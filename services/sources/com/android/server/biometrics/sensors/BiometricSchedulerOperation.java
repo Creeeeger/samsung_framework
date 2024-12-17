@@ -1,15 +1,17 @@
 package com.android.server.biometrics.sensors;
 
-import android.os.Build;
 import android.os.Handler;
-import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Slog;
 import com.android.internal.util.ArrayUtils;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
+import com.android.server.biometrics.sensors.BiometricScheduler;
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class BiometricSchedulerOperation {
+public final class BiometricSchedulerOperation {
     final Runnable mCancelWatchdog;
     public final ClientMonitorCallback mClientCallback;
     public final BaseClientMonitor mClientMonitor;
@@ -17,21 +19,8 @@ public class BiometricSchedulerOperation {
     public ClientMonitorCallback mOnStartCallback;
     public int mState;
 
-    public BiometricSchedulerOperation(BaseClientMonitor baseClientMonitor, ClientMonitorCallback clientMonitorCallback) {
-        this(baseClientMonitor, clientMonitorCallback, 0);
-    }
-
-    public BiometricSchedulerOperation(BaseClientMonitor baseClientMonitor, ClientMonitorCallback clientMonitorCallback, BooleanSupplier booleanSupplier) {
-        this(baseClientMonitor, clientMonitorCallback, 0, booleanSupplier);
-    }
-
-    public BiometricSchedulerOperation(BaseClientMonitor baseClientMonitor, ClientMonitorCallback clientMonitorCallback, int i) {
-        this(baseClientMonitor, clientMonitorCallback, i, new BooleanSupplier() { // from class: com.android.server.biometrics.sensors.BiometricSchedulerOperation$$ExternalSyntheticLambda1
-            @Override // java.util.function.BooleanSupplier
-            public final boolean getAsBoolean() {
-                return Build.isDebuggable();
-            }
-        });
+    public BiometricSchedulerOperation(int i, BaseClientMonitor baseClientMonitor, ClientMonitorCallback clientMonitorCallback) {
+        this(baseClientMonitor, clientMonitorCallback, i, new BiometricSchedulerOperation$$ExternalSyntheticLambda1());
     }
 
     public BiometricSchedulerOperation(BaseClientMonitor baseClientMonitor, ClientMonitorCallback clientMonitorCallback, int i, BooleanSupplier booleanSupplier) {
@@ -42,96 +31,121 @@ public class BiometricSchedulerOperation {
         this.mCancelWatchdog = new Runnable() { // from class: com.android.server.biometrics.sensors.BiometricSchedulerOperation$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
-                BiometricSchedulerOperation.this.lambda$new$0();
+                BiometricSchedulerOperation biometricSchedulerOperation = BiometricSchedulerOperation.this;
+                BaseClientMonitor baseClientMonitor2 = biometricSchedulerOperation.mClientMonitor;
+                if (biometricSchedulerOperation.mState == 5) {
+                    return;
+                }
+                Slog.e("BiometricSchedulerOperation", "[Watchdog Triggered]: " + biometricSchedulerOperation);
+                try {
+                    baseClientMonitor2.mListener.onError(baseClientMonitor2.mSensorId, baseClientMonitor2.mCookie, 5, 0);
+                } catch (RemoteException unused) {
+                    Slog.e("BiometricSchedulerOperation", "Remote exception when trying to send error in cancel watchdog.");
+                }
+                biometricSchedulerOperation.getWrappedCallback(biometricSchedulerOperation.mOnStartCallback).onClientFinished(baseClientMonitor2, false);
             }
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0() {
-        if (isFinished()) {
+    public BiometricSchedulerOperation(BaseClientMonitor baseClientMonitor, ClientMonitorCallback clientMonitorCallback, BooleanSupplier booleanSupplier) {
+        this(baseClientMonitor, clientMonitorCallback, 0, booleanSupplier);
+    }
+
+    public final void cancel(Handler handler, ClientMonitorCallback clientMonitorCallback) {
+        boolean contains = ArrayUtils.contains(new int[]{5}, this.mState);
+        if (contains) {
+            String str = "cancel: mState must not be " + this.mState;
+            if (this.mIsDebuggable.getAsBoolean()) {
+                throw new IllegalStateException(str);
+            }
+            Slog.e("BiometricSchedulerOperation", str);
+        }
+        if (contains) {
             return;
         }
-        Slog.e("BiometricSchedulerOperation", "[Watchdog Triggered]: " + this);
-        getWrappedCallback(this.mOnStartCallback).onClientFinished(this.mClientMonitor, false);
-    }
-
-    public int isReadyToStart(ClientMonitorCallback clientMonitorCallback) {
         int i = this.mState;
-        if (i != 4 && i != 0) {
-            return 0;
+        if (i == 3) {
+            Slog.w("BiometricSchedulerOperation", "Cannot cancel - already invoked for operation: " + this);
+            return;
         }
-        int cookie = this.mClientMonitor.getCookie();
-        if (cookie != 0) {
-            this.mState = 4;
-            this.mClientMonitor.waitForCookie(getWrappedCallback(clientMonitorCallback));
+        this.mState = 3;
+        BaseClientMonitor baseClientMonitor = this.mClientMonitor;
+        if (i == 0 || i == 1 || i == 4) {
+            Slog.d("BiometricSchedulerOperation", "[Cancelling] Current client (without start): " + baseClientMonitor);
+            baseClientMonitor.cancelWithoutStarting(getWrappedCallback(clientMonitorCallback));
+        } else {
+            Slog.d("BiometricSchedulerOperation", "[Cancelling] Current client: " + baseClientMonitor);
+            baseClientMonitor.cancel();
         }
-        return cookie;
+        handler.postDelayed(this.mCancelWatchdog, 3000L);
     }
 
-    public boolean start(ClientMonitorCallback clientMonitorCallback) {
-        if (errorWhenNoneOf("start", 0, 4, 1)) {
-            return false;
-        }
-        if (this.mClientMonitor.getCookie() != 0) {
-            if (this.mIsDebuggable.getAsBoolean()) {
-                throw new IllegalStateException("operation requires cookie");
-            }
-            Slog.e("BiometricSchedulerOperation", "operation requires cookie");
-        }
-        return doStart(clientMonitorCallback);
-    }
-
-    public boolean startWithCookie(ClientMonitorCallback clientMonitorCallback, int i) {
-        if (this.mClientMonitor.getCookie() != i) {
-            Slog.e("BiometricSchedulerOperation", "Mismatched cookie for operation: " + this + ", received: " + i);
-            return false;
-        }
-        if (errorWhenNoneOf("start", 0, 4, 1)) {
-            return false;
-        }
-        return doStart(clientMonitorCallback);
-    }
-
-    public final boolean doStart(ClientMonitorCallback clientMonitorCallback) {
-        this.mOnStartCallback = clientMonitorCallback;
-        ClientMonitorCallback wrappedCallback = getWrappedCallback(clientMonitorCallback);
-        if (this.mState == 1) {
+    /* JADX WARN: Multi-variable type inference failed */
+    public final boolean doStart(BiometricScheduler.AnonymousClass1 anonymousClass1) {
+        this.mOnStartCallback = anonymousClass1;
+        ClientMonitorCompositeCallback wrappedCallback = getWrappedCallback(anonymousClass1);
+        int i = this.mState;
+        BaseClientMonitor baseClientMonitor = this.mClientMonitor;
+        if (i == 1) {
             Slog.d("BiometricSchedulerOperation", "Operation marked for cancellation, cancelling now: " + this);
-            wrappedCallback.onClientFinished(this.mClientMonitor, true);
-            IBinder.DeathRecipient deathRecipient = this.mClientMonitor;
-            if (deathRecipient instanceof ErrorConsumer) {
-                ((ErrorConsumer) deathRecipient).onError(5, 0);
+            wrappedCallback.onClientFinished(baseClientMonitor, true);
+            if (baseClientMonitor instanceof ErrorConsumer) {
+                ((ErrorConsumer) baseClientMonitor).onError(5, 0);
             } else {
                 Slog.w("BiometricSchedulerOperation", "monitor cancelled but does not implement ErrorConsumer");
             }
             return false;
         }
-        if (isUnstartableHalOperation()) {
-            Slog.v("BiometricSchedulerOperation", "unable to start: " + this);
-            ((HalClientMonitor) this.mClientMonitor).unableToStart();
-            wrappedCallback.onClientFinished(this.mClientMonitor, false);
-            return false;
+        if (baseClientMonitor instanceof HalClientMonitor) {
+            HalClientMonitor halClientMonitor = (HalClientMonitor) baseClientMonitor;
+            if (halClientMonitor.mLazyDaemon.get() == null) {
+                Slog.v("BiometricSchedulerOperation", "unable to start: " + this);
+                halClientMonitor.unableToStart();
+                wrappedCallback.onClientFinished(baseClientMonitor, false);
+                return false;
+            }
         }
         this.mState = 2;
-        this.mClientMonitor.start(wrappedCallback);
+        baseClientMonitor.start(wrappedCallback);
         Slog.v("BiometricSchedulerOperation", "started: " + this);
         return true;
     }
 
-    public void abort() {
-        if (errorWhenNoneOf("abort", 0, 4, 1)) {
-            return;
+    public final boolean errorWhenNoneOf(String str, int... iArr) {
+        boolean z = !ArrayUtils.contains(iArr, this.mState);
+        if (z) {
+            StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, ": mState=");
+            m.append(this.mState);
+            m.append(" must be one of ");
+            m.append(Arrays.toString(iArr));
+            String sb = m.toString();
+            if (this.mIsDebuggable.getAsBoolean()) {
+                throw new IllegalStateException(sb);
+            }
+            Slog.e("BiometricSchedulerOperation", sb);
         }
-        if (isHalOperation()) {
-            ((HalClientMonitor) this.mClientMonitor).unableToStart();
-        }
-        getWrappedCallback().onClientFinished(this.mClientMonitor, false);
-        Slog.v("BiometricSchedulerOperation", "Aborted: " + this);
+        return z;
     }
 
-    public boolean markCanceling() {
-        if (this.mState != 0 || !isInterruptable()) {
+    public final ClientMonitorCompositeCallback getWrappedCallback(ClientMonitorCallback clientMonitorCallback) {
+        return new ClientMonitorCompositeCallback(new ClientMonitorCallback() { // from class: com.android.server.biometrics.sensors.BiometricSchedulerOperation.1
+            @Override // com.android.server.biometrics.sensors.ClientMonitorCallback
+            public final void onClientFinished(BaseClientMonitor baseClientMonitor, boolean z) {
+                Slog.d("BiometricSchedulerOperation", "[Finished / destroy]: " + baseClientMonitor);
+                BiometricSchedulerOperation biometricSchedulerOperation = BiometricSchedulerOperation.this;
+                biometricSchedulerOperation.mClientMonitor.destroy();
+                biometricSchedulerOperation.mState = 5;
+            }
+        }, clientMonitorCallback, this.mClientCallback);
+    }
+
+    public final boolean isMatchingRequestId(long j) {
+        long j2 = this.mClientMonitor.mRequestId;
+        return j2 <= 0 || j2 == j;
+    }
+
+    public final boolean markCanceling() {
+        if (this.mState != 0 || !this.mClientMonitor.isInterruptable()) {
             return false;
         }
         this.mState = 1;
@@ -142,142 +156,7 @@ public class BiometricSchedulerOperation {
         this.mState = 1;
     }
 
-    public void cancel(Handler handler, ClientMonitorCallback clientMonitorCallback) {
-        if (errorWhenOneOf("cancel", 5)) {
-            return;
-        }
-        int i = this.mState;
-        if (i == 3) {
-            Slog.w("BiometricSchedulerOperation", "Cannot cancel - already invoked for operation: " + this);
-            return;
-        }
-        this.mState = 3;
-        if (i == 0 || i == 1 || i == 4) {
-            Slog.d("BiometricSchedulerOperation", "[Cancelling] Current client (without start): " + this.mClientMonitor);
-            this.mClientMonitor.cancelWithoutStarting(getWrappedCallback(clientMonitorCallback));
-        } else {
-            Slog.d("BiometricSchedulerOperation", "[Cancelling] Current client: " + this.mClientMonitor);
-            this.mClientMonitor.cancel();
-        }
-        handler.postDelayed(this.mCancelWatchdog, 3000L);
-    }
-
-    public final ClientMonitorCallback getWrappedCallback() {
-        return getWrappedCallback(null);
-    }
-
-    public final ClientMonitorCallback getWrappedCallback(ClientMonitorCallback clientMonitorCallback) {
-        return new ClientMonitorCompositeCallback(new ClientMonitorCallback() { // from class: com.android.server.biometrics.sensors.BiometricSchedulerOperation.1
-            @Override // com.android.server.biometrics.sensors.ClientMonitorCallback
-            public void onClientFinished(BaseClientMonitor baseClientMonitor, boolean z) {
-                Slog.d("BiometricSchedulerOperation", "[Finished / destroy]: " + baseClientMonitor);
-                BiometricSchedulerOperation.this.mClientMonitor.destroy();
-                BiometricSchedulerOperation.this.mState = 5;
-            }
-        }, clientMonitorCallback, this.mClientCallback);
-    }
-
-    public int getSensorId() {
-        return this.mClientMonitor.getSensorId();
-    }
-
-    public int getProtoEnum() {
-        return this.mClientMonitor.getProtoEnum();
-    }
-
-    public int getTargetUserId() {
-        return this.mClientMonitor.getTargetUserId();
-    }
-
-    public boolean isFor(BaseClientMonitor baseClientMonitor) {
-        return this.mClientMonitor == baseClientMonitor;
-    }
-
-    public boolean isInterruptable() {
-        return this.mClientMonitor.isInterruptable();
-    }
-
-    public final boolean isHalOperation() {
-        return this.mClientMonitor instanceof HalClientMonitor;
-    }
-
-    public final boolean isUnstartableHalOperation() {
-        return isHalOperation() && ((HalClientMonitor) this.mClientMonitor).getFreshDaemon() == null;
-    }
-
-    public boolean isEnrollOperation() {
-        return this.mClientMonitor instanceof EnrollClient;
-    }
-
-    public boolean isAuthenticationOrDetectionOperation() {
-        BaseClientMonitor baseClientMonitor = this.mClientMonitor;
-        return (baseClientMonitor instanceof AuthenticationConsumer) || (baseClientMonitor instanceof DetectionConsumer);
-    }
-
-    public boolean isAcquisitionOperation() {
-        return this.mClientMonitor instanceof AcquisitionClient;
-    }
-
-    public boolean isMatchingRequestId(long j) {
-        return !this.mClientMonitor.hasRequestId() || this.mClientMonitor.getRequestId() == j;
-    }
-
-    public boolean isMatchingToken(IBinder iBinder) {
-        return this.mClientMonitor.getToken() == iBinder;
-    }
-
-    public boolean isStarted() {
-        return this.mState == 2;
-    }
-
-    public boolean isFinished() {
-        return this.mState == 5;
-    }
-
-    public boolean isMarkedCanceling() {
-        return this.mState == 1;
-    }
-
-    public BaseClientMonitor getClientMonitor() {
-        return this.mClientMonitor;
-    }
-
-    public final boolean errorWhenOneOf(String str, int... iArr) {
-        boolean contains = ArrayUtils.contains(iArr, this.mState);
-        if (contains) {
-            String str2 = str + ": mState must not be " + this.mState;
-            if (this.mIsDebuggable.getAsBoolean()) {
-                throw new IllegalStateException(str2);
-            }
-            Slog.e("BiometricSchedulerOperation", str2);
-        }
-        return contains;
-    }
-
-    public final boolean errorWhenNoneOf(String str, int... iArr) {
-        boolean z = !ArrayUtils.contains(iArr, this.mState);
-        if (z) {
-            String str2 = str + ": mState=" + this.mState + " must be one of " + Arrays.toString(iArr);
-            if (this.mIsDebuggable.getAsBoolean()) {
-                throw new IllegalStateException(str2);
-            }
-            Slog.e("BiometricSchedulerOperation", str2);
-        }
-        return z;
-    }
-
-    public String toString() {
+    public final String toString() {
         return this.mClientMonitor + ", State: " + this.mState;
-    }
-
-    public boolean isWaitingForCookie() {
-        return this.mState == 4;
-    }
-
-    public void destroy() {
-        BaseClientMonitor baseClientMonitor = this.mClientMonitor;
-        if (baseClientMonitor != null) {
-            baseClientMonitor.destroy();
-        }
     }
 }

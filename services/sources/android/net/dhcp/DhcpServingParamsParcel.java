@@ -1,26 +1,17 @@
 package android.net.dhcp;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Arrays;
 import java.util.StringJoiner;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class DhcpServingParamsParcel implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.net.dhcp.DhcpServingParamsParcel.1
-        @Override // android.os.Parcelable.Creator
-        public DhcpServingParamsParcel createFromParcel(Parcel parcel) {
-            DhcpServingParamsParcel dhcpServingParamsParcel = new DhcpServingParamsParcel();
-            dhcpServingParamsParcel.readFromParcel(parcel);
-            return dhcpServingParamsParcel;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public DhcpServingParamsParcel[] newArray(int i) {
-            return new DhcpServingParamsParcel[i];
-        }
-    };
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public int[] defaultRouters;
     public int[] dnsServers;
     public int[] excludedAddrs;
@@ -33,30 +24,25 @@ public class DhcpServingParamsParcel implements Parcelable {
     public boolean changePrefixOnDecline = false;
     public int leasesSubnetPrefixLength = 0;
 
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return 0;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.net.dhcp.DhcpServingParamsParcel$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            DhcpServingParamsParcel dhcpServingParamsParcel = new DhcpServingParamsParcel();
+            dhcpServingParamsParcel.readFromParcel(parcel);
+            return dhcpServingParamsParcel;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new DhcpServingParamsParcel[i];
+        }
     }
 
     @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeInt(this.serverAddr);
-        parcel.writeInt(this.serverAddrPrefixLength);
-        parcel.writeIntArray(this.defaultRouters);
-        parcel.writeIntArray(this.dnsServers);
-        parcel.writeIntArray(this.excludedAddrs);
-        parcel.writeLong(this.dhcpLeaseTimeSecs);
-        parcel.writeInt(this.linkMtu);
-        parcel.writeBoolean(this.metered);
-        parcel.writeInt(this.singleClientAddr);
-        parcel.writeBoolean(this.changePrefixOnDecline);
-        parcel.writeInt(this.leasesSubnetPrefixLength);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
+    public int describeContents() {
+        return 0;
     }
 
     public final void readFromParcel(Parcel parcel) {
@@ -139,17 +125,36 @@ public class DhcpServingParamsParcel implements Parcelable {
 
     public String toString() {
         StringJoiner stringJoiner = new StringJoiner(", ", "{", "}");
-        stringJoiner.add("serverAddr: " + this.serverAddr);
-        stringJoiner.add("serverAddrPrefixLength: " + this.serverAddrPrefixLength);
-        stringJoiner.add("defaultRouters: " + Arrays.toString(this.defaultRouters));
+        StringBuilder m = AmFmBandRange$$ExternalSyntheticOutline0.m(AmFmBandRange$$ExternalSyntheticOutline0.m(new StringBuilder("serverAddr: "), this.serverAddr, stringJoiner, "serverAddrPrefixLength: "), this.serverAddrPrefixLength, stringJoiner, "defaultRouters: ");
+        m.append(Arrays.toString(this.defaultRouters));
+        stringJoiner.add(m.toString());
         stringJoiner.add("dnsServers: " + Arrays.toString(this.dnsServers));
         stringJoiner.add("excludedAddrs: " + Arrays.toString(this.excludedAddrs));
         stringJoiner.add("dhcpLeaseTimeSecs: " + this.dhcpLeaseTimeSecs);
-        stringJoiner.add("linkMtu: " + this.linkMtu);
-        stringJoiner.add("metered: " + this.metered);
-        stringJoiner.add("singleClientAddr: " + this.singleClientAddr);
-        stringJoiner.add("changePrefixOnDecline: " + this.changePrefixOnDecline);
-        stringJoiner.add("leasesSubnetPrefixLength: " + this.leasesSubnetPrefixLength);
-        return "android.net.dhcp.DhcpServingParamsParcel" + stringJoiner.toString();
+        StringBuilder m2 = AmFmBandRange$$ExternalSyntheticOutline0.m(new StringBuilder("linkMtu: "), this.linkMtu, stringJoiner, "metered: ");
+        m2.append(this.metered);
+        stringJoiner.add(m2.toString());
+        StringBuilder m3 = AmFmBandRange$$ExternalSyntheticOutline0.m(new StringBuilder("singleClientAddr: "), this.singleClientAddr, stringJoiner, "changePrefixOnDecline: ");
+        m3.append(this.changePrefixOnDecline);
+        stringJoiner.add(m3.toString());
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(stringJoiner, AmFmBandRange$$ExternalSyntheticOutline0.m(new StringBuilder("leasesSubnetPrefixLength: "), this.leasesSubnetPrefixLength, stringJoiner, "DhcpServingParamsParcel"));
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeInt(this.serverAddr);
+        parcel.writeInt(this.serverAddrPrefixLength);
+        parcel.writeIntArray(this.defaultRouters);
+        parcel.writeIntArray(this.dnsServers);
+        parcel.writeIntArray(this.excludedAddrs);
+        parcel.writeLong(this.dhcpLeaseTimeSecs);
+        parcel.writeInt(this.linkMtu);
+        parcel.writeBoolean(this.metered);
+        parcel.writeInt(this.singleClientAddr);
+        parcel.writeBoolean(this.changePrefixOnDecline);
+        int m = SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(parcel, this.leasesSubnetPrefixLength, dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(m, dataPosition, parcel, m);
     }
 }

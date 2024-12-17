@@ -3,8 +3,10 @@ package com.android.server.accounts;
 import android.app.ActivityManager;
 import android.os.ShellCommand;
 import android.os.UserHandle;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AccountManagerServiceShellCommand extends ShellCommand {
     public final AccountManagerService mService;
@@ -13,74 +15,66 @@ public final class AccountManagerServiceShellCommand extends ShellCommand {
         this.mService = accountManagerService;
     }
 
-    public int onCommand(String str) {
+    public final int onCommand(String str) {
         if (str == null) {
             return handleDefaultCommands(str);
         }
         if (str.equals("get-bind-instant-service-allowed")) {
-            return runGetBindInstantServiceAllowed();
+            Integer parseUserId = parseUserId();
+            if (parseUserId == null) {
+                return -1;
+            }
+            PrintWriter outPrintWriter = getOutPrintWriter();
+            AccountManagerService accountManagerService = this.mService;
+            outPrintWriter.println(Boolean.toString(accountManagerService.mAuthenticatorCache.getBindInstantServiceAllowed(parseUserId.intValue())));
+            return 0;
         }
-        if (str.equals("set-bind-instant-service-allowed")) {
-            return runSetBindInstantServiceAllowed();
+        if (!str.equals("set-bind-instant-service-allowed")) {
+            return -1;
+        }
+        Integer parseUserId2 = parseUserId();
+        if (parseUserId2 != null) {
+            String nextArgRequired = getNextArgRequired();
+            if (nextArgRequired != null) {
+                AccountManagerService accountManagerService2 = this.mService;
+                accountManagerService2.mAuthenticatorCache.setBindInstantServiceAllowed(parseUserId2.intValue(), Boolean.parseBoolean(nextArgRequired));
+                return 0;
+            }
+            getErrPrintWriter().println("Error: no true/false specified");
         }
         return -1;
     }
 
-    public final int runGetBindInstantServiceAllowed() {
-        Integer parseUserId = parseUserId();
-        if (parseUserId == null) {
-            return -1;
-        }
-        getOutPrintWriter().println(Boolean.toString(this.mService.getBindInstantServiceAllowed(parseUserId.intValue())));
-        return 0;
-    }
-
-    public final int runSetBindInstantServiceAllowed() {
-        Integer parseUserId = parseUserId();
-        if (parseUserId == null) {
-            return -1;
-        }
-        String nextArgRequired = getNextArgRequired();
-        if (nextArgRequired == null) {
-            getErrPrintWriter().println("Error: no true/false specified");
-            return -1;
-        }
-        this.mService.setBindInstantServiceAllowed(parseUserId.intValue(), Boolean.parseBoolean(nextArgRequired));
-        return 0;
-    }
-
-    public final Integer parseUserId() {
-        String nextOption = getNextOption();
-        if (nextOption != null) {
-            if (nextOption.equals("--user")) {
-                int parseUserArg = UserHandle.parseUserArg(getNextArgRequired());
-                if (parseUserArg == -2) {
-                    return Integer.valueOf(ActivityManager.getCurrentUser());
-                }
-                if (parseUserArg == -1) {
-                    getErrPrintWriter().println("USER_ALL not supported. Specify a user.");
-                    return null;
-                }
-                if (parseUserArg < 0) {
-                    getErrPrintWriter().println("Invalid user: " + parseUserArg);
-                    return null;
-                }
-                return Integer.valueOf(parseUserArg);
-            }
-            getErrPrintWriter().println("Unknown option: " + nextOption);
-            return null;
-        }
-        return Integer.valueOf(ActivityManager.getCurrentUser());
-    }
-
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.println("Account manager service commands:");
         outPrintWriter.println("  help");
         outPrintWriter.println("    Print this help text.");
         outPrintWriter.println("  set-bind-instant-service-allowed [--user <USER_ID> (current user if not specified)] true|false ");
-        outPrintWriter.println("    Set whether binding to services provided by instant apps is allowed.");
-        outPrintWriter.println("  get-bind-instant-service-allowed [--user <USER_ID> (current user if not specified)]");
-        outPrintWriter.println("    Get whether binding to services provided by instant apps is allowed.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "    Set whether binding to services provided by instant apps is allowed.", "  get-bind-instant-service-allowed [--user <USER_ID> (current user if not specified)]", "    Get whether binding to services provided by instant apps is allowed.");
+    }
+
+    public final Integer parseUserId() {
+        String nextOption = getNextOption();
+        if (nextOption == null) {
+            return Integer.valueOf(ActivityManager.getCurrentUser());
+        }
+        if (!nextOption.equals("--user")) {
+            getErrPrintWriter().println("Unknown option: ".concat(nextOption));
+            return null;
+        }
+        int parseUserArg = UserHandle.parseUserArg(getNextArgRequired());
+        if (parseUserArg == -2) {
+            return Integer.valueOf(ActivityManager.getCurrentUser());
+        }
+        if (parseUserArg == -1) {
+            getErrPrintWriter().println("USER_ALL not supported. Specify a user.");
+            return null;
+        }
+        if (parseUserArg >= 0) {
+            return Integer.valueOf(parseUserArg);
+        }
+        AccountManagerServiceShellCommand$$ExternalSyntheticOutline0.m(getErrPrintWriter(), "Invalid user: ", parseUserArg);
+        return null;
     }
 }

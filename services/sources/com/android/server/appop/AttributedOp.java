@@ -2,16 +2,18 @@ package com.android.server.appop;
 
 import android.app.AppOpsManager;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.ArrayMap;
+import android.util.ArraySet;
 import android.util.LongSparseArray;
 import android.util.Pools;
 import android.util.Slog;
+import com.android.internal.util.function.pooled.PooledLambda;
+import com.android.internal.util.function.pooled.PooledRunnable;
 import com.android.server.appop.AppOpsService;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AttributedOp {
     public LongSparseArray mAccessEvents;
@@ -22,274 +24,42 @@ public final class AttributedOp {
     public final AppOpsService.Op parent;
     public final String tag;
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class InProgressStartOpEvent implements IBinder.DeathRecipient {
+        public int mAttributionChainId;
+        public int mAttributionFlags;
+        public IBinder mClientId;
+        public int mFlags;
+        public int mNumUnfinishedStarts;
+        public Runnable mOnDeath;
+        public AppOpsManager.OpEventProxyInfo mProxy;
+        public long mStartElapsedTime;
+        public long mStartTime;
+        public int mUidState;
+        public int mVirtualDeviceId;
+
+        @Override // android.os.IBinder.DeathRecipient
+        public final void binderDied() {
+            this.mOnDeath.run();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class InProgressStartOpEventPool extends Pools.SimplePool {
+        public OpEventProxyInfoPool mOpEventProxyInfoPool;
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class OpEventProxyInfoPool extends Pools.SimplePool {
+    }
+
     public AttributedOp(AppOpsService appOpsService, String str, AppOpsService.Op op) {
         this.mAppOpsService = appOpsService;
         this.tag = str;
         this.parent = op;
     }
 
-    public void accessed(int i, String str, String str2, int i2, int i3) {
-        long currentTimeMillis = System.currentTimeMillis();
-        accessed(currentTimeMillis, -1L, i, str, str2, i2, i3);
-        HistoricalRegistry historicalRegistry = this.mAppOpsService.mHistoricalRegistry;
-        AppOpsService.Op op = this.parent;
-        historicalRegistry.incrementOpAccessedCount(op.op, op.uid, op.packageName, this.tag, i2, i3, currentTimeMillis, 0, -1);
-        AppOpsService appOpsService = this.mAppOpsService;
-        AppOpsService.Op op2 = this.parent;
-        int i4 = op2.op;
-        int i5 = op2.uid;
-        String str3 = op2.packageName;
-        String str4 = this.tag;
-        appOpsService.writePermissionAccessInformation(i4, i5, str3, str, str4 == null ? str2 : str4, i2);
-    }
-
-    public void accessed(long j, long j2, int i, String str, String str2, int i2, int i3) {
-        long makeKey = AppOpsManager.makeKey(i2, i3);
-        if (this.mAccessEvents == null) {
-            this.mAccessEvents = new LongSparseArray(1);
-        }
-        AppOpsManager.OpEventProxyInfo acquire = i != -1 ? this.mAppOpsService.mOpEventProxyInfoPool.acquire(i, str, str2) : null;
-        AppOpsManager.NoteOpEvent noteOpEvent = (AppOpsManager.NoteOpEvent) this.mAccessEvents.get(makeKey);
-        if (noteOpEvent != null) {
-            noteOpEvent.reinit(j, j2, acquire, this.mAppOpsService.mOpEventProxyInfoPool);
-        } else {
-            this.mAccessEvents.put(makeKey, new AppOpsManager.NoteOpEvent(j, j2, acquire));
-        }
-    }
-
-    public void rejected(int i, int i2) {
-        rejected(System.currentTimeMillis(), i, i2);
-        HistoricalRegistry historicalRegistry = this.mAppOpsService.mHistoricalRegistry;
-        AppOpsService.Op op = this.parent;
-        historicalRegistry.incrementOpRejected(op.op, op.uid, op.packageName, this.tag, i, i2);
-    }
-
-    public void rejected(long j, int i, int i2) {
-        long makeKey = AppOpsManager.makeKey(i, i2);
-        if (this.mRejectEvents == null) {
-            this.mRejectEvents = new LongSparseArray(1);
-        }
-        AppOpsManager.NoteOpEvent noteOpEvent = (AppOpsManager.NoteOpEvent) this.mRejectEvents.get(makeKey);
-        if (noteOpEvent != null) {
-            noteOpEvent.reinit(j, -1L, (AppOpsManager.OpEventProxyInfo) null, this.mAppOpsService.mOpEventProxyInfoPool);
-        } else {
-            this.mRejectEvents.put(makeKey, new AppOpsManager.NoteOpEvent(j, -1L, (AppOpsManager.OpEventProxyInfo) null));
-        }
-    }
-
-    public void started(IBinder iBinder, int i, String str, String str2, int i2, int i3, int i4, int i5) {
-        started(iBinder, i, str, str2, i2, i3, true, i4, i5);
-    }
-
-    public final void started(IBinder iBinder, int i, String str, String str2, int i2, int i3, boolean z, int i4, int i5) {
-        startedOrPaused(iBinder, i, str, str2, i2, i3, z, true, i4, i5);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:20:0x00a1  */
-    /* JADX WARN: Removed duplicated region for block: B:27:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void startedOrPaused(android.os.IBinder r20, int r21, java.lang.String r22, java.lang.String r23, int r24, int r25, boolean r26, boolean r27, int r28, int r29) {
-        /*
-            Method dump skipped, instructions count: 223
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.appop.AttributedOp.startedOrPaused(android.os.IBinder, int, java.lang.String, java.lang.String, int, int, boolean, boolean, int, int):void");
-    }
-
-    public void finished(IBinder iBinder) {
-        finished(iBinder, true);
-    }
-
-    public final void finished(IBinder iBinder, boolean z) {
-        finishOrPause(iBinder, z, false);
-    }
-
-    public final void finishOrPause(IBinder iBinder, boolean z, boolean z2) {
-        int indexOfKey = isRunning() ? this.mInProgressEvents.indexOfKey(iBinder) : -1;
-        if (indexOfKey < 0) {
-            finishPossiblyPaused(iBinder, z2);
-            return;
-        }
-        InProgressStartOpEvent inProgressStartOpEvent = (InProgressStartOpEvent) this.mInProgressEvents.valueAt(indexOfKey);
-        if (!z2) {
-            inProgressStartOpEvent.mNumUnfinishedStarts--;
-        }
-        if (inProgressStartOpEvent.mNumUnfinishedStarts == 0 || z2) {
-            if (!z2) {
-                inProgressStartOpEvent.finish();
-                this.mInProgressEvents.removeAt(indexOfKey);
-            }
-            if (this.mAccessEvents == null) {
-                this.mAccessEvents = new LongSparseArray(1);
-            }
-            AppOpsManager.NoteOpEvent noteOpEvent = new AppOpsManager.NoteOpEvent(inProgressStartOpEvent.getStartTime(), SystemClock.elapsedRealtime() - inProgressStartOpEvent.getStartElapsedTime(), inProgressStartOpEvent.getProxy() != null ? new AppOpsManager.OpEventProxyInfo(inProgressStartOpEvent.getProxy()) : null);
-            this.mAccessEvents.put(AppOpsManager.makeKey(inProgressStartOpEvent.getUidState(), inProgressStartOpEvent.getFlags()), noteOpEvent);
-            HistoricalRegistry historicalRegistry = this.mAppOpsService.mHistoricalRegistry;
-            AppOpsService.Op op = this.parent;
-            historicalRegistry.increaseOpAccessDuration(op.op, op.uid, op.packageName, this.tag, inProgressStartOpEvent.getUidState(), inProgressStartOpEvent.getFlags(), noteOpEvent.getNoteTime(), noteOpEvent.getDuration(), inProgressStartOpEvent.getAttributionFlags(), inProgressStartOpEvent.getAttributionChainId());
-            if (z2) {
-                return;
-            }
-            this.mAppOpsService.mInProgressStartOpEventPool.release(inProgressStartOpEvent);
-            if (this.mInProgressEvents.isEmpty()) {
-                this.mInProgressEvents = null;
-                if (!z || this.parent.isRunning()) {
-                    return;
-                }
-                AppOpsService appOpsService = this.mAppOpsService;
-                AppOpsService.Op op2 = this.parent;
-                appOpsService.scheduleOpActiveChangedIfNeededLocked(op2.op, op2.uid, op2.packageName, this.tag, false, inProgressStartOpEvent.getAttributionFlags(), inProgressStartOpEvent.getAttributionChainId());
-            }
-        }
-    }
-
-    public final void finishPossiblyPaused(IBinder iBinder, boolean z) {
-        if (!isPaused()) {
-            Slog.wtf("AppOps", "No ops running or paused");
-            return;
-        }
-        int indexOfKey = this.mPausedInProgressEvents.indexOfKey(iBinder);
-        if (indexOfKey < 0) {
-            Slog.wtf("AppOps", "No op running or paused for the client");
-            return;
-        }
-        if (z) {
-            return;
-        }
-        InProgressStartOpEvent inProgressStartOpEvent = (InProgressStartOpEvent) this.mPausedInProgressEvents.valueAt(indexOfKey);
-        int i = inProgressStartOpEvent.mNumUnfinishedStarts - 1;
-        inProgressStartOpEvent.mNumUnfinishedStarts = i;
-        if (i == 0) {
-            this.mPausedInProgressEvents.removeAt(indexOfKey);
-            this.mAppOpsService.mInProgressStartOpEventPool.release(inProgressStartOpEvent);
-            if (this.mPausedInProgressEvents.isEmpty()) {
-                this.mPausedInProgressEvents = null;
-            }
-        }
-    }
-
-    public void createPaused(IBinder iBinder, int i, String str, String str2, int i2, int i3, int i4, int i5) {
-        startedOrPaused(iBinder, i, str, str2, i2, i3, true, false, i4, i5);
-    }
-
-    public void pause() {
-        if (isRunning()) {
-            if (this.mPausedInProgressEvents == null) {
-                this.mPausedInProgressEvents = new ArrayMap(1);
-            }
-            for (int i = 0; i < this.mInProgressEvents.size(); i++) {
-                InProgressStartOpEvent inProgressStartOpEvent = (InProgressStartOpEvent) this.mInProgressEvents.valueAt(i);
-                this.mPausedInProgressEvents.put(inProgressStartOpEvent.getClientId(), inProgressStartOpEvent);
-                finishOrPause(inProgressStartOpEvent.getClientId(), true, true);
-                AppOpsService appOpsService = this.mAppOpsService;
-                AppOpsService.Op op = this.parent;
-                appOpsService.scheduleOpActiveChangedIfNeededLocked(op.op, op.uid, op.packageName, this.tag, false, inProgressStartOpEvent.getAttributionFlags(), inProgressStartOpEvent.getAttributionChainId());
-            }
-            this.mInProgressEvents = null;
-        }
-    }
-
-    public void resume() {
-        if (isPaused()) {
-            if (this.mInProgressEvents == null) {
-                this.mInProgressEvents = new ArrayMap(this.mPausedInProgressEvents.size());
-            }
-            boolean z = !this.mPausedInProgressEvents.isEmpty() && this.mInProgressEvents.isEmpty();
-            long currentTimeMillis = System.currentTimeMillis();
-            for (int i = 0; i < this.mPausedInProgressEvents.size(); i++) {
-                InProgressStartOpEvent inProgressStartOpEvent = (InProgressStartOpEvent) this.mPausedInProgressEvents.valueAt(i);
-                this.mInProgressEvents.put(inProgressStartOpEvent.getClientId(), inProgressStartOpEvent);
-                inProgressStartOpEvent.setStartElapsedTime(SystemClock.elapsedRealtime());
-                inProgressStartOpEvent.setStartTime(currentTimeMillis);
-                HistoricalRegistry historicalRegistry = this.mAppOpsService.mHistoricalRegistry;
-                AppOpsService.Op op = this.parent;
-                historicalRegistry.incrementOpAccessedCount(op.op, op.uid, op.packageName, this.tag, inProgressStartOpEvent.getUidState(), inProgressStartOpEvent.getFlags(), currentTimeMillis, inProgressStartOpEvent.getAttributionFlags(), inProgressStartOpEvent.getAttributionChainId());
-                if (z) {
-                    AppOpsService appOpsService = this.mAppOpsService;
-                    AppOpsService.Op op2 = this.parent;
-                    appOpsService.scheduleOpActiveChangedIfNeededLocked(op2.op, op2.uid, op2.packageName, this.tag, true, inProgressStartOpEvent.getAttributionFlags(), inProgressStartOpEvent.getAttributionChainId());
-                }
-                AppOpsService appOpsService2 = this.mAppOpsService;
-                AppOpsService.Op op3 = this.parent;
-                appOpsService2.scheduleOpStartedIfNeededLocked(op3.op, op3.uid, op3.packageName, this.tag, inProgressStartOpEvent.getFlags(), 0, 2, inProgressStartOpEvent.getAttributionFlags(), inProgressStartOpEvent.getAttributionChainId());
-            }
-            this.mPausedInProgressEvents = null;
-        }
-    }
-
-    public void onClientDeath(IBinder iBinder) {
-        synchronized (this.mAppOpsService) {
-            if (isPaused() || isRunning()) {
-                InProgressStartOpEvent inProgressStartOpEvent = (InProgressStartOpEvent) (isPaused() ? this.mPausedInProgressEvents : this.mInProgressEvents).get(iBinder);
-                if (inProgressStartOpEvent != null) {
-                    inProgressStartOpEvent.mNumUnfinishedStarts = 1;
-                }
-                finished(iBinder);
-            }
-        }
-    }
-
-    public void onUidStateChanged(int i) {
-        int i2;
-        ArrayMap arrayMap;
-        int i3;
-        if (isPaused() || isRunning()) {
-            boolean isRunning = isRunning();
-            ArrayMap arrayMap2 = isRunning ? this.mInProgressEvents : this.mPausedInProgressEvents;
-            int size = arrayMap2.size();
-            ArrayList arrayList = new ArrayList(arrayMap2.keySet());
-            boolean z = false;
-            ArrayMap arrayMap3 = arrayMap2;
-            int i4 = 0;
-            while (i4 < size) {
-                InProgressStartOpEvent inProgressStartOpEvent = (InProgressStartOpEvent) arrayMap3.get(arrayList.get(i4));
-                if (inProgressStartOpEvent == null || inProgressStartOpEvent.getUidState() == i) {
-                    i2 = i4;
-                    arrayMap = arrayMap3;
-                } else {
-                    try {
-                        int i5 = inProgressStartOpEvent.mNumUnfinishedStarts;
-                        inProgressStartOpEvent.mNumUnfinishedStarts = 1;
-                        AppOpsManager.OpEventProxyInfo proxy = inProgressStartOpEvent.getProxy();
-                        finished(inProgressStartOpEvent.getClientId(), z);
-                        if (proxy != null) {
-                            i3 = i5;
-                            i2 = i4;
-                            arrayMap = arrayMap3;
-                            try {
-                                startedOrPaused(inProgressStartOpEvent.getClientId(), proxy.getUid(), proxy.getPackageName(), proxy.getAttributionTag(), i, inProgressStartOpEvent.getFlags(), false, isRunning, inProgressStartOpEvent.getAttributionFlags(), inProgressStartOpEvent.getAttributionChainId());
-                            } catch (RemoteException unused) {
-                            }
-                        } else {
-                            i3 = i5;
-                            i2 = i4;
-                            startedOrPaused(inProgressStartOpEvent.getClientId(), -1, null, null, i, inProgressStartOpEvent.getFlags(), false, isRunning, inProgressStartOpEvent.getAttributionFlags(), inProgressStartOpEvent.getAttributionChainId());
-                        }
-                        arrayMap3 = isRunning ? this.mInProgressEvents : this.mPausedInProgressEvents;
-                        try {
-                            InProgressStartOpEvent inProgressStartOpEvent2 = (InProgressStartOpEvent) arrayMap3.get(arrayList.get(i2));
-                            if (inProgressStartOpEvent2 != null) {
-                                inProgressStartOpEvent2.mNumUnfinishedStarts += i3 - 1;
-                            }
-                        } catch (RemoteException unused2) {
-                        }
-                    } catch (RemoteException unused3) {
-                        i2 = i4;
-                    }
-                    i4 = i2 + 1;
-                    z = false;
-                }
-                arrayMap3 = arrayMap;
-                i4 = i2 + 1;
-                z = false;
-            }
-        }
-    }
-
-    public final LongSparseArray add(LongSparseArray longSparseArray, LongSparseArray longSparseArray2) {
+    public static LongSparseArray add(LongSparseArray longSparseArray, LongSparseArray longSparseArray2) {
         if (longSparseArray == null) {
             return longSparseArray2;
         }
@@ -308,38 +78,7 @@ public final class AttributedOp {
         return longSparseArray;
     }
 
-    public void add(AttributedOp attributedOp) {
-        if (attributedOp.isRunning() || attributedOp.isPaused()) {
-            ArrayMap arrayMap = attributedOp.isRunning() ? attributedOp.mInProgressEvents : attributedOp.mPausedInProgressEvents;
-            Slog.w("AppOps", "Ignoring " + arrayMap.size() + " app-ops, running: " + attributedOp.isRunning());
-            int size = arrayMap.size();
-            for (int i = 0; i < size; i++) {
-                InProgressStartOpEvent inProgressStartOpEvent = (InProgressStartOpEvent) arrayMap.valueAt(i);
-                inProgressStartOpEvent.finish();
-                this.mAppOpsService.mInProgressStartOpEventPool.release(inProgressStartOpEvent);
-            }
-        }
-        this.mAccessEvents = add(this.mAccessEvents, attributedOp.mAccessEvents);
-        this.mRejectEvents = add(this.mRejectEvents, attributedOp.mRejectEvents);
-    }
-
-    public boolean isRunning() {
-        ArrayMap arrayMap = this.mInProgressEvents;
-        return (arrayMap == null || arrayMap.isEmpty()) ? false : true;
-    }
-
-    public boolean isPaused() {
-        ArrayMap arrayMap = this.mPausedInProgressEvents;
-        return (arrayMap == null || arrayMap.isEmpty()) ? false : true;
-    }
-
-    public boolean hasAnyTime() {
-        LongSparseArray longSparseArray;
-        LongSparseArray longSparseArray2 = this.mAccessEvents;
-        return (longSparseArray2 != null && longSparseArray2.size() > 0) || ((longSparseArray = this.mRejectEvents) != null && longSparseArray.size() > 0);
-    }
-
-    public final LongSparseArray deepClone(LongSparseArray longSparseArray) {
+    public static LongSparseArray deepClone(LongSparseArray longSparseArray) {
         if (longSparseArray == null) {
             return longSparseArray;
         }
@@ -351,7 +90,47 @@ public final class AttributedOp {
         return longSparseArray2;
     }
 
-    public AppOpsManager.AttributedOpEntry createAttributedOpEntryLocked() {
+    public final void accessed(int i, int i2, String str, String str2, String str3, int i3) {
+        long currentTimeMillis = System.currentTimeMillis();
+        accessed(currentTimeMillis, -1L, i, str, str2, str3, i2, i3);
+        HistoricalRegistry historicalRegistry = this.mAppOpsService.mHistoricalRegistry;
+        AppOpsService.Op op = this.parent;
+        historicalRegistry.incrementOpAccessedCount(op.op, op.uid, op.packageName, this.tag, i2, i3, currentTimeMillis, 0, -1);
+        AppOpsService appOpsService = this.mAppOpsService;
+        AppOpsService.Op op2 = this.parent;
+        int i4 = op2.op;
+        int i5 = op2.uid;
+        String str4 = op2.packageName;
+        String str5 = this.tag;
+        appOpsService.writePermissionAccessInformation(i4, i5, str4, str, str5 == null ? str2 : str5, i2);
+    }
+
+    public final void accessed(long j, long j2, int i, String str, String str2, String str3, int i2, int i3) {
+        AppOpsManager.OpEventProxyInfo opEventProxyInfo;
+        long makeKey = AppOpsManager.makeKey(i2, i3);
+        if (this.mAccessEvents == null) {
+            this.mAccessEvents = new LongSparseArray(1);
+        }
+        AppOpsService appOpsService = this.mAppOpsService;
+        if (i != -1) {
+            opEventProxyInfo = (AppOpsManager.OpEventProxyInfo) appOpsService.mOpEventProxyInfoPool.acquire();
+            if (opEventProxyInfo != null) {
+                opEventProxyInfo.reinit(i, str, str2, str3);
+            } else {
+                opEventProxyInfo = new AppOpsManager.OpEventProxyInfo(i, str, str2, str3);
+            }
+        } else {
+            opEventProxyInfo = null;
+        }
+        AppOpsManager.NoteOpEvent noteOpEvent = (AppOpsManager.NoteOpEvent) this.mAccessEvents.get(makeKey);
+        if (noteOpEvent == null) {
+            this.mAccessEvents.put(makeKey, new AppOpsManager.NoteOpEvent(j, j2, opEventProxyInfo));
+        } else {
+            noteOpEvent.reinit(j, j2, opEventProxyInfo, appOpsService.mOpEventProxyInfoPool);
+        }
+    }
+
+    public final AppOpsManager.AttributedOpEntry createAttributedOpEntryLocked() {
         LongSparseArray deepClone = deepClone(this.mAccessEvents);
         if (isRunning()) {
             long elapsedRealtime = SystemClock.elapsedRealtime();
@@ -359,146 +138,190 @@ public final class AttributedOp {
             if (deepClone == null) {
                 deepClone = new LongSparseArray(size);
             }
-            for (int i = 0; i < size; i++) {
+            int i = 0;
+            while (i < size) {
                 InProgressStartOpEvent inProgressStartOpEvent = (InProgressStartOpEvent) this.mInProgressEvents.valueAt(i);
-                deepClone.append(AppOpsManager.makeKey(inProgressStartOpEvent.getUidState(), inProgressStartOpEvent.getFlags()), new AppOpsManager.NoteOpEvent(inProgressStartOpEvent.getStartTime(), elapsedRealtime - inProgressStartOpEvent.getStartElapsedTime(), inProgressStartOpEvent.getProxy()));
+                deepClone.append(AppOpsManager.makeKey(inProgressStartOpEvent.mUidState, inProgressStartOpEvent.mFlags), new AppOpsManager.NoteOpEvent(inProgressStartOpEvent.mStartTime, Math.max(elapsedRealtime - inProgressStartOpEvent.mStartElapsedTime, 0L), inProgressStartOpEvent.mProxy));
+                i++;
+                elapsedRealtime = elapsedRealtime;
             }
         }
         return new AppOpsManager.AttributedOpEntry(this.parent.op, isRunning(), deepClone, deepClone(this.mRejectEvents));
     }
 
-    /* loaded from: classes.dex */
-    public final class InProgressStartOpEvent implements IBinder.DeathRecipient {
-        public int mAttributionChainId;
-        public int mAttributionFlags;
-        public String mAttributionTag;
-        public IBinder mClientId;
-        public int mFlags;
-        public int mNumUnfinishedStarts;
-        public Runnable mOnDeath;
-        public AppOpsManager.OpEventProxyInfo mProxy;
-        public long mStartElapsedTime;
-        public long mStartTime;
-        public int mUidState;
-
-        public InProgressStartOpEvent(long j, long j2, IBinder iBinder, String str, Runnable runnable, int i, AppOpsManager.OpEventProxyInfo opEventProxyInfo, int i2, int i3, int i4) {
-            this.mStartTime = j;
-            this.mStartElapsedTime = j2;
-            this.mClientId = iBinder;
-            this.mAttributionTag = str;
-            this.mOnDeath = runnable;
-            this.mUidState = i;
-            this.mProxy = opEventProxyInfo;
-            this.mFlags = i2;
-            this.mAttributionFlags = i3;
-            this.mAttributionChainId = i4;
-            iBinder.linkToDeath(this, 0);
+    public final void doForAllInProgressStartOpEvents(Consumer consumer) {
+        ArrayMap arrayMap = isPaused() ? this.mPausedInProgressEvents : this.mInProgressEvents;
+        if (arrayMap == null) {
+            return;
         }
+        int size = arrayMap.size();
+        ArraySet arraySet = new ArraySet(arrayMap.keySet());
+        for (int i = 0; i < size; i++) {
+            consumer.accept((InProgressStartOpEvent) arrayMap.get(arraySet.valueAt(i)));
+        }
+    }
 
-        public void finish() {
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:50:0x012a  */
+    /* JADX WARN: Removed duplicated region for block: B:61:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Type inference failed for: r4v0 */
+    /* JADX WARN: Type inference failed for: r4v1 */
+    /* JADX WARN: Type inference failed for: r4v2 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void finishOrPause(android.os.IBinder r27, boolean r28, boolean r29) {
+        /*
+            Method dump skipped, instructions count: 350
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.appop.AttributedOp.finishOrPause(android.os.IBinder, boolean, boolean):void");
+    }
+
+    public final boolean isPaused() {
+        ArrayMap arrayMap = this.mPausedInProgressEvents;
+        return (arrayMap == null || arrayMap.isEmpty()) ? false : true;
+    }
+
+    public final boolean isRunning() {
+        ArrayMap arrayMap = this.mInProgressEvents;
+        return (arrayMap == null || arrayMap.isEmpty()) ? false : true;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:36:0x0135  */
+    /* JADX WARN: Removed duplicated region for block: B:39:0x0140  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void onUidStateChanged(int r32) {
+        /*
+            Method dump skipped, instructions count: 381
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.appop.AttributedOp.onUidStateChanged(int):void");
+    }
+
+    public final void rejected(int i, int i2) {
+        rejected(i, i2, System.currentTimeMillis());
+        HistoricalRegistry historicalRegistry = this.mAppOpsService.mHistoricalRegistry;
+        AppOpsService.Op op = this.parent;
+        int i3 = op.op;
+        int i4 = op.uid;
+        String str = op.packageName;
+        String str2 = this.tag;
+        synchronized (historicalRegistry.mInMemoryLock) {
             try {
-                this.mClientId.unlinkToDeath(this, 0);
-            } catch (NoSuchElementException unused) {
+                if (historicalRegistry.mMode == 1) {
+                    if (!historicalRegistry.isPersistenceInitializedMLocked()) {
+                        Slog.v(HistoricalRegistry.LOG_TAG, "Interaction before persistence initialized");
+                        return;
+                    }
+                    historicalRegistry.getUpdatedPendingHistoricalOpsMLocked(System.currentTimeMillis()).increaseRejectCount(i3, i4, str, str2, i, i2, 1L);
+                }
+            } finally {
             }
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            this.mOnDeath.run();
-        }
-
-        public void reinit(long j, long j2, IBinder iBinder, String str, Runnable runnable, int i, int i2, AppOpsManager.OpEventProxyInfo opEventProxyInfo, int i3, int i4, Pools.Pool pool) {
-            this.mStartTime = j;
-            this.mStartElapsedTime = j2;
-            this.mClientId = iBinder;
-            this.mAttributionTag = str;
-            this.mOnDeath = runnable;
-            this.mUidState = i;
-            this.mFlags = i2;
-            AppOpsManager.OpEventProxyInfo opEventProxyInfo2 = this.mProxy;
-            if (opEventProxyInfo2 != null) {
-                pool.release(opEventProxyInfo2);
-            }
-            this.mProxy = opEventProxyInfo;
-            this.mAttributionFlags = i3;
-            this.mAttributionChainId = i4;
-            iBinder.linkToDeath(this, 0);
-        }
-
-        public long getStartTime() {
-            return this.mStartTime;
-        }
-
-        public long getStartElapsedTime() {
-            return this.mStartElapsedTime;
-        }
-
-        public IBinder getClientId() {
-            return this.mClientId;
-        }
-
-        public int getUidState() {
-            return this.mUidState;
-        }
-
-        public AppOpsManager.OpEventProxyInfo getProxy() {
-            return this.mProxy;
-        }
-
-        public int getFlags() {
-            return this.mFlags;
-        }
-
-        public int getAttributionFlags() {
-            return this.mAttributionFlags;
-        }
-
-        public int getAttributionChainId() {
-            return this.mAttributionChainId;
-        }
-
-        public void setStartTime(long j) {
-            this.mStartTime = j;
-        }
-
-        public void setStartElapsedTime(long j) {
-            this.mStartElapsedTime = j;
         }
     }
 
-    /* loaded from: classes.dex */
-    public class InProgressStartOpEventPool extends Pools.SimplePool {
-        public OpEventProxyInfoPool mOpEventProxyInfoPool;
-
-        public InProgressStartOpEventPool(OpEventProxyInfoPool opEventProxyInfoPool, int i) {
-            super(i);
-            this.mOpEventProxyInfoPool = opEventProxyInfoPool;
+    public final void rejected(int i, int i2, long j) {
+        long makeKey = AppOpsManager.makeKey(i, i2);
+        if (this.mRejectEvents == null) {
+            this.mRejectEvents = new LongSparseArray(1);
         }
-
-        public InProgressStartOpEvent acquire(long j, long j2, IBinder iBinder, String str, Runnable runnable, int i, String str2, String str3, int i2, int i3, int i4, int i5) {
-            InProgressStartOpEvent inProgressStartOpEvent = (InProgressStartOpEvent) acquire();
-            AppOpsManager.OpEventProxyInfo acquire = i != -1 ? this.mOpEventProxyInfoPool.acquire(i, str2, str3) : null;
-            if (inProgressStartOpEvent != null) {
-                inProgressStartOpEvent.reinit(j, j2, iBinder, str, runnable, i2, i3, acquire, i4, i5, this.mOpEventProxyInfoPool);
-                return inProgressStartOpEvent;
-            }
-            return new InProgressStartOpEvent(j, j2, iBinder, str, runnable, i2, acquire, i3, i4, i5);
+        AppOpsManager.NoteOpEvent noteOpEvent = (AppOpsManager.NoteOpEvent) this.mRejectEvents.get(makeKey);
+        if (noteOpEvent != null) {
+            noteOpEvent.reinit(j, -1L, (AppOpsManager.OpEventProxyInfo) null, this.mAppOpsService.mOpEventProxyInfoPool);
+        } else {
+            this.mRejectEvents.put(makeKey, new AppOpsManager.NoteOpEvent(j, -1L, (AppOpsManager.OpEventProxyInfo) null));
         }
     }
 
-    /* loaded from: classes.dex */
-    public class OpEventProxyInfoPool extends Pools.SimplePool {
-        public OpEventProxyInfoPool(int i) {
-            super(i);
+    public final void startedOrPaused(IBinder iBinder, int i, int i2, String str, String str2, String str3, int i3, int i4, int i5, int i6, boolean z, boolean z2) {
+        AppOpsManager.OpEventProxyInfo opEventProxyInfo;
+        InProgressStartOpEvent inProgressStartOpEvent;
+        String str4 = str2;
+        if (!z && !this.parent.isRunning() && z2) {
+            AppOpsService appOpsService = this.mAppOpsService;
+            AppOpsService.Op op = this.parent;
+            appOpsService.scheduleOpActiveChangedIfNeededLocked(op.op, op.uid, op.packageName, this.tag, i, true, i5, i6);
         }
-
-        public AppOpsManager.OpEventProxyInfo acquire(int i, String str, String str2) {
-            AppOpsManager.OpEventProxyInfo opEventProxyInfo = (AppOpsManager.OpEventProxyInfo) acquire();
-            if (opEventProxyInfo != null) {
-                opEventProxyInfo.reinit(i, str, str2);
-                return opEventProxyInfo;
+        if (z2 && this.mInProgressEvents == null) {
+            this.mInProgressEvents = new ArrayMap(1);
+        } else if (!z2 && this.mPausedInProgressEvents == null) {
+            this.mPausedInProgressEvents = new ArrayMap(1);
+        }
+        ArrayMap arrayMap = z2 ? this.mInProgressEvents : this.mPausedInProgressEvents;
+        long currentTimeMillis = System.currentTimeMillis();
+        InProgressStartOpEvent inProgressStartOpEvent2 = (InProgressStartOpEvent) arrayMap.get(iBinder);
+        if (inProgressStartOpEvent2 == null) {
+            InProgressStartOpEventPool inProgressStartOpEventPool = this.mAppOpsService.mInProgressStartOpEventPool;
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            PooledRunnable obtainRunnable = PooledLambda.obtainRunnable(new AttributedOp$$ExternalSyntheticLambda0(), this, iBinder);
+            InProgressStartOpEvent inProgressStartOpEvent3 = (InProgressStartOpEvent) inProgressStartOpEventPool.acquire();
+            if (i2 != -1) {
+                opEventProxyInfo = (AppOpsManager.OpEventProxyInfo) inProgressStartOpEventPool.mOpEventProxyInfoPool.acquire();
+                if (opEventProxyInfo != null) {
+                    opEventProxyInfo.reinit(i2, str, str4, str3);
+                } else {
+                    opEventProxyInfo = new AppOpsManager.OpEventProxyInfo(i2, str, str4, str3);
+                }
+            } else {
+                opEventProxyInfo = null;
             }
-            return new AppOpsManager.OpEventProxyInfo(i, str, str2);
+            if (inProgressStartOpEvent3 != null) {
+                OpEventProxyInfoPool opEventProxyInfoPool = inProgressStartOpEventPool.mOpEventProxyInfoPool;
+                inProgressStartOpEvent3.mStartTime = currentTimeMillis;
+                inProgressStartOpEvent3.mStartElapsedTime = elapsedRealtime;
+                inProgressStartOpEvent3.mClientId = iBinder;
+                inProgressStartOpEvent3.mOnDeath = obtainRunnable;
+                inProgressStartOpEvent3.mVirtualDeviceId = i;
+                inProgressStartOpEvent3.mUidState = i3;
+                inProgressStartOpEvent3.mFlags = i4;
+                AppOpsManager.OpEventProxyInfo opEventProxyInfo2 = inProgressStartOpEvent3.mProxy;
+                if (opEventProxyInfo2 != null) {
+                    opEventProxyInfoPool.release(opEventProxyInfo2);
+                }
+                inProgressStartOpEvent3.mProxy = opEventProxyInfo;
+                inProgressStartOpEvent3.mAttributionFlags = i5;
+                inProgressStartOpEvent3.mAttributionChainId = i6;
+                iBinder.linkToDeath(inProgressStartOpEvent3, 0);
+                inProgressStartOpEvent = inProgressStartOpEvent3;
+            } else {
+                inProgressStartOpEvent = new InProgressStartOpEvent();
+                inProgressStartOpEvent.mStartTime = currentTimeMillis;
+                inProgressStartOpEvent.mStartElapsedTime = elapsedRealtime;
+                inProgressStartOpEvent.mClientId = iBinder;
+                inProgressStartOpEvent.mVirtualDeviceId = i;
+                inProgressStartOpEvent.mOnDeath = obtainRunnable;
+                inProgressStartOpEvent.mUidState = i3;
+                inProgressStartOpEvent.mProxy = opEventProxyInfo;
+                inProgressStartOpEvent.mFlags = i4;
+                inProgressStartOpEvent.mAttributionFlags = i5;
+                inProgressStartOpEvent.mAttributionChainId = i6;
+                iBinder.linkToDeath(inProgressStartOpEvent, 0);
+            }
+            arrayMap.put(iBinder, inProgressStartOpEvent);
+            inProgressStartOpEvent2 = inProgressStartOpEvent;
+        } else if (i3 != inProgressStartOpEvent2.mUidState) {
+            onUidStateChanged(i3);
+        }
+        inProgressStartOpEvent2.mNumUnfinishedStarts++;
+        if (z2) {
+            HistoricalRegistry historicalRegistry = this.mAppOpsService.mHistoricalRegistry;
+            AppOpsService.Op op2 = this.parent;
+            historicalRegistry.incrementOpAccessedCount(op2.op, op2.uid, op2.packageName, this.tag, i3, i4, currentTimeMillis, i5, i6);
+            AppOpsService appOpsService2 = this.mAppOpsService;
+            AppOpsService.Op op3 = this.parent;
+            int i7 = op3.op;
+            int i8 = op3.uid;
+            String str5 = op3.packageName;
+            String str6 = this.tag;
+            if (str6 != null) {
+                str4 = str6;
+            }
+            appOpsService2.writePermissionAccessInformation(i7, i8, str5, null, str4, i3);
         }
     }
 }

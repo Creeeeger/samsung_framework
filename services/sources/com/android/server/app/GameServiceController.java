@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.TextUtils;
-import android.util.Slog;
 import com.android.server.SystemService;
 import com.android.server.app.GameServiceConfiguration;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class GameServiceController {
     public volatile GameServiceConfiguration.GameServiceComponentConfiguration mActiveGameServiceComponentConfiguration;
@@ -18,98 +18,45 @@ public final class GameServiceController {
     public final Executor mBackgroundExecutor;
     public final Context mContext;
     public volatile SystemService.TargetUser mCurrentForegroundUser;
-    public BroadcastReceiver mGameServicePackageChangedReceiver;
-    public volatile GameServiceProviderInstance mGameServiceProviderInstance;
-    public final GameServiceProviderInstanceFactory mGameServiceProviderInstanceFactory;
+    public PackageChangedBroadcastReceiver mGameServicePackageChangedReceiver;
+    public volatile GameServiceProviderInstanceImpl mGameServiceProviderInstance;
+    public final GameServiceProviderInstanceFactoryImpl mGameServiceProviderInstanceFactory;
     public volatile String mGameServiceProviderOverride;
-    public final GameServiceProviderSelector mGameServiceProviderSelector;
+    public final GameServiceProviderSelectorImpl mGameServiceProviderSelector;
     public volatile boolean mHasBootCompleted;
     public final Object mLock = new Object();
 
-    public GameServiceController(Context context, Executor executor, GameServiceProviderSelector gameServiceProviderSelector, GameServiceProviderInstanceFactory gameServiceProviderInstanceFactory) {
-        this.mContext = context;
-        this.mGameServiceProviderInstanceFactory = gameServiceProviderInstanceFactory;
-        this.mBackgroundExecutor = executor;
-        this.mGameServiceProviderSelector = gameServiceProviderSelector;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackageChangedBroadcastReceiver extends BroadcastReceiver {
+        public final String mPackageName;
 
-    public void onBootComplete() {
-        if (this.mHasBootCompleted) {
-            return;
+        public PackageChangedBroadcastReceiver(String str) {
+            this.mPackageName = str;
         }
-        this.mHasBootCompleted = true;
-        this.mBackgroundExecutor.execute(new GameServiceController$$ExternalSyntheticLambda0(this));
-    }
 
-    public void notifyUserStarted(SystemService.TargetUser targetUser) {
-        if (this.mCurrentForegroundUser != null) {
-            return;
-        }
-        setCurrentForegroundUserAndEvaluateProvider(targetUser);
-    }
-
-    public void notifyNewForegroundUser(SystemService.TargetUser targetUser) {
-        setCurrentForegroundUserAndEvaluateProvider(targetUser);
-    }
-
-    public void notifyUserUnlocking(SystemService.TargetUser targetUser) {
-        if (this.mCurrentForegroundUser != null && this.mCurrentForegroundUser.getUserIdentifier() == targetUser.getUserIdentifier()) {
-            this.mBackgroundExecutor.execute(new GameServiceController$$ExternalSyntheticLambda0(this));
-        }
-    }
-
-    public void notifyUserStopped(SystemService.TargetUser targetUser) {
-        if (this.mCurrentForegroundUser != null && this.mCurrentForegroundUser.getUserIdentifier() == targetUser.getUserIdentifier()) {
-            setCurrentForegroundUserAndEvaluateProvider(null);
-        }
-    }
-
-    public void setGameServiceProvider(String str) {
-        if (!Objects.equals(this.mGameServiceProviderOverride, str)) {
-            this.mGameServiceProviderOverride = str;
-            this.mBackgroundExecutor.execute(new GameServiceController$$ExternalSyntheticLambda0(this));
-        }
-    }
-
-    public final void setCurrentForegroundUserAndEvaluateProvider(SystemService.TargetUser targetUser) {
-        if (!Objects.equals(this.mCurrentForegroundUser, targetUser)) {
-            this.mCurrentForegroundUser = targetUser;
-            this.mBackgroundExecutor.execute(new GameServiceController$$ExternalSyntheticLambda0(this));
-        }
-    }
-
-    public final void evaluateActiveGameServiceProvider() {
-        if (this.mHasBootCompleted) {
-            synchronized (this.mLock) {
-                GameServiceConfiguration gameServiceConfiguration = this.mGameServiceProviderSelector.get(this.mCurrentForegroundUser, this.mGameServiceProviderOverride);
-                String packageName = gameServiceConfiguration == null ? null : gameServiceConfiguration.getPackageName();
-                GameServiceConfiguration.GameServiceComponentConfiguration gameServiceComponentConfiguration = gameServiceConfiguration == null ? null : gameServiceConfiguration.getGameServiceComponentConfiguration();
-                evaluateGameServiceProviderPackageChangedListenerLocked(packageName);
-                if (!Objects.equals(gameServiceComponentConfiguration, this.mActiveGameServiceComponentConfiguration)) {
-                    if (this.mGameServiceProviderInstance != null) {
-                        Slog.i("GameServiceController", "Stopping Game Service provider: " + this.mActiveGameServiceComponentConfiguration);
-                        this.mGameServiceProviderInstance.stop();
-                        this.mGameServiceProviderInstance = null;
-                    }
-                    this.mActiveGameServiceComponentConfiguration = gameServiceComponentConfiguration;
-                    if (this.mActiveGameServiceComponentConfiguration == null) {
-                        return;
-                    }
-                    Slog.i("GameServiceController", "Starting Game Service provider: " + this.mActiveGameServiceComponentConfiguration);
-                    this.mGameServiceProviderInstance = this.mGameServiceProviderInstanceFactory.create(this.mActiveGameServiceComponentConfiguration);
-                    this.mGameServiceProviderInstance.start();
-                }
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            if (TextUtils.equals(intent.getData().getSchemeSpecificPart(), this.mPackageName)) {
+                GameServiceController gameServiceController = GameServiceController.this;
+                gameServiceController.mBackgroundExecutor.execute(new GameServiceController$$ExternalSyntheticLambda0(gameServiceController));
             }
         }
+    }
+
+    public GameServiceController(Context context, Executor executor, GameServiceProviderSelectorImpl gameServiceProviderSelectorImpl, GameServiceProviderInstanceFactoryImpl gameServiceProviderInstanceFactoryImpl) {
+        this.mContext = context;
+        this.mGameServiceProviderInstanceFactory = gameServiceProviderInstanceFactoryImpl;
+        this.mBackgroundExecutor = executor;
+        this.mGameServiceProviderSelector = gameServiceProviderSelectorImpl;
     }
 
     public final void evaluateGameServiceProviderPackageChangedListenerLocked(String str) {
         if (TextUtils.equals(this.mActiveGameServiceProviderPackage, str)) {
             return;
         }
-        BroadcastReceiver broadcastReceiver = this.mGameServicePackageChangedReceiver;
-        if (broadcastReceiver != null) {
-            this.mContext.unregisterReceiver(broadcastReceiver);
+        PackageChangedBroadcastReceiver packageChangedBroadcastReceiver = this.mGameServicePackageChangedReceiver;
+        if (packageChangedBroadcastReceiver != null) {
+            this.mContext.unregisterReceiver(packageChangedBroadcastReceiver);
             this.mGameServicePackageChangedReceiver = null;
         }
         this.mActiveGameServiceProviderPackage = str;
@@ -122,31 +69,15 @@ public final class GameServiceController {
         intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
         intentFilter.addDataScheme("package");
         intentFilter.addDataSchemeSpecificPart(str, 0);
-        PackageChangedBroadcastReceiver packageChangedBroadcastReceiver = new PackageChangedBroadcastReceiver(str);
-        this.mGameServicePackageChangedReceiver = packageChangedBroadcastReceiver;
-        this.mContext.registerReceiver(packageChangedBroadcastReceiver, intentFilter);
+        PackageChangedBroadcastReceiver packageChangedBroadcastReceiver2 = new PackageChangedBroadcastReceiver(str);
+        this.mGameServicePackageChangedReceiver = packageChangedBroadcastReceiver2;
+        this.mContext.registerReceiver(packageChangedBroadcastReceiver2, intentFilter);
     }
 
-    /* loaded from: classes.dex */
-    public final class PackageChangedBroadcastReceiver extends BroadcastReceiver {
-        public final String mPackageName;
-
-        public PackageChangedBroadcastReceiver(String str) {
-            this.mPackageName = str;
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if (TextUtils.equals(intent.getData().getSchemeSpecificPart(), this.mPackageName)) {
-                Executor executor = GameServiceController.this.mBackgroundExecutor;
-                final GameServiceController gameServiceController = GameServiceController.this;
-                executor.execute(new Runnable() { // from class: com.android.server.app.GameServiceController$PackageChangedBroadcastReceiver$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        GameServiceController.this.evaluateActiveGameServiceProvider();
-                    }
-                });
-            }
+    public final void setCurrentForegroundUserAndEvaluateProvider(SystemService.TargetUser targetUser) {
+        if (!Objects.equals(this.mCurrentForegroundUser, targetUser)) {
+            this.mCurrentForegroundUser = targetUser;
+            this.mBackgroundExecutor.execute(new GameServiceController$$ExternalSyntheticLambda0(this));
         }
     }
 }

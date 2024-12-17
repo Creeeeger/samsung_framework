@@ -1,86 +1,104 @@
 package com.android.server.enterprise.hdm;
 
 import android.content.Context;
-import android.os.SystemProperties;
+import android.security.KeyStore2;
+import android.security.keystore.ArrayUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import com.samsung.android.wifi.SemWifiManager;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.FlashNotificationsController$$ExternalSyntheticOutline0;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import com.samsung.security.securekeyblob.SecureKeyGenParameterSpec;
-import com.samsung.security.securekeyblob.SecureKeyGenerator;
-import com.samsung.security.securekeyblob.SecureKeyResult;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.Random;
+import java.util.Set;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class HdmSakManager {
-    public static final String TAG = "HDM - " + HdmSakManager.class.getSimpleName();
-
-    public static boolean isSupported(Context context) {
-        try {
-            boolean isSupportSecureKeyService = new SecureKeyGenerator().isSupportSecureKeyService(context);
-            Log.i(TAG, "isSupportSecureKeyService: " + isSupportSecureKeyService);
-            return false;
-        } catch (Exception e) {
-            Log.i(TAG, "isSupported failed: " + e);
-            return false;
+    public static byte[] constructTLV(X509Certificate[] x509CertificateArr, byte[] bArr) {
+        if (x509CertificateArr.length == 3) {
+            return makeTLV((byte) 19, makeTLV((byte) 18, makeTLV((byte) 17, "SAK:".getBytes(StandardCharsets.UTF_8), x509CertificateArr[1].getEncoded()), x509CertificateArr[0].getEncoded()), bArr);
         }
-    }
-
-    public static byte[] generateHdmKey() {
-        try {
-            SecureKeyResult generateKeyPair = new SecureKeyGenerator().generateKeyPair(genKeySpec());
-            byte[] serviceKey = generateKeyPair.getServiceKey();
-            X509Certificate[] certificates = generateKeyPair.getCertificates();
-            Log.i(TAG, "serviceId: " + new String(generateKeyPair.getServiceID()) + ", certLen: " + certificates.length + ", keyLen: " + serviceKey.length);
-            return constructTLV(certificates, serviceKey);
-        } catch (Exception e) {
-            Log.e(TAG, "generateHdmKey failed: " + e, e);
-            return null;
-        }
+        throw new Exception("Invalid key length: " + x509CertificateArr.length);
     }
 
     public static SecureKeyGenParameterSpec genKeySpec() {
-        return new SecureKeyGenParameterSpec.Builder("tz_hdm".getBytes(), "EC").build();
+        byte[] bytes = "tz_hdm".getBytes();
+        Set emptySet = Collections.emptySet();
+        if (bytes == null) {
+            throw new NullPointerException("serviceName == null");
+        }
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        sb.append(random.nextLong());
+        sb.append(random.nextLong());
+        sb.append(random.nextLong());
+        sb.append(random.nextLong());
+        return new SecureKeyGenParameterSpec(bytes, 256, ArrayUtils.cloneIfNotEmpty(new String[]{"SHA-256"}), emptySet, null, null, null, sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 
-    public static byte[] getHashedImei(Context context) {
+    public static byte[] getImeiHash(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService("phone");
+        String primaryImei = telephonyManager.getPrimaryImei();
+        String secondaryImei = telephonyManager.getSecondaryImei();
+        StringBuilder sb = new StringBuilder("activeModem count: ");
+        sb.append(telephonyManager.getActiveModemCount());
+        sb.append(", Primary exist ? ");
+        sb.append(primaryImei != null);
+        sb.append(", Secondary exist ?  ");
+        FlashNotificationsController$$ExternalSyntheticOutline0.m("HDM - HdmSakManager", sb, secondaryImei != null);
+        return hash(primaryImei != null ? primaryImei.getBytes(StandardCharsets.UTF_8) : null, secondaryImei != null ? secondaryImei.getBytes(StandardCharsets.UTF_8) : null);
+    }
+
+    public static String getUniqueNumber() {
+        String read = BatteryService$$ExternalSyntheticOutline0.m45m(Constants.UFS_UN_R) ? read(Constants.UFS_UN_R, "UFS_UN_R") : BatteryService$$ExternalSyntheticOutline0.m45m(Constants.UFS_UN) ? read(Constants.UFS_UN, "UFS_UN") : BatteryService$$ExternalSyntheticOutline0.m45m(Constants.EMMC_UN_R) ? read(Constants.EMMC_UN_R, "EMMC_UN_R") : BatteryService$$ExternalSyntheticOutline0.m45m(Constants.EMMC_UN) ? read(Constants.EMMC_UN, "EMMC_UN") : null;
+        if (read != null) {
+            return read.toUpperCase();
+        }
+        Log.e("HDM - HdmSakManager", "can't find SN ID");
+        return null;
+    }
+
+    public static byte[] hash(byte[] bArr, byte[] bArr2) {
+        if (bArr == null) {
+            Log.e("HDM - HdmSakManager", "input1 null is not allowed");
+            return null;
+        }
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+        messageDigest.update(bArr, 0, bArr.length);
+        if (bArr2 != null) {
+            messageDigest.update(bArr2, 0, bArr2.length);
+        }
+        return messageDigest.digest();
+    }
+
+    public static boolean isSupported(Context context) {
+        boolean z = false;
         try {
-            if (isWifiOnly()) {
-                return getMacHash(context);
+            if (Integer.parseInt("34") < 35) {
+                return false;
             }
-            return getImeiHash(context);
+            KeyStore2.getInstance();
+            z = context.getPackageManager().hasSystemFeature("samsung.software.secure_key_service");
+            Log.i("HDM - HdmSakManager", "isSupportSecureKeyService: " + z);
+            return z;
         } catch (Exception e) {
-            Log.e(TAG, "getHashedImei failed: " + e);
-            return null;
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "isSupported failed: ", "HDM - HdmSakManager");
+            return z;
         }
     }
 
-    public static byte[] getHashedUniqueNumber() {
-        try {
-            String uniqueNumber = getUniqueNumber();
-            return hash(uniqueNumber != null ? uniqueNumber.getBytes(StandardCharsets.UTF_8) : null, null);
-        } catch (Exception e) {
-            Log.e(TAG, "getHashedUniqueNumber failed: " + e);
-            return null;
-        }
-    }
-
-    public static byte[] constructTLV(X509Certificate[] x509CertificateArr, byte[] bArr) {
-        if (x509CertificateArr.length != 3) {
-            throw new Exception("Invalid key length: " + x509CertificateArr.length);
-        }
-        return makeTLV(makeTLV(makeTLV("SAK:".getBytes(StandardCharsets.UTF_8), (byte) 17, x509CertificateArr[1].getEncoded()), (byte) 18, x509CertificateArr[0].getEncoded()), (byte) 19, bArr);
-    }
-
-    public static byte[] makeTLV(byte[] bArr, byte b, byte[] bArr2) {
+    public static byte[] makeTLV(byte b, byte[] bArr, byte[] bArr2) {
         int length = bArr2.length;
-        String str = TAG;
-        Log.i(str, "makeTLV: tag: " + Integer.toHexString(b) + ", len: " + length);
+        Log.i("HDM - HdmSakManager", "makeTLV: tag: " + Integer.toHexString(b) + ", len: " + length);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         if (bArr != null) {
             try {
@@ -99,69 +117,13 @@ public abstract class HdmSakManager {
         byteArrayOutputStream.write((byte) (length >>> 8));
         byteArrayOutputStream.write(bArr2, 0, length);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
-        Log.i(str, "makeTLV tlvLen: " + byteArray.length);
+        Log.i("HDM - HdmSakManager", "makeTLV tlvLen: " + byteArray.length);
         byteArrayOutputStream.close();
         return byteArray;
     }
 
-    public static byte[] getMacHash(Context context) {
-        String factoryMacAddress = ((SemWifiManager) context.getSystemService("sem_wifi")).getFactoryMacAddress();
-        return hash(factoryMacAddress != null ? factoryMacAddress.getBytes(StandardCharsets.UTF_8) : null, null);
-    }
-
-    public static byte[] getImeiHash(Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService("phone");
-        String primaryImei = telephonyManager.getPrimaryImei();
-        String secondaryImei = telephonyManager.getSecondaryImei();
-        String str = TAG;
-        StringBuilder sb = new StringBuilder();
-        sb.append("activeModem count: ");
-        sb.append(telephonyManager.getActiveModemCount());
-        sb.append(", Primary exist ? ");
-        sb.append(primaryImei != null);
-        sb.append(", Secondary exist ?  ");
-        sb.append(secondaryImei != null);
-        Log.i(str, sb.toString());
-        return hash(primaryImei != null ? primaryImei.getBytes(StandardCharsets.UTF_8) : null, secondaryImei != null ? secondaryImei.getBytes(StandardCharsets.UTF_8) : null);
-    }
-
-    public static byte[] hash(byte[] bArr, byte[] bArr2) {
-        if (bArr == null) {
-            Log.e(TAG, "input1 null is not allowed");
-            return null;
-        }
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-        messageDigest.update(bArr, 0, bArr.length);
-        if (bArr2 != null) {
-            messageDigest.update(bArr2, 0, bArr2.length);
-        }
-        return messageDigest.digest();
-    }
-
-    public static String getUniqueNumber() {
-        String read;
-        if (isExistFile("/sys/class/sec/ufs/un")) {
-            read = read("/sys/class/sec/ufs/un", "UFS_UN_R");
-        } else if (isExistFile("/sys/class/scsi_host/host0/unique_number")) {
-            read = read("/sys/class/scsi_host/host0/unique_number", "UFS_UN");
-        } else if (isExistFile("/sys/class/sec/mmc/un")) {
-            read = read("/sys/class/sec/mmc/un", "EMMC_UN_R");
-        } else {
-            read = isExistFile("/sys/block/mmcblk0/device/unique_number") ? read("/sys/block/mmcblk0/device/unique_number", "EMMC_UN") : null;
-        }
-        if (read != null) {
-            return read.toUpperCase();
-        }
-        Log.e(TAG, "can't find SN ID");
-        return null;
-    }
-
-    public static boolean isExistFile(String str) {
-        return new File(str).exists();
-    }
-
     public static String read(String str, String str2) {
-        Log.i(TAG, "SN target: " + str2);
+        Log.i("HDM - HdmSakManager", "SN target: ".concat(str2));
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(str, StandardCharsets.UTF_8));
             try {
@@ -176,12 +138,8 @@ public abstract class HdmSakManager {
             } finally {
             }
         } catch (Exception e) {
-            Log.e(TAG, "read Exception " + e);
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "read Exception ", "HDM - HdmSakManager");
             return null;
         }
-    }
-
-    public static boolean isWifiOnly() {
-        return "wifi-only".equalsIgnoreCase(SystemProperties.get("ro.carrier", "").trim()) || "yes".equalsIgnoreCase(SystemProperties.get("ro.radio.noril", "").trim());
     }
 }

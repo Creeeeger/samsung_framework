@@ -1,27 +1,18 @@
 package com.android.server.biometrics.sensors.face.aidl;
 
-import android.content.Context;
-import android.hardware.biometrics.IInvalidationCallback;
 import android.os.RemoteException;
 import android.util.Slog;
-import com.android.server.biometrics.log.BiometricContext;
-import com.android.server.biometrics.log.BiometricLogger;
 import com.android.server.biometrics.sensors.InvalidationClient;
-import java.util.Map;
-import java.util.function.Supplier;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FaceInvalidationClient extends InvalidationClient {
-    public FaceInvalidationClient(Context context, Supplier supplier, int i, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, Map map, IInvalidationCallback iInvalidationCallback) {
-        super(context, supplier, i, i2, biometricLogger, biometricContext, map, iInvalidationCallback);
-    }
-
+public final class FaceInvalidationClient extends InvalidationClient {
     @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void startHalOperation() {
+    public final void startHalOperation() {
         try {
             long currentTimeMillis = System.currentTimeMillis();
             Slog.w("FaceInvalidationClient", "invalidateAuthenticatorId START");
-            ((AidlSession) getFreshDaemon()).getSession().invalidateAuthenticatorId();
+            ((AidlSession) this.mLazyDaemon.get()).mSession.invalidateAuthenticatorId();
             Slog.w("FaceInvalidationClient", "invalidateAuthenticatorId FINISH (" + (System.currentTimeMillis() - currentTimeMillis) + "ms)");
         } catch (RemoteException e) {
             Slog.e("FaceInvalidationClient", "Remote exception", e);

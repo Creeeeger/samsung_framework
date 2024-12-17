@@ -1,26 +1,9 @@
 package com.android.server.enterprise.auditlog;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
-/* loaded from: classes2.dex */
-public class Filter {
-    public Matcher mMatcher;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class Filter {
     public Pattern mPattern;
-
-    public boolean setFilter(String str) {
-        try {
-            this.mPattern = Pattern.compile(str);
-            return true;
-        } catch (PatternSyntaxException unused) {
-            return false;
-        }
-    }
-
-    public boolean filtering(String str) {
-        Matcher matcher = this.mPattern.matcher(str);
-        this.mMatcher = matcher;
-        return matcher.find();
-    }
 }

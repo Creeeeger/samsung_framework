@@ -2,9 +2,10 @@ package com.android.server.usb.hal.port;
 
 import android.hardware.usb.IUsbOperationInternal;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface UsbPortHal {
-    void enableContaminantPresenceDetection(String str, boolean z, long j);
+    void enableContaminantPresenceDetection(String str, long j, boolean z);
 
     void enableLimitPowerTransfer(String str, boolean z, long j, IUsbOperationInternal iUsbOperationInternal);
 
@@ -18,11 +19,11 @@ public interface UsbPortHal {
 
     void resetUsbPort(String str, long j, IUsbOperationInternal iUsbOperationInternal);
 
-    void switchDataRole(String str, int i, long j);
+    void switchDataRole(int i, String str, long j);
 
-    void switchMode(String str, int i, long j);
+    void switchMode(int i, String str, long j);
 
-    void switchPowerRole(String str, int i, long j);
+    void switchPowerRole(int i, String str, long j);
 
     void systemReady();
 }

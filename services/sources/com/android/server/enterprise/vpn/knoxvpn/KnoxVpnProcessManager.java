@@ -18,155 +18,109 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-/* loaded from: classes2.dex */
-public class KnoxVpnProcessManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class KnoxVpnProcessManager {
     public static final boolean DBG = Debug.semIsProductDev();
     public static volatile KnoxVpnProcessManager instance = null;
     public static IActivityManager mActivityManagerNative = null;
-    public Context mContext;
-    public KnoxVpnEngineService mKnoxVpnEngineService;
-    public KnoxVpnHelper mKnoxVpnHelper;
+    public final Context mContext;
+    public final KnoxVpnEngineService mKnoxVpnEngineService;
+    public final KnoxVpnHelper mKnoxVpnHelper;
     public boolean mObserverStatus = false;
-    public IProcessObserver.Stub mProcessObserver = new IProcessObserver.Stub() { // from class: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnProcessManager.1
-        public void onForegroundServicesChanged(int i, int i2, int i3) {
+    public final AnonymousClass1 mProcessObserver = new IProcessObserver.Stub() { // from class: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnProcessManager.1
+        public final void onForegroundActivitiesChanged(int i, int i2, boolean z) {
+            KnoxVpnProcessManager.m567$$Nest$monApplicationStart(KnoxVpnProcessManager.this, i2);
         }
 
-        public void onForegroundActivitiesChanged(int i, int i2, boolean z) {
-            KnoxVpnProcessManager.this.onApplicationStart(i, i2);
+        public final void onForegroundServicesChanged(int i, int i2, int i3) {
         }
 
-        public void onProcessDied(int i, int i2) {
-            KnoxVpnProcessManager.this.onApplicationStop(i, i2);
+        /* JADX WARN: Removed duplicated region for block: B:56:0x00ac A[Catch: all -> 0x0071, Exception -> 0x0074, TryCatch #1 {Exception -> 0x0074, blocks: (B:34:0x005c, B:36:0x0064, B:38:0x0068, B:41:0x0079, B:43:0x0081, B:54:0x00a6, B:56:0x00ac, B:57:0x00bf, B:58:0x00a1), top: B:33:0x005c, outer: #0 }] */
+        /* JADX WARN: Removed duplicated region for block: B:57:0x00bf A[Catch: all -> 0x0071, Exception -> 0x0074, TRY_LEAVE, TryCatch #1 {Exception -> 0x0074, blocks: (B:34:0x005c, B:36:0x0064, B:38:0x0068, B:41:0x0079, B:43:0x0081, B:54:0x00a6, B:56:0x00ac, B:57:0x00bf, B:58:0x00a1), top: B:33:0x005c, outer: #0 }] */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void onProcessDied(int r14, int r15) {
+            /*
+                Method dump skipped, instructions count: 255
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnProcessManager.AnonymousClass1.onProcessDied(int, int):void");
+        }
+
+        public final void onProcessStarted(int i, int i2, int i3, String str, String str2) {
+            KnoxVpnProcessManager.m567$$Nest$monApplicationStart(KnoxVpnProcessManager.this, i2);
         }
     };
-    public VpnProfileConfig mVpnConfig;
+    public final VpnProfileConfig mVpnConfig;
 
+    /* renamed from: -$$Nest$monApplicationStart, reason: not valid java name */
+    public static void m567$$Nest$monApplicationStart(KnoxVpnProcessManager knoxVpnProcessManager, int i) {
+        KnoxVpnHelper knoxVpnHelper;
+        synchronized (knoxVpnProcessManager) {
+            if (knoxVpnProcessManager.mVpnConfig != null && (knoxVpnHelper = knoxVpnProcessManager.mKnoxVpnHelper) != null && knoxVpnProcessManager.mKnoxVpnEngineService != null) {
+                String profileOwningTheUidFromCache = knoxVpnHelper.getProfileOwningTheUidFromCache(i);
+                if (profileOwningTheUidFromCache == null) {
+                    return;
+                }
+                int userId = UserHandle.getUserId(i);
+                VpnProfileInfo profileEntry = knoxVpnProcessManager.mVpnConfig.getProfileEntry(profileOwningTheUidFromCache);
+                if (profileEntry == null) {
+                    return;
+                }
+                if (profileEntry.vpnConnectionType != 1) {
+                    return;
+                }
+                if (profileEntry.activateState == 0) {
+                    return;
+                }
+                IKnoxVpnService binderInterfaceForProfile = knoxVpnProcessManager.mKnoxVpnEngineService.getBinderInterfaceForProfile(profileOwningTheUidFromCache);
+                if (binderInterfaceForProfile == null) {
+                    return;
+                }
+                try {
+                    int state = binderInterfaceForProfile.getState(profileOwningTheUidFromCache);
+                    if (state != 1 && state != 5) {
+                        Log.d("KnoxVpnProcessManager", "on-demand profile is not going to be restarted due to current state " + state);
+                        return;
+                    }
+                    for (String str : knoxVpnProcessManager.mContext.getPackageManager().getPackagesForUid(i)) {
+                        knoxVpnProcessManager.mKnoxVpnHelper.getClass();
+                        if (profileEntry.getPackage(KnoxVpnHelper.getPersonifiedName(userId, str)) != null) {
+                            if (DBG) {
+                                Log.d("KnoxVpnProcessManager", "onApplicationStart : profileName : " + profileOwningTheUidFromCache + " / packageName : " + str + "/uid: " + i);
+                            }
+                            ArrayList arrayList = new ArrayList();
+                            arrayList.add(Integer.valueOf(i));
+                            knoxVpnProcessManager.mKnoxVpnEngineService.startVpnForPerApplication(profileOwningTheUidFromCache, arrayList, true);
+                        }
+                    }
+                } catch (RemoteException unused) {
+                }
+            }
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.enterprise.vpn.knoxvpn.KnoxVpnProcessManager$1] */
     public KnoxVpnProcessManager(KnoxVpnEngineService knoxVpnEngineService) {
         this.mContext = null;
         this.mVpnConfig = null;
         this.mKnoxVpnHelper = null;
         this.mKnoxVpnEngineService = null;
-        this.mContext = knoxVpnEngineService.getContext();
+        Context context = knoxVpnEngineService.mContext;
+        this.mContext = context;
         this.mKnoxVpnEngineService = knoxVpnEngineService;
         this.mVpnConfig = VpnProfileConfig.getInstance();
-        this.mKnoxVpnHelper = KnoxVpnHelper.getInstance(this.mContext);
+        this.mKnoxVpnHelper = KnoxVpnHelper.getInstance(context);
     }
 
-    public static synchronized KnoxVpnProcessManager getInstance(KnoxVpnEngineService knoxVpnEngineService) {
-        synchronized (KnoxVpnProcessManager.class) {
-            if (knoxVpnEngineService == null) {
-                return null;
-            }
-            if (instance == null) {
-                instance = new KnoxVpnProcessManager(knoxVpnEngineService);
-            }
-            return instance;
-        }
-    }
-
-    public final IProcessObserver.Stub getProcessObserver() {
-        return this.mProcessObserver;
-    }
-
-    public final IActivityManager getNativeActivityManagerService() {
-        if (mActivityManagerNative == null) {
-            mActivityManagerNative = ActivityManagerNative.getDefault();
-        }
-        return mActivityManagerNative;
-    }
-
-    public void registerProcessObserver() {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                Log.d("KnoxVpnProcessManager", "registerProcessObserver");
-                getNativeActivityManagerService().registerProcessObserver(getProcessObserver());
-                this.mObserverStatus = true;
-            } catch (Exception e) {
-                Log.e("KnoxVpnProcessManager", "Error occured while trying to register a process observer " + e);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void unregisterProcessObserver() {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                Log.d("KnoxVpnProcessManager", "unregisterProcessObserver");
-                getNativeActivityManagerService().unregisterProcessObserver(getProcessObserver());
-                this.mObserverStatus = false;
-            } catch (Exception e) {
-                Log.e("KnoxVpnProcessManager", "unregistering a process observer which is not registered yet " + e);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public boolean isProcessObserverRegistered() {
+    public final boolean isProcessObserverRegistered() {
         return this.mObserverStatus;
     }
 
-    public final synchronized void onApplicationStart(int i, int i2) {
-        KnoxVpnHelper knoxVpnHelper;
-        if (this.mVpnConfig != null && (knoxVpnHelper = this.mKnoxVpnHelper) != null && this.mKnoxVpnEngineService != null) {
-            String profileOwningTheUidFromCache = knoxVpnHelper.getProfileOwningTheUidFromCache(i2);
-            if (profileOwningTheUidFromCache == null) {
-                return;
-            }
-            int userId = UserHandle.getUserId(i2);
-            VpnProfileInfo profileEntry = this.mVpnConfig.getProfileEntry(profileOwningTheUidFromCache);
-            if (profileEntry == null) {
-                return;
-            }
-            if (profileEntry.getVpnConnectionType() != 1) {
-                return;
-            }
-            if (profileEntry.getActivateState() == 0) {
-                return;
-            }
-            IKnoxVpnService binderInterfaceForProfile = this.mKnoxVpnEngineService.getBinderInterfaceForProfile(profileOwningTheUidFromCache);
-            if (binderInterfaceForProfile == null) {
-                return;
-            }
-            try {
-                int state = binderInterfaceForProfile.getState(profileOwningTheUidFromCache);
-                if (state != 1 && state != 5) {
-                    Log.d("KnoxVpnProcessManager", "on-demand profile is not going to be restarted due to current state " + state);
-                    return;
-                }
-                for (String str : this.mContext.getPackageManager().getPackagesForUid(i2)) {
-                    if (profileEntry.getPackage(this.mKnoxVpnHelper.getPersonifiedName(userId, str)) != null) {
-                        if (DBG) {
-                            Log.d("KnoxVpnProcessManager", "onApplicationStart : profileName : " + profileOwningTheUidFromCache + " / packageName : " + str + "/uid: " + i2);
-                        }
-                        ArrayList arrayList = new ArrayList();
-                        arrayList.add(Integer.valueOf(i2));
-                        this.mKnoxVpnEngineService.startVpnForPerApplication(profileOwningTheUidFromCache, arrayList, true);
-                    }
-                }
-            } catch (RemoteException unused) {
-            }
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:55:0x00a0 A[Catch: Exception -> 0x00d6, all -> 0x0110, TryCatch #1 {Exception -> 0x00d6, blocks: (B:33:0x0052, B:35:0x005a, B:37:0x005e, B:40:0x0068, B:42:0x0070, B:53:0x009a, B:55:0x00a0, B:56:0x00bb, B:57:0x0095), top: B:32:0x0052, outer: #0 }] */
-    /* JADX WARN: Removed duplicated region for block: B:56:0x00bb A[Catch: Exception -> 0x00d6, all -> 0x0110, TRY_LEAVE, TryCatch #1 {Exception -> 0x00d6, blocks: (B:33:0x0052, B:35:0x005a, B:37:0x005e, B:40:0x0068, B:42:0x0070, B:53:0x009a, B:55:0x00a0, B:56:0x00bb, B:57:0x0095), top: B:32:0x0052, outer: #0 }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final synchronized void onApplicationStop(int r10, int r11) {
-        /*
-            Method dump skipped, instructions count: 275
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnProcessManager.onApplicationStop(int, int):void");
-    }
-
-    public boolean processRunCheck(VpnProfileInfo vpnProfileInfo) {
+    public final boolean processRunCheck(VpnProfileInfo vpnProfileInfo) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = ((ActivityManager) this.mContext.getSystemService("activity")).getRunningAppProcesses();
@@ -180,7 +134,7 @@ public class KnoxVpnProcessManager {
                     hashSet.add(String.valueOf(runningAppProcesses.get(i).uid));
                 }
             }
-            for (VpnPackageInfo vpnPackageInfo : vpnProfileInfo.getPackageList()) {
+            for (VpnPackageInfo vpnPackageInfo : vpnProfileInfo.mPackageMap.values()) {
                 Log.d("KnoxVpnProcessManager", "runningApplicationProcess VpnPackageInfo uid being added is " + vpnPackageInfo.getUid());
                 hashSet2.add(String.valueOf(vpnPackageInfo.getUid()));
             }
@@ -196,5 +150,41 @@ public class KnoxVpnProcessManager {
         }
         Binder.restoreCallingIdentity(clearCallingIdentity);
         return false;
+    }
+
+    public final void registerProcessObserver() {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                Log.d("KnoxVpnProcessManager", "registerProcessObserver");
+                if (mActivityManagerNative == null) {
+                    mActivityManagerNative = ActivityManagerNative.getDefault();
+                }
+                mActivityManagerNative.registerProcessObserver(this.mProcessObserver);
+                this.mObserverStatus = true;
+            } catch (Exception e) {
+                Log.e("KnoxVpnProcessManager", "Error occured while trying to register a process observer " + e);
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final void unregisterProcessObserver() {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                Log.d("KnoxVpnProcessManager", "unregisterProcessObserver");
+                if (mActivityManagerNative == null) {
+                    mActivityManagerNative = ActivityManagerNative.getDefault();
+                }
+                mActivityManagerNative.unregisterProcessObserver(this.mProcessObserver);
+                this.mObserverStatus = false;
+            } catch (Exception e) {
+                Log.e("KnoxVpnProcessManager", "unregistering a process observer which is not registered yet " + e);
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
     }
 }

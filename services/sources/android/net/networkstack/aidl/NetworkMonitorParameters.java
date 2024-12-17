@@ -1,5 +1,7 @@
 package android.net.networkstack.aidl;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.net.LinkProperties;
 import android.net.NetworkAgentConfig;
 import android.net.NetworkCapabilities;
@@ -10,36 +12,55 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class NetworkMonitorParameters implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.net.networkstack.aidl.NetworkMonitorParameters.1
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
+    public LinkProperties linkProperties;
+    public NetworkAgentConfig networkAgentConfig;
+    public NetworkCapabilities networkCapabilities;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.net.networkstack.aidl.NetworkMonitorParameters$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
         @Override // android.os.Parcelable.Creator
-        public NetworkMonitorParameters createFromParcel(Parcel parcel) {
+        public final Object createFromParcel(Parcel parcel) {
             NetworkMonitorParameters networkMonitorParameters = new NetworkMonitorParameters();
             networkMonitorParameters.readFromParcel(parcel);
             return networkMonitorParameters;
         }
 
         @Override // android.os.Parcelable.Creator
-        public NetworkMonitorParameters[] newArray(int i) {
+        public final Object[] newArray(int i) {
             return new NetworkMonitorParameters[i];
         }
-    };
-    public LinkProperties linkProperties;
-    public NetworkAgentConfig networkAgentConfig;
-    public NetworkCapabilities networkCapabilities;
+    }
+
+    private int describeContents(Object obj) {
+        if (obj != null && (obj instanceof Parcelable)) {
+            return ((Parcelable) obj).describeContents();
+        }
+        return 0;
+    }
 
     @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeTypedObject(this.networkAgentConfig, i);
-        parcel.writeTypedObject(this.networkCapabilities, i);
-        parcel.writeTypedObject(this.linkProperties, i);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
+    public int describeContents() {
+        return describeContents(this.linkProperties) | describeContents(this.networkAgentConfig) | describeContents(this.networkCapabilities);
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || !(obj instanceof NetworkMonitorParameters)) {
+            return false;
+        }
+        NetworkMonitorParameters networkMonitorParameters = (NetworkMonitorParameters) obj;
+        return Objects.deepEquals(this.networkAgentConfig, networkMonitorParameters.networkAgentConfig) && Objects.deepEquals(this.networkCapabilities, networkMonitorParameters.networkCapabilities) && Objects.deepEquals(this.linkProperties, networkMonitorParameters.linkProperties);
+    }
+
+    public int hashCode() {
+        return Arrays.deepHashCode(Arrays.asList(this.networkAgentConfig, this.networkCapabilities, this.linkProperties).toArray());
     }
 
     public final void readFromParcel(Parcel parcel) {
@@ -85,33 +106,18 @@ public class NetworkMonitorParameters implements Parcelable {
         stringJoiner.add("networkAgentConfig: " + Objects.toString(this.networkAgentConfig));
         stringJoiner.add("networkCapabilities: " + Objects.toString(this.networkCapabilities));
         stringJoiner.add("linkProperties: " + Objects.toString(this.linkProperties));
-        return "android.net.networkstack.aidl.NetworkMonitorParameters" + stringJoiner.toString();
-    }
-
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || !(obj instanceof NetworkMonitorParameters)) {
-            return false;
-        }
-        NetworkMonitorParameters networkMonitorParameters = (NetworkMonitorParameters) obj;
-        return Objects.deepEquals(this.networkAgentConfig, networkMonitorParameters.networkAgentConfig) && Objects.deepEquals(this.networkCapabilities, networkMonitorParameters.networkCapabilities) && Objects.deepEquals(this.linkProperties, networkMonitorParameters.linkProperties);
-    }
-
-    public int hashCode() {
-        return Arrays.deepHashCode(Arrays.asList(this.networkAgentConfig, this.networkCapabilities, this.linkProperties).toArray());
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(stringJoiner, new StringBuilder("NetworkMonitorParameters"));
     }
 
     @Override // android.os.Parcelable
-    public int describeContents() {
-        return describeContents(this.linkProperties) | describeContents(this.networkAgentConfig) | 0 | describeContents(this.networkCapabilities);
-    }
-
-    private int describeContents(Object obj) {
-        if (obj != null && (obj instanceof Parcelable)) {
-            return ((Parcelable) obj).describeContents();
-        }
-        return 0;
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeTypedObject(this.networkAgentConfig, i);
+        parcel.writeTypedObject(this.networkCapabilities, i);
+        parcel.writeTypedObject(this.linkProperties, i);
+        int dataPosition2 = parcel.dataPosition();
+        parcel.setDataPosition(dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(dataPosition2, dataPosition, parcel, dataPosition2);
     }
 }

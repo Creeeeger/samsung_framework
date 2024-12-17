@@ -6,19 +6,16 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import java.util.concurrent.Executor;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AppSchedulingModuleThread extends HandlerThread {
     public static Handler sHandler;
     public static Executor sHandlerExecutor;
     public static AppSchedulingModuleThread sInstance;
 
-    public AppSchedulingModuleThread() {
-        super("appscheduling.default", 0);
-    }
-
     public static void ensureThreadLocked() {
         if (sInstance == null) {
-            AppSchedulingModuleThread appSchedulingModuleThread = new AppSchedulingModuleThread();
+            AppSchedulingModuleThread appSchedulingModuleThread = new AppSchedulingModuleThread("appscheduling.default", 0);
             sInstance = appSchedulingModuleThread;
             appSchedulingModuleThread.start();
             Looper looper = sInstance.getLooper();
@@ -38,15 +35,6 @@ public final class AppSchedulingModuleThread extends HandlerThread {
         return appSchedulingModuleThread;
     }
 
-    public static Handler getHandler() {
-        Handler handler;
-        synchronized (AppSchedulingModuleThread.class) {
-            ensureThreadLocked();
-            handler = sHandler;
-        }
-        return handler;
-    }
-
     public static Executor getExecutor() {
         Executor executor;
         synchronized (AppSchedulingModuleThread.class) {
@@ -54,5 +42,14 @@ public final class AppSchedulingModuleThread extends HandlerThread {
             executor = sHandlerExecutor;
         }
         return executor;
+    }
+
+    public static Handler getHandler() {
+        Handler handler;
+        synchronized (AppSchedulingModuleThread.class) {
+            ensureThreadLocked();
+            handler = sHandler;
+        }
+        return handler;
     }
 }

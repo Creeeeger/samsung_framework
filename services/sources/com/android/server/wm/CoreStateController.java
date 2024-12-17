@@ -2,107 +2,100 @@ package com.android.server.wm;
 
 import android.app.IApplicationThread;
 import android.app.servertransaction.ClientTransaction;
-import android.app.servertransaction.ClientTransactionItem;
 import android.app.servertransaction.CoreStatesChangeItem;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.ArraySet;
 import android.util.Slog;
 import android.util.SparseArray;
+import com.android.internal.os.BackgroundThread;
 import com.android.server.am.ActivityManagerService;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import com.samsung.android.multiwindow.MultiWindowCoreState;
-import com.samsung.android.rune.CoreRune;
-import com.samsung.android.server.corestate.CoreStateCallback;
 import com.samsung.android.server.corestate.CoreStateObserverController;
+import com.samsung.android.server.corestate.CoreStateSettingObserver;
+import com.samsung.android.server.corestate.CoreStateVolatileObserver;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
-/* loaded from: classes3.dex */
-public class CoreStateController implements CoreStateObserverController.Callback {
-    public static final boolean DEBUG = CoreRune.SAFE_DEBUG;
-    public static final String TAG = "CoreStateController";
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class CoreStateController {
     public final ActivityTaskManagerService mAtm;
-    public Handler mH;
     public CoreStateObserverController mObserverController;
     public final Object mLock = new Object();
     public final SparseArray mStatesForUser = new SparseArray();
     public final ArrayList mCallbacks = new ArrayList();
 
     public CoreStateController(ActivityTaskManagerService activityTaskManagerService) {
-        if (DEBUG) {
-            Slog.d(TAG, "CoreStateController()");
-        }
         this.mAtm = activityTaskManagerService;
     }
 
-    public void initializeLocked() {
-        Slog.d(TAG, "initializeLocked()");
-        this.mH = new Handler(this.mAtm.mH.getLooper());
-        CoreStateObserverController coreStateObserverController = new CoreStateObserverController(this.mAtm.mContext, this, this.mH);
-        this.mObserverController = coreStateObserverController;
-        coreStateObserverController.init();
-        notifyCoreStatesChangedLocked(0, null);
-    }
-
-    public void registerCallbackLocked(CoreStateCallback coreStateCallback) {
-        synchronized (this.mCallbacks) {
-            this.mCallbacks.add(coreStateCallback);
-        }
-    }
-
-    public void startUserLocked(int i, boolean z, boolean z2) {
-        if (DEBUG) {
-            Slog.d(TAG, "startUserLocked: u" + i + ", " + z + ", " + z2);
-        }
-        this.mObserverController.startUserLocked(i, z, z2);
-        notifyCoreStatesChangedLocked(i, null);
-    }
-
-    public void stopUserLocked(int i, boolean z) {
-        if (DEBUG) {
-            Slog.d(TAG, "stopUserLocked(u" + i + ")");
-        }
-        this.mObserverController.stopUserLocked(i, z);
-        removeCoreStates(i);
-    }
-
-    public Bundle getCoreStates(int i) {
+    public final Bundle getCoreStates(int i) {
         Bundle bundle;
         synchronized (this.mLock) {
-            if (this.mStatesForUser.get(i) == null) {
-                this.mStatesForUser.put(i, new Bundle());
+            try {
+                if (this.mStatesForUser.get(i) == null) {
+                    this.mStatesForUser.put(i, new Bundle());
+                }
+                bundle = (Bundle) ((Bundle) this.mStatesForUser.get(i)).clone();
+            } catch (Throwable th) {
+                throw th;
             }
-            bundle = (Bundle) ((Bundle) this.mStatesForUser.get(i)).clone();
         }
         return bundle;
     }
 
-    public final void insertCoreStates(Bundle bundle, int i) {
-        synchronized (this.mLock) {
-            Bundle bundle2 = (Bundle) this.mStatesForUser.get(i);
-            this.mStatesForUser.put(i, bundle.deepCopy());
-            if (DEBUG) {
-                Slog.d(TAG, "insertCoreStates: u" + i + ", prev=" + bundle2 + ", next=" + bundle);
+    public final void notifyCoreStatesChangedLocked(int i, MultiWindowEnableController$$ExternalSyntheticLambda0 multiWindowEnableController$$ExternalSyntheticLambda0) {
+        int i2;
+        Bundle coreStates = getCoreStates(i);
+        boolean z = this.mAtm.mWindowManager.mCurrentUserId == i;
+        if (z) {
+            int updateFrom = MultiWindowCoreState.getInstance().updateFrom(coreStates);
+            synchronized (this.mCallbacks) {
+                try {
+                    Iterator it = this.mCallbacks.iterator();
+                    while (it.hasNext()) {
+                        ((MultiWindowEnableController) it.next()).onCoreStateChanged(updateFrom);
+                    }
+                } finally {
+                }
             }
         }
-    }
-
-    public final void removeCoreStates(int i) {
-        synchronized (this.mLock) {
-            this.mStatesForUser.remove(i);
+        SparseArray sparseArray = this.mAtm.mProcessMap.mPidMap;
+        for (int size = sparseArray.size() - 1; size >= 0; size--) {
+            WindowProcessController windowProcessController = (WindowProcessController) sparseArray.get(sparseArray.keyAt(size));
+            if (windowProcessController.mPid != ActivityManagerService.MY_PID && ((i2 = windowProcessController.mUserId) == i || (z && i2 == 0 && Constants.SYSTEMUI_PACKAGE_NAME.equals(windowProcessController.mName)))) {
+                try {
+                    IApplicationThread iApplicationThread = windowProcessController.mThread;
+                    if (iApplicationThread != null) {
+                        ClientTransaction obtain = ClientTransaction.obtain(iApplicationThread);
+                        obtain.addTransactionItem(CoreStatesChangeItem.obtain(coreStates));
+                        this.mAtm.mLifecycleManager.getClass();
+                        ClientLifecycleManager.scheduleTransaction(obtain);
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (multiWindowEnableController$$ExternalSyntheticLambda0 != null) {
+            multiWindowEnableController$$ExternalSyntheticLambda0.run();
         }
     }
 
-    @Override // com.samsung.android.server.corestate.CoreStateObserverController.Callback
-    public void onCoreStateChanged(Bundle bundle, int i, boolean z, Runnable runnable) {
-        insertCoreStates(bundle, i);
+    public final void onCoreStateChanged(Bundle bundle, int i, boolean z, MultiWindowEnableController$$ExternalSyntheticLambda0 multiWindowEnableController$$ExternalSyntheticLambda0) {
+        synchronized (this.mLock) {
+            this.mStatesForUser.put(i, bundle.deepCopy());
+        }
         WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
             if (z) {
                 try {
-                    notifyCoreStatesChangedLocked(i, runnable);
+                    notifyCoreStatesChangedLocked(i, multiWindowEnableController$$ExternalSyntheticLambda0);
                 } catch (Throwable th) {
                     WindowManagerService.resetPriorityAfterLockedSection();
                     throw th;
@@ -112,75 +105,85 @@ public class CoreStateController implements CoreStateObserverController.Callback
         WindowManagerService.resetPriorityAfterLockedSection();
     }
 
-    public final void notifyCoreStatesChangedLocked(int i, Runnable runnable) {
-        Bundle coreStates = getCoreStates(i);
-        boolean z = this.mAtm.mWindowManager.mCurrentUserId == i;
-        if (z) {
-            notifyToSystemThreadLocked(coreStates);
+    public final void setSharedPreferenceEdited() {
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                this.mObserverController.sendCoreState(false, 0, null);
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
         }
-        SparseArray pidMap = this.mAtm.mProcessMap.getPidMap();
-        for (int size = pidMap.size() - 1; size >= 0; size--) {
-            int keyAt = pidMap.keyAt(size);
-            WindowProcessController windowProcessController = (WindowProcessController) pidMap.get(keyAt);
-            if (windowProcessController.getPid() != ActivityManagerService.MY_PID && (windowProcessController.mUserId == i || (z && isPrimarySystemUIProcess(windowProcessController)))) {
-                try {
-                    IApplicationThread thread = windowProcessController.getThread();
-                    if (thread != null) {
-                        if (DEBUG) {
-                            Slog.d(TAG, "notifyCoreStatesChangedLocked: schedule CoreStateChangeItem, pid=" + keyAt);
-                        }
-                        ClientTransaction.obtain(thread, (IBinder) null).addCallback(CoreStatesChangeItem.obtain(coreStates));
-                        this.mAtm.getLifecycleManager().scheduleTransaction(thread, (IBinder) null, (ClientTransactionItem) CoreStatesChangeItem.obtain(coreStates));
-                    }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
+        WindowManagerService.resetPriorityAfterLockedSection();
+    }
+
+    public final void setVolatileState(String str, Object obj, int i, boolean z, boolean z2, MultiWindowEnableController$$ExternalSyntheticLambda0 multiWindowEnableController$$ExternalSyntheticLambda0) {
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                this.mObserverController.setVolatileState(str, obj, i, z, z2, multiWindowEnableController$$ExternalSyntheticLambda0);
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
+    }
+
+    public final void startUserLocked(int i, boolean z, boolean z2) {
+        CoreStateSettingObserver coreStateSettingObserver;
+        CoreStateObserverController coreStateObserverController = this.mObserverController;
+        Slog.d("CoreStateObserverController", "startUserLocked: " + coreStateObserverController.mStartedUserIds + ", u" + i);
+        coreStateObserverController.mStartedUserIds.add(Integer.valueOf(i));
+        if (z2 && (coreStateSettingObserver = coreStateObserverController.mSettingObserver) != null) {
+            coreStateSettingObserver.beginObserveCoreStateSettingsForSingleUser(i);
+        }
+        if (z2 || z) {
+            coreStateObserverController.sendCoreState(true, i, null);
+        }
+        notifyCoreStatesChangedLocked(i, null);
+    }
+
+    public final void stopUserLocked(int i, boolean z) {
+        CoreStateVolatileObserver coreStateVolatileObserver;
+        CoreStateObserverController coreStateObserverController = this.mObserverController;
+        Slog.d("CoreStateObserverController", "stopUserLocked: " + coreStateObserverController.mStartedUserIds + ", u" + i);
+        coreStateObserverController.mStartedUserIds.remove(Integer.valueOf(i));
+        final CoreStateSettingObserver coreStateSettingObserver = coreStateObserverController.mSettingObserver;
+        if (coreStateSettingObserver != null) {
+            ArraySet arraySet = coreStateObserverController.mStartedUserIds;
+            Slog.d("CoreStateSettingObserver", "endObserveCoreStateSettingsForSingleUser(u" + i + ")");
+            BackgroundThread.getHandler().post(new Runnable() { // from class: com.samsung.android.server.corestate.CoreStateSettingObserver$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    CoreStateSettingObserver coreStateSettingObserver2 = CoreStateSettingObserver.this;
+                    coreStateSettingObserver2.mContext.getContentResolver().unregisterContentObserver(coreStateSettingObserver2);
+                }
+            });
+            coreStateSettingObserver.beginObserveCoreStateSettings();
+            Iterator it = arraySet.iterator();
+            while (it.hasNext()) {
+                int intValue = ((Integer) it.next()).intValue();
+                if (intValue != 0 && intValue != i) {
+                    coreStateSettingObserver.beginObserveCoreStateSettingsForSingleUser(intValue);
                 }
             }
         }
-        if (runnable != null) {
-            runnable.run();
-        }
-    }
-
-    public final void notifyToSystemThreadLocked(Bundle bundle) {
-        int updateFrom = MultiWindowCoreState.getInstance().updateFrom(bundle);
-        synchronized (this.mCallbacks) {
-            Iterator it = this.mCallbacks.iterator();
-            while (it.hasNext()) {
-                ((CoreStateCallback) it.next()).onCoreStateChanged(updateFrom);
+        coreStateObserverController.mStateForUser.remove(i);
+        if (z && (coreStateVolatileObserver = coreStateObserverController.mVolatileObserver) != null) {
+            Iterator it2 = ((HashMap) coreStateVolatileObserver.mVolatileStatesRepository).entrySet().iterator();
+            while (it2.hasNext()) {
+                SparseArray sparseArray = (SparseArray) ((Map.Entry) it2.next()).getValue();
+                if (sparseArray != null) {
+                    sparseArray.remove(i);
+                }
             }
         }
-    }
-
-    public static boolean isPrimarySystemUIProcess(WindowProcessController windowProcessController) {
-        return windowProcessController.mUserId == 0 && "com.android.systemui".equals(windowProcessController.mName);
-    }
-
-    public void setSharedPreferenceEdited(int i) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                this.mObserverController.onCoreStateChanged(i);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
+        synchronized (this.mLock) {
+            this.mStatesForUser.remove(i);
         }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public void setVolatileState(String str, Object obj, int i, boolean z, boolean z2, Runnable runnable) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                this.mObserverController.setVolatileState(str, obj, i, z, z2, runnable);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
     }
 }

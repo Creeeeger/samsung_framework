@@ -1,85 +1,62 @@
 package com.android.server.hdmi;
 
-import android.hardware.hdmi.IHdmiControlCallback;
 import com.android.server.hdmi.HdmiControlService;
 
-/* loaded from: classes2.dex */
-public class ArcTerminationActionFromAvr extends HdmiCecFeatureAction {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ArcTerminationActionFromAvr extends HdmiCecFeatureAction {
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public /* bridge */ /* synthetic */ void addCallback(IHdmiControlCallback iHdmiControlCallback) {
-        super.addCallback(iHdmiControlCallback);
-    }
-
-    public ArcTerminationActionFromAvr(HdmiCecLocalDevice hdmiCecLocalDevice) {
-        super(hdmiCecLocalDevice);
-    }
-
-    public ArcTerminationActionFromAvr(HdmiCecLocalDevice hdmiCecLocalDevice, IHdmiControlCallback iHdmiControlCallback) {
-        super(hdmiCecLocalDevice, iHdmiControlCallback);
+    public final void handleTimerEvent(int i) {
+        int i2 = this.mState;
+        if (i2 == i && i2 == 1) {
+            ((HdmiCecLocalDeviceAudioSystem) this.mSource).setArcStatus(false);
+            HdmiLogger.debug("handleTerminateArcTimeout", new Object[0]);
+            finishWithCallback(1);
+        }
     }
 
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean start() {
-        this.mState = 1;
-        addTimer(1, 1000);
-        sendTerminateArc();
-        return true;
-    }
-
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean processCommand(HdmiCecMessage hdmiCecMessage) {
+    public final boolean processCommand(HdmiCecMessage hdmiCecMessage) {
         if (this.mState != 1) {
             return false;
         }
-        int opcode = hdmiCecMessage.getOpcode();
-        if (opcode != 0) {
-            if (opcode != 194) {
+        int i = hdmiCecMessage.mOpcode;
+        HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+        if (i != 0) {
+            if (i != 194) {
                 return false;
             }
             this.mState = 2;
-            audioSystem().processArcTermination();
+            ((HdmiCecLocalDeviceAudioSystem) hdmiCecLocalDevice).processArcTermination();
             finishWithCallback(0);
             return true;
         }
-        if ((hdmiCecMessage.getParams()[0] & 255) != 197) {
+        if ((hdmiCecMessage.mParams[0] & 255) != 197) {
             return false;
         }
         this.mState = 2;
-        audioSystem().processArcTermination();
+        ((HdmiCecLocalDeviceAudioSystem) hdmiCecLocalDevice).processArcTermination();
         finishWithCallback(3);
         return true;
     }
 
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public void handleTimerEvent(int i) {
-        int i2 = this.mState;
-        if (i2 == i && i2 == 1) {
-            handleTerminateArcTimeout();
-        }
-    }
-
-    public void sendTerminateArc() {
-        sendCommand(HdmiCecMessageBuilder.buildTerminateArc(getSourceAddress(), 0), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.ArcTerminationActionFromAvr$$ExternalSyntheticLambda0
+    public final void start() {
+        this.mState = 1;
+        addTimer(1, 1000);
+        this.mService.sendCecCommand(HdmiCecMessage.build(getSourceAddress(), 0, 197), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.ArcTerminationActionFromAvr$$ExternalSyntheticLambda0
             @Override // com.android.server.hdmi.HdmiControlService.SendMessageCallback
             public final void onSendCompleted(int i) {
-                ArcTerminationActionFromAvr.this.lambda$sendTerminateArc$0(i);
+                ArcTerminationActionFromAvr arcTerminationActionFromAvr = ArcTerminationActionFromAvr.this;
+                arcTerminationActionFromAvr.getClass();
+                if (i != 0) {
+                    if (i == 1) {
+                        ((HdmiCecLocalDeviceAudioSystem) arcTerminationActionFromAvr.mSource).setArcStatus(false);
+                    }
+                    HdmiLogger.debug("Terminate ARC was not successfully sent.", new Object[0]);
+                    arcTerminationActionFromAvr.finishWithCallback(3);
+                }
             }
         });
-    }
-
-    public /* synthetic */ void lambda$sendTerminateArc$0(int i) {
-        if (i != 0) {
-            if (i == 1) {
-                audioSystem().setArcStatus(false);
-            }
-            HdmiLogger.debug("Terminate ARC was not successfully sent.", new Object[0]);
-            finishWithCallback(3);
-        }
-    }
-
-    public final void handleTerminateArcTimeout() {
-        audioSystem().setArcStatus(false);
-        HdmiLogger.debug("handleTerminateArcTimeout", new Object[0]);
-        finishWithCallback(1);
     }
 }

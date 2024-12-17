@@ -11,150 +11,67 @@ import android.content.Context;
 import android.content.pm.ParceledListSlice;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.IRemoteCallback;
 import android.os.ResultReceiver;
 import android.os.ShellCallback;
 import android.util.Slog;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
 import com.android.server.infra.AbstractMasterSystemService;
+import com.android.server.infra.AbstractPerUserSystemService;
 import com.android.server.infra.FrameworkResourcesServiceNameResolver;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import java.io.FileDescriptor;
 import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AppPredictionManagerService extends AbstractMasterSystemService {
-    public static final String TAG = "AppPredictionManagerService";
-    public ActivityTaskManagerInternal mActivityTaskManagerInternal;
+public final class AppPredictionManagerService extends AbstractMasterSystemService {
+    public final ActivityTaskManagerInternal mActivityTaskManagerInternal;
 
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public int getMaximumTemporaryServiceDurationMs() {
-        return 120000;
-    }
-
-    public AppPredictionManagerService(Context context) {
-        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.ext_media_status_bad_removal), null, 17);
-        this.mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public AppPredictionPerUserService newServiceLocked(int i, boolean z) {
-        return new AppPredictionPerUserService(this, this.mLock, i);
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        publishBinderService("app_prediction", new PredictionManagerServiceStub());
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void enforceCallingPermissionForManagement() {
-        getContext().enforceCallingPermission("android.permission.MANAGE_APP_PREDICTIONS", TAG);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServicePackageUpdatedLocked(int i) {
-        AppPredictionPerUserService appPredictionPerUserService = (AppPredictionPerUserService) peekServiceForUserLocked(i);
-        if (appPredictionPerUserService != null) {
-            appPredictionPerUserService.onPackageUpdatedLocked();
-        }
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServicePackageRestartedLocked(int i) {
-        AppPredictionPerUserService appPredictionPerUserService = (AppPredictionPerUserService) peekServiceForUserLocked(i);
-        if (appPredictionPerUserService != null) {
-            appPredictionPerUserService.onPackageRestartedLocked();
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class PredictionManagerServiceStub extends IPredictionManager.Stub {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PredictionManagerServiceStub extends IPredictionManager.Stub {
         public PredictionManagerServiceStub() {
         }
 
-        public void createPredictionSession(final AppPredictionContext appPredictionContext, final AppPredictionSessionId appPredictionSessionId, final IBinder iBinder) {
-            runForUserLocked("createPredictionSession", appPredictionSessionId, new Consumer() { // from class: com.android.server.appprediction.AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda7
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((AppPredictionPerUserService) obj).onCreatePredictionSessionLocked(appPredictionContext, appPredictionSessionId, iBinder);
-                }
-            });
+        public final void createPredictionSession(AppPredictionContext appPredictionContext, AppPredictionSessionId appPredictionSessionId, IBinder iBinder) {
+            runForUserLocked("createPredictionSession", appPredictionSessionId, new AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda4(appPredictionContext, appPredictionSessionId, iBinder));
         }
 
-        public void notifyAppTargetEvent(final AppPredictionSessionId appPredictionSessionId, final AppTargetEvent appTargetEvent) {
-            runForUserLocked("notifyAppTargetEvent", appPredictionSessionId, new Consumer() { // from class: com.android.server.appprediction.AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda5
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((AppPredictionPerUserService) obj).notifyAppTargetEventLocked(appPredictionSessionId, appTargetEvent);
-                }
-            });
+        public final void notifyAppTargetEvent(AppPredictionSessionId appPredictionSessionId, AppTargetEvent appTargetEvent) {
+            runForUserLocked("notifyAppTargetEvent", appPredictionSessionId, new AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda0(appPredictionSessionId, appTargetEvent, 1));
         }
 
-        public void notifyLaunchLocationShown(final AppPredictionSessionId appPredictionSessionId, final String str, final ParceledListSlice parceledListSlice) {
-            runForUserLocked("notifyLaunchLocationShown", appPredictionSessionId, new Consumer() { // from class: com.android.server.appprediction.AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda1
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((AppPredictionPerUserService) obj).notifyLaunchLocationShownLocked(appPredictionSessionId, str, parceledListSlice);
-                }
-            });
+        public final void notifyLaunchLocationShown(AppPredictionSessionId appPredictionSessionId, String str, ParceledListSlice parceledListSlice) {
+            runForUserLocked("notifyLaunchLocationShown", appPredictionSessionId, new AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda4(appPredictionSessionId, str, parceledListSlice, 2));
         }
 
-        public void sortAppTargets(final AppPredictionSessionId appPredictionSessionId, final ParceledListSlice parceledListSlice, final IPredictionCallback iPredictionCallback) {
-            runForUserLocked("sortAppTargets", appPredictionSessionId, new Consumer() { // from class: com.android.server.appprediction.AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda3
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((AppPredictionPerUserService) obj).sortAppTargetsLocked(appPredictionSessionId, parceledListSlice, iPredictionCallback);
-                }
-            });
-        }
-
-        public void registerPredictionUpdates(final AppPredictionSessionId appPredictionSessionId, final IPredictionCallback iPredictionCallback) {
-            runForUserLocked("registerPredictionUpdates", appPredictionSessionId, new Consumer() { // from class: com.android.server.appprediction.AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda4
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((AppPredictionPerUserService) obj).registerPredictionUpdatesLocked(appPredictionSessionId, iPredictionCallback);
-                }
-            });
-        }
-
-        public void unregisterPredictionUpdates(final AppPredictionSessionId appPredictionSessionId, final IPredictionCallback iPredictionCallback) {
-            runForUserLocked("unregisterPredictionUpdates", appPredictionSessionId, new Consumer() { // from class: com.android.server.appprediction.AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((AppPredictionPerUserService) obj).unregisterPredictionUpdatesLocked(appPredictionSessionId, iPredictionCallback);
-                }
-            });
-        }
-
-        public void requestPredictionUpdate(final AppPredictionSessionId appPredictionSessionId) {
-            runForUserLocked("requestPredictionUpdate", appPredictionSessionId, new Consumer() { // from class: com.android.server.appprediction.AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda2
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((AppPredictionPerUserService) obj).requestPredictionUpdateLocked(appPredictionSessionId);
-                }
-            });
-        }
-
-        public void onDestroyPredictionSession(final AppPredictionSessionId appPredictionSessionId) {
-            runForUserLocked("onDestroyPredictionSession", appPredictionSessionId, new Consumer() { // from class: com.android.server.appprediction.AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda6
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((AppPredictionPerUserService) obj).onDestroyPredictionSessionLocked(appPredictionSessionId);
-                }
-            });
+        public final void onDestroyPredictionSession(AppPredictionSessionId appPredictionSessionId) {
+            runForUserLocked("onDestroyPredictionSession", appPredictionSessionId, new AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda1(appPredictionSessionId, 0));
         }
 
         /* JADX WARN: Multi-variable type inference failed */
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
             new AppPredictionManagerServiceShellCommand(AppPredictionManagerService.this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+        }
+
+        public final void registerPredictionUpdates(AppPredictionSessionId appPredictionSessionId, IPredictionCallback iPredictionCallback) {
+            runForUserLocked("registerPredictionUpdates", appPredictionSessionId, new AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda2(appPredictionSessionId, iPredictionCallback, 1));
+        }
+
+        public final void requestPredictionUpdate(AppPredictionSessionId appPredictionSessionId) {
+            runForUserLocked("requestPredictionUpdate", appPredictionSessionId, new AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda1(appPredictionSessionId, 1));
+        }
+
+        public final void requestServiceFeatures(AppPredictionSessionId appPredictionSessionId, IRemoteCallback iRemoteCallback) {
+            runForUserLocked("requestServiceFeatures", appPredictionSessionId, new AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda0(appPredictionSessionId, iRemoteCallback, 0));
         }
 
         public final void runForUserLocked(String str, AppPredictionSessionId appPredictionSessionId, Consumer consumer) {
             int handleIncomingUser = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), appPredictionSessionId.getUserId(), false, 0, (String) null, (String) null);
             if (AppPredictionManagerService.this.getContext().checkCallingPermission("android.permission.PACKAGE_USAGE_STATS") != 0 && !AppPredictionManagerService.this.mServiceNameResolver.isTemporary(handleIncomingUser) && !AppPredictionManagerService.this.mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid()) && Binder.getCallingUid() != 1000) {
-                String str2 = "Permission Denial: " + str + " from pid=" + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid() + " expected caller to hold PACKAGE_USAGE_STATS permission";
-                Slog.w(AppPredictionManagerService.TAG, str2);
-                throw new SecurityException(str2);
+                throw new SecurityException(ActivityManagerService$$ExternalSyntheticOutline0.m(DumpUtils$$ExternalSyntheticOutline0.m("Permission Denial: ", str, " from pid="), ", uid=", " expected caller to hold PACKAGE_USAGE_STATS permission", "AppPredictionManagerService"));
             }
             long clearCallingIdentity = Binder.clearCallingIdentity();
             try {
@@ -165,5 +82,60 @@ public class AppPredictionManagerService extends AbstractMasterSystemService {
                 Binder.restoreCallingIdentity(clearCallingIdentity);
             }
         }
+
+        public final void sortAppTargets(AppPredictionSessionId appPredictionSessionId, ParceledListSlice parceledListSlice, IPredictionCallback iPredictionCallback) {
+            runForUserLocked("sortAppTargets", appPredictionSessionId, new AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda4(appPredictionSessionId, parceledListSlice, iPredictionCallback, 1));
+        }
+
+        public final void unregisterPredictionUpdates(AppPredictionSessionId appPredictionSessionId, IPredictionCallback iPredictionCallback) {
+            runForUserLocked("unregisterPredictionUpdates", appPredictionSessionId, new AppPredictionManagerService$PredictionManagerServiceStub$$ExternalSyntheticLambda2(appPredictionSessionId, iPredictionCallback, 0));
+        }
+    }
+
+    public AppPredictionManagerService(Context context) {
+        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.date_and_time), null, 17);
+        this.mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void enforceCallingPermissionForManagement() {
+        getContext().enforceCallingPermission("android.permission.MANAGE_APP_PREDICTIONS", "AppPredictionManagerService");
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final int getMaximumTemporaryServiceDurationMs() {
+        return 120000;
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final AbstractPerUserSystemService newServiceLocked(int i, boolean z) {
+        return new AppPredictionPerUserService(this, this.mLock, i);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServicePackageRestartedLocked(int i) {
+        AppPredictionPerUserService appPredictionPerUserService = (AppPredictionPerUserService) peekServiceForUserLocked(i);
+        if (appPredictionPerUserService != null) {
+            if (appPredictionPerUserService.mMaster.debug) {
+                Slog.v("AppPredictionPerUserService", "onPackageRestartedLocked()");
+            }
+            appPredictionPerUserService.destroyAndRebindRemoteService$1();
+        }
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServicePackageUpdatedLocked(int i) {
+        AppPredictionPerUserService appPredictionPerUserService = (AppPredictionPerUserService) peekServiceForUserLocked(i);
+        if (appPredictionPerUserService != null) {
+            if (appPredictionPerUserService.mMaster.debug) {
+                Slog.v("AppPredictionPerUserService", "onPackageUpdatedLocked()");
+            }
+            appPredictionPerUserService.destroyAndRebindRemoteService$1();
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        publishBinderService("app_prediction", new PredictionManagerServiceStub());
     }
 }

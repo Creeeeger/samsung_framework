@@ -1,15 +1,19 @@
 package com.android.server.timedetector;
 
+import android.net.Network;
+import android.os.Binder;
 import android.os.ShellCommand;
 import android.util.NtpTrustedTime;
+import com.android.server.timedetector.NetworkTimeUpdateService;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class NetworkTimeUpdateServiceShellCommand extends ShellCommand {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class NetworkTimeUpdateServiceShellCommand extends ShellCommand {
     public final NetworkTimeUpdateService mNetworkTimeUpdateService;
 
     public NetworkTimeUpdateServiceShellCommand(NetworkTimeUpdateService networkTimeUpdateService) {
@@ -17,84 +21,86 @@ public class NetworkTimeUpdateServiceShellCommand extends ShellCommand {
         this.mNetworkTimeUpdateService = networkTimeUpdateService;
     }
 
-    public int onCommand(String str) {
+    public final int onCommand(String str) {
+        Duration duration;
+        Network network;
+        boolean forceRefresh;
         if (str == null) {
             return handleDefaultCommands(str);
         }
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1679617267:
-                if (str.equals("set_server_config_for_tests")) {
-                    c = 0;
-                    break;
+        duration = null;
+        switch (str) {
+            case "set_server_config_for_tests":
+                ArrayList arrayList = new ArrayList();
+                while (true) {
+                    String nextArg = getNextArg();
+                    if (nextArg == null) {
+                        if (arrayList.isEmpty()) {
+                            throw new IllegalArgumentException("Missing required option: ----server");
+                        }
+                        if (duration == null) {
+                            throw new IllegalArgumentException("Missing required option: ----timeout_millis");
+                        }
+                        this.mNetworkTimeUpdateService.setServerConfigForTests(new NtpTrustedTime.NtpConfig(arrayList, duration));
+                        return 0;
+                    }
+                    if (nextArg.equals("--timeout_millis")) {
+                        duration = Duration.ofMillis(Integer.parseInt(getNextArgRequired()));
+                    } else {
+                        if (!nextArg.equals("--server")) {
+                            throw new IllegalArgumentException("Unknown option: ".concat(nextArg));
+                        }
+                        try {
+                            arrayList.add(NtpTrustedTime.parseNtpUriStrict(getNextArgRequired()));
+                        } catch (URISyntaxException e) {
+                            throw new IllegalArgumentException("Bad NTP server value", e);
+                        }
+                    }
                 }
-                break;
-            case 65977594:
-                if (str.equals("reset_server_config_for_tests")) {
-                    c = 1;
-                    break;
+            case "reset_server_config_for_tests":
+                this.mNetworkTimeUpdateService.setServerConfigForTests(null);
+                return 0;
+            case "force_refresh":
+                NetworkTimeUpdateService networkTimeUpdateService = this.mNetworkTimeUpdateService;
+                networkTimeUpdateService.mContext.enforceCallingPermission("android.permission.SET_TIME", "force network time refresh");
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (networkTimeUpdateService.mLock) {
+                        network = networkTimeUpdateService.mDefaultNetwork;
+                    }
+                    if (network == null) {
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                        forceRefresh = false;
+                    } else {
+                        NetworkTimeUpdateService.EngineImpl engineImpl = networkTimeUpdateService.mEngine;
+                        NetworkTimeUpdateService.AnonymousClass1 anonymousClass1 = networkTimeUpdateService.mRefreshCallbacks;
+                        Long l = (Long) engineImpl.mElapsedRealtimeMillisSupplier.get();
+                        l.longValue();
+                        synchronized (engineImpl) {
+                            engineImpl.mLastRefreshAttemptElapsedRealtimeMillis = l;
+                        }
+                        forceRefresh = engineImpl.mNtpTrustedTime.forceRefresh(network);
+                        engineImpl.logToDebugAndDumpsys("forceRefreshForTests: refreshSuccessful=" + forceRefresh);
+                        if (forceRefresh) {
+                            NtpTrustedTime.TimeResult cachedTimeResult = engineImpl.mNtpTrustedTime.getCachedTimeResult();
+                            if (cachedTimeResult == null) {
+                                engineImpl.logToDebugAndDumpsys("forceRefreshForTests: cachedTimeResult unexpectedly null");
+                            } else {
+                                NetworkTimeUpdateService.EngineImpl.makeNetworkTimeSuggestion(cachedTimeResult, "EngineImpl.forceRefreshForTests()", anonymousClass1);
+                            }
+                        }
+                    }
+                    getOutPrintWriter().println(forceRefresh);
+                    return 0;
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
-                break;
-            case 1891346823:
-                if (str.equals("force_refresh")) {
-                    c = 2;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return runSetServerConfig();
-            case 1:
-                return runResetServerConfig();
-            case 2:
-                return runForceRefresh();
             default:
                 return handleDefaultCommands(str);
         }
     }
 
-    public final int runForceRefresh() {
-        getOutPrintWriter().println(this.mNetworkTimeUpdateService.forceRefreshForTests());
-        return 0;
-    }
-
-    public final int runSetServerConfig() {
-        ArrayList arrayList = new ArrayList();
-        Duration duration = null;
-        while (true) {
-            String nextArg = getNextArg();
-            if (nextArg != null) {
-                if (nextArg.equals("--timeout_millis")) {
-                    duration = Duration.ofMillis(Integer.parseInt(getNextArgRequired()));
-                } else if (nextArg.equals("--server")) {
-                    try {
-                        arrayList.add(NtpTrustedTime.parseNtpUriStrict(getNextArgRequired()));
-                    } catch (URISyntaxException e) {
-                        throw new IllegalArgumentException("Bad NTP server value", e);
-                    }
-                } else {
-                    throw new IllegalArgumentException("Unknown option: " + nextArg);
-                }
-            } else {
-                if (arrayList.isEmpty()) {
-                    throw new IllegalArgumentException("Missing required option: ----server");
-                }
-                if (duration == null) {
-                    throw new IllegalArgumentException("Missing required option: ----timeout_millis");
-                }
-                this.mNetworkTimeUpdateService.setServerConfigForTests(new NtpTrustedTime.NtpConfig(arrayList, duration));
-                return 0;
-            }
-        }
-    }
-
-    public final int runResetServerConfig() {
-        this.mNetworkTimeUpdateService.setServerConfigForTests(null);
-        return 0;
-    }
-
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.printf("Network Time Update Service (%s) commands:\n", "network_time_update_service");
         outPrintWriter.printf("  help\n", new Object[0]);

@@ -4,11 +4,37 @@ import android.hardware.usb.DisplayPortAltModeInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class RawPortInfo implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: com.android.server.usb.hal.port.RawPortInfo.1
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
+    public boolean canChangeDataRole;
+    public boolean canChangeMode;
+    public boolean canChangePowerRole;
+    public int[] complianceWarnings;
+    public int contaminantDetectionStatus;
+    public final int contaminantProtectionStatus;
+    public int currentDataRole;
+    public int currentMode;
+    public int currentPowerRole;
+    public DisplayPortAltModeInfo displayPortAltModeInfo;
+    public final int plugState;
+    public final String portId;
+    public final int powerBrickConnectionStatus;
+    public final boolean powerTransferLimited;
+    public final int supportedAltModes;
+    public final int supportedContaminantProtectionModes;
+    public final int supportedModes;
+    public final boolean supportsComplianceWarnings;
+    public final boolean supportsEnableContaminantPresenceDetection;
+    public final boolean supportsEnableContaminantPresenceProtection;
+    public final int usbDataStatus;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.usb.hal.port.RawPortInfo$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
         @Override // android.os.Parcelable.Creator
-        public RawPortInfo createFromParcel(Parcel parcel) {
+        public final Object createFromParcel(Parcel parcel) {
             String readString = parcel.readString();
             int readInt = parcel.readInt();
             int readInt2 = parcel.readInt();
@@ -33,35 +59,9 @@ public final class RawPortInfo implements Parcelable {
         }
 
         @Override // android.os.Parcelable.Creator
-        public RawPortInfo[] newArray(int i) {
+        public final Object[] newArray(int i) {
             return new RawPortInfo[i];
         }
-    };
-    public boolean canChangeDataRole;
-    public boolean canChangeMode;
-    public boolean canChangePowerRole;
-    public int[] complianceWarnings;
-    public int contaminantDetectionStatus;
-    public int contaminantProtectionStatus;
-    public int currentDataRole;
-    public int currentMode;
-    public int currentPowerRole;
-    public DisplayPortAltModeInfo displayPortAltModeInfo;
-    public int plugState;
-    public final String portId;
-    public int powerBrickConnectionStatus;
-    public boolean powerTransferLimited;
-    public int supportedAltModes;
-    public final int supportedContaminantProtectionModes;
-    public final int supportedModes;
-    public final boolean supportsComplianceWarnings;
-    public boolean supportsEnableContaminantPresenceDetection;
-    public boolean supportsEnableContaminantPresenceProtection;
-    public int usbDataStatus;
-
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return 0;
     }
 
     public RawPortInfo(String str, int i, int i2, int i3, boolean z, int i4, boolean z2, int i5, boolean z3, boolean z4, int i6, boolean z5, int i7, int i8, boolean z6, int i9, boolean z7, int[] iArr, int i10, int i11, DisplayPortAltModeInfo displayPortAltModeInfo) {
@@ -89,7 +89,12 @@ public final class RawPortInfo implements Parcelable {
     }
 
     @Override // android.os.Parcelable
-    public void writeToParcel(Parcel parcel, int i) {
+    public final int describeContents() {
+        return 0;
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.portId);
         parcel.writeInt(this.supportedModes);
         parcel.writeInt(this.supportedContaminantProtectionModes);

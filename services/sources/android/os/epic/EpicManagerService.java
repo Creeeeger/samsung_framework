@@ -12,23 +12,31 @@ import android.os.epic.IEpicManager;
 import android.util.Log;
 import com.android.server.SystemService;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class EpicManagerService extends SystemService {
-    public static final long FEATURE_ACTIVITY = 1;
-    public static final String FEATURE_PROPERTY_KEY = "vendor.epic.feature";
-    public static final long FEATURE_WEB = 2;
-    public static final String TAG = "EpicManagerService";
-    public IActivityManager mActivityManager;
-    public EpicChromeDetector mChromeDetector;
-    public final Context mContext;
-    public HandlerThread mDisplayHandlerThread;
-    public DisplayManager.DisplayListener mDisplayListener;
-    public DisplayManager mDisplayManager;
-    public PackageManager mPackageManager;
-    public EpicUidObserver mUidObserver;
+    private static final long FEATURE_ACTIVITY = 1;
+    private static final String FEATURE_PROPERTY_KEY = "vendor.epic.feature";
+    private static final long FEATURE_WEB = 2;
+    private static final String TAG = "EpicManagerService";
+    private IActivityManager mActivityManager;
+    private EpicChromeDetector mChromeDetector;
+    private final Context mContext;
+    private HandlerThread mDisplayHandlerThread;
+    private DisplayManager.DisplayListener mDisplayListener;
+    private DisplayManager mDisplayManager;
+    private PackageManager mPackageManager;
+    private EpicUidObserver mUidObserver;
 
-    @Override // com.android.server.SystemService
-    public void onBootPhase(int i) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BinderService extends IEpicManager.Stub {
+        public final IEpicObject Create(int i) {
+            return ObjectFactory.create(i);
+        }
+
+        public final IEpicObject Creates(int[] iArr) {
+            return ObjectFactory.create(iArr);
+        }
     }
 
     public EpicManagerService(Context context) {
@@ -41,6 +49,10 @@ public final class EpicManagerService extends SystemService {
     }
 
     @Override // com.android.server.SystemService
+    public void onBootPhase(int i) {
+    }
+
+    @Override // com.android.server.SystemService
     public void onStart() {
         publishBinderService("epic", new BinderService());
     }
@@ -48,10 +60,10 @@ public final class EpicManagerService extends SystemService {
     public void systemReady() {
         try {
             long j = SystemProperties.getLong(FEATURE_PROPERTY_KEY, 0L);
-            if ((j & 1) == 1) {
+            if ((j & FEATURE_ACTIVITY) == FEATURE_ACTIVITY) {
                 this.mActivityManager = ActivityManager.getService();
                 this.mPackageManager = this.mContext.getPackageManager();
-                if ((j & 2) == 2) {
+                if ((j & FEATURE_WEB) == FEATURE_WEB) {
                     this.mChromeDetector = new EpicChromeDetector();
                     this.mDisplayManager = (DisplayManager) this.mContext.getSystemService("display");
                     HandlerThread handlerThread = new HandlerThread("DisplayChange");
@@ -67,20 +79,6 @@ public final class EpicManagerService extends SystemService {
             }
         } catch (Exception e) {
             Log.i("EPICSVC", e.getMessage());
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class BinderService extends IEpicManager.Stub {
-        public BinderService() {
-        }
-
-        public IEpicObject Create(int i) {
-            return ObjectFactory.create(i);
-        }
-
-        public IEpicObject Creates(int[] iArr) {
-            return ObjectFactory.create(iArr);
         }
     }
 }

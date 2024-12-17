@@ -1,107 +1,102 @@
 package com.android.server.wm;
 
-import android.R;
 import android.content.Context;
 import android.os.Debug;
 import android.util.Slog;
 import android.util.proto.ProtoOutputStream;
 import android.view.SurfaceControl;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import com.android.server.wm.LocalAnimationAdapter;
-import com.android.server.wm.SurfaceAnimator;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class FadeAnimationController {
     public final Context mContext;
     public final DisplayContent mDisplayContent;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class FadeAnimationAdapter extends LocalAnimationAdapter {
+        public final boolean mShow;
+
+        public FadeAnimationAdapter(AnonymousClass1 anonymousClass1, SurfaceAnimationRunner surfaceAnimationRunner, boolean z) {
+            super(anonymousClass1, surfaceAnimationRunner);
+            this.mShow = z;
+        }
+
+        @Override // com.android.server.wm.AnimationAdapter
+        public boolean shouldDeferAnimationFinish() {
+            return !this.mShow;
+        }
+    }
 
     public FadeAnimationController(DisplayContent displayContent) {
         this.mDisplayContent = displayContent;
         this.mContext = displayContent.mWmService.mContext;
     }
 
-    public Animation getFadeInAnimation() {
-        return AnimationUtils.loadAnimation(this.mContext, R.anim.fade_in);
+    public FadeAnimationAdapter createAdapter(AnonymousClass1 anonymousClass1, boolean z, WindowToken windowToken) {
+        return new FadeAnimationAdapter(anonymousClass1, windowToken.getSurfaceAnimationRunner(), z);
     }
 
-    public Animation getFadeOutAnimation() {
-        return AnimationUtils.loadAnimation(this.mContext, R.anim.fade_out);
-    }
-
-    public void fadeWindowToken(boolean z, WindowToken windowToken, int i) {
-        fadeWindowToken(z, windowToken, i, null);
-    }
-
-    public void fadeWindowToken(boolean z, WindowToken windowToken, int i, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback) {
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r1v1, types: [com.android.server.wm.FadeAnimationController$1] */
+    public final void fadeWindowToken(boolean z, WindowToken windowToken, AsyncRotationController$$ExternalSyntheticLambda0 asyncRotationController$$ExternalSyntheticLambda0) {
         if (windowToken == null || windowToken.getParent() == null) {
             return;
         }
-        Animation fadeInAnimation = z ? getFadeInAnimation() : getFadeOutAnimation();
-        FadeAnimationAdapter createAdapter = fadeInAnimation != null ? createAdapter(createAnimationSpec(fadeInAnimation), z, windowToken) : null;
-        if (createAdapter == null) {
-            return;
-        }
-        Slog.d(StartingSurfaceController.TAG, "fadeWindowToken, show=" + z + ", animationType=" + SurfaceAnimator.animationTypeToString(i) + ", topWindow=" + windowToken.getTopChild() + ", token=" + windowToken + ", caller=" + Debug.getCallers(5));
-        windowToken.startAnimation(windowToken.getPendingTransaction(), createAdapter, z, i, onAnimationFinishedCallback);
-    }
-
-    public FadeAnimationAdapter createAdapter(LocalAnimationAdapter.AnimationSpec animationSpec, boolean z, WindowToken windowToken) {
-        return new FadeAnimationAdapter(animationSpec, windowToken.getSurfaceAnimationRunner(), z, windowToken);
-    }
-
-    public LocalAnimationAdapter.AnimationSpec createAnimationSpec(final Animation animation) {
-        return new LocalAnimationAdapter.AnimationSpec() { // from class: com.android.server.wm.FadeAnimationController.1
+        final Animation fadeInAnimation = z ? getFadeInAnimation() : getFadeOutAnimation();
+        FadeAnimationAdapter createAdapter = fadeInAnimation != null ? createAdapter(new LocalAnimationAdapter.AnimationSpec() { // from class: com.android.server.wm.FadeAnimationController.1
             public final Transformation mTransformation = new Transformation();
 
             @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-            public boolean getShowWallpaper() {
-                return true;
-            }
-
-            @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-            public long getDuration() {
-                return animation.getDuration();
-            }
-
-            @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-            public void apply(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, long j) {
+            public final void apply(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, long j) {
                 this.mTransformation.clear();
-                animation.getTransformation(j, this.mTransformation);
+                fadeInAnimation.getTransformation(j, this.mTransformation);
                 transaction.setAlpha(surfaceControl, this.mTransformation.getAlpha());
             }
 
             @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-            public void dump(PrintWriter printWriter, String str) {
+            public final void dump(PrintWriter printWriter, String str) {
                 printWriter.print(str);
-                printWriter.println(animation);
+                printWriter.println(fadeInAnimation);
             }
 
             @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-            public void dumpDebugInner(ProtoOutputStream protoOutputStream) {
+            public final void dumpDebugInner(ProtoOutputStream protoOutputStream) {
                 long start = protoOutputStream.start(1146756268033L);
-                protoOutputStream.write(1138166333441L, animation.toString());
+                protoOutputStream.write(1138166333441L, fadeInAnimation.toString());
                 protoOutputStream.end(start);
             }
-        };
+
+            @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+            public final long getDuration() {
+                return fadeInAnimation.getDuration();
+            }
+
+            @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+            public final boolean getShowWallpaper() {
+                return true;
+            }
+        }, z, windowToken) : null;
+        if (createAdapter == null) {
+            return;
+        }
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m("fadeWindowToken, show=", ", animationType=", z);
+        m.append(SurfaceAnimator.animationTypeToString(64));
+        m.append(", topWindow=");
+        m.append(windowToken.getTopChild());
+        m.append(", token=");
+        m.append(windowToken);
+        m.append(", caller=");
+        m.append(Debug.getCallers(5));
+        Slog.d("WindowManager", m.toString());
+        windowToken.startAnimation(windowToken.getPendingTransaction(), createAdapter, z, 64, asyncRotationController$$ExternalSyntheticLambda0);
     }
 
-    /* loaded from: classes3.dex */
-    public class FadeAnimationAdapter extends LocalAnimationAdapter {
-        public final boolean mShow;
-        public final WindowToken mToken;
+    public abstract Animation getFadeInAnimation();
 
-        public FadeAnimationAdapter(LocalAnimationAdapter.AnimationSpec animationSpec, SurfaceAnimationRunner surfaceAnimationRunner, boolean z, WindowToken windowToken) {
-            super(animationSpec, surfaceAnimationRunner);
-            this.mShow = z;
-            this.mToken = windowToken;
-        }
-
-        @Override // com.android.server.wm.AnimationAdapter
-        public boolean shouldDeferAnimationFinish(Runnable runnable) {
-            return !this.mShow;
-        }
-    }
+    public abstract Animation getFadeOutAnimation();
 }

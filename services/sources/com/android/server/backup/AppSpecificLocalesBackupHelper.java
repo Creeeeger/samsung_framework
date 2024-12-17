@@ -2,43 +2,44 @@ package com.android.server.backup;
 
 import android.app.backup.BlobBackupHelper;
 import android.util.Slog;
+import com.android.server.HeimdAllFsService$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
-import com.android.server.locales.LocaleManagerInternal;
+import com.android.server.locales.LocaleManagerService;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AppSpecificLocalesBackupHelper extends BlobBackupHelper {
-    public final LocaleManagerInternal mLocaleManagerInternal;
+public final class AppSpecificLocalesBackupHelper extends BlobBackupHelper {
+    public final LocaleManagerService.LocaleManagerInternalImpl mLocaleManagerInternal;
     public final int mUserId;
 
     public AppSpecificLocalesBackupHelper(int i) {
         super(1, new String[]{"app_locales"});
         this.mUserId = i;
-        this.mLocaleManagerInternal = (LocaleManagerInternal) LocalServices.getService(LocaleManagerInternal.class);
+        this.mLocaleManagerInternal = (LocaleManagerService.LocaleManagerInternalImpl) LocalServices.getService(LocaleManagerService.LocaleManagerInternalImpl.class);
     }
 
-    public byte[] getBackupPayload(String str) {
-        if ("app_locales".equals(str)) {
-            try {
-                return this.mLocaleManagerInternal.getBackupPayload(this.mUserId);
-            } catch (Exception e) {
-                Slog.e("AppLocalesBackupHelper", "Couldn't communicate with locale manager", e);
-                return null;
-            }
+    public final void applyRestoredPayload(String str, byte[] bArr) {
+        if (!"app_locales".equals(str)) {
+            HeimdAllFsService$$ExternalSyntheticOutline0.m("Unexpected restore key ", str, "AppLocalesBackupHelper");
+            return;
         }
-        Slog.w("AppLocalesBackupHelper", "Unexpected backup key " + str);
-        return null;
+        try {
+            this.mLocaleManagerInternal.stageAndApplyRestoredPayload(this.mUserId, bArr);
+        } catch (Exception e) {
+            Slog.e("AppLocalesBackupHelper", "Couldn't communicate with locale manager", e);
+        }
     }
 
-    public void applyRestoredPayload(String str, byte[] bArr) {
-        if ("app_locales".equals(str)) {
-            try {
-                this.mLocaleManagerInternal.stageAndApplyRestoredPayload(bArr, this.mUserId);
-                return;
-            } catch (Exception e) {
-                Slog.e("AppLocalesBackupHelper", "Couldn't communicate with locale manager", e);
-                return;
-            }
+    public final byte[] getBackupPayload(String str) {
+        if (!"app_locales".equals(str)) {
+            HeimdAllFsService$$ExternalSyntheticOutline0.m("Unexpected backup key ", str, "AppLocalesBackupHelper");
+            return null;
         }
-        Slog.w("AppLocalesBackupHelper", "Unexpected restore key " + str);
+        try {
+            return this.mLocaleManagerInternal.getBackupPayload(this.mUserId);
+        } catch (Exception e) {
+            Slog.e("AppLocalesBackupHelper", "Couldn't communicate with locale manager", e);
+            return null;
+        }
     }
 }

@@ -1,178 +1,30 @@
 package com.android.server.tv.tunerresourcemanager;
 
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import java.util.HashSet;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ClientProfile {
-    public int mGroupId;
     public final int mId;
-    public boolean mIsPriorityOverwritten;
     public int mNiceValue;
-    public int mPrimaryUsingFrontendHandle;
     public int mPriority;
     public final int mProcessId;
-    public Set mShareFeClientIds;
     public final String mTvInputSessionId;
     public final int mUseCase;
-    public int mUsingCasSystemId;
-    public int mUsingCiCamId;
-    public Set mUsingDemuxHandles;
-    public Set mUsingFrontendHandles;
-    public Set mUsingLnbHandles;
+    public int mPrimaryUsingFrontendHandle = -1;
+    public final Set mUsingFrontendHandles = new HashSet();
+    public final Set mShareFeClientIds = new HashSet();
+    public final Set mUsingDemuxHandles = new HashSet();
+    public Integer mShareeFeClientId = -1;
+    public final Set mUsingLnbHandles = new HashSet();
+    public int mUsingCasSystemId = -1;
+    public int mUsingCiCamId = -1;
+    public boolean mIsPriorityOverwritten = false;
 
-    public ClientProfile(Builder builder) {
-        this.mGroupId = -1;
-        this.mPrimaryUsingFrontendHandle = -1;
-        this.mUsingFrontendHandles = new HashSet();
-        this.mShareFeClientIds = new HashSet();
-        this.mUsingDemuxHandles = new HashSet();
-        this.mUsingLnbHandles = new HashSet();
-        this.mUsingCasSystemId = -1;
-        this.mUsingCiCamId = -1;
-        this.mIsPriorityOverwritten = false;
-        this.mId = builder.mId;
-        this.mTvInputSessionId = builder.mTvInputSessionId;
-        this.mUseCase = builder.mUseCase;
-        this.mProcessId = builder.mProcessId;
-    }
-
-    public int getId() {
-        return this.mId;
-    }
-
-    public int getUseCase() {
-        return this.mUseCase;
-    }
-
-    public int getProcessId() {
-        return this.mProcessId;
-    }
-
-    public boolean isPriorityOverwritten() {
-        return this.mIsPriorityOverwritten;
-    }
-
-    public int getPriority() {
-        return this.mPriority - this.mNiceValue;
-    }
-
-    public void setPriority(int i) {
-        if (i < 0) {
-            return;
-        }
-        this.mPriority = i;
-    }
-
-    public void overwritePriority(int i) {
-        if (i < 0) {
-            return;
-        }
-        this.mIsPriorityOverwritten = true;
-        this.mPriority = i;
-    }
-
-    public void setNiceValue(int i) {
-        this.mNiceValue = i;
-    }
-
-    public void useFrontend(int i) {
-        this.mUsingFrontendHandles.add(Integer.valueOf(i));
-    }
-
-    public void setPrimaryFrontend(int i) {
-        this.mPrimaryUsingFrontendHandle = i;
-    }
-
-    public int getPrimaryFrontend() {
-        return this.mPrimaryUsingFrontendHandle;
-    }
-
-    public void shareFrontend(int i) {
-        this.mShareFeClientIds.add(Integer.valueOf(i));
-    }
-
-    public void stopSharingFrontend(int i) {
-        this.mShareFeClientIds.remove(Integer.valueOf(i));
-    }
-
-    public Set getInUseFrontendHandles() {
-        return this.mUsingFrontendHandles;
-    }
-
-    public Set getShareFeClientIds() {
-        return this.mShareFeClientIds;
-    }
-
-    public void releaseFrontend() {
-        this.mUsingFrontendHandles.clear();
-        this.mShareFeClientIds.clear();
-        this.mPrimaryUsingFrontendHandle = -1;
-    }
-
-    public void useDemux(int i) {
-        this.mUsingDemuxHandles.add(Integer.valueOf(i));
-    }
-
-    public Set getInUseDemuxHandles() {
-        return this.mUsingDemuxHandles;
-    }
-
-    public void releaseDemux(int i) {
-        this.mUsingDemuxHandles.remove(Integer.valueOf(i));
-    }
-
-    public void useLnb(int i) {
-        this.mUsingLnbHandles.add(Integer.valueOf(i));
-    }
-
-    public Set getInUseLnbHandles() {
-        return this.mUsingLnbHandles;
-    }
-
-    public void releaseLnb(int i) {
-        this.mUsingLnbHandles.remove(Integer.valueOf(i));
-    }
-
-    public void useCas(int i) {
-        this.mUsingCasSystemId = i;
-    }
-
-    public int getInUseCasSystemId() {
-        return this.mUsingCasSystemId;
-    }
-
-    public void releaseCas() {
-        this.mUsingCasSystemId = -1;
-    }
-
-    public void useCiCam(int i) {
-        this.mUsingCiCamId = i;
-    }
-
-    public int getInUseCiCamId() {
-        return this.mUsingCiCamId;
-    }
-
-    public void releaseCiCam() {
-        this.mUsingCiCamId = -1;
-    }
-
-    public void reclaimAllResources() {
-        this.mUsingFrontendHandles.clear();
-        this.mShareFeClientIds.clear();
-        this.mPrimaryUsingFrontendHandle = -1;
-        this.mUsingLnbHandles.clear();
-        this.mUsingCasSystemId = -1;
-        this.mUsingCiCamId = -1;
-    }
-
-    public String toString() {
-        return "ClientProfile[id=" + this.mId + ", tvInputSessionId=" + this.mTvInputSessionId + ", useCase=" + this.mUseCase + ", processId=" + this.mProcessId + "]";
-    }
-
-    /* loaded from: classes3.dex */
-    public class Builder {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Builder {
         public final int mId;
         public int mProcessId;
         public String mTvInputSessionId;
@@ -181,24 +33,27 @@ public final class ClientProfile {
         public Builder(int i) {
             this.mId = i;
         }
+    }
 
-        public Builder useCase(int i) {
-            this.mUseCase = i;
-            return this;
-        }
+    public ClientProfile(Builder builder) {
+        this.mId = builder.mId;
+        this.mTvInputSessionId = builder.mTvInputSessionId;
+        this.mUseCase = builder.mUseCase;
+        this.mProcessId = builder.mProcessId;
+    }
 
-        public Builder tvInputSessionId(String str) {
-            this.mTvInputSessionId = str;
-            return this;
-        }
+    public final int getPriority() {
+        return this.mPriority - this.mNiceValue;
+    }
 
-        public Builder processId(int i) {
-            this.mProcessId = i;
-            return this;
-        }
-
-        public ClientProfile build() {
-            return new ClientProfile(this);
-        }
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("ClientProfile[id=");
+        sb.append(this.mId);
+        sb.append(", tvInputSessionId=");
+        sb.append(this.mTvInputSessionId);
+        sb.append(", useCase=");
+        sb.append(this.mUseCase);
+        sb.append(", processId=");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.mProcessId, sb, "]");
     }
 }

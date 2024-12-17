@@ -13,37 +13,34 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.security.Credentials;
+import android.os.UserManager;
 import android.security.KeyChain;
+import android.util.ArraySet;
 import android.util.PluralsMessageFormatter;
 import com.android.internal.notification.SystemNotificationChannels;
+import com.android.internal.util.Preconditions;
 import com.android.server.devicepolicy.DevicePolicyManagerService;
 import com.android.server.utils.Slogf;
-import com.samsung.android.knox.license.IEnterpriseLicense;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
-/* loaded from: classes2.dex */
-public class CertificateMonitor {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class CertificateMonitor {
     public final Handler mHandler;
     public final DevicePolicyManagerService.Injector mInjector;
-    public final BroadcastReceiver mRootCaReceiver;
+    public final AnonymousClass1 mRootCaReceiver;
     public final DevicePolicyManagerService mService;
 
     public CertificateMonitor(DevicePolicyManagerService devicePolicyManagerService, DevicePolicyManagerService.Injector injector, Handler handler) {
         BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.devicepolicy.CertificateMonitor.1
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
+            public final void onReceive(Context context, Intent intent) {
                 CertificateMonitor.this.updateInstalledCertificates(UserHandle.of(intent.getIntExtra("android.intent.extra.user_handle", getSendingUserId())));
             }
         };
-        this.mRootCaReceiver = broadcastReceiver;
         this.mService = devicePolicyManagerService;
         this.mInjector = injector;
         this.mHandler = handler;
@@ -55,65 +52,12 @@ public class CertificateMonitor {
         injector.mContext.registerReceiverAsUser(broadcastReceiver, UserHandle.ALL, intentFilter, null, handler);
     }
 
-    public String installCaCert(UserHandle userHandle, byte[] bArr) {
-        try {
-            byte[] convertToPem = Credentials.convertToPem(new Certificate[]{parseCert(bArr)});
-            try {
-                KeyChain.KeyChainConnection keyChainBindAsUser = this.mInjector.keyChainBindAsUser(userHandle);
-                try {
-                    String installCaCertificate = keyChainBindAsUser.getService().installCaCertificate(convertToPem);
-                    keyChainBindAsUser.close();
-                    return installCaCertificate;
-                } finally {
-                }
-            } catch (RemoteException e) {
-                Slogf.e("DevicePolicyManager", "installCaCertsToKeyChain(): ", e);
-                return null;
-            } catch (InterruptedException e2) {
-                Slogf.w("DevicePolicyManager", "installCaCertsToKeyChain(): ", e2);
-                Thread.currentThread().interrupt();
-                return null;
-            }
-        } catch (IOException | CertificateException e3) {
-            Slogf.e("DevicePolicyManager", "Problem converting cert", e3);
-            return null;
-        }
-    }
-
-    public void uninstallCaCerts(UserHandle userHandle, String[] strArr) {
-        try {
-            KeyChain.KeyChainConnection keyChainBindAsUser = this.mInjector.keyChainBindAsUser(userHandle);
-            for (String str : strArr) {
-                try {
-                    keyChainBindAsUser.getService().deleteCaCertificate(str);
-                } catch (Throwable th) {
-                    if (keyChainBindAsUser != null) {
-                        try {
-                            keyChainBindAsUser.close();
-                        } catch (Throwable th2) {
-                            th.addSuppressed(th2);
-                        }
-                    }
-                    throw th;
-                }
-            }
-            if (keyChainBindAsUser != null) {
-                keyChainBindAsUser.close();
-            }
-        } catch (RemoteException e) {
-            Slogf.e("DevicePolicyManager", "from CaCertUninstaller: ", e);
-        } catch (InterruptedException e2) {
-            Slogf.w("DevicePolicyManager", "CaCertUninstaller: ", e2);
-            Thread.currentThread().interrupt();
-        }
-    }
-
     public final List getInstalledCaCertificates(UserHandle userHandle) {
         try {
-            KeyChain.KeyChainConnection keyChainBindAsUser = this.mInjector.keyChainBindAsUser(userHandle);
+            KeyChain.KeyChainConnection bindAsUser = KeyChain.bindAsUser(this.mInjector.mContext, userHandle);
             try {
-                List list = keyChainBindAsUser.getService().getUserCaAliases().getList();
-                keyChainBindAsUser.close();
+                List list = bindAsUser.getService().getUserCaAliases().getList();
+                bindAsUser.close();
                 return list;
             } finally {
             }
@@ -125,86 +69,89 @@ public class CertificateMonitor {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onCertificateApprovalsChanged$0(int i) {
-        updateInstalledCertificates(UserHandle.of(i));
-    }
-
-    public void onCertificateApprovalsChanged(final int i) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.devicepolicy.CertificateMonitor$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                CertificateMonitor.this.lambda$onCertificateApprovalsChanged$0(i);
-            }
-        });
-    }
-
     public final void updateInstalledCertificates(UserHandle userHandle) {
+        Set set;
+        String string;
+        int i;
+        int i2;
+        String str;
         int identifier = userHandle.getIdentifier();
-        if (this.mInjector.getUserManager().isUserUnlocked(identifier)) {
+        if (UserManager.get(this.mInjector.mContext).isUserUnlocked(identifier)) {
             try {
                 List installedCaCertificates = getInstalledCaCertificates(userHandle);
-                this.mService.onInstalledCertificatesChanged(userHandle, installedCaCertificates);
-                try {
-                    IEnterpriseLicense licenseService = this.mInjector.getLicenseService();
-                    if (licenseService != null && licenseService.getAllLicenseInfo() != null) {
-                        this.mInjector.getNotificationManager().cancelAsUser("DevicePolicyManager", 33, userHandle);
-                        return;
+                DevicePolicyManagerService devicePolicyManagerService = this.mService;
+                Notification notification = null;
+                if (devicePolicyManagerService.mHasFeature) {
+                    devicePolicyManagerService.getCallerIdentity(null, null);
+                    Preconditions.checkCallAuthorization(devicePolicyManagerService.hasCallingOrSelfPermission("android.permission.MANAGE_USERS"));
+                    synchronized (devicePolicyManagerService.getLockObject()) {
+                        try {
+                            DevicePolicyData userData = devicePolicyManagerService.getUserData(userHandle.getIdentifier());
+                            if (((ArraySet) userData.mOwnerInstalledCaCerts).retainAll(installedCaCertificates) | userData.mAcceptedCaCertificates.retainAll(installedCaCertificates)) {
+                                devicePolicyManagerService.saveSettingsLocked(userHandle.getIdentifier(), false, false, false);
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
                     }
-                } catch (RemoteException unused) {
                 }
-                int size = installedCaCertificates.size() - this.mService.getAcceptedCaCertificates(userHandle).size();
-                if (size != 0) {
-                    this.mInjector.getNotificationManager().notifyAsUser("DevicePolicyManager", 33, buildNotification(userHandle, size), userHandle);
+                int size = installedCaCertificates.size();
+                DevicePolicyManagerService devicePolicyManagerService2 = this.mService;
+                if (devicePolicyManagerService2.mHasFeature) {
+                    synchronized (devicePolicyManagerService2.getLockObject()) {
+                        set = devicePolicyManagerService2.getUserData(userHandle.getIdentifier()).mAcceptedCaCertificates;
+                    }
                 } else {
+                    set = Collections.emptySet();
+                }
+                int size2 = size - set.size();
+                if (size2 == 0) {
                     this.mInjector.getNotificationManager().cancelAsUser("DevicePolicyManager", 33, userHandle);
+                    return;
                 }
-            } catch (RemoteException | RuntimeException e) {
-                Slogf.e("DevicePolicyManager", e, "Could not retrieve certificates from KeyChain service for user %d", Integer.valueOf(identifier));
+                DevicePolicyManagerService.Injector injector = this.mInjector;
+                try {
+                    Context createPackageContextAsUser = injector.mContext.createPackageContextAsUser(injector.mContext.getPackageName(), 0, userHandle);
+                    Resources resources = injector.mContext.getResources();
+                    int identifier2 = userHandle.getIdentifier();
+                    int identifier3 = userHandle.getIdentifier();
+                    DevicePolicyManagerService devicePolicyManagerService3 = this.mService;
+                    int i3 = 17304475;
+                    if (devicePolicyManagerService3.getProfileOwnerAsUser(identifier3) != null) {
+                        str = resources.getString(17043108, devicePolicyManagerService3.getProfileOwnerName(userHandle.getIdentifier()));
+                        i2 = devicePolicyManagerService3.getProfileParentId(userHandle.getIdentifier());
+                        i = 17304475;
+                    } else {
+                        if (devicePolicyManagerService3.getDeviceOwnerUserId() == userHandle.getIdentifier()) {
+                            string = resources.getString(17043108, devicePolicyManagerService3.getDeviceOwnerName());
+                        } else {
+                            string = resources.getString(17043107);
+                            i3 = R.drawable.stat_sys_warning;
+                        }
+                        i = i3;
+                        String str2 = string;
+                        i2 = identifier2;
+                        str = str2;
+                    }
+                    Intent intent = new Intent("com.android.settings.MONITORING_CERT_INFO");
+                    intent.setFlags(268468224);
+                    intent.putExtra("android.settings.extra.number_of_certificates", size2);
+                    intent.putExtra("android.intent.extra.USER_ID", userHandle.getIdentifier());
+                    ActivityInfo resolveActivityInfo = intent.resolveActivityInfo(injector.mContext.getPackageManager(), 1048576);
+                    if (resolveActivityInfo != null) {
+                        intent.setComponent(resolveActivityInfo.getComponentName());
+                    }
+                    PendingIntent activityAsUser = PendingIntent.getActivityAsUser(createPackageContextAsUser, 0, intent, 201326592, null, UserHandle.of(i2));
+                    HashMap hashMap = new HashMap();
+                    hashMap.put("count", Integer.valueOf(size2));
+                    notification = new Notification.Builder(createPackageContextAsUser, SystemNotificationChannels.SECURITY).setSmallIcon(i).setContentTitle(PluralsMessageFormatter.format(resources, hashMap, 17043109)).setContentText(str).setContentIntent(activityAsUser).setShowWhen(false).setColor(R.color.system_notification_accent_color).build();
+                } catch (PackageManager.NameNotFoundException e) {
+                    Slogf.e("DevicePolicyManager", e, "Create context as %s failed", userHandle);
+                }
+                this.mInjector.getNotificationManager().notifyAsUser("DevicePolicyManager", 33, notification, userHandle);
+            } catch (RemoteException | RuntimeException e2) {
+                Slogf.e("DevicePolicyManager", e2, "Could not retrieve certificates from KeyChain service for user %d", Integer.valueOf(identifier));
             }
         }
-    }
-
-    public final Notification buildNotification(UserHandle userHandle, int i) {
-        String string;
-        String str;
-        try {
-            Context createContextAsUser = this.mInjector.createContextAsUser(userHandle);
-            Resources resources = this.mInjector.getResources();
-            int identifier = userHandle.getIdentifier();
-            int i2 = 17304249;
-            if (this.mService.lambda$isProfileOwner$71(userHandle.getIdentifier()) != null) {
-                str = resources.getString(17042894, this.mService.getProfileOwnerName(userHandle.getIdentifier()));
-                identifier = this.mService.getProfileParentId(userHandle.getIdentifier());
-            } else {
-                if (this.mService.getDeviceOwnerUserId() == userHandle.getIdentifier()) {
-                    string = resources.getString(17042894, this.mService.getDeviceOwnerName());
-                } else {
-                    string = resources.getString(17042893);
-                    i2 = R.drawable.stat_sys_warning;
-                }
-                str = string;
-            }
-            int i3 = i2;
-            Intent intent = new Intent("com.android.settings.MONITORING_CERT_INFO");
-            intent.setFlags(268468224);
-            intent.putExtra("android.settings.extra.number_of_certificates", i);
-            intent.putExtra("android.intent.extra.USER_ID", userHandle.getIdentifier());
-            ActivityInfo resolveActivityInfo = intent.resolveActivityInfo(this.mInjector.getPackageManager(), 1048576);
-            if (resolveActivityInfo != null) {
-                intent.setComponent(resolveActivityInfo.getComponentName());
-            }
-            PendingIntent pendingIntentGetActivityAsUser = this.mInjector.pendingIntentGetActivityAsUser(createContextAsUser, 0, intent, 201326592, null, UserHandle.of(identifier));
-            HashMap hashMap = new HashMap();
-            hashMap.put("count", Integer.valueOf(i));
-            return new Notification.Builder(createContextAsUser, SystemNotificationChannels.SECURITY).setSmallIcon(i3).setContentTitle(PluralsMessageFormatter.format(resources, hashMap, 17042895)).setContentText(str).setContentIntent(pendingIntentGetActivityAsUser).setShowWhen(false).setColor(R.color.system_notification_accent_color).build();
-        } catch (PackageManager.NameNotFoundException e) {
-            Slogf.e("DevicePolicyManager", e, "Create context as %s failed", userHandle);
-            return null;
-        }
-    }
-
-    public static X509Certificate parseCert(byte[] bArr) {
-        return (X509Certificate) CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(bArr));
     }
 }

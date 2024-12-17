@@ -1,83 +1,20 @@
 package com.android.server.accessibility.autoaction.actiontype;
 
-import android.R;
-import android.content.Context;
 import android.media.AudioManager;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SoundAction extends CornerActionType {
+public final class SoundAction extends CornerActionType {
     public AudioManager mAudioManager;
-    public Context mContext;
     public String mType;
-
-    public SoundAction(Context context, String str) {
-        this.mContext = context;
-        this.mAudioManager = (AudioManager) context.getSystemService("audio");
-        this.mType = str;
-    }
-
-    public static SoundAction createAction(Context context, String str) {
-        return new SoundAction(context, str);
-    }
-
-    public static int getStringResId(String str) {
-        str.hashCode();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1428385405:
-                if (str.equals("ringtone_volume_up")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case -417942503:
-                if (str.equals("sound_vibrate_mute")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 452226764:
-                if (str.equals("media_volume_down")) {
-                    c = 2;
-                    break;
-                }
-                break;
-            case 1158011717:
-                if (str.equals("media_volume_up")) {
-                    c = 3;
-                    break;
-                }
-                break;
-            case 1710656906:
-                if (str.equals("ringtone_volume_down")) {
-                    c = 4;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return R.string.app_category_social;
-            case 1:
-                return R.string.app_suspended_default_message;
-            case 2:
-                return R.string.anr_process;
-            case 3:
-                return R.string.anr_title;
-            case 4:
-                return R.string.app_category_productivity;
-            default:
-                throw new IllegalArgumentException("Wrong Sound Action Type");
-        }
-    }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     @Override // com.android.server.accessibility.autoaction.actiontype.CornerActionType
-    public void performCornerAction(int i) {
+    public final void performCornerAction(int i) {
         char c;
         if (this.mAudioManager != null) {
             String str = this.mType;
-            str.hashCode();
+            str.getClass();
             switch (str.hashCode()) {
                 case -1428385405:
                     if (str.equals("ringtone_volume_up")) {

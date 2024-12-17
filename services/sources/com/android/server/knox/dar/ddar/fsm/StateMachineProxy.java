@@ -1,6 +1,7 @@
 package com.android.server.knox.dar.ddar.fsm;
 
 import android.content.Context;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.UserHandle;
@@ -11,55 +12,45 @@ import com.samsung.android.knox.dar.ddar.DualDARController;
 import com.samsung.android.knox.dar.ddar.fsm.Event;
 import com.samsung.android.knox.dar.ddar.fsm.State;
 import com.samsung.android.knox.dar.ddar.proxy.IProxyAgentService;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-/* loaded from: classes2.dex */
-public class StateMachineProxy extends IProxyAgentService implements StateMachineImpl.StateChangeListener {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class StateMachineProxy extends IProxyAgentService implements StateMachineImpl.StateChangeListener {
     public static StateMachineProxy mInstance;
-    public Context context;
+    public final Context context;
     public boolean initiateState = false;
-    public StateMachineImpl stateMachine;
-
-    public static synchronized StateMachineProxy getInstance(Context context) {
-        StateMachineProxy stateMachineProxy;
-        synchronized (StateMachineProxy.class) {
-            if (mInstance == null) {
-                mInstance = new StateMachineProxy(context);
-            }
-            stateMachineProxy = mInstance;
-        }
-        return stateMachineProxy;
-    }
+    public final StateMachineImpl stateMachine;
 
     public StateMachineProxy(Context context) {
         this.context = context;
-        this.stateMachine = new StateMachineImpl(context);
+        StateMachineImpl stateMachineImpl = new StateMachineImpl();
+        stateMachineImpl.currentStateMap = new HashMap();
+        stateMachineImpl.previousStateMap = new HashMap();
+        ArrayList arrayList = new ArrayList();
+        stateMachineImpl.stateChangeListeners = arrayList;
+        stateMachineImpl.stateLock = new Object();
+        Object obj = new Object();
+        stateMachineImpl.listenerLock = obj;
+        this.stateMachine = stateMachineImpl;
         setInitialState();
-        this.stateMachine.addStateChangeListener(this);
-    }
-
-    public final boolean setInitialState() {
-        int dualDARUser = PersonaServiceHelper.getDualDARUser();
-        DDLog.d("StateMachineProxy", "Set initial state for DualDAR User " + dualDARUser, new Object[0]);
-        if (this.initiateState) {
-            DDLog.d("StateMachineProxy", "DualDAR User has been already initiated", new Object[0]);
-            return true;
+        synchronized (obj) {
+            if (!arrayList.contains(this)) {
+                arrayList.add(this);
+            }
         }
-        if (dualDARUser != -1) {
-            DDLog.d("StateMachineProxy", "DualDAR User set initial State.", new Object[0]);
-            this.stateMachine.setInitialState(dualDARUser, State.DEVICE_LOCK_DATA_LOCK);
-            this.initiateState = true;
-            return true;
+    }
+
+    public static void enforceCallingUser(int i) {
+        if (UserHandle.getAppId(i) != 5250 && UserHandle.getAppId(i) != 1000 && UserHandle.getAppId(i) != Process.myUid()) {
+            throw new SecurityException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Can only be called by system user. callingUid: "));
         }
-        DDLog.e("StateMachineProxy", "Not Active user for DualDAR : " + dualDARUser, new Object[0]);
-        return false;
     }
 
-    @Override // com.android.server.knox.dar.ddar.fsm.StateMachineImpl.StateChangeListener
-    public void onStateChanged(State state, State state2, Event event, int i) {
-        DualDARController.getInstance(this.context).onDualDarStateChanged(state, state2, event, i);
-    }
-
-    public Bundle onMessage(int i, String str, Bundle bundle) {
+    public final Bundle onMessage(int i, String str, Bundle bundle) {
         char c;
         boolean z;
         try {
@@ -109,10 +100,39 @@ public class StateMachineProxy extends IProxyAgentService implements StateMachin
                 bundle2.putString("KEY_STATE", currentState.name());
                 bundle2.putBoolean("dual_dar_response", z);
             } else if (c == 3) {
-                State previousState = this.stateMachine.getPreviousState(bundle.getInt("KEY_DUAL_DAR_USER_ID"));
-                z = previousState != null;
-                bundle2.putString("KEY_STATE", previousState.name());
-                bundle2.putBoolean("dual_dar_response", z);
+                int i2 = bundle.getInt("KEY_DUAL_DAR_USER_ID");
+                State state = this.stateMachine;
+                state.getClass();
+                try {
+                    try {
+                    } catch (Throwable th) {
+                        th = th;
+                    }
+                } catch (Exception unused) {
+                    state = null;
+                }
+                synchronized (state.stateLock) {
+                    try {
+                        try {
+                            state = (State) ((HashMap) state.previousStateMap).get(Integer.valueOf(i2));
+                            if (state == null) {
+                                state = State.IDLE;
+                            }
+                            z = state != null;
+                            bundle2.putString("KEY_STATE", state.name());
+                            bundle2.putBoolean("dual_dar_response", z);
+                        } catch (Throwable th2) {
+                            th = th2;
+                            state = null;
+                            try {
+                                throw th;
+                            } catch (Exception unused2) {
+                            }
+                        }
+                    } catch (Throwable th3) {
+                        th = th3;
+                    }
+                }
             }
             return bundle2;
         } catch (Exception e) {
@@ -122,16 +142,71 @@ public class StateMachineProxy extends IProxyAgentService implements StateMachin
     }
 
     public final boolean processEvent(Bundle bundle) {
+        State currentState;
+        State state;
+        boolean z = false;
         if (!bundle.containsKey("KEY_EVENT") || !bundle.containsKey("KEY_DUAL_DAR_USER_ID")) {
             return false;
         }
-        return this.stateMachine.processEvent(Event.valueOf(bundle.getString("KEY_EVENT")), bundle.getInt("KEY_DUAL_DAR_USER_ID"));
+        Event valueOf = Event.valueOf(bundle.getString("KEY_EVENT"));
+        int i = bundle.getInt("KEY_DUAL_DAR_USER_ID");
+        StateMachineImpl stateMachineImpl = this.stateMachine;
+        synchronized (stateMachineImpl.stateLock) {
+            try {
+                currentState = stateMachineImpl.getCurrentState(i);
+                Map map = (Map) ((HashMap) StateMachineImpl.validTransitions).get(currentState);
+                if (valueOf == null || !map.containsKey(valueOf)) {
+                    DDLog.e("DualDAR::StateMachine", "Invalid event " + valueOf + " in state: " + currentState + " for user " + i, new Object[0]);
+                    state = null;
+                } else {
+                    state = (State) map.get(valueOf);
+                    ((HashMap) stateMachineImpl.previousStateMap).put(Integer.valueOf(i), currentState);
+                    ((HashMap) stateMachineImpl.currentStateMap).put(Integer.valueOf(i), state);
+                    DDLog.d("DualDAR::StateMachine", "Transition: (" + currentState + ") --> (" + state + ") because (" + valueOf + ") for user " + i, new Object[0]);
+                    z = true;
+                }
+                if (state == State.IDLE) {
+                    ((HashMap) stateMachineImpl.currentStateMap).remove(Integer.valueOf(i));
+                    ((HashMap) stateMachineImpl.previousStateMap).remove(Integer.valueOf(i));
+                }
+            } finally {
+            }
+        }
+        if (z) {
+            synchronized (stateMachineImpl.listenerLock) {
+                try {
+                    Iterator it = ((ArrayList) stateMachineImpl.stateChangeListeners).iterator();
+                    while (it.hasNext()) {
+                        DualDARController.getInstance(((StateMachineProxy) ((StateMachineImpl.StateChangeListener) it.next())).context).onDualDarStateChanged(currentState, state, valueOf, i);
+                    }
+                } finally {
+                }
+            }
+        }
+        return z;
     }
 
-    public final void enforceCallingUser(int i) {
-        if (UserHandle.getAppId(i) == 5250 || UserHandle.getAppId(i) == 1000 || UserHandle.getAppId(i) == Process.myUid()) {
-            return;
+    public final boolean setInitialState() {
+        int dualDARUser = PersonaServiceHelper.getDualDARUser();
+        DDLog.d("StateMachineProxy", VibrationParam$1$$ExternalSyntheticOutline0.m(dualDARUser, "Set initial state for DualDAR User "), new Object[0]);
+        if (this.initiateState) {
+            DDLog.d("StateMachineProxy", "DualDAR User has been already initiated", new Object[0]);
+            return true;
         }
-        throw new SecurityException("Can only be called by system user. callingUid: " + i);
+        if (dualDARUser == -1) {
+            DDLog.e("StateMachineProxy", VibrationParam$1$$ExternalSyntheticOutline0.m(dualDARUser, "Not Active user for DualDAR : "), new Object[0]);
+            return false;
+        }
+        DDLog.d("StateMachineProxy", "DualDAR User set initial State.", new Object[0]);
+        StateMachineImpl stateMachineImpl = this.stateMachine;
+        State state = State.DEVICE_LOCK_DATA_LOCK;
+        stateMachineImpl.getClass();
+        DDLog.d("DualDAR::StateMachine", "setInitialState() initialState: " + state + " for user " + dualDARUser, new Object[0]);
+        synchronized (stateMachineImpl.stateLock) {
+            ((HashMap) stateMachineImpl.currentStateMap).put(Integer.valueOf(dualDARUser), state);
+            ((HashMap) stateMachineImpl.previousStateMap).put(Integer.valueOf(dualDARUser), null);
+        }
+        this.initiateState = true;
+        return true;
     }
 }

@@ -6,24 +6,20 @@ import java.security.spec.InvalidKeySpecException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import libcore.util.HexEncoding;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class PasswordUtils {
-    public static SecretKey buildPasswordKey(String str, String str2, byte[] bArr, int i) {
-        return buildCharArrayKey(str, str2.toCharArray(), bArr, i);
-    }
-
-    public static String buildPasswordHash(String str, String str2, byte[] bArr, int i) {
-        SecretKey buildPasswordKey = buildPasswordKey(str, str2, bArr, i);
-        if (buildPasswordKey != null) {
-            return byteArrayToHex(buildPasswordKey.getEncoded());
+    public static SecretKey buildCharArrayKey(String str, char[] cArr, byte[] bArr, int i) {
+        try {
+            return SecretKeyFactory.getInstance(str).generateSecret(new PBEKeySpec(cArr, bArr, i, 256));
+        } catch (NoSuchAlgorithmException unused) {
+            Slog.e("BackupManagerService", "PBKDF2 unavailable!");
+            return null;
+        } catch (InvalidKeySpecException unused2) {
+            Slog.e("BackupManagerService", "Invalid key spec for PBKDF2!");
+            return null;
         }
-        return null;
-    }
-
-    public static String byteArrayToHex(byte[] bArr) {
-        return HexEncoding.encodeToString(bArr, true);
     }
 
     public static byte[] hexToByteArray(String str) {
@@ -39,25 +35,5 @@ public abstract class PasswordUtils {
             i = i2;
         }
         return bArr;
-    }
-
-    public static byte[] makeKeyChecksum(String str, byte[] bArr, byte[] bArr2, int i) {
-        char[] cArr = new char[bArr.length];
-        for (int i2 = 0; i2 < bArr.length; i2++) {
-            cArr[i2] = (char) bArr[i2];
-        }
-        return buildCharArrayKey(str, cArr, bArr2, i).getEncoded();
-    }
-
-    public static SecretKey buildCharArrayKey(String str, char[] cArr, byte[] bArr, int i) {
-        try {
-            return SecretKeyFactory.getInstance(str).generateSecret(new PBEKeySpec(cArr, bArr, i, 256));
-        } catch (NoSuchAlgorithmException unused) {
-            Slog.e("BackupManagerService", "PBKDF2 unavailable!");
-            return null;
-        } catch (InvalidKeySpecException unused2) {
-            Slog.e("BackupManagerService", "Invalid key spec for PBKDF2!");
-            return null;
-        }
     }
 }

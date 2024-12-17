@@ -1,11 +1,13 @@
 package com.android.server.am.mars.netlink;
 
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
 import java.nio.ByteBuffer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class StructFreeCessMsg {
+public final class StructFreeCessMsg {
     public int cmd;
-    public byte[] rpcname = new byte[100];
+    public final byte[] rpcname = new byte[100];
     public int type = 0;
     public int mod = 0;
     public int src_portid = 0;
@@ -16,29 +18,12 @@ public class StructFreeCessMsg {
     public int code = 0;
     public int uid = 0;
 
-    public void pack(ByteBuffer byteBuffer) {
-        byteBuffer.putInt(this.type);
-        byteBuffer.putInt(this.mod);
-        byteBuffer.putInt(this.src_portid);
-        byteBuffer.putInt(this.dst_portid);
-        byteBuffer.putInt(this.version);
-        byteBuffer.putInt(this.target_uid);
-        byteBuffer.putInt(this.flag);
-        byteBuffer.putInt(this.code);
-        for (int i = 0; i < 100; i++) {
-            byteBuffer.put(this.rpcname[i]);
-        }
-        byteBuffer.putInt(this.cmd);
-        byteBuffer.putInt(this.uid);
-    }
-
     public static StructFreeCessMsg parse(ByteBuffer byteBuffer) {
-        StructNlMsgHdr structNlMsgHdr = new StructNlMsgHdr();
-        structNlMsgHdr.nlmsg_len = byteBuffer.getInt();
-        structNlMsgHdr.nlmsg_type = byteBuffer.getShort();
-        structNlMsgHdr.nlmsg_flags = byteBuffer.getShort();
-        structNlMsgHdr.nlmsg_seq = byteBuffer.getInt();
-        structNlMsgHdr.nlmsg_pid = byteBuffer.getInt();
+        byteBuffer.getInt();
+        byteBuffer.getShort();
+        byteBuffer.getShort();
+        byteBuffer.getInt();
+        byteBuffer.getInt();
         StructFreeCessMsg structFreeCessMsg = new StructFreeCessMsg();
         structFreeCessMsg.type = byteBuffer.getInt();
         structFreeCessMsg.mod = byteBuffer.getInt();
@@ -56,7 +41,13 @@ public class StructFreeCessMsg {
         return structFreeCessMsg;
     }
 
-    public String toString() {
-        return ((("struct.type = " + this.type) + "struct.mode = " + this.mod) + "struct.src_portid = " + this.src_portid) + "struct.dst_portid = " + this.dst_portid;
+    public final String toString() {
+        StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m("struct.type = " + this.type, "struct.mode = ");
+        m.append(this.mod);
+        StringBuilder m2 = Preconditions$$ExternalSyntheticOutline0.m(m.toString(), "struct.src_portid = ");
+        m2.append(this.src_portid);
+        StringBuilder m3 = Preconditions$$ExternalSyntheticOutline0.m(m2.toString(), "struct.dst_portid = ");
+        m3.append(this.dst_portid);
+        return m3.toString();
     }
 }

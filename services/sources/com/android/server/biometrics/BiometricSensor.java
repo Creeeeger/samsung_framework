@@ -1,102 +1,35 @@
 package com.android.server.biometrics;
 
-import android.content.Context;
 import android.hardware.biometrics.IBiometricAuthenticator;
-import android.hardware.biometrics.IBiometricSensorReceiver;
-import android.os.IBinder;
 import android.util.Slog;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class BiometricSensor {
     public final int id;
     public final IBiometricAuthenticator impl;
-    public final Context mContext;
-    public int mCookie;
-    public int mError;
     boolean mIsUpdatedOemStrength;
     public boolean mIsUpdatedStrengthByDeviceConfig;
-    public int mSensorState;
     public int mUpdatedStrength;
     public final int modality;
     public int oemStrength;
+    public int mSensorState = 0;
+    public int mCookie = 0;
 
-    public abstract boolean confirmationAlwaysRequired(int i);
-
-    public abstract boolean confirmationSupported();
-
-    public BiometricSensor(Context context, int i, int i2, int i3, IBiometricAuthenticator iBiometricAuthenticator) {
-        this.mContext = context;
+    public BiometricSensor(int i, int i2, int i3, IBiometricAuthenticator iBiometricAuthenticator) {
         this.id = i;
         this.modality = i2;
         this.oemStrength = i3;
         this.impl = iBiometricAuthenticator;
         this.mUpdatedStrength = i3;
-        goToStateUnknown();
     }
 
-    public void goToStateUnknown() {
-        this.mSensorState = 0;
-        this.mCookie = 0;
-        this.mError = 0;
-    }
-
-    public void goToStateWaitingForCookie(boolean z, IBinder iBinder, long j, int i, IBiometricSensorReceiver iBiometricSensorReceiver, String str, long j2, int i2, boolean z2) {
-        this.mCookie = i2;
-        this.impl.prepareForAuthentication(z, iBinder, j, i, iBiometricSensorReceiver, str, j2, i2, z2);
-        this.mSensorState = 1;
-    }
-
-    public void goToStateCookieReturnedIfCookieMatches(int i) {
-        if (i == this.mCookie) {
-            Slog.d("BiometricService/Sensor", "Sensor(" + this.id + ") matched cookie: " + i);
-            this.mSensorState = 2;
-        }
-    }
-
-    public void startSensor() {
-        int i = this.mCookie;
-        if (i == 0) {
-            return;
-        }
-        this.impl.startPreparedClient(i);
-        this.mSensorState = 3;
-    }
-
-    public void goToStateCancelling(IBinder iBinder, String str, long j) {
-        if (this.mSensorState != 4) {
-            this.impl.cancelAuthenticationFromService(iBinder, str, j);
-            this.mSensorState = 4;
-        }
-    }
-
-    public void goToStoppedStateIfCookieMatches(int i, int i2) {
-        if (i == this.mCookie) {
-            Slog.d("BiometricService/Sensor", "Sensor(" + this.id + ") now in STATE_STOPPED");
-            this.mError = i2;
-            this.mSensorState = 5;
-        }
-    }
-
-    public int getCurrentStrength() {
+    public final int getCurrentStrength() {
         updateOemStrengthIfNotCached();
         return this.mUpdatedStrength | this.oemStrength;
     }
 
-    public int getSensorState() {
-        return this.mSensorState;
-    }
-
-    public int getCookie() {
-        return this.mCookie;
-    }
-
-    public void updateStrength(int i) {
-        this.mUpdatedStrength = i;
-        Slog.d("BiometricService/Sensor", ("updateStrength: Before(" + this + ")") + " After(" + this + ")");
-        this.mIsUpdatedStrengthByDeviceConfig = true;
-    }
-
-    public String toString() {
+    public final String toString() {
         return "ID(" + this.id + "), oemStrength: " + this.oemStrength + ", updatedStrength: " + this.mUpdatedStrength + ", modality " + this.modality + ", state: " + this.mSensorState + ", cookie: " + this.mCookie;
     }
 
@@ -120,5 +53,11 @@ public abstract class BiometricSensor {
             this.mUpdatedStrength = i;
         }
         Slog.d("BiometricService/Sensor", str + " After(" + this + ")");
+    }
+
+    public final void updateStrength(int i) {
+        this.mUpdatedStrength = i;
+        Slog.d("BiometricService/Sensor", ("updateStrength: Before(" + this + ")") + " After(" + this + ")");
+        this.mIsUpdatedStrengthByDeviceConfig = true;
     }
 }

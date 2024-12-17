@@ -1,50 +1,32 @@
 package com.android.server.pm.utils;
 
 import android.os.Handler;
+import com.android.server.pm.PackageInstallerService$$ExternalSyntheticLambda7;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class RequestThrottle {
-    public final int mBackoffBase;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RequestThrottle {
     public final Supplier mBlock;
-    public final AtomicInteger mCurrentRetry;
-    public final int mFirstDelay;
     public final Handler mHandler;
-    public final AtomicInteger mLastCommitted;
-    public final AtomicInteger mLastRequest;
-    public final int mMaxAttempts;
-    public final Runnable mRunnable;
+    public final AtomicInteger mLastRequest = new AtomicInteger(0);
+    public final AtomicInteger mLastCommitted = new AtomicInteger(-1);
+    public final AtomicInteger mCurrentRetry = new AtomicInteger(0);
+    public final int mMaxAttempts = 5;
+    public final int mFirstDelay = 1000;
+    public final int mBackoffBase = 2;
+    public final RequestThrottle$$ExternalSyntheticLambda0 mRunnable = new Runnable() { // from class: com.android.server.pm.utils.RequestThrottle$$ExternalSyntheticLambda0
+        @Override // java.lang.Runnable
+        public final void run() {
+            RequestThrottle.this.runInternal();
+        }
+    };
 
-    public RequestThrottle(Handler handler, Supplier supplier) {
-        this(handler, 5, 1000, 2, supplier);
-    }
-
-    public RequestThrottle(Handler handler, int i, int i2, int i3, Supplier supplier) {
-        this.mLastRequest = new AtomicInteger(0);
-        this.mLastCommitted = new AtomicInteger(-1);
-        this.mCurrentRetry = new AtomicInteger(0);
+    /* JADX WARN: Type inference failed for: r4v4, types: [com.android.server.pm.utils.RequestThrottle$$ExternalSyntheticLambda0] */
+    public RequestThrottle(Handler handler, PackageInstallerService$$ExternalSyntheticLambda7 packageInstallerService$$ExternalSyntheticLambda7) {
         this.mHandler = handler;
-        this.mBlock = supplier;
-        this.mMaxAttempts = i;
-        this.mFirstDelay = i2;
-        this.mBackoffBase = i3;
-        this.mRunnable = new Runnable() { // from class: com.android.server.pm.utils.RequestThrottle$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                RequestThrottle.this.runInternal();
-            }
-        };
-    }
-
-    public void schedule() {
-        this.mLastRequest.incrementAndGet();
-        this.mHandler.post(this.mRunnable);
-    }
-
-    public boolean runNow() {
-        this.mLastRequest.incrementAndGet();
-        return runInternal();
+        this.mBlock = packageInstallerService$$ExternalSyntheticLambda7;
     }
 
     public final boolean runInternal() {
@@ -59,10 +41,15 @@ public class RequestThrottle {
         }
         int andIncrement = this.mCurrentRetry.getAndIncrement();
         if (andIncrement < this.mMaxAttempts) {
-            this.mHandler.postDelayed(this.mRunnable, (long) (this.mFirstDelay * Math.pow(this.mBackoffBase, andIncrement)));
+            this.mHandler.postDelayed(this.mRunnable, (long) (Math.pow(this.mBackoffBase, andIncrement) * this.mFirstDelay));
         } else {
             this.mCurrentRetry.set(0);
         }
         return false;
+    }
+
+    public final void schedule() {
+        this.mLastRequest.incrementAndGet();
+        this.mHandler.post(this.mRunnable);
     }
 }

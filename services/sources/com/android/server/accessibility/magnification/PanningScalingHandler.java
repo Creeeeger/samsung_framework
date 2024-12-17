@@ -8,65 +8,47 @@ import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.ViewConfiguration;
+import com.android.server.accessibility.Flags;
+import com.android.server.accessibility.magnification.WindowMagnificationGestureHandler;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class PanningScalingHandler extends GestureDetector.SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
+public final class PanningScalingHandler extends GestureDetector.SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
     public static final boolean DEBUG = Log.isLoggable("PanningScalingHandler", 3);
-    public final boolean mBlockScroll;
     public final int mDisplayId;
     public boolean mEnable;
-    public float mInitialScaleFactor = -1.0f;
     public final MagnificationDelegate mMagnificationDelegate;
     public final float mMaxScale;
-    public final float mMinScale;
     public final ScaleGestureDetector mScaleGestureDetector;
     public boolean mScaling;
     public final float mScalingThreshold;
     public final GestureDetector mScrollGestureDetector;
+    public float mInitialScaleFactor = -1.0f;
+    public final float mMinScale = 1.0f;
+    public final boolean mBlockScroll = true;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface MagnificationDelegate {
         float getScale(int i);
 
-        boolean processScroll(int i, float f, float f2);
+        void processScroll(int i, float f, float f2);
 
-        void setScale(int i, float f);
+        void setScale(float f, int i);
     }
 
-    public PanningScalingHandler(Context context, float f, float f2, boolean z, MagnificationDelegate magnificationDelegate) {
+    public PanningScalingHandler(Context context, float f, WindowMagnificationGestureHandler.AnonymousClass1 anonymousClass1) {
         this.mDisplayId = context.getDisplayId();
         this.mMaxScale = f;
-        this.mMinScale = f2;
-        this.mBlockScroll = z;
-        ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(context, this, Handler.getMain());
+        Flags.pinchZoomZeroMinSpan();
+        ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(context, ViewConfiguration.get(context).getScaledTouchSlop() * 2, 0, Handler.getMain(), this);
         this.mScaleGestureDetector = scaleGestureDetector;
         this.mScrollGestureDetector = new GestureDetector(context, this, Handler.getMain());
         scaleGestureDetector.setQuickScaleEnabled(false);
-        this.mMagnificationDelegate = magnificationDelegate;
+        this.mMagnificationDelegate = anonymousClass1;
         TypedValue typedValue = new TypedValue();
-        context.getResources().getValue(R.dimen.date_picker_year_label_size, typedValue, false);
+        context.getResources().getValue(R.dimen.conversation_content_start, typedValue, false);
         this.mScalingThreshold = typedValue.getFloat();
-    }
-
-    public void setEnabled(boolean z) {
-        clear();
-        this.mEnable = z;
-    }
-
-    public void onTouchEvent(MotionEvent motionEvent) {
-        this.mScaleGestureDetector.onTouchEvent(motionEvent);
-        this.mScrollGestureDetector.onTouchEvent(motionEvent);
-    }
-
-    @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnGestureListener
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
-        if (!this.mEnable) {
-            return true;
-        }
-        if (this.mBlockScroll && this.mScaling) {
-            return true;
-        }
-        return this.mMagnificationDelegate.processScroll(this.mDisplayId, f, f2);
     }
 
     /* JADX WARN: Code restructure failed: missing block: B:28:0x0057, code lost:
@@ -79,7 +61,7 @@ public class PanningScalingHandler extends GestureDetector.SimpleOnGestureListen
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public boolean onScale(android.view.ScaleGestureDetector r7) {
+    public final boolean onScale(android.view.ScaleGestureDetector r7) {
         /*
             r6 = this;
             boolean r0 = com.android.server.accessibility.magnification.PanningScalingHandler.DEBUG
@@ -135,41 +117,44 @@ public class PanningScalingHandler extends GestureDetector.SimpleOnGestureListen
             if (r2 >= 0) goto L5a
             goto L4d
         L5a:
-            if (r0 == 0) goto L76
+            if (r0 == 0) goto L73
             java.lang.StringBuilder r0 = new java.lang.StringBuilder
-            r0.<init>()
             java.lang.String r2 = "Scaled content to: "
-            r0.append(r2)
+            r0.<init>(r2)
             r0.append(r7)
             java.lang.String r2 = "x"
             r0.append(r2)
             java.lang.String r0 = r0.toString()
             android.util.Slog.i(r1, r0)
-        L76:
+        L73:
             com.android.server.accessibility.magnification.PanningScalingHandler$MagnificationDelegate r0 = r6.mMagnificationDelegate
             int r6 = r6.mDisplayId
-            r0.setScale(r6, r7)
+            r0.setScale(r7, r6)
             return r3
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.accessibility.magnification.PanningScalingHandler.onScale(android.view.ScaleGestureDetector):boolean");
     }
 
     @Override // android.view.ScaleGestureDetector.OnScaleGestureListener
-    public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+    public final boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
         return this.mEnable;
     }
 
     @Override // android.view.ScaleGestureDetector.OnScaleGestureListener
-    public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
-        clear();
-    }
-
-    public void clear() {
+    public final void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
         this.mInitialScaleFactor = -1.0f;
         this.mScaling = false;
     }
 
-    public String toString() {
+    @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnGestureListener
+    public final boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
+        if (this.mEnable && (!this.mBlockScroll || !this.mScaling)) {
+            this.mMagnificationDelegate.processScroll(this.mDisplayId, f, f2);
+        }
+        return true;
+    }
+
+    public final String toString() {
         return "PanningScalingHandler{mInitialScaleFactor=" + this.mInitialScaleFactor + ", mScaling=" + this.mScaling + '}';
     }
 }

@@ -10,23 +10,23 @@ import android.graphics.drawable.Drawable;
 import android.view.Display;
 import android.view.Surface;
 import android.view.SurfaceControl;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 
-/* loaded from: classes3.dex */
-public class EmulatorDisplayOverlay {
-    public final BLASTBufferQueue mBlastBufferQueue;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class EmulatorDisplayOverlay {
     public boolean mDrawNeeded;
     public int mLastDH;
     public int mLastDW;
     public final Drawable mOverlay;
     public int mRotation;
-    public Point mScreenSize;
+    public final Point mScreenSize;
     public final Surface mSurface;
     public final SurfaceControl mSurfaceControl;
     public boolean mVisible;
 
     public EmulatorDisplayOverlay(Context context, DisplayContent displayContent, int i, SurfaceControl.Transaction transaction) {
-        Display display = displayContent.getDisplay();
+        Display display = displayContent.mDisplay;
         Point point = new Point();
         this.mScreenSize = point;
         display.getSize(point);
@@ -34,19 +34,17 @@ public class EmulatorDisplayOverlay {
         try {
             surfaceControl = displayContent.makeOverlay().setName("EmulatorDisplayOverlay").setBLASTLayer().setFormat(-3).setCallsite("EmulatorDisplayOverlay").build();
             transaction.setLayer(surfaceControl, i);
-            transaction.setPosition(surfaceControl, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
+            transaction.setPosition(surfaceControl, FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE);
             transaction.show(surfaceControl);
-            InputMonitor.setTrustedOverlayInputInfo(surfaceControl, transaction, displayContent.getDisplayId(), "EmulatorDisplayOverlay");
+            InputMonitor.setTrustedOverlayInputInfo(surfaceControl, transaction, displayContent.mDisplayId, "EmulatorDisplayOverlay");
         } catch (Surface.OutOfResourcesException unused) {
         }
         SurfaceControl surfaceControl2 = surfaceControl;
         this.mSurfaceControl = surfaceControl2;
         this.mDrawNeeded = true;
-        this.mOverlay = context.getDrawable(R.drawable.floating_popup_background_dark);
+        this.mOverlay = context.getDrawable(R.drawable.fastscroll_thumb_material);
         Point point2 = this.mScreenSize;
-        BLASTBufferQueue bLASTBufferQueue = new BLASTBufferQueue("EmulatorDisplayOverlay", surfaceControl2, point2.x, point2.y, 1);
-        this.mBlastBufferQueue = bLASTBufferQueue;
-        this.mSurface = bLASTBufferQueue.createSurface();
+        this.mSurface = new BLASTBufferQueue("EmulatorDisplayOverlay", surfaceControl2, point2.x, point2.y, 1).createSurface();
     }
 
     public final void drawIfNeeded(SurfaceControl.Transaction transaction) {
@@ -61,36 +59,12 @@ public class EmulatorDisplayOverlay {
                 return;
             }
             canvas.drawColor(0, PorterDuff.Mode.SRC);
-            transaction.setPosition(this.mSurfaceControl, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
+            transaction.setPosition(this.mSurfaceControl, FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE);
             Point point = this.mScreenSize;
             int max = Math.max(point.x, point.y);
             this.mOverlay.setBounds(0, 0, max, max);
             this.mOverlay.draw(canvas);
             this.mSurface.unlockCanvasAndPost(canvas);
         }
-    }
-
-    public void setVisibility(boolean z, SurfaceControl.Transaction transaction) {
-        if (this.mSurfaceControl == null) {
-            return;
-        }
-        this.mVisible = z;
-        drawIfNeeded(transaction);
-        if (z) {
-            transaction.show(this.mSurfaceControl);
-        } else {
-            transaction.hide(this.mSurfaceControl);
-        }
-    }
-
-    public void positionSurface(int i, int i2, int i3, SurfaceControl.Transaction transaction) {
-        if (this.mLastDW == i && this.mLastDH == i2 && this.mRotation == i3) {
-            return;
-        }
-        this.mLastDW = i;
-        this.mLastDH = i2;
-        this.mDrawNeeded = true;
-        this.mRotation = i3;
-        drawIfNeeded(transaction);
     }
 }

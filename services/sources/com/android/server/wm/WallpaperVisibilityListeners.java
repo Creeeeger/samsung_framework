@@ -1,46 +1,9 @@
 package com.android.server.wm;
 
-import android.os.RemoteCallbackList;
-import android.os.RemoteException;
 import android.util.SparseArray;
-import android.view.IWallpaperVisibilityListener;
 
-/* loaded from: classes3.dex */
-public class WallpaperVisibilityListeners {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WallpaperVisibilityListeners {
     public final SparseArray mDisplayListeners = new SparseArray();
-
-    public void registerWallpaperVisibilityListener(IWallpaperVisibilityListener iWallpaperVisibilityListener, int i) {
-        RemoteCallbackList remoteCallbackList = (RemoteCallbackList) this.mDisplayListeners.get(i);
-        if (remoteCallbackList == null) {
-            remoteCallbackList = new RemoteCallbackList();
-            this.mDisplayListeners.append(i, remoteCallbackList);
-        }
-        remoteCallbackList.register(iWallpaperVisibilityListener);
-    }
-
-    public void unregisterWallpaperVisibilityListener(IWallpaperVisibilityListener iWallpaperVisibilityListener, int i) {
-        RemoteCallbackList remoteCallbackList = (RemoteCallbackList) this.mDisplayListeners.get(i);
-        if (remoteCallbackList == null) {
-            return;
-        }
-        remoteCallbackList.unregister(iWallpaperVisibilityListener);
-    }
-
-    public void notifyWallpaperVisibilityChanged(DisplayContent displayContent) {
-        int displayId = displayContent.getDisplayId();
-        boolean isWallpaperVisible = displayContent.mWallpaperController.isWallpaperVisible();
-        RemoteCallbackList remoteCallbackList = (RemoteCallbackList) this.mDisplayListeners.get(displayId);
-        if (remoteCallbackList == null) {
-            return;
-        }
-        int beginBroadcast = remoteCallbackList.beginBroadcast();
-        while (beginBroadcast > 0) {
-            beginBroadcast--;
-            try {
-                remoteCallbackList.getBroadcastItem(beginBroadcast).onWallpaperVisibilityChanged(isWallpaperVisible, displayId);
-            } catch (RemoteException unused) {
-            }
-        }
-        remoteCallbackList.finishBroadcast();
-    }
 }

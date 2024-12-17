@@ -1,8 +1,6 @@
 package com.android.server.am;
 
-import android.app.ActivityOptions;
 import android.app.BackgroundStartPrivileges;
-import android.app.IApplicationThread;
 import android.app.compat.CompatChanges;
 import android.content.IIntentReceiver;
 import android.content.IIntentSender;
@@ -15,17 +13,20 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.TimeUtils;
-import com.android.internal.os.IResultReceiver;
+import com.android.internal.util.FrameworkStatsLog;
 import com.android.internal.util.function.pooled.PooledLambda;
-import com.android.internal.util.jobs.XmlUtils;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.wm.ActivityTaskManagerService;
 import com.android.server.wm.SafeActivityOptions;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class PendingIntentRecord extends IIntentSender.Stub {
+    public static final /* synthetic */ int $r8$clinit = 0;
     public final PendingIntentController controller;
     public final Key key;
     public String lastTag;
@@ -36,14 +37,15 @@ public final class PendingIntentRecord extends IIntentSender.Stub {
     public final int uid;
     public boolean sent = false;
     public boolean canceled = false;
+    public int cancelReason = 0;
     public int canceledFromUID = -1;
     public int canceledFromPID = -1;
-    public ArraySet mAllowBgActivityStartsForActivitySender = new ArraySet();
-    public ArraySet mAllowBgActivityStartsForBroadcastSender = new ArraySet();
-    public ArraySet mAllowBgActivityStartsForServiceSender = new ArraySet();
+    public final ArraySet mAllowBgActivityStartsForActivitySender = new ArraySet();
+    public final ArraySet mAllowBgActivityStartsForBroadcastSender = new ArraySet();
+    public final ArraySet mAllowBgActivityStartsForServiceSender = new ArraySet();
     public final WeakReference ref = new WeakReference(this);
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Key {
         public final IBinder activity;
         public Intent[] allIntents;
@@ -76,14 +78,14 @@ public final class PendingIntentRecord extends IIntentSender.Stub {
             this.flags = i3;
             this.options = safeActivityOptions;
             this.userId = i4;
-            int i5 = ((((851 + i3) * 37) + i2) * 37) + i4;
+            int i5 = ((((FrameworkStatsLog.VPN_CONNECTION_REPORTED + i3) * 37) + i2) * 37) + i4;
             i5 = str3 != null ? (i5 * 37) + str3.hashCode() : i5;
             i5 = iBinder != null ? (i5 * 37) + iBinder.hashCode() : i5;
             i5 = intent != null ? (i5 * 37) + intent.filterHashCode() : i5;
             this.hashCode = ((((str4 != null ? (i5 * 37) + str4.hashCode() : i5) * 37) + (str != null ? str.hashCode() : 0)) * 37) + i;
         }
 
-        public boolean equals(Object obj) {
+        public final boolean equals(Object obj) {
             if (obj == null) {
                 return false;
             }
@@ -112,58 +114,44 @@ public final class PendingIntentRecord extends IIntentSender.Stub {
             }
         }
 
-        public int hashCode() {
+        public final int hashCode() {
             return this.hashCode;
         }
 
-        public String toString() {
-            return toSecureString(false);
-        }
-
-        public String toSecureString(boolean z) {
-            String str;
-            StringBuilder sb = new StringBuilder();
-            sb.append("Key{");
+        public final String toSecureString(boolean z) {
+            StringBuilder sb = new StringBuilder("Key{");
             sb.append(typeName());
             sb.append(" pkg=");
             sb.append(this.packageName);
-            if (this.featureId != null) {
-                str = "/" + this.featureId;
-            } else {
-                str = "";
-            }
-            sb.append(str);
+            String str = this.featureId;
+            sb.append(str != null ? "/".concat(str) : "");
             sb.append(" intent=");
             Intent intent = this.requestIntent;
             sb.append(intent != null ? intent.toShortString(z, true, false, false) : "<null>");
             sb.append(" flags=0x");
-            sb.append(Integer.toHexString(this.flags));
-            sb.append(" u=");
+            BatteryService$$ExternalSyntheticOutline0.m(this.flags, sb, " u=");
             sb.append(this.userId);
             sb.append("} requestCode=");
             sb.append(this.requestCode);
             return sb.toString();
         }
 
-        public String typeName() {
+        public final String toString() {
+            return toSecureString(false);
+        }
+
+        public final String typeName() {
             int i = this.type;
             return i != 1 ? i != 2 ? i != 3 ? i != 4 ? i != 5 ? Integer.toString(i) : "startForegroundService" : "startService" : "activityResult" : "startActivity" : "broadcastIntent";
         }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class TempAllowListDuration {
         public long duration;
         public String reason;
         public int reasonCode;
         public int type;
-
-        public TempAllowListDuration(long j, int i, int i2, String str) {
-            this.duration = j;
-            this.type = i;
-            this.reasonCode = i2;
-            this.reason = str;
-        }
     }
 
     public PendingIntentRecord(PendingIntentController pendingIntentController, Key key, int i) {
@@ -172,175 +160,18 @@ public final class PendingIntentRecord extends IIntentSender.Stub {
         this.uid = i;
     }
 
-    public void setAllowlistDurationLocked(IBinder iBinder, long j, int i, int i2, String str) {
-        if (j > 0) {
-            if (this.mAllowlistDuration == null) {
-                this.mAllowlistDuration = new ArrayMap();
-            }
-            this.mAllowlistDuration.put(iBinder, new TempAllowListDuration(j, i, i2, str));
-        } else {
-            ArrayMap arrayMap = this.mAllowlistDuration;
-            if (arrayMap != null) {
-                arrayMap.remove(iBinder);
-                if (this.mAllowlistDuration.size() <= 0) {
-                    this.mAllowlistDuration = null;
-                }
-            }
-        }
-        this.stringName = null;
-    }
-
-    public void setAllowBgActivityStarts(IBinder iBinder, int i) {
-        if (iBinder == null) {
-            return;
-        }
-        if ((i & 1) != 0) {
-            this.mAllowBgActivityStartsForActivitySender.add(iBinder);
-        }
-        if ((i & 2) != 0) {
-            this.mAllowBgActivityStartsForBroadcastSender.add(iBinder);
-        }
-        if ((i & 4) != 0) {
-            this.mAllowBgActivityStartsForServiceSender.add(iBinder);
-        }
-    }
-
-    public void clearAllowBgActivityStarts(IBinder iBinder) {
-        if (iBinder == null) {
-            return;
-        }
-        this.mAllowBgActivityStartsForActivitySender.remove(iBinder);
-        this.mAllowBgActivityStartsForBroadcastSender.remove(iBinder);
-        this.mAllowBgActivityStartsForServiceSender.remove(iBinder);
-    }
-
-    public void registerCancelListenerLocked(IResultReceiver iResultReceiver) {
-        if (this.mCancelCallbacks == null) {
-            this.mCancelCallbacks = new RemoteCallbackList();
-        }
-        this.mCancelCallbacks.register(iResultReceiver);
-    }
-
-    public void unregisterCancelListenerLocked(IResultReceiver iResultReceiver) {
-        RemoteCallbackList remoteCallbackList = this.mCancelCallbacks;
-        if (remoteCallbackList == null) {
-            return;
-        }
-        remoteCallbackList.unregister(iResultReceiver);
-        if (this.mCancelCallbacks.getRegisteredCallbackCount() <= 0) {
-            this.mCancelCallbacks = null;
-        }
-    }
-
-    public RemoteCallbackList detachCancelListenersLocked() {
-        RemoteCallbackList remoteCallbackList = this.mCancelCallbacks;
-        this.mCancelCallbacks = null;
-        return remoteCallbackList;
-    }
-
-    public void send(int i, Intent intent, String str, IBinder iBinder, IIntentReceiver iIntentReceiver, String str2, Bundle bundle) {
-        sendInner(null, i, intent, str, iBinder, iIntentReceiver, str2, null, null, 0, 0, 0, bundle);
-    }
-
-    public static boolean isPendingIntentBalAllowedByPermission(ActivityOptions activityOptions) {
-        if (activityOptions == null) {
-            return false;
-        }
-        return activityOptions.isPendingIntentBackgroundActivityLaunchAllowedByPermission();
-    }
-
-    public static BackgroundStartPrivileges getBackgroundStartPrivilegesAllowedByCaller(ActivityOptions activityOptions, int i, String str) {
-        if (activityOptions == null) {
-            return getDefaultBackgroundStartPrivileges(i, str);
-        }
-        return getBackgroundStartPrivilegesAllowedByCaller(activityOptions.toBundle(), i, str);
-    }
-
-    public static BackgroundStartPrivileges getBackgroundStartPrivilegesAllowedByCaller(Bundle bundle, int i, String str) {
-        if (bundle == null || !bundle.containsKey("android.pendingIntent.backgroundActivityAllowed")) {
-            return getDefaultBackgroundStartPrivileges(i, str);
-        }
-        if (bundle.getBoolean("android.pendingIntent.backgroundActivityAllowed")) {
-            return BackgroundStartPrivileges.ALLOW_BAL;
-        }
-        return BackgroundStartPrivileges.NONE;
+    public static String cancelReasonToString(int i) {
+        return i != 0 ? i != 1 ? i != 2 ? i != 4 ? i != 8 ? i != 16 ? i != 32 ? i != 64 ? "UNKNOWN" : "ONE_SHOT_SENT" : "SUPERSEDED" : "HOSTING_ACTIVITY_DESTROYED" : "OWNER_CANCELED" : "OWNER_FORCE_STOPPED" : "OWNER_UNINSTALLED" : "USER_STOPPED" : "NULL";
     }
 
     public static BackgroundStartPrivileges getDefaultBackgroundStartPrivileges(int i, String str) {
-        boolean isChangeEnabled;
-        if (UserHandle.getAppId(i) == 1000) {
-            return BackgroundStartPrivileges.ALLOW_BAL;
-        }
-        if (str != null) {
-            isChangeEnabled = CompatChanges.isChangeEnabled(244637991L, str, UserHandle.getUserHandleForUid(i));
-        } else {
-            isChangeEnabled = CompatChanges.isChangeEnabled(244637991L, i);
-        }
-        if (isChangeEnabled) {
+        if (i == 0 || i == 1000) {
             return BackgroundStartPrivileges.ALLOW_FGS;
         }
-        return BackgroundStartPrivileges.ALLOW_BAL;
+        return str != null ? CompatChanges.isChangeEnabled(244637991L, str, UserHandle.getUserHandleForUid(i)) : CompatChanges.isChangeEnabled(244637991L, i) ? BackgroundStartPrivileges.ALLOW_FGS : BackgroundStartPrivileges.ALLOW_BAL;
     }
 
-    public int sendInner(IApplicationThread iApplicationThread, int i, Intent intent, String str, IBinder iBinder, IIntentReceiver iIntentReceiver, String str2, IBinder iBinder2, String str3, int i2, int i3, int i4, Bundle bundle) {
-        return sendInner(iApplicationThread, i, intent, str, iBinder, iIntentReceiver, str2, iBinder2, str3, i2, i3, i4, bundle, -1, -1);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:137:0x0509  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int sendInner(android.app.IApplicationThread r39, int r40, android.content.Intent r41, java.lang.String r42, android.os.IBinder r43, android.content.IIntentReceiver r44, java.lang.String r45, android.os.IBinder r46, java.lang.String r47, int r48, int r49, int r50, android.os.Bundle r51, int r52, int r53) {
-        /*
-            Method dump skipped, instructions count: 1340
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.PendingIntentRecord.sendInner(android.app.IApplicationThread, int, android.content.Intent, java.lang.String, android.os.IBinder, android.content.IIntentReceiver, java.lang.String, android.os.IBinder, java.lang.String, int, int, int, android.os.Bundle, int, int):int");
-    }
-
-    public final BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(IBinder iBinder) {
-        if (this.mAllowBgActivityStartsForActivitySender.contains(iBinder)) {
-            return BackgroundStartPrivileges.allowBackgroundActivityStarts(iBinder);
-        }
-        return BackgroundStartPrivileges.NONE;
-    }
-
-    public final BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(ArraySet arraySet, IBinder iBinder, Bundle bundle, int i) {
-        if (arraySet.contains(iBinder)) {
-            return BackgroundStartPrivileges.allowBackgroundActivityStarts(iBinder);
-        }
-        if (this.uid != i && this.controller.mAtmInternal.isUidForeground(i)) {
-            return getBackgroundStartPrivilegesAllowedByCaller(bundle, i, (String) null);
-        }
-        return BackgroundStartPrivileges.NONE;
-    }
-
-    public void finalize() {
-        try {
-            if (!this.canceled) {
-                this.controller.mH.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.server.am.PendingIntentRecord$$ExternalSyntheticLambda0
-                    @Override // java.util.function.Consumer
-                    public final void accept(Object obj) {
-                        ((PendingIntentRecord) obj).completeFinalize();
-                    }
-                }, this));
-            }
-        } finally {
-            super/*java.lang.Object*/.finalize();
-        }
-    }
-
-    public final void completeFinalize() {
-        synchronized (this.controller.mLock) {
-            if (((WeakReference) this.controller.mIntentSenderRecords.get(this.key)) == this.ref) {
-                this.controller.mIntentSenderRecords.remove(this.key);
-                this.controller.decrementUidStatLocked(this);
-            }
-        }
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
+    public final void dump(PrintWriter printWriter, String str) {
         printWriter.print(str);
         printWriter.print("uid=");
         printWriter.print(this.uid);
@@ -378,13 +209,13 @@ public final class PendingIntentRecord extends IIntentSender.Stub {
             printWriter.print("sent=");
             printWriter.print(this.sent);
             printWriter.print(" canceled=");
-            printWriter.println(this.canceled);
+            printWriter.print(this.canceled);
+            printWriter.print(" cancelReason=");
+            printWriter.println(cancelReasonToString(this.cancelReason));
             if (this.canceledFromUID != -1 || this.canceledFromPID != -1) {
                 printWriter.print(str);
                 printWriter.print(" cancel uid=");
-                printWriter.println(this.canceledFromUID);
-                printWriter.print(str);
-                printWriter.print(" cancel pid=");
+                BroadcastStats$$ExternalSyntheticOutline0.m(this.canceledFromUID, printWriter, str, " cancel pid=");
                 printWriter.println(this.canceledFromPID);
             }
         }
@@ -397,7 +228,7 @@ public final class PendingIntentRecord extends IIntentSender.Stub {
                 }
                 TempAllowListDuration tempAllowListDuration = (TempAllowListDuration) this.mAllowlistDuration.valueAt(i);
                 printWriter.print(Integer.toHexString(System.identityHashCode(this.mAllowlistDuration.keyAt(i))));
-                printWriter.print(XmlUtils.STRING_ARRAY_SEPARATOR);
+                printWriter.print(":");
                 TimeUtils.formatDuration(tempAllowListDuration.duration, printWriter);
                 printWriter.print("/");
                 printWriter.print(tempAllowListDuration.type);
@@ -421,48 +252,109 @@ public final class PendingIntentRecord extends IIntentSender.Stub {
         }
     }
 
-    public String toString() {
+    public final void finalize() {
+        try {
+            if (!this.canceled) {
+                this.controller.mH.sendMessage(PooledLambda.obtainMessage(new PendingIntentRecord$$ExternalSyntheticLambda0(), this));
+            }
+        } finally {
+            super/*java.lang.Object*/.finalize();
+        }
+    }
+
+    public final BackgroundStartPrivileges getBackgroundStartPrivilegesForActivitySender(ArraySet arraySet, IBinder iBinder, Bundle bundle, int i) {
+        int i2;
+        if (arraySet.contains(iBinder)) {
+            return BackgroundStartPrivileges.allowBackgroundActivityStarts(iBinder);
+        }
+        if (this.uid == i || !ActivityTaskManagerService.this.hasActiveVisibleWindow(i)) {
+            return BackgroundStartPrivileges.NONE;
+        }
+        if (bundle != null && (i2 = bundle.getInt("android.pendingIntent.backgroundActivityAllowed", 0)) != 0) {
+            return i2 != 2 ? BackgroundStartPrivileges.ALLOW_BAL : BackgroundStartPrivileges.NONE;
+        }
+        return getDefaultBackgroundStartPrivileges(i, null);
+    }
+
+    public final void send(int i, Intent intent, String str, IBinder iBinder, IIntentReceiver iIntentReceiver, String str2, Bundle bundle) {
+        sendInner(null, i, intent, str, iBinder, iIntentReceiver, str2, null, null, 0, 0, 0, bundle, -1, -1);
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:141:0x05a3  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int sendInner(android.app.IApplicationThread r32, int r33, android.content.Intent r34, java.lang.String r35, android.os.IBinder r36, android.content.IIntentReceiver r37, java.lang.String r38, android.os.IBinder r39, java.lang.String r40, int r41, int r42, int r43, android.os.Bundle r44, int r45, int r46) {
+        /*
+            Method dump skipped, instructions count: 1492
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.PendingIntentRecord.sendInner(android.app.IApplicationThread, int, android.content.Intent, java.lang.String, android.os.IBinder, android.content.IIntentReceiver, java.lang.String, android.os.IBinder, java.lang.String, int, int, int, android.os.Bundle, int, int):int");
+    }
+
+    public final void setAllowlistDurationLocked(IBinder iBinder, int i, int i2, String str, long j) {
+        if (j > 0) {
+            if (this.mAllowlistDuration == null) {
+                this.mAllowlistDuration = new ArrayMap();
+            }
+            ArrayMap arrayMap = this.mAllowlistDuration;
+            TempAllowListDuration tempAllowListDuration = new TempAllowListDuration();
+            tempAllowListDuration.duration = j;
+            tempAllowListDuration.type = i;
+            tempAllowListDuration.reasonCode = i2;
+            tempAllowListDuration.reason = str;
+            arrayMap.put(iBinder, tempAllowListDuration);
+        } else {
+            ArrayMap arrayMap2 = this.mAllowlistDuration;
+            if (arrayMap2 != null) {
+                arrayMap2.remove(iBinder);
+                if (this.mAllowlistDuration.size() <= 0) {
+                    this.mAllowlistDuration = null;
+                }
+            }
+        }
+        this.stringName = null;
+    }
+
+    public final String toString() {
         String str = this.stringName;
         if (str != null) {
             return str;
         }
-        StringBuilder sb = new StringBuilder(128);
-        sb.append("PendingIntentRecord{");
-        sb.append(Integer.toHexString(System.identityHashCode(this)));
-        sb.append(' ');
-        sb.append(this.key.packageName);
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(128, "PendingIntentRecord{");
+        m.append(Integer.toHexString(System.identityHashCode(this)));
+        m.append(' ');
+        m.append(this.key.packageName);
         if (this.key.featureId != null) {
-            sb.append('/');
-            sb.append(this.key.featureId);
+            m.append('/');
+            m.append(this.key.featureId);
         }
-        sb.append(' ');
-        sb.append(this.key.typeName());
+        m.append(' ');
+        m.append(this.key.typeName());
         if (this.mAllowlistDuration != null) {
-            sb.append(" (allowlist: ");
+            m.append(" (allowlist: ");
             for (int i = 0; i < this.mAllowlistDuration.size(); i++) {
                 if (i != 0) {
-                    sb.append(",");
+                    m.append(",");
                 }
                 TempAllowListDuration tempAllowListDuration = (TempAllowListDuration) this.mAllowlistDuration.valueAt(i);
-                sb.append(Integer.toHexString(System.identityHashCode(this.mAllowlistDuration.keyAt(i))));
-                sb.append(XmlUtils.STRING_ARRAY_SEPARATOR);
-                TimeUtils.formatDuration(tempAllowListDuration.duration, sb);
-                sb.append("/");
-                sb.append(tempAllowListDuration.type);
-                sb.append("/");
-                sb.append(PowerWhitelistManager.reasonCodeToString(tempAllowListDuration.reasonCode));
-                sb.append("/");
-                sb.append(tempAllowListDuration.reason);
+                m.append(Integer.toHexString(System.identityHashCode(this.mAllowlistDuration.keyAt(i))));
+                m.append(":");
+                TimeUtils.formatDuration(tempAllowListDuration.duration, m);
+                m.append("/");
+                m.append(tempAllowListDuration.type);
+                m.append("/");
+                m.append(PowerWhitelistManager.reasonCodeToString(tempAllowListDuration.reasonCode));
+                m.append("/");
+                m.append(tempAllowListDuration.reason);
             }
-            sb.append(")");
+            m.append(")");
         }
-        sb.append('}');
-        String sb2 = sb.toString();
-        this.stringName = sb2;
-        return sb2;
-    }
-
-    public int getUserId() {
-        return this.key.userId;
+        m.append('}');
+        String sb = m.toString();
+        this.stringName = sb;
+        return sb;
     }
 }

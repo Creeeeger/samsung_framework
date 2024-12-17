@@ -8,14 +8,12 @@ import android.util.Slog;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class PerformPrebakedVibratorStep extends AbstractVibratorStep {
-    public PerformPrebakedVibratorStep(VibrationStepConductor vibrationStepConductor, long j, VibratorController vibratorController, VibrationEffect.Composed composed, int i, long j2) {
-        super(vibrationStepConductor, Math.max(j, j2), vibratorController, composed, i, j2);
-    }
-
     @Override // com.android.server.vibrator.Step
-    public List play() {
+    public final List play() {
+        long perform;
         Trace.traceBegin(8388608L, "PerformPrebakedVibratorStep");
         try {
             PrebakedSegment prebakedSegment = (VibrationEffectSegment) this.effect.getSegments().get(this.segmentIndex);
@@ -24,17 +22,37 @@ public final class PerformPrebakedVibratorStep extends AbstractVibratorStep {
                 return nextSteps(1);
             }
             PrebakedSegment prebakedSegment2 = prebakedSegment;
-            VibrationEffect fallback = getVibration().getFallback(prebakedSegment2.getEffectId());
-            long on = this.controller.on(prebakedSegment2, getVibration().id);
-            handleVibratorOnResult(on);
-            getVibration().stats.reportPerformEffect(on, prebakedSegment2);
-            if (on == 0 && prebakedSegment2.shouldFallback() && (fallback instanceof VibrationEffect.Composed)) {
-                AbstractVibratorStep nextVibrateStep = this.conductor.nextVibrateStep(this.startTime, this.controller, replaceCurrentSegment((VibrationEffect.Composed) fallback), this.segmentIndex, this.mPendingVibratorOffDeadline);
-                List play = nextVibrateStep.play();
-                handleVibratorOnResult(nextVibrateStep.getVibratorOnDuration());
-                return play;
+            Slog.d("VibrationThread", "Perform " + VibrationEffect.effectIdToString(prebakedSegment2.getEffectId()) + " on vibrator " + this.controller.mVibratorInfo.getId());
+            VibrationEffect vibrationEffect = (VibrationEffect) this.conductor.mVibration.mFallbacks.get(prebakedSegment2.getEffectId());
+            VibratorController vibratorController = this.controller;
+            long j = this.conductor.mVibration.id;
+            synchronized (vibratorController.mLock) {
+                try {
+                    perform = vibratorController.mNativeWrapper.perform(prebakedSegment2.getEffectId(), prebakedSegment2.getEffectStrength(), j);
+                    if (perform > 0) {
+                        vibratorController.mCurrentAmplitude = -1.0f;
+                        vibratorController.notifyListenerOnVibrating(true);
+                    }
+                } finally {
+                }
             }
-            return nextSteps(1);
+            handleVibratorOnResult(perform);
+            VibrationStats vibrationStats = this.conductor.mVibration.stats;
+            vibrationStats.mVibratorPerformCount++;
+            if (perform > 0) {
+                vibrationStats.mVibratorEffectsUsed.put(prebakedSegment2.getEffectId(), true);
+                vibrationStats.mVibratorOnTotalDurationMillis += (int) perform;
+            } else {
+                vibrationStats.mVibratorEffectsUsed.put(prebakedSegment2.getEffectId(), false);
+            }
+            if (perform != 0 || !prebakedSegment2.shouldFallback() || !(vibrationEffect instanceof VibrationEffect.Composed)) {
+                return nextSteps(1);
+            }
+            Slog.d("VibrationThread", "Playing fallback for effect " + VibrationEffect.effectIdToString(prebakedSegment2.getEffectId()));
+            AbstractVibratorStep nextVibrateStep = this.conductor.nextVibrateStep(this.startTime, this.controller, replaceCurrentSegment((VibrationEffect.Composed) vibrationEffect), this.segmentIndex, this.mPendingVibratorOffDeadline);
+            List play = nextVibrateStep.play();
+            handleVibratorOnResult(nextVibrateStep.mVibratorOnResult);
+            return play;
         } finally {
             Trace.traceEnd(8388608L);
         }

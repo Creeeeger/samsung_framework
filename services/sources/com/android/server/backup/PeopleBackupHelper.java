@@ -1,13 +1,13 @@
 package com.android.server.backup;
 
 import android.app.backup.BlobBackupHelper;
-import android.util.Slog;
+import com.android.server.HeimdAllFsService$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.people.PeopleServiceInternal;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class PeopleBackupHelper extends BlobBackupHelper {
-    public static final String TAG = PeopleBackupHelper.class.getSimpleName();
+public final class PeopleBackupHelper extends BlobBackupHelper {
     public final int mUserId;
 
     public PeopleBackupHelper(int i) {
@@ -15,19 +15,19 @@ public class PeopleBackupHelper extends BlobBackupHelper {
         this.mUserId = i;
     }
 
-    public byte[] getBackupPayload(String str) {
-        if (!"people_conversation_infos".equals(str)) {
-            Slog.w(TAG, "Unexpected backup key " + str);
-            return new byte[0];
+    public final void applyRestoredPayload(String str, byte[] bArr) {
+        if ("people_conversation_infos".equals(str)) {
+            ((PeopleServiceInternal) LocalServices.getService(PeopleServiceInternal.class)).restore(this.mUserId, bArr);
+        } else {
+            HeimdAllFsService$$ExternalSyntheticOutline0.m("Unexpected restore key ", str, "PeopleBackupHelper");
         }
-        return ((PeopleServiceInternal) LocalServices.getService(PeopleServiceInternal.class)).getBackupPayload(this.mUserId);
     }
 
-    public void applyRestoredPayload(String str, byte[] bArr) {
-        if (!"people_conversation_infos".equals(str)) {
-            Slog.w(TAG, "Unexpected restore key " + str);
-            return;
+    public final byte[] getBackupPayload(String str) {
+        if ("people_conversation_infos".equals(str)) {
+            return ((PeopleServiceInternal) LocalServices.getService(PeopleServiceInternal.class)).getBackupPayload(this.mUserId);
         }
-        ((PeopleServiceInternal) LocalServices.getService(PeopleServiceInternal.class)).restore(this.mUserId, bArr);
+        HeimdAllFsService$$ExternalSyntheticOutline0.m("Unexpected backup key ", str, "PeopleBackupHelper");
+        return new byte[0];
     }
 }

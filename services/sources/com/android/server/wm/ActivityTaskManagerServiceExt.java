@@ -1,127 +1,171 @@
 package com.android.server.wm;
 
-import android.R;
 import android.app.ActivityOptions;
-import android.app.role.RoleManager;
+import android.app.ActivityTaskManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
-import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Binder;
-import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
-import android.os.IInstalld;
 import android.os.Process;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Slog;
+import android.util.SparseArray;
 import com.android.internal.app.AppLockPolicy;
 import com.android.internal.app.SmRccPolicy;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.FileDescriptorWatcher$FileDescriptorLeakWatcher$$ExternalSyntheticOutline0;
+import com.android.server.HeapdumpWatcher$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler$$ExternalSyntheticOutline0;
+import com.android.server.clipboard.ClipboardService;
 import com.android.server.wm.ActivityRecord;
+import com.android.server.wm.ActivityTaskManagerService;
+import com.android.server.wm.CompatChangeableAppsCache;
 import com.samsung.android.app.SemDualAppManager;
+import com.samsung.android.core.CompatChangeableApps;
 import com.samsung.android.desktopmode.DesktopModeFeature;
 import com.samsung.android.knox.SemPersonaManager;
+import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import com.samsung.android.rune.CoreRune;
+import com.samsung.android.server.corescpm.ScpmController;
+import com.samsung.android.server.corescpm.ScpmControllerImpl;
+import com.samsung.android.server.corestate.CoreStateObserverController;
+import com.samsung.android.server.corestate.CoreStateSystemFeatureObserver;
 import com.samsung.android.server.packagefeature.PackageFeature;
+import com.samsung.android.server.packagefeature.PackageFeatureCallback;
 import com.samsung.android.server.packagefeature.PackageFeatureData;
+import com.samsung.android.server.packagefeature.PackageFeatureUserChange;
+import com.samsung.android.server.packagefeature.core.PackageFeatureController;
+import com.samsung.android.server.packagefeature.core.PackageFeatureController$$ExternalSyntheticLambda0;
+import com.samsung.android.server.packagefeature.core.PackageFeatureManagerService;
+import com.samsung.android.server.packagefeature.core.PackageFeatureManagerService$$ExternalSyntheticLambda1;
+import com.samsung.android.server.packagefeature.core.PackageFeatureSettings;
+import com.samsung.android.server.packagefeature.core.PackageFeatures;
 import com.samsung.android.server.packagefeature.util.PackageSpecialManagementList;
+import com.samsung.android.server.util.CoreLogger;
 import com.samsung.android.server.util.SafetySystemService;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class ActivityTaskManagerServiceExt {
-    public final String PKG_SYSTEMUI;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ActivityTaskManagerServiceExt {
     public ActivityEmbeddedController mActivityEmbeddedController;
-    public boolean mAvoidCompatDisplayInsets;
     public final Context mContext;
     public final CoreStateController mCoreStateController;
-    public CustomAspectRatioController mCustomAspectRatioController;
     public DisplayCutoutController mDisplayCutoutController;
-    public FixedAspectRatioController mFixedAspectRatioController;
+    public FlexPanelController mFlexPanelController;
     public final PackageSpecialManagementList mHighRefreshRateBlockList;
     public final PackageSpecialManagementList mLowRefreshRateList;
     public final PackageSpecialManagementList mNaviAppLowRefreshRateList;
-    public OrientationController mOrientationController;
     public final ActivityTaskManagerService mService;
     public final ArrayList mStartedUserIds = new ArrayList();
-    public final PackageFeatureManagerService mPackageFeatureManagerService = new PackageFeatureManagerService();
-    public int mSysUiPid = -1;
     public SmRccPolicy mSmRccPolicy = null;
     public boolean mAppLockIsInMultiWindowMode = false;
-    public WeakHashMap mKeepAliveActivities = new WeakHashMap();
-    public AtomicBoolean mHasActivitiesKeptAlive = new AtomicBoolean(false);
+    public final WeakHashMap mKeepAliveActivities = new WeakHashMap();
+    public final AtomicBoolean mHasActivitiesKeptAlive = new AtomicBoolean(false);
 
-    public void removeTaskByCmpName(String str, int i, String str2) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class RefreshRateBlockList extends PackageSpecialManagementList {
+        public RefreshRateBlockList(PackageFeature packageFeature) {
+            super(packageFeature);
+        }
+
+        @Override // com.samsung.android.server.packagefeature.util.PackageSpecialManagementList, com.samsung.android.server.packagefeature.PackageFeatureCallback
+        public final void onPackageFeatureDataChanged(PackageFeatureData packageFeatureData) {
+            super.onPackageFeatureDataChanged(packageFeatureData);
+            ActivityTaskManagerServiceExt.this.mService.mWindowManager.requestTraversal();
+        }
     }
 
-    public void startAppLockService(IBinder iBinder, Intent intent, boolean z, String str) {
-        boolean[] zArr;
-        if (this.mService.mAppLockPolicy == null) {
-            return;
-        }
-        try {
-            zArr = getAppLockLaunchingState(iBinder);
-        } catch (Exception e) {
-            Log.e("ActivityTaskManagerServiceExt", "exception while querying AppLock Launching State", e);
-            zArr = null;
-        }
-        if (zArr != null) {
-            this.mAppLockIsInMultiWindowMode = zArr[0];
-            boolean z2 = zArr[1];
-            boolean z3 = zArr[2];
-            ActivityRecord activityRecord = this.mService.mRootWindowContainer.getActivityRecord(iBinder);
-            boolean z4 = activityRecord != null && activityRecord.getDisplayId() == 1;
-            boolean z5 = activityRecord != null && activityRecord.isNewDexMode();
-            if (this.mService.mAppLockPolicy.isAppLockBypassList(ActivityRecord.forTokenLocked(iBinder).info.name)) {
-                return;
-            }
-            if (this.mService.isKeyguardLocked(0) && z3) {
-                return;
-            }
-            if (z3 || z2 || this.mAppLockIsInMultiWindowMode || z5) {
-                int callingUid = Binder.getCallingUid();
-                if (SemPersonaManager.isKnoxId(UserHandle.getUserId(callingUid)) || this.mService.mAppLockPolicy.isManagedProfileUserId(UserHandle.getUserId(callingUid))) {
-                    return;
-                }
-                if ((SemDualAppManager.isDualAppId(UserHandle.getUserId(callingUid)) && AppLockPolicy.isSupportSSecure()) || z4) {
-                    return;
-                }
-                checkAppLockState(intent, z, str, z2);
-            }
-        }
+    public ActivityTaskManagerServiceExt(Context context, ActivityTaskManagerService activityTaskManagerService) {
+        this.mLowRefreshRateList = CoreRune.FW_VRR_LOW_REFRESH_RATE_LIST ? new RefreshRateBlockList(PackageFeature.LOW_REFRESH_RATE) : null;
+        this.mNaviAppLowRefreshRateList = CoreRune.FW_VRR_NAVIGATION_LOW_REFRESH_RATE ? new RefreshRateBlockList(PackageFeature.NAVIGATION_LOW_REFRESH_RATE) : null;
+        this.mHighRefreshRateBlockList = CoreRune.FW_VRR_HIGH_REFRESH_RATE_BLOCK_LIST ? new RefreshRateBlockList(PackageFeature.HIGH_REFRESH_RATE) : null;
+        this.mContext = context;
+        this.mService = activityTaskManagerService;
+        this.mCoreStateController = new CoreStateController(activityTaskManagerService);
+    }
+
+    public static boolean isSystemUid(int i) {
+        return UserHandle.getAppId(i) == 1000 || i == 0;
     }
 
     public final void checkAppLockState(final Intent intent, final boolean z, final String str, boolean z2) {
+        ActivityTaskManagerService activityTaskManagerService = this.mService;
         try {
-            boolean[] appLockLockedVerifyingState = getAppLockLockedVerifyingState(str);
+            boolean[] zArr = new boolean[2];
+            AppLockPolicy appLockPolicy = activityTaskManagerService.mAppLockPolicy;
+            if (appLockPolicy != null) {
+                zArr[0] = appLockPolicy.isAppLockedPackage(str);
+                zArr[1] = activityTaskManagerService.mAppLockPolicy.isAppLockedVerifying(str);
+            }
             final int callingUid = Binder.getCallingUid();
-            boolean z3 = appLockLockedVerifyingState[0];
+            boolean z3 = zArr[0];
             if (z3) {
-                boolean z4 = appLockLockedVerifyingState[1];
-                Slog.w("ActivityTaskManagerServiceExt", "AppLock checkAppLockState locked:" + z3 + " verifying:" + z4 + " pkgName = " + str + " isInMultiWindowMode:" + this.mAppLockIsInMultiWindowMode + " showWhenLocked:" + z);
+                boolean z4 = zArr[1];
+                StringBuilder m = FullScreenMagnificationGestureHandler$$ExternalSyntheticOutline0.m("AppLock checkAppLockState locked:", z3, " verifying:", z4, " pkgName = ");
+                m.append(str);
+                m.append(" isInMultiWindowMode:");
+                m.append(this.mAppLockIsInMultiWindowMode);
+                m.append(" showWhenLocked:");
+                m.append(z);
+                Slog.w("ActivityTaskManagerServiceExt", m.toString());
                 if (!z4 || z) {
                     setAppLockedVerifying(str, true);
-                    Runnable runnable = new Runnable() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda2
+                    Runnable runnable = new Runnable() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda4
                         @Override // java.lang.Runnable
                         public final void run() {
-                            ActivityTaskManagerServiceExt.this.lambda$checkAppLockState$0(str, callingUid, z, intent);
+                            ActivityTaskManagerServiceExt activityTaskManagerServiceExt = ActivityTaskManagerServiceExt.this;
+                            String str2 = str;
+                            int i = callingUid;
+                            boolean z5 = z;
+                            Intent intent2 = intent;
+                            activityTaskManagerServiceExt.getClass();
+                            Intent intent3 = new Intent("com.samsung.android.intent.action.CHECK_APPLOCK_SERVICE");
+                            intent3.setPackage("com.samsung.android.applock");
+                            intent3.putExtra("LAUNCH_FROM_RESUME", true);
+                            intent3.putExtra("LOCKED_PACKAGE_NAME", str2);
+                            intent3.putExtra("LOCKED_PACKAGE_USERID", UserHandle.getUserId(i));
+                            intent3.putExtra("LOCKED_APP_CAN_SHOW_WHEN_LOCKED", z5);
+                            if (intent2 != null) {
+                                Intent intent4 = new Intent(intent2.getAction());
+                                intent4.setComponent(intent2.getComponent());
+                                intent3.putExtra("LOCKED_PACKAGE_INTENT", intent4);
+                            }
+                            try {
+                                Context context = activityTaskManagerServiceExt.mContext;
+                                context.startServiceAsUser(intent3, context.getUser());
+                            } catch (Exception e) {
+                                Slog.e("ActivityTaskManagerServiceExt", "AppLock service start failed for intent:" + intent3, e);
+                            }
                         }
                     };
                     if (z2) {
                         runnable.run();
                     } else {
-                        this.mService.mH.post(runnable);
+                        activityTaskManagerService.mH.post(runnable);
                     }
                 }
             }
@@ -130,262 +174,7 @@ public class ActivityTaskManagerServiceExt {
         }
     }
 
-    public /* synthetic */ void lambda$checkAppLockState$0(String str, int i, boolean z, Intent intent) {
-        Intent intent2 = new Intent("com.samsung.android.intent.action.CHECK_APPLOCK_SERVICE");
-        intent2.setPackage("com.samsung.android.applock");
-        intent2.putExtra("LAUNCH_FROM_RESUME", true);
-        intent2.putExtra("LOCKED_PACKAGE_NAME", str);
-        intent2.putExtra("LOCKED_PACKAGE_USERID", UserHandle.getUserId(i));
-        intent2.putExtra("LOCKED_APP_CAN_SHOW_WHEN_LOCKED", z);
-        if (intent != null) {
-            Intent intent3 = new Intent(intent.getAction());
-            intent3.setComponent(intent.getComponent());
-            intent2.putExtra("LOCKED_PACKAGE_INTENT", intent3);
-        }
-        try {
-            Context context = this.mContext;
-            context.startServiceAsUser(intent2, context.getUser());
-        } catch (Exception e) {
-            Slog.e("ActivityTaskManagerServiceExt", "AppLock service start failed for intent:" + intent2, e);
-        }
-    }
-
-    public void startAppLockActivity(final ActivityRecord activityRecord) {
-        boolean inMultiWindowMode;
-        if (this.mService.mAppLockPolicy == null) {
-            return;
-        }
-        Task task = activityRecord.getTask();
-        int i = activityRecord.mUserId;
-        ActivityInfo activityInfo = activityRecord.info;
-        String str = task.mCallingPackage;
-        String str2 = task.mCallingFeatureId;
-        int i2 = task.mCallingUid;
-        boolean isAppLockedPackage = isAppLockedPackage(activityRecord.packageName);
-        boolean isAppLockedVerifying = isAppLockedVerifying(activityRecord.packageName);
-        boolean z = activityInfo == null || !this.mService.mAppLockPolicy.isActivityInExceptionList(activityInfo.name);
-        if (!isAppLockedPackage || isAppLockedVerifying) {
-            return;
-        }
-        if ((!activityRecord.isLaunchRequestedFromNotification() || activityRecord.getDisplayId() == 1) && z && activityRecord.isState(ActivityRecord.State.RESUMED) && !activityRecord.isNewDexMode()) {
-            AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-            final AtomicBoolean atomicBoolean2 = new AtomicBoolean(false);
-            if (task.inFreeformWindowingMode() && task.isDexMode()) {
-                inMultiWindowMode = false;
-            } else {
-                inMultiWindowMode = activityRecord.getTask().inMultiWindowMode();
-                if (!task.isDexMode()) {
-                    if (this.mService.mRootWindowContainer.getDefaultTaskDisplayArea().isSplitScreenModeActivated()) {
-                        atomicBoolean.set(true);
-                    }
-                    this.mService.mRootWindowContainer.getDefaultDisplay().forAllActivities(new Consumer() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda0
-                        @Override // java.util.function.Consumer
-                        public final void accept(Object obj) {
-                            ActivityTaskManagerServiceExt.lambda$startAppLockActivity$1(ActivityRecord.this, atomicBoolean2, (ActivityRecord) obj);
-                        }
-                    });
-                }
-            }
-            if (SemPersonaManager.isKnoxId(i) || this.mService.mAppLockPolicy.isManagedProfileUserId(i)) {
-                return;
-            }
-            if ((SemDualAppManager.isDualAppId(i) && AppLockPolicy.isSupportSSecure()) || inMultiWindowMode) {
-                return;
-            }
-            if (atomicBoolean2.get() || atomicBoolean.get()) {
-                Slog.i("ActivityTaskManagerServiceExt", "Start AppLock Service");
-                checkAppLockState(activityRecord.intent, activityRecord.canShowWhenLocked(), activityInfo.packageName, false);
-                return;
-            }
-            setAppLockedVerifying(activityRecord.packageName, true);
-            Intent intent = new Intent(getAppLockedCheckAction());
-            intent.addFlags(IInstalld.FLAG_CLEAR_APP_DATA_KEEP_ART_PROFILES);
-            intent.putExtra("android.intent.extra.PACKAGE_NAME", activityInfo.packageName);
-            intent.putExtra("LAUNCH_FROM_RESUME", true);
-            intent.putExtra("LOCKED_PACKAGE_NAME", activityInfo.packageName);
-            intent.putExtra("LOCKED_PACKAGE_USERID", i);
-            intent.putExtra("LOCKED_APP_CAN_SHOW_WHEN_LOCKED", activityRecord.canShowWhenLocked());
-            intent.setPackage("com.samsung.android.applock");
-            ActivityTaskSupervisor activityTaskSupervisor = this.mService.mTaskSupervisor;
-            String resolveTypeIfNeeded = intent.resolveTypeIfNeeded(this.mContext.getContentResolver());
-            if (SemDualAppManager.isDualAppId(i)) {
-                i = 0;
-            }
-            ActivityInfo activityInfo2 = activityTaskSupervisor.resolveIntent(intent, resolveTypeIfNeeded, i, 0, i2, Binder.getCallingPid()).activityInfo;
-            intent.setClassName(activityInfo2.packageName, activityInfo2.name);
-            ActivityOptions makeBasic = ActivityOptions.makeBasic();
-            makeBasic.setLaunchTaskId(task.mTaskId);
-            makeBasic.setTaskOverlay(true, false);
-            try {
-                this.mService.startActivityAsUser(this.mContext.getIApplicationThread(), str, str2, intent, intent.resolveTypeIfNeeded(this.mContext.getContentResolver()), null, null, 0, intent.getFlags(), null, makeBasic.toBundle(), 0);
-            } catch (Exception e) {
-                Log.e("ActivityTaskManagerServiceExt", "Exception while launching AppLock Confirm Activity for" + activityRecord + ", Exception is : " + e);
-            }
-        }
-    }
-
-    public static /* synthetic */ void lambda$startAppLockActivity$1(ActivityRecord activityRecord, AtomicBoolean atomicBoolean, ActivityRecord activityRecord2) {
-        if (activityRecord2.getTask().inMultiWindowMode() && activityRecord2.packageName.equals(activityRecord.packageName) && !activityRecord2.equals(activityRecord)) {
-            atomicBoolean.set(true);
-        }
-    }
-
-    public List getAppLockedPackageList() {
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.getAppLockedPackageList();
-        }
-        return null;
-    }
-
-    public void setAppLockedUnLockPackage(String str) {
-        int callingUid = Binder.getCallingUid();
-        if (!isSystemUid(callingUid)) {
-            throw new SecurityException(callingUid + " cannot call setAppLockedUnLockPackage(" + str + ")");
-        }
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            appLockPolicy.setAppLockedUnLockPackage(str);
-        }
-    }
-
-    public boolean isAppLockedPackage(String str) {
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.isAppLockedPackage(str);
-        }
-        return false;
-    }
-
-    public void clearAppLockedUnLockedApp() {
-        int callingUid = Binder.getCallingUid();
-        if (!isSystemUid(callingUid)) {
-            throw new SecurityException(callingUid + " cannot call clearAppLockedUnLockedApp()");
-        }
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            appLockPolicy.clearAppLockedUnLockedApp();
-        }
-    }
-
-    public String getAppLockedLockType() {
-        int callingUid = Binder.getCallingUid();
-        if (!isSystemUid(callingUid)) {
-            throw new SecurityException(callingUid + " cannot call getAppLockedLockType()");
-        }
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.getAppLockedLockType();
-        }
-        return null;
-    }
-
-    public String getAppLockedCheckAction() {
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.getAppLockedCheckAction();
-        }
-        return null;
-    }
-
-    public void setAppLockedVerifying(String str, boolean z) {
-        int callingUid = Binder.getCallingUid();
-        if (!isSystemUid(callingUid) && !isCallerSetSelf(callingUid, str)) {
-            throw new SecurityException(callingUid + " is not system uid or the packageNmae is not itself's");
-        }
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            appLockPolicy.setAppLockedVerifying(str, z);
-        }
-    }
-
-    public boolean isAppLockedVerifying(String str) {
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.isAppLockedVerifying(str);
-        }
-        return false;
-    }
-
-    public void setApplockLockedAppsPackage(String str) {
-        this.mService.mAppLockPolicy.setApplockLockedAppsPackage(str);
-    }
-
-    public void setApplockLockedAppsClass(String str) {
-        this.mService.mAppLockPolicy.setApplockLockedAppsClass(str);
-    }
-
-    public void setApplockType(int i) {
-        this.mService.mAppLockPolicy.setApplockType(i);
-    }
-
-    public void setApplockEnabled(boolean z) {
-        this.mService.mAppLockPolicy.setApplockEnabled(z);
-    }
-
-    public void setSsecureHiddenAppsPackages(String str) {
-        this.mService.mAppLockPolicy.setSsecureHiddenAppsPackages(str);
-    }
-
-    public String getApplockLockedAppsPackage() {
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.getApplockLockedAppsPackage();
-        }
-        return null;
-    }
-
-    public String getApplockLockedAppsClass() {
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.getApplockLockedAppsClass();
-        }
-        return null;
-    }
-
-    public int getApplockType() {
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.getApplockType();
-        }
-        return 0;
-    }
-
-    public boolean isApplockEnabled() {
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.isApplockEnabled();
-        }
-        return false;
-    }
-
-    public String getSsecureHiddenAppsPackages() {
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            return appLockPolicy.getSsecureHiddenAppsPackages();
-        }
-        return null;
-    }
-
-    public final boolean isCallerSetSelf(int i, String str) {
-        try {
-            try {
-                ApplicationInfo applicationInfo = this.mContext.getPackageManager().getApplicationInfo(str, 0);
-                return applicationInfo != null && UserHandle.getAppId(applicationInfo.uid) == UserHandle.getAppId(i);
-            } catch (Exception unused) {
-                Slog.d("ActivityTaskManagerServiceExt", "Exception - isCallerSetSelf:" + i);
-                return false;
-            }
-        } catch (Throwable unused2) {
-            return false;
-        }
-    }
-
-    public final boolean isSystemUid(int i) {
-        return UserHandle.getAppId(i) == 1000 || i == 0;
-    }
-
-    public boolean[] getAppLockLaunchingState(IBinder iBinder) {
+    public final boolean[] getAppLockLaunchingState(IBinder iBinder) {
         boolean[] zArr = new boolean[3];
         synchronized (this) {
             long clearCallingIdentity = Binder.clearCallingIdentity();
@@ -394,8 +183,8 @@ public class ActivityTaskManagerServiceExt {
                 if (forTokenLocked == null) {
                     throw new IllegalArgumentException("AppLockLaunchingFromActivity: No activity record matching token=" + iBinder);
                 }
-                if (forTokenLocked.isLaunchRequestedFromNotification()) {
-                    forTokenLocked.setLaunchingRequestFromNotification(false);
+                if (forTokenLocked.mLaunchingRequestedFromNotification) {
+                    forTokenLocked.mLaunchingRequestedFromNotification = false;
                     zArr[1] = true;
                 } else {
                     zArr[1] = false;
@@ -405,467 +194,554 @@ public class ActivityTaskManagerServiceExt {
                 } else {
                     zArr[2] = false;
                 }
-                Task task = forTokenLocked.getTask();
+                Task task = forTokenLocked.task;
                 if (task != null && task.inFreeformWindowingMode() && task.isDexMode()) {
                     zArr[0] = false;
                 } else {
-                    zArr[0] = forTokenLocked.getTask().inMultiWindowMode();
+                    zArr[0] = forTokenLocked.inMultiWindowMode();
                 }
-            } finally {
                 Binder.restoreCallingIdentity(clearCallingIdentity);
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                throw th;
             }
         }
         return zArr;
     }
 
-    public boolean[] getAppLockLockedVerifyingState(String str) {
-        boolean[] zArr = new boolean[2];
-        AppLockPolicy appLockPolicy = this.mService.mAppLockPolicy;
-        if (appLockPolicy != null) {
-            zArr[0] = appLockPolicy.isAppLockedPackage(str);
-            zArr[1] = this.mService.mAppLockPolicy.isAppLockedVerifying(str);
+    public final int getForegroundTaskId(int i) {
+        Task task;
+        ActivityRecord activity;
+        DisplayContent displayContent = this.mService.mRootWindowContainer.getDisplayContent(i);
+        int i2 = -1;
+        if (displayContent == null || (activity = displayContent.getActivity(new ActivityTaskManagerServiceExt$$ExternalSyntheticLambda6())) == null) {
+            task = null;
+        } else {
+            task = activity.task;
+            if (task != null) {
+                i2 = task.mTaskId;
+            }
         }
-        return zArr;
+        if (DesktopModeFeature.DEBUG) {
+            StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "getForegroundTaskId(), displayId=", ", taskId=", ", task=");
+            m.append(task);
+            Log.i("ActivityTaskManagerServiceExt", m.toString());
+        }
+        return i2;
     }
 
-    public ActivityTaskManagerServiceExt(Context context, ActivityTaskManagerService activityTaskManagerService) {
-        this.mNaviAppLowRefreshRateList = CoreRune.FW_VRR_NAVIGATION_LOW_REFRESH_RATE ? new RefreshRateBlockList(PackageFeature.NAVIGATION_LOW_REFRESH_RATE) : null;
-        this.mLowRefreshRateList = CoreRune.FW_VRR_LOW_REFRESH_RATE_LIST ? new RefreshRateBlockList(PackageFeature.LOW_REFRESH_RATE) : null;
-        this.mHighRefreshRateBlockList = CoreRune.FW_VRR_HIGH_REFRESH_RATE_BLOCK_LIST ? new RefreshRateBlockList(PackageFeature.HIGH_REFRESH_RATE) : null;
-        this.mContext = context;
-        this.mService = activityTaskManagerService;
-        this.mCoreStateController = new CoreStateController(activityTaskManagerService);
-        this.PKG_SYSTEMUI = context.getString(R.string.Midnight);
-        SafetySystemService.registerForSystemReady(new SafetySystemService.Callback() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda1
-            @Override // com.samsung.android.server.util.SafetySystemService.Callback
-            public final void onSystemReady(ActivityTaskManagerService activityTaskManagerService2) {
-                ActivityTaskManagerServiceExt.lambda$new$2(activityTaskManagerService2);
+    public final String getSmRccAction() {
+        SmRccPolicy smRccPolicy = this.mSmRccPolicy;
+        if (smRccPolicy != null) {
+            return smRccPolicy.getSmRccAction();
+        }
+        return null;
+    }
+
+    public final ArrayList getStartedUserIdsLocked() {
+        return new ArrayList(this.mStartedUserIds);
+    }
+
+    public final boolean hasPackageTask(int i) {
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                DisplayContent displayContent = this.mService.mRootWindowContainer.getDisplayContent(i);
+                if (displayContent == null) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    return false;
+                }
+                boolean z = displayContent.getTask(new Predicate() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda9
+                    public final /* synthetic */ int f$0 = 2;
+                    public final /* synthetic */ String f$1 = "com.sec.android.app.desktoplauncher";
+
+                    @Override // java.util.function.Predicate
+                    public final boolean test(Object obj) {
+                        ComponentName componentName;
+                        Task task = (Task) obj;
+                        return task.getActivityType() == this.f$0 && (componentName = task.realActivity) != null && componentName.getPackageName().equals(this.f$1);
+                    }
+                }, true) != null;
+                WindowManagerService.resetPriorityAfterLockedSection();
+                return z;
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+    }
+
+    public final void installSystemProvidersLocked() {
+        this.mStartedUserIds.add(0);
+        CoreStateController coreStateController = this.mCoreStateController;
+        coreStateController.getClass();
+        Slog.d("CoreStateController", "initializeLocked()");
+        ActivityTaskManagerService activityTaskManagerService = coreStateController.mAtm;
+        CoreStateObserverController coreStateObserverController = new CoreStateObserverController(activityTaskManagerService.mContext, coreStateController, new Handler(activityTaskManagerService.mH.getLooper()));
+        coreStateController.mObserverController = coreStateObserverController;
+        coreStateObserverController.mStartedUserIds.add(0);
+        CoreStateSystemFeatureObserver coreStateSystemFeatureObserver = coreStateObserverController.mSystemFeatureObserver;
+        Iterator it = coreStateSystemFeatureObserver.mSystemFeaturesList.iterator();
+        while (it.hasNext()) {
+            String str = (String) it.next();
+            ((HashMap) coreStateSystemFeatureObserver.mSystemFeaturesRepository).put(str, Boolean.valueOf(coreStateSystemFeatureObserver.mContext.getPackageManager().hasSystemFeature(str)));
+        }
+        coreStateObserverController.mSettingObserver.beginObserveCoreStateSettings();
+        coreStateObserverController.sendCoreState(true, 0, null);
+        coreStateController.notifyCoreStatesChangedLocked(0, null);
+        MultiWindowEnableController multiWindowEnableController = this.mService.mMultiWindowEnableController;
+        multiWindowEnableController.mDeviceSupportsMultiWindow = ActivityTaskManager.deviceSupportsMultiWindow(multiWindowEnableController.mAtm.mContext);
+        AnyMotionDetector$$ExternalSyntheticOutline0.m("MultiWindowEnableController", new StringBuilder("updateDeviceSupportsMultiWindow: support="), multiWindowEnableController.mDeviceSupportsMultiWindow);
+        if (multiWindowEnableController.mDeviceSupportsMultiWindow) {
+            multiWindowEnableController.setMultiWindowDynamicEnabled(0, "Initialize", multiWindowEnableController.isMultiWindowForceOnRequested(0) || !multiWindowEnableController.isMultiWindowOffRequested(0), false, false);
+        }
+    }
+
+    public final void keepAliveActivityLocked(Task task, boolean z) {
+        ActivityRecord activityRecord = task.topRunningActivityLocked();
+        if (activityRecord != null) {
+            if (!z) {
+                this.mKeepAliveActivities.remove(activityRecord);
+                if (this.mKeepAliveActivities.size() == 0) {
+                    this.mHasActivitiesKeptAlive.compareAndSet(true, false);
+                    return;
+                }
+                return;
+            }
+            if (this.mKeepAliveActivities.size() >= 2) {
+                HeapdumpWatcher$$ExternalSyntheticOutline0.m(new StringBuilder("Max count exceeded! Cannot set keepAlive for taskId="), task.mTaskId, "ActivityTaskManagerServiceExt");
+            } else {
+                this.mKeepAliveActivities.put(activityRecord, Boolean.TRUE);
+                this.mHasActivitiesKeptAlive.compareAndSet(false, true);
+            }
+        }
+    }
+
+    public final void onSystemReady() {
+        Context context = this.mContext;
+        SafetySystemService.Manager manager = SafetySystemService.LazyHolder.sSingleton;
+        synchronized (manager) {
+            manager.mSystemContext = context;
+        }
+        final MultiTaskingAppCompatController multiTaskingAppCompatController = this.mService.mMultiTaskingAppCompatController;
+        multiTaskingAppCompatController.mAtmService.mH.post(new Runnable() { // from class: com.android.server.wm.MultiTaskingAppCompatController$$ExternalSyntheticLambda4
+            @Override // java.lang.Runnable
+            public final void run() {
+                MultiTaskingAppCompatController multiTaskingAppCompatController2 = MultiTaskingAppCompatController.this;
+                CompatChangeableAppsCache compatChangeableAppsCache = CompatChangeableAppsCache.LazyHolder.sCache;
+                Context context2 = multiTaskingAppCompatController2.mAtmService.mContext;
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
+                intentFilter.addAction("android.intent.action.PACKAGE_CHANGED");
+                intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
+                intentFilter.addDataScheme("package");
+                context2.registerReceiver(new BroadcastReceiver() { // from class: com.android.server.wm.CompatChangeableAppsCache.1
+                    public final /* synthetic */ CompatChangeableAppsCache this$0 = LazyHolder.sCache;
+
+                    @Override // android.content.BroadcastReceiver
+                    public final void onReceive(Context context3, Intent intent) {
+                        Uri data = intent.getData();
+                        if (data == null) {
+                            Slog.w("CompatChangeableApps", "Failed to get package name in package receiver");
+                            return;
+                        }
+                        String schemeSpecificPart = data.getSchemeSpecificPart();
+                        String action = intent.getAction();
+                        if (action == null) {
+                            Slog.w("CompatChangeableApps", "Failed to get action in package receiver");
+                            return;
+                        }
+                        switch (action) {
+                            case "android.intent.action.PACKAGE_CHANGED":
+                            case "android.intent.action.PACKAGE_REMOVED":
+                            case "android.intent.action.PACKAGE_ADDED":
+                                CompatChangeableAppsCache compatChangeableAppsCache2 = this.this$0;
+                                synchronized (compatChangeableAppsCache2) {
+                                    try {
+                                        SparseArray sparseArray = compatChangeableAppsCache2.mAppsArray;
+                                        if (sparseArray == null) {
+                                            return;
+                                        }
+                                        int size = sparseArray.size();
+                                        for (int i = 0; i < size; i++) {
+                                            ((CompatChangeableApps) compatChangeableAppsCache2.mAppsArray.valueAt(i)).removeCache(schemeSpecificPart);
+                                        }
+                                        return;
+                                    } finally {
+                                    }
+                                }
+                            default:
+                                Slog.w("CompatChangeableApps", "Unsupported action in package receiver: ".concat(action));
+                                return;
+                        }
+                    }
+                }, intentFilter, null, null);
+                synchronized (compatChangeableAppsCache) {
+                    compatChangeableAppsCache.mAppsArray = new SparseArray();
+                }
+                if (CoreRune.MT_APP_COMPAT_STATUS_LOGGING) {
+                    MultiTaskingAppCompatStatusLogger multiTaskingAppCompatStatusLogger = multiTaskingAppCompatController2.mMultiTaskingAppCompatStatusLogger;
+                    if (multiTaskingAppCompatStatusLogger == null) {
+                        HashSet hashSet = CoreSaStatusLoggingService.sCoreSaStatusLoggers;
+                        return;
+                    }
+                    HashSet hashSet2 = CoreSaStatusLoggingService.sCoreSaStatusLoggers;
+                    synchronized (hashSet2) {
+                        try {
+                            boolean isEmpty = hashSet2.isEmpty();
+                            hashSet2.add(multiTaskingAppCompatStatusLogger);
+                            if (isEmpty) {
+                                CoreSaStatusLoggingService.schedule();
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
+                    Slog.d("CoreSaStatusLoggingService", "registerCoreSaStatusLogger logger=MultiTaskingAppCompatStatusLogger");
+                }
             }
         });
-    }
-
-    public static /* synthetic */ void lambda$new$2(ActivityTaskManagerService activityTaskManagerService) {
-        if (CoreRune.FW_BOUNDS_COMPAT_STATUS_LOGGING) {
-            BoundsCompatStatusLogger.get().onSystemReady(activityTaskManagerService);
-        }
-    }
-
-    public void onSystemReady() {
+        this.mService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda7
+            @Override // java.lang.Runnable
+            public final void run() {
+                ActivityTaskManagerServiceExt activityTaskManagerServiceExt = ActivityTaskManagerServiceExt.this;
+                activityTaskManagerServiceExt.getClass();
+                final PackageFeatureManagerService packageFeatureManagerService = PackageFeatureManagerService.LazyHolder.sInstance;
+                final Context context2 = activityTaskManagerServiceExt.mContext;
+                final ActivityTaskManagerService.H h = activityTaskManagerServiceExt.mService.mH;
+                PackageFeatureController packageFeatureController = packageFeatureManagerService.mPackageFeatureController;
+                CoreLogger coreLogger = packageFeatureManagerService.mLogger;
+                packageFeatureController.getClass();
+                Uri uri = PackageFeatureSettings.URI_PACKAGE_POLICY_DISABLED;
+                boolean z = Settings.Global.getInt(context2.getContentResolver(), "package_policy_disabled", 0) == 1;
+                synchronized (packageFeatureController.mLock) {
+                    try {
+                        if (packageFeatureController.mStarted) {
+                            packageFeatureController.mLogger.log(5, "The controller has already been started.", null);
+                        } else {
+                            packageFeatureController.mContext = context2;
+                            packageFeatureController.mHandler = h;
+                            packageFeatureController.mLogger = coreLogger;
+                            packageFeatureController.mPackageFeatures = new PackageFeatures(context2, h, coreLogger);
+                            packageFeatureController.mSettings = new PackageFeatureSettings(context2, h, packageFeatureController, z);
+                            h.post(new PackageFeatureController$$ExternalSyntheticLambda0(packageFeatureController, 1));
+                            packageFeatureController.mStarted = true;
+                        }
+                    } finally {
+                    }
+                }
+                PackageFeatureController packageFeatureController2 = packageFeatureManagerService.mPackageFeatureController;
+                ScpmController scpmController = packageFeatureManagerService.mScpmController;
+                Objects.requireNonNull(scpmController);
+                PackageFeatureManagerService$$ExternalSyntheticLambda1 packageFeatureManagerService$$ExternalSyntheticLambda1 = new PackageFeatureManagerService$$ExternalSyntheticLambda1(scpmController);
+                synchronized (packageFeatureController2.mLock) {
+                    packageFeatureController2.mGetFileDescriptor = packageFeatureManagerService$$ExternalSyntheticLambda1;
+                }
+                ScpmController scpmController2 = packageFeatureManagerService.mScpmController;
+                final Set groupNames = packageFeatureManagerService.mPackageFeatureController.getGroupNames();
+                PackageFeatureController packageFeatureController3 = packageFeatureManagerService.mPackageFeatureController;
+                CoreLogger coreLogger2 = packageFeatureManagerService.mLogger;
+                final ScpmControllerImpl scpmControllerImpl = (ScpmControllerImpl) scpmController2;
+                synchronized (scpmControllerImpl.mLock) {
+                    try {
+                        if (!scpmControllerImpl.mStarted) {
+                            scpmControllerImpl.mContext = context2;
+                            scpmControllerImpl.mHandler = h;
+                            scpmControllerImpl.mCallback = packageFeatureController3;
+                            scpmControllerImpl.mLogger = coreLogger2;
+                            scpmControllerImpl.mStarted = true;
+                            h.post(new Runnable() { // from class: com.samsung.android.server.corescpm.ScpmControllerImpl$$ExternalSyntheticLambda2
+                                @Override // java.lang.Runnable
+                                public final void run() {
+                                    ScpmControllerImpl scpmControllerImpl2 = ScpmControllerImpl.this;
+                                    Set set = groupNames;
+                                    Context context3 = context2;
+                                    Handler handler = h;
+                                    scpmControllerImpl2.getClass();
+                                    try {
+                                        IntentFilter intentFilter = new IntentFilter();
+                                        intentFilter.addAction("com.samsung.intent.action.LAZY_BOOT_COMPLETE");
+                                        intentFilter.addAction(KnoxCustomManagerService.ACTION_SCPM_POLICY_CLEAR_DATA);
+                                        Iterator it = set.iterator();
+                                        while (it.hasNext()) {
+                                            intentFilter.addAction("com.samsung.android.scpm.policy.UPDATE." + ((String) it.next()));
+                                        }
+                                        context3.registerReceiver(scpmControllerImpl2, intentFilter, 2);
+                                        handler.postDelayed(scpmControllerImpl2.mOnLazyBootCompletedTimeout, ClipboardService.DEFAULT_CLIPBOARD_TIMEOUT_MILLIS);
+                                    } catch (Throwable th) {
+                                        th.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    } finally {
+                    }
+                }
+                synchronized (packageFeatureManagerService) {
+                    try {
+                        Map map = packageFeatureManagerService.mTmpPackageFeatureCallbacks;
+                        if (map == null) {
+                            Slog.e("PackageFeature", "The package feature manager service has already been started.");
+                        } else {
+                            ((HashMap) map).forEach(new BiConsumer() { // from class: com.samsung.android.server.packagefeature.core.PackageFeatureManagerService$$ExternalSyntheticLambda2
+                                @Override // java.util.function.BiConsumer
+                                public final void accept(Object obj, Object obj2) {
+                                    PackageFeatureManagerService packageFeatureManagerService2 = PackageFeatureManagerService.this;
+                                    PackageFeature packageFeature = (PackageFeature) obj;
+                                    packageFeatureManagerService2.getClass();
+                                    Iterator it = ((List) obj2).iterator();
+                                    while (it.hasNext()) {
+                                        packageFeatureManagerService2.mPackageFeatureController.registerCallback(packageFeature, (PackageFeatureCallback) it.next());
+                                    }
+                                }
+                            });
+                            ((HashMap) packageFeatureManagerService.mTmpPackageFeatureCallbacks).clear();
+                            packageFeatureManagerService.mTmpPackageFeatureCallbacks = null;
+                        }
+                    } finally {
+                    }
+                }
+                Iterator it = ((ArrayList) PackagesChange.sAllPackagesChange).iterator();
+                while (it.hasNext()) {
+                    PackageFeatureUserChange[] packageFeatureUserChangeArr = ((PackagesChange) it.next()).mUserChanges;
+                    if (packageFeatureUserChangeArr != null) {
+                        for (PackageFeatureUserChange packageFeatureUserChange : packageFeatureUserChangeArr) {
+                            packageFeatureUserChange.onLoadFileCompletedAndSystemReady(true, false);
+                        }
+                    }
+                }
+            }
+        });
         if (CoreRune.MW_EMBED_ACTIVITY_PACKAGE_ENABLED) {
             this.mActivityEmbeddedController = new ActivityEmbeddedController(this.mService);
         }
-        boolean z = CoreRune.FW_CUSTOM_LETTERBOX_ENHANCED;
     }
 
-    public void initialize() {
-        if (CoreRune.FW_FIXED_ASPECT_RATIO_MODE) {
-            this.mFixedAspectRatioController = new FixedAspectRatioController(this.mService);
+    public final void removeTaskByCmpName() {
+        int callingPid = Binder.getCallingPid();
+        if (callingPid != Process.myPid()) {
+            FileDescriptorWatcher$FileDescriptorLeakWatcher$$ExternalSyntheticOutline0.m(callingPid, "Pid ", " cannot clear task!", "ActivityTaskManagerServiceExt");
+            return;
         }
-        this.mDisplayCutoutController = new DisplayCutoutController(this.mService);
-        this.mCustomAspectRatioController = new CustomAspectRatioController(this.mService);
-        new CustomAspectRatioLegacyController(this.mService);
-        if (CoreRune.FW_ORIENTATION_CONTROL) {
-            this.mOrientationController = new OrientationController(this.mService);
-        }
-        if (CoreRune.FW_BOUNDS_COMPAT_ALIGNMENT_CONTROL) {
-            BoundsCompatAlignmentController.setAtmService(this.mService);
-        }
-    }
+        DeviceIdleController$$ExternalSyntheticOutline0.m(callingPid, "removeTaskByCmpName:com.android.settings/.password.ChooseLockGeneric$InternalActivity user:0 callerPid:", " reason:Managed profile unavailable", "ActivityTaskManagerServiceExt");
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                try {
+                    for (int childCount = this.mService.mRootWindowContainer.getChildCount() - 1; childCount >= 0; childCount--) {
+                        DisplayContent displayContent = (DisplayContent) this.mService.mRootWindowContainer.getChildAt(childCount);
+                        if (displayContent == null) {
+                            WindowManagerService.resetPriorityAfterLockedSection();
+                            return;
+                        }
+                        displayContent.forAllRootTasks(new Consumer() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda5
+                            public final /* synthetic */ int f$1 = 0;
+                            public final /* synthetic */ String f$2 = "com.android.settings/.password.ChooseLockGeneric$InternalActivity";
 
-    public boolean removeTaskWithFlagsLocked(int i, int i2) {
-        if ((i2 & 8) != 0 || (i2 & 32) != 0) {
-            return removeAllRecentTasksLocked(i2);
-        }
-        try {
-            return this.mService.mTaskSupervisor.removeTaskById(i, true, (i2 & 16) == 0, CoreRune.MW_FREEFORM_DISMISS_VIEW && (i2 & 128) != 0, "remove-task-with-flags", Binder.getCallingUid());
-        } finally {
-            if ((i2 & 4) != 0) {
-                this.mService.mTaskSupervisor.scheduleIdle();
+                            @Override // java.util.function.Consumer
+                            public final void accept(Object obj) {
+                                Task task;
+                                ActivityTaskManagerServiceExt activityTaskManagerServiceExt = ActivityTaskManagerServiceExt.this;
+                                int i = this.f$1;
+                                String str = this.f$2;
+                                Task task2 = (Task) obj;
+                                activityTaskManagerServiceExt.getClass();
+                                if (task2.topRunningActivityLocked() != null) {
+                                    ArrayList dumpActivitiesLocked = task2.getDumpActivitiesLocked(-1, "all");
+                                    for (int size = dumpActivitiesLocked.size() - 1; size >= 0; size--) {
+                                        ActivityRecord activityRecord = (ActivityRecord) dumpActivitiesLocked.get(size);
+                                        if (activityRecord != null && (task = activityRecord.task) != null && task.mUserId == i && str.equals(activityRecord.shortComponentName)) {
+                                            long clearCallingIdentity = Binder.clearCallingIdentity();
+                                            try {
+                                                activityTaskManagerServiceExt.mService.mTaskSupervisor.removeTask(task, true, true, "remove-task-by-knox");
+                                            } finally {
+                                                Binder.restoreCallingIdentity(clearCallingIdentity);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                WindowManagerService.resetPriorityAfterLockedSection();
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
             }
         }
     }
 
-    public final boolean removeAllRecentTasksLocked(int i) {
-        ArrayList rawTasks = this.mService.getRecentTasks().getRawTasks();
+    public final boolean removeTaskWithFlagsLocked(int i, int i2) {
+        int i3 = i2 & 8;
+        ActivityTaskManagerService activityTaskManagerService = this.mService;
+        if (i3 == 0 && (i2 & 32) == 0) {
+            try {
+                return activityTaskManagerService.mTaskSupervisor.removeTaskById(i, Binder.getCallingUid(), Binder.getCallingPid(), "remove-task-with-flags", true, (i2 & 16) == 0, CoreRune.MW_DND_FREEFORM_DISMISS_VIEW && (i2 & 128) != 0);
+            } finally {
+                if ((i2 & 4) != 0) {
+                    activityTaskManagerService.mTaskSupervisor.scheduleIdle();
+                }
+            }
+        }
+        ArrayList rawTasks = activityTaskManagerService.mRecentTasks.getRawTasks();
         for (int size = rawTasks.size() - 1; size >= 0; size--) {
-            if (size != 0 || (i & 32) == 0) {
+            if (size != 0 || (i2 & 32) == 0) {
                 Task task = (Task) rawTasks.get(size);
                 if (!task.isActivityTypeHome() && !task.isActivityTypeRecents()) {
-                    removeTaskByIdIfNeededLocked(task, i);
+                    if (task.mUserId != activityTaskManagerService.mRootWindowContainer.mCurrentUser) {
+                        HashSet hashSet = new HashSet(Arrays.asList((Integer[]) Arrays.stream(activityTaskManagerService.mAmInternal.getCurrentProfileIds()).boxed().toArray(new ActivityTaskManagerServiceExt$$ExternalSyntheticLambda0())));
+                        hashSet.add(Integer.valueOf(activityTaskManagerService.mRootWindowContainer.mCurrentUser));
+                        if (!hashSet.contains(Integer.valueOf(task.mUserId))) {
+                        }
+                    }
+                    activityTaskManagerService.mTaskSupervisor.removeTaskById(task.mTaskId, Binder.getCallingUid(), Binder.getCallingPid(), "remove-task-by-id", true, (i2 & 16) == 0, false);
                 }
             }
         }
         return true;
     }
 
-    public final void removeTaskByIdIfNeededLocked(Task task, int i) {
-        if (task.mUserId != this.mService.mRootWindowContainer.mCurrentUser) {
-            HashSet hashSet = new HashSet(Arrays.asList((Integer[]) Arrays.stream(this.mService.mAmInternal.getCurrentProfileIds()).boxed().toArray(new IntFunction() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda3
-                @Override // java.util.function.IntFunction
-                public final Object apply(int i2) {
-                    Integer[] lambda$removeTaskByIdIfNeededLocked$3;
-                    lambda$removeTaskByIdIfNeededLocked$3 = ActivityTaskManagerServiceExt.lambda$removeTaskByIdIfNeededLocked$3(i2);
-                    return lambda$removeTaskByIdIfNeededLocked$3;
-                }
-            })));
-            hashSet.add(Integer.valueOf(this.mService.mRootWindowContainer.mCurrentUser));
-            if (!hashSet.contains(Integer.valueOf(task.mUserId))) {
-                return;
-            }
-        }
-        this.mService.mTaskSupervisor.removeTaskById(task.mTaskId, true, (i & 16) == 0, "remove-task-by-id", Binder.getCallingUid());
-    }
-
-    public static /* synthetic */ Integer[] lambda$removeTaskByIdIfNeededLocked$3(int i) {
-        return new Integer[i];
-    }
-
-    public final void keepAliveActivityLocked(Task task, boolean z) {
-        ActivityRecord activityRecord = task.topRunningActivityLocked();
-        if (activityRecord != null) {
-            if (z) {
-                if (this.mKeepAliveActivities.size() < 2) {
-                    this.mKeepAliveActivities.put(activityRecord, Boolean.TRUE);
-                    this.mHasActivitiesKeptAlive.compareAndSet(false, true);
-                    return;
-                } else {
-                    Slog.w("ActivityTaskManagerServiceExt", "Max count exceeded! Cannot set keepAlive for taskId=" + task.mTaskId);
-                    return;
-                }
-            }
-            resetActivityKeepAliveLocked(activityRecord);
-        }
-    }
-
-    public boolean moveTaskToBack(int i, boolean z, Bundle bundle) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                Task anyTaskForId = this.mService.mRootWindowContainer.anyTaskForId(i);
-                boolean z2 = false;
-                if (anyTaskForId == null) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    return false;
-                }
-                if (this.mService.getLockTaskController().isLockTaskModeViolation(anyTaskForId)) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    return false;
-                }
-                keepAliveActivityLocked(anyTaskForId, z);
-                Task rootTask = anyTaskForId.getRootTask();
-                if (rootTask != null && rootTask.moveTaskToBack(anyTaskForId, bundle)) {
-                    z2 = true;
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-                return z2;
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-    }
-
-    public boolean isKeepAliveActivity(ActivityRecord activityRecord) {
-        return this.mKeepAliveActivities.get(activityRecord) != null;
-    }
-
-    public void resetActivityKeepAliveLocked(ActivityRecord activityRecord) {
-        this.mKeepAliveActivities.remove(activityRecord);
-        if (this.mKeepAliveActivities.size() == 0) {
-            this.mHasActivitiesKeptAlive.compareAndSet(true, false);
-        }
-    }
-
-    public boolean hasKeepAliveActivities(WindowProcessController windowProcessController) {
-        if (!this.mHasActivitiesKeptAlive.get()) {
-            return false;
-        }
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                Iterator it = this.mKeepAliveActivities.keySet().iterator();
-                while (it.hasNext()) {
-                    if (windowProcessController.equals(((ActivityRecord) it.next()).app)) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        return true;
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-                return false;
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-    }
-
-    public boolean checkScreenDpSizeChanges(Configuration configuration, Configuration configuration2) {
-        int i;
-        int i2 = configuration2.screenWidthDp;
-        return ((i2 == 0 || configuration.screenWidthDp == i2) && ((i = configuration2.screenHeightDp) == 0 || configuration.screenHeightDp == i)) ? false : true;
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public class RefreshRateBlockList extends PackageSpecialManagementList {
-        public RefreshRateBlockList(PackageFeature packageFeature) {
-            super(packageFeature);
-        }
-
-        @Override // com.samsung.android.server.packagefeature.util.PackageSpecialManagementList, com.samsung.android.server.packagefeature.PackageFeatureCallback
-        public void onPackageFeatureDataChanged(PackageFeatureData packageFeatureData) {
-            super.onPackageFeatureDataChanged(packageFeatureData);
-            ActivityTaskManagerServiceExt.this.mService.mWindowManager.requestTraversal();
-        }
-    }
-
-    public CoreStateController getCoreStateController() {
-        return this.mCoreStateController;
-    }
-
-    public void installSystemProvidersLocked() {
-        this.mStartedUserIds.add(0);
-        this.mCoreStateController.initializeLocked();
-        this.mService.mMultiWindowEnableController.initializeLocked(0);
-    }
-
-    public void startUser(final int i, final boolean z, final boolean z2) {
-        this.mService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda5
-            @Override // java.lang.Runnable
-            public final void run() {
-                ActivityTaskManagerServiceExt.this.lambda$startUser$4(i, z, z2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$startUser$4(int i, boolean z, boolean z2) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                if (!this.mStartedUserIds.contains(Integer.valueOf(i))) {
-                    this.mStartedUserIds.add(Integer.valueOf(i));
-                }
-                this.mCoreStateController.startUserLocked(i, z, z2);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public void stopUser(final int i, final boolean z) {
-        this.mService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda4
-            @Override // java.lang.Runnable
-            public final void run() {
-                ActivityTaskManagerServiceExt.this.lambda$stopUser$5(i, z);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$stopUser$5(int i, boolean z) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                this.mStartedUserIds.remove(Integer.valueOf(i));
-                this.mService.mMultiWindowEnableController.stopUserLocked(i, z);
-                this.mCoreStateController.stopUserLocked(i, z);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public ArrayList getStartedUserIdsLocked() {
-        return new ArrayList(this.mStartedUserIds);
-    }
-
-    public void onLockTaskStateChanged(int i) {
-        boolean z = i != 0;
-        if (CoreRune.FW_SUPPORT_LOCK_TASK_MODE_BROADCAST) {
-            Intent intent = new Intent("com.kddi.agent.action.SCREEN_PINNING_CONDITION");
-            intent.putExtra("status", z);
-            this.mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
-        }
-        Intent intent2 = new Intent("com.samsung.android.action.LOCK_TASK_MODE");
-        intent2.putExtra("enable", z);
-        this.mContext.sendBroadcastAsUser(intent2, UserHandle.CURRENT, "com.samsung.android.permission.LOCK_TASK_MODE");
-    }
-
-    public int getForegroundTaskId(int i) {
-        Task task;
-        ActivityRecord activity;
-        DisplayContent displayContent = this.mService.mRootWindowContainer.getDisplayContent(i);
-        int i2 = -1;
-        if (displayContent == null || (activity = displayContent.getActivity(new Predicate() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda6
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean isValidActivityForForeground;
-                isValidActivityForForeground = ActivityTaskManagerServiceExt.isValidActivityForForeground((ActivityRecord) obj);
-                return isValidActivityForForeground;
-            }
-        })) == null) {
-            task = null;
-        } else {
-            task = activity.getTask();
-            if (task != null) {
-                i2 = task.mTaskId;
-            }
-        }
-        if (DesktopModeFeature.DEBUG) {
-            Log.i("ActivityTaskManagerServiceExt", "getForegroundTaskId(), displayId=" + i + ", taskId=" + i2 + ", task=" + task);
-        }
-        return i2;
-    }
-
-    public static boolean isValidActivityForForeground(ActivityRecord activityRecord) {
-        Bundle bundle;
-        if (activityRecord.finishing || activityRecord.isTaskOverlay()) {
-            return false;
-        }
-        if (!activityRecord.isActivityTypeStandard() && !activityRecord.isActivityTypeHome()) {
-            return false;
-        }
-        ActivityInfo activityInfo = activityRecord.info;
-        return activityInfo == null || (bundle = activityInfo.metaData) == null || !bundle.getBoolean("com.samsung.android.dex.autoopenlastapp.ignore", false);
-    }
-
-    public ComponentName getRealActivityForTaskId(int i) {
-        Task anyTaskForId = this.mService.mRootWindowContainer.anyTaskForId(i);
-        if (anyTaskForId == null) {
-            return null;
-        }
-        return anyTaskForId.realActivity;
-    }
-
-    public void clearHomeStack(int i) {
-        final String defaultHomePackageName = i == 0 ? getDefaultHomePackageName() : null;
-        if (DesktopModeFeature.DEBUG) {
-            Log.d("ActivityTaskManagerServiceExt", "clearHomeStack(), displayId=" + i + ", defaultHomePkgName=" + defaultHomePackageName);
-        }
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                DisplayContent displayContent = this.mService.mRootWindowContainer.getDisplayContent(i);
-                if (displayContent != null) {
-                    displayContent.forAllTasks(new Consumer() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda7
-                        @Override // java.util.function.Consumer
-                        public final void accept(Object obj) {
-                            ActivityTaskManagerServiceExt.this.lambda$clearHomeStack$6(defaultHomePackageName, (Task) obj);
-                        }
-                    }, true);
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public /* synthetic */ void lambda$clearHomeStack$6(String str, Task task) {
-        if ((task.isActivityTypeHome() || task.isActivityTypeRecents()) && !task.isRootTask()) {
-            ComponentName componentName = task.realActivity;
-            if (componentName == null || !componentName.getPackageName().equals(str)) {
-                if (DesktopModeFeature.DEBUG) {
-                    Log.d("ActivityTaskManagerServiceExt", "clearHomeStack(), removing task=" + task);
-                }
-                this.mService.mTaskSupervisor.removeTask(task, task.isActivityTypeRecents(), true, "ActivityTaskManagerServiceExt#clearHomeStack");
-            }
-        }
-    }
-
-    public final String getDefaultHomePackageName() {
-        List roleHoldersAsUser = ((RoleManager) this.mContext.getSystemService("role")).getRoleHoldersAsUser("android.app.role.HOME", Process.myUserHandle());
-        if (roleHoldersAsUser.isEmpty()) {
-            return null;
-        }
-        return (String) roleHoldersAsUser.get(0);
-    }
-
-    public boolean hasPackageTask(int i, final String str, final int i2) {
-        DisplayContent displayContent = this.mService.mRootWindowContainer.getDisplayContent(i);
-        return (displayContent == null || displayContent.getTask(new Predicate() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda8
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$hasPackageTask$7;
-                lambda$hasPackageTask$7 = ActivityTaskManagerServiceExt.lambda$hasPackageTask$7(i2, str, (Task) obj);
-                return lambda$hasPackageTask$7;
-            }
-        }, true) == null) ? false : true;
-    }
-
-    public static /* synthetic */ boolean lambda$hasPackageTask$7(int i, String str, Task task) {
-        ComponentName componentName;
-        return task.getActivityType() == i && (componentName = task.realActivity) != null && componentName.getPackageName().equals(str);
-    }
-
-    public void boostPriority(ActivityRecord activityRecord) {
-        WindowProcessController windowProcessController = activityRecord.app;
-        if (windowProcessController != null && windowProcessController.getThread() != null) {
-            try {
-                Process.setThreadPriority(activityRecord.app.getPid(), -10);
-                activityRecord.app.getThread().setProcessState(2);
-                activityRecord.app.setCurrentSchedulingGroup(3);
-            } catch (Exception unused) {
-            }
-        }
-    }
-
-    public int getSysUiPid() {
-        return this.mSysUiPid;
-    }
-
-    public void setSystemUiPidIfNeed(WindowProcessController windowProcessController) {
-        String str;
-        if (windowProcessController.mUserId == 0 && (str = this.PKG_SYSTEMUI) != null && str.equals(windowProcessController.mName)) {
-            Slog.d("ActivityTaskManagerServiceExt", "setSystemUiPidIfNeed : " + windowProcessController.getPid());
-            this.mSysUiPid = windowProcessController.getPid();
-        }
-    }
-
-    public void onUserUnlocked() {
-        Slog.i("ActivityTaskManagerServiceExt", "SmRcc onUserUnlocked loadData");
-        SmRccPolicy smRccPolicy = SmRccPolicy.getInstance(this.mContext);
-        this.mSmRccPolicy = smRccPolicy;
-        smRccPolicy.loadData();
-    }
-
-    public boolean isSmRccPkg(String str) {
-        SmRccPolicy smRccPolicy = this.mSmRccPolicy;
-        if (smRccPolicy != null) {
-            return smRccPolicy.isSmRccPkg(str);
-        }
-        return false;
-    }
-
-    public boolean isSmRccOpen(String str) {
-        SmRccPolicy smRccPolicy = this.mSmRccPolicy;
-        if (smRccPolicy != null) {
-            return smRccPolicy.isSmRccOpen(str);
-        }
-        return false;
-    }
-
-    public void resetSmRccOpen(String str) {
+    public final void resetSmRccOpen(String str) {
         SmRccPolicy smRccPolicy = this.mSmRccPolicy;
         if (smRccPolicy != null) {
             smRccPolicy.resetSmRccOpen(str);
         }
     }
 
-    public String getSmRccAction() {
-        SmRccPolicy smRccPolicy = this.mSmRccPolicy;
-        if (smRccPolicy != null) {
-            return smRccPolicy.getSmRccAction();
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x0023, code lost:
+    
+        if (android.os.UserHandle.getAppId(r1.uid) == android.os.UserHandle.getAppId(r0)) goto L13;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void setAppLockedVerifying(java.lang.String r5, boolean r6) {
+        /*
+            r4 = this;
+            int r0 = android.os.Binder.getCallingUid()
+            boolean r1 = isSystemUid(r0)
+            if (r1 != 0) goto L43
+            java.lang.String r1 = "Exception - isCallerSetSelf:"
+            android.content.Context r2 = r4.mContext     // Catch: java.lang.Exception -> L26 java.lang.Throwable -> L37
+            android.content.pm.PackageManager r2 = r2.getPackageManager()     // Catch: java.lang.Exception -> L26 java.lang.Throwable -> L37
+            r3 = 0
+            android.content.pm.ApplicationInfo r1 = r2.getApplicationInfo(r5, r3)     // Catch: java.lang.Exception -> L26 java.lang.Throwable -> L37
+            if (r1 == 0) goto L37
+            int r1 = r1.uid
+            int r1 = android.os.UserHandle.getAppId(r1)
+            int r2 = android.os.UserHandle.getAppId(r0)
+            if (r1 != r2) goto L37
+            goto L43
+        L26:
+            java.lang.String r4 = "ActivityTaskManagerServiceExt"
+            java.lang.StringBuilder r5 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L37
+            r5.<init>(r1)     // Catch: java.lang.Throwable -> L37
+            r5.append(r0)     // Catch: java.lang.Throwable -> L37
+            java.lang.String r5 = r5.toString()     // Catch: java.lang.Throwable -> L37
+            android.util.Slog.d(r4, r5)     // Catch: java.lang.Throwable -> L37
+        L37:
+            java.lang.SecurityException r4 = new java.lang.SecurityException
+            java.lang.String r5 = " is not system uid or the packageNmae is not itself's"
+            java.lang.String r5 = com.android.server.NandswapManager$$ExternalSyntheticOutline0.m(r0, r5)
+            r4.<init>(r5)
+            throw r4
+        L43:
+            com.android.server.wm.ActivityTaskManagerService r4 = r4.mService
+            com.android.internal.app.AppLockPolicy r4 = r4.mAppLockPolicy
+            if (r4 == 0) goto L4c
+            r4.setAppLockedVerifying(r5, r6)
+        L4c:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityTaskManagerServiceExt.setAppLockedVerifying(java.lang.String, boolean):void");
+    }
+
+    public final void startAppLockActivity(ActivityRecord activityRecord) {
+        boolean inMultiWindowMode;
+        String str;
+        ActivityTaskManagerService activityTaskManagerService = this.mService;
+        AppLockPolicy appLockPolicy = activityTaskManagerService.mAppLockPolicy;
+        if (appLockPolicy == null) {
+            return;
         }
-        return null;
+        Task task = activityRecord.task;
+        int i = activityRecord.mUserId;
+        ActivityInfo activityInfo = activityRecord.info;
+        String str2 = task.mCallingPackage;
+        String str3 = task.mCallingFeatureId;
+        int i2 = task.mCallingUid;
+        boolean isAppLockedPackage = appLockPolicy != null ? appLockPolicy.isAppLockedPackage(activityRecord.packageName) : false;
+        String str4 = activityRecord.packageName;
+        AppLockPolicy appLockPolicy2 = activityTaskManagerService.mAppLockPolicy;
+        boolean isAppLockedVerifying = appLockPolicy2 != null ? appLockPolicy2.isAppLockedVerifying(str4) : false;
+        boolean z = activityInfo == null || !activityTaskManagerService.mAppLockPolicy.isActivityInExceptionList(activityInfo.name);
+        if (!isAppLockedPackage || isAppLockedVerifying) {
+            return;
+        }
+        if ((activityRecord.mLaunchingRequestedFromNotification && activityRecord.getDisplayId() != 1) || !z || !activityRecord.isState(ActivityRecord.State.RESUMED)) {
+            return;
+        }
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        AtomicBoolean atomicBoolean2 = new AtomicBoolean(false);
+        if (task.inFreeformWindowingMode() && task.isDexMode()) {
+            inMultiWindowMode = false;
+        } else {
+            inMultiWindowMode = activityRecord.inMultiWindowMode();
+            if (!task.isDexMode()) {
+                if (activityTaskManagerService.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea().isSplitScreenModeActivated()) {
+                    atomicBoolean.set(true);
+                }
+                activityTaskManagerService.mRootWindowContainer.mDefaultDisplay.forAllActivities(new ActivityTaskManagerServiceExt$$ExternalSyntheticLambda1(activityRecord, atomicBoolean2));
+            }
+        }
+        if (SemPersonaManager.isKnoxId(i) || activityTaskManagerService.mAppLockPolicy.isManagedProfileUserId(i)) {
+            return;
+        }
+        if ((SemDualAppManager.isDualAppId(i) && AppLockPolicy.isSupportSSecure()) || inMultiWindowMode) {
+            return;
+        }
+        if (atomicBoolean2.get() || atomicBoolean.get()) {
+            Slog.i("ActivityTaskManagerServiceExt", "Start AppLock Service");
+            checkAppLockState(activityRecord.intent, activityRecord.canShowWhenLocked(), activityInfo.packageName, false);
+            return;
+        }
+        setAppLockedVerifying(activityRecord.packageName, true);
+        AppLockPolicy appLockPolicy3 = activityTaskManagerService.mAppLockPolicy;
+        Intent intent = new Intent(appLockPolicy3 != null ? appLockPolicy3.getAppLockedCheckAction() : null);
+        intent.addFlags(131072);
+        intent.putExtra("android.intent.extra.PACKAGE_NAME", activityInfo.packageName);
+        intent.putExtra("LAUNCH_FROM_RESUME", true);
+        intent.putExtra("LOCKED_PACKAGE_NAME", activityInfo.packageName);
+        intent.putExtra("LOCKED_PACKAGE_USERID", i);
+        intent.putExtra("LOCKED_APP_CAN_SHOW_WHEN_LOCKED", activityRecord.canShowWhenLocked());
+        intent.setPackage("com.samsung.android.applock");
+        ActivityTaskSupervisor activityTaskSupervisor = activityTaskManagerService.mTaskSupervisor;
+        String resolveTypeIfNeeded = intent.resolveTypeIfNeeded(this.mContext.getContentResolver());
+        if (SemDualAppManager.isDualAppId(i)) {
+            i = 0;
+        }
+        ActivityInfo activityInfo2 = activityTaskSupervisor.resolveIntent(intent, resolveTypeIfNeeded, i, 0, i2, Binder.getCallingPid()).activityInfo;
+        intent.setClassName(activityInfo2.packageName, activityInfo2.name);
+        ActivityOptions makeBasic = ActivityOptions.makeBasic();
+        makeBasic.setLaunchTaskId(task.mTaskId);
+        makeBasic.setTaskOverlay(true, false);
+        try {
+            str = "ActivityTaskManagerServiceExt";
+            try {
+                this.mService.startActivityAsUser(this.mContext.getIApplicationThread(), str2, str3, intent, intent.resolveTypeIfNeeded(this.mContext.getContentResolver()), null, null, 0, intent.getFlags(), null, makeBasic.toBundle(), 0, true);
+            } catch (Exception e) {
+                e = e;
+                Log.e(str, "Exception while launching AppLock Confirm Activity for" + activityRecord + ", Exception is : " + e);
+            }
+        } catch (Exception e2) {
+            e = e2;
+            str = "ActivityTaskManagerServiceExt";
+        }
     }
 }

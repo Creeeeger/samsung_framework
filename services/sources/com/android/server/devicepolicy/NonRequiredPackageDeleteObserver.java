@@ -1,47 +1,24 @@
 package com.android.server.devicepolicy;
 
 import android.content.pm.IPackageDeleteObserver;
-import android.util.Log;
-import android.util.Slog;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class NonRequiredPackageDeleteObserver extends IPackageDeleteObserver.Stub {
+    public boolean mFailed = false;
     public final CountDownLatch mLatch;
-    public final AtomicInteger mPackageCount;
-    public boolean mSuccess;
 
     public NonRequiredPackageDeleteObserver(int i) {
-        AtomicInteger atomicInteger = new AtomicInteger(0);
-        this.mPackageCount = atomicInteger;
         this.mLatch = new CountDownLatch(i);
-        atomicInteger.set(i);
     }
 
-    public void packageDeleted(String str, int i) {
+    public final void packageDeleted(String str, int i) {
         if (i != 1) {
-            Slog.e("DevicePolicyManager", "Failed to delete package: " + str);
-            synchronized (this.mLatch) {
-                this.mLatch.notifyAll();
-            }
-            return;
-        }
-        if (this.mPackageCount.decrementAndGet() == 0) {
-            this.mSuccess = true;
-            Slog.i("DevicePolicyManager", "All non-required system apps with launcher icon, and all disallowed apps have been uninstalled.");
+            BootReceiver$$ExternalSyntheticOutline0.m("Failed to delete package: ", str, "DevicePolicyManager");
+            this.mFailed = true;
         }
         this.mLatch.countDown();
-    }
-
-    public boolean awaitPackagesDeletion() {
-        try {
-            this.mLatch.await(30L, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            Log.w("DevicePolicyManager", "Interrupted while waiting for package deletion", e);
-            Thread.currentThread().interrupt();
-        }
-        return this.mSuccess;
     }
 }

@@ -2,8 +2,9 @@ package com.android.server.enterprise.firewall;
 
 import android.util.SparseBooleanArray;
 
-/* loaded from: classes2.dex */
-public class KnoxNetIdManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class KnoxNetIdManager {
     public int mLastNetId;
     public final int mMinNetId;
     public final SparseBooleanArray mNetIdInUse;
@@ -18,36 +19,37 @@ public class KnoxNetIdManager {
         this.mMinNetId = i;
     }
 
-    public final int getNextAvailableNetIdLocked(int i, SparseBooleanArray sparseBooleanArray) {
-        int i2 = 64510;
-        while (true) {
-            int i3 = this.mMinNetId;
-            if (i2 >= i3) {
-                i = i > i3 ? i - 1 : 64510;
-                if (!sparseBooleanArray.get(i)) {
-                    return i;
-                }
-                i2--;
-            } else {
-                throw new IllegalStateException("No free netIds");
-            }
-        }
-    }
-
-    public int reserveNetId() {
-        int i;
-        synchronized (this.mNetIdInUse) {
-            int nextAvailableNetIdLocked = getNextAvailableNetIdLocked(this.mLastNetId, this.mNetIdInUse);
-            this.mLastNetId = nextAvailableNetIdLocked;
-            this.mNetIdInUse.put(nextAvailableNetIdLocked, true);
-            i = this.mLastNetId;
-        }
-        return i;
-    }
-
-    public void releaseNetId(int i) {
+    public final void releaseNetId(int i) {
         synchronized (this.mNetIdInUse) {
             this.mNetIdInUse.delete(i);
         }
+    }
+
+    public final int reserveNetId() {
+        int i;
+        synchronized (this.mNetIdInUse) {
+            try {
+                int i2 = this.mLastNetId;
+                SparseBooleanArray sparseBooleanArray = this.mNetIdInUse;
+                int i3 = 64510;
+                while (true) {
+                    int i4 = this.mMinNetId;
+                    if (i3 < i4) {
+                        throw new IllegalStateException("No free netIds");
+                    }
+                    i2 = i2 > i4 ? i2 - 1 : 64510;
+                    if (sparseBooleanArray.get(i2)) {
+                        i3--;
+                    } else {
+                        this.mLastNetId = i2;
+                        this.mNetIdInUse.put(i2, true);
+                        i = this.mLastNetId;
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return i;
     }
 }

@@ -1,24 +1,14 @@
 package android.net;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
 import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class UidStatsParcel implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.net.UidStatsParcel.1
-        @Override // android.os.Parcelable.Creator
-        public UidStatsParcel createFromParcel(Parcel parcel) {
-            UidStatsParcel uidStatsParcel = new UidStatsParcel();
-            uidStatsParcel.readFromParcel(parcel);
-            return uidStatsParcel;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public UidStatsParcel[] newArray(int i) {
-            return new UidStatsParcel[i];
-        }
-    };
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public int key = 0;
     public int uid = 0;
     public int sport = 0;
@@ -53,52 +43,25 @@ public class UidStatsParcel implements Parcelable {
     public long latestRxTime = 0;
     public long cliMacAddr = 0;
 
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return 0;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.net.UidStatsParcel$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            UidStatsParcel uidStatsParcel = new UidStatsParcel();
+            uidStatsParcel.readFromParcel(parcel);
+            return uidStatsParcel;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new UidStatsParcel[i];
+        }
     }
 
     @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeInt(this.key);
-        parcel.writeInt(this.uid);
-        parcel.writeInt(this.sport);
-        parcel.writeInt(this.dport);
-        parcel.writeInt(this.ipVersion);
-        parcel.writeInt(this.ipv4Addr);
-        parcel.writeInt(this.ipv6Addr1);
-        parcel.writeInt(this.ipv6Addr2);
-        parcel.writeInt(this.ipv6Addr3);
-        parcel.writeInt(this.ipv6Addr4);
-        parcel.writeInt(this.ipv4sAddr);
-        parcel.writeInt(this.ipv6sAddr1);
-        parcel.writeInt(this.ipv6sAddr2);
-        parcel.writeInt(this.ipv6sAddr3);
-        parcel.writeInt(this.ipv6sAddr4);
-        parcel.writeInt(this.tcpPackets);
-        parcel.writeInt(this.udpPackets);
-        parcel.writeInt(this.rxPackets);
-        parcel.writeInt(this.txPackets);
-        parcel.writeLong(this.rxBytes);
-        parcel.writeLong(this.txBytes);
-        parcel.writeLong(this.firstTxTime);
-        parcel.writeInt(this.maxTxPacketSize);
-        parcel.writeInt(this.minTxPacketSize);
-        parcel.writeLong(this.maxTxInterPacketTime);
-        parcel.writeLong(this.minTxInterPacketTime);
-        parcel.writeLong(this.latestTxTime);
-        parcel.writeInt(this.maxRxPacketSize);
-        parcel.writeInt(this.minRxPacketSize);
-        parcel.writeLong(this.maxRxInterPacketTime2);
-        parcel.writeLong(this.maxRxInterPacketTime);
-        parcel.writeLong(this.latestRxTime);
-        parcel.writeLong(this.cliMacAddr);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
+    public int describeContents() {
+        return 0;
     }
 
     public final void readFromParcel(Parcel parcel) {
@@ -287,5 +250,47 @@ public class UidStatsParcel implements Parcelable {
             parcel.setDataPosition(dataPosition + readInt);
             throw th;
         }
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeInt(this.key);
+        parcel.writeInt(this.uid);
+        parcel.writeInt(this.sport);
+        parcel.writeInt(this.dport);
+        parcel.writeInt(this.ipVersion);
+        parcel.writeInt(this.ipv4Addr);
+        parcel.writeInt(this.ipv6Addr1);
+        parcel.writeInt(this.ipv6Addr2);
+        parcel.writeInt(this.ipv6Addr3);
+        parcel.writeInt(this.ipv6Addr4);
+        parcel.writeInt(this.ipv4sAddr);
+        parcel.writeInt(this.ipv6sAddr1);
+        parcel.writeInt(this.ipv6sAddr2);
+        parcel.writeInt(this.ipv6sAddr3);
+        parcel.writeInt(this.ipv6sAddr4);
+        parcel.writeInt(this.tcpPackets);
+        parcel.writeInt(this.udpPackets);
+        parcel.writeInt(this.rxPackets);
+        parcel.writeInt(this.txPackets);
+        parcel.writeLong(this.rxBytes);
+        parcel.writeLong(this.txBytes);
+        parcel.writeLong(this.firstTxTime);
+        parcel.writeInt(this.maxTxPacketSize);
+        parcel.writeInt(this.minTxPacketSize);
+        parcel.writeLong(this.maxTxInterPacketTime);
+        parcel.writeLong(this.minTxInterPacketTime);
+        parcel.writeLong(this.latestTxTime);
+        parcel.writeInt(this.maxRxPacketSize);
+        parcel.writeInt(this.minRxPacketSize);
+        parcel.writeLong(this.maxRxInterPacketTime2);
+        parcel.writeLong(this.maxRxInterPacketTime);
+        parcel.writeLong(this.latestRxTime);
+        parcel.writeLong(this.cliMacAddr);
+        int dataPosition2 = parcel.dataPosition();
+        parcel.setDataPosition(dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(dataPosition2, dataPosition, parcel, dataPosition2);
     }
 }

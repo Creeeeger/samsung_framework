@@ -1,797 +1,688 @@
 package com.android.server.knox.zt.devicetrust;
 
-import android.os.Build;
+import android.app.ActivityManager;
+import android.app.ActivityManagerInternal;
+import android.app.IActivityManager;
+import android.app.IProcessObserver;
+import android.content.Context;
+import android.net.util.NetdService$$ExternalSyntheticOutline0;
+import android.os.Binder;
 import android.os.Bundle;
-import android.os.IZtdListener;
-import android.os.Process;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.SystemClock;
-import android.os.ThreadLocalWorkSource;
-import android.os.UserHandle;
 import android.util.Log;
+import com.android.server.DirEncryptService$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.LocalServices;
+import com.android.server.VpnManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountsDb$CeDatabaseHelper$$ExternalSyntheticOutline0;
+import com.android.server.audio.AudioDeviceInventory$$ExternalSyntheticOutline0;
 import com.android.server.knox.zt.devicetrust.EndpointMonitorImpl;
+import com.android.server.knox.zt.devicetrust.data.AppBindingData;
+import com.android.server.knox.zt.devicetrust.data.AppDyingData;
 import com.android.server.knox.zt.devicetrust.data.EndpointData;
-import com.android.server.knox.zt.devicetrust.data.FsData;
-import com.android.server.knox.zt.devicetrust.data.PktData;
-import com.android.server.knox.zt.devicetrust.data.ScData;
-import com.android.server.knox.zt.devicetrust.data.SkData;
+import com.android.server.knox.zt.devicetrust.task.AbnormalPacketsMonitoring;
+import com.android.server.knox.zt.devicetrust.task.AppProcessMonitoring;
+import com.android.server.knox.zt.devicetrust.task.ExecveMonitoring;
+import com.android.server.knox.zt.devicetrust.task.HandleableMonitoringTask;
+import com.android.server.knox.zt.devicetrust.task.InsecurePortsMonitoring;
+import com.android.server.knox.zt.devicetrust.task.LocalNetworkPktMonitoring;
+import com.android.server.knox.zt.devicetrust.task.MonitoringTask;
+import com.android.server.knox.zt.devicetrust.task.PacketMonitoring;
+import com.android.server.knox.zt.devicetrust.task.PrivilegeEscalationMonitoring;
+import com.android.server.knox.zt.devicetrust.task.ProcessMonitoring;
+import com.android.server.knox.zt.devicetrust.task.ReschedulableMonitoringTask;
+import com.android.server.knox.zt.devicetrust.task.SocketStateMonitoring;
+import com.android.server.knox.zt.devicetrust.task.SystemCallMonitoring;
+import com.android.server.knox.zt.devicetrust.task.TaskRescheduler;
+import com.android.server.knox.zt.networktrust.KnoxNetworkEventService;
 import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
 import com.samsung.android.knox.zt.devicetrust.IEndpointMonitorListener;
-import com.samsung.android.server.pm.PmServerUtils;
+import com.samsung.android.knox.zt.internal.IKnoxZtInternalService;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class EndpointMonitorImpl {
-    public static final boolean DEBUG = isDebuggableBinary();
-    public static final long DEFAULT_INIT_DELAY_MS = 100;
-    public static final long DEFAULT_PERIOD_MS = 10;
-    public static final String DomainAccessMonitorThreadName = "DomainMonitor";
-    public static final String FileAccessMonitorThreadName = "FileMonitor";
-    public static final int MAX_SESSION_CNT = 2;
-    public static final String SockStateChangeMonitorThreadName = "SocketMonitor";
-    public static final String SystemCallMonitorThreadName = "SystemCallMonitor";
+    public static final String KZT_FW_PKG_NAME = "com.samsung.android.knox.zt.framework";
     public static final String TAG = "EndpointMonitorImpl";
-    public static final String TlsPacketMonitorThreadName = "TlsPacketMonitor";
-    public boolean mInitialized;
-    public OemNetdAdapterImpl mOemNetdAdapterImpl;
-    public Map mSessions;
-    public final Object mSessionsLock = new Object();
-    public final long mBootTimeNanos = (System.currentTimeMillis() * 1000000) - SystemClock.elapsedRealtimeNanos();
+    public final ActivityManagerInternal mAmInternal;
+    public long mBootTimeNanos;
+    public final Injector mInjector;
+    public final EndpointMonitorInternal mInternal;
+    public volatile int mKztFrameworkPid;
+    public final IProcessObserver mProcessObserver;
+    public final AtomicBoolean mProcessObserverRegistered;
+    public final MonitoringSession mSession;
+    public final Object mSessionLock;
 
-    public native ArrayList nativeReadFsData();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Injector {
+        public final long mBootTimeNanos;
+        public Context mContext;
+        public Handler mHandler;
+        public HandlerThread mHandlerThread;
+        public final EndpointMonitorNative mNative;
+        public final OemNetdAdapter mOemNetdAdapterImpl;
+        public final TaskRescheduler mTaskRescheduler;
+        public IKnoxZtInternalService mZtInternalService;
 
-    public native ArrayList nativeReadPktData();
-
-    public native ArrayList nativeReadScData();
-
-    public native ArrayList nativeReadSkData();
-
-    public native int nativeSetBpfHelper(OemNetdAdapter oemNetdAdapter);
-
-    public native int nativeSetTargetFiles(ArrayList arrayList, ArrayList arrayList2);
-
-    public native int nativeSetTracer(int i);
-
-    public native int nativeStartDpTracing();
-
-    public native int nativeStartTracing(int i);
-
-    public native int nativeStopTracing(int i);
-
-    public final synchronized void ensureInitialized() {
-        if (!this.mInitialized) {
-            this.mSessions = new HashMap();
+        public Injector() {
+            this.mBootTimeNanos = (System.currentTimeMillis() * 1000000) - SystemClock.elapsedRealtimeNanos();
+            this.mNative = new EndpointMonitorNative();
+            this.mTaskRescheduler = new TaskRescheduler();
             this.mOemNetdAdapterImpl = new OemNetdAdapterImpl();
-            this.mInitialized = true;
-            Log.d(TAG, "Lazily initialized");
         }
-    }
 
-    public final int setBpfHelper(OemNetdAdapter oemNetdAdapter) {
-        try {
-            return nativeSetBpfHelper(oemNetdAdapter);
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return -1;
+        public Injector(Context context) {
+            this.mBootTimeNanos = (System.currentTimeMillis() * 1000000) - SystemClock.elapsedRealtimeNanos();
+            EndpointMonitorNative endpointMonitorNative = new EndpointMonitorNative();
+            this.mNative = endpointMonitorNative;
+            this.mTaskRescheduler = new TaskRescheduler();
+            this.mOemNetdAdapterImpl = new OemNetdAdapterImpl(context, endpointMonitorNative);
+            this.mContext = context;
         }
-    }
 
-    public final long calculateEventTime(long j) {
-        return (this.mBootTimeNanos + j) / 1000000;
-    }
+        public final IActivityManager getActivityManager() {
+            return ActivityManager.getService();
+        }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$createMonitorRunnable$0(int i) {
-        onFileAccessDetected(i, readFsData());
-    }
+        public final ActivityManagerInternal getActivityManagerInternal() {
+            return (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
+        }
 
-    public final Runnable createMonitorRunnable(int i, final int i2) {
-        if (i == 2) {
-            return new Runnable() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$$ExternalSyntheticLambda4
-                @Override // java.lang.Runnable
-                public final void run() {
-                    EndpointMonitorImpl.this.lambda$createMonitorRunnable$0(i2);
+        public final AppMonitor getAppMonitor() {
+            return AppMonitor.get();
+        }
+
+        public final long getBootTimeNanos() {
+            return this.mBootTimeNanos;
+        }
+
+        public final Context getContext() {
+            return this.mContext;
+        }
+
+        public final synchronized Handler getHandler() {
+            try {
+                if (this.mHandler == null) {
+                    this.mHandler = new Handler(getHandlerThread().getLooper());
                 }
-            };
+            } catch (Throwable th) {
+                throw th;
+            }
+            return this.mHandler;
         }
-        if (i == 6) {
-            return null;
-        }
-        if (i == 3) {
-            return new Runnable() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$$ExternalSyntheticLambda5
-                @Override // java.lang.Runnable
-                public final void run() {
-                    EndpointMonitorImpl.this.lambda$createMonitorRunnable$1(i2);
+
+        public final synchronized HandlerThread getHandlerThread() {
+            try {
+                if (this.mHandlerThread == null) {
+                    HandlerThread handlerThread = new HandlerThread(EndpointMonitorImpl.TAG, 10);
+                    this.mHandlerThread = handlerThread;
+                    handlerThread.start();
                 }
-            };
+            } catch (Throwable th) {
+                throw th;
+            }
+            return this.mHandlerThread;
         }
-        if (i == 1) {
-            return new Runnable() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$$ExternalSyntheticLambda6
-                @Override // java.lang.Runnable
-                public final void run() {
-                    EndpointMonitorImpl.this.lambda$createMonitorRunnable$2(i2);
+
+        public final KnoxNetworkEventService getKnoxNetworkEventService() {
+            KnoxNetworkEventService knoxNetworkEventService;
+            Context context = this.mContext;
+            synchronized (KnoxNetworkEventService.class) {
+                try {
+                    if (KnoxNetworkEventService.mInstance == null) {
+                        KnoxNetworkEventService.mInstance = new KnoxNetworkEventService(context);
+                    }
+                    knoxNetworkEventService = KnoxNetworkEventService.mInstance;
+                } catch (Throwable th) {
+                    throw th;
                 }
-            };
+            }
+            return knoxNetworkEventService;
         }
-        if (i == 5) {
-            return new Runnable() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$$ExternalSyntheticLambda7
-                @Override // java.lang.Runnable
-                public final void run() {
-                    EndpointMonitorImpl.this.lambda$createMonitorRunnable$3(i2);
+
+        public final EndpointMonitorNative getNative() {
+            return this.mNative;
+        }
+
+        public final OemNetdAdapter getOemNetdAdapter() {
+            return this.mOemNetdAdapterImpl;
+        }
+
+        public final TaskRescheduler getTaskRescheduler() {
+            return this.mTaskRescheduler;
+        }
+
+        public final IKnoxZtInternalService getZtInternalService() {
+            if (this.mZtInternalService == null) {
+                this.mZtInternalService = IKnoxZtInternalService.Stub.asInterface(ServiceManager.getService("knoxztinternal"));
+            }
+            return this.mZtInternalService;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalService extends EndpointMonitorInternal {
+        public LocalService() {
+        }
+
+        public final void reportApplicationBinding(long j, int i, int i2, String str, String str2) {
+            EndpointMonitorImpl.this.mSession.findAndHandle(7, new AppBindingData(EndpointMonitorConst.TRACE_EVENT_APP_BINDING, j * 1000000, i, i2, str, str2).adjustTime(EndpointMonitorImpl.this.mBootTimeNanos));
+        }
+
+        public final void reportApplicationDying(long j, int i, int i2, String str, long j2) {
+            EndpointMonitorImpl.this.mSession.findAndHandle(7, new AppDyingData(EndpointMonitorConst.TRACE_EVENT_APP_DYING, j * 1000000, i, i2, str, j2).adjustTime(EndpointMonitorImpl.this.mBootTimeNanos));
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class MonitoringSession {
+        public final Object mLock;
+        public final Map mTasks = new HashMap();
+
+        public MonitoringSession(Object obj) {
+            this.mLock = obj;
+        }
+
+        public static void lambda$findByUid$0(int i, List list, Integer num, MonitoringTask monitoringTask) {
+            if (monitoringTask.mUid == i) {
+                list.add(monitoringTask);
+            }
+        }
+
+        public final void add(MonitoringTask monitoringTask) {
+            synchronized (this.mLock) {
+                this.mTasks.put(Integer.valueOf(monitoringTask.mType), monitoringTask);
+            }
+        }
+
+        public final boolean contains() {
+            boolean z;
+            synchronized (this.mLock) {
+                z = this.mTasks.size() > 0;
+            }
+            return z;
+        }
+
+        public final boolean contains(int i) {
+            boolean containsKey;
+            synchronized (this.mLock) {
+                containsKey = this.mTasks.containsKey(Integer.valueOf(i));
+            }
+            return containsKey;
+        }
+
+        public final boolean containsWithUid(int i) {
+            synchronized (this.mLock) {
+                try {
+                    Iterator it = this.mTasks.values().iterator();
+                    while (it.hasNext()) {
+                        if (((MonitoringTask) it.next()).mUid == i) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } catch (Throwable th) {
+                    throw th;
                 }
-            };
+            }
         }
-        return null;
+
+        public final MonitoringTask find(int i) {
+            MonitoringTask monitoringTask;
+            synchronized (this.mLock) {
+                monitoringTask = (MonitoringTask) this.mTasks.get(Integer.valueOf(i));
+            }
+            return monitoringTask;
+        }
+
+        public final void findAndHandle(int i, EndpointData endpointData) {
+            MonitoringTask find = find(i);
+            if (find instanceof HandleableMonitoringTask) {
+                ((HandleableMonitoringTask) find).handle(endpointData);
+            }
+        }
+
+        public final List findByUid(final int i) {
+            final ArrayList arrayList = new ArrayList();
+            synchronized (this.mLock) {
+                this.mTasks.forEach(new BiConsumer() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$MonitoringSession$$ExternalSyntheticLambda0
+                    @Override // java.util.function.BiConsumer
+                    public final void accept(Object obj, Object obj2) {
+                        EndpointMonitorImpl.MonitoringSession.lambda$findByUid$0(i, arrayList, (Integer) obj, (MonitoringTask) obj2);
+                    }
+                });
+            }
+            return arrayList;
+        }
+
+        public final void remove(int i) {
+            synchronized (this.mLock) {
+                this.mTasks.remove(Integer.valueOf(i));
+            }
+        }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$createMonitorRunnable$1(int i) {
-        onSocketStateChanged(i, readSkData());
+    public EndpointMonitorImpl() {
+        this(new Injector());
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$createMonitorRunnable$2(int i) {
-        onSystemCallDetected(i, readScData());
+    public EndpointMonitorImpl(Context context) {
+        this(new Injector(context));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$createMonitorRunnable$3(int i) {
-        onTlsPacketDetected(i, readPktData());
-    }
+    public EndpointMonitorImpl(Injector injector) {
+        this.mInjector = injector;
+        this.mBootTimeNanos = injector.mBootTimeNanos;
+        Object obj = new Object();
+        this.mSessionLock = obj;
+        this.mSession = new MonitoringSession(obj);
+        LocalService localService = new LocalService();
+        this.mInternal = localService;
+        LocalServices.addService(EndpointMonitorInternal.class, localService);
+        this.mAmInternal = injector.getActivityManagerInternal();
+        this.mProcessObserverRegistered = new AtomicBoolean(false);
+        this.mProcessObserver = new IProcessObserver.Stub() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl.1
+            public final void onForegroundActivitiesChanged(int i, int i2, boolean z) {
+            }
 
-    public final ThreadFactory createMonitorFactory(int i) {
-        final String str = i == 2 ? FileAccessMonitorThreadName : i == 6 ? DomainAccessMonitorThreadName : i == 3 ? SockStateChangeMonitorThreadName : i == 1 ? SystemCallMonitorThreadName : i == 5 ? TlsPacketMonitorThreadName : "Nop";
-        return new ThreadFactory() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$$ExternalSyntheticLambda1
-            @Override // java.util.concurrent.ThreadFactory
-            public final Thread newThread(Runnable runnable) {
-                Thread lambda$createMonitorFactory$5;
-                lambda$createMonitorFactory$5 = EndpointMonitorImpl.lambda$createMonitorFactory$5(str, runnable);
-                return lambda$createMonitorFactory$5;
+            public final void onForegroundServicesChanged(int i, int i2, int i3) {
+            }
+
+            public final void onProcessDied(int i, int i2) {
+                if (i2 == 1000 && EndpointMonitorImpl.this.mSession.containsWithUid(i2) && EndpointMonitorImpl.this.mKztFrameworkPid != 0 && EndpointMonitorImpl.this.mKztFrameworkPid == i) {
+                    EndpointMonitorImpl.this.stopMonitoring(i2);
+                    EndpointMonitorImpl.this.mKztFrameworkPid = 0;
+                }
+            }
+
+            public final void onProcessStarted(int i, int i2, int i3, String str, String str2) {
             }
         };
     }
 
-    public static /* synthetic */ Thread lambda$createMonitorFactory$5(String str, final Runnable runnable) {
-        Log.i(TAG, "Monitor created : " + str);
-        Thread thread = new Thread(new Runnable() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                EndpointMonitorImpl.lambda$createMonitorFactory$4(runnable);
-            }
-        }, str);
-        thread.setPriority(5);
-        thread.setDaemon(true);
-        return thread;
+    public final boolean containsNetworkEventFlag(int i) {
+        return (32768 & i) > 0 || (65536 & i) > 0 || (131072 & i) > 0;
     }
 
-    public static /* synthetic */ void lambda$createMonitorFactory$4(Runnable runnable) {
-        ThreadLocalWorkSource.setUid(Process.myUid());
-        runnable.run();
-    }
-
-    public final MonitorSession getMonitorSessionLocked(int i, int i2) {
-        if (i == 1) {
-            return getSystemCallMonitorSessionLocked(i2);
+    public final MonitoringTask createMonitoringTask(int i, int i2, int i3, int i4, int i5, IEndpointMonitorListener iEndpointMonitorListener, Predicate predicate) {
+        MonitoringTask rescheduleMonitoringTask = rescheduleMonitoringTask(i, i2, i3, i4, i5, iEndpointMonitorListener, predicate);
+        if (rescheduleMonitoringTask instanceof ReschedulableMonitoringTask) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(new StringBuilder("Task rescheduled = "), ((ReschedulableMonitoringTask) rescheduleMonitoringTask).mFingerprint, TAG);
+            return rescheduleMonitoringTask;
         }
-        if (i == 2) {
-            return getFileMonitorSessionLocked(i2);
+        switch (i) {
+            case 1:
+                return new SystemCallMonitoring(1, i2, i3, i4, i5, iEndpointMonitorListener, predicate, this.mInjector);
+            case 2:
+            case 4:
+            case 6:
+            case 8:
+            case 9:
+            case 13:
+            default:
+                return rescheduleMonitoringTask;
+            case 3:
+                return new SocketStateMonitoring(3, i2, i3, i4, i5, iEndpointMonitorListener, predicate, this.mInjector);
+            case 5:
+                return new PacketMonitoring(5, i2, i3, i4, i5, iEndpointMonitorListener, predicate, this.mInjector);
+            case 7:
+                return new AppProcessMonitoring(i2, i3, i4, i5, iEndpointMonitorListener, predicate, this.mInjector);
+            case 10:
+                return new ExecveMonitoring(i2, i3, i4, i5, iEndpointMonitorListener, predicate, this.mInjector);
+            case 11:
+                return new ProcessMonitoring(i2, i3, i4, i5, iEndpointMonitorListener, predicate, this.mInjector);
+            case 12:
+                return new PrivilegeEscalationMonitoring(i2, i3, i4, i5, iEndpointMonitorListener, predicate, this.mInjector);
+            case 14:
+                return new InsecurePortsMonitoring(i2, i, i3, i4, i5, iEndpointMonitorListener, this.mInjector);
+            case 15:
+                return new AbnormalPacketsMonitoring(i2, i, i3, i4, i5, iEndpointMonitorListener, this.mInjector);
+            case 16:
+                return new LocalNetworkPktMonitoring(i2, i, i3, i4, i5, iEndpointMonitorListener, this.mInjector);
+        }
+    }
+
+    public final Predicate getFilter(Bundle bundle) {
+        if (bundle.getBoolean(EndpointMonitorConst.OPT_TRACE_APPLICATION_ONLY, false)) {
+            return new EndpointMonitorImpl$$ExternalSyntheticLambda0();
+        }
+        return null;
+    }
+
+    public final int getFlags(int i, Bundle bundle) {
+        if (i == 1) {
+            return bundle.getInt("flags", 0);
         }
         if (i == 3) {
-            return getSocketMonitorSessionLocked(i2);
+            return 32;
         }
         if (i == 5) {
-            return getTlsPacketMonitorSessionLocked(i2);
+            return 64;
         }
-        if (i != 6) {
-            return null;
+        if (i == 7) {
+            return 128;
         }
-        return getDomainMonitorSessionLocked(i2);
+        if (i == 4) {
+            return 2048;
+        }
+        if (i == 10) {
+            return 4096;
+        }
+        if (i == 11) {
+            return 8192;
+        }
+        if (i == 12) {
+            return EndpointMonitorConst.FLAG_TRACING_PROCESS_PERMISSIONS_MODIFICATION;
+        }
+        if (i == 14) {
+            return 32768;
+        }
+        return i == 15 ? EndpointMonitorConst.FLAG_TRACING_NETWORK_EVENT_ABNORMAL_PKT : i == 16 ? 131072 : 0;
     }
 
-    public final MonitorSession getFileMonitorSessionLocked(int i) {
-        MonitorSession monitorSession = (MonitorSession) this.mSessions.get(Integer.valueOf(i));
-        if (monitorSession == null || monitorSession.type != 2) {
-            return null;
+    public final int getNetworkEventTypeByFlag(int i) {
+        if ((32768 & i) > 0) {
+            return 14;
         }
-        return monitorSession;
-    }
-
-    public final MonitorSession getDomainMonitorSessionLocked(int i) {
-        MonitorSession monitorSession = (MonitorSession) this.mSessions.get(Integer.valueOf(i));
-        if (monitorSession == null || monitorSession.type != 6) {
-            return null;
+        if ((65536 & i) > 0) {
+            return 15;
         }
-        return monitorSession;
-    }
-
-    public final MonitorSession getSocketMonitorSessionLocked(int i) {
-        MonitorSession monitorSession = (MonitorSession) this.mSessions.get(Integer.valueOf(i));
-        if (monitorSession == null || monitorSession.type != 3) {
-            return null;
-        }
-        return monitorSession;
-    }
-
-    public final MonitorSession getSystemCallMonitorSessionLocked(int i) {
-        MonitorSession monitorSession = (MonitorSession) this.mSessions.get(Integer.valueOf(i));
-        if (monitorSession == null || monitorSession.type != 1) {
-            return null;
-        }
-        return monitorSession;
-    }
-
-    public final MonitorSession getTlsPacketMonitorSessionLocked(int i) {
-        MonitorSession monitorSession = (MonitorSession) this.mSessions.get(Integer.valueOf(i));
-        if (monitorSession == null || monitorSession.type != 5) {
-            return null;
-        }
-        return monitorSession;
-    }
-
-    /* loaded from: classes2.dex */
-    public class MonitorSession {
-        public final Set allowedUids = new HashSet();
-        public final ScheduledExecutorService executor;
-        public final int extras;
-        public final Predicate filter;
-        public final int flags;
-        public final IEndpointMonitorListener listener;
-        public final int mode;
-        public final Runnable monitor;
-        public final int requestorUid;
-        public final Map targets;
-        public final int type;
-        public final IZtdListener uadListener;
-
-        public static /* synthetic */ boolean lambda$new$0(EndpointData endpointData) {
-            return true;
-        }
-
-        public int startLocked() {
-            if (this.monitor == null) {
-                return -2;
-            }
-            EndpointMonitorImpl.this.mSessions.put(Integer.valueOf(this.requestorUid), this);
-            this.executor.scheduleAtFixedRate(this.monitor, 100L, 10L, TimeUnit.MILLISECONDS);
-            return 0;
-        }
-
-        public void onEvent(EndpointData endpointData) {
-            if (this.filter.test(endpointData)) {
-                int i = this.mode;
-                if (i == 1) {
-                    this.listener.onEventSimplified(this.type, endpointData.adjustTime(EndpointMonitorImpl.this.mBootTimeNanos).updateExtras(this.extras).toLine());
-                } else if (i == 2) {
-                    this.listener.onEventGeneralized(this.type, endpointData.adjustTime(EndpointMonitorImpl.this.mBootTimeNanos).updateExtras(this.extras).toJson());
-                } else {
-                    if (i != 3) {
-                        return;
-                    }
-                    this.listener.onEvent(this.type, endpointData.adjustTime(EndpointMonitorImpl.this.mBootTimeNanos).updateExtras(this.extras).toBundle());
-                }
-            }
-        }
-
-        public MonitorSession(int i, int i2, int[] iArr, Map map, IZtdListener iZtdListener, IEndpointMonitorListener iEndpointMonitorListener, Predicate predicate, int i3, int i4, int i5) {
-            this.type = i;
-            this.requestorUid = i2;
-            if (iArr != null) {
-                for (int i6 : iArr) {
-                    this.allowedUids.add(Integer.valueOf(i6));
-                }
-            }
-            this.targets = map;
-            this.uadListener = iZtdListener;
-            this.listener = iEndpointMonitorListener;
-            this.filter = predicate == null ? new Predicate() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$MonitorSession$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$new$0;
-                    lambda$new$0 = EndpointMonitorImpl.MonitorSession.lambda$new$0((EndpointData) obj);
-                    return lambda$new$0;
-                }
-            } : predicate;
-            this.executor = Executors.newSingleThreadScheduledExecutor(EndpointMonitorImpl.this.createMonitorFactory(i));
-            this.monitor = EndpointMonitorImpl.this.createMonitorRunnable(i, i2);
-            this.flags = i3;
-            this.extras = i4;
-            this.mode = i5;
-        }
-    }
-
-    public final Map createTargetFiles(List list, List list2) {
-        if (list == null || list2 == null || list.size() != list2.size() || list.size() == 0) {
-            Log.e(TAG, "Failed to create target files due to invalid args");
-            return null;
-        }
-        HashMap hashMap = new HashMap();
-        for (int i = 0; i < list.size(); i++) {
-            try {
-                String ensureNotNull = ensureNotNull((String) list2.get(i));
-                hashMap.put(Long.valueOf(Long.parseLong(ensureNotNull)), ensureNotNull((String) list.get(i)));
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return hashMap;
-    }
-
-    public int startTracing(int i, int i2, Bundle bundle, IEndpointMonitorListener iEndpointMonitorListener) {
-        int i3;
-        ensureInitialized();
-        String str = TAG;
-        Log.i(str, "startTracing() - type : " + i + ", reqId : " + i2);
-        if (bundle != null && iEndpointMonitorListener != null && EndpointMonitorConst.validateTraceType(i)) {
-            if (i == 1) {
-                i3 = bundle.getInt("flags", 0);
-            } else {
-                i3 = i == 3 ? 32 : i == 2 ? 1 : i == 5 ? 64 : 0;
-            }
-            if (i3 <= 0) {
-                return -2;
-            }
-            int i4 = bundle.getInt("extras", 0);
-            int i5 = bundle.getInt("mode", 3);
-            if (i5 >= 1 && i5 <= 3) {
-                Predicate predicate = bundle.getBoolean(EndpointMonitorConst.OPT_TRACE_APPLICATION_ONLY, false) ? new Predicate() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$$ExternalSyntheticLambda2
-                    @Override // java.util.function.Predicate
-                    public final boolean test(Object obj) {
-                        boolean lambda$startTracing$6;
-                        lambda$startTracing$6 = EndpointMonitorImpl.lambda$startTracing$6((EndpointData) obj);
-                        return lambda$startTracing$6;
-                    }
-                } : null;
-                synchronized (this.mSessionsLock) {
-                    if (getMonitorSessionLocked(i, i2) != null) {
-                        Log.e(str, "Failed :: Session is already opened");
-                        return -4;
-                    }
-                    if (this.mSessions.size() >= 2) {
-                        Log.e(str, "Failed :: Session pool is full");
-                        return -3;
-                    }
-                    int prepare = prepare(i3, i2);
-                    if (prepare != 0) {
-                        Log.e(str, "prepare(" + prepare + ")");
-                        return -5;
-                    }
-                    int startTracing = startTracing(i3);
-                    if (startTracing != 0) {
-                        Log.e(str, "startTracing(" + startTracing + ")");
-                        return -5;
-                    }
-                    return createMonitorSessionForEpm(i, i2, i3, i4, i5, iEndpointMonitorListener, predicate).startLocked();
-                }
-            }
-        }
-        return -2;
-    }
-
-    public static /* synthetic */ boolean lambda$startTracing$6(EndpointData endpointData) {
-        return UserHandle.isApp(endpointData.getUid());
+        return (131072 & i) > 0 ? 16 : -1;
     }
 
     public final int prepare(int i, int i2) {
-        if ((i & 2) > 0 || (i & 4) > 0) {
-            return setTracer(i2);
+        if (i2 == 1000) {
+            int callingPid = Binder.getCallingPid();
+            if (KZT_FW_PKG_NAME.equals(this.mAmInternal.getPackageNameByPid(callingPid))) {
+                this.mKztFrameworkPid = callingPid;
+            } else {
+                this.mKztFrameworkPid = 0;
+            }
         }
         if ((i & 64) > 0) {
-            return this.mOemNetdAdapterImpl.attachProbes(i);
+            return this.mInjector.mOemNetdAdapterImpl.attachProbes(i);
+        }
+        if ((i & 4096) > 0 || (i & 8192) > 0 || (i & EndpointMonitorConst.FLAG_TRACING_PROCESS_PERMISSIONS_MODIFICATION) > 0 || (i & 32) > 0) {
+            return this.mInjector.mNative.setOffsets();
+        }
+        if (containsNetworkEventFlag(i)) {
+            try {
+                Log.i(TAG, "prepare() startMonitoringNetworkEvents() flags = " + i);
+                KnoxNetworkEventService knoxNetworkEventService = this.mInjector.getKnoxNetworkEventService();
+                int networkEventTypeByFlag = getNetworkEventTypeByFlag(i);
+                synchronized (knoxNetworkEventService) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("eventType", networkEventTypeByFlag);
+                    KnoxNetworkEventService.KnoxNwEventHandler knoxNwEventHandler = knoxNetworkEventService.mHandler;
+                    if (knoxNwEventHandler != null) {
+                        knoxNetworkEventService.mHandler.sendMessage(Message.obtain(knoxNwEventHandler, 1, 0, 0, bundle));
+                    }
+                }
+            } catch (Exception e) {
+                DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "prepare() startMonitoringNetworkEvents error ", TAG);
+                return -1;
+            }
         }
         return 0;
+    }
+
+    public final void registerProcessObserverLocked() {
+        if (!this.mSession.contains() || this.mProcessObserverRegistered.getAndSet(true)) {
+            return;
+        }
+        try {
+            this.mInjector.getClass();
+            ActivityManager.getService().registerProcessObserver(this.mProcessObserver);
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("Failed to register process observer: ", e, TAG);
+        }
+    }
+
+    public final MonitoringTask rescheduleMonitoringTask(int i, int i2, int i3, int i4, int i5, IEndpointMonitorListener iEndpointMonitorListener, Predicate predicate) {
+        return this.mInjector.mTaskRescheduler.reschedule(i, i2, i3, i4, i5, iEndpointMonitorListener, predicate);
     }
 
     public final int reset(int i) {
         if ((i & 64) > 0) {
-            return this.mOemNetdAdapterImpl.detachProbes(i);
+            return this.mInjector.mOemNetdAdapterImpl.detachProbes(i);
+        }
+        if (containsNetworkEventFlag(i)) {
+            try {
+                Log.i(TAG, "reset() disableNetworkEventMonitoring called");
+                KnoxNetworkEventService knoxNetworkEventService = this.mInjector.getKnoxNetworkEventService();
+                int networkEventTypeByFlag = getNetworkEventTypeByFlag(i);
+                synchronized (knoxNetworkEventService) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("eventType", networkEventTypeByFlag);
+                    KnoxNetworkEventService.KnoxNwEventHandler knoxNwEventHandler = knoxNetworkEventService.mHandler;
+                    if (knoxNwEventHandler != null) {
+                        knoxNetworkEventService.mHandler.sendMessage(Message.obtain(knoxNwEventHandler, 2, 0, 0, bundle));
+                    }
+                }
+            } catch (Exception e) {
+                DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "reset() disableNetworkEventMonitoring error ", TAG);
+                return -1;
+            }
         }
         return 0;
     }
 
-    public final int startTracing(int i) {
-        try {
-            return nativeStartTracing(i);
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public final int setTracer(int i) {
-        try {
-            return nativeSetTracer(i);
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public final MonitorSession createMonitorSessionForUad(int i, int i2, int[] iArr, Map map, IZtdListener iZtdListener) {
-        return createMonitorSession(i, i2, iArr, map, iZtdListener, null, null, 0, 0, 0);
-    }
-
-    public final MonitorSession createMonitorSessionForEpm(int i, int i2, int i3, int i4, int i5, IEndpointMonitorListener iEndpointMonitorListener, Predicate predicate) {
-        return createMonitorSession(i, i2, new int[0], new HashMap(), null, iEndpointMonitorListener, predicate, i3, i4, i5);
-    }
-
-    public final MonitorSession createMonitorSession(int i, int i2, int[] iArr, Map map, IZtdListener iZtdListener, IEndpointMonitorListener iEndpointMonitorListener, Predicate predicate, int i3, int i4, int i5) {
-        return new MonitorSession(i, i2, iArr, map, iZtdListener, iEndpointMonitorListener, predicate, i3, i4, i5);
-    }
-
-    public int stopTracing(int i, int i2) {
-        ensureInitialized();
+    public final int startMonitoring(int i, int i2, Bundle bundle, IEndpointMonitorListener iEndpointMonitorListener) {
+        int flags;
         String str = TAG;
-        Log.i(str, "stopTracing() - type : " + i + ", reqId : " + i2);
+        AccountsDb$CeDatabaseHelper$$ExternalSyntheticOutline0.m(i, i2, "startMonitoring() - type : ", ", reqId : ", str);
+        if (bundle == null || iEndpointMonitorListener == null || !EndpointMonitorConst.validateTraceType(i) || (flags = getFlags(i, bundle)) <= 0) {
+            return -2;
+        }
+        int i3 = bundle.getInt("mode", 3);
+        if (!EndpointMonitorConst.validateMode(i3)) {
+            return -2;
+        }
+        int i4 = bundle.getInt("extras", 0);
+        Predicate filter = getFilter(bundle);
+        synchronized (this.mSessionLock) {
+            try {
+                if (this.mSession.contains(i)) {
+                    Log.e(str, "Failed :: Task already running");
+                    return -4;
+                }
+                int prepare = prepare(flags, i2);
+                if (prepare != 0) {
+                    Log.e(str, "prepare(" + prepare + ")");
+                    return -5;
+                }
+                int startTracing = startTracing(flags);
+                if (startTracing == 0) {
+                    return startMonitoringTask(createMonitoringTask(i, i2, i3, flags, i4, iEndpointMonitorListener, filter));
+                }
+                Log.e(str, "startTracing(" + startTracing + ")");
+                return -5;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:6:0x0025  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int startMonitoringTask(com.android.server.knox.zt.devicetrust.task.MonitoringTask r3) {
+        /*
+            r2 = this;
+            boolean r0 = r3 instanceof com.android.server.knox.zt.devicetrust.task.ReschedulableMonitoringTask
+            if (r0 == 0) goto Lb
+            r0 = r3
+            com.android.server.knox.zt.devicetrust.task.ReschedulableMonitoringTask r0 = (com.android.server.knox.zt.devicetrust.task.ReschedulableMonitoringTask) r0
+            r0.schedule()
+            goto L20
+        Lb:
+            boolean r0 = r3 instanceof com.android.server.knox.zt.devicetrust.task.SchedulableMonitoringTask
+            if (r0 == 0) goto L16
+            r0 = r3
+            com.android.server.knox.zt.devicetrust.task.SchedulableMonitoringTask r0 = (com.android.server.knox.zt.devicetrust.task.SchedulableMonitoringTask) r0
+            r0.schedule()
+            goto L20
+        L16:
+            boolean r0 = r3 instanceof com.android.server.knox.zt.devicetrust.task.HandleableMonitoringTask
+            if (r0 == 0) goto L22
+            r0 = r3
+            com.android.server.knox.zt.devicetrust.task.HandleableMonitoringTask r0 = (com.android.server.knox.zt.devicetrust.task.HandleableMonitoringTask) r0
+            r0.establish()
+        L20:
+            r0 = 0
+            goto L23
+        L22:
+            r0 = -5
+        L23:
+            if (r0 != 0) goto L2d
+            com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$MonitoringSession r1 = r2.mSession
+            r1.add(r3)
+            r2.registerProcessObserverLocked()
+        L2d:
+            return r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl.startMonitoringTask(com.android.server.knox.zt.devicetrust.task.MonitoringTask):int");
+    }
+
+    public final int startTracing(int i) {
+        if (!containsNetworkEventFlag(i)) {
+            return this.mInjector.mNative.startTracing(i);
+        }
+        Log.i(TAG, "prepare() startNetworkEventLogging called");
+        return this.mInjector.mNative.startNetworkEventLogging(getNetworkEventTypeByFlag(i));
+    }
+
+    public final int stopMonitoring(int i, int i2) {
+        String str = TAG;
+        AccountsDb$CeDatabaseHelper$$ExternalSyntheticOutline0.m(i, i2, "stopMonitoring() - type : ", ", reqId : ", str);
         if (!EndpointMonitorConst.validateTraceType(i)) {
             return -2;
         }
-        synchronized (this.mSessionsLock) {
-            MonitorSession monitorSessionLocked = getMonitorSessionLocked(i, i2);
-            if (monitorSessionLocked == null) {
-                Log.e(str, "Session not found");
-                return -4;
+        synchronized (this.mSessionLock) {
+            try {
+                MonitoringTask find = this.mSession.find(i);
+                if (find == null) {
+                    Log.e(str, "Session not found");
+                    return 0;
+                }
+                if (!find.checkPermission(i2)) {
+                    return -1;
+                }
+                return stopMonitoringInner(find);
+            } catch (Throwable th) {
+                throw th;
             }
-            closeSessionLocked(monitorSessionLocked);
-            int reset = reset(monitorSessionLocked.flags);
-            if (reset != 0) {
-                Log.e(str, "reset(" + reset + ")");
-            }
-            int i3 = 1;
-            if (i == 1) {
-                i3 = 30;
-            } else if (i != 2) {
-                i3 = i == 3 ? 32 : i == 5 ? 64 : 0;
-            }
-            Log.i(str, "stopTracing() - rc : " + stopTracing(i3));
-            return 0;
         }
+    }
+
+    public final void stopMonitoring(int i) {
+        String str = TAG;
+        DirEncryptService$$ExternalSyntheticOutline0.m(i, "stopMonitoring() - reqId : ", str);
+        synchronized (this.mSessionLock) {
+            try {
+                List<MonitoringTask> findByUid = this.mSession.findByUid(i);
+                if (findByUid != null && findByUid.size() != 0) {
+                    for (MonitoringTask monitoringTask : findByUid) {
+                        Log.d(TAG, String.format("stopMonitoring() - Task : %s, Result : %d", monitoringTask.getTag(), Integer.valueOf(stopMonitoringInner(monitoringTask))));
+                    }
+                    return;
+                }
+                Log.e(str, "Session not found");
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final int stopMonitoringInner(MonitoringTask monitoringTask) {
+        int reset = reset(monitoringTask.mFlags);
+        if (reset != 0) {
+            AudioDeviceInventory$$ExternalSyntheticOutline0.m(reset, "reset(", ")", TAG);
+        }
+        int stopMonitoringTask = stopMonitoringTask(monitoringTask);
+        if (stopMonitoringTask != 0) {
+            AudioDeviceInventory$$ExternalSyntheticOutline0.m(stopMonitoringTask, "stopMonitoringTask(", ")", TAG);
+        }
+        int stopTracing = stopTracing(monitoringTask.mFlags);
+        if (stopTracing != 0) {
+            AudioDeviceInventory$$ExternalSyntheticOutline0.m(stopTracing, "stopTracing(", ")", TAG);
+        }
+        return stopTracing;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:6:0x0025  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int stopMonitoringTask(com.android.server.knox.zt.devicetrust.task.MonitoringTask r3) {
+        /*
+            r2 = this;
+            boolean r0 = r3 instanceof com.android.server.knox.zt.devicetrust.task.ReschedulableMonitoringTask
+            if (r0 == 0) goto Lb
+            r0 = r3
+            com.android.server.knox.zt.devicetrust.task.ReschedulableMonitoringTask r0 = (com.android.server.knox.zt.devicetrust.task.ReschedulableMonitoringTask) r0
+            r0.keep()
+            goto L20
+        Lb:
+            boolean r0 = r3 instanceof com.android.server.knox.zt.devicetrust.task.SchedulableMonitoringTask
+            if (r0 == 0) goto L16
+            r0 = r3
+            com.android.server.knox.zt.devicetrust.task.SchedulableMonitoringTask r0 = (com.android.server.knox.zt.devicetrust.task.SchedulableMonitoringTask) r0
+            r0.terminate()
+            goto L20
+        L16:
+            boolean r0 = r3 instanceof com.android.server.knox.zt.devicetrust.task.HandleableMonitoringTask
+            if (r0 == 0) goto L22
+            r0 = r3
+            com.android.server.knox.zt.devicetrust.task.HandleableMonitoringTask r0 = (com.android.server.knox.zt.devicetrust.task.HandleableMonitoringTask) r0
+            r0.release()
+        L20:
+            r0 = 0
+            goto L23
+        L22:
+            r0 = -5
+        L23:
+            if (r0 != 0) goto L2f
+            com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$MonitoringSession r1 = r2.mSession
+            int r3 = r3.mType
+            r1.remove(r3)
+            r2.unregisterProcessObserverLocked()
+        L2f:
+            return r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl.stopMonitoringTask(com.android.server.knox.zt.devicetrust.task.MonitoringTask):int");
     }
 
     public final int stopTracing(int i) {
-        try {
-            return nativeStopTracing(i);
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return -1;
-        }
+        return this.mInjector.mNative.stopTracing(i);
     }
 
-    public void startMonitoringFiles(final int i, int[] iArr, List list, List list2, IZtdListener iZtdListener) {
-        ensureInitialized();
-        String str = TAG;
-        Log.i(str, "startMonitoringFiles() - reqId : " + i);
-        if (iZtdListener == null || !(list instanceof ArrayList) || !(list2 instanceof ArrayList)) {
-            Log.e(str, "Failed :: Invalid argument");
-            return;
-        }
-        synchronized (this.mSessionsLock) {
-            if (getFileMonitorSessionLocked(i) != null) {
-                Log.e(str, "Failed :: Session is already opened");
-                return;
-            }
-            if (this.mSessions.size() >= 2) {
-                Log.e(str, "Failed :: Session pool is full");
-                return;
-            }
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                String str2 = (String) it.next();
-                Log.d(TAG, "startMonitoringFiles() - file  : " + str2);
-            }
-            Iterator it2 = list2.iterator();
-            while (it2.hasNext()) {
-                String str3 = (String) it2.next();
-                Log.d(TAG, "startMonitoringFiles() - inode : " + str3);
-            }
-            Map createTargetFiles = createTargetFiles(list, list2);
-            if (createTargetFiles == null) {
-                Log.d(TAG, "Failed :: Invalid targets");
-                return;
-            }
-            int targetFiles = setTargetFiles((ArrayList) list, (ArrayList) list2);
-            if (targetFiles != 0) {
-                Log.e(TAG, "Failed :: setTargetFiles(" + targetFiles + ")");
-                return;
-            }
-            int startFsTracing = startFsTracing();
-            if (startFsTracing != 0) {
-                Log.d(TAG, "startMonitoringFiles() - startFsTracing(" + startFsTracing + ")");
-                return;
-            }
-            MonitorSession createMonitorSessionForUad = createMonitorSessionForUad(2, i, iArr, createTargetFiles, iZtdListener);
-            this.mSessions.put(Integer.valueOf(i), createMonitorSessionForUad);
-            createMonitorSessionForUad.executor.scheduleAtFixedRate(new Runnable() { // from class: com.android.server.knox.zt.devicetrust.EndpointMonitorImpl$$ExternalSyntheticLambda3
-                @Override // java.lang.Runnable
-                public final void run() {
-                    EndpointMonitorImpl.this.lambda$startMonitoringFiles$7(i);
-                }
-            }, 100L, 10L, TimeUnit.MILLISECONDS);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$startMonitoringFiles$7(int i) {
-        onFileAccessDetected(i, readFsData());
-    }
-
-    public void stopMonitoringFiles(int i) {
-        ensureInitialized();
-        String str = TAG;
-        Log.i(str, "stopMonitoringFiles() - reqId : " + i);
-        synchronized (this.mSessionsLock) {
-            MonitorSession fileMonitorSessionLocked = getFileMonitorSessionLocked(i);
-            if (fileMonitorSessionLocked == null) {
-                Log.e(str, "Session not found");
-            } else {
-                closeSessionLocked(fileMonitorSessionLocked);
-            }
-        }
-    }
-
-    public final void onFileAccessDetected(int i, ArrayList arrayList) {
-        MonitorSession fileMonitorSessionLocked;
-        if (arrayList == null || arrayList.size() == 0) {
-            if (DEBUG) {
-                Log.d(TAG, "onFileAccessDetected(" + i + ") :: Nothing detected");
-                return;
-            }
-            return;
-        }
-        synchronized (this.mSessionsLock) {
-            fileMonitorSessionLocked = getFileMonitorSessionLocked(i);
-        }
-        if (fileMonitorSessionLocked == null) {
-            Log.e(TAG, "onFileAccessDetected(" + i + ") :: Lost session");
-            return;
-        }
-        Iterator it = arrayList.iterator();
-        while (it.hasNext()) {
-            FsData fsData = (FsData) it.next();
-            if (fileMonitorSessionLocked.targets.containsKey(Long.valueOf(fsData.ino))) {
-                int uid = fsData.getUid();
-                if (fileMonitorSessionLocked.allowedUids.contains(Integer.valueOf(uid))) {
-                    if (DEBUG) {
-                        Log.d(TAG, "onFileAccessDetected(" + i + ") :: Do not handle allowed app(" + uid + ")");
-                    }
-                } else {
-                    int pid = fsData.getPid();
-                    try {
-                        fileMonitorSessionLocked.uadListener.onUnauthorizedAccessDetected(1, 2, fsData.getEvent(), calculateEventTime(fsData.getTime()), uid, pid, getProcessName(pid), (String) fileMonitorSessionLocked.targets.get(Long.valueOf(fsData.ino)));
-                    } catch (RemoteException e) {
-                        onFailed(i, fileMonitorSessionLocked.type, "Binder died", e);
-                        closeSessionLocked(fileMonitorSessionLocked);
-                    }
-                }
-            }
-        }
-    }
-
-    public final void closeSessionLocked(MonitorSession monitorSession) {
-        Log.i(TAG, "closeSession() - reqId : " + monitorSession.requestorUid + ", type : " + monitorSession.type);
-        monitorSession.executor.shutdownNow();
-        this.mSessions.remove(Integer.valueOf(monitorSession.requestorUid));
-    }
-
-    public final void onFailed(int i, int i2, String str, Exception exc) {
-        Log.e(TAG, "onFailed() - reqId : " + i + ", type : " + i2 + ", reason : " + str);
-        if (exc != null) {
-            exc.printStackTrace();
-        }
-    }
-
-    public final int setTargetFiles(ArrayList arrayList, ArrayList arrayList2) {
-        try {
-            return nativeSetTargetFiles(arrayList, arrayList2);
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public final int startFsTracing() {
-        try {
-            return nativeStartTracing(1);
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public final ArrayList readFsData() {
-        try {
-            return nativeReadFsData();
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public void startMonitoringDomains(int i, int[] iArr, List list, IZtdListener iZtdListener) {
-        ensureInitialized();
-        String str = TAG;
-        Log.i(str, "startMonitoringDomains() - reqId : " + i);
-        if (iZtdListener == null) {
-            Log.e(str, "Failed :: Invalid argument");
-            return;
-        }
-        synchronized (this.mSessionsLock) {
-            if (getDomainMonitorSessionLocked(i) != null) {
-                Log.e(str, "Failed :: Session is already opened");
-                return;
-            }
-            if (this.mSessions.size() >= 2) {
-                Log.e(str, "Failed :: Session pool is full");
-                return;
-            }
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                String str2 = (String) it.next();
-                Log.d(TAG, "startMonitoringDomains() - domain : " + str2);
-            }
-            int startDpTracing = startDpTracing();
-            if (startDpTracing != 0) {
-                Log.d(TAG, "startMonitoringDomains() - startDpTracing(" + startDpTracing + ")");
-            }
-        }
-    }
-
-    public final int startDpTracing() {
-        try {
-            return nativeStartDpTracing();
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public void stopMonitoringDomains(int i) {
-        ensureInitialized();
-        String str = TAG;
-        Log.i(str, "stopMonitoringDomains() - reqId : " + i);
-        synchronized (this.mSessionsLock) {
-            MonitorSession domainMonitorSessionLocked = getDomainMonitorSessionLocked(i);
-            if (domainMonitorSessionLocked == null) {
-                Log.e(str, "Session not found");
-            } else {
-                domainMonitorSessionLocked.executor.shutdown();
-                this.mSessions.remove(Integer.valueOf(i));
-            }
-        }
-    }
-
-    public final ArrayList readSkData() {
-        try {
-            return nativeReadSkData();
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public final void onSocketStateChanged(int i, ArrayList arrayList) {
-        MonitorSession socketMonitorSessionLocked;
-        if (arrayList == null || arrayList.size() == 0) {
-            if (DEBUG) {
-                Log.d(TAG, "onSocketStateChanged(" + i + ") :: Nothing detected");
-                return;
-            }
-            return;
-        }
-        synchronized (this.mSessionsLock) {
-            socketMonitorSessionLocked = getSocketMonitorSessionLocked(i);
-        }
-        if (socketMonitorSessionLocked == null) {
-            Log.e(TAG, "onSocketStateChanged(" + i + ") :: Lost session");
+    public final void unregisterProcessObserverLocked() {
+        if (this.mSession.contains() || !this.mProcessObserverRegistered.getAndSet(false)) {
             return;
         }
         try {
-            Iterator it = arrayList.iterator();
-            while (it.hasNext()) {
-                socketMonitorSessionLocked.onEvent((SkData) it.next());
-            }
-        } catch (RemoteException unused) {
-            Log.e(TAG, "onSocketStateChanged() - Failed in binder transaction");
+            this.mInjector.getClass();
+            ActivityManager.getService().unregisterProcessObserver(this.mProcessObserver);
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("Failed to unregister process observer: ", e, TAG);
         }
-    }
-
-    public final ArrayList readScData() {
-        try {
-            return nativeReadScData();
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public final void onSystemCallDetected(int i, ArrayList arrayList) {
-        MonitorSession systemCallMonitorSessionLocked;
-        if (arrayList == null || arrayList.size() == 0) {
-            if (DEBUG) {
-                Log.d(TAG, "onSystemCallDetected(" + i + ") :: Nothing detected");
-                return;
-            }
-            return;
-        }
-        synchronized (this.mSessionsLock) {
-            systemCallMonitorSessionLocked = getSystemCallMonitorSessionLocked(i);
-        }
-        if (systemCallMonitorSessionLocked == null) {
-            Log.e(TAG, "onSystemCallDetected(" + i + ") :: Lost session");
-            return;
-        }
-        try {
-            Iterator it = arrayList.iterator();
-            while (it.hasNext()) {
-                ScData scData = (ScData) it.next();
-                if (EndpointMonitorConst.matchScEventToScFlags(scData.getEvent(), systemCallMonitorSessionLocked.flags)) {
-                    systemCallMonitorSessionLocked.onEvent(scData);
-                }
-            }
-        } catch (RemoteException unused) {
-            Log.e(TAG, "onSystemCallDetected() - Failed in binder transaction");
-        }
-    }
-
-    public final ArrayList readPktData() {
-        try {
-            return nativeReadPktData();
-        } catch (UnsatisfiedLinkError e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public final void onTlsPacketDetected(int i, ArrayList arrayList) {
-        MonitorSession tlsPacketMonitorSessionLocked;
-        if (arrayList == null || arrayList.size() == 0) {
-            if (DEBUG) {
-                Log.d(TAG, "onTlsPacketDetected(" + i + ") :: Nothing detected");
-                return;
-            }
-            return;
-        }
-        synchronized (this.mSessionsLock) {
-            tlsPacketMonitorSessionLocked = getTlsPacketMonitorSessionLocked(i);
-        }
-        if (tlsPacketMonitorSessionLocked == null) {
-            Log.e(TAG, "onTlsPacketDetected(" + i + ") :: Lost session");
-            return;
-        }
-        try {
-            Iterator it = arrayList.iterator();
-            while (it.hasNext()) {
-                tlsPacketMonitorSessionLocked.onEvent((PktData) it.next());
-            }
-        } catch (RemoteException unused) {
-            Log.e(TAG, "onTlsPacketDetected() - Failed in binder transaction");
-        }
-    }
-
-    public static String getProcessName(int i) {
-        return PmServerUtils.getProcessNameForPid(i);
-    }
-
-    public static String ensureNotNull(String str) {
-        if (str != null) {
-            return str;
-        }
-        throw new IllegalArgumentException("Argument must not be null");
-    }
-
-    public static boolean isDebuggableBinary() {
-        String str = Build.TYPE;
-        return "eng".equals(str) || "userdebug".equals(str);
     }
 }

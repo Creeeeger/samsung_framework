@@ -26,15 +26,16 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class GnssTimeUpdateService extends Binder {
     public static final boolean D = Log.isLoggable("GnssTimeUpdateService", 3);
     public static final Duration GNSS_TIME_UPDATE_ALARM_INTERVAL = Duration.ofHours(4);
-    public AlarmManager.OnAlarmListener mAlarmListener;
+    public GnssTimeUpdateService$$ExternalSyntheticLambda1 mAlarmListener;
     public final AlarmManager mAlarmManager;
     public final Context mContext;
     public volatile UnixEpochTime mLastSuggestedGnssTime;
-    public LocationListener mLocationListener;
+    public GnssTimeUpdateService$$ExternalSyntheticLambda0 mLocationListener;
     public final LocationManager mLocationManager;
     public final LocationManagerInternal mLocationManagerInternal;
     public final TimeDetectorInternal mTimeDetectorInternal;
@@ -43,8 +44,8 @@ public final class GnssTimeUpdateService extends Binder {
     public final Handler mHandler = FgThread.getHandler();
     public final Object mLock = new Object();
 
-    /* loaded from: classes3.dex */
-    public class Lifecycle extends SystemService {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Lifecycle extends SystemService {
         public GnssTimeUpdateService mService;
 
         public Lifecycle(Context context) {
@@ -52,18 +53,18 @@ public final class GnssTimeUpdateService extends Binder {
         }
 
         @Override // com.android.server.SystemService
-        public void onStart() {
+        public final void onBootPhase(int i) {
+            if (i == 600) {
+                this.mService.startGnssListeningInternal();
+            }
+        }
+
+        @Override // com.android.server.SystemService
+        public final void onStart() {
             Context createAttributionContext = getContext().createAttributionContext("GnssTimeUpdateService");
             GnssTimeUpdateService gnssTimeUpdateService = new GnssTimeUpdateService(createAttributionContext, (AlarmManager) createAttributionContext.getSystemService(AlarmManager.class), (LocationManager) createAttributionContext.getSystemService(LocationManager.class), (LocationManagerInternal) LocalServices.getService(LocationManagerInternal.class), (TimeDetectorInternal) LocalServices.getService(TimeDetectorInternal.class));
             this.mService = gnssTimeUpdateService;
             publishBinderService("gnss_time_update_service", gnssTimeUpdateService);
-        }
-
-        @Override // com.android.server.SystemService
-        public void onBootPhase(int i) {
-            if (i == 600) {
-                this.mService.startGnssListeningInternal();
-            }
         }
     }
 
@@ -80,113 +81,26 @@ public final class GnssTimeUpdateService extends Binder {
         this.mTimeDetectorInternal = timeDetectorInternal;
     }
 
-    public boolean startGnssListening() {
-        this.mContext.enforceCallingPermission("android.permission.SET_TIME", "Start GNSS listening");
-        this.mLocalLog.log("startGnssListening() called");
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return startGnssListeningInternal();
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
+    public static void logDebug(String str) {
+        if (D) {
+            Log.d("GnssTimeUpdateService", str);
         }
-    }
-
-    public boolean startGnssListeningInternal() {
-        if (!this.mLocationManager.hasProvider("gps")) {
-            logError("GPS provider does not exist on this device");
-            return false;
-        }
-        synchronized (this.mLock) {
-            if (this.mLocationListener != null) {
-                logDebug("Already listening for GNSS updates");
-                return true;
-            }
-            AlarmManager.OnAlarmListener onAlarmListener = this.mAlarmListener;
-            if (onAlarmListener != null) {
-                this.mAlarmManager.cancel(onAlarmListener);
-                this.mAlarmListener = null;
-            }
-            startGnssListeningLocked();
-            return true;
-        }
-    }
-
-    public final void startGnssListeningLocked() {
-        logDebug("startGnssListeningLocked()");
-        this.mLocationListener = new LocationListener() { // from class: com.android.server.timedetector.GnssTimeUpdateService$$ExternalSyntheticLambda0
-            @Override // android.location.LocationListener
-            public final void onLocationChanged(Location location) {
-                GnssTimeUpdateService.this.lambda$startGnssListeningLocked$0(location);
-            }
-        };
-        this.mLocationManager.requestLocationUpdates("gps", new LocationRequest.Builder(Long.MAX_VALUE).setMinUpdateIntervalMillis(0L).build(), this.mExecutor, this.mLocationListener);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$startGnssListeningLocked$0(Location location) {
-        handleLocationAvailable();
-    }
-
-    public final void handleLocationAvailable() {
-        logDebug("handleLocationAvailable()");
-        LocationTime gnssTimeMillis = this.mLocationManagerInternal.getGnssTimeMillis();
-        if (gnssTimeMillis != null) {
-            String str = "Passive location time received: " + gnssTimeMillis;
-            logDebug(str);
-            this.mLocalLog.log(str);
-            suggestGnssTime(gnssTimeMillis);
-        } else {
-            logDebug("getGnssTimeMillis() returned null");
-        }
-        synchronized (this.mLock) {
-            LocationListener locationListener = this.mLocationListener;
-            if (locationListener == null) {
-                logWarning("mLocationListener unexpectedly null");
-            } else {
-                this.mLocationManager.removeUpdates(locationListener);
-                this.mLocationListener = null;
-            }
-            if (this.mAlarmListener != null) {
-                logWarning("mAlarmListener was unexpectedly non-null");
-                this.mAlarmManager.cancel(this.mAlarmListener);
-            }
-            long elapsedRealtime = SystemClock.elapsedRealtime() + GNSS_TIME_UPDATE_ALARM_INTERVAL.toMillis();
-            AlarmManager.OnAlarmListener onAlarmListener = new AlarmManager.OnAlarmListener() { // from class: com.android.server.timedetector.GnssTimeUpdateService$$ExternalSyntheticLambda1
-                @Override // android.app.AlarmManager.OnAlarmListener
-                public final void onAlarm() {
-                    GnssTimeUpdateService.this.handleAlarmFired();
-                }
-            };
-            this.mAlarmListener = onAlarmListener;
-            this.mAlarmManager.set(2, elapsedRealtime, "GnssTimeUpdateService", onAlarmListener, this.mHandler);
-        }
-    }
-
-    public final void handleAlarmFired() {
-        logDebug("handleAlarmFired()");
-        synchronized (this.mLock) {
-            this.mAlarmListener = null;
-            startGnssListeningLocked();
-        }
-    }
-
-    public final void suggestGnssTime(LocationTime locationTime) {
-        logDebug("suggestGnssTime()");
-        UnixEpochTime unixEpochTime = new UnixEpochTime(locationTime.getElapsedRealtimeNanos() / 1000000, locationTime.getUnixEpochTimeMillis());
-        this.mLastSuggestedGnssTime = unixEpochTime;
-        this.mTimeDetectorInternal.suggestGnssTime(new GnssTimeSuggestion(unixEpochTime));
     }
 
     @Override // android.os.Binder
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
         if (DumpUtils.checkDumpPermission(this.mContext, "GnssTimeUpdateService", printWriter)) {
             printWriter.println("mLastSuggestedGnssTime: " + this.mLastSuggestedGnssTime);
             synchronized (this.mLock) {
-                printWriter.print("state: ");
-                if (this.mLocationListener != null) {
-                    printWriter.println("time updates enabled");
-                } else {
-                    printWriter.println("alarm enabled");
+                try {
+                    printWriter.print("state: ");
+                    if (this.mLocationListener != null) {
+                        printWriter.println("time updates enabled");
+                    } else {
+                        printWriter.println("alarm enabled");
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
             printWriter.println("Log:");
@@ -194,23 +108,97 @@ public final class GnssTimeUpdateService extends Binder {
         }
     }
 
-    public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+    public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
         new GnssTimeUpdateServiceShellCommand(this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
     }
 
-    public final void logError(String str) {
-        Log.e("GnssTimeUpdateService", str);
-        this.mLocalLog.log(str);
-    }
-
-    public final void logWarning(String str) {
-        Log.w("GnssTimeUpdateService", str);
-        this.mLocalLog.log(str);
-    }
-
-    public final void logDebug(String str) {
-        if (D) {
-            Log.d("GnssTimeUpdateService", str);
+    public boolean startGnssListeningInternal() {
+        if (!this.mLocationManager.hasProvider("gps")) {
+            Log.e("GnssTimeUpdateService", "GPS provider does not exist on this device");
+            this.mLocalLog.log("GPS provider does not exist on this device");
+            return false;
         }
+        synchronized (this.mLock) {
+            try {
+                if (this.mLocationListener != null) {
+                    logDebug("Already listening for GNSS updates");
+                    return true;
+                }
+                GnssTimeUpdateService$$ExternalSyntheticLambda1 gnssTimeUpdateService$$ExternalSyntheticLambda1 = this.mAlarmListener;
+                if (gnssTimeUpdateService$$ExternalSyntheticLambda1 != null) {
+                    this.mAlarmManager.cancel(gnssTimeUpdateService$$ExternalSyntheticLambda1);
+                    this.mAlarmListener = null;
+                }
+                startGnssListeningLocked();
+                return true;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.timedetector.GnssTimeUpdateService$$ExternalSyntheticLambda0] */
+    public final void startGnssListeningLocked() {
+        logDebug("startGnssListeningLocked()");
+        this.mLocationListener = new LocationListener() { // from class: com.android.server.timedetector.GnssTimeUpdateService$$ExternalSyntheticLambda0
+            /* JADX WARN: Multi-variable type inference failed */
+            /* JADX WARN: Type inference failed for: r9v0, types: [android.app.AlarmManager$OnAlarmListener, com.android.server.timedetector.GnssTimeUpdateService$$ExternalSyntheticLambda1] */
+            @Override // android.location.LocationListener
+            public final void onLocationChanged(Location location) {
+                final GnssTimeUpdateService gnssTimeUpdateService = GnssTimeUpdateService.this;
+                gnssTimeUpdateService.getClass();
+                GnssTimeUpdateService.logDebug("handleLocationAvailable()");
+                LocationTime gnssTimeMillis = gnssTimeUpdateService.mLocationManagerInternal.getGnssTimeMillis();
+                if (gnssTimeMillis != null) {
+                    String str = "Passive location time received: " + gnssTimeMillis;
+                    GnssTimeUpdateService.logDebug(str);
+                    gnssTimeUpdateService.mLocalLog.log(str);
+                    GnssTimeUpdateService.logDebug("suggestGnssTime()");
+                    UnixEpochTime unixEpochTime = new UnixEpochTime(gnssTimeMillis.getElapsedRealtimeNanos() / 1000000, gnssTimeMillis.getUnixEpochTimeMillis());
+                    gnssTimeUpdateService.mLastSuggestedGnssTime = unixEpochTime;
+                    GnssTimeSuggestion gnssTimeSuggestion = new GnssTimeSuggestion(unixEpochTime);
+                    TimeDetectorInternalImpl timeDetectorInternalImpl = (TimeDetectorInternalImpl) gnssTimeUpdateService.mTimeDetectorInternal;
+                    timeDetectorInternalImpl.getClass();
+                    timeDetectorInternalImpl.mHandler.post(new TimeDetectorInternalImpl$$ExternalSyntheticLambda0(timeDetectorInternalImpl, gnssTimeSuggestion, 1));
+                } else {
+                    GnssTimeUpdateService.logDebug("getGnssTimeMillis() returned null");
+                }
+                synchronized (gnssTimeUpdateService.mLock) {
+                    try {
+                        GnssTimeUpdateService$$ExternalSyntheticLambda0 gnssTimeUpdateService$$ExternalSyntheticLambda0 = gnssTimeUpdateService.mLocationListener;
+                        if (gnssTimeUpdateService$$ExternalSyntheticLambda0 == null) {
+                            Log.w("GnssTimeUpdateService", "mLocationListener unexpectedly null");
+                            gnssTimeUpdateService.mLocalLog.log("mLocationListener unexpectedly null");
+                        } else {
+                            gnssTimeUpdateService.mLocationManager.removeUpdates(gnssTimeUpdateService$$ExternalSyntheticLambda0);
+                            gnssTimeUpdateService.mLocationListener = null;
+                        }
+                        if (gnssTimeUpdateService.mAlarmListener != null) {
+                            Log.w("GnssTimeUpdateService", "mAlarmListener was unexpectedly non-null");
+                            gnssTimeUpdateService.mLocalLog.log("mAlarmListener was unexpectedly non-null");
+                            gnssTimeUpdateService.mAlarmManager.cancel(gnssTimeUpdateService.mAlarmListener);
+                        }
+                        long elapsedRealtime = SystemClock.elapsedRealtime() + GnssTimeUpdateService.GNSS_TIME_UPDATE_ALARM_INTERVAL.toMillis();
+                        ?? r9 = new AlarmManager.OnAlarmListener() { // from class: com.android.server.timedetector.GnssTimeUpdateService$$ExternalSyntheticLambda1
+                            @Override // android.app.AlarmManager.OnAlarmListener
+                            public final void onAlarm() {
+                                GnssTimeUpdateService gnssTimeUpdateService2 = GnssTimeUpdateService.this;
+                                gnssTimeUpdateService2.getClass();
+                                GnssTimeUpdateService.logDebug("handleAlarmFired()");
+                                synchronized (gnssTimeUpdateService2.mLock) {
+                                    gnssTimeUpdateService2.mAlarmListener = null;
+                                    gnssTimeUpdateService2.startGnssListeningLocked();
+                                }
+                            }
+                        };
+                        gnssTimeUpdateService.mAlarmListener = r9;
+                        gnssTimeUpdateService.mAlarmManager.set(2, elapsedRealtime, "GnssTimeUpdateService", r9, gnssTimeUpdateService.mHandler);
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+        };
+        this.mLocationManager.requestLocationUpdates("gps", new LocationRequest.Builder(Long.MAX_VALUE).setMinUpdateIntervalMillis(0L).build(), this.mExecutor, this.mLocationListener);
     }
 }

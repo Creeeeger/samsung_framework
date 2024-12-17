@@ -11,46 +11,88 @@ import android.os.Handler;
 import android.os.ILogd;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.logcat.ILogcatManagerService;
+import android.sec.enterprise.auditlog.AuditLog;
 import android.util.ArrayMap;
 import android.util.Slog;
 import com.android.internal.app.ILogAccessDialogCallback;
-import com.android.internal.util.ArrayUtils;
 import com.android.server.LocalServices;
 import com.android.server.SystemService;
+import com.android.server.accessibility.magnification.WindowMagnificationGestureHandler$$ExternalSyntheticOutline0;
+import com.samsung.android.knoxguard.service.utils.Constants;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.runtime.ObjectMethods;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class LogcatManagerService extends SystemService {
     static final int PENDING_CONFIRMATION_TIMEOUT_MILLIS;
     static final int STATUS_EXPIRATION_TIMEOUT_MILLIS = 60000;
     public final Map mActiveLogAccessCount;
     public ActivityManagerInternal mActivityManagerInternal;
     public final BinderService mBinderService;
-    public final Supplier mClock;
+    public final LogcatManagerService$Injector$$ExternalSyntheticLambda0 mClock;
     public final Context mContext;
     public final LogAccessDialogCallback mDialogCallback;
-    public final Handler mHandler;
+    public final LogAccessRequestHandler mHandler;
     public final Injector mInjector;
     public final Map mLogAccessStatus;
     public ILogd mLogdService;
+    public final KnoxSecurityLogHandler mSecurityLogHandlerCallback;
 
-    static {
-        PENDING_CONFIRMATION_TIMEOUT_MILLIS = Build.IS_DEBUGGABLE ? 70000 : 400000;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BinderService extends ILogcatManagerService.Stub {
+        public BinderService() {
+        }
+
+        public final void finishThread(int i, int i2, int i3, int i4) {
+            Message obtainMessage = LogcatManagerService.this.mHandler.obtainMessage(3, new LogAccessRequest(i, i2, i3, i4));
+            LogcatManagerService logcatManagerService = LogcatManagerService.this;
+            logcatManagerService.mHandler.sendMessageAtTime(obtainMessage, ((Long) logcatManagerService.mClock.get()).longValue());
+        }
+
+        public final void onKnoxSecurityLogEvent(int i, List list) {
+            LogcatManagerService.this.mSecurityLogHandlerCallback.sendMessage(LogcatManagerService.this.mHandler.obtainMessage(100, new SecurityLogEvent(i, list)));
+        }
+
+        public final void startThread(int i, int i2, int i3, int i4) {
+            Message obtainMessage = LogcatManagerService.this.mHandler.obtainMessage(0, new LogAccessRequest(i, i2, i3, i4));
+            LogcatManagerService logcatManagerService = LogcatManagerService.this;
+            logcatManagerService.mHandler.sendMessageAtTime(obtainMessage, ((Long) logcatManagerService.mClock.get()).longValue());
+        }
     }
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Injector {
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class KnoxSecurityLogHandler extends Handler {
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            if (message.what != 100) {
+                return;
+            }
+            SecurityLogEvent securityLogEvent = (SecurityLogEvent) message.obj;
+            AuditLog.logSecurityLogEvent(securityLogEvent.tag, securityLogEvent.payloads);
+            if (SystemProperties.get("ro.build.type", "user").equals("user") && SystemProperties.get("ro.product_ship", "true").equals("true")) {
+                return;
+            }
+            Slog.d("LogcatManagerService", "Knox security log event received - event: " + securityLogEvent);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class LogAccessClient {
         public final String mPackageName;
         public final int mUid;
@@ -60,7 +102,7 @@ public final class LogcatManagerService extends SystemService {
             this.mPackageName = str;
         }
 
-        public boolean equals(Object obj) {
+        public final boolean equals(Object obj) {
             if (this == obj) {
                 return true;
             }
@@ -71,16 +113,34 @@ public final class LogcatManagerService extends SystemService {
             return this.mUid == logAccessClient.mUid && Objects.equals(this.mPackageName, logAccessClient.mPackageName);
         }
 
-        public int hashCode() {
+        public final int hashCode() {
             return Objects.hash(Integer.valueOf(this.mUid), this.mPackageName);
         }
 
-        public String toString() {
+        public final String toString() {
             return "LogAccessClient{mUid=" + this.mUid + ", mPackageName=" + this.mPackageName + '}';
         }
     }
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LogAccessDialogCallback extends ILogAccessDialogCallback.Stub {
+        public LogAccessDialogCallback() {
+        }
+
+        public final void approveAccessForClient(int i, String str) {
+            Message obtainMessage = LogcatManagerService.this.mHandler.obtainMessage(1, new LogAccessClient(i, str));
+            LogcatManagerService logcatManagerService = LogcatManagerService.this;
+            logcatManagerService.mHandler.sendMessageAtTime(obtainMessage, ((Long) logcatManagerService.mClock.get()).longValue());
+        }
+
+        public final void declineAccessForClient(int i, String str) {
+            Message obtainMessage = LogcatManagerService.this.mHandler.obtainMessage(2, new LogAccessClient(i, str));
+            LogcatManagerService logcatManagerService = LogcatManagerService.this;
+            logcatManagerService.mHandler.sendMessageAtTime(obtainMessage, ((Long) logcatManagerService.mClock.get()).longValue());
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class LogAccessRequest {
         public final int mFd;
         public final int mGid;
@@ -94,7 +154,7 @@ public final class LogcatManagerService extends SystemService {
             this.mFd = i4;
         }
 
-        public boolean equals(Object obj) {
+        public final boolean equals(Object obj) {
             if (this == obj) {
                 return true;
             }
@@ -105,63 +165,24 @@ public final class LogcatManagerService extends SystemService {
             return this.mUid == logAccessRequest.mUid && this.mGid == logAccessRequest.mGid && this.mPid == logAccessRequest.mPid && this.mFd == logAccessRequest.mFd;
         }
 
-        public int hashCode() {
+        public final int hashCode() {
             return Objects.hash(Integer.valueOf(this.mUid), Integer.valueOf(this.mGid), Integer.valueOf(this.mPid), Integer.valueOf(this.mFd));
         }
 
-        public String toString() {
-            return "LogAccessRequest{mUid=" + this.mUid + ", mGid=" + this.mGid + ", mPid=" + this.mPid + ", mFd=" + this.mFd + '}';
+        public final String toString() {
+            StringBuilder sb = new StringBuilder("LogAccessRequest{mUid=");
+            sb.append(this.mUid);
+            sb.append(", mGid=");
+            sb.append(this.mGid);
+            sb.append(", mPid=");
+            sb.append(this.mPid);
+            sb.append(", mFd=");
+            return WindowMagnificationGestureHandler$$ExternalSyntheticOutline0.m(sb, this.mFd, '}');
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class LogAccessStatus {
-        public final List mPendingRequests;
-        public int mStatus;
-
-        public LogAccessStatus() {
-            this.mStatus = 0;
-            this.mPendingRequests = new ArrayList();
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class BinderService extends ILogcatManagerService.Stub {
-        public BinderService() {
-        }
-
-        public void startThread(int i, int i2, int i3, int i4) {
-            LogcatManagerService.this.mHandler.sendMessageAtTime(LogcatManagerService.this.mHandler.obtainMessage(0, new LogAccessRequest(i, i2, i3, i4)), ((Long) LogcatManagerService.this.mClock.get()).longValue());
-        }
-
-        public void finishThread(int i, int i2, int i3, int i4) {
-            LogcatManagerService.this.mHandler.sendMessageAtTime(LogcatManagerService.this.mHandler.obtainMessage(3, new LogAccessRequest(i, i2, i3, i4)), ((Long) LogcatManagerService.this.mClock.get()).longValue());
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class LogAccessDialogCallback extends ILogAccessDialogCallback.Stub {
-        public LogAccessDialogCallback() {
-        }
-
-        public void approveAccessForClient(int i, String str) {
-            LogcatManagerService.this.mHandler.sendMessageAtTime(LogcatManagerService.this.mHandler.obtainMessage(1, new LogAccessClient(i, str)), ((Long) LogcatManagerService.this.mClock.get()).longValue());
-        }
-
-        public void declineAccessForClient(int i, String str) {
-            LogcatManagerService.this.mHandler.sendMessageAtTime(LogcatManagerService.this.mHandler.obtainMessage(2, new LogAccessClient(i, str)), ((Long) LogcatManagerService.this.mClock.get()).longValue());
-        }
-    }
-
-    public final ILogd getLogdService() {
-        if (this.mLogdService == null) {
-            this.mLogdService = this.mInjector.getLogdService();
-        }
-        return this.mLogdService;
-    }
-
-    /* loaded from: classes2.dex */
-    public class LogAccessRequestHandler extends Handler {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LogAccessRequestHandler extends Handler {
         public final LogcatManagerService mService;
 
         public LogAccessRequestHandler(Looper looper, LogcatManagerService logcatManagerService) {
@@ -170,269 +191,158 @@ public final class LogcatManagerService extends SystemService {
         }
 
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
+            PackageManager packageManager;
             int i = message.what;
-            if (i == 0) {
-                this.mService.onLogAccessRequested((LogAccessRequest) message.obj);
-                return;
-            }
-            if (i == 1) {
-                this.mService.onAccessApprovedForClient((LogAccessClient) message.obj);
-                return;
-            }
-            if (i == 2) {
-                this.mService.onAccessDeclinedForClient((LogAccessClient) message.obj);
-                return;
-            }
-            if (i == 3) {
-                this.mService.onLogAccessFinished((LogAccessRequest) message.obj);
-            } else if (i == 4) {
-                this.mService.onPendingTimeoutExpired((LogAccessClient) message.obj);
-            } else {
-                if (i != 5) {
+            LogcatManagerService logcatManagerService = this.mService;
+            if (i != 0) {
+                if (i == 1) {
+                    logcatManagerService.onAccessApprovedForClient((LogAccessClient) message.obj);
                     return;
                 }
-                this.mService.onAccessStatusExpired((LogAccessClient) message.obj);
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class Injector {
-        public Supplier createClock() {
-            return new Supplier() { // from class: com.android.server.logcat.LogcatManagerService$Injector$$ExternalSyntheticLambda0
-                @Override // java.util.function.Supplier
-                public final Object get() {
-                    return Long.valueOf(SystemClock.uptimeMillis());
+                if (i == 2) {
+                    logcatManagerService.onAccessDeclinedForClient((LogAccessClient) message.obj);
+                    return;
                 }
-            };
-        }
-
-        public Looper getLooper() {
-            return Looper.getMainLooper();
-        }
-
-        public ILogd getLogdService() {
-            return ILogd.Stub.asInterface(ServiceManager.getService("logd"));
+                if (i == 3) {
+                    LogAccessClient clientForRequest = logcatManagerService.getClientForRequest((LogAccessRequest) message.obj);
+                    int intValue = ((Integer) logcatManagerService.mActiveLogAccessCount.getOrDefault(clientForRequest, 1)).intValue() - 1;
+                    if (intValue == 0) {
+                        ((ArrayMap) logcatManagerService.mActiveLogAccessCount).remove(clientForRequest);
+                        return;
+                    } else {
+                        ((ArrayMap) logcatManagerService.mActiveLogAccessCount).put(clientForRequest, Integer.valueOf(intValue));
+                        return;
+                    }
+                }
+                if (i != 4) {
+                    if (i != 5) {
+                        return;
+                    }
+                    ((ArrayMap) logcatManagerService.mLogAccessStatus).remove((LogAccessClient) message.obj);
+                    return;
+                } else {
+                    LogAccessClient logAccessClient = (LogAccessClient) message.obj;
+                    LogAccessStatus logAccessStatus = (LogAccessStatus) ((ArrayMap) logcatManagerService.mLogAccessStatus).get(logAccessClient);
+                    if (logAccessStatus == null || logAccessStatus.mStatus != 1) {
+                        return;
+                    }
+                    logcatManagerService.onAccessDeclinedForClient(logAccessClient);
+                    return;
+                }
+            }
+            LogAccessRequest logAccessRequest = (LogAccessRequest) message.obj;
+            LogAccessClient clientForRequest2 = logcatManagerService.getClientForRequest(logAccessRequest);
+            if (clientForRequest2 == null) {
+                logcatManagerService.declineRequest(logAccessRequest);
+                return;
+            }
+            LogAccessStatus logAccessStatus2 = (LogAccessStatus) ((ArrayMap) logcatManagerService.mLogAccessStatus).get(clientForRequest2);
+            if (logAccessStatus2 == null) {
+                logAccessStatus2 = new LogAccessStatus();
+                ((ArrayMap) logcatManagerService.mLogAccessStatus).put(clientForRequest2, logAccessStatus2);
+            }
+            int i2 = logAccessStatus2.mStatus;
+            if (i2 != 0) {
+                if (i2 == 1) {
+                    ((ArrayList) logAccessStatus2.mPendingRequests).add(logAccessRequest);
+                    return;
+                } else if (i2 == 2) {
+                    logcatManagerService.approveRequest(clientForRequest2, logAccessRequest);
+                    return;
+                } else {
+                    if (i2 != 3) {
+                        return;
+                    }
+                    logcatManagerService.declineRequest(logAccessRequest);
+                    return;
+                }
+            }
+            ((ArrayList) logAccessStatus2.mPendingRequests).add(logAccessRequest);
+            ActivityManagerInternal activityManagerInternal = logcatManagerService.mActivityManagerInternal;
+            int i3 = clientForRequest2.mUid;
+            boolean z = false;
+            boolean z2 = activityManagerInternal.getInstrumentationSourceUid(i3) != -1;
+            String str = clientForRequest2.mPackageName;
+            if ("com.sec.android.easyMover".equals(str) && (packageManager = logcatManagerService.mContext.getPackageManager()) != null) {
+                try {
+                    if (packageManager.checkSignatures("android", "com.sec.android.easyMover") == 0) {
+                        z = true;
+                    }
+                } catch (Exception unused) {
+                }
+            }
+            if (z2 || z) {
+                logcatManagerService.onAccessApprovedForClient(clientForRequest2);
+                return;
+            }
+            if (logcatManagerService.mActivityManagerInternal.getUidProcessState(i3) != 2) {
+                logcatManagerService.onAccessDeclinedForClient(clientForRequest2);
+                return;
+            }
+            ((LogAccessStatus) ((ArrayMap) logcatManagerService.mLogAccessStatus).get(clientForRequest2)).mStatus = 1;
+            LogAccessRequestHandler logAccessRequestHandler = logcatManagerService.mHandler;
+            logAccessRequestHandler.sendMessageAtTime(logAccessRequestHandler.obtainMessage(4, clientForRequest2), ((Long) logcatManagerService.mClock.get()).longValue() + LogcatManagerService.PENDING_CONFIRMATION_TIMEOUT_MILLIS);
+            Intent intent = new Intent();
+            intent.setFlags(268468224);
+            intent.putExtra("android.intent.extra.PACKAGE_NAME", str);
+            intent.putExtra("android.intent.extra.UID", i3);
+            intent.putExtra("EXTRA_CALLBACK", logcatManagerService.mDialogCallback.asBinder());
+            intent.setFlags(268435456);
+            intent.setComponent(new ComponentName(Constants.SYSTEMUI_PACKAGE_NAME, "com.android.systemui.logcat.LogAccessDialogActivity"));
+            logcatManagerService.mContext.startActivityAsUser(intent, UserHandle.SYSTEM);
         }
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LogAccessStatus {
+        public int mStatus = 0;
+        public final List mPendingRequests = new ArrayList();
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SecurityLogEvent extends Record {
+        public final List payloads;
+        public final int tag;
+
+        public SecurityLogEvent(int i, List list) {
+            this.tag = i;
+            this.payloads = list;
+        }
+
+        @Override // java.lang.Record
+        public final boolean equals(Object obj) {
+            return (boolean) ObjectMethods.bootstrap(MethodHandles.lookup(), "equals", MethodType.methodType(Boolean.TYPE, SecurityLogEvent.class, Object.class), SecurityLogEvent.class, "tag;payloads", "FIELD:Lcom/android/server/logcat/LogcatManagerService$SecurityLogEvent;->tag:I", "FIELD:Lcom/android/server/logcat/LogcatManagerService$SecurityLogEvent;->payloads:Ljava/util/List;").dynamicInvoker().invoke(this, obj) /* invoke-custom */;
+        }
+
+        @Override // java.lang.Record
+        public final int hashCode() {
+            return (int) ObjectMethods.bootstrap(MethodHandles.lookup(), "hashCode", MethodType.methodType(Integer.TYPE, SecurityLogEvent.class), SecurityLogEvent.class, "tag;payloads", "FIELD:Lcom/android/server/logcat/LogcatManagerService$SecurityLogEvent;->tag:I", "FIELD:Lcom/android/server/logcat/LogcatManagerService$SecurityLogEvent;->payloads:Ljava/util/List;").dynamicInvoker().invoke(this) /* invoke-custom */;
+        }
+
+        @Override // java.lang.Record
+        public final String toString() {
+            return "SecurityLogEvent{tag=" + this.tag + ", payloads=" + this.payloads + "}";
+        }
+    }
+
+    static {
+        PENDING_CONFIRMATION_TIMEOUT_MILLIS = Build.IS_DEBUGGABLE ? 70000 : 400000;
+    }
+
+    /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
     public LogcatManagerService(Context context) {
-        this(context, new Injector());
-    }
-
-    public LogcatManagerService(Context context, Injector injector) {
         super(context);
+        Injector injector = new Injector();
         this.mLogAccessStatus = new ArrayMap();
         this.mActiveLogAccessCount = new ArrayMap();
         this.mContext = context;
         this.mInjector = injector;
-        this.mClock = injector.createClock();
+        this.mClock = new LogcatManagerService$Injector$$ExternalSyntheticLambda0();
         this.mBinderService = new BinderService();
         this.mDialogCallback = new LogAccessDialogCallback();
-        this.mHandler = new LogAccessRequestHandler(injector.getLooper(), this);
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        try {
-            this.mActivityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
-            publishBinderService("logcat", this.mBinderService);
-        } catch (Throwable th) {
-            Slog.e("LogcatManagerService", "Could not start the LogcatManagerService.", th);
-        }
-    }
-
-    public LogAccessDialogCallback getDialogCallback() {
-        return this.mDialogCallback;
-    }
-
-    public ILogcatManagerService getBinderService() {
-        return this.mBinderService;
-    }
-
-    public final LogAccessClient getClientForRequest(LogAccessRequest logAccessRequest) {
-        String packageName = getPackageName(logAccessRequest);
-        if (packageName == null) {
-            return null;
-        }
-        return new LogAccessClient(logAccessRequest.mUid, packageName);
-    }
-
-    public final String getPackageName(LogAccessRequest logAccessRequest) {
-        PackageManager packageManager = this.mContext.getPackageManager();
-        if (packageManager == null) {
-            Slog.e("LogcatManagerService", "PackageManager is null, declining the logd access");
-            return null;
-        }
-        String[] packagesForUid = packageManager.getPackagesForUid(logAccessRequest.mUid);
-        if (ArrayUtils.isEmpty(packagesForUid)) {
-            Slog.e("LogcatManagerService", "Unknown calling package name, declining the logd access");
-            return null;
-        }
-        ActivityManagerInternal activityManagerInternal = this.mActivityManagerInternal;
-        if (activityManagerInternal != null) {
-            int i = logAccessRequest.mPid;
-            String packageNameByPid = activityManagerInternal.getPackageNameByPid(i);
-            while (true) {
-                if ((packageNameByPid == null || !ArrayUtils.contains(packagesForUid, packageNameByPid)) && i != -1) {
-                    i = Process.getParentPid(i);
-                    packageNameByPid = this.mActivityManagerInternal.getPackageNameByPid(i);
-                }
-            }
-            if (packageNameByPid != null && ArrayUtils.contains(packagesForUid, packageNameByPid)) {
-                return packageNameByPid;
-            }
-        }
-        Arrays.sort(packagesForUid);
-        String str = packagesForUid[0];
-        if (str != null && !str.isEmpty()) {
-            return str;
-        }
-        Slog.e("LogcatManagerService", "Unknown calling package name, declining the logd access");
-        return null;
-    }
-
-    public void onLogAccessRequested(LogAccessRequest logAccessRequest) {
-        LogAccessClient clientForRequest = getClientForRequest(logAccessRequest);
-        if (clientForRequest == null) {
-            declineRequest(logAccessRequest);
-            return;
-        }
-        LogAccessStatus logAccessStatus = (LogAccessStatus) this.mLogAccessStatus.get(clientForRequest);
-        if (logAccessStatus == null) {
-            logAccessStatus = new LogAccessStatus();
-            this.mLogAccessStatus.put(clientForRequest, logAccessStatus);
-        }
-        int i = logAccessStatus.mStatus;
-        if (i == 0) {
-            logAccessStatus.mPendingRequests.add(logAccessRequest);
-            processNewLogAccessRequest(clientForRequest);
-        } else if (i == 1) {
-            logAccessStatus.mPendingRequests.add(logAccessRequest);
-        } else if (i == 2) {
-            approveRequest(clientForRequest, logAccessRequest);
-        } else {
-            if (i != 3) {
-                return;
-            }
-            declineRequest(logAccessRequest);
-        }
-    }
-
-    public final boolean shouldShowConfirmationDialog(LogAccessClient logAccessClient) {
-        return this.mActivityManagerInternal.getUidProcessState(logAccessClient.mUid) == 2;
-    }
-
-    public final void processNewLogAccessRequest(LogAccessClient logAccessClient) {
-        boolean z = this.mActivityManagerInternal.getInstrumentationSourceUid(logAccessClient.mUid) != -1;
-        boolean isSmartSwitchApp = isSmartSwitchApp(logAccessClient);
-        if (z || isSmartSwitchApp) {
-            onAccessApprovedForClient(logAccessClient);
-            return;
-        }
-        if (!shouldShowConfirmationDialog(logAccessClient)) {
-            onAccessDeclinedForClient(logAccessClient);
-            return;
-        }
-        ((LogAccessStatus) this.mLogAccessStatus.get(logAccessClient)).mStatus = 1;
-        Handler handler = this.mHandler;
-        handler.sendMessageAtTime(handler.obtainMessage(4, logAccessClient), ((Long) this.mClock.get()).longValue() + PENDING_CONFIRMATION_TIMEOUT_MILLIS);
-        Intent createIntent = createIntent(logAccessClient);
-        createIntent.setFlags(268435456);
-        createIntent.setComponent(new ComponentName("com.android.systemui", "com.android.systemui.logcat.LogAccessDialogActivity"));
-        this.mContext.startActivityAsUser(createIntent, UserHandle.SYSTEM);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:10:0x0022  */
-    /* JADX WARN: Removed duplicated region for block: B:13:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final boolean isSmartSwitchApp(com.android.server.logcat.LogcatManagerService.LogAccessClient r4) {
-        /*
-            r3 = this;
-            java.lang.String r4 = r4.mPackageName
-            java.lang.String r0 = "com.sec.android.easyMover"
-            boolean r4 = r0.equals(r4)
-            r1 = 1
-            r2 = 0
-            if (r4 == 0) goto L1e
-            android.content.Context r3 = r3.mContext
-            android.content.pm.PackageManager r3 = r3.getPackageManager()
-            if (r3 == 0) goto L1e
-            java.lang.String r4 = "android"
-            int r3 = r3.checkSignatures(r4, r0)     // Catch: java.lang.Exception -> L1e
-            if (r3 != 0) goto L1e
-            r3 = r1
-            goto L1f
-        L1e:
-            r3 = r2
-        L1f:
-            if (r3 != r1) goto L22
-            goto L23
-        L22:
-            r1 = r2
-        L23:
-            return r1
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.logcat.LogcatManagerService.isSmartSwitchApp(com.android.server.logcat.LogcatManagerService$LogAccessClient):boolean");
-    }
-
-    public void onAccessApprovedForClient(LogAccessClient logAccessClient) {
-        scheduleStatusExpiry(logAccessClient);
-        LogAccessStatus logAccessStatus = (LogAccessStatus) this.mLogAccessStatus.get(logAccessClient);
-        if (logAccessStatus != null) {
-            Iterator it = logAccessStatus.mPendingRequests.iterator();
-            while (it.hasNext()) {
-                approveRequest(logAccessClient, (LogAccessRequest) it.next());
-            }
-            logAccessStatus.mStatus = 2;
-            logAccessStatus.mPendingRequests.clear();
-        }
-    }
-
-    public void onAccessDeclinedForClient(LogAccessClient logAccessClient) {
-        scheduleStatusExpiry(logAccessClient);
-        LogAccessStatus logAccessStatus = (LogAccessStatus) this.mLogAccessStatus.get(logAccessClient);
-        if (logAccessStatus != null) {
-            Iterator it = logAccessStatus.mPendingRequests.iterator();
-            while (it.hasNext()) {
-                declineRequest((LogAccessRequest) it.next());
-            }
-            logAccessStatus.mStatus = 3;
-            logAccessStatus.mPendingRequests.clear();
-        }
-    }
-
-    public final void scheduleStatusExpiry(LogAccessClient logAccessClient) {
-        this.mHandler.removeMessages(4, logAccessClient);
-        this.mHandler.removeMessages(5, logAccessClient);
-        Handler handler = this.mHandler;
-        handler.sendMessageAtTime(handler.obtainMessage(5, logAccessClient), ((Long) this.mClock.get()).longValue() + 60000);
-    }
-
-    public void onPendingTimeoutExpired(LogAccessClient logAccessClient) {
-        LogAccessStatus logAccessStatus = (LogAccessStatus) this.mLogAccessStatus.get(logAccessClient);
-        if (logAccessStatus == null || logAccessStatus.mStatus != 1) {
-            return;
-        }
-        onAccessDeclinedForClient(logAccessClient);
-    }
-
-    public void onAccessStatusExpired(LogAccessClient logAccessClient) {
-        this.mLogAccessStatus.remove(logAccessClient);
-    }
-
-    public void onLogAccessFinished(LogAccessRequest logAccessRequest) {
-        LogAccessClient clientForRequest = getClientForRequest(logAccessRequest);
-        int intValue = ((Integer) this.mActiveLogAccessCount.getOrDefault(clientForRequest, 1)).intValue() - 1;
-        if (intValue == 0) {
-            this.mActiveLogAccessCount.remove(clientForRequest);
-        } else {
-            this.mActiveLogAccessCount.put(clientForRequest, Integer.valueOf(intValue));
-        }
+        this.mHandler = new LogAccessRequestHandler(Looper.getMainLooper(), this);
+        this.mSecurityLogHandlerCallback = new KnoxSecurityLogHandler(Looper.getMainLooper());
     }
 
     public final void approveRequest(LogAccessClient logAccessClient, LogAccessRequest logAccessRequest) {
@@ -444,7 +354,8 @@ public final class LogcatManagerService extends SystemService {
                 this.mLogdService = null;
                 getLogdService().approve(logAccessRequest.mUid, logAccessRequest.mGid, logAccessRequest.mPid, logAccessRequest.mFd);
             }
-            this.mActiveLogAccessCount.put(logAccessClient, Integer.valueOf(((Integer) this.mActiveLogAccessCount.getOrDefault(logAccessClient, 0)).intValue() + 1));
+            Integer num = (Integer) this.mActiveLogAccessCount.getOrDefault(logAccessClient, 0);
+            ((ArrayMap) this.mActiveLogAccessCount).put(logAccessClient, Integer.valueOf(num.intValue() + 1));
         } catch (RemoteException e) {
             Slog.e("LogcatManagerService", "Fails to call remote functions", e);
         }
@@ -464,12 +375,136 @@ public final class LogcatManagerService extends SystemService {
         }
     }
 
-    public Intent createIntent(LogAccessClient logAccessClient) {
-        Intent intent = new Intent();
-        intent.setFlags(268468224);
-        intent.putExtra("android.intent.extra.PACKAGE_NAME", logAccessClient.mPackageName);
-        intent.putExtra("android.intent.extra.UID", logAccessClient.mUid);
-        intent.putExtra("EXTRA_CALLBACK", this.mDialogCallback.asBinder());
-        return intent;
+    public ILogcatManagerService getBinderService() {
+        return this.mBinderService;
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x004a, code lost:
+    
+        if (com.android.internal.util.ArrayUtils.contains(r0, r3) != false) goto L27;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:6:0x0061 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:8:0x0062  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final com.android.server.logcat.LogcatManagerService.LogAccessClient getClientForRequest(com.android.server.logcat.LogcatManagerService.LogAccessRequest r8) {
+        /*
+            r7 = this;
+            android.content.Context r0 = r7.mContext
+            android.content.pm.PackageManager r0 = r0.getPackageManager()
+            r1 = 0
+            java.lang.String r2 = "LogcatManagerService"
+            if (r0 != 0) goto L12
+            java.lang.String r7 = "PackageManager is null, declining the logd access"
+            android.util.Slog.e(r2, r7)
+        L10:
+            r3 = r1
+            goto L5f
+        L12:
+            int r3 = r8.mUid
+            java.lang.String[] r0 = r0.getPackagesForUid(r3)
+            boolean r3 = com.android.internal.util.ArrayUtils.isEmpty(r0)
+            java.lang.String r4 = "Unknown calling package name, declining the logd access"
+            if (r3 == 0) goto L24
+            android.util.Slog.e(r2, r4)
+            goto L10
+        L24:
+            android.app.ActivityManagerInternal r3 = r7.mActivityManagerInternal
+            if (r3 == 0) goto L4d
+            int r5 = r8.mPid
+            java.lang.String r3 = r3.getPackageNameByPid(r5)
+        L2e:
+            if (r3 == 0) goto L36
+            boolean r6 = com.android.internal.util.ArrayUtils.contains(r0, r3)
+            if (r6 != 0) goto L44
+        L36:
+            r6 = -1
+            if (r5 == r6) goto L44
+            int r5 = android.os.Process.getParentPid(r5)
+            android.app.ActivityManagerInternal r3 = r7.mActivityManagerInternal
+            java.lang.String r3 = r3.getPackageNameByPid(r5)
+            goto L2e
+        L44:
+            if (r3 == 0) goto L4d
+            boolean r7 = com.android.internal.util.ArrayUtils.contains(r0, r3)
+            if (r7 == 0) goto L4d
+            goto L5f
+        L4d:
+            java.util.Arrays.sort(r0)
+            r7 = 0
+            r3 = r0[r7]
+            if (r3 == 0) goto L5b
+            boolean r7 = r3.isEmpty()
+            if (r7 == 0) goto L5f
+        L5b:
+            android.util.Slog.e(r2, r4)
+            goto L10
+        L5f:
+            if (r3 != 0) goto L62
+            return r1
+        L62:
+            com.android.server.logcat.LogcatManagerService$LogAccessClient r7 = new com.android.server.logcat.LogcatManagerService$LogAccessClient
+            int r8 = r8.mUid
+            r7.<init>(r8, r3)
+            return r7
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.logcat.LogcatManagerService.getClientForRequest(com.android.server.logcat.LogcatManagerService$LogAccessRequest):com.android.server.logcat.LogcatManagerService$LogAccessClient");
+    }
+
+    public LogAccessDialogCallback getDialogCallback() {
+        return this.mDialogCallback;
+    }
+
+    public final ILogd getLogdService() {
+        if (this.mLogdService == null) {
+            this.mInjector.getClass();
+            this.mLogdService = ILogd.Stub.asInterface(ServiceManager.getService("logd"));
+        }
+        return this.mLogdService;
+    }
+
+    public final void onAccessApprovedForClient(LogAccessClient logAccessClient) {
+        scheduleStatusExpiry(logAccessClient);
+        LogAccessStatus logAccessStatus = (LogAccessStatus) ((ArrayMap) this.mLogAccessStatus).get(logAccessClient);
+        if (logAccessStatus != null) {
+            Iterator it = ((ArrayList) logAccessStatus.mPendingRequests).iterator();
+            while (it.hasNext()) {
+                approveRequest(logAccessClient, (LogAccessRequest) it.next());
+            }
+            logAccessStatus.mStatus = 2;
+            ((ArrayList) logAccessStatus.mPendingRequests).clear();
+        }
+    }
+
+    public final void onAccessDeclinedForClient(LogAccessClient logAccessClient) {
+        scheduleStatusExpiry(logAccessClient);
+        LogAccessStatus logAccessStatus = (LogAccessStatus) ((ArrayMap) this.mLogAccessStatus).get(logAccessClient);
+        if (logAccessStatus != null) {
+            Iterator it = ((ArrayList) logAccessStatus.mPendingRequests).iterator();
+            while (it.hasNext()) {
+                declineRequest((LogAccessRequest) it.next());
+            }
+            logAccessStatus.mStatus = 3;
+            ((ArrayList) logAccessStatus.mPendingRequests).clear();
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        try {
+            this.mActivityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
+            publishBinderService("logcat", this.mBinderService);
+        } catch (Throwable th) {
+            Slog.e("LogcatManagerService", "Could not start the LogcatManagerService.", th);
+        }
+    }
+
+    public final void scheduleStatusExpiry(LogAccessClient logAccessClient) {
+        LogAccessRequestHandler logAccessRequestHandler = this.mHandler;
+        logAccessRequestHandler.removeMessages(4, logAccessClient);
+        logAccessRequestHandler.removeMessages(5, logAccessClient);
+        logAccessRequestHandler.sendMessageAtTime(logAccessRequestHandler.obtainMessage(5, logAccessClient), ((Long) this.mClock.get()).longValue() + 60000);
     }
 }

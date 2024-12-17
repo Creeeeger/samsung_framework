@@ -3,13 +3,9 @@ package com.android.server.broadcastradio;
 import android.app.ActivityManager;
 import android.os.Binder;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class RadioServiceUserController {
-    public static boolean isCurrentOrSystemUser() {
-        int identifier = Binder.getCallingUserHandle().getIdentifier();
-        return identifier == getCurrentUser() || identifier == 0;
-    }
-
     public static int getCurrentUser() {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
@@ -23,5 +19,10 @@ public abstract class RadioServiceUserController {
             Binder.restoreCallingIdentity(clearCallingIdentity);
             throw th;
         }
+    }
+
+    public static boolean isCurrentOrSystemUser() {
+        int identifier = Binder.getCallingUserHandle().getIdentifier();
+        return identifier == getCurrentUser() || identifier == 0;
     }
 }

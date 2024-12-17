@@ -1,55 +1,35 @@
 package com.android.server.textclassifier;
 
 import com.android.internal.util.Preconditions;
+import com.android.server.PinnerService$$ExternalSyntheticOutline0;
+import com.android.server.VcnManagementService$$ExternalSyntheticLambda10;
+import com.android.server.textclassifier.TextClassificationManagerService;
 import java.util.ArrayDeque;
-import java.util.Objects;
 import java.util.Queue;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class FixedSizeQueue {
     public final Queue mDelegate;
     public final int mMaxSize;
-    public final OnEntryEvictedListener mOnEntryEvictedListener;
+    public final VcnManagementService$$ExternalSyntheticLambda10 mOnEntryEvictedListener;
 
-    /* loaded from: classes3.dex */
-    public interface OnEntryEvictedListener {
-        void onEntryEvicted(Object obj);
+    public FixedSizeQueue(VcnManagementService$$ExternalSyntheticLambda10 vcnManagementService$$ExternalSyntheticLambda10) {
+        Preconditions.checkArgument(true, "maxSize (%s) must > 0", new Object[]{20});
+        this.mDelegate = new ArrayDeque(20);
+        this.mMaxSize = 20;
+        this.mOnEntryEvictedListener = vcnManagementService$$ExternalSyntheticLambda10;
     }
 
-    public FixedSizeQueue(int i, OnEntryEvictedListener onEntryEvictedListener) {
-        Preconditions.checkArgument(i > 0, "maxSize (%s) must > 0", new Object[]{Integer.valueOf(i)});
-        this.mDelegate = new ArrayDeque(i);
-        this.mMaxSize = i;
-        this.mOnEntryEvictedListener = onEntryEvictedListener;
-    }
-
-    public int size() {
-        return this.mDelegate.size();
-    }
-
-    public boolean add(Object obj) {
-        Objects.requireNonNull(obj);
-        if (size() == this.mMaxSize) {
-            Object remove = this.mDelegate.remove();
-            OnEntryEvictedListener onEntryEvictedListener = this.mOnEntryEvictedListener;
-            if (onEntryEvictedListener != null) {
-                onEntryEvictedListener.onEntryEvicted(remove);
+    public final void add(TextClassificationManagerService.PendingRequest pendingRequest) {
+        if (((ArrayDeque) this.mDelegate).size() == this.mMaxSize) {
+            Object remove = ((ArrayDeque) this.mDelegate).remove();
+            if (this.mOnEntryEvictedListener != null) {
+                TextClassificationManagerService.PendingRequest pendingRequest2 = (TextClassificationManagerService.PendingRequest) remove;
+                PinnerService$$ExternalSyntheticOutline0.m("Pending request[", pendingRequest2.mName, "] is dropped", "TextClassificationManagerService");
+                pendingRequest2.mOnServiceFailure.run();
             }
         }
-        this.mDelegate.add(obj);
-        return true;
-    }
-
-    public Object poll() {
-        return this.mDelegate.poll();
-    }
-
-    public boolean remove(Object obj) {
-        Objects.requireNonNull(obj);
-        return this.mDelegate.remove(obj);
-    }
-
-    public boolean isEmpty() {
-        return this.mDelegate.isEmpty();
+        ((ArrayDeque) this.mDelegate).add(pendingRequest);
     }
 }

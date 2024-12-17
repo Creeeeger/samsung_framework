@@ -6,9 +6,12 @@ import android.util.Slog;
 import android.util.TimeUtils;
 import com.android.internal.app.procstats.AssociationState;
 import com.android.internal.app.procstats.ProcessStats;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.am.OomAdjusterModernImpl;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public final class ContentProviderConnection extends Binder {
+public final class ContentProviderConnection extends Binder implements OomAdjusterModernImpl.Connection {
     public AssociationState.SourceState association;
     public final ProcessRecord client;
     public final String clientPackage;
@@ -24,14 +27,6 @@ public final class ContentProviderConnection extends Binder {
     public final Object mLock = new Object();
     public final long createTime = SystemClock.elapsedRealtime();
 
-    public int getStableCount() {
-        return this.mStableCount;
-    }
-
-    public int getUnstableCount() {
-        return this.mUnstableCount;
-    }
-
     public ContentProviderConnection(ContentProviderRecord contentProviderRecord, ProcessRecord processRecord, String str, int i) {
         this.provider = contentProviderRecord;
         this.client = processRecord;
@@ -39,7 +34,65 @@ public final class ContentProviderConnection extends Binder {
         this.mExpectedUserId = i;
     }
 
-    public void startAssociationIfNeeded() {
+    public final void adjustCounts(int i, int i2) {
+        synchronized (this.mLock) {
+            if (i > 0) {
+                try {
+                    this.mNumStableIncs += i;
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            int i3 = this.mStableCount + i;
+            if (i3 < 0) {
+                throw new IllegalStateException("stableCount < 0: " + i3);
+            }
+            if (i2 > 0) {
+                this.mNumUnstableIncs += i2;
+            }
+            int i4 = this.mUnstableCount + i2;
+            if (i4 < 0) {
+                throw new IllegalStateException("unstableCount < 0: " + i4);
+            }
+            if (i3 + i4 <= 0) {
+                throw new IllegalStateException("ref counts can't go to zero here: stable=" + i3 + " unstable=" + i4);
+            }
+            this.mStableCount = i3;
+            this.mUnstableCount = i4;
+        }
+    }
+
+    @Override // com.android.server.am.OomAdjusterModernImpl.Connection
+    public final void computeHostOomAdjLSP(OomAdjuster oomAdjuster, ProcessRecord processRecord, ProcessRecord processRecord2, long j, ProcessRecord processRecord3, boolean z, int i) {
+        oomAdjuster.computeProviderHostOomAdjLSP(this, processRecord, processRecord2, j, processRecord3, z, false, false, i, 1001, false, false);
+    }
+
+    public final int decrementCount(boolean z) {
+        int i;
+        synchronized (this.mLock) {
+            try {
+                if (z) {
+                    this.mStableCount--;
+                } else {
+                    this.mUnstableCount--;
+                }
+                i = this.mStableCount + this.mUnstableCount;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return i;
+    }
+
+    public final int getStableCount() {
+        return this.mStableCount;
+    }
+
+    public final int getUnstableCount() {
+        return this.mUnstableCount;
+    }
+
+    public final void startAssociationIfNeeded() {
         if (this.association == null) {
             ContentProviderRecord contentProviderRecord = this.provider;
             if (contentProviderRecord.proc != null) {
@@ -48,7 +101,8 @@ public final class ContentProviderConnection extends Binder {
                 if (i == processRecord.uid && contentProviderRecord.info.processName.equals(processRecord.processName)) {
                     return;
                 }
-                ProcessStats.ProcessStateHolder processStateHolder = this.provider.proc.getPkgList().get(this.provider.name.getPackageName());
+                ContentProviderRecord contentProviderRecord2 = this.provider;
+                ProcessStats.ProcessStateHolder processStateHolder = contentProviderRecord2.proc.mPkgList.get(contentProviderRecord2.name.getPackageName());
                 if (processStateHolder == null) {
                     Slog.wtf("ActivityManager", "No package in referenced provider " + this.provider.name.toShortString() + ": proc=" + this.provider.proc);
                     return;
@@ -68,50 +122,7 @@ public final class ContentProviderConnection extends Binder {
         }
     }
 
-    public void trackProcState(int i, int i2) {
-        if (this.association != null) {
-            synchronized (this.mProcStatsLock) {
-                this.association.trackProcState(i, i2, SystemClock.uptimeMillis());
-            }
-        }
-    }
-
-    public void stopAssociation() {
-        if (this.association != null) {
-            synchronized (this.mProcStatsLock) {
-                this.association.stop();
-            }
-            this.association = null;
-        }
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder(128);
-        sb.append("ContentProviderConnection{");
-        toShortString(sb);
-        sb.append('}');
-        return sb.toString();
-    }
-
-    public String toShortString() {
-        StringBuilder sb = new StringBuilder(128);
-        toShortString(sb);
-        return sb.toString();
-    }
-
-    public String toClientString() {
-        StringBuilder sb = new StringBuilder(128);
-        toClientString(sb);
-        return sb.toString();
-    }
-
-    public void toShortString(StringBuilder sb) {
-        sb.append(this.provider.toShortString());
-        sb.append("->");
-        toClientString(sb);
-    }
-
-    public void toClientString(StringBuilder sb) {
+    public final void toClientString(StringBuilder sb) {
         sb.append(this.client.toShortString());
         synchronized (this.mLock) {
             sb.append(" s");
@@ -134,87 +145,12 @@ public final class ContentProviderConnection extends Binder {
         TimeUtils.formatDuration(elapsedRealtime - this.createTime, sb);
     }
 
-    public void initializeCount(boolean z) {
-        synchronized (this.mLock) {
-            if (z) {
-                this.mStableCount = 1;
-                this.mNumStableIncs = 1;
-                this.mUnstableCount = 0;
-                this.mNumUnstableIncs = 0;
-            } else {
-                this.mStableCount = 0;
-                this.mNumStableIncs = 0;
-                this.mUnstableCount = 1;
-                this.mNumUnstableIncs = 1;
-            }
-        }
-    }
-
-    public int incrementCount(boolean z) {
-        int i;
-        synchronized (this.mLock) {
-            if (z) {
-                this.mStableCount++;
-                this.mNumStableIncs++;
-            } else {
-                this.mUnstableCount++;
-                this.mNumUnstableIncs++;
-            }
-            i = this.mStableCount + this.mUnstableCount;
-        }
-        return i;
-    }
-
-    public int decrementCount(boolean z) {
-        int i;
-        synchronized (this.mLock) {
-            if (z) {
-                this.mStableCount--;
-            } else {
-                this.mUnstableCount--;
-            }
-            i = this.mStableCount + this.mUnstableCount;
-        }
-        return i;
-    }
-
-    public void adjustCounts(int i, int i2) {
-        synchronized (this.mLock) {
-            if (i > 0) {
-                this.mNumStableIncs += i;
-            }
-            int i3 = this.mStableCount + i;
-            if (i3 < 0) {
-                throw new IllegalStateException("stableCount < 0: " + i3);
-            }
-            if (i2 > 0) {
-                this.mNumUnstableIncs += i2;
-            }
-            int i4 = this.mUnstableCount + i2;
-            if (i4 < 0) {
-                throw new IllegalStateException("unstableCount < 0: " + i4);
-            }
-            if (i3 + i4 <= 0) {
-                throw new IllegalStateException("ref counts can't go to zero here: stable=" + i3 + " unstable=" + i4);
-            }
-            this.mStableCount = i3;
-            this.mUnstableCount = i4;
-        }
-    }
-
-    public int stableCount() {
-        int i;
-        synchronized (this.mLock) {
-            i = this.mStableCount;
-        }
-        return i;
-    }
-
-    public int totalRefCount() {
-        int i;
-        synchronized (this.mLock) {
-            i = this.mStableCount + this.mUnstableCount;
-        }
-        return i;
+    public final String toString() {
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(128, "ContentProviderConnection{");
+        m.append(this.provider.toShortString());
+        m.append("->");
+        toClientString(m);
+        m.append('}');
+        return m.toString();
     }
 }

@@ -3,235 +3,133 @@ package com.android.server.am;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Slog;
 import android.util.SparseArray;
 import com.android.internal.app.ProcessMap;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.ExplicitHealthCheckController$$ExternalSyntheticOutline0;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
 import java.util.HashMap;
+import java.util.HashSet;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class AppStateBroadcaster {
-    public static Context mContext = null;
-    public static volatile boolean mIsBroadcastEnabled = false;
-    public static String mLastFocusAppName;
+    public static Context mContext;
     public static Handler mObjHandler;
-    public static String[] sPackages = {"com.tmobile.echolocate", "com.tmobile.pr.mytmobile", "com.sprint.ms.smf.services"};
+    public static final boolean DEBUG = "eng".equals(SystemProperties.get("ro.build.type"));
+    public static volatile boolean mIsBroadcastEnabled = false;
+    public static String mLastFocusAppName = null;
+    public static final String[] sPackages = {"com.tmobile.echolocate", "com.tmobile.pr.mytmobile", "com.sprint.ms.smf.services"};
     public static final String[] APP_TERM_REASONS = {"NORMAL_SYSTEM_HALT", "USER_HALTED", "ANR", "CRASH"};
     public static final HashMap sKnownRunningPackages = new HashMap();
+
+    public static void broadcastAppState(String str, String str2) {
+        boolean z = DEBUG;
+        if (z) {
+            GmsAlarmManager$$ExternalSyntheticOutline0.m(" packageName : ", str, " appState : ", str2, "AppStateBroadcaster");
+        }
+        if (mContext == null || str == null || str2.equals("EXITED")) {
+            if (z) {
+                Slog.d("AppStateBroadcaster", "Can't send broadcast mContext is null");
+                return;
+            }
+            return;
+        }
+        for (String str3 : sPackages) {
+            Intent m = ExplicitHealthCheckController$$ExternalSyntheticOutline0.m("diagandroid.app.ApplicationState", str3);
+            m.putExtra("ApplicationPackageName", stripPackageName(str));
+            m.putExtra("ApplicationState", str2);
+            m.putExtra("oemIntentTimestamp", System.currentTimeMillis());
+            mContext.sendBroadcastAsUser(m, UserHandle.ALL, "diagandroid.app.receiveDetailedApplicationState");
+        }
+    }
 
     public static void enableIntentBroadcast(Context context, ProcessMap processMap) {
         mContext = context;
         mIsBroadcastEnabled = true;
         mLastFocusAppName = null;
         mObjHandler = new Handler();
-        populateRunningProcesses(processMap);
-        TrafficStateDatabaseController.enable(mContext);
-    }
-
-    public static void disableIntentBroadcast() {
-        mIsBroadcastEnabled = false;
-        mLastFocusAppName = null;
-        mObjHandler = null;
-        TrafficStateDatabaseController.disable();
-        HashMap hashMap = sKnownRunningPackages;
-        synchronized (hashMap) {
-            hashMap.clear();
-        }
-    }
-
-    public static void sendApplicationStart(String str, int i) {
-        if (!mIsBroadcastEnabled || TextUtils.isEmpty(str)) {
-            return;
-        }
-        packageRunning(str, i);
-    }
-
-    public static void sendApplicationFocusGain(String str) {
-        logOriginFunction("sendApplicationFocusGain(" + str + ")");
-        if (!mIsBroadcastEnabled || TextUtils.isEmpty(str)) {
-            return;
-        }
-        String str2 = mLastFocusAppName;
-        if (str2 == null || !str.equals(str2)) {
-            if (!TextUtils.isEmpty(mLastFocusAppName)) {
-                broadcastAppState(mLastFocusAppName, "FOCUS_LOSS");
-                Slog.d("AppStateBroadcaster", "sendApplicationFocusGain sent APP_STATE_FOCUS_LOSS for " + mLastFocusAppName);
+        for (SparseArray sparseArray : processMap.getMap().values()) {
+            for (int i = 0; i < sparseArray.size(); i++) {
+                ProcessRecord processRecord = (ProcessRecord) sparseArray.valueAt(i);
+                sendApplicationStart(processRecord.mPid, processRecord.info.packageName);
             }
-            broadcastAppState(str, "FOCUS_GAIN");
-            Slog.d("AppStateBroadcaster", "sendApplicationFocusGain sent APP_STATE_FOCUS_GAIN for " + str + ", old focus package was " + mLastFocusAppName);
-            mLastFocusAppName = str;
         }
-    }
-
-    public static void sendAppKillReason(final String str, final int i, int i2) {
-        final int i3 = 0;
-        switch (i2) {
-            case 4:
-            case 5:
-                i3 = 3;
-                break;
-            case 6:
-            case 7:
-                i3 = 2;
-                break;
-            case 10:
-            case 11:
-                i3 = 1;
-                break;
-        }
-        Slog.d("AppStateBroadcaster", "TMO killProcesses");
-        Handler handler = mObjHandler;
-        if (handler != null) {
-            handler.post(new Runnable() { // from class: com.android.server.am.AppStateBroadcaster$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    AppStateBroadcaster.sendApplicationStop(str, i, i3);
-                }
-            });
-        }
-    }
-
-    public static void sendApplicationFocusLoss(String str) {
-        logOriginFunction("sendApplicationFocusLoss(" + str + ")");
-        if (!mIsBroadcastEnabled || TextUtils.isEmpty(str) || TextUtils.isEmpty(mLastFocusAppName)) {
-            return;
-        }
-        broadcastAppState(str, "FOCUS_LOSS");
-        Slog.d("AppStateBroadcaster", "sendApplicationFocusLoss sent APP_STATE_FOCUS_LOSS for " + str);
-        if (str.equals(mLastFocusAppName)) {
-            Slog.d("AppStateBroadcaster", "packageName is same as mLastFocusAppName: " + mLastFocusAppName + "; setting it to null");
-            mLastFocusAppName = null;
-        }
-    }
-
-    public static void sendApplicationStop(String str, int i, int i2) {
-        logOriginFunction("sendApplicationStop(" + str + ", " + i + ", " + i2 + ")");
-        if (!mIsBroadcastEnabled || TextUtils.isEmpty(str) || i2 < 0 || i2 >= APP_TERM_REASONS.length) {
-            return;
-        }
-        packageStopped(str, i, i2);
     }
 
     public static void logOriginFunction(String str) {
         Throwable th = new Throwable();
         if (th.getStackTrace().length > 1) {
-            Slog.d("AppStateBroadcaster", str + " called from " + th.getStackTrace()[2].toString());
+            StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, " called from ");
+            m.append(th.getStackTrace()[2].toString());
+            Slog.d("AppStateBroadcaster", m.toString());
+        }
+    }
+
+    public static void sendApplicationFocusLoss(String str) {
+        boolean z = DEBUG;
+        if (z) {
+            logOriginFunction("sendApplicationFocusLoss(" + str + ")");
+        }
+        if (!mIsBroadcastEnabled || TextUtils.isEmpty(str) || TextUtils.isEmpty(mLastFocusAppName)) {
+            return;
+        }
+        broadcastAppState(str, "FOCUS_LOSS");
+        if (z) {
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m("sendApplicationFocusLoss sent APP_STATE_FOCUS_LOSS for ", str, "AppStateBroadcaster");
+        }
+        if (str.equals(mLastFocusAppName)) {
+            if (z) {
+                DeviceIdleController$$ExternalSyntheticOutline0.m(new StringBuilder("packageName is same as mLastFocusAppName: "), mLastFocusAppName, "; setting it to null", "AppStateBroadcaster");
+            }
+            mLastFocusAppName = null;
+        }
+    }
+
+    public static void sendApplicationStart(int i, String str) {
+        boolean z;
+        boolean z2;
+        if (!mIsBroadcastEnabled || TextUtils.isEmpty(str)) {
+            return;
+        }
+        HashMap hashMap = sKnownRunningPackages;
+        synchronized (hashMap) {
+            try {
+                String stripPackageName = stripPackageName(str);
+                z = DEBUG;
+                if (z) {
+                    Slog.d("AppStateBroadcaster", "packageRunning for " + stripPackageName + " with processId " + i + " packageName " + str);
+                }
+                ApplicationState applicationState = (ApplicationState) hashMap.get(stripPackageName);
+                z2 = false;
+                if (applicationState == null) {
+                    applicationState = new ApplicationState();
+                    applicationState.mStopReason = 0;
+                    applicationState.mProcessIds = new HashSet();
+                    hashMap.put(stripPackageName, applicationState);
+                    z2 = true;
+                }
+                applicationState.mProcessIds.add(Integer.valueOf(i));
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        if (z2) {
+            broadcastAppState(str, "START");
+            if (z) {
+                Slog.d("AppStateBroadcaster", "packageRunning sent APP_STATE_START for ".concat(str));
+            }
         }
     }
 
     public static String stripPackageName(String str) {
         int indexOf = str.indexOf(58);
         return indexOf != -1 ? str.substring(0, indexOf) : str;
-    }
-
-    public static long intentTimestamp() {
-        return System.currentTimeMillis();
-    }
-
-    public static void broadcastAppState(String str, String str2) {
-        Slog.d("AppStateBroadcaster", " packageName : " + str + " appState : " + str2);
-        if (mContext != null && str != null && str2 != null && !str2.equals("EXITED")) {
-            for (String str3 : sPackages) {
-                Intent intent = new Intent("diagandroid.app.ApplicationState");
-                intent.setPackage(str3);
-                intent.putExtra("ApplicationPackageName", stripPackageName(str));
-                intent.putExtra("ApplicationState", str2);
-                intent.putExtra("oemIntentTimestamp", intentTimestamp());
-                mContext.sendBroadcastAsUser(intent, UserHandle.ALL, "diagandroid.app.receiveDetailedApplicationState");
-            }
-            return;
-        }
-        Slog.d("AppStateBroadcaster", "Can't send broadcast mContext is null");
-    }
-
-    public static void broadcastAppExit(String str, String str2) {
-        Slog.d("AppStateBroadcaster", " packageName : " + str + " termReason : " + str2);
-        if (mContext != null && str != null && str2 != null) {
-            for (String str3 : sPackages) {
-                Intent intent = new Intent("diagandroid.app.ApplicationState");
-                intent.setPackage(str3);
-                intent.putExtra("ApplicationPackageName", stripPackageName(str));
-                intent.putExtra("ApplicationState", "EXITED");
-                intent.putExtra("ApplicationTermReason", str2);
-                intent.putExtra("oemIntentTimestamp", intentTimestamp());
-                mContext.sendBroadcastAsUser(intent, UserHandle.ALL, "diagandroid.app.receiveDetailedApplicationState");
-            }
-            return;
-        }
-        Slog.d("AppStateBroadcaster", "Can't send broadcast mContext is null");
-    }
-
-    public static void populateRunningProcesses(ProcessMap processMap) {
-        for (SparseArray sparseArray : processMap.getMap().values()) {
-            for (int i = 0; i < sparseArray.size(); i++) {
-                ProcessRecord processRecord = (ProcessRecord) sparseArray.valueAt(i);
-                sendApplicationStart(processRecord.info.packageName, processRecord.mPid);
-            }
-        }
-    }
-
-    public static void packageRunning(String str, int i) {
-        boolean z;
-        HashMap hashMap = sKnownRunningPackages;
-        synchronized (hashMap) {
-            String stripPackageName = stripPackageName(str);
-            Slog.d("AppStateBroadcaster", "packageRunning for " + stripPackageName + " with processId " + i + " packageName " + str);
-            ApplicationState applicationState = (ApplicationState) hashMap.get(stripPackageName);
-            if (applicationState == null) {
-                applicationState = new ApplicationState();
-                hashMap.put(stripPackageName, applicationState);
-                z = true;
-            } else {
-                z = false;
-            }
-            applicationState.addProcess(i);
-        }
-        if (z) {
-            broadcastAppState(str, "START");
-            Slog.d("AppStateBroadcaster", "packageRunning sent APP_STATE_START for " + str);
-        }
-    }
-
-    public static void packageStopped(String str, int i, int i2) {
-        boolean z;
-        boolean z2;
-        String str2 = "";
-        String stripPackageName = stripPackageName(str);
-        HashMap hashMap = sKnownRunningPackages;
-        synchronized (hashMap) {
-            Slog.d("AppStateBroadcaster", "packageStopped for " + str + " with processId=" + i + " stopReason=" + i2);
-            ApplicationState applicationState = (ApplicationState) hashMap.get(stripPackageName);
-            z = true;
-            z2 = false;
-            if (applicationState != null) {
-                Slog.d("AppStateBroadcaster", "Removing process " + i + ", packageName " + str + " from rootPackage " + stripPackageName);
-                if (applicationState.removeProcess(i, i2)) {
-                    Slog.d("AppStateBroadcaster", "Removing " + stripPackageName + " from running packages");
-                    String str3 = mLastFocusAppName;
-                    if (str3 != null && str.equals(str3)) {
-                        mLastFocusAppName = null;
-                        z2 = true;
-                    }
-                    hashMap.remove(stripPackageName);
-                    str2 = applicationState.getTermReason();
-                } else if (i2 < 2) {
-                    hashMap.remove(stripPackageName);
-                    str2 = applicationState.getTermReason();
-                } else {
-                    z = false;
-                }
-            } else {
-                Slog.d("AppStateBroadcaster", "packageStopped appState is null; send app exit with stopReason=" + i2);
-                hashMap.remove(stripPackageName);
-                str2 = APP_TERM_REASONS[i2];
-            }
-        }
-        if (z2) {
-            sendApplicationFocusLoss(str);
-        }
-        if (z) {
-            broadcastAppExit(stripPackageName, str2);
-        }
     }
 }

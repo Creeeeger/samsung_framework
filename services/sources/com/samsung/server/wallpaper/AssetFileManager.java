@@ -1,240 +1,123 @@
 package com.samsung.server.wallpaper;
 
-import android.os.Binder;
-import android.os.Bundle;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.os.Debug;
 import android.os.Environment;
-import android.os.FileUtils;
-import android.os.ParcelFileDescriptor;
-import android.os.SystemClock;
-import android.text.TextUtils;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
-import com.samsung.android.wallpaperbackup.BnRFileHelper;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import libcore.io.IoUtils;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class AssetFileManager {
+public final class AssetFileManager {
     public static final boolean DEBUG_DUMP = Debug.semIsProductDev();
 
-    public void migrateDirectory(int i) {
-        File userSystemDirectory = Environment.getUserSystemDirectory(i);
-        File file = new File(userSystemDirectory, "wallpaperassets");
-        File file2 = new File(userSystemDirectory, "wallpaper_assets");
-        if (!file.exists() || file2.exists()) {
+    public static File getBaseAssetDir(int i, int i2, boolean z) {
+        return z ? new File(Environment.getUserSystemDirectory(i2), BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "wallpaper_assets/", "_temp")) : new File(Environment.getUserSystemDirectory(i2), VibrationParam$1$$ExternalSyntheticOutline0.m(i, "wallpaper_assets/"));
+    }
+
+    public static void moveAssetFiles(int i, int i2, int i3) {
+        File baseAssetDir = getBaseAssetDir(i, i3, false);
+        File baseAssetDir2 = getBaseAssetDir(i2, i3, false);
+        removeAssetFiles(i2, i3);
+        if (baseAssetDir.renameTo(baseAssetDir2)) {
             return;
         }
-        Log.i("AssetFileManager", "migrateDirectory : migration result = " + file.renameTo(file2));
+        Log.w("AssetFileManager", "moveAssetFiles fail. " + baseAssetDir.getAbsolutePath() + " to " + baseAssetDir2.getAbsolutePath());
     }
 
-    public boolean writeAssetFiles(int i, int i2, Bundle bundle, String str) {
-        boolean z = false;
-        if (bundle == null) {
-            Log.i("AssetFileManager", "writeAssetFiles: bundle is null");
-            return false;
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        File baseAssetDir = getBaseAssetDir(i, i2, true);
-        if (!baseAssetDir.exists()) {
-            baseAssetDir.mkdirs();
-            Log.i("AssetFileManager", "writeAssetFiles: mkdir = " + baseAssetDir.getAbsolutePath());
-        }
-        Iterator<String> it = bundle.keySet().iterator();
-        while (true) {
-            if (!it.hasNext()) {
-                z = true;
-                break;
-            }
-            String next = it.next();
-            Log.i("AssetFileManager", "writeAssetFiles: " + next);
-            if (!writeToFile((ParcelFileDescriptor) bundle.getParcelable(next), new File(baseAssetDir, next), str)) {
-                break;
-            }
-        }
-        if (z) {
-            removeAssetFiles(i, i2);
-            File baseAssetDir2 = getBaseAssetDir(i, i2);
-            if (baseAssetDir.exists() && !baseAssetDir2.exists() && baseAssetDir.renameTo(baseAssetDir2)) {
-                Log.i("AssetFileManager", "rename success!!");
-            }
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-        return z;
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r4v11 */
-    /* JADX WARN: Type inference failed for: r4v8 */
-    public final boolean writeToFile(ParcelFileDescriptor parcelFileDescriptor, File file, String str) {
-        ParcelFileDescriptor parcelFileDescriptor2;
+    /* JADX WARN: Type inference failed for: r0v0, types: [int] */
+    public static void printDir(File file, PrintWriter printWriter) {
+        IOException e;
         FileInputStream fileInputStream;
-        AutoCloseable autoCloseable;
-        ParcelFileDescriptor parcelFileDescriptor3;
-        AutoCloseable autoCloseable2;
-        InputStream decryptStream;
-        FileOutputStream fileOutputStream;
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        InputStream inputStream = null;
-        try {
-            if (TextUtils.isEmpty(str)) {
-                decryptStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-                fileInputStream = null;
-            } else {
-                fileInputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-                try {
-                    decryptStream = BnRFileHelper.decryptStream(fileInputStream, str);
-                } catch (IOException e) {
-                    e = e;
-                    parcelFileDescriptor3 = null;
-                    autoCloseable2 = null;
-                    try {
-                        Log.w("AssetFileManager", "Error writeToFile", e);
-                        IoUtils.closeQuietly(inputStream);
-                        IoUtils.closeQuietly(fileInputStream);
-                        IoUtils.closeQuietly(autoCloseable2);
-                        IoUtils.closeQuietly(parcelFileDescriptor3);
-                        return false;
-                    } catch (Throwable th) {
-                        th = th;
-                        parcelFileDescriptor2 = parcelFileDescriptor3;
-                        autoCloseable = autoCloseable2;
-                        IoUtils.closeQuietly(inputStream);
-                        IoUtils.closeQuietly(fileInputStream);
-                        IoUtils.closeQuietly(autoCloseable);
-                        IoUtils.closeQuietly(parcelFileDescriptor2);
-                        throw th;
-                    }
-                } catch (Throwable th2) {
-                    th = th2;
-                    parcelFileDescriptor2 = null;
-                    autoCloseable = null;
-                    IoUtils.closeQuietly(inputStream);
-                    IoUtils.closeQuietly(fileInputStream);
-                    IoUtils.closeQuietly(autoCloseable);
-                    IoUtils.closeQuietly(parcelFileDescriptor2);
-                    throw th;
+        File[] listFiles = file.listFiles();
+        if (listFiles == null) {
+            return;
+        }
+        ?? length = listFiles.length;
+        AutoCloseable autoCloseable = null;
+        File file2 = null;
+        for (File file3 : listFiles) {
+            String name = file3.getName();
+            if (file3.isFile()) {
+                long length2 = file3.length() / 1024;
+                printWriter.print("        name = ");
+                printWriter.print(name);
+                printWriter.print(", size = ");
+                printWriter.print(length2);
+                printWriter.println("KB");
+                int lastIndexOf = name.lastIndexOf(".");
+                String substring = name.substring(lastIndexOf + 1);
+                if (lastIndexOf != -1 && "xml".equals(substring)) {
+                    file2 = file3;
                 }
+            } else {
+                File[] listFiles2 = file3.listFiles();
+                if (listFiles2 != null) {
+                    printWriter.print("    [which = ");
+                    printWriter.print(name);
+                    printWriter.print(", num = ");
+                    printWriter.print(listFiles2.length);
+                    printWriter.println("]");
+                }
+                printDir(file3, printWriter);
+            }
+        }
+        if (!DEBUG_DUMP || file2 == null) {
+            return;
+        }
+        printWriter.println("{AssetFileInfo}");
+        StringBuffer stringBuffer = new StringBuffer();
+        try {
+            try {
+                fileInputStream = new FileInputStream(file2.getAbsolutePath());
+            } catch (IOException e2) {
+                e = e2;
+                fileInputStream = null;
+            } catch (Throwable th) {
+                th = th;
+                IoUtils.closeQuietly(autoCloseable);
+                throw th;
             }
             try {
-                parcelFileDescriptor2 = ParcelFileDescriptor.open(file, 1006632960);
-                if (parcelFileDescriptor2 != null) {
-                    try {
-                        fileOutputStream = new FileOutputStream(file);
-                    } catch (IOException e2) {
-                        e = e2;
-                        fileOutputStream = inputStream;
-                    } catch (Throwable th3) {
-                        th = th3;
-                        fileOutputStream = inputStream;
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+                while (true) {
+                    String readLine = bufferedReader.readLine();
+                    if (readLine == null) {
+                        break;
                     }
-                    try {
-                        FileUtils.copy(decryptStream, fileOutputStream);
-                        fileOutputStream.flush();
-                        fileOutputStream.close();
-                        inputStream = fileOutputStream;
-                    } catch (IOException e3) {
-                        e = e3;
-                        inputStream = decryptStream;
-                        IOException iOException = e;
-                        parcelFileDescriptor3 = parcelFileDescriptor2;
-                        e = iOException;
-                        autoCloseable2 = fileOutputStream;
-                        Log.w("AssetFileManager", "Error writeToFile", e);
-                        IoUtils.closeQuietly(inputStream);
-                        IoUtils.closeQuietly(fileInputStream);
-                        IoUtils.closeQuietly(autoCloseable2);
-                        IoUtils.closeQuietly(parcelFileDescriptor3);
-                        return false;
-                    } catch (Throwable th4) {
-                        th = th4;
-                        inputStream = decryptStream;
-                        autoCloseable = fileOutputStream;
-                        IoUtils.closeQuietly(inputStream);
-                        IoUtils.closeQuietly(fileInputStream);
-                        IoUtils.closeQuietly(autoCloseable);
-                        IoUtils.closeQuietly(parcelFileDescriptor2);
-                        throw th;
-                    }
+                    stringBuffer.append(readLine + "\n");
                 }
-                Log.i("AssetFileManager", "writeToFile: file = " + file.getAbsolutePath() + " , complete (" + (SystemClock.elapsedRealtime() - elapsedRealtime) + " ms)");
-                IoUtils.closeQuietly(decryptStream);
+                bufferedReader.close();
+                fileInputStream.close();
+            } catch (IOException e3) {
+                e = e3;
+                e.printStackTrace();
                 IoUtils.closeQuietly(fileInputStream);
-                IoUtils.closeQuietly(inputStream);
-                IoUtils.closeQuietly(parcelFileDescriptor2);
-                return true;
-            } catch (IOException e4) {
-                e = e4;
-                parcelFileDescriptor3 = null;
-                autoCloseable2 = null;
-                inputStream = decryptStream;
-            } catch (Throwable th5) {
-                th = th5;
-                parcelFileDescriptor2 = null;
-                fileOutputStream = 0;
+                printWriter.println(stringBuffer);
             }
-        } catch (IOException e5) {
-            e = e5;
-            parcelFileDescriptor3 = null;
-            fileInputStream = null;
-            autoCloseable2 = null;
-        } catch (Throwable th6) {
-            th = th6;
-            parcelFileDescriptor2 = null;
-            fileInputStream = null;
-            autoCloseable = null;
+            IoUtils.closeQuietly(fileInputStream);
+            printWriter.println(stringBuffer);
+        } catch (Throwable th2) {
+            th = th2;
+            autoCloseable = length;
+            IoUtils.closeQuietly(autoCloseable);
+            throw th;
         }
     }
 
-    public ParcelFileDescriptor getAssetFile(int i, int i2, String str) {
-        File file = new File(getBaseAssetDir(i, i2), str);
-        if (!file.exists()) {
-            Log.i("AssetFileManager", "getAssetFile: " + str + " not exists! (which = " + i + ")");
-            return null;
-        }
-        try {
-            return ParcelFileDescriptor.open(file, 268435456);
-        } catch (FileNotFoundException e) {
-            Log.w("AssetFileManager", "Error getting wallpaper asset file", e);
-            return null;
-        }
-    }
-
-    public Bundle getAssets(int i, int i2) {
-        File baseAssetDir = getBaseAssetDir(i, i2);
-        if (baseAssetDir == null || !baseAssetDir.exists()) {
-            Log.i("AssetFileManager", "getAssets: not exists! (which = " + i + ")");
-            return null;
-        }
-        Bundle bundle = new Bundle();
-        try {
-            String[] list = baseAssetDir.list();
-            if (list != null && list.length > 0) {
-                for (int i3 = 0; i3 < list.length; i3++) {
-                    bundle.putParcelable(list[i3], ParcelFileDescriptor.open(new File(baseAssetDir, list[i3]), 268435456));
-                }
-            }
-        } catch (FileNotFoundException e) {
-            Log.w("AssetFileManager", "getAssets: Error getting wallpaper asset file", e);
-        }
-        return bundle;
-    }
-
-    public void removeAssetFiles(int i, int i2) {
-        File baseAssetDir = getBaseAssetDir(i, i2);
+    public static void removeAssetFiles(int i, int i2) {
+        File baseAssetDir = getBaseAssetDir(i, i2, false);
         Log.i("AssetFileManager", "removeAssetFiles: dir = " + baseAssetDir.getAbsolutePath());
-        if (!baseAssetDir.exists()) {
-            Log.i("AssetFileManager", "removeAssetFiles fail. dir not exists");
-        } else {
+        if (baseAssetDir.exists()) {
             removeDirectory(baseAssetDir);
+        } else {
+            Log.i("AssetFileManager", "removeAssetFiles fail. dir not exists");
         }
     }
 
@@ -252,115 +135,5 @@ public class AssetFileManager {
             }
         }
         file.delete();
-    }
-
-    public void moveAssetFiles(int i, int i2, int i3) {
-        File baseAssetDir = getBaseAssetDir(i, i3);
-        File baseAssetDir2 = getBaseAssetDir(i2, i3);
-        removeAssetFiles(i2, i3);
-        if (baseAssetDir.renameTo(baseAssetDir2)) {
-            return;
-        }
-        Log.w("AssetFileManager", "moveAssetFiles fail. " + baseAssetDir.getAbsolutePath() + " to " + baseAssetDir2.getAbsolutePath());
-    }
-
-    public static File getBaseAssetDir(int i, int i2) {
-        return getBaseAssetDir(i, i2, false);
-    }
-
-    public static File getBaseAssetDir(int i, int i2, boolean z) {
-        if (z) {
-            return new File(Environment.getUserSystemDirectory(i2), "wallpaper_assets/" + i + "_temp");
-        }
-        return new File(Environment.getUserSystemDirectory(i2), "wallpaper_assets/" + i);
-    }
-
-    public void dump(PrintWriter printWriter, int i) {
-        printWriter.println("[AssetFileManager]");
-        printDir(printWriter, new File(Environment.getUserSystemDirectory(i), "wallpaper_assets"));
-        printWriter.println();
-    }
-
-    public final void printDir(PrintWriter printWriter, File file) {
-        File[] listFiles = file.listFiles();
-        if (listFiles == null) {
-            return;
-        }
-        File file2 = null;
-        for (File file3 : listFiles) {
-            String name = file3.getName();
-            if (file3.isFile()) {
-                long length = file3.length() / 1024;
-                printWriter.print("        name = ");
-                printWriter.print(name);
-                printWriter.print(", size = ");
-                printWriter.print(length);
-                printWriter.println("KB");
-                int lastIndexOf = name.lastIndexOf(".");
-                String substring = name.substring(lastIndexOf + 1);
-                if (lastIndexOf != -1 && "xml".equals(substring)) {
-                    file2 = file3;
-                }
-            } else {
-                File[] listFiles2 = file3.listFiles();
-                if (listFiles2 != null) {
-                    printWriter.print("    [which = ");
-                    printWriter.print(name);
-                    printWriter.print(", num = ");
-                    printWriter.print(listFiles2.length);
-                    printWriter.println("]");
-                }
-                printDir(printWriter, file3);
-            }
-        }
-        if (!DEBUG_DUMP || file2 == null) {
-            return;
-        }
-        printInfoFile(printWriter, file2);
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    public final void printInfoFile(PrintWriter printWriter, File file) {
-        String readLine;
-        printWriter.println("{AssetFileInfo}");
-        StringBuffer stringBuffer = new StringBuffer();
-        FileInputStream fileInputStream = null;
-        FileInputStream fileInputStream2 = null;
-        try {
-            try {
-                FileInputStream fileInputStream3 = new FileInputStream(file.getAbsolutePath());
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream3));
-                    while (true) {
-                        readLine = bufferedReader.readLine();
-                        if (readLine == 0) {
-                            break;
-                        }
-                        stringBuffer.append(readLine + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                    }
-                    bufferedReader.close();
-                    fileInputStream3.close();
-                    IoUtils.closeQuietly(fileInputStream3);
-                    fileInputStream = readLine;
-                } catch (IOException e) {
-                    e = e;
-                    fileInputStream2 = fileInputStream3;
-                    e.printStackTrace();
-                    IoUtils.closeQuietly(fileInputStream2);
-                    fileInputStream = fileInputStream2;
-                    printWriter.println(stringBuffer);
-                } catch (Throwable th) {
-                    th = th;
-                    fileInputStream = fileInputStream3;
-                    IoUtils.closeQuietly(fileInputStream);
-                    throw th;
-                }
-            } catch (IOException e2) {
-                e = e2;
-            }
-            printWriter.println(stringBuffer);
-        } catch (Throwable th2) {
-            th = th2;
-        }
     }
 }

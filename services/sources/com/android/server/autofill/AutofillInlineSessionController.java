@@ -3,12 +3,16 @@ package com.android.server.autofill;
 import android.content.ComponentName;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Slog;
 import android.view.autofill.AutofillId;
+import com.android.internal.inputmethod.InlineSuggestionsRequestInfo;
+import com.android.server.autofill.AutofillInlineSuggestionsRequestSession;
+import com.android.server.autofill.Session;
 import com.android.server.autofill.ui.InlineFillUi;
 import com.android.server.inputmethod.InputMethodManagerInternal;
-import java.util.Optional;
 import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AutofillInlineSessionController {
     public final ComponentName mComponentName;
@@ -17,83 +21,42 @@ public final class AutofillInlineSessionController {
     public final InputMethodManagerInternal mInputMethodManagerInternal;
     public final Object mLock;
     public AutofillInlineSuggestionsRequestSession mSession;
-    public final InlineFillUi.InlineUiEventCallback mUiCallback;
+    public final Session.AnonymousClass2 mUiCallback;
     public final int mUserId;
 
-    public AutofillInlineSessionController(InputMethodManagerInternal inputMethodManagerInternal, int i, ComponentName componentName, Handler handler, Object obj, InlineFillUi.InlineUiEventCallback inlineUiEventCallback) {
+    public AutofillInlineSessionController(InputMethodManagerInternal inputMethodManagerInternal, int i, ComponentName componentName, Handler handler, Object obj, Session.AnonymousClass2 anonymousClass2) {
         this.mInputMethodManagerInternal = inputMethodManagerInternal;
         this.mUserId = i;
         this.mComponentName = componentName;
         this.mHandler = handler;
         this.mLock = obj;
-        this.mUiCallback = inlineUiEventCallback;
+        this.mUiCallback = anonymousClass2;
     }
 
-    public void onCreateInlineSuggestionsRequestLocked(AutofillId autofillId, Consumer consumer, Bundle bundle) {
+    public final void hideInlineSuggestionsUiLocked(AutofillId autofillId) {
+        AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession = this.mSession;
+        if (autofillInlineSuggestionsRequestSession != null) {
+            autofillInlineSuggestionsRequestSession.onInlineSuggestionsResponseLocked(new InlineFillUi(autofillId));
+        }
+    }
+
+    public final void onCreateInlineSuggestionsRequestLocked(AutofillId autofillId, Consumer consumer, Bundle bundle) {
         AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession = this.mSession;
         if (autofillInlineSuggestionsRequestSession != null) {
             autofillInlineSuggestionsRequestSession.destroySessionLocked();
         }
         this.mInlineFillUi = null;
-        AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession2 = new AutofillInlineSuggestionsRequestSession(this.mInputMethodManagerInternal, this.mUserId, this.mComponentName, this.mHandler, this.mLock, autofillId, consumer, bundle, this.mUiCallback);
+        ComponentName componentName = this.mComponentName;
+        Handler handler = this.mHandler;
+        InputMethodManagerInternal inputMethodManagerInternal = this.mInputMethodManagerInternal;
+        int i = this.mUserId;
+        AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession2 = new AutofillInlineSuggestionsRequestSession(inputMethodManagerInternal, i, componentName, handler, this.mLock, autofillId, consumer, bundle, this.mUiCallback);
         this.mSession = autofillInlineSuggestionsRequestSession2;
-        autofillInlineSuggestionsRequestSession2.onCreateInlineSuggestionsRequestLocked();
-    }
-
-    public void destroyLocked(AutofillId autofillId) {
-        AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession = this.mSession;
-        if (autofillInlineSuggestionsRequestSession != null) {
-            autofillInlineSuggestionsRequestSession.onInlineSuggestionsResponseLocked(InlineFillUi.emptyUi(autofillId));
-            this.mSession.destroySessionLocked();
-            this.mSession = null;
+        autofillInlineSuggestionsRequestSession2.mImeSessionInvalidated = false;
+        if (Helper.sDebug) {
+            Slog.d("AutofillInlineSuggestionsRequestSession", "onCreateInlineSuggestionsRequestLocked called: " + autofillInlineSuggestionsRequestSession2.mAutofillId);
         }
-        this.mInlineFillUi = null;
-    }
-
-    public Optional getInlineSuggestionsRequestLocked() {
-        AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession = this.mSession;
-        if (autofillInlineSuggestionsRequestSession != null) {
-            return autofillInlineSuggestionsRequestSession.getInlineSuggestionsRequestLocked();
-        }
-        return Optional.empty();
-    }
-
-    public boolean hideInlineSuggestionsUiLocked(AutofillId autofillId) {
-        AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession = this.mSession;
-        if (autofillInlineSuggestionsRequestSession != null) {
-            return autofillInlineSuggestionsRequestSession.onInlineSuggestionsResponseLocked(InlineFillUi.emptyUi(autofillId));
-        }
-        return false;
-    }
-
-    public void disableFilterMatching(AutofillId autofillId) {
-        InlineFillUi inlineFillUi = this.mInlineFillUi;
-        if (inlineFillUi == null || !inlineFillUi.getAutofillId().equals(autofillId)) {
-            return;
-        }
-        this.mInlineFillUi.disableFilterMatching();
-    }
-
-    public void resetInlineFillUiLocked() {
-        this.mInlineFillUi = null;
-        AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession = this.mSession;
-        if (autofillInlineSuggestionsRequestSession != null) {
-            autofillInlineSuggestionsRequestSession.resetInlineFillUiLocked();
-        }
-    }
-
-    public boolean filterInlineFillUiLocked(AutofillId autofillId, String str) {
-        InlineFillUi inlineFillUi = this.mInlineFillUi;
-        if (inlineFillUi == null || !inlineFillUi.getAutofillId().equals(autofillId)) {
-            return false;
-        }
-        this.mInlineFillUi.setFilterText(str);
-        return requestImeToShowInlineSuggestionsLocked();
-    }
-
-    public boolean setInlineFillUiLocked(InlineFillUi inlineFillUi) {
-        this.mInlineFillUi = inlineFillUi;
-        return requestImeToShowInlineSuggestionsLocked();
+        inputMethodManagerInternal.onCreateInlineSuggestionsRequest(i, new InlineSuggestionsRequestInfo(componentName, autofillInlineSuggestionsRequestSession2.mAutofillId, bundle), new AutofillInlineSuggestionsRequestSession.InlineSuggestionsRequestCallbackImpl(autofillInlineSuggestionsRequestSession2));
     }
 
     public final boolean requestImeToShowInlineSuggestionsLocked() {
@@ -103,13 +66,5 @@ public final class AutofillInlineSessionController {
             return false;
         }
         return autofillInlineSuggestionsRequestSession.onInlineSuggestionsResponseLocked(inlineFillUi);
-    }
-
-    public boolean isImeShowing() {
-        AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession = this.mSession;
-        if (autofillInlineSuggestionsRequestSession != null) {
-            return autofillInlineSuggestionsRequestSession.isImeShowing();
-        }
-        return false;
     }
 }

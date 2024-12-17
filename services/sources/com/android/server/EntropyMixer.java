@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemProperties;
@@ -21,63 +20,75 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class EntropyMixer extends Binder {
+public final class EntropyMixer extends Binder {
     static final String DEVICE_SPECIFIC_INFO_HEADER = "Copyright (C) 2009 The Android Open Source Project\nAll Your Randomness Are Belong To Us\n";
     static final int SEED_FILE_SIZE = 512;
-    public final BroadcastReceiver mBroadcastReceiver;
-    public final Handler mHandler;
+    public final AnonymousClass2 mBroadcastReceiver;
+    public final AnonymousClass1 mHandler;
     public final File randomReadDevice;
     public final File randomWriteDevice;
     public final AtomicFile seedFile;
     public static final long START_TIME = System.currentTimeMillis();
     public static final long START_NANOTIME = System.nanoTime();
 
-    public EntropyMixer(Context context) {
-        this(context, new File(getSystemDir(), "entropy.dat"), new File("/dev/urandom"), new File("/dev/urandom"));
+    /* JADX WARN: Illegal instructions before constructor call */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public EntropyMixer(android.content.Context r5) {
+        /*
+            r4 = this;
+            java.io.File r0 = new java.io.File
+            java.io.File r1 = android.os.Environment.getDataDirectory()
+            java.io.File r2 = new java.io.File
+            java.lang.String r3 = "system"
+            r2.<init>(r1, r3)
+            r2.mkdirs()
+            java.lang.String r1 = "entropy.dat"
+            r0.<init>(r2, r1)
+            java.io.File r1 = new java.io.File
+            java.lang.String r2 = "/dev/urandom"
+            r1.<init>(r2)
+            java.io.File r3 = new java.io.File
+            r3.<init>(r2)
+            r4.<init>(r5, r0, r1, r3)
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.EntropyMixer.<init>(android.content.Context):void");
     }
 
+    /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.EntropyMixer$1] */
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.EntropyMixer$2] */
     public EntropyMixer(Context context, File file, File file2, File file3) {
-        Handler handler = new Handler(IoThread.getHandler().getLooper()) { // from class: com.android.server.EntropyMixer.1
+        this.mHandler = new Handler(IoThread.getHandler().getLooper()) { // from class: com.android.server.EntropyMixer.1
             @Override // android.os.Handler
-            public void handleMessage(Message message) {
+            public final void handleMessage(Message message) {
                 if (message.what != 1) {
                     Slog.e("EntropyMixer", "Will not process invalid message");
-                } else {
-                    EntropyMixer.this.updateSeedFile();
-                    EntropyMixer.this.scheduleSeedUpdater();
+                    return;
                 }
+                EntropyMixer entropyMixer = EntropyMixer.this;
+                entropyMixer.updateSeedFile();
+                entropyMixer.mHandler.removeMessages(1);
+                entropyMixer.mHandler.sendEmptyMessageDelayed(1, 10800000L);
             }
         };
-        this.mHandler = handler;
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.EntropyMixer.2
+        this.mBroadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.EntropyMixer.2
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
+            public final void onReceive(Context context2, Intent intent) {
                 EntropyMixer.this.updateSeedFile();
             }
         };
-        this.mBroadcastReceiver = broadcastReceiver;
         this.seedFile = new AtomicFile((File) Preconditions.checkNotNull(file));
         this.randomReadDevice = (File) Preconditions.checkNotNull(file2);
-        this.randomWriteDevice = (File) Preconditions.checkNotNull(file3);
-        loadInitialEntropy();
-        updateSeedFile();
-        scheduleSeedUpdater();
-        IntentFilter intentFilter = new IntentFilter("android.intent.action.ACTION_SHUTDOWN");
-        intentFilter.addAction("android.intent.action.ACTION_POWER_CONNECTED");
-        intentFilter.addAction("android.intent.action.REBOOT");
-        context.registerReceiver(broadcastReceiver, intentFilter, null, handler);
-    }
-
-    public final void scheduleSeedUpdater() {
-        this.mHandler.removeMessages(1);
-        this.mHandler.sendEmptyMessageDelayed(1, 10800000L);
-    }
-
-    public final void loadInitialEntropy() {
+        File file4 = (File) Preconditions.checkNotNull(file3);
+        this.randomWriteDevice = file4;
         byte[] readSeedFile = readSeedFile();
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(this.randomWriteDevice);
+            FileOutputStream fileOutputStream = new FileOutputStream(file4);
             try {
                 if (readSeedFile.length != 0) {
                     fileOutputStream.write(readSeedFile);
@@ -90,6 +101,17 @@ public class EntropyMixer extends Binder {
         } catch (IOException e) {
             Slog.e("EntropyMixer", "Error writing to " + this.randomWriteDevice, e);
         }
+        updateSeedFile();
+        removeMessages(1);
+        sendEmptyMessageDelayed(1, 10800000L);
+        IntentFilter intentFilter = new IntentFilter("android.intent.action.ACTION_SHUTDOWN");
+        intentFilter.addAction("android.intent.action.ACTION_POWER_CONNECTED");
+        intentFilter.addAction("android.intent.action.REBOOT");
+        context.registerReceiver(this.mBroadcastReceiver, intentFilter, null, this.mHandler);
+    }
+
+    public static byte[] getDeviceSpecificInformation() {
+        return (DEVICE_SPECIFIC_INFO_HEADER + START_TIME + '\n' + START_NANOTIME + '\n' + SystemProperties.get("ro.serialno") + '\n' + SystemProperties.get("ro.bootmode") + '\n' + SystemProperties.get("ro.baseband") + '\n' + SystemProperties.get("ro.carrier") + '\n' + SystemProperties.get("ro.bootloader") + '\n' + SystemProperties.get("ro.hardware") + '\n' + SystemProperties.get("ro.revision") + '\n' + SystemProperties.get("ro.build.fingerprint") + '\n' + new Object().hashCode() + '\n' + System.currentTimeMillis() + '\n' + System.nanoTime() + '\n').getBytes();
     }
 
     public final byte[] readSeedFile() {
@@ -109,63 +131,54 @@ public class EntropyMixer extends Binder {
         byte[] bArr = new byte[512];
         try {
             fileInputStream = new FileInputStream(this.randomReadDevice);
-            try {
-            } finally {
-            }
         } catch (IOException e) {
             Slog.e("EntropyMixer", "Error reading " + this.randomReadDevice + "; seed file won't be properly updated", e);
         }
-        if (fileInputStream.read(bArr) != 512) {
-            throw new IOException("unexpected EOF");
-        }
-        fileInputStream.close();
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            messageDigest.update("Android EntropyMixer v1".getBytes());
-            messageDigest.update(longToBytes(System.currentTimeMillis()));
-            messageDigest.update(longToBytes(System.nanoTime()));
-            messageDigest.update(longToBytes(readSeedFile.length));
-            messageDigest.update(readSeedFile);
-            messageDigest.update(longToBytes(512));
-            messageDigest.update(bArr);
-            byte[] digest = messageDigest.digest();
-            System.arraycopy(digest, 0, bArr, 512 - digest.length, digest.length);
-            writeNewSeed(bArr);
-            if (readSeedFile.length == 0) {
-                Slog.i("EntropyMixer", "Created seed file");
-            } else {
-                Slog.i("EntropyMixer", "Updated seed file");
+            if (fileInputStream.read(bArr) != 512) {
+                throw new IOException("unexpected EOF");
             }
-        } catch (NoSuchAlgorithmException e2) {
-            Slog.wtf("EntropyMixer", "SHA-256 algorithm not found; seed file won't be updated", e2);
+            fileInputStream.close();
+            try {
+                MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+                messageDigest.update("Android EntropyMixer v1".getBytes());
+                long currentTimeMillis = System.currentTimeMillis();
+                ByteBuffer allocate = ByteBuffer.allocate(8);
+                allocate.putLong(currentTimeMillis);
+                messageDigest.update(allocate.array());
+                long nanoTime = System.nanoTime();
+                ByteBuffer allocate2 = ByteBuffer.allocate(8);
+                allocate2.putLong(nanoTime);
+                messageDigest.update(allocate2.array());
+                long length = readSeedFile.length;
+                ByteBuffer allocate3 = ByteBuffer.allocate(8);
+                allocate3.putLong(length);
+                messageDigest.update(allocate3.array());
+                messageDigest.update(readSeedFile);
+                ByteBuffer allocate4 = ByteBuffer.allocate(8);
+                allocate4.putLong(512);
+                messageDigest.update(allocate4.array());
+                messageDigest.update(bArr);
+                byte[] digest = messageDigest.digest();
+                System.arraycopy(digest, 0, bArr, 512 - digest.length, digest.length);
+                FileOutputStream fileOutputStream = null;
+                try {
+                    fileOutputStream = this.seedFile.startWrite();
+                    fileOutputStream.write(bArr);
+                    this.seedFile.finishWrite(fileOutputStream);
+                } catch (IOException e2) {
+                    Slog.e("EntropyMixer", "Error writing " + this.seedFile.getBaseFile(), e2);
+                    this.seedFile.failWrite(fileOutputStream);
+                }
+                if (readSeedFile.length == 0) {
+                    Slog.i("EntropyMixer", "Created seed file");
+                } else {
+                    Slog.i("EntropyMixer", "Updated seed file");
+                }
+            } catch (NoSuchAlgorithmException e3) {
+                Slog.wtf("EntropyMixer", "SHA-256 algorithm not found; seed file won't be updated", e3);
+            }
+        } finally {
         }
-    }
-
-    public final void writeNewSeed(byte[] bArr) {
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = this.seedFile.startWrite();
-            fileOutputStream.write(bArr);
-            this.seedFile.finishWrite(fileOutputStream);
-        } catch (IOException e) {
-            Slog.e("EntropyMixer", "Error writing " + this.seedFile.getBaseFile(), e);
-            this.seedFile.failWrite(fileOutputStream);
-        }
-    }
-
-    public static byte[] longToBytes(long j) {
-        ByteBuffer allocate = ByteBuffer.allocate(8);
-        allocate.putLong(j);
-        return allocate.array();
-    }
-
-    public final byte[] getDeviceSpecificInformation() {
-        return (DEVICE_SPECIFIC_INFO_HEADER + START_TIME + '\n' + START_NANOTIME + '\n' + SystemProperties.get("ro.serialno") + '\n' + SystemProperties.get("ro.bootmode") + '\n' + SystemProperties.get("ro.baseband") + '\n' + SystemProperties.get("ro.carrier") + '\n' + SystemProperties.get("ro.bootloader") + '\n' + SystemProperties.get("ro.hardware") + '\n' + SystemProperties.get("ro.revision") + '\n' + SystemProperties.get("ro.build.fingerprint") + '\n' + new Object().hashCode() + '\n' + System.currentTimeMillis() + '\n' + System.nanoTime() + '\n').getBytes();
-    }
-
-    public static File getSystemDir() {
-        File file = new File(Environment.getDataDirectory(), "system");
-        file.mkdirs();
-        return file;
     }
 }

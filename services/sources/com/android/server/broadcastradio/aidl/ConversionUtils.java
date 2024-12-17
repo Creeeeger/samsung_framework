@@ -1,149 +1,406 @@
 package com.android.server.broadcastradio.aidl;
 
 import android.app.compat.CompatChanges;
-import android.hardware.broadcastradio.AmFmBandRange;
-import android.hardware.broadcastradio.AmFmRegionConfig;
-import android.hardware.broadcastradio.DabTableEntry;
 import android.hardware.broadcastradio.Metadata;
 import android.hardware.broadcastradio.ProgramFilter;
 import android.hardware.broadcastradio.ProgramIdentifier;
 import android.hardware.broadcastradio.ProgramInfo;
-import android.hardware.broadcastradio.ProgramListChunk;
-import android.hardware.broadcastradio.Properties;
 import android.hardware.broadcastradio.VendorKeyValue;
-import android.hardware.radio.Announcement;
 import android.hardware.radio.ProgramList;
 import android.hardware.radio.ProgramSelector;
 import android.hardware.radio.RadioManager;
 import android.hardware.radio.RadioMetadata;
+import android.hardware.radio.UniqueProgramIdentifier;
 import android.os.ParcelableException;
 import android.os.ServiceSpecificException;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.IntArray;
-import com.android.server.broadcastradio.aidl.Utils;
+import com.android.internal.hidden_from_bootclasspath.android.hardware.radio.Flags;
 import com.android.server.utils.Slogf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.IntFunction;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class ConversionUtils {
-    public static int halResultToTunerResult(int i) {
-        switch (i) {
-            case 0:
-                return 0;
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-            case 3:
-                return 3;
-            case 4:
-                return 4;
-            case 5:
-                return 5;
-            case 6:
-                return 6;
-            default:
-                return 7;
+    public static ProgramList.Chunk convertChunkToTargetSdkVersion(ProgramList.Chunk chunk, int i) {
+        ArraySet arraySet = new ArraySet();
+        for (RadioManager.ProgramInfo programInfo : chunk.getModified()) {
+            if (programInfoMeetsSdkVersionRequirement(programInfo, i)) {
+                arraySet.add(programInfo);
+            }
         }
+        ArraySet arraySet2 = new ArraySet();
+        for (UniqueProgramIdentifier uniqueProgramIdentifier : chunk.getRemoved()) {
+            if (identifierMeetsSdkVersionRequirement(uniqueProgramIdentifier.getPrimaryId(), i)) {
+                arraySet2.add(uniqueProgramIdentifier);
+            }
+        }
+        return new ProgramList.Chunk(chunk.isPurge(), chunk.isComplete(), arraySet, arraySet2);
+    }
+
+    public static ProgramFilter filterToHalProgramFilter(ProgramList.Filter filter) {
+        ProgramFilter programFilter = new ProgramFilter();
+        IntArray intArray = new IntArray(filter.getIdentifierTypes().size());
+        ArrayList arrayList = new ArrayList();
+        Iterator it = filter.getIdentifierTypes().iterator();
+        while (it.hasNext()) {
+            intArray.add(((Integer) it.next()).intValue());
+        }
+        for (ProgramSelector.Identifier identifier : filter.getIdentifiers()) {
+            ProgramIdentifier identifierToHalProgramIdentifier = identifierToHalProgramIdentifier(identifier);
+            if (identifierToHalProgramIdentifier.type != 0) {
+                arrayList.add(identifierToHalProgramIdentifier);
+            } else {
+                Slogf.w("BcRadioAidlSrv.convert", "Invalid identifiers: %s", identifier);
+            }
+        }
+        programFilter.identifierTypes = intArray.toArray();
+        programFilter.identifiers = (ProgramIdentifier[]) arrayList.toArray(new ConversionUtils$$ExternalSyntheticLambda0(0));
+        programFilter.includeCategories = filter.areCategoriesIncluded();
+        programFilter.excludeModifications = filter.areModificationsExcluded();
+        return programFilter;
+    }
+
+    public static ProgramSelector.Identifier identifierFromHalProgramIdentifier(ProgramIdentifier programIdentifier) {
+        int i = programIdentifier.type;
+        if (i == 0) {
+            return null;
+        }
+        if (i == 5) {
+            i = 14;
+        } else if (i == 14) {
+            if (!Flags.hdRadioImproved()) {
+                return null;
+            }
+            i = 15;
+        }
+        return new ProgramSelector.Identifier(i, programIdentifier.value);
+    }
+
+    public static boolean identifierMeetsSdkVersionRequirement(ProgramSelector.Identifier identifier, int i) {
+        if (Flags.hdRadioImproved() && !CompatChanges.isChangeEnabled(302589903L, i) && identifier.getType() == 15) {
+            return false;
+        }
+        return CompatChanges.isChangeEnabled(261770108L, i) || identifier.getType() != 14;
+    }
+
+    public static ProgramIdentifier identifierToHalProgramIdentifier(ProgramSelector.Identifier identifier) {
+        ProgramIdentifier programIdentifier = new ProgramIdentifier();
+        if (identifier.getType() == 14) {
+            programIdentifier.type = 5;
+        } else if (!Flags.hdRadioImproved()) {
+            programIdentifier.type = identifier.getType();
+        } else if (identifier.getType() == 15) {
+            programIdentifier.type = 14;
+        } else {
+            programIdentifier.type = identifier.getType();
+        }
+        long value = identifier.getValue();
+        if (identifier.getType() == 5) {
+            programIdentifier.value = (65535 & value) | ((value >>> 16) << 32);
+        } else {
+            programIdentifier.value = value;
+        }
+        return programIdentifier;
     }
 
     public static int identifierTypeToProgramType(int i) {
-        switch (i) {
-            case 1:
-            case 2:
-                return 2;
-            case 3:
-                return 4;
-            case 4:
-            case 11:
-            default:
-                if (i < 1000 || i > 1999) {
-                    return 0;
+        int i2 = 2;
+        if (i != 1 && i != 2) {
+            i2 = 4;
+            if (i != 3 && i != 10004) {
+                switch (i) {
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                        return 5;
+                    case 9:
+                    case 10:
+                        return 6;
+                    default:
+                        switch (i) {
+                            case 12:
+                            case 13:
+                                return 7;
+                            case 14:
+                                return 5;
+                            default:
+                                if (Flags.hdRadioImproved() && i == 15) {
+                                    return 4;
+                                }
+                                if (i < 1000 || i > 1999) {
+                                    return 0;
+                                }
+                                return i;
+                        }
                 }
-                return i;
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 14:
-                return 5;
-            case 9:
-            case 10:
-                return 6;
-            case 12:
-            case 13:
-                return 7;
+            }
         }
+        return i2;
     }
 
-    public static boolean isVendorIdentifierType(int i) {
+    public static boolean isValidHalProgramSelector(android.hardware.broadcastradio.ProgramSelector programSelector) {
+        int i = programSelector.primaryId.type;
+        if (i == 1 || i == 2 || i == 3 || i == 5 || i == 9 || i == 12) {
+            return true;
+        }
         return i >= 1000 && i <= 1999;
     }
 
-    public static boolean isAtLeastU(int i) {
-        return CompatChanges.isChangeEnabled(261770108L, i);
+    public static RadioManager.ProgramInfo programInfoFromHalProgramInfo(ProgramInfo programInfo) {
+        if (!isValidHalProgramSelector(programInfo.selector)) {
+            return null;
+        }
+        int i = programInfo.logicallyTunedTo.type;
+        if (i != 1 && i != 2 && i != 3 && i != 5 && i != 9 && i != 12 && (i < 1000 || i > 1999)) {
+            return null;
+        }
+        int i2 = programInfo.physicallyTunedTo.type;
+        if (i2 != 1 && i2 != 8 && i2 != 10 && i2 != 13 && (i2 < 1000 || i2 > 1999)) {
+            return null;
+        }
+        ArrayList arrayList = new ArrayList();
+        if (programInfo.relatedContent != null) {
+            int i3 = 0;
+            while (true) {
+                ProgramIdentifier[] programIdentifierArr = programInfo.relatedContent;
+                if (i3 >= programIdentifierArr.length) {
+                    break;
+                }
+                ProgramSelector.Identifier identifierFromHalProgramIdentifier = identifierFromHalProgramIdentifier(programIdentifierArr[i3]);
+                if (identifierFromHalProgramIdentifier != null) {
+                    arrayList.add(identifierFromHalProgramIdentifier);
+                }
+                i3++;
+            }
+        }
+        ProgramSelector programSelectorFromHalProgramSelector = programSelectorFromHalProgramSelector(programInfo.selector);
+        Objects.requireNonNull(programSelectorFromHalProgramSelector);
+        return new RadioManager.ProgramInfo(programSelectorFromHalProgramSelector, identifierFromHalProgramIdentifier(programInfo.logicallyTunedTo), identifierFromHalProgramIdentifier(programInfo.physicallyTunedTo), arrayList, programInfo.infoFlags, programInfo.signalQuality, radioMetadataFromHalMetadata(programInfo.metadata), vendorInfoFromHalVendorKeyValues(programInfo.vendorInfo));
+    }
+
+    public static boolean programInfoMeetsSdkVersionRequirement(RadioManager.ProgramInfo programInfo, int i) {
+        if (!programSelectorMeetsSdkVersionRequirement(i, programInfo.getSelector()) || !identifierMeetsSdkVersionRequirement(programInfo.getLogicallyTunedTo(), i) || !identifierMeetsSdkVersionRequirement(programInfo.getPhysicallyTunedTo(), i)) {
+            return false;
+        }
+        Iterator it = programInfo.getRelatedContent().iterator();
+        while (it.hasNext()) {
+            if (!identifierMeetsSdkVersionRequirement((ProgramSelector.Identifier) it.next(), i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static ProgramSelector programSelectorFromHalProgramSelector(android.hardware.broadcastradio.ProgramSelector programSelector) {
+        ProgramIdentifier programIdentifier = programSelector.primaryId;
+        if ((programIdentifier.type == 0 && programIdentifier.value == 0 && programSelector.secondaryIds.length == 0) || !isValidHalProgramSelector(programSelector)) {
+            return null;
+        }
+        ArrayList arrayList = new ArrayList();
+        int i = 0;
+        while (true) {
+            ProgramIdentifier[] programIdentifierArr = programSelector.secondaryIds;
+            if (i >= programIdentifierArr.length) {
+                int identifierTypeToProgramType = identifierTypeToProgramType(programSelector.primaryId.type);
+                ProgramSelector.Identifier identifierFromHalProgramIdentifier = identifierFromHalProgramIdentifier(programSelector.primaryId);
+                Objects.requireNonNull(identifierFromHalProgramIdentifier);
+                return new ProgramSelector(identifierTypeToProgramType, identifierFromHalProgramIdentifier, (ProgramSelector.Identifier[]) arrayList.toArray(new ProgramSelector.Identifier[0]), (long[]) null);
+            }
+            ProgramIdentifier programIdentifier2 = programIdentifierArr[i];
+            if (programIdentifier2 != null) {
+                ProgramSelector.Identifier identifierFromHalProgramIdentifier2 = identifierFromHalProgramIdentifier(programIdentifier2);
+                if (identifierFromHalProgramIdentifier2 == null) {
+                    Slogf.e("BcRadioAidlSrv.convert", "invalid secondary id: %s", programSelector.secondaryIds[i]);
+                } else {
+                    arrayList.add(identifierFromHalProgramIdentifier2);
+                }
+            }
+            i++;
+        }
+    }
+
+    public static boolean programSelectorMeetsSdkVersionRequirement(int i, ProgramSelector programSelector) {
+        if (!identifierMeetsSdkVersionRequirement(programSelector.getPrimaryId(), i)) {
+            return false;
+        }
+        for (ProgramSelector.Identifier identifier : programSelector.getSecondaryIds()) {
+            if (!identifierMeetsSdkVersionRequirement(identifier, i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:44:0x00b2  */
+    /* JADX WARN: Removed duplicated region for block: B:47:0x00c2  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static android.hardware.radio.RadioManager.ModuleProperties propertiesFromHalProperties(int r28, java.lang.String r29, android.hardware.broadcastradio.Properties r30, android.hardware.broadcastradio.AmFmRegionConfig r31, android.hardware.broadcastradio.DabTableEntry[] r32) {
+        /*
+            Method dump skipped, instructions count: 349
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.broadcastradio.aidl.ConversionUtils.propertiesFromHalProperties(int, java.lang.String, android.hardware.broadcastradio.Properties, android.hardware.broadcastradio.AmFmRegionConfig, android.hardware.broadcastradio.DabTableEntry[]):android.hardware.radio.RadioManager$ModuleProperties");
+    }
+
+    public static RadioMetadata radioMetadataFromHalMetadata(Metadata[] metadataArr) {
+        RadioMetadata.Builder builder = new RadioMetadata.Builder();
+        for (int i = 0; i < metadataArr.length; i++) {
+            Metadata metadata = metadataArr[i];
+            int i2 = metadata._tag;
+            switch (i2) {
+                case 0:
+                    metadata._assertTag(0);
+                    builder.putString("android.hardware.radio.metadata.RDS_PS", (String) metadata._value);
+                    break;
+                case 1:
+                    metadata._assertTag(1);
+                    builder.putInt("android.hardware.radio.metadata.RDS_PTY", ((Integer) metadata._value).intValue());
+                    break;
+                case 2:
+                    metadata._assertTag(2);
+                    builder.putInt("android.hardware.radio.metadata.RBDS_PTY", ((Integer) metadata._value).intValue());
+                    break;
+                case 3:
+                    metadata._assertTag(3);
+                    builder.putString("android.hardware.radio.metadata.RDS_RT", (String) metadata._value);
+                    break;
+                case 4:
+                    metadata._assertTag(4);
+                    builder.putString("android.hardware.radio.metadata.TITLE", (String) metadata._value);
+                    break;
+                case 5:
+                    metadata._assertTag(5);
+                    builder.putString("android.hardware.radio.metadata.ARTIST", (String) metadata._value);
+                    break;
+                case 6:
+                    metadata._assertTag(6);
+                    builder.putString("android.hardware.radio.metadata.ALBUM", (String) metadata._value);
+                    break;
+                case 7:
+                    metadata._assertTag(7);
+                    builder.putInt("android.hardware.radio.metadata.ICON", ((Integer) metadata._value).intValue());
+                    break;
+                case 8:
+                    metadata._assertTag(8);
+                    builder.putInt("android.hardware.radio.metadata.ART", ((Integer) metadata._value).intValue());
+                    break;
+                case 9:
+                    metadata._assertTag(9);
+                    builder.putString("android.hardware.radio.metadata.PROGRAM_NAME", (String) metadata._value);
+                    break;
+                case 10:
+                    metadata._assertTag(10);
+                    builder.putString("android.hardware.radio.metadata.DAB_ENSEMBLE_NAME", (String) metadata._value);
+                    break;
+                case 11:
+                    metadata._assertTag(11);
+                    builder.putString("android.hardware.radio.metadata.DAB_ENSEMBLE_NAME_SHORT", (String) metadata._value);
+                    break;
+                case 12:
+                    metadata._assertTag(12);
+                    builder.putString("android.hardware.radio.metadata.DAB_SERVICE_NAME", (String) metadata._value);
+                    break;
+                case 13:
+                    metadata._assertTag(13);
+                    builder.putString("android.hardware.radio.metadata.DAB_SERVICE_NAME_SHORT", (String) metadata._value);
+                    break;
+                case 14:
+                    metadata._assertTag(14);
+                    builder.putString("android.hardware.radio.metadata.DAB_COMPONENT_NAME", (String) metadata._value);
+                    break;
+                case 15:
+                    metadata._assertTag(15);
+                    builder.putString("android.hardware.radio.metadata.DAB_COMPONENT_NAME_SHORT", (String) metadata._value);
+                    break;
+                default:
+                    if (Flags.hdRadioImproved()) {
+                        switch (i2) {
+                            case 16:
+                                Metadata metadata2 = metadataArr[i];
+                                metadata2._assertTag(16);
+                                builder.putString("android.hardware.radio.metadata.GENRE", (String) metadata2._value);
+                                break;
+                            case 17:
+                                Metadata metadata3 = metadataArr[i];
+                                metadata3._assertTag(17);
+                                builder.putString("android.hardware.radio.metadata.COMMENT_SHORT_DESCRIPTION", (String) metadata3._value);
+                                break;
+                            case 18:
+                                Metadata metadata4 = metadataArr[i];
+                                metadata4._assertTag(18);
+                                builder.putString("android.hardware.radio.metadata.COMMENT_ACTUAL_TEXT", (String) metadata4._value);
+                                break;
+                            case 19:
+                                Metadata metadata5 = metadataArr[i];
+                                metadata5._assertTag(19);
+                                builder.putString("android.hardware.radio.metadata.COMMERCIAL", (String) metadata5._value);
+                                break;
+                            case 20:
+                                Metadata metadata6 = metadataArr[i];
+                                metadata6._assertTag(20);
+                                builder.putStringArray("android.hardware.radio.metadata.UFIDS", (String[]) metadata6._value);
+                                break;
+                            case 21:
+                                Metadata metadata7 = metadataArr[i];
+                                metadata7._assertTag(21);
+                                builder.putString("android.hardware.radio.metadata.HD_STATION_NAME_SHORT", (String) metadata7._value);
+                                break;
+                            case 22:
+                                Metadata metadata8 = metadataArr[i];
+                                metadata8._assertTag(22);
+                                builder.putString("android.hardware.radio.metadata.HD_STATION_NAME_LONG", (String) metadata8._value);
+                                break;
+                            case 23:
+                                Metadata metadata9 = metadataArr[i];
+                                metadata9._assertTag(23);
+                                builder.putInt("android.hardware.radio.metadata.HD_SUBCHANNELS_AVAILABLE", ((Integer) metadata9._value).intValue());
+                                break;
+                            default:
+                                Slogf.w("BcRadioAidlSrv.convert", "Ignored unknown metadata entry: %s with HD radio flag enabled", metadataArr[i]);
+                                break;
+                        }
+                    } else {
+                        Slogf.w("BcRadioAidlSrv.convert", "Ignored unknown metadata entry: %s with HD radio flag disabled", metadataArr[i]);
+                        break;
+                    }
+            }
+        }
+        return builder.build();
     }
 
     public static RuntimeException throwOnError(RuntimeException runtimeException, String str) {
         if (!(runtimeException instanceof ServiceSpecificException)) {
-            return new ParcelableException(new RuntimeException(str + ": unknown error"));
+            return new ParcelableException(new RuntimeException(str.concat(": unknown error")));
         }
         int i = ((ServiceSpecificException) runtimeException).errorCode;
         switch (i) {
             case 1:
-                return new ParcelableException(new RuntimeException(str + ": INTERNAL_ERROR"));
+                return new ParcelableException(new RuntimeException(str.concat(": INTERNAL_ERROR")));
             case 2:
-                return new IllegalArgumentException(str + ": INVALID_ARGUMENTS");
+                return new IllegalArgumentException(str.concat(": INVALID_ARGUMENTS"));
             case 3:
-                return new IllegalStateException(str + ": INVALID_STATE");
+                return new IllegalStateException(str.concat(": INVALID_STATE"));
             case 4:
-                return new UnsupportedOperationException(str + ": NOT_SUPPORTED");
+                return new UnsupportedOperationException(str.concat(": NOT_SUPPORTED"));
             case 5:
-                return new ParcelableException(new RuntimeException(str + ": TIMEOUT"));
+                return new ParcelableException(new RuntimeException(str.concat(": TIMEOUT")));
             case 6:
-                return new IllegalStateException(str + ": CANCELED");
+                return new IllegalStateException(str.concat(": CANCELED"));
             case 7:
-                return new ParcelableException(new RuntimeException(str + ": UNKNOWN_ERROR"));
+                return new ParcelableException(new RuntimeException(str.concat(": UNKNOWN_ERROR")));
             default:
                 return new ParcelableException(new RuntimeException(str + ": unknown error (" + i + ")"));
         }
-    }
-
-    public static VendorKeyValue[] vendorInfoToHalVendorKeyValues(Map map) {
-        if (map == null) {
-            return new VendorKeyValue[0];
-        }
-        ArrayList arrayList = new ArrayList();
-        for (Map.Entry entry : map.entrySet()) {
-            VendorKeyValue vendorKeyValue = new VendorKeyValue();
-            vendorKeyValue.key = (String) entry.getKey();
-            String str = (String) entry.getValue();
-            vendorKeyValue.value = str;
-            String str2 = vendorKeyValue.key;
-            if (str2 == null || str == null) {
-                Slogf.w("BcRadioAidlSrv.convert", "VendorKeyValue contains invalid entry: key = %s, value = %s", str2, str);
-            } else {
-                arrayList.add(vendorKeyValue);
-            }
-        }
-        return (VendorKeyValue[]) arrayList.toArray(new IntFunction() { // from class: com.android.server.broadcastradio.aidl.ConversionUtils$$ExternalSyntheticLambda2
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i) {
-                VendorKeyValue[] lambda$vendorInfoToHalVendorKeyValues$0;
-                lambda$vendorInfoToHalVendorKeyValues$0 = ConversionUtils.lambda$vendorInfoToHalVendorKeyValues$0(i);
-                return lambda$vendorInfoToHalVendorKeyValues$0;
-            }
-        });
-    }
-
-    public static /* synthetic */ VendorKeyValue[] lambda$vendorInfoToHalVendorKeyValues$0(int i) {
-        return new VendorKeyValue[i];
     }
 
     public static Map vendorInfoFromHalVendorKeyValues(VendorKeyValue[] vendorKeyValueArr) {
@@ -163,382 +420,23 @@ public abstract class ConversionUtils {
         return arrayMap;
     }
 
-    public static int[] identifierTypesToProgramTypes(int[] iArr) {
-        ArraySet arraySet = new ArraySet();
-        int i = 0;
-        for (int i2 : iArr) {
-            int identifierTypeToProgramType = identifierTypeToProgramType(i2);
-            if (identifierTypeToProgramType != 0) {
-                arraySet.add(Integer.valueOf(identifierTypeToProgramType));
-                if (identifierTypeToProgramType == 2) {
-                    arraySet.add(1);
-                }
-                if (identifierTypeToProgramType == 4) {
-                    arraySet.add(3);
-                }
-            }
+    public static VendorKeyValue[] vendorInfoToHalVendorKeyValues(Map map) {
+        if (map == null) {
+            return new VendorKeyValue[0];
         }
-        int[] iArr2 = new int[arraySet.size()];
-        Iterator it = arraySet.iterator();
-        while (it.hasNext()) {
-            iArr2[i] = ((Integer) it.next()).intValue();
-            i++;
-        }
-        return iArr2;
-    }
-
-    public static RadioManager.BandDescriptor[] amfmConfigToBands(AmFmRegionConfig amFmRegionConfig) {
-        if (amFmRegionConfig == null) {
-            return new RadioManager.BandDescriptor[0];
-        }
-        int length = amFmRegionConfig.ranges.length;
         ArrayList arrayList = new ArrayList();
-        for (int i = 0; i < length; i++) {
-            Utils.FrequencyBand band = Utils.getBand(amFmRegionConfig.ranges[i].lowerBound);
-            if (band == Utils.FrequencyBand.UNKNOWN) {
-                Slogf.e("BcRadioAidlSrv.convert", "Unknown frequency band at %d kHz", Integer.valueOf(amFmRegionConfig.ranges[i].lowerBound));
-            } else if (band == Utils.FrequencyBand.FM) {
-                AmFmBandRange amFmBandRange = amFmRegionConfig.ranges[i];
-                arrayList.add(new RadioManager.FmBandDescriptor(0, 1, amFmBandRange.lowerBound, amFmBandRange.upperBound, amFmBandRange.spacing, true, true, true, true, true));
+        for (Map.Entry entry : map.entrySet()) {
+            VendorKeyValue vendorKeyValue = new VendorKeyValue();
+            vendorKeyValue.key = (String) entry.getKey();
+            String str = (String) entry.getValue();
+            vendorKeyValue.value = str;
+            String str2 = vendorKeyValue.key;
+            if (str2 == null || str == null) {
+                Slogf.w("BcRadioAidlSrv.convert", "VendorKeyValue contains invalid entry: key = %s, value = %s", str2, str);
             } else {
-                AmFmBandRange amFmBandRange2 = amFmRegionConfig.ranges[i];
-                arrayList.add(new RadioManager.AmBandDescriptor(0, 0, amFmBandRange2.lowerBound, amFmBandRange2.upperBound, amFmBandRange2.spacing, true));
+                arrayList.add(vendorKeyValue);
             }
         }
-        return (RadioManager.BandDescriptor[]) arrayList.toArray(new IntFunction() { // from class: com.android.server.broadcastradio.aidl.ConversionUtils$$ExternalSyntheticLambda3
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i2) {
-                RadioManager.BandDescriptor[] lambda$amfmConfigToBands$1;
-                lambda$amfmConfigToBands$1 = ConversionUtils.lambda$amfmConfigToBands$1(i2);
-                return lambda$amfmConfigToBands$1;
-            }
-        });
-    }
-
-    public static /* synthetic */ RadioManager.BandDescriptor[] lambda$amfmConfigToBands$1(int i) {
-        return new RadioManager.BandDescriptor[i];
-    }
-
-    public static Map dabConfigFromHalDabTableEntries(DabTableEntry[] dabTableEntryArr) {
-        if (dabTableEntryArr == null) {
-            return null;
-        }
-        ArrayMap arrayMap = new ArrayMap();
-        for (DabTableEntry dabTableEntry : dabTableEntryArr) {
-            arrayMap.put(dabTableEntry.label, Integer.valueOf(dabTableEntry.frequencyKhz));
-        }
-        return arrayMap;
-    }
-
-    public static RadioManager.ModuleProperties propertiesFromHalProperties(int i, String str, Properties properties, AmFmRegionConfig amFmRegionConfig, DabTableEntry[] dabTableEntryArr) {
-        Objects.requireNonNull(str);
-        Objects.requireNonNull(properties);
-        return new RadioManager.ModuleProperties(i, str, 0, properties.maker, properties.product, properties.version, properties.serial, 1, 1, false, false, amfmConfigToBands(amFmRegionConfig), true, identifierTypesToProgramTypes(properties.supportedIdentifierTypes), properties.supportedIdentifierTypes, dabConfigFromHalDabTableEntries(dabTableEntryArr), vendorInfoFromHalVendorKeyValues(properties.vendorInfo));
-    }
-
-    public static ProgramIdentifier identifierToHalProgramIdentifier(ProgramSelector.Identifier identifier) {
-        ProgramIdentifier programIdentifier = new ProgramIdentifier();
-        int type = identifier.getType();
-        programIdentifier.type = type;
-        if (type == 14) {
-            programIdentifier.type = 5;
-        }
-        programIdentifier.value = identifier.getValue();
-        return programIdentifier;
-    }
-
-    public static ProgramSelector.Identifier identifierFromHalProgramIdentifier(ProgramIdentifier programIdentifier) {
-        int i = programIdentifier.type;
-        if (i == 0) {
-            return null;
-        }
-        if (i == 5) {
-            i = 14;
-        }
-        return new ProgramSelector.Identifier(i, programIdentifier.value);
-    }
-
-    public static boolean isValidHalProgramSelector(android.hardware.broadcastradio.ProgramSelector programSelector) {
-        int i = programSelector.primaryId.type;
-        return i == 1 || i == 2 || i == 3 || i == 5 || i == 9 || i == 12 || isVendorIdentifierType(i);
-    }
-
-    public static android.hardware.broadcastradio.ProgramSelector programSelectorToHalProgramSelector(ProgramSelector programSelector) {
-        android.hardware.broadcastradio.ProgramSelector programSelector2 = new android.hardware.broadcastradio.ProgramSelector();
-        programSelector2.primaryId = identifierToHalProgramIdentifier(programSelector.getPrimaryId());
-        ProgramSelector.Identifier[] secondaryIds = programSelector.getSecondaryIds();
-        ArrayList arrayList = new ArrayList(secondaryIds.length);
-        for (ProgramSelector.Identifier identifier : secondaryIds) {
-            arrayList.add(identifierToHalProgramIdentifier(identifier));
-        }
-        programSelector2.secondaryIds = (ProgramIdentifier[]) arrayList.toArray(new IntFunction() { // from class: com.android.server.broadcastradio.aidl.ConversionUtils$$ExternalSyntheticLambda0
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i) {
-                ProgramIdentifier[] lambda$programSelectorToHalProgramSelector$2;
-                lambda$programSelectorToHalProgramSelector$2 = ConversionUtils.lambda$programSelectorToHalProgramSelector$2(i);
-                return lambda$programSelectorToHalProgramSelector$2;
-            }
-        });
-        if (isValidHalProgramSelector(programSelector2)) {
-            return programSelector2;
-        }
-        return null;
-    }
-
-    public static /* synthetic */ ProgramIdentifier[] lambda$programSelectorToHalProgramSelector$2(int i) {
-        return new ProgramIdentifier[i];
-    }
-
-    public static boolean isEmpty(android.hardware.broadcastradio.ProgramSelector programSelector) {
-        ProgramIdentifier programIdentifier = programSelector.primaryId;
-        return programIdentifier.type == 0 && programIdentifier.value == 0 && programSelector.secondaryIds.length == 0;
-    }
-
-    public static ProgramSelector programSelectorFromHalProgramSelector(android.hardware.broadcastradio.ProgramSelector programSelector) {
-        if (isEmpty(programSelector) || !isValidHalProgramSelector(programSelector)) {
-            return null;
-        }
-        ArrayList arrayList = new ArrayList();
-        int i = 0;
-        while (true) {
-            ProgramIdentifier[] programIdentifierArr = programSelector.secondaryIds;
-            if (i < programIdentifierArr.length) {
-                ProgramIdentifier programIdentifier = programIdentifierArr[i];
-                if (programIdentifier != null) {
-                    arrayList.add(identifierFromHalProgramIdentifier(programIdentifier));
-                }
-                i++;
-            } else {
-                int identifierTypeToProgramType = identifierTypeToProgramType(programSelector.primaryId.type);
-                ProgramSelector.Identifier identifierFromHalProgramIdentifier = identifierFromHalProgramIdentifier(programSelector.primaryId);
-                Objects.requireNonNull(identifierFromHalProgramIdentifier);
-                return new ProgramSelector(identifierTypeToProgramType, identifierFromHalProgramIdentifier, (ProgramSelector.Identifier[]) arrayList.toArray(new ProgramSelector.Identifier[0]), (long[]) null);
-            }
-        }
-    }
-
-    public static RadioMetadata radioMetadataFromHalMetadata(Metadata[] metadataArr) {
-        RadioMetadata.Builder builder = new RadioMetadata.Builder();
-        for (int i = 0; i < metadataArr.length; i++) {
-            switch (metadataArr[i].getTag()) {
-                case 0:
-                    builder.putString("android.hardware.radio.metadata.RDS_PS", metadataArr[i].getRdsPs());
-                    break;
-                case 1:
-                    builder.putInt("android.hardware.radio.metadata.RDS_PTY", metadataArr[i].getRdsPty());
-                    break;
-                case 2:
-                    builder.putInt("android.hardware.radio.metadata.RBDS_PTY", metadataArr[i].getRbdsPty());
-                    break;
-                case 3:
-                    builder.putString("android.hardware.radio.metadata.RDS_RT", metadataArr[i].getRdsRt());
-                    break;
-                case 4:
-                    builder.putString("android.hardware.radio.metadata.TITLE", metadataArr[i].getSongTitle());
-                    break;
-                case 5:
-                    builder.putString("android.hardware.radio.metadata.ARTIST", metadataArr[i].getSongArtist());
-                    break;
-                case 6:
-                    builder.putString("android.hardware.radio.metadata.ALBUM", metadataArr[i].getSongAlbum());
-                    break;
-                case 7:
-                    builder.putInt("android.hardware.radio.metadata.ICON", metadataArr[i].getStationIcon());
-                    break;
-                case 8:
-                    builder.putInt("android.hardware.radio.metadata.ART", metadataArr[i].getAlbumArt());
-                    break;
-                case 9:
-                    builder.putString("android.hardware.radio.metadata.PROGRAM_NAME", metadataArr[i].getProgramName());
-                    break;
-                case 10:
-                    builder.putString("android.hardware.radio.metadata.DAB_ENSEMBLE_NAME", metadataArr[i].getDabEnsembleName());
-                    break;
-                case 11:
-                    builder.putString("android.hardware.radio.metadata.DAB_ENSEMBLE_NAME_SHORT", metadataArr[i].getDabEnsembleNameShort());
-                    break;
-                case 12:
-                    builder.putString("android.hardware.radio.metadata.DAB_SERVICE_NAME", metadataArr[i].getDabServiceName());
-                    break;
-                case 13:
-                    builder.putString("android.hardware.radio.metadata.DAB_SERVICE_NAME_SHORT", metadataArr[i].getDabServiceNameShort());
-                    break;
-                case 14:
-                    builder.putString("android.hardware.radio.metadata.DAB_COMPONENT_NAME", metadataArr[i].getDabComponentName());
-                    break;
-                case 15:
-                    builder.putString("android.hardware.radio.metadata.DAB_COMPONENT_NAME_SHORT", metadataArr[i].getDabComponentNameShort());
-                    break;
-                default:
-                    Slogf.w("BcRadioAidlSrv.convert", "Ignored unknown metadata entry: %s", metadataArr[i]);
-                    break;
-            }
-        }
-        return builder.build();
-    }
-
-    public static boolean isValidLogicallyTunedTo(ProgramIdentifier programIdentifier) {
-        int i = programIdentifier.type;
-        return i == 1 || i == 2 || i == 3 || i == 5 || i == 9 || i == 12 || isVendorIdentifierType(i);
-    }
-
-    public static boolean isValidPhysicallyTunedTo(ProgramIdentifier programIdentifier) {
-        int i = programIdentifier.type;
-        return i == 1 || i == 8 || i == 10 || i == 13 || isVendorIdentifierType(i);
-    }
-
-    public static boolean isValidHalProgramInfo(ProgramInfo programInfo) {
-        return isValidHalProgramSelector(programInfo.selector) && isValidLogicallyTunedTo(programInfo.logicallyTunedTo) && isValidPhysicallyTunedTo(programInfo.physicallyTunedTo);
-    }
-
-    public static RadioManager.ProgramInfo programInfoFromHalProgramInfo(ProgramInfo programInfo) {
-        if (!isValidHalProgramInfo(programInfo)) {
-            return null;
-        }
-        ArrayList arrayList = new ArrayList();
-        if (programInfo.relatedContent != null) {
-            int i = 0;
-            while (true) {
-                ProgramIdentifier[] programIdentifierArr = programInfo.relatedContent;
-                if (i >= programIdentifierArr.length) {
-                    break;
-                }
-                ProgramSelector.Identifier identifierFromHalProgramIdentifier = identifierFromHalProgramIdentifier(programIdentifierArr[i]);
-                if (identifierFromHalProgramIdentifier != null) {
-                    arrayList.add(identifierFromHalProgramIdentifier);
-                }
-                i++;
-            }
-        }
-        ProgramSelector programSelectorFromHalProgramSelector = programSelectorFromHalProgramSelector(programInfo.selector);
-        Objects.requireNonNull(programSelectorFromHalProgramSelector);
-        return new RadioManager.ProgramInfo(programSelectorFromHalProgramSelector, identifierFromHalProgramIdentifier(programInfo.logicallyTunedTo), identifierFromHalProgramIdentifier(programInfo.physicallyTunedTo), arrayList, programInfo.infoFlags, programInfo.signalQuality, radioMetadataFromHalMetadata(programInfo.metadata), vendorInfoFromHalVendorKeyValues(programInfo.vendorInfo));
-    }
-
-    public static ProgramFilter filterToHalProgramFilter(ProgramList.Filter filter) {
-        if (filter == null) {
-            filter = new ProgramList.Filter();
-        }
-        ProgramFilter programFilter = new ProgramFilter();
-        IntArray intArray = new IntArray(filter.getIdentifierTypes().size());
-        ArrayList arrayList = new ArrayList();
-        Iterator it = filter.getIdentifierTypes().iterator();
-        while (it.hasNext()) {
-            intArray.add(((Integer) it.next()).intValue());
-        }
-        Iterator it2 = filter.getIdentifiers().iterator();
-        while (it2.hasNext()) {
-            arrayList.add(identifierToHalProgramIdentifier((ProgramSelector.Identifier) it2.next()));
-        }
-        programFilter.identifierTypes = intArray.toArray();
-        programFilter.identifiers = (ProgramIdentifier[]) arrayList.toArray(new IntFunction() { // from class: com.android.server.broadcastradio.aidl.ConversionUtils$$ExternalSyntheticLambda1
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i) {
-                ProgramIdentifier[] lambda$filterToHalProgramFilter$3;
-                lambda$filterToHalProgramFilter$3 = ConversionUtils.lambda$filterToHalProgramFilter$3(i);
-                return lambda$filterToHalProgramFilter$3;
-            }
-        });
-        programFilter.includeCategories = filter.areCategoriesIncluded();
-        programFilter.excludeModifications = filter.areModificationsExcluded();
-        return programFilter;
-    }
-
-    public static /* synthetic */ ProgramIdentifier[] lambda$filterToHalProgramFilter$3(int i) {
-        return new ProgramIdentifier[i];
-    }
-
-    public static ProgramList.Chunk chunkFromHalProgramListChunk(ProgramListChunk programListChunk) {
-        ArraySet arraySet = new ArraySet(programListChunk.modified.length);
-        int i = 0;
-        int i2 = 0;
-        while (true) {
-            ProgramInfo[] programInfoArr = programListChunk.modified;
-            if (i2 >= programInfoArr.length) {
-                break;
-            }
-            RadioManager.ProgramInfo programInfoFromHalProgramInfo = programInfoFromHalProgramInfo(programInfoArr[i2]);
-            if (programInfoFromHalProgramInfo == null) {
-                Slogf.w("BcRadioAidlSrv.convert", "Program info %s in program list chunk is not valid", programListChunk.modified[i2]);
-            } else {
-                arraySet.add(programInfoFromHalProgramInfo);
-            }
-            i2++;
-        }
-        ArraySet arraySet2 = new ArraySet();
-        if (programListChunk.removed != null) {
-            while (true) {
-                ProgramIdentifier[] programIdentifierArr = programListChunk.removed;
-                if (i >= programIdentifierArr.length) {
-                    break;
-                }
-                ProgramSelector.Identifier identifierFromHalProgramIdentifier = identifierFromHalProgramIdentifier(programIdentifierArr[i]);
-                if (identifierFromHalProgramIdentifier != null) {
-                    arraySet2.add(identifierFromHalProgramIdentifier);
-                }
-                i++;
-            }
-        }
-        return new ProgramList.Chunk(programListChunk.purge, programListChunk.complete, arraySet, arraySet2);
-    }
-
-    public static boolean isNewIdentifierInU(ProgramSelector.Identifier identifier) {
-        return identifier.getType() == 14;
-    }
-
-    public static boolean programSelectorMeetsSdkVersionRequirement(ProgramSelector programSelector, int i) {
-        if (isAtLeastU(i)) {
-            return true;
-        }
-        if (programSelector.getPrimaryId().getType() == 14) {
-            return false;
-        }
-        for (ProgramSelector.Identifier identifier : programSelector.getSecondaryIds()) {
-            if (isNewIdentifierInU(identifier)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean programInfoMeetsSdkVersionRequirement(RadioManager.ProgramInfo programInfo, int i) {
-        if (isAtLeastU(i)) {
-            return true;
-        }
-        if (!programSelectorMeetsSdkVersionRequirement(programInfo.getSelector(), i) || isNewIdentifierInU(programInfo.getLogicallyTunedTo()) || isNewIdentifierInU(programInfo.getPhysicallyTunedTo())) {
-            return false;
-        }
-        Iterator it = programInfo.getRelatedContent().iterator();
-        while (it.hasNext()) {
-            if (isNewIdentifierInU((ProgramSelector.Identifier) it.next())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static ProgramList.Chunk convertChunkToTargetSdkVersion(ProgramList.Chunk chunk, int i) {
-        if (isAtLeastU(i)) {
-            return chunk;
-        }
-        ArraySet arraySet = new ArraySet();
-        for (RadioManager.ProgramInfo programInfo : chunk.getModified()) {
-            if (programInfoMeetsSdkVersionRequirement(programInfo, i)) {
-                arraySet.add(programInfo);
-            }
-        }
-        ArraySet arraySet2 = new ArraySet();
-        for (ProgramSelector.Identifier identifier : chunk.getRemoved()) {
-            if (!isNewIdentifierInU(identifier)) {
-                arraySet2.add(identifier);
-            }
-        }
-        return new ProgramList.Chunk(chunk.isPurge(), chunk.isComplete(), arraySet, arraySet2);
-    }
-
-    public static Announcement announcementFromHalAnnouncement(android.hardware.broadcastradio.Announcement announcement) {
-        ProgramSelector programSelectorFromHalProgramSelector = programSelectorFromHalProgramSelector(announcement.selector);
-        Objects.requireNonNull(programSelectorFromHalProgramSelector, "Program selector can not be null");
-        return new Announcement(programSelectorFromHalProgramSelector, announcement.type, vendorInfoFromHalVendorKeyValues(announcement.vendorInfo));
+        return (VendorKeyValue[]) arrayList.toArray(new ConversionUtils$$ExternalSyntheticLambda0(2));
     }
 }

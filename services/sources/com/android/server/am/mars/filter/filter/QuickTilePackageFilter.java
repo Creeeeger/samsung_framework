@@ -6,61 +6,58 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Slog;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.am.mars.MARsDebugConfig;
 import com.android.server.am.mars.filter.IFilter;
 import java.util.ArrayList;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class QuickTilePackageFilter implements IFilter {
+public final class QuickTilePackageFilter implements IFilter {
     public ArrayList mActiveQuickTilePackages;
     public Context mContext;
-    public ContentObserver mQuickTileContentObserver;
+    public AnonymousClass1 mQuickTileContentObserver;
     public boolean mRegisteredQuickTileContentObserver;
-    public static String TAG = "MARs:" + QuickTilePackageFilter.class.getSimpleName();
-    public static String CUSTOM_PREFIX = "custom";
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class QuickTilePackageFilterHolder {
-        public static final QuickTilePackageFilter INSTANCE = new QuickTilePackageFilter();
-    }
+        public static final QuickTilePackageFilter INSTANCE;
 
-    public QuickTilePackageFilter() {
-        this.mContext = null;
-        this.mRegisteredQuickTileContentObserver = false;
-        this.mQuickTileContentObserver = null;
-        this.mActiveQuickTilePackages = new ArrayList();
-    }
-
-    public static QuickTilePackageFilter getInstance() {
-        return QuickTilePackageFilterHolder.INSTANCE;
-    }
-
-    public final void setContext(Context context) {
-        this.mContext = context;
+        static {
+            QuickTilePackageFilter quickTilePackageFilter = new QuickTilePackageFilter();
+            quickTilePackageFilter.mContext = null;
+            quickTilePackageFilter.mRegisteredQuickTileContentObserver = false;
+            quickTilePackageFilter.mQuickTileContentObserver = null;
+            quickTilePackageFilter.mActiveQuickTilePackages = new ArrayList();
+            INSTANCE = quickTilePackageFilter;
+        }
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void init(Context context) {
-        setContext(context);
-        getActiveQuickTilePackages();
-        registerContentObserver();
+    public final void deInit() {
+        try {
+            if (this.mRegisteredQuickTileContentObserver) {
+                this.mContext.getContentResolver().unregisterContentObserver(this.mQuickTileContentObserver);
+                this.mRegisteredQuickTileContentObserver = false;
+            }
+        } catch (IllegalArgumentException unused) {
+            Slog.e("MARs:QuickTilePackageFilter", "IllegalArgumentException occurred in unregisterContentObserver()");
+        }
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void deInit() {
-        unregisterContentObserver();
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public int filter(String str, int i, int i2, int i3) {
+    public final int filter(int i, int i2, int i3, String str) {
         Context context = this.mContext;
         if (context == null || i != context.getUserId()) {
             return 0;
         }
         synchronized (this.mActiveQuickTilePackages) {
             if (str != null) {
-                if (this.mActiveQuickTilePackages.contains(str)) {
-                    return 21;
+                try {
+                    if (this.mActiveQuickTilePackages.contains(str)) {
+                        return 21;
+                    }
+                } finally {
                 }
             }
             return 0;
@@ -76,46 +73,43 @@ public class QuickTilePackageFilter implements IFilter {
             return;
         }
         for (String str : string.split(",")) {
-            if (str != null && str.contains(CUSTOM_PREFIX)) {
+            if (str != null && str.contains("custom")) {
                 try {
                     String substring = str.substring(str.indexOf("(") + 1, str.indexOf("/"));
                     synchronized (this.mActiveQuickTilePackages) {
-                        if (!this.mActiveQuickTilePackages.contains(substring)) {
-                            this.mActiveQuickTilePackages.add(substring);
-                            if (MARsDebugConfig.DEBUG_FILTER) {
-                                Slog.d(TAG, "getActiveQuickTilePackages: add mActiveQuickTilePackages " + substring);
+                        try {
+                            if (!this.mActiveQuickTilePackages.contains(substring)) {
+                                this.mActiveQuickTilePackages.add(substring);
+                                if (MARsDebugConfig.DEBUG_FILTER) {
+                                    Slog.d("MARs:QuickTilePackageFilter", "getActiveQuickTilePackages: add mActiveQuickTilePackages " + substring);
+                                }
                             }
+                        } catch (Throwable th) {
+                            throw th;
                         }
                     }
                 } catch (Exception e) {
-                    Slog.e(TAG, "error occurred getActiveQuickTilePackages() ! " + e);
+                    BootReceiver$$ExternalSyntheticOutline0.m(e, "error occurred getActiveQuickTilePackages() ! ", "MARs:QuickTilePackageFilter");
                 }
             }
         }
     }
 
-    public final void registerContentObserver() {
+    /* JADX WARN: Type inference failed for: r5v2, types: [com.android.server.am.mars.filter.filter.QuickTilePackageFilter$1] */
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void init(Context context) {
+        this.mContext = context;
+        getActiveQuickTilePackages();
         if (this.mRegisteredQuickTileContentObserver) {
             return;
         }
         this.mQuickTileContentObserver = new ContentObserver(new Handler()) { // from class: com.android.server.am.mars.filter.filter.QuickTilePackageFilter.1
             @Override // android.database.ContentObserver
-            public void onChange(boolean z, Uri uri) {
+            public final void onChange(boolean z, Uri uri) {
                 QuickTilePackageFilter.this.getActiveQuickTilePackages();
             }
         };
         this.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor("sysui_qs_tiles"), false, this.mQuickTileContentObserver, this.mContext.getUserId());
         this.mRegisteredQuickTileContentObserver = true;
-    }
-
-    public final void unregisterContentObserver() {
-        try {
-            if (this.mRegisteredQuickTileContentObserver) {
-                this.mContext.getContentResolver().unregisterContentObserver(this.mQuickTileContentObserver);
-                this.mRegisteredQuickTileContentObserver = false;
-            }
-        } catch (IllegalArgumentException unused) {
-            Slog.e(TAG, "IllegalArgumentException occurred in unregisterContentObserver()");
-        }
     }
 }

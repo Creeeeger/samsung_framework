@@ -5,29 +5,26 @@ import android.os.Handler;
 import com.android.server.DeviceIdleInternal;
 import com.android.server.LocalServices;
 
-/* loaded from: classes2.dex */
-public class TvConstraintController implements ConstraintController {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class TvConstraintController implements ConstraintController {
     public final BluetoothConstraint mBluetoothConstraint;
-    public final Context mContext;
     public final DeviceIdleInternal mDeviceIdleService;
-    public final Handler mHandler;
 
     public TvConstraintController(Context context, Handler handler) {
-        this.mContext = context;
-        this.mHandler = handler;
         DeviceIdleInternal deviceIdleInternal = (DeviceIdleInternal) LocalServices.getService(DeviceIdleInternal.class);
         this.mDeviceIdleService = deviceIdleInternal;
         this.mBluetoothConstraint = context.getPackageManager().hasSystemFeature("android.hardware.bluetooth") ? new BluetoothConstraint(context, handler, deviceIdleInternal) : null;
     }
 
-    public void start() {
+    public final void start() {
         BluetoothConstraint bluetoothConstraint = this.mBluetoothConstraint;
         if (bluetoothConstraint != null) {
             this.mDeviceIdleService.registerDeviceIdleConstraint(bluetoothConstraint, "bluetooth", 1);
         }
     }
 
-    public void stop() {
+    public final void stop() {
         BluetoothConstraint bluetoothConstraint = this.mBluetoothConstraint;
         if (bluetoothConstraint != null) {
             this.mDeviceIdleService.unregisterDeviceIdleConstraint(bluetoothConstraint);

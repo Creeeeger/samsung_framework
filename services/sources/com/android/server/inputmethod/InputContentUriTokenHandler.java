@@ -8,8 +8,10 @@ import android.os.RemoteException;
 import com.android.internal.inputmethod.IInputContentUriToken;
 import com.android.server.LocalServices;
 import com.android.server.uri.UriGrantsManagerInternal;
+import com.android.server.uri.UriGrantsManagerService;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class InputContentUriTokenHandler extends IInputContentUriToken.Stub {
     public final Object mLock = new Object();
     public IBinder mPermissionOwnerToken = null;
@@ -19,7 +21,7 @@ public final class InputContentUriTokenHandler extends IInputContentUriToken.Stu
     public final int mTargetUserId;
     public final Uri mUri;
 
-    public InputContentUriTokenHandler(Uri uri, int i, String str, int i2, int i3) {
+    public InputContentUriTokenHandler(int i, String str, Uri uri, int i2, int i3) {
         this.mUri = uri;
         this.mSourceUid = i;
         this.mTargetPackage = str;
@@ -27,48 +29,48 @@ public final class InputContentUriTokenHandler extends IInputContentUriToken.Stu
         this.mTargetUserId = i3;
     }
 
-    public void take() {
-        synchronized (this.mLock) {
-            if (this.mPermissionOwnerToken != null) {
-                return;
-            }
-            IBinder newUriPermissionOwner = ((UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class)).newUriPermissionOwner("InputContentUriTokenHandler");
-            this.mPermissionOwnerToken = newUriPermissionOwner;
-            doTakeLocked(newUriPermissionOwner);
-        }
-    }
-
-    public final void doTakeLocked(IBinder iBinder) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
+    public final void finalize() {
         try {
-            try {
-                UriGrantsManager.getService().grantUriPermissionFromOwner(iBinder, this.mSourceUid, this.mTargetPackage, this.mUri, 1, this.mSourceUserId, this.mTargetUserId);
-            } catch (RemoteException e) {
-                e.rethrowFromSystemServer();
-            }
+            release();
         } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
+            super/*java.lang.Object*/.finalize();
         }
     }
 
-    public void release() {
+    public final void release() {
         synchronized (this.mLock) {
             if (this.mPermissionOwnerToken == null) {
                 return;
             }
             try {
-                ((UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class)).revokeUriPermissionFromOwner(this.mPermissionOwnerToken, this.mUri, 1, this.mSourceUserId);
+                ((UriGrantsManagerService.LocalService) ((UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class))).revokeUriPermissionFromOwner(this.mPermissionOwnerToken, this.mUri, 1, this.mSourceUserId);
             } finally {
                 this.mPermissionOwnerToken = null;
             }
         }
     }
 
-    public void finalize() {
-        try {
-            release();
-        } finally {
-            super/*java.lang.Object*/.finalize();
+    public final void take() {
+        synchronized (this.mLock) {
+            try {
+                if (this.mPermissionOwnerToken != null) {
+                    return;
+                }
+                IBinder newUriPermissionOwner = ((UriGrantsManagerService.LocalService) ((UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class))).newUriPermissionOwner("InputContentUriTokenHandler");
+                this.mPermissionOwnerToken = newUriPermissionOwner;
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    try {
+                        UriGrantsManager.getService().grantUriPermissionFromOwner(newUriPermissionOwner, this.mSourceUid, this.mTargetPackage, this.mUri, 1, this.mSourceUserId, this.mTargetUserId);
+                    } catch (RemoteException e) {
+                        e.rethrowFromSystemServer();
+                    }
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
         }
     }
 }

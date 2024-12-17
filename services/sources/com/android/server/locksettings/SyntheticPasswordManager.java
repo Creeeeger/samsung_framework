@@ -3,51 +3,67 @@ package com.android.server.locksettings;
 import android.app.admin.PasswordMetrics;
 import android.content.Context;
 import android.content.pm.UserInfo;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.hardware.weaver.IWeaver;
 import android.hardware.weaver.WeaverConfig;
 import android.hardware.weaver.WeaverReadResponse;
 import android.os.Binder;
 import android.os.Debug;
 import android.os.IBinder;
-import android.os.IHwBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
-import android.os.ServiceManager;
 import android.os.ServiceSpecificException;
 import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.security.Scrypt;
+import android.security.keystore.KeyProtection;
 import android.service.gatekeeper.GateKeeperResponse;
 import android.service.gatekeeper.IGateKeeperService;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
-import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.Preconditions;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
 import com.android.internal.widget.ICheckCredentialProgressCallback;
-import com.android.internal.widget.IWeakEscrowTokenRemovedListener;
 import com.android.internal.widget.LockPatternUtils;
-import com.android.internal.widget.LockSettingsInternal;
 import com.android.internal.widget.LockscreenCredential;
 import com.android.internal.widget.VerifyCredentialResponse;
-import com.android.server.LocalServices;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
+import com.android.server.SystemServiceManager$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0;
 import com.android.server.knox.dar.sdp.SDPLog;
 import com.android.server.locksettings.LockSettingsStorage;
-import com.android.server.locksettings.SyntheticPasswordManager;
 import com.android.server.locksettings.SyntheticPasswordMdfpp;
-import com.android.server.pm.UserManagerInternal;
 import com.android.server.utils.Slogf;
-import com.att.iqi.lib.metrics.mm.MM05;
 import com.samsung.android.feature.SemFloatingFeature;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
+import com.samsung.android.lock.LsLog;
+import com.samsung.android.lock.SPBnRManager;
+import com.samsung.android.service.HermesService.IHermesService;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,23 +73,24 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import libcore.util.HexEncoding;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes2.dex */
-public class SyntheticPasswordManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+class SyntheticPasswordManager {
     public static final boolean DEBUG;
     public final Context mContext;
-    public LockSettingsInternal mLockSettingsInternal;
-    public PasswordSlotManager mPasswordSlotManager;
-    public LockSettingsStorage mStorage;
+    public final PasswordSlotManager mPasswordSlotManager;
+    public final LockSettingsStorage mStorage;
     public final UserManager mUserManager;
-    public IWeaver mWeaver;
+    public volatile IWeaver mWeaver;
     public WeaverConfig mWeaverConfig;
-    public WeaverHidlAdapter mWeaverHidlService;
     public static final byte[] DEFAULT_PASSWORD = "default-password".getBytes();
     public static final byte[] DEFAULT_TOKEN = "This-byte-array-is-default-token".getBytes();
     public static final boolean SECURITY_UNPACK = SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_COMMON_SUPPORT_UNPACK");
@@ -93,178 +110,18 @@ public class SyntheticPasswordManager {
     public static final byte[] PERSONALIZATION_PASSWORD_METRICS = "password-metrics".getBytes();
     public static final byte[] PERSONALIZATION_CONTEXT = "android-synthetic-password-personalization-context".getBytes();
     public static final byte[] PERSONALIZATION_SDP_MASTER_KEY = "sdp-master-key".getBytes();
-    public boolean mIsWeaverSupported = false;
     public final RemoteCallbackList mListeners = new RemoteCallbackList();
-    public final WeaverAidlDeathRecipient mWeaverAidlDeathRecipient = new WeaverAidlDeathRecipient();
-    public final WeaverHidlDeathRecipient mWeaverHidlDeathRecipient = new WeaverHidlDeathRecipient();
-    public ArrayMap tokenMap = new ArrayMap();
-    public final SdpSyntheticPasswordManager mSdpSyntheticPasswordManager = new SdpSyntheticPasswordManager(this);
+    public final ArrayMap tokenMap = new ArrayMap();
+    public final SdpSyntheticPasswordManager mSdpSyntheticPasswordManager = new SdpSyntheticPasswordManager(this, this);
 
-    /* loaded from: classes2.dex */
-    public class AuthenticationResult {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AuthenticationResult {
         public VerifyCredentialResponse gkResponse;
         public SyntheticPassword syntheticPassword;
     }
 
-    /* loaded from: classes2.dex */
-    public class TokenData {
-        public byte[] aggregatedSecret;
-        public SyntheticPasswordMdfpp.KeyingMaterial km;
-        public LockPatternUtils.EscrowTokenStateChangeCallback mCallback;
-        public int mType;
-        public byte[] secdiscardableOnDisk;
-        public byte[] weaverSecret;
-
-        public TokenData() {
-        }
-    }
-
-    public static int fakeUserId(int i) {
-        return i + 100000;
-    }
-
-    private native long nativeSidFromPasswordHandle(byte[] bArr);
-
-    public final byte getTokenBasedProtectorType(int i) {
-        return i != 1 ? (byte) 1 : (byte) 2;
-    }
-
-    static {
-        DEBUG = "userdebug".equals(SystemProperties.get("ro.build.type")) || "eng".equals(SystemProperties.get("ro.build.type"));
-    }
-
-    /* loaded from: classes2.dex */
-    public class WeaverResult {
-        public static final SparseArray mWeaverResults = new SparseArray();
-        public int mOp;
-        public int mSlot;
-        public int mStatus = -999;
-        public int mUserId;
-
-        public static void begin(int i, int i2, int i3) {
-            WeaverResult weaverResult = new WeaverResult(i, i2, i3);
-            SparseArray sparseArray = mWeaverResults;
-            synchronized (sparseArray) {
-                sparseArray.put(i3, weaverResult);
-            }
-        }
-
-        public static void update(int i, int i2) {
-            synchronized (mWeaverResults) {
-                WeaverResult bySlotIdLocked = getBySlotIdLocked(i);
-                if (bySlotIdLocked != null) {
-                    bySlotIdLocked.updateInternal(i2);
-                }
-            }
-        }
-
-        public static void finish(int i) {
-            SparseArray sparseArray = mWeaverResults;
-            synchronized (sparseArray) {
-                WeaverResult weaverResult = (WeaverResult) sparseArray.get(i);
-                if (weaverResult != null) {
-                    SDPLog.d(weaverResult.toString());
-                    sparseArray.remove(i);
-                }
-            }
-        }
-
-        public static void finishOff(int i, String str) {
-            SparseArray sparseArray = mWeaverResults;
-            synchronized (sparseArray) {
-                WeaverResult bySlotIdLocked = getBySlotIdLocked(i);
-                if (bySlotIdLocked != null) {
-                    SDPLog.d(String.format(Locale.US, "%s [ op : %d, sl : %d, u : %d ]", str, Integer.valueOf(bySlotIdLocked.mOp), Integer.valueOf(bySlotIdLocked.mSlot), Integer.valueOf(bySlotIdLocked.mUserId)));
-                    sparseArray.remove(bySlotIdLocked.mUserId);
-                }
-            }
-        }
-
-        public static WeaverResult getBySlotIdLocked(int i) {
-            int i2 = 0;
-            while (true) {
-                SparseArray sparseArray = mWeaverResults;
-                if (i2 >= sparseArray.size()) {
-                    return null;
-                }
-                WeaverResult weaverResult = (WeaverResult) sparseArray.get(sparseArray.keyAt(i2));
-                if (weaverResult != null && weaverResult.mSlot == i) {
-                    return weaverResult;
-                }
-                i2++;
-            }
-        }
-
-        public WeaverResult(int i, int i2, int i3) {
-            this.mOp = i;
-            this.mSlot = i2;
-            this.mUserId = i3;
-        }
-
-        public final void updateInternal(int i) {
-            this.mStatus = i;
-        }
-
-        public String toString() {
-            String str;
-            int i = this.mOp;
-            if (i < 0 || i > 1) {
-                return String.format(Locale.US, "Invalid operation for weaver [ op : %d, sl : %d, u : %d ]", Integer.valueOf(i), Integer.valueOf(this.mSlot), Integer.valueOf(this.mUserId));
-            }
-            int i2 = this.mStatus;
-            if (i2 == -999) {
-                return String.format(Locale.US, "No update for weaver [ op : %d, sl : %d, u : %d ]", Integer.valueOf(i), Integer.valueOf(this.mSlot), Integer.valueOf(this.mUserId));
-            }
-            if (i2 == 0) {
-                str = "Weaver read status ok";
-            } else if (i2 == 1) {
-                str = "weaver read failed (FAILED)";
-            } else if (i2 == 2) {
-                str = "weaver read failed (INCORRECT_KEY)";
-            } else if (i2 != 3) {
-                str = "weaver read unknown status " + this.mStatus;
-            } else {
-                str = "weaver read failed (THROTTLE)";
-            }
-            Locale locale = Locale.US;
-            Object[] objArr = new Object[4];
-            objArr[0] = this.mOp == 0 ? "enrollment" : "verification";
-            objArr[1] = Integer.valueOf(this.mUserId);
-            objArr[2] = Integer.valueOf(this.mSlot);
-            objArr[3] = str;
-            return String.format(locale, "Result of weaver %s for user %d [ sl : %d, st : %s ]", objArr);
-        }
-    }
-
-    public boolean isWeaverSupported() {
-        return this.mIsWeaverSupported;
-    }
-
-    public void checkWeaverStatus() {
-        boolean z;
-        try {
-            z = isWeaverAvailable();
-        } catch (Exception e) {
-            SDPLog.e("Unexpected exception while check weaver availability", e);
-            z = false;
-        }
-        if (!isWeaverSupported()) {
-            Slog.d("SyntheticPasswordManager.SDP", "Device does not support weaver");
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("Weaver is ");
-        sb.append(z ? "now" : "NOT");
-        sb.append(" available");
-        SDPLog.d(sb.toString() + ((DEBUG && z) ? String.format(Locale.US, " with slots(%d), kSize(%d) and vSize(%d)", Integer.valueOf(this.mWeaverConfig.slots), Integer.valueOf(this.mWeaverConfig.keySize), Integer.valueOf(this.mWeaverConfig.valueSize)) : "!"));
-    }
-
-    public void refreshActiveSlots() {
-        this.mPasswordSlotManager.refreshActiveSlots(getUsedWeaverSlots());
-    }
-
-    /* loaded from: classes2.dex */
-    public class ConflictInfo {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ConflictInfo {
         public final long handle;
         public final int userId;
 
@@ -274,183 +131,8 @@ public class SyntheticPasswordManager {
         }
     }
 
-    public final void mitigateSlotConflicts(Map map, Map map2) {
-        if (map2.isEmpty()) {
-            return;
-        }
-        for (Map.Entry entry : map.entrySet()) {
-            int intValue = ((Integer) entry.getKey()).intValue();
-            if (!UserManager.isVirtualUserId(intValue)) {
-                Iterator it = ((List) entry.getValue()).iterator();
-                while (it.hasNext()) {
-                    int loadWeaverSlot = loadWeaverSlot(((Long) it.next()).longValue(), ((Integer) entry.getKey()).intValue());
-                    if (map2.containsKey(Integer.valueOf(loadWeaverSlot))) {
-                        SDPLog.d("Slot conflict at slot #" + loadWeaverSlot + " with user " + intValue);
-                        List<ConflictInfo> list = (List) map2.get(Integer.valueOf(loadWeaverSlot));
-                        if (list != null) {
-                            for (ConflictInfo conflictInfo : list) {
-                                mitigateSlotConflict(conflictInfo.handle, conflictInfo.userId);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public final void mitigateSlotConflict(long j, int i) {
-        if (UserManager.isVirtualUserId(i)) {
-            SDPLog.d(String.format("Mitigate slot conflict on %x.weaver for virtual user %d", Long.valueOf(j), Integer.valueOf(i)));
-            if (Binder.getCallingUid() == 1000) {
-                destroyState("weaver", j, i);
-                return;
-            }
-            return;
-        }
-        Slog.e("SyntheticPasswordManager", "Do not handle conflict for normal user " + i);
-    }
-
-    /* loaded from: classes2.dex */
-    public class AuthenticationSdpToken {
-        public boolean destroyed;
-        public int secureMode;
-
-        public AuthenticationSdpToken() {
-            this.destroyed = false;
-        }
-
-        public void setSecureMode(int i) {
-            this.secureMode = i;
-        }
-
-        public void setDestroyed(boolean z) {
-            this.destroyed = z;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class SyntheticPassword {
-        public byte[] mEncryptedEscrowSplit0;
-        public byte[] mEscrowSplit1;
-        public AuthenticationSdpToken mSdpToken;
-        public boolean mSecureFolderAuthToken;
-        public byte[] mSyntheticPassword;
-        public final byte mVersion;
-
-        public boolean isSdpMdfppMode() {
-            return false;
-        }
-
-        public SyntheticPassword(byte b) {
-            this.mVersion = b;
-            createSdpToken();
-        }
-
-        public final byte[] deriveSubkey(byte[] bArr) {
-            if (this.mVersion == 3) {
-                return new SP800Derive(this.mSyntheticPassword).withContext(bArr, SyntheticPasswordManager.PERSONALIZATION_CONTEXT);
-            }
-            return SyntheticPasswordCrypto.personalizedHash(bArr, this.mSyntheticPassword);
-        }
-
-        public byte[] deriveKeyStorePassword() {
-            return SyntheticPasswordManager.bytesToHex(deriveSubkey(SyntheticPasswordManager.PERSONALIZATION_KEY_STORE_PASSWORD));
-        }
-
-        public byte[] deriveGkPassword() {
-            return deriveSubkey(SyntheticPasswordManager.PERSONALIZATION_SP_GK_AUTH);
-        }
-
-        public byte[] deriveFileBasedEncryptionKey() {
-            return deriveSubkey(SyntheticPasswordManager.PERSONALIZATION_FBE_KEY);
-        }
-
-        public byte[] deriveVendorAuthSecret() {
-            return deriveSubkey(SyntheticPasswordManager.PERSONALIZATION_AUTHSECRET_KEY);
-        }
-
-        public byte[] derivePasswordHashFactor() {
-            return deriveSubkey(SyntheticPasswordManager.PERSONALIZATION_PASSWORD_HASH);
-        }
-
-        public byte[] deriveMetricsKey() {
-            return deriveSubkey(SyntheticPasswordManager.PERSONALIZATION_PASSWORD_METRICS);
-        }
-
-        public byte[] deriveVendorAuthSecretEncryptionKey() {
-            return deriveSubkey(SyntheticPasswordManager.PERSONALIZATION_AUTHSECRET_ENCRYPTION_KEY);
-        }
-
-        public void setEscrowData(byte[] bArr, byte[] bArr2) {
-            this.mEncryptedEscrowSplit0 = bArr;
-            this.mEscrowSplit1 = bArr2;
-        }
-
-        public void recreateFromEscrow(byte[] bArr) {
-            Objects.requireNonNull(this.mEscrowSplit1);
-            Objects.requireNonNull(this.mEncryptedEscrowSplit0);
-            recreate(bArr, this.mEscrowSplit1);
-        }
-
-        public void recreateDirectly(byte[] bArr) {
-            this.mSyntheticPassword = Arrays.copyOf(bArr, bArr.length);
-        }
-
-        public static SyntheticPassword create() {
-            SyntheticPassword syntheticPassword = new SyntheticPassword((byte) 3);
-            byte[] randomBytes = SecureRandomUtils.randomBytes(32);
-            byte[] randomBytes2 = SecureRandomUtils.randomBytes(32);
-            syntheticPassword.recreate(randomBytes, randomBytes2);
-            syntheticPassword.setEscrowData(SyntheticPasswordCrypto.encrypt(syntheticPassword.mSyntheticPassword, SyntheticPasswordManager.PERSONALIZATION_E0, randomBytes), randomBytes2);
-            return syntheticPassword;
-        }
-
-        public final void recreate(byte[] bArr, byte[] bArr2) {
-            this.mSyntheticPassword = SyntheticPasswordManager.bytesToHex(SyntheticPasswordCrypto.personalizedHash(SyntheticPasswordManager.PERSONALIZATION_SP_SPLIT, bArr, bArr2));
-        }
-
-        public byte[] getEscrowSecret() {
-            if (this.mEncryptedEscrowSplit0 == null) {
-                return null;
-            }
-            return SyntheticPasswordCrypto.decrypt(this.mSyntheticPassword, SyntheticPasswordManager.PERSONALIZATION_E0, this.mEncryptedEscrowSplit0);
-        }
-
-        public byte[] getSyntheticPassword() {
-            return this.mSyntheticPassword;
-        }
-
-        public byte getVersion() {
-            return this.mVersion;
-        }
-
-        public void setSecureFolderAuthToken(boolean z) {
-            this.mSecureFolderAuthToken = true;
-        }
-
-        public boolean getSecureFolderAuthToken() {
-            return this.mSecureFolderAuthToken;
-        }
-
-        public final void createSdpToken() {
-            AuthenticationSdpToken authenticationSdpToken = new AuthenticationSdpToken();
-            this.mSdpToken = authenticationSdpToken;
-            authenticationSdpToken.setSecureMode(0);
-            this.mSdpToken.setDestroyed(false);
-            this.mSecureFolderAuthToken = false;
-        }
-
-        public byte[] deriveSdpMasterKey() {
-            return deriveSubkey(SyntheticPasswordManager.PERSONALIZATION_SDP_MASTER_KEY);
-        }
-
-        public byte[] deriveSdpMasterKeyPersonalized() {
-            return SyntheticPasswordCrypto.personalizedHashSDP(SyntheticPasswordManager.PERSONALIZATION_SDP_MASTER_KEY, this.mSyntheticPassword);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class PasswordData {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PasswordData {
         public int credentialType;
         public byte[] passwordHandle;
         public int pinLength;
@@ -459,26 +141,6 @@ public class SyntheticPasswordManager {
         public byte scryptLogP;
         public byte scryptLogR;
         public int secureMode;
-
-        public static boolean isNormalSecureMode(int i) {
-            return i >= 0 && i <= 2;
-        }
-
-        public static PasswordData create(int i, int i2) {
-            PasswordData passwordData = new PasswordData();
-            passwordData.scryptLogN = MM05.IQ_SIP_CALL_STATE_DISCONNECTING;
-            passwordData.scryptLogR = (byte) 3;
-            passwordData.scryptLogP = (byte) 1;
-            passwordData.credentialType = i;
-            passwordData.pinLength = i2;
-            passwordData.salt = SecureRandomUtils.randomBytes(16);
-            passwordData.secureMode = 0;
-            return passwordData;
-        }
-
-        public static boolean isBadFormatFromAndroid14Beta(byte[] bArr) {
-            return bArr != null && bArr.length >= 2 && bArr[0] == 0 && bArr[1] == 2;
-        }
 
         public static PasswordData fromBytes(byte[] bArr) {
             PasswordData passwordData = new PasswordData();
@@ -501,47 +163,14 @@ public class SyntheticPasswordManager {
                 passwordData.passwordHandle = null;
             }
             passwordData.pinLength = allocate.getInt();
-            Log.d("SyntheticPasswordManager.SDP", "Inside fromBytes() - result.pinLength : " + passwordData.pinLength);
+            GestureWakeup$$ExternalSyntheticOutline0.m(new StringBuilder("Inside fromBytes() - result.pinLength : "), passwordData.pinLength, "SyntheticPasswordManager.SDP");
             passwordData.secureMode = 0;
-            Log.d("SyntheticPasswordManager.SDP", "2. result.secureMode : " + passwordData.secureMode);
+            GestureWakeup$$ExternalSyntheticOutline0.m(new StringBuilder("2. result.secureMode : "), passwordData.secureMode, "SyntheticPasswordManager.SDP");
             return passwordData;
         }
 
-        public static PasswordData fromBytesForMigration(byte[] bArr) {
-            PasswordData passwordData = new PasswordData();
-            ByteBuffer allocate = ByteBuffer.allocate(bArr.length);
-            allocate.put(bArr, 0, bArr.length);
-            allocate.flip();
-            passwordData.credentialType = (short) allocate.getInt();
-            passwordData.scryptLogN = allocate.get();
-            passwordData.scryptLogR = allocate.get();
-            passwordData.scryptLogP = allocate.get();
-            byte[] bArr2 = new byte[allocate.getInt()];
-            passwordData.salt = bArr2;
-            allocate.get(bArr2);
-            int i = allocate.getInt();
-            if (i > 0) {
-                byte[] bArr3 = new byte[i];
-                passwordData.passwordHandle = bArr3;
-                allocate.get(bArr3);
-            } else {
-                passwordData.passwordHandle = null;
-            }
-            int i2 = allocate.getInt();
-            if (isNormalSecureMode(i2)) {
-                passwordData.pinLength = -1;
-                passwordData.secureMode = i2;
-                SDPLog.d("SyntheticPasswordManager", "Migration case - secureMode : " + passwordData.secureMode);
-            } else {
-                passwordData.pinLength = i2;
-                passwordData.secureMode = 0;
-                SDPLog.d("SyntheticPasswordManager", "Abnormal migration case - pinLength : " + passwordData.pinLength + ", secureMode : " + passwordData.secureMode);
-            }
-            return passwordData;
-        }
-
-        public byte[] toBytes() {
-            int length = this.salt.length + 11 + 4;
+        public final byte[] toBytes() {
+            int length = this.salt.length + 15;
             byte[] bArr = this.passwordHandle;
             ByteBuffer allocate = ByteBuffer.allocate(length + (bArr != null ? bArr.length : 0) + 4);
             int i = this.credentialType;
@@ -555,30 +184,89 @@ public class SyntheticPasswordManager {
             allocate.putInt(this.salt.length);
             allocate.put(this.salt);
             byte[] bArr2 = this.passwordHandle;
-            if (bArr2 != null && bArr2.length > 0) {
+            if (bArr2 == null || bArr2.length <= 0) {
+                allocate.putInt(0);
+            } else {
                 allocate.putInt(bArr2.length);
                 allocate.put(this.passwordHandle);
-            } else {
-                allocate.putInt(0);
             }
             allocate.putInt(this.pinLength);
             return allocate.array();
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class SyntheticPasswordBlob {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SdpSyntheticPasswordManager {
+        public final SyntheticPasswordManager spManager;
+
+        /* renamed from: -$$Nest$mgetSecureMode, reason: not valid java name */
+        public static int m644$$Nest$mgetSecureMode(SdpSyntheticPasswordManager sdpSyntheticPasswordManager, int i) {
+            int i2;
+            sdpSyntheticPasswordManager.getClass();
+            int i3 = 0;
+            try {
+                i2 = SyntheticPasswordMdfpp.getSecureMode(i);
+            } catch (SyntheticPasswordMdfpp.EmptySlotException e) {
+                sdpSyntheticPasswordManager.spManager.getClass();
+                if (!SystemProperties.getBoolean("security.securehw.available", false)) {
+                    if (SyntheticPasswordManager.DEBUG) {
+                        e.printStackTrace();
+                    } else {
+                        Slog.d("SyntheticPasswordManager.SDP", e.getMessage());
+                    }
+                }
+                i2 = -1;
+            }
+            if (i2 == -1) {
+                sdpSyntheticPasswordManager.spManager.getClass();
+                if (!SystemProperties.getBoolean("security.securehw.available", false)) {
+                    SDPLog.i("user" + i + " - isSpecificProcessRequired : false, is Sdp user? false");
+                }
+            } else {
+                i3 = i2;
+            }
+            SparseArray sparseArray = SyntheticPasswordMdfpp.mSecureModeCache;
+            synchronized (sparseArray) {
+                sparseArray.put(i, Integer.valueOf(i3));
+            }
+            boolean z = SyntheticPasswordManager.DEBUG;
+            if (z) {
+                Slog.d("SyntheticPasswordManager.SDP", String.format("Cache - [ Secure Mode : %d, UserId : %d ]", Integer.valueOf(i3), Integer.valueOf(i)));
+            }
+            if (z) {
+                Slog.d("SyntheticPasswordManager.SDP", String.format("Get - [ Secure Mode : %d, UserId : %d ]", Integer.valueOf(i3), Integer.valueOf(i)));
+            }
+            Slog.d("SyntheticPasswordManager.SDP", String.format("Secure mode for user %d = %d", Integer.valueOf(i), Integer.valueOf(i3)));
+            return i3;
+        }
+
+        public SdpSyntheticPasswordManager(SyntheticPasswordManager syntheticPasswordManager, SyntheticPasswordManager syntheticPasswordManager2) {
+            this.spManager = syntheticPasswordManager2;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SyntheticPassword {
+        public byte[] mEncryptedEscrowSplit0;
+        public byte[] mEscrowSplit1;
+        public boolean mSecureFolderAuthToken = false;
+        public byte[] mSyntheticPassword;
+        public final byte mVersion;
+
+        public SyntheticPassword(byte b) {
+            this.mVersion = b;
+        }
+
+        public final byte[] deriveSubkey(byte[] bArr) {
+            return this.mVersion == 3 ? new SP800Derive(this.mSyntheticPassword).withContext(bArr, SyntheticPasswordManager.PERSONALIZATION_CONTEXT) : SyntheticPasswordCrypto.personalizedHash(bArr, this.mSyntheticPassword);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SyntheticPasswordBlob {
         public byte[] mContent;
         public byte mProtectorType;
         public byte mVersion;
-
-        public static SyntheticPasswordBlob create(byte b, byte b2, byte[] bArr) {
-            SyntheticPasswordBlob syntheticPasswordBlob = new SyntheticPasswordBlob();
-            syntheticPasswordBlob.mVersion = b;
-            syntheticPasswordBlob.mProtectorType = b2;
-            syntheticPasswordBlob.mContent = bArr;
-            return syntheticPasswordBlob;
-        }
 
         public static SyntheticPasswordBlob fromBytes(byte[] bArr) {
             SyntheticPasswordBlob syntheticPasswordBlob = new SyntheticPasswordBlob();
@@ -587,15 +275,133 @@ public class SyntheticPasswordManager {
             syntheticPasswordBlob.mContent = Arrays.copyOfRange(bArr, 2, bArr.length);
             return syntheticPasswordBlob;
         }
+    }
 
-        public byte[] toByte() {
-            byte[] bArr = this.mContent;
-            byte[] bArr2 = new byte[bArr.length + 1 + 1];
-            bArr2[0] = this.mVersion;
-            bArr2[1] = this.mProtectorType;
-            System.arraycopy(bArr, 0, bArr2, 2, bArr.length);
-            return bArr2;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TokenData {
+        public byte[] aggregatedSecret;
+        public LockPatternUtils.EscrowTokenStateChangeCallback mCallback;
+        public int mType;
+        public byte[] secdiscardableOnDisk;
+        public byte[] weaverSecret;
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class WeaverDiedRecipient implements IBinder.DeathRecipient {
+        public WeaverDiedRecipient() {
         }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public final void binderDied() {
+            Slog.wtf("SyntheticPasswordManager", "Weaver service has died");
+            SyntheticPasswordManager.this.mWeaver.asBinder().unlinkToDeath(this, 0);
+            SyntheticPasswordManager.this.mWeaver = null;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class WeaverResult {
+        public static final SparseArray mWeaverResults = new SparseArray();
+        public int mOp;
+        public int mSlot;
+        public int mStatus;
+        public int mUserId;
+
+        public static void begin(int i, int i2, int i3) {
+            WeaverResult weaverResult = new WeaverResult();
+            weaverResult.mOp = i;
+            weaverResult.mSlot = i2;
+            weaverResult.mUserId = i3;
+            weaverResult.mStatus = -999;
+            SparseArray sparseArray = mWeaverResults;
+            synchronized (sparseArray) {
+                sparseArray.put(i3, weaverResult);
+            }
+        }
+
+        public static void finish(int i) {
+            SparseArray sparseArray = mWeaverResults;
+            synchronized (sparseArray) {
+                try {
+                    WeaverResult weaverResult = (WeaverResult) sparseArray.get(i);
+                    if (weaverResult != null) {
+                        SDPLog.d(null, weaverResult.toString());
+                        sparseArray.remove(i);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public static void finishOff(int i, String str) {
+            SparseArray sparseArray = mWeaverResults;
+            synchronized (sparseArray) {
+                try {
+                    WeaverResult bySlotIdLocked = getBySlotIdLocked(i);
+                    if (bySlotIdLocked != null) {
+                        Locale locale = Locale.US;
+                        SDPLog.d(null, str + " [ op : " + bySlotIdLocked.mOp + ", sl : " + bySlotIdLocked.mSlot + ", u : " + bySlotIdLocked.mUserId + " ]");
+                        sparseArray.remove(bySlotIdLocked.mUserId);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public static WeaverResult getBySlotIdLocked(int i) {
+            int i2 = 0;
+            while (true) {
+                SparseArray sparseArray = mWeaverResults;
+                if (i2 >= sparseArray.size()) {
+                    return null;
+                }
+                WeaverResult weaverResult = (WeaverResult) sparseArray.get(sparseArray.keyAt(i2));
+                if (weaverResult != null && weaverResult.mSlot == i) {
+                    return weaverResult;
+                }
+                i2++;
+            }
+        }
+
+        public final String toString() {
+            String str;
+            int i = this.mUserId;
+            int i2 = this.mSlot;
+            int i3 = this.mOp;
+            if (i3 < 0 || i3 > 1) {
+                Locale locale = Locale.US;
+                return AmFmBandRange$$ExternalSyntheticOutline0.m(i, ArrayUtils$$ExternalSyntheticOutline0.m(i3, i2, "Invalid operation for weaver [ op : ", ", sl : ", ", u : "), " ]");
+            }
+            int i4 = this.mStatus;
+            if (i4 == -999) {
+                Locale locale2 = Locale.US;
+                return AmFmBandRange$$ExternalSyntheticOutline0.m(i, ArrayUtils$$ExternalSyntheticOutline0.m(i3, i2, "No update for weaver [ op : ", ", sl : ", ", u : "), " ]");
+            }
+            if (i4 == 0) {
+                str = "Weaver read status ok";
+            } else if (i4 == 1) {
+                str = "weaver read failed (FAILED)";
+            } else if (i4 == 2) {
+                str = "weaver read failed (INCORRECT_KEY)";
+            } else if (i4 != 3) {
+                str = "weaver read unknown status " + this.mStatus;
+            } else {
+                str = "weaver read failed (THROTTLE)";
+            }
+            Locale locale3 = Locale.US;
+            StringBuilder m = StorageManagerService$$ExternalSyntheticOutline0.m(i, "Result of weaver ", i3 == 0 ? "enrollment" : "verification", " for user ", " [ sl : ");
+            m.append(i2);
+            m.append(", st : ");
+            m.append(str);
+            m.append(" ]");
+            return m.toString();
+        }
+    }
+
+    static {
+        DEBUG = "userdebug".equals(SystemProperties.get("ro.build.type")) || "eng".equals(SystemProperties.get("ro.build.type"));
     }
 
     public SyntheticPasswordManager(Context context, LockSettingsStorage lockSettingsStorage, UserManager userManager, PasswordSlotManager passwordSlotManager) {
@@ -605,529 +411,43 @@ public class SyntheticPasswordManager {
         this.mPasswordSlotManager = passwordSlotManager;
     }
 
-    public final boolean isDeviceProvisioned() {
-        return Settings.Global.getInt(this.mContext.getContentResolver(), "device_provisioned", 0) != 0;
+    public static byte[] bytesToHex(byte[] bArr) {
+        return HexEncoding.encodeToString(bArr).getBytes();
     }
 
-    /* loaded from: classes2.dex */
-    public class WeaverAidlDeathRecipient implements IBinder.DeathRecipient {
-        public int deathCount;
-
-        public WeaverAidlDeathRecipient() {
-            this.deathCount = 0;
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            this.deathCount++;
-            Slog.e("SyntheticPasswordManager", "Weaver AIDL HAL died. " + this.deathCount + "times");
-            try {
-                SyntheticPasswordManager.this.mWeaver.asBinder().unlinkToDeath(this, 0);
-            } catch (Exception e) {
-                Slog.e("SyntheticPasswordManager", "Failed to unlinkToDeath", e);
-            }
-            SyntheticPasswordManager.this.mWeaver = null;
-        }
+    public static int fakeUserId(int i) {
+        return i + 100000;
     }
 
-    /* loaded from: classes2.dex */
-    public class WeaverHidlDeathRecipient implements IHwBinder.DeathRecipient {
-        public int deathCount;
-
-        public WeaverHidlDeathRecipient() {
-            this.deathCount = 0;
-        }
-
-        public void serviceDied(long j) {
-            this.deathCount++;
-            Slog.e("SyntheticPasswordManager", "Weaver HIDL HAL died. " + this.deathCount + "times");
-            try {
-                SyntheticPasswordManager.this.mWeaverHidlService.getHidlService().unlinkToDeath(this);
-            } catch (RemoteException e) {
-                Slog.e("SyntheticPasswordManager", "Failed to unlinkToDeath", e);
-            }
-            SyntheticPasswordManager.this.mWeaver = null;
-        }
+    public static String getProtectorKeyAlias(long j) {
+        return TextUtils.formatSimple("%s%x", new Object[]{"synthetic_password_", Long.valueOf(j)});
     }
 
-    public android.hardware.weaver.V1_0.IWeaver getWeaverHidlService() {
-        try {
-            if ("0".equals(SystemProperties.get("ro.boot.revision")) && "a25x".equals(SystemProperties.get("ro.product.device")) && "0x1".equals(SystemProperties.get("ro.boot.em.status"))) {
-                Slog.w("SyntheticPasswordManager", "NVM is not loaded");
-                return android.hardware.weaver.V1_0.IWeaver.getService(false);
-            }
-            return android.hardware.weaver.V1_0.IWeaver.getService(true);
-        } catch (NoSuchElementException unused) {
-            return null;
-        }
+    private native long nativeSidFromPasswordHandle(byte[] bArr);
+
+    public static byte[] stretchedLskfToGkPassword(byte[] bArr) {
+        return SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_USER_GK_AUTH, bArr);
     }
 
-    public final IWeaver getWeaverService() {
-        android.hardware.weaver.V1_0.IWeaver weaverHidlService;
-        IWeaver asInterface;
-        try {
-            try {
-                asInterface = IWeaver.Stub.asInterface(ServiceManager.waitForDeclaredService(IWeaver.DESCRIPTOR + "/default"));
-            } catch (SecurityException unused) {
-                Slog.w("SyntheticPasswordManager", "Does not have permissions to get AIDL weaver service");
-                this.mIsWeaverSupported = false;
-            }
-            if (asInterface != null) {
-                try {
-                    asInterface.asBinder().linkToDeath(this.mWeaverAidlDeathRecipient, 0);
-                } catch (RemoteException unused2) {
-                    Slog.e("SyntheticPasswordManager", "Cannot register a death recipient");
-                }
-                Slog.i("SyntheticPasswordManager", "Using AIDL weaver service");
-                return asInterface;
-            }
-            this.mIsWeaverSupported = true;
-            try {
-                try {
-                    weaverHidlService = getWeaverHidlService();
-                } catch (RemoteException e) {
-                    Slog.w("SyntheticPasswordManager", "Failed to get HIDL weaver service.", e);
-                    this.mIsWeaverSupported = false;
-                }
-                if (weaverHidlService != null) {
-                    try {
-                        weaverHidlService.linkToDeath(this.mWeaverHidlDeathRecipient, 0L);
-                    } catch (RemoteException unused3) {
-                        Slog.e("SyntheticPasswordManager", "Cannot register a death recipient");
-                    }
-                    Slog.i("SyntheticPasswordManager", "Using HIDL weaver service");
-                    WeaverHidlAdapter weaverHidlAdapter = new WeaverHidlAdapter(weaverHidlService);
-                    this.mWeaverHidlService = weaverHidlAdapter;
-                    return weaverHidlAdapter;
-                }
-                Slog.w("SyntheticPasswordManager", "Device does not support weaver");
-                this.mIsWeaverSupported = false;
-                return null;
-            } finally {
-            }
-        } finally {
-        }
+    public static byte[] transformUnderSecdiscardable(byte[] bArr, byte[] bArr2) {
+        return ArrayUtils.concat(new byte[][]{bArr, SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_SECDISCARDABLE, bArr2)});
     }
 
-    public boolean isAutoPinConfirmationFeatureAvailable() {
-        return LockPatternUtils.isAutoPinConfirmFeatureAvailable();
-    }
-
-    public final synchronized boolean isWeaverAvailable() {
-        if (this.mWeaver != null) {
-            return true;
-        }
-        IWeaver weaverService = getWeaverService();
-        if (weaverService == null) {
-            return false;
-        }
-        try {
-            WeaverConfig config = weaverService.getConfig();
-            if (config != null && config.slots > 0) {
-                this.mWeaver = weaverService;
-                this.mWeaverConfig = config;
-                this.mPasswordSlotManager.refreshActiveSlots(getUsedWeaverSlots());
-                Slog.i("SyntheticPasswordManager", "Weaver service initialized");
-                return true;
-            }
-            Slog.e("SyntheticPasswordManager", "Invalid weaver config");
-            return false;
-        } catch (RemoteException | ServiceSpecificException e) {
-            Slog.e("SyntheticPasswordManager", "Failed to get weaver config", e);
-            return false;
-        }
-    }
-
-    public final byte[] weaverEnroll(int i, byte[] bArr, byte[] bArr2) {
-        if (i != -1) {
-            WeaverConfig weaverConfig = this.mWeaverConfig;
-            if (i < weaverConfig.slots) {
-                if (bArr == null) {
-                    bArr = new byte[weaverConfig.keySize];
-                } else if (bArr.length != weaverConfig.keySize) {
-                    WeaverResult.finishOff(i, "Invalid key size for weaver");
-                    throw new IllegalArgumentException("Invalid key size for weaver");
-                }
-                if (bArr2 == null) {
-                    bArr2 = SecureRandomUtils.randomBytes(weaverConfig.valueSize);
-                }
-                try {
-                    this.mWeaver.write(i, bArr, bArr2);
-                    return bArr2;
-                } catch (ServiceSpecificException e) {
-                    Slog.e("SyntheticPasswordManager", "weaver write failed, slot: " + i, e);
-                    WeaverResult.finishOff(i, "weaver write failed with ServiceSpecificException");
-                    return null;
-                } catch (RemoteException e2) {
-                    Slog.e("SyntheticPasswordManager", "weaver write binder call failed, slot: " + i, e2);
-                    WeaverResult.finishOff(i, "weaver write binder call failed with RemoveException");
-                    return null;
-                }
-            }
-        }
-        WeaverResult.finishOff(i, "Invalid slot for weaver");
-        throw new IllegalArgumentException("Invalid slot for weaver");
-    }
-
-    public static VerifyCredentialResponse responseFromTimeout(WeaverReadResponse weaverReadResponse) {
-        long j = weaverReadResponse.timeout;
-        return VerifyCredentialResponse.fromTimeout((j > 2147483647L || j < 0) ? Integer.MAX_VALUE : (int) j);
-    }
-
-    public final VerifyCredentialResponse weaverVerify(int i, byte[] bArr) {
-        if (i != -1) {
-            WeaverConfig weaverConfig = this.mWeaverConfig;
-            if (i < weaverConfig.slots) {
-                if (bArr == null) {
-                    bArr = new byte[weaverConfig.keySize];
-                } else if (bArr.length != weaverConfig.keySize) {
-                    WeaverResult.finishOff(i, "Invalid key size for weaver");
-                    throw new IllegalArgumentException("Invalid key size for weaver");
-                }
-                try {
-                    WeaverReadResponse read = this.mWeaver.read(i, bArr);
-                    int i2 = read.status;
-                    new int[]{-999}[0] = i2;
-                    WeaverResult.update(i, i2);
-                    int i3 = read.status;
-                    if (i3 == 0) {
-                        return new VerifyCredentialResponse.Builder().setGatekeeperHAT(read.value).build();
-                    }
-                    if (i3 == 1) {
-                        Slog.e("SyntheticPasswordManager", "weaver read failed (FAILED), slot: " + i);
-                        return VerifyCredentialResponse.ERROR;
-                    }
-                    if (i3 == 2) {
-                        if (read.timeout == 0) {
-                            Slog.e("SyntheticPasswordManager", "weaver read failed (INCORRECT_KEY), slot: " + i);
-                            return VerifyCredentialResponse.ERROR;
-                        }
-                        Slog.e("SyntheticPasswordManager", "weaver read failed (INCORRECT_KEY/THROTTLE), slot: " + i);
-                        return responseFromTimeout(read);
-                    }
-                    if (i3 == 3) {
-                        Slog.e("SyntheticPasswordManager", "weaver read failed (THROTTLE), slot: " + i);
-                        return responseFromTimeout(read);
-                    }
-                    Slog.e("SyntheticPasswordManager", "weaver read unknown status " + read.status + ", slot: " + i);
-                    return VerifyCredentialResponse.ERROR;
-                } catch (RemoteException e) {
-                    Slog.e("SyntheticPasswordManager", "weaver read failed, slot: " + i, e);
-                    return VerifyCredentialResponse.ERROR;
-                }
-            }
-        }
-        WeaverResult.finishOff(i, "Invalid slot for weaver");
-        throw new IllegalArgumentException("Invalid slot for weaver");
-    }
-
-    public void removeUser(IGateKeeperService iGateKeeperService, int i) {
-        Iterator it = this.mStorage.listSyntheticPasswordProtectorsForUser("spblob", i).iterator();
-        while (it.hasNext()) {
-            long longValue = ((Long) it.next()).longValue();
-            destroyWeaverSlot(longValue, i);
-            destroyProtectorKey(getProtectorKeyAlias(longValue));
-        }
-        try {
-            iGateKeeperService.clearSecureUserId(fakeUserId(i));
-        } catch (RemoteException unused) {
-            Slog.w("SyntheticPasswordManager", "Failed to clear SID from gatekeeper");
-        }
-    }
-
-    public int getPinLength(long j, int i) {
-        byte[] loadState = loadState("pwd", j, i);
-        if (loadState == null) {
-            return -1;
-        }
-        return PasswordData.fromBytes(loadState).pinLength;
-    }
-
-    public int getCredentialType(long j, int i) {
-        byte[] loadState = loadState("pwd", j, i);
-        if (loadState == null) {
-            return -1;
-        }
-        return PasswordData.fromBytes(loadState).credentialType;
-    }
-
-    public static int getFrpCredentialType(byte[] bArr) {
-        if (bArr == null) {
-            return -1;
-        }
-        return PasswordData.fromBytes(bArr).credentialType;
-    }
-
-    public SyntheticPassword newSyntheticPassword(int i) {
-        clearSidForUser(i);
-        SyntheticPassword create = SyntheticPassword.create();
-        saveEscrowData(create, i);
-        return create;
-    }
-
-    public void newSidForUser(IGateKeeperService iGateKeeperService, SyntheticPassword syntheticPassword, int i) {
-        try {
-            GateKeeperResponse enroll = iGateKeeperService.enroll(i, (byte[]) null, (byte[]) null, syntheticPassword.deriveGkPassword());
-            if (enroll.getResponseCode() != 0) {
-                throw new IllegalStateException("Fail to create new SID for user " + i + " response: " + enroll.getResponseCode());
-            }
-            saveSyntheticPasswordHandle(enroll.getPayload(), i);
-        } catch (RemoteException e) {
-            throw new IllegalStateException("Failed to create new SID for user", e);
-        }
-    }
-
-    public void clearSidForUser(int i) {
-        destroyState("handle", 0L, i);
-    }
-
-    public boolean hasSidForUser(int i) {
-        return hasState("handle", 0L, i);
-    }
-
-    public final byte[] loadSyntheticPasswordHandle(int i) {
-        return loadState("handle", 0L, i);
-    }
-
-    public final void saveSyntheticPasswordHandle(byte[] bArr, int i) {
-        saveState("handle", bArr, 0L, i);
-        syncState(i);
-    }
-
-    public final boolean loadEscrowData(SyntheticPassword syntheticPassword, int i) {
-        byte[] loadState = loadState("e0", 0L, i);
-        byte[] loadState2 = loadState("p1", 0L, i);
-        syntheticPassword.setEscrowData(loadState, loadState2);
-        return (loadState == null || loadState2 == null) ? false : true;
-    }
-
-    public final void saveEscrowData(SyntheticPassword syntheticPassword, int i) {
-        saveState("e0", syntheticPassword.mEncryptedEscrowSplit0, 0L, i);
-        saveState("p1", syntheticPassword.mEscrowSplit1, 0L, i);
-    }
-
-    public boolean hasEscrowData(int i) {
-        return hasState("e0", 0L, i) && hasState("p1", 0L, i);
-    }
-
-    public boolean hasAnyEscrowData(int i) {
-        return hasState("e0", 0L, i) || hasState("p1", 0L, i);
-    }
-
-    public void destroyEscrowData(int i) {
-        destroyState("e0", 0L, i);
-        destroyState("p1", 0L, i);
-    }
-
-    public final int loadWeaverSlot(long j, int i) {
-        byte[] loadState = loadState("weaver", j, i);
-        if (loadState == null || loadState.length != 5) {
-            return -1;
-        }
-        ByteBuffer allocate = ByteBuffer.allocate(5);
-        allocate.put(loadState, 0, loadState.length);
-        allocate.flip();
-        if (allocate.get() != 1) {
-            Slog.e("SyntheticPasswordManager", "Invalid weaver slot version for protector " + j);
-            return -1;
-        }
-        return allocate.getInt();
-    }
-
-    public final void saveWeaverSlot(int i, long j, int i2) {
-        ByteBuffer allocate = ByteBuffer.allocate(5);
-        allocate.put((byte) 1);
-        allocate.putInt(i);
-        saveState("weaver", allocate.array(), j, i2);
-    }
-
-    public final void destroyWeaverSlot(long j, int i) {
-        int loadWeaverSlot = loadWeaverSlot(j, i);
-        destroyState("weaver", j, i);
-        if (loadWeaverSlot != -1) {
-            if (!isWeaverAvailable()) {
-                Slog.e("SyntheticPasswordManager", "Cannot erase Weaver slot because Weaver is unavailable");
-                return;
-            }
-            Set usedWeaverSlots = getUsedWeaverSlots();
-            SDPLog.d("Destroy weaver slot [ sl : " + loadWeaverSlot + ", u : " + i + " ]");
-            if (!usedWeaverSlots.contains(Integer.valueOf(loadWeaverSlot))) {
-                Slogf.i("SyntheticPasswordManager", "Erasing Weaver slot %d", Integer.valueOf(loadWeaverSlot));
-                WeaverResult.begin(0, loadWeaverSlot, i);
-                weaverEnroll(loadWeaverSlot, null, null);
-                WeaverResult.finish(i);
-                this.mPasswordSlotManager.markSlotDeleted(loadWeaverSlot);
-                return;
-            }
-            Slogf.i("SyntheticPasswordManager", "Weaver slot %d was already reused; not erasing it", Integer.valueOf(loadWeaverSlot));
-            SDPLog.d("Destroying skipped!");
-        }
-    }
-
-    public final Set getUsedWeaverSlots() {
-        ArrayList arrayList;
-        Map listSyntheticPasswordProtectorsForAllUsers = this.mStorage.listSyntheticPasswordProtectorsForAllUsers("weaver");
-        HashSet hashSet = new HashSet();
-        HashMap hashMap = new HashMap();
-        for (Map.Entry entry : listSyntheticPasswordProtectorsForAllUsers.entrySet()) {
-            for (Long l : (List) entry.getValue()) {
-                int loadWeaverSlot = loadWeaverSlot(l.longValue(), ((Integer) entry.getKey()).intValue());
-                if (hashSet.contains(Integer.valueOf(loadWeaverSlot))) {
-                    int intValue = ((Integer) entry.getKey()).intValue();
-                    if (UserManager.isVirtualUserId(intValue)) {
-                        SDPLog.d("Slot conflict at slot #" + loadWeaverSlot);
-                        if (hashMap.containsKey(Integer.valueOf(loadWeaverSlot))) {
-                            arrayList = (ArrayList) hashMap.get(Integer.valueOf(loadWeaverSlot));
-                        } else {
-                            arrayList = new ArrayList();
-                            hashMap.put(Integer.valueOf(loadWeaverSlot), arrayList);
-                        }
-                        arrayList.add(new ConflictInfo(l.longValue(), intValue));
-                    }
-                }
-                hashSet.add(Integer.valueOf(loadWeaverSlot));
-            }
-        }
-        mitigateSlotConflicts(listSyntheticPasswordProtectorsForAllUsers, hashMap);
-        return hashSet;
-    }
-
-    public final int getNextAvailableWeaverSlot() {
-        LockSettingsStorage.PersistentData readPersistentDataBlock;
-        Set usedWeaverSlots = getUsedWeaverSlots();
-        usedWeaverSlots.addAll(this.mPasswordSlotManager.getUsedSlots());
-        if (!isDeviceProvisioned() && (readPersistentDataBlock = this.mStorage.readPersistentDataBlock()) != null && readPersistentDataBlock.type == 2) {
-            usedWeaverSlots.add(Integer.valueOf(readPersistentDataBlock.userId));
-        }
-        for (int i = 0; i < this.mWeaverConfig.slots; i++) {
-            if (!usedWeaverSlots.contains(Integer.valueOf(i))) {
-                return i;
-            }
-        }
-        throw new IllegalStateException("Run out of weaver slots.");
-    }
-
-    public long createLskfBasedProtector(IGateKeeperService iGateKeeperService, LockscreenCredential lockscreenCredential, SyntheticPassword syntheticPassword, int i) {
-        return createLskfBasedProtector(iGateKeeperService, null, 0L, lockscreenCredential, syntheticPassword, i);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:36:0x01c8  */
-    /* JADX WARN: Removed duplicated region for block: B:37:0x01d3  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public long createLskfBasedProtector(android.service.gatekeeper.IGateKeeperService r18, com.android.internal.widget.LockscreenCredential r19, long r20, com.android.internal.widget.LockscreenCredential r22, com.android.server.locksettings.SyntheticPasswordManager.SyntheticPassword r23, int r24) {
-        /*
-            Method dump skipped, instructions count: 592
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.SyntheticPasswordManager.createLskfBasedProtector(android.service.gatekeeper.IGateKeeperService, com.android.internal.widget.LockscreenCredential, long, com.android.internal.widget.LockscreenCredential, com.android.server.locksettings.SyntheticPasswordManager$SyntheticPassword, int):long");
-    }
-
-    public final int derivePinLength(int i, boolean z, int i2) {
-        if (z && this.mStorage.isAutoPinConfirmSettingEnabled(i2) && i >= 6) {
-            return i;
-        }
-        return -1;
-    }
-
-    public VerifyCredentialResponse verifyFrpCredential(IGateKeeperService iGateKeeperService, LockscreenCredential lockscreenCredential, ICheckCredentialProgressCallback iCheckCredentialProgressCallback) {
-        LockSettingsStorage.PersistentData readPersistentDataBlock = this.mStorage.readPersistentDataBlock();
-        int i = readPersistentDataBlock.type;
-        if (i == 1) {
-            PasswordData fromBytes = PasswordData.fromBytes(readPersistentDataBlock.payload);
-            try {
-                return VerifyCredentialResponse.fromGateKeeperResponse(iGateKeeperService.verifyChallenge(fakeUserId(readPersistentDataBlock.userId), 0L, fromBytes.passwordHandle, stretchedLskfToGkPassword(stretchLskf(lockscreenCredential, fromBytes))));
-            } catch (RemoteException e) {
-                Slog.e("SyntheticPasswordManager", "FRP verifyChallenge failed", e);
-                return VerifyCredentialResponse.ERROR;
-            }
-        }
-        if (i == 2) {
-            if (!isWeaverAvailable()) {
-                Slog.e("SyntheticPasswordManager", "No weaver service to verify SP-based FRP credential");
-                return VerifyCredentialResponse.ERROR;
-            }
-            byte[] stretchLskf = stretchLskf(lockscreenCredential, PasswordData.fromBytes(readPersistentDataBlock.payload));
-            int i2 = readPersistentDataBlock.userId;
-            try {
-                WeaverResult.begin(1, i2, -9999);
-                return weaverVerify(i2, stretchedLskfToWeaverKey(stretchLskf)).stripPayload();
-            } finally {
-                WeaverResult.finish(-9999);
-            }
-        }
-        Slog.e("SyntheticPasswordManager", "persistentData.type must be TYPE_SP_GATEKEEPER or TYPE_SP_WEAVER, but is " + readPersistentDataBlock.type);
-        return VerifyCredentialResponse.ERROR;
-    }
-
-    public void migrateFrpPasswordLocked(long j, UserInfo userInfo, int i) {
-        if (this.mStorage.getPersistentDataBlockManager() == null || !LockPatternUtils.userOwnsFrpCredential(this.mContext, userInfo) || getCredentialType(j, userInfo.id) == -1) {
-            return;
-        }
-        Slog.i("SyntheticPasswordManager", "Migrating FRP credential to persistent data block");
-        PasswordData fromBytes = PasswordData.fromBytes(loadState("pwd", j, userInfo.id));
-        int loadWeaverSlot = loadWeaverSlot(j, userInfo.id);
-        if (loadWeaverSlot != -1) {
-            synchronizeWeaverFrpPassword(fromBytes, i, userInfo.id, loadWeaverSlot);
-        } else {
-            synchronizeGatekeeperFrpPassword(fromBytes, i, userInfo.id);
-        }
-    }
-
-    public static boolean isNoneCredential(PasswordData passwordData) {
-        return passwordData == null || passwordData.credentialType == -1;
-    }
-
-    public final boolean shouldSynchronizeFrpCredential(PasswordData passwordData, int i) {
-        if (this.mStorage.getPersistentDataBlockManager() == null) {
-            return false;
-        }
-        if (!LockPatternUtils.userOwnsFrpCredential(this.mContext, this.mUserManager.getUserInfo(i))) {
-            return false;
-        }
-        if (!isNoneCredential(passwordData) || isDeviceProvisioned()) {
-            return true;
-        }
-        Slog.d("SyntheticPasswordManager", "Not clearing FRP credential yet because device is not yet provisioned");
-        return false;
-    }
-
-    public final void synchronizeGatekeeperFrpPassword(PasswordData passwordData, int i, int i2) {
-        if (shouldSynchronizeFrpCredential(passwordData, i2)) {
-            Slogf.d("SyntheticPasswordManager", "Syncing Gatekeeper-based FRP credential tied to user %d", Integer.valueOf(i2));
-            if (!isNoneCredential(passwordData)) {
-                this.mStorage.writePersistentDataBlock(1, i2, i, passwordData.toBytes());
-            } else {
-                this.mStorage.writePersistentDataBlock(0, i2, 0, null);
-            }
-        }
-    }
-
-    public final void synchronizeWeaverFrpPassword(PasswordData passwordData, int i, int i2, int i3) {
-        if (shouldSynchronizeFrpCredential(passwordData, i2)) {
-            Slogf.d("SyntheticPasswordManager", "Syncing Weaver-based FRP credential tied to user %d", Integer.valueOf(i2));
-            if (!isNoneCredential(passwordData)) {
-                this.mStorage.writePersistentDataBlock(2, i3, i, passwordData.toBytes());
-            } else {
-                this.mStorage.writePersistentDataBlock(0, 0, 0, null);
-            }
-        }
-    }
-
-    public long addPendingToken(byte[] bArr, int i, int i2, LockPatternUtils.EscrowTokenStateChangeCallback escrowTokenStateChangeCallback) {
+    public final long addPendingToken(byte[] bArr, int i, int i2, LockPatternUtils.EscrowTokenStateChangeCallback escrowTokenStateChangeCallback) {
+        long nextLong;
         if (SECURITY_UNPACK) {
             bArr = DEFAULT_TOKEN;
         }
-        long generateProtectorId = generateProtectorId();
+        do {
+            nextLong = SecureRandomUtils.RNG.nextLong();
+        } while (nextLong == 0);
         if (!this.tokenMap.containsKey(Integer.valueOf(i2))) {
             this.tokenMap.put(Integer.valueOf(i2), new ArrayMap());
         }
         TokenData tokenData = new TokenData();
         tokenData.mType = i;
-        byte[] randomBytes = SecureRandomUtils.randomBytes(16384);
-        if (isWeaverAvailable()) {
+        byte[] randomBytes = SecureRandomUtils.randomBytes(EndpointMonitorConst.FLAG_TRACING_PROCESS_PERMISSIONS_MODIFICATION);
+        if (getWeaverService() != null) {
             byte[] randomBytes2 = SecureRandomUtils.randomBytes(this.mWeaverConfig.valueSize);
             tokenData.weaverSecret = randomBytes2;
             tokenData.secdiscardableOnDisk = SyntheticPasswordCrypto.encrypt(randomBytes2, PERSONALIZATION_WEAVER_TOKEN, randomBytes);
@@ -1137,156 +457,1063 @@ public class SyntheticPasswordManager {
         }
         tokenData.aggregatedSecret = transformUnderSecdiscardable(bArr, randomBytes);
         tokenData.mCallback = escrowTokenStateChangeCallback;
-        this.mSdpSyntheticPasswordManager.getSecureMode(i2);
-        this.mSdpSyntheticPasswordManager.isSdpMdfppMode(i2);
+        SdpSyntheticPasswordManager.m644$$Nest$mgetSecureMode(this.mSdpSyntheticPasswordManager, i2);
         SDPLog.i("Not Sdp Mdfpp Mode. keyingMaterial null");
-        tokenData.km = SyntheticPasswordMdfpp.KeyingMaterial.getNull();
-        ((ArrayMap) this.tokenMap.get(Integer.valueOf(i2))).put(Long.valueOf(generateProtectorId), tokenData);
-        return generateProtectorId;
+        ((ArrayMap) this.tokenMap.get(Integer.valueOf(i2))).put(Long.valueOf(nextLong), tokenData);
+        return nextLong;
     }
 
-    public byte[] getPendingTokenForDualDar(int i, long j) {
+    /* JADX WARN: Removed duplicated region for block: B:11:0x0022  */
+    /* JADX WARN: Removed duplicated region for block: B:8:0x001a  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void checkWeaverStatus() {
+        /*
+            r7 = this;
+            r0 = 0
+            r1 = 0
+            android.hardware.weaver.IWeaver r2 = r7.getWeaverService()     // Catch: java.lang.Exception -> La
+            if (r2 == 0) goto L10
+            r2 = 1
+            goto L11
+        La:
+            r2 = move-exception
+            java.lang.String r3 = "Unexpected exception while check weaver availability"
+            com.android.server.knox.dar.sdp.SDPLog.e(r2, r1, r3)
+        L10:
+            r2 = r0
+        L11:
+            java.lang.String r3 = "security.securehw.available"
+            boolean r0 = android.os.SystemProperties.getBoolean(r3, r0)
+            if (r0 != 0) goto L22
+            java.lang.String r7 = "SyntheticPasswordManager.SDP"
+            java.lang.String r0 = "Device does not support weaver"
+            android.util.Slog.d(r7, r0)
+            return
+        L22:
+            java.lang.StringBuilder r0 = new java.lang.StringBuilder
+            java.lang.String r3 = "Weaver is "
+            r0.<init>(r3)
+            if (r2 == 0) goto L2f
+            java.lang.String r3 = "now"
+            goto L31
+        L2f:
+            java.lang.String r3 = "NOT"
+        L31:
+            java.lang.String r4 = " available"
+            java.lang.String r0 = android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0.m(r0, r3, r4)
+            boolean r3 = com.android.server.locksettings.SyntheticPasswordManager.DEBUG
+            if (r3 == 0) goto L58
+            if (r2 == 0) goto L58
+            java.util.Locale r2 = java.util.Locale.US
+            android.hardware.weaver.WeaverConfig r7 = r7.mWeaverConfig
+            int r2 = r7.slots
+            int r3 = r7.keySize
+            int r7 = r7.valueSize
+            java.lang.String r4 = " with slots("
+            java.lang.String r5 = "), kSize("
+            java.lang.String r6 = ") and vSize("
+            java.lang.StringBuilder r2 = com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0.m(r2, r3, r4, r5, r6)
+            java.lang.String r3 = ")"
+            java.lang.String r7 = android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0.m(r7, r2, r3)
+            goto L5a
+        L58:
+            java.lang.String r7 = "!"
+        L5a:
+            java.lang.StringBuilder r2 = new java.lang.StringBuilder
+            r2.<init>()
+            r2.append(r0)
+            r2.append(r7)
+            java.lang.String r7 = r2.toString()
+            com.android.server.knox.dar.sdp.SDPLog.d(r1, r7)
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.SyntheticPasswordManager.checkWeaverStatus():void");
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x002f, code lost:
+    
+        if (r5 >= 6) goto L14;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:49:0x01bb  */
+    /* JADX WARN: Removed duplicated region for block: B:50:0x01c7  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final long createLskfBasedProtector(android.service.gatekeeper.IGateKeeperService r17, com.android.internal.widget.LockscreenCredential r18, long r19, com.android.internal.widget.LockscreenCredential r21, com.android.server.locksettings.SyntheticPasswordManager.SyntheticPassword r22, int r23) {
+        /*
+            Method dump skipped, instructions count: 587
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.SyntheticPasswordManager.createLskfBasedProtector(android.service.gatekeeper.IGateKeeperService, com.android.internal.widget.LockscreenCredential, long, com.android.internal.widget.LockscreenCredential, com.android.server.locksettings.SyntheticPasswordManager$SyntheticPassword, int):long");
+    }
+
+    public byte[] createSpBlob(String str, byte[] bArr, byte[] bArr2, long j) {
+        byte[] bArr3 = SyntheticPasswordCrypto.PROTECTOR_SECRET_PERSONALIZATION;
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(256, new SecureRandom());
+            SecretKey generateKey = keyGenerator.generateKey();
+            KeyStore keyStore = SyntheticPasswordCrypto.getKeyStore();
+            KeyProtection.Builder criticalToDeviceEncryption = new KeyProtection.Builder(2).setBlockModes("GCM").setEncryptionPaddings("NoPadding").setCriticalToDeviceEncryption(true);
+            if (j != 0) {
+                criticalToDeviceEncryption.setUserAuthenticationRequired(true).setBoundToSpecificSecureUserId(j).setUserAuthenticationValidityDurationSeconds(15);
+            }
+            KeyProtection build = criticalToDeviceEncryption.build();
+            criticalToDeviceEncryption.setRollbackResistant(true);
+            KeyProtection build2 = criticalToDeviceEncryption.build();
+            KeyStore.SecretKeyEntry secretKeyEntry = new KeyStore.SecretKeyEntry(generateKey);
+            try {
+                keyStore.setEntry(str, secretKeyEntry, build2);
+                Slog.i("SyntheticPasswordCrypto", "Using rollback-resistant key");
+            } catch (KeyStoreException unused) {
+                Slog.w("SyntheticPasswordCrypto", "Rollback-resistant keys unavailable.  Falling back to non-rollback-resistant key");
+                keyStore.setEntry(str, secretKeyEntry, build);
+            }
+            return SyntheticPasswordCrypto.encrypt(SyntheticPasswordCrypto.encrypt(bArr2, SyntheticPasswordCrypto.PROTECTOR_SECRET_PERSONALIZATION, bArr), generateKey);
+        } catch (IOException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | CertificateException | InvalidParameterSpecException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
+            Slog.e("SyntheticPasswordCrypto", "Failed to create blob", e);
+            throw new IllegalStateException("Failed to encrypt blob", e);
+        }
+    }
+
+    public final void createSyntheticPasswordBlob(long j, byte b, SyntheticPassword syntheticPassword, byte[] bArr, long j2, int i) {
+        byte[] decrypt;
+        if (b == 1 || b == 2) {
+            byte[] bArr2 = syntheticPassword.mEncryptedEscrowSplit0;
+            decrypt = bArr2 == null ? null : SyntheticPasswordCrypto.decrypt(syntheticPassword.mSyntheticPassword, PERSONALIZATION_E0, bArr2);
+        } else {
+            decrypt = syntheticPassword.mSyntheticPassword;
+        }
+        byte[] createSpBlob = createSpBlob(getProtectorKeyAlias(j), decrypt, bArr, j2);
+        byte b2 = syntheticPassword.mVersion != 3 ? (byte) 2 : (byte) 3;
+        byte[] bArr3 = new byte[createSpBlob.length + 2];
+        bArr3[0] = b2;
+        bArr3[1] = b;
+        System.arraycopy(createSpBlob, 0, bArr3, 2, createSpBlob.length);
+        saveState("spblob", bArr3, j, i);
+    }
+
+    public final boolean createTokenBasedProtector(int i, long j, SyntheticPassword syntheticPassword) {
+        TokenData tokenData;
+        if (!this.tokenMap.containsKey(Integer.valueOf(i)) || (tokenData = (TokenData) ((ArrayMap) this.tokenMap.get(Integer.valueOf(i))).get(Long.valueOf(j))) == null) {
+            return false;
+        }
+        if (!loadEscrowData(i, syntheticPassword)) {
+            Slog.w("SyntheticPasswordManager", "User is not escrowable");
+            return false;
+        }
+        if (!loadEscrowData(i, syntheticPassword)) {
+            Slog.w("SyntheticPasswordManager", "User is not escrowable");
+            return false;
+        }
+        Slogf.i("SyntheticPasswordManager", "Creating token-based protector %016x for user %d", Long.valueOf(j), Integer.valueOf(i));
+        IWeaver weaverService = getWeaverService();
+        if (weaverService != null) {
+            int nextAvailableWeaverSlot = getNextAvailableWeaverSlot();
+            Slogf.i("SyntheticPasswordManager", "Using Weaver slot %d for new token-based protector", Integer.valueOf(nextAvailableWeaverSlot));
+            WeaverResult.begin(0, nextAvailableWeaverSlot, i);
+            if (weaverEnroll(weaverService, nextAvailableWeaverSlot, null, tokenData.weaverSecret) == null) {
+                Slog.e("SyntheticPasswordManager", "Failed to enroll weaver secret when activating token");
+                WeaverResult.finishOff(nextAvailableWeaverSlot, "Failed to enroll token for user " + i);
+                return false;
+            }
+            WeaverResult.finish(i);
+            ByteBuffer allocate = ByteBuffer.allocate(5);
+            allocate.put((byte) 1);
+            allocate.putInt(nextAvailableWeaverSlot);
+            saveState("weaver", allocate.array(), j, i);
+            this.mPasswordSlotManager.markSlotInUse(nextAvailableWeaverSlot);
+        }
+        saveState("secdis", tokenData.secdiscardableOnDisk, j, i);
+        this.mSdpSyntheticPasswordManager.getClass();
+        createSyntheticPasswordBlob(j, tokenData.mType != 1 ? (byte) 1 : (byte) 2, syntheticPassword, tokenData.aggregatedSecret, 0L, i);
+        syncState(i);
+        ((ArrayMap) this.tokenMap.get(Integer.valueOf(i))).remove(Long.valueOf(j));
+        LockPatternUtils.EscrowTokenStateChangeCallback escrowTokenStateChangeCallback = tokenData.mCallback;
+        if (escrowTokenStateChangeCallback != null) {
+            escrowTokenStateChangeCallback.onEscrowTokenActivated(j, i);
+        }
+        return true;
+    }
+
+    public byte[] decryptSpBlob(String str, byte[] bArr, byte[] bArr2) {
+        try {
+            SecretKey secretKey = (SecretKey) SyntheticPasswordCrypto.getKeyStore().getKey(str, null);
+            if (secretKey != null) {
+                return SyntheticPasswordCrypto.decrypt(bArr2, SyntheticPasswordCrypto.PROTECTOR_SECRET_PERSONALIZATION, SyntheticPasswordCrypto.decrypt(bArr, secretKey));
+            }
+            throw new IllegalStateException("SP protector key is missing: " + str);
+        } catch (IOException | InvalidAlgorithmParameterException | InvalidKeyException | KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | CertificateException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
+            Slog.e("SyntheticPasswordCrypto", "Failed to decrypt blob", e);
+            throw new IllegalStateException("Failed to decrypt blob", e);
+        }
+    }
+
+    public final void destroyLskfBasedProtector(int i, long j) {
+        Slogf.i("SyntheticPasswordManager", "Destroying LSKF-based protector %016x for user %d", Long.valueOf(j), Integer.valueOf(i));
+        destroyState(i, "spblob", j);
+        destroyProtectorKey(getProtectorKeyAlias(j));
+        destroyState(i, "secdis", j);
+        if (hasState(i, "weaver", j)) {
+            destroyWeaverSlot(i, j);
+        }
+        destroyState(i, "pwd", j);
+        destroyState(i, "metrics", j);
+        SPBnRManager.deleteBackup(i, j);
+    }
+
+    public void destroyProtectorKey(String str) {
+        try {
+            SyntheticPasswordCrypto.getKeyStore().deleteEntry(str);
+            Slog.i("SyntheticPasswordCrypto", "Deleted SP protector key " + str);
+        } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException e) {
+            Slog.e("SyntheticPasswordCrypto", "Failed to delete SP protector key " + str, e);
+        }
+    }
+
+    public final void destroyState(int i, String str, long j) {
+        if ("spblob".equals(str)) {
+            LsLog.enroll(String.format("User %d Spblob destroy [%016x]\n%s", Integer.valueOf(i), Long.valueOf(j), Debug.getCallers(7, "    ")));
+        }
+        LockSettingsStorage lockSettingsStorage = this.mStorage;
+        lockSettingsStorage.deleteFile(lockSettingsStorage.getSyntheticPasswordStateFileForUser(i, str, j));
+    }
+
+    public final void destroyTokenBasedProtector(int i, long j) {
+        Slogf.i("SyntheticPasswordManager", "Destroying token-based protector %016x for user %d", Long.valueOf(j), Integer.valueOf(i));
+        SyntheticPasswordBlob fromBytes = SyntheticPasswordBlob.fromBytes(this.mStorage.readSyntheticPasswordState(i, "spblob", j));
+        destroyState(i, "spblob", j);
+        destroyProtectorKey(getProtectorKeyAlias(j));
+        destroyState(i, "secdis", j);
+        if (hasState(i, "weaver", j)) {
+            destroyWeaverSlot(i, j);
+        }
+        if (fromBytes.mProtectorType == 2) {
+            int beginBroadcast = this.mListeners.beginBroadcast();
+            while (beginBroadcast > 0) {
+                beginBroadcast--;
+                try {
+                    try {
+                        this.mListeners.getBroadcastItem(beginBroadcast).onWeakEscrowTokenRemoved(j, i);
+                    } catch (RemoteException e) {
+                        Slog.e("SyntheticPasswordManager", "Exception while notifying WeakEscrowTokenRemovedListener.", e);
+                    }
+                } finally {
+                    this.mListeners.finishBroadcast();
+                }
+            }
+        }
+    }
+
+    public final void destroyWeaverSlot(int i, long j) {
+        int loadWeaverSlot = loadWeaverSlot(i, j);
+        destroyState(i, "weaver", j);
+        if (loadWeaverSlot != -1) {
+            IWeaver weaverService = getWeaverService();
+            if (weaverService == null) {
+                Slog.e("SyntheticPasswordManager", "Cannot erase Weaver slot because Weaver is unavailable");
+                return;
+            }
+            Set usedWeaverSlots = getUsedWeaverSlots();
+            SDPLog.d(null, DualAppManagerService$$ExternalSyntheticOutline0.m(loadWeaverSlot, i, "Destroy weaver slot [ sl : ", ", u : ", " ]"));
+            if (((HashSet) usedWeaverSlots).contains(Integer.valueOf(loadWeaverSlot))) {
+                Slogf.i("SyntheticPasswordManager", "Weaver slot %d was already reused; not erasing it", Integer.valueOf(loadWeaverSlot));
+                SDPLog.d(null, "Destroying skipped!");
+                return;
+            }
+            Slogf.i("SyntheticPasswordManager", "Erasing Weaver slot %d", Integer.valueOf(loadWeaverSlot));
+            WeaverResult.begin(0, loadWeaverSlot, i);
+            weaverEnroll(weaverService, loadWeaverSlot, null, null);
+            WeaverResult.finish(i);
+            PasswordSlotManager passwordSlotManager = this.mPasswordSlotManager;
+            passwordSlotManager.ensureSlotMapLoaded();
+            if (passwordSlotManager.mSlotMap.containsKey(Integer.valueOf(loadWeaverSlot)) && !((String) passwordSlotManager.mSlotMap.get(Integer.valueOf(loadWeaverSlot))).equals(passwordSlotManager.getMode())) {
+                throw new IllegalStateException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(loadWeaverSlot, "password slot ", " cannot be deleted"));
+            }
+            passwordSlotManager.mSlotMap.remove(Integer.valueOf(loadWeaverSlot));
+            passwordSlotManager.saveSlotMap();
+        }
+    }
+
+    public final int getFailureCount(IGateKeeperService iGateKeeperService, long j, int i) {
+        PasswordData passwordData;
+        int i2;
+        if (j == 0) {
+            Slogf.wtf("SyntheticPasswordManager", "Synthetic password not found for user %d", Integer.valueOf(i));
+            return -1;
+        }
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "pwd", j);
+        if (readSyntheticPasswordState != null) {
+            passwordData = PasswordData.fromBytes(readSyntheticPasswordState);
+            i2 = passwordData.credentialType;
+        } else {
+            passwordData = null;
+            i2 = -1;
+        }
+        if (i2 == -1) {
+            Slogf.wtf("SyntheticPasswordManager", "Synthetic password not found for user %d", Integer.valueOf(i));
+            return -1;
+        }
+        if (passwordData == null || passwordData.passwordHandle == null) {
+            Slog.e("SyntheticPasswordManager", "Missing Gatekeeper handle for nonempty LSKF");
+            return -1;
+        }
+        try {
+            int failureCount = iGateKeeperService.getFailureCount(fakeUserId(i));
+            Slog.d("SyntheticPasswordManager", "getFailureCount = " + failureCount);
+            return failureCount;
+        } catch (RemoteException e) {
+            Slog.e("SyntheticPasswordManager", "getFailureCount, RemoteException " + i, e);
+            return -1;
+        }
+    }
+
+    public final int getFailureCount(IHermesService iHermesService, long j, int i) {
+        if (j == 0) {
+            Slogf.wtf("SyntheticPasswordManager", "Synthetic password not found for user %d", Integer.valueOf(i));
+            return -1;
+        }
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "pwd", j);
+        if ((readSyntheticPasswordState != null ? PasswordData.fromBytes(readSyntheticPasswordState).credentialType : -1) == -1) {
+            Slogf.wtf("SyntheticPasswordManager", "Synthetic password not found for user %d", Integer.valueOf(i));
+            return -1;
+        }
+        int loadWeaverSlot = loadWeaverSlot(i, j);
+        if (loadWeaverSlot == -1) {
+            Slog.e("SyntheticPasswordManager", "Protector uses Weaver, but Weaver is unavailable");
+            return -1;
+        }
+        try {
+            int failureCount = iHermesService.getFailureCount(loadWeaverSlot);
+            Slog.d("SyntheticPasswordManager", "getFailureCount = " + failureCount);
+            return failureCount;
+        } catch (RemoteException e) {
+            Slog.e("SyntheticPasswordManager", "getFailureCount, RemoteException " + loadWeaverSlot, e);
+            return -1;
+        }
+    }
+
+    public final int getNextAvailableWeaverSlot() {
+        Set usedWeaverSlots = getUsedWeaverSlots();
+        PasswordSlotManager passwordSlotManager = this.mPasswordSlotManager;
+        passwordSlotManager.ensureSlotMapLoaded();
+        usedWeaverSlots.addAll(Collections.unmodifiableSet(passwordSlotManager.mSlotMap.keySet()));
+        if (Settings.Global.getInt(this.mContext.getContentResolver(), "device_provisioned", 0) == 0) {
+            LockSettingsStorage.PersistentData readPersistentDataBlock = this.mStorage.readPersistentDataBlock();
+            if (readPersistentDataBlock.type == 2) {
+                ((HashSet) usedWeaverSlots).add(Integer.valueOf(readPersistentDataBlock.userId));
+            }
+        }
+        for (int i = 0; i < this.mWeaverConfig.slots; i++) {
+            if (!((HashSet) usedWeaverSlots).contains(Integer.valueOf(i))) {
+                return i;
+            }
+        }
+        throw new IllegalStateException("Run out of weaver slots.");
+    }
+
+    public final PasswordMetrics getPasswordMetrics(int i, long j, SyntheticPassword syntheticPassword) {
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "metrics", j);
+        if (readSyntheticPasswordState == null) {
+            Slogf.e("SyntheticPasswordManager", "Failed to read password metrics file for user %d", Integer.valueOf(i));
+            return null;
+        }
+        syntheticPassword.getClass();
+        byte[] decrypt = SyntheticPasswordCrypto.decrypt(syntheticPassword.deriveSubkey(PERSONALIZATION_PASSWORD_METRICS), new byte[0], readSyntheticPasswordState);
+        if (decrypt == null) {
+            Slogf.e("SyntheticPasswordManager", "Failed to decrypt password metrics file for user %d", Integer.valueOf(i));
+            return null;
+        }
+        ByteBuffer allocate = ByteBuffer.allocate(decrypt.length);
+        allocate.put(decrypt, 0, decrypt.length);
+        allocate.flip();
+        allocate.getInt();
+        return new PasswordMetrics(allocate.getInt(), allocate.getInt(), allocate.getInt(), allocate.getInt(), allocate.getInt(), allocate.getInt(), allocate.getInt(), allocate.getInt(), allocate.getInt(), allocate.getInt());
+    }
+
+    public final byte[] getPendingTokenForDualDar(int i, long j) {
         if (this.tokenMap.containsKey(Integer.valueOf(i))) {
             return Arrays.copyOf(((TokenData) ((ArrayMap) this.tokenMap.get(Integer.valueOf(i))).get(Long.valueOf(j))).aggregatedSecret, ((TokenData) ((ArrayMap) this.tokenMap.get(Integer.valueOf(i))).get(Long.valueOf(j))).aggregatedSecret.length);
         }
         return null;
     }
 
-    public byte[] getActiveTokenForDualDar(int i, byte[] bArr) {
-        return SyntheticPasswordMdfpp.deriveResetTokenForDualDAR(bArr);
+    public final Set getPendingTokensForUser(int i) {
+        return !this.tokenMap.containsKey(Integer.valueOf(i)) ? Collections.emptySet() : new ArraySet(((ArrayMap) this.tokenMap.get(Integer.valueOf(i))).keySet());
     }
 
-    public Set getPendingTokensForUser(int i) {
-        if (!this.tokenMap.containsKey(Integer.valueOf(i))) {
-            return Collections.emptySet();
+    public final LockSettingsStorage.PersistentData getSpecialUserPersistentData(int i) {
+        LockSettingsStorage lockSettingsStorage = this.mStorage;
+        if (i == -9999) {
+            return lockSettingsStorage.readPersistentDataBlock();
         }
-        return new ArraySet(((ArrayMap) this.tokenMap.get(Integer.valueOf(i))).keySet());
+        if (i != -9998) {
+            throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Unknown special user id "));
+        }
+        byte[] readFile = lockSettingsStorage.readFile(lockSettingsStorage.getRepairModePersistentDataFile());
+        return readFile == null ? LockSettingsStorage.PersistentData.NONE : LockSettingsStorage.PersistentData.fromBytes(readFile);
     }
 
-    public boolean removePendingToken(long j, int i) {
-        return this.tokenMap.containsKey(Integer.valueOf(i)) && ((ArrayMap) this.tokenMap.get(Integer.valueOf(i))).remove(Long.valueOf(j)) != null;
-    }
-
-    public boolean createTokenBasedProtector(long j, SyntheticPassword syntheticPassword, int i) {
-        TokenData tokenData;
-        if (!this.tokenMap.containsKey(Integer.valueOf(i)) || (tokenData = (TokenData) ((ArrayMap) this.tokenMap.get(Integer.valueOf(i))).get(Long.valueOf(j))) == null) {
-            return false;
-        }
-        if (!loadEscrowData(syntheticPassword, i)) {
-            Slog.w("SyntheticPasswordManager", "User is not escrowable");
-            return false;
-        }
-        Slogf.i("SyntheticPasswordManager", "Creating token-based protector %016x for user %d", Long.valueOf(j), Integer.valueOf(i));
-        if (isWeaverAvailable()) {
-            int nextAvailableWeaverSlot = getNextAvailableWeaverSlot();
-            Slogf.i("SyntheticPasswordManager", "Using Weaver slot %d for new token-based protector", Integer.valueOf(nextAvailableWeaverSlot));
-            WeaverResult.begin(0, nextAvailableWeaverSlot, i);
-            if (weaverEnroll(nextAvailableWeaverSlot, null, tokenData.weaverSecret) == null) {
-                Slog.e("SyntheticPasswordManager", "Failed to enroll weaver secret when activating token");
-                WeaverResult.finishOff(nextAvailableWeaverSlot, "Failed to enroll token for user " + i);
-                return false;
+    public final Set getUsedWeaverSlots() {
+        String str;
+        String str2;
+        ArrayList arrayList;
+        Map listSyntheticPasswordProtectorsForAllUsers = this.mStorage.listSyntheticPasswordProtectorsForAllUsers("weaver");
+        HashSet hashSet = new HashSet();
+        HashMap hashMap = new HashMap();
+        ArrayMap arrayMap = (ArrayMap) listSyntheticPasswordProtectorsForAllUsers;
+        Iterator it = arrayMap.entrySet().iterator();
+        while (true) {
+            String str3 = null;
+            String str4 = "Slot conflict at slot #";
+            if (!it.hasNext()) {
+                break;
             }
-            WeaverResult.finish(i);
-            saveWeaverSlot(nextAvailableWeaverSlot, j, i);
-            this.mPasswordSlotManager.markSlotInUse(nextAvailableWeaverSlot);
+            Map.Entry entry = (Map.Entry) it.next();
+            for (Long l : (List) entry.getValue()) {
+                int loadWeaverSlot = loadWeaverSlot(((Integer) entry.getKey()).intValue(), l.longValue());
+                if (hashSet.contains(Integer.valueOf(loadWeaverSlot))) {
+                    int intValue = ((Integer) entry.getKey()).intValue();
+                    if (UserManager.isVirtualUserId(intValue)) {
+                        SDPLog.d(str3, str4 + loadWeaverSlot);
+                        if (hashMap.containsKey(Integer.valueOf(loadWeaverSlot))) {
+                            arrayList = (ArrayList) hashMap.get(Integer.valueOf(loadWeaverSlot));
+                        } else {
+                            arrayList = new ArrayList();
+                            hashMap.put(Integer.valueOf(loadWeaverSlot), arrayList);
+                        }
+                        str2 = str4;
+                        arrayList.add(new ConflictInfo(l.longValue(), intValue));
+                        hashSet.add(Integer.valueOf(loadWeaverSlot));
+                        str4 = str2;
+                        str3 = null;
+                    }
+                }
+                str2 = str4;
+                hashSet.add(Integer.valueOf(loadWeaverSlot));
+                str4 = str2;
+                str3 = null;
+            }
         }
-        saveSecdiscardable(j, tokenData.secdiscardableOnDisk, i);
-        this.mSdpSyntheticPasswordManager.isSdpMdfppMode(i);
-        createSyntheticPasswordBlob(j, getTokenBasedProtectorType(tokenData.mType), syntheticPassword, tokenData.aggregatedSecret, 0L, i);
-        syncState(i);
-        ((ArrayMap) this.tokenMap.get(Integer.valueOf(i))).remove(Long.valueOf(j));
-        LockPatternUtils.EscrowTokenStateChangeCallback escrowTokenStateChangeCallback = tokenData.mCallback;
-        if (escrowTokenStateChangeCallback == null) {
-            return true;
+        String str5 = "Slot conflict at slot #";
+        if (!hashMap.isEmpty()) {
+            for (Map.Entry entry2 : arrayMap.entrySet()) {
+                int intValue2 = ((Integer) entry2.getKey()).intValue();
+                if (!UserManager.isVirtualUserId(intValue2)) {
+                    Iterator it2 = ((List) entry2.getValue()).iterator();
+                    while (it2.hasNext()) {
+                        int loadWeaverSlot2 = loadWeaverSlot(((Integer) entry2.getKey()).intValue(), ((Long) it2.next()).longValue());
+                        if (hashMap.containsKey(Integer.valueOf(loadWeaverSlot2))) {
+                            str = str5;
+                            SDPLog.d(null, str + loadWeaverSlot2 + " with user " + intValue2);
+                            List<ConflictInfo> list = (List) hashMap.get(Integer.valueOf(loadWeaverSlot2));
+                            if (list != null) {
+                                for (ConflictInfo conflictInfo : list) {
+                                    long j = conflictInfo.handle;
+                                    int i = conflictInfo.userId;
+                                    if (UserManager.isVirtualUserId(i)) {
+                                        SDPLog.d(null, String.format("Mitigate slot conflict on %x.weaver for virtual user %d", Long.valueOf(j), Integer.valueOf(i)));
+                                        if (Binder.getCallingUid() == 1000) {
+                                            destroyState(i, "weaver", j);
+                                        }
+                                    } else {
+                                        NandswapManager$$ExternalSyntheticOutline0.m(i, "Do not handle conflict for normal user ", "SyntheticPasswordManager");
+                                    }
+                                }
+                            }
+                        } else {
+                            str = str5;
+                        }
+                        str5 = str;
+                    }
+                }
+                str5 = str5;
+            }
         }
-        escrowTokenStateChangeCallback.onEscrowTokenActivated(j, i);
-        return true;
+        return hashSet;
     }
 
-    public final void createSyntheticPasswordBlob(long j, byte b, SyntheticPassword syntheticPassword, byte[] bArr, long j2, int i) {
-        byte[] escrowSecret;
-        if (b == 1 || b == 2) {
-            escrowSecret = syntheticPassword.getEscrowSecret();
-        } else {
-            escrowSecret = syntheticPassword.getSyntheticPassword();
+    public android.hardware.weaver.V1_0.IWeaver getWeaverHidlService() throws RemoteException {
+        try {
+            return android.hardware.weaver.V1_0.IWeaver.getService(true);
+        } catch (NoSuchElementException unused) {
+            return null;
         }
-        saveState("spblob", SyntheticPasswordBlob.create(syntheticPassword.mVersion == 3 ? (byte) 3 : (byte) 2, b, createSpBlob(getProtectorKeyAlias(j), escrowSecret, bArr, j2)).toByte(), j, i);
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:65:0x026a  */
-    /* JADX WARN: Removed duplicated region for block: B:67:0x0275  */
-    /* JADX WARN: Removed duplicated region for block: B:75:0x019f  */
-    /* JADX WARN: Removed duplicated region for block: B:76:0x01c5  */
+    public final synchronized IWeaver getWeaverService() {
+        IWeaver iWeaver = this.mWeaver;
+        if (iWeaver != null) {
+            return iWeaver;
+        }
+        IWeaver weaverServiceInternal = getWeaverServiceInternal();
+        if (weaverServiceInternal == null) {
+            return null;
+        }
+        try {
+            WeaverConfig config = weaverServiceInternal.getConfig();
+            if (config != null && config.slots > 0) {
+                this.mWeaver = weaverServiceInternal;
+                this.mWeaverConfig = config;
+                this.mPasswordSlotManager.refreshActiveSlots(getUsedWeaverSlots());
+                Slog.i("SyntheticPasswordManager", "Weaver service initialized");
+                return weaverServiceInternal;
+            }
+            Slog.e("SyntheticPasswordManager", "Invalid weaver config");
+            return null;
+        } catch (RemoteException | ServiceSpecificException e) {
+            Slog.e("SyntheticPasswordManager", "Failed to get weaver config", e);
+            return null;
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:17:0x0079 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:9:0x005f  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public com.android.server.locksettings.SyntheticPasswordManager.AuthenticationResult unlockLskfBasedProtector(android.service.gatekeeper.IGateKeeperService r23, long r24, com.android.internal.widget.LockscreenCredential r26, int r27, com.android.internal.widget.ICheckCredentialProgressCallback r28) {
+    public final android.hardware.weaver.IWeaver getWeaverServiceInternal() {
         /*
-            Method dump skipped, instructions count: 708
-            To view this dump change 'Code comments level' option to 'DEBUG'
+            r5 = this;
+            java.lang.String r0 = "SyntheticPasswordManager"
+            r1 = 0
+            java.lang.StringBuilder r2 = new java.lang.StringBuilder     // Catch: java.lang.SecurityException -> L57
+            r2.<init>()     // Catch: java.lang.SecurityException -> L57
+            java.lang.String r3 = android.hardware.weaver.IWeaver.DESCRIPTOR     // Catch: java.lang.SecurityException -> L57
+            r2.append(r3)     // Catch: java.lang.SecurityException -> L57
+            java.lang.String r4 = "/default"
+            r2.append(r4)     // Catch: java.lang.SecurityException -> L57
+            java.lang.String r2 = r2.toString()     // Catch: java.lang.SecurityException -> L57
+            android.os.IBinder r2 = android.os.ServiceManager.waitForDeclaredService(r2)     // Catch: java.lang.SecurityException -> L57
+            int r4 = android.hardware.weaver.IWeaver.Stub.$r8$clinit     // Catch: java.lang.SecurityException -> L57
+            if (r2 != 0) goto L20
+            r3 = r1
+            goto L37
+        L20:
+            android.os.IInterface r3 = r2.queryLocalInterface(r3)     // Catch: java.lang.SecurityException -> L57
+            if (r3 == 0) goto L2d
+            boolean r4 = r3 instanceof android.hardware.weaver.IWeaver     // Catch: java.lang.SecurityException -> L57
+            if (r4 == 0) goto L2d
+            android.hardware.weaver.IWeaver r3 = (android.hardware.weaver.IWeaver) r3     // Catch: java.lang.SecurityException -> L57
+            goto L37
+        L2d:
+            android.hardware.weaver.IWeaver$Stub$Proxy r3 = new android.hardware.weaver.IWeaver$Stub$Proxy     // Catch: java.lang.SecurityException -> L57
+            r3.<init>()     // Catch: java.lang.SecurityException -> L57
+            r4 = -1
+            r3.mCachedVersion = r4     // Catch: java.lang.SecurityException -> L57
+            r3.mRemote = r2     // Catch: java.lang.SecurityException -> L57
+        L37:
+            if (r3 != 0) goto L3b
+        L39:
+            r3 = r1
+            goto L5d
+        L3b:
+            int r2 = r3.getInterfaceVersion()     // Catch: android.os.RemoteException -> L50
+            r4 = 2
+            if (r2 >= r4) goto L4a
+            java.lang.String r3 = "Ignoring AIDL weaver service v"
+            java.lang.String r4 = " because only v2 and later are supported"
+            com.android.server.accessibility.BrailleDisplayConnection$$ExternalSyntheticOutline0.m(r2, r3, r4, r0)
+            goto L39
+        L4a:
+            java.lang.String r4 = "Found AIDL weaver service v"
+            com.android.server.HermesService$3$$ExternalSyntheticOutline0.m(r2, r4, r0)
+            goto L5d
+        L50:
+            r2 = move-exception
+            java.lang.String r3 = "Cannot get AIDL weaver service version"
+            android.util.Slog.e(r0, r3, r2)
+            goto L39
+        L57:
+            java.lang.String r2 = "Does not have permissions to get AIDL weaver service"
+            android.util.Slog.w(r0, r2)
+            goto L39
+        L5d:
+            if (r3 == 0) goto L79
+            java.lang.String r1 = "Using AIDL weaver service"
+            android.util.Slog.i(r0, r1)
+            android.os.IBinder r1 = r3.asBinder()     // Catch: android.os.RemoteException -> L72
+            com.android.server.locksettings.SyntheticPasswordManager$WeaverDiedRecipient r2 = new com.android.server.locksettings.SyntheticPasswordManager$WeaverDiedRecipient     // Catch: android.os.RemoteException -> L72
+            r2.<init>()     // Catch: android.os.RemoteException -> L72
+            r5 = 0
+            r1.linkToDeath(r2, r5)     // Catch: android.os.RemoteException -> L72
+            goto L78
+        L72:
+            r5 = move-exception
+            java.lang.String r1 = "Unable to register Weaver death recipient"
+            android.util.Slog.w(r0, r1, r5)
+        L78:
+            return r3
+        L79:
+            android.hardware.weaver.V1_0.IWeaver r5 = r5.getWeaverHidlService()     // Catch: android.os.RemoteException -> L8a
+            if (r5 == 0) goto L90
+            java.lang.String r2 = "Using HIDL weaver service"
+            android.util.Slog.i(r0, r2)     // Catch: android.os.RemoteException -> L8a
+            com.android.server.locksettings.WeaverHidlAdapter r2 = new com.android.server.locksettings.WeaverHidlAdapter     // Catch: android.os.RemoteException -> L8a
+            r2.<init>(r5)     // Catch: android.os.RemoteException -> L8a
+            return r2
+        L8a:
+            r5 = move-exception
+            java.lang.String r2 = "Failed to get HIDL weaver service."
+            android.util.Slog.w(r0, r2, r5)
+        L90:
+            java.lang.String r5 = "Device does not support weaver"
+            android.util.Slog.w(r0, r5)
+            return r1
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.SyntheticPasswordManager.unlockLskfBasedProtector(android.service.gatekeeper.IGateKeeperService, long, com.android.internal.widget.LockscreenCredential, int, com.android.internal.widget.ICheckCredentialProgressCallback):com.android.server.locksettings.SyntheticPasswordManager$AuthenticationResult");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.SyntheticPasswordManager.getWeaverServiceInternal():android.hardware.weaver.IWeaver");
     }
 
-    public boolean refreshPinLengthOnDisk(PasswordMetrics passwordMetrics, long j, int i) {
-        byte[] loadState;
-        if (!isAutoPinConfirmationFeatureAvailable() || (loadState = loadState("pwd", j, i)) == null) {
+    public final boolean hasEscrowData(int i) {
+        return hasState(i, "e0", 0L) && hasState(i, "p1", 0L);
+    }
+
+    public boolean hasPasswordData(long j, int i) {
+        return hasState(i, "pwd", j);
+    }
+
+    public boolean hasPasswordMetrics(long j, int i) {
+        return hasState(i, "metrics", j);
+    }
+
+    public final boolean hasState(int i, String str, long j) {
+        return !ArrayUtils.isEmpty(this.mStorage.readSyntheticPasswordState(i, str, j));
+    }
+
+    public boolean isAutoPinConfirmationFeatureAvailable() {
+        return LockPatternUtils.isAutoPinConfirmFeatureAvailable();
+    }
+
+    public final boolean loadEscrowData(int i, SyntheticPassword syntheticPassword) {
+        LockSettingsStorage lockSettingsStorage = this.mStorage;
+        byte[] readSyntheticPasswordState = lockSettingsStorage.readSyntheticPasswordState(i, "e0", 0L);
+        byte[] readSyntheticPasswordState2 = lockSettingsStorage.readSyntheticPasswordState(i, "p1", 0L);
+        syntheticPassword.mEncryptedEscrowSplit0 = readSyntheticPasswordState;
+        syntheticPassword.mEscrowSplit1 = readSyntheticPasswordState2;
+        return (readSyntheticPasswordState == null || readSyntheticPasswordState2 == null) ? false : true;
+    }
+
+    public final int loadWeaverSlot(int i, long j) {
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "weaver", j);
+        if (readSyntheticPasswordState == null || readSyntheticPasswordState.length != 5) {
+            return -1;
+        }
+        ByteBuffer allocate = ByteBuffer.allocate(5);
+        allocate.put(readSyntheticPasswordState, 0, readSyntheticPasswordState.length);
+        allocate.flip();
+        if (allocate.get() == 1) {
+            return allocate.getInt();
+        }
+        Slog.e("SyntheticPasswordManager", "Invalid weaver slot version for protector " + j);
+        return -1;
+    }
+
+    public final void migrateFrpPasswordLocked(long j, UserInfo userInfo, int i) {
+        LockSettingsStorage lockSettingsStorage = this.mStorage;
+        if (lockSettingsStorage.getPersistentDataBlockManager() == null || !LockPatternUtils.userOwnsFrpCredential(this.mContext, userInfo)) {
+            return;
+        }
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(userInfo.id, "pwd", j);
+        if ((readSyntheticPasswordState == null ? -1 : PasswordData.fromBytes(readSyntheticPasswordState).credentialType) != -1) {
+            Slog.i("SyntheticPasswordManager", "Migrating FRP credential to persistent data block");
+            PasswordData fromBytes = PasswordData.fromBytes(lockSettingsStorage.readSyntheticPasswordState(userInfo.id, "pwd", j));
+            int loadWeaverSlot = loadWeaverSlot(userInfo.id, j);
+            if (loadWeaverSlot != -1) {
+                synchronizeWeaverFrpPassword(fromBytes, i, userInfo.id, loadWeaverSlot);
+            } else {
+                synchronizeGatekeeperFrpPassword(fromBytes, i, userInfo.id);
+            }
+        }
+    }
+
+    public final boolean migrateKeyNamespace() {
+        Iterator it = ((ArrayMap) this.mStorage.listSyntheticPasswordProtectorsForAllUsers("spblob")).values().iterator();
+        boolean z = true;
+        while (it.hasNext()) {
+            for (Long l : (List) it.next()) {
+                l.longValue();
+                z &= SyntheticPasswordCrypto.migrateLockSettingsKey(TextUtils.formatSimple("%s%x", new Object[]{"synthetic_password_", l}));
+            }
+        }
+        return z;
+    }
+
+    public final void migratePwdDataForKnox(int i, long j) {
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "pwd", j);
+        if (readSyntheticPasswordState == null) {
+            return;
+        }
+        PasswordData passwordData = new PasswordData();
+        ByteBuffer allocate = ByteBuffer.allocate(readSyntheticPasswordState.length);
+        allocate.put(readSyntheticPasswordState, 0, readSyntheticPasswordState.length);
+        allocate.flip();
+        passwordData.credentialType = (short) allocate.getInt();
+        passwordData.scryptLogN = allocate.get();
+        passwordData.scryptLogR = allocate.get();
+        passwordData.scryptLogP = allocate.get();
+        byte[] bArr = new byte[allocate.getInt()];
+        passwordData.salt = bArr;
+        allocate.get(bArr);
+        int i2 = allocate.getInt();
+        if (i2 > 0) {
+            byte[] bArr2 = new byte[i2];
+            passwordData.passwordHandle = bArr2;
+            allocate.get(bArr2);
+        } else {
+            passwordData.passwordHandle = null;
+        }
+        int i3 = allocate.getInt();
+        if (i3 < 0 || i3 > 2) {
+            passwordData.pinLength = i3;
+            passwordData.secureMode = 0;
+            SDPLog.d("SyntheticPasswordManager", "Abnormal migration case - pinLength : " + passwordData.pinLength + ", secureMode : " + passwordData.secureMode);
+        } else {
+            passwordData.pinLength = -1;
+            passwordData.secureMode = i3;
+            SDPLog.d("SyntheticPasswordManager", "Migration case - secureMode : " + passwordData.secureMode);
+        }
+        saveState("pwd", passwordData.toBytes(), j, i);
+        syncState(i);
+        SDPLog.d("SyntheticPasswordManager", "Migrated password data for user " + i);
+    }
+
+    public final SyntheticPassword newSyntheticPassword(int i) {
+        destroyState(i, "handle", 0L);
+        SPBnRManager.deleteBackup(i, 0L, "handle");
+        SyntheticPassword syntheticPassword = new SyntheticPassword((byte) 3);
+        byte[] randomBytes = SecureRandomUtils.randomBytes(32);
+        byte[] randomBytes2 = SecureRandomUtils.randomBytes(32);
+        byte[] bytesToHex = bytesToHex(SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_SP_SPLIT, randomBytes, randomBytes2));
+        syntheticPassword.mSyntheticPassword = bytesToHex;
+        byte[] encrypt = SyntheticPasswordCrypto.encrypt(bytesToHex, PERSONALIZATION_E0, randomBytes);
+        syntheticPassword.mEncryptedEscrowSplit0 = encrypt;
+        syntheticPassword.mEscrowSplit1 = randomBytes2;
+        saveState("e0", encrypt, 0L, i);
+        saveState("p1", syntheticPassword.mEscrowSplit1, 0L, i);
+        return syntheticPassword;
+    }
+
+    public final void removeUser(IGateKeeperService iGateKeeperService, int i) {
+        Iterator it = ((ArrayList) this.mStorage.listSyntheticPasswordProtectorsForUser(i, "spblob")).iterator();
+        while (it.hasNext()) {
+            long longValue = ((Long) it.next()).longValue();
+            destroyWeaverSlot(i, longValue);
+            destroyProtectorKey(getProtectorKeyAlias(longValue));
+        }
+        try {
+            iGateKeeperService.clearSecureUserId(fakeUserId(i));
+        } catch (RemoteException unused) {
+            Slog.w("SyntheticPasswordManager", "Failed to clear SID from gatekeeper");
+        }
+    }
+
+    public final void savePasswordMetrics(LockscreenCredential lockscreenCredential, SyntheticPassword syntheticPassword, long j, int i) {
+        syntheticPassword.getClass();
+        PasswordMetrics computeForCredential = PasswordMetrics.computeForCredential(lockscreenCredential);
+        ByteBuffer allocate = ByteBuffer.allocate(44);
+        allocate.putInt(1);
+        allocate.putInt(computeForCredential.credType);
+        allocate.putInt(computeForCredential.length);
+        allocate.putInt(computeForCredential.letters);
+        allocate.putInt(computeForCredential.upperCase);
+        allocate.putInt(computeForCredential.lowerCase);
+        allocate.putInt(computeForCredential.numeric);
+        allocate.putInt(computeForCredential.symbols);
+        allocate.putInt(computeForCredential.nonLetter);
+        allocate.putInt(computeForCredential.nonNumeric);
+        allocate.putInt(computeForCredential.seqLength);
+        saveState("metrics", SyntheticPasswordCrypto.encrypt(syntheticPassword.deriveSubkey(PERSONALIZATION_PASSWORD_METRICS), new byte[0], allocate.array()), j, i);
+    }
+
+    public final void saveState(String str, byte[] bArr, long j, int i) {
+        if ("spblob".equals(str)) {
+            LsLog.enroll(String.format("User %d Spblob save [%016x]\n%s", Integer.valueOf(i), Long.valueOf(j), Debug.getCallers(7, "    ")));
+        }
+        LockSettingsStorage lockSettingsStorage = this.mStorage;
+        File syntheticPasswordDirectoryForUser = lockSettingsStorage.getSyntheticPasswordDirectoryForUser(i);
+        if (!syntheticPasswordDirectoryForUser.exists()) {
+            syntheticPasswordDirectoryForUser.mkdir();
+        }
+        lockSettingsStorage.writeFile(lockSettingsStorage.getSyntheticPasswordStateFileForUser(i, str, j), bArr, false);
+    }
+
+    public byte[] scrypt(byte[] bArr, byte[] bArr2, int i, int i2, int i3, int i4) {
+        return new Scrypt().scrypt(bArr, bArr2, i, i2, i3, i4);
+    }
+
+    public final boolean shouldSynchronizeFrpCredential(PasswordData passwordData, int i) {
+        if (this.mStorage.getPersistentDataBlockManager() == null) {
             return false;
         }
-        PasswordData fromBytes = PasswordData.fromBytes(loadState);
-        int derivePinLength = derivePinLength(passwordMetrics.length, passwordMetrics.credType == 3, i);
-        if (fromBytes.pinLength != derivePinLength) {
-            fromBytes.pinLength = derivePinLength;
-            saveState("pwd", fromBytes.toBytes(), j, i);
-            syncState(i);
+        if (!LockPatternUtils.userOwnsFrpCredential(this.mContext, this.mUserManager.getUserInfo(i))) {
+            return false;
         }
-        return true;
+        if ((passwordData != null && passwordData.credentialType != -1) || Settings.Global.getInt(this.mContext.getContentResolver(), "device_provisioned", 0) != 0) {
+            return true;
+        }
+        Slog.d("SyntheticPasswordManager", "Not clearing FRP credential yet because device is not yet provisioned");
+        return false;
     }
 
-    public AuthenticationResult unlockTokenBasedProtector(IGateKeeperService iGateKeeperService, long j, byte[] bArr, int i) {
+    public long sidFromPasswordHandle(byte[] bArr) {
+        return nativeSidFromPasswordHandle(bArr);
+    }
+
+    public byte[] stretchLskf(LockscreenCredential lockscreenCredential, PasswordData passwordData) {
+        byte[] credential = (lockscreenCredential.isNone() || SECURITY_UNPACK) ? DEFAULT_PASSWORD : lockscreenCredential.getCredential();
+        if (passwordData != null) {
+            return scrypt(credential, passwordData.salt, 1 << passwordData.scryptLogN, 1 << passwordData.scryptLogR, 1 << passwordData.scryptLogP, 32);
+        }
+        Preconditions.checkArgument(lockscreenCredential.isNone());
+        return Arrays.copyOf(credential, 32);
+    }
+
+    public final byte[] stretchedLskfToWeaverKey(byte[] bArr) {
+        byte[] personalizedHash = SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_WEAVER_KEY, bArr);
+        int length = personalizedHash.length;
+        int i = this.mWeaverConfig.keySize;
+        if (length >= i) {
+            return Arrays.copyOf(personalizedHash, i);
+        }
+        throw new IllegalArgumentException("weaver key length too small");
+    }
+
+    public final void syncState(int i) {
+        LockSettingsStorage.fsyncDirectory(this.mStorage.getSyntheticPasswordDirectoryForUser(i));
+    }
+
+    public final void synchronizeGatekeeperFrpPassword(PasswordData passwordData, int i, int i2) {
+        if (shouldSynchronizeFrpCredential(passwordData, i2)) {
+            Slogf.d("SyntheticPasswordManager", "Syncing Gatekeeper-based FRP credential tied to user %d", Integer.valueOf(i2));
+            boolean z = passwordData == null || passwordData.credentialType == -1;
+            LockSettingsStorage lockSettingsStorage = this.mStorage;
+            if (z) {
+                lockSettingsStorage.writePersistentDataBlock(0, i2, 0, null);
+            } else {
+                lockSettingsStorage.writePersistentDataBlock(1, i2, i, passwordData.toBytes());
+            }
+        }
+    }
+
+    public final void synchronizeWeaverFrpPassword(PasswordData passwordData, int i, int i2, int i3) {
+        if (shouldSynchronizeFrpCredential(passwordData, i2)) {
+            Slogf.d("SyntheticPasswordManager", "Syncing Weaver-based FRP credential tied to user %d", Integer.valueOf(i2));
+            boolean z = passwordData == null || passwordData.credentialType == -1;
+            LockSettingsStorage lockSettingsStorage = this.mStorage;
+            if (z) {
+                lockSettingsStorage.writePersistentDataBlock(0, 0, 0, null);
+            } else {
+                lockSettingsStorage.writePersistentDataBlock(2, i3, i, passwordData.toBytes());
+            }
+        }
+    }
+
+    public final AuthenticationResult unlockLskfBasedProtector(IGateKeeperService iGateKeeperService, long j, LockscreenCredential lockscreenCredential, int i, ICheckCredentialProgressCallback iCheckCredentialProgressCallback) {
+        PasswordData passwordData;
+        int i2;
+        byte[] bArr;
+        String str;
+        long j2;
+        long j3;
+        byte[] transformUnderSecdiscardable;
+        boolean z;
+        PasswordData passwordData2;
+        GateKeeperResponse gateKeeperResponse;
+        AuthenticationResult authenticationResult = new AuthenticationResult();
+        if (j == 0) {
+            Slogf.wtf("SyntheticPasswordManager", "Synthetic password not found for user %d", Integer.valueOf(i));
+            authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
+            LsLog.verify("SP not found for user " + i);
+            return authenticationResult;
+        }
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "pwd", j);
+        if (readSyntheticPasswordState != null) {
+            PasswordData fromBytes = PasswordData.fromBytes(readSyntheticPasswordState);
+            i2 = fromBytes.credentialType;
+            passwordData = fromBytes;
+        } else {
+            passwordData = null;
+            i2 = -1;
+        }
+        if (!lockscreenCredential.checkAgainstStoredType(i2)) {
+            Slogf.e("SyntheticPasswordManager", "Credential type mismatch: stored type is %s but provided type is %s", LockPatternUtils.credentialTypeToString(i2), LockPatternUtils.credentialTypeToString(lockscreenCredential.getType()));
+            authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
+            LsLog.verify("Credential type mismatch: stored type is " + LockPatternUtils.credentialTypeToString(i2) + " but provided type is " + LockPatternUtils.credentialTypeToString(lockscreenCredential.getType()));
+            return authenticationResult;
+        }
+        byte[] stretchLskf = stretchLskf(lockscreenCredential, passwordData);
+        this.mSdpSyntheticPasswordManager.getClass();
+        SDPLog.d("SyntheticPasswordManager", "unlockLskfBasedProtector isSdpMdfppMode ? false");
+        LsLog.verifyBegin(i);
+        int loadWeaverSlot = loadWeaverSlot(i, j);
+        if (loadWeaverSlot != -1) {
+            LsLog.verifyUpdate(lockscreenCredential.getType(), loadWeaverSlot, j, passwordData != null ? passwordData.salt : null);
+            IWeaver weaverService = getWeaverService();
+            if (weaverService == null) {
+                Slog.e("SyntheticPasswordManager", "Protector uses Weaver, but Weaver is unavailable");
+                authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
+                LsLog.verifyFinish(1, -1L, "Protector uses Weaver, but Weaver is unavailable");
+                return authenticationResult;
+            }
+            WeaverResult.begin(1, loadWeaverSlot, i);
+            authenticationResult.gkResponse = weaverVerify(weaverService, loadWeaverSlot, stretchedLskfToWeaverKey(stretchLskf));
+            WeaverResult.finish(i);
+            if (authenticationResult.gkResponse.getResponseCode() != 0) {
+                return authenticationResult;
+            }
+            transformUnderSecdiscardable = ArrayUtils.concat(new byte[][]{stretchLskf, SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_WEAVER_PASSWORD, authenticationResult.gkResponse.getGatekeeperHAT())});
+            str = "SyntheticPasswordManager";
+            j3 = 0;
+        } else {
+            LsLog.verifyUpdate(lockscreenCredential.getType(), -1, j, passwordData != null ? passwordData.salt : null);
+            if (passwordData == null || passwordData.passwordHandle == null) {
+                bArr = stretchLskf;
+                str = "SyntheticPasswordManager";
+                if (!lockscreenCredential.isNone()) {
+                    Slog.e(str, "Missing Gatekeeper password handle for nonempty LSKF");
+                    authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
+                    LsLog.verifyFinish(1, -1L, "Missing Gatekeeper password handle for nonempty LSKF");
+                    return authenticationResult;
+                }
+                j2 = 0;
+            } else {
+                byte[] stretchedLskfToGkPassword = stretchedLskfToGkPassword(stretchLskf);
+                if (UserManager.isVirtualUserId(i) && getWeaverService() != null && passwordData.passwordHandle == null) {
+                    SDPLog.d(null, "Virtual User " + i + " may lost weaver slot.");
+                    z = false;
+                    passwordData.passwordHandle = new byte[0];
+                } else {
+                    z = false;
+                }
+                try {
+                    passwordData2 = passwordData;
+                    bArr = stretchLskf;
+                    str = "SyntheticPasswordManager";
+                } catch (RemoteException e) {
+                    e = e;
+                    str = "SyntheticPasswordManager";
+                }
+                try {
+                    GateKeeperResponse verifyChallenge = iGateKeeperService.verifyChallenge(fakeUserId(i), 0L, passwordData.passwordHandle, stretchedLskfToGkPassword);
+                    int responseCode = verifyChallenge.getResponseCode();
+                    if (responseCode != 0) {
+                        if (responseCode == 1) {
+                            authenticationResult.gkResponse = VerifyCredentialResponse.fromTimeout(verifyChallenge.getTimeout());
+                            LsLog.verifyFinish(3, verifyChallenge.getTimeout(), "gatekeeper THROTTLE");
+                            return authenticationResult;
+                        }
+                        authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
+                        if (responseCode == -1) {
+                            LsLog.verifyFinish(2, verifyChallenge.getTimeout(), "gatekeeper INCORRECT_KEY");
+                        } else {
+                            LsLog.verifyFinish(responseCode, verifyChallenge.getTimeout(), "gatekeeper FAILED");
+                        }
+                        return authenticationResult;
+                    }
+                    authenticationResult.gkResponse = VerifyCredentialResponse.OK;
+                    if (verifyChallenge.getShouldReEnroll()) {
+                        try {
+                            gateKeeperResponse = iGateKeeperService.enroll(fakeUserId(i), passwordData2.passwordHandle, stretchedLskfToGkPassword, stretchedLskfToGkPassword);
+                        } catch (RemoteException e2) {
+                            Slog.w(str, "Fail to invoke gatekeeper.enroll", e2);
+                            gateKeeperResponse = GateKeeperResponse.ERROR;
+                        }
+                        if (gateKeeperResponse.getResponseCode() == 0) {
+                            passwordData2.passwordHandle = gateKeeperResponse.getPayload();
+                            passwordData2.credentialType = lockscreenCredential.getType();
+                            saveState("pwd", passwordData2.toBytes(), j, i);
+                            syncState(i);
+                            synchronizeGatekeeperFrpPassword(passwordData2, 0, i);
+                        } else {
+                            DeviceIdleController$$ExternalSyntheticOutline0.m(i, "Fail to re-enroll user password for user ", str);
+                        }
+                    }
+                    j2 = sidFromPasswordHandle(passwordData2.passwordHandle);
+                } catch (RemoteException e3) {
+                    e = e3;
+                    Slog.e(str, "gatekeeper verify failed", e);
+                    authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
+                    LsLog.verifyFinish(1, -1L, "gatekeeper verify failed");
+                    return authenticationResult;
+                }
+            }
+            byte[] readSyntheticPasswordState2 = this.mStorage.readSyntheticPasswordState(i, "secdis", j);
+            if (readSyntheticPasswordState2 == null) {
+                Slog.e(str, "secdiscardable file not found");
+                authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
+                return authenticationResult;
+            }
+            j3 = j2;
+            transformUnderSecdiscardable = transformUnderSecdiscardable(bArr, readSyntheticPasswordState2);
+        }
+        LsLog.verifyFinish(0, 0L, "verify success!");
+        if (iCheckCredentialProgressCallback != null) {
+            try {
+                iCheckCredentialProgressCallback.onCredentialVerified();
+            } catch (RemoteException e4) {
+                Slog.w(str, "progressCallback throws exception", e4);
+            }
+        }
+        SyntheticPassword unwrapSyntheticPasswordBlob = unwrapSyntheticPasswordBlob(j, (byte) 0, transformUnderSecdiscardable, j3, i);
+        authenticationResult.syntheticPassword = unwrapSyntheticPasswordBlob;
+        authenticationResult.gkResponse = verifyChallenge(iGateKeeperService, unwrapSyntheticPasswordBlob, i);
+        if (authenticationResult.syntheticPassword != null && !lockscreenCredential.isNone() && !hasPasswordMetrics(j, i)) {
+            savePasswordMetrics(lockscreenCredential, authenticationResult.syntheticPassword, j, i);
+            syncState(i);
+        }
+        return authenticationResult;
+    }
+
+    public final AuthenticationResult unlockTokenBasedProtector(int i, long j, IGateKeeperService iGateKeeperService, byte[] bArr) {
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "spblob", j);
+        if (readSyntheticPasswordState == null) {
+            AuthenticationResult authenticationResult = new AuthenticationResult();
+            authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
+            Slogf.w("SyntheticPasswordManager", "spblob not found for protector %016x, user %d", Long.valueOf(j), Integer.valueOf(i));
+            return authenticationResult;
+        }
         if (SECURITY_UNPACK) {
             bArr = DEFAULT_TOKEN;
         }
-        return unlockTokenBasedProtectorInternal(iGateKeeperService, j, SyntheticPasswordBlob.fromBytes(loadState("spblob", j, i)).mProtectorType, bArr, i);
-    }
-
-    public AuthenticationResult unlockWeakTokenBasedProtector(IGateKeeperService iGateKeeperService, long j, byte[] bArr, int i) {
-        return unlockTokenBasedProtectorInternal(iGateKeeperService, j, (byte) 2, bArr, i);
+        return unlockTokenBasedProtectorInternal(iGateKeeperService, j, SyntheticPasswordBlob.fromBytes(readSyntheticPasswordState).mProtectorType, bArr, i);
     }
 
     public final AuthenticationResult unlockTokenBasedProtectorInternal(IGateKeeperService iGateKeeperService, long j, byte b, byte[] bArr, int i) {
         AuthenticationResult authenticationResult = new AuthenticationResult();
-        byte[] loadSecdiscardable = loadSecdiscardable(j, i);
-        if (loadSecdiscardable == null) {
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "secdis", j);
+        if (readSyntheticPasswordState == null) {
             Slog.e("SyntheticPasswordManager", "secdiscardable file not found");
             authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
             return authenticationResult;
         }
-        int loadWeaverSlot = loadWeaverSlot(j, i);
+        int loadWeaverSlot = loadWeaverSlot(i, j);
         if (loadWeaverSlot != -1) {
-            if (!isWeaverAvailable()) {
+            IWeaver weaverService = getWeaverService();
+            if (weaverService == null) {
                 Slog.e("SyntheticPasswordManager", "Protector uses Weaver, but Weaver is unavailable");
                 authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
                 return authenticationResult;
             }
             WeaverResult.begin(1, loadWeaverSlot, i);
-            VerifyCredentialResponse weaverVerify = weaverVerify(loadWeaverSlot, null);
+            VerifyCredentialResponse weaverVerify = weaverVerify(weaverService, loadWeaverSlot, null);
             WeaverResult.finish(i);
             if (weaverVerify.getResponseCode() != 0 || weaverVerify.getGatekeeperHAT() == null) {
                 Slog.e("SyntheticPasswordManager", "Failed to retrieve Weaver secret when unlocking token-based protector");
                 authenticationResult.gkResponse = VerifyCredentialResponse.ERROR;
                 return authenticationResult;
             }
-            loadSecdiscardable = SyntheticPasswordCrypto.decrypt(weaverVerify.getGatekeeperHAT(), PERSONALIZATION_WEAVER_TOKEN, loadSecdiscardable);
+            readSyntheticPasswordState = SyntheticPasswordCrypto.decrypt(weaverVerify.getGatekeeperHAT(), PERSONALIZATION_WEAVER_TOKEN, readSyntheticPasswordState);
         }
-        this.mSdpSyntheticPasswordManager.getSecureMode(i);
-        this.mSdpSyntheticPasswordManager.isSdpMdfppMode(i);
-        SyntheticPasswordMdfpp.KeyingMaterial.getNull();
-        SyntheticPassword unwrapSyntheticPasswordBlob = unwrapSyntheticPasswordBlob(j, b, transformUnderSecdiscardable(bArr, loadSecdiscardable), 0L, i);
+        SdpSyntheticPasswordManager.m644$$Nest$mgetSecureMode(this.mSdpSyntheticPasswordManager, i);
+        SyntheticPassword unwrapSyntheticPasswordBlob = unwrapSyntheticPasswordBlob(j, b, transformUnderSecdiscardable(bArr, readSyntheticPasswordState), 0L, i);
         authenticationResult.syntheticPassword = unwrapSyntheticPasswordBlob;
         if (unwrapSyntheticPasswordBlob != null) {
-            VerifyCredentialResponse verifyChallenge = verifyChallenge(iGateKeeperService, unwrapSyntheticPasswordBlob, 0L, i);
+            VerifyCredentialResponse verifyChallenge = verifyChallenge(iGateKeeperService, unwrapSyntheticPasswordBlob, i);
             authenticationResult.gkResponse = verifyChallenge;
             if (verifyChallenge == null) {
                 authenticationResult.gkResponse = VerifyCredentialResponse.OK;
@@ -1299,11 +1526,12 @@ public class SyntheticPasswordManager {
 
     public final SyntheticPassword unwrapSyntheticPasswordBlob(long j, byte b, byte[] bArr, long j2, int i) {
         byte[] decryptSpBlob;
-        byte[] loadState = loadState("spblob", j, i);
-        if (loadState == null) {
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "spblob", j);
+        if (readSyntheticPasswordState == null) {
+            LsLog.verify(String.format("Fail to load spblob for protector %016x for user %d", Long.valueOf(j), Integer.valueOf(i)));
             return null;
         }
-        SyntheticPasswordBlob fromBytes = SyntheticPasswordBlob.fromBytes(loadState);
+        SyntheticPasswordBlob fromBytes = SyntheticPasswordBlob.fromBytes(readSyntheticPasswordState);
         byte b2 = fromBytes.mVersion;
         if (b2 != 3 && b2 != 2 && b2 != 1) {
             throw new IllegalArgumentException("Unknown blob version: " + ((int) fromBytes.mVersion));
@@ -1312,65 +1540,82 @@ public class SyntheticPasswordManager {
             throw new IllegalArgumentException("Invalid protector type: " + ((int) fromBytes.mProtectorType));
         }
         if (b2 == 1) {
-            decryptSpBlob = SyntheticPasswordCrypto.decryptBlobV1(getProtectorKeyAlias(j), fromBytes.mContent, bArr);
+            String protectorKeyAlias = getProtectorKeyAlias(j);
+            byte[] bArr2 = fromBytes.mContent;
+            try {
+                SecretKey secretKey = (SecretKey) SyntheticPasswordCrypto.getKeyStore().getKey(protectorKeyAlias, null);
+                if (secretKey == null) {
+                    throw new IllegalStateException("SP protector key is missing: " + protectorKeyAlias);
+                }
+                decryptSpBlob = SyntheticPasswordCrypto.decrypt(SyntheticPasswordCrypto.decrypt(bArr, SyntheticPasswordCrypto.PROTECTOR_SECRET_PERSONALIZATION, bArr2), secretKey);
+            } catch (Exception e) {
+                Slog.e("SyntheticPasswordCrypto", "Failed to decrypt V1 blob", e);
+                throw new IllegalStateException("Failed to decrypt blob", e);
+            }
         } else {
             decryptSpBlob = decryptSpBlob(getProtectorKeyAlias(j), fromBytes.mContent, bArr);
         }
         if (decryptSpBlob == null) {
-            Slog.e("SyntheticPasswordManager", "Fail to decrypt SP for user " + i);
+            NandswapManager$$ExternalSyntheticOutline0.m(i, "Fail to decrypt SP for user ", "SyntheticPasswordManager");
             return null;
         }
         SyntheticPassword syntheticPassword = new SyntheticPassword(fromBytes.mVersion);
         byte b3 = fromBytes.mProtectorType;
-        if (b3 == 1 || b3 == 2) {
-            if (!loadEscrowData(syntheticPassword, i)) {
-                Slog.e("SyntheticPasswordManager", "User is not escrowable: " + i);
+        if (b3 != 1 && b3 != 2) {
+            syntheticPassword.mSyntheticPassword = Arrays.copyOf(decryptSpBlob, decryptSpBlob.length);
+        } else {
+            if (!loadEscrowData(i, syntheticPassword)) {
+                NandswapManager$$ExternalSyntheticOutline0.m(i, "User is not escrowable: ", "SyntheticPasswordManager");
                 return null;
             }
-            syntheticPassword.recreateFromEscrow(decryptSpBlob);
-        } else {
-            syntheticPassword.recreateDirectly(decryptSpBlob);
+            Objects.requireNonNull(syntheticPassword.mEscrowSplit1);
+            Objects.requireNonNull(syntheticPassword.mEncryptedEscrowSplit0);
+            syntheticPassword.mSyntheticPassword = bytesToHex(SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_SP_SPLIT, decryptSpBlob, syntheticPassword.mEscrowSplit1));
         }
         if (fromBytes.mVersion == 1) {
-            Slog.i("SyntheticPasswordManager", "Upgrading v1 SP blob for user " + i + ", protectorType = " + ((int) fromBytes.mProtectorType));
+            SystemServiceManager$$ExternalSyntheticOutline0.m(BatteryService$$ExternalSyntheticOutline0.m(i, "Upgrading v1 SP blob for user ", ", protectorType = "), fromBytes.mProtectorType, "SyntheticPasswordManager");
             createSyntheticPasswordBlob(j, fromBytes.mProtectorType, syntheticPassword, bArr, j2, i);
             syncState(i);
         }
         return syntheticPassword;
     }
 
-    public VerifyCredentialResponse verifyChallenge(IGateKeeperService iGateKeeperService, SyntheticPassword syntheticPassword, long j, int i) {
-        return verifyChallengeInternal(iGateKeeperService, syntheticPassword.deriveGkPassword(), j, i);
+    public final VerifyCredentialResponse verifyChallenge(IGateKeeperService iGateKeeperService, SyntheticPassword syntheticPassword, int i) {
+        syntheticPassword.getClass();
+        return verifyChallengeInternal(i, 0L, iGateKeeperService, syntheticPassword.deriveSubkey(PERSONALIZATION_SP_GK_AUTH));
     }
 
-    public VerifyCredentialResponse verifyChallengeInternal(IGateKeeperService iGateKeeperService, byte[] bArr, long j, int i) {
+    public final VerifyCredentialResponse verifyChallengeInternal(int i, long j, IGateKeeperService iGateKeeperService, byte[] bArr) {
         GateKeeperResponse gateKeeperResponse;
-        byte[] loadSyntheticPasswordHandle = loadSyntheticPasswordHandle(i);
-        if (loadSyntheticPasswordHandle == null) {
+        byte[] readSyntheticPasswordState = this.mStorage.readSyntheticPasswordState(i, "handle", 0L);
+        if (readSyntheticPasswordState == null) {
             return null;
         }
         try {
-            GateKeeperResponse verifyChallenge = iGateKeeperService.verifyChallenge(i, j, loadSyntheticPasswordHandle, bArr);
+            GateKeeperResponse verifyChallenge = iGateKeeperService.verifyChallenge(i, j, readSyntheticPasswordState, bArr);
             int responseCode = verifyChallenge.getResponseCode();
             if (responseCode != 0) {
                 if (responseCode == 1) {
+                    Slog.e("SyntheticPasswordManager", "Gatekeeper verification of synthetic password failed with RESPONSE_RETRY");
                     return VerifyCredentialResponse.fromTimeout(verifyChallenge.getTimeout());
                 }
+                Slog.e("SyntheticPasswordManager", "Gatekeeper verification of synthetic password failed with RESPONSE_ERROR");
                 return VerifyCredentialResponse.ERROR;
             }
             VerifyCredentialResponse build = new VerifyCredentialResponse.Builder().setGatekeeperHAT(verifyChallenge.getPayload()).build();
             if (verifyChallenge.getShouldReEnroll()) {
                 try {
-                    gateKeeperResponse = iGateKeeperService.enroll(i, loadSyntheticPasswordHandle, loadSyntheticPasswordHandle, bArr);
+                    gateKeeperResponse = iGateKeeperService.enroll(i, readSyntheticPasswordState, readSyntheticPasswordState, bArr);
                 } catch (RemoteException e) {
                     Slog.e("SyntheticPasswordManager", "Failed to invoke gatekeeper.enroll", e);
                     gateKeeperResponse = GateKeeperResponse.ERROR;
                 }
                 if (gateKeeperResponse.getResponseCode() == 0) {
-                    saveSyntheticPasswordHandle(gateKeeperResponse.getPayload(), i);
-                    return verifyChallengeInternal(iGateKeeperService, bArr, j, i);
+                    saveState("handle", gateKeeperResponse.getPayload(), 0L, i);
+                    syncState(i);
+                    return verifyChallengeInternal(i, j, iGateKeeperService, bArr);
                 }
-                Slog.w("SyntheticPasswordManager", "Fail to re-enroll SP handle for user " + i);
+                DeviceIdleController$$ExternalSyntheticOutline0.m(i, "Fail to re-enroll SP handle for user ", "SyntheticPasswordManager");
             }
             return build;
         } catch (RemoteException e2) {
@@ -1379,404 +1624,170 @@ public class SyntheticPasswordManager {
         }
     }
 
-    public boolean protectorExists(long j, int i) {
-        return hasState("spblob", j, i);
-    }
-
-    public void destroyTokenBasedProtector(long j, int i) {
-        Slogf.i("SyntheticPasswordManager", "Destroying token-based protector %016x for user %d", Long.valueOf(j), Integer.valueOf(i));
-        SyntheticPasswordBlob fromBytes = SyntheticPasswordBlob.fromBytes(loadState("spblob", j, i));
-        destroyProtectorCommon(j, i);
-        if (fromBytes.mProtectorType == 2) {
-            notifyWeakEscrowTokenRemovedListeners(j, i);
-        }
-    }
-
-    public void destroyAllWeakTokenBasedProtectors(int i) {
-        Iterator it = this.mStorage.listSyntheticPasswordProtectorsForUser("secdis", i).iterator();
-        while (it.hasNext()) {
-            long longValue = ((Long) it.next()).longValue();
-            byte[] loadState = loadState("spblob", longValue, i);
-            if (loadState == null) {
-                Slogf.e("SyntheticPasswordManager", "!@ Loadstate failed, protector %016x for user %d", Long.valueOf(longValue), Integer.valueOf(i));
-            } else if (SyntheticPasswordBlob.fromBytes(loadState).mProtectorType == 2) {
-                destroyTokenBasedProtector(longValue, i);
-            }
-        }
-    }
-
-    public void destroyLskfBasedProtector(long j, int i) {
-        Slogf.i("SyntheticPasswordManager", "Destroying LSKF-based protector %016x for user %d", Long.valueOf(j), Integer.valueOf(i));
-        destroyProtectorCommon(j, i);
-        destroyState("pwd", j, i);
-        destroyState("metrics", j, i);
-    }
-
-    public final void destroyProtectorCommon(long j, int i) {
-        destroyState("spblob", j, i);
-        destroyProtectorKey(getProtectorKeyAlias(j));
-        destroyState("secdis", j, i);
-        if (hasState("weaver", j, i)) {
-            destroyWeaverSlot(j, i);
-        }
-    }
-
-    public final byte[] transformUnderWeaverSecret(byte[] bArr, byte[] bArr2) {
-        return ArrayUtils.concat(new byte[][]{bArr, SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_WEAVER_PASSWORD, bArr2)});
-    }
-
-    public final byte[] transformUnderSecdiscardable(byte[] bArr, byte[] bArr2) {
-        return ArrayUtils.concat(new byte[][]{bArr, SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_SECDISCARDABLE, bArr2)});
-    }
-
-    public final byte[] createSecdiscardable(long j, int i) {
-        byte[] randomBytes = SecureRandomUtils.randomBytes(16384);
-        saveSecdiscardable(j, randomBytes, i);
-        return randomBytes;
-    }
-
-    public final void saveSecdiscardable(long j, byte[] bArr, int i) {
-        saveState("secdis", bArr, j, i);
-    }
-
-    public final byte[] loadSecdiscardable(long j, int i) {
-        return loadState("secdis", j, i);
-    }
-
-    public boolean hasPasswordData(long j, int i) {
-        return hasState("pwd", j, i);
-    }
-
-    public PasswordMetrics getPasswordMetrics(SyntheticPassword syntheticPassword, long j, int i) {
-        byte[] loadState = loadState("metrics", j, i);
-        if (loadState == null) {
-            Slogf.e("SyntheticPasswordManager", "Failed to read password metrics file for user %d", Integer.valueOf(i));
-            return null;
-        }
-        byte[] decrypt = SyntheticPasswordCrypto.decrypt(syntheticPassword.deriveMetricsKey(), new byte[0], loadState);
-        if (decrypt == null) {
-            Slogf.e("SyntheticPasswordManager", "Failed to decrypt password metrics file for user %d", Integer.valueOf(i));
-            return null;
-        }
-        return VersionedPasswordMetrics.deserialize(decrypt).getMetrics();
-    }
-
-    public final void savePasswordMetrics(LockscreenCredential lockscreenCredential, SyntheticPassword syntheticPassword, long j, int i) {
-        saveState("metrics", SyntheticPasswordCrypto.encrypt(syntheticPassword.deriveMetricsKey(), new byte[0], new VersionedPasswordMetrics(lockscreenCredential).serialize()), j, i);
-    }
-
-    public boolean hasPasswordMetrics(long j, int i) {
-        return hasState("metrics", j, i);
-    }
-
-    public final boolean hasState(String str, long j, int i) {
-        return !ArrayUtils.isEmpty(loadState(str, j, i));
-    }
-
-    public final byte[] loadState(String str, long j, int i) {
-        return this.mStorage.readSyntheticPasswordState(i, j, str);
-    }
-
-    public final void saveState(String str, byte[] bArr, long j, int i) {
-        if ("spblob".equals(str)) {
-            makeSpmLog(i, j, "saveState() " + str);
-        }
-        this.mStorage.writeSyntheticPasswordState(i, j, str, bArr);
-    }
-
-    public final void syncState(int i) {
-        this.mStorage.syncSyntheticPasswordState(i);
-    }
-
-    public final void destroyState(String str, long j, int i) {
-        if ("spblob".equals(str)) {
-            makeSpmLog(i, j, "destroyState() " + str);
-        }
-        this.mStorage.deleteSyntheticPasswordState(i, j, str);
-    }
-
-    public byte[] decryptSpBlob(String str, byte[] bArr, byte[] bArr2) {
-        return SyntheticPasswordCrypto.decryptBlob(str, bArr, bArr2);
-    }
-
-    public byte[] createSpBlob(String str, byte[] bArr, byte[] bArr2, long j) {
-        return SyntheticPasswordCrypto.createBlob(str, bArr, bArr2, j);
-    }
-
-    public void destroyProtectorKey(String str) {
-        SyntheticPasswordCrypto.destroyProtectorKey(str);
-    }
-
-    public static long generateProtectorId() {
-        long randomLong;
-        do {
-            randomLong = SecureRandomUtils.randomLong();
-        } while (randomLong == 0);
-        return randomLong;
-    }
-
-    public final String getProtectorKeyAlias(long j) {
-        return TextUtils.formatSimple("%s%x", new Object[]{"synthetic_password_", Long.valueOf(j)});
-    }
-
-    public byte[] stretchLskf(LockscreenCredential lockscreenCredential, PasswordData passwordData) {
-        byte[] credential = (lockscreenCredential.isNone() || SECURITY_UNPACK) ? DEFAULT_PASSWORD : lockscreenCredential.getCredential();
-        if (passwordData == null) {
-            Preconditions.checkArgument(lockscreenCredential.isNone());
-            return Arrays.copyOf(credential, 32);
-        }
-        return scrypt(credential, passwordData.salt, 1 << passwordData.scryptLogN, 1 << passwordData.scryptLogR, 1 << passwordData.scryptLogP, 32);
-    }
-
-    public final byte[] stretchedLskfToGkPassword(byte[] bArr) {
-        return SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_USER_GK_AUTH, bArr);
-    }
-
-    public final byte[] stretchedLskfToWeaverKey(byte[] bArr) {
-        byte[] personalizedHash = SyntheticPasswordCrypto.personalizedHash(PERSONALIZATION_WEAVER_KEY, bArr);
-        int length = personalizedHash.length;
-        int i = this.mWeaverConfig.keySize;
-        if (length < i) {
-            throw new IllegalArgumentException("weaver key length too small");
-        }
-        return Arrays.copyOf(personalizedHash, i);
-    }
-
-    public long sidFromPasswordHandle(byte[] bArr) {
-        return nativeSidFromPasswordHandle(bArr);
-    }
-
-    public byte[] scrypt(byte[] bArr, byte[] bArr2, int i, int i2, int i3, int i4) {
-        return new Scrypt().scrypt(bArr, bArr2, i, i2, i3, i4);
-    }
-
-    public static byte[] bytesToHex(byte[] bArr) {
-        return HexEncoding.encodeToString(bArr).getBytes();
-    }
-
-    public boolean migrateKeyNamespace() {
-        Iterator it = this.mStorage.listSyntheticPasswordProtectorsForAllUsers("spblob").values().iterator();
-        boolean z = true;
-        while (it.hasNext()) {
-            Iterator it2 = ((List) it.next()).iterator();
-            while (it2.hasNext()) {
-                z &= SyntheticPasswordCrypto.migrateLockSettingsKey(getProtectorKeyAlias(((Long) it2.next()).longValue()));
-            }
-        }
-        return z;
-    }
-
-    public boolean registerWeakEscrowTokenRemovedListener(IWeakEscrowTokenRemovedListener iWeakEscrowTokenRemovedListener) {
-        return this.mListeners.register(iWeakEscrowTokenRemovedListener);
-    }
-
-    public boolean unregisterWeakEscrowTokenRemovedListener(IWeakEscrowTokenRemovedListener iWeakEscrowTokenRemovedListener) {
-        return this.mListeners.unregister(iWeakEscrowTokenRemovedListener);
-    }
-
-    public final void notifyWeakEscrowTokenRemovedListeners(long j, int i) {
-        int beginBroadcast = this.mListeners.beginBroadcast();
-        while (beginBroadcast > 0) {
-            beginBroadcast--;
+    public final VerifyCredentialResponse verifySpecialUserCredential(int i, IGateKeeperService iGateKeeperService, LockscreenCredential lockscreenCredential) {
+        LockSettingsStorage.PersistentData specialUserPersistentData = getSpecialUserPersistentData(i);
+        int i2 = specialUserPersistentData.userId;
+        byte[] bArr = specialUserPersistentData.payload;
+        int i3 = specialUserPersistentData.type;
+        if (i3 == 1) {
+            PasswordData fromBytes = PasswordData.fromBytes(bArr);
             try {
+                return VerifyCredentialResponse.fromGateKeeperResponse(iGateKeeperService.verifyChallenge(fakeUserId(i2), 0L, fromBytes.passwordHandle, stretchedLskfToGkPassword(stretchLskf(lockscreenCredential, fromBytes))));
+            } catch (RemoteException e) {
+                Slog.e("SyntheticPasswordManager", "Persistent data credential verifyChallenge failed", e);
+                return VerifyCredentialResponse.ERROR;
+            }
+        }
+        if (i3 != 2) {
+            NandswapManager$$ExternalSyntheticOutline0.m(i3, "persistentData.type must be TYPE_SP_GATEKEEPER or TYPE_SP_WEAVER, but is ", "SyntheticPasswordManager");
+            return VerifyCredentialResponse.ERROR;
+        }
+        IWeaver weaverService = getWeaverService();
+        if (weaverService == null) {
+            Slog.e("SyntheticPasswordManager", "No weaver service to verify SP-based persistent data credential");
+            return VerifyCredentialResponse.ERROR;
+        }
+        byte[] stretchLskf = stretchLskf(lockscreenCredential, PasswordData.fromBytes(bArr));
+        try {
+            WeaverResult.begin(1, i2, i);
+            return weaverVerify(weaverService, i2, stretchedLskfToWeaverKey(stretchLskf)).stripPayload();
+        } finally {
+            WeaverResult.finish(i);
+        }
+    }
+
+    public final byte[] weaverEnroll(IWeaver iWeaver, int i, byte[] bArr, byte[] bArr2) {
+        if (i != -1) {
+            WeaverConfig weaverConfig = this.mWeaverConfig;
+            if (i < weaverConfig.slots) {
+                if (bArr == null) {
+                    bArr = new byte[weaverConfig.keySize];
+                } else if (bArr.length != weaverConfig.keySize) {
+                    WeaverResult.finishOff(i, "Invalid key size for weaver");
+                    LsLog.enrollFinish(1, "Invalid key size for weaver");
+                    throw new IllegalArgumentException("Invalid key size for weaver");
+                }
+                if (bArr2 == null) {
+                    bArr2 = SecureRandomUtils.randomBytes(weaverConfig.valueSize);
+                }
                 try {
-                    this.mListeners.getBroadcastItem(beginBroadcast).onWeakEscrowTokenRemoved(j, i);
+                    iWeaver.write(i, bArr, bArr2);
+                    return bArr2;
+                } catch (ServiceSpecificException e) {
+                    Slog.e("SyntheticPasswordManager", "weaver write failed, slot: " + i, e);
+                    WeaverResult.finishOff(i, "weaver write failed with ServiceSpecificException");
+                    LsLog.enrollFinish(1, "weaver write failed");
+                    return null;
+                } catch (RemoteException e2) {
+                    Slog.e("SyntheticPasswordManager", "weaver write binder call failed, slot: " + i, e2);
+                    WeaverResult.finishOff(i, "weaver write binder call failed with RemoveException");
+                    LsLog.enrollFinish(1, "weaver write binder call failed");
+                    return null;
+                }
+            }
+        }
+        WeaverResult.finishOff(i, "Invalid slot for weaver");
+        LsLog.enrollFinish(1, "Invalid slot for weaver");
+        throw new IllegalArgumentException("Invalid slot for weaver");
+    }
+
+    public final VerifyCredentialResponse weaverVerify(IWeaver iWeaver, int i, byte[] bArr) {
+        if (i != -1) {
+            WeaverConfig weaverConfig = this.mWeaverConfig;
+            if (i < weaverConfig.slots) {
+                if (bArr == null) {
+                    bArr = new byte[weaverConfig.keySize];
+                } else if (bArr.length != weaverConfig.keySize) {
+                    WeaverResult.finishOff(i, "Invalid key size for weaver");
+                    LsLog.verifyFinish(1, -1L, "Invalid key size for weaver " + bArr.length);
+                    throw new IllegalArgumentException("Invalid key size for weaver");
+                }
+                try {
+                    WeaverReadResponse read = iWeaver.read(i, bArr);
+                    int i2 = read.status;
+                    synchronized (WeaverResult.mWeaverResults) {
+                        WeaverResult bySlotIdLocked = WeaverResult.getBySlotIdLocked(i);
+                        if (bySlotIdLocked != null) {
+                            bySlotIdLocked.mStatus = i2;
+                        }
+                    }
+                    int i3 = read.status;
+                    if (i3 == 0) {
+                        return new VerifyCredentialResponse.Builder().setGatekeeperHAT(read.value).build();
+                    }
+                    if (i3 == 1) {
+                        NandswapManager$$ExternalSyntheticOutline0.m(i, "weaver read failed (FAILED), slot: ", "SyntheticPasswordManager");
+                        LsLog.verifyFinish(read.status, -1L, "weaver FAILED");
+                        return VerifyCredentialResponse.ERROR;
+                    }
+                    int i4 = Integer.MAX_VALUE;
+                    if (i3 == 2) {
+                        if (read.timeout == 0) {
+                            NandswapManager$$ExternalSyntheticOutline0.m(i, "weaver read failed (INCORRECT_KEY), slot: ", "SyntheticPasswordManager");
+                            LsLog.verifyFinish(read.status, read.timeout, "weaver INCORRECT_KEY");
+                            return VerifyCredentialResponse.ERROR;
+                        }
+                        NandswapManager$$ExternalSyntheticOutline0.m(i, "weaver read failed (INCORRECT_KEY/THROTTLE), slot: ", "SyntheticPasswordManager");
+                        LsLog.verifyFinish(read.status, read.timeout, "weaver INCORRECT_KEY/THROTTLE");
+                        long j = read.timeout;
+                        if (j <= 2147483647L && j >= 0) {
+                            i4 = (int) j;
+                        }
+                        return VerifyCredentialResponse.fromTimeout(i4);
+                    }
+                    if (i3 != 3) {
+                        Slog.e("SyntheticPasswordManager", "weaver read unknown status " + read.status + ", slot: " + i);
+                        LsLog.verifyFinish(read.status, -1L, "weaver read unknown status");
+                        return VerifyCredentialResponse.ERROR;
+                    }
+                    NandswapManager$$ExternalSyntheticOutline0.m(i, "weaver read failed (THROTTLE), slot: ", "SyntheticPasswordManager");
+                    LsLog.verifyFinish(read.status, read.timeout, "weaver THROTTLE");
+                    long j2 = read.timeout;
+                    if (j2 <= 2147483647L && j2 >= 0) {
+                        i4 = (int) j2;
+                    }
+                    return VerifyCredentialResponse.fromTimeout(i4);
                 } catch (RemoteException e) {
-                    Slog.e("SyntheticPasswordManager", "Exception while notifying WeakEscrowTokenRemovedListener.", e);
+                    Slog.e("SyntheticPasswordManager", "weaver read failed, slot: " + i, e);
+                    LsLog.verifyFinish(1, -1L, "weaver read failed, slot: " + i);
+                    return VerifyCredentialResponse.ERROR;
                 }
-            } finally {
-                this.mListeners.finishBroadcast();
             }
         }
+        WeaverResult.finishOff(i, "Invalid slot for weaver");
+        LsLog.verifyFinish(1, -1L, "Invalid slot for weaver");
+        throw new IllegalArgumentException("Invalid slot for weaver");
     }
 
-    public void writeVendorAuthSecret(byte[] bArr, SyntheticPassword syntheticPassword, int i) {
-        saveState("vendor_auth_secret", SyntheticPasswordCrypto.encrypt(syntheticPassword.deriveVendorAuthSecretEncryptionKey(), new byte[0], bArr), 0L, i);
-        syncState(i);
-    }
-
-    public byte[] readVendorAuthSecret(SyntheticPassword syntheticPassword, int i) {
-        byte[] loadState = loadState("vendor_auth_secret", 0L, i);
-        if (loadState == null) {
-            return null;
-        }
-        return SyntheticPasswordCrypto.decrypt(syntheticPassword.deriveVendorAuthSecretEncryptionKey(), new byte[0], loadState);
-    }
-
-    public final void makeSpmLog(int i, long j, String str) {
-        StringBuilder sb = new StringBuilder(1024);
-        sb.append("SyntheticPasswordManager state file event ");
-        sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        sb.append("Contents : ");
-        sb.append(str);
-        sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        sb.append("Time : ");
-        sb.append(makeTime());
-        sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        sb.append("User id : ");
-        sb.append(i);
-        sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        sb.append("User protectorId : ");
-        sb.append(j);
-        sb.append(String.format(", %x", Long.valueOf(j)));
-        sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        sb.append("Callers : \n");
-        sb.append(Debug.getCallers(10, "    "));
-        this.mStorage.addLog(0, sb.toString());
-    }
-
-    public final String makeTime() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        return String.format(Locale.US, "%02d-%02d %02d:%02d:%02d.%03d ", Integer.valueOf(calendar.get(2) + 1), Integer.valueOf(calendar.get(5)), Integer.valueOf(calendar.get(11)), Integer.valueOf(calendar.get(12)), Integer.valueOf(calendar.get(13)), Integer.valueOf(calendar.get(14)));
-    }
-
-    public void saveEscrowData(byte[] bArr, byte[] bArr2, int i) {
-        saveState("e0", bArr, 0L, i);
-        saveState("p1", bArr2, 0L, i);
-    }
-
-    public void migratePwdDataForKnox(long j, int i) {
-        byte[] loadState = loadState("pwd", j, i);
-        if (loadState == null) {
-            return;
-        }
-        saveState("pwd", PasswordData.fromBytesForMigration(loadState).toBytes(), j, i);
-        syncState(i);
-        SDPLog.d("SyntheticPasswordManager", "Migrated password data for user " + i);
-    }
-
-    /* loaded from: classes2.dex */
-    public class SdpSyntheticPasswordManager {
-        public SyntheticPasswordManager spManager;
-
-        public final boolean isNeedToEnableSdpMdfppModeForSystem(int i) {
-            return false;
-        }
-
-        public final boolean isSdpMdfppMode(int i) {
-            return false;
-        }
-
-        public final boolean isSdpMdfppModeEnabledForSystem(int i) {
-            return false;
-        }
-
-        public final boolean isSdpUser(int i) {
-            return false;
-        }
-
-        public SdpSyntheticPasswordManager(SyntheticPasswordManager syntheticPasswordManager) {
-            this.spManager = syntheticPasswordManager;
-        }
-
-        public final void cacheSecureMode(int i, int i2) {
-            SyntheticPasswordMdfpp.cacheSecureMode(i, i2);
-            if (SyntheticPasswordManager.DEBUG) {
-                Slog.d("SyntheticPasswordManager.SDP", String.format("Cache - [ Secure Mode : %d, UserId : %d ]", Integer.valueOf(i2), Integer.valueOf(i)));
-            }
-        }
-
-        public final int getSecureMode(final int i) {
-            int i2;
-            boolean z;
-            try {
-                i2 = SyntheticPasswordMdfpp.getSecureMode(i);
-            } catch (SyntheticPasswordMdfpp.EmptySlotException e) {
-                if (!this.spManager.isWeaverSupported()) {
-                    if (SyntheticPasswordManager.DEBUG) {
-                        e.printStackTrace();
-                    } else {
-                        Slog.d("SyntheticPasswordManager.SDP", e.getMessage());
-                    }
+    public final boolean writeRepairModeCredentialLocked(int i, long j) {
+        if (!LockPatternUtils.canUserEnterRepairMode(this.mContext, this.mUserManager.getUserInfo(i))) {
+            Slogf.w("SyntheticPasswordManager", "User %d can't enter repair mode", Integer.valueOf(i));
+        } else if (LockPatternUtils.isRepairModeActive(this.mContext)) {
+            Slog.w("SyntheticPasswordManager", "Can't write repair mode credential while repair mode is already active");
+        } else {
+            if (!LockPatternUtils.isGsiRunning()) {
+                LockSettingsStorage lockSettingsStorage = this.mStorage;
+                byte[] readSyntheticPasswordState = lockSettingsStorage.readSyntheticPasswordState(i, "pwd", j);
+                if (readSyntheticPasswordState == null) {
+                    Slogf.w("SyntheticPasswordManager", "Password data not found for user %d", Integer.valueOf(i));
+                    return false;
                 }
-                i2 = -1;
-            }
-            if (i2 == -1) {
-                if (!this.spManager.isWeaverSupported() && (isSpecificProcessRequired(i) || isSdpMdfppModeEnabledForSystem(i))) {
-                    if (isNeedToEnableSdpMdfppModeForSystem(i)) {
-                        SDPLog.d("Secure mode not set yet for System (Device owner) " + i + " using AOSP SP");
-                        z = true;
-                    } else {
-                        if (isSdpMdfppModeEnabledForSystem(i)) {
-                            SDPLog.d("Secure mode was set for System (Device owner) " + i + " using AOSP SP");
-                        }
-                        z = false;
-                    }
-                    if (!z) {
-                        i2 = ((Integer) this.spManager.getLockSettingsInternal().map(new Function() { // from class: com.android.server.locksettings.SyntheticPasswordManager$SdpSyntheticPasswordManager$$ExternalSyntheticLambda0
-                            @Override // java.util.function.Function
-                            public final Object apply(Object obj) {
-                                Integer lambda$getSecureMode$0;
-                                lambda$getSecureMode$0 = SyntheticPasswordManager.SdpSyntheticPasswordManager.lambda$getSecureMode$0(i, (LockSettingsInternal) obj);
-                                return lambda$getSecureMode$0;
-                            }
-                        }).orElse(-1)).intValue();
-                        if (i2 == -1) {
-                            if (isDualDarUser(i)) {
-                                SDPLog.d("Secure Mode doesn't support for initial DualDAR user anymore");
-                            } else {
-                                SDPLog.d("No secure mode for user " + i);
-                                i2 = 2;
-                            }
-                        }
-                    }
+                PasswordData fromBytes = PasswordData.fromBytes(readSyntheticPasswordState);
+                if (fromBytes.credentialType == -1) {
+                    Slogf.w("SyntheticPasswordManager", "User %d has NONE credential", Integer.valueOf(i));
+                    return false;
                 }
-                i2 = 0;
-            }
-            cacheSecureMode(i, i2);
-            if (SyntheticPasswordManager.DEBUG) {
-                Slog.d("SyntheticPasswordManager.SDP", String.format("Get - [ Secure Mode : %d, UserId : %d ]", Integer.valueOf(i2), Integer.valueOf(i)));
-            }
-            Slog.d("SyntheticPasswordManager.SDP", String.format("Secure mode for user %d = %d", Integer.valueOf(i), Integer.valueOf(i2)));
-            return i2;
-        }
-
-        public static /* synthetic */ Integer lambda$getSecureMode$0(int i, LockSettingsInternal lockSettingsInternal) {
-            return Integer.valueOf(lockSettingsInternal.getSecureMode(i));
-        }
-
-        public final boolean isDualDarUser(int i) {
-            boolean z;
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                UserInfo userInfo = SyntheticPasswordManager.this.getUserManagerInternal().getUserInfo(i);
-                if (userInfo != null) {
-                    if ((userInfo.flags & 100663296) != 0) {
-                        z = true;
-                        return z;
-                    }
+                Slogf.d("SyntheticPasswordManager", "Writing repair mode credential tied to user %d", Integer.valueOf(i));
+                int loadWeaverSlot = loadWeaverSlot(i, j);
+                if (loadWeaverSlot != -1) {
+                    lockSettingsStorage.writeFile(lockSettingsStorage.getRepairModePersistentDataFile(), LockSettingsStorage.PersistentData.toBytes(2, loadWeaverSlot, 0, fromBytes.toBytes()), true);
+                } else {
+                    lockSettingsStorage.writeFile(lockSettingsStorage.getRepairModePersistentDataFile(), LockSettingsStorage.PersistentData.toBytes(1, i, 0, fromBytes.toBytes()), true);
                 }
-                z = false;
-                return z;
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return true;
             }
+            Slog.w("SyntheticPasswordManager", "Can't write repair mode credential while GSI is running");
         }
-
-        public final boolean isSpecificProcessRequired(int i) {
-            SDPLog.i("user" + i + " - isSpecificProcessRequired : false, is Sdp user? " + isSdpUser(i));
-            return false;
-        }
-    }
-
-    public int getSecureMode(long j, int i) {
-        byte[] loadState = loadState("pwd", j, i);
-        if (loadState == null) {
-            Slog.w("SyntheticPasswordManager.SDP", "getSecureMode: encountered empty password data for user " + i);
-            return -1;
-        }
-        return PasswordData.fromBytes(loadState).secureMode;
-    }
-
-    public final Optional getLockSettingsInternal() {
-        if (this.mLockSettingsInternal == null) {
-            this.mLockSettingsInternal = (LockSettingsInternal) LocalServices.getService(LockSettingsInternal.class);
-        }
-        return Optional.ofNullable(this.mLockSettingsInternal);
-    }
-
-    public final UserManagerInternal getUserManagerInternal() {
-        return (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
+        return false;
     }
 }

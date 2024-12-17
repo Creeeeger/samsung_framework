@@ -7,51 +7,21 @@ import com.android.internal.org.bouncycastle.asn1.ASN1Sequence;
 import com.android.internal.org.bouncycastle.asn1.ASN1TaggedObject;
 import com.android.internal.org.bouncycastle.asn1.DEROctetString;
 import com.android.internal.org.bouncycastle.asn1.DERPrintableString;
-import java.io.IOException;
 import java.security.cert.CertificateParsingException;
 
-/* loaded from: classes2.dex */
-public class Asn1Utils {
-    public static byte[] getByteArrayFromAsn1(ASN1Encodable aSN1Encodable) {
-        if (aSN1Encodable == null) {
-            throw new CertificateParsingException("Expected DEROctetString");
-        }
-        if (aSN1Encodable instanceof ASN1TaggedObject) {
-            aSN1Encodable = ((ASN1TaggedObject) aSN1Encodable).getObject();
-        }
-        if (aSN1Encodable instanceof DEROctetString) {
-            return ((ASN1OctetString) aSN1Encodable).getOctets();
-        }
-        if (aSN1Encodable instanceof DERPrintableString) {
-            return ((DERPrintableString) aSN1Encodable).getOctets();
-        }
-        throw new CertificateParsingException("Expected DEROctetString");
-    }
-
-    public static ASN1Sequence getAsn1SequenceFromBytes(byte[] bArr) {
-        try {
-            ASN1InputStream aSN1InputStream = new ASN1InputStream(bArr);
-            try {
-                ASN1Sequence asn1SequenceFromStream = getAsn1SequenceFromStream(aSN1InputStream);
-                aSN1InputStream.close();
-                return asn1SequenceFromStream;
-            } finally {
-            }
-        } catch (IOException e) {
-            throw new CertificateParsingException("Failed to parse SEQUENCE", e);
-        }
-    }
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public abstract class Asn1Utils {
     public static ASN1Sequence getAsn1SequenceFromStream(ASN1InputStream aSN1InputStream) {
         ASN1OctetString readObject = aSN1InputStream.readObject();
         if (!(readObject instanceof ASN1OctetString)) {
-            throw new CertificateParsingException("Expected octet stream, found " + readObject.getClass().getName());
+            throw new CertificateParsingException("Expected octet stream, found ".concat(readObject.getClass().getName()));
         }
         ASN1InputStream aSN1InputStream2 = new ASN1InputStream(readObject.getOctets());
         try {
             ASN1Sequence readObject2 = aSN1InputStream2.readObject();
             if (!(readObject2 instanceof ASN1Sequence)) {
-                throw new CertificateParsingException("Expected sequence, found " + readObject2.getClass().getName());
+                throw new CertificateParsingException("Expected sequence, found ".concat(readObject2.getClass().getName()));
             }
             ASN1Sequence aSN1Sequence = readObject2;
             aSN1InputStream2.close();
@@ -64,5 +34,16 @@ public class Asn1Utils {
             }
             throw th;
         }
+    }
+
+    public static byte[] getByteArrayFromAsn1(ASN1Encodable aSN1Encodable) {
+        ASN1OctetString object = ((ASN1TaggedObject) aSN1Encodable).getObject();
+        if (object instanceof DEROctetString) {
+            return object.getOctets();
+        }
+        if (object instanceof DERPrintableString) {
+            return ((DERPrintableString) object).getOctets();
+        }
+        throw new CertificateParsingException("Expected DEROctetString");
     }
 }

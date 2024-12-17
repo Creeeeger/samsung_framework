@@ -1,10 +1,11 @@
 package com.android.internal.util.jobs;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class RingBufferIndices {
-    public final int mCapacity;
-    public int mSize;
-    public int mStart;
+    private final int mCapacity;
+    private int mSize;
+    private int mStart;
 
     public RingBufferIndices(int i) {
         this.mCapacity = i;
@@ -31,13 +32,13 @@ public class RingBufferIndices {
         this.mSize = 0;
     }
 
-    public int size() {
-        return this.mSize;
-    }
-
     public int indexOf(int i) {
         int i2 = this.mStart + i;
         int i3 = this.mCapacity;
         return i2 >= i3 ? i2 - i3 : i2;
+    }
+
+    public int size() {
+        return this.mSize;
     }
 }

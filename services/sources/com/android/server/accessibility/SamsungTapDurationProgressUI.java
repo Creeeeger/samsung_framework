@@ -5,12 +5,8 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.ActivityManager;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Handler;
-import android.os.IInstalld;
-import android.os.RemoteException;
 import android.provider.Settings;
 import android.util.Property;
 import android.view.Display;
@@ -21,10 +17,11 @@ import android.view.WindowManager;
 import android.view.animation.PathInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SamsungTapDurationProgressUI {
+public final class SamsungTapDurationProgressUI {
     public ImageView mArrow;
     public ImageView mBackground;
     public ImageView mCircle;
@@ -37,6 +34,7 @@ public class SamsungTapDurationProgressUI {
     public ImageView mHold;
     public boolean mIsRemoveAnimationEnabled;
     public boolean mIsShortThreshold;
+    public final int mNavigationBarHeight;
     public WindowManager.LayoutParams mParams;
     public ProgressBar mProgress;
     public AnimatorSet mRotationSet;
@@ -48,180 +46,178 @@ public class SamsungTapDurationProgressUI {
     public WindowManager mWindowManager;
     public final Handler mHandler = new Handler();
     public final Thread mUiThread = Thread.currentThread();
-    public final int mNavigationBarHeight = getNavigationBarHeight();
 
     public SamsungTapDurationProgressUI(Context context) {
         this.mContext = context;
         this.mUiMode = context.getResources().getConfiguration().uiMode;
         this.mDensityDpi = this.mContext.getResources().getConfiguration().densityDpi;
-        this.mSize = this.mContext.getResources().getDimensionPixelSize(17106190);
+        this.mSize = this.mContext.getResources().getDimensionPixelSize(17106301);
+        this.mNavigationBarHeight = this.mContext.getResources().getBoolean(R.bool.config_sms_decode_gsm_8bit_data) ? this.mContext.getResources().getDimensionPixelSize(R.dimen.resolver_max_collapsed_height) : 0;
         this.mIsRemoveAnimationEnabled = Settings.Global.getInt(this.mContext.getContentResolver(), "remove_animations", 0) == 1;
         this.mIsShortThreshold = false;
         makeView();
         makeAnimation();
     }
 
-    public void setDurationTime(long j) {
-        this.mDuration = j;
-        if (this.mIsShortThreshold != (j < 300)) {
-            setShortThresholdView(j < 300);
-        }
-    }
+    public final void makeAnimation() {
+        this.mScaleSet = new AnimatorSet();
+        this.mRotationSet = new AnimatorSet();
+        final int i = 0;
+        final int i2 = 1;
+        this.mScaleSet.playTogether(ObjectAnimator.ofFloat(this.mView, (Property<View, Float>) View.SCALE_X, 0.8f, 1.0f), ObjectAnimator.ofFloat(this.mView, (Property<View, Float>) View.SCALE_Y, 0.8f, 1.0f));
+        this.mScaleSet.setDuration(350L);
+        this.mScaleSet.addListener(new Animator.AnimatorListener(this) { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI.1
+            public final /* synthetic */ SamsungTapDurationProgressUI this$0;
 
-    public void setViewOnOff(final boolean z) {
-        runOnUiThread(new Runnable() { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                SamsungTapDurationProgressUI.this.lambda$setViewOnOff$0(z);
+            {
+                this.this$0 = this;
+            }
+
+            private final void onAnimationCancel$com$android$server$accessibility$SamsungTapDurationProgressUI$1(Animator animator) {
+            }
+
+            private final void onAnimationCancel$com$android$server$accessibility$SamsungTapDurationProgressUI$3(Animator animator) {
+            }
+
+            private final void onAnimationRepeat$com$android$server$accessibility$SamsungTapDurationProgressUI$1(Animator animator) {
+            }
+
+            private final void onAnimationRepeat$com$android$server$accessibility$SamsungTapDurationProgressUI$3(Animator animator) {
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public final void onAnimationCancel(Animator animator) {
+                int i3 = i;
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public final void onAnimationEnd(Animator animator) {
+                switch (i) {
+                    case 0:
+                        this.this$0.mView.setScaleX(1.0f);
+                        this.this$0.mView.setScaleY(1.0f);
+                        break;
+                    default:
+                        SamsungTapDurationProgressUI samsungTapDurationProgressUI = this.this$0;
+                        samsungTapDurationProgressUI.mStandBy.setVisibility((samsungTapDurationProgressUI.mIsRemoveAnimationEnabled || samsungTapDurationProgressUI.mIsShortThreshold) ? 0 : 8);
+                        this.this$0.mHold.setVisibility(8);
+                        this.this$0.mView.setVisibility(8);
+                        break;
+                }
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public final void onAnimationRepeat(Animator animator) {
+                int i3 = i;
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public final void onAnimationStart(Animator animator) {
+                switch (i) {
+                    case 0:
+                        this.this$0.mCircle.setRotation(FullScreenMagnificationGestureHandler.MAX_SCALE);
+                        this.this$0.mArrow.setRotation(FullScreenMagnificationGestureHandler.MAX_SCALE);
+                        this.this$0.mArrow.setAlpha(FullScreenMagnificationGestureHandler.MAX_SCALE);
+                        this.this$0.mView.setScaleX(0.8f);
+                        this.this$0.mView.setScaleY(0.8f);
+                        this.this$0.mView.setAlpha(1.0f);
+                        this.this$0.mProgress.setProgress(0);
+                        this.this$0.mRotationSet.start();
+                        this.this$0.mFadeInAnimator.start();
+                        break;
+                    default:
+                        this.this$0.mView.setScaleX(1.0f);
+                        this.this$0.mView.setScaleY(1.0f);
+                        break;
+                }
             }
         });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setViewOnOff$0(boolean z) {
-        this.mView.setVisibility(z ? 0 : 8);
-    }
-
-    public void start() {
-        runOnUiThread(new Runnable() { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                SamsungTapDurationProgressUI.this.lambda$start$1();
+        this.mScaleSet.setInterpolator(new PathInterpolator(0.22f, 0.17f, FullScreenMagnificationGestureHandler.MAX_SCALE, 1.0f));
+        ImageView imageView = this.mCircle;
+        Property property = View.ROTATION;
+        ObjectAnimator ofFloat = ObjectAnimator.ofFloat(imageView, (Property<ImageView, Float>) property, FullScreenMagnificationGestureHandler.MAX_SCALE, 360.0f);
+        ObjectAnimator ofFloat2 = ObjectAnimator.ofFloat(this.mArrow, (Property<ImageView, Float>) property, FullScreenMagnificationGestureHandler.MAX_SCALE, 360.0f);
+        ofFloat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI.2
+            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+            public final void onAnimationUpdate(ValueAnimator valueAnimator) {
+                SamsungTapDurationProgressUI.this.mProgress.setProgress((int) ((Float) valueAnimator.getAnimatedValue()).floatValue());
             }
         });
-    }
+        this.mRotationSet.playTogether(ofFloat, ofFloat2);
+        ImageView imageView2 = this.mArrow;
+        Property property2 = View.ALPHA;
+        ObjectAnimator ofFloat3 = ObjectAnimator.ofFloat(imageView2, (Property<ImageView, Float>) property2, FullScreenMagnificationGestureHandler.MAX_SCALE, 1.0f);
+        this.mFadeInAnimator = ofFloat3;
+        ofFloat3.setDuration(100L);
+        ObjectAnimator ofFloat4 = ObjectAnimator.ofFloat(this.mView, (Property<View, Float>) property2, 1.0f, FullScreenMagnificationGestureHandler.MAX_SCALE);
+        this.mFadeOutAnimator = ofFloat4;
+        ofFloat4.setDuration(150L);
+        this.mFadeOutAnimator.addListener(new Animator.AnimatorListener(this) { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI.1
+            public final /* synthetic */ SamsungTapDurationProgressUI this$0;
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$start$1() {
-        checkConfigurationChanged();
-        if (this.mFadeOutAnimator.isRunning()) {
-            this.mFadeOutAnimator.end();
-        }
-        this.mRotationSet.setDuration(this.mDuration);
-        this.mScaleSet.start();
-    }
+            {
+                this.this$0 = this;
+            }
 
-    public void cancel() {
-        runOnUiThread(new Runnable() { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                SamsungTapDurationProgressUI.this.lambda$cancel$2();
+            private final void onAnimationCancel$com$android$server$accessibility$SamsungTapDurationProgressUI$1(Animator animator) {
+            }
+
+            private final void onAnimationCancel$com$android$server$accessibility$SamsungTapDurationProgressUI$3(Animator animator) {
+            }
+
+            private final void onAnimationRepeat$com$android$server$accessibility$SamsungTapDurationProgressUI$1(Animator animator) {
+            }
+
+            private final void onAnimationRepeat$com$android$server$accessibility$SamsungTapDurationProgressUI$3(Animator animator) {
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public final void onAnimationCancel(Animator animator) {
+                int i3 = i2;
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public final void onAnimationEnd(Animator animator) {
+                switch (i2) {
+                    case 0:
+                        this.this$0.mView.setScaleX(1.0f);
+                        this.this$0.mView.setScaleY(1.0f);
+                        break;
+                    default:
+                        SamsungTapDurationProgressUI samsungTapDurationProgressUI = this.this$0;
+                        samsungTapDurationProgressUI.mStandBy.setVisibility((samsungTapDurationProgressUI.mIsRemoveAnimationEnabled || samsungTapDurationProgressUI.mIsShortThreshold) ? 0 : 8);
+                        this.this$0.mHold.setVisibility(8);
+                        this.this$0.mView.setVisibility(8);
+                        break;
+                }
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public final void onAnimationRepeat(Animator animator) {
+                int i3 = i2;
+            }
+
+            @Override // android.animation.Animator.AnimatorListener
+            public final void onAnimationStart(Animator animator) {
+                switch (i2) {
+                    case 0:
+                        this.this$0.mCircle.setRotation(FullScreenMagnificationGestureHandler.MAX_SCALE);
+                        this.this$0.mArrow.setRotation(FullScreenMagnificationGestureHandler.MAX_SCALE);
+                        this.this$0.mArrow.setAlpha(FullScreenMagnificationGestureHandler.MAX_SCALE);
+                        this.this$0.mView.setScaleX(0.8f);
+                        this.this$0.mView.setScaleY(0.8f);
+                        this.this$0.mView.setAlpha(1.0f);
+                        this.this$0.mProgress.setProgress(0);
+                        this.this$0.mRotationSet.start();
+                        this.this$0.mFadeInAnimator.start();
+                        break;
+                    default:
+                        this.this$0.mView.setScaleX(1.0f);
+                        this.this$0.mView.setScaleY(1.0f);
+                        break;
+                }
             }
         });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$cancel$2() {
-        if (this.mScaleSet.isRunning()) {
-            this.mScaleSet.cancel();
-        }
-        if (this.mRotationSet.isRunning()) {
-            this.mRotationSet.cancel();
-        }
-        this.mFadeOutAnimator.start();
-    }
-
-    public void end() {
-        runOnUiThread(new Runnable() { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI$$ExternalSyntheticLambda4
-            @Override // java.lang.Runnable
-            public final void run() {
-                SamsungTapDurationProgressUI.this.lambda$end$3();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$end$3() {
-        if (this.mRotationSet.isRunning()) {
-            this.mRotationSet.end();
-        }
-        if (this.mIsRemoveAnimationEnabled || this.mIsShortThreshold) {
-            this.mStandBy.setVisibility(8);
-            this.mHold.setVisibility(0);
-        } else {
-            this.mFadeOutAnimator.start();
-        }
-    }
-
-    public void updateView(float f, float f2) {
-        if (this.mDisplay.getRotation() == 3) {
-            this.mParams.x = (((int) f) - (this.mSize / 2)) - this.mNavigationBarHeight;
-        } else {
-            this.mParams.x = ((int) f) - (this.mSize / 2);
-        }
-        this.mParams.y = ((int) f2) - (this.mSize / 2);
-        runOnUiThread(new Runnable() { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI$$ExternalSyntheticLambda3
-            @Override // java.lang.Runnable
-            public final void run() {
-                SamsungTapDurationProgressUI.this.lambda$updateView$4();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$updateView$4() {
-        this.mWindowManager.updateViewLayout(this.mView, this.mParams);
-    }
-
-    public void setRemoveAnimationEnabled(boolean z) {
-        this.mIsRemoveAnimationEnabled = z;
-        int i = 0;
-        this.mCircle.setVisibility((z || this.mIsShortThreshold) ? 8 : 0);
-        this.mArrow.setVisibility((z || this.mIsShortThreshold) ? 8 : 0);
-        this.mBackground.setVisibility((z || this.mIsShortThreshold) ? 8 : 0);
-        this.mProgress.setVisibility((z || this.mIsShortThreshold) ? 8 : 0);
-        ImageView imageView = this.mStandBy;
-        if (!z && !this.mIsShortThreshold) {
-            i = 8;
-        }
-        imageView.setVisibility(i);
-        this.mHold.setVisibility(8);
-    }
-
-    public void setShortThresholdView(boolean z) {
-        this.mIsShortThreshold = z;
-        int i = 0;
-        this.mCircle.setVisibility((z || this.mIsRemoveAnimationEnabled) ? 8 : 0);
-        this.mArrow.setVisibility((z || this.mIsRemoveAnimationEnabled) ? 8 : 0);
-        this.mBackground.setVisibility((z || this.mIsRemoveAnimationEnabled) ? 8 : 0);
-        this.mProgress.setVisibility((z || this.mIsRemoveAnimationEnabled) ? 8 : 0);
-        ImageView imageView = this.mStandBy;
-        if (!z && !this.mIsRemoveAnimationEnabled) {
-            i = 8;
-        }
-        imageView.setVisibility(i);
-        this.mHold.setVisibility(8);
-        this.mSize = this.mContext.getResources().getDimensionPixelSize(z ? R.dimen.config_preferredHyphenationFrequency : 17106190);
-        this.mStandBy.getLayoutParams().width = this.mSize;
-        this.mStandBy.getLayoutParams().height = this.mSize;
-        this.mHold.getLayoutParams().width = this.mSize;
-        this.mHold.getLayoutParams().height = this.mSize;
-        this.mStandBy.requestLayout();
-        this.mHold.requestLayout();
-    }
-
-    public void destroy() {
-        this.mContext = null;
-        this.mWindowManager.removeView(this.mView);
-    }
-
-    public final void checkConfigurationChanged() {
-        try {
-            Configuration configuration = ActivityManager.getService().getConfiguration();
-            int i = this.mUiMode;
-            int i2 = configuration.uiMode;
-            if (i == i2 && this.mDensityDpi == configuration.densityDpi) {
-                return;
-            }
-            this.mUiMode = i2;
-            this.mDensityDpi = configuration.densityDpi;
-            this.mContext = this.mContext.createConfigurationContext(configuration);
-            this.mWindowManager.removeView(this.mView);
-            this.mSize = this.mContext.getResources().getDimensionPixelSize(17106190);
-            makeView();
-            makeAnimation();
-        } catch (RemoteException unused) {
-        }
     }
 
     public final void makeView() {
@@ -237,102 +233,22 @@ public class SamsungTapDurationProgressUI {
             layoutParams.flags = 1800;
             layoutParams.format = -3;
             layoutParams.gravity = 51;
-            layoutParams.samsungFlags |= IInstalld.FLAG_CLEAR_APP_DATA_KEEP_ART_PROFILES;
+            layoutParams.samsungFlags |= 131072;
             layoutParams.layoutInDisplayCutoutMode = 1;
         }
-        View inflate = LayoutInflater.from(this.mContext).inflate(R.layout.notification_template_part_line1, (ViewGroup) null);
+        View inflate = LayoutInflater.from(this.mContext).inflate(R.layout.notification_material_action_list, (ViewGroup) null);
         this.mView = inflate;
         inflate.bringToFront();
         this.mView.invalidate();
         this.mView.setVisibility(8);
-        this.mCircle = (ImageView) this.mView.findViewById(16909847);
-        this.mArrow = (ImageView) this.mView.findViewById(16909845);
-        this.mBackground = (ImageView) this.mView.findViewById(16909846);
-        this.mProgress = (ProgressBar) this.mView.findViewById(16909853);
-        this.mStandBy = (ImageView) this.mView.findViewById(16909854);
-        this.mHold = (ImageView) this.mView.findViewById(16909848);
+        this.mCircle = (ImageView) this.mView.findViewById(16909859);
+        this.mArrow = (ImageView) this.mView.findViewById(16909857);
+        this.mBackground = (ImageView) this.mView.findViewById(16909858);
+        this.mProgress = (ProgressBar) this.mView.findViewById(16909865);
+        this.mStandBy = (ImageView) this.mView.findViewById(16909866);
+        this.mHold = (ImageView) this.mView.findViewById(16909860);
         setRemoveAnimationEnabled(this.mIsRemoveAnimationEnabled);
         this.mWindowManager.addView(this.mView, this.mParams);
-    }
-
-    public final void makeAnimation() {
-        this.mScaleSet = new AnimatorSet();
-        this.mRotationSet = new AnimatorSet();
-        this.mScaleSet.playTogether(ObjectAnimator.ofFloat(this.mView, (Property<View, Float>) View.SCALE_X, 0.8f, 1.0f), ObjectAnimator.ofFloat(this.mView, (Property<View, Float>) View.SCALE_Y, 0.8f, 1.0f));
-        this.mScaleSet.setDuration(350L);
-        this.mScaleSet.addListener(new Animator.AnimatorListener() { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI.1
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationCancel(Animator animator) {
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationRepeat(Animator animator) {
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationStart(Animator animator) {
-                SamsungTapDurationProgressUI.this.mCircle.setRotation(DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
-                SamsungTapDurationProgressUI.this.mArrow.setRotation(DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
-                SamsungTapDurationProgressUI.this.mArrow.setAlpha(DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
-                SamsungTapDurationProgressUI.this.mView.setScaleX(0.8f);
-                SamsungTapDurationProgressUI.this.mView.setScaleY(0.8f);
-                SamsungTapDurationProgressUI.this.mView.setAlpha(1.0f);
-                SamsungTapDurationProgressUI.this.mProgress.setProgress(0);
-                SamsungTapDurationProgressUI.this.mRotationSet.start();
-                SamsungTapDurationProgressUI.this.mFadeInAnimator.start();
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationEnd(Animator animator) {
-                SamsungTapDurationProgressUI.this.mView.setScaleX(1.0f);
-                SamsungTapDurationProgressUI.this.mView.setScaleY(1.0f);
-            }
-        });
-        this.mScaleSet.setInterpolator(new PathInterpolator(0.22f, 0.17f, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 1.0f));
-        ObjectAnimator ofFloat = ObjectAnimator.ofFloat(this.mCircle, (Property<ImageView, Float>) View.ROTATION, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 360.0f);
-        ObjectAnimator ofFloat2 = ObjectAnimator.ofFloat(this.mArrow, (Property<ImageView, Float>) View.ROTATION, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 360.0f);
-        ofFloat.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI.2
-            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                SamsungTapDurationProgressUI.this.mProgress.setProgress((int) ((Float) valueAnimator.getAnimatedValue()).floatValue());
-            }
-        });
-        this.mRotationSet.playTogether(ofFloat, ofFloat2);
-        ObjectAnimator ofFloat3 = ObjectAnimator.ofFloat(this.mArrow, (Property<ImageView, Float>) View.ALPHA, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 1.0f);
-        this.mFadeInAnimator = ofFloat3;
-        ofFloat3.setDuration(100L);
-        ObjectAnimator ofFloat4 = ObjectAnimator.ofFloat(this.mView, (Property<View, Float>) View.ALPHA, 1.0f, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
-        this.mFadeOutAnimator = ofFloat4;
-        ofFloat4.setDuration(150L);
-        this.mFadeOutAnimator.addListener(new Animator.AnimatorListener() { // from class: com.android.server.accessibility.SamsungTapDurationProgressUI.3
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationCancel(Animator animator) {
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationRepeat(Animator animator) {
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationStart(Animator animator) {
-                SamsungTapDurationProgressUI.this.mView.setScaleX(1.0f);
-                SamsungTapDurationProgressUI.this.mView.setScaleY(1.0f);
-            }
-
-            @Override // android.animation.Animator.AnimatorListener
-            public void onAnimationEnd(Animator animator) {
-                SamsungTapDurationProgressUI.this.mStandBy.setVisibility((SamsungTapDurationProgressUI.this.mIsRemoveAnimationEnabled || SamsungTapDurationProgressUI.this.mIsShortThreshold) ? 0 : 8);
-                SamsungTapDurationProgressUI.this.mHold.setVisibility(8);
-                SamsungTapDurationProgressUI.this.mView.setVisibility(8);
-            }
-        });
-    }
-
-    public final int getNavigationBarHeight() {
-        if (this.mContext.getResources().getBoolean(17891826)) {
-            return this.mContext.getResources().getDimensionPixelSize(R.dimen.text_size_display_1_material);
-        }
-        return 0;
     }
 
     public final void runOnUiThread(Runnable runnable) {
@@ -341,5 +257,20 @@ public class SamsungTapDurationProgressUI {
         } else {
             runnable.run();
         }
+    }
+
+    public final void setRemoveAnimationEnabled(boolean z) {
+        this.mIsRemoveAnimationEnabled = z;
+        int i = 0;
+        this.mCircle.setVisibility((z || this.mIsShortThreshold) ? 8 : 0);
+        this.mArrow.setVisibility((z || this.mIsShortThreshold) ? 8 : 0);
+        this.mBackground.setVisibility((z || this.mIsShortThreshold) ? 8 : 0);
+        this.mProgress.setVisibility((z || this.mIsShortThreshold) ? 8 : 0);
+        ImageView imageView = this.mStandBy;
+        if (!z && !this.mIsShortThreshold) {
+            i = 8;
+        }
+        imageView.setVisibility(i);
+        this.mHold.setVisibility(8);
     }
 }

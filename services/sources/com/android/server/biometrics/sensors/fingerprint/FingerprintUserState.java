@@ -1,6 +1,5 @@
 package com.android.server.biometrics.sensors.fingerprint;
 
-import android.content.Context;
 import android.hardware.fingerprint.Fingerprint;
 import android.util.Slog;
 import com.android.modules.utils.TypedXmlPullParser;
@@ -9,35 +8,11 @@ import com.android.server.biometrics.sensors.BiometricUserState;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FingerprintUserState extends BiometricUserState {
+public final class FingerprintUserState extends BiometricUserState {
     @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public String getBiometricsTag() {
-        return "fingerprints";
-    }
-
-    @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public int getNameTemplateResource() {
-        return 17042716;
-    }
-
-    public FingerprintUserState(Context context, int i, String str) {
-        super(context, i, str);
-    }
-
-    @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public ArrayList getCopy(ArrayList arrayList) {
-        ArrayList arrayList2 = new ArrayList();
-        Iterator it = arrayList.iterator();
-        while (it.hasNext()) {
-            Fingerprint fingerprint = (Fingerprint) it.next();
-            arrayList2.add(new Fingerprint(fingerprint.getName(), fingerprint.getGroupId(), fingerprint.getBiometricId(), fingerprint.getDeviceId(), fingerprint.semGetDuplicatedImageCount()));
-        }
-        return arrayList2;
-    }
-
-    @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public void doWriteState(TypedXmlSerializer typedXmlSerializer) {
+    public final void doWriteState(TypedXmlSerializer typedXmlSerializer) {
         ArrayList copy;
         synchronized (this) {
             copy = getCopy(this.mBiometrics);
@@ -58,7 +33,33 @@ public class FingerprintUserState extends BiometricUserState {
     }
 
     @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public void parseBiometricsLocked(TypedXmlPullParser typedXmlPullParser) {
+    public final String getBiometricsTag() {
+        return "fingerprints";
+    }
+
+    @Override // com.android.server.biometrics.sensors.BiometricUserState
+    public final ArrayList getCopy(ArrayList arrayList) {
+        ArrayList arrayList2 = new ArrayList();
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            Fingerprint fingerprint = (Fingerprint) it.next();
+            arrayList2.add(new Fingerprint(fingerprint.getName(), fingerprint.getGroupId(), fingerprint.getBiometricId(), fingerprint.getDeviceId(), fingerprint.semGetDuplicatedImageCount()));
+        }
+        return arrayList2;
+    }
+
+    @Override // com.android.server.biometrics.sensors.BiometricUserState
+    public final String getLegacyFileName() {
+        return "settings_fingerprint.xml";
+    }
+
+    @Override // com.android.server.biometrics.sensors.BiometricUserState
+    public final int getNameTemplateResource() {
+        return 17042921;
+    }
+
+    @Override // com.android.server.biometrics.sensors.BiometricUserState
+    public final void parseBiometricsLocked(TypedXmlPullParser typedXmlPullParser) {
         int i;
         int depth = typedXmlPullParser.getDepth();
         while (true) {

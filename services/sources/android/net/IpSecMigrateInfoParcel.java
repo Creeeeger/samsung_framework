@@ -1,22 +1,14 @@
 package android.net;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
 import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class IpSecMigrateInfoParcel implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.net.IpSecMigrateInfoParcel.1
-        @Override // android.os.Parcelable.Creator
-        public IpSecMigrateInfoParcel createFromParcel(Parcel parcel) {
-            return IpSecMigrateInfoParcel.internalCreateFromParcel(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public IpSecMigrateInfoParcel[] newArray(int i) {
-            return new IpSecMigrateInfoParcel[i];
-        }
-    };
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public final int direction;
     public final int interfaceId;
     public final String newDestinationAddress;
@@ -26,12 +18,21 @@ public class IpSecMigrateInfoParcel implements Parcelable {
     public final int requestId;
     public final int selAddrFamily;
 
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return 0;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.net.IpSecMigrateInfoParcel$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            return IpSecMigrateInfoParcel.internalCreateFromParcel(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new IpSecMigrateInfoParcel[i];
+        }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Builder {
         private String newDestinationAddress;
         private String newSourceAddress;
@@ -42,6 +43,40 @@ public class IpSecMigrateInfoParcel implements Parcelable {
         private int direction = 0;
         private int interfaceId = 0;
 
+        public IpSecMigrateInfoParcel build() {
+            return new IpSecMigrateInfoParcel(this.requestId, this.selAddrFamily, this.direction, this.oldSourceAddress, this.oldDestinationAddress, this.newSourceAddress, this.newDestinationAddress, this.interfaceId);
+        }
+
+        public Builder setDirection(int i) {
+            this.direction = i;
+            return this;
+        }
+
+        public Builder setInterfaceId(int i) {
+            this.interfaceId = i;
+            return this;
+        }
+
+        public Builder setNewDestinationAddress(String str) {
+            this.newDestinationAddress = str;
+            return this;
+        }
+
+        public Builder setNewSourceAddress(String str) {
+            this.newSourceAddress = str;
+            return this;
+        }
+
+        public Builder setOldDestinationAddress(String str) {
+            this.oldDestinationAddress = str;
+            return this;
+        }
+
+        public Builder setOldSourceAddress(String str) {
+            this.oldSourceAddress = str;
+            return this;
+        }
+
         public Builder setRequestId(int i) {
             this.requestId = i;
             return this;
@@ -51,58 +86,6 @@ public class IpSecMigrateInfoParcel implements Parcelable {
             this.selAddrFamily = i;
             return this;
         }
-
-        public Builder setDirection(int i) {
-            this.direction = i;
-            return this;
-        }
-
-        public Builder setOldSourceAddress(String str) {
-            this.oldSourceAddress = str;
-            return this;
-        }
-
-        public Builder setOldDestinationAddress(String str) {
-            this.oldDestinationAddress = str;
-            return this;
-        }
-
-        public Builder setNewSourceAddress(String str) {
-            this.newSourceAddress = str;
-            return this;
-        }
-
-        public Builder setNewDestinationAddress(String str) {
-            this.newDestinationAddress = str;
-            return this;
-        }
-
-        public Builder setInterfaceId(int i) {
-            this.interfaceId = i;
-            return this;
-        }
-
-        public IpSecMigrateInfoParcel build() {
-            return new IpSecMigrateInfoParcel(this.requestId, this.selAddrFamily, this.direction, this.oldSourceAddress, this.oldDestinationAddress, this.newSourceAddress, this.newDestinationAddress, this.interfaceId);
-        }
-    }
-
-    @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeInt(this.requestId);
-        parcel.writeInt(this.selAddrFamily);
-        parcel.writeInt(this.direction);
-        parcel.writeString(this.oldSourceAddress);
-        parcel.writeString(this.oldDestinationAddress);
-        parcel.writeString(this.newSourceAddress);
-        parcel.writeString(this.newDestinationAddress);
-        parcel.writeInt(this.interfaceId);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
     }
 
     public IpSecMigrateInfoParcel(int i, int i2, int i3, String str, String str2, String str3, String str4, int i4) {
@@ -203,5 +186,25 @@ public class IpSecMigrateInfoParcel implements Parcelable {
         }
         parcel.setDataPosition(dataPosition + readInt);
         return builder.build();
+    }
+
+    @Override // android.os.Parcelable
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeInt(this.requestId);
+        parcel.writeInt(this.selAddrFamily);
+        parcel.writeInt(this.direction);
+        parcel.writeString(this.oldSourceAddress);
+        parcel.writeString(this.oldDestinationAddress);
+        parcel.writeString(this.newSourceAddress);
+        parcel.writeString(this.newDestinationAddress);
+        int m = SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(parcel, this.interfaceId, dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(m, dataPosition, parcel, m);
     }
 }

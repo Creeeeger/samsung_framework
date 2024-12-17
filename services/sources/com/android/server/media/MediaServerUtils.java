@@ -1,40 +1,28 @@
 package com.android.server.media;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManagerInternal;
-import android.os.Binder;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import com.android.server.LocalServices;
-import java.io.PrintWriter;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
+import com.android.server.pm.PackageManagerService;
+import java.util.Arrays;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class MediaServerUtils {
-    public static boolean isValidActivityComponentName(Context context, ComponentName componentName, String str, UserHandle userHandle) {
-        new Intent(str).setComponent(componentName);
-        return !context.getPackageManager().queryIntentActivitiesAsUser(r0, 0, userHandle).isEmpty();
-    }
-
-    public static void enforcePackageName(String str, int i) {
+    public static void enforcePackageName(Context context, String str, int i) {
         if (i == 0 || i == 2000) {
             return;
         }
         if (TextUtils.isEmpty(str)) {
             throw new IllegalArgumentException("packageName may not be empty");
         }
-        if (UserHandle.isSameApp(i, ((PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class)).getPackageUid(str, 0L, UserHandle.getUserId(i)))) {
+        if (((PackageManagerService.PackageManagerInternalImpl) ((PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class))).isSameApp(i, UserHandle.getUserId(i), 0L, str)) {
             return;
         }
-        throw new IllegalArgumentException("packageName does not belong to the calling uid; pkg=" + str + ", uid=" + i);
-    }
-
-    public static boolean checkDumpPermission(Context context, String str, PrintWriter printWriter) {
-        if (context.checkCallingOrSelfPermission("android.permission.DUMP") == 0) {
-            return true;
-        }
-        printWriter.println("Permission Denial: can't dump " + str + " from from pid=" + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid() + " due to missing android.permission.DUMP permission");
-        return false;
+        throw new IllegalArgumentException(AudioOffloadInfo$$ExternalSyntheticOutline0.m(StorageManagerService$$ExternalSyntheticOutline0.m(i, "packageName does not belong to the calling uid; pkg=", str, ", uid=", " ("), Arrays.toString(context.getPackageManager().getPackagesForUid(i)), ")"));
     }
 }

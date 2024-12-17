@@ -1,472 +1,828 @@
 package com.android.server.locksettings.recoverablekeystore.serialization;
 
+import android.security.keystore.recovery.KeyChainProtectionParams;
 import android.security.keystore.recovery.KeyChainSnapshot;
+import android.security.keystore.recovery.KeyDerivationParams;
+import android.security.keystore.recovery.WrappedApplicationKey;
 import android.util.Base64;
+import android.util.Xml;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import com.android.modules.utils.TypedXmlPullParser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.security.cert.CertPath;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class KeyChainSnapshotDeserializer {
-    public static KeyChainSnapshot deserialize(InputStream inputStream) {
-        try {
-            return deserializeInternal(inputStream);
-        } catch (XmlPullParserException e) {
-            throw new KeyChainSnapshotParserException("Malformed KeyChainSnapshot XML", e);
-        }
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x007d, code lost:
-    
-        if (r3.equals("thmCertPath") == false) goto L10;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static android.security.keystore.recovery.KeyChainSnapshot deserializeInternal(java.io.InputStream r13) {
-        /*
-            Method dump skipped, instructions count: 338
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotDeserializer.deserializeInternal(java.io.InputStream):android.security.keystore.recovery.KeyChainSnapshot");
-    }
-
-    public static List readWrappedApplicationKeys(TypedXmlPullParser typedXmlPullParser) {
-        typedXmlPullParser.require(2, KeyChainSnapshotSchema.NAMESPACE, "applicationKeysList");
-        ArrayList arrayList = new ArrayList();
-        while (typedXmlPullParser.next() != 3) {
-            if (typedXmlPullParser.getEventType() == 2) {
-                arrayList.add(readWrappedApplicationKey(typedXmlPullParser));
-            }
-        }
-        typedXmlPullParser.require(3, KeyChainSnapshotSchema.NAMESPACE, "applicationKeysList");
-        return arrayList;
-    }
-
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x004d, code lost:
-    
-        switch(r8) {
-            case 0: goto L41;
-            case 1: goto L40;
-            case 2: goto L42;
-            default: goto L39;
-        };
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0061, code lost:
-    
-        throw new com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException(java.lang.String.format(java.util.Locale.US, "Unexpected tag %s in wrappedApplicationKey", r3));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x006a, code lost:
-    
-        r0.setEncryptedKeyMaterial(readBlobTag(r9, "keyMaterial"));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0072, code lost:
-    
-        r0.setMetadata(readBlobTag(r9, "keyMetadata"));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x0062, code lost:
-    
-        r0.setAlias(readStringTag(r9, "alias"));
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static android.security.keystore.recovery.WrappedApplicationKey readWrappedApplicationKey(com.android.modules.utils.TypedXmlPullParser r9) {
-        /*
-            java.lang.String r0 = com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotSchema.NAMESPACE
-            r1 = 2
-            java.lang.String r2 = "applicationKey"
-            r9.require(r1, r0, r2)
-            android.security.keystore.recovery.WrappedApplicationKey$Builder r0 = new android.security.keystore.recovery.WrappedApplicationKey$Builder
-            r0.<init>()
-        Ld:
-            int r3 = r9.next()
-            r4 = 3
-            if (r3 == r4) goto L7a
-            int r3 = r9.getEventType()
-            if (r3 == r1) goto L1b
-            goto Ld
-        L1b:
-            java.lang.String r3 = r9.getName()
-            r3.hashCode()
-            int r4 = r3.hashCode()
-            java.lang.String r5 = "alias"
-            java.lang.String r6 = "keyMaterial"
-            java.lang.String r7 = "keyMetadata"
-            r8 = -1
-            switch(r4) {
-                case -1712279890: goto L45;
-                case -963209050: goto L3c;
-                case 92902992: goto L33;
-                default: goto L32;
+    public static KeyChainSnapshot deserializeInternal(InputStream inputStream) {
+        String str;
+        char c;
+        char c2;
+        String str2;
+        String str3;
+        String str4;
+        String str5;
+        String str6;
+        String str7;
+        String str8;
+        String str9;
+        String str10;
+        String str11;
+        String str12;
+        String str13;
+        String str14;
+        String str15;
+        String str16;
+        String str17;
+        String str18;
+        String str19;
+        String str20;
+        String str21;
+        String str22;
+        char c3;
+        String str23;
+        String str24;
+        int i;
+        String str25;
+        String str26;
+        String str27;
+        String str28;
+        char c4;
+        String str29;
+        String str30;
+        String str31;
+        String str32;
+        String str33;
+        KeyDerivationParams createSha256Params;
+        String str34;
+        String str35;
+        String str36;
+        char c5;
+        String str37 = "algorithm";
+        String str38 = "keyDerivationParams";
+        String str39 = "userSecretType";
+        String str40 = "lockScreenUiType";
+        String str41 = "serverParams";
+        String str42 = "applicationKeysList";
+        String str43 = "snapshotVersion";
+        String str44 = "thmCertPath";
+        String str45 = "recoveryKeyMaterial";
+        String str46 = "keyMetadata";
+        String str47 = "maxAttempts";
+        String str48 = "keyMaterial";
+        TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(inputStream);
+        resolvePullParser.nextTag();
+        String str49 = "alias";
+        String str50 = "memoryDifficulty";
+        String str51 = "salt";
+        String str52 = "keyChainSnapshot";
+        resolvePullParser.require(2, (String) null, "keyChainSnapshot");
+        KeyChainSnapshot.Builder builder = new KeyChainSnapshot.Builder();
+        while (true) {
+            String str53 = str52;
+            if (resolvePullParser.next() == 3) {
+                resolvePullParser.require(3, (String) null, str53);
+                try {
+                    return builder.build();
+                } catch (NullPointerException e) {
+                    throw new KeyChainSnapshotParserException("Failed to build KeyChainSnapshot", e);
+                }
             }
-        L32:
-            goto L4d
-        L33:
-            boolean r4 = r3.equals(r5)
-            if (r4 != 0) goto L3a
-            goto L4d
-        L3a:
-            r8 = r1
-            goto L4d
-        L3c:
-            boolean r4 = r3.equals(r6)
-            if (r4 != 0) goto L43
-            goto L4d
-        L43:
-            r8 = 1
-            goto L4d
-        L45:
-            boolean r4 = r3.equals(r7)
-            if (r4 != 0) goto L4c
-            goto L4d
-        L4c:
-            r8 = 0
-        L4d:
-            switch(r8) {
-                case 0: goto L72;
-                case 1: goto L6a;
-                case 2: goto L62;
-                default: goto L50;
+            if (resolvePullParser.getEventType() == 2) {
+                String name = resolvePullParser.getName();
+                name.getClass();
+                String str54 = "Unexpected tag ";
+                switch (name.hashCode()) {
+                    case -1719931702:
+                        str = str45;
+                        if (name.equals(str47)) {
+                            c = 0;
+                            break;
+                        }
+                        c = 65535;
+                        break;
+                    case -1388433662:
+                        str = str45;
+                        if (name.equals("backendPublicKey")) {
+                            c = 1;
+                            break;
+                        }
+                        c = 65535;
+                        break;
+                    case -1370381871:
+                        if (name.equals(str45)) {
+                            str = str45;
+                            c = 2;
+                            break;
+                        }
+                        str = str45;
+                        c = 65535;
+                        break;
+                    case -1368437758:
+                        if (name.equals(str44)) {
+                            str = str45;
+                            c = 3;
+                            break;
+                        }
+                        str = str45;
+                        c = 65535;
+                        break;
+                    case 481270388:
+                        if (name.equals(str43)) {
+                            c2 = 4;
+                            char c6 = c2;
+                            str = str45;
+                            c = c6;
+                            break;
+                        }
+                        str = str45;
+                        c = 65535;
+                        break;
+                    case 1190285858:
+                        if (name.equals(str42)) {
+                            c2 = 5;
+                            char c62 = c2;
+                            str = str45;
+                            c = c62;
+                            break;
+                        }
+                        str = str45;
+                        c = 65535;
+                        break;
+                    case 1352257591:
+                        if (name.equals("counterId")) {
+                            c2 = 6;
+                            char c622 = c2;
+                            str = str45;
+                            c = c622;
+                            break;
+                        }
+                        str = str45;
+                        c = 65535;
+                        break;
+                    case 1596875199:
+                        if (name.equals("keyChainProtectionParamsList")) {
+                            c2 = 7;
+                            char c6222 = c2;
+                            str = str45;
+                            c = c6222;
+                            break;
+                        }
+                        str = str45;
+                        c = 65535;
+                        break;
+                    case 1806980777:
+                        if (name.equals(str41)) {
+                            c2 = '\b';
+                            char c62222 = c2;
+                            str = str45;
+                            c = c62222;
+                            break;
+                        }
+                        str = str45;
+                        c = 65535;
+                        break;
+                    default:
+                        str = str45;
+                        c = 65535;
+                        break;
+                }
+                switch (c) {
+                    case 0:
+                        str2 = str37;
+                        str3 = str41;
+                        str4 = str42;
+                        str5 = str43;
+                        str6 = str49;
+                        str7 = str50;
+                        str8 = str51;
+                        str9 = str;
+                        str10 = str38;
+                        str11 = str40;
+                        str12 = str48;
+                        str13 = str47;
+                        str14 = str39;
+                        str15 = str44;
+                        str16 = str46;
+                        builder.setMaxAttempts(readIntTag(resolvePullParser, str13));
+                        str44 = str15;
+                        str46 = str16;
+                        str47 = str13;
+                        str50 = str7;
+                        str39 = str14;
+                        str40 = str11;
+                        str41 = str3;
+                        str42 = str4;
+                        str48 = str12;
+                        str51 = str8;
+                        str37 = str2;
+                        str38 = str10;
+                        str43 = str5;
+                        str49 = str6;
+                        str45 = str9;
+                        break;
+                    case 1:
+                        str17 = str47;
+                        str2 = str37;
+                        str3 = str41;
+                        str4 = str42;
+                        str5 = str43;
+                        str15 = str44;
+                        str6 = str49;
+                        str7 = str50;
+                        str8 = str51;
+                        str9 = str;
+                        str10 = str38;
+                        str11 = str40;
+                        str12 = str48;
+                        str14 = str39;
+                        str16 = str46;
+                        str13 = str17;
+                        str44 = str15;
+                        str46 = str16;
+                        str47 = str13;
+                        str50 = str7;
+                        str39 = str14;
+                        str40 = str11;
+                        str41 = str3;
+                        str42 = str4;
+                        str48 = str12;
+                        str51 = str8;
+                        str37 = str2;
+                        str38 = str10;
+                        str43 = str5;
+                        str49 = str6;
+                        str45 = str9;
+                        break;
+                    case 2:
+                        str17 = str47;
+                        str2 = str37;
+                        str3 = str41;
+                        str4 = str42;
+                        str5 = str43;
+                        str15 = str44;
+                        str6 = str49;
+                        str7 = str50;
+                        str8 = str51;
+                        str9 = str;
+                        str10 = str38;
+                        str11 = str40;
+                        str12 = str48;
+                        str14 = str39;
+                        str16 = str46;
+                        builder.setEncryptedRecoveryKeyBlob(readBlobTag(resolvePullParser, str9));
+                        str13 = str17;
+                        str44 = str15;
+                        str46 = str16;
+                        str47 = str13;
+                        str50 = str7;
+                        str39 = str14;
+                        str40 = str11;
+                        str41 = str3;
+                        str42 = str4;
+                        str48 = str12;
+                        str51 = str8;
+                        str37 = str2;
+                        str38 = str10;
+                        str43 = str5;
+                        str49 = str6;
+                        str45 = str9;
+                        break;
+                    case 3:
+                        str17 = str47;
+                        str2 = str37;
+                        str3 = str41;
+                        str4 = str42;
+                        str5 = str43;
+                        str15 = str44;
+                        str6 = str49;
+                        str7 = str50;
+                        str8 = str51;
+                        str10 = str38;
+                        str11 = str40;
+                        str12 = str48;
+                        str14 = str39;
+                        str16 = str46;
+                        try {
+                            try {
+                                builder.setTrustedHardwareCertPath(CertificateFactory.getInstance("X.509").generateCertPath(new ByteArrayInputStream(readBlobTag(resolvePullParser, str15))));
+                                str9 = str;
+                                str13 = str17;
+                                str44 = str15;
+                                str46 = str16;
+                                str47 = str13;
+                                str50 = str7;
+                                str39 = str14;
+                                str40 = str11;
+                                str41 = str3;
+                                str42 = str4;
+                                str48 = str12;
+                                str51 = str8;
+                                str37 = str2;
+                                str38 = str10;
+                                str43 = str5;
+                                str49 = str6;
+                                str45 = str9;
+                                break;
+                            } catch (CertificateException e2) {
+                                throw new KeyChainSnapshotParserException("Could not parse CertPath in tag " + str15, e2);
+                            }
+                        } catch (CertificateException e3) {
+                            throw new KeyChainSnapshotParserException("Could not set trustedHardwareCertPath", e3);
+                        }
+                    case 4:
+                        str2 = str37;
+                        str3 = str41;
+                        str4 = str42;
+                        str5 = str43;
+                        str6 = str49;
+                        str7 = str50;
+                        str8 = str51;
+                        str10 = str38;
+                        str11 = str40;
+                        str12 = str48;
+                        str14 = str39;
+                        str16 = str46;
+                        builder.setSnapshotVersion(readIntTag(resolvePullParser, str5));
+                        str9 = str;
+                        str13 = str47;
+                        str15 = str44;
+                        str44 = str15;
+                        str46 = str16;
+                        str47 = str13;
+                        str50 = str7;
+                        str39 = str14;
+                        str40 = str11;
+                        str41 = str3;
+                        str42 = str4;
+                        str48 = str12;
+                        str51 = str8;
+                        str37 = str2;
+                        str38 = str10;
+                        str43 = str5;
+                        str49 = str6;
+                        str45 = str9;
+                        break;
+                    case 5:
+                        String str55 = str47;
+                        str2 = str37;
+                        str3 = str41;
+                        str4 = str42;
+                        String str56 = str43;
+                        String str57 = str44;
+                        str7 = str50;
+                        str8 = str51;
+                        int i2 = 2;
+                        String str58 = null;
+                        resolvePullParser.require(2, (String) null, str4);
+                        ArrayList arrayList = new ArrayList();
+                        while (true) {
+                            int i3 = 3;
+                            if (resolvePullParser.next() == 3) {
+                                str11 = str40;
+                                str6 = str49;
+                                str10 = str38;
+                                str12 = str48;
+                                str14 = str39;
+                                str16 = str46;
+                                resolvePullParser.require(3, str58, str4);
+                                builder.setWrappedApplicationKeys(arrayList);
+                                str9 = str;
+                                str13 = str55;
+                                str15 = str57;
+                                str5 = str56;
+                                break;
+                            } else if (resolvePullParser.getEventType() == i2) {
+                                resolvePullParser.require(i2, str58, "applicationKey");
+                                WrappedApplicationKey.Builder builder2 = new WrappedApplicationKey.Builder();
+                                while (resolvePullParser.next() != i3) {
+                                    if (resolvePullParser.getEventType() != 2) {
+                                        i3 = 3;
+                                    } else {
+                                        String name2 = resolvePullParser.getName();
+                                        name2.getClass();
+                                        switch (name2.hashCode()) {
+                                            case -1712279890:
+                                                str18 = str49;
+                                                str19 = str38;
+                                                str20 = str48;
+                                                str21 = str39;
+                                                str22 = str46;
+                                                if (name2.equals(str22)) {
+                                                    c3 = 0;
+                                                    break;
+                                                }
+                                                c3 = 65535;
+                                                break;
+                                            case -963209050:
+                                                str18 = str49;
+                                                str19 = str38;
+                                                str20 = str48;
+                                                if (name2.equals(str20)) {
+                                                    str21 = str39;
+                                                    str22 = str46;
+                                                    c3 = 1;
+                                                    break;
+                                                }
+                                                str21 = str39;
+                                                str22 = str46;
+                                                c3 = 65535;
+                                                break;
+                                            case 92902992:
+                                                str18 = str49;
+                                                if (name2.equals(str18)) {
+                                                    str19 = str38;
+                                                    str20 = str48;
+                                                    str21 = str39;
+                                                    str22 = str46;
+                                                    c3 = 2;
+                                                    break;
+                                                }
+                                                str19 = str38;
+                                                str20 = str48;
+                                                str21 = str39;
+                                                str22 = str46;
+                                                c3 = 65535;
+                                                break;
+                                            default:
+                                                str18 = str49;
+                                                str19 = str38;
+                                                str20 = str48;
+                                                str21 = str39;
+                                                str22 = str46;
+                                                c3 = 65535;
+                                                break;
+                                        }
+                                        switch (c3) {
+                                            case 0:
+                                                str23 = str54;
+                                                str24 = str40;
+                                                i = 3;
+                                                builder2.setMetadata(readBlobTag(resolvePullParser, str22));
+                                                break;
+                                            case 1:
+                                                str23 = str54;
+                                                str24 = str40;
+                                                i = 3;
+                                                builder2.setEncryptedKeyMaterial(readBlobTag(resolvePullParser, str20));
+                                                break;
+                                            case 2:
+                                                str23 = str54;
+                                                resolvePullParser.require(2, (String) null, str18);
+                                                String readText = readText(resolvePullParser);
+                                                str24 = str40;
+                                                i = 3;
+                                                resolvePullParser.require(3, (String) null, str18);
+                                                builder2.setAlias(readText);
+                                                break;
+                                            default:
+                                                Locale locale = Locale.US;
+                                                throw new KeyChainSnapshotParserException(XmlUtils$$ExternalSyntheticOutline0.m(str54, name2, " in wrappedApplicationKey"));
+                                        }
+                                        str54 = str23;
+                                        str46 = str22;
+                                        str39 = str21;
+                                        str48 = str20;
+                                        str38 = str19;
+                                        str49 = str18;
+                                        i3 = i;
+                                        str40 = str24;
+                                    }
+                                }
+                                String str59 = str40;
+                                int i4 = i3;
+                                String str60 = str49;
+                                String str61 = str38;
+                                String str62 = str48;
+                                String str63 = str39;
+                                String str64 = str46;
+                                String str65 = str54;
+                                resolvePullParser.require(i4, (String) null, "applicationKey");
+                                try {
+                                    arrayList.add(builder2.build());
+                                    str54 = str65;
+                                    str40 = str59;
+                                    i2 = 2;
+                                    str58 = null;
+                                    str46 = str64;
+                                    str39 = str63;
+                                    str48 = str62;
+                                    str38 = str61;
+                                    str49 = str60;
+                                } catch (NullPointerException e4) {
+                                    throw new KeyChainSnapshotParserException("Failed to build WrappedApplicationKey", e4);
+                                }
+                            }
+                        }
+                    case 6:
+                        str25 = str47;
+                        str2 = str37;
+                        str3 = str41;
+                        str26 = str43;
+                        str27 = str44;
+                        str8 = str51;
+                        str28 = str42;
+                        str7 = str50;
+                        resolvePullParser.require(2, (String) null, "counterId");
+                        String readText2 = readText(resolvePullParser);
+                        resolvePullParser.require(3, (String) null, "counterId");
+                        try {
+                            builder.setCounterId(Long.valueOf(readText2).longValue());
+                            str6 = str49;
+                            str4 = str28;
+                            str9 = str;
+                            str15 = str27;
+                            str5 = str26;
+                            str10 = str38;
+                            str11 = str40;
+                            str12 = str48;
+                            str13 = str25;
+                            str14 = str39;
+                            str16 = str46;
+                            str44 = str15;
+                            str46 = str16;
+                            str47 = str13;
+                            str50 = str7;
+                            str39 = str14;
+                            str40 = str11;
+                            str41 = str3;
+                            str42 = str4;
+                            str48 = str12;
+                            str51 = str8;
+                            str37 = str2;
+                            str38 = str10;
+                            str43 = str5;
+                            str49 = str6;
+                            str45 = str9;
+                            break;
+                        } catch (NumberFormatException e5) {
+                            Locale locale2 = Locale.US;
+                            throw new KeyChainSnapshotParserException(XmlUtils$$ExternalSyntheticOutline0.m("counterId expected long but got '", readText2, "'"), e5);
+                        }
+                    case 7:
+                        resolvePullParser.require(2, (String) null, "keyChainProtectionParamsList");
+                        ArrayList arrayList2 = new ArrayList();
+                        while (true) {
+                            str3 = str41;
+                            if (resolvePullParser.next() == 3) {
+                                str25 = str47;
+                                str2 = str37;
+                                str26 = str43;
+                                str27 = str44;
+                                str8 = str51;
+                                str28 = str42;
+                                str7 = str50;
+                                resolvePullParser.require(3, (String) null, "keyChainProtectionParamsList");
+                                builder.setKeyChainProtectionParams(arrayList2);
+                                break;
+                            } else if (resolvePullParser.getEventType() != 2) {
+                                str41 = str3;
+                            } else {
+                                String str66 = str47;
+                                resolvePullParser.require(2, (String) null, "keyChainProtectionParams");
+                                KeyChainProtectionParams.Builder builder3 = new KeyChainProtectionParams.Builder();
+                                while (true) {
+                                    String str67 = str44;
+                                    if (resolvePullParser.next() == 3) {
+                                        String str68 = str37;
+                                        String str69 = str43;
+                                        String str70 = str51;
+                                        String str71 = str42;
+                                        String str72 = str50;
+                                        resolvePullParser.require(3, (String) null, "keyChainProtectionParams");
+                                        try {
+                                            arrayList2.add(builder3.build());
+                                            str50 = str72;
+                                            str37 = str68;
+                                            str42 = str71;
+                                            str41 = str3;
+                                            str47 = str66;
+                                            str44 = str67;
+                                            str51 = str70;
+                                            str43 = str69;
+                                        } catch (NullPointerException e6) {
+                                            throw new KeyChainSnapshotParserException("Failed to build KeyChainProtectionParams", e6);
+                                        }
+                                    } else if (resolvePullParser.getEventType() != 2) {
+                                        str44 = str67;
+                                    } else {
+                                        String name3 = resolvePullParser.getName();
+                                        name3.getClass();
+                                        switch (name3.hashCode()) {
+                                            case -776797115:
+                                                if (name3.equals(str40)) {
+                                                    c4 = 0;
+                                                    break;
+                                                }
+                                                c4 = 65535;
+                                                break;
+                                            case -696958923:
+                                                if (name3.equals(str39)) {
+                                                    c4 = 1;
+                                                    break;
+                                                }
+                                                c4 = 65535;
+                                                break;
+                                            case 912448924:
+                                                if (name3.equals(str38)) {
+                                                    c4 = 2;
+                                                    break;
+                                                }
+                                                c4 = 65535;
+                                                break;
+                                            default:
+                                                c4 = 65535;
+                                                break;
+                                        }
+                                        switch (c4) {
+                                            case 0:
+                                                str29 = str37;
+                                                str30 = str43;
+                                                str31 = str51;
+                                                str32 = str42;
+                                                str33 = str50;
+                                                builder3.setLockScreenUiFormat(readIntTag(resolvePullParser, str40));
+                                                break;
+                                            case 1:
+                                                str29 = str37;
+                                                str30 = str43;
+                                                str31 = str51;
+                                                str32 = str42;
+                                                str33 = str50;
+                                                builder3.setUserSecretType(readIntTag(resolvePullParser, str39));
+                                                break;
+                                            case 2:
+                                                resolvePullParser.require(2, (String) null, str38);
+                                                int i5 = -1;
+                                                int i6 = -1;
+                                                byte[] bArr = null;
+                                                while (true) {
+                                                    str30 = str43;
+                                                    if (resolvePullParser.next() != 3) {
+                                                        if (resolvePullParser.getEventType() == 2) {
+                                                            String name4 = resolvePullParser.getName();
+                                                            name4.getClass();
+                                                            switch (name4.hashCode()) {
+                                                                case -973274212:
+                                                                    str34 = str51;
+                                                                    str35 = str42;
+                                                                    str36 = str50;
+                                                                    if (name4.equals(str36)) {
+                                                                        c5 = 0;
+                                                                        break;
+                                                                    }
+                                                                    c5 = 65535;
+                                                                    break;
+                                                                case 3522646:
+                                                                    str34 = str51;
+                                                                    if (name4.equals(str34)) {
+                                                                        str35 = str42;
+                                                                        str36 = str50;
+                                                                        c5 = 1;
+                                                                        break;
+                                                                    }
+                                                                    str35 = str42;
+                                                                    str36 = str50;
+                                                                    c5 = 65535;
+                                                                    break;
+                                                                case 225490031:
+                                                                    if (name4.equals(str37)) {
+                                                                        str34 = str51;
+                                                                        str35 = str42;
+                                                                        str36 = str50;
+                                                                        c5 = 2;
+                                                                        break;
+                                                                    }
+                                                                default:
+                                                                    str34 = str51;
+                                                                    str35 = str42;
+                                                                    str36 = str50;
+                                                                    c5 = 65535;
+                                                                    break;
+                                                            }
+                                                            switch (c5) {
+                                                                case 0:
+                                                                    i6 = readIntTag(resolvePullParser, str36);
+                                                                    break;
+                                                                case 1:
+                                                                    bArr = readBlobTag(resolvePullParser, str34);
+                                                                    break;
+                                                                case 2:
+                                                                    i5 = readIntTag(resolvePullParser, str37);
+                                                                    break;
+                                                                default:
+                                                                    Locale locale3 = Locale.US;
+                                                                    throw new KeyChainSnapshotParserException(XmlUtils$$ExternalSyntheticOutline0.m("Unexpected tag ", name4, " in keyDerivationParams"));
+                                                            }
+                                                            str50 = str36;
+                                                            str42 = str35;
+                                                            str51 = str34;
+                                                        }
+                                                        str43 = str30;
+                                                    } else {
+                                                        str31 = str51;
+                                                        str32 = str42;
+                                                        str33 = str50;
+                                                        if (bArr == null) {
+                                                            throw new KeyChainSnapshotParserException("salt was not set in keyDerivationParams");
+                                                        }
+                                                        str29 = str37;
+                                                        int i7 = i5;
+                                                        if (i7 == 1) {
+                                                            createSha256Params = KeyDerivationParams.createSha256Params(bArr);
+                                                        } else {
+                                                            if (i7 != 2) {
+                                                                throw new KeyChainSnapshotParserException("Unknown algorithm in keyDerivationParams");
+                                                            }
+                                                            createSha256Params = KeyDerivationParams.createScryptParams(bArr, i6);
+                                                        }
+                                                        resolvePullParser.require(3, (String) null, str38);
+                                                        builder3.setKeyDerivationParams(createSha256Params);
+                                                        break;
+                                                    }
+                                                }
+                                            default:
+                                                Locale locale4 = Locale.US;
+                                                throw new KeyChainSnapshotParserException(XmlUtils$$ExternalSyntheticOutline0.m("Unexpected tag ", name3, " in keyChainProtectionParams"));
+                                        }
+                                        str50 = str33;
+                                        str37 = str29;
+                                        str42 = str32;
+                                        str44 = str67;
+                                        str51 = str31;
+                                        str43 = str30;
+                                    }
+                                }
+                            }
+                        }
+                    case '\b':
+                        builder.setServerParams(readBlobTag(resolvePullParser, str41));
+                        str2 = str37;
+                        str3 = str41;
+                        str4 = str42;
+                        str5 = str43;
+                        str6 = str49;
+                        str7 = str50;
+                        str8 = str51;
+                        str9 = str;
+                        str10 = str38;
+                        str11 = str40;
+                        str12 = str48;
+                        str13 = str47;
+                        str14 = str39;
+                        str15 = str44;
+                        str16 = str46;
+                        str44 = str15;
+                        str46 = str16;
+                        str47 = str13;
+                        str50 = str7;
+                        str39 = str14;
+                        str40 = str11;
+                        str41 = str3;
+                        str42 = str4;
+                        str48 = str12;
+                        str51 = str8;
+                        str37 = str2;
+                        str38 = str10;
+                        str43 = str5;
+                        str49 = str6;
+                        str45 = str9;
+                        break;
+                    default:
+                        Locale locale5 = Locale.US;
+                        throw new KeyChainSnapshotParserException(XmlUtils$$ExternalSyntheticOutline0.m("Unexpected tag ", name, " in keyChainSnapshot"));
+                }
             }
-        L50:
-            com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException r9 = new com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException
-            java.util.Locale r0 = java.util.Locale.US
-            java.lang.String r1 = "Unexpected tag %s in wrappedApplicationKey"
-            java.lang.Object[] r2 = new java.lang.Object[]{r3}
-            java.lang.String r0 = java.lang.String.format(r0, r1, r2)
-            r9.<init>(r0)
-            throw r9
-        L62:
-            java.lang.String r3 = readStringTag(r9, r5)
-            r0.setAlias(r3)
-            goto Ld
-        L6a:
-            byte[] r3 = readBlobTag(r9, r6)
-            r0.setEncryptedKeyMaterial(r3)
-            goto Ld
-        L72:
-            byte[] r3 = readBlobTag(r9, r7)
-            r0.setMetadata(r3)
-            goto Ld
-        L7a:
-            java.lang.String r1 = com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotSchema.NAMESPACE
-            r9.require(r4, r1, r2)
-            android.security.keystore.recovery.WrappedApplicationKey r9 = r0.build()     // Catch: java.lang.NullPointerException -> L84
-            return r9
-        L84:
-            r9 = move-exception
-            com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException r0 = new com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException
-            java.lang.String r1 = "Failed to build WrappedApplicationKey"
-            r0.<init>(r1, r9)
-            throw r0
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotDeserializer.readWrappedApplicationKey(com.android.modules.utils.TypedXmlPullParser):android.security.keystore.recovery.WrappedApplicationKey");
-    }
-
-    public static List readKeyChainProtectionParamsList(TypedXmlPullParser typedXmlPullParser) {
-        typedXmlPullParser.require(2, KeyChainSnapshotSchema.NAMESPACE, "keyChainProtectionParamsList");
-        ArrayList arrayList = new ArrayList();
-        while (typedXmlPullParser.next() != 3) {
-            if (typedXmlPullParser.getEventType() == 2) {
-                arrayList.add(readKeyChainProtectionParams(typedXmlPullParser));
-            }
+            str52 = str53;
         }
-        typedXmlPullParser.require(3, KeyChainSnapshotSchema.NAMESPACE, "keyChainProtectionParamsList");
-        return arrayList;
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x004f, code lost:
-    
-        switch(r7) {
-            case 0: goto L41;
-            case 1: goto L40;
-            case 2: goto L42;
-            default: goto L39;
-        };
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0063, code lost:
-    
-        throw new com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException(java.lang.String.format(java.util.Locale.US, "Unexpected tag %s in keyChainProtectionParams", r3));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x006c, code lost:
-    
-        r0.setUserSecretType(readIntTag(r8, "userSecretType"));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0074, code lost:
-    
-        r0.setLockScreenUiFormat(readIntTag(r8, "lockScreenUiType"));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x0064, code lost:
-    
-        r0.setKeyDerivationParams(readKeyDerivationParams(r8));
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static android.security.keystore.recovery.KeyChainProtectionParams readKeyChainProtectionParams(com.android.modules.utils.TypedXmlPullParser r8) {
-        /*
-            java.lang.String r0 = com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotSchema.NAMESPACE
-            r1 = 2
-            java.lang.String r2 = "keyChainProtectionParams"
-            r8.require(r1, r0, r2)
-            android.security.keystore.recovery.KeyChainProtectionParams$Builder r0 = new android.security.keystore.recovery.KeyChainProtectionParams$Builder
-            r0.<init>()
-        Le:
-            int r3 = r8.next()
-            r4 = 3
-            if (r3 == r4) goto L7c
-            int r3 = r8.getEventType()
-            if (r3 == r1) goto L1c
-            goto Le
-        L1c:
-            java.lang.String r3 = r8.getName()
-            r3.hashCode()
-            int r4 = r3.hashCode()
-            java.lang.String r5 = "userSecretType"
-            java.lang.String r6 = "lockScreenUiType"
-            r7 = -1
-            switch(r4) {
-                case -776797115: goto L47;
-                case -696958923: goto L3e;
-                case 912448924: goto L32;
-                default: goto L31;
-            }
-        L31:
-            goto L4f
-        L32:
-            java.lang.String r4 = "keyDerivationParams"
-            boolean r4 = r3.equals(r4)
-            if (r4 != 0) goto L3c
-            goto L4f
-        L3c:
-            r7 = r1
-            goto L4f
-        L3e:
-            boolean r4 = r3.equals(r5)
-            if (r4 != 0) goto L45
-            goto L4f
-        L45:
-            r7 = 1
-            goto L4f
-        L47:
-            boolean r4 = r3.equals(r6)
-            if (r4 != 0) goto L4e
-            goto L4f
-        L4e:
-            r7 = 0
-        L4f:
-            switch(r7) {
-                case 0: goto L74;
-                case 1: goto L6c;
-                case 2: goto L64;
-                default: goto L52;
-            }
-        L52:
-            com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException r8 = new com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException
-            java.util.Locale r0 = java.util.Locale.US
-            java.lang.String r1 = "Unexpected tag %s in keyChainProtectionParams"
-            java.lang.Object[] r2 = new java.lang.Object[]{r3}
-            java.lang.String r0 = java.lang.String.format(r0, r1, r2)
-            r8.<init>(r0)
-            throw r8
-        L64:
-            android.security.keystore.recovery.KeyDerivationParams r3 = readKeyDerivationParams(r8)
-            r0.setKeyDerivationParams(r3)
-            goto Le
-        L6c:
-            int r3 = readIntTag(r8, r5)
-            r0.setUserSecretType(r3)
-            goto Le
-        L74:
-            int r3 = readIntTag(r8, r6)
-            r0.setLockScreenUiFormat(r3)
-            goto Le
-        L7c:
-            java.lang.String r1 = com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotSchema.NAMESPACE
-            r8.require(r4, r1, r2)
-            android.security.keystore.recovery.KeyChainProtectionParams r8 = r0.build()     // Catch: java.lang.NullPointerException -> L86
-            return r8
-        L86:
-            r8 = move-exception
-            com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException r0 = new com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException
-            java.lang.String r1 = "Failed to build KeyChainProtectionParams"
-            r0.<init>(r1, r8)
-            throw r0
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotDeserializer.readKeyChainProtectionParams(com.android.modules.utils.TypedXmlPullParser):android.security.keystore.recovery.KeyChainProtectionParams");
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x0041, code lost:
-    
-        if (r6.equals("salt") == false) goto L10;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static android.security.keystore.recovery.KeyDerivationParams readKeyDerivationParams(com.android.modules.utils.TypedXmlPullParser r12) {
-        /*
-            java.lang.String r0 = com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotSchema.NAMESPACE
-            r1 = 2
-            java.lang.String r2 = "keyDerivationParams"
-            r12.require(r1, r0, r2)
-            r0 = -1
-            r3 = 0
-            r4 = r0
-            r5 = r4
-        Ld:
-            int r6 = r12.next()
-            r7 = 1
-            r8 = 3
-            if (r6 == r8) goto L70
-            int r6 = r12.getEventType()
-            if (r6 == r1) goto L1c
-            goto Ld
-        L1c:
-            java.lang.String r6 = r12.getName()
-            r6.hashCode()
-            int r8 = r6.hashCode()
-            java.lang.String r9 = "algorithm"
-            java.lang.String r10 = "salt"
-            java.lang.String r11 = "memoryDifficulty"
-            switch(r8) {
-                case -973274212: goto L44;
-                case 3522646: goto L3d;
-                case 225490031: goto L34;
-                default: goto L32;
-            }
-        L32:
-            r7 = r0
-            goto L4c
-        L34:
-            boolean r7 = r6.equals(r9)
-            if (r7 != 0) goto L3b
-            goto L32
-        L3b:
-            r7 = r1
-            goto L4c
-        L3d:
-            boolean r8 = r6.equals(r10)
-            if (r8 != 0) goto L4c
-            goto L32
-        L44:
-            boolean r7 = r6.equals(r11)
-            if (r7 != 0) goto L4b
-            goto L32
-        L4b:
-            r7 = 0
-        L4c:
-            switch(r7) {
-                case 0: goto L6b;
-                case 1: goto L66;
-                case 2: goto L61;
-                default: goto L4f;
-            }
-        L4f:
-            com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException r12 = new com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException
-            java.util.Locale r0 = java.util.Locale.US
-            java.lang.String r1 = "Unexpected tag %s in keyDerivationParams"
-            java.lang.Object[] r2 = new java.lang.Object[]{r6}
-            java.lang.String r0 = java.lang.String.format(r0, r1, r2)
-            r12.<init>(r0)
-            throw r12
-        L61:
-            int r4 = readIntTag(r12, r9)
-            goto Ld
-        L66:
-            byte[] r3 = readBlobTag(r12, r10)
-            goto Ld
-        L6b:
-            int r5 = readIntTag(r12, r11)
-            goto Ld
-        L70:
-            if (r3 == 0) goto L8d
-            if (r4 == r7) goto L83
-            if (r4 != r1) goto L7b
-            android.security.keystore.recovery.KeyDerivationParams r0 = android.security.keystore.recovery.KeyDerivationParams.createScryptParams(r3, r5)
-            goto L87
-        L7b:
-            com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException r12 = new com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException
-            java.lang.String r0 = "Unknown algorithm in keyDerivationParams"
-            r12.<init>(r0)
-            throw r12
-        L83:
-            android.security.keystore.recovery.KeyDerivationParams r0 = android.security.keystore.recovery.KeyDerivationParams.createSha256Params(r3)
-        L87:
-            java.lang.String r1 = com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotSchema.NAMESPACE
-            r12.require(r8, r1, r2)
-            return r0
-        L8d:
-            com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException r12 = new com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotParserException
-            java.lang.String r0 = "salt was not set in keyDerivationParams"
-            r12.<init>(r0)
-            throw r12
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.recoverablekeystore.serialization.KeyChainSnapshotDeserializer.readKeyDerivationParams(com.android.modules.utils.TypedXmlPullParser):android.security.keystore.recovery.KeyDerivationParams");
-    }
-
-    public static int readIntTag(TypedXmlPullParser typedXmlPullParser, String str) {
-        String str2 = KeyChainSnapshotSchema.NAMESPACE;
-        typedXmlPullParser.require(2, str2, str);
-        String readText = readText(typedXmlPullParser);
-        typedXmlPullParser.require(3, str2, str);
-        try {
-            return Integer.valueOf(readText).intValue();
-        } catch (NumberFormatException e) {
-            throw new KeyChainSnapshotParserException(String.format(Locale.US, "%s expected int but got '%s'", str, readText), e);
-        }
-    }
-
-    public static long readLongTag(TypedXmlPullParser typedXmlPullParser, String str) {
-        String str2 = KeyChainSnapshotSchema.NAMESPACE;
-        typedXmlPullParser.require(2, str2, str);
-        String readText = readText(typedXmlPullParser);
-        typedXmlPullParser.require(3, str2, str);
-        try {
-            return Long.valueOf(readText).longValue();
-        } catch (NumberFormatException e) {
-            throw new KeyChainSnapshotParserException(String.format(Locale.US, "%s expected long but got '%s'", str, readText), e);
-        }
-    }
-
-    public static String readStringTag(TypedXmlPullParser typedXmlPullParser, String str) {
-        String str2 = KeyChainSnapshotSchema.NAMESPACE;
-        typedXmlPullParser.require(2, str2, str);
-        String readText = readText(typedXmlPullParser);
-        typedXmlPullParser.require(3, str2, str);
-        return readText;
     }
 
     public static byte[] readBlobTag(TypedXmlPullParser typedXmlPullParser, String str) {
-        String str2 = KeyChainSnapshotSchema.NAMESPACE;
-        typedXmlPullParser.require(2, str2, str);
+        typedXmlPullParser.require(2, (String) null, str);
         String readText = readText(typedXmlPullParser);
-        typedXmlPullParser.require(3, str2, str);
+        typedXmlPullParser.require(3, (String) null, str);
         try {
             return Base64.decode(readText, 0);
         } catch (IllegalArgumentException e) {
-            throw new KeyChainSnapshotParserException(String.format(Locale.US, "%s expected base64 encoded bytes but got '%s'", str, readText), e);
+            Locale locale = Locale.US;
+            throw new KeyChainSnapshotParserException(str + " expected base64 encoded bytes but got '" + readText + "'", e);
         }
     }
 
-    public static CertPath readCertPathTag(TypedXmlPullParser typedXmlPullParser, String str) {
+    public static int readIntTag(TypedXmlPullParser typedXmlPullParser, String str) {
+        typedXmlPullParser.require(2, (String) null, str);
+        String readText = readText(typedXmlPullParser);
+        typedXmlPullParser.require(3, (String) null, str);
         try {
-            return CertificateFactory.getInstance("X.509").generateCertPath(new ByteArrayInputStream(readBlobTag(typedXmlPullParser, str)));
-        } catch (CertificateException e) {
-            throw new KeyChainSnapshotParserException("Could not parse CertPath in tag " + str, e);
+            return Integer.valueOf(readText).intValue();
+        } catch (NumberFormatException e) {
+            Locale locale = Locale.US;
+            throw new KeyChainSnapshotParserException(str + " expected int but got '" + readText + "'", e);
         }
     }
 

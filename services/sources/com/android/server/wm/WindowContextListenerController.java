@@ -1,6 +1,7 @@
 package com.android.server.wm;
 
-import android.app.IWindowToken;
+import android.app.servertransaction.WindowContextInfoChangeItem;
+import android.app.servertransaction.WindowContextWindowRemovalItem;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -9,92 +10,187 @@ import android.util.ArrayMap;
 import android.view.Display;
 import android.window.WindowProviderService;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import java.io.PrintWriter;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class WindowContextListenerController {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WindowContextListenerController {
     final ArrayMap mListeners = new ArrayMap();
 
-    public void registerWindowContainerListener(IBinder iBinder, WindowContainer windowContainer, int i, int i2, Bundle bundle) {
-        registerWindowContainerListener(iBinder, windowContainer, i, i2, bundle, true);
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class WindowContextListenerImpl implements WindowContainerListener {
+        public final IBinder mClientToken;
+        public WindowContainer mContainer;
+        public DeathRecipient mDeathRecipient;
+        public boolean mHasPendingConfiguration;
+        public Configuration mLastReportedConfig;
+        public int mLastReportedDisplay = -1;
+        public final Bundle mOptions;
+        public final int mType;
+        public final WindowProcessController mWpc;
 
-    public void registerWindowContainerListener(IBinder iBinder, WindowContainer windowContainer, int i, int i2, Bundle bundle, boolean z) {
-        WindowContextListenerImpl windowContextListenerImpl = (WindowContextListenerImpl) this.mListeners.get(iBinder);
-        if (windowContextListenerImpl == null) {
-            new WindowContextListenerImpl(iBinder, windowContainer, i, i2, bundle).register(z);
-        } else {
-            windowContextListenerImpl.updateContainer(windowContainer);
-        }
-    }
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class DeathRecipient implements IBinder.DeathRecipient {
+            public DeathRecipient() {
+            }
 
-    public void unregisterWindowContainerListener(IBinder iBinder) {
-        WindowContextListenerImpl windowContextListenerImpl = (WindowContextListenerImpl) this.mListeners.get(iBinder);
-        if (windowContextListenerImpl == null) {
-            return;
-        }
-        windowContextListenerImpl.unregister();
-        if (windowContextListenerImpl.mDeathRecipient != null) {
-            windowContextListenerImpl.mDeathRecipient.unlinkToDeath();
-        }
-    }
-
-    public void dispatchPendingConfigurationIfNeeded(int i) {
-        for (int size = this.mListeners.size() - 1; size >= 0; size--) {
-            WindowContextListenerImpl windowContextListenerImpl = (WindowContextListenerImpl) this.mListeners.valueAt(size);
-            if (windowContextListenerImpl.getWindowContainer().getDisplayContent().getDisplayId() == i && windowContextListenerImpl.mHasPendingConfiguration) {
-                windowContextListenerImpl.reportConfigToWindowTokenClient();
+            @Override // android.os.IBinder.DeathRecipient
+            public final void binderDied() {
+                WindowManagerGlobalLock windowManagerGlobalLock = WindowContextListenerImpl.this.mContainer.mWmService.mGlobalLock;
+                WindowManagerService.boostPriorityForLockedSection();
+                synchronized (windowManagerGlobalLock) {
+                    try {
+                        WindowContextListenerImpl windowContextListenerImpl = WindowContextListenerImpl.this;
+                        windowContextListenerImpl.mDeathRecipient = null;
+                        windowContextListenerImpl.unregister();
+                    } catch (Throwable th) {
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                        throw th;
+                    }
+                }
+                WindowManagerService.resetPriorityAfterLockedSection();
             }
         }
+
+        public WindowContextListenerImpl(WindowProcessController windowProcessController, IBinder iBinder, WindowContainer windowContainer, int i, Bundle bundle) {
+            this.mWpc = windowProcessController;
+            this.mClientToken = iBinder;
+            Objects.requireNonNull(windowContainer);
+            this.mContainer = windowContainer;
+            this.mType = i;
+            this.mOptions = bundle;
+            DeathRecipient deathRecipient = new DeathRecipient();
+            try {
+                iBinder.linkToDeath(deathRecipient, 0);
+                this.mDeathRecipient = deathRecipient;
+            } catch (RemoteException unused) {
+                if (ProtoLogImpl_54989576.Cache.WM_ERROR_enabled[4]) {
+                    ProtoLogImpl_54989576.e(ProtoLogGroup.WM_ERROR, 6139364662459841509L, 0, "Could not register window container listener token=%s, container=%s", String.valueOf(iBinder), String.valueOf(this.mContainer));
+                }
+            }
+        }
+
+        public final void dispatchWindowContextInfoChange() {
+            if (this.mDeathRecipient == null) {
+                throw new IllegalStateException("Invalid client token: " + this.mClientToken);
+            }
+            DisplayContent displayContent = this.mContainer.getDisplayContent();
+            if (displayContent.isReady()) {
+                if (!WindowProviderService.isWindowProviderService(this.mOptions) && Display.isSuspendedState(displayContent.mDisplayInfo.state)) {
+                    this.mHasPendingConfiguration = true;
+                    return;
+                }
+                Configuration configuration = this.mContainer.getConfiguration();
+                int i = displayContent.mDisplayId;
+                if (this.mLastReportedConfig == null) {
+                    this.mLastReportedConfig = new Configuration();
+                }
+                if (configuration.equals(this.mLastReportedConfig) && i == this.mLastReportedDisplay) {
+                    return;
+                }
+                this.mLastReportedConfig.setTo(configuration);
+                this.mLastReportedDisplay = i;
+                this.mWpc.scheduleClientTransactionItem(WindowContextInfoChangeItem.obtain(this.mClientToken, configuration, i));
+                this.mHasPendingConfiguration = false;
+            }
+        }
+
+        public WindowContainer getWindowContainer() {
+            return this.mContainer;
+        }
+
+        @Override // com.android.server.wm.WindowContainerListener
+        public final void onDisplayChanged(DisplayContent displayContent) {
+            dispatchWindowContextInfoChange();
+        }
+
+        @Override // com.android.server.wm.ConfigurationContainerListener
+        public final void onMergedOverrideConfigurationChanged(Configuration configuration) {
+            dispatchWindowContextInfoChange();
+        }
+
+        @Override // com.android.server.wm.WindowContainerListener
+        public final void onRemoved() {
+            DisplayContent displayContent;
+            if (this.mDeathRecipient == null) {
+                throw new IllegalStateException("Invalid client token: " + this.mClientToken);
+            }
+            WindowToken asWindowToken = this.mContainer.asWindowToken();
+            if (asWindowToken != null && asWindowToken.mFromClientToken && (displayContent = asWindowToken.mWmService.mRoot.getDisplayContent(this.mLastReportedDisplay)) != null) {
+                updateContainer(displayContent.findAreaForWindowType(asWindowToken.windowType, asWindowToken.mOptions, asWindowToken.mOwnerCanManageAppTokens, asWindowToken.mRoundedCornerOverlay));
+                return;
+            }
+            DeathRecipient deathRecipient = this.mDeathRecipient;
+            WindowContextListenerImpl.this.mClientToken.unlinkToDeath(deathRecipient, 0);
+            this.mWpc.scheduleClientTransactionItem(WindowContextWindowRemovalItem.obtain(this.mClientToken));
+            unregister();
+        }
+
+        public final void register(boolean z) {
+            IBinder iBinder = this.mClientToken;
+            if (this.mDeathRecipient != null) {
+                WindowContextListenerController.this.mListeners.putIfAbsent(iBinder, this);
+                this.mContainer.registerWindowContainerListener(this, z);
+            } else {
+                throw new IllegalStateException("Invalid client token: " + iBinder);
+            }
+        }
+
+        public final String toString() {
+            return "WindowContextListenerImpl{clientToken=" + this.mClientToken + ", container=" + this.mContainer + "}";
+        }
+
+        public final void unregister() {
+            this.mContainer.unregisterWindowContainerListener(this);
+            WindowContextListenerController.this.mListeners.remove(this.mClientToken);
+        }
+
+        public final void updateContainer(WindowContainer windowContainer) {
+            Objects.requireNonNull(windowContainer);
+            if (this.mContainer.equals(windowContainer)) {
+                return;
+            }
+            this.mContainer.unregisterWindowContainerListener(this);
+            this.mContainer = windowContainer;
+            this.mLastReportedConfig = null;
+            this.mLastReportedDisplay = -1;
+            register(true);
+        }
     }
 
-    public boolean assertCallerCanModifyListener(IBinder iBinder, boolean z, int i) {
+    public final boolean assertCallerCanModifyListener(int i, boolean z, IBinder iBinder) {
         WindowContextListenerImpl windowContextListenerImpl = (WindowContextListenerImpl) this.mListeners.get(iBinder);
         if (windowContextListenerImpl == null) {
-            if (ProtoLogCache.WM_DEBUG_ADD_REMOVE_enabled) {
-                ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, -1136467585, 0, (String) null, (Object[]) null);
+            if (!ProtoLogImpl_54989576.Cache.WM_DEBUG_ADD_REMOVE_enabled[2]) {
+                return false;
             }
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, 2163930285157267092L, 0, null, null);
             return false;
         }
-        if (z || i == windowContextListenerImpl.mOwnerUid) {
+        if (z) {
             return true;
         }
-        throw new UnsupportedOperationException("Uid mismatch. Caller uid is " + i + ", while the listener's owner is from " + windowContextListenerImpl.mOwnerUid);
-    }
-
-    public boolean hasListener(IBinder iBinder) {
-        return this.mListeners.containsKey(iBinder);
-    }
-
-    public int getWindowType(IBinder iBinder) {
-        WindowContextListenerImpl windowContextListenerImpl = (WindowContextListenerImpl) this.mListeners.get(iBinder);
-        if (windowContextListenerImpl != null) {
-            return windowContextListenerImpl.mType;
+        WindowProcessController windowProcessController = windowContextListenerImpl.mWpc;
+        if (i == windowProcessController.mUid) {
+            return true;
         }
-        return -1;
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "Uid mismatch. Caller uid is ", ", while the listener's owner is from ");
+        m.append(windowProcessController.mUid);
+        throw new UnsupportedOperationException(m.toString());
     }
 
-    public Bundle getOptions(IBinder iBinder) {
-        WindowContextListenerImpl windowContextListenerImpl = (WindowContextListenerImpl) this.mListeners.get(iBinder);
-        if (windowContextListenerImpl != null) {
-            return windowContextListenerImpl.mOptions;
+    public final void registerWindowContainerListener(WindowProcessController windowProcessController, IBinder iBinder, WindowContainer windowContainer, int i, Bundle bundle) {
+        if (((WindowContextListenerImpl) this.mListeners.get(iBinder)) == null) {
+            new WindowContextListenerImpl(windowProcessController, iBinder, windowContainer, i, bundle).register(false);
+        } else {
+            updateContainerForWindowContextListener(iBinder, windowContainer);
         }
-        return null;
     }
 
-    public WindowContainer getContainer(IBinder iBinder) {
-        WindowContextListenerImpl windowContextListenerImpl = (WindowContextListenerImpl) this.mListeners.get(iBinder);
-        if (windowContextListenerImpl != null) {
-            return windowContextListenerImpl.mContainer;
-        }
-        return null;
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder("WindowContextListenerController{");
-        sb.append("mListeners=[");
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("WindowContextListenerController{mListeners=[");
         int size = this.mListeners.values().size();
         for (int i = 0; i < size; i++) {
             sb.append(this.mListeners.valueAt(i));
@@ -106,205 +202,12 @@ public class WindowContextListenerController {
         return sb.toString();
     }
 
-    public void dump(PrintWriter printWriter, String str) {
-        String str2 = str + "  ";
-        printWriter.print(str);
-        printWriter.println(WindowContextListenerController.class.getSimpleName());
-        int size = this.mListeners.values().size();
-        for (int i = 0; i < size; i++) {
-            WindowContextListenerImpl windowContextListenerImpl = (WindowContextListenerImpl) this.mListeners.valueAt(i);
-            printWriter.print(str2);
-            printWriter.print("mListeners #");
-            printWriter.print(i);
-            printWriter.print(" {");
-            printWriter.print("type:");
-            printWriter.print(windowContextListenerImpl.mType);
-            printWriter.print(", display:");
-            printWriter.print(windowContextListenerImpl.mLastReportedDisplay);
-            printWriter.print(", package=");
-            printWriter.print(windowContextListenerImpl.mPackageName);
-            printWriter.print(", container=");
-            printWriter.print(windowContextListenerImpl.mContainer);
-            printWriter.println("}");
-            if (windowContextListenerImpl.mHasPendingConfiguration) {
-                printWriter.print(str2);
-                printWriter.println("  mHasPendingConfiguration=true");
-            }
-            printWriter.print(str2);
-            printWriter.print("  mLastReportedConfig=");
-            printWriter.println(windowContextListenerImpl.mLastReportedConfig);
-        }
-        printWriter.println();
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public class WindowContextListenerImpl implements WindowContainerListener {
-        public final IWindowToken mClientToken;
-        public WindowContainer mContainer;
-        public DeathRecipient mDeathRecipient;
-        public boolean mHasPendingConfiguration;
-        public Configuration mLastReportedConfig;
-        public int mLastReportedDisplay;
-        public final Bundle mOptions;
-        public final int mOwnerUid;
-        public String mPackageName;
-        public final int mType;
-
-        public WindowContextListenerImpl(IBinder iBinder, WindowContainer windowContainer, int i, int i2, Bundle bundle) {
-            this.mLastReportedDisplay = -1;
-            this.mClientToken = IWindowToken.Stub.asInterface(iBinder);
-            Objects.requireNonNull(windowContainer);
-            this.mContainer = windowContainer;
-            this.mOwnerUid = i;
-            this.mType = i2;
-            this.mOptions = bundle;
-            DeathRecipient deathRecipient = new DeathRecipient();
-            try {
-                deathRecipient.linkToDeath();
-                this.mDeathRecipient = deathRecipient;
-            } catch (RemoteException unused) {
-                if (ProtoLogCache.WM_ERROR_enabled) {
-                    ProtoLogImpl.e(ProtoLogGroup.WM_ERROR, -2014162875, 0, "Could not register window container listener token=%s, container=%s", new Object[]{String.valueOf(iBinder), String.valueOf(this.mContainer)});
-                }
-            }
-            this.mPackageName = this.mContainer.mWmService.mContext.getPackageManager().getNameForUid(this.mOwnerUid);
-        }
-
-        public WindowContainer getWindowContainer() {
-            return this.mContainer;
-        }
-
-        public final void updateContainer(WindowContainer windowContainer) {
-            Objects.requireNonNull(windowContainer);
-            if (this.mContainer.equals(windowContainer)) {
-                return;
-            }
-            this.mContainer.unregisterWindowContainerListener(this);
-            this.mContainer = windowContainer;
-            clear();
-            register();
-        }
-
-        public final void register() {
-            register(true);
-        }
-
-        public final void register(boolean z) {
-            IBinder asBinder = this.mClientToken.asBinder();
-            if (this.mDeathRecipient == null) {
-                throw new IllegalStateException("Invalid client token: " + asBinder);
-            }
-            WindowContextListenerController.this.mListeners.putIfAbsent(asBinder, this);
-            this.mContainer.registerWindowContainerListener(this, z);
-        }
-
-        public final void unregister() {
-            this.mContainer.unregisterWindowContainerListener(this);
-            WindowContextListenerController.this.mListeners.remove(this.mClientToken.asBinder());
-        }
-
-        public final void clear() {
-            this.mLastReportedConfig = null;
-            this.mLastReportedDisplay = -1;
-        }
-
-        @Override // com.android.server.wm.ConfigurationContainerListener
-        public void onMergedOverrideConfigurationChanged(Configuration configuration) {
-            reportConfigToWindowTokenClient();
-        }
-
-        @Override // com.android.server.wm.WindowContainerListener
-        public void onDisplayChanged(DisplayContent displayContent) {
-            reportConfigToWindowTokenClient();
-        }
-
-        public final void reportConfigToWindowTokenClient() {
-            if (this.mDeathRecipient == null) {
-                throw new IllegalStateException("Invalid client token: " + this.mClientToken.asBinder());
-            }
-            DisplayContent displayContent = this.mContainer.getDisplayContent();
-            if (displayContent.isReady()) {
-                if (!WindowProviderService.isWindowProviderService(this.mOptions) && Display.isSuspendedState(displayContent.getDisplayInfo().state)) {
-                    this.mHasPendingConfiguration = true;
-                    return;
-                }
-                Configuration configuration = this.mContainer.getConfiguration();
-                int displayId = displayContent.getDisplayId();
-                if (this.mLastReportedConfig == null) {
-                    this.mLastReportedConfig = new Configuration();
-                }
-                if (configuration.equals(this.mLastReportedConfig) && displayId == this.mLastReportedDisplay) {
-                    return;
-                }
-                this.mLastReportedConfig.setTo(configuration);
-                this.mLastReportedDisplay = displayId;
-                try {
-                    this.mContainer.mWmService.mContext.getPackageManager().getNameForUid(this.mOwnerUid);
-                    this.mClientToken.onConfigurationChanged(configuration, displayId);
-                } catch (RemoteException unused) {
-                    if (ProtoLogCache.WM_ERROR_enabled) {
-                        ProtoLogImpl.w(ProtoLogGroup.WM_ERROR, 1948483534, 0, "Could not report config changes to the window token client.", (Object[]) null);
-                    }
-                }
-                this.mHasPendingConfiguration = false;
-            }
-        }
-
-        @Override // com.android.server.wm.WindowContainerListener
-        public void onRemoved() {
-            DisplayContent displayContent;
-            if (this.mDeathRecipient == null) {
-                throw new IllegalStateException("Invalid client token: " + this.mClientToken.asBinder());
-            }
-            WindowToken asWindowToken = this.mContainer.asWindowToken();
-            if (asWindowToken != null && asWindowToken.isFromClient() && (displayContent = asWindowToken.mWmService.mRoot.getDisplayContent(this.mLastReportedDisplay)) != null) {
-                updateContainer(displayContent.findAreaForToken(asWindowToken));
-                return;
-            }
-            this.mDeathRecipient.unlinkToDeath();
-            try {
-                this.mClientToken.onWindowTokenRemoved();
-            } catch (RemoteException unused) {
-                if (ProtoLogCache.WM_ERROR_enabled) {
-                    ProtoLogImpl.w(ProtoLogGroup.WM_ERROR, 90764070, 0, "Could not report token removal to the window token client.", (Object[]) null);
-                }
-            }
-            unregister();
-        }
-
-        public String toString() {
-            return "WindowContextListenerImpl{clientToken=" + this.mClientToken.asBinder() + ", container=" + this.mContainer + ", " + this.mPackageName + "}";
-        }
-
-        /* loaded from: classes3.dex */
-        public class DeathRecipient implements IBinder.DeathRecipient {
-            public DeathRecipient() {
-            }
-
-            @Override // android.os.IBinder.DeathRecipient
-            public void binderDied() {
-                WindowManagerGlobalLock windowManagerGlobalLock = WindowContextListenerImpl.this.mContainer.mWmService.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        WindowContextListenerImpl.this.mDeathRecipient = null;
-                        WindowContextListenerImpl.this.unregister();
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-
-            public void linkToDeath() {
-                WindowContextListenerImpl.this.mClientToken.asBinder().linkToDeath(this, 0);
-            }
-
-            public void unlinkToDeath() {
-                WindowContextListenerImpl.this.mClientToken.asBinder().unlinkToDeath(this, 0);
-            }
+    public final void updateContainerForWindowContextListener(IBinder iBinder, WindowContainer windowContainer) {
+        WindowContextListenerImpl windowContextListenerImpl = (WindowContextListenerImpl) this.mListeners.get(iBinder);
+        if (windowContextListenerImpl != null) {
+            windowContextListenerImpl.updateContainer(windowContainer);
+        } else {
+            throw new IllegalArgumentException("Can't find listener for " + iBinder);
         }
     }
 }

@@ -1,5 +1,7 @@
 package android.net;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,19 +9,10 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class NativeNetworkConfig implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.net.NativeNetworkConfig.1
-        @Override // android.os.Parcelable.Creator
-        public NativeNetworkConfig createFromParcel(Parcel parcel) {
-            return NativeNetworkConfig.internalCreateFromParcel(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NativeNetworkConfig[] newArray(int i) {
-            return new NativeNetworkConfig[i];
-        }
-    };
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public final boolean excludeLocalRoutes;
     public final int netId;
     public final int networkType;
@@ -27,12 +20,21 @@ public class NativeNetworkConfig implements Parcelable {
     public final boolean secure;
     public final int vpnType;
 
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return 0;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.net.NativeNetworkConfig$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            return NativeNetworkConfig.internalCreateFromParcel(parcel);
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new NativeNetworkConfig[i];
+        }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Builder {
         private int netId = 0;
         private int networkType = 0;
@@ -40,6 +42,15 @@ public class NativeNetworkConfig implements Parcelable {
         private boolean secure = false;
         private int vpnType = 2;
         private boolean excludeLocalRoutes = false;
+
+        public NativeNetworkConfig build() {
+            return new NativeNetworkConfig(this.netId, this.networkType, this.permission, this.secure, this.vpnType, this.excludeLocalRoutes);
+        }
+
+        public Builder setExcludeLocalRoutes(boolean z) {
+            this.excludeLocalRoutes = z;
+            return this;
+        }
 
         public Builder setNetId(int i) {
             this.netId = i;
@@ -65,31 +76,6 @@ public class NativeNetworkConfig implements Parcelable {
             this.vpnType = i;
             return this;
         }
-
-        public Builder setExcludeLocalRoutes(boolean z) {
-            this.excludeLocalRoutes = z;
-            return this;
-        }
-
-        public NativeNetworkConfig build() {
-            return new NativeNetworkConfig(this.netId, this.networkType, this.permission, this.secure, this.vpnType, this.excludeLocalRoutes);
-        }
-    }
-
-    @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeInt(this.netId);
-        parcel.writeInt(this.networkType);
-        parcel.writeInt(this.permission);
-        parcel.writeBoolean(this.secure);
-        parcel.writeInt(this.vpnType);
-        parcel.writeBoolean(this.excludeLocalRoutes);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
     }
 
     public NativeNetworkConfig(int i, int i2, int i3, boolean z, int i4, boolean z2) {
@@ -174,15 +160,9 @@ public class NativeNetworkConfig implements Parcelable {
         return builder.build();
     }
 
-    public String toString() {
-        StringJoiner stringJoiner = new StringJoiner(", ", "{", "}");
-        stringJoiner.add("netId: " + this.netId);
-        stringJoiner.add("networkType: " + this.networkType);
-        stringJoiner.add("permission: " + this.permission);
-        stringJoiner.add("secure: " + this.secure);
-        stringJoiner.add("vpnType: " + this.vpnType);
-        stringJoiner.add("excludeLocalRoutes: " + this.excludeLocalRoutes);
-        return "android.net.NativeNetworkConfig" + stringJoiner.toString();
+    @Override // android.os.Parcelable
+    public int describeContents() {
+        return 0;
     }
 
     public boolean equals(Object obj) {
@@ -198,5 +178,31 @@ public class NativeNetworkConfig implements Parcelable {
 
     public int hashCode() {
         return Arrays.deepHashCode(Arrays.asList(Integer.valueOf(this.netId), Integer.valueOf(this.networkType), Integer.valueOf(this.permission), Boolean.valueOf(this.secure), Integer.valueOf(this.vpnType), Boolean.valueOf(this.excludeLocalRoutes)).toArray());
+    }
+
+    public String toString() {
+        StringJoiner stringJoiner = new StringJoiner(", ", "{", "}");
+        StringBuilder m = AmFmBandRange$$ExternalSyntheticOutline0.m(AmFmBandRange$$ExternalSyntheticOutline0.m(AmFmBandRange$$ExternalSyntheticOutline0.m(new StringBuilder("netId: "), this.netId, stringJoiner, "networkType: "), this.networkType, stringJoiner, "permission: "), this.permission, stringJoiner, "secure: ");
+        m.append(this.secure);
+        stringJoiner.add(m.toString());
+        StringBuilder m2 = AmFmBandRange$$ExternalSyntheticOutline0.m(new StringBuilder("vpnType: "), this.vpnType, stringJoiner, "excludeLocalRoutes: ");
+        m2.append(this.excludeLocalRoutes);
+        stringJoiner.add(m2.toString());
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(stringJoiner, new StringBuilder("NativeNetworkConfig"));
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeInt(this.netId);
+        parcel.writeInt(this.networkType);
+        parcel.writeInt(this.permission);
+        parcel.writeBoolean(this.secure);
+        parcel.writeInt(this.vpnType);
+        parcel.writeBoolean(this.excludeLocalRoutes);
+        int dataPosition2 = parcel.dataPosition();
+        parcel.setDataPosition(dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(dataPosition2, dataPosition, parcel, dataPosition2);
     }
 }

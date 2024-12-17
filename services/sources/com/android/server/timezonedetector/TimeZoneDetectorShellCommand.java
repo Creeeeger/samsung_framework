@@ -1,312 +1,392 @@
 package com.android.server.timezonedetector;
 
+import android.app.time.LocationTimeZoneAlgorithmStatus;
 import android.app.time.TimeZoneConfiguration;
 import android.app.time.TimeZoneState;
 import android.app.timezonedetector.ManualTimeZoneSuggestion;
 import android.app.timezonedetector.TelephonyTimeZoneSuggestion;
+import android.os.Binder;
 import android.os.ShellCommand;
+import android.os.SystemClock;
+import com.android.server.timezonedetector.CallerIdentityInjector;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.StringTokenizer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class TimeZoneDetectorShellCommand extends ShellCommand {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class TimeZoneDetectorShellCommand extends ShellCommand {
     public final TimeZoneDetectorService mInterface;
 
     public TimeZoneDetectorShellCommand(TimeZoneDetectorService timeZoneDetectorService) {
         this.mInterface = timeZoneDetectorService;
     }
 
-    public int onCommand(String str) {
+    public final int onCommand(String str) {
+        boolean z;
+        boolean z2;
+        final int i = 2;
+        final int i2 = 0;
+        final int i3 = 1;
         if (str == null) {
             return handleDefaultCommands(str);
         }
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1908861832:
-                if (str.equals("is_telephony_detection_supported")) {
-                    c = 0;
-                    break;
+        switch (str) {
+            case "is_telephony_detection_supported":
+                PrintWriter outPrintWriter = getOutPrintWriter();
+                TimeZoneDetectorService timeZoneDetectorService = this.mInterface;
+                timeZoneDetectorService.enforceManageTimeZoneDetectorPermission();
+                TimeZoneDetectorStrategyImpl timeZoneDetectorStrategyImpl = (TimeZoneDetectorStrategyImpl) timeZoneDetectorService.mTimeZoneDetectorStrategy;
+                synchronized (timeZoneDetectorStrategyImpl) {
+                    z = timeZoneDetectorStrategyImpl.mCurrentConfigurationInternal.mTelephonyDetectionSupported;
                 }
-                break;
-            case -1595273216:
-                if (str.equals("suggest_manual_time_zone")) {
-                    c = 1;
-                    break;
+                outPrintWriter.println(z);
+                return 0;
+            case "suggest_manual_time_zone":
+                Supplier supplier = new Supplier(this) { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda0
+                    public final /* synthetic */ TimeZoneDetectorShellCommand f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
+                    /* JADX WARN: Multi-variable type inference failed */
+                    /* JADX WARN: Type inference failed for: r5v10, types: [java.util.List] */
+                    /* JADX WARN: Type inference failed for: r5v12 */
+                    /* JADX WARN: Type inference failed for: r5v8, types: [java.util.ArrayList] */
+                    /* JADX WARN: Type inference failed for: r5v9, types: [java.util.List] */
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        ?? arrayList;
+                        int i4 = i;
+                        TimeZoneDetectorShellCommand timeZoneDetectorShellCommand = this.f$0;
+                        switch (i4) {
+                            case 0:
+                                GeolocationTimeZoneSuggestion geolocationTimeZoneSuggestion = null;
+                                LocationTimeZoneAlgorithmStatus locationTimeZoneAlgorithmStatus = null;
+                                String str2 = null;
+                                while (true) {
+                                    String nextArg = timeZoneDetectorShellCommand.getNextArg();
+                                    if (nextArg == null) {
+                                        if (locationTimeZoneAlgorithmStatus == null) {
+                                            throw new IllegalArgumentException("Missing --status");
+                                        }
+                                        if (str2 != null) {
+                                            if ("UNCERTAIN".equals(str2)) {
+                                                arrayList = 0;
+                                            } else if ("EMPTY".equals(str2)) {
+                                                arrayList = Collections.emptyList();
+                                            } else {
+                                                arrayList = new ArrayList();
+                                                StringTokenizer stringTokenizer = new StringTokenizer(str2, ",");
+                                                while (stringTokenizer.hasMoreTokens()) {
+                                                    arrayList.add(stringTokenizer.nextToken());
+                                                }
+                                            }
+                                            long elapsedRealtime = SystemClock.elapsedRealtime();
+                                            geolocationTimeZoneSuggestion = arrayList == 0 ? new GeolocationTimeZoneSuggestion(elapsedRealtime, null) : new GeolocationTimeZoneSuggestion(elapsedRealtime, arrayList);
+                                        }
+                                        LocationAlgorithmEvent locationAlgorithmEvent = new LocationAlgorithmEvent(locationTimeZoneAlgorithmStatus, geolocationTimeZoneSuggestion);
+                                        locationAlgorithmEvent.addDebugInfo("Command line injection");
+                                        return locationAlgorithmEvent;
+                                    }
+                                    if (nextArg.equals("--suggestion")) {
+                                        str2 = timeZoneDetectorShellCommand.getNextArgRequired();
+                                    } else {
+                                        if (!nextArg.equals("--status")) {
+                                            throw new IllegalArgumentException("Unknown option: ".concat(nextArg));
+                                        }
+                                        locationTimeZoneAlgorithmStatus = LocationTimeZoneAlgorithmStatus.parseCommandlineArg(timeZoneDetectorShellCommand.getNextArgRequired());
+                                    }
+                                }
+                            case 1:
+                                timeZoneDetectorShellCommand.getClass();
+                                return TelephonyTimeZoneSuggestion.parseCommandLineArg(timeZoneDetectorShellCommand);
+                            default:
+                                timeZoneDetectorShellCommand.getClass();
+                                return ManualTimeZoneSuggestion.parseCommandLineArg(timeZoneDetectorShellCommand);
+                        }
+                    }
+                };
+                final TimeZoneDetectorService timeZoneDetectorService2 = this.mInterface;
+                Objects.requireNonNull(timeZoneDetectorService2);
+                return runSingleArgMethod(supplier, new Consumer() { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        int i4 = i;
+                        TimeZoneDetectorService timeZoneDetectorService3 = timeZoneDetectorService2;
+                        switch (i4) {
+                            case 0:
+                                LocationAlgorithmEvent locationAlgorithmEvent = (LocationAlgorithmEvent) obj;
+                                timeZoneDetectorService3.mContext.enforceCallingPermission("android.permission.SET_TIME_ZONE", "suggest geolocation time zone");
+                                Objects.requireNonNull(locationAlgorithmEvent);
+                                timeZoneDetectorService3.mHandler.post(new TimeZoneDetectorService$$ExternalSyntheticLambda0(timeZoneDetectorService3, locationAlgorithmEvent, 1));
+                                break;
+                            case 1:
+                                timeZoneDetectorService3.suggestTelephonyTimeZone((TelephonyTimeZoneSuggestion) obj);
+                                break;
+                            default:
+                                timeZoneDetectorService3.suggestManualTimeZone((ManualTimeZoneSuggestion) obj);
+                                break;
+                        }
+                    }
+                });
+            case "get_time_zone_state":
+                getOutPrintWriter().println(this.mInterface.getTimeZoneState());
+                return 0;
+            case "set_time_zone_state_for_tests":
+                TimeZoneState parseCommandLineArgs = TimeZoneState.parseCommandLineArgs(this);
+                TimeZoneDetectorService timeZoneDetectorService3 = this.mInterface;
+                timeZoneDetectorService3.enforceManageTimeZoneDetectorPermission();
+                ((CallerIdentityInjector.Real) timeZoneDetectorService3.mCallerIdentityInjector).getClass();
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    TimeZoneDetectorStrategyImpl timeZoneDetectorStrategyImpl2 = (TimeZoneDetectorStrategyImpl) timeZoneDetectorService3.mTimeZoneDetectorStrategy;
+                    timeZoneDetectorStrategyImpl2.getClass();
+                    Objects.requireNonNull(parseCommandLineArgs);
+                    timeZoneDetectorStrategyImpl2.mEnvironment.setDeviceTimeZoneAndConfidence(parseCommandLineArgs.getUserShouldConfirmId() ? 0 : 100, parseCommandLineArgs.getId(), "setTimeZoneState()");
+                    return 0;
+                } finally {
+                    ((CallerIdentityInjector.Real) timeZoneDetectorService3.mCallerIdentityInjector).getClass();
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
-                break;
-            case -1589541881:
-                if (str.equals("get_time_zone_state")) {
-                    c = 2;
-                    break;
+            case "is_auto_detection_enabled":
+                getOutPrintWriter().println(this.mInterface.getCapabilitiesAndConfig(-2).getConfiguration().isAutoDetectionEnabled());
+                return 0;
+            case "dump_metrics":
+                PrintWriter outPrintWriter2 = getOutPrintWriter();
+                TimeZoneDetectorService timeZoneDetectorService4 = this.mInterface;
+                timeZoneDetectorService4.enforceManageTimeZoneDetectorPermission();
+                MetricsTimeZoneDetectorState generateMetricsState = ((TimeZoneDetectorStrategyImpl) timeZoneDetectorService4.mTimeZoneDetectorStrategy).generateMetricsState();
+                outPrintWriter2.println("MetricsTimeZoneDetectorState:");
+                outPrintWriter2.println(generateMetricsState.toString());
+                return 0;
+            case "set_geo_detection_enabled":
+                return !this.mInterface.updateConfiguration(-2, new TimeZoneConfiguration.Builder().setGeoDetectionEnabled(Boolean.parseBoolean(getNextArgRequired())).build()) ? 1 : 0;
+            case "confirm_time_zone":
+                String str2 = null;
+                while (true) {
+                    String nextArg = getNextArg();
+                    if (nextArg == null) {
+                        if (str2 == null) {
+                            throw new IllegalArgumentException("No zoneId specified.");
+                        }
+                        getOutPrintWriter().println(this.mInterface.confirmTimeZone(str2));
+                        return 0;
+                    }
+                    if (!nextArg.equals("--zone_id")) {
+                        throw new IllegalArgumentException("Unknown option: ".concat(nextArg));
+                    }
+                    str2 = getNextArgRequired();
                 }
-                break;
-            case -1366762753:
-                if (str.equals("set_time_zone_state_for_tests")) {
-                    c = 3;
-                    break;
+            case "is_geo_detection_enabled":
+                getOutPrintWriter().println(this.mInterface.getCapabilitiesAndConfig(-2).getConfiguration().isGeoDetectionEnabled());
+                return 0;
+            case "suggest_telephony_time_zone":
+                Supplier supplier2 = new Supplier(this) { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda0
+                    public final /* synthetic */ TimeZoneDetectorShellCommand f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
+                    /* JADX WARN: Multi-variable type inference failed */
+                    /* JADX WARN: Type inference failed for: r5v10, types: [java.util.List] */
+                    /* JADX WARN: Type inference failed for: r5v12 */
+                    /* JADX WARN: Type inference failed for: r5v8, types: [java.util.ArrayList] */
+                    /* JADX WARN: Type inference failed for: r5v9, types: [java.util.List] */
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        ?? arrayList;
+                        int i4 = i3;
+                        TimeZoneDetectorShellCommand timeZoneDetectorShellCommand = this.f$0;
+                        switch (i4) {
+                            case 0:
+                                GeolocationTimeZoneSuggestion geolocationTimeZoneSuggestion = null;
+                                LocationTimeZoneAlgorithmStatus locationTimeZoneAlgorithmStatus = null;
+                                String str22 = null;
+                                while (true) {
+                                    String nextArg2 = timeZoneDetectorShellCommand.getNextArg();
+                                    if (nextArg2 == null) {
+                                        if (locationTimeZoneAlgorithmStatus == null) {
+                                            throw new IllegalArgumentException("Missing --status");
+                                        }
+                                        if (str22 != null) {
+                                            if ("UNCERTAIN".equals(str22)) {
+                                                arrayList = 0;
+                                            } else if ("EMPTY".equals(str22)) {
+                                                arrayList = Collections.emptyList();
+                                            } else {
+                                                arrayList = new ArrayList();
+                                                StringTokenizer stringTokenizer = new StringTokenizer(str22, ",");
+                                                while (stringTokenizer.hasMoreTokens()) {
+                                                    arrayList.add(stringTokenizer.nextToken());
+                                                }
+                                            }
+                                            long elapsedRealtime = SystemClock.elapsedRealtime();
+                                            geolocationTimeZoneSuggestion = arrayList == 0 ? new GeolocationTimeZoneSuggestion(elapsedRealtime, null) : new GeolocationTimeZoneSuggestion(elapsedRealtime, arrayList);
+                                        }
+                                        LocationAlgorithmEvent locationAlgorithmEvent = new LocationAlgorithmEvent(locationTimeZoneAlgorithmStatus, geolocationTimeZoneSuggestion);
+                                        locationAlgorithmEvent.addDebugInfo("Command line injection");
+                                        return locationAlgorithmEvent;
+                                    }
+                                    if (nextArg2.equals("--suggestion")) {
+                                        str22 = timeZoneDetectorShellCommand.getNextArgRequired();
+                                    } else {
+                                        if (!nextArg2.equals("--status")) {
+                                            throw new IllegalArgumentException("Unknown option: ".concat(nextArg2));
+                                        }
+                                        locationTimeZoneAlgorithmStatus = LocationTimeZoneAlgorithmStatus.parseCommandlineArg(timeZoneDetectorShellCommand.getNextArgRequired());
+                                    }
+                                }
+                            case 1:
+                                timeZoneDetectorShellCommand.getClass();
+                                return TelephonyTimeZoneSuggestion.parseCommandLineArg(timeZoneDetectorShellCommand);
+                            default:
+                                timeZoneDetectorShellCommand.getClass();
+                                return ManualTimeZoneSuggestion.parseCommandLineArg(timeZoneDetectorShellCommand);
+                        }
+                    }
+                };
+                final TimeZoneDetectorService timeZoneDetectorService5 = this.mInterface;
+                Objects.requireNonNull(timeZoneDetectorService5);
+                return runSingleArgMethod(supplier2, new Consumer() { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        int i4 = i3;
+                        TimeZoneDetectorService timeZoneDetectorService32 = timeZoneDetectorService5;
+                        switch (i4) {
+                            case 0:
+                                LocationAlgorithmEvent locationAlgorithmEvent = (LocationAlgorithmEvent) obj;
+                                timeZoneDetectorService32.mContext.enforceCallingPermission("android.permission.SET_TIME_ZONE", "suggest geolocation time zone");
+                                Objects.requireNonNull(locationAlgorithmEvent);
+                                timeZoneDetectorService32.mHandler.post(new TimeZoneDetectorService$$ExternalSyntheticLambda0(timeZoneDetectorService32, locationAlgorithmEvent, 1));
+                                break;
+                            case 1:
+                                timeZoneDetectorService32.suggestTelephonyTimeZone((TelephonyTimeZoneSuggestion) obj);
+                                break;
+                            default:
+                                timeZoneDetectorService32.suggestManualTimeZone((ManualTimeZoneSuggestion) obj);
+                                break;
+                        }
+                    }
+                });
+            case "enable_telephony_fallback":
+                TimeZoneDetectorService timeZoneDetectorService6 = this.mInterface;
+                timeZoneDetectorService6.enforceManageTimeZoneDetectorPermission();
+                ((TimeZoneDetectorStrategyImpl) timeZoneDetectorService6.mTimeZoneDetectorStrategy).enableTelephonyTimeZoneFallback("Command line");
+                return 0;
+            case "is_geo_detection_supported":
+                PrintWriter outPrintWriter3 = getOutPrintWriter();
+                TimeZoneDetectorService timeZoneDetectorService7 = this.mInterface;
+                timeZoneDetectorService7.enforceManageTimeZoneDetectorPermission();
+                TimeZoneDetectorStrategyImpl timeZoneDetectorStrategyImpl3 = (TimeZoneDetectorStrategyImpl) timeZoneDetectorService7.mTimeZoneDetectorStrategy;
+                synchronized (timeZoneDetectorStrategyImpl3) {
+                    z2 = timeZoneDetectorStrategyImpl3.mCurrentConfigurationInternal.mGeoDetectionSupported;
                 }
-                break;
-            case -1316904020:
-                if (str.equals("is_auto_detection_enabled")) {
-                    c = 4;
-                    break;
-                }
-                break;
-            case -1264030344:
-                if (str.equals("dump_metrics")) {
-                    c = 5;
-                    break;
-                }
-                break;
-            case -646187524:
-                if (str.equals("set_geo_detection_enabled")) {
-                    c = 6;
-                    break;
-                }
-                break;
-            case -364727521:
-                if (str.equals("confirm_time_zone")) {
-                    c = 7;
-                    break;
-                }
-                break;
-            case 496894148:
-                if (str.equals("is_geo_detection_enabled")) {
-                    c = '\b';
-                    break;
-                }
-                break;
-            case 596690236:
-                if (str.equals("suggest_telephony_time_zone")) {
-                    c = '\t';
-                    break;
-                }
-                break;
-            case 1133835109:
-                if (str.equals("enable_telephony_fallback")) {
-                    c = '\n';
-                    break;
-                }
-                break;
-            case 1385756017:
-                if (str.equals("is_geo_detection_supported")) {
-                    c = 11;
-                    break;
-                }
-                break;
-            case 1830029431:
-                if (str.equals("handle_location_algorithm_event")) {
-                    c = '\f';
-                    break;
-                }
-                break;
-            case 1902269812:
-                if (str.equals("set_auto_detection_enabled")) {
-                    c = '\r';
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return runIsTelephonyDetectionSupported();
-            case 1:
-                return runSuggestManualTimeZone();
-            case 2:
-                return runGetTimeZoneState();
-            case 3:
-                return runSetTimeZoneState();
-            case 4:
-                return runIsAutoDetectionEnabled();
-            case 5:
-                return runDumpMetrics();
-            case 6:
-                return runSetGeoDetectionEnabled();
-            case 7:
-                return runConfirmTimeZone();
-            case '\b':
-                return runIsGeoDetectionEnabled();
-            case '\t':
-                return runSuggestTelephonyTimeZone();
-            case '\n':
-                return runEnableTelephonyFallback();
-            case 11:
-                return runIsGeoDetectionSupported();
-            case '\f':
-                return runHandleLocationEvent();
-            case '\r':
-                return runSetAutoDetectionEnabled();
+                outPrintWriter3.println(z2);
+                return 0;
+            case "handle_location_algorithm_event":
+                Supplier supplier3 = new Supplier(this) { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda0
+                    public final /* synthetic */ TimeZoneDetectorShellCommand f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
+                    /* JADX WARN: Multi-variable type inference failed */
+                    /* JADX WARN: Type inference failed for: r5v10, types: [java.util.List] */
+                    /* JADX WARN: Type inference failed for: r5v12 */
+                    /* JADX WARN: Type inference failed for: r5v8, types: [java.util.ArrayList] */
+                    /* JADX WARN: Type inference failed for: r5v9, types: [java.util.List] */
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        ?? arrayList;
+                        int i4 = i2;
+                        TimeZoneDetectorShellCommand timeZoneDetectorShellCommand = this.f$0;
+                        switch (i4) {
+                            case 0:
+                                GeolocationTimeZoneSuggestion geolocationTimeZoneSuggestion = null;
+                                LocationTimeZoneAlgorithmStatus locationTimeZoneAlgorithmStatus = null;
+                                String str22 = null;
+                                while (true) {
+                                    String nextArg2 = timeZoneDetectorShellCommand.getNextArg();
+                                    if (nextArg2 == null) {
+                                        if (locationTimeZoneAlgorithmStatus == null) {
+                                            throw new IllegalArgumentException("Missing --status");
+                                        }
+                                        if (str22 != null) {
+                                            if ("UNCERTAIN".equals(str22)) {
+                                                arrayList = 0;
+                                            } else if ("EMPTY".equals(str22)) {
+                                                arrayList = Collections.emptyList();
+                                            } else {
+                                                arrayList = new ArrayList();
+                                                StringTokenizer stringTokenizer = new StringTokenizer(str22, ",");
+                                                while (stringTokenizer.hasMoreTokens()) {
+                                                    arrayList.add(stringTokenizer.nextToken());
+                                                }
+                                            }
+                                            long elapsedRealtime = SystemClock.elapsedRealtime();
+                                            geolocationTimeZoneSuggestion = arrayList == 0 ? new GeolocationTimeZoneSuggestion(elapsedRealtime, null) : new GeolocationTimeZoneSuggestion(elapsedRealtime, arrayList);
+                                        }
+                                        LocationAlgorithmEvent locationAlgorithmEvent = new LocationAlgorithmEvent(locationTimeZoneAlgorithmStatus, geolocationTimeZoneSuggestion);
+                                        locationAlgorithmEvent.addDebugInfo("Command line injection");
+                                        return locationAlgorithmEvent;
+                                    }
+                                    if (nextArg2.equals("--suggestion")) {
+                                        str22 = timeZoneDetectorShellCommand.getNextArgRequired();
+                                    } else {
+                                        if (!nextArg2.equals("--status")) {
+                                            throw new IllegalArgumentException("Unknown option: ".concat(nextArg2));
+                                        }
+                                        locationTimeZoneAlgorithmStatus = LocationTimeZoneAlgorithmStatus.parseCommandlineArg(timeZoneDetectorShellCommand.getNextArgRequired());
+                                    }
+                                }
+                            case 1:
+                                timeZoneDetectorShellCommand.getClass();
+                                return TelephonyTimeZoneSuggestion.parseCommandLineArg(timeZoneDetectorShellCommand);
+                            default:
+                                timeZoneDetectorShellCommand.getClass();
+                                return ManualTimeZoneSuggestion.parseCommandLineArg(timeZoneDetectorShellCommand);
+                        }
+                    }
+                };
+                final TimeZoneDetectorService timeZoneDetectorService8 = this.mInterface;
+                Objects.requireNonNull(timeZoneDetectorService8);
+                return runSingleArgMethod(supplier3, new Consumer() { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        int i4 = i2;
+                        TimeZoneDetectorService timeZoneDetectorService32 = timeZoneDetectorService8;
+                        switch (i4) {
+                            case 0:
+                                LocationAlgorithmEvent locationAlgorithmEvent = (LocationAlgorithmEvent) obj;
+                                timeZoneDetectorService32.mContext.enforceCallingPermission("android.permission.SET_TIME_ZONE", "suggest geolocation time zone");
+                                Objects.requireNonNull(locationAlgorithmEvent);
+                                timeZoneDetectorService32.mHandler.post(new TimeZoneDetectorService$$ExternalSyntheticLambda0(timeZoneDetectorService32, locationAlgorithmEvent, 1));
+                                break;
+                            case 1:
+                                timeZoneDetectorService32.suggestTelephonyTimeZone((TelephonyTimeZoneSuggestion) obj);
+                                break;
+                            default:
+                                timeZoneDetectorService32.suggestManualTimeZone((ManualTimeZoneSuggestion) obj);
+                                break;
+                        }
+                    }
+                });
+            case "set_auto_detection_enabled":
+                return !this.mInterface.updateConfiguration(-2, new TimeZoneConfiguration.Builder().setAutoDetectionEnabled(Boolean.parseBoolean(getNextArgRequired())).build()) ? 1 : 0;
             default:
                 return handleDefaultCommands(str);
         }
     }
 
-    public final int runIsAutoDetectionEnabled() {
-        getOutPrintWriter().println(this.mInterface.getCapabilitiesAndConfig(-2).getConfiguration().isAutoDetectionEnabled());
-        return 0;
-    }
-
-    public final int runIsTelephonyDetectionSupported() {
-        getOutPrintWriter().println(this.mInterface.isTelephonyTimeZoneDetectionSupported());
-        return 0;
-    }
-
-    public final int runIsGeoDetectionSupported() {
-        getOutPrintWriter().println(this.mInterface.isGeoTimeZoneDetectionSupported());
-        return 0;
-    }
-
-    public final int runIsGeoDetectionEnabled() {
-        getOutPrintWriter().println(this.mInterface.getCapabilitiesAndConfig(-2).getConfiguration().isGeoDetectionEnabled());
-        return 0;
-    }
-
-    public final int runSetAutoDetectionEnabled() {
-        return !this.mInterface.updateConfiguration(-2, new TimeZoneConfiguration.Builder().setAutoDetectionEnabled(Boolean.parseBoolean(getNextArgRequired())).build()) ? 1 : 0;
-    }
-
-    public final int runSetGeoDetectionEnabled() {
-        return !this.mInterface.updateConfiguration(-2, new TimeZoneConfiguration.Builder().setGeoDetectionEnabled(Boolean.parseBoolean(getNextArgRequired())).build()) ? 1 : 0;
-    }
-
-    public final int runHandleLocationEvent() {
-        Supplier supplier = new Supplier() { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda2
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                LocationAlgorithmEvent lambda$runHandleLocationEvent$0;
-                lambda$runHandleLocationEvent$0 = TimeZoneDetectorShellCommand.this.lambda$runHandleLocationEvent$0();
-                return lambda$runHandleLocationEvent$0;
-            }
-        };
-        final TimeZoneDetectorService timeZoneDetectorService = this.mInterface;
-        Objects.requireNonNull(timeZoneDetectorService);
-        return runSingleArgMethod(supplier, new Consumer() { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TimeZoneDetectorService.this.handleLocationAlgorithmEvent((LocationAlgorithmEvent) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ LocationAlgorithmEvent lambda$runHandleLocationEvent$0() {
-        return LocationAlgorithmEvent.parseCommandLineArg(this);
-    }
-
-    public final int runSuggestManualTimeZone() {
-        Supplier supplier = new Supplier() { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda0
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                ManualTimeZoneSuggestion lambda$runSuggestManualTimeZone$1;
-                lambda$runSuggestManualTimeZone$1 = TimeZoneDetectorShellCommand.this.lambda$runSuggestManualTimeZone$1();
-                return lambda$runSuggestManualTimeZone$1;
-            }
-        };
-        final TimeZoneDetectorService timeZoneDetectorService = this.mInterface;
-        Objects.requireNonNull(timeZoneDetectorService);
-        return runSingleArgMethod(supplier, new Consumer() { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TimeZoneDetectorService.this.suggestManualTimeZone((ManualTimeZoneSuggestion) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ ManualTimeZoneSuggestion lambda$runSuggestManualTimeZone$1() {
-        return ManualTimeZoneSuggestion.parseCommandLineArg(this);
-    }
-
-    public final int runSuggestTelephonyTimeZone() {
-        Supplier supplier = new Supplier() { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda4
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                TelephonyTimeZoneSuggestion lambda$runSuggestTelephonyTimeZone$2;
-                lambda$runSuggestTelephonyTimeZone$2 = TimeZoneDetectorShellCommand.this.lambda$runSuggestTelephonyTimeZone$2();
-                return lambda$runSuggestTelephonyTimeZone$2;
-            }
-        };
-        final TimeZoneDetectorService timeZoneDetectorService = this.mInterface;
-        Objects.requireNonNull(timeZoneDetectorService);
-        return runSingleArgMethod(supplier, new Consumer() { // from class: com.android.server.timezonedetector.TimeZoneDetectorShellCommand$$ExternalSyntheticLambda5
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TimeZoneDetectorService.this.suggestTelephonyTimeZone((TelephonyTimeZoneSuggestion) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ TelephonyTimeZoneSuggestion lambda$runSuggestTelephonyTimeZone$2() {
-        return TelephonyTimeZoneSuggestion.parseCommandLineArg(this);
-    }
-
-    public final int runSingleArgMethod(Supplier supplier, Consumer consumer) {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        try {
-            Object obj = supplier.get();
-            if (obj == null) {
-                outPrintWriter.println("Error: arg not specified");
-                return 1;
-            }
-            consumer.accept(obj);
-            outPrintWriter.println("Arg " + obj + " injected.");
-            return 0;
-        } catch (RuntimeException e) {
-            outPrintWriter.println(e);
-            return 1;
-        }
-    }
-
-    public final int runEnableTelephonyFallback() {
-        this.mInterface.enableTelephonyFallback("Command line");
-        return 0;
-    }
-
-    public final int runGetTimeZoneState() {
-        getOutPrintWriter().println(this.mInterface.getTimeZoneState());
-        return 0;
-    }
-
-    public final int runSetTimeZoneState() {
-        this.mInterface.setTimeZoneState(TimeZoneState.parseCommandLineArgs(this));
-        return 0;
-    }
-
-    public final int runConfirmTimeZone() {
-        getOutPrintWriter().println(this.mInterface.confirmTimeZone(parseTimeZoneIdArg(this)));
-        return 0;
-    }
-
-    public static String parseTimeZoneIdArg(ShellCommand shellCommand) {
-        String str = null;
-        while (true) {
-            String nextArg = shellCommand.getNextArg();
-            if (nextArg == null) {
-                if (str != null) {
-                    return str;
-                }
-                throw new IllegalArgumentException("No zoneId specified.");
-            }
-            if (nextArg.equals("--zone_id")) {
-                str = shellCommand.getNextArgRequired();
-            } else {
-                throw new IllegalArgumentException("Unknown option: " + nextArg);
-            }
-        }
-    }
-
-    public final int runDumpMetrics() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        MetricsTimeZoneDetectorState generateMetricsState = this.mInterface.generateMetricsState();
-        outPrintWriter.println("MetricsTimeZoneDetectorState:");
-        outPrintWriter.println(generateMetricsState.toString());
-        return 0;
-    }
-
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.printf("Time Zone Detector (%s) commands:\n", "time_zone_detector");
         outPrintWriter.printf("  help\n", new Object[0]);
@@ -342,7 +422,11 @@ public class TimeZoneDetectorShellCommand extends ShellCommand {
         outPrintWriter.printf("  %s\n", "dump_metrics");
         outPrintWriter.printf("    Dumps the service metrics to stdout for inspection.\n", new Object[0]);
         outPrintWriter.println();
-        LocationAlgorithmEvent.printCommandLineOpts(outPrintWriter);
+        outPrintWriter.println("Location algorithm event options:");
+        outPrintWriter.println("  --status {LocationTimeZoneAlgorithmStatus toString() format}");
+        outPrintWriter.println("  [--suggestion {UNCERTAIN|EMPTY|<Olson ID>+}]");
+        outPrintWriter.println();
+        outPrintWriter.println("See " + LocationAlgorithmEvent.class.getName() + " for more information");
         outPrintWriter.println();
         ManualTimeZoneSuggestion.printCommandLineOpts(outPrintWriter);
         outPrintWriter.println();
@@ -374,5 +458,22 @@ public class TimeZoneDetectorShellCommand extends ShellCommand {
         outPrintWriter.println();
         outPrintWriter.printf("Also see \"adb shell cmd %s help\" for lower-level location time zone commands / settings.\n", "location_time_zone_manager");
         outPrintWriter.println();
+    }
+
+    public final int runSingleArgMethod(Supplier supplier, Consumer consumer) {
+        PrintWriter outPrintWriter = getOutPrintWriter();
+        try {
+            Object obj = supplier.get();
+            if (obj == null) {
+                outPrintWriter.println("Error: arg not specified");
+                return 1;
+            }
+            consumer.accept(obj);
+            outPrintWriter.println("Arg " + obj + " injected.");
+            return 0;
+        } catch (RuntimeException e) {
+            outPrintWriter.println(e);
+            return 1;
+        }
     }
 }

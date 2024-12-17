@@ -2,108 +2,97 @@ package com.android.server.credentials;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.credentials.ClearCredentialStateRequest;
 import android.credentials.CredentialProviderInfo;
 import android.credentials.IClearCredentialStateCallback;
-import android.credentials.ui.UserSelectionDialogResult;
-import android.os.CancellationSignal;
-import android.service.credentials.CallingAppInfo;
+import android.service.credentials.ClearCredentialStateRequest;
 import android.util.Slog;
 import com.android.server.credentials.ProviderSession;
-import com.android.server.credentials.RequestSession;
+import com.android.server.credentials.metrics.RequestSessionMetric;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ClearRequestSession extends RequestSession implements ProviderSession.ProviderInternalCallback {
     @Override // com.android.server.credentials.RequestSession
-    public void launchUiWithProviderData(ArrayList arrayList) {
-    }
-
-    @Override // com.android.server.credentials.ProviderSession.ProviderInternalCallback
-    public void onFinalErrorReceived(ComponentName componentName, String str, String str2) {
-    }
-
-    @Override // com.android.server.credentials.CredentialManagerUi.CredentialManagerUiCallback
-    public void onUiCancellation(boolean z) {
-    }
-
-    @Override // com.android.server.credentials.CredentialManagerUi.CredentialManagerUiCallback
-    public void onUiSelectorInvocationFailure() {
-    }
-
-    @Override // com.android.server.credentials.RequestSession, com.android.server.credentials.CredentialManagerUi.CredentialManagerUiCallback
-    public /* bridge */ /* synthetic */ void onUiSelection(UserSelectionDialogResult userSelectionDialogResult) {
-        super.onUiSelection(userSelectionDialogResult);
-    }
-
-    public ClearRequestSession(Context context, RequestSession.SessionLifetime sessionLifetime, Object obj, int i, int i2, IClearCredentialStateCallback iClearCredentialStateCallback, ClearCredentialStateRequest clearCredentialStateRequest, CallingAppInfo callingAppInfo, Set set, CancellationSignal cancellationSignal, long j) {
-        super(context, sessionLifetime, obj, i, i2, clearCredentialStateRequest, iClearCredentialStateCallback, "android.credentials.ui.TYPE_UNDEFINED", callingAppInfo, set, cancellationSignal, j);
+    public final ProviderSession initiateProviderSession(CredentialProviderInfo credentialProviderInfo, RemoteCredentialService remoteCredentialService) {
+        Context context = this.mContext;
+        ClearCredentialStateRequest clearCredentialStateRequest = new ClearCredentialStateRequest(this.mClientAppInfo, ((android.credentials.ClearCredentialStateRequest) this.mClientRequest).getData());
+        ComponentName componentName = credentialProviderInfo.getComponentName();
+        ProviderClearSession providerClearSession = new ProviderClearSession(context, clearCredentialStateRequest, this, componentName, this.mUserId, remoteCredentialService);
+        providerClearSession.mStatus = ProviderSession.Status.PENDING;
+        Slog.i("CredentialManager", "Provider session created and being added for: " + credentialProviderInfo.getComponentName());
+        ((ConcurrentHashMap) this.mProviders).put(componentName.flattenToString(), providerClearSession);
+        return providerClearSession;
     }
 
     @Override // com.android.server.credentials.RequestSession
-    public ProviderSession initiateProviderSession(CredentialProviderInfo credentialProviderInfo, RemoteCredentialService remoteCredentialService) {
-        ProviderClearSession createNewSession = ProviderClearSession.createNewSession(this.mContext, this.mUserId, credentialProviderInfo, this, remoteCredentialService);
-        if (createNewSession != null) {
-            Slog.i("GetRequestSession", "Provider session created and being added for: " + credentialProviderInfo.getComponentName());
-            this.mProviders.put(createNewSession.getComponentName().flattenToString(), createNewSession);
-        }
-        return createNewSession;
-    }
-
-    @Override // com.android.server.credentials.ProviderSession.ProviderInternalCallback
-    public void onProviderStatusChanged(ProviderSession.Status status, ComponentName componentName, ProviderSession.CredentialsSource credentialsSource) {
-        Slog.i("GetRequestSession", "Provider changed with status: " + status + ", and source: " + credentialsSource);
-        if (ProviderSession.isTerminatingStatus(status)) {
-            Slog.i("GetRequestSession", "Provider terminating status");
-            onProviderTerminated(componentName);
-        } else if (ProviderSession.isCompletionStatus(status)) {
-            Slog.i("GetRequestSession", "Provider has completion status");
-            onProviderResponseComplete(componentName);
-        }
-    }
-
-    @Override // com.android.server.credentials.ProviderSession.ProviderInternalCallback
-    public void onFinalResponseReceived(ComponentName componentName, Void r5) {
-        this.mRequestSessionMetric.collectUiResponseData(true, System.nanoTime());
-        this.mRequestSessionMetric.updateMetricsOnResponseReceived(this.mProviders, componentName, isPrimaryProviderViaProviderInfo(componentName));
-        respondToClientWithResponseAndFinish(null);
-    }
-
-    public void onProviderResponseComplete(ComponentName componentName) {
-        if (isAnyProviderPending()) {
-            return;
-        }
-        onFinalResponseReceived(componentName, (Void) null);
-    }
-
-    public void onProviderTerminated(ComponentName componentName) {
-        if (isAnyProviderPending()) {
-            return;
-        }
-        processResponses();
+    public final void invokeClientCallbackError(String str, String str2) {
+        ((IClearCredentialStateCallback) this.mClientCallback).onError(str, str2);
     }
 
     @Override // com.android.server.credentials.RequestSession
-    public void invokeClientCallbackSuccess(Void r1) {
+    public final void invokeClientCallbackSuccess(Object obj) {
         ((IClearCredentialStateCallback) this.mClientCallback).onSuccess();
     }
 
     @Override // com.android.server.credentials.RequestSession
-    public void invokeClientCallbackError(String str, String str2) {
-        ((IClearCredentialStateCallback) this.mClientCallback).onError(str, str2);
+    public final void launchUiWithProviderData(ArrayList arrayList) {
     }
 
-    public final void processResponses() {
-        Iterator it = this.mProviders.values().iterator();
-        while (it.hasNext()) {
-            if (((ProviderSession) it.next()).isProviderResponseSet().booleanValue()) {
+    @Override // com.android.server.credentials.RequestSession, com.android.server.credentials.ProviderSession.ProviderInternalCallback
+    public final void onFinalErrorReceived(String str, String str2) {
+    }
+
+    @Override // com.android.server.credentials.ProviderSession.ProviderInternalCallback
+    public final void onFinalResponseReceived(ComponentName componentName, Object obj) {
+        long nanoTime = System.nanoTime();
+        RequestSessionMetric requestSessionMetric = this.mRequestSessionMetric;
+        requestSessionMetric.collectUiResponseData(nanoTime);
+        Map map = this.mProviders;
+        requestSessionMetric.updateMetricsOnResponseReceived(map, componentName);
+        respondToClientWithResponseAndFinish(null);
+    }
+
+    @Override // com.android.server.credentials.ProviderSession.ProviderInternalCallback
+    public final void onProviderStatusChanged(ProviderSession.Status status, ComponentName componentName, ProviderSession.CredentialsSource credentialsSource) {
+        Slog.i("CredentialManager", "Provider changed with status: " + status + ", and source: " + credentialsSource);
+        boolean z = status == ProviderSession.Status.CANCELED || status == ProviderSession.Status.SERVICE_DEAD;
+        RequestSessionMetric requestSessionMetric = this.mRequestSessionMetric;
+        if (!z) {
+            if (status == ProviderSession.Status.COMPLETE || status == ProviderSession.Status.EMPTY_RESPONSE) {
+                Slog.i("CredentialManager", "Provider has completion status");
+                if (isAnyProviderPending()) {
+                    return;
+                }
+                requestSessionMetric.collectUiResponseData(System.nanoTime());
+                Map map = this.mProviders;
+                requestSessionMetric.updateMetricsOnResponseReceived(map, componentName);
+                respondToClientWithResponseAndFinish(null);
+                return;
+            }
+            return;
+        }
+        Slog.i("CredentialManager", "Provider terminating status");
+        if (isAnyProviderPending()) {
+            return;
+        }
+        for (ProviderSession providerSession : ((ConcurrentHashMap) this.mProviders).values()) {
+            if (providerSession.mProviderResponse != null || providerSession.mProviderResponseSet.booleanValue()) {
                 respondToClientWithResponseAndFinish(null);
                 return;
             }
         }
-        this.mRequestSessionMetric.collectFrameworkException("android.credentials.ClearCredentialStateException.TYPE_UNKNOWN");
+        requestSessionMetric.collectFrameworkException("android.credentials.ClearCredentialStateException.TYPE_UNKNOWN");
         respondToClientWithErrorAndFinish("android.credentials.ClearCredentialStateException.TYPE_UNKNOWN", "All providers failed");
+    }
+
+    @Override // com.android.server.credentials.RequestSession
+    public final void onUiCancellation(boolean z) {
+    }
+
+    @Override // com.android.server.credentials.RequestSession
+    public final void onUiSelectorInvocationFailure() {
     }
 }

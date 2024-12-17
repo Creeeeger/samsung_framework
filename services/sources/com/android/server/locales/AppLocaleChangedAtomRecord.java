@@ -2,7 +2,8 @@ package com.android.server.locales;
 
 import java.util.Locale;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class AppLocaleChangedAtomRecord {
     public final int mCallingUid;
     public String mNewLocales;
@@ -22,27 +23,7 @@ public final class AppLocaleChangedAtomRecord {
         }
     }
 
-    public void setNewLocales(String str) {
-        this.mNewLocales = convertEmptyLocales(str);
-    }
-
-    public void setTargetUid(int i) {
-        this.mTargetUid = i;
-    }
-
-    public void setPrevLocales(String str) {
-        this.mPrevLocales = convertEmptyLocales(str);
-    }
-
-    public void setStatus(int i) {
-        this.mStatus = i;
-    }
-
-    public void setCaller(int i) {
-        this.mCaller = i;
-    }
-
-    public final String convertEmptyLocales(String str) {
+    public static String convertEmptyLocales(String str) {
         Locale locale;
         if (!"".equals(str) || (locale = Locale.getDefault()) == null) {
             return str;

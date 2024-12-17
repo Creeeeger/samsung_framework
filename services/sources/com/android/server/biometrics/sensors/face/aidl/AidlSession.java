@@ -1,43 +1,35 @@
 package com.android.server.biometrics.sensors.face.aidl;
 
+import android.content.Context;
 import android.hardware.biometrics.face.ISession;
-import android.hardware.keymaster.HardwareAuthToken;
-import com.android.server.biometrics.sensors.face.aidl.Sensor;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.biometrics.sensors.face.hidl.HidlToAidlSessionAdapter;
+import java.util.function.Supplier;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AidlSession {
+public final class AidlSession {
+    public final AidlResponseHandler mAidlResponseHandler;
     public final int mHalInterfaceVersion;
-    public final Sensor.HalSessionCallback mHalSessionCallback;
     public final ISession mSession;
     public final int mUserId;
 
-    public boolean hasContextMethods() {
-        return false;
-    }
-
-    public AidlSession(int i, ISession iSession, int i2, Sensor.HalSessionCallback halSessionCallback) {
+    public AidlSession(int i, ISession iSession, int i2, AidlResponseHandler aidlResponseHandler) {
         this.mHalInterfaceVersion = i;
         this.mSession = iSession;
         this.mUserId = i2;
-        this.mHalSessionCallback = halSessionCallback;
+        this.mAidlResponseHandler = aidlResponseHandler;
     }
 
-    public ISession getSession() {
-        return this.mSession;
-    }
-
-    public int getUserId() {
-        return this.mUserId;
-    }
-
-    public Sensor.HalSessionCallback getHalSessionCallback() {
-        return this.mHalSessionCallback;
-    }
-
-    public void resetLockout(HardwareAuthToken hardwareAuthToken) {
-        Sensor.HalSessionCallback halSessionCallback = this.mHalSessionCallback;
-        if (halSessionCallback != null) {
-            halSessionCallback.onLockoutCleared();
-        }
+    public AidlSession(Context context, Supplier supplier, int i, AidlResponseHandler aidlResponseHandler) {
+        HidlToAidlSessionAdapter hidlToAidlSessionAdapter = new HidlToAidlSessionAdapter(context, supplier, i, aidlResponseHandler);
+        this.mSession = hidlToAidlSessionAdapter;
+        SemFaceServiceExImpl semFaceServiceExImpl = SemFaceServiceExImpl.getInstance();
+        DeviceIdleController$$ExternalSyntheticOutline0.m(new StringBuilder("sl : "), hidlToAidlSessionAdapter.mSecurityLevel, "HidlToAidlSessionAdapter");
+        semFaceServiceExImpl.mSecurityLevel = hidlToAidlSessionAdapter.mSecurityLevel;
+        SemFaceServiceExImpl.getInstance().mIsHIDL = true;
+        this.mHalInterfaceVersion = 0;
+        this.mUserId = i;
+        this.mAidlResponseHandler = aidlResponseHandler;
     }
 }

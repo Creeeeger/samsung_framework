@@ -3,9 +3,11 @@ package com.att.iqi.lib.metrics.ea;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.att.iqi.lib.Metric;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class EA12 extends Metric {
     private static final byte FLAG_CMAS = 2;
     private static final byte FLAG_ETWS = 1;
@@ -62,11 +64,11 @@ public class EA12 extends Metric {
         }
         this.szPlmn = parcel.readString();
         this.szLanguage = parcel.readString();
-        if (hasGeo()) {
+        if (!hasGeo()) {
+            this.szGeometries = "";
+        } else {
             this.llReceivedTimeMillis = parcel.readLong();
             this.szGeometries = parcel.readString();
-        } else {
-            this.szGeometries = "";
         }
     }
 
@@ -105,12 +107,12 @@ public class EA12 extends Metric {
         }
         long readLong = obtain.readLong();
         String readString = obtain.readString();
-        if (readLong != 0 && readString != null) {
+        if (readLong == 0 || readString == null) {
+            this.szGeometries = "";
+        } else {
             b = (byte) (b | FLAG_HAS_GEO);
             this.llReceivedTimeMillis = readLong;
             this.szGeometries = readString;
-        } else {
-            this.szGeometries = "";
         }
         this.ucFlags = b;
         obtain.recycle();
@@ -125,7 +127,7 @@ public class EA12 extends Metric {
     }
 
     @Override // com.att.iqi.lib.Metric
-    public int serialize(ByteBuffer byteBuffer) {
+    public int serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
         byteBuffer.putInt(this.lServiceCategory);
         byteBuffer.putInt(this.lSerialNumber);
         byteBuffer.putInt(this.lGeographicalScope);

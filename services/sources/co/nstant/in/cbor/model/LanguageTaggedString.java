@@ -1,14 +1,6 @@
 package co.nstant.in.cbor.model;
 
-import java.util.Objects;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class LanguageTaggedString extends Array {
-    public LanguageTaggedString(UnicodeString unicodeString, UnicodeString unicodeString2) {
-        setTag(38);
-        Objects.requireNonNull(unicodeString);
-        add(unicodeString);
-        Objects.requireNonNull(unicodeString2);
-        add(unicodeString2);
-    }
+public final class LanguageTaggedString extends Array {
 }

@@ -7,34 +7,57 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import com.samsung.android.sepunion.Log;
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
-public class AutoScreenOn {
-    public static final String TAG = "CoverManager_" + AutoScreenOn.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class AutoScreenOn {
     public final boolean mAutoScreenOnFeature;
-    public ContentResolver mContentResolver;
-    public final Context mContext;
+    public final ContentResolver mContentResolver;
     public final boolean mNfcAuthEnabled;
-    public AutoScreenOnObserver mObserver;
+    public final AutoScreenOnObserver mObserver;
     public final Object mLock = new Object();
     public boolean mIsAutoScreenOn = true;
 
-    public AutoScreenOn(Looper looper, Context context) {
-        this.mContext = context;
-        this.mNfcAuthEnabled = Feature.getInstance(context).isNfcAuthEnabled();
-        this.mAutoScreenOnFeature = context.getPackageManager().hasSystemFeature("com.sec.feature.cover.autoscreenon");
-        if (support()) {
-            init(looper);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AutoScreenOnObserver extends ContentObserver {
+        public AutoScreenOnObserver(Handler handler) {
+            super(handler);
+            Log.v("CoverManager_AutoScreenOn", "AutoScreenOnObserver");
+        }
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z) {
+            super.onChange(z);
+            Log.v("CoverManager_AutoScreenOn", "AutoScreenOnObserver.onChange(boolean selfChange : " + z + ")");
+            AutoScreenOn.this.update();
         }
     }
 
-    public boolean support() {
-        return !this.mNfcAuthEnabled || this.mAutoScreenOnFeature;
+    public AutoScreenOn(Looper looper, Context context) {
+        Feature.getInstance(context).getClass();
+        this.mNfcAuthEnabled = Feature.sIsNfcAuthSystemFeatureEnabled;
+        this.mAutoScreenOnFeature = context.getPackageManager().hasSystemFeature("com.sec.feature.cover.autoscreenon");
+        if (support()) {
+            this.mContentResolver = context.getContentResolver();
+            this.mObserver = new AutoScreenOnObserver(new Handler(looper));
+            this.mContentResolver.registerContentObserver(Settings.System.getUriFor("auto_screen_on"), false, this.mObserver, -1);
+            update();
+        }
     }
 
-    public boolean off() {
+    public final void dump(PrintWriter printWriter) {
+        printWriter.println(" Current AutoScreenOn State:");
+        synchronized (this.mLock) {
+            printWriter.println("  " + this.mNfcAuthEnabled + " " + this.mAutoScreenOnFeature);
+            StringBuilder sb = new StringBuilder("  mAutoScreenOn = ");
+            sb.append(this.mIsAutoScreenOn);
+            printWriter.println(sb.toString());
+            printWriter.println("  ");
+        }
+    }
+
+    public final boolean off() {
         boolean z;
         synchronized (this.mLock) {
             z = !this.mIsAutoScreenOn;
@@ -42,47 +65,17 @@ public class AutoScreenOn {
         return z;
     }
 
-    public void update() {
+    public final boolean support() {
+        return !this.mNfcAuthEnabled || this.mAutoScreenOnFeature;
+    }
+
+    public final void update() {
         synchronized (this.mLock) {
             boolean z = true;
             if (Settings.System.getIntForUser(this.mContentResolver, "auto_screen_on", 1, -2) != 1) {
                 z = false;
             }
             this.mIsAutoScreenOn = z;
-        }
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        printWriter.println(" Current AutoScreenOn State:");
-        synchronized (this.mLock) {
-            printWriter.println("  " + this.mNfcAuthEnabled + " " + this.mAutoScreenOnFeature);
-            StringBuilder sb = new StringBuilder();
-            sb.append("  mAutoScreenOn = ");
-            sb.append(this.mIsAutoScreenOn);
-            printWriter.println(sb.toString());
-            printWriter.println("  ");
-        }
-    }
-
-    public final void init(Looper looper) {
-        this.mContentResolver = this.mContext.getContentResolver();
-        this.mObserver = new AutoScreenOnObserver(new Handler(looper));
-        this.mContentResolver.registerContentObserver(Settings.System.getUriFor("auto_screen_on"), false, this.mObserver, -1);
-        update();
-    }
-
-    /* loaded from: classes3.dex */
-    public class AutoScreenOnObserver extends ContentObserver {
-        public AutoScreenOnObserver(Handler handler) {
-            super(handler);
-            Log.v(AutoScreenOn.TAG, "AutoScreenOnObserver");
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z) {
-            super.onChange(z);
-            Log.v(AutoScreenOn.TAG, "AutoScreenOnObserver.onChange(boolean selfChange : " + z + ")");
-            AutoScreenOn.this.update();
         }
     }
 }

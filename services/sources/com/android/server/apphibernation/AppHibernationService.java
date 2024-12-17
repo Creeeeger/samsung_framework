@@ -1,21 +1,14 @@
 package com.android.server.apphibernation;
 
-import android.app.ActivityManager;
 import android.app.ActivityThread;
+import android.app.Flags;
 import android.app.IActivityManager;
-import android.app.IApplicationThread;
 import android.app.StatsManager;
 import android.app.usage.StorageStats;
 import android.app.usage.StorageStatsManager;
-import android.app.usage.UsageEvents;
-import android.app.usage.UsageStatsManagerInternal;
 import android.apphibernation.HibernationStats;
 import android.apphibernation.IAppHibernationService;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.IIntentReceiver;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageDataObserver;
 import android.content.pm.IPackageManager;
@@ -24,11 +17,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManagerInternal;
 import android.content.pm.UserInfo;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.RemoteException;
 import android.os.ResultReceiver;
-import android.os.ServiceManager;
 import android.os.ShellCallback;
 import android.os.Trace;
 import android.os.UserHandle;
@@ -42,8 +33,9 @@ import android.util.SparseArray;
 import com.android.internal.util.DumpUtils;
 import com.android.internal.util.FrameworkStatsLog;
 import com.android.internal.util.IndentingPrintWriter;
-import com.android.server.LocalServices;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import com.android.server.SystemService;
+import com.android.server.pm.PackageManagerService;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -57,270 +49,317 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AppHibernationService extends SystemService {
     public static boolean sIsServiceEnabled;
     public final Executor mBackgroundExecutor;
-    public final BroadcastReceiver mBroadcastReceiver;
-    public final Context mContext;
+    public final AnonymousClass1 mBroadcastReceiver;
     public final Map mGlobalHibernationStates;
     public final HibernationStateDiskStore mGlobalLevelHibernationDiskStore;
     public final IActivityManager mIActivityManager;
     public final IPackageManager mIPackageManager;
     public final Injector mInjector;
-    public final AppHibernationManagerInternal mLocalService;
     public final Object mLock;
     public final boolean mOatArtifactDeletionEnabled;
     public final PackageManagerInternal mPackageManagerInternal;
     public final AppHibernationServiceStub mServiceStub;
     public final StorageStatsManager mStorageStatsManager;
-    public final UsageStatsManagerInternal.UsageEventListener mUsageEventListener;
+    public final AppHibernationService$$ExternalSyntheticLambda0 mUsageEventListener;
     public final SparseArray mUserDiskStores;
     public final UserManager mUserManager;
     public final SparseArray mUserStates;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AppHibernationServiceStub extends IAppHibernationService.Stub {
+        public final AppHibernationService mService;
+
+        public AppHibernationServiceStub(AppHibernationService appHibernationService) {
+            this.mService = appHibernationService;
+        }
+
+        public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+            AppHibernationService appHibernationService = this.mService;
+            if (DumpUtils.checkDumpAndUsageStatsPermission(appHibernationService.getContext(), "AppHibernationService", printWriter)) {
+                IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ");
+                synchronized (appHibernationService.mLock) {
+                    try {
+                        int size = appHibernationService.mUserStates.size();
+                        for (int i = 0; i < size; i++) {
+                            int keyAt = appHibernationService.mUserStates.keyAt(i);
+                            indentingPrintWriter.print("User Level Hibernation States, ");
+                            indentingPrintWriter.printPair("user", Integer.valueOf(keyAt));
+                            indentingPrintWriter.println();
+                            Map map = (Map) appHibernationService.mUserStates.get(keyAt);
+                            indentingPrintWriter.increaseIndent();
+                            Iterator it = map.values().iterator();
+                            while (it.hasNext()) {
+                                indentingPrintWriter.print((UserLevelState) it.next());
+                                indentingPrintWriter.println();
+                            }
+                            indentingPrintWriter.decreaseIndent();
+                        }
+                        indentingPrintWriter.println();
+                        indentingPrintWriter.print("Global Level Hibernation States");
+                        indentingPrintWriter.println();
+                        Iterator it2 = ((ArrayMap) appHibernationService.mGlobalHibernationStates).values().iterator();
+                        while (it2.hasNext()) {
+                            indentingPrintWriter.print((GlobalLevelState) it2.next());
+                            indentingPrintWriter.println();
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+        }
+
+        public final List getHibernatingPackagesForUser(int i) {
+            return this.mService.getHibernatingPackagesForUser(i);
+        }
+
+        public final Map getHibernationStatsForUser(List list, int i) {
+            Set<String> arraySet = list != null ? new ArraySet(list) : null;
+            AppHibernationService appHibernationService = this.mService;
+            appHibernationService.getClass();
+            ArrayMap arrayMap = new ArrayMap();
+            if (AppHibernationService.sIsServiceEnabled) {
+                appHibernationService.getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
+                int handleIncomingUser = appHibernationService.handleIncomingUser(i, "getHibernationStatsForUser");
+                synchronized (appHibernationService.mLock) {
+                    try {
+                        if (appHibernationService.checkUserStatesExist(handleIncomingUser, "getHibernationStatsForUser", true)) {
+                            Map map = (Map) appHibernationService.mUserStates.get(handleIncomingUser);
+                            if (arraySet == null) {
+                                arraySet = map.keySet();
+                            }
+                            for (String str : arraySet) {
+                                if (appHibernationService.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
+                                    if (((ArrayMap) appHibernationService.mGlobalHibernationStates).containsKey(str) && map.containsKey(str)) {
+                                        arrayMap.put(str, new HibernationStats(((GlobalLevelState) ((ArrayMap) appHibernationService.mGlobalHibernationStates).get(str)).savedByte + ((UserLevelState) map.get(str)).savedByte));
+                                    }
+                                    Slog.w("AppHibernationService", TextUtils.formatSimple("No hibernation state associated with package %s user %d. Maybethe package was uninstalled? ", new Object[]{str, Integer.valueOf(handleIncomingUser)}));
+                                }
+                            }
+                        }
+                    } finally {
+                    }
+                }
+            }
+            return arrayMap;
+        }
+
+        public final boolean isHibernatingForUser(String str, int i) {
+            return this.mService.isHibernatingForUser(str, i);
+        }
+
+        public final boolean isHibernatingGlobally(String str) {
+            return this.mService.isHibernatingGlobally(str);
+        }
+
+        public final boolean isOatArtifactDeletionEnabled() {
+            AppHibernationService appHibernationService = this.mService;
+            appHibernationService.getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
+            return appHibernationService.mOatArtifactDeletionEnabled;
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+            new AppHibernationShellCommand(this.mService).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+        }
+
+        public final void setHibernatingForUser(String str, int i, boolean z) {
+            this.mService.setHibernatingForUser(str, i, z);
+        }
+
+        public final void setHibernatingGlobally(String str, boolean z) {
+            this.mService.setHibernatingGlobally(str, z);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface Injector {
-        IActivityManager getActivityManager();
+    }
 
-        Executor getBackgroundExecutor();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class InjectorImpl implements Injector {
+        public final Context mContext;
+        public final ScheduledExecutorService mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        public final UserLevelHibernationProto mUserLevelHibernationProto = new UserLevelHibernationProto();
 
-        Context getContext();
+        public InjectorImpl(Context context) {
+            this.mContext = context;
+        }
+    }
 
-        HibernationStateDiskStore getGlobalLevelDiskStore();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalService {
+        public final AppHibernationService mService;
 
-        IPackageManager getPackageManager();
+        public LocalService(AppHibernationService appHibernationService) {
+            this.mService = appHibernationService;
+        }
+    }
 
-        PackageManagerInternal getPackageManagerInternal();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class StatsPullAtomCallbackImpl implements StatsManager.StatsPullAtomCallback {
+        public StatsPullAtomCallbackImpl() {
+        }
 
-        StorageStatsManager getStorageStatsManager();
-
-        UsageStatsManagerInternal getUsageStatsManagerInternal();
-
-        HibernationStateDiskStore getUserLevelDiskStore(int i);
-
-        UserManager getUserManager();
-
-        boolean isOatArtifactDeletionEnabled();
+        public final int onPullAtom(int i, List list) {
+            long j;
+            int i2;
+            if (!AppHibernationService.sIsServiceEnabled && (i == 10107 || i == 10109)) {
+                return 0;
+            }
+            if (i == 10107) {
+                List aliveUsers = AppHibernationService.this.mUserManager.getAliveUsers();
+                int size = aliveUsers.size();
+                for (int i3 = 0; i3 < size; i3++) {
+                    int i4 = ((UserInfo) aliveUsers.get(i3)).id;
+                    if (AppHibernationService.this.mUserManager.isUserUnlockingOrUnlocked(i4)) {
+                        list.add(FrameworkStatsLog.buildStatsEvent(i, ((ArrayList) AppHibernationService.this.getHibernatingPackagesForUser(i4)).size(), i4));
+                    }
+                }
+            } else {
+                if (i != 10109) {
+                    return 1;
+                }
+                synchronized (AppHibernationService.this.mLock) {
+                    try {
+                        j = 0;
+                        i2 = 0;
+                        for (GlobalLevelState globalLevelState : ((ArrayMap) AppHibernationService.this.mGlobalHibernationStates).values()) {
+                            if (globalLevelState.hibernated) {
+                                i2++;
+                                j += globalLevelState.savedByte;
+                            }
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+                list.add(FrameworkStatsLog.buildStatsEvent(i, i2, j / 1000000));
+            }
+            return 0;
+        }
     }
 
     public AppHibernationService(Context context) {
         this(new InjectorImpl(context));
     }
 
-    public AppHibernationService(Injector injector) {
-        super(injector.getContext());
-        this.mLock = new Object();
-        this.mUserStates = new SparseArray();
-        this.mUserDiskStores = new SparseArray();
-        this.mGlobalHibernationStates = new ArrayMap();
-        LocalService localService = new LocalService(this);
-        this.mLocalService = localService;
-        this.mServiceStub = new AppHibernationServiceStub(this);
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.apphibernation.AppHibernationService.1
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -10000);
-                if (intExtra == -10000) {
-                    return;
-                }
-                String action = intent.getAction();
-                if ("android.intent.action.PACKAGE_ADDED".equals(action) || "android.intent.action.PACKAGE_REMOVED".equals(action)) {
-                    String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
-                    if (intent.getBooleanExtra("android.intent.extra.REPLACING", false)) {
-                        return;
-                    }
-                    if ("android.intent.action.PACKAGE_ADDED".equals(action)) {
-                        AppHibernationService.this.onPackageAdded(schemeSpecificPart, intExtra);
-                    } else if ("android.intent.action.PACKAGE_REMOVED".equals(action)) {
-                        AppHibernationService.this.onPackageRemoved(schemeSpecificPart, intExtra);
-                        if (intent.getBooleanExtra("android.intent.extra.REMOVED_FOR_ALL_USERS", false)) {
-                            AppHibernationService.this.onPackageRemovedForAllUsers(schemeSpecificPart);
-                        }
-                    }
-                }
-            }
-        };
-        this.mBroadcastReceiver = broadcastReceiver;
-        UsageStatsManagerInternal.UsageEventListener usageEventListener = new UsageStatsManagerInternal.UsageEventListener() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda5
-            @Override // android.app.usage.UsageStatsManagerInternal.UsageEventListener
-            public final void onUsageEvent(int i, UsageEvents.Event event) {
-                AppHibernationService.this.lambda$new$6(i, event);
-            }
-        };
-        this.mUsageEventListener = usageEventListener;
-        Context context = injector.getContext();
-        this.mContext = context;
-        this.mIPackageManager = injector.getPackageManager();
-        this.mPackageManagerInternal = injector.getPackageManagerInternal();
-        this.mIActivityManager = injector.getActivityManager();
-        this.mUserManager = injector.getUserManager();
-        this.mStorageStatsManager = injector.getStorageStatsManager();
-        this.mGlobalLevelHibernationDiskStore = injector.getGlobalLevelDiskStore();
-        this.mBackgroundExecutor = injector.getBackgroundExecutor();
-        this.mOatArtifactDeletionEnabled = injector.isOatArtifactDeletionEnabled();
-        this.mInjector = injector;
-        Context createContextAsUser = context.createContextAsUser(UserHandle.ALL, 0);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
-        intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
-        intentFilter.addDataScheme("package");
-        createContextAsUser.registerReceiver(broadcastReceiver, intentFilter);
-        LocalServices.addService(AppHibernationManagerInternal.class, localService);
-        injector.getUsageStatsManagerInternal().registerListener(usageEventListener);
+    /* JADX WARN: Illegal instructions before constructor call */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public AppHibernationService(com.android.server.apphibernation.AppHibernationService.Injector r11) {
+        /*
+            r10 = this;
+            r0 = r11
+            com.android.server.apphibernation.AppHibernationService$InjectorImpl r0 = (com.android.server.apphibernation.AppHibernationService.InjectorImpl) r0
+            android.content.Context r1 = r0.mContext
+            r10.<init>(r1)
+            java.lang.Object r1 = new java.lang.Object
+            r1.<init>()
+            r10.mLock = r1
+            android.util.SparseArray r1 = new android.util.SparseArray
+            r1.<init>()
+            r10.mUserStates = r1
+            android.util.SparseArray r1 = new android.util.SparseArray
+            r1.<init>()
+            r10.mUserDiskStores = r1
+            android.util.ArrayMap r1 = new android.util.ArrayMap
+            r1.<init>()
+            r10.mGlobalHibernationStates = r1
+            com.android.server.apphibernation.AppHibernationService$LocalService r1 = new com.android.server.apphibernation.AppHibernationService$LocalService
+            r1.<init>(r10)
+            com.android.server.apphibernation.AppHibernationService$AppHibernationServiceStub r2 = new com.android.server.apphibernation.AppHibernationService$AppHibernationServiceStub
+            r2.<init>(r10)
+            r10.mServiceStub = r2
+            com.android.server.apphibernation.AppHibernationService$1 r2 = new com.android.server.apphibernation.AppHibernationService$1
+            r2.<init>()
+            com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda0 r3 = new com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda0
+            r3.<init>()
+            android.content.Context r4 = r0.mContext
+            java.lang.String r5 = "package"
+            android.os.IBinder r6 = android.os.ServiceManager.getService(r5)
+            android.content.pm.IPackageManager r6 = android.content.pm.IPackageManager.Stub.asInterface(r6)
+            r10.mIPackageManager = r6
+            java.lang.Class<android.content.pm.PackageManagerInternal> r6 = android.content.pm.PackageManagerInternal.class
+            java.lang.Object r6 = com.android.server.LocalServices.getService(r6)
+            android.content.pm.PackageManagerInternal r6 = (android.content.pm.PackageManagerInternal) r6
+            r10.mPackageManagerInternal = r6
+            android.app.IActivityManager r6 = android.app.ActivityManager.getService()
+            r10.mIActivityManager = r6
+            android.content.Context r6 = r0.mContext
+            java.lang.Class<android.os.UserManager> r7 = android.os.UserManager.class
+            java.lang.Object r6 = r6.getSystemService(r7)
+            android.os.UserManager r6 = (android.os.UserManager) r6
+            r10.mUserManager = r6
+            android.content.Context r6 = r0.mContext
+            java.lang.Class<android.app.usage.StorageStatsManager> r7 = android.app.usage.StorageStatsManager.class
+            java.lang.Object r6 = r6.getSystemService(r7)
+            android.app.usage.StorageStatsManager r6 = (android.app.usage.StorageStatsManager) r6
+            r10.mStorageStatsManager = r6
+            java.io.File r6 = new java.io.File
+            java.io.File r7 = android.os.Environment.getDataSystemDirectory()
+            java.lang.String r8 = "hibernation"
+            r6.<init>(r7, r8)
+            com.android.server.apphibernation.HibernationStateDiskStore r7 = new com.android.server.apphibernation.HibernationStateDiskStore
+            com.android.server.apphibernation.GlobalLevelHibernationProto r8 = new com.android.server.apphibernation.GlobalLevelHibernationProto
+            r8.<init>()
+            java.util.concurrent.ScheduledExecutorService r9 = r0.mScheduledExecutorService
+            r7.<init>(r6, r8, r9)
+            r10.mGlobalLevelHibernationDiskStore = r7
+            java.util.concurrent.ScheduledExecutorService r6 = r0.mScheduledExecutorService
+            r10.mBackgroundExecutor = r6
+            android.content.Context r0 = r0.mContext
+            android.content.res.Resources r0 = r0.getResources()
+            r6 = 17891760(0x11101b0, float:2.6633505E-38)
+            boolean r0 = r0.getBoolean(r6)
+            r10.mOatArtifactDeletionEnabled = r0
+            r10.mInjector = r11
+            android.os.UserHandle r10 = android.os.UserHandle.ALL
+            r11 = 0
+            android.content.Context r10 = r4.createContextAsUser(r10, r11)
+            android.content.IntentFilter r11 = new android.content.IntentFilter
+            r11.<init>()
+            java.lang.String r0 = "android.intent.action.PACKAGE_ADDED"
+            r11.addAction(r0)
+            java.lang.String r0 = "android.intent.action.PACKAGE_REMOVED"
+            r11.addAction(r0)
+            r11.addDataScheme(r5)
+            r10.registerReceiver(r2, r11)
+            java.lang.Class<com.android.server.apphibernation.AppHibernationService$LocalService> r10 = com.android.server.apphibernation.AppHibernationService.LocalService.class
+            com.android.server.LocalServices.addService(r10, r1)
+            java.lang.Class<android.app.usage.UsageStatsManagerInternal> r10 = android.app.usage.UsageStatsManagerInternal.class
+            java.lang.Object r10 = com.android.server.LocalServices.getService(r10)
+            android.app.usage.UsageStatsManagerInternal r10 = (android.app.usage.UsageStatsManagerInternal) r10
+            r10.registerListener(r3)
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.apphibernation.AppHibernationService.<init>(com.android.server.apphibernation.AppHibernationService$Injector):void");
     }
 
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        publishBinderService("app_hibernation", this.mServiceStub);
-    }
-
-    @Override // com.android.server.SystemService
-    public void onBootPhase(int i) {
-        if (i == 1000) {
-            this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda6
-                @Override // java.lang.Runnable
-                public final void run() {
-                    AppHibernationService.this.lambda$onBootPhase$0();
-                }
-            });
-        }
-        if (i == 500) {
-            sIsServiceEnabled = isDeviceConfigAppHibernationEnabled();
-            DeviceConfig.addOnPropertiesChangedListener("app_hibernation", ActivityThread.currentApplication().getMainExecutor(), new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda7
-                public final void onPropertiesChanged(DeviceConfig.Properties properties) {
-                    AppHibernationService.this.onDeviceConfigChanged(properties);
-                }
-            });
-            StatsManager statsManager = (StatsManager) getContext().getSystemService(StatsManager.class);
-            StatsPullAtomCallbackImpl statsPullAtomCallbackImpl = new StatsPullAtomCallbackImpl();
-            statsManager.setPullAtomCallback(FrameworkStatsLog.USER_LEVEL_HIBERNATED_APPS, (StatsManager.PullAtomMetadata) null, this.mBackgroundExecutor, statsPullAtomCallbackImpl);
-            statsManager.setPullAtomCallback(FrameworkStatsLog.GLOBAL_HIBERNATED_APPS, (StatsManager.PullAtomMetadata) null, this.mBackgroundExecutor, statsPullAtomCallbackImpl);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onBootPhase$0() {
-        List readHibernationStates = this.mGlobalLevelHibernationDiskStore.readHibernationStates();
-        synchronized (this.mLock) {
-            initializeGlobalHibernationStates(readHibernationStates);
-        }
-    }
-
-    public final boolean isOatArtifactDeletionEnabled() {
-        getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
-        return this.mOatArtifactDeletionEnabled;
-    }
-
-    public boolean isHibernatingForUser(String str, int i) {
-        if (!sIsServiceEnabled) {
-            return false;
-        }
-        getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller did not have permission while calling isHibernatingForUser");
-        int handleIncomingUser = handleIncomingUser(i, "isHibernatingForUser");
-        synchronized (this.mLock) {
-            if (!checkUserStatesExist(handleIncomingUser, "isHibernatingForUser", false)) {
-                return false;
-            }
-            UserLevelState userLevelState = (UserLevelState) ((Map) this.mUserStates.get(handleIncomingUser)).get(str);
-            if (userLevelState != null && this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
-                return userLevelState.hibernated;
+    public final boolean checkUserStatesExist(int i, String str, boolean z) {
+        if (!this.mUserManager.isUserUnlockingOrUnlocked(i)) {
+            if (z) {
+                Slog.w("AppHibernationService", TextUtils.formatSimple("Attempt to call %s on stopped or nonexistent user %d", new Object[]{str, Integer.valueOf(i)}));
             }
             return false;
         }
-    }
-
-    public boolean isHibernatingGlobally(String str) {
-        if (!sIsServiceEnabled) {
-            return false;
+        if (this.mUserStates.contains(i)) {
+            return true;
         }
-        getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
-        synchronized (this.mLock) {
-            GlobalLevelState globalLevelState = (GlobalLevelState) this.mGlobalHibernationStates.get(str);
-            if (globalLevelState != null && this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
-                return globalLevelState.hibernated;
-            }
-            return false;
+        if (z) {
+            Slog.w("AppHibernationService", TextUtils.formatSimple("Attempt to call %s before states have been read from disk", new Object[]{str}));
         }
+        return false;
     }
 
-    public void setHibernatingForUser(final String str, int i, boolean z) {
-        if (sIsServiceEnabled) {
-            getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
-            final int handleIncomingUser = handleIncomingUser(i, "setHibernatingForUser");
-            synchronized (this.mLock) {
-                if (checkUserStatesExist(handleIncomingUser, "setHibernatingForUser", true)) {
-                    final UserLevelState userLevelState = (UserLevelState) ((Map) this.mUserStates.get(handleIncomingUser)).get(str);
-                    if (userLevelState != null && this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
-                        if (userLevelState.hibernated == z) {
-                            return;
-                        }
-                        userLevelState.hibernated = z;
-                        if (z) {
-                            this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda2
-                                @Override // java.lang.Runnable
-                                public final void run() {
-                                    AppHibernationService.this.lambda$setHibernatingForUser$1(str, handleIncomingUser, userLevelState);
-                                }
-                            });
-                        } else {
-                            this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda3
-                                @Override // java.lang.Runnable
-                                public final void run() {
-                                    AppHibernationService.this.lambda$setHibernatingForUser$2(str, handleIncomingUser);
-                                }
-                            });
-                            userLevelState.lastUnhibernatedMs = System.currentTimeMillis();
-                        }
-                        final UserLevelState userLevelState2 = new UserLevelState(userLevelState);
-                        this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda4
-                            @Override // java.lang.Runnable
-                            public final void run() {
-                                AppHibernationService.lambda$setHibernatingForUser$3(UserLevelState.this, handleIncomingUser);
-                            }
-                        });
-                        ((HibernationStateDiskStore) this.mUserDiskStores.get(handleIncomingUser)).scheduleWriteHibernationStates(new ArrayList(((Map) this.mUserStates.get(handleIncomingUser)).values()));
-                        return;
-                    }
-                    Slog.e("AppHibernationService", TextUtils.formatSimple("Package %s is not installed for user %s", new Object[]{str, Integer.valueOf(handleIncomingUser)}));
-                }
-            }
-        }
-    }
-
-    public static /* synthetic */ void lambda$setHibernatingForUser$3(UserLevelState userLevelState, int i) {
-        FrameworkStatsLog.write(FrameworkStatsLog.USER_LEVEL_HIBERNATION_STATE_CHANGED, userLevelState.packageName, i, userLevelState.hibernated);
-    }
-
-    public void setHibernatingGlobally(final String str, boolean z) {
-        if (sIsServiceEnabled) {
-            getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
-            synchronized (this.mLock) {
-                final GlobalLevelState globalLevelState = (GlobalLevelState) this.mGlobalHibernationStates.get(str);
-                if (globalLevelState != null && this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
-                    if (globalLevelState.hibernated != z) {
-                        globalLevelState.hibernated = z;
-                        if (z) {
-                            this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda0
-                                @Override // java.lang.Runnable
-                                public final void run() {
-                                    AppHibernationService.this.lambda$setHibernatingGlobally$4(str, globalLevelState);
-                                }
-                            });
-                        } else {
-                            globalLevelState.savedByte = 0L;
-                            globalLevelState.lastUnhibernatedMs = System.currentTimeMillis();
-                        }
-                        this.mGlobalLevelHibernationDiskStore.scheduleWriteHibernationStates(new ArrayList(this.mGlobalHibernationStates.values()));
-                    }
-                    return;
-                }
-                Slog.e("AppHibernationService", TextUtils.formatSimple("Package %s is not installed for any user", new Object[]{str}));
-            }
-        }
-    }
-
-    public List getHibernatingPackagesForUser(int i) {
+    public final List getHibernatingPackagesForUser(int i) {
         ArrayList arrayList = new ArrayList();
         if (!sIsServiceEnabled) {
             return arrayList;
@@ -328,98 +367,59 @@ public final class AppHibernationService extends SystemService {
         getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
         int handleIncomingUser = handleIncomingUser(i, "getHibernatingPackagesForUser");
         synchronized (this.mLock) {
-            if (!checkUserStatesExist(handleIncomingUser, "getHibernatingPackagesForUser", true)) {
+            try {
+                if (!checkUserStatesExist(handleIncomingUser, "getHibernatingPackagesForUser", true)) {
+                    return arrayList;
+                }
+                for (UserLevelState userLevelState : ((Map) this.mUserStates.get(handleIncomingUser)).values()) {
+                    if (this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), userLevelState.packageName) && userLevelState.hibernated) {
+                        arrayList.add(userLevelState.packageName);
+                    }
+                }
                 return arrayList;
+            } catch (Throwable th) {
+                throw th;
             }
-            for (UserLevelState userLevelState : ((Map) this.mUserStates.get(handleIncomingUser)).values()) {
-                if (this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), userLevelState.packageName) && userLevelState.hibernated) {
-                    arrayList.add(userLevelState.packageName);
-                }
-            }
-            return arrayList;
         }
     }
 
-    public Map getHibernationStatsForUser(Set set, int i) {
-        ArrayMap arrayMap = new ArrayMap();
-        if (!sIsServiceEnabled) {
-            return arrayMap;
-        }
-        getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
-        int handleIncomingUser = handleIncomingUser(i, "getHibernationStatsForUser");
-        synchronized (this.mLock) {
-            if (!checkUserStatesExist(handleIncomingUser, "getHibernationStatsForUser", true)) {
-                return arrayMap;
-            }
-            Map map = (Map) this.mUserStates.get(handleIncomingUser);
-            if (set == null) {
-                set = map.keySet();
-            }
-            for (String str : set) {
-                if (this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
-                    if (this.mGlobalHibernationStates.containsKey(str) && map.containsKey(str)) {
-                        arrayMap.put(str, new HibernationStats(((GlobalLevelState) this.mGlobalHibernationStates.get(str)).savedByte + ((UserLevelState) map.get(str)).savedByte));
-                    }
-                    Slog.w("AppHibernationService", TextUtils.formatSimple("No hibernation state associated with package %s user %d. Maybethe package was uninstalled? ", new Object[]{str, Integer.valueOf(handleIncomingUser)}));
-                }
-            }
-            return arrayMap;
-        }
-    }
-
-    /* renamed from: hibernatePackageForUser, reason: merged with bridge method [inline-methods] */
-    public final void lambda$setHibernatingForUser$1(String str, int i, UserLevelState userLevelState) {
-        Trace.traceBegin(524288L, "hibernatePackage");
-        long clearCallingIdentity = Binder.clearCallingIdentity();
+    public final int handleIncomingUser(int i, String str) {
         try {
-            try {
-                try {
-                    StorageStats queryStatsForPackage = this.mStorageStatsManager.queryStatsForPackage(this.mIPackageManager.getApplicationInfo(str, 537698816L, i).storageUuid, str, new UserHandle(i));
-                    this.mIActivityManager.forceStopPackage(str, i);
-                    this.mIPackageManager.deleteApplicationCacheFilesAsUser(str, i, (IPackageDataObserver) null);
-                    synchronized (this.mLock) {
-                        userLevelState.savedByte = queryStatsForPackage.getCacheBytes();
-                    }
-                } catch (PackageManager.NameNotFoundException e) {
-                    Slog.e("AppHibernationService", "Package name not found when querying storage stats", e);
-                } catch (RemoteException e2) {
-                    throw new IllegalStateException("Failed to hibernate due to manager not being available", e2);
-                }
-            } catch (IOException e3) {
-                Slog.e("AppHibernationService", "Storage device not found", e3);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            Trace.traceEnd(524288L);
+            return this.mIActivityManager.handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), i, false, true, str, (String) null);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
         }
     }
 
-    /* renamed from: unhibernatePackageForUser, reason: merged with bridge method [inline-methods] */
-    public final void lambda$setHibernatingForUser$2(String str, int i) {
-        Trace.traceBegin(524288L, "unhibernatePackage");
-        long clearCallingIdentity = Binder.clearCallingIdentity();
+    public final void initializeGlobalHibernationStates(List list) {
         try {
-            try {
-                String[] strArr = {"android.permission.RECEIVE_BOOT_COMPLETED"};
-                this.mIActivityManager.broadcastIntentWithFeature((IApplicationThread) null, (String) null, new Intent("android.intent.action.LOCKED_BOOT_COMPLETED").setPackage(str), (String) null, (IIntentReceiver) null, -1, (String) null, (Bundle) null, strArr, (String[]) null, (String[]) null, -1, (Bundle) null, false, false, i);
-                this.mIActivityManager.broadcastIntentWithFeature((IApplicationThread) null, (String) null, new Intent("android.intent.action.BOOT_COMPLETED").setPackage(str), (String) null, (IIntentReceiver) null, -1, (String) null, (Bundle) null, strArr, (String[]) null, (String[]) null, -1, (Bundle) null, false, false, i);
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
+            List list2 = this.mIPackageManager.getInstalledPackages(541893120L, 0).getList();
+            int size = list2.size();
+            for (int i = 0; i < size; i++) {
+                String str = ((PackageInfo) list2.get(i)).packageName;
+                GlobalLevelState globalLevelState = new GlobalLevelState();
+                globalLevelState.packageName = str;
+                ((ArrayMap) this.mGlobalHibernationStates).put(str, globalLevelState);
             }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            Trace.traceEnd(524288L);
+            if (list != null) {
+                ArraySet arraySet = new ArraySet();
+                int size2 = list2.size();
+                for (int i2 = 0; i2 < size2; i2++) {
+                    arraySet.add(((PackageInfo) list2.get(i2)).packageName);
+                }
+                int size3 = list.size();
+                for (int i3 = 0; i3 < size3; i3++) {
+                    GlobalLevelState globalLevelState2 = (GlobalLevelState) list.get(i3);
+                    if (arraySet.contains(globalLevelState2.packageName)) {
+                        ((ArrayMap) this.mGlobalHibernationStates).put(globalLevelState2.packageName, globalLevelState2);
+                    } else {
+                        Slog.w("AppHibernationService", TextUtils.formatSimple("No hibernation state associated with package %s. Maybe the package was uninstalled? ", new Object[]{globalLevelState2.packageName}));
+                    }
+                }
+            }
+        } catch (RemoteException e) {
+            throw new IllegalStateException("Package manager not available", e);
         }
-    }
-
-    /* renamed from: hibernatePackageGlobally, reason: merged with bridge method [inline-methods] */
-    public final void lambda$setHibernatingGlobally$4(String str, GlobalLevelState globalLevelState) {
-        Trace.traceBegin(524288L, "hibernatePackageGlobally");
-        long max = this.mOatArtifactDeletionEnabled ? Math.max(this.mPackageManagerInternal.deleteOatArtifactsOfPackage(str), 0L) : 0L;
-        synchronized (this.mLock) {
-            globalLevelState.savedByte = max;
-        }
-        Trace.traceEnd(524288L);
     }
 
     public final void initializeUserHibernationStates(int i, List list) {
@@ -466,68 +466,87 @@ public final class AppHibernationService extends SystemService {
         }
     }
 
-    public final void initializeGlobalHibernationStates(List list) {
-        try {
-            List list2 = this.mIPackageManager.getInstalledPackages(541893120L, 0).getList();
-            int size = list2.size();
-            for (int i = 0; i < size; i++) {
-                String str = ((PackageInfo) list2.get(i)).packageName;
-                GlobalLevelState globalLevelState = new GlobalLevelState();
-                globalLevelState.packageName = str;
-                this.mGlobalHibernationStates.put(str, globalLevelState);
-            }
-            if (list != null) {
-                ArraySet arraySet = new ArraySet();
-                int size2 = list2.size();
-                for (int i2 = 0; i2 < size2; i2++) {
-                    arraySet.add(((PackageInfo) list2.get(i2)).packageName);
-                }
-                int size3 = list.size();
-                for (int i3 = 0; i3 < size3; i3++) {
-                    GlobalLevelState globalLevelState2 = (GlobalLevelState) list.get(i3);
-                    if (!arraySet.contains(globalLevelState2.packageName)) {
-                        Slog.w("AppHibernationService", TextUtils.formatSimple("No hibernation state associated with package %s. Maybe the package was uninstalled? ", new Object[]{globalLevelState2.packageName}));
-                    } else {
-                        this.mGlobalHibernationStates.put(globalLevelState2.packageName, globalLevelState2);
-                    }
-                }
-            }
-        } catch (RemoteException e) {
-            throw new IllegalStateException("Package manager not available", e);
+    public final boolean isHibernatingForUser(String str, int i) {
+        if (!sIsServiceEnabled) {
+            return false;
         }
-    }
-
-    @Override // com.android.server.SystemService
-    public void onUserUnlocking(SystemService.TargetUser targetUser) {
-        final int userIdentifier = targetUser.getUserIdentifier();
-        final HibernationStateDiskStore userLevelDiskStore = this.mInjector.getUserLevelDiskStore(userIdentifier);
-        this.mUserDiskStores.put(userIdentifier, userLevelDiskStore);
-        this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                AppHibernationService.this.lambda$onUserUnlocking$5(userLevelDiskStore, userIdentifier);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onUserUnlocking$5(HibernationStateDiskStore hibernationStateDiskStore, int i) {
-        List readHibernationStates = hibernationStateDiskStore.readHibernationStates();
+        getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller did not have permission while calling isHibernatingForUser");
+        int handleIncomingUser = handleIncomingUser(i, "isHibernatingForUser");
         synchronized (this.mLock) {
-            if (this.mUserManager.isUserUnlockingOrUnlocked(i)) {
-                initializeUserHibernationStates(i, readHibernationStates);
-                for (UserLevelState userLevelState : ((Map) this.mUserStates.get(i)).values()) {
-                    String str = userLevelState.packageName;
-                    if (((GlobalLevelState) this.mGlobalHibernationStates.get(str)).hibernated && !userLevelState.hibernated) {
-                        setHibernatingGlobally(str, false);
-                    }
+            try {
+                if (!checkUserStatesExist(handleIncomingUser, "isHibernatingForUser", false)) {
+                    return false;
                 }
+                UserLevelState userLevelState = (UserLevelState) ((Map) this.mUserStates.get(handleIncomingUser)).get(str);
+                if (userLevelState != null && this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
+                    return userLevelState.hibernated;
+                }
+                return false;
+            } finally {
+            }
+        }
+    }
+
+    public final boolean isHibernatingGlobally(String str) {
+        if (!sIsServiceEnabled) {
+            return false;
+        }
+        getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
+        synchronized (this.mLock) {
+            try {
+                GlobalLevelState globalLevelState = (GlobalLevelState) ((ArrayMap) this.mGlobalHibernationStates).get(str);
+                if (globalLevelState != null && this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
+                    return globalLevelState.hibernated;
+                }
+                return false;
+            } finally {
             }
         }
     }
 
     @Override // com.android.server.SystemService
-    public void onUserStopping(SystemService.TargetUser targetUser) {
+    public final void onBootPhase(int i) {
+        if (i == 1000) {
+            this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda1
+                @Override // java.lang.Runnable
+                public final void run() {
+                    AppHibernationService appHibernationService = AppHibernationService.this;
+                    List readHibernationStates = appHibernationService.mGlobalLevelHibernationDiskStore.readHibernationStates();
+                    synchronized (appHibernationService.mLock) {
+                        appHibernationService.initializeGlobalHibernationStates(readHibernationStates);
+                    }
+                }
+            });
+        }
+        if (i == 500) {
+            sIsServiceEnabled = DeviceConfig.getBoolean("app_hibernation", "app_hibernation_enabled", true);
+            DeviceConfig.addOnPropertiesChangedListener("app_hibernation", ActivityThread.currentApplication().getMainExecutor(), new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda2
+                public final void onPropertiesChanged(DeviceConfig.Properties properties) {
+                    AppHibernationService.this.getClass();
+                    Iterator it = properties.getKeyset().iterator();
+                    while (it.hasNext()) {
+                        if (TextUtils.equals("app_hibernation_enabled", (String) it.next())) {
+                            AppHibernationService.sIsServiceEnabled = DeviceConfig.getBoolean("app_hibernation", "app_hibernation_enabled", true);
+                            AnyMotionDetector$$ExternalSyntheticOutline0.m("AppHibernationService", new StringBuilder("App hibernation changed to enabled="), AppHibernationService.sIsServiceEnabled);
+                            return;
+                        }
+                    }
+                }
+            });
+            StatsManager statsManager = (StatsManager) getContext().getSystemService(StatsManager.class);
+            StatsPullAtomCallbackImpl statsPullAtomCallbackImpl = new StatsPullAtomCallbackImpl();
+            statsManager.setPullAtomCallback(FrameworkStatsLog.USER_LEVEL_HIBERNATED_APPS, (StatsManager.PullAtomMetadata) null, this.mBackgroundExecutor, statsPullAtomCallbackImpl);
+            statsManager.setPullAtomCallback(FrameworkStatsLog.GLOBAL_HIBERNATED_APPS, (StatsManager.PullAtomMetadata) null, this.mBackgroundExecutor, statsPullAtomCallbackImpl);
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        publishBinderService("app_hibernation", this.mServiceStub);
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onUserStopping(SystemService.TargetUser targetUser) {
         int userIdentifier = targetUser.getUserIdentifier();
         synchronized (this.mLock) {
             this.mUserDiskStores.remove(userIdentifier);
@@ -535,304 +554,146 @@ public final class AppHibernationService extends SystemService {
         }
     }
 
-    public final void onPackageAdded(String str, int i) {
-        synchronized (this.mLock) {
-            if (this.mUserStates.contains(i)) {
-                UserLevelState userLevelState = new UserLevelState();
-                userLevelState.packageName = str;
-                ((Map) this.mUserStates.get(i)).put(str, userLevelState);
-                if (!this.mGlobalHibernationStates.containsKey(str)) {
-                    GlobalLevelState globalLevelState = new GlobalLevelState();
-                    globalLevelState.packageName = str;
-                    this.mGlobalHibernationStates.put(str, globalLevelState);
-                }
-            }
-        }
+    @Override // com.android.server.SystemService
+    public final void onUserUnlocking(SystemService.TargetUser targetUser) {
+        int userIdentifier = targetUser.getUserIdentifier();
+        InjectorImpl injectorImpl = (InjectorImpl) this.mInjector;
+        injectorImpl.getClass();
+        HibernationStateDiskStore hibernationStateDiskStore = new HibernationStateDiskStore(new File(Environment.getDataSystemCeDirectory(userIdentifier), "hibernation"), injectorImpl.mUserLevelHibernationProto, injectorImpl.mScheduledExecutorService);
+        this.mUserDiskStores.put(userIdentifier, hibernationStateDiskStore);
+        this.mBackgroundExecutor.execute(new AppHibernationService$$ExternalSyntheticLambda3(this, hibernationStateDiskStore, userIdentifier, 0));
     }
 
-    public final void onPackageRemoved(String str, int i) {
-        synchronized (this.mLock) {
-            if (this.mUserStates.contains(i)) {
-                ((Map) this.mUserStates.get(i)).remove(str);
-            }
-        }
-    }
-
-    public final void onPackageRemovedForAllUsers(String str) {
-        synchronized (this.mLock) {
-            this.mGlobalHibernationStates.remove(str);
-        }
-    }
-
-    public final void onDeviceConfigChanged(DeviceConfig.Properties properties) {
-        Iterator it = properties.getKeyset().iterator();
-        while (it.hasNext()) {
-            if (TextUtils.equals("app_hibernation_enabled", (String) it.next())) {
-                sIsServiceEnabled = isDeviceConfigAppHibernationEnabled();
-                Slog.d("AppHibernationService", "App hibernation changed to enabled=" + sIsServiceEnabled);
-                return;
-            }
-        }
-    }
-
-    public final int handleIncomingUser(int i, String str) {
-        try {
-            return this.mIActivityManager.handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), i, false, true, str, (String) null);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    public final boolean checkUserStatesExist(int i, String str, boolean z) {
-        if (!this.mUserManager.isUserUnlockingOrUnlocked(i)) {
-            if (z) {
-                Slog.w("AppHibernationService", TextUtils.formatSimple("Attempt to call %s on stopped or nonexistent user %d", new Object[]{str, Integer.valueOf(i)}));
-            }
-            return false;
-        }
-        if (this.mUserStates.contains(i)) {
-            return true;
-        }
-        if (z) {
-            Slog.w("AppHibernationService", TextUtils.formatSimple("Attempt to call %s before states have been read from disk", new Object[]{str}));
-        }
-        return false;
-    }
-
-    public final void dump(PrintWriter printWriter) {
-        if (DumpUtils.checkDumpAndUsageStatsPermission(getContext(), "AppHibernationService", printWriter)) {
-            IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ");
+    public final void setHibernatingForUser(final String str, int i, boolean z) {
+        if (sIsServiceEnabled) {
+            getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
+            final int handleIncomingUser = handleIncomingUser(i, "setHibernatingForUser");
             synchronized (this.mLock) {
-                int size = this.mUserStates.size();
-                for (int i = 0; i < size; i++) {
-                    int keyAt = this.mUserStates.keyAt(i);
-                    indentingPrintWriter.print("User Level Hibernation States, ");
-                    indentingPrintWriter.printPair("user", Integer.valueOf(keyAt));
-                    indentingPrintWriter.println();
-                    Map map = (Map) this.mUserStates.get(keyAt);
-                    indentingPrintWriter.increaseIndent();
-                    Iterator it = map.values().iterator();
-                    while (it.hasNext()) {
-                        indentingPrintWriter.print((UserLevelState) it.next());
-                        indentingPrintWriter.println();
-                    }
-                    indentingPrintWriter.decreaseIndent();
-                }
-                indentingPrintWriter.println();
-                indentingPrintWriter.print("Global Level Hibernation States");
-                indentingPrintWriter.println();
-                Iterator it2 = this.mGlobalHibernationStates.values().iterator();
-                while (it2.hasNext()) {
-                    indentingPrintWriter.print((GlobalLevelState) it2.next());
-                    indentingPrintWriter.println();
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class LocalService extends AppHibernationManagerInternal {
-        public final AppHibernationService mService;
-
-        public LocalService(AppHibernationService appHibernationService) {
-            this.mService = appHibernationService;
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationManagerInternal
-        public boolean isHibernatingForUser(String str, int i) {
-            return this.mService.isHibernatingForUser(str, i);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationManagerInternal
-        public void setHibernatingForUser(String str, int i, boolean z) {
-            this.mService.setHibernatingForUser(str, i, z);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationManagerInternal
-        public void setHibernatingGlobally(String str, boolean z) {
-            this.mService.setHibernatingGlobally(str, z);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationManagerInternal
-        public boolean isHibernatingGlobally(String str) {
-            return this.mService.isHibernatingGlobally(str);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationManagerInternal
-        public boolean isOatArtifactDeletionEnabled() {
-            return this.mService.isOatArtifactDeletionEnabled();
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class AppHibernationServiceStub extends IAppHibernationService.Stub {
-        public final AppHibernationService mService;
-
-        public AppHibernationServiceStub(AppHibernationService appHibernationService) {
-            this.mService = appHibernationService;
-        }
-
-        public boolean isHibernatingForUser(String str, int i) {
-            return this.mService.isHibernatingForUser(str, i);
-        }
-
-        public void setHibernatingForUser(String str, int i, boolean z) {
-            this.mService.setHibernatingForUser(str, i, z);
-        }
-
-        public void setHibernatingGlobally(String str, boolean z) {
-            this.mService.setHibernatingGlobally(str, z);
-        }
-
-        public boolean isHibernatingGlobally(String str) {
-            return this.mService.isHibernatingGlobally(str);
-        }
-
-        public List getHibernatingPackagesForUser(int i) {
-            return this.mService.getHibernatingPackagesForUser(i);
-        }
-
-        public Map getHibernationStatsForUser(List list, int i) {
-            return this.mService.getHibernationStatsForUser(list != null ? new ArraySet(list) : null, i);
-        }
-
-        public boolean isOatArtifactDeletionEnabled() {
-            return this.mService.isOatArtifactDeletionEnabled();
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
-            new AppHibernationShellCommand(this.mService).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
-        }
-
-        public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-            this.mService.dump(printWriter);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$6(int i, UsageEvents.Event event) {
-        if (isAppHibernationEnabled()) {
-            int i2 = event.mEventType;
-            if (i2 == 7 || i2 == 1 || i2 == 31) {
-                String str = event.mPackage;
-                setHibernatingForUser(str, i, false);
-                setHibernatingGlobally(str, false);
-            }
-        }
-    }
-
-    public static boolean isAppHibernationEnabled() {
-        return sIsServiceEnabled;
-    }
-
-    public static boolean isDeviceConfigAppHibernationEnabled() {
-        return DeviceConfig.getBoolean("app_hibernation", "app_hibernation_enabled", true);
-    }
-
-    /* loaded from: classes.dex */
-    public final class InjectorImpl implements Injector {
-        public final Context mContext;
-        public final ScheduledExecutorService mScheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        public final UserLevelHibernationProto mUserLevelHibernationProto = new UserLevelHibernationProto();
-
-        public InjectorImpl(Context context) {
-            this.mContext = context;
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public Context getContext() {
-            return this.mContext;
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public IPackageManager getPackageManager() {
-            return IPackageManager.Stub.asInterface(ServiceManager.getService("package"));
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public PackageManagerInternal getPackageManagerInternal() {
-            return (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public IActivityManager getActivityManager() {
-            return ActivityManager.getService();
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public UserManager getUserManager() {
-            return (UserManager) this.mContext.getSystemService(UserManager.class);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public StorageStatsManager getStorageStatsManager() {
-            return (StorageStatsManager) this.mContext.getSystemService(StorageStatsManager.class);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public Executor getBackgroundExecutor() {
-            return this.mScheduledExecutorService;
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public UsageStatsManagerInternal getUsageStatsManagerInternal() {
-            return (UsageStatsManagerInternal) LocalServices.getService(UsageStatsManagerInternal.class);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public HibernationStateDiskStore getGlobalLevelDiskStore() {
-            return new HibernationStateDiskStore(new File(Environment.getDataSystemDirectory(), "hibernation"), new GlobalLevelHibernationProto(), this.mScheduledExecutorService);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public HibernationStateDiskStore getUserLevelDiskStore(int i) {
-            return new HibernationStateDiskStore(new File(Environment.getDataSystemCeDirectory(i), "hibernation"), this.mUserLevelHibernationProto, this.mScheduledExecutorService);
-        }
-
-        @Override // com.android.server.apphibernation.AppHibernationService.Injector
-        public boolean isOatArtifactDeletionEnabled() {
-            return this.mContext.getResources().getBoolean(17891721);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class StatsPullAtomCallbackImpl implements StatsManager.StatsPullAtomCallback {
-        public StatsPullAtomCallbackImpl() {
-        }
-
-        public int onPullAtom(int i, List list) {
-            long j;
-            int i2;
-            if (!AppHibernationService.isAppHibernationEnabled() && (i == 10107 || i == 10109)) {
-                return 0;
-            }
-            if (i == 10107) {
-                List aliveUsers = AppHibernationService.this.mUserManager.getAliveUsers();
-                int size = aliveUsers.size();
-                for (int i3 = 0; i3 < size; i3++) {
-                    int i4 = ((UserInfo) aliveUsers.get(i3)).id;
-                    if (AppHibernationService.this.mUserManager.isUserUnlockingOrUnlocked(i4)) {
-                        list.add(FrameworkStatsLog.buildStatsEvent(i, AppHibernationService.this.getHibernatingPackagesForUser(i4).size(), i4));
-                    }
-                }
-            } else {
-                if (i != 10109) {
-                    return 1;
-                }
-                synchronized (AppHibernationService.this.mLock) {
-                    j = 0;
-                    i2 = 0;
-                    for (GlobalLevelState globalLevelState : AppHibernationService.this.mGlobalHibernationStates.values()) {
-                        if (globalLevelState.hibernated) {
-                            i2++;
-                            j += globalLevelState.savedByte;
+                try {
+                    if (checkUserStatesExist(handleIncomingUser, "setHibernatingForUser", true)) {
+                        final UserLevelState userLevelState = (UserLevelState) ((Map) this.mUserStates.get(handleIncomingUser)).get(str);
+                        if (userLevelState != null && this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
+                            if (userLevelState.hibernated == z) {
+                                return;
+                            }
+                            userLevelState.hibernated = z;
+                            if (z) {
+                                this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda4
+                                    @Override // java.lang.Runnable
+                                    public final void run() {
+                                        AppHibernationService appHibernationService = AppHibernationService.this;
+                                        String str2 = str;
+                                        int i2 = handleIncomingUser;
+                                        UserLevelState userLevelState2 = userLevelState;
+                                        appHibernationService.getClass();
+                                        Trace.traceBegin(524288L, "hibernatePackage");
+                                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                                        try {
+                                            try {
+                                                try {
+                                                    try {
+                                                        ApplicationInfo applicationInfo = appHibernationService.mIPackageManager.getApplicationInfo(str2, 537698816L, i2);
+                                                        StorageStats queryStatsForPackage = appHibernationService.mStorageStatsManager.queryStatsForPackage(applicationInfo.storageUuid, str2, new UserHandle(i2));
+                                                        if (Flags.appRestrictionsApi()) {
+                                                            try {
+                                                                appHibernationService.mIActivityManager.noteAppRestrictionEnabled(str2, applicationInfo.uid, 60, true, 2, (String) null, 3, 7776000000L);
+                                                            } catch (RemoteException unused) {
+                                                                Slog.e("AppHibernationService", "Couldn't set restriction state change");
+                                                            }
+                                                        }
+                                                        appHibernationService.mIActivityManager.forceStopPackage(str2, i2);
+                                                        appHibernationService.mIPackageManager.deleteApplicationCacheFilesAsUser(str2, i2, (IPackageDataObserver) null);
+                                                        synchronized (appHibernationService.mLock) {
+                                                            userLevelState2.savedByte = queryStatsForPackage.getCacheBytes();
+                                                        }
+                                                    } catch (RemoteException e) {
+                                                        throw new IllegalStateException("Failed to hibernate due to manager not being available", e);
+                                                    }
+                                                } catch (IOException e2) {
+                                                    Slog.e("AppHibernationService", "Storage device not found", e2);
+                                                }
+                                            } catch (PackageManager.NameNotFoundException e3) {
+                                                Slog.e("AppHibernationService", "Package name not found when querying storage stats", e3);
+                                            }
+                                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                                            Trace.traceEnd(524288L);
+                                        } catch (Throwable th) {
+                                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                                            Trace.traceEnd(524288L);
+                                            throw th;
+                                        }
+                                    }
+                                });
+                            } else {
+                                this.mBackgroundExecutor.execute(new AppHibernationService$$ExternalSyntheticLambda3(this, str, handleIncomingUser, 1));
+                                userLevelState.lastUnhibernatedMs = System.currentTimeMillis();
+                            }
+                            final UserLevelState userLevelState2 = new UserLevelState();
+                            userLevelState2.packageName = userLevelState.packageName;
+                            userLevelState2.hibernated = userLevelState.hibernated;
+                            userLevelState2.savedByte = userLevelState.savedByte;
+                            userLevelState2.lastUnhibernatedMs = userLevelState.lastUnhibernatedMs;
+                            this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda6
+                                @Override // java.lang.Runnable
+                                public final void run() {
+                                    UserLevelState userLevelState3 = UserLevelState.this;
+                                    FrameworkStatsLog.write(FrameworkStatsLog.USER_LEVEL_HIBERNATION_STATE_CHANGED, userLevelState3.packageName, handleIncomingUser, userLevelState3.hibernated);
+                                }
+                            });
+                            ((HibernationStateDiskStore) this.mUserDiskStores.get(handleIncomingUser)).scheduleWriteHibernationStates(new ArrayList(((Map) this.mUserStates.get(handleIncomingUser)).values()));
+                            return;
                         }
+                        Slog.e("AppHibernationService", TextUtils.formatSimple("Package %s is not installed for user %s", new Object[]{str, Integer.valueOf(handleIncomingUser)}));
                     }
+                } catch (Throwable th) {
+                    throw th;
                 }
-                list.add(FrameworkStatsLog.buildStatsEvent(i, i2, j / 1000000));
             }
-            return 0;
+        }
+    }
+
+    public final void setHibernatingGlobally(final String str, boolean z) {
+        if (sIsServiceEnabled) {
+            getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_APP_HIBERNATION", "Caller does not have MANAGE_APP_HIBERNATION permission.");
+            synchronized (this.mLock) {
+                try {
+                    final GlobalLevelState globalLevelState = (GlobalLevelState) ((ArrayMap) this.mGlobalHibernationStates).get(str);
+                    if (globalLevelState != null && this.mPackageManagerInternal.canQueryPackage(Binder.getCallingUid(), str)) {
+                        if (globalLevelState.hibernated != z) {
+                            globalLevelState.hibernated = z;
+                            if (z) {
+                                this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.apphibernation.AppHibernationService$$ExternalSyntheticLambda7
+                                    @Override // java.lang.Runnable
+                                    public final void run() {
+                                        AppHibernationService appHibernationService = AppHibernationService.this;
+                                        String str2 = str;
+                                        GlobalLevelState globalLevelState2 = globalLevelState;
+                                        appHibernationService.getClass();
+                                        Trace.traceBegin(524288L, "hibernatePackageGlobally");
+                                        long j = 0;
+                                        if (appHibernationService.mOatArtifactDeletionEnabled) {
+                                            ((PackageManagerService.PackageManagerInternalImpl) appHibernationService.mPackageManagerInternal).mService.snapshotComputer();
+                                            j = Math.max(PackageManagerService.deleteOatArtifactsOfPackage(str2), 0L);
+                                        }
+                                        synchronized (appHibernationService.mLock) {
+                                            globalLevelState2.savedByte = j;
+                                        }
+                                        Trace.traceEnd(524288L);
+                                    }
+                                });
+                            } else {
+                                globalLevelState.savedByte = 0L;
+                                globalLevelState.lastUnhibernatedMs = System.currentTimeMillis();
+                            }
+                            this.mGlobalLevelHibernationDiskStore.scheduleWriteHibernationStates(new ArrayList(((ArrayMap) this.mGlobalHibernationStates).values()));
+                        }
+                        return;
+                    }
+                    Slog.e("AppHibernationService", TextUtils.formatSimple("Package %s is not installed for any user", new Object[]{str}));
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
         }
     }
 }

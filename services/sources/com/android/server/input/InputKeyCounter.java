@@ -7,48 +7,43 @@ import android.os.SystemProperties;
 import android.util.ArrayMap;
 import android.util.Log;
 import com.samsung.android.knox.custom.LauncherConfigurationInternal;
-import java.util.Map;
 
-/* loaded from: classes2.dex */
-public class InputKeyCounter {
-    public static final boolean DEBUG;
-    public static final boolean SHIP_BUILD;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class InputKeyCounter {
+    public static final boolean DEBUG = !"true".equals(SystemProperties.get("ro.product_ship", "false"));
     public final HwKeyCount mCurrentKeyCount = new HwKeyCount();
 
-    static {
-        boolean equals = "true".equals(SystemProperties.get("ro.product_ship", "false"));
-        SHIP_BUILD = equals;
-        DEBUG = !equals;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class HwKeyCount {
+        public final ArrayMap mKeyCountMap = new ArrayMap();
+        public long mAllKeyCount = 0;
 
-    public void increaseCount(int i) {
-        this.mCurrentKeyCount.add(i);
-    }
-
-    public long getAllKeyCount() {
-        return this.mCurrentKeyCount.getAllKeyCount();
-    }
-
-    public void saveCount() {
-        ArrayMap keyCountMap = this.mCurrentKeyCount.getKeyCountMap();
-        String str = new String();
-        for (Map.Entry entry : keyCountMap.entrySet()) {
-            str = str.concat(Integer.toString(((Integer) entry.getKey()).intValue())).concat(",").concat(Integer.toString(((Integer) entry.getValue()).intValue())).concat("/");
+        public final void add(int i, int i2) {
+            synchronized (this.mKeyCountMap) {
+                try {
+                    this.mKeyCountMap.put(Integer.valueOf(i), Integer.valueOf(i2));
+                    this.mAllKeyCount = i2;
+                    if (InputKeyCounter.DEBUG) {
+                        Log.d("InputKeyCounter", "Add keyCode: " + i + ", currentCount:" + i2);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
         }
-        if (DEBUG) {
-            Log.i("InputKeyCounter", "saveCount - concat data :" + str);
+
+        public final ArrayMap getKeyCountMap() {
+            ArrayMap arrayMap = new ArrayMap();
+            synchronized (this.mKeyCountMap) {
+                arrayMap.putAll(this.mKeyCountMap);
+            }
+            return arrayMap;
         }
-        SystemProperties.set("persist.service.bgkeycount", str);
     }
 
-    public void sendBroadcastKeyCount(Context context) {
-        ArrayMap keyCountMap = this.mCurrentKeyCount.getKeyCountMap();
-        this.mCurrentKeyCount.clearKeyCount();
-        sendBroadcastKeyCountInternal(context, keyCountMap);
-    }
-
-    public final void sendBroadcastKeyCountInternal(Context context, ArrayMap arrayMap) {
-        if (arrayMap == null || arrayMap.size() == 0) {
+    public static void sendBroadcastKeyCountInternal(Context context, ArrayMap arrayMap) {
+        if (arrayMap.size() == 0) {
             Log.i("InputKeyCounter", "No map object");
             return;
         }
@@ -71,99 +66,6 @@ public class InputKeyCounter {
             Log.d("InputKeyCounter", "Sendbroadcast keycount - lenght: " + arrayMap.size());
             for (int i2 = 0; i2 < size; i2++) {
                 Log.d("InputKeyCounter", "Sendbroadcast keycount - cvs: " + contentValuesArr[i2].toString());
-            }
-        }
-    }
-
-    public void kickOldies(Context context) {
-        if (DEBUG) {
-            Log.i("InputKeyCounter", "read old data!");
-        }
-        String[] split = SystemProperties.get("persist.service.bgkeycount", "null").split("/");
-        HwKeyCount hwKeyCount = new HwKeyCount();
-        try {
-            for (String str : split) {
-                if (DEBUG) {
-                    Log.d("InputKeyCounter", "read old saved keycount strings = " + str);
-                }
-                String[] split2 = str.split(",");
-                if (split2.length != 2) {
-                    Log.w("InputKeyCounter", "throw up the data!");
-                    return;
-                }
-                hwKeyCount.add(Integer.parseInt(split2[0]), Integer.parseInt(split2[1]));
-            }
-        } catch (NumberFormatException unused) {
-            Log.e("InputKeyCounter", "NumberFormatException, throw up the data!");
-            SystemProperties.set("persist.service.bgkeycount", "");
-        }
-        sendBroadcastKeyCountInternal(context, hwKeyCount.getKeyCountMap());
-        SystemProperties.set("persist.service.bgkeycount", "");
-    }
-
-    /* loaded from: classes2.dex */
-    public class HwKeyCount {
-        public long mAllKeyCount;
-        public ArrayMap mKeyCountMap;
-
-        public HwKeyCount() {
-            this.mKeyCountMap = new ArrayMap();
-            this.mAllKeyCount = 0L;
-        }
-
-        public void add(int i) {
-            synchronized (this.mKeyCountMap) {
-                if (this.mKeyCountMap.containsKey(Integer.valueOf(i))) {
-                    int intValue = ((Integer) this.mKeyCountMap.get(Integer.valueOf(i))).intValue();
-                    this.mKeyCountMap.remove(Integer.valueOf(i));
-                    int i2 = intValue + 1;
-                    this.mKeyCountMap.put(Integer.valueOf(i), Integer.valueOf(i2));
-                    if (InputKeyCounter.DEBUG) {
-                        Log.d("InputKeyCounter", "Add keyCode: " + i + ", currentCount= " + i2);
-                    }
-                } else {
-                    this.mKeyCountMap.put(Integer.valueOf(i), 1);
-                    if (InputKeyCounter.DEBUG) {
-                        Log.d("InputKeyCounter", "Add keyCode: " + i + ", currentCount: 1");
-                    }
-                }
-                this.mAllKeyCount++;
-            }
-        }
-
-        public void add(int i, int i2) {
-            synchronized (this.mKeyCountMap) {
-                this.mKeyCountMap.put(Integer.valueOf(i), Integer.valueOf(i2));
-                this.mAllKeyCount = i2;
-                if (InputKeyCounter.DEBUG) {
-                    Log.d("InputKeyCounter", "Add keyCode: " + i + ", currentCount:" + i2);
-                }
-            }
-        }
-
-        public ArrayMap getKeyCountMap() {
-            ArrayMap arrayMap = new ArrayMap();
-            synchronized (this.mKeyCountMap) {
-                arrayMap.putAll(this.mKeyCountMap);
-            }
-            return arrayMap;
-        }
-
-        public long getAllKeyCount() {
-            long j;
-            synchronized (this.mKeyCountMap) {
-                j = this.mAllKeyCount;
-            }
-            if (InputKeyCounter.DEBUG) {
-                Log.d("InputKeyCounter", "getAllKeyCount: " + j);
-            }
-            return j;
-        }
-
-        public void clearKeyCount() {
-            synchronized (this.mKeyCountMap) {
-                this.mKeyCountMap.clear();
-                this.mAllKeyCount = 0L;
             }
         }
     }

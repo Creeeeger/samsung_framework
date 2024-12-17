@@ -1,5 +1,6 @@
 package android.hardware.biometrics.fingerprint.V2_1;
 
+import android.hardware.authsecret.V1_0.IAuthSecret$Proxy$$ExternalSyntheticOutline0;
 import android.hidl.base.V1_0.DebugInfo;
 import android.hidl.base.V1_0.IBase;
 import android.os.HidlSupport;
@@ -11,86 +12,98 @@ import android.os.IHwInterface;
 import android.os.NativeHandle;
 import android.os.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IBiometricsFingerprint extends IBase {
-    @Override // android.hidl.base.V1_0.IBase
-    IHwBinder asBinder();
 
-    int authenticate(long j, int i);
-
-    int cancel();
-
-    int enroll(byte[] bArr, int i, int i2);
-
-    int enumerate();
-
-    long getAuthenticatorId();
-
-    @Override // android.hidl.base.V1_0.IBase
-    ArrayList interfaceChain();
-
-    int postEnroll();
-
-    long preEnroll();
-
-    int remove(int i, int i2);
-
-    int setActiveGroup(int i, String str);
-
-    long setNotify(IBiometricsFingerprintClientCallback iBiometricsFingerprintClientCallback);
-
-    static IBiometricsFingerprint asInterface(IHwBinder iHwBinder) {
-        if (iHwBinder == null) {
-            return null;
-        }
-        IHwInterface queryLocalInterface = iHwBinder.queryLocalInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-        if (queryLocalInterface != null && (queryLocalInterface instanceof IBiometricsFingerprint)) {
-            return (IBiometricsFingerprint) queryLocalInterface;
-        }
-        Proxy proxy = new Proxy(iHwBinder);
-        try {
-            Iterator it = proxy.interfaceChain().iterator();
-            while (it.hasNext()) {
-                if (((String) it.next()).equals("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint")) {
-                    return proxy;
-                }
-            }
-        } catch (RemoteException unused) {
-        }
-        return null;
-    }
-
-    static IBiometricsFingerprint getService(String str) {
-        return asInterface(HwBinder.getService("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint", str));
-    }
-
-    static IBiometricsFingerprint getService() {
-        return getService("default");
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Proxy implements IBiometricsFingerprint {
         public IHwBinder mRemote;
 
-        public Proxy(IHwBinder iHwBinder) {
-            Objects.requireNonNull(iHwBinder);
-            this.mRemote = iHwBinder;
-        }
-
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint, android.hidl.base.V1_0.IBase
-        public IHwBinder asBinder() {
+        @Override // android.hidl.base.V1_0.IBase
+        public final IHwBinder asBinder() {
             return this.mRemote;
         }
 
-        public String toString() {
+        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
+        public final int authenticate(int i, long j) {
+            HwParcel hwParcel = new HwParcel();
+            hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
+            hwParcel.writeInt64(j);
+            hwParcel.writeInt32(i);
+            HwParcel hwParcel2 = new HwParcel();
             try {
-                return interfaceDescriptor() + "@Proxy";
-            } catch (RemoteException unused) {
-                return "[class or subclass of android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint]@Proxy";
+                this.mRemote.transact(10, hwParcel, hwParcel2, 0);
+                hwParcel2.verifySuccess();
+                hwParcel.releaseTemporaryStorage();
+                return hwParcel2.readInt32();
+            } finally {
+                hwParcel2.release();
+            }
+        }
+
+        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
+        public final int cancel() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(6, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName, nativeHandle, arrayList);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256131655, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
+        public final int enroll(int i, int i2, byte[] bArr) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
+            HwBlob hwBlob = new HwBlob(69);
+            if (bArr.length != 69) {
+                throw new IllegalArgumentException("Array element is not of the expected length");
+            }
+            hwBlob.putInt8Array(0L, bArr);
+            m.writeBuffer(hwBlob);
+            m.writeInt32(i);
+            m.writeInt32(i2);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(3, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
+        public final int enumerate() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(7, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
             }
         }
 
@@ -98,126 +111,152 @@ public interface IBiometricsFingerprint extends IBase {
             return HidlSupport.interfacesEqual(this, obj);
         }
 
+        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
+        public final long getAuthenticatorId() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(5, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt64();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final DebugInfo getDebugInfo() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(257049926, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                DebugInfo debugInfo = new DebugInfo();
+                debugInfo.readFromParcel(hwParcel);
+                return debugInfo;
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final ArrayList getHashChain() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256398152, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                ArrayList arrayList = new ArrayList();
+                HwBlob readBuffer = hwParcel.readBuffer(16L);
+                int int32 = readBuffer.getInt32(8L);
+                HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
+                arrayList.clear();
+                for (int i = 0; i < int32; i++) {
+                    byte[] bArr = new byte[32];
+                    readEmbeddedBuffer.copyToInt8Array(i * 32, bArr, 32);
+                    arrayList.add(bArr);
+                }
+                return arrayList;
+            } finally {
+                hwParcel.release();
+            }
+        }
+
         public final int hashCode() {
-            return asBinder().hashCode();
+            return this.mRemote.hashCode();
         }
 
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public long setNotify(IBiometricsFingerprintClientCallback iBiometricsFingerprintClientCallback) {
+        @Override // android.hidl.base.V1_0.IBase
+        public final ArrayList interfaceChain() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-            hwParcel.writeStrongBinder(iBiometricsFingerprintClientCallback == null ? null : iBiometricsFingerprintClientCallback.asBinder());
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(1, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt64();
+                this.mRemote.transact(256067662, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readStringVector();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public long preEnroll() {
+        @Override // android.hidl.base.V1_0.IBase
+        public final String interfaceDescriptor() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(2, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt64();
+                this.mRemote.transact(256136003, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readString();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public int enroll(byte[] bArr, int i, int i2) {
+        @Override // android.hidl.base.V1_0.IBase
+        public final boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
+            return this.mRemote.linkToDeath(deathRecipient, j);
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void notifySyspropsChanged() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-            HwBlob hwBlob = new HwBlob(69);
-            if (bArr == null || bArr.length != 69) {
-                throw new IllegalArgumentException("Array element is not of the expected length");
-            }
-            hwBlob.putInt8Array(0L, bArr);
-            hwParcel.writeBuffer(hwBlob);
-            hwParcel.writeInt32(i);
-            hwParcel.writeInt32(i2);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(3, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
+                this.mRemote.transact(257120595, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public int postEnroll() {
+        @Override // android.hidl.base.V1_0.IBase
+        public final void ping() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(4, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
+                this.mRemote.transact(256921159, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public long getAuthenticatorId() {
+        public final int postEnroll() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(5, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt64();
+                this.mRemote.transact(4, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public int cancel() {
+        public final long preEnroll() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(6, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
+                this.mRemote.transact(2, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt64();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public int enumerate() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(7, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public int remove(int i, int i2) {
+        public final int remove(int i, int i2) {
             HwParcel hwParcel = new HwParcel();
             hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
             hwParcel.writeInt32(i);
@@ -234,7 +273,7 @@ public interface IBiometricsFingerprint extends IBase {
         }
 
         @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public int setActiveGroup(int i, String str) {
+        public final int setActiveGroup(int i, String str) {
             HwParcel hwParcel = new HwParcel();
             hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
             hwParcel.writeInt32(i);
@@ -250,373 +289,88 @@ public interface IBiometricsFingerprint extends IBase {
             }
         }
 
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
-        public int authenticate(long j, int i) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-            hwParcel.writeInt64(j);
-            hwParcel.writeInt32(i);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(10, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint, android.hidl.base.V1_0.IBase
-        public ArrayList interfaceChain() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256067662, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readStringVector();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            hwParcel.writeNativeHandle(nativeHandle);
-            hwParcel.writeStringVector(arrayList);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256131655, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public String interfaceDescriptor() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256136003, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readString();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public ArrayList getHashChain() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256398152, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                ArrayList arrayList = new ArrayList();
-                HwBlob readBuffer = hwParcel2.readBuffer(16L);
-                int int32 = readBuffer.getInt32(8L);
-                HwBlob readEmbeddedBuffer = hwParcel2.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
-                arrayList.clear();
-                for (int i = 0; i < int32; i++) {
-                    byte[] bArr = new byte[32];
-                    readEmbeddedBuffer.copyToInt8Array(i * 32, bArr, 32);
-                    arrayList.add(bArr);
-                }
-                return arrayList;
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void setHALInstrumentation() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256462420, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
-            return this.mRemote.linkToDeath(deathRecipient, j);
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void ping() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256921159, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public DebugInfo getDebugInfo() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(257049926, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                DebugInfo debugInfo = new DebugInfo();
-                debugInfo.readFromParcel(hwParcel2);
-                return debugInfo;
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void notifySyspropsChanged() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(257120595, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
-            return this.mRemote.unlinkToDeath(deathRecipient);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public abstract class Stub extends HwBinder implements IBiometricsFingerprint {
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint, android.hidl.base.V1_0.IBase
-        public IHwBinder asBinder() {
-            return this;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final String interfaceDescriptor() {
-            return "android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint";
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
-            return true;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final void ping() {
-        }
-
         @Override // android.hidl.base.V1_0.IBase
         public final void setHALInstrumentation() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256462420, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint
+        public final long setNotify(IBiometricsFingerprintClientCallback iBiometricsFingerprintClientCallback) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
+            m.writeStrongBinder(iBiometricsFingerprintClientCallback == null ? null : iBiometricsFingerprintClientCallback.asBinder());
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(1, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt64();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        public final String toString() {
+            try {
+                return interfaceDescriptor() + "@Proxy";
+            } catch (RemoteException unused) {
+                return "[class or subclass of android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint]@Proxy";
+            }
         }
 
         @Override // android.hidl.base.V1_0.IBase
         public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
-            return true;
-        }
-
-        @Override // android.hardware.biometrics.fingerprint.V2_1.IBiometricsFingerprint, android.hidl.base.V1_0.IBase
-        public final ArrayList interfaceChain() {
-            return new ArrayList(Arrays.asList("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint", IBase.kInterfaceName));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final ArrayList getHashChain() {
-            return new ArrayList(Arrays.asList(new byte[]{31, -67, -63, -8, 82, -8, -67, 46, 74, 108, 92, -77, 10, -62, -73, -122, 104, -55, -115, -50, 17, -118, 97, 118, 45, 64, 52, -82, -123, -97, 67, -40}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, -48, 45, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, 36, -13, -51, 105, 87, 19, -109, 36, -72, 59, 24, -54, 76}));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final DebugInfo getDebugInfo() {
-            DebugInfo debugInfo = new DebugInfo();
-            debugInfo.pid = HidlSupport.getPidIfSharable();
-            debugInfo.ptr = 0L;
-            debugInfo.arch = 0;
-            return debugInfo;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final void notifySyspropsChanged() {
-            HwBinder.enableInstrumentation();
-        }
-
-        public IHwInterface queryLocalInterface(String str) {
-            if ("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint".equals(str)) {
-                return this;
-            }
-            return null;
-        }
-
-        public String toString() {
-            return interfaceDescriptor() + "@Stub";
-        }
-
-        public void onTransact(int i, HwParcel hwParcel, HwParcel hwParcel2, int i2) {
-            switch (i) {
-                case 1:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    long notify = setNotify(IBiometricsFingerprintClientCallback.asInterface(hwParcel.readStrongBinder()));
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt64(notify);
-                    hwParcel2.send();
-                    return;
-                case 2:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    long preEnroll = preEnroll();
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt64(preEnroll);
-                    hwParcel2.send();
-                    return;
-                case 3:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    byte[] bArr = new byte[69];
-                    hwParcel.readBuffer(69L).copyToInt8Array(0L, bArr, 69);
-                    int enroll = enroll(bArr, hwParcel.readInt32(), hwParcel.readInt32());
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(enroll);
-                    hwParcel2.send();
-                    return;
-                case 4:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    int postEnroll = postEnroll();
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(postEnroll);
-                    hwParcel2.send();
-                    return;
-                case 5:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    long authenticatorId = getAuthenticatorId();
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt64(authenticatorId);
-                    hwParcel2.send();
-                    return;
-                case 6:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    int cancel = cancel();
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(cancel);
-                    hwParcel2.send();
-                    return;
-                case 7:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    int enumerate = enumerate();
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(enumerate);
-                    hwParcel2.send();
-                    return;
-                case 8:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    int remove = remove(hwParcel.readInt32(), hwParcel.readInt32());
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(remove);
-                    hwParcel2.send();
-                    return;
-                case 9:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    int activeGroup = setActiveGroup(hwParcel.readInt32(), hwParcel.readString());
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(activeGroup);
-                    hwParcel2.send();
-                    return;
-                case 10:
-                    hwParcel.enforceInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
-                    int authenticate = authenticate(hwParcel.readInt64(), hwParcel.readInt32());
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(authenticate);
-                    hwParcel2.send();
-                    return;
-                default:
-                    switch (i) {
-                        case 256067662:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            ArrayList interfaceChain = interfaceChain();
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeStringVector(interfaceChain);
-                            hwParcel2.send();
-                            return;
-                        case 256131655:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            debug(hwParcel.readNativeHandle(), hwParcel.readStringVector());
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.send();
-                            return;
-                        case 256136003:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            String interfaceDescriptor = interfaceDescriptor();
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeString(interfaceDescriptor);
-                            hwParcel2.send();
-                            return;
-                        case 256398152:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            ArrayList hashChain = getHashChain();
-                            hwParcel2.writeStatus(0);
-                            HwBlob hwBlob = new HwBlob(16);
-                            int size = hashChain.size();
-                            hwBlob.putInt32(8L, size);
-                            hwBlob.putBool(12L, false);
-                            HwBlob hwBlob2 = new HwBlob(size * 32);
-                            for (int i3 = 0; i3 < size; i3++) {
-                                long j = i3 * 32;
-                                byte[] bArr2 = (byte[]) hashChain.get(i3);
-                                if (bArr2 == null || bArr2.length != 32) {
-                                    throw new IllegalArgumentException("Array element is not of the expected length");
-                                }
-                                hwBlob2.putInt8Array(j, bArr2);
-                            }
-                            hwBlob.putBlob(0L, hwBlob2);
-                            hwParcel2.writeBuffer(hwBlob);
-                            hwParcel2.send();
-                            return;
-                        case 256462420:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            setHALInstrumentation();
-                            return;
-                        case 256921159:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            ping();
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.send();
-                            return;
-                        case 257049926:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            DebugInfo debugInfo = getDebugInfo();
-                            hwParcel2.writeStatus(0);
-                            debugInfo.writeToParcel(hwParcel2);
-                            hwParcel2.send();
-                            return;
-                        case 257120595:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            notifySyspropsChanged();
-                            return;
-                        default:
-                            return;
-                    }
-            }
+            return this.mRemote.unlinkToDeath(deathRecipient);
         }
     }
+
+    static IBiometricsFingerprint getService() {
+        IHwBinder service = HwBinder.getService("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint", "default");
+        if (service == null) {
+            return null;
+        }
+        IHwInterface queryLocalInterface = service.queryLocalInterface("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint");
+        if (queryLocalInterface != null && (queryLocalInterface instanceof IBiometricsFingerprint)) {
+            return (IBiometricsFingerprint) queryLocalInterface;
+        }
+        Proxy proxy = new Proxy();
+        proxy.mRemote = service;
+        try {
+            Iterator it = proxy.interfaceChain().iterator();
+            while (it.hasNext()) {
+                if (((String) it.next()).equals("android.hardware.biometrics.fingerprint@2.1::IBiometricsFingerprint")) {
+                    return proxy;
+                }
+            }
+            return null;
+        } catch (RemoteException unused) {
+            return null;
+        }
+    }
+
+    int authenticate(int i, long j);
+
+    int cancel();
+
+    int enroll(int i, int i2, byte[] bArr);
+
+    int enumerate();
+
+    long getAuthenticatorId();
+
+    int postEnroll();
+
+    long preEnroll();
+
+    int remove(int i, int i2);
+
+    int setActiveGroup(int i, String str);
+
+    long setNotify(IBiometricsFingerprintClientCallback iBiometricsFingerprintClientCallback);
 }

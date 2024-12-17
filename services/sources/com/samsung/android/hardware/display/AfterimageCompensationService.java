@@ -1,18 +1,15 @@
 package com.samsung.android.hardware.display;
 
-import android.R;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
-import android.net.util.NetworkConstants;
 import android.os.Build;
 import android.os.SemHqmManager;
 import android.util.Slog;
 import android.view.WindowManager;
-import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.HeimdAllFsService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,199 +19,46 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.Thread;
-import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public class AfterimageCompensationService {
-    public static final String[] AFPC_KEYS = {"BURN_IN_INIT_POC_VECTOR", "BURN_IN_POC_APPLY_COUNT", "BURN_IN_JND"};
     public static final String[] mAFPC_KEYS = {"ApplyCount", "JND", "AvgLum", "MaxBDI", "NBDI", "EffAvgLum", "EffMaxBDI", "EffNBDI", "ApplyCount_sub", "JND_sub", "AvgLum_sub", "MaxBDI_sub", "NBDI_sub", "EffAvgLum_sub", "EffMaxBDI_sub", "EffNBDI_sub"};
     public boolean AfcStateCondition;
-    public int AfpcPeriodMax;
-    public boolean mAFPCVersion1;
-    public int mAfcType;
-    public int mAfpcHeight;
-    public int mAfpcHeight_sub;
-    public int mAfpcPanelNumber_main;
-    public int mAfpcPanelNumber_sub;
-    public int mAfpcSize;
-    public int mAfpcSize_sub;
-    public int mAfpcWidth;
-    public int mAfpcWidth_sub;
-    public int mApplyScaleEffect;
+    public final int AfpcPeriodMax;
+    public final int mAfcType;
+    public final int mAfpcPanelNumber_main;
+    public final int mAfpcSize;
+    public int mApplyCount;
+    public int mApplyCount_sub;
+    public final int mApplyScaleEffect;
     public float mApplyValue;
-    public int[] mBrightnessBorderValue;
+    public float mApplyValue_sub;
     public final Context mContext;
-    public boolean mMcaRewrited;
-    public boolean mPocInitVector;
-    public boolean mThreadAFPC;
-    public boolean mThreadAPC;
-    public long mThreadSleepTime;
-    public Thread.State state;
+    public final boolean mThreadAFPC;
+    public final long mThreadSleepTime;
     public final boolean DEBUG = "eng".equals(Build.TYPE);
-    public final int AFC_TYPE_AFC = 0;
-    public final int AFC_TYPE_AFC_V1 = 1;
-    public final int AFC_TYPE_AFPC = 2;
-    public final int AFC_TYPE_MAFPC = 3;
-    public final int AFC_TYPE_AFPC_V2 = 4;
-    public final int AFC_TYPE_MAFPC_V2 = 5;
-    public final int AFC_TYPE_MAFPC_V3 = 6;
-    public final int AFC_TYPE_MAFPC_V4 = 7;
-    public final int AFC_TYPE_MAFPC_V5 = 8;
-    public final int AFC_TYPE_MAFPC_V6 = 9;
-    public final int AFC_TYPE_MAFPC_V7 = 10;
-    public final int AFC_TYPE_MAFPC_V8 = 11;
-    public final int MODEL_BEYOND0 = 190100;
-    public final int MODEL_BEYOND1 = 190101;
-    public final int MODEL_BEYOND2 = 190102;
-    public final int MODEL_BEYONDX = 190103;
-    public final int MODEL_DAVINC1 = 190201;
-    public final int MODEL_DAVINC2 = 190202;
-    public final int MODEL_X1 = 200101;
-    public final int MODEL_Y2 = 200102;
-    public final int MODEL_Z3 = 200103;
-    public final int MODEL_C1 = 200201;
-    public final int MODEL_C2 = 200202;
-    public final int MODEL_TOP = 200203;
-    public final int MODEL_O1 = 210101;
-    public final int MODEL_T2 = 210102;
-    public final int MODEL_P3 = 210103;
-    public final int MODEL_B2 = 210201;
-    public final int MODEL_Q2 = 210202;
-    public final int MODEL_R0 = 220101;
-    public final int MODEL_G0 = 220102;
-    public final int MODEL_B0 = 220103;
-    public final int MODEL_B4 = 220201;
-    public final int MODEL_Q4_MAIN = 220202;
-    public final int MODEL_Q4_SUB = 220203;
-    public final int MODEL_DM1 = 230101;
-    public final int MODEL_DM2 = 230102;
-    public final int MODEL_DM3 = 230103;
-    public final int MODEL_B5 = 230201;
-    public final int MODEL_Q5_MAIN = 230202;
-    public final int MODEL_Q5_SUB = 230203;
-    public final int MODEL_E1 = 240101;
-    public final int MODEL_E2 = 240102;
-    public final int MODEL_E3 = 240103;
-    public final int MODEL_B6 = 240201;
-    public final int MODEL_Q6_MAIN = 240202;
-    public final int MODEL_Q6_SUB = 240203;
-    public final int MODEL_Q6A_MAIN = 240204;
-    public final int MODEL_Q6A_SUB = 240205;
-    public final long MILLIS_AFC_PERIOD = 10000;
-    public final long MILLIS_AFPC_PERIOD = 60000;
-    public final long MILLIS_AFPC_V2_PERIOD = 30000;
-    public final int MAX_APPLY_COUNT = 10;
-    public final double APPLY_BDI = 300.0d;
-    public final double APPLY_AVG_LUM = 80.0d;
-    public final double APPLY_AVG_LUM_V2 = 75.0d;
-    public final double APPLY_AVG_LUM_V3 = 70.0d;
-    public final double APPLY_AVG_LUM_V4 = 70.0d;
-    public final double APPLY_AVG_LUM_V5 = 50.0d;
-    public final double APPLY_AVG_LUM_V6 = 50.0d;
-    public final double APPLY_AVG_LUM_V7 = 50.0d;
-    public final double APPLY_AVG_LUM_V8 = 50.0d;
-    public final String SYSFS_COPR_FILE_PATH = "/sys/class/lcd/panel/copr_roi";
-    public final String SYSFS_SENSOR_COPR_FILE_PATH = "/sys/class/sensors/light_sensor/copr_roix";
-    public final String SYSFS_BRIGHTNESS_FILE_PATH = "/sys/class/lcd/panel/brt_avg";
-    public final String SYSFS_BRIGHTNESS_FILE_PATH_SUB = "/sys/class/lcd/panel1/brt_avg";
-    public final String SYSFS_PANEL_CELL_ID = "/sys/class/lcd/panel/cell_id";
-    public final String SYSFS_PANEL_CELL_ID_SUB = "/sys/class/lcd/panel1/cell_id";
-    public final String SYSFS_PANEL_POC = "/sys/class/lcd/panel/poc";
-    public final String AFC_DIRECTORY = "/efs/afc";
-    public final String AFC_DIRECTORY_SUB = "/efs/afc1";
-    public final String AFC_PANEL_CELL_ID = "/efs/afc/cell_id";
-    public final String AFC_PANEL_CELL_ID_SUB = "/efs/afc1/cell_id";
-    public final String AFC_LOGGING_DATA = "/efs/afc/logging_data";
-    public final String AFC_REG_DATA = "/efs/afc/afc_data";
-    public final String AFC_ORIGINAL_VEC = "/efs/afc/org.vec";
-    public final String AFC_TIME_DATA = "/efs/afc/time_data";
-    public final String AFC_TIME_DATA_SUB = "/efs/afc1/time_data";
-    public final String AFC_POC_DATA = "/efs/afc/poc_data";
-    public final String AFC_POC_DATA_SUB = "/efs/afc1/poc_data";
-    public final String AFC_APPLY_COUNT = "/efs/afc/apply_count";
-    public final String AFC_APPLY_COUNT_SUB = "/efs/afc1/apply_count";
-    public final String AFC_APPLY_LDU = "/efs/afc/apply_ldu";
-    public final String AFC_DIFF_DATA = "/efs/afc/diff_data";
-    public final String AFC_DIFF_DATA_SUB = "/efs/afc1/diff_data";
-    public final String AFC_STATE = "/efs/afc/afc_state";
-    public final String AFC_MDNIE_BLOCK = "/efs/afc/mdnie_block";
-    public final String AFC_MDNIE_BLOCK_SUB = "/efs/afc1/mdnie_block";
-    public final String AFC_TEST_BLOCK = "/efs/afc/test_block";
-    public final String MCA_REWRITED = "/efs/afc/rewrited";
-    public final String MCA_ORG_VEC = "/efs/afc/original.vec";
-    public final String DEV_POC = "/dev/poc";
-    public final String RECOVERY_POC = "/cache/recovery/poc.vec";
-    public final String BEYOND_POC_COMMAND = "7 0 551186";
-    public final String POC_ERASE_COMMAND = "7 0 ";
-    public final String AFC_DEFAULT_VALUE = "0";
-    public final String AFC_INIT_VALUE = "1 255 255 255 255 255 255 255 255 255 255 255 255";
-    public final int AFC_LOGGING_DATA_SIZE = 15;
-    public final int AFC_MAX_COUNT = 1100000;
-    public final int AFC_RGB_NUMBER = 3;
-    public final int BRIGHTNESS_MAX_NUMBER = 11;
-    public final int AFC_COPR_ROI_MAX_NUMBER = 12;
-    public final int AFPC_PERIOD_COUNT = 1440;
-    public final int AFPC_V2_PERIOD_COUNT = 2880;
-    public final int AFC_COPR_ROI_MAX_VALUE = 256;
-    public final int AFC_COPR_ROI_MAX_INDEX = FrameworkStatsLog.HDMI_CEC_MESSAGE_REPORTED__USER_CONTROL_PRESSED_COMMAND__UP;
-    public final int AFC_XRGB_MAX_VALUE = IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
-    public final int AFC_XRGB_MAX_INDEX = 256;
-    public final int AFC_LUX_MAX_NUMBER = 11;
-    public final int AFC_RGB_MAX_NUMBER = 360;
-    public final int AFC_RGB_ADDRESS = 120;
-    public final int AFC_XRGB_BASE_POINT = 136;
-    public final int AFC_XY_COPR_ROI_SIZE = 16;
-    public final int AFC_COPR_ROI_TABLE_SIZE = 771;
-    public final int AFC_XRGB_TABLE_SIZE = FrameworkStatsLog.APP_STANDBY_BUCKET_CHANGED__MAIN_REASON__MAIN_USAGE;
-    public final int AFC_TABLE_SIZE = 15840;
-    public final int AFC_STATE_0 = 0;
-    public final int AFC_STATE_1 = 1;
-    public final int AFC_STATE_2 = 2;
-    public final int AFC_STATE_3 = 3;
-    public final int AFC_STATE_END = 4;
-    public final int EFF_NBDI_MAX_NUM = 20;
-    public final int EFF_NBDI_V3_MAX_NUM = 30;
-    public final int EFF_NBDI_V4_MAX_NUM = 30;
-    public final int EFF_NBDI_V5_MAX_NUM = 50;
-    public final int EFF_NBDI_V6_MAX_NUM = 100;
-    public final int EFF_NBDI_V7_MAX_NUM = 100;
-    public final int EFF_NBDI_V8_MAX_NUM = 100;
-    public final int BRIGHTNESS_MAX_VALUE = NetworkConstants.ETHER_MTU;
     public Thread mAfcThread = null;
-    public ScreenWatchingReceiver mScreenWatchingReceiver = null;
-    public int mAfcState = 0;
-    public boolean mAfcLoggingDataValid = false;
     public boolean AfcThreadCondition = true;
     public boolean AfcThreadAODCondition = false;
     public boolean AfcThreadTerminateCondition = false;
     public boolean isRunningCameraApp = false;
     public int AodBrightness = 0;
-    public int mApplyCount = 0;
-    public int mApplyCount_sub = 0;
-    public float mApplyValue_sub = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    public float mCurrentBrightnessValue = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    public int[] mCoprRoi = new int[12];
     public int mLuminance = 0;
     public int mLuminance_sub = 0;
     public int AfpcPeriodCount = 0;
     public int AfpcPeriodCount_sub = 0;
-    public long mThreadSleepTimeAod = 1000;
-    public int interpolationCount = 0;
-    public int[] interpolationCoprRoi = new int[12];
-    public int interpolationLuminance = 0;
-    public double[] interpolationCoprRoiDouble = new double[12];
-    public double interpolationLuminanceDouble = 0.0d;
-    public float[] mAfpcJndRef = {7.0f, 11.0f};
-    public float[] mAfpcJndRefV2 = {3.0f, 5.0f, 7.0f, 9.0f, 11.0f};
-    public float[] effNbdiTh = {150.0f, 150.0f, 200.0f, 200.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f};
-    public float[] effNbdiTh_V3 = {100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 150.0f, 150.0f, 150.0f, 150.0f, 150.0f, 200.0f, 200.0f, 200.0f, 200.0f, 200.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f};
-    public float[] effNbdiTh_V4 = {100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 150.0f, 150.0f, 150.0f, 150.0f, 150.0f, 200.0f, 200.0f, 200.0f, 200.0f, 200.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f};
-    public float[] effNbdiTh_V5 = {100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 150.0f, 150.0f, 150.0f, 150.0f, 150.0f, 200.0f, 200.0f, 200.0f, 200.0f, 200.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f};
-    public float[] effNbdiTh_V6 = {30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f};
-    public float[] effNbdiTh_V7 = {30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f};
-    public float[] effNbdiTh_V8 = {30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f};
+    public final float[] mAfpcJndRef = {7.0f, 11.0f};
+    public final float[] mAfpcJndRefV2 = {3.0f, 5.0f, 7.0f, 9.0f, 11.0f};
+    public final float[] effNbdiTh = {150.0f, 150.0f, 200.0f, 200.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f};
+    public final float[] effNbdiTh_V3 = {100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 150.0f, 150.0f, 150.0f, 150.0f, 150.0f, 200.0f, 200.0f, 200.0f, 200.0f, 200.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f};
+    public final float[] effNbdiTh_V4 = {100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 150.0f, 150.0f, 150.0f, 150.0f, 150.0f, 200.0f, 200.0f, 200.0f, 200.0f, 200.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f};
+    public final float[] effNbdiTh_V5 = {100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 150.0f, 150.0f, 150.0f, 150.0f, 150.0f, 200.0f, 200.0f, 200.0f, 200.0f, 200.0f, 250.0f, 250.0f, 250.0f, 250.0f, 250.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f, 300.0f};
+    public final float[] effNbdiTh_V6 = {30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f};
+    public final float[] effNbdiTh_V7 = {30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f};
+    public final float[] effNbdiTh_V9 = {30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f, 30.0f};
     public double mAvgLum = 0.0d;
     public double mMaxBDI = 0.0d;
     public double mNBDI = 0.0d;
@@ -230,74 +74,562 @@ public class AfterimageCompensationService {
     public SemHqmManager mSemHqmManager = null;
     public WindowManager mWindowManager = null;
 
-    /* renamed from: -$$Nest$smnativeDataEvaluate, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ float m14248$$Nest$smnativeDataEvaluate() {
-        return nativeDataEvaluate();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AfcThread extends Thread {
+        public boolean mDataValid = false;
+        public boolean mNormalValid = false;
+        public int rotation = 0;
+
+        public AfcThread() {
+        }
+
+        /* JADX WARN: Removed duplicated region for block: B:361:0x02ba A[SYNTHETIC] */
+        /* JADX WARN: Removed duplicated region for block: B:365:0x01ba A[Catch: all -> 0x0023, Exception -> 0x0027, TryCatch #19 {Exception -> 0x0027, blocks: (B:4:0x0002, B:6:0x0008, B:8:0x000f, B:11:0x0017, B:14:0x0038, B:16:0x0040, B:18:0x0051, B:20:0x0062, B:21:0x006b, B:23:0x0073, B:25:0x007b, B:55:0x0083, B:57:0x0089, B:59:0x0099, B:61:0x00a1, B:62:0x00d6, B:64:0x00dd, B:66:0x00f0, B:69:0x0103, B:71:0x0115, B:73:0x011d, B:74:0x0127, B:76:0x012f, B:77:0x015e, B:79:0x0164, B:84:0x0174, B:85:0x0177, B:86:0x017a, B:87:0x017d, B:88:0x0180, B:89:0x0182, B:91:0x0194, B:363:0x01a8, B:365:0x01ba, B:367:0x0215, B:370:0x021f, B:371:0x0225, B:382:0x0235, B:385:0x0236, B:95:0x023a, B:97:0x0295, B:100:0x029f, B:101:0x02a5, B:112:0x02b5, B:115:0x02b6, B:391:0x0139, B:393:0x0141, B:394:0x014c, B:396:0x0154, B:118:0x02ba, B:120:0x02c6, B:122:0x02cd, B:124:0x02d9, B:126:0x02fa, B:127:0x0335, B:131:0x031a, B:132:0x033c, B:134:0x0345, B:136:0x0351, B:138:0x0372, B:139:0x03ad, B:141:0x03ba, B:143:0x03cc, B:145:0x03d8, B:147:0x03f9, B:151:0x0449, B:152:0x0464, B:156:0x0392, B:157:0x046b, B:159:0x0475, B:161:0x0481, B:163:0x053c, B:165:0x0544, B:167:0x0550, B:169:0x0564, B:171:0x056e, B:175:0x05bf, B:176:0x05da, B:177:0x05e1, B:179:0x05e9, B:181:0x05f5, B:183:0x06ab, B:185:0x06ba, B:187:0x06d3, B:189:0x06e7, B:191:0x06f1, B:195:0x0742, B:196:0x075d, B:197:0x0764, B:199:0x0774, B:201:0x0780, B:203:0x0834, B:205:0x083e, B:207:0x0857, B:209:0x086b, B:211:0x0875, B:215:0x08c6, B:216:0x08e1, B:217:0x08e8, B:219:0x08f1, B:221:0x08fd, B:223:0x09b1, B:225:0x09bb, B:227:0x09d0, B:229:0x09e4, B:231:0x09ee, B:235:0x0a3f, B:236:0x0a5a, B:237:0x0a61, B:239:0x0a6b, B:241:0x0a77, B:243:0x0b2e, B:245:0x0b36, B:247:0x0b42, B:249:0x0b57, B:251:0x0b6b, B:253:0x0b75, B:257:0x0bc7, B:258:0x0c9d, B:259:0x0be4, B:261:0x0bee, B:263:0x0bfa, B:265:0x0c13, B:267:0x0c27, B:269:0x0c31, B:273:0x0c82, B:274:0x0ca4, B:276:0x0cae, B:279:0x0cba, B:281:0x0cc2, B:283:0x0cce, B:285:0x0d84, B:287:0x0d90, B:289:0x0da9, B:291:0x0dbd, B:293:0x0dc7, B:297:0x0e18, B:298:0x0e33, B:299:0x0e3a, B:301:0x0e44, B:303:0x0e50, B:305:0x0f06, B:307:0x0f12, B:309:0x0f2b, B:311:0x0f3f, B:313:0x0f49, B:317:0x0f9a, B:318:0x0fb5, B:319:0x0fbc, B:321:0x0fc8, B:323:0x107e, B:325:0x108a, B:327:0x109f, B:329:0x10b3, B:331:0x10bd, B:335:0x110e, B:336:0x1129, B:337:0x112e, B:339:0x113a, B:341:0x1142, B:343:0x114c, B:345:0x1158, B:347:0x1205, B:349:0x120d, B:351:0x1218, B:353:0x122c, B:355:0x1234, B:359:0x1283, B:360:0x129e, B:399:0x00aa, B:401:0x00c8, B:403:0x00d0, B:405:0x0067, B:28:0x12a3, B:31:0x12ab, B:34:0x12b3, B:35:0x12b9, B:47:0x12c9, B:51:0x12ca, B:407:0x002b, B:410:0x002e, B:412:0x0036), top: B:3:0x0002, outer: #2 }] */
+        /* JADX WARN: Removed duplicated region for block: B:389:0x02ba A[SYNTHETIC] */
+        /* JADX WARN: Removed duplicated region for block: B:79:0x0164 A[Catch: all -> 0x0023, Exception -> 0x0027, TryCatch #19 {Exception -> 0x0027, blocks: (B:4:0x0002, B:6:0x0008, B:8:0x000f, B:11:0x0017, B:14:0x0038, B:16:0x0040, B:18:0x0051, B:20:0x0062, B:21:0x006b, B:23:0x0073, B:25:0x007b, B:55:0x0083, B:57:0x0089, B:59:0x0099, B:61:0x00a1, B:62:0x00d6, B:64:0x00dd, B:66:0x00f0, B:69:0x0103, B:71:0x0115, B:73:0x011d, B:74:0x0127, B:76:0x012f, B:77:0x015e, B:79:0x0164, B:84:0x0174, B:85:0x0177, B:86:0x017a, B:87:0x017d, B:88:0x0180, B:89:0x0182, B:91:0x0194, B:363:0x01a8, B:365:0x01ba, B:367:0x0215, B:370:0x021f, B:371:0x0225, B:382:0x0235, B:385:0x0236, B:95:0x023a, B:97:0x0295, B:100:0x029f, B:101:0x02a5, B:112:0x02b5, B:115:0x02b6, B:391:0x0139, B:393:0x0141, B:394:0x014c, B:396:0x0154, B:118:0x02ba, B:120:0x02c6, B:122:0x02cd, B:124:0x02d9, B:126:0x02fa, B:127:0x0335, B:131:0x031a, B:132:0x033c, B:134:0x0345, B:136:0x0351, B:138:0x0372, B:139:0x03ad, B:141:0x03ba, B:143:0x03cc, B:145:0x03d8, B:147:0x03f9, B:151:0x0449, B:152:0x0464, B:156:0x0392, B:157:0x046b, B:159:0x0475, B:161:0x0481, B:163:0x053c, B:165:0x0544, B:167:0x0550, B:169:0x0564, B:171:0x056e, B:175:0x05bf, B:176:0x05da, B:177:0x05e1, B:179:0x05e9, B:181:0x05f5, B:183:0x06ab, B:185:0x06ba, B:187:0x06d3, B:189:0x06e7, B:191:0x06f1, B:195:0x0742, B:196:0x075d, B:197:0x0764, B:199:0x0774, B:201:0x0780, B:203:0x0834, B:205:0x083e, B:207:0x0857, B:209:0x086b, B:211:0x0875, B:215:0x08c6, B:216:0x08e1, B:217:0x08e8, B:219:0x08f1, B:221:0x08fd, B:223:0x09b1, B:225:0x09bb, B:227:0x09d0, B:229:0x09e4, B:231:0x09ee, B:235:0x0a3f, B:236:0x0a5a, B:237:0x0a61, B:239:0x0a6b, B:241:0x0a77, B:243:0x0b2e, B:245:0x0b36, B:247:0x0b42, B:249:0x0b57, B:251:0x0b6b, B:253:0x0b75, B:257:0x0bc7, B:258:0x0c9d, B:259:0x0be4, B:261:0x0bee, B:263:0x0bfa, B:265:0x0c13, B:267:0x0c27, B:269:0x0c31, B:273:0x0c82, B:274:0x0ca4, B:276:0x0cae, B:279:0x0cba, B:281:0x0cc2, B:283:0x0cce, B:285:0x0d84, B:287:0x0d90, B:289:0x0da9, B:291:0x0dbd, B:293:0x0dc7, B:297:0x0e18, B:298:0x0e33, B:299:0x0e3a, B:301:0x0e44, B:303:0x0e50, B:305:0x0f06, B:307:0x0f12, B:309:0x0f2b, B:311:0x0f3f, B:313:0x0f49, B:317:0x0f9a, B:318:0x0fb5, B:319:0x0fbc, B:321:0x0fc8, B:323:0x107e, B:325:0x108a, B:327:0x109f, B:329:0x10b3, B:331:0x10bd, B:335:0x110e, B:336:0x1129, B:337:0x112e, B:339:0x113a, B:341:0x1142, B:343:0x114c, B:345:0x1158, B:347:0x1205, B:349:0x120d, B:351:0x1218, B:353:0x122c, B:355:0x1234, B:359:0x1283, B:360:0x129e, B:399:0x00aa, B:401:0x00c8, B:403:0x00d0, B:405:0x0067, B:28:0x12a3, B:31:0x12ab, B:34:0x12b3, B:35:0x12b9, B:47:0x12c9, B:51:0x12ca, B:407:0x002b, B:410:0x002e, B:412:0x0036), top: B:3:0x0002, outer: #2 }] */
+        /* JADX WARN: Removed duplicated region for block: B:97:0x0295 A[Catch: all -> 0x0023, Exception -> 0x0027, TRY_LEAVE, TryCatch #19 {Exception -> 0x0027, blocks: (B:4:0x0002, B:6:0x0008, B:8:0x000f, B:11:0x0017, B:14:0x0038, B:16:0x0040, B:18:0x0051, B:20:0x0062, B:21:0x006b, B:23:0x0073, B:25:0x007b, B:55:0x0083, B:57:0x0089, B:59:0x0099, B:61:0x00a1, B:62:0x00d6, B:64:0x00dd, B:66:0x00f0, B:69:0x0103, B:71:0x0115, B:73:0x011d, B:74:0x0127, B:76:0x012f, B:77:0x015e, B:79:0x0164, B:84:0x0174, B:85:0x0177, B:86:0x017a, B:87:0x017d, B:88:0x0180, B:89:0x0182, B:91:0x0194, B:363:0x01a8, B:365:0x01ba, B:367:0x0215, B:370:0x021f, B:371:0x0225, B:382:0x0235, B:385:0x0236, B:95:0x023a, B:97:0x0295, B:100:0x029f, B:101:0x02a5, B:112:0x02b5, B:115:0x02b6, B:391:0x0139, B:393:0x0141, B:394:0x014c, B:396:0x0154, B:118:0x02ba, B:120:0x02c6, B:122:0x02cd, B:124:0x02d9, B:126:0x02fa, B:127:0x0335, B:131:0x031a, B:132:0x033c, B:134:0x0345, B:136:0x0351, B:138:0x0372, B:139:0x03ad, B:141:0x03ba, B:143:0x03cc, B:145:0x03d8, B:147:0x03f9, B:151:0x0449, B:152:0x0464, B:156:0x0392, B:157:0x046b, B:159:0x0475, B:161:0x0481, B:163:0x053c, B:165:0x0544, B:167:0x0550, B:169:0x0564, B:171:0x056e, B:175:0x05bf, B:176:0x05da, B:177:0x05e1, B:179:0x05e9, B:181:0x05f5, B:183:0x06ab, B:185:0x06ba, B:187:0x06d3, B:189:0x06e7, B:191:0x06f1, B:195:0x0742, B:196:0x075d, B:197:0x0764, B:199:0x0774, B:201:0x0780, B:203:0x0834, B:205:0x083e, B:207:0x0857, B:209:0x086b, B:211:0x0875, B:215:0x08c6, B:216:0x08e1, B:217:0x08e8, B:219:0x08f1, B:221:0x08fd, B:223:0x09b1, B:225:0x09bb, B:227:0x09d0, B:229:0x09e4, B:231:0x09ee, B:235:0x0a3f, B:236:0x0a5a, B:237:0x0a61, B:239:0x0a6b, B:241:0x0a77, B:243:0x0b2e, B:245:0x0b36, B:247:0x0b42, B:249:0x0b57, B:251:0x0b6b, B:253:0x0b75, B:257:0x0bc7, B:258:0x0c9d, B:259:0x0be4, B:261:0x0bee, B:263:0x0bfa, B:265:0x0c13, B:267:0x0c27, B:269:0x0c31, B:273:0x0c82, B:274:0x0ca4, B:276:0x0cae, B:279:0x0cba, B:281:0x0cc2, B:283:0x0cce, B:285:0x0d84, B:287:0x0d90, B:289:0x0da9, B:291:0x0dbd, B:293:0x0dc7, B:297:0x0e18, B:298:0x0e33, B:299:0x0e3a, B:301:0x0e44, B:303:0x0e50, B:305:0x0f06, B:307:0x0f12, B:309:0x0f2b, B:311:0x0f3f, B:313:0x0f49, B:317:0x0f9a, B:318:0x0fb5, B:319:0x0fbc, B:321:0x0fc8, B:323:0x107e, B:325:0x108a, B:327:0x109f, B:329:0x10b3, B:331:0x10bd, B:335:0x110e, B:336:0x1129, B:337:0x112e, B:339:0x113a, B:341:0x1142, B:343:0x114c, B:345:0x1158, B:347:0x1205, B:349:0x120d, B:351:0x1218, B:353:0x122c, B:355:0x1234, B:359:0x1283, B:360:0x129e, B:399:0x00aa, B:401:0x00c8, B:403:0x00d0, B:405:0x0067, B:28:0x12a3, B:31:0x12ab, B:34:0x12b3, B:35:0x12b9, B:47:0x12c9, B:51:0x12ca, B:407:0x002b, B:410:0x002e, B:412:0x0036), top: B:3:0x0002, outer: #2 }] */
+        @Override // java.lang.Thread, java.lang.Runnable
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void run() {
+            /*
+                Method dump skipped, instructions count: 4871
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.hardware.display.AfterimageCompensationService.AfcThread.run():void");
+        }
     }
 
-    /* renamed from: -$$Nest$smnativeDataReadAvgLum, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14250$$Nest$smnativeDataReadAvgLum() {
-        return nativeDataReadAvgLum();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ScreenWatchingReceiver extends BroadcastReceiver {
+        public ScreenWatchingReceiver() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            int i;
+            int i2;
+            Thread thread;
+            Thread thread2;
+            String action = intent.getAction();
+            if ("android.intent.action.BOOT_COMPLETED".equals(action)) {
+                Slog.i("AfterimageCompensationService", "ACTION_BOOT_COMPLETED");
+                AfterimageCompensationService afterimageCompensationService = AfterimageCompensationService.this;
+                afterimageCompensationService.mSemHqmManager = (SemHqmManager) afterimageCompensationService.mContext.getSystemService("HqmManagerService");
+                AfterimageCompensationService afterimageCompensationService2 = AfterimageCompensationService.this;
+                afterimageCompensationService2.mWindowManager = (WindowManager) afterimageCompensationService2.mContext.getSystemService("window");
+                AfterimageCompensationService afterimageCompensationService3 = AfterimageCompensationService.this;
+                if (!afterimageCompensationService3.AfcStateCondition) {
+                    HeimdAllFsService$$ExternalSyntheticOutline0.m("AfterimageCompensationService", new StringBuilder("AfcStateCondition is already done - "), AfterimageCompensationService.this.AfcStateCondition);
+                    return;
+                }
+                afterimageCompensationService3.mAfcThread = AfterimageCompensationService.this.new AfcThread();
+                AfterimageCompensationService.this.mAfcThread.start();
+                Slog.i("AfterimageCompensationService", "AFC Thread Start");
+                return;
+            }
+            if ("android.intent.action.SCREEN_ON".equals(action)) {
+                Slog.i("AfterimageCompensationService", "ACTION_SCREEN_ON");
+                AfterimageCompensationService afterimageCompensationService4 = AfterimageCompensationService.this;
+                if (afterimageCompensationService4.AfcStateCondition) {
+                    afterimageCompensationService4.AfcThreadCondition = true;
+                    afterimageCompensationService4.AfcThreadAODCondition = false;
+                    Thread thread3 = afterimageCompensationService4.mAfcThread;
+                    if (thread3 != null) {
+                        synchronized (thread3) {
+                            afterimageCompensationService4.mAfcThread.notify();
+                        }
+                    }
+                    if (afterimageCompensationService4.mAfcType < 10 || (thread2 = afterimageCompensationService4.mAfcThread) == null || !afterimageCompensationService4.AfcThreadTerminateCondition || thread2.getState() != Thread.State.TERMINATED) {
+                        return;
+                    }
+                    AfcThread afcThread = afterimageCompensationService4.new AfcThread();
+                    afterimageCompensationService4.mAfcThread = afcThread;
+                    afcThread.start();
+                    Slog.i("AfterimageCompensationService", "AFC Thread ReStart");
+                    afterimageCompensationService4.AfcThreadTerminateCondition = false;
+                    return;
+                }
+                return;
+            }
+            if ("android.intent.action.SCREEN_OFF".equals(action)) {
+                Slog.i("AfterimageCompensationService", "ACTION_SCREEN_OFF");
+                AfterimageCompensationService afterimageCompensationService5 = AfterimageCompensationService.this;
+                afterimageCompensationService5.AfcThreadCondition = false;
+                if (!afterimageCompensationService5.AfcStateCondition || afterimageCompensationService5.mAfcType < 10 || (thread = afterimageCompensationService5.mAfcThread) == null) {
+                    return;
+                }
+                synchronized (thread) {
+                    afterimageCompensationService5.mAfcThread.interrupt();
+                }
+                return;
+            }
+            if ("android.intent.action.ACTION_SHUTDOWN".equals(action)) {
+                Slog.i("AfterimageCompensationService", "ACTION_SHUTDOWN");
+                AfterimageCompensationService.this.getClass();
+                AfterimageCompensationService.this.getClass();
+                AfterimageCompensationService.this.getClass();
+                AfterimageCompensationService afterimageCompensationService6 = AfterimageCompensationService.this;
+                boolean z = afterimageCompensationService6.AfcStateCondition;
+                if (z && afterimageCompensationService6.mAfcType == 6) {
+                    int i3 = afterimageCompensationService6.AfpcPeriodCount;
+                    if (i3 > 20) {
+                        AfterimageCompensationService.nativeDataTerminate(i3);
+                        return;
+                    }
+                    return;
+                }
+                if (z && afterimageCompensationService6.mAfcType == 7) {
+                    int i4 = afterimageCompensationService6.AfpcPeriodCount;
+                    if (i4 > 20) {
+                        AfterimageCompensationService.nativeDataTerminate(i4);
+                        return;
+                    }
+                    return;
+                }
+                if (z && afterimageCompensationService6.mAfcType == 8) {
+                    int i5 = afterimageCompensationService6.AfpcPeriodCount;
+                    if (i5 > 20) {
+                        AfterimageCompensationService.nativeDataTerminate(i5);
+                        return;
+                    }
+                    return;
+                }
+                if (z && ((i2 = afterimageCompensationService6.mAfcType) == 9 || i2 == 11)) {
+                    int i6 = afterimageCompensationService6.AfpcPeriodCount;
+                    if (i6 > 20) {
+                        AfterimageCompensationService.nativeDataTerminate(i6);
+                    }
+                    int i7 = AfterimageCompensationService.this.AfpcPeriodCount_sub;
+                    if (i7 > 20) {
+                        AfterimageCompensationService.nativeDataTerminateSub(i7);
+                        return;
+                    }
+                    return;
+                }
+                if (z && afterimageCompensationService6.mAfcType == 10) {
+                    int i8 = afterimageCompensationService6.AfpcPeriodCount;
+                    if (i8 > 20) {
+                        AfterimageCompensationService.nativeDataTerminate(i8);
+                        return;
+                    }
+                    return;
+                }
+                if (z && afterimageCompensationService6.mAfcType == 12 && (i = afterimageCompensationService6.AfpcPeriodCount) > 20) {
+                    AfterimageCompensationService.nativeDataTerminate(i);
+                }
+            }
+        }
     }
 
-    /* renamed from: -$$Nest$smnativeDataReadAvgLumSub, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14251$$Nest$smnativeDataReadAvgLumSub() {
-        return nativeDataReadAvgLumSub();
+    /* renamed from: -$$Nest$mgetBrightness, reason: not valid java name */
+    public static boolean m1194$$Nest$mgetBrightness(AfterimageCompensationService afterimageCompensationService) {
+        afterimageCompensationService.getClass();
+        if (!new File("/sys/class/lcd/panel/brt_avg").exists()) {
+            return false;
+        }
+        try {
+            String readStrFromFile = readStrFromFile("/sys/class/lcd/panel/brt_avg");
+            if (readStrFromFile == null) {
+                return false;
+            }
+            try {
+                int parseInt = Integer.parseInt(readStrFromFile);
+                afterimageCompensationService.mLuminance = parseInt;
+                return parseInt >= 0;
+            } catch (NumberFormatException e) {
+                Slog.e("AfterimageCompensationService", "NumberFormatException : " + e);
+                return false;
+            }
+        } catch (Exception e2) {
+            e2.printStackTrace();
+            return false;
+        }
     }
 
-    /* renamed from: -$$Nest$smnativeDataReadEffAvgLum, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14252$$Nest$smnativeDataReadEffAvgLum() {
-        return nativeDataReadEffAvgLum();
+    /* renamed from: -$$Nest$mgetBrightness_sub, reason: not valid java name */
+    public static boolean m1195$$Nest$mgetBrightness_sub(AfterimageCompensationService afterimageCompensationService) {
+        afterimageCompensationService.getClass();
+        if (!new File("/sys/class/lcd/panel1/brt_avg").exists()) {
+            return false;
+        }
+        try {
+            String readStrFromFile = readStrFromFile("/sys/class/lcd/panel1/brt_avg");
+            if (readStrFromFile == null) {
+                return false;
+            }
+            try {
+                int parseInt = Integer.parseInt(readStrFromFile);
+                afterimageCompensationService.mLuminance_sub = parseInt;
+                return parseInt >= 0;
+            } catch (NumberFormatException e) {
+                Slog.e("AfterimageCompensationService", "NumberFormatException : " + e);
+                return false;
+            }
+        } catch (Exception e2) {
+            e2.printStackTrace();
+            return false;
+        }
     }
 
-    /* renamed from: -$$Nest$smnativeDataReadEffAvgLumSub, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14253$$Nest$smnativeDataReadEffAvgLumSub() {
-        return nativeDataReadEffAvgLumSub();
+    /* JADX WARN: Removed duplicated region for block: B:16:0x00a7  */
+    /* JADX WARN: Removed duplicated region for block: B:19:0x00b0  */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x00cd  */
+    /* renamed from: -$$Nest$mupdateHWParam, reason: not valid java name */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void m1196$$Nest$mupdateHWParam(com.samsung.android.hardware.display.AfterimageCompensationService r19) {
+        /*
+            r1 = r19
+            int r0 = r1.mApplyCount
+            java.lang.String r2 = java.lang.Integer.toString(r0)
+            float r0 = r1.mApplyValue
+            java.lang.String r3 = java.lang.Float.toString(r0)
+            double r4 = r1.mAvgLum
+            java.lang.String r4 = java.lang.Double.toString(r4)
+            double r5 = r1.mMaxBDI
+            java.lang.String r5 = java.lang.Double.toString(r5)
+            double r6 = r1.mNBDI
+            java.lang.String r6 = java.lang.Double.toString(r6)
+            double r7 = r1.mEffAvgLum
+            java.lang.String r7 = java.lang.Double.toString(r7)
+            double r8 = r1.mEffMaxBDI
+            java.lang.String r8 = java.lang.Double.toString(r8)
+            double r9 = r1.mEffNBDI
+            java.lang.String r9 = java.lang.Double.toString(r9)
+            int r0 = r1.mApplyCount_sub
+            java.lang.String r10 = java.lang.Integer.toString(r0)
+            float r0 = r1.mApplyValue_sub
+            java.lang.String r11 = java.lang.Float.toString(r0)
+            double r12 = r1.mAvgLum_sub
+            java.lang.String r12 = java.lang.Double.toString(r12)
+            double r13 = r1.mMaxBDI_sub
+            java.lang.String r13 = java.lang.Double.toString(r13)
+            double r14 = r1.mNBDI_sub
+            java.lang.String r14 = java.lang.Double.toString(r14)
+            r0 = r14
+            double r14 = r1.mEffAvgLum_sub
+            java.lang.String r15 = java.lang.Double.toString(r14)
+            r16 = r15
+            double r14 = r1.mEffMaxBDI_sub
+            java.lang.String r17 = java.lang.Double.toString(r14)
+            double r14 = r1.mEffNBDI_sub
+            java.lang.String r18 = java.lang.Double.toString(r14)
+            r14 = r0
+            r15 = r16
+            r16 = r17
+            r17 = r18
+            java.lang.String[] r0 = new java.lang.String[]{r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17}
+            java.lang.String[] r2 = com.samsung.android.hardware.display.AfterimageCompensationService.mAFPC_KEYS
+            r3 = 0
+            org.json.JSONObject r4 = new org.json.JSONObject     // Catch: org.json.JSONException -> L8a
+            r4.<init>()     // Catch: org.json.JSONException -> L8a
+            r3 = 0
+        L79:
+            r5 = 16
+            if (r3 >= r5) goto L8f
+            r5 = r2[r3]     // Catch: org.json.JSONException -> L87
+            r6 = r0[r3]     // Catch: org.json.JSONException -> L87
+            r4.put(r5, r6)     // Catch: org.json.JSONException -> L87
+            int r3 = r3 + 1
+            goto L79
+        L87:
+            r0 = move-exception
+            r3 = r4
+            goto L8b
+        L8a:
+            r0 = move-exception
+        L8b:
+            r0.printStackTrace()
+            r4 = r3
+        L8f:
+            java.lang.String r0 = r4.toString()
+            java.lang.String r2 = "\\{"
+            java.lang.String r3 = ""
+            java.lang.String r0 = r0.replaceAll(r2, r3)
+            java.lang.String r2 = "\\}"
+            java.lang.String r12 = r0.replaceAll(r2, r3)
+            boolean r0 = r1.DEBUG
+            java.lang.String r2 = "AfterimageCompensationService"
+            if (r0 == 0) goto Lac
+            java.lang.String r0 = "customDataSet : "
+            com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0.m(r0, r12, r2)
+        Lac:
+            android.os.SemHqmManager r0 = r1.mSemHqmManager
+            if (r0 == 0) goto Lcd
+            java.lang.String r0 = "sendBroadcastToHWParam() mSemHqmManager.sendHWParamToHQM"
+            android.util.Slog.i(r2, r0)
+            android.os.SemHqmManager r4 = r1.mSemHqmManager
+            java.lang.String r9 = "0.0"
+            java.lang.String r10 = "sec"
+            r5 = 0
+            java.lang.String r6 = "Display"
+            java.lang.String r7 = "DIQE"
+            java.lang.String r8 = "sm"
+            java.lang.String r11 = ""
+            java.lang.String r13 = ""
+            r4.sendHWParamToHQM(r5, r6, r7, r8, r9, r10, r11, r12, r13)
+            goto Ld3
+        Lcd:
+            java.lang.String r0 = "sendBroadcastToHWParam() mSemHqmManager is null"
+            android.util.Slog.d(r2, r0)
+        Ld3:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.hardware.display.AfterimageCompensationService.m1196$$Nest$mupdateHWParam(com.samsung.android.hardware.display.AfterimageCompensationService):void");
     }
 
-    /* renamed from: -$$Nest$smnativeDataReadEffMaxBDI, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14254$$Nest$smnativeDataReadEffMaxBDI() {
-        return nativeDataReadEffMaxBDI();
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:105:0x0670  */
+    /* JADX WARN: Removed duplicated region for block: B:110:0x06ee A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:114:0x06fb  */
+    /* JADX WARN: Removed duplicated region for block: B:124:0x0733  */
+    /* JADX WARN: Removed duplicated region for block: B:133:0x0753 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:136:0x0764  */
+    /* JADX WARN: Removed duplicated region for block: B:144:0x0798  */
+    /* JADX WARN: Removed duplicated region for block: B:153:0x07f6  */
+    /* JADX WARN: Removed duplicated region for block: B:165:0x083f  */
+    /* JADX WARN: Removed duplicated region for block: B:171:0x0857  */
+    /* JADX WARN: Removed duplicated region for block: B:197:0x06ea  */
+    /* JADX WARN: Removed duplicated region for block: B:238:0x0653  */
+    /* JADX WARN: Removed duplicated region for block: B:239:0x048c A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:26:0x02ea  */
+    /* JADX WARN: Removed duplicated region for block: B:301:0x0465  */
+    /* JADX WARN: Removed duplicated region for block: B:91:0x0564  */
+    /* JADX WARN: Removed duplicated region for block: B:99:0x05ba  */
+    /* JADX WARN: Type inference failed for: r9v10 */
+    /* JADX WARN: Type inference failed for: r9v11 */
+    /* JADX WARN: Type inference failed for: r9v12 */
+    /* JADX WARN: Type inference failed for: r9v13 */
+    /* JADX WARN: Type inference failed for: r9v14 */
+    /* JADX WARN: Type inference failed for: r9v15 */
+    /* JADX WARN: Type inference failed for: r9v3 */
+    /* JADX WARN: Type inference failed for: r9v34 */
+    /* JADX WARN: Type inference failed for: r9v35 */
+    /* JADX WARN: Type inference failed for: r9v36 */
+    /* JADX WARN: Type inference failed for: r9v37 */
+    /* JADX WARN: Type inference failed for: r9v38 */
+    /* JADX WARN: Type inference failed for: r9v39 */
+    /* JADX WARN: Type inference failed for: r9v40 */
+    /* JADX WARN: Type inference failed for: r9v45 */
+    /* JADX WARN: Type inference failed for: r9v6 */
+    /* JADX WARN: Type inference failed for: r9v7 */
+    /* JADX WARN: Type inference failed for: r9v8 */
+    /* JADX WARN: Type inference failed for: r9v9 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public AfterimageCompensationService(android.content.Context r33) {
+        /*
+            Method dump skipped, instructions count: 3054
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.hardware.display.AfterimageCompensationService.<init>(android.content.Context):void");
     }
 
-    /* renamed from: -$$Nest$smnativeDataReadEffMaxBDISub, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14255$$Nest$smnativeDataReadEffMaxBDISub() {
-        return nativeDataReadEffMaxBDISub();
+    /* JADX WARN: Removed duplicated region for block: B:33:0x0075 A[Catch: IOException -> 0x0071, TryCatch #4 {IOException -> 0x0071, blocks: (B:44:0x006d, B:33:0x0075, B:35:0x007a, B:37:0x007f), top: B:43:0x006d }] */
+    /* JADX WARN: Removed duplicated region for block: B:35:0x007a A[Catch: IOException -> 0x0071, TryCatch #4 {IOException -> 0x0071, blocks: (B:44:0x006d, B:33:0x0075, B:35:0x007a, B:37:0x007f), top: B:43:0x006d }] */
+    /* JADX WARN: Removed duplicated region for block: B:37:0x007f A[Catch: IOException -> 0x0071, TRY_LEAVE, TryCatch #4 {IOException -> 0x0071, blocks: (B:44:0x006d, B:33:0x0075, B:35:0x007a, B:37:0x007f), top: B:43:0x006d }] */
+    /* JADX WARN: Removed duplicated region for block: B:43:0x006d A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void fileCopy() {
+        /*
+            java.lang.String r0 = "/cache/recovery/poc.vec"
+            java.lang.String r1 = "/dev/poc"
+            r2 = 0
+            java.io.FileInputStream r3 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L4a java.io.IOException -> L4f
+            r3.<init>(r0)     // Catch: java.lang.Throwable -> L4a java.io.IOException -> L4f
+            java.io.FileOutputStream r0 = new java.io.FileOutputStream     // Catch: java.lang.Throwable -> L42 java.io.IOException -> L46
+            r0.<init>(r1)     // Catch: java.lang.Throwable -> L42 java.io.IOException -> L46
+            java.nio.channels.FileChannel r1 = r3.getChannel()     // Catch: java.lang.Throwable -> L3c java.io.IOException -> L3f
+            java.nio.channels.FileChannel r2 = r0.getChannel()     // Catch: java.lang.Throwable -> L38 java.io.IOException -> L3a
+            long r7 = r1.size()     // Catch: java.lang.Throwable -> L38 java.io.IOException -> L3a
+            r5 = 0
+            r4 = r1
+            r9 = r2
+            r4.transferTo(r5, r7, r9)     // Catch: java.lang.Throwable -> L38 java.io.IOException -> L3a
+            if (r2 == 0) goto L2a
+            r2.close()     // Catch: java.io.IOException -> L28
+            goto L2a
+        L28:
+            r0 = move-exception
+            goto L34
+        L2a:
+            r1.close()     // Catch: java.io.IOException -> L28
+            r3.close()     // Catch: java.io.IOException -> L28
+            r0.close()     // Catch: java.io.IOException -> L28
+            goto L6a
+        L34:
+            r0.printStackTrace()
+            goto L6a
+        L38:
+            r4 = move-exception
+            goto L6b
+        L3a:
+            r4 = move-exception
+            goto L53
+        L3c:
+            r4 = move-exception
+            r1 = r2
+            goto L6b
+        L3f:
+            r4 = move-exception
+            r1 = r2
+            goto L53
+        L42:
+            r4 = move-exception
+            r0 = r2
+            r1 = r0
+            goto L6b
+        L46:
+            r4 = move-exception
+            r0 = r2
+            r1 = r0
+            goto L53
+        L4a:
+            r4 = move-exception
+            r0 = r2
+            r1 = r0
+            r3 = r1
+            goto L6b
+        L4f:
+            r4 = move-exception
+            r0 = r2
+            r1 = r0
+            r3 = r1
+        L53:
+            r4.printStackTrace()     // Catch: java.lang.Throwable -> L38
+            if (r2 == 0) goto L5b
+            r2.close()     // Catch: java.io.IOException -> L28
+        L5b:
+            if (r1 == 0) goto L60
+            r1.close()     // Catch: java.io.IOException -> L28
+        L60:
+            if (r3 == 0) goto L65
+            r3.close()     // Catch: java.io.IOException -> L28
+        L65:
+            if (r0 == 0) goto L6a
+            r0.close()     // Catch: java.io.IOException -> L28
+        L6a:
+            return
+        L6b:
+            if (r2 == 0) goto L73
+            r2.close()     // Catch: java.io.IOException -> L71
+            goto L73
+        L71:
+            r0 = move-exception
+            goto L83
+        L73:
+            if (r1 == 0) goto L78
+            r1.close()     // Catch: java.io.IOException -> L71
+        L78:
+            if (r3 == 0) goto L7d
+            r3.close()     // Catch: java.io.IOException -> L71
+        L7d:
+            if (r0 == 0) goto L86
+            r0.close()     // Catch: java.io.IOException -> L71
+            goto L86
+        L83:
+            r0.printStackTrace()
+        L86:
+            throw r4
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.hardware.display.AfterimageCompensationService.fileCopy():void");
     }
 
-    /* renamed from: -$$Nest$smnativeDataReadEffNBDI, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14256$$Nest$smnativeDataReadEffNBDI() {
-        return nativeDataReadEffNBDI();
-    }
-
-    /* renamed from: -$$Nest$smnativeDataReadEffNBDISub, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14257$$Nest$smnativeDataReadEffNBDISub() {
-        return nativeDataReadEffNBDISub();
-    }
-
-    /* renamed from: -$$Nest$smnativeDataReadMaxBDI, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14258$$Nest$smnativeDataReadMaxBDI() {
-        return nativeDataReadMaxBDI();
-    }
-
-    /* renamed from: -$$Nest$smnativeDataReadMaxBDISub, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14259$$Nest$smnativeDataReadMaxBDISub() {
-        return nativeDataReadMaxBDISub();
-    }
-
-    /* renamed from: -$$Nest$smnativeDataReadNBDI, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14260$$Nest$smnativeDataReadNBDI() {
-        return nativeDataReadNBDI();
-    }
-
-    /* renamed from: -$$Nest$smnativeDataReadNBDISub, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ double m14261$$Nest$smnativeDataReadNBDISub() {
-        return nativeDataReadNBDISub();
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r2v11, types: [java.lang.String] */
+    /* JADX WARN: Type inference failed for: r2v12 */
+    /* JADX WARN: Type inference failed for: r2v15 */
+    /* JADX WARN: Type inference failed for: r2v16 */
+    /* JADX WARN: Type inference failed for: r2v17 */
+    /* JADX WARN: Type inference failed for: r2v4, types: [java.lang.String] */
+    /* JADX WARN: Type inference failed for: r2v7 */
+    /* JADX WARN: Type inference failed for: r2v9 */
+    public static String getStringFromFile(String str) {
+        byte[] bArr = new byte[128];
+        for (int i = 0; i < 128; i++) {
+            bArr[i] = 0;
+        }
+        FileInputStream fileInputStream = null;
+        r2 = 0;
+        ?? r2 = 0;
+        FileInputStream fileInputStream2 = null;
+        FileInputStream fileInputStream3 = null;
+        try {
+            try {
+                try {
+                    FileInputStream fileInputStream4 = new FileInputStream(new File(str));
+                    try {
+                        int read = fileInputStream4.read(bArr);
+                        r2 = read != 0 ? new String(bArr, 0, read - 1, StandardCharsets.UTF_8) : 0;
+                        fileInputStream4.close();
+                        try {
+                            fileInputStream4.close();
+                            return r2;
+                        } catch (IOException unused) {
+                            Slog.e("AfterimageCompensationService", "File Close error");
+                            return r2;
+                        }
+                    } catch (FileNotFoundException e) {
+                        e = e;
+                        bArr = r2;
+                        fileInputStream2 = fileInputStream4;
+                        Slog.e("AfterimageCompensationService", "FileNotFoundException : " + e);
+                        if (fileInputStream2 != null) {
+                            fileInputStream2.close();
+                        }
+                        return bArr;
+                    } catch (IOException e2) {
+                        e = e2;
+                        bArr = r2;
+                        fileInputStream3 = fileInputStream4;
+                        e.printStackTrace();
+                        Slog.e("AfterimageCompensationService", "IOException : " + e);
+                        if (fileInputStream3 != null) {
+                            fileInputStream3.close();
+                        }
+                        return bArr;
+                    } catch (Throwable th) {
+                        th = th;
+                        fileInputStream = fileInputStream4;
+                        if (fileInputStream != null) {
+                            try {
+                                fileInputStream.close();
+                            } catch (IOException unused2) {
+                                Slog.e("AfterimageCompensationService", "File Close error");
+                            }
+                        }
+                        throw th;
+                    }
+                } catch (FileNotFoundException e3) {
+                    e = e3;
+                    bArr = null;
+                } catch (IOException e4) {
+                    e = e4;
+                    bArr = null;
+                }
+            } catch (IOException unused3) {
+                Slog.e("AfterimageCompensationService", "File Close error");
+                return bArr;
+            }
+        } catch (Throwable th2) {
+            th = th2;
+        }
     }
 
     private static native int nativeDataApply(int i);
 
-    private static native float nativeDataEvaluate();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native float nativeDataEvaluate();
 
     private static native int nativeDataInit(int i, int i2, int i3, int i4, int i5, int i6, int i7, int i8);
 
@@ -308,29 +640,41 @@ public class AfterimageCompensationService {
     /* JADX INFO: Access modifiers changed from: private */
     public static native int nativeDataRead(int i, int i2, int i3, boolean z);
 
-    private static native double nativeDataReadAvgLum();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadAvgLum();
 
-    private static native double nativeDataReadAvgLumSub();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadAvgLumSub();
 
-    private static native double nativeDataReadEffAvgLum();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadEffAvgLum();
 
-    private static native double nativeDataReadEffAvgLumSub();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadEffAvgLumSub();
 
-    private static native double nativeDataReadEffMaxBDI();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadEffMaxBDI();
 
-    private static native double nativeDataReadEffMaxBDISub();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadEffMaxBDISub();
 
-    private static native double nativeDataReadEffNBDI();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadEffNBDI();
 
-    private static native double nativeDataReadEffNBDISub();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadEffNBDISub();
 
-    private static native double nativeDataReadMaxBDI();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadMaxBDI();
 
-    private static native double nativeDataReadMaxBDISub();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadMaxBDISub();
 
-    private static native double nativeDataReadNBDI();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadNBDI();
 
-    private static native double nativeDataReadNBDISub();
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native double nativeDataReadNBDISub();
 
     /* JADX INFO: Access modifiers changed from: private */
     public static native int nativeDataReadSub(int i, int i2, int i3, boolean z);
@@ -360,703 +704,7 @@ public class AfterimageCompensationService {
     /* JADX INFO: Access modifiers changed from: private */
     public static native int nativeDataWriteV2(int i);
 
-    /* JADX WARN: Multi-variable type inference failed */
-    public AfterimageCompensationService(Context context) {
-        byte b;
-        byte b2;
-        int i;
-        int i2;
-        this.mBrightnessBorderValue = new int[11];
-        this.AfcStateCondition = false;
-        this.mThreadAPC = false;
-        this.mThreadAFPC = false;
-        this.mAFPCVersion1 = false;
-        this.mMcaRewrited = false;
-        this.mPocInitVector = false;
-        this.mApplyValue = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        this.mThreadSleepTime = 0L;
-        this.AfpcPeriodMax = 0;
-        this.mAfcType = 0;
-        this.mAfpcPanelNumber_main = 0;
-        this.mAfpcPanelNumber_sub = 0;
-        this.mAfpcSize = 0;
-        this.mAfpcHeight = 0;
-        this.mAfpcWidth = 0;
-        this.mAfpcSize_sub = 0;
-        this.mAfpcHeight_sub = 0;
-        this.mAfpcWidth_sub = 0;
-        this.mApplyScaleEffect = 180;
-        this.mContext = context;
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.BOOT_COMPLETED");
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter.addAction("android.intent.action.ACTION_SHUTDOWN");
-        intentFilter.addAction("com.sec.android.app.server.power.DISPLAY_ON_TIME");
-        intentFilter.addAction("com.sec.android.intent.action.HQM_UPDATE_REQ");
-        this.mContext.registerReceiver(new ScreenWatchingReceiver(), intentFilter);
-        File file = new File("/efs/afc");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        File file2 = new File("/efs/afc1");
-        if (!file2.exists()) {
-            file2.mkdirs();
-        }
-        new File("/sys/class/lcd/panel/copr_roi").exists();
-        new File("/sys/class/lcd/panel/brt_avg").exists();
-        this.mAfcType = this.mContext.getResources().getInteger(R.integer.config_activityDefaultDur);
-        this.mAfpcPanelNumber_main = this.mContext.getResources().getInteger(R.integer.config_allowedUnprivilegedKeepalivePerUid);
-        this.mAfpcPanelNumber_sub = this.mContext.getResources().getInteger(R.integer.config_app_exit_info_history_list_size);
-        this.mAfpcSize = this.mContext.getResources().getInteger(R.integer.config_attentionMaximumExtension);
-        this.mAfpcHeight = this.mContext.getResources().getInteger(R.integer.config_activityShortDur);
-        this.mAfpcWidth = this.mContext.getResources().getInteger(R.integer.config_attentiveWarningDuration);
-        this.mAfpcSize_sub = this.mContext.getResources().getInteger(R.integer.config_attentiveTimeout);
-        this.mAfpcHeight_sub = this.mContext.getResources().getInteger(R.integer.config_alertDialogController);
-        this.mAfpcWidth_sub = this.mContext.getResources().getInteger(R.integer.config_autoBrightnessBrighteningLightDebounce);
-        this.mContext.getResources().getIntArray(R.array.config_keyboardTapVibePattern);
-        this.mBrightnessBorderValue = this.mContext.getResources().getIntArray(R.array.config_face_acquire_keyguard_ignorelist);
-        this.mContext.getResources().getIntArray(R.array.config_jitzygoteBootImagePinnerServiceFiles);
-        this.mContext.getResources().getIntArray(R.array.face_acquired_vendor);
-        this.mContext.getResources().getIntArray(R.array.config_face_acquire_vendor_biometricprompt_ignorelist);
-        int i3 = this.mAfcType;
-        if (i3 >= 2) {
-            this.mThreadAFPC = true;
-            if (i3 >= 4) {
-                this.mThreadSleepTime = 30000L;
-                this.AfpcPeriodMax = 2880;
-            } else {
-                this.mThreadSleepTime = 60000L;
-                this.AfpcPeriodMax = 1440;
-            }
-        } else if (i3 == 1) {
-            this.mThreadAPC = true;
-            this.mThreadSleepTime = 10000L;
-        }
-        if (i3 == 1) {
-            this.mAFPCVersion1 = true;
-        }
-        Slog.i("AfterimageCompensationService", "mAfcType : " + this.mAfcType + ", mThreadAFPC : " + this.mThreadAFPC + ", mThreadSleepTime : " + this.mThreadSleepTime + ", AfpcPeriodMax : " + this.AfpcPeriodMax);
-        Slog.i("AfterimageCompensationService", "mAfpcPanelNumber_main : " + this.mAfpcPanelNumber_main + ", mAfpcSize : " + this.mAfpcSize + ", mAfpcHeight : " + this.mAfpcHeight + ", mAfpcWidth : " + this.mAfpcWidth);
-        Slog.i("AfterimageCompensationService", "mAfpcPanelNumber_sub : " + this.mAfpcPanelNumber_sub + ", mAfpcSize_sub : " + this.mAfpcSize_sub + ", mAfpcHeight_sub : " + this.mAfpcHeight_sub + ", mAfpcWidth_sub : " + this.mAfpcWidth_sub);
-        if (this.mThreadAFPC) {
-            update_check_panel_id();
-            if (new File("/efs/afc/rewrited").exists()) {
-                this.mMcaRewrited = true;
-            }
-            boolean exists = new File("/efs/afc/poc_data").exists();
-            boolean exists2 = new File("/efs/afc/time_data").exists();
-            boolean exists3 = new File("/efs/afc/diff_data").exists();
-            boolean exists4 = new File("/efs/afc1/poc_data").exists();
-            boolean exists5 = new File("/efs/afc1/time_data").exists();
-            boolean exists6 = new File("/efs/afc1/diff_data").exists();
-            if (nativeDataInit(this.mAfcType, this.mAfpcPanelNumber_main, this.mAfpcSize, this.mAfpcHeight, this.mAfpcWidth, exists ? 1 : 0, exists2 ? 1 : 0, exists3 ? 1 : 0) == 0) {
-                processApplyData_main();
-                b = true;
-            } else {
-                b = false;
-            }
-            if (nativeDataInitSub(this.mAfcType, this.mAfpcPanelNumber_sub, this.mAfpcSize_sub, this.mAfpcHeight_sub, this.mAfpcWidth_sub, exists4 ? 1 : 0, exists5 ? 1 : 0, exists6 ? 1 : 0) == 0) {
-                processApplyData_sub();
-                b2 = true;
-            } else {
-                b2 = false;
-            }
-            if (b != false || b2 != false) {
-                if (this.mAfcType == 3 && (i2 = this.mAfpcPanelNumber_main) >= 200101 && i2 <= 200103 && new File("/efs/afc/mdnie_block").exists()) {
-                    nativeDataApply(this.mApplyScaleEffect);
-                }
-                int i4 = this.mAfpcPanelNumber_main;
-                if (i4 == 190201 || i4 == 190202) {
-                    this.mApplyScaleEffect = 100;
-                }
-                if (this.mAfcType == 4 && new File("/sys/class/lcd/panel/poc").exists() && new File("/dev/poc").exists() && new File("/cache/recovery/poc.vec").exists()) {
-                    Slog.d("AfterimageCompensationService", "AFPC_V2 Update");
-                    fileWriteString("/sys/class/lcd/panel/poc", "7 0 " + this.mAfpcSize);
-                    fileCopy("/cache/recovery/poc.vec", "/dev/poc");
-                    if (new File("/cache/recovery/poc.vec").delete()) {
-                        Slog.d("AfterimageCompensationService", "AFPC_V2 Update RECOVERY_POC  delete");
-                    }
-                    this.mApplyCount++;
-                    try {
-                        String str = this.mApplyCount + " " + String.format(Locale.US, "%.2f", Float.valueOf(this.mApplyValue));
-                        fileWriteString("/efs/afc/apply_count", str);
-                        Slog.i("AfterimageCompensationService", "afpcDataWrite - str : " + str);
-                    } catch (NumberFormatException e) {
-                        Slog.e("AfterimageCompensationService", "NumberFormatException : " + e);
-                        this.mApplyValue = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-                    }
-                }
-                if (this.mAfcType == 2 && ((((i = this.mAfpcPanelNumber_main) >= 190101 && i <= 190103) || (i >= 190201 && i <= 190202)) && new File("/sys/class/lcd/panel/poc").exists() && new File("/dev/poc").exists() && new File("/cache/recovery/poc.vec").exists())) {
-                    Slog.d("AfterimageCompensationService", "FOTA AFPC");
-                    fileWriteString("/sys/class/lcd/panel/poc", "7 0 " + this.mAfpcSize);
-                    fileCopy("/cache/recovery/poc.vec", "/dev/poc");
-                    if (new File("/cache/recovery/poc.vec").delete()) {
-                        Slog.d("AfterimageCompensationService", "FOTA AFPC RECOVERY_POC  delete");
-                    }
-                }
-                if (new File("/efs/afc/org.vec").exists()) {
-                    this.mPocInitVector = true;
-                }
-                if (!new File("/efs/afc/rewrited").exists()) {
-                    this.AfcStateCondition = true;
-                }
-            } else {
-                Slog.i("AfterimageCompensationService", "mAFPC init Failed");
-            }
-        }
-        Slog.i("AfterimageCompensationService", "AfterimageCompensationService Init Success");
-    }
-
-    /* loaded from: classes2.dex */
-    public final class ScreenWatchingReceiver extends BroadcastReceiver {
-        public ScreenWatchingReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if ("android.intent.action.BOOT_COMPLETED".equals(action)) {
-                Slog.i("AfterimageCompensationService", "ACTION_BOOT_COMPLETED");
-                AfterimageCompensationService afterimageCompensationService = AfterimageCompensationService.this;
-                afterimageCompensationService.mSemHqmManager = (SemHqmManager) afterimageCompensationService.mContext.getSystemService("HqmManagerService");
-                AfterimageCompensationService afterimageCompensationService2 = AfterimageCompensationService.this;
-                afterimageCompensationService2.mWindowManager = (WindowManager) afterimageCompensationService2.mContext.getSystemService("window");
-                if (AfterimageCompensationService.this.AfcStateCondition) {
-                    AfterimageCompensationService.this.mAfcThread = new AfcThread();
-                    AfterimageCompensationService.this.mAfcThread.start();
-                    Slog.i("AfterimageCompensationService", "AFC Thread Start");
-                    return;
-                }
-                Slog.i("AfterimageCompensationService", "AfcStateCondition is already done - " + AfterimageCompensationService.this.AfcStateCondition);
-                return;
-            }
-            if ("android.intent.action.SCREEN_ON".equals(action)) {
-                Slog.i("AfterimageCompensationService", "ACTION_SCREEN_ON");
-                AfterimageCompensationService.this.receive_screen_on_intent();
-                return;
-            }
-            if ("android.intent.action.SCREEN_OFF".equals(action)) {
-                Slog.i("AfterimageCompensationService", "ACTION_SCREEN_OFF");
-                AfterimageCompensationService.this.receive_screen_off_intent();
-                return;
-            }
-            if ("android.intent.action.ACTION_SHUTDOWN".equals(action)) {
-                Slog.i("AfterimageCompensationService", "ACTION_SHUTDOWN");
-                if (AfterimageCompensationService.this.mAfcState >= 0 && AfterimageCompensationService.this.mAfcState <= 4 && AfterimageCompensationService.this.interpolationCount > 0 && AfterimageCompensationService.this.interpolationCount <= 1100000) {
-                    AfterimageCompensationService.this.writeLoggingDataEfs();
-                }
-                if (AfterimageCompensationService.this.AfcStateCondition && AfterimageCompensationService.this.mAfcType == 6) {
-                    if (AfterimageCompensationService.this.AfpcPeriodCount > 20) {
-                        AfterimageCompensationService.nativeDataTerminate(AfterimageCompensationService.this.AfpcPeriodCount);
-                        return;
-                    }
-                    return;
-                }
-                if (AfterimageCompensationService.this.AfcStateCondition && AfterimageCompensationService.this.mAfcType == 7) {
-                    if (AfterimageCompensationService.this.AfpcPeriodCount > 20) {
-                        AfterimageCompensationService.nativeDataTerminate(AfterimageCompensationService.this.AfpcPeriodCount);
-                        return;
-                    }
-                    return;
-                }
-                if (AfterimageCompensationService.this.AfcStateCondition && AfterimageCompensationService.this.mAfcType == 8) {
-                    if (AfterimageCompensationService.this.AfpcPeriodCount > 20) {
-                        AfterimageCompensationService.nativeDataTerminate(AfterimageCompensationService.this.AfpcPeriodCount);
-                    }
-                } else {
-                    if (AfterimageCompensationService.this.AfcStateCondition && (AfterimageCompensationService.this.mAfcType == 9 || AfterimageCompensationService.this.mAfcType == 11)) {
-                        if (AfterimageCompensationService.this.AfpcPeriodCount > 20) {
-                            AfterimageCompensationService.nativeDataTerminate(AfterimageCompensationService.this.AfpcPeriodCount);
-                        }
-                        if (AfterimageCompensationService.this.AfpcPeriodCount_sub > 20) {
-                            AfterimageCompensationService.nativeDataTerminateSub(AfterimageCompensationService.this.AfpcPeriodCount_sub);
-                            return;
-                        }
-                        return;
-                    }
-                    if (AfterimageCompensationService.this.AfcStateCondition && AfterimageCompensationService.this.mAfcType == 10 && AfterimageCompensationService.this.AfpcPeriodCount > 20) {
-                        AfterimageCompensationService.nativeDataTerminate(AfterimageCompensationService.this.AfpcPeriodCount);
-                    }
-                }
-            }
-        }
-    }
-
-    public final void receive_screen_on_intent() {
-        Thread thread;
-        if (this.AfcStateCondition) {
-            this.AfcThreadCondition = true;
-            this.AfcThreadAODCondition = false;
-            Thread thread2 = this.mAfcThread;
-            if (thread2 != null) {
-                synchronized (thread2) {
-                    this.mAfcThread.notify();
-                }
-            }
-            if (this.mAfcType < 10 || (thread = this.mAfcThread) == null || !this.AfcThreadTerminateCondition) {
-                return;
-            }
-            Thread.State state = thread.getState();
-            this.state = state;
-            if (state == Thread.State.TERMINATED) {
-                AfcThread afcThread = new AfcThread();
-                this.mAfcThread = afcThread;
-                afcThread.start();
-                Slog.i("AfterimageCompensationService", "AFC Thread ReStart");
-                this.AfcThreadTerminateCondition = false;
-            }
-        }
-    }
-
-    public final void receive_screen_off_intent() {
-        Thread thread;
-        this.AfcThreadCondition = false;
-        if (!this.AfcStateCondition || this.mAfcType < 10 || (thread = this.mAfcThread) == null) {
-            return;
-        }
-        synchronized (thread) {
-            this.mAfcThread.interrupt();
-        }
-    }
-
-    public void updateAlwaysOnDisplayForBurnInService(boolean z, int i) {
-        if (this.AfcStateCondition && this.mAfcType >= 10 && z) {
-            this.AfcThreadAODCondition = z;
-            this.AodBrightness = i;
-            Thread thread = this.mAfcThread;
-            if (thread != null) {
-                synchronized (thread) {
-                    this.mAfcThread.notify();
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class AfcThread extends Thread {
-        public double[] mAvgCoprRoi;
-        public boolean mBrightnessValid;
-        public boolean mDataValid;
-        public boolean mNormalValid;
-        public int rotation;
-
-        public AfcThread() {
-            this.mDataValid = false;
-            this.mBrightnessValid = false;
-            this.mNormalValid = false;
-            this.rotation = 0;
-            this.mAvgCoprRoi = new double[12];
-        }
-
-        /* JADX WARN: Removed duplicated region for block: B:100:0x02be A[Catch: all -> 0x11bf, Exception -> 0x11c1, TRY_LEAVE, TryCatch #19 {Exception -> 0x11c1, blocks: (B:3:0x0001, B:5:0x0009, B:7:0x0012, B:10:0x001a, B:13:0x0033, B:15:0x003b, B:17:0x004c, B:19:0x005d, B:20:0x0068, B:22:0x0070, B:24:0x0078, B:53:0x0080, B:55:0x0086, B:57:0x0096, B:59:0x009e, B:63:0x00aa, B:65:0x00e7, B:67:0x00ee, B:69:0x0101, B:72:0x0114, B:74:0x0126, B:76:0x012e, B:77:0x0139, B:79:0x0141, B:80:0x0171, B:82:0x0179, B:87:0x018f, B:88:0x0192, B:89:0x0195, B:90:0x0198, B:91:0x019b, B:92:0x019d, B:94:0x01af, B:333:0x01c3, B:335:0x01d5, B:337:0x0236, B:340:0x0243, B:341:0x0249, B:351:0x0258, B:354:0x0259, B:98:0x025d, B:100:0x02be, B:103:0x02cb, B:104:0x02d1, B:114:0x02e0, B:117:0x02e1, B:360:0x014c, B:362:0x0154, B:363:0x015f, B:365:0x0167, B:120:0x02e5, B:122:0x02fa, B:124:0x0302, B:126:0x030e, B:128:0x0330, B:129:0x036a, B:132:0x034f, B:133:0x0371, B:135:0x037a, B:137:0x0386, B:139:0x03a8, B:140:0x03e2, B:142:0x03f1, B:144:0x0409, B:146:0x0415, B:148:0x0436, B:151:0x0485, B:152:0x04a0, B:155:0x03c7, B:156:0x04a7, B:158:0x04b1, B:160:0x04bd, B:162:0x0579, B:164:0x0581, B:166:0x058d, B:168:0x05a1, B:170:0x05ab, B:173:0x05fb, B:174:0x0616, B:175:0x061d, B:177:0x0625, B:179:0x0631, B:181:0x06e8, B:183:0x06f7, B:185:0x0710, B:187:0x0724, B:189:0x072e, B:192:0x077e, B:193:0x0799, B:194:0x07a0, B:196:0x07b0, B:198:0x07bc, B:200:0x0871, B:202:0x087b, B:204:0x0894, B:206:0x08a8, B:208:0x08b2, B:211:0x0902, B:212:0x091d, B:213:0x0924, B:215:0x092d, B:217:0x0939, B:219:0x09ee, B:221:0x09f8, B:223:0x0a11, B:225:0x0a25, B:227:0x0a2f, B:230:0x0a7f, B:231:0x0a9a, B:232:0x0aa1, B:234:0x0aab, B:236:0x0ab7, B:238:0x0b6f, B:240:0x0b77, B:242:0x0b81, B:244:0x0b9a, B:246:0x0bae, B:248:0x0bb8, B:251:0x0c09, B:252:0x0cdc, B:253:0x0c26, B:255:0x0c30, B:257:0x0c3a, B:259:0x0c53, B:261:0x0c67, B:263:0x0c71, B:266:0x0cc1, B:267:0x0ce3, B:269:0x0ceb, B:272:0x0cf5, B:274:0x0cfd, B:276:0x0d09, B:278:0x0dbe, B:280:0x0dc8, B:282:0x0de1, B:284:0x0df5, B:286:0x0dff, B:289:0x0e4f, B:290:0x0e6a, B:291:0x0e71, B:293:0x0e7d, B:295:0x0f32, B:297:0x0f3c, B:299:0x0f55, B:301:0x0f69, B:303:0x0f73, B:306:0x0fc3, B:307:0x0fde, B:308:0x0fe3, B:310:0x0ff1, B:312:0x0ff9, B:314:0x1001, B:316:0x100d, B:318:0x10c2, B:320:0x10cc, B:322:0x10e5, B:324:0x10f9, B:326:0x1103, B:329:0x1153, B:330:0x116e, B:368:0x00af, B:370:0x00d1, B:372:0x00d9, B:376:0x00e5, B:379:0x0063, B:27:0x1173, B:30:0x117b, B:33:0x1183, B:34:0x1189, B:45:0x1198, B:49:0x1199, B:381:0x0026, B:384:0x0029, B:386:0x0031), top: B:2:0x0001, outer: #20 }] */
-        /* JADX WARN: Removed duplicated region for block: B:331:0x02e5 A[SYNTHETIC] */
-        /* JADX WARN: Removed duplicated region for block: B:335:0x01d5 A[Catch: all -> 0x11bf, Exception -> 0x11c1, TryCatch #19 {Exception -> 0x11c1, blocks: (B:3:0x0001, B:5:0x0009, B:7:0x0012, B:10:0x001a, B:13:0x0033, B:15:0x003b, B:17:0x004c, B:19:0x005d, B:20:0x0068, B:22:0x0070, B:24:0x0078, B:53:0x0080, B:55:0x0086, B:57:0x0096, B:59:0x009e, B:63:0x00aa, B:65:0x00e7, B:67:0x00ee, B:69:0x0101, B:72:0x0114, B:74:0x0126, B:76:0x012e, B:77:0x0139, B:79:0x0141, B:80:0x0171, B:82:0x0179, B:87:0x018f, B:88:0x0192, B:89:0x0195, B:90:0x0198, B:91:0x019b, B:92:0x019d, B:94:0x01af, B:333:0x01c3, B:335:0x01d5, B:337:0x0236, B:340:0x0243, B:341:0x0249, B:351:0x0258, B:354:0x0259, B:98:0x025d, B:100:0x02be, B:103:0x02cb, B:104:0x02d1, B:114:0x02e0, B:117:0x02e1, B:360:0x014c, B:362:0x0154, B:363:0x015f, B:365:0x0167, B:120:0x02e5, B:122:0x02fa, B:124:0x0302, B:126:0x030e, B:128:0x0330, B:129:0x036a, B:132:0x034f, B:133:0x0371, B:135:0x037a, B:137:0x0386, B:139:0x03a8, B:140:0x03e2, B:142:0x03f1, B:144:0x0409, B:146:0x0415, B:148:0x0436, B:151:0x0485, B:152:0x04a0, B:155:0x03c7, B:156:0x04a7, B:158:0x04b1, B:160:0x04bd, B:162:0x0579, B:164:0x0581, B:166:0x058d, B:168:0x05a1, B:170:0x05ab, B:173:0x05fb, B:174:0x0616, B:175:0x061d, B:177:0x0625, B:179:0x0631, B:181:0x06e8, B:183:0x06f7, B:185:0x0710, B:187:0x0724, B:189:0x072e, B:192:0x077e, B:193:0x0799, B:194:0x07a0, B:196:0x07b0, B:198:0x07bc, B:200:0x0871, B:202:0x087b, B:204:0x0894, B:206:0x08a8, B:208:0x08b2, B:211:0x0902, B:212:0x091d, B:213:0x0924, B:215:0x092d, B:217:0x0939, B:219:0x09ee, B:221:0x09f8, B:223:0x0a11, B:225:0x0a25, B:227:0x0a2f, B:230:0x0a7f, B:231:0x0a9a, B:232:0x0aa1, B:234:0x0aab, B:236:0x0ab7, B:238:0x0b6f, B:240:0x0b77, B:242:0x0b81, B:244:0x0b9a, B:246:0x0bae, B:248:0x0bb8, B:251:0x0c09, B:252:0x0cdc, B:253:0x0c26, B:255:0x0c30, B:257:0x0c3a, B:259:0x0c53, B:261:0x0c67, B:263:0x0c71, B:266:0x0cc1, B:267:0x0ce3, B:269:0x0ceb, B:272:0x0cf5, B:274:0x0cfd, B:276:0x0d09, B:278:0x0dbe, B:280:0x0dc8, B:282:0x0de1, B:284:0x0df5, B:286:0x0dff, B:289:0x0e4f, B:290:0x0e6a, B:291:0x0e71, B:293:0x0e7d, B:295:0x0f32, B:297:0x0f3c, B:299:0x0f55, B:301:0x0f69, B:303:0x0f73, B:306:0x0fc3, B:307:0x0fde, B:308:0x0fe3, B:310:0x0ff1, B:312:0x0ff9, B:314:0x1001, B:316:0x100d, B:318:0x10c2, B:320:0x10cc, B:322:0x10e5, B:324:0x10f9, B:326:0x1103, B:329:0x1153, B:330:0x116e, B:368:0x00af, B:370:0x00d1, B:372:0x00d9, B:376:0x00e5, B:379:0x0063, B:27:0x1173, B:30:0x117b, B:33:0x1183, B:34:0x1189, B:45:0x1198, B:49:0x1199, B:381:0x0026, B:384:0x0029, B:386:0x0031), top: B:2:0x0001, outer: #20 }] */
-        /* JADX WARN: Removed duplicated region for block: B:358:0x02e5 A[SYNTHETIC] */
-        /* JADX WARN: Removed duplicated region for block: B:82:0x0179 A[Catch: all -> 0x11bf, Exception -> 0x11c1, TryCatch #19 {Exception -> 0x11c1, blocks: (B:3:0x0001, B:5:0x0009, B:7:0x0012, B:10:0x001a, B:13:0x0033, B:15:0x003b, B:17:0x004c, B:19:0x005d, B:20:0x0068, B:22:0x0070, B:24:0x0078, B:53:0x0080, B:55:0x0086, B:57:0x0096, B:59:0x009e, B:63:0x00aa, B:65:0x00e7, B:67:0x00ee, B:69:0x0101, B:72:0x0114, B:74:0x0126, B:76:0x012e, B:77:0x0139, B:79:0x0141, B:80:0x0171, B:82:0x0179, B:87:0x018f, B:88:0x0192, B:89:0x0195, B:90:0x0198, B:91:0x019b, B:92:0x019d, B:94:0x01af, B:333:0x01c3, B:335:0x01d5, B:337:0x0236, B:340:0x0243, B:341:0x0249, B:351:0x0258, B:354:0x0259, B:98:0x025d, B:100:0x02be, B:103:0x02cb, B:104:0x02d1, B:114:0x02e0, B:117:0x02e1, B:360:0x014c, B:362:0x0154, B:363:0x015f, B:365:0x0167, B:120:0x02e5, B:122:0x02fa, B:124:0x0302, B:126:0x030e, B:128:0x0330, B:129:0x036a, B:132:0x034f, B:133:0x0371, B:135:0x037a, B:137:0x0386, B:139:0x03a8, B:140:0x03e2, B:142:0x03f1, B:144:0x0409, B:146:0x0415, B:148:0x0436, B:151:0x0485, B:152:0x04a0, B:155:0x03c7, B:156:0x04a7, B:158:0x04b1, B:160:0x04bd, B:162:0x0579, B:164:0x0581, B:166:0x058d, B:168:0x05a1, B:170:0x05ab, B:173:0x05fb, B:174:0x0616, B:175:0x061d, B:177:0x0625, B:179:0x0631, B:181:0x06e8, B:183:0x06f7, B:185:0x0710, B:187:0x0724, B:189:0x072e, B:192:0x077e, B:193:0x0799, B:194:0x07a0, B:196:0x07b0, B:198:0x07bc, B:200:0x0871, B:202:0x087b, B:204:0x0894, B:206:0x08a8, B:208:0x08b2, B:211:0x0902, B:212:0x091d, B:213:0x0924, B:215:0x092d, B:217:0x0939, B:219:0x09ee, B:221:0x09f8, B:223:0x0a11, B:225:0x0a25, B:227:0x0a2f, B:230:0x0a7f, B:231:0x0a9a, B:232:0x0aa1, B:234:0x0aab, B:236:0x0ab7, B:238:0x0b6f, B:240:0x0b77, B:242:0x0b81, B:244:0x0b9a, B:246:0x0bae, B:248:0x0bb8, B:251:0x0c09, B:252:0x0cdc, B:253:0x0c26, B:255:0x0c30, B:257:0x0c3a, B:259:0x0c53, B:261:0x0c67, B:263:0x0c71, B:266:0x0cc1, B:267:0x0ce3, B:269:0x0ceb, B:272:0x0cf5, B:274:0x0cfd, B:276:0x0d09, B:278:0x0dbe, B:280:0x0dc8, B:282:0x0de1, B:284:0x0df5, B:286:0x0dff, B:289:0x0e4f, B:290:0x0e6a, B:291:0x0e71, B:293:0x0e7d, B:295:0x0f32, B:297:0x0f3c, B:299:0x0f55, B:301:0x0f69, B:303:0x0f73, B:306:0x0fc3, B:307:0x0fde, B:308:0x0fe3, B:310:0x0ff1, B:312:0x0ff9, B:314:0x1001, B:316:0x100d, B:318:0x10c2, B:320:0x10cc, B:322:0x10e5, B:324:0x10f9, B:326:0x1103, B:329:0x1153, B:330:0x116e, B:368:0x00af, B:370:0x00d1, B:372:0x00d9, B:376:0x00e5, B:379:0x0063, B:27:0x1173, B:30:0x117b, B:33:0x1183, B:34:0x1189, B:45:0x1198, B:49:0x1199, B:381:0x0026, B:384:0x0029, B:386:0x0031), top: B:2:0x0001, outer: #20 }] */
-        @Override // java.lang.Thread, java.lang.Runnable
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public void run() {
-            /*
-                Method dump skipped, instructions count: 4600
-                To view this dump change 'Code comments level' option to 'DEBUG'
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.hardware.display.AfterimageCompensationService.AfcThread.run():void");
-        }
-    }
-
-    public final void writeLoggingDataEfs() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.mAfcState);
-        sb.append(" ");
-        sb.append(this.interpolationCount);
-        sb.append(" ");
-        sb.append(this.interpolationLuminance);
-        for (int i = 0; i < 12; i++) {
-            sb.append(" ");
-            sb.append(this.interpolationCoprRoi[i]);
-        }
-        Slog.i("AfterimageCompensationService", "AFC Loggin Data - " + ((Object) sb));
-        fileWriteString("/efs/afc/logging_data", sb.toString());
-    }
-
-    public final boolean getBrightness() {
-        if (!new File("/sys/class/lcd/panel/brt_avg").exists()) {
-            return false;
-        }
-        try {
-            String readStrFromFile = readStrFromFile("/sys/class/lcd/panel/brt_avg");
-            if (readStrFromFile == null) {
-                return false;
-            }
-            try {
-                int parseInt = Integer.parseInt(readStrFromFile);
-                this.mLuminance = parseInt;
-                return parseInt >= 0;
-            } catch (NumberFormatException e) {
-                Slog.e("AfterimageCompensationService", "NumberFormatException : " + e);
-                return false;
-            }
-        } catch (Exception e2) {
-            e2.printStackTrace();
-            return false;
-        }
-    }
-
-    public final boolean getBrightness_sub() {
-        if (!new File("/sys/class/lcd/panel1/brt_avg").exists()) {
-            return false;
-        }
-        try {
-            String readStrFromFile = readStrFromFile("/sys/class/lcd/panel1/brt_avg");
-            if (readStrFromFile == null) {
-                return false;
-            }
-            try {
-                int parseInt = Integer.parseInt(readStrFromFile);
-                this.mLuminance_sub = parseInt;
-                return parseInt >= 0;
-            } catch (NumberFormatException e) {
-                Slog.e("AfterimageCompensationService", "NumberFormatException : " + e);
-                return false;
-            }
-        } catch (Exception e2) {
-            e2.printStackTrace();
-            return false;
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:13:0x0206  */
-    /* JADX WARN: Removed duplicated region for block: B:21:0x0345  */
-    /* JADX WARN: Removed duplicated region for block: B:30:0x0242 A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:70:0x006d A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void update_check_panel_id() {
-        /*
-            Method dump skipped, instructions count: 889
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.hardware.display.AfterimageCompensationService.update_check_panel_id():void");
-    }
-
-    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:13:0x0045 -> B:14:0x005e). Please report as a decompilation issue!!! */
-    public final void processApplyData_main() {
-        if (new File("/efs/afc/apply_count").exists()) {
-            try {
-                String stringFromFile = getStringFromFile("/efs/afc/apply_count");
-                if (stringFromFile != null) {
-                    String[] split = stringFromFile.trim().split(" ");
-                    try {
-                        if (split.length == 2) {
-                            this.mApplyCount = Integer.parseInt(split[0].trim());
-                            this.mApplyValue = Float.parseFloat(split[1].trim());
-                        } else {
-                            this.mApplyCount = 0;
-                            this.mApplyValue = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-                        }
-                    } catch (NumberFormatException e) {
-                        Slog.e("AfterimageCompensationService", "NumberFormatException : " + e);
-                    }
-                }
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-        }
-        Slog.i("AfterimageCompensationService", "processApplyData_main() mApplyCount : " + this.mApplyCount + " , mApplyValue : " + this.mApplyValue);
-    }
-
-    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:13:0x0045 -> B:14:0x005e). Please report as a decompilation issue!!! */
-    public final void processApplyData_sub() {
-        if (new File("/efs/afc1/apply_count").exists()) {
-            try {
-                String stringFromFile = getStringFromFile("/efs/afc1/apply_count");
-                if (stringFromFile != null) {
-                    String[] split = stringFromFile.trim().split(" ");
-                    try {
-                        if (split.length == 2) {
-                            this.mApplyCount_sub = Integer.parseInt(split[0].trim());
-                            this.mApplyValue_sub = Float.parseFloat(split[1].trim());
-                        } else {
-                            this.mApplyCount_sub = 0;
-                            this.mApplyValue_sub = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-                        }
-                    } catch (NumberFormatException e) {
-                        Slog.e("AfterimageCompensationService", "NumberFormatException : " + e);
-                    }
-                }
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
-        }
-        Slog.i("AfterimageCompensationService", "processApplyData_sub() mApplyCount_sub : " + this.mApplyCount_sub + " , mApplyValue_sub : " + this.mApplyValue_sub);
-    }
-
-    public final void updateHWParam() {
-        String[] strArr = {Integer.toString(this.mApplyCount), Float.toString(this.mApplyValue), Double.toString(this.mAvgLum), Double.toString(this.mMaxBDI), Double.toString(this.mNBDI), Double.toString(this.mEffAvgLum), Double.toString(this.mEffMaxBDI), Double.toString(this.mEffNBDI), Integer.toString(this.mApplyCount_sub), Float.toString(this.mApplyValue_sub), Double.toString(this.mAvgLum_sub), Double.toString(this.mMaxBDI_sub), Double.toString(this.mNBDI_sub), Double.toString(this.mEffAvgLum_sub), Double.toString(this.mEffMaxBDI_sub), Double.toString(this.mEffNBDI_sub)};
-        String[] strArr2 = mAFPC_KEYS;
-        handleSendBroadcastToHWParam("DIQE", parseBigData(strArr2, strArr, strArr2.length));
-    }
-
-    public final void handleSendBroadcastToHWParam(String str, String str2) {
-        if (this.mSemHqmManager != null) {
-            Slog.i("AfterimageCompensationService", "sendBroadcastToHWParam() mSemHqmManager.sendHWParamToHQM");
-            this.mSemHqmManager.sendHWParamToHQM(0, "Display", str, "sm", "0.0", "sec", "", str2, "");
-        } else {
-            Slog.d("AfterimageCompensationService", "sendBroadcastToHWParam() mSemHqmManager is null");
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:15:0x0031  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final java.lang.String parseBigData(java.lang.String[] r5, java.lang.String[] r6, int r7) {
-        /*
-            r4 = this;
-            r0 = 0
-            org.json.JSONObject r1 = new org.json.JSONObject     // Catch: org.json.JSONException -> L16
-            r1.<init>()     // Catch: org.json.JSONException -> L16
-            r0 = 0
-        L7:
-            if (r0 >= r7) goto L1b
-            r2 = r5[r0]     // Catch: org.json.JSONException -> L13
-            r3 = r6[r0]     // Catch: org.json.JSONException -> L13
-            r1.put(r2, r3)     // Catch: org.json.JSONException -> L13
-            int r0 = r0 + 1
-            goto L7
-        L13:
-            r5 = move-exception
-            r0 = r1
-            goto L17
-        L16:
-            r5 = move-exception
-        L17:
-            r5.printStackTrace()
-            r1 = r0
-        L1b:
-            java.lang.String r5 = r1.toString()
-            java.lang.String r6 = "\\{"
-            java.lang.String r7 = ""
-            java.lang.String r5 = r5.replaceAll(r6, r7)
-            java.lang.String r6 = "\\}"
-            java.lang.String r5 = r5.replaceAll(r6, r7)
-            boolean r4 = r4.DEBUG
-            if (r4 == 0) goto L47
-            java.lang.StringBuilder r4 = new java.lang.StringBuilder
-            r4.<init>()
-            java.lang.String r6 = "customDataSet : "
-            r4.append(r6)
-            r4.append(r5)
-            java.lang.String r4 = r4.toString()
-            java.lang.String r6 = "AfterimageCompensationService"
-            android.util.Slog.d(r6, r4)
-        L47:
-            return r5
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.hardware.display.AfterimageCompensationService.parseBigData(java.lang.String[], java.lang.String[], int):java.lang.String");
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r1v11, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r1v12 */
-    /* JADX WARN: Type inference failed for: r1v15 */
-    /* JADX WARN: Type inference failed for: r1v16 */
-    /* JADX WARN: Type inference failed for: r1v17 */
-    /* JADX WARN: Type inference failed for: r1v2, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r1v7 */
-    /* JADX WARN: Type inference failed for: r1v9 */
-    public final String getStringFromFile(String str) {
-        FileInputStream fileInputStream;
-        byte[] bArr = new byte[128];
-        for (int i = 0; i < 128; i++) {
-            bArr[i] = 0;
-        }
-        FileInputStream fileInputStream2 = null;
-        r1 = 0;
-        ?? r1 = 0;
-        FileInputStream fileInputStream3 = null;
-        FileInputStream fileInputStream4 = null;
-        try {
-            try {
-                try {
-                    fileInputStream = new FileInputStream(new File(str));
-                } catch (FileNotFoundException e) {
-                    e = e;
-                    bArr = null;
-                } catch (IOException e2) {
-                    e = e2;
-                    bArr = null;
-                }
-                try {
-                    int read = fileInputStream.read(bArr);
-                    r1 = read != 0 ? new String(bArr, 0, read - 1, StandardCharsets.UTF_8) : 0;
-                    fileInputStream.close();
-                    try {
-                        fileInputStream.close();
-                        return r1;
-                    } catch (IOException unused) {
-                        Slog.e("AfterimageCompensationService", "File Close error");
-                        return r1;
-                    }
-                } catch (FileNotFoundException e3) {
-                    e = e3;
-                    bArr = r1;
-                    fileInputStream4 = fileInputStream;
-                    Slog.e("AfterimageCompensationService", "FileNotFoundException : " + e);
-                    if (fileInputStream4 != null) {
-                        fileInputStream4.close();
-                    }
-                    return bArr;
-                } catch (IOException e4) {
-                    e = e4;
-                    bArr = r1;
-                    fileInputStream2 = fileInputStream;
-                    e.printStackTrace();
-                    Slog.e("AfterimageCompensationService", "IOException : " + e);
-                    if (fileInputStream2 != null) {
-                        fileInputStream2.close();
-                    }
-                    return bArr;
-                } catch (Throwable th) {
-                    th = th;
-                    fileInputStream3 = fileInputStream;
-                    if (fileInputStream3 != null) {
-                        try {
-                            fileInputStream3.close();
-                        } catch (IOException unused2) {
-                            Slog.e("AfterimageCompensationService", "File Close error");
-                        }
-                    }
-                    throw th;
-                }
-            } catch (Throwable th2) {
-                th = th2;
-            }
-        } catch (IOException unused3) {
-            Slog.e("AfterimageCompensationService", "File Close error");
-        }
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r8v0, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r8v1, types: [java.io.IOException] */
-    /* JADX WARN: Type inference failed for: r8v10 */
-    /* JADX WARN: Type inference failed for: r8v11, types: [java.io.FileOutputStream] */
-    /* JADX WARN: Type inference failed for: r8v2 */
-    /* JADX WARN: Type inference failed for: r8v3, types: [java.io.FileOutputStream] */
-    /* JADX WARN: Type inference failed for: r8v5 */
-    /* JADX WARN: Type inference failed for: r8v6 */
-    /* JADX WARN: Type inference failed for: r8v7 */
-    /* JADX WARN: Type inference failed for: r8v8, types: [java.io.FileOutputStream] */
-    /* JADX WARN: Type inference failed for: r8v9 */
-    /* JADX WARN: Type inference failed for: r9v0, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r9v1 */
-    /* JADX WARN: Type inference failed for: r9v10 */
-    /* JADX WARN: Type inference failed for: r9v11, types: [java.nio.channels.FileChannel] */
-    /* JADX WARN: Type inference failed for: r9v2, types: [java.nio.channels.FileChannel] */
-    /* JADX WARN: Type inference failed for: r9v3 */
-    /* JADX WARN: Type inference failed for: r9v4 */
-    /* JADX WARN: Type inference failed for: r9v5 */
-    /* JADX WARN: Type inference failed for: r9v6, types: [java.nio.channels.FileChannel] */
-    /* JADX WARN: Type inference failed for: r9v7 */
-    /* JADX WARN: Type inference failed for: r9v8 */
-    /* JADX WARN: Type inference failed for: r9v9 */
-    public static void fileCopy(String e, String str) {
-        FileInputStream fileInputStream;
-        FileChannel fileChannel = null;
-        try {
-        } catch (IOException e2) {
-            e = e2;
-            e.printStackTrace();
-        }
-        try {
-            try {
-                fileInputStream = new FileInputStream((String) e);
-                try {
-                    e = new FileOutputStream((String) str);
-                    try {
-                        str = fileInputStream.getChannel();
-                    } catch (IOException e3) {
-                        e = e3;
-                        str = 0;
-                    } catch (Throwable th) {
-                        th = th;
-                        str = 0;
-                        if (fileChannel != null) {
-                            try {
-                                fileChannel.close();
-                            } catch (IOException e4) {
-                                e4.printStackTrace();
-                                throw th;
-                            }
-                        }
-                        if (str != 0) {
-                            str.close();
-                        }
-                        if (fileInputStream != null) {
-                            fileInputStream.close();
-                        }
-                        if (e != 0) {
-                            e.close();
-                        }
-                        throw th;
-                    }
-                } catch (IOException e5) {
-                    e = e5;
-                    e = 0;
-                    str = 0;
-                } catch (Throwable th2) {
-                    th = th2;
-                    e = 0;
-                    str = 0;
-                }
-            } catch (IOException e6) {
-                e = e6;
-                e = 0;
-                str = 0;
-                fileInputStream = null;
-            } catch (Throwable th3) {
-                th = th3;
-                e = 0;
-                str = 0;
-                fileInputStream = null;
-            }
-            try {
-                fileChannel = e.getChannel();
-                str.transferTo(0L, str.size(), fileChannel);
-                if (fileChannel != null) {
-                    fileChannel.close();
-                }
-                str.close();
-                fileInputStream.close();
-                e.close();
-            } catch (IOException e7) {
-                e = e7;
-                e.printStackTrace();
-                if (fileChannel != null) {
-                    fileChannel.close();
-                }
-                if (str != 0) {
-                    str.close();
-                }
-                if (fileInputStream != null) {
-                    fileInputStream.close();
-                }
-                if (e != 0) {
-                    e.close();
-                }
-            }
-        } catch (Throwable th4) {
-            th = th4;
-        }
-    }
+    private static native int nativeMdnieBlockVerify(boolean z);
 
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Type inference failed for: r7v0, types: [java.lang.String] */
@@ -1160,8 +808,7 @@ public class AfterimageCompensationService {
                     } catch (IOException e10) {
                         e = e10;
                         printStream = System.out;
-                        sb = new StringBuilder();
-                        sb.append("FileReader Close IOException : ");
+                        sb = new StringBuilder("FileReader Close IOException : ");
                         sb.append(e.getMessage());
                         printStream.println(sb.toString());
                         return str2;
@@ -1189,8 +836,7 @@ public class AfterimageCompensationService {
                     } catch (IOException e13) {
                         e = e13;
                         printStream = System.out;
-                        sb = new StringBuilder();
-                        sb.append("FileReader Close IOException : ");
+                        sb = new StringBuilder("FileReader Close IOException : ");
                         sb.append(e.getMessage());
                         printStream.println(sb.toString());
                         return str2;
@@ -1203,8 +849,7 @@ public class AfterimageCompensationService {
             } catch (IOException e14) {
                 e = e14;
                 printStream = System.out;
-                sb = new StringBuilder();
-                sb.append("FileReader Close IOException : ");
+                sb = new StringBuilder("FileReader Close IOException : ");
                 sb.append(e.getMessage());
                 printStream.println(sb.toString());
                 return str2;
@@ -1213,6 +858,69 @@ public class AfterimageCompensationService {
         } catch (Throwable th4) {
             th = th4;
         }
+    }
+
+    public final boolean afpcDataApply() {
+        Slog.i("AfterimageCompensationService", "afpcDataApply()");
+        int i = this.mAfcType;
+        if (i != 3 && i < 5) {
+            return false;
+        }
+        if (BatteryService$$ExternalSyntheticOutline0.m45m("/efs/afc/mdnie_block")) {
+            nativeDataApply(this.mApplyScaleEffect);
+            return true;
+        }
+        Slog.i("AfterimageCompensationService", "afpcDataApply - AFC_MDNIE_BLOCK not exist");
+        return false;
+    }
+
+    public final boolean afpcDataOff() {
+        Slog.i("AfterimageCompensationService", "afpcDataOff()");
+        int i = this.mAfcType;
+        if (i != 3 && i < 5) {
+            return false;
+        }
+        nativeDataOff();
+        return true;
+    }
+
+    public final boolean afpcDataVerify() {
+        StringBuilder sb = new StringBuilder("afpcDataVerify() - ");
+        int i = this.mAfpcSize;
+        sb.append(i);
+        sb.append(", ");
+        sb.append(i);
+        Slog.i("AfterimageCompensationService", sb.toString());
+        return nativeDataVerify() == 0;
+    }
+
+    public final boolean afpcDataWrite() {
+        Slog.i("AfterimageCompensationService", "afpcDataWrite()");
+        if (this.mAfcType != 2 || !this.mThreadAFPC || !this.AfcStateCondition) {
+            return false;
+        }
+        int i = this.mApplyCount;
+        float[] fArr = this.mAfpcJndRef;
+        if (i >= fArr.length) {
+            return false;
+        }
+        float nativeDataEvaluate = nativeDataEvaluate();
+        Locale locale = Locale.US;
+        float parseFloat = Float.parseFloat(String.format(locale, "%.2f", Float.valueOf(nativeDataEvaluate)));
+        this.mApplyValue = parseFloat;
+        if (parseFloat < fArr[this.mApplyCount] || nativeDataWrite(this.mApplyScaleEffect) != 0) {
+            return false;
+        }
+        this.mApplyCount++;
+        try {
+            String str = this.mApplyCount + " " + String.format(locale, "%.2f", Float.valueOf(this.mApplyValue));
+            fileWriteString("/efs/afc/apply_count", str);
+            Slog.i("AfterimageCompensationService", "afpcDataWrite - str : " + str);
+        } catch (NumberFormatException e) {
+            Slog.e("AfterimageCompensationService", "NumberFormatException : " + e);
+            this.mApplyValue = FullScreenMagnificationGestureHandler.MAX_SCALE;
+        }
+        return true;
     }
 
     public final boolean fileWriteString(String str, String str2) {
@@ -1243,66 +951,8 @@ public class AfterimageCompensationService {
                 return false;
             }
         } catch (FileNotFoundException unused) {
-            Slog.d("AfterimageCompensationService", "fileWriteString : file not found : " + str);
+            Slog.d("AfterimageCompensationService", "fileWriteString : file not found : ".concat(str));
             return false;
         }
-    }
-
-    public boolean afpcDataVerify() {
-        Slog.i("AfterimageCompensationService", "afpcDataVerify() - " + this.mAfpcSize + ", " + this.mAfpcSize);
-        return nativeDataVerify() == 0;
-    }
-
-    public boolean afpcDataApply() {
-        Slog.i("AfterimageCompensationService", "afpcDataApply()");
-        int i = this.mAfcType;
-        if (i != 3 && i < 5) {
-            return false;
-        }
-        if (new File("/efs/afc/mdnie_block").exists()) {
-            nativeDataApply(this.mApplyScaleEffect);
-            return true;
-        }
-        Slog.i("AfterimageCompensationService", "afpcDataApply - AFC_MDNIE_BLOCK not exist");
-        return false;
-    }
-
-    public boolean afpcDataOff() {
-        Slog.i("AfterimageCompensationService", "afpcDataOff()");
-        int i = this.mAfcType;
-        if (i != 3 && i < 5) {
-            return false;
-        }
-        nativeDataOff();
-        return true;
-    }
-
-    public boolean afpcWorkOff() {
-        Slog.i("AfterimageCompensationService", "afpcWorkOff()");
-        this.AfcStateCondition = false;
-        return true;
-    }
-
-    public boolean afpcDataWrite() {
-        Slog.i("AfterimageCompensationService", "afpcDataWrite()");
-        if (this.mAfcType == 2 && this.mThreadAFPC && this.AfcStateCondition && this.mApplyCount < this.mAfpcJndRef.length) {
-            float nativeDataEvaluate = nativeDataEvaluate();
-            Locale locale = Locale.US;
-            float parseFloat = Float.parseFloat(String.format(locale, "%.2f", Float.valueOf(nativeDataEvaluate)));
-            this.mApplyValue = parseFloat;
-            if (parseFloat >= this.mAfpcJndRef[this.mApplyCount] && nativeDataWrite(this.mApplyScaleEffect) == 0) {
-                this.mApplyCount++;
-                try {
-                    String str = this.mApplyCount + " " + String.format(locale, "%.2f", Float.valueOf(this.mApplyValue));
-                    fileWriteString("/efs/afc/apply_count", str);
-                    Slog.i("AfterimageCompensationService", "afpcDataWrite - str : " + str);
-                } catch (NumberFormatException e) {
-                    Slog.e("AfterimageCompensationService", "NumberFormatException : " + e);
-                    this.mApplyValue = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-                }
-                return true;
-            }
-        }
-        return false;
     }
 }

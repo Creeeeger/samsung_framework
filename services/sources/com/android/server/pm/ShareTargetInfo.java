@@ -3,16 +3,19 @@ package com.android.server.pm;
 import android.text.TextUtils;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-/* loaded from: classes3.dex */
-public class ShareTargetInfo {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ShareTargetInfo {
     public final String[] mCategories;
     public final String mTargetClass;
     public final TargetData[] mTargetData;
 
-    /* loaded from: classes3.dex */
-    public class TargetData {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TargetData {
         public final String mHost;
         public final String mMimeType;
         public final String mPath;
@@ -31,42 +34,49 @@ public class ShareTargetInfo {
             this.mMimeType = str7;
         }
 
-        public void toStringInner(StringBuilder sb) {
-            if (!TextUtils.isEmpty(this.mScheme)) {
-                sb.append(" scheme=");
-                sb.append(this.mScheme);
-            }
-            if (!TextUtils.isEmpty(this.mHost)) {
-                sb.append(" host=");
-                sb.append(this.mHost);
-            }
-            if (!TextUtils.isEmpty(this.mPort)) {
-                sb.append(" port=");
-                sb.append(this.mPort);
-            }
-            if (!TextUtils.isEmpty(this.mPath)) {
-                sb.append(" path=");
-                sb.append(this.mPath);
-            }
-            if (!TextUtils.isEmpty(this.mPathPattern)) {
-                sb.append(" pathPattern=");
-                sb.append(this.mPathPattern);
-            }
-            if (!TextUtils.isEmpty(this.mPathPrefix)) {
-                sb.append(" pathPrefix=");
-                sb.append(this.mPathPrefix);
-            }
-            if (TextUtils.isEmpty(this.mMimeType)) {
-                return;
-            }
-            sb.append(" mimeType=");
-            sb.append(this.mMimeType);
-        }
-
-        public String toString() {
+        public final String toString() {
             StringBuilder sb = new StringBuilder();
             toStringInner(sb);
             return sb.toString();
+        }
+
+        public final void toStringInner(StringBuilder sb) {
+            String str = this.mScheme;
+            if (!TextUtils.isEmpty(str)) {
+                sb.append(" scheme=");
+                sb.append(str);
+            }
+            String str2 = this.mHost;
+            if (!TextUtils.isEmpty(str2)) {
+                sb.append(" host=");
+                sb.append(str2);
+            }
+            String str3 = this.mPort;
+            if (!TextUtils.isEmpty(str3)) {
+                sb.append(" port=");
+                sb.append(str3);
+            }
+            String str4 = this.mPath;
+            if (!TextUtils.isEmpty(str4)) {
+                sb.append(" path=");
+                sb.append(str4);
+            }
+            String str5 = this.mPathPattern;
+            if (!TextUtils.isEmpty(str5)) {
+                sb.append(" pathPattern=");
+                sb.append(str5);
+            }
+            String str6 = this.mPathPrefix;
+            if (!TextUtils.isEmpty(str6)) {
+                sb.append(" pathPrefix=");
+                sb.append(str6);
+            }
+            String str7 = this.mMimeType;
+            if (TextUtils.isEmpty(str7)) {
+                return;
+            }
+            sb.append(" mimeType=");
+            sb.append(str7);
         }
     }
 
@@ -76,73 +86,95 @@ public class ShareTargetInfo {
         this.mCategories = strArr;
     }
 
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("targetClass=");
-        sb.append(this.mTargetClass);
-        for (int i = 0; i < this.mTargetData.length; i++) {
-            sb.append(" data={");
-            this.mTargetData[i].toStringInner(sb);
-            sb.append("}");
-        }
-        for (int i2 = 0; i2 < this.mCategories.length; i2++) {
-            sb.append(" category=");
-            sb.append(this.mCategories[i2]);
-        }
-        return sb.toString();
-    }
-
-    public void saveToXml(TypedXmlSerializer typedXmlSerializer) {
-        typedXmlSerializer.startTag((String) null, "share-target");
-        ShortcutService.writeAttr(typedXmlSerializer, "targetClass", this.mTargetClass);
-        for (int i = 0; i < this.mTargetData.length; i++) {
-            typedXmlSerializer.startTag((String) null, "data");
-            ShortcutService.writeAttr(typedXmlSerializer, "scheme", this.mTargetData[i].mScheme);
-            ShortcutService.writeAttr(typedXmlSerializer, "host", this.mTargetData[i].mHost);
-            ShortcutService.writeAttr(typedXmlSerializer, "port", this.mTargetData[i].mPort);
-            ShortcutService.writeAttr(typedXmlSerializer, "path", this.mTargetData[i].mPath);
-            ShortcutService.writeAttr(typedXmlSerializer, "pathPattern", this.mTargetData[i].mPathPattern);
-            ShortcutService.writeAttr(typedXmlSerializer, "pathPrefix", this.mTargetData[i].mPathPrefix);
-            ShortcutService.writeAttr(typedXmlSerializer, "mimeType", this.mTargetData[i].mMimeType);
-            typedXmlSerializer.endTag((String) null, "data");
-        }
-        for (int i2 = 0; i2 < this.mCategories.length; i2++) {
-            typedXmlSerializer.startTag((String) null, "category");
-            ShortcutService.writeAttr(typedXmlSerializer, "name", this.mCategories[i2]);
-            typedXmlSerializer.endTag((String) null, "category");
-        }
-        typedXmlSerializer.endTag((String) null, "share-target");
-    }
-
     public static ShareTargetInfo loadFromXml(TypedXmlPullParser typedXmlPullParser) {
-        String parseStringAttribute = ShortcutService.parseStringAttribute(typedXmlPullParser, "targetClass");
+        AtomicBoolean atomicBoolean = ShortcutService.sIsEmergencyMode;
+        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "targetClass");
         ArrayList arrayList = new ArrayList();
         ArrayList arrayList2 = new ArrayList();
         while (true) {
             int next = typedXmlPullParser.next();
             if (next != 1) {
-                if (next == 2) {
-                    String name = typedXmlPullParser.getName();
-                    name.hashCode();
-                    if (name.equals("data")) {
-                        arrayList.add(parseTargetData(typedXmlPullParser));
-                    } else if (name.equals("category")) {
-                        arrayList2.add(ShortcutService.parseStringAttribute(typedXmlPullParser, "name"));
+                if (next != 2) {
+                    if (next == 3 && typedXmlPullParser.getName().equals("share-target")) {
+                        break;
                     }
-                } else if (next == 3 && typedXmlPullParser.getName().equals("share-target")) {
-                    break;
+                } else {
+                    String name = typedXmlPullParser.getName();
+                    name.getClass();
+                    if (name.equals("data")) {
+                        AtomicBoolean atomicBoolean2 = ShortcutService.sIsEmergencyMode;
+                        arrayList.add(new TargetData(typedXmlPullParser.getAttributeValue((String) null, "scheme"), typedXmlPullParser.getAttributeValue((String) null, "host"), typedXmlPullParser.getAttributeValue((String) null, "port"), typedXmlPullParser.getAttributeValue((String) null, "path"), typedXmlPullParser.getAttributeValue((String) null, "pathPattern"), typedXmlPullParser.getAttributeValue((String) null, "pathPrefix"), typedXmlPullParser.getAttributeValue((String) null, "mimeType")));
+                    } else if (name.equals("category")) {
+                        arrayList2.add(typedXmlPullParser.getAttributeValue((String) null, "name"));
+                    }
                 }
             } else {
                 break;
             }
         }
-        if (arrayList.isEmpty() || parseStringAttribute == null || arrayList2.isEmpty()) {
+        if (arrayList.isEmpty() || attributeValue == null || arrayList2.isEmpty()) {
             return null;
         }
-        return new ShareTargetInfo((TargetData[]) arrayList.toArray(new TargetData[arrayList.size()]), parseStringAttribute, (String[]) arrayList2.toArray(new String[arrayList2.size()]));
+        return new ShareTargetInfo((TargetData[]) arrayList.toArray(new TargetData[arrayList.size()]), attributeValue, (String[]) arrayList2.toArray(new String[arrayList2.size()]));
     }
 
-    public static TargetData parseTargetData(TypedXmlPullParser typedXmlPullParser) {
-        return new TargetData(ShortcutService.parseStringAttribute(typedXmlPullParser, "scheme"), ShortcutService.parseStringAttribute(typedXmlPullParser, "host"), ShortcutService.parseStringAttribute(typedXmlPullParser, "port"), ShortcutService.parseStringAttribute(typedXmlPullParser, "path"), ShortcutService.parseStringAttribute(typedXmlPullParser, "pathPattern"), ShortcutService.parseStringAttribute(typedXmlPullParser, "pathPrefix"), ShortcutService.parseStringAttribute(typedXmlPullParser, "mimeType"));
+    public final void saveToXml(TypedXmlSerializer typedXmlSerializer) {
+        typedXmlSerializer.startTag((String) null, "share-target");
+        ShortcutService.writeAttr(typedXmlSerializer, "targetClass", this.mTargetClass);
+        int i = 0;
+        int i2 = 0;
+        while (true) {
+            TargetData[] targetDataArr = this.mTargetData;
+            if (i2 >= targetDataArr.length) {
+                break;
+            }
+            typedXmlSerializer.startTag((String) null, "data");
+            ShortcutService.writeAttr(typedXmlSerializer, "scheme", targetDataArr[i2].mScheme);
+            ShortcutService.writeAttr(typedXmlSerializer, "host", targetDataArr[i2].mHost);
+            ShortcutService.writeAttr(typedXmlSerializer, "port", targetDataArr[i2].mPort);
+            ShortcutService.writeAttr(typedXmlSerializer, "path", targetDataArr[i2].mPath);
+            ShortcutService.writeAttr(typedXmlSerializer, "pathPattern", targetDataArr[i2].mPathPattern);
+            ShortcutService.writeAttr(typedXmlSerializer, "pathPrefix", targetDataArr[i2].mPathPrefix);
+            ShortcutService.writeAttr(typedXmlSerializer, "mimeType", targetDataArr[i2].mMimeType);
+            typedXmlSerializer.endTag((String) null, "data");
+            i2++;
+        }
+        while (true) {
+            String[] strArr = this.mCategories;
+            if (i >= strArr.length) {
+                typedXmlSerializer.endTag((String) null, "share-target");
+                return;
+            }
+            typedXmlSerializer.startTag((String) null, "category");
+            ShortcutService.writeAttr(typedXmlSerializer, "name", strArr[i]);
+            typedXmlSerializer.endTag((String) null, "category");
+            i++;
+        }
+    }
+
+    public final String toString() {
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m("targetClass=");
+        m.append(this.mTargetClass);
+        int i = 0;
+        int i2 = 0;
+        while (true) {
+            TargetData[] targetDataArr = this.mTargetData;
+            if (i2 >= targetDataArr.length) {
+                break;
+            }
+            m.append(" data={");
+            targetDataArr[i2].toStringInner(m);
+            m.append("}");
+            i2++;
+        }
+        while (true) {
+            String[] strArr = this.mCategories;
+            if (i >= strArr.length) {
+                return m.toString();
+            }
+            m.append(" category=");
+            m.append(strArr[i]);
+            i++;
+        }
     }
 }

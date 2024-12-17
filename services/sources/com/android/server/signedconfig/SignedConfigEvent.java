@@ -1,16 +1,11 @@
 package com.android.server.signedconfig;
 
-import com.android.internal.util.FrameworkStatsLog;
-
-/* loaded from: classes3.dex */
-public class SignedConfigEvent {
-    public int type = 0;
-    public int status = 0;
-    public int version = 0;
-    public String fromPackage = null;
-    public int verifiedWith = 0;
-
-    public void send() {
-        FrameworkStatsLog.write(123, this.type, this.status, this.version, this.fromPackage, this.verifiedWith);
-    }
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SignedConfigEvent {
+    public String fromPackage;
+    public int status;
+    public int type;
+    public int verifiedWith;
+    public int version;
 }

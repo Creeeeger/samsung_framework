@@ -3,39 +3,22 @@ package com.android.server.display.config;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.xmlpull.v1.XmlPullParser;
 
-/* loaded from: classes2.dex */
-public class SensorDetails {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class SensorDetails {
+    public String featureFlag;
     public String name;
     public RefreshRateRange refreshRate;
+    public NonNegativeFloatToFloatMap supportedModes;
     public String type;
-
-    public final String getType() {
-        return this.type;
-    }
-
-    public final void setType(String str) {
-        this.type = str;
-    }
-
-    public final String getName() {
-        return this.name;
-    }
-
-    public final void setName(String str) {
-        this.name = str;
-    }
-
-    public final RefreshRateRange getRefreshRate() {
-        return this.refreshRate;
-    }
-
-    public final void setRefreshRate(RefreshRateRange refreshRateRange) {
-        this.refreshRate = refreshRateRange;
-    }
 
     public static SensorDetails read(XmlPullParser xmlPullParser) {
         int next;
         SensorDetails sensorDetails = new SensorDetails();
+        String attributeValue = xmlPullParser.getAttributeValue(null, "featureFlag");
+        if (attributeValue != null) {
+            sensorDetails.featureFlag = attributeValue;
+        }
         xmlPullParser.getDepth();
         while (true) {
             next = xmlPullParser.next();
@@ -45,11 +28,13 @@ public class SensorDetails {
             if (xmlPullParser.getEventType() == 2) {
                 String name = xmlPullParser.getName();
                 if (name.equals("type")) {
-                    sensorDetails.setType(XmlParser.readText(xmlPullParser));
+                    sensorDetails.type = XmlParser.readText(xmlPullParser);
                 } else if (name.equals("name")) {
-                    sensorDetails.setName(XmlParser.readText(xmlPullParser));
+                    sensorDetails.name = XmlParser.readText(xmlPullParser);
                 } else if (name.equals("refreshRate")) {
-                    sensorDetails.setRefreshRate(RefreshRateRange.read(xmlPullParser));
+                    sensorDetails.refreshRate = RefreshRateRange.read(xmlPullParser);
+                } else if (name.equals("supportedModes")) {
+                    sensorDetails.supportedModes = NonNegativeFloatToFloatMap.read(xmlPullParser);
                 } else {
                     XmlParser.skip(xmlPullParser);
                 }

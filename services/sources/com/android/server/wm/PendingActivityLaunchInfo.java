@@ -1,41 +1,28 @@
 package com.android.server.wm;
 
-import android.app.ActivityOptions;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.util.Slog;
 
-/* compiled from: DexRestartAppInfo.java */
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class PendingActivityLaunchInfo extends DexRestartAppInfo {
-    public PendingActivityLaunchInfo(PendingActivityLaunch pendingActivityLaunch, String str, int i, ApplicationInfo applicationInfo, Task task, Task task2, ActivityOptions activityOptions, int i2) {
-        super(str, i, applicationInfo, task, task2, activityOptions, i2);
-        this.mPal = pendingActivityLaunch;
-    }
-
     @Override // com.android.server.wm.DexRestartAppInfo
-    public CharSequence getAppName(Context context, ActivityTaskSupervisor activityTaskSupervisor) {
-        ActivityRecord activityRecord;
-        ActivityInfo activityInfo;
-        PendingActivityLaunch pendingActivityLaunch = this.mPal;
-        return (pendingActivityLaunch == null || (activityRecord = pendingActivityLaunch.r) == null || (activityInfo = activityRecord.info) == null) ? "" : activityInfo.loadLabel(context.getPackageManager());
-    }
-
-    @Override // com.android.server.wm.DexRestartAppInfo
-    public void startResult(ActivityTaskManagerService activityTaskManagerService, int i) {
+    public final void startResult(int i, ActivityTaskManagerService activityTaskManagerService) {
         if (this.mPal == null) {
             return;
         }
         this.mOptions.setLaunchDisplayId(i);
-        if (DexRestartAppInfo.SAFE_DEBUG) {
-            Slog.d("DexController", "startResult: windowingMode=" + this.mOptions.getLaunchWindowingMode() + " targetDisplayId=" + i);
+        PendingActivityLaunch pendingActivityLaunch = this.mPal;
+        int i2 = pendingActivityLaunch.r.launchMode;
+        boolean z = i2 == 3 || i2 == 2;
+        ActivityStartController activityStartController = activityTaskManagerService.mActivityStartController;
+        try {
+            activityStartController.obtainStarter(null, "pendingActivityLaunch-for-dex").startResolvedActivity(pendingActivityLaunch.r, pendingActivityLaunch.sourceRecord, pendingActivityLaunch.startFlags, this.mOptions, z ? null : this.mTargetTask, pendingActivityLaunch.intentGrants);
+        } catch (Exception e) {
+            Slog.e("ActivityTaskManager", "Exception during pending activity launch for dex. pal=" + pendingActivityLaunch, e);
         }
-        int i2 = this.mPal.r.launchMode;
-        activityTaskManagerService.getActivityStartController().doPendingActivityLaunches(this.mPal, i2 == 3 || i2 == 2 ? null : this.mTargetTask, this.mOptions);
     }
 
-    public String toString() {
+    public final String toString() {
         return "START_PENDING_ACTIVITY_LAUNCH_TYPE, pal : " + this.mPal + ", processName : " + this.mProcessName + ", uid : " + this.mUid;
     }
 }

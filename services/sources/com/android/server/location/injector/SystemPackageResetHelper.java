@@ -2,20 +2,170 @@ package com.android.server.location.injector;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import com.android.internal.util.Preconditions;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
+import com.android.server.location.LocationServiceThread;
+import com.android.server.location.injector.SystemPackageResetHelper;
+import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-/* loaded from: classes2.dex */
-public class SystemPackageResetHelper extends PackageResetHelper {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class SystemPackageResetHelper {
     public final Context mContext;
-    public BroadcastReceiver mReceiver;
+    public Receiver mReceiver;
+    public final CopyOnWriteArrayList mResponders = new CopyOnWriteArrayList();
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Receiver extends BroadcastReceiver {
+        public Receiver() {
+        }
+
+        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            Uri data;
+            final String schemeSpecificPart;
+            char c;
+            final int i = 0;
+            final int i2 = 1;
+            String action = intent.getAction();
+            if (action == null || (data = intent.getData()) == null || (schemeSpecificPart = data.getSchemeSpecificPart()) == null) {
+                return;
+            }
+            switch (action.hashCode()) {
+                case -1072806502:
+                    if (action.equals("android.intent.action.QUERY_PACKAGE_RESTART")) {
+                        c = 0;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case -757780528:
+                    if (action.equals("android.intent.action.PACKAGE_RESTARTED")) {
+                        c = 1;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case 172491798:
+                    if (action.equals("android.intent.action.PACKAGE_CHANGED")) {
+                        c = 2;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case 525384130:
+                    if (action.equals("android.intent.action.PACKAGE_REMOVED")) {
+                        c = 3;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                default:
+                    c = 65535;
+                    break;
+            }
+            switch (c) {
+                case 0:
+                    String[] stringArrayExtra = intent.getStringArrayExtra("android.intent.extra.PACKAGES");
+                    if (stringArrayExtra != null) {
+                        int length = stringArrayExtra.length;
+                        while (i < length) {
+                            String str = stringArrayExtra[i];
+                            Iterator it = SystemPackageResetHelper.this.mResponders.iterator();
+                            while (it.hasNext()) {
+                                if (((PackageResetHelper$Responder) it.next()).isResetableForPackage(str)) {
+                                    setResultCode(-1);
+                                    break;
+                                }
+                            }
+                            i++;
+                        }
+                        break;
+                    }
+                    break;
+                case 1:
+                case 3:
+                    LocationServiceThread.getExecutor().execute(new Runnable(this) { // from class: com.android.server.location.injector.SystemPackageResetHelper$Receiver$$ExternalSyntheticLambda0
+                        public final /* synthetic */ SystemPackageResetHelper.Receiver f$0;
+
+                        {
+                            this.f$0 = this;
+                        }
+
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            switch (i2) {
+                                case 0:
+                                    SystemPackageResetHelper.Receiver receiver = this.f$0;
+                                    SystemPackageResetHelper.this.notifyPackageReset(schemeSpecificPart);
+                                    break;
+                                default:
+                                    SystemPackageResetHelper.Receiver receiver2 = this.f$0;
+                                    SystemPackageResetHelper.this.notifyPackageReset(schemeSpecificPart);
+                                    break;
+                            }
+                        }
+                    });
+                    break;
+                case 2:
+                    String[] stringArrayExtra2 = intent.getStringArrayExtra("android.intent.extra.changed_component_name_list");
+                    if (stringArrayExtra2 != null) {
+                        for (String str2 : stringArrayExtra2) {
+                            if (schemeSpecificPart.equals(str2)) {
+                                try {
+                                    if (!context.getPackageManager().getApplicationInfo(schemeSpecificPart, PackageManager.ApplicationInfoFlags.of(0L)).enabled) {
+                                        LocationServiceThread.getExecutor().execute(new Runnable(this) { // from class: com.android.server.location.injector.SystemPackageResetHelper$Receiver$$ExternalSyntheticLambda0
+                                            public final /* synthetic */ SystemPackageResetHelper.Receiver f$0;
+
+                                            {
+                                                this.f$0 = this;
+                                            }
+
+                                            @Override // java.lang.Runnable
+                                            public final void run() {
+                                                switch (i) {
+                                                    case 0:
+                                                        SystemPackageResetHelper.Receiver receiver = this.f$0;
+                                                        SystemPackageResetHelper.this.notifyPackageReset(schemeSpecificPart);
+                                                        break;
+                                                    default:
+                                                        SystemPackageResetHelper.Receiver receiver2 = this.f$0;
+                                                        SystemPackageResetHelper.this.notifyPackageReset(schemeSpecificPart);
+                                                        break;
+                                                }
+                                            }
+                                        });
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    break;
+            }
+        }
+    }
 
     public SystemPackageResetHelper(Context context) {
         this.mContext = context;
     }
 
-    @Override // com.android.server.location.injector.PackageResetHelper
-    public void onRegister() {
+    public final void notifyPackageReset(String str) {
+        DualAppManagerService$$ExternalSyntheticOutline0.m("package ", str, " reset", "LocationManagerService");
+        Iterator it = this.mResponders.iterator();
+        while (it.hasNext()) {
+            ((PackageResetHelper$Responder) it.next()).onPackageReset(str);
+        }
+    }
+
+    public final void onRegister() {
         Preconditions.checkState(this.mReceiver == null);
         this.mReceiver = new Receiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -27,164 +177,20 @@ public class SystemPackageResetHelper extends PackageResetHelper {
         this.mContext.registerReceiver(this.mReceiver, intentFilter);
     }
 
-    @Override // com.android.server.location.injector.PackageResetHelper
-    public void onUnregister() {
-        Preconditions.checkState(this.mReceiver != null);
-        this.mContext.unregisterReceiver(this.mReceiver);
-        this.mReceiver = null;
+    public final synchronized void register(PackageResetHelper$Responder packageResetHelper$Responder) {
+        boolean isEmpty = this.mResponders.isEmpty();
+        this.mResponders.add(packageResetHelper$Responder);
+        if (isEmpty) {
+            onRegister();
+        }
     }
 
-    /* loaded from: classes2.dex */
-    public class Receiver extends BroadcastReceiver {
-        public Receiver() {
-        }
-
-        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Removed duplicated region for block: B:24:0x00b4 A[ORIG_RETURN, RETURN] */
-        /* JADX WARN: Removed duplicated region for block: B:25:0x006b A[EXC_TOP_SPLITTER, SYNTHETIC] */
-        @Override // android.content.BroadcastReceiver
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public void onReceive(android.content.Context r7, android.content.Intent r8) {
-            /*
-                r6 = this;
-                java.lang.String r0 = r8.getAction()
-                if (r0 != 0) goto L7
-                return
-            L7:
-                android.net.Uri r1 = r8.getData()
-                if (r1 != 0) goto Le
-                return
-            Le:
-                java.lang.String r1 = r1.getSchemeSpecificPart()
-                if (r1 != 0) goto L15
-                return
-            L15:
-                int r2 = r0.hashCode()
-                r3 = -1
-                r4 = 1
-                r5 = 0
-                switch(r2) {
-                    case -1072806502: goto L42;
-                    case -757780528: goto L37;
-                    case 172491798: goto L2c;
-                    case 525384130: goto L21;
-                    default: goto L1f;
-                }
-            L1f:
-                r0 = r3
-                goto L4c
-            L21:
-                java.lang.String r2 = "android.intent.action.PACKAGE_REMOVED"
-                boolean r0 = r0.equals(r2)
-                if (r0 != 0) goto L2a
-                goto L1f
-            L2a:
-                r0 = 3
-                goto L4c
-            L2c:
-                java.lang.String r2 = "android.intent.action.PACKAGE_CHANGED"
-                boolean r0 = r0.equals(r2)
-                if (r0 != 0) goto L35
-                goto L1f
-            L35:
-                r0 = 2
-                goto L4c
-            L37:
-                java.lang.String r2 = "android.intent.action.PACKAGE_RESTARTED"
-                boolean r0 = r0.equals(r2)
-                if (r0 != 0) goto L40
-                goto L1f
-            L40:
-                r0 = r4
-                goto L4c
-            L42:
-                java.lang.String r2 = "android.intent.action.QUERY_PACKAGE_RESTART"
-                boolean r0 = r0.equals(r2)
-                if (r0 != 0) goto L4b
-                goto L1f
-            L4b:
-                r0 = r5
-            L4c:
-                switch(r0) {
-                    case 0: goto L98;
-                    case 1: goto L8b;
-                    case 2: goto L50;
-                    case 3: goto L8b;
-                    default: goto L4f;
-                }
-            L4f:
-                goto Lb4
-            L50:
-                java.lang.String r0 = "android.intent.extra.changed_component_name_list"
-                java.lang.String[] r8 = r8.getStringArrayExtra(r0)
-                if (r8 == 0) goto L68
-                int r0 = r8.length
-                r2 = r5
-            L5a:
-                if (r2 >= r0) goto L68
-                r3 = r8[r2]
-                boolean r3 = r1.equals(r3)
-                if (r3 == 0) goto L65
-                goto L69
-            L65:
-                int r2 = r2 + 1
-                goto L5a
-            L68:
-                r4 = r5
-            L69:
-                if (r4 == 0) goto Lb4
-                android.content.pm.PackageManager r7 = r7.getPackageManager()     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L8a
-                r2 = 0
-                android.content.pm.PackageManager$ApplicationInfoFlags r8 = android.content.pm.PackageManager.ApplicationInfoFlags.of(r2)     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L8a
-                android.content.pm.ApplicationInfo r7 = r7.getApplicationInfo(r1, r8)     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L8a
-                boolean r7 = r7.enabled     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L8a
-                if (r7 != 0) goto Lb4
-                java.util.concurrent.Executor r7 = com.android.server.FgThread.getExecutor()     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L8a
-                com.android.server.location.injector.SystemPackageResetHelper$Receiver$$ExternalSyntheticLambda0 r8 = new com.android.server.location.injector.SystemPackageResetHelper$Receiver$$ExternalSyntheticLambda0     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L8a
-                r8.<init>()     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L8a
-                r7.execute(r8)     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L8a
-                goto Lb4
-            L8a:
-                return
-            L8b:
-                java.util.concurrent.Executor r7 = com.android.server.FgThread.getExecutor()
-                com.android.server.location.injector.SystemPackageResetHelper$Receiver$$ExternalSyntheticLambda1 r8 = new com.android.server.location.injector.SystemPackageResetHelper$Receiver$$ExternalSyntheticLambda1
-                r8.<init>()
-                r7.execute(r8)
-                goto Lb4
-            L98:
-                java.lang.String r7 = "android.intent.extra.PACKAGES"
-                java.lang.String[] r7 = r8.getStringArrayExtra(r7)
-                if (r7 == 0) goto Lb4
-                int r8 = r7.length
-            La1:
-                if (r5 >= r8) goto Lb4
-                r0 = r7[r5]
-                com.android.server.location.injector.SystemPackageResetHelper r1 = com.android.server.location.injector.SystemPackageResetHelper.this
-                boolean r0 = r1.queryResetableForPackage(r0)
-                if (r0 == 0) goto Lb1
-                r6.setResultCode(r3)
-                goto Lb4
-            Lb1:
-                int r5 = r5 + 1
-                goto La1
-            Lb4:
-                return
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.server.location.injector.SystemPackageResetHelper.Receiver.onReceive(android.content.Context, android.content.Intent):void");
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onReceive$0(String str) {
-            SystemPackageResetHelper.this.notifyPackageReset(str);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onReceive$1(String str) {
-            SystemPackageResetHelper.this.notifyPackageReset(str);
+    public final synchronized void unregister(PackageResetHelper$Responder packageResetHelper$Responder) {
+        this.mResponders.remove(packageResetHelper$Responder);
+        if (this.mResponders.isEmpty()) {
+            Preconditions.checkState(this.mReceiver != null);
+            this.mContext.unregisterReceiver(this.mReceiver);
+            this.mReceiver = null;
         }
     }
 }

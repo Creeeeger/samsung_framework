@@ -2,23 +2,25 @@ package com.android.server.am;
 
 import android.R;
 import android.app.ActivityThread;
+import android.app.IApplicationThread;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.ContentObserver;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.provider.DeviceConfig;
 import android.provider.Settings;
+import android.text.TextFlags;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.Executor;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class CoreSettingsObserver extends ContentObserver {
-    public static final String LOG_TAG = CoreSettingsObserver.class.getSimpleName();
     public static volatile boolean sDeviceConfigContextEntriesLoaded;
     public static final List sDeviceConfigEntries;
     static final Map sGlobalSettingToTypeMap;
@@ -26,6 +28,23 @@ public final class CoreSettingsObserver extends ContentObserver {
     static final Map sSystemSettingToTypeMap;
     public final ActivityManagerService mActivityManagerService;
     public final Bundle mCoreSettings;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DeviceConfigEntry {
+        public final String coreSettingKey;
+        public final Object defaultValue;
+        public final String flag;
+        public final String namespace;
+        public final Class type;
+
+        public DeviceConfigEntry(String str, String str2, String str3, Class cls, Object obj) {
+            this.namespace = str;
+            this.flag = str2;
+            this.coreSettingKey = str3;
+            this.type = cls;
+            this.defaultValue = obj;
+        }
+    }
 
     static {
         HashMap hashMap = new HashMap();
@@ -39,6 +58,9 @@ public final class CoreSettingsObserver extends ContentObserver {
         Class cls = Integer.TYPE;
         hashMap.put("long_press_timeout", cls);
         hashMap.put("multi_press_timeout", cls);
+        hashMap.put("key_repeat_timeout", cls);
+        hashMap.put("key_repeat_delay", cls);
+        hashMap.put("stylus_pointer_icon_enabled", cls);
         hashMap2.put("time_12_24", String.class);
         hashMap3.put("debug_view_attributes", cls);
         hashMap3.put("debug_view_attributes_application_package", String.class);
@@ -53,6 +75,7 @@ public final class CoreSettingsObserver extends ContentObserver {
         hashMap3.put("gpu_debug_layers", String.class);
         hashMap3.put("gpu_debug_layers_gles", String.class);
         hashMap3.put("gpu_debug_layer_app", String.class);
+        hashMap3.put("gpu_control_layer_apps", String.class);
         hashMap3.put("updatable_driver_all_apps", cls);
         hashMap3.put("updatable_driver_production_opt_in_apps", String.class);
         hashMap3.put("updatable_driver_prerelease_opt_in_apps", String.class);
@@ -76,24 +99,16 @@ public final class CoreSettingsObserver extends ContentObserver {
         arrayList.add(new DeviceConfigEntry("widget", "CursorControlFeature__magnifier_zoom_factor", "widget__magnifier_zoom_factor", cls3, Float.valueOf(1.5f)));
         arrayList.add(new DeviceConfigEntry("widget", "CursorControlFeature__magnifier_aspect_ratio", "widget__magnifier_aspect_ratio", cls3, Float.valueOf(5.5f)));
         arrayList.add(new DeviceConfigEntry("text", "TextEditing__enable_new_context_menu", "text__enable_new_context_menu", cls2, bool));
-        sDeviceConfigContextEntriesLoaded = false;
-    }
-
-    /* loaded from: classes.dex */
-    public class DeviceConfigEntry {
-        public String coreSettingKey;
-        public Object defaultValue;
-        public String flag;
-        public String namespace;
-        public Class type;
-
-        public DeviceConfigEntry(String str, String str2, String str3, Class cls, Object obj) {
-            this.namespace = str;
-            this.flag = str2;
-            this.coreSettingKey = str3;
-            this.type = cls;
-            Objects.requireNonNull(obj);
-            this.defaultValue = obj;
+        int i = 0;
+        while (true) {
+            String[] strArr = TextFlags.TEXT_ACONFIGS_FLAGS;
+            if (i >= strArr.length) {
+                sDeviceConfigContextEntriesLoaded = false;
+                return;
+            }
+            String str = strArr[i];
+            sDeviceConfigEntries.add(new DeviceConfigEntry("text", str, TextFlags.getKeyForFlag(str), Boolean.TYPE, Boolean.valueOf(TextFlags.TEXT_ACONFIG_DEFAULT_VALUE[i])));
+            i++;
         }
     }
 
@@ -101,50 +116,18 @@ public final class CoreSettingsObserver extends ContentObserver {
         super(activityManagerService.mHandler);
         this.mCoreSettings = new Bundle();
         if (!sDeviceConfigContextEntriesLoaded) {
-            synchronized (sDeviceConfigEntries) {
-                if (!sDeviceConfigContextEntriesLoaded) {
-                    loadDeviceConfigContextEntries(activityManagerService.mContext);
-                    sDeviceConfigContextEntriesLoaded = true;
+            List list = sDeviceConfigEntries;
+            synchronized (list) {
+                try {
+                    if (!sDeviceConfigContextEntriesLoaded) {
+                        ((ArrayList) list).add(new DeviceConfigEntry("widget", "AnalogClockFeature__analog_clock_seconds_hand_fps", "widget__analog_clock_seconds_hand_fps", Integer.TYPE, Integer.valueOf(activityManagerService.mContext.getResources().getInteger(R.integer.config_displayWhiteBalanceBrightnessFilterHorizon))));
+                        sDeviceConfigContextEntriesLoaded = true;
+                    }
+                } finally {
                 }
             }
         }
         this.mActivityManagerService = activityManagerService;
-        beginObserveCoreSettings();
-        sendCoreSettings();
-    }
-
-    public static void loadDeviceConfigContextEntries(Context context) {
-        sDeviceConfigEntries.add(new DeviceConfigEntry("widget", "AnalogClockFeature__analog_clock_seconds_hand_fps", "widget__analog_clock_seconds_hand_fps", Integer.TYPE, Integer.valueOf(context.getResources().getInteger(R.integer.config_jobSchedulerIdleWindowSlop))));
-    }
-
-    public Bundle getCoreSettingsLocked() {
-        return (Bundle) this.mCoreSettings.clone();
-    }
-
-    @Override // android.database.ContentObserver
-    public void onChange(boolean z) {
-        ActivityManagerService activityManagerService = this.mActivityManagerService;
-        ActivityManagerService.boostPriorityForLockedSection();
-        synchronized (activityManagerService) {
-            try {
-                sendCoreSettings();
-            } catch (Throwable th) {
-                ActivityManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        ActivityManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public final void sendCoreSettings() {
-        populateSettings(this.mCoreSettings, sSecureSettingToTypeMap);
-        populateSettings(this.mCoreSettings, sSystemSettingToTypeMap);
-        populateSettings(this.mCoreSettings, sGlobalSettingToTypeMap);
-        populateSettingsFromDeviceConfig();
-        this.mActivityManagerService.onCoreSettingsChange(this.mCoreSettings);
-    }
-
-    public final void beginObserveCoreSettings() {
         Iterator it = sSecureSettingToTypeMap.keySet().iterator();
         while (it.hasNext()) {
             this.mActivityManagerService.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor((String) it.next()), false, this);
@@ -158,66 +141,106 @@ public final class CoreSettingsObserver extends ContentObserver {
             this.mActivityManagerService.mContext.getContentResolver().registerContentObserver(Settings.Global.getUriFor((String) it3.next()), false, this);
         }
         HashSet hashSet = new HashSet();
-        for (DeviceConfigEntry deviceConfigEntry : sDeviceConfigEntries) {
+        Iterator it4 = ((ArrayList) sDeviceConfigEntries).iterator();
+        while (it4.hasNext()) {
+            DeviceConfigEntry deviceConfigEntry = (DeviceConfigEntry) it4.next();
             if (!hashSet.contains(deviceConfigEntry.namespace)) {
-                DeviceConfig.addOnPropertiesChangedListener(deviceConfigEntry.namespace, ActivityThread.currentApplication().getMainExecutor(), new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.am.CoreSettingsObserver$$ExternalSyntheticLambda0
+                Executor mainExecutor = ActivityThread.currentApplication().getMainExecutor();
+                DeviceConfig.OnPropertiesChangedListener onPropertiesChangedListener = new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.am.CoreSettingsObserver$$ExternalSyntheticLambda0
                     public final void onPropertiesChanged(DeviceConfig.Properties properties) {
-                        CoreSettingsObserver.this.lambda$beginObserveCoreSettings$0(properties);
+                        CoreSettingsObserver.this.onChange(false);
                     }
-                });
-                hashSet.add(deviceConfigEntry.namespace);
+                };
+                String str = deviceConfigEntry.namespace;
+                DeviceConfig.addOnPropertiesChangedListener(str, mainExecutor, onPropertiesChangedListener);
+                hashSet.add(str);
             }
         }
+        sendCoreSettings();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$beginObserveCoreSettings$0(DeviceConfig.Properties properties) {
-        onChange(false);
+    @Override // android.database.ContentObserver
+    public final void onChange(boolean z) {
+        ActivityManagerService activityManagerService = this.mActivityManagerService;
+        ActivityManagerService.boostPriorityForLockedSection();
+        synchronized (activityManagerService) {
+            try {
+                sendCoreSettings();
+            } catch (Throwable th) {
+                ActivityManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        ActivityManagerService.resetPriorityAfterLockedSection();
     }
 
     public void populateSettings(Bundle bundle, Map map) {
-        String string;
         ContentResolver contentResolver = this.mActivityManagerService.mContext.getContentResolver();
         for (Map.Entry entry : map.entrySet()) {
             String str = (String) entry.getKey();
-            if (map == sSecureSettingToTypeMap) {
-                string = Settings.Secure.getStringForUser(contentResolver, str, contentResolver.getUserId());
-            } else if (map == sSystemSettingToTypeMap) {
-                string = Settings.System.getStringForUser(contentResolver, str, contentResolver.getUserId());
-            } else {
-                string = Settings.Global.getString(contentResolver, str);
-            }
-            if (string == null) {
+            String stringForUser = map == sSecureSettingToTypeMap ? Settings.Secure.getStringForUser(contentResolver, str, contentResolver.getUserId()) : map == sSystemSettingToTypeMap ? Settings.System.getStringForUser(contentResolver, str, contentResolver.getUserId()) : Settings.Global.getString(contentResolver, str);
+            if (stringForUser == null) {
                 bundle.remove(str);
             } else {
                 Class cls = (Class) entry.getValue();
                 if (cls == String.class) {
-                    bundle.putString(str, string);
+                    bundle.putString(str, stringForUser);
                 } else if (cls == Integer.TYPE) {
-                    bundle.putInt(str, Integer.parseInt(string));
+                    bundle.putInt(str, Integer.parseInt(stringForUser));
                 } else if (cls == Float.TYPE) {
-                    bundle.putFloat(str, Float.parseFloat(string));
+                    bundle.putFloat(str, Float.parseFloat(stringForUser));
                 } else if (cls == Long.TYPE) {
-                    bundle.putLong(str, Long.parseLong(string));
+                    bundle.putLong(str, Long.parseLong(stringForUser));
                 }
             }
         }
     }
 
-    public final void populateSettingsFromDeviceConfig() {
-        for (DeviceConfigEntry deviceConfigEntry : sDeviceConfigEntries) {
+    public final void sendCoreSettings() {
+        populateSettings(this.mCoreSettings, sSecureSettingToTypeMap);
+        populateSettings(this.mCoreSettings, sSystemSettingToTypeMap);
+        populateSettings(this.mCoreSettings, sGlobalSettingToTypeMap);
+        Iterator it = ((ArrayList) sDeviceConfigEntries).iterator();
+        while (it.hasNext()) {
+            DeviceConfigEntry deviceConfigEntry = (DeviceConfigEntry) it.next();
             Class cls = deviceConfigEntry.type;
+            String str = deviceConfigEntry.flag;
+            String str2 = deviceConfigEntry.namespace;
+            String str3 = deviceConfigEntry.coreSettingKey;
+            Object obj = deviceConfigEntry.defaultValue;
             if (cls == String.class) {
-                this.mCoreSettings.putString(deviceConfigEntry.coreSettingKey, DeviceConfig.getString(deviceConfigEntry.namespace, deviceConfigEntry.flag, (String) deviceConfigEntry.defaultValue));
+                this.mCoreSettings.putString(str3, DeviceConfig.getString(str2, str, (String) obj));
             } else if (cls == Integer.TYPE) {
-                this.mCoreSettings.putInt(deviceConfigEntry.coreSettingKey, DeviceConfig.getInt(deviceConfigEntry.namespace, deviceConfigEntry.flag, ((Integer) deviceConfigEntry.defaultValue).intValue()));
+                this.mCoreSettings.putInt(str3, DeviceConfig.getInt(str2, str, ((Integer) obj).intValue()));
             } else if (cls == Float.TYPE) {
-                this.mCoreSettings.putFloat(deviceConfigEntry.coreSettingKey, DeviceConfig.getFloat(deviceConfigEntry.namespace, deviceConfigEntry.flag, ((Float) deviceConfigEntry.defaultValue).floatValue()));
+                this.mCoreSettings.putFloat(str3, DeviceConfig.getFloat(str2, str, ((Float) obj).floatValue()));
             } else if (cls == Long.TYPE) {
-                this.mCoreSettings.putLong(deviceConfigEntry.coreSettingKey, DeviceConfig.getLong(deviceConfigEntry.namespace, deviceConfigEntry.flag, ((Long) deviceConfigEntry.defaultValue).longValue()));
+                this.mCoreSettings.putLong(str3, DeviceConfig.getLong(str2, str, ((Long) obj).longValue()));
             } else if (cls == Boolean.TYPE) {
-                this.mCoreSettings.putInt(deviceConfigEntry.coreSettingKey, DeviceConfig.getBoolean(deviceConfigEntry.namespace, deviceConfigEntry.flag, ((Boolean) deviceConfigEntry.defaultValue).booleanValue()) ? 1 : 0);
+                this.mCoreSettings.putInt(str3, DeviceConfig.getBoolean(str2, str, ((Boolean) obj).booleanValue()) ? 1 : 0);
             }
         }
+        ActivityManagerService activityManagerService = this.mActivityManagerService;
+        Bundle bundle = this.mCoreSettings;
+        ActivityManagerProcLock activityManagerProcLock = activityManagerService.mProcLock;
+        ActivityManagerService.boostPriorityForProcLockedSection();
+        synchronized (activityManagerProcLock) {
+            try {
+                ProcessList processList = activityManagerService.mProcessList;
+                for (int size = processList.mLruProcesses.size() - 1; size >= 0; size--) {
+                    IApplicationThread iApplicationThread = ((ProcessRecord) processList.mLruProcesses.get(size)).mThread;
+                    if (iApplicationThread != null) {
+                        try {
+                            iApplicationThread.setCoreSettings(bundle);
+                        } catch (RemoteException unused) {
+                        }
+                    }
+                }
+            } catch (Throwable th) {
+                ActivityManagerService.resetPriorityAfterProcLockedSection();
+                throw th;
+            }
+        }
+        ActivityManagerService.resetPriorityAfterProcLockedSection();
     }
 }

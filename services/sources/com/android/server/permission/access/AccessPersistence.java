@@ -1,49 +1,44 @@
 package com.android.server.permission.access;
 
+import android.content.ApexEnvironment;
+import android.os.FileUtils;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.util.AtomicFile;
-import android.util.Log;
-import android.util.SparseArray;
+import android.util.Slog;
 import android.util.SparseLongArray;
-import com.android.internal.os.BackgroundThread;
-import com.android.modules.utils.BinaryXmlPullParser;
 import com.android.modules.utils.BinaryXmlSerializer;
-import com.android.server.permission.access.collection.IntSet;
-import com.android.server.permission.access.util.PermissionApex;
-import com.android.server.permission.jarjar.kotlin.Unit;
+import com.android.server.permission.access.immutable.MutableIntMap;
+import com.android.server.permission.access.immutable.MutableIntReferenceMap;
 import com.android.server.permission.jarjar.kotlin.io.CloseableKt;
-import com.android.server.permission.jarjar.kotlin.jvm.internal.DefaultConstructorMarker;
 import com.android.server.permission.jarjar.kotlin.jvm.internal.Intrinsics;
 import com.android.server.permission.jarjar.kotlin.jvm.internal.Ref$ObjectRef;
-import com.android.server.permission.jarjar.kotlin.ranges.RangesKt___RangesKt;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-/* compiled from: AccessPersistence.kt */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class AccessPersistence {
-    public static final Companion Companion = new Companion(null);
-    public static final String LOG_TAG = AccessPersistence.class.getSimpleName();
     public final AccessPolicy policy;
     public WriteHandler writeHandler;
     public final Object scheduleLock = new Object();
     public final SparseLongArray pendingMutationTimesMillis = new SparseLongArray();
-    public final SparseArray pendingStates = new SparseArray();
+    public final MutableIntMap pendingStates = new MutableIntMap();
     public final Object writeLock = new Object();
 
-    /* compiled from: AccessPersistence.kt */
-    /* loaded from: classes2.dex */
-    public final class Companion {
-        public Companion() {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class WriteHandler extends Handler {
+        public WriteHandler(Looper looper) {
+            super(looper);
         }
 
-        public /* synthetic */ Companion(DefaultConstructorMarker defaultConstructorMarker) {
-            this();
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            AccessPersistence.this.writePendingState(message.what);
         }
     }
 
@@ -51,100 +46,38 @@ public final class AccessPersistence {
         this.policy = accessPolicy;
     }
 
-    public final void initialize() {
-        this.writeHandler = new WriteHandler(BackgroundThread.getHandler().getLooper());
-    }
-
-    public final void read(AccessState accessState) {
-        readSystemState(accessState);
-        IntSet userIds = accessState.getSystemState().getUserIds();
-        int size = userIds.getSize();
+    public final void write(MutableAccessState mutableAccessState) {
+        write(mutableAccessState.getSystemState(), mutableAccessState, -1);
+        MutableIntReferenceMap userStates = mutableAccessState.getUserStates();
+        int size = userStates.array.size();
         for (int i = 0; i < size; i++) {
-            readUserState(accessState, userIds.elementAt(i));
+            write((MutableUserState) userStates.valueAt(i), mutableAccessState, userStates.array.keyAt(i));
         }
     }
 
-    public final void readSystemState(AccessState accessState) {
-        File systemFile = getSystemFile();
-        try {
-            FileInputStream openRead = new AtomicFile(systemFile).openRead();
-            try {
-                BinaryXmlPullParser binaryXmlPullParser = new BinaryXmlPullParser();
-                binaryXmlPullParser.setInput(openRead, (String) null);
-                this.policy.parseSystemState(binaryXmlPullParser, accessState);
-                Unit unit = Unit.INSTANCE;
-                CloseableKt.closeFinally(openRead, null);
-            } catch (Throwable th) {
-                try {
-                    throw th;
-                } catch (Throwable th2) {
-                    CloseableKt.closeFinally(openRead, th);
-                    throw th2;
-                }
-            }
-        } catch (FileNotFoundException unused) {
-            Log.i(LOG_TAG, systemFile + " not found");
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to read " + systemFile, e);
-        }
-    }
-
-    public final void readUserState(AccessState accessState, int i) {
-        File userFile = getUserFile(i);
-        try {
-            FileInputStream openRead = new AtomicFile(userFile).openRead();
-            try {
-                BinaryXmlPullParser binaryXmlPullParser = new BinaryXmlPullParser();
-                binaryXmlPullParser.setInput(openRead, (String) null);
-                this.policy.parseUserState(binaryXmlPullParser, accessState, i);
-                Unit unit = Unit.INSTANCE;
-                CloseableKt.closeFinally(openRead, null);
-            } catch (Throwable th) {
-                try {
-                    throw th;
-                } catch (Throwable th2) {
-                    CloseableKt.closeFinally(openRead, th);
-                    throw th2;
-                }
-            }
-        } catch (FileNotFoundException unused) {
-            Log.i(LOG_TAG, userFile + " not found");
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to read " + userFile, e);
-        }
-    }
-
-    public final void write(AccessState accessState) {
-        write(accessState.getSystemState(), accessState, -1);
-        SparseArray userStates = accessState.getUserStates();
-        int size = userStates.size();
-        for (int i = 0; i < size; i++) {
-            write((UserState) userStates.valueAt(i), accessState, userStates.keyAt(i));
-        }
-    }
-
-    public final void write(WritableState writableState, AccessState accessState, int i) {
+    public final void write(WritableState writableState, MutableAccessState mutableAccessState, int i) {
         long j;
         int writeMode = writableState.getWriteMode();
         if (writeMode != 0) {
-            if (writeMode == 1) {
+            if (writeMode != 1) {
+                if (writeMode != 2) {
+                    throw new IllegalStateException(Integer.valueOf(writeMode).toString());
+                }
                 synchronized (this.scheduleLock) {
-                    this.pendingStates.set(i, accessState);
-                    Unit unit = Unit.INSTANCE;
+                    this.pendingStates.array.put(i, mutableAccessState);
                 }
                 writePendingState(i);
                 return;
             }
-            if (writeMode == 2) {
-                synchronized (this.scheduleLock) {
+            synchronized (this.scheduleLock) {
+                try {
                     WriteHandler writeHandler = this.writeHandler;
-                    WriteHandler writeHandler2 = null;
                     if (writeHandler == null) {
                         Intrinsics.throwUninitializedPropertyAccessException("writeHandler");
-                        writeHandler = null;
+                        throw null;
                     }
                     writeHandler.removeMessages(i);
-                    this.pendingStates.set(i, accessState);
+                    this.pendingStates.array.put(i, mutableAccessState);
                     long uptimeMillis = SystemClock.uptimeMillis();
                     SparseLongArray sparseLongArray = this.pendingMutationTimesMillis;
                     int indexOfKey = sparseLongArray.indexOfKey(i);
@@ -155,128 +88,137 @@ public final class AccessPersistence {
                         j = uptimeMillis;
                     }
                     long j2 = uptimeMillis - j;
-                    WriteHandler writeHandler3 = this.writeHandler;
-                    if (writeHandler3 == null) {
+                    WriteHandler writeHandler2 = this.writeHandler;
+                    if (writeHandler2 == null) {
                         Intrinsics.throwUninitializedPropertyAccessException("writeHandler");
-                        writeHandler3 = null;
+                        throw null;
                     }
-                    Message obtainMessage = writeHandler3.obtainMessage(i);
+                    Message obtainMessage = writeHandler2.obtainMessage(i);
                     if (j2 > 2000) {
                         obtainMessage.sendToTarget();
-                        Unit unit2 = Unit.INSTANCE;
                     } else {
-                        long coerceAtMost = RangesKt___RangesKt.coerceAtMost(1000L, 2000 - j2);
-                        WriteHandler writeHandler4 = this.writeHandler;
-                        if (writeHandler4 == null) {
-                            Intrinsics.throwUninitializedPropertyAccessException("writeHandler");
-                        } else {
-                            writeHandler2 = writeHandler4;
+                        long j3 = 2000 - j2;
+                        if (1000 <= j3) {
+                            j3 = 1000;
                         }
-                        writeHandler2.sendMessageDelayed(obtainMessage, coerceAtMost);
+                        WriteHandler writeHandler3 = this.writeHandler;
+                        if (writeHandler3 == null) {
+                            Intrinsics.throwUninitializedPropertyAccessException("writeHandler");
+                            throw null;
+                        }
+                        writeHandler3.sendMessageDelayed(obtainMessage, j3);
                     }
+                } catch (Throwable th) {
+                    throw th;
                 }
-                return;
             }
-            throw new IllegalStateException(Integer.valueOf(writeMode).toString());
         }
     }
 
     public final void writePendingState(int i) {
         synchronized (this.writeLock) {
-            Ref$ObjectRef ref$ObjectRef = new Ref$ObjectRef();
-            synchronized (this.scheduleLock) {
-                this.pendingMutationTimesMillis.delete(i);
-                ref$ObjectRef.element = this.pendingStates.removeReturnOld(i);
-                WriteHandler writeHandler = this.writeHandler;
-                if (writeHandler == null) {
-                    Intrinsics.throwUninitializedPropertyAccessException("writeHandler");
-                    writeHandler = null;
+            try {
+                Ref$ObjectRef ref$ObjectRef = new Ref$ObjectRef();
+                synchronized (this.scheduleLock) {
+                    this.pendingMutationTimesMillis.delete(i);
+                    MutableIntMap mutableIntMap = this.pendingStates;
+                    Object removeReturnOld = mutableIntMap.array.removeReturnOld(i);
+                    mutableIntMap.array.size();
+                    ref$ObjectRef.element = removeReturnOld;
+                    WriteHandler writeHandler = this.writeHandler;
+                    if (writeHandler == null) {
+                        Intrinsics.throwUninitializedPropertyAccessException("writeHandler");
+                        throw null;
+                    }
+                    writeHandler.removeMessages(i);
                 }
-                writeHandler.removeMessages(i);
-                Unit unit = Unit.INSTANCE;
-            }
-            Object obj = ref$ObjectRef.element;
-            if (obj == null) {
-                return;
-            }
-            if (i == -1) {
-                writeSystemState((AccessState) obj);
-            } else {
-                writeUserState((AccessState) obj, i);
+                Object obj = ref$ObjectRef.element;
+                if (obj == null) {
+                    return;
+                }
+                if (i == -1) {
+                    writeSystemState((AccessState) obj);
+                } else {
+                    writeUserState((AccessState) obj, i);
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
     public final void writeSystemState(AccessState accessState) {
-        File systemFile = getSystemFile();
+        File file;
+        File file2 = new File(ApexEnvironment.getApexEnvironment("com.android.permission").getDeviceProtectedDataDir(), "access.abx");
         try {
-            AtomicFile atomicFile = new AtomicFile(systemFile);
+            AtomicFile atomicFile = new AtomicFile(file2);
             FileOutputStream startWrite = atomicFile.startWrite();
             try {
-                try {
-                    BinaryXmlSerializer binaryXmlSerializer = new BinaryXmlSerializer();
-                    binaryXmlSerializer.setOutput(startWrite, (String) null);
-                    binaryXmlSerializer.startDocument((String) null, Boolean.TRUE);
-                    this.policy.serializeSystemState(binaryXmlSerializer, accessState);
-                    binaryXmlSerializer.endDocument();
-                    atomicFile.finishWrite(startWrite);
-                    Unit unit = Unit.INSTANCE;
-                    CloseableKt.closeFinally(startWrite, null);
-                } catch (Throwable th) {
-                    atomicFile.failWrite(startWrite);
-                    throw th;
-                }
+                BinaryXmlSerializer binaryXmlSerializer = new BinaryXmlSerializer();
+                binaryXmlSerializer.setOutput(startWrite, (String) null);
+                binaryXmlSerializer.startDocument((String) null, Boolean.TRUE);
+                this.policy.serializeSystemState(binaryXmlSerializer, accessState);
+                binaryXmlSerializer.endDocument();
+                atomicFile.finishWrite(startWrite);
+                CloseableKt.closeFinally(startWrite, null);
+                file = new File(atomicFile.getBaseFile().getParentFile(), atomicFile.getBaseFile().getName() + ".reservecopy");
             } finally {
             }
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Failed to serialize " + systemFile, e);
+            try {
+                FileInputStream fileInputStream = new FileInputStream(atomicFile.getBaseFile());
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    try {
+                        FileUtils.copy(fileInputStream, fileOutputStream);
+                        fileOutputStream.getFD().sync();
+                        CloseableKt.closeFinally(fileOutputStream, null);
+                        CloseableKt.closeFinally(fileInputStream, null);
+                    } finally {
+                    }
+                } finally {
+                }
+            } catch (Exception e) {
+                Slog.e("AccessPersistence", "Failed to write " + file, e);
+            }
+        } catch (Exception e2) {
+            Slog.e("AccessPersistence", "Failed to serialize " + file2, e2);
         }
     }
 
     public final void writeUserState(AccessState accessState, int i) {
-        File userFile = getUserFile(i);
+        File file = new File(ApexEnvironment.getApexEnvironment("com.android.permission").getDeviceProtectedDataDirForUser(UserHandle.of(i)), "access.abx");
         try {
-            AtomicFile atomicFile = new AtomicFile(userFile);
+            AtomicFile atomicFile = new AtomicFile(file);
             FileOutputStream startWrite = atomicFile.startWrite();
             try {
+                BinaryXmlSerializer binaryXmlSerializer = new BinaryXmlSerializer();
+                binaryXmlSerializer.setOutput(startWrite, (String) null);
+                binaryXmlSerializer.startDocument((String) null, Boolean.TRUE);
+                this.policy.serializeUserState(binaryXmlSerializer, accessState, i);
+                binaryXmlSerializer.endDocument();
+                atomicFile.finishWrite(startWrite);
+                CloseableKt.closeFinally(startWrite, null);
+                File file2 = new File(atomicFile.getBaseFile().getParentFile(), atomicFile.getBaseFile().getName() + ".reservecopy");
                 try {
-                    BinaryXmlSerializer binaryXmlSerializer = new BinaryXmlSerializer();
-                    binaryXmlSerializer.setOutput(startWrite, (String) null);
-                    binaryXmlSerializer.startDocument((String) null, Boolean.TRUE);
-                    this.policy.serializeUserState(binaryXmlSerializer, accessState, i);
-                    binaryXmlSerializer.endDocument();
-                    atomicFile.finishWrite(startWrite);
-                    Unit unit = Unit.INSTANCE;
-                    CloseableKt.closeFinally(startWrite, null);
-                } catch (Throwable th) {
-                    atomicFile.failWrite(startWrite);
-                    throw th;
+                    FileInputStream fileInputStream = new FileInputStream(atomicFile.getBaseFile());
+                    try {
+                        FileOutputStream fileOutputStream = new FileOutputStream(file2);
+                        try {
+                            FileUtils.copy(fileInputStream, fileOutputStream);
+                            fileOutputStream.getFD().sync();
+                            CloseableKt.closeFinally(fileOutputStream, null);
+                            CloseableKt.closeFinally(fileInputStream, null);
+                        } finally {
+                        }
+                    } finally {
+                    }
+                } catch (Exception e) {
+                    Slog.e("AccessPersistence", "Failed to write " + file2, e);
                 }
             } finally {
             }
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Failed to serialize " + userFile, e);
-        }
-    }
-
-    public final File getSystemFile() {
-        return new File(PermissionApex.INSTANCE.getSystemDataDirectory(), "access.abx");
-    }
-
-    public final File getUserFile(int i) {
-        return new File(PermissionApex.INSTANCE.getUserDataDirectory(i), "access.abx");
-    }
-
-    /* compiled from: AccessPersistence.kt */
-    /* loaded from: classes2.dex */
-    public final class WriteHandler extends Handler {
-        public WriteHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            AccessPersistence.this.writePendingState(message.what);
+        } catch (Exception e2) {
+            Slog.e("AccessPersistence", "Failed to serialize " + file, e2);
         }
     }
 }

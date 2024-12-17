@@ -1,55 +1,39 @@
 package com.android.server.appop;
 
-import android.util.ArraySet;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
-import java.io.PrintWriter;
+import com.android.server.appop.AppOpsService;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface AppOpsCheckingServiceInterface {
+    boolean addAppOpsModeChangedListener(AppOpsService.AnonymousClass2 anonymousClass2);
+
     void clearAllModes();
 
-    boolean dumpListeners(int i, int i2, String str, PrintWriter printWriter);
+    SparseBooleanArray getForegroundOps(int i);
 
-    SparseBooleanArray evalForegroundPackageOps(String str, SparseBooleanArray sparseBooleanArray, int i);
+    SparseBooleanArray getForegroundOps(int i, String str);
 
-    SparseBooleanArray evalForegroundUidOps(int i, SparseBooleanArray sparseBooleanArray);
-
-    SparseIntArray getNonDefaultPackageModes(String str, int i);
+    SparseIntArray getNonDefaultPackageModes(int i, String str);
 
     SparseIntArray getNonDefaultUidModes(int i);
 
-    ArraySet getOpModeChangedListeners(int i);
+    int getPackageMode(int i, int i2, String str);
 
-    int getPackageMode(String str, int i, int i2);
-
-    ArraySet getPackageModeChangedListeners(String str);
-
-    int getUidMode(int i, int i2);
-
-    void notifyOpChanged(OnOpModeChangedListener onOpModeChangedListener, int i, int i2, String str);
-
-    void notifyOpChangedForAllPkgsInUid(int i, int i2, boolean z, OnOpModeChangedListener onOpModeChangedListener);
-
-    void notifyWatchersOfChange(int i, int i2);
+    int getUidMode(int i, int i2, String str);
 
     void readState();
 
-    void removeListener(OnOpModeChangedListener onOpModeChangedListener);
-
-    boolean removePackage(String str, int i);
+    boolean removePackage(int i, String str);
 
     void removeUid(int i);
 
-    void setPackageMode(String str, int i, int i2, int i3);
+    void setPackageMode(int i, int i2, int i3, String str);
 
     boolean setUidMode(int i, int i2, int i3);
 
     void shutdown();
-
-    void startWatchingOpModeChanged(OnOpModeChangedListener onOpModeChangedListener, int i);
-
-    void startWatchingPackageModeChanged(OnOpModeChangedListener onOpModeChangedListener, String str);
 
     void systemReady();
 

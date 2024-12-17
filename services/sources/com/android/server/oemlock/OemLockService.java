@@ -4,62 +4,92 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.service.oemlock.IOemLockService;
 import android.util.Slog;
 import com.android.server.LocalServices;
-import com.android.server.PersistentDataBlockManagerInternal;
 import com.android.server.SystemService;
+import com.android.server.pdb.PersistentDataBlockManagerInternal;
+import com.android.server.pdb.PersistentDataBlockService;
 import com.android.server.pm.UserManagerInternal;
 import com.android.server.pm.UserRestrictionsUtils;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class OemLockService extends SystemService {
-    public Context mContext;
-    public OemLock mOemLock;
-    public final IBinder mService;
-    public final UserManagerInternal.UserRestrictionsListener mUserRestrictionsListener;
+public final class OemLockService extends SystemService {
+    public final Context mContext;
+    public final OemLock mOemLock;
+    public final AnonymousClass2 mService;
+    public final AnonymousClass1 mUserRestrictionsListener;
 
-    public static boolean isHalPresent() {
-        return (VendorLockHidl.getOemLockHalService() == null && VendorLockAidl.getOemLockHalService() == null) ? false : true;
+    /* renamed from: -$$Nest$menforceUserIsAdmin, reason: not valid java name */
+    public static void m736$$Nest$menforceUserIsAdmin(OemLockService oemLockService) {
+        oemLockService.getClass();
+        int callingUserId = UserHandle.getCallingUserId();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            if (UserManager.get(oemLockService.mContext).isUserAdmin(callingUserId)) {
+            } else {
+                throw new SecurityException("Must be an admin user");
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
     }
 
-    public static OemLock getOemLock(Context context) {
+    /* renamed from: -$$Nest$msetPersistentDataBlockOemUnlockAllowedBit, reason: not valid java name */
+    public static void m737$$Nest$msetPersistentDataBlockOemUnlockAllowedBit(OemLockService oemLockService, boolean z) {
+        oemLockService.getClass();
+        PersistentDataBlockManagerInternal persistentDataBlockManagerInternal = (PersistentDataBlockManagerInternal) LocalServices.getService(PersistentDataBlockManagerInternal.class);
+        if (persistentDataBlockManagerInternal == null || (oemLockService.mOemLock instanceof PersistentDataBlockLock)) {
+            return;
+        }
+        Slog.i("OemLock", "Update OEM Unlock bit in pst partition to " + z);
+        PersistentDataBlockService.InternalService internalService = (PersistentDataBlockService.InternalService) persistentDataBlockManagerInternal;
+        synchronized (PersistentDataBlockService.this.mLock) {
+            PersistentDataBlockService.this.doSetOemUnlockEnabledLocked(z);
+            PersistentDataBlockService.this.computeAndWriteDigestLocked();
+        }
+    }
+
+    /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r2v0, types: [com.android.server.oemlock.OemLockService$2] */
+    public OemLockService(Context context) {
+        super(context);
+        PersistentDataBlockLock persistentDataBlockLock;
         if (VendorLockAidl.getOemLockHalService() != null) {
             Slog.i("OemLock", "Using vendor lock via the HAL(aidl)");
-            return new VendorLockAidl(context);
-        }
-        if (VendorLockHidl.getOemLockHalService() != null) {
+            VendorLockAidl vendorLockAidl = new VendorLockAidl();
+            vendorLockAidl.mOemLock = VendorLockAidl.getOemLockHalService();
+            persistentDataBlockLock = vendorLockAidl;
+        } else if (VendorLockHidl.getOemLockHalService() != null) {
             Slog.i("OemLock", "Using vendor lock via the HAL(hidl)");
-            return new VendorLockHidl(context);
+            VendorLockHidl vendorLockHidl = new VendorLockHidl();
+            vendorLockHidl.mOemLock = VendorLockHidl.getOemLockHalService();
+            persistentDataBlockLock = vendorLockHidl;
+        } else {
+            Slog.i("OemLock", "Using persistent data block based lock");
+            PersistentDataBlockLock persistentDataBlockLock2 = new PersistentDataBlockLock();
+            persistentDataBlockLock2.mContext = context;
+            persistentDataBlockLock = persistentDataBlockLock2;
         }
-        Slog.i("OemLock", "Using persistent data block based lock");
-        return new PersistentDataBlockLock(context);
-    }
-
-    public OemLockService(Context context) {
-        this(context, getOemLock(context));
-    }
-
-    public OemLockService(Context context, OemLock oemLock) {
-        super(context);
         UserManagerInternal.UserRestrictionsListener userRestrictionsListener = new UserManagerInternal.UserRestrictionsListener() { // from class: com.android.server.oemlock.OemLockService.1
             @Override // com.android.server.pm.UserManagerInternal.UserRestrictionsListener
-            public void onUserRestrictionsChanged(int i, Bundle bundle, Bundle bundle2) {
+            public final void onUserRestrictionsChanged(int i, Bundle bundle, Bundle bundle2) {
                 if (!UserRestrictionsUtils.restrictionsChanged(bundle2, bundle, "no_factory_reset") || (!bundle.getBoolean("no_factory_reset"))) {
                     return;
                 }
-                OemLockService.this.mOemLock.setOemUnlockAllowedByDevice(false);
-                OemLockService.this.setPersistentDataBlockOemUnlockAllowedBit(false);
+                OemLockService oemLockService = OemLockService.this;
+                oemLockService.mOemLock.setOemUnlockAllowedByDevice(false);
+                OemLockService.m737$$Nest$msetPersistentDataBlockOemUnlockAllowedBit(oemLockService, false);
             }
         };
-        this.mUserRestrictionsListener = userRestrictionsListener;
         this.mService = new IOemLockService.Stub() { // from class: com.android.server.oemlock.OemLockService.2
-            public String getLockName() {
-                super.getLockName_enforcePermission();
+            public final String getLockName() {
+                getLockName_enforcePermission();
                 long clearCallingIdentity = Binder.clearCallingIdentity();
                 try {
                     return OemLockService.this.mOemLock.getLockName();
@@ -68,19 +98,29 @@ public class OemLockService extends SystemService {
                 }
             }
 
-            public void setOemUnlockAllowedByCarrier(boolean z, byte[] bArr) {
-                super.setOemUnlockAllowedByCarrier_enforcePermission();
-                OemLockService.this.enforceUserIsAdmin();
+            public final boolean isDeviceOemUnlocked() {
+                isDeviceOemUnlocked_enforcePermission();
+                String str = SystemProperties.get("ro.boot.flash.locked");
+                str.getClass();
+                return str.equals("0");
+            }
+
+            public final boolean isOemUnlockAllowed() {
+                isOemUnlockAllowed_enforcePermission();
                 long clearCallingIdentity = Binder.clearCallingIdentity();
                 try {
-                    OemLockService.this.mOemLock.setOemUnlockAllowedByCarrier(z, bArr);
-                } finally {
+                    boolean z = OemLockService.this.mOemLock.isOemUnlockAllowedByCarrier() && OemLockService.this.mOemLock.isOemUnlockAllowedByDevice();
+                    OemLockService.m737$$Nest$msetPersistentDataBlockOemUnlockAllowedBit(OemLockService.this, z);
                     Binder.restoreCallingIdentity(clearCallingIdentity);
+                    return z;
+                } catch (Throwable th) {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                    throw th;
                 }
             }
 
-            public boolean isOemUnlockAllowedByCarrier() {
-                super.isOemUnlockAllowedByCarrier_enforcePermission();
+            public final boolean isOemUnlockAllowedByCarrier() {
+                isOemUnlockAllowedByCarrier_enforcePermission();
                 long clearCallingIdentity = Binder.clearCallingIdentity();
                 try {
                     return OemLockService.this.mOemLock.isOemUnlockAllowedByCarrier();
@@ -89,29 +129,8 @@ public class OemLockService extends SystemService {
                 }
             }
 
-            public void setOemUnlockAllowedByUser(boolean z) {
-                super.setOemUnlockAllowedByUser_enforcePermission();
-                if (ActivityManager.isUserAMonkey()) {
-                    return;
-                }
-                OemLockService.this.enforceUserIsAdmin();
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    if (!OemLockService.this.isOemUnlockAllowedByAdmin()) {
-                        throw new SecurityException("Admin does not allow OEM unlock");
-                    }
-                    if (!OemLockService.this.mOemLock.isOemUnlockAllowedByCarrier()) {
-                        throw new SecurityException("Carrier does not allow OEM unlock");
-                    }
-                    OemLockService.this.mOemLock.setOemUnlockAllowedByDevice(z);
-                    OemLockService.this.setPersistentDataBlockOemUnlockAllowedBit(z);
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            }
-
-            public boolean isOemUnlockAllowedByUser() {
-                super.isOemUnlockAllowedByUser_enforcePermission();
+            public final boolean isOemUnlockAllowedByUser() {
+                isOemUnlockAllowedByUser_enforcePermission();
                 long clearCallingIdentity = Binder.clearCallingIdentity();
                 try {
                     return OemLockService.this.mOemLock.isOemUnlockAllowedByDevice();
@@ -120,58 +139,49 @@ public class OemLockService extends SystemService {
                 }
             }
 
-            public boolean isOemUnlockAllowed() {
-                super.isOemUnlockAllowed_enforcePermission();
+            public final void setOemUnlockAllowedByCarrier(boolean z, byte[] bArr) {
+                setOemUnlockAllowedByCarrier_enforcePermission();
+                OemLockService.m736$$Nest$menforceUserIsAdmin(OemLockService.this);
                 long clearCallingIdentity = Binder.clearCallingIdentity();
                 try {
-                    boolean z = OemLockService.this.mOemLock.isOemUnlockAllowedByCarrier() && OemLockService.this.mOemLock.isOemUnlockAllowedByDevice();
-                    OemLockService.this.setPersistentDataBlockOemUnlockAllowedBit(z);
-                    return z;
+                    OemLockService.this.mOemLock.setOemUnlockAllowedByCarrier(z, bArr);
                 } finally {
                     Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
             }
 
-            public boolean isDeviceOemUnlocked() {
-                super.isDeviceOemUnlocked_enforcePermission();
-                String str = SystemProperties.get("ro.boot.flash.locked");
-                str.hashCode();
-                return str.equals("0");
+            public final void setOemUnlockAllowedByUser(boolean z) {
+                setOemUnlockAllowedByUser_enforcePermission();
+                if (ActivityManager.isUserAMonkey()) {
+                    return;
+                }
+                OemLockService.m736$$Nest$menforceUserIsAdmin(OemLockService.this);
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    if (!(!UserManager.get(OemLockService.this.mContext).hasUserRestriction("no_factory_reset", UserHandle.SYSTEM))) {
+                        throw new SecurityException("Admin does not allow OEM unlock");
+                    }
+                    if (!OemLockService.this.mOemLock.isOemUnlockAllowedByCarrier()) {
+                        throw new SecurityException("Carrier does not allow OEM unlock");
+                    }
+                    OemLockService.this.mOemLock.setOemUnlockAllowedByDevice(z);
+                    OemLockService.m737$$Nest$msetPersistentDataBlockOemUnlockAllowedBit(OemLockService.this, z);
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
             }
         };
         this.mContext = context;
-        this.mOemLock = oemLock;
+        this.mOemLock = persistentDataBlockLock;
         ((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).addUserRestrictionsListener(userRestrictionsListener);
     }
 
+    public static boolean isHalPresent() {
+        return (VendorLockHidl.getOemLockHalService() == null && VendorLockAidl.getOemLockHalService() == null) ? false : true;
+    }
+
     @Override // com.android.server.SystemService
-    public void onStart() {
+    public final void onStart() {
         publishBinderService("oem_lock", this.mService);
-    }
-
-    public final void setPersistentDataBlockOemUnlockAllowedBit(boolean z) {
-        PersistentDataBlockManagerInternal persistentDataBlockManagerInternal = (PersistentDataBlockManagerInternal) LocalServices.getService(PersistentDataBlockManagerInternal.class);
-        if (persistentDataBlockManagerInternal == null || (this.mOemLock instanceof PersistentDataBlockLock)) {
-            return;
-        }
-        Slog.i("OemLock", "Update OEM Unlock bit in pst partition to " + z);
-        persistentDataBlockManagerInternal.forceOemUnlockEnabled(z);
-    }
-
-    public final boolean isOemUnlockAllowedByAdmin() {
-        return !UserManager.get(this.mContext).hasUserRestriction("no_factory_reset", UserHandle.SYSTEM);
-    }
-
-    public final void enforceUserIsAdmin() {
-        int callingUserId = UserHandle.getCallingUserId();
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            if (UserManager.get(this.mContext).isUserAdmin(callingUserId)) {
-            } else {
-                throw new SecurityException("Must be an admin user");
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
     }
 }

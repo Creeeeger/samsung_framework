@@ -19,14 +19,14 @@ import android.os.SystemClock;
 import android.os.UEventObserver;
 import android.util.ArrayMap;
 import android.util.ArraySet;
-import android.util.IndentingPrintWriter;
 import android.util.Log;
 import android.util.Slog;
 import android.view.InputDevice;
-import com.android.internal.util.jobs.XmlUtils;
-import com.android.server.display.DisplayPowerController2;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import com.android.server.input.BatteryController;
-import java.io.PrintWriter;
+import com.android.server.input.UEventManager;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
@@ -36,568 +36,219 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class BatteryController {
-    public static final boolean DEBUG = Log.isLoggable(BatteryController.class.getSimpleName(), 3);
+    public static final boolean DEBUG = Log.isLoggable("BatteryController", 3);
     static final long POLLING_PERIOD_MILLIS = 10000;
-    public static final String TAG = "BatteryController";
     static final long USI_BATTERY_VALIDITY_DURATION_MILLIS = 3600000;
-    public BluetoothBatteryManager.BluetoothBatteryListener mBluetoothBatteryListener;
+    public BatteryController$$ExternalSyntheticLambda4 mBluetoothBatteryListener;
     public final BluetoothBatteryManager mBluetoothBatteryManager;
     public final Context mContext;
-    public final ArrayMap mDeviceMonitors;
     public final Handler mHandler;
-    public final InputManager.InputDeviceListener mInputDeviceListener;
-    public boolean mIsInteractive;
-    public boolean mIsPolling;
-    public final ArrayMap mListenerRecords;
-    public final Object mLock;
     public final NativeInputManagerService mNative;
     public final UEventManager mUEventManager;
+    public final Object mLock = new Object();
+    public final ArrayMap mListenerRecords = new ArrayMap();
+    public final ArrayMap mDeviceMonitors = new ArrayMap();
+    public boolean mIsPolling = false;
+    public boolean mIsInteractive = true;
+    public final AnonymousClass1 mInputDeviceListener = new AnonymousClass1();
 
-    /* renamed from: com.android.server.input.BatteryController$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements UEventManager {
-    }
-
-    /* loaded from: classes2.dex */
-    public interface BluetoothBatteryManager {
-
-        /* loaded from: classes2.dex */
-        public interface BluetoothBatteryListener {
-            void onBluetoothBatteryChanged(long j, String str, int i);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.input.BatteryController$1, reason: invalid class name */
+    public final class AnonymousClass1 implements InputManager.InputDeviceListener {
+        public AnonymousClass1() {
         }
 
-        void addBatteryListener(BluetoothBatteryListener bluetoothBatteryListener);
+        @Override // android.hardware.input.InputManager.InputDeviceListener
+        public final void onInputDeviceAdded(int i) {
+            synchronized (BatteryController.this.mLock) {
+                try {
+                    BatteryController batteryController = BatteryController.this;
+                    batteryController.getClass();
+                    if (((Boolean) batteryController.processInputDevice(i, Boolean.FALSE, new BatteryController$$ExternalSyntheticLambda0(2))).booleanValue() && !BatteryController.this.mDeviceMonitors.containsKey(Integer.valueOf(i))) {
+                        BatteryController.this.mDeviceMonitors.put(Integer.valueOf(i), BatteryController.this.new UsiDeviceMonitor(i));
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        @Override // android.hardware.input.InputManager.InputDeviceListener
+        public final void onInputDeviceChanged(int i) {
+            synchronized (BatteryController.this.mLock) {
+                try {
+                    DeviceMonitor deviceMonitor = (DeviceMonitor) BatteryController.this.mDeviceMonitors.get(Integer.valueOf(i));
+                    if (deviceMonitor == null) {
+                        return;
+                    }
+                    deviceMonitor.onConfiguration(SystemClock.uptimeMillis());
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        @Override // android.hardware.input.InputManager.InputDeviceListener
+        public final void onInputDeviceRemoved(int i) {
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    interface BluetoothBatteryManager {
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public interface BluetoothBatteryListener {
+            void onBluetoothBatteryChanged(int i, String str, long j);
+        }
+
+        void addBatteryListener(BatteryController$$ExternalSyntheticLambda4 batteryController$$ExternalSyntheticLambda4);
 
         void addMetadataListener(String str, BluetoothAdapter.OnMetadataChangedListener onMetadataChangedListener);
 
         int getBatteryLevel(String str);
 
-        byte[] getMetadata(String str, int i);
+        byte[] getMetadata(int i, String str);
 
         void removeBatteryListener(BluetoothBatteryListener bluetoothBatteryListener);
 
         void removeMetadataListener(String str, BluetoothAdapter.OnMetadataChangedListener onMetadataChangedListener);
     }
 
-    public BatteryController(Context context, NativeInputManagerService nativeInputManagerService, Looper looper) {
-        this(context, nativeInputManagerService, looper, new UEventManager() { // from class: com.android.server.input.BatteryController.1
-        }, new LocalBluetoothBatteryManager(context, looper));
-    }
-
-    public BatteryController(Context context, NativeInputManagerService nativeInputManagerService, Looper looper, UEventManager uEventManager, BluetoothBatteryManager bluetoothBatteryManager) {
-        this.mLock = new Object();
-        this.mListenerRecords = new ArrayMap();
-        this.mDeviceMonitors = new ArrayMap();
-        this.mIsPolling = false;
-        this.mIsInteractive = true;
-        this.mInputDeviceListener = new InputManager.InputDeviceListener() { // from class: com.android.server.input.BatteryController.2
-            @Override // android.hardware.input.InputManager.InputDeviceListener
-            public void onInputDeviceRemoved(int i) {
-            }
-
-            public AnonymousClass2() {
-            }
-
-            @Override // android.hardware.input.InputManager.InputDeviceListener
-            public void onInputDeviceAdded(int i) {
-                synchronized (BatteryController.this.mLock) {
-                    if (BatteryController.this.isUsiDevice(i) && !BatteryController.this.mDeviceMonitors.containsKey(Integer.valueOf(i))) {
-                        BatteryController.this.mDeviceMonitors.put(Integer.valueOf(i), new UsiDeviceMonitor(i));
-                    }
-                }
-            }
-
-            @Override // android.hardware.input.InputManager.InputDeviceListener
-            public void onInputDeviceChanged(int i) {
-                synchronized (BatteryController.this.mLock) {
-                    DeviceMonitor deviceMonitor = (DeviceMonitor) BatteryController.this.mDeviceMonitors.get(Integer.valueOf(i));
-                    if (deviceMonitor == null) {
-                        return;
-                    }
-                    deviceMonitor.onConfiguration(SystemClock.uptimeMillis());
-                }
-            }
-        };
-        this.mContext = context;
-        this.mNative = nativeInputManagerService;
-        this.mHandler = new Handler(looper);
-        this.mUEventManager = uEventManager;
-        this.mBluetoothBatteryManager = bluetoothBatteryManager;
-    }
-
-    public void systemRunning() {
-        InputManager inputManager = (InputManager) this.mContext.getSystemService(InputManager.class);
-        Objects.requireNonNull(inputManager);
-        inputManager.registerInputDeviceListener(this.mInputDeviceListener, this.mHandler);
-        for (int i : inputManager.getInputDeviceIds()) {
-            this.mInputDeviceListener.onInputDeviceAdded(i);
-        }
-    }
-
-    public void registerBatteryListener(int i, IInputDeviceBatteryListener iInputDeviceBatteryListener, int i2) {
-        synchronized (this.mLock) {
-            ListenerRecord listenerRecord = (ListenerRecord) this.mListenerRecords.get(Integer.valueOf(i2));
-            if (listenerRecord == null) {
-                listenerRecord = new ListenerRecord(i2, iInputDeviceBatteryListener);
-                try {
-                    iInputDeviceBatteryListener.asBinder().linkToDeath(listenerRecord.mDeathRecipient, 0);
-                    this.mListenerRecords.put(Integer.valueOf(i2), listenerRecord);
-                    if (DEBUG) {
-                        Slog.d(TAG, "Battery listener added for pid " + i2);
-                    }
-                } catch (RemoteException unused) {
-                    Slog.i(TAG, "Client died before battery listener could be registered.");
-                    return;
-                }
-            }
-            if (listenerRecord.mListener.asBinder() != iInputDeviceBatteryListener.asBinder()) {
-                throw new SecurityException("Cannot register a new battery listener when there is already another registered listener for pid " + i2);
-            }
-            if (!listenerRecord.mMonitoredDevices.add(Integer.valueOf(i))) {
-                throw new IllegalArgumentException("The battery listener for pid " + i2 + " is already monitoring deviceId " + i);
-            }
-            DeviceMonitor deviceMonitor = (DeviceMonitor) this.mDeviceMonitors.get(Integer.valueOf(i));
-            if (deviceMonitor == null) {
-                deviceMonitor = new DeviceMonitor(i);
-                this.mDeviceMonitors.put(Integer.valueOf(i), deviceMonitor);
-                updateBluetoothBatteryMonitoring();
-            }
-            if (DEBUG) {
-                Slog.d(TAG, "Battery listener for pid " + i2 + " is monitoring deviceId " + i);
-            }
-            updatePollingLocked(true);
-            notifyBatteryListener(listenerRecord, deviceMonitor.getBatteryStateForReporting());
-        }
-    }
-
-    public static void notifyBatteryListener(ListenerRecord listenerRecord, State state) {
-        try {
-            listenerRecord.mListener.onBatteryStateChanged(state);
-        } catch (RemoteException e) {
-            Slog.e(TAG, "Failed to notify listener", e);
-        }
-        if (DEBUG) {
-            Slog.d(TAG, "Notified battery listener from pid " + listenerRecord.mPid + " of state of deviceId " + ((IInputDeviceBatteryState) state).deviceId);
-        }
-    }
-
-    public final void notifyAllListenersForDevice(final State state) {
-        synchronized (this.mLock) {
-            if (DEBUG) {
-                Slog.d(TAG, "Notifying all listeners of battery state: " + state);
-            }
-            this.mListenerRecords.forEach(new BiConsumer() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda10
-                @Override // java.util.function.BiConsumer
-                public final void accept(Object obj, Object obj2) {
-                    BatteryController.lambda$notifyAllListenersForDevice$0(BatteryController.State.this, (Integer) obj, (BatteryController.ListenerRecord) obj2);
-                }
-            });
-        }
-    }
-
-    public static /* synthetic */ void lambda$notifyAllListenersForDevice$0(State state, Integer num, ListenerRecord listenerRecord) {
-        if (listenerRecord.mMonitoredDevices.contains(Integer.valueOf(((IInputDeviceBatteryState) state).deviceId))) {
-            notifyBatteryListener(listenerRecord, state);
-        }
-    }
-
-    public final void updatePollingLocked(boolean z) {
-        if (!this.mIsInteractive || !anyOf(this.mDeviceMonitors, new Predicate() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda3
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                return ((BatteryController.DeviceMonitor) obj).requiresPolling();
-            }
-        })) {
-            this.mIsPolling = false;
-            this.mHandler.removeCallbacks(new BatteryController$$ExternalSyntheticLambda4(this));
-        } else {
-            if (this.mIsPolling) {
-                return;
-            }
-            this.mIsPolling = true;
-            this.mHandler.postDelayed(new BatteryController$$ExternalSyntheticLambda4(this), z ? POLLING_PERIOD_MILLIS : 0L);
-        }
-    }
-
-    public final Object processInputDevice(int i, Object obj, Function function) {
-        InputManager inputManager = (InputManager) this.mContext.getSystemService(InputManager.class);
-        Objects.requireNonNull(inputManager);
-        InputDevice inputDevice = inputManager.getInputDevice(i);
-        return inputDevice == null ? obj : function.apply(inputDevice);
-    }
-
-    public final String getInputDeviceName(int i) {
-        return (String) processInputDevice(i, "<none>", new Function() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda5
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return ((InputDevice) obj).getName();
-            }
-        });
-    }
-
-    public final boolean hasBattery(int i) {
-        return ((Boolean) processInputDevice(i, Boolean.FALSE, new Function() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda2
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return Boolean.valueOf(((InputDevice) obj).hasBattery());
-            }
-        })).booleanValue();
-    }
-
-    public final boolean isUsiDevice(int i) {
-        return ((Boolean) processInputDevice(i, Boolean.FALSE, new Function() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda8
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                Boolean lambda$isUsiDevice$1;
-                lambda$isUsiDevice$1 = BatteryController.lambda$isUsiDevice$1((InputDevice) obj);
-                return lambda$isUsiDevice$1;
-            }
-        })).booleanValue();
-    }
-
-    public static /* synthetic */ Boolean lambda$isUsiDevice$1(InputDevice inputDevice) {
-        return Boolean.valueOf(inputDevice.getHostUsiVersion() != null);
-    }
-
-    public final BluetoothDevice getBluetoothDevice(int i) {
-        return getBluetoothDevice(this.mContext, (String) processInputDevice(i, null, new Function() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda6
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return ((InputDevice) obj).getBluetoothAddress();
-            }
-        }));
-    }
-
-    public static BluetoothDevice getBluetoothDevice(Context context, String str) {
-        if (str == null) {
-            return null;
-        }
-        BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(BluetoothManager.class);
-        Objects.requireNonNull(bluetoothManager);
-        return bluetoothManager.getAdapter().getRemoteDevice(str);
-    }
-
-    public final DeviceMonitor getDeviceMonitorOrThrowLocked(int i) {
-        DeviceMonitor deviceMonitor = (DeviceMonitor) this.mDeviceMonitors.get(Integer.valueOf(i));
-        Objects.requireNonNull(deviceMonitor, "Maps are out of sync: Cannot find device state for deviceId " + i);
-        return deviceMonitor;
-    }
-
-    public void unregisterBatteryListener(int i, IInputDeviceBatteryListener iInputDeviceBatteryListener, int i2) {
-        synchronized (this.mLock) {
-            ListenerRecord listenerRecord = (ListenerRecord) this.mListenerRecords.get(Integer.valueOf(i2));
-            if (listenerRecord == null) {
-                throw new IllegalArgumentException("Cannot unregister battery callback: No listener registered for pid " + i2);
-            }
-            if (listenerRecord.mListener.asBinder() != iInputDeviceBatteryListener.asBinder()) {
-                throw new IllegalArgumentException("Cannot unregister battery callback: The listener is not the one that is registered for pid " + i2);
-            }
-            if (!listenerRecord.mMonitoredDevices.contains(Integer.valueOf(i))) {
-                throw new IllegalArgumentException("Cannot unregister battery callback: The device is not being monitored for deviceId " + i);
-            }
-            unregisterRecordLocked(listenerRecord, i);
-        }
-    }
-
-    public final void unregisterRecordLocked(ListenerRecord listenerRecord, int i) {
-        int i2 = listenerRecord.mPid;
-        if (!listenerRecord.mMonitoredDevices.remove(Integer.valueOf(i))) {
-            throw new IllegalStateException("Cannot unregister battery callback: The deviceId " + i + " is not being monitored by pid " + i2);
-        }
-        if (!hasRegisteredListenerForDeviceLocked(i)) {
-            DeviceMonitor deviceMonitorOrThrowLocked = getDeviceMonitorOrThrowLocked(i);
-            if (!deviceMonitorOrThrowLocked.isPersistent()) {
-                deviceMonitorOrThrowLocked.onMonitorDestroy();
-                this.mDeviceMonitors.remove(Integer.valueOf(i));
-            }
-        }
-        if (listenerRecord.mMonitoredDevices.isEmpty()) {
-            listenerRecord.mListener.asBinder().unlinkToDeath(listenerRecord.mDeathRecipient, 0);
-            this.mListenerRecords.remove(Integer.valueOf(i2));
-            if (DEBUG) {
-                Slog.d(TAG, "Battery listener removed for pid " + i2);
-            }
-        }
-        updatePollingLocked(false);
-    }
-
-    public final boolean hasRegisteredListenerForDeviceLocked(int i) {
-        for (int i2 = 0; i2 < this.mListenerRecords.size(); i2++) {
-            if (((ListenerRecord) this.mListenerRecords.valueAt(i2)).mMonitoredDevices.contains(Integer.valueOf(i))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final void handleListeningProcessDied(int i) {
-        synchronized (this.mLock) {
-            ListenerRecord listenerRecord = (ListenerRecord) this.mListenerRecords.get(Integer.valueOf(i));
-            if (listenerRecord == null) {
-                return;
-            }
-            if (DEBUG) {
-                Slog.d(TAG, "Removing battery listener for pid " + i + " because the process died");
-            }
-            Iterator it = listenerRecord.mMonitoredDevices.iterator();
-            while (it.hasNext()) {
-                unregisterRecordLocked(listenerRecord, ((Integer) it.next()).intValue());
-            }
-        }
-    }
-
-    public final void handleUEventNotification(int i, long j) {
-        synchronized (this.mLock) {
-            DeviceMonitor deviceMonitor = (DeviceMonitor) this.mDeviceMonitors.get(Integer.valueOf(i));
-            if (deviceMonitor == null) {
-                return;
-            }
-            deviceMonitor.onUEvent(j);
-        }
-    }
-
-    public final void handlePollEvent() {
-        synchronized (this.mLock) {
-            if (this.mIsPolling) {
-                final long uptimeMillis = SystemClock.uptimeMillis();
-                this.mDeviceMonitors.forEach(new BiConsumer() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda9
-                    @Override // java.util.function.BiConsumer
-                    public final void accept(Object obj, Object obj2) {
-                        ((BatteryController.DeviceMonitor) obj2).onPoll(uptimeMillis);
-                    }
-                });
-                this.mHandler.postDelayed(new BatteryController$$ExternalSyntheticLambda4(this), POLLING_PERIOD_MILLIS);
-            }
-        }
-    }
-
-    public final void handleMonitorTimeout(int i) {
-        synchronized (this.mLock) {
-            DeviceMonitor deviceMonitor = (DeviceMonitor) this.mDeviceMonitors.get(Integer.valueOf(i));
-            if (deviceMonitor == null) {
-                return;
-            }
-            deviceMonitor.onTimeout(SystemClock.uptimeMillis());
-        }
-    }
-
-    public final void handleBluetoothBatteryLevelChange(long j, final String str, int i) {
-        synchronized (this.mLock) {
-            DeviceMonitor deviceMonitor = (DeviceMonitor) findIf(this.mDeviceMonitors, new Predicate() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda7
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$handleBluetoothBatteryLevelChange$3;
-                    lambda$handleBluetoothBatteryLevelChange$3 = BatteryController.lambda$handleBluetoothBatteryLevelChange$3(str, (BatteryController.DeviceMonitor) obj);
-                    return lambda$handleBluetoothBatteryLevelChange$3;
-                }
-            });
-            if (deviceMonitor != null) {
-                deviceMonitor.onBluetoothBatteryChanged(j, i);
-            }
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$handleBluetoothBatteryLevelChange$3(String str, DeviceMonitor deviceMonitor) {
-        return deviceMonitor.mBluetoothDevice != null && str.equals(deviceMonitor.mBluetoothDevice.getAddress());
-    }
-
-    public final void handleBluetoothMetadataChange(final BluetoothDevice bluetoothDevice, int i, byte[] bArr) {
-        synchronized (this.mLock) {
-            DeviceMonitor deviceMonitor = (DeviceMonitor) findIf(this.mDeviceMonitors, new Predicate() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda11
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$handleBluetoothMetadataChange$4;
-                    lambda$handleBluetoothMetadataChange$4 = BatteryController.lambda$handleBluetoothMetadataChange$4(bluetoothDevice, (BatteryController.DeviceMonitor) obj);
-                    return lambda$handleBluetoothMetadataChange$4;
-                }
-            });
-            if (deviceMonitor != null) {
-                deviceMonitor.onBluetoothMetadataChanged(SystemClock.uptimeMillis(), i, bArr);
-            }
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$handleBluetoothMetadataChange$4(BluetoothDevice bluetoothDevice, DeviceMonitor deviceMonitor) {
-        return bluetoothDevice.equals(deviceMonitor.mBluetoothDevice);
-    }
-
-    public IInputDeviceBatteryState getBatteryState(int i) {
-        synchronized (this.mLock) {
-            long uptimeMillis = SystemClock.uptimeMillis();
-            DeviceMonitor deviceMonitor = (DeviceMonitor) this.mDeviceMonitors.get(Integer.valueOf(i));
-            if (deviceMonitor == null) {
-                return queryBatteryStateFromNative(i, uptimeMillis, hasBattery(i));
-            }
-            deviceMonitor.onPoll(uptimeMillis);
-            return deviceMonitor.getBatteryStateForReporting();
-        }
-    }
-
-    public void onInteractiveChanged(boolean z) {
-        synchronized (this.mLock) {
-            this.mIsInteractive = z;
-            updatePollingLocked(false);
-        }
-    }
-
-    public void notifyStylusGestureStarted(int i, long j) {
-        synchronized (this.mLock) {
-            DeviceMonitor deviceMonitor = (DeviceMonitor) this.mDeviceMonitors.get(Integer.valueOf(i));
-            if (deviceMonitor == null) {
-                return;
-            }
-            deviceMonitor.onStylusGestureStarted(j);
-        }
-    }
-
-    public void dump(PrintWriter printWriter) {
-        IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter);
-        synchronized (this.mLock) {
-            indentingPrintWriter.println(TAG + XmlUtils.STRING_ARRAY_SEPARATOR);
-            indentingPrintWriter.increaseIndent();
-            indentingPrintWriter.println("State: Polling = " + this.mIsPolling + ", Interactive = " + this.mIsInteractive);
-            StringBuilder sb = new StringBuilder();
-            sb.append("Listeners: ");
-            sb.append(this.mListenerRecords.size());
-            sb.append(" battery listeners");
-            indentingPrintWriter.println(sb.toString());
-            indentingPrintWriter.increaseIndent();
-            for (int i = 0; i < this.mListenerRecords.size(); i++) {
-                indentingPrintWriter.println(i + ": " + this.mListenerRecords.valueAt(i));
-            }
-            indentingPrintWriter.decreaseIndent();
-            indentingPrintWriter.println("Device Monitors: " + this.mDeviceMonitors.size() + " monitors");
-            indentingPrintWriter.increaseIndent();
-            for (int i2 = 0; i2 < this.mDeviceMonitors.size(); i2++) {
-                indentingPrintWriter.println(i2 + ": " + this.mDeviceMonitors.valueAt(i2));
-            }
-            indentingPrintWriter.decreaseIndent();
-            indentingPrintWriter.decreaseIndent();
-        }
-    }
-
-    public void monitor() {
-        synchronized (this.mLock) {
-        }
-    }
-
-    /* renamed from: com.android.server.input.BatteryController$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 implements InputManager.InputDeviceListener {
-        @Override // android.hardware.input.InputManager.InputDeviceListener
-        public void onInputDeviceRemoved(int i) {
-        }
-
-        public AnonymousClass2() {
-        }
-
-        @Override // android.hardware.input.InputManager.InputDeviceListener
-        public void onInputDeviceAdded(int i) {
-            synchronized (BatteryController.this.mLock) {
-                if (BatteryController.this.isUsiDevice(i) && !BatteryController.this.mDeviceMonitors.containsKey(Integer.valueOf(i))) {
-                    BatteryController.this.mDeviceMonitors.put(Integer.valueOf(i), new UsiDeviceMonitor(i));
-                }
-            }
-        }
-
-        @Override // android.hardware.input.InputManager.InputDeviceListener
-        public void onInputDeviceChanged(int i) {
-            synchronized (BatteryController.this.mLock) {
-                DeviceMonitor deviceMonitor = (DeviceMonitor) BatteryController.this.mDeviceMonitors.get(Integer.valueOf(i));
-                if (deviceMonitor == null) {
-                    return;
-                }
-                deviceMonitor.onConfiguration(SystemClock.uptimeMillis());
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class ListenerRecord {
-        public final IBinder.DeathRecipient mDeathRecipient;
-        public final IInputDeviceBatteryListener mListener;
-        public final Set mMonitoredDevices = new ArraySet();
-        public final int mPid;
-
-        public ListenerRecord(final int i, IInputDeviceBatteryListener iInputDeviceBatteryListener) {
-            this.mPid = i;
-            this.mListener = iInputDeviceBatteryListener;
-            this.mDeathRecipient = new IBinder.DeathRecipient() { // from class: com.android.server.input.BatteryController$ListenerRecord$$ExternalSyntheticLambda0
-                @Override // android.os.IBinder.DeathRecipient
-                public final void binderDied() {
-                    BatteryController.ListenerRecord.this.lambda$new$0(i);
-                }
-            };
-        }
-
-        public /* synthetic */ void lambda$new$0(int i) {
-            BatteryController.this.handleListeningProcessDied(i);
-        }
-
-        public String toString() {
-            return "pid=" + this.mPid + ", monitored devices=" + Arrays.toString(this.mMonitoredDevices.toArray());
-        }
-    }
-
-    public final State queryBatteryStateFromNative(int i, long j, boolean z) {
-        return new State(i, j, z, z ? this.mNative.getBatteryStatus(i) : 1, z ? this.mNative.getBatteryCapacity(i) / 100.0f : Float.NaN);
-    }
-
-    public final void updateBluetoothBatteryMonitoring() {
-        synchronized (this.mLock) {
-            if (anyOf(this.mDeviceMonitors, new Predicate() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$updateBluetoothBatteryMonitoring$5;
-                    lambda$updateBluetoothBatteryMonitoring$5 = BatteryController.lambda$updateBluetoothBatteryMonitoring$5((BatteryController.DeviceMonitor) obj);
-                    return lambda$updateBluetoothBatteryMonitoring$5;
-                }
-            })) {
-                if (this.mBluetoothBatteryListener == null) {
-                    if (DEBUG) {
-                        Slog.d(TAG, "Registering bluetooth battery listener");
-                    }
-                    BluetoothBatteryManager.BluetoothBatteryListener bluetoothBatteryListener = new BluetoothBatteryManager.BluetoothBatteryListener() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda1
-                        @Override // com.android.server.input.BatteryController.BluetoothBatteryManager.BluetoothBatteryListener
-                        public final void onBluetoothBatteryChanged(long j, String str, int i) {
-                            BatteryController.this.handleBluetoothBatteryLevelChange(j, str, i);
-                        }
-                    };
-                    this.mBluetoothBatteryListener = bluetoothBatteryListener;
-                    this.mBluetoothBatteryManager.addBatteryListener(bluetoothBatteryListener);
-                }
-            } else if (this.mBluetoothBatteryListener != null) {
-                if (DEBUG) {
-                    Slog.d(TAG, "Unregistering bluetooth battery listener");
-                }
-                this.mBluetoothBatteryManager.removeBatteryListener(this.mBluetoothBatteryListener);
-                this.mBluetoothBatteryListener = null;
-            }
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$updateBluetoothBatteryMonitoring$5(DeviceMonitor deviceMonitor) {
-        return deviceMonitor.mBluetoothDevice != null;
-    }
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class DeviceMonitor {
         public BluetoothDevice mBluetoothDevice;
-        public BluetoothAdapter.OnMetadataChangedListener mBluetoothMetadataListener;
+        public BatteryController$DeviceMonitor$$ExternalSyntheticLambda2 mBluetoothMetadataListener;
         public final State mState;
-        public UEventManager.UEventBatteryListener mUEventBatteryListener;
+        public AnonymousClass1 mUEventBatteryListener;
         public boolean mHasBattery = false;
         public long mBluetoothEventTime = 0;
         public int mBluetoothBatteryLevel = -1;
         public int mBluetoothMetadataBatteryLevel = -1;
         public int mBluetoothMetadataBatteryStatus = 1;
 
-        public boolean isPersistent() {
-            return false;
+        public DeviceMonitor(int i) {
+            this.mState = new State(i);
+            configureDeviceMonitor(SystemClock.uptimeMillis());
+        }
+
+        /* JADX WARN: Type inference failed for: r0v7, types: [com.android.server.input.BatteryController$DeviceMonitor$$ExternalSyntheticLambda2] */
+        /* JADX WARN: Type inference failed for: r4v11, types: [com.android.server.input.BatteryController$DeviceMonitor$1, com.android.server.input.UEventManager$UEventListener] */
+        public final void configureDeviceMonitor(long j) {
+            State state = this.mState;
+            int i = ((IInputDeviceBatteryState) state).deviceId;
+            boolean z = this.mHasBattery;
+            boolean z2 = BatteryController.DEBUG;
+            final BatteryController batteryController = BatteryController.this;
+            batteryController.getClass();
+            if (z != ((Boolean) batteryController.processInputDevice(i, Boolean.FALSE, new BatteryController$$ExternalSyntheticLambda0(0))).booleanValue()) {
+                boolean z3 = !this.mHasBattery;
+                this.mHasBattery = z3;
+                if (z3) {
+                    String batteryDevicePath = batteryController.mNative.getBatteryDevicePath(((IInputDeviceBatteryState) state).deviceId);
+                    if (batteryDevicePath != null) {
+                        final int i2 = ((IInputDeviceBatteryState) state).deviceId;
+                        ?? r4 = new UEventBatteryListener() { // from class: com.android.server.input.BatteryController.DeviceMonitor.1
+                            @Override // com.android.server.input.BatteryController.UEventBatteryListener
+                            public final void onBatteryUEvent(long j2) {
+                                BatteryController batteryController2 = BatteryController.this;
+                                int i3 = i2;
+                                synchronized (batteryController2.mLock) {
+                                    try {
+                                        DeviceMonitor deviceMonitor = (DeviceMonitor) batteryController2.mDeviceMonitors.get(Integer.valueOf(i3));
+                                        if (deviceMonitor == null) {
+                                            return;
+                                        }
+                                        deviceMonitor.onUEvent(j2);
+                                    } finally {
+                                    }
+                                }
+                            }
+                        };
+                        this.mUEventBatteryListener = r4;
+                        StringBuilder sb = new StringBuilder("DEVPATH=");
+                        if (batteryDevicePath.startsWith("/sys")) {
+                            batteryDevicePath = batteryDevicePath.substring(4);
+                        }
+                        sb.append(batteryDevicePath);
+                        String sb2 = sb.toString();
+                        batteryController.mUEventManager.getClass();
+                        r4.mObserver.startObserving(sb2);
+                    }
+                } else {
+                    AnonymousClass1 anonymousClass1 = this.mUEventBatteryListener;
+                    if (anonymousClass1 != null) {
+                        batteryController.mUEventManager.getClass();
+                        anonymousClass1.mObserver.stopObserving();
+                        this.mUEventBatteryListener = null;
+                    }
+                }
+                updateBatteryStateFromNative(j);
+            }
+            BluetoothDevice bluetoothDevice = BatteryController.getBluetoothDevice(batteryController.mContext, (String) batteryController.processInputDevice(i, null, new BatteryController$$ExternalSyntheticLambda0(3)));
+            if (Objects.equals(this.mBluetoothDevice, bluetoothDevice)) {
+                return;
+            }
+            if (BatteryController.DEBUG) {
+                StringBuilder sb3 = new StringBuilder("Bluetooth device is now ");
+                sb3.append(bluetoothDevice != null ? "" : "not");
+                sb3.append(" present for deviceId ");
+                sb3.append(i);
+                Slog.d("BatteryController", sb3.toString());
+            }
+            this.mBluetoothBatteryLevel = -1;
+            stopBluetoothMetadataMonitoring();
+            this.mBluetoothDevice = bluetoothDevice;
+            batteryController.updateBluetoothBatteryMonitoring();
+            BluetoothDevice bluetoothDevice2 = this.mBluetoothDevice;
+            if (bluetoothDevice2 != null) {
+                String address = bluetoothDevice2.getAddress();
+                BluetoothBatteryManager bluetoothBatteryManager = batteryController.mBluetoothBatteryManager;
+                this.mBluetoothBatteryLevel = bluetoothBatteryManager.getBatteryLevel(address);
+                Objects.requireNonNull(this.mBluetoothDevice);
+                this.mBluetoothMetadataListener = new BluetoothAdapter.OnMetadataChangedListener() { // from class: com.android.server.input.BatteryController$DeviceMonitor$$ExternalSyntheticLambda2
+                    public final void onMetadataChanged(BluetoothDevice bluetoothDevice3, final int i3, final byte[] bArr) {
+                        BatteryController batteryController2 = BatteryController.this;
+                        synchronized (batteryController2.mLock) {
+                            try {
+                                final BatteryController.DeviceMonitor deviceMonitor = (BatteryController.DeviceMonitor) BatteryController.findIf(batteryController2.mDeviceMonitors, new BatteryController$$ExternalSyntheticLambda9(1, bluetoothDevice3));
+                                if (deviceMonitor != null) {
+                                    deviceMonitor.processChangesAndNotify(SystemClock.uptimeMillis(), new Consumer() { // from class: com.android.server.input.BatteryController$DeviceMonitor$$ExternalSyntheticLambda5
+                                        @Override // java.util.function.Consumer
+                                        public final void accept(Object obj) {
+                                            BatteryController.DeviceMonitor deviceMonitor2 = BatteryController.DeviceMonitor.this;
+                                            int i4 = i3;
+                                            byte[] bArr2 = bArr;
+                                            deviceMonitor2.getClass();
+                                            deviceMonitor2.updateBluetoothMetadataState(((Long) obj).longValue(), bArr2, i4);
+                                        }
+                                    });
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                    }
+                };
+                bluetoothBatteryManager.addMetadataListener(this.mBluetoothDevice.getAddress(), this.mBluetoothMetadataListener);
+                updateBluetoothMetadataState(j, bluetoothBatteryManager.getMetadata(18, this.mBluetoothDevice.getAddress()), 18);
+                updateBluetoothMetadataState(j, bluetoothBatteryManager.getMetadata(19, this.mBluetoothDevice.getAddress()), 19);
+            }
+        }
+
+        public State getBatteryStateForReporting() {
+            return (State) Objects.requireNonNullElseGet(resolveBluetoothBatteryState(), new BatteryController$DeviceMonitor$$ExternalSyntheticLambda1(this, 0));
+        }
+
+        public void onConfiguration(long j) {
+            processChangesAndNotify(j, new BatteryController$DeviceMonitor$$ExternalSyntheticLambda0(this, 1));
+        }
+
+        public void onPoll(long j) {
+            processChangesAndNotify(j, new BatteryController$DeviceMonitor$$ExternalSyntheticLambda0(this, 0));
         }
 
         public void onStylusGestureStarted(long j) {
@@ -606,126 +257,49 @@ public final class BatteryController {
         public void onTimeout(long j) {
         }
 
-        public boolean requiresPolling() {
-            return true;
+        public void onUEvent(long j) {
+            processChangesAndNotify(j, new BatteryController$DeviceMonitor$$ExternalSyntheticLambda0(this, 0));
         }
 
-        public DeviceMonitor(int i) {
-            this.mState = new State(i);
-            configureDeviceMonitor(SystemClock.uptimeMillis());
-        }
-
-        public void processChangesAndNotify(long j, Consumer consumer) {
+        public final void processChangesAndNotify(long j, Consumer consumer) {
             State batteryStateForReporting = getBatteryStateForReporting();
             consumer.accept(Long.valueOf(j));
-            State batteryStateForReporting2 = getBatteryStateForReporting();
-            if (batteryStateForReporting.equalsIgnoringUpdateTime(batteryStateForReporting2)) {
+            final State batteryStateForReporting2 = getBatteryStateForReporting();
+            long j2 = ((IInputDeviceBatteryState) batteryStateForReporting).updateTime;
+            ((IInputDeviceBatteryState) batteryStateForReporting).updateTime = ((IInputDeviceBatteryState) batteryStateForReporting2).updateTime;
+            boolean equals = batteryStateForReporting.equals(batteryStateForReporting2);
+            ((IInputDeviceBatteryState) batteryStateForReporting).updateTime = j2;
+            if (equals) {
                 return;
             }
-            BatteryController.this.notifyAllListenersForDevice(batteryStateForReporting2);
-        }
-
-        public void onConfiguration(long j) {
-            processChangesAndNotify(j, new Consumer() { // from class: com.android.server.input.BatteryController$DeviceMonitor$$ExternalSyntheticLambda3
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    BatteryController.DeviceMonitor.this.configureDeviceMonitor(((Long) obj).longValue());
+            BatteryController batteryController = BatteryController.this;
+            synchronized (batteryController.mLock) {
+                try {
+                    if (BatteryController.DEBUG) {
+                        Slog.d("BatteryController", "Notifying all listeners of battery state: " + batteryStateForReporting2);
+                    }
+                    batteryController.mListenerRecords.forEach(new BiConsumer() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda10
+                        @Override // java.util.function.BiConsumer
+                        public final void accept(Object obj, Object obj2) {
+                            BatteryController.State state = BatteryController.State.this;
+                            BatteryController.ListenerRecord listenerRecord = (BatteryController.ListenerRecord) obj2;
+                            boolean z = BatteryController.DEBUG;
+                            if (((ArraySet) listenerRecord.mMonitoredDevices).contains(Integer.valueOf(((IInputDeviceBatteryState) state).deviceId))) {
+                                BatteryController.notifyBatteryListener(listenerRecord, state);
+                            }
+                        }
+                    });
+                } finally {
                 }
-            });
-        }
-
-        public final void configureDeviceMonitor(long j) {
-            int i = ((IInputDeviceBatteryState) this.mState).deviceId;
-            if (this.mHasBattery != BatteryController.this.hasBattery(i)) {
-                boolean z = !this.mHasBattery;
-                this.mHasBattery = z;
-                if (z) {
-                    startNativeMonitoring();
-                } else {
-                    stopNativeMonitoring();
-                }
-                updateBatteryStateFromNative(j);
-            }
-            BluetoothDevice bluetoothDevice = BatteryController.this.getBluetoothDevice(i);
-            if (Objects.equals(this.mBluetoothDevice, bluetoothDevice)) {
-                return;
-            }
-            if (BatteryController.DEBUG) {
-                String str = BatteryController.TAG;
-                StringBuilder sb = new StringBuilder();
-                sb.append("Bluetooth device is now ");
-                sb.append(bluetoothDevice != null ? "" : "not");
-                sb.append(" present for deviceId ");
-                sb.append(i);
-                Slog.d(str, sb.toString());
-            }
-            this.mBluetoothBatteryLevel = -1;
-            stopBluetoothMetadataMonitoring();
-            this.mBluetoothDevice = bluetoothDevice;
-            BatteryController.this.updateBluetoothBatteryMonitoring();
-            if (this.mBluetoothDevice != null) {
-                this.mBluetoothBatteryLevel = BatteryController.this.mBluetoothBatteryManager.getBatteryLevel(this.mBluetoothDevice.getAddress());
-                startBluetoothMetadataMonitoring(j);
             }
         }
 
-        public final void startNativeMonitoring() {
-            String batteryDevicePath = BatteryController.this.mNative.getBatteryDevicePath(((IInputDeviceBatteryState) this.mState).deviceId);
-            if (batteryDevicePath == null) {
-                return;
+        public final State resolveBluetoothBatteryState() {
+            int i = this.mBluetoothMetadataBatteryLevel;
+            if ((i < 0 || i > 100) && ((i = this.mBluetoothBatteryLevel) < 0 || i > 100)) {
+                return null;
             }
-            this.mUEventBatteryListener = new UEventManager.UEventBatteryListener() { // from class: com.android.server.input.BatteryController.DeviceMonitor.1
-                public final /* synthetic */ int val$deviceId;
-
-                public AnonymousClass1(int i) {
-                    r2 = i;
-                }
-
-                @Override // com.android.server.input.BatteryController.UEventManager.UEventBatteryListener
-                public void onBatteryUEvent(long j) {
-                    BatteryController.this.handleUEventNotification(r2, j);
-                }
-            };
-            BatteryController.this.mUEventManager.addListener(this.mUEventBatteryListener, "DEVPATH=" + formatDevPath(batteryDevicePath));
-        }
-
-        /* renamed from: com.android.server.input.BatteryController$DeviceMonitor$1 */
-        /* loaded from: classes2.dex */
-        public class AnonymousClass1 extends UEventManager.UEventBatteryListener {
-            public final /* synthetic */ int val$deviceId;
-
-            public AnonymousClass1(int i) {
-                r2 = i;
-            }
-
-            @Override // com.android.server.input.BatteryController.UEventManager.UEventBatteryListener
-            public void onBatteryUEvent(long j) {
-                BatteryController.this.handleUEventNotification(r2, j);
-            }
-        }
-
-        public final String formatDevPath(String str) {
-            return str.startsWith("/sys") ? str.substring(4) : str;
-        }
-
-        public final void stopNativeMonitoring() {
-            if (this.mUEventBatteryListener != null) {
-                BatteryController.this.mUEventManager.removeListener(this.mUEventBatteryListener);
-                this.mUEventBatteryListener = null;
-            }
-        }
-
-        public final void startBluetoothMetadataMonitoring(long j) {
-            Objects.requireNonNull(this.mBluetoothDevice);
-            final BatteryController batteryController = BatteryController.this;
-            this.mBluetoothMetadataListener = new BluetoothAdapter.OnMetadataChangedListener() { // from class: com.android.server.input.BatteryController$DeviceMonitor$$ExternalSyntheticLambda2
-                public final void onMetadataChanged(BluetoothDevice bluetoothDevice, int i, byte[] bArr) {
-                    BatteryController.this.handleBluetoothMetadataChange(bluetoothDevice, i, bArr);
-                }
-            };
-            BatteryController.this.mBluetoothBatteryManager.addMetadataListener(this.mBluetoothDevice.getAddress(), this.mBluetoothMetadataListener);
-            updateBluetoothMetadataState(j, 18, BatteryController.this.mBluetoothBatteryManager.getMetadata(this.mBluetoothDevice.getAddress(), 18));
-            updateBluetoothMetadataState(j, 19, BatteryController.this.mBluetoothBatteryManager.getMetadata(this.mBluetoothDevice.getAddress(), 19));
+            return new State(((IInputDeviceBatteryState) this.mState).deviceId, this.mBluetoothEventTime, true, this.mBluetoothMetadataBatteryStatus, i / 100.0f);
         }
 
         public final void stopBluetoothMetadataMonitoring() {
@@ -739,54 +313,51 @@ public final class BatteryController {
             this.mBluetoothMetadataBatteryStatus = 1;
         }
 
-        public void onMonitorDestroy() {
-            stopNativeMonitoring();
-            stopBluetoothMetadataMonitoring();
-            this.mBluetoothDevice = null;
-            BatteryController.this.updateBluetoothBatteryMonitoring();
-        }
-
-        public void updateBatteryStateFromNative(long j) {
+        public String toString() {
+            StringBuilder sb = new StringBuilder("DeviceId=");
             State state = this.mState;
-            state.updateIfChanged(BatteryController.this.queryBatteryStateFromNative(((IInputDeviceBatteryState) state).deviceId, j, this.mHasBattery));
+            sb.append(((IInputDeviceBatteryState) state).deviceId);
+            sb.append(", Name='");
+            int i = ((IInputDeviceBatteryState) state).deviceId;
+            boolean z = BatteryController.DEBUG;
+            BatteryController batteryController = BatteryController.this;
+            batteryController.getClass();
+            sb.append((String) batteryController.processInputDevice(i, "<none>", new BatteryController$$ExternalSyntheticLambda0(1)));
+            sb.append("', NativeBattery=");
+            sb.append(state);
+            sb.append(", UEventListener=");
+            sb.append(this.mUEventBatteryListener != null ? "added" : "none");
+            sb.append(", BluetoothState=");
+            sb.append(resolveBluetoothBatteryState());
+            return sb.toString();
         }
 
-        public void onPoll(long j) {
-            processChangesAndNotify(j, new BatteryController$DeviceMonitor$$ExternalSyntheticLambda1(this));
+        public final void updateBatteryStateFromNative(long j) {
+            State state = this.mState;
+            int i = ((IInputDeviceBatteryState) state).deviceId;
+            boolean z = this.mHasBattery;
+            boolean z2 = BatteryController.DEBUG;
+            State queryBatteryStateFromNative = BatteryController.this.queryBatteryStateFromNative(i, j, z);
+            long j2 = ((IInputDeviceBatteryState) state).updateTime;
+            ((IInputDeviceBatteryState) state).updateTime = ((IInputDeviceBatteryState) queryBatteryStateFromNative).updateTime;
+            boolean equals = state.equals(queryBatteryStateFromNative);
+            ((IInputDeviceBatteryState) state).updateTime = j2;
+            if (equals) {
+                return;
+            }
+            int i2 = ((IInputDeviceBatteryState) queryBatteryStateFromNative).deviceId;
+            long j3 = ((IInputDeviceBatteryState) queryBatteryStateFromNative).updateTime;
+            boolean z3 = ((IInputDeviceBatteryState) queryBatteryStateFromNative).isPresent;
+            int i3 = ((IInputDeviceBatteryState) queryBatteryStateFromNative).status;
+            float f = ((IInputDeviceBatteryState) queryBatteryStateFromNative).capacity;
+            ((IInputDeviceBatteryState) state).deviceId = i2;
+            ((IInputDeviceBatteryState) state).updateTime = j3;
+            ((IInputDeviceBatteryState) state).isPresent = z3;
+            ((IInputDeviceBatteryState) state).status = i3;
+            ((IInputDeviceBatteryState) state).capacity = f;
         }
 
-        public void onUEvent(long j) {
-            processChangesAndNotify(j, new BatteryController$DeviceMonitor$$ExternalSyntheticLambda1(this));
-        }
-
-        public void onBluetoothBatteryChanged(long j, final int i) {
-            processChangesAndNotify(j, new Consumer() { // from class: com.android.server.input.BatteryController$DeviceMonitor$$ExternalSyntheticLambda4
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    BatteryController.DeviceMonitor.this.lambda$onBluetoothBatteryChanged$0(i, (Long) obj);
-                }
-            });
-        }
-
-        public /* synthetic */ void lambda$onBluetoothBatteryChanged$0(int i, Long l) {
-            this.mBluetoothBatteryLevel = i;
-            this.mBluetoothEventTime = l.longValue();
-        }
-
-        public void onBluetoothMetadataChanged(long j, final int i, final byte[] bArr) {
-            processChangesAndNotify(j, new Consumer() { // from class: com.android.server.input.BatteryController$DeviceMonitor$$ExternalSyntheticLambda5
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    BatteryController.DeviceMonitor.this.lambda$onBluetoothMetadataChanged$1(i, bArr, (Long) obj);
-                }
-            });
-        }
-
-        public /* synthetic */ void lambda$onBluetoothMetadataChanged$1(int i, byte[] bArr, Long l) {
-            updateBluetoothMetadataState(l.longValue(), i, bArr);
-        }
-
-        public final void updateBluetoothMetadataState(long j, int i, byte[] bArr) {
+        public final void updateBluetoothMetadataState(long j, byte[] bArr, int i) {
             if (i != 18) {
                 if (i != 19) {
                     return;
@@ -806,241 +377,70 @@ public final class BatteryController {
                 try {
                     this.mBluetoothMetadataBatteryLevel = Integer.parseInt(new String(bArr));
                 } catch (NumberFormatException unused) {
-                    Slog.wtf(BatteryController.TAG, "Failed to parse bluetooth METADATA_MAIN_BATTERY with value '" + new String(bArr) + "' for device " + this.mBluetoothDevice);
+                    boolean z = BatteryController.DEBUG;
+                    Slog.wtf("BatteryController", "Failed to parse bluetooth METADATA_MAIN_BATTERY with value '" + new String(bArr) + "' for device " + this.mBluetoothDevice);
                 }
             }
-        }
-
-        public State getBatteryStateForReporting() {
-            return (State) Objects.requireNonNullElseGet(resolveBluetoothBatteryState(), new Supplier() { // from class: com.android.server.input.BatteryController$DeviceMonitor$$ExternalSyntheticLambda0
-                @Override // java.util.function.Supplier
-                public final Object get() {
-                    BatteryController.State lambda$getBatteryStateForReporting$2;
-                    lambda$getBatteryStateForReporting$2 = BatteryController.DeviceMonitor.this.lambda$getBatteryStateForReporting$2();
-                    return lambda$getBatteryStateForReporting$2;
-                }
-            });
-        }
-
-        public /* synthetic */ State lambda$getBatteryStateForReporting$2() {
-            return new State(this.mState);
-        }
-
-        public State resolveBluetoothBatteryState() {
-            int i = this.mBluetoothMetadataBatteryLevel;
-            if ((i < 0 || i > 100) && ((i = this.mBluetoothBatteryLevel) < 0 || i > 100)) {
-                return null;
-            }
-            return new State(((IInputDeviceBatteryState) this.mState).deviceId, this.mBluetoothEventTime, true, this.mBluetoothMetadataBatteryStatus, i / 100.0f);
-        }
-
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("DeviceId=");
-            sb.append(((IInputDeviceBatteryState) this.mState).deviceId);
-            sb.append(", Name='");
-            sb.append(BatteryController.this.getInputDeviceName(((IInputDeviceBatteryState) this.mState).deviceId));
-            sb.append("', NativeBattery=");
-            sb.append(this.mState);
-            sb.append(", UEventListener=");
-            sb.append(this.mUEventBatteryListener != null ? "added" : "none");
-            sb.append(", BluetoothState=");
-            sb.append(resolveBluetoothBatteryState());
-            return sb.toString();
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class UsiDeviceMonitor extends DeviceMonitor {
-        public Runnable mValidityTimeoutCallback;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ListenerRecord {
+        public final BatteryController$ListenerRecord$$ExternalSyntheticLambda0 mDeathRecipient;
+        public final IInputDeviceBatteryListener mListener;
+        public final Set mMonitoredDevices = new ArraySet();
+        public final int mPid;
 
-        @Override // com.android.server.input.BatteryController.DeviceMonitor
-        public boolean isPersistent() {
-            return true;
-        }
-
-        @Override // com.android.server.input.BatteryController.DeviceMonitor
-        public void onPoll(long j) {
-        }
-
-        @Override // com.android.server.input.BatteryController.DeviceMonitor
-        public boolean requiresPolling() {
-            return false;
-        }
-
-        public UsiDeviceMonitor(int i) {
-            super(i);
-        }
-
-        @Override // com.android.server.input.BatteryController.DeviceMonitor
-        public void onUEvent(long j) {
-            processChangesAndNotify(j, new Consumer() { // from class: com.android.server.input.BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda3
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    BatteryController.UsiDeviceMonitor.this.lambda$onUEvent$0((Long) obj);
-                }
-            });
-        }
-
-        public /* synthetic */ void lambda$onUEvent$0(Long l) {
-            updateBatteryStateFromNative(l.longValue());
-            markUsiBatteryValid();
-        }
-
-        @Override // com.android.server.input.BatteryController.DeviceMonitor
-        public void onStylusGestureStarted(long j) {
-            processChangesAndNotify(j, new Consumer() { // from class: com.android.server.input.BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    BatteryController.UsiDeviceMonitor.this.lambda$onStylusGestureStarted$1((Long) obj);
-                }
-            });
-        }
-
-        public /* synthetic */ void lambda$onStylusGestureStarted$1(Long l) {
-            if ((this.mValidityTimeoutCallback != null) || ((IInputDeviceBatteryState) this.mState).capacity != DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                markUsiBatteryValid();
-            }
-        }
-
-        public /* synthetic */ void lambda$onTimeout$2(Long l) {
-            markUsiBatteryInvalid();
-        }
-
-        @Override // com.android.server.input.BatteryController.DeviceMonitor
-        public void onTimeout(long j) {
-            processChangesAndNotify(j, new Consumer() { // from class: com.android.server.input.BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda4
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    BatteryController.UsiDeviceMonitor.this.lambda$onTimeout$2((Long) obj);
-                }
-            });
-        }
-
-        @Override // com.android.server.input.BatteryController.DeviceMonitor
-        public void onConfiguration(long j) {
-            super.onConfiguration(j);
-            if (!this.mHasBattery) {
-                throw new IllegalStateException("UsiDeviceMonitor: USI devices are always expected to report a valid battery, but no battery was detected!");
-            }
-        }
-
-        public final void markUsiBatteryValid() {
-            if (this.mValidityTimeoutCallback != null) {
-                BatteryController.this.mHandler.removeCallbacks(this.mValidityTimeoutCallback);
-            } else {
-                final int i = ((IInputDeviceBatteryState) this.mState).deviceId;
-                this.mValidityTimeoutCallback = new Runnable() { // from class: com.android.server.input.BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda2
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        BatteryController.UsiDeviceMonitor.this.lambda$markUsiBatteryValid$3(i);
-                    }
-                };
-            }
-            BatteryController.this.mHandler.postDelayed(this.mValidityTimeoutCallback, 3600000L);
-        }
-
-        public /* synthetic */ void lambda$markUsiBatteryValid$3(int i) {
-            BatteryController.this.handleMonitorTimeout(i);
-        }
-
-        public final void markUsiBatteryInvalid() {
-            if (this.mValidityTimeoutCallback == null) {
-                return;
-            }
-            BatteryController.this.mHandler.removeCallbacks(this.mValidityTimeoutCallback);
-            this.mValidityTimeoutCallback = null;
-        }
-
-        @Override // com.android.server.input.BatteryController.DeviceMonitor
-        public State getBatteryStateForReporting() {
-            return (State) Objects.requireNonNullElseGet(resolveBluetoothBatteryState(), new Supplier() { // from class: com.android.server.input.BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda1
-                @Override // java.util.function.Supplier
-                public final Object get() {
-                    BatteryController.State lambda$getBatteryStateForReporting$4;
-                    lambda$getBatteryStateForReporting$4 = BatteryController.UsiDeviceMonitor.this.lambda$getBatteryStateForReporting$4();
-                    return lambda$getBatteryStateForReporting$4;
-                }
-            });
-        }
-
-        public /* synthetic */ State lambda$getBatteryStateForReporting$4() {
-            return this.mValidityTimeoutCallback != null ? new State(this.mState) : new State(((IInputDeviceBatteryState) this.mState).deviceId);
-        }
-
-        @Override // com.android.server.input.BatteryController.DeviceMonitor
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append(super.toString());
-            sb.append(", UsiStateIsValid=");
-            sb.append(this.mValidityTimeoutCallback != null);
-            return sb.toString();
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public interface UEventManager {
-
-        /* loaded from: classes2.dex */
-        public abstract class UEventBatteryListener {
-            public final UEventObserver mObserver = new UEventObserver() { // from class: com.android.server.input.BatteryController.UEventManager.UEventBatteryListener.1
-                public AnonymousClass1() {
-                }
-
-                public void onUEvent(UEventObserver.UEvent uEvent) {
-                    long uptimeMillis = SystemClock.uptimeMillis();
-                    if (BatteryController.DEBUG) {
-                        Slog.d(BatteryController.TAG, "UEventListener: Received UEvent: " + uEvent + " eventTime: " + uptimeMillis);
-                    }
-                    if ("CHANGE".equalsIgnoreCase(uEvent.get("ACTION")) && "POWER_SUPPLY".equalsIgnoreCase(uEvent.get("SUBSYSTEM"))) {
-                        UEventBatteryListener.this.onBatteryUEvent(uptimeMillis);
+        /* JADX WARN: Type inference failed for: r1v2, types: [com.android.server.input.BatteryController$ListenerRecord$$ExternalSyntheticLambda0] */
+        public ListenerRecord(final int i, IInputDeviceBatteryListener iInputDeviceBatteryListener) {
+            this.mPid = i;
+            this.mListener = iInputDeviceBatteryListener;
+            this.mDeathRecipient = new IBinder.DeathRecipient() { // from class: com.android.server.input.BatteryController$ListenerRecord$$ExternalSyntheticLambda0
+                @Override // android.os.IBinder.DeathRecipient
+                public final void binderDied() {
+                    BatteryController.ListenerRecord listenerRecord = BatteryController.ListenerRecord.this;
+                    int i2 = i;
+                    BatteryController batteryController = BatteryController.this;
+                    synchronized (batteryController.mLock) {
+                        try {
+                            BatteryController.ListenerRecord listenerRecord2 = (BatteryController.ListenerRecord) batteryController.mListenerRecords.get(Integer.valueOf(i2));
+                            if (listenerRecord2 == null) {
+                                return;
+                            }
+                            if (BatteryController.DEBUG) {
+                                Slog.d("BatteryController", "Removing battery listener for pid " + i2 + " because the process died");
+                            }
+                            Iterator it = ((ArraySet) listenerRecord2.mMonitoredDevices).iterator();
+                            while (it.hasNext()) {
+                                batteryController.unregisterRecordLocked(listenerRecord2, ((Integer) it.next()).intValue());
+                            }
+                        } finally {
+                        }
                     }
                 }
             };
-
-            public abstract void onBatteryUEvent(long j);
-
-            /* renamed from: com.android.server.input.BatteryController$UEventManager$UEventBatteryListener$1 */
-            /* loaded from: classes2.dex */
-            public class AnonymousClass1 extends UEventObserver {
-                public AnonymousClass1() {
-                }
-
-                public void onUEvent(UEventObserver.UEvent uEvent) {
-                    long uptimeMillis = SystemClock.uptimeMillis();
-                    if (BatteryController.DEBUG) {
-                        Slog.d(BatteryController.TAG, "UEventListener: Received UEvent: " + uEvent + " eventTime: " + uptimeMillis);
-                    }
-                    if ("CHANGE".equalsIgnoreCase(uEvent.get("ACTION")) && "POWER_SUPPLY".equalsIgnoreCase(uEvent.get("SUBSYSTEM"))) {
-                        UEventBatteryListener.this.onBatteryUEvent(uptimeMillis);
-                    }
-                }
-            }
         }
 
-        default void addListener(UEventBatteryListener uEventBatteryListener, String str) {
-            uEventBatteryListener.mObserver.startObserving(str);
-        }
-
-        default void removeListener(UEventBatteryListener uEventBatteryListener) {
-            uEventBatteryListener.mObserver.stopObserving();
+        public final String toString() {
+            return "pid=" + this.mPid + ", monitored devices=" + Arrays.toString(((ArraySet) this.mMonitoredDevices).toArray());
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class LocalBluetoothBatteryManager implements BluetoothBatteryManager {
-        public final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.input.BatteryController.LocalBluetoothBatteryManager.1
-            public AnonymousClass1() {
-            }
-
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalBluetoothBatteryManager implements BluetoothBatteryManager {
+        public final AnonymousClass1 mBroadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.input.BatteryController.LocalBluetoothBatteryManager.1
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
+            public final void onReceive(Context context, Intent intent) {
                 BluetoothDevice bluetoothDevice;
                 if ("android.bluetooth.device.action.BATTERY_LEVEL_CHANGED".equals(intent.getAction()) && (bluetoothDevice = (BluetoothDevice) intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE", BluetoothDevice.class)) != null) {
                     int intExtra = intent.getIntExtra("android.bluetooth.device.extra.BATTERY_LEVEL", -1);
                     synchronized (LocalBluetoothBatteryManager.this.mBroadcastReceiver) {
-                        if (LocalBluetoothBatteryManager.this.mRegisteredListener != null) {
-                            LocalBluetoothBatteryManager.this.mRegisteredListener.onBluetoothBatteryChanged(SystemClock.uptimeMillis(), bluetoothDevice.getAddress(), intExtra);
+                        try {
+                            if (LocalBluetoothBatteryManager.this.mRegisteredListener != null) {
+                                LocalBluetoothBatteryManager.this.mRegisteredListener.onBluetoothBatteryChanged(intExtra, bluetoothDevice.getAddress(), SystemClock.uptimeMillis());
+                            }
+                        } catch (Throwable th) {
+                            throw th;
                         }
                     }
                 }
@@ -1050,108 +450,78 @@ public final class BatteryController {
         public final Executor mExecutor;
         public BluetoothBatteryManager.BluetoothBatteryListener mRegisteredListener;
 
-        /* renamed from: com.android.server.input.BatteryController$LocalBluetoothBatteryManager$1 */
-        /* loaded from: classes2.dex */
-        public class AnonymousClass1 extends BroadcastReceiver {
-            public AnonymousClass1() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                BluetoothDevice bluetoothDevice;
-                if ("android.bluetooth.device.action.BATTERY_LEVEL_CHANGED".equals(intent.getAction()) && (bluetoothDevice = (BluetoothDevice) intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE", BluetoothDevice.class)) != null) {
-                    int intExtra = intent.getIntExtra("android.bluetooth.device.extra.BATTERY_LEVEL", -1);
-                    synchronized (LocalBluetoothBatteryManager.this.mBroadcastReceiver) {
-                        if (LocalBluetoothBatteryManager.this.mRegisteredListener != null) {
-                            LocalBluetoothBatteryManager.this.mRegisteredListener.onBluetoothBatteryChanged(SystemClock.uptimeMillis(), bluetoothDevice.getAddress(), intExtra);
-                        }
-                    }
-                }
-            }
-        }
-
+        /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.input.BatteryController$LocalBluetoothBatteryManager$1] */
         public LocalBluetoothBatteryManager(Context context, Looper looper) {
             this.mContext = context;
             this.mExecutor = new HandlerExecutor(new Handler(looper));
         }
 
         @Override // com.android.server.input.BatteryController.BluetoothBatteryManager
-        public void addBatteryListener(BluetoothBatteryManager.BluetoothBatteryListener bluetoothBatteryListener) {
+        public final void addBatteryListener(BatteryController$$ExternalSyntheticLambda4 batteryController$$ExternalSyntheticLambda4) {
             synchronized (this.mBroadcastReceiver) {
-                if (this.mRegisteredListener != null) {
-                    throw new IllegalStateException("Only one bluetooth battery listener can be registered at once.");
+                try {
+                    if (this.mRegisteredListener != null) {
+                        throw new IllegalStateException("Only one bluetooth battery listener can be registered at once.");
+                    }
+                    this.mRegisteredListener = batteryController$$ExternalSyntheticLambda4;
+                    this.mContext.registerReceiver(this.mBroadcastReceiver, new IntentFilter("android.bluetooth.device.action.BATTERY_LEVEL_CHANGED"));
+                } catch (Throwable th) {
+                    throw th;
                 }
-                this.mRegisteredListener = bluetoothBatteryListener;
-                this.mContext.registerReceiver(this.mBroadcastReceiver, new IntentFilter("android.bluetooth.device.action.BATTERY_LEVEL_CHANGED"));
             }
         }
 
         @Override // com.android.server.input.BatteryController.BluetoothBatteryManager
-        public void removeBatteryListener(BluetoothBatteryManager.BluetoothBatteryListener bluetoothBatteryListener) {
-            synchronized (this.mBroadcastReceiver) {
-                if (!bluetoothBatteryListener.equals(this.mRegisteredListener)) {
-                    throw new IllegalStateException("Listener is not registered.");
-                }
-                this.mRegisteredListener = null;
-                this.mContext.unregisterReceiver(this.mBroadcastReceiver);
-            }
-        }
-
-        @Override // com.android.server.input.BatteryController.BluetoothBatteryManager
-        public int getBatteryLevel(String str) {
-            return BatteryController.getBluetoothDevice(this.mContext, str).getBatteryLevel();
-        }
-
-        @Override // com.android.server.input.BatteryController.BluetoothBatteryManager
-        public void addMetadataListener(String str, BluetoothAdapter.OnMetadataChangedListener onMetadataChangedListener) {
+        public final void addMetadataListener(String str, BluetoothAdapter.OnMetadataChangedListener onMetadataChangedListener) {
             BluetoothManager bluetoothManager = (BluetoothManager) this.mContext.getSystemService(BluetoothManager.class);
             Objects.requireNonNull(bluetoothManager);
             bluetoothManager.getAdapter().addOnMetadataChangedListener(BatteryController.getBluetoothDevice(this.mContext, str), this.mExecutor, onMetadataChangedListener);
         }
 
         @Override // com.android.server.input.BatteryController.BluetoothBatteryManager
-        public void removeMetadataListener(String str, BluetoothAdapter.OnMetadataChangedListener onMetadataChangedListener) {
+        public final int getBatteryLevel(String str) {
+            return BatteryController.getBluetoothDevice(this.mContext, str).getBatteryLevel();
+        }
+
+        @Override // com.android.server.input.BatteryController.BluetoothBatteryManager
+        public final byte[] getMetadata(int i, String str) {
+            return BatteryController.getBluetoothDevice(this.mContext, str).getMetadata(i);
+        }
+
+        @Override // com.android.server.input.BatteryController.BluetoothBatteryManager
+        public final void removeBatteryListener(BluetoothBatteryManager.BluetoothBatteryListener bluetoothBatteryListener) {
+            synchronized (this.mBroadcastReceiver) {
+                try {
+                    if (!bluetoothBatteryListener.equals(this.mRegisteredListener)) {
+                        throw new IllegalStateException("Listener is not registered.");
+                    }
+                    this.mRegisteredListener = null;
+                    this.mContext.unregisterReceiver(this.mBroadcastReceiver);
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        @Override // com.android.server.input.BatteryController.BluetoothBatteryManager
+        public final void removeMetadataListener(String str, BluetoothAdapter.OnMetadataChangedListener onMetadataChangedListener) {
             BluetoothManager bluetoothManager = (BluetoothManager) this.mContext.getSystemService(BluetoothManager.class);
             Objects.requireNonNull(bluetoothManager);
             bluetoothManager.getAdapter().removeOnMetadataChangedListener(BatteryController.getBluetoothDevice(this.mContext, str), onMetadataChangedListener);
         }
-
-        @Override // com.android.server.input.BatteryController.BluetoothBatteryManager
-        public byte[] getMetadata(String str, int i) {
-            return BatteryController.getBluetoothDevice(this.mContext, str).getMetadata(i);
-        }
     }
 
-    /* loaded from: classes2.dex */
-    public class State extends IInputDeviceBatteryState {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class State extends IInputDeviceBatteryState {
         public State(int i) {
-            reset(i);
-        }
-
-        public State(IInputDeviceBatteryState iInputDeviceBatteryState) {
-            copyFrom(iInputDeviceBatteryState);
+            ((IInputDeviceBatteryState) this).deviceId = i;
+            ((IInputDeviceBatteryState) this).updateTime = 0L;
+            ((IInputDeviceBatteryState) this).isPresent = false;
+            ((IInputDeviceBatteryState) this).status = 1;
+            ((IInputDeviceBatteryState) this).capacity = Float.NaN;
         }
 
         public State(int i, long j, boolean z, int i2, float f) {
-            initialize(i, j, z, i2, f);
-        }
-
-        public void updateIfChanged(IInputDeviceBatteryState iInputDeviceBatteryState) {
-            if (equalsIgnoringUpdateTime(iInputDeviceBatteryState)) {
-                return;
-            }
-            copyFrom(iInputDeviceBatteryState);
-        }
-
-        public void reset(int i) {
-            initialize(i, 0L, false, 1, Float.NaN);
-        }
-
-        public final void copyFrom(IInputDeviceBatteryState iInputDeviceBatteryState) {
-            initialize(iInputDeviceBatteryState.deviceId, iInputDeviceBatteryState.updateTime, iInputDeviceBatteryState.isPresent, iInputDeviceBatteryState.status, iInputDeviceBatteryState.capacity);
-        }
-
-        public final void initialize(int i, long j, boolean z, int i2, float f) {
             ((IInputDeviceBatteryState) this).deviceId = i;
             ((IInputDeviceBatteryState) this).updateTime = j;
             ((IInputDeviceBatteryState) this).isPresent = z;
@@ -1159,15 +529,20 @@ public final class BatteryController {
             ((IInputDeviceBatteryState) this).capacity = f;
         }
 
-        public boolean equalsIgnoringUpdateTime(IInputDeviceBatteryState iInputDeviceBatteryState) {
-            long j = ((IInputDeviceBatteryState) this).updateTime;
-            ((IInputDeviceBatteryState) this).updateTime = iInputDeviceBatteryState.updateTime;
-            boolean equals = equals(iInputDeviceBatteryState);
+        public State(IInputDeviceBatteryState iInputDeviceBatteryState) {
+            int i = iInputDeviceBatteryState.deviceId;
+            long j = iInputDeviceBatteryState.updateTime;
+            boolean z = iInputDeviceBatteryState.isPresent;
+            int i2 = iInputDeviceBatteryState.status;
+            float f = iInputDeviceBatteryState.capacity;
+            ((IInputDeviceBatteryState) this).deviceId = i;
             ((IInputDeviceBatteryState) this).updateTime = j;
-            return equals;
+            ((IInputDeviceBatteryState) this).isPresent = z;
+            ((IInputDeviceBatteryState) this).status = i2;
+            ((IInputDeviceBatteryState) this).capacity = f;
         }
 
-        public String toString() {
+        public final String toString() {
             if (!((IInputDeviceBatteryState) this).isPresent) {
                 return "State{<not present>}";
             }
@@ -1175,8 +550,128 @@ public final class BatteryController {
         }
     }
 
-    public static boolean anyOf(ArrayMap arrayMap, Predicate predicate) {
-        return findIf(arrayMap, predicate) != null;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    abstract class UEventBatteryListener extends UEventManager.UEventListener {
+        public abstract void onBatteryUEvent(long j);
+
+        @Override // com.android.server.input.UEventManager.UEventListener
+        public final void onUEvent(UEventObserver.UEvent uEvent) {
+            long uptimeMillis = SystemClock.uptimeMillis();
+            if (BatteryController.DEBUG) {
+                Slog.d("BatteryController", "UEventListener: Received UEvent: " + uEvent + " eventTime: " + uptimeMillis);
+            }
+            if ("CHANGE".equalsIgnoreCase(uEvent.get("ACTION")) && "POWER_SUPPLY".equalsIgnoreCase(uEvent.get("SUBSYSTEM"))) {
+                onBatteryUEvent(uptimeMillis);
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UsiDeviceMonitor extends DeviceMonitor {
+        public BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda2 mValidityTimeoutCallback;
+
+        public UsiDeviceMonitor(int i) {
+            super(i);
+        }
+
+        @Override // com.android.server.input.BatteryController.DeviceMonitor
+        public final State getBatteryStateForReporting() {
+            return (State) Objects.requireNonNullElseGet(resolveBluetoothBatteryState(), new BatteryController$DeviceMonitor$$ExternalSyntheticLambda1(this, 1));
+        }
+
+        /* JADX WARN: Type inference failed for: r2v0, types: [com.android.server.input.BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda2] */
+        public final void markUsiBatteryValid() {
+            BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda2 batteryController$UsiDeviceMonitor$$ExternalSyntheticLambda2 = this.mValidityTimeoutCallback;
+            BatteryController batteryController = BatteryController.this;
+            if (batteryController$UsiDeviceMonitor$$ExternalSyntheticLambda2 != null) {
+                batteryController.mHandler.removeCallbacks(batteryController$UsiDeviceMonitor$$ExternalSyntheticLambda2);
+            } else {
+                final int i = ((IInputDeviceBatteryState) this.mState).deviceId;
+                this.mValidityTimeoutCallback = new Runnable() { // from class: com.android.server.input.BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda2
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        BatteryController.UsiDeviceMonitor usiDeviceMonitor = BatteryController.UsiDeviceMonitor.this;
+                        int i2 = i;
+                        BatteryController batteryController2 = BatteryController.this;
+                        synchronized (batteryController2.mLock) {
+                            try {
+                                BatteryController.DeviceMonitor deviceMonitor = (BatteryController.DeviceMonitor) batteryController2.mDeviceMonitors.get(Integer.valueOf(i2));
+                                if (deviceMonitor == null) {
+                                    return;
+                                }
+                                deviceMonitor.onTimeout(SystemClock.uptimeMillis());
+                            } finally {
+                            }
+                        }
+                    }
+                };
+            }
+            batteryController.mHandler.postDelayed(this.mValidityTimeoutCallback, 3600000L);
+        }
+
+        @Override // com.android.server.input.BatteryController.DeviceMonitor
+        public final void onConfiguration(long j) {
+            super.onConfiguration(j);
+            if (!this.mHasBattery) {
+                throw new IllegalStateException("UsiDeviceMonitor: USI devices are always expected to report a valid battery, but no battery was detected!");
+            }
+        }
+
+        @Override // com.android.server.input.BatteryController.DeviceMonitor
+        public final void onPoll(long j) {
+        }
+
+        @Override // com.android.server.input.BatteryController.DeviceMonitor
+        public final void onStylusGestureStarted(long j) {
+            processChangesAndNotify(j, new BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda0(this, 0));
+        }
+
+        @Override // com.android.server.input.BatteryController.DeviceMonitor
+        public final void onTimeout(long j) {
+            processChangesAndNotify(j, new BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda0(this, 2));
+        }
+
+        @Override // com.android.server.input.BatteryController.DeviceMonitor
+        public final void onUEvent(long j) {
+            processChangesAndNotify(j, new BatteryController$UsiDeviceMonitor$$ExternalSyntheticLambda0(this, 1));
+        }
+
+        @Override // com.android.server.input.BatteryController.DeviceMonitor
+        public final String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append(super.toString());
+            sb.append(", UsiStateIsValid=");
+            sb.append(this.mValidityTimeoutCallback != null);
+            return sb.toString();
+        }
+    }
+
+    public static void $r8$lambda$CQleDsNEE174VGVNEyfPVkU2Ab0(BatteryController batteryController) {
+        synchronized (batteryController.mLock) {
+            try {
+                if (batteryController.mIsPolling) {
+                    final long uptimeMillis = SystemClock.uptimeMillis();
+                    batteryController.mDeviceMonitors.forEach(new BiConsumer() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda8
+                        @Override // java.util.function.BiConsumer
+                        public final void accept(Object obj, Object obj2) {
+                            long j = uptimeMillis;
+                            boolean z = BatteryController.DEBUG;
+                            ((BatteryController.DeviceMonitor) obj2).onPoll(j);
+                        }
+                    });
+                    batteryController.mHandler.postDelayed(new BatteryController$$ExternalSyntheticLambda2(batteryController), POLLING_PERIOD_MILLIS);
+                }
+            } finally {
+            }
+        }
+    }
+
+    public BatteryController(Context context, NativeInputManagerService nativeInputManagerService, Looper looper, UEventManager uEventManager, BluetoothBatteryManager bluetoothBatteryManager) {
+        this.mContext = context;
+        this.mNative = nativeInputManagerService;
+        this.mHandler = new Handler(looper);
+        this.mUEventManager = uEventManager;
+        this.mBluetoothBatteryManager = bluetoothBatteryManager;
     }
 
     public static Object findIf(ArrayMap arrayMap, Predicate predicate) {
@@ -1187,5 +682,146 @@ public final class BatteryController {
             }
         }
         return null;
+    }
+
+    public static BluetoothDevice getBluetoothDevice(Context context, String str) {
+        if (str == null) {
+            return null;
+        }
+        BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(BluetoothManager.class);
+        Objects.requireNonNull(bluetoothManager);
+        return bluetoothManager.getAdapter().getRemoteDevice(str);
+    }
+
+    public static void notifyBatteryListener(ListenerRecord listenerRecord, State state) {
+        try {
+            listenerRecord.mListener.onBatteryStateChanged(state);
+        } catch (RemoteException e) {
+            Slog.e("BatteryController", "Failed to notify listener", e);
+        }
+        if (DEBUG) {
+            StringBuilder sb = new StringBuilder("Notified battery listener from pid ");
+            sb.append(listenerRecord.mPid);
+            sb.append(" of state of deviceId ");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(sb, ((IInputDeviceBatteryState) state).deviceId, "BatteryController");
+        }
+    }
+
+    public final void monitor() {
+        synchronized (this.mLock) {
+        }
+    }
+
+    public final Object processInputDevice(int i, Object obj, Function function) {
+        InputManager inputManager = (InputManager) this.mContext.getSystemService(InputManager.class);
+        Objects.requireNonNull(inputManager);
+        InputDevice inputDevice = inputManager.getInputDevice(i);
+        return inputDevice == null ? obj : function.apply(inputDevice);
+    }
+
+    public final State queryBatteryStateFromNative(int i, long j, boolean z) {
+        return new State(i, j, z, z ? this.mNative.getBatteryStatus(i) : 1, z ? r8.getBatteryCapacity(i) / 100.0f : Float.NaN);
+    }
+
+    public final void unregisterRecordLocked(ListenerRecord listenerRecord, int i) {
+        boolean remove = ((ArraySet) listenerRecord.mMonitoredDevices).remove(Integer.valueOf(i));
+        int i2 = listenerRecord.mPid;
+        if (!remove) {
+            throw new IllegalStateException(ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "Cannot unregister battery callback: The deviceId ", " is not being monitored by pid "));
+        }
+        int i3 = 0;
+        while (true) {
+            if (i3 < this.mListenerRecords.size()) {
+                if (((ArraySet) ((ListenerRecord) this.mListenerRecords.valueAt(i3)).mMonitoredDevices).contains(Integer.valueOf(i))) {
+                    break;
+                } else {
+                    i3++;
+                }
+            } else {
+                DeviceMonitor deviceMonitor = (DeviceMonitor) this.mDeviceMonitors.get(Integer.valueOf(i));
+                Objects.requireNonNull(deviceMonitor, "Maps are out of sync: Cannot find device state for deviceId " + i);
+                if (!(deviceMonitor instanceof UsiDeviceMonitor)) {
+                    DeviceMonitor.AnonymousClass1 anonymousClass1 = deviceMonitor.mUEventBatteryListener;
+                    BatteryController batteryController = BatteryController.this;
+                    if (anonymousClass1 != null) {
+                        batteryController.mUEventManager.getClass();
+                        anonymousClass1.mObserver.stopObserving();
+                        deviceMonitor.mUEventBatteryListener = null;
+                    }
+                    deviceMonitor.stopBluetoothMetadataMonitoring();
+                    deviceMonitor.mBluetoothDevice = null;
+                    batteryController.updateBluetoothBatteryMonitoring();
+                    this.mDeviceMonitors.remove(Integer.valueOf(i));
+                }
+            }
+        }
+        if (((ArraySet) listenerRecord.mMonitoredDevices).isEmpty()) {
+            listenerRecord.mListener.asBinder().unlinkToDeath(listenerRecord.mDeathRecipient, 0);
+            this.mListenerRecords.remove(Integer.valueOf(i2));
+            if (DEBUG) {
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(i2, "Battery listener removed for pid ", "BatteryController");
+            }
+        }
+        updatePollingLocked(false);
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r1v9, types: [com.android.server.input.BatteryController$$ExternalSyntheticLambda4] */
+    public final void updateBluetoothBatteryMonitoring() {
+        synchronized (this.mLock) {
+            try {
+                if (findIf(this.mDeviceMonitors, new BatteryController$$ExternalSyntheticLambda1(1)) != null) {
+                    if (this.mBluetoothBatteryListener == null) {
+                        if (DEBUG) {
+                            Slog.d("BatteryController", "Registering bluetooth battery listener");
+                        }
+                        ?? r1 = new BluetoothBatteryManager.BluetoothBatteryListener() { // from class: com.android.server.input.BatteryController$$ExternalSyntheticLambda4
+                            @Override // com.android.server.input.BatteryController.BluetoothBatteryManager.BluetoothBatteryListener
+                            public final void onBluetoothBatteryChanged(final int i, String str, long j) {
+                                BatteryController batteryController = BatteryController.this;
+                                synchronized (batteryController.mLock) {
+                                    final BatteryController.DeviceMonitor deviceMonitor = (BatteryController.DeviceMonitor) BatteryController.findIf(batteryController.mDeviceMonitors, new BatteryController$$ExternalSyntheticLambda9(0, str));
+                                    if (deviceMonitor != null) {
+                                        deviceMonitor.processChangesAndNotify(j, new Consumer() { // from class: com.android.server.input.BatteryController$DeviceMonitor$$ExternalSyntheticLambda4
+                                            @Override // java.util.function.Consumer
+                                            public final void accept(Object obj) {
+                                                BatteryController.DeviceMonitor deviceMonitor2 = BatteryController.DeviceMonitor.this;
+                                                deviceMonitor2.mBluetoothBatteryLevel = i;
+                                                deviceMonitor2.mBluetoothEventTime = ((Long) obj).longValue();
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        };
+                        this.mBluetoothBatteryListener = r1;
+                        this.mBluetoothBatteryManager.addBatteryListener(r1);
+                    }
+                } else if (this.mBluetoothBatteryListener != null) {
+                    if (DEBUG) {
+                        Slog.d("BatteryController", "Unregistering bluetooth battery listener");
+                    }
+                    this.mBluetoothBatteryManager.removeBatteryListener(this.mBluetoothBatteryListener);
+                    this.mBluetoothBatteryListener = null;
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void updatePollingLocked(boolean z) {
+        boolean z2 = this.mIsInteractive;
+        Handler handler = this.mHandler;
+        if (!z2 || findIf(this.mDeviceMonitors, new BatteryController$$ExternalSyntheticLambda1(0)) == null) {
+            this.mIsPolling = false;
+            handler.removeCallbacks(new BatteryController$$ExternalSyntheticLambda2(this));
+        } else {
+            if (this.mIsPolling) {
+                return;
+            }
+            this.mIsPolling = true;
+            handler.postDelayed(new BatteryController$$ExternalSyntheticLambda2(this), z ? POLLING_PERIOD_MILLIS : 0L);
+        }
     }
 }

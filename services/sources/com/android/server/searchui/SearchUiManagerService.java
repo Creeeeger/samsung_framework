@@ -14,111 +14,31 @@ import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.os.ShellCallback;
 import android.util.Slog;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.infra.AbstractMasterSystemService;
+import com.android.server.infra.AbstractPerUserSystemService;
 import com.android.server.infra.FrameworkResourcesServiceNameResolver;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import java.io.FileDescriptor;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class SearchUiManagerService extends AbstractMasterSystemService {
-    public static final String TAG = "SearchUiManagerService";
-    public ActivityTaskManagerInternal mActivityTaskManagerInternal;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SearchUiManagerService extends AbstractMasterSystemService {
+    public final ActivityTaskManagerInternal mActivityTaskManagerInternal;
 
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public int getMaximumTemporaryServiceDurationMs() {
-        return 120000;
-    }
-
-    public SearchUiManagerService(Context context) {
-        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.face_acquired_too_far), null, 17);
-        this.mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public SearchUiPerUserService newServiceLocked(int i, boolean z) {
-        return new SearchUiPerUserService(this, this.mLock, i);
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        publishBinderService("search_ui", new SearchUiManagerStub());
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void enforceCallingPermissionForManagement() {
-        getContext().enforceCallingPermission("android.permission.MANAGE_SEARCH_UI", TAG);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServicePackageUpdatedLocked(int i) {
-        SearchUiPerUserService searchUiPerUserService = (SearchUiPerUserService) peekServiceForUserLocked(i);
-        if (searchUiPerUserService != null) {
-            searchUiPerUserService.onPackageUpdatedLocked();
-        }
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServicePackageRestartedLocked(int i) {
-        SearchUiPerUserService searchUiPerUserService = (SearchUiPerUserService) peekServiceForUserLocked(i);
-        if (searchUiPerUserService != null) {
-            searchUiPerUserService.onPackageRestartedLocked();
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class SearchUiManagerStub extends ISearchUiManager.Stub {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SearchUiManagerStub extends ISearchUiManager.Stub {
         public SearchUiManagerStub() {
         }
 
-        public void createSearchSession(final SearchContext searchContext, final SearchSessionId searchSessionId, final IBinder iBinder) {
-            runForUserLocked("createSearchSession", searchSessionId, new Consumer() { // from class: com.android.server.searchui.SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SearchUiPerUserService) obj).onCreateSearchSessionLocked(searchContext, searchSessionId, iBinder);
-                }
-            });
+        public final void createSearchSession(SearchContext searchContext, SearchSessionId searchSessionId, IBinder iBinder) {
+            runForUserLocked("createSearchSession", searchSessionId, new SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda0(searchContext, searchSessionId, iBinder));
         }
 
-        public void notifyEvent(final SearchSessionId searchSessionId, final Query query, final SearchTargetEvent searchTargetEvent) {
-            runForUserLocked("notifyEvent", searchSessionId, new Consumer() { // from class: com.android.server.searchui.SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda5
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SearchUiPerUserService) obj).notifyLocked(searchSessionId, query, searchTargetEvent);
-                }
-            });
-        }
-
-        public void query(final SearchSessionId searchSessionId, final Query query, final ISearchCallback iSearchCallback) {
-            runForUserLocked("query", searchSessionId, new Consumer() { // from class: com.android.server.searchui.SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda2
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SearchUiPerUserService) obj).queryLocked(searchSessionId, query, iSearchCallback);
-                }
-            });
-        }
-
-        public void registerEmptyQueryResultUpdateCallback(final SearchSessionId searchSessionId, final ISearchCallback iSearchCallback) {
-            runForUserLocked("registerEmptyQueryResultUpdateCallback", searchSessionId, new Consumer() { // from class: com.android.server.searchui.SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda4
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SearchUiPerUserService) obj).registerEmptyQueryResultUpdateCallbackLocked(searchSessionId, iSearchCallback);
-                }
-            });
-        }
-
-        public void unregisterEmptyQueryResultUpdateCallback(final SearchSessionId searchSessionId, final ISearchCallback iSearchCallback) {
-            runForUserLocked("unregisterEmptyQueryResultUpdateCallback", searchSessionId, new Consumer() { // from class: com.android.server.searchui.SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda1
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SearchUiPerUserService) obj).unregisterEmptyQueryResultUpdateCallbackLocked(searchSessionId, iSearchCallback);
-                }
-            });
-        }
-
-        public void destroySearchSession(final SearchSessionId searchSessionId) {
-            runForUserLocked("destroySearchSession", searchSessionId, new Consumer() { // from class: com.android.server.searchui.SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda3
+        public final void destroySearchSession(final SearchSessionId searchSessionId) {
+            runForUserLocked("destroySearchSession", searchSessionId, new Consumer() { // from class: com.android.server.searchui.SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda5
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     ((SearchUiPerUserService) obj).onDestroyLocked(searchSessionId);
@@ -126,26 +46,94 @@ public class SearchUiManagerService extends AbstractMasterSystemService {
             });
         }
 
+        public final void notifyEvent(SearchSessionId searchSessionId, Query query, SearchTargetEvent searchTargetEvent) {
+            runForUserLocked("notifyEvent", searchSessionId, new SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda0(searchSessionId, query, searchTargetEvent, 0));
+        }
+
         /* JADX WARN: Multi-variable type inference failed */
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
             new SearchUiManagerServiceShellCommand(SearchUiManagerService.this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+        }
+
+        public final void query(SearchSessionId searchSessionId, Query query, ISearchCallback iSearchCallback) {
+            runForUserLocked("query", searchSessionId, new SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda0(searchSessionId, query, iSearchCallback, 1));
+        }
+
+        public final void registerEmptyQueryResultUpdateCallback(SearchSessionId searchSessionId, ISearchCallback iSearchCallback) {
+            runForUserLocked("registerEmptyQueryResultUpdateCallback", searchSessionId, new SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda3(searchSessionId, iSearchCallback, 0));
         }
 
         public final void runForUserLocked(String str, SearchSessionId searchSessionId, Consumer consumer) {
             int handleIncomingUser = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), searchSessionId.getUserId(), false, 0, (String) null, (String) null);
-            if (!SearchUiManagerService.this.mServiceNameResolver.isTemporary(handleIncomingUser) && !SearchUiManagerService.this.mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid())) {
-                String str2 = "Permission Denial: " + str + " from pid=" + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid();
-                Slog.w(SearchUiManagerService.TAG, str2);
-                throw new SecurityException(str2);
-            }
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                synchronized (SearchUiManagerService.this.mLock) {
-                    consumer.accept((SearchUiPerUserService) SearchUiManagerService.this.getServiceForUserLocked(handleIncomingUser));
+            if (SearchUiManagerService.this.mServiceNameResolver.isTemporary(handleIncomingUser) || SearchUiManagerService.this.mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid())) {
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (SearchUiManagerService.this.mLock) {
+                        consumer.accept((SearchUiPerUserService) SearchUiManagerService.this.getServiceForUserLocked(handleIncomingUser));
+                    }
+                    return;
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
             }
+            StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Permission Denial: ", str, " from pid=");
+            m.append(Binder.getCallingPid());
+            m.append(", uid=");
+            m.append(Binder.getCallingUid());
+            String sb = m.toString();
+            Slog.w("SearchUiManagerService", sb);
+            throw new SecurityException(sb);
         }
+
+        public final void unregisterEmptyQueryResultUpdateCallback(SearchSessionId searchSessionId, ISearchCallback iSearchCallback) {
+            runForUserLocked("unregisterEmptyQueryResultUpdateCallback", searchSessionId, new SearchUiManagerService$SearchUiManagerStub$$ExternalSyntheticLambda3(searchSessionId, iSearchCallback, 1));
+        }
+    }
+
+    public SearchUiManagerService(Context context) {
+        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.demo_starting_message), null, 17);
+        this.mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void enforceCallingPermissionForManagement() {
+        getContext().enforceCallingPermission("android.permission.MANAGE_SEARCH_UI", "SearchUiManagerService");
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final int getMaximumTemporaryServiceDurationMs() {
+        return 120000;
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final AbstractPerUserSystemService newServiceLocked(int i, boolean z) {
+        return new SearchUiPerUserService(this, this.mLock, i);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServicePackageRestartedLocked(int i) {
+        SearchUiPerUserService searchUiPerUserService = (SearchUiPerUserService) peekServiceForUserLocked(i);
+        if (searchUiPerUserService != null) {
+            if (searchUiPerUserService.mMaster.debug) {
+                Slog.v("SearchUiPerUserService", "onPackageRestartedLocked()");
+            }
+            searchUiPerUserService.destroyAndRebindRemoteService$2();
+        }
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServicePackageUpdatedLocked(int i) {
+        SearchUiPerUserService searchUiPerUserService = (SearchUiPerUserService) peekServiceForUserLocked(i);
+        if (searchUiPerUserService != null) {
+            if (searchUiPerUserService.mMaster.debug) {
+                Slog.v("SearchUiPerUserService", "onPackageUpdatedLocked()");
+            }
+            searchUiPerUserService.destroyAndRebindRemoteService$2();
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        publishBinderService("search_ui", new SearchUiManagerStub());
     }
 }

@@ -2,48 +2,41 @@ package com.android.server.location.gnss.sec;
 
 import android.os.Build;
 import android.os.SystemProperties;
-import java.io.File;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 
-/* loaded from: classes2.dex */
-public class GnssVendorConfig {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class GnssVendorConfig {
     public static GnssVendorConfig mInstance;
 
     public static synchronized GnssVendorConfig getInstance() {
         GnssVendorConfig gnssVendorConfig;
         synchronized (GnssVendorConfig.class) {
-            if (mInstance == null) {
-                mInstance = new GnssVendorConfig();
+            try {
+                if (mInstance == null) {
+                    mInstance = new GnssVendorConfig();
+                }
+                gnssVendorConfig = mInstance;
+            } catch (Throwable th) {
+                throw th;
             }
-            gnssVendorConfig = mInstance;
         }
         return gnssVendorConfig;
     }
 
-    public boolean isIzatServiceEnabled() {
-        return isQcomHardware() && !isNonQcomGnss();
+    public static boolean isBroadcomGnss() {
+        return BatteryService$$ExternalSyntheticOutline0.m45m("vendor/etc/gnss/gps.xml");
     }
 
-    public boolean isQcomHardware() {
-        return "qcom".equals(Build.HARDWARE);
+    public static boolean isIzatServiceEnabled() {
+        return (!"qcom".equals(Build.HARDWARE) || isBroadcomGnss() || isLsiGnss() || BatteryService$$ExternalSyntheticOutline0.m45m("vendor/etc/gnss/mnl.prop")) ? false : true;
     }
 
-    public boolean isNonQcomGnss() {
-        return isBroadcomGnss() || isLsiGnss() || isMtkGnss();
+    public static boolean isLsiGnss() {
+        return BatteryService$$ExternalSyntheticOutline0.m45m("vendor/etc/gnss/gps.cfg");
     }
 
-    public boolean isMtkGnss() {
-        return new File("vendor/etc/gnss/mnl.prop").exists();
-    }
-
-    public boolean isLsiGnss() {
-        return new File("vendor/etc/gnss/gps.cfg").exists();
-    }
-
-    public boolean isBroadcomGnss() {
-        return new File("vendor/etc/gnss/gps.xml").exists();
-    }
-
-    public boolean isUnisocGnss() {
+    public static boolean isUnisocGnss() {
         return SystemProperties.get("ro.hardware.chipname", "Unknown").toLowerCase().contains("unisoc");
     }
 }

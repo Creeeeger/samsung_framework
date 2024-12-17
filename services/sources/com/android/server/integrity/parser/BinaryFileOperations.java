@@ -5,43 +5,30 @@ import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
 import com.android.server.integrity.model.BitInputStream;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class BinaryFileOperations {
-    public static String getStringValue(BitInputStream bitInputStream) {
-        return getStringValue(bitInputStream, bitInputStream.getNext(8), bitInputStream.getNext(1) == 1);
-    }
-
     public static String getStringValue(BitInputStream bitInputStream, int i, boolean z) {
-        if (!z) {
-            StringBuilder sb = new StringBuilder();
-            while (true) {
-                int i2 = i - 1;
-                if (i > 0) {
-                    sb.append((char) bitInputStream.getNext(8));
-                    i = i2;
-                } else {
-                    return sb.toString();
-                }
-            }
-        } else {
+        if (z) {
             ByteBuffer allocate = ByteBuffer.allocate(i);
             while (true) {
-                int i3 = i - 1;
-                if (i > 0) {
-                    allocate.put((byte) (bitInputStream.getNext(8) & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT));
-                    i = i3;
-                } else {
+                int i2 = i - 1;
+                if (i <= 0) {
                     return IntegrityUtils.getHexDigest(allocate.array());
                 }
+                allocate.put((byte) (bitInputStream.getNext(8) & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT));
+                i = i2;
+            }
+        } else {
+            StringBuilder sb = new StringBuilder();
+            while (true) {
+                int i3 = i - 1;
+                if (i <= 0) {
+                    return sb.toString();
+                }
+                sb.append((char) bitInputStream.getNext(8));
+                i = i3;
             }
         }
-    }
-
-    public static int getIntValue(BitInputStream bitInputStream) {
-        return bitInputStream.getNext(32);
-    }
-
-    public static boolean getBooleanValue(BitInputStream bitInputStream) {
-        return bitInputStream.getNext(1) == 1;
     }
 }

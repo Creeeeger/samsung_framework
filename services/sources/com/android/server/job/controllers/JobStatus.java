@@ -4,9 +4,11 @@ import android.app.job.JobInfo;
 import android.app.job.JobWorkItem;
 import android.app.job.UserVisibleJobSummary;
 import android.content.ClipData;
-import android.content.ComponentName;
+import android.content.Intent;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.net.Network;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
@@ -18,12 +20,17 @@ import android.util.Patterns;
 import android.util.Slog;
 import android.util.TimeUtils;
 import android.util.proto.ProtoOutputStream;
-import com.android.internal.util.jobs.XmlUtils;
+import com.android.modules.expresslog.Counter;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.PinnerService$$ExternalSyntheticOutline0;
+import com.android.server.RCPManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.job.GrantedUriPermissions;
 import com.android.server.job.JobSchedulerInternal;
 import com.android.server.job.JobSchedulerService;
+import com.android.server.job.JobSchedulerService$$ExternalSyntheticLambda1;
 import com.android.server.job.controllers.ContentObserverController;
 import dalvik.annotation.optimization.NeverCompile;
 import java.io.PrintWriter;
@@ -31,17 +38,13 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Random;
-import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class JobStatus {
     public static final ArrayMap BASIC_PII_FILTERS;
-    public static final int CONSTRAINT_BATTERY_NOT_LOW = 2;
-    public static final int CONSTRAINT_CHARGING = 1;
-    public static final int CONSTRAINT_IDLE = 4;
     public static final int CONSTRAINT_STORAGE_NOT_LOW = 8;
-    static final long MIN_WINDOW_FOR_FLEXIBILITY_MS = 3600000;
     public static MessageDigest sMessageDigest;
     public boolean appHasDozeExemption;
     public final String batteryName;
@@ -55,45 +58,49 @@ public final class JobStatus {
     public final JobInfo job;
     public int lastEvaluatedBias;
     public final long latestRunTimeElapsedMillis;
+    public final boolean mCanApplyTransportAffinities;
     public int mConstraintChangeHistoryIndex;
     public final int[] mConstraintStatusHistory;
     public final long[] mConstraintUpdatedTimesElapsed;
     public long mCumulativeExecutionTimeMs;
     public int mDynamicConstraints;
     public boolean mExpeditedQuotaApproved;
-    public boolean mExpeditedTareApproved;
+    public String[] mFilteredDebugTags;
+    public String mFilteredTraceTag;
     public long mFirstForceBatchedTimeElapsed;
-    public boolean mHasAccessToUnmetered;
     public final boolean mHasExemptedMediaUrisOnly;
     public boolean mHasMediaBackupExemption;
     public int mInternalFlags;
+    public boolean mIsDowngradedDueToBuggyApp;
+    public final boolean mIsProxyJob;
     public boolean mIsUserBgRestricted;
-    public long mLastFailedRunTime;
-    public long mLastSuccessfulRunTime;
+    public JobSchedulerInternal mJobSchedulerInternal;
+    public final long mLastFailedRunTime;
+    public final long mLastSuccessfulRunTime;
     public boolean mLoggedBucketMismatch;
     public final long mLoggingJobId;
     public long mMinimumNetworkChunkBytes;
     public final String mNamespace;
     public final String mNamespaceHash;
+    public int mNumAppliedFlexibleConstraints;
     public int mNumDroppedFlexibleConstraints;
-    public final int mNumRequiredFlexibleConstraints;
     public final int mNumSystemStops;
     public long mOriginalLatestRunTimeElapsedMillis;
     public Pair mPersistedUtcTimes;
-    public final boolean mPreferUnmetered;
-    public final int mPreferredConstraints;
     public boolean mReadyDeadlineSatisfied;
     public boolean mReadyDynamicSatisfied;
     public boolean mReadyNotDozing;
     public boolean mReadyNotRestrictedInBg;
-    public boolean mReadyTareWealth;
     public boolean mReadyWithinQuota;
     public int mReasonReadyToUnready;
     public final int mRequiredConstraintsOfInterest;
     public int mSatisfiedConstraintsOfInterest;
+    public String mSystemTraceTag;
     public long mTotalNetworkDownloadBytes;
     public long mTotalNetworkUploadBytes;
+    public boolean mTransportAffinitiesSatisfied;
     public UserVisibleJobSummary mUserVisibleJobSummary;
+    public String mWakelockTag;
     public long madeActive;
     public long madePending;
     public Network network;
@@ -114,7 +121,6 @@ public final class JobStatus {
     public boolean startedAsUserInitiatedJob;
     public boolean startedWithForegroundFlag;
     public boolean startedWithImmediacyPrivilege;
-    public final String tag;
     public int trackingControllers;
     public boolean uidActive;
     public Throwable unpreparedPoint;
@@ -124,44 +130,6 @@ public final class JobStatus {
     public static final ArrayMap sNamespaceHashCache = new ArrayMap();
     public static final Uri[] MEDIA_URIS_FOR_STANDBY_EXEMPTION = {MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Video.Media.EXTERNAL_CONTENT_URI};
 
-    public static int getProtoConstraint(int i) {
-        int i2 = 1;
-        if (i != 1) {
-            i2 = 2;
-            if (i != 2) {
-                switch (i) {
-                    case Integer.MIN_VALUE:
-                        return 4;
-                    case 4:
-                        return 6;
-                    case 8:
-                        return 3;
-                    case 2097152:
-                        return 15;
-                    case 4194304:
-                        return 11;
-                    case 8388608:
-                        return 14;
-                    case 16777216:
-                        return 10;
-                    case 33554432:
-                        return 9;
-                    case 67108864:
-                        return 8;
-                    case 134217728:
-                        return 13;
-                    case 268435456:
-                        return 7;
-                    case 1073741824:
-                        return 5;
-                    default:
-                        return 0;
-                }
-            }
-        }
-        return i2;
-    }
-
     static {
         ArrayMap arrayMap = new ArrayMap();
         BASIC_PII_FILTERS = arrayMap;
@@ -169,1252 +137,87 @@ public final class JobStatus {
         arrayMap.put(Patterns.PHONE, "[PHONE]");
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:10:0x0095  */
-    /* JADX WARN: Removed duplicated region for block: B:13:0x00b0  */
-    /* JADX WARN: Removed duplicated region for block: B:18:0x00d5  */
-    /* JADX WARN: Removed duplicated region for block: B:21:0x0141  */
-    /* JADX WARN: Removed duplicated region for block: B:24:0x014a  */
-    /* JADX WARN: Removed duplicated region for block: B:27:0x0156  */
-    /* JADX WARN: Removed duplicated region for block: B:30:0x015f  */
-    /* JADX WARN: Removed duplicated region for block: B:33:0x016a  */
-    /* JADX WARN: Removed duplicated region for block: B:36:0x0173  */
-    /* JADX WARN: Removed duplicated region for block: B:46:0x01a7  */
-    /* JADX WARN: Removed duplicated region for block: B:48:0x01ac  */
-    /* JADX WARN: Removed duplicated region for block: B:58:0x01e2  */
-    /* JADX WARN: Removed duplicated region for block: B:61:0x0205  */
-    /* JADX WARN: Removed duplicated region for block: B:65:0x01e9  */
-    /* JADX WARN: Removed duplicated region for block: B:67:0x01a9  */
-    /* JADX WARN: Removed duplicated region for block: B:69:0x00f5  */
-    /* JADX WARN: Removed duplicated region for block: B:70:0x0098  */
-    /* JADX WARN: Removed duplicated region for block: B:71:0x0089  */
-    /* JADX WARN: Removed duplicated region for block: B:8:0x0073  */
+    /* JADX WARN: Removed duplicated region for block: B:13:0x0113  */
+    /* JADX WARN: Removed duplicated region for block: B:16:0x0139  */
+    /* JADX WARN: Removed duplicated region for block: B:19:0x0176  */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x0185  */
+    /* JADX WARN: Removed duplicated region for block: B:25:0x01e2  */
+    /* JADX WARN: Removed duplicated region for block: B:28:0x01e9  */
+    /* JADX WARN: Removed duplicated region for block: B:31:0x01f5  */
+    /* JADX WARN: Removed duplicated region for block: B:34:0x01fe  */
+    /* JADX WARN: Removed duplicated region for block: B:37:0x020f  */
+    /* JADX WARN: Removed duplicated region for block: B:40:0x0218  */
+    /* JADX WARN: Removed duplicated region for block: B:50:0x023f  */
+    /* JADX WARN: Removed duplicated region for block: B:55:0x0254 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:59:0x0260  */
+    /* JADX WARN: Removed duplicated region for block: B:67:0x0286  */
+    /* JADX WARN: Removed duplicated region for block: B:72:0x028f  */
+    /* JADX WARN: Removed duplicated region for block: B:76:0x01a3  */
+    /* JADX WARN: Removed duplicated region for block: B:77:0x0179  */
+    /* JADX WARN: Removed duplicated region for block: B:78:0x016f  */
+    /* JADX WARN: Removed duplicated region for block: B:79:0x0129  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public JobStatus(android.app.job.JobInfo r17, int r18, java.lang.String r19, int r20, int r21, java.lang.String r22, java.lang.String r23, int r24, int r25, long r26, long r28, long r30, long r32, long r34, int r36, int r37) {
+    public JobStatus(android.app.job.JobInfo r20, int r21, java.lang.String r22, int r23, int r24, java.lang.String r25, java.lang.String r26, int r27, int r28, long r29, long r31, long r33, long r35, long r37, int r39, int r40) {
         /*
-            Method dump skipped, instructions count: 570
+            Method dump skipped, instructions count: 684
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.job.controllers.JobStatus.<init>(android.app.job.JobInfo, int, java.lang.String, int, int, java.lang.String, java.lang.String, int, int, long, long, long, long, long, int, int):void");
     }
 
-    public JobStatus(JobStatus jobStatus) {
-        this(jobStatus.getJob(), jobStatus.getUid(), jobStatus.getSourcePackageName(), jobStatus.getSourceUserId(), jobStatus.getStandbyBucket(), jobStatus.getNamespace(), jobStatus.getSourceTag(), jobStatus.getNumFailures(), jobStatus.getNumSystemStops(), jobStatus.getEarliestRunTime(), jobStatus.getLatestRunTimeElapsed(), jobStatus.getLastSuccessfulRunTime(), jobStatus.getLastFailedRunTime(), jobStatus.getCumulativeExecutionTimeMs(), jobStatus.getInternalFlags(), jobStatus.mDynamicConstraints);
-        this.mPersistedUtcTimes = jobStatus.mPersistedUtcTimes;
-        if (jobStatus.mPersistedUtcTimes != null && DEBUG) {
-            Slog.i("JobScheduler.JobStatus", "Cloning job with persisted run times", new RuntimeException("here"));
-        }
-        ArrayList arrayList = jobStatus.executingWork;
-        if (arrayList != null && arrayList.size() > 0) {
-            this.executingWork = new ArrayList(jobStatus.executingWork);
-        }
-        ArrayList arrayList2 = jobStatus.pendingWork;
-        if (arrayList2 == null || arrayList2.size() <= 0) {
-            return;
-        }
-        this.pendingWork = new ArrayList(jobStatus.pendingWork);
-    }
-
-    public JobStatus(JobInfo jobInfo, int i, String str, int i2, int i3, String str2, String str3, long j, long j2, long j3, long j4, long j5, Pair pair, int i4, int i5) {
-        this(jobInfo, i, str, i2, i3, str2, str3, 0, 0, j, j2, j3, j4, j5, i4, i5);
-        this.mPersistedUtcTimes = pair;
-        if (pair == null || !DEBUG) {
-            return;
-        }
-        Slog.i("JobScheduler.JobStatus", "+ restored job with RTC times because of bad boot clock");
-    }
-
     public JobStatus(JobStatus jobStatus, long j, long j2, int i, int i2, long j3, long j4, long j5) {
-        this(jobStatus.job, jobStatus.getUid(), jobStatus.getSourcePackageName(), jobStatus.getSourceUserId(), jobStatus.getStandbyBucket(), jobStatus.getNamespace(), jobStatus.getSourceTag(), i, i2, j, j2, j3, j4, j5, jobStatus.getInternalFlags(), jobStatus.mDynamicConstraints);
+        this(jobStatus.job, jobStatus.callingUid, jobStatus.sourcePackageName, jobStatus.sourceUserId, jobStatus.standbyBucket, jobStatus.mNamespace, jobStatus.sourceTag, i, i2, j, j2, j3, j4, j5, jobStatus.mInternalFlags, jobStatus.mDynamicConstraints);
+    }
+
+    public static String applyBasicPiiFilters(String str) {
+        for (int size = BASIC_PII_FILTERS.size() - 1; size >= 0; size--) {
+            ArrayMap arrayMap = BASIC_PII_FILTERS;
+            str = ((Pattern) arrayMap.keyAt(size)).matcher(str).replaceAll((String) arrayMap.valueAt(size));
+        }
+        return str;
+    }
+
+    public static String bucketName(int i) {
+        switch (i) {
+            case 0:
+                return "ACTIVE";
+            case 1:
+                return "WORKING_SET";
+            case 2:
+                return "FREQUENT";
+            case 3:
+                return "RARE";
+            case 4:
+                return "NEVER";
+            case 5:
+                return "RESTRICTED";
+            case 6:
+                return "EXEMPTED";
+            default:
+                return VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Unknown: ");
+        }
     }
 
     public static JobStatus createFromJobInfo(JobInfo jobInfo, int i, String str, int i2, String str2, String str3) {
         long minLatencyMillis;
         long maxExecutionDelayMillis;
-        long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
+        JobSchedulerService.sElapsedRealtimeClock.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
         if (jobInfo.isPeriodic()) {
             long max = Math.max(JobInfo.getMinPeriodMillis(), Math.min(31536000000L, jobInfo.getIntervalMillis()));
-            maxExecutionDelayMillis = millis + max;
+            maxExecutionDelayMillis = elapsedRealtime + max;
             minLatencyMillis = maxExecutionDelayMillis - Math.max(JobInfo.getMinFlexMillis(), Math.min(max, jobInfo.getFlexMillis()));
         } else {
-            minLatencyMillis = jobInfo.hasEarlyConstraint() ? jobInfo.getMinLatencyMillis() + millis : 0L;
-            maxExecutionDelayMillis = jobInfo.hasLateConstraint() ? jobInfo.getMaxExecutionDelayMillis() + millis : Long.MAX_VALUE;
+            minLatencyMillis = jobInfo.hasEarlyConstraint() ? jobInfo.getMinLatencyMillis() + elapsedRealtime : 0L;
+            maxExecutionDelayMillis = jobInfo.hasLateConstraint() ? jobInfo.getMaxExecutionDelayMillis() + elapsedRealtime : Long.MAX_VALUE;
         }
-        return new JobStatus(jobInfo, i, str, i2, JobSchedulerService.standbyBucketForPackage(str != null ? str : jobInfo.getService().getPackageName(), i2, millis), str2, str3, 0, 0, minLatencyMillis, maxExecutionDelayMillis, 0L, 0L, 0L, 0, 0);
+        return new JobStatus(jobInfo, i, str, i2, JobSchedulerService.standbyBucketForPackage(i2, str != null ? str : jobInfo.getService().getPackageName(), elapsedRealtime), str2, str3, 0, 0, minLatencyMillis, maxExecutionDelayMillis, 0L, 0L, 0L, 0, 0);
     }
 
-    public final long generateLoggingId(String str, int i) {
-        return str == null ? i : (str.hashCode() << 31) | i;
-    }
-
-    public static String generateNamespaceHash(String str) {
-        String str2 = null;
-        if (str == null) {
-            return null;
-        }
-        if (str.trim().isEmpty()) {
-            return str;
-        }
-        ArrayMap arrayMap = sNamespaceHashCache;
-        synchronized (arrayMap) {
-            int indexOfKey = arrayMap.indexOfKey(str);
-            if (indexOfKey >= 0) {
-                return (String) arrayMap.valueAt(indexOfKey);
-            }
-            try {
-                if (sMessageDigest == null) {
-                    sMessageDigest = MessageDigest.getInstance("SHA-256");
-                }
-                byte[] digest = sMessageDigest.digest(str.getBytes());
-                StringBuilder sb = new StringBuilder(digest.length);
-                for (byte b : digest) {
-                    sb.append(String.format("%02X", Byte.valueOf(b)));
-                }
-                str2 = sb.toString();
-            } catch (Exception e) {
-                Slog.wtf("JobScheduler.JobStatus", "Couldn't hash input", e);
-            }
-            if (str2 == null) {
-                return "failed_namespace_hash";
-            }
-            String intern = str2.intern();
-            ArrayMap arrayMap2 = sNamespaceHashCache;
-            synchronized (arrayMap2) {
-                if (arrayMap2.size() >= 128) {
-                    arrayMap2.removeAt(new Random().nextInt(128));
-                }
-                arrayMap2.put(str, intern);
-            }
-            return intern;
-        }
-    }
-
-    public void enqueueWorkLocked(JobWorkItem jobWorkItem) {
-        if (this.pendingWork == null) {
-            this.pendingWork = new ArrayList();
-        }
-        jobWorkItem.setWorkId(this.nextPendingWorkId);
-        this.nextPendingWorkId++;
-        if (jobWorkItem.getIntent() != null && GrantedUriPermissions.checkGrantFlags(jobWorkItem.getIntent().getFlags())) {
-            jobWorkItem.setGrants(GrantedUriPermissions.createFromIntent(jobWorkItem.getIntent(), this.sourceUid, this.sourcePackageName, this.sourceUserId, toShortString()));
-        }
-        this.pendingWork.add(jobWorkItem);
-        updateNetworkBytesLocked();
-    }
-
-    public JobWorkItem dequeueWorkLocked() {
-        ArrayList arrayList = this.pendingWork;
-        if (arrayList == null || arrayList.size() <= 0) {
-            return null;
-        }
-        JobWorkItem jobWorkItem = (JobWorkItem) this.pendingWork.remove(0);
-        if (jobWorkItem != null) {
-            if (this.executingWork == null) {
-                this.executingWork = new ArrayList();
-            }
-            this.executingWork.add(jobWorkItem);
-            jobWorkItem.bumpDeliveryCount();
-        }
-        return jobWorkItem;
-    }
-
-    public int getWorkCount() {
-        ArrayList arrayList = this.pendingWork;
-        int size = arrayList == null ? 0 : arrayList.size();
-        ArrayList arrayList2 = this.executingWork;
-        return size + (arrayList2 != null ? arrayList2.size() : 0);
-    }
-
-    public boolean hasExecutingWorkLocked() {
-        ArrayList arrayList = this.executingWork;
-        return arrayList != null && arrayList.size() > 0;
-    }
-
-    public static void ungrantWorkItem(JobWorkItem jobWorkItem) {
-        if (jobWorkItem.getGrants() != null) {
-            ((GrantedUriPermissions) jobWorkItem.getGrants()).revoke();
-        }
-    }
-
-    public boolean completeWorkLocked(int i) {
-        ArrayList arrayList = this.executingWork;
-        if (arrayList != null) {
-            int size = arrayList.size();
-            for (int i2 = 0; i2 < size; i2++) {
-                JobWorkItem jobWorkItem = (JobWorkItem) this.executingWork.get(i2);
-                if (jobWorkItem.getWorkId() == i) {
-                    this.executingWork.remove(i2);
-                    ungrantWorkItem(jobWorkItem);
-                    updateNetworkBytesLocked();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public static void ungrantWorkList(ArrayList arrayList) {
-        if (arrayList != null) {
-            int size = arrayList.size();
-            for (int i = 0; i < size; i++) {
-                ungrantWorkItem((JobWorkItem) arrayList.get(i));
-            }
-        }
-    }
-
-    public void stopTrackingJobLocked(JobStatus jobStatus) {
-        if (jobStatus != null) {
-            ArrayList arrayList = this.executingWork;
-            if (arrayList != null && arrayList.size() > 0) {
-                jobStatus.pendingWork = this.executingWork;
-            }
-            if (jobStatus.pendingWork == null) {
-                jobStatus.pendingWork = this.pendingWork;
-            } else {
-                ArrayList arrayList2 = this.pendingWork;
-                if (arrayList2 != null && arrayList2.size() > 0) {
-                    jobStatus.pendingWork.addAll(this.pendingWork);
-                }
-            }
-            this.pendingWork = null;
-            this.executingWork = null;
-            jobStatus.nextPendingWorkId = this.nextPendingWorkId;
-            jobStatus.updateNetworkBytesLocked();
-        } else {
-            ungrantWorkList(this.pendingWork);
-            this.pendingWork = null;
-            ungrantWorkList(this.executingWork);
-            this.executingWork = null;
-        }
-        updateNetworkBytesLocked();
-    }
-
-    public void prepareLocked() {
-        if (this.prepared) {
-            Slog.wtf("JobScheduler.JobStatus", "Already prepared: " + this);
-            return;
-        }
-        this.prepared = true;
-        this.unpreparedPoint = null;
-        ClipData clipData = this.job.getClipData();
-        if (clipData != null) {
-            this.uriPerms = GrantedUriPermissions.createFromClip(clipData, this.sourceUid, this.sourcePackageName, this.sourceUserId, this.job.getClipGrantFlags(), toShortString());
-        }
-    }
-
-    public void unprepareLocked() {
-        if (!this.prepared) {
-            Slog.wtf("JobScheduler.JobStatus", "Hasn't been prepared: " + this);
-            Throwable th = this.unpreparedPoint;
-            if (th != null) {
-                Slog.e("JobScheduler.JobStatus", "Was already unprepared at ", th);
-                return;
-            }
-            return;
-        }
-        this.prepared = false;
-        this.unpreparedPoint = new Throwable().fillInStackTrace();
-        GrantedUriPermissions grantedUriPermissions = this.uriPerms;
-        if (grantedUriPermissions != null) {
-            grantedUriPermissions.revoke();
-            this.uriPerms = null;
-        }
-    }
-
-    public boolean isPreparedLocked() {
-        return this.prepared;
-    }
-
-    public JobInfo getJob() {
-        return this.job;
-    }
-
-    public int getJobId() {
-        return this.job.getId();
-    }
-
-    public long getLoggingJobId() {
-        return this.mLoggingJobId;
-    }
-
-    public void printUniqueId(PrintWriter printWriter) {
-        String str = this.mNamespace;
-        if (str != null) {
-            printWriter.print(str);
-            printWriter.print(XmlUtils.STRING_ARRAY_SEPARATOR);
-        } else {
-            printWriter.print("#");
-        }
-        UserHandle.formatUid(printWriter, this.callingUid);
-        printWriter.print("/");
-        printWriter.print(this.job.getId());
-    }
-
-    public int getNumFailures() {
-        return this.numFailures;
-    }
-
-    public int getNumSystemStops() {
-        return this.mNumSystemStops;
-    }
-
-    public int getNumPreviousAttempts() {
-        return this.numFailures + this.mNumSystemStops;
-    }
-
-    public ComponentName getServiceComponent() {
-        return this.job.getService();
-    }
-
-    public String getSourcePackageName() {
-        return this.sourcePackageName;
-    }
-
-    public int getSourceUid() {
-        return this.sourceUid;
-    }
-
-    public int getSourceUserId() {
-        return this.sourceUserId;
-    }
-
-    public int getUserId() {
-        return UserHandle.getUserId(this.callingUid);
-    }
-
-    public final boolean shouldBlameSourceForTimeout() {
-        return UserHandle.isCore(this.callingUid);
-    }
-
-    public String getTimeoutBlamePackageName() {
-        if (shouldBlameSourceForTimeout()) {
-            return this.sourcePackageName;
-        }
-        return getServiceComponent().getPackageName();
-    }
-
-    public int getTimeoutBlameUserId() {
-        if (shouldBlameSourceForTimeout()) {
-            return this.sourceUserId;
-        }
-        return UserHandle.getUserId(this.callingUid);
-    }
-
-    public int getEffectiveStandbyBucket() {
-        String str;
-        boolean isAppConsideredBuggy = ((JobSchedulerInternal) LocalServices.getService(JobSchedulerInternal.class)).isAppConsideredBuggy(getUserId(), getServiceComponent().getPackageName(), getTimeoutBlameUserId(), getTimeoutBlamePackageName());
-        int standbyBucket = getStandbyBucket();
-        if (standbyBucket != 6) {
-            if (this.uidActive || getJob().isExemptedFromAppStandby()) {
-                return 0;
-            }
-            if (standbyBucket != 5 && standbyBucket != 4 && this.mHasMediaBackupExemption) {
-                return Math.max(isAppConsideredBuggy ? 1 : 0, Math.min(1, standbyBucket));
-            }
-            return Math.max(isAppConsideredBuggy ? 1 : 0, standbyBucket);
-        }
-        if (isAppConsideredBuggy) {
-            if (getServiceComponent().getPackageName().equals(this.sourcePackageName)) {
-                str = this.sourcePackageName;
-            } else {
-                str = getServiceComponent().getPackageName() + "/" + this.sourcePackageName;
-            }
-            Slog.w("JobScheduler.JobStatus", "Exempted app " + str + " considered buggy");
-        }
-        return standbyBucket;
-    }
-
-    public int getStandbyBucket() {
-        return this.standbyBucket;
-    }
-
-    public void setStandbyBucket(int i) {
-        if (i == 5) {
-            addDynamicConstraints(268435463);
-        } else if (this.standbyBucket == 5) {
-            removeDynamicConstraints(268435463);
-        }
-        this.standbyBucket = i;
-        this.mLoggedBucketMismatch = false;
-    }
-
-    public void maybeLogBucketMismatch() {
-        if (this.mLoggedBucketMismatch) {
-            return;
-        }
-        Slog.wtf("JobScheduler.JobStatus", "App " + getSourcePackageName() + " became active but still in NEVER bucket");
-        this.mLoggedBucketMismatch = true;
-    }
-
-    public long getWhenStandbyDeferred() {
-        return this.whenStandbyDeferred;
-    }
-
-    public void setWhenStandbyDeferred(long j) {
-        this.whenStandbyDeferred = j;
-    }
-
-    public long getFirstForceBatchedTimeElapsed() {
-        return this.mFirstForceBatchedTimeElapsed;
-    }
-
-    public void setFirstForceBatchedTimeElapsed(long j) {
-        this.mFirstForceBatchedTimeElapsed = j;
-    }
-
-    public boolean updateMediaBackupExemptionStatus() {
-        boolean z = this.mHasExemptedMediaUrisOnly && !this.job.hasLateConstraint() && this.job.getRequiredNetwork() != null && getEffectivePriority() >= 300 && this.sourcePackageName.equals(((JobSchedulerInternal) LocalServices.getService(JobSchedulerInternal.class)).getCloudMediaProviderPackage(this.sourceUserId));
-        if (this.mHasMediaBackupExemption == z) {
-            return false;
-        }
-        this.mHasMediaBackupExemption = z;
-        return true;
-    }
-
-    public String getNamespace() {
-        return this.mNamespace;
-    }
-
-    public String getNamespaceHash() {
-        return this.mNamespaceHash;
-    }
-
-    public String getSourceTag() {
-        return this.sourceTag;
-    }
-
-    public int getUid() {
-        return this.callingUid;
-    }
-
-    public String getBatteryName() {
-        return this.batteryName;
-    }
-
-    public String getTag() {
-        return this.tag;
-    }
-
-    public int getBias() {
-        return this.job.getBias();
-    }
-
-    public int getEffectivePriority() {
-        int min = Math.min((getInternalFlags() & 2) != 0 || (this.job.isUserInitiated() && (getInternalFlags() & 4) != 0) ? 400 : 500, this.job.getPriority());
-        if (this.numFailures < 2 || shouldTreatAsUserInitiatedJob()) {
-            return min;
-        }
-        if (isRequestedExpeditedJob()) {
-            return 400;
-        }
-        int i = this.numFailures / 2;
-        if (i == 1) {
-            return Math.min(300, min);
-        }
-        if (i != 2) {
-            return 100;
-        }
-        return Math.min(200, min);
-    }
-
-    public int getFlags() {
-        return this.job.getFlags();
-    }
-
-    public int getInternalFlags() {
-        return this.mInternalFlags;
-    }
-
-    public void addInternalFlags(int i) {
-        this.mInternalFlags = i | this.mInternalFlags;
-    }
-
-    public void removeInternalFlags(int i) {
-        this.mInternalFlags = (~i) & this.mInternalFlags;
-    }
-
-    public int getPreferredConstraintFlags() {
-        return this.mPreferredConstraints;
-    }
-
-    public int getSatisfiedConstraintFlags() {
-        return this.satisfiedConstraints;
-    }
-
-    public void maybeAddForegroundExemption(Predicate predicate) {
-        if (this.job.hasEarlyConstraint() || this.job.hasLateConstraint() || (this.mInternalFlags & 1) != 0 || !predicate.test(Integer.valueOf(getSourceUid()))) {
-            return;
-        }
-        addInternalFlags(1);
-    }
-
-    public final void updateNetworkBytesLocked() {
-        long estimatedNetworkDownloadBytes = this.job.getEstimatedNetworkDownloadBytes();
-        this.mTotalNetworkDownloadBytes = estimatedNetworkDownloadBytes;
-        if (estimatedNetworkDownloadBytes < 0) {
-            this.mTotalNetworkDownloadBytes = -1L;
-        }
-        long estimatedNetworkUploadBytes = this.job.getEstimatedNetworkUploadBytes();
-        this.mTotalNetworkUploadBytes = estimatedNetworkUploadBytes;
-        if (estimatedNetworkUploadBytes < 0) {
-            this.mTotalNetworkUploadBytes = -1L;
-        }
-        this.mMinimumNetworkChunkBytes = this.job.getMinimumNetworkChunkBytes();
-        if (this.pendingWork != null) {
-            for (int i = 0; i < this.pendingWork.size(); i++) {
-                long estimatedNetworkDownloadBytes2 = ((JobWorkItem) this.pendingWork.get(i)).getEstimatedNetworkDownloadBytes();
-                if (estimatedNetworkDownloadBytes2 != -1 && estimatedNetworkDownloadBytes2 > 0) {
-                    long j = this.mTotalNetworkDownloadBytes;
-                    if (j != -1) {
-                        this.mTotalNetworkDownloadBytes = j + estimatedNetworkDownloadBytes2;
-                    } else {
-                        this.mTotalNetworkDownloadBytes = estimatedNetworkDownloadBytes2;
-                    }
-                }
-                long estimatedNetworkUploadBytes2 = ((JobWorkItem) this.pendingWork.get(i)).getEstimatedNetworkUploadBytes();
-                if (estimatedNetworkUploadBytes2 != -1 && estimatedNetworkUploadBytes2 > 0) {
-                    long j2 = this.mTotalNetworkUploadBytes;
-                    if (j2 != -1) {
-                        this.mTotalNetworkUploadBytes = j2 + estimatedNetworkUploadBytes2;
-                    } else {
-                        this.mTotalNetworkUploadBytes = estimatedNetworkUploadBytes2;
-                    }
-                }
-                long minimumNetworkChunkBytes = ((JobWorkItem) this.pendingWork.get(i)).getMinimumNetworkChunkBytes();
-                long j3 = this.mMinimumNetworkChunkBytes;
-                if (j3 == -1) {
-                    this.mMinimumNetworkChunkBytes = minimumNetworkChunkBytes;
-                } else if (minimumNetworkChunkBytes != -1) {
-                    this.mMinimumNetworkChunkBytes = Math.min(j3, minimumNetworkChunkBytes);
-                }
-            }
-        }
-    }
-
-    public long getEstimatedNetworkDownloadBytes() {
-        return this.mTotalNetworkDownloadBytes;
-    }
-
-    public long getEstimatedNetworkUploadBytes() {
-        return this.mTotalNetworkUploadBytes;
-    }
-
-    public long getMinimumNetworkChunkBytes() {
-        return this.mMinimumNetworkChunkBytes;
-    }
-
-    public boolean hasConnectivityConstraint() {
-        return (this.requiredConstraints & 268435456) != 0;
-    }
-
-    public boolean hasChargingConstraint() {
-        return hasConstraint(1);
-    }
-
-    public boolean hasBatteryNotLowConstraint() {
-        return hasConstraint(2);
-    }
-
-    public boolean hasPowerConstraint() {
-        return hasConstraint(3);
-    }
-
-    public boolean hasStorageNotLowConstraint() {
-        return hasConstraint(8);
-    }
-
-    public boolean hasTimingDelayConstraint() {
-        return hasConstraint(Integer.MIN_VALUE);
-    }
-
-    public boolean hasDeadlineConstraint() {
-        return hasConstraint(1073741824);
-    }
-
-    public boolean hasIdleConstraint() {
-        return hasConstraint(4);
-    }
-
-    public boolean hasContentTriggerConstraint() {
-        return (this.requiredConstraints & 67108864) != 0;
-    }
-
-    public boolean hasFlexibilityConstraint() {
-        return (this.requiredConstraints & 2097152) != 0;
-    }
-
-    public int getNumRequiredFlexibleConstraints() {
-        return this.mNumRequiredFlexibleConstraints - this.mNumDroppedFlexibleConstraints;
-    }
-
-    public int getNumDroppedFlexibleConstraints() {
-        return this.mNumDroppedFlexibleConstraints;
-    }
-
-    public final boolean hasConstraint(int i) {
-        return ((this.requiredConstraints & i) == 0 && (this.mDynamicConstraints & i) == 0) ? false : true;
-    }
-
-    public long getTriggerContentUpdateDelay() {
-        long triggerContentUpdateDelay = this.job.getTriggerContentUpdateDelay();
-        if (triggerContentUpdateDelay < 0) {
-            return 10000L;
-        }
-        return Math.max(triggerContentUpdateDelay, 500L);
-    }
-
-    public long getTriggerContentMaxDelay() {
-        long triggerContentMaxDelay = this.job.getTriggerContentMaxDelay();
-        if (triggerContentMaxDelay < 0) {
-            return 120000L;
-        }
-        return Math.max(triggerContentMaxDelay, 1000L);
-    }
-
-    public boolean isPersisted() {
-        return this.job.isPersisted();
-    }
-
-    public long getCumulativeExecutionTimeMs() {
-        return this.mCumulativeExecutionTimeMs;
-    }
-
-    public void incrementCumulativeExecutionTime(long j) {
-        this.mCumulativeExecutionTimeMs += j;
-    }
-
-    public long getEarliestRunTime() {
-        return this.earliestRunTimeElapsedMillis;
-    }
-
-    public long getLatestRunTimeElapsed() {
-        return this.latestRunTimeElapsedMillis;
-    }
-
-    public long getOriginalLatestRunTimeElapsed() {
-        return this.mOriginalLatestRunTimeElapsedMillis;
-    }
-
-    public void setOriginalLatestRunTimeElapsed(long j) {
-        this.mOriginalLatestRunTimeElapsedMillis = j;
-    }
-
-    public void setHasAccessToUnmetered(boolean z) {
-        this.mHasAccessToUnmetered = z;
-    }
-
-    public boolean getHasAccessToUnmetered() {
-        return this.mHasAccessToUnmetered;
-    }
-
-    public boolean getPreferUnmetered() {
-        return this.mPreferUnmetered;
-    }
-
-    public int getStopReason() {
-        return this.mReasonReadyToUnready;
-    }
-
-    public float getFractionRunTime() {
-        long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
-        long j = this.earliestRunTimeElapsedMillis;
-        if (j == 0 && this.latestRunTimeElapsedMillis == Long.MAX_VALUE) {
-            return 1.0f;
-        }
-        if (j == 0) {
-            if (millis >= this.latestRunTimeElapsedMillis) {
-                return 1.0f;
-            }
-            return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        }
-        long j2 = this.latestRunTimeElapsedMillis;
-        if (j2 == Long.MAX_VALUE) {
-            if (millis >= j) {
-                return 1.0f;
-            }
-            return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        }
-        if (millis <= j) {
-            return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        }
-        if (millis >= j2) {
-            return 1.0f;
-        }
-        return ((float) (millis - j)) / ((float) (j2 - j));
-    }
-
-    public Pair getPersistedUtcTimes() {
-        return this.mPersistedUtcTimes;
-    }
-
-    public void clearPersistedUtcTimes() {
-        this.mPersistedUtcTimes = null;
-    }
-
-    public boolean isRequestedExpeditedJob() {
-        return (getFlags() & 16) != 0;
-    }
-
-    public boolean shouldTreatAsExpeditedJob() {
-        return this.mExpeditedQuotaApproved && this.mExpeditedTareApproved && isRequestedExpeditedJob();
-    }
-
-    public boolean shouldTreatAsUserInitiatedJob() {
-        return getJob().isUserInitiated() && (getInternalFlags() & 2) == 0 && (getInternalFlags() & 4) == 0;
-    }
-
-    public UserVisibleJobSummary getUserVisibleJobSummary() {
-        if (this.mUserVisibleJobSummary == null) {
-            this.mUserVisibleJobSummary = new UserVisibleJobSummary(this.callingUid, getServiceComponent().getPackageName(), getSourceUserId(), getSourcePackageName(), getNamespace(), getJobId());
-        }
-        return this.mUserVisibleJobSummary;
-    }
-
-    public boolean isUserVisibleJob() {
-        return shouldTreatAsUserInitiatedJob() || this.startedAsUserInitiatedJob;
-    }
-
-    public boolean canRunInDoze() {
-        if (this.appHasDozeExemption || (getFlags() & 1) != 0 || shouldTreatAsUserInitiatedJob()) {
-            return true;
-        }
-        return (shouldTreatAsExpeditedJob() || this.startedAsExpeditedJob) && (this.mDynamicConstraints & 33554432) == 0;
-    }
-
-    public boolean canRunInBatterySaver() {
-        if ((getInternalFlags() & 1) != 0 || shouldTreatAsUserInitiatedJob()) {
-            return true;
-        }
-        return (shouldTreatAsExpeditedJob() || this.startedAsExpeditedJob) && (this.mDynamicConstraints & 4194304) == 0;
-    }
-
-    public boolean isUserBgRestricted() {
-        return this.mIsUserBgRestricted;
-    }
-
-    public boolean setUidRestrictConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(1048576, j, z);
-    }
-
-    public boolean setChargingConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(1, j, z);
-    }
-
-    public boolean setBatteryNotLowConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(2, j, z);
-    }
-
-    public boolean setStorageNotLowConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(8, j, z);
-    }
-
-    public boolean setPrefetchConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(8388608, j, z);
-    }
-
-    public boolean setTimingDelayConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(Integer.MIN_VALUE, j, z);
-    }
-
-    public boolean setDeadlineConstraintSatisfied(long j, boolean z) {
-        boolean z2 = false;
-        if (!setConstraintSatisfied(1073741824, j, z)) {
-            return false;
-        }
-        if (!this.job.isPeriodic() && hasDeadlineConstraint() && z) {
-            z2 = true;
-        }
-        this.mReadyDeadlineSatisfied = z2;
-        return true;
-    }
-
-    public boolean setIdleConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(4, j, z);
-    }
-
-    public boolean setConnectivityConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(268435456, j, z);
-    }
-
-    public boolean setContentTriggerConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(67108864, j, z);
-    }
-
-    public boolean setDeviceNotDozingConstraintSatisfied(long j, boolean z, boolean z2) {
-        this.appHasDozeExemption = z2;
-        if (!setConstraintSatisfied(33554432, j, z)) {
-            return false;
-        }
-        this.mReadyNotDozing = z || canRunInDoze();
-        return true;
-    }
-
-    public boolean setBackgroundNotRestrictedConstraintSatisfied(long j, boolean z, boolean z2) {
-        this.mIsUserBgRestricted = z2;
-        if (!setConstraintSatisfied(4194304, j, z)) {
-            return false;
-        }
-        this.mReadyNotRestrictedInBg = z;
-        return true;
-    }
-
-    public boolean setQuotaConstraintSatisfied(long j, boolean z) {
-        if (!setConstraintSatisfied(16777216, j, z)) {
-            return false;
-        }
-        this.mReadyWithinQuota = z;
-        return true;
-    }
-
-    public boolean setTareWealthConstraintSatisfied(long j, boolean z) {
-        if (!setConstraintSatisfied(134217728, j, z)) {
-            return false;
-        }
-        this.mReadyTareWealth = z;
-        return true;
-    }
-
-    public boolean setFlexibilityConstraintSatisfied(long j, boolean z) {
-        return setConstraintSatisfied(2097152, j, z);
-    }
-
-    public boolean setExpeditedJobQuotaApproved(long j, boolean z) {
-        if (this.mExpeditedQuotaApproved == z) {
-            return false;
-        }
-        boolean z2 = !z && isReady();
-        this.mExpeditedQuotaApproved = z;
-        updateExpeditedDependencies();
-        boolean isReady = isReady();
-        if (z2 && !isReady) {
-            this.mReasonReadyToUnready = 10;
-        } else if (!z2 && isReady) {
-            this.mReasonReadyToUnready = 0;
-        }
-        return true;
-    }
-
-    public boolean setExpeditedJobTareApproved(long j, boolean z) {
-        if (this.mExpeditedTareApproved == z) {
-            return false;
-        }
-        boolean z2 = !z && isReady();
-        this.mExpeditedTareApproved = z;
-        updateExpeditedDependencies();
-        boolean isReady = isReady();
-        if (z2 && !isReady) {
-            this.mReasonReadyToUnready = 10;
-        } else if (!z2 && isReady) {
-            this.mReasonReadyToUnready = 0;
-        }
-        return true;
-    }
-
-    public final void updateExpeditedDependencies() {
-        this.mReadyNotDozing = isConstraintSatisfied(33554432) || canRunInDoze();
-    }
-
-    public boolean setUidActive(boolean z) {
-        if (z == this.uidActive) {
-            return false;
-        }
-        this.uidActive = z;
-        return true;
-    }
-
-    public boolean setConstraintSatisfied(int i, long j, boolean z) {
-        if (((this.satisfiedConstraints & i) != 0) == z) {
-            return false;
-        }
-        if (DEBUG) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Constraint ");
-            sb.append(i);
-            sb.append(" is ");
-            sb.append(!z ? "NOT " : "");
-            sb.append("satisfied for ");
-            sb.append(toShortString());
-            Slog.v("JobScheduler.JobStatus", sb.toString());
-        }
-        boolean z2 = !z && isReady();
-        int i2 = (this.satisfiedConstraints & (~i)) | (z ? i : 0);
-        this.satisfiedConstraints = i2;
-        this.mSatisfiedConstraintsOfInterest = (-1800404977) & i2;
-        int i3 = this.mDynamicConstraints;
-        this.mReadyDynamicSatisfied = i3 != 0 && i3 == (i2 & i3);
-        long[] jArr = this.mConstraintUpdatedTimesElapsed;
-        int i4 = this.mConstraintChangeHistoryIndex;
-        jArr[i4] = j;
-        this.mConstraintStatusHistory[i4] = i2;
-        this.mConstraintChangeHistoryIndex = (i4 + 1) % 10;
-        boolean readinessStatusWithConstraint = readinessStatusWithConstraint(i, z);
-        if (z2 && !readinessStatusWithConstraint) {
-            this.mReasonReadyToUnready = constraintToStopReason(i);
-        } else if (!z2 && readinessStatusWithConstraint) {
-            this.mReasonReadyToUnready = 0;
-        }
-        return true;
-    }
-
-    public final int constraintToStopReason(int i) {
-        if (i == 1) {
-            return (this.requiredConstraints & i) != 0 ? 6 : 12;
-        }
-        if (i == 2) {
-            return (this.requiredConstraints & i) != 0 ? 5 : 12;
-        }
-        if (i == 4) {
-            return (this.requiredConstraints & i) != 0 ? 8 : 12;
-        }
-        if (i == 8) {
-            return 9;
-        }
-        if (i == 4194304) {
-            return this.mIsUserBgRestricted ? 11 : 4;
-        }
-        if (i == 8388608) {
-            return 15;
-        }
-        if (i == 16777216) {
-            return 10;
-        }
-        if (i == 33554432) {
-            return 4;
-        }
-        if (i == 134217728) {
-            return 10;
-        }
-        if (i == 268435456) {
-            return 7;
-        }
-        Slog.wtf("JobScheduler.JobStatus", "Unsupported constraint (" + i + ") --stop reason mapping");
-        return 0;
-    }
-
-    public int getPendingJobReason() {
-        int i = ~this.satisfiedConstraints;
-        int i2 = this.requiredConstraints;
-        int i3 = i & (this.mDynamicConstraints | i2 | 188743680);
-        if ((4194304 & i3) != 0) {
-            return this.mIsUserBgRestricted ? 3 : 12;
-        }
-        if ((i3 & 2) != 0) {
-            return (i2 & 2) != 0 ? 4 : 2;
-        }
-        if ((i3 & 1) != 0) {
-            return (i2 & 1) != 0 ? 5 : 2;
-        }
-        if ((268435456 & i3) != 0) {
-            return 6;
-        }
-        if ((67108864 & i3) != 0) {
-            return 7;
-        }
-        if ((33554432 & i3) != 0) {
-            return 12;
-        }
-        if ((2097152 & i3) != 0) {
-            return 13;
-        }
-        if ((i3 & 4) != 0) {
-            return (i2 & 4) != 0 ? 8 : 2;
-        }
-        if ((8388608 & i3) != 0) {
-            return 10;
-        }
-        if ((i3 & 8) != 0) {
-            return 11;
-        }
-        if ((134217728 & i3) != 0) {
-            return 14;
-        }
-        if ((Integer.MIN_VALUE & i3) != 0) {
-            return 9;
-        }
-        if ((i3 & 16777216) != 0) {
-            return 14;
-        }
-        if (getEffectiveStandbyBucket() == 4) {
-            Slog.wtf("JobScheduler.JobStatus", "App in NEVER bucket querying pending job reason");
-            return 15;
-        }
-        if (this.serviceProcessName != null) {
-            return 1;
-        }
-        if (isReady()) {
-            return 0;
-        }
-        Slog.wtf("JobScheduler.JobStatus", "Unknown reason job isn't ready");
-        return 0;
-    }
-
-    public boolean isConstraintSatisfied(int i) {
-        return (this.satisfiedConstraints & i) != 0;
-    }
-
-    public boolean isExpeditedQuotaApproved() {
-        return this.mExpeditedQuotaApproved;
-    }
-
-    public boolean clearTrackingController(int i) {
-        int i2 = this.trackingControllers;
-        if ((i2 & i) == 0) {
-            return false;
-        }
-        this.trackingControllers = (~i) & i2;
-        return true;
-    }
-
-    public void setTrackingController(int i) {
-        this.trackingControllers = i | this.trackingControllers;
-    }
-
-    public void adjustNumRequiredFlexibleConstraints(int i) {
-        this.mNumDroppedFlexibleConstraints = Math.max(0, Math.min(this.mNumRequiredFlexibleConstraints, this.mNumDroppedFlexibleConstraints - i));
-    }
-
-    public void disallowRunInBatterySaverAndDoze() {
-        addDynamicConstraints(37748736);
-    }
-
-    public void addDynamicConstraints(int i) {
-        if ((16777216 & i) != 0) {
-            Slog.wtf("JobScheduler.JobStatus", "Tried to set quota as a dynamic constraint");
-            i &= -16777217;
-        }
-        if ((134217728 & i) != 0) {
-            Slog.wtf("JobScheduler.JobStatus", "Tried to set TARE as a dynamic constraint");
-            i &= -134217729;
-        }
-        if (!hasConnectivityConstraint()) {
-            i &= -268435457;
-        }
-        if (!hasContentTriggerConstraint()) {
-            i &= -67108865;
-        }
-        int i2 = i | this.mDynamicConstraints;
-        this.mDynamicConstraints = i2;
-        this.mReadyDynamicSatisfied = i2 != 0 && i2 == (this.satisfiedConstraints & i2);
-    }
-
-    public final void removeDynamicConstraints(int i) {
-        int i2 = (~i) & this.mDynamicConstraints;
-        this.mDynamicConstraints = i2;
-        this.mReadyDynamicSatisfied = i2 != 0 && i2 == (this.satisfiedConstraints & i2);
-    }
-
-    public long getLastSuccessfulRunTime() {
-        return this.mLastSuccessfulRunTime;
-    }
-
-    public long getLastFailedRunTime() {
-        return this.mLastFailedRunTime;
-    }
-
-    public boolean isReady() {
-        return isReady(this.mSatisfiedConstraintsOfInterest);
-    }
-
-    public boolean wouldBeReadyWithConstraint(int i) {
-        return readinessStatusWithConstraint(i, true);
-    }
-
-    public boolean readinessStatusWithConstraint(int i, boolean z) {
-        boolean z2;
-        int i2 = this.mSatisfiedConstraintsOfInterest;
-        if (i == 4194304) {
-            z2 = this.mReadyNotRestrictedInBg;
-            this.mReadyNotRestrictedInBg = z;
-        } else if (i == 16777216) {
-            z2 = this.mReadyWithinQuota;
-            this.mReadyWithinQuota = z;
-        } else if (i == 33554432) {
-            z2 = this.mReadyNotDozing;
-            this.mReadyNotDozing = z;
-        } else if (i == 134217728) {
-            z2 = this.mReadyTareWealth;
-            this.mReadyTareWealth = z;
-        } else if (i == 1073741824) {
-            z2 = this.mReadyDeadlineSatisfied;
-            this.mReadyDeadlineSatisfied = z;
-        } else {
-            i2 = z ? i2 | i : (~i) & i2;
-            int i3 = this.mDynamicConstraints;
-            this.mReadyDynamicSatisfied = i3 != 0 && i3 == (i2 & i3);
-            z2 = false;
-        }
-        if (i != 2097152) {
-            i2 |= 2097152;
-        }
-        boolean isReady = isReady(i2);
-        if (i == 4194304) {
-            this.mReadyNotRestrictedInBg = z2;
-        } else if (i == 16777216) {
-            this.mReadyWithinQuota = z2;
-        } else if (i == 33554432) {
-            this.mReadyNotDozing = z2;
-        } else if (i == 134217728) {
-            this.mReadyTareWealth = z2;
-        } else if (i == 1073741824) {
-            this.mReadyDeadlineSatisfied = z2;
-        } else {
-            int i4 = this.mDynamicConstraints;
-            this.mReadyDynamicSatisfied = i4 != 0 && i4 == (this.satisfiedConstraints & i4);
-        }
-        return isReady;
-    }
-
-    public final boolean isReady(int i) {
-        if (((this.mReadyWithinQuota && this.mReadyTareWealth) || this.mReadyDynamicSatisfied || shouldTreatAsExpeditedJob()) && getEffectiveStandbyBucket() != 4 && this.mReadyNotDozing && this.mReadyNotRestrictedInBg && this.serviceProcessName != null) {
-            return this.mReadyDeadlineSatisfied || isConstraintsSatisfied(i);
-        }
-        return false;
-    }
-
-    public boolean isConstraintsSatisfied() {
-        return isConstraintsSatisfied(this.mSatisfiedConstraintsOfInterest);
-    }
-
-    public final boolean isConstraintsSatisfied(int i) {
-        int i2 = this.overrideState;
-        if (i2 == 3) {
-            return true;
-        }
-        if (i2 == 2) {
-            i |= this.requiredConstraints & (-2136997873);
-        }
-        int i3 = this.mRequiredConstraintsOfInterest;
-        return (i & i3) == i3;
-    }
-
-    public boolean matches(int i, String str, int i2) {
-        return this.job.getId() == i2 && this.callingUid == i && Objects.equals(this.mNamespace, str);
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder(128);
-        sb.append("JobStatus{");
-        sb.append(Integer.toHexString(System.identityHashCode(this)));
-        if (this.mNamespace != null) {
-            sb.append(" ");
-            sb.append(this.mNamespace);
-            sb.append(XmlUtils.STRING_ARRAY_SEPARATOR);
-        } else {
-            sb.append(" #");
-        }
-        UserHandle.formatUid(sb, this.callingUid);
-        sb.append("/");
-        sb.append(this.job.getId());
-        sb.append(' ');
-        sb.append(this.batteryName);
-        sb.append(" u=");
-        sb.append(getUserId());
-        sb.append(" s=");
-        sb.append(getSourceUid());
-        if (this.earliestRunTimeElapsedMillis != 0 || this.latestRunTimeElapsedMillis != Long.MAX_VALUE) {
-            long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
-            sb.append(" TIME=");
-            formatRunTime(sb, this.earliestRunTimeElapsedMillis, 0L, millis);
-            sb.append(XmlUtils.STRING_ARRAY_SEPARATOR);
-            formatRunTime(sb, this.latestRunTimeElapsedMillis, Long.MAX_VALUE, millis);
-        }
-        if (this.job.getRequiredNetwork() != null) {
-            sb.append(" NET");
-        }
-        if (this.job.isRequireCharging()) {
-            sb.append(" CHARGING");
-        }
-        if (this.job.isRequireBatteryNotLow()) {
-            sb.append(" BATNOTLOW");
-        }
-        if (this.job.isRequireStorageNotLow()) {
-            sb.append(" STORENOTLOW");
-        }
-        if (this.job.isRequireDeviceIdle()) {
-            sb.append(" IDLE");
-        }
-        if (this.job.isPeriodic()) {
-            sb.append(" PERIODIC");
-        }
-        if (this.job.isPersisted()) {
-            sb.append(" PERSISTED");
-        }
-        if ((this.satisfiedConstraints & 33554432) == 0) {
-            sb.append(" WAIT:DEV_NOT_DOZING");
-        }
-        if (this.job.getTriggerContentUris() != null) {
-            sb.append(" URIS=");
-            sb.append(Arrays.toString(this.job.getTriggerContentUris()));
-        }
-        if (this.numFailures != 0) {
-            sb.append(" failures=");
-            sb.append(this.numFailures);
-        }
-        if (this.mNumSystemStops != 0) {
-            sb.append(" system stops=");
-            sb.append(this.mNumSystemStops);
-        }
-        if (isReady()) {
-            sb.append(" READY");
-        } else {
-            sb.append(" satisfied:0x");
-            sb.append(Integer.toHexString(this.satisfiedConstraints));
-            int i = this.mRequiredConstraintsOfInterest | 188743680;
-            sb.append(" unsatisfied:0x");
-            sb.append(Integer.toHexString((this.satisfiedConstraints & i) ^ i));
-        }
-        sb.append("}");
-        return sb.toString();
-    }
-
-    public final void formatRunTime(PrintWriter printWriter, long j, long j2, long j3) {
-        if (j == j2) {
-            printWriter.print("none");
-        } else {
-            TimeUtils.formatDuration(j - j3, printWriter);
-        }
-    }
-
-    public final void formatRunTime(StringBuilder sb, long j, long j2, long j3) {
-        if (j == j2) {
-            sb.append("none");
-        } else {
-            TimeUtils.formatDuration(j - j3, sb);
-        }
-    }
-
-    public String toShortString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Integer.toHexString(System.identityHashCode(this)));
-        if (this.mNamespace != null) {
-            sb.append(" {");
-            sb.append(this.mNamespace);
-            sb.append("}");
-        }
-        sb.append(" #");
-        UserHandle.formatUid(sb, this.callingUid);
-        sb.append("/");
-        sb.append(this.job.getId());
-        sb.append(' ');
-        sb.append(this.batteryName);
-        return sb.toString();
-    }
-
-    public String toShortStringExceptUniqueId() {
-        return Integer.toHexString(System.identityHashCode(this)) + ' ' + this.batteryName;
-    }
-
-    public void writeToShortProto(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        protoOutputStream.write(1120986464257L, this.callingUid);
-        protoOutputStream.write(1120986464258L, this.job.getId());
-        protoOutputStream.write(1138166333443L, this.batteryName);
-        protoOutputStream.end(start);
-    }
-
-    public static void dumpConstraints(PrintWriter printWriter, int i) {
+    public static void dumpConstraints(int i, PrintWriter printWriter) {
         if ((i & 1) != 0) {
             printWriter.print(" CHARGING");
         }
@@ -1451,9 +254,6 @@ public final class JobStatus {
         if ((8388608 & i) != 0) {
             printWriter.print(" PREFETCH");
         }
-        if ((134217728 & i) != 0) {
-            printWriter.print(" TARE_WEALTH");
-        }
         if ((16777216 & i) != 0) {
             printWriter.print(" WITHIN_QUOTA");
         }
@@ -1467,7 +267,7 @@ public final class JobStatus {
         }
     }
 
-    public void dumpConstraints(ProtoOutputStream protoOutputStream, long j, int i) {
+    public static void dumpConstraints(ProtoOutputStream protoOutputStream, long j, int i) {
         if ((i & 1) != 0) {
             protoOutputStream.write(j, 1);
         }
@@ -1498,12 +298,12 @@ public final class JobStatus {
         if ((16777216 & i) != 0) {
             protoOutputStream.write(j, 10);
         }
-        if ((4194304 & i) != 0) {
+        if ((i & 4194304) != 0) {
             protoOutputStream.write(j, 11);
         }
     }
 
-    public final void dumpJobWorkItem(IndentingPrintWriter indentingPrintWriter, JobWorkItem jobWorkItem, int i) {
+    public static void dumpJobWorkItem(IndentingPrintWriter indentingPrintWriter, JobWorkItem jobWorkItem, int i) {
         indentingPrintWriter.increaseIndent();
         indentingPrintWriter.print("#");
         indentingPrintWriter.print(i);
@@ -1522,7 +322,7 @@ public final class JobStatus {
         indentingPrintWriter.decreaseIndent();
     }
 
-    public final void dumpJobWorkItem(ProtoOutputStream protoOutputStream, long j, JobWorkItem jobWorkItem) {
+    public static void dumpJobWorkItem(ProtoOutputStream protoOutputStream, long j, JobWorkItem jobWorkItem) {
         long start = protoOutputStream.start(j);
         protoOutputStream.write(1120986464257L, jobWorkItem.getWorkId());
         protoOutputStream.write(1120986464258L, jobWorkItem.getDeliveryCount());
@@ -1536,42 +336,82 @@ public final class JobStatus {
         protoOutputStream.end(start);
     }
 
-    public String getBucketName() {
-        return bucketName(this.standbyBucket);
+    public void addDynamicConstraints(int i) {
+        if ((16777216 & i) != 0) {
+            Slog.wtf("JobScheduler.JobStatus", "Tried to set quota as a dynamic constraint");
+            i &= -16777217;
+        }
+        if (!hasConnectivityConstraint()) {
+            i &= -268435457;
+        }
+        if (!hasContentTriggerConstraint()) {
+            i &= -67108865;
+        }
+        int i2 = i | this.mDynamicConstraints;
+        this.mDynamicConstraints = i2;
+        this.mReadyDynamicSatisfied = i2 != 0 && i2 == (this.satisfiedConstraints & i2);
     }
 
-    public static String bucketName(int i) {
-        switch (i) {
-            case 0:
-                return "ACTIVE";
-            case 1:
-                return "WORKING_SET";
-            case 2:
-                return "FREQUENT";
-            case 3:
-                return "RARE";
-            case 4:
-                return "NEVER";
-            case 5:
-                return "RESTRICTED";
-            case 6:
-                return "EXEMPTED";
-            default:
-                return "Unknown: " + i;
+    public final boolean canRunInDoze() {
+        if (this.appHasDozeExemption || (this.job.getFlags() & 1) != 0 || shouldTreatAsUserInitiatedJob()) {
+            return true;
         }
+        return (shouldTreatAsExpeditedJob() || this.startedAsExpeditedJob) && (this.mDynamicConstraints & 33554432) == 0;
+    }
+
+    public final boolean clearTrackingController(int i) {
+        int i2 = this.trackingControllers;
+        if ((i2 & i) == 0) {
+            return false;
+        }
+        this.trackingControllers = (~i) & i2;
+        return true;
+    }
+
+    public final String computeSystemTraceTag() {
+        String str = this.mSystemTraceTag;
+        if (str != null) {
+            return str;
+        }
+        String packageName = this.job.getService().getPackageName();
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(128, "*job*<");
+        m.append(this.sourceUid);
+        m.append(">");
+        String str2 = this.sourcePackageName;
+        m.append(str2);
+        if (!str2.equals(packageName)) {
+            m.append(":");
+            m.append(packageName);
+        }
+        m.append("/");
+        m.append(this.job.getService().getShortClassName());
+        if (!packageName.equals(this.serviceProcessName)) {
+            m.append("$");
+            m.append(this.serviceProcessName);
+        }
+        String str3 = this.mNamespace;
+        if (str3 != null && !str3.trim().isEmpty()) {
+            m.append("@");
+            m.append(str3);
+        }
+        m.append("#");
+        m.append(this.job.getId());
+        String sb = m.toString();
+        this.mSystemTraceTag = sb;
+        return sb;
     }
 
     @NeverCompile
-    public void dump(IndentingPrintWriter indentingPrintWriter, boolean z, long j) {
+    public final void dump(IndentingPrintWriter indentingPrintWriter, boolean z, long j) {
         UserHandle.formatUid(indentingPrintWriter, this.callingUid);
         indentingPrintWriter.print(" tag=");
-        indentingPrintWriter.println(this.tag);
+        indentingPrintWriter.println(getWakelockTag());
         indentingPrintWriter.print("Source: uid=");
-        UserHandle.formatUid(indentingPrintWriter, getSourceUid());
+        UserHandle.formatUid(indentingPrintWriter, this.sourceUid);
         indentingPrintWriter.print(" user=");
-        indentingPrintWriter.print(getSourceUserId());
+        indentingPrintWriter.print(this.sourceUserId);
         indentingPrintWriter.print(" pkg=");
-        indentingPrintWriter.println(getSourcePackageName());
+        indentingPrintWriter.println(this.sourcePackageName);
         if (z) {
             indentingPrintWriter.println("JobInfo:");
             indentingPrintWriter.increaseIndent();
@@ -1603,10 +443,10 @@ public final class JobStatus {
                 indentingPrintWriter.print("Flags: ");
                 indentingPrintWriter.println(Integer.toHexString(this.job.getFlags()));
             }
-            if (getInternalFlags() != 0) {
+            if (this.mInternalFlags != 0) {
                 indentingPrintWriter.print("Internal flags: ");
-                indentingPrintWriter.print(Integer.toHexString(getInternalFlags()));
-                if ((getInternalFlags() & 1) != 0) {
+                indentingPrintWriter.print(Integer.toHexString(this.mInternalFlags));
+                if ((this.mInternalFlags & 1) != 0) {
                     indentingPrintWriter.print(" HAS_FOREGROUND_EXEMPTION");
                 }
                 indentingPrintWriter.println();
@@ -1694,41 +534,47 @@ public final class JobStatus {
             if (this.job.hasLateConstraint()) {
                 indentingPrintWriter.println("Has late constraint");
             }
+            if (this.job.getTraceTag() != null) {
+                indentingPrintWriter.print("Trace tag: ");
+                indentingPrintWriter.println(this.job.getTraceTag());
+            }
+            if (this.job.getDebugTags().size() > 0) {
+                indentingPrintWriter.print("Debug tags: ");
+                indentingPrintWriter.println(this.job.getDebugTags());
+            }
             indentingPrintWriter.decreaseIndent();
         }
         indentingPrintWriter.print("Required constraints:");
-        dumpConstraints(indentingPrintWriter, this.requiredConstraints);
-        indentingPrintWriter.println();
-        indentingPrintWriter.print("Preferred constraints:");
-        dumpConstraints(indentingPrintWriter, this.mPreferredConstraints);
+        int i2 = this.requiredConstraints;
+        dumpConstraints(i2, indentingPrintWriter);
         indentingPrintWriter.println();
         indentingPrintWriter.print("Dynamic constraints:");
-        dumpConstraints(indentingPrintWriter, this.mDynamicConstraints);
+        dumpConstraints(this.mDynamicConstraints, indentingPrintWriter);
         indentingPrintWriter.println();
         if (z) {
             indentingPrintWriter.print("Satisfied constraints:");
-            dumpConstraints(indentingPrintWriter, this.satisfiedConstraints);
+            dumpConstraints(this.satisfiedConstraints, indentingPrintWriter);
             indentingPrintWriter.println();
             indentingPrintWriter.print("Unsatisfied constraints:");
-            dumpConstraints(indentingPrintWriter, (this.requiredConstraints | 16777216 | 134217728) & (~this.satisfiedConstraints));
+            dumpConstraints((16777216 | i2) & (~this.satisfiedConstraints), indentingPrintWriter);
             indentingPrintWriter.println();
             if (hasFlexibilityConstraint()) {
                 indentingPrintWriter.print("Num Required Flexible constraints: ");
                 indentingPrintWriter.print(getNumRequiredFlexibleConstraints());
                 indentingPrintWriter.println();
                 indentingPrintWriter.print("Num Dropped Flexible constraints: ");
-                indentingPrintWriter.print(getNumDroppedFlexibleConstraints());
+                indentingPrintWriter.print(this.mNumDroppedFlexibleConstraints);
                 indentingPrintWriter.println();
             }
             indentingPrintWriter.println("Constraint history:");
             indentingPrintWriter.increaseIndent();
-            for (int i2 = 0; i2 < 10; i2++) {
-                int i3 = (this.mConstraintChangeHistoryIndex + i2) % 10;
-                long j2 = this.mConstraintUpdatedTimesElapsed[i3];
+            for (int i3 = 0; i3 < 10; i3++) {
+                int i4 = (this.mConstraintChangeHistoryIndex + i3) % 10;
+                long j2 = this.mConstraintUpdatedTimesElapsed[i4];
                 if (j2 != 0) {
                     TimeUtils.formatDuration(j2, j, indentingPrintWriter);
                     indentingPrintWriter.print(" =");
-                    dumpConstraints(indentingPrintWriter, this.mConstraintStatusHistory[i3]);
+                    dumpConstraints(this.mConstraintStatusHistory[i4], indentingPrintWriter);
                     indentingPrintWriter.println();
                 }
             }
@@ -1777,7 +623,7 @@ public final class JobStatus {
         indentingPrintWriter.println(this.mReadyNotDozing);
         indentingPrintWriter.print("readyNotRestrictedInBg: ");
         indentingPrintWriter.println(this.mReadyNotRestrictedInBg);
-        if (!this.job.isPeriodic() && hasDeadlineConstraint()) {
+        if (!this.job.isPeriodic() && hasConstraint(1073741824)) {
             indentingPrintWriter.print("readyDeadlineSatisfied: ");
             indentingPrintWriter.println(this.mReadyDeadlineSatisfied);
         }
@@ -1787,16 +633,14 @@ public final class JobStatus {
         }
         indentingPrintWriter.print("readyComponentEnabled: ");
         indentingPrintWriter.println(this.serviceProcessName != null);
-        if ((getFlags() & 16) != 0) {
+        if ((this.job.getFlags() & 16) != 0) {
             indentingPrintWriter.print("expeditedQuotaApproved: ");
             indentingPrintWriter.print(this.mExpeditedQuotaApproved);
-            indentingPrintWriter.print(" expeditedTareApproved: ");
-            indentingPrintWriter.print(this.mExpeditedTareApproved);
             indentingPrintWriter.print(" (started as EJ: ");
             indentingPrintWriter.print(this.startedAsExpeditedJob);
             indentingPrintWriter.println(")");
         }
-        if ((32 & getFlags()) != 0) {
+        if ((this.job.getFlags() & 32) != 0) {
             indentingPrintWriter.print("userInitiatedApproved: ");
             indentingPrintWriter.print(shouldTreatAsUserInitiatedJob());
             indentingPrintWriter.print(" (started as UIJ: ");
@@ -1812,16 +656,16 @@ public final class JobStatus {
         if (this.changedAuthorities != null) {
             indentingPrintWriter.println("Changed authorities:");
             indentingPrintWriter.increaseIndent();
-            for (int i4 = 0; i4 < this.changedAuthorities.size(); i4++) {
-                indentingPrintWriter.println((String) this.changedAuthorities.valueAt(i4));
+            for (int i5 = 0; i5 < this.changedAuthorities.size(); i5++) {
+                indentingPrintWriter.println((String) this.changedAuthorities.valueAt(i5));
             }
             indentingPrintWriter.decreaseIndent();
         }
         if (this.changedUris != null) {
             indentingPrintWriter.println("Changed URIs:");
             indentingPrintWriter.increaseIndent();
-            for (int i5 = 0; i5 < this.changedUris.size(); i5++) {
-                indentingPrintWriter.println(this.changedUris.valueAt(i5));
+            for (int i6 = 0; i6 < this.changedUris.size(); i6++) {
+                indentingPrintWriter.println(this.changedUris.valueAt(i6));
             }
             indentingPrintWriter.decreaseIndent();
         }
@@ -1832,19 +676,19 @@ public final class JobStatus {
         ArrayList arrayList = this.pendingWork;
         if (arrayList != null && arrayList.size() > 0) {
             indentingPrintWriter.println("Pending work:");
-            for (int i6 = 0; i6 < this.pendingWork.size(); i6++) {
-                dumpJobWorkItem(indentingPrintWriter, (JobWorkItem) this.pendingWork.get(i6), i6);
+            for (int i7 = 0; i7 < this.pendingWork.size(); i7++) {
+                dumpJobWorkItem(indentingPrintWriter, (JobWorkItem) this.pendingWork.get(i7), i7);
             }
         }
         ArrayList arrayList2 = this.executingWork;
         if (arrayList2 != null && arrayList2.size() > 0) {
             indentingPrintWriter.println("Executing work:");
-            for (int i7 = 0; i7 < this.executingWork.size(); i7++) {
-                dumpJobWorkItem(indentingPrintWriter, (JobWorkItem) this.executingWork.get(i7), i7);
+            for (int i8 = 0; i8 < this.executingWork.size(); i8++) {
+                dumpJobWorkItem(indentingPrintWriter, (JobWorkItem) this.executingWork.get(i8), i8);
             }
         }
         indentingPrintWriter.print("Standby bucket: ");
-        indentingPrintWriter.println(getBucketName());
+        indentingPrintWriter.println(bucketName(this.standbyBucket));
         indentingPrintWriter.increaseIndent();
         if (this.whenStandbyDeferred != 0) {
             indentingPrintWriter.print("Deferred since: ");
@@ -1861,47 +705,63 @@ public final class JobStatus {
         TimeUtils.formatDuration(this.enqueueTime, j, indentingPrintWriter);
         indentingPrintWriter.println();
         indentingPrintWriter.print("Run time: earliest=");
-        formatRunTime((PrintWriter) indentingPrintWriter, this.earliestRunTimeElapsedMillis, 0L, j);
+        long j3 = this.earliestRunTimeElapsedMillis;
+        if (j3 == 0) {
+            indentingPrintWriter.print("none");
+        } else {
+            TimeUtils.formatDuration(j3 - j, indentingPrintWriter);
+        }
         indentingPrintWriter.print(", latest=");
-        formatRunTime((PrintWriter) indentingPrintWriter, this.latestRunTimeElapsedMillis, Long.MAX_VALUE, j);
+        long j4 = this.latestRunTimeElapsedMillis;
+        if (j4 == Long.MAX_VALUE) {
+            indentingPrintWriter.print("none");
+        } else {
+            TimeUtils.formatDuration(j4 - j, indentingPrintWriter);
+        }
         indentingPrintWriter.print(", original latest=");
-        formatRunTime((PrintWriter) indentingPrintWriter, this.mOriginalLatestRunTimeElapsedMillis, Long.MAX_VALUE, j);
+        long j5 = this.mOriginalLatestRunTimeElapsedMillis;
+        if (j5 == Long.MAX_VALUE) {
+            indentingPrintWriter.print("none");
+        } else {
+            TimeUtils.formatDuration(j5 - j, indentingPrintWriter);
+        }
         indentingPrintWriter.println();
         if (this.mCumulativeExecutionTimeMs != 0) {
             indentingPrintWriter.print("Cumulative execution time=");
             TimeUtils.formatDuration(this.mCumulativeExecutionTimeMs, indentingPrintWriter);
             indentingPrintWriter.println();
         }
-        if (this.numFailures != 0) {
+        int i9 = this.numFailures;
+        if (i9 != 0) {
             indentingPrintWriter.print("Num failures: ");
-            indentingPrintWriter.println(this.numFailures);
+            indentingPrintWriter.println(i9);
         }
-        if (this.mNumSystemStops != 0) {
+        int i10 = this.mNumSystemStops;
+        if (i10 != 0) {
             indentingPrintWriter.print("Num system stops: ");
-            indentingPrintWriter.println(this.mNumSystemStops);
+            indentingPrintWriter.println(i10);
         }
-        if (this.mLastSuccessfulRunTime != 0) {
+        long j6 = this.mLastSuccessfulRunTime;
+        if (j6 != 0) {
             indentingPrintWriter.print("Last successful run: ");
-            indentingPrintWriter.println(formatTime(this.mLastSuccessfulRunTime));
+            indentingPrintWriter.println(DateFormat.format("yyyy-MM-dd HH:mm:ss", j6));
         }
-        if (this.mLastFailedRunTime != 0) {
+        long j7 = this.mLastFailedRunTime;
+        if (j7 != 0) {
             indentingPrintWriter.print("Last failed run: ");
-            indentingPrintWriter.println(formatTime(this.mLastFailedRunTime));
+            indentingPrintWriter.println(DateFormat.format("yyyy-MM-dd HH:mm:ss", j7));
         }
     }
 
-    public static CharSequence formatTime(long j) {
-        return DateFormat.format("yyyy-MM-dd HH:mm:ss", j);
-    }
-
-    public void dump(ProtoOutputStream protoOutputStream, long j, boolean z, long j2) {
-        long start = protoOutputStream.start(j);
-        long j3 = 1120986464257L;
+    public final void dump(ProtoOutputStream protoOutputStream, boolean z, long j) {
+        int i;
+        long start = protoOutputStream.start(1146756268034L);
+        long j2 = 1120986464257L;
         protoOutputStream.write(1120986464257L, this.callingUid);
-        protoOutputStream.write(1138166333442L, this.tag);
-        protoOutputStream.write(1120986464259L, getSourceUid());
-        protoOutputStream.write(1120986464260L, getSourceUserId());
-        protoOutputStream.write(1138166333445L, getSourcePackageName());
+        protoOutputStream.write(1138166333442L, getWakelockTag());
+        protoOutputStream.write(1120986464259L, this.sourceUid);
+        protoOutputStream.write(1120986464260L, this.sourceUserId);
+        protoOutputStream.write(1138166333445L, this.sourcePackageName);
         if (z) {
             long start2 = protoOutputStream.start(1146756268038L);
             this.job.getService().dumpDebug(protoOutputStream, 1146756268033L);
@@ -1911,23 +771,23 @@ public final class JobStatus {
             protoOutputStream.write(1133871366149L, this.job.isPersisted());
             protoOutputStream.write(1172526071814L, this.job.getBias());
             protoOutputStream.write(1120986464263L, this.job.getFlags());
-            protoOutputStream.write(1112396529688L, getInternalFlags());
+            protoOutputStream.write(1112396529688L, this.mInternalFlags);
             protoOutputStream.write(1133871366152L, this.job.isRequireCharging());
             protoOutputStream.write(1133871366153L, this.job.isRequireBatteryNotLow());
             protoOutputStream.write(1133871366154L, this.job.isRequireDeviceIdle());
             if (this.job.getTriggerContentUris() != null) {
-                int i = 0;
-                while (i < this.job.getTriggerContentUris().length) {
+                int i2 = 0;
+                while (i2 < this.job.getTriggerContentUris().length) {
                     long start3 = protoOutputStream.start(2246267895819L);
-                    JobInfo.TriggerContentUri triggerContentUri = this.job.getTriggerContentUris()[i];
-                    protoOutputStream.write(j3, triggerContentUri.getFlags());
+                    JobInfo.TriggerContentUri triggerContentUri = this.job.getTriggerContentUris()[i2];
+                    protoOutputStream.write(j2, triggerContentUri.getFlags());
                     Uri uri = triggerContentUri.getUri();
                     if (uri != null) {
                         protoOutputStream.write(1138166333442L, uri.toString());
                     }
                     protoOutputStream.end(start3);
-                    i++;
-                    j3 = 1120986464257L;
+                    i2++;
+                    j2 = 1120986464257L;
                 }
                 if (this.job.getTriggerContentUpdateDelay() >= 0) {
                     protoOutputStream.write(1112396529676L, this.job.getTriggerContentUpdateDelay());
@@ -1949,13 +809,13 @@ public final class JobStatus {
             if (grantedUriPermissions != null) {
                 grantedUriPermissions.dump(protoOutputStream, 1146756268049L);
             }
-            long j4 = this.mTotalNetworkDownloadBytes;
-            if (j4 != -1) {
-                protoOutputStream.write(1112396529689L, j4);
+            long j3 = this.mTotalNetworkDownloadBytes;
+            if (j3 != -1) {
+                protoOutputStream.write(1112396529689L, j3);
             }
-            long j5 = this.mTotalNetworkUploadBytes;
-            if (j5 != -1) {
-                protoOutputStream.write(1112396529690L, j5);
+            long j4 = this.mTotalNetworkUploadBytes;
+            if (j4 != -1) {
+                protoOutputStream.write(1112396529690L, j4);
             }
             protoOutputStream.write(1112396529684L, this.job.getMinLatencyMillis());
             protoOutputStream.write(1112396529685L, this.job.getMaxExecutionDelayMillis());
@@ -1967,11 +827,12 @@ public final class JobStatus {
             protoOutputStream.write(1133871366168L, this.job.hasLateConstraint());
             protoOutputStream.end(start2);
         }
-        dumpConstraints(protoOutputStream, 2259152797703L, this.requiredConstraints);
+        int i3 = this.requiredConstraints;
+        dumpConstraints(protoOutputStream, 2259152797703L, i3);
         dumpConstraints(protoOutputStream, 2259152797727L, this.mDynamicConstraints);
         if (z) {
             dumpConstraints(protoOutputStream, 2259152797704L, this.satisfiedConstraints);
-            dumpConstraints(protoOutputStream, 2259152797705L, (this.requiredConstraints | 16777216) & (~this.satisfiedConstraints));
+            dumpConstraints(protoOutputStream, 2259152797705L, (16777216 | i3) & (~this.satisfiedConstraints));
             protoOutputStream.write(1133871366154L, this.appHasDozeExemption);
             protoOutputStream.write(1133871366170L, this.uidActive);
             protoOutputStream.write(1133871366171L, this.job.isExemptedFromAppStandby());
@@ -2006,47 +867,705 @@ public final class JobStatus {
         protoOutputStream.write(1133871366147L, this.mReadyDynamicSatisfied);
         protoOutputStream.end(start5);
         if (this.changedAuthorities != null) {
-            for (int i2 = 0; i2 < this.changedAuthorities.size(); i2++) {
-                protoOutputStream.write(2237677961228L, (String) this.changedAuthorities.valueAt(i2));
+            for (int i4 = 0; i4 < this.changedAuthorities.size(); i4++) {
+                protoOutputStream.write(2237677961228L, (String) this.changedAuthorities.valueAt(i4));
             }
         }
         if (this.changedUris != null) {
-            for (int i3 = 0; i3 < this.changedUris.size(); i3++) {
-                protoOutputStream.write(2237677961229L, ((Uri) this.changedUris.valueAt(i3)).toString());
+            for (int i5 = 0; i5 < this.changedUris.size(); i5++) {
+                protoOutputStream.write(2237677961229L, ((Uri) this.changedUris.valueAt(i5)).toString());
             }
         }
         if (this.pendingWork != null) {
-            for (int i4 = 0; i4 < this.pendingWork.size(); i4++) {
-                dumpJobWorkItem(protoOutputStream, 2246267895823L, (JobWorkItem) this.pendingWork.get(i4));
+            for (int i6 = 0; i6 < this.pendingWork.size(); i6++) {
+                dumpJobWorkItem(protoOutputStream, 2246267895823L, (JobWorkItem) this.pendingWork.get(i6));
             }
         }
         if (this.executingWork != null) {
-            for (int i5 = 0; i5 < this.executingWork.size(); i5++) {
-                dumpJobWorkItem(protoOutputStream, 2246267895824L, (JobWorkItem) this.executingWork.get(i5));
+            for (int i7 = 0; i7 < this.executingWork.size(); i7++) {
+                dumpJobWorkItem(protoOutputStream, 2246267895824L, (JobWorkItem) this.executingWork.get(i7));
             }
         }
         protoOutputStream.write(1159641169937L, this.standbyBucket);
-        protoOutputStream.write(1112396529682L, j2 - this.enqueueTime);
-        long j6 = this.whenStandbyDeferred;
-        protoOutputStream.write(1112396529692L, j6 == 0 ? 0L : j2 - j6);
-        long j7 = this.mFirstForceBatchedTimeElapsed;
-        protoOutputStream.write(1112396529693L, j7 == 0 ? 0L : j2 - j7);
-        long j8 = this.earliestRunTimeElapsedMillis;
-        if (j8 == 0) {
+        protoOutputStream.write(1112396529682L, j - this.enqueueTime);
+        long j5 = this.whenStandbyDeferred;
+        protoOutputStream.write(1112396529692L, j5 == 0 ? 0L : j - j5);
+        long j6 = this.mFirstForceBatchedTimeElapsed;
+        protoOutputStream.write(1112396529693L, j6 == 0 ? 0L : j - j6);
+        long j7 = this.earliestRunTimeElapsedMillis;
+        if (j7 == 0) {
+            i = 0;
             protoOutputStream.write(1176821039123L, 0);
         } else {
-            protoOutputStream.write(1176821039123L, j8 - j2);
+            i = 0;
+            protoOutputStream.write(1176821039123L, j7 - j);
         }
-        long j9 = this.latestRunTimeElapsedMillis;
-        if (j9 == Long.MAX_VALUE) {
-            protoOutputStream.write(1176821039124L, 0);
+        long j8 = this.latestRunTimeElapsedMillis;
+        if (j8 == Long.MAX_VALUE) {
+            protoOutputStream.write(1176821039124L, i);
         } else {
-            protoOutputStream.write(1176821039124L, j9 - j2);
+            protoOutputStream.write(1176821039124L, j8 - j);
         }
         protoOutputStream.write(1116691496990L, this.mOriginalLatestRunTimeElapsedMillis);
         protoOutputStream.write(1120986464277L, this.numFailures + this.mNumSystemStops);
         protoOutputStream.write(1112396529686L, this.mLastSuccessfulRunTime);
         protoOutputStream.write(1112396529687L, this.mLastFailedRunTime);
+        protoOutputStream.end(start);
+    }
+
+    public final void enqueueWorkLocked(JobWorkItem jobWorkItem) {
+        GrantedUriPermissions grantedUriPermissions;
+        if (this.pendingWork == null) {
+            this.pendingWork = new ArrayList();
+        }
+        jobWorkItem.setWorkId(this.nextPendingWorkId);
+        this.nextPendingWorkId++;
+        if (jobWorkItem.getIntent() != null && (jobWorkItem.getIntent().getFlags() & 3) != 0) {
+            Intent intent = jobWorkItem.getIntent();
+            String shortString = toShortString();
+            int flags = intent.getFlags();
+            if ((flags & 3) != 0) {
+                Uri data = intent.getData();
+                int i = this.sourceUid;
+                String str = this.sourcePackageName;
+                int i2 = this.sourceUserId;
+                grantedUriPermissions = data != null ? GrantedUriPermissions.grantUri(data, i, str, i2, flags, shortString, null) : null;
+                ClipData clipData = intent.getClipData();
+                if (clipData != null) {
+                    grantedUriPermissions = GrantedUriPermissions.grantClip(clipData, i, str, i2, flags, shortString, grantedUriPermissions);
+                }
+            } else {
+                grantedUriPermissions = null;
+            }
+            jobWorkItem.setGrants(grantedUriPermissions);
+        }
+        this.pendingWork.add(jobWorkItem);
+        updateNetworkBytesLocked();
+    }
+
+    public final int getEffectivePriority() {
+        int min = Math.min(((this.mInternalFlags & 2) != 0 || (this.job.isUserInitiated() && (this.mInternalFlags & 4) != 0)) ? 400 : 500, this.job.getPriority());
+        int i = this.numFailures;
+        if (i < 2 || shouldTreatAsUserInitiatedJob()) {
+            return min;
+        }
+        if (isRequestedExpeditedJob()) {
+            return 400;
+        }
+        int i2 = i / 2;
+        if (i2 == 1) {
+            return Math.min(300, min);
+        }
+        if (i2 != 2) {
+            return 100;
+        }
+        return Math.min(200, min);
+    }
+
+    public final int getEffectiveStandbyBucket() {
+        if (this.mJobSchedulerInternal == null) {
+            this.mJobSchedulerInternal = (JobSchedulerInternal) LocalServices.getService(JobSchedulerInternal.class);
+        }
+        JobSchedulerInternal jobSchedulerInternal = this.mJobSchedulerInternal;
+        int i = this.callingUid;
+        boolean isAppConsideredBuggy = jobSchedulerInternal.isAppConsideredBuggy(UserHandle.getUserId(i), this.job.getService().getPackageName(), getTimeoutBlameUserId(), getTimeoutBlamePackageName());
+        int i2 = this.standbyBucket;
+        if (i2 == 6) {
+            if (isAppConsideredBuggy) {
+                String packageName = this.job.getService().getPackageName();
+                String str = this.sourcePackageName;
+                if (!packageName.equals(str)) {
+                    str = this.job.getService().getPackageName() + "/" + str;
+                }
+                PinnerService$$ExternalSyntheticOutline0.m("Exempted app ", str, " considered buggy", "JobScheduler.JobStatus");
+            }
+            return i2;
+        }
+        if (this.uidActive || this.job.isExemptedFromAppStandby()) {
+            return 0;
+        }
+        if (i2 != 5 && i2 != 4 && this.mHasMediaBackupExemption) {
+            i2 = Math.min(1, i2);
+        }
+        if (!isAppConsideredBuggy || i2 >= 1) {
+            return i2;
+        }
+        if (!this.mIsDowngradedDueToBuggyApp) {
+            if (UserHandle.isCore(i)) {
+                i = this.sourceUid;
+            }
+            Counter.logIncrementWithUid("job_scheduler.value_job_quota_reduced_due_to_buggy_uid", i);
+            this.mIsDowngradedDueToBuggyApp = true;
+        }
+        return 1;
+    }
+
+    public final String[] getFilteredDebugTags() {
+        String[] strArr = this.mFilteredDebugTags;
+        if (strArr != null) {
+            return strArr;
+        }
+        ArraySet debugTagsArraySet = this.job.getDebugTagsArraySet();
+        this.mFilteredDebugTags = new String[debugTagsArraySet.size()];
+        int i = 0;
+        while (true) {
+            String[] strArr2 = this.mFilteredDebugTags;
+            if (i >= strArr2.length) {
+                return strArr2;
+            }
+            strArr2[i] = applyBasicPiiFilters((String) debugTagsArraySet.valueAt(i));
+            i++;
+        }
+    }
+
+    public final String getFilteredTraceTag() {
+        String str = this.mFilteredTraceTag;
+        if (str != null) {
+            return str;
+        }
+        String traceTag = this.job.getTraceTag();
+        if (traceTag == null) {
+            return null;
+        }
+        String applyBasicPiiFilters = applyBasicPiiFilters(traceTag);
+        this.mFilteredTraceTag = applyBasicPiiFilters;
+        return applyBasicPiiFilters;
+    }
+
+    public final float getFractionRunTime() {
+        JobSchedulerService.sElapsedRealtimeClock.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        long j = this.earliestRunTimeElapsedMillis;
+        long j2 = this.latestRunTimeElapsedMillis;
+        if (j == 0 && j2 == Long.MAX_VALUE) {
+            return 1.0f;
+        }
+        if (j == 0) {
+            if (elapsedRealtime >= j2) {
+                return 1.0f;
+            }
+            return FullScreenMagnificationGestureHandler.MAX_SCALE;
+        }
+        if (j2 == Long.MAX_VALUE) {
+            if (elapsedRealtime >= j) {
+                return 1.0f;
+            }
+            return FullScreenMagnificationGestureHandler.MAX_SCALE;
+        }
+        if (elapsedRealtime <= j) {
+            return FullScreenMagnificationGestureHandler.MAX_SCALE;
+        }
+        if (elapsedRealtime >= j2) {
+            return 1.0f;
+        }
+        return (elapsedRealtime - j) / (j2 - j);
+    }
+
+    public final int getNumPreviousAttempts() {
+        return this.numFailures + this.mNumSystemStops;
+    }
+
+    public final int getNumRequiredFlexibleConstraints() {
+        return this.mNumAppliedFlexibleConstraints - this.mNumDroppedFlexibleConstraints;
+    }
+
+    public final String getTimeoutBlamePackageName() {
+        return UserHandle.isCore(this.callingUid) ? this.sourcePackageName : this.job.getService().getPackageName();
+    }
+
+    public final int getTimeoutBlameUserId() {
+        int i = this.callingUid;
+        return UserHandle.isCore(i) ? this.sourceUserId : UserHandle.getUserId(i);
+    }
+
+    public final long getTriggerContentMaxDelay() {
+        long triggerContentMaxDelay = this.job.getTriggerContentMaxDelay();
+        if (triggerContentMaxDelay < 0) {
+            return 120000L;
+        }
+        return Math.max(triggerContentMaxDelay, 1000L);
+    }
+
+    public final long getTriggerContentUpdateDelay() {
+        long triggerContentUpdateDelay = this.job.getTriggerContentUpdateDelay();
+        if (triggerContentUpdateDelay < 0) {
+            return 10000L;
+        }
+        return Math.max(triggerContentUpdateDelay, 500L);
+    }
+
+    public final UserVisibleJobSummary getUserVisibleJobSummary() {
+        if (this.mUserVisibleJobSummary == null) {
+            this.mUserVisibleJobSummary = new UserVisibleJobSummary(this.callingUid, this.job.getService().getPackageName(), this.sourceUserId, this.sourcePackageName, this.mNamespace, this.job.getId());
+        }
+        return this.mUserVisibleJobSummary;
+    }
+
+    public final String getWakelockTag() {
+        if (this.mWakelockTag == null) {
+            this.mWakelockTag = "*job*/" + this.batteryName;
+        }
+        return this.mWakelockTag;
+    }
+
+    public final int getWorkCount() {
+        ArrayList arrayList = this.pendingWork;
+        int size = arrayList == null ? 0 : arrayList.size();
+        ArrayList arrayList2 = this.executingWork;
+        return size + (arrayList2 != null ? arrayList2.size() : 0);
+    }
+
+    public final boolean hasConnectivityConstraint() {
+        return (this.requiredConstraints & 268435456) != 0;
+    }
+
+    public final boolean hasConstraint(int i) {
+        return ((this.requiredConstraints & i) == 0 && (this.mDynamicConstraints & i) == 0) ? false : true;
+    }
+
+    public final boolean hasContentTriggerConstraint() {
+        return (this.requiredConstraints & 67108864) != 0;
+    }
+
+    public final boolean hasFlexibilityConstraint() {
+        return (this.requiredConstraints & 2097152) != 0;
+    }
+
+    public final boolean isConstraintSatisfied(int i) {
+        return (this.satisfiedConstraints & i) != 0;
+    }
+
+    public final boolean isConstraintsSatisfied(int i) {
+        int i2 = this.overrideState;
+        if (i2 == 3) {
+            return true;
+        }
+        if (i2 == 2) {
+            i |= this.requiredConstraints & (-2136997873);
+        }
+        int i3 = this.mRequiredConstraintsOfInterest;
+        return (i & i3) == i3;
+    }
+
+    public final boolean isReady(int i) {
+        if ((this.mReadyWithinQuota || this.mReadyDynamicSatisfied || shouldTreatAsExpeditedJob()) && getEffectiveStandbyBucket() != 4 && this.mReadyNotDozing && this.mReadyNotRestrictedInBg && this.serviceProcessName != null) {
+            return this.mReadyDeadlineSatisfied || isConstraintsSatisfied(i);
+        }
+        return false;
+    }
+
+    public final boolean isRequestedExpeditedJob() {
+        return (this.job.getFlags() & 16) != 0;
+    }
+
+    public final boolean isUserVisibleJob() {
+        return shouldTreatAsUserInitiatedJob() || this.startedAsUserInitiatedJob;
+    }
+
+    public final boolean matches(int i, int i2, String str) {
+        return this.job.getId() == i2 && this.callingUid == i && Objects.equals(this.mNamespace, str);
+    }
+
+    public final void maybeAddForegroundExemption(JobSchedulerService$$ExternalSyntheticLambda1 jobSchedulerService$$ExternalSyntheticLambda1) {
+        if (this.job.hasEarlyConstraint() || this.job.hasLateConstraint() || (this.mInternalFlags & 1) != 0 || !jobSchedulerService$$ExternalSyntheticLambda1.test(Integer.valueOf(this.sourceUid))) {
+            return;
+        }
+        this.mInternalFlags |= 1;
+    }
+
+    public final void prepareLocked() {
+        if (this.prepared) {
+            Slog.wtf("JobScheduler.JobStatus", "Already prepared: " + this);
+            return;
+        }
+        this.prepared = true;
+        GrantedUriPermissions grantedUriPermissions = null;
+        this.unpreparedPoint = null;
+        ClipData clipData = this.job.getClipData();
+        if (clipData != null) {
+            int clipGrantFlags = this.job.getClipGrantFlags();
+            String shortString = toShortString();
+            if ((clipGrantFlags & 3) != 0) {
+                grantedUriPermissions = GrantedUriPermissions.grantClip(clipData, this.sourceUid, this.sourcePackageName, this.sourceUserId, clipGrantFlags, shortString, null);
+            }
+            this.uriPerms = grantedUriPermissions;
+        }
+    }
+
+    public final void printUniqueId(PrintWriter printWriter) {
+        String str = this.mNamespace;
+        if (str != null) {
+            printWriter.print(str);
+            printWriter.print(":");
+        } else {
+            printWriter.print("#");
+        }
+        UserHandle.formatUid(printWriter, this.callingUid);
+        printWriter.print("/");
+        printWriter.print(this.job.getId());
+    }
+
+    public boolean readinessStatusWithConstraint(int i, boolean z) {
+        boolean z2;
+        int i2 = this.mSatisfiedConstraintsOfInterest;
+        if (i == 4194304) {
+            z2 = this.mReadyNotRestrictedInBg;
+            this.mReadyNotRestrictedInBg = z;
+        } else if (i == 16777216) {
+            z2 = this.mReadyWithinQuota;
+            this.mReadyWithinQuota = z;
+        } else if (i == 33554432) {
+            z2 = this.mReadyNotDozing;
+            this.mReadyNotDozing = z;
+        } else if (i != 1073741824) {
+            i2 = z ? i2 | i : (~i) & i2;
+            int i3 = this.mDynamicConstraints;
+            this.mReadyDynamicSatisfied = i3 != 0 && i3 == (i2 & i3);
+            z2 = false;
+        } else {
+            z2 = this.mReadyDeadlineSatisfied;
+            this.mReadyDeadlineSatisfied = z;
+        }
+        if (i != 2097152) {
+            i2 |= 2097152;
+        }
+        boolean isReady = isReady(i2);
+        if (i == 4194304) {
+            this.mReadyNotRestrictedInBg = z2;
+        } else if (i == 16777216) {
+            this.mReadyWithinQuota = z2;
+        } else if (i == 33554432) {
+            this.mReadyNotDozing = z2;
+        } else if (i != 1073741824) {
+            int i4 = this.mDynamicConstraints;
+            this.mReadyDynamicSatisfied = i4 != 0 && i4 == (this.satisfiedConstraints & i4);
+        } else {
+            this.mReadyDeadlineSatisfied = z2;
+        }
+        return isReady;
+    }
+
+    public final boolean setConstraintSatisfied(int i, long j, boolean z) {
+        int i2 = 0;
+        if (((this.satisfiedConstraints & i) != 0) == z) {
+            return false;
+        }
+        if (DEBUG) {
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "Constraint ", " is ");
+            m.append(!z ? "NOT " : "");
+            m.append("satisfied for ");
+            m.append(toShortString());
+            Slog.v("JobScheduler.JobStatus", m.toString());
+        }
+        boolean z2 = !z && isReady(this.mSatisfiedConstraintsOfInterest);
+        int i3 = (this.satisfiedConstraints & (~i)) | (z ? i : 0);
+        this.satisfiedConstraints = i3;
+        this.mSatisfiedConstraintsOfInterest = (-1800404977) & i3;
+        int i4 = this.mDynamicConstraints;
+        this.mReadyDynamicSatisfied = i4 != 0 && i4 == (i3 & i4);
+        int i5 = this.mConstraintChangeHistoryIndex;
+        this.mConstraintUpdatedTimesElapsed[i5] = j;
+        this.mConstraintStatusHistory[i5] = i3;
+        this.mConstraintChangeHistoryIndex = (i5 + 1) % 10;
+        boolean readinessStatusWithConstraint = readinessStatusWithConstraint(i, z);
+        if (z2 && !readinessStatusWithConstraint) {
+            int i6 = this.requiredConstraints;
+            if (i == 1) {
+                if ((i & i6) != 0) {
+                    i2 = 6;
+                    this.mReasonReadyToUnready = i2;
+                }
+                i2 = 12;
+                this.mReasonReadyToUnready = i2;
+            } else if (i != 2) {
+                if (i == 4) {
+                    if ((i & i6) != 0) {
+                        i2 = 8;
+                    }
+                    i2 = 12;
+                } else if (i == 8) {
+                    i2 = 9;
+                } else if (i != 2097152) {
+                    if (i == 4194304) {
+                        if (this.mIsUserBgRestricted) {
+                            i2 = 11;
+                        }
+                        i2 = 4;
+                    } else if (i == 8388608) {
+                        i2 = 15;
+                    } else if (i != 16777216) {
+                        if (i != 33554432) {
+                            if (i != 268435456) {
+                                Slog.wtf("JobScheduler.JobStatus", "Unsupported constraint (" + i + ") --stop reason mapping");
+                            } else {
+                                i2 = 7;
+                            }
+                        }
+                        i2 = 4;
+                    } else {
+                        i2 = 10;
+                    }
+                }
+                this.mReasonReadyToUnready = i2;
+            } else {
+                if ((i & i6) != 0) {
+                    i2 = 5;
+                    this.mReasonReadyToUnready = i2;
+                }
+                i2 = 12;
+                this.mReasonReadyToUnready = i2;
+            }
+        } else if (!z2 && readinessStatusWithConstraint) {
+            this.mReasonReadyToUnready = 0;
+        }
+        return true;
+    }
+
+    public final void setTrackingController(int i) {
+        this.trackingControllers = i | this.trackingControllers;
+    }
+
+    public final boolean shouldTreatAsExpeditedJob() {
+        return this.mExpeditedQuotaApproved && isRequestedExpeditedJob();
+    }
+
+    public final boolean shouldTreatAsUserInitiatedJob() {
+        if (this.job.isUserInitiated()) {
+            int i = this.mInternalFlags;
+            if ((i & 2) == 0 && (i & 4) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final String toShortString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Integer.toHexString(System.identityHashCode(this)));
+        String str = this.mNamespace;
+        if (str != null) {
+            sb.append(" {");
+            sb.append(str);
+            sb.append("}");
+        }
+        sb.append(" #");
+        UserHandle.formatUid(sb, this.callingUid);
+        sb.append("/");
+        sb.append(this.job.getId());
+        sb.append(' ');
+        sb.append(this.batteryName);
+        return sb.toString();
+    }
+
+    public final String toShortStringExceptUniqueId() {
+        return Integer.toHexString(System.identityHashCode(this)) + ' ' + this.batteryName;
+    }
+
+    public final String toString() {
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(128, "JobStatus{");
+        m.append(Integer.toHexString(System.identityHashCode(this)));
+        String str = this.mNamespace;
+        if (str != null) {
+            RCPManagerService$$ExternalSyntheticOutline0.m$1(m, " ", str, ":");
+        } else {
+            m.append(" #");
+        }
+        int i = this.callingUid;
+        UserHandle.formatUid(m, i);
+        m.append("/");
+        m.append(this.job.getId());
+        m.append(' ');
+        m.append(this.batteryName);
+        m.append(" u=");
+        m.append(UserHandle.getUserId(i));
+        m.append(" s=");
+        m.append(this.sourceUid);
+        long j = this.earliestRunTimeElapsedMillis;
+        long j2 = this.latestRunTimeElapsedMillis;
+        if (j != 0 || j2 != Long.MAX_VALUE) {
+            JobSchedulerService.sElapsedRealtimeClock.getClass();
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            m.append(" TIME=");
+            if (j == 0) {
+                m.append("none");
+            } else {
+                TimeUtils.formatDuration(j - elapsedRealtime, m);
+            }
+            m.append(":");
+            if (j2 == Long.MAX_VALUE) {
+                m.append("none");
+            } else {
+                TimeUtils.formatDuration(j2 - elapsedRealtime, m);
+            }
+        }
+        if (this.job.getRequiredNetwork() != null) {
+            m.append(" NET");
+        }
+        if (this.job.isRequireCharging()) {
+            m.append(" CHARGING");
+        }
+        if (this.job.isRequireBatteryNotLow()) {
+            m.append(" BATNOTLOW");
+        }
+        if (this.job.isRequireStorageNotLow()) {
+            m.append(" STORENOTLOW");
+        }
+        if (this.job.isRequireDeviceIdle()) {
+            m.append(" IDLE");
+        }
+        if (this.job.isPeriodic()) {
+            m.append(" PERIODIC");
+        }
+        if (this.job.isPersisted()) {
+            m.append(" PERSISTED");
+        }
+        if ((this.satisfiedConstraints & 33554432) == 0) {
+            m.append(" WAIT:DEV_NOT_DOZING");
+        }
+        if (this.job.getTriggerContentUris() != null) {
+            m.append(" URIS=");
+            m.append(Arrays.toString(this.job.getTriggerContentUris()));
+        }
+        int i2 = this.numFailures;
+        if (i2 != 0) {
+            m.append(" failures=");
+            m.append(i2);
+        }
+        int i3 = this.mNumSystemStops;
+        if (i3 != 0) {
+            m.append(" system stops=");
+            m.append(i3);
+        }
+        if (isReady(this.mSatisfiedConstraintsOfInterest)) {
+            m.append(" READY");
+        } else {
+            m.append(" satisfied:0x");
+            m.append(Integer.toHexString(this.satisfiedConstraints));
+            int i4 = this.mRequiredConstraintsOfInterest | 56623104;
+            m.append(" unsatisfied:0x");
+            m.append(Integer.toHexString((this.satisfiedConstraints & i4) ^ i4));
+        }
+        m.append("}");
+        return m.toString();
+    }
+
+    public final void unprepareLocked() {
+        if (this.prepared) {
+            this.prepared = false;
+            this.unpreparedPoint = new Throwable().fillInStackTrace();
+            GrantedUriPermissions grantedUriPermissions = this.uriPerms;
+            if (grantedUriPermissions != null) {
+                grantedUriPermissions.revoke();
+                this.uriPerms = null;
+                return;
+            }
+            return;
+        }
+        Slog.wtf("JobScheduler.JobStatus", "Hasn't been prepared: " + this);
+        Throwable th = this.unpreparedPoint;
+        if (th != null) {
+            Slog.e("JobScheduler.JobStatus", "Was already unprepared at ", th);
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:17:0x0043 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:19:0x0044  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean updateMediaBackupExemptionStatus() {
+        /*
+            r4 = this;
+            com.android.server.job.JobSchedulerInternal r0 = r4.mJobSchedulerInternal
+            if (r0 != 0) goto Le
+            java.lang.Class<com.android.server.job.JobSchedulerInternal> r0 = com.android.server.job.JobSchedulerInternal.class
+            java.lang.Object r0 = com.android.server.LocalServices.getService(r0)
+            com.android.server.job.JobSchedulerInternal r0 = (com.android.server.job.JobSchedulerInternal) r0
+            r4.mJobSchedulerInternal = r0
+        Le:
+            boolean r0 = r4.mHasExemptedMediaUrisOnly
+            r1 = 0
+            r2 = 1
+            if (r0 == 0) goto L3e
+            android.app.job.JobInfo r0 = r4.job
+            boolean r0 = r0.hasLateConstraint()
+            if (r0 != 0) goto L3e
+            android.app.job.JobInfo r0 = r4.job
+            android.net.NetworkRequest r0 = r0.getRequiredNetwork()
+            if (r0 == 0) goto L3e
+            int r0 = r4.getEffectivePriority()
+            r3 = 300(0x12c, float:4.2E-43)
+            if (r0 < r3) goto L3e
+            com.android.server.job.JobSchedulerInternal r0 = r4.mJobSchedulerInternal
+            int r3 = r4.sourceUserId
+            java.lang.String r0 = r0.getCloudMediaProviderPackage(r3)
+            java.lang.String r3 = r4.sourcePackageName
+            boolean r0 = r3.equals(r0)
+            if (r0 == 0) goto L3e
+            r0 = r2
+            goto L3f
+        L3e:
+            r0 = r1
+        L3f:
+            boolean r3 = r4.mHasMediaBackupExemption
+            if (r3 != r0) goto L44
+            return r1
+        L44:
+            r4.mHasMediaBackupExemption = r0
+            return r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.job.controllers.JobStatus.updateMediaBackupExemptionStatus():boolean");
+    }
+
+    public final void updateNetworkBytesLocked() {
+        long estimatedNetworkDownloadBytes = this.job.getEstimatedNetworkDownloadBytes();
+        this.mTotalNetworkDownloadBytes = estimatedNetworkDownloadBytes;
+        if (estimatedNetworkDownloadBytes < 0) {
+            this.mTotalNetworkDownloadBytes = -1L;
+        }
+        long estimatedNetworkUploadBytes = this.job.getEstimatedNetworkUploadBytes();
+        this.mTotalNetworkUploadBytes = estimatedNetworkUploadBytes;
+        if (estimatedNetworkUploadBytes < 0) {
+            this.mTotalNetworkUploadBytes = -1L;
+        }
+        this.mMinimumNetworkChunkBytes = this.job.getMinimumNetworkChunkBytes();
+        if (this.pendingWork != null) {
+            for (int i = 0; i < this.pendingWork.size(); i++) {
+                long estimatedNetworkDownloadBytes2 = ((JobWorkItem) this.pendingWork.get(i)).getEstimatedNetworkDownloadBytes();
+                if (estimatedNetworkDownloadBytes2 != -1 && estimatedNetworkDownloadBytes2 > 0) {
+                    long j = this.mTotalNetworkDownloadBytes;
+                    if (j != -1) {
+                        this.mTotalNetworkDownloadBytes = j + estimatedNetworkDownloadBytes2;
+                    } else {
+                        this.mTotalNetworkDownloadBytes = estimatedNetworkDownloadBytes2;
+                    }
+                }
+                long estimatedNetworkUploadBytes2 = ((JobWorkItem) this.pendingWork.get(i)).getEstimatedNetworkUploadBytes();
+                if (estimatedNetworkUploadBytes2 != -1 && estimatedNetworkUploadBytes2 > 0) {
+                    long j2 = this.mTotalNetworkUploadBytes;
+                    if (j2 != -1) {
+                        this.mTotalNetworkUploadBytes = j2 + estimatedNetworkUploadBytes2;
+                    } else {
+                        this.mTotalNetworkUploadBytes = estimatedNetworkUploadBytes2;
+                    }
+                }
+                long minimumNetworkChunkBytes = ((JobWorkItem) this.pendingWork.get(i)).getMinimumNetworkChunkBytes();
+                long j3 = this.mMinimumNetworkChunkBytes;
+                if (j3 == -1) {
+                    this.mMinimumNetworkChunkBytes = minimumNetworkChunkBytes;
+                } else if (minimumNetworkChunkBytes != -1) {
+                    this.mMinimumNetworkChunkBytes = Math.min(j3, minimumNetworkChunkBytes);
+                }
+            }
+        }
+    }
+
+    public final void writeToShortProto(ProtoOutputStream protoOutputStream, long j) {
+        long start = protoOutputStream.start(j);
+        protoOutputStream.write(1120986464257L, this.callingUid);
+        protoOutputStream.write(1120986464258L, this.job.getId());
+        protoOutputStream.write(1138166333443L, this.batteryName);
         protoOutputStream.end(start);
     }
 }

@@ -1,78 +1,32 @@
 package com.android.server.credentials.metrics;
 
-import com.android.server.audio.AudioService$$ExternalSyntheticLambda0;
+import com.android.server.audio.AudioService$$ExternalSyntheticLambda1;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class InitialPhaseMetric {
+public final class InitialPhaseMetric {
     public final int mSessionIdCaller;
     public int mApiName = ApiName.UNKNOWN.getMetricCode();
     public int mCallerUid = -1;
     public long mCredentialServiceStartedTimeNanoseconds = -1;
-    public long mCredentialServiceBeginQueryTimeNanoseconds = -1;
     public boolean mOriginSpecified = false;
     public Map mRequestCounts = new LinkedHashMap();
+    public int mAutofillSessionId = -1;
+    public int mAutofillRequestId = -1;
 
     public InitialPhaseMetric(int i) {
         this.mSessionIdCaller = i;
     }
 
-    public void setCredentialServiceStartedTimeNanoseconds(long j) {
-        this.mCredentialServiceStartedTimeNanoseconds = j;
+    public final int[] getUniqueRequestCounts() {
+        return this.mRequestCounts.values().stream().mapToInt(new AudioService$$ExternalSyntheticLambda1(2)).toArray();
     }
 
-    public void setCredentialServiceBeginQueryTimeNanoseconds(long j) {
-        this.mCredentialServiceBeginQueryTimeNanoseconds = j;
-    }
-
-    public long getCredentialServiceStartedTimeNanoseconds() {
-        return this.mCredentialServiceStartedTimeNanoseconds;
-    }
-
-    public void setApiName(int i) {
-        this.mApiName = i;
-    }
-
-    public int getApiName() {
-        return this.mApiName;
-    }
-
-    public void setCallerUid(int i) {
-        this.mCallerUid = i;
-    }
-
-    public int getCallerUid() {
-        return this.mCallerUid;
-    }
-
-    public int getSessionIdCaller() {
-        return this.mSessionIdCaller;
-    }
-
-    public int getCountRequestClassType() {
-        return this.mRequestCounts.size();
-    }
-
-    public void setOriginSpecified(boolean z) {
-        this.mOriginSpecified = z;
-    }
-
-    public boolean isOriginSpecified() {
-        return this.mOriginSpecified;
-    }
-
-    public void setRequestCounts(Map map) {
-        this.mRequestCounts = map;
-    }
-
-    public String[] getUniqueRequestStrings() {
+    public final String[] getUniqueRequestStrings() {
         String[] strArr = new String[this.mRequestCounts.keySet().size()];
         this.mRequestCounts.keySet().toArray(strArr);
         return strArr;
-    }
-
-    public int[] getUniqueRequestCounts() {
-        return this.mRequestCounts.values().stream().mapToInt(new AudioService$$ExternalSyntheticLambda0()).toArray();
     }
 }

@@ -2,19 +2,20 @@ package com.android.server.knox.dar.ddar.proxy;
 
 import android.content.ComponentName;
 
-/* loaded from: classes2.dex */
-public class ProxyAgentInfo {
-    public ComponentName mCompName;
-    public String mName;
-    public int mUserId;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ProxyAgentInfo {
+    public final ComponentName mCompName;
+    public final String mName;
+    public final int mUserId;
 
-    public ProxyAgentInfo(String str, int i, ComponentName componentName) {
+    public ProxyAgentInfo(ComponentName componentName, int i, String str) {
         this.mName = str;
         this.mUserId = i;
         this.mCompName = componentName;
     }
 
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -34,7 +35,7 @@ public class ProxyAgentInfo {
         return false;
     }
 
-    public String toString() {
+    public final String toString() {
         return String.format("ProxyAgentInfo {mName:%s mCompName:%s mUserId:%d}", this.mName, this.mCompName, Integer.valueOf(this.mUserId));
     }
 }

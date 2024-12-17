@@ -1,15 +1,13 @@
 package com.android.server.wm;
 
-import android.content.Context;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.window.ITaskFpsCallback;
 import java.util.HashMap;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes3.dex */
-public final class TaskFpsCallbackController {
-    public final Context mContext;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+final class TaskFpsCallbackController {
     public final HashMap mTaskFpsCallbacks = new HashMap();
     public final HashMap mDeathRecipients = new HashMap();
 
@@ -17,11 +15,7 @@ public final class TaskFpsCallbackController {
 
     private static native void nativeUnregister(long j);
 
-    public TaskFpsCallbackController(Context context) {
-        this.mContext = context;
-    }
-
-    public void registerListener(int i, final ITaskFpsCallback iTaskFpsCallback) {
+    public final void registerListener(int i, final ITaskFpsCallback iTaskFpsCallback) {
         if (iTaskFpsCallback == null) {
             return;
         }
@@ -33,7 +27,7 @@ public final class TaskFpsCallbackController {
         IBinder.DeathRecipient deathRecipient = new IBinder.DeathRecipient() { // from class: com.android.server.wm.TaskFpsCallbackController$$ExternalSyntheticLambda0
             @Override // android.os.IBinder.DeathRecipient
             public final void binderDied() {
-                TaskFpsCallbackController.this.lambda$registerListener$0(iTaskFpsCallback);
+                TaskFpsCallbackController.this.unregisterListener(iTaskFpsCallback);
             }
         };
         try {
@@ -43,8 +37,7 @@ public final class TaskFpsCallbackController {
         }
     }
 
-    /* renamed from: unregisterListener, reason: merged with bridge method [inline-methods] */
-    public void lambda$registerListener$0(ITaskFpsCallback iTaskFpsCallback) {
+    public final void unregisterListener(ITaskFpsCallback iTaskFpsCallback) {
         if (iTaskFpsCallback == null) {
             return;
         }

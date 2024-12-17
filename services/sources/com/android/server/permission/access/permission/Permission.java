@@ -1,16 +1,16 @@
 package com.android.server.permission.access.permission;
 
 import android.content.pm.PermissionInfo;
+import android.hardware.biometrics.face.V1_0.OptionalBool$$ExternalSyntheticOutline0;
 import android.os.UserHandle;
-import com.android.server.permission.jarjar.kotlin.jvm.internal.DefaultConstructorMarker;
+import com.android.server.alarm.AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0;
 import com.android.server.permission.jarjar.kotlin.jvm.internal.Intrinsics;
 import java.util.Arrays;
 import libcore.util.EmptyArray;
 
-/* compiled from: Permission.kt */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class Permission {
-    public static final Companion Companion = new Companion(null);
     public final int appId;
     public final boolean areGidsPerUser;
     public final int[] gids;
@@ -18,73 +18,8 @@ public final class Permission {
     public final PermissionInfo permissionInfo;
     public final int type;
 
-    /* compiled from: Permission.kt */
-    /* loaded from: classes2.dex */
-    public final class Companion {
-        public Companion() {
-        }
-
-        public /* synthetic */ Companion(DefaultConstructorMarker defaultConstructorMarker) {
-            this();
-        }
-    }
-
-    public static /* synthetic */ Permission copy$default(Permission permission, PermissionInfo permissionInfo, boolean z, int i, int i2, int[] iArr, boolean z2, int i3, Object obj) {
-        if ((i3 & 1) != 0) {
-            permissionInfo = permission.permissionInfo;
-        }
-        if ((i3 & 2) != 0) {
-            z = permission.isReconciled;
-        }
-        boolean z3 = z;
-        if ((i3 & 4) != 0) {
-            i = permission.type;
-        }
-        int i4 = i;
-        if ((i3 & 8) != 0) {
-            i2 = permission.appId;
-        }
-        int i5 = i2;
-        if ((i3 & 16) != 0) {
-            iArr = permission.gids;
-        }
-        int[] iArr2 = iArr;
-        if ((i3 & 32) != 0) {
-            z2 = permission.areGidsPerUser;
-        }
-        return permission.copy(permissionInfo, z3, i4, i5, iArr2, z2);
-    }
-
-    public final Permission copy(PermissionInfo permissionInfo, boolean z, int i, int i2, int[] iArr, boolean z2) {
-        return new Permission(permissionInfo, z, i, i2, iArr, z2);
-    }
-
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof Permission)) {
-            return false;
-        }
-        Permission permission = (Permission) obj;
-        return Intrinsics.areEqual(this.permissionInfo, permission.permissionInfo) && this.isReconciled == permission.isReconciled && this.type == permission.type && this.appId == permission.appId && Intrinsics.areEqual(this.gids, permission.gids) && this.areGidsPerUser == permission.areGidsPerUser;
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    public int hashCode() {
-        int hashCode = this.permissionInfo.hashCode() * 31;
-        boolean z = this.isReconciled;
-        int i = z;
-        if (z != 0) {
-            i = 1;
-        }
-        int hashCode2 = (((((((hashCode + i) * 31) + Integer.hashCode(this.type)) * 31) + Integer.hashCode(this.appId)) * 31) + Arrays.hashCode(this.gids)) * 31;
-        boolean z2 = this.areGidsPerUser;
-        return hashCode2 + (z2 ? 1 : z2 ? 1 : 0);
-    }
-
-    public String toString() {
-        return "Permission(permissionInfo=" + this.permissionInfo + ", isReconciled=" + this.isReconciled + ", type=" + this.type + ", appId=" + this.appId + ", gids=" + Arrays.toString(this.gids) + ", areGidsPerUser=" + this.areGidsPerUser + ")";
+    public /* synthetic */ Permission(PermissionInfo permissionInfo, boolean z, int i, int i2) {
+        this(permissionInfo, z, i, i2, EmptyArray.INT, false);
     }
 
     public Permission(PermissionInfo permissionInfo, boolean z, int i, int i2, int[] iArr, boolean z2) {
@@ -96,46 +31,52 @@ public final class Permission {
         this.areGidsPerUser = z2;
     }
 
-    public final PermissionInfo getPermissionInfo() {
-        return this.permissionInfo;
+    public static Permission copy$default(Permission permission, PermissionInfo permissionInfo, boolean z, int i) {
+        return new Permission(permissionInfo, z, permission.type, i, permission.gids, permission.areGidsPerUser);
     }
 
-    public final boolean isReconciled() {
-        return this.isReconciled;
-    }
-
-    public final int getType() {
-        return this.type;
-    }
-
-    public final int getAppId() {
-        return this.appId;
-    }
-
-    public /* synthetic */ Permission(PermissionInfo permissionInfo, boolean z, int i, int i2, int[] iArr, boolean z2, int i3, DefaultConstructorMarker defaultConstructorMarker) {
-        this(permissionInfo, z, i, i2, (i3 & 16) != 0 ? EmptyArray.INT : iArr, (i3 & 32) != 0 ? false : z2);
-    }
-
-    public final int[] getGids() {
-        return this.gids;
-    }
-
-    public final boolean getAreGidsPerUser() {
-        return this.areGidsPerUser;
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Permission)) {
+            return false;
+        }
+        Permission permission = (Permission) obj;
+        return Intrinsics.areEqual(this.permissionInfo, permission.permissionInfo) && this.isReconciled == permission.isReconciled && this.type == permission.type && this.appId == permission.appId && Intrinsics.areEqual(this.gids, permission.gids) && this.areGidsPerUser == permission.areGidsPerUser;
     }
 
     public final int[] getGidsForUser(int i) {
-        if (this.areGidsPerUser) {
-            int length = this.gids.length;
-            int[] iArr = new int[length];
-            for (int i2 = 0; i2 < length; i2++) {
-                iArr[i2] = UserHandle.getUid(i, this.gids[i2]);
-            }
-            return iArr;
+        boolean z = this.areGidsPerUser;
+        int[] iArr = this.gids;
+        if (!z) {
+            int[] copyOf = Arrays.copyOf(iArr, iArr.length);
+            Intrinsics.checkNotNullExpressionValue("copyOf(...)", copyOf);
+            return copyOf;
         }
-        int[] iArr2 = this.gids;
-        int[] copyOf = Arrays.copyOf(iArr2, iArr2.length);
-        Intrinsics.checkNotNullExpressionValue(copyOf, "copyOf(this, size)");
-        return copyOf;
+        int length = iArr.length;
+        int[] iArr2 = new int[length];
+        for (int i2 = 0; i2 < length; i2++) {
+            iArr2[i2] = UserHandle.getUid(i, iArr[i2]);
+        }
+        return iArr2;
+    }
+
+    public final int hashCode() {
+        return Boolean.hashCode(this.areGidsPerUser) + ((Arrays.hashCode(this.gids) + ((Integer.hashCode(this.appId) + ((Integer.hashCode(this.type) + ((Boolean.hashCode(this.isReconciled) + (this.permissionInfo.hashCode() * 31)) * 31)) * 31)) * 31)) * 31);
+    }
+
+    public final String toString() {
+        PermissionInfo permissionInfo = this.permissionInfo;
+        String arrays = Arrays.toString(this.gids);
+        StringBuilder sb = new StringBuilder("Permission(permissionInfo=");
+        sb.append(permissionInfo);
+        sb.append(", isReconciled=");
+        sb.append(this.isReconciled);
+        sb.append(", type=");
+        sb.append(this.type);
+        sb.append(", appId=");
+        AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.appId, ", gids=", arrays, ", areGidsPerUser=", sb);
+        return OptionalBool$$ExternalSyntheticOutline0.m(")", sb, this.areGidsPerUser);
     }
 }

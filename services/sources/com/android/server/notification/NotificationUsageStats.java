@@ -9,12 +9,15 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 import com.android.internal.logging.MetricsLogger;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.alarm.AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0;
 import com.android.server.backup.BackupManagerConstants;
-import com.android.server.display.DisplayPowerController2;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import com.android.server.notification.NotificationManagerService;
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,248 +26,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class NotificationUsageStats {
-    public static final AggregatedStats[] EMPTY_AGGREGATED_STATS = new AggregatedStats[0];
+public final class NotificationUsageStats {
     public final Context mContext;
-    public final Handler mHandler;
+    public final AnonymousClass1 mHandler;
     public final Map mStats = new HashMap();
     public final ArrayDeque mStatsArrays = new ArrayDeque();
-    public ArraySet mStatExpiredkeys = new ArraySet();
+    public final ArraySet mStatExpiredkeys = new ArraySet();
     public long mLastEmitTime = SystemClock.elapsedRealtime();
 
-    public NotificationUsageStats(Context context) {
-        this.mContext = context;
-        Handler handler = new Handler(context.getMainLooper()) { // from class: com.android.server.notification.NotificationUsageStats.1
-            @Override // android.os.Handler
-            public void handleMessage(Message message) {
-                if (message.what == 1) {
-                    NotificationUsageStats.this.emit();
-                    return;
-                }
-                Log.wtf("NotificationUsageStats", "Unknown message type: " + message.what);
-            }
-        };
-        this.mHandler = handler;
-        handler.sendEmptyMessageDelayed(1, BackupManagerConstants.DEFAULT_KEY_VALUE_BACKUP_INTERVAL_MILLISECONDS);
-    }
-
-    public synchronized float getAppEnqueueRate(String str) {
-        AggregatedStats orCreateAggregatedStatsLocked = getOrCreateAggregatedStatsLocked(str);
-        if (orCreateAggregatedStatsLocked == null) {
-            return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        }
-        return orCreateAggregatedStatsLocked.getEnqueueRate(SystemClock.elapsedRealtime());
-    }
-
-    public synchronized boolean isAlertRateLimited(String str) {
-        AggregatedStats orCreateAggregatedStatsLocked = getOrCreateAggregatedStatsLocked(str);
-        if (orCreateAggregatedStatsLocked == null) {
-            return false;
-        }
-        return orCreateAggregatedStatsLocked.isAlertRateLimited();
-    }
-
-    public synchronized void registerEnqueuedByApp(String str) {
-        AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(str);
-        for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
-            aggregatedStats.numEnqueuedByApp++;
-            if (aggregatedStats.key.equals(str)) {
-                aggregatedStats.updateInterarrivalEstimate(SystemClock.elapsedRealtime());
-            }
-        }
-        releaseAggregatedStatsLocked(aggregatedStatsLocked);
-    }
-
-    public synchronized void registerPostedByApp(NotificationRecord notificationRecord) {
-        notificationRecord.stats.posttimeElapsedMs = SystemClock.elapsedRealtime();
-        AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord);
-        for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
-            int i = 1;
-            aggregatedStats.numPostedByApp++;
-            aggregatedStats.countApiUse(notificationRecord);
-            int i2 = aggregatedStats.numUndecoratedRemoteViews;
-            if (!notificationRecord.hasUndecoratedRemoteView()) {
-                i = 0;
-            }
-            aggregatedStats.numUndecoratedRemoteViews = i2 + i;
-        }
-        releaseAggregatedStatsLocked(aggregatedStatsLocked);
-    }
-
-    public synchronized void registerUpdatedByApp(NotificationRecord notificationRecord, NotificationRecord notificationRecord2) {
-        notificationRecord.stats.updateFrom(notificationRecord2.stats);
-        AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord);
-        for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
-            aggregatedStats.numUpdatedByApp++;
-            aggregatedStats.countApiUse(notificationRecord);
-        }
-        releaseAggregatedStatsLocked(aggregatedStatsLocked);
-    }
-
-    public synchronized void registerRemovedByApp(NotificationRecord notificationRecord) {
-        notificationRecord.stats.onRemoved();
-        AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord);
-        for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
-            aggregatedStats.numRemovedByApp++;
-        }
-        releaseAggregatedStatsLocked(aggregatedStatsLocked);
-    }
-
-    public synchronized void registerDismissedByUser(NotificationRecord notificationRecord) {
-        MetricsLogger.histogram(this.mContext, "note_dismiss_longevity", ((int) (System.currentTimeMillis() - notificationRecord.getRankingTimeMs())) / 60000);
-        notificationRecord.stats.onDismiss();
-    }
-
-    public synchronized void registerClickedByUser(NotificationRecord notificationRecord) {
-        MetricsLogger.histogram(this.mContext, "note_click_longevity", ((int) (System.currentTimeMillis() - notificationRecord.getRankingTimeMs())) / 60000);
-        notificationRecord.stats.onClick();
-    }
-
-    public synchronized void registerPeopleAffinity(NotificationRecord notificationRecord, boolean z, boolean z2, boolean z3) {
-        AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord);
-        for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
-            if (z) {
-                aggregatedStats.numWithValidPeople++;
-            }
-            if (z2) {
-                aggregatedStats.numWithStaredPeople++;
-            }
-            if (z3) {
-                aggregatedStats.numPeopleCacheHit++;
-            } else {
-                aggregatedStats.numPeopleCacheMiss++;
-            }
-        }
-        releaseAggregatedStatsLocked(aggregatedStatsLocked);
-    }
-
-    public synchronized void registerBlocked(NotificationRecord notificationRecord) {
-        AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord);
-        for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
-            aggregatedStats.numBlocked++;
-        }
-        releaseAggregatedStatsLocked(aggregatedStatsLocked);
-    }
-
-    public synchronized void registerSuspendedByAdmin(NotificationRecord notificationRecord) {
-        AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord);
-        for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
-            aggregatedStats.numSuspendedByAdmin++;
-        }
-        releaseAggregatedStatsLocked(aggregatedStatsLocked);
-    }
-
-    public synchronized void registerOverRateQuota(String str) {
-        for (AggregatedStats aggregatedStats : getAggregatedStatsLocked(str)) {
-            aggregatedStats.numRateViolations++;
-        }
-    }
-
-    public synchronized void registerOverCountQuota(String str) {
-        for (AggregatedStats aggregatedStats : getAggregatedStatsLocked(str)) {
-            aggregatedStats.numQuotaViolations++;
-        }
-    }
-
-    public synchronized void registerImageRemoved(String str) {
-        for (AggregatedStats aggregatedStats : getAggregatedStatsLocked(str)) {
-            aggregatedStats.numImagesRemoved++;
-        }
-    }
-
-    public final AggregatedStats[] getAggregatedStatsLocked(NotificationRecord notificationRecord) {
-        return getAggregatedStatsLocked(notificationRecord.getSbn().getPackageName());
-    }
-
-    public final AggregatedStats[] getAggregatedStatsLocked(String str) {
-        AggregatedStats[] aggregatedStatsArr = (AggregatedStats[]) this.mStatsArrays.poll();
-        if (aggregatedStatsArr == null) {
-            aggregatedStatsArr = new AggregatedStats[2];
-        }
-        aggregatedStatsArr[0] = getOrCreateAggregatedStatsLocked("__global");
-        aggregatedStatsArr[1] = getOrCreateAggregatedStatsLocked(str);
-        return aggregatedStatsArr;
-    }
-
-    public final void releaseAggregatedStatsLocked(AggregatedStats[] aggregatedStatsArr) {
-        for (int i = 0; i < aggregatedStatsArr.length; i++) {
-            aggregatedStatsArr[i] = null;
-        }
-        this.mStatsArrays.offer(aggregatedStatsArr);
-    }
-
-    public final AggregatedStats getOrCreateAggregatedStatsLocked(String str) {
-        AggregatedStats aggregatedStats = (AggregatedStats) this.mStats.get(str);
-        if (aggregatedStats == null) {
-            aggregatedStats = new AggregatedStats(this.mContext, str);
-            this.mStats.put(str, aggregatedStats);
-        }
-        aggregatedStats.mLastAccessTime = SystemClock.elapsedRealtime();
-        return aggregatedStats;
-    }
-
-    public synchronized JSONObject dumpJson(NotificationManagerService.DumpFilter dumpFilter) {
-        JSONObject jSONObject;
-        jSONObject = new JSONObject();
-        try {
-            JSONArray jSONArray = new JSONArray();
-            for (AggregatedStats aggregatedStats : this.mStats.values()) {
-                if (dumpFilter == null || dumpFilter.matches(aggregatedStats.key)) {
-                    jSONArray.put(aggregatedStats.dumpJson());
-                }
-            }
-            jSONObject.put("current", jSONArray);
-        } catch (JSONException unused) {
-        }
-        return jSONObject;
-    }
-
-    public PulledStats remoteViewStats(long j, boolean z) {
-        PulledStats pulledStats = new PulledStats(j);
-        for (AggregatedStats aggregatedStats : this.mStats.values()) {
-            if (aggregatedStats.numUndecoratedRemoteViews > 0) {
-                pulledStats.addUndecoratedPackage(aggregatedStats.key, aggregatedStats.mCreated);
-            }
-        }
-        return pulledStats;
-    }
-
-    public synchronized void dump(PrintWriter printWriter, String str, NotificationManagerService.DumpFilter dumpFilter) {
-        for (AggregatedStats aggregatedStats : this.mStats.values()) {
-            if (dumpFilter == null || dumpFilter.matches(aggregatedStats.key)) {
-                aggregatedStats.dump(printWriter, str);
-            }
-        }
-        printWriter.println(str + "mStatsArrays.size(): " + this.mStatsArrays.size());
-        printWriter.println(str + "mStats.size(): " + this.mStats.size());
-    }
-
-    public synchronized void emit() {
-        getOrCreateAggregatedStatsLocked("__global").emit();
-        this.mHandler.removeMessages(1);
-        this.mHandler.sendEmptyMessageDelayed(1, BackupManagerConstants.DEFAULT_KEY_VALUE_BACKUP_INTERVAL_MILLISECONDS);
-        for (String str : this.mStats.keySet()) {
-            if (((AggregatedStats) this.mStats.get(str)).mLastAccessTime < this.mLastEmitTime) {
-                this.mStatExpiredkeys.add(str);
-            }
-        }
-        Iterator it = this.mStatExpiredkeys.iterator();
-        while (it.hasNext()) {
-            this.mStats.remove((String) it.next());
-        }
-        this.mStatExpiredkeys.clear();
-        this.mLastEmitTime = SystemClock.elapsedRealtime();
-    }
-
-    /* loaded from: classes2.dex */
-    public class AggregatedStats {
-        public ImportanceHistogram finalImportance;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AggregatedStats {
+        public final AlertRateLimiter alertRate;
+        public final RateEstimator enqueueRate;
+        public final ImportanceHistogram finalImportance;
         public final String key;
         public final Context mContext;
+        public final long mCreated = SystemClock.elapsedRealtime();
         public long mLastAccessTime;
         public AggregatedStats mPrevious;
-        public ImportanceHistogram noisyImportance;
+        public final ImportanceHistogram noisyImportance;
         public int numAlertViolations;
         public int numAutoCancel;
         public int numBlocked;
@@ -282,6 +64,7 @@ public class NotificationUsageStats {
         public int numRemovedByApp;
         public int numSecret;
         public int numSuspendedByAdmin;
+        public int numTooOld;
         public int numUndecoratedRemoteViews;
         public int numUpdatedByApp;
         public int numUserInitiatedJob;
@@ -297,10 +80,7 @@ public class NotificationUsageStats {
         public int numWithText;
         public int numWithTitle;
         public int numWithValidPeople;
-        public ImportanceHistogram quietImportance;
-        public final long mCreated = SystemClock.elapsedRealtime();
-        public RateEstimator enqueueRate = new RateEstimator();
-        public AlertRateLimiter alertRate = new AlertRateLimiter();
+        public final ImportanceHistogram quietImportance;
 
         public AggregatedStats(Context context, String str) {
             this.key = str;
@@ -308,17 +88,22 @@ public class NotificationUsageStats {
             this.noisyImportance = new ImportanceHistogram(context, "note_imp_noisy_");
             this.quietImportance = new ImportanceHistogram(context, "note_imp_quiet_");
             this.finalImportance = new ImportanceHistogram(context, "note_importance_");
+            RateEstimator rateEstimator = new RateEstimator();
+            rateEstimator.mInterarrivalTime = 1.0d;
+            this.enqueueRate = rateEstimator;
+            AlertRateLimiter alertRateLimiter = new AlertRateLimiter();
+            alertRateLimiter.mLastNotificationMillis = 0L;
+            this.alertRate = alertRateLimiter;
         }
 
-        public AggregatedStats getPrevious() {
-            if (this.mPrevious == null) {
-                this.mPrevious = new AggregatedStats(this.mContext, this.key);
+        public static void maybePut(JSONObject jSONObject, String str, int i) {
+            if (i > 0) {
+                jSONObject.put(str, i);
             }
-            return this.mPrevious;
         }
 
-        public void countApiUse(NotificationRecord notificationRecord) {
-            Notification notification = notificationRecord.getNotification();
+        public final void countApiUse(NotificationRecord notificationRecord) {
+            Notification notification = notificationRecord.sbn.getNotification();
             if (notification.actions != null) {
                 this.numWithActions++;
             }
@@ -351,7 +136,7 @@ public class NotificationUsageStats {
             } else {
                 this.quietImportance.increment(singleNotificationStats.requestedImportance);
             }
-            this.finalImportance.increment(notificationRecord.getImportance());
+            this.finalImportance.increment(notificationRecord.mImportance);
             Set<String> keySet = notification.extras.keySet();
             if (keySet.contains("android.bigText")) {
                 this.numWithBigText++;
@@ -383,267 +168,15 @@ public class NotificationUsageStats {
             this.numWithInfoText++;
         }
 
-        public void emit() {
-            AggregatedStats previous = getPrevious();
-            maybeCount("note_enqueued", this.numEnqueuedByApp - previous.numEnqueuedByApp);
-            maybeCount("note_post", this.numPostedByApp - previous.numPostedByApp);
-            maybeCount("note_update", this.numUpdatedByApp - previous.numUpdatedByApp);
-            maybeCount("note_remove", this.numRemovedByApp - previous.numRemovedByApp);
-            maybeCount("note_with_people", this.numWithValidPeople - previous.numWithValidPeople);
-            maybeCount("note_with_stars", this.numWithStaredPeople - previous.numWithStaredPeople);
-            maybeCount("people_cache_hit", this.numPeopleCacheHit - previous.numPeopleCacheHit);
-            maybeCount("people_cache_miss", this.numPeopleCacheMiss - previous.numPeopleCacheMiss);
-            maybeCount("note_blocked", this.numBlocked - previous.numBlocked);
-            maybeCount("note_suspended", this.numSuspendedByAdmin - previous.numSuspendedByAdmin);
-            maybeCount("note_with_actions", this.numWithActions - previous.numWithActions);
-            maybeCount("note_private", this.numPrivate - previous.numPrivate);
-            maybeCount("note_secret", this.numSecret - previous.numSecret);
-            maybeCount("note_interupt", this.numInterrupt - previous.numInterrupt);
-            maybeCount("note_big_text", this.numWithBigText - previous.numWithBigText);
-            maybeCount("note_big_pic", this.numWithBigPicture - previous.numWithBigPicture);
-            maybeCount("note_fg", this.numForegroundService - previous.numForegroundService);
-            maybeCount("note_uij", this.numUserInitiatedJob - previous.numUserInitiatedJob);
-            maybeCount("note_ongoing", this.numOngoing - previous.numOngoing);
-            maybeCount("note_auto", this.numAutoCancel - previous.numAutoCancel);
-            maybeCount("note_large_icon", this.numWithLargeIcon - previous.numWithLargeIcon);
-            maybeCount("note_inbox", this.numWithInbox - previous.numWithInbox);
-            maybeCount("note_media", this.numWithMediaSession - previous.numWithMediaSession);
-            maybeCount("note_title", this.numWithTitle - previous.numWithTitle);
-            maybeCount("note_text", this.numWithText - previous.numWithText);
-            maybeCount("note_sub_text", this.numWithSubText - previous.numWithSubText);
-            maybeCount("note_info_text", this.numWithInfoText - previous.numWithInfoText);
-            maybeCount("note_over_rate", this.numRateViolations - previous.numRateViolations);
-            maybeCount("note_over_alert_rate", this.numAlertViolations - previous.numAlertViolations);
-            maybeCount("note_over_quota", this.numQuotaViolations - previous.numQuotaViolations);
-            maybeCount("note_images_removed", this.numImagesRemoved - previous.numImagesRemoved);
-            this.noisyImportance.maybeCount(previous.noisyImportance);
-            this.quietImportance.maybeCount(previous.quietImportance);
-            this.finalImportance.maybeCount(previous.finalImportance);
-            previous.numEnqueuedByApp = this.numEnqueuedByApp;
-            previous.numPostedByApp = this.numPostedByApp;
-            previous.numUpdatedByApp = this.numUpdatedByApp;
-            previous.numRemovedByApp = this.numRemovedByApp;
-            previous.numPeopleCacheHit = this.numPeopleCacheHit;
-            previous.numPeopleCacheMiss = this.numPeopleCacheMiss;
-            previous.numWithStaredPeople = this.numWithStaredPeople;
-            previous.numWithValidPeople = this.numWithValidPeople;
-            previous.numBlocked = this.numBlocked;
-            previous.numSuspendedByAdmin = this.numSuspendedByAdmin;
-            previous.numWithActions = this.numWithActions;
-            previous.numPrivate = this.numPrivate;
-            previous.numSecret = this.numSecret;
-            previous.numInterrupt = this.numInterrupt;
-            previous.numWithBigText = this.numWithBigText;
-            previous.numWithBigPicture = this.numWithBigPicture;
-            previous.numForegroundService = this.numForegroundService;
-            previous.numUserInitiatedJob = this.numUserInitiatedJob;
-            previous.numOngoing = this.numOngoing;
-            previous.numAutoCancel = this.numAutoCancel;
-            previous.numWithLargeIcon = this.numWithLargeIcon;
-            previous.numWithInbox = this.numWithInbox;
-            previous.numWithMediaSession = this.numWithMediaSession;
-            previous.numWithTitle = this.numWithTitle;
-            previous.numWithText = this.numWithText;
-            previous.numWithSubText = this.numWithSubText;
-            previous.numWithInfoText = this.numWithInfoText;
-            previous.numRateViolations = this.numRateViolations;
-            previous.numAlertViolations = this.numAlertViolations;
-            previous.numQuotaViolations = this.numQuotaViolations;
-            previous.numImagesRemoved = this.numImagesRemoved;
-            this.noisyImportance.update(previous.noisyImportance);
-            this.quietImportance.update(previous.quietImportance);
-            this.finalImportance.update(previous.finalImportance);
-        }
-
-        public void maybeCount(String str, int i) {
-            if (i > 0) {
-                MetricsLogger.count(this.mContext, str, i);
+        public final JSONObject dumpJson() {
+            AggregatedStats aggregatedStats = this.mPrevious;
+            String str = this.key;
+            if (aggregatedStats == null) {
+                this.mPrevious = new AggregatedStats(this.mContext, str);
             }
-        }
-
-        public void dump(PrintWriter printWriter, String str) {
-            printWriter.println(toStringWithIndent(str));
-        }
-
-        public String toString() {
-            return toStringWithIndent("");
-        }
-
-        public float getEnqueueRate() {
-            return getEnqueueRate(SystemClock.elapsedRealtime());
-        }
-
-        public float getEnqueueRate(long j) {
-            return this.enqueueRate.getRate(j);
-        }
-
-        public void updateInterarrivalEstimate(long j) {
-            this.enqueueRate.update(j);
-        }
-
-        public boolean isAlertRateLimited() {
-            boolean shouldRateLimitAlert = this.alertRate.shouldRateLimitAlert(SystemClock.elapsedRealtime());
-            if (shouldRateLimitAlert) {
-                this.numAlertViolations++;
-            }
-            return shouldRateLimitAlert;
-        }
-
-        public final String toStringWithIndent(String str) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(str);
-            sb.append("AggregatedStats{\n");
-            String str2 = str + "  ";
-            sb.append(str2);
-            sb.append("key='");
-            sb.append(this.key);
-            sb.append("',\n");
-            sb.append(str2);
-            sb.append("numEnqueuedByApp=");
-            sb.append(this.numEnqueuedByApp);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numPostedByApp=");
-            sb.append(this.numPostedByApp);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numUpdatedByApp=");
-            sb.append(this.numUpdatedByApp);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numRemovedByApp=");
-            sb.append(this.numRemovedByApp);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numPeopleCacheHit=");
-            sb.append(this.numPeopleCacheHit);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numWithStaredPeople=");
-            sb.append(this.numWithStaredPeople);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numWithValidPeople=");
-            sb.append(this.numWithValidPeople);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numPeopleCacheMiss=");
-            sb.append(this.numPeopleCacheMiss);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numBlocked=");
-            sb.append(this.numBlocked);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numSuspendedByAdmin=");
-            sb.append(this.numSuspendedByAdmin);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numWithActions=");
-            sb.append(this.numWithActions);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numPrivate=");
-            sb.append(this.numPrivate);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numSecret=");
-            sb.append(this.numSecret);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numInterrupt=");
-            sb.append(this.numInterrupt);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numWithBigText=");
-            sb.append(this.numWithBigText);
-            sb.append(",\n");
-            sb.append(str2);
-            sb.append("numWithBigPicture=");
-            sb.append(this.numWithBigPicture);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numForegroundService=");
-            sb.append(this.numForegroundService);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numUserInitiatedJob=");
-            sb.append(this.numUserInitiatedJob);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numOngoing=");
-            sb.append(this.numOngoing);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numAutoCancel=");
-            sb.append(this.numAutoCancel);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numWithLargeIcon=");
-            sb.append(this.numWithLargeIcon);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numWithInbox=");
-            sb.append(this.numWithInbox);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numWithMediaSession=");
-            sb.append(this.numWithMediaSession);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numWithTitle=");
-            sb.append(this.numWithTitle);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numWithText=");
-            sb.append(this.numWithText);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numWithSubText=");
-            sb.append(this.numWithSubText);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numWithInfoText=");
-            sb.append(this.numWithInfoText);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numRateViolations=");
-            sb.append(this.numRateViolations);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numAlertViolations=");
-            sb.append(this.numAlertViolations);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numQuotaViolations=");
-            sb.append(this.numQuotaViolations);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numImagesRemoved=");
-            sb.append(this.numImagesRemoved);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append(this.noisyImportance.toString());
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append(this.quietImportance.toString());
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append(this.finalImportance.toString());
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str2);
-            sb.append("numUndecorateRVs=");
-            sb.append(this.numUndecoratedRemoteViews);
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append(str);
-            sb.append("}");
-            return sb.toString();
-        }
-
-        public JSONObject dumpJson() {
-            AggregatedStats previous = getPrevious();
+            AggregatedStats aggregatedStats2 = this.mPrevious;
             JSONObject jSONObject = new JSONObject();
-            jSONObject.put("key", this.key);
+            jSONObject.put("key", str);
             jSONObject.put("duration", SystemClock.elapsedRealtime() - this.mCreated);
             maybePut(jSONObject, "numEnqueuedByApp", this.numEnqueuedByApp);
             maybePut(jSONObject, "numPostedByApp", this.numPostedByApp);
@@ -674,34 +207,184 @@ public class NotificationUsageStats {
             maybePut(jSONObject, "numWithInfoText", this.numWithInfoText);
             maybePut(jSONObject, "numRateViolations", this.numRateViolations);
             maybePut(jSONObject, "numQuotaLViolations", this.numQuotaViolations);
-            maybePut(jSONObject, "notificationEnqueueRate", getEnqueueRate());
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            RateEstimator rateEstimator = this.enqueueRate;
+            double interarrivalEstimate = rateEstimator.mLastEventTime == null ? FullScreenMagnificationGestureHandler.MAX_SCALE : (float) (1.0d / rateEstimator.getInterarrivalEstimate(elapsedRealtime));
+            if (interarrivalEstimate > 0.0d) {
+                jSONObject.put("notificationEnqueueRate", interarrivalEstimate);
+            }
             maybePut(jSONObject, "numAlertViolations", this.numAlertViolations);
             maybePut(jSONObject, "numImagesRemoved", this.numImagesRemoved);
-            this.noisyImportance.maybePut(jSONObject, previous.noisyImportance);
-            this.quietImportance.maybePut(jSONObject, previous.quietImportance);
-            this.finalImportance.maybePut(jSONObject, previous.finalImportance);
+            maybePut(jSONObject, "numTooOld", this.numTooOld);
+            ImportanceHistogram importanceHistogram = aggregatedStats2.noisyImportance;
+            ImportanceHistogram importanceHistogram2 = this.noisyImportance;
+            importanceHistogram2.getClass();
+            jSONObject.put(importanceHistogram2.mPrefix, new JSONArray(importanceHistogram2.mCount));
+            ImportanceHistogram importanceHistogram3 = this.quietImportance;
+            importanceHistogram3.getClass();
+            jSONObject.put(importanceHistogram3.mPrefix, new JSONArray(importanceHistogram3.mCount));
+            ImportanceHistogram importanceHistogram4 = this.finalImportance;
+            importanceHistogram4.getClass();
+            jSONObject.put(importanceHistogram4.mPrefix, new JSONArray(importanceHistogram4.mCount));
             return jSONObject;
         }
 
-        public final void maybePut(JSONObject jSONObject, String str, int i) {
+        public final void emit() {
+            if (this.mPrevious == null) {
+                this.mPrevious = new AggregatedStats(this.mContext, this.key);
+            }
+            AggregatedStats aggregatedStats = this.mPrevious;
+            maybeCount(this.numEnqueuedByApp - aggregatedStats.numEnqueuedByApp, "note_enqueued");
+            maybeCount(this.numPostedByApp - aggregatedStats.numPostedByApp, "note_post");
+            maybeCount(this.numUpdatedByApp - aggregatedStats.numUpdatedByApp, "note_update");
+            maybeCount(this.numRemovedByApp - aggregatedStats.numRemovedByApp, "note_remove");
+            maybeCount(this.numWithValidPeople - aggregatedStats.numWithValidPeople, "note_with_people");
+            maybeCount(this.numWithStaredPeople - aggregatedStats.numWithStaredPeople, "note_with_stars");
+            maybeCount(this.numPeopleCacheHit - aggregatedStats.numPeopleCacheHit, "people_cache_hit");
+            maybeCount(this.numPeopleCacheMiss - aggregatedStats.numPeopleCacheMiss, "people_cache_miss");
+            maybeCount(this.numBlocked - aggregatedStats.numBlocked, "note_blocked");
+            maybeCount(this.numSuspendedByAdmin - aggregatedStats.numSuspendedByAdmin, "note_suspended");
+            maybeCount(this.numWithActions - aggregatedStats.numWithActions, "note_with_actions");
+            maybeCount(this.numPrivate - aggregatedStats.numPrivate, "note_private");
+            maybeCount(this.numSecret - aggregatedStats.numSecret, "note_secret");
+            maybeCount(this.numInterrupt - aggregatedStats.numInterrupt, "note_interupt");
+            maybeCount(this.numWithBigText - aggregatedStats.numWithBigText, "note_big_text");
+            maybeCount(this.numWithBigPicture - aggregatedStats.numWithBigPicture, "note_big_pic");
+            maybeCount(this.numForegroundService - aggregatedStats.numForegroundService, "note_fg");
+            maybeCount(this.numUserInitiatedJob - aggregatedStats.numUserInitiatedJob, "note_uij");
+            maybeCount(this.numOngoing - aggregatedStats.numOngoing, "note_ongoing");
+            maybeCount(this.numAutoCancel - aggregatedStats.numAutoCancel, "note_auto");
+            maybeCount(this.numWithLargeIcon - aggregatedStats.numWithLargeIcon, "note_large_icon");
+            maybeCount(this.numWithInbox - aggregatedStats.numWithInbox, "note_inbox");
+            maybeCount(this.numWithMediaSession - aggregatedStats.numWithMediaSession, "note_media");
+            maybeCount(this.numWithTitle - aggregatedStats.numWithTitle, "note_title");
+            maybeCount(this.numWithText - aggregatedStats.numWithText, "note_text");
+            maybeCount(this.numWithSubText - aggregatedStats.numWithSubText, "note_sub_text");
+            maybeCount(this.numWithInfoText - aggregatedStats.numWithInfoText, "note_info_text");
+            maybeCount(this.numRateViolations - aggregatedStats.numRateViolations, "note_over_rate");
+            maybeCount(this.numAlertViolations - aggregatedStats.numAlertViolations, "note_over_alert_rate");
+            maybeCount(this.numQuotaViolations - aggregatedStats.numQuotaViolations, "note_over_quota");
+            maybeCount(this.numImagesRemoved - aggregatedStats.numImagesRemoved, "note_images_removed");
+            maybeCount(this.numTooOld - aggregatedStats.numTooOld, "not_too_old");
+            ImportanceHistogram importanceHistogram = this.noisyImportance;
+            ImportanceHistogram importanceHistogram2 = aggregatedStats.noisyImportance;
+            importanceHistogram.maybeCount(importanceHistogram2);
+            ImportanceHistogram importanceHistogram3 = this.quietImportance;
+            ImportanceHistogram importanceHistogram4 = aggregatedStats.quietImportance;
+            importanceHistogram3.maybeCount(importanceHistogram4);
+            ImportanceHistogram importanceHistogram5 = this.finalImportance;
+            ImportanceHistogram importanceHistogram6 = aggregatedStats.finalImportance;
+            importanceHistogram5.maybeCount(importanceHistogram6);
+            aggregatedStats.numEnqueuedByApp = this.numEnqueuedByApp;
+            aggregatedStats.numPostedByApp = this.numPostedByApp;
+            aggregatedStats.numUpdatedByApp = this.numUpdatedByApp;
+            aggregatedStats.numRemovedByApp = this.numRemovedByApp;
+            aggregatedStats.numPeopleCacheHit = this.numPeopleCacheHit;
+            aggregatedStats.numPeopleCacheMiss = this.numPeopleCacheMiss;
+            aggregatedStats.numWithStaredPeople = this.numWithStaredPeople;
+            aggregatedStats.numWithValidPeople = this.numWithValidPeople;
+            aggregatedStats.numBlocked = this.numBlocked;
+            aggregatedStats.numSuspendedByAdmin = this.numSuspendedByAdmin;
+            aggregatedStats.numWithActions = this.numWithActions;
+            aggregatedStats.numPrivate = this.numPrivate;
+            aggregatedStats.numSecret = this.numSecret;
+            aggregatedStats.numInterrupt = this.numInterrupt;
+            aggregatedStats.numWithBigText = this.numWithBigText;
+            aggregatedStats.numWithBigPicture = this.numWithBigPicture;
+            aggregatedStats.numForegroundService = this.numForegroundService;
+            aggregatedStats.numUserInitiatedJob = this.numUserInitiatedJob;
+            aggregatedStats.numOngoing = this.numOngoing;
+            aggregatedStats.numAutoCancel = this.numAutoCancel;
+            aggregatedStats.numWithLargeIcon = this.numWithLargeIcon;
+            aggregatedStats.numWithInbox = this.numWithInbox;
+            aggregatedStats.numWithMediaSession = this.numWithMediaSession;
+            aggregatedStats.numWithTitle = this.numWithTitle;
+            aggregatedStats.numWithText = this.numWithText;
+            aggregatedStats.numWithSubText = this.numWithSubText;
+            aggregatedStats.numWithInfoText = this.numWithInfoText;
+            aggregatedStats.numRateViolations = this.numRateViolations;
+            aggregatedStats.numAlertViolations = this.numAlertViolations;
+            aggregatedStats.numQuotaViolations = this.numQuotaViolations;
+            aggregatedStats.numImagesRemoved = this.numImagesRemoved;
+            aggregatedStats.numTooOld = this.numTooOld;
+            importanceHistogram.update(importanceHistogram2);
+            importanceHistogram3.update(importanceHistogram4);
+            importanceHistogram5.update(importanceHistogram6);
+        }
+
+        public final void maybeCount(int i, String str) {
             if (i > 0) {
-                jSONObject.put(str, i);
+                MetricsLogger.count(this.mContext, str, i);
             }
         }
 
-        public final void maybePut(JSONObject jSONObject, String str, float f) {
-            double d = f;
-            if (d > 0.0d) {
-                jSONObject.put(str, d);
-            }
+        public final String toString() {
+            return toStringWithIndent("");
+        }
+
+        public final String toStringWithIndent(String str) {
+            StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, "AggregatedStats{\n");
+            String concat = str.concat("  ");
+            m.append(concat);
+            m.append("key='");
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(m, this.key, "',\n", concat, "numEnqueuedByApp=");
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numEnqueuedByApp, ",\n", concat, "numPostedByApp=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numPostedByApp, ",\n", concat, "numUpdatedByApp=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numUpdatedByApp, ",\n", concat, "numRemovedByApp=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numRemovedByApp, ",\n", concat, "numPeopleCacheHit=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numPeopleCacheHit, ",\n", concat, "numWithStaredPeople=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithStaredPeople, ",\n", concat, "numWithValidPeople=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithValidPeople, ",\n", concat, "numPeopleCacheMiss=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numPeopleCacheMiss, ",\n", concat, "numBlocked=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numBlocked, ",\n", concat, "numSuspendedByAdmin=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numSuspendedByAdmin, ",\n", concat, "numWithActions=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithActions, ",\n", concat, "numPrivate=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numPrivate, ",\n", concat, "numSecret=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numSecret, ",\n", concat, "numInterrupt=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numInterrupt, ",\n", concat, "numWithBigText=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithBigText, ",\n", concat, "numWithBigPicture=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithBigPicture, "\n", concat, "numForegroundService=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numForegroundService, "\n", concat, "numUserInitiatedJob=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numUserInitiatedJob, "\n", concat, "numOngoing=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numOngoing, "\n", concat, "numAutoCancel=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numAutoCancel, "\n", concat, "numWithLargeIcon=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithLargeIcon, "\n", concat, "numWithInbox=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithInbox, "\n", concat, "numWithMediaSession=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithMediaSession, "\n", concat, "numWithTitle=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithTitle, "\n", concat, "numWithText=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithText, "\n", concat, "numWithSubText=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithSubText, "\n", concat, "numWithInfoText=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numWithInfoText, "\n", concat, "numRateViolations=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numRateViolations, "\n", concat, "numAlertViolations=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numAlertViolations, "\n", concat, "numQuotaViolations=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numQuotaViolations, "\n", concat, "numImagesRemoved=", m);
+            AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(this.numImagesRemoved, "\n", concat, "numTooOld=", m);
+            m.append(this.numTooOld);
+            m.append("\n");
+            m.append(concat);
+            m.append(this.noisyImportance.toString());
+            m.append("\n");
+            m.append(concat);
+            m.append(this.quietImportance.toString());
+            m.append("\n");
+            m.append(concat);
+            m.append(this.finalImportance.toString());
+            m.append("\n");
+            m.append(concat);
+            m.append("numUndecorateRVs=");
+            m.append(this.numUndecoratedRemoteViews);
+            m.append("\n");
+            m.append(str);
+            m.append("}");
+            return m.toString();
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class ImportanceHistogram {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ImportanceHistogram {
         public static final String[] IMPORTANCE_NAMES = {"none", "min", "low", "default", "high", "max"};
         public final Context mContext;
-        public int[] mCount = new int[6];
+        public final int[] mCount = new int[6];
         public final String[] mCounterNames = new String[6];
         public final String mPrefix;
 
@@ -713,13 +396,13 @@ public class NotificationUsageStats {
             }
         }
 
-        public void increment(int i) {
-            int max = Math.max(0, Math.min(i, this.mCount.length - 1));
+        public final void increment(int i) {
             int[] iArr = this.mCount;
+            int max = Math.max(0, Math.min(i, iArr.length - 1));
             iArr[max] = iArr[max] + 1;
         }
 
-        public void maybeCount(ImportanceHistogram importanceHistogram) {
+        public final void maybeCount(ImportanceHistogram importanceHistogram) {
             for (int i = 0; i < 6; i++) {
                 int i2 = this.mCount[i] - importanceHistogram.mCount[i];
                 if (i2 > 0) {
@@ -728,17 +411,7 @@ public class NotificationUsageStats {
             }
         }
 
-        public void update(ImportanceHistogram importanceHistogram) {
-            for (int i = 0; i < 6; i++) {
-                this.mCount[i] = importanceHistogram.mCount[i];
-            }
-        }
-
-        public void maybePut(JSONObject jSONObject, ImportanceHistogram importanceHistogram) {
-            jSONObject.put(this.mPrefix, new JSONArray(this.mCount));
-        }
-
-        public String toString() {
+        public final String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append(this.mPrefix);
             sb.append(": [");
@@ -751,45 +424,33 @@ public class NotificationUsageStats {
             sb.append("]");
             return sb.toString();
         }
+
+        public final void update(ImportanceHistogram importanceHistogram) {
+            for (int i = 0; i < 6; i++) {
+                this.mCount[i] = importanceHistogram.mCount[i];
+            }
+        }
     }
 
-    /* loaded from: classes2.dex */
-    public class SingleNotificationStats {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SingleNotificationStats {
+        public long airtimeCount;
+        public long airtimeExpandedMs;
+        public long airtimeMs;
+        public long currentAirtimeExpandedStartElapsedMs;
+        public long currentAirtimeStartElapsedMs;
+        public boolean isExpanded;
         public boolean isNoisy;
+        public boolean isVisible;
         public int naturalImportance;
+        public long posttimeElapsedMs;
+        public long posttimeToDismissMs;
+        public long posttimeToFirstAirtimeMs;
+        public long posttimeToFirstClickMs;
+        public long posttimeToFirstVisibleExpansionMs;
         public int requestedImportance;
-        public boolean isVisible = false;
-        public boolean isExpanded = false;
-        public long posttimeElapsedMs = -1;
-        public long posttimeToFirstClickMs = -1;
-        public long posttimeToDismissMs = -1;
-        public long airtimeCount = 0;
-        public long posttimeToFirstAirtimeMs = -1;
-        public long currentAirtimeStartElapsedMs = -1;
-        public long airtimeMs = 0;
-        public long posttimeToFirstVisibleExpansionMs = -1;
-        public long currentAirtimeExpandedStartElapsedMs = -1;
-        public long airtimeExpandedMs = 0;
-        public long userExpansionCount = 0;
 
-        public void onClick() {
-            if (this.posttimeToFirstClickMs < 0) {
-                this.posttimeToFirstClickMs = SystemClock.elapsedRealtime() - this.posttimeElapsedMs;
-            }
-        }
-
-        public void onDismiss() {
-            if (this.posttimeToDismissMs < 0) {
-                this.posttimeToDismissMs = SystemClock.elapsedRealtime() - this.posttimeElapsedMs;
-            }
-            finish();
-        }
-
-        public void onRemoved() {
-            finish();
-        }
-
-        public void onVisibilityChanged(boolean z) {
+        public final void onVisibilityChanged(boolean z) {
             long elapsedRealtime = SystemClock.elapsedRealtime();
             boolean z2 = this.isVisible;
             this.isVisible = z;
@@ -804,7 +465,7 @@ public class NotificationUsageStats {
             } else {
                 long j = this.currentAirtimeStartElapsedMs;
                 if (j >= 0) {
-                    this.airtimeMs += elapsedRealtime - j;
+                    this.airtimeMs = (elapsedRealtime - j) + this.airtimeMs;
                     this.currentAirtimeStartElapsedMs = -1L;
                 }
             }
@@ -813,16 +474,20 @@ public class NotificationUsageStats {
             }
         }
 
-        public void onExpansionChanged(boolean z, boolean z2) {
-            this.isExpanded = z2;
-            if (z2 && z) {
-                this.userExpansionCount++;
-            }
-            updateVisiblyExpandedStats();
+        public final String toString() {
+            return "SingleNotificationStats{posttimeElapsedMs=" + this.posttimeElapsedMs + ", posttimeToFirstClickMs=" + this.posttimeToFirstClickMs + ", posttimeToDismissMs=" + this.posttimeToDismissMs + ", airtimeCount=" + this.airtimeCount + ", airtimeMs=" + this.airtimeMs + ", currentAirtimeStartElapsedMs=" + this.currentAirtimeStartElapsedMs + ", airtimeExpandedMs=" + this.airtimeExpandedMs + ", posttimeToFirstVisibleExpansionMs=" + this.posttimeToFirstVisibleExpansionMs + ", currentAirtimeExpandedStartElapsedMs=" + this.currentAirtimeExpandedStartElapsedMs + ", requestedImportance=" + this.requestedImportance + ", naturalImportance=" + this.naturalImportance + ", isNoisy=" + this.isNoisy + '}';
         }
 
-        public boolean hasBeenVisiblyExpanded() {
-            return this.posttimeToFirstVisibleExpansionMs >= 0;
+        public final void updateFrom(SingleNotificationStats singleNotificationStats) {
+            this.posttimeElapsedMs = singleNotificationStats.posttimeElapsedMs;
+            this.posttimeToFirstClickMs = singleNotificationStats.posttimeToFirstClickMs;
+            this.airtimeCount = singleNotificationStats.airtimeCount;
+            this.posttimeToFirstAirtimeMs = singleNotificationStats.posttimeToFirstAirtimeMs;
+            this.currentAirtimeStartElapsedMs = singleNotificationStats.currentAirtimeStartElapsedMs;
+            this.airtimeMs = singleNotificationStats.airtimeMs;
+            this.posttimeToFirstVisibleExpansionMs = singleNotificationStats.posttimeToFirstVisibleExpansionMs;
+            this.currentAirtimeExpandedStartElapsedMs = singleNotificationStats.currentAirtimeExpandedStartElapsedMs;
+            this.airtimeExpandedMs = singleNotificationStats.airtimeExpandedMs;
         }
 
         public final void updateVisiblyExpandedStats() {
@@ -839,30 +504,233 @@ public class NotificationUsageStats {
             }
             long j = this.currentAirtimeExpandedStartElapsedMs;
             if (j >= 0) {
-                this.airtimeExpandedMs += elapsedRealtime - j;
+                this.airtimeExpandedMs = (elapsedRealtime - j) + this.airtimeExpandedMs;
                 this.currentAirtimeExpandedStartElapsedMs = -1L;
             }
         }
+    }
 
-        public void finish() {
-            onVisibilityChanged(false);
-        }
+    /* JADX WARN: Type inference failed for: r0v4, types: [android.os.Handler, com.android.server.notification.NotificationUsageStats$1] */
+    public NotificationUsageStats(Context context) {
+        this.mContext = context;
+        ?? r0 = new Handler(context.getMainLooper()) { // from class: com.android.server.notification.NotificationUsageStats.1
+            @Override // android.os.Handler
+            public final void handleMessage(Message message) {
+                if (message.what != 1) {
+                    Log.wtf("NotificationUsageStats", "Unknown message type: " + message.what);
+                    return;
+                }
+                NotificationUsageStats notificationUsageStats = NotificationUsageStats.this;
+                synchronized (notificationUsageStats) {
+                    try {
+                        notificationUsageStats.getOrCreateAggregatedStatsLocked("__global").emit();
+                        notificationUsageStats.mHandler.removeMessages(1);
+                        notificationUsageStats.mHandler.sendEmptyMessageDelayed(1, BackupManagerConstants.DEFAULT_KEY_VALUE_BACKUP_INTERVAL_MILLISECONDS);
+                        for (String str : ((HashMap) notificationUsageStats.mStats).keySet()) {
+                            if (((AggregatedStats) ((HashMap) notificationUsageStats.mStats).get(str)).mLastAccessTime < notificationUsageStats.mLastEmitTime) {
+                                notificationUsageStats.mStatExpiredkeys.add(str);
+                            }
+                        }
+                        Iterator it = notificationUsageStats.mStatExpiredkeys.iterator();
+                        while (it.hasNext()) {
+                            ((HashMap) notificationUsageStats.mStats).remove((String) it.next());
+                        }
+                        notificationUsageStats.mStatExpiredkeys.clear();
+                        notificationUsageStats.mLastEmitTime = SystemClock.elapsedRealtime();
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+        };
+        this.mHandler = r0;
+        r0.sendEmptyMessageDelayed(1, BackupManagerConstants.DEFAULT_KEY_VALUE_BACKUP_INTERVAL_MILLISECONDS);
+    }
 
-        public String toString() {
-            return "SingleNotificationStats{posttimeElapsedMs=" + this.posttimeElapsedMs + ", posttimeToFirstClickMs=" + this.posttimeToFirstClickMs + ", posttimeToDismissMs=" + this.posttimeToDismissMs + ", airtimeCount=" + this.airtimeCount + ", airtimeMs=" + this.airtimeMs + ", currentAirtimeStartElapsedMs=" + this.currentAirtimeStartElapsedMs + ", airtimeExpandedMs=" + this.airtimeExpandedMs + ", posttimeToFirstVisibleExpansionMs=" + this.posttimeToFirstVisibleExpansionMs + ", currentAirtimeExpandedStartElapsedMs=" + this.currentAirtimeExpandedStartElapsedMs + ", requestedImportance=" + this.requestedImportance + ", naturalImportance=" + this.naturalImportance + ", isNoisy=" + this.isNoisy + '}';
+    public final synchronized void dump(PrintWriter printWriter, NotificationManagerService.DumpFilter dumpFilter) {
+        try {
+            for (AggregatedStats aggregatedStats : ((HashMap) this.mStats).values()) {
+                if (dumpFilter.matches(aggregatedStats.key)) {
+                    printWriter.println(aggregatedStats.toStringWithIndent("    "));
+                }
+            }
+            printWriter.println("    mStatsArrays.size(): " + this.mStatsArrays.size());
+            printWriter.println("    mStats.size(): " + ((HashMap) this.mStats).size());
+        } catch (Throwable th) {
+            throw th;
         }
+    }
 
-        public void updateFrom(SingleNotificationStats singleNotificationStats) {
-            this.posttimeElapsedMs = singleNotificationStats.posttimeElapsedMs;
-            this.posttimeToFirstClickMs = singleNotificationStats.posttimeToFirstClickMs;
-            this.airtimeCount = singleNotificationStats.airtimeCount;
-            this.posttimeToFirstAirtimeMs = singleNotificationStats.posttimeToFirstAirtimeMs;
-            this.currentAirtimeStartElapsedMs = singleNotificationStats.currentAirtimeStartElapsedMs;
-            this.airtimeMs = singleNotificationStats.airtimeMs;
-            this.posttimeToFirstVisibleExpansionMs = singleNotificationStats.posttimeToFirstVisibleExpansionMs;
-            this.currentAirtimeExpandedStartElapsedMs = singleNotificationStats.currentAirtimeExpandedStartElapsedMs;
-            this.airtimeExpandedMs = singleNotificationStats.airtimeExpandedMs;
-            this.userExpansionCount = singleNotificationStats.userExpansionCount;
+    public final synchronized JSONObject dumpJson(NotificationManagerService.DumpFilter dumpFilter) {
+        JSONObject jSONObject;
+        try {
+            jSONObject = new JSONObject();
+            try {
+                JSONArray jSONArray = new JSONArray();
+                for (AggregatedStats aggregatedStats : ((HashMap) this.mStats).values()) {
+                    if (dumpFilter.matches(aggregatedStats.key)) {
+                        jSONArray.put(aggregatedStats.dumpJson());
+                    }
+                }
+                jSONObject.put("current", jSONArray);
+            } catch (JSONException unused) {
+            }
+        } catch (Throwable th) {
+            throw th;
         }
+        return jSONObject;
+    }
+
+    public final AggregatedStats[] getAggregatedStatsLocked(String str) {
+        AggregatedStats[] aggregatedStatsArr = (AggregatedStats[]) this.mStatsArrays.poll();
+        if (aggregatedStatsArr == null) {
+            aggregatedStatsArr = new AggregatedStats[2];
+        }
+        aggregatedStatsArr[0] = getOrCreateAggregatedStatsLocked("__global");
+        aggregatedStatsArr[1] = getOrCreateAggregatedStatsLocked(str);
+        return aggregatedStatsArr;
+    }
+
+    public final AggregatedStats getOrCreateAggregatedStatsLocked(String str) {
+        AggregatedStats aggregatedStats = (AggregatedStats) ((HashMap) this.mStats).get(str);
+        if (aggregatedStats == null) {
+            aggregatedStats = new AggregatedStats(this.mContext, str);
+            ((HashMap) this.mStats).put(str, aggregatedStats);
+        }
+        aggregatedStats.mLastAccessTime = SystemClock.elapsedRealtime();
+        return aggregatedStats;
+    }
+
+    public final synchronized void registerBlocked(NotificationRecord notificationRecord) {
+        try {
+            AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord.sbn.getPackageName());
+            for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
+                aggregatedStats.numBlocked++;
+            }
+            releaseAggregatedStatsLocked(aggregatedStatsLocked);
+        } catch (Throwable th) {
+            throw th;
+        }
+    }
+
+    public final synchronized void registerClickedByUser(NotificationRecord notificationRecord) {
+        MetricsLogger.histogram(this.mContext, "note_click_longevity", ((int) (System.currentTimeMillis() - notificationRecord.mRankingTimeMs)) / 60000);
+        SingleNotificationStats singleNotificationStats = notificationRecord.stats;
+        if (singleNotificationStats.posttimeToFirstClickMs < 0) {
+            singleNotificationStats.posttimeToFirstClickMs = SystemClock.elapsedRealtime() - singleNotificationStats.posttimeElapsedMs;
+        }
+    }
+
+    public final synchronized void registerImageRemoved(String str) {
+        for (AggregatedStats aggregatedStats : getAggregatedStatsLocked(str)) {
+            aggregatedStats.numImagesRemoved++;
+        }
+    }
+
+    public final synchronized void registerOverCountQuota(String str) {
+        for (AggregatedStats aggregatedStats : getAggregatedStatsLocked(str)) {
+            aggregatedStats.numQuotaViolations++;
+        }
+    }
+
+    public final synchronized void registerOverRateQuota(String str) {
+        for (AggregatedStats aggregatedStats : getAggregatedStatsLocked(str)) {
+            aggregatedStats.numRateViolations++;
+        }
+    }
+
+    public final synchronized void registerPeopleAffinity(NotificationRecord notificationRecord, boolean z, boolean z2, boolean z3) {
+        try {
+            AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord.sbn.getPackageName());
+            for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
+                if (z) {
+                    aggregatedStats.numWithValidPeople++;
+                }
+                if (z2) {
+                    aggregatedStats.numWithStaredPeople++;
+                }
+                if (z3) {
+                    aggregatedStats.numPeopleCacheHit++;
+                } else {
+                    aggregatedStats.numPeopleCacheMiss++;
+                }
+            }
+            releaseAggregatedStatsLocked(aggregatedStatsLocked);
+        } catch (Throwable th) {
+            throw th;
+        }
+    }
+
+    public final synchronized void registerPostedByApp(NotificationRecord notificationRecord) {
+        boolean z;
+        try {
+            notificationRecord.stats.posttimeElapsedMs = SystemClock.elapsedRealtime();
+            AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord.sbn.getPackageName());
+            for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
+                int i = 1;
+                aggregatedStats.numPostedByApp++;
+                aggregatedStats.countApiUse(notificationRecord);
+                int i2 = aggregatedStats.numUndecoratedRemoteViews;
+                Notification notification = notificationRecord.sbn.getNotification();
+                if (!notification.isStyle(Notification.DecoratedCustomViewStyle.class) && !notification.isStyle(Notification.DecoratedMediaCustomViewStyle.class)) {
+                    z = false;
+                    if ((notification.contentView != null && notification.bigContentView == null && notification.headsUpContentView == null) || z) {
+                        i = 0;
+                    }
+                    aggregatedStats.numUndecoratedRemoteViews = i2 + i;
+                }
+                z = true;
+                if (notification.contentView != null) {
+                }
+                aggregatedStats.numUndecoratedRemoteViews = i2 + i;
+            }
+            releaseAggregatedStatsLocked(aggregatedStatsLocked);
+        } catch (Throwable th) {
+            throw th;
+        }
+    }
+
+    public final synchronized void registerSuspendedByAdmin(NotificationRecord notificationRecord) {
+        try {
+            AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord.sbn.getPackageName());
+            for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
+                aggregatedStats.numSuspendedByAdmin++;
+            }
+            releaseAggregatedStatsLocked(aggregatedStatsLocked);
+        } catch (Throwable th) {
+            throw th;
+        }
+    }
+
+    public final synchronized void registerUpdatedByApp(NotificationRecord notificationRecord, NotificationRecord notificationRecord2) {
+        try {
+            notificationRecord.stats.updateFrom(notificationRecord2.stats);
+            AggregatedStats[] aggregatedStatsLocked = getAggregatedStatsLocked(notificationRecord.sbn.getPackageName());
+            for (AggregatedStats aggregatedStats : aggregatedStatsLocked) {
+                aggregatedStats.numUpdatedByApp++;
+                aggregatedStats.countApiUse(notificationRecord);
+            }
+            releaseAggregatedStatsLocked(aggregatedStatsLocked);
+        } catch (Throwable th) {
+            throw th;
+        }
+    }
+
+    public final void releaseAggregatedStatsLocked(AggregatedStats[] aggregatedStatsArr) {
+        for (int i = 0; i < aggregatedStatsArr.length; i++) {
+            aggregatedStatsArr[i] = null;
+        }
+        this.mStatsArrays.offer(aggregatedStatsArr);
+    }
+
+    public final PulledStats remoteViewStats(long j) {
+        PulledStats pulledStats = new PulledStats(j);
+        for (AggregatedStats aggregatedStats : ((HashMap) this.mStats).values()) {
+            if (aggregatedStats.numUndecoratedRemoteViews > 0) {
+                ((ArrayList) pulledStats.mUndecoratedPackageNames).add(aggregatedStats.key);
+                pulledStats.mTimePeriodEndMs = Math.max(pulledStats.mTimePeriodEndMs, aggregatedStats.mCreated);
+            }
+        }
+        return pulledStats;
     }
 }

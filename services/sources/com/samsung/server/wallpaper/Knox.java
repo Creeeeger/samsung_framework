@@ -4,8 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class Knox {
+public final class Knox {
     public final Context mContext;
 
     public Knox(Context context) {
@@ -13,13 +14,13 @@ public class Knox {
         this.mContext = context;
     }
 
-    public boolean isWallpaperChangeAllowed(boolean z) {
-        Cursor query = this.mContext.getContentResolver().query(Uri.parse("content://com.sec.knox.provider/RestrictionPolicy4"), null, "isWallpaperChangeAllowed", z ? new String[]{"true"} : new String[]{"false"}, null);
-        boolean z2 = true;
+    public final boolean isWallpaperChangeAllowed() {
+        boolean z = true;
+        Cursor query = this.mContext.getContentResolver().query(Uri.parse("content://com.sec.knox.provider/RestrictionPolicy4"), null, "isWallpaperChangeAllowed", new String[]{"true"}, null);
         if (query != null) {
             try {
                 query.moveToFirst();
-                z2 = true ^ "false".equals(query.getString(query.getColumnIndex("isWallpaperChangeAllowed")));
+                z = true ^ "false".equals(query.getString(query.getColumnIndex("isWallpaperChangeAllowed")));
             } catch (Exception unused) {
             } catch (Throwable th) {
                 query.close();
@@ -27,7 +28,7 @@ public class Knox {
             }
             query.close();
         }
-        Log.d("Knox", "isWallpaperChangeAllowed " + z2);
-        return z2;
+        Log.d("Knox", "isWallpaperChangeAllowed " + z);
+        return z;
     }
 }

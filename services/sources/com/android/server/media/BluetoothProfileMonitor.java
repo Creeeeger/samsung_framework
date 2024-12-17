@@ -9,8 +9,9 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
-public class BluetoothProfileMonitor {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class BluetoothProfileMonitor {
     public BluetoothA2dp mA2dpProfile;
     public final BluetoothAdapter mBluetoothAdapter;
     public final Context mContext;
@@ -18,108 +19,100 @@ public class BluetoothProfileMonitor {
     public BluetoothLeAudio mLeAudioProfile;
     public final ProfileListener mProfileListener = new ProfileListener();
 
-    /* loaded from: classes2.dex */
-    public interface OnProfileChangedListener {
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ProfileListener implements BluetoothProfile.ServiceListener {
+        public ProfileListener() {
+        }
 
-    /* renamed from: -$$Nest$fgetmOnProfileChangedListener, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ OnProfileChangedListener m8247$$Nest$fgetmOnProfileChangedListener(BluetoothProfileMonitor bluetoothProfileMonitor) {
-        bluetoothProfileMonitor.getClass();
-        return null;
+        @Override // android.bluetooth.BluetoothProfile.ServiceListener
+        public final void onServiceConnected(int i, BluetoothProfile bluetoothProfile) {
+            synchronized (BluetoothProfileMonitor.this) {
+                try {
+                    if (i == 2) {
+                        BluetoothProfileMonitor.this.mA2dpProfile = (BluetoothA2dp) bluetoothProfile;
+                    } else if (i == 21) {
+                        BluetoothProfileMonitor.this.mHearingAidProfile = (BluetoothHearingAid) bluetoothProfile;
+                    } else if (i == 22) {
+                        BluetoothProfileMonitor.this.mLeAudioProfile = (BluetoothLeAudio) bluetoothProfile;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        @Override // android.bluetooth.BluetoothProfile.ServiceListener
+        public final void onServiceDisconnected(int i) {
+            synchronized (BluetoothProfileMonitor.this) {
+                try {
+                    if (i == 2) {
+                        BluetoothProfileMonitor.this.mA2dpProfile = null;
+                    } else if (i == 21) {
+                        BluetoothProfileMonitor.this.mHearingAidProfile = null;
+                    } else if (i == 22) {
+                        BluetoothProfileMonitor.this.mLeAudioProfile = null;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
     }
 
     public BluetoothProfileMonitor(Context context, BluetoothAdapter bluetoothAdapter) {
         Objects.requireNonNull(context);
-        Objects.requireNonNull(bluetoothAdapter);
         this.mContext = context;
         this.mBluetoothAdapter = bluetoothAdapter;
     }
 
-    public void start() {
-        this.mBluetoothAdapter.getProfileProxy(this.mContext, this.mProfileListener, 2);
-        this.mBluetoothAdapter.getProfileProxy(this.mContext, this.mProfileListener, 21);
-        this.mBluetoothAdapter.getProfileProxy(this.mContext, this.mProfileListener, 22);
+    public final long getGroupId(BluetoothDevice bluetoothDevice, int i) {
+        synchronized (this) {
+            long j = -1;
+            try {
+                if (i == 2) {
+                    return -1L;
+                }
+                if (i == 21) {
+                    BluetoothHearingAid bluetoothHearingAid = this.mHearingAidProfile;
+                    if (bluetoothHearingAid != null) {
+                        j = bluetoothHearingAid.getHiSyncId(bluetoothDevice);
+                    }
+                    return j;
+                }
+                if (i == 22) {
+                    BluetoothLeAudio bluetoothLeAudio = this.mLeAudioProfile;
+                    if (bluetoothLeAudio != null) {
+                        j = bluetoothLeAudio.getGroupId(bluetoothDevice);
+                    }
+                    return j;
+                }
+                throw new IllegalArgumentException(i + " is not supported as Bluetooth profile");
+            } finally {
+            }
+        }
     }
 
-    public boolean isProfileSupported(int i, BluetoothDevice bluetoothDevice) {
+    public final boolean isProfileSupported(BluetoothDevice bluetoothDevice, int i) {
         BluetoothProfile bluetoothProfile;
         synchronized (this) {
-            if (i == 2) {
-                bluetoothProfile = this.mA2dpProfile;
-            } else if (i == 21) {
-                bluetoothProfile = this.mHearingAidProfile;
-            } else if (i == 22) {
-                bluetoothProfile = this.mLeAudioProfile;
-            } else {
-                throw new IllegalArgumentException(i + " is not supported as Bluetooth profile");
+            try {
+                if (i == 2) {
+                    bluetoothProfile = this.mA2dpProfile;
+                } else if (i == 21) {
+                    bluetoothProfile = this.mHearingAidProfile;
+                } else {
+                    if (i != 22) {
+                        throw new IllegalArgumentException(i + " is not supported as Bluetooth profile");
+                    }
+                    bluetoothProfile = this.mLeAudioProfile;
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
         if (bluetoothProfile == null) {
             return false;
         }
         return bluetoothProfile.getConnectedDevices().contains(bluetoothDevice);
-    }
-
-    public long getGroupId(int i, BluetoothDevice bluetoothDevice) {
-        synchronized (this) {
-            long j = -1;
-            if (i == 2) {
-                return -1L;
-            }
-            if (i == 21) {
-                BluetoothHearingAid bluetoothHearingAid = this.mHearingAidProfile;
-                if (bluetoothHearingAid != null) {
-                    j = bluetoothHearingAid.getHiSyncId(bluetoothDevice);
-                }
-                return j;
-            }
-            if (i == 22) {
-                BluetoothLeAudio bluetoothLeAudio = this.mLeAudioProfile;
-                if (bluetoothLeAudio != null) {
-                    j = bluetoothLeAudio.getGroupId(bluetoothDevice);
-                }
-                return j;
-            }
-            throw new IllegalArgumentException(i + " is not supported as Bluetooth profile");
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class ProfileListener implements BluetoothProfile.ServiceListener {
-        public ProfileListener() {
-        }
-
-        @Override // android.bluetooth.BluetoothProfile.ServiceListener
-        public void onServiceConnected(int i, BluetoothProfile bluetoothProfile) {
-            synchronized (BluetoothProfileMonitor.this) {
-                if (i == 2) {
-                    BluetoothProfileMonitor.this.mA2dpProfile = (BluetoothA2dp) bluetoothProfile;
-                } else if (i == 21) {
-                    BluetoothProfileMonitor.this.mHearingAidProfile = (BluetoothHearingAid) bluetoothProfile;
-                } else {
-                    if (i != 22) {
-                        return;
-                    }
-                    BluetoothProfileMonitor.this.mLeAudioProfile = (BluetoothLeAudio) bluetoothProfile;
-                }
-                BluetoothProfileMonitor.m8247$$Nest$fgetmOnProfileChangedListener(BluetoothProfileMonitor.this);
-            }
-        }
-
-        @Override // android.bluetooth.BluetoothProfile.ServiceListener
-        public void onServiceDisconnected(int i) {
-            synchronized (BluetoothProfileMonitor.this) {
-                if (i == 2) {
-                    BluetoothProfileMonitor.this.mA2dpProfile = null;
-                } else if (i == 21) {
-                    BluetoothProfileMonitor.this.mHearingAidProfile = null;
-                } else if (i != 22) {
-                    return;
-                } else {
-                    BluetoothProfileMonitor.this.mLeAudioProfile = null;
-                }
-                BluetoothProfileMonitor.m8247$$Nest$fgetmOnProfileChangedListener(BluetoothProfileMonitor.this);
-            }
-        }
     }
 }

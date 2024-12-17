@@ -1,17 +1,14 @@
 package com.samsung.android.server.util;
 
 import android.util.Slog;
-import com.android.server.wm.WindowManagerServiceExt;
-import com.samsung.android.rune.CoreRune;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class CoreLogger {
+public final class CoreLogger {
     public final List mBuffer;
     public final boolean mBufferOverflowAllowed;
     public final int mBufferSize;
@@ -19,57 +16,7 @@ public class CoreLogger {
     public final String mTag;
     public final boolean mUseTimeline;
 
-    public static Builder getBuilder() {
-        return new Builder();
-    }
-
-    /* loaded from: classes2.dex */
-    public class Builder {
-        public boolean mBufferOverflowAllowed;
-        public int mBufferSize;
-        public String mDumpTitle;
-        public String mTag;
-        public boolean mUseTimeline;
-
-        public Builder() {
-            String simpleName = CoreLogger.class.getSimpleName();
-            this.mTag = simpleName;
-            this.mDumpTitle = simpleName;
-            this.mBufferOverflowAllowed = true;
-            this.mUseTimeline = true;
-        }
-
-        public CoreLogger build() {
-            return new CoreLogger(this.mTag, this.mDumpTitle, this.mBufferSize, this.mBufferOverflowAllowed, this.mUseTimeline);
-        }
-
-        public Builder setTag(String str) {
-            this.mTag = str;
-            return this;
-        }
-
-        public Builder setDumpTitle(String str) {
-            this.mDumpTitle = str;
-            return this;
-        }
-
-        public Builder setBufferSize(int i) {
-            this.mBufferSize = i;
-            return this;
-        }
-
-        public Builder setBufferOverflowAllowed(boolean z) {
-            this.mBufferOverflowAllowed = z;
-            return this;
-        }
-
-        public Builder setUseTimeline(boolean z) {
-            this.mUseTimeline = z;
-            return this;
-        }
-    }
-
-    public CoreLogger(String str, String str2, int i, boolean z, boolean z2) {
+    public CoreLogger(String str, int i, String str2, boolean z, boolean z2) {
         this.mTag = str;
         this.mDumpTitle = str2;
         this.mBufferSize = i;
@@ -78,12 +25,8 @@ public class CoreLogger {
         this.mUseTimeline = z2;
     }
 
-    public void log(int i, String str) {
-        log(i, str, null);
-    }
-
-    public void log(int i, String str, Throwable th) {
-        if (this.mBuffer == null || CoreRune.SAFE_DEBUG) {
+    public final void log(int i, String str, Throwable th) {
+        if (this.mBuffer == null) {
             Slog.println(i, this.mTag, str);
         }
         if (th != null) {
@@ -95,8 +38,11 @@ public class CoreLogger {
         }
         if (!this.mBufferOverflowAllowed) {
             synchronized (list) {
-                if (isBufferFull()) {
-                    return;
+                try {
+                    if (this.mBuffer.size() > this.mBufferSize) {
+                        return;
+                    }
+                } finally {
                 }
             }
         }
@@ -106,61 +52,17 @@ public class CoreLogger {
         }
         try {
             synchronized (this.mBuffer) {
-                if (isBufferFull()) {
-                    this.mBuffer.remove(0);
+                try {
+                    if (this.mBuffer.size() > this.mBufferSize) {
+                        this.mBuffer.remove(0);
+                    }
+                    this.mBuffer.add(str);
+                } catch (Throwable th2) {
+                    throw th2;
                 }
-                this.mBuffer.add(str);
             }
         } catch (Exception e) {
             Slog.w(this.mTag, "Fail to add logs", e);
         }
-    }
-
-    public final boolean isBufferFull() {
-        return this.mBuffer.size() > this.mBufferSize;
-    }
-
-    public void print(final PrintWriter printWriter, final String str) {
-        List list = this.mBuffer;
-        if (list == null) {
-            return;
-        }
-        synchronized (list) {
-            if (this.mBuffer.isEmpty()) {
-                return;
-            }
-            printWriter.println(str + this.mDumpTitle);
-            this.mBuffer.forEach(new Consumer() { // from class: com.samsung.android.server.util.CoreLogger$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    CoreLogger.lambda$print$0(printWriter, str, (String) obj);
-                }
-            });
-        }
-    }
-
-    public static /* synthetic */ void lambda$print$0(PrintWriter printWriter, String str, String str2) {
-        printWriter.println(str + str2);
-    }
-
-    public final List getBuffer() {
-        List list = this.mBuffer;
-        if (list == null) {
-            return null;
-        }
-        synchronized (list) {
-            if (this.mBuffer.isEmpty()) {
-                return null;
-            }
-            return new ArrayList(this.mBuffer);
-        }
-    }
-
-    public void toDumpCriticalInfo() {
-        List buffer = getBuffer();
-        if (buffer == null) {
-            return;
-        }
-        WindowManagerServiceExt.logCriticalInfo(this.mDumpTitle, buffer);
     }
 }

@@ -1,23 +1,14 @@
 package com.android.server.usb.descriptors;
 
-/* loaded from: classes3.dex */
-public class UsbACAudioControlEndpoint extends UsbACEndpoint {
-    public byte mAddress;
-    public byte mAttribs;
-    public byte mInterval;
-    public int mMaxPacketSize;
-
-    public UsbACAudioControlEndpoint(int i, byte b, int i2, byte b2) {
-        super(i, b, i2, b2);
-    }
-
-    @Override // com.android.server.usb.descriptors.UsbACEndpoint, com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
-        super.parseRawDescriptors(byteStream);
-        this.mAddress = byteStream.getByte();
-        this.mAttribs = byteStream.getByte();
-        this.mMaxPacketSize = byteStream.unpackUsbShort();
-        this.mInterval = byteStream.getByte();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class UsbACAudioControlEndpoint extends UsbACEndpoint {
+    @Override // com.android.server.usb.descriptors.UsbDescriptor
+    public final int parseRawDescriptors(ByteStream byteStream) {
+        byteStream.getByte();
+        byteStream.getByte();
+        byteStream.unpackUsbShort();
+        byteStream.getByte();
         return this.mLength;
     }
 }

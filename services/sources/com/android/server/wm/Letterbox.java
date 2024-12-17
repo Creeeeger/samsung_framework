@@ -1,9 +1,10 @@
 package com.android.server.wm;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.InputConstants;
 import android.view.GestureDetector;
@@ -15,267 +16,100 @@ import android.view.InputWindowHandle;
 import android.view.MotionEvent;
 import android.view.SemBlurInfo;
 import android.view.SurfaceControl;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.UiThread;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.samsung.android.rune.CoreRune;
-import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class Letterbox {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class Letterbox {
     public static final Rect EMPTY_RECT = new Rect();
     public static final Point ZERO_POINT = new Point(0, 0);
-    public final Supplier mAreCornersRounded;
-    public Supplier mBlurColorCurveSupplier;
-    public final Supplier mBlurRadiusSupplier;
+    public final AppCompatLetterboxOverrides mAppCompatLetterboxOverrides;
+    public final AppCompatReachabilityPolicy mAppCompatReachabilityPolicy;
     public final LetterboxSurface mBottom;
-    public Supplier mCanHaveLetterboxSurfaceSupplier;
-    public final Supplier mColorSupplier;
-    public final Supplier mDarkScrimAlphaSupplier;
-    public final IntConsumer mDoubleTapCallbackX;
-    public final IntConsumer mDoubleTapCallbackY;
     public final LetterboxSurface mFullWindowSurface;
-    public final Supplier mHasWallpaperBackgroundSupplier;
     public WindowState mInputWindow;
+    public boolean mLastUseFullWindowSurface;
     public final LetterboxSurface mLeft;
     public final Supplier mParentSurfaceSupplier;
     public final LetterboxSurface mRight;
-    public IntConsumer mSingleTapCallback;
     public final Supplier mSurfaceControlFactory;
     public final LetterboxSurface[] mSurfaces;
     public final LetterboxSurface mTop;
     public final Supplier mTransactionFactory;
-    public boolean mUseFullWindowSurface;
     public final Rect mOuter = new Rect();
     public final Rect mInner = new Rect();
 
-    public Letterbox(Supplier supplier, Supplier supplier2, Supplier supplier3, Supplier supplier4, Supplier supplier5, Supplier supplier6, Supplier supplier7, IntConsumer intConsumer, IntConsumer intConsumer2, Supplier supplier8) {
-        LetterboxSurface letterboxSurface = new LetterboxSurface("top");
-        this.mTop = letterboxSurface;
-        LetterboxSurface letterboxSurface2 = new LetterboxSurface("left");
-        this.mLeft = letterboxSurface2;
-        LetterboxSurface letterboxSurface3 = new LetterboxSurface("bottom");
-        this.mBottom = letterboxSurface3;
-        LetterboxSurface letterboxSurface4 = new LetterboxSurface("right");
-        this.mRight = letterboxSurface4;
-        this.mFullWindowSurface = new LetterboxSurface("fullWindow");
-        this.mSurfaces = new LetterboxSurface[]{letterboxSurface2, letterboxSurface, letterboxSurface4, letterboxSurface3};
-        this.mSurfaceControlFactory = supplier;
-        this.mTransactionFactory = supplier2;
-        this.mAreCornersRounded = supplier3;
-        this.mColorSupplier = supplier4;
-        this.mHasWallpaperBackgroundSupplier = supplier5;
-        this.mBlurRadiusSupplier = supplier6;
-        this.mDarkScrimAlphaSupplier = supplier7;
-        this.mDoubleTapCallbackX = intConsumer;
-        this.mDoubleTapCallbackY = intConsumer2;
-        this.mParentSurfaceSupplier = supplier8;
-        this.mUseFullWindowSurface = useFullWindowSurface();
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
+        public final WindowManagerService mWmService;
 
-    public void layout(Rect rect, Rect rect2, Point point) {
-        this.mOuter.set(rect);
-        this.mInner.set(rect2);
-        this.mTop.layout(rect.left, rect.top, rect.right, rect2.top, point);
-        this.mLeft.layout(rect.left, rect.top, rect2.left, rect.bottom, point);
-        this.mBottom.layout(rect.left, rect2.bottom, rect.right, rect.bottom, point);
-        this.mRight.layout(rect2.right, rect.top, rect.right, rect.bottom, point);
-        this.mFullWindowSurface.layout(rect.left, rect.top, rect.right, rect.bottom, point);
-    }
-
-    public Rect getInsets() {
-        return new Rect(this.mLeft.getWidth(), this.mTop.getHeight(), this.mRight.getWidth(), this.mBottom.getHeight());
-    }
-
-    public Rect getInnerFrame() {
-        return this.mInner;
-    }
-
-    public Rect getOuterFrame() {
-        return this.mOuter;
-    }
-
-    public boolean notIntersectsOrFullyContains(Rect rect) {
-        int i = 0;
-        int i2 = 0;
-        for (LetterboxSurface letterboxSurface : this.mSurfaces) {
-            Rect rect2 = letterboxSurface.mLayoutFrameGlobal;
-            if (rect2.isEmpty()) {
-                i++;
-            } else if (!Rect.intersects(rect2, rect)) {
-                i2++;
-            } else if (rect2.contains(rect)) {
-                return true;
-            }
-        }
-        return i + i2 == this.mSurfaces.length;
-    }
-
-    public void hide() {
-        Rect rect = EMPTY_RECT;
-        layout(rect, rect, ZERO_POINT);
-    }
-
-    public void destroy() {
-        this.mOuter.setEmpty();
-        this.mInner.setEmpty();
-        for (LetterboxSurface letterboxSurface : this.mSurfaces) {
-            letterboxSurface.remove();
-        }
-        this.mFullWindowSurface.remove();
-    }
-
-    public boolean needsApplySurfaceChanges() {
-        if (isUseFullWindowSurfaceChanged()) {
-            return true;
-        }
-        if (useFullWindowSurface()) {
-            return this.mFullWindowSurface.needsApplySurfaceChanges();
-        }
-        for (LetterboxSurface letterboxSurface : this.mSurfaces) {
-            if (letterboxSurface.needsApplySurfaceChanges()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void applySurfaceChanges(SurfaceControl.Transaction transaction) {
-        int i = 0;
-        if (isUseFullWindowSurfaceChanged()) {
-            boolean z = !this.mUseFullWindowSurface;
-            this.mUseFullWindowSurface = z;
-            if (z) {
-                applyLetterboxSurfaceChanges(transaction, this.mFullWindowSurface);
-                LetterboxSurface[] letterboxSurfaceArr = this.mSurfaces;
-                int length = letterboxSurfaceArr.length;
-                while (i < length) {
-                    removeLetterboxSurface(transaction, letterboxSurfaceArr[i]);
-                    i++;
-                }
-                return;
-            }
-            LetterboxSurface[] letterboxSurfaceArr2 = this.mSurfaces;
-            int length2 = letterboxSurfaceArr2.length;
-            while (i < length2) {
-                applyLetterboxSurfaceChanges(transaction, letterboxSurfaceArr2[i]);
-                i++;
-            }
-            removeLetterboxSurface(transaction, this.mFullWindowSurface);
-            return;
-        }
-        if (useFullWindowSurface()) {
-            this.mFullWindowSurface.applySurfaceChanges(transaction);
-            LetterboxSurface[] letterboxSurfaceArr3 = this.mSurfaces;
-            int length3 = letterboxSurfaceArr3.length;
-            while (i < length3) {
-                letterboxSurfaceArr3[i].remove();
-                i++;
-            }
-            return;
-        }
-        LetterboxSurface[] letterboxSurfaceArr4 = this.mSurfaces;
-        int length4 = letterboxSurfaceArr4.length;
-        while (i < length4) {
-            letterboxSurfaceArr4[i].applySurfaceChanges(transaction);
-            i++;
-        }
-        this.mFullWindowSurface.remove();
-    }
-
-    public void attachInput(WindowState windowState) {
-        this.mInputWindow = windowState;
-        if (useFullWindowSurface()) {
-            this.mFullWindowSurface.attachInput(windowState);
-            return;
-        }
-        for (LetterboxSurface letterboxSurface : this.mSurfaces) {
-            letterboxSurface.attachInput(windowState);
-        }
-    }
-
-    public void onMovedToDisplay(int i) {
-        for (LetterboxSurface letterboxSurface : this.mSurfaces) {
-            if (letterboxSurface.mInputInterceptor != null) {
-                letterboxSurface.mInputInterceptor.mWindowHandle.displayId = i;
-            }
-        }
-        if (this.mFullWindowSurface.mInputInterceptor != null) {
-            this.mFullWindowSurface.mInputInterceptor.mWindowHandle.displayId = i;
-        }
-    }
-
-    public final boolean useFullWindowSurface() {
-        return ((Boolean) this.mAreCornersRounded.get()).booleanValue() || ((Boolean) this.mHasWallpaperBackgroundSupplier.get()).booleanValue();
-    }
-
-    /* loaded from: classes3.dex */
-    public final class TapEventReceiver extends InputEventReceiver {
-        public final GestureDetector mDoubleTapDetector;
-        public final DoubleTapListener mDoubleTapListener;
-
-        public TapEventReceiver(InputChannel inputChannel, Context context) {
-            super(inputChannel, UiThread.getHandler().getLooper());
-            DoubleTapListener doubleTapListener = new DoubleTapListener();
-            this.mDoubleTapListener = doubleTapListener;
-            this.mDoubleTapDetector = new GestureDetector(context, doubleTapListener, UiThread.getHandler());
-        }
-
-        public void onInputEvent(InputEvent inputEvent) {
-            finishInputEvent(inputEvent, this.mDoubleTapDetector.onTouchEvent((MotionEvent) inputEvent));
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
-        public DoubleTapListener() {
+        public DoubleTapListener(WindowManagerService windowManagerService) {
+            this.mWmService = windowManagerService;
         }
 
         @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnDoubleTapListener
-        public boolean onDoubleTapEvent(MotionEvent motionEvent) {
-            if (motionEvent.getAction() != 1) {
-                return false;
+        public final boolean onDoubleTapEvent(MotionEvent motionEvent) {
+            WindowManagerGlobalLock windowManagerGlobalLock = this.mWmService.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    if (Letterbox.this.mOuter.isEmpty() || motionEvent.getAction() != 1) {
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                        return false;
+                    }
+                    Letterbox.this.mAppCompatReachabilityPolicy.handleDoubleTap((int) motionEvent.getRawX(), (int) motionEvent.getRawY());
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    return true;
+                } catch (Throwable th) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
             }
-            Letterbox.this.mDoubleTapCallbackX.accept((int) motionEvent.getRawX());
-            Letterbox.this.mDoubleTapCallbackY.accept((int) motionEvent.getRawY());
-            return true;
         }
 
         @Override // android.view.GestureDetector.SimpleOnGestureListener, android.view.GestureDetector.OnGestureListener
-        public boolean onSingleTapUp(MotionEvent motionEvent) {
-            IntConsumer intConsumer;
-            if (CoreRune.FW_CUSTOM_LETTERBOX_ENHANCED_FOR_BOUNDS_COMPAT_UI_EXPERIENCE && (intConsumer = Letterbox.this.mSingleTapCallback) != null) {
-                intConsumer.accept(0);
-                return true;
+        public final boolean onSingleTapUp(MotionEvent motionEvent) {
+            if (!CoreRune.MT_APP_COMPAT_CONFIGURATION) {
+                return super.onSingleTapUp(motionEvent);
             }
-            return super.onSingleTapUp(motionEvent);
+            AppCompatReachabilityPolicy appCompatReachabilityPolicy = Letterbox.this.mAppCompatReachabilityPolicy;
+            ActivityRecord activityRecord = appCompatReachabilityPolicy.mActivityRecord;
+            activityRecord.mAtmService.mH.removeCallbacks(appCompatReachabilityPolicy.mOnSingleTap);
+            activityRecord.mAtmService.mH.post(appCompatReachabilityPolicy.mOnSingleTap);
+            return true;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public final class InputInterceptor {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class InputInterceptor implements Runnable {
         public final InputChannel mClientChannel;
-        public final InputEventReceiver mInputEventReceiver;
+        public final Handler mHandler;
+        public final TapEventReceiver mInputEventReceiver;
         public final IBinder mToken;
         public final InputWindowHandle mWindowHandle;
         public final WindowManagerService mWmService;
 
-        public InputInterceptor(String str, WindowState windowState) {
+        public InputInterceptor(Letterbox letterbox, String str, WindowState windowState) {
             WindowManagerService windowManagerService = windowState.mWmService;
             this.mWmService = windowManagerService;
-            StringBuilder sb = new StringBuilder();
-            sb.append(str);
+            Handler handler = UiThread.getHandler();
+            this.mHandler = handler;
+            StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(str);
             Object obj = windowState.mActivityRecord;
-            sb.append(obj == null ? windowState : obj);
-            String sb2 = sb.toString();
-            InputChannel createInputChannel = windowManagerService.mInputManager.createInputChannel(sb2);
+            m.append(obj == null ? windowState : obj);
+            String sb = m.toString();
+            InputChannel createInputChannel = windowManagerService.mInputManager.createInputChannel(sb);
             this.mClientChannel = createInputChannel;
-            this.mInputEventReceiver = new TapEventReceiver(createInputChannel, windowManagerService.mContext);
+            this.mInputEventReceiver = new TapEventReceiver(letterbox, createInputChannel, windowManagerService, handler);
             IBinder token = createInputChannel.getToken();
             this.mToken = token;
             InputWindowHandle inputWindowHandle = new InputWindowHandle((InputApplicationHandle) null, windowState.getDisplayId());
             this.mWindowHandle = inputWindowHandle;
-            inputWindowHandle.name = sb2;
+            inputWindowHandle.name = sb;
             inputWindowHandle.token = token;
             inputWindowHandle.layoutParamsType = 2022;
             inputWindowHandle.dispatchingTimeoutMillis = InputConstants.DEFAULT_DISPATCHING_TIMEOUT_MILLIS;
@@ -285,26 +119,15 @@ public class Letterbox {
             inputWindowHandle.inputConfig = 1028;
         }
 
-        public void updateTouchableRegion(Rect rect) {
-            if (rect.isEmpty()) {
-                this.mWindowHandle.token = null;
-                return;
-            }
-            InputWindowHandle inputWindowHandle = this.mWindowHandle;
-            inputWindowHandle.token = this.mToken;
-            inputWindowHandle.touchableRegion.set(rect);
-            this.mWindowHandle.touchableRegion.translate(-rect.left, -rect.top);
-        }
-
-        public void dispose() {
-            this.mWmService.mInputManager.removeInputChannel(this.mToken);
+        @Override // java.lang.Runnable
+        public final void run() {
             this.mInputEventReceiver.dispose();
             this.mClientChannel.dispose();
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class LetterboxSurface {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LetterboxSurface {
         public Color mColor;
         public boolean mHasWallpaperBackground;
         public InputInterceptor mInputInterceptor;
@@ -319,172 +142,169 @@ public class Letterbox {
             this.mType = str;
         }
 
-        public void layout(int i, int i2, int i3, int i4, Point point) {
+        public final void applySurfaceChanges(SurfaceControl.Transaction transaction, SurfaceControl.Transaction transaction2) {
+            InputInterceptor inputInterceptor;
+            SemBlurInfo.ColorCurve letterboxBackgroundWallpaperBlurColorCurve;
+            if (needsApplySurfaceChanges()) {
+                this.mSurfaceFrameRelative.set(this.mLayoutFrameRelative);
+                if (!this.mSurfaceFrameRelative.isEmpty()) {
+                    Letterbox letterbox = Letterbox.this;
+                    if (!letterbox.mAppCompatLetterboxOverrides.shouldHideLetterboxSurface(letterbox.mInputWindow)) {
+                        if (this.mSurface == null) {
+                            SurfaceControl build = ((SurfaceControl.Builder) letterbox.mSurfaceControlFactory.get()).setName("Letterbox - " + this.mType + "").setFlags(4).setColorLayer().setCallsite("LetterboxSurface.createSurface").build();
+                            this.mSurface = build;
+                            transaction.setLayer(build, -20000).setColorSpaceAgnostic(this.mSurface, true);
+                        }
+                        this.mColor = letterbox.mAppCompatLetterboxOverrides.getLetterboxBackgroundColor();
+                        this.mParentSurface = (SurfaceControl) letterbox.mParentSurfaceSupplier.get();
+                        transaction.setColor(this.mSurface, new float[]{this.mColor.red(), this.mColor.green(), this.mColor.blue()});
+                        SurfaceControl surfaceControl = this.mSurface;
+                        Rect rect = this.mSurfaceFrameRelative;
+                        transaction.setPosition(surfaceControl, rect.left, rect.top);
+                        transaction.setWindowCrop(this.mSurface, this.mSurfaceFrameRelative.width(), this.mSurfaceFrameRelative.height());
+                        transaction.reparent(this.mSurface, this.mParentSurface);
+                        this.mHasWallpaperBackground = letterbox.mAppCompatLetterboxOverrides.hasWallpaperBackgroundForLetterbox();
+                        boolean z = CoreRune.MT_APP_COMPAT_CONFIGURATION;
+                        if (z && MultiTaskingAppCompatConfiguration.getConfig(letterbox.mAppCompatLetterboxOverrides.mActivityRecord).hasCapturedLetterboxSurface()) {
+                            transaction.setAlpha(this.mSurface, FullScreenMagnificationGestureHandler.MAX_SCALE);
+                            transaction.setBackgroundBlurRadius(this.mSurface, 0);
+                        } else if (this.mHasWallpaperBackground) {
+                            transaction.setAlpha(this.mSurface, letterbox.mAppCompatLetterboxOverrides.getLetterboxWallpaperDarkScrimAlpha());
+                            AppCompatLetterboxOverrides appCompatLetterboxOverrides = letterbox.mAppCompatLetterboxOverrides;
+                            int letterboxWallpaperBlurRadiusPx = appCompatLetterboxOverrides.getLetterboxWallpaperBlurRadiusPx();
+                            if (letterboxWallpaperBlurRadiusPx <= 0) {
+                                transaction.setBackgroundBlurRadius(this.mSurface, 0);
+                            } else {
+                                if (z && (letterboxBackgroundWallpaperBlurColorCurve = MultiTaskingAppCompatConfiguration.getConfig(appCompatLetterboxOverrides.mActivityRecord).getLetterboxBackgroundWallpaperBlurColorCurve()) != null) {
+                                    transaction.setBackgroundBlurColorCurve(this.mSurface, letterboxBackgroundWallpaperBlurColorCurve);
+                                }
+                                transaction.setBackgroundBlurRadius(this.mSurface, letterboxWallpaperBlurRadiusPx);
+                            }
+                        } else {
+                            transaction.setAlpha(this.mSurface, 1.0f);
+                            transaction.setBackgroundBlurRadius(this.mSurface, 0);
+                        }
+                        transaction.show(this.mSurface);
+                        if (this.mSurface != null || (inputInterceptor = this.mInputInterceptor) == null) {
+                        }
+                        Rect rect2 = this.mSurfaceFrameRelative;
+                        inputInterceptor.getClass();
+                        if (rect2.isEmpty()) {
+                            inputInterceptor.mWindowHandle.token = null;
+                        } else {
+                            InputWindowHandle inputWindowHandle = inputInterceptor.mWindowHandle;
+                            inputWindowHandle.token = inputInterceptor.mToken;
+                            inputWindowHandle.touchableRegion.set(rect2);
+                            inputInterceptor.mWindowHandle.touchableRegion.translate(-rect2.left, -rect2.top);
+                        }
+                        transaction2.setInputWindowInfo(this.mSurface, this.mInputInterceptor.mWindowHandle);
+                        return;
+                    }
+                }
+                SurfaceControl surfaceControl2 = this.mSurface;
+                if (surfaceControl2 != null) {
+                    transaction.hide(surfaceControl2);
+                }
+                if (this.mSurface != null) {
+                }
+            }
+        }
+
+        public final void attachInput(WindowState windowState) {
+            InputInterceptor inputInterceptor = this.mInputInterceptor;
+            if (inputInterceptor != null) {
+                inputInterceptor.mWmService.mInputManager.removeInputChannel(inputInterceptor.mToken);
+                inputInterceptor.mHandler.post(inputInterceptor);
+            }
+            this.mInputInterceptor = new InputInterceptor(Letterbox.this, AudioOffloadInfo$$ExternalSyntheticOutline0.m(new StringBuilder("Letterbox_"), this.mType, "_"), windowState);
+        }
+
+        public final void layout(int i, int i2, int i3, int i4, Point point) {
             this.mLayoutFrameGlobal.set(i, i2, i3, i4);
             this.mLayoutFrameRelative.set(this.mLayoutFrameGlobal);
             this.mLayoutFrameRelative.offset(-point.x, -point.y);
         }
 
-        public final void createSurface(SurfaceControl.Transaction transaction) {
-            SurfaceControl build = ((SurfaceControl.Builder) Letterbox.this.mSurfaceControlFactory.get()).setName("Letterbox - " + this.mType).setFlags(4).setColorLayer().setCallsite("LetterboxSurface.createSurface").build();
-            this.mSurface = build;
-            transaction.setLayer(build, -20000).setColorSpaceAgnostic(this.mSurface, true);
-        }
-
-        public void attachInput(WindowState windowState) {
-            InputInterceptor inputInterceptor = this.mInputInterceptor;
-            if (inputInterceptor != null) {
-                inputInterceptor.dispose();
+        public final boolean needsApplySurfaceChanges() {
+            if (this.mSurfaceFrameRelative.equals(this.mLayoutFrameRelative)) {
+                if (!this.mSurfaceFrameRelative.isEmpty()) {
+                    Letterbox letterbox = Letterbox.this;
+                    if (letterbox.mAppCompatLetterboxOverrides.hasWallpaperBackgroundForLetterbox() != this.mHasWallpaperBackground || !letterbox.mAppCompatLetterboxOverrides.getLetterboxBackgroundColor().equals(this.mColor) || letterbox.mParentSurfaceSupplier.get() != this.mParentSurface) {
+                    }
+                }
+                return false;
             }
-            this.mInputInterceptor = new InputInterceptor("Letterbox_" + this.mType + "_", windowState);
+            return true;
         }
 
-        public void remove() {
+        public final void remove() {
             if (this.mSurface != null) {
                 ((SurfaceControl.Transaction) Letterbox.this.mTransactionFactory.get()).remove(this.mSurface).apply();
                 this.mSurface = null;
             }
             InputInterceptor inputInterceptor = this.mInputInterceptor;
             if (inputInterceptor != null) {
-                inputInterceptor.dispose();
+                inputInterceptor.mWmService.mInputManager.removeInputChannel(inputInterceptor.mToken);
+                inputInterceptor.mHandler.post(inputInterceptor);
                 this.mInputInterceptor = null;
             }
         }
+    }
 
-        public int getWidth() {
-            return Math.max(0, this.mLayoutFrameGlobal.width());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TapEventReceiver extends InputEventReceiver {
+        public final GestureDetector mDoubleTapDetector;
+
+        public TapEventReceiver(Letterbox letterbox, InputChannel inputChannel, WindowManagerService windowManagerService, Handler handler) {
+            super(inputChannel, handler.getLooper());
+            this.mDoubleTapDetector = new GestureDetector(windowManagerService.mContext, letterbox.new DoubleTapListener(windowManagerService), handler);
         }
 
-        public int getHeight() {
-            return Math.max(0, this.mLayoutFrameGlobal.height());
+        public final void onInputEvent(InputEvent inputEvent) {
+            finishInputEvent(inputEvent, this.mDoubleTapDetector.onTouchEvent((MotionEvent) inputEvent));
         }
+    }
 
-        public void applySurfaceChanges(SurfaceControl.Transaction transaction) {
-            InputInterceptor inputInterceptor;
-            if (needsApplySurfaceChanges()) {
-                this.mSurfaceFrameRelative.set(this.mLayoutFrameRelative);
-                if (!this.mSurfaceFrameRelative.isEmpty() && (CoreRune.FW_CUSTOM_LETTERBOX_ENHANCED_FOR_BOUNDS_COMPAT_UI_EXPERIENCE || !CoreRune.FW_CUSTOM_LETTERBOX || Letterbox.this.canHaveLetterboxSurface())) {
-                    if (this.mSurface == null) {
-                        createSurface(transaction);
-                    }
-                    this.mColor = (Color) Letterbox.this.mColorSupplier.get();
-                    this.mParentSurface = (SurfaceControl) Letterbox.this.mParentSurfaceSupplier.get();
-                    transaction.setColor(this.mSurface, getRgbColorArray());
-                    SurfaceControl surfaceControl = this.mSurface;
-                    Rect rect = this.mSurfaceFrameRelative;
-                    transaction.setPosition(surfaceControl, rect.left, rect.top);
-                    transaction.setWindowCrop(this.mSurface, this.mSurfaceFrameRelative.width(), this.mSurfaceFrameRelative.height());
-                    transaction.reparent(this.mSurface, this.mParentSurface);
-                    this.mHasWallpaperBackground = ((Boolean) Letterbox.this.mHasWallpaperBackgroundSupplier.get()).booleanValue();
-                    updateAlphaAndBlur(transaction);
-                    transaction.show(this.mSurface);
-                } else {
-                    SurfaceControl surfaceControl2 = this.mSurface;
-                    if (surfaceControl2 != null) {
-                        transaction.hide(surfaceControl2);
-                    }
-                }
-                if (this.mSurface == null || (inputInterceptor = this.mInputInterceptor) == null) {
-                    return;
-                }
-                inputInterceptor.updateTouchableRegion(this.mSurfaceFrameRelative);
-                transaction.setInputWindowInfo(this.mSurface, this.mInputInterceptor.mWindowHandle);
+    public Letterbox(AppCompatLetterboxPolicy$LetterboxPolicyState$$ExternalSyntheticLambda1 appCompatLetterboxPolicy$LetterboxPolicyState$$ExternalSyntheticLambda1, Supplier supplier, AppCompatReachabilityPolicy appCompatReachabilityPolicy, AppCompatLetterboxOverrides appCompatLetterboxOverrides, AppCompatLetterboxPolicy$LetterboxPolicyState$$ExternalSyntheticLambda1 appCompatLetterboxPolicy$LetterboxPolicyState$$ExternalSyntheticLambda12) {
+        LetterboxSurface letterboxSurface = new LetterboxSurface("top");
+        this.mTop = letterboxSurface;
+        LetterboxSurface letterboxSurface2 = new LetterboxSurface("left");
+        this.mLeft = letterboxSurface2;
+        LetterboxSurface letterboxSurface3 = new LetterboxSurface("bottom");
+        this.mBottom = letterboxSurface3;
+        LetterboxSurface letterboxSurface4 = new LetterboxSurface("right");
+        this.mRight = letterboxSurface4;
+        this.mFullWindowSurface = new LetterboxSurface("fullWindow");
+        this.mSurfaces = new LetterboxSurface[]{letterboxSurface2, letterboxSurface, letterboxSurface4, letterboxSurface3};
+        this.mSurfaceControlFactory = appCompatLetterboxPolicy$LetterboxPolicyState$$ExternalSyntheticLambda1;
+        this.mTransactionFactory = supplier;
+        this.mAppCompatReachabilityPolicy = appCompatReachabilityPolicy;
+        this.mAppCompatLetterboxOverrides = appCompatLetterboxOverrides;
+        this.mParentSurfaceSupplier = appCompatLetterboxPolicy$LetterboxPolicyState$$ExternalSyntheticLambda12;
+    }
+
+    public final void layout(Rect rect, Rect rect2, Point point) {
+        this.mOuter.set(rect);
+        this.mInner.set(rect2);
+        this.mTop.layout(rect.left, rect.top, rect.right, rect2.top, point);
+        this.mLeft.layout(rect.left, rect.top, rect2.left, rect.bottom, point);
+        this.mBottom.layout(rect.left, rect2.bottom, rect.right, rect.bottom, point);
+        this.mRight.layout(rect2.right, rect.top, rect.right, rect.bottom, point);
+        this.mFullWindowSurface.layout(rect.left, rect.top, rect.right, rect.bottom, point);
+    }
+
+    public final boolean useFullWindowSurface() {
+        AppCompatLetterboxOverrides appCompatLetterboxOverrides = this.mAppCompatLetterboxOverrides;
+        appCompatLetterboxOverrides.getClass();
+        boolean z = CoreRune.MT_APP_COMPAT_CONFIGURATION;
+        ActivityRecord activityRecord = appCompatLetterboxOverrides.mActivityRecord;
+        if (z) {
+            if (MultiTaskingAppCompatConfiguration.getConfig(activityRecord).getLetterboxActivityCornersRadius() != 0 && activityRecord.occludesParent(true)) {
+                return true;
             }
+        } else if (appCompatLetterboxOverrides.mAppCompatConfiguration.mLetterboxActivityCornersRadius != 0 && activityRecord.occludesParent(true)) {
+            return true;
         }
-
-        public final void updateAlphaAndBlur(SurfaceControl.Transaction transaction) {
-            Supplier supplier;
-            SemBlurInfo.ColorCurve colorCurve;
-            if (CoreRune.FW_CUSTOM_LETTERBOX_ENHANCED_FOR_BOUNDS_COMPAT_UI_EXPERIENCE && !Letterbox.this.canHaveLetterboxSurface()) {
-                transaction.setAlpha(this.mSurface, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
-                transaction.setBackgroundBlurRadius(this.mSurface, 0);
-                return;
-            }
-            if (!this.mHasWallpaperBackground) {
-                transaction.setAlpha(this.mSurface, 1.0f);
-                transaction.setBackgroundBlurRadius(this.mSurface, 0);
-                return;
-            }
-            transaction.setAlpha(this.mSurface, ((Float) Letterbox.this.mDarkScrimAlphaSupplier.get()).floatValue());
-            if (((Integer) Letterbox.this.mBlurRadiusSupplier.get()).intValue() <= 0) {
-                transaction.setBackgroundBlurRadius(this.mSurface, 0);
-                return;
-            }
-            if (CoreRune.FW_BLUR_WALLPAPER_LETTERBOX && (supplier = Letterbox.this.mBlurColorCurveSupplier) != null && (colorCurve = (SemBlurInfo.ColorCurve) supplier.get()) != null) {
-                transaction.setBackgroundBlurColorCurve(this.mSurface, colorCurve);
-            }
-            transaction.setBackgroundBlurRadius(this.mSurface, ((Integer) Letterbox.this.mBlurRadiusSupplier.get()).intValue());
-        }
-
-        public final float[] getRgbColorArray() {
-            return new float[]{this.mColor.red(), this.mColor.green(), this.mColor.blue()};
-        }
-
-        public boolean needsApplySurfaceChanges() {
-            return (this.mSurfaceFrameRelative.equals(this.mLayoutFrameRelative) && (this.mSurfaceFrameRelative.isEmpty() || (((Boolean) Letterbox.this.mHasWallpaperBackgroundSupplier.get()).booleanValue() == this.mHasWallpaperBackground && ((Color) Letterbox.this.mColorSupplier.get()).equals(this.mColor) && Letterbox.this.mParentSurfaceSupplier.get() == this.mParentSurface))) ? false : true;
-        }
-    }
-
-    public final boolean isUseFullWindowSurfaceChanged() {
-        return this.mUseFullWindowSurface != useFullWindowSurface();
-    }
-
-    public final void applyLetterboxSurfaceChanges(SurfaceControl.Transaction transaction, LetterboxSurface letterboxSurface) {
-        if (letterboxSurface.mInputInterceptor == null) {
-            letterboxSurface.attachInput(this.mInputWindow);
-            letterboxSurface.mSurfaceFrameRelative.setEmpty();
-        }
-        letterboxSurface.applySurfaceChanges(transaction);
-    }
-
-    public final void removeLetterboxSurface(SurfaceControl.Transaction transaction, LetterboxSurface letterboxSurface) {
-        if (letterboxSurface.mSurface != null && letterboxSurface.mSurface.isValid()) {
-            letterboxSurface.mSurfaceFrameRelative.setEmpty();
-            transaction.hide(letterboxSurface.mSurface);
-            transaction.remove(letterboxSurface.mSurface);
-            letterboxSurface.mSurface = null;
-        }
-        letterboxSurface.remove();
-    }
-
-    public int getDirection(int i, int i2, int i3, int i4) {
-        if (i > 0 && !this.mLeft.mSurfaceFrameRelative.isEmpty() && i == this.mLeft.getWidth()) {
-            return 1;
-        }
-        if (i2 > 0 && !this.mRight.mSurfaceFrameRelative.isEmpty() && i2 == this.mRight.getWidth()) {
-            return 2;
-        }
-        if (i3 <= 0 || this.mTop.mSurfaceFrameRelative.isEmpty() || i3 != this.mTop.getHeight()) {
-            return (i4 <= 0 || this.mBottom.mSurfaceFrameRelative.isEmpty() || i4 != this.mBottom.getHeight()) ? 0 : 8;
-        }
-        return 4;
-    }
-
-    public final boolean canHaveLetterboxSurface() {
-        Supplier supplier = this.mCanHaveLetterboxSurfaceSupplier;
-        return supplier == null || ((Boolean) supplier.get()).booleanValue();
-    }
-
-    public boolean reparentToWallpaperParentImmediately(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
-        if (!useFullWindowSurface() || this.mFullWindowSurface.mSurface == null || this.mFullWindowSurface.mSurfaceFrameRelative.isEmpty()) {
-            return false;
-        }
-        SurfaceControl surfaceControl2 = this.mFullWindowSurface.mSurface;
-        transaction.reparent(surfaceControl2, surfaceControl);
-        transaction.setPosition(surfaceControl2, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
-        transaction.setLayer(surfaceControl2, 1);
-        transaction.apply(true);
-        transaction.setLayer(surfaceControl2, -20000);
-        return true;
-    }
-
-    public void clearSurfaceFrame() {
-        if (useFullWindowSurface()) {
-            this.mFullWindowSurface.mSurfaceFrameRelative.setEmpty();
-            return;
-        }
-        for (LetterboxSurface letterboxSurface : this.mSurfaces) {
-            letterboxSurface.mSurfaceFrameRelative.setEmpty();
-        }
+        return appCompatLetterboxOverrides.hasWallpaperBackgroundForLetterbox();
     }
 }

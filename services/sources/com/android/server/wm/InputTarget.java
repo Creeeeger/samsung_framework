@@ -1,13 +1,14 @@
 package com.android.server.wm;
 
+import android.os.IBinder;
 import android.util.proto.ProtoOutputStream;
-import android.view.IWindow;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface InputTarget {
     boolean canScreenshotIme();
 
-    void dumpProto(ProtoOutputStream protoOutputStream, long j, int i);
+    void dumpProto(int i, ProtoOutputStream protoOutputStream);
 
     ActivityRecord getActivityRecord();
 
@@ -15,13 +16,13 @@ public interface InputTarget {
 
     int getDisplayId();
 
-    IWindow getIWindow();
-
     InsetsControlTarget getImeControlTarget();
 
     int getPid();
 
     WindowState getWindowState();
+
+    IBinder getWindowToken();
 
     void handleTapOutsideFocusInsideSelf();
 

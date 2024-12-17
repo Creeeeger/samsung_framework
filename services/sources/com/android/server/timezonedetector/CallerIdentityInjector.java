@@ -1,33 +1,11 @@
 package com.android.server.timezonedetector;
 
-import android.os.Binder;
-import android.os.UserHandle;
-
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface CallerIdentityInjector {
-    public static final CallerIdentityInjector REAL = new Real();
+    public static final Real REAL = new Real();
 
-    long clearCallingIdentity();
-
-    int getCallingUserId();
-
-    void restoreCallingIdentity(long j);
-
-    /* loaded from: classes3.dex */
-    public class Real implements CallerIdentityInjector {
-        @Override // com.android.server.timezonedetector.CallerIdentityInjector
-        public int getCallingUserId() {
-            return UserHandle.getCallingUserId();
-        }
-
-        @Override // com.android.server.timezonedetector.CallerIdentityInjector
-        public long clearCallingIdentity() {
-            return Binder.clearCallingIdentity();
-        }
-
-        @Override // com.android.server.timezonedetector.CallerIdentityInjector
-        public void restoreCallingIdentity(long j) {
-            Binder.restoreCallingIdentity(j);
-        }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Real implements CallerIdentityInjector {
     }
 }

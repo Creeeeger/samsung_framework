@@ -8,6 +8,7 @@ import com.android.server.utils.Slogf;
 import java.util.List;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class BroadcastRadioService {
     public static final String TAG = "BcRadio1Srv";
@@ -22,12 +23,12 @@ public class BroadcastRadioService {
 
     private native Tuner nativeOpenTuner(long j, int i, RadioManager.BandConfig bandConfig, boolean z, ITunerCallback iTunerCallback);
 
-    public void finalize() {
+    public final void finalize() throws Throwable {
         nativeFinalize(this.mNativeContext);
         super.finalize();
     }
 
-    public List loadModules() {
+    public final List loadModules() {
         List list;
         synchronized (this.mLock) {
             List nativeLoadModules = nativeLoadModules(this.mNativeContext);
@@ -37,7 +38,7 @@ public class BroadcastRadioService {
         return list;
     }
 
-    public ITuner openTuner(int i, RadioManager.BandConfig bandConfig, boolean z, ITunerCallback iTunerCallback) {
+    public final ITuner openTuner(int i, RadioManager.BandConfig bandConfig, boolean z, ITunerCallback iTunerCallback) {
         Tuner nativeOpenTuner;
         if (!RadioServiceUserController.isCurrentOrSystemUser()) {
             Slogf.e(TAG, "Cannot open tuner on HAL 1.x client for non-current user");

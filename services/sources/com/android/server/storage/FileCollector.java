@@ -5,15 +5,23 @@ import android.app.usage.StorageStatsManager;
 import android.content.Context;
 import android.os.UserHandle;
 import android.os.storage.StorageManager;
-import android.os.storage.VolumeInfo;
 import android.util.ArrayMap;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class FileCollector {
     public static final Map EXTENSION_MAP;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MeasurementResult {
+        public long audioSize;
+        public long imagesSize;
+        public long miscSize;
+        public long videosSize;
+    }
 
     static {
         ArrayMap arrayMap = new ArrayMap();
@@ -112,8 +120,35 @@ public abstract class FileCollector {
         arrayMap.put("xwd", 0);
     }
 
-    public static MeasurementResult getMeasurementResult(File file) {
-        return collectFiles(StorageManager.maybeTranslateEmulatedPathToInternal(file), new MeasurementResult());
+    public static void collectFiles(File file, MeasurementResult measurementResult) {
+        File[] listFiles = file.listFiles();
+        if (listFiles == null) {
+            return;
+        }
+        for (File file2 : listFiles) {
+            if (file2.isDirectory()) {
+                try {
+                    collectFiles(file2, measurementResult);
+                } catch (StackOverflowError unused) {
+                    return;
+                }
+            } else {
+                long length = file2.length();
+                Map map = EXTENSION_MAP;
+                String name = file2.getName();
+                int lastIndexOf = name.lastIndexOf(46);
+                int intValue = ((Integer) map.getOrDefault(lastIndexOf == -1 ? "" : name.substring(lastIndexOf + 1).toLowerCase(), -1)).intValue();
+                if (intValue == 0) {
+                    measurementResult.imagesSize += length;
+                } else if (intValue == 1) {
+                    measurementResult.videosSize += length;
+                } else if (intValue != 2) {
+                    measurementResult.miscSize += length;
+                } else {
+                    measurementResult.audioSize += length;
+                }
+            }
+        }
     }
 
     public static MeasurementResult getMeasurementResult(Context context) {
@@ -127,74 +162,6 @@ public abstract class FileCollector {
             return measurementResult;
         } catch (IOException unused) {
             throw new IllegalStateException("Could not query storage");
-        }
-    }
-
-    public static long getSystemSize(Context context) {
-        File path;
-        VolumeInfo primaryStorageCurrentVolume = context.getPackageManager().getPrimaryStorageCurrentVolume();
-        StorageManager storageManager = (StorageManager) context.getSystemService("storage");
-        VolumeInfo findEmulatedForPrivate = storageManager.findEmulatedForPrivate(primaryStorageCurrentVolume);
-        if (findEmulatedForPrivate == null || (path = findEmulatedForPrivate.getPath()) == null) {
-            return 0L;
-        }
-        long primaryStorageSize = storageManager.getPrimaryStorageSize() - path.getTotalSpace();
-        if (primaryStorageSize <= 0) {
-            return 0L;
-        }
-        return primaryStorageSize;
-    }
-
-    public static MeasurementResult collectFiles(File file, MeasurementResult measurementResult) {
-        File[] listFiles = file.listFiles();
-        if (listFiles == null) {
-            return measurementResult;
-        }
-        for (File file2 : listFiles) {
-            if (file2.isDirectory()) {
-                try {
-                    collectFiles(file2, measurementResult);
-                } catch (StackOverflowError unused) {
-                    return measurementResult;
-                }
-            } else {
-                handleFile(measurementResult, file2);
-            }
-        }
-        return measurementResult;
-    }
-
-    public static void handleFile(MeasurementResult measurementResult, File file) {
-        long length = file.length();
-        int intValue = ((Integer) EXTENSION_MAP.getOrDefault(getExtensionForFile(file), -1)).intValue();
-        if (intValue == 0) {
-            measurementResult.imagesSize += length;
-            return;
-        }
-        if (intValue == 1) {
-            measurementResult.videosSize += length;
-        } else if (intValue == 2) {
-            measurementResult.audioSize += length;
-        } else {
-            measurementResult.miscSize += length;
-        }
-    }
-
-    public static String getExtensionForFile(File file) {
-        String name = file.getName();
-        int lastIndexOf = name.lastIndexOf(46);
-        return lastIndexOf == -1 ? "" : name.substring(lastIndexOf + 1).toLowerCase();
-    }
-
-    /* loaded from: classes3.dex */
-    public class MeasurementResult {
-        public long audioSize;
-        public long imagesSize;
-        public long miscSize;
-        public long videosSize;
-
-        public long totalAccountedSize() {
-            return this.imagesSize + this.videosSize + this.miscSize + this.audioSize;
         }
     }
 }

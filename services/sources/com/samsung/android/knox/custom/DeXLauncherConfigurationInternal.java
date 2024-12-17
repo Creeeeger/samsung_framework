@@ -5,9 +5,11 @@ import android.content.Context;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class DeXLauncherConfigurationInternal {
+public final class DeXLauncherConfigurationInternal {
     public static final String ALPHABETIC_GRID = "alphabetical_order";
     public static final Uri CONTENT_URI = Uri.parse("content://com.sec.android.app.desktoplauncher.settings");
     public static final String CUSTOM_GRID = "custom_order";
@@ -41,7 +43,14 @@ public class DeXLauncherConfigurationInternal {
         this.mContext = context;
     }
 
-    public int addURLShortcut(Point point, String str, String str2, String str3, ComponentName componentName) {
+    public final int addShortcut(Point point, ComponentName componentName) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("coordination_position", point);
+        bundle.putParcelable("component", componentName);
+        return this.mContext.getContentResolver().call(CONTENT_URI, "add_shortcut", (String) null, bundle).getInt("invocation_result", -2);
+    }
+
+    public final int addURLShortcut(Point point, String str, String str2, String str3, ComponentName componentName) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("coordination_position", point);
         bundle.putString(KEY_SHORTCUT_TITLE, str);
@@ -51,39 +60,30 @@ public class DeXLauncherConfigurationInternal {
         return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_ADD_URL_SHORTCUT, (String) null, bundle).getInt("invocation_result", -2);
     }
 
-    public int removeURLShortcut(String str, ComponentName componentName) {
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_HOME_URL, str);
-        bundle.putParcelable("component", componentName);
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_REMOVE_URL_SHORTCUT, (String) null, bundle).getInt("invocation_result", -2);
+    public final int changeOrder(String str) {
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_CHANGE_ORDER, (String) null, AccountManagerService$$ExternalSyntheticOutline0.m142m(KEY_OPTION_ORDER, str)).getInt("invocation_result", -2);
     }
 
-    public int addShortcut(Point point, ComponentName componentName) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("coordination_position", point);
-        bundle.putParcelable("component", componentName);
-        return this.mContext.getContentResolver().call(CONTENT_URI, "add_shortcut", (String) null, bundle).getInt("invocation_result", -2);
+    public final int getOrder() {
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_ORDER, (String) null, new Bundle()).getInt("invocation_result", -2);
     }
 
-    public int removeShortcut(ComponentName componentName) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("component", componentName);
-        return this.mContext.getContentResolver().call(CONTENT_URI, "remove_shortcut", (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public int makeEmptyPosition(Point point) {
+    public final int makeEmptyPosition(Point point) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("coordination_position", point);
         return this.mContext.getContentResolver().call(CONTENT_URI, "make_empty_position", (String) null, bundle).getInt("invocation_result", -2);
     }
 
-    public int changeOrder(String str) {
+    public final int removeShortcut(ComponentName componentName) {
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_OPTION_ORDER, str);
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_CHANGE_ORDER, (String) null, bundle).getInt("invocation_result", -2);
+        bundle.putParcelable("component", componentName);
+        return this.mContext.getContentResolver().call(CONTENT_URI, "remove_shortcut", (String) null, bundle).getInt("invocation_result", -2);
     }
 
-    public int getOrder() {
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_ORDER, (String) null, new Bundle()).getInt("invocation_result", -2);
+    public final int removeURLShortcut(String str, ComponentName componentName) {
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_HOME_URL, str);
+        bundle.putParcelable("component", componentName);
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_REMOVE_URL_SHORTCUT, (String) null, bundle).getInt("invocation_result", -2);
     }
 }

@@ -3,22 +3,37 @@ package com.android.server.power.stats;
 import android.hardware.power.stats.EnergyConsumer;
 import android.hardware.power.stats.EnergyConsumerAttribution;
 import android.hardware.power.stats.EnergyConsumerResult;
-import android.os.BatteryStats;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.util.SparseLongArray;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
 
-/* loaded from: classes3.dex */
-public class EnergyConsumerSnapshot {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class EnergyConsumerSnapshot {
     public final SparseArray mAttributionSnapshots;
-    public BatteryStats.EnergyConsumerDetails mEnergyConsumerDetails;
     public final SparseLongArray mEnergyConsumerSnapshots;
     public final SparseArray mEnergyConsumers;
     public final int mNumCpuClusterOrdinals;
     public final int mNumDisplayOrdinals;
     public final int mNumOtherOrdinals;
     public final SparseIntArray mVoltageSnapshots;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class EnergyConsumerDeltaData {
+        public long bluetoothChargeUC;
+        public long cameraChargeUC;
+        public long[] cpuClusterChargeUC;
+        public long[] displayChargeUC;
+        public long gnssChargeUC;
+        public long mobileRadioChargeUC;
+        public long[] otherTotalChargeUC;
+        public SparseLongArray[] otherUidChargesUC;
+        public long wifiChargeUC;
+    }
 
     public EnergyConsumerSnapshot(SparseArray sparseArray) {
         this.mEnergyConsumers = sparseArray;
@@ -31,223 +46,7 @@ public class EnergyConsumerSnapshot {
         this.mAttributionSnapshots = new SparseArray(calculateNumOrdinals);
     }
 
-    /* loaded from: classes3.dex */
-    public class EnergyConsumerDeltaData {
-        public long bluetoothChargeUC = -1;
-        public long[] cpuClusterChargeUC = null;
-        public long[] displayChargeUC = null;
-        public long gnssChargeUC = -1;
-        public long mobileRadioChargeUC = -1;
-        public long wifiChargeUC = -1;
-        public long cameraChargeUC = -1;
-        public long[] otherTotalChargeUC = null;
-        public SparseLongArray[] otherUidChargesUC = null;
-
-        public boolean isEmpty() {
-            return this.bluetoothChargeUC <= 0 && isEmpty(this.cpuClusterChargeUC) && isEmpty(this.displayChargeUC) && this.gnssChargeUC <= 0 && this.mobileRadioChargeUC <= 0 && this.wifiChargeUC <= 0 && isEmpty(this.otherTotalChargeUC);
-        }
-
-        public final boolean isEmpty(long[] jArr) {
-            if (jArr == null) {
-                return true;
-            }
-            for (long j : jArr) {
-                if (j > 0) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    public EnergyConsumerDeltaData updateAndGetDelta(EnergyConsumerResult[] energyConsumerResultArr, int i) {
-        int i2;
-        int i3;
-        String str;
-        EnergyConsumerResult[] energyConsumerResultArr2 = energyConsumerResultArr;
-        boolean z = false;
-        if (energyConsumerResultArr2 == null || energyConsumerResultArr2.length == 0) {
-            return null;
-        }
-        String str2 = "EnergyConsumerSnapshot";
-        if (i <= 0) {
-            Slog.wtf("EnergyConsumerSnapshot", "Unexpected battery voltage (" + i + " mV) when taking energy consumer snapshot");
-            return null;
-        }
-        EnergyConsumerDeltaData energyConsumerDeltaData = new EnergyConsumerDeltaData();
-        int length = energyConsumerResultArr2.length;
-        int i4 = 0;
-        while (i4 < length) {
-            EnergyConsumerResult energyConsumerResult = energyConsumerResultArr2[i4];
-            int i5 = energyConsumerResult.id;
-            long j = energyConsumerResult.energyUWs;
-            EnergyConsumerAttribution[] energyConsumerAttributionArr = energyConsumerResult.attribution;
-            EnergyConsumer energyConsumer = (EnergyConsumer) this.mEnergyConsumers.get(i5, z);
-            if (energyConsumer == null) {
-                Slog.e(str2, "updateAndGetDelta given invalid consumerId " + i5);
-                i2 = length;
-                i3 = i4;
-                str = str2;
-            } else {
-                byte b = energyConsumer.type;
-                int i6 = energyConsumer.ordinal;
-                String str3 = str2;
-                long j2 = this.mEnergyConsumerSnapshots.get(i5, -1L);
-                int i7 = this.mVoltageSnapshots.get(i5);
-                this.mEnergyConsumerSnapshots.put(i5, j);
-                this.mVoltageSnapshots.put(i5, i);
-                int i8 = ((i7 + i) + 1) / 2;
-                SparseLongArray updateAndGetDeltaForTypeOther = updateAndGetDeltaForTypeOther(energyConsumer, energyConsumerAttributionArr, i8);
-                if (j2 >= 0 && j != j2) {
-                    i2 = length;
-                    i3 = i4;
-                    long j3 = j - j2;
-                    if (j3 < 0 || i7 <= 0) {
-                        str = str3;
-                        Slog.e(str, "Bad data! EnergyConsumer " + energyConsumer.name + ": new energy (" + j + ") < old energy (" + j2 + "), new voltage (" + i + "), old voltage (" + i7 + "). Skipping. ");
-                    } else {
-                        long calculateChargeConsumedUC = calculateChargeConsumedUC(j3, i8);
-                        switch (b) {
-                            case 0:
-                                if (energyConsumerDeltaData.otherTotalChargeUC == null) {
-                                    int i9 = this.mNumOtherOrdinals;
-                                    energyConsumerDeltaData.otherTotalChargeUC = new long[i9];
-                                    energyConsumerDeltaData.otherUidChargesUC = new SparseLongArray[i9];
-                                }
-                                energyConsumerDeltaData.otherTotalChargeUC[i6] = calculateChargeConsumedUC;
-                                energyConsumerDeltaData.otherUidChargesUC[i6] = updateAndGetDeltaForTypeOther;
-                                break;
-                            case 1:
-                                energyConsumerDeltaData.bluetoothChargeUC = calculateChargeConsumedUC;
-                                break;
-                            case 2:
-                                if (energyConsumerDeltaData.cpuClusterChargeUC == null) {
-                                    energyConsumerDeltaData.cpuClusterChargeUC = new long[this.mNumCpuClusterOrdinals];
-                                }
-                                energyConsumerDeltaData.cpuClusterChargeUC[i6] = calculateChargeConsumedUC;
-                                break;
-                            case 3:
-                                if (energyConsumerDeltaData.displayChargeUC == null) {
-                                    energyConsumerDeltaData.displayChargeUC = new long[this.mNumDisplayOrdinals];
-                                }
-                                energyConsumerDeltaData.displayChargeUC[i6] = calculateChargeConsumedUC;
-                                break;
-                            case 4:
-                                energyConsumerDeltaData.gnssChargeUC = calculateChargeConsumedUC;
-                                break;
-                            case 5:
-                                energyConsumerDeltaData.mobileRadioChargeUC = calculateChargeConsumedUC;
-                                break;
-                            case 6:
-                                energyConsumerDeltaData.wifiChargeUC = calculateChargeConsumedUC;
-                                break;
-                            case 7:
-                                energyConsumerDeltaData.cameraChargeUC = calculateChargeConsumedUC;
-                                break;
-                            default:
-                                str = str3;
-                                Slog.w(str, "Ignoring consumer " + energyConsumer.name + " of unknown type " + ((int) b));
-                                continue;
-                        }
-                    }
-                } else {
-                    i2 = length;
-                    i3 = i4;
-                }
-                str = str3;
-            }
-            i4 = i3 + 1;
-            energyConsumerResultArr2 = energyConsumerResultArr;
-            str2 = str;
-            length = i2;
-            z = false;
-        }
-        return energyConsumerDeltaData;
-    }
-
-    public final SparseLongArray updateAndGetDeltaForTypeOther(EnergyConsumer energyConsumer, EnergyConsumerAttribution[] energyConsumerAttributionArr, int i) {
-        EnergyConsumerAttribution[] energyConsumerAttributionArr2;
-        SparseLongArray sparseLongArray;
-        if (energyConsumer.type != 0) {
-            return null;
-        }
-        int i2 = 0;
-        EnergyConsumerAttribution[] energyConsumerAttributionArr3 = energyConsumerAttributionArr == null ? new EnergyConsumerAttribution[0] : energyConsumerAttributionArr;
-        SparseLongArray sparseLongArray2 = (SparseLongArray) this.mAttributionSnapshots.get(energyConsumer.id, null);
-        if (sparseLongArray2 == null) {
-            SparseLongArray sparseLongArray3 = new SparseLongArray(energyConsumerAttributionArr3.length);
-            this.mAttributionSnapshots.put(energyConsumer.id, sparseLongArray3);
-            int length = energyConsumerAttributionArr3.length;
-            while (i2 < length) {
-                EnergyConsumerAttribution energyConsumerAttribution = energyConsumerAttributionArr3[i2];
-                sparseLongArray3.put(energyConsumerAttribution.uid, energyConsumerAttribution.energyUWs);
-                i2++;
-            }
-            return null;
-        }
-        SparseLongArray sparseLongArray4 = new SparseLongArray();
-        int length2 = energyConsumerAttributionArr3.length;
-        while (i2 < length2) {
-            EnergyConsumerAttribution energyConsumerAttribution2 = energyConsumerAttributionArr3[i2];
-            int i3 = energyConsumerAttribution2.uid;
-            long j = energyConsumerAttribution2.energyUWs;
-            long j2 = sparseLongArray2.get(i3, 0L);
-            sparseLongArray2.put(i3, j);
-            if (j2 >= 0 && j != j2) {
-                energyConsumerAttributionArr2 = energyConsumerAttributionArr3;
-                sparseLongArray = sparseLongArray2;
-                long j3 = j - j2;
-                if (j3 < 0 || i <= 0) {
-                    Slog.e("EnergyConsumerSnapshot", "EnergyConsumer " + energyConsumer.name + ": new energy (" + j + ") but old energy (" + j2 + "). Average voltage (" + i + ")Skipping. ");
-                } else {
-                    sparseLongArray4.put(i3, calculateChargeConsumedUC(j3, i));
-                }
-            } else {
-                energyConsumerAttributionArr2 = energyConsumerAttributionArr3;
-                sparseLongArray = sparseLongArray2;
-            }
-            i2++;
-            sparseLongArray2 = sparseLongArray;
-            energyConsumerAttributionArr3 = energyConsumerAttributionArr2;
-        }
-        return sparseLongArray4;
-    }
-
-    public String[] getOtherOrdinalNames() {
-        String[] strArr = new String[this.mNumOtherOrdinals];
-        int size = this.mEnergyConsumers.size();
-        int i = 0;
-        for (int i2 = 0; i2 < size; i2++) {
-            EnergyConsumer energyConsumer = (EnergyConsumer) this.mEnergyConsumers.valueAt(i2);
-            if (energyConsumer.type == 0) {
-                strArr[i] = sanitizeCustomBucketName(energyConsumer.name);
-                i++;
-            }
-        }
-        return strArr;
-    }
-
-    public final String sanitizeCustomBucketName(String str) {
-        if (str == null) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder(str.length());
-        for (char c : str.toCharArray()) {
-            if (Character.isWhitespace(c)) {
-                sb.append(' ');
-            } else if (Character.isISOControl(c)) {
-                sb.append('_');
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
     public static int calculateNumOrdinals(int i, SparseArray sparseArray) {
-        if (sparseArray == null) {
-            return 0;
-        }
         int size = sparseArray.size();
         int i2 = 0;
         for (int i3 = 0; i3 < size; i3++) {
@@ -258,201 +57,248 @@ public class EnergyConsumerSnapshot {
         return i2;
     }
 
-    public final long calculateChargeConsumedUC(long j, int i) {
-        return ((j * 1000) + (i / 2)) / i;
-    }
-
-    public BatteryStats.EnergyConsumerDetails getEnergyConsumerDetails(EnergyConsumerDeltaData energyConsumerDeltaData) {
-        if (this.mEnergyConsumerDetails == null) {
-            this.mEnergyConsumerDetails = createEnergyConsumerDetails();
-        }
-        long[] jArr = this.mEnergyConsumerDetails.chargeUC;
+    public final String[] getOtherOrdinalNames() {
+        String sb;
+        String[] strArr = new String[this.mNumOtherOrdinals];
+        int size = this.mEnergyConsumers.size();
         int i = 0;
-        while (true) {
-            BatteryStats.EnergyConsumerDetails energyConsumerDetails = this.mEnergyConsumerDetails;
-            BatteryStats.EnergyConsumerDetails.EnergyConsumer[] energyConsumerArr = energyConsumerDetails.consumers;
-            if (i >= energyConsumerArr.length) {
-                return energyConsumerDetails;
+        for (int i2 = 0; i2 < size; i2++) {
+            EnergyConsumer energyConsumer = (EnergyConsumer) this.mEnergyConsumers.valueAt(i2);
+            if (energyConsumer.type == 0) {
+                int i3 = i + 1;
+                String str = energyConsumer.name;
+                if (str == null) {
+                    sb = "";
+                } else {
+                    StringBuilder sb2 = new StringBuilder(str.length());
+                    for (char c : str.toCharArray()) {
+                        if (Character.isWhitespace(c)) {
+                            sb2.append(' ');
+                        } else if (Character.isISOControl(c)) {
+                            sb2.append('_');
+                        } else {
+                            sb2.append(c);
+                        }
+                    }
+                    sb = sb2.toString();
+                }
+                strArr[i] = sb;
+                i = i3;
             }
-            BatteryStats.EnergyConsumerDetails.EnergyConsumer energyConsumer = energyConsumerArr[i];
-            switch (energyConsumer.type) {
-                case 0:
-                    long[] jArr2 = energyConsumerDeltaData.otherTotalChargeUC;
-                    if (jArr2 != null) {
-                        jArr[i] = jArr2[energyConsumer.ordinal];
-                        break;
-                    } else {
-                        jArr[i] = -1;
-                        break;
-                    }
-                case 1:
-                    jArr[i] = energyConsumerDeltaData.bluetoothChargeUC;
-                    break;
-                case 2:
-                    long[] jArr3 = energyConsumerDeltaData.cpuClusterChargeUC;
-                    if (jArr3 != null) {
-                        jArr[i] = jArr3[energyConsumer.ordinal];
-                        break;
-                    } else {
-                        jArr[i] = -1;
-                        break;
-                    }
-                case 3:
-                    long[] jArr4 = energyConsumerDeltaData.displayChargeUC;
-                    if (jArr4 != null) {
-                        jArr[i] = jArr4[energyConsumer.ordinal];
-                        break;
-                    } else {
-                        jArr[i] = -1;
-                        break;
-                    }
-                case 4:
-                    jArr[i] = energyConsumerDeltaData.gnssChargeUC;
-                    break;
-                case 5:
-                    jArr[i] = energyConsumerDeltaData.mobileRadioChargeUC;
-                    break;
-                case 6:
-                    jArr[i] = energyConsumerDeltaData.wifiChargeUC;
-                    break;
-                case 7:
-                    jArr[i] = energyConsumerDeltaData.cameraChargeUC;
-                    break;
-                default:
-                    jArr[i] = -1;
-                    break;
-            }
-            i++;
         }
+        return strArr;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:22:0x008c  */
-    /* JADX WARN: Removed duplicated region for block: B:25:0x00a6 A[SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final android.os.BatteryStats.EnergyConsumerDetails createEnergyConsumerDetails() {
-        /*
-            r11 = this;
-            android.os.BatteryStats$EnergyConsumerDetails r0 = new android.os.BatteryStats$EnergyConsumerDetails
-            r0.<init>()
-            android.util.SparseArray r1 = r11.mEnergyConsumers
-            int r1 = r1.size()
-            android.os.BatteryStats$EnergyConsumerDetails$EnergyConsumer[] r1 = new android.os.BatteryStats.EnergyConsumerDetails.EnergyConsumer[r1]
-            r0.consumers = r1
-            r1 = 0
-            r2 = r1
-        L11:
-            android.util.SparseArray r3 = r11.mEnergyConsumers
-            int r3 = r3.size()
-            if (r2 >= r3) goto Lae
-            android.util.SparseArray r3 = r11.mEnergyConsumers
-            java.lang.Object r3 = r3.valueAt(r2)
-            android.hardware.power.stats.EnergyConsumer r3 = (android.hardware.power.stats.EnergyConsumer) r3
-            android.os.BatteryStats$EnergyConsumerDetails$EnergyConsumer r4 = new android.os.BatteryStats$EnergyConsumerDetails$EnergyConsumer
-            r4.<init>()
-            byte r5 = r3.type
-            r4.type = r5
-            int r6 = r3.ordinal
-            r4.ordinal = r6
-            switch(r5) {
-                case 0: goto L54;
-                case 1: goto L4f;
-                case 2: goto L4a;
-                case 3: goto L45;
-                case 4: goto L40;
-                case 5: goto L3b;
-                case 6: goto L36;
-                default: goto L31;
+    public final EnergyConsumerDeltaData updateAndGetDelta(EnergyConsumerResult[] energyConsumerResultArr, int i) {
+        int i2;
+        int i3;
+        int i4;
+        SparseLongArray sparseLongArray;
+        long j;
+        long j2;
+        long j3;
+        long j4;
+        int i5;
+        EnergyConsumerSnapshot energyConsumerSnapshot = this;
+        EnergyConsumerResult[] energyConsumerResultArr2 = energyConsumerResultArr;
+        int i6 = i;
+        boolean z = false;
+        if (energyConsumerResultArr2 == null || energyConsumerResultArr2.length == 0) {
+            return null;
+        }
+        if (i6 <= 0) {
+            Slog.wtf("EnergyConsumerSnapshot", "Unexpected battery voltage (" + i6 + " mV) when taking energy consumer snapshot");
+            return null;
+        }
+        EnergyConsumerDeltaData energyConsumerDeltaData = new EnergyConsumerDeltaData();
+        long j5 = -1;
+        energyConsumerDeltaData.bluetoothChargeUC = -1L;
+        energyConsumerDeltaData.cpuClusterChargeUC = null;
+        energyConsumerDeltaData.displayChargeUC = null;
+        energyConsumerDeltaData.gnssChargeUC = -1L;
+        energyConsumerDeltaData.mobileRadioChargeUC = -1L;
+        energyConsumerDeltaData.wifiChargeUC = -1L;
+        energyConsumerDeltaData.cameraChargeUC = -1L;
+        energyConsumerDeltaData.otherTotalChargeUC = null;
+        energyConsumerDeltaData.otherUidChargesUC = null;
+        int length = energyConsumerResultArr2.length;
+        int i7 = 0;
+        while (i7 < length) {
+            EnergyConsumerResult energyConsumerResult = energyConsumerResultArr2[i7];
+            int i8 = energyConsumerResult.id;
+            long j6 = energyConsumerResult.energyUWs;
+            EnergyConsumerAttribution[] energyConsumerAttributionArr = energyConsumerResult.attribution;
+            EnergyConsumer energyConsumer = (EnergyConsumer) energyConsumerSnapshot.mEnergyConsumers.get(i8, z);
+            if (energyConsumer == null) {
+                NandswapManager$$ExternalSyntheticOutline0.m(i8, "updateAndGetDelta given invalid consumerId ", "EnergyConsumerSnapshot");
+                i5 = i6;
+                i2 = length;
+                i4 = i7;
+            } else {
+                byte b = energyConsumer.type;
+                int i9 = energyConsumer.ordinal;
+                i2 = length;
+                long j7 = energyConsumerSnapshot.mEnergyConsumerSnapshots.get(i8, j5);
+                int i10 = energyConsumerSnapshot.mVoltageSnapshots.get(i8);
+                energyConsumerSnapshot.mEnergyConsumerSnapshots.put(i8, j6);
+                energyConsumerSnapshot.mVoltageSnapshots.put(i8, i6);
+                int i11 = ((i10 + i6) + 1) / 2;
+                if (energyConsumer.type != 0) {
+                    i3 = i10;
+                    j = j7;
+                    i4 = i7;
+                } else {
+                    if (energyConsumerAttributionArr == null) {
+                        energyConsumerAttributionArr = new EnergyConsumerAttribution[0];
+                    }
+                    SparseLongArray sparseLongArray2 = (SparseLongArray) energyConsumerSnapshot.mAttributionSnapshots.get(energyConsumer.id, null);
+                    if (sparseLongArray2 == null) {
+                        SparseLongArray sparseLongArray3 = new SparseLongArray(energyConsumerAttributionArr.length);
+                        energyConsumerSnapshot.mAttributionSnapshots.put(energyConsumer.id, sparseLongArray3);
+                        int length2 = energyConsumerAttributionArr.length;
+                        int i12 = 0;
+                        while (i12 < length2) {
+                            int i13 = length2;
+                            EnergyConsumerAttribution energyConsumerAttribution = energyConsumerAttributionArr[i12];
+                            sparseLongArray3.put(energyConsumerAttribution.uid, energyConsumerAttribution.energyUWs);
+                            i12++;
+                            length2 = i13;
+                            i7 = i7;
+                            i10 = i10;
+                        }
+                        i3 = i10;
+                        i4 = i7;
+                        j = j7;
+                    } else {
+                        i3 = i10;
+                        i4 = i7;
+                        sparseLongArray = new SparseLongArray();
+                        int length3 = energyConsumerAttributionArr.length;
+                        int i14 = 0;
+                        while (i14 < length3) {
+                            EnergyConsumerAttribution energyConsumerAttribution2 = energyConsumerAttributionArr[i14];
+                            int i15 = energyConsumerAttribution2.uid;
+                            long j8 = j6;
+                            long j9 = energyConsumerAttribution2.energyUWs;
+                            int i16 = i14;
+                            long j10 = j7;
+                            int i17 = length3;
+                            long j11 = sparseLongArray2.get(i15, 0L);
+                            sparseLongArray2.put(i15, j9);
+                            if (j11 >= 0 && j9 != j11) {
+                                long j12 = j9 - j11;
+                                if (j12 < 0 || i11 <= 0) {
+                                    StringBuilder sb = new StringBuilder("EnergyConsumer ");
+                                    sb.append(energyConsumer.name);
+                                    sb.append(": new energy (");
+                                    sb.append(j9);
+                                    BootReceiver$$ExternalSyntheticOutline0.m(sb, ") but old energy (", j11, "). Average voltage (");
+                                    NandswapManager$$ExternalSyntheticOutline0.m(sb, i11, ")Skipping. ", "EnergyConsumerSnapshot");
+                                } else {
+                                    sparseLongArray.put(i15, ((j12 * 1000) + (i11 / 2)) / i11);
+                                }
+                            }
+                            i14 = i16 + 1;
+                            length3 = i17;
+                            j6 = j8;
+                            j7 = j10;
+                        }
+                        j = j7;
+                        j2 = j6;
+                        j3 = 0;
+                        if (j >= j3 && j2 != j) {
+                            j4 = j2 - j;
+                            if (j4 >= j3 || i3 <= 0) {
+                                energyConsumerSnapshot = this;
+                                StringBuilder sb2 = new StringBuilder("Bad data! EnergyConsumer ");
+                                sb2.append(energyConsumer.name);
+                                sb2.append(": new energy (");
+                                sb2.append(j2);
+                                BootReceiver$$ExternalSyntheticOutline0.m(sb2, ") < old energy (", j, "), new voltage (");
+                                i5 = i;
+                                Slog.e("EnergyConsumerSnapshot", ActivityManagerService$$ExternalSyntheticOutline0.m(i5, i3, "), old voltage (", "). Skipping. ", sb2));
+                            } else {
+                                long j13 = ((j4 * 1000) + (i11 / 2)) / i11;
+                                switch (b) {
+                                    case 0:
+                                        energyConsumerSnapshot = this;
+                                        if (energyConsumerDeltaData.otherTotalChargeUC == null) {
+                                            int i18 = energyConsumerSnapshot.mNumOtherOrdinals;
+                                            energyConsumerDeltaData.otherTotalChargeUC = new long[i18];
+                                            energyConsumerDeltaData.otherUidChargesUC = new SparseLongArray[i18];
+                                        }
+                                        energyConsumerDeltaData.otherTotalChargeUC[i9] = j13;
+                                        energyConsumerDeltaData.otherUidChargesUC[i9] = sparseLongArray;
+                                        break;
+                                    case 1:
+                                        energyConsumerSnapshot = this;
+                                        energyConsumerDeltaData.bluetoothChargeUC = j13;
+                                        break;
+                                    case 2:
+                                        energyConsumerSnapshot = this;
+                                        if (energyConsumerDeltaData.cpuClusterChargeUC == null) {
+                                            energyConsumerDeltaData.cpuClusterChargeUC = new long[energyConsumerSnapshot.mNumCpuClusterOrdinals];
+                                        }
+                                        energyConsumerDeltaData.cpuClusterChargeUC[i9] = j13;
+                                        break;
+                                    case 3:
+                                        if (energyConsumerDeltaData.displayChargeUC == null) {
+                                            energyConsumerSnapshot = this;
+                                            energyConsumerDeltaData.displayChargeUC = new long[energyConsumerSnapshot.mNumDisplayOrdinals];
+                                        } else {
+                                            energyConsumerSnapshot = this;
+                                        }
+                                        energyConsumerDeltaData.displayChargeUC[i9] = j13;
+                                        break;
+                                    case 4:
+                                        energyConsumerDeltaData.gnssChargeUC = j13;
+                                        break;
+                                    case 5:
+                                        energyConsumerDeltaData.mobileRadioChargeUC = j13;
+                                        break;
+                                    case 6:
+                                        energyConsumerDeltaData.wifiChargeUC = j13;
+                                        break;
+                                    case 7:
+                                        energyConsumerDeltaData.cameraChargeUC = j13;
+                                        break;
+                                    default:
+                                        Slog.w("EnergyConsumerSnapshot", "Ignoring consumer " + energyConsumer.name + " of unknown type " + ((int) b));
+                                        break;
+                                }
+                                i5 = i;
+                            }
+                        }
+                        energyConsumerSnapshot = this;
+                        i5 = i;
+                    }
+                }
+                j2 = j6;
+                j3 = 0;
+                sparseLongArray = null;
+                if (j >= j3) {
+                    j4 = j2 - j;
+                    if (j4 >= j3) {
+                    }
+                    energyConsumerSnapshot = this;
+                    StringBuilder sb22 = new StringBuilder("Bad data! EnergyConsumer ");
+                    sb22.append(energyConsumer.name);
+                    sb22.append(": new energy (");
+                    sb22.append(j2);
+                    BootReceiver$$ExternalSyntheticOutline0.m(sb22, ") < old energy (", j, "), new voltage (");
+                    i5 = i;
+                    Slog.e("EnergyConsumerSnapshot", ActivityManagerService$$ExternalSyntheticOutline0.m(i5, i3, "), old voltage (", "). Skipping. ", sb22));
+                }
+                energyConsumerSnapshot = this;
+                i5 = i;
             }
-        L31:
-            java.lang.String r5 = "UNKNOWN"
-            r4.name = r5
-            goto L5c
-        L36:
-            java.lang.String r5 = "WIFI"
-            r4.name = r5
-            goto L5c
-        L3b:
-            java.lang.String r5 = "MOBILE_RADIO"
-            r4.name = r5
-            goto L5c
-        L40:
-            java.lang.String r5 = "GNSS"
-            r4.name = r5
-            goto L5c
-        L45:
-            java.lang.String r5 = "DISPLAY"
-            r4.name = r5
-            goto L5c
-        L4a:
-            java.lang.String r5 = "CPU"
-            r4.name = r5
-            goto L5c
-        L4f:
-            java.lang.String r5 = "BLUETOOTH"
-            r4.name = r5
-            goto L5c
-        L54:
-            java.lang.String r5 = r3.name
-            java.lang.String r5 = r11.sanitizeCustomBucketName(r5)
-            r4.name = r5
-        L5c:
-            int r5 = r4.type
-            if (r5 == 0) goto La6
-            int r5 = r4.ordinal
-            r6 = 1
-            if (r5 == 0) goto L67
-            r5 = r6
-            goto L68
-        L67:
-            r5 = r1
-        L68:
-            if (r5 != 0) goto L89
-            r7 = r1
-        L6b:
-            android.util.SparseArray r8 = r11.mEnergyConsumers
-            int r8 = r8.size()
-            if (r7 >= r8) goto L89
-            android.util.SparseArray r8 = r11.mEnergyConsumers
-            java.lang.Object r8 = r8.valueAt(r7)
-            android.hardware.power.stats.EnergyConsumer r8 = (android.hardware.power.stats.EnergyConsumer) r8
-            byte r9 = r8.type
-            int r10 = r4.type
-            if (r9 != r10) goto L86
-            int r8 = r8.ordinal
-            if (r8 == 0) goto L86
-            goto L8a
-        L86:
-            int r7 = r7 + 1
-            goto L6b
-        L89:
-            r6 = r5
-        L8a:
-            if (r6 == 0) goto La6
-            java.lang.StringBuilder r5 = new java.lang.StringBuilder
-            r5.<init>()
-            java.lang.String r6 = r4.name
-            r5.append(r6)
-            java.lang.String r6 = "/"
-            r5.append(r6)
-            int r3 = r3.ordinal
-            r5.append(r3)
-            java.lang.String r3 = r5.toString()
-            r4.name = r3
-        La6:
-            android.os.BatteryStats$EnergyConsumerDetails$EnergyConsumer[] r3 = r0.consumers
-            r3[r2] = r4
-            int r2 = r2 + 1
-            goto L11
-        Lae:
-            android.os.BatteryStats$EnergyConsumerDetails$EnergyConsumer[] r11 = r0.consumers
-            int r11 = r11.length
-            long[] r11 = new long[r11]
-            r0.chargeUC = r11
-            return r0
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.power.stats.EnergyConsumerSnapshot.createEnergyConsumerDetails():android.os.BatteryStats$EnergyConsumerDetails");
+            i7 = i4 + 1;
+            energyConsumerResultArr2 = energyConsumerResultArr;
+            i6 = i5;
+            length = i2;
+            z = false;
+            j5 = -1;
+        }
+        return energyConsumerDeltaData;
     }
 }

@@ -4,53 +4,39 @@ import android.content.ComponentName;
 import android.util.Slog;
 import android.window.WindowContainerTransaction;
 
-/* loaded from: classes3.dex */
-public class AppPairController implements IController {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class AppPairController implements IController {
     public final ActivityTaskManagerService mAtm;
     public boolean mShouldAutoPipByAppPair = false;
-
-    @Override // com.android.server.wm.IController
-    public void initialize() {
-    }
 
     public AppPairController(ActivityTaskManagerService activityTaskManagerService) {
         this.mAtm = activityTaskManagerService;
     }
 
-    public void handleAutoPipIfNeededLocked(WindowContainerTransaction windowContainerTransaction) {
+    public final void handleAutoPipIfNeededLocked(WindowContainerTransaction windowContainerTransaction) {
         ActivityRecord findEnterPipOnTaskSwitchCandidate;
-        TaskDisplayArea defaultTaskDisplayArea = this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea();
-        Task topRootTaskInWindowingMode = defaultTaskDisplayArea.getTopRootTaskInWindowingMode(1);
-        if (topRootTaskInWindowingMode == null || defaultTaskDisplayArea.isSplitScreenModeActivated() || (findEnterPipOnTaskSwitchCandidate = Task.findEnterPipOnTaskSwitchCandidate(topRootTaskInWindowingMode)) == null || findEnterPipOnTaskSwitchCandidate.supportsEnterPipOnTaskSwitch) {
+        TaskDisplayArea defaultTaskDisplayArea = this.mAtm.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea();
+        Task rootTask = defaultTaskDisplayArea.getRootTask(1, 0);
+        if (rootTask == null || defaultTaskDisplayArea.isSplitScreenModeActivated() || (findEnterPipOnTaskSwitchCandidate = Task.findEnterPipOnTaskSwitchCandidate(rootTask)) == null || findEnterPipOnTaskSwitchCandidate.supportsEnterPipOnTaskSwitch) {
             return;
         }
-        if (hasSamePackageInStartIntentsLocked(windowContainerTransaction, findEnterPipOnTaskSwitchCandidate.packageName)) {
-            Slog.d("AppPairController", "handleAutoPipIfNeededLocked: failed, reason=same_package, r=" + findEnterPipOnTaskSwitchCandidate);
-            return;
-        }
-        Task.enableEnterPipOnTaskSwitch(findEnterPipOnTaskSwitchCandidate, topRootTaskInWindowingMode, null, null);
-        Slog.d("AppPairController", "handleAutoPipIfNeededLocked: enable autoPip, r=" + findEnterPipOnTaskSwitchCandidate);
-        setShouldAutoPipByAppPair(findEnterPipOnTaskSwitchCandidate.supportsEnterPipOnTaskSwitch);
-    }
-
-    public final boolean hasSamePackageInStartIntentsLocked(WindowContainerTransaction windowContainerTransaction, String str) {
-        if (str == null) {
-            return false;
-        }
-        for (WindowContainerTransaction.HierarchyOp hierarchyOp : windowContainerTransaction.getHierarchyOps()) {
-            ComponentName component = hierarchyOp.getActivityIntent() != null ? hierarchyOp.getActivityIntent().getComponent() : null;
-            if (component != null && str.equals(component.getPackageName())) {
-                return true;
+        String str = findEnterPipOnTaskSwitchCandidate.packageName;
+        if (str != null) {
+            for (WindowContainerTransaction.HierarchyOp hierarchyOp : windowContainerTransaction.getHierarchyOps()) {
+                ComponentName component = hierarchyOp.getActivityIntent() != null ? hierarchyOp.getActivityIntent().getComponent() : null;
+                if (component != null && str.equals(component.getPackageName())) {
+                    Slog.d("AppPairController", "handleAutoPipIfNeededLocked: failed, reason=same_package, r=" + findEnterPipOnTaskSwitchCandidate);
+                    return;
+                }
             }
         }
-        return false;
+        Task.enableEnterPipOnTaskSwitch(null, findEnterPipOnTaskSwitchCandidate, null, rootTask);
+        Slog.d("AppPairController", "handleAutoPipIfNeededLocked: enable autoPip, r=" + findEnterPipOnTaskSwitchCandidate);
+        this.mShouldAutoPipByAppPair = findEnterPipOnTaskSwitchCandidate.supportsEnterPipOnTaskSwitch;
     }
 
-    public boolean shouldAutoPipByAppPair() {
-        return this.mShouldAutoPipByAppPair;
-    }
-
-    public void setShouldAutoPipByAppPair(boolean z) {
-        this.mShouldAutoPipByAppPair = z;
+    @Override // com.android.server.wm.IController
+    public final void initialize() {
     }
 }

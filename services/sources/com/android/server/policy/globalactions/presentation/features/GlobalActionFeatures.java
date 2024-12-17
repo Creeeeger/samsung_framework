@@ -1,67 +1,36 @@
 package com.android.server.policy.globalactions.presentation.features;
 
+import android.R;
 import android.content.Context;
-import com.samsung.android.feature.SemCscFeature;
+import android.os.SystemProperties;
 import com.samsung.android.globalactions.presentation.features.Features;
-import com.samsung.android.globalactions.util.SettingsWrapper;
+import java.util.List;
 
-/* loaded from: classes3.dex */
-public class GlobalActionFeatures implements Features {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class GlobalActionFeatures implements Features {
     public Context mContext;
-    public final SettingsWrapper mSettingsWrapper;
 
-    public final boolean isDesktopModeSupported() {
-        return true;
-    }
-
-    public final boolean isEffectSupported() {
-        return true;
-    }
-
-    public GlobalActionFeatures(Context context, SettingsWrapper settingsWrapper) {
-        this.mContext = context;
-        this.mSettingsWrapper = settingsWrapper;
-    }
-
-    public final boolean isNaviBarSupported() {
-        return this.mContext.getResources().getBoolean(17891826);
-    }
-
-    public final boolean isDataModeSupported() {
-        return SemCscFeature.getInstance().getBoolean("CscFeature_Framework_SupportDataModeSwitchGlobalAction");
-    }
-
-    public final boolean isForceRestartMessageSupported() {
-        return SemCscFeature.getInstance().getBoolean("CscFeature_Framework_SupportForceRestartGlobalAction");
-    }
-
-    public final boolean isRBMSupported() {
-        String string = SemCscFeature.getInstance().getString("CscFeature_Common_ConfigYuva");
-        return string != null && string.contains("powerplanning") && string.contains("reserve");
-    }
-
-    public boolean isEnabled(String str) {
+    public final boolean isEnabled(String str) {
         if (str.equals("SF_EFFECT")) {
-            return isEffectSupported();
+            return true;
         }
         if (str.equals("NAV_BAR")) {
-            return isNaviBarSupported();
+            return this.mContext.getResources().getBoolean(R.bool.config_sms_decode_gsm_8bit_data);
         }
         if (str.equals("DESKTOP_MODE")) {
-            return isDesktopModeSupported();
+            return true;
         }
         if (str.equals("DATA_MODE")) {
-            return isDataModeSupported();
+            return List.of("GLB", "XTC", "SMA", "XTE").contains(SystemProperties.get("ro.csc.sales_code", "NONE").trim().toUpperCase());
         }
         if (str.equals("LOCKDOWN_MODE")) {
             return true;
         }
         if (str.equals("FORCE_RESTART_MESSAGE")) {
-            return isForceRestartMessageSupported();
+            return List.of("CHC", "CHM", "CHN", "CBK", "CTC", "CHU", "BNZ").contains(SystemProperties.get("ro.csc.sales_code", "NONE").trim().toUpperCase());
         }
-        if (str.equals("RESERVE_BATTERY_MODE")) {
-            return isRBMSupported();
-        }
+        str.equals("RESERVE_BATTERY_MODE");
         return false;
     }
 }

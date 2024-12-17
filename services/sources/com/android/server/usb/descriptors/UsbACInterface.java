@@ -1,117 +1,36 @@
 package com.android.server.usb.descriptors;
 
-import android.util.Log;
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 import com.android.server.usb.descriptors.report.UsbStrings;
+import java.util.HashMap;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class UsbACInterface extends UsbDescriptor {
     public final int mSubclass;
     public final byte mSubtype;
 
     public UsbACInterface(int i, byte b, byte b2, int i2) {
-        super(i, b);
+        super(b, i);
         this.mSubtype = b2;
         this.mSubclass = i2;
     }
 
-    public byte getSubtype() {
-        return this.mSubtype;
-    }
-
-    public int getSubclass() {
-        return this.mSubclass;
-    }
-
-    public static UsbDescriptor allocAudioControlDescriptor(UsbDescriptorParser usbDescriptorParser, ByteStream byteStream, int i, byte b, byte b2, int i2) {
-        switch (b2) {
-            case 1:
-                int unpackUsbShort = byteStream.unpackUsbShort();
-                usbDescriptorParser.setACInterfaceSpec(unpackUsbShort);
-                if (unpackUsbShort == 512) {
-                    return new Usb20ACHeader(i, b, b2, i2, unpackUsbShort);
-                }
-                return new Usb10ACHeader(i, b, b2, i2, unpackUsbShort);
-            case 2:
-                if (usbDescriptorParser.getACInterfaceSpec() == 512) {
-                    return new Usb20ACInputTerminal(i, b, b2, i2);
-                }
-                return new Usb10ACInputTerminal(i, b, b2, i2);
-            case 3:
-                if (usbDescriptorParser.getACInterfaceSpec() == 512) {
-                    return new Usb20ACOutputTerminal(i, b, b2, i2);
-                }
-                return new Usb10ACOutputTerminal(i, b, b2, i2);
-            case 4:
-                if (usbDescriptorParser.getACInterfaceSpec() == 512) {
-                    return new Usb20ACMixerUnit(i, b, b2, i2);
-                }
-                return new Usb10ACMixerUnit(i, b, b2, i2);
-            case 5:
-                return new UsbACSelectorUnit(i, b, b2, i2);
-            case 6:
-                return new UsbACFeatureUnit(i, b, b2, i2);
-            default:
-                Log.w("UsbACInterface", "Unknown Audio Class Interface subtype:0x" + Integer.toHexString(b2));
-                return new UsbACInterfaceUnparsed(i, b, b2, i2);
-        }
-    }
-
-    public static UsbDescriptor allocAudioStreamingDescriptor(UsbDescriptorParser usbDescriptorParser, ByteStream byteStream, int i, byte b, byte b2, int i2) {
-        int aCInterfaceSpec = usbDescriptorParser.getACInterfaceSpec();
-        if (b2 == 1) {
-            if (aCInterfaceSpec == 512) {
-                return new Usb20ASGeneral(i, b, b2, i2);
-            }
-            return new Usb10ASGeneral(i, b, b2, i2);
-        }
-        if (b2 == 2) {
-            return UsbASFormat.allocDescriptor(usbDescriptorParser, byteStream, i, b, b2, i2);
-        }
-        Log.w("UsbACInterface", "Unknown Audio Streaming Interface subtype:0x" + Integer.toHexString(b2));
-        return null;
-    }
-
-    public static UsbDescriptor allocMidiStreamingDescriptor(int i, byte b, byte b2, int i2) {
-        if (b2 == 1) {
-            return new UsbMSMidiHeader(i, b, b2, i2);
-        }
-        if (b2 == 2) {
-            return new UsbMSMidiInputJack(i, b, b2, i2);
-        }
-        if (b2 == 3) {
-            return new UsbMSMidiOutputJack(i, b, b2, i2);
-        }
-        Log.w("UsbACInterface", "Unknown MIDI Streaming Interface subtype:0x" + Integer.toHexString(b2));
-        return null;
-    }
-
-    public static UsbDescriptor allocDescriptor(UsbDescriptorParser usbDescriptorParser, ByteStream byteStream, int i, byte b) {
-        byte b2 = byteStream.getByte();
-        int usbSubclass = usbDescriptorParser.getCurInterface().getUsbSubclass();
-        if (usbSubclass == 1) {
-            return allocAudioControlDescriptor(usbDescriptorParser, byteStream, i, b, b2, usbSubclass);
-        }
-        if (usbSubclass == 2) {
-            return allocAudioStreamingDescriptor(usbDescriptorParser, byteStream, i, b, b2, usbSubclass);
-        }
-        if (usbSubclass == 3) {
-            return allocMidiStreamingDescriptor(i, b, b2, usbSubclass);
-        }
-        Log.w("UsbACInterface", "Unknown Audio Class Interface Subclass: 0x" + Integer.toHexString(usbSubclass));
-        return null;
-    }
-
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        int subclass = getSubclass();
-        String aCInterfaceSubclassName = UsbStrings.getACInterfaceSubclassName(subclass);
-        byte subtype = getSubtype();
-        String aCControlInterfaceName = UsbStrings.getACControlInterfaceName(subtype);
-        reportCanvas.openList();
-        reportCanvas.writeListItem("Subclass: " + ReportCanvas.getHexString(subclass) + " " + aCInterfaceSubclassName);
-        reportCanvas.writeListItem("Subtype: " + ReportCanvas.getHexString(subtype) + " " + aCControlInterfaceName);
-        reportCanvas.closeList();
+    public void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        int i = this.mSubclass;
+        String str = i == 1 ? "AC Control" : "AC Streaming";
+        HashMap hashMap = UsbStrings.sACControlInterfaceNames;
+        byte b = this.mSubtype;
+        String str2 = (String) hashMap.get(Byte.valueOf(b));
+        int i2 = b & 255;
+        if (str2 == null) {
+            str2 = "Unknown subtype [0x" + Integer.toHexString(i2) + ":" + i2 + "]";
+        }
+        textReportCanvas.openList();
+        textReportCanvas.writeListItem("Subclass: " + TextReportCanvas.getHexString(i) + " " + str);
+        textReportCanvas.writeListItem("Subtype: " + TextReportCanvas.getHexString(b) + " " + str2);
+        textReportCanvas.closeList();
     }
 }

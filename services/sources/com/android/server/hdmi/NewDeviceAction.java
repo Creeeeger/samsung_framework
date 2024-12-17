@@ -2,15 +2,18 @@ package com.android.server.hdmi;
 
 import android.hardware.hdmi.HdmiDeviceInfo;
 import android.util.Slog;
-import com.android.server.hdmi.HdmiCecLocalDevice;
+import android.util.SparseArray;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import java.io.UnsupportedEncodingException;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class NewDeviceAction extends HdmiCecFeatureAction {
     public final int mDeviceLogicalAddress;
     public final int mDevicePhysicalAddress;
     public final int mDeviceType;
     public String mDisplayName;
+    public HdmiDeviceInfo mOldDeviceInfo;
     public int mTimeoutRetry;
     public int mVendorId;
 
@@ -22,101 +25,45 @@ public final class NewDeviceAction extends HdmiCecFeatureAction {
         this.mVendorId = 16777215;
     }
 
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean start() {
-        requestOsdName(true);
-        return true;
-    }
-
-    public final void requestOsdName(boolean z) {
-        if (z) {
-            this.mTimeoutRetry = 0;
-        }
-        this.mState = 1;
-        if (mayProcessCommandIfCached(this.mDeviceLogicalAddress, 71)) {
-            return;
-        }
-        sendCommand(HdmiCecMessageBuilder.buildGiveOsdNameCommand(getSourceAddress(), this.mDeviceLogicalAddress));
-        addTimer(this.mState, 2000);
-    }
-
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean processCommand(HdmiCecMessage hdmiCecMessage) {
-        int opcode = hdmiCecMessage.getOpcode();
-        int source = hdmiCecMessage.getSource();
-        byte[] params = hdmiCecMessage.getParams();
-        if (this.mDeviceLogicalAddress != source) {
-            return false;
-        }
-        int i = this.mState;
-        if (i == 1) {
-            if (opcode == 71) {
-                try {
-                    this.mDisplayName = new String(params, "US-ASCII");
-                } catch (UnsupportedEncodingException e) {
-                    Slog.e("NewDeviceAction", "Failed to get OSD name: " + e.getMessage());
-                }
-                requestVendorId(true);
-                return true;
-            }
-            if (opcode == 0 && (params[0] & 255) == 70) {
-                requestVendorId(true);
-                return true;
-            }
-        } else if (i == 2) {
-            if (opcode == 135) {
-                this.mVendorId = HdmiUtils.threeBytesToInt(params);
-                addDeviceInfo();
-                finish();
-                return true;
-            }
-            if (opcode == 0 && (params[0] & 255) == 140) {
-                addDeviceInfo();
-                finish();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final boolean mayProcessCommandIfCached(int i, int i2) {
-        HdmiCecMessage message = getCecMessageCache().getMessage(i, i2);
-        if (message != null) {
-            return processCommand(message);
-        }
-        return false;
-    }
-
-    public final void requestVendorId(boolean z) {
-        if (z) {
-            this.mTimeoutRetry = 0;
-        }
-        this.mState = 2;
-        if (mayProcessCommandIfCached(this.mDeviceLogicalAddress, 135)) {
-            return;
-        }
-        sendCommand(HdmiCecMessageBuilder.buildGiveDeviceVendorIdCommand(getSourceAddress(), this.mDeviceLogicalAddress));
-        addTimer(this.mState, 2000);
-    }
-
     public final void addDeviceInfo() {
-        if (!localDevice().mService.getHdmiCecNetwork().isInDeviceList(this.mDeviceLogicalAddress, this.mDevicePhysicalAddress)) {
-            Slog.w("NewDeviceAction", String.format("Device not found (%02x, %04x)", Integer.valueOf(this.mDeviceLogicalAddress), Integer.valueOf(this.mDevicePhysicalAddress)));
+        HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+        HdmiCecNetwork hdmiCecNetwork = hdmiCecLocalDevice.mService.mHdmiCecNetwork;
+        hdmiCecNetwork.assertRunOnServiceThread();
+        int i = this.mDeviceLogicalAddress;
+        HdmiDeviceInfo cecDeviceInfo = hdmiCecNetwork.getCecDeviceInfo(i);
+        int i2 = this.mDevicePhysicalAddress;
+        boolean z = false;
+        if (cecDeviceInfo != null && cecDeviceInfo.getPhysicalAddress() == i2) {
+            z = true;
+        }
+        if (!z) {
+            Slog.w("NewDeviceAction", String.format("Device not found (%02x, %04x)", Integer.valueOf(i), Integer.valueOf(i2)));
             return;
         }
         if (this.mDisplayName == null) {
             this.mDisplayName = "";
         }
-        HdmiDeviceInfo build = HdmiDeviceInfo.cecDeviceBuilder().setLogicalAddress(this.mDeviceLogicalAddress).setPhysicalAddress(this.mDevicePhysicalAddress).setPortId(tv().getPortId(this.mDevicePhysicalAddress)).setDeviceType(this.mDeviceType).setVendorId(this.mVendorId).setDisplayName(this.mDisplayName).build();
-        localDevice().mService.getHdmiCecNetwork().addCecDevice(build);
-        tv().processDelayedMessages(this.mDeviceLogicalAddress);
-        if (HdmiUtils.isEligibleAddressForDevice(5, this.mDeviceLogicalAddress)) {
-            tv().onNewAvrAdded(build);
+        HdmiCecLocalDeviceTv hdmiCecLocalDeviceTv = (HdmiCecLocalDeviceTv) hdmiCecLocalDevice;
+        HdmiDeviceInfo.Builder portId = HdmiDeviceInfo.cecDeviceBuilder().setLogicalAddress(i).setPhysicalAddress(i2).setPortId(hdmiCecLocalDeviceTv.mService.mHdmiCecNetwork.physicalAddressToPortId(i2));
+        int i3 = this.mDeviceType;
+        HdmiDeviceInfo build = portId.setDeviceType(i3).setVendorId(this.mVendorId).setDisplayName(this.mDisplayName).build();
+        HdmiDeviceInfo hdmiDeviceInfo = this.mOldDeviceInfo;
+        if (hdmiDeviceInfo != null && hdmiDeviceInfo.getLogicalAddress() == i && this.mOldDeviceInfo.getPhysicalAddress() == i2 && this.mOldDeviceInfo.getDeviceType() == i3 && this.mOldDeviceInfo.getVendorId() == this.mVendorId && this.mOldDeviceInfo.getDisplayName().equals(this.mDisplayName)) {
+            hdmiCecLocalDeviceTv.processDelayedMessages(i);
+            Slog.d("NewDeviceAction", "Ignore NewDevice, deviceInfo is same as current device");
+            Slog.d("NewDeviceAction", "Old:[" + this.mOldDeviceInfo.toString() + "]; New:[" + build.toString() + "]");
+            return;
+        }
+        Slog.d("NewDeviceAction", "Add NewDevice:[" + build.toString() + "]");
+        hdmiCecLocalDevice.mService.mHdmiCecNetwork.addCecDevice(build);
+        hdmiCecLocalDeviceTv.processDelayedMessages(i);
+        if (HdmiUtils.isEligibleAddressForDevice(5, i)) {
+            hdmiCecLocalDeviceTv.onNewAvrAdded(build);
         }
     }
 
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public void handleTimerEvent(int i) {
+    public final void handleTimerEvent(int i) {
         int i2 = this.mState;
         if (i2 == 0 || i2 != i) {
             return;
@@ -139,12 +86,107 @@ public final class NewDeviceAction extends HdmiCecFeatureAction {
                 requestVendorId(false);
             } else {
                 addDeviceInfo();
-                finish();
+                finish(true);
             }
         }
     }
 
-    public boolean isActionOf(HdmiCecLocalDevice.ActiveSource activeSource) {
-        return this.mDeviceLogicalAddress == activeSource.logicalAddress && this.mDevicePhysicalAddress == activeSource.physicalAddress;
+    public final boolean mayProcessCommandIfCached(int i, int i2) {
+        HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+        hdmiCecLocalDevice.assertRunOnServiceThread();
+        SparseArray sparseArray = (SparseArray) hdmiCecLocalDevice.mCecMessageCache.mCache.get(i);
+        HdmiCecMessage hdmiCecMessage = sparseArray == null ? null : (HdmiCecMessage) sparseArray.get(i2);
+        if (hdmiCecMessage != null) {
+            return processCommand(hdmiCecMessage);
+        }
+        return false;
+    }
+
+    @Override // com.android.server.hdmi.HdmiCecFeatureAction
+    public final boolean processCommand(HdmiCecMessage hdmiCecMessage) {
+        int i = hdmiCecMessage.mOpcode;
+        if (this.mDeviceLogicalAddress != hdmiCecMessage.mSource) {
+            return false;
+        }
+        int i2 = this.mState;
+        byte[] bArr = hdmiCecMessage.mParams;
+        if (i2 == 1) {
+            if (i == 71) {
+                try {
+                    this.mDisplayName = new String(bArr, "US-ASCII");
+                } catch (UnsupportedEncodingException e) {
+                    Slog.e("NewDeviceAction", "Failed to get OSD name: " + e.getMessage());
+                }
+                requestVendorId(true);
+                return true;
+            }
+            if (i == 0 && (bArr[0] & 255) == 70) {
+                requestVendorId(true);
+                return true;
+            }
+        } else if (i2 == 2) {
+            if (i == 135) {
+                this.mVendorId = HdmiUtils.threeBytesToInt(bArr);
+                addDeviceInfo();
+                finish(true);
+                return true;
+            }
+            if (i == 0 && (bArr[0] & 255) == 140) {
+                addDeviceInfo();
+                finish(true);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final void requestOsdName(boolean z) {
+        if (z) {
+            this.mTimeoutRetry = 0;
+        }
+        this.mState = 1;
+        int i = this.mDeviceLogicalAddress;
+        if (mayProcessCommandIfCached(i, 71)) {
+            return;
+        }
+        this.mService.sendCecCommand(HdmiCecMessage.build(getSourceAddress(), i, 70), null);
+        addTimer(this.mState, 2000);
+    }
+
+    public final void requestVendorId(boolean z) {
+        if (z) {
+            this.mTimeoutRetry = 0;
+        }
+        this.mState = 2;
+        int i = this.mDeviceLogicalAddress;
+        if (mayProcessCommandIfCached(i, 135)) {
+            return;
+        }
+        this.mService.sendCecCommand(HdmiCecMessage.build(getSourceAddress(), i, 140), null);
+        addTimer(this.mState, 2000);
+    }
+
+    @Override // com.android.server.hdmi.HdmiCecFeatureAction
+    public final void start() {
+        HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+        HdmiCecNetwork hdmiCecNetwork = hdmiCecLocalDevice.mService.mHdmiCecNetwork;
+        int i = this.mDeviceLogicalAddress;
+        HdmiDeviceInfo cecDeviceInfo = hdmiCecNetwork.getCecDeviceInfo(i);
+        this.mOldDeviceInfo = cecDeviceInfo;
+        int i2 = this.mDevicePhysicalAddress;
+        if (cecDeviceInfo == null || cecDeviceInfo.getPhysicalAddress() != i2) {
+            Slog.d("NewDeviceAction", "Start NewDeviceAction with default deviceInfo");
+            HdmiDeviceInfo build = HdmiDeviceInfo.cecDeviceBuilder().setLogicalAddress(i).setPhysicalAddress(i2).setPortId(((HdmiCecLocalDeviceTv) hdmiCecLocalDevice).mService.mHdmiCecNetwork.physicalAddressToPortId(i2)).setDeviceType(this.mDeviceType).setVendorId(16777215).build();
+            HdmiDeviceInfo hdmiDeviceInfo = this.mOldDeviceInfo;
+            HdmiControlService hdmiControlService = hdmiCecLocalDevice.mService;
+            if (hdmiDeviceInfo != null) {
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(i2, "Remove device by NewDeviceAction, logical address conflicts: ", "NewDeviceAction");
+                hdmiControlService.mHdmiCecNetwork.removeCecDevice(hdmiCecLocalDevice, i);
+            }
+            hdmiControlService.mHdmiCecNetwork.addCecDevice(build);
+        } else {
+            Slog.d("NewDeviceAction", "Start NewDeviceAction with old deviceInfo:[" + this.mOldDeviceInfo.toString() + "]");
+        }
+        requestOsdName(true);
     }
 }

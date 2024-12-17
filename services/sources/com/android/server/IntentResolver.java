@@ -2,6 +2,7 @@ package com.android.server;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -11,9 +12,8 @@ import android.util.MutableInt;
 import android.util.PrintWriterPrinter;
 import android.util.Slog;
 import android.util.proto.ProtoOutputStream;
+import com.android.internal.hidden_from_bootclasspath.android.permission.flags.Flags;
 import com.android.internal.util.FastPrintWriter;
-import com.android.internal.util.jobs.XmlUtils;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import com.android.server.pm.Computer;
 import com.android.server.pm.snapshot.PackageDataSnapshot;
 import java.io.PrintWriter;
@@ -25,19 +25,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class IntentResolver {
-    public static final Comparator mResolvePrioritySorter = new Comparator() { // from class: com.android.server.IntentResolver.1
-        @Override // java.util.Comparator
-        public int compare(Object obj, Object obj2) {
-            int priority = ((IntentFilter) obj).getPriority();
-            int priority2 = ((IntentFilter) obj2).getPriority();
-            if (priority > priority2) {
-                return -1;
-            }
-            return priority < priority2 ? 1 : 0;
-        }
-    };
+    public static final AnonymousClass1 mResolvePrioritySorter = new AnonymousClass1();
     public final ArraySet mFilters = new ArraySet();
     public final ArrayMap mTypeToFilter = new ArrayMap();
     public final ArrayMap mBaseTypeToFilter = new ArrayMap();
@@ -46,236 +37,52 @@ public abstract class IntentResolver {
     public final ArrayMap mActionToFilter = new ArrayMap();
     public final ArrayMap mTypedActionToFilter = new ArrayMap();
 
-    public boolean allowFilterResult(Object obj, List list) {
-        return true;
-    }
-
-    public void filterResults(List list) {
-    }
-
-    public Object filterToLabel(Object obj) {
-        return "IntentFilter";
-    }
-
-    public abstract IntentFilter getIntentFilter(Object obj);
-
-    public boolean isFilterStopped(Computer computer, Object obj, int i) {
-        return false;
-    }
-
-    public abstract boolean isPackageForFilter(String str, Object obj);
-
-    public abstract Object[] newArray(int i);
-
-    public Object newResult(Computer computer, Object obj, int i, int i2, long j) {
-        return obj;
-    }
-
-    public Object snapshot(Object obj) {
-        return obj;
-    }
-
-    public void addFilter(PackageDataSnapshot packageDataSnapshot, Object obj) {
-        IntentFilter intentFilter = getIntentFilter(obj);
-        this.mFilters.add(obj);
-        int register_intent_filter = register_intent_filter(obj, intentFilter.schemesIterator(), this.mSchemeToFilter, "      Scheme: ");
-        int register_mime_types = register_mime_types(obj, "      Type: ");
-        if (register_intent_filter == 0 && register_mime_types == 0) {
-            register_intent_filter(obj, intentFilter.actionsIterator(), this.mActionToFilter, "      Action: ");
-        }
-        if (register_mime_types != 0) {
-            register_intent_filter(obj, intentFilter.actionsIterator(), this.mTypedActionToFilter, "      TypedAction: ");
-        }
-    }
-
-    public static boolean intentMatchesFilter(IntentFilter intentFilter, Intent intent, String str) {
-        boolean z = (intent.getFlags() & 8) != 0;
-        LogPrinter logPrinter = z ? new LogPrinter(2, "IntentResolver", 3) : null;
-        if (z) {
-            Slog.v("IntentResolver", "Intent: " + intent);
-            Slog.v("IntentResolver", "Matching against filter: " + intentFilter);
-            intentFilter.dump(logPrinter, "  ");
-        }
-        int match = intentFilter.match(intent.getAction(), str, intent.getScheme(), intent.getData(), intent.getCategories(), "IntentResolver");
-        if (match >= 0) {
-            if (z) {
-                Slog.v("IntentResolver", "Filter matched!  match=0x" + Integer.toHexString(match));
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.IntentResolver$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Comparator {
+        @Override // java.util.Comparator
+        public final int compare(Object obj, Object obj2) {
+            int priority = ((IntentFilter) obj).getPriority();
+            int priority2 = ((IntentFilter) obj2).getPriority();
+            if (priority > priority2) {
+                return -1;
             }
-            return true;
+            return priority < priority2 ? 1 : 0;
         }
-        if (z) {
-            Slog.v("IntentResolver", "Filter did not match: " + (match != -4 ? match != -3 ? match != -2 ? match != -1 ? "unknown reason" : "type" : "data" : "action" : "category"));
-        }
-        return false;
     }
 
-    public final ArrayList collectFilters(Object[] objArr, IntentFilter intentFilter) {
-        Object obj;
-        ArrayList arrayList = null;
-        if (objArr != null) {
-            for (int i = 0; i < objArr.length && (obj = objArr[i]) != null; i++) {
-                if (IntentFilter.filterEquals(getIntentFilter(obj), intentFilter)) {
-                    if (arrayList == null) {
-                        arrayList = new ArrayList();
-                    }
-                    arrayList.add(obj);
-                }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class IteratorWrapper implements Iterator {
+        public Object mCur;
+        public final Iterator mI;
+
+        public IteratorWrapper(Iterator it) {
+            this.mI = it;
+        }
+
+        @Override // java.util.Iterator
+        public final boolean hasNext() {
+            return this.mI.hasNext();
+        }
+
+        @Override // java.util.Iterator
+        public final Object next() {
+            Object next = this.mI.next();
+            this.mCur = next;
+            return next;
+        }
+
+        @Override // java.util.Iterator
+        public final void remove() {
+            Object obj = this.mCur;
+            if (obj != null) {
+                IntentResolver.this.removeFilterInternal(obj);
             }
-        }
-        return arrayList;
-    }
-
-    public ArrayList findFilters(IntentFilter intentFilter) {
-        if (intentFilter.countDataSchemes() == 1) {
-            return collectFilters((Object[]) this.mSchemeToFilter.get(intentFilter.getDataScheme(0)), intentFilter);
-        }
-        if (intentFilter.countDataTypes() != 0 && intentFilter.countActions() == 1) {
-            return collectFilters((Object[]) this.mTypedActionToFilter.get(intentFilter.getAction(0)), intentFilter);
-        }
-        if (intentFilter.countDataTypes() == 0 && intentFilter.countDataSchemes() == 0 && intentFilter.countActions() == 1) {
-            return collectFilters((Object[]) this.mActionToFilter.get(intentFilter.getAction(0)), intentFilter);
-        }
-        Iterator it = this.mFilters.iterator();
-        ArrayList arrayList = null;
-        while (it.hasNext()) {
-            Object next = it.next();
-            if (IntentFilter.filterEquals(getIntentFilter(next), intentFilter)) {
-                if (arrayList == null) {
-                    arrayList = new ArrayList();
-                }
-                arrayList.add(next);
-            }
-        }
-        return arrayList;
-    }
-
-    public void removeFilter(Object obj) {
-        removeFilterInternal(obj);
-        this.mFilters.remove(obj);
-    }
-
-    public void removeFilterInternal(Object obj) {
-        IntentFilter intentFilter = getIntentFilter(obj);
-        int unregister_intent_filter = unregister_intent_filter(obj, intentFilter.schemesIterator(), this.mSchemeToFilter, "      Scheme: ");
-        int unregister_mime_types = unregister_mime_types(obj, "      Type: ");
-        if (unregister_intent_filter == 0 && unregister_mime_types == 0) {
-            unregister_intent_filter(obj, intentFilter.actionsIterator(), this.mActionToFilter, "      Action: ");
-        }
-        if (unregister_mime_types != 0) {
-            unregister_intent_filter(obj, intentFilter.actionsIterator(), this.mTypedActionToFilter, "      TypedAction: ");
+            this.mI.remove();
         }
     }
 
-    public boolean dumpMap(PrintWriter printWriter, String str, String str2, String str3, ArrayMap arrayMap, String str4, boolean z, boolean z2) {
-        boolean z3;
-        String str5;
-        Object obj;
-        PrintWriterPrinter printWriterPrinter;
-        boolean z4;
-        ArrayMap arrayMap2 = arrayMap;
-        String str6 = str3 + "  ";
-        String str7 = str3 + "    ";
-        ArrayMap arrayMap3 = new ArrayMap();
-        String str8 = str2;
-        int i = 0;
-        boolean z5 = false;
-        PrintWriterPrinter printWriterPrinter2 = null;
-        while (i < arrayMap.size()) {
-            Object[] objArr = (Object[]) arrayMap2.valueAt(i);
-            int length = objArr.length;
-            if (!z2 || z) {
-                z3 = z5;
-                str8 = str8;
-                printWriterPrinter2 = printWriterPrinter2;
-                int i2 = 0;
-                boolean z6 = false;
-                while (i2 < length) {
-                    Object obj2 = objArr[i2];
-                    if (obj2 != null) {
-                        if (str4 == null || isPackageForFilter(str4, obj2)) {
-                            if (str8 != null) {
-                                printWriter.print(str);
-                                printWriter.println(str8);
-                                str8 = null;
-                            }
-                            if (!z6) {
-                                printWriter.print(str6);
-                                printWriter.print((String) arrayMap2.keyAt(i));
-                                printWriter.println(XmlUtils.STRING_ARRAY_SEPARATOR);
-                                z6 = true;
-                            }
-                            dumpFilter(printWriter, str7, obj2);
-                            if (z) {
-                                if (printWriterPrinter2 == null) {
-                                    printWriterPrinter2 = new PrintWriterPrinter(printWriter);
-                                }
-                                getIntentFilter(obj2).dump(printWriterPrinter2, str7 + "  ");
-                            }
-                            z3 = true;
-                        }
-                        i2++;
-                        arrayMap2 = arrayMap;
-                    }
-                }
-            } else {
-                arrayMap3.clear();
-                int i3 = 0;
-                while (true) {
-                    str5 = str8;
-                    if (i3 >= length || (obj = objArr[i3]) == null) {
-                        break;
-                    }
-                    if (str4 == null || isPackageForFilter(str4, obj)) {
-                        Object filterToLabel = filterToLabel(obj);
-                        printWriterPrinter = printWriterPrinter2;
-                        int indexOfKey = arrayMap3.indexOfKey(filterToLabel);
-                        if (indexOfKey < 0) {
-                            z4 = z5;
-                            arrayMap3.put(filterToLabel, new MutableInt(1));
-                        } else {
-                            z4 = z5;
-                            ((MutableInt) arrayMap3.valueAt(indexOfKey)).value++;
-                        }
-                    } else {
-                        z4 = z5;
-                        printWriterPrinter = printWriterPrinter2;
-                    }
-                    i3++;
-                    str8 = str5;
-                    printWriterPrinter2 = printWriterPrinter;
-                    z5 = z4;
-                }
-                z3 = z5;
-                PrintWriterPrinter printWriterPrinter3 = printWriterPrinter2;
-                str8 = str5;
-                int i4 = 0;
-                boolean z7 = false;
-                while (i4 < arrayMap3.size()) {
-                    if (str8 != null) {
-                        printWriter.print(str);
-                        printWriter.println(str8);
-                        str8 = null;
-                    }
-                    if (!z7) {
-                        printWriter.print(str6);
-                        printWriter.print((String) arrayMap2.keyAt(i));
-                        printWriter.println(XmlUtils.STRING_ARRAY_SEPARATOR);
-                        z7 = true;
-                    }
-                    dumpFilterLabel(printWriter, str7, arrayMap3.keyAt(i4), ((MutableInt) arrayMap3.valueAt(i4)).value);
-                    i4++;
-                    z3 = true;
-                }
-                printWriterPrinter2 = printWriterPrinter3;
-            }
-            z5 = z3;
-            i++;
-            arrayMap2 = arrayMap;
-        }
-        return z5;
-    }
-
-    public void writeProtoMap(ProtoOutputStream protoOutputStream, long j, ArrayMap arrayMap) {
+    public static void writeProtoMap(ProtoOutputStream protoOutputStream, long j, ArrayMap arrayMap) {
         int size = arrayMap.size();
         for (int i = 0; i < size; i++) {
             long start = protoOutputStream.start(j);
@@ -287,141 +94,6 @@ public abstract class IntentResolver {
             }
             protoOutputStream.end(start);
         }
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        writeProtoMap(protoOutputStream, 2246267895809L, this.mTypeToFilter);
-        writeProtoMap(protoOutputStream, 2246267895810L, this.mBaseTypeToFilter);
-        writeProtoMap(protoOutputStream, 2246267895811L, this.mWildTypeToFilter);
-        writeProtoMap(protoOutputStream, 2246267895812L, this.mSchemeToFilter);
-        writeProtoMap(protoOutputStream, 2246267895813L, this.mActionToFilter);
-        writeProtoMap(protoOutputStream, 2246267895814L, this.mTypedActionToFilter);
-        protoOutputStream.end(start);
-    }
-
-    public boolean dump(PrintWriter printWriter, String str, String str2, String str3, boolean z, boolean z2) {
-        String str4 = str2 + "  ";
-        String str5 = KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + str2;
-        String str6 = str + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + str2;
-        if (dumpMap(printWriter, str6, "Full MIME Types:", str4, this.mTypeToFilter, str3, z, z2)) {
-            str6 = str5;
-        }
-        if (dumpMap(printWriter, str6, "Base MIME Types:", str4, this.mBaseTypeToFilter, str3, z, z2)) {
-            str6 = str5;
-        }
-        if (dumpMap(printWriter, str6, "Wild MIME Types:", str4, this.mWildTypeToFilter, str3, z, z2)) {
-            str6 = str5;
-        }
-        if (dumpMap(printWriter, str6, "Schemes:", str4, this.mSchemeToFilter, str3, z, z2)) {
-            str6 = str5;
-        }
-        if (dumpMap(printWriter, str6, "Non-Data Actions:", str4, this.mActionToFilter, str3, z, z2)) {
-            str6 = str5;
-        }
-        if (dumpMap(printWriter, str6, "MIME Typed Actions:", str4, this.mTypedActionToFilter, str3, z, z2)) {
-            str6 = str5;
-        }
-        return str6 == str5;
-    }
-
-    /* loaded from: classes.dex */
-    public class IteratorWrapper implements Iterator {
-        public Object mCur;
-        public final Iterator mI;
-
-        public IteratorWrapper(Iterator it) {
-            this.mI = it;
-        }
-
-        @Override // java.util.Iterator
-        public boolean hasNext() {
-            return this.mI.hasNext();
-        }
-
-        @Override // java.util.Iterator
-        public Object next() {
-            Object next = this.mI.next();
-            this.mCur = next;
-            return next;
-        }
-
-        @Override // java.util.Iterator
-        public void remove() {
-            Object obj = this.mCur;
-            if (obj != null) {
-                IntentResolver.this.removeFilterInternal(obj);
-            }
-            this.mI.remove();
-        }
-    }
-
-    public Iterator filterIterator() {
-        return new IteratorWrapper(this.mFilters.iterator());
-    }
-
-    public Set filterSet() {
-        return Collections.unmodifiableSet(this.mFilters);
-    }
-
-    public List queryIntentFromList(Computer computer, Intent intent, String str, boolean z, ArrayList arrayList, int i, long j) {
-        ArrayList arrayList2 = new ArrayList();
-        boolean z2 = (intent.getFlags() & 8) != 0;
-        FastImmutableArraySet fastIntentCategories = getFastIntentCategories(intent);
-        String scheme = intent.getScheme();
-        int i2 = 0;
-        for (int size = arrayList.size(); i2 < size; size = size) {
-            buildResolveList(computer, intent, fastIntentCategories, z2, z, str, scheme, (Object[]) arrayList.get(i2), arrayList2, i, j);
-            i2++;
-        }
-        filterResults(arrayList2);
-        sortResults(arrayList2);
-        return arrayList2;
-    }
-
-    public List queryIntent(PackageDataSnapshot packageDataSnapshot, Intent intent, String str, boolean z, int i) {
-        return queryIntent(packageDataSnapshot, intent, str, z, i, 0L);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:27:0x016a  */
-    /* JADX WARN: Removed duplicated region for block: B:32:0x0193 A[ADDED_TO_REGION] */
-    /* JADX WARN: Removed duplicated region for block: B:41:0x01ce  */
-    /* JADX WARN: Removed duplicated region for block: B:43:0x01f4  */
-    /* JADX WARN: Removed duplicated region for block: B:45:0x0210  */
-    /* JADX WARN: Removed duplicated region for block: B:47:0x022c  */
-    /* JADX WARN: Removed duplicated region for block: B:50:0x0250  */
-    /* JADX WARN: Removed duplicated region for block: B:57:0x01ed  */
-    /* JADX WARN: Removed duplicated region for block: B:59:0x018f  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final java.util.List queryIntent(com.android.server.pm.snapshot.PackageDataSnapshot r24, android.content.Intent r25, java.lang.String r26, boolean r27, int r28, long r29) {
-        /*
-            Method dump skipped, instructions count: 633
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.IntentResolver.queryIntent(com.android.server.pm.snapshot.PackageDataSnapshot, android.content.Intent, java.lang.String, boolean, int, long):java.util.List");
-    }
-
-    public boolean isFilterVerified(Object obj) {
-        return getIntentFilter(obj).isVerified();
-    }
-
-    public void sortResults(List list) {
-        Collections.sort(list, mResolvePrioritySorter);
-    }
-
-    public void dumpFilter(PrintWriter printWriter, String str, Object obj) {
-        printWriter.print(str);
-        printWriter.println(obj);
-    }
-
-    public void dumpFilterLabel(PrintWriter printWriter, String str, Object obj, int i) {
-        printWriter.print(str);
-        printWriter.print(obj);
-        printWriter.print(": ");
-        printWriter.println(i);
     }
 
     public final void addFilter(ArrayMap arrayMap, String str, Object obj) {
@@ -447,120 +119,44 @@ public abstract class IntentResolver {
         arrayMap.put(str, newArray2);
     }
 
-    public final int register_mime_types(Object obj, String str) {
-        String str2;
+    public void addFilter(PackageDataSnapshot packageDataSnapshot, Object obj) {
+        String str;
+        IntentFilter intentFilter = getIntentFilter(obj);
+        this.mFilters.add(obj);
+        int register_intent_filter = register_intent_filter(obj, intentFilter.schemesIterator(), this.mSchemeToFilter);
         Iterator<String> typesIterator = getIntentFilter(obj).typesIterator();
-        if (typesIterator == null) {
-            return 0;
-        }
         int i = 0;
-        while (typesIterator.hasNext()) {
-            String next = typesIterator.next();
-            i++;
-            int indexOf = next.indexOf(47);
-            if (indexOf > 0) {
-                str2 = next.substring(0, indexOf).intern();
-            } else {
-                str2 = next;
-                next = next + "/*";
-            }
-            addFilter(this.mTypeToFilter, next, obj);
-            if (indexOf > 0) {
-                addFilter(this.mBaseTypeToFilter, str2, obj);
-            } else {
-                addFilter(this.mWildTypeToFilter, str2, obj);
-            }
-        }
-        return i;
-    }
-
-    public final int unregister_mime_types(Object obj, String str) {
-        String str2;
-        Iterator<String> typesIterator = getIntentFilter(obj).typesIterator();
-        if (typesIterator == null) {
-            return 0;
-        }
-        int i = 0;
-        while (typesIterator.hasNext()) {
-            String next = typesIterator.next();
-            i++;
-            int indexOf = next.indexOf(47);
-            if (indexOf > 0) {
-                str2 = next.substring(0, indexOf).intern();
-            } else {
-                str2 = next;
-                next = next + "/*";
-            }
-            remove_all_objects(this.mTypeToFilter, next, obj);
-            if (indexOf > 0) {
-                remove_all_objects(this.mBaseTypeToFilter, str2, obj);
-            } else {
-                remove_all_objects(this.mWildTypeToFilter, str2, obj);
-            }
-        }
-        return i;
-    }
-
-    public final int register_intent_filter(Object obj, Iterator it, ArrayMap arrayMap, String str) {
-        int i = 0;
-        if (it == null) {
-            return 0;
-        }
-        while (it.hasNext()) {
-            i++;
-            addFilter(arrayMap, (String) it.next(), obj);
-        }
-        return i;
-    }
-
-    public final int unregister_intent_filter(Object obj, Iterator it, ArrayMap arrayMap, String str) {
-        int i = 0;
-        if (it == null) {
-            return 0;
-        }
-        while (it.hasNext()) {
-            i++;
-            remove_all_objects(arrayMap, (String) it.next(), obj);
-        }
-        return i;
-    }
-
-    public final void remove_all_objects(ArrayMap arrayMap, String str, Object obj) {
-        Object[] objArr = (Object[]) arrayMap.get(str);
-        if (objArr != null) {
-            int length = objArr.length - 1;
-            while (length >= 0 && objArr[length] == null) {
-                length--;
-            }
-            int i = length;
-            while (length >= 0) {
-                Object obj2 = objArr[length];
-                if (obj2 != null && getIntentFilter(obj2) == getIntentFilter(obj)) {
-                    int i2 = i - length;
-                    if (i2 > 0) {
-                        System.arraycopy(objArr, length + 1, objArr, length, i2);
-                    }
-                    objArr[i] = null;
-                    i--;
+        if (typesIterator != null) {
+            int i2 = 0;
+            while (typesIterator.hasNext()) {
+                String next = typesIterator.next();
+                i2++;
+                int indexOf = next.indexOf(47);
+                if (indexOf > 0) {
+                    str = next.substring(0, indexOf).intern();
+                } else {
+                    str = next;
+                    next = next.concat("/*");
                 }
-                length--;
+                addFilter(this.mTypeToFilter, next, obj);
+                if (indexOf > 0) {
+                    addFilter(this.mBaseTypeToFilter, str, obj);
+                } else {
+                    addFilter(this.mWildTypeToFilter, str, obj);
+                }
             }
-            if (i < 0) {
-                arrayMap.remove(str);
-            } else if (i < objArr.length / 2) {
-                Object[] newArray = newArray(i + 2);
-                System.arraycopy(objArr, 0, newArray, 0, i + 1);
-                arrayMap.put(str, newArray);
-            }
+            i = i2;
+        }
+        if (register_intent_filter == 0 && i == 0) {
+            register_intent_filter(obj, intentFilter.actionsIterator(), this.mActionToFilter);
+        }
+        if (i != 0) {
+            register_intent_filter(obj, intentFilter.actionsIterator(), this.mTypedActionToFilter);
         }
     }
 
-    public static FastImmutableArraySet getFastIntentCategories(Intent intent) {
-        Set<String> categories = intent.getCategories();
-        if (categories == null) {
-            return null;
-        }
-        return new FastImmutableArraySet((String[]) categories.toArray(new String[categories.size()]));
+    public boolean allowFilterResult(List list, Object obj) {
+        return true;
     }
 
     public final void buildResolveList(Computer computer, Intent intent, FastImmutableArraySet fastImmutableArraySet, boolean z, boolean z2, String str, String str2, Object[] objArr, List list, int i, long j) {
@@ -601,14 +197,14 @@ public abstract class IntentResolver {
             } else if (str4 == null || isPackageForFilter(str4, obj)) {
                 IntentFilter intentFilter = getIntentFilter(obj);
                 if (intentFilter.getAutoVerify() && z) {
-                    Slog.v("IntentResolver", "  Filter verified: " + isFilterVerified(obj));
+                    Slog.v("IntentResolver", "  Filter verified: " + getIntentFilter(obj).isVerified());
                     int i5 = 0;
                     for (int countDataAuthorities = intentFilter.countDataAuthorities(); i5 < countDataAuthorities; countDataAuthorities = countDataAuthorities) {
                         Slog.v("IntentResolver", "   " + intentFilter.getDataAuthority(i5).getHost());
                         i5++;
                     }
                 }
-                if (allowFilterResult(obj, list)) {
+                if (allowFilterResult(list, obj)) {
                     String str5 = action;
                     str3 = action;
                     i2 = i4;
@@ -625,7 +221,7 @@ public abstract class IntentResolver {
                                 Slog.v("IntentResolver", "    Created result: " + newResult);
                             }
                             if (newResult != null) {
-                                list.add(newResult);
+                                ((ArrayList) list).add(newResult);
                                 if (z) {
                                     dumpFilter(fastPrintWriter2, "    ", obj);
                                     fastPrintWriter2.flush();
@@ -636,7 +232,7 @@ public abstract class IntentResolver {
                             z3 = true;
                         }
                     } else if (z) {
-                        Slog.v("IntentResolver", "  Filter did not match: " + (match != -4 ? match != -3 ? match != -2 ? match != -1 ? "unknown reason" : "type" : "data" : "action" : "category"));
+                        Slog.v("IntentResolver", "  Filter did not match: ".concat(match != -4 ? match != -3 ? match != -2 ? match != -1 ? "unknown reason" : "type" : "data" : "action" : "category"));
                     }
                     i4 = i2 + 1;
                     objArr2 = objArr;
@@ -660,15 +256,49 @@ public abstract class IntentResolver {
             length = i3;
         }
         if (z && z3) {
-            if (list.size() == 0) {
+            ArrayList arrayList = (ArrayList) list;
+            if (arrayList.size() == 0) {
                 Slog.v("IntentResolver", "resolveIntent failed: found match, but none with CATEGORY_DEFAULT");
-            } else if (list.size() > 1) {
+            } else if (arrayList.size() > 1) {
                 Slog.v("IntentResolver", "resolveIntent: multiple matches, only some with CATEGORY_DEFAULT");
             }
         }
     }
 
-    public void copyInto(ArrayMap arrayMap, ArrayMap arrayMap2) {
+    public final ArrayList collectFilters(Object[] objArr, IntentFilter intentFilter) {
+        Object obj;
+        ArrayList arrayList = null;
+        if (objArr != null) {
+            for (int i = 0; i < objArr.length && (obj = objArr[i]) != null; i++) {
+                if (IntentFilter.filterEquals(getIntentFilter(obj), intentFilter)) {
+                    if (arrayList == null) {
+                        arrayList = new ArrayList();
+                    }
+                    arrayList.add(obj);
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    public final void copyFrom(IntentResolver intentResolver) {
+        ArraySet arraySet = this.mFilters;
+        ArraySet arraySet2 = intentResolver.mFilters;
+        arraySet.clear();
+        int size = arraySet2.size();
+        arraySet.ensureCapacity(size);
+        for (int i = 0; i < size; i++) {
+            arraySet.append(snapshot(arraySet2.valueAt(i)));
+        }
+        copyInto(this.mTypeToFilter, intentResolver.mTypeToFilter);
+        copyInto(this.mBaseTypeToFilter, intentResolver.mBaseTypeToFilter);
+        copyInto(this.mWildTypeToFilter, intentResolver.mWildTypeToFilter);
+        copyInto(this.mSchemeToFilter, intentResolver.mSchemeToFilter);
+        copyInto(this.mActionToFilter, intentResolver.mActionToFilter);
+        copyInto(this.mTypedActionToFilter, intentResolver.mTypedActionToFilter);
+    }
+
+    public final void copyInto(ArrayMap arrayMap, ArrayMap arrayMap2) {
         int size = arrayMap2.size();
         arrayMap.clear();
         arrayMap.ensureCapacity(size);
@@ -683,22 +313,318 @@ public abstract class IntentResolver {
         }
     }
 
-    public void copyInto(ArraySet arraySet, ArraySet arraySet2) {
-        arraySet.clear();
-        int size = arraySet2.size();
-        arraySet.ensureCapacity(size);
-        for (int i = 0; i < size; i++) {
-            arraySet.append(snapshot(arraySet2.valueAt(i)));
+    public final boolean dump(PrintWriter printWriter, String str, String str2, String str3, boolean z, boolean z2) {
+        String concat = str2.concat("  ");
+        String concat2 = "\n".concat(str2);
+        String m = AnyMotionDetector$$ExternalSyntheticOutline0.m(str, "\n", str2);
+        if (dumpMap(printWriter, m, "Full MIME Types:", concat, this.mTypeToFilter, str3, z, z2)) {
+            m = concat2;
+        }
+        if (dumpMap(printWriter, m, "Base MIME Types:", concat, this.mBaseTypeToFilter, str3, z, z2)) {
+            m = concat2;
+        }
+        if (dumpMap(printWriter, m, "Wild MIME Types:", concat, this.mWildTypeToFilter, str3, z, z2)) {
+            m = concat2;
+        }
+        if (dumpMap(printWriter, m, "Schemes:", concat, this.mSchemeToFilter, str3, z, z2)) {
+            m = concat2;
+        }
+        if (dumpMap(printWriter, m, "Non-Data Actions:", concat, this.mActionToFilter, str3, z, z2)) {
+            m = concat2;
+        }
+        if (dumpMap(printWriter, m, "MIME Typed Actions:", concat, this.mTypedActionToFilter, str3, z, z2)) {
+            m = concat2;
+        }
+        return m == concat2;
+    }
+
+    public void dumpFilter(PrintWriter printWriter, String str, Object obj) {
+        printWriter.print(str);
+        printWriter.println(obj);
+    }
+
+    public void dumpFilterLabel(PrintWriter printWriter, String str, Object obj, int i) {
+        printWriter.print(str);
+        printWriter.print(obj);
+        printWriter.print(": ");
+        printWriter.println(i);
+    }
+
+    public final boolean dumpMap(PrintWriter printWriter, String str, String str2, String str3, ArrayMap arrayMap, String str4, boolean z, boolean z2) {
+        boolean z3;
+        String str5;
+        Object obj;
+        PrintWriterPrinter printWriterPrinter;
+        boolean z4;
+        ArrayMap arrayMap2 = arrayMap;
+        String m$1 = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str3, "  ");
+        String m$12 = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str3, "    ");
+        ArrayMap arrayMap3 = new ArrayMap();
+        String str6 = str2;
+        int i = 0;
+        boolean z5 = false;
+        PrintWriterPrinter printWriterPrinter2 = null;
+        while (i < arrayMap.size()) {
+            Object[] objArr = (Object[]) arrayMap2.valueAt(i);
+            int length = objArr.length;
+            if (!z2 || z) {
+                z3 = z5;
+                str6 = str6;
+                printWriterPrinter2 = printWriterPrinter2;
+                int i2 = 0;
+                boolean z6 = false;
+                while (i2 < length) {
+                    Object obj2 = objArr[i2];
+                    if (obj2 == null) {
+                        break;
+                    }
+                    if (str4 == null || isPackageForFilter(str4, obj2)) {
+                        if (str6 != null) {
+                            printWriter.print(str);
+                            printWriter.println(str6);
+                            str6 = null;
+                        }
+                        if (!z6) {
+                            printWriter.print(m$1);
+                            printWriter.print((String) arrayMap2.keyAt(i));
+                            printWriter.println(":");
+                            z6 = true;
+                        }
+                        dumpFilter(printWriter, m$12, obj2);
+                        if (z) {
+                            if (printWriterPrinter2 == null) {
+                                printWriterPrinter2 = new PrintWriterPrinter(printWriter);
+                            }
+                            getIntentFilter(obj2).dump(printWriterPrinter2, m$12 + "  ");
+                        }
+                        z3 = true;
+                    }
+                    i2++;
+                    arrayMap2 = arrayMap;
+                }
+            } else {
+                arrayMap3.clear();
+                int i3 = 0;
+                while (true) {
+                    str5 = str6;
+                    if (i3 >= length || (obj = objArr[i3]) == null) {
+                        break;
+                    }
+                    if (str4 == null || isPackageForFilter(str4, obj)) {
+                        Object filterToLabel = filterToLabel(obj);
+                        printWriterPrinter = printWriterPrinter2;
+                        int indexOfKey = arrayMap3.indexOfKey(filterToLabel);
+                        if (indexOfKey < 0) {
+                            z4 = z5;
+                            arrayMap3.put(filterToLabel, new MutableInt(1));
+                        } else {
+                            z4 = z5;
+                            ((MutableInt) arrayMap3.valueAt(indexOfKey)).value++;
+                        }
+                    } else {
+                        z4 = z5;
+                        printWriterPrinter = printWriterPrinter2;
+                    }
+                    i3++;
+                    str6 = str5;
+                    printWriterPrinter2 = printWriterPrinter;
+                    z5 = z4;
+                }
+                z3 = z5;
+                PrintWriterPrinter printWriterPrinter3 = printWriterPrinter2;
+                str6 = str5;
+                int i4 = 0;
+                boolean z7 = false;
+                while (i4 < arrayMap3.size()) {
+                    if (str6 != null) {
+                        printWriter.print(str);
+                        printWriter.println(str6);
+                        str6 = null;
+                    }
+                    if (!z7) {
+                        printWriter.print(m$1);
+                        printWriter.print((String) arrayMap2.keyAt(i));
+                        printWriter.println(":");
+                        z7 = true;
+                    }
+                    dumpFilterLabel(printWriter, m$12, arrayMap3.keyAt(i4), ((MutableInt) arrayMap3.valueAt(i4)).value);
+                    i4++;
+                    z3 = true;
+                }
+                printWriterPrinter2 = printWriterPrinter3;
+            }
+            z5 = z3;
+            i++;
+            arrayMap2 = arrayMap;
+        }
+        return z5;
+    }
+
+    public final IteratorWrapper filterIterator() {
+        return new IteratorWrapper(this.mFilters.iterator());
+    }
+
+    public void filterResults(List list) {
+    }
+
+    public Object filterToLabel(Object obj) {
+        return "IntentFilter";
+    }
+
+    public abstract IntentFilter getIntentFilter(Object obj);
+
+    public boolean isFilterStopped(Computer computer, Object obj, int i) {
+        return false;
+    }
+
+    public abstract boolean isPackageForFilter(String str, Object obj);
+
+    public abstract Object[] newArray(int i);
+
+    public Object newResult(Computer computer, Object obj, int i, int i2, long j) {
+        return obj;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:34:0x0160  */
+    /* JADX WARN: Removed duplicated region for block: B:39:0x0186 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:48:0x01ba  */
+    /* JADX WARN: Removed duplicated region for block: B:51:0x01d6  */
+    /* JADX WARN: Removed duplicated region for block: B:53:0x01fc  */
+    /* JADX WARN: Removed duplicated region for block: B:55:0x0218  */
+    /* JADX WARN: Removed duplicated region for block: B:57:0x0234  */
+    /* JADX WARN: Removed duplicated region for block: B:60:0x0258  */
+    /* JADX WARN: Removed duplicated region for block: B:66:0x01f5  */
+    /* JADX WARN: Removed duplicated region for block: B:67:0x01bd  */
+    /* JADX WARN: Removed duplicated region for block: B:69:0x0182  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final java.util.List queryIntent(com.android.server.pm.snapshot.PackageDataSnapshot r24, android.content.Intent r25, java.lang.String r26, boolean r27, int r28, long r29) {
+        /*
+            Method dump skipped, instructions count: 638
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.IntentResolver.queryIntent(com.android.server.pm.snapshot.PackageDataSnapshot, android.content.Intent, java.lang.String, boolean, int, long):java.util.List");
+    }
+
+    public final List queryIntentFromList(Computer computer, Intent intent, String str, boolean z, ArrayList arrayList, int i, long j) {
+        if ("android.intent.action.PROCESS_TEXT".equals(intent.getAction()) && Flags.ignoreProcessText()) {
+            return Collections.emptyList();
+        }
+        ArrayList arrayList2 = new ArrayList();
+        boolean z2 = (intent.getFlags() & 8) != 0;
+        Set<String> categories = intent.getCategories();
+        FastImmutableArraySet fastImmutableArraySet = categories == null ? null : new FastImmutableArraySet((String[]) categories.toArray(new String[categories.size()]));
+        String scheme = intent.getScheme();
+        int i2 = 0;
+        for (int size = arrayList.size(); i2 < size; size = size) {
+            buildResolveList(computer, intent, fastImmutableArraySet, z2, z, str, scheme, (Object[]) arrayList.get(i2), arrayList2, i, j);
+            i2++;
+        }
+        sortResults(arrayList2);
+        return arrayList2;
+    }
+
+    public final int register_intent_filter(Object obj, Iterator it, ArrayMap arrayMap) {
+        int i = 0;
+        if (it == null) {
+            return 0;
+        }
+        while (it.hasNext()) {
+            i++;
+            addFilter(arrayMap, (String) it.next(), obj);
+        }
+        return i;
+    }
+
+    public void removeFilter(Object obj) {
+        removeFilterInternal(obj);
+        this.mFilters.remove(obj);
+    }
+
+    public void removeFilterInternal(Object obj) {
+        String str;
+        IntentFilter intentFilter = getIntentFilter(obj);
+        int unregister_intent_filter = unregister_intent_filter(obj, intentFilter.schemesIterator(), this.mSchemeToFilter);
+        Iterator<String> typesIterator = getIntentFilter(obj).typesIterator();
+        int i = 0;
+        if (typesIterator != null) {
+            int i2 = 0;
+            while (typesIterator.hasNext()) {
+                String next = typesIterator.next();
+                i2++;
+                int indexOf = next.indexOf(47);
+                if (indexOf > 0) {
+                    str = next.substring(0, indexOf).intern();
+                } else {
+                    str = next;
+                    next = next.concat("/*");
+                }
+                remove_all_objects(this.mTypeToFilter, next, obj);
+                if (indexOf > 0) {
+                    remove_all_objects(this.mBaseTypeToFilter, str, obj);
+                } else {
+                    remove_all_objects(this.mWildTypeToFilter, str, obj);
+                }
+            }
+            i = i2;
+        }
+        if (unregister_intent_filter == 0 && i == 0) {
+            unregister_intent_filter(obj, intentFilter.actionsIterator(), this.mActionToFilter);
+        }
+        if (i != 0) {
+            unregister_intent_filter(obj, intentFilter.actionsIterator(), this.mTypedActionToFilter);
         }
     }
 
-    public void copyFrom(IntentResolver intentResolver) {
-        copyInto(this.mFilters, intentResolver.mFilters);
-        copyInto(this.mTypeToFilter, intentResolver.mTypeToFilter);
-        copyInto(this.mBaseTypeToFilter, intentResolver.mBaseTypeToFilter);
-        copyInto(this.mWildTypeToFilter, intentResolver.mWildTypeToFilter);
-        copyInto(this.mSchemeToFilter, intentResolver.mSchemeToFilter);
-        copyInto(this.mActionToFilter, intentResolver.mActionToFilter);
-        copyInto(this.mTypedActionToFilter, intentResolver.mTypedActionToFilter);
+    public final void remove_all_objects(ArrayMap arrayMap, String str, Object obj) {
+        Object[] objArr = (Object[]) arrayMap.get(str);
+        if (objArr != null) {
+            int length = objArr.length - 1;
+            while (length >= 0 && objArr[length] == null) {
+                length--;
+            }
+            int i = length;
+            while (length >= 0) {
+                Object obj2 = objArr[length];
+                if (obj2 != null && getIntentFilter(obj2) == getIntentFilter(obj)) {
+                    int i2 = i - length;
+                    if (i2 > 0) {
+                        System.arraycopy(objArr, length + 1, objArr, length, i2);
+                    }
+                    objArr[i] = null;
+                    i--;
+                }
+                length--;
+            }
+            if (i < 0) {
+                arrayMap.remove(str);
+            } else if (i < objArr.length / 2) {
+                Object[] newArray = newArray(i + 2);
+                System.arraycopy(objArr, 0, newArray, 0, i + 1);
+                arrayMap.put(str, newArray);
+            }
+        }
+    }
+
+    public Object snapshot(Object obj) {
+        return obj;
+    }
+
+    public void sortResults(List list) {
+        Collections.sort(list, mResolvePrioritySorter);
+    }
+
+    public final int unregister_intent_filter(Object obj, Iterator it, ArrayMap arrayMap) {
+        int i = 0;
+        if (it == null) {
+            return 0;
+        }
+        while (it.hasNext()) {
+            i++;
+            remove_all_objects(arrayMap, (String) it.next(), obj);
+        }
+        return i;
     }
 }

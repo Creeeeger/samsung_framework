@@ -2,79 +2,90 @@ package com.android.server.wm;
 
 import android.app.ActivityOptions;
 import android.app.AppGlobals;
+import android.graphics.Rect;
 import android.os.Binder;
 import android.os.RemoteException;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.samsung.android.knox.custom.KnoxCustomManagerService;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes3.dex */
-public class MultiStarController implements IController {
-    public static final List DEFAULT_ALLOW_LIST = Arrays.asList("com.samsung.android.multistar", "com.android.systemui", "com.android.settings");
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class MultiStarController implements IController {
+    public static final List DEFAULT_ALLOW_LIST = Arrays.asList("com.samsung.android.multistar", Constants.SYSTEMUI_PACKAGE_NAME, KnoxCustomManagerService.SETTING_PKG_NAME);
     public ActivityTaskManagerService mAtm;
 
-    @Override // com.android.server.wm.IController
-    public void dumpLocked(PrintWriter printWriter, String str) {
-    }
-
-    @Override // com.android.server.wm.IController
-    public void initialize() {
-    }
-
-    public MultiStarController(ActivityTaskManagerService activityTaskManagerService) {
-        this.mAtm = activityTaskManagerService;
-    }
-
-    public final boolean ensureCallingPkg(List list) {
+    public static void checkMultiStarPackageAndPermission(String str, List list) {
+        if (list == null) {
+            list = new ArrayList();
+        }
+        list.addAll(DEFAULT_ALLOW_LIST);
         try {
             String[] packagesForUid = AppGlobals.getPackageManager().getPackagesForUid(Binder.getCallingUid());
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                String str = (String) it.next();
-                for (String str2 : packagesForUid) {
-                    if (str.equals(str2)) {
-                        return true;
+            for (String str2 : list) {
+                for (String str3 : packagesForUid) {
+                    if (str2.equals(str3)) {
+                        ActivityTaskManagerService.enforceTaskPermission(str);
+                        return;
                     }
                 }
             }
         } catch (RemoteException unused) {
         }
-        return false;
+        StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Permission Denial: ", str, " from pid=");
+        m.append(Binder.getCallingPid());
+        m.append(", uid=");
+        m.append(Binder.getCallingUid());
+        throw new SecurityException(m.toString());
     }
 
-    public void checkMultiStarPackageAndPermission(String str) {
-        checkMultiStarPackageAndPermission(str, null);
+    @Override // com.android.server.wm.IController
+    public final void dumpLocked(PrintWriter printWriter) {
     }
 
-    public void checkMultiStarPackageAndPermission(String str, List list) {
-        if (list == null) {
-            list = new ArrayList();
+    @Override // com.android.server.wm.IController
+    public final void initialize() {
+    }
+
+    public final void setCustomDensityEnabled(int i) {
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        activityTaskManagerService.mMultiWindowEnableController.dismissMultiWindowMode();
+        MultiWindowEnableController multiWindowEnableController = activityTaskManagerService.mMultiWindowEnableController;
+        ArrayList arrayList = multiWindowEnableController.mCDRequestLogs;
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "(", ", ");
+        m.append(multiWindowEnableController.mSimpleDateFormat.format(Long.valueOf(System.currentTimeMillis())));
+        m.append(")");
+        arrayList.add(m.toString());
+        if (multiWindowEnableController.mCDRequestLogs.size() > 50) {
+            multiWindowEnableController.mCDRequestLogs.remove(0);
         }
-        list.addAll(DEFAULT_ALLOW_LIST);
-        if (!ensureCallingPkg(list)) {
-            throw new SecurityException("Permission Denial: " + str + " from pid=" + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid());
+        Iterator it = multiWindowEnableController.mAtm.mExt.getStartedUserIdsLocked().iterator();
+        while (it.hasNext()) {
+            multiWindowEnableController.mCoreStateController.setVolatileState("custom_density", Integer.valueOf(i), ((Integer) it.next()).intValue(), true, true, null);
         }
-        ActivityTaskManagerService.enforceTaskPermission(str);
     }
 
-    public void setCustomDensityEnabled(int i) {
-        this.mAtm.mMultiWindowEnableController.dismissMultiWindowMode(0);
-        this.mAtm.mMultiWindowEnableController.setCustomDensityEnabled(i);
-    }
-
-    public boolean toggleFreeformWindowingMode() {
+    public final boolean toggleFreeformWindowingMode() {
         ActivityRecord activityRecord;
-        Task rootTask = this.mAtm.mWindowManager.getDefaultDisplayContentLocked().getRootTask(1, 1);
-        if (rootTask == null || (activityRecord = rootTask.topRunningActivityLocked()) == null || activityRecord.getTask() == null || !activityRecord.supportsFreeform()) {
+        Rect rect;
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        Task rootTask = activityTaskManagerService.mWindowManager.getDefaultDisplayContentLocked().getRootTask(1, 1);
+        if (rootTask == null || (activityRecord = rootTask.topRunningActivityLocked()) == null || activityRecord.task == null || !activityRecord.supportsFreeform()) {
             return false;
         }
-        this.mAtm.mActivityClientController.toggleFreeformWindowingMode(activityRecord.token);
-        if (activityRecord.inFreeformWindowingMode() && (activityRecord.getTask().mLastNonFullscreenBounds == null || activityRecord.getTask().mLastNonFullscreenBounds.isEmpty())) {
+        activityTaskManagerService.mActivityClientController.toggleFreeformWindowingMode(activityRecord.token);
+        if (activityRecord.inFreeformWindowingMode() && ((rect = activityRecord.task.mLastNonFullscreenBounds) == null || rect.isEmpty())) {
             ActivityOptions makeBasic = ActivityOptions.makeBasic();
             makeBasic.setLaunchWindowingMode(5);
-            this.mAtm.mTaskSupervisor.getLaunchParamsController().layoutTask(activityRecord.getTask(), activityRecord.info.windowLayout, activityRecord, null, makeBasic, activityRecord.getTask().getDisplayId());
+            LaunchParamsController launchParamsController = activityTaskManagerService.mTaskSupervisor.mLaunchParamsController;
+            Task task = activityRecord.task;
+            launchParamsController.layoutTask(task, activityRecord.info.windowLayout, activityRecord, null, makeBasic, task.getDisplayId());
         }
         return true;
     }

@@ -3,66 +3,68 @@ package com.android.server.am.mars.filter.filter;
 import android.content.Context;
 import android.util.ArrayMap;
 import com.android.server.am.MARsPolicyManager;
+import com.android.server.am.mars.MARsUtils;
 import com.android.server.am.mars.database.MARsVersionManager;
 import com.android.server.am.mars.filter.IFilter;
 import java.util.ArrayList;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TopPackageFilter implements IFilter {
+public final class TopPackageFilter implements IFilter {
     public ArrayMap mTopPkg;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class TopPackageFilterHolder {
-        public static final TopPackageFilter INSTANCE = new TopPackageFilter();
+        public static final TopPackageFilter INSTANCE;
+
+        static {
+            TopPackageFilter topPackageFilter = new TopPackageFilter();
+            topPackageFilter.mTopPkg = new ArrayMap();
+            INSTANCE = topPackageFilter;
+        }
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void deInit() {
-    }
-
-    public final void setContext(Context context) {
-    }
-
-    public TopPackageFilter() {
-        this.mTopPkg = new ArrayMap();
-    }
-
-    public static TopPackageFilter getInstance() {
-        return TopPackageFilterHolder.INSTANCE;
+    public final void deInit() {
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void init(Context context) {
-        setContext(context);
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public int filter(String str, int i, int i2, int i3) {
-        if (MARsPolicyManager.getInstance().isChinaPolicyEnabled() && !MARsPolicyManager.getInstance().getScreenOnState() && MARsVersionManager.getInstance().isAdjustRestrictionMatch(5, str, null, null)) {
+    public final int filter(int i, int i2, int i3, String str) {
+        if (MARsUtils.isChinaPolicyEnabled() && !MARsUtils.getScreenOnState()) {
+            String[][] strArr = MARsVersionManager.mMARsSettingsInfoDefault;
+            if (MARsVersionManager.MARsVersionManagerHolder.INSTANCE.isAdjustRestrictionMatch(5, str, null, null)) {
+                return 0;
+            }
+        }
+        if ((i3 == 4 || i3 == 15) && !MARsUtils.getScreenOnState()) {
             return 0;
         }
-        if ((i3 == 4 || i3 == 15) && !MARsPolicyManager.getInstance().getScreenOnState()) {
-            return 0;
+        if (i3 == 7 || i3 == 3) {
+            boolean z = MARsPolicyManager.MARs_ENABLE;
+            if (MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.isFirstTimeTriggerAutorun()) {
+                return 0;
+            }
         }
         synchronized (this.mTopPkg) {
-            ArrayList arrayList = (ArrayList) this.mTopPkg.get(Integer.valueOf(i));
-            return (arrayList == null || !arrayList.contains(str)) ? 0 : 12;
+            try {
+                ArrayList arrayList = (ArrayList) this.mTopPkg.get(Integer.valueOf(i));
+                return (arrayList == null || !arrayList.contains(str)) ? 0 : 12;
+            } catch (Throwable th) {
+                throw th;
+            }
         }
     }
 
-    public void updateTopPkgList(ArrayList arrayList, int i) {
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void init(Context context) {
+    }
+
+    public final void updateTopPkgList(ArrayList arrayList, int i) {
         if (arrayList != null) {
             synchronized (this.mTopPkg) {
                 this.mTopPkg.clear();
                 this.mTopPkg.put(Integer.valueOf(i), arrayList);
             }
-        }
-    }
-
-    public boolean isInTopPkgList(String str, int i) {
-        synchronized (this.mTopPkg) {
-            ArrayList arrayList = (ArrayList) this.mTopPkg.get(Integer.valueOf(i));
-            return arrayList != null && arrayList.contains(str);
         }
     }
 }

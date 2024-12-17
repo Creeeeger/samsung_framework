@@ -1,37 +1,27 @@
 package com.android.server.wm;
 
 import android.app.ActivityOptions;
-import android.app.BackgroundStartPrivileges;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Binder;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
 import android.util.Slog;
 import android.util.SparseArray;
-import com.android.server.LocalServices;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import com.android.server.wm.DexCompatBoundsProvider;
 import com.android.server.wm.LaunchParamsController;
-import com.samsung.android.desktopmode.DesktopModeManagerInternal;
-import com.samsung.android.rune.CoreRune;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class DexCompatController implements IController {
-    public static final boolean DEBUG_DEX_COMPAT = CoreRune.SAFE_DEBUG;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DexCompatController implements IController {
     public final ActivityTaskManagerService mAtm;
     public final WindowManagerGlobalLock mGlobalLock;
     public H mH;
@@ -39,576 +29,74 @@ public class DexCompatController implements IController {
     public final SparseArray mDecorCaptionHeightInFullscreen = new SparseArray();
     public final SparseArray mDecorCaptionHeightInFreeform = new SparseArray();
 
-    public DexCompatController(ActivityTaskManagerService activityTaskManagerService) {
-        this.mAtm = activityTaskManagerService;
-        this.mGlobalLock = activityTaskManagerService.mGlobalLock;
-    }
-
-    @Override // com.android.server.wm.IController
-    public void initialize() {
-        this.mH = new H(this.mAtm.mH.getLooper());
-    }
-
-    public boolean resolveDexCompatConfigurationLocked(ActivityRecord activityRecord, ApplicationInfo applicationInfo, int i, Configuration configuration, String str) {
-        if (!shouldBeApplyDexCompatConfigurationLocked(activityRecord, applicationInfo, i)) {
-            return false;
-        }
-        applyDexCompatConfigurationLocked(activityRecord, applicationInfo, configuration, str);
-        return true;
-    }
-
-    public boolean shouldBeApplyDexCompatConfigurationLocked(ActivityRecord activityRecord, ApplicationInfo applicationInfo, int i) {
-        if ((activityRecord != null && !activityRecord.isDexMode()) || applicationInfo == null) {
-            return false;
-        }
-        if (activityRecord != null && activityRecord.getPid() == Process.myPid()) {
-            return false;
-        }
-        int dexModeLocked = this.mAtm.mDexController.getDexModeLocked();
-        return ((dexModeLocked == 1 && i == 0) || (dexModeLocked == 2 && i == 2)) && (getResolvedLaunchPolicyForPackage(activityRecord, applicationInfo) & 1) != 0;
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:18:0x0036  */
-    /* JADX WARN: Removed duplicated region for block: B:27:0x003f  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void applyDexCompatConfigurationLocked(com.android.server.wm.ActivityRecord r8, android.content.pm.ApplicationInfo r9, android.content.res.Configuration r10, java.lang.String r11) {
-        /*
-            Method dump skipped, instructions count: 269
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DexCompatController.applyDexCompatConfigurationLocked(com.android.server.wm.ActivityRecord, android.content.pm.ApplicationInfo, android.content.res.Configuration, java.lang.String):void");
-    }
-
-    public final ActivityRecord getTopCompatActivityLocked(final String str) {
-        DisplayContent displayContent;
-        int dexModeLocked = this.mAtm.mDexController.getDexModeLocked();
-        if (dexModeLocked == 2) {
-            displayContent = this.mAtm.mRootWindowContainer.getDisplayContent(2);
-        } else {
-            displayContent = dexModeLocked == 1 ? this.mAtm.mRootWindowContainer.getDisplayContent(0) : null;
-        }
-        if (str != null && displayContent != null) {
-            final ArrayList arrayList = new ArrayList();
-            displayContent.forAllTasks(new Consumer() { // from class: com.android.server.wm.DexCompatController$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    DexCompatController.lambda$getTopCompatActivityLocked$0(arrayList, (Task) obj);
-                }
-            });
-            Iterator it = arrayList.iterator();
-            while (it.hasNext()) {
-                ActivityRecord activity = ((Task) it.next()).getActivity(new Predicate() { // from class: com.android.server.wm.DexCompatController$$ExternalSyntheticLambda1
-                    @Override // java.util.function.Predicate
-                    public final boolean test(Object obj) {
-                        boolean lambda$getTopCompatActivityLocked$1;
-                        lambda$getTopCompatActivityLocked$1 = DexCompatController.lambda$getTopCompatActivityLocked$1(str, (ActivityRecord) obj);
-                        return lambda$getTopCompatActivityLocked$1;
-                    }
-                }, true);
-                if (activity != null) {
-                    return activity;
-                }
-            }
-        }
-        return null;
-    }
-
-    public static /* synthetic */ void lambda$getTopCompatActivityLocked$0(ArrayList arrayList, Task task) {
-        if (task.isDexCompatEnabled()) {
-            arrayList.add(task);
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$getTopCompatActivityLocked$1(String str, ActivityRecord activityRecord) {
-        return str.equals(activityRecord.processName) && !activityRecord.finishing;
-    }
-
-    public final int getResolvedLaunchPolicyForPackage(ActivityRecord activityRecord, ApplicationInfo applicationInfo) {
-        if (((DesktopModeManagerInternal) LocalServices.getService(DesktopModeManagerInternal.class)) == null) {
-            Slog.w("DexCompatController", "[DexCompat] DexCompatLaunchPolicy: task=" + this + ", DesktopModeService is null, caller=" + Debug.getCallers(6));
-            return 0;
-        }
-        if (activityRecord == null) {
-            return this.mAtm.mDexController.getDexPolicyFlags(applicationInfo);
-        }
-        if (activityRecord.isActivityTypeHome() || activityRecord.isActivityTypeDream()) {
-            activityRecord.mProcessAppLaunchPolicy = 0;
-            return 0;
-        }
-        int i = activityRecord.mProcessAppLaunchPolicy;
-        if (i == 0) {
-            activityRecord.mProcessAppLaunchPolicy = this.mAtm.mDexController.getDexPolicyFlags(applicationInfo);
-            if (!activityRecord.isResizeable(false)) {
-                activityRecord.mProcessAppLaunchPolicy |= 1;
-            }
-            return activityRecord.mProcessAppLaunchPolicy;
-        }
-        if (activityRecord.info == null || (i & 1) == 0 || activityRecord.getTask() == null || !activityRecord.getTask().isDexCompatEnabled()) {
-            return 0;
-        }
-        int dexPolicyFlags = this.mAtm.mDexController.getDexPolicyFlags(applicationInfo);
-        return !activityRecord.isResizeable(false) ? dexPolicyFlags | 1 : dexPolicyFlags;
-    }
-
-    public int getDecorCaptionHeight(int i, int i2) {
-        Integer num;
-        if (i2 == 1) {
-            num = (Integer) this.mDecorCaptionHeightInFullscreen.get(i);
-        } else {
-            num = i2 == 5 ? (Integer) this.mDecorCaptionHeightInFreeform.get(i) : null;
-        }
-        if (num != null) {
-            return num.intValue();
-        }
-        return 0;
-    }
-
-    public void loadResources(int i) {
-        if (this.mAtm.mRootWindowContainer.getDisplayContent(i) == null) {
-            Slog.w("DexCompatController", "loadResources: failed, cannot find display!");
-            return;
-        }
-        Context displayContext = this.mAtm.mDexController.getDisplayContext(i);
-        if (displayContext == null) {
-            displayContext = this.mAtm.mContext;
-        }
-        Resources resources = displayContext.getResources();
-        this.mDecorCaptionHeightInFullscreen.put(i, Integer.valueOf(resources.getDimensionPixelSize(17105721)));
-        this.mDecorCaptionHeightInFreeform.put(i, Integer.valueOf(resources.getDimensionPixelSize(17105720)));
-    }
-
-    public void updateDexCompatLaunchPolicy(Task task, ActivityInfo activityInfo) {
-        String str;
-        if (task.isDexMode()) {
-            task.mDexLaunchPolicy = this.mAtm.mDexController.getDexPolicyFlags(activityInfo.applicationInfo);
-            if (!task.isResizeable(false)) {
-                task.mDexLaunchPolicy |= 1;
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.append("[DexCompat] DexCompatLaunchPolicy: task=");
-            sb.append(task);
-            sb.append(" mDexLaunchPolicy=0x");
-            sb.append(Integer.toHexString(task.mDexLaunchPolicy));
-            sb.append(" mResizeMode=");
-            sb.append(task.mResizeMode);
-            sb.append(" info=");
-            sb.append(activityInfo);
-            if (DEBUG_DEX_COMPAT) {
-                str = ", caller=" + Debug.getCallers(6);
-            } else {
-                str = "";
-            }
-            sb.append(str);
-            Slog.i("DexCompatController", sb.toString());
-        }
-    }
-
-    public void changeWindowingModeIfNeeded(Task task, Task task2, ActivityRecord activityRecord) {
-        LaunchParamsController.LaunchParams launchParams = new LaunchParamsController.LaunchParams();
-        this.mAtm.mTaskSupervisor.getLaunchParamsController().calculate(task2, null, activityRecord, null, null, null, 3, launchParams);
-        int windowingMode = task.getWindowingMode();
-        int i = launchParams.mWindowingMode;
-        if (i == 0 || windowingMode == i) {
-            return;
-        }
-        Slog.d("DexCompatController", "[DexCompat] changeWindowingModeIfNeeded: prev=" + windowingMode + ", next=" + launchParams.mWindowingMode + ", task=" + task2);
-        task.setWindowingMode(launchParams.mWindowingMode, false);
-    }
-
-    public boolean isOrientationChangedLocked(Task task, ActivityRecord activityRecord) {
-        int convertToConfigurationOrientation;
-        if (!task.isDexCompatEnabled()) {
-            return false;
-        }
-        Task rootTask = task.getRootTask();
-        ActivityRecord activityRecord2 = task.topRunningActivityLocked();
-        if (rootTask == null || activityRecord == null) {
-            return false;
-        }
-        if ((activityRecord2 != null && activityRecord2 != activityRecord) || (convertToConfigurationOrientation = convertToConfigurationOrientation(activityRecord.getRequestedOrientation())) == 0) {
-            return false;
-        }
-        this.mTmpRect.set(task.getBounds());
-        return ((this.mTmpRect.isEmpty() || this.mTmpRect.width() > this.mTmpRect.height()) ? 2 : 1) != convertToConfigurationOrientation;
-    }
-
-    public DexCompatBoundsProvider getCompatBoundsProvider(int i) {
-        if (i == 1) {
-            return new DexCompatBoundsProvider();
-        }
-        if (i == 2) {
-            return new DexCompatBoundsProvider.CustomDexCompatBoundsProvider();
-        }
-        if (i == 3) {
-            return new DexCompatBoundsProvider.FullscreenDexCompatBoundsProvider();
-        }
-        return null;
-    }
-
-    public void getCompatBounds(Task task, Rect rect, ActivityRecord activityRecord) {
-        getCompatBounds(task, rect, activityRecord, task.mDexCompatUiMode);
-    }
-
-    public void getCompatBounds(Task task, Rect rect, ActivityRecord activityRecord, int i) {
-        DexCompatBoundsProvider compatBoundsProvider = getCompatBoundsProvider(i);
-        if (compatBoundsProvider == null) {
-            Slog.w("DexCompatController", "rotateDexCompatTaskLocked: cannot found bounds provider, " + task);
-            return;
-        }
-        if (compatBoundsProvider.setInitialState(task, getAppOrientation(task, activityRecord))) {
-            compatBoundsProvider.getBounds(rect);
-        }
-    }
-
-    public final int getAppOrientation(Task task, ActivityRecord activityRecord) {
-        ActivityRecord topMostActivity = task.getTopMostActivity();
-        if (topMostActivity != null) {
-            return topMostActivity.getOrientation() != -2 ? topMostActivity.getOrientation() : topMostActivity.info.screenOrientation;
-        }
-        if (activityRecord == null) {
-            return -1;
-        }
-        if (activityRecord.getRootTask() != null) {
-            return activityRecord.getOrientation();
-        }
-        return activityRecord.info.screenOrientation;
-    }
-
-    public void rotateDexCompatTaskLocked(ActivityRecord activityRecord) {
-        int i;
-        int i2;
-        int i3;
-        Task task = activityRecord.getTask();
-        if (task == null || !task.isDexCompatEnabled()) {
-            return;
-        }
-        Rect bounds = task.getBounds();
-        int i4 = (bounds.isEmpty() || bounds.width() > bounds.height()) ? 1 : 0;
-        DexCompatBoundsProvider compatBoundsProvider = getCompatBoundsProvider(task.mDexCompatUiMode);
-        if (compatBoundsProvider == null) {
-            Slog.w("DexCompatController", "rotateDexCompatTaskLocked: cannot found bounds provider, " + task);
-            return;
-        }
-        Rect rect = new Rect();
-        if (compatBoundsProvider.setInitialState(task, i4)) {
-            compatBoundsProvider.getBounds(rect);
-        }
-        Task rootTask = task.getRootTask();
-        if (!rect.isEmpty()) {
-            if (rootTask != null && !rootTask.inFreeformWindowingMode()) {
-                rootTask.setWindowingMode(5);
-            }
-            Point dexScreenSizeLocked = getDexScreenSizeLocked();
-            int width = (dexScreenSizeLocked.x - rect.width()) / 2;
-            if (task.isDexCompatUiFullscreen() && compatBoundsProvider.mIsPortrait && activityRecord.getRequestedConfigurationOrientation() == 1) {
-                i = getDecorCaptionHeight(activityRecord.getDisplayId(), activityRecord.getWindowingMode());
-            } else if (bounds.isEmpty()) {
-                i = 0;
-            } else {
-                width = bounds.left;
-                i = bounds.top;
-            }
-            rect.offsetTo(width, i);
-            int i5 = rect.left;
-            if (i5 < 0) {
-                i2 = -i5;
-            } else {
-                int i6 = rect.right;
-                int i7 = dexScreenSizeLocked.x;
-                i2 = i6 > i7 ? i7 - i6 : 0;
-            }
-            int i8 = rect.top;
-            if (i8 < 0) {
-                i3 = -i8;
-            } else {
-                int i9 = rect.bottom;
-                int i10 = dexScreenSizeLocked.y;
-                i3 = i9 > i10 ? i10 - i9 : 0;
-            }
-            rect.offset(i2, i3);
-            this.mAtm.resizeTask(task.mTaskId, rect, 0);
-        } else if (task.isDexCompatUiFullscreen() && rootTask != null) {
-            rootTask.setWindowingMode(1);
-        }
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.i("DexCompatController", "[DexCompat] rotateCompatTaskLocked: " + task + ", prev=" + bounds + ", new=" + rect);
-        }
-    }
-
-    public final Point getDexScreenSizeLocked() {
-        if (this.mAtm.mDexController.getDexModeLocked() == 2) {
-            return this.mAtm.mDexController.getDexDisplaySizeLocked();
-        }
-        Point point = new Point();
-        this.mAtm.mRootWindowContainer.getDefaultDisplay().mDisplay.getRealSize(point);
-        return point;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x002a, code lost:
-    
-        if (r4.width() <= r4.height()) goto L74;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x005e, code lost:
-    
-        return 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x003d, code lost:
-    
-        if (r4.x > r4.y) goto L56;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0048, code lost:
-    
-        if (r4.width() > r4.height()) goto L56;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x005a, code lost:
-    
-        if (r4.width() > r4.height()) goto L56;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int getOrientationFromTaskBounds(com.android.server.wm.Task r5) {
-        /*
-            r4 = this;
-            boolean r4 = r5.isDexCompatEnabled()
-            if (r4 != 0) goto L8
-            r4 = 0
-            return r4
-        L8:
-            android.graphics.Rect r4 = r5.getRequestedOverrideBounds()
-            int r0 = com.android.server.wm.DexCompatBoundsProvider.getDefaultOrientation()
-            int r1 = r5.mDexCompatUiMode
-            r2 = 2
-            r3 = 1
-            if (r1 == r3) goto L4b
-            if (r1 == r2) goto L2e
-            r5 = 3
-            if (r1 == r5) goto L1c
-            goto L5e
-        L1c:
-            boolean r5 = r4.isEmpty()
-            if (r5 != 0) goto L2c
-            int r5 = r4.width()
-            int r4 = r4.height()
-            if (r5 <= r4) goto L5d
-        L2c:
-            r0 = r2
-            goto L5e
-        L2e:
-            boolean r1 = r4.isEmpty()
-            if (r1 == 0) goto L40
-            android.graphics.Point r4 = r5.mDexCompatCustomSize
-            if (r4 != 0) goto L39
-            goto L5e
-        L39:
-            int r5 = r4.x
-            int r4 = r4.y
-            if (r5 <= r4) goto L5d
-            goto L2c
-        L40:
-            int r5 = r4.width()
-            int r4 = r4.height()
-            if (r5 <= r4) goto L5d
-            goto L2c
-        L4b:
-            boolean r5 = r4.isEmpty()
-            if (r5 == 0) goto L52
-            goto L5e
-        L52:
-            int r5 = r4.width()
-            int r4 = r4.height()
-            if (r5 <= r4) goto L5d
-            goto L2c
-        L5d:
-            r0 = r3
-        L5e:
-            return r0
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DexCompatController.getOrientationFromTaskBounds(com.android.server.wm.Task):int");
-    }
-
-    public static int convertToConfigurationOrientation(int i) {
-        if (ActivityInfo.isFixedOrientationPortrait(i)) {
-            return 1;
-        }
-        return ActivityInfo.isFixedOrientationLandscape(i) ? 2 : 0;
-    }
-
-    public void startActivityForDexRestart(Task task) {
-        ActivityRecord rootActivity = task.getRootActivity();
-        if (rootActivity == null) {
-            return;
-        }
-        int displayId = task.getDisplayId();
-        if (displayId == -1) {
-            Slog.w("DexCompatController", "[DexCompat] Display is not invalid.");
-            return;
-        }
-        Intent intent = task.intent;
-        intent.addFlags(1048576);
-        ActivityOptions makeBasic = ActivityOptions.makeBasic();
-        makeBasic.setLaunchDisplayId(displayId);
-        makeBasic.setForceLaunchWindowingMode(task.getWindowingMode());
-        Request request = new Request();
-        WindowProcessController windowProcessController = rootActivity.app;
-        if (windowProcessController != null && isSystemUiProcessName(windowProcessController.mName)) {
-            Slog.w("DexCompatController", "startActivityForDexRestart: cannot kill systemui process, root=" + rootActivity + ", task=" + task);
-        } else {
-            request.wpc = rootActivity.app;
-        }
-        request.intent = intent;
-        request.callingUid = task.mCallingUid;
-        request.callingPackage = task.mCallingPackage;
-        request.callingFeatureId = task.mCallingFeatureId;
-        request.realCallingPid = Binder.getCallingPid();
-        request.realCallingUid = Binder.getCallingUid();
-        request.activityOptions = new SafeActivityOptions(makeBasic);
-        request.reason = "startActivityForDexRestart";
-        request.userId = task.mUserId;
-        this.mAtm.deferWindowLayout();
-        try {
-            this.mAtm.mTaskSupervisor.removeTaskById(task.mTaskId, false, true, "startActivityForDexRestart", request.callingUid);
-            scheduleStartActivityAsToggleFreeform(request, displayId);
-        } finally {
-            this.mAtm.continueWindowLayout();
-        }
-    }
-
-    public void toggleFreeformForDexCompatApp(Task task) {
-        ActivityRecord rootActivity = task.getRootActivity();
-        if (rootActivity == null) {
-            return;
-        }
-        int displayId = task.getDisplayId();
-        if (displayId == -1) {
-            Slog.w("DexCompatController", "[DexCompat] Display is not invalid.");
-            return;
-        }
-        Intent intent = task.intent;
-        intent.addFlags(1048576);
-        ActivityOptions makeBasic = ActivityOptions.makeBasic();
-        makeBasic.setLaunchDisplayId(displayId);
-        if (task.mDexCompatUiMode != 3) {
-            this.mTmpRect.setEmpty();
-            makeBasic.setLaunchBounds(this.mTmpRect);
-            makeBasic.setForceLaunchWindowingMode(1);
-        } else {
-            makeBasic.setForceLaunchWindowingMode(5);
-        }
-        Request request = new Request();
-        WindowProcessController windowProcessController = rootActivity.app;
-        if (windowProcessController != null && isSystemUiProcessName(windowProcessController.mName)) {
-            Slog.w("DexCompatController", "startActivityForDexRestart: cannot kill systemui process, root=" + rootActivity + ", task=" + task);
-        } else {
-            request.wpc = rootActivity.app;
-        }
-        request.intent = intent;
-        request.callingUid = task.mCallingUid;
-        request.callingPackage = task.mCallingPackage;
-        request.callingFeatureId = task.mCallingFeatureId;
-        request.realCallingPid = Binder.getCallingPid();
-        request.realCallingUid = Binder.getCallingUid();
-        request.activityOptions = new SafeActivityOptions(makeBasic);
-        request.reason = "toggleFreeformWindowingMode";
-        request.userId = task.mUserId;
-        this.mAtm.deferWindowLayout();
-        try {
-            this.mAtm.mTaskSupervisor.removeTaskById(task.mTaskId, false, true, "toggleFreeformWindowingMode", request.callingUid);
-            scheduleStartActivityAsToggleFreeform(request, displayId);
-        } finally {
-            this.mAtm.continueWindowLayout();
-        }
-    }
-
-    public final void scheduleStartActivityAsToggleFreeform(Request request, int i) {
-        H h = this.mH;
-        h.sendMessage(h.obtainMessage(0, i, 0, request));
-    }
-
-    public final void startActivityAsToggleFreeform(Request request, int i, boolean z) {
-        WindowProcessController windowProcessController = request.wpc;
-        if (windowProcessController != null) {
-            this.mAtm.mDexController.killProcessIfNeeded(windowProcessController, i, request.reason, z);
-        }
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                DisplayContent displayContent = this.mAtm.mRootWindowContainer.getDisplayContent(i);
-                if (displayContent == null) {
-                    Slog.w("DexCompatController", "startActivityAsToggleFreeform: failed, cannot find display#" + i);
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    return;
-                }
-                displayContent.prepareAppTransition(6);
-                WindowManagerService.resetPriorityAfterLockedSection();
-                this.mAtm.getActivityStartController().startActivityInPackage(request.callingUid, request.realCallingPid, request.realCallingUid, request.callingPackage, request.callingFeatureId, request.intent, null, null, null, 0, 0, request.activityOptions, request.userId, null, request.reason, false, null, BackgroundStartPrivileges.NONE);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class Request {
-        public SafeActivityOptions activityOptions;
-        public String callingFeatureId;
-        public String callingPackage;
-        public Intent intent;
-        public String reason;
-        public int userId;
-        public WindowProcessController wpc;
-        public int callingUid = -1;
-        public int realCallingPid = 0;
-        public int realCallingUid = -1;
-
-        public Request() {
-            reset();
-        }
-
-        public void reset() {
-            this.wpc = null;
-            this.intent = null;
-            this.callingUid = -1;
-            this.callingPackage = null;
-            this.realCallingPid = 0;
-            this.realCallingUid = -1;
-            this.activityOptions = null;
-            this.reason = null;
-            this.userId = 0;
-        }
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class H extends Handler {
         public H(Looper looper) {
             super(looper);
         }
 
+        /* JADX WARN: Removed duplicated region for block: B:33:0x0094  */
+        /* JADX WARN: Removed duplicated region for block: B:34:0x00b3  */
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            if (message.what != 0) {
-                return;
-            }
-            DexCompatController.this.startActivityAsToggleFreeform((Request) message.obj, message.arg1, message.arg2 != 0);
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void handleMessage(android.os.Message r20) {
+            /*
+                Method dump skipped, instructions count: 284
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DexCompatController.H.handleMessage(android.os.Message):void");
         }
     }
 
-    public static boolean isSystemUiProcessName(String str) {
-        return "com.android.systemui".equals(str) || "system:ui".equals(str);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Request {
+        public SafeActivityOptions activityOptions;
+        public String callingFeatureId;
+        public String callingPackage;
+        public int callingUid;
+        public Intent intent;
+        public int realCallingPid;
+        public int realCallingUid;
+        public String reason;
+        public int userId;
+        public WindowProcessController wpc;
+    }
+
+    public DexCompatController(ActivityTaskManagerService activityTaskManagerService) {
+        this.mAtm = activityTaskManagerService;
+        this.mGlobalLock = activityTaskManagerService.mGlobalLock;
+    }
+
+    public final void changeWindowingModeIfNeeded(Task task, ActivityRecord activityRecord) {
+        Task rootTask;
+        if (activityRecord == null || !task.isDexCompatEnabled() || (rootTask = task.getRootTask()) == null) {
+            return;
+        }
+        LaunchParamsController.LaunchParams launchParams = new LaunchParamsController.LaunchParams();
+        this.mAtm.mTaskSupervisor.mLaunchParamsController.calculate(task, null, activityRecord, null, null, null, 3, launchParams, null);
+        int windowingMode = rootTask.getWindowingMode();
+        int i = launchParams.mWindowingMode;
+        if (i == 0 || i == windowingMode) {
+            return;
+        }
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(windowingMode, "[DexCompat] changeWindowingModeIfNeeded: prev=", ", next=");
+        m.append(launchParams.mWindowingMode);
+        m.append(", task=");
+        m.append(task);
+        Slog.d("DexCompatController", m.toString());
+        rootTask.setWindowingMode(launchParams.mWindowingMode, false);
     }
 
     @Override // com.android.server.wm.IController
-    public void dumpLocked(PrintWriter printWriter, String str) {
+    public final void dumpLocked(PrintWriter printWriter) {
         printWriter.println("[DexCompatController]");
-        int dexModeLocked = this.mAtm.mDexController.getDexModeLocked();
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        int dexModeLocked = activityTaskManagerService.mDexController.getDexModeLocked();
         if (dexModeLocked != 0) {
-            DisplayContent displayContent = this.mAtm.mRootWindowContainer.getDisplayContent(dexModeLocked == 1 ? 0 : 2);
+            DisplayContent displayContent = activityTaskManagerService.mRootWindowContainer.getDisplayContent(dexModeLocked == 1 ? 0 : 2);
             if (displayContent == null) {
                 return;
             }
@@ -616,9 +104,325 @@ public class DexCompatController implements IController {
             int min = Math.min(this.mTmpRect.width(), this.mTmpRect.height());
             int defaultWidth = DexCompatBoundsProvider.getDefaultWidth(dexModeLocked, min);
             int defaultHeight = DexCompatBoundsProvider.getDefaultHeight(dexModeLocked, min);
-            printWriter.println(str + "DexCompat isDefaultSizeCompatible=" + DexCompatBoundsProvider.isDefaultSizeCompatible(min));
-            printWriter.println(str + "DexCompat DefaultSize=(" + defaultWidth + "x" + defaultHeight + ")");
+            StringBuilder sb = new StringBuilder("  DexCompat isDefaultSizeCompatible=");
+            sb.append(min <= 0 || min > 1400);
+            printWriter.println(sb.toString());
+            printWriter.println("  DexCompat DefaultSize=(" + defaultWidth + "x" + defaultHeight + ")");
         }
         printWriter.println();
+    }
+
+    public final void getCompatBounds(Task task, Rect rect, ActivityRecord activityRecord, int i) {
+        int orientation;
+        DexCompatBoundsProvider compatBoundsProvider = getCompatBoundsProvider(i);
+        if (compatBoundsProvider == null) {
+            Slog.w("DexCompatController", "rotateDexCompatTaskLocked: cannot found bounds provider, " + task);
+            return;
+        }
+        ActivityRecord topMostActivity = task.getTopMostActivity();
+        if (topMostActivity != null) {
+            orientation = topMostActivity.getOrientation();
+            if (orientation == -2) {
+                orientation = topMostActivity.info.screenOrientation;
+            }
+        } else {
+            orientation = activityRecord != null ? activityRecord.getRootTask() != null ? activityRecord.getOrientation() : activityRecord.info.screenOrientation : -1;
+        }
+        if (task.getDisplayContent() == null) {
+            return;
+        }
+        compatBoundsProvider.mTask = task;
+        compatBoundsProvider.mIsPortrait = compatBoundsProvider.isPortrait(orientation);
+        compatBoundsProvider.mTask.getDisplayContent().getStableRect(compatBoundsProvider.mStableBounds);
+        compatBoundsProvider.getBounds(rect);
+    }
+
+    public DexCompatBoundsProvider getCompatBoundsProvider(int i) {
+        if (i == 1) {
+            return new DexCompatBoundsProvider();
+        }
+        if (i == 2) {
+            return new DexCompatBoundsProvider.CustomDexCompatBoundsProvider(0);
+        }
+        if (i == 3) {
+            return new DexCompatBoundsProvider.CustomDexCompatBoundsProvider(1);
+        }
+        return null;
+    }
+
+    @Override // com.android.server.wm.IController
+    public final void initialize() {
+        this.mH = new H(this.mAtm.mH.getLooper());
+    }
+
+    public final boolean isOrientationChanged(ActivityRecord activityRecord) {
+        if (activityRecord.getRootTask() == null) {
+            return false;
+        }
+        Task task = activityRecord.task;
+        if (!task.isDexCompatEnabled()) {
+            return false;
+        }
+        ActivityRecord activityRecord2 = task.topRunningActivityLocked();
+        if (activityRecord2 != null && activityRecord2 != activityRecord) {
+            return false;
+        }
+        int requestedOrientation = activityRecord.getRequestedOrientation();
+        char c = 2;
+        char c2 = ActivityInfo.isFixedOrientationPortrait(requestedOrientation) ? (char) 1 : ActivityInfo.isFixedOrientationLandscape(requestedOrientation) ? (char) 2 : (char) 0;
+        if (c2 == 0) {
+            return false;
+        }
+        this.mTmpRect.set(task.getBounds());
+        if (!this.mTmpRect.isEmpty() && this.mTmpRect.width() <= this.mTmpRect.height()) {
+            c = 1;
+        }
+        return c != c2;
+    }
+
+    public final void rotateDexCompatTaskLocked(ActivityRecord activityRecord) {
+        Point point;
+        int i;
+        int i2;
+        int i3;
+        Task task = activityRecord.task;
+        if (task == null || !task.isDexCompatEnabled()) {
+            return;
+        }
+        DexCompatBoundsProvider compatBoundsProvider = getCompatBoundsProvider(task.mDexCompatUiMode);
+        if (compatBoundsProvider == null) {
+            Slog.w("DexCompatController", "rotateDexCompatTaskLocked: cannot found bounds provider, " + task);
+            return;
+        }
+        Rect rect = new Rect();
+        Rect bounds = task.getBounds();
+        int i4 = (bounds.isEmpty() || bounds.width() > bounds.height()) ? 1 : 0;
+        if (task.getDisplayContent() != null) {
+            compatBoundsProvider.mTask = task;
+            compatBoundsProvider.mIsPortrait = compatBoundsProvider.isPortrait(i4);
+            compatBoundsProvider.mTask.getDisplayContent().getStableRect(compatBoundsProvider.mStableBounds);
+            compatBoundsProvider.getBounds(rect);
+        }
+        Task rootTask = task.getRootTask();
+        if (rect.isEmpty()) {
+            if (task.mDexCompatUiMode != 3 || rootTask == null) {
+                return;
+            }
+            rootTask.setWindowingMode(1);
+            return;
+        }
+        if (rootTask != null && !rootTask.inFreeformWindowingMode()) {
+            rootTask.setWindowingMode(5);
+        }
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        if (activityTaskManagerService.mDexController.getDexModeLocked() == 2) {
+            point = activityTaskManagerService.mDexController.mDexDisplaySize;
+        } else {
+            point = new Point();
+            activityTaskManagerService.mRootWindowContainer.mDefaultDisplay.mDisplay.getRealSize(point);
+        }
+        int width = (point.x - rect.width()) / 2;
+        if ((task.mDexCompatUiMode == 3 && compatBoundsProvider.mIsPortrait && activityRecord.getRequestedConfigurationOrientation() == 1) || bounds.isEmpty()) {
+            i = 0;
+        } else {
+            width = bounds.left;
+            i = bounds.top;
+        }
+        rect.offsetTo(width, i);
+        int i5 = rect.left;
+        if (i5 < 0) {
+            i2 = -i5;
+        } else {
+            int i6 = rect.right;
+            int i7 = point.x;
+            i2 = i6 > i7 ? i7 - i6 : 0;
+        }
+        int i8 = rect.top;
+        if (i8 < 0) {
+            i3 = -i8;
+        } else {
+            int i9 = rect.bottom;
+            int i10 = point.y;
+            i3 = i9 > i10 ? i10 - i9 : 0;
+        }
+        rect.offset(i2, i3);
+        activityTaskManagerService.resizeTask(task.mTaskId, rect, 0);
+    }
+
+    public final void scheduleStartActivityAsToggleFreeform(Task task, BooleanSupplier booleanSupplier, IntSupplier intSupplier, Supplier supplier) {
+        ActivityTaskManagerService activityTaskManagerService;
+        ActivityRecord rootActivity = task.getRootActivity(true, false);
+        if (rootActivity == null) {
+            return;
+        }
+        int displayId = task.getDisplayId();
+        if (displayId == -1) {
+            Slog.w("DexCompatController", "[DexCompat] Display is not invalid.");
+            return;
+        }
+        Intent intent = task.intent;
+        intent.addFlags(1048576);
+        ActivityOptions makeBasic = ActivityOptions.makeBasic();
+        makeBasic.setLaunchDisplayId(displayId);
+        if (booleanSupplier.getAsBoolean()) {
+            this.mTmpRect.setEmpty();
+            makeBasic.setLaunchBounds(this.mTmpRect);
+        }
+        makeBasic.setForceLaunchWindowingMode(intSupplier.getAsInt());
+        String str = (String) supplier.get();
+        Request request = new Request();
+        request.wpc = null;
+        request.intent = null;
+        request.callingUid = -1;
+        request.callingPackage = null;
+        request.realCallingPid = 0;
+        request.realCallingUid = -1;
+        request.activityOptions = null;
+        request.reason = null;
+        request.userId = 0;
+        WindowProcessController windowProcessController = rootActivity.app;
+        try {
+            if (windowProcessController != null) {
+                String str2 = windowProcessController.mName;
+                if (Constants.SYSTEMUI_PACKAGE_NAME.equals(str2) || "system:ui".equals(str2)) {
+                    Slog.w("DexCompatController", "startActivityForDexRestart: cannot kill systemui process, root=" + rootActivity + ", task=" + task);
+                    request.intent = intent;
+                    request.callingUid = task.mCallingUid;
+                    request.callingPackage = task.mCallingPackage;
+                    request.callingFeatureId = task.mCallingFeatureId;
+                    request.realCallingPid = Binder.getCallingPid();
+                    request.realCallingUid = Binder.getCallingUid();
+                    request.activityOptions = new SafeActivityOptions(makeBasic);
+                    request.reason = str;
+                    request.userId = task.mUserId;
+                    activityTaskManagerService = this.mAtm;
+                    activityTaskManagerService.deferWindowLayout();
+                    activityTaskManagerService.mTaskSupervisor.removeTaskById(task.mTaskId, request.callingUid, request.realCallingPid, str, false, true, false);
+                    H h = this.mH;
+                    h.sendMessage(h.obtainMessage(0, displayId, 0, request));
+                    return;
+                }
+            }
+            activityTaskManagerService.mTaskSupervisor.removeTaskById(task.mTaskId, request.callingUid, request.realCallingPid, str, false, true, false);
+            H h2 = this.mH;
+            h2.sendMessage(h2.obtainMessage(0, displayId, 0, request));
+            return;
+        } finally {
+            activityTaskManagerService.continueWindowLayout();
+        }
+        request.wpc = rootActivity.app;
+        request.intent = intent;
+        request.callingUid = task.mCallingUid;
+        request.callingPackage = task.mCallingPackage;
+        request.callingFeatureId = task.mCallingFeatureId;
+        request.realCallingPid = Binder.getCallingPid();
+        request.realCallingUid = Binder.getCallingUid();
+        request.activityOptions = new SafeActivityOptions(makeBasic);
+        request.reason = str;
+        request.userId = task.mUserId;
+        activityTaskManagerService = this.mAtm;
+        activityTaskManagerService.deferWindowLayout();
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:20:0x00aa  */
+    /* JADX WARN: Removed duplicated region for block: B:22:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean shouldBeApplyDexCompatConfigurationLocked(com.android.server.wm.ActivityRecord r6, android.content.pm.ApplicationInfo r7, int r8) {
+        /*
+            r5 = this;
+            r0 = 0
+            if (r7 == 0) goto Lab
+            if (r6 == 0) goto L17
+            boolean r1 = r6.isDexMode()
+            if (r1 == 0) goto Lab
+            int r1 = r6.getPid()
+            int r2 = android.os.Process.myPid()
+            if (r1 != r2) goto L17
+            goto Lab
+        L17:
+            com.android.server.wm.ActivityTaskManagerService r1 = r5.mAtm
+            com.android.server.wm.DexController r2 = r1.mDexController
+            int r2 = r2.getDexModeLocked()
+            r3 = 1
+            if (r2 != r3) goto L24
+            if (r8 == 0) goto L29
+        L24:
+            r4 = 2
+            if (r2 != r4) goto Lab
+            if (r8 != r4) goto Lab
+        L29:
+            java.lang.Class<com.samsung.android.desktopmode.DesktopModeManagerInternal> r8 = com.samsung.android.desktopmode.DesktopModeManagerInternal.class
+            java.lang.Object r8 = com.android.server.LocalServices.getService(r8)
+            if (r8 != 0) goto L53
+            java.lang.StringBuilder r6 = new java.lang.StringBuilder
+            java.lang.String r7 = "[DexCompat] DexCompatLaunchPolicy: task="
+            r6.<init>(r7)
+            r6.append(r5)
+            java.lang.String r5 = ", DesktopModeService is null, caller="
+            r6.append(r5)
+            r5 = 6
+            java.lang.String r5 = android.os.Debug.getCallers(r5)
+            r6.append(r5)
+            java.lang.String r5 = r6.toString()
+            java.lang.String r6 = "DexCompatController"
+            android.util.Slog.w(r6, r5)
+        L51:
+            r5 = r0
+            goto La7
+        L53:
+            r5 = 0
+            if (r6 != 0) goto L5d
+            com.android.server.wm.DexController r6 = r1.mDexController
+            int r5 = r6.getDexPolicyFlags(r5, r7)
+            goto La7
+        L5d:
+            boolean r8 = r6.isActivityTypeHome()
+            if (r8 != 0) goto La4
+            boolean r8 = r6.isActivityTypeDream()
+            if (r8 == 0) goto L6a
+            goto La4
+        L6a:
+            int r8 = r6.mProcessAppLaunchPolicy
+            if (r8 != 0) goto L84
+            com.android.server.wm.DexController r8 = r1.mDexController
+            int r5 = r8.getDexPolicyFlags(r5, r7)
+            r6.mProcessAppLaunchPolicy = r5
+            boolean r5 = r6.isResizeable(r0)
+            if (r5 != 0) goto L81
+            int r5 = r6.mProcessAppLaunchPolicy
+            r5 = r5 | r3
+            r6.mProcessAppLaunchPolicy = r5
+        L81:
+            int r5 = r6.mProcessAppLaunchPolicy
+            goto La7
+        L84:
+            android.content.pm.ActivityInfo r2 = r6.info
+            if (r2 == 0) goto L51
+            r8 = r8 & r3
+            if (r8 == 0) goto L51
+            com.android.server.wm.Task r8 = r6.task
+            if (r8 == 0) goto L51
+            boolean r8 = r8.isDexCompatEnabled()
+            if (r8 == 0) goto L51
+            com.android.server.wm.DexController r8 = r1.mDexController
+            int r5 = r8.getDexPolicyFlags(r5, r7)
+            boolean r6 = r6.isResizeable(r0)
+            if (r6 != 0) goto La7
+            r5 = r5 | 1
+            goto La7
+        La4:
+            r6.mProcessAppLaunchPolicy = r0
+            goto L51
+        La7:
+            r5 = r5 & r3
+            if (r5 == 0) goto Lab
+            r0 = r3
+        Lab:
+            return r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DexCompatController.shouldBeApplyDexCompatConfigurationLocked(com.android.server.wm.ActivityRecord, android.content.pm.ApplicationInfo, int):boolean");
     }
 }

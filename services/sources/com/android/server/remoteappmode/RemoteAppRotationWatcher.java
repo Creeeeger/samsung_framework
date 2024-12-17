@@ -1,29 +1,18 @@
 package com.android.server.remoteappmode;
 
 import android.view.IRotationWatcher;
-import android.view.WindowManagerGlobal;
 import com.samsung.android.remoteappmode.IRotationChangeListener;
 
-/* loaded from: classes3.dex */
-public class RemoteAppRotationWatcher extends IRotationWatcher.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RemoteAppRotationWatcher extends IRotationWatcher.Stub {
     public IRotationChangeListener listener;
-    public int mDisplayId = -1;
+    public int mDisplayId;
 
-    public void onRotationChanged(int i) {
+    public final void onRotationChanged(int i) {
         IRotationChangeListener iRotationChangeListener = this.listener;
         if (iRotationChangeListener != null) {
             iRotationChangeListener.onRotationChanged(this.mDisplayId, i);
         }
-    }
-
-    public void setRotationChangeListener(int i, IRotationChangeListener iRotationChangeListener) {
-        this.listener = iRotationChangeListener;
-        this.mDisplayId = i;
-        WindowManagerGlobal.getWindowManagerService().watchRotation(this, i);
-    }
-
-    public void removeRotationChangeListenr() {
-        this.listener = null;
-        WindowManagerGlobal.getWindowManagerService().removeRotationWatcher(this);
     }
 }

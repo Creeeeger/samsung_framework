@@ -6,16 +6,15 @@ import com.android.internal.util.ConcurrentUtils;
 import com.android.server.LocalServices;
 import com.android.server.SystemServerInitThreadPool;
 import com.android.server.SystemService;
-import com.android.server.sensors.SensorManagerInternal;
 import com.android.server.sensors.SensorService;
 import com.android.server.utils.TimingsTraceAndSlog;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class SensorService extends SystemService {
     public static final String START_NATIVE_SENSOR_SERVICE = "StartNativeSensorService";
     public final Object mLock;
@@ -24,21 +23,51 @@ public class SensorService extends SystemService {
     public final Set mRuntimeSensorHandles;
     public Future mSensorServiceStart;
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public static native void registerProximityActiveListenerNative(long j);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalService {
+        public LocalService() {
+        }
+    }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public static native int registerRuntimeSensorNative(long j, int i, int i2, String str, String str2, float f, float f2, float f3, int i3, int i4, int i5, SensorManagerInternal.RuntimeSensorCallback runtimeSensorCallback);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ProximityListenerDelegate implements SensorManagerInternal$ProximityActiveListener {
+        public ProximityListenerDelegate() {
+        }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public static native boolean sendRuntimeSensorEventNative(long j, int i, int i2, long j2, float[] fArr);
+        @Override // com.android.server.sensors.SensorManagerInternal$ProximityActiveListener
+        public final void onProximityActive(boolean z) {
+            int i;
+            ProximityListenerProxy[] proximityListenerProxyArr;
+            synchronized (SensorService.this.mLock) {
+                proximityListenerProxyArr = (ProximityListenerProxy[]) SensorService.this.mProximityListeners.values().toArray(new ProximityListenerProxy[0]);
+            }
+            for (ProximityListenerProxy proximityListenerProxy : proximityListenerProxyArr) {
+                proximityListenerProxy.onProximityActive(z);
+            }
+        }
+    }
 
-    private static native long startSensorServiceNative(SensorManagerInternal.ProximityActiveListener proximityActiveListener);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ProximityListenerProxy implements SensorManagerInternal$ProximityActiveListener {
+        public final Executor mExecutor;
+        public final SensorManagerInternal$ProximityActiveListener mListener;
 
-    private static native void unregisterProximityActiveListenerNative(long j);
+        public ProximityListenerProxy(Executor executor, SensorManagerInternal$ProximityActiveListener sensorManagerInternal$ProximityActiveListener) {
+            this.mExecutor = executor;
+            this.mListener = sensorManagerInternal$ProximityActiveListener;
+        }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public static native void unregisterRuntimeSensorNative(long j, int i);
+        @Override // com.android.server.sensors.SensorManagerInternal$ProximityActiveListener
+        public final void onProximityActive(final boolean z) {
+            this.mExecutor.execute(new Runnable() { // from class: com.android.server.sensors.SensorService$ProximityListenerProxy$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    SensorService.ProximityListenerProxy proximityListenerProxy = SensorService.ProximityListenerProxy.this;
+                    proximityListenerProxy.mListener.onProximityActive(z);
+                }
+            });
+        }
+    }
 
     public SensorService(Context context) {
         super(context);
@@ -47,12 +76,12 @@ public class SensorService extends SystemService {
         this.mProximityListeners = new ArrayMap();
         this.mRuntimeSensorHandles = new HashSet();
         synchronized (obj) {
-            this.mSensorServiceStart = SystemServerInitThreadPool.submit(new Runnable() { // from class: com.android.server.sensors.SensorService$$ExternalSyntheticLambda0
+            this.mSensorServiceStart = SystemServerInitThreadPool.submit(START_NATIVE_SENSOR_SERVICE, new Runnable() { // from class: com.android.server.sensors.SensorService$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
                     SensorService.this.lambda$new$0();
                 }
-            }, START_NATIVE_SENSOR_SERVICE);
+            });
         }
     }
 
@@ -67,13 +96,24 @@ public class SensorService extends SystemService {
         newAsyncLog.traceEnd();
     }
 
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        LocalServices.addService(SensorManagerInternal.class, new LocalService());
-    }
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native void registerProximityActiveListenerNative(long j);
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native int registerRuntimeSensorNative(long j, int i, int i2, String str, String str2, float f, float f2, float f3, int i3, int i4, int i5, SensorManagerInternal$RuntimeSensorCallback sensorManagerInternal$RuntimeSensorCallback);
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native boolean sendRuntimeSensorEventNative(long j, int i, int i2, long j2, float[] fArr);
+
+    private static native long startSensorServiceNative(SensorManagerInternal$ProximityActiveListener sensorManagerInternal$ProximityActiveListener);
+
+    private static native void unregisterProximityActiveListenerNative(long j);
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static native void unregisterRuntimeSensorNative(long j, int i);
 
     @Override // com.android.server.SystemService
-    public void onBootPhase(int i) {
+    public final void onBootPhase(int i) {
         if (i == 200) {
             ConcurrentUtils.waitForFutureNoInterrupt(this.mSensorServiceStart, START_NATIVE_SENSOR_SERVICE);
             synchronized (this.mLock) {
@@ -82,99 +122,8 @@ public class SensorService extends SystemService {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class LocalService extends SensorManagerInternal {
-        public LocalService() {
-        }
-
-        @Override // com.android.server.sensors.SensorManagerInternal
-        public int createRuntimeSensor(int i, int i2, String str, String str2, float f, float f2, float f3, int i3, int i4, int i5, SensorManagerInternal.RuntimeSensorCallback runtimeSensorCallback) {
-            int registerRuntimeSensorNative;
-            synchronized (SensorService.this.mLock) {
-                registerRuntimeSensorNative = SensorService.registerRuntimeSensorNative(SensorService.this.mPtr, i, i2, str, str2, f, f2, f3, i3, i4, i5, runtimeSensorCallback);
-                SensorService.this.mRuntimeSensorHandles.add(Integer.valueOf(registerRuntimeSensorNative));
-            }
-            return registerRuntimeSensorNative;
-        }
-
-        @Override // com.android.server.sensors.SensorManagerInternal
-        public void removeRuntimeSensor(int i) {
-            synchronized (SensorService.this.mLock) {
-                if (SensorService.this.mRuntimeSensorHandles.contains(Integer.valueOf(i))) {
-                    SensorService.this.mRuntimeSensorHandles.remove(Integer.valueOf(i));
-                    SensorService.unregisterRuntimeSensorNative(SensorService.this.mPtr, i);
-                }
-            }
-        }
-
-        @Override // com.android.server.sensors.SensorManagerInternal
-        public boolean sendSensorEvent(int i, int i2, long j, float[] fArr) {
-            synchronized (SensorService.this.mLock) {
-                if (!SensorService.this.mRuntimeSensorHandles.contains(Integer.valueOf(i))) {
-                    return false;
-                }
-                return SensorService.sendRuntimeSensorEventNative(SensorService.this.mPtr, i, i2, j, fArr);
-            }
-        }
-
-        @Override // com.android.server.sensors.SensorManagerInternal
-        public void addProximityActiveListener(Executor executor, SensorManagerInternal.ProximityActiveListener proximityActiveListener) {
-            Objects.requireNonNull(executor, "executor must not be null");
-            Objects.requireNonNull(proximityActiveListener, "listener must not be null");
-            ProximityListenerProxy proximityListenerProxy = new ProximityListenerProxy(executor, proximityActiveListener);
-            synchronized (SensorService.this.mLock) {
-                if (SensorService.this.mProximityListeners.containsKey(proximityActiveListener)) {
-                    throw new IllegalArgumentException("listener already registered");
-                }
-                SensorService.this.mProximityListeners.put(proximityActiveListener, proximityListenerProxy);
-                if (SensorService.this.mProximityListeners.size() == 1) {
-                    SensorService.registerProximityActiveListenerNative(SensorService.this.mPtr);
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class ProximityListenerProxy implements SensorManagerInternal.ProximityActiveListener {
-        public final Executor mExecutor;
-        public final SensorManagerInternal.ProximityActiveListener mListener;
-
-        public ProximityListenerProxy(Executor executor, SensorManagerInternal.ProximityActiveListener proximityActiveListener) {
-            this.mExecutor = executor;
-            this.mListener = proximityActiveListener;
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onProximityActive$0(boolean z) {
-            this.mListener.onProximityActive(z);
-        }
-
-        @Override // com.android.server.sensors.SensorManagerInternal.ProximityActiveListener
-        public void onProximityActive(final boolean z) {
-            this.mExecutor.execute(new Runnable() { // from class: com.android.server.sensors.SensorService$ProximityListenerProxy$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    SensorService.ProximityListenerProxy.this.lambda$onProximityActive$0(z);
-                }
-            });
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class ProximityListenerDelegate implements SensorManagerInternal.ProximityActiveListener {
-        public ProximityListenerDelegate() {
-        }
-
-        @Override // com.android.server.sensors.SensorManagerInternal.ProximityActiveListener
-        public void onProximityActive(boolean z) {
-            int i;
-            ProximityListenerProxy[] proximityListenerProxyArr;
-            synchronized (SensorService.this.mLock) {
-                proximityListenerProxyArr = (ProximityListenerProxy[]) SensorService.this.mProximityListeners.values().toArray(new ProximityListenerProxy[0]);
-            }
-            for (ProximityListenerProxy proximityListenerProxy : proximityListenerProxyArr) {
-                proximityListenerProxy.onProximityActive(z);
-            }
-        }
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        LocalServices.addService(LocalService.class, new LocalService());
     }
 }

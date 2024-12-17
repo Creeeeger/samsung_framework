@@ -1,41 +1,44 @@
 package com.android.server.am.mars.filter.filter;
 
 import android.content.Context;
+import com.android.server.am.MARsPackageInfo;
 import com.android.server.am.MARsPolicyManager;
+import com.android.server.am.mars.MARsUtils;
 import com.android.server.am.mars.filter.IFilter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class NoAppIconFilter implements IFilter {
-    public static String TAG = "MARs:" + NoAppIconFilter.class.getSimpleName();
-    public Context context;
+public final class NoAppIconFilter implements IFilter {
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class NoAppIconFilterHolder {
         public static final NoAppIconFilter INSTANCE = new NoAppIconFilter();
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void deInit() {
-    }
-
-    public NoAppIconFilter() {
-        this.context = null;
-    }
-
-    public static NoAppIconFilter getInstance() {
-        return NoAppIconFilterHolder.INSTANCE;
+    public final void deInit() {
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void init(Context context) {
-        this.context = context;
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public int filter(String str, int i, int i2, int i3) {
-        if (MARsPolicyManager.getInstance().getHasAppIcon(str, i)) {
-            return 0;
+    public final int filter(int i, int i2, int i3, String str) {
+        boolean z = MARsUtils.IS_SUPPORT_FREEZE_FG_SERVICE_FEATURE;
+        boolean z2 = MARsPolicyManager.MARs_ENABLE;
+        MARsPolicyManager mARsPolicyManager = MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE;
+        mARsPolicyManager.getClass();
+        synchronized (MARsPolicyManager.MARsLock) {
+            try {
+                MARsPackageInfo mARsPackageInfo = MARsPolicyManager.getMARsPackageInfo(mARsPolicyManager.mMARsTargetPackages, str, i);
+                if (mARsPackageInfo == null || !mARsPackageInfo.hasAppIcon) {
+                    return (!mARsPolicyManager.isFirstTimeTriggerAutorun() || str.startsWith("com.sec.") || str.startsWith("com.samsung.") || str.startsWith("com.sds.")) ? 5 : 0;
+                }
+                return 0;
+            } catch (Throwable th) {
+                throw th;
+            }
         }
-        return (!MARsPolicyManager.getInstance().isFirstTimeTriggerAutorun() || str.startsWith("com.sec.") || str.startsWith("com.samsung.") || str.startsWith("com.sds.")) ? 5 : 0;
+    }
+
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void init(Context context) {
     }
 }

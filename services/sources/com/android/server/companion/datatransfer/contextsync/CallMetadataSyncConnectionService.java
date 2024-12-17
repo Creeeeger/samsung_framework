@@ -11,232 +11,206 @@ import android.telecom.PhoneAccount;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.util.Slog;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
-import com.android.server.companion.CompanionDeviceManagerServiceInternal;
+import com.android.server.companion.CompanionDeviceConfig;
+import com.android.server.companion.CompanionDeviceManagerService;
 import com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService;
 import com.android.server.companion.datatransfer.contextsync.CallMetadataSyncData;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class CallMetadataSyncConnectionService extends ConnectionService {
     AudioManager mAudioManager;
-    public CompanionDeviceManagerServiceInternal mCdmsi;
+    public CompanionDeviceManagerService.LocalService mCdmsi;
     TelecomManager mTelecomManager;
     final Map mActiveConnections = new HashMap();
-    final CrossDeviceSyncControllerCallback mCrossDeviceSyncControllerCallback = new AnonymousClass1();
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public abstract class CallMetadataSyncConnectionCallback {
-        public abstract void sendCallAction(int i, String str, int i2);
-    }
-
-    /* renamed from: com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService$1, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends CrossDeviceSyncControllerCallback {
-        public AnonymousClass1() {
+    final CrossDeviceSyncControllerCallback mCrossDeviceSyncControllerCallback = new CrossDeviceSyncControllerCallback() { // from class: com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService.1
+        @Override // com.android.server.companion.datatransfer.contextsync.CrossDeviceSyncControllerCallback
+        public final void cleanUpCallIds(final Set set) {
+            CallMetadataSyncConnectionService.this.mActiveConnections.values().removeIf(new Predicate() { // from class: com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService$1$$ExternalSyntheticLambda0
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    CallMetadataSyncConnectionService.CallMetadataSyncConnection callMetadataSyncConnection = (CallMetadataSyncConnectionService.CallMetadataSyncConnection) obj;
+                    if (!set.contains(callMetadataSyncConnection.mCall.mId)) {
+                        return false;
+                    }
+                    callMetadataSyncConnection.setDisconnected(new DisconnectCause(3));
+                    return true;
+                }
+            });
         }
 
         @Override // com.android.server.companion.datatransfer.contextsync.CrossDeviceSyncControllerCallback
-        public void processContextSyncMessage(final int i, final CallMetadataSyncData callMetadataSyncData) {
+        public final void processContextSyncMessage(final int i, final CallMetadataSyncData callMetadataSyncData) {
             CallMetadataSyncConnectionIdentifier callMetadataSyncConnectionIdentifier;
-            for (CallMetadataSyncData.Call call : callMetadataSyncData.getCalls()) {
-                CallMetadataSyncConnection callMetadataSyncConnection = (CallMetadataSyncConnection) CallMetadataSyncConnectionService.this.mActiveConnections.get(new CallMetadataSyncConnectionIdentifier(i, call.getId()));
+            Iterator it = ((HashMap) callMetadataSyncData.mCalls).values().iterator();
+            while (true) {
+                boolean hasNext = it.hasNext();
+                CallMetadataSyncConnectionService callMetadataSyncConnectionService = CallMetadataSyncConnectionService.this;
+                if (!hasNext) {
+                    callMetadataSyncConnectionService.mActiveConnections.values().removeIf(new Predicate() { // from class: com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService$1$$ExternalSyntheticLambda1
+                        @Override // java.util.function.Predicate
+                        public final boolean test(Object obj) {
+                            int i2 = i;
+                            CallMetadataSyncData callMetadataSyncData2 = callMetadataSyncData;
+                            CallMetadataSyncConnectionService.CallMetadataSyncConnection callMetadataSyncConnection = (CallMetadataSyncConnectionService.CallMetadataSyncConnection) obj;
+                            if (callMetadataSyncConnection.mIsIdFinalized && i2 == callMetadataSyncConnection.mAssociationId) {
+                                if (!((HashMap) callMetadataSyncData2.mCalls).containsKey(callMetadataSyncConnection.mCall.mId)) {
+                                    callMetadataSyncConnection.setDisconnected(new DisconnectCause(3));
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                    });
+                    return;
+                }
+                CallMetadataSyncData.Call call = (CallMetadataSyncData.Call) it.next();
+                CallMetadataSyncConnection callMetadataSyncConnection = (CallMetadataSyncConnection) callMetadataSyncConnectionService.mActiveConnections.get(new CallMetadataSyncConnectionIdentifier(i, call.mId));
                 if (callMetadataSyncConnection != null) {
-                    callMetadataSyncConnection.update(call);
+                    CallMetadataSyncConnection.m345$$Nest$mupdate(callMetadataSyncConnection, call);
                 } else {
-                    Iterator it = CallMetadataSyncConnectionService.this.mActiveConnections.entrySet().iterator();
+                    Iterator it2 = callMetadataSyncConnectionService.mActiveConnections.entrySet().iterator();
                     while (true) {
-                        if (!it.hasNext()) {
+                        if (!it2.hasNext()) {
                             callMetadataSyncConnectionIdentifier = null;
                             break;
                         }
-                        Map.Entry entry = (Map.Entry) it.next();
-                        if (((CallMetadataSyncConnection) entry.getValue()).getAssociationId() == i && !((CallMetadataSyncConnection) entry.getValue()).isIdFinalized() && call.getId().endsWith(((CallMetadataSyncConnection) entry.getValue()).getCallId())) {
+                        Map.Entry entry = (Map.Entry) it2.next();
+                        if (((CallMetadataSyncConnection) entry.getValue()).mAssociationId == i && !((CallMetadataSyncConnection) entry.getValue()).mIsIdFinalized && call.mId.endsWith(((CallMetadataSyncConnection) entry.getValue()).mCall.mId)) {
                             callMetadataSyncConnectionIdentifier = (CallMetadataSyncConnectionIdentifier) entry.getKey();
                             break;
                         }
                     }
                     if (callMetadataSyncConnectionIdentifier != null) {
-                        CallMetadataSyncConnection callMetadataSyncConnection2 = (CallMetadataSyncConnection) CallMetadataSyncConnectionService.this.mActiveConnections.remove(callMetadataSyncConnectionIdentifier);
-                        callMetadataSyncConnection2.update(call);
-                        CallMetadataSyncConnectionService.this.mActiveConnections.put(new CallMetadataSyncConnectionIdentifier(i, call.getId()), callMetadataSyncConnection2);
+                        CallMetadataSyncConnection callMetadataSyncConnection2 = (CallMetadataSyncConnection) callMetadataSyncConnectionService.mActiveConnections.remove(callMetadataSyncConnectionIdentifier);
+                        CallMetadataSyncConnection.m345$$Nest$mupdate(callMetadataSyncConnection2, call);
+                        callMetadataSyncConnectionService.mActiveConnections.put(new CallMetadataSyncConnectionIdentifier(i, call.mId), callMetadataSyncConnection2);
                     }
                 }
             }
-            CallMetadataSyncConnectionService.this.mActiveConnections.values().removeIf(new Predicate() { // from class: com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService$1$$ExternalSyntheticLambda1
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$processContextSyncMessage$0;
-                    lambda$processContextSyncMessage$0 = CallMetadataSyncConnectionService.AnonymousClass1.lambda$processContextSyncMessage$0(i, callMetadataSyncData, (CallMetadataSyncConnectionService.CallMetadataSyncConnection) obj);
-                    return lambda$processContextSyncMessage$0;
-                }
-            });
+        }
+    };
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService$2, reason: invalid class name */
+    public final class AnonymousClass2 extends CallMetadataSyncConnectionCallback {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ CallMetadataSyncConnectionService this$0;
+
+        public /* synthetic */ AnonymousClass2(CallMetadataSyncConnectionService callMetadataSyncConnectionService, int i) {
+            this.$r8$classId = i;
+            this.this$0 = callMetadataSyncConnectionService;
         }
 
-        public static /* synthetic */ boolean lambda$processContextSyncMessage$0(int i, CallMetadataSyncData callMetadataSyncData, CallMetadataSyncConnection callMetadataSyncConnection) {
-            if (!callMetadataSyncConnection.isIdFinalized() || i != callMetadataSyncConnection.getAssociationId() || callMetadataSyncData.hasCall(callMetadataSyncConnection.getCallId())) {
-                return false;
+        @Override // com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService.CallMetadataSyncConnectionCallback
+        public final void sendCallAction(int i, int i2, String str) {
+            switch (this.$r8$classId) {
+                case 0:
+                    CompanionDeviceManagerService.LocalService localService = this.this$0.mCdmsi;
+                    byte[] createCallControlMessage = CrossDeviceSyncController.createCallControlMessage(i2, str);
+                    localService.getClass();
+                    if (CompanionDeviceConfig.isEnabled()) {
+                        CompanionDeviceManagerService.this.mCrossDeviceSyncController.syncMessageToDevice(i, createCallControlMessage);
+                        break;
+                    }
+                    break;
+                default:
+                    CompanionDeviceManagerService.LocalService localService2 = this.this$0.mCdmsi;
+                    byte[] createCallControlMessage2 = CrossDeviceSyncController.createCallControlMessage(i2, str);
+                    localService2.getClass();
+                    if (CompanionDeviceConfig.isEnabled()) {
+                        CompanionDeviceManagerService.this.mCrossDeviceSyncController.syncMessageToDevice(i, createCallControlMessage2);
+                        break;
+                    }
+                    break;
             }
-            callMetadataSyncConnection.setDisconnected(new DisconnectCause(3));
-            return true;
-        }
-
-        @Override // com.android.server.companion.datatransfer.contextsync.CrossDeviceSyncControllerCallback
-        public void cleanUpCallIds(final Set set) {
-            CallMetadataSyncConnectionService.this.mActiveConnections.values().removeIf(new Predicate() { // from class: com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService$1$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$cleanUpCallIds$1;
-                    lambda$cleanUpCallIds$1 = CallMetadataSyncConnectionService.AnonymousClass1.lambda$cleanUpCallIds$1(set, (CallMetadataSyncConnectionService.CallMetadataSyncConnection) obj);
-                    return lambda$cleanUpCallIds$1;
-                }
-            });
-        }
-
-        public static /* synthetic */ boolean lambda$cleanUpCallIds$1(Set set, CallMetadataSyncConnection callMetadataSyncConnection) {
-            if (!set.contains(callMetadataSyncConnection.getCallId())) {
-                return false;
-            }
-            callMetadataSyncConnection.setDisconnected(new DisconnectCause(3));
-            return true;
         }
     }
 
-    @Override // android.app.Service
-    public void onCreate() {
-        super.onCreate();
-        this.mAudioManager = (AudioManager) getSystemService(AudioManager.class);
-        this.mTelecomManager = (TelecomManager) getSystemService(TelecomManager.class);
-        CompanionDeviceManagerServiceInternal companionDeviceManagerServiceInternal = (CompanionDeviceManagerServiceInternal) LocalServices.getService(CompanionDeviceManagerServiceInternal.class);
-        this.mCdmsi = companionDeviceManagerServiceInternal;
-        companionDeviceManagerServiceInternal.registerCallMetadataSyncCallback(this.mCrossDeviceSyncControllerCallback, 1);
-    }
-
-    @Override // android.telecom.ConnectionService
-    public Connection onCreateIncomingConnection(PhoneAccountHandle phoneAccountHandle, ConnectionRequest connectionRequest) {
-        int i = connectionRequest.getExtras().getInt("com.android.server.companion.datatransfer.contextsync.extra.ASSOCIATION_ID");
-        CallMetadataSyncData.Call fromBundle = CallMetadataSyncData.Call.fromBundle(connectionRequest.getExtras().getBundle("com.android.server.companion.datatransfer.contextsync.extra.CALL"));
-        fromBundle.setDirection(1);
-        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.CALL");
-        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.CALL_FACILITATOR_ID");
-        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.ASSOCIATION_ID");
-        CallMetadataSyncConnection callMetadataSyncConnection = new CallMetadataSyncConnection(this.mTelecomManager, this.mAudioManager, i, fromBundle, new CallMetadataSyncConnectionCallback() { // from class: com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService.2
-            @Override // com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService.CallMetadataSyncConnectionCallback
-            public void sendCallAction(int i2, String str, int i3) {
-                CallMetadataSyncConnectionService.this.mCdmsi.sendCrossDeviceSyncMessage(i2, CrossDeviceSyncController.createCallControlMessage(str, i3));
-            }
-        });
-        callMetadataSyncConnection.setConnectionProperties(16);
-        callMetadataSyncConnection.setInitializing();
-        return callMetadataSyncConnection;
-    }
-
-    @Override // android.telecom.ConnectionService
-    public void onCreateIncomingConnectionFailed(PhoneAccountHandle phoneAccountHandle, ConnectionRequest connectionRequest) {
-        Slog.e("CallMetadataSyncConnectionService", "onCreateOutgoingConnectionFailed for: " + (phoneAccountHandle != null ? phoneAccountHandle.getId() : "unknown PhoneAccount"));
-    }
-
-    @Override // android.telecom.ConnectionService
-    public Connection onCreateOutgoingConnection(PhoneAccountHandle phoneAccountHandle, ConnectionRequest connectionRequest) {
-        String shortClassName;
-        String packageName;
-        if (phoneAccountHandle == null) {
-            phoneAccountHandle = connectionRequest.getAccountHandle();
-        }
-        PhoneAccount phoneAccount = this.mTelecomManager.getPhoneAccount(phoneAccountHandle);
-        CallMetadataSyncData.Call call = new CallMetadataSyncData.Call();
-        call.setId(connectionRequest.getExtras().getString("com.android.companion.datatransfer.contextsync.extra.CALL_ID"));
-        call.setStatus(0);
-        if (phoneAccount != null) {
-            shortClassName = phoneAccount.getLabel().toString();
-        } else {
-            shortClassName = phoneAccountHandle.getComponentName().getShortClassName();
-        }
-        if (phoneAccount != null) {
-            packageName = phoneAccount.getExtras().getString("com.android.server.companion.datatransfer.contextsync.extra.CALL_FACILITATOR_ID");
-        } else {
-            packageName = phoneAccountHandle.getComponentName().getPackageName();
-        }
-        call.setFacilitator(new CallMetadataSyncData.CallFacilitator(shortClassName, packageName, phoneAccountHandle.getComponentName().flattenToString()));
-        call.setDirection(2);
-        call.setCallerId(connectionRequest.getAddress().getSchemeSpecificPart());
-        int i = phoneAccount.getExtras().getInt("com.android.server.companion.datatransfer.contextsync.extra.ASSOCIATION_ID");
-        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.CALL");
-        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.CALL_FACILITATOR_ID");
-        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.ASSOCIATION_ID");
-        CallMetadataSyncConnection callMetadataSyncConnection = new CallMetadataSyncConnection(this.mTelecomManager, this.mAudioManager, i, call, new CallMetadataSyncConnectionCallback() { // from class: com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService.3
-            @Override // com.android.server.companion.datatransfer.contextsync.CallMetadataSyncConnectionService.CallMetadataSyncConnectionCallback
-            public void sendCallAction(int i2, String str, int i3) {
-                CallMetadataSyncConnectionService.this.mCdmsi.sendCrossDeviceSyncMessage(i2, CrossDeviceSyncController.createCallControlMessage(str, i3));
-            }
-        });
-        callMetadataSyncConnection.setCallerDisplayName(call.getCallerId(), 1);
-        this.mCdmsi.addSelfOwnedCallId(call.getId());
-        this.mCdmsi.sendCrossDeviceSyncMessage(i, CrossDeviceSyncController.createCallCreateMessage(call.getId(), connectionRequest.getAddress().toString(), call.getFacilitator().getIdentifier()));
-        callMetadataSyncConnection.setInitializing();
-        return callMetadataSyncConnection;
-    }
-
-    @Override // android.telecom.ConnectionService
-    public void onCreateOutgoingConnectionFailed(PhoneAccountHandle phoneAccountHandle, ConnectionRequest connectionRequest) {
-        Slog.e("CallMetadataSyncConnectionService", "onCreateOutgoingConnectionFailed for: " + (phoneAccountHandle != null ? phoneAccountHandle.getId() : "unknown PhoneAccount"));
-    }
-
-    public void onCreateConnectionComplete(Connection connection) {
-        if (connection instanceof CallMetadataSyncConnection) {
-            CallMetadataSyncConnection callMetadataSyncConnection = (CallMetadataSyncConnection) connection;
-            callMetadataSyncConnection.initialize();
-            this.mActiveConnections.put(new CallMetadataSyncConnectionIdentifier(callMetadataSyncConnection.getAssociationId(), callMetadataSyncConnection.getCallId()), callMetadataSyncConnection);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    final class CallMetadataSyncConnectionIdentifier {
-        public final int mAssociationId;
-        public final String mCallId;
-
-        public CallMetadataSyncConnectionIdentifier(int i, String str) {
-            this.mAssociationId = i;
-            this.mCallId = str;
-        }
-
-        public int getAssociationId() {
-            return this.mAssociationId;
-        }
-
-        public String getCallId() {
-            return this.mCallId;
-        }
-
-        public int hashCode() {
-            return Objects.hash(Integer.valueOf(this.mAssociationId), this.mCallId);
-        }
-
-        public boolean equals(Object obj) {
-            String str;
-            if (!(obj instanceof CallMetadataSyncConnectionIdentifier)) {
-                return false;
-            }
-            CallMetadataSyncConnectionIdentifier callMetadataSyncConnectionIdentifier = (CallMetadataSyncConnectionIdentifier) obj;
-            return callMetadataSyncConnectionIdentifier.getAssociationId() == this.mAssociationId && (str = this.mCallId) != null && str.equals(callMetadataSyncConnectionIdentifier.getCallId());
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public class CallMetadataSyncConnection extends Connection {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class CallMetadataSyncConnection extends Connection {
         public final int mAssociationId;
         public final AudioManager mAudioManager;
         public final CallMetadataSyncData.Call mCall;
         public final CallMetadataSyncConnectionCallback mCallback;
         public boolean mIsIdFinalized;
         public final TelecomManager mTelecomManager;
+
+        /* renamed from: -$$Nest$mupdate, reason: not valid java name */
+        public static void m345$$Nest$mupdate(CallMetadataSyncConnection callMetadataSyncConnection, CallMetadataSyncData.Call call) {
+            int i;
+            if (!callMetadataSyncConnection.mIsIdFinalized) {
+                callMetadataSyncConnection.mCall.mId = call.mId;
+                callMetadataSyncConnection.mIsIdFinalized = true;
+            }
+            int i2 = call.mStatus;
+            if (i2 == 4 && callMetadataSyncConnection.mCall.mStatus != 4) {
+                callMetadataSyncConnection.mTelecomManager.silenceRinger();
+            }
+            callMetadataSyncConnection.mCall.mStatus = i2;
+            switch (i2) {
+                case 1:
+                case 4:
+                    i = 2;
+                    break;
+                case 2:
+                    i = 4;
+                    break;
+                case 3:
+                    i = 3;
+                    break;
+                case 5:
+                    i = 12;
+                    break;
+                case 6:
+                    i = 13;
+                    break;
+                case 7:
+                    i = 7;
+                    break;
+                case 8:
+                    i = 1;
+                    break;
+                default:
+                    i = 0;
+                    break;
+            }
+            if (i != callMetadataSyncConnection.getState()) {
+                if (i == 2) {
+                    callMetadataSyncConnection.setRinging();
+                } else if (i == 4) {
+                    callMetadataSyncConnection.setActive();
+                } else if (i == 3) {
+                    callMetadataSyncConnection.setOnHold();
+                } else if (i == 7) {
+                    callMetadataSyncConnection.setDisconnected(new DisconnectCause(3));
+                } else if (i == 1) {
+                    callMetadataSyncConnection.setDialing();
+                } else {
+                    Slog.e("CallMetadataSyncConnectionService", "Could not update call to unknown state");
+                }
+            }
+            int connectionCapabilities = callMetadataSyncConnection.getConnectionCapabilities();
+            CallMetadataSyncData.Call call2 = callMetadataSyncConnection.mCall;
+            Set set = call.mControls;
+            ((HashSet) call2.mControls).clear();
+            call2.mControls.addAll(set);
+            int i3 = (callMetadataSyncConnection.mCall.hasControl(7) || callMetadataSyncConnection.mCall.hasControl(8)) ? connectionCapabilities | 1 : connectionCapabilities & (-2);
+            int i4 = (callMetadataSyncConnection.mCall.hasControl(4) || callMetadataSyncConnection.mCall.hasControl(5)) ? i3 | 64 : i3 & (-65);
+            callMetadataSyncConnection.mAudioManager.setMicrophoneMute(callMetadataSyncConnection.mCall.hasControl(5));
+            if (i4 != callMetadataSyncConnection.getConnectionCapabilities()) {
+                callMetadataSyncConnection.setConnectionCapabilities(i4);
+            }
+        }
 
         public CallMetadataSyncConnection(TelecomManager telecomManager, AudioManager audioManager, int i, CallMetadataSyncData.Call call, CallMetadataSyncConnectionCallback callMetadataSyncConnectionCallback) {
             this.mTelecomManager = telecomManager;
@@ -246,141 +220,229 @@ public class CallMetadataSyncConnectionService extends ConnectionService {
             this.mCallback = callMetadataSyncConnectionCallback;
         }
 
-        public String getCallId() {
-            return this.mCall.getId();
-        }
-
-        public int getAssociationId() {
-            return this.mAssociationId;
-        }
-
-        public boolean isIdFinalized() {
-            return this.mIsIdFinalized;
-        }
-
-        public final void initialize() {
-            int status = this.mCall.getStatus();
-            if (status == 4) {
-                this.mTelecomManager.silenceRinger();
-            }
-            int convertStatusToState = CrossDeviceCall.convertStatusToState(status);
-            if (convertStatusToState == 2) {
-                setRinging();
-            } else if (convertStatusToState == 4) {
-                setActive();
-            } else if (convertStatusToState == 3) {
-                setOnHold();
-            } else if (convertStatusToState == 7) {
-                setDisconnected(new DisconnectCause(3));
-            } else if (convertStatusToState == 1) {
-                setDialing();
-            } else {
-                setInitialized();
-            }
-            String callerId = this.mCall.getCallerId();
-            if (callerId != null) {
-                setCallerDisplayName(callerId, 1);
-                setAddress(Uri.fromParts("custom", this.mCall.getCallerId(), null), 1);
-            }
-            Bundle bundle = new Bundle();
-            bundle.putString("com.android.companion.datatransfer.contextsync.extra.CALL_ID", this.mCall.getId());
-            putExtras(bundle);
-            int connectionCapabilities = getConnectionCapabilities();
-            int i = this.mCall.hasControl(7) ? connectionCapabilities | 1 : connectionCapabilities & (-2);
-            int i2 = this.mCall.hasControl(4) ? i | 64 : i & (-65);
-            this.mAudioManager.setMicrophoneMute(this.mCall.hasControl(5));
-            if (i2 != getConnectionCapabilities()) {
-                setConnectionCapabilities(i2);
-            }
-        }
-
-        public final void update(CallMetadataSyncData.Call call) {
-            boolean z = true;
-            if (!this.mIsIdFinalized) {
-                this.mCall.setId(call.getId());
-                this.mIsIdFinalized = true;
-            }
-            int status = call.getStatus();
-            if (status == 4 && this.mCall.getStatus() != 4) {
-                this.mTelecomManager.silenceRinger();
-            }
-            this.mCall.setStatus(status);
-            int convertStatusToState = CrossDeviceCall.convertStatusToState(status);
-            if (convertStatusToState != getState()) {
-                if (convertStatusToState == 2) {
-                    setRinging();
-                } else if (convertStatusToState == 4) {
-                    setActive();
-                } else if (convertStatusToState == 3) {
-                    setOnHold();
-                } else if (convertStatusToState == 7) {
-                    setDisconnected(new DisconnectCause(3));
-                } else if (convertStatusToState == 1) {
-                    setDialing();
-                } else {
-                    Slog.e("CallMetadataSyncConnectionService", "Could not update call to unknown state");
-                }
-            }
-            int connectionCapabilities = getConnectionCapabilities();
-            this.mCall.setControls(call.getControls());
-            int i = this.mCall.hasControl(7) || this.mCall.hasControl(8) ? connectionCapabilities | 1 : connectionCapabilities & (-2);
-            if (!this.mCall.hasControl(4) && !this.mCall.hasControl(5)) {
-                z = false;
-            }
-            int i2 = z ? i | 64 : i & (-65);
-            this.mAudioManager.setMicrophoneMute(this.mCall.hasControl(5));
-            if (i2 != getConnectionCapabilities()) {
-                setConnectionCapabilities(i2);
-            }
-        }
-
         @Override // android.telecom.Connection
-        public void onAnswer(int i) {
+        public final void onAnswer(int i) {
             sendCallAction(1);
         }
 
         @Override // android.telecom.Connection
-        public void onReject() {
-            sendCallAction(2);
+        public final void onDisconnect() {
+            sendCallAction(6);
         }
 
         @Override // android.telecom.Connection
-        public void onReject(int i) {
-            onReject();
-        }
-
-        @Override // android.telecom.Connection
-        public void onReject(String str) {
-            onReject();
-        }
-
-        @Override // android.telecom.Connection
-        public void onSilence() {
-            sendCallAction(3);
-        }
-
-        @Override // android.telecom.Connection
-        public void onHold() {
+        public final void onHold() {
             sendCallAction(7);
         }
 
         @Override // android.telecom.Connection
-        public void onUnhold() {
-            sendCallAction(8);
-        }
-
-        @Override // android.telecom.Connection
-        public void onMuteStateChanged(boolean z) {
+        public final void onMuteStateChanged(boolean z) {
             sendCallAction(z ? 4 : 5);
         }
 
         @Override // android.telecom.Connection
-        public void onDisconnect() {
-            sendCallAction(6);
+        public final void onReject() {
+            sendCallAction(2);
+        }
+
+        @Override // android.telecom.Connection
+        public final void onReject(int i) {
+            sendCallAction(2);
+        }
+
+        @Override // android.telecom.Connection
+        public final void onReject(String str) {
+            sendCallAction(2);
+        }
+
+        @Override // android.telecom.Connection
+        public final void onSilence() {
+            sendCallAction(3);
+        }
+
+        @Override // android.telecom.Connection
+        public final void onUnhold() {
+            sendCallAction(8);
         }
 
         public final void sendCallAction(int i) {
-            this.mCallback.sendCallAction(this.mAssociationId, this.mCall.getId(), i);
+            this.mCallback.sendCallAction(this.mAssociationId, i, this.mCall.mId);
         }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    abstract class CallMetadataSyncConnectionCallback {
+        public abstract void sendCallAction(int i, int i2, String str);
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class CallMetadataSyncConnectionIdentifier {
+        public final int mAssociationId;
+        public final String mCallId;
+
+        public CallMetadataSyncConnectionIdentifier(int i, String str) {
+            this.mAssociationId = i;
+            this.mCallId = str;
+        }
+
+        public final boolean equals(Object obj) {
+            String str;
+            if (!(obj instanceof CallMetadataSyncConnectionIdentifier)) {
+                return false;
+            }
+            CallMetadataSyncConnectionIdentifier callMetadataSyncConnectionIdentifier = (CallMetadataSyncConnectionIdentifier) obj;
+            return callMetadataSyncConnectionIdentifier.mAssociationId == this.mAssociationId && (str = this.mCallId) != null && str.equals(callMetadataSyncConnectionIdentifier.mCallId);
+        }
+
+        public final int hashCode() {
+            return Objects.hash(Integer.valueOf(this.mAssociationId), this.mCallId);
+        }
+    }
+
+    @Override // android.app.Service
+    public final void onCreate() {
+        super.onCreate();
+        this.mAudioManager = (AudioManager) getSystemService(AudioManager.class);
+        this.mTelecomManager = (TelecomManager) getSystemService(TelecomManager.class);
+        CompanionDeviceManagerService.LocalService localService = (CompanionDeviceManagerService.LocalService) LocalServices.getService(CompanionDeviceManagerService.LocalService.class);
+        this.mCdmsi = localService;
+        localService.registerCallMetadataSyncCallback(this.mCrossDeviceSyncControllerCallback, 1);
+    }
+
+    public final void onCreateConnectionComplete(Connection connection) {
+        char c;
+        if (connection instanceof CallMetadataSyncConnection) {
+            CallMetadataSyncConnection callMetadataSyncConnection = (CallMetadataSyncConnection) connection;
+            int i = callMetadataSyncConnection.mCall.mStatus;
+            if (i == 4) {
+                callMetadataSyncConnection.mTelecomManager.silenceRinger();
+            }
+            switch (i) {
+                case 1:
+                case 4:
+                    c = 2;
+                    break;
+                case 2:
+                    c = 4;
+                    break;
+                case 3:
+                    c = 3;
+                    break;
+                case 5:
+                    c = '\f';
+                    break;
+                case 6:
+                    c = '\r';
+                    break;
+                case 7:
+                    c = 7;
+                    break;
+                case 8:
+                    c = 1;
+                    break;
+                default:
+                    c = 0;
+                    break;
+            }
+            if (c == 2) {
+                callMetadataSyncConnection.setRinging();
+            } else if (c == 4) {
+                callMetadataSyncConnection.setActive();
+            } else if (c == 3) {
+                callMetadataSyncConnection.setOnHold();
+            } else if (c == 7) {
+                callMetadataSyncConnection.setDisconnected(new DisconnectCause(3));
+            } else if (c == 1) {
+                callMetadataSyncConnection.setDialing();
+            } else {
+                callMetadataSyncConnection.setInitialized();
+            }
+            String str = callMetadataSyncConnection.mCall.mCallerId;
+            if (str != null) {
+                callMetadataSyncConnection.setCallerDisplayName(str, 1);
+                callMetadataSyncConnection.setAddress(Uri.fromParts("custom", callMetadataSyncConnection.mCall.mCallerId, null), 1);
+            }
+            Bundle bundle = new Bundle();
+            bundle.putString("com.android.companion.datatransfer.contextsync.extra.CALL_ID", callMetadataSyncConnection.mCall.mId);
+            callMetadataSyncConnection.putExtras(bundle);
+            int connectionCapabilities = callMetadataSyncConnection.getConnectionCapabilities();
+            int i2 = callMetadataSyncConnection.mCall.hasControl(7) ? connectionCapabilities | 1 : connectionCapabilities & (-2);
+            int i3 = callMetadataSyncConnection.mCall.hasControl(4) ? i2 | 64 : i2 & (-65);
+            callMetadataSyncConnection.mAudioManager.setMicrophoneMute(callMetadataSyncConnection.mCall.hasControl(5));
+            if (i3 != callMetadataSyncConnection.getConnectionCapabilities()) {
+                callMetadataSyncConnection.setConnectionCapabilities(i3);
+            }
+            this.mActiveConnections.put(new CallMetadataSyncConnectionIdentifier(callMetadataSyncConnection.mAssociationId, callMetadataSyncConnection.mCall.mId), callMetadataSyncConnection);
+        }
+    }
+
+    @Override // android.telecom.ConnectionService
+    public final Connection onCreateIncomingConnection(PhoneAccountHandle phoneAccountHandle, ConnectionRequest connectionRequest) {
+        int i = connectionRequest.getExtras().getInt("com.android.server.companion.datatransfer.contextsync.extra.ASSOCIATION_ID");
+        Bundle bundle = connectionRequest.getExtras().getBundle("com.android.server.companion.datatransfer.contextsync.extra.CALL");
+        CallMetadataSyncData.Call call = new CallMetadataSyncData.Call();
+        if (bundle != null) {
+            call.mId = bundle.getString("com.android.companion.datatransfer.contextsync.extra.CALL_ID");
+            call.mCallerId = bundle.getString("com.android.server.companion.datatransfer.contextsync.extra.CALLER_ID");
+            call.mAppIcon = bundle.getByteArray("com.android.server.companion.datatransfer.contextsync.extra.APP_ICON");
+            call.mFacilitator = new CallMetadataSyncData.CallFacilitator(bundle.getString("com.android.server.companion.datatransfer.contextsync.extra.FACILITATOR_NAME"), bundle.getString("com.android.server.companion.datatransfer.contextsync.extra.FACILITATOR_ID"), bundle.getString("com.android.server.companion.datatransfer.contextsync.extra.FACILITATOR_EXT_ID"));
+            call.mStatus = bundle.getInt("com.android.server.companion.datatransfer.contextsync.extra.STATUS");
+            call.mDirection = bundle.getInt("com.android.server.companion.datatransfer.contextsync.extra.DIRECTION");
+            HashSet hashSet = new HashSet(bundle.getIntegerArrayList("com.android.server.companion.datatransfer.contextsync.extra.CONTROLS"));
+            ((HashSet) call.mControls).clear();
+            call.mControls.addAll(hashSet);
+        }
+        call.mDirection = 1;
+        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.CALL");
+        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.CALL_FACILITATOR_ID");
+        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.ASSOCIATION_ID");
+        CallMetadataSyncConnection callMetadataSyncConnection = new CallMetadataSyncConnection(this.mTelecomManager, this.mAudioManager, i, call, new AnonymousClass2(this, 0));
+        callMetadataSyncConnection.setConnectionProperties(16);
+        callMetadataSyncConnection.setInitializing();
+        return callMetadataSyncConnection;
+    }
+
+    @Override // android.telecom.ConnectionService
+    public final void onCreateIncomingConnectionFailed(PhoneAccountHandle phoneAccountHandle, ConnectionRequest connectionRequest) {
+        BootReceiver$$ExternalSyntheticOutline0.m("onCreateOutgoingConnectionFailed for: ", phoneAccountHandle != null ? phoneAccountHandle.getId() : "unknown PhoneAccount", "CallMetadataSyncConnectionService");
+    }
+
+    @Override // android.telecom.ConnectionService
+    public final Connection onCreateOutgoingConnection(PhoneAccountHandle phoneAccountHandle, ConnectionRequest connectionRequest) {
+        if (phoneAccountHandle == null) {
+            phoneAccountHandle = connectionRequest.getAccountHandle();
+        }
+        PhoneAccount phoneAccount = this.mTelecomManager.getPhoneAccount(phoneAccountHandle);
+        CallMetadataSyncData.Call call = new CallMetadataSyncData.Call();
+        call.mId = connectionRequest.getExtras().getString("com.android.companion.datatransfer.contextsync.extra.CALL_ID");
+        call.mStatus = 0;
+        call.mFacilitator = new CallMetadataSyncData.CallFacilitator(phoneAccount != null ? phoneAccount.getLabel().toString() : phoneAccountHandle.getComponentName().getShortClassName(), phoneAccount != null ? phoneAccount.getExtras().getString("com.android.server.companion.datatransfer.contextsync.extra.CALL_FACILITATOR_ID") : phoneAccountHandle.getComponentName().getPackageName(), phoneAccountHandle.getComponentName().flattenToString());
+        call.mDirection = 2;
+        call.mCallerId = connectionRequest.getAddress().getSchemeSpecificPart();
+        int i = phoneAccount.getExtras().getInt("com.android.server.companion.datatransfer.contextsync.extra.ASSOCIATION_ID");
+        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.CALL");
+        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.CALL_FACILITATOR_ID");
+        connectionRequest.getExtras().remove("com.android.server.companion.datatransfer.contextsync.extra.ASSOCIATION_ID");
+        CallMetadataSyncConnection callMetadataSyncConnection = new CallMetadataSyncConnection(this.mTelecomManager, this.mAudioManager, i, call, new AnonymousClass2(this, 1));
+        callMetadataSyncConnection.setCallerDisplayName(call.mCallerId, 1);
+        CompanionDeviceManagerService.LocalService localService = this.mCdmsi;
+        String str = call.mId;
+        localService.getClass();
+        if (CompanionDeviceConfig.isEnabled()) {
+            CompanionDeviceManagerService.this.mCrossDeviceSyncController.mCallManager.mSelfOwnedCalls.add(str);
+        }
+        CompanionDeviceManagerService.LocalService localService2 = this.mCdmsi;
+        byte[] createCallCreateMessage = CrossDeviceSyncController.createCallCreateMessage(call.mId, connectionRequest.getAddress().toString(), call.mFacilitator.mIdentifier);
+        localService2.getClass();
+        if (CompanionDeviceConfig.isEnabled()) {
+            CompanionDeviceManagerService.this.mCrossDeviceSyncController.syncMessageToDevice(i, createCallCreateMessage);
+        }
+        callMetadataSyncConnection.setInitializing();
+        return callMetadataSyncConnection;
+    }
+
+    @Override // android.telecom.ConnectionService
+    public final void onCreateOutgoingConnectionFailed(PhoneAccountHandle phoneAccountHandle, ConnectionRequest connectionRequest) {
+        BootReceiver$$ExternalSyntheticOutline0.m("onCreateOutgoingConnectionFailed for: ", phoneAccountHandle != null ? phoneAccountHandle.getId() : "unknown PhoneAccount", "CallMetadataSyncConnectionService");
     }
 }

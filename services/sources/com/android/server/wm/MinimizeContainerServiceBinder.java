@@ -2,33 +2,16 @@ package com.android.server.wm;
 
 import com.samsung.android.rune.CoreRune;
 
-/* loaded from: classes3.dex */
-public class MinimizeContainerServiceBinder extends FreeformContainerServiceBinder {
-    public MinimizeContainerServiceBinder(ActivityTaskManagerService activityTaskManagerService) {
-        super(activityTaskManagerService);
-        setServiceComponent("com.android.systemui", "com.android.wm.shell.freeform.MinimizeContainerService");
-    }
-
-    @Override // com.android.server.wm.FreeformContainerServiceBinder
-    public boolean okToBind() {
-        return CoreRune.MW_FREEFORM_MINIMIZE_CONTAINER && super.okToBind() && hasFreeformTask();
-    }
-
-    @Override // com.android.server.wm.FreeformContainerServiceBinder
-    public boolean okToUnbind() {
-        if (CoreRune.MW_FREEFORM_MINIMIZE_CONTAINER) {
-            return super.okToUnbind() || !hasFreeformTask();
-        }
-        return false;
-    }
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class MinimizeContainerServiceBinder extends FreeformContainerServiceBinder {
     public final boolean hasFreeformTask() {
         boolean z;
-        WindowManagerGlobalLock globalLock = this.mAtm.getGlobalLock();
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
-        synchronized (globalLock) {
+        synchronized (windowManagerGlobalLock) {
             try {
-                z = this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea().getTopRootTaskInWindowingMode(5) != null;
+                z = this.mAtm.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea().getRootTask(5, 0) != null;
             } catch (Throwable th) {
                 WindowManagerService.resetPriorityAfterLockedSection();
                 throw th;
@@ -36,5 +19,18 @@ public class MinimizeContainerServiceBinder extends FreeformContainerServiceBind
         }
         WindowManagerService.resetPriorityAfterLockedSection();
         return z;
+    }
+
+    @Override // com.android.server.wm.FreeformContainerServiceBinder
+    public final boolean okToBind() {
+        return CoreRune.MW_FREEFORM_MINIMIZE_CONTAINER && super.okToBind() && hasFreeformTask();
+    }
+
+    @Override // com.android.server.wm.FreeformContainerServiceBinder
+    public final boolean okToUnbind() {
+        if (CoreRune.MW_FREEFORM_MINIMIZE_CONTAINER) {
+            return (okToBind() ^ true) || !hasFreeformTask();
+        }
+        return false;
     }
 }

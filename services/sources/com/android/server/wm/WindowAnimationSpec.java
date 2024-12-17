@@ -12,50 +12,32 @@ import android.view.animation.AnimationSet;
 import android.view.animation.Interpolator;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.wm.LocalAnimationAdapter;
 import java.io.PrintWriter;
-import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class WindowAnimationSpec implements LocalAnimationAdapter.AnimationSpec {
-    public final boolean mAllowExtension;
-    public Animation mAnimation;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WindowAnimationSpec implements LocalAnimationAdapter.AnimationSpec {
+    public final Animation mAnimation;
     public final boolean mCanSkipFirstFrame;
-    public final boolean mIsAppAnimation;
     public final Point mPosition;
     public final Rect mRootTaskBounds;
-    public int mRootTaskClipMode;
+    public final int mRootTaskClipMode;
     public final ThreadLocal mThreadLocalTmps;
     public final Rect mTmpRect;
     public final float mWindowCornerRadius;
 
-    public static /* synthetic */ TmpValues $r8$lambda$LPYhkojuA7Rcm_KU4DHewFkMvcY() {
-        return new TmpValues();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TmpValues {
+        public final Transformation transformation = new Transformation();
+        public final float[] floats = new float[9];
     }
 
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public WindowAnimationSpec asWindowAnimationSpec() {
-        return this;
-    }
-
-    public WindowAnimationSpec(Animation animation, Point point, boolean z, float f) {
-        this(animation, point, null, z, 1, false, f);
-    }
-
-    public WindowAnimationSpec(Animation animation, Point point, Rect rect, boolean z, int i, boolean z2, float f) {
-        this(animation, point, rect, z, i, z2, f, true);
-    }
-
-    public WindowAnimationSpec(Animation animation, Point point, Rect rect, boolean z, int i, boolean z2, float f, boolean z3) {
+    public WindowAnimationSpec(Animation animation, Point point, Rect rect, boolean z, int i, float f) {
         Point point2 = new Point();
         this.mPosition = point2;
-        this.mThreadLocalTmps = ThreadLocal.withInitial(new Supplier() { // from class: com.android.server.wm.WindowAnimationSpec$$ExternalSyntheticLambda0
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                return WindowAnimationSpec.$r8$lambda$LPYhkojuA7Rcm_KU4DHewFkMvcY();
-            }
-        });
+        this.mThreadLocalTmps = ThreadLocal.withInitial(new WindowAnimationSpec$$ExternalSyntheticLambda0());
         Rect rect2 = new Rect();
         this.mRootTaskBounds = rect2;
         this.mTmpRect = new Rect();
@@ -65,127 +47,22 @@ public class WindowAnimationSpec implements LocalAnimationAdapter.AnimationSpec 
         }
         this.mWindowCornerRadius = f;
         this.mCanSkipFirstFrame = z;
-        this.mIsAppAnimation = z2;
         this.mRootTaskClipMode = i;
         if (rect != null) {
             rect2.set(rect);
         }
-        this.mAllowExtension = z3;
     }
 
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public boolean getShowWallpaper() {
-        return this.mAnimation.getShowWallpaper();
+    public WindowAnimationSpec(Animation animation, Point point, boolean z, float f) {
+        this(animation, point, null, z, 1, f);
     }
 
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public boolean getShowBackground() {
-        return this.mAnimation.getShowBackdrop();
-    }
-
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public int getBackgroundColor() {
-        return this.mAnimation.getBackdropColor();
-    }
-
-    public boolean hasExtension() {
-        return this.mAnimation.hasExtension();
-    }
-
-    public boolean allowExtension() {
-        return this.mAllowExtension;
-    }
-
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public long getDuration() {
-        return this.mAnimation.computeDurationHint();
-    }
-
-    public Rect getRootTaskBounds() {
-        return this.mRootTaskBounds;
-    }
-
-    public Animation getAnimation() {
-        return this.mAnimation;
-    }
-
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public void apply(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, long j) {
-        TmpValues tmpValues = (TmpValues) this.mThreadLocalTmps.get();
-        tmpValues.transformation.clear();
-        this.mAnimation.getTransformation(j, tmpValues.transformation);
-        Matrix matrix = tmpValues.transformation.getMatrix();
-        Point point = this.mPosition;
-        matrix.postTranslate(point.x, point.y);
-        transaction.setMatrix(surfaceControl, tmpValues.transformation.getMatrix(), tmpValues.floats);
-        transaction.setAlpha(surfaceControl, tmpValues.transformation.getAlpha());
-        boolean z = true;
-        if (this.mRootTaskClipMode == 1) {
-            if (tmpValues.transformation.hasClipRect()) {
-                Rect clipRect = tmpValues.transformation.getClipRect();
-                accountForExtension(tmpValues.transformation, clipRect);
-                transaction.setWindowCrop(surfaceControl, clipRect);
-            } else {
-                z = false;
-            }
-        } else {
-            this.mTmpRect.set(this.mRootTaskBounds);
-            if (tmpValues.transformation.hasClipRect()) {
-                this.mTmpRect.intersect(tmpValues.transformation.getClipRect());
-            }
-            accountForExtension(tmpValues.transformation, this.mTmpRect);
-            transaction.setWindowCrop(surfaceControl, this.mTmpRect);
+    public static float findInterpolationAdjustedTargetFraction(Interpolator interpolator, float f) {
+        float f2 = 0.5f;
+        for (float f3 = 0.25f; f3 >= 0.01f; f3 /= 2.0f) {
+            f2 = interpolator.getInterpolation(f2) < f ? f2 + f3 : f2 - f3;
         }
-        if (z && this.mAnimation.hasRoundedCorners()) {
-            float f = this.mWindowCornerRadius;
-            if (f > DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                transaction.setCornerRadius(surfaceControl, f);
-            }
-        }
-    }
-
-    public final void accountForExtension(Transformation transformation, Rect rect) {
-        Insets min = Insets.min(transformation.getInsets(), Insets.NONE);
-        if (min.equals(Insets.NONE)) {
-            return;
-        }
-        rect.inset(min);
-    }
-
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public long calculateStatusBarTransitionStartTime() {
-        long uptimeMillis;
-        long j;
-        TranslateAnimation findTranslateAnimation = findTranslateAnimation(this.mAnimation);
-        if (findTranslateAnimation != null) {
-            if (findTranslateAnimation.isXAxisTransition() && findTranslateAnimation.isFullWidthTranslate()) {
-                uptimeMillis = SystemClock.uptimeMillis() + findTranslateAnimation.getStartOffset() + (((float) findTranslateAnimation.getDuration()) * findMiddleOfTranslationFraction(findTranslateAnimation.getInterpolator()));
-                j = 60;
-            } else {
-                uptimeMillis = SystemClock.uptimeMillis() + findTranslateAnimation.getStartOffset() + (((float) findTranslateAnimation.getDuration()) * findAlmostThereFraction(findTranslateAnimation.getInterpolator()));
-                j = 120;
-            }
-            return uptimeMillis - j;
-        }
-        return SystemClock.uptimeMillis();
-    }
-
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public boolean canSkipFirstFrame() {
-        return this.mCanSkipFirstFrame;
-    }
-
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public void dump(PrintWriter printWriter, String str) {
-        printWriter.print(str);
-        printWriter.println(this.mAnimation);
-    }
-
-    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-    public void dumpDebugInner(ProtoOutputStream protoOutputStream) {
-        long start = protoOutputStream.start(1146756268033L);
-        protoOutputStream.write(1138166333441L, this.mAnimation.toString());
-        protoOutputStream.end(start);
+        return f2;
     }
 
     public static TranslateAnimation findTranslateAnimation(Animation animation) {
@@ -205,30 +82,109 @@ public class WindowAnimationSpec implements LocalAnimationAdapter.AnimationSpec 
         return null;
     }
 
-    public static float findAlmostThereFraction(Interpolator interpolator) {
-        return findInterpolationAdjustedTargetFraction(interpolator, 0.99f, 0.01f);
-    }
-
-    public final float findMiddleOfTranslationFraction(Interpolator interpolator) {
-        return findInterpolationAdjustedTargetFraction(interpolator, 0.5f, 0.01f);
-    }
-
-    public static float findInterpolationAdjustedTargetFraction(Interpolator interpolator, float f, float f2) {
-        float f3 = 0.5f;
-        for (float f4 = 0.25f; f4 >= f2; f4 /= 2.0f) {
-            f3 = interpolator.getInterpolation(f3) < f ? f3 + f4 : f3 - f4;
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final void apply(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, long j) {
+        TmpValues tmpValues = (TmpValues) this.mThreadLocalTmps.get();
+        tmpValues.transformation.clear();
+        this.mAnimation.getTransformation(j, tmpValues.transformation);
+        Matrix matrix = tmpValues.transformation.getMatrix();
+        Point point = this.mPosition;
+        matrix.postTranslate(point.x, point.y);
+        transaction.setMatrix(surfaceControl, tmpValues.transformation.getMatrix(), tmpValues.floats);
+        transaction.setAlpha(surfaceControl, tmpValues.transformation.getAlpha());
+        if (this.mRootTaskClipMode != 1) {
+            this.mTmpRect.set(this.mRootTaskBounds);
+            if (tmpValues.transformation.hasClipRect()) {
+                this.mTmpRect.intersect(tmpValues.transformation.getClipRect());
+            }
+            Transformation transformation = tmpValues.transformation;
+            Rect rect = this.mTmpRect;
+            Insets insets = transformation.getInsets();
+            Insets insets2 = Insets.NONE;
+            Insets min = Insets.min(insets, insets2);
+            if (!min.equals(insets2)) {
+                rect.inset(min);
+            }
+            transaction.setWindowCrop(surfaceControl, this.mTmpRect);
+        } else {
+            if (!tmpValues.transformation.hasClipRect()) {
+                return;
+            }
+            Rect clipRect = tmpValues.transformation.getClipRect();
+            Insets insets3 = tmpValues.transformation.getInsets();
+            Insets insets4 = Insets.NONE;
+            Insets min2 = Insets.min(insets3, insets4);
+            if (!min2.equals(insets4)) {
+                clipRect.inset(min2);
+            }
+            transaction.setWindowCrop(surfaceControl, clipRect);
         }
-        return f3;
+        if (this.mAnimation.hasRoundedCorners()) {
+            float f = this.mWindowCornerRadius;
+            if (f > FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                transaction.setCornerRadius(surfaceControl, f);
+            }
+        }
     }
 
-    /* loaded from: classes3.dex */
-    public class TmpValues {
-        public final float[] floats;
-        public final Transformation transformation;
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final WindowAnimationSpec asWindowAnimationSpec() {
+        return this;
+    }
 
-        public TmpValues() {
-            this.transformation = new Transformation();
-            this.floats = new float[9];
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final long calculateStatusBarTransitionStartTime() {
+        long startOffset;
+        long j;
+        TranslateAnimation findTranslateAnimation = findTranslateAnimation(this.mAnimation);
+        if (findTranslateAnimation == null) {
+            return SystemClock.uptimeMillis();
         }
+        if (findTranslateAnimation.isXAxisTransition() && findTranslateAnimation.isFullWidthTranslate()) {
+            startOffset = findTranslateAnimation.getStartOffset() + SystemClock.uptimeMillis() + ((long) (findTranslateAnimation.getDuration() * findInterpolationAdjustedTargetFraction(findTranslateAnimation.getInterpolator(), 0.5f)));
+            j = 60;
+        } else {
+            startOffset = findTranslateAnimation.getStartOffset() + SystemClock.uptimeMillis() + ((long) (findTranslateAnimation.getDuration() * findInterpolationAdjustedTargetFraction(findTranslateAnimation.getInterpolator(), 0.99f)));
+            j = 120;
+        }
+        return startOffset - j;
+    }
+
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final boolean canSkipFirstFrame() {
+        return this.mCanSkipFirstFrame;
+    }
+
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final void dump(PrintWriter printWriter, String str) {
+        printWriter.print(str);
+        printWriter.println(this.mAnimation);
+    }
+
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final void dumpDebugInner(ProtoOutputStream protoOutputStream) {
+        long start = protoOutputStream.start(1146756268033L);
+        protoOutputStream.write(1138166333441L, this.mAnimation.toString());
+        protoOutputStream.end(start);
+    }
+
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final int getBackgroundColor() {
+        return this.mAnimation.getBackdropColor();
+    }
+
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final long getDuration() {
+        return this.mAnimation.computeDurationHint();
+    }
+
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final boolean getShowBackground() {
+        return this.mAnimation.getShowBackdrop();
+    }
+
+    @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+    public final boolean getShowWallpaper() {
+        return this.mAnimation.getShowWallpaper();
     }
 }

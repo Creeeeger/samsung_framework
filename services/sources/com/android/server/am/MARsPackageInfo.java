@@ -1,11 +1,10 @@
 package com.android.server.am;
 
 import com.android.server.am.MARsPolicyManager;
-import com.android.server.am.mars.database.MARsVersionManager;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class MARsPackageInfo {
-    public static String TAG = "MARsPackageInfo";
+public final class MARsPackageInfo {
     public double BatteryUsage;
     public MARsPolicyManager.Policy appliedPolicy;
     public int checkJobRunningCount;
@@ -19,43 +18,101 @@ public class MARsPackageInfo {
     public boolean isDisabled;
     public boolean isFASEnabled;
     public boolean isInRestrictedBucket;
-    public boolean isInUsageStats;
-    public boolean isRemovedPkg;
     public boolean isSCPMTarget;
     public long lastUsedTime;
     public int maxLevel;
-    public int mpsm;
-    public String name;
+    public final String name;
     public long nextKillTimeForLongRunningProcess;
     public int optionFlag;
     public int packageType;
-    public double preBatteryUsage;
     public long resetTime;
     public int sbike;
     public String sharedUidName;
     public int state;
-    public int uds;
-    public int uid;
-    public int userId;
+    public final int uid;
+    public final int userId;
 
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0047, code lost:
+    /* JADX WARN: Can't wrap try/catch for region: R(26:0|1|(24:50|(1:52)(2:53|(1:55)(2:56|(1:58)(2:59|(1:61))))|4|5|6|(1:8)|9|(3:11|(1:13)(1:15)|14)|16|(1:18)|19|(1:21)|22|(1:24)|25|(2:27|(1:31))|32|(1:34)|35|(1:37)|38|(1:40)|42|43)|3|4|5|6|(0)|9|(0)|16|(0)|19|(0)|22|(0)|25|(0)|32|(0)|35|(0)|38|(0)|42|43) */
+    /* JADX WARN: Code restructure failed: missing block: B:45:0x0089, code lost:
     
-        if (java.lang.Integer.parseInt(r23.getStrMode()) == 1) goto L82;
+        r10 = move-exception;
      */
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x011b, code lost:
+    
+        android.util.Log.e("MARsPackageInfo", "NumberFormatException !" + r10);
+     */
+    /* JADX WARN: Removed duplicated region for block: B:11:0x009a A[Catch: NumberFormatException -> 0x0089, TryCatch #0 {NumberFormatException -> 0x0089, blocks: (B:6:0x0078, B:8:0x007e, B:9:0x008c, B:11:0x009a, B:14:0x00a6, B:16:0x00a8, B:18:0x00ae, B:19:0x00b8, B:21:0x00be, B:22:0x00c8, B:24:0x00ce, B:25:0x00d8, B:27:0x00dc, B:29:0x00e6, B:31:0x00ea, B:32:0x00ed, B:34:0x00f3, B:35:0x00fd, B:37:0x0103, B:38:0x010d, B:40:0x0113), top: B:5:0x0078 }] */
+    /* JADX WARN: Removed duplicated region for block: B:18:0x00ae A[Catch: NumberFormatException -> 0x0089, TryCatch #0 {NumberFormatException -> 0x0089, blocks: (B:6:0x0078, B:8:0x007e, B:9:0x008c, B:11:0x009a, B:14:0x00a6, B:16:0x00a8, B:18:0x00ae, B:19:0x00b8, B:21:0x00be, B:22:0x00c8, B:24:0x00ce, B:25:0x00d8, B:27:0x00dc, B:29:0x00e6, B:31:0x00ea, B:32:0x00ed, B:34:0x00f3, B:35:0x00fd, B:37:0x0103, B:38:0x010d, B:40:0x0113), top: B:5:0x0078 }] */
+    /* JADX WARN: Removed duplicated region for block: B:21:0x00be A[Catch: NumberFormatException -> 0x0089, TryCatch #0 {NumberFormatException -> 0x0089, blocks: (B:6:0x0078, B:8:0x007e, B:9:0x008c, B:11:0x009a, B:14:0x00a6, B:16:0x00a8, B:18:0x00ae, B:19:0x00b8, B:21:0x00be, B:22:0x00c8, B:24:0x00ce, B:25:0x00d8, B:27:0x00dc, B:29:0x00e6, B:31:0x00ea, B:32:0x00ed, B:34:0x00f3, B:35:0x00fd, B:37:0x0103, B:38:0x010d, B:40:0x0113), top: B:5:0x0078 }] */
+    /* JADX WARN: Removed duplicated region for block: B:24:0x00ce A[Catch: NumberFormatException -> 0x0089, TryCatch #0 {NumberFormatException -> 0x0089, blocks: (B:6:0x0078, B:8:0x007e, B:9:0x008c, B:11:0x009a, B:14:0x00a6, B:16:0x00a8, B:18:0x00ae, B:19:0x00b8, B:21:0x00be, B:22:0x00c8, B:24:0x00ce, B:25:0x00d8, B:27:0x00dc, B:29:0x00e6, B:31:0x00ea, B:32:0x00ed, B:34:0x00f3, B:35:0x00fd, B:37:0x0103, B:38:0x010d, B:40:0x0113), top: B:5:0x0078 }] */
+    /* JADX WARN: Removed duplicated region for block: B:27:0x00dc A[Catch: NumberFormatException -> 0x0089, TryCatch #0 {NumberFormatException -> 0x0089, blocks: (B:6:0x0078, B:8:0x007e, B:9:0x008c, B:11:0x009a, B:14:0x00a6, B:16:0x00a8, B:18:0x00ae, B:19:0x00b8, B:21:0x00be, B:22:0x00c8, B:24:0x00ce, B:25:0x00d8, B:27:0x00dc, B:29:0x00e6, B:31:0x00ea, B:32:0x00ed, B:34:0x00f3, B:35:0x00fd, B:37:0x0103, B:38:0x010d, B:40:0x0113), top: B:5:0x0078 }] */
+    /* JADX WARN: Removed duplicated region for block: B:34:0x00f3 A[Catch: NumberFormatException -> 0x0089, TryCatch #0 {NumberFormatException -> 0x0089, blocks: (B:6:0x0078, B:8:0x007e, B:9:0x008c, B:11:0x009a, B:14:0x00a6, B:16:0x00a8, B:18:0x00ae, B:19:0x00b8, B:21:0x00be, B:22:0x00c8, B:24:0x00ce, B:25:0x00d8, B:27:0x00dc, B:29:0x00e6, B:31:0x00ea, B:32:0x00ed, B:34:0x00f3, B:35:0x00fd, B:37:0x0103, B:38:0x010d, B:40:0x0113), top: B:5:0x0078 }] */
+    /* JADX WARN: Removed duplicated region for block: B:37:0x0103 A[Catch: NumberFormatException -> 0x0089, TryCatch #0 {NumberFormatException -> 0x0089, blocks: (B:6:0x0078, B:8:0x007e, B:9:0x008c, B:11:0x009a, B:14:0x00a6, B:16:0x00a8, B:18:0x00ae, B:19:0x00b8, B:21:0x00be, B:22:0x00c8, B:24:0x00ce, B:25:0x00d8, B:27:0x00dc, B:29:0x00e6, B:31:0x00ea, B:32:0x00ed, B:34:0x00f3, B:35:0x00fd, B:37:0x0103, B:38:0x010d, B:40:0x0113), top: B:5:0x0078 }] */
+    /* JADX WARN: Removed duplicated region for block: B:40:0x0113 A[Catch: NumberFormatException -> 0x0089, TRY_LEAVE, TryCatch #0 {NumberFormatException -> 0x0089, blocks: (B:6:0x0078, B:8:0x007e, B:9:0x008c, B:11:0x009a, B:14:0x00a6, B:16:0x00a8, B:18:0x00ae, B:19:0x00b8, B:21:0x00be, B:22:0x00c8, B:24:0x00ce, B:25:0x00d8, B:27:0x00dc, B:29:0x00e6, B:31:0x00ea, B:32:0x00ed, B:34:0x00f3, B:35:0x00fd, B:37:0x0103, B:38:0x010d, B:40:0x0113), top: B:5:0x0078 }] */
+    /* JADX WARN: Removed duplicated region for block: B:8:0x007e A[Catch: NumberFormatException -> 0x0089, TryCatch #0 {NumberFormatException -> 0x0089, blocks: (B:6:0x0078, B:8:0x007e, B:9:0x008c, B:11:0x009a, B:14:0x00a6, B:16:0x00a8, B:18:0x00ae, B:19:0x00b8, B:21:0x00be, B:22:0x00c8, B:24:0x00ce, B:25:0x00d8, B:27:0x00dc, B:29:0x00e6, B:31:0x00ea, B:32:0x00ed, B:34:0x00f3, B:35:0x00fd, B:37:0x0103, B:38:0x010d, B:40:0x0113), top: B:5:0x0078 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public MARsPackageInfo(com.android.server.am.mars.database.FASEntity r23) {
+    public MARsPackageInfo(com.android.server.am.mars.database.FASEntity r10) {
         /*
-            Method dump skipped, instructions count: 360
+            Method dump skipped, instructions count: 310
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.MARsPackageInfo.<init>(com.android.server.am.mars.database.FASEntity):void");
     }
 
-    public void updatePackageInfo(MARsPackageInfo mARsPackageInfo) {
-        int i;
+    /* JADX WARN: Removed duplicated region for block: B:11:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:8:0x003d  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void initOptionFlag() {
+        /*
+            r4 = this;
+            r0 = 0
+            r4.optionFlag = r0
+            r0 = 0
+            java.lang.String r1 = r4.name
+            if (r1 == 0) goto L10
+            java.lang.String r2 = ".cts."
+            boolean r2 = r1.contains(r2)
+            if (r2 != 0) goto L1c
+        L10:
+            java.lang.String[][] r2 = com.android.server.am.mars.database.MARsVersionManager.mMARsSettingsInfoDefault
+            com.android.server.am.mars.database.MARsVersionManager r2 = com.android.server.am.mars.database.MARsVersionManager.MARsVersionManagerHolder.INSTANCE
+            r3 = 19
+            boolean r3 = r2.isAdjustRestrictionMatch(r3, r1, r0, r0)
+            if (r3 == 0) goto L23
+        L1c:
+            int r2 = r4.optionFlag
+            r2 = r2 | 2
+            r4.optionFlag = r2
+            goto L31
+        L23:
+            r3 = 11
+            boolean r2 = r2.isAdjustRestrictionMatch(r3, r1, r0, r0)
+            if (r2 == 0) goto L31
+            int r2 = r4.optionFlag
+            r2 = r2 | 1
+            r4.optionFlag = r2
+        L31:
+            java.lang.String[][] r2 = com.android.server.am.mars.database.MARsVersionManager.mMARsSettingsInfoDefault
+            com.android.server.am.mars.database.MARsVersionManager r2 = com.android.server.am.mars.database.MARsVersionManager.MARsVersionManagerHolder.INSTANCE
+            r3 = 20
+            boolean r0 = r2.isAdjustRestrictionMatch(r3, r1, r0, r0)
+            if (r0 == 0) goto L43
+            int r0 = r4.optionFlag
+            r0 = r0 | 4
+            r4.optionFlag = r0
+        L43:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.MARsPackageInfo.initOptionFlag():void");
+    }
+
+    public final void updatePackageInfo(MARsPackageInfo mARsPackageInfo) {
         long j = this.resetTime;
         long j2 = mARsPackageInfo.resetTime;
         if (j == j2 && this.state == mARsPackageInfo.state && this.isFASEnabled == mARsPackageInfo.isFASEnabled && this.fasType == mARsPackageInfo.fasType && this.maxLevel == mARsPackageInfo.maxLevel && this.isDisabled == mARsPackageInfo.isDisabled) {
@@ -68,228 +125,10 @@ public class MARsPackageInfo {
         this.state = mARsPackageInfo.state;
         this.resetTime = j2;
         this.packageType = mARsPackageInfo.packageType;
-        if (z) {
-            i = mARsPackageInfo.maxLevel;
-            if (i <= 2) {
-                i = 2;
-            }
-        } else {
-            i = 1;
-        }
-        this.maxLevel = i;
+        this.maxLevel = z ? Math.max(mARsPackageInfo.maxLevel, 2) : 1;
         this.disableType = mARsPackageInfo.disableType;
         this.disableResetTime = mARsPackageInfo.disableResetTime;
         this.BatteryUsage = mARsPackageInfo.BatteryUsage;
-        this.preBatteryUsage = mARsPackageInfo.preBatteryUsage;
         this.disableReason = mARsPackageInfo.disableReason;
-    }
-
-    public void setIsInUsageStats(boolean z) {
-        this.isInUsageStats = z;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void initOptionFlag() {
-        this.optionFlag = 0;
-        String str = this.name;
-        if ((str != null && str.contains(".cts.")) || MARsVersionManager.getInstance().isAdjustRestrictionMatch(19, this.name, null, null)) {
-            this.optionFlag |= 2;
-        } else if (MARsVersionManager.getInstance().isAdjustRestrictionMatch(11, this.name, null, null)) {
-            this.optionFlag |= 1;
-        }
-        if (MARsVersionManager.getInstance().isAdjustRestrictionMatch(20, this.name, null, null)) {
-            this.optionFlag |= 4;
-        }
-    }
-
-    public int getUid() {
-        return this.uid;
-    }
-
-    public int getUserId() {
-        return this.userId;
-    }
-
-    public boolean getFASEnabled() {
-        return this.isFASEnabled;
-    }
-
-    public void setFASEnabled(boolean z) {
-        this.isFASEnabled = z;
-    }
-
-    public boolean getIsInRestrictedBucket() {
-        return this.isInRestrictedBucket;
-    }
-
-    public void setIsInRestrictedBucket(boolean z) {
-        this.isInRestrictedBucket = z;
-    }
-
-    public String getFasReason() {
-        return this.fasReason;
-    }
-
-    public void setFasReason(String str) {
-        this.fasReason = str;
-    }
-
-    public boolean getDisabled() {
-        return this.isDisabled;
-    }
-
-    public void setDisabled(boolean z) {
-        this.isDisabled = z;
-    }
-
-    public int getFasType() {
-        return this.fasType;
-    }
-
-    public void setFasType(int i) {
-        this.fasType = i;
-    }
-
-    public int getState() {
-        return this.state;
-    }
-
-    public void setState(int i) {
-        this.state = i;
-    }
-
-    public long getResetTime() {
-        return this.resetTime;
-    }
-
-    public void setResetTime(long j) {
-        this.resetTime = j;
-    }
-
-    public long getLastUsedTime() {
-        return this.lastUsedTime;
-    }
-
-    public void setLastUsedTime(long j) {
-        this.lastUsedTime = j;
-    }
-
-    public int getPackageType() {
-        return this.packageType;
-    }
-
-    public int getMaxLevel() {
-        return this.maxLevel;
-    }
-
-    public void setMaxLevel(int i) {
-        this.maxLevel = i;
-    }
-
-    public int getCurLevel() {
-        return this.curLevel;
-    }
-
-    public void setCurLevel(int i) {
-        this.curLevel = i;
-    }
-
-    public int getDisableType() {
-        return this.disableType;
-    }
-
-    public void setDisableType(int i) {
-        this.disableType = i;
-    }
-
-    public long getDisableResetTime() {
-        return this.disableResetTime;
-    }
-
-    public void setDisableResetTime(long j) {
-        this.disableResetTime = j;
-    }
-
-    public double getBatteryUsage() {
-        return this.BatteryUsage;
-    }
-
-    public void setBatteryUsage(double d) {
-        this.BatteryUsage = d;
-    }
-
-    public boolean getHasAppIcon() {
-        return this.hasAppIcon;
-    }
-
-    public void setHasAppIcon(boolean z) {
-        this.hasAppIcon = z;
-    }
-
-    public String getSharedUidName() {
-        return this.sharedUidName;
-    }
-
-    public void setSharedUidName(String str) {
-        this.sharedUidName = str;
-    }
-
-    public int getDisableReason() {
-        return this.disableReason;
-    }
-
-    public void setDisableReason(int i) {
-        this.disableReason = i;
-    }
-
-    public int getUds() {
-        return this.uds;
-    }
-
-    public void setUds(int i) {
-        this.uds = i;
-    }
-
-    public int getSBike() {
-        return this.sbike;
-    }
-
-    public void setSBike(int i) {
-        this.sbike = i;
-    }
-
-    public int getMpsm() {
-        return this.mpsm;
-    }
-
-    public void setMpsm(int i) {
-        this.mpsm = i;
-    }
-
-    public MARsPolicyManager.Policy getAppliedPolicy() {
-        return this.appliedPolicy;
-    }
-
-    public void setAppliedPolicy(MARsPolicyManager.Policy policy) {
-        this.appliedPolicy = policy;
-    }
-
-    public int getCheckJobRunningCount() {
-        return this.checkJobRunningCount;
-    }
-
-    public void setCheckJobRunningCount(int i) {
-        this.checkJobRunningCount = i;
-    }
-
-    public void setIsSCPMTarget(boolean z) {
-        this.isSCPMTarget = z;
-    }
-
-    public boolean isSCPMTarget() {
-        return this.isSCPMTarget;
     }
 }

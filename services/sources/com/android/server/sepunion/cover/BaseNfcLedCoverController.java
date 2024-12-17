@@ -6,22 +6,81 @@ import android.nfc.NfcAdapter;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.PowerManager;
+import com.samsung.android.nfc.adapter.SamsungNfcAdapter;
 import com.samsung.android.sepunion.Log;
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class BaseNfcLedCoverController {
-    public static final String TAG = "CoverManager_" + BaseNfcLedCoverController.class.getSimpleName();
-    public Context mContext;
+    public final Context mContext;
+    public boolean mIsLedCoverAttached = false;
     public NfcAdapter mNfcAdapter;
     public final PowerManager mPowerManager;
-    public boolean mIsLedCoverAttached = false;
-    public final int EVENT_TYPE_POWER_KEY = 10;
+    public SamsungNfcAdapter mSamsungNfcAdapter;
+
+    public BaseNfcLedCoverController(Context context) {
+        this.mContext = context;
+        this.mPowerManager = (PowerManager) context.getSystemService("power");
+        this.mNfcAdapter = NfcAdapter.getDefaultAdapter(context);
+        this.mSamsungNfcAdapter = SamsungNfcAdapter.getDefaultAdapter(context);
+    }
+
+    public static void acquireWakeLockWithPermission(PowerManager.WakeLock wakeLock) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            if (!wakeLock.isHeld()) {
+                wakeLock.acquire();
+            }
+        } catch (IllegalStateException e) {
+            Log.e("CoverManager_BaseNfcLedCoverController", "Shouldn't happen", e);
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+    }
+
+    public static String getByteDataString(byte[] bArr) {
+        if (bArr == null) {
+            return "null";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bArr) {
+            sb.append(String.format("%02X", Byte.valueOf(b)));
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
+    public static void releaseWakeLockWithPermission(PowerManager.WakeLock wakeLock) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            if (wakeLock.isHeld()) {
+                wakeLock.release();
+            }
+        } catch (IllegalStateException e) {
+            Log.e("CoverManager_BaseNfcLedCoverController", "Shouldn't happen", e);
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+    }
 
     public void addLedNotification(Bundle bundle) {
+    }
+
+    public void dump(PrintWriter printWriter) {
+        printWriter.println(" Current NfcLedCoverController state:");
+        printWriter.print("  mIsLEDCoverAttached=");
+        printWriter.println(this.mIsLedCoverAttached);
+        printWriter.println("  ");
+    }
+
+    public final SamsungNfcAdapter getSamsungNfcAdapter() {
+        if (this.mSamsungNfcAdapter == null) {
+            this.mSamsungNfcAdapter = SamsungNfcAdapter.getDefaultAdapter(this.mContext);
+        }
+        if (this.mSamsungNfcAdapter == null) {
+            Log.e("CoverManager_BaseNfcLedCoverController", "Could not get SamsungNfcAdapter");
+        }
+        return this.mSamsungNfcAdapter;
     }
 
     public void notifyAuthenticationResponse() {
@@ -54,72 +113,6 @@ public class BaseNfcLedCoverController {
         return false;
     }
 
-    public void updateNfcLedCoverAttachStateLocked(boolean z, int i) {
-    }
-
-    public BaseNfcLedCoverController(Looper looper, Context context) {
-        this.mContext = context;
-        this.mPowerManager = (PowerManager) context.getSystemService("power");
-        this.mNfcAdapter = NfcAdapter.getDefaultAdapter(context);
-    }
-
-    public void setLcdOffDisabledByCover(boolean z) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("event_type", 1);
-        bundle.putBoolean("lcd_off_disabled_by_cover", z);
-        sendSystemEvent(bundle);
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        printWriter.println(" Current NfcLedCoverController state:");
-        printWriter.print("  mIsLEDCoverAttached=");
-        printWriter.println(this.mIsLedCoverAttached);
-        printWriter.println("  ");
-    }
-
-    public String getByteDataString(byte[] bArr) {
-        if (bArr == null) {
-            return "null";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bArr) {
-            sb.append(String.format("%02X", Byte.valueOf(b)));
-            sb.append(" ");
-        }
-        return sb.toString();
-    }
-
-    public NfcAdapter getNfcAdapter() {
-        if (this.mNfcAdapter == null) {
-            this.mNfcAdapter = NfcAdapter.getDefaultAdapter(this.mContext);
-        }
-        if (this.mNfcAdapter == null) {
-            Log.e(TAG, "Could not get NfcAdapter");
-        }
-        return this.mNfcAdapter;
-    }
-
-    public final void acquireWakeLockWithPermission(PowerManager.WakeLock wakeLock) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            if (!wakeLock.isHeld()) {
-                wakeLock.acquire();
-            }
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "Shouldn't happen", e);
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-    }
-
-    public final void releaseWakeLockWithPermission(PowerManager.WakeLock wakeLock) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            if (wakeLock.isHeld()) {
-                wakeLock.release();
-            }
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "Shouldn't happen", e);
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
+    public void updateNfcLedCoverAttachStateLocked(int i, boolean z) {
     }
 }

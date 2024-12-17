@@ -1,13 +1,12 @@
 package com.android.server.clipboard;
 
 import android.content.ClipData;
-import android.os.PersistableBundle;
 import android.os.SystemProperties;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.system.OsConstants;
 import android.system.VmSocketAddress;
-import android.util.Slog;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 import java.io.EOFException;
 import java.io.FileDescriptor;
 import java.io.InterruptedIOException;
@@ -18,42 +17,11 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class EmulatorClipboardMonitor implements Consumer {
+public final class EmulatorClipboardMonitor implements Consumer {
     public static final boolean LOG_CLIBOARD_ACCESS = SystemProperties.getBoolean("ro.boot.qemu.log_clipboard_access", false);
-    public final Thread mHostMonitorThread;
-    public FileDescriptor mPipe = null;
-
-    public static byte[] createOpenHandshake() {
-        byte[] copyOf = Arrays.copyOf("pipe:clipboard".getBytes(), 15);
-        copyOf[14] = 0;
-        return copyOf;
-    }
-
-    public final synchronized FileDescriptor getPipeFD() {
-        return this.mPipe;
-    }
-
-    public final synchronized void setPipeFD(FileDescriptor fileDescriptor) {
-        this.mPipe = fileDescriptor;
-    }
-
-    public static FileDescriptor openPipeImpl() {
-        try {
-            FileDescriptor socket = Os.socket(OsConstants.AF_VSOCK, OsConstants.SOCK_STREAM, 0);
-            try {
-                Os.connect(socket, new VmSocketAddress(5000, OsConstants.VMADDR_CID_HOST));
-                byte[] createOpenHandshake = createOpenHandshake();
-                writeFully(socket, createOpenHandshake, 0, createOpenHandshake.length);
-                return socket;
-            } catch (ErrnoException | InterruptedIOException | SocketException unused) {
-                Os.close(socket);
-                return null;
-            }
-        } catch (ErrnoException unused2) {
-            return null;
-        }
-    }
+    public FileDescriptor mPipe;
 
     public static FileDescriptor openPipe() {
         FileDescriptor openPipeImpl = openPipeImpl();
@@ -64,17 +32,52 @@ public class EmulatorClipboardMonitor implements Consumer {
         return openPipeImpl;
     }
 
-    public final byte[] receiveMessage(FileDescriptor fileDescriptor) {
+    public static FileDescriptor openPipeImpl() {
+        try {
+            FileDescriptor socket = Os.socket(OsConstants.AF_VSOCK, OsConstants.SOCK_STREAM, 0);
+            try {
+                Os.connect(socket, new VmSocketAddress(5000, OsConstants.VMADDR_CID_HOST));
+                byte[] copyOf = Arrays.copyOf("pipe:clipboard".getBytes(), 15);
+                copyOf[14] = 0;
+                writeFully(socket, copyOf, copyOf.length);
+                return socket;
+            } catch (ErrnoException | InterruptedIOException | SocketException unused) {
+                Os.close(socket);
+                return null;
+            }
+        } catch (ErrnoException unused2) {
+            return null;
+        }
+    }
+
+    public static byte[] receiveMessage(FileDescriptor fileDescriptor) {
+        int i = 4;
         byte[] bArr = new byte[4];
-        readFully(fileDescriptor, bArr, 0, 4);
+        int i2 = 0;
+        int i3 = 0;
+        while (i > 0) {
+            int read = Os.read(fileDescriptor, bArr, i3, i);
+            if (read <= 0) {
+                throw new EOFException();
+            }
+            i3 += read;
+            i -= read;
+        }
         ByteBuffer wrap = ByteBuffer.wrap(bArr);
         wrap.order(ByteOrder.LITTLE_ENDIAN);
-        int i = wrap.getInt();
-        if (i < 0 || i > 134217728) {
-            throw new ProtocolException("Clipboard message length: " + i + " out of bounds.");
+        int i4 = wrap.getInt();
+        if (i4 < 0 || i4 > 134217728) {
+            throw new ProtocolException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i4, "Clipboard message length: ", " out of bounds."));
         }
-        byte[] bArr2 = new byte[i];
-        readFully(fileDescriptor, bArr2, 0, i);
+        byte[] bArr2 = new byte[i4];
+        while (i4 > 0) {
+            int read2 = Os.read(fileDescriptor, bArr2, i2, i4);
+            if (read2 <= 0) {
+                throw new EOFException();
+            }
+            i2 += read2;
+            i4 -= read2;
+        }
         return bArr2;
     }
 
@@ -83,106 +86,36 @@ public class EmulatorClipboardMonitor implements Consumer {
         ByteBuffer wrap = ByteBuffer.wrap(bArr2);
         wrap.order(ByteOrder.LITTLE_ENDIAN);
         wrap.putInt(bArr.length);
-        writeFully(fileDescriptor, bArr2, 0, 4);
-        writeFully(fileDescriptor, bArr, 0, bArr.length);
+        writeFully(fileDescriptor, bArr2, 4);
+        writeFully(fileDescriptor, bArr, bArr.length);
     }
 
-    public EmulatorClipboardMonitor(final Consumer consumer) {
-        Thread thread = new Thread(new Runnable() { // from class: com.android.server.clipboard.EmulatorClipboardMonitor$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                EmulatorClipboardMonitor.this.lambda$new$0(consumer);
+    public static void writeFully(FileDescriptor fileDescriptor, byte[] bArr, int i) {
+        int i2 = 0;
+        while (i > 0) {
+            int write = Os.write(fileDescriptor, bArr, i2, i);
+            if (write <= 0) {
+                throw new ErrnoException("write", OsConstants.EIO);
             }
-        });
-        this.mHostMonitorThread = thread;
-        thread.start();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(Consumer consumer) {
-        while (true) {
-            FileDescriptor fileDescriptor = null;
-            while (!Thread.interrupted()) {
-                if (fileDescriptor == null) {
-                    try {
-                        fileDescriptor = openPipe();
-                        setPipeFD(fileDescriptor);
-                    } catch (ErrnoException | EOFException | InterruptedIOException | InterruptedException | OutOfMemoryError | ProtocolException e) {
-                        Slog.w("EmulatorClipboardMonitor", "Failure to read from host clipboard", e);
-                        setPipeFD(null);
-                        try {
-                            Os.close(fileDescriptor);
-                        } catch (ErrnoException unused) {
-                        }
-                    }
-                }
-                String str = new String(receiveMessage(fileDescriptor));
-                ClipData clipData = new ClipData("host clipboard", new String[]{"text/plain"}, new ClipData.Item(str));
-                PersistableBundle persistableBundle = new PersistableBundle();
-                persistableBundle.putBoolean("com.android.systemui.SUPPRESS_CLIPBOARD_OVERLAY", true);
-                clipData.getDescription().setExtras(persistableBundle);
-                if (LOG_CLIBOARD_ACCESS) {
-                    Slog.i("EmulatorClipboardMonitor", "Setting the guest clipboard to '" + str + "'");
-                }
-                consumer.accept(clipData);
-            }
-            return;
+            i2 += write;
+            i -= write;
         }
     }
 
     @Override // java.util.function.Consumer
-    public void accept(ClipData clipData) {
-        FileDescriptor pipeFD = getPipeFD();
-        if (pipeFD != null) {
-            setHostClipboard(pipeFD, getClipString(clipData));
-        }
-    }
-
-    public final String getClipString(ClipData clipData) {
+    public final void accept(Object obj) {
+        FileDescriptor fileDescriptor;
         CharSequence text;
-        return (clipData == null || clipData.getItemCount() == 0 || (text = clipData.getItemAt(0).getText()) == null) ? "" : text.toString();
-    }
-
-    public static void setHostClipboard(final FileDescriptor fileDescriptor, final String str) {
-        new Thread(new Runnable() { // from class: com.android.server.clipboard.EmulatorClipboardMonitor$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                EmulatorClipboardMonitor.lambda$setHostClipboard$1(str, fileDescriptor);
-            }
-        }).start();
-    }
-
-    public static /* synthetic */ void lambda$setHostClipboard$1(String str, FileDescriptor fileDescriptor) {
-        if (LOG_CLIBOARD_ACCESS) {
-            Slog.i("EmulatorClipboardMonitor", "Setting the host clipboard to '" + str + "'");
+        ClipData clipData = (ClipData) obj;
+        synchronized (this) {
+            fileDescriptor = this.mPipe;
         }
-        try {
-            sendMessage(fileDescriptor, str.getBytes());
-        } catch (ErrnoException | InterruptedIOException e) {
-            Slog.e("EmulatorClipboardMonitor", "Failed to set host clipboard " + e.getMessage());
-        } catch (IllegalArgumentException unused) {
-        }
-    }
-
-    public static void readFully(FileDescriptor fileDescriptor, byte[] bArr, int i, int i2) {
-        while (i2 > 0) {
-            int read = Os.read(fileDescriptor, bArr, i, i2);
-            if (read <= 0) {
-                throw new EOFException();
+        if (fileDescriptor != null) {
+            String str = "";
+            if (clipData != null && clipData.getItemCount() != 0 && (text = clipData.getItemAt(0).getText()) != null) {
+                str = text.toString();
             }
-            i += read;
-            i2 -= read;
-        }
-    }
-
-    public static void writeFully(FileDescriptor fileDescriptor, byte[] bArr, int i, int i2) {
-        while (i2 > 0) {
-            int write = Os.write(fileDescriptor, bArr, i, i2);
-            if (write <= 0) {
-                throw new ErrnoException("write", OsConstants.EIO);
-            }
-            i += write;
-            i2 -= write;
+            new Thread(new EmulatorClipboardMonitor$$ExternalSyntheticLambda0(1, str, fileDescriptor)).start();
         }
     }
 }

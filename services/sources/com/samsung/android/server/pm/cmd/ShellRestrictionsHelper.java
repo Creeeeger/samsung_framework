@@ -1,45 +1,43 @@
 package com.samsung.android.server.pm.cmd;
 
 import android.os.Binder;
-import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import java.util.ArrayList;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class ShellRestrictionsHelper {
-    public final List mCmdBlockList = new ArrayList();
-    public final List mCmdKnoxBlockList = new ArrayList();
+public final class ShellRestrictionsHelper {
+    public final List mCmdBlockClearOnlyList;
+    public final List mCmdBlockList;
+    public final List mCmdKnoxBlockList;
 
     public ShellRestrictionsHelper() {
-        buildCmdBlockList();
+        ArrayList arrayList = new ArrayList();
+        this.mCmdBlockList = arrayList;
+        ArrayList arrayList2 = new ArrayList();
+        this.mCmdKnoxBlockList = arrayList2;
+        ArrayList arrayList3 = new ArrayList();
+        this.mCmdBlockClearOnlyList = arrayList3;
+        arrayList.add("com.tmobile.echolocate");
+        arrayList2.add("com.samsung.klmsagent");
+        arrayList2.add("com.samsung.android.knox.er");
+        arrayList2.add("com.samsung.android.knox.kfbp");
+        arrayList2.add("com.samsung.android.knox.knnr");
+        arrayList2.add("com.samsung.android.knox.sandbox");
+        arrayList2.add("com.samsung.android.kgclient");
+        arrayList2.add("com.sec.enterprise.knox.cloudmdm.smdms");
+        arrayList2.add("com.samsung.android.knox.app.networkfilter");
+        arrayList2.add("com.knox.vpn.proxyhandler");
+        arrayList3.add("co.sitic.pp");
     }
 
-    public String hasRestrictedPackage(List list) {
-        if (list != null && !list.isEmpty()) {
-            for (int i = 0; i < list.size(); i++) {
-                String str = (String) list.get(i);
-                if (isRestrictedPackage(str, true, false)) {
-                    return str;
-                }
-            }
-        }
-        return null;
-    }
-
-    public boolean isRestrictedPackage(String str, boolean z, boolean z2) {
+    public final boolean isRestrictedPackage(int i, String str) {
         if (Binder.getCallingUid() == 0) {
             return false;
         }
-        if (z && this.mCmdKnoxBlockList.contains(str)) {
-            return true;
+        if (((i & 4) == 0 || !((ArrayList) this.mCmdBlockClearOnlyList).contains(str)) && !((ArrayList) this.mCmdKnoxBlockList).contains(str)) {
+            return (i & 2) != 0 && ((ArrayList) this.mCmdBlockList).contains(str);
         }
-        return z2 && this.mCmdBlockList.contains(str);
-    }
-
-    public final void buildCmdBlockList() {
-        this.mCmdBlockList.add("com.tmobile.echolocate");
-        this.mCmdKnoxBlockList.add("com.samsung.klmsagent");
-        this.mCmdKnoxBlockList.add(KnoxCustomManagerService.KG_PKG_NAME);
-        this.mCmdKnoxBlockList.add("com.sec.enterprise.knox.cloudmdm.smdms");
+        return true;
     }
 }

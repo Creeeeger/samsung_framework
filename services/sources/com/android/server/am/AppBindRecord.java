@@ -1,10 +1,9 @@
 package com.android.server.am;
 
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import android.util.ArraySet;
-import android.util.proto.ProtoOutputStream;
-import com.android.internal.util.jobs.XmlUtils;
-import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AppBindRecord {
     public final ProcessRecord attributedClient;
@@ -13,16 +12,6 @@ public final class AppBindRecord {
     public final IntentBindRecord intent;
     public final ServiceRecord service;
 
-    public void dumpInIntentBind(PrintWriter printWriter, String str) {
-        int size = this.connections.size();
-        if (size > 0) {
-            printWriter.println(str + "Per-process Connections:");
-            for (int i = 0; i < size; i++) {
-                printWriter.println(str + "  " + ((ConnectionRecord) this.connections.valueAt(i)));
-            }
-        }
-    }
-
     public AppBindRecord(ServiceRecord serviceRecord, IntentBindRecord intentBindRecord, ProcessRecord processRecord, ProcessRecord processRecord2) {
         this.service = serviceRecord;
         this.intent = intentBindRecord;
@@ -30,18 +19,12 @@ public final class AppBindRecord {
         this.attributedClient = processRecord2;
     }
 
-    public String toString() {
-        return "AppBindRecord{" + Integer.toHexString(System.identityHashCode(this)) + " " + this.service.shortInstanceName + XmlUtils.STRING_ARRAY_SEPARATOR + this.client.processName + "}";
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        protoOutputStream.write(1138166333441L, this.service.shortInstanceName);
-        protoOutputStream.write(1138166333442L, this.client.processName);
-        int size = this.connections.size();
-        for (int i = 0; i < size; i++) {
-            protoOutputStream.write(2237677961219L, Integer.toHexString(System.identityHashCode((ConnectionRecord) this.connections.valueAt(i))));
-        }
-        protoOutputStream.end(start);
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("AppBindRecord{");
+        sb.append(Integer.toHexString(System.identityHashCode(this)));
+        sb.append(" ");
+        sb.append(this.service.shortInstanceName);
+        sb.append(":");
+        return AudioOffloadInfo$$ExternalSyntheticOutline0.m(sb, this.client.processName, "}");
     }
 }

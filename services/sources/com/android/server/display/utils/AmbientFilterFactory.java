@@ -3,27 +3,18 @@ package com.android.server.display.utils;
 import android.R;
 import android.content.res.Resources;
 import android.util.TypedValue;
-import com.android.server.display.utils.AmbientFilter;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class AmbientFilterFactory {
-    public static AmbientFilter createAmbientFilter(String str, int i, float f) {
-        if (!Float.isNaN(f)) {
-            return new AmbientFilter.WeightedMovingAverageAmbientFilter(str, i, f);
-        }
-        throw new IllegalArgumentException("missing configurations: expected config_displayWhiteBalanceBrightnessFilterIntercept");
-    }
-
-    public static AmbientFilter createBrightnessFilter(String str, Resources resources) {
-        return createAmbientFilter(str, resources.getInteger(R.integer.config_mobile_hotspot_provision_check_period), getFloat(resources, R.dimen.config_screen_magnification_scaling_threshold));
-    }
-
-    public static float getFloat(Resources resources, int i) {
+    public static AmbientFilter$WeightedMovingAverageAmbientFilter createBrightnessFilter(Resources resources, String str) {
+        int integer = resources.getInteger(R.integer.config_esim_bootstrap_data_limit_bytes);
         TypedValue typedValue = new TypedValue();
-        resources.getValue(i, typedValue, true);
-        if (typedValue.type != 4) {
-            return Float.NaN;
+        resources.getValue(R.dimen.config_minScalingSpan, typedValue, true);
+        float f = typedValue.type != 4 ? Float.NaN : typedValue.getFloat();
+        if (Float.isNaN(f)) {
+            throw new IllegalArgumentException("missing configurations: expected config_displayWhiteBalanceBrightnessFilterIntercept");
         }
-        return typedValue.getFloat();
+        return new AmbientFilter$WeightedMovingAverageAmbientFilter(str, f, integer);
     }
 }

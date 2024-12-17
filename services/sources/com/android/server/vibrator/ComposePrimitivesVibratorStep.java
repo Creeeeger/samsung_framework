@@ -8,55 +8,64 @@ import android.util.Slog;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ComposePrimitivesVibratorStep extends AbstractVibratorStep {
-    public ComposePrimitivesVibratorStep(VibrationStepConductor vibrationStepConductor, long j, VibratorController vibratorController, VibrationEffect.Composed composed, int i, long j2) {
-        super(vibrationStepConductor, Math.max(j, j2), vibratorController, composed, i, j2);
-    }
-
     @Override // com.android.server.vibrator.Step
-    public List play() {
+    public final List play() {
+        long compose;
         Trace.traceBegin(8388608L, "ComposePrimitivesStep");
         try {
-            int compositionSizeMax = this.controller.getVibratorInfo().getCompositionSizeMax();
+            int compositionSizeMax = this.controller.mVibratorInfo.getCompositionSizeMax();
             VibrationEffect.Composed composed = this.effect;
             int i = this.segmentIndex;
             if (compositionSizeMax <= 0) {
                 compositionSizeMax = 100;
             }
-            List unrollPrimitiveSegments = unrollPrimitiveSegments(composed, i, compositionSizeMax);
-            if (unrollPrimitiveSegments.isEmpty()) {
+            ArrayList arrayList = new ArrayList(compositionSizeMax);
+            int size = composed.getSegments().size();
+            int repeatIndex = composed.getRepeatIndex();
+            while (arrayList.size() < compositionSizeMax) {
+                if (i == size) {
+                    if (repeatIndex < 0) {
+                        break;
+                    }
+                    i = repeatIndex;
+                }
+                PrimitiveSegment primitiveSegment = (VibrationEffectSegment) composed.getSegments().get(i);
+                if (!(primitiveSegment instanceof PrimitiveSegment)) {
+                    break;
+                }
+                arrayList.add(primitiveSegment);
+                i++;
+            }
+            if (arrayList.isEmpty()) {
                 Slog.w("VibrationThread", "Ignoring wrong segment for a ComposePrimitivesStep: " + this.effect.getSegments().get(this.segmentIndex));
                 return nextSteps(1);
             }
-            PrimitiveSegment[] primitiveSegmentArr = (PrimitiveSegment[]) unrollPrimitiveSegments.toArray(new PrimitiveSegment[unrollPrimitiveSegments.size()]);
-            long on = this.controller.on(primitiveSegmentArr, getVibration().id);
-            handleVibratorOnResult(on);
-            getVibration().stats.reportComposePrimitives(on, primitiveSegmentArr);
-            return nextSteps(unrollPrimitiveSegments.size());
+            Slog.d("VibrationThread", "Compose " + arrayList + " primitives on vibrator " + getVibratorId());
+            PrimitiveSegment[] primitiveSegmentArr = (PrimitiveSegment[]) arrayList.toArray(new PrimitiveSegment[arrayList.size()]);
+            VibratorController vibratorController = this.controller;
+            long j = this.conductor.mVibration.id;
+            long j2 = 0;
+            if (vibratorController.mVibratorInfo.hasCapability(32L)) {
+                synchronized (vibratorController.mLock) {
+                    try {
+                        compose = vibratorController.mNativeWrapper.compose(primitiveSegmentArr, j);
+                        if (compose > 0) {
+                            vibratorController.mCurrentAmplitude = -1.0f;
+                            vibratorController.notifyListenerOnVibrating(true);
+                        }
+                    } finally {
+                    }
+                }
+                j2 = compose;
+            }
+            handleVibratorOnResult(j2);
+            this.conductor.mVibration.stats.reportComposePrimitives(primitiveSegmentArr, j2);
+            return nextSteps(arrayList.size());
         } finally {
             Trace.traceEnd(8388608L);
         }
-    }
-
-    public final List unrollPrimitiveSegments(VibrationEffect.Composed composed, int i, int i2) {
-        ArrayList arrayList = new ArrayList(i2);
-        int size = composed.getSegments().size();
-        int repeatIndex = composed.getRepeatIndex();
-        while (arrayList.size() < i2) {
-            if (i == size) {
-                if (repeatIndex < 0) {
-                    break;
-                }
-                i = repeatIndex;
-            }
-            PrimitiveSegment primitiveSegment = (VibrationEffectSegment) composed.getSegments().get(i);
-            if (!(primitiveSegment instanceof PrimitiveSegment)) {
-                break;
-            }
-            arrayList.add(primitiveSegment);
-            i++;
-        }
-        return arrayList;
     }
 }

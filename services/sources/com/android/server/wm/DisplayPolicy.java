@@ -13,78 +13,86 @@ import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.hardware.display.DisplayManagerGlobal;
 import android.os.Debug;
 import android.os.FactoryTest;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.IInstalld;
 import android.os.Looper;
 import android.os.Message;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.os.UserHandle;
 import android.util.ArraySet;
-import android.util.DisplayMetrics;
-import android.util.PrintWriterPrinter;
+import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
-import android.view.DisplayInfo;
-import android.view.InsetsFlags;
-import android.view.InsetsFrameProvider;
+import android.util.TypedValue;
+import android.view.DisplayShape;
 import android.view.InsetsSource;
 import android.view.InsetsState;
+import android.view.PrivacyIndicatorBounds;
 import android.view.Surface;
 import android.view.SurfaceControl;
 import android.view.TwoFingerSwipeGestureDetector;
-import android.view.ViewDebug;
 import android.view.ViewRootImpl;
 import android.view.WindowInsets;
 import android.view.WindowLayout;
 import android.view.WindowManager;
+import android.view.WindowManagerPolicyConstants;
 import android.view.accessibility.AccessibilityManager;
 import android.window.ClientWindowFrames;
+import com.android.internal.os.BackgroundThread;
 import com.android.internal.policy.ForceShowNavBarSettingsObserver;
 import com.android.internal.policy.GestureNavigationSettingsObserver;
-import com.android.internal.policy.ScreenDecorationsUtils;
-import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
+import com.android.internal.statusbar.IStatusBar;
 import com.android.internal.statusbar.LetterboxDetails;
 import com.android.internal.util.ScreenshotHelper;
-import com.android.internal.util.ScreenshotRequest;
 import com.android.internal.util.function.TriFunction;
 import com.android.internal.view.AppearanceRegion;
 import com.android.internal.widget.PointerLocationView;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.ServiceKeeper$$ExternalSyntheticOutline0;
+import com.android.server.SystemServiceManager$$ExternalSyntheticOutline0;
 import com.android.server.UiThread;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.display.DisplayPowerController;
+import com.android.server.knox.zt.usertrust.TouchEventView;
+import com.android.server.policy.PhoneWindowManager;
 import com.android.server.policy.WindowManagerPolicy;
 import com.android.server.statusbar.StatusBarManagerInternal;
-import com.android.server.wallpaper.WallpaperManagerInternal;
+import com.android.server.statusbar.StatusBarManagerService;
+import com.android.server.wm.AppCompatLetterboxPolicy;
 import com.android.server.wm.DisplayPolicy;
 import com.android.server.wm.InsetsPolicy;
+import com.android.server.wm.Letterbox;
 import com.android.server.wm.SystemGesturesPointerEventListener;
+import com.android.server.wm.SystemGesturesPointerEventListener.FlingGestureDetector;
+import com.android.server.wm.TspStateController;
 import com.android.server.wm.WindowManagerInternal;
+import com.android.wm.shell.Flags;
 import com.samsung.android.cocktailbar.CocktailBarManagerInternal;
+import com.samsung.android.cover.CoverState;
 import com.samsung.android.knox.custom.LauncherConfigurationInternal;
 import com.samsung.android.multiwindow.MultiWindowCoreState;
 import com.samsung.android.multiwindow.MultiWindowEdgeDetector;
-import com.samsung.android.multiwindow.MultiWindowUtils;
 import com.samsung.android.rune.CoreRune;
-import com.samsung.cmfa.AuthTouch.IAuthTouchEnableListener;
-import com.samsung.cmfa.AuthTouch.TouchEventView;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-/* loaded from: classes3.dex */
-public class DisplayPolicy {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DisplayPolicy {
     public final AccessibilityManager mAccessibilityManager;
     public boolean mAllowLockscreenWhenOn;
-    public final WindowManagerInternal.AppTransitionListener mAppTransitionListener;
+    public final AnonymousClass2 mAppTransitionListener;
     public volatile boolean mAwake;
     public WindowState mBottomGestureHost;
     public DecorInsets.Cache mCachedDecorInsets;
@@ -98,23 +106,24 @@ public class DisplayPolicy {
     public final DisplayContent mDisplayContent;
     public boolean mDreamingLockscreen;
     public boolean mEdgeEnabled;
-    public DisplayPolicyExt mExt;
+    public final DisplayPolicyExt mExt;
     public String mFocusedApp;
     public WindowState mFocusedWindow;
     public final ForceShowNavBarSettingsObserver mForceShowNavBarSettingsObserver;
     public boolean mForceShowNavigationBarEnabled;
+    public int mForciblyShownTypes;
     public boolean mFreeformTaskSurfaceOverlappingWithNavBar;
     public final GestureNavigationSettingsObserver mGestureNavigationSettingsObserver;
-    public final Handler mHandler;
+    public final PolicyHandler mHandler;
     public volatile boolean mHasNavigationBar;
-    public volatile boolean mHasStatusBar;
     public volatile boolean mHdmiPlugged;
+    public boolean mImeInsetsConsumed;
+    public boolean mImmersiveConfirmationWindowExists;
     public final ImmersiveModeConfirmation mImmersiveModeConfirmation;
     public boolean mIsFreeformWindowOverlappingWithNavBar;
     public boolean mIsImmersiveMode;
     public boolean mIsPipWindowOverlappingWithNavBar;
     public boolean mIsResizingByDivider;
-    public boolean mIsVisibleBySwipe;
     public volatile boolean mKeyguardDrawComplete;
     public int mLastAppearance;
     public int mLastBehavior;
@@ -126,36 +135,35 @@ public class DisplayPolicy {
     public AppearanceRegion[] mLastStatusBarAppearanceRegions;
     public WindowState mLeftGestureHost;
     public int mLeftGestureInset;
-    public final Object mLock;
-    public WindowState mNavBarBackgroundWindow;
+    public final WindowManagerGlobalLock mLock;
+    public WindowState mNavBarBackgroundWindowCandidate;
     public WindowState mNavBarColorWindowCandidate;
     public volatile boolean mNavigationBarAlwaysShowOnSideGesture;
     public volatile boolean mNavigationBarCanMove;
     public volatile WindowState mNotificationShade;
+    public final long mPanicThresholdMs;
+    public long mPanicTime;
     public long mPendingPanicGestureUptime;
     public volatile boolean mPersistentVrModeEnabled;
     public PointerLocationView mPointerLocationView;
-    public RefreshRatePolicy mRefreshRatePolicy;
+    public final RefreshRatePolicy mRefreshRatePolicy;
     public boolean mRemoteInsetsControllerControlsSystemBars;
     public WindowState mRightGestureHost;
     public int mRightGestureInset;
     public volatile boolean mScreenOnEarly;
     public volatile boolean mScreenOnFully;
-    public volatile WindowManagerPolicy.ScreenOnListener mScreenOnListener;
+    public volatile DisplayPowerController.ScreenOnUnblocker mScreenOnListener;
     public final ScreenshotHelper mScreenshotHelper;
     public final WindowManagerService mService;
     public boolean mShouldAttachNavBarToAppDuringTransition;
     public boolean mShowingDream;
     public boolean mSkipTransferTouchToStatusBar;
     public StatusBarManagerInternal mStatusBarManagerInternal;
-    public SystemGesturesPointerEventListener mSystemGestures;
+    public final SystemGesturesPointerEventListener mSystemGestures;
     public WindowState mSystemUiControllingWindow;
-    public WindowManagerInternal.TaskSystemBarsListener mTaskSystemBarsVisibilityListener;
     public WindowState mTopFullscreenOpaqueWindowState;
     public WindowState mTopGestureHost;
     public boolean mTopIsFullscreen;
-    public WindowState mTransientWindowState;
-    public final TwoFingerSwipeGestureDetector mTwoFingerSwipeGestureDetector;
     public Context mUiContext;
     public volatile boolean mWindowManagerDrawComplete;
     public static final int SHOW_TYPES_FOR_SWIPE = WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars();
@@ -183,155 +191,816 @@ public class DisplayPolicy {
     public boolean mLastFocusIsFullscreen = false;
     public final WindowLayout mWindowLayout = new WindowLayout();
     public int mNavBarOpacityMode = 0;
-    public boolean mIsCmfaStarted = false;
+    public boolean mIsKnoxZtStarted = false;
     public TouchEventView mTouchEventView = null;
     public int mTouchEventViewHash = -1;
     public int mDexTaskbarHeight = 0;
     public WindowState mDefaultStatusBar = null;
     public WindowState mDefaultNotificationShade = null;
     public WindowState mDefaultNavigationBar = null;
-    public Rect mTmpFrame = new Rect();
-    public Rect mWindowBounds = new Rect();
-    public boolean mIsCaptionImmersiveMode = false;
-    public boolean mWasStatusInvisible = false;
-    public int mImmersiveTaskId = -1;
-    public boolean mNeedToUpdateDecorInsets = false;
-    public final Runnable mHiddenNavPanic = new Runnable() { // from class: com.android.server.wm.DisplayPolicy.4
-        public AnonymousClass4() {
-        }
-
+    public final Rect mTmpFrame = new Rect();
+    public final Rect mWindowBounds = new Rect();
+    public final AnonymousClass4 mHiddenNavPanic = new Runnable() { // from class: com.android.server.wm.DisplayPolicy.4
         @Override // java.lang.Runnable
-        public void run() {
+        public final void run() {
             synchronized (DisplayPolicy.this.mLock) {
-                if (DisplayPolicy.this.mService.mPolicy.isUserSetupComplete()) {
-                    DisplayPolicy.this.mPendingPanicGestureUptime = SystemClock.uptimeMillis();
-                    DisplayPolicy.this.updateSystemBarAttributes();
+                try {
+                    if (((PhoneWindowManager) DisplayPolicy.this.mService.mPolicy).isUserSetupComplete()) {
+                        DisplayPolicy.this.mPendingPanicGestureUptime = SystemClock.uptimeMillis();
+                        DisplayPolicy.this.updateSystemBarAttributes();
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
         }
     };
-    public IAuthTouchEnableListener mAuthTouchEnableListener = new IAuthTouchEnableListener.Stub() { // from class: com.android.server.wm.DisplayPolicy.5
-        public AnonymousClass5() {
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.wm.DisplayPolicy$1, reason: invalid class name */
+    public final class AnonymousClass1 {
+        public final DisplayPolicy$1$$ExternalSyntheticLambda0 mOnSwipeFromBottom;
+        public final DisplayPolicy$1$$ExternalSyntheticLambda0 mOnSwipeFromLeft;
+        public final DisplayPolicy$1$$ExternalSyntheticLambda0 mOnSwipeFromRight;
+        public final DisplayPolicy$1$$ExternalSyntheticLambda0 mOnSwipeFromTop;
+
+        /* JADX WARN: Type inference failed for: r2v1, types: [com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda0] */
+        /* JADX WARN: Type inference failed for: r2v2, types: [com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda0] */
+        /* JADX WARN: Type inference failed for: r2v3, types: [com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda0] */
+        /* JADX WARN: Type inference failed for: r2v4, types: [com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda0] */
+        public AnonymousClass1() {
+            final int i = 0;
+            this.mOnSwipeFromLeft = new Runnable(this) { // from class: com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda0
+                public final /* synthetic */ DisplayPolicy.AnonymousClass1 f$0;
+
+                {
+                    this.f$0 = this;
+                }
+
+                @Override // java.lang.Runnable
+                public final void run() {
+                    int i2 = i;
+                    DisplayPolicy.AnonymousClass1 anonymousClass1 = this.f$0;
+                    switch (i2) {
+                        case 0:
+                            anonymousClass1.onSwipeFromLeft();
+                            break;
+                        case 1:
+                            anonymousClass1.onSwipeFromTop();
+                            break;
+                        case 2:
+                            anonymousClass1.onSwipeFromRight();
+                            break;
+                        default:
+                            anonymousClass1.onSwipeFromBottom();
+                            break;
+                    }
+                }
+            };
+            final int i2 = 1;
+            this.mOnSwipeFromTop = new Runnable(this) { // from class: com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda0
+                public final /* synthetic */ DisplayPolicy.AnonymousClass1 f$0;
+
+                {
+                    this.f$0 = this;
+                }
+
+                @Override // java.lang.Runnable
+                public final void run() {
+                    int i22 = i2;
+                    DisplayPolicy.AnonymousClass1 anonymousClass1 = this.f$0;
+                    switch (i22) {
+                        case 0:
+                            anonymousClass1.onSwipeFromLeft();
+                            break;
+                        case 1:
+                            anonymousClass1.onSwipeFromTop();
+                            break;
+                        case 2:
+                            anonymousClass1.onSwipeFromRight();
+                            break;
+                        default:
+                            anonymousClass1.onSwipeFromBottom();
+                            break;
+                    }
+                }
+            };
+            final int i3 = 2;
+            this.mOnSwipeFromRight = new Runnable(this) { // from class: com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda0
+                public final /* synthetic */ DisplayPolicy.AnonymousClass1 f$0;
+
+                {
+                    this.f$0 = this;
+                }
+
+                @Override // java.lang.Runnable
+                public final void run() {
+                    int i22 = i3;
+                    DisplayPolicy.AnonymousClass1 anonymousClass1 = this.f$0;
+                    switch (i22) {
+                        case 0:
+                            anonymousClass1.onSwipeFromLeft();
+                            break;
+                        case 1:
+                            anonymousClass1.onSwipeFromTop();
+                            break;
+                        case 2:
+                            anonymousClass1.onSwipeFromRight();
+                            break;
+                        default:
+                            anonymousClass1.onSwipeFromBottom();
+                            break;
+                    }
+                }
+            };
+            final int i4 = 3;
+            this.mOnSwipeFromBottom = new Runnable(this) { // from class: com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda0
+                public final /* synthetic */ DisplayPolicy.AnonymousClass1 f$0;
+
+                {
+                    this.f$0 = this;
+                }
+
+                @Override // java.lang.Runnable
+                public final void run() {
+                    int i22 = i4;
+                    DisplayPolicy.AnonymousClass1 anonymousClass1 = this.f$0;
+                    switch (i22) {
+                        case 0:
+                            anonymousClass1.onSwipeFromLeft();
+                            break;
+                        case 1:
+                            anonymousClass1.onSwipeFromTop();
+                            break;
+                        case 2:
+                            anonymousClass1.onSwipeFromRight();
+                            break;
+                        default:
+                            anonymousClass1.onSwipeFromBottom();
+                            break;
+                    }
+                }
+            };
         }
 
-        public void notifyTouchEventEnabled(boolean z, boolean z2) {
-            Slog.i(StartingSurfaceController.TAG, "notifyTouchEventEnabled:" + z + "," + z2 + "," + DisplayPolicy.this.mIsCmfaStarted);
-            Message message = new Message();
-            if (z) {
-                if (DisplayPolicy.this.mIsCmfaStarted) {
-                    message.what = 8;
-                    if (z2) {
-                        message.arg1 = 1;
-                    } else {
-                        message.arg1 = 2;
+        public static Insets getControllableInsets(WindowState windowState) {
+            InsetsSourceProvider controllableInsetProvider;
+            if (windowState != null && (controllableInsetProvider = windowState.getControllableInsetProvider()) != null) {
+                return controllableInsetProvider.mSource.calculateInsets(windowState.getBounds(), true);
+            }
+            return Insets.NONE;
+        }
+
+        public final void onMouseHoverAtBottom() {
+            long j;
+            int i;
+            ActivityRecord activityRecord;
+            DisplayPolicy displayPolicy = DisplayPolicy.this;
+            displayPolicy.mHandler.removeCallbacks(this.mOnSwipeFromBottom);
+            WindowState windowState = displayPolicy.mTopFullscreenOpaqueWindowState;
+            if (windowState == null || !windowState.isDexMode() || (activityRecord = windowState.mActivityRecord) == null || (i = activityRecord.mTransientBarShowingDelayMillis) < 0) {
+                DisplayContent displayContent = displayPolicy.mDisplayContent;
+                if (!displayContent.isDexMode() || (i = displayContent.mAtmService.mDexController.mDexStarShowingDelayTime) < 0) {
+                    j = 500;
+                    displayPolicy.mHandler.postDelayed(this.mOnSwipeFromBottom, j);
+                }
+            }
+            j = i;
+            displayPolicy.mHandler.postDelayed(this.mOnSwipeFromBottom, j);
+        }
+
+        public final void onSwipeFromBottom() {
+            synchronized (DisplayPolicy.this.mLock) {
+                DisplayPolicy displayPolicy = DisplayPolicy.this;
+                WindowState windowState = displayPolicy.mBottomGestureHost;
+                displayPolicy.requestTransientBars(windowState, getControllableInsets(windowState).bottom > 0);
+            }
+        }
+
+        public final void onSwipeFromLeft() {
+            Region obtain = Region.obtain();
+            synchronized (DisplayPolicy.this.mLock) {
+                try {
+                    DisplayPolicy.this.mDisplayContent.calculateSystemGestureExclusion(obtain, null);
+                    boolean z = getControllableInsets(DisplayPolicy.this.mLeftGestureHost).left > 0;
+                    if (!z) {
+                        if (DisplayPolicy.this.mNavigationBarAlwaysShowOnSideGesture) {
+                            SystemGesturesPointerEventListener systemGesturesPointerEventListener = DisplayPolicy.this.mSystemGestures;
+                            if (!obtain.contains((int) systemGesturesPointerEventListener.mDownX[0], (int) systemGesturesPointerEventListener.mDownY[0])) {
+                            }
+                        }
+                        requestTransientBarsForSideSwipe(DisplayPolicy.this.mLeftGestureHost, 1);
                     }
+                    DisplayPolicy displayPolicy = DisplayPolicy.this;
+                    displayPolicy.requestTransientBars(displayPolicy.mLeftGestureHost, z);
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            obtain.recycle();
+        }
+
+        public final void onSwipeFromRight() {
+            Region obtain = Region.obtain();
+            synchronized (DisplayPolicy.this.mLock) {
+                try {
+                    DisplayPolicy.this.mDisplayContent.calculateSystemGestureExclusion(obtain, null);
+                    boolean z = getControllableInsets(DisplayPolicy.this.mRightGestureHost).right > 0;
+                    if (!z) {
+                        if (DisplayPolicy.this.mNavigationBarAlwaysShowOnSideGesture) {
+                            SystemGesturesPointerEventListener systemGesturesPointerEventListener = DisplayPolicy.this.mSystemGestures;
+                            if (!obtain.contains((int) systemGesturesPointerEventListener.mDownX[0], (int) systemGesturesPointerEventListener.mDownY[0])) {
+                            }
+                        }
+                        requestTransientBarsForSideSwipe(DisplayPolicy.this.mRightGestureHost, 2);
+                    }
+                    DisplayPolicy displayPolicy = DisplayPolicy.this;
+                    displayPolicy.requestTransientBars(displayPolicy.mRightGestureHost, z);
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            obtain.recycle();
+        }
+
+        public final void onSwipeFromTop() {
+            synchronized (DisplayPolicy.this.mLock) {
+                try {
+                    MultiWindowPointerEventListener multiWindowPointerEventListener = DisplayPolicy.this.mDisplayContent.mMultiWindowPointerEventListener;
+                    MultiWindowEdgeDetector multiWindowEdgeDetector = multiWindowPointerEventListener != null ? multiWindowPointerEventListener.mMultiWindowEdgeDetector : null;
+                    if (multiWindowEdgeDetector != null && multiWindowPointerEventListener.isAllowCornerGestureState() && multiWindowEdgeDetector.isEdge()) {
+                        return;
+                    }
+                    DisplayPolicy displayPolicy = DisplayPolicy.this;
+                    WindowState windowState = displayPolicy.mTopGestureHost;
+                    displayPolicy.requestTransientBars(windowState, getControllableInsets(windowState).top > 0);
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        /* JADX WARN: Code restructure failed: missing block: B:12:0x0029, code lost:
+        
+            if (r0.logicalWidth < r0.logicalHeight) goto L16;
+         */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void requestTransientBarsForSideSwipe(com.android.server.wm.WindowState r5, int r6) {
+            /*
+                r4 = this;
+                com.android.server.wm.DisplayPolicy r0 = com.android.server.wm.DisplayPolicy.this
+                boolean r1 = r0.mEdgeEnabled
+                r2 = 1
+                if (r1 == 0) goto L42
+                com.android.server.wm.DisplayContent r1 = r0.mDisplayContent
+                boolean r3 = r1.isDefaultDisplay
+                if (r3 == 0) goto L42
+                boolean r3 = com.samsung.android.multiwindow.MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED
+                if (r3 == 0) goto L42
+                com.android.server.wm.TaskDisplayArea r1 = r1.getDefaultTaskDisplayArea()
+                boolean r1 = r1.isSplitScreenModeActivated()
+                if (r1 != 0) goto L1c
+                goto L42
+            L1c:
+                boolean r1 = r0.mNavigationBarCanMove
+                if (r1 != 0) goto L21
+                goto L2b
+            L21:
+                com.android.server.wm.DisplayContent r0 = r0.mDisplayContent
+                android.view.DisplayInfo r0 = r0.mDisplayInfo
+                int r1 = r0.logicalWidth
+                int r0 = r0.logicalHeight
+                if (r1 >= r0) goto L42
+            L2b:
+                com.android.server.wm.DisplayPolicy r5 = com.android.server.wm.DisplayPolicy.this
+                com.android.server.wm.WindowState r6 = r5.mNavigationBar
+                if (r6 != 0) goto L35
+                r5.mSkipTransferTouchToStatusBar = r2
+                com.android.server.wm.WindowState r6 = r5.mStatusBar
+            L35:
+                r5.requestTransientBars(r6, r2)
+                com.android.server.wm.DisplayPolicy r4 = com.android.server.wm.DisplayPolicy.this
+                boolean r5 = r4.mSkipTransferTouchToStatusBar
+                if (r5 == 0) goto L51
+                r5 = 0
+                r4.mSkipTransferTouchToStatusBar = r5
+                goto L51
+            L42:
+                com.android.server.wm.DisplayPolicy r4 = com.android.server.wm.DisplayPolicy.this
+                com.android.server.wm.WindowState r0 = r4.mNavigationBar
+                if (r0 == 0) goto L51
+                if (r0 != r5) goto L51
+                int r0 = r4.mNavigationBarPosition
+                if (r0 != r6) goto L51
+                r4.requestTransientBars(r5, r2)
+            L51:
+                return
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.AnonymousClass1.requestTransientBarsForSideSwipe(com.android.server.wm.WindowState, int):void");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.wm.DisplayPolicy$2, reason: invalid class name */
+    public final class AnonymousClass2 extends WindowManagerInternal.AppTransitionListener {
+        public final DisplayPolicy$2$$ExternalSyntheticLambda1 mAppTransitionCancelled;
+        public final DisplayPolicy$2$$ExternalSyntheticLambda1 mAppTransitionFinished;
+        public final DisplayPolicy$2$$ExternalSyntheticLambda1 mAppTransitionPending;
+
+        /* JADX WARN: Type inference failed for: r2v1, types: [com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda1] */
+        /* JADX WARN: Type inference failed for: r2v2, types: [com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda1] */
+        /* JADX WARN: Type inference failed for: r2v3, types: [com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda1] */
+        public AnonymousClass2(final int i) {
+            final int i2 = 0;
+            this.mAppTransitionPending = new Runnable(this) { // from class: com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda1
+                public final /* synthetic */ DisplayPolicy.AnonymousClass2 f$0;
+
+                {
+                    this.f$0 = this;
+                }
+
+                @Override // java.lang.Runnable
+                public final void run() {
+                    IStatusBar iStatusBar;
+                    IStatusBar iStatusBar2;
+                    switch (i2) {
+                        case 0:
+                            DisplayPolicy.AnonymousClass2 anonymousClass2 = this.f$0;
+                            int i3 = i;
+                            StatusBarManagerInternal statusBarManagerInternal = DisplayPolicy.this.getStatusBarManagerInternal();
+                            if (statusBarManagerInternal != null && (iStatusBar = StatusBarManagerService.this.mBar) != null) {
+                                try {
+                                    iStatusBar.appTransitionPending(i3);
+                                    break;
+                                } catch (RemoteException unused) {
+                                    return;
+                                }
+                            }
+                            break;
+                        case 1:
+                            DisplayPolicy.AnonymousClass2 anonymousClass22 = this.f$0;
+                            int i4 = i;
+                            StatusBarManagerInternal statusBarManagerInternal2 = DisplayPolicy.this.getStatusBarManagerInternal();
+                            if (statusBarManagerInternal2 != null && (iStatusBar2 = StatusBarManagerService.this.mBar) != null) {
+                                try {
+                                    iStatusBar2.appTransitionCancelled(i4);
+                                    break;
+                                } catch (RemoteException unused2) {
+                                    return;
+                                }
+                            }
+                            break;
+                        default:
+                            DisplayPolicy.AnonymousClass2 anonymousClass23 = this.f$0;
+                            int i5 = i;
+                            StatusBarManagerInternal statusBarManagerInternal3 = DisplayPolicy.this.getStatusBarManagerInternal();
+                            if (statusBarManagerInternal3 != null) {
+                                StatusBarManagerService.AnonymousClass2 anonymousClass24 = (StatusBarManagerService.AnonymousClass2) statusBarManagerInternal3;
+                                StatusBarManagerService.this.enforceStatusBarService();
+                                IStatusBar iStatusBar3 = StatusBarManagerService.this.mBar;
+                                if (iStatusBar3 != null) {
+                                    try {
+                                        iStatusBar3.appTransitionFinished(i5);
+                                        break;
+                                    } catch (RemoteException unused3) {
+                                        return;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+            };
+            final int i3 = 1;
+            this.mAppTransitionCancelled = new Runnable(this) { // from class: com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda1
+                public final /* synthetic */ DisplayPolicy.AnonymousClass2 f$0;
+
+                {
+                    this.f$0 = this;
+                }
+
+                @Override // java.lang.Runnable
+                public final void run() {
+                    IStatusBar iStatusBar;
+                    IStatusBar iStatusBar2;
+                    switch (i3) {
+                        case 0:
+                            DisplayPolicy.AnonymousClass2 anonymousClass2 = this.f$0;
+                            int i32 = i;
+                            StatusBarManagerInternal statusBarManagerInternal = DisplayPolicy.this.getStatusBarManagerInternal();
+                            if (statusBarManagerInternal != null && (iStatusBar = StatusBarManagerService.this.mBar) != null) {
+                                try {
+                                    iStatusBar.appTransitionPending(i32);
+                                    break;
+                                } catch (RemoteException unused) {
+                                    return;
+                                }
+                            }
+                            break;
+                        case 1:
+                            DisplayPolicy.AnonymousClass2 anonymousClass22 = this.f$0;
+                            int i4 = i;
+                            StatusBarManagerInternal statusBarManagerInternal2 = DisplayPolicy.this.getStatusBarManagerInternal();
+                            if (statusBarManagerInternal2 != null && (iStatusBar2 = StatusBarManagerService.this.mBar) != null) {
+                                try {
+                                    iStatusBar2.appTransitionCancelled(i4);
+                                    break;
+                                } catch (RemoteException unused2) {
+                                    return;
+                                }
+                            }
+                            break;
+                        default:
+                            DisplayPolicy.AnonymousClass2 anonymousClass23 = this.f$0;
+                            int i5 = i;
+                            StatusBarManagerInternal statusBarManagerInternal3 = DisplayPolicy.this.getStatusBarManagerInternal();
+                            if (statusBarManagerInternal3 != null) {
+                                StatusBarManagerService.AnonymousClass2 anonymousClass24 = (StatusBarManagerService.AnonymousClass2) statusBarManagerInternal3;
+                                StatusBarManagerService.this.enforceStatusBarService();
+                                IStatusBar iStatusBar3 = StatusBarManagerService.this.mBar;
+                                if (iStatusBar3 != null) {
+                                    try {
+                                        iStatusBar3.appTransitionFinished(i5);
+                                        break;
+                                    } catch (RemoteException unused3) {
+                                        return;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+            };
+            final int i4 = 2;
+            this.mAppTransitionFinished = new Runnable(this) { // from class: com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda1
+                public final /* synthetic */ DisplayPolicy.AnonymousClass2 f$0;
+
+                {
+                    this.f$0 = this;
+                }
+
+                @Override // java.lang.Runnable
+                public final void run() {
+                    IStatusBar iStatusBar;
+                    IStatusBar iStatusBar2;
+                    switch (i4) {
+                        case 0:
+                            DisplayPolicy.AnonymousClass2 anonymousClass2 = this.f$0;
+                            int i32 = i;
+                            StatusBarManagerInternal statusBarManagerInternal = DisplayPolicy.this.getStatusBarManagerInternal();
+                            if (statusBarManagerInternal != null && (iStatusBar = StatusBarManagerService.this.mBar) != null) {
+                                try {
+                                    iStatusBar.appTransitionPending(i32);
+                                    break;
+                                } catch (RemoteException unused) {
+                                    return;
+                                }
+                            }
+                            break;
+                        case 1:
+                            DisplayPolicy.AnonymousClass2 anonymousClass22 = this.f$0;
+                            int i42 = i;
+                            StatusBarManagerInternal statusBarManagerInternal2 = DisplayPolicy.this.getStatusBarManagerInternal();
+                            if (statusBarManagerInternal2 != null && (iStatusBar2 = StatusBarManagerService.this.mBar) != null) {
+                                try {
+                                    iStatusBar2.appTransitionCancelled(i42);
+                                    break;
+                                } catch (RemoteException unused2) {
+                                    return;
+                                }
+                            }
+                            break;
+                        default:
+                            DisplayPolicy.AnonymousClass2 anonymousClass23 = this.f$0;
+                            int i5 = i;
+                            StatusBarManagerInternal statusBarManagerInternal3 = DisplayPolicy.this.getStatusBarManagerInternal();
+                            if (statusBarManagerInternal3 != null) {
+                                StatusBarManagerService.AnonymousClass2 anonymousClass24 = (StatusBarManagerService.AnonymousClass2) statusBarManagerInternal3;
+                                StatusBarManagerService.this.enforceStatusBarService();
+                                IStatusBar iStatusBar3 = StatusBarManagerService.this.mBar;
+                                if (iStatusBar3 != null) {
+                                    try {
+                                        iStatusBar3.appTransitionFinished(i5);
+                                        break;
+                                    } catch (RemoteException unused3) {
+                                        return;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+            };
+        }
+
+        @Override // com.android.server.wm.WindowManagerInternal.AppTransitionListener
+        public final void onAppTransitionCancelledLocked(boolean z) {
+            DisplayPolicy.this.mHandler.post(this.mAppTransitionCancelled);
+        }
+
+        @Override // com.android.server.wm.WindowManagerInternal.AppTransitionListener
+        public final void onAppTransitionFinishedLocked(IBinder iBinder) {
+            DisplayPolicy.this.mHandler.post(this.mAppTransitionFinished);
+        }
+
+        @Override // com.android.server.wm.WindowManagerInternal.AppTransitionListener
+        public final void onAppTransitionPendingLocked() {
+            DisplayPolicy.this.mHandler.post(this.mAppTransitionPending);
+        }
+
+        @Override // com.android.server.wm.WindowManagerInternal.AppTransitionListener
+        public final void onAppTransitionStartingLocked(final long j) {
+            DisplayPolicy.this.mHandler.post(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda0
+                public final /* synthetic */ long f$2 = 120;
+
+                @Override // java.lang.Runnable
+                public final void run() {
+                    DisplayPolicy.AnonymousClass2 anonymousClass2 = DisplayPolicy.AnonymousClass2.this;
+                    long j2 = j;
+                    long j3 = this.f$2;
+                    StatusBarManagerInternal statusBarManagerInternal = DisplayPolicy.this.getStatusBarManagerInternal();
+                    if (statusBarManagerInternal != null) {
+                        int displayId = DisplayPolicy.this.mContext.getDisplayId();
+                        IStatusBar iStatusBar = StatusBarManagerService.this.mBar;
+                        if (iStatusBar != null) {
+                            try {
+                                iStatusBar.appTransitionStarting(displayId, j2, j3);
+                            } catch (RemoteException unused) {
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DecorInsets {
+        public final DisplayContent mDisplayContent;
+        public final Info[] mInfoForRotation;
+        public final Info mTmpInfo = new Info();
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Cache {
+            public boolean mActive;
+            public final DecorInsets mDecorInsets;
+            public int mPreserveId;
+
+            public Cache(DisplayContent displayContent) {
+                this.mDecorInsets = new DecorInsets(displayContent);
+            }
+        }
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Info {
+            public final Rect mNonDecorInsets = new Rect();
+            public final Rect mConfigInsets = new Rect();
+            public final Rect mOverrideConfigInsets = new Rect();
+            public final Rect mOverrideNonDecorInsets = new Rect();
+            public final Rect mNonDecorFrame = new Rect();
+            public final Rect mConfigFrame = new Rect();
+            public final Rect mOverrideConfigFrame = new Rect();
+            public final Rect mOverrideNonDecorFrame = new Rect();
+            public boolean mNeedUpdate = true;
+            public final Rect mCutoutInsets = new Rect();
+            public final Rect mExceptNavConfigInsets = new Rect();
+
+            public final void set(Info info) {
+                this.mNonDecorInsets.set(info.mNonDecorInsets);
+                this.mConfigInsets.set(info.mConfigInsets);
+                this.mOverrideConfigInsets.set(info.mOverrideConfigInsets);
+                this.mOverrideNonDecorInsets.set(info.mOverrideNonDecorInsets);
+                this.mNonDecorFrame.set(info.mNonDecorFrame);
+                this.mConfigFrame.set(info.mConfigFrame);
+                this.mOverrideConfigFrame.set(info.mOverrideConfigFrame);
+                this.mOverrideNonDecorFrame.set(info.mOverrideNonDecorFrame);
+                this.mNeedUpdate = false;
+            }
+
+            public final String toString() {
+                StringBuilder sb = new StringBuilder(32);
+                return "{nonDecorInsets=" + this.mNonDecorInsets.toShortString(sb) + ", overrideNonDecorInsets=" + this.mOverrideNonDecorInsets.toShortString(sb) + ", configInsets=" + this.mConfigInsets.toShortString(sb) + ", overrideConfigInsets=" + this.mOverrideConfigInsets.toShortString(sb) + ", nonDecorFrame=" + this.mNonDecorFrame.toShortString(sb) + ", overrideNonDecorFrame=" + this.mOverrideNonDecorFrame.toShortString(sb) + ", configFrame=" + this.mConfigFrame.toShortString(sb) + ", overrideConfigFrame=" + this.mOverrideConfigFrame.toShortString(sb) + '}';
+            }
+
+            public final InsetsState update(int i, int i2, int i3, DisplayContent displayContent) {
+                Insets calculateInsets;
+                Insets calculateInsets2;
+                DisplayFrames displayFrames = new DisplayFrames();
+                displayFrames.update(i, i2, i3, displayContent.calculateDisplayCutoutForRotation(i, false), displayContent.calculateRoundedCornersForRotation(i), (PrivacyIndicatorBounds) displayContent.mPrivacyIndicatorBoundsCache.getOrCompute(i, displayContent.mCurrentPrivacyIndicatorBounds), (DisplayShape) displayContent.mDisplayShapeCache.getOrCompute(i, displayContent.mInitialDisplayShape));
+                displayContent.mDisplayPolicy.simulateLayoutDisplay(displayFrames);
+                InsetsState insetsState = displayFrames.mInsetsState;
+                Rect displayFrame = insetsState.getDisplayFrame();
+                if (displayContent.isDexMode()) {
+                    int displayCutout = CoreRune.MD_DEX_NOT_SUPPORT_CUTOUT ? WindowInsets.Type.displayCutout() : 0;
+                    if (displayContent.mAtmService.mDexController.mIsDexForceImmersiveModeEnabled) {
+                        displayCutout |= WindowInsets.Type.navigationBars();
+                    }
+                    int i4 = displayContent.mWmService.mDecorTypes;
+                    int i5 = ~displayCutout;
+                    calculateInsets = insetsState.calculateInsets(displayFrame, i4 & i5, true);
+                    WindowManagerService windowManagerService = displayContent.mWmService;
+                    int i6 = windowManagerService.mConfigTypes;
+                    if (i6 != windowManagerService.mDecorTypes) {
+                        calculateInsets2 = insetsState.calculateInsets(displayFrame, i5 & i6, true);
+                    }
+                    calculateInsets2 = calculateInsets;
                 } else {
-                    message.what = 7;
-                    if (z2) {
-                        message.arg1 = 1;
-                    } else {
-                        message.arg1 = 2;
+                    calculateInsets = insetsState.calculateInsets(displayFrame, displayContent.mWmService.mDecorTypes, true);
+                    WindowManagerService windowManagerService2 = displayContent.mWmService;
+                    int i7 = windowManagerService2.mConfigTypes;
+                    if (i7 != windowManagerService2.mDecorTypes) {
+                        calculateInsets2 = insetsState.calculateInsets(displayFrame, i7, true);
                     }
+                    calculateInsets2 = calculateInsets;
                 }
-            } else {
-                message.what = 8;
+                WindowManagerService windowManagerService3 = displayContent.mWmService;
+                int i8 = windowManagerService3.mConfigTypes;
+                int i9 = windowManagerService3.mOverrideConfigTypes;
+                Insets calculateInsets3 = i8 == i9 ? calculateInsets2 : insetsState.calculateInsets(displayFrame, i9, true);
+                WindowManagerService windowManagerService4 = displayContent.mWmService;
+                int i10 = windowManagerService4.mDecorTypes;
+                int i11 = windowManagerService4.mOverrideDecorTypes;
+                Insets calculateInsets4 = i10 == i11 ? calculateInsets : insetsState.calculateInsets(displayFrame, i11, true);
+                this.mNonDecorInsets.set(calculateInsets.left, calculateInsets.top, calculateInsets.right, calculateInsets.bottom);
+                this.mConfigInsets.set(calculateInsets2.left, calculateInsets2.top, calculateInsets2.right, calculateInsets2.bottom);
+                this.mOverrideConfigInsets.set(calculateInsets3.left, calculateInsets3.top, calculateInsets3.right, calculateInsets3.bottom);
+                this.mOverrideNonDecorInsets.set(calculateInsets4.left, calculateInsets4.top, calculateInsets4.right, calculateInsets4.bottom);
+                this.mNonDecorFrame.set(displayFrame);
+                this.mNonDecorFrame.inset(this.mNonDecorInsets);
+                this.mConfigFrame.set(displayFrame);
+                this.mConfigFrame.inset(this.mConfigInsets);
+                this.mOverrideConfigFrame.set(displayFrame);
+                this.mOverrideConfigFrame.inset(this.mOverrideConfigInsets);
+                this.mOverrideNonDecorFrame.set(displayFrame);
+                this.mOverrideNonDecorFrame.inset(this.mOverrideNonDecorInsets);
+                this.mNeedUpdate = false;
+                Insets calculateInsets5 = insetsState.calculateInsets(displayFrame, WindowInsets.Type.statusBars(), true);
+                Insets calculateInsets6 = insetsState.calculateInsets(displayFrame, WindowInsets.Type.displayCutout(), true);
+                this.mCutoutInsets.set(calculateInsets6.left, calculateInsets6.top, calculateInsets6.right, calculateInsets6.bottom);
+                this.mExceptNavConfigInsets.set(Math.max(calculateInsets5.left, calculateInsets6.left), Math.max(calculateInsets5.top, calculateInsets6.top), Math.max(calculateInsets5.right, calculateInsets6.right), Math.max(calculateInsets5.bottom, calculateInsets6.bottom));
+                return insetsState;
             }
-            DisplayPolicy.this.mHandler.sendMessage(message);
         }
-    };
 
-    public static boolean isNavBarEmpty(int i) {
-        return (i & 23068672) == 23068672;
-    }
-
-    public boolean areSystemBarsForcedConsumedLw() {
-        return false;
-    }
-
-    public final int clearNavBarOpaqueFlag(int i) {
-        return i & (-3);
-    }
-
-    public StatusBarManagerInternal getStatusBarManagerInternal() {
-        StatusBarManagerInternal statusBarManagerInternal;
-        synchronized (this.mServiceAcquireLock) {
-            if (this.mStatusBarManagerInternal == null) {
-                this.mStatusBarManagerInternal = (StatusBarManagerInternal) LocalServices.getService(StatusBarManagerInternal.class);
+        public DecorInsets(DisplayContent displayContent) {
+            Info[] infoArr = new Info[4];
+            this.mInfoForRotation = infoArr;
+            this.mDisplayContent = displayContent;
+            for (int length = infoArr.length - 1; length >= 0; length--) {
+                this.mInfoForRotation[length] = new Info();
             }
-            statusBarManagerInternal = this.mStatusBarManagerInternal;
         }
-        return statusBarManagerInternal;
+
+        public final void dump(String str, PrintWriter printWriter) {
+            int i = 0;
+            while (true) {
+                Info[] infoArr = this.mInfoForRotation;
+                if (i >= infoArr.length) {
+                    return;
+                }
+                Info info = infoArr[i];
+                StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(str);
+                m.append(Surface.rotationToString(i));
+                m.append("=");
+                m.append(info);
+                printWriter.println(m.toString());
+                i++;
+            }
+        }
+
+        public final void invalidate() {
+            for (Info info : this.mInfoForRotation) {
+                info.mNeedUpdate = true;
+            }
+        }
+
+        public final void setTo(DecorInsets decorInsets) {
+            Info[] infoArr = this.mInfoForRotation;
+            for (int length = infoArr.length - 1; length >= 0; length--) {
+                infoArr[length].set(decorInsets.mInfoForRotation[length]);
+            }
+        }
     }
 
-    public void requestTransientTaskBar() {
-        WindowState windowState = this.mNavigationBar;
-        if (windowState == null || !windowState.isDrawFinishedLw()) {
-            return;
-        }
-        InsetsPolicy insetsPolicy = getInsetsPolicy();
-        if (insetsPolicy.isTransient(WindowInsets.Type.navigationBars())) {
-            insetsPolicy.abortTransient();
-        }
-        requestTransientBars(this.mNavigationBar, false);
-    }
-
-    /* loaded from: classes3.dex */
-    public class PolicyHandler extends Handler {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PolicyHandler extends Handler {
         public PolicyHandler(Looper looper) {
             super(looper);
         }
 
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             int i = message.what;
+            DisplayPolicy displayPolicy = DisplayPolicy.this;
             if (i == 4) {
-                DisplayPolicy.this.enablePointerLocation();
+                if (displayPolicy.mPointerLocationView != null) {
+                    return;
+                }
+                PointerLocationView pointerLocationView = new PointerLocationView(displayPolicy.mContext);
+                displayPolicy.mPointerLocationView = pointerLocationView;
+                pointerLocationView.setPrintCoords(false);
+                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                layoutParams.type = 2015;
+                layoutParams.flags = 280;
+                layoutParams.privateFlags |= 16;
+                layoutParams.setFitInsetsTypes(0);
+                layoutParams.layoutInDisplayCutoutMode = 3;
+                if (ActivityManager.isHighEndGfx()) {
+                    layoutParams.flags |= 16777216;
+                    layoutParams.privateFlags |= 2;
+                }
+                layoutParams.format = -3;
+                StringBuilder sb = new StringBuilder("PointerLocation - display ");
+                DisplayContent displayContent = displayPolicy.mDisplayContent;
+                sb.append(displayContent.mDisplayId);
+                layoutParams.setTitle(sb.toString());
+                layoutParams.inputFeatures |= 1;
+                ((WindowManager) displayPolicy.mContext.getSystemService(WindowManager.class)).addView(displayPolicy.mPointerLocationView, layoutParams);
+                displayContent.registerPointerEventListener(displayPolicy.mPointerLocationView);
                 return;
             }
             if (i == 5) {
-                DisplayPolicy.this.disablePointerLocation();
-                return;
-            }
-            if (i == 7) {
-                int i2 = message.arg1;
-                if (i2 == 1) {
-                    DisplayPolicy.this.enableTouchListener(false);
-                    return;
-                } else {
-                    if (i2 == 2) {
-                        DisplayPolicy.this.enableTouchListener(false);
-                        return;
-                    }
+                WindowManagerPolicyConstants.PointerEventListener pointerEventListener = displayPolicy.mPointerLocationView;
+                if (pointerEventListener == null) {
                     return;
                 }
-            }
-            if (i != 8) {
+                DisplayContent displayContent2 = displayPolicy.mDisplayContent;
+                if (!displayContent2.mRemoved) {
+                    displayContent2.unregisterPointerEventListener(pointerEventListener);
+                }
+                ((WindowManager) displayPolicy.mContext.getSystemService(WindowManager.class)).removeView(displayPolicy.mPointerLocationView);
+                displayPolicy.mPointerLocationView = null;
                 return;
             }
-            DisplayPolicy.this.disableTouchListener();
+            if (i == 107) {
+                int i2 = message.arg1;
+                if (i2 == 101 || i2 == 102) {
+                    if (displayPolicy.mIsKnoxZtStarted) {
+                        Slog.i("WindowManager", "TouchEventView is already added");
+                        return;
+                    }
+                    if (displayPolicy.mTouchEventView == null) {
+                        displayPolicy.mTouchEventView = new TouchEventView(displayPolicy.mContext, displayPolicy.mExt.mAuthFactorTouchManager);
+                    }
+                    Slog.i("WindowManager", "enableTouchListener debugmode:false");
+                    displayPolicy.mTouchEventView.setDebugmode(false);
+                    try {
+                        displayPolicy.mDisplayContent.registerPointerEventListener(displayPolicy.mTouchEventView);
+                    } catch (IllegalStateException e) {
+                        Slog.e("WindowManager", "Exception in registering mTouchEventView :- " + e);
+                    }
+                    displayPolicy.mTouchEventViewHash = displayPolicy.mTouchEventView.hashCode();
+                    displayPolicy.mIsKnoxZtStarted = true;
+                    return;
+                }
+                return;
+            }
+            if (i != 108) {
+                return;
+            }
+            TouchEventView touchEventView = displayPolicy.mTouchEventView;
+            if (touchEventView == null) {
+                Slog.i("WindowManager", "TouchEventView is not added");
+            } else if (displayPolicy.mIsKnoxZtStarted) {
+                try {
+                    if (displayPolicy.mTouchEventViewHash == touchEventView.hashCode()) {
+                        displayPolicy.mDisplayContent.unregisterPointerEventListener(displayPolicy.mTouchEventView);
+                    }
+                } catch (IllegalStateException e2) {
+                    Slog.e("WindowManager", "Exception in unregistering mTouchEventView :- " + e2);
+                }
+                displayPolicy.mIsKnoxZtStarted = false;
+            } else {
+                Slog.i("WindowManager", "mIsKnoxZtStarted is false");
+            }
             int i3 = message.arg1;
-            if (i3 == 1) {
-                DisplayPolicy.this.startEnableTouchEvent(true);
-            } else if (i3 == 2) {
-                DisplayPolicy.this.startEnableTouchEvent(false);
+            if (i3 == 101) {
+                displayPolicy.startEnableTouchEvent(true);
+            } else if (i3 == 102) {
+                displayPolicy.startEnableTouchEvent(false);
             }
         }
     }
 
+    /* JADX WARN: Type inference failed for: r0v4, types: [com.android.server.wm.DisplayPolicy$4] */
     public DisplayPolicy(WindowManagerService windowManagerService, DisplayContent displayContent) {
         this.mService = windowManagerService;
-        Context createDisplayContext = displayContent.isDefaultDisplay ? windowManagerService.mContext : windowManagerService.mContext.createDisplayContext(displayContent.getDisplay());
+        Context createDisplayContext = displayContent.isDefaultDisplay ? windowManagerService.mContext : windowManagerService.mContext.createDisplayContext(displayContent.mDisplay);
         this.mContext = createDisplayContext;
-        this.mUiContext = displayContent.isDefaultDisplay ? windowManagerService.mAtmService.getUiContext() : windowManagerService.mAtmService.mSystemThread.getSystemUiContext(displayContent.getDisplayId());
+        this.mUiContext = displayContent.isDefaultDisplay ? windowManagerService.mAtmService.mUiContext : windowManagerService.mAtmService.mSystemThread.getSystemUiContext(displayContent.mDisplayId);
         this.mDisplayContent = displayContent;
         this.mDecorInsets = new DecorInsets(displayContent);
-        this.mLock = windowManagerService.getWindowManagerLock();
+        this.mLock = windowManagerService.mGlobalLock;
         this.mExt = new DisplayPolicyExt(createDisplayContext, windowManagerService, this);
-        int displayId = displayContent.getDisplayId();
+        int i = displayContent.mDisplayId;
         Resources resources = createDisplayContext.getResources();
-        this.mCarDockEnablesAccelerometer = resources.getBoolean(R.bool.config_disableUsbPermissionDialogs);
-        this.mDeskDockEnablesAccelerometer = resources.getBoolean(R.bool.resolver_landscape_phone);
-        this.mCanSystemBarsBeShownByUser = !resources.getBoolean(R.bool.action_bar_embed_tabs) || resources.getBoolean(17891805);
+        this.mCarDockEnablesAccelerometer = resources.getBoolean(R.bool.config_carrier_wfc_ims_available);
+        this.mDeskDockEnablesAccelerometer = resources.getBoolean(R.bool.config_device_wfc_ims_available);
+        this.mCanSystemBarsBeShownByUser = !resources.getBoolean(R.bool.config_remoteInsetsControllerControlsSystemBars) || resources.getBoolean(R.bool.config_setColorTransformAccelerated);
+        this.mPanicThresholdMs = resources.getInteger(R.integer.config_maxShortcutTargetsPerApp);
         this.mAccessibilityManager = (AccessibilityManager) createDisplayContext.getSystemService("accessibility");
         if (!displayContent.isDefaultDisplay) {
             this.mAwake = true;
@@ -341,860 +1010,146 @@ public class DisplayPolicy {
         Looper looper = UiThread.getHandler().getLooper();
         PolicyHandler policyHandler = new PolicyHandler(looper);
         this.mHandler = policyHandler;
-        if (!ViewRootImpl.CLIENT_TRANSIENT) {
-            this.mSystemGestures = new SystemGesturesPointerEventListener(this.mUiContext, policyHandler, new AnonymousClass1());
-            TwoFingerSwipeGestureDetector twoFingerSwipeGestureDetector = new TwoFingerSwipeGestureDetector(this.mUiContext, new Function() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda9
+        boolean z = ViewRootImpl.CLIENT_TRANSIENT;
+        if (!z) {
+            SystemGesturesPointerEventListener systemGesturesPointerEventListener = new SystemGesturesPointerEventListener(this.mUiContext, policyHandler, new AnonymousClass1());
+            this.mSystemGestures = systemGesturesPointerEventListener;
+            displayContent.registerPointerEventListener(new TwoFingerSwipeGestureDetector(this.mUiContext, new Function() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda1
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
-                    TwoFingerSwipeGestureDetector.GestureListener createGestureListener;
-                    createGestureListener = DisplayPolicy.this.createGestureListener((TwoFingerSwipeGestureDetector) obj);
-                    return createGestureListener;
+                    final DisplayPolicy displayPolicy = DisplayPolicy.this;
+                    final TwoFingerSwipeGestureDetector twoFingerSwipeGestureDetector = (TwoFingerSwipeGestureDetector) obj;
+                    displayPolicy.getClass();
+                    return new TwoFingerSwipeGestureDetector.GestureListener() { // from class: com.android.server.wm.DisplayPolicy.3
+                        /* JADX WARN: Code restructure failed: missing block: B:29:0x005c, code lost:
+                        
+                            if (r10 == 3) goto L25;
+                         */
+                        /* JADX WARN: Removed duplicated region for block: B:18:0x0060 A[ADDED_TO_REGION] */
+                        /*
+                            Code decompiled incorrectly, please refer to instructions dump.
+                            To view partially-correct code enable 'Show inconsistent code' option in preferences
+                        */
+                        public final void onCommitted(int r10) {
+                            /*
+                                r9 = this;
+                                com.android.server.wm.DisplayPolicy r0 = com.android.server.wm.DisplayPolicy.this
+                                com.android.server.wm.WindowManagerGlobalLock r0 = r0.mLock
+                                monitor-enter(r0)
+                                android.graphics.Region r1 = android.graphics.Region.obtain()     // Catch: java.lang.Throwable -> L6e
+                                com.android.server.wm.DisplayPolicy r2 = com.android.server.wm.DisplayPolicy.this     // Catch: java.lang.Throwable -> L6e
+                                com.android.server.wm.DisplayContent r2 = r2.mDisplayContent     // Catch: java.lang.Throwable -> L6e
+                                r3 = 0
+                                r2.calculateSystemGestureExclusion(r1, r3)     // Catch: java.lang.Throwable -> L6e
+                                com.android.server.wm.DisplayPolicy r2 = com.android.server.wm.DisplayPolicy.this     // Catch: java.lang.Throwable -> L6e
+                                com.android.server.wm.SystemGesturesPointerEventListener r2 = r2.mSystemGestures     // Catch: java.lang.Throwable -> L6e
+                                float[] r3 = r2.mDownX     // Catch: java.lang.Throwable -> L6e
+                                r4 = 0
+                                r3 = r3[r4]     // Catch: java.lang.Throwable -> L6e
+                                int r3 = (int) r3     // Catch: java.lang.Throwable -> L6e
+                                float[] r2 = r2.mDownY     // Catch: java.lang.Throwable -> L6e
+                                r2 = r2[r4]     // Catch: java.lang.Throwable -> L6e
+                                int r2 = (int) r2     // Catch: java.lang.Throwable -> L6e
+                                boolean r1 = r1.contains(r3, r2)     // Catch: java.lang.Throwable -> L6e
+                                r2 = 1
+                                r1 = r1 ^ r2
+                                com.android.server.wm.DisplayPolicy r3 = com.android.server.wm.DisplayPolicy.this     // Catch: java.lang.Throwable -> L6e
+                                com.android.server.wm.DisplayContent r5 = r3.mDisplayContent     // Catch: java.lang.Throwable -> L6e
+                                com.android.server.wm.TaskDisplayArea r5 = r5.getDefaultTaskDisplayArea()     // Catch: java.lang.Throwable -> L6e
+                                if (r5 == 0) goto L70
+                                boolean r6 = r5.isSplitScreenModeActivated()     // Catch: java.lang.Throwable -> L6e
+                                if (r6 == 0) goto L37
+                                goto L70
+                            L37:
+                                boolean r6 = com.samsung.android.rune.CoreRune.MW_MULTI_SPLIT_FULL_TO_SPLIT_BY_GESTURE     // Catch: java.lang.Throwable -> L6e
+                                r7 = 3
+                                r8 = 4
+                                if (r6 == 0) goto L4c
+                                android.content.Context r3 = r3.mContext     // Catch: java.lang.Throwable -> L6e
+                                boolean r3 = com.samsung.android.multiwindow.MultiWindowUtils.isInSubDisplay(r3)     // Catch: java.lang.Throwable -> L6e
+                                if (r3 != 0) goto L4c
+                                if (r10 == r2) goto L5e
+                                if (r10 == r7) goto L5e
+                                if (r10 != r8) goto L70
+                                goto L5e
+                            L4c:
+                                android.content.res.Configuration r3 = r5.getConfiguration()     // Catch: java.lang.Throwable -> L6e
+                                int r3 = r3.orientation     // Catch: java.lang.Throwable -> L6e
+                                if (r3 != r2) goto L57
+                                if (r10 != r8) goto L70
+                                goto L5e
+                            L57:
+                                r5 = 2
+                                if (r3 != r5) goto L70
+                                if (r10 == r2) goto L5e
+                                if (r10 != r7) goto L70
+                            L5e:
+                                if (r1 == 0) goto L70
+                                if (r10 == r2) goto L66
+                                if (r10 == r7) goto L66
+                                if (r10 != r8) goto L70
+                            L66:
+                                com.android.server.wm.DisplayPolicy r9 = com.android.server.wm.DisplayPolicy.this     // Catch: java.lang.Throwable -> L6e
+                                com.android.server.wm.WindowState r10 = r9.mNavigationBar     // Catch: java.lang.Throwable -> L6e
+                                r9.requestTransientBars(r10, r4)     // Catch: java.lang.Throwable -> L6e
+                                goto L70
+                            L6e:
+                                r9 = move-exception
+                                goto L72
+                            L70:
+                                monitor-exit(r0)     // Catch: java.lang.Throwable -> L6e
+                                return
+                            L72:
+                                monitor-exit(r0)     // Catch: java.lang.Throwable -> L6e
+                                throw r9
+                            */
+                            throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.AnonymousClass3.onCommitted(int):void");
+                        }
+
+                        public final void onDetecting() {
+                            synchronized (DisplayPolicy.this.mLock) {
+                                try {
+                                    DisplayContent displayContent2 = DisplayPolicy.this.mDisplayContent;
+                                    if (displayContent2.mAtmService.mMultiTaskingController.mIsFullToSplitEnabled) {
+                                        twoFingerSwipeGestureDetector.init(displayContent2.getBounds(), DisplayPolicy.this.mDisplayContent.mBaseDisplayDensity / 160, 13);
+                                    } else {
+                                        twoFingerSwipeGestureDetector.cancel();
+                                    }
+                                } catch (Throwable th) {
+                                    throw th;
+                                }
+                            }
+                        }
+                    };
                 }
-            }, "DP");
-            this.mTwoFingerSwipeGestureDetector = twoFingerSwipeGestureDetector;
-            displayContent.registerPointerEventListener(twoFingerSwipeGestureDetector);
-            this.mSystemGestures.setDisplayContent(displayContent);
-            displayContent.registerPointerEventListener(this.mSystemGestures);
-        } else {
-            this.mTwoFingerSwipeGestureDetector = null;
+            }, "DP"));
+            systemGesturesPointerEventListener.mDisplayContent = displayContent;
+            displayContent.registerPointerEventListener(systemGesturesPointerEventListener);
         }
-        AnonymousClass2 anonymousClass2 = new AnonymousClass2(displayId);
+        AnonymousClass2 anonymousClass2 = new AnonymousClass2(i);
         this.mAppTransitionListener = anonymousClass2;
         displayContent.mAppTransition.registerListenerLocked(anonymousClass2);
         displayContent.mTransitionController.registerLegacyListener(anonymousClass2);
-        this.mImmersiveModeConfirmation = new ImmersiveModeConfirmation(createDisplayContext, looper, windowManagerService.mVrModeEnabled, this.mCanSystemBarsBeShownByUser, this);
+        if (z || ViewRootImpl.CLIENT_IMMERSIVE_CONFIRMATION) {
+            this.mImmersiveModeConfirmation = null;
+        } else {
+            this.mImmersiveModeConfirmation = new ImmersiveModeConfirmation(createDisplayContext, looper, windowManagerService.mVrModeEnabled);
+        }
         this.mScreenshotHelper = displayContent.isDefaultDisplay ? new ScreenshotHelper(createDisplayContext) : null;
         if (displayContent.isDefaultDisplay) {
-            this.mHasStatusBar = true;
-            this.mHasNavigationBar = createDisplayContext.getResources().getBoolean(17891826);
+            this.mHasNavigationBar = createDisplayContext.getResources().getBoolean(R.bool.config_sms_decode_gsm_8bit_data);
         } else {
-            this.mHasStatusBar = false;
             this.mHasNavigationBar = displayContent.supportsSystemDecorations();
         }
-        this.mRefreshRatePolicy = new RefreshRatePolicy(windowManagerService, displayContent.getDisplayInfo(), windowManagerService.mHighRefreshRateDenylist);
-        final GestureNavigationSettingsObserver gestureNavigationSettingsObserver = new GestureNavigationSettingsObserver(policyHandler, createDisplayContext, new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda10
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.this.lambda$new$0();
-            }
-        });
+        this.mRefreshRatePolicy = new RefreshRatePolicy(windowManagerService, displayContent.mDisplayInfo, windowManagerService.mHighRefreshRateDenylist);
+        GestureNavigationSettingsObserver gestureNavigationSettingsObserver = new GestureNavigationSettingsObserver(policyHandler, BackgroundThread.getHandler(), createDisplayContext, new DisplayPolicy$$ExternalSyntheticLambda2(this, 0));
         this.mGestureNavigationSettingsObserver = gestureNavigationSettingsObserver;
-        Objects.requireNonNull(gestureNavigationSettingsObserver);
-        policyHandler.post(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda11
-            @Override // java.lang.Runnable
-            public final void run() {
-                gestureNavigationSettingsObserver.register();
-            }
-        });
-        final ForceShowNavBarSettingsObserver forceShowNavBarSettingsObserver = new ForceShowNavBarSettingsObserver(policyHandler, createDisplayContext);
+        policyHandler.post(new DisplayPolicy$$ExternalSyntheticLambda3(gestureNavigationSettingsObserver, 0));
+        ForceShowNavBarSettingsObserver forceShowNavBarSettingsObserver = new ForceShowNavBarSettingsObserver(policyHandler, createDisplayContext);
         this.mForceShowNavBarSettingsObserver = forceShowNavBarSettingsObserver;
-        forceShowNavBarSettingsObserver.setOnChangeRunnable(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda12
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.this.updateForceShowNavBarSettings();
-            }
-        });
+        forceShowNavBarSettingsObserver.setOnChangeRunnable(new DisplayPolicy$$ExternalSyntheticLambda2(this, 3));
         this.mForceShowNavigationBarEnabled = forceShowNavBarSettingsObserver.isEnabled();
-        Objects.requireNonNull(forceShowNavBarSettingsObserver);
-        policyHandler.post(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda13
-            @Override // java.lang.Runnable
-            public final void run() {
-                forceShowNavBarSettingsObserver.register();
-            }
-        });
-    }
-
-    /* renamed from: com.android.server.wm.DisplayPolicy$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements SystemGesturesPointerEventListener.Callbacks {
-        public Runnable mOnSwipeFromLeft = new Runnable() { // from class: com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.AnonymousClass1.this.onSwipeFromLeft();
-            }
-        };
-        public Runnable mOnSwipeFromTop = new Runnable() { // from class: com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.AnonymousClass1.this.onSwipeFromTop();
-            }
-        };
-        public Runnable mOnSwipeFromRight = new Runnable() { // from class: com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.AnonymousClass1.this.onSwipeFromRight();
-            }
-        };
-        public Runnable mOnSwipeFromBottom = new Runnable() { // from class: com.android.server.wm.DisplayPolicy$1$$ExternalSyntheticLambda3
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.AnonymousClass1.this.onSwipeFromBottom();
-            }
-        };
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onDebug() {
-        }
-
-        public AnonymousClass1() {
-        }
-
-        public final Insets getControllableInsets(WindowState windowState) {
-            if (windowState == null) {
-                return Insets.NONE;
-            }
-            InsetsSourceProvider controllableInsetProvider = windowState.getControllableInsetProvider();
-            if (controllableInsetProvider == null) {
-                return Insets.NONE;
-            }
-            return controllableInsetProvider.getSource().calculateInsets(windowState.getBounds(), true);
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onSwipeFromTop() {
-            synchronized (DisplayPolicy.this.mLock) {
-                MultiWindowPointerEventListener multiWindowPointerEventListener = DisplayPolicy.this.mDisplayContent.mMultiWindowPointerEventListener;
-                MultiWindowEdgeDetector multiWindowEdgeDetector = multiWindowPointerEventListener != null ? multiWindowPointerEventListener.getMultiWindowEdgeDetector() : null;
-                if (multiWindowEdgeDetector != null && multiWindowPointerEventListener.isAllowCornerGestureState() && multiWindowEdgeDetector.isEdge()) {
-                    return;
-                }
-                DisplayPolicy displayPolicy = DisplayPolicy.this;
-                displayPolicy.requestTransientBars(displayPolicy.mTopGestureHost, getControllableInsets(DisplayPolicy.this.mTopGestureHost).top > 0);
-            }
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onSwipeFromBottom() {
-            synchronized (DisplayPolicy.this.mLock) {
-                DisplayPolicy displayPolicy = DisplayPolicy.this;
-                displayPolicy.requestTransientBars(displayPolicy.mBottomGestureHost, getControllableInsets(DisplayPolicy.this.mBottomGestureHost).bottom > 0);
-            }
-        }
-
-        public final boolean allowsSideSwipe(Region region) {
-            return DisplayPolicy.this.mNavigationBarAlwaysShowOnSideGesture && !DisplayPolicy.this.mSystemGestures.currentGestureStartedInRegion(region);
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onSwipeFromRight() {
-            Region obtain = Region.obtain();
-            synchronized (DisplayPolicy.this.mLock) {
-                DisplayPolicy.this.mDisplayContent.calculateSystemGestureExclusion(obtain, null);
-                boolean z = getControllableInsets(DisplayPolicy.this.mRightGestureHost).right > 0;
-                if (!z && !allowsSideSwipe(obtain)) {
-                    requestTransientBarsForSideSwipe(DisplayPolicy.this.mRightGestureHost, 2);
-                }
-                DisplayPolicy displayPolicy = DisplayPolicy.this;
-                displayPolicy.requestTransientBars(displayPolicy.mRightGestureHost, z);
-            }
-            obtain.recycle();
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onSwipeFromLeft() {
-            Region obtain = Region.obtain();
-            synchronized (DisplayPolicy.this.mLock) {
-                DisplayPolicy.this.mDisplayContent.calculateSystemGestureExclusion(obtain, null);
-                boolean z = getControllableInsets(DisplayPolicy.this.mLeftGestureHost).left > 0;
-                if (!z && !allowsSideSwipe(obtain)) {
-                    requestTransientBarsForSideSwipe(DisplayPolicy.this.mLeftGestureHost, 1);
-                }
-                DisplayPolicy displayPolicy = DisplayPolicy.this;
-                displayPolicy.requestTransientBars(displayPolicy.mLeftGestureHost, z);
-            }
-            obtain.recycle();
-        }
-
-        public final void requestTransientBarsForSideSwipe(WindowState windowState, int i) {
-            if (DisplayPolicy.this.supportTransientEdgeInSplitMode()) {
-                WindowState windowState2 = DisplayPolicy.this.mNavigationBar;
-                if (DisplayPolicy.this.mNavigationBar == null) {
-                    DisplayPolicy.this.mSkipTransferTouchToStatusBar = true;
-                    windowState2 = DisplayPolicy.this.mStatusBar;
-                }
-                DisplayPolicy.this.requestTransientBars(windowState2, true);
-                if (DisplayPolicy.this.mSkipTransferTouchToStatusBar) {
-                    DisplayPolicy.this.mSkipTransferTouchToStatusBar = false;
-                    return;
-                }
-                return;
-            }
-            if (DisplayPolicy.this.mNavigationBar != null && DisplayPolicy.this.mNavigationBar == windowState && DisplayPolicy.this.mNavigationBarPosition == i) {
-                DisplayPolicy.this.requestTransientBars(windowState, true);
-            }
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onFling(int i) {
-            if (CoreRune.FW_VRR_PERFORMANCE || DisplayPolicy.this.mService.mPowerManagerInternal == null) {
-                return;
-            }
-            DisplayPolicy.this.mService.mPowerManagerInternal.setPowerBoost(0, i);
-        }
-
-        public final WindowOrientationListener getOrientationListener() {
-            DisplayRotation displayRotation = DisplayPolicy.this.mDisplayContent.getDisplayRotation();
-            if (displayRotation != null) {
-                return displayRotation.getOrientationListener();
-            }
-            return null;
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onDown() {
-            WindowOrientationListener orientationListener = getOrientationListener();
-            if (orientationListener != null) {
-                orientationListener.onTouchStart();
-            }
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onUpOrCancel() {
-            WindowOrientationListener orientationListener = getOrientationListener();
-            if (orientationListener != null) {
-                orientationListener.onTouchEnd();
-            }
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onMouseHoverAtLeft() {
-            DisplayPolicy.this.mHandler.removeCallbacks(this.mOnSwipeFromLeft);
-            DisplayPolicy.this.mHandler.postDelayed(this.mOnSwipeFromLeft, 500L);
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onMouseHoverAtTop() {
-            DisplayPolicy.this.mHandler.removeCallbacks(this.mOnSwipeFromTop);
-            DisplayPolicy.this.mHandler.postDelayed(this.mOnSwipeFromTop, 500L);
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onMouseHoverAtRight() {
-            DisplayPolicy.this.mHandler.removeCallbacks(this.mOnSwipeFromRight);
-            DisplayPolicy.this.mHandler.postDelayed(this.mOnSwipeFromRight, 500L);
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onMouseHoverAtBottom() {
-            long j;
-            int dexStarShowingDelayTime;
-            ActivityRecord activityRecord;
-            DisplayPolicy.this.mHandler.removeCallbacks(this.mOnSwipeFromBottom);
-            WindowState windowState = DisplayPolicy.this.mTopFullscreenOpaqueWindowState;
-            if (windowState != null && windowState.isDexMode() && (activityRecord = windowState.mActivityRecord) != null && activityRecord.hasTransientBarShowingDelay()) {
-                dexStarShowingDelayTime = windowState.mActivityRecord.getTransientBarShowingDelayMillis();
-            } else if (DisplayPolicy.this.mDisplayContent.isDexMode() && DisplayPolicy.this.mDisplayContent.mAtmService.mDexController.getDexStarShowingDelayTime() >= 0) {
-                dexStarShowingDelayTime = DisplayPolicy.this.mDisplayContent.mAtmService.mDexController.getDexStarShowingDelayTime();
-            } else {
-                j = 500;
-                DisplayPolicy.this.mHandler.postDelayed(this.mOnSwipeFromBottom, j);
-            }
-            j = dexStarShowingDelayTime;
-            DisplayPolicy.this.mHandler.postDelayed(this.mOnSwipeFromBottom, j);
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onMouseLeaveFromLeft() {
-            DisplayPolicy.this.mHandler.removeCallbacks(this.mOnSwipeFromLeft);
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onMouseLeaveFromTop() {
-            DisplayPolicy.this.mHandler.removeCallbacks(this.mOnSwipeFromTop);
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onMouseLeaveFromRight() {
-            DisplayPolicy.this.mHandler.removeCallbacks(this.mOnSwipeFromRight);
-        }
-
-        @Override // com.android.server.wm.SystemGesturesPointerEventListener.Callbacks
-        public void onMouseLeaveFromBottom() {
-            DisplayPolicy.this.mHandler.removeCallbacks(this.mOnSwipeFromBottom);
-        }
-    }
-
-    /* renamed from: com.android.server.wm.DisplayPolicy$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 extends WindowManagerInternal.AppTransitionListener {
-        public Runnable mAppTransitionCancelled;
-        public Runnable mAppTransitionFinished;
-        public Runnable mAppTransitionPending;
-        public final /* synthetic */ int val$displayId;
-
-        public AnonymousClass2(final int i) {
-            this.val$displayId = i;
-            this.mAppTransitionPending = new Runnable() { // from class: com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DisplayPolicy.AnonymousClass2.this.lambda$$0(i);
-                }
-            };
-            this.mAppTransitionCancelled = new Runnable() { // from class: com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DisplayPolicy.AnonymousClass2.this.lambda$$1(i);
-                }
-            };
-            this.mAppTransitionFinished = new Runnable() { // from class: com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DisplayPolicy.AnonymousClass2.this.lambda$$2(i);
-                }
-            };
-        }
-
-        public /* synthetic */ void lambda$$0(int i) {
-            StatusBarManagerInternal statusBarManagerInternal = DisplayPolicy.this.getStatusBarManagerInternal();
-            if (statusBarManagerInternal != null) {
-                statusBarManagerInternal.appTransitionPending(i);
-            }
-        }
-
-        public /* synthetic */ void lambda$$1(int i) {
-            StatusBarManagerInternal statusBarManagerInternal = DisplayPolicy.this.getStatusBarManagerInternal();
-            if (statusBarManagerInternal != null) {
-                statusBarManagerInternal.appTransitionCancelled(i);
-            }
-        }
-
-        public /* synthetic */ void lambda$$2(int i) {
-            StatusBarManagerInternal statusBarManagerInternal = DisplayPolicy.this.getStatusBarManagerInternal();
-            if (statusBarManagerInternal != null) {
-                statusBarManagerInternal.appTransitionFinished(i);
-            }
-        }
-
-        @Override // com.android.server.wm.WindowManagerInternal.AppTransitionListener
-        public void onAppTransitionPendingLocked() {
-            DisplayPolicy.this.mHandler.post(this.mAppTransitionPending);
-        }
-
-        @Override // com.android.server.wm.WindowManagerInternal.AppTransitionListener
-        public int onAppTransitionStartingLocked(final long j, final long j2) {
-            DisplayPolicy.this.mHandler.post(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$2$$ExternalSyntheticLambda3
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DisplayPolicy.AnonymousClass2.this.lambda$onAppTransitionStartingLocked$3(j, j2);
-                }
-            });
-            return 0;
-        }
-
-        public /* synthetic */ void lambda$onAppTransitionStartingLocked$3(long j, long j2) {
-            StatusBarManagerInternal statusBarManagerInternal = DisplayPolicy.this.getStatusBarManagerInternal();
-            if (statusBarManagerInternal != null) {
-                statusBarManagerInternal.appTransitionStarting(DisplayPolicy.this.mContext.getDisplayId(), j, j2);
-            }
-        }
-
-        @Override // com.android.server.wm.WindowManagerInternal.AppTransitionListener
-        public void onAppTransitionCancelledLocked(boolean z) {
-            DisplayPolicy.this.mHandler.post(this.mAppTransitionCancelled);
-        }
-
-        @Override // com.android.server.wm.WindowManagerInternal.AppTransitionListener
-        public void onAppTransitionFinishedLocked(IBinder iBinder) {
-            DisplayPolicy.this.mHandler.post(this.mAppTransitionFinished);
-        }
-    }
-
-    public /* synthetic */ void lambda$new$0() {
-        synchronized (this.mLock) {
-            onConfigurationChanged();
-            if (!ViewRootImpl.CLIENT_TRANSIENT) {
-                this.mSystemGestures.onConfigurationChanged();
-            }
-            this.mDisplayContent.updateSystemGestureExclusion();
-        }
-    }
-
-    /* renamed from: com.android.server.wm.DisplayPolicy$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 implements TwoFingerSwipeGestureDetector.GestureListener {
-        public final /* synthetic */ TwoFingerSwipeGestureDetector val$detector;
-
-        public AnonymousClass3(TwoFingerSwipeGestureDetector twoFingerSwipeGestureDetector) {
-            r2 = twoFingerSwipeGestureDetector;
-        }
-
-        public void onDetecting() {
-            synchronized (DisplayPolicy.this.mLock) {
-                if (!DisplayPolicy.this.mDisplayContent.mAtmService.mMultiTaskingController.isFullToSplitEnabled()) {
-                    r2.cancel();
-                } else {
-                    r2.init(DisplayPolicy.this.mDisplayContent.getBounds(), DisplayPolicy.this.mDisplayContent.mBaseDisplayDensity / 160, 13);
-                }
-            }
-        }
-
-        public void onCommitted(int i) {
-            synchronized (DisplayPolicy.this.mLock) {
-                Region obtain = Region.obtain();
-                DisplayPolicy.this.mDisplayContent.calculateSystemGestureExclusion(obtain, null);
-                boolean z = !DisplayPolicy.this.mSystemGestures.currentGestureStartedInRegion(obtain);
-                if (DisplayPolicy.this.isTwoFingerSwipeGestureAcceptable(i) && z && (i == 1 || i == 3 || i == 4)) {
-                    DisplayPolicy displayPolicy = DisplayPolicy.this;
-                    displayPolicy.requestTransientBars(displayPolicy.mNavigationBar, false);
-                }
-            }
-        }
-    }
-
-    public final TwoFingerSwipeGestureDetector.GestureListener createGestureListener(TwoFingerSwipeGestureDetector twoFingerSwipeGestureDetector) {
-        return new TwoFingerSwipeGestureDetector.GestureListener() { // from class: com.android.server.wm.DisplayPolicy.3
-            public final /* synthetic */ TwoFingerSwipeGestureDetector val$detector;
-
-            public AnonymousClass3(TwoFingerSwipeGestureDetector twoFingerSwipeGestureDetector2) {
-                r2 = twoFingerSwipeGestureDetector2;
-            }
-
-            public void onDetecting() {
-                synchronized (DisplayPolicy.this.mLock) {
-                    if (!DisplayPolicy.this.mDisplayContent.mAtmService.mMultiTaskingController.isFullToSplitEnabled()) {
-                        r2.cancel();
-                    } else {
-                        r2.init(DisplayPolicy.this.mDisplayContent.getBounds(), DisplayPolicy.this.mDisplayContent.mBaseDisplayDensity / 160, 13);
-                    }
-                }
-            }
-
-            public void onCommitted(int i) {
-                synchronized (DisplayPolicy.this.mLock) {
-                    Region obtain = Region.obtain();
-                    DisplayPolicy.this.mDisplayContent.calculateSystemGestureExclusion(obtain, null);
-                    boolean z = !DisplayPolicy.this.mSystemGestures.currentGestureStartedInRegion(obtain);
-                    if (DisplayPolicy.this.isTwoFingerSwipeGestureAcceptable(i) && z && (i == 1 || i == 3 || i == 4)) {
-                        DisplayPolicy displayPolicy = DisplayPolicy.this;
-                        displayPolicy.requestTransientBars(displayPolicy.mNavigationBar, false);
-                    }
-                }
-            }
-        };
-    }
-
-    public final boolean isTwoFingerSwipeGestureAcceptable(int i) {
-        TaskDisplayArea defaultTaskDisplayArea = this.mDisplayContent.getDefaultTaskDisplayArea();
-        if (defaultTaskDisplayArea == null || defaultTaskDisplayArea.isSplitScreenModeActivated()) {
-            return false;
-        }
-        if (CoreRune.MW_MULTI_SPLIT_FULL_TO_SPLIT_BY_GESTURE && !MultiWindowUtils.isInSubDisplay(this.mContext)) {
-            return i == 1 || i == 3 || i == 4;
-        }
-        int i2 = defaultTaskDisplayArea.getConfiguration().orientation;
-        if (i2 == 1) {
-            return i == 4;
-        }
-        if (i2 == 2) {
-            return i == 1 || i == 3;
-        }
-        return false;
-    }
-
-    public final void updateForceShowNavBarSettings() {
-        synchronized (this.mLock) {
-            this.mForceShowNavigationBarEnabled = this.mForceShowNavBarSettingsObserver.isEnabled();
-            updateSystemBarAttributes();
-        }
-    }
-
-    public void systemReady() {
-        if (!ViewRootImpl.CLIENT_TRANSIENT) {
-            this.mSystemGestures.systemReady();
-        }
-        if (this.mService.mPointerLocationEnabled) {
-            setPointerLocationEnabled(true);
-        }
-        startEnableTouchEvent(false);
-        Slog.i(StartingSurfaceController.TAG, "systemReady() >> CMFA startEnableTouchEvent called for Display Id : " + getDisplayId());
-        this.mImmersiveModeConfirmation.systemReady();
-    }
-
-    public int getDisplayId() {
-        return this.mDisplayContent.getDisplayId();
-    }
-
-    public void setHdmiPlugged(boolean z) {
-        setHdmiPlugged(z, false);
-    }
-
-    public void setHdmiPlugged(boolean z, boolean z2) {
-        if (z2 || this.mHdmiPlugged != z) {
-            this.mHdmiPlugged = z;
-            this.mService.updateRotation(true, true);
-            Intent intent = new Intent("android.intent.action.HDMI_PLUGGED");
-            intent.addFlags(67108864);
-            intent.putExtra(LauncherConfigurationInternal.KEY_STATE_BOOLEAN, z);
-            this.mContext.sendStickyBroadcastAsUser(intent, UserHandle.ALL);
-        }
-    }
-
-    public boolean isHdmiPlugged() {
-        return this.mHdmiPlugged;
-    }
-
-    public boolean isCarDockEnablesAccelerometer() {
-        return this.mCarDockEnablesAccelerometer;
-    }
-
-    public boolean isDeskDockEnablesAccelerometer() {
-        return this.mDeskDockEnablesAccelerometer;
-    }
-
-    public void setPersistentVrModeEnabled(boolean z) {
-        this.mPersistentVrModeEnabled = z;
-    }
-
-    public boolean isPersistentVrModeEnabled() {
-        return this.mPersistentVrModeEnabled;
-    }
-
-    public void setDockMode(int i) {
-        this.mDockMode = i;
-    }
-
-    public int getDockMode() {
-        return this.mDockMode;
-    }
-
-    public boolean hasNavigationBar() {
-        return this.mHasNavigationBar;
-    }
-
-    public boolean hasSideGestures() {
-        return this.mHasNavigationBar && (this.mLeftGestureInset > 0 || this.mRightGestureInset > 0);
-    }
-
-    public boolean navigationBarCanMove() {
-        return this.mNavigationBarCanMove;
-    }
-
-    public void setLidState(int i) {
-        this.mLidState = i;
-    }
-
-    public int getLidState() {
-        return this.mLidState;
-    }
-
-    public void setAwake(boolean z) {
-        synchronized (this.mLock) {
-            if (z == this.mAwake) {
-                return;
-            }
-            this.mAwake = z;
-            if (CoreRune.MW_MULTI_SPLIT_FOLDING_POLICY && z && this.mDisplayContent.mWmService.isFolded()) {
-                this.mService.mAtmService.mMultiWindowFoldController.scheduleWakeUpInFoldingState(this.mDisplayContent.isSleeping());
-            }
-            if (this.mDisplayContent.isDefaultDisplay) {
-                this.mService.mAtmService.mKeyguardController.updateDeferTransitionForAod(this.mAwake);
-            }
-        }
-    }
-
-    public boolean isAwake() {
-        return this.mAwake;
-    }
-
-    public boolean isScreenOnEarly() {
-        return this.mScreenOnEarly;
-    }
-
-    public boolean isScreenOnFully() {
-        return this.mScreenOnFully;
-    }
-
-    public boolean isKeyguardDrawComplete() {
-        return this.mKeyguardDrawComplete;
-    }
-
-    public boolean isWindowManagerDrawComplete() {
-        return this.mWindowManagerDrawComplete;
-    }
-
-    public boolean isForceShowNavigationBarEnabled() {
-        return this.mForceShowNavigationBarEnabled;
-    }
-
-    public WindowManagerPolicy.ScreenOnListener getScreenOnListener() {
-        return this.mScreenOnListener;
-    }
-
-    public boolean isRemoteInsetsControllerControllingSystemBars() {
-        return this.mRemoteInsetsControllerControlsSystemBars;
-    }
-
-    public void setRemoteInsetsControllerControlsSystemBars(boolean z) {
-        this.mRemoteInsetsControllerControlsSystemBars = z;
-    }
-
-    public void screenTurnedOn(WindowManagerPolicy.ScreenOnListener screenOnListener) {
-        synchronized (this.mLock) {
-            this.mScreenOnEarly = true;
-            this.mScreenOnFully = false;
-            this.mKeyguardDrawComplete = false;
-            this.mWindowManagerDrawComplete = false;
-            this.mScreenOnListener = screenOnListener;
-        }
-    }
-
-    public void screenTurnedOff() {
-        synchronized (this.mLock) {
-            this.mScreenOnEarly = false;
-            this.mScreenOnFully = false;
-            this.mKeyguardDrawComplete = false;
-            this.mWindowManagerDrawComplete = false;
-            this.mScreenOnListener = null;
-            this.mExt.screenTurnedOff();
-        }
-    }
-
-    public boolean finishKeyguardDrawn() {
-        synchronized (this.mLock) {
-            if (this.mScreenOnEarly && !this.mKeyguardDrawComplete) {
-                this.mKeyguardDrawComplete = true;
-                this.mWindowManagerDrawComplete = false;
-                return true;
-            }
-            return false;
-        }
-    }
-
-    public boolean finishWindowsDrawn() {
-        synchronized (this.mLock) {
-            if (this.mScreenOnEarly && !this.mWindowManagerDrawComplete) {
-                this.mWindowManagerDrawComplete = true;
-                return true;
-            }
-            return false;
-        }
-    }
-
-    public boolean finishScreenTurningOn() {
-        synchronized (this.mLock) {
-            if (ProtoLogCache.WM_FORCE_DEBUG_SCREEN_ON_enabled) {
-                ProtoLogImpl.d(ProtoLogGroup.WM_FORCE_DEBUG_SCREEN_ON, 1312084488, 1023, "finishScreenTurningOn: mAwake=%b, mScreenOnEarly=%b, mScreenOnFully=%b, mKeyguardDrawComplete=%b, mWindowManagerDrawComplete=%b", new Object[]{Boolean.valueOf(this.mAwake), Boolean.valueOf(this.mScreenOnEarly), Boolean.valueOf(this.mScreenOnFully), Boolean.valueOf(this.mKeyguardDrawComplete), Boolean.valueOf(this.mWindowManagerDrawComplete)});
-            }
-            if (!this.mScreenOnFully && this.mScreenOnEarly && this.mWindowManagerDrawComplete && (!this.mAwake || this.mKeyguardDrawComplete)) {
-                if (ProtoLogCache.WM_FORCE_DEBUG_SCREEN_ON_enabled) {
-                    ProtoLogImpl.i(ProtoLogGroup.WM_FORCE_DEBUG_SCREEN_ON, 823210702, 0, "Finished screen turning on...", (Object[]) null);
-                }
-                this.mScreenOnListener = null;
-                this.mScreenOnFully = true;
-                if (CoreRune.FW_TSP_STATE_CONTROLLER && this.mDisplayContent.isDefaultDisplay) {
-                    this.mExt.finishScreenTurningOn();
-                }
-                return true;
-            }
-            return false;
-        }
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0018, code lost:
-    
-        if (r0 != 2006) goto L97;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void adjustWindowParamsLw(com.android.server.wm.WindowState r7, android.view.WindowManager.LayoutParams r8) {
-        /*
-            Method dump skipped, instructions count: 306
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.adjustWindowParamsLw(com.android.server.wm.WindowState, android.view.WindowManager$LayoutParams):void");
-    }
-
-    public void setDropInputModePolicy(WindowState windowState, WindowManager.LayoutParams layoutParams) {
-        if (layoutParams.type == 2005 && (layoutParams.privateFlags & 536870912) == 0) {
-            ((SurfaceControl.Transaction) this.mService.mTransactionFactory.get()).setDropInputMode(windowState.getSurfaceControl(), 1).apply();
-        }
-    }
-
-    /* JADX WARN: Failed to find 'out' block for switch in B:24:0x0044. Please report as an issue. */
-    /* JADX WARN: Removed duplicated region for block: B:40:0x00d2  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int validateAddingWindowLw(android.view.WindowManager.LayoutParams r8, int r9, int r10) {
-        /*
-            Method dump skipped, instructions count: 236
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.validateAddingWindowLw(android.view.WindowManager$LayoutParams, int, int):int");
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:10:0x0051  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void addWindowLw(com.android.server.wm.WindowState r9, android.view.WindowManager.LayoutParams r10) {
-        /*
-            r8 = this;
-            int r0 = r10.type
-            r1 = 2000(0x7d0, float:2.803E-42)
-            if (r0 == r1) goto L3a
-            r2 = 2019(0x7e3, float:2.829E-42)
-            if (r0 == r2) goto L26
-            r3 = 2040(0x7f8, float:2.859E-42)
-            if (r0 == r3) goto L12
-            switch(r0) {
-                case 2621: goto L3a;
-                case 2622: goto L12;
-                case 2623: goto L26;
-                default: goto L11;
-            }
-        L11:
-            goto L4d
-        L12:
-            com.android.server.wm.DisplayContent r1 = r8.mDisplayContent
-            boolean r1 = r1.isDefaultDisplay
-            if (r1 == 0) goto L23
-            if (r0 != r3) goto L23
-            r8.mDefaultNotificationShade = r9
-            boolean r0 = r8.hasDexStandAloneNotificationShade()
-            if (r0 == 0) goto L23
-            return
-        L23:
-            r8.mNotificationShade = r9
-            goto L4d
-        L26:
-            com.android.server.wm.DisplayContent r1 = r8.mDisplayContent
-            boolean r1 = r1.isDefaultDisplay
-            if (r1 == 0) goto L37
-            if (r0 != r2) goto L37
-            r8.mDefaultNavigationBar = r9
-            boolean r0 = r8.hasDexStandAloneNavigationBar()
-            if (r0 == 0) goto L37
-            return
-        L37:
-            r8.mNavigationBar = r9
-            goto L4d
-        L3a:
-            com.android.server.wm.DisplayContent r2 = r8.mDisplayContent
-            boolean r2 = r2.isDefaultDisplay
-            if (r2 == 0) goto L4b
-            if (r0 != r1) goto L4b
-            r8.mDefaultStatusBar = r9
-            boolean r0 = r8.hasDexStandAloneStatusBar()
-            if (r0 == 0) goto L4b
-            return
-        L4b:
-            r8.mStatusBar = r9
-        L4d:
-            android.view.InsetsFrameProvider[] r0 = r10.providedInsets
-            if (r0 == 0) goto Lc6
-            int r0 = r0.length
-            int r0 = r0 + (-1)
-        L54:
-            if (r0 < 0) goto L9d
-            android.view.InsetsFrameProvider[] r1 = r10.providedInsets
-            r1 = r1[r0]
-            r2 = -1
-            com.android.internal.util.function.TriFunction r2 = getFrameProvider(r9, r0, r2)
-            android.view.InsetsFrameProvider$InsetsSizeOverride[] r3 = r1.getInsetsSizeOverrides()
-            if (r3 == 0) goto L7f
-            android.util.SparseArray r4 = new android.util.SparseArray
-            r4.<init>()
-            int r5 = r3.length
-            int r5 = r5 + (-1)
-        L6d:
-            if (r5 < 0) goto L80
-            r6 = r3[r5]
-            int r6 = r6.getWindowType()
-            com.android.internal.util.function.TriFunction r7 = getFrameProvider(r9, r0, r5)
-            r4.put(r6, r7)
-            int r5 = r5 + (-1)
-            goto L6d
-        L7f:
-            r4 = 0
-        L80:
-            com.android.server.wm.DisplayContent r3 = r8.mDisplayContent
-            com.android.server.wm.InsetsStateController r3 = r3.getInsetsStateController()
-            int r5 = r1.getId()
-            int r1 = r1.getType()
-            com.android.server.wm.InsetsSourceProvider r1 = r3.getOrCreateSourceProvider(r5, r1)
-            r1.setWindowContainer(r9, r2, r4)
-            android.util.ArraySet r1 = r8.mInsetsSourceWindowsExceptIme
-            r1.add(r9)
-            int r0 = r0 + (-1)
-            goto L54
-        L9d:
-            android.view.WindowManager$LayoutParams r0 = r9.mAttrs
-            int r0 = r0.type
-            r1 = 2024(0x7e8, float:2.836E-42)
-            if (r0 != r1) goto Lc6
-            com.android.server.wm.InsetsSourceProvider r0 = r9.getControllableInsetProvider()
-            if (r0 == 0) goto Lc6
-            com.android.server.wm.InsetsSourceProvider r0 = r9.getControllableInsetProvider()
-            android.view.InsetsSource r0 = r0.getSource()
-            int r0 = r0.getType()
-            int r1 = android.view.WindowInsets.Type.navigationBars()
-            if (r0 != r1) goto Lc6
-            com.android.server.wm.DisplayPolicyExt r0 = r8.mExt
-            com.android.server.wm.TaskbarController r0 = r0.getTaskbarController()
-            r0.onTaskbarAddedLw(r9)
-        Lc6:
-            com.android.server.wm.DisplayPolicyExt r8 = r8.mExt
-            r8.addWindowLw(r9, r10)
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.addWindowLw(com.android.server.wm.WindowState, android.view.WindowManager$LayoutParams):void");
-    }
-
-    public static TriFunction getFrameProvider(final WindowState windowState, final int i, final int i2) {
-        return new TriFunction() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda4
-            public final Object apply(Object obj, Object obj2, Object obj3) {
-                Integer lambda$getFrameProvider$1;
-                lambda$getFrameProvider$1 = DisplayPolicy.lambda$getFrameProvider$1(WindowState.this, i, i2, (DisplayFrames) obj, (WindowContainer) obj2, (Rect) obj3);
-                return lambda$getFrameProvider$1;
-            }
-        };
-    }
-
-    public static /* synthetic */ Integer lambda$getFrameProvider$1(WindowState windowState, int i, int i2, DisplayFrames displayFrames, WindowContainer windowContainer, Rect rect) {
-        Insets insetsSize;
-        WindowManager.LayoutParams forRotation = windowState.mAttrs.forRotation(displayFrames.mRotation);
-        InsetsFrameProvider insetsFrameProvider = forRotation.providedInsets[i];
-        Rect rect2 = displayFrames.mUnrestricted;
-        Rect rect3 = displayFrames.mDisplayCutoutSafe;
-        int source = insetsFrameProvider.getSource();
-        boolean z = false;
-        if (source == 0) {
-            rect.set(rect2);
-        } else if (source == 1) {
-            rect.set(windowContainer.getBounds());
-        } else if (source != 2) {
-            if (source == 3) {
-                rect.set(insetsFrameProvider.getArbitraryRectangle());
-            }
-        } else if ((forRotation.privateFlags & IInstalld.FLAG_USE_QUOTA) != 0) {
-            z = true;
-        }
-        if (i2 == -1) {
-            insetsSize = insetsFrameProvider.getInsetsSize();
-        } else {
-            insetsSize = insetsFrameProvider.getInsetsSizeOverrides()[i2].getInsetsSize();
-        }
-        if (insetsFrameProvider.getMinimalInsetsSizeInDisplayCutoutSafe() != null) {
-            sTmpRect2.set(rect);
-        }
-        calculateInsetsFrame(rect, insetsSize);
-        if (z && insetsSize != null) {
-            WindowLayout.extendFrameByCutout(rect3, rect2, rect, sTmpRect);
-        }
-        if (insetsFrameProvider.getMinimalInsetsSizeInDisplayCutoutSafe() != null) {
-            Rect rect4 = sTmpRect2;
-            calculateInsetsFrame(rect4, insetsFrameProvider.getMinimalInsetsSizeInDisplayCutoutSafe());
-            WindowLayout.extendFrameByCutout(rect3, rect2, rect4, sTmpRect);
-            if (rect4.contains(rect)) {
-                rect.set(rect4);
-            }
-        }
-        return Integer.valueOf(insetsFrameProvider.getFlags());
+        policyHandler.post(new DisplayPolicy$$ExternalSyntheticLambda5(forceShowNavBarSettingsObserver, 0));
     }
 
     public static void calculateInsetsFrame(Rect rect, Insets insets) {
@@ -1224,197 +1179,103 @@ public class DisplayPolicy {
         }
     }
 
-    public TriFunction getImeSourceFrameProvider() {
-        return new TriFunction() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda14
-            public final Object apply(Object obj, Object obj2, Object obj3) {
-                Integer lambda$getImeSourceFrameProvider$2;
-                lambda$getImeSourceFrameProvider$2 = DisplayPolicy.this.lambda$getImeSourceFrameProvider$2((DisplayFrames) obj, (WindowContainer) obj2, (Rect) obj3);
-                return lambda$getImeSourceFrameProvider$2;
-            }
-        };
+    public static WindowState chooseNavigationBackgroundWindow(WindowState windowState, WindowState windowState2, int i) {
+        if (windowState2 != null && windowState2.isVisible() && i == 4 && drawsBarBackground(windowState2)) {
+            return windowState2;
+        }
+        if (drawsBarBackground(windowState)) {
+            return windowState;
+        }
+        return null;
     }
 
-    public /* synthetic */ Integer lambda$getImeSourceFrameProvider$2(DisplayFrames displayFrames, WindowContainer windowContainer, Rect rect) {
-        WindowState asWindowState = windowContainer.asWindowState();
-        if (asWindowState == null) {
-            throw new IllegalArgumentException("IME insets must be provided by a window.");
-        }
-        if (this.mNavigationBar != null && navigationBarPosition(displayFrames.mRotation) == 4 && !this.mExt.getTaskbarController().hasTaskbar() && this.mExt.isImeBtnOnGestureAllowed(displayFrames.mRotation)) {
-            Rect rect2 = sTmpRect;
-            rect2.set(rect);
-            rect2.intersectUnchecked(this.mNavigationBar.getFrame());
-            rect.inset(asWindowState.mGivenContentInsets);
-            rect.union(rect2);
-        } else {
-            rect.inset(asWindowState.mGivenContentInsets);
-        }
-        return 0;
+    public static WindowState chooseNavigationColorWindowLw(WindowState windowState, WindowState windowState2, int i) {
+        return (windowState2 == null || !windowState2.isVisible() || i != 4 || (windowState2.mAttrs.flags & Integer.MIN_VALUE) == 0) ? windowState : (windowState == null || !windowState.mIsDimming || WindowManager.LayoutParams.mayUseInputMethod(windowState.mAttrs.flags)) ? windowState2 : windowState;
     }
 
-    public void removeWindowLw(WindowState windowState) {
-        if (this.mStatusBar == windowState) {
-            if (hasDexStandAloneStatusBar()) {
-                restoreDefaultStatusBar();
-            } else {
-                this.mStatusBar = null;
-            }
-        } else if (this.mNavigationBar == windowState) {
-            if (hasDexStandAloneNavigationBar()) {
-                restoreDefaultNavigationBar();
-            } else {
-                this.mNavigationBar = null;
-            }
-        } else if (this.mNotificationShade == windowState) {
-            if (hasDexStandAloneNotificationShade()) {
-                restoreDefaultNotificationShade();
-            } else {
-                this.mNotificationShade = null;
+    public static boolean drawsBarBackground(WindowState windowState) {
+        if (windowState == null) {
+            return true;
+        }
+        WindowManager.LayoutParams layoutParams = windowState.mAttrs;
+        return (layoutParams.privateFlags & 32768) != 0 || ((layoutParams.flags & Integer.MIN_VALUE) != 0);
+    }
+
+    public static boolean intersectsAnyInsets(Rect rect, InsetsState insetsState, int i) {
+        for (int sourceSize = insetsState.sourceSize() - 1; sourceSize >= 0; sourceSize--) {
+            InsetsSource sourceAt = insetsState.sourceAt(sourceSize);
+            if ((sourceAt.getType() & i) != 0 && sourceAt.isVisible() && Rect.intersects(rect, sourceAt.getFrame())) {
+                return true;
             }
         }
-        if (this.mLastFocusedWindow == windowState) {
-            this.mLastFocusedWindow = null;
-        }
-        if (windowState.hasInsetsSourceProvider()) {
-            SparseArray insetsSourceProviders = windowState.getInsetsSourceProviders();
-            InsetsStateController insetsStateController = this.mDisplayContent.getInsetsStateController();
-            for (int size = insetsSourceProviders.size() - 1; size >= 0; size--) {
-                InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) insetsSourceProviders.valueAt(size);
-                insetsSourceProvider.setWindowContainer(null, null, null);
-                insetsStateController.removeSourceProvider(insetsSourceProvider.getSource().getId());
-            }
-            if (this.mExt.getTaskbarController().isTaskbar(windowState)) {
-                this.mExt.getTaskbarController().onTaskbarRemovedLw();
-            }
-        }
-        this.mInsetsSourceWindowsExceptIme.remove(windowState);
-        if (this.mDefaultStatusBar == windowState) {
-            this.mDefaultStatusBar = null;
-        }
-        if (this.mDefaultNavigationBar == windowState) {
-            this.mDefaultNavigationBar = null;
-        }
-        if (this.mDefaultNotificationShade == windowState) {
-            this.mDefaultNotificationShade = null;
-        }
-        this.mExt.removeWindowLw(windowState);
+        return false;
     }
 
-    public WindowState getStatusBar() {
-        return this.mStatusBar;
+    public static boolean isOverlappingWithNavBar(WindowState windowState) {
+        if (!windowState.isVisible()) {
+            return false;
+        }
+        if (windowState.getTask() != null && windowState.getTask().isFreeformStashed()) {
+            InsetsState insetsState = windowState.getDisplayContent().mInsetsStateController.mState;
+            Rect stashedBounds = windowState.getTask().getStashedBounds();
+            return stashedBounds != null && intersectsAnyInsets(stashedBounds, insetsState, WindowInsets.Type.navigationBars());
+        }
+        if (!windowState.getWindowConfiguration().tasksAreFloating() || windowState.getDisplayContent() == null) {
+            return intersectsAnyInsets(windowState.mIsDimming ? windowState.getBounds() : windowState.mWindowFrames.mFrame, windowState.getInsetsState(false), WindowInsets.Type.navigationBars());
+        }
+        return intersectsAnyInsets(windowState.mIsDimming ? windowState.getBounds() : windowState.mWindowFrames.mFrame, windowState.getDisplayContent().mInsetsStateController.mState, WindowInsets.Type.navigationBars());
     }
 
-    public WindowState getNotificationShade() {
-        return this.mNotificationShade;
+    /* JADX WARN: Removed duplicated region for block: B:10:0x0055  */
+    /* JADX WARN: Removed duplicated region for block: B:13:0x005b  */
+    /* JADX WARN: Removed duplicated region for block: B:27:0x00b9  */
+    /* JADX WARN: Removed duplicated region for block: B:36:0x010a  */
+    /* JADX WARN: Removed duplicated region for block: B:65:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:70:0x00d6  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void addWindowLw(final com.android.server.wm.WindowState r10, android.view.WindowManager.LayoutParams r11) {
+        /*
+            Method dump skipped, instructions count: 368
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.addWindowLw(com.android.server.wm.WindowState, android.view.WindowManager$LayoutParams):void");
     }
 
-    public WindowState getNavigationBar() {
-        return this.mNavigationBar;
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0016, code lost:
+    
+        if (r0 != 2006) goto L37;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x0135, code lost:
+    
+        if ((134217728 & r8) != 0) goto L63;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x013e, code lost:
+    
+        if (android.view.InsetsState.clearsCompatInsets(r10.type, r8, 0, 0) != false) goto L63;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void adjustWindowParamsLw(com.android.server.wm.WindowState r9, android.view.WindowManager.LayoutParams r10) {
+        /*
+            Method dump skipped, instructions count: 326
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.adjustWindowParamsLw(com.android.server.wm.WindowState, android.view.WindowManager$LayoutParams):void");
     }
 
-    public boolean isImmersiveMode() {
-        return this.mIsImmersiveMode;
-    }
-
-    public int selectAnimation(WindowState windowState, int i) {
-        if (ProtoLogCache.WM_DEBUG_ANIM_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ANIM, 341360111, 4, (String) null, new Object[]{String.valueOf(windowState), Long.valueOf(i)});
-        }
-        CoverPolicy coverPolicy = this.mExt.mCoverPolicy;
-        if (coverPolicy != null && coverPolicy.shouldApplyNoAnimation(windowState)) {
-            return -1;
-        }
-        if (CoreRune.SYSFW_APP_SPEG && (this.mDisplayContent.getDisplayInfo().flags & 32768) != 0) {
-            Slog.d("SPEG", "skip animation-leash of window_animation");
-            return -1;
-        }
-        if (i != 5 || !windowState.hasAppShownWindows()) {
-            return 0;
-        }
-        if (windowState.isActivityTypeHome() || windowState.mAttrs.alpha == DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            return -1;
-        }
-        if (!ProtoLogCache.WM_DEBUG_ANIM_enabled) {
-            return R.anim.app_starting_exit;
-        }
-        ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ANIM, -1303628829, 0, (String) null, (Object[]) null);
-        return R.anim.app_starting_exit;
-    }
-
-    public void simulateLayoutDisplay(DisplayFrames displayFrames) {
-        sTmpClientFrames.attachedFrame = null;
-        for (int size = this.mInsetsSourceWindowsExceptIme.size() - 1; size >= 0; size--) {
-            WindowState windowState = (WindowState) this.mInsetsSourceWindowsExceptIme.valueAt(size);
-            if (!this.mExt.getTaskbarController().isHiddenBar(windowState) && (!isDexStandAloneMode() || !hasDexStandAloneNavigationBar() || windowState != this.mDefaultNavigationBar)) {
-                this.mWindowLayout.computeFrames(windowState.mAttrs.forRotation(displayFrames.mRotation), displayFrames.mInsetsState, displayFrames.mDisplayCutoutSafe, displayFrames.mUnrestricted, windowState.getWindowingMode(), -1, -1, windowState.getRequestedVisibleTypes(), windowState.mGlobalScale, sTmpClientFrames, windowState.getStageType());
-                SparseArray insetsSourceProviders = windowState.getInsetsSourceProviders();
-                InsetsState insetsState = displayFrames.mInsetsState;
-                for (int size2 = insetsSourceProviders.size() - 1; size2 >= 0; size2--) {
-                    insetsState.addSource(((InsetsSourceProvider) insetsSourceProviders.valueAt(size2)).createSimulatedSource(displayFrames, sTmpClientFrames.frame));
-                }
-            }
-        }
-    }
-
-    public void onDisplayInfoChanged(DisplayInfo displayInfo) {
-        if (ViewRootImpl.CLIENT_TRANSIENT) {
-            return;
-        }
-        int i = displayInfo.displayId;
-        if (i == 2) {
-            this.mUiContext = this.mService.mAtmService.mSystemThread.getSystemUiContext(i);
-            updateCurrentUserResources();
-        }
-        this.mSystemGestures.onDisplayInfoChanged(displayInfo);
-        if (CoreRune.FW_VRR_FOR_SUB_DISPLAY && displayInfo.displayId == 0) {
-            this.mRefreshRatePolicy.onDisplayInfoChanged(displayInfo);
-        }
-    }
-
-    public void layoutWindowLw(WindowState windowState, WindowState windowState2, DisplayFrames displayFrames) {
-        int i;
-        if (windowState.skipLayout()) {
-            return;
-        }
-        DisplayFrames displayFrames2 = windowState.getDisplayFrames(displayFrames);
-        WindowManager.LayoutParams forRotation = windowState.mAttrs.forRotation(displayFrames2.mRotation);
-        ClientWindowFrames clientWindowFrames = sTmpClientFrames;
-        clientWindowFrames.attachedFrame = windowState2 != null ? windowState2.getFrame() : null;
-        boolean z = forRotation == windowState.mAttrs;
-        int i2 = z ? windowState.mRequestedWidth : -1;
-        if (this.mDisplayContent.isDexMode() && windowState == this.mNavigationBar) {
-            int i3 = this.mDexTaskbarHeight;
-            forRotation.height = i3;
-            i = i3;
-        } else {
-            i = z ? windowState.mRequestedHeight : -1;
-        }
-        this.mWindowBounds.set(windowState.getBounds());
-        if (windowState.isPopOver()) {
-            updatePopOverLayoutWindow(windowState);
-        }
-        if (CoreRune.FW_BOUNDS_COMPAT_FOR_IME_EXPERIENCE) {
-            BoundsCompatUtils.get().adjustBoundsWithImeIfNeeded(windowState, this.mWindowBounds);
-        }
-        this.mWindowLayout.computeFrames(forRotation, windowState.getInsetsState(), displayFrames2.mDisplayCutoutSafe, this.mWindowBounds, windowState.getWindowingMode(), i2, i, windowState.getRequestedVisibleTypes(), windowState.mGlobalScale, clientWindowFrames, windowState.getStageType());
-        windowState.setFrames(clientWindowFrames, windowState.mRequestedWidth, windowState.mRequestedHeight);
-    }
-
-    public WindowState getTopFullscreenOpaqueWindow() {
-        return this.mTopFullscreenOpaqueWindowState;
-    }
-
-    public boolean isTopLayoutFullscreen() {
-        return this.mTopIsFullscreen;
-    }
-
-    public void beginPostLayoutPolicyLw() {
+    public final void beginPostLayoutPolicyLw() {
         this.mLeftGestureHost = null;
         this.mTopGestureHost = null;
         this.mRightGestureHost = null;
         this.mBottomGestureHost = null;
         this.mTopFullscreenOpaqueWindowState = null;
         this.mNavBarColorWindowCandidate = null;
-        this.mNavBarBackgroundWindow = null;
+        this.mNavBarBackgroundWindowCandidate = null;
         this.mStatusBarAppearanceRegionList.clear();
         this.mLetterboxDetails.clear();
         this.mStatusBarBackgroundWindows.clear();
@@ -1424,823 +1285,117 @@ public class DisplayPolicy {
         this.mAllowLockscreenWhenOn = false;
         this.mShowingDream = false;
         this.mIsFreeformWindowOverlappingWithNavBar = false;
-        this.mExt.beginPostLayoutPolicyLw();
+        this.mForciblyShownTypes = 0;
+        DisplayPolicyExt displayPolicyExt = this.mExt;
+        if (displayPolicyExt.mDisplayPolicy.mDisplayContent.mDisplayId == 0) {
+            FreeformController freeformController = displayPolicyExt.mService.mAtmService.mFreeformController;
+            DisplayContent defaultDisplayContentLocked = freeformController.mAtm.mWindowManager.getDefaultDisplayContentLocked();
+            if (defaultDisplayContentLocked == null) {
+                Slog.d("FreeformController", "Default display content is null");
+            } else if (!defaultDisplayContentLocked.isDexMode()) {
+                freeformController.mTmpForceHideFreeformRequester = null;
+                freeformController.mTmpForceHideMinimizeRequester = null;
+                defaultDisplayContentLocked.forAllWindows((Consumer) new FreeformController$$ExternalSyntheticLambda0(freeformController, 1), true);
+                if (freeformController.mForceHideFreeformRequester != freeformController.mTmpForceHideFreeformRequester) {
+                    Slog.d("FreeformController", "beginPostLayoutPolicyLw: forceHideRequester changed, old=" + freeformController.mForceHideFreeformRequester + ", new=" + freeformController.mTmpForceHideFreeformRequester);
+                    freeformController.mForceHideFreeformRequester = freeformController.mTmpForceHideFreeformRequester;
+                    freeformController.setBlockToAddForceHideFreeformTasks(false);
+                }
+                if (freeformController.mForceHideMinimizeRequester != freeformController.mTmpForceHideMinimizeRequester) {
+                    Slog.d("FreeformController", "beginPostLayoutPolicyLw: forceHide minimize Requester changed, old=" + freeformController.mForceHideMinimizeRequester + ", new=" + freeformController.mTmpForceHideMinimizeRequester);
+                    freeformController.mForceHideMinimizeRequester = freeformController.mTmpForceHideMinimizeRequester;
+                }
+            }
+        }
+        displayPolicyExt.mFakeFocusedWindow = null;
+        CoverPolicy coverPolicy = displayPolicyExt.mCoverPolicy;
+        if (coverPolicy != null) {
+            coverPolicy.mAppsToBeHiddenBySViewCover.clear();
+            coverPolicy.mHideSViewCoverWindow = null;
+            if (!((CoverState) WmCoverState.getInstance()).attached) {
+                coverPolicy.mLastCoverAppCovered = false;
+            }
+            coverPolicy.mWallpaperTargetMayChange = false;
+        }
         this.mIsPipWindowOverlappingWithNavBar = false;
         this.mIsResizingByDivider = false;
+        this.mImeInsetsConsumed = false;
     }
 
-    public final boolean shouldSetGesutreHost(WindowState windowState, int i) {
-        return (windowState == this.mNavigationBar && this.mNavigationBarPosition == i) || (this.mExt.getTaskbarController().isTaskbar(windowState) && this.mExt.getTaskbarController().isTaskbarVisible());
+    public final void callStatusBarSafely(Consumer consumer) {
+        this.mHandler.post(new DisplayPolicy$$ExternalSyntheticLambda16(this, consumer));
     }
 
-    public void applyPostLayoutPolicyLw(WindowState windowState, WindowManager.LayoutParams layoutParams, WindowState windowState2, WindowState windowState3) {
-        LetterboxDetails letterboxDetails;
-        if (layoutParams.type == 2019) {
-            this.mNavigationBarPosition = navigationBarPosition(this.mDisplayContent.mDisplayFrames.mRotation);
+    public final boolean canReplaceSystemWindowForDexStandAlone(WindowManager.LayoutParams layoutParams) {
+        int i = layoutParams.type;
+        if (i == 2000) {
+            return hasDexStandAloneStatusBar();
         }
-        boolean z = false;
-        boolean z2 = windowState.canAffectSystemUiFlags() && !windowState.inFreeformWindowingMode();
-        this.mExt.applyPostLayoutPolicyLw(windowState, layoutParams);
-        if (!this.mExt.applyForceHidePolicyLw(windowState)) {
-            applyKeyguardPolicy(windowState, windowState3);
+        if (i == 2019) {
+            return hasDexStandAloneNavigationBar();
         }
-        if (!this.mIsFreeformWindowOverlappingWithNavBar && windowState.inFreeformWindowingMode() && windowState.mActivityRecord != null && ((windowState.getTask() == null || !windowState.getTask().isFreeformForceHidden()) && isOverlappingWithNavBar(windowState))) {
-            this.mIsFreeformWindowOverlappingWithNavBar = true;
+        if (i == 2040) {
+            return hasDexStandAloneNotificationShade();
         }
-        if (!this.mIsPipWindowOverlappingWithNavBar && windowState.mActivityRecord != null && windowState.inPinnedWindowingMode() && windowState.getTask() != null && !windowState.getTask().matchParentBounds() && isOverlappingWithNavBar(windowState)) {
-            this.mIsPipWindowOverlappingWithNavBar = true;
-        }
-        if (windowState.hasInsetsSourceProvider()) {
-            SparseArray insetsSourceProviders = windowState.getInsetsSourceProviders();
-            Rect bounds = windowState.getBounds();
-            for (int size = insetsSourceProviders.size() - 1; size >= 0; size--) {
-                InsetsSource source = ((InsetsSourceProvider) insetsSourceProviders.valueAt(size)).getSource();
-                if ((source.getType() & (WindowInsets.Type.systemGestures() | WindowInsets.Type.mandatorySystemGestures())) != 0 && (this.mLeftGestureHost == null || this.mTopGestureHost == null || this.mRightGestureHost == null || this.mBottomGestureHost == null)) {
-                    Insets calculateInsets = source.calculateInsets(bounds, false);
-                    if (this.mLeftGestureHost == null && (calculateInsets.left > 0 || shouldSetGesutreHost(windowState, 1))) {
-                        this.mLeftGestureHost = windowState;
-                    }
-                    if (this.mTopGestureHost == null && calculateInsets.top > 0) {
-                        this.mTopGestureHost = windowState;
-                    }
-                    if (this.mRightGestureHost == null && (calculateInsets.right > 0 || shouldSetGesutreHost(windowState, 2))) {
-                        this.mRightGestureHost = windowState;
-                    }
-                    if (this.mBottomGestureHost == null && calculateInsets.bottom > 0) {
-                        this.mBottomGestureHost = windowState;
-                    }
+        switch (i) {
+            case 2621:
+                WindowState windowState = this.mStatusBar;
+                if (windowState == null || windowState.mAttrs.type != 2000) {
+                    break;
                 }
-            }
-        }
-        if ((windowState.mAttrs.multiwindowFlags & 64) != 0) {
-            this.mIsResizingByDivider = true;
-        }
-        if (z2) {
-            int i = layoutParams.type;
-            boolean z3 = i >= 1 && i < 2000;
-            if (this.mTopFullscreenOpaqueWindowState == null) {
-                int i2 = layoutParams.flags;
-                if (windowState.isDreamWindow() && (!this.mDreamingLockscreen || (windowState.isVisible() && windowState.hasDrawn()))) {
-                    this.mShowingDream = true;
-                    z3 = true;
+                break;
+            case 2622:
+                if (this.mNotificationShade == null || this.mNotificationShade.mAttrs.type != 2040) {
+                    break;
                 }
-                if (z3 && windowState2 == null && layoutParams.isFullscreen() && (i2 & 1) != 0) {
-                    this.mAllowLockscreenWhenOn = true;
+                break;
+            case 2623:
+                WindowState windowState2 = this.mNavigationBar;
+                if (windowState2 == null || windowState2.mAttrs.type != 2019) {
+                    break;
                 }
-            }
-            if ((z3 && windowState2 == null && layoutParams.isFullscreen()) || layoutParams.type == 2031) {
-                if (this.mTopFullscreenOpaqueWindowState == null && !windowState.isPopOver() && !windowState.isInBubbleMode()) {
-                    this.mTopFullscreenOpaqueWindowState = windowState;
-                }
-                if (this.mStatusBar != null) {
-                    Rect rect = sTmpRect;
-                    if (rect.setIntersect(windowState.getFrame(), this.mStatusBar.getFrame()) && !this.mStatusBarBackgroundCheckedBounds.contains(rect)) {
-                        if (!this.mDisplayContent.getDefaultTaskDisplayArea().isSplitScreenModeActivated() || windowState.inSplitScreenWindowingMode()) {
-                            this.mStatusBarBackgroundWindows.add(windowState);
-                            this.mStatusBarBackgroundCheckedBounds.union(rect);
-                            z = true;
-                        }
-                        if (!this.mStatusBarColorCheckedBounds.contains(rect) && z) {
-                            int i3 = windowState.mAttrs.insetsFlags.appearance & 8;
-                            if (this.mIsResizingByDivider && windowState.getFrame().width() == this.mStatusBar.getFrame().width()) {
-                                i3 &= -2;
-                            }
-                            this.mStatusBarAppearanceRegionList.add(new AppearanceRegion(i3, new Rect(windowState.getFrame())));
-                            this.mStatusBarColorCheckedBounds.union(rect);
-                            addSystemBarColorApp(windowState);
-                        }
-                    }
-                }
-                if (isOverlappingWithNavBar(windowState)) {
-                    if (this.mNavBarColorWindowCandidate == null) {
-                        this.mNavBarColorWindowCandidate = windowState;
-                        addSystemBarColorApp(windowState);
-                    }
-                    if (this.mNavBarBackgroundWindow == null) {
-                        this.mNavBarBackgroundWindow = windowState;
-                    }
-                }
-                ActivityRecord activityRecord = windowState.getActivityRecord();
-                if (activityRecord == null || (letterboxDetails = activityRecord.mLetterboxUiController.getLetterboxDetails()) == null) {
-                    return;
-                }
-                this.mLetterboxDetails.add(letterboxDetails);
-                return;
-            }
-            if (windowState.isDimming() && !this.mExt.isBlurringWinNotAffectingLightBarAppearance(windowState)) {
-                WindowState windowState4 = this.mStatusBar;
-                if (windowState4 != null && addStatusBarAppearanceRegionsForDimmingWindow(windowState.mAttrs.insetsFlags.appearance & 8, windowState4.getFrame(), windowState.getBounds(), windowState.getFrame())) {
-                    addSystemBarColorApp(windowState);
-                }
-                if (isOverlappingWithNavBar(windowState) && this.mNavBarColorWindowCandidate == null) {
-                    this.mNavBarColorWindowCandidate = windowState;
-                    return;
-                }
-                return;
-            }
-            if (z3 && windowState2 == null && this.mNavBarColorWindowCandidate == null && windowState.getFrame().contains(getBarContentFrameForWindow(windowState, WindowInsets.Type.navigationBars()))) {
-                this.mNavBarColorWindowCandidate = windowState;
-                addSystemBarColorApp(windowState);
-            }
+                break;
         }
+        return false;
     }
 
-    public final boolean addStatusBarAppearanceRegionsForDimmingWindow(int i, Rect rect, Rect rect2, Rect rect3) {
-        Rect rect4 = sTmpRect;
-        if (!rect4.setIntersect(rect2, rect) || this.mStatusBarColorCheckedBounds.contains(rect4)) {
-            return false;
-        }
-        if (i != 0) {
-            Rect rect5 = sTmpRect2;
-            if (rect5.setIntersect(rect3, rect)) {
-                this.mStatusBarAppearanceRegionList.add(new AppearanceRegion(i, new Rect(rect3)));
-                if (!rect4.equals(rect5) && rect4.height() == rect5.height()) {
-                    if (rect4.left != rect5.left) {
-                        this.mStatusBarAppearanceRegionList.add(new AppearanceRegion(0, new Rect(rect2.left, rect2.top, rect5.left, rect2.bottom)));
-                    }
-                    if (rect4.right != rect5.right) {
-                        this.mStatusBarAppearanceRegionList.add(new AppearanceRegion(0, new Rect(rect5.right, rect2.top, rect2.right, rect2.bottom)));
-                    }
-                }
-                this.mStatusBarColorCheckedBounds.union(rect4);
-                return true;
-            }
-        }
-        this.mStatusBarAppearanceRegionList.add(new AppearanceRegion(0, new Rect(rect2)));
-        this.mStatusBarColorCheckedBounds.union(rect4);
-        return true;
-    }
-
-    public final void addSystemBarColorApp(WindowState windowState) {
-        ActivityRecord activityRecord = windowState.mActivityRecord;
-        if (activityRecord != null) {
-            this.mSystemBarColorApps.add(activityRecord);
-        }
-    }
-
-    public void finishPostLayoutPolicyLw() {
-        if (!this.mShowingDream) {
-            this.mDreamingLockscreen = this.mService.mPolicy.isKeyguardShowingAndNotOccluded();
-        }
-        updateSystemBarAttributes();
-        boolean z = this.mShowingDream;
-        if (z != this.mLastShowingDream) {
-            this.mLastShowingDream = z;
-            this.mDisplayContent.notifyKeyguardFlagsChanged();
-        }
-        this.mExt.finishPostLayoutPolicyLw();
-        this.mService.mPolicy.setAllowLockscreenWhenOn(getDisplayId(), this.mAllowLockscreenWhenOn);
-    }
-
-    public final void applyKeyguardPolicy(WindowState windowState, WindowState windowState2) {
-        if (windowState.canBeHiddenByKeyguard()) {
-            boolean shouldBeHiddenByKeyguard = shouldBeHiddenByKeyguard(windowState, windowState2);
-            if (windowState.mIsImWindow) {
-                this.mDisplayContent.getInsetsStateController().getImeSourceProvider().setFrozen(shouldBeHiddenByKeyguard);
-            }
-            if (shouldBeHiddenByKeyguard) {
-                windowState.hide(false, true);
-                return;
-            } else {
-                windowState.show(false, true);
-                return;
-            }
-        }
-        if (this.mExt.canBeForceHiddenByAodLw(windowState)) {
-            if (this.mService.mAtmService.mKeyguardController.isAodShowing(getDisplayId())) {
-                windowState.hide(false, true);
-            } else {
-                windowState.show(false, true);
-            }
-        }
-    }
-
-    public final boolean shouldBeHiddenByKeyguard(WindowState windowState, WindowState windowState2) {
-        DisplayContent displayContent = this.mDisplayContent;
-        boolean z = false;
-        if ((displayContent.isDefaultDisplay || !displayContent.isDexMode()) && windowState.mIsImWindow && (this.mDisplayContent.isAodShowing() || (this.mDisplayContent.isDefaultDisplay && !this.mWindowManagerDrawComplete))) {
-            return true;
-        }
-        if (!this.mDisplayContent.isDefaultDisplay || !isKeyguardShowing()) {
-            return CoreRune.FW_INFINITY_WALLPAPER_IN_AOD && this.mExt.canBeForceHiddenByAodLw(windowState) && this.mDisplayContent.isAodShowing();
-        }
-        if (windowState2 != null && windowState2.isVisible() && windowState.mIsImWindow && (windowState2.canShowWhenLocked() || !windowState2.canBeHiddenByKeyguard())) {
-            return false;
-        }
-        if (isKeyguardOccluded() && (windowState.canShowWhenLocked() || (windowState.mAttrs.privateFlags & 256) != 0)) {
-            z = true;
-        }
-        return !z;
-    }
-
-    public boolean topAppHidesSystemBar(int i) {
-        if (this.mTopFullscreenOpaqueWindowState == null || getInsetsPolicy().areTypesForciblyShowing(i)) {
-            return false;
-        }
-        return !this.mTopFullscreenOpaqueWindowState.isRequestedVisible(i);
-    }
-
-    public void switchUser() {
-        updateCurrentUserResources();
-        updateForceShowNavBarSettings();
-    }
-
-    public void onOverlayChanged() {
-        updateCurrentUserResources();
-        this.mDisplayContent.updateDisplayInfo();
-        onConfigurationChanged();
-        if (ViewRootImpl.CLIENT_TRANSIENT) {
-            return;
-        }
-        this.mSystemGestures.onConfigurationChanged();
-    }
-
-    public void onConfigurationChanged() {
-        Resources currentUserResources = getCurrentUserResources();
-        if (this.mDisplayContent.isDefaultDisplay) {
-            this.mHasNavigationBar = currentUserResources.getBoolean(17891826);
-        }
-        if (this.mDisplayContent.isDexMode()) {
-            this.mDexTaskbarHeight = currentUserResources.getDimensionPixelSize(17106192);
-        }
-        this.mSystemGestures.onConfigurationChanged();
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.i(StartingSurfaceController.TAG, "DisplayPolicy#onConfigurationChanged, displayId=" + this.mDisplayContent.getDisplayId() + ", ResourcesConfig=" + this.mUiContext.getResources().getConfiguration() + ", ResourcesMetrics=" + this.mUiContext.getResources().getDisplayMetrics());
-        }
-        this.mNavBarOpacityMode = currentUserResources.getInteger(R.integer.kg_selector_gravity);
-        this.mLeftGestureInset = this.mGestureNavigationSettingsObserver.getLeftSensitivity(currentUserResources);
-        this.mRightGestureInset = this.mGestureNavigationSettingsObserver.getRightSensitivity(currentUserResources);
-        this.mNavigationBarAlwaysShowOnSideGesture = currentUserResources.getBoolean(17891774);
-        this.mRemoteInsetsControllerControlsSystemBars = currentUserResources.getBoolean(R.bool.action_bar_embed_tabs);
-        updateConfigurationAndScreenSizeDependentBehaviors();
-        boolean z = currentUserResources.getBoolean(R.bool.config_bluetooth_pan_enable_autoconnect);
-        if (this.mShouldAttachNavBarToAppDuringTransition != z) {
-            this.mShouldAttachNavBarToAppDuringTransition = z;
-        }
-        this.mExt.onConfigurationChanged();
-    }
-
-    public void updateConfigurationAndScreenSizeDependentBehaviors() {
-        Resources currentUserResources = getCurrentUserResources();
-        DisplayContent displayContent = this.mDisplayContent;
-        this.mNavigationBarCanMove = displayContent.mBaseDisplayWidth != displayContent.mBaseDisplayHeight && currentUserResources.getBoolean(17891775);
-        if (CoreRune.FW_NAVBAR_MOVABLE_POLICY) {
-            this.mNavigationBarCanMove = false;
-        }
-        this.mDisplayContent.getDisplayRotation().updateUserDependentConfiguration(currentUserResources);
-        if (CoreRune.FW_TSP_STATE_CONTROLLER) {
-            DisplayPolicyExt displayPolicyExt = this.mExt;
-            DisplayContent displayContent2 = this.mDisplayContent;
-            displayPolicyExt.updateConfigurationAndScreenSizeDependentBehaviors(displayContent2.mBaseDisplayWidth, displayContent2.mBaseDisplayHeight, displayContent2.mInitialDisplayWidth, displayContent2.mInitialDisplayHeight);
-        }
-    }
-
-    public final void updateCurrentUserResources() {
-        int currentUserId = this.mService.mAmInternal.getCurrentUserId();
-        Context systemUiContext = getSystemUiContext();
-        if (currentUserId == 0) {
-            this.mCurrentUserResources = systemUiContext.getResources();
-        } else {
-            LoadedApk packageInfo = ActivityThread.currentActivityThread().getPackageInfo(systemUiContext.getPackageName(), (CompatibilityInfo) null, 0, currentUserId);
-            this.mCurrentUserResources = ResourcesManager.getInstance().getResources(systemUiContext.getWindowContextToken(), packageInfo.getResDir(), (String[]) null, packageInfo.getOverlayDirs(), packageInfo.getOverlayPaths(), packageInfo.getApplicationInfo().sharedLibraryFiles, Integer.valueOf(this.mDisplayContent.getDisplayId()), (Configuration) null, systemUiContext.getResources().getCompatibilityInfo(), (ClassLoader) null, (List) null);
-        }
-    }
-
-    public Resources getCurrentUserResources() {
-        if (this.mCurrentUserResources == null) {
-            updateCurrentUserResources();
-        }
-        return this.mCurrentUserResources;
-    }
-
-    public Context getContext() {
-        return this.mContext;
-    }
-
-    public Context getSystemUiContext() {
-        return this.mUiContext;
-    }
-
-    public void setCanSystemBarsBeShownByUser(boolean z) {
-        this.mCanSystemBarsBeShownByUser = z;
-    }
-
-    public void notifyDisplayReady() {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda5
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.this.lambda$notifyDisplayReady$3();
-            }
-        });
-        startEnableTouchEvent(false);
-        Slog.i(StartingSurfaceController.TAG, "notifyDisplayReady() >> CMFA startEnableTouchEvent called for Display Id : " + getDisplayId());
-    }
-
-    public /* synthetic */ void lambda$notifyDisplayReady$3() {
-        int displayId = getDisplayId();
-        StatusBarManagerInternal statusBarManagerInternal = getStatusBarManagerInternal();
-        if (statusBarManagerInternal != null) {
-            statusBarManagerInternal.onDisplayReady(displayId);
-        }
-        WallpaperManagerInternal wallpaperManagerInternal = (WallpaperManagerInternal) LocalServices.getService(WallpaperManagerInternal.class);
-        if (wallpaperManagerInternal != null) {
-            wallpaperManagerInternal.onDisplayReady(displayId);
-        }
-    }
-
-    public float getWindowCornerRadius() {
-        return this.mDisplayContent.getDisplay().getType() == 1 ? ScreenDecorationsUtils.getWindowCornerRadius(this.mContext) : DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    }
-
-    public boolean isShowingDreamLw() {
-        return this.mShowingDream;
-    }
-
-    /* loaded from: classes3.dex */
-    public class DecorInsets {
-        public final DisplayContent mDisplayContent;
-        public final Info[] mInfoForRotation;
-        public final Info mTmpInfo = new Info();
-        public static final int DECOR_TYPES = WindowInsets.Type.displayCutout() | WindowInsets.Type.navigationBars();
-        public static final int CONFIG_TYPES = WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars();
-
-        /* loaded from: classes3.dex */
-        public class Info {
-            public int mLastInsetsSourceCount;
-            public final Rect mNonDecorInsets = new Rect();
-            public final Rect mConfigInsets = new Rect();
-            public final Rect mNonDecorFrame = new Rect();
-            public final Rect mConfigFrame = new Rect();
-            public boolean mNeedUpdate = true;
-            public final Rect mCutoutInsets = new Rect();
-            public final Rect mExceptNavConfigInsets = new Rect();
-
-            public void update(DisplayContent displayContent, int i, int i2, int i3) {
-                int i4;
-                DisplayFrames displayFrames = new DisplayFrames();
-                displayContent.updateDisplayFrames(displayFrames, i, i2, i3);
-                displayContent.getDisplayPolicy().simulateLayoutDisplay(displayFrames);
-                InsetsState insetsState = displayFrames.mInsetsState;
-                Rect displayFrame = insetsState.getDisplayFrame();
-                if (displayContent.isDexMode()) {
-                    i4 = CoreRune.MD_DEX_NOT_SUPPORT_CUTOUT ? WindowInsets.Type.displayCutout() | 0 : 0;
-                    if (displayContent.mAtmService.mDexController.isDexForceImmersiveModeEnabled()) {
-                        i4 |= WindowInsets.Type.navigationBars();
-                    }
-                } else {
-                    i4 = 0;
-                }
-                Insets calculateInsets = insetsState.calculateInsets(displayFrame, (~i4) & DecorInsets.DECOR_TYPES, true);
-                Insets calculateInsets2 = insetsState.calculateInsets(displayFrame, WindowInsets.Type.statusBars(), true);
-                this.mNonDecorInsets.set(calculateInsets.left, calculateInsets.top, calculateInsets.right, calculateInsets.bottom);
-                this.mConfigInsets.set(Math.max(calculateInsets2.left, calculateInsets.left), Math.max(calculateInsets2.top, calculateInsets.top), Math.max(calculateInsets2.right, calculateInsets.right), Math.max(calculateInsets2.bottom, calculateInsets.bottom));
-                this.mNonDecorFrame.set(displayFrame);
-                this.mNonDecorFrame.inset(this.mNonDecorInsets);
-                this.mConfigFrame.set(displayFrame);
-                this.mConfigFrame.inset(this.mConfigInsets);
-                this.mLastInsetsSourceCount = displayContent.getDisplayPolicy().mInsetsSourceWindowsExceptIme.size();
-                this.mNeedUpdate = false;
-                Insets calculateInsets3 = insetsState.calculateInsets(displayFrame, WindowInsets.Type.displayCutout(), true);
-                this.mCutoutInsets.set(calculateInsets3.left, calculateInsets3.top, calculateInsets3.right, calculateInsets3.bottom);
-                this.mExceptNavConfigInsets.set(Math.max(calculateInsets2.left, calculateInsets3.left), Math.max(calculateInsets2.top, calculateInsets3.top), Math.max(calculateInsets2.right, calculateInsets3.right), Math.max(calculateInsets2.bottom, calculateInsets3.bottom));
-            }
-
-            public void set(Info info) {
-                this.mNonDecorInsets.set(info.mNonDecorInsets);
-                this.mConfigInsets.set(info.mConfigInsets);
-                this.mNonDecorFrame.set(info.mNonDecorFrame);
-                this.mConfigFrame.set(info.mConfigFrame);
-                this.mLastInsetsSourceCount = info.mLastInsetsSourceCount;
-                this.mNeedUpdate = false;
-            }
-
-            public String toString() {
-                StringBuilder sb = new StringBuilder(32);
-                return "{nonDecorInsets=" + this.mNonDecorInsets.toShortString(sb) + ", configInsets=" + this.mConfigInsets.toShortString(sb) + ", nonDecorFrame=" + this.mNonDecorFrame.toShortString(sb) + ", configFrame=" + this.mConfigFrame.toShortString(sb) + '}';
-            }
-        }
-
-        public DecorInsets(DisplayContent displayContent) {
-            Info[] infoArr = new Info[4];
-            this.mInfoForRotation = infoArr;
-            this.mDisplayContent = displayContent;
-            for (int length = infoArr.length - 1; length >= 0; length--) {
-                this.mInfoForRotation[length] = new Info();
-            }
-        }
-
-        public Info get(int i, int i2, int i3) {
-            Info info = this.mInfoForRotation[i];
-            if (info.mNeedUpdate) {
-                info.update(this.mDisplayContent, i, i2, i3);
-            }
-            return info;
-        }
-
-        public void invalidate() {
-            for (Info info : this.mInfoForRotation) {
-                info.mNeedUpdate = true;
-            }
-        }
-
-        public void setTo(DecorInsets decorInsets) {
-            for (int length = this.mInfoForRotation.length - 1; length >= 0; length--) {
-                this.mInfoForRotation[length].set(decorInsets.mInfoForRotation[length]);
-            }
-        }
-
-        public void dump(String str, PrintWriter printWriter) {
-            int i = 0;
-            while (true) {
-                Info[] infoArr = this.mInfoForRotation;
-                if (i >= infoArr.length) {
-                    return;
-                }
-                printWriter.println(str + Surface.rotationToString(i) + "=" + infoArr[i]);
-                i++;
-            }
-        }
-
-        /* loaded from: classes3.dex */
-        public class Cache {
-            public boolean mActive;
-            public final DecorInsets mDecorInsets;
-            public int mPreserveId;
-
-            public Cache(DisplayContent displayContent) {
-                this.mDecorInsets = new DecorInsets(displayContent);
-            }
-
-            public boolean canPreserve() {
-                return this.mPreserveId == -1 || this.mDecorInsets.mDisplayContent.mTransitionController.inTransition(this.mPreserveId);
-            }
-        }
-    }
-
-    public boolean updateDecorInsetsInfo() {
-        if (shouldKeepCurrentDecorInsets()) {
-            return false;
-        }
-        DisplayContent displayContent = this.mDisplayContent;
-        DisplayFrames displayFrames = displayContent.mDisplayFrames;
-        int i = displayFrames.mRotation;
-        int i2 = displayFrames.mWidth;
-        int i3 = displayFrames.mHeight;
-        DecorInsets.Info info = this.mDecorInsets.mTmpInfo;
-        info.update(displayContent, i, i2, i3);
-        DecorInsets.Info decorInsetsInfo = getDecorInsetsInfo(i, i2, i3);
-        if (info.mConfigFrame.equals(decorInsetsInfo.mConfigFrame)) {
-            if (info.mLastInsetsSourceCount != decorInsetsInfo.mLastInsetsSourceCount) {
-                for (int length = this.mDecorInsets.mInfoForRotation.length - 1; length >= 0; length--) {
-                    if (length != i) {
-                        boolean z = (length + i) % 2 == 1;
-                        this.mDecorInsets.mInfoForRotation[length].update(this.mDisplayContent, length, z ? i3 : i2, z ? i2 : i3);
-                    }
-                }
-                this.mDecorInsets.mInfoForRotation[i].set(info);
-            }
-            return false;
-        }
-        DecorInsets.Cache cache = this.mCachedDecorInsets;
-        if (cache != null && !cache.canPreserve() && !this.mDisplayContent.isSleeping()) {
-            this.mCachedDecorInsets = null;
-        }
-        this.mDecorInsets.invalidate();
-        this.mDecorInsets.mInfoForRotation[i].set(info);
-        return true;
-    }
-
-    public DecorInsets.Info getDecorInsetsInfo(int i, int i2, int i3) {
-        return this.mDecorInsets.get(i, i2, i3);
-    }
-
-    public boolean shouldKeepCurrentDecorInsets() {
-        DecorInsets.Cache cache = this.mCachedDecorInsets;
-        return cache != null && cache.mActive && cache.canPreserve();
-    }
-
-    public void physicalDisplayChanged() {
-        if (USE_CACHED_INSETS_FOR_DISPLAY_SWITCH) {
-            updateCachedDecorInsets();
-        }
-    }
-
-    public void updateCachedDecorInsets() {
-        DecorInsets decorInsets;
-        if (this.mCachedDecorInsets == null) {
-            this.mCachedDecorInsets = new DecorInsets.Cache(this.mDisplayContent);
-            decorInsets = null;
-        } else {
-            decorInsets = new DecorInsets(this.mDisplayContent);
-            decorInsets.setTo(this.mCachedDecorInsets.mDecorInsets);
-        }
-        DecorInsets.Cache cache = this.mCachedDecorInsets;
-        cache.mPreserveId = -1;
-        cache.mDecorInsets.setTo(this.mDecorInsets);
-        if (decorInsets != null) {
-            this.mDecorInsets.setTo(decorInsets);
-            this.mCachedDecorInsets.mActive = true;
-        }
-    }
-
-    public void physicalDisplayUpdated() {
-        if (this.mCachedDecorInsets == null) {
-            return;
-        }
-        if (!this.mDisplayContent.mTransitionController.isCollecting()) {
-            this.mCachedDecorInsets = null;
-            return;
-        }
-        this.mCachedDecorInsets.mPreserveId = this.mDisplayContent.mTransitionController.getCollectingTransitionId();
-        this.mDisplayContent.mTransitionController.mStateValidators.add(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda6
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.this.lambda$physicalDisplayUpdated$4();
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$physicalDisplayUpdated$4() {
-        if (this.mDisplayContent.isSleeping() || !updateDecorInsetsInfo()) {
-            return;
-        }
-        Slog.d(StartingSurfaceController.TAG, "Insets changed after display switch transition");
-        this.mDisplayContent.sendNewConfiguration();
-    }
-
-    public int navigationBarPosition(int i) {
-        if (this.mDisplayContent.isDexMode()) {
-            return 4;
-        }
-        WindowState windowState = this.mNavigationBar;
-        if (windowState == null) {
-            return -1;
-        }
-        int i2 = windowState.mAttrs.forRotation(i).gravity;
-        if (i2 != 3) {
-            return i2 != 5 ? 4 : 2;
-        }
-        return 1;
-    }
-
-    public int getNavBarPosition() {
-        return this.mNavigationBarPosition;
-    }
-
-    public void focusChangedLw(WindowState windowState, WindowState windowState2) {
-        this.mFocusedWindow = windowState2;
-        this.mLastFocusedWindow = windowState;
-        if (this.mDisplayContent.isDefaultDisplay) {
-            this.mService.mPolicy.onDefaultDisplayFocusChangedLw(windowState2);
-        }
-        updateSystemBarAttributes();
-    }
-
-    public void requestTransientBars(WindowState windowState, boolean z) {
-        if (ViewRootImpl.CLIENT_TRANSIENT) {
-            return;
-        }
-        if (isNavOrAltBar(windowState)) {
-            this.mImmersiveModeConfirmation.showOkButton();
-        }
-        if (CoreRune.IS_FACTORY_BINARY || FactoryTest.isAutomaticTestMode(this.mContext) || FactoryTest.isRunningFactoryApp()) {
-            Slog.d(StartingSurfaceController.TAG, "Not showing transient bar, because factory test mode");
-            return;
-        }
-        if (windowState == this.mStatusBar && this.mService.mExt.mPolicyExt.isLockTaskModePinned()) {
-            Slog.d(StartingSurfaceController.TAG, "Not showing transient bar, because lock task mode pinned");
-            return;
-        }
-        boolean z2 = isNavBarEmpty(this.mLastDisableFlags) || (windowState == this.mStatusBar && this.mDisplayContent.isDexMode());
-        if ((z2 && isNavOrAltBar(windowState)) || windowState == null || !this.mService.mPolicy.isUserSetupComplete()) {
-            return;
-        }
-        if (!this.mCanSystemBarsBeShownByUser) {
-            Slog.d(StartingSurfaceController.TAG, "Remote insets controller disallows showing system bars - ignoring request");
-            return;
-        }
-        InsetsSourceProvider controllableInsetProvider = windowState.getControllableInsetProvider();
-        InsetsControlTarget controlTarget = controllableInsetProvider != null ? controllableInsetProvider.getControlTarget() : null;
-        if (controlTarget == null || controlTarget == getNotificationShade()) {
-            return;
-        }
-        WindowState window = controlTarget.getWindow();
-        if (window == null || !window.isActivityTypeDream()) {
-            int statusBars = (WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars()) & controlTarget.getRequestedVisibleTypes();
-            Slog.d(StartingSurfaceController.TAG, "requestTransientBars: swipeTarget=" + windowState + ", controlTarget=" + controlTarget + ", canShowTransient=" + controlTarget.canShowTransient() + ", restorePositionTypes=0x" + Integer.toHexString(statusBars) + ", from=" + Debug.getCallers(2));
-            InsetsSourceProvider controllableInsetProvider2 = windowState.getControllableInsetProvider();
-            if (controllableInsetProvider2 != null && controllableInsetProvider2.getSource().getType() == WindowInsets.Type.navigationBars() && (WindowInsets.Type.navigationBars() & statusBars) != 0) {
-                controlTarget.showInsets(WindowInsets.Type.navigationBars(), false, null);
-                return;
-            }
-            if (controlTarget.canShowTransient()) {
-                getInsetsPolicy().mLastTransientRequestedByPolicyControl = controlTarget instanceof InsetsPolicy.PolicyControlTarget;
-                if (z2) {
-                    this.mDisplayContent.getInsetsPolicy().showTransient(SHOW_TYPES_FOR_SWIPE & (~WindowInsets.Type.navigationBars()), z);
-                } else {
-                    this.mDisplayContent.getInsetsPolicy().showTransient(SHOW_TYPES_FOR_SWIPE, z);
-                }
-                if (this.mDisplayContent.isDexMode()) {
-                    controlTarget.showInsets((~WindowInsets.Type.statusBars()) & statusBars, false, null);
-                    return;
-                } else {
-                    controlTarget.showInsets(statusBars, false, null);
-                    return;
-                }
-            }
-            if (this.mDisplayContent.isDexMode()) {
-                controlTarget.showInsets(WindowInsets.Type.navigationBars(), false, null);
-            } else {
-                controlTarget.showInsets(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars(), false, null);
-            }
-            if (windowState == this.mStatusBar) {
-                if (this.mDisplayContent.isDexMode()) {
-                    if (CoreRune.SAFE_DEBUG) {
-                        Slog.i(StartingSurfaceController.TAG, "Don't transfer touch to the status bar in DexMode.");
-                    }
-                } else {
-                    if (this.mSkipTransferTouchToStatusBar || this.mStatusBar.transferTouch()) {
-                        return;
-                    }
-                    Slog.i(StartingSurfaceController.TAG, "Could not transfer touch to the status bar");
-                }
-            }
-        }
-    }
-
-    public boolean isKeyguardShowing() {
-        return this.mService.mPolicy.isKeyguardShowing();
-    }
-
-    public final boolean isKeyguardOccluded() {
-        return this.mService.mExt.mPolicyExt.isKeyguardOccluded(getDisplayId());
-    }
-
-    public InsetsPolicy getInsetsPolicy() {
-        return this.mDisplayContent.getInsetsPolicy();
-    }
-
-    public void addRelaunchingApp(ActivityRecord activityRecord) {
-        if (!this.mSystemBarColorApps.contains(activityRecord) || activityRecord.hasStartingWindow()) {
-            return;
-        }
-        this.mRelaunchingSystemBarColorApps.add(activityRecord);
-    }
-
-    public void removeRelaunchingApp(ActivityRecord activityRecord) {
-        if (this.mRelaunchingSystemBarColorApps.remove(activityRecord) && this.mRelaunchingSystemBarColorApps.isEmpty()) {
-            updateSystemBarAttributes();
-        }
-    }
-
-    public void resetSystemBarAttributes() {
-        this.mLastDisableFlags = 0;
-        updateSystemBarAttributes();
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:116:0x0243  */
-    /* JADX WARN: Removed duplicated region for block: B:119:0x0252  */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:54:0x00df  */
+    /* JADX WARN: Removed duplicated region for block: B:71:0x00ec  */
+    /* JADX WARN: Removed duplicated region for block: B:88:0x015c  */
+    /* JADX WARN: Removed duplicated region for block: B:92:0x0166  */
+    /* JADX WARN: Type inference failed for: r4v10, types: [int] */
+    /* JADX WARN: Type inference failed for: r4v11 */
+    /* JADX WARN: Type inference failed for: r4v12 */
+    /* JADX WARN: Type inference failed for: r4v13 */
+    /* JADX WARN: Type inference failed for: r4v14, types: [int] */
+    /* JADX WARN: Type inference failed for: r4v26 */
+    /* JADX WARN: Type inference failed for: r4v27 */
+    /* JADX WARN: Type inference failed for: r4v5, types: [com.samsung.android.cover.ICoverManager] */
+    /* JADX WARN: Type inference failed for: r4v6 */
+    /* JADX WARN: Type inference failed for: r4v7 */
+    /* JADX WARN: Type inference failed for: r4v8 */
+    /* JADX WARN: Type inference failed for: r4v9 */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void updateSystemBarAttributes() {
+    public final void finishPostLayoutPolicyLw() {
         /*
-            Method dump skipped, instructions count: 697
+            Method dump skipped, instructions count: 382
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.updateSystemBarAttributes():void");
-    }
-
-    public static /* synthetic */ void lambda$updateSystemBarAttributes$9(int i, int i2, AppearanceRegion[] appearanceRegionArr, boolean z, CocktailBarManagerInternal cocktailBarManagerInternal) {
-        cocktailBarManagerInternal.onSystemBarAppearanceChanged(i, i2, appearanceRegionArr);
-        cocktailBarManagerInternal.topAppWindowChanged(i, z, true);
-    }
-
-    public final void callStatusBarSafely(final Consumer consumer) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda15
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.this.lambda$callStatusBarSafely$10(consumer);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$callStatusBarSafely$10(Consumer consumer) {
-        StatusBarManagerInternal statusBarManagerInternal = getStatusBarManagerInternal();
-        if (statusBarManagerInternal != null) {
-            consumer.accept(statusBarManagerInternal);
-        }
-    }
-
-    public static WindowState chooseNavigationColorWindowLw(WindowState windowState, WindowState windowState2, int i) {
-        return !(windowState2 != null && windowState2.isVisible() && i == 4 && (windowState2.mAttrs.flags & Integer.MIN_VALUE) != 0) ? windowState : (windowState == null || !windowState.isDimming() || WindowManager.LayoutParams.mayUseInputMethod(windowState.mAttrs.flags)) ? windowState2 : windowState;
-    }
-
-    public int updateLightNavigationBarLw(int i, WindowState windowState) {
-        if (windowState == null || !isLightBarAllowed(windowState, WindowInsets.Type.navigationBars())) {
-            int i2 = i & (-17);
-            return (windowState == null || !this.mExt.isUsingBlurEffect(windowState.mAttrs)) ? i2 : i2 | (windowState.mAttrs.insetsFlags.appearance & 16);
-        }
-        boolean z = this.mIsResizingByDivider;
-        boolean z2 = false;
-        boolean z3 = this.mDisplayContent.isDefaultDisplay && this.mService.mAtmService.mNaturalSwitchingController.isRunning();
-        if (z || z3) {
-            return i & (-17);
-        }
-        if (windowState.isDexMode()) {
-            if (windowState.mActivityRecord != null && windowState.getWindowingMode() == 1 && (windowState.isActivityTypeStandard() || windowState.isActivityTypeAssistant())) {
-                z2 = true;
-            }
-            if (z2) {
-                return (i & (-17)) | 2;
-            }
-        }
-        return (i & (-17)) | (windowState.mAttrs.insetsFlags.appearance & 16);
-    }
-
-    public final int updateSystemBarsLw(WindowState windowState, int i) {
-        WindowState windowState2;
-        WindowState windowState3;
-        ActivityRecord activityRecord;
-        StatusBarManagerInternal statusBarManagerInternal;
-        TaskDisplayArea defaultTaskDisplayArea = this.mDisplayContent.getDefaultTaskDisplayArea();
-        Task topRootTaskInWindowingMode = defaultTaskDisplayArea.getTopRootTaskInWindowingMode(1);
-        boolean z = false;
-        boolean z2 = topRootTaskInWindowingMode != null && topRootTaskInWindowingMode.isVisible() && topRootTaskInWindowingMode.getTopLeafTask().inSplitScreenWindowingMode();
-        boolean isRootTaskVisible = defaultTaskDisplayArea.isRootTaskVisible(5);
-        getInsetsPolicy().updateSystemBars(windowState, z2, isRootTaskVisible);
-        boolean z3 = topAppHidesSystemBar(WindowInsets.Type.statusBars());
-        if (getStatusBar() != null && (statusBarManagerInternal = getStatusBarManagerInternal()) != null) {
-            statusBarManagerInternal.setTopAppHidesStatusBar(z3);
-        }
-        this.mTopIsFullscreen = z3 && (this.mNotificationShade == null || !this.mNotificationShade.isVisible());
-        int configureNavBarOpacity = configureNavBarOpacity(configureStatusBarOpacity(3), z2, isRootTaskVisible, CoreRune.FW_FIXED_ASPECT_RATIO_MODE && (activityRecord = windowState.mActivityRecord) != null && activityRecord.mCompatRecord.isFixedAspectRatioModeEnabled() && windowState.mActivityRecord.getConfiguration().orientation == 1);
-        boolean z4 = this.mIsImmersiveMode;
-        boolean isImmersiveMode = isImmersiveMode(windowState);
-        if (z4 != isImmersiveMode) {
-            this.mIsImmersiveMode = isImmersiveMode;
-            DisplayContent displayContent = this.mDisplayContent;
-            if (displayContent.isDefaultDisplay && !displayContent.isDexMode()) {
-                RootDisplayArea rootDisplayArea = windowState.getRootDisplayArea();
-                this.mImmersiveModeConfirmation.immersiveModeChangedLw(rootDisplayArea == null ? -1 : rootDisplayArea.mFeatureId, isImmersiveMode, this.mService.mPolicy.isUserSetupComplete(), isNavBarEmpty(i), windowState);
-            }
-            if (CoreRune.MW_CAPTION_SHELL_IMMERSIVE_MODE && this.mDisplayContent.isDexMode() && windowState.getTask() != null && windowState.getTask().inFullscreenWindowingMode()) {
-                this.mService.mAtmService.mTaskOrganizerController.onImmersiveModeChanged(windowState.getTask(), this.mIsImmersiveMode);
-            }
-        }
-        if (CoreRune.MW_CAPTION_SHELL_IMMERSIVE_MODE && (windowState3 = this.mTopFullscreenOpaqueWindowState) != null && windowState3.getTask() != null && this.mTopFullscreenOpaqueWindowState.getTask().inFullscreenWindowingMode()) {
-            boolean z5 = this.mIsCaptionImmersiveMode;
-            boolean isCaptionImmersiveMode = isCaptionImmersiveMode(this.mTopFullscreenOpaqueWindowState);
-            if (this.mDisplayContent.isNewDexMode()) {
-                boolean z6 = isCaptionImmersiveMode && z5 && this.mTopFullscreenOpaqueWindowState.getTask().mTaskId != this.mImmersiveTaskId;
-                if (z5 != isCaptionImmersiveMode || z6) {
-                    this.mIsCaptionImmersiveMode = isCaptionImmersiveMode;
-                    this.mImmersiveTaskId = isCaptionImmersiveMode ? this.mTopFullscreenOpaqueWindowState.getTask().mTaskId : -1;
-                    this.mService.mAtmService.mTaskOrganizerController.onImmersiveModeChanged(this.mTopFullscreenOpaqueWindowState.getTask(), isCaptionImmersiveMode);
-                    setTransientVisibilityChangeListener(this.mTopFullscreenOpaqueWindowState, isCaptionImmersiveMode);
-                } else {
-                    boolean z7 = !isStatusBarVisibleLw();
-                    if (this.mWasStatusInvisible != z7) {
-                        this.mWasStatusInvisible = z7;
-                        if (this.mIsVisibleBySwipe) {
-                            this.mIsVisibleBySwipe = false;
-                        } else {
-                            this.mService.mAtmService.mTaskOrganizerController.onImmersiveModeChanged(this.mTopFullscreenOpaqueWindowState.getTask(), z7);
-                            setTransientVisibilityChangeListener(this.mTopFullscreenOpaqueWindowState, z7);
-                        }
-                    }
-                }
-            } else if (!this.mDisplayContent.isDesktopModeEnabled() && z5 != isCaptionImmersiveMode && windowState.getTask() != null) {
-                this.mIsCaptionImmersiveMode = isCaptionImmersiveMode;
-                windowState.getTask().updateFullScreenCaptionState(isCaptionImmersiveMode);
-            }
-        }
-        boolean z8 = !windowState.isRequestedVisible(WindowInsets.Type.navigationBars());
-        long uptimeMillis = SystemClock.uptimeMillis();
-        long j = this.mPendingPanicGestureUptime;
-        if (j != 0 && uptimeMillis - j <= 30000) {
-            z = true;
-        }
-        DisplayPolicy displayPolicy = this.mService.getDefaultDisplayContentLocked().getDisplayPolicy();
-        if (z && z8 && isImmersiveMode && displayPolicy.isKeyguardDrawComplete()) {
-            this.mPendingPanicGestureUptime = 0L;
-            if ((windowState.getAttrs().type != 2226 || !isKeyguardShowing() || isKeyguardOccluded()) && (((windowState2 = this.mNavigationBar) == null || !windowState2.mHasSeamlessOperation) && !isNavBarEmpty(i))) {
-                this.mDisplayContent.getInsetsPolicy().showTransient(SHOW_TYPES_FOR_PANIC, true);
-            }
-        }
-        return configureNavBarOpacity;
-    }
-
-    public static boolean isLightBarAllowed(WindowState windowState, int i) {
-        if (windowState == null) {
-            return false;
-        }
-        return intersectsAnyInsets(windowState.getFrame(), windowState.getInsetsState(), i);
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.finishPostLayoutPolicyLw():void");
     }
 
     public final Rect getBarContentFrameForWindow(WindowState windowState, int i) {
-        DisplayFrames displayFrames = windowState.getDisplayFrames(this.mDisplayContent.mDisplayFrames);
+        DisplayFrames displayFrames = this.mDisplayContent.mDisplayFrames;
+        DisplayFrames fixedRotationTransformDisplayFrames = windowState.mToken.getFixedRotationTransformDisplayFrames();
+        if (fixedRotationTransformDisplayFrames != null) {
+            displayFrames = fixedRotationTransformDisplayFrames;
+        } else if (windowState.isLayoutNeededInUdcCutout()) {
+            displayFrames = windowState.mDisplayContent.mUdcCutoutPolicy.mUdcDisplayFrames;
+        }
         InsetsState insetsState = displayFrames.mInsetsState;
         Rect rect = displayFrames.mUnrestricted;
         Rect rect2 = sTmpDisplayCutoutSafe;
@@ -2276,685 +1431,39 @@ public class DisplayPolicy {
         return rect3;
     }
 
-    public boolean isFullyTransparentAllowed(WindowState windowState, int i) {
-        if (windowState == null) {
-            return true;
-        }
-        return windowState.isFullyTransparentBarAllowed(getBarContentFrameForWindow(windowState, i));
+    public Context getContext() {
+        return this.mContext;
     }
 
-    public final boolean drawsBarBackground(WindowState windowState) {
-        if (windowState == null) {
-            return true;
+    public Resources getCurrentUserResources() {
+        if (this.mCurrentUserResources == null) {
+            updateCurrentUserResources();
         }
-        return ((windowState.getAttrs().privateFlags & 32768) != 0) || ((windowState.getAttrs().flags & Integer.MIN_VALUE) != 0);
+        return this.mCurrentUserResources;
     }
 
-    public final int configureStatusBarOpacity(int i) {
-        boolean z = true;
-        boolean z2 = true;
-        for (int size = this.mStatusBarBackgroundWindows.size() - 1; size >= 0; size--) {
-            WindowState windowState = (WindowState) this.mStatusBarBackgroundWindows.get(size);
-            z &= drawsBarBackground(windowState);
-            z2 &= isFullyTransparentAllowed(windowState, WindowInsets.Type.statusBars());
+    public final DecorInsets.Info getDecorInsetsInfo(int i, int i2, int i3) {
+        DecorInsets decorInsets = this.mDecorInsets;
+        DecorInsets.Info info = decorInsets.mInfoForRotation[i];
+        if (info.mNeedUpdate) {
+            info.update(i, i2, i3, decorInsets.mDisplayContent);
         }
-        if (z) {
-            i &= -2;
-        }
-        return !z2 ? i | 32 : i;
+        return info;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:55:0x00d7, code lost:
-    
-        if (com.samsung.android.multiwindow.MultiWindowCoreState.MW_NAVISTAR_SPLIT_IMMERSIVE_MODE_ENABLED != false) goto L205;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:56:0x0128, code lost:
-    
-        r3 = false;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:79:0x0125, code lost:
-    
-        if (r8 == false) goto L204;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:58:0x012b  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final int configureNavBarOpacity(int r7, boolean r8, boolean r9, boolean r10) {
-        /*
-            Method dump skipped, instructions count: 316
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.configureNavBarOpacity(int, boolean, boolean, boolean):int");
-    }
-
-    public final boolean isImmersiveMode(WindowState windowState) {
-        if (windowState == null || windowState == getNotificationShade() || windowState.isActivityTypeDream()) {
-            return false;
-        }
-        if (windowState.isDexMode() && windowState.getWindowingMode() == 1) {
-            WindowState navControlWindow = windowState.isChildWindow() ? getInsetsPolicy().getNavControlWindow(windowState) : null;
-            if (navControlWindow != null) {
-                windowState = navControlWindow;
-            }
-            if (windowState.isRequestedVisible(WindowInsets.Type.navigationBars(), true)) {
-                return false;
-            }
-        } else if (windowState.mAttrs.insetsFlags.behavior != 2 || windowState.getWindowingMode() != 1) {
-            return false;
-        }
-        return getInsetsPolicy().hasHiddenSources(WindowInsets.Type.navigationBars()) || getInsetsPolicy().isTransient(WindowInsets.Type.navigationBars());
-    }
-
-    /* renamed from: com.android.server.wm.DisplayPolicy$4 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass4 implements Runnable {
-        public AnonymousClass4() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (DisplayPolicy.this.mLock) {
-                if (DisplayPolicy.this.mService.mPolicy.isUserSetupComplete()) {
-                    DisplayPolicy.this.mPendingPanicGestureUptime = SystemClock.uptimeMillis();
-                    DisplayPolicy.this.updateSystemBarAttributes();
-                }
-            }
-        }
-    }
-
-    public void onPowerKeyDown(boolean z) {
-        if (this.mImmersiveModeConfirmation.onPowerKeyDown(z, SystemClock.elapsedRealtime(), isImmersiveMode(this.mSystemUiControllingWindow), isNavBarEmpty(this.mLastDisableFlags))) {
-            this.mHandler.post(this.mHiddenNavPanic);
-        }
-    }
-
-    public void onVrStateChangedLw(boolean z) {
-        this.mImmersiveModeConfirmation.onVrStateChangedLw(z);
-    }
-
-    public void onLockTaskStateChangedLw(int i) {
-        this.mImmersiveModeConfirmation.onLockTaskModeChangedLw(i);
-    }
-
-    public void onUserActivityEventTouch() {
-        if (this.mAwake) {
-            return;
-        }
-        WindowState windowState = this.mNotificationShade;
-        this.mService.mAtmService.setProcessAnimatingWhileDozing(windowState != null ? windowState.getProcess() : null);
-    }
-
-    public boolean onSystemUiSettingsChanged() {
-        return this.mImmersiveModeConfirmation.onSettingChanged(this.mService.mCurrentUserId);
-    }
-
-    public void takeScreenshot(int i, int i2) {
-        if (this.mScreenshotHelper != null) {
-            this.mScreenshotHelper.takeScreenshot(new ScreenshotRequest.Builder(i, i2).build(), this.mHandler, (Consumer) null);
-        }
-    }
-
-    public RefreshRatePolicy getRefreshRatePolicy() {
-        return this.mRefreshRatePolicy;
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        printWriter.print(str);
-        printWriter.println("DisplayPolicy");
-        String str2 = str + "  ";
-        String str3 = str2 + "  ";
-        printWriter.print(str2);
-        printWriter.print("mCarDockEnablesAccelerometer=");
-        printWriter.print(this.mCarDockEnablesAccelerometer);
-        printWriter.print(" mDeskDockEnablesAccelerometer=");
-        printWriter.println(this.mDeskDockEnablesAccelerometer);
-        printWriter.print(str2);
-        printWriter.print("mDockMode=");
-        printWriter.print(Intent.dockStateToString(this.mDockMode));
-        printWriter.print(" mLidState=");
-        printWriter.println(WindowManagerPolicy.WindowManagerFuncs.lidStateToString(this.mLidState));
-        printWriter.print(str2);
-        printWriter.print("mAwake=");
-        printWriter.print(this.mAwake);
-        printWriter.print(" mScreenOnEarly=");
-        printWriter.print(this.mScreenOnEarly);
-        printWriter.print(" mScreenOnFully=");
-        printWriter.println(this.mScreenOnFully);
-        printWriter.print(str2);
-        printWriter.print("mKeyguardDrawComplete=");
-        printWriter.print(this.mKeyguardDrawComplete);
-        printWriter.print(" mWindowManagerDrawComplete=");
-        printWriter.println(this.mWindowManagerDrawComplete);
-        printWriter.print(str2);
-        printWriter.print("mHdmiPlugged=");
-        printWriter.println(this.mHdmiPlugged);
-        if (this.mLastDisableFlags != 0) {
-            printWriter.print(str2);
-            printWriter.print("mLastDisableFlags=0x");
-            printWriter.println(Integer.toHexString(this.mLastDisableFlags));
-        }
-        if (this.mLastAppearance != 0) {
-            printWriter.print(str2);
-            printWriter.print("mLastAppearance=");
-            printWriter.println(ViewDebug.flagsToString(InsetsFlags.class, "appearance", this.mLastAppearance));
-        }
-        if (this.mLastBehavior != 0) {
-            printWriter.print(str2);
-            printWriter.print("mLastBehavior=");
-            printWriter.println(ViewDebug.flagsToString(InsetsFlags.class, "behavior", this.mLastBehavior));
-        }
-        printWriter.print(str2);
-        printWriter.print("mShowingDream=");
-        printWriter.print(this.mShowingDream);
-        printWriter.print(" mDreamingLockscreen=");
-        printWriter.println(this.mDreamingLockscreen);
-        if (this.mStatusBar != null) {
-            printWriter.print(str2);
-            printWriter.print("mStatusBar=");
-            printWriter.println(this.mStatusBar);
-        }
-        if (this.mNotificationShade != null) {
-            printWriter.print(str2);
-            printWriter.print("mExpandedPanel=");
-            printWriter.println(this.mNotificationShade);
-        }
-        printWriter.print(str2);
-        printWriter.print("isKeyguardShowing=");
-        printWriter.println(isKeyguardShowing());
-        if (this.mNavigationBar != null) {
-            printWriter.print(str2);
-            printWriter.print("mNavigationBar=");
-            printWriter.println(this.mNavigationBar);
-            printWriter.print(str2);
-            printWriter.print("mNavBarOpacityMode=");
-            printWriter.println(this.mNavBarOpacityMode);
-            printWriter.print(str2);
-            printWriter.print("mNavigationBarCanMove=");
-            printWriter.println(this.mNavigationBarCanMove);
-            printWriter.print(str2);
-            printWriter.print("mNavigationBarPosition=");
-            printWriter.println(this.mNavigationBarPosition);
-            if (this.mCurrentUserResources != null) {
-                printWriter.print(str2);
-                printWriter.println("mCurrentUserResources");
-                printWriter.print(str2);
-                printWriter.print(" .mUserId=");
-                printWriter.println(this.mCurrentUserResources.mUserId);
-                printWriter.print(str2);
-                printWriter.print(" .getAssets().getApkPaths()=");
-                printWriter.println(Arrays.toString(this.mCurrentUserResources.getAssets().getApkPaths()));
-                printWriter.print(str2);
-                printWriter.print(" .getConfiguration()=");
-                printWriter.println(this.mCurrentUserResources.getConfiguration());
-                printWriter.print(str2);
-                if (this.mDisplayContent.isDexMode()) {
-                    printWriter.print(" .getDimensionPixelSize(R.dimen.task_bar_height)=");
-                    printWriter.println(this.mCurrentUserResources.getDimensionPixelSize(17106192));
-                } else {
-                    printWriter.print(" .getDimensionPixelSize(R.dimen.navigation_bar_height)=");
-                    printWriter.println(this.mCurrentUserResources.getDimensionPixelSize(R.dimen.text_size_display_1_material));
-                }
-            }
-        }
-        WindowState windowState = this.mStatusBar;
-        WindowState windowState2 = this.mDefaultStatusBar;
-        if (windowState != windowState2 && windowState2 != null) {
-            printWriter.print(str2);
-            printWriter.print("mDefaultStatusBar=");
-            printWriter.println(this.mDefaultStatusBar);
-        }
-        WindowState windowState3 = this.mNotificationShade;
-        WindowState windowState4 = this.mDefaultNotificationShade;
-        if (windowState3 != windowState4 && windowState4 != null) {
-            printWriter.print(str2);
-            printWriter.print("mDefaultNotificationShade=");
-            printWriter.println(this.mDefaultNotificationShade);
-        }
-        WindowState windowState5 = this.mNavigationBar;
-        WindowState windowState6 = this.mDefaultNavigationBar;
-        if (windowState5 != windowState6 && windowState6 != null) {
-            printWriter.print(str2);
-            printWriter.print("mDefaultNavigationBar=");
-            printWriter.println(this.mDefaultNavigationBar);
-        }
-        if (shouldKeepSystemUiControllingWindow()) {
-            printWriter.print(str2);
-            printWriter.print("shouldKeepSystemUiControllingWindow=true");
-        }
-        if (this.mLeftGestureHost != null) {
-            printWriter.print(str2);
-            printWriter.print("mLeftGestureHost=");
-            printWriter.println(this.mLeftGestureHost);
-        }
-        if (this.mTopGestureHost != null) {
-            printWriter.print(str2);
-            printWriter.print("mTopGestureHost=");
-            printWriter.println(this.mTopGestureHost);
-        }
-        if (this.mRightGestureHost != null) {
-            printWriter.print(str2);
-            printWriter.print("mRightGestureHost=");
-            printWriter.println(this.mRightGestureHost);
-        }
-        if (this.mBottomGestureHost != null) {
-            printWriter.print(str2);
-            printWriter.print("mBottomGestureHost=");
-            printWriter.println(this.mBottomGestureHost);
-        }
-        if (this.mFocusedWindow != null) {
-            printWriter.print(str2);
-            printWriter.print("mFocusedWindow=");
-            printWriter.println(this.mFocusedWindow);
-        }
-        if (this.mTopFullscreenOpaqueWindowState != null) {
-            printWriter.print(str2);
-            printWriter.print("mTopFullscreenOpaqueWindowState=");
-            printWriter.println(this.mTopFullscreenOpaqueWindowState);
-        }
-        if (!this.mSystemBarColorApps.isEmpty()) {
-            printWriter.print(str2);
-            printWriter.print("mSystemBarColorApps=");
-            printWriter.println(this.mSystemBarColorApps);
-        }
-        if (!this.mRelaunchingSystemBarColorApps.isEmpty()) {
-            printWriter.print(str2);
-            printWriter.print("mRelaunchingSystemBarColorApps=");
-            printWriter.println(this.mRelaunchingSystemBarColorApps);
-        }
-        if (this.mNavBarColorWindowCandidate != null) {
-            printWriter.print(str2);
-            printWriter.print("mNavBarColorWindowCandidate=");
-            printWriter.println(this.mNavBarColorWindowCandidate);
-        }
-        if (this.mNavBarBackgroundWindow != null) {
-            printWriter.print(str2);
-            printWriter.print("mNavBarBackgroundWindow=");
-            printWriter.println(this.mNavBarBackgroundWindow);
-        }
-        if (this.mLastStatusBarAppearanceRegions != null) {
-            printWriter.print(str2);
-            printWriter.println("mLastStatusBarAppearanceRegions=");
-            for (int length = this.mLastStatusBarAppearanceRegions.length - 1; length >= 0; length--) {
-                printWriter.print(str3);
-                printWriter.println(this.mLastStatusBarAppearanceRegions[length]);
-            }
-        }
-        if (this.mLastLetterboxDetails != null) {
-            printWriter.print(str2);
-            printWriter.println("mLastLetterboxDetails=");
-            for (int length2 = this.mLastLetterboxDetails.length - 1; length2 >= 0; length2--) {
-                printWriter.print(str3);
-                printWriter.println(this.mLastLetterboxDetails[length2]);
-            }
-        }
-        if (!this.mStatusBarBackgroundWindows.isEmpty()) {
-            printWriter.print(str2);
-            printWriter.println("mStatusBarBackgroundWindows=");
-            for (int size = this.mStatusBarBackgroundWindows.size() - 1; size >= 0; size--) {
-                WindowState windowState7 = (WindowState) this.mStatusBarBackgroundWindows.get(size);
-                printWriter.print(str3);
-                printWriter.println(windowState7);
-            }
-        }
-        printWriter.print(str2);
-        printWriter.print("mTopIsFullscreen=");
-        printWriter.println(this.mTopIsFullscreen);
-        printWriter.print(str2);
-        printWriter.print("mForceShowNavigationBarEnabled=");
-        printWriter.print(this.mForceShowNavigationBarEnabled);
-        printWriter.print(" mAllowLockscreenWhenOn=");
-        printWriter.println(this.mAllowLockscreenWhenOn);
-        printWriter.print(str2);
-        printWriter.print("mRemoteInsetsControllerControlsSystemBars=");
-        printWriter.println(this.mRemoteInsetsControllerControlsSystemBars);
-        printWriter.print(str2);
-        printWriter.println("mDecorInsetsInfo:");
-        this.mDecorInsets.dump(str3, printWriter);
-        if (this.mCachedDecorInsets != null) {
-            printWriter.print(str2);
-            printWriter.println("mCachedDecorInsets:");
-            this.mCachedDecorInsets.mDecorInsets.dump(str3, printWriter);
-        }
-        if (!ViewRootImpl.CLIENT_TRANSIENT) {
-            this.mSystemGestures.dump(printWriter, str2);
-        }
-        printWriter.print(str2);
-        printWriter.println("Looper state:");
-        this.mHandler.getLooper().dump(new PrintWriterPrinter(printWriter), str2 + "  ");
-        Context context = this.mUiContext;
-        if (context != null && context.getResources() != null) {
-            printWriter.print(str2);
-            printWriter.println("UiContextResourcesConfig=");
-            printWriter.print(str2);
-            printWriter.println(this.mUiContext.getResources().getConfiguration());
-            printWriter.print(str2);
-            printWriter.println("UiContextResourcesMetrics=");
-            printWriter.print(str2);
-            printWriter.println(this.mUiContext.getResources().getDisplayMetrics());
-        }
-        printWriter.println();
-        this.mExt.dump(str2, printWriter);
-        if (CoreRune.FW_VRR_POLICY) {
-            printWriter.println();
-            this.mRefreshRatePolicy.dump(str2, printWriter);
-        }
-    }
-
-    public final boolean supportsPointerLocation() {
-        if (CoreRune.SYSFW_APP_SPEG && (this.mDisplayContent.getDisplayInfo().flags & 32768) != 0) {
-            Slog.d("SPEG", "Pointer location is not supported");
-            return false;
-        }
-        DisplayContent displayContent = this.mDisplayContent;
-        return displayContent.isDefaultDisplay || !displayContent.isPrivate();
-    }
-
-    public void setPointerLocationEnabled(boolean z) {
-        if (supportsPointerLocation()) {
-            this.mHandler.sendEmptyMessage(z ? 4 : 5);
-        }
-    }
-
-    public final void enablePointerLocation() {
-        if (this.mPointerLocationView != null) {
-            return;
-        }
-        PointerLocationView pointerLocationView = new PointerLocationView(this.mContext);
-        this.mPointerLocationView = pointerLocationView;
-        pointerLocationView.setPrintCoords(false);
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.type = 2015;
-        layoutParams.flags = 280;
-        layoutParams.privateFlags |= 16;
-        layoutParams.setFitInsetsTypes(0);
-        layoutParams.layoutInDisplayCutoutMode = 3;
-        if (ActivityManager.isHighEndGfx()) {
-            layoutParams.flags |= 16777216;
-            layoutParams.privateFlags |= 2;
-        }
-        layoutParams.format = -3;
-        layoutParams.setTitle("PointerLocation - display " + getDisplayId());
-        layoutParams.inputFeatures = layoutParams.inputFeatures | 1;
-        ((WindowManager) this.mContext.getSystemService(WindowManager.class)).addView(this.mPointerLocationView, layoutParams);
-        this.mDisplayContent.registerPointerEventListener(this.mPointerLocationView);
-    }
-
-    public final void disablePointerLocation() {
-        if (this.mPointerLocationView == null) {
-            return;
-        }
-        if (!this.mDisplayContent.isRemoved()) {
-            this.mDisplayContent.unregisterPointerEventListener(this.mPointerLocationView);
-        }
-        ((WindowManager) this.mContext.getSystemService(WindowManager.class)).removeView(this.mPointerLocationView);
-        this.mPointerLocationView = null;
-    }
-
-    public boolean isWindowExcludedFromContent(WindowState windowState) {
-        PointerLocationView pointerLocationView;
-        return (windowState == null || (pointerLocationView = this.mPointerLocationView) == null || windowState.mClient != pointerLocationView.getWindowToken()) ? false : true;
-    }
-
-    public void release() {
-        this.mDisplayContent.mTransitionController.unregisterLegacyListener(this.mAppTransitionListener);
-        Handler handler = this.mHandler;
-        final GestureNavigationSettingsObserver gestureNavigationSettingsObserver = this.mGestureNavigationSettingsObserver;
-        Objects.requireNonNull(gestureNavigationSettingsObserver);
-        handler.post(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda7
-            @Override // java.lang.Runnable
-            public final void run() {
-                gestureNavigationSettingsObserver.unregister();
-            }
-        });
-        Handler handler2 = this.mHandler;
-        final ForceShowNavBarSettingsObserver forceShowNavBarSettingsObserver = this.mForceShowNavBarSettingsObserver;
-        Objects.requireNonNull(forceShowNavBarSettingsObserver);
-        handler2.post(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda8
-            @Override // java.lang.Runnable
-            public final void run() {
-                forceShowNavBarSettingsObserver.unregister();
-            }
-        });
-        this.mImmersiveModeConfirmation.release();
-        this.mIsCmfaStarted = false;
-        Slog.i(StartingSurfaceController.TAG, "release() >> CMFA mIsCmfaStarted is false for Display Id : " + getDisplayId());
-        if (this.mService.mPointerLocationEnabled) {
-            setPointerLocationEnabled(false);
-        }
-    }
-
-    public static boolean isOverlappingWithNavBar(WindowState windowState) {
-        if ((!CoreRune.FW_CUSTOM_LETTERBOX || !windowState.mAnimatingExit || windowState.mAttrs.type != 3 || !CustomLetterboxConfiguration.hasWallpaperBackgroundForLetterbox(windowState.mActivityRecord)) && !windowState.isVisible()) {
-            return false;
-        }
-        if (windowState.getTask() != null && windowState.getTask().isFreeformStashed()) {
-            InsetsState rawInsetsState = windowState.getDisplayContent().getInsetsStateController().getRawInsetsState();
-            Rect stashedBounds = windowState.getTask().getStashedBounds();
-            return stashedBounds != null && intersectsAnyInsets(stashedBounds, rawInsetsState, WindowInsets.Type.navigationBars());
-        }
-        if (windowState.getWindowConfiguration().tasksAreFloating() && windowState.getDisplayContent() != null) {
-            return intersectsAnyInsets(windowState.isDimming() ? windowState.getBounds() : windowState.getFrame(), windowState.getDisplayContent().getInsetsStateController().getRawInsetsState(), WindowInsets.Type.navigationBars());
-        }
-        return intersectsAnyInsets(windowState.isDimming() ? windowState.getBounds() : windowState.getFrame(), windowState.getInsetsState(), WindowInsets.Type.navigationBars());
-    }
-
-    public static boolean intersectsAnyInsets(Rect rect, InsetsState insetsState, int i) {
-        for (int sourceSize = insetsState.sourceSize() - 1; sourceSize >= 0; sourceSize--) {
-            InsetsSource sourceAt = insetsState.sourceAt(sourceSize);
-            if ((sourceAt.getType() & i) != 0 && sourceAt.isVisible() && Rect.intersects(rect, sourceAt.getFrame())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean shouldAttachNavBarToAppDuringTransition() {
-        return this.mShouldAttachNavBarToAppDuringTransition && this.mNavigationBar != null;
-    }
-
-    public final void startEnableTouchEvent(boolean z) {
-        Message message = new Message();
-        message.what = 7;
-        if (z) {
-            message.arg1 = 1;
-        } else {
-            message.arg1 = 2;
-        }
-        this.mHandler.sendMessage(message);
-    }
-
-    /* renamed from: com.android.server.wm.DisplayPolicy$5 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass5 extends IAuthTouchEnableListener.Stub {
-        public AnonymousClass5() {
-        }
-
-        public void notifyTouchEventEnabled(boolean z, boolean z2) {
-            Slog.i(StartingSurfaceController.TAG, "notifyTouchEventEnabled:" + z + "," + z2 + "," + DisplayPolicy.this.mIsCmfaStarted);
-            Message message = new Message();
-            if (z) {
-                if (DisplayPolicy.this.mIsCmfaStarted) {
-                    message.what = 8;
-                    if (z2) {
-                        message.arg1 = 1;
-                    } else {
-                        message.arg1 = 2;
-                    }
-                } else {
-                    message.what = 7;
-                    if (z2) {
-                        message.arg1 = 1;
-                    } else {
-                        message.arg1 = 2;
-                    }
-                }
-            } else {
-                message.what = 8;
-            }
-            DisplayPolicy.this.mHandler.sendMessage(message);
-        }
-    }
-
-    public final void enableTouchListener(boolean z) {
-        if (this.mIsCmfaStarted) {
-            Slog.i(StartingSurfaceController.TAG, "TouchEventView is already added");
-            return;
-        }
-        if (this.mTouchEventView == null) {
-            this.mTouchEventView = new TouchEventView(this.mContext, this.mAuthTouchEnableListener);
-        }
-        Slog.i(StartingSurfaceController.TAG, "enableTouchListener debugmode:" + z);
-        this.mTouchEventView.setDebugmode(z);
-        try {
-            this.mDisplayContent.registerPointerEventListener(this.mTouchEventView);
-        } catch (IllegalStateException e) {
-            Slog.e(StartingSurfaceController.TAG, "Exception in registering mTouchEventView :- " + e);
-        }
-        this.mTouchEventViewHash = this.mTouchEventView.hashCode();
-        this.mIsCmfaStarted = true;
-    }
-
-    public void disableTouchListener() {
-        TouchEventView touchEventView = this.mTouchEventView;
-        if (touchEventView == null) {
-            Slog.i(StartingSurfaceController.TAG, "TouchEventView is not added");
-            return;
-        }
-        if (!this.mIsCmfaStarted) {
-            Slog.i(StartingSurfaceController.TAG, "mIsCmfaStarted is false");
-            return;
-        }
-        try {
-            if (this.mTouchEventViewHash == touchEventView.hashCode()) {
-                this.mDisplayContent.unregisterPointerEventListener(this.mTouchEventView);
-            }
-        } catch (IllegalStateException e) {
-            Slog.e(StartingSurfaceController.TAG, "Exception in unregistering mTouchEventView :- " + e);
-        }
-        this.mIsCmfaStarted = false;
-    }
-
-    public WindowState getFocusedWindow() {
-        return this.mFocusedWindow;
-    }
-
-    public void updateDisplayOverrideConfiguration() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        Configuration configuration = new Configuration();
-        this.mDisplayContent.computeScreenConfiguration(configuration);
-        this.mDisplayContent.mDisplay.getMetrics(displayMetrics);
-        this.mUiContext.getResources().updateConfiguration(configuration, displayMetrics);
-        onConfigurationChanged();
-        this.mSystemGestures.onConfigurationChanged();
-    }
-
-    public boolean isStatusBarVisibleLw() {
-        WindowState windowState = this.mStatusBar;
-        return windowState != null && windowState.isVisible();
-    }
-
-    public boolean isNavigationBarVisibleLw() {
-        WindowState windowState = this.mNavigationBar;
-        return (windowState != null && windowState.isVisible()) || this.mExt.getTaskbarController().isTaskbarVisible();
-    }
-
-    public final boolean isNavOrAltBar(WindowState windowState) {
-        if (this.mNavigationBar == windowState) {
-            return true;
-        }
-        if (windowState == null || !windowState.hasInsetsSourceProvider()) {
-            return false;
-        }
-        SparseArray insetsSourceProviders = windowState.getInsetsSourceProviders();
-        for (int size = insetsSourceProviders.size() - 1; size >= 0; size--) {
-            if (((InsetsSourceProvider) insetsSourceProviders.valueAt(size)).getSource().getType() == WindowInsets.Type.navigationBars()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final void callCocktailBarSafely(final Consumer consumer) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda16
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayPolicy.this.lambda$callCocktailBarSafely$12(consumer);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$callCocktailBarSafely$12(Consumer consumer) {
-        CocktailBarManagerInternal cocktailBarManagerInternal = getCocktailBarManagerInternal();
-        if (cocktailBarManagerInternal != null) {
-            consumer.accept(cocktailBarManagerInternal);
-        }
-    }
-
-    public final CocktailBarManagerInternal getCocktailBarManagerInternal() {
-        CocktailBarManagerInternal cocktailBarManagerInternal;
+    public final StatusBarManagerInternal getStatusBarManagerInternal() {
+        StatusBarManagerInternal statusBarManagerInternal;
         synchronized (this.mServiceAcquireLock) {
-            if (this.mCocktailBarInternal == null) {
-                this.mCocktailBarInternal = (CocktailBarManagerInternal) LocalServices.getService(CocktailBarManagerInternal.class);
+            try {
+                if (this.mStatusBarManagerInternal == null) {
+                    this.mStatusBarManagerInternal = (StatusBarManagerInternal) LocalServices.getService(StatusBarManagerInternal.class);
+                }
+                statusBarManagerInternal = this.mStatusBarManagerInternal;
+            } catch (Throwable th) {
+                throw th;
             }
-            cocktailBarManagerInternal = this.mCocktailBarInternal;
         }
-        return cocktailBarManagerInternal;
-    }
-
-    public void setControlTargetToNotificationShade() {
-        if (this.mNotificationShade != null) {
-            Slog.d(StartingSurfaceController.TAG, "set ControlTarget to NotificationShade=" + this.mNotificationShade);
-            this.mDisplayContent.getInsetsPolicy().updateBarControlTarget(this.mNotificationShade);
-        }
-    }
-
-    public boolean isDexStandAloneMode() {
-        return this.mDisplayContent.isDexMode() && this.mDisplayContent.isDefaultDisplay;
-    }
-
-    public final boolean canReplaceSystemWindowForDexStandAlone(WindowManager.LayoutParams layoutParams) {
-        int i = layoutParams.type;
-        if (i == 2000) {
-            return hasDexStandAloneStatusBar();
-        }
-        if (i == 2019) {
-            return hasDexStandAloneNavigationBar();
-        }
-        if (i == 2040) {
-            return hasDexStandAloneNotificationShade();
-        }
-        switch (i) {
-            case 2621:
-                WindowState windowState = this.mStatusBar;
-                return windowState != null && windowState.mAttrs.type == 2000;
-            case 2622:
-                return this.mNotificationShade != null && this.mNotificationShade.mAttrs.type == 2040;
-            case 2623:
-                WindowState windowState2 = this.mNavigationBar;
-                return windowState2 != null && windowState2.mAttrs.type == 2019;
-            default:
-                return false;
-        }
-    }
-
-    public final boolean hasDexStandAloneStatusBar() {
-        WindowState windowState = this.mStatusBar;
-        return windowState != null && windowState.mAttrs.type == 2621;
-    }
-
-    public final void restoreDefaultStatusBar() {
-        WindowState windowState = this.mStatusBar;
-        WindowState windowState2 = this.mDefaultStatusBar;
-        if (windowState == windowState2) {
-            return;
-        }
-        this.mStatusBar = null;
-        if (windowState2 != null) {
-            addWindowLw(windowState2, windowState2.mAttrs);
-        }
-        Slog.d(StartingSurfaceController.TAG, "restoreDefaultStatusBar: prev=" + windowState + ", now=" + this.mStatusBar);
+        return statusBarManagerInternal;
     }
 
     public final boolean hasDexStandAloneNavigationBar() {
@@ -2962,84 +1471,643 @@ public class DisplayPolicy {
         return windowState != null && windowState.mAttrs.type == 2623;
     }
 
-    public final void restoreDefaultNavigationBar() {
-        WindowState windowState = this.mNavigationBar;
-        WindowState windowState2 = this.mDefaultNavigationBar;
-        if (windowState == windowState2) {
-            return;
-        }
-        this.mNavigationBar = null;
-        if (windowState2 != null) {
-            addWindowLw(windowState2, windowState2.mAttrs);
-        }
-        Slog.d(StartingSurfaceController.TAG, "restoreDefaultNavigationBar: prev=" + windowState + ", now=" + this.mNavigationBar);
-    }
-
     public final boolean hasDexStandAloneNotificationShade() {
         return this.mNotificationShade != null && this.mNotificationShade.mAttrs.type == 2622;
     }
 
-    public final void restoreDefaultNotificationShade() {
-        if (this.mNotificationShade == this.mDefaultNotificationShade) {
-            return;
-        }
-        WindowState windowState = this.mNotificationShade;
-        this.mNotificationShade = null;
-        WindowState windowState2 = this.mDefaultNotificationShade;
-        if (windowState2 != null) {
-            addWindowLw(windowState2, windowState2.mAttrs);
-        }
-        Slog.d(StartingSurfaceController.TAG, "restoreDefaultNotificationShade: prev=" + windowState + ", now=" + this.mNotificationShade);
+    public final boolean hasDexStandAloneStatusBar() {
+        WindowState windowState = this.mStatusBar;
+        return windowState != null && windowState.mAttrs.type == 2621;
     }
 
-    public void setFreeforTaskSurfaceOverlappingWithNavBar(boolean z) {
-        if (z != this.mFreeformTaskSurfaceOverlappingWithNavBar) {
-            this.mFreeformTaskSurfaceOverlappingWithNavBar = z;
-            if (z != ((this.mLastAppearance & 128) != 0)) {
-                updateSystemBarAttributes();
+    public final boolean isDexStandAloneMode() {
+        DisplayContent displayContent = this.mDisplayContent;
+        return displayContent.isDexMode() && displayContent.isDefaultDisplay;
+    }
+
+    public boolean isFullyTransparentAllowed(WindowState windowState, int i) {
+        if (windowState == null) {
+            return true;
+        }
+        Rect barContentFrameForWindow = getBarContentFrameForWindow(windowState, i);
+        ActivityRecord activityRecord = windowState.mActivityRecord;
+        if (activityRecord == null) {
+            return true;
+        }
+        if (activityRecord.isLayoutNeededInUdcCutout()) {
+            UdcCutoutPolicy udcCutoutPolicy = activityRecord.mDisplayContent.mUdcCutoutPolicy;
+            if (udcCutoutPolicy.mTmpBarContentFrame == null) {
+                udcCutoutPolicy.mTmpBarContentFrame = new Rect();
+            }
+            udcCutoutPolicy.mTmpBarContentFrame.set(barContentFrameForWindow);
+            udcCutoutPolicy.mTmpBarContentFrame.intersectUnchecked(udcCutoutPolicy.mUdcDisplayFrames.mDisplayCutoutSafe);
+            barContentFrameForWindow = udcCutoutPolicy.mTmpBarContentFrame;
+        }
+        AppCompatLetterboxPolicy.LetterboxPolicyState letterboxPolicyState = activityRecord.mAppCompatController.mAppCompatLetterboxPolicy.mLetterboxPolicyState;
+        if (!letterboxPolicyState.isRunning()) {
+            return true;
+        }
+        Letterbox.LetterboxSurface[] letterboxSurfaceArr = letterboxPolicyState.mLetterbox.mSurfaces;
+        int i2 = 0;
+        int i3 = 0;
+        for (Letterbox.LetterboxSurface letterboxSurface : letterboxSurfaceArr) {
+            Rect rect = letterboxSurface.mLayoutFrameGlobal;
+            if (rect.isEmpty()) {
+                i2++;
+            } else if (!Rect.intersects(rect, barContentFrameForWindow)) {
+                i3++;
+            } else if (rect.contains(barContentFrameForWindow)) {
+                return true;
             }
         }
+        return i2 + i3 == letterboxSurfaceArr.length;
     }
 
-    public void hideImmersiveModeConfirmation() {
-        ImmersiveModeConfirmation immersiveModeConfirmation = this.mImmersiveModeConfirmation;
-        if (immersiveModeConfirmation != null) {
-            immersiveModeConfirmation.hideImmersiveModeConfirmation();
-        }
-    }
-
-    public boolean isInImmersiveSplitMode(WindowState windowState) {
-        return isInImmersiveSplitMode(windowState, false);
-    }
-
-    public boolean isInImmersiveSplitMode(WindowState windowState, boolean z) {
-        if (windowState == null && (windowState = this.mTopFullscreenOpaqueWindowState) == null) {
+    public final boolean isImmersiveMode(WindowState windowState) {
+        InsetsControlTarget navControlTarget;
+        boolean z = false;
+        if (windowState == null) {
             return false;
         }
-        if (z) {
-            return PolicyControl.shouldApplySplitImmersiveStatusBar(windowState);
+        windowState.mPolicy.getClass();
+        int windowLayerLw = WindowManagerPolicy.getWindowLayerLw(windowState);
+        windowState.mPolicy.getClass();
+        if (windowLayerLw > WindowManagerPolicy.getWindowLayerFromTypeLw(2000) || windowState.isActivityTypeDream()) {
+            return false;
         }
-        return PolicyControl.shouldApplySplitImmersiveNavigation(windowState);
-    }
-
-    public final boolean supportTransientEdgeInSplitMode() {
-        if (this.mEdgeEnabled) {
-            DisplayContent displayContent = this.mDisplayContent;
-            if (displayContent.isDefaultDisplay && MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED && displayContent.getDefaultTaskDisplayArea().isSplitScreenModeActivated()) {
-                if (!this.mNavigationBarCanMove) {
-                    return true;
+        boolean isDexMode = windowState.isDexMode();
+        DisplayContent displayContent = this.mDisplayContent;
+        if (!isDexMode) {
+            return displayContent.mInsetsPolicy.hasHiddenSources(WindowInsets.Type.navigationBars());
+        }
+        if (windowState.getWindowingMode() == 1) {
+            WindowState windowState2 = null;
+            if (windowState.mIsChildWindow && (navControlTarget = displayContent.mInsetsPolicy.getNavControlTarget(windowState, false)) != null) {
+                windowState2 = navControlTarget.getWindow();
+            }
+            if (windowState2 != null) {
+                windowState = windowState2;
+            }
+            if (windowState.isRequestedVisible(WindowInsets.Type.navigationBars(), true)) {
+                return false;
+            }
+            return displayContent.mInsetsPolicy.hasHiddenSources(WindowInsets.Type.navigationBars()) || displayContent.mInsetsPolicy.isTransient(WindowInsets.Type.navigationBars());
+        }
+        InsetsPolicy insetsPolicy = displayContent.mInsetsPolicy;
+        InsetsPolicy.ImmersiveControlTarget immersiveControlTarget = insetsPolicy.mDexForceImmersiveModeControlTarget;
+        int navigationBars = WindowInsets.Type.navigationBars();
+        InsetsStateController insetsStateController = insetsPolicy.mStateController;
+        InsetsState insetsState = insetsStateController.mState;
+        for (int sourceSize = insetsState.sourceSize() - 1; sourceSize >= 0; sourceSize--) {
+            InsetsSource sourceAt = insetsState.sourceAt(sourceSize);
+            if ((sourceAt.getType() & navigationBars) != 0 && !sourceAt.getFrame().isEmpty() && !sourceAt.isVisible()) {
+                int type = sourceAt.getType();
+                ArrayList arrayList = (ArrayList) insetsStateController.mControlTargetProvidersMap.get(immersiveControlTarget);
+                if (arrayList != null) {
+                    Iterator it = arrayList.iterator();
+                    while (true) {
+                        if (!it.hasNext()) {
+                            break;
+                        }
+                        InsetsSource insetsSource = ((InsetsSourceProvider) it.next()).mSource;
+                        if (insetsSource != null && insetsSource.getType() == type) {
+                            z = true;
+                            break;
+                        }
+                    }
                 }
-                DisplayInfo displayInfo = this.mDisplayContent.getDisplayInfo();
-                if (displayInfo.logicalWidth < displayInfo.logicalHeight) {
-                    return true;
-                }
+                return !z;
             }
         }
         return false;
     }
 
-    public void updateEdgeSettings(boolean z) {
-        this.mEdgeEnabled = z;
+    public final void layoutWindowLw(WindowState windowState, WindowState windowState2, DisplayFrames displayFrames) {
+        int i;
+        int i2;
+        int i3;
+        Task task;
+        windowState.getClass();
+        if (CoreRune.FW_FOLD_WALLPAPER_POLICY && windowState.mDisplayContent.isDefaultDisplay && !windowState.mToken.canShowInCurrentDevice()) {
+            return;
+        }
+        ActivityRecord activityRecord = windowState.mActivityRecord;
+        if (activityRecord == null || !activityRecord.mWaitForEnteringPinnedMode) {
+            DisplayFrames fixedRotationTransformDisplayFrames = windowState.mToken.getFixedRotationTransformDisplayFrames();
+            if (fixedRotationTransformDisplayFrames == null) {
+                fixedRotationTransformDisplayFrames = windowState.isLayoutNeededInUdcCutout() ? windowState.mDisplayContent.mUdcCutoutPolicy.mUdcDisplayFrames : displayFrames;
+            }
+            WindowManager.LayoutParams forRotation = windowState.mAttrs.forRotation(fixedRotationTransformDisplayFrames.mRotation);
+            ClientWindowFrames clientWindowFrames = sTmpClientFrames;
+            clientWindowFrames.attachedFrame = windowState2 != null ? windowState2.mWindowFrames.mFrame : null;
+            boolean z = forRotation == windowState.mAttrs;
+            int i4 = z ? windowState.mRequestedWidth : -1;
+            if (this.mDisplayContent.isDexMode() && windowState == this.mNavigationBar) {
+                int i5 = this.mDexTaskbarHeight;
+                forRotation.height = i5;
+                i = i5;
+            } else {
+                i = z ? windowState.mRequestedHeight : -1;
+            }
+            this.mWindowBounds.set(windowState.getBounds());
+            if (windowState.isPopOver() && (task = windowState.getTask()) != null) {
+                DisplayContent displayContent = windowState.getDisplayContent();
+                InputTarget inputTarget = displayContent.mImeInputTarget;
+                WindowState windowState3 = inputTarget != null ? inputTarget.getWindowState() : null;
+                boolean z2 = windowState3 != null && (!windowState.inFreeformWindowingMode() ? windowState != windowState3 : task != windowState3.getTask());
+                WindowState windowState4 = displayContent.mInputMethodWindow;
+                if (z2 && windowState4 != null && windowState4.isVisibleNow()) {
+                    InsetsState insetsState = displayContent.mInsetsStateController.mState;
+                    this.mTmpFrame.set(insetsState.getDisplayFrame());
+                    Rect rect = this.mTmpFrame;
+                    rect.inset(insetsState.calculateInsets(rect, WindowInsets.Type.systemBars() | WindowInsets.Type.ime() | WindowInsets.Type.displayCutout(), false));
+                    int i6 = windowState.getBounds().bottom - this.mTmpFrame.bottom;
+                    if (i6 > 0) {
+                        PopOverController popOverController = displayContent.mPopOverController;
+                        int i7 = windowState.getBounds().top;
+                        int i8 = this.mTmpFrame.top;
+                        popOverController.getClass();
+                        if (windowState.isDesktopModeEnabled() || windowState.inFreeformWindowingMode()) {
+                            i7 -= windowState.getCaptionHeight();
+                            if (windowState.inFreeformWindowingMode()) {
+                                i7 -= windowState.getFreeformThickness();
+                            }
+                            if (windowState.inFullscreenWindowingMode()) {
+                                i7 -= (int) TypedValue.applyDimension(1, 32.0f, popOverController.mDisplayContent.mWmService.mContext.getResources().getDisplayMetrics());
+                            }
+                        }
+                        this.mWindowBounds.offset(0, -Math.min(i6, Math.max(Math.max(i7, 0) - i8, 0)));
+                        if (!windowState.mLayoutWithIme) {
+                            windowState.mLayoutWithIme = true;
+                            windowState.forceReportingResized();
+                        }
+                        windowState.mWindowFrames.mContentChanged = true;
+                    }
+                } else if (windowState.mLayoutWithIme) {
+                    windowState.mLayoutWithIme = false;
+                    windowState.forceReportingResized();
+                }
+            }
+            this.mWindowLayout.computeFrames(forRotation, windowState.getInsetsState(false), fixedRotationTransformDisplayFrames.mDisplayCutoutSafe, this.mWindowBounds, windowState.getWindowingMode(), i4, i, windowState.mRequestedVisibleTypes, windowState.mGlobalScale, clientWindowFrames, windowState.getStageType());
+            int i9 = windowState.mRequestedWidth;
+            int i10 = windowState.mRequestedHeight;
+            WindowFrames windowFrames = windowState.mWindowFrames;
+            windowState.mTmpRect.set(windowFrames.mParentFrame);
+            windowFrames.mDisplayFrame.set(clientWindowFrames.displayFrame);
+            windowFrames.mParentFrame.set(clientWindowFrames.parentFrame);
+            windowFrames.mFrame.set(clientWindowFrames.frame);
+            windowFrames.mCompatFrame.set(windowFrames.mFrame);
+            float f = windowState.mInvGlobalScale;
+            Rect rect2 = windowFrames.mCompatFrame;
+            if (f == 1.0f || windowState.getConfiguration().windowConfiguration.getCompatSandboxInvScale() == 1.0f) {
+                float f2 = windowState.mInvGlobalScale;
+                if (f2 != 1.0f) {
+                    windowFrames.mCompatFrame.scale(f2);
+                }
+            } else {
+                int width = rect2.width();
+                int height = rect2.height();
+                int i11 = (int) ((rect2.left * f) + 0.5f);
+                rect2.left = i11;
+                int i12 = (int) ((rect2.top * f) + 0.5f);
+                rect2.top = i12;
+                rect2.right = i11 + ((int) ((width * f) + 0.5f));
+                rect2.bottom = i12 + ((int) ((height * f) + 0.5f));
+            }
+            windowFrames.mParentFrameWasClippedByDisplayCutout = clientWindowFrames.isParentFrameClippedByDisplayCutout;
+            windowFrames.mRelFrame.set(windowFrames.mFrame);
+            WindowContainer parent = windowState.getParent();
+            if (windowState.mIsChildWindow) {
+                Rect rect3 = ((WindowState) parent).mWindowFrames.mFrame;
+                i3 = rect3.left;
+                i2 = rect3.top;
+            } else if (parent != null) {
+                Rect bounds = parent.getBounds();
+                i3 = bounds.left;
+                i2 = bounds.top;
+            } else {
+                i2 = 0;
+                i3 = 0;
+            }
+            Rect rect4 = windowFrames.mRelFrame;
+            Rect rect5 = windowFrames.mFrame;
+            rect4.offsetTo(rect5.left - i3, rect5.top - i2);
+            if (i9 != windowState.mLastRequestedWidth || i10 != windowState.mLastRequestedHeight || !windowState.mTmpRect.equals(windowFrames.mParentFrame)) {
+                windowState.mLastRequestedWidth = i9;
+                windowState.mLastRequestedHeight = i10;
+                windowFrames.mContentChanged = true;
+            }
+            if (!windowFrames.mFrame.equals(windowFrames.mLastFrame) || !windowFrames.mRelFrame.equals(windowFrames.mLastRelFrame)) {
+                windowState.mWmService.mFrameChangingWindows.add(windowState);
+            }
+            if (windowState.mAttrs.type == 2034 && !windowFrames.mFrame.equals(windowFrames.mLastFrame)) {
+                windowState.mMovedByResize = true;
+            }
+            if (windowState.mIsWallpaper) {
+                Rect rect6 = windowFrames.mLastFrame;
+                Rect rect7 = windowFrames.mFrame;
+                if (rect6.width() != rect7.width() || rect6.height() != rect7.height()) {
+                    windowState.mDisplayContent.mWallpaperController.updateWallpaperOffset(windowState, false);
+                }
+            }
+            windowState.updateSourceFrame(windowFrames.mFrame);
+            ActivityRecord activityRecord2 = windowState.mActivityRecord;
+            if (activityRecord2 != null && !windowState.mIsChildWindow) {
+                activityRecord2.mAppCompatController.mAppCompatLetterboxPolicy.start(windowState);
+            }
+            windowState.mSurfacePlacementNeeded = true;
+            windowState.mHaveFrame = true;
+        }
+    }
+
+    public final int navigationBarPosition(int i) {
+        if (this.mDisplayContent.isDexMode()) {
+            return 4;
+        }
+        WindowState windowState = this.mNavigationBar;
+        if (windowState == null) {
+            return -1;
+        }
+        int i2 = windowState.mAttrs.forRotation(i).gravity;
+        if (i2 != 3) {
+            return i2 != 5 ? 4 : 2;
+        }
+        return 1;
+    }
+
+    public final void notifyDisplayReady() {
+        this.mHandler.post(new DisplayPolicy$$ExternalSyntheticLambda2(this, 1));
+        startEnableTouchEvent(false);
+        SystemServiceManager$$ExternalSyntheticOutline0.m(new StringBuilder("notifyDisplayReady() >> KnoxZT startEnableTouchEvent called for Display Id : "), this.mDisplayContent.mDisplayId, "WindowManager");
+    }
+
+    public final void onConfigurationChanged() {
+        boolean z;
+        Resources currentUserResources = getCurrentUserResources();
+        if (this.mDisplayContent.isDefaultDisplay) {
+            this.mHasNavigationBar = currentUserResources.getBoolean(R.bool.config_sms_decode_gsm_8bit_data);
+        }
+        if (this.mDisplayContent.isDexMode()) {
+            this.mDexTaskbarHeight = currentUserResources.getDimensionPixelSize(17106303);
+        }
+        this.mSystemGestures.onConfigurationChanged();
+        this.mNavBarOpacityMode = currentUserResources.getInteger(R.integer.config_powerStatsAggregationPeriod);
+        this.mLeftGestureInset = this.mGestureNavigationSettingsObserver.getLeftSensitivity(currentUserResources);
+        this.mRightGestureInset = this.mGestureNavigationSettingsObserver.getRightSensitivity(currentUserResources);
+        this.mNavigationBarAlwaysShowOnSideGesture = currentUserResources.getBoolean(R.bool.config_omnipresentCommunalUser);
+        this.mRemoteInsetsControllerControlsSystemBars = currentUserResources.getBoolean(R.bool.config_remoteInsetsControllerControlsSystemBars);
+        updateConfigurationAndScreenSizeDependentBehaviors();
+        if (currentUserResources.getBoolean(R.bool.config_autoPowerModePreferWristTilt)) {
+            Flags.enableTinyTaskbar();
+            z = true;
+        } else {
+            z = false;
+        }
+        if (this.mShouldAttachNavBarToAppDuringTransition != z) {
+            this.mShouldAttachNavBarToAppDuringTransition = z;
+        }
+        DisplayPolicyExt displayPolicyExt = this.mExt;
+        DisplayPolicy displayPolicy = displayPolicyExt.mDisplayPolicy;
+        Resources currentUserResources2 = displayPolicy.getCurrentUserResources();
+        int i = displayPolicyExt.mNavigationMode;
+        int integer = currentUserResources2.getInteger(R.integer.config_pinnerWebviewPinBytes);
+        displayPolicyExt.mNavigationMode = integer;
+        if (i != integer && displayPolicy.mDisplayContent.isDefaultDisplay) {
+            StringBuilder sb = new StringBuilder("DisplayPolicyExt#onConfigurationChanged, NavigationMode(new)=");
+            ServiceKeeper$$ExternalSyntheticOutline0.m(displayPolicyExt.mNavigationMode, i, ", NavigationMode(old)=", ", callers=", sb);
+            sb.append(Debug.getCallers(3));
+            Log.i("DisplayPolicyExt", sb.toString());
+        }
+        displayPolicyExt.mNavBarImeBtnAllRotationsAllowed = CoreRune.IS_TABLET_DEVICE || currentUserResources2.getBoolean(R.bool.config_pdp_reject_enable_retry);
+    }
+
+    public final void onDisplaySwitchFinished() {
+        WallpaperController wallpaperController = this.mDisplayContent.mWallpaperController;
+        if (wallpaperController.mIsWallpaperNotifiedOnDisplaySwitch) {
+            WindowManagerGlobalLock windowManagerGlobalLock = wallpaperController.mService.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    wallpaperController.mIsWallpaperNotifiedOnDisplaySwitch = false;
+                    wallpaperController.notifyDisplaySwitch(false);
+                } catch (Throwable th) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
+            }
+            WindowManagerService.resetPriorityAfterLockedSection();
+        }
+        this.mDisplayContent.mDisplayUpdater.onDisplaySwitching(false);
+    }
+
+    public final void removeWindowLw(WindowState windowState) {
+        if (this.mStatusBar == windowState) {
+            if (hasDexStandAloneStatusBar()) {
+                WindowState windowState2 = this.mStatusBar;
+                WindowState windowState3 = this.mDefaultStatusBar;
+                if (windowState2 != windowState3) {
+                    this.mStatusBar = null;
+                    if (windowState3 != null) {
+                        addWindowLw(windowState3, windowState3.mAttrs);
+                    }
+                    Slog.d("WindowManager", "restoreDefaultStatusBar: prev=" + windowState2 + ", now=" + this.mStatusBar);
+                }
+            } else {
+                this.mStatusBar = null;
+            }
+        } else if (this.mNavigationBar == windowState) {
+            if (hasDexStandAloneNavigationBar()) {
+                WindowState windowState4 = this.mNavigationBar;
+                WindowState windowState5 = this.mDefaultNavigationBar;
+                if (windowState4 != windowState5) {
+                    this.mNavigationBar = null;
+                    if (windowState5 != null) {
+                        addWindowLw(windowState5, windowState5.mAttrs);
+                    }
+                    Slog.d("WindowManager", "restoreDefaultNavigationBar: prev=" + windowState4 + ", now=" + this.mNavigationBar);
+                }
+            } else {
+                this.mNavigationBar = null;
+            }
+        } else if (this.mNotificationShade == windowState) {
+            if (!hasDexStandAloneNotificationShade()) {
+                this.mNotificationShade = null;
+            } else if (this.mNotificationShade != this.mDefaultNotificationShade) {
+                WindowState windowState6 = this.mNotificationShade;
+                this.mNotificationShade = null;
+                WindowState windowState7 = this.mDefaultNotificationShade;
+                if (windowState7 != null) {
+                    addWindowLw(windowState7, windowState7.mAttrs);
+                }
+                Slog.d("WindowManager", "restoreDefaultNotificationShade: prev=" + windowState6 + ", now=" + this.mNotificationShade);
+            }
+        }
+        if (this.mLastFocusedWindow == windowState) {
+            this.mLastFocusedWindow = null;
+        }
+        if (windowState.hasInsetsSourceProvider()) {
+            SparseArray insetsSourceProviders = windowState.getInsetsSourceProviders();
+            InsetsStateController insetsStateController = this.mDisplayContent.mInsetsStateController;
+            for (int size = insetsSourceProviders.size() - 1; size >= 0; size--) {
+                InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) insetsSourceProviders.valueAt(size);
+                insetsSourceProvider.setWindowContainer(null, null, null);
+                int id = insetsSourceProvider.mSource.getId();
+                insetsStateController.getClass();
+                if (id != InsetsSource.ID_IME) {
+                    insetsStateController.mState.removeSource(id);
+                    insetsStateController.mProviders.remove(id);
+                }
+            }
+        }
+        this.mInsetsSourceWindowsExceptIme.remove(windowState);
+        if (this.mDefaultStatusBar == windowState) {
+            this.mDefaultStatusBar = null;
+        }
+        if (this.mDefaultNavigationBar == windowState) {
+            this.mDefaultNavigationBar = null;
+        }
+        if (this.mDefaultNotificationShade == windowState) {
+            this.mDefaultNotificationShade = null;
+        }
+        DisplayPolicyExt displayPolicyExt = this.mExt;
+        CoverPolicy coverPolicy = displayPolicyExt.mCoverPolicy;
+        if (coverPolicy != null && coverPolicy.mCoverWindow == windowState) {
+            coverPolicy.mCoverWindow = null;
+        }
+        if (displayPolicyExt.mPayHandlerWin == windowState) {
+            displayPolicyExt.mPayHandlerWin = null;
+        }
+        ActivityRecord activityRecord = windowState.mActivityRecord;
+        if (activityRecord != null) {
+            PopOverState popOverState = activityRecord.mPopOverState;
+            if (popOverState.mOptions != null || popOverState.mOptionsInherited != null) {
+                PopOverController popOverController = displayPolicyExt.mDisplayPolicy.mDisplayContent.mPopOverController;
+                popOverController.getClass();
+                WindowState findMainWindow = windowState.mActivityRecord.findMainWindow(false);
+                if (findMainWindow != null && findMainWindow.mChildDimmingDialogs.contains(windowState)) {
+                    findMainWindow.mChildDimmingDialogs.remove(windowState);
+                    popOverController.updatePopOverDimAttributesLw(findMainWindow, findMainWindow.mAttrs);
+                }
+            }
+        }
+        TaskbarController taskbarController = displayPolicyExt.mTaskbarController;
+        if (taskbarController.mTaskbarWin == windowState) {
+            taskbarController.mTaskbarWin = null;
+            WindowState windowState8 = taskbarController.mDisplayPolicy.mNavigationBar;
+            if ((windowState8 == null ? null : windowState8.getControllableInsetProvider()) != null) {
+                WindowState windowState9 = taskbarController.mDisplayPolicy.mNavigationBar;
+                if ((windowState9 == null ? null : windowState9.getControllableInsetProvider()).mControlTarget != null) {
+                    DisplayPolicy displayPolicy = taskbarController.mDisplayPolicy;
+                    InsetsStateController insetsStateController2 = displayPolicy.mDisplayContent.mInsetsStateController;
+                    WindowState windowState10 = displayPolicy.mNavigationBar;
+                    insetsStateController2.notifyControlChanged((windowState10 == null ? null : windowState10.getControllableInsetProvider()).mControlTarget);
+                }
+            }
+        }
+        if (displayPolicyExt.mGameToolsWindow == windowState) {
+            displayPolicyExt.mGameToolsWindow = null;
+            displayPolicyExt.notifyRequestedGameToolsWin(false);
+        } else if (displayPolicyExt.mGameToolsOverlayWindow == windowState) {
+            displayPolicyExt.mGameToolsOverlayWindow = null;
+        }
+        if ((windowState.mAttrs.privateFlags & 131072) != 0) {
+            this.mImmersiveConfirmationWindowExists = false;
+        }
+    }
+
+    public void requestTransientBars(WindowState windowState, boolean z) {
+        if (ViewRootImpl.CLIENT_TRANSIENT) {
+            return;
+        }
+        if (CoreRune.IS_FACTORY_BINARY || FactoryTest.isAutomaticTestMode(this.mContext) || FactoryTest.isRunningFactoryApp()) {
+            Slog.d("WindowManager", "Not showing transient bar, because factory test mode");
+            return;
+        }
+        if (windowState == this.mStatusBar && this.mService.mExt.mPolicyExt.mLockTaskModeState == 2) {
+            Slog.d("WindowManager", "Not showing transient bar, because lock task mode pinned");
+            return;
+        }
+        if (windowState == null || !((PhoneWindowManager) this.mService.mPolicy).isUserSetupComplete()) {
+            return;
+        }
+        if (!this.mCanSystemBarsBeShownByUser) {
+            Slog.d("WindowManager", "Remote insets controller disallows showing system bars - ignoring request");
+            return;
+        }
+        if (windowState == this.mStatusBar && this.mDisplayContent.isDexMode()) {
+            if (this.mNavigationBar == windowState) {
+                return;
+            }
+            if (windowState.hasInsetsSourceProvider()) {
+                SparseArray insetsSourceProviders = windowState.getInsetsSourceProviders();
+                for (int size = insetsSourceProviders.size() - 1; size >= 0; size--) {
+                    if (((InsetsSourceProvider) insetsSourceProviders.valueAt(size)).mSource.getType() == WindowInsets.Type.navigationBars()) {
+                        return;
+                    }
+                }
+            }
+        }
+        InsetsSourceProvider controllableInsetProvider = windowState.getControllableInsetProvider();
+        InsetsControlTarget insetsControlTarget = controllableInsetProvider != null ? controllableInsetProvider.mControlTarget : null;
+        if (insetsControlTarget == null || insetsControlTarget == this.mNotificationShade) {
+            return;
+        }
+        WindowState window = insetsControlTarget.getWindow();
+        if (window == null || !window.isActivityTypeDream()) {
+            int statusBars = (WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars()) & insetsControlTarget.getRequestedVisibleTypes();
+            Slog.d("WindowManager", "requestTransientBars: swipeTarget=" + windowState + ", controlTarget=" + insetsControlTarget + ", canShowTransient=" + insetsControlTarget.canShowTransient() + ", restorePositionTypes=0x" + Integer.toHexString(statusBars) + ", from=" + Debug.getCallers(2));
+            InsetsSourceProvider controllableInsetProvider2 = windowState.getControllableInsetProvider();
+            if (controllableInsetProvider2 != null && controllableInsetProvider2.mSource.getType() == WindowInsets.Type.navigationBars() && (WindowInsets.Type.navigationBars() & statusBars) != 0) {
+                insetsControlTarget.showInsets(WindowInsets.Type.navigationBars(), false, null);
+                return;
+            }
+            if (insetsControlTarget.canShowTransient()) {
+                InsetsPolicy insetsPolicy = this.mDisplayContent.mInsetsPolicy;
+                insetsPolicy.mLastTransientRequestedByPolicyControl = insetsControlTarget instanceof InsetsPolicy.PolicyControlTarget;
+                insetsPolicy.showTransient(SHOW_TYPES_FOR_SWIPE, z);
+                if (this.mDisplayContent.isDexMode()) {
+                    insetsControlTarget.showInsets((~WindowInsets.Type.statusBars()) & statusBars, false, null);
+                } else {
+                    insetsControlTarget.showInsets(statusBars, false, null);
+                }
+            } else {
+                if (this.mDisplayContent.isDexMode()) {
+                    insetsControlTarget.showInsets(WindowInsets.Type.navigationBars(), false, null);
+                } else {
+                    insetsControlTarget.showInsets(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars(), false, null);
+                }
+                if (windowState == this.mStatusBar) {
+                    if (this.mDisplayContent.isDexMode() || this.mSkipTransferTouchToStatusBar) {
+                        return;
+                    }
+                    WindowState windowState2 = this.mStatusBar;
+                    if (!windowState2.mWmService.mInputManager.transferTouch(windowState2.mInputChannelToken, windowState2.getDisplayId())) {
+                        Slog.i("WindowManager", "Could not transfer touch to the status bar");
+                    }
+                }
+            }
+            if (!ViewRootImpl.CLIENT_IMMERSIVE_CONFIRMATION && !ViewRootImpl.CLIENT_TRANSIENT) {
+                ImmersiveModeConfirmation immersiveModeConfirmation = this.mImmersiveModeConfirmation;
+                if (immersiveModeConfirmation.mClingWindow != null) {
+                    immersiveModeConfirmation.mHandler.post(immersiveModeConfirmation.mConfirm);
+                    return;
+                }
+                return;
+            }
+            StatusBarManagerService.AnonymousClass2 anonymousClass2 = (StatusBarManagerService.AnonymousClass2) this.mStatusBarManagerInternal;
+            if (StatusBarManagerService.this.mBar == null) {
+                return;
+            }
+            try {
+                StatusBarManagerService.this.mBar.confirmImmersivePrompt();
+            } catch (RemoteException unused) {
+            }
+        }
+    }
+
+    public final void screenTurnedOff() {
+        synchronized (this.mLock) {
+            this.mScreenOnEarly = false;
+            this.mScreenOnFully = false;
+            this.mKeyguardDrawComplete = false;
+            this.mWindowManagerDrawComplete = false;
+            this.mScreenOnListener = null;
+            this.mService.mAtmService.mVisibleDozeUiProcess = null;
+        }
+    }
+
+    public final void screenTurningOn(DisplayPowerController.ScreenOnUnblocker screenOnUnblocker) {
+        WindowProcessController windowProcessController;
+        synchronized (this.mLock) {
+            try {
+                this.mScreenOnEarly = true;
+                this.mScreenOnFully = false;
+                this.mKeyguardDrawComplete = false;
+                this.mWindowManagerDrawComplete = false;
+                this.mScreenOnListener = screenOnUnblocker;
+                if (this.mAwake || this.mNotificationShade == null) {
+                    windowProcessController = null;
+                } else {
+                    windowProcessController = this.mNotificationShade.mSession.mProcess;
+                    this.mService.mAtmService.mVisibleDozeUiProcess = windowProcessController;
+                }
+                if (this.mDisplayContent.mDisplayId == 1) {
+                    this.mScreenOnFully = true;
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        if (windowProcessController != null) {
+            Trace.instant(32L, "screenTurnedOnWhileDozing");
+            this.mService.mAtmService.setProcessAnimatingWhileDozing(windowProcessController);
+        }
+    }
+
+    public final void setAwake(boolean z) {
+        synchronized (this.mLock) {
+            try {
+                if (z == this.mAwake) {
+                    return;
+                }
+                this.mAwake = z;
+                if (CoreRune.MW_MULTI_SPLIT_FOLDING_POLICY && z) {
+                    this.mDisplayContent.mWmService.getClass();
+                }
+                if (this.mDisplayContent.isDefaultDisplay) {
+                    if (z) {
+                        this.mService.mAtmService.mVisibleDozeUiProcess = null;
+                    } else if (this.mScreenOnFully && this.mNotificationShade != null) {
+                        this.mService.mAtmService.mVisibleDozeUiProcess = this.mNotificationShade.mSession.mProcess;
+                    }
+                    this.mService.mAtmService.mKeyguardController.updateDeferTransitionForAod(this.mAwake);
+                    if (!z) {
+                        onDisplaySwitchFinished();
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public void setCanSystemBarsBeShownByUser(boolean z) {
+        this.mCanSystemBarsBeShownByUser = z;
+    }
+
+    public final void setDropInputModePolicy(WindowState windowState, WindowManager.LayoutParams layoutParams) {
+        if (layoutParams.type == 2005 && (layoutParams.privateFlags & 536870912) == 0) {
+            ((SurfaceControl.Transaction) this.mService.mTransactionFactory.get()).setDropInputMode(windowState.mSurfaceControl, 1).apply();
+        }
+    }
+
+    public final void setHdmiPlugged(boolean z, boolean z2) {
+        if (z2 || this.mHdmiPlugged != z) {
+            this.mHdmiPlugged = z;
+            this.mService.updateRotationUnchecked(true, true);
+            Intent intent = new Intent("android.intent.action.HDMI_PLUGGED");
+            intent.addFlags(67108864);
+            intent.putExtra(LauncherConfigurationInternal.KEY_STATE_BOOLEAN, z);
+            this.mContext.sendStickyBroadcastAsUser(intent, UserHandle.ALL);
+        }
+    }
+
+    public final void setPointerLocationEnabled(boolean z) {
+        boolean z2 = CoreRune.SYSFW_APP_SPEG;
+        DisplayContent displayContent = this.mDisplayContent;
+        if (z2 && (displayContent.mDisplayInfo.flags & 32768) != 0) {
+            Slog.d("SPEG", "Pointer location is not supported");
+        } else if (displayContent.isDefaultDisplay || !displayContent.isPrivate()) {
+            this.mHandler.sendEmptyMessage(z ? 4 : 5);
+        }
+    }
+
+    public void setRemoteInsetsControllerControlsSystemBars(boolean z) {
+        this.mRemoteInsetsControllerControlsSystemBars = z;
+    }
+
+    public final boolean shouldAttachNavBarToAppDuringTransition() {
+        return this.mShouldAttachNavBarToAppDuringTransition && this.mNavigationBar != null;
     }
 
     public final boolean shouldKeepSystemUiControllingWindow() {
@@ -3049,116 +2117,320 @@ public class DisplayPolicy {
         return MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED && this.mFocusedWindow == null && (windowState = this.mTopFullscreenOpaqueWindowState) != null && windowState.isActivityTypeHome() && (windowState2 = this.mSystemUiControllingWindow) != null && windowState2.inSplitScreenWindowingMode() && (activityRecord = this.mDisplayContent.mFocusedApp) != null && activityRecord.inSplitScreenWindowingMode();
     }
 
-    public boolean isDexForceImmersiveModeEnabled() {
-        return this.mDisplayContent.isDexMode() && this.mDisplayContent.mAtmService.mDexController.isDexForceImmersiveModeEnabled();
-    }
-
-    public boolean isInDexForceImmersiveMode() {
-        return this.mDisplayContent.isDexMode() && this.mDisplayContent.mAtmService.mDexController.isInDexForceImmersiveMode();
-    }
-
-    public void updatePopOverLayoutWindow(WindowState windowState) {
-        Task task = windowState.getTask();
-        if (task == null) {
-            return;
-        }
-        DisplayContent displayContent = windowState.getDisplayContent();
-        WindowState windowState2 = displayContent.getImeInputTarget() != null ? displayContent.getImeInputTarget().getWindowState() : null;
-        boolean z = windowState2 != null && (!windowState.inFreeformWindowingMode() ? windowState != windowState2 : task != windowState2.getTask());
-        WindowState windowState3 = displayContent.mInputMethodWindow;
-        if (z && windowState3 != null && windowState3.isVisibleNow()) {
-            InsetsState rawInsetsState = displayContent.getInsetsStateController().getRawInsetsState();
-            this.mTmpFrame.set(rawInsetsState.getDisplayFrame());
-            Rect rect = this.mTmpFrame;
-            rect.inset(rawInsetsState.calculateInsets(rect, WindowInsets.Type.systemBars() | WindowInsets.Type.ime() | WindowInsets.Type.displayCutout(), false));
-            int i = windowState.getBounds().bottom - this.mTmpFrame.bottom;
-            if (i > 0) {
-                this.mWindowBounds.offset(0, -Math.min(i, displayContent.mPopOverController.getDistanceToTopForPopOver(windowState, windowState.getBounds().top, this.mTmpFrame.top)));
-                if (!windowState.isLayoutWithIme()) {
-                    windowState.setLayoutWithIme(true);
-                    windowState.forceReportingResized();
+    public final void simulateLayoutDisplay(DisplayFrames displayFrames) {
+        sTmpClientFrames.attachedFrame = null;
+        for (int size = this.mInsetsSourceWindowsExceptIme.size() - 1; size >= 0; size--) {
+            WindowState windowState = (WindowState) this.mInsetsSourceWindowsExceptIme.valueAt(size);
+            if (!isDexStandAloneMode() || !hasDexStandAloneNavigationBar() || windowState != this.mDefaultNavigationBar) {
+                this.mWindowLayout.computeFrames(windowState.mAttrs.forRotation(displayFrames.mRotation), displayFrames.mInsetsState, displayFrames.mDisplayCutoutSafe, displayFrames.mUnrestricted, windowState.getWindowingMode(), -1, -1, windowState.mRequestedVisibleTypes, windowState.mGlobalScale, sTmpClientFrames, windowState.getStageType());
+                SparseArray insetsSourceProviders = windowState.getInsetsSourceProviders();
+                InsetsState insetsState = displayFrames.mInsetsState;
+                for (int size2 = insetsSourceProviders.size() - 1; size2 >= 0; size2--) {
+                    InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) insetsSourceProviders.valueAt(size2);
+                    Rect rect = sTmpClientFrames.frame;
+                    insetsSourceProvider.getClass();
+                    InsetsSource insetsSource = new InsetsSource(insetsSourceProvider.mSource);
+                    insetsSourceProvider.mTmpRect.set(rect);
+                    TriFunction triFunction = insetsSourceProvider.mFrameProvider;
+                    if (triFunction != null) {
+                        triFunction.apply(displayFrames, insetsSourceProvider.mWindowContainer, insetsSourceProvider.mTmpRect);
+                    }
+                    insetsSource.setFrame(insetsSourceProvider.mTmpRect);
+                    insetsSource.updateSideHint(displayFrames.mUnrestricted);
+                    insetsSource.setVisibleFrame((Rect) null);
+                    insetsState.addSource(insetsSource);
                 }
-                windowState.getWindowFrames().setContentChanged(true);
-                return;
             }
-            return;
-        }
-        if (windowState.isLayoutWithIme()) {
-            windowState.setLayoutWithIme(false);
-            windowState.forceReportingResized();
         }
     }
 
-    public final boolean isCaptionImmersiveMode(WindowState windowState) {
-        if (!CoreRune.MW_CAPTION_SHELL_IMMERSIVE_MODE || windowState == null || windowState == getNotificationShade() || windowState.isActivityTypeDream()) {
-            return false;
-        }
-        if (CoreRune.MT_NEW_DEX && windowState.isActivityTypeHome()) {
-            return false;
-        }
-        WindowState statusControlWindow = windowState.isChildWindow() ? getInsetsPolicy().getStatusControlWindow(windowState) : null;
-        if (statusControlWindow != null) {
-            windowState = statusControlWindow;
-        }
-        if (windowState.mAttrs.insetsFlags.behavior == 2 && windowState.getWindowingMode() == 1) {
-            return getInsetsPolicy().hasHiddenSources(WindowInsets.Type.statusBars()) || getInsetsPolicy().isTransient(WindowInsets.Type.statusBars());
-        }
-        return false;
-    }
-
-    public void setTransientVisibilityChangeListener(WindowState windowState, boolean z) {
-        if (windowState.getTask() == null || !windowState.getTask().isOrganized()) {
-            return;
-        }
-        WindowManagerInternal windowManagerInternal = (WindowManagerInternal) LocalServices.getService(WindowManagerInternal.class);
+    public final void startEnableTouchEvent(boolean z) {
+        Message message = new Message();
+        message.what = 107;
         if (z) {
-            this.mTransientWindowState = windowState;
-            if (this.mTaskSystemBarsVisibilityListener == null) {
-                this.mTaskSystemBarsVisibilityListener = new WindowManagerInternal.TaskSystemBarsListener() { // from class: com.android.server.wm.DisplayPolicy.6
-                    public AnonymousClass6() {
-                    }
-
-                    @Override // com.android.server.wm.WindowManagerInternal.TaskSystemBarsListener
-                    public void onTransientSystemBarsVisibilityChanged(int i, boolean z2, boolean z3) {
-                        Task task;
-                        if (DisplayPolicy.this.mTransientWindowState == null || (task = DisplayPolicy.this.mTransientWindowState.getTask()) == null || task.mTaskId != i) {
-                            return;
-                        }
-                        DisplayPolicy.this.mIsVisibleBySwipe = true;
-                        DisplayPolicy.this.mService.mAtmService.mTaskOrganizerController.onNewDexImmersiveModeChanged(task, !z2);
-                    }
-                };
-            }
-            if (windowManagerInternal != null) {
-                windowManagerInternal.registerTaskSystemBarsListener(this.mTaskSystemBarsVisibilityListener);
-                return;
-            }
-            return;
+            message.arg1 = 101;
+        } else {
+            message.arg1 = 102;
         }
-        this.mTransientWindowState = null;
-        WindowManagerInternal.TaskSystemBarsListener taskSystemBarsListener = this.mTaskSystemBarsVisibilityListener;
-        if (taskSystemBarsListener != null) {
-            if (windowManagerInternal != null) {
-                windowManagerInternal.unregisterTaskSystemBarsListener(taskSystemBarsListener);
+        this.mHandler.sendMessage(message);
+    }
+
+    public final void systemReady() {
+        if (!ViewRootImpl.CLIENT_TRANSIENT) {
+            final SystemGesturesPointerEventListener systemGesturesPointerEventListener = this.mSystemGestures;
+            systemGesturesPointerEventListener.mHandler.post(new Runnable() { // from class: com.android.server.wm.SystemGesturesPointerEventListener$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    SystemGesturesPointerEventListener systemGesturesPointerEventListener2 = SystemGesturesPointerEventListener.this;
+                    int displayId = systemGesturesPointerEventListener2.mContext.getDisplayId();
+                    if (DisplayManagerGlobal.getInstance().getDisplayInfo(displayId) == null) {
+                        DeviceIdleController$$ExternalSyntheticOutline0.m(displayId, "Cannot create GestureDetector, display removed:", "SystemGestures");
+                    } else {
+                        systemGesturesPointerEventListener2.mGestureDetector = new SystemGesturesPointerEventListener.AnonymousClass1(systemGesturesPointerEventListener2.mContext, systemGesturesPointerEventListener2.new FlingGestureDetector(), systemGesturesPointerEventListener2.mHandler);
+                    }
+                }
+            });
+            if (systemGesturesPointerEventListener.mContext.getDisplayId() == 0) {
+                systemGesturesPointerEventListener.mMultiWindowEdgeDetector = new MultiWindowEdgeDetector(systemGesturesPointerEventListener.mContext, "SystemGesture");
             }
-            this.mTaskSystemBarsVisibilityListener = null;
+        }
+        if (this.mService.mPointerLocationEnabled) {
+            setPointerLocationEnabled(true);
+        }
+        startEnableTouchEvent(false);
+        SystemServiceManager$$ExternalSyntheticOutline0.m(new StringBuilder("systemReady() >> KnoxZT startEnableTouchEvent called for Display Id : "), this.mDisplayContent.mDisplayId, "WindowManager");
+    }
+
+    public final boolean topAppHidesSystemBar(int i) {
+        if (this.mTopFullscreenOpaqueWindowState == null || (this.mDisplayContent.mInsetsPolicy.mForcedShowingTypes & i) == i) {
+            return false;
+        }
+        return !r0.isRequestedVisible(i, false);
+    }
+
+    public void updateCachedDecorInsets() {
+        DecorInsets decorInsets;
+        DecorInsets.Cache cache = this.mCachedDecorInsets;
+        DisplayContent displayContent = this.mDisplayContent;
+        if (cache == null) {
+            this.mCachedDecorInsets = new DecorInsets.Cache(displayContent);
+            decorInsets = null;
+        } else {
+            decorInsets = new DecorInsets(displayContent);
+            decorInsets.setTo(this.mCachedDecorInsets.mDecorInsets);
+        }
+        DecorInsets.Cache cache2 = this.mCachedDecorInsets;
+        cache2.mPreserveId = -1;
+        DecorInsets decorInsets2 = cache2.mDecorInsets;
+        DecorInsets decorInsets3 = this.mDecorInsets;
+        decorInsets2.setTo(decorInsets3);
+        if (decorInsets != null) {
+            decorInsets3.setTo(decorInsets);
+            this.mCachedDecorInsets.mActive = true;
         }
     }
 
-    /* renamed from: com.android.server.wm.DisplayPolicy$6 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass6 implements WindowManagerInternal.TaskSystemBarsListener {
-        public AnonymousClass6() {
-        }
-
-        @Override // com.android.server.wm.WindowManagerInternal.TaskSystemBarsListener
-        public void onTransientSystemBarsVisibilityChanged(int i, boolean z2, boolean z3) {
-            Task task;
-            if (DisplayPolicy.this.mTransientWindowState == null || (task = DisplayPolicy.this.mTransientWindowState.getTask()) == null || task.mTaskId != i) {
-                return;
+    public final void updateConfigurationAndScreenSizeDependentBehaviors() {
+        Resources currentUserResources = getCurrentUserResources();
+        boolean z = false;
+        if (!CoreRune.FW_NAVBAR_MOVABLE_POLICY) {
+            DisplayContent displayContent = this.mDisplayContent;
+            if (displayContent.mBaseDisplayWidth != displayContent.mBaseDisplayHeight && currentUserResources.getBoolean(R.bool.config_orderUnlockAndWake)) {
+                z = true;
             }
-            DisplayPolicy.this.mIsVisibleBySwipe = true;
-            DisplayPolicy.this.mService.mAtmService.mTaskOrganizerController.onNewDexImmersiveModeChanged(task, !z2);
         }
+        this.mNavigationBarCanMove = z;
+        DisplayRotation displayRotation = this.mDisplayContent.mDisplayRotation;
+        displayRotation.getClass();
+        displayRotation.mAllowSeamlessRotationDespiteNavBarMoving = currentUserResources.getBoolean(R.bool.config_allowTheaterModeWakeFromDock);
+        boolean z2 = CoreRune.FW_TSP_STATE_CONTROLLER;
+        if (z2) {
+            DisplayPolicyExt displayPolicyExt = this.mExt;
+            DisplayContent displayContent2 = this.mDisplayContent;
+            int i = displayContent2.mBaseDisplayWidth;
+            int i2 = displayContent2.mBaseDisplayHeight;
+            int i3 = displayContent2.mInitialDisplayWidth;
+            int i4 = displayContent2.mInitialDisplayHeight;
+            displayPolicyExt.getClass();
+            if (z2 && displayPolicyExt.mDisplayPolicy.mDisplayContent.isDefaultDisplay) {
+                TspStateController tspStateController = displayPolicyExt.mService.mExt.mTspStateController;
+                TspStateController.DeviceSize deviceSize = tspStateController.mDeviceSize;
+                deviceSize.width = i;
+                deviceSize.height = i2;
+                deviceSize.initWidth = i3;
+                deviceSize.initHeight = i4;
+                tspStateController.initDefaultValues();
+                tspStateController.updateCustomValue();
+                int i5 = deviceSize.initWidth;
+                int i6 = deviceSize.initHeight;
+                TspStateController.TspDebug tspDebug = tspStateController.mTspDebug;
+                tspDebug.mInitDisplayWidth = i5;
+                tspDebug.mInitDisplayHeight = i6;
+            }
+        }
+    }
+
+    public final void updateCurrentUserResources() {
+        int currentUserId = this.mService.mAmInternal.getCurrentUserId();
+        Context context = this.mUiContext;
+        if (currentUserId == 0) {
+            this.mCurrentUserResources = context.getResources();
+        } else {
+            LoadedApk packageInfo = ActivityThread.currentActivityThread().getPackageInfo(context.getPackageName(), (CompatibilityInfo) null, 0, currentUserId);
+            this.mCurrentUserResources = ResourcesManager.getInstance().getResources(context.getWindowContextToken(), packageInfo.getResDir(), (String[]) null, packageInfo.getOverlayDirs(), packageInfo.getOverlayPaths(), packageInfo.getApplicationInfo().sharedLibraryFiles, Integer.valueOf(this.mDisplayContent.mDisplayId), (Configuration) null, context.getResources().getCompatibilityInfo(), (ClassLoader) null, (List) null);
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x00a1, code lost:
+    
+        r0 = r13.mDecorInsets.mInfoForRotation.length - 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x00a7, code lost:
+    
+        if (r0 < 0) goto L70;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x00a9, code lost:
+    
+        if (r0 == r5) goto L72;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x00af, code lost:
+    
+        if (((r0 + r5) % 2) != 1) goto L42;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x00b1, code lost:
+    
+        r3 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x00b4, code lost:
+    
+        if (r3 == false) goto L45;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x00b6, code lost:
+    
+        r8 = r4;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x00b9, code lost:
+    
+        if (r3 == false) goto L48;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x00bb, code lost:
+    
+        r3 = r6;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:36:0x00be, code lost:
+    
+        r13.mDecorInsets.mInfoForRotation[r0].update(r0, r8, r3, r13.mDisplayContent);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x00c9, code lost:
+    
+        r0 = r0 - 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x00bd, code lost:
+    
+        r3 = r4;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x00b8, code lost:
+    
+        r8 = r6;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x00b3, code lost:
+    
+        r3 = false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x00cc, code lost:
+    
+        r13.mDecorInsets.mInfoForRotation[r5].set(r7);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x009f, code lost:
+    
+        if (r10 != r9) goto L36;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean updateDecorInsetsInfo() {
+        /*
+            Method dump skipped, instructions count: 257
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.updateDecorInsetsInfo():boolean");
+    }
+
+    public final void updateForceShowNavBarSettings() {
+        synchronized (this.mLock) {
+            this.mForceShowNavigationBarEnabled = this.mForceShowNavBarSettingsObserver.isEnabled();
+            updateSystemBarAttributes();
+        }
+    }
+
+    public int updateLightNavigationBarLw(int i, WindowState windowState) {
+        if (windowState != null) {
+            boolean z = false;
+            if (intersectsAnyInsets(windowState.mWindowFrames.mFrame, windowState.getInsetsState(false), WindowInsets.Type.navigationBars())) {
+                boolean z2 = this.mIsResizingByDivider;
+                if (this.mDisplayContent.isDefaultDisplay && this.mService.mAtmService.mNaturalSwitchingController.mNaturalSwitchingRunning) {
+                    z = true;
+                }
+                return (z2 || z) ? i & (-17) : (windowState.isDexMode() && windowState.mActivityRecord != null && windowState.getWindowingMode() == 1 && (windowState.isActivityTypeStandard() || windowState.isActivityTypeAssistant())) ? (i & (-17)) | 2 : (i & (-17)) | (windowState.mAttrs.insetsFlags.appearance & 16);
+            }
+        }
+        int i2 = i & (-17);
+        if (windowState == null) {
+            return i2;
+        }
+        WindowManager.LayoutParams layoutParams = windowState.mAttrs;
+        this.mExt.getClass();
+        return DisplayPolicyExt.isUsingBlurEffect(layoutParams) ? i2 | (windowState.mAttrs.insetsFlags.appearance & 16) : i2;
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:314:0x0200, code lost:
+    
+        if (r0.isRequestedVisible(android.view.WindowInsets.Type.navigationBars(), false) == false) goto L227;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:344:0x025d, code lost:
+    
+        if (com.samsung.android.multiwindow.MultiWindowCoreState.MW_NAVISTAR_SPLIT_IMMERSIVE_MODE_ENABLED != false) goto L210;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:366:0x02a5, code lost:
+    
+        if (r6 == false) goto L226;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:370:0x02ae, code lost:
+    
+        if (com.samsung.android.rune.CoreRune.MW_MULTI_SPLIT != false) goto L153;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:382:0x0199, code lost:
+    
+        if (r12 != false) goto L114;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:383:0x019b, code lost:
+    
+        r8 = r8 & (-3);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:387:0x01a5, code lost:
+    
+        if (r12 != false) goto L114;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:391:0x01ae, code lost:
+    
+        if (r25.mFreeformTaskSurfaceOverlappingWithNavBar == false) goto L129;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:393:0x01b3, code lost:
+    
+        if (r0 != false) goto L114;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:128:0x02d9  */
+    /* JADX WARN: Removed duplicated region for block: B:174:0x039f  */
+    /* JADX WARN: Removed duplicated region for block: B:177:0x03b0 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:178:0x03b1  */
+    /* JADX WARN: Removed duplicated region for block: B:229:0x04a8  */
+    /* JADX WARN: Removed duplicated region for block: B:265:0x0590  */
+    /* JADX WARN: Removed duplicated region for block: B:270:0x05b9  */
+    /* JADX WARN: Removed duplicated region for block: B:273:0x05cf  */
+    /* JADX WARN: Type inference failed for: r3v12, types: [com.android.server.wm.DisplayPolicy$$ExternalSyntheticLambda12] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void updateSystemBarAttributes() {
+        /*
+            Method dump skipped, instructions count: 1595
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.updateSystemBarAttributes():void");
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:40:0x00da  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int validateAddingWindowLw(android.view.WindowManager.LayoutParams r8, int r9, int r10) {
+        /*
+            Method dump skipped, instructions count: 246
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayPolicy.validateAddingWindowLw(android.view.WindowManager$LayoutParams, int, int):int");
     }
 }

@@ -6,14 +6,15 @@ import android.os.HwParcel;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class Properties {
     public String maker = new String();
     public String product = new String();
     public String version = new String();
     public String serial = new String();
-    public ArrayList supportedIdentifierTypes = new ArrayList();
-    public ArrayList vendorInfo = new ArrayList();
+    public final ArrayList supportedIdentifierTypes = new ArrayList();
+    public final ArrayList vendorInfo = new ArrayList();
 
     public final boolean equals(Object obj) {
         if (this == obj) {
@@ -30,37 +31,24 @@ public final class Properties {
         return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.maker)), Integer.valueOf(HidlSupport.deepHashCode(this.product)), Integer.valueOf(HidlSupport.deepHashCode(this.version)), Integer.valueOf(HidlSupport.deepHashCode(this.serial)), Integer.valueOf(HidlSupport.deepHashCode(this.supportedIdentifierTypes)), Integer.valueOf(HidlSupport.deepHashCode(this.vendorInfo)));
     }
 
-    public final String toString() {
-        return "{.maker = " + this.maker + ", .product = " + this.product + ", .version = " + this.version + ", .serial = " + this.serial + ", .supportedIdentifierTypes = " + this.supportedIdentifierTypes + ", .vendorInfo = " + this.vendorInfo + "}";
-    }
-
     public final void readFromParcel(HwParcel hwParcel) {
-        readEmbeddedFromParcel(hwParcel, hwParcel.readBuffer(96L), 0L);
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        long j2 = j + 0;
-        this.maker = hwBlob.getString(j2);
-        hwParcel.readEmbeddedBuffer(r6.getBytes().length + 1, hwBlob.handle(), j2 + 0, false);
-        long j3 = j + 16;
-        this.product = hwBlob.getString(j3);
-        hwParcel.readEmbeddedBuffer(r6.getBytes().length + 1, hwBlob.handle(), j3 + 0, false);
-        long j4 = j + 32;
-        this.version = hwBlob.getString(j4);
-        hwParcel.readEmbeddedBuffer(r6.getBytes().length + 1, hwBlob.handle(), j4 + 0, false);
-        long j5 = j + 48;
-        this.serial = hwBlob.getString(j5);
-        hwParcel.readEmbeddedBuffer(r6.getBytes().length + 1, hwBlob.handle(), j5 + 0, false);
-        long j6 = j + 64;
-        int int32 = hwBlob.getInt32(j6 + 8);
-        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 4, hwBlob.handle(), j6 + 0, true);
+        HwBlob readBuffer = hwParcel.readBuffer(96L);
+        this.maker = readBuffer.getString(0L);
+        hwParcel.readEmbeddedBuffer(r0.getBytes().length + 1, readBuffer.handle(), 0L, false);
+        this.product = readBuffer.getString(16L);
+        hwParcel.readEmbeddedBuffer(r0.getBytes().length + 1, readBuffer.handle(), 16L, false);
+        this.version = readBuffer.getString(32L);
+        hwParcel.readEmbeddedBuffer(r0.getBytes().length + 1, readBuffer.handle(), 32L, false);
+        this.serial = readBuffer.getString(48L);
+        hwParcel.readEmbeddedBuffer(r0.getBytes().length + 1, readBuffer.handle(), 48L, false);
+        int int32 = readBuffer.getInt32(72L);
+        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 4, readBuffer.handle(), 64L, true);
         this.supportedIdentifierTypes.clear();
         for (int i = 0; i < int32; i++) {
             this.supportedIdentifierTypes.add(Integer.valueOf(readEmbeddedBuffer.getInt32(i * 4)));
         }
-        long j7 = j + 80;
-        int int322 = hwBlob.getInt32(8 + j7);
-        HwBlob readEmbeddedBuffer2 = hwParcel.readEmbeddedBuffer(int322 * 32, hwBlob.handle(), j7 + 0, true);
+        int int322 = readBuffer.getInt32(88L);
+        HwBlob readEmbeddedBuffer2 = hwParcel.readEmbeddedBuffer(int322 * 32, readBuffer.handle(), 80L, true);
         this.vendorInfo.clear();
         for (int i2 = 0; i2 < int322; i2++) {
             VendorKeyValue vendorKeyValue = new VendorKeyValue();
@@ -69,34 +57,7 @@ public final class Properties {
         }
     }
 
-    public final void writeToParcel(HwParcel hwParcel) {
-        HwBlob hwBlob = new HwBlob(96);
-        writeEmbeddedToBlob(hwBlob, 0L);
-        hwParcel.writeBuffer(hwBlob);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putString(j + 0, this.maker);
-        hwBlob.putString(j + 16, this.product);
-        hwBlob.putString(j + 32, this.version);
-        hwBlob.putString(j + 48, this.serial);
-        int size = this.supportedIdentifierTypes.size();
-        long j2 = j + 64;
-        hwBlob.putInt32(j2 + 8, size);
-        hwBlob.putBool(j2 + 12, false);
-        HwBlob hwBlob2 = new HwBlob(size * 4);
-        for (int i = 0; i < size; i++) {
-            hwBlob2.putInt32(i * 4, ((Integer) this.supportedIdentifierTypes.get(i)).intValue());
-        }
-        hwBlob.putBlob(j2 + 0, hwBlob2);
-        int size2 = this.vendorInfo.size();
-        long j3 = j + 80;
-        hwBlob.putInt32(8 + j3, size2);
-        hwBlob.putBool(12 + j3, false);
-        HwBlob hwBlob3 = new HwBlob(size2 * 32);
-        for (int i2 = 0; i2 < size2; i2++) {
-            ((VendorKeyValue) this.vendorInfo.get(i2)).writeEmbeddedToBlob(hwBlob3, i2 * 32);
-        }
-        hwBlob.putBlob(j3 + 0, hwBlob3);
+    public final String toString() {
+        return "{.maker = " + this.maker + ", .product = " + this.product + ", .version = " + this.version + ", .serial = " + this.serial + ", .supportedIdentifierTypes = " + this.supportedIdentifierTypes + ", .vendorInfo = " + this.vendorInfo + "}";
     }
 }

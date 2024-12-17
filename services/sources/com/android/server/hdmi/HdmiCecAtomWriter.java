@@ -2,98 +2,57 @@ package com.android.server.hdmi;
 
 import com.android.internal.util.FrameworkStatsLog;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public class HdmiCecAtomWriter {
     protected static final int FEATURE_ABORT_OPCODE_UNKNOWN = 256;
 
-    public void messageReported(HdmiCecMessage hdmiCecMessage, int i, int i2, int i3) {
-        messageReportedBase(createMessageReportedGenericArgs(hdmiCecMessage, i, i3, i2), createMessageReportedSpecialArgs(hdmiCecMessage));
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MessageReportedSpecialArgs {
+        public int mUserControlPressedCommand = 0;
+        public int mFeatureAbortOpcode = 256;
+        public int mFeatureAbortReason = 0;
     }
 
-    public void messageReported(HdmiCecMessage hdmiCecMessage, int i, int i2) {
-        messageReported(hdmiCecMessage, i, i2, -1);
+    public static void earcStatusChanged(int i, int i2, int i3, boolean z, boolean z2) {
+        FrameworkStatsLog.write(701, z, z2, i != 0 ? i != 1 ? i != 2 ? i != 3 ? 0 : 4 : 3 : 2 : 1, i2 != 0 ? i2 != 1 ? i2 != 2 ? i2 != 3 ? 0 : 4 : 3 : 2 : 1, i3);
     }
 
-    public final MessageReportedGenericArgs createMessageReportedGenericArgs(HdmiCecMessage hdmiCecMessage, int i, int i2, int i3) {
-        return new MessageReportedGenericArgs(i3, i, hdmiCecMessage.getSource(), hdmiCecMessage.getDestination(), hdmiCecMessage.getOpcode(), i2 == -1 ? 0 : i2 + 10);
-    }
-
-    public final MessageReportedSpecialArgs createMessageReportedSpecialArgs(HdmiCecMessage hdmiCecMessage) {
-        int opcode = hdmiCecMessage.getOpcode();
-        if (opcode == 0) {
-            return createFeatureAbortSpecialArgs(hdmiCecMessage);
-        }
-        if (opcode == 68) {
-            return createUserControlPressedSpecialArgs(hdmiCecMessage);
-        }
-        return new MessageReportedSpecialArgs();
-    }
-
-    public final MessageReportedSpecialArgs createUserControlPressedSpecialArgs(HdmiCecMessage hdmiCecMessage) {
-        MessageReportedSpecialArgs messageReportedSpecialArgs = new MessageReportedSpecialArgs();
-        if (hdmiCecMessage.getParams().length > 0) {
-            byte b = hdmiCecMessage.getParams()[0];
-            if (b >= 30 && b <= 41) {
-                messageReportedSpecialArgs.mUserControlPressedCommand = 2;
-            } else {
-                messageReportedSpecialArgs.mUserControlPressedCommand = b + 256;
+    public final void messageReported(HdmiCecMessage hdmiCecMessage, int i, int i2, int i3) {
+        MessageReportedSpecialArgs messageReportedSpecialArgs;
+        MessageReportedSpecialArgs messageReportedSpecialArgs2;
+        int i4 = i3 == -1 ? 0 : i3 + 10;
+        int i5 = hdmiCecMessage.mSource;
+        int i6 = hdmiCecMessage.mOpcode;
+        byte[] bArr = hdmiCecMessage.mParams;
+        if (i6 == 0) {
+            messageReportedSpecialArgs = new MessageReportedSpecialArgs();
+            if (bArr.length > 0) {
+                messageReportedSpecialArgs.mFeatureAbortOpcode = bArr[0] & 255;
+                if (bArr.length > 1) {
+                    messageReportedSpecialArgs.mFeatureAbortReason = bArr[1] + 10;
+                }
+            }
+        } else {
+            if (i6 != 68) {
+                messageReportedSpecialArgs2 = new MessageReportedSpecialArgs();
+                writeHdmiCecMessageReportedAtom(i2, i, i5, hdmiCecMessage.mDestination, i6, i4, messageReportedSpecialArgs2.mUserControlPressedCommand, messageReportedSpecialArgs2.mFeatureAbortOpcode, messageReportedSpecialArgs2.mFeatureAbortReason);
+            }
+            messageReportedSpecialArgs = new MessageReportedSpecialArgs();
+            if (bArr.length > 0) {
+                byte b = bArr[0];
+                if (b < 30 || b > 41) {
+                    messageReportedSpecialArgs.mUserControlPressedCommand = b + 256;
+                } else {
+                    messageReportedSpecialArgs.mUserControlPressedCommand = 2;
+                }
             }
         }
-        return messageReportedSpecialArgs;
-    }
-
-    public final MessageReportedSpecialArgs createFeatureAbortSpecialArgs(HdmiCecMessage hdmiCecMessage) {
-        MessageReportedSpecialArgs messageReportedSpecialArgs = new MessageReportedSpecialArgs();
-        if (hdmiCecMessage.getParams().length > 0) {
-            messageReportedSpecialArgs.mFeatureAbortOpcode = hdmiCecMessage.getParams()[0] & 255;
-            if (hdmiCecMessage.getParams().length > 1) {
-                messageReportedSpecialArgs.mFeatureAbortReason = hdmiCecMessage.getParams()[1] + 10;
-            }
-        }
-        return messageReportedSpecialArgs;
-    }
-
-    public final void messageReportedBase(MessageReportedGenericArgs messageReportedGenericArgs, MessageReportedSpecialArgs messageReportedSpecialArgs) {
-        writeHdmiCecMessageReportedAtom(messageReportedGenericArgs.mUid, messageReportedGenericArgs.mDirection, messageReportedGenericArgs.mInitiatorLogicalAddress, messageReportedGenericArgs.mDestinationLogicalAddress, messageReportedGenericArgs.mOpcode, messageReportedGenericArgs.mSendMessageResult, messageReportedSpecialArgs.mUserControlPressedCommand, messageReportedSpecialArgs.mFeatureAbortOpcode, messageReportedSpecialArgs.mFeatureAbortReason);
+        messageReportedSpecialArgs2 = messageReportedSpecialArgs;
+        writeHdmiCecMessageReportedAtom(i2, i, i5, hdmiCecMessage.mDestination, i6, i4, messageReportedSpecialArgs2.mUserControlPressedCommand, messageReportedSpecialArgs2.mFeatureAbortOpcode, messageReportedSpecialArgs2.mFeatureAbortReason);
     }
 
     public void writeHdmiCecMessageReportedAtom(int i, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9) {
         FrameworkStatsLog.write(310, i, i2, i3, i4, i5, i6, i7, i8, i9);
-    }
-
-    public void activeSourceChanged(int i, int i2, int i3) {
-        FrameworkStatsLog.write(309, i, i2, i3);
-    }
-
-    /* loaded from: classes2.dex */
-    public class MessageReportedGenericArgs {
-        public final int mDestinationLogicalAddress;
-        public final int mDirection;
-        public final int mInitiatorLogicalAddress;
-        public final int mOpcode;
-        public final int mSendMessageResult;
-        public final int mUid;
-
-        public MessageReportedGenericArgs(int i, int i2, int i3, int i4, int i5, int i6) {
-            this.mUid = i;
-            this.mDirection = i2;
-            this.mInitiatorLogicalAddress = i3;
-            this.mDestinationLogicalAddress = i4;
-            this.mOpcode = i5;
-            this.mSendMessageResult = i6;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class MessageReportedSpecialArgs {
-        public int mFeatureAbortOpcode;
-        public int mFeatureAbortReason;
-        public int mUserControlPressedCommand;
-
-        public MessageReportedSpecialArgs() {
-            this.mUserControlPressedCommand = 0;
-            this.mFeatureAbortOpcode = 256;
-            this.mFeatureAbortReason = 0;
-        }
     }
 }

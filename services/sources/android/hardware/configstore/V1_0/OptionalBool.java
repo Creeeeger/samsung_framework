@@ -1,10 +1,10 @@
 package android.hardware.configstore.V1_0;
 
-import android.os.HidlSupport;
-import android.os.HwBlob;
-import android.os.HwParcel;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
+import android.hardware.biometrics.face.V1_0.OptionalBool$$ExternalSyntheticOutline0;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class OptionalBool {
     public boolean specified = false;
@@ -22,30 +22,13 @@ public final class OptionalBool {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(Boolean.valueOf(this.specified))), Integer.valueOf(HidlSupport.deepHashCode(Boolean.valueOf(this.value))));
+        return Objects.hash(AudioOffloadInfo$$ExternalSyntheticOutline0.m(this.specified), AudioOffloadInfo$$ExternalSyntheticOutline0.m(this.value));
     }
 
     public final String toString() {
-        return "{.specified = " + this.specified + ", .value = " + this.value + "}";
-    }
-
-    public final void readFromParcel(HwParcel hwParcel) {
-        readEmbeddedFromParcel(hwParcel, hwParcel.readBuffer(2L), 0L);
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.specified = hwBlob.getBool(0 + j);
-        this.value = hwBlob.getBool(j + 1);
-    }
-
-    public final void writeToParcel(HwParcel hwParcel) {
-        HwBlob hwBlob = new HwBlob(2);
-        writeEmbeddedToBlob(hwBlob, 0L);
-        hwParcel.writeBuffer(hwBlob);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putBool(0 + j, this.specified);
-        hwBlob.putBool(j + 1, this.value);
+        StringBuilder sb = new StringBuilder("{.specified = ");
+        sb.append(this.specified);
+        sb.append(", .value = ");
+        return OptionalBool$$ExternalSyntheticOutline0.m("}", sb, this.value);
     }
 }

@@ -12,18 +12,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class NetworkStackClientBase {
     private INetworkStackConnector mConnector;
     private final ArrayList mPendingNetStackRequests = new ArrayList();
 
-    public void makeDhcpServer(final String str, final DhcpServingParamsParcel dhcpServingParamsParcel, final IDhcpServerCallbacks iDhcpServerCallbacks) {
-        requestConnector(new Consumer() { // from class: android.net.networkstack.NetworkStackClientBase$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                NetworkStackClientBase.lambda$makeDhcpServer$0(str, dhcpServingParamsParcel, iDhcpServerCallbacks, (INetworkStackConnector) obj);
-            }
-        });
+    /* JADX INFO: Access modifiers changed from: private */
+    public static /* synthetic */ void lambda$fetchIpMemoryStore$3(IIpMemoryStoreCallbacks iIpMemoryStoreCallbacks, INetworkStackConnector iNetworkStackConnector) {
+        try {
+            iNetworkStackConnector.fetchIpMemoryStore(iIpMemoryStoreCallbacks);
+        } catch (RemoteException e) {
+            throw new IllegalStateException("Could not fetch IpMemoryStore", e);
+        }
     }
 
     /* JADX INFO: Access modifiers changed from: private */
@@ -35,15 +36,6 @@ public abstract class NetworkStackClientBase {
         }
     }
 
-    public void makeIpClient(final String str, final IIpClientCallbacks iIpClientCallbacks) {
-        requestConnector(new Consumer() { // from class: android.net.networkstack.NetworkStackClientBase$$ExternalSyntheticLambda2
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                NetworkStackClientBase.lambda$makeIpClient$1(str, iIpClientCallbacks, (INetworkStackConnector) obj);
-            }
-        });
-    }
-
     /* JADX INFO: Access modifiers changed from: private */
     public static /* synthetic */ void lambda$makeIpClient$1(String str, IIpClientCallbacks iIpClientCallbacks, INetworkStackConnector iNetworkStackConnector) {
         try {
@@ -51,15 +43,6 @@ public abstract class NetworkStackClientBase {
         } catch (RemoteException e) {
             throw new IllegalStateException("Could not create IpClient", e);
         }
-    }
-
-    public void makeNetworkMonitor(final Network network, final String str, final INetworkMonitorCallbacks iNetworkMonitorCallbacks) {
-        requestConnector(new Consumer() { // from class: android.net.networkstack.NetworkStackClientBase$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                NetworkStackClientBase.lambda$makeNetworkMonitor$2(network, str, iNetworkMonitorCallbacks, (INetworkStackConnector) obj);
-            }
-        });
     }
 
     /* JADX INFO: Access modifiers changed from: private */
@@ -72,7 +55,7 @@ public abstract class NetworkStackClientBase {
     }
 
     public void fetchIpMemoryStore(final IIpMemoryStoreCallbacks iIpMemoryStoreCallbacks) {
-        requestConnector(new Consumer() { // from class: android.net.networkstack.NetworkStackClientBase$$ExternalSyntheticLambda0
+        requestConnector(new Consumer() { // from class: android.net.networkstack.NetworkStackClientBase$$ExternalSyntheticLambda1
             @Override // java.util.function.Consumer
             public final void accept(Object obj) {
                 NetworkStackClientBase.lambda$fetchIpMemoryStore$3(IIpMemoryStoreCallbacks.this, (INetworkStackConnector) obj);
@@ -80,24 +63,29 @@ public abstract class NetworkStackClientBase {
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public static /* synthetic */ void lambda$fetchIpMemoryStore$3(IIpMemoryStoreCallbacks iIpMemoryStoreCallbacks, INetworkStackConnector iNetworkStackConnector) {
-        try {
-            iNetworkStackConnector.fetchIpMemoryStore(iIpMemoryStoreCallbacks);
-        } catch (RemoteException e) {
-            throw new IllegalStateException("Could not fetch IpMemoryStore", e);
+    public int getQueueLength() {
+        int size;
+        synchronized (this.mPendingNetStackRequests) {
+            size = this.mPendingNetStackRequests.size();
         }
+        return size;
     }
 
-    public void requestConnector(Consumer consumer) {
-        synchronized (this.mPendingNetStackRequests) {
-            INetworkStackConnector iNetworkStackConnector = this.mConnector;
-            if (iNetworkStackConnector == null) {
-                this.mPendingNetStackRequests.add(consumer);
-            } else {
-                consumer.accept(iNetworkStackConnector);
+    public void makeDhcpServer(String str, DhcpServingParamsParcel dhcpServingParamsParcel, IDhcpServerCallbacks iDhcpServerCallbacks) {
+        requestConnector(new NetworkStackClientBase$$ExternalSyntheticLambda0(str, dhcpServingParamsParcel, iDhcpServerCallbacks));
+    }
+
+    public void makeIpClient(final String str, final IIpClientCallbacks iIpClientCallbacks) {
+        requestConnector(new Consumer() { // from class: android.net.networkstack.NetworkStackClientBase$$ExternalSyntheticLambda2
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                NetworkStackClientBase.lambda$makeIpClient$1(str, iIpClientCallbacks, (INetworkStackConnector) obj);
             }
-        }
+        });
+    }
+
+    public void makeNetworkMonitor(Network network, String str, INetworkMonitorCallbacks iNetworkMonitorCallbacks) {
+        requestConnector(new NetworkStackClientBase$$ExternalSyntheticLambda0(network, str, iNetworkMonitorCallbacks));
     }
 
     public void onNetworkStackConnected(INetworkStackConnector iNetworkStackConnector) {
@@ -112,19 +100,29 @@ public abstract class NetworkStackClientBase {
                 ((Consumer) it.next()).accept(iNetworkStackConnector);
             }
             synchronized (this.mPendingNetStackRequests) {
-                if (this.mPendingNetStackRequests.size() == 0) {
-                    this.mConnector = iNetworkStackConnector;
-                    return;
+                try {
+                    if (this.mPendingNetStackRequests.size() == 0) {
+                        this.mConnector = iNetworkStackConnector;
+                        return;
+                    }
+                } finally {
                 }
             }
         }
     }
 
-    public int getQueueLength() {
-        int size;
+    public void requestConnector(Consumer consumer) {
         synchronized (this.mPendingNetStackRequests) {
-            size = this.mPendingNetStackRequests.size();
+            try {
+                INetworkStackConnector iNetworkStackConnector = this.mConnector;
+                if (iNetworkStackConnector == null) {
+                    this.mPendingNetStackRequests.add(consumer);
+                } else {
+                    consumer.accept(iNetworkStackConnector);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
         }
-        return size;
     }
 }

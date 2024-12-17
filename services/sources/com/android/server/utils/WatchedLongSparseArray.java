@@ -2,139 +2,83 @@ package com.android.server.utils;
 
 import android.util.LongSparseArray;
 
-/* loaded from: classes3.dex */
-public class WatchedLongSparseArray extends WatchableImpl implements Snappable {
-    public final Watcher mObserver;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WatchedLongSparseArray extends WatchableImpl implements Snappable {
+    public final AnonymousClass1 mObserver;
     public final LongSparseArray mStorage;
     public volatile boolean mWatching;
 
-    public final void onChanged() {
-        dispatchChange(this);
-    }
-
-    public final void registerChild(Object obj) {
-        if (this.mWatching && (obj instanceof Watchable)) {
-            ((Watchable) obj).registerObserver(this.mObserver);
-        }
-    }
-
-    public final void unregisterChild(Object obj) {
-        if (this.mWatching && (obj instanceof Watchable)) {
-            ((Watchable) obj).unregisterObserver(this.mObserver);
-        }
-    }
-
-    public final void unregisterChildIf(Object obj) {
-        if (this.mWatching && (obj instanceof Watchable) && this.mStorage.indexOfValue(obj) == -1) {
-            ((Watchable) obj).unregisterObserver(this.mObserver);
-        }
-    }
-
-    @Override // com.android.server.utils.WatchableImpl, com.android.server.utils.Watchable
-    public void registerObserver(Watcher watcher) {
-        super.registerObserver(watcher);
-        if (registeredObserverCount() == 1) {
-            this.mWatching = true;
-            int size = this.mStorage.size();
-            for (int i = 0; i < size; i++) {
-                registerChild(this.mStorage.valueAt(i));
-            }
-        }
-    }
-
-    @Override // com.android.server.utils.WatchableImpl, com.android.server.utils.Watchable
-    public void unregisterObserver(Watcher watcher) {
-        super.unregisterObserver(watcher);
-        if (registeredObserverCount() == 0) {
-            int size = this.mStorage.size();
-            for (int i = 0; i < size; i++) {
-                unregisterChild(this.mStorage.valueAt(i));
-            }
-            this.mWatching = false;
-        }
-    }
-
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.utils.WatchedLongSparseArray$1] */
     public WatchedLongSparseArray() {
         this.mWatching = false;
         this.mObserver = new Watcher() { // from class: com.android.server.utils.WatchedLongSparseArray.1
             @Override // com.android.server.utils.Watcher
-            public void onChange(Watchable watchable) {
+            public final void onChange(Watchable watchable) {
                 WatchedLongSparseArray.this.dispatchChange(watchable);
             }
         };
         this.mStorage = new LongSparseArray();
     }
 
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.utils.WatchedLongSparseArray$1] */
     public WatchedLongSparseArray(int i) {
         this.mWatching = false;
         this.mObserver = new Watcher() { // from class: com.android.server.utils.WatchedLongSparseArray.1
             @Override // com.android.server.utils.Watcher
-            public void onChange(Watchable watchable) {
+            public final void onChange(Watchable watchable) {
                 WatchedLongSparseArray.this.dispatchChange(watchable);
             }
         };
         this.mStorage = new LongSparseArray(i);
     }
 
-    public Object get(long j) {
-        return this.mStorage.get(j);
-    }
-
-    public void delete(long j) {
-        Object obj = this.mStorage.get(j, null);
-        this.mStorage.delete(j);
-        unregisterChildIf(obj);
-        onChanged();
-    }
-
-    public void remove(long j) {
-        delete(j);
-    }
-
-    public void put(long j, Object obj) {
-        Object obj2 = this.mStorage.get(j);
-        this.mStorage.put(j, obj);
-        unregisterChildIf(obj2);
-        registerChild(obj);
-        onChanged();
-    }
-
-    public int size() {
-        return this.mStorage.size();
-    }
-
-    public long keyAt(int i) {
-        return this.mStorage.keyAt(i);
-    }
-
-    public Object valueAt(int i) {
-        return this.mStorage.valueAt(i);
-    }
-
-    public int indexOfKey(long j) {
-        return this.mStorage.indexOfKey(j);
-    }
-
-    public String toString() {
-        return this.mStorage.toString();
+    @Override // com.android.server.utils.WatchableImpl, com.android.server.utils.Watchable
+    public final void registerObserver(Watcher watcher) {
+        super.registerObserver(watcher);
+        if (this.mObservers.size() == 1) {
+            this.mWatching = true;
+            int size = this.mStorage.size();
+            for (int i = 0; i < size; i++) {
+                Object valueAt = this.mStorage.valueAt(i);
+                if (this.mWatching && (valueAt instanceof Watchable)) {
+                    ((Watchable) valueAt).registerObserver(this.mObserver);
+                }
+            }
+        }
     }
 
     @Override // com.android.server.utils.Snappable
-    public WatchedLongSparseArray snapshot() {
-        WatchedLongSparseArray watchedLongSparseArray = new WatchedLongSparseArray(size());
-        snapshot(watchedLongSparseArray, this);
+    public final Object snapshot() {
+        WatchedLongSparseArray watchedLongSparseArray = new WatchedLongSparseArray(this.mStorage.size());
+        if (watchedLongSparseArray.mStorage.size() != 0) {
+            throw new IllegalArgumentException("snapshot destination is not empty");
+        }
+        int size = this.mStorage.size();
+        for (int i = 0; i < size; i++) {
+            Object maybeSnapshot = Snapshots.maybeSnapshot(this.mStorage.valueAt(i));
+            watchedLongSparseArray.mStorage.put(this.mStorage.keyAt(i), maybeSnapshot);
+        }
+        watchedLongSparseArray.seal();
         return watchedLongSparseArray;
     }
 
-    public static void snapshot(WatchedLongSparseArray watchedLongSparseArray, WatchedLongSparseArray watchedLongSparseArray2) {
-        if (watchedLongSparseArray.size() != 0) {
-            throw new IllegalArgumentException("snapshot destination is not empty");
+    public final String toString() {
+        return this.mStorage.toString();
+    }
+
+    @Override // com.android.server.utils.WatchableImpl, com.android.server.utils.Watchable
+    public final void unregisterObserver(Watcher watcher) {
+        super.unregisterObserver(watcher);
+        if (this.mObservers.size() == 0) {
+            int size = this.mStorage.size();
+            for (int i = 0; i < size; i++) {
+                Object valueAt = this.mStorage.valueAt(i);
+                if (this.mWatching && (valueAt instanceof Watchable)) {
+                    ((Watchable) valueAt).unregisterObserver(this.mObserver);
+                }
+            }
+            this.mWatching = false;
         }
-        int size = watchedLongSparseArray2.size();
-        for (int i = 0; i < size; i++) {
-            Object maybeSnapshot = Snapshots.maybeSnapshot(watchedLongSparseArray2.valueAt(i));
-            watchedLongSparseArray.mStorage.put(watchedLongSparseArray2.keyAt(i), maybeSnapshot);
-        }
-        watchedLongSparseArray.seal();
     }
 }

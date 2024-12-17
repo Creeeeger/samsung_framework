@@ -1,76 +1,24 @@
 package com.android.server.pm.pkg.mutate;
 
-import android.content.ComponentName;
-import android.content.pm.overlay.OverlayPaths;
 import android.util.ArraySet;
+import com.android.server.pm.InstallSource;
 import com.android.server.pm.PackageSetting;
 import com.android.server.pm.pkg.PackageUserStateImpl;
-import com.android.server.pm.pkg.SuspendParams;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
-/* loaded from: classes3.dex */
-public class PackageStateMutator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PackageStateMutator {
     public static final AtomicLong sStateChangeSequence = new AtomicLong();
     public final Function mActiveStateFunction;
     public final Function mDisabledStateFunction;
     public final StateWriteWrapper mStateWrite = new StateWriteWrapper();
     public final ArraySet mChangedStates = new ArraySet();
 
-    public PackageStateMutator(Function function, Function function2) {
-        this.mActiveStateFunction = function;
-        this.mDisabledStateFunction = function2;
-    }
-
-    public static void onPackageStateChanged() {
-        sStateChangeSequence.incrementAndGet();
-    }
-
-    public PackageStateWrite forPackage(String str) {
-        return setState((PackageSetting) this.mActiveStateFunction.apply(str));
-    }
-
-    public PackageStateWrite forDisabledSystemPackage(String str) {
-        return setState((PackageSetting) this.mDisabledStateFunction.apply(str));
-    }
-
-    public InitialState initialState(int i) {
-        return new InitialState(i, sStateChangeSequence.get());
-    }
-
-    public Result generateResult(InitialState initialState, int i) {
-        if (initialState == null) {
-            return Result.SUCCESS;
-        }
-        boolean z = i != initialState.mPackageSequence;
-        boolean z2 = sStateChangeSequence.get() != initialState.mStateSequence;
-        if (z && z2) {
-            return Result.PACKAGES_AND_STATE_CHANGED;
-        }
-        if (z) {
-            return Result.PACKAGES_CHANGED;
-        }
-        if (z2) {
-            return Result.STATE_CHANGED;
-        }
-        return Result.SUCCESS;
-    }
-
-    public void onFinished() {
-        for (int i = 0; i < this.mChangedStates.size(); i++) {
-            ((PackageSetting) this.mChangedStates.valueAt(i)).onChanged();
-        }
-    }
-
-    public final StateWriteWrapper setState(PackageSetting packageSetting) {
-        if (packageSetting != null) {
-            this.mChangedStates.add(packageSetting);
-        }
-        return this.mStateWrite.setState(packageSetting);
-    }
-
-    /* loaded from: classes3.dex */
-    public class InitialState {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class InitialState {
         public final int mPackageSequence;
         public final long mStateSequence;
 
@@ -80,8 +28,8 @@ public class PackageStateMutator {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class Result {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Result {
         public final boolean mCommitted;
         public final boolean mPackagesChanged;
         public final boolean mSpecificPackageNull;
@@ -90,7 +38,6 @@ public class PackageStateMutator {
         public static final Result PACKAGES_CHANGED = new Result(false, true, false, false);
         public static final Result STATE_CHANGED = new Result(false, false, true, false);
         public static final Result PACKAGES_AND_STATE_CHANGED = new Result(false, true, true, false);
-        public static final Result SPECIFIC_PACKAGE_NULL = new Result(false, false, true, true);
 
         public Result(boolean z, boolean z2, boolean z3, boolean z4) {
             this.mCommitted = z;
@@ -98,279 +45,67 @@ public class PackageStateMutator {
             this.mStateChanged = z3;
             this.mSpecificPackageNull = z4;
         }
+    }
 
-        public boolean isCommitted() {
-            return this.mCommitted;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class StateWriteWrapper {
+        public PackageSetting mState;
+        public final UserStateWriteWrapper mUserStateWrite = new UserStateWriteWrapper();
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class UserStateWriteWrapper {
+            public PackageUserStateImpl mUserState;
         }
 
-        public boolean isPackagesChanged() {
-            return this.mPackagesChanged;
+        public final void setInstaller(int i, String str) {
+            PackageSetting packageSetting = this.mState;
+            if (packageSetting != null) {
+                InstallSource installSource = packageSetting.installSource;
+                if (!Objects.equals(str, installSource.mInstallerPackageName)) {
+                    String intern = InstallSource.intern(str);
+                    int i2 = installSource.mPackageSource;
+                    boolean z = installSource.mIsOrphaned;
+                    installSource = InstallSource.createInternal(i, i2, installSource.mInitiatingPackageSignatures, installSource.mInitiatingPackageName, installSource.mOriginatingPackageName, intern, installSource.mUpdateOwnerPackageName, installSource.mInstallerAttributionTag, z, installSource.mIsInitiatingPackageUninstalled);
+                }
+                packageSetting.installSource = installSource;
+                packageSetting.onChanged$2();
+            }
         }
 
-        public boolean isStateChanged() {
-            return this.mStateChanged;
-        }
-
-        public boolean isSpecificPackageNull() {
-            return this.mSpecificPackageNull;
+        public final UserStateWriteWrapper userState(int i) {
+            PackageUserStateImpl packageUserStateImpl;
+            PackageSetting packageSetting = this.mState;
+            if (packageSetting == null) {
+                packageUserStateImpl = null;
+            } else {
+                PackageUserStateImpl packageUserStateImpl2 = (PackageUserStateImpl) packageSetting.mUserStates.get(i);
+                if (packageUserStateImpl2 == null) {
+                    packageUserStateImpl2 = new PackageUserStateImpl(packageSetting);
+                    packageSetting.mUserStates.put(i, packageUserStateImpl2);
+                }
+                packageUserStateImpl = packageUserStateImpl2;
+            }
+            if (packageUserStateImpl != null) {
+                packageUserStateImpl.mWatchable = this.mState;
+            }
+            UserStateWriteWrapper userStateWriteWrapper = this.mUserStateWrite;
+            userStateWriteWrapper.mUserState = packageUserStateImpl;
+            return userStateWriteWrapper;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class StateWriteWrapper implements PackageStateWrite {
-        public PackageSetting mState;
-        public final UserStateWriteWrapper mUserStateWrite;
+    public PackageStateMutator(Function function, Function function2) {
+        this.mActiveStateFunction = function;
+        this.mDisabledStateFunction = function2;
+    }
 
-        public StateWriteWrapper() {
-            this.mUserStateWrite = new UserStateWriteWrapper();
+    public final StateWriteWrapper forPackage(String str) {
+        PackageSetting packageSetting = (PackageSetting) this.mActiveStateFunction.apply(str);
+        if (packageSetting != null) {
+            this.mChangedStates.add(packageSetting);
         }
-
-        public StateWriteWrapper setState(PackageSetting packageSetting) {
-            this.mState = packageSetting;
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageUserStateWrite userState(int i) {
-            PackageSetting packageSetting = this.mState;
-            PackageUserStateImpl orCreateUserState = packageSetting == null ? null : packageSetting.getOrCreateUserState(i);
-            if (orCreateUserState != null) {
-                orCreateUserState.setWatchable(this.mState);
-            }
-            return this.mUserStateWrite.setStates(orCreateUserState);
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public void onChanged() {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.onChanged();
-            }
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setHiddenUntilInstalled(boolean z) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.getTransientState().setHiddenUntilInstalled(z);
-            }
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setRequiredForSystemUser(boolean z) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                if (z) {
-                    packageSetting.setPrivateFlags(packageSetting.getPrivateFlags() | 512);
-                } else {
-                    packageSetting.setPrivateFlags(packageSetting.getPrivateFlags() & (-513));
-                }
-            }
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setMimeGroup(String str, ArraySet arraySet) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.setMimeGroup(str, arraySet);
-            }
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setCategoryOverride(int i) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.setCategoryOverride(i);
-            }
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setUpdateAvailable(boolean z) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.setUpdateAvailable(z);
-            }
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setLoadingProgress(float f) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.setLoadingProgress(f);
-            }
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setLoadingCompletedTime(long j) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.setLoadingCompletedTime(j);
-            }
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setOverrideSeInfo(String str) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.getTransientState().setOverrideSeInfo(str);
-            }
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setInstaller(String str, int i) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.setInstallerPackage(str, i);
-            }
-            return this;
-        }
-
-        @Override // com.android.server.pm.pkg.mutate.PackageStateWrite
-        public PackageStateWrite setUpdateOwner(String str) {
-            PackageSetting packageSetting = this.mState;
-            if (packageSetting != null) {
-                packageSetting.setUpdateOwnerPackage(str);
-            }
-            return this;
-        }
-
-        /* loaded from: classes3.dex */
-        public class UserStateWriteWrapper implements PackageUserStateWrite {
-            public PackageUserStateImpl mUserState;
-
-            public UserStateWriteWrapper() {
-            }
-
-            public UserStateWriteWrapper setStates(PackageUserStateImpl packageUserStateImpl) {
-                this.mUserState = packageUserStateImpl;
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setInstalled(boolean z) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setInstalled(z);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setUninstallReason(int i) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setUninstallReason(i);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setDistractionFlags(int i) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setDistractionFlags(i);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite putSuspendParams(String str, SuspendParams suspendParams) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.putSuspendParams(str, suspendParams);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite removeSuspension(String str) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.removeSuspension(str);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setHidden(boolean z) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setHidden(z);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setStopped(boolean z) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setStopped(z);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setNotLaunched(boolean z) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setNotLaunched(z);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setOverlayPaths(OverlayPaths overlayPaths) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setOverlayPaths(overlayPaths);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setOverlayPathsForLibrary(String str, OverlayPaths overlayPaths) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setSharedLibraryOverlayPaths(str, overlayPaths);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setHarmfulAppWarning(String str) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setHarmfulAppWarning(str);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setSplashScreenTheme(String str) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl != null) {
-                    packageUserStateImpl.setSplashScreenTheme(str);
-                }
-                return this;
-            }
-
-            @Override // com.android.server.pm.pkg.mutate.PackageUserStateWrite
-            public PackageUserStateWrite setComponentLabelIcon(ComponentName componentName, String str, Integer num) {
-                PackageUserStateImpl packageUserStateImpl = this.mUserState;
-                if (packageUserStateImpl == null) {
-                    return null;
-                }
-                packageUserStateImpl.overrideLabelAndIcon(componentName, str, num);
-                return null;
-            }
-        }
+        StateWriteWrapper stateWriteWrapper = this.mStateWrite;
+        stateWriteWrapper.mState = packageSetting;
+        return stateWriteWrapper;
     }
 }

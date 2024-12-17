@@ -1,28 +1,35 @@
 package com.android.server.timezonedetector;
 
+import android.app.ActivityManagerInternal;
 import android.app.time.LocationTimeZoneAlgorithmStatus;
 import android.app.time.TelephonyTimeZoneAlgorithmStatus;
 import android.app.time.TimeZoneCapabilities;
-import android.app.time.TimeZoneCapabilitiesAndConfig;
 import android.app.time.TimeZoneConfiguration;
 import android.app.time.TimeZoneDetectorStatus;
-import android.app.time.TimeZoneState;
 import android.app.timezonedetector.ManualTimeZoneSuggestion;
 import android.app.timezonedetector.TelephonyTimeZoneSuggestion;
-import android.os.Handler;
 import android.os.TimestampedValue;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.IndentingPrintWriter;
 import android.util.Slog;
 import android.util.TimeUtils;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.LocalServices;
+import com.android.server.accessibility.magnification.WindowMagnificationGestureHandler$$ExternalSyntheticOutline0;
 import com.android.server.timedetector.TimeDetectorStrategyImpl$$ExternalSyntheticLambda0;
 import java.io.PrintWriter;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class TimeZoneDetectorStrategyImpl implements TimeZoneDetectorStrategy {
     public static final int TELEPHONY_SCORE_HIGH = 3;
     public static final int TELEPHONY_SCORE_HIGHEST = 4;
@@ -33,16 +40,15 @@ public final class TimeZoneDetectorStrategyImpl implements TimeZoneDetectorStrat
     public ConfigurationInternal mCurrentConfigurationInternal;
     public TimeZoneDetectorStatus mDetectorStatus;
     public final Environment mEnvironment;
-    public boolean mGeoLocationFallbackEnabled;
     public String mLastTelephonyTimezoneIso;
     public final ServiceConfigAccessor mServiceConfigAccessor;
     public TimestampedValue mTelephonyTimeZoneFallbackEnabled;
-    public final ArrayMapWithHistory mTelephonySuggestionsBySlotIndex = new ArrayMapWithHistory(10);
+    public final ArrayMapWithHistory mTelephonySuggestionsBySlotIndex = new ArrayMapWithHistory();
     public final ReferenceWithHistory mLatestLocationAlgorithmEvent = new ReferenceWithHistory(10);
     public final ReferenceWithHistory mLatestManualSuggestion = new ReferenceWithHistory(10);
     public final List mStateChangeListeners = new ArrayList();
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface Environment {
         void addDebugLogEntry(String str);
 
@@ -54,339 +60,182 @@ public final class TimeZoneDetectorStrategyImpl implements TimeZoneDetectorStrat
 
         int getDeviceTimeZoneConfidence();
 
-        void runAsync(Runnable runnable);
+        void runAsync(TimeDetectorStrategyImpl$$ExternalSyntheticLambda0 timeDetectorStrategyImpl$$ExternalSyntheticLambda0);
 
-        void setDeviceTimeZoneAndConfidence(String str, int i, String str2);
+        void setDeviceTimeZoneAndConfidence(int i, String str, String str2);
     }
 
-    public static TimeZoneDetectorStrategyImpl create(Handler handler, ServiceConfigAccessor serviceConfigAccessor) {
-        return new TimeZoneDetectorStrategyImpl(serviceConfigAccessor, new EnvironmentImpl(handler));
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class QualifiedTelephonyTimeZoneSuggestion {
+        public final int score;
+        public final TelephonyTimeZoneSuggestion suggestion;
+
+        public QualifiedTelephonyTimeZoneSuggestion(TelephonyTimeZoneSuggestion telephonyTimeZoneSuggestion, int i) {
+            this.suggestion = telephonyTimeZoneSuggestion;
+            this.score = i;
+        }
+
+        public final boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || QualifiedTelephonyTimeZoneSuggestion.class != obj.getClass()) {
+                return false;
+            }
+            QualifiedTelephonyTimeZoneSuggestion qualifiedTelephonyTimeZoneSuggestion = (QualifiedTelephonyTimeZoneSuggestion) obj;
+            return this.score == qualifiedTelephonyTimeZoneSuggestion.score && this.suggestion.equals(qualifiedTelephonyTimeZoneSuggestion.suggestion);
+        }
+
+        public final int hashCode() {
+            return Objects.hash(Integer.valueOf(this.score), this.suggestion);
+        }
+
+        public final String toString() {
+            StringBuilder sb = new StringBuilder("QualifiedTelephonyTimeZoneSuggestion{suggestion=");
+            sb.append(this.suggestion);
+            sb.append(", score=");
+            return WindowMagnificationGestureHandler$$ExternalSyntheticOutline0.m(sb, this.score, '}');
+        }
     }
 
     public TimeZoneDetectorStrategyImpl(ServiceConfigAccessor serviceConfigAccessor, Environment environment) {
         Objects.requireNonNull(environment);
-        Environment environment2 = environment;
-        this.mEnvironment = environment2;
+        this.mEnvironment = environment;
         Objects.requireNonNull(serviceConfigAccessor);
-        ServiceConfigAccessor serviceConfigAccessor2 = serviceConfigAccessor;
-        this.mServiceConfigAccessor = serviceConfigAccessor2;
-        this.mTelephonyTimeZoneFallbackEnabled = new TimestampedValue(environment2.elapsedRealtimeMillis(), Boolean.TRUE);
+        this.mServiceConfigAccessor = serviceConfigAccessor;
+        this.mTelephonyTimeZoneFallbackEnabled = new TimestampedValue(environment.elapsedRealtimeMillis(), Boolean.TRUE);
         synchronized (this) {
-            serviceConfigAccessor2.addConfigurationInternalChangeListener(new StateChangeListener() { // from class: com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl$$ExternalSyntheticLambda0
-                @Override // com.android.server.timezonedetector.StateChangeListener
-                public final void onChange() {
-                    TimeZoneDetectorStrategyImpl.this.handleConfigurationInternalMaybeChanged();
+            try {
+                StateChangeListener stateChangeListener = new StateChangeListener() { // from class: com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl$$ExternalSyntheticLambda0
+                    @Override // com.android.server.timezonedetector.StateChangeListener
+                    public final void onChange() {
+                        TimeZoneDetectorStrategyImpl timeZoneDetectorStrategyImpl = TimeZoneDetectorStrategyImpl.this;
+                        synchronized (timeZoneDetectorStrategyImpl) {
+                            timeZoneDetectorStrategyImpl.updateCurrentConfigurationInternalIfRequired$1("handleConfigurationInternalMaybeChanged:");
+                        }
+                    }
+                };
+                ServiceConfigAccessorImpl serviceConfigAccessorImpl = (ServiceConfigAccessorImpl) serviceConfigAccessor;
+                synchronized (serviceConfigAccessorImpl) {
+                    ((ArrayList) serviceConfigAccessorImpl.mConfigurationInternalListeners).add(stateChangeListener);
                 }
-            });
-            this.mLastTelephonyTimezoneIso = "";
-            this.mGeoLocationFallbackEnabled = serviceConfigAccessor2.isGeolocationFallbackEnabled();
-            updateCurrentConfigurationInternalIfRequired("TimeZoneDetectorStrategyImpl:");
+                this.mLastTelephonyTimezoneIso = "";
+                updateCurrentConfigurationInternalIfRequired$1("TimeZoneDetectorStrategyImpl:");
+            } catch (Throwable th) {
+                throw th;
+            }
         }
     }
 
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized TimeZoneCapabilitiesAndConfig getCapabilitiesAndConfig(int i, boolean z) {
-        ConfigurationInternal configurationInternal;
-        if (this.mCurrentConfigurationInternal.getUserId() == i) {
-            configurationInternal = this.mCurrentConfigurationInternal;
-        } else {
-            configurationInternal = this.mServiceConfigAccessor.getConfigurationInternal(i);
-        }
-        return new TimeZoneCapabilitiesAndConfig(this.mDetectorStatus, configurationInternal.asCapabilities(z), configurationInternal.asConfiguration());
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized boolean updateConfiguration(int i, TimeZoneConfiguration timeZoneConfiguration, boolean z) {
-        boolean updateConfiguration;
-        updateConfiguration = this.mServiceConfigAccessor.updateConfiguration(i, timeZoneConfiguration, z);
-        if (updateConfiguration) {
-            updateCurrentConfigurationInternalIfRequired("updateConfiguration: userId=" + i + ", configuration=" + timeZoneConfiguration + ", bypassUserPolicyChecks=" + z);
-        }
-        return updateConfiguration;
-    }
-
-    public final void updateCurrentConfigurationInternalIfRequired(String str) {
-        ConfigurationInternal currentUserConfigurationInternal = this.mServiceConfigAccessor.getCurrentUserConfigurationInternal();
-        ConfigurationInternal configurationInternal = this.mCurrentConfigurationInternal;
-        if (currentUserConfigurationInternal.equals(configurationInternal) && this.mGeoLocationFallbackEnabled == this.mServiceConfigAccessor.isGeolocationFallbackEnabled()) {
-            return;
-        }
-        this.mCurrentConfigurationInternal = currentUserConfigurationInternal;
-        String str2 = str + " [oldConfiguration=" + configurationInternal + ", newConfiguration=" + currentUserConfigurationInternal + "], GeoLocationFBEnabled: " + this.mGeoLocationFallbackEnabled + "->" + this.mServiceConfigAccessor.isGeolocationFallbackEnabled();
-        this.mGeoLocationFallbackEnabled = this.mServiceConfigAccessor.isGeolocationFallbackEnabled();
-        logTimeZoneDebugInfo(str2);
-        updateDetectorStatus();
-        notifyStateChangeListenersAsynchronously();
-        doAutoTimeZoneDetection(this.mCurrentConfigurationInternal, str2);
-    }
-
-    public final void notifyStateChangeListenersAsynchronously() {
-        for (StateChangeListener stateChangeListener : this.mStateChangeListeners) {
-            Environment environment = this.mEnvironment;
-            Objects.requireNonNull(stateChangeListener);
-            environment.runAsync(new TimeDetectorStrategyImpl$$ExternalSyntheticLambda0(stateChangeListener));
-        }
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized void addChangeListener(StateChangeListener stateChangeListener) {
-        this.mStateChangeListeners.add(stateChangeListener);
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized boolean confirmTimeZone(String str) {
+    public final synchronized boolean confirmTimeZone(String str) {
         Objects.requireNonNull(str);
         String deviceTimeZone = this.mEnvironment.getDeviceTimeZone();
         if (!deviceTimeZone.equals(str)) {
             return false;
         }
         if (this.mEnvironment.getDeviceTimeZoneConfidence() < 100) {
-            this.mEnvironment.setDeviceTimeZoneAndConfidence(deviceTimeZone, 100, "confirmTimeZone: timeZoneId=" + str);
+            this.mEnvironment.setDeviceTimeZoneAndConfidence(100, deviceTimeZone, "confirmTimeZone: timeZoneId=".concat(str));
         }
         return true;
     }
 
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized TimeZoneState getTimeZoneState() {
-        return new TimeZoneState(this.mEnvironment.getDeviceTimeZone(), this.mEnvironment.getDeviceTimeZoneConfidence() < 100);
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public void setTimeZoneState(TimeZoneState timeZoneState) {
-        Objects.requireNonNull(timeZoneState);
-        this.mEnvironment.setDeviceTimeZoneAndConfidence(timeZoneState.getId(), timeZoneState.getUserShouldConfirmId() ? 0 : 100, "setTimeZoneState()");
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized void handleLocationAlgorithmEvent(LocationAlgorithmEvent locationAlgorithmEvent) {
-        ConfigurationInternal configurationInternal = this.mCurrentConfigurationInternal;
-        Objects.requireNonNull(locationAlgorithmEvent);
-        this.mLatestLocationAlgorithmEvent.set(locationAlgorithmEvent);
-        if (updateDetectorStatus()) {
-            notifyStateChangeListenersAsynchronously();
+    public final void disableTelephonyFallbackIfNeeded() {
+        GeolocationTimeZoneSuggestion geolocationTimeZoneSuggestion;
+        LocationAlgorithmEvent locationAlgorithmEvent = (LocationAlgorithmEvent) this.mLatestLocationAlgorithmEvent.get();
+        if (locationAlgorithmEvent == null || (geolocationTimeZoneSuggestion = locationAlgorithmEvent.mSuggestion) == null || geolocationTimeZoneSuggestion.mZoneIds == null || !((Boolean) this.mTelephonyTimeZoneFallbackEnabled.getValue()).booleanValue()) {
+            return;
         }
-        if (locationAlgorithmEvent.getAlgorithmStatus().couldEnableTelephonyFallback()) {
-            enableTelephonyTimeZoneFallback("handleLocationAlgorithmEvent(), event=" + locationAlgorithmEvent);
-        } else {
-            disableTelephonyFallbackIfNeeded();
+        if (geolocationTimeZoneSuggestion.mEffectiveFromElapsedMillis > this.mTelephonyTimeZoneFallbackEnabled.getReferenceTimeMillis()) {
+            Environment environment = this.mEnvironment;
+            this.mTelephonyTimeZoneFallbackEnabled = new TimestampedValue(environment.elapsedRealtimeMillis(), Boolean.FALSE);
+            environment.addDebugLogEntry("disableTelephonyFallbackIfNeeded: mTelephonyTimeZoneFallbackEnabled=" + this.mTelephonyTimeZoneFallbackEnabled);
         }
-        doAutoTimeZoneDetection(configurationInternal, "New location algorithm event received. event=" + locationAlgorithmEvent);
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized boolean suggestManualTimeZone(int i, ManualTimeZoneSuggestion manualTimeZoneSuggestion, boolean z) {
-        ConfigurationInternal configurationInternal = this.mCurrentConfigurationInternal;
-        if (configurationInternal.getUserId() != i) {
-            Slog.w("time_zone_detector", "Manual suggestion received but user != current user, userId=" + i + " suggestion=" + manualTimeZoneSuggestion);
-            return false;
-        }
-        Objects.requireNonNull(manualTimeZoneSuggestion);
-        String zoneId = manualTimeZoneSuggestion.getZoneId();
-        String str = "Manual time suggestion received: suggestion=" + manualTimeZoneSuggestion;
-        TimeZoneCapabilities asCapabilities = configurationInternal.asCapabilities(z);
-        if (asCapabilities.getSetManualTimeZoneCapability() != 40) {
-            Slog.i("time_zone_detector", "User does not have the capability needed to set the time zone manually: capabilities=" + asCapabilities + ", timeZoneId=" + zoneId + ", cause=" + str);
-            return false;
-        }
-        this.mLatestManualSuggestion.set(manualTimeZoneSuggestion);
-        setDeviceTimeZoneIfRequired(zoneId, str);
-        return true;
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized void suggestTelephonyTimeZone(TelephonyTimeZoneSuggestion telephonyTimeZoneSuggestion) {
-        ConfigurationInternal configurationInternal = this.mCurrentConfigurationInternal;
-        Objects.requireNonNull(telephonyTimeZoneSuggestion);
-        this.mTelephonySuggestionsBySlotIndex.put(Integer.valueOf(telephonyTimeZoneSuggestion.getSlotIndex()), new QualifiedTelephonyTimeZoneSuggestion(telephonyTimeZoneSuggestion, scoreTelephonySuggestion(telephonyTimeZoneSuggestion)));
-        doAutoTimeZoneDetection(configurationInternal, "New telephony time zone suggested. suggestion=" + telephonyTimeZoneSuggestion);
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized void enableTelephonyTimeZoneFallback(String str) {
-        if (!((Boolean) this.mTelephonyTimeZoneFallbackEnabled.getValue()).booleanValue()) {
-            ConfigurationInternal configurationInternal = this.mCurrentConfigurationInternal;
-            this.mTelephonyTimeZoneFallbackEnabled = new TimestampedValue(this.mEnvironment.elapsedRealtimeMillis(), Boolean.TRUE);
-            logTimeZoneDebugInfo("enableTelephonyTimeZoneFallback:  reason=" + str + ", currentUserConfig=" + configurationInternal + ", mTelephonyTimeZoneFallbackEnabled=" + this.mTelephonyTimeZoneFallbackEnabled);
-            disableTelephonyFallbackIfNeeded();
-            if (configurationInternal.isTelephonyFallbackSupported()) {
-                doAutoTimeZoneDetection(configurationInternal, str);
-            }
-        }
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public synchronized MetricsTimeZoneDetectorState generateMetricsState() {
-        QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestion;
-        findBestTelephonySuggestion = findBestTelephonySuggestion();
-        return MetricsTimeZoneDetectorState.create(new OrdinalGenerator(new TimeZoneCanonicalizer()), this.mCurrentConfigurationInternal, this.mEnvironment.getDeviceTimeZone(), getLatestManualSuggestion(), findBestTelephonySuggestion == null ? null : findBestTelephonySuggestion.suggestion, getLatestLocationAlgorithmEvent());
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public boolean isTelephonyTimeZoneDetectionSupported() {
-        boolean isTelephonyDetectionSupported;
-        synchronized (this) {
-            isTelephonyDetectionSupported = this.mCurrentConfigurationInternal.isTelephonyDetectionSupported();
-        }
-        return isTelephonyDetectionSupported;
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategy
-    public boolean isGeoTimeZoneDetectionSupported() {
-        boolean isGeoDetectionSupported;
-        synchronized (this) {
-            isGeoDetectionSupported = this.mCurrentConfigurationInternal.isGeoDetectionSupported();
-        }
-        return isGeoDetectionSupported;
-    }
-
-    public static int scoreTelephonySuggestion(TelephonyTimeZoneSuggestion telephonyTimeZoneSuggestion) {
-        if (telephonyTimeZoneSuggestion.getZoneId() == null) {
-            return 0;
-        }
-        int i = 4;
-        if (telephonyTimeZoneSuggestion.getMatchType() != 5 && telephonyTimeZoneSuggestion.getMatchType() != 4) {
-            i = 1;
-            if (telephonyTimeZoneSuggestion.getQuality() == 1) {
-                return 3;
-            }
-            if (telephonyTimeZoneSuggestion.getQuality() == 2) {
-                return 2;
-            }
-            if (telephonyTimeZoneSuggestion.getQuality() != 3) {
-                throw new AssertionError();
-            }
-        }
-        return i;
     }
 
     public final void doAutoTimeZoneDetection(ConfigurationInternal configurationInternal, String str) {
+        GeolocationTimeZoneSuggestion geolocationTimeZoneSuggestion;
+        List list;
         int detectionMode = configurationInternal.getDetectionMode();
-        if (this.mGeoLocationFallbackEnabled && detectionMode == 2 && configurationInternal.isTelephonyDetectionSupported()) {
-            Slog.d("time_zone_detector", "doAutoTimeZoneDetection - GeoLocationFallback Enabled");
-            detectionMode = 3;
-        }
         if (detectionMode == 0) {
-            Slog.i("time_zone_detector", "Unknown detection mode: " + detectionMode + ", is location off?");
+            BootReceiver$$ExternalSyntheticOutline0.m(detectionMode, "Unknown detection mode: ", ", is location off?", "time_zone_detector");
             return;
         }
         if (detectionMode != 1) {
             if (detectionMode == 2) {
-                if (!doGeolocationTimeZoneDetection(str) && ((Boolean) this.mTelephonyTimeZoneFallbackEnabled.getValue()).booleanValue() && configurationInternal.isTelephonyFallbackSupported()) {
+                if (!doGeolocationTimeZoneDetection(str) && ((Boolean) this.mTelephonyTimeZoneFallbackEnabled.getValue()).booleanValue() && configurationInternal.mTelephonyFallbackSupported) {
                     doTelephonyTimeZoneDetection(str + ", telephony fallback mode");
                     return;
                 }
                 return;
             }
-            if (detectionMode == 3) {
-                if (this.mGeoLocationFallbackEnabled && useGeoLocationTimezoneFallbackIfNeeded()) {
-                    Slog.d("time_zone_detector", "doAutoTimeZoneDetection - use GEO case, not Telephony");
-                    if (doGeolocationTimeZoneDetection(str + ", geolocation fallback mode")) {
-                        return;
-                    }
-                    Slog.d("time_zone_detector", "doAutoTimeZoneDetection - geolocation fallback failed");
-                    return;
-                }
-                doTelephonyTimeZoneDetection(str);
+            if (detectionMode != 3) {
+                Slog.wtf("time_zone_detector", "Unknown detection mode: " + detectionMode);
                 return;
             }
-            Slog.wtf("time_zone_detector", "Unknown detection mode: " + detectionMode);
+            if (configurationInternal.mGeoLocationFbEnabledSetting) {
+                QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestion = findBestTelephonySuggestion();
+                if (findBestTelephonySuggestion == null || findBestTelephonySuggestion.score < 2 || findBestTelephonySuggestion.suggestion.getZoneId() == null) {
+                    Slog.d("time_zone_detector", "isTelephonyTimeZoneCertain - telephony uncertain");
+                    QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestion2 = findBestTelephonySuggestion();
+                    String str2 = null;
+                    String str3 = findBestTelephonySuggestion2 != null ? findBestTelephonySuggestion2.suggestion.mCountryIso : null;
+                    StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("useGeoLocationTimezoneFallbackIfNeeded - currentIso:", str3, " ,mLastTelephonyTimezoneIso:");
+                    m.append(this.mLastTelephonyTimezoneIso);
+                    Slog.d("time_zone_detector", m.toString());
+                    if (!TextUtils.isEmpty(str3) && !TextUtils.equals(str3, this.mLastTelephonyTimezoneIso)) {
+                        LocationAlgorithmEvent locationAlgorithmEvent = (LocationAlgorithmEvent) this.mLatestLocationAlgorithmEvent.get();
+                        if (locationAlgorithmEvent != null && (geolocationTimeZoneSuggestion = locationAlgorithmEvent.mSuggestion) != null && (list = geolocationTimeZoneSuggestion.mZoneIds) != null && !list.isEmpty()) {
+                            str2 = this.mEnvironment.getDeviceTimeZone();
+                            if (!list.contains(str2)) {
+                                str2 = (String) list.get(0);
+                            }
+                        }
+                        BinaryTransparencyService$$ExternalSyntheticOutline0.m("useGeoLocationTimezoneFallbackIfNeeded - geoTimeZoneId:", str2, "time_zone_detector");
+                        if (str2 != null) {
+                            List timeZoneIdsForCountryCode = TimeUtils.getTimeZoneIdsForCountryCode(str3);
+                            if (timeZoneIdsForCountryCode == null) {
+                                timeZoneIdsForCountryCode = new ArrayList();
+                            }
+                            Slog.d("time_zone_detector", "getCountryTimeZoneList - timeZoneList:" + timeZoneIdsForCountryCode);
+                            if (timeZoneIdsForCountryCode.contains(str2)) {
+                                Slog.d("time_zone_detector", "doAutoTimeZoneDetection - use GEO case, not Telephony");
+                                if (doGeolocationTimeZoneDetection(str + ", geolocation fallback mode")) {
+                                    return;
+                                }
+                                Slog.d("time_zone_detector", "doAutoTimeZoneDetection - geolocation fallback failed");
+                                return;
+                            }
+                        }
+                    }
+                } else {
+                    Slog.d("time_zone_detector", "useGeoLocationTimezoneFallbackIfNeeded - TelephonyTimeZoneCertain, return false");
+                }
+            }
+            doTelephonyTimeZoneDetection(str);
         }
     }
 
     public final boolean doGeolocationTimeZoneDetection(String str) {
-        List zoneIds;
+        GeolocationTimeZoneSuggestion geolocationTimeZoneSuggestion;
+        List list;
         LocationAlgorithmEvent locationAlgorithmEvent = (LocationAlgorithmEvent) this.mLatestLocationAlgorithmEvent.get();
-        if (locationAlgorithmEvent == null || locationAlgorithmEvent.getSuggestion() == null || (zoneIds = locationAlgorithmEvent.getSuggestion().getZoneIds()) == null) {
+        if (locationAlgorithmEvent == null || (geolocationTimeZoneSuggestion = locationAlgorithmEvent.mSuggestion) == null || (list = geolocationTimeZoneSuggestion.mZoneIds) == null) {
             return false;
         }
-        if (zoneIds.isEmpty()) {
+        if (list.isEmpty()) {
             return true;
         }
         String deviceTimeZone = this.mEnvironment.getDeviceTimeZone();
-        if (!zoneIds.contains(deviceTimeZone)) {
-            deviceTimeZone = (String) zoneIds.get(0);
+        if (!list.contains(deviceTimeZone)) {
+            deviceTimeZone = (String) list.get(0);
         }
         setDeviceTimeZoneIfRequired(deviceTimeZone, str);
         return true;
     }
 
-    public final void disableTelephonyFallbackIfNeeded() {
-        LocationAlgorithmEvent locationAlgorithmEvent = (LocationAlgorithmEvent) this.mLatestLocationAlgorithmEvent.get();
-        if (locationAlgorithmEvent == null) {
-            return;
-        }
-        GeolocationTimeZoneSuggestion suggestion = locationAlgorithmEvent.getSuggestion();
-        if (((suggestion == null || suggestion.getZoneIds() == null) ? false : true) && ((Boolean) this.mTelephonyTimeZoneFallbackEnabled.getValue()).booleanValue()) {
-            if (suggestion.getEffectiveFromElapsedMillis() > this.mTelephonyTimeZoneFallbackEnabled.getReferenceTimeMillis()) {
-                this.mTelephonyTimeZoneFallbackEnabled = new TimestampedValue(this.mEnvironment.elapsedRealtimeMillis(), Boolean.FALSE);
-                logTimeZoneDebugInfo("disableTelephonyFallbackIfNeeded: mTelephonyTimeZoneFallbackEnabled=" + this.mTelephonyTimeZoneFallbackEnabled);
-            }
-        }
-    }
-
-    public final void logTimeZoneDebugInfo(String str) {
-        this.mEnvironment.addDebugLogEntry(str);
-    }
-
-    public final boolean isTelephonyTimeZoneCertain() {
-        QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestion = findBestTelephonySuggestion();
-        if (findBestTelephonySuggestion != null && findBestTelephonySuggestion.score >= 2 && findBestTelephonySuggestion.suggestion.getZoneId() != null) {
-            return true;
-        }
-        Slog.d("time_zone_detector", "isTelephonyTimeZoneCertain - telephony uncertain");
-        return false;
-    }
-
-    public final String getCurrentIso() {
-        QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestion = findBestTelephonySuggestion();
-        if (findBestTelephonySuggestion != null) {
-            return findBestTelephonySuggestion.suggestion.mCountryIso;
-        }
-        return null;
-    }
-
-    public final boolean useGeoLocationTimezoneFallbackIfNeeded() {
-        if (isTelephonyTimeZoneCertain()) {
-            Slog.d("time_zone_detector", "useGeoLocationTimezoneFallbackIfNeeded - TelephonyTimeZoneCertain, return false");
-            return false;
-        }
-        String currentIso = getCurrentIso();
-        Slog.d("time_zone_detector", "useGeoLocationTimezoneFallbackIfNeeded - currentIso:" + currentIso + " ,mLastTelephonyTimezoneIso:" + this.mLastTelephonyTimezoneIso);
-        if (!TextUtils.isEmpty(currentIso) && !TextUtils.equals(currentIso, this.mLastTelephonyTimezoneIso)) {
-            String geoLocationTimeZoneId = getGeoLocationTimeZoneId();
-            Slog.d("time_zone_detector", "useGeoLocationTimezoneFallbackIfNeeded - geoTimeZoneId:" + geoLocationTimeZoneId);
-            if (geoLocationTimeZoneId != null && getCountryTimeZoneList(currentIso).contains(geoLocationTimeZoneId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final String getGeoLocationTimeZoneId() {
-        List zoneIds;
-        LocationAlgorithmEvent locationAlgorithmEvent = (LocationAlgorithmEvent) this.mLatestLocationAlgorithmEvent.get();
-        if (locationAlgorithmEvent == null || locationAlgorithmEvent.getSuggestion() == null || (zoneIds = locationAlgorithmEvent.getSuggestion().getZoneIds()) == null || zoneIds.isEmpty()) {
-            return null;
-        }
-        String deviceTimeZone = this.mEnvironment.getDeviceTimeZone();
-        return zoneIds.contains(deviceTimeZone) ? deviceTimeZone : (String) zoneIds.get(0);
-    }
-
-    public final List getCountryTimeZoneList(String str) {
-        List timeZoneIdsForCountryCode = TimeUtils.getTimeZoneIdsForCountryCode(str);
-        if (timeZoneIdsForCountryCode == null) {
-            timeZoneIdsForCountryCode = new ArrayList();
-        }
-        Slog.d("time_zone_detector", "getCountryTimeZoneList - timeZoneList:" + timeZoneIdsForCountryCode);
-        return timeZoneIdsForCountryCode;
-    }
-
     public final void doTelephonyTimeZoneDetection(String str) {
         QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestion = findBestTelephonySuggestion();
-        if (findBestTelephonySuggestion == null) {
-            return;
-        }
-        if (findBestTelephonySuggestion.score >= 2) {
+        if (findBestTelephonySuggestion != null && findBestTelephonySuggestion.score >= 2) {
             String zoneId = findBestTelephonySuggestion.suggestion.getZoneId();
             if (zoneId == null) {
                 Slog.w("time_zone_detector", "Empty zone suggestion scored higher than expected. This is an error: bestTelephonySuggestion=" + findBestTelephonySuggestion + ", detectionReason=" + str);
@@ -397,59 +246,23 @@ public final class TimeZoneDetectorStrategyImpl implements TimeZoneDetectorStrat
         }
     }
 
-    public final void setDeviceTimeZoneIfRequired(String str, String str2) {
-        String deviceTimeZone = this.mEnvironment.getDeviceTimeZone();
-        int deviceTimeZoneConfidence = this.mEnvironment.getDeviceTimeZoneConfidence();
-        if (!str.equals(deviceTimeZone) || 100 > deviceTimeZoneConfidence) {
-            this.mEnvironment.setDeviceTimeZoneAndConfidence(str, 100, "Set device time zone or higher confidence: newZoneId=" + str + ", cause=" + str2 + ", newConfidence=100");
-        }
-    }
-
-    public final QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestion() {
-        int i;
-        int i2;
-        QualifiedTelephonyTimeZoneSuggestion qualifiedTelephonyTimeZoneSuggestion = null;
-        for (int i3 = 0; i3 < this.mTelephonySuggestionsBySlotIndex.size(); i3++) {
-            QualifiedTelephonyTimeZoneSuggestion qualifiedTelephonyTimeZoneSuggestion2 = (QualifiedTelephonyTimeZoneSuggestion) this.mTelephonySuggestionsBySlotIndex.valueAt(i3);
-            if (qualifiedTelephonyTimeZoneSuggestion2 != null && (qualifiedTelephonyTimeZoneSuggestion == null || (i = qualifiedTelephonyTimeZoneSuggestion2.score) > (i2 = qualifiedTelephonyTimeZoneSuggestion.score) || (i == i2 && qualifiedTelephonyTimeZoneSuggestion2.suggestion.getSlotIndex() < qualifiedTelephonyTimeZoneSuggestion.suggestion.getSlotIndex()))) {
-                qualifiedTelephonyTimeZoneSuggestion = qualifiedTelephonyTimeZoneSuggestion2;
-            }
-        }
-        return qualifiedTelephonyTimeZoneSuggestion;
-    }
-
-    public synchronized QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestionForTests() {
-        return findBestTelephonySuggestion();
-    }
-
-    public final synchronized void handleConfigurationInternalMaybeChanged() {
-        updateCurrentConfigurationInternalIfRequired("handleConfigurationInternalMaybeChanged:");
-    }
-
-    public final boolean updateDetectorStatus() {
-        TimeZoneDetectorStatus createTimeZoneDetectorStatus = createTimeZoneDetectorStatus(this.mCurrentConfigurationInternal, (LocationAlgorithmEvent) this.mLatestLocationAlgorithmEvent.get());
-        boolean z = !createTimeZoneDetectorStatus.equals(this.mDetectorStatus);
-        if (z) {
-            this.mDetectorStatus = createTimeZoneDetectorStatus;
-        }
-        return z;
-    }
-
     @Override // com.android.server.timezonedetector.Dumpable
-    public synchronized void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
+    public final synchronized void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
         indentingPrintWriter.println("TimeZoneDetectorStrategy:");
         indentingPrintWriter.increaseIndent();
         indentingPrintWriter.println("mCurrentConfigurationInternal=" + this.mCurrentConfigurationInternal);
         indentingPrintWriter.println("mDetectorStatus=" + this.mDetectorStatus);
-        indentingPrintWriter.println("[Capabilities=" + this.mCurrentConfigurationInternal.asCapabilities(false) + "]");
-        StringBuilder sb = new StringBuilder();
-        sb.append("mEnvironment.getDeviceTimeZone()=");
+        indentingPrintWriter.println("[Capabilities=" + this.mCurrentConfigurationInternal.asCapabilities() + "]");
+        StringBuilder sb = new StringBuilder("mEnvironment.getDeviceTimeZone()=");
         sb.append(this.mEnvironment.getDeviceTimeZone());
         indentingPrintWriter.println(sb.toString());
         indentingPrintWriter.println("mEnvironment.getDeviceTimeZoneConfidence()=" + this.mEnvironment.getDeviceTimeZoneConfidence());
         indentingPrintWriter.println("Misc state:");
         indentingPrintWriter.increaseIndent();
-        indentingPrintWriter.println("mTelephonyTimeZoneFallbackEnabled=" + formatDebugString(this.mTelephonyTimeZoneFallbackEnabled));
+        StringBuilder sb2 = new StringBuilder("mTelephonyTimeZoneFallbackEnabled=");
+        TimestampedValue timestampedValue = this.mTelephonyTimeZoneFallbackEnabled;
+        sb2.append(timestampedValue.getValue() + " @ " + Duration.ofMillis(timestampedValue.getReferenceTimeMillis()));
+        indentingPrintWriter.println(sb2.toString());
         indentingPrintWriter.decreaseIndent();
         indentingPrintWriter.println("Time zone debug log:");
         indentingPrintWriter.increaseIndent();
@@ -469,26 +282,50 @@ public final class TimeZoneDetectorStrategyImpl implements TimeZoneDetectorStrat
         indentingPrintWriter.decreaseIndent();
         indentingPrintWriter.println("Geolocation fallback state:");
         indentingPrintWriter.increaseIndent();
-        indentingPrintWriter.println("mGeoLocationFallbackEnabled=" + this.mGeoLocationFallbackEnabled);
         indentingPrintWriter.println("mLastTelephonyTimezoneIso=" + this.mLastTelephonyTimezoneIso);
         indentingPrintWriter.decreaseIndent();
         indentingPrintWriter.decreaseIndent();
     }
 
-    public synchronized ManualTimeZoneSuggestion getLatestManualSuggestion() {
-        return (ManualTimeZoneSuggestion) this.mLatestManualSuggestion.get();
+    public final synchronized void enableTelephonyTimeZoneFallback(String str) {
+        if (!((Boolean) this.mTelephonyTimeZoneFallbackEnabled.getValue()).booleanValue()) {
+            ConfigurationInternal configurationInternal = this.mCurrentConfigurationInternal;
+            this.mTelephonyTimeZoneFallbackEnabled = new TimestampedValue(this.mEnvironment.elapsedRealtimeMillis(), Boolean.TRUE);
+            this.mEnvironment.addDebugLogEntry("enableTelephonyTimeZoneFallback:  reason=" + str + ", currentUserConfig=" + configurationInternal + ", mTelephonyTimeZoneFallbackEnabled=" + this.mTelephonyTimeZoneFallbackEnabled);
+            disableTelephonyFallbackIfNeeded();
+            if (configurationInternal.mTelephonyFallbackSupported) {
+                doAutoTimeZoneDetection(configurationInternal, str);
+            }
+        }
     }
 
-    public synchronized QualifiedTelephonyTimeZoneSuggestion getLatestTelephonySuggestion(int i) {
-        return (QualifiedTelephonyTimeZoneSuggestion) this.mTelephonySuggestionsBySlotIndex.get(Integer.valueOf(i));
+    public final QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestion() {
+        int i;
+        int i2;
+        QualifiedTelephonyTimeZoneSuggestion qualifiedTelephonyTimeZoneSuggestion = null;
+        int i3 = 0;
+        while (true) {
+            ArrayMapWithHistory arrayMapWithHistory = this.mTelephonySuggestionsBySlotIndex;
+            ArrayMap arrayMap = arrayMapWithHistory.mMap;
+            if (i3 >= (arrayMap == null ? 0 : arrayMap.size())) {
+                return qualifiedTelephonyTimeZoneSuggestion;
+            }
+            QualifiedTelephonyTimeZoneSuggestion qualifiedTelephonyTimeZoneSuggestion2 = (QualifiedTelephonyTimeZoneSuggestion) arrayMapWithHistory.valueAt(i3);
+            if (qualifiedTelephonyTimeZoneSuggestion2 != null && (qualifiedTelephonyTimeZoneSuggestion == null || (i = qualifiedTelephonyTimeZoneSuggestion2.score) > (i2 = qualifiedTelephonyTimeZoneSuggestion.score) || (i == i2 && qualifiedTelephonyTimeZoneSuggestion2.suggestion.getSlotIndex() < qualifiedTelephonyTimeZoneSuggestion.suggestion.getSlotIndex()))) {
+                qualifiedTelephonyTimeZoneSuggestion = qualifiedTelephonyTimeZoneSuggestion2;
+            }
+            i3++;
+        }
     }
 
-    public synchronized LocationAlgorithmEvent getLatestLocationAlgorithmEvent() {
-        return (LocationAlgorithmEvent) this.mLatestLocationAlgorithmEvent.get();
+    public synchronized QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestionForTests() {
+        return findBestTelephonySuggestion();
     }
 
-    public synchronized boolean isTelephonyFallbackEnabledForTests() {
-        return ((Boolean) this.mTelephonyTimeZoneFallbackEnabled.getValue()).booleanValue();
+    public final synchronized MetricsTimeZoneDetectorState generateMetricsState() {
+        QualifiedTelephonyTimeZoneSuggestion findBestTelephonySuggestion;
+        findBestTelephonySuggestion = findBestTelephonySuggestion();
+        return MetricsTimeZoneDetectorState.create(new OrdinalGenerator(new TimeZoneCanonicalizer()), this.mCurrentConfigurationInternal, this.mEnvironment.getDeviceTimeZone(), getLatestManualSuggestion(), findBestTelephonySuggestion == null ? null : findBestTelephonySuggestion.suggestion, getLatestLocationAlgorithmEvent());
     }
 
     public synchronized ConfigurationInternal getCachedCapabilitiesAndConfigForTests() {
@@ -499,64 +336,124 @@ public final class TimeZoneDetectorStrategyImpl implements TimeZoneDetectorStrat
         return this.mDetectorStatus;
     }
 
-    /* loaded from: classes3.dex */
-    public final class QualifiedTelephonyTimeZoneSuggestion {
-        public final int score;
-        public final TelephonyTimeZoneSuggestion suggestion;
+    public synchronized LocationAlgorithmEvent getLatestLocationAlgorithmEvent() {
+        return (LocationAlgorithmEvent) this.mLatestLocationAlgorithmEvent.get();
+    }
 
-        public QualifiedTelephonyTimeZoneSuggestion(TelephonyTimeZoneSuggestion telephonyTimeZoneSuggestion, int i) {
-            this.suggestion = telephonyTimeZoneSuggestion;
-            this.score = i;
-        }
+    public synchronized ManualTimeZoneSuggestion getLatestManualSuggestion() {
+        return (ManualTimeZoneSuggestion) this.mLatestManualSuggestion.get();
+    }
 
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
+    public synchronized QualifiedTelephonyTimeZoneSuggestion getLatestTelephonySuggestion(int i) {
+        return (QualifiedTelephonyTimeZoneSuggestion) this.mTelephonySuggestionsBySlotIndex.get(Integer.valueOf(i));
+    }
+
+    public final synchronized void handleLocationAlgorithmEvent(LocationAlgorithmEvent locationAlgorithmEvent) {
+        try {
+            ConfigurationInternal configurationInternal = this.mCurrentConfigurationInternal;
+            Objects.requireNonNull(locationAlgorithmEvent);
+            this.mLatestLocationAlgorithmEvent.set(locationAlgorithmEvent);
+            if (updateDetectorStatus()) {
+                notifyStateChangeListenersAsynchronously$1();
             }
-            if (obj == null || QualifiedTelephonyTimeZoneSuggestion.class != obj.getClass()) {
-                return false;
+            if (locationAlgorithmEvent.mAlgorithmStatus.couldEnableTelephonyFallback()) {
+                enableTelephonyTimeZoneFallback("handleLocationAlgorithmEvent(), event=" + locationAlgorithmEvent);
+            } else {
+                disableTelephonyFallbackIfNeeded();
             }
-            QualifiedTelephonyTimeZoneSuggestion qualifiedTelephonyTimeZoneSuggestion = (QualifiedTelephonyTimeZoneSuggestion) obj;
-            return this.score == qualifiedTelephonyTimeZoneSuggestion.score && this.suggestion.equals(qualifiedTelephonyTimeZoneSuggestion.suggestion);
-        }
-
-        public int hashCode() {
-            return Objects.hash(Integer.valueOf(this.score), this.suggestion);
-        }
-
-        public String toString() {
-            return "QualifiedTelephonyTimeZoneSuggestion{suggestion=" + this.suggestion + ", score=" + this.score + '}';
+            doAutoTimeZoneDetection(configurationInternal, "New location algorithm event received. event=" + locationAlgorithmEvent);
+        } catch (Throwable th) {
+            throw th;
         }
     }
 
-    public static String formatDebugString(TimestampedValue timestampedValue) {
-        return timestampedValue.getValue() + " @ " + Duration.ofMillis(timestampedValue.getReferenceTimeMillis());
+    public synchronized boolean isTelephonyFallbackEnabledForTests() {
+        return ((Boolean) this.mTelephonyTimeZoneFallbackEnabled.getValue()).booleanValue();
     }
 
-    public static TimeZoneDetectorStatus createTimeZoneDetectorStatus(ConfigurationInternal configurationInternal, LocationAlgorithmEvent locationAlgorithmEvent) {
-        int i;
-        if (configurationInternal.isAutoDetectionSupported()) {
-            i = configurationInternal.getAutoDetectionEnabledBehavior() ? 3 : 2;
-        } else {
-            i = 1;
+    public final void notifyStateChangeListenersAsynchronously$1() {
+        Iterator it = ((ArrayList) this.mStateChangeListeners).iterator();
+        while (it.hasNext()) {
+            StateChangeListener stateChangeListener = (StateChangeListener) it.next();
+            Objects.requireNonNull(stateChangeListener);
+            this.mEnvironment.runAsync(new TimeDetectorStrategyImpl$$ExternalSyntheticLambda0(stateChangeListener));
         }
-        return new TimeZoneDetectorStatus(i, createTelephonyAlgorithmStatus(configurationInternal), createLocationAlgorithmStatus(configurationInternal, locationAlgorithmEvent));
     }
 
-    public static LocationTimeZoneAlgorithmStatus createLocationAlgorithmStatus(ConfigurationInternal configurationInternal, LocationAlgorithmEvent locationAlgorithmEvent) {
-        if (locationAlgorithmEvent != null) {
-            return locationAlgorithmEvent.getAlgorithmStatus();
+    public final void setDeviceTimeZoneIfRequired(String str, String str2) {
+        Environment environment = this.mEnvironment;
+        String deviceTimeZone = environment.getDeviceTimeZone();
+        int deviceTimeZoneConfidence = environment.getDeviceTimeZoneConfidence();
+        if (!str.equals(deviceTimeZone) || 100 > deviceTimeZoneConfidence) {
+            environment.setDeviceTimeZoneAndConfidence(100, str, XmlUtils$$ExternalSyntheticOutline0.m("Set device time zone or higher confidence: newZoneId=", str, ", cause=", str2, ", newConfidence=100"));
         }
-        if (!configurationInternal.isGeoDetectionSupported()) {
-            return LocationTimeZoneAlgorithmStatus.NOT_SUPPORTED;
-        }
-        if (configurationInternal.isGeoDetectionExecutionEnabled()) {
-            return LocationTimeZoneAlgorithmStatus.RUNNING_NOT_REPORTED;
-        }
-        return LocationTimeZoneAlgorithmStatus.NOT_RUNNING;
     }
 
-    public static TelephonyTimeZoneAlgorithmStatus createTelephonyAlgorithmStatus(ConfigurationInternal configurationInternal) {
-        return new TelephonyTimeZoneAlgorithmStatus(!configurationInternal.isTelephonyDetectionSupported() ? 1 : 3);
+    public final synchronized boolean suggestManualTimeZone(int i, ManualTimeZoneSuggestion manualTimeZoneSuggestion) {
+        ConfigurationInternal configurationInternal = this.mCurrentConfigurationInternal;
+        if (configurationInternal.mUserId != i) {
+            Slog.w("time_zone_detector", "Manual suggestion received but user != current user, userId=" + i + " suggestion=" + manualTimeZoneSuggestion);
+            return false;
+        }
+        Objects.requireNonNull(manualTimeZoneSuggestion);
+        String zoneId = manualTimeZoneSuggestion.getZoneId();
+        String str = "Manual time suggestion received: suggestion=" + manualTimeZoneSuggestion;
+        TimeZoneCapabilities asCapabilities = configurationInternal.asCapabilities();
+        if (asCapabilities.getSetManualTimeZoneCapability() == 40) {
+            this.mLatestManualSuggestion.set(manualTimeZoneSuggestion);
+            setDeviceTimeZoneIfRequired(zoneId, str);
+            return true;
+        }
+        Slog.i("time_zone_detector", "User does not have the capability needed to set the time zone manually: capabilities=" + asCapabilities + ", timeZoneId=" + zoneId + ", cause=" + str);
+        return false;
+    }
+
+    public final synchronized boolean updateConfiguration(int i, TimeZoneConfiguration timeZoneConfiguration) {
+        boolean z;
+        ServiceConfigAccessorImpl serviceConfigAccessorImpl = (ServiceConfigAccessorImpl) this.mServiceConfigAccessor;
+        synchronized (serviceConfigAccessorImpl) {
+            Objects.requireNonNull(timeZoneConfiguration);
+            ConfigurationInternal configurationInternal = serviceConfigAccessorImpl.getConfigurationInternal(i);
+            TimeZoneConfiguration tryApplyConfigChanges = configurationInternal.asCapabilities().tryApplyConfigChanges(new TimeZoneConfiguration.Builder().setAutoDetectionEnabled(configurationInternal.mAutoDetectionEnabledSetting).setGeoDetectionEnabled(configurationInternal.mGeoDetectionEnabledSetting).build(), timeZoneConfiguration);
+            if (tryApplyConfigChanges == null) {
+                z = false;
+            } else {
+                serviceConfigAccessorImpl.storeConfiguration(i, timeZoneConfiguration, tryApplyConfigChanges);
+                z = true;
+            }
+        }
+        if (z) {
+            updateCurrentConfigurationInternalIfRequired$1("updateConfiguration: userId=" + i + ", configuration=" + timeZoneConfiguration + ", bypassUserPolicyChecks=false");
+        }
+        return z;
+    }
+
+    public final void updateCurrentConfigurationInternalIfRequired$1(String str) {
+        ConfigurationInternal configurationInternal;
+        ServiceConfigAccessorImpl serviceConfigAccessorImpl = (ServiceConfigAccessorImpl) this.mServiceConfigAccessor;
+        synchronized (serviceConfigAccessorImpl) {
+            configurationInternal = serviceConfigAccessorImpl.getConfigurationInternal(((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).getCurrentUserId());
+        }
+        ConfigurationInternal configurationInternal2 = this.mCurrentConfigurationInternal;
+        if (configurationInternal.equals(configurationInternal2)) {
+            return;
+        }
+        this.mCurrentConfigurationInternal = configurationInternal;
+        String str2 = str + " [oldConfiguration=" + configurationInternal2 + ", newConfiguration=" + configurationInternal + "]";
+        this.mEnvironment.addDebugLogEntry(str2);
+        updateDetectorStatus();
+        notifyStateChangeListenersAsynchronously$1();
+        doAutoTimeZoneDetection(this.mCurrentConfigurationInternal, str2);
+    }
+
+    public final boolean updateDetectorStatus() {
+        ConfigurationInternal configurationInternal = this.mCurrentConfigurationInternal;
+        LocationAlgorithmEvent locationAlgorithmEvent = (LocationAlgorithmEvent) this.mLatestLocationAlgorithmEvent.get();
+        TimeZoneDetectorStatus timeZoneDetectorStatus = new TimeZoneDetectorStatus(!configurationInternal.isAutoDetectionSupported() ? 1 : (configurationInternal.isAutoDetectionSupported() && configurationInternal.mAutoDetectionEnabledSetting) ? 3 : 2, new TelephonyTimeZoneAlgorithmStatus(configurationInternal.mTelephonyDetectionSupported ? 3 : 1), locationAlgorithmEvent != null ? locationAlgorithmEvent.mAlgorithmStatus : !configurationInternal.mGeoDetectionSupported ? LocationTimeZoneAlgorithmStatus.NOT_SUPPORTED : configurationInternal.isGeoDetectionExecutionEnabled() ? LocationTimeZoneAlgorithmStatus.RUNNING_NOT_REPORTED : LocationTimeZoneAlgorithmStatus.NOT_RUNNING);
+        boolean z = !timeZoneDetectorStatus.equals(this.mDetectorStatus);
+        if (z) {
+            this.mDetectorStatus = timeZoneDetectorStatus;
+        }
+        return z;
     }
 }

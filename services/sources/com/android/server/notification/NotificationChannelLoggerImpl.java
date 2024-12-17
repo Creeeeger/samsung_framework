@@ -1,28 +1,17 @@
 package com.android.server.notification;
 
 import android.app.NotificationChannel;
-import android.app.NotificationChannelGroup;
 import com.android.internal.logging.UiEventLogger;
-import com.android.internal.logging.UiEventLoggerImpl;
 import com.android.internal.util.FrameworkStatsLog;
 import com.android.server.notification.NotificationChannelLogger;
+import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class NotificationChannelLoggerImpl implements NotificationChannelLogger {
-    public UiEventLogger mUiEventLogger = new UiEventLoggerImpl();
+public final class NotificationChannelLoggerImpl implements NotificationChannelLogger {
+    public UiEventLogger mUiEventLogger;
 
-    @Override // com.android.server.notification.NotificationChannelLogger
-    public void logNotificationChannel(NotificationChannelLogger.NotificationChannelEvent notificationChannelEvent, NotificationChannel notificationChannel, int i, String str, int i2, int i3) {
-        FrameworkStatsLog.write(FrameworkStatsLog.NOTIFICATION_CHANNEL_MODIFIED, notificationChannelEvent.getId(), i, str, NotificationChannelLogger.getIdHash(notificationChannel), i2, i3, notificationChannel.isConversation(), NotificationChannelLogger.getConversationIdHash(notificationChannel), notificationChannel.isDemoted(), notificationChannel.isImportantConversation());
-    }
-
-    @Override // com.android.server.notification.NotificationChannelLogger
-    public void logNotificationChannelGroup(NotificationChannelLogger.NotificationChannelEvent notificationChannelEvent, NotificationChannelGroup notificationChannelGroup, int i, String str, boolean z) {
-        FrameworkStatsLog.write(FrameworkStatsLog.NOTIFICATION_CHANNEL_MODIFIED, notificationChannelEvent.getId(), i, str, NotificationChannelLogger.getIdHash(notificationChannelGroup), NotificationChannelLogger.getImportance(z), NotificationChannelLogger.getImportance(notificationChannelGroup), false, 0, false, false);
-    }
-
-    @Override // com.android.server.notification.NotificationChannelLogger
-    public void logAppEvent(NotificationChannelLogger.NotificationChannelEvent notificationChannelEvent, int i, String str) {
-        this.mUiEventLogger.log(notificationChannelEvent, i, str);
+    public final void logNotificationChannel(NotificationChannelLogger.NotificationChannelEvent notificationChannelEvent, NotificationChannel notificationChannel, int i, String str, int i2, int i3) {
+        FrameworkStatsLog.write(FrameworkStatsLog.NOTIFICATION_CHANNEL_MODIFIED, notificationChannelEvent.getId(), i, str, Math.floorMod(Objects.hashCode(notificationChannel.getId()), 8192), i2, i3, notificationChannel.isConversation(), Math.floorMod(Objects.hashCode(notificationChannel.getConversationId()), 8192), notificationChannel.isDemoted(), notificationChannel.isImportantConversation());
     }
 }

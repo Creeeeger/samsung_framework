@@ -1,46 +1,33 @@
 package org.tukaani.xz.simple;
 
-import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class PowerPC implements SimpleFilter {
-    public final boolean isEncoder;
     public int pos;
 
-    public PowerPC(boolean z, int i) {
-        this.isEncoder = z;
-        this.pos = i;
-    }
-
     @Override // org.tukaani.xz.simple.SimpleFilter
-    public int code(byte[] bArr, int i, int i2) {
-        int i3;
-        int i4 = (i2 + i) - 4;
-        int i5 = i;
-        while (i5 <= i4) {
-            int i6 = bArr[i5];
-            if ((i6 & 252) == 72) {
-                int i7 = i5 + 3;
-                int i8 = bArr[i7];
-                if ((i8 & 3) == 1) {
-                    int i9 = i5 + 1;
-                    int i10 = i5 + 2;
-                    int i11 = ((i6 & 3) << 24) | ((bArr[i9] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) << 16) | ((bArr[i10] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) << 8) | (i8 & 252);
-                    if (this.isEncoder) {
-                        i3 = i11 + ((this.pos + i5) - i);
-                    } else {
-                        i3 = i11 - ((this.pos + i5) - i);
-                    }
-                    bArr[i5] = (byte) (72 | ((i3 >>> 24) & 3));
-                    bArr[i9] = (byte) (i3 >>> 16);
-                    bArr[i10] = (byte) (i3 >>> 8);
-                    bArr[i7] = (byte) (i3 | (bArr[i7] & 3));
+    public final int code(int i, int i2, byte[] bArr) {
+        int i3 = (i2 + i) - 4;
+        int i4 = i;
+        while (i4 <= i3) {
+            byte b = bArr[i4];
+            if ((b & 252) == 72) {
+                int i5 = i4 + 3;
+                byte b2 = bArr[i5];
+                if ((b2 & 3) == 1) {
+                    int i6 = i4 + 1;
+                    int i7 = i4 + 2;
+                    int i8 = (((((b & 3) << 24) | ((bArr[i6] & 255) << 16)) | ((bArr[i7] & 255) << 8)) | (b2 & 252)) - ((this.pos + i4) - i);
+                    bArr[i4] = (byte) (72 | ((i8 >>> 24) & 3));
+                    bArr[i6] = (byte) (i8 >>> 16);
+                    bArr[i7] = (byte) (i8 >>> 8);
+                    bArr[i5] = (byte) (i8 | (bArr[i5] & 3));
                 }
             }
-            i5 += 4;
+            i4 += 4;
         }
-        int i12 = i5 - i;
-        this.pos += i12;
-        return i12;
+        int i9 = i4 - i;
+        this.pos += i9;
+        return i9;
     }
 }

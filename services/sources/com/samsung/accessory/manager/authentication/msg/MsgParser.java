@@ -2,38 +2,24 @@ package com.samsung.accessory.manager.authentication.msg;
 
 import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
 import android.util.Slog;
-import com.android.internal.util.jobs.XmlUtils;
+import com.android.server.am.mars.MARsFreezeStateRecord$$ExternalSyntheticOutline0;
 
-/* loaded from: classes.dex */
-public class MsgParser {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class MsgParser {
     public byte[] extraData;
     public KeyInformation keyInform;
     public Message mMsg;
+    public MsgHelper mMsgHelper;
     public byte[] managerUrl;
     public byte productId;
     public String publicKey;
+    public byte[] randNum;
     public byte[] serialNumber;
     public byte[] urlExtra;
-    public String TAG = "SAccessoryManager_MsgParser";
-    public final int ROOTPUBKEY = 1;
-    public final int SEC_ROOTPUBKEY = 2;
-    public final int SEC_UBIVELOX_ROOTPUBKEY = 3;
-    public final int RES_ATQS = 1;
-    public final int RES_PUB_KEY = 2;
-    public final int RES_VERIFICATION = 3;
-    public final int RES_WRITE_ID = 4;
-    public final int RES_READ_ID = 5;
-    public final int RES_FIRMWARE = 6;
-    public final int RES_KEY_CHANGE = 7;
-    public final int RES_SEC_PUB_KEY = 8;
-    public final int RES_REQ_URL = 9;
-    public final int RES_REQ_EXTRA = 10;
-    public final int RES_REQ_UNIFIED3RD = 11;
-    public byte[] randNum = new byte[16];
-    public MsgHelper mMsgHelper = new MsgHelper();
 
-    /* loaded from: classes.dex */
-    public class KeyInformation {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class KeyInformation {
         public byte[] chipPubKey;
         public int keySize;
         public byte[] rootPriv_Sig_r;
@@ -41,192 +27,146 @@ public class MsgParser {
         public int signatureSize;
         public byte[] signedRandVal_r;
         public byte[] signedRandVal_s;
-
-        public void setCertificateOfChip(byte[] bArr) {
-            System.arraycopy(bArr, 0, this.chipPubKey, 0, this.keySize);
-            System.arraycopy(bArr, this.keySize, this.rootPriv_Sig_r, 0, this.signatureSize / 2);
-            int i = this.keySize;
-            int i2 = this.signatureSize;
-            System.arraycopy(bArr, i + (i2 / 2), this.rootPriv_Sig_s, 0, i2 / 2);
-        }
-
-        public void setSignatueOfRandomValue(byte[] bArr) {
-            System.arraycopy(bArr, 0, this.signedRandVal_r, 0, this.signatureSize / 2);
-            int i = this.signatureSize;
-            System.arraycopy(bArr, i / 2, this.signedRandVal_s, 0, i / 2);
-        }
-
-        public boolean isValidCertificate(int i) {
-            return i == this.keySize + this.signatureSize;
-        }
-
-        public boolean isValidSignature(int i) {
-            return i == this.signatureSize;
-        }
-
-        public KeyInformation(byte b) {
-            int i = b & 255;
-            if (i == 51 || i == 85) {
-                this.keySize = 40;
-                this.signatureSize = 42;
-                this.chipPubKey = new byte[40];
-                this.rootPriv_Sig_r = new byte[42 / 2];
-                this.rootPriv_Sig_s = new byte[42 / 2];
-                this.signedRandVal_r = new byte[42 / 2];
-                this.signedRandVal_s = new byte[42 / 2];
-            }
-        }
     }
 
-    public boolean parseData(int i, byte[] bArr) {
-        return parseData(i, bArr, false);
+    public static String byteArrayToString(byte[] bArr) {
+        if (bArr == null) {
+            return "null";
+        }
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (i < bArr.length) {
+            i = MARsFreezeStateRecord$$ExternalSyntheticOutline0.m("%02x", new Object[]{Byte.valueOf(bArr[i])}, sb, i, 1);
+        }
+        return sb.toString();
     }
 
-    public boolean parseData(int i, byte[] bArr, boolean z) {
+    public final boolean checkPubKey(int i, boolean z) {
+        KeyInformation keyInformation = this.keyInform;
+        if (this.mMsg.getData().length != keyInformation.keySize + keyInformation.signatureSize) {
+            return false;
+        }
+        KeyInformation keyInformation2 = this.keyInform;
+        byte[] data = this.mMsg.getData();
+        byte[] bArr = keyInformation2.chipPubKey;
+        int i2 = keyInformation2.keySize;
+        System.arraycopy(data, 0, bArr, 0, i2);
+        int i3 = 2;
+        int i4 = keyInformation2.signatureSize / 2;
+        System.arraycopy(data, i2, keyInformation2.rootPriv_Sig_r, 0, i4);
+        System.arraycopy(data, i2 + i4, keyInformation2.rootPriv_Sig_s, 0, i4);
+        if (z) {
+            i3 = 3;
+        } else if (i == 2) {
+            i3 = 1;
+        }
+        boolean verify_certificate = this.mMsgHelper.verify_certificate(i3, byteArrayToString(this.keyInform.chipPubKey), byteArrayToString(this.keyInform.rootPriv_Sig_r), byteArrayToString(this.keyInform.rootPriv_Sig_s));
+        if (verify_certificate) {
+            this.publicKey = byteArrayToString(this.keyInform.chipPubKey);
+        }
+        return verify_certificate;
+    }
+
+    public final boolean parseData(int i, byte[] bArr, boolean z) {
+        boolean z2;
         if (i == 1) {
-            this.mMsg = new Message(i, bArr);
-            return checkAtqs();
+            Message message = new Message(i, bArr);
+            this.mMsg = message;
+            if (message.getData().length < 2) {
+                return false;
+            }
+            this.productId = this.mMsg.getData()[1];
+            Slog.secD("SAccessoryManager_MsgParser", "productId = " + Integer.toHexString(this.productId) + "h");
+            byte b = this.productId;
+            KeyInformation keyInformation = new KeyInformation();
+            int i2 = b & 255;
+            if (i2 == 51 || i2 == 85) {
+                keyInformation.keySize = 40;
+                keyInformation.signatureSize = 42;
+                keyInformation.chipPubKey = new byte[40];
+                keyInformation.rootPriv_Sig_r = new byte[21];
+                keyInformation.rootPriv_Sig_s = new byte[21];
+                keyInformation.signedRandVal_r = new byte[21];
+                keyInformation.signedRandVal_s = new byte[21];
+            }
+            this.keyInform = keyInformation;
+            return true;
         }
         if (i == 2) {
             this.mMsg = new Message(i, bArr);
             boolean checkPubKey = checkPubKey(2, z);
-            Slog.secD(this.TAG, "command " + i + XmlUtils.STRING_ARRAY_SEPARATOR + checkPubKey);
+            Slog.secD("SAccessoryManager_MsgParser", "command " + i + ":" + checkPubKey);
             return checkPubKey;
         }
         if (i == 3) {
-            this.mMsg = new Message(i, bArr);
-            boolean checkVerification = checkVerification();
-            Slog.secD(this.TAG, "command " + i + XmlUtils.STRING_ARRAY_SEPARATOR + checkVerification);
-            return checkVerification;
+            Message message2 = new Message(i, bArr);
+            this.mMsg = message2;
+            if (message2.getData().length == this.keyInform.signatureSize) {
+                KeyInformation keyInformation2 = this.keyInform;
+                byte[] data = this.mMsg.getData();
+                int i3 = keyInformation2.signatureSize / 2;
+                System.arraycopy(data, 0, keyInformation2.signedRandVal_r, 0, i3);
+                System.arraycopy(data, i3, keyInformation2.signedRandVal_s, 0, i3);
+                z2 = this.mMsgHelper.verify_rand_signature(byteArrayToString(this.keyInform.chipPubKey), this.randNum, byteArrayToString(this.keyInform.signedRandVal_r), byteArrayToString(this.keyInform.signedRandVal_s));
+            } else {
+                Slog.e("SAccessoryManager_MsgParser", "signature is invalid");
+                z2 = false;
+            }
+            Slog.secD("SAccessoryManager_MsgParser", "command " + i + ":" + z2);
+            return z2;
         }
         if (i == 5) {
-            this.mMsg = new Message(i, bArr);
-            return checkReadId();
+            Message message3 = new Message(i, bArr);
+            this.mMsg = message3;
+            this.serialNumber = message3.getData();
+            return true;
         }
         switch (i) {
             case 8:
                 this.mMsg = new Message(i, bArr);
                 return checkPubKey(8, z);
             case 9:
-                this.mMsg = new Message(i, bArr);
-                return checkUrl();
+                Message message4 = new Message(i, bArr);
+                this.mMsg = message4;
+                byte[] data2 = message4.getData();
+                this.urlExtra = data2;
+                int length = data2.length;
+                byte[] bArr2 = new byte[length + 1];
+                this.managerUrl = bArr2;
+                bArr2[0] = (byte) length;
+                System.arraycopy(data2, 0, bArr2, 1, length);
+                Slog.secD("SAccessoryManager_MsgParser", "url: " + byteArrayToString(this.managerUrl));
+                return true;
             case 10:
-                this.mMsg = new Message(i, bArr);
-                return checkExtra();
+                Message message5 = new Message(i, bArr);
+                this.mMsg = message5;
+                byte[] data3 = message5.getData();
+                this.urlExtra = data3;
+                int length2 = data3.length;
+                byte[] bArr3 = new byte[length2 + 1];
+                this.extraData = bArr3;
+                bArr3[0] = (byte) length2;
+                System.arraycopy(data3, 0, bArr3, 1, length2);
+                Slog.secD("SAccessoryManager_MsgParser", "extra Data: " + byteArrayToString(this.extraData));
+                return true;
             case 11:
-                this.mMsg = new Message(i, bArr);
-                return checkUnified3rd();
+                Message message6 = new Message(i, bArr);
+                this.mMsg = message6;
+                byte[] data4 = message6.getData();
+                this.urlExtra = data4;
+                int i4 = (data4[0] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) + 1;
+                int i5 = data4[i4] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
+                byte[] bArr4 = new byte[i4];
+                this.managerUrl = bArr4;
+                int i6 = i5 + 1;
+                this.extraData = new byte[i6];
+                System.arraycopy(data4, 0, bArr4, 0, i4);
+                System.arraycopy(this.urlExtra, i4, this.extraData, 0, i6);
+                Slog.secD("SAccessoryManager_MsgParser", "url: " + byteArrayToString(this.managerUrl));
+                Slog.secD("SAccessoryManager_MsgParser", "extra Data: " + byteArrayToString(this.extraData));
+                return true;
             default:
                 return true;
         }
-    }
-
-    public boolean checkAtqs() {
-        if (this.mMsg.getData().length < 2) {
-            return false;
-        }
-        this.productId = this.mMsg.getData()[1];
-        Slog.secD(this.TAG, "productId = " + Integer.toHexString(this.productId) + "h");
-        this.keyInform = new KeyInformation(this.productId);
-        return true;
-    }
-
-    public boolean checkPubKey(int i, boolean z) {
-        if (!this.keyInform.isValidCertificate(this.mMsg.getData().length)) {
-            return false;
-        }
-        this.keyInform.setCertificateOfChip(this.mMsg.getData());
-        boolean verify_certificate = this.mMsgHelper.verify_certificate(z ? 3 : i == 2 ? 1 : 2, byteArrayToString(this.keyInform.chipPubKey), byteArrayToString(this.keyInform.rootPriv_Sig_r), byteArrayToString(this.keyInform.rootPriv_Sig_s));
-        if (!verify_certificate) {
-            return verify_certificate;
-        }
-        this.publicKey = byteArrayToString(this.keyInform.chipPubKey);
-        return verify_certificate;
-    }
-
-    public boolean checkVerification() {
-        if (this.keyInform.isValidSignature(this.mMsg.getData().length)) {
-            this.keyInform.setSignatueOfRandomValue(this.mMsg.getData());
-            return this.mMsgHelper.verify_rand_signature(byteArrayToString(this.keyInform.chipPubKey), this.randNum, byteArrayToString(this.keyInform.signedRandVal_r), byteArrayToString(this.keyInform.signedRandVal_s));
-        }
-        Slog.e(this.TAG, "signature is invalid");
-        return false;
-    }
-
-    public boolean checkReadId() {
-        this.serialNumber = this.mMsg.getData();
-        return true;
-    }
-
-    public boolean checkUrl() {
-        byte[] data = this.mMsg.getData();
-        this.urlExtra = data;
-        int length = data.length;
-        byte[] bArr = new byte[length + 1];
-        this.managerUrl = bArr;
-        bArr[0] = (byte) length;
-        System.arraycopy(data, 0, bArr, 1, length);
-        Slog.secD(this.TAG, "url: " + byteArrayToString(this.managerUrl));
-        return true;
-    }
-
-    public boolean checkExtra() {
-        byte[] data = this.mMsg.getData();
-        this.urlExtra = data;
-        int length = data.length;
-        byte[] bArr = new byte[length + 1];
-        this.extraData = bArr;
-        bArr[0] = (byte) length;
-        System.arraycopy(data, 0, bArr, 1, length);
-        Slog.secD(this.TAG, "extra Data: " + byteArrayToString(this.extraData));
-        return true;
-    }
-
-    public boolean checkUnified3rd() {
-        byte[] data = this.mMsg.getData();
-        this.urlExtra = data;
-        int i = (data[0] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) + 1;
-        int i2 = data[i] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
-        byte[] bArr = new byte[i];
-        this.managerUrl = bArr;
-        int i3 = i2 + 1;
-        this.extraData = new byte[i3];
-        System.arraycopy(data, 0, bArr, 0, i);
-        System.arraycopy(this.urlExtra, i, this.extraData, 0, i3);
-        Slog.secD(this.TAG, "url: " + byteArrayToString(this.managerUrl));
-        Slog.secD(this.TAG, "extra Data: " + byteArrayToString(this.extraData));
-        return true;
-    }
-
-    public void setRandNum(byte[] bArr) {
-        this.randNum = (byte[]) bArr.clone();
-    }
-
-    public String getPublicKey() {
-        String str = this.publicKey;
-        return str == null ? "" : str;
-    }
-
-    public byte[] getSerialNumber() {
-        return this.serialNumber;
-    }
-
-    public byte[] getManagerUrl() {
-        return this.managerUrl;
-    }
-
-    public byte[] getExtraData() {
-        return this.extraData;
-    }
-
-    public String byteArrayToString(byte[] bArr) {
-        if (bArr == null) {
-            return "null";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bArr) {
-            sb.append(String.format("%02x", Byte.valueOf(b)));
-        }
-        return sb.toString();
     }
 }

@@ -3,7 +3,8 @@ package com.android.server.timezonedetector.location;
 import java.time.Duration;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class TimeZoneProviderRequest {
     public static final TimeZoneProviderRequest STOP_UPDATES = new TimeZoneProviderRequest(false, null, null);
     public final Duration mEventFilteringAgeThreshold;
@@ -16,29 +17,7 @@ public final class TimeZoneProviderRequest {
         this.mEventFilteringAgeThreshold = duration2;
     }
 
-    public static TimeZoneProviderRequest createStartUpdatesRequest(Duration duration, Duration duration2) {
-        Objects.requireNonNull(duration);
-        Objects.requireNonNull(duration2);
-        return new TimeZoneProviderRequest(true, duration, duration2);
-    }
-
-    public static TimeZoneProviderRequest createStopUpdatesRequest() {
-        return STOP_UPDATES;
-    }
-
-    public boolean sendUpdates() {
-        return this.mSendUpdates;
-    }
-
-    public Duration getInitializationTimeout() {
-        return this.mInitializationTimeout;
-    }
-
-    public Duration getEventFilteringAgeThreshold() {
-        return this.mEventFilteringAgeThreshold;
-    }
-
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -49,11 +28,11 @@ public final class TimeZoneProviderRequest {
         return this.mSendUpdates == timeZoneProviderRequest.mSendUpdates && Objects.equals(this.mInitializationTimeout, timeZoneProviderRequest.mInitializationTimeout) && Objects.equals(this.mEventFilteringAgeThreshold, timeZoneProviderRequest.mEventFilteringAgeThreshold);
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(Boolean.valueOf(this.mSendUpdates), this.mInitializationTimeout, this.mEventFilteringAgeThreshold);
     }
 
-    public String toString() {
+    public final String toString() {
         return "TimeZoneProviderRequest{mSendUpdates=" + this.mSendUpdates + ", mInitializationTimeout=" + this.mInitializationTimeout + ", mEventFilteringAgeThreshold=" + this.mEventFilteringAgeThreshold + "}";
     }
 }

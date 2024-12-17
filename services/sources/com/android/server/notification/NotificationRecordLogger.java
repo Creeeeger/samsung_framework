@@ -1,296 +1,157 @@
 package com.android.server.notification;
 
 import android.app.NotificationChannel;
-import android.app.Person;
-import android.os.Bundle;
-import android.os.IInstalld;
 import android.util.Log;
 import com.android.internal.logging.InstanceId;
 import com.android.internal.logging.UiEventLogger;
-import com.android.internal.util.FrameworkStatsLog;
-import java.util.ArrayList;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public interface NotificationRecordLogger {
-    void log(UiEventLogger.UiEventEnum uiEventEnum);
 
-    void log(UiEventLogger.UiEventEnum uiEventEnum, NotificationRecord notificationRecord);
-
-    void logNotificationAdjusted(NotificationRecord notificationRecord, int i, int i2, InstanceId instanceId);
-
-    void logNotificationPosted(NotificationReported notificationReported);
-
-    default NotificationReported prepareToLogNotificationPosted(NotificationRecord notificationRecord, NotificationRecord notificationRecord2, int i, int i2, InstanceId instanceId) {
-        NotificationRecordPair notificationRecordPair = new NotificationRecordPair(notificationRecord, notificationRecord2);
-        if (notificationRecordPair.shouldLogReported(i2)) {
-            return new NotificationReported(notificationRecordPair, NotificationReportedEvent.fromRecordPair(notificationRecordPair), i, i2, instanceId);
-        }
-        return null;
-    }
-
-    default void logNotificationCancelled(NotificationRecord notificationRecord, int i, int i2) {
-        log(NotificationCancelledEvent.fromCancelReason(i, i2), notificationRecord);
-    }
-
-    default void logNotificationVisibility(NotificationRecord notificationRecord, boolean z) {
-        log(NotificationEvent.fromVisibility(z), notificationRecord);
-    }
-
-    /* loaded from: classes2.dex */
-    public enum NotificationReportedEvent implements UiEventLogger.UiEventEnum {
-        NOTIFICATION_POSTED(162),
-        NOTIFICATION_UPDATED(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_LAUNCHED_FROM_SETTINGS),
-        NOTIFICATION_ADJUSTED(908);
-
-        private final int mId;
-
-        NotificationReportedEvent(int i) {
-            this.mId = i;
-        }
-
-        public int getId() {
-            return this.mId;
-        }
-
-        public static NotificationReportedEvent fromRecordPair(NotificationRecordPair notificationRecordPair) {
-            return notificationRecordPair.old != null ? NOTIFICATION_UPDATED : NOTIFICATION_POSTED;
-        }
-    }
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public enum NotificationCancelledEvent implements UiEventLogger.UiEventEnum {
-        INVALID(0),
-        NOTIFICATION_CANCEL_CLICK(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_ADMIN_RESTRICTED),
-        NOTIFICATION_CANCEL_USER_OTHER(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_MISSING_WORK_APP),
-        NOTIFICATION_CANCEL_USER_CANCEL_ALL(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_MISSING_PERSONAL_APP),
-        NOTIFICATION_CANCEL_ERROR(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_MISSING_INSTALL_BANNER_INTENT),
-        NOTIFICATION_CANCEL_PACKAGE_CHANGED(168),
-        NOTIFICATION_CANCEL_USER_STOPPED(169),
-        NOTIFICATION_CANCEL_PACKAGE_BANNED(170),
-        NOTIFICATION_CANCEL_APP_CANCEL(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_USER_DECLINED_CONSENT),
-        NOTIFICATION_CANCEL_APP_CANCEL_ALL(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_PERMISSION_REVOKED),
-        NOTIFICATION_CANCEL_LISTENER_CANCEL(173),
-        NOTIFICATION_CANCEL_LISTENER_CANCEL_ALL(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__DOCSUI_EMPTY_STATE_QUIET_MODE),
-        NOTIFICATION_CANCEL_GROUP_SUMMARY_CANCELED(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__DOCSUI_LAUNCH_OTHER_APP),
-        NOTIFICATION_CANCEL_GROUP_OPTIMIZATION(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__DOCSUI_PICK_RESULT),
-        NOTIFICATION_CANCEL_PACKAGE_SUSPENDED(177),
-        NOTIFICATION_CANCEL_PROFILE_TURNED_OFF(178),
-        NOTIFICATION_CANCEL_UNAUTOBUNDLED(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CREDENTIAL_MANAGEMENT_APP_REQUEST_POLICY),
-        NOTIFICATION_CANCEL_CHANNEL_BANNED(180),
-        NOTIFICATION_CANCEL_SNOOZED(181),
-        NOTIFICATION_CANCEL_TIMEOUT(182),
-        NOTIFICATION_CANCEL_CHANNEL_REMOVED(1261),
-        NOTIFICATION_CANCEL_CLEAR_DATA(1262),
-        NOTIFICATION_CANCEL_USER_PEEK(190),
-        NOTIFICATION_CANCEL_USER_AOD(191),
-        NOTIFICATION_CANCEL_USER_BUBBLE(1228),
-        NOTIFICATION_CANCEL_USER_LOCKSCREEN(193),
-        NOTIFICATION_CANCEL_USER_SHADE(192),
-        NOTIFICATION_CANCEL_ASSISTANT(906);
+        INVALID("INVALID"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF1("NOTIFICATION_CANCEL_CLICK"),
+        NOTIFICATION_CANCEL_USER_OTHER("NOTIFICATION_CANCEL_USER_OTHER"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF3("NOTIFICATION_CANCEL_USER_CANCEL_ALL"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF4("NOTIFICATION_CANCEL_ERROR"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF5("NOTIFICATION_CANCEL_PACKAGE_CHANGED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF6("NOTIFICATION_CANCEL_USER_STOPPED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF7("NOTIFICATION_CANCEL_PACKAGE_BANNED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF8("NOTIFICATION_CANCEL_APP_CANCEL"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF9("NOTIFICATION_CANCEL_APP_CANCEL_ALL"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF10("NOTIFICATION_CANCEL_LISTENER_CANCEL"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF11("NOTIFICATION_CANCEL_LISTENER_CANCEL_ALL"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF12("NOTIFICATION_CANCEL_GROUP_SUMMARY_CANCELED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF13("NOTIFICATION_CANCEL_GROUP_OPTIMIZATION"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF14("NOTIFICATION_CANCEL_PACKAGE_SUSPENDED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF15("NOTIFICATION_CANCEL_PROFILE_TURNED_OFF"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF14("NOTIFICATION_CANCEL_UNAUTOBUNDLED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF15("NOTIFICATION_CANCEL_CHANNEL_BANNED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF14("NOTIFICATION_CANCEL_SNOOZED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF15("NOTIFICATION_CANCEL_TIMEOUT"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF14("NOTIFICATION_CANCEL_CHANNEL_REMOVED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF15("NOTIFICATION_CANCEL_CLEAR_DATA"),
+        NOTIFICATION_CANCEL_USER_PEEK("NOTIFICATION_CANCEL_USER_PEEK"),
+        NOTIFICATION_CANCEL_USER_AOD("NOTIFICATION_CANCEL_USER_AOD"),
+        NOTIFICATION_CANCEL_USER_BUBBLE("NOTIFICATION_CANCEL_USER_BUBBLE"),
+        NOTIFICATION_CANCEL_USER_LOCKSCREEN("NOTIFICATION_CANCEL_USER_LOCKSCREEN"),
+        NOTIFICATION_CANCEL_USER_SHADE("NOTIFICATION_CANCEL_USER_SHADE"),
+        NOTIFICATION_CANCEL_ASSISTANT("NOTIFICATION_CANCEL_ASSISTANT");
 
         private final int mId;
 
-        NotificationCancelledEvent(int i) {
-            this.mId = i;
+        NotificationCancelledEvent(String str) {
+            this.mId = r2;
         }
 
-        public int getId() {
+        public final int getId() {
             return this.mId;
-        }
-
-        public static NotificationCancelledEvent fromCancelReason(int i, int i2) {
-            if (i2 == -1) {
-                Log.wtf("NotificationRecordLogger", "Unexpected surface: " + i2 + " with reason " + i);
-                return INVALID;
-            }
-            if (i != 2) {
-                if (1 <= i && i <= 21) {
-                    return values()[i];
-                }
-                if (i == 22) {
-                    return NOTIFICATION_CANCEL_ASSISTANT;
-                }
-                Log.wtf("NotificationRecordLogger", "Unexpected reason: " + i + " with surface " + i2);
-                return INVALID;
-            }
-            if (i2 == 0) {
-                return NOTIFICATION_CANCEL_USER_OTHER;
-            }
-            if (i2 == 1) {
-                return NOTIFICATION_CANCEL_USER_PEEK;
-            }
-            if (i2 == 2) {
-                return NOTIFICATION_CANCEL_USER_AOD;
-            }
-            if (i2 == 3) {
-                return NOTIFICATION_CANCEL_USER_SHADE;
-            }
-            if (i2 == 4) {
-                return NOTIFICATION_CANCEL_USER_BUBBLE;
-            }
-            if (i2 == 5) {
-                return NOTIFICATION_CANCEL_USER_LOCKSCREEN;
-            }
-            Log.wtf("NotificationRecordLogger", "Unexpected surface: " + i2 + " with reason " + i);
-            return INVALID;
         }
     }
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public enum NotificationEvent implements UiEventLogger.UiEventEnum {
-        NOTIFICATION_OPEN(197),
-        NOTIFICATION_CLOSE(198),
-        NOTIFICATION_SNOOZED(FrameworkStatsLog.APP_BACKGROUND_RESTRICTIONS_INFO__EXEMPTION_REASON__REASON_MEDIA_SESSION_CALLBACK),
-        NOTIFICATION_NOT_POSTED_SNOOZED(FrameworkStatsLog.APP_BACKGROUND_RESTRICTIONS_INFO__EXEMPTION_REASON__REASON_ROLE_EMERGENCY),
-        NOTIFICATION_CLICKED(320),
-        NOTIFICATION_ACTION_CLICKED(321),
-        NOTIFICATION_DETAIL_OPEN_SYSTEM(FrameworkStatsLog.TIF_TUNE_CHANGED),
-        NOTIFICATION_DETAIL_CLOSE_SYSTEM(FrameworkStatsLog.AUTO_ROTATE_REPORTED),
-        NOTIFICATION_DETAIL_OPEN_USER(329),
-        NOTIFICATION_DETAIL_CLOSE_USER(330),
-        NOTIFICATION_DIRECT_REPLIED(331),
-        NOTIFICATION_SMART_REPLIED(332),
-        NOTIFICATION_SMART_REPLY_VISIBLE(FrameworkStatsLog.DEVICE_ROTATED),
-        NOTIFICATION_ACTION_CLICKED_0(450),
-        NOTIFICATION_ACTION_CLICKED_1(FrameworkStatsLog.CDM_ASSOCIATION_ACTION),
-        NOTIFICATION_ACTION_CLICKED_2(FrameworkStatsLog.MAGNIFICATION_TRIPLE_TAP_AND_HOLD_ACTIVATED_SESSION_REPORTED),
-        NOTIFICATION_CONTEXTUAL_ACTION_CLICKED_0(FrameworkStatsLog.MAGNIFICATION_FOLLOW_TYPING_FOCUS_ACTIVATED_SESSION_REPORTED),
-        NOTIFICATION_CONTEXTUAL_ACTION_CLICKED_1(454),
-        NOTIFICATION_CONTEXTUAL_ACTION_CLICKED_2(455),
-        NOTIFICATION_ASSIST_ACTION_CLICKED_0(456),
-        NOTIFICATION_ASSIST_ACTION_CLICKED_1(457),
-        NOTIFICATION_ASSIST_ACTION_CLICKED_2(458);
+        NOTIFICATION_OPEN("NOTIFICATION_OPEN"),
+        NOTIFICATION_CLOSE("NOTIFICATION_CLOSE"),
+        NOTIFICATION_SNOOZED("NOTIFICATION_SNOOZED"),
+        NOTIFICATION_NOT_POSTED_SNOOZED("NOTIFICATION_NOT_POSTED_SNOOZED"),
+        NOTIFICATION_CLICKED("NOTIFICATION_CLICKED"),
+        NOTIFICATION_ACTION_CLICKED("NOTIFICATION_ACTION_CLICKED"),
+        NOTIFICATION_DETAIL_OPEN_SYSTEM("NOTIFICATION_DETAIL_OPEN_SYSTEM"),
+        NOTIFICATION_DETAIL_CLOSE_SYSTEM("NOTIFICATION_DETAIL_CLOSE_SYSTEM"),
+        NOTIFICATION_DETAIL_OPEN_USER("NOTIFICATION_DETAIL_OPEN_USER"),
+        NOTIFICATION_DETAIL_CLOSE_USER("NOTIFICATION_DETAIL_CLOSE_USER"),
+        NOTIFICATION_DIRECT_REPLIED("NOTIFICATION_DIRECT_REPLIED"),
+        NOTIFICATION_SMART_REPLIED("NOTIFICATION_SMART_REPLIED"),
+        NOTIFICATION_SMART_REPLY_VISIBLE("NOTIFICATION_SMART_REPLY_VISIBLE"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF171("NOTIFICATION_ACTION_CLICKED_0"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF184("NOTIFICATION_ACTION_CLICKED_1"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF197("NOTIFICATION_ACTION_CLICKED_2"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF210("NOTIFICATION_CONTEXTUAL_ACTION_CLICKED_0"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF223("NOTIFICATION_CONTEXTUAL_ACTION_CLICKED_1"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF236("NOTIFICATION_CONTEXTUAL_ACTION_CLICKED_2"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF249("NOTIFICATION_ASSIST_ACTION_CLICKED_0"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF262("NOTIFICATION_ASSIST_ACTION_CLICKED_1"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF275("NOTIFICATION_ASSIST_ACTION_CLICKED_2");
 
         private final int mId;
 
-        NotificationEvent(int i) {
-            this.mId = i;
+        NotificationEvent(String str) {
+            this.mId = r2;
         }
 
-        public int getId() {
+        public final int getId() {
             return this.mId;
-        }
-
-        public static NotificationEvent fromVisibility(boolean z) {
-            return z ? NOTIFICATION_OPEN : NOTIFICATION_CLOSE;
-        }
-
-        public static NotificationEvent fromExpanded(boolean z, boolean z2) {
-            return z2 ? z ? NOTIFICATION_DETAIL_OPEN_USER : NOTIFICATION_DETAIL_CLOSE_USER : z ? NOTIFICATION_DETAIL_OPEN_SYSTEM : NOTIFICATION_DETAIL_CLOSE_SYSTEM;
-        }
-
-        public static NotificationEvent fromAction(int i, boolean z, boolean z2) {
-            if (i < 0 || i > 2) {
-                return NOTIFICATION_ACTION_CLICKED;
-            }
-            if (z) {
-                return values()[NOTIFICATION_ASSIST_ACTION_CLICKED_0.ordinal() + i];
-            }
-            if (z2) {
-                return values()[NOTIFICATION_CONTEXTUAL_ACTION_CLICKED_0.ordinal() + i];
-            }
-            return values()[NOTIFICATION_ACTION_CLICKED_0.ordinal() + i];
         }
     }
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public enum NotificationPanelEvent implements UiEventLogger.UiEventEnum {
-        NOTIFICATION_PANEL_OPEN(325),
-        NOTIFICATION_PANEL_CLOSE(326);
+        NOTIFICATION_PANEL_OPEN("NOTIFICATION_PANEL_OPEN"),
+        NOTIFICATION_PANEL_CLOSE("NOTIFICATION_PANEL_CLOSE");
 
         private final int mId;
 
-        NotificationPanelEvent(int i) {
-            this.mId = i;
+        NotificationPanelEvent(String str) {
+            this.mId = r2;
         }
 
-        public int getId() {
+        public final int getId() {
             return this.mId;
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class NotificationRecordPair {
-        public final NotificationRecord old;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class NotificationRecordPair {
         public final NotificationRecord r;
 
         public NotificationRecordPair(NotificationRecord notificationRecord, NotificationRecord notificationRecord2) {
             this.r = notificationRecord;
-            this.old = notificationRecord2;
-        }
-
-        public boolean shouldLogReported(int i) {
-            NotificationRecord notificationRecord = this.r;
-            if (notificationRecord == null) {
-                return false;
-            }
-            if (this.old == null || i > 0) {
-                return true;
-            }
-            return (Objects.equals(notificationRecord.getSbn().getChannelIdLogTag(), this.old.getSbn().getChannelIdLogTag()) && Objects.equals(this.r.getSbn().getGroupLogTag(), this.old.getSbn().getGroupLogTag()) && this.r.getSbn().getNotification().isGroupSummary() == this.old.getSbn().getNotification().isGroupSummary() && Objects.equals(this.r.getSbn().getNotification().category, this.old.getSbn().getNotification().category) && this.r.getImportance() == this.old.getImportance() && NotificationRecordLogger.getLoggingImportance(this.r) == NotificationRecordLogger.getLoggingImportance(this.old) && this.r.rankingScoreMatches(this.old.getRankingScore())) ? false : true;
-        }
-
-        public int getStyle() {
-            return getStyle(this.r.getSbn().getNotification().extras);
-        }
-
-        public final int getStyle(Bundle bundle) {
-            String string;
-            if (bundle == null || (string = bundle.getString("android.template")) == null || string.isEmpty()) {
-                return 0;
-            }
-            return string.hashCode();
-        }
-
-        public int getNumPeople() {
-            return getNumPeople(this.r.getSbn().getNotification().extras);
-        }
-
-        public final int getNumPeople(Bundle bundle) {
-            ArrayList parcelableArrayList;
-            if (bundle == null || (parcelableArrayList = bundle.getParcelableArrayList("android.people.list", Person.class)) == null || parcelableArrayList.isEmpty()) {
-                return 0;
-            }
-            return parcelableArrayList.size();
-        }
-
-        public int getAssistantHash() {
-            String adjustmentIssuer = this.r.getAdjustmentIssuer();
-            if (adjustmentIssuer == null) {
-                return 0;
-            }
-            return adjustmentIssuer.hashCode();
-        }
-
-        public int getInstanceId() {
-            if (this.r.getSbn().getInstanceId() == null) {
-                return 0;
-            }
-            return this.r.getSbn().getInstanceId().getId();
-        }
-
-        public int getNotificationIdHash() {
-            return SmallHash.hash(this.r.getSbn().getId() ^ Objects.hashCode(this.r.getSbn().getTag()));
-        }
-
-        public int getChannelIdHash() {
-            return SmallHash.hash(this.r.getSbn().getNotification().getChannelId());
-        }
-
-        public int getGroupIdHash() {
-            return SmallHash.hash(this.r.getSbn().getGroup());
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class NotificationReported {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class NotificationReported {
+        public final int age_in_minutes;
         public final int alerting;
         public final int assistant_hash;
         public final float assistant_ranking_score;
         public final String category;
         public final int channel_id_hash;
         public final int event_id;
+        public final int fsi_state;
         public final int group_id_hash;
         public final int group_instance_id;
         public final int importance;
@@ -301,6 +162,7 @@ public interface NotificationRecordLogger {
         public final int instance_id;
         public final boolean is_foreground_service;
         public final boolean is_group_summary;
+        public final boolean is_locked;
         public final boolean is_non_dismissible;
         public final boolean is_ongoing;
         public final int notification_id_hash;
@@ -312,46 +174,87 @@ public interface NotificationRecordLogger {
         public final long timeout_millis;
         public final int uid;
 
-        public NotificationReported(NotificationRecordPair notificationRecordPair, NotificationReportedEvent notificationReportedEvent, int i, int i2, InstanceId instanceId) {
-            this.event_id = notificationReportedEvent.getId();
-            this.uid = notificationRecordPair.r.getUid();
-            this.package_name = notificationRecordPair.r.getSbn().getPackageName();
-            this.instance_id = notificationRecordPair.getInstanceId();
-            this.notification_id_hash = notificationRecordPair.getNotificationIdHash();
-            this.channel_id_hash = notificationRecordPair.getChannelIdHash();
-            this.group_id_hash = notificationRecordPair.getGroupIdHash();
-            this.group_instance_id = instanceId == null ? 0 : instanceId.getId();
-            this.is_group_summary = notificationRecordPair.r.getSbn().getNotification().isGroupSummary();
-            this.category = notificationRecordPair.r.getSbn().getNotification().category;
-            this.style = notificationRecordPair.getStyle();
-            this.num_people = notificationRecordPair.getNumPeople();
-            this.position = i;
-            this.importance = NotificationRecordLogger.getLoggingImportance(notificationRecordPair.r);
-            this.alerting = i2;
-            this.importance_source = notificationRecordPair.r.getImportanceExplanationCode();
-            this.importance_initial = notificationRecordPair.r.getInitialImportance();
-            this.importance_initial_source = notificationRecordPair.r.getInitialImportanceExplanationCode();
-            this.importance_asst = notificationRecordPair.r.getAssistantImportance();
-            this.assistant_hash = notificationRecordPair.getAssistantHash();
-            this.assistant_ranking_score = notificationRecordPair.r.getRankingScore();
-            this.is_ongoing = notificationRecordPair.r.getSbn().isOngoing();
-            this.is_foreground_service = NotificationRecordLogger.isForegroundService(notificationRecordPair.r);
-            this.timeout_millis = notificationRecordPair.r.getSbn().getNotification().getTimeoutAfter();
-            this.is_non_dismissible = NotificationRecordLogger.isNonDismissible(notificationRecordPair.r);
+        /* JADX WARN: Removed duplicated region for block: B:52:0x017f  */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public NotificationReported(com.android.server.notification.NotificationRecordLogger.NotificationRecordPair r6, com.android.server.notification.NotificationRecordLogger.NotificationReportedEvent r7, int r8, int r9, com.android.internal.logging.InstanceId r10) {
+            /*
+                Method dump skipped, instructions count: 443
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.notification.NotificationRecordLogger.NotificationReported.<init>(com.android.server.notification.NotificationRecordLogger$NotificationRecordPair, com.android.server.notification.NotificationRecordLogger$NotificationReportedEvent, int, int, com.android.internal.logging.InstanceId):void");
         }
     }
 
-    static int getLoggingImportance(NotificationRecord notificationRecord) {
-        int importance = notificationRecord.getImportance();
-        NotificationChannel channel = notificationRecord.getChannel();
-        return channel == null ? importance : NotificationChannelLogger.getLoggingImportance(channel, importance);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public enum NotificationReportedEvent implements UiEventLogger.UiEventEnum {
+        NOTIFICATION_POSTED("NOTIFICATION_POSTED"),
+        NOTIFICATION_UPDATED("NOTIFICATION_UPDATED"),
+        NOTIFICATION_ADJUSTED("NOTIFICATION_ADJUSTED");
+
+        private final int mId;
+
+        NotificationReportedEvent(String str) {
+            this.mId = r2;
+        }
+
+        public final int getId() {
+            return this.mId;
+        }
     }
 
-    static boolean isForegroundService(NotificationRecord notificationRecord) {
-        return (notificationRecord.getSbn() == null || notificationRecord.getSbn().getNotification() == null || (notificationRecord.getSbn().getNotification().flags & 64) == 0) ? false : true;
+    static NotificationReported prepareToLogNotificationPosted(NotificationRecord notificationRecord, NotificationRecord notificationRecord2, int i, int i2, InstanceId instanceId) {
+        int i3;
+        NotificationRecordPair notificationRecordPair = new NotificationRecordPair(notificationRecord, notificationRecord2);
+        if (notificationRecord2 != null && i2 <= 0 && Objects.equals(notificationRecord.sbn.getChannelIdLogTag(), notificationRecord2.sbn.getChannelIdLogTag()) && Objects.equals(notificationRecord.sbn.getGroupLogTag(), notificationRecord2.sbn.getGroupLogTag()) && notificationRecord.sbn.getNotification().isGroupSummary() == notificationRecord2.sbn.getNotification().isGroupSummary() && Objects.equals(notificationRecord.sbn.getNotification().category, notificationRecord2.sbn.getNotification().category) && (i3 = notificationRecord.mImportance) == notificationRecord2.mImportance) {
+            NotificationChannel notificationChannel = notificationRecord.mChannel;
+            if (notificationChannel != null) {
+                i3 = NotificationChannelLogger.getLoggingImportance(notificationChannel, i3);
+            }
+            int i4 = notificationRecord2.mImportance;
+            NotificationChannel notificationChannel2 = notificationRecord2.mChannel;
+            if (notificationChannel2 != null) {
+                i4 = NotificationChannelLogger.getLoggingImportance(notificationChannel2, i4);
+            }
+            if (i3 == i4) {
+                if (Math.abs(notificationRecord.mRankingScore - notificationRecord2.mRankingScore) < 1.0E-4d) {
+                    return null;
+                }
+            }
+        }
+        NotificationReportedEvent notificationReportedEvent = NotificationReportedEvent.NOTIFICATION_POSTED;
+        return new NotificationReported(notificationRecordPair, notificationRecord2 != null ? NotificationReportedEvent.NOTIFICATION_UPDATED : NotificationReportedEvent.NOTIFICATION_POSTED, i, i2, instanceId);
     }
 
-    static boolean isNonDismissible(NotificationRecord notificationRecord) {
-        return (notificationRecord.getSbn() == null || notificationRecord.getSbn().getNotification() == null || (notificationRecord.getNotification().flags & IInstalld.FLAG_FORCE) == 0) ? false : true;
+    default void logNotificationCancelled(NotificationRecord notificationRecord, int i, int i2) {
+        NotificationCancelledEvent notificationCancelledEvent = NotificationCancelledEvent.INVALID;
+        if (i2 == -1) {
+            Log.wtf("NotificationRecordLogger", "Unexpected surface: " + i2 + " with reason " + i);
+        } else if (i == 2) {
+            if (i2 == 0) {
+                notificationCancelledEvent = NotificationCancelledEvent.NOTIFICATION_CANCEL_USER_OTHER;
+            } else if (i2 == 1) {
+                notificationCancelledEvent = NotificationCancelledEvent.NOTIFICATION_CANCEL_USER_PEEK;
+            } else if (i2 == 2) {
+                notificationCancelledEvent = NotificationCancelledEvent.NOTIFICATION_CANCEL_USER_AOD;
+            } else if (i2 == 3) {
+                notificationCancelledEvent = NotificationCancelledEvent.NOTIFICATION_CANCEL_USER_SHADE;
+            } else if (i2 == 4) {
+                notificationCancelledEvent = NotificationCancelledEvent.NOTIFICATION_CANCEL_USER_BUBBLE;
+            } else if (i2 != 5) {
+                Log.wtf("NotificationRecordLogger", "Unexpected surface: " + i2 + " with reason " + i);
+            } else {
+                notificationCancelledEvent = NotificationCancelledEvent.NOTIFICATION_CANCEL_USER_LOCKSCREEN;
+            }
+        } else if (1 <= i && i <= 21) {
+            notificationCancelledEvent = NotificationCancelledEvent.values()[i];
+        } else if (i == 22) {
+            notificationCancelledEvent = NotificationCancelledEvent.NOTIFICATION_CANCEL_ASSISTANT;
+        } else {
+            Log.wtf("NotificationRecordLogger", "Unexpected reason: " + i + " with surface " + i2);
+        }
+        ((NotificationRecordLoggerImpl) this).log(notificationCancelledEvent, notificationRecord);
     }
 }

@@ -1,11 +1,10 @@
 package com.android.server.am;
 
 import android.content.IntentFilter;
-import android.util.Printer;
 import android.util.proto.ProtoOutputStream;
 import dalvik.annotation.optimization.NeverCompile;
-import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class BroadcastFilter extends IntentFilter {
     public final boolean exported;
@@ -33,17 +32,8 @@ public final class BroadcastFilter extends IntentFilter {
         this.exported = z3;
     }
 
-    public String getReceiverClassName() {
-        int lastIndexOf;
-        String str = this.receiverId;
-        if (str == null || (lastIndexOf = str.lastIndexOf(64)) <= 0) {
-            return null;
-        }
-        return this.receiverId.substring(0, lastIndexOf);
-    }
-
     @NeverCompile
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
+    public final void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
         long start = protoOutputStream.start(j);
         super.dumpDebug(protoOutputStream, 1146756268033L);
         String str = this.requiredPermission;
@@ -55,27 +45,7 @@ public final class BroadcastFilter extends IntentFilter {
         protoOutputStream.end(start);
     }
 
-    @NeverCompile
-    public void dumpBrief(PrintWriter printWriter, String str) {
-        dumpBroadcastFilterState(printWriter, str);
-    }
-
-    @NeverCompile
-    public void dumpInReceiverList(PrintWriter printWriter, Printer printer, String str) {
-        super.dump(printer, str);
-        dumpBroadcastFilterState(printWriter, str);
-    }
-
-    @NeverCompile
-    public void dumpBroadcastFilterState(PrintWriter printWriter, String str) {
-        if (this.requiredPermission != null) {
-            printWriter.print(str);
-            printWriter.print("requiredPermission=");
-            printWriter.println(this.requiredPermission);
-        }
-    }
-
-    public String toString() {
+    public final String toString() {
         return "BroadcastFilter{" + Integer.toHexString(System.identityHashCode(this)) + ' ' + this.owningUid + "/u" + this.owningUserId + ' ' + this.receiverList + '}';
     }
 }

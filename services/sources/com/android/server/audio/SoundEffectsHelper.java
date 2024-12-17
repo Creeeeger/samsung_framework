@@ -1,23 +1,18 @@
 package com.android.server.audio;
 
-import android.R;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
-import com.android.internal.util.XmlUtils;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.audio.AudioService;
 import com.android.server.utils.EventLogger;
 import com.samsung.android.audio.Rune;
 import com.samsung.android.media.AudioFxHelper;
@@ -25,38 +20,86 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SoundEffectsHelper {
+public final class SoundEffectsHelper {
     public final Context mContext;
+    public final List mDefaultResources;
+    public final int[] mEffects;
     public final Consumer mPlayerAvailableCb;
     public String mPrevSystemSoundFromSoundTheme;
     public final int mSfxAttenuationDb;
     public SfxHandler mSfxHandler;
-    public SfxWorker mSfxWorker;
+    public final SfxWorker mSfxWorker;
     public SoundPool mSoundPool;
     public SoundPoolLoader mSoundPoolLoader;
     public String mSystemSoundFromSoundTheme;
     public String mThemeTouchSoundPath;
     public final EventLogger mSfxLogger = new EventLogger(33, "Sound Effects Loading");
     public final List mResources = new ArrayList();
-    public final int[] mEffects = new int[23];
     public boolean mUpdateSystemSound = false;
-    public final List mDefaultResources = new ArrayList();
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.audio.SoundEffectsHelper$1, reason: invalid class name */
+    public final class AnonymousClass1 implements OnEffectsLoadCompleteHandler {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ SoundEffectsHelper this$0;
+
+        public /* synthetic */ AnonymousClass1(SoundEffectsHelper soundEffectsHelper, int i) {
+            this.$r8$classId = i;
+            this.this$0 = soundEffectsHelper;
+        }
+
+        @Override // com.android.server.audio.SoundEffectsHelper.OnEffectsLoadCompleteHandler
+        public final void run(boolean z) {
+            switch (this.$r8$classId) {
+                case 0:
+                    SoundEffectsHelper soundEffectsHelper = this.this$0;
+                    soundEffectsHelper.mSoundPoolLoader = null;
+                    if (!z) {
+                        Log.w("AS.SfxHelper", "onLoadSoundEffects(), Error while loading samples");
+                        soundEffectsHelper.onUnloadSoundEffects();
+                        break;
+                    }
+                    break;
+                default:
+                    this.this$0.onUnloadSoundEffects();
+                    break;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.audio.SoundEffectsHelper$3, reason: invalid class name */
+    public final class AnonymousClass3 implements MediaPlayer.OnCompletionListener {
+        @Override // android.media.MediaPlayer.OnCompletionListener
+        public final void onCompletion(MediaPlayer mediaPlayer) {
+            SoundEffectsHelper.m289$$Nest$smcleanupPlayer(mediaPlayer);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.audio.SoundEffectsHelper$4, reason: invalid class name */
+    public final class AnonymousClass4 implements MediaPlayer.OnErrorListener {
+        @Override // android.media.MediaPlayer.OnErrorListener
+        public final boolean onError(MediaPlayer mediaPlayer, int i, int i2) {
+            SoundEffectsHelper.m289$$Nest$smcleanupPlayer(mediaPlayer);
+            return true;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface OnEffectsLoadCompleteHandler {
         void run(boolean z);
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Resource {
         public final String mFileName;
         public boolean mHasSituationVolume;
@@ -66,201 +109,264 @@ public class SoundEffectsHelper {
         public Resource(String str) {
             this.mFileName = str;
         }
+    }
 
-        public void unload() {
-            this.mSampleId = 0;
-            this.mLoaded = false;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SfxHandler extends Handler {
+        public SfxHandler() {
         }
-    }
 
-    public SoundEffectsHelper(Context context, Consumer consumer) {
-        this.mThemeTouchSoundPath = null;
-        this.mSystemSoundFromSoundTheme = null;
-        this.mPrevSystemSoundFromSoundTheme = null;
-        this.mContext = context;
-        this.mSfxAttenuationDb = context.getResources().getInteger(17695016);
-        this.mPlayerAvailableCb = consumer;
-        if (Rune.SEC_AUDIO_SUPPORT_SOUND_THEME) {
-            ContentResolver contentResolver = context.getContentResolver();
-            this.mThemeTouchSoundPath = Settings.Global.getStringForUser(contentResolver, "theme_touch_sound", -2);
-            this.mSystemSoundFromSoundTheme = Settings.System.getStringForUser(contentResolver, "system_sound", -2);
-            this.mPrevSystemSoundFromSoundTheme = Settings.System.getStringForUser(contentResolver, "prev_system_sound", -2);
-            loadTouchSoundAssetsDefaultList();
-        }
-        startWorker();
-    }
-
-    public void loadSoundEffects(OnEffectsLoadCompleteHandler onEffectsLoadCompleteHandler) {
-        sendMsg(0, 0, 0, onEffectsLoadCompleteHandler, 0);
-    }
-
-    public void unloadSoundEffects() {
-        sendMsg(1, 0, 0, null, 0);
-    }
-
-    public void playSoundEffect(int i, int i2) {
-        sendMsg(2, i, i2, null, 0);
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
-        if (this.mSfxHandler != null) {
-            printWriter.println(str + "Message handler (watch for unhandled messages):");
-            this.mSfxHandler.dump(new PrintWriterPrinter(printWriter), "  ");
-        } else {
-            printWriter.println(str + "Message handler is null");
-        }
-        printWriter.println(str + "Default attenuation (dB): " + this.mSfxAttenuationDb);
-        this.mSfxLogger.dump(printWriter);
-    }
-
-    public final void startWorker() {
-        SfxWorker sfxWorker = new SfxWorker();
-        this.mSfxWorker = sfxWorker;
-        sfxWorker.start();
-        synchronized (this) {
-            while (this.mSfxHandler == null) {
-                try {
-                    wait();
-                } catch (InterruptedException unused) {
-                    Log.w("AS.SfxHelper", "Interrupted while waiting " + this.mSfxWorker.getName() + " to start");
-                }
-            }
-        }
-    }
-
-    public final void sendMsg(int i, int i2, int i3, Object obj, int i4) {
-        SfxHandler sfxHandler = this.mSfxHandler;
-        sfxHandler.sendMessageDelayed(sfxHandler.obtainMessage(i, i2, i3, obj), i4);
-    }
-
-    public final void logEvent(String str) {
-        this.mSfxLogger.enqueue(new EventLogger.StringEvent(str));
-    }
-
-    public final void onLoadSoundEffects(OnEffectsLoadCompleteHandler onEffectsLoadCompleteHandler) {
-        SoundPoolLoader soundPoolLoader = this.mSoundPoolLoader;
-        if (soundPoolLoader != null) {
-            soundPoolLoader.addHandler(onEffectsLoadCompleteHandler);
-            return;
-        }
-        if (this.mSoundPool != null) {
-            if (onEffectsLoadCompleteHandler != null) {
-                onEffectsLoadCompleteHandler.run(true);
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            SoundPoolLoader soundPoolLoader;
+            int i = message.what;
+            SoundEffectsHelper soundEffectsHelper = SoundEffectsHelper.this;
+            if (i == 0) {
+                SoundEffectsHelper.m288$$Nest$monLoadSoundEffects(soundEffectsHelper, (OnEffectsLoadCompleteHandler) message.obj);
                 return;
             }
-            return;
+            if (i == 1) {
+                soundEffectsHelper.onUnloadSoundEffects();
+                return;
+            }
+            if (i == 2) {
+                SoundEffectsHelper.m288$$Nest$monLoadSoundEffects(soundEffectsHelper, new OnEffectsLoadCompleteHandler(message.arg1, message.arg2) { // from class: com.android.server.audio.SoundEffectsHelper.SfxHandler.1
+                    public final /* synthetic */ int val$effect;
+
+                    @Override // com.android.server.audio.SoundEffectsHelper.OnEffectsLoadCompleteHandler
+                    public final void run(boolean z) {
+                        StringBuilder sb;
+                        if (z) {
+                            SoundEffectsHelper soundEffectsHelper2 = SoundEffectsHelper.this;
+                            soundEffectsHelper2.getClass();
+                            int i2 = this.val$effect;
+                            float soundFxVolumeByType = AudioFxHelper.getSoundFxVolumeByType(i2);
+                            Resource resource = (Resource) ((ArrayList) soundEffectsHelper2.mResources).get(soundEffectsHelper2.mEffects[i2]);
+                            SoundPool soundPool = soundEffectsHelper2.mSoundPool;
+                            if (soundPool != null && resource.mSampleId != 0 && resource.mLoaded) {
+                                soundPool.semSetStreamType(1);
+                                if (i2 == AudioFxHelper.getPlaySoundTypeForSEP(101)) {
+                                    soundEffectsHelper2.mSoundPool.semSetStreamType(Rune.SEC_AUDIO_DEFAULT_STREAM_NOTIFICATION ? 5 : 2);
+                                }
+                                soundEffectsHelper2.mSoundPool.play(resource.mSampleId, soundFxVolumeByType, soundFxVolumeByType, 0, 0, 1.0f);
+                                return;
+                            }
+                            MediaPlayer mediaPlayer = new MediaPlayer();
+                            try {
+                                try {
+                                    try {
+                                        mediaPlayer.setDataSource(soundEffectsHelper2.getResourceFilePath(resource));
+                                        mediaPlayer.setAudioStreamType(1);
+                                        mediaPlayer.prepare();
+                                        mediaPlayer.setVolume(soundFxVolumeByType);
+                                        mediaPlayer.setOnCompletionListener(new AnonymousClass3());
+                                        mediaPlayer.setOnErrorListener(new AnonymousClass4());
+                                        mediaPlayer.start();
+                                        try {
+                                            mediaPlayer.stop();
+                                            mediaPlayer.release();
+                                        } catch (IllegalStateException e) {
+                                            e = e;
+                                            sb = new StringBuilder("MediaPlayer IllegalStateException: ");
+                                            sb.append(e);
+                                            Log.w("AS.SfxHelper", sb.toString());
+                                        }
+                                    } catch (IOException e2) {
+                                        Log.w("AS.SfxHelper", "MediaPlayer IOException: " + e2);
+                                        try {
+                                            mediaPlayer.stop();
+                                            mediaPlayer.release();
+                                        } catch (IllegalStateException e3) {
+                                            e = e3;
+                                            sb = new StringBuilder("MediaPlayer IllegalStateException: ");
+                                            sb.append(e);
+                                            Log.w("AS.SfxHelper", sb.toString());
+                                        }
+                                    } catch (IllegalArgumentException e4) {
+                                        Log.w("AS.SfxHelper", "MediaPlayer IllegalArgumentException: " + e4);
+                                        try {
+                                            mediaPlayer.stop();
+                                            mediaPlayer.release();
+                                        } catch (IllegalStateException e5) {
+                                            e = e5;
+                                            sb = new StringBuilder("MediaPlayer IllegalStateException: ");
+                                            sb.append(e);
+                                            Log.w("AS.SfxHelper", sb.toString());
+                                        }
+                                    }
+                                } catch (IllegalStateException e6) {
+                                    Log.w("AS.SfxHelper", "MediaPlayer IllegalStateException: " + e6);
+                                    try {
+                                        mediaPlayer.stop();
+                                        mediaPlayer.release();
+                                    } catch (IllegalStateException e7) {
+                                        e = e7;
+                                        sb = new StringBuilder("MediaPlayer IllegalStateException: ");
+                                        sb.append(e);
+                                        Log.w("AS.SfxHelper", sb.toString());
+                                    }
+                                }
+                            } catch (Throwable th) {
+                                try {
+                                    mediaPlayer.stop();
+                                    mediaPlayer.release();
+                                } catch (IllegalStateException e8) {
+                                    Log.w("AS.SfxHelper", "MediaPlayer IllegalStateException: " + e8);
+                                }
+                                throw th;
+                            }
+                        }
+                    }
+                });
+            } else if (i == 3 && (soundPoolLoader = soundEffectsHelper.mSoundPoolLoader) != null) {
+                soundPoolLoader.onComplete(false);
+            }
         }
-        logEvent("effects loading started");
-        SoundPool build = new SoundPool.Builder().setMaxStreams(4).setAudioAttributes(new AudioAttributes.Builder().setUsage(13).setContentType(4).build()).build();
-        this.mSoundPool = build;
-        this.mPlayerAvailableCb.accept(build);
-        loadSoundAssets();
-        SoundPoolLoader soundPoolLoader2 = new SoundPoolLoader();
-        this.mSoundPoolLoader = soundPoolLoader2;
-        soundPoolLoader2.addHandler(new OnEffectsLoadCompleteHandler() { // from class: com.android.server.audio.SoundEffectsHelper.1
-            @Override // com.android.server.audio.SoundEffectsHelper.OnEffectsLoadCompleteHandler
-            public void run(boolean z) {
-                SoundEffectsHelper.this.mSoundPoolLoader = null;
-                if (z) {
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SfxWorker extends Thread {
+        public SfxWorker() {
+            super("AS.SfxWorker");
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public final void run() {
+            Looper.prepare();
+            synchronized (SoundEffectsHelper.this) {
+                SoundEffectsHelper.this.mSfxHandler = SoundEffectsHelper.this.new SfxHandler();
+                SoundEffectsHelper.this.notify();
+            }
+            Looper.loop();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SoundPoolLoader implements SoundPool.OnLoadCompleteListener {
+        public final List mLoadCompleteHandlers = new ArrayList();
+
+        public SoundPoolLoader() {
+            SoundEffectsHelper.this.mSoundPool.setOnLoadCompleteListener(this);
+        }
+
+        public final void onComplete(boolean z) {
+            SoundPool soundPool = SoundEffectsHelper.this.mSoundPool;
+            if (soundPool != null) {
+                soundPool.setOnLoadCompleteListener(null);
+            }
+            Iterator it = ((ArrayList) this.mLoadCompleteHandlers).iterator();
+            while (it.hasNext()) {
+                ((OnEffectsLoadCompleteHandler) it.next()).run(z);
+            }
+            SoundEffectsHelper.this.logEvent("effects loading ".concat(z ? "completed" : "failed"));
+        }
+
+        @Override // android.media.SoundPool.OnLoadCompleteListener
+        public final void onLoadComplete(SoundPool soundPool, int i, int i2) {
+            Resource resource;
+            int i3 = 0;
+            if (i2 == 0) {
+                Iterator it = ((ArrayList) SoundEffectsHelper.this.mResources).iterator();
+                while (it.hasNext()) {
+                    Resource resource2 = (Resource) it.next();
+                    if (resource2.mSampleId == i && !resource2.mLoaded) {
+                        SoundEffectsHelper.this.logEvent("effect " + resource2.mFileName + " loaded");
+                        resource2.mLoaded = true;
+                        if (Rune.SEC_AUDIO_EXTENSION_SITUATION_VOLUME && resource2.mHasSituationVolume) {
+                            SoundEffectsHelper.this.mSoundPool.semSetSituationType(i, "stv_touch_tone");
+                        }
+                    }
+                    if (resource2.mSampleId != 0 && !resource2.mLoaded) {
+                        i3++;
+                    }
+                }
+                if (i3 == 0) {
+                    onComplete(true);
                     return;
                 }
-                Log.w("AS.SfxHelper", "onLoadSoundEffects(), Error while loading samples");
-                SoundEffectsHelper.this.onUnloadSoundEffects();
+                return;
             }
-        });
-        this.mSoundPoolLoader.addHandler(onEffectsLoadCompleteHandler);
-        int i = 0;
-        for (Resource resource : this.mResources) {
-            String resourceFilePath = Rune.SEC_AUDIO_SUPPORT_SOUND_THEME ? getResourceFilePath(i, resource) : getResourceFilePath(resource);
-            int load = this.mSoundPool.load(resourceFilePath, 0);
-            if (load > 0) {
-                resource.mSampleId = load;
-                resource.mLoaded = false;
-                i++;
-            } else {
-                logEvent("effect " + resourceFilePath + " rejected by SoundPool");
-                StringBuilder sb = new StringBuilder();
-                sb.append("SoundPool could not load file: ");
-                sb.append(resourceFilePath);
-                Log.w("AS.SfxHelper", sb.toString());
+            Iterator it2 = ((ArrayList) SoundEffectsHelper.this.mResources).iterator();
+            while (true) {
+                if (!it2.hasNext()) {
+                    resource = null;
+                    break;
+                } else {
+                    resource = (Resource) it2.next();
+                    if (resource.mSampleId == i) {
+                        break;
+                    }
+                }
             }
-        }
-        if (i > 0) {
-            sendMsg(3, 0, 0, null, 15000);
-        } else {
-            logEvent("effects loading completed, no effects to load");
-            this.mSoundPoolLoader.onComplete(true);
+            String resourceFilePath = resource != null ? SoundEffectsHelper.this.getResourceFilePath(resource) : VibrationParam$1$$ExternalSyntheticOutline0.m(i, "with unknown sample ID ");
+            SoundEffectsHelper.this.logEvent("effect " + resourceFilePath + " loading failed, status " + i2);
+            Log.w("AS.SfxHelper", "onLoadSoundEffects(), Error " + i2 + " while loading sample " + resourceFilePath);
+            onComplete(false);
         }
     }
 
-    public void onUnloadSoundEffects() {
-        if (this.mSoundPool == null) {
-            return;
-        }
-        SoundPoolLoader soundPoolLoader = this.mSoundPoolLoader;
-        if (soundPoolLoader != null) {
-            soundPoolLoader.addHandler(new OnEffectsLoadCompleteHandler() { // from class: com.android.server.audio.SoundEffectsHelper.2
-                @Override // com.android.server.audio.SoundEffectsHelper.OnEffectsLoadCompleteHandler
-                public void run(boolean z) {
-                    SoundEffectsHelper.this.onUnloadSoundEffects();
-                }
-            });
-        }
-        logEvent("effects unloading started");
-        for (Resource resource : this.mResources) {
-            int i = resource.mSampleId;
-            if (i != 0) {
-                this.mSoundPool.unload(i);
-                resource.unload();
-            }
-        }
-        this.mSoundPool.release();
-        this.mSoundPool = null;
-        logEvent("effects unloading completed");
+    /* JADX WARN: Can't wrap try/catch for region: R(11:(3:141|142|(11:144|25|26|(4:(2:28|(3:30|(3:71|72|(3:74|75|76)(1:77))(3:32|33|(8:35|36|37|39|40|(1:42)|43|(3:48|49|50))(1:56))|51)(2:78|79))|57|(1:59)(1:70)|(3:62|(1:65)|(1:68)))|80|81|(1:83)(1:114)|84|(6:87|(4:89|(1:106)(1:93)|94|(1:96))(1:107)|97|(3:103|104|105)(3:99|100|101)|102|85)|108|(2:110|111)(2:112|113)))|25|26|(0)|80|81|(0)(0)|84|(1:85)|108|(0)(0)) */
+    /* JADX WARN: Code restructure failed: missing block: B:119:0x0203, code lost:
+    
+        if (r5 != null) goto L81;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:124:0x01ef, code lost:
+    
+        if (r5 != null) goto L81;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:135:0x0121, code lost:
+    
+        r3 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:136:0x0122, code lost:
+    
+        r5 = r0;
+        r0 = r3;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:137:0x0117, code lost:
+    
+        r3 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:138:0x0118, code lost:
+    
+        r5 = r0;
+        r0 = r3;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:139:0x011c, code lost:
+    
+        r3 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:140:0x011d, code lost:
+    
+        r5 = r0;
+        r0 = r3;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:148:0x0078, code lost:
+    
+        if (((java.util.ArrayList) r14.mResources).isEmpty() == false) goto L88;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:110:0x02ea  */
+    /* JADX WARN: Removed duplicated region for block: B:112:0x02f5  */
+    /* JADX WARN: Removed duplicated region for block: B:114:0x0226  */
+    /* JADX WARN: Removed duplicated region for block: B:129:0x01fc  */
+    /* JADX WARN: Removed duplicated region for block: B:28:0x00da A[Catch: all -> 0x0113, IOException -> 0x0117, XmlPullParserException -> 0x011c, NotFoundException -> 0x0121, LOOP:0: B:28:0x00da->B:51:0x00da, LOOP_START, TryCatch #3 {all -> 0x0113, blocks: (B:26:0x00c0, B:28:0x00da, B:57:0x01b1, B:62:0x01ce, B:65:0x01dc, B:68:0x01e3, B:30:0x00e5, B:72:0x00ee, B:75:0x00fe, B:33:0x0126, B:35:0x012f, B:37:0x013d, B:40:0x014b, B:42:0x0167, B:43:0x017b, B:46:0x0185, B:49:0x018b, B:54:0x019b), top: B:25:0x00c0 }] */
+    /* JADX WARN: Removed duplicated region for block: B:83:0x021e  */
+    /* JADX WARN: Removed duplicated region for block: B:87:0x0238  */
+    /* renamed from: -$$Nest$monLoadSoundEffects, reason: not valid java name */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void m288$$Nest$monLoadSoundEffects(com.android.server.audio.SoundEffectsHelper r14, com.android.server.audio.SoundEffectsHelper.OnEffectsLoadCompleteHandler r15) {
+        /*
+            Method dump skipped, instructions count: 775
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.audio.SoundEffectsHelper.m288$$Nest$monLoadSoundEffects(com.android.server.audio.SoundEffectsHelper, com.android.server.audio.SoundEffectsHelper$OnEffectsLoadCompleteHandler):void");
     }
 
-    public void onPlaySoundEffect(int i, int i2) {
-        float soundFxVolumeByType = i2 < 0 ? AudioFxHelper.getSoundFxVolumeByType(i) : i2 / 1000.0f;
-        Resource resource = (Resource) this.mResources.get(this.mEffects[i]);
-        SoundPool soundPool = this.mSoundPool;
-        if (soundPool != null && resource.mSampleId != 0 && resource.mLoaded) {
-            soundPool.semSetStreamType(1);
-            if (i == AudioFxHelper.getPlaySoundTypeForSEP(101)) {
-                this.mSoundPool.semSetStreamType(Rune.SEC_AUDIO_DEFAULT_STREAM_NOTIFICATION ? 5 : 2);
-            }
-            this.mSoundPool.play(resource.mSampleId, soundFxVolumeByType, soundFxVolumeByType, 0, 0, 1.0f);
-            return;
-        }
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(getResourceFilePath(resource));
-            mediaPlayer.setAudioStreamType(1);
-            mediaPlayer.prepare();
-            mediaPlayer.setVolume(soundFxVolumeByType);
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() { // from class: com.android.server.audio.SoundEffectsHelper.3
-                @Override // android.media.MediaPlayer.OnCompletionListener
-                public void onCompletion(MediaPlayer mediaPlayer2) {
-                    SoundEffectsHelper.cleanupPlayer(mediaPlayer2);
-                }
-            });
-            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() { // from class: com.android.server.audio.SoundEffectsHelper.4
-                @Override // android.media.MediaPlayer.OnErrorListener
-                public boolean onError(MediaPlayer mediaPlayer2, int i3, int i4) {
-                    SoundEffectsHelper.cleanupPlayer(mediaPlayer2);
-                    return true;
-                }
-            });
-            mediaPlayer.start();
-        } catch (IOException e) {
-            Log.w("AS.SfxHelper", "MediaPlayer IOException: " + e);
-        } catch (IllegalArgumentException e2) {
-            Log.w("AS.SfxHelper", "MediaPlayer IllegalArgumentException: " + e2);
-        } catch (IllegalStateException e3) {
-            Log.w("AS.SfxHelper", "MediaPlayer IllegalStateException: " + e3);
-        }
-    }
-
-    public static void cleanupPlayer(MediaPlayer mediaPlayer) {
+    /* renamed from: -$$Nest$smcleanupPlayer, reason: not valid java name */
+    public static void m289$$Nest$smcleanupPlayer(MediaPlayer mediaPlayer) {
         if (mediaPlayer != null) {
             try {
                 mediaPlayer.stop();
@@ -271,345 +377,58 @@ public class SoundEffectsHelper {
         }
     }
 
-    public final String getResourceFilePath(Resource resource) {
-        String str;
-        if (Rune.SEC_AUDIO_SUPPORT_SOUND_THEME && TextUtils.equals(this.mSystemSoundFromSoundTheme, "Open_theme")) {
-            str = this.mThemeTouchSoundPath + resource.mFileName;
-        } else {
-            str = Environment.getProductDirectory() + "/media/audio/ui/" + resource.mFileName;
-        }
-        if (new File(str).isFile()) {
-            return str;
-        }
-        return Environment.getRootDirectory() + "/media/audio/ui/" + resource.mFileName;
-    }
-
-    public final void loadSoundAssetDefaults() {
-        int size = this.mResources.size();
-        this.mResources.add(new Resource("Effect_Tick.ogg"));
-        Arrays.fill(this.mEffects, size);
-    }
-
-    public final void loadSoundAssets() {
-        XmlResourceParser xml;
-        if (Rune.SEC_AUDIO_SUPPORT_SOUND_THEME && this.mUpdateSystemSound) {
-            this.mUpdateSystemSound = false;
-            if (!this.mResources.isEmpty()) {
-                this.mResources.clear();
-            }
-        } else if (!this.mResources.isEmpty()) {
-            return;
-        }
-        loadSoundAssetDefaults();
-        XmlResourceParser xmlResourceParser = null;
-        try {
-            try {
-                if (Rune.SEC_AUDIO_SUPPORT_SOUND_THEME && !TextUtils.isEmpty(this.mSystemSoundFromSoundTheme)) {
-                    xml = getSoundThemeXmlParser();
-                } else {
-                    xml = this.mContext.getResources().getXml(R.xml.audio_assets);
-                }
-                try {
-                    try {
-                        XmlUtils.beginDocument(xml, "audio_assets");
-                        String attributeValue = xml.getAttributeValue(null, "version");
-                        HashMap hashMap = new HashMap();
-                        if ("1.0".equals(attributeValue)) {
-                            while (true) {
-                                XmlUtils.nextElement(xml);
-                                String name = xml.getName();
-                                if (name == null) {
-                                    break;
-                                }
-                                if (name.equals("group")) {
-                                    String attributeValue2 = xml.getAttributeValue(null, "name");
-                                    if (!"touch_sounds".equals(attributeValue2)) {
-                                        Log.w("AS.SfxHelper", "Unsupported group name: " + attributeValue2);
-                                    }
-                                } else {
-                                    if (!name.equals("asset")) {
-                                        break;
-                                    }
-                                    String attributeValue3 = xml.getAttributeValue(null, "id");
-                                    String attributeValue4 = xml.getAttributeValue(null, "file");
-                                    try {
-                                        int playSoundTypeForSEP = AudioFxHelper.getPlaySoundTypeForSEP(AudioManager.class.getField(attributeValue3).getInt(null));
-                                        int intValue = ((Integer) hashMap.getOrDefault(Integer.valueOf(playSoundTypeForSEP), 0)).intValue() + 1;
-                                        hashMap.put(Integer.valueOf(playSoundTypeForSEP), Integer.valueOf(intValue));
-                                        if (intValue > 1) {
-                                            Log.w("AS.SfxHelper", "Duplicate definition for sound ID: " + attributeValue3);
-                                        }
-                                        this.mEffects[playSoundTypeForSEP] = findOrAddResourceByFileName(attributeValue4);
-                                        if (Rune.SEC_AUDIO_EXTENSION_SITUATION_VOLUME && !AudioFxHelper.isPreDefinedEffectKey(playSoundTypeForSEP)) {
-                                            ((Resource) this.mResources.get(this.mEffects[playSoundTypeForSEP])).mHasSituationVolume = true;
-                                        }
-                                    } catch (Exception unused) {
-                                        Log.w("AS.SfxHelper", "Invalid sound ID: " + attributeValue3);
-                                    }
-                                }
-                            }
-                            boolean allNavigationRepeatSoundsParsed = allNavigationRepeatSoundsParsed(hashMap);
-                            boolean z = ((Integer) hashMap.getOrDefault(11, 0)).intValue() > 0;
-                            if (allNavigationRepeatSoundsParsed || z) {
-                                AudioManager audioManager = (AudioManager) this.mContext.getSystemService(AudioManager.class);
-                                if (audioManager != null && allNavigationRepeatSoundsParsed) {
-                                    audioManager.setNavigationRepeatSoundEffectsEnabled(true);
-                                }
-                                if (audioManager != null && z) {
-                                    audioManager.setHomeSoundEffectEnabled(true);
-                                }
-                            }
-                        }
-                        xml.close();
-                    } catch (Resources.NotFoundException e) {
-                        e = e;
-                        xmlResourceParser = xml;
-                        Log.w("AS.SfxHelper", "audio assets file not found", e);
-                        if (xmlResourceParser == null) {
-                            return;
-                        }
-                        xmlResourceParser.close();
-                    } catch (IOException e2) {
-                        e = e2;
-                        xmlResourceParser = xml;
-                        Log.w("AS.SfxHelper", "I/O exception reading sound assets", e);
-                        if (xmlResourceParser != null) {
-                            xmlResourceParser.close();
-                        }
-                    } catch (XmlPullParserException e3) {
-                        e = e3;
-                        xmlResourceParser = xml;
-                        Log.w("AS.SfxHelper", "XML parser exception reading sound assets", e);
-                        if (xmlResourceParser != null) {
-                            xmlResourceParser.close();
-                        }
-                    }
-                } catch (Throwable th) {
-                    th = th;
-                    xmlResourceParser = xml;
-                    if (xmlResourceParser != null) {
-                        xmlResourceParser.close();
-                    }
-                    throw th;
-                }
-            } catch (Resources.NotFoundException e4) {
-                e = e4;
-            } catch (IOException e5) {
-                e = e5;
-            } catch (XmlPullParserException e6) {
-                e = e6;
-            }
-        } catch (Throwable th2) {
-            th = th2;
-        }
-    }
-
-    public final boolean allNavigationRepeatSoundsParsed(Map map) {
-        return ((((Integer) map.getOrDefault(12, 0)).intValue() + ((Integer) map.getOrDefault(13, 0)).intValue()) + ((Integer) map.getOrDefault(14, 0)).intValue()) + ((Integer) map.getOrDefault(15, 0)).intValue() == 4;
-    }
-
-    public final int findOrAddResourceByFileName(String str) {
-        for (int i = 0; i < this.mResources.size(); i++) {
-            if (((Resource) this.mResources.get(i)).mFileName.equals(str)) {
-                return i;
-            }
-        }
-        int size = this.mResources.size();
-        this.mResources.add(new Resource(str));
-        return size;
-    }
-
-    public final Resource findResourceBySampleId(int i) {
-        for (Resource resource : this.mResources) {
-            if (resource.mSampleId == i) {
-                return resource;
-            }
-        }
-        return null;
-    }
-
-    /* loaded from: classes.dex */
-    public class SfxWorker extends Thread {
-        public SfxWorker() {
-            super("AS.SfxWorker");
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            Looper.prepare();
-            synchronized (SoundEffectsHelper.this) {
-                SoundEffectsHelper.this.mSfxHandler = new SfxHandler();
-                SoundEffectsHelper.this.notify();
-            }
-            Looper.loop();
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class SfxHandler extends Handler {
-        public SfxHandler() {
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            int i = message.what;
-            if (i == 0) {
-                SoundEffectsHelper.this.onLoadSoundEffects((OnEffectsLoadCompleteHandler) message.obj);
-                return;
-            }
-            if (i == 1) {
-                SoundEffectsHelper.this.onUnloadSoundEffects();
-                return;
-            }
-            if (i == 2) {
-                final int i2 = message.arg1;
-                final int i3 = message.arg2;
-                SoundEffectsHelper.this.onLoadSoundEffects(new OnEffectsLoadCompleteHandler() { // from class: com.android.server.audio.SoundEffectsHelper.SfxHandler.1
-                    @Override // com.android.server.audio.SoundEffectsHelper.OnEffectsLoadCompleteHandler
-                    public void run(boolean z) {
-                        if (z) {
-                            SoundEffectsHelper.this.onPlaySoundEffect(i2, i3);
-                        }
-                    }
-                });
-            } else if (i == 3 && SoundEffectsHelper.this.mSoundPoolLoader != null) {
-                SoundEffectsHelper.this.mSoundPoolLoader.onTimeout();
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class SoundPoolLoader implements SoundPool.OnLoadCompleteListener {
-        public List mLoadCompleteHandlers = new ArrayList();
-
-        public SoundPoolLoader() {
-            SoundEffectsHelper.this.mSoundPool.setOnLoadCompleteListener(this);
-        }
-
-        public void addHandler(OnEffectsLoadCompleteHandler onEffectsLoadCompleteHandler) {
-            if (onEffectsLoadCompleteHandler != null) {
-                this.mLoadCompleteHandlers.add(onEffectsLoadCompleteHandler);
-            }
-        }
-
-        @Override // android.media.SoundPool.OnLoadCompleteListener
-        public void onLoadComplete(SoundPool soundPool, int i, int i2) {
-            int i3 = 0;
-            if (i2 == 0) {
-                for (Resource resource : SoundEffectsHelper.this.mResources) {
-                    if (resource.mSampleId == i && !resource.mLoaded) {
-                        SoundEffectsHelper.this.logEvent("effect " + resource.mFileName + " loaded");
-                        resource.mLoaded = true;
-                        if (Rune.SEC_AUDIO_EXTENSION_SITUATION_VOLUME && resource.mHasSituationVolume) {
-                            SoundEffectsHelper.this.mSoundPool.semSetSituationType(i, "stv_touch_tone");
-                        }
-                    }
-                    if (resource.mSampleId != 0 && !resource.mLoaded) {
-                        i3++;
-                    }
-                }
-                if (i3 == 0) {
-                    onComplete(true);
-                    return;
-                }
-                return;
-            }
-            Resource findResourceBySampleId = SoundEffectsHelper.this.findResourceBySampleId(i);
-            String resourceFilePath = findResourceBySampleId != null ? SoundEffectsHelper.this.getResourceFilePath(findResourceBySampleId) : "with unknown sample ID " + i;
-            SoundEffectsHelper.this.logEvent("effect " + resourceFilePath + " loading failed, status " + i2);
-            Log.w("AS.SfxHelper", "onLoadSoundEffects(), Error " + i2 + " while loading sample " + resourceFilePath);
-            onComplete(false);
-        }
-
-        public void onTimeout() {
-            onComplete(false);
-        }
-
-        public void onComplete(boolean z) {
-            if (SoundEffectsHelper.this.mSoundPool != null) {
-                SoundEffectsHelper.this.mSoundPool.setOnLoadCompleteListener(null);
-            }
-            Iterator it = this.mLoadCompleteHandlers.iterator();
-            while (it.hasNext()) {
-                ((OnEffectsLoadCompleteHandler) it.next()).run(z);
-            }
-            SoundEffectsHelper soundEffectsHelper = SoundEffectsHelper.this;
-            StringBuilder sb = new StringBuilder();
-            sb.append("effects loading ");
-            sb.append(z ? "completed" : "failed");
-            soundEffectsHelper.logEvent(sb.toString());
-        }
-    }
-
-    public void updateThemeSound(String str, String str2, boolean z) {
-        boolean z2;
-        boolean z3;
-        if (!TextUtils.isEmpty(str)) {
-            if (!TextUtils.equals(str, this.mThemeTouchSoundPath)) {
-                Log.v("AS.SfxHelper", "updateThemeSound( theme is changed )");
-                this.mThemeTouchSoundPath = str;
-                z2 = true;
-            }
-            z2 = false;
-        } else {
-            if (!TextUtils.isEmpty(this.mThemeTouchSoundPath)) {
-                Log.v("AS.SfxHelper", "updateThemeSound( theme is released )");
-                this.mThemeTouchSoundPath = null;
-                z2 = true;
-            }
-            z2 = false;
-        }
-        if (!TextUtils.isEmpty(str2)) {
-            if (!TextUtils.equals(str2, this.mSystemSoundFromSoundTheme)) {
-                Log.v("AS.SfxHelper", "updateThemeSound( Change to " + str2 + " )");
-                this.mSystemSoundFromSoundTheme = str2;
-                if (!TextUtils.equals(str2, "Open_theme")) {
-                    this.mPrevSystemSoundFromSoundTheme = str2;
-                }
-                z3 = true;
-            }
-            z3 = false;
-        } else {
-            if (!TextUtils.isEmpty(this.mSystemSoundFromSoundTheme)) {
-                Log.v("AS.SfxHelper", "updateThemeSound( Change to default )");
-                this.mSystemSoundFromSoundTheme = null;
-                this.mPrevSystemSoundFromSoundTheme = null;
-                z3 = true;
-            }
-            z3 = false;
-        }
-        if (z || z2 || z3) {
-            this.mUpdateSystemSound = true;
-            if (!this.mSfxHandler.hasMessages(1)) {
-                sendMsg(1, 0, 0, null, 300);
-            }
-            if (this.mSfxHandler.hasMessages(0)) {
-                return;
-            }
-            sendMsg(0, 0, 0, null, 300);
-        }
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x00dd, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:49:0x0141, code lost:
     
-        if (r1 == null) goto L56;
+        if (r1 == null) goto L71;
      */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x012d, code lost:
+    
+        if (r1 == null) goto L71;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:72:0x0155 A[EXC_TOP_SPLITTER, LOOP:2: B:72:0x0155->B:79:0x0155, LOOP_START, SYNTHETIC] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final void loadTouchSoundAssetsDefaultList() {
+    public SoundEffectsHelper(android.content.Context r7, com.android.server.audio.AudioService$$ExternalSyntheticLambda16 r8) {
         /*
-            Method dump skipped, instructions count: 233
+            Method dump skipped, instructions count: 389
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.audio.SoundEffectsHelper.loadTouchSoundAssetsDefaultList():void");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.audio.SoundEffectsHelper.<init>(android.content.Context, com.android.server.audio.AudioService$$ExternalSyntheticLambda16):void");
     }
 
-    public final String getResourceFilePath(int i, Resource resource) {
+    public static boolean allNavigationRepeatSoundsParsed(Map map) {
+        HashMap hashMap = (HashMap) map;
+        return ((Integer) hashMap.getOrDefault(15, 0)).intValue() + (((Integer) hashMap.getOrDefault(14, 0)).intValue() + (((Integer) hashMap.getOrDefault(13, 0)).intValue() + ((Integer) hashMap.getOrDefault(12, 0)).intValue())) == 4;
+    }
+
+    public final void dump(PrintWriter printWriter) {
+        if (this.mSfxHandler != null) {
+            printWriter.println("  Message handler (watch for unhandled messages):");
+            this.mSfxHandler.dump(new PrintWriterPrinter(printWriter), "  ");
+        } else {
+            printWriter.println("  Message handler is null");
+        }
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m(new StringBuilder("  Default attenuation (dB): "), this.mSfxAttenuationDb, printWriter);
+        this.mSfxLogger.dump(printWriter);
+    }
+
+    public final int findOrAddResourceByFileName(String str) {
+        for (int i = 0; i < ((ArrayList) this.mResources).size(); i++) {
+            if (((Resource) ((ArrayList) this.mResources).get(i)).mFileName.equals(str)) {
+                return i;
+            }
+        }
+        int size = ((ArrayList) this.mResources).size();
+        ((ArrayList) this.mResources).add(new Resource(str));
+        return size;
+    }
+
+    public final String getResourceFilePath(Resource resource) {
         String str;
         if (Rune.SEC_AUDIO_SUPPORT_SOUND_THEME && TextUtils.equals(this.mSystemSoundFromSoundTheme, "Open_theme")) {
-            str = this.mThemeTouchSoundPath + ((Resource) this.mDefaultResources.get(i)).mFileName;
+            str = this.mThemeTouchSoundPath + resource.mFileName;
         } else {
             str = Environment.getProductDirectory() + "/media/audio/ui/" + resource.mFileName;
         }
@@ -682,5 +501,50 @@ public class SoundEffectsHelper {
             return r8
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.audio.SoundEffectsHelper.getSoundThemeXmlParser():android.content.res.XmlResourceParser");
+    }
+
+    public final void loadSoundEffects(AudioService.LoadSoundEffectReply loadSoundEffectReply) {
+        sendMsg(0, 0, 0, loadSoundEffectReply, 0);
+    }
+
+    public final void logEvent(String str) {
+        this.mSfxLogger.enqueue(new EventLogger.StringEvent(str));
+    }
+
+    public final void onUnloadSoundEffects() {
+        if (this.mSoundPool == null) {
+            return;
+        }
+        SoundPoolLoader soundPoolLoader = this.mSoundPoolLoader;
+        if (soundPoolLoader != null) {
+            ((ArrayList) soundPoolLoader.mLoadCompleteHandlers).add(new AnonymousClass1(this, 1));
+        }
+        logEvent("effects unloading started");
+        Iterator it = ((ArrayList) this.mResources).iterator();
+        while (it.hasNext()) {
+            Resource resource = (Resource) it.next();
+            int i = resource.mSampleId;
+            if (i != 0) {
+                this.mSoundPool.unload(i);
+                resource.mSampleId = 0;
+                resource.mLoaded = false;
+            }
+        }
+        this.mSoundPool.release();
+        this.mSoundPool = null;
+        logEvent("effects unloading completed");
+    }
+
+    public final void playSoundEffect(int i, int i2) {
+        sendMsg(2, i, i2, null, 0);
+    }
+
+    public final void sendMsg(int i, int i2, int i3, AudioService.LoadSoundEffectReply loadSoundEffectReply, int i4) {
+        SfxHandler sfxHandler = this.mSfxHandler;
+        sfxHandler.sendMessageDelayed(sfxHandler.obtainMessage(i, i2, i3, loadSoundEffectReply), i4);
+    }
+
+    public final void unloadSoundEffects() {
+        sendMsg(1, 0, 0, null, 0);
     }
 }

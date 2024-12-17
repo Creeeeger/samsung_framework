@@ -1,10 +1,11 @@
 package android.hardware.broadcastradio.V2_0;
 
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 import android.os.HidlSupport;
 import android.os.HwBlob;
-import android.os.HwParcel;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ProgramIdentifier {
     public int type = 0;
@@ -22,20 +23,18 @@ public final class ProgramIdentifier {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.type))), Integer.valueOf(HidlSupport.deepHashCode(Long.valueOf(this.value))));
+        return Objects.hash(AudioConfig$$ExternalSyntheticOutline0.m(this.type), Integer.valueOf(HidlSupport.deepHashCode(Long.valueOf(this.value))));
     }
 
-    public final String toString() {
-        return "{.type = " + this.type + ", .value = " + this.value + "}";
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.type = hwBlob.getInt32(0 + j);
+    public final void readEmbeddedFromParcel(HwBlob hwBlob, long j) {
+        this.type = hwBlob.getInt32(j);
         this.value = hwBlob.getInt64(j + 8);
     }
 
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putInt32(0 + j, this.type);
-        hwBlob.putInt64(j + 8, this.value);
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("{.type = ");
+        sb.append(this.type);
+        sb.append(", .value = ");
+        return AudioConfig$$ExternalSyntheticOutline0.m(sb, this.value, "}");
     }
 }

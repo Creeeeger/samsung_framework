@@ -1,75 +1,26 @@
 package com.android.server.wm;
 
 import android.app.ActivityOptions;
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.os.Bundle;
-import com.samsung.android.rune.CoreRune;
-import java.util.ArrayList;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class DexRestartAppInfo {
-    public static final boolean SAFE_DEBUG = CoreRune.SAFE_DEBUG;
-    public final String TAG;
-    public boolean mKeepProcessAlive;
-    public int mLaunchTaskId;
-    public ActivityOptions mOptions;
+    public final ActivityOptions mOptions;
     public PendingActivityLaunch mPal;
-    public int mPreferredDisplayId;
-    public String mProcessName;
-    public Task mReusedTask;
-    public boolean mSkipToShow;
-    public Task mTargetTask;
-    public int mUid;
+    public final int mPreferredDisplayId;
+    public final String mProcessName;
+    public final Task mReusedTask;
+    public final Task mTargetTask;
+    public final int mUid;
 
-    public abstract CharSequence getAppName(Context context, ActivityTaskSupervisor activityTaskSupervisor);
-
-    public abstract void startResult(ActivityTaskManagerService activityTaskManagerService, int i);
-
-    public DexRestartAppInfo(String str, int i, ApplicationInfo applicationInfo, Task task, ActivityOptions activityOptions, int i2) {
-        this(str, i, applicationInfo, task, null, activityOptions, i2);
-    }
-
-    public DexRestartAppInfo(String str, int i, ApplicationInfo applicationInfo, Task task, Task task2, ActivityOptions activityOptions, int i2) {
-        Bundle bundle;
-        this.TAG = "DexController";
+    public DexRestartAppInfo(String str, int i, Task task, Task task2, ActivityOptions activityOptions, int i2) {
         this.mProcessName = str;
         this.mUid = i;
         this.mReusedTask = task;
         this.mTargetTask = task2;
         this.mOptions = activityOptions == null ? ActivityOptions.makeBasic() : activityOptions;
         this.mPreferredDisplayId = i2;
-        if (applicationInfo == null || (bundle = applicationInfo.metaData) == null) {
-            return;
-        }
-        this.mSkipToShow = bundle.getBoolean("com.samsung.android.multidisplay.do_not_show_displaychooser");
     }
 
-    public static DexRestartAppInfo createPendingActivityLaunchType(PendingActivityLaunch pendingActivityLaunch, String str, int i, ApplicationInfo applicationInfo, Task task, Task task2, ActivityOptions activityOptions, int i2) {
-        return new PendingActivityLaunchInfo(pendingActivityLaunch, str, i, applicationInfo, task, task2, activityOptions, i2);
-    }
-
-    public static DexRestartAppInfo createStartActivityFromRecentsType(String str, int i, ApplicationInfo applicationInfo, Task task, ActivityOptions activityOptions, int i2) {
-        return new StartActivityFromRecentsInfo(str, i, applicationInfo, task, activityOptions, i2);
-    }
-
-    public ArrayList getMovingTaskLocked(DexController dexController, int i) {
-        return dexController.getTaskLocked(this.mProcessName, this.mUid, false, i);
-    }
-
-    public String getProcessName() {
-        return this.mProcessName;
-    }
-
-    public int getUid() {
-        return this.mUid;
-    }
-
-    public void setKeepProcessAlive(boolean z) {
-        this.mKeepProcessAlive = z;
-    }
-
-    public boolean skipToShow() {
-        return this.mSkipToShow;
-    }
+    public abstract void startResult(int i, ActivityTaskManagerService activityTaskManagerService);
 }

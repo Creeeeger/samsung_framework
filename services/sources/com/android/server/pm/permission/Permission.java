@@ -1,29 +1,24 @@
 package com.android.server.pm.permission;
 
-import android.content.pm.PackageManagerInternal;
 import android.content.pm.PermissionInfo;
-import android.os.IInstalld;
 import android.os.UserHandle;
-import com.android.server.pm.pkg.PackageStateInternal;
-import com.android.server.pm.pkg.component.ParsedPermission;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Set;
 import libcore.util.EmptyArray;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class Permission {
     public boolean mDefinitionChanged;
-    public int[] mGids;
+    public int[] mGids = EmptyArray.INT;
     public boolean mGidsPerUser;
     public PermissionInfo mPermissionInfo;
     public boolean mReconciled;
     public final int mType;
     public int mUid;
 
-    public Permission(String str, String str2, int i) {
-        this.mGids = EmptyArray.INT;
+    public Permission(int i, String str, String str2) {
         PermissionInfo permissionInfo = new PermissionInfo();
         this.mPermissionInfo = permissionInfo;
         permissionInfo.name = str;
@@ -33,340 +28,80 @@ public final class Permission {
     }
 
     public Permission(PermissionInfo permissionInfo, int i) {
-        this.mGids = EmptyArray.INT;
         this.mPermissionInfo = permissionInfo;
         this.mType = i;
     }
 
-    public Permission(PermissionInfo permissionInfo, int i, boolean z, int i2, int[] iArr, boolean z2) {
-        this(permissionInfo, i);
-        this.mReconciled = z;
-        this.mUid = i2;
-        this.mGids = iArr;
-        this.mGidsPerUser = z2;
-    }
-
-    public PermissionInfo getPermissionInfo() {
-        return this.mPermissionInfo;
-    }
-
-    public void setPermissionInfo(PermissionInfo permissionInfo) {
-        if (permissionInfo != null) {
-            this.mPermissionInfo = permissionInfo;
-        } else {
-            PermissionInfo permissionInfo2 = new PermissionInfo();
-            PermissionInfo permissionInfo3 = this.mPermissionInfo;
-            permissionInfo2.name = permissionInfo3.name;
-            permissionInfo2.packageName = permissionInfo3.packageName;
-            permissionInfo2.protectionLevel = permissionInfo3.protectionLevel;
-            this.mPermissionInfo = permissionInfo2;
-        }
-        this.mReconciled = permissionInfo != null;
-    }
-
-    public String getName() {
-        return this.mPermissionInfo.name;
-    }
-
-    public int getProtectionLevel() {
-        return this.mPermissionInfo.protectionLevel;
-    }
-
-    public String getPackageName() {
-        return this.mPermissionInfo.packageName;
-    }
-
-    public int getType() {
-        return this.mType;
-    }
-
-    public int getUid() {
-        return this.mUid;
-    }
-
-    public boolean hasGids() {
-        return this.mGids.length != 0;
-    }
-
-    public int[] getRawGids() {
-        return this.mGids;
-    }
-
-    public boolean areGidsPerUser() {
-        return this.mGidsPerUser;
-    }
-
-    public void setGids(int[] iArr, boolean z) {
-        this.mGids = iArr;
-        this.mGidsPerUser = z;
-    }
-
-    public int[] computeGids(int i) {
-        if (this.mGidsPerUser) {
-            int[] iArr = new int[this.mGids.length];
-            int i2 = 0;
-            while (true) {
-                int[] iArr2 = this.mGids;
-                if (i2 >= iArr2.length) {
-                    return iArr;
-                }
-                iArr[i2] = UserHandle.getUid(i, iArr2[i2]);
-                i2++;
-            }
-        } else {
-            int[] iArr3 = this.mGids;
-            return iArr3.length != 0 ? (int[]) iArr3.clone() : iArr3;
-        }
-    }
-
-    public boolean isDefinitionChanged() {
-        return this.mDefinitionChanged;
-    }
-
-    public void setDefinitionChanged(boolean z) {
-        this.mDefinitionChanged = z;
-    }
-
-    public int calculateFootprint(Permission permission) {
-        if (this.mUid == permission.mUid) {
-            return permission.mPermissionInfo.name.length() + permission.mPermissionInfo.calculateFootprint();
-        }
-        return 0;
-    }
-
-    public boolean isPermission(ParsedPermission parsedPermission) {
-        PermissionInfo permissionInfo = this.mPermissionInfo;
-        return permissionInfo != null && Objects.equals(permissionInfo.packageName, parsedPermission.getPackageName()) && Objects.equals(this.mPermissionInfo.name, parsedPermission.getName());
-    }
-
-    public boolean isDynamic() {
-        return this.mType == 2;
-    }
-
-    public boolean isNormal() {
-        return (this.mPermissionInfo.protectionLevel & 15) == 0;
-    }
-
-    public boolean isRuntime() {
-        return (this.mPermissionInfo.protectionLevel & 15) == 1;
-    }
-
-    public boolean isRemoved() {
-        return (this.mPermissionInfo.flags & 2) != 0;
-    }
-
-    public boolean isSoftRestricted() {
-        return (this.mPermissionInfo.flags & 8) != 0;
-    }
-
-    public boolean isHardRestricted() {
-        return (this.mPermissionInfo.flags & 4) != 0;
-    }
-
-    public boolean isHardOrSoftRestricted() {
-        return (this.mPermissionInfo.flags & 12) != 0;
-    }
-
-    public boolean isImmutablyRestricted() {
-        return (this.mPermissionInfo.flags & 16) != 0;
-    }
-
-    public boolean isSignature() {
-        return (this.mPermissionInfo.protectionLevel & 15) == 2;
-    }
-
-    public boolean isInternal() {
-        return (this.mPermissionInfo.protectionLevel & 15) == 4;
-    }
-
-    public boolean isAppOp() {
-        return (this.mPermissionInfo.protectionLevel & 64) != 0;
-    }
-
-    public boolean isDevelopment() {
-        return isSignature() && (this.mPermissionInfo.protectionLevel & 32) != 0;
-    }
-
-    public boolean isInstaller() {
-        return (this.mPermissionInfo.protectionLevel & 256) != 0;
-    }
-
-    public boolean isInstant() {
-        return (this.mPermissionInfo.protectionLevel & IInstalld.FLAG_USE_QUOTA) != 0;
-    }
-
-    public boolean isOem() {
-        return (this.mPermissionInfo.protectionLevel & 16384) != 0;
-    }
-
-    public boolean isPre23() {
-        return (this.mPermissionInfo.protectionLevel & 128) != 0;
-    }
-
-    public boolean isPreInstalled() {
-        return (this.mPermissionInfo.protectionLevel & 1024) != 0;
-    }
-
-    public boolean isPrivileged() {
-        return (this.mPermissionInfo.protectionLevel & 16) != 0;
-    }
-
-    public boolean isRuntimeOnly() {
-        return (this.mPermissionInfo.protectionLevel & IInstalld.FLAG_FORCE) != 0;
-    }
-
-    public boolean isSetup() {
-        return (this.mPermissionInfo.protectionLevel & IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES) != 0;
-    }
-
-    public boolean isVerifier() {
-        return (this.mPermissionInfo.protectionLevel & 512) != 0;
-    }
-
-    public boolean isVendorPrivileged() {
-        return (this.mPermissionInfo.protectionLevel & 32768) != 0;
-    }
-
-    public boolean isSystemTextClassifier() {
-        return (this.mPermissionInfo.protectionLevel & 65536) != 0;
-    }
-
-    public boolean isConfigurator() {
-        return (this.mPermissionInfo.protectionLevel & 524288) != 0;
-    }
-
-    public boolean isIncidentReportApprover() {
-        return (this.mPermissionInfo.protectionLevel & 1048576) != 0;
-    }
-
-    public boolean isAppPredictor() {
-        return (this.mPermissionInfo.protectionLevel & 2097152) != 0;
-    }
-
-    public boolean isCompanion() {
-        return (this.mPermissionInfo.protectionLevel & 8388608) != 0;
-    }
-
-    public boolean isModule() {
-        return (this.mPermissionInfo.protectionLevel & 4194304) != 0;
-    }
-
-    public boolean isRetailDemo() {
-        return (this.mPermissionInfo.protectionLevel & 16777216) != 0;
-    }
-
-    public boolean isRecents() {
-        return (this.mPermissionInfo.protectionLevel & 33554432) != 0;
-    }
-
-    public boolean isRole() {
-        return (this.mPermissionInfo.protectionLevel & 67108864) != 0;
-    }
-
-    public boolean isKnownSigner() {
-        return (this.mPermissionInfo.protectionLevel & 134217728) != 0;
-    }
-
-    public Set getKnownCerts() {
-        return this.mPermissionInfo.knownCerts;
-    }
-
-    public void transfer(String str, String str2) {
-        if (str.equals(this.mPermissionInfo.packageName)) {
-            PermissionInfo permissionInfo = new PermissionInfo();
-            PermissionInfo permissionInfo2 = this.mPermissionInfo;
-            permissionInfo.name = permissionInfo2.name;
-            permissionInfo.packageName = str2;
-            permissionInfo.protectionLevel = permissionInfo2.protectionLevel;
-            this.mPermissionInfo = permissionInfo;
-            this.mReconciled = false;
-            this.mUid = 0;
-            this.mGids = EmptyArray.INT;
-            this.mGidsPerUser = false;
-        }
-    }
-
-    public boolean addToTree(int i, PermissionInfo permissionInfo, Permission permission) {
-        PermissionInfo permissionInfo2 = this.mPermissionInfo;
-        boolean z = (permissionInfo2.protectionLevel == i && this.mReconciled && this.mUid == permission.mUid && Objects.equals(permissionInfo2.packageName, permission.mPermissionInfo.packageName) && comparePermissionInfos(this.mPermissionInfo, permissionInfo)) ? false : true;
-        PermissionInfo permissionInfo3 = new PermissionInfo(permissionInfo);
-        this.mPermissionInfo = permissionInfo3;
-        permissionInfo3.packageName = permission.mPermissionInfo.packageName;
-        permissionInfo3.protectionLevel = i;
-        this.mReconciled = true;
-        this.mUid = permission.mUid;
-        return z;
-    }
-
-    public void updateDynamicPermission(Collection collection) {
-        Permission findPermissionTree;
-        if (this.mType != 2 || (findPermissionTree = findPermissionTree(collection, this.mPermissionInfo.name)) == null) {
-            return;
-        }
-        this.mPermissionInfo.packageName = findPermissionTree.mPermissionInfo.packageName;
-        this.mReconciled = true;
-        this.mUid = findPermissionTree.mUid;
-    }
-
-    public static boolean isOverridingSystemPermission(Permission permission, PermissionInfo permissionInfo, PackageManagerInternal packageManagerInternal) {
-        PackageStateInternal packageStateInternal;
-        if (permission == null || Objects.equals(permission.mPermissionInfo.packageName, permissionInfo.packageName) || !permission.mReconciled || (packageStateInternal = packageManagerInternal.getPackageStateInternal(permission.mPermissionInfo.packageName)) == null) {
-            return false;
-        }
-        return packageStateInternal.isSystem();
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:27:0x007b  */
-    /* JADX WARN: Removed duplicated region for block: B:30:0x0088  */
+    /* JADX WARN: Removed duplicated region for block: B:27:0x0071  */
+    /* JADX WARN: Removed duplicated region for block: B:30:0x007e  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
     public static com.android.server.pm.permission.Permission createOrUpdate(com.android.server.pm.permission.Permission r8, android.content.pm.PermissionInfo r9, com.android.server.pm.pkg.PackageState r10, java.util.Collection r11, boolean r12) {
         /*
-            Method dump skipped, instructions count: 303
+            Method dump skipped, instructions count: 273
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.permission.Permission.createOrUpdate(com.android.server.pm.permission.Permission, android.content.pm.PermissionInfo, com.android.server.pm.pkg.PackageState, java.util.Collection, boolean):com.android.server.pm.permission.Permission");
     }
 
-    public static Permission enforcePermissionTree(Collection collection, String str, int i) {
-        Permission findPermissionTree;
-        if (str != null && (findPermissionTree = findPermissionTree(collection, str)) != null && findPermissionTree.getUid() == UserHandle.getAppId(i)) {
-            return findPermissionTree;
-        }
-        throw new SecurityException("Calling uid " + i + " is not allowed to add to or remove from the permission tree");
-    }
-
-    public static Permission findPermissionTree(Collection collection, String str) {
+    public static Permission findPermissionTree(String str, Collection collection) {
         Iterator it = collection.iterator();
         while (it.hasNext()) {
             Permission permission = (Permission) it.next();
-            String name = permission.getName();
-            if (str.startsWith(name) && str.length() > name.length() && str.charAt(name.length()) == '.') {
+            String str2 = permission.mPermissionInfo.name;
+            if (str.startsWith(str2) && str.length() > str2.length() && str.charAt(str2.length()) == '.') {
                 return permission;
             }
         }
         return null;
     }
 
-    public String getGroup() {
-        return this.mPermissionInfo.group;
+    public final boolean addToTree(int i, PermissionInfo permissionInfo, Permission permission) {
+        boolean z;
+        PermissionInfo permissionInfo2 = this.mPermissionInfo;
+        if (permissionInfo2.protectionLevel == i && this.mReconciled && this.mUid == permission.mUid && Objects.equals(permissionInfo2.packageName, permission.mPermissionInfo.packageName)) {
+            PermissionInfo permissionInfo3 = this.mPermissionInfo;
+            if (permissionInfo3.icon == permissionInfo.icon && permissionInfo3.logo == permissionInfo.logo && permissionInfo3.protectionLevel == permissionInfo.protectionLevel && Objects.equals(permissionInfo3.name, permissionInfo.name) && Objects.equals(permissionInfo3.nonLocalizedLabel, permissionInfo.nonLocalizedLabel) && Objects.equals(permissionInfo3.packageName, permissionInfo.packageName)) {
+                z = false;
+                PermissionInfo permissionInfo4 = new PermissionInfo(permissionInfo);
+                this.mPermissionInfo = permissionInfo4;
+                permissionInfo4.packageName = permission.mPermissionInfo.packageName;
+                permissionInfo4.protectionLevel = i;
+                this.mReconciled = true;
+                this.mUid = permission.mUid;
+                return z;
+            }
+        }
+        z = true;
+        PermissionInfo permissionInfo42 = new PermissionInfo(permissionInfo);
+        this.mPermissionInfo = permissionInfo42;
+        permissionInfo42.packageName = permission.mPermissionInfo.packageName;
+        permissionInfo42.protectionLevel = i;
+        this.mReconciled = true;
+        this.mUid = permission.mUid;
+        return z;
     }
 
-    public int getProtection() {
-        return this.mPermissionInfo.protectionLevel & 15;
+    public final int[] computeGids(int i) {
+        if (!this.mGidsPerUser) {
+            int[] iArr = this.mGids;
+            return iArr.length != 0 ? (int[]) iArr.clone() : iArr;
+        }
+        int[] iArr2 = new int[this.mGids.length];
+        int i2 = 0;
+        while (true) {
+            int[] iArr3 = this.mGids;
+            if (i2 >= iArr3.length) {
+                return iArr2;
+            }
+            iArr2[i2] = UserHandle.getUid(i, iArr3[i2]);
+            i2++;
+        }
     }
 
-    public int getProtectionFlags() {
-        return this.mPermissionInfo.protectionLevel & 65520;
-    }
-
-    public PermissionInfo generatePermissionInfo(int i) {
-        return generatePermissionInfo(i, 10000);
-    }
-
-    public PermissionInfo generatePermissionInfo(int i, int i2) {
+    public final PermissionInfo generatePermissionInfo(int i, int i2) {
         PermissionInfo permissionInfo;
         if (this.mPermissionInfo != null) {
             permissionInfo = new PermissionInfo(this.mPermissionInfo);
@@ -395,7 +130,31 @@ public final class Permission {
         return permissionInfo;
     }
 
-    public static boolean comparePermissionInfos(PermissionInfo permissionInfo, PermissionInfo permissionInfo2) {
-        return permissionInfo.icon == permissionInfo2.icon && permissionInfo.logo == permissionInfo2.logo && permissionInfo.protectionLevel == permissionInfo2.protectionLevel && Objects.equals(permissionInfo.name, permissionInfo2.name) && Objects.equals(permissionInfo.nonLocalizedLabel, permissionInfo2.nonLocalizedLabel) && Objects.equals(permissionInfo.packageName, permissionInfo2.packageName);
+    public final boolean isDevelopment() {
+        return isSignature() && (this.mPermissionInfo.protectionLevel & 32) != 0;
+    }
+
+    public final boolean isInstant() {
+        return (this.mPermissionInfo.protectionLevel & 4096) != 0;
+    }
+
+    public final boolean isInternal() {
+        return (this.mPermissionInfo.protectionLevel & 15) == 4;
+    }
+
+    public final boolean isPrivileged() {
+        return (this.mPermissionInfo.protectionLevel & 16) != 0;
+    }
+
+    public final boolean isRole() {
+        return (this.mPermissionInfo.protectionLevel & 67108864) != 0;
+    }
+
+    public final boolean isRuntime() {
+        return (this.mPermissionInfo.protectionLevel & 15) == 1;
+    }
+
+    public final boolean isSignature() {
+        return (this.mPermissionInfo.protectionLevel & 15) == 2;
     }
 }

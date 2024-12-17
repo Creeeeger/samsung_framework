@@ -1,18 +1,15 @@
 package com.android.server.hdmi;
 
 import android.util.Slog;
+import com.android.server.hdmi.HdmiCecFeatureAction;
 import com.android.server.hdmi.HdmiControlService;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class SendKeyAction extends HdmiCecFeatureAction {
     public int mLastKeycode;
     public long mLastSendKeyTime;
     public final int mTargetAddress;
-
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean processCommand(HdmiCecMessage hdmiCecMessage) {
-        return false;
-    }
 
     public SendKeyAction(HdmiCecLocalDevice hdmiCecLocalDevice, int i, int i2) {
         super(hdmiCecLocalDevice);
@@ -21,51 +18,59 @@ public final class SendKeyAction extends HdmiCecFeatureAction {
     }
 
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean start() {
-        sendKeyDown(this.mLastKeycode);
-        this.mLastSendKeyTime = getCurrentTime();
-        if (!HdmiCecKeycode.isRepeatableKey(this.mLastKeycode)) {
-            sendKeyUp();
-            finish();
-            return true;
+    public final void handleTimerEvent(int i) {
+        int i2 = this.mState;
+        if (i2 != 1) {
+            if (i2 != 2) {
+                Slog.w("SendKeyAction", "Not in a valid state");
+                return;
+            } else {
+                sendKeyUp();
+                finish(true);
+                return;
+            }
         }
-        this.mState = 1;
-        addTimer(1, 400);
-        return true;
+        ((HdmiCecFeatureAction.ActionTimerHandler) this.mActionTimer).clearTimerMessage();
+        this.mState = 2;
+        sendKeyDown(this.mLastKeycode);
+        this.mLastSendKeyTime = System.currentTimeMillis();
+        addTimer(this.mState, 1000);
     }
 
-    public final long getCurrentTime() {
-        return System.currentTimeMillis();
+    @Override // com.android.server.hdmi.HdmiCecFeatureAction
+    public final boolean processCommand(HdmiCecMessage hdmiCecMessage) {
+        return false;
     }
 
-    public void processKeyEvent(int i, boolean z) {
+    public final void processKeyEvent(int i, boolean z) {
         int i2 = this.mState;
         if (i2 != 1 && i2 != 2) {
             Slog.w("SendKeyAction", "Not in a valid state");
             return;
         }
-        if (z) {
-            if (i != this.mLastKeycode) {
-                sendKeyDown(i);
-                this.mLastSendKeyTime = getCurrentTime();
-                if (!HdmiCecKeycode.isRepeatableKey(i)) {
-                    sendKeyUp();
-                    finish();
-                    return;
-                }
-            } else if (getCurrentTime() - this.mLastSendKeyTime >= 300) {
-                sendKeyDown(i);
-                this.mLastSendKeyTime = getCurrentTime();
+        if (!z) {
+            if (i == this.mLastKeycode) {
+                sendKeyUp();
+                finish(true);
+                return;
             }
-            this.mActionTimer.clearTimerMessage();
-            addTimer(this.mState, 1000);
-            this.mLastKeycode = i;
             return;
         }
-        if (i == this.mLastKeycode) {
-            sendKeyUp();
-            finish();
+        if (i != this.mLastKeycode) {
+            sendKeyDown(i);
+            this.mLastSendKeyTime = System.currentTimeMillis();
+            if (!HdmiCecKeycode.isRepeatableKey(i)) {
+                sendKeyUp();
+                finish(true);
+                return;
+            }
+        } else if (System.currentTimeMillis() - this.mLastSendKeyTime >= 300) {
+            sendKeyDown(i);
+            this.mLastSendKeyTime = System.currentTimeMillis();
         }
+        ((HdmiCecFeatureAction.ActionTimerHandler) this.mActionTimer).clearTimerMessage();
+        addTimer(this.mState, 1000);
+        this.mLastKeycode = i;
     }
 
     public final void sendKeyDown(int i) {
@@ -73,73 +78,48 @@ public final class SendKeyAction extends HdmiCecFeatureAction {
         if (androidKeyToCecKey == null) {
             return;
         }
-        if (this.mTargetAddress == 5 && localDevice().getDeviceInfo().getLogicalAddress() != 0) {
-            sendCommand(HdmiCecMessageBuilder.buildUserControlPressed(getSourceAddress(), this.mTargetAddress, androidKeyToCecKey), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.SendKeyAction.1
-                public AnonymousClass1() {
-                }
-
+        int i2 = this.mTargetAddress;
+        if (i2 != 5 || this.mSource.getDeviceInfo().getLogicalAddress() == 0) {
+            sendCommand(HdmiCecMessage.build(getSourceAddress(), i2, 68, androidKeyToCecKey));
+        } else {
+            sendCommand(HdmiCecMessage.build(getSourceAddress(), i2, 68, androidKeyToCecKey), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.SendKeyAction.1
                 @Override // com.android.server.hdmi.HdmiControlService.SendMessageCallback
-                public void onSendCompleted(int i2) {
-                    if (i2 != 0) {
-                        HdmiLogger.debug("AVR did not respond to <User Control Pressed>", new Object[0]);
-                        SendKeyAction.this.localDevice().mService.setSystemAudioActivated(false);
+                public final void onSendCompleted(int i3) {
+                    if (i3 == 1) {
+                        HdmiLogger.debug("AVR did not acknowledge <User Control Pressed>", new Object[0]);
+                        SendKeyAction.this.mSource.mService.setSystemAudioActivated(false);
                     }
                 }
             });
-        } else {
-            sendCommand(HdmiCecMessageBuilder.buildUserControlPressed(getSourceAddress(), this.mTargetAddress, androidKeyToCecKey));
-        }
-    }
-
-    /* renamed from: com.android.server.hdmi.SendKeyAction$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements HdmiControlService.SendMessageCallback {
-        public AnonymousClass1() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiControlService.SendMessageCallback
-        public void onSendCompleted(int i2) {
-            if (i2 != 0) {
-                HdmiLogger.debug("AVR did not respond to <User Control Pressed>", new Object[0]);
-                SendKeyAction.this.localDevice().mService.setSystemAudioActivated(false);
-            }
         }
     }
 
     public final void sendKeyUp() {
-        if (HdmiCecKeycode.isVolumeKeycode(this.mLastKeycode) && localDevice().getService().isAbsoluteVolumeBehaviorEnabled()) {
-            sendCommand(HdmiCecMessageBuilder.buildUserControlReleased(getSourceAddress(), this.mTargetAddress), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.SendKeyAction$$ExternalSyntheticLambda0
+        boolean isVolumeKeycode = HdmiCecKeycode.isVolumeKeycode(this.mLastKeycode);
+        int i = this.mTargetAddress;
+        if (isVolumeKeycode && this.mSource.mService.isAbsoluteVolumeBehaviorEnabled()) {
+            sendCommand(HdmiCecMessage.build(getSourceAddress(), i, 69), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.SendKeyAction$$ExternalSyntheticLambda0
                 @Override // com.android.server.hdmi.HdmiControlService.SendMessageCallback
-                public final void onSendCompleted(int i) {
-                    SendKeyAction.this.lambda$sendKeyUp$0(i);
+                public final void onSendCompleted(int i2) {
+                    SendKeyAction sendKeyAction = SendKeyAction.this;
+                    sendKeyAction.sendCommand(HdmiCecMessage.build(sendKeyAction.getSourceAddress(), sendKeyAction.mSource.findAudioReceiverAddress(), 113));
                 }
             });
         } else {
-            sendCommand(HdmiCecMessageBuilder.buildUserControlReleased(getSourceAddress(), this.mTargetAddress));
+            sendCommand(HdmiCecMessage.build(getSourceAddress(), i, 69));
         }
-    }
-
-    public /* synthetic */ void lambda$sendKeyUp$0(int i) {
-        sendCommand(HdmiCecMessageBuilder.buildGiveAudioStatus(getSourceAddress(), localDevice().findAudioReceiverAddress()));
     }
 
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public void handleTimerEvent(int i) {
-        int i2 = this.mState;
-        if (i2 != 1) {
-            if (i2 == 2) {
-                sendKeyUp();
-                finish();
-                return;
-            } else {
-                Slog.w("SendKeyAction", "Not in a valid state");
-                return;
-            }
-        }
-        this.mActionTimer.clearTimerMessage();
-        this.mState = 2;
+    public final void start() {
         sendKeyDown(this.mLastKeycode);
-        this.mLastSendKeyTime = getCurrentTime();
-        addTimer(this.mState, 1000);
+        this.mLastSendKeyTime = System.currentTimeMillis();
+        if (HdmiCecKeycode.isRepeatableKey(this.mLastKeycode)) {
+            this.mState = 1;
+            addTimer(1, 400);
+        } else {
+            sendKeyUp();
+            finish(true);
+        }
     }
 }

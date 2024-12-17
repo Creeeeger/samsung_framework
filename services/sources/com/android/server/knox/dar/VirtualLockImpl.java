@@ -1,9 +1,7 @@
 package com.android.server.knox.dar;
 
-import android.app.admin.PasswordMetrics;
-import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.util.NetworkConstants;
-import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -11,54 +9,84 @@ import android.service.gatekeeper.IGateKeeperService;
 import android.util.Log;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.LockSettingsInternal;
-import com.android.internal.widget.LockscreenCredential;
-import com.android.server.LocalServices;
 import com.android.server.knox.dar.DarManagerService;
-import com.android.server.knox.dar.sdp.SDPLog;
-import com.samsung.android.knox.dar.VirtualLockUtils;
 import java.security.SecureRandom;
-import java.util.Optional;
-import java.util.function.Function;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class VirtualLockImpl {
-    public final Context mContext;
+    public static final SecureRandom sSecureRandom = new SecureRandom();
     public final DarDatabaseCache mDarDatabaseCache;
     public IGateKeeperService mGateKeeperService;
     public final DarManagerService.Injector mInjector;
     public final LockPatternUtils mLockPatternUtils;
     public LockSettingsInternal mLockSettingsInternal;
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class GateKeeperDiedRecipient implements IBinder.DeathRecipient {
+        public GateKeeperDiedRecipient() {
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public final void binderDied() {
+            VirtualLockImpl.this.mGateKeeperService.asBinder().unlinkToDeath(this, 0);
+            VirtualLockImpl.this.mGateKeeperService = null;
+        }
+    }
+
     public VirtualLockImpl(DarManagerService.Injector injector) {
         this.mInjector = injector;
-        this.mContext = injector.getContext();
-        this.mDarDatabaseCache = injector.getDarDatabaseCache();
-        this.mLockPatternUtils = injector.getLockPatternUtils();
+        injector.getClass();
+        this.mDarDatabaseCache = injector.mDarDatabaseCache;
+        this.mLockPatternUtils = injector.mLockPatternUtils;
     }
 
-    public int reserveUserIdForSystem() {
-        this.mInjector.enforceCallerKnoxCoreOrSelf("reserveUserIdForSystem");
-        int reservedUserIdForSystem = getReservedUserIdForSystem();
-        if (getReservedUserIdForSystem() != -10000) {
-            return reservedUserIdForSystem;
+    public final boolean clearResetPasswordTokenInternal(int i, long j) {
+        if (j == 0 || !this.mLockPatternUtils.removeEscrowToken(j, i)) {
+            return false;
         }
-        int availableUserId = getAvailableUserId();
-        this.mDarDatabaseCache.putInt(0, "vl.reserved.userid", availableUserId);
-        return availableUserId;
+        DarDatabaseCache darDatabaseCache = this.mDarDatabaseCache;
+        darDatabaseCache.getClass();
+        SQLiteDatabase sQLiteDatabase = null;
+        try {
+            try {
+                sQLiteDatabase = darDatabaseCache.mDatabaseHelper.getWritableDatabase();
+                sQLiteDatabase.beginTransaction();
+                sQLiteDatabase.delete("dar_info", "name=? AND user=?", new String[]{"vl.rst.token.handle", Integer.toString(i)});
+                sQLiteDatabase.setTransactionSuccessful();
+                sQLiteDatabase.endTransaction();
+                sQLiteDatabase.close();
+                String makeTag = DarDatabaseCache.makeTag(i, "vl.rst.token.handle");
+                synchronized (darDatabaseCache.mCache) {
+                    try {
+                        if (darDatabaseCache.mCache.containsKey(makeTag)) {
+                            darDatabaseCache.mCache.remove(makeTag);
+                        }
+                    } finally {
+                    }
+                }
+                return true;
+            } catch (Exception e) {
+                DarDatabaseCache.reportError(e, "del");
+                if (sQLiteDatabase == null) {
+                    return true;
+                }
+                sQLiteDatabase.endTransaction();
+                sQLiteDatabase.close();
+                return true;
+            }
+        } catch (Throwable th) {
+            if (sQLiteDatabase != null) {
+                sQLiteDatabase.endTransaction();
+                sQLiteDatabase.close();
+            }
+            throw th;
+        }
     }
 
-    public int getReservedUserIdForSystem() {
-        this.mInjector.enforceCallerKnoxCoreOrSelf("getReservedUserIdForSystem");
-        return this.mDarDatabaseCache.getInt(0, "vl.reserved.userid", -10000);
-    }
-
-    public int getAvailableUserId() {
-        return getAvailableUserId(1000);
-    }
-
-    public int getAvailableUserId(int i) {
+    public final int getAvailableUserId() {
         int reservedUserIdForSystem = getReservedUserIdForSystem();
-        while (i < i + 10) {
+        for (int i = 1000; i < i + 10; i++) {
             if (i != reservedUserIdForSystem) {
                 try {
                     if (getGateKeeperService().getSecureUserId(i) == 0) {
@@ -68,115 +96,8 @@ public final class VirtualLockImpl {
                     e.printStackTrace();
                 }
             }
-            i++;
         }
-        return new SecureRandom().nextInt(500) + NetworkConstants.ETHER_MTU;
-    }
-
-    public boolean setResetPasswordToken(byte[] bArr, int i) {
-        SDPLog.d("VirtualLockImpl", "Set reset password token for user " + i);
-        if (!VirtualLockUtils.isVirtualUserId(i)) {
-            return false;
-        }
-        if (bArr == null || bArr.length < 32) {
-            throw new IllegalArgumentException("token must be at least 32-byte long");
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            clearResetPasswordTokenInternal(this.mDarDatabaseCache.getLong(i, "vl.rst.token.handle", 0L), i);
-            long addEscrowToken = this.mLockPatternUtils.addEscrowToken(bArr, i, this.mInjector.getEscrowTokenStateChangeCallback());
-            this.mDarDatabaseCache.putLong(i, "vl.rst.token.handle", addEscrowToken);
-            return addEscrowToken != 0;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public boolean clearResetPasswordToken(int i) {
-        SDPLog.d("VirtualLockImpl", "Clear Reset password token for user " + i);
-        if (!VirtualLockUtils.isVirtualUserId(i)) {
-            return false;
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return clearResetPasswordTokenInternal(this.mDarDatabaseCache.getLong(i, "vl.rst.token.handle", 0L), i);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final boolean clearResetPasswordTokenInternal(long j, int i) {
-        if (j == 0 || !this.mLockPatternUtils.removeEscrowToken(j, i)) {
-            return false;
-        }
-        this.mDarDatabaseCache.delete(i, "vl.rst.token.handle");
-        return true;
-    }
-
-    public boolean isResetPasswordTokenActive(int i) {
-        if (!VirtualLockUtils.isVirtualUserId(i)) {
-            return false;
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return this.mLockPatternUtils.isEscrowTokenActive(this.mDarDatabaseCache.getLong(i, "vl.rst.token.handle", 0L), i);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public boolean resetPasswordWithToken(String str, final byte[] bArr, final int i) {
-        LockscreenCredential createPasswordOrNone;
-        SDPLog.d("VirtualLockImpl", "Reset password with token for user " + i);
-        if (!VirtualLockUtils.isVirtualUserId(i)) {
-            return false;
-        }
-        if (str == null) {
-            str = "";
-        }
-        final long j = this.mDarDatabaseCache.getLong(i, "vl.rst.token.handle", 0L);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            if (PasswordMetrics.isNumericOnly(str)) {
-                createPasswordOrNone = LockscreenCredential.createPin(str);
-            } else {
-                createPasswordOrNone = LockscreenCredential.createPasswordOrNone(str);
-            }
-            final LockscreenCredential lockscreenCredential = createPasswordOrNone;
-            return ((Boolean) getLockSettingsInternal().map(new Function() { // from class: com.android.server.knox.dar.VirtualLockImpl$$ExternalSyntheticLambda0
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    Boolean lambda$resetPasswordWithToken$0;
-                    lambda$resetPasswordWithToken$0 = VirtualLockImpl.lambda$resetPasswordWithToken$0(lockscreenCredential, j, bArr, i, (LockSettingsInternal) obj);
-                    return lambda$resetPasswordWithToken$0;
-                }
-            }).orElse(Boolean.FALSE)).booleanValue();
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public static /* synthetic */ Boolean lambda$resetPasswordWithToken$0(LockscreenCredential lockscreenCredential, long j, byte[] bArr, int i, LockSettingsInternal lockSettingsInternal) {
-        return Boolean.valueOf(lockSettingsInternal.setLockCredentialWithToken(lockscreenCredential, j, bArr, i));
-    }
-
-    public final Optional getLockSettingsInternal() {
-        if (this.mLockSettingsInternal == null) {
-            this.mLockSettingsInternal = (LockSettingsInternal) LocalServices.getService(LockSettingsInternal.class);
-        }
-        return Optional.ofNullable(this.mLockSettingsInternal);
-    }
-
-    /* loaded from: classes2.dex */
-    public class GateKeeperDiedRecipient implements IBinder.DeathRecipient {
-        public GateKeeperDiedRecipient() {
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            VirtualLockImpl.this.mGateKeeperService.asBinder().unlinkToDeath(this, 0);
-            VirtualLockImpl.this.mGateKeeperService = null;
-        }
+        return sSecureRandom.nextInt(500) + NetworkConstants.ETHER_MTU;
     }
 
     public final synchronized IGateKeeperService getGateKeeperService() {
@@ -185,17 +106,33 @@ public final class VirtualLockImpl {
             return iGateKeeperService;
         }
         IBinder service = ServiceManager.getService("android.service.gatekeeper.IGateKeeperService");
-        if (service != null) {
-            try {
-                service.linkToDeath(new GateKeeperDiedRecipient(), 0);
-            } catch (RemoteException e) {
-                Log.w("VirtualLockImpl", " Unable to register death recipient", e);
-            }
-            IGateKeeperService asInterface = IGateKeeperService.Stub.asInterface(service);
-            this.mGateKeeperService = asInterface;
-            return asInterface;
+        if (service == null) {
+            Log.e("VirtualLockImpl", "Unable to acquire GateKeeperService");
+            return null;
         }
-        Log.e("VirtualLockImpl", "Unable to acquire GateKeeperService");
-        return null;
+        try {
+            service.linkToDeath(new GateKeeperDiedRecipient(), 0);
+        } catch (RemoteException e) {
+            Log.w("VirtualLockImpl", " Unable to register death recipient", e);
+        }
+        IGateKeeperService asInterface = IGateKeeperService.Stub.asInterface(service);
+        this.mGateKeeperService = asInterface;
+        return asInterface;
+    }
+
+    public final int getReservedUserIdForSystem() {
+        this.mInjector.getClass();
+        DarManagerService.Injector.enforceCallerKnoxCoreOrSelf("getReservedUserIdForSystem");
+        DarDatabaseCache darDatabaseCache = this.mDarDatabaseCache;
+        darDatabaseCache.getClass();
+        try {
+            String internal = darDatabaseCache.getInternal(0, "vl.reserved.userid");
+            if (internal != null) {
+                return Integer.parseInt(internal);
+            }
+            return -10000;
+        } catch (NumberFormatException unused) {
+            return -10000;
+        }
     }
 }

@@ -3,46 +3,33 @@ package com.android.server.location.gnss;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.location.GeofenceHardwareImpl;
-import android.location.FusedBatchOptions;
 import android.location.GnssCapabilities;
-import android.location.GnssMeasurementCorrections;
-import android.location.GnssMeasurementRequest;
-import android.location.GnssStatus;
-import android.location.IGnssAntennaInfoListener;
-import android.location.IGnssMeasurementsListener;
-import android.location.IGnssNavigationMessageListener;
-import android.location.IGnssNmeaListener;
-import android.location.IGnssStatusListener;
-import android.location.IGpsGeofenceHardware;
-import android.location.Location;
-import android.location.util.identity.CallerIdentity;
 import android.os.Binder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.os.UserHandle;
+import android.os.connectivity.GpsBatteryStats;
+import android.util.Base64;
 import android.util.IndentingPrintWriter;
 import android.util.Log;
 import com.android.internal.app.IBatteryStats;
-import com.android.server.location.LocationServiceThread;
-import com.android.server.location.gnss.GnssLocationProvider;
-import com.android.server.location.gnss.GnssManagerService;
-import com.android.server.location.gnss.GnssStatusProvider;
+import com.android.internal.location.nano.GnssLogsProto;
+import com.android.server.location.LocationManagerService;
+import com.android.server.location.gnss.GnssMetrics;
 import com.android.server.location.gnss.hal.GnssNative;
 import com.android.server.location.gnss.sec.SLocationProxy;
 import com.android.server.location.injector.Injector;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import java.io.FileDescriptor;
-import java.util.List;
-import java.util.Objects;
 
-/* loaded from: classes2.dex */
-public class GnssManagerService {
-    public final GnssCapabilitiesHalModule mCapabilitiesHalModule;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class GnssManagerService {
     public final Context mContext;
-    public final GnssGeofenceHalModule mGeofenceHalModule;
     public final GnssAntennaInfoProvider mGnssAntennaInfoProvider;
-    public final IGpsGeofenceHardware mGnssGeofenceProxy;
-    public final GnssLocationProvider mGnssLocationProvider;
+    public final GnssGeofenceProxy mGnssGeofenceProxy;
+    public final GnssLocationProviderSec mGnssLocationProvider;
     public final GnssMeasurementsProvider mGnssMeasurementsProvider;
     public final GnssMetrics mGnssMetrics;
     public final GnssNative mGnssNative;
@@ -51,230 +38,36 @@ public class GnssManagerService {
     public final GnssStatusProvider mGnssStatusProvider;
     public final SLocationProxy mSLocationProxy;
 
-    public GnssManagerService(Context context, Injector injector, GnssNative gnssNative) {
-        Context createAttributionContext = context.createAttributionContext("GnssService");
-        this.mContext = createAttributionContext;
-        this.mGnssNative = gnssNative;
-        GnssMetrics gnssMetrics = new GnssMetrics(createAttributionContext, IBatteryStats.Stub.asInterface(ServiceManager.getService("batterystats")), gnssNative);
-        this.mGnssMetrics = gnssMetrics;
-        this.mGnssLocationProvider = new GnssLocationProviderSec(createAttributionContext, injector, gnssNative, gnssMetrics);
-        this.mGnssStatusProvider = new GnssStatusProvider(injector, gnssNative);
-        this.mGnssNmeaProvider = new GnssNmeaProvider(injector, gnssNative);
-        this.mGnssMeasurementsProvider = new GnssMeasurementsProvider(injector, gnssNative);
-        this.mGnssNavigationMessageProvider = new GnssNavigationMessageProvider(injector, gnssNative);
-        GnssAntennaInfoProvider gnssAntennaInfoProvider = new GnssAntennaInfoProvider(gnssNative);
-        this.mGnssAntennaInfoProvider = gnssAntennaInfoProvider;
-        gnssAntennaInfoProvider.setNSLocationProviderHelper(injector.getNSLocationProviderHelper());
-        this.mGnssGeofenceProxy = new GnssGeofenceProxy(gnssNative);
-        this.mGeofenceHalModule = new GnssGeofenceHalModule(gnssNative);
-        this.mCapabilitiesHalModule = new GnssCapabilitiesHalModule(gnssNative);
-        gnssNative.register();
-        this.mSLocationProxy = new SLocationProxy();
-    }
-
-    public void onSystemReady() {
-        this.mGnssLocationProvider.onSystemReady();
-    }
-
-    public GnssLocationProvider getGnssLocationProvider() {
-        return this.mGnssLocationProvider;
-    }
-
-    public void setAutomotiveGnssSuspended(boolean z) {
-        this.mGnssLocationProvider.setAutomotiveGnssSuspended(z);
-    }
-
-    public boolean isAutomotiveGnssSuspended() {
-        return this.mGnssLocationProvider.isAutomotiveGnssSuspended();
-    }
-
-    public IGpsGeofenceHardware getGnssGeofenceProxy() {
-        return this.mGnssGeofenceProxy;
-    }
-
-    public void enableSLocation() {
-        this.mSLocationProxy.enableSLocation();
-        GnssLocationProvider gnssLocationProvider = this.mGnssLocationProvider;
-        if (gnssLocationProvider != null) {
-            final SLocationProxy sLocationProxy = this.mSLocationProxy;
-            Objects.requireNonNull(sLocationProxy);
-            gnssLocationProvider.setSLocationSvCallback(new GnssLocationProvider.SvCallback() { // from class: com.android.server.location.gnss.GnssManagerService$$ExternalSyntheticLambda0
-                @Override // com.android.server.location.gnss.GnssLocationProvider.SvCallback
-                public final void onSvCallback(GnssStatus gnssStatus) {
-                    SLocationProxy.this.onSvStatusChanged(gnssStatus);
-                }
-            });
-        }
-        GnssStatusProvider gnssStatusProvider = this.mGnssStatusProvider;
-        if (gnssStatusProvider != null) {
-            final SLocationProxy sLocationProxy2 = this.mSLocationProxy;
-            Objects.requireNonNull(sLocationProxy2);
-            gnssStatusProvider.setSLocationStatusCallback(new GnssStatusProvider.StatusCallback() { // from class: com.android.server.location.gnss.GnssManagerService$$ExternalSyntheticLambda1
-                @Override // com.android.server.location.gnss.GnssStatusProvider.StatusCallback
-                public final void onStatusCallback(boolean z) {
-                    SLocationProxy.this.onStatusChanged(z);
-                }
-            });
-        }
-    }
-
-    public int getGnssYearOfHardware() {
-        return this.mGnssNative.getHardwareYear();
-    }
-
-    public String getGnssHardwareModelName() {
-        return this.mGnssNative.getHardwareModelName();
-    }
-
-    public GnssCapabilities getGnssCapabilities() {
-        return this.mGnssNative.getCapabilities();
-    }
-
-    public List getGnssAntennaInfos() {
-        return this.mGnssAntennaInfoProvider.getAntennaInfos();
-    }
-
-    public int getGnssBatchSize() {
-        return this.mGnssLocationProvider.getBatchSize();
-    }
-
-    public void registerGnssStatusCallback(IGnssStatusListener iGnssStatusListener, String str, String str2, String str3) {
-        this.mContext.enforceCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION", null);
-        this.mGnssStatusProvider.addListener(CallerIdentity.fromBinder(this.mContext, str, str2, str3), iGnssStatusListener);
-    }
-
-    public void unregisterGnssStatusCallback(IGnssStatusListener iGnssStatusListener) {
-        this.mGnssStatusProvider.removeListener(iGnssStatusListener);
-    }
-
-    public void registerGnssNmeaCallback(IGnssNmeaListener iGnssNmeaListener, String str, String str2, String str3) {
-        this.mContext.enforceCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION", null);
-        this.mGnssNmeaProvider.addListener(CallerIdentity.fromBinder(this.mContext, str, str2, str3), iGnssNmeaListener);
-    }
-
-    public void unregisterGnssNmeaCallback(IGnssNmeaListener iGnssNmeaListener) {
-        this.mGnssNmeaProvider.removeListener(iGnssNmeaListener);
-    }
-
-    public void addGnssMeasurementsListener(GnssMeasurementRequest gnssMeasurementRequest, IGnssMeasurementsListener iGnssMeasurementsListener, String str, String str2, String str3) {
-        this.mContext.enforceCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION", null);
-        if (gnssMeasurementRequest.isCorrelationVectorOutputsEnabled()) {
-            this.mContext.enforceCallingOrSelfPermission("android.permission.LOCATION_HARDWARE", null);
-        }
-        this.mGnssMeasurementsProvider.addListener(gnssMeasurementRequest, CallerIdentity.fromBinder(this.mContext, str, str2, str3), iGnssMeasurementsListener);
-    }
-
-    public void injectGnssMeasurementCorrections(GnssMeasurementCorrections gnssMeasurementCorrections) {
-        this.mContext.enforceCallingOrSelfPermission("android.permission.LOCATION_HARDWARE", null);
-        this.mContext.enforceCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION", null);
-        if (this.mGnssNative.injectMeasurementCorrections(gnssMeasurementCorrections)) {
-            return;
-        }
-        Log.w("GnssManager", "failed to inject GNSS measurement corrections");
-    }
-
-    public void removeGnssMeasurementsListener(IGnssMeasurementsListener iGnssMeasurementsListener) {
-        this.mGnssMeasurementsProvider.removeListener(iGnssMeasurementsListener);
-    }
-
-    public void addGnssNavigationMessageListener(IGnssNavigationMessageListener iGnssNavigationMessageListener, String str, String str2, String str3) {
-        this.mContext.enforceCallingOrSelfPermission("android.permission.ACCESS_FINE_LOCATION", null);
-        this.mGnssNavigationMessageProvider.addListener(CallerIdentity.fromBinder(this.mContext, str, str2, str3), iGnssNavigationMessageListener);
-    }
-
-    public void removeGnssNavigationMessageListener(IGnssNavigationMessageListener iGnssNavigationMessageListener) {
-        this.mGnssNavigationMessageProvider.removeListener(iGnssNavigationMessageListener);
-    }
-
-    public void addGnssAntennaInfoListener(IGnssAntennaInfoListener iGnssAntennaInfoListener, String str, String str2, String str3) {
-        this.mGnssAntennaInfoProvider.addListener(CallerIdentity.fromBinder(this.mContext, str, str2, str3), iGnssAntennaInfoListener);
-    }
-
-    public void removeGnssAntennaInfoListener(IGnssAntennaInfoListener iGnssAntennaInfoListener) {
-        this.mGnssAntennaInfoProvider.removeListener(iGnssAntennaInfoListener);
-    }
-
-    public void sendNiResponse(int i, int i2) {
-        try {
-            this.mGnssLocationProvider.getNetInitiatedListener().sendNiResponse(i, i2);
-        } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
-        }
-    }
-
-    public void dump(FileDescriptor fileDescriptor, IndentingPrintWriter indentingPrintWriter, String[] strArr) {
-        if (strArr.length > 0 && strArr[0].equals("--gnssmetrics")) {
-            indentingPrintWriter.append(this.mGnssMetrics.dumpGnssMetricsAsProtoString());
-            return;
-        }
-        indentingPrintWriter.println("Capabilities: " + this.mGnssNative.getCapabilities());
-        indentingPrintWriter.println("GNSS Hardware Model Name: " + getGnssHardwareModelName());
-        if (this.mGnssStatusProvider.isSupported()) {
-            indentingPrintWriter.println("Status Provider:");
-            indentingPrintWriter.increaseIndent();
-            this.mGnssStatusProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
-            indentingPrintWriter.decreaseIndent();
-        }
-        if (this.mGnssMeasurementsProvider.isSupported()) {
-            indentingPrintWriter.println("Measurements Provider:");
-            indentingPrintWriter.increaseIndent();
-            this.mGnssMeasurementsProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
-            indentingPrintWriter.decreaseIndent();
-        }
-        if (this.mGnssNavigationMessageProvider.isSupported()) {
-            indentingPrintWriter.println("Navigation Message Provider:");
-            indentingPrintWriter.increaseIndent();
-            this.mGnssNavigationMessageProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
-            indentingPrintWriter.decreaseIndent();
-        }
-        if (this.mGnssAntennaInfoProvider.isSupported()) {
-            indentingPrintWriter.println("Antenna Info Provider:");
-            indentingPrintWriter.increaseIndent();
-            indentingPrintWriter.println("Antenna Infos: " + this.mGnssAntennaInfoProvider.getAntennaInfos());
-            this.mGnssAntennaInfoProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
-            indentingPrintWriter.decreaseIndent();
-        }
-        if (this.mGnssNmeaProvider.isSupported()) {
-            indentingPrintWriter.println("NMEA Provider:");
-            indentingPrintWriter.increaseIndent();
-            this.mGnssNmeaProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
-            indentingPrintWriter.decreaseIndent();
-        }
-        GnssPowerStats powerStats = this.mGnssNative.getPowerStats();
-        if (powerStats != null) {
-            indentingPrintWriter.println("Last Power Stats:");
-            indentingPrintWriter.increaseIndent();
-            powerStats.dump(fileDescriptor, indentingPrintWriter, strArr, this.mGnssNative.getCapabilities());
-            indentingPrintWriter.decreaseIndent();
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class GnssCapabilitiesHalModule implements GnssNative.BaseCallbacks {
-        @Override // com.android.server.location.gnss.hal.GnssNative.BaseCallbacks
-        public void onHalRestarted() {
-        }
-
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class GnssCapabilitiesHalModule implements GnssNative.BaseCallbacks {
         public GnssCapabilitiesHalModule(GnssNative gnssNative) {
             gnssNative.addBaseCallbacks(this);
         }
 
         @Override // com.android.server.location.gnss.hal.GnssNative.BaseCallbacks
-        public void onCapabilitiesChanged(GnssCapabilities gnssCapabilities, GnssCapabilities gnssCapabilities2) {
+        public final void onCapabilitiesChanged(GnssCapabilities gnssCapabilities) {
             long clearCallingIdentity = Binder.clearCallingIdentity();
             try {
-                GnssManagerService.this.mContext.sendBroadcastAsUser(new Intent("android.location.action.GNSS_CAPABILITIES_CHANGED").putExtra("android.location.extra.GNSS_CAPABILITIES", gnssCapabilities2).addFlags(1073741824).addFlags(268435456), UserHandle.ALL);
+                GnssManagerService.this.mContext.sendBroadcastAsUser(new Intent("android.location.action.GNSS_CAPABILITIES_CHANGED").putExtra("android.location.extra.GNSS_CAPABILITIES", gnssCapabilities).addFlags(1073741824).addFlags(268435456), UserHandle.ALL);
             } finally {
                 Binder.restoreCallingIdentity(clearCallingIdentity);
             }
         }
+
+        @Override // com.android.server.location.gnss.hal.GnssNative.BaseCallbacks
+        public final void onHalRestarted() {
+        }
     }
 
-    /* loaded from: classes2.dex */
-    public class GnssGeofenceHalModule implements GnssNative.GeofenceCallbacks {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class GnssGeofenceHalModule implements GnssNative.GeofenceCallbacks {
         public GeofenceHardwareImpl mGeofenceHardwareImpl;
 
-        public final int translateGeofenceStatus(int i) {
+        public GnssGeofenceHalModule(GnssNative gnssNative) {
+            gnssNative.setGeofenceCallbacks(this);
+        }
+
+        public static int translateGeofenceStatus(int i) {
             if (i == -149) {
                 return 5;
             }
@@ -296,105 +89,156 @@ public class GnssManagerService {
             }
         }
 
-        public GnssGeofenceHalModule(GnssNative gnssNative) {
-            gnssNative.setGeofenceCallbacks(this);
-        }
-
         public final synchronized GeofenceHardwareImpl getGeofenceHardware() {
-            if (this.mGeofenceHardwareImpl == null) {
-                this.mGeofenceHardwareImpl = GeofenceHardwareImpl.getInstance(GnssManagerService.this.mContext);
+            try {
+                if (this.mGeofenceHardwareImpl == null) {
+                    this.mGeofenceHardwareImpl = GeofenceHardwareImpl.getInstance(GnssManagerService.this.mContext);
+                }
+            } catch (Throwable th) {
+                throw th;
             }
             return this.mGeofenceHardwareImpl;
         }
+    }
 
-        public /* synthetic */ void lambda$onReportGeofenceTransition$0(int i, Location location, int i2, long j) {
-            getGeofenceHardware().reportGeofenceTransition(i, location, i2, j, 0, FusedBatchOptions.SourceTechnologies.GNSS);
-        }
+    public GnssManagerService(Context context, Injector injector, GnssNative gnssNative) {
+        Context createAttributionContext = context.createAttributionContext("GnssService");
+        this.mContext = createAttributionContext;
+        this.mGnssNative = gnssNative;
+        GnssMetrics gnssMetrics = new GnssMetrics(createAttributionContext, IBatteryStats.Stub.asInterface(ServiceManager.getService("batterystats")), gnssNative);
+        this.mGnssMetrics = gnssMetrics;
+        this.mGnssLocationProvider = new GnssLocationProviderSec(createAttributionContext, injector, gnssNative, gnssMetrics);
+        this.mGnssStatusProvider = new GnssStatusProvider(injector, gnssNative);
+        this.mGnssNmeaProvider = new GnssNmeaProvider(injector, gnssNative);
+        this.mGnssMeasurementsProvider = new GnssMeasurementsProvider(injector, gnssNative);
+        this.mGnssNavigationMessageProvider = new GnssNavigationMessageProvider(injector, gnssNative);
+        GnssAntennaInfoProvider gnssAntennaInfoProvider = new GnssAntennaInfoProvider(gnssNative);
+        this.mGnssAntennaInfoProvider = gnssAntennaInfoProvider;
+        gnssAntennaInfoProvider.mNSLocationProviderHelper = ((LocationManagerService.SystemInjector) injector).mNSLocationProviderHelper;
+        this.mGnssGeofenceProxy = new GnssGeofenceProxy(gnssNative);
+        new GnssGeofenceHalModule(gnssNative);
+        new GnssCapabilitiesHalModule(gnssNative);
+        gnssNative.register();
+        SLocationProxy sLocationProxy = new SLocationProxy();
+        sLocationProxy.mSLocationService = null;
+        this.mSLocationProxy = sLocationProxy;
+    }
 
-        @Override // com.android.server.location.gnss.hal.GnssNative.GeofenceCallbacks
-        public void onReportGeofenceTransition(final int i, final Location location, final int i2, final long j) {
-            LocationServiceThread.getHandler().post(new Runnable() { // from class: com.android.server.location.gnss.GnssManagerService$GnssGeofenceHalModule$$ExternalSyntheticLambda3
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GnssManagerService.GnssGeofenceHalModule.this.lambda$onReportGeofenceTransition$0(i, location, i2, j);
-                }
-            });
-            GnssManagerService.this.mSLocationProxy.reportGeofenceTransition(i, location, i2, j);
+    public final void dump(FileDescriptor fileDescriptor, IndentingPrintWriter indentingPrintWriter, String[] strArr) {
+        GpsBatteryStats gpsBatteryStats;
+        if (strArr.length <= 0 || !strArr[0].equals("--gnssmetrics")) {
+            indentingPrintWriter.println("Capabilities: " + this.mGnssNative.mCapabilities);
+            indentingPrintWriter.println("GNSS Hardware Model Name: " + this.mGnssNative.mHardwareModelName);
+            this.mGnssStatusProvider.getClass();
+            indentingPrintWriter.println("Status Provider:");
+            indentingPrintWriter.increaseIndent();
+            this.mGnssStatusProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
+            indentingPrintWriter.decreaseIndent();
+            if (this.mGnssMeasurementsProvider.mGnssNative.isMeasurementSupported()) {
+                indentingPrintWriter.println("Measurements Provider:");
+                indentingPrintWriter.increaseIndent();
+                this.mGnssMeasurementsProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
+                indentingPrintWriter.decreaseIndent();
+            }
+            if (this.mGnssNavigationMessageProvider.mGnssNative.isNavigationMessageCollectionSupported()) {
+                indentingPrintWriter.println("Navigation Message Provider:");
+                indentingPrintWriter.increaseIndent();
+                this.mGnssNavigationMessageProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
+                indentingPrintWriter.decreaseIndent();
+            }
+            if (this.mGnssAntennaInfoProvider.mGnssNative.isAntennaInfoSupported()) {
+                indentingPrintWriter.println("Antenna Info Provider:");
+                indentingPrintWriter.increaseIndent();
+                indentingPrintWriter.println("Antenna Infos: " + this.mGnssAntennaInfoProvider.mAntennaInfos);
+                this.mGnssAntennaInfoProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
+                indentingPrintWriter.decreaseIndent();
+            }
+            this.mGnssNmeaProvider.getClass();
+            indentingPrintWriter.println("NMEA Provider:");
+            indentingPrintWriter.increaseIndent();
+            this.mGnssNmeaProvider.dump(fileDescriptor, indentingPrintWriter, strArr);
+            indentingPrintWriter.decreaseIndent();
+            GnssPowerStats gnssPowerStats = this.mGnssNative.mLastKnownPowerStats;
+            if (gnssPowerStats != null) {
+                indentingPrintWriter.println("Last Known Power Stats:");
+                indentingPrintWriter.increaseIndent();
+                gnssPowerStats.dump(fileDescriptor, indentingPrintWriter, strArr, this.mGnssNative.mCapabilities);
+                indentingPrintWriter.decreaseIndent();
+                return;
+            }
+            return;
         }
-
-        @Override // com.android.server.location.gnss.hal.GnssNative.GeofenceCallbacks
-        public void onReportGeofenceStatus(final int i, final Location location) {
-            LocationServiceThread.getHandler().post(new Runnable() { // from class: com.android.server.location.gnss.GnssManagerService$GnssGeofenceHalModule$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GnssManagerService.GnssGeofenceHalModule.this.lambda$onReportGeofenceStatus$1(i, location);
-                }
-            });
+        GnssMetrics gnssMetrics = this.mGnssMetrics;
+        gnssMetrics.getClass();
+        GnssLogsProto.GnssLog gnssLog = new GnssLogsProto.GnssLog();
+        GnssMetrics.Statistics statistics = gnssMetrics.mLocationFailureStatistics;
+        if (statistics.getCount() > 0) {
+            gnssLog.numLocationReportProcessed = statistics.getCount();
+            gnssLog.percentageLocationFailure = (int) (statistics.getMean() * 100.0d);
         }
-
-        public /* synthetic */ void lambda$onReportGeofenceStatus$1(int i, Location location) {
-            getGeofenceHardware().reportGeofenceMonitorStatus(0, i == 2 ? 0 : 1, location, FusedBatchOptions.SourceTechnologies.GNSS);
-            GnssManagerService.this.mSLocationProxy.reportGeofenceStatus(i, location);
+        GnssMetrics.Statistics statistics2 = gnssMetrics.mTimeToFirstFixSecStatistics;
+        if (statistics2.getCount() > 0) {
+            gnssLog.numTimeToFirstFixProcessed = statistics2.getCount();
+            gnssLog.meanTimeToFirstFixSecs = (int) statistics2.getMean();
+            gnssLog.standardDeviationTimeToFirstFixSecs = (int) statistics2.getStandardDeviation();
         }
-
-        public /* synthetic */ void lambda$onReportGeofenceAddStatus$2(int i, int i2) {
-            getGeofenceHardware().reportGeofenceAddStatus(i, translateGeofenceStatus(i2));
+        GnssMetrics.Statistics statistics3 = gnssMetrics.mPositionAccuracyMeterStatistics;
+        if (statistics3.getCount() > 0) {
+            gnssLog.numPositionAccuracyProcessed = statistics3.getCount();
+            gnssLog.meanPositionAccuracyMeters = (int) statistics3.getMean();
+            gnssLog.standardDeviationPositionAccuracyMeters = (int) statistics3.getStandardDeviation();
         }
-
-        @Override // com.android.server.location.gnss.hal.GnssNative.GeofenceCallbacks
-        public void onReportGeofenceAddStatus(final int i, final int i2) {
-            LocationServiceThread.getHandler().post(new Runnable() { // from class: com.android.server.location.gnss.GnssManagerService$GnssGeofenceHalModule$$ExternalSyntheticLambda5
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GnssManagerService.GnssGeofenceHalModule.this.lambda$onReportGeofenceAddStatus$2(i, i2);
-                }
-            });
-            GnssManagerService.this.mSLocationProxy.onReportGeofenceAddStatus(i, i2);
+        GnssMetrics.Statistics statistics4 = gnssMetrics.mTopFourAverageCn0Statistics;
+        if (statistics4.getCount() > 0) {
+            gnssLog.numTopFourAverageCn0Processed = statistics4.getCount();
+            gnssLog.meanTopFourAverageCn0DbHz = statistics4.getMean();
+            gnssLog.standardDeviationTopFourAverageCn0DbHz = statistics4.getStandardDeviation();
         }
-
-        public /* synthetic */ void lambda$onReportGeofenceRemoveStatus$3(int i, int i2) {
-            getGeofenceHardware().reportGeofenceRemoveStatus(i, translateGeofenceStatus(i2));
+        int i = gnssMetrics.mNumSvStatus;
+        if (i > 0) {
+            gnssLog.numSvStatusProcessed = i;
         }
-
-        @Override // com.android.server.location.gnss.hal.GnssNative.GeofenceCallbacks
-        public void onReportGeofenceRemoveStatus(final int i, final int i2) {
-            LocationServiceThread.getHandler().post(new Runnable() { // from class: com.android.server.location.gnss.GnssManagerService$GnssGeofenceHalModule$$ExternalSyntheticLambda4
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GnssManagerService.GnssGeofenceHalModule.this.lambda$onReportGeofenceRemoveStatus$3(i, i2);
-                }
-            });
-            GnssManagerService.this.mSLocationProxy.onReportGeofenceRemoveStatus(i, i2);
+        int i2 = gnssMetrics.mNumL5SvStatus;
+        if (i2 > 0) {
+            gnssLog.numL5SvStatusProcessed = i2;
         }
-
-        public /* synthetic */ void lambda$onReportGeofencePauseStatus$4(int i, int i2) {
-            getGeofenceHardware().reportGeofencePauseStatus(i, translateGeofenceStatus(i2));
+        int i3 = gnssMetrics.mNumSvStatusUsedInFix;
+        if (i3 > 0) {
+            gnssLog.numSvStatusUsedInFix = i3;
         }
-
-        @Override // com.android.server.location.gnss.hal.GnssNative.GeofenceCallbacks
-        public void onReportGeofencePauseStatus(final int i, final int i2) {
-            LocationServiceThread.getHandler().post(new Runnable() { // from class: com.android.server.location.gnss.GnssManagerService$GnssGeofenceHalModule$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GnssManagerService.GnssGeofenceHalModule.this.lambda$onReportGeofencePauseStatus$4(i, i2);
-                }
-            });
-            GnssManagerService.this.mSLocationProxy.onReportGeofencePauseStatus(i, i2);
+        int i4 = gnssMetrics.mNumL5SvStatusUsedInFix;
+        if (i4 > 0) {
+            gnssLog.numL5SvStatusUsedInFix = i4;
         }
-
-        public /* synthetic */ void lambda$onReportGeofenceResumeStatus$5(int i, int i2) {
-            getGeofenceHardware().reportGeofenceResumeStatus(i, translateGeofenceStatus(i2));
+        GnssMetrics.Statistics statistics5 = gnssMetrics.mTopFourAverageCn0StatisticsL5;
+        if (statistics5.getCount() > 0) {
+            gnssLog.numL5TopFourAverageCn0Processed = statistics5.getCount();
+            gnssLog.meanL5TopFourAverageCn0DbHz = statistics5.getMean();
+            gnssLog.standardDeviationL5TopFourAverageCn0DbHz = statistics5.getStandardDeviation();
         }
-
-        @Override // com.android.server.location.gnss.hal.GnssNative.GeofenceCallbacks
-        public void onReportGeofenceResumeStatus(final int i, final int i2) {
-            LocationServiceThread.getHandler().post(new Runnable() { // from class: com.android.server.location.gnss.GnssManagerService$GnssGeofenceHalModule$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GnssManagerService.GnssGeofenceHalModule.this.lambda$onReportGeofenceResumeStatus$5(i, i2);
-                }
-            });
-            GnssManagerService.this.mSLocationProxy.onReportGeofenceResumeStatus(i, i2);
+        GnssMetrics.GnssPowerMetrics gnssPowerMetrics = gnssMetrics.mGnssPowerMetrics;
+        gnssPowerMetrics.getClass();
+        GnssLogsProto.PowerMetrics powerMetrics = new GnssLogsProto.PowerMetrics();
+        GnssMetrics.GnssPowerMetrics gnssPowerMetrics2 = GnssMetrics.this.mGnssPowerMetrics;
+        gnssPowerMetrics2.getClass();
+        try {
+            gpsBatteryStats = gnssPowerMetrics2.mBatteryStats.getGpsBatteryStats();
+        } catch (RemoteException e) {
+            Log.w("GnssMetrics", e);
+            gpsBatteryStats = null;
         }
+        if (gpsBatteryStats != null) {
+            powerMetrics.loggingDurationMs = gpsBatteryStats.getLoggingDurationMs();
+            powerMetrics.energyConsumedMah = gpsBatteryStats.getEnergyConsumedMaMs() / 3600000.0d;
+            long[] timeInGpsSignalQualityLevel = gpsBatteryStats.getTimeInGpsSignalQualityLevel();
+            long[] jArr = new long[timeInGpsSignalQualityLevel.length];
+            powerMetrics.timeInSignalQualityLevelMs = jArr;
+            System.arraycopy(timeInGpsSignalQualityLevel, 0, jArr, 0, timeInGpsSignalQualityLevel.length);
+        }
+        gnssLog.powerMetrics = powerMetrics;
+        gnssLog.hardwareRevision = SystemProperties.get("ro.boot.revision", "");
+        String encodeToString = Base64.encodeToString(GnssLogsProto.GnssLog.toByteArray(gnssLog), 0);
+        gnssMetrics.reset();
+        indentingPrintWriter.append(encodeToString);
     }
 }

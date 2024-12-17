@@ -8,8 +8,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 @SystemApi(client = SystemApi.Client.SYSTEM_SERVER)
-/* loaded from: classes3.dex */
+/* loaded from: classes2.dex */
 public interface PackageState {
     AndroidPackage getAndroidPackage();
 
@@ -37,6 +38,8 @@ public interface PackageState {
 
     String getPrimaryCpuAbi();
 
+    byte[] getRestrictUpdateHash();
+
     String getSeInfo();
 
     String getSecondaryCpuAbi();
@@ -49,11 +52,20 @@ public interface PackageState {
 
     PackageUserState getStateForUser(UserHandle userHandle);
 
+    int getTargetSdkVersion();
+
+    default PackageUserState getUserStateOrDefault(int i) {
+        PackageUserState packageUserState = (PackageUserState) getUserStates().get(i);
+        return packageUserState == null ? PackageUserState.DEFAULT : packageUserState;
+    }
+
     SparseArray getUserStates();
 
     List getUsesLibraryFiles();
 
     String[] getUsesSdkLibraries();
+
+    boolean[] getUsesSdkLibrariesOptional();
 
     long[] getUsesSdkLibrariesVersionsMajor();
 
@@ -71,6 +83,10 @@ public interface PackageState {
 
     boolean isApkInUpdatedApex();
 
+    boolean isDebuggable();
+
+    boolean isDefaultToDeviceProtectedStorage();
+
     boolean isExternalStorage();
 
     boolean isForceQueryableOverride();
@@ -83,11 +99,17 @@ public interface PackageState {
 
     boolean isOem();
 
+    boolean isPendingRestore();
+
+    boolean isPersistent();
+
     boolean isPrivileged();
 
     boolean isProduct();
 
     boolean isRequiredForSystemUser();
+
+    boolean isScannedAsStoppedSystemApp();
 
     boolean isSystem();
 
@@ -98,9 +120,4 @@ public interface PackageState {
     boolean isUpdatedSystemApp();
 
     boolean isVendor();
-
-    default PackageUserState getUserStateOrDefault(int i) {
-        PackageUserState packageUserState = (PackageUserState) getUserStates().get(i);
-        return packageUserState == null ? PackageUserState.DEFAULT : packageUserState;
-    }
 }

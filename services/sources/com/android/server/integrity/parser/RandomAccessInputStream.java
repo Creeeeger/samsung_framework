@@ -2,46 +2,42 @@ package com.android.server.integrity.parser;
 
 import java.io.InputStream;
 
-/* loaded from: classes2.dex */
-public class RandomAccessInputStream extends InputStream {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RandomAccessInputStream extends InputStream {
     public int mPosition = 0;
-    public final RandomAccessObject mRandomAccessObject;
+    public final RandomAccessObject$RandomAccessFileObject mRandomAccessObject;
 
-    public RandomAccessInputStream(RandomAccessObject randomAccessObject) {
-        this.mRandomAccessObject = randomAccessObject;
-    }
-
-    public void seek(int i) {
-        this.mRandomAccessObject.seek(i);
-        this.mPosition = i;
+    public RandomAccessInputStream(RandomAccessObject$RandomAccessFileObject randomAccessObject$RandomAccessFileObject) {
+        this.mRandomAccessObject = randomAccessObject$RandomAccessFileObject;
     }
 
     @Override // java.io.InputStream
-    public int available() {
-        return this.mRandomAccessObject.length() - this.mPosition;
+    public final int available() {
+        return this.mRandomAccessObject.mLength - this.mPosition;
     }
 
     @Override // java.io.InputStream, java.io.Closeable, java.lang.AutoCloseable
-    public void close() {
-        this.mRandomAccessObject.close();
+    public final void close() {
+        this.mRandomAccessObject.mRandomAccessFile.close();
     }
 
     @Override // java.io.InputStream
-    public int read() {
+    public final int read() {
         if (available() <= 0) {
             return -1;
         }
         this.mPosition++;
-        return this.mRandomAccessObject.read();
+        return this.mRandomAccessObject.mRandomAccessFile.read();
     }
 
     @Override // java.io.InputStream
-    public int read(byte[] bArr) {
+    public final int read(byte[] bArr) {
         return read(bArr, 0, bArr.length);
     }
 
     @Override // java.io.InputStream
-    public int read(byte[] bArr, int i, int i2) {
+    public final int read(byte[] bArr, int i, int i2) {
         if (i2 <= 0) {
             return 0;
         }
@@ -49,13 +45,13 @@ public class RandomAccessInputStream extends InputStream {
         if (available <= 0) {
             return -1;
         }
-        int read = this.mRandomAccessObject.read(bArr, i, Math.min(i2, available));
+        int read = this.mRandomAccessObject.mRandomAccessFile.read(bArr, i, Math.min(i2, available));
         this.mPosition += read;
         return read;
     }
 
     @Override // java.io.InputStream
-    public long skip(long j) {
+    public final long skip(long j) {
         int available;
         if (j <= 0 || (available = available()) <= 0) {
             return 0L;
@@ -63,7 +59,7 @@ public class RandomAccessInputStream extends InputStream {
         int min = (int) Math.min(available, j);
         int i = this.mPosition + min;
         this.mPosition = i;
-        this.mRandomAccessObject.seek(i);
+        this.mRandomAccessObject.mRandomAccessFile.seek(i);
         return min;
     }
 }

@@ -1,130 +1,94 @@
 package com.android.server.knox.dar;
 
-import android.content.pm.UserInfo;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.net.INetd;
 import android.os.Binder;
 import android.os.SystemProperties;
 import android.util.Log;
-import com.android.internal.widget.LockscreenCredential;
-import com.samsung.android.knox.SemPersonaManager;
+import com.android.server.input.KeyboardMetricsCollector;
 
-/* loaded from: classes2.dex */
-public final class DarUtil {
-    public static boolean mIsDeviceOwnerEnabled = false;
-
-    public static void updateDeviceOwnerStatus(boolean z) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                boolean isDoEnabled = SemPersonaManager.isDoEnabled(0);
-                Log.d("DARUtil", "Knox device_owner property : " + isDoEnabled);
-                boolean z2 = SystemProperties.getBoolean("ro.device_owner", false);
-                Log.d("DARUtil", "DPM device_owner property  : " + z2);
-                Log.d("DARUtil", "Extra factor               : " + z);
-                setDoEnabled(isDoEnabled || z2 || z);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public static void setDoEnabled(boolean z) {
-        mIsDeviceOwnerEnabled = z;
-    }
-
-    public static boolean isDoEnabled() {
-        boolean z = mIsDeviceOwnerEnabled;
-        if (z) {
-            return z;
-        }
-        Log.d("DARUtil", "Device owner status not updated yet...");
-        return SemPersonaManager.isDoEnabled(0);
-    }
-
-    public static boolean isDeviceOwnerUser(int i) {
-        return i == 0 && isDoEnabled();
-    }
-
-    public static boolean isEnterpriseUser(UserInfo userInfo) {
-        boolean z = !(!userInfo.isManagedProfile() || userInfo.isSdpNotSupportedSecureFolder() || userInfo.isGuest() || userInfo.isDualAppProfile() || userInfo.isBMode()) || isDeviceOwnerUser(userInfo.id);
-        if (!z) {
-            Log.d("DARUtil", "Not an enterprise user : " + userInfo.id);
-        } else {
-            Log.d("DARUtil", "is enterprise user : " + userInfo.id);
-        }
-        return z;
-    }
-
-    public static boolean isLegacyContainerUser(UserInfo userInfo) {
-        boolean isSecureFolder = userInfo.isSecureFolder();
-        if (isSecureFolder) {
-            Log.d("DARUtil", "Identified as legacy type container user : " + userInfo.id);
-        }
-        return isSecureFolder;
-    }
-
-    public static LockscreenCredential getSafe(LockscreenCredential lockscreenCredential) {
-        return lockscreenCredential == null ? LockscreenCredential.createNone() : lockscreenCredential;
-    }
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public abstract class DarUtil {
     public static String credentialTypeToString(int i) {
-        if (i == -1) {
-            return "None";
-        }
-        if (i == 1) {
-            return "Pattern";
-        }
-        if (i == 3) {
-            return "Pin";
-        }
-        if (i == 4) {
-            return "Password";
-        }
-        return "Unknown " + i;
+        return i != -1 ? i != 1 ? i != 3 ? i != 4 ? VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Unknown ") : "Password" : "Pin" : "Pattern" : KeyboardMetricsCollector.DEFAULT_LANGUAGE_TAG;
     }
 
-    public static boolean isDaemonRunning(String str) {
-        String str2;
-        boolean z = false;
-        if (str == null || str.isEmpty()) {
-            Log.e("DARUtil", "isDaemonRunning() - Invalid service name");
-            return false;
-        }
-        String str3 = "init.svc." + str;
+    public static boolean isDaemonRunning() {
+        String str;
+        String concat = "init.svc.".concat("dualdard");
         long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z = false;
         try {
             try {
-                str2 = SystemProperties.get(str3);
+                str = SystemProperties.get(concat);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (str2 != null && !str2.isEmpty()) {
-                z = INetd.IF_FLAG_RUNNING.equals(str2);
+            if (str != null && !str.isEmpty()) {
+                z = INetd.IF_FLAG_RUNNING.equals(str);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
                 return z;
             }
             Log.e("DARUtil", "isDaemonRunning() - Service not found");
-            return z;
-        } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
+            return z;
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
         }
     }
 
-    public static void setSystemPropertyBoolean(String str, boolean z) {
-        if (str == null || str.isEmpty()) {
-            Log.e("DARUtil", "Invalid property");
-            return;
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                SystemProperties.set(str, Boolean.toString(z));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x002e, code lost:
+    
+        if (com.samsung.android.knox.SemPersonaManager.isDoEnabled(0) != false) goto L16;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:13:0x0033  */
+    /* JADX WARN: Removed duplicated region for block: B:16:0x0040  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static boolean isEnterpriseUser(android.content.pm.UserInfo r4) {
+        /*
+            boolean r0 = r4.isManagedProfile()
+            java.lang.String r1 = "DARUtil"
+            if (r0 == 0) goto L20
+            boolean r0 = r4.isSdpNotSupportedSecureFolder()
+            if (r0 != 0) goto L20
+            boolean r0 = r4.isGuest()
+            if (r0 != 0) goto L20
+            boolean r0 = r4.isDualAppProfile()
+            if (r0 != 0) goto L20
+            boolean r0 = r4.isBMode()
+            if (r0 == 0) goto L30
+        L20:
+            int r0 = r4.id
+            r2 = 0
+            if (r0 != 0) goto L31
+            java.lang.String r0 = "Device owner status not updated yet..."
+            android.util.Log.d(r1, r0)
+            boolean r0 = com.samsung.android.knox.SemPersonaManager.isDoEnabled(r2)
+            if (r0 == 0) goto L31
+        L30:
+            r2 = 1
+        L31:
+            if (r2 != 0) goto L40
+            java.lang.StringBuilder r0 = new java.lang.StringBuilder
+            java.lang.String r3 = "Not an enterprise user : "
+            r0.<init>(r3)
+            int r4 = r4.id
+            com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0.m(r0, r4, r1)
+            goto L4d
+        L40:
+            java.lang.StringBuilder r0 = new java.lang.StringBuilder
+            java.lang.String r3 = "is enterprise user : "
+            r0.<init>(r3)
+            int r4 = r4.id
+            com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0.m(r0, r4, r1)
+        L4d:
+            return r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.knox.dar.DarUtil.isEnterpriseUser(android.content.pm.UserInfo):boolean");
     }
 }

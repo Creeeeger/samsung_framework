@@ -5,17 +5,21 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.media.AudioSystem;
 import android.os.Binder;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.SystemProperties;
-import android.os.UserHandle;
 import android.provider.Settings;
+import android.telephony.PhoneStateListener;
+import android.text.TextUtils;
 import android.util.Log;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptService$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
 import com.android.server.audio.AudioServiceExt;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.audio.RecordingActivityMonitor;
 import com.samsung.android.audio.Rune;
 import com.samsung.android.media.AudioParameter;
 import com.samsung.android.server.audio.AudioExecutor;
@@ -24,24 +28,24 @@ import com.samsung.android.server.audio.AudioSettingsHelper;
 import com.samsung.android.server.audio.CoverHelper;
 import com.samsung.android.server.audio.DesktopModeHelper;
 import com.samsung.android.server.audio.DvfsHelper;
-import com.samsung.android.server.audio.FactoryUtils;
+import com.samsung.android.server.audio.LiveTranslatorManager;
 import com.samsung.android.server.audio.MicModeManager;
 import com.samsung.android.server.audio.OmcRingtoneManager;
 import com.samsung.android.server.audio.PhoneStateHelper;
 import com.samsung.android.server.audio.VolumeMonitorService;
-import com.samsung.android.server.audio.utils.AudioUtils;
 import com.samsung.android.server.audio.utils.CoreFxUtils;
-import com.samsung.android.server.audio.utils.KaraokeUtils;
 import com.samsung.android.server.audio.utils.SoundAliveUtils;
-import java.io.PrintWriter;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AudioServiceExt {
+public final class AudioServiceExt {
     public static int mKaraokeListenbackEnabled;
     public int mAdaptSoundEnabled;
     public int mAllSoundMute;
     public final AudioSystemAdapter mAudioSystem;
+    public final HandlerThread mBroadcastHandlerThread;
     public final Context mContext;
     public final CoverHelper mCoverHelper;
     public final ContentResolver mCr;
@@ -50,23 +54,23 @@ public class AudioServiceExt {
     public boolean mExtraVolume;
     public boolean mIsBikeMode;
     public boolean mIsPttCallVolumeEnabled;
+    public final LiveTranslatorManager mLiveTranslatorManager;
     public float mMainBalance;
     public int mMainMono;
     public final MicModeManager mMicModeManager;
     public int mNbQualityMode;
-    public OmcRingtoneManager mOmcRingtoneManager;
+    public final OmcRingtoneManager mOmcRingtoneManager;
     public PhoneStateHelper mPhoneStateHelper;
     public final AudioService mService;
     public final AudioSettingsHelper mSettingsHelper;
-    public ExtSettingsObserver mSettingsObserver;
     public final SoundEffectsHelper mSfxHelper;
     public int mUpscalerEnabled;
     public int mVideoCallVoiceEffectMode;
     public boolean mVoipAntiHowling;
     public boolean mVoipExtraVolume;
     public int mVolumeMonitorValue;
-    public final BroadcastReceiver mReceiver = new ExtBroadcastReceiver();
-    public final BroadcastReceiver mResetSettingsReceiver = new ResetSettingsReceiver();
+    public final ExtBroadcastReceiver mReceiver = new ExtBroadcastReceiver(this, 0);
+    public final ExtBroadcastReceiver mResetSettingsReceiver = new ExtBroadcastReceiver(this, 1);
     public boolean mScreenCall = false;
     public boolean mCallTranslationMode = false;
     public int mVoiceTxControlMode = 0;
@@ -74,188 +78,112 @@ public class AudioServiceExt {
     public int mVoiceCallMonsterSoundMode = -1;
     public int mVideoCallMonsterSoundMode = -1;
 
-    public AudioServiceExt(Context context, AudioService audioService, AudioSystemAdapter audioSystemAdapter, AudioSettingsHelper audioSettingsHelper, SoundEffectsHelper soundEffectsHelper, MicModeManager micModeManager) {
-        this.mVideoCallVoiceEffectMode = Rune.SEC_AUDIO_VIDEO_CALL_VOICE_DEFAULT_EFFECT ? 100 : -1;
-        this.mVoipExtraVolume = false;
-        this.mVoipAntiHowling = false;
-        this.mExtraVolume = false;
-        this.mIsPttCallVolumeEnabled = false;
-        this.mVolumeMonitorValue = 0;
-        this.mContext = context;
-        this.mService = audioService;
-        this.mAudioSystem = audioSystemAdapter;
-        this.mSettingsHelper = audioSettingsHelper;
-        this.mSfxHelper = soundEffectsHelper;
-        this.mMicModeManager = micModeManager;
-        this.mCr = context.getContentResolver();
-        this.mOmcRingtoneManager = OmcRingtoneManager.getInstance();
-        this.mCoverHelper = CoverHelper.getInstance();
-        readPersistedCustomSettings();
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ExtBroadcastReceiver extends BroadcastReceiver {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ AudioServiceExt this$0;
 
-    public void systemReady() {
-        this.mSettingsObserver = new ExtSettingsObserver();
-        registerReceivers();
-        if (this.mAllSoundMute == 1) {
-            setAllSoundMute();
-        }
-        this.mDvfsHelper = DvfsHelper.getInstance(this.mContext);
-        PhoneStateHelper phoneStateHelper = PhoneStateHelper.getInstance(this.mContext);
-        this.mPhoneStateHelper = phoneStateHelper;
-        phoneStateHelper.registerPhoneStateListener();
-        DesktopModeHelper desktopModeHelper = DesktopModeHelper.getInstance(this.mContext);
-        this.mDesktopModeHelper = desktopModeHelper;
-        desktopModeHelper.registerListener();
-    }
-
-    public void bootCompleted() {
-        if (Rune.SEC_AUDIO_SUPPORT_VOIP_SOUND_LOUDER) {
-            this.mAudioSystem.setParameters("l_call_voip_extra_volume_enable=" + this.mVoipExtraVolume);
-        }
-        if (Rune.SEC_AUDIO_SUPPORT_VOIP_ANTI_HOWLING) {
-            this.mAudioSystem.setParameters("l_call_voip_extra_volume_enable=" + this.mVoipAntiHowling);
-        }
-        this.mCoverHelper.init(this.mContext);
-        AudioHqmHelper.startLogging(this.mContext);
-        CoreFxUtils.setAdaptSound(this.mContext, this.mAdaptSoundEnabled);
-        CoreFxUtils.setUpScalerMode(this.mUpscalerEnabled);
-        setNbQualityMode(0);
-        if (Rune.SEC_AUDIO_MIC_MODE_FOR_QUICK_PANEL_UI) {
-            restoreMicMode();
-        }
-    }
-
-    public void onAudioServerDied() {
-        setAllSoundMute();
-        if (Rune.SEC_AUDIO_SUPPORT_VOIP_SOUND_LOUDER) {
-            restoreVoipExtraVolume();
-        }
-        if (Rune.SEC_AUDIO_SUPPORT_VOIP_ANTI_HOWLING) {
-            restoreVoipAntiHowling();
-        }
-        if (Rune.SEC_AUDIO_VIDEO_CALL_VOICE_EFFECT) {
-            restoreVideoCallVoiceEffect();
-        }
-        if (Rune.SEC_AUDIO_MIC_MODE_FOR_QUICK_PANEL_UI) {
-            restoreMicMode();
-        }
-        if (Rune.SEC_AUDIO_CALL_MONSTER_SOUND) {
-            restoreCallMonsterSoundMode();
-        }
-        restoreDexState();
-        CoreFxUtils.setUpScalerMode(this.mUpscalerEnabled);
-        CoreFxUtils.setAdaptSound(this.mContext, this.mAdaptSoundEnabled);
-        AudioUtils.sendBroadcastToUser(this.mContext, new Intent("com.samsung.intent.action.MEDIA_SERVER_REBOOTED"), UserHandle.CURRENT, null);
-        setNbQualityMode(getNbQualityMode());
-        if (Rune.SEC_AUDIO_VOLUME_MONITOR) {
-            getVolumeMonitorService().audioServerDied();
-        }
-        AudioHqmHelper.increaseAudioServerResetCount();
-    }
-
-    public final void readPersistedCustomSettings() {
-        ContentResolver contentResolver = this.mCr;
-        this.mNbQualityMode = Settings.Global.getInt(contentResolver, "personalise_call_sound_soft", 0);
-        if (Rune.SEC_AUDIO_SUPPORT_VOIP_SOUND_LOUDER) {
-            this.mVoipExtraVolume = Settings.System.getInt(contentResolver, "voip_extra_volume", 0) != 0;
-        }
-        if (Rune.SEC_AUDIO_SUPPORT_VOIP_ANTI_HOWLING) {
-            this.mVoipAntiHowling = Settings.System.getInt(contentResolver, "voip_anti_howling", 0) != 0;
-        }
-        this.mAdaptSoundEnabled = Settings.System.getIntForUser(contentResolver, "hearing_musiccheck", 0, -2);
-        this.mUpscalerEnabled = Settings.System.getIntForUser(contentResolver, "k2hd_effect", 0, -2);
-        if (Rune.SEC_AUDIO_BIKE_MODE) {
-            this.mIsBikeMode = Settings.Secure.getInt(contentResolver, "isBikeMode", 0) == 1;
-        }
-        if (Rune.SEC_AUDIO_KARAOKE_LISTENBACK) {
-            mKaraokeListenbackEnabled = Settings.Global.getInt(contentResolver, "headphone_monitoring", 0);
-        }
-        if (Rune.SEC_AUDIO_VOLUME_MONITOR) {
-            this.mVolumeMonitorValue = Settings.Global.getInt(contentResolver, "volume_monitor", 0);
-            getVolumeMonitorService().setVolumeMonitorOnOff(this.mVolumeMonitorValue == 1);
-        }
-    }
-
-    public final void registerReceivers() {
-        IntentFilter intentFilter = new IntentFilter();
-        addExtIntentFilter(intentFilter);
-        this.mContext.registerReceiverAsUser(this.mReceiver, UserHandle.ALL, intentFilter, null, null, 2);
-        IntentFilter intentFilter2 = new IntentFilter();
-        addResetSettingsIntentFilter(intentFilter2);
-        this.mContext.registerReceiverAsUser(this.mResetSettingsReceiver, UserHandle.ALL, intentFilter2, "com.sec.android.settings.permission.SOFT_RESET", null, 2);
-    }
-
-    public final void addExtIntentFilter(IntentFilter intentFilter) {
-        intentFilter.addAction("android.intent.action.ACTION_SHUTDOWN");
-        intentFilter.addAction("android.intent.action.USER_SWITCHED");
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter.addAction("android.settings.ALL_SOUND_MUTE");
-        intentFilter.addAction("com.samsung.intent.action.WB_AMR");
-        intentFilter.addAction("com.sec.media.action.AUDIOCORE_LOGGING");
-        intentFilter.addAction("com.sec.android.intent.action.DHR_HQM_REFRESH_REQ");
-        intentFilter.addAction("android.intent.action.ACTION_SUBINFO_RECORD_UPDATED");
-        intentFilter.addAction("com.android.launcher3.quickstep.closeall");
-        intentFilter.addAction("com.android.phone.action.PERSONALISE_CALL_SOUND_CHANGED");
-    }
-
-    /* loaded from: classes.dex */
-    public class ExtBroadcastReceiver extends BroadcastReceiver {
-        public ExtBroadcastReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            try {
-                handleIntent(context, intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        public /* synthetic */ ExtBroadcastReceiver(AudioServiceExt audioServiceExt, int i) {
+            this.$r8$classId = i;
+            this.this$0 = audioServiceExt;
         }
 
         public void handleIntent(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals("android.intent.action.SCREEN_ON")) {
-                AudioServiceExt.this.mDvfsHelper.setScreenOn(true);
-                AudioExecutor.execute(new Runnable() { // from class: com.android.server.audio.AudioServiceExt$ExtBroadcastReceiver$$ExternalSyntheticLambda0
+                this.this$0.mDvfsHelper.mIsScreenOn = true;
+                final int i = 0;
+                AudioExecutor.execute(new Runnable(this) { // from class: com.android.server.audio.AudioServiceExt$ExtBroadcastReceiver$$ExternalSyntheticLambda0
+                    public final /* synthetic */ AudioServiceExt.ExtBroadcastReceiver f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
                     @Override // java.lang.Runnable
                     public final void run() {
-                        AudioServiceExt.ExtBroadcastReceiver.this.lambda$handleIntent$0();
+                        int i2 = i;
+                        AudioServiceExt.ExtBroadcastReceiver extBroadcastReceiver = this.f$0;
+                        switch (i2) {
+                            case 0:
+                                SoundAliveUtils.notifyDVFSToSoundAlive(extBroadcastReceiver.this$0.mContext, 0, true);
+                                break;
+                            default:
+                                SoundAliveUtils.notifyDVFSToSoundAlive(extBroadcastReceiver.this$0.mContext, 0, false);
+                                break;
+                        }
                     }
                 });
                 return;
             }
             if (action.equals("android.intent.action.SCREEN_OFF")) {
-                AudioServiceExt.this.mDvfsHelper.setScreenOn(false);
-                AudioExecutor.execute(new Runnable() { // from class: com.android.server.audio.AudioServiceExt$ExtBroadcastReceiver$$ExternalSyntheticLambda1
+                this.this$0.mDvfsHelper.mIsScreenOn = false;
+                final int i2 = 1;
+                AudioExecutor.execute(new Runnable(this) { // from class: com.android.server.audio.AudioServiceExt$ExtBroadcastReceiver$$ExternalSyntheticLambda0
+                    public final /* synthetic */ AudioServiceExt.ExtBroadcastReceiver f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
                     @Override // java.lang.Runnable
                     public final void run() {
-                        AudioServiceExt.ExtBroadcastReceiver.this.lambda$handleIntent$1();
+                        int i22 = i2;
+                        AudioServiceExt.ExtBroadcastReceiver extBroadcastReceiver = this.f$0;
+                        switch (i22) {
+                            case 0:
+                                SoundAliveUtils.notifyDVFSToSoundAlive(extBroadcastReceiver.this$0.mContext, 0, true);
+                                break;
+                            default:
+                                SoundAliveUtils.notifyDVFSToSoundAlive(extBroadcastReceiver.this$0.mContext, 0, false);
+                                break;
+                        }
                     }
                 });
                 return;
             }
             if ("android.settings.ALL_SOUND_MUTE".equals(action)) {
-                AudioServiceExt.this.mAllSoundMute = intent.getIntExtra("mute", 0);
-                AudioServiceExt.this.setAllSoundMute();
+                this.this$0.mAllSoundMute = intent.getIntExtra("mute", 0);
+                this.this$0.setAllSoundMute();
                 return;
             }
             if (action.equals("android.intent.action.USER_SWITCHED")) {
                 if (Rune.SEC_AUDIO_SUPPORT_SOUND_THEME) {
                     int intExtra = intent.getIntExtra("android.intent.extra.user_handle", 0);
-                    Log.d("AS.AudioServiceExt", "ACTION_USER_SWITCHED :: userId = " + intExtra);
-                    AudioServiceExt.this.updateThemeSound(intExtra, true);
+                    NetworkScorerAppManager$$ExternalSyntheticOutline0.m(intExtra, "ACTION_USER_SWITCHED :: userId = ", "AS.AudioServiceExt");
+                    this.this$0.updateThemeSound(intExtra, true);
                     return;
                 }
                 return;
             }
             if ("com.samsung.intent.action.WB_AMR".equals(action)) {
-                AudioServiceExt.this.updateCallBandInfo(intent);
+                AudioServiceExt audioServiceExt = this.this$0;
+                audioServiceExt.getClass();
+                int intExtra2 = intent.getIntExtra("EXTRA_RAT", 0);
+                int intExtra3 = intent.getIntExtra("EXTRA_STATE", 0);
+                AudioSystemAdapter audioSystemAdapter = audioServiceExt.mAudioSystem;
+                if (intExtra3 == 9) {
+                    Log.d("AS.AudioServiceExt", "wb_amr fb");
+                    audioSystemAdapter.setParameters("g_call_band=fb");
+                } else if (intExtra3 == 8) {
+                    Log.d("AS.AudioServiceExt", "wb_amr swb");
+                    audioSystemAdapter.setParameters("g_call_band=swb");
+                } else if (intExtra3 == 1) {
+                    Log.d("AS.AudioServiceExt", "wb_amr wb");
+                    audioSystemAdapter.setParameters("g_call_band=wb");
+                } else {
+                    Log.d("AS.AudioServiceExt", "wb_amr nb");
+                    audioSystemAdapter.setParameters("g_call_band=nb");
+                }
+                if (intExtra2 != 0) {
+                    audioSystemAdapter.setParameters("l_call_rat_type=" + intExtra2);
+                    return;
+                }
                 return;
             }
             if ("android.intent.action.ACTION_SHUTDOWN".equals(action)) {
                 AudioHqmHelper.sendHqmData(context, false);
-                AudioServiceExt.this.mAudioSystem.setParameters("dev_shutdown=true");
+                this.this$0.mAudioSystem.setParameters("dev_shutdown=true");
                 return;
             }
             if ("com.sec.media.action.AUDIOCORE_LOGGING".equals(action)) {
@@ -270,29 +198,73 @@ public class AudioServiceExt {
             }
             if ("android.intent.action.ACTION_SUBINFO_RECORD_UPDATED".equals(action)) {
                 Log.i("AS.AudioServiceExt", "ACTION_SUBINFO_RECORD_UPDATED received");
-                AudioServiceExt.this.mPhoneStateHelper.unregisterPhoneStateListener();
-                AudioServiceExt.this.mPhoneStateHelper.registerPhoneStateListener();
-            } else if ("com.android.launcher3.quickstep.closeall".equals(action)) {
+                PhoneStateHelper phoneStateHelper = this.this$0.mPhoneStateHelper;
+                if (phoneStateHelper.mTelephonyManager != null) {
+                    for (int i3 = 0; i3 < phoneStateHelper.mSimCount; i3++) {
+                        PhoneStateListener phoneStateListener = phoneStateHelper.mPhoneStateListener[i3];
+                        if (phoneStateListener != null) {
+                            phoneStateHelper.mSpecifiedTm[i3].listen(phoneStateListener, 0);
+                            phoneStateHelper.mRilState = -1;
+                            DirEncryptService$$ExternalSyntheticOutline0.m(i3, "call unregisterPhoneStateListener : ", "AS.PhoneStateHelper");
+                        }
+                    }
+                }
+                this.this$0.mPhoneStateHelper.registerPhoneStateListener();
+                return;
+            }
+            if ("com.android.launcher3.quickstep.closeall".equals(action)) {
                 Log.d("AS.AudioServiceExt", "onReceive close all");
-                AudioServiceExt.this.mAudioSystem.setParameters("l_recovery_restarting=true");
-            } else if ("com.android.phone.action.PERSONALISE_CALL_SOUND_CHANGED".equals(action)) {
-                AudioServiceExt.this.setNbQualityMode(intent.getIntExtra("value", 0));
+                this.this$0.mAudioSystem.setParameters("l_recovery_restarting=true");
+                return;
+            }
+            if ("com.android.phone.action.PERSONALISE_CALL_SOUND_CHANGED".equals(action)) {
+                this.this$0.setNbQualityMode(intent.getIntExtra("value", 0));
+                return;
+            }
+            if ("com.samsung.server.BatteryService.action.BATTERY_CONNECTION_STATE_CHANGED".equals(action)) {
+                boolean booleanExtra = intent.getBooleanExtra("all_battery_connected", true);
+                int intForUser = Settings.System.getIntForUser(this.this$0.mCr, "all_sound_off", 0, -2);
+                StringBuilder sb = new StringBuilder("battery hotswap(connected only 1 battery) = ");
+                boolean z = !booleanExtra;
+                sb.append(z);
+                sb.append(", mAllSoundMute=");
+                sb.append(this.this$0.mAllSoundMute);
+                sb.append(", allSoundOff=");
+                sb.append(intForUser);
+                Log.i("AS.AudioServiceExt", sb.toString());
+                if (intForUser != 1) {
+                    AudioServiceExt audioServiceExt2 = this.this$0;
+                    if (z != audioServiceExt2.mAllSoundMute) {
+                        audioServiceExt2.mAllSoundMute = z ? 1 : 0;
+                        audioServiceExt2.setAllSoundMute();
+                    }
+                }
             }
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$handleIntent$0() {
-            SoundAliveUtils.notifyDVFSToSoundAlive(AudioServiceExt.this.mContext, 0, true);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$handleIntent$1() {
-            SoundAliveUtils.notifyDVFSToSoundAlive(AudioServiceExt.this.mContext, 0, false);
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            switch (this.$r8$classId) {
+                case 0:
+                    try {
+                        handleIntent(context, intent);
+                        break;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                default:
+                    if ("com.samsung.intent.action.SETTINGS_SOFT_RESET".equals(intent.getAction())) {
+                        AudioExecutor.execute(new AudioServiceExt$$ExternalSyntheticLambda1(1, this));
+                        break;
+                    }
+                    break;
+            }
         }
     }
 
-    /* loaded from: classes.dex */
-    public class ExtSettingsObserver extends ContentObserver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ExtSettingsObserver extends ContentObserver {
         public ExtSettingsObserver() {
             super(new Handler());
             if (Rune.SEC_AUDIO_SUPPORT_SOUND_THEME) {
@@ -313,172 +285,140 @@ public class AudioServiceExt {
         }
 
         @Override // android.database.ContentObserver
-        public void onChange(boolean z) {
-            int i;
+        public final void onChange(boolean z) {
             super.onChange(z);
             if (Rune.SEC_AUDIO_SUPPORT_SOUND_THEME) {
                 AudioServiceExt.this.updateThemeSound(ActivityManager.getCurrentUser(), false);
             }
             int intForUser = Settings.System.getIntForUser(AudioServiceExt.this.mCr, "hearing_musiccheck", 0, -2);
             int intForUser2 = Settings.System.getIntForUser(AudioServiceExt.this.mCr, "k2hd_effect", 0, -2);
-            if (AudioServiceExt.this.mAdaptSoundEnabled != intForUser) {
-                AudioServiceExt.this.mAdaptSoundEnabled = intForUser;
-                CoreFxUtils.setAdaptSound(AudioServiceExt.this.mContext, AudioServiceExt.this.mAdaptSoundEnabled);
-            } else if (AudioServiceExt.this.mUpscalerEnabled != intForUser2) {
-                AudioServiceExt.this.mUpscalerEnabled = intForUser2;
-                CoreFxUtils.setUpScalerMode(AudioServiceExt.this.mUpscalerEnabled);
+            AudioServiceExt audioServiceExt = AudioServiceExt.this;
+            if (audioServiceExt.mAdaptSoundEnabled != intForUser) {
+                audioServiceExt.mAdaptSoundEnabled = intForUser;
+                CoreFxUtils.setAdaptSound(audioServiceExt.mContext, intForUser);
+            } else if (audioServiceExt.mUpscalerEnabled != intForUser2) {
+                audioServiceExt.mUpscalerEnabled = intForUser2;
+                CoreFxUtils.setUpScalerMode(intForUser2);
             }
             if (Rune.SEC_AUDIO_BIKE_MODE) {
-                AudioServiceExt audioServiceExt = AudioServiceExt.this;
-                audioServiceExt.mIsBikeMode = Settings.Secure.getInt(audioServiceExt.mContext.getContentResolver(), "isBikeMode", 0) == 1;
+                AudioServiceExt audioServiceExt2 = AudioServiceExt.this;
+                audioServiceExt2.mIsBikeMode = Settings.Secure.getInt(audioServiceExt2.mContext.getContentResolver(), "isBikeMode", 0) == 1;
             }
             if (Rune.SEC_AUDIO_KARAOKE_LISTENBACK) {
                 AudioServiceExt.mKaraokeListenbackEnabled = Settings.Global.getInt(AudioServiceExt.this.mCr, "headphone_monitoring", 0);
-                if (AudioServiceExt.this.mService.getRecordMonitor().isOnlyKaraokeRecordingActive()) {
-                    KaraokeUtils.setKaraokeListenback(AudioServiceExt.mKaraokeListenbackEnabled);
+                RecordingActivityMonitor recordingActivityMonitor = AudioServiceExt.this.mService.mRecordMonitor;
+                synchronized (recordingActivityMonitor.mRecordStates) {
+                    try {
+                        Iterator it = ((ArrayList) recordingActivityMonitor.mRecordStates).iterator();
+                        int i = 0;
+                        int i2 = 0;
+                        while (it.hasNext()) {
+                            RecordingActivityMonitor.RecordingState recordingState = (RecordingActivityMonitor.RecordingState) it.next();
+                            if (recordingState.isActiveConfiguration()) {
+                                String[] packagesForUid = recordingActivityMonitor.mPackMan.getPackagesForUid(recordingState.mConfig.getClientUid());
+                                if (packagesForUid != null && packagesForUid.length > 0) {
+                                    if (recordingActivityMonitor.mAudioSettingsHelper.checkAppCategory(packagesForUid[0], "karaoke_listenback_allow")) {
+                                        i++;
+                                    } else {
+                                        i2++;
+                                    }
+                                }
+                            }
+                        }
+                        if (i > 0 && i2 == 0) {
+                            AudioSystem.setParameters("l_effect_listenback_key;state=" + AudioServiceExt.mKaraokeListenbackEnabled);
+                        }
+                    } finally {
+                    }
                 }
             }
-            if (!Rune.SEC_AUDIO_VOLUME_MONITOR || AudioServiceExt.this.mVolumeMonitorValue == (i = Settings.Global.getInt(AudioServiceExt.this.mCr, "volume_monitor", 0))) {
-                return;
-            }
-            AudioServiceExt.this.mVolumeMonitorValue = i;
-            AudioServiceExt.this.getVolumeMonitorService().setVolumeMonitorOnOff(i == 1);
-            if (i == 2) {
-                AudioServiceExt.this.getVolumeMonitorService().resetByDataClear();
-            }
-        }
-    }
-
-    public final void addResetSettingsIntentFilter(IntentFilter intentFilter) {
-        intentFilter.addAction("com.samsung.intent.action.SETTINGS_SOFT_RESET");
-    }
-
-    /* loaded from: classes.dex */
-    public class ResetSettingsReceiver extends BroadcastReceiver {
-        public ResetSettingsReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if ("com.samsung.intent.action.SETTINGS_SOFT_RESET".equals(intent.getAction())) {
-                AudioExecutor.execute(new Runnable() { // from class: com.android.server.audio.AudioServiceExt$ResetSettingsReceiver$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        AudioServiceExt.ResetSettingsReceiver.this.lambda$onReceive$0();
+            if (Rune.SEC_AUDIO_VOLUME_MONITOR) {
+                int i3 = Settings.Global.getInt(AudioServiceExt.this.mCr, "volume_monitor", 0);
+                AudioServiceExt audioServiceExt3 = AudioServiceExt.this;
+                if (audioServiceExt3.mVolumeMonitorValue != i3) {
+                    audioServiceExt3.mVolumeMonitorValue = i3;
+                    VolumeMonitorService.getInstance(audioServiceExt3.mContext).setVolumeMonitorOnOff(i3 == 1);
+                    if (i3 == 2) {
+                        VolumeMonitorService.getInstance(AudioServiceExt.this.mContext).resetByDataClear();
                     }
-                });
+                }
             }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onReceive$0() {
-            AudioServiceExt.this.performSoftReset();
         }
     }
 
-    public final void performSoftReset() {
-        ContentResolver contentResolver = this.mCr;
-        Log.i("AS.AudioServiceExt", "performSoftReset start");
-        this.mSettingsHelper.resetTable();
-        this.mAllSoundMute = 0;
-        Settings.System.putIntForUser(contentResolver, "all_sound_off", 0, -2);
-        setAllSoundMute();
-        Settings.System.putIntForUser(contentResolver, "master_mono", 0, -2);
-        if (Rune.SEC_AUDIO_VOLUME_MONITOR) {
-            Settings.Global.putInt(contentResolver, "volume_monitor", 0);
-            this.mVolumeMonitorValue = 0;
-            getVolumeMonitorService().resetByDataClear();
+    public AudioServiceExt(Context context, AudioService audioService, AudioSystemAdapter audioSystemAdapter, AudioSettingsHelper audioSettingsHelper, SoundEffectsHelper soundEffectsHelper, MicModeManager micModeManager, LiveTranslatorManager liveTranslatorManager) {
+        this.mVideoCallVoiceEffectMode = Rune.SEC_AUDIO_VIDEO_CALL_VOICE_DEFAULT_EFFECT ? 100 : -1;
+        this.mVoipExtraVolume = false;
+        this.mVoipAntiHowling = false;
+        this.mExtraVolume = false;
+        this.mIsPttCallVolumeEnabled = false;
+        this.mVolumeMonitorValue = 0;
+        this.mContext = context;
+        this.mService = audioService;
+        this.mAudioSystem = audioSystemAdapter;
+        this.mSettingsHelper = audioSettingsHelper;
+        this.mSfxHelper = soundEffectsHelper;
+        this.mMicModeManager = micModeManager;
+        this.mLiveTranslatorManager = liveTranslatorManager;
+        ContentResolver contentResolver = context.getContentResolver();
+        this.mCr = contentResolver;
+        HandlerThread handlerThread = new HandlerThread("AudioServiceExt Broadcast");
+        this.mBroadcastHandlerThread = handlerThread;
+        handlerThread.start();
+        if (OmcRingtoneManager.sInstance == null) {
+            OmcRingtoneManager.sInstance = new OmcRingtoneManager();
         }
-        this.mAdaptSoundEnabled = 0;
-        Settings.System.putIntForUser(contentResolver, "hearing_musiccheck", 0, -2);
-        CoreFxUtils.setAdaptSound(this.mContext, this.mAdaptSoundEnabled);
-        this.mUpscalerEnabled = 0;
-        Settings.System.putIntForUser(contentResolver, "k2hd_effect", 0, -2);
-        CoreFxUtils.setUpScalerMode(this.mUpscalerEnabled);
-        Settings.System.putIntForUser(contentResolver, "sound_alive_effect", 0, -2);
-        Settings.System.putIntForUser(contentResolver, "tube_amp_effect", 0, -2);
-        Settings.System.putIntForUser(contentResolver, "adjust_media_volume_only", getDefaultVolumeOption(), -2);
-        if (this.mService.getMediaVolumeSteps() != null) {
-            Settings.System.putString(this.mCr, "sec_volume_steps", "");
-        }
-        if (Rune.SEC_AUDIO_KARAOKE_LISTENBACK) {
-            mKaraokeListenbackEnabled = 0;
-            Settings.Global.putInt(contentResolver, "headphone_monitoring", 0);
-        }
-        setNbQualityMode(0);
-        Settings.Global.putInt(contentResolver, "personalise_call_sound_soft", 0);
-        setDefaultMainBalance();
+        this.mOmcRingtoneManager = OmcRingtoneManager.sInstance;
+        this.mCoverHelper = CoverHelper.getInstance();
+        this.mNbQualityMode = Settings.Global.getInt(contentResolver, "personalise_call_sound_soft", 0);
         if (Rune.SEC_AUDIO_SUPPORT_VOIP_SOUND_LOUDER) {
-            setDefaultModeVoipExtraVolume();
+            this.mVoipExtraVolume = Settings.System.getInt(contentResolver, "voip_extra_volume", 0) != 0;
         }
         if (Rune.SEC_AUDIO_SUPPORT_VOIP_ANTI_HOWLING) {
-            setDefaultModeVoipAntiHowling();
+            this.mVoipAntiHowling = Settings.System.getInt(contentResolver, "voip_anti_howling", 0) != 0;
         }
-        Settings.Global.putInt(contentResolver, "multisound_state", 0);
-        Settings.System.putString(contentResolver, "multisound_app", null);
-        Settings.System.putInt(contentResolver, "multisound_devicetype", -1);
-        if (Rune.SEC_AUDIO_MIC_MODE_FOR_QUICK_PANEL_UI) {
-            Settings.System.putInt(contentResolver, "call_mic_mode", 0);
-            Settings.System.putInt(contentResolver, "voip_call_mic_mode", 0);
+        this.mAdaptSoundEnabled = Settings.System.getIntForUser(contentResolver, "hearing_musiccheck", 0, -2);
+        this.mUpscalerEnabled = Settings.System.getIntForUser(contentResolver, "k2hd_effect", 0, -2);
+        if (Rune.SEC_AUDIO_BIKE_MODE) {
+            this.mIsBikeMode = Settings.Secure.getInt(contentResolver, "isBikeMode", 0) == 1;
         }
-        this.mService.resetRingerMode();
-        Log.i("AS.AudioServiceExt", "performSoftReset end");
-    }
-
-    public final void updateCallBandInfo(Intent intent) {
-        int intExtra = intent.getIntExtra("EXTRA_RAT", 0);
-        int intExtra2 = intent.getIntExtra("EXTRA_STATE", 0);
-        if (intExtra2 == 9) {
-            Log.d("AS.AudioServiceExt", "wb_amr fb");
-            this.mAudioSystem.setParameters("g_call_band=fb");
-        } else if (intExtra2 == 8) {
-            Log.d("AS.AudioServiceExt", "wb_amr swb");
-            this.mAudioSystem.setParameters("g_call_band=swb");
-        } else if (intExtra2 == 1) {
-            Log.d("AS.AudioServiceExt", "wb_amr wb");
-            this.mAudioSystem.setParameters("g_call_band=wb");
-        } else {
-            Log.d("AS.AudioServiceExt", "wb_amr nb");
-            this.mAudioSystem.setParameters("g_call_band=nb");
+        if (Rune.SEC_AUDIO_KARAOKE_LISTENBACK) {
+            mKaraokeListenbackEnabled = Settings.Global.getInt(contentResolver, "headphone_monitoring", 0);
         }
-        if (intExtra != 0) {
-            this.mAudioSystem.setParameters("l_call_rat_type=" + intExtra);
+        if (Rune.SEC_AUDIO_VOLUME_MONITOR) {
+            this.mVolumeMonitorValue = Settings.Global.getInt(contentResolver, "volume_monitor", 0);
+            VolumeMonitorService.getInstance(context).setVolumeMonitorOnOff(this.mVolumeMonitorValue == 1);
         }
     }
 
-    public boolean isScreenCall() {
-        return this.mScreenCall;
+    public static int getIntValueFromString(int i, String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            Log.e("AS.AudioServiceExt", "NumberFormatException", e);
+            return i;
+        }
     }
 
-    public void setScreenCall(boolean z) {
-        this.mScreenCall = z;
+    public final void restoreLiveTranslator() {
+        LiveTranslatorManager liveTranslatorManager = this.mLiveTranslatorManager;
+        if (liveTranslatorManager == null || !liveTranslatorManager.mIsVoiceCapable) {
+            return;
+        }
+        boolean z = Settings.System.getInt(LiveTranslatorManager.mCr, "voip_translator_enable", 0) != 0;
+        String string = Settings.System.getString(LiveTranslatorManager.mCr, "voip_translator_package");
+        Log.i("LiveTranslatorManager", "restoreVoipTranslator enabled = " + z + ", packageName = " + string);
+        if (z) {
+            liveTranslatorManager.setVoipTranslator(string, true);
+        }
     }
 
-    public boolean isCallTranslationMode() {
-        return this.mCallTranslationMode;
+    public final void setAllSoundMute() {
+        this.mAudioSystem.setParameters("l_all_sound_mute_enable=".concat(this.mAllSoundMute == 1 ? "true" : "false"));
+        SystemProperties.set("persist.audio.allsoundmute", Integer.toString(this.mAllSoundMute));
     }
 
-    public void setCallTranslationMode(boolean z) {
-        this.mCallTranslationMode = z;
-    }
-
-    public int getVoiceTxControlMode() {
-        return this.mVoiceTxControlMode;
-    }
-
-    public void setVoiceTxControlMode(int i) {
-        this.mVoiceTxControlMode = i;
-    }
-
-    public int getVoiceRxControlMode() {
-        return this.mVoiceRxControlMode;
-    }
-
-    public void setVoiceRxControlMode(int i) {
-        this.mVoiceRxControlMode = i;
-    }
-
-    public void setNbQualityMode(int i) {
+    public final void setNbQualityMode(int i) {
         this.mNbQualityMode = i;
         if (i > 0) {
             AudioSystem.setParameters("l_call_nb_quality_enable=true");
@@ -487,203 +427,7 @@ public class AudioServiceExt {
         }
     }
 
-    public int getNbQualityMode() {
-        return this.mNbQualityMode;
-    }
-
-    public void updateMonoSetting(boolean z) {
-        this.mMainMono = z ? 1 : 0;
-        if (z != this.mSettingsHelper.getIntValue("mono_audio_db", 0)) {
-            this.mSettingsHelper.removeValue("mono_audio_db");
-        }
-    }
-
-    public void setVoiceCallMonsterSoundMode(int i) {
-        this.mVoiceCallMonsterSoundMode = i;
-    }
-
-    public void setVideoCallMonsterSoundMode(int i) {
-        this.mVideoCallMonsterSoundMode = i;
-    }
-
-    public final void restoreCallMonsterSoundMode() {
-        if (this.mVoiceCallMonsterSoundMode != 1) {
-            this.mAudioSystem.setParameters("l_call_nc_booster_enable=" + this.mVoiceCallMonsterSoundMode);
-        }
-        if (this.mVideoCallMonsterSoundMode != -1) {
-            this.mAudioSystem.setParameters("l_mic_input_control_mode_2mic=" + this.mVideoCallMonsterSoundMode);
-        }
-    }
-
-    public void setVideoCallVoiceEffectMode(int i) {
-        this.mVideoCallVoiceEffectMode = i;
-    }
-
-    public final void restoreVideoCallVoiceEffect() {
-        if ((!Rune.SEC_AUDIO_VIDEO_CALL_VOICE_EFFECT || this.mVideoCallVoiceEffectMode == -1) && (!Rune.SEC_AUDIO_VIDEO_CALL_VOICE_DEFAULT_EFFECT || this.mVideoCallVoiceEffectMode == 100)) {
-            return;
-        }
-        this.mAudioSystem.setParameters("l_mic_input_control_mode=" + this.mVideoCallVoiceEffectMode);
-    }
-
-    public final void restoreMicMode() {
-        MicModeManager micModeManager = this.mMicModeManager;
-        if (micModeManager != null) {
-            micModeManager.restoreMicMode();
-            this.mMicModeManager.restoreVoipTranslator();
-        }
-    }
-
-    public void setVoipExtraVolume(boolean z) {
-        this.mVoipExtraVolume = z;
-    }
-
-    public void setDefaultModeVoipExtraVolume() {
-        this.mVoipExtraVolume = false;
-        Settings.System.putInt(this.mCr, "voip_extra_volume", 0);
-    }
-
-    public final void restoreVoipExtraVolume() {
-        this.mAudioSystem.setParameters("l_call_voip_extra_volume_enable=" + this.mVoipExtraVolume);
-    }
-
-    public void setVoipAntiHowling(boolean z) {
-        this.mVoipAntiHowling = z;
-    }
-
-    public void setDefaultModeVoipAntiHowling() {
-        this.mVoipAntiHowling = false;
-        Settings.System.putInt(this.mCr, "voip_anti_howling", 0);
-    }
-
-    public final void restoreVoipAntiHowling() {
-        this.mAudioSystem.setParameters("l_call_voip_extra_volume_enable=" + this.mVoipAntiHowling);
-    }
-
-    public boolean isExtraVolume() {
-        return this.mExtraVolume;
-    }
-
-    public void setExtraVolume(boolean z) {
-        this.mExtraVolume = z;
-    }
-
-    public float getMainBalance() {
-        return this.mMainBalance;
-    }
-
-    public void setDefaultMainBalance() {
-        this.mMainBalance = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        Settings.System.putFloatForUser(this.mCr, "master_balance", DisplayPowerController2.RATE_FROM_DOZE_TO_ON, -2);
-        Settings.System.putFloatForUser(this.mCr, "speaker_balance", DisplayPowerController2.RATE_FROM_DOZE_TO_ON, -2);
-    }
-
-    public void updateBalance(float f) {
-        float floatForUser = Settings.System.getFloatForUser(this.mCr, "speaker_balance", DisplayPowerController2.RATE_FROM_DOZE_TO_ON, -2);
-        this.mAudioSystem.setParameters("l_speaker_balance=" + floatForUser);
-        this.mMainBalance = f;
-        if (Float.compare(this.mMainBalance, (this.mSettingsHelper.getIntValue("sound_balance", 50) - 50) / 50.0f) != 0) {
-            this.mSettingsHelper.removeValue("sound_balance");
-        }
-    }
-
-    public List getExcludedRingtoneTitles(int i) {
-        if (i == 2) {
-            return this.mOmcRingtoneManager.getExcludedNotifications();
-        }
-        return this.mOmcRingtoneManager.getExcludedRingtones();
-    }
-
-    public void updateThemeSound(int i, boolean z) {
-        String stringForUser = Settings.Global.getStringForUser(this.mCr, "theme_touch_sound", i);
-        String stringForUser2 = Settings.System.getStringForUser(this.mCr, "system_sound", i);
-        SoundEffectsHelper soundEffectsHelper = this.mSfxHelper;
-        if (soundEffectsHelper != null) {
-            soundEffectsHelper.updateThemeSound(stringForUser, stringForUser2, z);
-        }
-    }
-
-    public boolean isCoverOpen() {
-        return this.mCoverHelper.isCoverOpen();
-    }
-
-    public void setCoverSafetyVolume(boolean z) {
-        this.mCoverHelper.setCoverSafetyVolume(z);
-    }
-
-    public boolean isCoverSafetyVolume() {
-        return this.mCoverHelper.isCoverSafetyVolume();
-    }
-
-    public final void restoreDexState() {
-        this.mDesktopModeHelper.restoreDexState();
-    }
-
-    public boolean isPttCallVolumeEnabled() {
-        return this.mIsPttCallVolumeEnabled;
-    }
-
-    public void setPttCallVolumeEnabled(boolean z) {
-        this.mIsPttCallVolumeEnabled = z;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$notifyDVFSToSoundAlive$0(Context context, int i) {
-        SoundAliveUtils.notifyDVFSToSoundAlive(context, i, this.mDvfsHelper.getIsScreenOn());
-    }
-
-    public void notifyDVFSToSoundAlive(final Context context, final int i) {
-        AudioExecutor.execute(new Runnable() { // from class: com.android.server.audio.AudioServiceExt$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                AudioServiceExt.this.lambda$notifyDVFSToSoundAlive$0(context, i);
-            }
-        });
-    }
-
-    public void startCPUBoostForVoIP(Context context) {
-        this.mDvfsHelper.startCPUBoostForVoIP(this.mContext);
-    }
-
-    public void stopCPUBoostForVoIP() {
-        this.mDvfsHelper.stopCPUBoostForVoIP();
-    }
-
-    public boolean isBikeMode() {
-        return this.mIsBikeMode;
-    }
-
-    public int getAllSoundMute() {
-        return this.mAllSoundMute;
-    }
-
-    public final void setAllSoundMuteToNative() {
-        AudioSystemAdapter audioSystemAdapter = this.mAudioSystem;
-        StringBuilder sb = new StringBuilder();
-        sb.append("l_all_sound_mute_enable=");
-        sb.append(this.mAllSoundMute == 1 ? "true" : "false");
-        audioSystemAdapter.setParameters(sb.toString());
-    }
-
-    public final void setAllSoundMute() {
-        setAllSoundMuteToNative();
-        SystemProperties.set("persist.audio.allsoundmute", Integer.toString(this.mAllSoundMute));
-    }
-
-    public void readAllSoundMuteUserRestriction(int i) {
-        this.mAllSoundMute = Settings.System.getIntForUser(this.mCr, "all_sound_off", 0, i);
-        Log.d("AS.AudioServiceExt", "readUserRestrictions mAllSoundMute = " + this.mAllSoundMute);
-    }
-
-    public VolumeMonitorService getVolumeMonitorService() {
-        return VolumeMonitorService.getInstance(this.mContext);
-    }
-
-    public static int getDefaultVolumeOption() {
-        return !FactoryUtils.isFactoryMode() ? 1 : 0;
-    }
-
-    public void setSystemSettingForSoundAssistant(String str, int i) {
+    public final void setSystemSettingForSoundAssistant(int i, String str) {
         if ("sound_balance".equals(str) || "mono_audio_db".equals(str) || "adjust_media_volume_only".equals(str)) {
             long clearCallingIdentity = Binder.clearCallingIdentity();
             try {
@@ -694,7 +438,7 @@ public class AudioServiceExt {
                 }
                 Settings.System.putIntForUser(this.mCr, str, i, -2);
                 Binder.restoreCallingIdentity(clearCallingIdentity);
-                this.mSettingsHelper.setIntValue(str, i);
+                this.mSettingsHelper.setIntValue(i, str);
             } catch (Throwable th) {
                 Binder.restoreCallingIdentity(clearCallingIdentity);
                 throw th;
@@ -702,64 +446,65 @@ public class AudioServiceExt {
         }
     }
 
-    public int getIntValueFromString(String str, int i) {
-        try {
-            return Integer.parseInt(str);
-        } catch (NumberFormatException e) {
-            Log.e("AS.AudioServiceExt", "NumberFormatException", e);
-            return i;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$resetConcertHall$1() {
-        SoundAliveUtils.resetConcertHall(this.mContext);
-    }
-
-    public void resetConcertHall() {
-        AudioExecutor.execute(new Runnable() { // from class: com.android.server.audio.AudioServiceExt$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                AudioServiceExt.this.lambda$resetConcertHall$1();
-            }
-        });
-    }
-
-    public void updateCallGuardInfo(int i, int i2, boolean z) {
-        Log.i("AS.AudioServiceExt", "callguard: mode(" + i + "), pid(" + i2 + "), skipSet(" + z + ")");
+    public final void updateCallGuardInfo(int i, int i2, boolean z) {
+        StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "callguard: mode(", "), pid(", "), skipSet(");
+        m.append(z);
+        m.append(")");
+        Log.i("AS.AudioServiceExt", m.toString());
         this.mAudioSystem.setParameters(new AudioParameter.Builder().setParam("l_guard_call_mode", i).setParam("l_guard_call_mode_calling_pid", i2).setParam("l_guard_call_mode_skip", z ? 1 : 0).build().toString());
     }
 
-    public void addAudioServiceExtDump(PrintWriter printWriter) {
-        printWriter.print("  mNbQualityMode=");
-        printWriter.println(this.mNbQualityMode);
-        if (Rune.SEC_AUDIO_SCREEN_CALL) {
-            printWriter.print("  mScreenCall=");
-            printWriter.println(this.mScreenCall);
+    public final void updateThemeSound(int i, boolean z) {
+        boolean z2;
+        boolean z3;
+        String stringForUser = Settings.Global.getStringForUser(this.mCr, "theme_touch_sound", i);
+        String stringForUser2 = Settings.System.getStringForUser(this.mCr, "system_sound", i);
+        SoundEffectsHelper soundEffectsHelper = this.mSfxHelper;
+        if (soundEffectsHelper != null) {
+            if (TextUtils.isEmpty(stringForUser)) {
+                if (!TextUtils.isEmpty(soundEffectsHelper.mThemeTouchSoundPath)) {
+                    Log.v("AS.SfxHelper", "updateThemeSound( theme is released )");
+                    soundEffectsHelper.mThemeTouchSoundPath = null;
+                    z2 = true;
+                }
+                z2 = false;
+            } else {
+                if (!TextUtils.equals(stringForUser, soundEffectsHelper.mThemeTouchSoundPath)) {
+                    Log.v("AS.SfxHelper", "updateThemeSound( theme is changed )");
+                    soundEffectsHelper.mThemeTouchSoundPath = stringForUser;
+                    z2 = true;
+                }
+                z2 = false;
+            }
+            if (TextUtils.isEmpty(stringForUser2)) {
+                if (!TextUtils.isEmpty(soundEffectsHelper.mSystemSoundFromSoundTheme)) {
+                    Log.v("AS.SfxHelper", "updateThemeSound( Change to default )");
+                    soundEffectsHelper.mSystemSoundFromSoundTheme = null;
+                    soundEffectsHelper.mPrevSystemSoundFromSoundTheme = null;
+                    z3 = true;
+                }
+                z3 = false;
+            } else {
+                if (!TextUtils.equals(stringForUser2, soundEffectsHelper.mSystemSoundFromSoundTheme)) {
+                    Log.v("AS.SfxHelper", "updateThemeSound( Change to " + stringForUser2 + " )");
+                    soundEffectsHelper.mSystemSoundFromSoundTheme = stringForUser2;
+                    if (!TextUtils.equals(stringForUser2, "Open_theme")) {
+                        soundEffectsHelper.mPrevSystemSoundFromSoundTheme = stringForUser2;
+                    }
+                    z3 = true;
+                }
+                z3 = false;
+            }
+            if (z || z2 || z3) {
+                soundEffectsHelper.mUpdateSystemSound = true;
+                if (!soundEffectsHelper.mSfxHandler.hasMessages(1)) {
+                    soundEffectsHelper.sendMsg(1, 0, 0, null, 300);
+                }
+                if (soundEffectsHelper.mSfxHandler.hasMessages(0)) {
+                    return;
+                }
+                soundEffectsHelper.sendMsg(0, 0, 0, null, 300);
+            }
         }
-        printWriter.print("  mMasterMono=");
-        printWriter.println(this.mMainMono);
-        printWriter.print("  mMainBalance=");
-        printWriter.println(this.mMainBalance);
-        printWriter.print("  mAdaptSoundEnabled=");
-        printWriter.println(this.mAdaptSoundEnabled);
-        printWriter.print("  mUpscalerEnabled=");
-        printWriter.println(this.mUpscalerEnabled);
-        printWriter.print("  mIsPttCallVolumeEnabled=");
-        printWriter.println(this.mIsPttCallVolumeEnabled);
-        printWriter.print("  CPUBoostValueForVoIP=");
-        printWriter.println(this.mDvfsHelper.getCPUBoostValueForVoIP());
-        printWriter.print("  mAllSoundMute=");
-        printWriter.println(this.mAllSoundMute);
-        if (Rune.SEC_AUDIO_KARAOKE_LISTENBACK) {
-            printWriter.print("  mKaraokeListenbackEnabled=");
-            printWriter.println(mKaraokeListenbackEnabled);
-        }
-        if (Rune.SEC_AUDIO_VOLUME_MONITOR) {
-            printWriter.print("  mVolumeMonitorValue=");
-            printWriter.println(this.mVolumeMonitorValue);
-        }
-        printWriter.print("  AudioHqmHelper.ResetCount=");
-        printWriter.println(AudioHqmHelper.getAudioServerResetCount());
     }
 }

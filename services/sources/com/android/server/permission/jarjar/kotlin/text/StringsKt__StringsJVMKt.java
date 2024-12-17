@@ -2,31 +2,12 @@ package com.android.server.permission.jarjar.kotlin.text;
 
 import com.android.server.permission.jarjar.kotlin.jvm.internal.Intrinsics;
 
-/* compiled from: StringsJVM.kt */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public abstract class StringsKt__StringsJVMKt extends StringsKt__StringNumberConversionsKt {
-    public static /* synthetic */ boolean startsWith$default(String str, String str2, boolean z, int i, Object obj) {
-        if ((i & 2) != 0) {
-            z = false;
-        }
-        return startsWith(str, str2, z);
-    }
-
-    public static final boolean startsWith(String str, String str2, boolean z) {
-        Intrinsics.checkNotNullParameter(str, "<this>");
-        Intrinsics.checkNotNullParameter(str2, "prefix");
-        if (!z) {
-            return str.startsWith(str2);
-        }
-        return regionMatches(str, 0, str2, 0, str2.length(), z);
-    }
-
-    public static final boolean regionMatches(String str, int i, String str2, int i2, int i3, boolean z) {
-        Intrinsics.checkNotNullParameter(str, "<this>");
-        Intrinsics.checkNotNullParameter(str2, "other");
-        if (!z) {
-            return str.regionMatches(i, str2, i2, i3);
-        }
-        return str.regionMatches(z, i, str2, i2, i3);
+public abstract class StringsKt__StringsJVMKt extends StringsKt__StringBuilderKt {
+    public static boolean startsWith$default(String str, String str2) {
+        Intrinsics.checkNotNullParameter("<this>", str);
+        Intrinsics.checkNotNullParameter("prefix", str2);
+        return str.startsWith(str2);
     }
 }

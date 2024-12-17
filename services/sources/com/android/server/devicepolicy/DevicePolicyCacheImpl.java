@@ -7,106 +7,46 @@ import android.util.SparseIntArray;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-/* loaded from: classes2.dex */
-public class DevicePolicyCacheImpl extends DevicePolicyCache {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DevicePolicyCacheImpl extends DevicePolicyCache {
     public final Object mLock = new Object();
-    public int mScreenCaptureDisallowedUser = -10000;
-    public Set mScreenCaptureDisallowedUsers = new HashSet();
+    public final Set mScreenCaptureDisallowedUsers = new HashSet();
     public final SparseIntArray mPasswordQuality = new SparseIntArray();
     public final SparseIntArray mPermissionPolicy = new SparseIntArray();
     public ArrayMap mLauncherShortcutOverrides = new ArrayMap();
-    public final AtomicBoolean mCanGrantSensorsPermissions = new AtomicBoolean(false);
+    public volatile boolean mCanGrantSensorsPermissions = false;
+    public final SparseIntArray mContentProtectionPolicy = new SparseIntArray();
 
-    public void onUserRemoved(int i) {
+    public final boolean canAdminGrantSensorsPermissions() {
+        return this.mCanGrantSensorsPermissions;
+    }
+
+    public final void dump(IndentingPrintWriter indentingPrintWriter) {
         synchronized (this.mLock) {
-            this.mPasswordQuality.delete(i);
-            this.mPermissionPolicy.delete(i);
+            indentingPrintWriter.println("Device policy cache:");
+            indentingPrintWriter.increaseIndent();
+            indentingPrintWriter.println("Screen capture disallowed users: " + this.mScreenCaptureDisallowedUsers);
+            indentingPrintWriter.println("Password quality: " + this.mPasswordQuality);
+            indentingPrintWriter.println("Permission policy: " + this.mPermissionPolicy);
+            indentingPrintWriter.println("Content protection policy: " + this.mContentProtectionPolicy);
+            indentingPrintWriter.println("Admin can grant sensors permission: " + this.mCanGrantSensorsPermissions);
+            indentingPrintWriter.print("Shortcuts overrides: ");
+            indentingPrintWriter.println(this.mLauncherShortcutOverrides);
+            indentingPrintWriter.decreaseIndent();
         }
     }
 
-    public boolean isScreenCaptureAllowed(int i) {
-        boolean z;
-        if (DevicePolicyManagerService.isPolicyEngineForFinanceFlagEnabled()) {
-            return isScreenCaptureAllowedInPolicyEngine(i);
-        }
-        synchronized (this.mLock) {
-            int i2 = this.mScreenCaptureDisallowedUser;
-            z = (i2 == -1 || i2 == i) ? false : true;
-        }
-        return z;
-    }
-
-    public final boolean isScreenCaptureAllowedInPolicyEngine(int i) {
-        boolean z;
-        synchronized (this.mLock) {
-            z = (this.mScreenCaptureDisallowedUsers.contains(Integer.valueOf(i)) || this.mScreenCaptureDisallowedUsers.contains(-1)) ? false : true;
-        }
-        return z;
-    }
-
-    public int getScreenCaptureDisallowedUser() {
-        int i;
-        synchronized (this.mLock) {
-            i = this.mScreenCaptureDisallowedUser;
-        }
-        return i;
-    }
-
-    public void setScreenCaptureDisallowedUser(int i) {
-        synchronized (this.mLock) {
-            this.mScreenCaptureDisallowedUser = i;
-        }
-    }
-
-    public void setScreenCaptureDisallowedUser(int i, boolean z) {
-        synchronized (this.mLock) {
-            if (z) {
-                this.mScreenCaptureDisallowedUsers.add(Integer.valueOf(i));
-            } else {
-                this.mScreenCaptureDisallowedUsers.remove(Integer.valueOf(i));
-            }
-        }
-    }
-
-    public int getPasswordQuality(int i) {
+    public final int getContentProtectionPolicy(int i) {
         int i2;
         synchronized (this.mLock) {
-            i2 = this.mPasswordQuality.get(i, 0);
+            i2 = this.mContentProtectionPolicy.get(i, 1);
         }
         return i2;
     }
 
-    public void setPasswordQuality(int i, int i2) {
-        synchronized (this.mLock) {
-            this.mPasswordQuality.put(i, i2);
-        }
-    }
-
-    public int getPermissionPolicy(int i) {
-        int i2;
-        synchronized (this.mLock) {
-            i2 = this.mPermissionPolicy.get(i, 0);
-        }
-        return i2;
-    }
-
-    public void setPermissionPolicy(int i, int i2) {
-        synchronized (this.mLock) {
-            this.mPermissionPolicy.put(i, i2);
-        }
-    }
-
-    public boolean canAdminGrantSensorsPermissions() {
-        return this.mCanGrantSensorsPermissions.get();
-    }
-
-    public void setAdminCanGrantSensorsPermissions(boolean z) {
-        this.mCanGrantSensorsPermissions.set(z);
-    }
-
-    public Map getLauncherShortcutOverrides() {
+    public final Map getLauncherShortcutOverrides() {
         ArrayMap arrayMap;
         synchronized (this.mLock) {
             arrayMap = new ArrayMap(this.mLauncherShortcutOverrides);
@@ -114,27 +54,52 @@ public class DevicePolicyCacheImpl extends DevicePolicyCache {
         return arrayMap;
     }
 
-    public void setLauncherShortcutOverrides(ArrayMap arrayMap) {
+    public final int getPasswordQuality(int i) {
+        int i2;
         synchronized (this.mLock) {
-            this.mLauncherShortcutOverrides = new ArrayMap(arrayMap);
+            i2 = this.mPasswordQuality.get(i, 0);
+        }
+        return i2;
+    }
+
+    public final int getPermissionPolicy(int i) {
+        int i2;
+        synchronized (this.mLock) {
+            i2 = this.mPermissionPolicy.get(i, 0);
+        }
+        return i2;
+    }
+
+    public final boolean isScreenCaptureAllowed(int i) {
+        boolean z;
+        synchronized (this.mLock) {
+            try {
+                z = (((HashSet) this.mScreenCaptureDisallowedUsers).contains(Integer.valueOf(i)) || ((HashSet) this.mScreenCaptureDisallowedUsers).contains(-1)) ? false : true;
+            } finally {
+            }
+        }
+        return z;
+    }
+
+    public final void onUserRemoved(int i) {
+        synchronized (this.mLock) {
+            this.mPasswordQuality.delete(i);
+            this.mPermissionPolicy.delete(i);
+            this.mContentProtectionPolicy.delete(i);
         }
     }
 
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
+    public final void setContentProtectionPolicy(int i, Integer num) {
         synchronized (this.mLock) {
-            indentingPrintWriter.println("Device policy cache:");
-            indentingPrintWriter.increaseIndent();
-            if (DevicePolicyManagerService.isPolicyEngineForFinanceFlagEnabled()) {
-                indentingPrintWriter.println("Screen capture disallowed users: " + this.mScreenCaptureDisallowedUsers);
-            } else {
-                indentingPrintWriter.println("Screen capture disallowed user: " + this.mScreenCaptureDisallowedUser);
+            try {
+                if (num == null) {
+                    this.mContentProtectionPolicy.delete(i);
+                } else {
+                    this.mContentProtectionPolicy.put(i, num.intValue());
+                }
+            } catch (Throwable th) {
+                throw th;
             }
-            indentingPrintWriter.println("Password quality: " + this.mPasswordQuality);
-            indentingPrintWriter.println("Permission policy: " + this.mPermissionPolicy);
-            indentingPrintWriter.println("Admin can grant sensors permission: " + this.mCanGrantSensorsPermissions.get());
-            indentingPrintWriter.print("Shortcuts overrides: ");
-            indentingPrintWriter.println(this.mLauncherShortcutOverrides);
-            indentingPrintWriter.decreaseIndent();
         }
     }
 }

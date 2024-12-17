@@ -2,43 +2,16 @@ package com.android.server.wm;
 
 import android.os.Bundle;
 
-/* loaded from: classes3.dex */
-public class WmScreenshotInfo {
-    public int mType = 1;
-    public int mSweepDirection = 1;
-    public int mDisplayId = 0;
-    public int mOrigin = 1;
-    public Bundle mBundle = null;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WmScreenshotInfo {
+    public Bundle mBundle;
+    public int mDisplayId;
+    public int mOrigin;
+    public int mSweepDirection;
+    public int mType;
 
-    public void set(int i, int i2, int i3, int i4, Bundle bundle) {
-        this.mType = i;
-        this.mSweepDirection = i2;
-        this.mDisplayId = i3;
-        this.mOrigin = i4;
-        this.mBundle = bundle;
-    }
-
-    public int getType() {
-        return this.mType;
-    }
-
-    public int getSweepDirection() {
-        return this.mSweepDirection;
-    }
-
-    public int getDisplayId() {
-        return this.mDisplayId;
-    }
-
-    public int getOrigin() {
-        return this.mOrigin;
-    }
-
-    public Bundle getBundle() {
-        return this.mBundle;
-    }
-
-    public String toString() {
+    public final String toString() {
         return "ScreenshotInfo{type=" + this.mType + ", sweepDirection=" + this.mSweepDirection + ", display=" + this.mDisplayId + ", origin=" + this.mOrigin + ", bundle=" + this.mBundle + "}";
     }
 }

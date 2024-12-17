@@ -1,17 +1,10 @@
 package android.hidl.safe_union.V1_0;
 
-import android.os.HwBlob;
-import android.os.HwParcel;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class Monostate {
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-    }
-
     public final boolean equals(Object obj) {
         if (this == obj) {
             return true;

@@ -1,210 +1,87 @@
 package com.android.server.biometrics.log;
 
-import android.hardware.biometrics.common.AuthenticateReason;
 import android.hardware.biometrics.common.OperationContext;
-import android.hardware.face.FaceAuthenticateOptions;
-import android.hardware.fingerprint.FingerprintAuthenticateOptions;
+import android.hardware.biometrics.common.OperationState;
+import java.util.concurrent.ConcurrentHashMap;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class OperationContextExt {
+public final class OperationContextExt {
     public final OperationContext mAidlContext;
-    public int mDockState;
-    public int mFoldState;
     public final boolean mIsBP;
-    public boolean mIsDisplayOn;
-    public int mOrientation;
+    public final boolean mIsMandatoryBiometrics;
     public BiometricContextSessionInfo mSessionInfo;
+    public boolean mIsDisplayOn = false;
+    public int mDockState = 0;
+    public int mOrientation = 0;
+    public int mFoldState = 0;
 
-    public static int toAidlDisplayState(int i) {
-        int i2 = 1;
-        if (i != 1) {
-            i2 = 2;
-            if (i != 2) {
-                i2 = 3;
-                if (i != 3) {
-                    i2 = 4;
-                    if (i != 4) {
-                        return 0;
-                    }
-                }
-            }
-        }
-        return i2;
-    }
-
-    public final int getAuthReason(FingerprintAuthenticateOptions fingerprintAuthenticateOptions) {
-        return 0;
-    }
-
-    public final int getWakeReason(FingerprintAuthenticateOptions fingerprintAuthenticateOptions) {
-        return 0;
-    }
-
-    public OperationContextExt(boolean z) {
-        this(new OperationContext(), z);
-    }
-
-    public OperationContextExt(OperationContext operationContext, boolean z) {
-        this.mIsDisplayOn = false;
-        this.mDockState = 0;
-        this.mOrientation = 0;
-        this.mFoldState = 0;
+    public OperationContextExt(OperationContext operationContext, boolean z, int i, boolean z2) {
         this.mAidlContext = operationContext;
         this.mIsBP = z;
-    }
-
-    public OperationContext toAidlContext() {
-        return this.mAidlContext;
-    }
-
-    public OperationContext toAidlContext(FaceAuthenticateOptions faceAuthenticateOptions) {
-        this.mAidlContext.authenticateReason = AuthenticateReason.faceAuthenticateReason(getAuthReason(faceAuthenticateOptions));
-        this.mAidlContext.wakeReason = getWakeReason(faceAuthenticateOptions);
-        return this.mAidlContext;
-    }
-
-    public OperationContext toAidlContext(FingerprintAuthenticateOptions fingerprintAuthenticateOptions) {
-        this.mAidlContext.authenticateReason = AuthenticateReason.fingerprintAuthenticateReason(getAuthReason(fingerprintAuthenticateOptions));
-        this.mAidlContext.wakeReason = getWakeReason(fingerprintAuthenticateOptions);
-        return this.mAidlContext;
-    }
-
-    public final int getAuthReason(FaceAuthenticateOptions faceAuthenticateOptions) {
-        switch (faceAuthenticateOptions.getAuthenticateReason()) {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-            case 3:
-                return 3;
-            case 4:
-                return 4;
-            case 5:
-                return 5;
-            case 6:
-                return 6;
-            case 7:
-                return 7;
-            case 8:
-                return 8;
-            case 9:
-                return 9;
-            case 10:
-                return 10;
-            default:
-                return 0;
+        this.mIsMandatoryBiometrics = z2;
+        if (i == 2) {
+            operationContext.operationState = OperationState.fingerprintOperationState(new OperationState.FingerprintOperationState());
+        } else if (i == 8) {
+            operationContext.operationState = OperationState.faceOperationState(new OperationState.FaceOperationState());
         }
     }
 
-    public final int getWakeReason(FaceAuthenticateOptions faceAuthenticateOptions) {
-        int wakeReason = faceAuthenticateOptions.getWakeReason();
-        if (wakeReason == 1) {
-            return 1;
-        }
-        if (wakeReason == 4) {
-            return 2;
-        }
-        if (wakeReason == 10) {
-            return 6;
-        }
-        if (wakeReason == 6) {
-            return 3;
-        }
-        if (wakeReason == 7) {
-            return 4;
-        }
-        switch (wakeReason) {
-            case 15:
-                return 7;
-            case 16:
-                return 8;
-            case 17:
-                return 9;
-            default:
-                return 0;
-        }
-    }
-
-    public int getId() {
-        return this.mAidlContext.id;
-    }
-
-    public int getOrderAndIncrement() {
-        BiometricContextSessionInfo biometricContextSessionInfo = this.mSessionInfo;
-        if (biometricContextSessionInfo != null) {
-            return biometricContextSessionInfo.getOrderAndIncrement();
-        }
-        return -1;
-    }
-
-    public byte getReason() {
-        return this.mAidlContext.reason;
-    }
-
-    public int getWakeReason() {
-        return this.mAidlContext.wakeReason;
-    }
-
-    public boolean isDisplayOn() {
-        return this.mIsDisplayOn;
-    }
-
-    public boolean isAod() {
-        return this.mAidlContext.isAod;
-    }
-
-    public int getDisplayState() {
-        return this.mAidlContext.displayState;
-    }
-
-    public boolean isCrypto() {
-        return this.mAidlContext.isCrypto;
-    }
-
-    public int getDockState() {
-        return this.mDockState;
-    }
-
-    public int getFoldState() {
-        return this.mFoldState;
-    }
-
-    public int getOrientation() {
-        return this.mOrientation;
-    }
-
-    public OperationContextExt update(BiometricContext biometricContext, boolean z) {
-        this.mAidlContext.isAod = biometricContext.isAod();
-        this.mAidlContext.displayState = toAidlDisplayState(biometricContext.getDisplayState());
-        this.mAidlContext.isCrypto = z;
-        setFirstSessionId(biometricContext);
-        this.mIsDisplayOn = biometricContext.isDisplayOn();
-        this.mDockState = biometricContext.getDockedState();
-        this.mFoldState = biometricContext.getFoldState();
-        this.mOrientation = biometricContext.getCurrentRotation();
-        return this;
-    }
-
-    public final void setFirstSessionId(BiometricContext biometricContext) {
-        if (this.mIsBP) {
-            BiometricContextSessionInfo biometricPromptSessionInfo = biometricContext.getBiometricPromptSessionInfo();
-            this.mSessionInfo = biometricPromptSessionInfo;
-            if (biometricPromptSessionInfo != null) {
-                this.mAidlContext.id = biometricPromptSessionInfo.getId();
-                this.mAidlContext.reason = (byte) 1;
-                return;
-            }
-        } else {
-            BiometricContextSessionInfo keyguardEntrySessionInfo = biometricContext.getKeyguardEntrySessionInfo();
-            this.mSessionInfo = keyguardEntrySessionInfo;
-            if (keyguardEntrySessionInfo != null) {
-                this.mAidlContext.id = keyguardEntrySessionInfo.getId();
-                this.mAidlContext.reason = (byte) 2;
-                return;
-            }
-        }
+    public final void update(BiometricContext biometricContext, boolean z) {
         OperationContext operationContext = this.mAidlContext;
-        operationContext.id = 0;
-        operationContext.reason = (byte) 0;
+        BiometricContextProvider biometricContextProvider = (BiometricContextProvider) biometricContext;
+        int i = biometricContextProvider.mDisplayState;
+        int i2 = 4;
+        operationContext.isAod = i == 4;
+        int i3 = 3;
+        if (i == 1) {
+            i2 = 1;
+        } else if (i == 2) {
+            i2 = 2;
+        } else if (i == 3) {
+            i2 = 3;
+        } else if (i != 4) {
+            i2 = 0;
+        }
+        operationContext.displayState = i2;
+        int i4 = biometricContextProvider.mFoldState;
+        if (i4 == 1) {
+            i3 = 1;
+        } else if (i4 == 2) {
+            i3 = 2;
+        } else if (i4 != 3) {
+            i3 = 0;
+        }
+        operationContext.foldState = i3;
+        operationContext.isCrypto = z;
+        OperationState operationState = operationContext.operationState;
+        if (operationState != null && operationState.getTag() == 0) {
+            this.mAidlContext.operationState.getFingerprintOperationState().isHardwareIgnoringTouches = biometricContextProvider.mIsHardwareIgnoringTouches;
+        }
+        if (this.mIsBP) {
+            BiometricContextSessionInfo biometricContextSessionInfo = (BiometricContextSessionInfo) ((ConcurrentHashMap) biometricContextProvider.mSession).get(2);
+            this.mSessionInfo = biometricContextSessionInfo;
+            if (biometricContextSessionInfo != null) {
+                this.mAidlContext.id = biometricContextSessionInfo.mId.getId();
+                this.mAidlContext.reason = (byte) 1;
+            }
+            OperationContext operationContext2 = this.mAidlContext;
+            operationContext2.id = 0;
+            operationContext2.reason = (byte) 0;
+        } else {
+            BiometricContextSessionInfo biometricContextSessionInfo2 = (BiometricContextSessionInfo) ((ConcurrentHashMap) biometricContextProvider.mSession).get(1);
+            this.mSessionInfo = biometricContextSessionInfo2;
+            if (biometricContextSessionInfo2 != null) {
+                this.mAidlContext.id = biometricContextSessionInfo2.mId.getId();
+                this.mAidlContext.reason = (byte) 2;
+            }
+            OperationContext operationContext22 = this.mAidlContext;
+            operationContext22.id = 0;
+            operationContext22.reason = (byte) 0;
+        }
+        this.mIsDisplayOn = biometricContextProvider.mWindowManager.getDefaultDisplay().getState() == 2;
+        this.mDockState = biometricContextProvider.mDockState;
+        this.mFoldState = biometricContextProvider.mFoldState;
+        this.mOrientation = biometricContextProvider.mWindowManager.getDefaultDisplay().getRotation();
     }
 }

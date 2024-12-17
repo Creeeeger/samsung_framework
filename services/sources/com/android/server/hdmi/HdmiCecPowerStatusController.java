@@ -1,9 +1,12 @@
 package com.android.server.hdmi;
 
+import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
+import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes2.dex */
-public class HdmiCecPowerStatusController {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class HdmiCecPowerStatusController {
     public final HdmiControlService mHdmiControlService;
     public int mPowerStatus = 1;
 
@@ -11,45 +14,20 @@ public class HdmiCecPowerStatusController {
         this.mHdmiControlService = hdmiControlService;
     }
 
-    public int getPowerStatus() {
-        return this.mPowerStatus;
-    }
-
-    public boolean isPowerStatusOn() {
-        return this.mPowerStatus == 0;
-    }
-
-    public boolean isPowerStatusStandby() {
-        return this.mPowerStatus == 1;
-    }
-
-    public boolean isPowerStatusTransientToOn() {
-        return this.mPowerStatus == 2;
-    }
-
-    public boolean isPowerStatusTransientToStandby() {
-        return this.mPowerStatus == 3;
-    }
-
-    public void setPowerStatus(int i) {
-        setPowerStatus(i, true);
-    }
-
-    public void setPowerStatus(int i, boolean z) {
+    public final void setPowerStatus(int i, boolean z) {
         if (i == this.mPowerStatus) {
             return;
         }
         this.mPowerStatus = i;
-        if (!z || this.mHdmiControlService.getCecVersion() < 6) {
-            return;
-        }
-        sendReportPowerStatus(this.mPowerStatus);
-    }
-
-    public final void sendReportPowerStatus(int i) {
-        Iterator it = this.mHdmiControlService.getAllCecLocalDevices().iterator();
-        while (it.hasNext()) {
-            this.mHdmiControlService.sendCecCommand(HdmiCecMessageBuilder.buildReportPowerStatus(((HdmiCecLocalDevice) it.next()).getDeviceInfo().getLogicalAddress(), 15, i));
+        if (z) {
+            HdmiControlService hdmiControlService = this.mHdmiControlService;
+            if (hdmiControlService.getCecVersion() >= 6) {
+                int i2 = this.mPowerStatus;
+                Iterator it = ((ArrayList) hdmiControlService.getAllCecLocalDevices()).iterator();
+                while (it.hasNext()) {
+                    hdmiControlService.sendCecCommand(HdmiCecMessage.build(((HdmiCecLocalDevice) it.next()).getDeviceInfo().getLogicalAddress(), 15, 144, new byte[]{(byte) (i2 & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT)}), null);
+                }
+            }
         }
     }
 }

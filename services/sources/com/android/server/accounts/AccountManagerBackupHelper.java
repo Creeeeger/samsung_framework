@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AccountManagerBackupHelper {
     public final AccountManagerInternal mAccountManagerInternal;
@@ -34,12 +35,30 @@ public final class AccountManagerBackupHelper {
     public RestorePackageMonitor mRestorePackageMonitor;
     public List mRestorePendingAppPermissions;
 
-    public AccountManagerBackupHelper(AccountManagerService accountManagerService, AccountManagerInternal accountManagerInternal) {
-        this.mAccountManagerService = accountManagerService;
-        this.mAccountManagerInternal = accountManagerInternal;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CancelRestoreCommand implements Runnable {
+        public CancelRestoreCommand() {
+        }
+
+        @Override // java.lang.Runnable
+        public final void run() {
+            synchronized (AccountManagerBackupHelper.this.mLock) {
+                try {
+                    AccountManagerBackupHelper accountManagerBackupHelper = AccountManagerBackupHelper.this;
+                    accountManagerBackupHelper.mRestorePendingAppPermissions = null;
+                    RestorePackageMonitor restorePackageMonitor = accountManagerBackupHelper.mRestorePackageMonitor;
+                    if (restorePackageMonitor != null) {
+                        restorePackageMonitor.unregister();
+                        AccountManagerBackupHelper.this.mRestorePackageMonitor = null;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class PendingAppPermission {
         public final String accountDigest;
         public final String certDigest;
@@ -53,29 +72,33 @@ public final class AccountManagerBackupHelper {
             this.userId = i;
         }
 
-        public boolean apply(PackageManager packageManager) {
+        public final boolean apply(PackageManager packageManager) {
             Account account;
             AccountManagerService.UserAccounts userAccounts = AccountManagerBackupHelper.this.mAccountManagerService.getUserAccounts(this.userId);
             synchronized (userAccounts.dbLock) {
                 synchronized (userAccounts.cacheLock) {
-                    account = null;
-                    for (Account[] accountArr : userAccounts.accountCache.values()) {
-                        int length = accountArr.length;
-                        int i = 0;
-                        while (true) {
-                            if (i >= length) {
+                    try {
+                        account = null;
+                        for (Account[] accountArr : userAccounts.accountCache.values()) {
+                            int length = accountArr.length;
+                            int i = 0;
+                            while (true) {
+                                if (i >= length) {
+                                    break;
+                                }
+                                Account account2 = accountArr[i];
+                                if (this.accountDigest.equals(PackageUtils.computeSha256Digest(account2.name.getBytes()))) {
+                                    account = account2;
+                                    break;
+                                }
+                                i++;
+                            }
+                            if (account != null) {
                                 break;
                             }
-                            Account account2 = accountArr[i];
-                            if (this.accountDigest.equals(PackageUtils.computeSha256Digest(account2.name.getBytes()))) {
-                                account = account2;
-                                break;
-                            }
-                            i++;
                         }
-                        if (account != null) {
-                            break;
-                        }
+                    } catch (Throwable th) {
+                        throw th;
                     }
                 }
             }
@@ -99,7 +122,46 @@ public final class AccountManagerBackupHelper {
         }
     }
 
-    public byte[] backupAccountAccessPermissions(int i) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RestorePackageMonitor extends PackageMonitor {
+        public RestorePackageMonitor() {
+        }
+
+        public final void onPackageAdded(String str, int i) {
+            AccountManagerBackupHelper accountManagerBackupHelper;
+            Runnable runnable;
+            synchronized (AccountManagerBackupHelper.this.mLock) {
+                try {
+                    if (AccountManagerBackupHelper.this.mRestorePendingAppPermissions == null) {
+                        return;
+                    }
+                    if (UserHandle.getUserId(i) != 0) {
+                        return;
+                    }
+                    for (int size = AccountManagerBackupHelper.this.mRestorePendingAppPermissions.size() - 1; size >= 0; size--) {
+                        PendingAppPermission pendingAppPermission = (PendingAppPermission) AccountManagerBackupHelper.this.mRestorePendingAppPermissions.get(size);
+                        if (pendingAppPermission.packageName.equals(str) && pendingAppPermission.apply(AccountManagerBackupHelper.this.mAccountManagerService.mContext.getPackageManager())) {
+                            AccountManagerBackupHelper.this.mRestorePendingAppPermissions.remove(size);
+                        }
+                    }
+                    if (AccountManagerBackupHelper.this.mRestorePendingAppPermissions.isEmpty() && (runnable = (accountManagerBackupHelper = AccountManagerBackupHelper.this).mRestoreCancelCommand) != null) {
+                        accountManagerBackupHelper.mAccountManagerService.mHandler.removeCallbacks(runnable);
+                        AccountManagerBackupHelper.this.mRestoreCancelCommand.run();
+                        AccountManagerBackupHelper.this.mRestoreCancelCommand = null;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    public AccountManagerBackupHelper(AccountManagerService accountManagerService, AccountManagerInternal accountManagerInternal) {
+        this.mAccountManagerService = accountManagerService;
+        this.mAccountManagerInternal = accountManagerInternal;
+    }
+
+    public final byte[] backupAccountAccessPermissions(int i) {
         AccountManagerService.UserAccounts userAccounts = this.mAccountManagerService.getUserAccounts(i);
         synchronized (userAccounts.dbLock) {
             synchronized (userAccounts.cacheLock) {
@@ -146,37 +208,36 @@ public final class AccountManagerBackupHelper {
         }
     }
 
-    public void restoreAccountAccessPermissions(byte[] bArr, int i) {
+    public final void restoreAccountAccessPermissions(byte[] bArr, int i) {
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bArr);
             TypedXmlPullParser newFastPullParser = Xml.newFastPullParser();
             newFastPullParser.setInput(byteArrayInputStream, StandardCharsets.UTF_8.name());
             PackageManager packageManager = this.mAccountManagerService.mContext.getPackageManager();
             int depth = newFastPullParser.getDepth();
-            while (true) {
-                byte b = 0;
-                if (XmlUtils.nextElementWithin(newFastPullParser, depth)) {
-                    if ("permissions".equals(newFastPullParser.getName())) {
-                        int depth2 = newFastPullParser.getDepth();
-                        while (XmlUtils.nextElementWithin(newFastPullParser, depth2)) {
-                            if ("permission".equals(newFastPullParser.getName())) {
-                                String attributeValue = newFastPullParser.getAttributeValue((String) null, "account-sha-256");
-                                if (TextUtils.isEmpty(attributeValue)) {
-                                    XmlUtils.skipCurrentTag(newFastPullParser);
-                                }
-                                String attributeValue2 = newFastPullParser.getAttributeValue((String) null, "package");
-                                if (TextUtils.isEmpty(attributeValue2)) {
-                                    XmlUtils.skipCurrentTag(newFastPullParser);
-                                }
-                                String attributeValue3 = newFastPullParser.getAttributeValue((String) null, "digest");
-                                if (TextUtils.isEmpty(attributeValue3)) {
-                                    XmlUtils.skipCurrentTag(newFastPullParser);
-                                }
-                                PendingAppPermission pendingAppPermission = new PendingAppPermission(attributeValue, attributeValue2, attributeValue3, i);
-                                if (pendingAppPermission.apply(packageManager)) {
-                                    continue;
-                                } else {
-                                    synchronized (this.mLock) {
+            while (XmlUtils.nextElementWithin(newFastPullParser, depth)) {
+                if ("permissions".equals(newFastPullParser.getName())) {
+                    int depth2 = newFastPullParser.getDepth();
+                    while (XmlUtils.nextElementWithin(newFastPullParser, depth2)) {
+                        if ("permission".equals(newFastPullParser.getName())) {
+                            String attributeValue = newFastPullParser.getAttributeValue((String) null, "account-sha-256");
+                            if (TextUtils.isEmpty(attributeValue)) {
+                                XmlUtils.skipCurrentTag(newFastPullParser);
+                            }
+                            String attributeValue2 = newFastPullParser.getAttributeValue((String) null, "package");
+                            if (TextUtils.isEmpty(attributeValue2)) {
+                                XmlUtils.skipCurrentTag(newFastPullParser);
+                            }
+                            String attributeValue3 = newFastPullParser.getAttributeValue((String) null, "digest");
+                            if (TextUtils.isEmpty(attributeValue3)) {
+                                XmlUtils.skipCurrentTag(newFastPullParser);
+                            }
+                            PendingAppPermission pendingAppPermission = new PendingAppPermission(attributeValue, attributeValue2, attributeValue3, i);
+                            if (pendingAppPermission.apply(packageManager)) {
+                                continue;
+                            } else {
+                                synchronized (this.mLock) {
+                                    try {
                                         if (this.mRestorePackageMonitor == null) {
                                             RestorePackageMonitor restorePackageMonitor = new RestorePackageMonitor();
                                             this.mRestorePackageMonitor = restorePackageMonitor;
@@ -187,65 +248,19 @@ public final class AccountManagerBackupHelper {
                                             this.mRestorePendingAppPermissions = new ArrayList();
                                         }
                                         this.mRestorePendingAppPermissions.add(pendingAppPermission);
+                                    } finally {
                                     }
                                 }
                             }
                         }
                     }
-                } else {
-                    CancelRestoreCommand cancelRestoreCommand = new CancelRestoreCommand();
-                    this.mRestoreCancelCommand = cancelRestoreCommand;
-                    this.mAccountManagerService.mHandler.postDelayed(cancelRestoreCommand, ClipboardService.DEFAULT_CLIPBOARD_TIMEOUT_MILLIS);
-                    return;
                 }
             }
+            CancelRestoreCommand cancelRestoreCommand = new CancelRestoreCommand();
+            this.mRestoreCancelCommand = cancelRestoreCommand;
+            this.mAccountManagerService.mHandler.postDelayed(cancelRestoreCommand, ClipboardService.DEFAULT_CLIPBOARD_TIMEOUT_MILLIS);
         } catch (IOException | XmlPullParserException e) {
             Log.e("AccountManagerBackupHelper", "Error restoring app permissions", e);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class RestorePackageMonitor extends PackageMonitor {
-        public RestorePackageMonitor() {
-        }
-
-        public void onPackageAdded(String str, int i) {
-            synchronized (AccountManagerBackupHelper.this.mLock) {
-                if (AccountManagerBackupHelper.this.mRestorePendingAppPermissions == null) {
-                    return;
-                }
-                if (UserHandle.getUserId(i) != 0) {
-                    return;
-                }
-                for (int size = AccountManagerBackupHelper.this.mRestorePendingAppPermissions.size() - 1; size >= 0; size--) {
-                    PendingAppPermission pendingAppPermission = (PendingAppPermission) AccountManagerBackupHelper.this.mRestorePendingAppPermissions.get(size);
-                    if (pendingAppPermission.packageName.equals(str) && pendingAppPermission.apply(AccountManagerBackupHelper.this.mAccountManagerService.mContext.getPackageManager())) {
-                        AccountManagerBackupHelper.this.mRestorePendingAppPermissions.remove(size);
-                    }
-                }
-                if (AccountManagerBackupHelper.this.mRestorePendingAppPermissions.isEmpty() && AccountManagerBackupHelper.this.mRestoreCancelCommand != null) {
-                    AccountManagerBackupHelper.this.mAccountManagerService.mHandler.removeCallbacks(AccountManagerBackupHelper.this.mRestoreCancelCommand);
-                    AccountManagerBackupHelper.this.mRestoreCancelCommand.run();
-                    AccountManagerBackupHelper.this.mRestoreCancelCommand = null;
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class CancelRestoreCommand implements Runnable {
-        public CancelRestoreCommand() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            synchronized (AccountManagerBackupHelper.this.mLock) {
-                AccountManagerBackupHelper.this.mRestorePendingAppPermissions = null;
-                if (AccountManagerBackupHelper.this.mRestorePackageMonitor != null) {
-                    AccountManagerBackupHelper.this.mRestorePackageMonitor.unregister();
-                    AccountManagerBackupHelper.this.mRestorePackageMonitor = null;
-                }
-            }
         }
     }
 }

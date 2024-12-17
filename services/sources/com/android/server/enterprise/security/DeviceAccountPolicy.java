@@ -8,12 +8,13 @@ import android.os.IBinder;
 import android.os.Process;
 import android.util.Log;
 import android.util.Slog;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
+import com.android.server.audio.AudioDeviceInventory$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.EnterpriseService;
 import com.android.server.enterprise.EnterpriseServiceCallback;
 import com.android.server.enterprise.RestrictionToastManager;
 import com.android.server.enterprise.auditlog.AuditLogService;
 import com.android.server.enterprise.storage.EdmStorageProvider;
-import com.android.server.enterprise.storage.EdmStorageProviderBase;
 import com.android.server.enterprise.utils.Utils;
 import com.samsung.android.knox.ContextInfo;
 import com.samsung.android.knox.EnterpriseDeviceManager;
@@ -29,63 +30,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-/* loaded from: classes2.dex */
-public class DeviceAccountPolicy extends IDeviceAccountPolicy.Stub implements EnterpriseServiceCallback {
-    public static String[] mSupportedAccountTypes = {"com.samsung.android.email", "com.samsung.android.exchange", "com.samsung.android.ldap", "com.osp.app.signin", "com.google", "com.google.android.gm.legacyimap", "com.google.android.gm.pop3", "com.google.android.gm.exchange", "com.google.work", "com.facebook.auth.login"};
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DeviceAccountPolicy extends IDeviceAccountPolicy.Stub implements EnterpriseServiceCallback {
+    public static final String[] mSupportedAccountTypes = {"com.samsung.android.email", "com.samsung.android.exchange", "com.samsung.android.ldap", "com.osp.app.signin", "com.google", "com.google.android.gm.legacyimap", "com.google.android.gm.pop3", "com.google.android.gm.exchange", "com.google.work", "com.facebook.auth.login"};
+    public AuditLogService mAuditLogService;
     public Context mContext;
+    public EnterpriseDeviceManager mEDM;
     public EdmStorageProvider mEdmStorageProvider;
-    public EnterpriseDeviceManager mEDM = null;
-    public AuditLogService mAuditLogService = null;
 
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void notifyToAddSystemService(String str, IBinder iBinder) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminAdded(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminRemoved(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onPreAdminRemoval(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void systemReady() {
-    }
-
-    public final EnterpriseDeviceManager getEDM() {
-        if (this.mEDM == null) {
-            this.mEDM = EnterpriseDeviceManager.getInstance(this.mContext);
-        }
-        return this.mEDM;
-    }
-
-    public final AuditLogService getAuditLogService() {
-        if (this.mAuditLogService == null) {
-            this.mAuditLogService = (AuditLogService) EnterpriseService.getPolicyService("auditlog");
-        }
-        return this.mAuditLogService;
-    }
-
-    public DeviceAccountPolicy(Context context) {
-        this.mContext = context;
-        this.mEdmStorageProvider = new EdmStorageProvider(context);
-    }
-
-    public final ContextInfo enforceSecurityPermission(ContextInfo contextInfo) {
-        return getEDM().enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_SECURITY")));
-    }
-
-    public final boolean checkAccountMatch(Iterator it, String str) {
+    public static boolean checkAccountMatch(Iterator it, String str) {
         while (it.hasNext()) {
             String str2 = (String) it.next();
             try {
             } catch (Exception unused) {
-                Slog.d("DeviceAccountPolicy", "checkAccountMatch() : invalid matched. match = " + str + " ,target =" + str2);
+                GmsAlarmManager$$ExternalSyntheticOutline0.m("checkAccountMatch() : invalid matched. match = ", str, " ,target =", str2, "DeviceAccountPolicy");
             }
             if (str.matches(str2)) {
                 Slog.d("DeviceAccountPolicy", "checkAccountMatch() : matched. match = " + str + " ,target =" + str2);
@@ -96,9 +55,17 @@ public class DeviceAccountPolicy extends IDeviceAccountPolicy.Stub implements En
         return false;
     }
 
-    public final boolean addAccountsToBWLInternal(ContextInfo contextInfo, String str, List list, String str2) {
+    public final boolean addAccountsToAdditionBlackList(ContextInfo contextInfo, String str, List list) {
+        return addAccountsToBWLInternal(contextInfo, list, str, "ADDITION_BLACKLIST");
+    }
+
+    public final boolean addAccountsToAdditionWhiteList(ContextInfo contextInfo, String str, List list) {
+        return addAccountsToBWLInternal(contextInfo, list, str, "ADDITION_WHITELIST");
+    }
+
+    public final boolean addAccountsToBWLInternal(ContextInfo contextInfo, List list, String str, String str2) {
         ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (!getSupportedAccountTypes().contains(str) || list == null) {
+        if (!Arrays.asList(mSupportedAccountTypes).contains(str) || list == null) {
             Log.i("DeviceAccountPolicy", "addAccountsToBWLInternal() : invalid parameter.");
             return false;
         }
@@ -119,13 +86,13 @@ public class DeviceAccountPolicy extends IDeviceAccountPolicy.Stub implements En
                     boolean z2 = z && putValuesNoUpdate;
                     if (putValuesNoUpdate) {
                         if (str2.equals("ADDITION_BLACKLIST")) {
-                            getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has added account %s to the addition blacklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), callingOrCurrentUserId);
+                            getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has added account %s to the addition blocklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), null, callingOrCurrentUserId);
                         } else if (str2.equals("ADDITION_WHITELIST")) {
-                            getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has added account %s to the addition whitelist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), callingOrCurrentUserId);
+                            getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has added account %s to the addition allowlist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), null, callingOrCurrentUserId);
                         } else if (str2.equals("REMOVAL_BLACKLIST")) {
-                            getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has added account %s to the removal blacklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), callingOrCurrentUserId);
+                            getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has added account %s to the removal blocklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), null, callingOrCurrentUserId);
                         } else if (str2.equals("REMOVAL_WHITELIST")) {
-                            getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has added account %s to the removal whitelist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), callingOrCurrentUserId);
+                            getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has added account %s to the removal allowlist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), null, callingOrCurrentUserId);
                         }
                     }
                     z = z2;
@@ -143,10 +110,245 @@ public class DeviceAccountPolicy extends IDeviceAccountPolicy.Stub implements En
         }
     }
 
-    public final boolean removeAccountsFromBWLInternal(ContextInfo contextInfo, String str, List list, String str2) {
+    public final boolean addAccountsToRemovalBlackList(ContextInfo contextInfo, String str, List list) {
+        return addAccountsToBWLInternal(contextInfo, list, str, "REMOVAL_BLACKLIST");
+    }
+
+    public final boolean addAccountsToRemovalWhiteList(ContextInfo contextInfo, String str, List list) {
+        return addAccountsToBWLInternal(contextInfo, list, str, "REMOVAL_WHITELIST");
+    }
+
+    public final boolean clearAccountsFromAdditionBlackList(ContextInfo contextInfo, String str) {
+        return clearAccountsFromBWLInternal(contextInfo, str, "ADDITION_BLACKLIST");
+    }
+
+    public final boolean clearAccountsFromAdditionWhiteList(ContextInfo contextInfo, String str) {
+        return clearAccountsFromBWLInternal(contextInfo, str, "ADDITION_WHITELIST");
+    }
+
+    public final boolean clearAccountsFromBWLInternal(ContextInfo contextInfo, String str, String str2) {
         ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
         int i = enforceSecurityPermission.mCallerUid;
-        if (!getSupportedAccountTypes().contains(str) || list == null) {
+        String[] strArr = {"adminUid", "type", "listType"};
+        String[] strArr2 = {String.valueOf(i), str, str2};
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("adminUid", Integer.valueOf(i));
+                contentValues.put("type", str);
+                contentValues.put("listType", str2);
+                if (((ArrayList) this.mEdmStorageProvider.getValuesList("AccountBlackWhiteList", strArr, contentValues)).isEmpty()) {
+                    Slog.d("DeviceAccountPolicy", "clearAccountsFromBWLInternal() : no accounts.");
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                    return true;
+                }
+                boolean deleteDataByFields = this.mEdmStorageProvider.deleteDataByFields("AccountBlackWhiteList", strArr, strArr2);
+                if (deleteDataByFields) {
+                    if (str2.equals("ADDITION_BLACKLIST")) {
+                        getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed all accounts from addition blocklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid)), null, callingOrCurrentUserId);
+                    } else if (str2.equals("ADDITION_WHITELIST")) {
+                        getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed all accounts from addition allowlist.", Integer.valueOf(enforceSecurityPermission.mCallerUid)), null, callingOrCurrentUserId);
+                    } else if (str2.equals("REMOVAL_BLACKLIST")) {
+                        getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed all accounts from removal blocklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid)), null, callingOrCurrentUserId);
+                    } else if (str2.equals("REMOVAL_WHITELIST")) {
+                        getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed all accounts from removal allowlist.", Integer.valueOf(enforceSecurityPermission.mCallerUid)), null, callingOrCurrentUserId);
+                    }
+                }
+                return deleteDataByFields;
+            } catch (Exception e) {
+                Log.e("DeviceAccountPolicy", "Handled Exception in clearAccountsFromBWLInternal()", e);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return false;
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final boolean clearAccountsFromRemovalBlackList(ContextInfo contextInfo, String str) {
+        return clearAccountsFromBWLInternal(contextInfo, str, "REMOVAL_BLACKLIST");
+    }
+
+    public final boolean clearAccountsFromRemovalWhiteList(ContextInfo contextInfo, String str) {
+        return clearAccountsFromBWLInternal(contextInfo, str, "REMOVAL_WHITELIST");
+    }
+
+    public final ContextInfo enforceSecurityPermission(ContextInfo contextInfo) {
+        if (this.mEDM == null) {
+            this.mEDM = EnterpriseDeviceManager.getInstance(this.mContext);
+        }
+        return this.mEDM.enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_SECURITY")));
+    }
+
+    public final List getAccountsFromAdditionBlackLists(ContextInfo contextInfo, String str) {
+        return getAccountsFromBWLInternal(contextInfo, str, "ADDITION_BLACKLIST");
+    }
+
+    public final List getAccountsFromAdditionWhiteLists(ContextInfo contextInfo, String str) {
+        return getAccountsFromBWLInternal(contextInfo, str, "ADDITION_WHITELIST");
+    }
+
+    public final List getAccountsFromBWLInternal(ContextInfo contextInfo, String str, String str2) {
+        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
+        if (!Arrays.asList(mSupportedAccountTypes).contains(str)) {
+            Log.i("DeviceAccountPolicy", "getAccountsFromBWLInternal() : no support type.");
+            return null;
+        }
+        Map loadAccounts = loadAccounts(Utils.getCallingOrCurrentUserId(enforceSecurityPermission), str, str2);
+        if (loadAccounts == null) {
+            AudioDeviceInventory$$ExternalSyntheticOutline0.m("getAccountsFromBWLInternal() : Account list for ", str2, " is null.", "DeviceAccountPolicy");
+            return null;
+        }
+        HashMap hashMap = (HashMap) loadAccounts;
+        Set<Integer> keySet = hashMap.keySet();
+        ArrayList arrayList = new ArrayList(keySet.size());
+        for (Integer num : keySet) {
+            AccountControlInfo accountControlInfo = new AccountControlInfo();
+            accountControlInfo.adminPackageName = this.mEdmStorageProvider.getPackageNameForUid(num.intValue());
+            accountControlInfo.entries = new ArrayList((Collection) hashMap.get(num));
+            arrayList.add(accountControlInfo);
+        }
+        return arrayList;
+    }
+
+    public final List getAccountsFromRemovalBlackLists(ContextInfo contextInfo, String str) {
+        return getAccountsFromBWLInternal(contextInfo, str, "REMOVAL_BLACKLIST");
+    }
+
+    public final List getAccountsFromRemovalWhiteLists(ContextInfo contextInfo, String str) {
+        return getAccountsFromBWLInternal(contextInfo, str, "REMOVAL_WHITELIST");
+    }
+
+    public final AuditLogService getAuditLogService() {
+        if (this.mAuditLogService == null) {
+            this.mAuditLogService = (AuditLogService) EnterpriseService.getPolicyService("auditlog");
+        }
+        return this.mAuditLogService;
+    }
+
+    public final List getSupportedAccountTypes() {
+        return Arrays.asList(mSupportedAccountTypes);
+    }
+
+    public final boolean isAccountAdditionAllowed(String str, String str2, boolean z) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(new ContextInfo(Binder.getCallingUid()));
+        Map loadAccounts = loadAccounts(callingOrCurrentUserId, str, "ADDITION_BLACKLIST");
+        Map loadAccounts2 = loadAccounts(callingOrCurrentUserId, str, "ADDITION_WHITELIST");
+        if (loadAccounts == null) {
+            Log.i("DeviceAccountPolicy", "isAccountAdditionAllowed() : no BlackList.");
+            return true;
+        }
+        HashMap hashMap = (HashMap) loadAccounts;
+        for (Integer num : hashMap.keySet()) {
+            if (loadAccounts2 == null || !checkAccountMatch(((Set) ((HashMap) loadAccounts2).get(num)).iterator(), str2)) {
+                if (checkAccountMatch(((Set) hashMap.get(num)).iterator(), str2)) {
+                    if (z) {
+                        RestrictionToastManager.show(R.string.back_button_label);
+                    }
+                    Slog.d("DeviceAccountPolicy", "isAccountAdditionAllowed() : account has blocked. userId = " + num);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public final boolean isAccountRemovalAllowed(String str, String str2, boolean z) {
+        return isAccountRemovalAllowedAsUser(str, str2, z, Utils.getCallingOrCurrentUserId(new ContextInfo(Binder.getCallingUid())));
+    }
+
+    public final boolean isAccountRemovalAllowedAsUser(String str, String str2, boolean z, int i) {
+        Map loadAccounts = loadAccounts(i, str, "REMOVAL_BLACKLIST");
+        Map loadAccounts2 = loadAccounts(i, str, "REMOVAL_WHITELIST");
+        if (loadAccounts == null) {
+            Log.i("DeviceAccountPolicy", "isAccountRemovalAllowedAsUser() : no BlackList.");
+            return true;
+        }
+        HashMap hashMap = (HashMap) loadAccounts;
+        for (Integer num : hashMap.keySet()) {
+            if (loadAccounts2 != null && checkAccountMatch(((Set) ((HashMap) loadAccounts2).get(num)).iterator(), str2)) {
+                Slog.d("DeviceAccountPolicy", "isAccountRemovalAllowedAsUser() : no WhiteList.");
+            } else if (checkAccountMatch(((Set) hashMap.get(num)).iterator(), str2)) {
+                if (z) {
+                    RestrictionToastManager.show(R.string.badPin);
+                }
+                Slog.d("DeviceAccountPolicy", "isAccountRemovalAllowedAsUser() : account has blocked. userId = " + num);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public final synchronized Map loadAccounts(int i, String str, String str2) {
+        Slog.d("DeviceAccountPolicy", "loadAccounts() : userId  = " + i);
+        ArrayList longListAsUser = this.mEdmStorageProvider.getLongListAsUser(i, "AccountBlackWhiteList", "adminUid");
+        if (longListAsUser.size() == 0) {
+            Log.i("DeviceAccountPolicy", "loadAccounts() : admin is null ");
+            return null;
+        }
+        TreeSet treeSet = new TreeSet(longListAsUser);
+        HashMap hashMap = new HashMap(treeSet.size());
+        Iterator it = treeSet.iterator();
+        while (it.hasNext()) {
+            hashMap.put(Integer.valueOf((int) ((Long) it.next()).longValue()), new TreeSet());
+        }
+        String[] strArr = {"adminUid", "name"};
+        try {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("containerID", (Integer) 0);
+            contentValues.put("userID", Integer.valueOf(i));
+            contentValues.put("type", str);
+            contentValues.put("listType", str2);
+            ArrayList arrayList = (ArrayList) this.mEdmStorageProvider.getValuesList("AccountBlackWhiteList", strArr, contentValues);
+            if (arrayList.isEmpty()) {
+                Log.i("DeviceAccountPolicy", "loadAccounts() : list empty ");
+            }
+            Iterator it2 = arrayList.iterator();
+            while (it2.hasNext()) {
+                ContentValues contentValues2 = (ContentValues) it2.next();
+                Long asLong = contentValues2.getAsLong("adminUid");
+                if (asLong != null) {
+                    ((Set) hashMap.get(Integer.valueOf((int) asLong.longValue()))).add(contentValues2.getAsString("name"));
+                } else {
+                    Log.i("DeviceAccountPolicy", "loadAccounts() : can not get admin. ");
+                }
+            }
+        } catch (Exception e) {
+            Log.e("DeviceAccountPolicy", "Handled Exception in loadAccounts()", e);
+        }
+        return hashMap;
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void notifyToAddSystemService(String str, IBinder iBinder) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminAdded(int i) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminRemoved(int i) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onPreAdminRemoval(int i) {
+    }
+
+    public final boolean removeAccountsFromAdditionBlackList(ContextInfo contextInfo, String str, List list) {
+        return removeAccountsFromBWLInternal(contextInfo, list, str, "ADDITION_BLACKLIST");
+    }
+
+    public final boolean removeAccountsFromAdditionWhiteList(ContextInfo contextInfo, String str, List list) {
+        return removeAccountsFromBWLInternal(contextInfo, list, str, "ADDITION_WHITELIST");
+    }
+
+    public final boolean removeAccountsFromBWLInternal(ContextInfo contextInfo, List list, String str, String str2) {
+        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
+        int i = enforceSecurityPermission.mCallerUid;
+        if (!Arrays.asList(mSupportedAccountTypes).contains(str) || list == null) {
             Log.i("DeviceAccountPolicy", "removeAccountsFromBWLInternal() : invalid parameter.");
             return false;
         }
@@ -162,13 +364,13 @@ public class DeviceAccountPolicy extends IDeviceAccountPolicy.Stub implements En
                     boolean z2 = z && deleteDataByFields;
                     if (deleteDataByFields) {
                         if (str2.equals("ADDITION_BLACKLIST")) {
-                            getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed account %s from addition blacklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), callingOrCurrentUserId);
+                            getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed account %s from addition blocklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), null, callingOrCurrentUserId);
                         } else if (str2.equals("ADDITION_WHITELIST")) {
-                            getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed account %s from addition whitelist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), callingOrCurrentUserId);
+                            getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed account %s from addition allowlist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), null, callingOrCurrentUserId);
                         } else if (str2.equals("REMOVAL_BLACKLIST")) {
-                            getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed account %s from removal blacklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), callingOrCurrentUserId);
+                            getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed account %s from removal blocklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), null, callingOrCurrentUserId);
                         } else if (str2.equals("REMOVAL_WHITELIST")) {
-                            getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed account %s from removal whitelist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), callingOrCurrentUserId);
+                            getAuditLogService().redactedAuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed account %s from removal allowlist.", Integer.valueOf(enforceSecurityPermission.mCallerUid), str3), null, callingOrCurrentUserId);
                         }
                     }
                     z = z2;
@@ -186,220 +388,15 @@ public class DeviceAccountPolicy extends IDeviceAccountPolicy.Stub implements En
         }
     }
 
-    public final List getAccountsFromBWLInternal(ContextInfo contextInfo, String str, String str2) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (!getSupportedAccountTypes().contains(str)) {
-            Log.i("DeviceAccountPolicy", "getAccountsFromBWLInternal() : no support type.");
-            return null;
-        }
-        Map loadAccounts = loadAccounts(Utils.getCallingOrCurrentUserId(enforceSecurityPermission), str, str2);
-        if (loadAccounts == null) {
-            Log.i("DeviceAccountPolicy", "getAccountsFromBWLInternal() : Account list for " + str2 + " is null.");
-            return null;
-        }
-        Set<Integer> keySet = loadAccounts.keySet();
-        ArrayList arrayList = new ArrayList(keySet.size());
-        for (Integer num : keySet) {
-            AccountControlInfo accountControlInfo = new AccountControlInfo();
-            accountControlInfo.adminPackageName = getPackageNameForUid(num.intValue());
-            accountControlInfo.entries = new ArrayList((Collection) loadAccounts.get(num));
-            arrayList.add(accountControlInfo);
-        }
-        return arrayList;
+    public final boolean removeAccountsFromRemovalBlackList(ContextInfo contextInfo, String str, List list) {
+        return removeAccountsFromBWLInternal(contextInfo, list, str, "REMOVAL_BLACKLIST");
     }
 
-    public final boolean clearAccountsFromBWLInternal(ContextInfo contextInfo, String str, String str2) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        int i = enforceSecurityPermission.mCallerUid;
-        String[] strArr = {"adminUid", "type", "listType"};
-        String[] strArr2 = {String.valueOf(i), str, str2};
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("adminUid", Integer.valueOf(i));
-            contentValues.put("type", str);
-            contentValues.put("listType", str2);
-            List valuesList = this.mEdmStorageProvider.getValuesList("AccountBlackWhiteList", strArr, contentValues);
-            if (valuesList != null && !valuesList.isEmpty()) {
-                boolean deleteDataByFields = this.mEdmStorageProvider.deleteDataByFields("AccountBlackWhiteList", strArr, strArr2);
-                if (deleteDataByFields) {
-                    if (str2.equals("ADDITION_BLACKLIST")) {
-                        getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed all accounts from addition blacklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid)), callingOrCurrentUserId);
-                    } else if (str2.equals("ADDITION_WHITELIST")) {
-                        getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed all accounts from addition whitelist.", Integer.valueOf(enforceSecurityPermission.mCallerUid)), callingOrCurrentUserId);
-                    } else if (str2.equals("REMOVAL_BLACKLIST")) {
-                        getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed all accounts from removal blacklist.", Integer.valueOf(enforceSecurityPermission.mCallerUid)), callingOrCurrentUserId);
-                    } else if (str2.equals("REMOVAL_WHITELIST")) {
-                        getAuditLogService().AuditLoggerAsUser(enforceSecurityPermission, 5, 1, true, Process.myPid(), "DeviceAccountPolicy", String.format("Admin %d has removed all accounts from removal whitelist.", Integer.valueOf(enforceSecurityPermission.mCallerUid)), callingOrCurrentUserId);
-                    }
-                }
-                return deleteDataByFields;
-            }
-            Slog.d("DeviceAccountPolicy", "clearAccountsFromBWLInternal() : no accounts.");
-            return true;
-        } catch (Exception e) {
-            Log.e("DeviceAccountPolicy", "Handled Exception in clearAccountsFromBWLInternal()", e);
-            return false;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
+    public final boolean removeAccountsFromRemovalWhiteList(ContextInfo contextInfo, String str, List list) {
+        return removeAccountsFromBWLInternal(contextInfo, list, str, "REMOVAL_WHITELIST");
     }
 
-    public final synchronized Map loadAccounts(int i, String str, String str2) {
-        Slog.d("DeviceAccountPolicy", "loadAccounts() : userId  = " + i);
-        ArrayList longListAsUser = this.mEdmStorageProvider.getLongListAsUser("AccountBlackWhiteList", "adminUid", i);
-        if (longListAsUser.size() == 0) {
-            Log.i("DeviceAccountPolicy", "loadAccounts() : admin is null ");
-            return null;
-        }
-        TreeSet treeSet = new TreeSet(longListAsUser);
-        HashMap hashMap = new HashMap(treeSet.size());
-        Iterator it = treeSet.iterator();
-        while (it.hasNext()) {
-            hashMap.put(Integer.valueOf(EdmStorageProviderBase.getAdminUidFromLUID(((Long) it.next()).longValue())), new TreeSet());
-        }
-        String[] strArr = {"adminUid", "name"};
-        try {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("containerID", (Integer) 0);
-            contentValues.put("userID", Integer.valueOf(i));
-            contentValues.put("type", str);
-            contentValues.put("listType", str2);
-            List<ContentValues> valuesList = this.mEdmStorageProvider.getValuesList("AccountBlackWhiteList", strArr, contentValues);
-            if (valuesList.isEmpty()) {
-                Log.i("DeviceAccountPolicy", "loadAccounts() : list empty ");
-            }
-            for (ContentValues contentValues2 : valuesList) {
-                Long asLong = contentValues2.getAsLong("adminUid");
-                if (asLong != null) {
-                    ((Set) hashMap.get(Integer.valueOf(EdmStorageProviderBase.getAdminUidFromLUID(asLong.longValue())))).add(contentValues2.getAsString("name"));
-                } else {
-                    Log.i("DeviceAccountPolicy", "loadAccounts() : can not get admin. ");
-                }
-            }
-        } catch (Exception e) {
-            Log.e("DeviceAccountPolicy", "Handled Exception in loadAccounts()", e);
-        }
-        return hashMap;
-    }
-
-    public List getSupportedAccountTypes() {
-        return Arrays.asList(mSupportedAccountTypes);
-    }
-
-    public boolean addAccountsToRemovalBlackList(ContextInfo contextInfo, String str, List list) {
-        return addAccountsToBWLInternal(contextInfo, str, list, "REMOVAL_BLACKLIST");
-    }
-
-    public boolean removeAccountsFromRemovalBlackList(ContextInfo contextInfo, String str, List list) {
-        return removeAccountsFromBWLInternal(contextInfo, str, list, "REMOVAL_BLACKLIST");
-    }
-
-    public List getAccountsFromRemovalBlackLists(ContextInfo contextInfo, String str) {
-        return getAccountsFromBWLInternal(contextInfo, str, "REMOVAL_BLACKLIST");
-    }
-
-    public boolean clearAccountsFromRemovalBlackList(ContextInfo contextInfo, String str) {
-        return clearAccountsFromBWLInternal(contextInfo, str, "REMOVAL_BLACKLIST");
-    }
-
-    public boolean addAccountsToRemovalWhiteList(ContextInfo contextInfo, String str, List list) {
-        return addAccountsToBWLInternal(contextInfo, str, list, "REMOVAL_WHITELIST");
-    }
-
-    public boolean removeAccountsFromRemovalWhiteList(ContextInfo contextInfo, String str, List list) {
-        return removeAccountsFromBWLInternal(contextInfo, str, list, "REMOVAL_WHITELIST");
-    }
-
-    public List getAccountsFromRemovalWhiteLists(ContextInfo contextInfo, String str) {
-        return getAccountsFromBWLInternal(contextInfo, str, "REMOVAL_WHITELIST");
-    }
-
-    public boolean clearAccountsFromRemovalWhiteList(ContextInfo contextInfo, String str) {
-        return clearAccountsFromBWLInternal(contextInfo, str, "REMOVAL_WHITELIST");
-    }
-
-    public boolean isAccountRemovalAllowed(String str, String str2, boolean z) {
-        return isAccountRemovalAllowedAsUser(str, str2, z, Utils.getCallingOrCurrentUserId(new ContextInfo(Binder.getCallingUid())));
-    }
-
-    public boolean isAccountRemovalAllowedAsUser(String str, String str2, boolean z, int i) {
-        Map loadAccounts = loadAccounts(i, str, "REMOVAL_BLACKLIST");
-        Map loadAccounts2 = loadAccounts(i, str, "REMOVAL_WHITELIST");
-        if (loadAccounts == null) {
-            Log.i("DeviceAccountPolicy", "isAccountRemovalAllowedAsUser() : no BlackList.");
-            return true;
-        }
-        for (Integer num : loadAccounts.keySet()) {
-            if (loadAccounts2 != null && checkAccountMatch(((Set) loadAccounts2.get(num)).iterator(), str2)) {
-                Slog.d("DeviceAccountPolicy", "isAccountRemovalAllowedAsUser() : no WhiteList.");
-            } else if (checkAccountMatch(((Set) loadAccounts.get(num)).iterator(), str2)) {
-                if (z) {
-                    RestrictionToastManager.show(R.string.autofill_update_yes);
-                }
-                Slog.d("DeviceAccountPolicy", "isAccountRemovalAllowedAsUser() : account has blocked. userId = " + num);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean addAccountsToAdditionBlackList(ContextInfo contextInfo, String str, List list) {
-        return addAccountsToBWLInternal(contextInfo, str, list, "ADDITION_BLACKLIST");
-    }
-
-    public boolean removeAccountsFromAdditionBlackList(ContextInfo contextInfo, String str, List list) {
-        return removeAccountsFromBWLInternal(contextInfo, str, list, "ADDITION_BLACKLIST");
-    }
-
-    public List getAccountsFromAdditionBlackLists(ContextInfo contextInfo, String str) {
-        return getAccountsFromBWLInternal(contextInfo, str, "ADDITION_BLACKLIST");
-    }
-
-    public boolean clearAccountsFromAdditionBlackList(ContextInfo contextInfo, String str) {
-        return clearAccountsFromBWLInternal(contextInfo, str, "ADDITION_BLACKLIST");
-    }
-
-    public boolean addAccountsToAdditionWhiteList(ContextInfo contextInfo, String str, List list) {
-        return addAccountsToBWLInternal(contextInfo, str, list, "ADDITION_WHITELIST");
-    }
-
-    public boolean removeAccountsFromAdditionWhiteList(ContextInfo contextInfo, String str, List list) {
-        return removeAccountsFromBWLInternal(contextInfo, str, list, "ADDITION_WHITELIST");
-    }
-
-    public List getAccountsFromAdditionWhiteLists(ContextInfo contextInfo, String str) {
-        return getAccountsFromBWLInternal(contextInfo, str, "ADDITION_WHITELIST");
-    }
-
-    public boolean clearAccountsFromAdditionWhiteList(ContextInfo contextInfo, String str) {
-        return clearAccountsFromBWLInternal(contextInfo, str, "ADDITION_WHITELIST");
-    }
-
-    public boolean isAccountAdditionAllowed(String str, String str2, boolean z) {
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(new ContextInfo(Binder.getCallingUid()));
-        Map loadAccounts = loadAccounts(callingOrCurrentUserId, str, "ADDITION_BLACKLIST");
-        Map loadAccounts2 = loadAccounts(callingOrCurrentUserId, str, "ADDITION_WHITELIST");
-        if (loadAccounts == null) {
-            Log.i("DeviceAccountPolicy", "isAccountAdditionAllowed() : no BlackList.");
-            return true;
-        }
-        for (Integer num : loadAccounts.keySet()) {
-            if (loadAccounts2 == null || !checkAccountMatch(((Set) loadAccounts2.get(num)).iterator(), str2)) {
-                if (checkAccountMatch(((Set) loadAccounts.get(num)).iterator(), str2)) {
-                    if (z) {
-                        RestrictionToastManager.show(R.string.autofill_update_title_with_type);
-                    }
-                    Slog.d("DeviceAccountPolicy", "isAccountAdditionAllowed() : account has blocked. userId = " + num);
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public final String getPackageNameForUid(int i) {
-        return this.mEdmStorageProvider.getPackageNameForUid(i);
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void systemReady() {
     }
 }

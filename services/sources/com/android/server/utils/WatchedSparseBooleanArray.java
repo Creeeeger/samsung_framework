@@ -2,13 +2,10 @@ package com.android.server.utils;
 
 import android.util.SparseBooleanArray;
 
-/* loaded from: classes3.dex */
-public class WatchedSparseBooleanArray extends WatchableImpl implements Snappable {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WatchedSparseBooleanArray extends WatchableImpl implements Snappable {
     public final SparseBooleanArray mStorage;
-
-    public final void onChanged() {
-        dispatchChange(this);
-    }
 
     public WatchedSparseBooleanArray() {
         this.mStorage = new SparseBooleanArray();
@@ -18,39 +15,25 @@ public class WatchedSparseBooleanArray extends WatchableImpl implements Snappabl
         this.mStorage = watchedSparseBooleanArray.mStorage.clone();
     }
 
-    public boolean get(int i) {
-        return this.mStorage.get(i);
-    }
-
-    public void delete(int i) {
-        this.mStorage.delete(i);
-        onChanged();
-    }
-
-    public void put(int i, boolean z) {
-        this.mStorage.put(i, z);
-        onChanged();
-    }
-
-    public int hashCode() {
-        return this.mStorage.hashCode();
-    }
-
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (obj instanceof WatchedSparseBooleanArray) {
             return this.mStorage.equals(((WatchedSparseBooleanArray) obj).mStorage);
         }
         return false;
     }
 
-    public String toString() {
-        return this.mStorage.toString();
+    public final int hashCode() {
+        return this.mStorage.hashCode();
     }
 
     @Override // com.android.server.utils.Snappable
-    public WatchedSparseBooleanArray snapshot() {
+    public final Object snapshot() {
         WatchedSparseBooleanArray watchedSparseBooleanArray = new WatchedSparseBooleanArray(this);
         watchedSparseBooleanArray.seal();
         return watchedSparseBooleanArray;
+    }
+
+    public final String toString() {
+        return this.mStorage.toString();
     }
 }

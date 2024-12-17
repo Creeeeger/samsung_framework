@@ -1,55 +1,6 @@
 package com.android.server.timezonedetector;
 
-import android.app.time.TimeZoneConfiguration;
-import java.time.Duration;
-
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface ServiceConfigAccessor {
-    void addConfigurationInternalChangeListener(StateChangeListener stateChangeListener);
-
-    void addLocationTimeZoneManagerConfigListener(StateChangeListener stateChangeListener);
-
-    ConfigurationInternal getConfigurationInternal(int i);
-
-    ConfigurationInternal getCurrentUserConfigurationInternal();
-
-    Duration getLocationTimeZoneProviderEventFilteringAgeThreshold();
-
-    Duration getLocationTimeZoneProviderInitializationTimeout();
-
-    Duration getLocationTimeZoneProviderInitializationTimeoutFuzz();
-
-    Duration getLocationTimeZoneUncertaintyDelay();
-
-    String getPrimaryLocationTimeZoneProviderMode();
-
-    String getPrimaryLocationTimeZoneProviderPackageName();
-
-    boolean getRecordStateChangesForTests();
-
-    String getSecondaryLocationTimeZoneProviderMode();
-
-    String getSecondaryLocationTimeZoneProviderPackageName();
-
-    boolean isGeoTimeZoneDetectionFeatureSupported();
-
-    boolean isGeoTimeZoneDetectionFeatureSupportedInConfig();
-
-    boolean isGeolocationFallbackEnabled();
-
-    boolean isTestPrimaryLocationTimeZoneProvider();
-
-    boolean isTestSecondaryLocationTimeZoneProvider();
-
-    void removeConfigurationInternalChangeListener(StateChangeListener stateChangeListener);
-
-    void resetVolatileTestConfig();
-
-    void setRecordStateChangesForTests(boolean z);
-
-    void setTestPrimaryLocationTimeZoneProviderPackageName(String str);
-
-    void setTestSecondaryLocationTimeZoneProviderPackageName(String str);
-
-    boolean updateConfiguration(int i, TimeZoneConfiguration timeZoneConfiguration, boolean z);
 }

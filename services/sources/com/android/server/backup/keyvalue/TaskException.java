@@ -1,37 +1,15 @@
 package com.android.server.backup.keyvalue;
 
-import com.android.internal.util.Preconditions;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 class TaskException extends BackupException {
+    public static final /* synthetic */ int $r8$clinit = 0;
     private final boolean mStateCompromised;
     private final int mStatus;
 
-    public static TaskException stateCompromised() {
-        return new TaskException(true, -1000);
-    }
-
-    public static TaskException stateCompromised(Exception exc) {
-        if (exc instanceof TaskException) {
-            return new TaskException(exc, true, ((TaskException) exc).getStatus());
-        }
-        return new TaskException(exc, true, -1000);
-    }
-
-    public static TaskException forStatus(int i) {
-        Preconditions.checkArgument(i != 0, "Exception based on TRANSPORT_OK");
-        return new TaskException(false, i);
-    }
-
-    public static TaskException causedBy(Exception exc) {
-        if (exc instanceof TaskException) {
-            return (TaskException) exc;
-        }
-        return new TaskException(exc, false, -1000);
-    }
-
-    public static TaskException create() {
-        return new TaskException(false, -1000);
+    public TaskException(int i, boolean z) {
+        this.mStateCompromised = z;
+        this.mStatus = i;
     }
 
     public TaskException(Exception exc, boolean z, int i) {
@@ -40,16 +18,15 @@ class TaskException extends BackupException {
         this.mStatus = i;
     }
 
-    public TaskException(boolean z, int i) {
-        this.mStateCompromised = z;
-        this.mStatus = i;
+    public static TaskException stateCompromised(Exception exc) {
+        return exc instanceof TaskException ? new TaskException(exc, true, ((TaskException) exc).mStatus) : new TaskException(exc, true, -1000);
     }
 
-    public boolean isStateCompromised() {
-        return this.mStateCompromised;
-    }
-
-    public int getStatus() {
+    public final int getStatus() {
         return this.mStatus;
+    }
+
+    public final boolean isStateCompromised() {
+        return this.mStateCompromised;
     }
 }

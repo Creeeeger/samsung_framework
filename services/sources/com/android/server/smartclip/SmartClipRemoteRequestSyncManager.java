@@ -1,63 +1,46 @@
 package com.android.server.smartclip;
 
+import android.content.Context;
 import android.util.Log;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0;
 import com.samsung.android.content.smartclip.SmartClipRemoteRequestResult;
 import java.util.HashMap;
 
-/* compiled from: SpenGestureManagerService.java */
-/* loaded from: classes3.dex */
-public class SmartClipRemoteRequestSyncManager {
-    public static final String TAG = SpenGestureManagerService.TAG;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SmartClipRemoteRequestSyncManager {
+    public static final String TAG;
     public int mNextRequestId = 0;
-    public HashMap mRequestMap = new HashMap();
+    public final HashMap mRequestMap = new HashMap();
 
-    /* compiled from: SpenGestureManagerService.java */
-    /* loaded from: classes3.dex */
-    public class RequestInfo {
-        public int mRequestId;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RequestInfo {
+        public boolean mResponseArrived;
         public SmartClipRemoteRequestResult mResultData;
-        public Object mWaitObj = new Object();
-        public boolean mResponseArrived = false;
+        public Object mWaitObj;
     }
 
-    public SmartClipRemoteRequestResult waitResult(int i, int i2) {
-        RequestInfo requestInfo;
-        RequestInfo requestItem = getRequestItem(i);
-        if (requestItem == null) {
-            Log.e(TAG, "waitResult : Could not find request info!! id = " + i);
-            return null;
-        }
-        long currentTimeMillis = System.currentTimeMillis();
-        synchronized (requestItem.mWaitObj) {
-            if (!requestItem.mResponseArrived) {
-                try {
-                    requestItem.mWaitObj.wait(i2);
-                } catch (InterruptedException e) {
-                    Log.e(TAG, "waitResult : e=" + e);
-                }
+    static {
+        Context context = SpenGestureManagerService.mContext;
+        TAG = "SpenGestureManagerService";
+    }
+
+    public final int allocateNewRequestId(boolean z) {
+        int i = this.mNextRequestId;
+        this.mNextRequestId = i + 1;
+        if (z) {
+            RequestInfo requestInfo = new RequestInfo();
+            requestInfo.mWaitObj = new Object();
+            requestInfo.mResponseArrived = false;
+            synchronized (this.mRequestMap) {
+                this.mRequestMap.put(Integer.valueOf(i), requestInfo);
             }
         }
-        Log.i(TAG, "waitResult : Unlocked. Id = " + i + " Elapsed = " + (System.currentTimeMillis() - currentTimeMillis) + "ms");
-        synchronized (this.mRequestMap) {
-            requestInfo = (RequestInfo) this.mRequestMap.remove(Integer.valueOf(i));
-        }
-        return requestInfo.mResultData;
+        return i;
     }
 
-    public void notifyResult(SmartClipRemoteRequestResult smartClipRemoteRequestResult) {
-        RequestInfo requestItem = getRequestItem(smartClipRemoteRequestResult.mRequestId);
-        if (requestItem == null) {
-            Log.e(TAG, "notifyResult : Could not find request information. id=" + smartClipRemoteRequestResult.mRequestId);
-            return;
-        }
-        synchronized (requestItem.mWaitObj) {
-            requestItem.mResultData = smartClipRemoteRequestResult;
-            requestItem.mResponseArrived = true;
-            requestItem.mWaitObj.notify();
-        }
-    }
-
-    public RequestInfo getRequestItem(int i) {
+    public final RequestInfo getRequestItem(int i) {
         RequestInfo requestInfo;
         synchronized (this.mRequestMap) {
             requestInfo = (RequestInfo) this.mRequestMap.get(Integer.valueOf(i));
@@ -65,16 +48,31 @@ public class SmartClipRemoteRequestSyncManager {
         return requestInfo;
     }
 
-    public int allocateNewRequestId(boolean z) {
-        int i = this.mNextRequestId;
-        this.mNextRequestId = i + 1;
-        if (z) {
-            RequestInfo requestInfo = new RequestInfo();
-            requestInfo.mRequestId = i;
-            synchronized (this.mRequestMap) {
-                this.mRequestMap.put(Integer.valueOf(i), requestInfo);
+    public final SmartClipRemoteRequestResult waitResult(int i) {
+        RequestInfo requestInfo;
+        RequestInfo requestItem = getRequestItem(i);
+        if (requestItem == null) {
+            ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m(i, "waitResult : Could not find request info!! id = ", TAG);
+            return null;
+        }
+        long currentTimeMillis = System.currentTimeMillis();
+        synchronized (requestItem.mWaitObj) {
+            if (!requestItem.mResponseArrived) {
+                try {
+                    requestItem.mWaitObj.wait(500);
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "waitResult : e=" + e);
+                }
             }
         }
-        return i;
+        String str = TAG;
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "waitResult : Unlocked. Id = ", " Elapsed = ");
+        m.append(System.currentTimeMillis() - currentTimeMillis);
+        m.append("ms");
+        Log.i(str, m.toString());
+        synchronized (this.mRequestMap) {
+            requestInfo = (RequestInfo) this.mRequestMap.remove(Integer.valueOf(i));
+        }
+        return requestInfo.mResultData;
     }
 }

@@ -1,5 +1,6 @@
 package com.android.server.timezonedetector.location;
 
+import android.R;
 import android.content.Context;
 import android.os.Binder;
 import android.os.Handler;
@@ -14,15 +15,19 @@ import com.android.server.SystemService;
 import com.android.server.timezonedetector.Dumpable;
 import com.android.server.timezonedetector.ServiceConfigAccessor;
 import com.android.server.timezonedetector.ServiceConfigAccessorImpl;
+import com.android.server.timezonedetector.ServiceConfigAccessorImpl$$ExternalSyntheticLambda1;
 import com.android.server.timezonedetector.StateChangeListener;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Callable;
 
-/* loaded from: classes3.dex */
-public class LocationTimeZoneManagerService extends Binder {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class LocationTimeZoneManagerService extends Binder {
+    public static final /* synthetic */ int $r8$clinit = 0;
     public static final long BLOCKING_OP_WAIT_DURATION_MILLIS = Duration.ofSeconds(20).toMillis();
     public final Context mContext;
     public final Handler mHandler;
@@ -32,10 +37,10 @@ public class LocationTimeZoneManagerService extends Binder {
     public final ProviderConfig mSecondaryProviderConfig = new ProviderConfig(1, "secondary", "android.service.timezone.SecondaryLocationTimeZoneProviderService");
     public final ServiceConfigAccessor mServiceConfigAccessor;
     public final Object mSharedLock;
-    public final ThreadingDomain mThreadingDomain;
+    public final HandlerThreadingDomain mThreadingDomain;
 
-    /* loaded from: classes3.dex */
-    public class Lifecycle extends SystemService {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Lifecycle extends SystemService {
         public LocationTimeZoneManagerService mService;
         public final ServiceConfigAccessor mServiceConfigAccessor;
 
@@ -47,262 +52,44 @@ public class LocationTimeZoneManagerService extends Binder {
         }
 
         @Override // com.android.server.SystemService
-        public void onStart() {
-            Context context = getContext();
-            if (this.mServiceConfigAccessor.isGeoTimeZoneDetectionFeatureSupportedInConfig()) {
-                LocationTimeZoneManagerService locationTimeZoneManagerService = new LocationTimeZoneManagerService(context, this.mServiceConfigAccessor);
-                this.mService = locationTimeZoneManagerService;
-                publishBinderService("location_time_zone_manager", locationTimeZoneManagerService);
-                return;
+        public final void onBootPhase(int i) {
+            if (((ServiceConfigAccessorImpl) this.mServiceConfigAccessor).mContext.getResources().getBoolean(R.bool.config_enableMultipleAdmins)) {
+                if (i == 500) {
+                    final LocationTimeZoneManagerService locationTimeZoneManagerService = this.mService;
+                    ServiceConfigAccessor serviceConfigAccessor = locationTimeZoneManagerService.mServiceConfigAccessor;
+                    ((ServiceConfigAccessorImpl) serviceConfigAccessor).mServerFlags.addListener(new StateChangeListener() { // from class: com.android.server.timezonedetector.location.LocationTimeZoneManagerService$$ExternalSyntheticLambda3
+                        @Override // com.android.server.timezonedetector.StateChangeListener
+                        public final void onChange() {
+                            LocationTimeZoneManagerService locationTimeZoneManagerService2 = LocationTimeZoneManagerService.this;
+                            HandlerThreadingDomain handlerThreadingDomain = locationTimeZoneManagerService2.mThreadingDomain;
+                            handlerThreadingDomain.mHandler.post(new LocationTimeZoneManagerService$$ExternalSyntheticLambda1(locationTimeZoneManagerService2, 3));
+                        }
+                    }, ServiceConfigAccessorImpl.LOCATION_TIME_ZONE_MANAGER_SERVER_FLAGS_KEYS_TO_WATCH);
+                    return;
+                }
+                if (i == 600) {
+                    LocationTimeZoneManagerService locationTimeZoneManagerService2 = this.mService;
+                    locationTimeZoneManagerService2.getClass();
+                    locationTimeZoneManagerService2.mThreadingDomain.mHandler.post(new LocationTimeZoneManagerService$$ExternalSyntheticLambda1(locationTimeZoneManagerService2, 1));
+                }
             }
-            Slog.d("LocationTZDetector", "Geo time zone detection feature is disabled in config");
         }
 
         @Override // com.android.server.SystemService
-        public void onBootPhase(int i) {
-            if (this.mServiceConfigAccessor.isGeoTimeZoneDetectionFeatureSupportedInConfig()) {
-                if (i == 500) {
-                    this.mService.onSystemReady();
-                } else if (i == 600) {
-                    this.mService.onSystemThirdPartyAppsCanStart();
-                }
-            }
-        }
-    }
-
-    public LocationTimeZoneManagerService(Context context, ServiceConfigAccessor serviceConfigAccessor) {
-        this.mContext = context.createAttributionContext("LocationTimeZoneService");
-        Handler handler = FgThread.getHandler();
-        this.mHandler = handler;
-        HandlerThreadingDomain handlerThreadingDomain = new HandlerThreadingDomain(handler);
-        this.mThreadingDomain = handlerThreadingDomain;
-        this.mSharedLock = handlerThreadingDomain.getLockObject();
-        Objects.requireNonNull(serviceConfigAccessor);
-        this.mServiceConfigAccessor = serviceConfigAccessor;
-    }
-
-    public void onSystemReady() {
-        this.mServiceConfigAccessor.addLocationTimeZoneManagerConfigListener(new StateChangeListener() { // from class: com.android.server.timezonedetector.location.LocationTimeZoneManagerService$$ExternalSyntheticLambda3
-            @Override // com.android.server.timezonedetector.StateChangeListener
-            public final void onChange() {
-                LocationTimeZoneManagerService.this.handleServiceConfigurationChangedOnMainThread();
-            }
-        });
-    }
-
-    public final void handleServiceConfigurationChangedOnMainThread() {
-        this.mThreadingDomain.post(new Runnable() { // from class: com.android.server.timezonedetector.location.LocationTimeZoneManagerService$$ExternalSyntheticLambda6
-            @Override // java.lang.Runnable
-            public final void run() {
-                LocationTimeZoneManagerService.this.restartIfRequiredOnDomainThread();
-            }
-        });
-    }
-
-    public final void restartIfRequiredOnDomainThread() {
-        this.mThreadingDomain.assertCurrentThread();
-        synchronized (this.mSharedLock) {
-            if (this.mLocationTimeZoneProviderController != null) {
-                stopOnDomainThread();
-                startOnDomainThread();
-            }
-        }
-    }
-
-    public void onSystemThirdPartyAppsCanStart() {
-        startInternal(false);
-    }
-
-    public void start() {
-        enforceManageTimeZoneDetectorPermission();
-        startInternal(true);
-    }
-
-    public final void startInternal(boolean z) {
-        Runnable runnable = new Runnable() { // from class: com.android.server.timezonedetector.location.LocationTimeZoneManagerService$$ExternalSyntheticLambda4
-            @Override // java.lang.Runnable
-            public final void run() {
-                LocationTimeZoneManagerService.this.startOnDomainThread();
-            }
-        };
-        if (z) {
-            this.mThreadingDomain.postAndWait(runnable, BLOCKING_OP_WAIT_DURATION_MILLIS);
-        } else {
-            this.mThreadingDomain.post(runnable);
-        }
-    }
-
-    public void startWithTestProviders(final String str, final String str2, final boolean z) {
-        enforceManageTimeZoneDetectorPermission();
-        if (str == null && str2 == null) {
-            throw new IllegalArgumentException("One or both test package names must be provided.");
-        }
-        this.mThreadingDomain.postAndWait(new Runnable() { // from class: com.android.server.timezonedetector.location.LocationTimeZoneManagerService$$ExternalSyntheticLambda5
-            @Override // java.lang.Runnable
-            public final void run() {
-                LocationTimeZoneManagerService.this.lambda$startWithTestProviders$0(str, str2, z);
-            }
-        }, BLOCKING_OP_WAIT_DURATION_MILLIS);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$startWithTestProviders$0(String str, String str2, boolean z) {
-        synchronized (this.mSharedLock) {
-            stopOnDomainThread();
-            this.mServiceConfigAccessor.setTestPrimaryLocationTimeZoneProviderPackageName(str);
-            this.mServiceConfigAccessor.setTestSecondaryLocationTimeZoneProviderPackageName(str2);
-            this.mServiceConfigAccessor.setRecordStateChangesForTests(z);
-            startOnDomainThread();
-        }
-    }
-
-    public final void startOnDomainThread() {
-        this.mThreadingDomain.assertCurrentThread();
-        synchronized (this.mSharedLock) {
-            if (!this.mServiceConfigAccessor.isGeoTimeZoneDetectionFeatureSupported()) {
-                debugLog("Not starting location_time_zone_manager: it is disabled in service config");
+        public final void onStart() {
+            Context context = getContext();
+            ServiceConfigAccessor serviceConfigAccessor = this.mServiceConfigAccessor;
+            if (!((ServiceConfigAccessorImpl) serviceConfigAccessor).mContext.getResources().getBoolean(R.bool.config_enableMultipleAdmins)) {
+                Slog.d("LocationTZDetector", "Geo time zone detection feature is disabled in config");
                 return;
             }
-            if (this.mLocationTimeZoneProviderController == null) {
-                LocationTimeZoneProvider createProvider = this.mPrimaryProviderConfig.createProvider();
-                LocationTimeZoneProvider createProvider2 = this.mSecondaryProviderConfig.createProvider();
-                LocationTimeZoneProviderController locationTimeZoneProviderController = new LocationTimeZoneProviderController(this.mThreadingDomain, new RealControllerMetricsLogger(), createProvider, createProvider2, this.mServiceConfigAccessor.getRecordStateChangesForTests());
-                LocationTimeZoneProviderControllerEnvironmentImpl locationTimeZoneProviderControllerEnvironmentImpl = new LocationTimeZoneProviderControllerEnvironmentImpl(this.mThreadingDomain, this.mServiceConfigAccessor, locationTimeZoneProviderController);
-                locationTimeZoneProviderController.initialize(locationTimeZoneProviderControllerEnvironmentImpl, new LocationTimeZoneProviderControllerCallbackImpl(this.mThreadingDomain));
-                this.mLocationTimeZoneProviderControllerEnvironment = locationTimeZoneProviderControllerEnvironmentImpl;
-                this.mLocationTimeZoneProviderController = locationTimeZoneProviderController;
-            }
+            LocationTimeZoneManagerService locationTimeZoneManagerService = new LocationTimeZoneManagerService(context, serviceConfigAccessor);
+            this.mService = locationTimeZoneManagerService;
+            publishBinderService("location_time_zone_manager", locationTimeZoneManagerService);
         }
     }
 
-    public void stop() {
-        enforceManageTimeZoneDetectorPermission();
-        this.mThreadingDomain.postAndWait(new Runnable() { // from class: com.android.server.timezonedetector.location.LocationTimeZoneManagerService$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                LocationTimeZoneManagerService.this.stopOnDomainThread();
-            }
-        }, BLOCKING_OP_WAIT_DURATION_MILLIS);
-    }
-
-    public final void stopOnDomainThread() {
-        this.mThreadingDomain.assertCurrentThread();
-        synchronized (this.mSharedLock) {
-            LocationTimeZoneProviderController locationTimeZoneProviderController = this.mLocationTimeZoneProviderController;
-            if (locationTimeZoneProviderController != null) {
-                locationTimeZoneProviderController.destroy();
-                this.mLocationTimeZoneProviderController = null;
-                this.mLocationTimeZoneProviderControllerEnvironment.destroy();
-                this.mLocationTimeZoneProviderControllerEnvironment = null;
-                this.mServiceConfigAccessor.resetVolatileTestConfig();
-            }
-        }
-    }
-
-    public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
-        new LocationTimeZoneManagerShellCommand(this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
-    }
-
-    public void clearRecordedProviderStates() {
-        enforceManageTimeZoneDetectorPermission();
-        this.mThreadingDomain.postAndWait(new Runnable() { // from class: com.android.server.timezonedetector.location.LocationTimeZoneManagerService$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                LocationTimeZoneManagerService.this.lambda$clearRecordedProviderStates$1();
-            }
-        }, BLOCKING_OP_WAIT_DURATION_MILLIS);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$clearRecordedProviderStates$1() {
-        synchronized (this.mSharedLock) {
-            LocationTimeZoneProviderController locationTimeZoneProviderController = this.mLocationTimeZoneProviderController;
-            if (locationTimeZoneProviderController != null) {
-                locationTimeZoneProviderController.clearRecordedStates();
-            }
-        }
-    }
-
-    public LocationTimeZoneManagerServiceState getStateForTests() {
-        enforceManageTimeZoneDetectorPermission();
-        try {
-            return (LocationTimeZoneManagerServiceState) this.mThreadingDomain.postAndWait(new Callable() { // from class: com.android.server.timezonedetector.location.LocationTimeZoneManagerService$$ExternalSyntheticLambda2
-                @Override // java.util.concurrent.Callable
-                public final Object call() {
-                    LocationTimeZoneManagerServiceState lambda$getStateForTests$2;
-                    lambda$getStateForTests$2 = LocationTimeZoneManagerService.this.lambda$getStateForTests$2();
-                    return lambda$getStateForTests$2;
-                }
-            }, BLOCKING_OP_WAIT_DURATION_MILLIS);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ LocationTimeZoneManagerServiceState lambda$getStateForTests$2() {
-        synchronized (this.mSharedLock) {
-            LocationTimeZoneProviderController locationTimeZoneProviderController = this.mLocationTimeZoneProviderController;
-            if (locationTimeZoneProviderController == null) {
-                return null;
-            }
-            return locationTimeZoneProviderController.getStateForTests();
-        }
-    }
-
-    @Override // android.os.Binder
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        if (DumpUtils.checkDumpPermission(this.mContext, "LocationTZDetector", printWriter)) {
-            IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter);
-            synchronized (this.mSharedLock) {
-                indentingPrintWriter.println("LocationTimeZoneManagerService:");
-                indentingPrintWriter.increaseIndent();
-                indentingPrintWriter.println("Primary provider config:");
-                indentingPrintWriter.increaseIndent();
-                this.mPrimaryProviderConfig.dump(indentingPrintWriter, strArr);
-                indentingPrintWriter.decreaseIndent();
-                indentingPrintWriter.println("Secondary provider config:");
-                indentingPrintWriter.increaseIndent();
-                this.mSecondaryProviderConfig.dump(indentingPrintWriter, strArr);
-                indentingPrintWriter.decreaseIndent();
-                LocationTimeZoneProviderController locationTimeZoneProviderController = this.mLocationTimeZoneProviderController;
-                if (locationTimeZoneProviderController == null) {
-                    indentingPrintWriter.println("{Stopped}");
-                } else {
-                    locationTimeZoneProviderController.dump(indentingPrintWriter, strArr);
-                }
-                indentingPrintWriter.decreaseIndent();
-            }
-        }
-    }
-
-    public static void debugLog(String str) {
-        if (Log.isLoggable("LocationTZDetector", 3)) {
-            Slog.d("LocationTZDetector", str);
-        }
-    }
-
-    public static void infoLog(String str) {
-        if (Log.isLoggable("LocationTZDetector", 4)) {
-            Slog.i("LocationTZDetector", str);
-        }
-    }
-
-    public static void warnLog(String str) {
-        warnLog(str, null);
-    }
-
-    public static void warnLog(String str, Throwable th) {
-        if (Log.isLoggable("LocationTZDetector", 5)) {
-            Slog.w("LocationTZDetector", str, th);
-        }
-    }
-
-    public final void enforceManageTimeZoneDetectorPermission() {
-        this.mContext.enforceCallingPermission("android.permission.MANAGE_TIME_AND_ZONE_DETECTION", "manage time and time zone detection");
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class ProviderConfig implements Dumpable {
         public final int mIndex;
         public final String mName;
@@ -319,8 +106,8 @@ public class LocationTimeZoneManagerService extends Binder {
         public ProviderConfig(int r2, java.lang.String r3, java.lang.String r4) {
             /*
                 r0 = this;
-                com.android.server.timezonedetector.location.LocationTimeZoneManagerService.this = r1
                 r0.<init>()
+                com.android.server.timezonedetector.location.LocationTimeZoneManagerService.this = r1
                 if (r2 < 0) goto Lb
                 r1 = 1
                 if (r2 > r1) goto Lb
@@ -330,54 +117,198 @@ public class LocationTimeZoneManagerService extends Binder {
             Lc:
                 com.android.internal.util.Preconditions.checkArgument(r1)
                 r0.mIndex = r2
-                java.util.Objects.requireNonNull(r3)
                 r0.mName = r3
-                java.util.Objects.requireNonNull(r4)
                 r0.mServiceAction = r4
                 return
             */
             throw new UnsupportedOperationException("Method not decompiled: com.android.server.timezonedetector.location.LocationTimeZoneManagerService.ProviderConfig.<init>(com.android.server.timezonedetector.location.LocationTimeZoneManagerService, int, java.lang.String, java.lang.String):void");
         }
 
-        public LocationTimeZoneProvider createProvider() {
-            RealProviderMetricsLogger realProviderMetricsLogger = new RealProviderMetricsLogger(this.mIndex);
-            if (Objects.equals(getMode(), "disabled")) {
-                return new DisabledLocationTimeZoneProvider(realProviderMetricsLogger, LocationTimeZoneManagerService.this.mThreadingDomain, this.mName, LocationTimeZoneManagerService.this.mServiceConfigAccessor.getRecordStateChangesForTests());
+        public final LocationTimeZoneProvider createProvider() {
+            boolean z;
+            boolean z2;
+            boolean z3;
+            int i = this.mIndex;
+            RealProviderMetricsLogger realProviderMetricsLogger = new RealProviderMetricsLogger(i);
+            LocationTimeZoneManagerService locationTimeZoneManagerService = LocationTimeZoneManagerService.this;
+            if (Objects.equals(i == 0 ? ((ServiceConfigAccessorImpl) locationTimeZoneManagerService.mServiceConfigAccessor).getPrimaryLocationTimeZoneProviderMode() : ((ServiceConfigAccessorImpl) locationTimeZoneManagerService.mServiceConfigAccessor).getSecondaryLocationTimeZoneProviderMode(), "disabled")) {
+                LocationTimeZoneManagerService locationTimeZoneManagerService2 = LocationTimeZoneManagerService.this;
+                HandlerThreadingDomain handlerThreadingDomain = locationTimeZoneManagerService2.mThreadingDomain;
+                String str = this.mName;
+                ServiceConfigAccessorImpl serviceConfigAccessorImpl = (ServiceConfigAccessorImpl) locationTimeZoneManagerService2.mServiceConfigAccessor;
+                synchronized (serviceConfigAccessorImpl) {
+                    z3 = serviceConfigAccessorImpl.mRecordStateChangesForTests;
+                }
+                return new DisabledLocationTimeZoneProvider(realProviderMetricsLogger, handlerThreadingDomain, str, new DisabledLocationTimeZoneProvider$$ExternalSyntheticLambda0(), z3);
             }
-            return new BinderLocationTimeZoneProvider(realProviderMetricsLogger, LocationTimeZoneManagerService.this.mThreadingDomain, this.mName, createBinderProxy(), LocationTimeZoneManagerService.this.mServiceConfigAccessor.getRecordStateChangesForTests());
+            String str2 = this.mServiceAction;
+            if (this.mIndex == 0) {
+                ServiceConfigAccessorImpl serviceConfigAccessorImpl2 = (ServiceConfigAccessorImpl) LocationTimeZoneManagerService.this.mServiceConfigAccessor;
+                synchronized (serviceConfigAccessorImpl2) {
+                    z = serviceConfigAccessorImpl2.mTestPrimaryLocationTimeZoneProviderMode != null;
+                }
+            } else {
+                ServiceConfigAccessorImpl serviceConfigAccessorImpl3 = (ServiceConfigAccessorImpl) LocationTimeZoneManagerService.this.mServiceConfigAccessor;
+                synchronized (serviceConfigAccessorImpl3) {
+                    z = serviceConfigAccessorImpl3.mTestSecondaryLocationTimeZoneProviderMode != null;
+                }
+            }
+            boolean z4 = z;
+            String packageName = getPackageName();
+            LocationTimeZoneManagerService locationTimeZoneManagerService3 = LocationTimeZoneManagerService.this;
+            RealLocationTimeZoneProviderProxy realLocationTimeZoneProviderProxy = new RealLocationTimeZoneProviderProxy(locationTimeZoneManagerService3.mContext, locationTimeZoneManagerService3.mHandler, locationTimeZoneManagerService3.mThreadingDomain, str2, packageName, z4);
+            LocationTimeZoneManagerService locationTimeZoneManagerService4 = LocationTimeZoneManagerService.this;
+            HandlerThreadingDomain handlerThreadingDomain2 = locationTimeZoneManagerService4.mThreadingDomain;
+            String str3 = this.mName;
+            ServiceConfigAccessorImpl serviceConfigAccessorImpl4 = (ServiceConfigAccessorImpl) locationTimeZoneManagerService4.mServiceConfigAccessor;
+            synchronized (serviceConfigAccessorImpl4) {
+                z2 = serviceConfigAccessorImpl4.mRecordStateChangesForTests;
+            }
+            return new BinderLocationTimeZoneProvider(realProviderMetricsLogger, handlerThreadingDomain2, str3, realLocationTimeZoneProviderProxy, z2);
         }
 
         @Override // com.android.server.timezonedetector.Dumpable
-        public void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
-            indentingPrintWriter.printf("getMode()=%s\n", new Object[]{getMode()});
+        public final void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
+            int i = this.mIndex;
+            LocationTimeZoneManagerService locationTimeZoneManagerService = LocationTimeZoneManagerService.this;
+            indentingPrintWriter.printf("getMode()=%s\n", new Object[]{i == 0 ? ((ServiceConfigAccessorImpl) locationTimeZoneManagerService.mServiceConfigAccessor).getPrimaryLocationTimeZoneProviderMode() : ((ServiceConfigAccessorImpl) locationTimeZoneManagerService.mServiceConfigAccessor).getSecondaryLocationTimeZoneProviderMode()});
             indentingPrintWriter.printf("getPackageName()=%s\n", new Object[]{getPackageName()});
         }
 
-        public final String getMode() {
-            if (this.mIndex == 0) {
-                return LocationTimeZoneManagerService.this.mServiceConfigAccessor.getPrimaryLocationTimeZoneProviderMode();
-            }
-            return LocationTimeZoneManagerService.this.mServiceConfigAccessor.getSecondaryLocationTimeZoneProviderMode();
-        }
-
-        public final RealLocationTimeZoneProviderProxy createBinderProxy() {
-            String str = this.mServiceAction;
-            boolean isTestProvider = isTestProvider();
-            return new RealLocationTimeZoneProviderProxy(LocationTimeZoneManagerService.this.mContext, LocationTimeZoneManagerService.this.mHandler, LocationTimeZoneManagerService.this.mThreadingDomain, str, getPackageName(), isTestProvider);
-        }
-
-        public final boolean isTestProvider() {
-            if (this.mIndex == 0) {
-                return LocationTimeZoneManagerService.this.mServiceConfigAccessor.isTestPrimaryLocationTimeZoneProvider();
-            }
-            return LocationTimeZoneManagerService.this.mServiceConfigAccessor.isTestSecondaryLocationTimeZoneProvider();
-        }
-
         public final String getPackageName() {
+            String string;
+            String string2;
             if (this.mIndex == 0) {
-                return LocationTimeZoneManagerService.this.mServiceConfigAccessor.getPrimaryLocationTimeZoneProviderPackageName();
+                ServiceConfigAccessorImpl serviceConfigAccessorImpl = (ServiceConfigAccessorImpl) LocationTimeZoneManagerService.this.mServiceConfigAccessor;
+                synchronized (serviceConfigAccessorImpl) {
+                    string2 = serviceConfigAccessorImpl.mTestPrimaryLocationTimeZoneProviderMode != null ? serviceConfigAccessorImpl.mTestPrimaryLocationTimeZoneProviderPackageName : serviceConfigAccessorImpl.mContext.getResources().getString(R.string.ext_media_nomedia_notification_message);
+                }
+                return string2;
             }
-            return LocationTimeZoneManagerService.this.mServiceConfigAccessor.getSecondaryLocationTimeZoneProviderPackageName();
+            ServiceConfigAccessorImpl serviceConfigAccessorImpl2 = (ServiceConfigAccessorImpl) LocationTimeZoneManagerService.this.mServiceConfigAccessor;
+            synchronized (serviceConfigAccessorImpl2) {
+                string = serviceConfigAccessorImpl2.mTestSecondaryLocationTimeZoneProviderMode != null ? serviceConfigAccessorImpl2.mTestSecondaryLocationTimeZoneProviderPackageName : serviceConfigAccessorImpl2.mContext.getResources().getString(R.string.face_acquired_poor_gaze);
+            }
+            return string;
+        }
+    }
+
+    public LocationTimeZoneManagerService(Context context, ServiceConfigAccessor serviceConfigAccessor) {
+        this.mContext = context.createAttributionContext("LocationTimeZoneService");
+        Handler handler = FgThread.getHandler();
+        this.mHandler = handler;
+        HandlerThreadingDomain handlerThreadingDomain = new HandlerThreadingDomain(handler);
+        this.mThreadingDomain = handlerThreadingDomain;
+        this.mSharedLock = handlerThreadingDomain.mLockObject;
+        Objects.requireNonNull(serviceConfigAccessor);
+        this.mServiceConfigAccessor = serviceConfigAccessor;
+    }
+
+    public static void debugLog(String str) {
+        if (Log.isLoggable("LocationTZDetector", 3)) {
+            Slog.d("LocationTZDetector", str);
+        }
+    }
+
+    public static void warnLog(String str, Throwable th) {
+        if (Log.isLoggable("LocationTZDetector", 5)) {
+            Slog.w("LocationTZDetector", str, th);
+        }
+    }
+
+    @Override // android.os.Binder
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+        if (DumpUtils.checkDumpPermission(this.mContext, "LocationTZDetector", printWriter)) {
+            IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter);
+            synchronized (this.mSharedLock) {
+                try {
+                    indentingPrintWriter.println("LocationTimeZoneManagerService:");
+                    indentingPrintWriter.increaseIndent();
+                    indentingPrintWriter.println("Primary provider config:");
+                    indentingPrintWriter.increaseIndent();
+                    this.mPrimaryProviderConfig.dump(indentingPrintWriter, strArr);
+                    indentingPrintWriter.decreaseIndent();
+                    indentingPrintWriter.println("Secondary provider config:");
+                    indentingPrintWriter.increaseIndent();
+                    this.mSecondaryProviderConfig.dump(indentingPrintWriter, strArr);
+                    indentingPrintWriter.decreaseIndent();
+                    LocationTimeZoneProviderController locationTimeZoneProviderController = this.mLocationTimeZoneProviderController;
+                    if (locationTimeZoneProviderController == null) {
+                        indentingPrintWriter.println("{Stopped}");
+                    } else {
+                        locationTimeZoneProviderController.dump(indentingPrintWriter, strArr);
+                    }
+                    indentingPrintWriter.decreaseIndent();
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+        new LocationTimeZoneManagerShellCommand(this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+    }
+
+    public final void startOnDomainThread() {
+        boolean z;
+        this.mThreadingDomain.assertCurrentThread();
+        synchronized (this.mSharedLock) {
+            try {
+                if (!((ServiceConfigAccessorImpl) this.mServiceConfigAccessor).isGeoTimeZoneDetectionFeatureSupported()) {
+                    debugLog("Not starting location_time_zone_manager: it is disabled in service config");
+                    return;
+                }
+                if (this.mLocationTimeZoneProviderController == null) {
+                    LocationTimeZoneProvider createProvider = this.mPrimaryProviderConfig.createProvider();
+                    LocationTimeZoneProvider createProvider2 = this.mSecondaryProviderConfig.createProvider();
+                    RealControllerMetricsLogger realControllerMetricsLogger = new RealControllerMetricsLogger();
+                    ServiceConfigAccessorImpl serviceConfigAccessorImpl = (ServiceConfigAccessorImpl) this.mServiceConfigAccessor;
+                    synchronized (serviceConfigAccessorImpl) {
+                        z = serviceConfigAccessorImpl.mRecordStateChangesForTests;
+                    }
+                    LocationTimeZoneProviderController locationTimeZoneProviderController = new LocationTimeZoneProviderController(this.mThreadingDomain, realControllerMetricsLogger, createProvider, createProvider2, z);
+                    LocationTimeZoneProviderControllerEnvironmentImpl locationTimeZoneProviderControllerEnvironmentImpl = new LocationTimeZoneProviderControllerEnvironmentImpl(this.mThreadingDomain, this.mServiceConfigAccessor, locationTimeZoneProviderController);
+                    locationTimeZoneProviderController.initialize(locationTimeZoneProviderControllerEnvironmentImpl, new LocationTimeZoneProviderControllerCallbackImpl(this.mThreadingDomain));
+                    this.mLocationTimeZoneProviderControllerEnvironment = locationTimeZoneProviderControllerEnvironmentImpl;
+                    this.mLocationTimeZoneProviderController = locationTimeZoneProviderController;
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void stopOnDomainThread() {
+        this.mThreadingDomain.assertCurrentThread();
+        synchronized (this.mSharedLock) {
+            try {
+                LocationTimeZoneProviderController locationTimeZoneProviderController = this.mLocationTimeZoneProviderController;
+                if (locationTimeZoneProviderController != null) {
+                    locationTimeZoneProviderController.destroy();
+                    this.mLocationTimeZoneProviderController = null;
+                    LocationTimeZoneProviderControllerEnvironmentImpl locationTimeZoneProviderControllerEnvironmentImpl = this.mLocationTimeZoneProviderControllerEnvironment;
+                    ServiceConfigAccessor serviceConfigAccessor = locationTimeZoneProviderControllerEnvironmentImpl.mServiceConfigAccessor;
+                    LocationTimeZoneProviderControllerEnvironmentImpl$$ExternalSyntheticLambda0 locationTimeZoneProviderControllerEnvironmentImpl$$ExternalSyntheticLambda0 = locationTimeZoneProviderControllerEnvironmentImpl.mConfigurationInternalChangeListener;
+                    ServiceConfigAccessorImpl serviceConfigAccessorImpl = (ServiceConfigAccessorImpl) serviceConfigAccessor;
+                    synchronized (serviceConfigAccessorImpl) {
+                        List list = serviceConfigAccessorImpl.mConfigurationInternalListeners;
+                        Objects.requireNonNull(locationTimeZoneProviderControllerEnvironmentImpl$$ExternalSyntheticLambda0);
+                        ((ArrayList) list).remove(locationTimeZoneProviderControllerEnvironmentImpl$$ExternalSyntheticLambda0);
+                    }
+                    this.mLocationTimeZoneProviderControllerEnvironment = null;
+                    ServiceConfigAccessorImpl serviceConfigAccessorImpl2 = (ServiceConfigAccessorImpl) this.mServiceConfigAccessor;
+                    synchronized (serviceConfigAccessorImpl2) {
+                        serviceConfigAccessorImpl2.mTestPrimaryLocationTimeZoneProviderPackageName = null;
+                        serviceConfigAccessorImpl2.mTestPrimaryLocationTimeZoneProviderMode = null;
+                        serviceConfigAccessorImpl2.mTestSecondaryLocationTimeZoneProviderPackageName = null;
+                        serviceConfigAccessorImpl2.mTestSecondaryLocationTimeZoneProviderMode = null;
+                        serviceConfigAccessorImpl2.mRecordStateChangesForTests = false;
+                        serviceConfigAccessorImpl2.mContext.getMainThreadHandler().post(new ServiceConfigAccessorImpl$$ExternalSyntheticLambda1(serviceConfigAccessorImpl2));
+                    }
+                }
+            } finally {
+            }
         }
     }
 }

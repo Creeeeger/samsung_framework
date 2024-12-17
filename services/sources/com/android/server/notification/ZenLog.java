@@ -2,53 +2,124 @@ package com.android.server.notification;
 
 import android.app.NotificationManager;
 import android.content.ComponentName;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.RemoteException;
-import android.service.notification.IConditionProvider;
 import android.service.notification.ZenModeConfig;
 import android.service.notification.ZenModeDiff;
-import android.util.Log;
-import android.util.Slog;
+import android.util.LocalLog;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class ZenLog {
-    public static final boolean DEBUG;
-    public static final SimpleDateFormat FORMAT;
-    public static final String[] MSGS;
-    public static final int SIZE;
-    public static final long[] TIMES;
-    public static final int[] TYPES;
-    public static int sNext;
-    public static int sSize;
+    public static final LocalLog INTERCEPTION_EVENTS;
+    public static final LocalLog STATE_CHANGES;
+
+    static {
+        int i = Build.IS_DEBUGGABLE ? 200 : 100;
+        STATE_CHANGES = new LocalLog(i);
+        INTERCEPTION_EVENTS = new LocalLog(i);
+    }
+
+    public static void append(int i, String str) {
+        if (i == 1 || i == 12 || i == 20 || i == 19 || i == 18 || i == 21) {
+            LocalLog localLog = INTERCEPTION_EVENTS;
+            synchronized (localLog) {
+                localLog.log(typeToString(i) + ": " + str);
+            }
+            return;
+        }
+        LocalLog localLog2 = STATE_CHANGES;
+        synchronized (localLog2) {
+            localLog2.log(typeToString(i) + ": " + str);
+        }
+    }
+
+    public static String componentListToString(List list) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            ComponentName componentName = (ComponentName) list.get(i);
+            sb.append(componentName != null ? componentName.toShortString() : null);
+        }
+        return sb.toString();
+    }
+
+    public static void dump(PrintWriter printWriter) {
+        LocalLog localLog = INTERCEPTION_EVENTS;
+        synchronized (localLog) {
+            printWriter.printf("    Interception Events:\n", new Object[0]);
+            localLog.dump("    ", printWriter);
+        }
+        LocalLog localLog2 = STATE_CHANGES;
+        synchronized (localLog2) {
+            printWriter.printf("    State Changes:\n", new Object[0]);
+            localLog2.dump("    ", printWriter);
+        }
+    }
 
     public static String ringerModeToString(int i) {
         return i != 0 ? i != 1 ? i != 2 ? "unknown" : "normal" : "vibrate" : "silent";
     }
 
+    public static void traceConfig(String str, ComponentName componentName, ZenModeConfig zenModeConfig, ZenModeConfig zenModeConfig2, int i) {
+        ZenModeDiff.ConfigDiff configDiff = new ZenModeDiff.ConfigDiff(zenModeConfig, zenModeConfig2);
+        if (!configDiff.hasDiff()) {
+            append(11, str + " no changes");
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(str);
+        sb.append(" - ");
+        sb.append(componentName);
+        sb.append(" : ");
+        sb.append(i);
+        sb.append(",\n");
+        sb.append(zenModeConfig2 != null ? zenModeConfig2.toString() : null);
+        sb.append(",\n");
+        sb.append(configDiff);
+        append(11, sb.toString());
+    }
+
+    public static void traceMatchesCallFilter(int i, String str, boolean z) {
+        append(18, "result=" + z + ", reason=" + str + ", calling uid=" + i);
+    }
+
+    public static void traceNotIntercepted(NotificationRecord notificationRecord, String str) {
+        append(12, notificationRecord.sbn.getKey() + "," + str);
+    }
+
+    public static void traceSetNotificationPolicy(String str, int i, NotificationManager.Policy policy) {
+        StringBuilder m = StorageManagerService$$ExternalSyntheticOutline0.m(i, "pkg=", str, " targetSdk=", " NotificationPolicy=");
+        m.append(policy.toString());
+        append(16, m.toString());
+    }
+
+    public static void traceSetZenMode(int i, String str) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(i != 0 ? i != 1 ? i != 2 ? i != 3 ? "unknown" : "alarms" : "no_interruptions" : "important_interruptions" : "off");
+        sb.append(",");
+        sb.append(str);
+        append(6, sb.toString());
+    }
+
     public static String typeToString(int i) {
+        if (i == 1) {
+            return "intercepted";
+        }
+        if (i == 6) {
+            return "set_zen_mode";
+        }
+        if (i == 3) {
+            return "set_ringer_mode_external";
+        }
+        if (i == 4) {
+            return "set_ringer_mode_internal";
+        }
         switch (i) {
-            case 1:
-                return "intercepted";
-            case 2:
-                return "allow_disable";
-            case 3:
-                return "set_ringer_mode_external";
-            case 4:
-                return "set_ringer_mode_internal";
-            case 5:
-                return "downtime";
-            case 6:
-                return "set_zen_mode";
-            case 7:
-                return "update_zen_mode";
-            case 8:
-                return "exit_condition";
             case 9:
                 return "subscribe";
             case 10:
@@ -79,173 +150,6 @@ public abstract class ZenLog {
                 return "matches_contact";
             default:
                 return "unknown";
-        }
-    }
-
-    public static String zenModeToString(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? "unknown" : "alarms" : "no_interruptions" : "important_interruptions" : "off";
-    }
-
-    static {
-        boolean z = Build.IS_DEBUGGABLE;
-        DEBUG = z;
-        int i = z ? 200 : 100;
-        SIZE = i;
-        TIMES = new long[i];
-        TYPES = new int[i];
-        MSGS = new String[i];
-        FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
-    }
-
-    public static void traceIntercepted(NotificationRecord notificationRecord, String str) {
-        append(1, notificationRecord.getKey() + "," + str);
-    }
-
-    public static void traceNotIntercepted(NotificationRecord notificationRecord, String str) {
-        append(12, notificationRecord.getKey() + "," + str);
-    }
-
-    public static void traceAlertOnUpdatedIntercept(NotificationRecord notificationRecord) {
-        append(21, notificationRecord.getKey());
-    }
-
-    public static void traceSetRingerModeExternal(int i, int i2, String str, int i3, int i4) {
-        append(3, str + ",e:" + ringerModeToString(i) + "->" + ringerModeToString(i2) + ",i:" + ringerModeToString(i3) + "->" + ringerModeToString(i4));
-    }
-
-    public static void traceSetRingerModeInternal(int i, int i2, String str, int i3, int i4) {
-        append(4, str + ",i:" + ringerModeToString(i) + "->" + ringerModeToString(i2) + ",e:" + ringerModeToString(i3) + "->" + ringerModeToString(i4));
-    }
-
-    public static void traceSetZenMode(int i, String str) {
-        append(6, zenModeToString(i) + "," + str);
-    }
-
-    public static void traceSetConsolidatedZenPolicy(NotificationManager.Policy policy, String str) {
-        append(17, policy.toString() + "," + str);
-    }
-
-    public static void traceSetNotificationPolicy(String str, int i, NotificationManager.Policy policy) {
-        String str2 = "pkg=" + str + " targetSdk=" + i + " NotificationPolicy=" + policy.toString();
-        append(16, str2);
-        Log.d("ZenLog", "Zen Policy Changed: " + str2);
-    }
-
-    public static void traceSubscribe(Uri uri, IConditionProvider iConditionProvider, RemoteException remoteException) {
-        append(9, uri + "," + subscribeResult(iConditionProvider, remoteException));
-    }
-
-    public static void traceUnsubscribe(Uri uri, IConditionProvider iConditionProvider, RemoteException remoteException) {
-        append(10, uri + "," + subscribeResult(iConditionProvider, remoteException));
-    }
-
-    public static void traceConfig(String str, ZenModeConfig zenModeConfig, ZenModeConfig zenModeConfig2) {
-        ZenModeDiff.ConfigDiff configDiff = new ZenModeDiff.ConfigDiff(zenModeConfig, zenModeConfig2);
-        if (!configDiff.hasDiff()) {
-            append(11, str + " no changes");
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append(str);
-        sb.append(",\n");
-        sb.append(zenModeConfig2 != null ? zenModeConfig2.toString() : null);
-        sb.append(",\n");
-        sb.append(configDiff);
-        append(11, sb.toString());
-    }
-
-    public static void traceDisableEffects(NotificationRecord notificationRecord, String str) {
-        append(13, notificationRecord.getKey() + "," + str);
-    }
-
-    public static void traceEffectsSuppressorChanged(List list, List list2, long j) {
-        append(14, "suppressed effects:" + j + "," + componentListToString(list) + "->" + componentListToString(list2));
-    }
-
-    public static void traceListenerHintsChanged(int i, int i2, int i3) {
-        append(15, hintsToString(i) + "->" + hintsToString(i2) + ",listeners=" + i3);
-    }
-
-    public static void traceMatchesCallFilter(boolean z, String str, int i) {
-        append(18, "result=" + z + ", reason=" + str + ", calling uid=" + i);
-    }
-
-    public static void traceRecordCaller(boolean z, boolean z2) {
-        append(19, "has phone number=" + z + ", has uri=" + z2);
-    }
-
-    public static void traceCheckRepeatCaller(boolean z, boolean z2, boolean z3) {
-        append(20, "res=" + z + ", given phone number=" + z2 + ", given uri=" + z3);
-    }
-
-    public static String subscribeResult(IConditionProvider iConditionProvider, RemoteException remoteException) {
-        return iConditionProvider == null ? "no provider" : remoteException != null ? remoteException.getMessage() : "ok";
-    }
-
-    public static void traceMatchContactFilter(Bundle bundle, Float f) {
-        if (bundle == null) {
-            append(22, "extra is null");
-            return;
-        }
-        append(22, bundle.toString() + ", contactAffinity: " + f);
-    }
-
-    public static String hintsToString(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 4 ? Integer.toString(i) : "disable_call_effects" : "disable_notification_effects" : "disable_effects" : "none";
-    }
-
-    public static String componentToString(ComponentName componentName) {
-        if (componentName != null) {
-            return componentName.toShortString();
-        }
-        return null;
-    }
-
-    public static String componentListToString(List list) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < list.size(); i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            sb.append(componentToString((ComponentName) list.get(i)));
-        }
-        return sb.toString();
-    }
-
-    public static void append(int i, String str) {
-        String[] strArr = MSGS;
-        synchronized (strArr) {
-            TIMES[sNext] = System.currentTimeMillis();
-            int[] iArr = TYPES;
-            int i2 = sNext;
-            iArr[i2] = i;
-            strArr[i2] = str;
-            int i3 = SIZE;
-            sNext = (i2 + 1) % i3;
-            int i4 = sSize;
-            if (i4 < i3) {
-                sSize = i4 + 1;
-            }
-        }
-        if (DEBUG) {
-            Slog.d("ZenLog", typeToString(i) + ": " + str);
-        }
-    }
-
-    public static void dump(PrintWriter printWriter, String str) {
-        synchronized (MSGS) {
-            int i = sNext - sSize;
-            int i2 = SIZE;
-            int i3 = (i + i2) % i2;
-            for (int i4 = 0; i4 < sSize; i4++) {
-                int i5 = (i3 + i4) % SIZE;
-                printWriter.print(str);
-                printWriter.print(FORMAT.format(new Date(TIMES[i5])));
-                printWriter.print(' ');
-                printWriter.print(typeToString(TYPES[i5]));
-                printWriter.print(": ");
-                printWriter.println(MSGS[i5]);
-            }
         }
     }
 }

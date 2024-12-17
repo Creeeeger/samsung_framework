@@ -18,157 +18,171 @@ import android.os.UserHandle;
 import android.util.Slog;
 import android.window.TaskSnapshot;
 import com.android.internal.os.IResultReceiver;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
 import com.android.server.infra.AbstractMasterSystemService;
+import com.android.server.infra.AbstractPerUserSystemService;
 import com.android.server.infra.FrameworkResourcesServiceNameResolver;
 import com.android.server.wm.ActivityTaskManagerInternal;
+import com.android.server.wm.ActivityTaskManagerService;
 import java.io.FileDescriptor;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ContentSuggestionsManagerService extends AbstractMasterSystemService {
-    public static final String TAG = "ContentSuggestionsManagerService";
-    public ActivityTaskManagerInternal mActivityTaskManagerInternal;
+public final class ContentSuggestionsManagerService extends AbstractMasterSystemService {
+    public final ActivityTaskManagerInternal mActivityTaskManagerInternal;
 
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public int getMaximumTemporaryServiceDurationMs() {
-        return 120000;
-    }
-
-    public ContentSuggestionsManagerService(Context context) {
-        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.ext_media_status_unmountable), "no_content_suggestions");
-        this.mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public ContentSuggestionsPerUserService newServiceLocked(int i, boolean z) {
-        return new ContentSuggestionsPerUserService(this, this.mLock, i);
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        publishBinderService("content_suggestions", new ContentSuggestionsManagerStub());
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void enforceCallingPermissionForManagement() {
-        getContext().enforceCallingPermission("android.permission.MANAGE_CONTENT_SUGGESTIONS", TAG);
-    }
-
-    public final void enforceCaller(int i, String str) {
-        if (getContext().checkCallingPermission("android.permission.MANAGE_CONTENT_SUGGESTIONS") == 0 || this.mServiceNameResolver.isTemporary(i) || this.mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid())) {
-            return;
-        }
-        String str2 = "Permission Denial: " + str + " from pid=" + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid() + " expected caller is recents";
-        Slog.w(TAG, str2);
-        throw new SecurityException(str2);
-    }
-
-    /* loaded from: classes.dex */
-    public class ContentSuggestionsManagerStub extends IContentSuggestionsManager.Stub {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ContentSuggestionsManagerStub extends IContentSuggestionsManager.Stub {
         public ContentSuggestionsManagerStub() {
         }
 
-        public void provideContextBitmap(int i, Bitmap bitmap, Bundle bundle) {
-            if (bitmap == null) {
-                throw new IllegalArgumentException("Expected non-null bitmap");
-            }
-            if (bundle == null) {
-                throw new IllegalArgumentException("Expected non-null imageContextRequestExtras");
-            }
-            ContentSuggestionsManagerService.this.enforceCaller(UserHandle.getCallingUserId(), "provideContextBitmap");
+        public final void classifyContentSelections(int i, ClassificationsRequest classificationsRequest, IClassificationsCallback iClassificationsCallback) {
+            RemoteContentSuggestionsService ensureRemoteServiceLocked;
+            ContentSuggestionsManagerService.m385$$Nest$menforceCaller(ContentSuggestionsManagerService.this, UserHandle.getCallingUserId(), "classifyContentSelections");
             synchronized (ContentSuggestionsManagerService.this.mLock) {
                 ContentSuggestionsPerUserService contentSuggestionsPerUserService = (ContentSuggestionsPerUserService) ContentSuggestionsManagerService.this.getServiceForUserLocked(i);
-                if (contentSuggestionsPerUserService != null) {
-                    bundle.putParcelable("android.contentsuggestions.extra.BITMAP", bitmap);
-                    contentSuggestionsPerUserService.provideContextImageFromBitmapLocked(bundle);
+                if (contentSuggestionsPerUserService != null && (ensureRemoteServiceLocked = contentSuggestionsPerUserService.ensureRemoteServiceLocked()) != null) {
+                    ensureRemoteServiceLocked.classifyContentSelections(classificationsRequest, iClassificationsCallback);
                 }
             }
         }
 
-        public void provideContextImage(int i, int i2, Bundle bundle) {
-            HardwareBuffer hardwareBuffer;
-            TaskSnapshot taskSnapshotBlocking;
-            if (bundle == null) {
-                throw new IllegalArgumentException("Expected non-null imageContextRequestExtras");
-            }
-            ContentSuggestionsManagerService.this.enforceCaller(UserHandle.getCallingUserId(), "provideContextImage");
-            int i3 = 0;
-            if (bundle.containsKey("android.contentsuggestions.extra.BITMAP") || (taskSnapshotBlocking = ContentSuggestionsManagerService.this.mActivityTaskManagerInternal.getTaskSnapshotBlocking(i2, false)) == null) {
-                hardwareBuffer = null;
-            } else {
-                hardwareBuffer = taskSnapshotBlocking.getHardwareBuffer();
-                ColorSpace colorSpace = taskSnapshotBlocking.getColorSpace();
-                if (colorSpace != null) {
-                    i3 = colorSpace.getId();
-                }
-            }
-            synchronized (ContentSuggestionsManagerService.this.mLock) {
-                ContentSuggestionsPerUserService contentSuggestionsPerUserService = (ContentSuggestionsPerUserService) ContentSuggestionsManagerService.this.getServiceForUserLocked(i);
-                if (contentSuggestionsPerUserService != null) {
-                    contentSuggestionsPerUserService.provideContextImageLocked(i2, hardwareBuffer, i3, bundle);
-                }
-            }
-        }
-
-        public void suggestContentSelections(int i, SelectionsRequest selectionsRequest, ISelectionsCallback iSelectionsCallback) {
-            ContentSuggestionsManagerService.this.enforceCaller(UserHandle.getCallingUserId(), "suggestContentSelections");
-            synchronized (ContentSuggestionsManagerService.this.mLock) {
-                ContentSuggestionsPerUserService contentSuggestionsPerUserService = (ContentSuggestionsPerUserService) ContentSuggestionsManagerService.this.getServiceForUserLocked(i);
-                if (contentSuggestionsPerUserService != null) {
-                    contentSuggestionsPerUserService.suggestContentSelectionsLocked(selectionsRequest, iSelectionsCallback);
-                }
-            }
-        }
-
-        public void classifyContentSelections(int i, ClassificationsRequest classificationsRequest, IClassificationsCallback iClassificationsCallback) {
-            ContentSuggestionsManagerService.this.enforceCaller(UserHandle.getCallingUserId(), "classifyContentSelections");
-            synchronized (ContentSuggestionsManagerService.this.mLock) {
-                ContentSuggestionsPerUserService contentSuggestionsPerUserService = (ContentSuggestionsPerUserService) ContentSuggestionsManagerService.this.getServiceForUserLocked(i);
-                if (contentSuggestionsPerUserService != null) {
-                    contentSuggestionsPerUserService.classifyContentSelectionsLocked(classificationsRequest, iClassificationsCallback);
-                }
-            }
-        }
-
-        public void notifyInteraction(int i, String str, Bundle bundle) {
-            ContentSuggestionsManagerService.this.enforceCaller(UserHandle.getCallingUserId(), "notifyInteraction");
-            synchronized (ContentSuggestionsManagerService.this.mLock) {
-                ContentSuggestionsPerUserService contentSuggestionsPerUserService = (ContentSuggestionsPerUserService) ContentSuggestionsManagerService.this.getServiceForUserLocked(i);
-                if (contentSuggestionsPerUserService != null) {
-                    contentSuggestionsPerUserService.notifyInteractionLocked(str, bundle);
-                }
-            }
-        }
-
-        public void isEnabled(int i, IResultReceiver iResultReceiver) {
+        public final void isEnabled(int i, IResultReceiver iResultReceiver) {
             boolean isDisabledLocked;
-            ContentSuggestionsManagerService.this.enforceCaller(UserHandle.getCallingUserId(), "isEnabled");
+            ContentSuggestionsManagerService.m385$$Nest$menforceCaller(ContentSuggestionsManagerService.this, UserHandle.getCallingUserId(), "isEnabled");
             synchronized (ContentSuggestionsManagerService.this.mLock) {
                 isDisabledLocked = ContentSuggestionsManagerService.this.isDisabledLocked(i);
             }
             iResultReceiver.send(!isDisabledLocked ? 1 : 0, (Bundle) null);
         }
 
-        public void resetTemporaryService(int i) {
-            ContentSuggestionsManagerService.this.resetTemporaryService(i);
-        }
-
-        public void setTemporaryService(int i, String str, int i2) {
-            ContentSuggestionsManagerService.this.setTemporaryService(i, str, i2);
-        }
-
-        public void setDefaultServiceEnabled(int i, boolean z) {
-            ContentSuggestionsManagerService.this.setDefaultServiceEnabled(i, z);
+        public final void notifyInteraction(int i, String str, Bundle bundle) {
+            RemoteContentSuggestionsService ensureRemoteServiceLocked;
+            ContentSuggestionsManagerService.m385$$Nest$menforceCaller(ContentSuggestionsManagerService.this, UserHandle.getCallingUserId(), "notifyInteraction");
+            synchronized (ContentSuggestionsManagerService.this.mLock) {
+                ContentSuggestionsPerUserService contentSuggestionsPerUserService = (ContentSuggestionsPerUserService) ContentSuggestionsManagerService.this.getServiceForUserLocked(i);
+                if (contentSuggestionsPerUserService != null && (ensureRemoteServiceLocked = contentSuggestionsPerUserService.ensureRemoteServiceLocked()) != null) {
+                    ensureRemoteServiceLocked.notifyInteraction(bundle, str);
+                }
+            }
         }
 
         /* JADX WARN: Multi-variable type inference failed */
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
             int callingUid = Binder.getCallingUid();
-            if (callingUid != 2000 && callingUid != 0) {
-                Slog.e(ContentSuggestionsManagerService.TAG, "Expected shell caller");
-            } else {
+            if (callingUid == 2000 || callingUid == 0) {
                 new ContentSuggestionsManagerServiceShellCommand(ContentSuggestionsManagerService.this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+            } else {
+                Slog.e("ContentSuggestionsManagerService", "Expected shell caller");
             }
         }
+
+        public final void provideContextBitmap(int i, Bitmap bitmap, Bundle bundle) {
+            if (bitmap == null) {
+                throw new IllegalArgumentException("Expected non-null bitmap");
+            }
+            if (bundle == null) {
+                throw new IllegalArgumentException("Expected non-null imageContextRequestExtras");
+            }
+            ContentSuggestionsManagerService.m385$$Nest$menforceCaller(ContentSuggestionsManagerService.this, UserHandle.getCallingUserId(), "provideContextBitmap");
+            synchronized (ContentSuggestionsManagerService.this.mLock) {
+                try {
+                    ContentSuggestionsPerUserService contentSuggestionsPerUserService = (ContentSuggestionsPerUserService) ContentSuggestionsManagerService.this.getServiceForUserLocked(i);
+                    if (contentSuggestionsPerUserService != null) {
+                        bundle.putParcelable("android.contentsuggestions.extra.BITMAP", bitmap);
+                        RemoteContentSuggestionsService ensureRemoteServiceLocked = contentSuggestionsPerUserService.ensureRemoteServiceLocked();
+                        if (ensureRemoteServiceLocked != null) {
+                            ensureRemoteServiceLocked.provideContextImage(-1, null, 0, bundle);
+                        }
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void provideContextImage(int i, int i2, Bundle bundle) {
+            HardwareBuffer hardwareBuffer;
+            RemoteContentSuggestionsService ensureRemoteServiceLocked;
+            TaskSnapshot taskSnapshot;
+            if (bundle == null) {
+                throw new IllegalArgumentException("Expected non-null imageContextRequestExtras");
+            }
+            ContentSuggestionsManagerService.m385$$Nest$menforceCaller(ContentSuggestionsManagerService.this, UserHandle.getCallingUserId(), "provideContextImage");
+            int i3 = 0;
+            if (bundle.containsKey("android.contentsuggestions.extra.BITMAP") || (taskSnapshot = ActivityTaskManagerService.this.getTaskSnapshot(i2, false, false)) == null) {
+                hardwareBuffer = null;
+            } else {
+                hardwareBuffer = taskSnapshot.getHardwareBuffer();
+                ColorSpace colorSpace = taskSnapshot.getColorSpace();
+                if (colorSpace != null) {
+                    i3 = colorSpace.getId();
+                }
+            }
+            synchronized (ContentSuggestionsManagerService.this.mLock) {
+                ContentSuggestionsPerUserService contentSuggestionsPerUserService = (ContentSuggestionsPerUserService) ContentSuggestionsManagerService.this.getServiceForUserLocked(i);
+                if (contentSuggestionsPerUserService != null && (ensureRemoteServiceLocked = contentSuggestionsPerUserService.ensureRemoteServiceLocked()) != null) {
+                    ensureRemoteServiceLocked.provideContextImage(i2, hardwareBuffer, i3, bundle);
+                }
+            }
+        }
+
+        public final void resetTemporaryService(int i) {
+            ContentSuggestionsManagerService.this.resetTemporaryService(i);
+        }
+
+        public final void setDefaultServiceEnabled(int i, boolean z) {
+            ContentSuggestionsManagerService.this.setDefaultServiceEnabled(i, z);
+        }
+
+        public final void setTemporaryService(int i, String str, int i2) {
+            ContentSuggestionsManagerService.this.setTemporaryService(i, str, i2);
+        }
+
+        public final void suggestContentSelections(int i, SelectionsRequest selectionsRequest, ISelectionsCallback iSelectionsCallback) {
+            RemoteContentSuggestionsService ensureRemoteServiceLocked;
+            ContentSuggestionsManagerService.m385$$Nest$menforceCaller(ContentSuggestionsManagerService.this, UserHandle.getCallingUserId(), "suggestContentSelections");
+            synchronized (ContentSuggestionsManagerService.this.mLock) {
+                ContentSuggestionsPerUserService contentSuggestionsPerUserService = (ContentSuggestionsPerUserService) ContentSuggestionsManagerService.this.getServiceForUserLocked(i);
+                if (contentSuggestionsPerUserService != null && (ensureRemoteServiceLocked = contentSuggestionsPerUserService.ensureRemoteServiceLocked()) != null) {
+                    ensureRemoteServiceLocked.suggestContentSelections(selectionsRequest, iSelectionsCallback);
+                }
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$menforceCaller, reason: not valid java name */
+    public static void m385$$Nest$menforceCaller(ContentSuggestionsManagerService contentSuggestionsManagerService, int i, String str) {
+        if (contentSuggestionsManagerService.getContext().checkCallingPermission("android.permission.MANAGE_CONTENT_SUGGESTIONS") != 0 && !contentSuggestionsManagerService.mServiceNameResolver.isTemporary(i) && !contentSuggestionsManagerService.mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid())) {
+            throw new SecurityException(ActivityManagerService$$ExternalSyntheticOutline0.m(DumpUtils$$ExternalSyntheticOutline0.m("Permission Denial: ", str, " from pid="), ", uid=", " expected caller is recents", "ContentSuggestionsManagerService"));
+        }
+    }
+
+    public ContentSuggestionsManagerService(Context context) {
+        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.date_picker_increment_year_button), "no_content_suggestions");
+        this.mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void enforceCallingPermissionForManagement() {
+        getContext().enforceCallingPermission("android.permission.MANAGE_CONTENT_SUGGESTIONS", "ContentSuggestionsManagerService");
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final int getMaximumTemporaryServiceDurationMs() {
+        return 120000;
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final AbstractPerUserSystemService newServiceLocked(int i, boolean z) {
+        ContentSuggestionsPerUserService contentSuggestionsPerUserService = new ContentSuggestionsPerUserService(this, this.mLock, i);
+        return contentSuggestionsPerUserService;
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        publishBinderService("content_suggestions", new ContentSuggestionsManagerStub());
     }
 }

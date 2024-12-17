@@ -1,6 +1,5 @@
 package com.android.server.accessibility.autoaction.actiontype;
 
-import android.R;
 import android.app.StatusBarManager;
 import android.content.Context;
 import android.content.Intent;
@@ -9,24 +8,13 @@ import android.os.ServiceManager;
 import com.android.internal.accessibility.util.AccessibilityUtils;
 import com.android.internal.statusbar.IStatusBarService;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class OpenCloseNotifications extends CornerActionType {
+public final class OpenCloseNotifications extends CornerActionType {
     public Context mContext;
 
-    public static int getStringResId() {
-        return R.string.app_blocked_message;
-    }
-
-    public OpenCloseNotifications(Context context) {
-        this.mContext = context;
-    }
-
-    public static OpenCloseNotifications createAction(Context context) {
-        return new OpenCloseNotifications(context);
-    }
-
     @Override // com.android.server.accessibility.autoaction.actiontype.CornerActionType
-    public void performCornerAction(int i) {
+    public final void performCornerAction(int i) {
         if (AccessibilityUtils.isFoldedLargeCoverScreen()) {
             this.mContext.sendBroadcast(new Intent("com.samsung.android.app.aodservice.sublauncher.REQUEST_FOCUS_NOTIFICATION"));
             return;

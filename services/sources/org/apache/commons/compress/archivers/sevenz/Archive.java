@@ -2,8 +2,9 @@ package org.apache.commons.compress.archivers.sevenz;
 
 import java.util.BitSet;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class Archive {
+public final class Archive {
     public SevenZArchiveEntry[] files;
     public Folder[] folders;
     public long[] packCrcs;
@@ -13,15 +14,23 @@ public class Archive {
     public StreamMap streamMap;
     public SubStreamsInfo subStreamsInfo;
 
-    public String toString() {
-        return "Archive with packed streams starting at offset " + this.packPos + ", " + lengthOf(this.packSizes) + " pack sizes, " + lengthOf(this.packCrcs) + " CRCs, " + lengthOf(this.folders) + " folders, " + lengthOf(this.files) + " files and " + this.streamMap;
-    }
-
-    public static String lengthOf(long[] jArr) {
-        return jArr == null ? "(null)" : String.valueOf(jArr.length);
-    }
-
-    public static String lengthOf(Object[] objArr) {
-        return objArr == null ? "(null)" : String.valueOf(objArr.length);
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("Archive with packed streams starting at offset ");
+        sb.append(this.packPos);
+        sb.append(", ");
+        long[] jArr = this.packSizes;
+        sb.append(jArr == null ? "(null)" : String.valueOf(jArr.length));
+        sb.append(" pack sizes, ");
+        long[] jArr2 = this.packCrcs;
+        sb.append(jArr2 == null ? "(null)" : String.valueOf(jArr2.length));
+        sb.append(" CRCs, ");
+        Folder[] folderArr = this.folders;
+        sb.append(folderArr == null ? "(null)" : String.valueOf(folderArr.length));
+        sb.append(" folders, ");
+        SevenZArchiveEntry[] sevenZArchiveEntryArr = this.files;
+        sb.append(sevenZArchiveEntryArr != null ? String.valueOf(sevenZArchiveEntryArr.length) : "(null)");
+        sb.append(" files and ");
+        sb.append(this.streamMap);
+        return sb.toString();
     }
 }

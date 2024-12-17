@@ -8,8 +8,7 @@ import android.content.res.XmlResourceParser;
 import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.util.Slog;
-import com.android.server.cocktailbar.utils.CocktailBarUtils;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,24 +16,23 @@ import java.util.HashSet;
 import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class CocktailBarConfig {
-    public static String INTENT_FILTER = "com.samsung.app.honeyspace.edge";
-    public static final String TAG = "CocktailBarConfig";
+public final class CocktailBarConfig {
     public static CocktailBarConfig sInstance;
     public ArrayList mCategoryFilter;
     public String mCategoryFilterStr;
-    public Context mContext;
     public String mMetaDataHideEdgeService;
-    public PackageManager mPackageManager;
+    public final PackageManager mPackageManager;
     public int mVersion = 2;
     public int mPreferredWidth = 0;
-    public HashSet mPackageHideEdgeServiceList = new HashSet();
+    public final HashSet mPackageHideEdgeServiceList = new HashSet();
     public boolean mIsServiceFounded = false;
     public final HashMap mReplacedComponent = new HashMap();
 
-    public int getDefaultVersion() {
-        return 1;
+    public CocktailBarConfig(Context context) {
+        this.mPackageManager = context.getPackageManager();
+        parseEdgeConfig();
     }
 
     public static CocktailBarConfig getInstance(Context context) {
@@ -44,33 +42,25 @@ public class CocktailBarConfig {
         return sInstance;
     }
 
-    public CocktailBarConfig(Context context) {
-        this.mContext = context;
-        this.mPackageManager = context.getPackageManager();
-        parseEdgeConfig();
+    public final String dump() {
+        StringBuffer stringBuffer = new StringBuffer("[CocktailBarConfig]  version=");
+        stringBuffer.append(this.mVersion);
+        stringBuffer.append(" categoryStr=");
+        stringBuffer.append(this.mCategoryFilterStr);
+        stringBuffer.append(" width=");
+        stringBuffer.append(this.mPreferredWidth);
+        HashSet hashSet = this.mPackageHideEdgeServiceList;
+        if (hashSet != null && !hashSet.isEmpty()) {
+            stringBuffer.append(" hideAppList=");
+            stringBuffer.append(this.mPackageHideEdgeServiceList.toString());
+        }
+        stringBuffer.append("replaced cn size=");
+        stringBuffer.append(this.mReplacedComponent.size());
+        stringBuffer.append("\n");
+        return stringBuffer.toString();
     }
 
-    public int getVersion() {
-        return this.mVersion;
-    }
-
-    public int getPreferredWidth() {
-        return this.mPreferredWidth;
-    }
-
-    public String getCategoryFilterStr() {
-        return this.mCategoryFilterStr;
-    }
-
-    public HashSet getPackageHideEdgeServiceList() {
-        return this.mPackageHideEdgeServiceList;
-    }
-
-    public String getMetaDataHideEdgeService() {
-        return this.mMetaDataHideEdgeService;
-    }
-
-    public ArrayList getCategoryFilter() {
+    public final ArrayList getCategoryFilter() {
         if (this.mCategoryFilter == null) {
             if (this.mCategoryFilterStr != null) {
                 this.mCategoryFilter = new ArrayList();
@@ -81,57 +71,49 @@ public class CocktailBarConfig {
                     }
                 }
             } else {
-                Slog.d(TAG, "getCategoryFilter: CategoryFilterStr is null");
+                Slog.d("CocktailBarConfig", "getCategoryFilter: CategoryFilterStr is null");
             }
         }
         return this.mCategoryFilter;
     }
 
-    public boolean reload() {
-        if (this.mIsServiceFounded) {
-            return true;
-        }
-        parseEdgeConfig();
-        return this.mIsServiceFounded;
-    }
-
     public final void parseEdgeConfig() {
-        XmlResourceParser edgeConfigParser = getEdgeConfigParser();
+        XmlResourceParser xmlResourceParser;
+        List<ResolveInfo> queryIntentServicesAsUser = this.mPackageManager.queryIntentServicesAsUser(new Intent("com.samsung.app.honeyspace.edge"), 128, 0);
+        if (queryIntentServicesAsUser == null || queryIntentServicesAsUser.size() <= 0) {
+            this.mIsServiceFounded = false;
+            Slog.d("CocktailBarConfig", "getEdgeConfigParser: no enabled cocktailbarservice");
+        } else {
+            this.mIsServiceFounded = true;
+            for (ResolveInfo resolveInfo : queryIntentServicesAsUser) {
+                if (!resolveInfo.serviceInfo.isEnabled()) {
+                    BootReceiver$$ExternalSyntheticOutline0.m(new StringBuilder("getEdgeConfigParser: not enabled: "), resolveInfo.resolvePackageName, "CocktailBarConfig");
+                } else {
+                    if (CocktailBarUtils$CocktailBarWhiteList.isSystemApplication(0, resolveInfo.serviceInfo.packageName)) {
+                        xmlResourceParser = resolveInfo.serviceInfo.loadXmlMetaData(this.mPackageManager, "com.samsung.android.edge.config");
+                        break;
+                    }
+                    BootReceiver$$ExternalSyntheticOutline0.m(new StringBuilder("getEdgeConfigParser: not system app: "), resolveInfo.resolvePackageName, "CocktailBarConfig");
+                }
+            }
+        }
+        xmlResourceParser = null;
         String str = SystemProperties.get("ro.product.name");
         try {
-            if (edgeConfigParser != null) {
+            if (xmlResourceParser != null) {
                 try {
-                    parseXml(edgeConfigParser, str);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (XmlPullParserException e2) {
+                    try {
+                        parseXml(xmlResourceParser, str);
+                    } catch (XmlPullParserException e) {
+                        e.printStackTrace();
+                    }
+                } catch (IOException e2) {
                     e2.printStackTrace();
                 }
             }
         } finally {
-            edgeConfigParser.close();
+            xmlResourceParser.close();
         }
-    }
-
-    public final XmlResourceParser getEdgeConfigParser() {
-        List<ResolveInfo> queryIntentServicesAsUser = this.mPackageManager.queryIntentServicesAsUser(new Intent(INTENT_FILTER), 128, 0);
-        if (queryIntentServicesAsUser != null && queryIntentServicesAsUser.size() > 0) {
-            this.mIsServiceFounded = true;
-            for (ResolveInfo resolveInfo : queryIntentServicesAsUser) {
-                if (!resolveInfo.serviceInfo.isEnabled()) {
-                    Slog.d(TAG, "getEdgeConfigParser: not enabled: " + resolveInfo.resolvePackageName);
-                } else {
-                    if (CocktailBarUtils.CocktailBarWhiteList.isSystemApplication(resolveInfo.serviceInfo.packageName, 0)) {
-                        return resolveInfo.serviceInfo.loadXmlMetaData(this.mPackageManager, "com.samsung.android.edge.config");
-                    }
-                    Slog.d(TAG, "getEdgeConfigParser: not system app: " + resolveInfo.resolvePackageName);
-                }
-            }
-            return null;
-        }
-        this.mIsServiceFounded = false;
-        Slog.d(TAG, "getEdgeConfigParser: no enabled cocktailbarservice");
-        return null;
     }
 
     public final void parseXml(XmlResourceParser xmlResourceParser, String str) {
@@ -156,46 +138,20 @@ public class CocktailBarConfig {
                 } else if ("meta_data_hide_edge_service".equals(name)) {
                     this.mMetaDataHideEdgeService = xmlResourceParser.getAttributeValue(null, "value");
                 } else if ("replaced_component".equals(name)) {
-                    addReplcaedComponent(xmlResourceParser.getAttributeValue(null, "value"));
+                    String attributeValue3 = xmlResourceParser.getAttributeValue(null, "value");
+                    if (TextUtils.isEmpty(attributeValue3)) {
+                        BootReceiver$$ExternalSyntheticOutline0.m("addReplcaedComponent: value is empty. -", attributeValue3, "CocktailBarConfig");
+                    } else {
+                        String[] split = attributeValue3.split(",");
+                        if (split.length < 2 || TextUtils.isEmpty(split[0]) || TextUtils.isEmpty(split[1])) {
+                            Slog.e("CocktailBarConfig", "addReplcaedComponent: value is wrong. - ".concat(attributeValue3));
+                        } else {
+                            this.mReplacedComponent.put(split[0], split[1]);
+                        }
+                    }
                 }
             }
             eventType = xmlResourceParser.next();
         }
-    }
-
-    public String getConvertedComponent(String str) {
-        return (String) this.mReplacedComponent.get(str);
-    }
-
-    public final void addReplcaedComponent(String str) {
-        if (TextUtils.isEmpty(str)) {
-            Slog.e(TAG, "addReplcaedComponent: value is empty. -" + str);
-            return;
-        }
-        String[] split = str.split(",");
-        if (split.length < 2 || TextUtils.isEmpty(split[0]) || TextUtils.isEmpty(split[1])) {
-            Slog.e(TAG, "addReplcaedComponent: value is wrong. - " + str);
-            return;
-        }
-        this.mReplacedComponent.put(split[0], split[1]);
-    }
-
-    public String dump() {
-        StringBuffer stringBuffer = new StringBuffer("[CocktailBarConfig] ");
-        stringBuffer.append(" version=");
-        stringBuffer.append(this.mVersion);
-        stringBuffer.append(" categoryStr=");
-        stringBuffer.append(this.mCategoryFilterStr);
-        stringBuffer.append(" width=");
-        stringBuffer.append(this.mPreferredWidth);
-        HashSet hashSet = this.mPackageHideEdgeServiceList;
-        if (hashSet != null && !hashSet.isEmpty()) {
-            stringBuffer.append(" hideAppList=");
-            stringBuffer.append(this.mPackageHideEdgeServiceList.toString());
-        }
-        stringBuffer.append("replaced cn size=");
-        stringBuffer.append(this.mReplacedComponent.size());
-        stringBuffer.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        return stringBuffer.toString();
     }
 }

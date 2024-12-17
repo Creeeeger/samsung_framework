@@ -7,25 +7,22 @@ import android.util.Slog;
 import android.util.proto.ProtoOutputStream;
 import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class StatLogger {
-    public static final String TAG = "StatLogger";
-    public final int SIZE;
-    public final int[] mCallsPerSecond;
-    public final int[] mCountStats;
-    public final long[] mDurationPerSecond;
-    public final long[] mDurationStats;
-    public final String[] mLabels;
-    public final Object mLock;
-    public final int[] mMaxCallsPerSecond;
-    public final long[] mMaxDurationPerSecond;
-    public final long[] mMaxDurationStats;
-    public long mNextTickTime;
-    public final String mStatsTag;
-
-    public StatLogger(String[] strArr) {
-        this(null, strArr);
-    }
+    private static final String TAG = "StatLogger";
+    private final int SIZE;
+    private final int[] mCallsPerSecond;
+    private final int[] mCountStats;
+    private final long[] mDurationPerSecond;
+    private final long[] mDurationStats;
+    private final String[] mLabels;
+    private final Object mLock;
+    private final int[] mMaxCallsPerSecond;
+    private final long[] mMaxDurationPerSecond;
+    private final long[] mMaxDurationStats;
+    private long mNextTickTime;
+    private final String mStatsTag;
 
     public StatLogger(String str, String[] strArr) {
         this.mLock = new Object();
@@ -43,14 +40,69 @@ public class StatLogger {
         this.mLabels = strArr;
     }
 
+    public StatLogger(String[] strArr) {
+        this(null, strArr);
+    }
+
+    public void dump(IndentingPrintWriter indentingPrintWriter) {
+        synchronized (this.mLock) {
+            try {
+                if (TextUtils.isEmpty(this.mStatsTag)) {
+                    indentingPrintWriter.println("Stats:");
+                } else {
+                    indentingPrintWriter.println(this.mStatsTag + ":");
+                }
+                indentingPrintWriter.increaseIndent();
+                for (int i = 0; i < this.SIZE; i++) {
+                    int i2 = this.mCountStats[i];
+                    double d = this.mDurationStats[i] / 1000.0d;
+                    indentingPrintWriter.println(String.format("%s: count=%d, total=%.1fms, avg=%.3fms, max calls/s=%d max dur/s=%.1fms max time=%.1fms", this.mLabels[i], Integer.valueOf(i2), Double.valueOf(d), Double.valueOf(i2 == 0 ? 0.0d : d / i2), Integer.valueOf(this.mMaxCallsPerSecond[i]), Double.valueOf(this.mMaxDurationPerSecond[i] / 1000.0d), Double.valueOf(this.mMaxDurationStats[i] / 1000.0d)));
+                }
+                indentingPrintWriter.decreaseIndent();
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public void dump(PrintWriter printWriter, String str) {
+        dump(new IndentingPrintWriter(printWriter, "  ").setIndent(str));
+    }
+
+    public void dumpProto(ProtoOutputStream protoOutputStream, long j) {
+        synchronized (this.mLock) {
+            try {
+                long start = protoOutputStream.start(j);
+                for (int i = 0; i < this.mLabels.length; i++) {
+                    long start2 = protoOutputStream.start(2246267895809L);
+                    protoOutputStream.write(1120986464257L, i);
+                    protoOutputStream.write(1138166333442L, this.mLabels[i]);
+                    protoOutputStream.write(1120986464259L, this.mCountStats[i]);
+                    protoOutputStream.write(1112396529668L, this.mDurationStats[i]);
+                    protoOutputStream.write(1120986464261L, this.mMaxCallsPerSecond[i]);
+                    protoOutputStream.write(1112396529670L, this.mMaxDurationPerSecond[i]);
+                    protoOutputStream.write(1112396529671L, this.mMaxDurationStats[i]);
+                    protoOutputStream.end(start2);
+                }
+                protoOutputStream.end(start);
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
     public long getTime() {
         return SystemClock.uptimeNanos() / 1000;
     }
 
     public long logDurationStat(int i, long j) {
         synchronized (this.mLock) {
-            long time = getTime() - j;
-            if (i >= 0 && i < this.SIZE) {
+            try {
+                long time = getTime() - j;
+                if (i < 0 || i >= this.SIZE) {
+                    Slog.wtf(TAG, "Invalid event ID: " + i);
+                    return time;
+                }
                 int[] iArr = this.mCountStats;
                 iArr[i] = iArr[i] + 1;
                 long[] jArr = this.mDurationStats;
@@ -84,56 +136,9 @@ public class StatLogger {
                 long[] jArr5 = this.mDurationPerSecond;
                 jArr5[i] = jArr5[i] + time;
                 return time;
+            } catch (Throwable th) {
+                throw th;
             }
-            Slog.wtf(TAG, "Invalid event ID: " + i);
-            return time;
-        }
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
-        dump(new IndentingPrintWriter(printWriter, "  ").setIndent(str));
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-        synchronized (this.mLock) {
-            if (TextUtils.isEmpty(this.mStatsTag)) {
-                indentingPrintWriter.println("Stats:");
-            } else {
-                indentingPrintWriter.println(this.mStatsTag + XmlUtils.STRING_ARRAY_SEPARATOR);
-            }
-            indentingPrintWriter.increaseIndent();
-            for (int i = 0; i < this.SIZE; i++) {
-                int i2 = this.mCountStats[i];
-                double d = this.mDurationStats[i] / 1000.0d;
-                Object[] objArr = new Object[7];
-                objArr[0] = this.mLabels[i];
-                objArr[1] = Integer.valueOf(i2);
-                objArr[2] = Double.valueOf(d);
-                objArr[3] = Double.valueOf(i2 == 0 ? 0.0d : d / i2);
-                objArr[4] = Integer.valueOf(this.mMaxCallsPerSecond[i]);
-                objArr[5] = Double.valueOf(this.mMaxDurationPerSecond[i] / 1000.0d);
-                objArr[6] = Double.valueOf(this.mMaxDurationStats[i] / 1000.0d);
-                indentingPrintWriter.println(String.format("%s: count=%d, total=%.1fms, avg=%.3fms, max calls/s=%d max dur/s=%.1fms max time=%.1fms", objArr));
-            }
-            indentingPrintWriter.decreaseIndent();
-        }
-    }
-
-    public void dumpProto(ProtoOutputStream protoOutputStream, long j) {
-        synchronized (this.mLock) {
-            long start = protoOutputStream.start(j);
-            for (int i = 0; i < this.mLabels.length; i++) {
-                long start2 = protoOutputStream.start(2246267895809L);
-                protoOutputStream.write(1120986464257L, i);
-                protoOutputStream.write(1138166333442L, this.mLabels[i]);
-                protoOutputStream.write(1120986464259L, this.mCountStats[i]);
-                protoOutputStream.write(1112396529668L, this.mDurationStats[i]);
-                protoOutputStream.write(1120986464261L, this.mMaxCallsPerSecond[i]);
-                protoOutputStream.write(1112396529670L, this.mMaxDurationPerSecond[i]);
-                protoOutputStream.write(1112396529671L, this.mMaxDurationStats[i]);
-                protoOutputStream.end(start2);
-            }
-            protoOutputStream.end(start);
         }
     }
 }

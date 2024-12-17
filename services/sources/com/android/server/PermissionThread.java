@@ -5,6 +5,7 @@ import android.os.HandlerExecutor;
 import android.os.Looper;
 import java.util.concurrent.Executor;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class PermissionThread extends ServiceThread {
     public static Handler sHandler;
@@ -12,15 +13,11 @@ public final class PermissionThread extends ServiceThread {
     public static PermissionThread sInstance;
     public static final Object sLock = new Object();
 
-    public PermissionThread() {
-        super("android.perm", 0, true);
-    }
-
     public static void ensureThreadLocked() {
         if (sInstance != null) {
             return;
         }
-        PermissionThread permissionThread = new PermissionThread();
+        PermissionThread permissionThread = new PermissionThread(0, "android.perm", true);
         sInstance = permissionThread;
         permissionThread.start();
         Looper looper = sInstance.getLooper();
@@ -30,15 +27,6 @@ public final class PermissionThread extends ServiceThread {
         sHandlerExecutor = new HandlerExecutor(sHandler);
     }
 
-    public static Handler getHandler() {
-        Handler handler;
-        synchronized (sLock) {
-            ensureThreadLocked();
-            handler = sHandler;
-        }
-        return handler;
-    }
-
     public static Executor getExecutor() {
         HandlerExecutor handlerExecutor;
         synchronized (sLock) {
@@ -46,5 +34,14 @@ public final class PermissionThread extends ServiceThread {
             handlerExecutor = sHandlerExecutor;
         }
         return handlerExecutor;
+    }
+
+    public static Handler getHandler() {
+        Handler handler;
+        synchronized (sLock) {
+            ensureThreadLocked();
+            handler = sHandler;
+        }
+        return handler;
     }
 }

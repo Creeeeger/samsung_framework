@@ -2,92 +2,64 @@ package com.samsung.android.server.audio;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
+import com.android.server.KnoxCaptureInputFilter$$ExternalSyntheticOutline0;
 import com.samsung.android.audio.Rune;
 import com.samsung.android.os.SemDvfsManager;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class DvfsHelper {
+public final class DvfsHelper {
     public static DvfsHelper sInstance;
-    public final Runnable boostChecker;
-    public int mCPUBoostValueForVoIP;
-    public SemDvfsManager mCpuStateLock;
     public final DvfsManagerFactory mDvfsManagerFactory;
-    public Handler mHandler;
-    public boolean mIsCPUBoostedForVoIP;
-    public boolean mIsScreenOn;
-    public int mRetryDelayMs;
-    public SemDvfsManager mSemDvfsCpuMin;
-
-    /* loaded from: classes2.dex */
-    public interface DvfsManagerFactory {
-        SemDvfsManager create(Context context, String str);
-    }
-
-    /* loaded from: classes2.dex */
-    public class DefaultDvfsManagerFactory implements DvfsManagerFactory {
-        @Override // com.samsung.android.server.audio.DvfsHelper.DvfsManagerFactory
-        public SemDvfsManager create(Context context, String str) {
-            return SemDvfsManager.createInstance(context, str);
+    public final Handler mHandler;
+    public final SemDvfsManager mSemDvfsCpuMin;
+    public SemDvfsManager mCpuStateLock = null;
+    public boolean mIsCPUBoostedForVoIP = false;
+    public boolean mIsScreenOn = true;
+    public int mRetryDelayMs = 28000;
+    public final DvfsHelper$$ExternalSyntheticLambda0 boostChecker = new Runnable() { // from class: com.samsung.android.server.audio.DvfsHelper$$ExternalSyntheticLambda0
+        @Override // java.lang.Runnable
+        public final void run() {
+            DvfsHelper dvfsHelper = DvfsHelper.this;
+            if (dvfsHelper.mIsCPUBoostedForVoIP) {
+                dvfsHelper.acquireCPUBoost();
+                return;
+            }
+            if (dvfsHelper.mSemDvfsCpuMin != null) {
+                Log.i("AS.DvfsHelper", "release() cpu min lock");
+                dvfsHelper.mSemDvfsCpuMin.release();
+            }
+            if (!Rune.SEC_AUDIO_CPU_STATE_LOCK || dvfsHelper.mCpuStateLock == null) {
+                return;
+            }
+            Log.i("AS.DvfsHelper", "releaseCPUBoost CPU state lock");
+            dvfsHelper.mCpuStateLock.release();
         }
+    };
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DefaultDvfsManagerFactory implements DvfsManagerFactory {
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface DvfsManagerFactory {
+    }
+
+    /* JADX WARN: Type inference failed for: r0v4, types: [com.samsung.android.server.audio.DvfsHelper$$ExternalSyntheticLambda0] */
     public DvfsHelper(Context context, DvfsManagerFactory dvfsManagerFactory) {
         this.mSemDvfsCpuMin = null;
-        this.mCpuStateLock = null;
-        this.mIsCPUBoostedForVoIP = false;
-        this.mIsScreenOn = true;
-        this.mRetryDelayMs = 28000;
-        this.boostChecker = new Runnable() { // from class: com.samsung.android.server.audio.DvfsHelper$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                DvfsHelper.this.lambda$new$0();
-            }
-        };
         this.mDvfsManagerFactory = dvfsManagerFactory;
-        init(context);
-    }
-
-    public void setRetryTime(int i) {
-        this.mRetryDelayMs = i;
-    }
-
-    public DvfsHelper(Context context) {
-        this(context, new DefaultDvfsManagerFactory());
-    }
-
-    public static DvfsHelper getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new DvfsHelper(context);
+        ((DefaultDvfsManagerFactory) dvfsManagerFactory).getClass();
+        SemDvfsManager createInstance = SemDvfsManager.createInstance(context, "AUDIOSERVICE_VOIP_BOOST");
+        this.mSemDvfsCpuMin = createInstance;
+        if (createInstance != null) {
+            createInstance.setHint(3300);
         }
-        return sInstance;
+        this.mHandler = new Handler(KnoxCaptureInputFilter$$ExternalSyntheticOutline0.m("AS.DvfsHelper").getLooper());
     }
 
-    public final void init(Context context) {
-        SemDvfsManager create = this.mDvfsManagerFactory.create(context, "AUDIOSERVICE_VOIP_BOOST");
-        this.mSemDvfsCpuMin = create;
-        if (create != null) {
-            create.setHint(3300);
-        }
-        HandlerThread handlerThread = new HandlerThread("AS.DvfsHelper");
-        handlerThread.start();
-        this.mHandler = new Handler(handlerThread.getLooper());
-    }
-
-    public void releaseCPUBoost() {
-        if (this.mSemDvfsCpuMin != null) {
-            Log.i("AS.DvfsHelper", "release() cpu min lock");
-            this.mSemDvfsCpuMin.release();
-        }
-        if (!Rune.SEC_AUDIO_CPU_STATE_LOCK || this.mCpuStateLock == null) {
-            return;
-        }
-        Log.i("AS.DvfsHelper", "releaseCPUBoost CPU state lock");
-        this.mCpuStateLock.release();
-    }
-
-    public void acquireCPUBoost() {
+    public final void acquireCPUBoost() {
         if (this.mSemDvfsCpuMin == null) {
             return;
         }
@@ -97,55 +69,15 @@ public class DvfsHelper {
             Log.i("AS.DvfsHelper", "acquireCPUBoost CPU state lock");
             this.mCpuStateLock.acquire(30000);
         }
-        if (this.mHandler.hasCallbacks(this.boostChecker)) {
+        Handler handler = this.mHandler;
+        DvfsHelper$$ExternalSyntheticLambda0 dvfsHelper$$ExternalSyntheticLambda0 = this.boostChecker;
+        if (handler.hasCallbacks(dvfsHelper$$ExternalSyntheticLambda0)) {
             return;
         }
-        this.mHandler.postDelayed(this.boostChecker, this.mRetryDelayMs);
+        this.mHandler.postDelayed(dvfsHelper$$ExternalSyntheticLambda0, this.mRetryDelayMs);
     }
 
-    public void startCPUBoostForVoIP(Context context) {
-        this.mIsCPUBoostedForVoIP = true;
-        if (this.mSemDvfsCpuMin == null) {
-            Log.w("AS.DvfsHelper", "DvfsManager is null");
-            return;
-        }
-        if (Rune.SEC_AUDIO_CPU_STATE_LOCK) {
-            Log.i("AS.DvfsHelper", "initCPUBoost create cpu state lock");
-            SemDvfsManager create = this.mDvfsManagerFactory.create(context, "AS.DvfsHelper");
-            this.mCpuStateLock = create;
-            if (create != null) {
-                create.addResourceValue(268447744, create.getApproximateFrequency(this.mCPUBoostValueForVoIP, 268447744, 1));
-            }
-        }
-        acquireCPUBoost();
-    }
-
-    public void stopCPUBoostForVoIP() {
-        this.mIsCPUBoostedForVoIP = false;
-        if (this.mHandler.hasCallbacks(this.boostChecker)) {
-            return;
-        }
-        this.mHandler.post(this.boostChecker);
-    }
-
-    public int getCPUBoostValueForVoIP() {
-        return this.mCPUBoostValueForVoIP;
-    }
-
-    public void setScreenOn(boolean z) {
-        this.mIsScreenOn = z;
-    }
-
-    public boolean getIsScreenOn() {
-        return this.mIsScreenOn;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0() {
-        if (this.mIsCPUBoostedForVoIP) {
-            acquireCPUBoost();
-        } else {
-            releaseCPUBoost();
-        }
+    public void setRetryTime(int i) {
+        this.mRetryDelayMs = i;
     }
 }

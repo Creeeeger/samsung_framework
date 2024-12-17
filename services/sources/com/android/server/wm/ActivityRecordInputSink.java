@@ -6,8 +6,9 @@ import android.view.InputWindowHandle;
 import android.view.SurfaceControl;
 import com.samsung.android.rune.CoreRune;
 
-/* loaded from: classes3.dex */
-public class ActivityRecordInputSink {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ActivityRecordInputSink {
     public final ActivityRecord mActivityRecord;
     public InputWindowHandleWrapper mInputWindowHandleWrapper;
     public final boolean mIsCompatEnabled;
@@ -23,59 +24,46 @@ public class ActivityRecordInputSink {
         }
     }
 
-    public void applyChangesToSurfaceIfChanged(SurfaceControl.Transaction transaction) {
-        InputWindowHandleWrapper inputWindowHandleWrapper = getInputWindowHandleWrapper();
-        if (this.mSurfaceControl == null) {
-            this.mSurfaceControl = createSurface(transaction);
+    public final void applyChangesToSurfaceIfChanged(SurfaceControl.Transaction transaction) {
+        WindowState findMainWindow;
+        Task task;
+        Task rootTask;
+        InputWindowHandleWrapper inputWindowHandleWrapper = this.mInputWindowHandleWrapper;
+        String str = this.mName;
+        ActivityRecord activityRecord = this.mActivityRecord;
+        if (inputWindowHandleWrapper == null) {
+            InputWindowHandle inputWindowHandle = new InputWindowHandle((InputApplicationHandle) null, activityRecord.getDisplayId());
+            inputWindowHandle.replaceTouchableRegionWithCrop = true;
+            inputWindowHandle.name = str;
+            inputWindowHandle.layoutParamsType = 2022;
+            inputWindowHandle.ownerPid = WindowManagerService.MY_PID;
+            inputWindowHandle.ownerUid = WindowManagerService.MY_UID;
+            inputWindowHandle.inputConfig = 5;
+            this.mInputWindowHandleWrapper = new InputWindowHandleWrapper(inputWindowHandle);
         }
-        if (inputWindowHandleWrapper.isChanged()) {
-            inputWindowHandleWrapper.applyChangesToSurface(transaction, this.mSurfaceControl);
-        }
-    }
-
-    public final SurfaceControl createSurface(SurfaceControl.Transaction transaction) {
-        SurfaceControl build = this.mActivityRecord.makeChildSurface(null).setName(this.mName).setHidden(false).setCallsite("ActivityRecordInputSink.createSurface").build();
-        transaction.setLayer(build, Integer.MIN_VALUE);
-        return build;
-    }
-
-    public final InputWindowHandleWrapper getInputWindowHandleWrapper() {
-        if (this.mInputWindowHandleWrapper == null) {
-            this.mInputWindowHandleWrapper = new InputWindowHandleWrapper(createInputWindowHandle());
-        }
-        ActivityRecord activityBelow = this.mActivityRecord.getTask() != null ? this.mActivityRecord.getTask().getActivityBelow(this.mActivityRecord) : null;
-        if ((activityBelow != null && (activityBelow.mAllowedTouchUid == this.mActivityRecord.getUid() || activityBelow.isUid(this.mActivityRecord.getUid()))) || !this.mIsCompatEnabled || this.mActivityRecord.isInTransition() || shouldAllowPassThrough()) {
+        Task task2 = activityRecord.task;
+        ActivityRecord activityBelow = task2 != null ? task2.getActivityBelow(activityRecord) : null;
+        if ((activityBelow != null && (activityBelow.mAllowedTouchUid == activityRecord.getUid() || activityBelow.isUid(activityRecord.getUid()))) || !this.mIsCompatEnabled || activityRecord.inTransitionSelfOrParent() || !activityRecord.mActivityRecordInputSinkEnabled || activityRecord.inFreeformWindowingMode() || activityRecord.mPopOverState.mIsActivated || ((CoreRune.MW_EMBED_ACTIVITY && activityRecord.isSplitEmbedded()) || (((findMainWindow = activityRecord.findMainWindow(true)) != null && findMainWindow.isVisible() && findMainWindow.mWindowFrames.mFrame.isEmpty()) || ((task = activityRecord.task) != null && task.getConfiguration().windowConfiguration.getWindowingMode() == 6 && task.isAlwaysOnTop() && (rootTask = activityRecord.mRootWindowContainer.getRootTask(task.mTaskViewTaskOrganizerTaskId)) != null && rootTask.isFreeformForceHidden())))) {
             this.mInputWindowHandleWrapper.setInputConfigMasked(8, 8);
         } else {
             this.mInputWindowHandleWrapper.setInputConfigMasked(0, 8);
         }
-        this.mInputWindowHandleWrapper.setDisplayId(this.mActivityRecord.getDisplayId());
-        return this.mInputWindowHandleWrapper;
-    }
-
-    public final boolean shouldAllowPassThrough() {
-        if (this.mActivityRecord.inFreeformWindowingMode() || this.mActivityRecord.mPopOverState.isActivated()) {
-            return true;
+        InputWindowHandleWrapper inputWindowHandleWrapper2 = this.mInputWindowHandleWrapper;
+        int displayId = activityRecord.getDisplayId();
+        InputWindowHandle inputWindowHandle2 = inputWindowHandleWrapper2.mHandle;
+        if (inputWindowHandle2.displayId != displayId) {
+            inputWindowHandle2.displayId = displayId;
+            inputWindowHandleWrapper2.mChanged = true;
         }
-        return (CoreRune.MW_EMBED_ACTIVITY && this.mActivityRecord.isSplitEmbedded()) || this.mActivityRecord.hasVisibleEmptySizeMainWindow();
-    }
-
-    public final InputWindowHandle createInputWindowHandle() {
-        InputWindowHandle inputWindowHandle = new InputWindowHandle((InputApplicationHandle) null, this.mActivityRecord.getDisplayId());
-        inputWindowHandle.replaceTouchableRegionWithCrop = true;
-        inputWindowHandle.name = this.mName;
-        inputWindowHandle.layoutParamsType = 2022;
-        inputWindowHandle.ownerPid = WindowManagerService.MY_PID;
-        inputWindowHandle.ownerUid = WindowManagerService.MY_UID;
-        inputWindowHandle.inputConfig = 5;
-        return inputWindowHandle;
-    }
-
-    public void releaseSurfaceControl() {
-        SurfaceControl surfaceControl = this.mSurfaceControl;
-        if (surfaceControl != null) {
-            surfaceControl.release();
-            this.mSurfaceControl = null;
+        InputWindowHandleWrapper inputWindowHandleWrapper3 = this.mInputWindowHandleWrapper;
+        if (this.mSurfaceControl == null) {
+            SurfaceControl build = activityRecord.makeChildSurface(null).setName(str).setHidden(false).setCallsite("ActivityRecordInputSink.createSurface").build();
+            transaction.setLayer(build, Integer.MIN_VALUE);
+            this.mSurfaceControl = build;
+        }
+        if (inputWindowHandleWrapper3.mChanged) {
+            transaction.setInputWindowInfo(this.mSurfaceControl, inputWindowHandleWrapper3.mHandle);
+            inputWindowHandleWrapper3.mChanged = false;
         }
     }
 }

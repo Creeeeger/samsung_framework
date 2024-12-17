@@ -1,59 +1,10 @@
 package com.android.server.pm;
 
-import android.content.pm.PackageManagerInternal;
 import android.util.ArraySet;
 
-/* loaded from: classes3.dex */
-public class PackageObserverHelper {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PackageObserverHelper {
     public final Object mLock = new Object();
     public ArraySet mActiveSnapshot = new ArraySet();
-
-    public void addObserver(PackageManagerInternal.PackageListObserver packageListObserver) {
-        synchronized (this.mLock) {
-            ArraySet arraySet = new ArraySet(this.mActiveSnapshot);
-            arraySet.add(packageListObserver);
-            this.mActiveSnapshot = arraySet;
-        }
-    }
-
-    public void removeObserver(PackageManagerInternal.PackageListObserver packageListObserver) {
-        synchronized (this.mLock) {
-            ArraySet arraySet = new ArraySet(this.mActiveSnapshot);
-            arraySet.remove(packageListObserver);
-            this.mActiveSnapshot = arraySet;
-        }
-    }
-
-    public void notifyAdded(String str, int i) {
-        ArraySet arraySet;
-        synchronized (this.mLock) {
-            arraySet = this.mActiveSnapshot;
-        }
-        int size = arraySet.size();
-        for (int i2 = 0; i2 < size; i2++) {
-            ((PackageManagerInternal.PackageListObserver) arraySet.valueAt(i2)).onPackageAdded(str, i);
-        }
-    }
-
-    public void notifyChanged(String str, int i) {
-        ArraySet arraySet;
-        synchronized (this.mLock) {
-            arraySet = this.mActiveSnapshot;
-        }
-        int size = arraySet.size();
-        for (int i2 = 0; i2 < size; i2++) {
-            ((PackageManagerInternal.PackageListObserver) arraySet.valueAt(i2)).onPackageChanged(str, i);
-        }
-    }
-
-    public void notifyRemoved(String str, int i) {
-        ArraySet arraySet;
-        synchronized (this.mLock) {
-            arraySet = this.mActiveSnapshot;
-        }
-        int size = arraySet.size();
-        for (int i2 = 0; i2 < size; i2++) {
-            ((PackageManagerInternal.PackageListObserver) arraySet.valueAt(i2)).onPackageRemoved(str, i);
-        }
-    }
 }

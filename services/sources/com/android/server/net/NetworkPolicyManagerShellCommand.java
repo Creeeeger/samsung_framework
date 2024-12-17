@@ -4,188 +4,128 @@ import android.content.Context;
 import android.net.NetworkPolicyManager;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.os.RemoteException;
 import android.os.ShellCommand;
+import android.os.SystemProperties;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class NetworkPolicyManagerShellCommand extends ShellCommand {
+public final class NetworkPolicyManagerShellCommand extends ShellCommand {
     public final NetworkPolicyManagerService mInterface;
     public final WifiManager mWifiManager;
-
-    public static String overrideToString(int i) {
-        return i != 1 ? i != 2 ? "none" : "false" : "true";
-    }
 
     public NetworkPolicyManagerShellCommand(Context context, NetworkPolicyManagerService networkPolicyManagerService) {
         this.mInterface = networkPolicyManagerService;
         this.mWifiManager = (WifiManager) context.getSystemService("wifi");
     }
 
-    public int onCommand(String str) {
-        char c;
-        if (str == null) {
-            return handleDefaultCommands(str);
-        }
+    public final int getUidFromNextArg() {
         PrintWriter outPrintWriter = getOutPrintWriter();
-        try {
-            switch (str.hashCode()) {
-                case -1544226370:
-                    if (str.equals("start-watching")) {
-                        c = 5;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case -934610812:
-                    if (str.equals("remove")) {
-                        c = 4;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 96417:
-                    if (str.equals("add")) {
-                        c = 3;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 102230:
-                    if (str.equals("get")) {
-                        c = 0;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 113762:
-                    if (str.equals("set")) {
-                        c = 1;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 3322014:
-                    if (str.equals("list")) {
-                        c = 2;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 1093388830:
-                    if (str.equals("stop-watching")) {
-                        c = 6;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                default:
-                    c = 65535;
-                    break;
-            }
-            switch (c) {
-                case 0:
-                    return runGet();
-                case 1:
-                    return runSet();
-                case 2:
-                    return runList();
-                case 3:
-                    return runAdd();
-                case 4:
-                    return runRemove();
-                case 5:
-                    return runStartWatching();
-                case 6:
-                    return runStopWatching();
-                default:
-                    return handleDefaultCommands(str);
-            }
-        } catch (RemoteException e) {
-            outPrintWriter.println("Remote exception: " + e);
+        String nextArg = getNextArg();
+        if (nextArg == null) {
+            outPrintWriter.println("Error: didn't specify UID");
             return -1;
+        }
+        try {
+            return Integer.parseInt(nextArg);
+        } catch (NumberFormatException unused) {
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m(outPrintWriter, "Error: UID (", nextArg, ") should be a number");
+            return -2;
         }
     }
 
-    public void onHelp() {
+    public final void listUidList(String str, int[] iArr) {
+        PrintWriter outPrintWriter = getOutPrintWriter();
+        outPrintWriter.print(str);
+        outPrintWriter.print(": ");
+        if (iArr.length == 0) {
+            outPrintWriter.println("none");
+        } else {
+            for (int i : iArr) {
+                outPrintWriter.print(i);
+                outPrintWriter.print(' ');
+            }
+        }
+        outPrintWriter.println();
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x00b4, code lost:
+    
+        if (r6.equals("restrict-background-whitelist") == false) goto L50;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int onCommand(java.lang.String r9) {
+        /*
+            Method dump skipped, instructions count: 346
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.net.NetworkPolicyManagerShellCommand.onCommand(java.lang.String):int");
+    }
+
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.println("Network policy manager (netpolicy) commands:");
         outPrintWriter.println("  help");
         outPrintWriter.println("    Print this help text.");
         outPrintWriter.println("");
-        outPrintWriter.println("  add restrict-background-whitelist UID");
-        outPrintWriter.println("    Adds a UID to the whitelist for restrict background usage.");
-        outPrintWriter.println("  add restrict-background-blacklist UID");
-        outPrintWriter.println("    Adds a UID to the blacklist for restrict background usage.");
-        outPrintWriter.println("  add app-idle-whitelist UID");
-        outPrintWriter.println("    Adds a UID to the temporary app idle whitelist.");
-        outPrintWriter.println("  get restrict-background");
-        outPrintWriter.println("    Gets the global restrict background usage status.");
-        outPrintWriter.println("  list wifi-networks [true|false]");
-        outPrintWriter.println("    Lists all saved wifi networks and whether they are metered or not.");
-        outPrintWriter.println("    If a boolean argument is passed, filters just the metered (or unmetered)");
-        outPrintWriter.println("    networks.");
-        outPrintWriter.println("  list restrict-background-whitelist");
-        outPrintWriter.println("    Lists UIDs that are whitelisted for restrict background usage.");
-        outPrintWriter.println("  list restrict-background-blacklist");
-        outPrintWriter.println("    Lists UIDs that are blacklisted for restrict background usage.");
-        outPrintWriter.println("  remove restrict-background-whitelist UID");
-        outPrintWriter.println("    Removes a UID from the whitelist for restrict background usage.");
-        outPrintWriter.println("  remove restrict-background-blacklist UID");
-        outPrintWriter.println("    Removes a UID from the blacklist for restrict background usage.");
-        outPrintWriter.println("  remove app-idle-whitelist UID");
-        outPrintWriter.println("    Removes a UID from the temporary app idle whitelist.");
-        outPrintWriter.println("  set metered-network ID [undefined|true|false]");
-        outPrintWriter.println("    Toggles whether the given wi-fi network is metered.");
-        outPrintWriter.println("  set restrict-background BOOLEAN");
-        outPrintWriter.println("    Sets the global restrict background usage status.");
-        outPrintWriter.println("  set sub-plan-owner subId [packageName]");
-        outPrintWriter.println("    Sets the data plan owner package for subId.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  add restrict-background-whitelist UID", "    Adds a UID to the whitelist for restrict background usage.", "  add restrict-background-blacklist UID", "    Adds a UID to the blacklist for restrict background usage.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  add app-idle-whitelist UID", "    Adds a UID to the temporary app idle whitelist.", "  get restrict-background", "    Gets the global restrict background usage status.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  list wifi-networks [true|false]", "    Lists all saved wifi networks and whether they are metered or not.", "    If a boolean argument is passed, filters just the metered (or unmetered)", "    networks.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  list restrict-background-whitelist", "    Lists UIDs that are whitelisted for restrict background usage.", "  list restrict-background-blacklist", "    Lists UIDs that are blacklisted for restrict background usage.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  remove restrict-background-whitelist UID", "    Removes a UID from the whitelist for restrict background usage.", "  remove restrict-background-blacklist UID", "    Removes a UID from the blacklist for restrict background usage.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  remove app-idle-whitelist UID", "    Removes a UID from the temporary app idle whitelist.", "  set metered-network ID [undefined|true|false]", "    Toggles whether the given wi-fi network is metered.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  set restrict-background BOOLEAN", "    Sets the global restrict background usage status.", "  set sub-plan-owner subId [packageName]", "    Sets the data plan owner package for subId.");
     }
 
-    public final int runGet() {
+    public final int resetUidPolicy(int i, String str) {
+        int uidFromNextArg = getUidFromNextArg();
+        if (uidFromNextArg < 0) {
+            return uidFromNextArg;
+        }
+        if (this.mInterface.getUidPolicy(uidFromNextArg) == i) {
+            this.mInterface.setUidPolicy(uidFromNextArg, 0);
+            return 0;
+        }
         PrintWriter outPrintWriter = getOutPrintWriter();
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            outPrintWriter.println("Error: didn't specify type of data to get");
-            return -1;
-        }
-        if (nextArg.equals("restrict-background")) {
-            return getRestrictBackground();
-        }
-        if (nextArg.equals("restricted-mode")) {
-            return getRestrictedModeState();
-        }
-        outPrintWriter.println("Error: unknown get type '" + nextArg + "'");
+        outPrintWriter.print("Error: UID ");
+        outPrintWriter.print(uidFromNextArg);
+        outPrintWriter.print(' ');
+        outPrintWriter.println(str);
         return -1;
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    public final int runSet() {
+    public final int runAdd() {
         char c;
         PrintWriter outPrintWriter = getOutPrintWriter();
         String nextArg = getNextArg();
         if (nextArg == null) {
-            outPrintWriter.println("Error: didn't specify type of data to set");
+            outPrintWriter.println("Error: didn't specify type of data to add");
             return -1;
         }
         switch (nextArg.hashCode()) {
-            case -983249079:
-                if (nextArg.equals("metered-network")) {
+            case -1683867974:
+                if (nextArg.equals("app-idle-whitelist")) {
                     c = 0;
                     break;
                 }
                 c = 65535;
                 break;
-            case -747095841:
-                if (nextArg.equals("restrict-background")) {
+            case -668534353:
+                if (nextArg.equals("restrict-background-blacklist")) {
                     c = 1;
                     break;
                 }
                 c = 65535;
                 break;
-            case 1846940860:
-                if (nextArg.equals("sub-plan-owner")) {
+            case 639570137:
+                if (nextArg.equals("restrict-background-whitelist")) {
                     c = 2;
                     break;
                 }
@@ -197,15 +137,57 @@ public class NetworkPolicyManagerShellCommand extends ShellCommand {
         }
         switch (c) {
             case 0:
-                return setMeteredWifiNetwork();
+                int uidFromNextArg = getUidFromNextArg();
+                if (uidFromNextArg >= 0) {
+                    this.mInterface.setAppIdleWhitelist(uidFromNextArg, true);
+                    break;
+                } else {
+                    break;
+                }
             case 1:
-                return setRestrictBackground();
+                int uidFromNextArg2 = getUidFromNextArg();
+                if (uidFromNextArg2 >= 0) {
+                    this.mInterface.setUidPolicy(uidFromNextArg2, 1);
+                    break;
+                } else {
+                    break;
+                }
             case 2:
-                return setSubPlanOwner();
+                int uidFromNextArg3 = getUidFromNextArg();
+                if (uidFromNextArg3 >= 0) {
+                    this.mInterface.setUidPolicy(uidFromNextArg3, 4);
+                    break;
+                } else {
+                    break;
+                }
             default:
-                outPrintWriter.println("Error: unknown set type '" + nextArg + "'");
-                return -1;
+                BinaryTransparencyService$$ExternalSyntheticOutline0.m(outPrintWriter, "Error: unknown add type '", nextArg, "'");
+                break;
         }
+        return -1;
+    }
+
+    public final int runGet() {
+        PrintWriter outPrintWriter = getOutPrintWriter();
+        String nextArg = getNextArg();
+        if (nextArg == null) {
+            outPrintWriter.println("Error: didn't specify type of data to get");
+            return -1;
+        }
+        if (nextArg.equals("restrict-background")) {
+            PrintWriter outPrintWriter2 = getOutPrintWriter();
+            outPrintWriter2.print("Restrict background status: ");
+            outPrintWriter2.println(this.mInterface.getRestrictBackground() ? "enabled" : "disabled");
+            return 0;
+        }
+        if (!nextArg.equals("restricted-mode")) {
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m(outPrintWriter, "Error: unknown get type '", nextArg, "'");
+            return -1;
+        }
+        PrintWriter outPrintWriter3 = getOutPrintWriter();
+        outPrintWriter3.print("Restricted mode status: ");
+        outPrintWriter3.println(this.mInterface.isRestrictedModeEnabled() ? "enabled" : "disabled");
+        return 0;
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
@@ -252,317 +234,124 @@ public class NetworkPolicyManagerShellCommand extends ShellCommand {
         }
         switch (c) {
             case 0:
-                return listAppIdleWhitelist();
+                getOutPrintWriter();
+                listUidList("App Idle whitelisted UIDs", this.mInterface.getAppIdleWhitelist());
+                break;
             case 1:
-                return listRestrictBackgroundBlacklist();
+                listUidList("Restrict background blacklisted UIDs", this.mInterface.getUidsWithPolicy(1));
+                break;
             case 2:
-                return listWifiNetworks();
+                PrintWriter outPrintWriter2 = getOutPrintWriter();
+                String nextArg2 = getNextArg();
+                int i = nextArg2 == null ? 0 : Boolean.parseBoolean(nextArg2) ? 1 : 2;
+                for (WifiConfiguration wifiConfiguration : this.mWifiManager.getConfiguredNetworks()) {
+                    if (nextArg2 == null || wifiConfiguration.meteredOverride == i) {
+                        outPrintWriter2.print(NetworkPolicyManager.resolveNetworkId(wifiConfiguration));
+                        outPrintWriter2.print(';');
+                        int i2 = wifiConfiguration.meteredOverride;
+                        outPrintWriter2.println(i2 != 1 ? i2 != 2 ? "none" : "false" : "true");
+                    }
+                }
+                break;
             case 3:
-                return listRestrictBackgroundWhitelist();
-            default:
-                outPrintWriter.println("Error: unknown list type '" + nextArg + "'");
-                return -1;
-        }
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    public final int runAdd() {
-        char c;
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            outPrintWriter.println("Error: didn't specify type of data to add");
-            return -1;
-        }
-        switch (nextArg.hashCode()) {
-            case -1683867974:
-                if (nextArg.equals("app-idle-whitelist")) {
-                    c = 0;
-                    break;
-                }
-                c = 65535;
-                break;
-            case -668534353:
-                if (nextArg.equals("restrict-background-blacklist")) {
-                    c = 1;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 639570137:
-                if (nextArg.equals("restrict-background-whitelist")) {
-                    c = 2;
-                    break;
-                }
-                c = 65535;
+                listUidList("Restrict background whitelisted UIDs", this.mInterface.getUidsWithPolicy(4));
                 break;
             default:
-                c = 65535;
+                BinaryTransparencyService$$ExternalSyntheticOutline0.m(outPrintWriter, "Error: unknown list type '", nextArg, "'");
                 break;
         }
-        switch (c) {
-            case 0:
-                return addAppIdleWhitelist();
-            case 1:
-                return addRestrictBackgroundBlacklist();
-            case 2:
-                return addRestrictBackgroundWhitelist();
-            default:
-                outPrintWriter.println("Error: unknown add type '" + nextArg + "'");
-                return -1;
-        }
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    public final int runRemove() {
-        char c;
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            outPrintWriter.println("Error: didn't specify type of data to remove");
-            return -1;
-        }
-        switch (nextArg.hashCode()) {
-            case -1683867974:
-                if (nextArg.equals("app-idle-whitelist")) {
-                    c = 0;
-                    break;
-                }
-                c = 65535;
-                break;
-            case -668534353:
-                if (nextArg.equals("restrict-background-blacklist")) {
-                    c = 1;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 639570137:
-                if (nextArg.equals("restrict-background-whitelist")) {
-                    c = 2;
-                    break;
-                }
-                c = 65535;
-                break;
-            default:
-                c = 65535;
-                break;
-        }
-        switch (c) {
-            case 0:
-                return removeAppIdleWhitelist();
-            case 1:
-                return removeRestrictBackgroundBlacklist();
-            case 2:
-                return removeRestrictBackgroundWhitelist();
-            default:
-                outPrintWriter.println("Error: unknown remove type '" + nextArg + "'");
-                return -1;
-        }
-    }
-
-    public final int runStartWatching() {
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        if (parseInt < 0) {
-            PrintWriter outPrintWriter = getOutPrintWriter();
-            outPrintWriter.print("Invalid UID: ");
-            outPrintWriter.println(parseInt);
-            return -1;
-        }
-        this.mInterface.setDebugUid(parseInt);
-        return 0;
-    }
-
-    public final int runStopWatching() {
-        this.mInterface.setDebugUid(-1);
-        return 0;
-    }
-
-    public final int listUidPolicies(String str, int i) {
-        return listUidList(str, this.mInterface.getUidsWithPolicy(i));
-    }
-
-    public final int listUidList(String str, int[] iArr) {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        outPrintWriter.print(str);
-        outPrintWriter.print(": ");
-        if (iArr.length == 0) {
-            outPrintWriter.println("none");
-        } else {
-            for (int i : iArr) {
-                outPrintWriter.print(i);
-                outPrintWriter.print(' ');
-            }
-        }
-        outPrintWriter.println();
-        return 0;
-    }
-
-    public final int listRestrictBackgroundWhitelist() {
-        return listUidPolicies("Restrict background whitelisted UIDs", 4);
-    }
-
-    public final int listRestrictBackgroundBlacklist() {
-        return listUidPolicies("Restrict background blacklisted UIDs", 1);
-    }
-
-    public final int listAppIdleWhitelist() {
-        getOutPrintWriter();
-        return listUidList("App Idle whitelisted UIDs", this.mInterface.getAppIdleWhitelist());
-    }
-
-    public final int getRestrictedModeState() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        outPrintWriter.print("Restricted mode status: ");
-        outPrintWriter.println(this.mInterface.isRestrictedModeEnabled() ? "enabled" : "disabled");
-        return 0;
-    }
-
-    public final int getRestrictBackground() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        outPrintWriter.print("Restrict background status: ");
-        outPrintWriter.println(this.mInterface.getRestrictBackground() ? "enabled" : "disabled");
-        return 0;
-    }
-
-    public final int setRestrictBackground() {
-        int nextBooleanArg = getNextBooleanArg();
-        if (nextBooleanArg < 0) {
-            return nextBooleanArg;
-        }
-        this.mInterface.setRestrictBackground(nextBooleanArg > 0);
-        return 0;
-    }
-
-    public final int setSubPlanOwner() {
-        this.mInterface.setSubscriptionPlansOwner(Integer.parseInt(getNextArgRequired()), getNextArg());
-        return 0;
-    }
-
-    public final int setUidPolicy(int i) {
-        int uidFromNextArg = getUidFromNextArg();
-        if (uidFromNextArg < 0) {
-            return uidFromNextArg;
-        }
-        this.mInterface.setUidPolicy(uidFromNextArg, i);
-        return 0;
-    }
-
-    public final int resetUidPolicy(String str, int i) {
-        int uidFromNextArg = getUidFromNextArg();
-        if (uidFromNextArg < 0) {
-            return uidFromNextArg;
-        }
-        if (this.mInterface.getUidPolicy(uidFromNextArg) != i) {
-            PrintWriter outPrintWriter = getOutPrintWriter();
-            outPrintWriter.print("Error: UID ");
-            outPrintWriter.print(uidFromNextArg);
-            outPrintWriter.print(' ');
-            outPrintWriter.println(str);
-            return -1;
-        }
-        this.mInterface.setUidPolicy(uidFromNextArg, 0);
-        return 0;
-    }
-
-    public final int addRestrictBackgroundWhitelist() {
-        return setUidPolicy(4);
-    }
-
-    public final int removeRestrictBackgroundWhitelist() {
-        return resetUidPolicy("not whitelisted", 4);
-    }
-
-    public final int addRestrictBackgroundBlacklist() {
-        return setUidPolicy(1);
-    }
-
-    public final int removeRestrictBackgroundBlacklist() {
-        return resetUidPolicy("not blacklisted", 1);
-    }
-
-    public final int setAppIdleWhitelist(boolean z) {
-        int uidFromNextArg = getUidFromNextArg();
-        if (uidFromNextArg < 0) {
-            return uidFromNextArg;
-        }
-        this.mInterface.setAppIdleWhitelist(uidFromNextArg, z);
-        return 0;
-    }
-
-    public final int addAppIdleWhitelist() {
-        return setAppIdleWhitelist(true);
-    }
-
-    public final int removeAppIdleWhitelist() {
-        return setAppIdleWhitelist(false);
-    }
-
-    public final int listWifiNetworks() {
-        int i;
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            i = 0;
-        } else {
-            i = Boolean.parseBoolean(nextArg) ? 1 : 2;
-        }
-        for (WifiConfiguration wifiConfiguration : this.mWifiManager.getConfiguredNetworks()) {
-            if (nextArg == null || wifiConfiguration.meteredOverride == i) {
-                outPrintWriter.print(NetworkPolicyManager.resolveNetworkId(wifiConfiguration));
-                outPrintWriter.print(';');
-                outPrintWriter.println(overrideToString(wifiConfiguration.meteredOverride));
-            }
-        }
-        return 0;
-    }
-
-    public final int setMeteredWifiNetwork() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            outPrintWriter.println("Error: didn't specify networkId");
-            return -1;
-        }
-        String nextArg2 = getNextArg();
-        if (nextArg2 == null) {
-            outPrintWriter.println("Error: didn't specify meteredOverride");
-            return -1;
-        }
-        this.mInterface.setWifiMeteredOverride(NetworkPolicyManager.resolveNetworkId(nextArg), stringToOverride(nextArg2));
         return -1;
     }
 
-    public static int stringToOverride(String str) {
-        str.hashCode();
-        if (str.equals("true")) {
-            return 1;
-        }
-        return !str.equals("false") ? 0 : 2;
-    }
-
-    public final int getNextBooleanArg() {
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r5v0 */
+    /* JADX WARN: Type inference failed for: r5v2 */
+    /* JADX WARN: Type inference failed for: r5v3 */
+    public final int runSet() {
+        boolean z;
+        int i = 2;
         PrintWriter outPrintWriter = getOutPrintWriter();
         String nextArg = getNextArg();
-        if (nextArg != null) {
-            return Boolean.valueOf(nextArg).booleanValue() ? 1 : 0;
-        }
-        outPrintWriter.println("Error: didn't specify BOOLEAN");
-        return -1;
-    }
-
-    public final int getUidFromNextArg() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        String nextArg = getNextArg();
+        int i2 = -1;
         if (nextArg == null) {
-            outPrintWriter.println("Error: didn't specify UID");
+            outPrintWriter.println("Error: didn't specify type of data to set");
             return -1;
         }
-        try {
-            return Integer.parseInt(nextArg);
-        } catch (NumberFormatException unused) {
-            outPrintWriter.println("Error: UID (" + nextArg + ") should be a number");
-            return -2;
+        switch (nextArg.hashCode()) {
+            case -983249079:
+                if (nextArg.equals("metered-network")) {
+                    z = false;
+                    break;
+                }
+                z = -1;
+                break;
+            case -747095841:
+                if (nextArg.equals("restrict-background")) {
+                    z = true;
+                    break;
+                }
+                z = -1;
+                break;
+            case 1846940860:
+                if (nextArg.equals("sub-plan-owner")) {
+                    z = 2;
+                    break;
+                }
+                z = -1;
+                break;
+            default:
+                z = -1;
+                break;
         }
+        switch (z) {
+            case false:
+                PrintWriter outPrintWriter2 = getOutPrintWriter();
+                String nextArg2 = getNextArg();
+                if (nextArg2 != null) {
+                    String nextArg3 = getNextArg();
+                    if (nextArg3 != null) {
+                        NetworkPolicyManagerService networkPolicyManagerService = this.mInterface;
+                        String resolveNetworkId = NetworkPolicyManager.resolveNetworkId(nextArg2);
+                        if (nextArg3.equals("true")) {
+                            i = 1;
+                        } else if (!nextArg3.equals("false")) {
+                            i = 0;
+                        }
+                        networkPolicyManagerService.setWifiMeteredOverride(resolveNetworkId, i);
+                        break;
+                    } else {
+                        outPrintWriter2.println("Error: didn't specify meteredOverride");
+                        break;
+                    }
+                } else {
+                    outPrintWriter2.println("Error: didn't specify networkId");
+                    break;
+                }
+            case true:
+                PrintWriter outPrintWriter3 = getOutPrintWriter();
+                String nextArg4 = getNextArg();
+                if (nextArg4 == null) {
+                    outPrintWriter3.println("Error: didn't specify BOOLEAN");
+                } else {
+                    i2 = Boolean.valueOf(nextArg4).booleanValue();
+                }
+                if (i2 >= 0) {
+                    this.mInterface.setRestrictBackground(i2 > 0);
+                    break;
+                } else {
+                    break;
+                }
+            case true:
+                int parseInt = Integer.parseInt(getNextArgRequired());
+                String nextArg5 = getNextArg();
+                this.mInterface.mContext.enforceCallingOrSelfPermission("android.permission.NETWORK_SETTINGS", "NetworkPolicy");
+                SystemProperties.set("persist.sys.sub_plan_owner." + parseInt, nextArg5);
+                break;
+            default:
+                BinaryTransparencyService$$ExternalSyntheticOutline0.m(outPrintWriter, "Error: unknown set type '", nextArg, "'");
+                break;
+        }
+        return -1;
     }
 }

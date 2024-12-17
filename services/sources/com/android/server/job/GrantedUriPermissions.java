@@ -4,6 +4,7 @@ import android.app.UriGrantsManager;
 import android.content.ClipData;
 import android.content.ContentProvider;
 import android.content.Intent;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -12,58 +13,40 @@ import android.util.Slog;
 import android.util.proto.ProtoOutputStream;
 import com.android.server.LocalServices;
 import com.android.server.uri.UriGrantsManagerInternal;
+import com.android.server.uri.UriGrantsManagerService;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class GrantedUriPermissions {
     public final int mGrantFlags;
     public final IBinder mPermissionOwner;
     public final int mSourceUserId;
     public final String mTag;
+    public final UriGrantsManagerInternal mUriGrantsManagerInternal;
     public final ArrayList mUris = new ArrayList();
-
-    public static boolean checkGrantFlags(int i) {
-        return (i & 3) != 0;
-    }
 
     public GrantedUriPermissions(int i, int i2, String str) {
         this.mGrantFlags = i;
         this.mSourceUserId = UserHandle.getUserId(i2);
         this.mTag = str;
-        this.mPermissionOwner = ((UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class)).newUriPermissionOwner("job: " + str);
-    }
-
-    public void revoke() {
-        for (int size = this.mUris.size() - 1; size >= 0; size--) {
-            ((UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class)).revokeUriPermissionFromOwner(this.mPermissionOwner, (Uri) this.mUris.get(size), this.mGrantFlags, this.mSourceUserId);
-        }
-        this.mUris.clear();
-    }
-
-    public static GrantedUriPermissions createFromIntent(Intent intent, int i, String str, int i2, String str2) {
-        int flags = intent.getFlags();
-        if (!checkGrantFlags(flags)) {
-            return null;
-        }
-        Uri data = intent.getData();
-        GrantedUriPermissions grantUri = data != null ? grantUri(data, i, str, i2, flags, str2, null) : null;
-        ClipData clipData = intent.getClipData();
-        return clipData != null ? grantClip(clipData, i, str, i2, flags, str2, grantUri) : grantUri;
-    }
-
-    public static GrantedUriPermissions createFromClip(ClipData clipData, int i, String str, int i2, int i3, String str2) {
-        if (checkGrantFlags(i3) && clipData != null) {
-            return grantClip(clipData, i, str, i2, i3, str2, null);
-        }
-        return null;
+        UriGrantsManagerInternal uriGrantsManagerInternal = (UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class);
+        this.mUriGrantsManagerInternal = uriGrantsManagerInternal;
+        this.mPermissionOwner = ((UriGrantsManagerService.LocalService) uriGrantsManagerInternal).newUriPermissionOwner(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("job: ", str));
     }
 
     public static GrantedUriPermissions grantClip(ClipData clipData, int i, String str, int i2, int i3, String str2, GrantedUriPermissions grantedUriPermissions) {
         int itemCount = clipData.getItemCount();
         GrantedUriPermissions grantedUriPermissions2 = grantedUriPermissions;
         for (int i4 = 0; i4 < itemCount; i4++) {
-            grantedUriPermissions2 = grantItem(clipData.getItemAt(i4), i, str, i2, i3, str2, grantedUriPermissions2);
+            ClipData.Item itemAt = clipData.getItemAt(i4);
+            if (itemAt.getUri() != null) {
+                grantedUriPermissions2 = grantUri(itemAt.getUri(), i, str, i2, i3, str2, grantedUriPermissions2);
+            }
+            GrantedUriPermissions grantedUriPermissions3 = grantedUriPermissions2;
+            Intent intent = itemAt.getIntent();
+            grantedUriPermissions2 = (intent == null || intent.getData() == null) ? grantedUriPermissions3 : grantUri(intent.getData(), i, str, i2, i3, str2, grantedUriPermissions3);
         }
         return grantedUriPermissions2;
     }
@@ -83,16 +66,22 @@ public final class GrantedUriPermissions {
         return grantedUriPermissions;
     }
 
-    public static GrantedUriPermissions grantItem(ClipData.Item item, int i, String str, int i2, int i3, String str2, GrantedUriPermissions grantedUriPermissions) {
-        if (item.getUri() != null) {
-            grantedUriPermissions = grantUri(item.getUri(), i, str, i2, i3, str2, grantedUriPermissions);
+    public final void dump(ProtoOutputStream protoOutputStream, long j) {
+        long start = protoOutputStream.start(j);
+        protoOutputStream.write(1120986464257L, this.mGrantFlags);
+        protoOutputStream.write(1120986464258L, this.mSourceUserId);
+        protoOutputStream.write(1138166333443L, this.mTag);
+        protoOutputStream.write(1138166333444L, this.mPermissionOwner.toString());
+        for (int i = 0; i < this.mUris.size(); i++) {
+            Uri uri = (Uri) this.mUris.get(i);
+            if (uri != null) {
+                protoOutputStream.write(2237677961221L, uri.toString());
+            }
         }
-        GrantedUriPermissions grantedUriPermissions2 = grantedUriPermissions;
-        Intent intent = item.getIntent();
-        return (intent == null || intent.getData() == null) ? grantedUriPermissions2 : grantUri(intent.getData(), i, str, i2, i3, str2, grantedUriPermissions2);
+        protoOutputStream.end(start);
     }
 
-    public void dump(PrintWriter printWriter) {
+    public final void dump(PrintWriter printWriter) {
         printWriter.print("mGrantFlags=0x");
         printWriter.print(Integer.toHexString(this.mGrantFlags));
         printWriter.print(" mSourceUserId=");
@@ -109,18 +98,10 @@ public final class GrantedUriPermissions {
         }
     }
 
-    public void dump(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        protoOutputStream.write(1120986464257L, this.mGrantFlags);
-        protoOutputStream.write(1120986464258L, this.mSourceUserId);
-        protoOutputStream.write(1138166333443L, this.mTag);
-        protoOutputStream.write(1138166333444L, this.mPermissionOwner.toString());
-        for (int i = 0; i < this.mUris.size(); i++) {
-            Uri uri = (Uri) this.mUris.get(i);
-            if (uri != null) {
-                protoOutputStream.write(2237677961221L, uri.toString());
-            }
+    public final void revoke() {
+        for (int size = this.mUris.size() - 1; size >= 0; size--) {
+            ((UriGrantsManagerService.LocalService) this.mUriGrantsManagerInternal).revokeUriPermissionFromOwner(this.mPermissionOwner, (Uri) this.mUris.get(size), this.mGrantFlags, this.mSourceUserId);
         }
-        protoOutputStream.end(start);
+        this.mUris.clear();
     }
 }

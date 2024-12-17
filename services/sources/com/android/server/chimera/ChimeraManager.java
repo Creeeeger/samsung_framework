@@ -1,312 +1,276 @@
 package com.android.server.chimera;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.hardware.camera2.CameraManager;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.SystemProperties;
-import com.android.server.am.ActivityManagerService;
-import com.android.server.chimera.SystemEventListener;
+import android.provider.Settings;
+import android.text.TextUtils;
+import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.util.function.pooled.PooledLambda;
+import com.android.server.am.MARsPolicyManager;
+import com.android.server.chimera.AggressivePolicyHandler;
+import com.android.server.chimera.SystemRepository;
 import com.android.server.chimera.heimdall.Heimdall;
+import com.android.server.chimera.heimdall.HeimdallReportManager;
+import com.android.server.chimera.ppn.ChimeraQuotaMonitor;
+import com.android.server.chimera.ppn.ChimeraQuotaMonitor.AlwaysRunningMemCollectTask;
+import com.android.server.chimera.ppn.PerProcessNandswap;
 import com.android.server.chimera.psitracker.PSITracker;
-import com.android.server.chimera.umr.UnifiedMemoryReclaimer;
-import java.io.PrintWriter;
+import com.android.server.wm.ActivityMetricsLaunchObserverRegistry;
+import com.android.server.wm.LaunchObserverRegistryImpl;
+import com.android.server.wm.LaunchObserverRegistryImpl$$ExternalSyntheticLambda0;
+import java.util.ArrayList;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.Timer;
+import java.util.function.Predicate;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ChimeraManager implements SystemEventListener.MediaScanFinishedListener {
-    public static final boolean IS_SHIP_BUILD = "true".equals(SystemProperties.get("ro.product_ship", "false"));
+public final class ChimeraManager {
     public AbnormalFgsDetector mAbnormalFgsDetector;
     public ChimeraAppManager mAppManager;
     public ChimeraStrategy mChimeraStrategy;
     public Context mContext;
     public GPUMemoryReclaimer mGPUMemoryReclaimer;
+    public GenieUnloadPolicyHandler mGenieUnloadPolicyHandler;
     public HandlerThread mHandlerThread;
     public Heimdall mHeimdall;
+    public PSITracker mPSITracker;
     public PerProcessNandswap mPerProcessNandswap;
+    public PolicyHandler mPolicyHandler;
     public SettingRepository mSettingRepository;
     public SystemEventListener mSystemEventListener;
     public SystemRepository mSystemRepository;
-    public PolicyHandler mPolicyHandler = null;
-    public PSITracker mPSITracker = null;
 
-    public String getVersion() {
-        return "2.0";
-    }
-
-    public ChimeraManager(Context context, ActivityManagerService activityManagerService) {
-        this.mAppManager = null;
-        this.mChimeraStrategy = null;
-        this.mSystemRepository = null;
-        this.mSystemEventListener = null;
-        this.mSettingRepository = null;
-        this.mSystemRepository = RepositoryFactory.getInstance().getSystemRepository(context, activityManagerService);
-        this.mSettingRepository = RepositoryFactory.getInstance().getSettingRepository(this.mSystemRepository);
-        HandlerThread handlerThread = new HandlerThread("ObserverHandler");
-        this.mHandlerThread = handlerThread;
-        handlerThread.start();
-        this.mChimeraStrategy = new ChimeraStrategy(new ChimeraRecentAppManager(this.mSystemRepository, this.mSettingRepository, this.mHandlerThread.getLooper()), this.mSystemRepository, this.mSettingRepository);
-        this.mAppManager = new ChimeraAppManager(this.mSystemRepository);
-        this.mContext = context;
-        this.mSystemEventListener = new SystemEventListener(context, this.mHandlerThread.getLooper(), this.mSystemRepository);
-        this.mAbnormalFgsDetector = new AbnormalFgsDetector(this.mSystemRepository);
-        this.mHeimdall = new Heimdall(this.mHandlerThread.getLooper(), context, activityManagerService);
-        this.mSystemEventListener.addMediaScanFinishedListener(this);
-        ChimeraStandbyBucketCollectorService.schedule(context);
-    }
-
-    public final void registerSystemEventListener() {
-        this.mSystemEventListener.addBottleNeckHintListener(this.mPolicyHandler);
-        this.mSystemEventListener.addPmmCriticalListener(this.mPolicyHandler);
-        this.mSystemEventListener.addPmmStateChangeListener(this.mPolicyHandler);
-        this.mSystemEventListener.addLmkdEventListener(this.mPolicyHandler);
-        this.mSystemEventListener.addCarModeChangeListener(this.mPolicyHandler);
-        if (this.mSettingRepository.isQuickReclaimEnable()) {
-            this.mSystemEventListener.addAppLaunchIntentListener(this.mPolicyHandler);
-            this.mSystemEventListener.addCameraDeviceStateCallback(this.mContext);
-            this.mSystemEventListener.addAppLaunchIntent();
-            this.mSystemEventListener.addCameraStateListener(this.mPolicyHandler);
-        }
-        this.mSystemEventListener.addHomeLaunchListener(this.mPolicyHandler);
-        if (this.mSettingRepository.isAppsIdleKillEnabled() || this.mSettingRepository.isNativeProcessesIdleKillEnabled()) {
-            this.mSystemEventListener.addDeviceIdleListener(this.mPolicyHandler);
-        }
-        this.mSystemEventListener.addOneHourTimerListener(this.mAbnormalFgsDetector);
-        if (ChimeraCommonUtil.isQuotaEnable()) {
-            this.mSystemEventListener.addAlwaysRunningQuotaExceedListener(this.mPolicyHandler);
-        }
-    }
-
-    public final void unRegisterSystemEventListener() {
-        this.mSystemEventListener.removeBottleNeckHintListener(this.mPolicyHandler);
-        this.mSystemEventListener.removePmmCriticalListener(this.mPolicyHandler);
-        this.mSystemEventListener.removePmmStateChangeListener(this.mPolicyHandler);
-        this.mSystemEventListener.removeLmkdEventListener(this.mPolicyHandler);
-        this.mSystemEventListener.removeCarModeChangeListener(this.mPolicyHandler);
-        this.mSystemEventListener.removeHomeLaunchListener(this.mPolicyHandler);
-        if (this.mSettingRepository.isAppsIdleKillEnabled() || this.mSettingRepository.isNativeProcessesIdleKillEnabled()) {
-            this.mSystemEventListener.removeDeviceIdleListener(this.mPolicyHandler);
-        }
-        if (this.mSettingRepository.isQuickReclaimEnable()) {
-            this.mSystemEventListener.removeAppLaunchIntentListener(this.mPolicyHandler);
-            this.mSystemEventListener.removeCameraDeviceStateCallback(this.mContext);
-            this.mSystemEventListener.removeAppLaunchIntent();
-            this.mSystemEventListener.removeCameraStateListener(this.mPolicyHandler);
-        }
-        this.mSystemEventListener.removeOneHourTimerListener(this.mAbnormalFgsDetector);
-        if (ChimeraCommonUtil.isQuotaEnable()) {
-            this.mSystemEventListener.removeAlwaysRunningQuotaExceedListener(this.mPolicyHandler);
-        }
-    }
-
-    public void createPolicyHandler() {
+    public final void createPolicyHandler() {
+        boolean z = this.mSettingRepository.mIsConservativeMode;
         if (this.mPolicyHandler != null) {
-            unRegisterSystemEventListener();
+            unRegisterSystemEventListener(z);
         }
-        if (this.mSettingRepository.isConservativeMode()) {
+        if (z) {
             this.mPolicyHandler = new ConservativePolicyHandler(this.mAppManager, this.mChimeraStrategy, this.mSystemRepository, this.mSettingRepository, this.mAbnormalFgsDetector, this.mHandlerThread.getLooper());
+            registerSystemEventListener(true);
         } else {
-            this.mPolicyHandler = new AggressivePolicyHandler(this.mAppManager, this.mChimeraStrategy, this.mSystemRepository, this.mSettingRepository, this.mAbnormalFgsDetector, this.mHandlerThread.getLooper());
-        }
-        registerSystemEventListener();
-        this.mSystemRepository.log("ChimeraManager", "Chimera instance created");
-    }
-
-    public void createPSITracker() {
-        PSITracker pSITracker = this.mPSITracker;
-        if (pSITracker != null) {
-            this.mSystemEventListener.removeTimeOrTimeZoneChangedListener(pSITracker);
-        }
-        PSITracker pSITracker2 = new PSITracker(this.mSystemRepository, this.mContext, this.mHandlerThread.getLooper());
-        this.mPSITracker = pSITracker2;
-        this.mSystemEventListener.addTimeOrTimeZoneChangedListener(pSITracker2);
-        if (PSITracker.mFirstTriggeredAfterBooting) {
-            return;
-        }
-        PSITracker.mFirstTriggeredAfterBooting = true;
-        this.mPSITracker.scheduleAvailMem240PeriodRecord("MEDIA_SCAN_FINISHED");
-    }
-
-    public void checkProcessInHeimdall(int i, String str, String str2) {
-        try {
-            this.mHeimdall.checkProcess(i, str, str2);
-        } catch (Exception e) {
-            Heimdall.log(e.getMessage());
-        }
-    }
-
-    public void dump(PrintWriter printWriter, String[] strArr) {
-        if (strArr == null || strArr.length == 0) {
-            return;
-        }
-        if ("-a".equals(strArr[0])) {
-            printWriter.println("Chimera enabled: true");
-        } else if (strArr.length > 0) {
-            String str = strArr[0];
-            if (str.equals("info")) {
-                printWriter.println("Chimera enabled: true");
-            } else if (str.equals("standby")) {
-                printWriter.println(this.mAppManager.dumpStandbyBucket());
-            } else if (str.equals("use_bg_keeping_policy")) {
-                printWriter.println("Chimera set ConservativePolicy mode: " + strArr[1]);
-                boolean equals = "true".equals(strArr[1].toLowerCase());
-                if (equals != this.mSettingRepository.isConservativeMode()) {
-                    this.mSettingRepository.enableConservativeMode(equals);
-                    unRegisterSystemEventListener();
-                    createPolicyHandler();
+            Looper looper = this.mHandlerThread.getLooper();
+            ChimeraAppManager chimeraAppManager = this.mAppManager;
+            ChimeraStrategy chimeraStrategy = this.mChimeraStrategy;
+            SystemRepository systemRepository = this.mSystemRepository;
+            AggressivePolicyHandler aggressivePolicyHandler = new AggressivePolicyHandler(chimeraAppManager, chimeraStrategy, systemRepository, this.mSettingRepository, this.mAbnormalFgsDetector, looper);
+            aggressivePolicyHandler.mPkgKillIntervalDefault = 43200000;
+            aggressivePolicyHandler.mIsAdjustTargetFree = false;
+            aggressivePolicyHandler.mAdjustTargetFreeEndTime = 0L;
+            aggressivePolicyHandler.mAdjustTargetFreeFactor = 1.0d;
+            aggressivePolicyHandler.mCurProtectLevel = AggressivePolicyHandler.ProtectLevel.NORMAL;
+            aggressivePolicyHandler.mIsHeavyLaunchOn = false;
+            aggressivePolicyHandler.mHeavyLaunchBufferSize = 0;
+            aggressivePolicyHandler.mHeavyLaunchPackageLimit = 0;
+            aggressivePolicyHandler.mSkipReasonLogger = new SkipReasonLogger(systemRepository);
+            aggressivePolicyHandler.mSystemRepository.getClass();
+            String str = SystemProperties.get("ro.slmk.chimera_kill_interval_ms", "");
+            if (str != null && str.length() > 0) {
+                String[] split = str.split(",");
+                if (split.length == 2) {
+                    aggressivePolicyHandler.mPkgKillIntervalDefault = Integer.parseInt(split[0]);
+                    aggressivePolicyHandler.mPkgKillIntervalHeavy = Integer.parseInt(split[1]);
                 }
-            } else {
-                if (str.equals("reclaim_cache")) {
-                    this.mSettingRepository.enableReclaimPageCache("on".equals(strArr[1].toLowerCase()));
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("reclaim_cache: ");
-                    sb.append(this.mSettingRepository.isReclaimPageCacheEnabled() ? "on" : "off");
-                    printWriter.println(sb.toString());
-                } else if (str.equals("gc")) {
-                    this.mSettingRepository.enableGc("on".equals(strArr[1].toLowerCase()));
-                    StringBuilder sb2 = new StringBuilder();
-                    sb2.append("mIsGcenable: ");
-                    sb2.append(this.mSettingRepository.isGcEnabled() ? "on" : "off");
-                    printWriter.println(sb2.toString());
-                } else if (str.equals("enable_app_idle_kill")) {
-                    printWriter.println("Chimera enable samsung apps idle kill: " + strArr[1]);
-                    boolean equals2 = "true".equals(strArr[1].toLowerCase());
-                    if (equals2 != this.mSettingRepository.isAppsIdleKillEnabled()) {
-                        this.mSettingRepository.enableAppsIdleKill(equals2);
-                        if (!equals2 && !this.mSettingRepository.isNativeProcessesIdleKillEnabled()) {
-                            this.mSystemEventListener.removeDeviceIdleListener(this.mPolicyHandler);
-                        } else if (equals2 && !this.mSettingRepository.isNativeProcessesIdleKillEnabled()) {
-                            this.mSystemEventListener.addDeviceIdleListener(this.mPolicyHandler);
-                        }
+            }
+            SystemRepository.log("AggressivePolicyHandler", "PKG_KILL_INTERVAL_DEFAULT: " + aggressivePolicyHandler.mPkgKillIntervalDefault);
+            SystemRepository.log("AggressivePolicyHandler", "PKG_KILL_INTERVAL_HEAVY: " + aggressivePolicyHandler.mPkgKillIntervalHeavy);
+            int parseInt = Integer.parseInt(SystemProperties.get("persist.sys.chimera_pkg_kill_interval_ms", aggressivePolicyHandler.mPkgKillIntervalDefault + ""));
+            aggressivePolicyHandler.mCemPkgKillIntervalMs = Integer.parseInt(SystemProperties.get("ro.slmk.chimera_cem_pkg_kill_interval_ms", PolicyHandler.CEM_PKG_KILL_INTERVAL_DEFAULT));
+            aggressivePolicyHandler.mPkgProtectedParameters = new int[][]{new int[]{200, FrameworkStatsLog.VPN_CONNECTION_STATE_CHANGED, parseInt}, new int[]{100, FrameworkStatsLog.VPN_CONNECTION_STATE_CHANGED, aggressivePolicyHandler.mPkgKillIntervalHeavy}};
+            final int i = 0;
+            aggressivePolicyHandler.mIsKillBoostModeOnNormal = ((Boolean) Optional.of(SystemProperties.get("ro.slmk.chimera_kill_boost_on_normal", "")).filter(new Predicate() { // from class: com.android.server.chimera.AggressivePolicyHandler$$ExternalSyntheticLambda1
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    String str2 = (String) obj;
+                    switch (i) {
                     }
-                } else if (str.equals("enable_native_idle_kill")) {
-                    printWriter.println("Chimera enable 3rd native processes idle kill: " + strArr[1]);
-                    boolean equals3 = "true".equals(strArr[1].toLowerCase());
-                    if (equals3 != this.mSettingRepository.isNativeProcessesIdleKillEnabled()) {
-                        this.mSettingRepository.enableNativeProcessesIdleKill(equals3);
-                        if (!equals3 && !this.mSettingRepository.isAppsIdleKillEnabled()) {
-                            this.mSystemEventListener.removeDeviceIdleListener(this.mPolicyHandler);
-                        } else if (equals3 && !this.mSettingRepository.isAppsIdleKillEnabled()) {
-                            this.mSystemEventListener.addDeviceIdleListener(this.mPolicyHandler);
-                        }
+                    return !TextUtils.isEmpty(str2);
+                }
+            }).map(new AggressivePolicyHandler$$ExternalSyntheticLambda2()).orElse(Boolean.valueOf(ChimeraCommonUtil.getRamSizeGb() <= 3))).booleanValue();
+            final int i2 = 1;
+            aggressivePolicyHandler.mIsKillBoostModeOnHeavy = ((Boolean) Optional.of(SystemProperties.get("ro.slmk.chimera_kill_boost_on_heavy", "")).filter(new Predicate() { // from class: com.android.server.chimera.AggressivePolicyHandler$$ExternalSyntheticLambda1
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    String str2 = (String) obj;
+                    switch (i2) {
                     }
-                } else if (str.equals("enable_quick_reclaim")) {
-                    printWriter.println("Chimera enable quick reclaim: " + strArr[1]);
-                    boolean equalsIgnoreCase = "true".equalsIgnoreCase(strArr[1]);
-                    if (equalsIgnoreCase != this.mSettingRepository.isQuickReclaimEnable()) {
-                        this.mSettingRepository.enableQuickReclaim(equalsIgnoreCase);
-                        if (equalsIgnoreCase) {
-                            this.mSystemEventListener.addCameraDeviceStateCallback(this.mContext);
-                            this.mSystemEventListener.addAppLaunchIntentListener(this.mPolicyHandler);
-                            this.mSystemEventListener.addAppLaunchIntent();
-                        } else {
-                            this.mSystemEventListener.removeCameraDeviceStateCallback(this.mContext);
-                            this.mSystemEventListener.removeAppLaunchIntentListener(this.mPolicyHandler);
-                            this.mSystemEventListener.removeAppLaunchIntent();
-                        }
-                    }
-                } else if (str.equals("umr")) {
-                    UnifiedMemoryReclaimer.dumpInfo(printWriter, strArr);
-                } else if ("gmr".equals(str)) {
-                    GPUMemoryReclaimer gPUMemoryReclaimer = this.mGPUMemoryReclaimer;
-                    if (gPUMemoryReclaimer != null) {
-                        gPUMemoryReclaimer.dumpInfo(printWriter, strArr);
-                    }
-                } else if ("ppnandswap".equals(str)) {
-                    PerProcessNandswap perProcessNandswap = this.mPerProcessNandswap;
-                    if (perProcessNandswap != null) {
-                        perProcessNandswap.dumpInfo(printWriter, strArr);
-                    }
-                } else if (str.equals("psitracker")) {
-                    PSITracker pSITracker = this.mPSITracker;
-                    if (pSITracker != null) {
-                        pSITracker.dumpInfo(printWriter, strArr);
-                    }
-                } else {
-                    if (str.equals("enable_app_cache_reclaim")) {
-                        printWriter.println("Chimera enable app cache reclaim: " + strArr[1]);
-                        boolean equalsIgnoreCase2 = "true".equalsIgnoreCase(strArr[1]);
-                        if (equalsIgnoreCase2 != this.mSettingRepository.isAppCacheReclaimEnable()) {
-                            this.mSettingRepository.enableAppCacheReclaim(equalsIgnoreCase2);
-                            if (equalsIgnoreCase2) {
-                                printWriter.println("Chimera app cache reclaim enabled.");
-                                return;
-                            } else {
-                                printWriter.println("Chimera app cache reclaim disabled.");
-                                return;
-                            }
-                        }
-                        return;
-                    }
-                    if (str.equals("heimdall")) {
-                        this.mHeimdall.dumpInfo(printWriter, strArr);
-                        return;
-                    } else if (str.equals("set_quota") && !IS_SHIP_BUILD) {
-                        printWriter.println("Chimera set quota: " + strArr[1]);
-                        ChimeraQuotaMonitor.getInstance().setQuota(Long.parseLong(strArr[1]));
+                    return !TextUtils.isEmpty(str2);
+                }
+            }).map(new AggressivePolicyHandler$$ExternalSyntheticLambda2()).orElse(Boolean.valueOf(ChimeraCommonUtil.getRamSizeGb() <= 3))).booleanValue();
+            PolicyHandler.mIsBubEnabled = SystemProperties.get("persist.sys.bub_onoff", "on").equals("on");
+            String str2 = SystemProperties.get("ro.slmk.chimera_adjust_boot_targetfree", "");
+            if (!TextUtils.isEmpty(str2)) {
+                String[] split2 = str2.split(",");
+                if (split2.length == 2) {
+                    try {
+                        int parseInt2 = Integer.parseInt(split2[0]);
+                        aggressivePolicyHandler.mAdjustTargetFreeEndTime = System.currentTimeMillis() + (parseInt2 * 1000);
+                        aggressivePolicyHandler.mAdjustTargetFreeFactor = Double.parseDouble(split2[1]);
+                        aggressivePolicyHandler.mIsAdjustTargetFree = true;
+                        SystemRepository.log("AggressivePolicyHandler", "Adjust targetfree : " + parseInt2 + ", " + aggressivePolicyHandler.mAdjustTargetFreeFactor);
+                    } catch (Exception unused) {
+                        SystemRepository.log("AggressivePolicyHandler", "Error while adjust targetfee");
                     }
                 }
             }
+            if (ChimeraCommonUtil.getRamSizeGb() <= 4) {
+                aggressivePolicyHandler.mHeavyLaunchBufferSize = 80;
+                aggressivePolicyHandler.mHeavyLaunchPackageLimit = 25;
+                aggressivePolicyHandler.mIsHeavyLaunchOn = true;
+            }
+            if (aggressivePolicyHandler.mIsHeavyLaunchOn) {
+                aggressivePolicyHandler.mHeavyLaunchCounter = new HeavyLaunchCounter(aggressivePolicyHandler.mHeavyLaunchBufferSize, aggressivePolicyHandler.mHeavyLaunchPackageLimit);
+                SystemRepository.log("AggressivePolicyHandler", "Heavy launch param : " + aggressivePolicyHandler.mHeavyLaunchBufferSize + "," + aggressivePolicyHandler.mHeavyLaunchPackageLimit);
+            }
+            this.mPolicyHandler = aggressivePolicyHandler;
+            registerSystemEventListener(false);
         }
-        this.mChimeraStrategy.dump(printWriter, strArr);
-        PolicyHandler policyHandler = this.mPolicyHandler;
-        if (policyHandler != null) {
-            policyHandler.dump(printWriter, strArr);
-        }
-        if ("-a".equals(strArr[0])) {
-            printWriter.println();
-            UnifiedMemoryReclaimer.dumpInfo(printWriter, strArr);
-            printWriter.println();
-            PerProcessNandswap perProcessNandswap2 = this.mPerProcessNandswap;
-            if (perProcessNandswap2 != null) {
-                perProcessNandswap2.dumpInfo(printWriter, strArr);
-            }
-            printWriter.println();
-            GPUMemoryReclaimer gPUMemoryReclaimer2 = this.mGPUMemoryReclaimer;
-            if (gPUMemoryReclaimer2 != null) {
-                gPUMemoryReclaimer2.dumpInfo(printWriter, strArr);
-            }
-            AbnormalFgsDetector abnormalFgsDetector = this.mAbnormalFgsDetector;
-            if (abnormalFgsDetector != null) {
-                abnormalFgsDetector.dump(printWriter, strArr);
-            }
-            Heimdall heimdall = this.mHeimdall;
-            if (heimdall != null) {
-                heimdall.dumpInfo(printWriter, strArr);
-            }
-        }
+        this.mSystemRepository.getClass();
+        SystemRepository.log("ChimeraManager", "Chimera instance created");
     }
 
-    public ChimeraDataInfo getChimeraStat() {
-        return (ChimeraDataInfo) Optional.ofNullable(this.mPolicyHandler).map(new Function() { // from class: com.android.server.chimera.ChimeraManager$$ExternalSyntheticLambda0
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return ((PolicyHandler) obj).getChimeraStat();
-            }
-        }).orElse(new ChimeraDataInfo());
-    }
-
-    @Override // com.android.server.chimera.SystemEventListener.MediaScanFinishedListener
-    public void onMediaScanFinished() {
-        this.mSystemRepository.logDebug("ChimeraManager", "onMediaScanFinished() to start the policy ");
-        this.mSettingRepository.initialize();
+    public final void onMediaScanFinished() {
+        SystemRepository systemRepository = this.mSystemRepository;
+        systemRepository.getClass();
+        SystemRepository.logDebug("ChimeraManager", "onMediaScanFinished() to start the policy ");
+        SettingRepository settingRepository = this.mSettingRepository;
+        settingRepository.initialize();
+        Heimdall heimdall = this.mHeimdall;
+        ContentResolver contentResolver = heimdall.mContext.getContentResolver();
+        heimdall.updateAlwaysRunningGlobalQuota(contentResolver);
+        heimdall.updateAnomalyType(contentResolver);
+        heimdall.updateSpec(contentResolver);
+        int i = Settings.Global.getInt(contentResolver, "heimdall_report_hour_interval", 0);
+        if (i > 0) {
+            heimdall.mHeimdallPhaseManager.mHeimdallProcessList.mTimeoutReportProtectedHour = i;
+        }
+        int i2 = Settings.Global.getInt(contentResolver, "heimdall_random_sample_rate", 10);
+        heimdall.mHeimdallReportManager.getClass();
+        if (i2 >= 0) {
+            HeimdallReportManager.sRandomSampleRate = Math.min(i2, 1000);
+        }
+        Heimdall.log("retrieveSettings done");
         createPolicyHandler();
+        SystemRepository.log("ChimeraManager", "createGeniePolicyHandler");
+        GenieUnloadPolicyHandler genieUnloadPolicyHandler = this.mGenieUnloadPolicyHandler;
+        SystemEventListener systemEventListener = this.mSystemEventListener;
+        if (genieUnloadPolicyHandler != null) {
+            ((ArrayList) systemEventListener.mLmkdEventListeners).remove(genieUnloadPolicyHandler);
+            SystemRepository.log("ChimeraManager", "removeLmkdEventListener for mGeniePolicyHandler");
+        }
+        GenieUnloadPolicyHandler genieUnloadPolicyHandler2 = new GenieUnloadPolicyHandler(this.mAppManager, this.mChimeraStrategy, this.mSystemRepository, this.mSettingRepository, this.mAbnormalFgsDetector, this.mHandlerThread.getLooper());
+        this.mGenieUnloadPolicyHandler = genieUnloadPolicyHandler2;
+        ((ArrayList) systemEventListener.mLmkdEventListeners).add(genieUnloadPolicyHandler2);
+        SystemRepository.log("ChimeraManager", "create new mGeniePolicyHandler and addLmkdEventListener");
         PerProcessNandswap perProcessNandswap = PerProcessNandswap.getInstance();
         this.mPerProcessNandswap = perProcessNandswap;
-        perProcessNandswap.init(this.mSystemRepository, this.mChimeraStrategy);
+        ChimeraStrategy chimeraStrategy = this.mChimeraStrategy;
+        perProcessNandswap.init(systemRepository, chimeraStrategy);
         this.mGPUMemoryReclaimer = GPUMemoryReclaimer.getInstance();
-        if (this.mSettingRepository.isPSITrackerEnabled()) {
-            createPSITracker();
+        if (settingRepository.mIsPSITrackerEnable) {
+            PSITracker pSITracker = this.mPSITracker;
+            if (pSITracker != null) {
+                ((ArrayList) systemEventListener.mTimeOrTimeZoneChangedListeners).remove(pSITracker);
+            }
+            PSITracker pSITracker2 = new PSITracker(this.mContext, this.mHandlerThread.getLooper(), systemRepository);
+            this.mPSITracker = pSITracker2;
+            ((ArrayList) systemEventListener.mTimeOrTimeZoneChangedListeners).add(pSITracker2);
+            if (!PSITracker.mFirstTriggeredAfterBooting) {
+                PSITracker.mFirstTriggeredAfterBooting = true;
+                this.mPSITracker.scheduleAvailMem240PeriodRecord("MEDIA_SCAN_FINISHED");
+            }
         }
-        if (ChimeraCommonUtil.isQuotaEnable()) {
-            ChimeraQuotaMonitor.getInstance().schedule(this.mSystemRepository, this.mAppManager, this.mSystemEventListener, this.mChimeraStrategy.getAlwaysRunningProcQuota());
+        int[] iArr = ChimeraCommonUtil.ADJ_LEVELS;
+        if (SystemProperties.getBoolean("ro.slmk.chimera_quota_enable", false)) {
+            ChimeraQuotaMonitor chimeraQuotaMonitor = ChimeraQuotaMonitor.INSTANCE;
+            int i3 = chimeraStrategy.mAlwaysRunningProcessQuota;
+            chimeraQuotaMonitor.mSystemRepository = systemRepository;
+            long j = i3 * 1024;
+            chimeraQuotaMonitor.mQuota = j;
+            if (j <= 0) {
+                SystemRepository.log("ChimeraQuotaMonitor", "ChimeraQuotaMonitor invalid quota: " + chimeraQuotaMonitor.mQuota);
+            } else if (chimeraQuotaMonitor.mTimer == null) {
+                Timer timer = new Timer();
+                chimeraQuotaMonitor.mTimer = timer;
+                timer.schedule(chimeraQuotaMonitor.new AlwaysRunningMemCollectTask(), 1200000L, 1200000L);
+            } else {
+                SystemRepository.log("ChimeraQuotaMonitor", "ChimeraQuotaMonitor already start!");
+            }
+        }
+        MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.getClass();
+        if (MARsPolicyManager.isChinaPolicyEnabled()) {
+            systemRepository.mFGActivityManager = new SystemRepository.ForegroundActivityManager();
         }
     }
 
-    public SettingRepository getSettingRepository() {
-        return this.mSettingRepository;
+    public final void registerSystemEventListener(boolean z) {
+        SystemEventListener systemEventListener = this.mSystemEventListener;
+        if (!z) {
+            ((ArrayList) systemEventListener.mLmkdEventListeners).add(this.mPolicyHandler);
+            ((ArrayList) systemEventListener.mCarModeChangeListeners).add(this.mPolicyHandler);
+            ((ArrayList) systemEventListener.mHomeLaunchListeners).add(this.mPolicyHandler);
+            boolean z2 = MARsPolicyManager.MARs_ENABLE;
+            MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.getClass();
+            boolean isChinaPolicyEnabled = MARsPolicyManager.isChinaPolicyEnabled();
+            SettingRepository settingRepository = this.mSettingRepository;
+            if (isChinaPolicyEnabled || settingRepository.mQuickReclaimEnable) {
+                systemEventListener.addCameraDeviceStateCallback(this.mContext);
+            }
+            if (settingRepository.mQuickReclaimEnable) {
+                ((ArrayList) systemEventListener.mAppLaunchIntentListeners).add(this.mPolicyHandler);
+                ActivityMetricsLaunchObserverRegistry provideLaunchObserverRegistry = systemEventListener.provideLaunchObserverRegistry();
+                LaunchObserverRegistryImpl launchObserverRegistryImpl = (LaunchObserverRegistryImpl) provideLaunchObserverRegistry;
+                launchObserverRegistryImpl.mHandler.sendMessage(PooledLambda.obtainMessage(new LaunchObserverRegistryImpl$$ExternalSyntheticLambda0(1), launchObserverRegistryImpl, systemEventListener.mAppLaunchObserver));
+                ((ArrayList) systemEventListener.mCameraStateListeners).add(this.mPolicyHandler);
+            }
+        }
+        ((ArrayList) systemEventListener.mDeviceIdleListeners).add(this.mPolicyHandler);
+        if (((ArrayList) systemEventListener.mOneHourTimerListeners).size() == 0) {
+            systemEventListener.startOneHourTimer();
+        }
+        ((ArrayList) systemEventListener.mOneHourTimerListeners).add(this.mAbnormalFgsDetector);
+        boolean z3 = MARsPolicyManager.MARs_ENABLE;
+        MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.getClass();
+        if (MARsPolicyManager.isChinaPolicyEnabled()) {
+            ((ArrayList) systemEventListener.mQuotaListeners).add(this.mPolicyHandler);
+        }
     }
 
-    public PSITracker getPSITracker() {
-        return this.mPSITracker;
+    public final void unRegisterSystemEventListener(boolean z) {
+        SystemEventListener systemEventListener = this.mSystemEventListener;
+        if (!z) {
+            ((ArrayList) systemEventListener.mLmkdEventListeners).remove(this.mPolicyHandler);
+            ((ArrayList) systemEventListener.mCarModeChangeListeners).remove(this.mPolicyHandler);
+            ((ArrayList) systemEventListener.mHomeLaunchListeners).remove(this.mPolicyHandler);
+            boolean z2 = MARsPolicyManager.MARs_ENABLE;
+            MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.getClass();
+            boolean isChinaPolicyEnabled = MARsPolicyManager.isChinaPolicyEnabled();
+            SettingRepository settingRepository = this.mSettingRepository;
+            if (isChinaPolicyEnabled || settingRepository.mQuickReclaimEnable) {
+                ((CameraManager) this.mContext.getSystemService("camera")).unregisterSemCameraDeviceStateCallback(systemEventListener.mSystemRepository.mCameraDeviceStateCallback);
+            }
+            if (settingRepository.mQuickReclaimEnable) {
+                ((ArrayList) systemEventListener.mAppLaunchIntentListeners).remove(this.mPolicyHandler);
+                ActivityMetricsLaunchObserverRegistry provideLaunchObserverRegistry = systemEventListener.provideLaunchObserverRegistry();
+                LaunchObserverRegistryImpl launchObserverRegistryImpl = (LaunchObserverRegistryImpl) provideLaunchObserverRegistry;
+                launchObserverRegistryImpl.mHandler.sendMessage(PooledLambda.obtainMessage(new LaunchObserverRegistryImpl$$ExternalSyntheticLambda0(0), launchObserverRegistryImpl, systemEventListener.mAppLaunchObserver));
+                ((ArrayList) systemEventListener.mCameraStateListeners).remove(this.mPolicyHandler);
+            }
+        }
+        ((ArrayList) systemEventListener.mDeviceIdleListeners).remove(this.mPolicyHandler);
+        ((ArrayList) systemEventListener.mOneHourTimerListeners).remove(this.mAbnormalFgsDetector);
+        if (((ArrayList) systemEventListener.mOneHourTimerListeners).size() == 0) {
+            systemEventListener.mHandler.removeMessages(14);
+        }
+        boolean z3 = MARsPolicyManager.MARs_ENABLE;
+        MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.getClass();
+        if (MARsPolicyManager.isChinaPolicyEnabled()) {
+            ((ArrayList) systemEventListener.mQuotaListeners).remove(this.mPolicyHandler);
+        }
     }
 }

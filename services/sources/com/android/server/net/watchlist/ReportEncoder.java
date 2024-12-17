@@ -3,17 +3,12 @@ package com.android.server.net.watchlist;
 import android.util.Log;
 import android.util.proto.ProtoOutputStream;
 import com.android.internal.util.HexDump;
-import com.android.server.net.watchlist.WatchlistReportDbHelper;
 import java.io.ByteArrayOutputStream;
-import java.util.List;
 import java.util.Map;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class ReportEncoder {
-    public static byte[] encodeWatchlistReport(WatchlistConfig watchlistConfig, byte[] bArr, List list, WatchlistReportDbHelper.AggregatedResult aggregatedResult) {
-        return serializeReport(watchlistConfig, PrivacyUtils.createDpEncodedReportMap(watchlistConfig.isConfigSecure(), bArr, list, aggregatedResult));
-    }
-
     public static byte[] serializeReport(WatchlistConfig watchlistConfig, Map map) {
         byte[] watchlistConfigHash = watchlistConfig.getWatchlistConfigHash();
         if (watchlistConfigHash == null) {

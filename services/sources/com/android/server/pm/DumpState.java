@@ -1,6 +1,7 @@
 package com.android.server.pm;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class DumpState {
     public boolean mBrief;
     public boolean mCheckIn;
@@ -11,74 +12,16 @@ public final class DumpState {
     public boolean mTitlePrinted;
     public int mTypes;
 
-    public boolean isDumping(int i) {
+    public final boolean isDumping(int i) {
         int i2 = this.mTypes;
         return (i2 == 0 && i != 8192) || (i2 & i) != 0;
     }
 
-    public void setDump(int i) {
-        this.mTypes = i | this.mTypes;
-    }
-
-    public boolean isOptionEnabled(int i) {
+    public final boolean isOptionEnabled(int i) {
         return (this.mOptions & i) != 0;
     }
 
-    public void setOptionEnabled(int i) {
-        this.mOptions = i | this.mOptions;
-    }
-
-    public boolean onTitlePrinted() {
-        boolean z = this.mTitlePrinted;
-        this.mTitlePrinted = true;
-        return z;
-    }
-
-    public boolean getTitlePrinted() {
-        return this.mTitlePrinted;
-    }
-
-    public void setTitlePrinted(boolean z) {
-        this.mTitlePrinted = z;
-    }
-
-    public SharedUserSetting getSharedUser() {
-        return this.mSharedUser;
-    }
-
-    public void setSharedUser(SharedUserSetting sharedUserSetting) {
-        this.mSharedUser = sharedUserSetting;
-    }
-
-    public String getTargetPackageName() {
-        return this.mTargetPackageName;
-    }
-
-    public void setTargetPackageName(String str) {
-        this.mTargetPackageName = str;
-    }
-
-    public boolean isFullPreferred() {
-        return this.mFullPreferred;
-    }
-
-    public void setFullPreferred(boolean z) {
-        this.mFullPreferred = z;
-    }
-
-    public boolean isCheckIn() {
-        return this.mCheckIn;
-    }
-
-    public void setCheckIn(boolean z) {
-        this.mCheckIn = z;
-    }
-
-    public boolean isBrief() {
-        return this.mBrief;
-    }
-
-    public void setBrief(boolean z) {
-        this.mBrief = z;
+    public final void setDump(int i) {
+        this.mTypes = i | this.mTypes;
     }
 }

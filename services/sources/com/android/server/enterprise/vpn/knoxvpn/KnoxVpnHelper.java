@@ -1,7 +1,6 @@
 package com.android.server.enterprise.vpn.knoxvpn;
 
 import android.app.AppGlobals;
-import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -24,12 +23,19 @@ import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
-import com.android.server.audio.AudioService$$ExternalSyntheticLambda0;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
+import com.android.server.ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
+import com.android.server.VpnManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.audio.AudioService$$ExternalSyntheticLambda1;
+import com.android.server.connectivity.EnterpriseVpn$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.vpn.knoxvpn.profile.VpnPackageInfo;
 import com.android.server.enterprise.vpn.knoxvpn.profile.VpnProfileConfig;
 import com.android.server.enterprise.vpn.knoxvpn.profile.VpnProfileInfo;
 import com.android.server.enterprise.vpn.knoxvpn.storage.KnoxVpnStorageProvider;
-import com.samsung.android.knox.EnterpriseDeviceManager;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
@@ -46,85 +52,134 @@ import java.util.Random;
 import java.util.stream.Stream;
 import org.json.JSONObject;
 
-/* loaded from: classes2.dex */
-public class KnoxVpnHelper {
-    public KnoxVpnStorageProvider mVpnStorageProvider;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class KnoxVpnHelper {
+    public final KnoxVpnStorageProvider mVpnStorageProvider;
     public static final boolean DBG = Debug.semIsProductDev();
     public static KnoxVpnHelper mInstance = null;
     public static Context mContext = null;
-    public static EnterpriseDeviceManager mEDM = null;
-    public static NotificationManager mNotificationManager = null;
     public static KnoxVpnCredentialHandler mKnoxVpnCredentialHandler = null;
     public INetworkManagementService mNetworkManagementService = null;
     public final VpnProfileConfig vpnConfig = VpnProfileConfig.getInstance();
-
-    public static synchronized KnoxVpnHelper getInstance(Context context) {
-        KnoxVpnHelper knoxVpnHelper;
-        synchronized (KnoxVpnHelper.class) {
-            if (mInstance == null) {
-                mInstance = new KnoxVpnHelper(context);
-            }
-            knoxVpnHelper = mInstance;
-        }
-        return knoxVpnHelper;
-    }
-
-    public static KnoxVpnCredentialHandler getKnoxVpnCredentialHandler() {
-        if (mKnoxVpnCredentialHandler == null) {
-            mKnoxVpnCredentialHandler = KnoxVpnCredentialHandler.getInstance(mContext);
-        }
-        return mKnoxVpnCredentialHandler;
-    }
 
     public KnoxVpnHelper(Context context) {
         this.mVpnStorageProvider = null;
         mContext = context;
         this.mVpnStorageProvider = KnoxVpnStorageProvider.getInstance(context);
-        mKnoxVpnCredentialHandler = KnoxVpnCredentialHandler.getInstance(mContext);
+        mKnoxVpnCredentialHandler = KnoxVpnCredentialHandler.getInstance();
     }
 
-    public final IVpnManager getVpnManagerService() {
-        return IVpnManager.Stub.asInterface(ServiceManager.getService("vpn_management"));
-    }
-
-    public final INetworkManagementService getNetworkManagementService() {
-        IBinder service = ServiceManager.getService("network_management");
-        if (service != null && this.mNetworkManagementService == null) {
-            this.mNetworkManagementService = INetworkManagementService.Stub.asInterface(service);
+    public static boolean checkIfPlatformSigned(int i) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z = false;
+        try {
+            IPackageManager packageManager = AppGlobals.getPackageManager();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo("com.samsung.knox.vpn.tether.auth", 128L, i);
+            if (packageManager.checkUidSignatures(applicationInfo != null ? applicationInfo.uid : -1, 1000) == 0) {
+                z = true;
+            }
+        } catch (Exception unused) {
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
         }
-        return this.mNetworkManagementService;
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return z;
     }
 
-    public static IPackageManager getPackageManager() {
-        return AppGlobals.getPackageManager();
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0015, code lost:
+    
+        android.util.Log.d("FW-KnoxVpnHelper", "checkIfUidIsBlackListed: mBlacklistedApplication value is " + r4[r3]);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x002f, code lost:
+    
+        r2 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0013, code lost:
+    
+        if (r0 == false) goto L12;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static boolean checkIfUidIsBlackListed(int r7, int r8) {
+        /*
+            boolean r0 = com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.DBG
+            java.lang.String r1 = "FW-KnoxVpnHelper"
+            r2 = 0
+            r3 = r2
+        L6:
+            java.lang.String[] r4 = com.android.server.enterprise.vpn.knoxvpn.KnoxVpnConstants.BLACK_LISTED_APPLICATION     // Catch: java.lang.Exception -> L2d
+            r5 = 1
+            if (r3 >= r5) goto L3e
+            r6 = r4[r3]     // Catch: java.lang.Exception -> L2d
+            int r6 = getUIDForPackage(r8, r6)     // Catch: java.lang.Exception -> L2d
+            if (r6 != r7) goto L31
+            if (r0 == 0) goto L2f
+            java.lang.StringBuilder r7 = new java.lang.StringBuilder     // Catch: java.lang.Exception -> L2d
+            r7.<init>()     // Catch: java.lang.Exception -> L2d
+            java.lang.String r8 = "checkIfUidIsBlackListed: mBlacklistedApplication value is "
+            r7.append(r8)     // Catch: java.lang.Exception -> L2d
+            r8 = r4[r3]     // Catch: java.lang.Exception -> L2d
+            r7.append(r8)     // Catch: java.lang.Exception -> L2d
+            java.lang.String r7 = r7.toString()     // Catch: java.lang.Exception -> L2d
+            android.util.Log.d(r1, r7)     // Catch: java.lang.Exception -> L2d
+            goto L2f
+        L2d:
+            r7 = move-exception
+            goto L34
+        L2f:
+            r2 = r5
+            goto L3e
+        L31:
+            int r3 = r3 + 1
+            goto L6
+        L34:
+            java.lang.StringBuilder r8 = new java.lang.StringBuilder
+            java.lang.String r3 = "Exception at checkIfUidIsBlackListed API "
+            r8.<init>(r3)
+            com.android.server.VpnManagerService$$ExternalSyntheticOutline0.m(r7, r8, r1)
+        L3e:
+            if (r0 == 0) goto L46
+            java.lang.String r7 = "checkIfUidIsBlackListed: isUidBackListed value is "
+            com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0.m(r7, r1, r2)
+        L46:
+            return r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.checkIfUidIsBlackListed(int, int):boolean");
     }
 
-    public boolean isPackageInstalled(String str, int i) {
-        IPackageManager packageManager = getPackageManager();
-        if (packageManager != null) {
+    public static String getActiveNetworkInterface() {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        String str = null;
+        try {
             try {
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                ApplicationInfo applicationInfo = packageManager.getApplicationInfo(str, 0L, i);
+                str = getVpnManagerService().getActiveDefaultInterface();
+                Log.d("FW-KnoxVpnHelper", "The active interface name is " + str);
+            } finally {
                 Binder.restoreCallingIdentity(clearCallingIdentity);
-                if (applicationInfo != null) {
-                    if (!DBG) {
-                        return true;
-                    }
-                    Log.d("FW-KnoxVpnHelper", "package present. application uid for user 100 = " + applicationInfo.uid);
-                    return true;
-                }
-                Log.d("FW-KnoxVpnHelper", "package not present : " + str);
-                return false;
+            }
+        } catch (Throwable unused) {
+            Log.e("FW-KnoxVpnHelper", "Exception occured while trying to get the active interface details");
+        }
+        return str;
+    }
+
+    public static int getContainerIdFromPackageName(String str) {
+        if (str != null) {
+            try {
+                return Integer.parseInt(str.split("_")[0]);
             } catch (Exception unused) {
-                Log.d("FW-KnoxVpnHelper", "Exception in isPackageInstalled");
             }
         }
-        return false;
+        return -1;
     }
 
-    public String[] getInstalledPackages(int i) {
+    public static String[] getInstalledPackages(int i) {
         try {
-            IPackageManager packageManager = getPackageManager();
+            IPackageManager packageManager = AppGlobals.getPackageManager();
             ArrayList arrayList = new ArrayList();
             long clearCallingIdentity = Binder.clearCallingIdentity();
             List list = packageManager.getInstalledApplications(0L, i).getList();
@@ -143,64 +198,149 @@ public class KnoxVpnHelper {
             }
             return strArr;
         } catch (Exception e) {
-            Log.d("FW-KnoxVpnHelper", "Exception in getInstalledPackages : " + Log.getStackTraceString(e));
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception in getInstalledPackages : "), "FW-KnoxVpnHelper");
             return null;
         }
     }
 
-    public String[] getUserPackageListForProfile(String str, int i) {
-        int i2;
+    public static synchronized KnoxVpnHelper getInstance(Context context) {
+        KnoxVpnHelper knoxVpnHelper;
+        synchronized (KnoxVpnHelper.class) {
+            try {
+                if (mInstance == null) {
+                    mInstance = new KnoxVpnHelper(context);
+                }
+                knoxVpnHelper = mInstance;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return knoxVpnHelper;
+    }
+
+    public static String getIpChainNameAfterUpgrade() {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        while (sb.length() < 10) {
+            sb.append("STUVWXYZ1234567890".charAt((int) (random.nextFloat() * 18)));
+        }
+        return sb.toString();
+    }
+
+    public static KnoxVpnCredentialHandler getKnoxVpnCredentialHandler() {
+        if (mKnoxVpnCredentialHandler == null) {
+            mKnoxVpnCredentialHandler = KnoxVpnCredentialHandler.getInstance();
+        }
+        return mKnoxVpnCredentialHandler;
+    }
+
+    public static HashSet getListOfActiveUsers() {
+        HashSet hashSet = new HashSet();
         long clearCallingIdentity = Binder.clearCallingIdentity();
-        String[] strArr = null;
         try {
             try {
-                VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-                IPackageManager packageManager = getPackageManager();
-                ArrayList arrayList = new ArrayList();
-                Iterator it = packageManager.getInstalledApplications(0L, i).getList().iterator();
-                while (true) {
-                    i2 = 0;
-                    if (!it.hasNext()) {
-                        break;
-                    }
-                    ApplicationInfo applicationInfo = (ApplicationInfo) it.next();
-                    if (profileEntry != null) {
-                        Iterator it2 = profileEntry.getExemptPackageList().iterator();
-                        while (true) {
-                            if (!it2.hasNext()) {
-                                break;
-                            }
-                            if (((Integer) it2.next()).intValue() == applicationInfo.uid) {
-                                i2 = 1;
-                                break;
-                            }
-                        }
-                    }
-                    if (i2 == 0) {
-                        arrayList.add(applicationInfo.packageName);
-                    }
-                }
-                strArr = new String[arrayList.size()];
-                Iterator it3 = arrayList.iterator();
-                while (it3.hasNext()) {
-                    int i3 = i2 + 1;
-                    strArr[i2] = (String) it3.next();
-                    i2 = i3;
+                for (UserInfo userInfo : ((UserManager) mContext.getSystemService("user")).getUsers()) {
+                    Log.d("FW-KnoxVpnHelper", "the list of active users are " + userInfo.id);
+                    hashSet.add(Integer.valueOf(userInfo.id));
                 }
             } catch (Exception e) {
-                Log.d("FW-KnoxVpnHelper", "Exception in getInstalledPackages : " + Log.getStackTraceString(e));
+                Log.e("FW-KnoxVpnHelper", "Exception occured while trying to get the list of active users " + Log.getStackTraceString(e));
             }
-            return strArr;
+            return hashSet;
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public int getUIDForPackage(int i, String str) {
+    public static InetAddress getNetworkPart(InetAddress inetAddress, int i) {
+        byte[] address = inetAddress.getAddress();
+        if (i < 0 || i > address.length * 8) {
+            throw new RuntimeException("IP address with " + address.length + " bytes has invalid prefix length " + i);
+        }
+        int i2 = i / 8;
+        byte b = (byte) (IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT << (8 - (i % 8)));
+        if (i2 < address.length) {
+            address[i2] = (byte) (b & address[i2]);
+        }
+        while (true) {
+            i2++;
+            if (i2 >= address.length) {
+                try {
+                    return InetAddress.getByAddress(address);
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException("getNetworkPart error - " + e.toString());
+                }
+            }
+            address[i2] = 0;
+        }
+    }
+
+    public static List getNetworkPartWithMask(String str) {
+        ArrayList arrayList = new ArrayList();
+        try {
+            NetworkInterface byName = NetworkInterface.getByName(str);
+            if (byName != null) {
+                List<InterfaceAddress> interfaceAddresses = byName.getInterfaceAddresses();
+                ArrayList arrayList2 = new ArrayList(interfaceAddresses.size());
+                for (InterfaceAddress interfaceAddress : interfaceAddresses) {
+                    if (!interfaceAddress.getAddress().isLinkLocalAddress()) {
+                        arrayList2.add(interfaceAddress);
+                    }
+                }
+                Iterator it = arrayList2.iterator();
+                while (it.hasNext()) {
+                    InterfaceAddress interfaceAddress2 = (InterfaceAddress) it.next();
+                    arrayList.add(getNetworkPart(interfaceAddress2.getAddress(), interfaceAddress2.getNetworkPrefixLength()).getHostAddress() + "/" + ((int) interfaceAddress2.getNetworkPrefixLength()));
+                }
+            }
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder(" "), "FW-KnoxVpnHelper");
+        }
+        return arrayList;
+    }
+
+    public static String getPackageNameForUid(int i) {
+        try {
+            return AppGlobals.getPackageManager().getNameForUid(i);
+        } catch (Exception e) {
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception in getPackageNameForUid : "), "FW-KnoxVpnHelper");
+            return null;
+        }
+    }
+
+    public static String getPersonifiedName(int i, String str) {
+        try {
+            if (DBG) {
+                Log.d("FW-KnoxVpnHelper", "vpn getPersonifiedName : container id is regular device");
+            }
+            return i + "_" + str;
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception getting getPersonifiedName : Error :  "), "FW-KnoxVpnHelper");
+            return null;
+        }
+    }
+
+    public static String getProfileNameFromJsonString(String str) {
+        try {
+            return new JSONObject(str).getJSONObject("KNOX_VPN_PARAMETERS").getJSONObject("profile_attribute").getString("profileName");
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("get profilename from json : Error parsing JSON \n"), "FW-KnoxVpnHelper");
+            return null;
+        }
+    }
+
+    public static String getRegularPackageName(String str) {
+        if (str != null) {
+            return str.substring(str.indexOf("_") + 1);
+        }
+        return null;
+    }
+
+    public static int getUIDForPackage(int i, String str) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             try {
-                ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(str, 128L, i);
+                ApplicationInfo applicationInfo = AppGlobals.getPackageManager().getApplicationInfo(str, 128L, i);
                 boolean z = DBG;
                 if (z) {
                     Log.d("FW-KnoxVpnHelper", "application uid for info :  " + applicationInfo);
@@ -222,223 +362,376 @@ public class KnoxVpnHelper {
         }
     }
 
-    public String getPackageNameForUid(int i) {
+    public static int getUidForPackageName(String str) {
+        boolean z = DBG;
+        if (z) {
+            DualAppManagerService$$ExternalSyntheticOutline0.m("getUidForPackageName: transformedPackageName value is ", str, "FW-KnoxVpnHelper");
+        }
+        int i = -1;
         try {
-            return getPackageManager().getNameForUid(i);
+            int containerIdFromPackageName = getContainerIdFromPackageName(str);
+            if (z) {
+                Log.d("FW-KnoxVpnHelper", "getUidForPackageName: userIdOfVendor value is " + containerIdFromPackageName);
+            }
+            i = getUIDForPackage(containerIdFromPackageName, getRegularPackageName(str));
+            if (z) {
+                Log.d("FW-KnoxVpnHelper", "getUidForPackageName: uidOfVendor value is " + i);
+            }
         } catch (Exception e) {
-            Log.d("FW-KnoxVpnHelper", "Exception in getPackageNameForUid : " + Log.getStackTraceString(e));
+            if (z) {
+                VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception at getUidForPackageName API "), "FW-KnoxVpnHelper");
+            }
+        }
+        return i;
+    }
+
+    public static IVpnManager getVpnManagerService() {
+        return IVpnManager.Stub.asInterface(ServiceManager.getService("vpn_management"));
+    }
+
+    public static boolean isPackageForAddAllPackages(VpnPackageInfo vpnPackageInfo) {
+        return vpnPackageInfo.getUid() == -2 && vpnPackageInfo.getPackageName().equalsIgnoreCase(getPersonifiedName(getContainerIdFromPackageName(vpnPackageInfo.getPackageName()), "ADD_ALL_PACKAGES"));
+    }
+
+    public static boolean isPackageInstalled(int i, String str) {
+        IPackageManager packageManager = AppGlobals.getPackageManager();
+        if (packageManager != null) {
+            try {
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                ApplicationInfo applicationInfo = packageManager.getApplicationInfo(str, 0L, i);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                if (applicationInfo == null) {
+                    Log.d("FW-KnoxVpnHelper", "package not present : " + str);
+                    return false;
+                }
+                if (!DBG) {
+                    return true;
+                }
+                Log.d("FW-KnoxVpnHelper", "package present. application uid for user 100 = " + applicationInfo.uid);
+                return true;
+            } catch (Exception unused) {
+                Log.d("FW-KnoxVpnHelper", "Exception in isPackageInstalled");
+            }
+        }
+        return false;
+    }
+
+    public static boolean isUsbTetheringConfigured(String str) {
+        if (str == null) {
+            return false;
+        }
+        try {
+            return new JSONObject(str).getJSONObject("KNOX_VPN_PARAMETERS").getJSONObject("knox").optInt("allow_usb_over_vpn_tethering", 0) == 1;
+        } catch (Exception unused) {
+            return false;
+        }
+    }
+
+    public static String retrieveProfileCredentials(String str, String str2) {
+        try {
+            String str3 = str + "_" + str2;
+            getKnoxVpnCredentialHandler().getClass();
+            return KnoxVpnCredentialHandler.retrieveCredentialsFromKeystore(str3);
+        } catch (Exception e) {
+            if (DBG) {
+                EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception occured while Retrieve the profile credentials "), "FW-KnoxVpnHelper");
+            }
             return null;
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:39:0x016d  */
+    public static boolean saveProfileCredentials(String str, String str2) {
+        try {
+            getKnoxVpnCredentialHandler().getClass();
+            return KnoxVpnCredentialHandler.storeCredentialsInKeystore(str, str2);
+        } catch (Exception e) {
+            if (DBG) {
+                EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception occured while saving the profile credentials "), "FW-KnoxVpnHelper");
+            }
+            return false;
+        }
+    }
+
+    public static void sendProxyConfigBroadcast(int i, HashMap hashMap, HashSet hashSet) {
+        Iterator it;
+        Iterator it2;
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                Iterator it3 = hashMap.keySet().iterator();
+                while (it3.hasNext()) {
+                    Integer num = (Integer) it3.next();
+                    Intent intent = new Intent("android.intent.action.PROXY_CHANGE");
+                    intent.addFlags(603979776);
+                    if (num.intValue() == i) {
+                        Log.d("FW-KnoxVpnHelper", "skipping sending the broadcast which contains proxy configuration to vpn client for per-app use-case " + num);
+                    } else {
+                        boolean booleanValue = ((Boolean) hashMap.get(num)).booleanValue();
+                        boolean z = DBG;
+                        if (booleanValue) {
+                            String packageNameForUid = getPackageNameForUid(i);
+                            String[] installedPackages = getInstalledPackages(num.intValue());
+                            if (installedPackages != null) {
+                                int length = installedPackages.length;
+                                int i2 = 0;
+                                while (i2 < length) {
+                                    String str = installedPackages[i2];
+                                    if (packageNameForUid.equalsIgnoreCase(str)) {
+                                        Log.d("FW-KnoxVpnHelper", "skipping sending the broadcast which contains proxy configuration to vpn client for addAll use-case " + packageNameForUid);
+                                        it2 = it3;
+                                    } else {
+                                        Iterator it4 = hashSet.iterator();
+                                        boolean z2 = false;
+                                        while (true) {
+                                            if (!it4.hasNext()) {
+                                                it2 = it3;
+                                                break;
+                                            }
+                                            int intValue = ((Integer) it4.next()).intValue();
+                                            it2 = it3;
+                                            if (UserHandle.getUserId(intValue) == num.intValue()) {
+                                                String[] packagesForUid = AppGlobals.getPackageManager().getPackagesForUid(intValue);
+                                                if (packagesForUid != null) {
+                                                    int length2 = packagesForUid.length;
+                                                    int i3 = 0;
+                                                    while (true) {
+                                                        if (i3 >= length2) {
+                                                            break;
+                                                        }
+                                                        int i4 = length2;
+                                                        String str2 = packagesForUid[i3];
+                                                        if (str2.equalsIgnoreCase(str)) {
+                                                            Log.d("FW-KnoxVpnHelper", "skipping sending the broadcast which contains proxy configuration to exempted uid for addAll use-case " + str2);
+                                                            z2 = true;
+                                                            break;
+                                                        }
+                                                        i3++;
+                                                        length2 = i4;
+                                                    }
+                                                } else {
+                                                    continue;
+                                                    it3 = it2;
+                                                }
+                                            }
+                                            if (z2) {
+                                                break;
+                                            } else {
+                                                it3 = it2;
+                                            }
+                                        }
+                                        if (!z2) {
+                                            if (z) {
+                                                Log.d("FW-KnoxVpnHelper", "sending proxy broadcast to the app added to knox vpn profile for addAll use-case " + str);
+                                            }
+                                            intent.setPackage(str);
+                                            mContext.sendBroadcastAsUser(intent, new UserHandle(num.intValue()));
+                                        }
+                                    }
+                                    i2++;
+                                    it3 = it2;
+                                }
+                            }
+                            it = it3;
+                        } else {
+                            it = it3;
+                            String[] packagesForUid2 = AppGlobals.getPackageManager().getPackagesForUid(num.intValue());
+                            if (packagesForUid2 != null) {
+                                for (String str3 : packagesForUid2) {
+                                    if (z) {
+                                        Log.d("FW-KnoxVpnHelper", "sending proxy broadcast to the app added to knox vpn profile for per use-case " + str3);
+                                    }
+                                    intent.setPackage(str3);
+                                    mContext.sendBroadcastAsUser(intent, new UserHandle(UserHandle.getUserId(num.intValue())));
+                                }
+                            }
+                        }
+                        it3 = it;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("FW-KnoxVpnHelper", "Exception occured while sending proxy broadcast to knox vpn apps " + Log.getStackTraceString(e));
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public static void setProxyFlagForEmail(int i, boolean z) {
+        if (z) {
+            SystemProperties.set("net.vpn.proxy.email." + i, "1");
+        } else {
+            SystemProperties.set("net.vpn.proxy.email." + i, "0");
+        }
+    }
+
+    public static int startUid(int i) {
+        int i2 = (i * 100000) + 1;
+        try {
+            if (DBG) {
+                Log.d("FW-KnoxVpnHelper", "startUid - The Start uid for the persona for which dns is going to be applied is" + i2);
+            }
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("startUidOfPersona Error"), "FW-KnoxVpnHelper");
+        }
+        return i2;
+    }
+
+    public static int stopUid(int i) {
+        int i2 = i * 100000;
+        int i3 = i2 + 1;
+        int i4 = -1;
+        try {
+            boolean z = DBG;
+            if (z) {
+                Log.d("FW-KnoxVpnHelper", "stopUid - The Start uid for the persona for which dns is going to be applied is" + i3);
+            }
+            i4 = i2 + 99999;
+            if (z) {
+                Log.d("FW-KnoxVpnHelper", "stopUid - The last uid for the persona for which dns is going to be applied is" + i4);
+            }
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("stopUidOfPersona Error"), "FW-KnoxVpnHelper");
+        }
+        return i4;
+    }
+
+    public static HashMap updateProxyList(int i, boolean z) {
+        HashMap hashMap = new HashMap();
+        hashMap.put(Integer.valueOf(i), Boolean.valueOf(z));
+        return hashMap;
+    }
+
+    public final boolean addExemptedListToDatabase(int i, String str, String str2) {
+        try {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("profileName", str);
+            contentValues.put("packageName", str2);
+            contentValues.put("packageUid", Integer.valueOf(i));
+            this.mVpnStorageProvider.getClass();
+            return KnoxVpnStorageProvider.mEDM.putDataByFields("vpnExemptInfo", null, null, contentValues);
+        } catch (Exception e) {
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("addExemptedListToDatabase : Exception:"), "FW-KnoxVpnHelper");
+            return false;
+        }
+    }
+
+    public final void addOrRemoveAppsFromBatteryOptimization(String str, String str2, boolean z) {
+        if (str2 == null || !str2.equalsIgnoreCase("com.samsung.sVpn")) {
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                if (z) {
+                    if (this.vpnConfig.getProfileEntry(str) != null && !((PowerManager) mContext.getSystemService("power")).isIgnoringBatteryOptimizations(str2)) {
+                        IDeviceIdleController.Stub.asInterface(ServiceManager.getService("deviceidle")).addPowerSaveWhitelistApp(str2);
+                    }
+                } else if (((PowerManager) mContext.getSystemService("power")).isIgnoringBatteryOptimizations(str2)) {
+                    IDeviceIdleController.Stub.asInterface(ServiceManager.getService("deviceidle")).removePowerSaveWhitelistApp(str2);
+                }
+            } catch (Exception unused) {
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                throw th;
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final void addOrRemoveSystemAppFromBatteryOptimization(String str, boolean z) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+        } catch (Exception unused) {
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+        if (AppGlobals.getPackageManager().checkSignatures("android", "com.knox.vpn.proxyhandler", UserHandle.getCallingUserId()) != 0) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return;
+        }
+        if (z) {
+            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+            if (profileEntry != null) {
+                if (profileEntry.mProxyServer == null) {
+                    if (profileEntry.mPacurl != Uri.EMPTY) {
+                    }
+                }
+                if (!((PowerManager) mContext.getSystemService("power")).isIgnoringBatteryOptimizations("com.knox.vpn.proxyhandler")) {
+                    IDeviceIdleController.Stub.asInterface(ServiceManager.getService("deviceidle")).addPowerSaveWhitelistApp("com.knox.vpn.proxyhandler");
+                }
+            }
+        } else if (((PowerManager) mContext.getSystemService("power")).isIgnoringBatteryOptimizations("com.knox.vpn.proxyhandler")) {
+            IDeviceIdleController.Stub.asInterface(ServiceManager.getService("deviceidle")).removePowerSaveWhitelistApp("com.knox.vpn.proxyhandler");
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+    }
+
+    public final void addOrRemoveSystemAppFromDataSaverWhitelist(int i, String str, boolean z) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                if (z) {
+                    VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+                    if (profileEntry != null && (profileEntry.mProxyServer != null || profileEntry.mPacurl != Uri.EMPTY)) {
+                        getNetworkManagementService().addOrRemoveSystemAppFromDataSaverWhitelist(z, i);
+                    }
+                } else {
+                    getNetworkManagementService().addOrRemoveSystemAppFromDataSaverWhitelist(z, i);
+                }
+            } catch (Throwable unused) {
+                Log.e("FW-KnoxVpnHelper", "No permission to update the data-saver list");
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:38:0x00e5  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public boolean addVpnProfileToDatabase(com.samsung.android.knox.net.vpn.KnoxVpnContext r20, java.lang.String r21, int r22) {
+    public final boolean addVpnProfileToDatabase(com.samsung.android.knox.net.vpn.KnoxVpnContext r20, java.lang.String r21, int r22) {
         /*
-            Method dump skipped, instructions count: 633
+            Method dump skipped, instructions count: 427
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.addVpnProfileToDatabase(com.samsung.android.knox.net.vpn.KnoxVpnContext, java.lang.String, int):boolean");
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:28:0x00f8 A[Catch: Exception -> 0x01af, TryCatch #0 {Exception -> 0x01af, blocks: (B:3:0x0017, B:5:0x0035, B:7:0x003f, B:8:0x0053, B:10:0x005c, B:11:0x0070, B:13:0x0079, B:14:0x008d, B:26:0x00ec, B:28:0x00f8, B:29:0x0111), top: B:2:0x0017 }] */
-    /* JADX WARN: Removed duplicated region for block: B:50:0x010f  */
+    /* JADX WARN: Removed duplicated region for block: B:27:0x00f0 A[Catch: Exception -> 0x0054, TryCatch #2 {Exception -> 0x0054, blocks: (B:3:0x001a, B:5:0x0039, B:7:0x0044, B:8:0x0059, B:10:0x0062, B:11:0x0071, B:13:0x007a, B:14:0x0089, B:25:0x00e4, B:27:0x00f0, B:28:0x00ff, B:29:0x011d), top: B:2:0x001a }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public boolean addVpnProfileToMap(com.samsung.android.knox.net.vpn.KnoxVpnContext r20, java.lang.String r21, int r22) {
+    public final boolean addVpnProfileToMap(com.samsung.android.knox.net.vpn.KnoxVpnContext r21, java.lang.String r22, int r23) {
         /*
-            Method dump skipped, instructions count: 462
+            Method dump skipped, instructions count: 428
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.addVpnProfileToMap(com.samsung.android.knox.net.vpn.KnoxVpnContext, java.lang.String, int):boolean");
     }
 
-    public String getProfileNameFromJsonString(String str) {
-        try {
-            return new JSONObject(str).getJSONObject("KNOX_VPN_PARAMETERS").getJSONObject("profile_attribute").getString("profileName");
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "get profilename from json : Error parsing JSON \n" + Log.getStackTraceString(e));
-            return null;
-        }
-    }
-
-    public boolean isWideVpnExists(int i) {
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("VpnPackageInfo", new String[]{"packageName"}, new String[]{getPersonifiedName(i, "ADD_ALL_PACKAGES")}, new String[]{"profileName"});
-            if (dataByFields != null) {
-                return dataByFields.size() > 0;
-            }
-            return false;
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "isPackageExists \n" + Log.getStackTraceString(e));
-            return false;
-        }
-    }
-
-    public int getAdminIdForUserVpn(int i) {
-        for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.getProfileEntries()) {
-            Iterator it = vpnProfileInfo.getPackageList().iterator();
-            while (it.hasNext()) {
-                if (((VpnPackageInfo) it.next()).getPackageName().equalsIgnoreCase(getPersonifiedName(i, "ADD_ALL_PACKAGES"))) {
-                    return vpnProfileInfo.getAdminId();
-                }
-            }
-        }
-        if (DBG) {
-            Log.d("FW-KnoxVpnHelper", "getAdminIdForUserVpn: admin id value is -1for user " + i);
-        }
-        return -1;
-    }
-
-    public boolean isUsingKnoxPackageExists(int i) {
-        boolean z = false;
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("VpnPackageInfo", new String[]{"packageCid"}, new String[]{Integer.toString(i)}, new String[]{"packageName"});
-            if (dataByFields == null || dataByFields.size() <= 0) {
-                return false;
-            }
-            Iterator it = dataByFields.iterator();
-            boolean z2 = false;
-            while (it.hasNext()) {
-                try {
-                    if (((ContentValues) it.next()).getAsString("packageName").equalsIgnoreCase(getPersonifiedName(i, "ADD_ALL_PACKAGES"))) {
-                        return false;
-                    }
-                    z2 = true;
-                } catch (Exception e) {
-                    e = e;
-                    z = z2;
-                    Log.e("FW-KnoxVpnHelper", "isUsingKnoxPackageExists \n" + Log.getStackTraceString(e));
-                    return z;
-                }
-            }
-            return z2;
-        } catch (Exception e2) {
-            e = e2;
-        }
-    }
-
-    public String getPersonifiedName(int i, String str) {
-        try {
-            if (DBG) {
-                Log.d("FW-KnoxVpnHelper", "vpn getPersonifiedName : container id is regular device");
-            }
-            return i + "_" + str;
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "Exception getting getPersonifiedName : Error :  " + Log.getStackTraceString(e));
-            return null;
-        }
-    }
-
-    public String getRegularPackageName(String str) {
-        if (str != null) {
-            return str.substring(str.indexOf("_") + 1);
-        }
-        return null;
-    }
-
-    public int getContainerIdFromPackageName(String str) {
-        if (str == null) {
-            return -1;
-        }
-        try {
-            return Integer.parseInt(str.split("_")[0]);
-        } catch (Exception unused) {
-            return -1;
-        }
-    }
-
-    public boolean checkIfVpnProfileTableIsEmpty(String str) {
-        boolean z = true;
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("VpnProfileInfo", new String[]{"vendorName"}, new String[]{str}, null);
-            if (dataByFields != null) {
-                if (dataByFields.size() > 0) {
-                    z = false;
-                }
-            }
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "Exception at checkIfKnoxVpnDatabaseIsEmpty API: " + Log.getStackTraceString(e));
-        }
-        Log.d("FW-KnoxVpnHelper", "checkIfKnoxVpnDatabaseIsEmpty: tableEmpty value is " + z);
-        return z;
-    }
-
-    public int checkIfProfileHasChainingFeature(String str) {
+    public final void applyBlockingRulesToUidRange(String str, boolean z) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
             if (profileEntry == null) {
-                return -1;
+                return;
             }
-            if (profileEntry.getChainingEnabled() == 1) {
-                return 1;
-            }
-            return profileEntry.getChainingEnabled() == 0 ? 0 : -1;
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "Exception at checkIfProfileHasChainingFeature" + Log.getStackTraceString(e));
-            return -1;
+            getVpnManagerService().applyBlockingRulesToUidRange(str, profileEntry.personaId, z, getRegularPackageName(profileEntry.mVendorPkgName));
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public String getProfileOwningThePackage(String str) {
-        String str2 = null;
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("VpnPackageInfo", new String[]{"packageName"}, new String[]{str}, new String[]{"profileName"});
-            if (dataByFields != null && dataByFields.size() > 0) {
-                Iterator it = dataByFields.iterator();
-                while (it.hasNext()) {
-                    str2 = ((ContentValues) it.next()).getAsString("profileName");
-                }
-            }
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "Exception at getProfileOwningThePackage " + Log.getStackTraceString(e));
-        }
-        return str2;
-    }
-
-    public String getProfileOwningTheUid(int i) {
-        String str = null;
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("VpnPackageInfo", new String[]{"packageUid"}, new String[]{Integer.toString(i)}, new String[]{"profileName"});
-            if (dataByFields != null && dataByFields.size() > 0) {
-                Iterator it = dataByFields.iterator();
-                while (it.hasNext()) {
-                    str = ((ContentValues) it.next()).getAsString("profileName");
-                }
-            }
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "Exception at getProfileOwningTheUid " + Log.getStackTraceString(e));
-        }
-        return str;
-    }
-
-    public String getProfileOwningTheUidWithNoInternetPermission(int i) {
-        String str = null;
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("vpnNoInternetPermission", new String[]{"packageUid"}, new String[]{Integer.toString(i)}, new String[]{"profileName"});
-            if (dataByFields != null && dataByFields.size() > 0) {
-                Iterator it = dataByFields.iterator();
-                while (it.hasNext()) {
-                    str = ((ContentValues) it.next()).getAsString("profileName");
-                }
-            }
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "Exception at getProfileOwningTheUidWithNoInternetPermission " + Log.getStackTraceString(e));
-        }
-        return str;
-    }
-
-    public boolean chainingForAddAll(String str, int i) {
-        Log.d("FW-KnoxVpnHelper", "chainingForAddAll: profileName value is " + str);
+    public final boolean chainingForAddAll(int i, String str) {
+        DualAppManagerService$$ExternalSyntheticOutline0.m("chainingForAddAll: profileName value is ", str, "FW-KnoxVpnHelper");
         boolean z = false;
         try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("VpnPackageInfo", new String[]{"packageCid"}, new String[]{Integer.toString(i)}, new String[]{"packageName"});
-            if (dataByFields != null && dataByFields.size() > 0 && checkIfProfileHasChainingFeature(str) == 1) {
+            this.mVpnStorageProvider.getClass();
+            ArrayList dataByFields = KnoxVpnStorageProvider.mEDM.getDataByFields("VpnPackageInfo", new String[]{"packageCid"}, new String[]{Integer.toString(i)}, new String[]{"packageName"});
+            if (dataByFields.size() > 0 && checkIfProfileHasChainingFeature(str) == 1) {
                 boolean z2 = DBG;
                 if (z2) {
                     Log.d("FW-KnoxVpnHelper", "chainingForAddAll: checkIfProfileHasChainingFeature value is true");
@@ -454,7 +747,7 @@ public class KnoxVpnHelper {
                         if (DBG) {
                             Log.d("FW-KnoxVpnHelper", "chainingForAddAll: packageName value is " + asString);
                         }
-                        if (asString.equalsIgnoreCase(profileEntry.getVendorPkgName())) {
+                        if (asString.equalsIgnoreCase(profileEntry.mVendorPkgName)) {
                             Log.d("FW-KnoxVpnHelper", "chainingForAddAll: packageName and vendorName are same");
                             z = true;
                             break;
@@ -471,50 +764,59 @@ public class KnoxVpnHelper {
                 Log.d("FW-KnoxVpnHelper", "chainingForAddAll: profileName value is " + z);
             }
         } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "Exception at enableChainingForAddAll API " + Log.getStackTraceString(e));
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception at enableChainingForAddAll API "), "FW-KnoxVpnHelper");
         }
         return z;
     }
 
-    public int getUidForPackageName(String str) {
-        boolean z = DBG;
-        if (z) {
-            Log.d("FW-KnoxVpnHelper", "getUidForPackageName: transformedPackageName value is " + str);
-        }
-        int i = -1;
+    public final boolean checKIfUidIsExempted(int i) {
+        Collection<VpnProfileInfo> values;
+        boolean z = false;
         try {
-            int containerIdFromPackageName = getContainerIdFromPackageName(str);
-            if (z) {
-                Log.d("FW-KnoxVpnHelper", "getUidForPackageName: userIdOfVendor value is " + containerIdFromPackageName);
-            }
-            i = getUIDForPackage(containerIdFromPackageName, getRegularPackageName(str));
-            if (z) {
-                Log.d("FW-KnoxVpnHelper", "getUidForPackageName: uidOfVendor value is " + i);
-            }
-        } catch (Exception e) {
-            if (DBG) {
-                Log.e("FW-KnoxVpnHelper", "Exception at getUidForPackageName API " + Log.getStackTraceString(e));
+            values = this.vpnConfig.vpnProfileInfoMap.values();
+        } catch (Exception unused) {
+            Log.e("FW-KnoxVpnHelper", "Error occured while trying to check if the app Id is added to exempt list");
+        }
+        if (values == null) {
+            return false;
+        }
+        for (VpnProfileInfo vpnProfileInfo : values) {
+            if (vpnProfileInfo.activateState == 1) {
+                Iterator it = vpnProfileInfo.mExemptPackageList.iterator();
+                while (true) {
+                    if (!it.hasNext()) {
+                        break;
+                    }
+                    if (i == ((Integer) it.next()).intValue()) {
+                        Log.d("FW-KnoxVpnHelper", "Check to see if Captive portal is being added to exempted list returns true");
+                        z = true;
+                        break;
+                    }
+                }
+                if (z) {
+                    break;
+                }
             }
         }
-        return i;
+        return z;
     }
 
-    public int checkIfChainingEnabledForVendor(int i, boolean z) {
-        int chainingEnabled;
-        int i2 = -2;
+    public final int checkIfChainingEnabledForVendor(int i, boolean z) {
+        int i2;
+        int i3 = -2;
         try {
-            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.getProfileEntries()) {
-                if (vpnProfileInfo.getVendorUid() == i) {
-                    if (z) {
-                        chainingEnabled = vpnProfileInfo.getChainingEnabled();
-                        if (chainingEnabled != -1) {
-                            i2 = chainingEnabled;
+            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.vpnProfileInfoMap.values()) {
+                if (vpnProfileInfo.mVendorUid == i) {
+                    if (!z) {
+                        i2 = vpnProfileInfo.chainingEnabled;
+                        if (i2 == -1) {
+                            i3 = i2;
                             break;
                         }
                     } else {
-                        chainingEnabled = vpnProfileInfo.getChainingEnabled();
-                        if (chainingEnabled == -1) {
-                            i2 = chainingEnabled;
+                        i2 = vpnProfileInfo.chainingEnabled;
+                        if (i2 != -1) {
+                            i3 = i2;
                             break;
                         }
                     }
@@ -522,111 +824,290 @@ public class KnoxVpnHelper {
             }
         } catch (Exception e) {
             if (DBG) {
-                Log.e("FW-KnoxVpnHelper", "Exception at checkIfChainingEnabledForVendor " + Log.getStackTraceString(e));
+                VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception at checkIfChainingEnabledForVendor "), "FW-KnoxVpnHelper");
             }
         }
         if (DBG) {
-            Log.d("FW-KnoxVpnHelper", "is chaining feature enabled  " + i2 + "for vendor " + i);
+            AccessibilityManagerService$$ExternalSyntheticOutline0.m(i3, i, "is chaining feature enabled  ", "for vendor ", "FW-KnoxVpnHelper");
         }
-        return i2;
+        return i3;
     }
 
-    public boolean isPackageForAddAllPackages(VpnPackageInfo vpnPackageInfo) {
-        return vpnPackageInfo.getUid() == -2 && vpnPackageInfo.getPackageName().equalsIgnoreCase(getPersonifiedName(getContainerIdFromPackageName(vpnPackageInfo.getPackageName()), "ADD_ALL_PACKAGES"));
+    public final int checkIfProfileHasChainingFeature(String str) {
+        try {
+            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+            if (profileEntry == null) {
+                return -1;
+            }
+            if (profileEntry.chainingEnabled == 1) {
+                return 1;
+            }
+            return profileEntry.chainingEnabled == 0 ? 0 : -1;
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception at checkIfProfileHasChainingFeature"), "FW-KnoxVpnHelper");
+            return -1;
+        }
     }
 
-    public boolean checkIfProfileListEmpty() {
+    public final boolean checkIfProfileListEmpty() {
         boolean z = true;
         try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("VpnProfileInfo", null, null, null);
-            if (dataByFields != null) {
-                if (dataByFields.size() > 0) {
-                    z = false;
-                }
+            this.mVpnStorageProvider.getClass();
+            if (KnoxVpnStorageProvider.mEDM.getDataByFields("VpnProfileInfo", null, null, null).size() > 0) {
+                z = false;
             }
         } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "Exception at checkIfProfileListEmpty API " + Log.getStackTraceString(e));
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception at checkIfProfileListEmpty API "), "FW-KnoxVpnHelper");
         }
-        Log.d("FW-KnoxVpnHelper", "checkIfProfileListEmpty:profileListEmpty value is " + z);
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("checkIfProfileListEmpty:profileListEmpty value is ", "FW-KnoxVpnHelper", z);
         return z;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x0013, code lost:
+    public final int checkIfUidHasInternetPermission(int i) {
+        int i2 = 2;
+        try {
+            int checkUidPermission = AppGlobals.getPackageManager().checkUidPermission("android.permission.INTERNET", i);
+            this.mVpnStorageProvider.getClass();
+            if (KnoxVpnStorageProvider.mEDM.getDataByFields("vpnNoInternetPermission", new String[]{"packageUid"}, new String[]{Integer.toString(i)}, new String[]{"packageUid"}).size() > 0) {
+                if (checkUidPermission == 0) {
+                    i2 = 0;
+                }
+            } else if (checkUidPermission != 0) {
+                i2 = 1;
+            }
+        } catch (Exception unused) {
+            Log.e("FW-KnoxVpnHelper", "Error occured while checking if uid has been upgraded with internet permission");
+        }
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m(i, i2, "checkIfUidHasInternetPermission for uid ", " return value is ", "FW-KnoxVpnHelper");
+        return i2;
+    }
+
+    public final boolean checkIfVpnProfileTableIsEmpty(String str) {
+        boolean z = true;
+        try {
+            this.mVpnStorageProvider.getClass();
+            if (KnoxVpnStorageProvider.mEDM.getDataByFields("VpnProfileInfo", new String[]{"vendorName"}, new String[]{str}, null).size() > 0) {
+                z = false;
+            }
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception at checkIfKnoxVpnDatabaseIsEmpty API: "), "FW-KnoxVpnHelper");
+        }
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("checkIfKnoxVpnDatabaseIsEmpty: tableEmpty value is ", "FW-KnoxVpnHelper", z);
+        return z;
+    }
+
+    public final void enableKnoxVpnFlagForTether(boolean z) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                getNetworkManagementService().enableKnoxVpnFlagForTether(z);
+            } catch (RemoteException unused) {
+                Log.e("FW-KnoxVpnHelper", "Error at enableKnoxVpnFlagForTether " + z);
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final int getAdminIdForUserVpn(int i) {
+        for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.vpnProfileInfoMap.values()) {
+            Iterator it = vpnProfileInfo.mPackageMap.values().iterator();
+            while (it.hasNext()) {
+                if (((VpnPackageInfo) it.next()).getPackageName().equalsIgnoreCase(getPersonifiedName(i, "ADD_ALL_PACKAGES"))) {
+                    return vpnProfileInfo.admin_id;
+                }
+            }
+        }
+        if (!DBG) {
+            return -1;
+        }
+        NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "getAdminIdForUserVpn: admin id value is -1for user ", "FW-KnoxVpnHelper");
+        return -1;
+    }
+
+    public final int getAdminIdFromPackageName(String str) {
+        VpnProfileConfig vpnProfileConfig = this.vpnConfig;
+        if (vpnProfileConfig != null && vpnProfileConfig.vpnProfileInfoMap.values().size() > 0) {
+            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.vpnProfileInfoMap.values()) {
+                if (str.equalsIgnoreCase(vpnProfileInfo.mVendorPkgName)) {
+                    return vpnProfileInfo.admin_id;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public final int getChainingValueForProfile(String str) {
+        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+        if (profileEntry != null) {
+            return profileEntry.chainingEnabled;
+        }
+        return -1;
+    }
+
+    public final int getConnectionType(String str) {
+        try {
+            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+            if (profileEntry != null) {
+                return profileEntry.vpnConnectionType;
+            }
+            return 0;
+        } catch (Exception unused) {
+            StorageManagerService$$ExternalSyntheticOutline0.m("Error occured while trying to fetch the profile list for the vpn client ", str, "FW-KnoxVpnHelper");
+            return 0;
+        }
+    }
+
+    public final String getDefaultNetworkInterface(String str) {
+        try {
+            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+            if (profileEntry == null || profileEntry.activateState != 1) {
+                return null;
+            }
+            return getActiveNetworkInterface();
+        } catch (Exception unused) {
+            return null;
+        }
+    }
+
+    public final void getExemptedListFromDatabase(String str) {
+        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+        if (profileEntry == null) {
+            return;
+        }
+        HashSet hashSet = profileEntry.mExemptPackageList;
+        try {
+            this.mVpnStorageProvider.getClass();
+            try {
+                Iterator it = KnoxVpnStorageProvider.mEDM.getDataByFields("vpnExemptInfo", new String[]{"profileName"}, new String[]{str}, new String[]{"packageUid"}).iterator();
+                while (it.hasNext()) {
+                    Integer asInteger = ((ContentValues) it.next()).getAsInteger("packageUid");
+                    asInteger.getClass();
+                    hashSet.add(asInteger);
+                }
+            } catch (Exception e) {
+                Log.e("FW-KnoxVpnHelper", "getExemptedListFromDatabase " + Log.getStackTraceString(e));
+            }
+        } catch (Exception e2) {
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e2, new StringBuilder("getExemptedListFromDatabase : Exception:"), "FW-KnoxVpnHelper");
+        }
+    }
+
+    public final String getInterfaceNameForUsbtethering() {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        String str = null;
+        try {
+            try {
+                String[] listInterfaces = getNetworkManagementService().listInterfaces();
+                int length = listInterfaces.length;
+                int i = 0;
+                while (true) {
+                    if (i >= length) {
+                        break;
+                    }
+                    String str2 = listInterfaces[i];
+                    Stream stream = Arrays.stream(KnoxVpnConstants.USB_TETHERING_IFACE);
+                    Objects.requireNonNull(str2);
+                    if (stream.anyMatch(new KnoxVpnHelper$$ExternalSyntheticLambda0(str2))) {
+                        str = str2;
+                        break;
+                    }
+                    i++;
+                }
+            } catch (Exception unused) {
+                if (DBG) {
+                    Log.e("FW-KnoxVpnHelper", "Exception at getInterfaceNameForUsbtethering");
+                }
+            }
+            return str;
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x003b, code lost:
     
-        if (com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.DBG == false) goto L10;
+        if (r8.hasNext() == false) goto L29;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0015, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x003d, code lost:
     
-        android.util.Log.d("FW-KnoxVpnHelper", "checkIfUidIsBlackListed: mBlacklistedApplication value is " + r3[r2]);
+        r3 = r8.next().getAddress();
      */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x002b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x004b, code lost:
     
-        r1 = true;
+        if (r3.isLinkLocalAddress() == false) goto L28;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x004e, code lost:
+    
+        r0.add(r3);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x002b, code lost:
+    
+        r8 = java.net.NetworkInterface.getByName(r5).getInterfaceAddresses().iterator();
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public boolean checkIfUidIsBlackListed(int r6, int r7) {
+    public final java.util.List getIpAddressForUsbTetheringInterface() {
         /*
-            r5 = this;
-            java.lang.String r0 = "FW-KnoxVpnHelper"
-            r1 = 0
-            r2 = r1
-        L4:
-            java.lang.String[] r3 = com.android.server.enterprise.vpn.knoxvpn.KnoxVpnConstants.BLACK_LISTED_APPLICATION     // Catch: java.lang.Exception -> L30
-            int r4 = r3.length     // Catch: java.lang.Exception -> L30
-            if (r2 >= r4) goto L49
-            r4 = r3[r2]     // Catch: java.lang.Exception -> L30
-            int r4 = r5.getUIDForPackage(r7, r4)     // Catch: java.lang.Exception -> L30
-            if (r4 != r6) goto L2d
-            boolean r5 = com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.DBG     // Catch: java.lang.Exception -> L30
-            if (r5 == 0) goto L2b
-            java.lang.StringBuilder r5 = new java.lang.StringBuilder     // Catch: java.lang.Exception -> L30
-            r5.<init>()     // Catch: java.lang.Exception -> L30
-            java.lang.String r6 = "checkIfUidIsBlackListed: mBlacklistedApplication value is "
-            r5.append(r6)     // Catch: java.lang.Exception -> L30
-            r6 = r3[r2]     // Catch: java.lang.Exception -> L30
-            r5.append(r6)     // Catch: java.lang.Exception -> L30
-            java.lang.String r5 = r5.toString()     // Catch: java.lang.Exception -> L30
-            android.util.Log.d(r0, r5)     // Catch: java.lang.Exception -> L30
-        L2b:
-            r1 = 1
-            goto L49
-        L2d:
-            int r2 = r2 + 1
-            goto L4
-        L30:
-            r5 = move-exception
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder
-            r6.<init>()
-            java.lang.String r7 = "Exception at checkIfUidIsBlackListed API "
-            r6.append(r7)
-            java.lang.String r5 = android.util.Log.getStackTraceString(r5)
-            r6.append(r5)
-            java.lang.String r5 = r6.toString()
-            android.util.Log.e(r0, r5)
-        L49:
-            boolean r5 = com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.DBG
-            if (r5 == 0) goto L61
-            java.lang.StringBuilder r5 = new java.lang.StringBuilder
-            r5.<init>()
-            java.lang.String r6 = "checkIfUidIsBlackListed: isUidBackListed value is "
-            r5.append(r6)
-            r5.append(r1)
-            java.lang.String r5 = r5.toString()
-            android.util.Log.d(r0, r5)
-        L61:
-            return r1
+            r8 = this;
+            java.util.ArrayList r0 = new java.util.ArrayList
+            r0.<init>()
+            long r1 = android.os.Binder.clearCallingIdentity()
+            android.os.INetworkManagementService r8 = r8.getNetworkManagementService()     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            java.lang.String[] r8 = r8.listInterfaces()     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            int r3 = r8.length     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            r4 = 0
+        L13:
+            if (r4 >= r3) goto L57
+            r5 = r8[r4]     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            java.lang.String[] r6 = com.android.server.enterprise.vpn.knoxvpn.KnoxVpnConstants.USB_TETHERING_IFACE     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            java.util.stream.Stream r6 = java.util.Arrays.stream(r6)     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            java.util.Objects.requireNonNull(r5)     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper$$ExternalSyntheticLambda0 r7 = new com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper$$ExternalSyntheticLambda0     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            r7.<init>(r5)     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            boolean r6 = r6.anyMatch(r7)     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            if (r6 == 0) goto L54
+            java.net.NetworkInterface r8 = java.net.NetworkInterface.getByName(r5)     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            java.util.List r8 = r8.getInterfaceAddresses()     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            java.util.Iterator r8 = r8.iterator()     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+        L37:
+            boolean r3 = r8.hasNext()     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            if (r3 == 0) goto L57
+            java.lang.Object r3 = r8.next()     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            java.net.InterfaceAddress r3 = (java.net.InterfaceAddress) r3     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            java.net.InetAddress r3 = r3.getAddress()     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            boolean r4 = r3.isLinkLocalAddress()     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            if (r4 == 0) goto L4e
+            goto L37
+        L4e:
+            r0.add(r3)     // Catch: java.lang.Throwable -> L52 java.lang.Exception -> L5b
+            goto L37
+        L52:
+            r8 = move-exception
+            goto L64
+        L54:
+            int r4 = r4 + 1
+            goto L13
+        L57:
+            android.os.Binder.restoreCallingIdentity(r1)
+            goto L63
+        L5b:
+            java.lang.String r8 = "FW-KnoxVpnHelper"
+            java.lang.String r3 = "Exception at getIpAddressForUsbTetheringInterface"
+            android.util.Log.e(r8, r3)     // Catch: java.lang.Throwable -> L52
+            goto L57
+        L63:
+            return r0
+        L64:
+            android.os.Binder.restoreCallingIdentity(r1)
+            throw r8
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.checkIfUidIsBlackListed(int, int):boolean");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.getIpAddressForUsbTetheringInterface():java.util.List");
     }
 
-    public boolean checkIfAddAllPackage(String str) {
-        return str.equalsIgnoreCase(getPersonifiedName(getContainerIdFromPackageName(str), "ADD_ALL_PACKAGES"));
-    }
-
-    public HashMap getListOfUid(String str) {
+    public final HashMap getListOfUid(String str) {
         HashMap hashMap = null;
         try {
             VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
@@ -635,7 +1116,7 @@ public class KnoxVpnHelper {
             }
             HashMap hashMap2 = new HashMap();
             try {
-                for (VpnPackageInfo vpnPackageInfo : profileEntry.getPackageList()) {
+                for (VpnPackageInfo vpnPackageInfo : profileEntry.mPackageMap.values()) {
                     if (vpnPackageInfo.getPackageName().contains("ADD_ALL_PACKAGES")) {
                         int containerIdFromPackageName = getContainerIdFromPackageName(vpnPackageInfo.getPackageName());
                         Log.d("FW-KnoxVpnHelper", "knox vpn proxy settings is going to be applied for the user " + containerIdFromPackageName);
@@ -658,348 +1139,42 @@ public class KnoxVpnHelper {
         }
     }
 
-    public HashMap updateProxyList(int i, boolean z) {
-        HashMap hashMap = new HashMap();
-        hashMap.put(Integer.valueOf(i), Boolean.valueOf(z));
-        return hashMap;
-    }
-
-    public void setProxyFlagForEmail(int i, boolean z) {
-        if (z) {
-            SystemProperties.set("net.vpn.proxy.email." + i, "1");
-            return;
+    public final INetworkManagementService getNetworkManagementService() {
+        IBinder service = ServiceManager.getService("network_management");
+        if (service != null && this.mNetworkManagementService == null) {
+            this.mNetworkManagementService = INetworkManagementService.Stub.asInterface(service);
         }
-        SystemProperties.set("net.vpn.proxy.email." + i, "0");
+        return this.mNetworkManagementService;
     }
 
-    public void sendProxyConfigBroadcast(HashMap hashMap, int i, HashSet hashSet) {
-        KnoxVpnHelper knoxVpnHelper = this;
-        int i2 = i;
-        long clearCallingIdentity = Binder.clearCallingIdentity();
+    public final int getNonChainedVendoUid(int i) {
+        for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.vpnProfileInfoMap.values()) {
+            if (vpnProfileInfo.chainingEnabled == 0 && UserHandle.getUserId(i) == UserHandle.getUserId(vpnProfileInfo.mVendorUid)) {
+                return vpnProfileInfo.mVendorUid;
+            }
+        }
+        return -1;
+    }
+
+    public final String getProfileNameForExemptedUid(int i) {
         try {
-            try {
-                for (Integer num : hashMap.keySet()) {
-                    Intent intent = new Intent("android.intent.action.PROXY_CHANGE");
-                    intent.addFlags(603979776);
-                    if (num.intValue() == i2) {
-                        Log.d("FW-KnoxVpnHelper", "skipping sending the broadcast which contains proxy configuration to vpn client for per-app use-case " + num);
-                    } else {
-                        if (((Boolean) hashMap.get(num)).booleanValue()) {
-                            String packageNameForUid = knoxVpnHelper.getPackageNameForUid(i2);
-                            String[] installedPackages = knoxVpnHelper.getInstalledPackages(num.intValue());
-                            if (installedPackages != null) {
-                                for (String str : installedPackages) {
-                                    if (packageNameForUid.equalsIgnoreCase(str)) {
-                                        Log.d("FW-KnoxVpnHelper", "skipping sending the broadcast which contains proxy configuration to vpn client for addAll use-case " + packageNameForUid);
-                                    } else {
-                                        Iterator it = hashSet.iterator();
-                                        boolean z = false;
-                                        while (it.hasNext()) {
-                                            int intValue = ((Integer) it.next()).intValue();
-                                            if (UserHandle.getUserId(intValue) == num.intValue()) {
-                                                String[] packagesForUid = getPackageManager().getPackagesForUid(intValue);
-                                                if (packagesForUid != null) {
-                                                    int length = packagesForUid.length;
-                                                    int i3 = 0;
-                                                    while (true) {
-                                                        if (i3 >= length) {
-                                                            break;
-                                                        }
-                                                        int i4 = length;
-                                                        String str2 = packagesForUid[i3];
-                                                        if (str2.equalsIgnoreCase(str)) {
-                                                            Log.d("FW-KnoxVpnHelper", "skipping sending the broadcast which contains proxy configuration to exempted uid for addAll use-case " + str2);
-                                                            z = true;
-                                                            break;
-                                                        }
-                                                        i3++;
-                                                        length = i4;
-                                                    }
-                                                }
-                                            }
-                                            if (z) {
-                                                break;
-                                            }
-                                        }
-                                        if (!z) {
-                                            if (DBG) {
-                                                Log.d("FW-KnoxVpnHelper", "sending proxy broadcast to the app added to knox vpn profile for addAll use-case " + str);
-                                            }
-                                            intent.setPackage(str);
-                                            mContext.sendBroadcastAsUser(intent, new UserHandle(num.intValue()));
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            String[] packagesForUid2 = getPackageManager().getPackagesForUid(num.intValue());
-                            if (packagesForUid2 != null) {
-                                for (String str3 : packagesForUid2) {
-                                    if (DBG) {
-                                        Log.d("FW-KnoxVpnHelper", "sending proxy broadcast to the app added to knox vpn profile for per use-case " + str3);
-                                    }
-                                    intent.setPackage(str3);
-                                    mContext.sendBroadcastAsUser(intent, new UserHandle(UserHandle.getUserId(num.intValue())));
-                                }
-                            }
-                        }
-                        knoxVpnHelper = this;
-                        i2 = i;
-                    }
+            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.vpnProfileInfoMap.values()) {
+                if (vpnProfileInfo.activateState == 1 && vpnProfileInfo.mExemptPackageList.contains(Integer.valueOf(i))) {
+                    return vpnProfileInfo.mProfileName;
                 }
-            } catch (Exception e) {
-                Log.e("FW-KnoxVpnHelper", "Exception occured while sending proxy broadcast to knox vpn apps " + Log.getStackTraceString(e));
             }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void removeProfileCredentials(String str) {
-        try {
-            getKnoxVpnCredentialHandler().deleteCredentialsFromKeystore(str + "_proxy-username");
-            getKnoxVpnCredentialHandler().deleteCredentialsFromKeystore(str + "_proxy-password");
-            getKnoxVpnCredentialHandler().deleteCredentialsFromKeystore(str + "_captivecert_pwd");
-            getKnoxVpnCredentialHandler().deleteCredentialsFromKeystore(str + "_cacert_pwd");
-            getKnoxVpnCredentialHandler().deleteCredentialsFromKeystore(str + "_servercert_pwd");
+            return null;
         } catch (Exception e) {
-            if (DBG) {
-                Log.d("FW-KnoxVpnHelper", "Exception occured while removing the profile credentials " + Log.getStackTraceString(e));
-            }
-        }
-    }
-
-    public String retrieveProfileCredentials(String str, String str2) {
-        try {
-            return getKnoxVpnCredentialHandler().retrieveCredentialsFromKeystore(str + "_" + str2);
-        } catch (Exception e) {
-            if (DBG) {
-                Log.d("FW-KnoxVpnHelper", "Exception occured while Retrieve the profile credentials " + Log.getStackTraceString(e));
-            }
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("getProfileNameForExemptedUid "), "FW-KnoxVpnHelper");
             return null;
         }
     }
 
-    public boolean saveProfileCredentials(String str, String str2) {
+    public final String getProfileNameForPermissionUpdatedApp(int i) {
         try {
-            return getKnoxVpnCredentialHandler().storeCredentialsInKeystore(str, str2);
-        } catch (Exception e) {
-            if (DBG) {
-                Log.d("FW-KnoxVpnHelper", "Exception occured while saving the profile credentials " + Log.getStackTraceString(e));
-            }
-            return false;
-        }
-    }
-
-    public String getActiveNetworkInterface() {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        String str = null;
-        try {
-            try {
-                str = getVpnManagerService().getActiveDefaultInterface();
-                Log.d("FW-KnoxVpnHelper", "The active interface name is " + str);
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        } catch (Throwable unused) {
-            Log.e("FW-KnoxVpnHelper", "Exception occured while trying to get the active interface details");
-        }
-        return str;
-    }
-
-    public HashSet getListOfActiveUsers() {
-        HashSet hashSet = new HashSet();
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                for (UserInfo userInfo : ((UserManager) mContext.getSystemService("user")).getUsers()) {
-                    Log.d("FW-KnoxVpnHelper", "the list of active users are " + userInfo.id);
-                    hashSet.add(Integer.valueOf(userInfo.id));
-                }
-            } catch (Exception e) {
-                Log.e("FW-KnoxVpnHelper", "Exception occured while trying to get the list of active users " + Log.getStackTraceString(e));
-            }
-            return hashSet;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public int startUid(int i) {
-        int i2 = (i * 100000) + 1;
-        try {
-            if (DBG) {
-                Log.d("FW-KnoxVpnHelper", "startUid - The Start uid for the persona for which dns is going to be applied is" + i2);
-            }
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "startUidOfPersona Error" + Log.getStackTraceString(e));
-        }
-        return i2;
-    }
-
-    public int stopUid(int i) {
-        int i2 = (i * 100000) + 1;
-        int i3 = -1;
-        try {
-            boolean z = DBG;
-            if (z) {
-                Log.d("FW-KnoxVpnHelper", "stopUid - The Start uid for the persona for which dns is going to be applied is" + i2);
-            }
-            i3 = 99999 + (i2 - 1);
-            if (z) {
-                Log.d("FW-KnoxVpnHelper", "stopUid - The last uid for the persona for which dns is going to be applied is" + i3);
-            }
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "stopUidOfPersona Error" + Log.getStackTraceString(e));
-        }
-        return i3;
-    }
-
-    public boolean addExemptedListToDatabase(String str, String str2, int i) {
-        try {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("profileName", str);
-            contentValues.put("packageName", str2);
-            contentValues.put("packageUid", Integer.valueOf(i));
-            return this.mVpnStorageProvider.putDataByFields("vpnExemptInfo", null, null, contentValues);
-        } catch (Exception e) {
-            Log.d("FW-KnoxVpnHelper", "addExemptedListToDatabase : Exception:" + Log.getStackTraceString(e));
-            return false;
-        }
-    }
-
-    public boolean updateExemptedListToDatabase(String str, String str2, int i) {
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("vpnExemptInfo", new String[]{"packageName"}, new String[]{str2}, new String[]{"profileName", "packageUid"});
-            if (dataByFields == null || dataByFields.size() <= 0) {
-                return false;
-            }
-            Log.d("FW-KnoxVpnHelper", "updating exempted application details after install-uninstall " + str2 + i);
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("packageUid", Integer.valueOf(i));
-            return this.mVpnStorageProvider.putDataByFields("vpnExemptInfo", new String[]{"packageName"}, new String[]{str2}, contentValues);
-        } catch (Exception e) {
-            Log.d("FW-KnoxVpnHelper", "updateExemptedListToDatabase : Exception:" + Log.getStackTraceString(e));
-            return false;
-        }
-    }
-
-    public boolean removeExemptedListToDatabase(String str, int i) {
-        try {
-            return this.mVpnStorageProvider.deleteDataByFields("vpnExemptInfo", new String[]{"packageUid"}, new String[]{Integer.toString(i)});
-        } catch (Exception e) {
-            Log.d("FW-KnoxVpnHelper", "removeExemptedListToDatabase : Exception:" + Log.getStackTraceString(e));
-            return false;
-        }
-    }
-
-    public boolean removeExemptedListToDatabase(String str, String str2) {
-        try {
-            return this.mVpnStorageProvider.deleteDataByFields("vpnExemptInfo", new String[]{"packageName"}, new String[]{str2});
-        } catch (Exception e) {
-            Log.d("FW-KnoxVpnHelper", "removeExemptedListToDatabase : Exception:" + Log.getStackTraceString(e));
-            return false;
-        }
-    }
-
-    public void getExemptedListFromDatabase(String str) {
-        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-        if (profileEntry == null) {
-            return;
-        }
-        HashSet exemptPackageList = profileEntry.getExemptPackageList();
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("vpnExemptInfo", new String[]{"profileName"}, new String[]{str}, new String[]{"packageUid"});
-            if (dataByFields != null) {
-                try {
-                    Iterator it = dataByFields.iterator();
-                    while (it.hasNext()) {
-                        exemptPackageList.add(Integer.valueOf(((ContentValues) it.next()).getAsInteger("packageUid").intValue()));
-                    }
-                } catch (Exception e) {
-                    Log.e("FW-KnoxVpnHelper", "getExemptedListFromDatabase " + Log.getStackTraceString(e));
-                }
-            }
-        } catch (Exception e2) {
-            Log.d("FW-KnoxVpnHelper", "getExemptedListFromDatabase : Exception:" + Log.getStackTraceString(e2));
-        }
-    }
-
-    public HashSet getUninsalledAppsFromExemptedList(int i, String str) {
-        String asString;
-        HashSet hashSet = new HashSet();
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("vpnExemptInfo", new String[]{"profileName"}, new String[]{str}, new String[]{"packageUid", "packageName"});
-            if (dataByFields != null) {
-                try {
-                    Iterator it = dataByFields.iterator();
-                    while (it.hasNext()) {
-                        ContentValues contentValues = (ContentValues) it.next();
-                        if (contentValues.getAsInteger("packageUid").intValue() == -1 && (asString = contentValues.getAsString("packageName")) != null && getContainerIdFromPackageName(asString) == i) {
-                            String regularPackageName = getRegularPackageName(asString);
-                            Log.d("FW-KnoxVpnHelper", "adding uninstalledPackage to exempt list " + regularPackageName);
-                            hashSet.add(regularPackageName);
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.e("FW-KnoxVpnHelper", "getExemptedListFromDatabase " + Log.getStackTraceString(e));
-                }
-            }
-        } catch (Exception e2) {
-            Log.d("FW-KnoxVpnHelper", "getExemptedListFromDatabase : Exception:" + Log.getStackTraceString(e2));
-        }
-        return hashSet;
-    }
-
-    public HashSet getUninsalledAppsFromExemptedList(String str) {
-        String asString;
-        HashSet hashSet = new HashSet();
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("vpnExemptInfo", new String[]{"profileName"}, new String[]{str}, new String[]{"packageUid", "packageName"});
-            if (dataByFields != null) {
-                Iterator it = dataByFields.iterator();
-                while (it.hasNext()) {
-                    ContentValues contentValues = (ContentValues) it.next();
-                    if (contentValues.getAsInteger("packageUid").intValue() == -1 && (asString = contentValues.getAsString("packageName")) != null) {
-                        hashSet.add(asString);
-                    }
-                }
-            }
-        } catch (Exception unused) {
-        }
-        return hashSet;
-    }
-
-    public int checkIfUidHasInternetPermission(int i) {
-        int checkUidPermission;
-        ArrayList dataByFields;
-        int i2 = 2;
-        try {
-            checkUidPermission = getPackageManager().checkUidPermission("android.permission.INTERNET", i);
-            dataByFields = this.mVpnStorageProvider.getDataByFields("vpnNoInternetPermission", new String[]{"packageUid"}, new String[]{Integer.toString(i)}, new String[]{"packageUid"});
-        } catch (Exception unused) {
-            Log.e("FW-KnoxVpnHelper", "Error occured while checking if uid has been upgraded with internet permission");
-        }
-        if (dataByFields != null) {
-            if (dataByFields.size() > 0) {
-                if (checkUidPermission == 0) {
-                    i2 = 0;
-                }
-                Log.d("FW-KnoxVpnHelper", "checkIfUidHasInternetPermission for uid " + i + " return value is " + i2);
-                return i2;
-            }
-        }
-        if (checkUidPermission != 0) {
-            i2 = 1;
-        }
-        Log.d("FW-KnoxVpnHelper", "checkIfUidHasInternetPermission for uid " + i + " return value is " + i2);
-        return i2;
-    }
-
-    public String getProfileNameForPermissionUpdatedApp(int i) {
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("vpnNoInternetPermission", new String[]{"packageUid"}, new String[]{Integer.toString(i)}, new String[]{"profileName"});
-            if (dataByFields == null || dataByFields.size() <= 0) {
+            this.mVpnStorageProvider.getClass();
+            ArrayList dataByFields = KnoxVpnStorageProvider.mEDM.getDataByFields("vpnNoInternetPermission", new String[]{"packageUid"}, new String[]{Integer.toString(i)}, new String[]{"profileName"});
+            if (dataByFields.size() <= 0) {
                 return null;
             }
             Iterator it = dataByFields.iterator();
@@ -1013,40 +1188,596 @@ public class KnoxVpnHelper {
         }
     }
 
-    public void updateIpChainNameForProfile(String str, String str2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("vpnIpChainName", str2);
-        Log.d("FW-KnoxVpnHelper", "updateIpChainNameForProfile " + this.mVpnStorageProvider.putDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, contentValues));
-    }
-
-    public void removePackagesFromPermissionDb(String str, int i) {
-        ArrayList arrayList = new ArrayList();
+    public final String getProfileOwningThePackage(String str) {
+        String str2 = null;
         try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("vpnNoInternetPermission", new String[]{"profileName"}, new String[]{str}, new String[]{"packageUid"});
-            if (dataByFields != null && dataByFields.size() > 0) {
+            this.mVpnStorageProvider.getClass();
+            ArrayList dataByFields = KnoxVpnStorageProvider.mEDM.getDataByFields("VpnPackageInfo", new String[]{"packageName"}, new String[]{str}, new String[]{"profileName"});
+            if (dataByFields.size() > 0) {
                 Iterator it = dataByFields.iterator();
                 while (it.hasNext()) {
-                    int intValue = ((ContentValues) it.next()).getAsInteger("packageUid").intValue();
+                    str2 = ((ContentValues) it.next()).getAsString("profileName");
+                }
+            }
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception at getProfileOwningThePackage "), "FW-KnoxVpnHelper");
+        }
+        return str2;
+    }
+
+    public final String getProfileOwningTheUid(int i) {
+        String str = null;
+        try {
+            this.mVpnStorageProvider.getClass();
+            ArrayList dataByFields = KnoxVpnStorageProvider.mEDM.getDataByFields("VpnPackageInfo", new String[]{"packageUid"}, new String[]{Integer.toString(i)}, new String[]{"profileName"});
+            if (dataByFields.size() > 0) {
+                Iterator it = dataByFields.iterator();
+                while (it.hasNext()) {
+                    str = ((ContentValues) it.next()).getAsString("profileName");
+                }
+            }
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception at getProfileOwningTheUid "), "FW-KnoxVpnHelper");
+        }
+        return str;
+    }
+
+    public final String getProfileOwningTheUidFromCache(int i) {
+        String str = null;
+        try {
+            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.vpnProfileInfoMap.values()) {
+                Iterator it = vpnProfileInfo.mPackageMap.values().iterator();
+                while (true) {
+                    if (!it.hasNext()) {
+                        break;
+                    }
+                    if (((VpnPackageInfo) it.next()).getUid() == i) {
+                        str = vpnProfileInfo.mProfileName;
+                        break;
+                    }
+                }
+                if (str != null) {
+                    break;
+                }
+            }
+        } catch (Exception unused) {
+            ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m(i, "Error occured while trying to fetch the profileName for uid for on-demand use-case", "FW-KnoxVpnHelper");
+        }
+        return str;
+    }
+
+    public final String getProfileOwningTheUidWithNoInternetPermission(int i) {
+        String str = null;
+        try {
+            this.mVpnStorageProvider.getClass();
+            ArrayList dataByFields = KnoxVpnStorageProvider.mEDM.getDataByFields("vpnNoInternetPermission", new String[]{"packageUid"}, new String[]{Integer.toString(i)}, new String[]{"profileName"});
+            if (dataByFields.size() > 0) {
+                Iterator it = dataByFields.iterator();
+                while (it.hasNext()) {
+                    str = ((ContentValues) it.next()).getAsString("profileName");
+                }
+            }
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception at getProfileOwningTheUidWithNoInternetPermission "), "FW-KnoxVpnHelper");
+        }
+        return str;
+    }
+
+    public final Bundle getTetherAuthDetailsFromDatabase(String str) {
+        Bundle bundle = new Bundle();
+        this.mVpnStorageProvider.getClass();
+        ArrayList dataByFields = KnoxVpnStorageProvider.mEDM.getDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, null);
+        if (dataByFields.size() > 0) {
+            Iterator it = dataByFields.iterator();
+            while (it.hasNext()) {
+                ContentValues contentValues = (ContentValues) it.next();
+                if (contentValues.containsKey("tetherLoginpage")) {
+                    bundle.putString("key-tether-auth-login-page", contentValues.getAsString("tetherLoginpage"));
+                }
+                if (contentValues.containsKey("tetherResponsePage")) {
+                    bundle.putString("key-tether-auth-response-page", contentValues.getAsString("tetherResponsePage"));
+                }
+                if (contentValues.containsKey("tetherClientCertIssuerCN")) {
+                    bundle.putString("key-tether-client-certificate-issuer-cn", contentValues.getAsString("tetherClientCertIssuerCN"));
+                }
+                if (contentValues.containsKey("tetherClientCertIssuedCN")) {
+                    bundle.putString("key-tether-client-certificate-issued-cn", contentValues.getAsString("tetherClientCertIssuedCN"));
+                }
+                if (contentValues.containsKey("tetherCaptivePortalAlias")) {
+                    bundle.putString("key-tether-captive-portal-alias", contentValues.getAsString("tetherCaptivePortalAlias"));
+                }
+                if (contentValues.containsKey("tetherCaptivePortalCert")) {
+                    bundle.putByteArray("key-tether-captive-portal-certificate", contentValues.getAsByteArray("tetherCaptivePortalCert"));
+                }
+                if (contentValues.containsKey("tetherCAlias")) {
+                    bundle.putString("key-tether-ca-alias", contentValues.getAsString("tetherCAlias"));
+                }
+                if (contentValues.containsKey("tetherCACert")) {
+                    bundle.putByteArray("key-tether-ca-certificate", contentValues.getAsByteArray("tetherCACert"));
+                }
+                if (contentValues.containsKey("tetherServerCert")) {
+                    bundle.putByteArray("key-tether-user-certificate", contentValues.getAsByteArray("tetherServerCert"));
+                }
+                if (contentValues.containsKey("tetherServerAlias")) {
+                    bundle.putString("key-tether-user-alias", contentValues.getAsString("tetherServerAlias"));
+                }
+            }
+        }
+        return bundle;
+    }
+
+    public final HashSet getUninsalledAppsFromExemptedList(int i, String str) {
+        String asString;
+        HashSet hashSet = new HashSet();
+        try {
+            this.mVpnStorageProvider.getClass();
+            try {
+                Iterator it = KnoxVpnStorageProvider.mEDM.getDataByFields("vpnExemptInfo", new String[]{"profileName"}, new String[]{str}, new String[]{"packageUid", "packageName"}).iterator();
+                while (it.hasNext()) {
+                    ContentValues contentValues = (ContentValues) it.next();
+                    if (contentValues.getAsInteger("packageUid").intValue() == -1 && (asString = contentValues.getAsString("packageName")) != null && getContainerIdFromPackageName(asString) == i) {
+                        String regularPackageName = getRegularPackageName(asString);
+                        Log.d("FW-KnoxVpnHelper", "adding uninstalledPackage to exempt list " + regularPackageName);
+                        hashSet.add(regularPackageName);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("FW-KnoxVpnHelper", "getExemptedListFromDatabase " + Log.getStackTraceString(e));
+            }
+        } catch (Exception e2) {
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e2, new StringBuilder("getExemptedListFromDatabase : Exception:"), "FW-KnoxVpnHelper");
+        }
+        return hashSet;
+    }
+
+    public final HashSet getUninsalledAppsFromExemptedList(String str) {
+        String asString;
+        HashSet hashSet = new HashSet();
+        try {
+            this.mVpnStorageProvider.getClass();
+            Iterator it = KnoxVpnStorageProvider.mEDM.getDataByFields("vpnExemptInfo", new String[]{"profileName"}, new String[]{str}, new String[]{"packageUid", "packageName"}).iterator();
+            while (it.hasNext()) {
+                ContentValues contentValues = (ContentValues) it.next();
+                if (contentValues.getAsInteger("packageUid").intValue() == -1 && (asString = contentValues.getAsString("packageName")) != null) {
+                    hashSet.add(asString);
+                }
+            }
+        } catch (Exception unused) {
+        }
+        return hashSet;
+    }
+
+    public final boolean getUsbTetheringAuthConfig(int i, String str, String str2) {
+        byte[] asByteArray;
+        boolean z = false;
+        try {
+            this.mVpnStorageProvider.getClass();
+            ArrayList dataByFields = KnoxVpnStorageProvider.mEDM.getDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, new String[]{str2});
+            if (dataByFields.size() > 0) {
+                Iterator it = dataByFields.iterator();
+                if (it.hasNext()) {
+                    ContentValues contentValues = (ContentValues) it.next();
+                    if (i != 0 ? !(i != 1 || (asByteArray = contentValues.getAsByteArray(str2)) == null || asByteArray.length <= 0) : contentValues.getAsString(str2) != null) {
+                        z = true;
+                    }
+                }
+            }
+        } catch (Exception unused) {
+        }
+        return z;
+    }
+
+    public final String[] getUserPackageListForProfile(int i, String str) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        String[] strArr = null;
+        try {
+            try {
+                VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+                IPackageManager packageManager = AppGlobals.getPackageManager();
+                ArrayList arrayList = new ArrayList();
+                for (ApplicationInfo applicationInfo : packageManager.getInstalledApplications(0L, i).getList()) {
+                    if (profileEntry != null) {
+                        Iterator it = profileEntry.mExemptPackageList.iterator();
+                        while (it.hasNext()) {
+                            if (((Integer) it.next()).intValue() == applicationInfo.uid) {
+                                break;
+                            }
+                        }
+                    }
+                    arrayList.add(applicationInfo.packageName);
+                }
+                strArr = new String[arrayList.size()];
+                Iterator it2 = arrayList.iterator();
+                int i2 = 0;
+                while (it2.hasNext()) {
+                    int i3 = i2 + 1;
+                    strArr[i2] = (String) it2.next();
+                    i2 = i3;
+                }
+            } catch (Exception e) {
+                Log.d("FW-KnoxVpnHelper", "Exception in getInstalledPackages : " + Log.getStackTraceString(e));
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return strArr;
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final int getpackageCountByUserId(int i, String str) {
+        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+        int i2 = 0;
+        if (profileEntry != null) {
+            for (VpnPackageInfo vpnPackageInfo : profileEntry.mPackageMap.values()) {
+                if (vpnPackageInfo.getCid() == i && vpnPackageInfo.getUid() > 0) {
+                    i2++;
+                }
+            }
+        }
+        return i2;
+    }
+
+    public final List getuidListForProfile(String str) {
+        ArrayList arrayList = new ArrayList();
+        try {
+            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+            if (profileEntry != null) {
+                Iterator it = profileEntry.mPackageMap.values().iterator();
+                while (it.hasNext()) {
+                    int uid = ((VpnPackageInfo) it.next()).getUid();
+                    if (uid > 0) {
+                        arrayList.add(Integer.valueOf(uid));
+                    }
+                }
+            }
+        } catch (Exception unused) {
+        }
+        return arrayList;
+    }
+
+    public final HashSet getuserIdForExemptedUidByProfile(String str) {
+        VpnProfileInfo profileEntry;
+        HashSet hashSet = new HashSet();
+        try {
+            profileEntry = this.vpnConfig.getProfileEntry(str);
+        } catch (Exception unused) {
+            Log.e("FW-KnoxVpnHelper", "Error occured at getuserIdForExemptedUidByProfile");
+        }
+        if (profileEntry == null) {
+            return hashSet;
+        }
+        Iterator it = profileEntry.mExemptPackageList.iterator();
+        while (it.hasNext()) {
+            hashSet.add(Integer.valueOf(UserHandle.getUserId(((Integer) it.next()).intValue())));
+        }
+        return hashSet;
+    }
+
+    public final HashSet getuserIdForExemptedUids() {
+        Collection<VpnProfileInfo> values;
+        HashSet hashSet = new HashSet();
+        try {
+            values = this.vpnConfig.vpnProfileInfoMap.values();
+        } catch (Exception unused) {
+            Log.e("FW-KnoxVpnHelper", "Error occured while trying to fetch the list of userId for exempted uids");
+        }
+        if (values == null) {
+            return hashSet;
+        }
+        for (VpnProfileInfo vpnProfileInfo : values) {
+            if (vpnProfileInfo.activateState == 1) {
+                Iterator it = vpnProfileInfo.mExemptPackageList.iterator();
+                while (it.hasNext()) {
+                    hashSet.add(Integer.valueOf(UserHandle.getUserId(((Integer) it.next()).intValue())));
+                }
+            }
+        }
+        return hashSet;
+    }
+
+    public final List getuserIdListForProfile(String str) {
+        ArrayList arrayList = new ArrayList();
+        try {
+            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+            if (profileEntry != null) {
+                for (VpnPackageInfo vpnPackageInfo : profileEntry.mPackageMap.values()) {
+                    if (vpnPackageInfo.getUid() == -2) {
+                        arrayList.add(Integer.valueOf(vpnPackageInfo.getCid()));
+                    }
+                }
+            }
+        } catch (Exception unused) {
+        }
+        return arrayList;
+    }
+
+    public final boolean isNativeVpnClient(String str) {
+        boolean z = false;
+        try {
+            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+            if (profileEntry != null) {
+                int i = profileEntry.mVendorUid;
+                String str2 = profileEntry.mVendorPkgName;
+                if (UserHandle.getAppId(i) == 1000 && str2.contains("com.samsung.sVpn")) {
+                    profileEntry.mVpnClientType = 1;
+                    z = true;
+                } else {
+                    profileEntry.mVpnClientType = 0;
+                }
+            }
+        } catch (Exception unused) {
+            StorageManagerService$$ExternalSyntheticOutline0.m("Error occured while trying to check if profile is configured by native vpn client ", str, "FW-KnoxVpnHelper");
+        }
+        return z;
+    }
+
+    public final boolean isUsingKnoxPackageExists(int i) {
+        boolean z = false;
+        try {
+            this.mVpnStorageProvider.getClass();
+            ArrayList dataByFields = KnoxVpnStorageProvider.mEDM.getDataByFields("VpnPackageInfo", new String[]{"packageCid"}, new String[]{Integer.toString(i)}, new String[]{"packageName"});
+            if (dataByFields.size() <= 0) {
+                return false;
+            }
+            Iterator it = dataByFields.iterator();
+            boolean z2 = false;
+            while (it.hasNext()) {
+                try {
+                    if (((ContentValues) it.next()).getAsString("packageName").equalsIgnoreCase(getPersonifiedName(i, "ADD_ALL_PACKAGES"))) {
+                        return false;
+                    }
+                    z2 = true;
+                } catch (Exception e) {
+                    e = e;
+                    z = z2;
+                    VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("isUsingKnoxPackageExists \n"), "FW-KnoxVpnHelper");
+                    return z;
+                }
+            }
+            return z2;
+        } catch (Exception e2) {
+            e = e2;
+        }
+    }
+
+    public final boolean isWideVpnExists(int i) {
+        try {
+            String personifiedName = getPersonifiedName(i, "ADD_ALL_PACKAGES");
+            this.mVpnStorageProvider.getClass();
+            return KnoxVpnStorageProvider.mEDM.getDataByFields("VpnPackageInfo", new String[]{"packageName"}, new String[]{personifiedName}, new String[]{"profileName"}).size() > 0;
+        } catch (Exception e) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("isPackageExists \n"), "FW-KnoxVpnHelper");
+            return false;
+        }
+    }
+
+    public final List profileListForClient() {
+        ArrayList arrayList = new ArrayList();
+        try {
+            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.vpnProfileInfoMap.values()) {
+                String regularPackageName = getRegularPackageName(vpnProfileInfo.mVendorPkgName);
+                if (regularPackageName != null && regularPackageName.equalsIgnoreCase("com.samsung.sVpn")) {
+                    arrayList.add(vpnProfileInfo.mProfileName);
+                }
+            }
+        } catch (Exception unused) {
+            Log.e("FW-KnoxVpnHelper", "Error occured while trying to fetch the profile list for the vpn client com.samsung.sVpn");
+        }
+        return arrayList;
+    }
+
+    public final void registerNetdTetherEventListener(boolean z) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                if (z) {
+                    getNetworkManagementService().registerNetdTetherEventListener();
+                } else {
+                    getNetworkManagementService().unregisterNetdTetherEventListener();
+                }
+            } catch (RemoteException unused) {
+                Log.e("FW-KnoxVpnHelper", "Error at registerNetdTetherEventListener " + z);
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final void removeExemptedListToDatabase(String str) {
+        try {
+            this.mVpnStorageProvider.getClass();
+            KnoxVpnStorageProvider.mEDM.deleteDataByFields("vpnExemptInfo", new String[]{"packageName"}, new String[]{str});
+        } catch (Exception e) {
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("removeExemptedListToDatabase : Exception:"), "FW-KnoxVpnHelper");
+        }
+    }
+
+    public final boolean removeExemptedListToDatabase(int i) {
+        try {
+            KnoxVpnStorageProvider knoxVpnStorageProvider = this.mVpnStorageProvider;
+            String[] strArr = {Integer.toString(i)};
+            knoxVpnStorageProvider.getClass();
+            return KnoxVpnStorageProvider.mEDM.deleteDataByFields("vpnExemptInfo", new String[]{"packageUid"}, strArr);
+        } catch (Exception e) {
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("removeExemptedListToDatabase : Exception:"), "FW-KnoxVpnHelper");
+            return false;
+        }
+    }
+
+    public final void removePackagesFromPermissionDb(int i, String str) {
+        KnoxVpnStorageProvider knoxVpnStorageProvider = this.mVpnStorageProvider;
+        ArrayList arrayList = new ArrayList();
+        try {
+            knoxVpnStorageProvider.getClass();
+            ArrayList dataByFields = KnoxVpnStorageProvider.mEDM.getDataByFields("vpnNoInternetPermission", new String[]{"profileName"}, new String[]{str}, new String[]{"packageUid"});
+            if (dataByFields.size() > 0) {
+                Iterator it = dataByFields.iterator();
+                while (it.hasNext()) {
+                    Integer asInteger = ((ContentValues) it.next()).getAsInteger("packageUid");
+                    int intValue = asInteger.intValue();
                     if (intValue != -1 && UserHandle.getUserId(intValue) == i) {
-                        arrayList.add(Integer.valueOf(intValue));
+                        arrayList.add(asInteger);
                     }
                 }
             }
             Iterator it2 = arrayList.iterator();
             while (it2.hasNext()) {
-                this.mVpnStorageProvider.deleteDataByFields("vpnNoInternetPermission", new String[]{"packageUid"}, new String[]{Integer.toString(((Integer) it2.next()).intValue())});
+                String[] strArr = {Integer.toString(((Integer) it2.next()).intValue())};
+                KnoxVpnStorageProvider.mEDM.deleteDataByFields("vpnNoInternetPermission", new String[]{"packageUid"}, strArr);
             }
         } catch (Exception unused) {
         }
     }
 
-    public void updateUsbTetheringForProfileInDb(String str, int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("usbTethering", Integer.valueOf(i));
-        Log.d("FW-KnoxVpnHelper", "updateUsbTetheringForProfileInDb " + this.mVpnStorageProvider.putDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, contentValues));
+    public final String setRandomIpChainName(String str) {
+        while (true) {
+            StringBuilder sb = new StringBuilder();
+            Random random = new Random();
+            while (sb.length() < 10) {
+                sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".charAt((int) (random.nextFloat() * 36)));
+            }
+            String sb2 = sb.toString();
+            Iterator it = this.vpnConfig.vpnProfileInfoMap.values().iterator();
+            while (true) {
+                if (it.hasNext()) {
+                    VpnProfileInfo vpnProfileInfo = (VpnProfileInfo) it.next();
+                    if (!vpnProfileInfo.mProfileName.equalsIgnoreCase(str) && vpnProfileInfo.mIpChainName.equalsIgnoreCase(sb2)) {
+                        break;
+                    }
+                } else {
+                    VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
+                    if (profileEntry != null) {
+                        profileEntry.mIpChainName = sb2;
+                        updateIpChainNameForProfile(str, sb2);
+                        return sb2;
+                    }
+                    StorageManagerService$$ExternalSyntheticOutline0.m("Error occured while trying to get the setRandomIpChainName for profile ", str, "FW-KnoxVpnHelper");
+                }
+            }
+        }
     }
 
-    public void updateUsbTetherAuthDetails(String str, Bundle bundle, boolean z) {
+    public final boolean updateExemptedListToDatabase(int i, String str) {
+        try {
+            this.mVpnStorageProvider.getClass();
+            if (KnoxVpnStorageProvider.mEDM.getDataByFields("vpnExemptInfo", new String[]{"packageName"}, new String[]{str}, new String[]{"profileName", "packageUid"}).size() <= 0) {
+                return false;
+            }
+            Log.d("FW-KnoxVpnHelper", "updating exempted application details after install-uninstall " + str + i);
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("packageUid", Integer.valueOf(i));
+            return KnoxVpnStorageProvider.mEDM.putDataByFields("vpnExemptInfo", new String[]{"packageName"}, new String[]{str}, contentValues);
+        } catch (Exception e) {
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("updateExemptedListToDatabase : Exception:"), "FW-KnoxVpnHelper");
+            return false;
+        }
+    }
+
+    public final void updateIpChainNameForProfile(String str, String str2) {
+        ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("vpnIpChainName", str2);
+        this.mVpnStorageProvider.getClass();
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("updateIpChainNameForProfile ", "FW-KnoxVpnHelper", KnoxVpnStorageProvider.mEDM.putDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, m));
+    }
+
+    public final void updateUidsToVpnUidRange(String str) {
+        long clearCallingIdentity;
+        Iterator it;
+        int nonChainedVendoUid;
+        int nonChainedVendoUid2;
+        String str2 = str;
+        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str2);
+        if (profileEntry == null) {
+            return;
+        }
+        int i = profileEntry.personaId;
+        String regularPackageName = getRegularPackageName(profileEntry.mVendorPkgName);
+        long clearCallingIdentity2 = Binder.clearCallingIdentity();
+        getVpnManagerService().resetUidListInNetworkCapabilities(str2, i, regularPackageName);
+        Binder.restoreCallingIdentity(clearCallingIdentity2);
+        HashSet hashSet = new HashSet();
+        for (Iterator it2 = profileEntry.mPackageMap.values().iterator(); it2.hasNext(); it2 = it) {
+            VpnPackageInfo vpnPackageInfo = (VpnPackageInfo) it2.next();
+            int uid = vpnPackageInfo.getUid();
+            if (uid == -2) {
+                int cid = vpnPackageInfo.getCid();
+                VpnProfileInfo profileEntry2 = this.vpnConfig.getProfileEntry(str2);
+                if (profileEntry2 == null) {
+                    it = it2;
+                } else {
+                    HashSet hashSet2 = new HashSet();
+                    int i2 = profileEntry2.mVendorUid;
+                    int i3 = profileEntry2.personaId;
+                    String regularPackageName2 = getRegularPackageName(profileEntry2.mVendorPkgName);
+                    Iterator it3 = profileEntry2.mExemptPackageList.iterator();
+                    while (it3.hasNext()) {
+                        Integer num = (Integer) it3.next();
+                        int intValue = num.intValue();
+                        if (intValue > 0 && UserHandle.getUserId(intValue) == cid) {
+                            hashSet2.add(num);
+                        }
+                    }
+                    clearCallingIdentity = Binder.clearCallingIdentity();
+                    if (cid == 0) {
+                        Integer[] numArr = KnoxVpnConstants.AID_EXEMPT_LIST;
+                        it = it2;
+                        for (int i4 = 0; i4 < 3; i4++) {
+                            Integer num2 = numArr[i4];
+                            num2.getClass();
+                            hashSet2.add(num2);
+                        }
+                        if (profileEntry2.mVendorPkgName.contains("com.samsung.sVpn")) {
+                            i2 = 1016;
+                        }
+                        if (profileEntry2.chainingEnabled == 1 && (nonChainedVendoUid2 = getNonChainedVendoUid(profileEntry2.mVendorUid)) > 0 && UserHandle.getUserId(nonChainedVendoUid2) == cid) {
+                            hashSet2.add(Integer.valueOf(nonChainedVendoUid2));
+                        }
+                        if (i3 == cid) {
+                            hashSet2.add(Integer.valueOf(i2));
+                        }
+                        getVpnManagerService().updateUidRangesToUserVpnWithBlackList(str, i3, cid, new ArrayList(hashSet2).stream().mapToInt(new AudioService$$ExternalSyntheticLambda1(2)).toArray(), regularPackageName2);
+                    } else {
+                        it = it2;
+                        if (profileEntry2.mVendorPkgName.contains("com.samsung.sVpn")) {
+                            getVpnManagerService().updateUidRangesToUserVpn(str, i3, true, cid, regularPackageName2);
+                        } else {
+                            if (profileEntry2.chainingEnabled == 1 && (nonChainedVendoUid = getNonChainedVendoUid(profileEntry2.mVendorUid)) > 0 && UserHandle.getUserId(nonChainedVendoUid) == cid) {
+                                hashSet2.add(Integer.valueOf(nonChainedVendoUid));
+                            }
+                            if (i3 == cid) {
+                                hashSet2.add(Integer.valueOf(i2));
+                            }
+                            getVpnManagerService().updateUidRangesToUserVpnWithBlackList(str, i3, cid, new ArrayList(hashSet2).stream().mapToInt(new AudioService$$ExternalSyntheticLambda1(2)).toArray(), regularPackageName2);
+                        }
+                    }
+                }
+            } else {
+                it = it2;
+                if (uid > 0) {
+                    hashSet.add(Integer.valueOf(uid));
+                }
+            }
+            str2 = str;
+        }
+        if (!hashSet.isEmpty()) {
+            int[] array = new ArrayList(hashSet).stream().mapToInt(new AudioService$$ExternalSyntheticLambda1(2)).toArray();
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                getVpnManagerService().updateUidRangesToPerAppVpn(str, i, true, array, regularPackageName);
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+        if (profileEntry.activateState == 1) {
+            applyBlockingRulesToUidRange(str, true);
+        } else {
+            applyBlockingRulesToUidRange(str, false);
+        }
+    }
+
+    public final void updateUsbTetherAuthDetails(String str, Bundle bundle, boolean z) {
         ContentValues contentValues = new ContentValues();
         if (z) {
             contentValues.put("usbTetheringAuth", (Integer) 1);
@@ -1113,752 +1844,14 @@ public class KnoxVpnHelper {
             contentValues.putNull("tetherServerCert");
             contentValues.putNull("tetherServerAlias");
         }
-        Log.d("FW-KnoxVpnHelper", "update db with usbTetheringAuthConfig result is " + this.mVpnStorageProvider.putDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, contentValues));
+        this.mVpnStorageProvider.getClass();
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("update db with usbTetheringAuthConfig result is ", "FW-KnoxVpnHelper", KnoxVpnStorageProvider.mEDM.putDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, contentValues));
     }
 
-    public boolean getUsbTetheringAuthConfig(String str, String str2, int i) {
-        byte[] asByteArray;
-        boolean z = false;
-        try {
-            ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, new String[]{str2});
-            if (dataByFields != null && dataByFields.size() > 0) {
-                Iterator it = dataByFields.iterator();
-                if (it.hasNext()) {
-                    ContentValues contentValues = (ContentValues) it.next();
-                    if (i != 0 ? !(i != 1 || (asByteArray = contentValues.getAsByteArray(str2)) == null || asByteArray.length <= 0) : contentValues.getAsString(str2) != null) {
-                        z = true;
-                    }
-                }
-            }
-        } catch (Exception unused) {
-        }
-        return z;
-    }
-
-    public Bundle getTetherAuthDetailsFromDatabase(String str) {
-        Bundle bundle = new Bundle();
-        ArrayList dataByFields = this.mVpnStorageProvider.getDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, null);
-        if (dataByFields != null && dataByFields.size() > 0) {
-            Iterator it = dataByFields.iterator();
-            while (it.hasNext()) {
-                ContentValues contentValues = (ContentValues) it.next();
-                if (contentValues.containsKey("tetherLoginpage")) {
-                    bundle.putString("key-tether-auth-login-page", contentValues.getAsString("tetherLoginpage"));
-                }
-                if (contentValues.containsKey("tetherResponsePage")) {
-                    bundle.putString("key-tether-auth-response-page", contentValues.getAsString("tetherResponsePage"));
-                }
-                if (contentValues.containsKey("tetherClientCertIssuerCN")) {
-                    bundle.putString("key-tether-client-certificate-issuer-cn", contentValues.getAsString("tetherClientCertIssuerCN"));
-                }
-                if (contentValues.containsKey("tetherClientCertIssuedCN")) {
-                    bundle.putString("key-tether-client-certificate-issued-cn", contentValues.getAsString("tetherClientCertIssuedCN"));
-                }
-                if (contentValues.containsKey("tetherCaptivePortalAlias")) {
-                    bundle.putString("key-tether-captive-portal-alias", contentValues.getAsString("tetherCaptivePortalAlias"));
-                }
-                if (contentValues.containsKey("tetherCaptivePortalCert")) {
-                    bundle.putByteArray("key-tether-captive-portal-certificate", contentValues.getAsByteArray("tetherCaptivePortalCert"));
-                }
-                if (contentValues.containsKey("tetherCAlias")) {
-                    bundle.putString("key-tether-ca-alias", contentValues.getAsString("tetherCAlias"));
-                }
-                if (contentValues.containsKey("tetherCACert")) {
-                    bundle.putByteArray("key-tether-ca-certificate", contentValues.getAsByteArray("tetherCACert"));
-                }
-                if (contentValues.containsKey("tetherServerCert")) {
-                    bundle.putByteArray("key-tether-user-certificate", contentValues.getAsByteArray("tetherServerCert"));
-                }
-                if (contentValues.containsKey("tetherServerAlias")) {
-                    bundle.putString("key-tether-user-alias", contentValues.getAsString("tetherServerAlias"));
-                }
-            }
-        }
-        return bundle;
-    }
-
-    public String getProfileNameForExemptedUid(int i) {
-        try {
-            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.getProfileEntries()) {
-                if (vpnProfileInfo.getActivateState() == 1 && vpnProfileInfo.getExemptPackageList().contains(Integer.valueOf(i))) {
-                    return vpnProfileInfo.getProfileName();
-                }
-            }
-            return null;
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", "getProfileNameForExemptedUid " + Log.getStackTraceString(e));
-            return null;
-        }
-    }
-
-    public HashSet getuserIdForExemptedUids() {
-        Collection<VpnProfileInfo> profileEntries;
-        HashSet hashSet = new HashSet();
-        try {
-            profileEntries = this.vpnConfig.getProfileEntries();
-        } catch (Exception unused) {
-            Log.e("FW-KnoxVpnHelper", "Error occured while trying to fetch the list of userId for exempted uids");
-        }
-        if (profileEntries == null) {
-            return hashSet;
-        }
-        for (VpnProfileInfo vpnProfileInfo : profileEntries) {
-            if (vpnProfileInfo.getActivateState() == 1) {
-                Iterator it = vpnProfileInfo.getExemptPackageList().iterator();
-                while (it.hasNext()) {
-                    hashSet.add(Integer.valueOf(UserHandle.getUserId(((Integer) it.next()).intValue())));
-                }
-            }
-        }
-        return hashSet;
-    }
-
-    public HashSet getuserIdForExemptedUidByProfile(String str) {
-        VpnProfileInfo profileEntry;
-        HashSet hashSet = new HashSet();
-        try {
-            profileEntry = this.vpnConfig.getProfileEntry(str);
-        } catch (Exception unused) {
-            Log.e("FW-KnoxVpnHelper", "Error occured at getuserIdForExemptedUidByProfile");
-        }
-        if (profileEntry == null) {
-            return hashSet;
-        }
-        Iterator it = profileEntry.getExemptPackageList().iterator();
-        while (it.hasNext()) {
-            hashSet.add(Integer.valueOf(UserHandle.getUserId(((Integer) it.next()).intValue())));
-        }
-        return hashSet;
-    }
-
-    public boolean checKIfUidIsExempted(int i) {
-        Collection<VpnProfileInfo> profileEntries;
-        boolean z = false;
-        try {
-            profileEntries = this.vpnConfig.getProfileEntries();
-        } catch (Exception unused) {
-            Log.e("FW-KnoxVpnHelper", "Error occured while trying to check if the app Id is added to exempt list");
-        }
-        if (profileEntries == null) {
-            return false;
-        }
-        for (VpnProfileInfo vpnProfileInfo : profileEntries) {
-            if (vpnProfileInfo.getActivateState() == 1) {
-                Iterator it = vpnProfileInfo.getExemptPackageList().iterator();
-                while (true) {
-                    if (!it.hasNext()) {
-                        break;
-                    }
-                    if (i == ((Integer) it.next()).intValue()) {
-                        Log.d("FW-KnoxVpnHelper", "Check to see if Captive portal is being added to exempted list returns true");
-                        z = true;
-                        break;
-                    }
-                }
-                if (z) {
-                    break;
-                }
-            }
-        }
-        return z;
-    }
-
-    public List profileListForClient(String str) {
-        ArrayList arrayList = new ArrayList();
-        try {
-            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.getProfileEntries()) {
-                String regularPackageName = getRegularPackageName(vpnProfileInfo.getVendorPkgName());
-                if (regularPackageName != null && regularPackageName.equalsIgnoreCase(str)) {
-                    arrayList.add(vpnProfileInfo.getProfileName());
-                }
-            }
-        } catch (Exception unused) {
-            Log.e("FW-KnoxVpnHelper", "Error occured while trying to fetch the profile list for the vpn client " + str);
-        }
-        return arrayList;
-    }
-
-    public int getAdminIdFromPackageName(String str) {
-        VpnProfileConfig vpnProfileConfig = this.vpnConfig;
-        if (vpnProfileConfig != null && vpnProfileConfig.getProfileEntries().size() > 0) {
-            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.getProfileEntries()) {
-                if (str.equalsIgnoreCase(vpnProfileInfo.getVendorPkgName())) {
-                    return vpnProfileInfo.getAdminId();
-                }
-            }
-        }
-        return -1;
-    }
-
-    public String getIpChainNameForProfile(String str) {
-        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-        if (profileEntry == null) {
-            Log.e("FW-KnoxVpnHelper", "Error occured while trying to fetch the profile list for the vpn client " + str);
-            return null;
-        }
-        return profileEntry.getIpChainName();
-    }
-
-    public int getConnectionType(String str) {
-        try {
-            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-            if (profileEntry != null) {
-                return profileEntry.getVpnConnectionType();
-            }
-            return 0;
-        } catch (Exception unused) {
-            Log.e("FW-KnoxVpnHelper", "Error occured while trying to fetch the profile list for the vpn client " + str);
-            return 0;
-        }
-    }
-
-    public String getProfileOwningTheUidFromCache(int i) {
-        String str = null;
-        try {
-            for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.getProfileEntries()) {
-                Iterator it = vpnProfileInfo.getPackageList().iterator();
-                while (true) {
-                    if (!it.hasNext()) {
-                        break;
-                    }
-                    if (((VpnPackageInfo) it.next()).getUid() == i) {
-                        str = vpnProfileInfo.getProfileName();
-                        break;
-                    }
-                }
-                if (str != null) {
-                    break;
-                }
-            }
-        } catch (Exception unused) {
-            Log.e("FW-KnoxVpnHelper", "Error occured while trying to fetch the profileName for uid for on-demand use-case" + i);
-        }
-        return str;
-    }
-
-    public boolean isNativeVpnClient(String str) {
-        boolean z = false;
-        try {
-            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-            if (profileEntry != null) {
-                int vendorUid = profileEntry.getVendorUid();
-                String vendorPkgName = profileEntry.getVendorPkgName();
-                if (UserHandle.getAppId(vendorUid) == 1000 && vendorPkgName.contains("com.samsung.sVpn")) {
-                    profileEntry.setVpnType(1);
-                    z = true;
-                } else {
-                    profileEntry.setVpnType(0);
-                }
-            }
-        } catch (Exception unused) {
-            Log.e("FW-KnoxVpnHelper", "Error occured while trying to check if profile is configured by native vpn client " + str);
-        }
-        return z;
-    }
-
-    public boolean isKnoxVpnProfile(String str) {
-        return this.vpnConfig.getProfileEntry(str) != null;
-    }
-
-    public boolean isUsbTetheringConfigured(String str) {
-        if (str == null) {
-            return false;
-        }
-        try {
-            return new JSONObject(str).getJSONObject("KNOX_VPN_PARAMETERS").getJSONObject("knox").optInt("allow_usb_over_vpn_tethering", 0) == 1;
-        } catch (Exception unused) {
-            return false;
-        }
-    }
-
-    public int getNonChainedVendoUid(int i) {
-        for (VpnProfileInfo vpnProfileInfo : this.vpnConfig.getProfileEntries()) {
-            if (vpnProfileInfo.getChainingEnabled() == 0 && UserHandle.getUserId(i) == UserHandle.getUserId(vpnProfileInfo.getVendorUid())) {
-                return vpnProfileInfo.getVendorUid();
-            }
-        }
-        return -1;
-    }
-
-    public String getDefaultNetworkInterface(String str) {
-        try {
-            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-            if (profileEntry == null || profileEntry.getActivateState() != 1) {
-                return null;
-            }
-            return getActiveNetworkInterface();
-        } catch (Exception unused) {
-            return null;
-        }
-    }
-
-    public List getuidListForProfile(String str) {
-        ArrayList arrayList = new ArrayList();
-        try {
-            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-            if (profileEntry != null) {
-                Iterator it = profileEntry.getPackageList().iterator();
-                while (it.hasNext()) {
-                    int uid = ((VpnPackageInfo) it.next()).getUid();
-                    if (uid > 0) {
-                        arrayList.add(Integer.valueOf(uid));
-                    }
-                }
-            }
-        } catch (Exception unused) {
-        }
-        return arrayList;
-    }
-
-    public List getuserIdListForProfile(String str) {
-        ArrayList arrayList = new ArrayList();
-        try {
-            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-            if (profileEntry != null) {
-                for (VpnPackageInfo vpnPackageInfo : profileEntry.getPackageList()) {
-                    if (vpnPackageInfo.getUid() == -2) {
-                        arrayList.add(Integer.valueOf(vpnPackageInfo.getCid()));
-                    }
-                }
-            }
-        } catch (Exception unused) {
-        }
-        return arrayList;
-    }
-
-    public int getpackageCountByUserId(String str, int i) {
-        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-        int i2 = 0;
-        if (profileEntry != null) {
-            for (VpnPackageInfo vpnPackageInfo : profileEntry.getPackageList()) {
-                if (vpnPackageInfo.getCid() == i && vpnPackageInfo.getUid() > 0) {
-                    i2++;
-                }
-            }
-        }
-        return i2;
-    }
-
-    public int getChainingValueForProfile(String str) {
-        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-        if (profileEntry != null) {
-            return profileEntry.getChainingEnabled();
-        }
-        return -1;
-    }
-
-    public void addOrRemoveSystemAppFromBatteryOptimization(String str, String str2, boolean z) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-        } catch (Exception unused) {
-        } catch (Throwable th) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            throw th;
-        }
-        if (getPackageManager().checkSignatures("android", str2, UserHandle.getCallingUserId()) != 0) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            return;
-        }
-        if (z) {
-            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-            if (profileEntry != null && ((profileEntry.getProxyServer() != KnoxVpnConstants.DEFAULT_PROXY_SERVER || profileEntry.getPacurl() != Uri.EMPTY) && !((PowerManager) mContext.getSystemService("power")).isIgnoringBatteryOptimizations(str2))) {
-                IDeviceIdleController.Stub.asInterface(ServiceManager.getService("deviceidle")).addPowerSaveWhitelistApp(str2);
-            }
-        } else if (((PowerManager) mContext.getSystemService("power")).isIgnoringBatteryOptimizations(str2)) {
-            IDeviceIdleController.Stub.asInterface(ServiceManager.getService("deviceidle")).removePowerSaveWhitelistApp(str2);
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-    }
-
-    public void addOrRemoveAppsFromBatteryOptimization(String str, String str2, boolean z) {
-        if (str2 == null || !str2.equalsIgnoreCase("com.samsung.sVpn")) {
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                if (z) {
-                    if (this.vpnConfig.getProfileEntry(str) != null && !((PowerManager) mContext.getSystemService("power")).isIgnoringBatteryOptimizations(str2)) {
-                        IDeviceIdleController.Stub.asInterface(ServiceManager.getService("deviceidle")).addPowerSaveWhitelistApp(str2);
-                    }
-                } else if (((PowerManager) mContext.getSystemService("power")).isIgnoringBatteryOptimizations(str2)) {
-                    IDeviceIdleController.Stub.asInterface(ServiceManager.getService("deviceidle")).removePowerSaveWhitelistApp(str2);
-                }
-            } catch (Exception unused) {
-            } catch (Throwable th) {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                throw th;
-            }
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void addOrRemoveSystemAppFromDataSaverWhitelist(String str, int i, boolean z) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                if (z) {
-                    VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-                    if (profileEntry != null && (profileEntry.getProxyServer() != KnoxVpnConstants.DEFAULT_PROXY_SERVER || profileEntry.getPacurl() != Uri.EMPTY)) {
-                        getNetworkManagementService().addOrRemoveSystemAppFromDataSaverWhitelist(z, i);
-                    }
-                } else {
-                    getNetworkManagementService().addOrRemoveSystemAppFromDataSaverWhitelist(z, i);
-                }
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        } catch (Throwable unused) {
-            Log.e("FW-KnoxVpnHelper", "No permission to update the data-saver list");
-        }
-    }
-
-    public String setRandomIpChainName(String str) {
-        boolean z;
-        while (true) {
-            StringBuilder sb = new StringBuilder();
-            Random random = new Random();
-            while (sb.length() < 10) {
-                sb.append("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".charAt((int) (random.nextFloat() * 36)));
-            }
-            String sb2 = sb.toString();
-            Iterator it = this.vpnConfig.getProfileEntries().iterator();
-            while (true) {
-                if (!it.hasNext()) {
-                    z = true;
-                    break;
-                }
-                VpnProfileInfo vpnProfileInfo = (VpnProfileInfo) it.next();
-                if (!vpnProfileInfo.getProfileName().equalsIgnoreCase(str) && vpnProfileInfo.getIpChainName().equalsIgnoreCase(sb2)) {
-                    z = false;
-                    break;
-                }
-            }
-            if (z) {
-                VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-                if (profileEntry != null) {
-                    profileEntry.setIpChainName(sb2);
-                    updateIpChainNameForProfile(str, sb2);
-                    return sb2;
-                }
-                Log.e("FW-KnoxVpnHelper", "Error occured while trying to get the setRandomIpChainName for profile " + str);
-            }
-        }
-    }
-
-    public String getIpChainNameAfterUpgrade(String str) {
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
-        while (sb.length() < 10) {
-            sb.append("STUVWXYZ1234567890".charAt((int) (random.nextFloat() * 18)));
-        }
-        return sb.toString();
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x003b, code lost:
-    
-        if (r8.hasNext() == false) goto L28;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x003d, code lost:
-    
-        r3 = r8.next().getAddress();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x004b, code lost:
-    
-        if (r3.isLinkLocalAddress() == false) goto L27;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x004e, code lost:
-    
-        r0.add(r3);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x002b, code lost:
-    
-        r8 = java.net.NetworkInterface.getByName(r5).getInterfaceAddresses().iterator();
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public java.util.List getIpAddressForUsbTetheringInterface() {
-        /*
-            r8 = this;
-            java.util.ArrayList r0 = new java.util.ArrayList
-            r0.<init>()
-            long r1 = android.os.Binder.clearCallingIdentity()
-            android.os.INetworkManagementService r8 = r8.getNetworkManagementService()     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            java.lang.String[] r8 = r8.listInterfaces()     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            int r3 = r8.length     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            r4 = 0
-        L13:
-            if (r4 >= r3) goto L5e
-            r5 = r8[r4]     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            java.lang.String[] r6 = com.android.server.enterprise.vpn.knoxvpn.KnoxVpnConstants.USB_TETHERING_IFACE     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            java.util.stream.Stream r6 = java.util.Arrays.stream(r6)     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            java.util.Objects.requireNonNull(r5)     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper$$ExternalSyntheticLambda0 r7 = new com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper$$ExternalSyntheticLambda0     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            r7.<init>(r5)     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            boolean r6 = r6.anyMatch(r7)     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            if (r6 == 0) goto L52
-            java.net.NetworkInterface r8 = java.net.NetworkInterface.getByName(r5)     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            java.util.List r8 = r8.getInterfaceAddresses()     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            java.util.Iterator r8 = r8.iterator()     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-        L37:
-            boolean r3 = r8.hasNext()     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            if (r3 == 0) goto L5e
-            java.lang.Object r3 = r8.next()     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            java.net.InterfaceAddress r3 = (java.net.InterfaceAddress) r3     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            java.net.InetAddress r3 = r3.getAddress()     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            boolean r4 = r3.isLinkLocalAddress()     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            if (r4 == 0) goto L4e
-            goto L37
-        L4e:
-            r0.add(r3)     // Catch: java.lang.Throwable -> L55 java.lang.Exception -> L57
-            goto L37
-        L52:
-            int r4 = r4 + 1
-            goto L13
-        L55:
-            r8 = move-exception
-            goto L62
-        L57:
-            java.lang.String r8 = "FW-KnoxVpnHelper"
-            java.lang.String r3 = "Exception at getIpAddressForUsbTetheringInterface"
-            android.util.Log.e(r8, r3)     // Catch: java.lang.Throwable -> L55
-        L5e:
-            android.os.Binder.restoreCallingIdentity(r1)
-            return r0
-        L62:
-            android.os.Binder.restoreCallingIdentity(r1)
-            throw r8
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.vpn.knoxvpn.KnoxVpnHelper.getIpAddressForUsbTetheringInterface():java.util.List");
-    }
-
-    public String getInterfaceNameForUsbtethering() {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        String str = null;
-        try {
-            try {
-                String[] listInterfaces = getNetworkManagementService().listInterfaces();
-                int length = listInterfaces.length;
-                int i = 0;
-                while (true) {
-                    if (i >= length) {
-                        break;
-                    }
-                    String str2 = listInterfaces[i];
-                    Stream stream = Arrays.stream(KnoxVpnConstants.USB_TETHERING_IFACE);
-                    Objects.requireNonNull(str2);
-                    if (stream.anyMatch(new KnoxVpnHelper$$ExternalSyntheticLambda0(str2))) {
-                        str = str2;
-                        break;
-                    }
-                    i++;
-                }
-            } catch (Exception unused) {
-                if (DBG) {
-                    Log.e("FW-KnoxVpnHelper", "Exception at getInterfaceNameForUsbtethering");
-                }
-            }
-            return str;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final List excludeLinkLocal(List list) {
-        ArrayList arrayList = new ArrayList(list.size());
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            InterfaceAddress interfaceAddress = (InterfaceAddress) it.next();
-            if (!interfaceAddress.getAddress().isLinkLocalAddress()) {
-                arrayList.add(interfaceAddress);
-            }
-        }
-        return arrayList;
-    }
-
-    public List getNetworkPartWithMask(String str) {
-        ArrayList arrayList = new ArrayList();
-        try {
-            NetworkInterface byName = NetworkInterface.getByName(str);
-            if (byName != null) {
-                for (InterfaceAddress interfaceAddress : excludeLinkLocal(byName.getInterfaceAddresses())) {
-                    arrayList.add(getNetworkPart(interfaceAddress.getAddress(), interfaceAddress.getNetworkPrefixLength()).getHostAddress() + "/" + ((int) interfaceAddress.getNetworkPrefixLength()));
-                }
-            }
-        } catch (Exception e) {
-            Log.e("FW-KnoxVpnHelper", " " + Log.getStackTraceString(e));
-        }
-        return arrayList;
-    }
-
-    public boolean checkIfPlatformSigned(int i, String str) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        boolean z = false;
-        try {
-            IPackageManager packageManager = getPackageManager();
-            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(str, 128L, i);
-            if (packageManager.checkUidSignatures(applicationInfo != null ? applicationInfo.uid : -1, 1000) == 0) {
-                z = true;
-            }
-        } catch (Exception unused) {
-        } catch (Throwable th) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            throw th;
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-        return z;
-    }
-
-    public void enableKnoxVpnFlagForTether(boolean z) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                getNetworkManagementService().enableKnoxVpnFlagForTether(z);
-            } catch (RemoteException unused) {
-                Log.e("FW-KnoxVpnHelper", "Error at enableKnoxVpnFlagForTether " + z);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void registerNetdTetherEventListener(boolean z) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                if (z) {
-                    getNetworkManagementService().registerNetdTetherEventListener();
-                } else {
-                    getNetworkManagementService().unregisterNetdTetherEventListener();
-                }
-            } catch (RemoteException unused) {
-                Log.e("FW-KnoxVpnHelper", "Error at registerNetdTetherEventListener " + z);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final void addUidsToVpnUidRange(String str, int i) {
-        int nonChainedVendoUid;
-        int nonChainedVendoUid2;
-        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-        if (profileEntry == null) {
-            return;
-        }
-        HashSet hashSet = new HashSet();
-        int vendorUid = profileEntry.getVendorUid();
-        int personaId = profileEntry.getPersonaId();
-        String regularPackageName = getRegularPackageName(profileEntry.getVendorPkgName());
-        Iterator it = profileEntry.getExemptPackageList().iterator();
-        while (it.hasNext()) {
-            int intValue = ((Integer) it.next()).intValue();
-            if (intValue > 0 && UserHandle.getUserId(intValue) == i) {
-                hashSet.add(Integer.valueOf(intValue));
-            }
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        if (i == 0) {
-            for (Integer num : KnoxVpnConstants.AID_EXEMPT_LIST) {
-                hashSet.add(Integer.valueOf(num.intValue()));
-            }
-            if (profileEntry.getVendorPkgName().contains("com.samsung.sVpn")) {
-                vendorUid = 1016;
-            }
-            if (profileEntry.getChainingEnabled() == 1 && (nonChainedVendoUid2 = getNonChainedVendoUid(profileEntry.getVendorUid())) > 0 && UserHandle.getUserId(nonChainedVendoUid2) == i) {
-                hashSet.add(Integer.valueOf(nonChainedVendoUid2));
-            }
-            if (personaId == i) {
-                hashSet.add(Integer.valueOf(vendorUid));
-            }
-            getVpnManagerService().updateUidRangesToUserVpnWithBlackList(str, personaId, i, new ArrayList(hashSet).stream().mapToInt(new AudioService$$ExternalSyntheticLambda0()).toArray(), regularPackageName);
-        } else if (profileEntry.getVendorPkgName().contains("com.samsung.sVpn")) {
-            getVpnManagerService().updateUidRangesToUserVpn(str, personaId, true, i, regularPackageName);
-        } else {
-            if (profileEntry.getChainingEnabled() == 1 && (nonChainedVendoUid = getNonChainedVendoUid(profileEntry.getVendorUid())) > 0 && UserHandle.getUserId(nonChainedVendoUid) == i) {
-                hashSet.add(Integer.valueOf(nonChainedVendoUid));
-            }
-            if (personaId == i) {
-                hashSet.add(Integer.valueOf(vendorUid));
-            }
-            getVpnManagerService().updateUidRangesToUserVpnWithBlackList(str, personaId, i, new ArrayList(hashSet).stream().mapToInt(new AudioService$$ExternalSyntheticLambda0()).toArray(), regularPackageName);
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-    }
-
-    public void updateUidsToVpnUidRange(String str) {
-        VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-        if (profileEntry == null) {
-            return;
-        }
-        int personaId = profileEntry.getPersonaId();
-        String regularPackageName = getRegularPackageName(profileEntry.getVendorPkgName());
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        getVpnManagerService().resetUidListInNetworkCapabilities(str, personaId, regularPackageName);
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-        HashSet hashSet = new HashSet();
-        for (VpnPackageInfo vpnPackageInfo : profileEntry.getPackageList()) {
-            int uid = vpnPackageInfo.getUid();
-            if (uid == -2) {
-                addUidsToVpnUidRange(str, vpnPackageInfo.getCid());
-            } else if (uid > 0) {
-                hashSet.add(Integer.valueOf(uid));
-            }
-        }
-        if (!hashSet.isEmpty()) {
-            int[] array = new ArrayList(hashSet).stream().mapToInt(new AudioService$$ExternalSyntheticLambda0()).toArray();
-            long clearCallingIdentity2 = Binder.clearCallingIdentity();
-            try {
-                getVpnManagerService().updateUidRangesToPerAppVpn(str, personaId, true, array, regularPackageName);
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity2);
-            }
-        }
-        if (profileEntry.getActivateState() == 1) {
-            applyBlockingRulesToUidRange(str, true);
-        } else {
-            applyBlockingRulesToUidRange(str, false);
-        }
-    }
-
-    public void applyBlockingRulesToUidRange(String str, boolean z) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            VpnProfileInfo profileEntry = this.vpnConfig.getProfileEntry(str);
-            if (profileEntry == null) {
-                return;
-            }
-            getVpnManagerService().applyBlockingRulesToUidRange(str, profileEntry.getPersonaId(), z, getRegularPackageName(profileEntry.getVendorPkgName()));
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final InetAddress getNetworkPart(InetAddress inetAddress, int i) {
-        byte[] address = inetAddress.getAddress();
-        maskRawAddress(address, i);
-        try {
-            return InetAddress.getByAddress(address);
-        } catch (UnknownHostException e) {
-            throw new RuntimeException("getNetworkPart error - " + e.toString());
-        }
-    }
-
-    public final void maskRawAddress(byte[] bArr, int i) {
-        if (i < 0 || i > bArr.length * 8) {
-            throw new RuntimeException("IP address with " + bArr.length + " bytes has invalid prefix length " + i);
-        }
-        int i2 = i / 8;
-        byte b = (byte) (IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT << (8 - (i % 8)));
-        if (i2 < bArr.length) {
-            bArr[i2] = (byte) (b & bArr[i2]);
-        }
-        while (true) {
-            i2++;
-            if (i2 >= bArr.length) {
-                return;
-            } else {
-                bArr[i2] = 0;
-            }
-        }
+    public final void updateUsbTetheringForProfileInDb(int i, String str) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("usbTethering", Integer.valueOf(i));
+        this.mVpnStorageProvider.getClass();
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("updateUsbTetheringForProfileInDb ", "FW-KnoxVpnHelper", KnoxVpnStorageProvider.mEDM.putDataByFields("VpnProfileInfo", new String[]{"profileName"}, new String[]{str}, contentValues));
     }
 }

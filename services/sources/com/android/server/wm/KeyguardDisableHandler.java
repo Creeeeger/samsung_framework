@@ -1,62 +1,81 @@
 package com.android.server.wm;
 
 import android.app.admin.DevicePolicyCache;
-import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Process;
-import com.android.server.LocalServices;
+import android.os.TokenWatcher;
 import com.android.server.pm.UserManagerInternal;
+import com.android.server.policy.PhoneWindowManager;
 import com.android.server.policy.WindowManagerPolicy;
 import com.android.server.utils.UserTokenWatcher;
+import com.android.server.utils.UserTokenWatcher.InnerTokenWatcher;
 import com.android.server.wm.LockTaskController;
-import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
-public class KeyguardDisableHandler {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class KeyguardDisableHandler {
     public final UserTokenWatcher mAppTokenWatcher;
-    public final UserTokenWatcher.Callback mCallback;
     public int mCurrentUser = 0;
-    public Injector mInjector;
+    public final Injector mInjector;
     public final UserTokenWatcher mSystemTokenWatcher;
 
-    /* loaded from: classes3.dex */
-    public interface Injector {
-        boolean dpmRequiresPassword(int i);
-
-        void enableKeyguard(boolean z);
-
-        int getProfileParentId(int i);
-
-        boolean isKeyguardSecure(int i);
-    }
-
-    public KeyguardDisableHandler(Injector injector, Handler handler) {
-        UserTokenWatcher.Callback callback = new UserTokenWatcher.Callback() { // from class: com.android.server.wm.KeyguardDisableHandler.1
-            @Override // com.android.server.utils.UserTokenWatcher.Callback
-            public void acquired(int i) {
-                KeyguardDisableHandler.this.updateKeyguardEnabled(i);
-            }
-
-            @Override // com.android.server.utils.UserTokenWatcher.Callback
-            public void released(int i) {
-                KeyguardDisableHandler.this.updateKeyguardEnabled(i);
-            }
-        };
-        this.mCallback = callback;
-        this.mInjector = injector;
-        this.mAppTokenWatcher = new UserTokenWatcher(callback, handler, StartingSurfaceController.TAG);
-        this.mSystemTokenWatcher = new UserTokenWatcher(callback, handler, StartingSurfaceController.TAG);
-    }
-
-    public void setCurrentUser(int i) {
-        synchronized (this) {
-            this.mCurrentUser = i;
-            updateKeyguardEnabledLocked(-1);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.wm.KeyguardDisableHandler$1, reason: invalid class name */
+    public final class AnonymousClass1 {
+        public AnonymousClass1() {
         }
     }
 
-    public void updateKeyguardEnabled(int i) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.wm.KeyguardDisableHandler$2, reason: invalid class name */
+    public final class AnonymousClass2 implements Injector {
+        public final /* synthetic */ WindowManagerPolicy val$policy;
+        public final /* synthetic */ UserManagerInternal val$userManager;
+
+        public AnonymousClass2(WindowManagerPolicy windowManagerPolicy, UserManagerInternal userManagerInternal) {
+            this.val$policy = windowManagerPolicy;
+            this.val$userManager = userManagerInternal;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface Injector {
+    }
+
+    public KeyguardDisableHandler(Injector injector, Handler handler) {
+        AnonymousClass1 anonymousClass1 = new AnonymousClass1();
+        this.mInjector = injector;
+        this.mAppTokenWatcher = new UserTokenWatcher(anonymousClass1, handler);
+        this.mSystemTokenWatcher = new UserTokenWatcher(anonymousClass1, handler);
+    }
+
+    public final void disableKeyguard(int i, IBinder iBinder, String str, int i2) {
+        UserTokenWatcher userTokenWatcher;
+        if (Process.isApplicationUid(i)) {
+            userTokenWatcher = this.mAppTokenWatcher;
+        } else {
+            if (i != 1000 || !(iBinder instanceof LockTaskController.LockTaskToken)) {
+                throw new UnsupportedOperationException("Only apps can use the KeyguardLock API");
+            }
+            userTokenWatcher = this.mSystemTokenWatcher;
+        }
+        int profileParentId = ((AnonymousClass2) this.mInjector).val$userManager.getProfileParentId(i2);
+        synchronized (userTokenWatcher.mWatchers) {
+            try {
+                TokenWatcher tokenWatcher = (TokenWatcher) userTokenWatcher.mWatchers.get(profileParentId);
+                if (tokenWatcher == null) {
+                    tokenWatcher = userTokenWatcher.new InnerTokenWatcher(profileParentId, userTokenWatcher.mHandler, userTokenWatcher.mTag);
+                    userTokenWatcher.mWatchers.put(profileParentId, tokenWatcher);
+                }
+                tokenWatcher.acquire(iBinder, str);
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void updateKeyguardEnabled(int i) {
         synchronized (this) {
             updateKeyguardEnabledLocked(i);
         }
@@ -65,73 +84,17 @@ public class KeyguardDisableHandler {
     public final void updateKeyguardEnabledLocked(int i) {
         int i2 = this.mCurrentUser;
         if (i2 == i || i == -1) {
-            this.mInjector.enableKeyguard(shouldKeyguardBeEnabled(i2));
-        }
-    }
-
-    public void disableKeyguard(IBinder iBinder, String str, int i, int i2) {
-        watcherForCallingUid(iBinder, i).acquire(iBinder, str, this.mInjector.getProfileParentId(i2));
-    }
-
-    public void reenableKeyguard(IBinder iBinder, int i, int i2) {
-        watcherForCallingUid(iBinder, i).release(iBinder, this.mInjector.getProfileParentId(i2));
-    }
-
-    public void dump(PrintWriter printWriter) {
-        printWriter.println("  KeyguardDisable Token Info:");
-        UserTokenWatcher userTokenWatcher = this.mAppTokenWatcher;
-        if (userTokenWatcher != null) {
-            userTokenWatcher.dump(printWriter);
-        }
-        UserTokenWatcher userTokenWatcher2 = this.mSystemTokenWatcher;
-        if (userTokenWatcher2 != null) {
-            userTokenWatcher2.dump(printWriter);
-        }
-    }
-
-    public final UserTokenWatcher watcherForCallingUid(IBinder iBinder, int i) {
-        if (Process.isApplicationUid(i)) {
-            return this.mAppTokenWatcher;
-        }
-        if (i == 1000 && (iBinder instanceof LockTaskController.LockTaskToken)) {
-            return this.mSystemTokenWatcher;
-        }
-        throw new UnsupportedOperationException("Only apps can use the KeyguardLock API");
-    }
-
-    public final boolean shouldKeyguardBeEnabled(int i) {
-        boolean dpmRequiresPassword = this.mInjector.dpmRequiresPassword(this.mCurrentUser);
-        boolean z = false;
-        boolean z2 = (dpmRequiresPassword || this.mInjector.isKeyguardSecure(this.mCurrentUser)) ? false : true;
-        boolean z3 = !dpmRequiresPassword;
-        if ((z2 && this.mAppTokenWatcher.isAcquired(i)) || (z3 && this.mSystemTokenWatcher.isAcquired(i))) {
-            z = true;
-        }
-        return !z;
-    }
-
-    public static KeyguardDisableHandler create(Context context, final WindowManagerPolicy windowManagerPolicy, Handler handler) {
-        final UserManagerInternal userManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
-        return new KeyguardDisableHandler(new Injector() { // from class: com.android.server.wm.KeyguardDisableHandler.2
-            @Override // com.android.server.wm.KeyguardDisableHandler.Injector
-            public boolean dpmRequiresPassword(int i) {
-                return DevicePolicyCache.getInstance().getPasswordQuality(i) != 0;
+            Injector injector = this.mInjector;
+            AnonymousClass2 anonymousClass2 = (AnonymousClass2) injector;
+            anonymousClass2.getClass();
+            boolean z = false;
+            boolean z2 = DevicePolicyCache.getInstance().getPasswordQuality(i2) != 0;
+            boolean z3 = (z2 || ((PhoneWindowManager) anonymousClass2.val$policy).isKeyguardSecure(this.mCurrentUser)) ? false : true;
+            boolean z4 = !z2;
+            if ((z3 && this.mAppTokenWatcher.isAcquired(i2)) || (z4 && this.mSystemTokenWatcher.isAcquired(i2))) {
+                z = true;
             }
-
-            @Override // com.android.server.wm.KeyguardDisableHandler.Injector
-            public boolean isKeyguardSecure(int i) {
-                return WindowManagerPolicy.this.isKeyguardSecure(i);
-            }
-
-            @Override // com.android.server.wm.KeyguardDisableHandler.Injector
-            public int getProfileParentId(int i) {
-                return userManagerInternal.getProfileParentId(i);
-            }
-
-            @Override // com.android.server.wm.KeyguardDisableHandler.Injector
-            public void enableKeyguard(boolean z) {
-                WindowManagerPolicy.this.enableKeyguard(z);
-            }
-        }, handler);
+            ((PhoneWindowManager) ((AnonymousClass2) injector).val$policy).enableKeyguard(!z);
+        }
     }
 }

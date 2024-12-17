@@ -5,87 +5,120 @@ import android.os.Handler;
 import android.os.Looper;
 import com.android.server.LocalServices;
 import com.android.server.wm.ActivityTaskManagerInternal;
+import com.android.server.wm.ActivityTaskManagerService;
+import com.android.server.wm.ActivityTaskManagerService.SleepTokenAcquirerImpl;
 import com.samsung.android.sepunion.Log;
 
-/* loaded from: classes3.dex */
-public class SleepTokenAcquirer {
-    public static final String TAG = "CoverManager_" + SleepTokenAcquirer.class.getSimpleName();
-    public final Context mContext;
-    public ActivityTaskManagerInternal.SleepTokenAcquirer mDefaultAcquirer;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SleepTokenAcquirer {
+    public final ActivityTaskManagerInternal mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
+    public ActivityTaskManagerService.SleepTokenAcquirerImpl mDefaultAcquirer;
+    public final SleepTokenAcquirer$$ExternalSyntheticLambda0 mDefaultSleepToken;
     public final Handler mHandler;
     public boolean mIsCoverAppCovered;
+    public final SleepTokenAcquirer$$ExternalSyntheticLambda0 mSleepTokenTask;
     public boolean mSwitchState;
-    public ActivityTaskManagerInternal.SleepTokenAcquirer mVirtualAcquirer;
-    public final Runnable mSleepTokenTask = new Runnable() { // from class: com.android.server.sepunion.cover.SleepTokenAcquirer$$ExternalSyntheticLambda0
-        @Override // java.lang.Runnable
-        public final void run() {
-            SleepTokenAcquirer.this.doSleepToken();
-        }
-    };
-    public final Runnable mDefaultSleepToken = new Runnable() { // from class: com.android.server.sepunion.cover.SleepTokenAcquirer$$ExternalSyntheticLambda1
-        @Override // java.lang.Runnable
-        public final void run() {
-            SleepTokenAcquirer.this.doDefaultSleepToken();
-        }
-    };
-    public final ActivityTaskManagerInternal mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
 
+    /* JADX WARN: Type inference failed for: r2v1, types: [com.android.server.sepunion.cover.SleepTokenAcquirer$$ExternalSyntheticLambda0] */
+    /* JADX WARN: Type inference failed for: r2v2, types: [com.android.server.sepunion.cover.SleepTokenAcquirer$$ExternalSyntheticLambda0] */
     public SleepTokenAcquirer(Context context, Looper looper) {
-        this.mContext = context;
+        final int i = 0;
+        this.mSleepTokenTask = new Runnable(this) { // from class: com.android.server.sepunion.cover.SleepTokenAcquirer$$ExternalSyntheticLambda0
+            public final /* synthetic */ SleepTokenAcquirer f$0;
+
+            {
+                this.f$0 = this;
+            }
+
+            @Override // java.lang.Runnable
+            public final void run() {
+                ActivityTaskManagerService.SleepTokenAcquirerImpl sleepTokenAcquirer;
+                int i2 = i;
+                SleepTokenAcquirer sleepTokenAcquirer2 = this.f$0;
+                switch (i2) {
+                    case 0:
+                        boolean z = sleepTokenAcquirer2.mSwitchState;
+                        Handler handler = sleepTokenAcquirer2.mHandler;
+                        SleepTokenAcquirer$$ExternalSyntheticLambda0 sleepTokenAcquirer$$ExternalSyntheticLambda0 = sleepTokenAcquirer2.mDefaultSleepToken;
+                        if (!z && !sleepTokenAcquirer2.mIsCoverAppCovered) {
+                            handler.removeCallbacks(sleepTokenAcquirer$$ExternalSyntheticLambda0);
+                            handler.postDelayed(sleepTokenAcquirer$$ExternalSyntheticLambda0, 200L);
+                            break;
+                        } else if (!handler.hasCallbacks(sleepTokenAcquirer$$ExternalSyntheticLambda0)) {
+                            ActivityTaskManagerService.SleepTokenAcquirerImpl sleepTokenAcquirer3 = sleepTokenAcquirer2.getSleepTokenAcquirer();
+                            if (sleepTokenAcquirer3 != null) {
+                                Log.d("CoverManager_SleepTokenAcquirer", "releaseSleepToken 0");
+                                sleepTokenAcquirer3.release(0);
+                                break;
+                            }
+                        } else {
+                            handler.removeCallbacks(sleepTokenAcquirer$$ExternalSyntheticLambda0);
+                            break;
+                        }
+                        break;
+                    default:
+                        if (!sleepTokenAcquirer2.mSwitchState && !sleepTokenAcquirer2.mIsCoverAppCovered && (sleepTokenAcquirer = sleepTokenAcquirer2.getSleepTokenAcquirer()) != null) {
+                            Log.d("CoverManager_SleepTokenAcquirer", "acquireSleepToken 0");
+                            sleepTokenAcquirer.acquire(0, false);
+                            break;
+                        }
+                        break;
+                }
+            }
+        };
+        final int i2 = 1;
+        this.mDefaultSleepToken = new Runnable(this) { // from class: com.android.server.sepunion.cover.SleepTokenAcquirer$$ExternalSyntheticLambda0
+            public final /* synthetic */ SleepTokenAcquirer f$0;
+
+            {
+                this.f$0 = this;
+            }
+
+            @Override // java.lang.Runnable
+            public final void run() {
+                ActivityTaskManagerService.SleepTokenAcquirerImpl sleepTokenAcquirer;
+                int i22 = i2;
+                SleepTokenAcquirer sleepTokenAcquirer2 = this.f$0;
+                switch (i22) {
+                    case 0:
+                        boolean z = sleepTokenAcquirer2.mSwitchState;
+                        Handler handler = sleepTokenAcquirer2.mHandler;
+                        SleepTokenAcquirer$$ExternalSyntheticLambda0 sleepTokenAcquirer$$ExternalSyntheticLambda0 = sleepTokenAcquirer2.mDefaultSleepToken;
+                        if (!z && !sleepTokenAcquirer2.mIsCoverAppCovered) {
+                            handler.removeCallbacks(sleepTokenAcquirer$$ExternalSyntheticLambda0);
+                            handler.postDelayed(sleepTokenAcquirer$$ExternalSyntheticLambda0, 200L);
+                            break;
+                        } else if (!handler.hasCallbacks(sleepTokenAcquirer$$ExternalSyntheticLambda0)) {
+                            ActivityTaskManagerService.SleepTokenAcquirerImpl sleepTokenAcquirer3 = sleepTokenAcquirer2.getSleepTokenAcquirer();
+                            if (sleepTokenAcquirer3 != null) {
+                                Log.d("CoverManager_SleepTokenAcquirer", "releaseSleepToken 0");
+                                sleepTokenAcquirer3.release(0);
+                                break;
+                            }
+                        } else {
+                            handler.removeCallbacks(sleepTokenAcquirer$$ExternalSyntheticLambda0);
+                            break;
+                        }
+                        break;
+                    default:
+                        if (!sleepTokenAcquirer2.mSwitchState && !sleepTokenAcquirer2.mIsCoverAppCovered && (sleepTokenAcquirer = sleepTokenAcquirer2.getSleepTokenAcquirer()) != null) {
+                            Log.d("CoverManager_SleepTokenAcquirer", "acquireSleepToken 0");
+                            sleepTokenAcquirer.acquire(0, false);
+                            break;
+                        }
+                        break;
+                }
+            }
+        };
         this.mHandler = new Handler(looper);
     }
 
-    public void update(boolean z, boolean z2) {
-        this.mSwitchState = z;
-        this.mIsCoverAppCovered = z2;
-        this.mHandler.removeCallbacks(this.mSleepTokenTask);
-        this.mHandler.post(this.mSleepTokenTask);
-    }
-
-    public final void acquire(int i) {
-        ActivityTaskManagerInternal.SleepTokenAcquirer sleepTokenAcquirer = getSleepTokenAcquirer(i);
-        if (sleepTokenAcquirer != null) {
-            Log.d(TAG, "acquireSleepToken " + i);
-            sleepTokenAcquirer.acquire(i);
+    public final ActivityTaskManagerService.SleepTokenAcquirerImpl getSleepTokenAcquirer() {
+        if (this.mDefaultAcquirer == null) {
+            Log.d("CoverManager_SleepTokenAcquirer", "createSleepTokenAcquirer 0");
+            this.mDefaultAcquirer = ActivityTaskManagerService.this.new SleepTokenAcquirerImpl("cover");
         }
-    }
-
-    public final void release(int i) {
-        ActivityTaskManagerInternal.SleepTokenAcquirer sleepTokenAcquirer = getSleepTokenAcquirer(i);
-        if (sleepTokenAcquirer != null) {
-            Log.d(TAG, "releaseSleepToken " + i);
-            sleepTokenAcquirer.release(i);
-        }
-    }
-
-    public final ActivityTaskManagerInternal.SleepTokenAcquirer getSleepTokenAcquirer(int i) {
-        if (i == 0) {
-            if (this.mDefaultAcquirer == null) {
-                Log.d(TAG, "createSleepTokenAcquirer " + i);
-                this.mDefaultAcquirer = this.mActivityTaskManagerInternal.createSleepTokenAcquirer("cover");
-            }
-        } else if (this.mVirtualAcquirer == null) {
-            Log.d(TAG, "createSleepTokenAcquirer " + i);
-            this.mVirtualAcquirer = this.mActivityTaskManagerInternal.createSleepTokenAcquirer("cover-virtual");
-        }
-        return i == 0 ? this.mDefaultAcquirer : this.mVirtualAcquirer;
-    }
-
-    public final void doSleepToken() {
-        if (!this.mSwitchState && !this.mIsCoverAppCovered) {
-            this.mHandler.removeCallbacks(this.mDefaultSleepToken);
-            this.mHandler.postDelayed(this.mDefaultSleepToken, 200L);
-        } else if (this.mHandler.hasCallbacks(this.mDefaultSleepToken)) {
-            this.mHandler.removeCallbacks(this.mDefaultSleepToken);
-        } else {
-            release(0);
-        }
-    }
-
-    public final void doDefaultSleepToken() {
-        if (this.mSwitchState || this.mIsCoverAppCovered) {
-            return;
-        }
-        acquire(0);
+        return this.mDefaultAcquirer;
     }
 }

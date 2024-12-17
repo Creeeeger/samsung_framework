@@ -2,23 +2,11 @@ package com.android.server.location;
 
 import android.content.Context;
 import android.os.Binder;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class LocationPermissions {
-    public static boolean checkLocationPermission(int i, int i2) {
-        return i >= i2;
-    }
-
-    public static String asPermission(int i) {
-        if (i == 1) {
-            return "android.permission.ACCESS_COARSE_LOCATION";
-        }
-        if (i == 2) {
-            return "android.permission.ACCESS_FINE_LOCATION";
-        }
-        throw new IllegalArgumentException();
-    }
-
     public static int asAppOp(int i) {
         if (i == 1) {
             return 0;
@@ -29,40 +17,23 @@ public abstract class LocationPermissions {
         throw new IllegalArgumentException();
     }
 
-    public static void enforceCallingOrSelfLocationPermission(Context context, int i) {
-        enforceLocationPermission(Binder.getCallingUid(), getPermissionLevel(context, Binder.getCallingUid(), Binder.getCallingPid()), i);
+    public static void enforceCallingOrSelfBypassPermission(Context context) {
+        int callingUid = Binder.getCallingUid();
+        if (context.checkPermission("android.permission.LOCATION_BYPASS", Binder.getCallingPid(), callingUid) != 0) {
+            throw new SecurityException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(callingUid, "uid", " does not have android.permission.LOCATION_BYPASS."));
+        }
     }
 
     public static void enforceLocationPermission(int i, int i2, int i3) {
-        if (checkLocationPermission(i2, i3)) {
+        if (i2 >= i3) {
             return;
         }
-        if (i3 != 1) {
-            if (i3 != 2) {
-                return;
-            }
-            throw new SecurityException("uid " + i + " does not have android.permission.ACCESS_FINE_LOCATION.");
+        if (i3 == 1) {
+            throw new SecurityException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "uid ", " does not have android.permission.ACCESS_COARSE_LOCATION or android.permission.ACCESS_FINE_LOCATION."));
         }
-        throw new SecurityException("uid " + i + " does not have android.permission.ACCESS_COARSE_LOCATION or android.permission.ACCESS_FINE_LOCATION.");
-    }
-
-    public static void enforceCallingOrSelfBypassPermission(Context context) {
-        enforceBypassPermission(context, Binder.getCallingUid(), Binder.getCallingPid());
-    }
-
-    public static void enforceBypassPermission(Context context, int i, int i2) {
-        if (context.checkPermission("android.permission.LOCATION_BYPASS", i2, i) == 0) {
-            return;
+        if (i3 == 2) {
+            throw new SecurityException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "uid ", " does not have android.permission.ACCESS_FINE_LOCATION."));
         }
-        throw new SecurityException("uid" + i + " does not have android.permission.LOCATION_BYPASS.");
-    }
-
-    public static boolean checkCallingOrSelfLocationPermission(Context context, int i) {
-        return checkLocationPermission(getCallingOrSelfPermissionLevel(context), i);
-    }
-
-    public static int getCallingOrSelfPermissionLevel(Context context) {
-        return getPermissionLevel(context, Binder.getCallingUid(), Binder.getCallingPid());
     }
 
     public static int getPermissionLevel(Context context, int i, int i2) {

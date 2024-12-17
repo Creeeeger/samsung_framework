@@ -1,17 +1,6 @@
 package co.nstant.in.cbor.encoder;
 
-import co.nstant.in.cbor.CborEncoder;
-import co.nstant.in.cbor.model.MajorType;
-import co.nstant.in.cbor.model.UnsignedInteger;
-import java.io.OutputStream;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class UnsignedIntegerEncoder extends AbstractEncoder {
-    public UnsignedIntegerEncoder(CborEncoder cborEncoder, OutputStream outputStream) {
-        super(cborEncoder, outputStream);
-    }
-
-    public void encode(UnsignedInteger unsignedInteger) {
-        encodeTypeAndLength(MajorType.UNSIGNED_INTEGER, unsignedInteger.getValue());
-    }
+public final class UnsignedIntegerEncoder extends AbstractEncoder {
 }

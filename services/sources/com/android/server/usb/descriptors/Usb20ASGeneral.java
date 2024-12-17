@@ -1,8 +1,9 @@
 package com.android.server.usb.descriptors;
 
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class Usb20ASGeneral extends UsbACInterface implements UsbAudioChannelCluster {
     public int mChannelConfig;
     public byte mChannelNames;
@@ -12,41 +13,13 @@ public final class Usb20ASGeneral extends UsbACInterface implements UsbAudioChan
     public byte mNumChannels;
     public byte mTerminalLink;
 
-    public Usb20ASGeneral(int i, byte b, byte b2, int i2) {
-        super(i, b, b2, i2);
-    }
-
-    public byte getTerminalLink() {
-        return this.mTerminalLink;
-    }
-
-    public byte getControls() {
-        return this.mControls;
-    }
-
-    public byte getFormatType() {
-        return this.mFormatType;
-    }
-
-    public int getFormats() {
-        return this.mFormats;
-    }
-
     @Override // com.android.server.usb.descriptors.UsbAudioChannelCluster
-    public byte getChannelCount() {
+    public final byte getChannelCount() {
         return this.mNumChannels;
     }
 
-    public int getChannelConfig() {
-        return this.mChannelConfig;
-    }
-
-    public byte getChannelNames() {
-        return this.mChannelNames;
-    }
-
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
+    public final int parseRawDescriptors(ByteStream byteStream) {
         this.mTerminalLink = byteStream.getByte();
         this.mControls = byteStream.getByte();
         this.mFormatType = byteStream.getByte();
@@ -58,16 +31,16 @@ public final class Usb20ASGeneral extends UsbACInterface implements UsbAudioChan
     }
 
     @Override // com.android.server.usb.descriptors.UsbACInterface, com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        reportCanvas.openList();
-        reportCanvas.writeListItem("Terminal Link: " + ((int) getTerminalLink()));
-        reportCanvas.writeListItem("Controls: " + ReportCanvas.getHexString(getControls()));
-        reportCanvas.writeListItem("Format Type: " + ReportCanvas.getHexString(getFormatType()));
-        reportCanvas.writeListItem("Formats: " + ReportCanvas.getHexString(getFormats()));
-        reportCanvas.writeListItem("Channel Count: " + ((int) getChannelCount()));
-        reportCanvas.writeListItem("Channel Config: " + ReportCanvas.getHexString(getChannelConfig()));
-        reportCanvas.writeListItem("Channel Names String ID: " + ((int) getChannelNames()));
-        reportCanvas.closeList();
+    public final void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        textReportCanvas.openList();
+        textReportCanvas.writeListItem("Terminal Link: " + ((int) this.mTerminalLink));
+        textReportCanvas.writeListItem("Controls: " + TextReportCanvas.getHexString(this.mControls));
+        textReportCanvas.writeListItem("Format Type: " + TextReportCanvas.getHexString(this.mFormatType));
+        textReportCanvas.writeListItem("Formats: " + TextReportCanvas.getHexString(this.mFormats));
+        textReportCanvas.writeListItem("Channel Count: " + ((int) this.mNumChannels));
+        textReportCanvas.writeListItem("Channel Config: " + TextReportCanvas.getHexString(this.mChannelConfig));
+        textReportCanvas.writeListItem("Channel Names String ID: " + ((int) this.mChannelNames));
+        textReportCanvas.closeList();
     }
 }

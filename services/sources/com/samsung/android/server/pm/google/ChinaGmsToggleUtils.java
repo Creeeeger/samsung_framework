@@ -3,17 +3,14 @@ package com.samsung.android.server.pm.google;
 import android.app.ActivityThread;
 import android.content.Context;
 import android.content.pm.UserInfo;
-import android.database.ContentObserver;
-import android.os.Handler;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.util.Log;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.function.Predicate;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class ChinaGmsToggleUtils {
+public final class ChinaGmsToggleUtils {
     public static final String[] GMS_PACKAGES = {"com.google.android.gms", "com.google.android.configupdater", "com.google.android.syncadapters.calendar"};
     public final Context mContext;
 
@@ -21,40 +18,14 @@ public class ChinaGmsToggleUtils {
         this.mContext = context;
     }
 
-    public void setGmsEnabledSetting(int i) {
-        UserManager userManager = (UserManager) this.mContext.getSystemService(UserManager.class);
-        if (userManager == null) {
-            return;
-        }
-        int gmsEnabledState = getGmsEnabledState();
-        if (i == -1) {
-            Iterator it = userManager.getUsers().iterator();
-            while (it.hasNext()) {
-                setEnabledStateForGmsPackages(gmsEnabledState, ((UserInfo) it.next()).id);
-            }
-            return;
-        }
-        setEnabledStateForGmsPackages(gmsEnabledState, i);
-    }
-
-    public void setGmsEnabledPackage(String str, int[] iArr) {
-        int gmsEnabledState = getGmsEnabledState();
-        for (int i : iArr) {
-            try {
-                setApplicationEnabledSettingAsUser(str, gmsEnabledState, i);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d("PackageManager", "Fail to enable " + str);
-            }
-        }
-    }
-
-    public final int getGmsEnabledState() {
-        return Settings.Global.getInt(this.mContext.getContentResolver(), "google_core_control", 0) == 1 ? 1 : 2;
+    public void setApplicationEnabledSettingAsUser(String str, int i, int i2) throws Exception {
+        ActivityThread.getPackageManager().setApplicationEnabledSetting(str, i, 0, i2, this.mContext.getOpPackageName());
     }
 
     public final void setEnabledStateForGmsPackages(int i, int i2) {
-        for (String str : GMS_PACKAGES) {
+        String[] strArr = GMS_PACKAGES;
+        for (int i3 = 0; i3 < 3; i3++) {
+            String str = strArr[i3];
             try {
                 setApplicationEnabledSettingAsUser(str, i, i2);
             } catch (Exception e) {
@@ -64,31 +35,19 @@ public class ChinaGmsToggleUtils {
         }
     }
 
-    public void setApplicationEnabledSettingAsUser(String str, int i, int i2) {
-        ActivityThread.getPackageManager().setApplicationEnabledSetting(str, i, 0, i2, this.mContext.getOpPackageName());
-    }
-
-    public void registerContentObserverForGoogleControlCore(Handler handler) {
-        this.mContext.getContentResolver().registerContentObserver(Settings.Global.getUriFor("google_core_control"), true, new ContentObserver(handler) { // from class: com.samsung.android.server.pm.google.ChinaGmsToggleUtils.1
-            @Override // android.database.ContentObserver
-            public void onChange(boolean z) {
-                ChinaGmsToggleUtils.this.setGmsEnabledSetting(-1);
-            }
-        }, -1);
-    }
-
-    public static boolean isGMSPackage(final String str) {
-        return Arrays.stream(GMS_PACKAGES).anyMatch(new Predicate() { // from class: com.samsung.android.server.pm.google.ChinaGmsToggleUtils$$ExternalSyntheticLambda0
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$isGMSPackage$0;
-                lambda$isGMSPackage$0 = ChinaGmsToggleUtils.lambda$isGMSPackage$0(str, (String) obj);
-                return lambda$isGMSPackage$0;
-            }
-        });
-    }
-
-    public static /* synthetic */ boolean lambda$isGMSPackage$0(String str, String str2) {
-        return str2.equals(str);
+    public final void setGmsEnabledSetting(int i) {
+        UserManager userManager = (UserManager) this.mContext.getSystemService(UserManager.class);
+        if (userManager == null) {
+            return;
+        }
+        int i2 = Settings.Global.getInt(this.mContext.getContentResolver(), "google_core_control", 0) != 1 ? 2 : 1;
+        if (i != -1) {
+            setEnabledStateForGmsPackages(i2, i);
+            return;
+        }
+        Iterator it = userManager.getUsers().iterator();
+        while (it.hasNext()) {
+            setEnabledStateForGmsPackages(i2, ((UserInfo) it.next()).id);
+        }
     }
 }

@@ -4,60 +4,28 @@ import android.app.role.RoleManager;
 import android.content.Context;
 import android.os.UserHandle;
 import android.util.ArrayMap;
-import android.util.Slog;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
 import com.android.server.am.mars.filter.IFilter;
 import com.samsung.android.knox.SemPersonaManager;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ImportantRoleFilter implements IFilter {
-    public final String TAG;
-    public Context mContext;
-    public int mSecureFolderUserId;
-    public ArrayMap mSystemGalleryHolderList;
+public final class ImportantRoleFilter implements IFilter {
+    public final ArrayMap mSystemGalleryHolderList = new ArrayMap();
+    public Context mContext = null;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class ImportantRoleFilterHolder {
         public static final ImportantRoleFilter INSTANCE = new ImportantRoleFilter();
     }
 
-    public ImportantRoleFilter() {
-        this.TAG = "MARs:" + ImportantRoleFilter.class.getSimpleName();
-        this.mSystemGalleryHolderList = new ArrayMap();
-        this.mContext = null;
-    }
-
-    public static ImportantRoleFilter getInstance() {
-        return ImportantRoleFilterHolder.INSTANCE;
-    }
-
-    public final void setContext(Context context) {
-        this.mContext = context;
-    }
-
     @Override // com.android.server.am.mars.filter.IFilter
-    public void init(Context context) {
-        SemPersonaManager semPersonaManager;
-        setContext(context);
-        int userId = this.mContext.getUserId();
-        getSystemGalleryHolder(userId);
-        if (userId != 0 || (semPersonaManager = (SemPersonaManager) this.mContext.getSystemService("persona")) == null) {
-            return;
-        }
-        int knoxId = semPersonaManager.getKnoxId(2, true);
-        this.mSecureFolderUserId = knoxId;
-        if (knoxId < 150 || knoxId > 160) {
-            return;
-        }
-        getSystemGalleryHolder(knoxId);
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public void deInit() {
+    public final void deInit() {
         this.mSystemGalleryHolderList.clear();
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public int filter(String str, int i, int i2, int i3) {
+    public final int filter(int i, int i2, int i3, String str) {
         String str2 = (String) this.mSystemGalleryHolderList.get(Integer.valueOf(i));
         return (str2 == null || !str2.equals(str)) ? 0 : 22;
     }
@@ -70,7 +38,20 @@ public class ImportantRoleFilter implements IFilter {
             }
             this.mSystemGalleryHolderList.put(Integer.valueOf(i), str);
         } catch (Exception e) {
-            Slog.e(this.TAG, "Exception " + e.getMessage());
+            NandswapManager$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception "), "MARs:ImportantRoleFilter");
         }
+    }
+
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void init(Context context) {
+        SemPersonaManager semPersonaManager;
+        int knoxId;
+        this.mContext = context;
+        int userId = context.getUserId();
+        getSystemGalleryHolder(userId);
+        if (userId != 0 || (semPersonaManager = (SemPersonaManager) this.mContext.getSystemService("persona")) == null || (knoxId = semPersonaManager.getKnoxId(2, true)) < 150 || knoxId > 160) {
+            return;
+        }
+        getSystemGalleryHolder(knoxId);
     }
 }

@@ -1,23 +1,23 @@
 package com.android.server.power;
 
 import android.R;
+import android.app.ActivityManagerInternal;
+import android.app.BroadcastOptions;
 import android.app.IActivityManager;
 import android.app.ProgressDialog;
-import android.app.admin.SecurityLog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IIntentReceiver;
 import android.content.Intent;
 import android.content.pm.PackageManagerInternal;
-import android.hardware.input.IInputManager;
 import android.hardware.usb.UsbManager;
 import android.media.AudioAttributes;
 import android.net.INetd;
+import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
 import android.os.FileUtils;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.PowerManager;
 import android.os.RecoverySystem;
 import android.os.RemoteException;
@@ -25,19 +25,24 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.SystemVibrator;
-import android.os.UserHandle;
 import android.os.UserManager;
-import android.provider.Settings;
-import android.system.Os;
+import android.sysprop.CrashRecoveryProperties;
 import android.telephony.TelephonyManager;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.TimingsTraceLog;
-import android.view.ContextThemeWrapper;
+import android.view.SurfaceControl;
+import android.widget.TextView;
+import com.android.internal.statusbar.IStatusBar;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.RescueParty;
+import com.android.server.power.shutdown.AnimationPlayer;
+import com.android.server.power.shutdown.ShutdownDialog;
+import com.android.server.power.shutdown.SoundPlayer;
 import com.android.server.statusbar.StatusBarManagerInternal;
+import com.android.server.statusbar.StatusBarManagerService;
 import com.samsung.android.knox.ContextInfo;
 import com.samsung.android.knox.restriction.IRestrictionPolicy;
 import com.samsung.android.sepunion.SemUnionManager;
@@ -45,197 +50,199 @@ import com.samsung.android.service.HermesService.IHermesService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.TreeMap;
+import java.util.function.BiFunction;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ShutdownThread extends Thread {
-    public static long currentTimeMillisStart = 0;
-    public static ShutdownDialog dlgAnim = null;
-    public static LogFileWriter logFileWriter = null;
-    public static String mCallerName = null;
-    public static String mReason = null;
-    public static boolean mReboot = false;
-    public static boolean mRebootHasProgressBar = false;
-    public static boolean mRebootSafeMode = false;
-    public static boolean mSupportQmg = false;
-    public static boolean sIsRestrict = false;
-    public static boolean sIsStarted = false;
+    static final int DEFAULT_SHUTDOWN_VIBRATE_MS = 500;
+    public static long currentTimeMillisStart;
+    public static LogFileWriter logFileWriter;
+    public static String mReason;
+    public static boolean mReboot;
+    public static boolean mRebootHasProgressBar;
+    public static boolean mRebootSafeMode;
+    public static boolean sIsStarted;
+    public static ShutdownDialog shutdownDialog;
     public boolean mActionDone;
     public final Object mActionDoneSync = new Object();
     public Context mContext;
     public PowerManager.WakeLock mCpuWakeLock;
-    public Handler mHandler;
+    public AnonymousClass1 mHandler;
+    public final Injector mInjector;
     public PowerManager mPowerManager;
     public ProgressDialog mProgressDialog;
     public PowerManager.WakeLock mScreenWakeLock;
     public static final Object sIsStartedGuard = new Object();
-    public static final ShutdownThread sInstance = new ShutdownThread();
+    public static final ShutdownThread sInstance = new ShutdownThread(new Injector());
     public static final AudioAttributes VIBRATION_ATTRIBUTES = new AudioAttributes.Builder().setContentType(4).setUsage(13).build();
     public static final ArrayMap TRON_METRICS = new ArrayMap();
-    public static String METRIC_SYSTEM_SERVER = "shutdown_system_server";
-    public static String METRIC_SEND_BROADCAST = "shutdown_send_shutdown_broadcast";
-    public static String METRIC_AM = "shutdown_activity_manager";
-    public static String METRIC_PM = "shutdown_package_manager";
-    public static String METRIC_RADIOS = "shutdown_radios";
-    public static String METRIC_RADIO = "shutdown_radio";
-    public static String METRIC_SHUTDOWN_TIME_START = "begin_shutdown";
+    public static final String METRIC_SYSTEM_SERVER = "shutdown_system_server";
+    public static final String METRIC_SEND_BROADCAST = "shutdown_send_shutdown_broadcast";
+    public static final String METRIC_AM = "shutdown_activity_manager";
+    public static final String METRIC_PM = "shutdown_package_manager";
+    public static final String METRIC_RADIOS = "shutdown_radios";
+    public static final String METRIC_RADIO = "shutdown_radio";
+    public static final String METRIC_SHUTDOWN_TIME_START = "begin_shutdown";
     public static final boolean BIN_TYPE_USER = "user".equals(SystemProperties.get("ro.build.type"));
     public static final boolean BIN_TYPE_DEBUG_LOW = "0x4f4c".equals(SystemProperties.get("ro.boot.debug_level"));
     public static final boolean BIN_TYPE_PRODUCTSHIP = !Debug.semIsProductDev();
     public static boolean systemRequest = false;
 
-    /* renamed from: -$$Nest$smnewTimingsLog, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ TimingsTraceLog m10445$$Nest$smnewTimingsLog() {
-        return newTimingsLog();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.power.ShutdownThread$1, reason: invalid class name */
+    public final class AnonymousClass1 extends Handler {
+        public static ShutdownThread$getDelayDumpstate$1 delayDumpRaunnable;
+        public static AnonymousClass1 delayhandler;
     }
 
-    public static void shutdown(Context context, String str, boolean z) {
-        android.util.Slog.i("ShutdownThread", "shutdown reason : " + str + ", confirm : " + z);
-        if (sIsStarted) {
-            Log.d("ShutdownThread", "!@Request to shutdown already running, returning.");
-            return;
-        }
-        mReboot = false;
-        mRebootSafeMode = false;
-        mReason = str;
-        mCallerName = null;
-        shutdownInner(context);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class Injector {
     }
 
-    public static void systemShutdown(Context context, String str) {
-        android.util.Slog.i("ShutdownThread", "systemShutdown - reason: " + str);
-        if (sIsStarted) {
-            Log.d("ShutdownThread", "!@Request to shutdown already running, returning.");
-            return;
-        }
-        mReboot = false;
-        mRebootSafeMode = false;
-        mReason = str;
-        mCallerName = null;
-        systemRequest = true;
-        shutdownInner(context);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LogFileWriter {
+        public FileOutputStream latestShutdownProfile;
+        public FileOutputStream shutdownProfile;
     }
 
-    public static ShutdownThread get() {
-        ShutdownThread shutdownThread;
-        synchronized (ShutdownThread.class) {
-            shutdownThread = sInstance;
-        }
-        return shutdownThread;
-    }
-
-    public static void sendMylog(String str, String str2) {
-        MYLOG.i(str, str2);
-    }
-
-    public static void shutdownInner(Context context) {
-        context.assertRuntimeOverlayThemable();
-        synchronized (sIsStartedGuard) {
-            if (sIsStarted) {
-                Log.d("ShutdownThread", "!@Request to shutdown already running, returning./shutdowninner");
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public abstract class MYLOG {
+        public static void i(String str, String str2) {
+            try {
+                android.util.Slog.i(str, str2);
+                ShutdownThread.wirteLogFileWriter(str2);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (ShutdownThread.shutdownDialog == null || ShutdownThread.BIN_TYPE_USER) {
                 return;
             }
-            sIsRestrict = false;
-            try {
-                IRestrictionPolicy asInterface = IRestrictionPolicy.Stub.asInterface(ServiceManager.getService("restriction_policy"));
-                if ((!mReboot || mReason != null) && asInterface != null && !systemRequest && !asInterface.isPowerOffAllowed(new ContextInfo(), true)) {
-                    android.util.Slog.d("ShutdownThread", "Shutdown Disabled by Administrator");
-                    sIsRestrict = true;
-                    sendPowerOffCancelBroadcast(context);
-                    return;
+            Calendar calendar = Calendar.getInstance();
+            final String format = String.format("%02d-%02d %02d:%02d:%02d.%03d %s: %s\n", Integer.valueOf(calendar.get(2) + 1), Integer.valueOf(calendar.get(5)), Integer.valueOf(calendar.get(11)), Integer.valueOf(calendar.get(12)), Integer.valueOf(calendar.get(13)), Integer.valueOf(calendar.get(14)), "ShutdownThread", str2);
+            final ShutdownDialog shutdownDialog = ShutdownThread.shutdownDialog;
+            Handler handler = shutdownDialog.logHandler;
+            if (handler == null || shutdownDialog.mLogView == null) {
+                return;
+            }
+            handler.post(new Runnable() { // from class: com.android.server.power.shutdown.ShutdownDialog$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ShutdownDialog shutdownDialog2 = ShutdownDialog.this;
+                    String str3 = format;
+                    TextView textView = shutdownDialog2.mLogView;
+                    if (textView != null) {
+                        textView.append(str3);
+                    }
                 }
-            } catch (RemoteException e) {
-                android.util.Slog.e("ShutdownThread", "RemoteException", e);
-            } catch (Exception e2) {
-                android.util.Slog.e("ShutdownThread", "Exception", e2);
-            }
-            if (SystemProperties.getInt("persist.sys.rescue_level", 0) == 6) {
-                SystemProperties.set("persist.sys.enable_isrb", Boolean.toString(true));
-                SystemProperties.set("persist.sys.rescue_mode", "isrb_off");
-                SystemProperties.set("sys.isrblevel.callreboot", Boolean.toString(true));
-            }
-            ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(context, (context.getResources().getConfiguration().uiMode & 48) == 32 ? R.style.Theme.DeviceDefault : R.style.Theme.DeviceDefault.Light);
-            UpdatePoweroffResetReason(new Exception("It is not an exception!! just save the trace for process which called shutdown thread!! ShutdownThread.shutdown"));
-            try {
-                Thread.sleep(50L);
-            } catch (InterruptedException e3) {
-                android.util.Slog.e("ShutdownThread", "InterruptedException", e3);
-            }
-            android.util.Slog.i("ShutdownThread", "!@########POWEROFF START###### current time : " + new SimpleDateFormat("yy/MM/dd HH:mm:ss.SSS").format(new Date(System.currentTimeMillis())));
-            currentTimeMillisStart = System.currentTimeMillis();
-            beginShutdownSequence(contextThemeWrapper);
+            });
         }
     }
 
-    public static void UpdatePoweroffResetReason(Exception exc) {
-        android.util.Slog.i("ShutdownThread", "save power_off_reset_reason.txt");
-        File file = new File(Environment.getDataDirectory().toString() + "/log/power_off_reset_reason.txt");
-        if (file.length() > 10240) {
-            ifOverSizeFileBackup(file);
-        }
-        FileOutputStream fileOutputStream = null;
-        try {
+    public ShutdownThread(Injector injector) {
+        this.mInjector = injector;
+    }
+
+    public static void closeLogFileWriter() {
+        if (logFileWriter != null) {
+            android.util.Slog.i("ShutdownThread", "logFileWriter saveAndClose logFileWriter : " + logFileWriter);
+            LogFileWriter logFileWriter2 = logFileWriter;
+            FileOutputStream fileOutputStream = logFileWriter2.shutdownProfile;
             try {
                 try {
-                    FileOutputStream fileOutputStream2 = new FileOutputStream(file, true);
-                    try {
-                        PrintWriter printWriter = new PrintWriter(fileOutputStream2);
-                        Os.chmod(file.getPath(), FrameworkStatsLog.DISPLAY_HBM_STATE_CHANGED);
-                        Os.chown(file.getPath(), 1000, 1007);
-                        printWriter.println(new SimpleDateFormat("yy/MM/dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
-                        if (mCallerName != null) {
-                            printWriter.println("caller : " + mCallerName);
-                        }
-                        printWriter.println("reason : " + mReason);
-                        exc.printStackTrace(printWriter);
-                        printWriter.flush();
-                        printWriter.close();
-                        fileOutputStream2.close();
-                    } catch (Exception e) {
-                        e = e;
-                        fileOutputStream = fileOutputStream2;
-                        e.printStackTrace();
-                        if (fileOutputStream != null) {
-                            fileOutputStream.close();
-                        }
-                    } catch (Throwable th) {
-                        th = th;
-                        fileOutputStream = fileOutputStream2;
-                        if (fileOutputStream != null) {
-                            try {
-                                fileOutputStream.close();
-                            } catch (IOException e2) {
-                                e2.printStackTrace();
+                    if (fileOutputStream != null) {
+                        try {
+                            fileOutputStream.flush();
+                            logFileWriter2.shutdownProfile.close();
+                            logFileWriter2.shutdownProfile = null;
+                            FileOutputStream fileOutputStream2 = logFileWriter2.latestShutdownProfile;
+                            if (fileOutputStream2 != null) {
+                                fileOutputStream2.flush();
+                                logFileWriter2.latestShutdownProfile.close();
+                                logFileWriter2.latestShutdownProfile = null;
+                            }
+                            FileOutputStream fileOutputStream3 = logFileWriter2.shutdownProfile;
+                            if (fileOutputStream3 != null) {
+                                fileOutputStream3.close();
+                                logFileWriter2.shutdownProfile = null;
+                            }
+                            FileOutputStream fileOutputStream4 = logFileWriter2.latestShutdownProfile;
+                            if (fileOutputStream4 != null) {
+                                fileOutputStream4.close();
+                                logFileWriter2.latestShutdownProfile = null;
+                            }
+                        } catch (IOException e) {
+                            android.util.Slog.e("ShutdownThread", "LogFileWriter.saveAndClose fail", e);
+                            FileOutputStream fileOutputStream5 = logFileWriter2.shutdownProfile;
+                            if (fileOutputStream5 != null) {
+                                fileOutputStream5.close();
+                                logFileWriter2.shutdownProfile = null;
+                            }
+                            FileOutputStream fileOutputStream6 = logFileWriter2.latestShutdownProfile;
+                            if (fileOutputStream6 != null) {
+                                fileOutputStream6.close();
+                                logFileWriter2.latestShutdownProfile = null;
                             }
                         }
-                        throw th;
                     }
-                } catch (Throwable th2) {
-                    th = th2;
+                } catch (Throwable th) {
+                    try {
+                        FileOutputStream fileOutputStream7 = logFileWriter2.shutdownProfile;
+                        if (fileOutputStream7 != null) {
+                            fileOutputStream7.close();
+                            logFileWriter2.shutdownProfile = null;
+                        }
+                        FileOutputStream fileOutputStream8 = logFileWriter2.latestShutdownProfile;
+                        if (fileOutputStream8 != null) {
+                            fileOutputStream8.close();
+                            logFileWriter2.latestShutdownProfile = null;
+                        }
+                    } catch (IOException e2) {
+                        android.util.Slog.e("ShutdownThread", "LogFileWriter.saveAndClose error", e2);
+                    }
+                    throw th;
                 }
-            } catch (Exception e3) {
-                e = e3;
+            } catch (IOException e3) {
+                android.util.Slog.e("ShutdownThread", "LogFileWriter.saveAndClose error", e3);
             }
-        } catch (IOException e4) {
-            e4.printStackTrace();
+            logFileWriter = null;
         }
     }
 
-    public static void ifOverSizeFileBackup(File file) {
-        android.util.Slog.i("ShutdownThread", "The size of power_off_reset_reason.txt is over than 10KB. Rename to power_off_reset_reason_backup.txt for backup.");
-        File file2 = new File(Environment.getDataDirectory().toString() + "/log/power_off_reset_reason_backup.txt");
-        if (file2.exists()) {
-            android.util.Slog.i("ShutdownThread", "power_off_reset_reason_backup.txt file is already exist. So, delete it.");
-            if (!file2.delete()) {
-                android.util.Slog.e("ShutdownThread", "power_off_reset_reason_backup.txt delete fail");
-                return;
+    public static void get() {
+        synchronized (ShutdownThread.class) {
+        }
+    }
+
+    public static synchronized ShutdownDialog getShutdownDialog(Context context) {
+        ShutdownDialog shutdownDialog2;
+        synchronized (ShutdownThread.class) {
+            try {
+                if (shutdownDialog == null) {
+                    shutdownDialog = new ShutdownDialog(context);
+                }
+                shutdownDialog2 = shutdownDialog;
+            } catch (Throwable th) {
+                throw th;
             }
         }
-        file.renameTo(file2);
+        return shutdownDialog2;
+    }
+
+    public static void metricEnded(String str) {
+        ArrayMap arrayMap = TRON_METRICS;
+        synchronized (arrayMap) {
+            arrayMap.put(str, Long.valueOf(SystemClock.elapsedRealtime() + ((Long) arrayMap.get(str)).longValue()));
+        }
+    }
+
+    public static void metricStarted(String str) {
+        ArrayMap arrayMap = TRON_METRICS;
+        synchronized (arrayMap) {
+            arrayMap.put(str, Long.valueOf(SystemClock.elapsedRealtime() * (-1)));
+        }
     }
 
     public static void reboot(Context context, String str, boolean z) {
@@ -248,11 +255,61 @@ public final class ShutdownThread extends Thread {
         mRebootSafeMode = false;
         mRebootHasProgressBar = false;
         mReason = str;
-        mCallerName = null;
         shutdownInner(context);
     }
 
-    public static void rebootSafeMode(Context context, boolean z) {
+    public static void rebootOrShutdown(Context context, String str, boolean z) {
+        if (SystemProperties.get("ro.boot.debug_level", "0x4f4c").equals("0x494d")) {
+            long elapsedRealtime = (60 * 1000) + SystemClock.elapsedRealtime();
+            while (true) {
+                if (!INetd.IF_FLAG_RUNNING.equals(SystemProperties.get("init.svc.bugreportd")) && !INetd.IF_FLAG_RUNNING.equals(SystemProperties.get("init.svc.bugreportm"))) {
+                    break;
+                }
+                if (elapsedRealtime - SystemClock.elapsedRealtime() <= 0) {
+                    android.util.Slog.w("ShutdownThread", "!@Dumpstate finish wait timed out");
+                    break;
+                } else {
+                    android.util.Slog.d("ShutdownThread", "!@wait for finish Dumpstate: sleep 1000ms");
+                    try {
+                        Thread.sleep(1000L);
+                    } catch (InterruptedException unused) {
+                        android.util.Slog.e("ShutdownThread", "InterruptedException");
+                    }
+                }
+            }
+        }
+        if (z) {
+            MYLOG.i("ShutdownThread", "!@Rebooting, reason: " + str);
+            PowerManagerService.lowLevelReboot(str);
+            Log.e("ShutdownThread", "!@Reboot failed, will attempt shutdown instead");
+            closeLogFileWriter();
+            str = "[shutdownthread]rebootFailed";
+        } else if (context != null) {
+            SystemVibrator systemVibrator = new SystemVibrator(context);
+            try {
+                if (systemVibrator.hasVibrator()) {
+                    systemVibrator.vibrate(500L, VIBRATION_ATTRIBUTES);
+                    try {
+                        Thread.sleep(500L);
+                    } catch (InterruptedException unused2) {
+                    }
+                }
+            } catch (Exception e) {
+                Log.w("ShutdownThread", "Failed to vibrate during shutdown.", e);
+            }
+        }
+        MYLOG.i("ShutdownThread", "!@Performing low-level shutdown...");
+        closeLogFileWriter();
+        SimpleDateFormat simpleDateFormat = PowerManagerService.DATE_FORMAT;
+        Slog.d("PowerManagerService", "[api] lowLevelShutdown: " + PowerManagerUtil.callerInfoToString(true));
+        Slog.saveLogAsFile();
+        if (str == null) {
+            str = "";
+        }
+        SystemProperties.set("sys.powerctl", "shutdown,".concat(str));
+    }
+
+    public static void rebootSafeMode(Context context) {
         if (sIsStarted) {
             Log.d("ShutdownThread", "!@Request to shutdown already running, returning./rebootSafeMode()");
             return;
@@ -272,52 +329,55 @@ public final class ShutdownThread extends Thread {
         mRebootSafeMode = true;
         mRebootHasProgressBar = false;
         mReason = "SafeMode";
-        mCallerName = null;
         shutdownInner(context);
     }
 
     public static ProgressDialog showShutdownDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         String str = mReason;
-        if (str != null && str.startsWith("recovery-update")) {
-            mRebootHasProgressBar = RecoverySystem.UNCRYPT_PACKAGE_FILE.exists() && !RecoverySystem.BLOCK_MAP_FILE.exists();
-            progressDialog.setTitle(context.getText(17042370));
-            if (mRebootHasProgressBar) {
-                progressDialog.setMax(100);
-                progressDialog.setProgress(0);
-                progressDialog.setIndeterminate(false);
-                progressDialog.setProgressNumberFormat(null);
-                progressDialog.setProgressStyle(1);
-                progressDialog.setMessage(context.getText(17042368));
-            } else {
-                if (showSysuiReboot()) {
-                    return null;
-                }
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage(context.getText(17042369));
-            }
-        } else {
+        if (str == null || !str.startsWith("recovery-update")) {
             String str2 = mReason;
             if (str2 != null && str2.equals("recovery")) {
-                if (RescueParty.isAttemptingFactoryReset()) {
-                    progressDialog.setTitle(context.getText(17042327));
-                    progressDialog.setMessage(context.getText(17042825));
+                int i = RescueParty.LEVEL_ISRB_BOOT;
+                if (((Boolean) CrashRecoveryProperties.attemptingFactoryReset().orElse(Boolean.FALSE)).booleanValue() || RescueParty.isRebootPropertySet()) {
+                    progressDialog.setTitle(context.getText(17042469));
+                    progressDialog.setMessage(context.getText(17043035));
                     progressDialog.setIndeterminate(true);
                 } else {
                     if (showSysuiReboot()) {
                         return null;
                     }
-                    progressDialog.setTitle(context.getText(17042366));
-                    progressDialog.setMessage(context.getText(17042365));
+                    progressDialog.setTitle(context.getText(17042522));
+                    progressDialog.setMessage(context.getText(17042521));
                     progressDialog.setIndeterminate(true);
                 }
             } else {
                 if (showSysuiReboot()) {
                     return null;
                 }
-                progressDialog.setTitle(context.getText(17042327));
-                progressDialog.setMessage(context.getText(17042825));
+                progressDialog.setTitle(context.getText(17042469));
+                progressDialog.setMessage(context.getText(17043035));
                 progressDialog.setIndeterminate(true);
+            }
+        } else {
+            mRebootHasProgressBar = RecoverySystem.UNCRYPT_PACKAGE_FILE.exists() && !RecoverySystem.BLOCK_MAP_FILE.exists();
+            progressDialog.setTitle(context.getText(17042526));
+            if (mRebootHasProgressBar) {
+                progressDialog.setMax(100);
+                progressDialog.setProgress(0);
+                progressDialog.setIndeterminate(false);
+                if (!context.getResources().getBoolean(R.bool.config_sms_force_7bit_encoding)) {
+                    progressDialog.setProgressPercentFormat(null);
+                }
+                progressDialog.setProgressNumberFormat(null);
+                progressDialog.setProgressStyle(1);
+                progressDialog.setMessage(context.getText(17042524));
+            } else {
+                if (showSysuiReboot()) {
+                    return null;
+                }
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage(context.getText(17042525));
             }
         }
         progressDialog.setCancelable(false);
@@ -327,333 +387,248 @@ public final class ShutdownThread extends Thread {
     }
 
     public static boolean showSysuiReboot() {
-        Log.d("ShutdownThread", "Attempting to use SysUI shutdown UI");
+        IStatusBar iStatusBar;
         try {
-            if (((StatusBarManagerInternal) LocalServices.getService(StatusBarManagerInternal.class)).showShutdownUi(mReboot, mReason)) {
-                Log.d("ShutdownThread", "SysUI handling shutdown UI");
-                return true;
-            }
-        } catch (Exception unused) {
-        }
-        Log.d("ShutdownThread", "SysUI is unavailable");
-        return false;
-    }
-
-    public static void sendPowerOffCancelBroadcast(Context context) {
-        context.sendBroadcast(new Intent("POWER_OFF_CANCEL"));
-    }
-
-    public static void beginShutdownSequence(Context context) {
-        synchronized (sIsStartedGuard) {
-            if (sIsStarted) {
-                Log.d("ShutdownThread", "!@Shutdown sequence already running, returning./beginShutdownSequence");
-                return;
-            }
-            sIsStarted = true;
-            getDelayDumpstate.startState();
-            openLogFileWriter();
-            MYLOG.i("ShutdownThread", "!@beginShutdownSequence");
-            setInputKeysDisable();
-            Intent intent = new Intent();
-            intent.setAction("com.sec.android.internal.ims.FLIGHT_MODE");
-            intent.putExtra("powerofftriggered", 0);
-            intent.putExtra("isShutDownForRCS", true);
-            context.sendBroadcast(intent);
-            MYLOG.i("ShutdownThread", "!@Shutdown animation will start");
-            dlgAnim = new ShutdownDialog(context);
+            StatusBarManagerInternal statusBarManagerInternal = (StatusBarManagerInternal) LocalServices.getService(StatusBarManagerInternal.class);
+            boolean z = mReboot;
             String str = mReason;
-            if (str != null && str.startsWith("recovery-update")) {
-                sInstance.mProgressDialog = showShutdownDialog(context);
-            } else {
-                if (LibQmg.checkSupportQmg()) {
-                    boolean existAnim = dlgAnim.existAnim();
-                    mSupportQmg = existAnim;
-                    if (existAnim) {
-                        android.util.Slog.i("ShutdownThread", "!@play QMG animation");
-                        if ("silent.sec".equals(mReason) || new File("/efs/sec_efs/auto_reboot/silence_LCDoff.txt").exists()) {
-                            dlgAnim.setSilentShutdown(true);
-                        }
-                        dlgAnim.prepareShutdown();
-                        dlgAnim.show();
-                    }
-                }
-                sInstance.mProgressDialog = showShutdownDialog(context);
+            StatusBarManagerService.AnonymousClass2 anonymousClass2 = (StatusBarManagerService.AnonymousClass2) statusBarManagerInternal;
+            if (!StatusBarManagerService.this.mContext.getResources().getBoolean(R.bool.config_sms_utf8_support) || (iStatusBar = StatusBarManagerService.this.mBar) == null) {
+                return false;
             }
-            ShutdownThread shutdownThread = sInstance;
-            shutdownThread.mContext = context;
-            PowerManager powerManager = (PowerManager) context.getSystemService("power");
-            shutdownThread.mPowerManager = powerManager;
-            shutdownThread.mCpuWakeLock = null;
-            try {
-                PowerManager.WakeLock newWakeLock = powerManager.newWakeLock(1, "ShutdownThread-cpu");
-                shutdownThread.mCpuWakeLock = newWakeLock;
-                newWakeLock.setReferenceCounted(false);
-                shutdownThread.mCpuWakeLock.acquire();
-            } catch (SecurityException e) {
-                Log.w("ShutdownThread", "No permission to acquire wake lock", e);
-                sInstance.mCpuWakeLock = null;
-            }
-            ShutdownThread shutdownThread2 = sInstance;
-            shutdownThread2.mScreenWakeLock = null;
-            if (shutdownThread2.mPowerManager.isScreenOn()) {
-                try {
-                    PowerManager.WakeLock newWakeLock2 = shutdownThread2.mPowerManager.newWakeLock(26, "ShutdownThread-screen");
-                    shutdownThread2.mScreenWakeLock = newWakeLock2;
-                    newWakeLock2.setReferenceCounted(false);
-                    shutdownThread2.mScreenWakeLock.acquire();
-                } catch (SecurityException e2) {
-                    Log.w("ShutdownThread", "No permission to acquire wake lock", e2);
-                    sInstance.mScreenWakeLock = null;
-                }
-            }
-            if (SecurityLog.isLoggingEnabled()) {
-                SecurityLog.writeEvent(210010, new Object[0]);
-            }
-            ShutdownThread shutdownThread3 = sInstance;
-            shutdownThread3.mHandler = new Handler() { // from class: com.android.server.power.ShutdownThread.1
-            };
-            shutdownThread3.start();
+            iStatusBar.showShutdownUi(z, str);
+            return true;
+        } catch (RemoteException | Exception unused) {
+            return false;
         }
     }
 
-    public static void setInputKeysDisable() {
-        IInputManager asInterface = IInputManager.Stub.asInterface(ServiceManager.checkService("input"));
-        if (asInterface == null) {
-            android.util.Slog.e("ShutdownThread", "ServiceManager.checkService fail");
+    public static void shutdown(Context context, String str, boolean z) {
+        android.util.Slog.i("ShutdownThread", "shutdown reason : " + str + ", confirm : " + z);
+        if (sIsStarted) {
+            Log.d("ShutdownThread", "!@Request to shutdown already running, returning.");
             return;
         }
-        try {
-            android.util.Slog.i("ShutdownThread", "setInputKeysDisable");
-            asInterface.setStartedShutdown(true);
-        } catch (RemoteException e) {
-            android.util.Slog.d("ShutdownThread", "error occur while input disable");
-            e.printStackTrace();
+        mReboot = false;
+        mRebootSafeMode = false;
+        mReason = str;
+        shutdownInner(context);
+    }
+
+    /* JADX WARN: Can't wrap try/catch for region: R(16:9|(2:10|11)|(10:(23:13|(1:15)|16|17|(1:19)|20|(1:22)(1:167)|23|(1:25)(1:166)|26|(3:28|(2:30|(1:32))|33)|34|35|36|37|38|39|40|41|42|43|44|1ca)|37|38|39|40|41|42|43|44|1ca)|(3:173|174|175)|16|17|(0)|20|(0)(0)|23|(0)(0)|26|(0)|34|35|36) */
+    /* JADX WARN: Can't wrap try/catch for region: R(25:9|(2:10|11)|(23:13|(1:15)|16|17|(1:19)|20|(1:22)(1:167)|23|(1:25)(1:166)|26|(3:28|(2:30|(1:32))|33)|34|35|36|37|38|39|40|41|42|43|44|1ca)|(3:173|174|175)|16|17|(0)|20|(0)(0)|23|(0)(0)|26|(0)|34|35|36|37|38|39|40|41|42|43|44|1ca) */
+    /* JADX WARN: Can't wrap try/catch for region: R(26:9|10|11|(23:13|(1:15)|16|17|(1:19)|20|(1:22)(1:167)|23|(1:25)(1:166)|26|(3:28|(2:30|(1:32))|33)|34|35|36|37|38|39|40|41|42|43|44|1ca)|(3:173|174|175)|16|17|(0)|20|(0)(0)|23|(0)(0)|26|(0)|34|35|36|37|38|39|40|41|42|43|44|1ca) */
+    /* JADX WARN: Code restructure failed: missing block: B:142:0x0192, code lost:
+    
+        r15 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:143:0x0193, code lost:
+    
+        android.util.Slog.e("ShutdownThread", "InterruptedException", r15);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:146:0x017d, code lost:
+    
+        r15 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:147:0x0184, code lost:
+    
+        r15.printStackTrace();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:148:0x0187, code lost:
+    
+        if (r5 != null) goto L67;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:149:0x0189, code lost:
+    
+        r5.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:161:0x0174, code lost:
+    
+        r15 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:162:0x0175, code lost:
+    
+        r15.printStackTrace();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:163:0x0182, code lost:
+    
+        r15 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:164:0x0183, code lost:
+    
+        r5 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:165:0x017f, code lost:
+    
+        r15 = th;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:155:0x043c A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:166:0x00a0  */
+    /* JADX WARN: Removed duplicated region for block: B:167:0x0097  */
+    /* JADX WARN: Removed duplicated region for block: B:19:0x0068  */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x0095  */
+    /* JADX WARN: Removed duplicated region for block: B:25:0x009c  */
+    /* JADX WARN: Removed duplicated region for block: B:28:0x00e0  */
+    /* JADX WARN: Removed duplicated region for block: B:46:0x01cb A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void shutdownInner(android.content.Context r15) {
+        /*
+            Method dump skipped, instructions count: 1095
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.power.ShutdownThread.shutdownInner(android.content.Context):void");
+    }
+
+    public static void systemShutdown(Context context, String str) {
+        android.util.Slog.i("ShutdownThread", "systemShutdown - reason: ".concat(str));
+        if (sIsStarted) {
+            Log.d("ShutdownThread", "!@Request to shutdown already running, returning.");
+            return;
+        }
+        mReboot = false;
+        mRebootSafeMode = false;
+        mReason = str;
+        systemRequest = true;
+        shutdownInner(context);
+    }
+
+    public static void wirteLogFileWriter(String str) {
+        LogFileWriter logFileWriter2 = logFileWriter;
+        if (logFileWriter2 != null) {
+            if (logFileWriter2.shutdownProfile == null) {
+                android.util.Slog.i("ShutdownThread", "shutdownProfile is null");
+                return;
+            }
+            Calendar calendar = Calendar.getInstance();
+            String format = String.format("%02d-%02d %02d:%02d:%02d.%03d %s: %s\n", Integer.valueOf(calendar.get(2) + 1), Integer.valueOf(calendar.get(5)), Integer.valueOf(calendar.get(11)), Integer.valueOf(calendar.get(12)), Integer.valueOf(calendar.get(13)), Integer.valueOf(calendar.get(14)), "ShutdownThread", str);
+            try {
+                logFileWriter2.shutdownProfile.write(format.getBytes());
+                FileOutputStream fileOutputStream = logFileWriter2.latestShutdownProfile;
+                if (fileOutputStream != null) {
+                    fileOutputStream.write(format.getBytes());
+                }
+            } catch (IOException e) {
+                android.util.Slog.e("ShutdownThread", "LogFileWriter.write fail", e);
+            }
         }
     }
 
-    public void actionDone() {
-        synchronized (this.mActionDoneSync) {
-            this.mActionDone = true;
-            this.mActionDoneSync.notifyAll();
-        }
+    /* JADX WARN: Removed duplicated region for block: B:10:0x0043  */
+    /* JADX WARN: Removed duplicated region for block: B:13:0x0074  */
+    /* JADX WARN: Removed duplicated region for block: B:21:0x0048  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void playShutdownVibration(android.content.Context r10) {
+        /*
+            r9 = this;
+            com.android.server.power.ShutdownThread$Injector r0 = r9.mInjector
+            r0.getClass()
+            android.os.SystemVibrator r0 = new android.os.SystemVibrator
+            r0.<init>(r10)
+            boolean r1 = r0.hasVibrator()
+            if (r1 != 0) goto L11
+            return
+        L11:
+            com.android.server.power.ShutdownThread$Injector r1 = r9.mInjector
+            r1.getClass()
+            android.content.res.Resources r10 = r10.getResources()
+            r1 = 17040177(0x1040331, float:2.424686E-38)
+            java.lang.String r10 = r10.getString(r1)
+            boolean r1 = android.text.TextUtils.isEmpty(r10)
+            java.lang.String r2 = "ShutdownThread"
+            if (r1 != 0) goto L3d
+            java.io.FileReader r1 = new java.io.FileReader     // Catch: java.lang.Exception -> L37
+            r1.<init>(r10)     // Catch: java.lang.Exception -> L37
+            android.os.vibrator.persistence.ParsedVibration r10 = android.os.vibrator.persistence.VibrationXmlParser.parseDocument(r1)     // Catch: java.lang.Exception -> L37
+            android.os.VibrationEffect r10 = r10.resolve(r0)     // Catch: java.lang.Exception -> L37
+            goto L3e
+        L37:
+            r10 = move-exception
+            java.lang.String r1 = "Error parsing default shutdown vibration effect."
+            android.util.Log.e(r2, r1, r10)
+        L3d:
+            r10 = 0
+        L3e:
+            r1 = -1
+            r3 = 500(0x1f4, double:2.47E-321)
+            if (r10 != 0) goto L48
+            android.os.VibrationEffect r10 = android.os.VibrationEffect.createOneShot(r3, r1)
+            goto L5e
+        L48:
+            long r5 = r10.getDuration()
+            r7 = 9223372036854775807(0x7fffffffffffffff, double:NaN)
+            int r5 = (r5 > r7 ? 1 : (r5 == r7 ? 0 : -1))
+            if (r5 != 0) goto L5e
+            java.lang.String r10 = "The parsed shutdown vibration is indefinite."
+            android.util.Log.w(r2, r10)
+            android.os.VibrationEffect r10 = android.os.VibrationEffect.createOneShot(r3, r1)
+        L5e:
+            r1 = 18
+            android.os.VibrationAttributes r1 = android.os.VibrationAttributes.createForUsage(r1)
+            r0.vibrate(r10, r1)
+            long r0 = r10.getDuration()
+            com.android.server.power.ShutdownThread$Injector r9 = r9.mInjector
+            r5 = 0
+            int r10 = (r0 > r5 ? 1 : (r0 == r5 ? 0 : -1))
+            if (r10 >= 0) goto L74
+            goto L75
+        L74:
+            r3 = r0
+        L75:
+            r9.getClass()
+            java.lang.Thread.sleep(r3)     // Catch: java.lang.InterruptedException -> L7b
+        L7b:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.power.ShutdownThread.playShutdownVibration(android.content.Context):void");
     }
 
+    /* JADX WARN: Type inference failed for: r0v73, types: [com.android.server.power.ShutdownThread$6] */
     @Override // java.lang.Thread, java.lang.Runnable
-    public void run() {
-        TimingsTraceLog newTimingsLog = newTimingsLog();
-        newTimingsLog.traceBegin("SystemServerShutdown");
-        metricShutdownStart();
-        metricStarted(METRIC_SYSTEM_SERVER);
-        Led.On();
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.power.ShutdownThread.2
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                ShutdownThread.this.actionDone();
-            }
-        };
-        StringBuilder sb = new StringBuilder();
-        sb.append(mReboot ? "1" : "0");
-        String str = mReason;
-        if (str == null) {
-            str = "";
-        }
-        sb.append(str);
-        SystemProperties.set("sys.shutdown.requested", sb.toString());
-        if (mRebootSafeMode) {
-            SystemProperties.set("persist.sys.safemode", "1");
-        }
-        newTimingsLog.traceBegin("DumpPreRebootInfo");
-        try {
-            android.util.Slog.i("ShutdownThread", "Logging pre-reboot information...");
-            PreRebootLogger.log(this.mContext);
-        } catch (Exception e) {
-            android.util.Slog.e("ShutdownThread", "Failed to log pre-reboot information", e);
-        }
-        newTimingsLog.traceEnd();
-        metricStarted(METRIC_SEND_BROADCAST);
-        newTimingsLog.traceBegin("SendShutdownBroadcast");
-        MYLOG.i("ShutdownThread", "!@Sending shutdown broadcast...");
-        this.mActionDone = false;
-        Intent intent = new Intent("android.intent.action.ACTION_SHUTDOWN");
-        intent.addFlags(1342177280);
-        this.mContext.sendOrderedBroadcastAsUser(intent, UserHandle.ALL, null, broadcastReceiver, this.mHandler, 0, null, null);
-        long elapsedRealtime = SystemClock.elapsedRealtime() + 10000;
-        synchronized (this.mActionDoneSync) {
-            while (true) {
-                if (this.mActionDone) {
-                    break;
-                }
-                long elapsedRealtime2 = elapsedRealtime - SystemClock.elapsedRealtime();
-                if (elapsedRealtime2 <= 0) {
-                    Log.w("ShutdownThread", "Shutdown broadcast timed out");
-                    break;
-                } else {
-                    if (mRebootHasProgressBar) {
-                        sInstance.setRebootProgress((int) ((((10000 - elapsedRealtime2) * 1.0d) * 2.0d) / 10000.0d), null);
-                    }
-                    try {
-                        this.mActionDoneSync.wait(Math.min(elapsedRealtime2, 500L));
-                    } catch (InterruptedException unused) {
-                    }
-                }
-            }
-        }
-        if (mRebootHasProgressBar) {
-            sInstance.setRebootProgress(2, null);
-        }
-        long currentTimeMillis = System.currentTimeMillis() - currentTimeMillisStart;
-        String valueOf = String.valueOf(SystemProperties.get("dev.shutdownbroadcast.on", ""));
-        if ((!BIN_TYPE_PRODUCTSHIP || !BIN_TYPE_DEBUG_LOW) && currentTimeMillis >= 5000) {
-            MYLOG.i("ShutdownThread", "!@shutdown is too slow, elapsed time from POWEROFF START to BROADCAST_SHUTDOWN is " + currentTimeMillis);
-        } else {
-            "On".equalsIgnoreCase(valueOf);
-        }
-        newTimingsLog.traceEnd();
-        metricEnded(METRIC_SEND_BROADCAST);
-        shutdownHermes();
-        MYLOG.i("ShutdownThread", "!@Shutting down activity manager...");
-        newTimingsLog.traceBegin("ShutdownActivityManager");
-        metricStarted(METRIC_AM);
-        IActivityManager asInterface = IActivityManager.Stub.asInterface(ServiceManager.checkService("activity"));
-        if (asInterface != null) {
-            try {
-                asInterface.shutdown(10000);
-            } catch (RemoteException unused2) {
-            }
-        }
-        if (mRebootHasProgressBar) {
-            sInstance.setRebootProgress(4, null);
-        }
-        newTimingsLog.traceEnd();
-        metricEnded(METRIC_AM);
-        MYLOG.i("ShutdownThread", "!@Shutting down package manager...");
-        newTimingsLog.traceBegin("ShutdownPackageManager");
-        metricStarted(METRIC_PM);
-        PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
-        if (packageManagerInternal != null) {
-            packageManagerInternal.shutdown();
-        }
-        if (mRebootHasProgressBar) {
-            sInstance.setRebootProgress(6, null);
-        }
-        newTimingsLog.traceEnd();
-        metricEnded(METRIC_PM);
-        newTimingsLog.traceBegin("ShutdownRadios");
-        metricStarted(METRIC_RADIOS);
-        shutdownRadios(12000);
-        if (mRebootHasProgressBar) {
-            sInstance.setRebootProgress(18, null);
-        }
-        newTimingsLog.traceEnd();
-        metricEnded(METRIC_RADIOS);
-        if (mRebootHasProgressBar) {
-            sInstance.setRebootProgress(20, null);
-            uncrypt();
-        }
-        MYLOG.i("ShutdownThread", "!@waitForAnimEnd");
-        if ("ON".equals(SystemProperties.get("service.poweranimation.on", ""))) {
-            MYLOG.i("ShutdownThread", "!@wait for PNG animation end");
-            waitForAnimationEnd(10);
-        } else if (LibQmg.checkSupportQmg() && mSupportQmg) {
-            MYLOG.i("ShutdownThread", "!@wait for QMG animation end");
-            dlgAnim.waitForAnimEnd(10);
-        }
-        ((UsbManager) this.mContext.getSystemService("usb")).enableUsbDataSignal(false);
-        if (SystemProperties.get("ro.boot.debug_level", "0x4f4c").equals("0x494d")) {
-            waitForDumpstateEnd(60);
-        }
-        StringBuilder sb2 = new StringBuilder();
-        sb2.append("!@run, ");
-        sb2.append(mReboot ? "reboot" : "shutdown");
-        sb2.append(" requested reason=");
-        String str2 = mReason;
-        if (str2 == null) {
-            str2 = "null";
-        }
-        sb2.append(str2);
-        MYLOG.i("ShutdownThread", sb2.toString());
-        rebootOrShutdown(this.mContext, mReboot, mReason);
-    }
-
-    public boolean waitForAnimationEnd(int i) {
-        long elapsedRealtime = SystemClock.elapsedRealtime() + (i * 1000);
-        while (!"END".equals(SystemProperties.get("dev.shutdownanimation.end"))) {
-            if (elapsedRealtime - SystemClock.elapsedRealtime() <= 0) {
-                android.util.Slog.w("ShutdownThread", "!@Animation finish wait timed out");
-                return true;
-            }
-            android.util.Slog.d("ShutdownThread", "!@wait for finish : sleep 100ms");
-            try {
-                Thread.sleep(100L);
-            } catch (InterruptedException unused) {
-                android.util.Slog.e("ShutdownThread", "InterruptedException");
-            }
-        }
-        return true;
-    }
-
-    public boolean waitForDumpstateEnd(int i) {
-        long elapsedRealtime = SystemClock.elapsedRealtime() + (i * 1000);
-        while (true) {
-            if (!INetd.IF_FLAG_RUNNING.equals(SystemProperties.get("init.svc.bugreportd")) && !INetd.IF_FLAG_RUNNING.equals(SystemProperties.get("init.svc.bugreportm"))) {
-                return true;
-            }
-            if (elapsedRealtime - SystemClock.elapsedRealtime() <= 0) {
-                android.util.Slog.w("ShutdownThread", "!@Dumpstate finish wait timed out");
-                return true;
-            }
-            android.util.Slog.d("ShutdownThread", "!@wait for finish Dumpstate: sleep 1000ms");
-            try {
-                Thread.sleep(1000L);
-            } catch (InterruptedException unused) {
-                android.util.Slog.e("ShutdownThread", "InterruptedException");
-            }
-        }
-    }
-
-    public static TimingsTraceLog newTimingsLog() {
-        return new TimingsTraceLog("ShutdownTiming", 524288L);
-    }
-
-    public static void metricStarted(String str) {
-        ArrayMap arrayMap = TRON_METRICS;
-        synchronized (arrayMap) {
-            arrayMap.put(str, Long.valueOf(SystemClock.elapsedRealtime() * (-1)));
-        }
-    }
-
-    public static void metricEnded(String str) {
-        ArrayMap arrayMap = TRON_METRICS;
-        synchronized (arrayMap) {
-            arrayMap.put(str, Long.valueOf(SystemClock.elapsedRealtime() + ((Long) arrayMap.get(str)).longValue()));
-        }
-    }
-
-    public static void metricShutdownStart() {
+    public final void run() {
+        SoundPlayer soundPlayer;
+        Context context;
+        File file;
+        TimingsTraceLog timingsTraceLog = new TimingsTraceLog("ShutdownTiming", 524288L);
+        timingsTraceLog.traceBegin("SystemServerShutdown");
         ArrayMap arrayMap = TRON_METRICS;
         synchronized (arrayMap) {
             arrayMap.put(METRIC_SHUTDOWN_TIME_START, Long.valueOf(System.currentTimeMillis()));
         }
-    }
-
-    public final void setRebootProgress(final int i, final CharSequence charSequence) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.power.ShutdownThread.3
-            @Override // java.lang.Runnable
-            public void run() {
-                if (ShutdownThread.this.mProgressDialog != null) {
-                    ShutdownThread.this.mProgressDialog.setProgress(i);
-                    if (charSequence != null) {
-                        ShutdownThread.this.mProgressDialog.setMessage(charSequence);
-                    }
-                }
-            }
-        });
-    }
-
-    public final void shutdownHermes() {
+        metricStarted(METRIC_SYSTEM_SERVER);
+        SurfaceControl.notifyShutdown();
+        String str = mReboot ? "1" : "0";
+        String str2 = mReason;
+        if (str2 == null) {
+            str2 = "";
+        }
+        SystemProperties.set("sys.shutdown.requested", str.concat(str2));
+        if (mRebootSafeMode) {
+            SystemProperties.set("persist.sys.safemode", "1");
+        }
+        timingsTraceLog.traceBegin("DumpPreRebootInfo");
+        try {
+            android.util.Slog.i("ShutdownThread", "Logging pre-reboot information...");
+            context = this.mContext;
+            String[] strArr = PreRebootLogger.BUFFERS_TO_DUMP;
+            file = new File(Environment.getDataMiscDirectory(), "prereboot");
+        } catch (Exception e) {
+            android.util.Slog.e("ShutdownThread", "Failed to log pre-reboot information", e);
+        }
+        if (!file.exists() || !file.isDirectory()) {
+            throw new UnsupportedOperationException("Pre-reboot dump directory not found");
+        }
+        PreRebootLogger.log(context, file);
+        timingsTraceLog.traceEnd();
+        MYLOG.i("ShutdownThread", "!@Shutting down Hermes manager...");
         Thread thread = new Thread() { // from class: com.android.server.power.ShutdownThread.4
             @Override // java.lang.Thread, java.lang.Runnable
-            public void run() {
+            public final void run() {
                 SemUnionManager semUnionManager = (SemUnionManager) ShutdownThread.this.mContext.getSystemService("sepunion");
                 try {
                     if (semUnionManager != null) {
@@ -671,8 +646,8 @@ public final class ShutdownThread extends Thread {
                     } else {
                         android.util.Slog.e("ShutdownThread", "!@Shutdown HermesService is skipped um is null.");
                     }
-                } catch (Exception e) {
-                    android.util.Slog.e("ShutdownThread", "!@Exception during hermesservice shutdown", e);
+                } catch (Exception e2) {
+                    android.util.Slog.e("ShutdownThread", "!@Exception during hermesservice shutdown", e2);
                 }
             }
         };
@@ -683,66 +658,102 @@ public final class ShutdownThread extends Thread {
         } catch (InterruptedException unused) {
         }
         android.util.Slog.i("ShutdownThread", "!@Shutdown HermesService end.");
-    }
-
-    /* loaded from: classes3.dex */
-    public abstract class Led {
-        public static void On() {
-            fileWriteInt(6);
-        }
-
-        public static void fileWriteInt(int i) {
-            File file = new File("/sys/class/sec/led/led_pattern");
-            if (!file.isFile()) {
-                android.util.Slog.i("LED", "!@LED File is not exist");
-                return;
-            }
-            FileOutputStream fileOutputStream = null;
-            try {
-                try {
-                    try {
-                        FileOutputStream fileOutputStream2 = new FileOutputStream(file);
-                        try {
-                            fileOutputStream2.write(Integer.toString(i).getBytes());
-                            fileOutputStream2.close();
-                        } catch (IOException unused) {
-                            fileOutputStream = fileOutputStream2;
-                            android.util.Slog.i("LED", "!@Exception has raised while file write");
-                            if (fileOutputStream != null) {
-                                fileOutputStream.close();
-                            }
-                        } catch (Throwable th) {
-                            th = th;
-                            fileOutputStream = fileOutputStream2;
-                            if (fileOutputStream != null) {
-                                try {
-                                    fileOutputStream.close();
-                                } catch (IOException e) {
-                                    android.util.Slog.e("ShutdownThread", "led file close error", e);
-                                }
-                            }
-                            throw th;
+        metricStarted(METRIC_SEND_BROADCAST);
+        timingsTraceLog.traceBegin("SendShutdownBroadcast");
+        MYLOG.i("ShutdownThread", "!@Sending shutdown broadcast...");
+        this.mActionDone = false;
+        ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).broadcastIntentWithCallback(BatteryService$$ExternalSyntheticOutline0.m(1342177280, "android.intent.action.ACTION_SHUTDOWN"), new IIntentReceiver.Stub() { // from class: com.android.server.power.ShutdownThread.2
+            public final void performReceive(Intent intent, int i, String str3, Bundle bundle, boolean z, boolean z2, int i2) {
+                final ShutdownThread shutdownThread = ShutdownThread.this;
+                shutdownThread.mHandler.post(new Runnable() { // from class: com.android.server.power.ShutdownThread$2$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        ShutdownThread shutdownThread2 = ShutdownThread.this;
+                        synchronized (shutdownThread2.mActionDoneSync) {
+                            shutdownThread2.mActionDone = true;
+                            shutdownThread2.mActionDoneSync.notifyAll();
                         }
-                    } catch (Throwable th2) {
-                        th = th2;
                     }
-                } catch (IOException unused2) {
+                });
+            }
+        }, (String[]) null, -1, (int[]) null, (BiFunction) null, BroadcastOptions.makeBasic().setDeferralPolicy(2).toBundle());
+        long elapsedRealtime = SystemClock.elapsedRealtime() + 10000;
+        synchronized (this.mActionDoneSync) {
+            while (true) {
+                try {
+                    if (this.mActionDone) {
+                        break;
+                    }
+                    long elapsedRealtime2 = elapsedRealtime - SystemClock.elapsedRealtime();
+                    if (elapsedRealtime2 <= 0) {
+                        Log.w("ShutdownThread", "Shutdown broadcast timed out");
+                        break;
+                    } else {
+                        if (mRebootHasProgressBar) {
+                            sInstance.setRebootProgress((int) ((((10000 - elapsedRealtime2) * 1.0d) * 2.0d) / 10000.0d), null);
+                        }
+                        try {
+                            this.mActionDoneSync.wait(Math.min(elapsedRealtime2, 500L));
+                        } catch (InterruptedException unused2) {
+                        }
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
-            } catch (IOException e2) {
-                android.util.Slog.e("ShutdownThread", "led file close error", e2);
             }
         }
-    }
-
-    public final void shutdownRadios(final int i) {
-        long j = i;
-        final long elapsedRealtime = SystemClock.elapsedRealtime() + j;
+        if (mRebootHasProgressBar) {
+            sInstance.setRebootProgress(2, null);
+        }
+        long currentTimeMillis = System.currentTimeMillis() - currentTimeMillisStart;
+        String valueOf = String.valueOf(SystemProperties.get("dev.shutdownbroadcast.on", ""));
+        if (!(BIN_TYPE_PRODUCTSHIP && BIN_TYPE_DEBUG_LOW) && currentTimeMillis >= 5000) {
+            MYLOG.i("ShutdownThread", "!@shutdown is too slow, elapsed time from POWEROFF START to BROADCAST_SHUTDOWN is " + currentTimeMillis);
+        } else {
+            "On".equalsIgnoreCase(valueOf);
+        }
+        timingsTraceLog.traceEnd();
+        metricEnded(METRIC_SEND_BROADCAST);
+        MYLOG.i("ShutdownThread", "!@Shutting down activity manager...");
+        timingsTraceLog.traceBegin("ShutdownActivityManager");
+        metricStarted(METRIC_AM);
+        IActivityManager asInterface = IActivityManager.Stub.asInterface(ServiceManager.checkService("activity"));
+        if (asInterface != null) {
+            try {
+                asInterface.shutdown(10000);
+            } catch (RemoteException unused3) {
+            }
+        }
+        if (mRebootHasProgressBar) {
+            sInstance.setRebootProgress(4, null);
+        }
+        timingsTraceLog.traceEnd();
+        metricEnded(METRIC_AM);
+        MYLOG.i("ShutdownThread", "!@Shutting down package manager...");
+        timingsTraceLog.traceBegin("ShutdownPackageManager");
+        String str3 = METRIC_PM;
+        metricStarted(str3);
+        PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
+        if (packageManagerInternal != null) {
+            packageManagerInternal.shutdown();
+        }
+        if (mRebootHasProgressBar) {
+            sInstance.setRebootProgress(6, null);
+        }
+        timingsTraceLog.traceEnd();
+        metricEnded(str3);
+        timingsTraceLog.traceBegin("ShutdownRadios");
+        metricStarted(METRIC_RADIOS);
+        long j = 12000;
+        final long elapsedRealtime3 = SystemClock.elapsedRealtime() + j;
         final boolean[] zArr = new boolean[1];
-        Thread thread = new Thread() { // from class: com.android.server.power.ShutdownThread.5
+        Thread thread2 = new Thread() { // from class: com.android.server.power.ShutdownThread.5
+            public final /* synthetic */ int val$timeout = 12000;
+
             @Override // java.lang.Thread, java.lang.Runnable
-            public void run() {
+            public final void run() {
                 MYLOG.i("ShutdownThread", "!@Start shutdown radios");
-                TimingsTraceLog m10445$$Nest$smnewTimingsLog = ShutdownThread.m10445$$Nest$smnewTimingsLog();
+                TimingsTraceLog timingsTraceLog2 = new TimingsTraceLog("ShutdownTiming", 524288L);
                 TelephonyManager telephonyManager = (TelephonyManager) ShutdownThread.this.mContext.getSystemService(TelephonyManager.class);
                 boolean z = telephonyManager == null || !telephonyManager.isAnyRadioPoweredOn();
                 if (!z) {
@@ -751,330 +762,165 @@ public final class ShutdownThread extends Thread {
                     telephonyManager.shutdownAllRadios();
                 }
                 MYLOG.i("ShutdownThread", "Waiting for Radio...");
-                long j2 = elapsedRealtime;
-                long elapsedRealtime2 = SystemClock.elapsedRealtime();
+                long j2 = elapsedRealtime3;
+                long elapsedRealtime4 = SystemClock.elapsedRealtime();
                 while (true) {
-                    if (j2 - elapsedRealtime2 <= 0) {
+                    if (j2 - elapsedRealtime4 <= 0) {
                         return;
                     }
                     if (ShutdownThread.mRebootHasProgressBar) {
-                        ShutdownThread.sInstance.setRebootProgress(((int) ((((r8 - r6) * 1.0d) * 12.0d) / i)) + 6, null);
+                        ShutdownThread.sInstance.setRebootProgress(((int) ((((r8 - r6) * 1.0d) * 12.0d) / this.val$timeout)) + 6, null);
                     }
                     if (!z && (!telephonyManager.isAnyRadioPoweredOn())) {
                         MYLOG.i("ShutdownThread", "!@Radio turned off.");
-                        ShutdownThread.metricEnded(ShutdownThread.METRIC_RADIO);
-                        m10445$$Nest$smnewTimingsLog.logDuration("ShutdownRadio", ((Long) ShutdownThread.TRON_METRICS.get(ShutdownThread.METRIC_RADIO)).longValue());
+                        String str4 = ShutdownThread.METRIC_RADIO;
+                        ShutdownThread.metricEnded(str4);
+                        timingsTraceLog2.logDuration("ShutdownRadio", ((Long) ShutdownThread.TRON_METRICS.get(str4)).longValue());
                     }
                     if (z) {
-                        MYLOG.i("ShutdownThread", "!@Radio shutdown complete.");
+                        Log.i("ShutdownThread", "Radio shutdown complete.");
                         zArr[0] = true;
                         return;
                     }
                     MYLOG.i("ShutdownThread", "!@before sleep");
                     SystemClock.sleep(100L);
                     MYLOG.i("ShutdownThread", "!@after sleep");
-                    MYLOG.i("ShutdownThread", "!@[Phone off retry:" + SystemClock.elapsedRealtime() + "] : " + elapsedRealtime + " radio=" + z);
-                    j2 = elapsedRealtime;
-                    elapsedRealtime2 = SystemClock.elapsedRealtime();
+                    MYLOG.i("ShutdownThread", "!@[Phone off retry:" + SystemClock.elapsedRealtime() + "] : " + elapsedRealtime3 + " radio=" + z);
+                    j2 = elapsedRealtime3;
+                    elapsedRealtime4 = SystemClock.elapsedRealtime();
                 }
             }
         };
-        thread.start();
+        thread2.start();
         try {
-            thread.join(j);
-        } catch (InterruptedException unused) {
+            thread2.join(j);
+        } catch (InterruptedException unused4) {
         }
-        if (zArr[0]) {
-            return;
+        if (!zArr[0]) {
+            MYLOG.i("ShutdownThread", "Timed out waiting for Radio shutdown.");
         }
-        MYLOG.i("ShutdownThread", "Timed out waiting for Radio shutdown.");
-    }
-
-    public static void rebootOrShutdown(Context context, boolean z, String str) {
-        if (z) {
-            MYLOG.i("ShutdownThread", "!@Rebooting, reason: " + str);
-            PowerManagerService.lowLevelReboot(str);
-            Log.e("ShutdownThread", "!@Reboot failed, will attempt shutdown instead");
-            closeLogFileWriter();
-            str = "[shutdownthread]rebootFailed";
-        } else if (context != null) {
-            SystemVibrator systemVibrator = new SystemVibrator(context);
-            try {
-                if (systemVibrator.hasVibrator()) {
-                    systemVibrator.vibrate(500L, VIBRATION_ATTRIBUTES);
-                    try {
-                        Thread.sleep(500L);
-                    } catch (InterruptedException unused) {
-                    }
-                }
-            } catch (Exception e) {
-                Log.w("ShutdownThread", "Failed to vibrate during shutdown.", e);
-            }
+        if (mRebootHasProgressBar) {
+            sInstance.setRebootProgress(18, null);
         }
-        MYLOG.i("ShutdownThread", "!@Performing low-level shutdown...");
-        closeLogFileWriter();
-        PowerManagerService.lowLevelShutdown(str);
-    }
-
-    public final void uncrypt() {
-        Log.i("ShutdownThread", "Calling uncrypt and monitoring the progress...");
-        final RecoverySystem.ProgressListener progressListener = new RecoverySystem.ProgressListener() { // from class: com.android.server.power.ShutdownThread.6
-            @Override // android.os.RecoverySystem.ProgressListener
-            public void onProgress(int i) {
-                if (i >= 0 && i < 100) {
-                    ShutdownThread.sInstance.setRebootProgress(((int) ((i * 80.0d) / 100.0d)) + 20, ShutdownThread.this.mContext.getText(17042367));
-                } else if (i == 100) {
-                    ShutdownThread.sInstance.setRebootProgress(i, ShutdownThread.this.mContext.getText(17042369));
-                }
-            }
-        };
-        final boolean[] zArr = {false};
-        Thread thread = new Thread() { // from class: com.android.server.power.ShutdownThread.7
-            @Override // java.lang.Thread, java.lang.Runnable
-            public void run() {
-                int i = 3;
-                while (i > 0) {
-                    try {
-                        RecoverySystem.processPackage(ShutdownThread.this.mContext, new File(FileUtils.readTextFile(RecoverySystem.UNCRYPT_PACKAGE_FILE, 0, null)), progressListener);
-                        MYLOG.i("ShutdownThread", "!@uncrypt finished. No need to retry uncrypt");
-                        break;
-                    } catch (Exception e) {
-                        i--;
-                        MYLOG.i("ShutdownThread", "!@Error uncrypting file : " + Log.getStackTraceString(e));
-                    }
-                }
-                zArr[0] = true;
-            }
-        };
-        thread.start();
-        try {
-            thread.join(900000L);
-        } catch (InterruptedException unused) {
-        }
-        if (zArr[0]) {
-            return;
-        }
-        Log.w("ShutdownThread", "Timed out waiting for uncrypt.");
-        try {
-            FileUtils.stringToFile(RecoverySystem.UNCRYPT_STATUS_FILE, String.format("uncrypt_time: %d\nuncrypt_error: %d\n", 900, 100));
-        } catch (IOException e) {
-            Log.e("ShutdownThread", "Failed to write timeout message to uncrypt status", e);
-        }
-    }
-
-    public static void openLogFileWriter() {
-        android.util.Slog.i("ShutdownThread", "Shutdown logFileWriter start");
-        if (logFileWriter == null) {
-            logFileWriter = new LogFileWriter("/data/log/", "shutdown_profile");
-        }
-    }
-
-    public static void closeLogFileWriter() {
-        if (logFileWriter != null) {
-            android.util.Slog.i("ShutdownThread", "logFileWriter saveAndClose logFileWriter : " + logFileWriter);
-            logFileWriter.saveAndClose();
-            logFileWriter = null;
-        }
-    }
-
-    public static void wirteLogFileWriter(String str) {
-        LogFileWriter logFileWriter2 = logFileWriter;
-        if (logFileWriter2 != null) {
-            logFileWriter2.write("ShutdownThread", str);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class LogFileWriter {
-        public File file;
-        public FileOutputStream latestShutdownProfile;
-        public File latestfile;
-        public FileOutputStream shutdownProfile;
-
-        public LogFileWriter(String str, String str2) {
-            this.latestShutdownProfile = null;
-            String generateFilename = generateFilename(str, str2);
-            if (generateFilename != null) {
-                try {
-                    this.file = new File(str + generateFilename);
-                    this.shutdownProfile = new FileOutputStream(this.file);
-                    this.latestfile = new File(str + str2 + "_latest.txt");
-                    this.latestShutdownProfile = new FileOutputStream(this.latestfile);
-                    this.file.setReadable(true, false);
-                    this.latestfile.setReadable(true, false);
-                } catch (Exception e) {
-                    android.util.Slog.e("ShutdownThread", "LogFileWriter.LogFileWriter error", e);
-                }
-            }
-        }
-
-        public final String generateFilename(String str, String str2) {
-            File[] listFiles = new File(str).listFiles();
-            if (listFiles == null) {
-                return null;
-            }
-            TreeMap treeMap = new TreeMap();
-            for (File file : listFiles) {
-                String name = file.getName();
-                if (file.isFile() && name.startsWith(str2)) {
-                    treeMap.put(Long.valueOf(file.lastModified()), name);
-                }
-            }
-            if (treeMap.size() < 5) {
-                return String.format("%s.%d.%s", str2, Integer.valueOf(treeMap.size() + 1), "txt");
-            }
-            return (String) treeMap.get(Long.valueOf(((Long) treeMap.keySet().iterator().next()).longValue()));
-        }
-
-        public void write(String str, String str2) {
-            if (this.shutdownProfile == null) {
-                android.util.Slog.i(str, "shutdownProfile is null");
-                return;
-            }
-            StringBuilder sb = new StringBuilder();
-            Calendar calendar = Calendar.getInstance();
-            sb.append(String.format("%02d-%02d %02d:%02d:%02d.%03d %s: %s\n", Integer.valueOf(calendar.get(2) + 1), Integer.valueOf(calendar.get(5)), Integer.valueOf(calendar.get(11)), Integer.valueOf(calendar.get(12)), Integer.valueOf(calendar.get(13)), Integer.valueOf(calendar.get(14)), str, str2));
-            try {
-                this.shutdownProfile.write(sb.toString().getBytes());
-                FileOutputStream fileOutputStream = this.latestShutdownProfile;
-                if (fileOutputStream != null) {
-                    fileOutputStream.write(sb.toString().getBytes());
-                }
-            } catch (IOException e) {
-                android.util.Slog.e(str, "LogFileWriter.write fail", e);
-            }
-        }
-
-        public void saveAndClose() {
-            FileOutputStream fileOutputStream = this.shutdownProfile;
-            if (fileOutputStream == null) {
-                return;
-            }
-            try {
-                try {
-                    try {
-                        fileOutputStream.flush();
-                        this.shutdownProfile.close();
-                        this.shutdownProfile = null;
-                        FileOutputStream fileOutputStream2 = this.latestShutdownProfile;
-                        if (fileOutputStream2 != null) {
-                            fileOutputStream2.flush();
-                            this.latestShutdownProfile.close();
-                            this.latestShutdownProfile = null;
-                        }
-                        FileOutputStream fileOutputStream3 = this.shutdownProfile;
-                        if (fileOutputStream3 != null) {
-                            fileOutputStream3.close();
-                            this.shutdownProfile = null;
-                        }
-                        FileOutputStream fileOutputStream4 = this.latestShutdownProfile;
-                        if (fileOutputStream4 != null) {
-                            fileOutputStream4.close();
-                            this.latestShutdownProfile = null;
-                        }
-                    } catch (Throwable th) {
-                        try {
-                            FileOutputStream fileOutputStream5 = this.shutdownProfile;
-                            if (fileOutputStream5 != null) {
-                                fileOutputStream5.close();
-                                this.shutdownProfile = null;
-                            }
-                            FileOutputStream fileOutputStream6 = this.latestShutdownProfile;
-                            if (fileOutputStream6 != null) {
-                                fileOutputStream6.close();
-                                this.latestShutdownProfile = null;
-                            }
-                        } catch (IOException e) {
-                            android.util.Slog.e("ShutdownThread", "LogFileWriter.saveAndClose error", e);
-                        }
-                        throw th;
-                    }
-                } catch (IOException e2) {
-                    android.util.Slog.e("ShutdownThread", "LogFileWriter.saveAndClose fail", e2);
-                    FileOutputStream fileOutputStream7 = this.shutdownProfile;
-                    if (fileOutputStream7 != null) {
-                        fileOutputStream7.close();
-                        this.shutdownProfile = null;
-                    }
-                    FileOutputStream fileOutputStream8 = this.latestShutdownProfile;
-                    if (fileOutputStream8 != null) {
-                        fileOutputStream8.close();
-                        this.latestShutdownProfile = null;
-                    }
-                }
-            } catch (IOException e3) {
-                android.util.Slog.e("ShutdownThread", "LogFileWriter.saveAndClose error", e3);
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public abstract class MYLOG {
-        public static int i(String str, String str2) {
-            int i;
-            try {
-                i = android.util.Slog.i(str, str2);
-                try {
-                    ShutdownThread.wirteLogFileWriter(str2);
-                } catch (Exception e) {
-                    e = e;
-                    e.printStackTrace();
-                    if (ShutdownThread.dlgAnim != null) {
-                        StringBuilder sb = new StringBuilder();
-                        Calendar calendar = Calendar.getInstance();
-                        sb.append(String.format("%02d-%02d %02d:%02d:%02d.%03d %s: %s\n", Integer.valueOf(calendar.get(2) + 1), Integer.valueOf(calendar.get(5)), Integer.valueOf(calendar.get(11)), Integer.valueOf(calendar.get(12)), Integer.valueOf(calendar.get(13)), Integer.valueOf(calendar.get(14)), "ShutdownThread", str2));
-                        ShutdownThread.dlgAnim.appendTextLog(sb.toString());
-                    }
-                    return i;
-                }
-            } catch (Exception e2) {
-                e = e2;
-                i = -1;
-            }
-            if (ShutdownThread.dlgAnim != null && !ShutdownThread.BIN_TYPE_USER) {
-                StringBuilder sb2 = new StringBuilder();
-                Calendar calendar2 = Calendar.getInstance();
-                sb2.append(String.format("%02d-%02d %02d:%02d:%02d.%03d %s: %s\n", Integer.valueOf(calendar2.get(2) + 1), Integer.valueOf(calendar2.get(5)), Integer.valueOf(calendar2.get(11)), Integer.valueOf(calendar2.get(12)), Integer.valueOf(calendar2.get(13)), Integer.valueOf(calendar2.get(14)), "ShutdownThread", str2));
-                ShutdownThread.dlgAnim.appendTextLog(sb2.toString());
-            }
-            return i;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class getDelayDumpstate extends Handler {
-        public static Runnable delayDumpRaunnable;
-        public static getDelayDumpstate delayhandler;
-
-        public getDelayDumpstate(Looper looper) {
-            super(looper);
-        }
-
-        public static void startState() {
-            if (delayhandler == null) {
-                android.util.Slog.i("ShutdownDelay", "Start handler");
-                delayhandler = new getDelayDumpstate(Looper.getMainLooper());
-            }
-            delayDumpRaunnable = new Runnable() { // from class: com.android.server.power.ShutdownThread.getDelayDumpstate.1
-                @Override // java.lang.Runnable
-                public void run() {
-                    if (ShutdownThread.BIN_TYPE_PRODUCTSHIP || "recovery".equals(ShutdownThread.mReason) || "recovery-update".equals(ShutdownThread.mReason)) {
-                        android.util.Slog.i("ShutdownDelay", "!@ShutdownThread.run() : Checking timeout, done. Try force shutdown again.");
-                        ShutdownThread.rebootOrShutdown(ShutdownThread.sInstance.mContext, ShutdownThread.mReboot, ShutdownThread.mReason);
-                    } else {
-                        android.util.Slog.i("ShutdownDelay", "!@ShutdownThread.run() : checking timeout, done.");
+        timingsTraceLog.traceEnd();
+        metricEnded(METRIC_RADIOS);
+        if (mRebootHasProgressBar) {
+            sInstance.setRebootProgress(20, null);
+            Log.i("ShutdownThread", "Calling uncrypt and monitoring the progress...");
+            final ?? r0 = new RecoverySystem.ProgressListener() { // from class: com.android.server.power.ShutdownThread.6
+                @Override // android.os.RecoverySystem.ProgressListener
+                public final void onProgress(int i) {
+                    if (i >= 0 && i < 100) {
+                        ShutdownThread.sInstance.setRebootProgress(((int) ((i * 80.0d) / 100.0d)) + 20, ShutdownThread.this.mContext.getText(17042523));
+                    } else if (i == 100) {
+                        ShutdownThread.sInstance.setRebootProgress(i, ShutdownThread.this.mContext.getText(17042525));
                     }
                 }
             };
-            if ("recovery".equals(ShutdownThread.mReason) || "recovery-update".equals(ShutdownThread.mReason)) {
-                delayhandler.postDelayed(delayDumpRaunnable, 900000L);
-            } else {
-                delayhandler.postDelayed(delayDumpRaunnable, 120000L);
+            final boolean[] zArr2 = {false};
+            Thread thread3 = new Thread() { // from class: com.android.server.power.ShutdownThread.7
+                @Override // java.lang.Thread, java.lang.Runnable
+                public final void run() {
+                    int i = 3;
+                    while (i > 0) {
+                        try {
+                            RecoverySystem.processPackage(ShutdownThread.this.mContext, new File(FileUtils.readTextFile(RecoverySystem.UNCRYPT_PACKAGE_FILE, 0, null)), r0);
+                            MYLOG.i("ShutdownThread", "!@uncrypt finished. No need to retry uncrypt");
+                            break;
+                        } catch (Exception e2) {
+                            i--;
+                            MYLOG.i("ShutdownThread", "!@Error uncrypting file : " + Log.getStackTraceString(e2));
+                        }
+                    }
+                    zArr2[0] = true;
+                }
+            };
+            thread3.start();
+            try {
+                thread3.join(900000L);
+            } catch (InterruptedException unused5) {
+            }
+            if (!zArr2[0]) {
+                Log.w("ShutdownThread", "Timed out waiting for uncrypt.");
+                try {
+                    FileUtils.stringToFile(RecoverySystem.UNCRYPT_STATUS_FILE, String.format("uncrypt_time: %d\nuncrypt_error: %d\n", Integer.valueOf(FrameworkStatsLog.CAMERA_FEATURE_COMBINATION_QUERY_EVENT), 100));
+                } catch (IOException e2) {
+                    Log.e("ShutdownThread", "Failed to write timeout message to uncrypt status", e2);
+                }
             }
         }
+        MYLOG.i("ShutdownThread", "!@waitForAnimEnd");
+        if ("ON".equals(SystemProperties.get("service.poweranimation.on", ""))) {
+            MYLOG.i("ShutdownThread", "!@wait for PNG animation end");
+            long elapsedRealtime4 = (10 * 1000) + SystemClock.elapsedRealtime();
+            while (true) {
+                if ("END".equals(SystemProperties.get("dev.shutdownanimation.end"))) {
+                    break;
+                }
+                if (elapsedRealtime4 - SystemClock.elapsedRealtime() <= 0) {
+                    android.util.Slog.w("ShutdownThread", "!@Animation finish wait timed out");
+                    break;
+                } else {
+                    android.util.Slog.d("ShutdownThread", "!@wait for finish : sleep 100ms");
+                    try {
+                        Thread.sleep(100L);
+                    } catch (InterruptedException unused6) {
+                        android.util.Slog.e("ShutdownThread", "InterruptedException");
+                    }
+                }
+            }
+        } else {
+            ShutdownDialog shutdownDialog2 = shutdownDialog;
+            if (shutdownDialog2 != null && shutdownDialog2.isShowing()) {
+                MYLOG.i("ShutdownThread", "!@wait for animation end");
+                ShutdownDialog shutdownDialog3 = shutdownDialog;
+                shutdownDialog3.getClass();
+                long elapsedRealtime5 = (10 * 1000) + SystemClock.elapsedRealtime();
+                while (true) {
+                    AnimationPlayer animationPlayer = shutdownDialog3.animationPlayer;
+                    if ((animationPlayer == null || !animationPlayer.isPlaying()) && ((soundPlayer = shutdownDialog3.soundPlayer) == null || !soundPlayer.isPlaying())) {
+                        break;
+                    }
+                    if (elapsedRealtime5 - SystemClock.elapsedRealtime() <= 0) {
+                        android.util.Slog.w("Shutdown-ShutdownDialog", "!@Animation finish wait timed out");
+                        break;
+                    } else {
+                        android.util.Slog.d("Shutdown-ShutdownDialog", "!@wait for finish : sleep 100ms");
+                        try {
+                            Thread.sleep(100L);
+                        } catch (InterruptedException unused7) {
+                            android.util.Slog.e("Shutdown-ShutdownDialog", "InterruptedException");
+                        }
+                    }
+                }
+            }
+        }
+        ((UsbManager) this.mContext.getSystemService("usb")).enableUsbDataSignal(false);
+        StringBuilder sb = new StringBuilder("!@run, ");
+        sb.append(mReboot ? "reboot" : "shutdown");
+        sb.append(" requested reason=");
+        String str4 = mReason;
+        if (str4 == null) {
+            str4 = "null";
+        }
+        sb.append(str4);
+        MYLOG.i("ShutdownThread", sb.toString());
+        rebootOrShutdown(this.mContext, mReason, mReboot);
     }
 
-    public static boolean isFOTAAvailable(Context context) {
-        return context != null && Settings.System.getInt(context.getContentResolver(), "attfota_forceinstall_FN_sim", 0) == 1;
+    public final void setRebootProgress(final int i, final CharSequence charSequence) {
+        this.mHandler.post(new Runnable() { // from class: com.android.server.power.ShutdownThread.3
+            @Override // java.lang.Runnable
+            public final void run() {
+                ProgressDialog progressDialog = ShutdownThread.this.mProgressDialog;
+                if (progressDialog != null) {
+                    progressDialog.setProgress(i);
+                    CharSequence charSequence2 = charSequence;
+                    if (charSequence2 != null) {
+                        ShutdownThread.this.mProgressDialog.setMessage(charSequence2);
+                    }
+                }
+            }
+        });
     }
 }

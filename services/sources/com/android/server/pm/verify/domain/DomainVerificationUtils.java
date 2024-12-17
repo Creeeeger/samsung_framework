@@ -1,34 +1,16 @@
 package com.android.server.pm.verify.domain;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
-import android.util.Patterns;
 import com.android.internal.util.CollectionUtils;
-import com.android.server.compat.PlatformCompat;
-import com.android.server.pm.pkg.AndroidPackage;
-import java.util.function.Supplier;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import java.util.regex.Matcher;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class DomainVerificationUtils {
-    public static final ThreadLocal sCachedMatcher = ThreadLocal.withInitial(new Supplier() { // from class: com.android.server.pm.verify.domain.DomainVerificationUtils$$ExternalSyntheticLambda0
-        @Override // java.util.function.Supplier
-        public final Object get() {
-            Matcher lambda$static$0;
-            lambda$static$0 = DomainVerificationUtils.lambda$static$0();
-            return lambda$static$0;
-        }
-    });
-
-    public static /* synthetic */ Matcher lambda$static$0() {
-        return Patterns.DOMAIN_NAME.matcher("");
-    }
-
-    public static PackageManager.NameNotFoundException throwPackageUnavailable(String str) {
-        throw new PackageManager.NameNotFoundException("Package " + str + " unavailable");
-    }
+    public static final ThreadLocal sCachedMatcher = ThreadLocal.withInitial(new DomainVerificationUtils$$ExternalSyntheticLambda0());
 
     public static boolean isDomainVerificationIntent(Intent intent, long j) {
         int size;
@@ -46,14 +28,7 @@ public abstract class DomainVerificationUtils {
         return (size == 0 || intent.hasCategory("android.intent.category.BROWSABLE")) ? z : intent.hasCategory("android.intent.category.DEFAULT");
     }
 
-    public static boolean isChangeEnabled(PlatformCompat platformCompat, AndroidPackage androidPackage, long j) {
-        return platformCompat.isChangeEnabledInternalNoLogging(j, buildMockAppInfo(androidPackage));
-    }
-
-    public static ApplicationInfo buildMockAppInfo(AndroidPackage androidPackage) {
-        ApplicationInfo applicationInfo = new ApplicationInfo();
-        applicationInfo.packageName = androidPackage.getPackageName();
-        applicationInfo.targetSdkVersion = androidPackage.getTargetSdkVersion();
-        return applicationInfo;
+    public static void throwPackageUnavailable(String str) {
+        throw new PackageManager.NameNotFoundException(XmlUtils$$ExternalSyntheticOutline0.m("Package ", str, " unavailable"));
     }
 }

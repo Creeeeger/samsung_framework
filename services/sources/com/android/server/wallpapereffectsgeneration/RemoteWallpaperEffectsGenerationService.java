@@ -3,26 +3,19 @@ package com.android.server.wallpapereffectsgeneration;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.IBinder;
+import android.os.IInterface;
 import android.service.wallpapereffectsgeneration.IWallpaperEffectsGenerationService;
+import android.util.Slog;
 import com.android.internal.infra.AbstractMultiplePendingRequestsRemoteService;
 import com.android.internal.infra.AbstractRemoteService;
 
-/* loaded from: classes3.dex */
-public class RemoteWallpaperEffectsGenerationService extends AbstractMultiplePendingRequestsRemoteService {
-    public static final String TAG = RemoteWallpaperEffectsGenerationService.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RemoteWallpaperEffectsGenerationService extends AbstractMultiplePendingRequestsRemoteService {
     public final RemoteWallpaperEffectsGenerationServiceCallback mCallback;
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface RemoteWallpaperEffectsGenerationServiceCallback extends AbstractRemoteService.VultureCallback {
-        void onConnectedStateChanged(boolean z);
-    }
-
-    public long getRemoteRequestMillis() {
-        return 2000L;
-    }
-
-    public long getTimeoutIdleBindMillis() {
-        return 120000L;
     }
 
     public RemoteWallpaperEffectsGenerationService(Context context, ComponentName componentName, int i, RemoteWallpaperEffectsGenerationServiceCallback remoteWallpaperEffectsGenerationServiceCallback, boolean z, boolean z2) {
@@ -30,22 +23,36 @@ public class RemoteWallpaperEffectsGenerationService extends AbstractMultiplePen
         this.mCallback = remoteWallpaperEffectsGenerationServiceCallback;
     }
 
-    public IWallpaperEffectsGenerationService getServiceInterface(IBinder iBinder) {
+    public final void executeOnResolvedService(WallpaperEffectsGenerationPerUserService$$ExternalSyntheticLambda0 wallpaperEffectsGenerationPerUserService$$ExternalSyntheticLambda0) {
+        executeAsyncRequest(wallpaperEffectsGenerationPerUserService$$ExternalSyntheticLambda0);
+    }
+
+    public final long getRemoteRequestMillis() {
+        return 2000L;
+    }
+
+    public final IInterface getServiceInterface(IBinder iBinder) {
         return IWallpaperEffectsGenerationService.Stub.asInterface(iBinder);
     }
 
-    public void reconnect() {
-        super.scheduleBind();
+    public final long getTimeoutIdleBindMillis() {
+        return 120000L;
     }
 
-    public void executeOnResolvedService(AbstractRemoteService.AsyncRequest asyncRequest) {
-        executeAsyncRequest(asyncRequest);
-    }
-
-    public void handleOnConnectedStateChanged(boolean z) {
+    public final void handleOnConnectedStateChanged(boolean z) {
         RemoteWallpaperEffectsGenerationServiceCallback remoteWallpaperEffectsGenerationServiceCallback = this.mCallback;
         if (remoteWallpaperEffectsGenerationServiceCallback != null) {
-            remoteWallpaperEffectsGenerationServiceCallback.onConnectedStateChanged(z);
+            WallpaperEffectsGenerationPerUserService wallpaperEffectsGenerationPerUserService = (WallpaperEffectsGenerationPerUserService) remoteWallpaperEffectsGenerationServiceCallback;
+            wallpaperEffectsGenerationPerUserService.getClass();
+            if (z) {
+                return;
+            }
+            Slog.w("WallpaperEffectsGenerationPerUserService", "remote wallpaper effects generation service disconnected");
+            wallpaperEffectsGenerationPerUserService.updateRemoteServiceLocked();
         }
+    }
+
+    public final void reconnect() {
+        scheduleBind();
     }
 }

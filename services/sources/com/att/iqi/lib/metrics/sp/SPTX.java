@@ -3,10 +3,12 @@ package com.att.iqi.lib.metrics.sp;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.att.iqi.lib.Metric;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class SPTX extends Metric {
     private int m_dwCSeq;
     private int m_dwTransId;
@@ -28,12 +30,6 @@ public class SPTX extends Metric {
         reset();
     }
 
-    public void reset() {
-        this.m_dwTransId = 0;
-        this.m_dwCSeq = 0;
-        this.m_strMessage = "";
-    }
-
     public SPTX(Parcel parcel) {
         super(parcel);
         if (parcel.readInt() >= 1) {
@@ -43,35 +39,26 @@ public class SPTX extends Metric {
         }
     }
 
-    public SPTX setTransId(int i) {
-        this.m_dwTransId = i;
-        return this;
-    }
-
-    public int getTransId() {
-        return this.m_dwTransId;
-    }
-
-    public SPTX setCSeq(int i) {
-        this.m_dwCSeq = i;
-        return this;
-    }
-
     public int getCSeq() {
         return this.m_dwCSeq;
-    }
-
-    public SPTX setMessage(String str) {
-        this.m_strMessage = str;
-        return this;
     }
 
     public String getMessage() {
         return this.m_strMessage;
     }
 
+    public int getTransId() {
+        return this.m_dwTransId;
+    }
+
+    public void reset() {
+        this.m_dwTransId = 0;
+        this.m_dwCSeq = 0;
+        this.m_strMessage = "";
+    }
+
     @Override // com.att.iqi.lib.Metric
-    public int serialize(ByteBuffer byteBuffer) {
+    public int serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
         byteBuffer.putInt(this.m_dwTransId);
         byteBuffer.putInt(this.m_dwCSeq);
         String str = this.m_strMessage;
@@ -81,6 +68,21 @@ public class SPTX extends Metric {
             byteBuffer.put(this.m_strMessage.getBytes(StandardCharsets.US_ASCII));
         }
         return byteBuffer.position();
+    }
+
+    public SPTX setCSeq(int i) {
+        this.m_dwCSeq = i;
+        return this;
+    }
+
+    public SPTX setMessage(String str) {
+        this.m_strMessage = str;
+        return this;
+    }
+
+    public SPTX setTransId(int i) {
+        this.m_dwTransId = i;
+        return this;
     }
 
     @Override // com.att.iqi.lib.Metric, android.os.Parcelable

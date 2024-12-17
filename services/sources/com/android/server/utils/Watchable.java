@@ -2,18 +2,12 @@ package com.android.server.utils;
 
 import android.os.Build;
 import android.util.Log;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import java.lang.reflect.Field;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface Watchable {
-    void dispatchChange(Watchable watchable);
-
-    boolean isRegisteredObserver(Watcher watcher);
-
-    void registerObserver(Watcher watcher);
-
-    void unregisterObserver(Watcher watcher);
-
     static void verifyWatchedAttributes(Object obj, Watcher watcher, boolean z) {
         if (Build.IS_ENG || Build.IS_USERDEBUG) {
             for (Field field : obj.getClass().getDeclaredFields()) {
@@ -26,28 +20,38 @@ public interface Watchable {
                         if (obj2 instanceof Watchable) {
                             Watchable watchable = (Watchable) obj2;
                             if (watchable != null && !watchable.isRegisteredObserver(watcher)) {
-                                handleVerifyError("Watchable " + str + " missing an observer", z);
+                                String str2 = "Watchable " + str + " missing an observer";
+                                if (!z) {
+                                    throw new RuntimeException(str2);
+                                }
+                                Log.e("Watchable", str2);
                             }
-                        } else if (!watched.manual()) {
-                            handleVerifyError("@Watched annotated field " + str + " is not a watchable type and is not flagged for manual watching.", z);
+                        } else if (watched.manual()) {
+                            continue;
+                        } else {
+                            String str3 = "@Watched annotated field " + str + " is not a watchable type and is not flagged for manual watching.";
+                            if (!z) {
+                                throw new RuntimeException(str3);
+                            }
+                            Log.e("Watchable", str3);
                         }
                     } catch (IllegalAccessException unused) {
-                        handleVerifyError("Watchable " + str + " not visible", z);
+                        String m = XmlUtils$$ExternalSyntheticOutline0.m("Watchable ", str, " not visible");
+                        if (!z) {
+                            throw new RuntimeException(m);
+                        }
+                        Log.e("Watchable", m);
                     }
                 }
             }
         }
     }
 
-    static void handleVerifyError(String str, boolean z) {
-        if (z) {
-            Log.e("Watchable", str);
-            return;
-        }
-        throw new RuntimeException(str);
-    }
+    void dispatchChange(Watchable watchable);
 
-    static void verifyWatchedAttributes(Object obj, Watcher watcher) {
-        verifyWatchedAttributes(obj, watcher, false);
-    }
+    boolean isRegisteredObserver(Watcher watcher);
+
+    void registerObserver(Watcher watcher);
+
+    void unregisterObserver(Watcher watcher);
 }

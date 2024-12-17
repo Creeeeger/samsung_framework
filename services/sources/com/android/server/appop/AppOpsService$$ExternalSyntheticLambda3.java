@@ -1,11 +1,12 @@
 package com.android.server.appop;
 
-import com.android.internal.util.function.QuintConsumer;
+import java.util.function.Consumer;
 
-/* compiled from: R8$$SyntheticClass */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public final /* synthetic */ class AppOpsService$$ExternalSyntheticLambda3 implements QuintConsumer {
-    public final void accept(Object obj, Object obj2, Object obj3, Object obj4, Object obj5) {
-        ((AppOpsService) obj).notifyOpChanged((OnOpModeChangedListener) obj2, ((Integer) obj3).intValue(), ((Integer) obj4).intValue(), (String) obj5);
+public final /* synthetic */ class AppOpsService$$ExternalSyntheticLambda3 implements Consumer {
+    @Override // java.util.function.Consumer
+    public final void accept(Object obj) {
+        ((AppOpsService) obj).getPackageListAndResample();
     }
 }

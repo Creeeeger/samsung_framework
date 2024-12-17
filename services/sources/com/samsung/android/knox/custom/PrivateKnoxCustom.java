@@ -7,6 +7,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public class PrivateKnoxCustom {
     public static final int KNOX_CUSTOM_AUTO_STARTUP_FLAG = 1;
@@ -25,23 +26,32 @@ public class PrivateKnoxCustom {
     public final boolean DEBUG = false;
     public EnterpriseDeviceManager mEDM = null;
 
-    private native byte[] readParamData();
-
-    private native boolean writeParamData(byte[] bArr);
+    public PrivateKnoxCustom(Context context) {
+        this.mContext = context;
+    }
 
     public static synchronized PrivateKnoxCustom getInstance(Context context) {
         PrivateKnoxCustom privateKnoxCustom;
         synchronized (PrivateKnoxCustom.class) {
-            if (mInstance == null) {
-                mInstance = new PrivateKnoxCustom(context);
+            try {
+                if (mInstance == null) {
+                    mInstance = new PrivateKnoxCustom(context);
+                }
+                privateKnoxCustom = mInstance;
+            } catch (Throwable th) {
+                throw th;
             }
-            privateKnoxCustom = mInstance;
         }
         return privateKnoxCustom;
     }
 
-    public PrivateKnoxCustom(Context context) {
-        this.mContext = context;
+    private native byte[] readParamData();
+
+    private native boolean writeParamData(byte[] bArr);
+
+    public final int enforceSystemPermission() throws SecurityException {
+        getEDM().enforceActiveAdminPermission(new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_CUSTOM_SYSTEM")));
+        return 0;
     }
 
     public final EnterpriseDeviceManager getEDM() {
@@ -51,9 +61,8 @@ public class PrivateKnoxCustom {
         return this.mEDM;
     }
 
-    public final int enforceSystemPermission() {
-        getEDM().enforceActiveAdminPermission(new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_CUSTOM_SYSTEM")));
-        return 0;
+    public final boolean isKnoxCustomAutoStartUpEnabled() {
+        return readBooleanDataValue(8);
     }
 
     public final boolean readBooleanDataValue(int i) {
@@ -71,6 +80,21 @@ public class PrivateKnoxCustom {
             return true;
         }
         return z;
+    }
+
+    public final boolean setKnoxCustomAutoStartUp(boolean z) {
+        enforceSystemPermission();
+        boolean readBooleanDataValue = readBooleanDataValue(8);
+        if (z) {
+            if (readBooleanDataValue) {
+                return false;
+            }
+            return writeBooleanDataValue(8, true);
+        }
+        if (readBooleanDataValue) {
+            return writeBooleanDataValue(8, false);
+        }
+        return false;
     }
 
     public final boolean writeBooleanDataValue(int i, boolean z) {
@@ -103,24 +127,5 @@ public class PrivateKnoxCustom {
         boolean writeParamData = writeParamData(bArr);
         Binder.restoreCallingIdentity(clearCallingIdentity);
         return writeParamData;
-    }
-
-    public boolean setKnoxCustomAutoStartUp(boolean z) {
-        enforceSystemPermission();
-        boolean isKnoxCustomAutoStartUpEnabled = isKnoxCustomAutoStartUpEnabled();
-        if (z) {
-            if (isKnoxCustomAutoStartUpEnabled) {
-                return false;
-            }
-            return writeBooleanDataValue(8, true);
-        }
-        if (isKnoxCustomAutoStartUpEnabled) {
-            return writeBooleanDataValue(8, false);
-        }
-        return false;
-    }
-
-    public boolean isKnoxCustomAutoStartUpEnabled() {
-        return readBooleanDataValue(8);
     }
 }

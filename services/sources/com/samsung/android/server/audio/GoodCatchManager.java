@@ -2,126 +2,170 @@ package com.samsung.android.server.audio;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
 import com.samsung.android.sepunion.SemGoodCatchManager;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class GoodCatchManager {
+public final class GoodCatchManager {
     public static final String[] SOUND_FUNC = {"ringermode", "callmode", "mediavolume", "playback"};
-    public final Context mContext;
-    public String mModule;
-    public SemGoodCatchManager mSemGoodCatchManager;
-    public boolean[] mSoundFunc = {false, false, false, false};
+    public final AnonymousClass1 mAudioStateListener;
+    public final String mModule;
+    public final SemGoodCatchManager mSemGoodCatchManager;
+    public final AnonymousClass1 mVibrateStateListener;
+    public final boolean[] mSoundFunc = {false, false, false, false};
     public boolean mVibrationFunc = false;
-    public SemGoodCatchManager.OnStateChangeListener mAudioStateListener = new SemGoodCatchManager.OnStateChangeListener() { // from class: com.samsung.android.server.audio.GoodCatchManager.1
-        public void onStart(String str) {
-            Log.d("AS.GoodCatchManager", "onStart " + str);
-            if (GoodCatchManager.SOUND_FUNC[0].equals(str)) {
-                GoodCatchManager.this.mSoundFunc[0] = true;
-                return;
-            }
-            if (GoodCatchManager.SOUND_FUNC[1].equals(str)) {
-                GoodCatchManager.this.mSoundFunc[1] = true;
-            } else if (GoodCatchManager.SOUND_FUNC[2].equals(str)) {
-                GoodCatchManager.this.mSoundFunc[2] = true;
-            } else if (GoodCatchManager.SOUND_FUNC[3].equals(str)) {
-                GoodCatchManager.this.mSoundFunc[3] = true;
-            }
-        }
-
-        public void onStop(String str) {
-            Log.d("AS.GoodCatchManager", "onStop " + str);
-            if (GoodCatchManager.SOUND_FUNC[0].equals(str)) {
-                GoodCatchManager.this.mSoundFunc[0] = false;
-                return;
-            }
-            if (GoodCatchManager.SOUND_FUNC[1].equals(str)) {
-                GoodCatchManager.this.mSoundFunc[1] = false;
-            } else if (GoodCatchManager.SOUND_FUNC[2].equals(str)) {
-                GoodCatchManager.this.mSoundFunc[2] = false;
-            } else if (GoodCatchManager.SOUND_FUNC[3].equals(str)) {
-                GoodCatchManager.this.mSoundFunc[3] = false;
-            }
-        }
-    };
-    public SemGoodCatchManager.OnStateChangeListener mVibrateStateListener = new SemGoodCatchManager.OnStateChangeListener() { // from class: com.samsung.android.server.audio.GoodCatchManager.2
-        public void onStart(String str) {
-            Log.d("AS.GoodCatchManager", "onStart " + str);
-            GoodCatchManager.this.mVibrationFunc = true;
-        }
-
-        public void onStop(String str) {
-            Log.d("AS.GoodCatchManager", "onStop " + str);
-            GoodCatchManager.this.mVibrationFunc = false;
-        }
-    };
-
-    public boolean isRingerModeCatchEnabled() {
-        if (TextUtils.equals("AudioService", this.mModule)) {
-            return this.mSoundFunc[0];
-        }
-        return false;
-    }
-
-    public boolean isCallModeCatchEnabled() {
-        if (TextUtils.equals("AudioService", this.mModule)) {
-            return this.mSoundFunc[1];
-        }
-        return false;
-    }
-
-    public boolean isVibrateCatchEnabled() {
-        if (TextUtils.equals("VibratorService", this.mModule)) {
-            return this.mVibrationFunc;
-        }
-        return false;
-    }
-
-    public boolean isMediaVolumeCatchEnabled() {
-        if (TextUtils.equals("AudioService", this.mModule)) {
-            return this.mSoundFunc[2];
-        }
-        return false;
-    }
-
-    public boolean isPlaybackCatchEnabled() {
-        if (TextUtils.equals("AudioService", this.mModule)) {
-            return this.mSoundFunc[3];
-        }
-        return false;
-    }
 
     public GoodCatchManager(Context context, String str) {
-        this.mContext = context;
+        final int i = 0;
+        SemGoodCatchManager.OnStateChangeListener onStateChangeListener = new SemGoodCatchManager.OnStateChangeListener(this) { // from class: com.samsung.android.server.audio.GoodCatchManager.1
+            public final /* synthetic */ GoodCatchManager this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            public final void onStart(String str2) {
+                switch (i) {
+                    case 0:
+                        DualAppManagerService$$ExternalSyntheticOutline0.m("onStart ", str2, "AS.GoodCatchManager");
+                        String[] strArr = GoodCatchManager.SOUND_FUNC;
+                        if (!strArr[0].equals(str2)) {
+                            if (!strArr[1].equals(str2)) {
+                                if (!strArr[2].equals(str2)) {
+                                    if (strArr[3].equals(str2)) {
+                                        this.this$0.mSoundFunc[3] = true;
+                                        break;
+                                    }
+                                } else {
+                                    this.this$0.mSoundFunc[2] = true;
+                                    break;
+                                }
+                            } else {
+                                this.this$0.mSoundFunc[1] = true;
+                                break;
+                            }
+                        } else {
+                            this.this$0.mSoundFunc[0] = true;
+                            break;
+                        }
+                        break;
+                    default:
+                        DualAppManagerService$$ExternalSyntheticOutline0.m("onStart ", str2, "AS.GoodCatchManager");
+                        this.this$0.mVibrationFunc = true;
+                        break;
+                }
+            }
+
+            public final void onStop(String str2) {
+                switch (i) {
+                    case 0:
+                        DualAppManagerService$$ExternalSyntheticOutline0.m("onStop ", str2, "AS.GoodCatchManager");
+                        String[] strArr = GoodCatchManager.SOUND_FUNC;
+                        if (!strArr[0].equals(str2)) {
+                            if (!strArr[1].equals(str2)) {
+                                if (!strArr[2].equals(str2)) {
+                                    if (strArr[3].equals(str2)) {
+                                        this.this$0.mSoundFunc[3] = false;
+                                        break;
+                                    }
+                                } else {
+                                    this.this$0.mSoundFunc[2] = false;
+                                    break;
+                                }
+                            } else {
+                                this.this$0.mSoundFunc[1] = false;
+                                break;
+                            }
+                        } else {
+                            this.this$0.mSoundFunc[0] = false;
+                            break;
+                        }
+                        break;
+                    default:
+                        DualAppManagerService$$ExternalSyntheticOutline0.m("onStop ", str2, "AS.GoodCatchManager");
+                        this.this$0.mVibrationFunc = false;
+                        break;
+                }
+            }
+        };
+        final int i2 = 1;
+        SemGoodCatchManager.OnStateChangeListener onStateChangeListener2 = new SemGoodCatchManager.OnStateChangeListener(this) { // from class: com.samsung.android.server.audio.GoodCatchManager.1
+            public final /* synthetic */ GoodCatchManager this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            public final void onStart(String str2) {
+                switch (i2) {
+                    case 0:
+                        DualAppManagerService$$ExternalSyntheticOutline0.m("onStart ", str2, "AS.GoodCatchManager");
+                        String[] strArr = GoodCatchManager.SOUND_FUNC;
+                        if (!strArr[0].equals(str2)) {
+                            if (!strArr[1].equals(str2)) {
+                                if (!strArr[2].equals(str2)) {
+                                    if (strArr[3].equals(str2)) {
+                                        this.this$0.mSoundFunc[3] = true;
+                                        break;
+                                    }
+                                } else {
+                                    this.this$0.mSoundFunc[2] = true;
+                                    break;
+                                }
+                            } else {
+                                this.this$0.mSoundFunc[1] = true;
+                                break;
+                            }
+                        } else {
+                            this.this$0.mSoundFunc[0] = true;
+                            break;
+                        }
+                        break;
+                    default:
+                        DualAppManagerService$$ExternalSyntheticOutline0.m("onStart ", str2, "AS.GoodCatchManager");
+                        this.this$0.mVibrationFunc = true;
+                        break;
+                }
+            }
+
+            public final void onStop(String str2) {
+                switch (i2) {
+                    case 0:
+                        DualAppManagerService$$ExternalSyntheticOutline0.m("onStop ", str2, "AS.GoodCatchManager");
+                        String[] strArr = GoodCatchManager.SOUND_FUNC;
+                        if (!strArr[0].equals(str2)) {
+                            if (!strArr[1].equals(str2)) {
+                                if (!strArr[2].equals(str2)) {
+                                    if (strArr[3].equals(str2)) {
+                                        this.this$0.mSoundFunc[3] = false;
+                                        break;
+                                    }
+                                } else {
+                                    this.this$0.mSoundFunc[2] = false;
+                                    break;
+                                }
+                            } else {
+                                this.this$0.mSoundFunc[1] = false;
+                                break;
+                            }
+                        } else {
+                            this.this$0.mSoundFunc[0] = false;
+                            break;
+                        }
+                        break;
+                    default:
+                        DualAppManagerService$$ExternalSyntheticOutline0.m("onStop ", str2, "AS.GoodCatchManager");
+                        this.this$0.mVibrationFunc = false;
+                        break;
+                }
+            }
+        };
         this.mModule = str;
         if (TextUtils.equals("AudioService", str)) {
-            this.mSemGoodCatchManager = new SemGoodCatchManager(context, "AudioService", SOUND_FUNC, this.mAudioStateListener);
+            this.mSemGoodCatchManager = new SemGoodCatchManager(context, "AudioService", SOUND_FUNC, onStateChangeListener);
         } else if (TextUtils.equals("VibratorService", str)) {
-            this.mSemGoodCatchManager = new SemGoodCatchManager(context, "VibratorService", new String[]{"vibration"}, this.mVibrateStateListener);
+            this.mSemGoodCatchManager = new SemGoodCatchManager(context, "VibratorService", new String[]{"vibration"}, onStateChangeListener2);
         }
-    }
-
-    public void updateCallMode(String str, int i, String str2) {
-        this.mSemGoodCatchManager.update(SOUND_FUNC[1], str, i, "", str2);
-    }
-
-    public void updateRingerMode(String str, int i, String str2) {
-        this.mSemGoodCatchManager.update(SOUND_FUNC[0], str, i, "", str2);
-    }
-
-    public void updateVibrateMode(String str) {
-        this.mSemGoodCatchManager.update("vibration", str, 0, "", "");
-    }
-
-    public void updateVibrateMode(String str, int i, String str2) {
-        this.mSemGoodCatchManager.update("vibration", str, i, "", str2);
-    }
-
-    public void updateMediaVolume(String str, String str2) {
-        this.mSemGoodCatchManager.update(SOUND_FUNC[2], str, 0, "", str2);
-    }
-
-    public void updatePlayback(String str, int i) {
-        this.mSemGoodCatchManager.update(SOUND_FUNC[3], str, i, "", "");
     }
 }

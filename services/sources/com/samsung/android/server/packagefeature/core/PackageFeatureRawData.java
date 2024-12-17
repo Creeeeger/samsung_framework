@@ -7,21 +7,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 class PackageFeatureRawData extends PackageFeatureData implements Serializable {
     public static boolean sShowPackageName = false;
     private static final long serialVersionUID = 202206080250L;
     private final ConcurrentHashMap mSerial = new ConcurrentHashMap();
 
-    public String put(String str, String str2, String str3) {
-        if (str == null) {
-            str = "null";
-        }
-        this.mSerial.put(str2, str);
-        return super.put(str2, str3);
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
+    public final void dump(PrintWriter printWriter, String str) {
         Iterator it = entrySet().iterator();
         int i = sShowPackageName ? 5 : 10;
         int i2 = 0;
@@ -47,5 +40,13 @@ class PackageFeatureRawData extends PackageFeatureData implements Serializable {
             i2 = i3;
         }
         printWriter.println();
+    }
+
+    public final void put(String str, String str2, String str3) {
+        if (str == null) {
+            str = "null";
+        }
+        this.mSerial.put(str2, str);
+        put(str2, str3);
     }
 }

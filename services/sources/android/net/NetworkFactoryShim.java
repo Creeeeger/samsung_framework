@@ -2,20 +2,16 @@ package android.net;
 
 import android.os.Looper;
 import android.os.Message;
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface NetworkFactoryShim {
-    void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr);
+    void dump(PrintWriter printWriter);
 
     Looper getLooper();
 
-    NetworkProvider getProvider();
-
     int getRequestCount();
-
-    int getSerialNumber();
 
     Message obtainMessage(int i, int i2, int i3, Object obj);
 
@@ -23,17 +19,13 @@ public interface NetworkFactoryShim {
 
     void register(String str);
 
-    void releaseRequestAsUnfulfillableByAnyFactory(NetworkRequest networkRequest);
+    default void registerIgnoringScore(String str) {
+        throw new UnsupportedOperationException();
+    }
 
     void setCapabilityFilter(NetworkCapabilities networkCapabilities);
 
     void setScoreFilter(int i);
 
     void setScoreFilter(NetworkScore networkScore);
-
-    void terminate();
-
-    default void registerIgnoringScore(String str) {
-        throw new UnsupportedOperationException();
-    }
 }

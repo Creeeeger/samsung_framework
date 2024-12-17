@@ -1,25 +1,16 @@
 package com.android.server.job.restrictions;
 
 import android.util.IndentingPrintWriter;
-import android.util.proto.ProtoOutputStream;
 import com.android.server.job.JobSchedulerService;
 import com.android.server.job.controllers.JobStatus;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class JobRestriction {
     public final int mInternalReason;
     public final int mPendingReason;
     public final JobSchedulerService mService;
     public final int mStopReason;
-
-    public abstract void dumpConstants(IndentingPrintWriter indentingPrintWriter);
-
-    public void dumpConstants(ProtoOutputStream protoOutputStream) {
-    }
-
-    public abstract boolean isJobRestricted(JobStatus jobStatus);
-
-    public abstract void onSystemServicesReady();
 
     public JobRestriction(JobSchedulerService jobSchedulerService, int i, int i2, int i3) {
         this.mService = jobSchedulerService;
@@ -28,15 +19,10 @@ public abstract class JobRestriction {
         this.mInternalReason = i3;
     }
 
-    public final int getPendingReason() {
-        return this.mPendingReason;
-    }
+    public abstract void dumpConstants(IndentingPrintWriter indentingPrintWriter);
 
-    public final int getStopReason() {
-        return this.mStopReason;
-    }
+    public abstract boolean isJobRestricted(JobStatus jobStatus, int i);
 
-    public final int getInternalReason() {
-        return this.mInternalReason;
+    public void onSystemServicesReady() {
     }
 }

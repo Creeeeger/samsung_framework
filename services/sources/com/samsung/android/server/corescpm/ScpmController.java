@@ -1,37 +1,28 @@
 package com.samsung.android.server.corescpm;
 
-import android.content.Context;
-import android.os.Handler;
-import com.samsung.android.server.util.CoreLogger;
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
+import com.samsung.android.server.packagefeature.core.PackageFeatureManagerService;
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public interface ScpmController {
-    void dump(PrintWriter printWriter);
 
-    FileDescriptor getFileDescriptor(String str);
-
-    void registerScpm(Context context, Handler handler, Set set, Consumer consumer, CoreLogger coreLogger);
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class ConsumerInfo {
         public final String mAppId;
         public final String mPackageName;
         public final String mReceiverPackageName;
         public final String mVersion;
 
-        public ConsumerInfo(String str, String str2, String str3, String str4) {
-            this.mPackageName = str;
-            this.mReceiverPackageName = str2;
-            this.mAppId = str3;
-            this.mVersion = str4;
+        public ConsumerInfo() {
+            String str = PackageFeatureManagerService.ScpmConsumerInfo.VERSION;
+            this.mPackageName = "android";
+            this.mReceiverPackageName = "android";
+            this.mAppId = "hz6wdikdtw";
+            this.mVersion = str;
         }
 
-        public int hashCode() {
+        public final int hashCode() {
             return Objects.hash(this.mPackageName, this.mReceiverPackageName, this.mAppId, this.mVersion);
         }
     }

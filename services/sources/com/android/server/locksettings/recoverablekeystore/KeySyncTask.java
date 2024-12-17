@@ -1,37 +1,36 @@
 package com.android.server.locksettings.recoverablekeystore;
 
-import android.content.Context;
+import android.app.KeyguardManager;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.security.Scrypt;
-import android.security.keystore.recovery.KeyChainProtectionParams;
-import android.security.keystore.recovery.KeyChainSnapshot;
-import android.security.keystore.recovery.KeyDerivationParams;
-import android.security.keystore.recovery.WrappedApplicationKey;
 import android.util.Log;
 import android.util.Pair;
-import com.android.internal.util.ArrayUtils;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.server.audio.AudioService$$ExternalSyntheticOutline0;
 import com.android.server.locksettings.recoverablekeystore.storage.RecoverableKeyStoreDb;
 import com.android.server.locksettings.recoverablekeystore.storage.RecoverySnapshotStorage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.cert.CertPath;
-import java.security.cert.CertificateException;
+import java.security.UnrecoverableKeyException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import javax.crypto.KeyGenerator;
+import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 
-/* loaded from: classes2.dex */
-public class KeySyncTask implements Runnable {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class KeySyncTask implements Runnable {
     static final int SCRYPT_PARAM_N = 4096;
     static final int SCRYPT_PARAM_OUTLEN_BYTES = 32;
     static final int SCRYPT_PARAM_P = 1;
@@ -47,23 +46,12 @@ public class KeySyncTask implements Runnable {
     public final TestOnlyInsecureCertificateHelper mTestOnlyInsecureCertificateHelper;
     public final int mUserId;
 
-    public static int getUiFormat(int i) {
-        if (i == 1) {
-            return 3;
-        }
-        return i == 3 ? 1 : 2;
-    }
-
-    public static KeySyncTask newInstance(Context context, RecoverableKeyStoreDb recoverableKeyStoreDb, RecoverySnapshotStorage recoverySnapshotStorage, RecoverySnapshotListenersStorage recoverySnapshotListenersStorage, int i, int i2, byte[] bArr, boolean z) {
-        return new KeySyncTask(recoverableKeyStoreDb, recoverySnapshotStorage, recoverySnapshotListenersStorage, i, i2, bArr, z, PlatformKeyManager.getInstance(context, recoverableKeyStoreDb), new TestOnlyInsecureCertificateHelper(), new Scrypt());
-    }
-
     public KeySyncTask(RecoverableKeyStoreDb recoverableKeyStoreDb, RecoverySnapshotStorage recoverySnapshotStorage, RecoverySnapshotListenersStorage recoverySnapshotListenersStorage, int i, int i2, byte[] bArr, boolean z, PlatformKeyManager platformKeyManager, TestOnlyInsecureCertificateHelper testOnlyInsecureCertificateHelper, Scrypt scrypt) {
         this.mSnapshotListenersStorage = recoverySnapshotListenersStorage;
         this.mRecoverableKeyStoreDb = recoverableKeyStoreDb;
         this.mUserId = i;
         this.mCredentialType = i2;
-        this.mCredential = bArr;
+        this.mCredential = bArr != null ? Arrays.copyOf(bArr, bArr.length) : null;
         this.mCredentialUpdated = z;
         this.mPlatformKeyManager = platformKeyManager;
         this.mRecoverySnapshotStorage = recoverySnapshotStorage;
@@ -71,212 +59,11 @@ public class KeySyncTask implements Runnable {
         this.mScrypt = scrypt;
     }
 
-    @Override // java.lang.Runnable
-    public void run() {
-        try {
-            synchronized (KeySyncTask.class) {
-                syncKeys();
-            }
-        } catch (Exception e) {
-            Log.e("KeySyncTask", "Unexpected exception thrown during KeySyncTask", e);
+    public static int getUiFormat(int i) {
+        if (i == 1) {
+            return 3;
         }
-    }
-
-    public final void syncKeys() {
-        int generationId = this.mPlatformKeyManager.getGenerationId(this.mUserId);
-        if (this.mCredentialType == -1) {
-            Log.w("KeySyncTask", "Credentials are not set for user " + this.mUserId);
-            if (generationId < 1001000) {
-                this.mPlatformKeyManager.invalidatePlatformKey(this.mUserId, generationId);
-                return;
-            }
-            return;
-        }
-        if (isCustomLockScreen()) {
-            Log.w("KeySyncTask", "Unsupported credential type " + this.mCredentialType + " for user " + this.mUserId);
-            if (generationId < 1001000) {
-                this.mRecoverableKeyStoreDb.invalidateKeysForUserIdOnCustomScreenLock(this.mUserId);
-                return;
-            }
-            return;
-        }
-        if (this.mPlatformKeyManager.isDeviceLocked(this.mUserId) && this.mUserId == 0) {
-            Log.w("KeySyncTask", "Can't sync keys for locked user " + this.mUserId);
-            return;
-        }
-        List recoveryAgents = this.mRecoverableKeyStoreDb.getRecoveryAgents(this.mUserId);
-        Iterator it = recoveryAgents.iterator();
-        while (it.hasNext()) {
-            int intValue = ((Integer) it.next()).intValue();
-            try {
-                syncKeysForAgent(intValue);
-            } catch (IOException e) {
-                Log.e("KeySyncTask", "IOException during sync for agent " + intValue, e);
-            }
-        }
-        if (recoveryAgents.isEmpty()) {
-            Log.w("KeySyncTask", "No recovery agent initialized for user " + this.mUserId);
-        }
-    }
-
-    public final boolean isCustomLockScreen() {
-        int i = this.mCredentialType;
-        return (i == -1 || i == 1 || i == 3 || i == 4) ? false : true;
-    }
-
-    public final void syncKeysForAgent(int i) {
-        boolean z;
-        PublicKey recoveryServicePublicKey;
-        byte[] hashCredentialsBySaltedSha256;
-        Long counterId;
-        KeyDerivationParams createSha256Params;
-        if (shouldCreateSnapshot(i)) {
-            z = false;
-        } else {
-            z = this.mRecoverableKeyStoreDb.getSnapshotVersion(this.mUserId, i) != null && this.mRecoverySnapshotStorage.get(i) == null;
-            if (z) {
-                Log.d("KeySyncTask", "Recreating most recent snapshot");
-            } else {
-                Log.d("KeySyncTask", "Key sync not needed.");
-                return;
-            }
-        }
-        String defaultCertificateAliasIfEmpty = this.mTestOnlyInsecureCertificateHelper.getDefaultCertificateAliasIfEmpty(this.mRecoverableKeyStoreDb.getActiveRootOfTrust(this.mUserId, i));
-        CertPath recoveryServiceCertPath = this.mRecoverableKeyStoreDb.getRecoveryServiceCertPath(this.mUserId, i, defaultCertificateAliasIfEmpty);
-        if (recoveryServiceCertPath != null) {
-            Log.d("KeySyncTask", "Using the public key in stored CertPath for syncing");
-            recoveryServicePublicKey = recoveryServiceCertPath.getCertificates().get(0).getPublicKey();
-        } else {
-            Log.d("KeySyncTask", "Using the stored raw public key for syncing");
-            recoveryServicePublicKey = this.mRecoverableKeyStoreDb.getRecoveryServicePublicKey(this.mUserId, i);
-        }
-        if (recoveryServicePublicKey == null) {
-            Log.w("KeySyncTask", "Not initialized for KeySync: no public key set. Cancelling task.");
-            return;
-        }
-        byte[] serverParams = this.mRecoverableKeyStoreDb.getServerParams(this.mUserId, i);
-        if (serverParams == null) {
-            Log.w("KeySyncTask", "No device ID set for user " + this.mUserId);
-            return;
-        }
-        if (this.mTestOnlyInsecureCertificateHelper.isTestOnlyCertificateAlias(defaultCertificateAliasIfEmpty)) {
-            Log.w("KeySyncTask", "Insecure root certificate is used by recovery agent " + i);
-            if (this.mTestOnlyInsecureCertificateHelper.doesCredentialSupportInsecureMode(this.mCredentialType, this.mCredential)) {
-                Log.w("KeySyncTask", "Whitelisted credential is used to generate snapshot by recovery agent " + i);
-            } else {
-                Log.w("KeySyncTask", "Non whitelisted credential is used to generate recovery snapshot by " + i + " - ignore attempt.");
-                return;
-            }
-        }
-        boolean shouldUseScryptToHashCredential = shouldUseScryptToHashCredential();
-        byte[] generateSalt = generateSalt();
-        if (shouldUseScryptToHashCredential) {
-            hashCredentialsBySaltedSha256 = hashCredentialsByScrypt(generateSalt, this.mCredential);
-        } else {
-            hashCredentialsBySaltedSha256 = hashCredentialsBySaltedSha256(generateSalt, this.mCredential);
-        }
-        try {
-            Map keysToSync = getKeysToSync(i);
-            if (this.mTestOnlyInsecureCertificateHelper.isTestOnlyCertificateAlias(defaultCertificateAliasIfEmpty)) {
-                keysToSync = this.mTestOnlyInsecureCertificateHelper.keepOnlyWhitelistedInsecureKeys(keysToSync);
-            }
-            try {
-                SecretKey generateRecoveryKey = generateRecoveryKey();
-                try {
-                    Map encryptKeysWithRecoveryKey = KeySyncUtils.encryptKeysWithRecoveryKey(generateRecoveryKey, keysToSync);
-                    if (this.mCredentialUpdated) {
-                        counterId = Long.valueOf(generateAndStoreCounterId(i));
-                    } else {
-                        counterId = this.mRecoverableKeyStoreDb.getCounterId(this.mUserId, i);
-                        if (counterId == null) {
-                            counterId = Long.valueOf(generateAndStoreCounterId(i));
-                        }
-                    }
-                    try {
-                        byte[] thmEncryptRecoveryKey = KeySyncUtils.thmEncryptRecoveryKey(recoveryServicePublicKey, hashCredentialsBySaltedSha256, KeySyncUtils.packVaultParams(recoveryServicePublicKey, counterId.longValue(), 10, serverParams), generateRecoveryKey);
-                        if (shouldUseScryptToHashCredential) {
-                            createSha256Params = KeyDerivationParams.createScryptParams(generateSalt, 4096);
-                        } else {
-                            createSha256Params = KeyDerivationParams.createSha256Params(generateSalt);
-                        }
-                        KeyChainProtectionParams build = new KeyChainProtectionParams.Builder().setUserSecretType(100).setLockScreenUiFormat(getUiFormat(this.mCredentialType)).setKeyDerivationParams(createSha256Params).setSecret(new byte[0]).build();
-                        ArrayList arrayList = new ArrayList();
-                        arrayList.add(build);
-                        KeyChainSnapshot.Builder encryptedRecoveryKeyBlob = new KeyChainSnapshot.Builder().setSnapshotVersion(getSnapshotVersion(i, z)).setMaxAttempts(10).setCounterId(counterId.longValue()).setServerParams(serverParams).setKeyChainProtectionParams(arrayList).setWrappedApplicationKeys(createApplicationKeyEntries(encryptKeysWithRecoveryKey, keysToSync)).setEncryptedRecoveryKeyBlob(thmEncryptRecoveryKey);
-                        try {
-                            encryptedRecoveryKeyBlob.setTrustedHardwareCertPath(recoveryServiceCertPath);
-                            this.mRecoverySnapshotStorage.put(i, encryptedRecoveryKeyBlob.build());
-                            this.mSnapshotListenersStorage.recoverySnapshotAvailable(i);
-                            this.mRecoverableKeyStoreDb.setShouldCreateSnapshot(this.mUserId, i, false);
-                        } catch (CertificateException e) {
-                            Log.wtf("KeySyncTask", "Cannot serialize CertPath when calling setTrustedHardwareCertPath", e);
-                        }
-                    } catch (InvalidKeyException e2) {
-                        Log.e("KeySyncTask", "Could not encrypt with recovery key", e2);
-                    } catch (NoSuchAlgorithmException e3) {
-                        Log.wtf("KeySyncTask", "SecureBox encrypt algorithms unavailable", e3);
-                    }
-                } catch (InvalidKeyException | NoSuchAlgorithmException e4) {
-                    Log.wtf("KeySyncTask", "Should be impossible: could not encrypt application keys with random key", e4);
-                }
-            } catch (NoSuchAlgorithmException e5) {
-                Log.wtf("AES should never be unavailable", e5);
-            }
-        } catch (BadPlatformKeyException e6) {
-            Log.e("KeySyncTask", "Loaded keys for same generation ID as platform key, so BadPlatformKeyException should be impossible.", e6);
-        } catch (InsecureUserException e7) {
-            Log.e("KeySyncTask", "A screen unlock triggered the key sync flow, so user must have lock screen. This should be impossible.", e7);
-        } catch (IOException e8) {
-            Log.e("KeySyncTask", "Local database error.", e8);
-        } catch (GeneralSecurityException e9) {
-            Log.e("KeySyncTask", "Failed to load recoverable keys for sync", e9);
-        }
-    }
-
-    public int getSnapshotVersion(int i, boolean z) {
-        Long valueOf;
-        Long snapshotVersion = this.mRecoverableKeyStoreDb.getSnapshotVersion(this.mUserId, i);
-        if (z) {
-            valueOf = Long.valueOf(snapshotVersion != null ? snapshotVersion.longValue() : 1L);
-        } else {
-            valueOf = Long.valueOf(snapshotVersion != null ? 1 + snapshotVersion.longValue() : 1L);
-        }
-        if (this.mRecoverableKeyStoreDb.setSnapshotVersion(this.mUserId, i, valueOf.longValue()) < 0) {
-            Log.e("KeySyncTask", "Failed to set the snapshot version in the local DB.");
-            throw new IOException("Failed to set the snapshot version in the local DB.");
-        }
-        return valueOf.intValue();
-    }
-
-    public final long generateAndStoreCounterId(int i) {
-        long nextLong = new SecureRandom().nextLong();
-        if (this.mRecoverableKeyStoreDb.setCounterId(this.mUserId, i, nextLong) >= 0) {
-            return nextLong;
-        }
-        Log.e("KeySyncTask", "Failed to set the snapshot version in the local DB.");
-        throw new IOException("Failed to set counterId in the local DB.");
-    }
-
-    public final Map getKeysToSync(int i) {
-        PlatformDecryptionKey decryptKey = this.mPlatformKeyManager.getDecryptKey(this.mUserId);
-        return WrappedKey.unwrapKeys(decryptKey, this.mRecoverableKeyStoreDb.getAllKeys(this.mUserId, i, decryptKey.getGenerationId()));
-    }
-
-    public final boolean shouldCreateSnapshot(int i) {
-        if (!ArrayUtils.contains(this.mRecoverableKeyStoreDb.getRecoverySecretTypes(this.mUserId, i), 100)) {
-            return false;
-        }
-        if (this.mCredentialUpdated && this.mRecoverableKeyStoreDb.getSnapshotVersion(this.mUserId, i) != null) {
-            this.mRecoverableKeyStoreDb.setShouldCreateSnapshot(this.mUserId, i, true);
-            return true;
-        }
-        return this.mRecoverableKeyStoreDb.getShouldCreateSnapshot(this.mUserId, i);
-    }
-
-    public static byte[] generateSalt() {
-        byte[] bArr = new byte[16];
-        new SecureRandom().nextBytes(bArr);
-        return bArr;
+        return i == 3 ? 1 : 2;
     }
 
     public static byte[] hashCredentialsBySaltedSha256(byte[] bArr, byte[] bArr2) {
@@ -296,26 +83,167 @@ public class KeySyncTask implements Runnable {
         }
     }
 
-    public final byte[] hashCredentialsByScrypt(byte[] bArr, byte[] bArr2) {
-        return this.mScrypt.scrypt(bArr2, bArr, 4096, 8, 1, 32);
-    }
-
-    public static SecretKey generateRecoveryKey() {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(256);
-        return keyGenerator.generateKey();
-    }
-
-    public static List createApplicationKeyEntries(Map map, Map map2) {
-        ArrayList arrayList = new ArrayList();
-        for (String str : map.keySet()) {
-            arrayList.add(new WrappedApplicationKey.Builder().setAlias(str).setEncryptedKeyMaterial((byte[]) map.get(str)).setMetadata((byte[]) ((Pair) map2.get(str)).second).build());
+    public final long generateAndStoreCounterId(int i) {
+        long nextLong = new SecureRandom().nextLong();
+        if (this.mRecoverableKeyStoreDb.setLong(this.mUserId, i, nextLong, "counter_id") >= 0) {
+            return nextLong;
         }
-        return arrayList;
+        Log.e("KeySyncTask", "Failed to set the snapshot version in the local DB.");
+        throw new IOException("Failed to set counterId in the local DB.");
     }
 
-    public final boolean shouldUseScryptToHashCredential() {
+    public final Map getKeysToSync(int i) {
+        PlatformDecryptionKey decryptKeyInternal;
+        PlatformKeyManager platformKeyManager = this.mPlatformKeyManager;
+        int i2 = this.mUserId;
+        platformKeyManager.init(i2);
+        try {
+            decryptKeyInternal = platformKeyManager.getDecryptKeyInternal(i2);
+            PlatformKeyManager.ensureDecryptionKeyIsValid(i2, decryptKeyInternal);
+        } catch (UnrecoverableKeyException unused) {
+            Locale locale = Locale.US;
+            Log.i("PlatformKeyManager", "Regenerating permanently invalid Platform key for user " + i2 + ".");
+            platformKeyManager.regenerate(i2);
+            decryptKeyInternal = platformKeyManager.getDecryptKeyInternal(i2);
+        }
+        RecoverableKeyStoreDb recoverableKeyStoreDb = this.mRecoverableKeyStoreDb;
+        int i3 = this.mUserId;
+        int i4 = decryptKeyInternal.mGenerationId;
+        Map allKeys = recoverableKeyStoreDb.getAllKeys(i3, i, i4);
+        HashMap hashMap = new HashMap();
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        HashMap hashMap2 = (HashMap) allKeys;
+        for (String str : hashMap2.keySet()) {
+            WrappedKey wrappedKey = (WrappedKey) hashMap2.get(str);
+            if (wrappedKey.mPlatformKeyGenerationId != i4) {
+                Locale locale2 = Locale.US;
+                StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("WrappedKey with alias '", str, "' was wrapped with platform key ");
+                m.append(wrappedKey.mPlatformKeyGenerationId);
+                m.append(", not platform key ");
+                m.append(i4);
+                throw new BadPlatformKeyException(m.toString());
+            }
+            cipher.init(4, decryptKeyInternal.mKey, new GCMParameterSpec(128, wrappedKey.mNonce));
+            try {
+                hashMap.put(str, Pair.create((SecretKey) cipher.unwrap(wrappedKey.mKeyMaterial, "AES", 3), wrappedKey.mKeyMetadata));
+            } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+                Locale locale3 = Locale.US;
+                Log.e("WrappedKey", "Error unwrapping recoverable key with alias '" + str + "'", e);
+            }
+        }
+        return hashMap;
+    }
+
+    public int getSnapshotVersion(int i, boolean z) throws IOException {
+        Long valueOf;
+        Long l = this.mRecoverableKeyStoreDb.getLong(this.mUserId, i, "snapshot_version");
+        if (z) {
+            valueOf = Long.valueOf(l != null ? l.longValue() : 1L);
+        } else {
+            valueOf = Long.valueOf(l != null ? 1 + l.longValue() : 1L);
+        }
+        if (this.mRecoverableKeyStoreDb.setLong(this.mUserId, i, valueOf.longValue(), "snapshot_version") >= 0) {
+            return valueOf.intValue();
+        }
+        Log.e("KeySyncTask", "Failed to set the snapshot version in the local DB.");
+        throw new IOException("Failed to set the snapshot version in the local DB.");
+    }
+
+    @Override // java.lang.Runnable
+    public final void run() {
+        try {
+            try {
+                synchronized (KeySyncTask.class) {
+                    syncKeys();
+                }
+                byte[] bArr = this.mCredential;
+                if (bArr != null) {
+                    Arrays.fill(bArr, (byte) 0);
+                }
+            } catch (Exception e) {
+                Log.e("KeySyncTask", "Unexpected exception thrown during KeySyncTask", e);
+                byte[] bArr2 = this.mCredential;
+                if (bArr2 != null) {
+                    Arrays.fill(bArr2, (byte) 0);
+                }
+            }
+        } catch (Throwable th) {
+            byte[] bArr3 = this.mCredential;
+            if (bArr3 != null) {
+                Arrays.fill(bArr3, (byte) 0);
+            }
+            throw th;
+        }
+    }
+
+    public final void syncKeys() {
+        if (this.mCredentialUpdated && this.mRecoverableKeyStoreDb.getBadRemoteGuessCounter(this.mUserId) != 0) {
+            this.mRecoverableKeyStoreDb.setBadRemoteGuessCounter(this.mUserId, 0);
+        }
+        int platformKeyGenerationId = this.mPlatformKeyManager.mDatabase.getPlatformKeyGenerationId(this.mUserId);
         int i = this.mCredentialType;
-        return i == 4 || i == 3;
+        if (i == -1) {
+            AudioService$$ExternalSyntheticOutline0.m(new StringBuilder("Credentials are not set for user "), this.mUserId, "KeySyncTask");
+            if (platformKeyGenerationId < 1001000) {
+                this.mPlatformKeyManager.invalidatePlatformKey(this.mUserId, platformKeyGenerationId);
+                return;
+            }
+            return;
+        }
+        if (i != -1 && i != 1 && i != 3 && i != 4) {
+            StringBuilder sb = new StringBuilder("Unsupported credential type ");
+            sb.append(this.mCredentialType);
+            sb.append(" for user ");
+            AudioService$$ExternalSyntheticOutline0.m(sb, this.mUserId, "KeySyncTask");
+            if (platformKeyGenerationId < 1001000) {
+                RecoverableKeyStoreDb recoverableKeyStoreDb = this.mRecoverableKeyStoreDb;
+                int i2 = this.mUserId;
+                SQLiteDatabase writableDatabase = recoverableKeyStoreDb.mKeyStoreDbHelper.getWritableDatabase();
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("recovery_status", (Integer) 3);
+                writableDatabase.update("keys", contentValues, "user_id = ?", new String[]{String.valueOf(i2)});
+                return;
+            }
+            return;
+        }
+        if (((KeyguardManager) this.mPlatformKeyManager.mContext.getSystemService(KeyguardManager.class)).isDeviceLocked(this.mUserId) && this.mUserId == 0) {
+            AudioService$$ExternalSyntheticOutline0.m(new StringBuilder("Can't sync keys for locked user "), this.mUserId, "KeySyncTask");
+            return;
+        }
+        ArrayList arrayList = (ArrayList) this.mRecoverableKeyStoreDb.getRecoveryAgents(this.mUserId);
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            int intValue = ((Integer) it.next()).intValue();
+            try {
+                syncKeysForAgent(intValue);
+            } catch (IOException e) {
+                Log.e("KeySyncTask", "IOException during sync for agent " + intValue, e);
+            }
+        }
+        if (arrayList.isEmpty()) {
+            AudioService$$ExternalSyntheticOutline0.m(new StringBuilder("No recovery agent initialized for user "), this.mUserId, "KeySyncTask");
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:198:0x0045, code lost:
+    
+        if (r0.longValue() != 0) goto L14;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:154:0x0154  */
+    /* JADX WARN: Removed duplicated region for block: B:167:0x0112 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:177:0x00ce  */
+    /* JADX WARN: Removed duplicated region for block: B:18:0x013e  */
+    /* JADX WARN: Removed duplicated region for block: B:20:0x0194  */
+    /* JADX WARN: Removed duplicated region for block: B:23:0x019c  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void syncKeysForAgent(int r20) {
+        /*
+            Method dump skipped, instructions count: 1233
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.locksettings.recoverablekeystore.KeySyncTask.syncKeysForAgent(int):void");
     }
 }

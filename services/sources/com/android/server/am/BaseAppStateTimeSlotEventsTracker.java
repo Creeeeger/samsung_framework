@@ -1,6 +1,7 @@
 package com.android.server.am;
 
 import android.content.Context;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -10,118 +11,23 @@ import android.util.SparseArray;
 import android.util.TimeUtils;
 import com.android.internal.app.ProcessMap;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.am.BaseAppStateEvents;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.am.AppRestrictionController;
 import com.android.server.am.BaseAppStateEventsTracker;
+import com.android.server.am.BaseAppStateTimeSlotEventsTracker;
 import com.android.server.am.BaseAppStateTracker;
+import com.android.server.backup.BackupManagerConstants;
 import java.io.PrintWriter;
-import java.lang.reflect.Constructor;
 import java.util.LinkedList;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class BaseAppStateTimeSlotEventsTracker extends BaseAppStateEventsTracker {
-    public H mHandler;
+    public final H mHandler;
     public final ArrayMap mTmpPkgs;
 
-    public BaseAppStateTimeSlotEventsTracker(Context context, AppRestrictionController appRestrictionController, Constructor constructor, Object obj) {
-        super(context, appRestrictionController, constructor, obj);
-        this.mTmpPkgs = new ArrayMap();
-        this.mHandler = new H(this);
-    }
-
-    public void onNewEvent(String str, int i) {
-        this.mHandler.obtainMessage(0, i, 0, str).sendToTarget();
-    }
-
-    public void handleNewEvent(String str, int i) {
-        int totalEvents;
-        boolean z;
-        if (((BaseAppStateTimeSlotEventsPolicy) this.mInjector.getPolicy()).shouldExempt(str, i) != -1) {
-            return;
-        }
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        synchronized (this.mLock) {
-            SimpleAppStateTimeslotEvents simpleAppStateTimeslotEvents = (SimpleAppStateTimeslotEvents) this.mPkgEvents.get(i, str);
-            if (simpleAppStateTimeslotEvents == null) {
-                simpleAppStateTimeslotEvents = (SimpleAppStateTimeslotEvents) createAppStateEvents(i, str);
-                this.mPkgEvents.put(i, str, simpleAppStateTimeslotEvents);
-            }
-            simpleAppStateTimeslotEvents.addEvent(elapsedRealtime, 0);
-            totalEvents = simpleAppStateTimeslotEvents.getTotalEvents(elapsedRealtime, 0);
-            z = totalEvents >= ((BaseAppStateTimeSlotEventsPolicy) this.mInjector.getPolicy()).getNumOfEventsThreshold();
-        }
-        if (z) {
-            ((BaseAppStateTimeSlotEventsPolicy) this.mInjector.getPolicy()).onExcessiveEvents(str, i, totalEvents, elapsedRealtime);
-        }
-    }
-
-    public void onMonitorEnabled(boolean z) {
-        if (z) {
-            return;
-        }
-        synchronized (this.mLock) {
-            this.mPkgEvents.clear();
-        }
-    }
-
-    public void onNumOfEventsThresholdChanged(int i) {
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        synchronized (this.mLock) {
-            SparseArray map = this.mPkgEvents.getMap();
-            for (int size = map.size() - 1; size >= 0; size--) {
-                ArrayMap arrayMap = (ArrayMap) map.valueAt(size);
-                for (int size2 = arrayMap.size() - 1; size2 >= 0; size2--) {
-                    SimpleAppStateTimeslotEvents simpleAppStateTimeslotEvents = (SimpleAppStateTimeslotEvents) arrayMap.valueAt(size2);
-                    int totalEvents = simpleAppStateTimeslotEvents.getTotalEvents(elapsedRealtime, 0);
-                    if (totalEvents >= i) {
-                        this.mTmpPkgs.put(simpleAppStateTimeslotEvents, Integer.valueOf(totalEvents));
-                    }
-                }
-            }
-        }
-        for (int size3 = this.mTmpPkgs.size() - 1; size3 >= 0; size3--) {
-            SimpleAppStateTimeslotEvents simpleAppStateTimeslotEvents2 = (SimpleAppStateTimeslotEvents) this.mTmpPkgs.keyAt(size3);
-            ((BaseAppStateTimeSlotEventsPolicy) this.mInjector.getPolicy()).onExcessiveEvents(simpleAppStateTimeslotEvents2.mPackageName, simpleAppStateTimeslotEvents2.mUid, ((Integer) this.mTmpPkgs.valueAt(size3)).intValue(), elapsedRealtime);
-        }
-        this.mTmpPkgs.clear();
-    }
-
-    public int getTotalEventsLocked(int i, long j) {
-        SimpleAppStateTimeslotEvents simpleAppStateTimeslotEvents = (SimpleAppStateTimeslotEvents) getUidEventsLocked(i);
-        if (simpleAppStateTimeslotEvents == null) {
-            return 0;
-        }
-        return simpleAppStateTimeslotEvents.getTotalEvents(j, 0);
-    }
-
-    public final void trimEvents() {
-        trim(Math.max(0L, SystemClock.elapsedRealtime() - ((BaseAppStateTimeSlotEventsPolicy) this.mInjector.getPolicy()).getMaxTrackingDuration()));
-    }
-
-    @Override // com.android.server.am.BaseAppStateTracker
-    public void onUserInteractionStarted(String str, int i) {
-        ((BaseAppStateTimeSlotEventsPolicy) this.mInjector.getPolicy()).onUserInteractionStarted(str, i);
-    }
-
-    /* loaded from: classes.dex */
-    public class H extends Handler {
-        public final BaseAppStateTimeSlotEventsTracker mTracker;
-
-        public H(BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker) {
-            super(baseAppStateTimeSlotEventsTracker.mBgHandler.getLooper());
-            this.mTracker = baseAppStateTimeSlotEventsTracker;
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            if (message.what != 0) {
-                return;
-            }
-            this.mTracker.handleNewEvent((String) message.obj, message.arg1);
-        }
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class BaseAppStateTimeSlotEventsPolicy extends BaseAppStateEventsTracker.BaseAppStateEventsPolicy {
         public final int mDefaultNumOfEventsThreshold;
         public final ProcessMap mExcessiveEventPkgs;
@@ -130,77 +36,92 @@ public abstract class BaseAppStateTimeSlotEventsTracker extends BaseAppStateEven
         public volatile int mNumOfEventsThreshold;
         public long mTimeSlotSize;
 
-        public BaseAppStateTimeSlotEventsPolicy(BaseAppStateTracker.Injector injector, BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker, String str, boolean z, String str2, long j, String str3, int i) {
-            super(injector, baseAppStateTimeSlotEventsTracker, str, z, str2, j);
+        public BaseAppStateTimeSlotEventsPolicy(BaseAppStateTracker.Injector injector, BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker, String str, String str2, String str3) {
+            super(injector, baseAppStateTimeSlotEventsTracker, str, true, str2, BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS);
             this.mExcessiveEventPkgs = new ProcessMap();
             this.mTimeSlotSize = 900000L;
             this.mKeyNumOfEventsThreshold = str3;
-            this.mDefaultNumOfEventsThreshold = i;
+            this.mDefaultNumOfEventsThreshold = 10000;
             this.mLock = baseAppStateTimeSlotEventsTracker.mLock;
         }
 
         @Override // com.android.server.am.BaseAppStateEventsTracker.BaseAppStateEventsPolicy, com.android.server.am.BaseAppStatePolicy
-        public void onSystemReady() {
-            super.onSystemReady();
-            updateNumOfEventsThreshold();
-        }
-
-        @Override // com.android.server.am.BaseAppStateEventsTracker.BaseAppStateEventsPolicy, com.android.server.am.BaseAppStatePolicy
-        public void onPropertiesChanged(String str) {
-            if (this.mKeyNumOfEventsThreshold.equals(str)) {
-                updateNumOfEventsThreshold();
-            } else {
-                super.onPropertiesChanged(str);
+        public void dump(PrintWriter printWriter, String str) {
+            super.dump(printWriter, str);
+            if (this.mTrackerEnabled) {
+                printWriter.print(str);
+                printWriter.print(this.mKeyNumOfEventsThreshold);
+                printWriter.print('=');
+                printWriter.println(this.mNumOfEventsThreshold);
             }
+            printWriter.print(str);
+            printWriter.print("event_time_slot_size=");
+            printWriter.println(this.mTimeSlotSize);
         }
 
+        /* JADX WARN: Removed duplicated region for block: B:11:0x0023 A[Catch: all -> 0x001e, DONT_GENERATE, TryCatch #0 {all -> 0x001e, blocks: (B:4:0x0003, B:6:0x000f, B:11:0x0023, B:15:0x0027, B:17:0x0029), top: B:3:0x0003 }] */
+        /* JADX WARN: Removed duplicated region for block: B:14:0x0025  */
         @Override // com.android.server.am.BaseAppStatePolicy
-        public void onTrackerEnabled(boolean z) {
-            ((BaseAppStateTimeSlotEventsTracker) this.mTracker).onMonitorEnabled(z);
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final int getProposedRestrictionLevel(int r3, int r4, java.lang.String r5) {
+            /*
+                r2 = this;
+                java.lang.Object r0 = r2.mLock
+                monitor-enter(r0)
+                com.android.internal.app.ProcessMap r1 = r2.mExcessiveEventPkgs     // Catch: java.lang.Throwable -> L1e
+                java.lang.Object r3 = r1.get(r5, r3)     // Catch: java.lang.Throwable -> L1e
+                r5 = 30
+                r1 = 40
+                if (r3 == 0) goto L20
+                com.android.server.am.BaseAppStateTracker r2 = r2.mTracker     // Catch: java.lang.Throwable -> L1e
+                com.android.server.am.BaseAppStateTimeSlotEventsTracker r2 = (com.android.server.am.BaseAppStateTimeSlotEventsTracker) r2     // Catch: java.lang.Throwable -> L1e
+                com.android.server.am.AppRestrictionController r2 = r2.mAppRestrictionController     // Catch: java.lang.Throwable -> L1e
+                com.android.server.am.AppRestrictionController$ConstantsObserver r2 = r2.mConstantsObserver     // Catch: java.lang.Throwable -> L1e
+                boolean r2 = r2.mBgAutoRestrictAbusiveApps     // Catch: java.lang.Throwable -> L1e
+                if (r2 != 0) goto L1c
+                goto L20
+            L1c:
+                r2 = r1
+                goto L21
+            L1e:
+                r2 = move-exception
+                goto L2c
+            L20:
+                r2 = r5
+            L21:
+                if (r4 <= r1) goto L25
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L1e
+                return r2
+            L25:
+                if (r4 != r1) goto L29
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L1e
+                return r5
+            L29:
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L1e
+                r2 = 0
+                return r2
+            L2c:
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L1e
+                throw r2
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.BaseAppStateTimeSlotEventsTracker.BaseAppStateTimeSlotEventsPolicy.getProposedRestrictionLevel(int, int, java.lang.String):int");
         }
 
-        @Override // com.android.server.am.BaseAppStateEventsTracker.BaseAppStateEventsPolicy
-        public void onMaxTrackingDurationChanged(long j) {
-            BaseAppStateTracker baseAppStateTracker = this.mTracker;
-            Handler handler = ((BaseAppStateTimeSlotEventsTracker) baseAppStateTracker).mBgHandler;
-            final BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker = (BaseAppStateTimeSlotEventsTracker) baseAppStateTracker;
-            Objects.requireNonNull(baseAppStateTimeSlotEventsTracker);
-            handler.post(new Runnable() { // from class: com.android.server.am.BaseAppStateTimeSlotEventsTracker$BaseAppStateTimeSlotEventsPolicy$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    BaseAppStateTimeSlotEventsTracker.this.trimEvents();
-                }
-            });
-        }
-
-        public final void updateNumOfEventsThreshold() {
-            int i = DeviceConfig.getInt("activity_manager", this.mKeyNumOfEventsThreshold, this.mDefaultNumOfEventsThreshold);
-            if (i != this.mNumOfEventsThreshold) {
-                this.mNumOfEventsThreshold = i;
-                ((BaseAppStateTimeSlotEventsTracker) this.mTracker).onNumOfEventsThresholdChanged(i);
-            }
-        }
-
-        public int getNumOfEventsThreshold() {
-            return this.mNumOfEventsThreshold;
-        }
-
-        public long getTimeSlotSize() {
-            return this.mTimeSlotSize;
-        }
-
-        public void setTimeSlotSize(long j) {
-            this.mTimeSlotSize = j;
-        }
-
-        public void onExcessiveEvents(String str, int i, int i2, long j) {
+        public final void onExcessiveEvents(int i, String str, long j) {
             boolean z;
             synchronized (this.mLock) {
-                if (((Long) this.mExcessiveEventPkgs.get(str, i)) == null) {
-                    this.mExcessiveEventPkgs.put(str, i, Long.valueOf(j));
-                    z = true;
-                } else {
-                    z = false;
+                try {
+                    if (((Long) this.mExcessiveEventPkgs.get(str, i)) == null) {
+                        this.mExcessiveEventPkgs.put(str, i, Long.valueOf(j));
+                        z = true;
+                    } else {
+                        z = false;
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
             if (z) {
@@ -208,108 +129,180 @@ public abstract class BaseAppStateTimeSlotEventsTracker extends BaseAppStateEven
             }
         }
 
-        public int shouldExempt(String str, int i) {
-            if (((BaseAppStateTimeSlotEventsTracker) this.mTracker).isUidOnTop(i)) {
-                return 12;
-            }
-            if (((BaseAppStateTimeSlotEventsTracker) this.mTracker).mAppRestrictionController.hasForegroundServices(str, i)) {
-                return 14;
-            }
-            int shouldExemptUid = shouldExemptUid(i);
-            if (shouldExemptUid != -1) {
-                return shouldExemptUid;
-            }
-            return -1;
-        }
-
-        /* JADX WARN: Removed duplicated region for block: B:11:0x0021 A[Catch: all -> 0x002a, DONT_GENERATE, TryCatch #0 {, blocks: (B:4:0x0003, B:6:0x000f, B:11:0x0021, B:15:0x0025, B:17:0x0027), top: B:3:0x0003 }] */
-        /* JADX WARN: Removed duplicated region for block: B:14:0x0023  */
-        @Override // com.android.server.am.BaseAppStatePolicy
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public int getProposedRestrictionLevel(java.lang.String r3, int r4, int r5) {
-            /*
-                r2 = this;
-                java.lang.Object r0 = r2.mLock
-                monitor-enter(r0)
-                com.android.internal.app.ProcessMap r1 = r2.mExcessiveEventPkgs     // Catch: java.lang.Throwable -> L2a
-                java.lang.Object r3 = r1.get(r3, r4)     // Catch: java.lang.Throwable -> L2a
-                r4 = 30
-                r1 = 40
-                if (r3 == 0) goto L1e
-                com.android.server.am.BaseAppStateTracker r2 = r2.mTracker     // Catch: java.lang.Throwable -> L2a
-                com.android.server.am.BaseAppStateTimeSlotEventsTracker r2 = (com.android.server.am.BaseAppStateTimeSlotEventsTracker) r2     // Catch: java.lang.Throwable -> L2a
-                com.android.server.am.AppRestrictionController r2 = r2.mAppRestrictionController     // Catch: java.lang.Throwable -> L2a
-                boolean r2 = r2.isAutoRestrictAbusiveAppEnabled()     // Catch: java.lang.Throwable -> L2a
-                if (r2 != 0) goto L1c
-                goto L1e
-            L1c:
-                r2 = r1
-                goto L1f
-            L1e:
-                r2 = r4
-            L1f:
-                if (r5 <= r1) goto L23
-                monitor-exit(r0)     // Catch: java.lang.Throwable -> L2a
-                return r2
-            L23:
-                if (r5 != r1) goto L27
-                monitor-exit(r0)     // Catch: java.lang.Throwable -> L2a
-                return r4
-            L27:
-                monitor-exit(r0)     // Catch: java.lang.Throwable -> L2a
-                r2 = 0
-                return r2
-            L2a:
-                r2 = move-exception
-                monitor-exit(r0)     // Catch: java.lang.Throwable -> L2a
-                throw r2
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.BaseAppStateTimeSlotEventsTracker.BaseAppStateTimeSlotEventsPolicy.getProposedRestrictionLevel(java.lang.String, int, int):int");
-        }
-
-        public void onUserInteractionStarted(String str, int i) {
-            synchronized (this.mLock) {
-                this.mExcessiveEventPkgs.remove(str, i);
-            }
-            ((BaseAppStateTimeSlotEventsTracker) this.mTracker).mAppRestrictionController.refreshAppRestrictionLevelForUid(i, FrameworkStatsLog.APP_STANDBY_BUCKET_CHANGED__MAIN_REASON__MAIN_USAGE, 3, true);
+        @Override // com.android.server.am.BaseAppStateEventsTracker.BaseAppStateEventsPolicy
+        public final void onMaxTrackingDurationChanged() {
+            final BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker = (BaseAppStateTimeSlotEventsTracker) this.mTracker;
+            AppRestrictionController.BgHandler bgHandler = baseAppStateTimeSlotEventsTracker.mBgHandler;
+            Objects.requireNonNull(baseAppStateTimeSlotEventsTracker);
+            bgHandler.post(new Runnable() { // from class: com.android.server.am.BaseAppStateTimeSlotEventsTracker$BaseAppStateTimeSlotEventsPolicy$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker2 = BaseAppStateTimeSlotEventsTracker.this;
+                    baseAppStateTimeSlotEventsTracker2.getClass();
+                    baseAppStateTimeSlotEventsTracker2.trim(Math.max(0L, SystemClock.elapsedRealtime() - ((BaseAppStateTimeSlotEventsTracker.BaseAppStateTimeSlotEventsPolicy) baseAppStateTimeSlotEventsTracker2.mInjector.mAppStatePolicy).mMaxTrackingDuration));
+                }
+            });
         }
 
         @Override // com.android.server.am.BaseAppStateEventsTracker.BaseAppStateEventsPolicy, com.android.server.am.BaseAppStatePolicy
-        public void dump(PrintWriter printWriter, String str) {
-            super.dump(printWriter, str);
-            if (isEnabled()) {
-                printWriter.print(str);
-                printWriter.print(this.mKeyNumOfEventsThreshold);
-                printWriter.print('=');
-                printWriter.println(this.mDefaultNumOfEventsThreshold);
+        public final void onPropertiesChanged(String str) {
+            if (this.mKeyNumOfEventsThreshold.equals(str)) {
+                updateNumOfEventsThreshold();
+            } else {
+                super.onPropertiesChanged(str);
             }
-            printWriter.print(str);
-            printWriter.print("event_time_slot_size=");
-            printWriter.println(getTimeSlotSize());
+        }
+
+        @Override // com.android.server.am.BaseAppStateEventsTracker.BaseAppStateEventsPolicy, com.android.server.am.BaseAppStatePolicy
+        public final void onSystemReady() {
+            super.onSystemReady();
+            updateNumOfEventsThreshold();
+        }
+
+        @Override // com.android.server.am.BaseAppStatePolicy
+        public final void onTrackerEnabled(boolean z) {
+            BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker = (BaseAppStateTimeSlotEventsTracker) this.mTracker;
+            if (z) {
+                baseAppStateTimeSlotEventsTracker.getClass();
+                return;
+            }
+            synchronized (baseAppStateTimeSlotEventsTracker.mLock) {
+                baseAppStateTimeSlotEventsTracker.mPkgEvents.clear();
+            }
+        }
+
+        public void setTimeSlotSize(long j) {
+            this.mTimeSlotSize = j;
+        }
+
+        public final void updateNumOfEventsThreshold() {
+            int i = DeviceConfig.getInt("activity_manager", this.mKeyNumOfEventsThreshold, this.mDefaultNumOfEventsThreshold);
+            if (i != this.mNumOfEventsThreshold) {
+                this.mNumOfEventsThreshold = i;
+                BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker = (BaseAppStateTimeSlotEventsTracker) this.mTracker;
+                baseAppStateTimeSlotEventsTracker.getClass();
+                long elapsedRealtime = SystemClock.elapsedRealtime();
+                synchronized (baseAppStateTimeSlotEventsTracker.mLock) {
+                    try {
+                        SparseArray sparseArray = baseAppStateTimeSlotEventsTracker.mPkgEvents.mMap;
+                        for (int size = sparseArray.size() - 1; size >= 0; size--) {
+                            ArrayMap arrayMap = (ArrayMap) sparseArray.valueAt(size);
+                            for (int size2 = arrayMap.size() - 1; size2 >= 0; size2--) {
+                                SimpleAppStateTimeslotEvents simpleAppStateTimeslotEvents = (SimpleAppStateTimeslotEvents) arrayMap.valueAt(size2);
+                                int totalEventsSince = simpleAppStateTimeslotEvents.getTotalEventsSince(simpleAppStateTimeslotEvents.getEarliest(0L), elapsedRealtime);
+                                if (totalEventsSince >= i) {
+                                    baseAppStateTimeSlotEventsTracker.mTmpPkgs.put(simpleAppStateTimeslotEvents, Integer.valueOf(totalEventsSince));
+                                }
+                            }
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+                for (int size3 = baseAppStateTimeSlotEventsTracker.mTmpPkgs.size() - 1; size3 >= 0; size3--) {
+                    SimpleAppStateTimeslotEvents simpleAppStateTimeslotEvents2 = (SimpleAppStateTimeslotEvents) baseAppStateTimeSlotEventsTracker.mTmpPkgs.keyAt(size3);
+                    BaseAppStateTimeSlotEventsPolicy baseAppStateTimeSlotEventsPolicy = (BaseAppStateTimeSlotEventsPolicy) baseAppStateTimeSlotEventsTracker.mInjector.mAppStatePolicy;
+                    String str = simpleAppStateTimeslotEvents2.mPackageName;
+                    int i2 = simpleAppStateTimeslotEvents2.mUid;
+                    ((Integer) baseAppStateTimeSlotEventsTracker.mTmpPkgs.valueAt(size3)).getClass();
+                    baseAppStateTimeSlotEventsPolicy.onExcessiveEvents(i2, str, elapsedRealtime);
+                }
+                baseAppStateTimeSlotEventsTracker.mTmpPkgs.clear();
+            }
         }
     }
 
-    /* loaded from: classes.dex */
-    public class SimpleAppStateTimeslotEvents extends BaseAppStateTimeSlotEvents {
-        @Override // com.android.server.am.BaseAppStateEvents
-        public String formatEventTypeLabel(int i) {
-            return "";
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class H extends Handler {
+        public final BaseAppStateTimeSlotEventsTracker mTracker;
+
+        public H(BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker) {
+            super(baseAppStateTimeSlotEventsTracker.mBgHandler.getLooper());
+            this.mTracker = baseAppStateTimeSlotEventsTracker;
         }
 
-        public SimpleAppStateTimeslotEvents(int i, String str, long j, String str2, BaseAppStateEvents.MaxTrackingDurationConfig maxTrackingDurationConfig) {
-            super(i, str, 1, j, str2, maxTrackingDurationConfig);
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            boolean contains;
+            int backgroundRestrictionExemptionReason;
+            boolean z;
+            if (message.what != 0) {
+                return;
+            }
+            BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker = this.mTracker;
+            String str = (String) message.obj;
+            int i = message.arg1;
+            BaseAppStateTimeSlotEventsPolicy baseAppStateTimeSlotEventsPolicy = (BaseAppStateTimeSlotEventsPolicy) baseAppStateTimeSlotEventsTracker.mInjector.mAppStatePolicy;
+            BaseAppStateTimeSlotEventsTracker baseAppStateTimeSlotEventsTracker2 = (BaseAppStateTimeSlotEventsTracker) baseAppStateTimeSlotEventsPolicy.mTracker;
+            synchronized (baseAppStateTimeSlotEventsTracker2.mLock) {
+                contains = baseAppStateTimeSlotEventsTracker2.mTopUids.contains(Integer.valueOf(i));
+            }
+            if (contains) {
+                backgroundRestrictionExemptionReason = 12;
+            } else if (((BaseAppStateTimeSlotEventsTracker) baseAppStateTimeSlotEventsPolicy.mTracker).mAppRestrictionController.hasForegroundServices(i, str)) {
+                backgroundRestrictionExemptionReason = 14;
+            } else {
+                backgroundRestrictionExemptionReason = baseAppStateTimeSlotEventsPolicy.mTracker.mAppRestrictionController.getBackgroundRestrictionExemptionReason(i);
+                if (backgroundRestrictionExemptionReason == -1) {
+                    backgroundRestrictionExemptionReason = -1;
+                }
+            }
+            if (backgroundRestrictionExemptionReason != -1) {
+                return;
+            }
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            synchronized (baseAppStateTimeSlotEventsTracker.mLock) {
+                try {
+                    SimpleAppStateTimeslotEvents simpleAppStateTimeslotEvents = (SimpleAppStateTimeslotEvents) baseAppStateTimeSlotEventsTracker.mPkgEvents.get(i, str);
+                    if (simpleAppStateTimeslotEvents == null) {
+                        simpleAppStateTimeslotEvents = (SimpleAppStateTimeslotEvents) baseAppStateTimeSlotEventsTracker.createAppStateEvents(i, str);
+                        baseAppStateTimeSlotEventsTracker.mPkgEvents.put(str, i, simpleAppStateTimeslotEvents);
+                    }
+                    simpleAppStateTimeslotEvents.addEvent(elapsedRealtime);
+                    z = simpleAppStateTimeslotEvents.getTotalEventsSince(simpleAppStateTimeslotEvents.getEarliest(0L), elapsedRealtime) >= ((BaseAppStateTimeSlotEventsPolicy) baseAppStateTimeSlotEventsTracker.mInjector.mAppStatePolicy).mNumOfEventsThreshold;
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            if (z) {
+                ((BaseAppStateTimeSlotEventsPolicy) baseAppStateTimeSlotEventsTracker.mInjector.mAppStatePolicy).onExcessiveEvents(i, str, elapsedRealtime);
+            }
         }
+    }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SimpleAppStateTimeslotEvents extends BaseAppStateTimeSlotEvents {
         @Override // com.android.server.am.BaseAppStateEvents
-        public String formatEventSummary(long j, int i) {
+        public final String formatEventSummary(int i, long j) {
             LinkedList linkedList = this.mEvents[0];
             if (linkedList == null || linkedList.size() == 0) {
                 return "(none)";
             }
-            return "total=" + getTotalEvents(j, 0) + ", latest=" + getTotalEventsSince(this.mCurSlotStartTime[0], j, 0) + "(slot=" + TimeUtils.formatTime(this.mCurSlotStartTime[0], j) + ")";
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(getTotalEventsSince(getEarliest(0L), j), "total=", ", latest=");
+            long[] jArr = this.mCurSlotStartTime;
+            m.append(getTotalEventsSince(jArr[0], j));
+            m.append("(slot=");
+            return AudioOffloadInfo$$ExternalSyntheticOutline0.m(m, TimeUtils.formatTime(jArr[0], j), ")");
         }
+
+        @Override // com.android.server.am.BaseAppStateEvents
+        public final String formatEventTypeLabel(int i) {
+            return "";
+        }
+    }
+
+    public BaseAppStateTimeSlotEventsTracker(Context context, AppRestrictionController appRestrictionController) {
+        super(context, appRestrictionController);
+        this.mTmpPkgs = new ArrayMap();
+        this.mHandler = new H(this);
+    }
+
+    @Override // com.android.server.am.BaseAppStateTracker
+    public final void onUserInteractionStarted(String str, int i) {
+        BaseAppStateTimeSlotEventsPolicy baseAppStateTimeSlotEventsPolicy = (BaseAppStateTimeSlotEventsPolicy) this.mInjector.mAppStatePolicy;
+        synchronized (baseAppStateTimeSlotEventsPolicy.mLock) {
+            baseAppStateTimeSlotEventsPolicy.mExcessiveEventPkgs.remove(str, i);
+        }
+        ((BaseAppStateTimeSlotEventsTracker) baseAppStateTimeSlotEventsPolicy.mTracker).mAppRestrictionController.refreshAppRestrictionLevelForUid(i, FrameworkStatsLog.APP_STANDBY_BUCKET_CHANGED__MAIN_REASON__MAIN_USAGE, 3, true);
     }
 }

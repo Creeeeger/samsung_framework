@@ -1,7 +1,9 @@
 package com.android.server.am;
 
 import android.content.pm.ApplicationInfo;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class BackupRecord {
     public ProcessRecord app;
@@ -18,23 +20,22 @@ public final class BackupRecord {
         this.backupDestination = i3;
     }
 
-    public String toString() {
+    public final String toString() {
         String str = this.stringName;
         if (str != null) {
             return str;
         }
-        StringBuilder sb = new StringBuilder(128);
-        sb.append("BackupRecord{");
-        sb.append(Integer.toHexString(System.identityHashCode(this)));
-        sb.append(' ');
-        sb.append(this.appInfo.packageName);
-        sb.append(' ');
-        sb.append(this.appInfo.name);
-        sb.append(' ');
-        sb.append(this.appInfo.backupAgentName);
-        sb.append('}');
-        String sb2 = sb.toString();
-        this.stringName = sb2;
-        return sb2;
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(128, "BackupRecord{");
+        m.append(Integer.toHexString(System.identityHashCode(this)));
+        m.append(' ');
+        m.append(this.appInfo.packageName);
+        m.append(' ');
+        m.append(this.appInfo.name);
+        m.append(' ');
+        m.append(this.appInfo.backupAgentName);
+        m.append('}');
+        String sb = m.toString();
+        this.stringName = sb;
+        return sb;
     }
 }

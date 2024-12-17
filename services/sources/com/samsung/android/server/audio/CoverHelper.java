@@ -1,11 +1,10 @@
 package com.samsung.android.server.audio;
 
-import android.content.Context;
 import com.samsung.android.cover.CoverManager;
-import com.samsung.android.cover.CoverState;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class CoverHelper {
+public final class CoverHelper {
     public static CoverHelper sInstance;
     public CoverManager mCoverManager;
     public boolean mIsCoverSafetyVolume;
@@ -13,29 +12,15 @@ public class CoverHelper {
     public static synchronized CoverHelper getInstance() {
         CoverHelper coverHelper;
         synchronized (CoverHelper.class) {
-            if (sInstance == null) {
-                sInstance = new CoverHelper();
+            try {
+                if (sInstance == null) {
+                    sInstance = new CoverHelper();
+                }
+                coverHelper = sInstance;
+            } catch (Throwable th) {
+                throw th;
             }
-            coverHelper = sInstance;
         }
         return coverHelper;
-    }
-
-    public void init(Context context) {
-        this.mCoverManager = new CoverManager(context);
-    }
-
-    public boolean isCoverOpen() {
-        CoverState coverState;
-        CoverManager coverManager = this.mCoverManager;
-        return coverManager == null || (coverState = coverManager.getCoverState()) == null || coverState.getSwitchState();
-    }
-
-    public boolean isCoverSafetyVolume() {
-        return this.mIsCoverSafetyVolume;
-    }
-
-    public void setCoverSafetyVolume(boolean z) {
-        this.mIsCoverSafetyVolume = z;
     }
 }

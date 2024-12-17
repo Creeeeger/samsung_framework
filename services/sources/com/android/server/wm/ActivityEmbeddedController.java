@@ -6,8 +6,9 @@ import com.android.server.pm.UserManagerInternal;
 import com.samsung.android.server.packagefeature.PackageFeatureUserChange;
 import com.samsung.android.server.packagefeature.PackageFeatureUserChangePersister;
 
-/* loaded from: classes3.dex */
-public class ActivityEmbeddedController extends PackagesChange {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ActivityEmbeddedController extends PackagesChange {
     public final PackageFeatureUserChange mUserChange;
     public UserManagerInternal mUserManagerInternal;
 
@@ -16,7 +17,7 @@ public class ActivityEmbeddedController extends PackagesChange {
         this.mUserChange = new PackageFeatureUserChange(1024, PackageFeatureUserChangePersister.EMBED_ACTIVITY_DIRECTORY, "EmbedActivityPackageSetting");
     }
 
-    public int findTargetUserId(int i) {
+    public final int findTargetUserId(int i) {
         if (this.mUserManagerInternal == null) {
             this.mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
         }
@@ -24,15 +25,11 @@ public class ActivityEmbeddedController extends PackagesChange {
         return (userInfo == null || !(userInfo.isProfile() || userInfo.isDualAppProfile())) ? i : this.mUserManagerInternal.getProfileParentId(userInfo.id);
     }
 
-    public int getEnabled(String str, int i) {
+    public final int getEnabled(int i, String str) {
         Integer num = (Integer) this.mUserChange.getValue(findTargetUserId(i), str);
         if (num == null) {
             return 0;
         }
         return num.intValue();
-    }
-
-    public void setEnabled(String str, int i, int i2) {
-        this.mUserChange.putValue(findTargetUserId(i2), str, Integer.valueOf(i));
     }
 }

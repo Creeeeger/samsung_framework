@@ -3,78 +3,130 @@ package com.android.server.autofill;
 import android.os.Bundle;
 import android.os.RemoteCallback;
 import android.os.ShellCommand;
-import android.os.UserHandle;
 import android.service.autofill.AutofillFieldClassificationService;
+import android.util.Slog;
+import android.view.autofill.AutofillValue;
 import com.android.internal.os.IResultReceiver;
+import com.android.server.accounts.AccountManagerServiceShellCommand$$ExternalSyntheticOutline0;
+import com.android.server.am.ActiveServices$$ExternalSyntheticOutline0;
+import com.android.server.infra.FrameworkResourcesServiceNameResolver;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AutofillManagerServiceShellCommand extends ShellCommand {
     public final AutofillManagerService mService;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.autofill.AutofillManagerServiceShellCommand$1, reason: invalid class name */
+    public final class AnonymousClass1 extends IResultReceiver.Stub {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ CountDownLatch val$latch;
+        public final /* synthetic */ PrintWriter val$pw;
+
+        public /* synthetic */ AnonymousClass1(PrintWriter printWriter, CountDownLatch countDownLatch, int i) {
+            this.$r8$classId = i;
+            this.val$pw = printWriter;
+            this.val$latch = countDownLatch;
+        }
+
+        public final void send(int i, Bundle bundle) {
+            switch (this.$r8$classId) {
+                case 0:
+                    AccountManagerServiceShellCommand$$ExternalSyntheticOutline0.m(this.val$pw, "resultCode=", i);
+                    if (i == 0 && bundle != null) {
+                        this.val$pw.println("value=" + bundle.getInt(KnoxCustomManagerService.SPCM_KEY_RESULT));
+                    }
+                    this.val$latch.countDown();
+                    break;
+                default:
+                    Iterator<String> it = bundle.getStringArrayList("sessions").iterator();
+                    while (it.hasNext()) {
+                        this.val$pw.println(it.next());
+                    }
+                    this.val$latch.countDown();
+                    break;
+            }
+        }
+    }
 
     public AutofillManagerServiceShellCommand(AutofillManagerService autofillManagerService) {
         this.mService = autofillManagerService;
     }
 
-    public int onCommand(String str) {
-        if (str == null) {
-            return handleDefaultCommands(str);
-        }
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case 102230:
-                if (str.equals("get")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case 113762:
-                if (str.equals("set")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 3322014:
-                if (str.equals("list")) {
-                    c = 2;
-                    break;
-                }
-                break;
-            case 108404047:
-                if (str.equals("reset")) {
-                    c = 3;
-                    break;
-                }
-                break;
-            case 1557372922:
-                if (str.equals("destroy")) {
-                    c = 4;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return requestGet(outPrintWriter);
-            case 1:
-                return requestSet(outPrintWriter);
-            case 2:
-                return requestList(outPrintWriter);
-            case 3:
-                return requestReset();
-            case 4:
-                return requestDestroy(outPrintWriter);
-            default:
-                return handleDefaultCommands(str);
+    public static int waitForLatch(PrintWriter printWriter, CountDownLatch countDownLatch) {
+        try {
+            if (countDownLatch.await(5L, TimeUnit.SECONDS)) {
+                return 0;
+            }
+            printWriter.println("Timed out after 5 seconds");
+            return -1;
+        } catch (InterruptedException unused) {
+            printWriter.println("System call interrupted");
+            Thread.currentThread().interrupt();
+            return -1;
         }
     }
 
-    public void onHelp() {
+    public final void getLogLevel(PrintWriter printWriter) {
+        int i;
+        AutofillManagerService autofillManagerService = this.mService;
+        autofillManagerService.enforceCallingPermissionForManagement();
+        synchronized (autofillManagerService.mLock) {
+            try {
+                i = Helper.sVerbose ? 4 : Helper.sDebug ? 2 : 0;
+            } finally {
+            }
+        }
+        if (i == 0) {
+            printWriter.println("off");
+            return;
+        }
+        if (i == 2) {
+            printWriter.println("debug");
+        } else if (i != 4) {
+            ActiveServices$$ExternalSyntheticOutline0.m(i, printWriter, "unknow (", ")");
+        } else {
+            printWriter.println("verbose");
+        }
+    }
+
+    public final int getNextIntArgRequired() {
+        return Integer.parseInt(getNextArgRequired());
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:164:0x042f, code lost:
+    
+        if (r0.equals("default") == false) goto L181;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:186:0x049b, code lost:
+    
+        if (r0.equals("debug") == false) goto L200;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:197:0x01ba, code lost:
+    
+        if (r11.equals("max_visible_datasets") == false) goto L92;
+     */
+    /* JADX WARN: Type inference failed for: r0v54, types: [com.android.server.autofill.AutofillManagerServiceShellCommand$2] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int onCommand(java.lang.String r11) {
+        /*
+            Method dump skipped, instructions count: 1374
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.autofill.AutofillManagerServiceShellCommand.onCommand(java.lang.String):int");
+    }
+
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         try {
             outPrintWriter.println("AutoFill Service (autofill) commands:");
@@ -140,6 +192,9 @@ public final class AutofillManagerServiceShellCommand extends ShellCommand {
             outPrintWriter.println("  reset");
             outPrintWriter.println("    Resets all pending sessions and cached service connections.");
             outPrintWriter.println("");
+            outPrintWriter.println("  flags");
+            outPrintWriter.println("    Prints out all autofill related flags.");
+            outPrintWriter.println("");
             outPrintWriter.close();
         } catch (Throwable th) {
             if (outPrintWriter != null) {
@@ -154,10 +209,17 @@ public final class AutofillManagerServiceShellCommand extends ShellCommand {
     }
 
     /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    public final int requestGet(PrintWriter printWriter) {
+    public final int requestGet(final PrintWriter printWriter) {
         char c;
+        String str;
+        boolean isPccClassificationEnabled;
+        boolean z;
+        boolean z2;
+        int i;
+        int i2;
         String nextArgRequired = getNextArgRequired();
-        nextArgRequired.hashCode();
+        nextArgRequired.getClass();
+        int i3 = 0;
         switch (nextArgRequired.hashCode()) {
             case -2124387184:
                 if (nextArgRequired.equals("fc_score")) {
@@ -228,482 +290,113 @@ public final class AutofillManagerServiceShellCommand extends ShellCommand {
         }
         switch (c) {
             case 0:
-                return getFieldClassificationScore(printWriter);
+                String nextArgRequired2 = getNextArgRequired();
+                if ("--algorithm".equals(nextArgRequired2)) {
+                    str = getNextArgRequired();
+                    nextArgRequired2 = getNextArgRequired();
+                } else {
+                    str = null;
+                }
+                String nextArgRequired3 = getNextArgRequired();
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                AutofillManagerService autofillManagerService = this.mService;
+                RemoteCallback remoteCallback = new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: com.android.server.autofill.AutofillManagerServiceShellCommand$$ExternalSyntheticLambda0
+                    public final void onResult(Bundle bundle) {
+                        PrintWriter printWriter2 = printWriter;
+                        CountDownLatch countDownLatch2 = countDownLatch;
+                        AutofillFieldClassificationService.Scores scores = (AutofillFieldClassificationService.Scores) bundle.getParcelable("scores", AutofillFieldClassificationService.Scores.class);
+                        if (scores == null) {
+                            printWriter2.println("no score");
+                        } else {
+                            printWriter2.println(scores.scores[0][0]);
+                        }
+                        countDownLatch2.countDown();
+                    }
+                });
+                autofillManagerService.enforceCallingPermissionForManagement();
+                new FieldClassificationStrategy(autofillManagerService.getContext(), -2).calculateScores(remoteCallback, Arrays.asList(AutofillValue.forText(nextArgRequired2)), new String[]{nextArgRequired3}, new String[]{null}, str, null, null, null);
+                return waitForLatch(printWriter, countDownLatch);
             case 1:
-                return getLogLevel(printWriter);
+                getLogLevel(printWriter);
+                return 0;
             case 2:
-                return getFullScreenMode(printWriter);
+                this.mService.enforceCallingPermissionForManagement();
+                Boolean bool = Helper.sFullScreenMode;
+                if (bool == null) {
+                    printWriter.println("default");
+                } else if (bool.booleanValue()) {
+                    printWriter.println("true");
+                } else {
+                    printWriter.println("false");
+                }
+                return 0;
             case 3:
-                return isFieldDetectionServiceEnabled(printWriter);
+                int nextIntArgRequired = getNextIntArgRequired();
+                AutofillManagerService autofillManagerService2 = this.mService;
+                autofillManagerService2.enforceCallingPermissionForManagement();
+                synchronized (autofillManagerService2.mLock) {
+                    try {
+                        AutofillManagerServiceImpl autofillManagerServiceImpl = (AutofillManagerServiceImpl) autofillManagerService2.getServiceForUserLocked(nextIntArgRequired);
+                        isPccClassificationEnabled = autofillManagerServiceImpl != null ? autofillManagerServiceImpl.isPccClassificationEnabled() : false;
+                    } finally {
+                    }
+                }
+                printWriter.println(isPccClassificationEnabled);
+                return 0;
             case 4:
-                return getSavedPasswordCount(printWriter);
+                int nextIntArgRequired2 = getNextIntArgRequired();
+                CountDownLatch countDownLatch2 = new CountDownLatch(1);
+                AnonymousClass1 anonymousClass1 = new AnonymousClass1(printWriter, countDownLatch2, i3);
+                AutofillManagerService autofillManagerService3 = this.mService;
+                autofillManagerService3.enforceCallingPermissionForManagement();
+                synchronized (autofillManagerService3.mLock) {
+                    AutofillManagerServiceImpl autofillManagerServiceImpl2 = (AutofillManagerServiceImpl) autofillManagerService3.peekServiceForUserLocked(nextIntArgRequired2);
+                    if (autofillManagerServiceImpl2 != null) {
+                        autofillManagerServiceImpl2.requestSavedPasswordCount(anonymousClass1);
+                        waitForLatch(printWriter, countDownLatch2);
+                    } else if (Helper.sVerbose) {
+                        Slog.v("AutofillManagerService", "requestSavedPasswordCount(): no service for " + nextIntArgRequired2);
+                    }
+                }
+                return 0;
             case 5:
-                return getBindInstantService(printWriter);
+                AutofillManagerService autofillManagerService4 = this.mService;
+                autofillManagerService4.enforceCallingPermissionForManagement();
+                synchronized (autofillManagerService4.mLock) {
+                    z = autofillManagerService4.mAllowInstantService;
+                }
+                if (z) {
+                    printWriter.println("true");
+                } else {
+                    printWriter.println("false");
+                }
+                return 0;
             case 6:
-                return getDefaultAugmentedServiceEnabled(printWriter);
+                int nextIntArgRequired3 = getNextIntArgRequired();
+                AutofillManagerService autofillManagerService5 = this.mService;
+                autofillManagerService5.enforceCallingPermissionForManagement();
+                FrameworkResourcesServiceNameResolver frameworkResourcesServiceNameResolver = autofillManagerService5.mAugmentedAutofillResolver;
+                synchronized (frameworkResourcesServiceNameResolver.mLock) {
+                    z2 = !frameworkResourcesServiceNameResolver.mDefaultServicesDisabled.get(nextIntArgRequired3);
+                }
+                printWriter.println(z2);
+                return 0;
             case 7:
-                return getMaxVisibileDatasets(printWriter);
+                this.mService.getClass();
+                synchronized (AutofillManagerService.class) {
+                    i = AutofillManagerService.sVisibleDatasetsMaxCount;
+                }
+                printWriter.println(i);
+                return 0;
             case '\b':
-                return getMaxPartitions(printWriter);
+                synchronized (this.mService.mLock) {
+                    i2 = AutofillManagerService.sPartitionMaxCount;
+                }
+                printWriter.println(i2);
+                return 0;
             default:
-                printWriter.println("Invalid set: " + nextArgRequired);
+                printWriter.println("Invalid set: ".concat(nextArgRequired));
                 return -1;
         }
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    public final int requestSet(PrintWriter printWriter) {
-        char c;
-        String nextArgRequired = getNextArgRequired();
-        nextArgRequired.hashCode();
-        switch (nextArgRequired.hashCode()) {
-            case -2006901047:
-                if (nextArgRequired.equals("log_level")) {
-                    c = 0;
-                    break;
-                }
-                c = 65535;
-                break;
-            case -1298810906:
-                if (nextArgRequired.equals("full_screen_mode")) {
-                    c = 1;
-                    break;
-                }
-                c = 65535;
-                break;
-            case -571600804:
-                if (nextArgRequired.equals("temporary-augmented-service")) {
-                    c = 2;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 809633044:
-                if (nextArgRequired.equals("bind-instant-service-allowed")) {
-                    c = 3;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 852405952:
-                if (nextArgRequired.equals("default-augmented-service-enabled")) {
-                    c = 4;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 1393110435:
-                if (nextArgRequired.equals("max_visible_datasets")) {
-                    c = 5;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 1772188804:
-                if (nextArgRequired.equals("max_partitions")) {
-                    c = 6;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 2027866865:
-                if (nextArgRequired.equals("temporary-detection-service")) {
-                    c = 7;
-                    break;
-                }
-                c = 65535;
-                break;
-            default:
-                c = 65535;
-                break;
-        }
-        switch (c) {
-            case 0:
-                return setLogLevel(printWriter);
-            case 1:
-                return setFullScreenMode(printWriter);
-            case 2:
-                return setTemporaryAugmentedService(printWriter);
-            case 3:
-                return setBindInstantService(printWriter);
-            case 4:
-                return setDefaultAugmentedServiceEnabled(printWriter);
-            case 5:
-                return setMaxVisibileDatasets();
-            case 6:
-                return setMaxPartitions();
-            case 7:
-                return setTemporaryDetectionService(printWriter);
-            default:
-                printWriter.println("Invalid set: " + nextArgRequired);
-                return -1;
-        }
-    }
-
-    public final int getLogLevel(PrintWriter printWriter) {
-        int logLevel = this.mService.getLogLevel();
-        if (logLevel == 0) {
-            printWriter.println("off");
-            return 0;
-        }
-        if (logLevel == 2) {
-            printWriter.println("debug");
-            return 0;
-        }
-        if (logLevel == 4) {
-            printWriter.println("verbose");
-            return 0;
-        }
-        printWriter.println("unknow (" + logLevel + ")");
-        return 0;
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    public final int setLogLevel(PrintWriter printWriter) {
-        boolean z;
-        String nextArgRequired = getNextArgRequired();
-        String lowerCase = nextArgRequired.toLowerCase();
-        lowerCase.hashCode();
-        switch (lowerCase.hashCode()) {
-            case 109935:
-                if (lowerCase.equals("off")) {
-                    z = false;
-                    break;
-                }
-                z = -1;
-                break;
-            case 95458899:
-                if (lowerCase.equals("debug")) {
-                    z = true;
-                    break;
-                }
-                z = -1;
-                break;
-            case 351107458:
-                if (lowerCase.equals("verbose")) {
-                    z = 2;
-                    break;
-                }
-                z = -1;
-                break;
-            default:
-                z = -1;
-                break;
-        }
-        switch (z) {
-            case false:
-                this.mService.setLogLevel(0);
-                return 0;
-            case true:
-                this.mService.setLogLevel(2);
-                return 0;
-            case true:
-                this.mService.setLogLevel(4);
-                return 0;
-            default:
-                printWriter.println("Invalid level: " + nextArgRequired);
-                return -1;
-        }
-    }
-
-    public final int getMaxPartitions(PrintWriter printWriter) {
-        printWriter.println(this.mService.getMaxPartitions());
-        return 0;
-    }
-
-    public final int setMaxPartitions() {
-        this.mService.setMaxPartitions(Integer.parseInt(getNextArgRequired()));
-        return 0;
-    }
-
-    public final int getMaxVisibileDatasets(PrintWriter printWriter) {
-        printWriter.println(this.mService.getMaxVisibleDatasets());
-        return 0;
-    }
-
-    public final int setMaxVisibileDatasets() {
-        this.mService.setMaxVisibleDatasets(Integer.parseInt(getNextArgRequired()));
-        return 0;
-    }
-
-    public final int getFieldClassificationScore(final PrintWriter printWriter) {
-        String str;
-        String str2;
-        String nextArgRequired = getNextArgRequired();
-        if ("--algorithm".equals(nextArgRequired)) {
-            str2 = getNextArgRequired();
-            str = getNextArgRequired();
-        } else {
-            str = nextArgRequired;
-            str2 = null;
-        }
-        String nextArgRequired2 = getNextArgRequired();
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        this.mService.calculateScore(str2, str, nextArgRequired2, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: com.android.server.autofill.AutofillManagerServiceShellCommand$$ExternalSyntheticLambda1
-            public final void onResult(Bundle bundle) {
-                AutofillManagerServiceShellCommand.lambda$getFieldClassificationScore$0(printWriter, countDownLatch, bundle);
-            }
-        }));
-        return waitForLatch(printWriter, countDownLatch);
-    }
-
-    public static /* synthetic */ void lambda$getFieldClassificationScore$0(PrintWriter printWriter, CountDownLatch countDownLatch, Bundle bundle) {
-        AutofillFieldClassificationService.Scores scores = (AutofillFieldClassificationService.Scores) bundle.getParcelable("scores", AutofillFieldClassificationService.Scores.class);
-        if (scores == null) {
-            printWriter.println("no score");
-        } else {
-            printWriter.println(scores.scores[0][0]);
-        }
-        countDownLatch.countDown();
-    }
-
-    public final int getFullScreenMode(PrintWriter printWriter) {
-        Boolean fullScreenMode = this.mService.getFullScreenMode();
-        if (fullScreenMode == null) {
-            printWriter.println("default");
-            return 0;
-        }
-        if (fullScreenMode.booleanValue()) {
-            printWriter.println("true");
-            return 0;
-        }
-        printWriter.println("false");
-        return 0;
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    public final int setFullScreenMode(PrintWriter printWriter) {
-        char c;
-        String nextArgRequired = getNextArgRequired();
-        String lowerCase = nextArgRequired.toLowerCase();
-        lowerCase.hashCode();
-        switch (lowerCase.hashCode()) {
-            case 3569038:
-                if (lowerCase.equals("true")) {
-                    c = 0;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 97196323:
-                if (lowerCase.equals("false")) {
-                    c = 1;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 1544803905:
-                if (lowerCase.equals("default")) {
-                    c = 2;
-                    break;
-                }
-                c = 65535;
-                break;
-            default:
-                c = 65535;
-                break;
-        }
-        switch (c) {
-            case 0:
-                this.mService.setFullScreenMode(Boolean.TRUE);
-                return 0;
-            case 1:
-                this.mService.setFullScreenMode(Boolean.FALSE);
-                return 0;
-            case 2:
-                this.mService.setFullScreenMode(null);
-                return 0;
-            default:
-                printWriter.println("Invalid mode: " + nextArgRequired);
-                return -1;
-        }
-    }
-
-    public final int getBindInstantService(PrintWriter printWriter) {
-        if (this.mService.getAllowInstantService()) {
-            printWriter.println("true");
-            return 0;
-        }
-        printWriter.println("false");
-        return 0;
-    }
-
-    public final int setBindInstantService(PrintWriter printWriter) {
-        String nextArgRequired = getNextArgRequired();
-        String lowerCase = nextArgRequired.toLowerCase();
-        lowerCase.hashCode();
-        if (lowerCase.equals("true")) {
-            this.mService.setAllowInstantService(true);
-            return 0;
-        }
-        if (lowerCase.equals("false")) {
-            this.mService.setAllowInstantService(false);
-            return 0;
-        }
-        printWriter.println("Invalid mode: " + nextArgRequired);
-        return -1;
-    }
-
-    public final int setTemporaryDetectionService(PrintWriter printWriter) {
-        int nextIntArgRequired = getNextIntArgRequired();
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            this.mService.resetTemporaryDetectionService(nextIntArgRequired);
-            return 0;
-        }
-        int nextIntArgRequired2 = getNextIntArgRequired();
-        if (nextIntArgRequired2 <= 0) {
-            this.mService.resetTemporaryDetectionService(nextIntArgRequired);
-            return 0;
-        }
-        this.mService.setTemporaryDetectionService(nextIntArgRequired, nextArg, nextIntArgRequired2);
-        printWriter.println("Autofill Detection Service temporarily set to " + nextArg + " for " + nextIntArgRequired2 + "ms");
-        return 0;
-    }
-
-    public final int isFieldDetectionServiceEnabled(PrintWriter printWriter) {
-        printWriter.println(this.mService.isFieldDetectionServiceEnabledForUser(getNextIntArgRequired()));
-        return 0;
-    }
-
-    public final int setTemporaryAugmentedService(PrintWriter printWriter) {
-        int nextIntArgRequired = getNextIntArgRequired();
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            this.mService.resetTemporaryAugmentedAutofillService(nextIntArgRequired);
-            return 0;
-        }
-        int nextIntArgRequired2 = getNextIntArgRequired();
-        this.mService.setTemporaryAugmentedAutofillService(nextIntArgRequired, nextArg, nextIntArgRequired2);
-        printWriter.println("AugmentedAutofillService temporarily set to " + nextArg + " for " + nextIntArgRequired2 + "ms");
-        return 0;
-    }
-
-    public final int getDefaultAugmentedServiceEnabled(PrintWriter printWriter) {
-        printWriter.println(this.mService.isDefaultAugmentedServiceEnabled(getNextIntArgRequired()));
-        return 0;
-    }
-
-    public final int setDefaultAugmentedServiceEnabled(PrintWriter printWriter) {
-        int nextIntArgRequired = getNextIntArgRequired();
-        boolean parseBoolean = Boolean.parseBoolean(getNextArgRequired());
-        if (this.mService.setDefaultAugmentedServiceEnabled(nextIntArgRequired, parseBoolean)) {
-            return 0;
-        }
-        printWriter.println("already " + parseBoolean);
-        return 0;
-    }
-
-    public final int getSavedPasswordCount(final PrintWriter printWriter) {
-        int nextIntArgRequired = getNextIntArgRequired();
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        if (!this.mService.requestSavedPasswordCount(nextIntArgRequired, new IResultReceiver.Stub() { // from class: com.android.server.autofill.AutofillManagerServiceShellCommand.1
-            public void send(int i, Bundle bundle) {
-                printWriter.println("resultCode=" + i);
-                if (i == 0 && bundle != null) {
-                    printWriter.println("value=" + bundle.getInt(KnoxCustomManagerService.SPCM_KEY_RESULT));
-                }
-                countDownLatch.countDown();
-            }
-        })) {
-            return 0;
-        }
-        waitForLatch(printWriter, countDownLatch);
-        return 0;
-    }
-
-    public final int requestDestroy(PrintWriter printWriter) {
-        if (!isNextArgSessions(printWriter)) {
-            return -1;
-        }
-        final int userIdFromArgsOrAllUsers = getUserIdFromArgsOrAllUsers();
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final IResultReceiver.Stub stub = new IResultReceiver.Stub() { // from class: com.android.server.autofill.AutofillManagerServiceShellCommand.2
-            public void send(int i, Bundle bundle) {
-                countDownLatch.countDown();
-            }
-        };
-        return requestSessionCommon(printWriter, countDownLatch, new Runnable() { // from class: com.android.server.autofill.AutofillManagerServiceShellCommand$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                AutofillManagerServiceShellCommand.this.lambda$requestDestroy$1(userIdFromArgsOrAllUsers, stub);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$requestDestroy$1(int i, IResultReceiver iResultReceiver) {
-        this.mService.removeAllSessions(i, iResultReceiver);
-    }
-
-    public final int requestList(final PrintWriter printWriter) {
-        if (!isNextArgSessions(printWriter)) {
-            return -1;
-        }
-        final int userIdFromArgsOrAllUsers = getUserIdFromArgsOrAllUsers();
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final IResultReceiver.Stub stub = new IResultReceiver.Stub() { // from class: com.android.server.autofill.AutofillManagerServiceShellCommand.3
-            public void send(int i, Bundle bundle) {
-                Iterator<String> it = bundle.getStringArrayList("sessions").iterator();
-                while (it.hasNext()) {
-                    printWriter.println(it.next());
-                }
-                countDownLatch.countDown();
-            }
-        };
-        return requestSessionCommon(printWriter, countDownLatch, new Runnable() { // from class: com.android.server.autofill.AutofillManagerServiceShellCommand$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                AutofillManagerServiceShellCommand.this.lambda$requestList$2(userIdFromArgsOrAllUsers, stub);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$requestList$2(int i, IResultReceiver iResultReceiver) {
-        this.mService.listSessions(i, iResultReceiver);
-    }
-
-    public final boolean isNextArgSessions(PrintWriter printWriter) {
-        if (getNextArgRequired().equals("sessions")) {
-            return true;
-        }
-        printWriter.println("Error: invalid list type");
-        return false;
-    }
-
-    public final int requestSessionCommon(PrintWriter printWriter, CountDownLatch countDownLatch, Runnable runnable) {
-        runnable.run();
-        return waitForLatch(printWriter, countDownLatch);
-    }
-
-    public final int waitForLatch(PrintWriter printWriter, CountDownLatch countDownLatch) {
-        try {
-            if (countDownLatch.await(5L, TimeUnit.SECONDS)) {
-                return 0;
-            }
-            printWriter.println("Timed out after 5 seconds");
-            return -1;
-        } catch (InterruptedException unused) {
-            printWriter.println("System call interrupted");
-            Thread.currentThread().interrupt();
-            return -1;
-        }
-    }
-
-    public final int requestReset() {
-        this.mService.reset();
-        return 0;
-    }
-
-    public final int getUserIdFromArgsOrAllUsers() {
-        if ("--user".equals(getNextArg())) {
-            return UserHandle.parseUserArg(getNextArgRequired());
-        }
-        return -1;
-    }
-
-    public final int getNextIntArgRequired() {
-        return Integer.parseInt(getNextArgRequired());
     }
 }

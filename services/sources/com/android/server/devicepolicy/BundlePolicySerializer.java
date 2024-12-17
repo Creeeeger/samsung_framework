@@ -1,8 +1,7 @@
 package com.android.server.devicepolicy;
 
 import android.app.admin.BundlePolicyValue;
-import android.app.admin.PackagePolicyKey;
-import android.app.admin.PolicyKey;
+import android.app.admin.PolicyValue;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -14,35 +13,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class BundlePolicySerializer extends PolicySerializer {
-    @Override // com.android.server.devicepolicy.PolicySerializer
-    public void saveToXml(PolicyKey policyKey, TypedXmlSerializer typedXmlSerializer, Bundle bundle) {
-        Objects.requireNonNull(bundle);
-        Objects.requireNonNull(policyKey);
-        if (!(policyKey instanceof PackagePolicyKey)) {
-            throw new IllegalArgumentException("policyKey is not of type PackagePolicyKey");
-        }
-        writeBundle(bundle, typedXmlSerializer);
-    }
-
-    @Override // com.android.server.devicepolicy.PolicySerializer
-    /* renamed from: readFromXml, reason: merged with bridge method [inline-methods] */
-    public BundlePolicyValue mo4926readFromXml(TypedXmlPullParser typedXmlPullParser) {
-        Bundle bundle = new Bundle();
-        ArrayList arrayList = new ArrayList();
-        try {
-            int depth = typedXmlPullParser.getDepth();
-            while (XmlUtils.nextElementWithin(typedXmlPullParser, depth)) {
-                readBundle(bundle, arrayList, typedXmlPullParser);
-            }
-            return new BundlePolicyValue(bundle);
-        } catch (IOException | XmlPullParserException e) {
-            Log.e("BundlePolicySerializer", "Error parsing Bundle policy.", e);
-            return null;
-        }
-    }
-
     public static void readBundle(Bundle bundle, ArrayList arrayList, TypedXmlPullParser typedXmlPullParser) {
         if (typedXmlPullParser.getEventType() == 2 && typedXmlPullParser.getName().equals("entry")) {
             String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "key");
@@ -56,7 +29,7 @@ public final class BundlePolicySerializer extends PolicySerializer {
                         break;
                     }
                     if (next == 2 && typedXmlPullParser.getName().equals("value")) {
-                        arrayList.add(typedXmlPullParser.nextText().trim());
+                        arrayList.add(typedXmlPullParser.nextText());
                         attributeInt--;
                     }
                 }
@@ -66,36 +39,39 @@ public final class BundlePolicySerializer extends PolicySerializer {
                 return;
             }
             if ("B".equals(attributeValue2)) {
-                bundle.putBundle(attributeValue, readBundleEntry(typedXmlPullParser, arrayList));
-                return;
-            }
-            if ("BA".equals(attributeValue2)) {
+                Bundle bundle2 = new Bundle();
                 int depth = typedXmlPullParser.getDepth();
-                ArrayList arrayList2 = new ArrayList();
                 while (XmlUtils.nextElementWithin(typedXmlPullParser, depth)) {
-                    arrayList2.add(readBundleEntry(typedXmlPullParser, arrayList));
+                    readBundle(bundle2, arrayList, typedXmlPullParser);
                 }
-                bundle.putParcelableArray(attributeValue, (Parcelable[]) arrayList2.toArray(new Bundle[arrayList2.size()]));
+                bundle.putBundle(attributeValue, bundle2);
                 return;
             }
-            String trim = typedXmlPullParser.nextText().trim();
-            if ("b".equals(attributeValue2)) {
-                bundle.putBoolean(attributeValue, Boolean.parseBoolean(trim));
-            } else if ("i".equals(attributeValue2)) {
-                bundle.putInt(attributeValue, Integer.parseInt(trim));
-            } else {
-                bundle.putString(attributeValue, trim);
+            if (!"BA".equals(attributeValue2)) {
+                String nextText = typedXmlPullParser.nextText();
+                if ("b".equals(attributeValue2)) {
+                    bundle.putBoolean(attributeValue, Boolean.parseBoolean(nextText));
+                    return;
+                } else if ("i".equals(attributeValue2)) {
+                    bundle.putInt(attributeValue, Integer.parseInt(nextText));
+                    return;
+                } else {
+                    bundle.putString(attributeValue, nextText);
+                    return;
+                }
             }
+            int depth2 = typedXmlPullParser.getDepth();
+            ArrayList arrayList2 = new ArrayList();
+            while (XmlUtils.nextElementWithin(typedXmlPullParser, depth2)) {
+                Bundle bundle3 = new Bundle();
+                int depth3 = typedXmlPullParser.getDepth();
+                while (XmlUtils.nextElementWithin(typedXmlPullParser, depth3)) {
+                    readBundle(bundle3, arrayList, typedXmlPullParser);
+                }
+                arrayList2.add(bundle3);
+            }
+            bundle.putParcelableArray(attributeValue, (Parcelable[]) arrayList2.toArray(new Bundle[arrayList2.size()]));
         }
-    }
-
-    public static Bundle readBundleEntry(TypedXmlPullParser typedXmlPullParser, ArrayList arrayList) {
-        Bundle bundle = new Bundle();
-        int depth = typedXmlPullParser.getDepth();
-        while (XmlUtils.nextElementWithin(typedXmlPullParser, depth)) {
-            readBundle(bundle, arrayList, typedXmlPullParser);
-        }
-        return bundle;
     }
 
     public static void writeBundle(Bundle bundle, TypedXmlSerializer typedXmlSerializer) {
@@ -151,5 +127,28 @@ public final class BundlePolicySerializer extends PolicySerializer {
             }
             typedXmlSerializer.endTag((String) null, "entry");
         }
+    }
+
+    @Override // com.android.server.devicepolicy.PolicySerializer
+    public final PolicyValue readFromXml(TypedXmlPullParser typedXmlPullParser) {
+        Bundle bundle = new Bundle();
+        ArrayList arrayList = new ArrayList();
+        try {
+            int depth = typedXmlPullParser.getDepth();
+            while (XmlUtils.nextElementWithin(typedXmlPullParser, depth)) {
+                readBundle(bundle, arrayList, typedXmlPullParser);
+            }
+            return new BundlePolicyValue(bundle);
+        } catch (IOException | XmlPullParserException e) {
+            Log.e("BundlePolicySerializer", "Error parsing Bundle policy.", e);
+            return null;
+        }
+    }
+
+    @Override // com.android.server.devicepolicy.PolicySerializer
+    public final void saveToXml(Object obj, TypedXmlSerializer typedXmlSerializer) {
+        Bundle bundle = (Bundle) obj;
+        Objects.requireNonNull(bundle);
+        writeBundle(bundle, typedXmlSerializer);
     }
 }

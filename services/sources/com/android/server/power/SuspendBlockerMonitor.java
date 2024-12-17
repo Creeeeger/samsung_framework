@@ -1,71 +1,55 @@
 package com.android.server.power;
 
 import com.android.internal.util.RingBuffer;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
-public class SuspendBlockerMonitor {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SuspendBlockerMonitor {
     public String mDetail;
     public int mEvents;
     public static final RingBuffer mSuspendBlockerMonitorCallbacks = new RingBuffer(CallbackHistory.class, 200);
     public static final SuspendBlockerMonitor GLOBAL_INSTANCE = new SuspendBlockerMonitor();
 
-    public void addNewCallbackEvent(String str, int i) {
-        mSuspendBlockerMonitorCallbacks.append(new CallbackHistory(PowerManagerUtil.getCurrentTimeAsString(), str, i));
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CallbackHistory {
+        public String mCmd;
+        public String mDetail;
+        public String mTimeStr;
 
-    public static SuspendBlockerMonitor getGlobalInstance() {
-        return GLOBAL_INSTANCE;
-    }
-
-    public void setEvent(int i) {
-        this.mEvents = i | this.mEvents;
-    }
-
-    public void setEventWithDetail(int i, String str) {
-        this.mEvents |= i;
-        this.mDetail = str;
-        if (i != 256 || str.contains("unfinished") || str.contains("on state")) {
-            return;
+        public final String toString() {
+            return String.format("[%s] [%25s] [%s]", this.mTimeStr, this.mDetail, this.mCmd);
         }
-        addNewCallbackEvent(str, 1);
     }
 
-    public void clearEventWithDetail(int i, String str) {
-        this.mEvents &= -3841;
-        if (i != 256 || str.contains("unfinished") || str.contains("on state")) {
-            return;
+    public static void addNewCallbackEvent(int i, String str) {
+        RingBuffer ringBuffer = mSuspendBlockerMonitorCallbacks;
+        String currentTimeAsString = PowerManagerUtil.getCurrentTimeAsString();
+        CallbackHistory callbackHistory = new CallbackHistory();
+        callbackHistory.mTimeStr = currentTimeAsString;
+        callbackHistory.mDetail = str;
+        if (i == 1) {
+            callbackHistory.mCmd = "ACQ";
+        } else if (i == 2) {
+            callbackHistory.mCmd = "REL";
         }
-        addNewCallbackEvent(str, 2);
+        ringBuffer.append(callbackHistory);
     }
 
-    public void clearGlobalEvent() {
-        this.mEvents &= -16;
-    }
-
-    public void clearGroupEvent() {
-        this.mEvents &= -241;
-    }
-
-    public boolean hasGlobalEvent() {
-        return (this.mEvents & 15) != 0;
-    }
-
-    public boolean hasGroupEvent() {
-        return (this.mEvents & 240) != 0;
-    }
-
-    public void dump(PrintWriter printWriter) {
+    public final void dump(PrintWriter printWriter) {
         printWriter.println();
         printWriter.println("SuspendBlockerMonitor:");
         printWriter.println(toString());
         printWriter.println();
     }
 
-    public String toString() {
+    public final void setEvent(int i) {
+        this.mEvents = i | this.mEvents;
+    }
+
+    public final String toString() {
         StringBuilder sb = new StringBuilder();
-        if (hasGlobalEvent()) {
+        if ((this.mEvents & 15) != 0) {
             sb.append("    [Global]\n");
             sb.append("      mEvents = 0x" + Integer.toHexString(this.mEvents));
             sb.append(" ( ");
@@ -83,8 +67,8 @@ public class SuspendBlockerMonitor {
             }
             sb.append(")");
         }
-        if (hasGroupEvent()) {
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+        if ((this.mEvents & 240) != 0) {
+            sb.append("\n");
             sb.append("      mEvents = 0x" + Integer.toHexString(this.mEvents));
             sb.append(" ( ");
             if ((this.mEvents & 16) != 0) {
@@ -106,42 +90,16 @@ public class SuspendBlockerMonitor {
             sb.append(this.mDetail);
         }
         if (this == GLOBAL_INSTANCE) {
-            StringBuilder sb2 = new StringBuilder();
-            sb2.append("\n    CallBack History = ");
+            StringBuilder sb2 = new StringBuilder("\n    CallBack History = ");
             RingBuffer ringBuffer = mSuspendBlockerMonitorCallbacks;
             sb2.append(ringBuffer.size());
-            sb2.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+            sb2.append("\n");
             sb.append(sb2.toString());
-            CallbackHistory[] callbackHistoryArr = (CallbackHistory[]) ringBuffer.toArray();
-            for (CallbackHistory callbackHistory : callbackHistoryArr) {
+            for (CallbackHistory callbackHistory : (CallbackHistory[]) ringBuffer.toArray()) {
                 sb.append(callbackHistory.toString());
-                sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+                sb.append("\n");
             }
         }
         return sb.toString();
-    }
-
-    /* loaded from: classes3.dex */
-    public class CallbackHistory {
-        public String mCmd;
-        public String mDetail;
-        public String mTimeStr;
-
-        public CallbackHistory(String str, String str2, int i) {
-            this.mTimeStr = str;
-            this.mDetail = str2;
-            if (i == 1) {
-                this.mCmd = "ACQ";
-            } else {
-                if (i != 2) {
-                    return;
-                }
-                this.mCmd = "REL";
-            }
-        }
-
-        public String toString() {
-            return String.format("[%s] [%25s] [%s]", this.mTimeStr, this.mDetail, this.mCmd);
-        }
     }
 }

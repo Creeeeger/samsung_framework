@@ -2,7 +2,9 @@ package com.android.server.accessibility.gestures;
 
 import android.accessibilityservice.AccessibilityGestureEvent;
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.Region;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Slog;
@@ -12,24 +14,31 @@ import android.view.accessibility.A11yLogger;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import com.android.internal.accessibility.util.AccessibilityUtils;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
 import com.android.server.accessibility.AccessibilityManagerService;
+import com.android.server.accessibility.AccessibilityWindowManager;
 import com.android.server.accessibility.BaseEventStreamTransformation;
 import com.android.server.accessibility.EventStreamTransformation;
+import com.android.server.accessibility.Flags;
 import com.android.server.accessibility.gestures.GestureManifold;
 import com.android.server.accessibility.gestures.TouchState;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TouchExplorer extends BaseEventStreamTransformation implements GestureManifold.Listener {
+public final class TouchExplorer extends BaseEventStreamTransformation implements GestureManifold.Listener {
     public static final boolean DEBUG = Log.isLoggable("TouchExplorer", 3);
-    public static boolean SEC_DEBUG = false;
+    public static boolean SEC_DEBUG;
     public final AccessibilityManagerService mAms;
     public final Context mContext;
     public int mDetermineUserIntentTimeout;
     public final EventDispatcher mDispatcher;
-    public int mDisplayId;
+    public final int mDisplayId;
     public final int mDoubleTapSlop;
     public int mDraggingPointerId;
     public final float mEdgeSwipeHeightPixels;
@@ -38,20 +47,197 @@ public class TouchExplorer extends BaseEventStreamTransformation implements Gest
     public final GestureManifold mGestureDetector;
     public final Handler mHandler;
     public final TouchState.ReceivedPointerTracker mReceivedPointerTracker;
-    public final SendHoverEnterAndMoveDelayed mSendHoverEnterAndMoveDelayed;
+    public final SendHoverExitDelayed mSendHoverEnterAndMoveDelayed;
     public final SendHoverExitDelayed mSendHoverExitDelayed;
     public final SendAccessibilityEventDelayed mSendTouchExplorationEndDelayed;
     public final SendAccessibilityEventDelayed mSendTouchInteractionEndDelayed;
-    public TouchState mState;
+    public final TouchState mState;
     public Region mTouchExplorationPassthroughRegion;
     public final int mTouchSlop;
 
-    public TouchExplorer(Context context, AccessibilityManagerService accessibilityManagerService) {
-        this(context, accessibilityManagerService, null);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ExitGestureDetectionModeDelayed implements Runnable {
+        public ExitGestureDetectionModeDelayed() {
+        }
+
+        @Override // java.lang.Runnable
+        public final void run() {
+            TouchExplorer.this.mDispatcher.sendAccessibilityEvent(524288);
+            TouchExplorer touchExplorer = TouchExplorer.this;
+            MotionEvent motionEvent = touchExplorer.mState.mLastReceivedEvent;
+            if (motionEvent != null) {
+                touchExplorer.clear(33554432, motionEvent);
+            }
+        }
     }
 
-    public TouchExplorer(Context context, AccessibilityManagerService accessibilityManagerService, GestureManifold gestureManifold) {
-        this(context, accessibilityManagerService, gestureManifold, new Handler(context.getMainLooper()));
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SendAccessibilityEventDelayed implements Runnable {
+        public int mDelay;
+        public final int mEventType;
+
+        public SendAccessibilityEventDelayed(int i, int i2) {
+            this.mEventType = i;
+            this.mDelay = i2;
+        }
+
+        public final void cancel() {
+            TouchExplorer.this.mHandler.removeCallbacks(this);
+        }
+
+        public final void forceSendAndRemove() {
+            if (isPending()) {
+                run();
+                cancel();
+            }
+        }
+
+        public final boolean isPending() {
+            return TouchExplorer.this.mHandler.hasCallbacks(this);
+        }
+
+        @Override // java.lang.Runnable
+        public final void run() {
+            TouchExplorer.this.mDispatcher.sendAccessibilityEvent(this.mEventType);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SendHoverExitDelayed implements Runnable {
+        public final /* synthetic */ int $r8$classId;
+        public int mPointerIdBits;
+        public int mPolicyFlags;
+        public Object mPrototype;
+        public Object mRawEvent;
+        public final /* synthetic */ TouchExplorer this$0;
+
+        public SendHoverExitDelayed(TouchExplorer touchExplorer, int i) {
+            this.$r8$classId = i;
+            switch (i) {
+                case 1:
+                    this.this$0 = touchExplorer;
+                    this.mPrototype = new ArrayList();
+                    this.mRawEvent = new ArrayList();
+                    break;
+                default:
+                    this.this$0 = touchExplorer;
+                    break;
+            }
+        }
+
+        public void addEvent(MotionEvent motionEvent, MotionEvent motionEvent2) {
+            ((ArrayList) ((List) this.mPrototype)).add(MotionEvent.obtain(motionEvent));
+            ((ArrayList) ((List) this.mRawEvent)).add(MotionEvent.obtain(motionEvent2));
+        }
+
+        public final void cancel() {
+            switch (this.$r8$classId) {
+                case 0:
+                    if (isPending()) {
+                        this.this$0.mHandler.removeCallbacks(this);
+                        MotionEvent motionEvent = (MotionEvent) this.mPrototype;
+                        if (motionEvent != null) {
+                            motionEvent.recycle();
+                        }
+                        MotionEvent motionEvent2 = (MotionEvent) this.mRawEvent;
+                        if (motionEvent2 != null) {
+                            motionEvent2.recycle();
+                        }
+                        this.mPrototype = null;
+                        this.mRawEvent = null;
+                        this.mPointerIdBits = -1;
+                        this.mPolicyFlags = 0;
+                        break;
+                    }
+                    break;
+                default:
+                    if (isPending()) {
+                        this.this$0.mHandler.removeCallbacks(this);
+                        clear();
+                        break;
+                    }
+                    break;
+            }
+        }
+
+        public void clear() {
+            this.mPointerIdBits = -1;
+            this.mPolicyFlags = 0;
+            for (int size = ((ArrayList) ((List) this.mPrototype)).size() - 1; size >= 0; size--) {
+                ((MotionEvent) ((ArrayList) ((List) this.mPrototype)).remove(size)).recycle();
+            }
+            for (int size2 = ((ArrayList) ((List) this.mRawEvent)).size() - 1; size2 >= 0; size2--) {
+                ((MotionEvent) ((ArrayList) ((List) this.mRawEvent)).remove(size2)).recycle();
+            }
+        }
+
+        public final boolean isPending() {
+            switch (this.$r8$classId) {
+            }
+            return this.this$0.mHandler.hasCallbacks(this);
+        }
+
+        @Override // java.lang.Runnable
+        public final void run() {
+            switch (this.$r8$classId) {
+                case 0:
+                    if (TouchExplorer.DEBUG) {
+                        Slog.d("SendHoverExitDelayed", "Injecting motion event: ACTION_HOVER_EXIT");
+                    }
+                    this.this$0.mDispatcher.sendMotionEvent(10, this.mPointerIdBits, this.mPolicyFlags, (MotionEvent) this.mPrototype, (MotionEvent) this.mRawEvent);
+                    if (!this.this$0.mSendTouchExplorationEndDelayed.isPending()) {
+                        this.this$0.mSendTouchExplorationEndDelayed.cancel();
+                        SendAccessibilityEventDelayed sendAccessibilityEventDelayed = this.this$0.mSendTouchExplorationEndDelayed;
+                        TouchExplorer.this.mHandler.postDelayed(sendAccessibilityEventDelayed, sendAccessibilityEventDelayed.mDelay);
+                    }
+                    if (this.this$0.mSendTouchInteractionEndDelayed.isPending()) {
+                        this.this$0.mSendTouchInteractionEndDelayed.cancel();
+                        SendAccessibilityEventDelayed sendAccessibilityEventDelayed2 = this.this$0.mSendTouchInteractionEndDelayed;
+                        TouchExplorer.this.mHandler.postDelayed(sendAccessibilityEventDelayed2, sendAccessibilityEventDelayed2.mDelay);
+                    }
+                    MotionEvent motionEvent = (MotionEvent) this.mPrototype;
+                    if (motionEvent != null) {
+                        motionEvent.recycle();
+                    }
+                    MotionEvent motionEvent2 = (MotionEvent) this.mRawEvent;
+                    if (motionEvent2 != null) {
+                        motionEvent2.recycle();
+                    }
+                    this.mPrototype = null;
+                    this.mRawEvent = null;
+                    this.mPointerIdBits = -1;
+                    this.mPolicyFlags = 0;
+                    break;
+                default:
+                    if (Integer.bitCount(this.this$0.mReceivedPointerTracker.mReceivedPointersDown) > 1) {
+                        Slog.e("TouchExplorer", "Attempted touch exploration with " + Integer.bitCount(this.this$0.mReceivedPointerTracker.mReceivedPointersDown) + " pointers down.");
+                        break;
+                    } else if (((ArrayList) ((List) this.mPrototype)).size() != 0) {
+                        Flags.sendHoverEventsBasedOnEventStream();
+                        this.this$0.sendHoverExitAndTouchExplorationGestureEndIfNeeded(this.mPolicyFlags);
+                        this.this$0.mDispatcher.sendAccessibilityEvent(512);
+                        if (this.this$0.mGestureDetector.mSendMotionEventsEnabled) {
+                            this.this$0.dispatchGesture(new AccessibilityGestureEvent(-2, this.this$0.mState.mLastReceivedEvent.getDisplayId(), this.this$0.mGestureDetector.mEvents));
+                        }
+                        if (!((ArrayList) ((List) this.mPrototype)).isEmpty() && !((ArrayList) ((List) this.mRawEvent)).isEmpty()) {
+                            this.this$0.mDispatcher.sendMotionEvent(9, this.mPointerIdBits, this.mPolicyFlags, (MotionEvent) ((ArrayList) ((List) this.mPrototype)).get(0), (MotionEvent) ((ArrayList) ((List) this.mRawEvent)).get(0));
+                            if (TouchExplorer.DEBUG) {
+                                Slog.d("SendHoverEnterAndMoveDelayed", "Injecting motion event: ACTION_HOVER_ENTER");
+                            }
+                            int size = ((ArrayList) ((List) this.mPrototype)).size();
+                            for (int i = 1; i < size; i++) {
+                                this.this$0.mDispatcher.sendMotionEvent(7, this.mPointerIdBits, this.mPolicyFlags, (MotionEvent) ((ArrayList) ((List) this.mPrototype)).get(i), (MotionEvent) ((ArrayList) ((List) this.mRawEvent)).get(i));
+                                if (TouchExplorer.DEBUG) {
+                                    Slog.d("SendHoverEnterAndMoveDelayed", "Injecting motion event: ACTION_HOVER_MOVE");
+                                }
+                            }
+                        }
+                        clear();
+                        break;
+                    }
+                    break;
+            }
+        }
     }
 
     public TouchExplorer(Context context, AccessibilityManagerService accessibilityManagerService, GestureManifold gestureManifold, Handler handler) {
@@ -62,20 +248,21 @@ public class TouchExplorer extends BaseEventStreamTransformation implements Gest
         this.mAms = accessibilityManagerService;
         TouchState touchState = new TouchState(displayId, accessibilityManagerService);
         this.mState = touchState;
-        this.mReceivedPointerTracker = touchState.getReceivedPointerTracker();
-        this.mDispatcher = new EventDispatcher(context, accessibilityManagerService, super.getNext(), this.mState);
+        this.mReceivedPointerTracker = touchState.mReceivedPointerTracker;
+        this.mDispatcher = new EventDispatcher(context, accessibilityManagerService, this.mNext, touchState);
         this.mDetermineUserIntentTimeout = ViewConfiguration.getDoubleTapTimeout();
         this.mDoubleTapSlop = ViewConfiguration.get(context).getScaledDoubleTapSlop();
         this.mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        this.mEdgeSwipeHeightPixels = (context.getResources().getDisplayMetrics().ydpi / GestureUtils.CM_PER_INCH) * 0.25f;
+        this.mEdgeSwipeHeightPixels = (context.getResources().getDisplayMetrics().ydpi / 2.54f) * 0.25f;
         this.mHandler = handler;
         this.mExitGestureDetectionModeDelayed = new ExitGestureDetectionModeDelayed();
-        this.mSendHoverEnterAndMoveDelayed = new SendHoverEnterAndMoveDelayed();
-        this.mSendHoverExitDelayed = new SendHoverExitDelayed();
-        this.mSendTouchExplorationEndDelayed = new SendAccessibilityEventDelayed(1024, this.mDetermineUserIntentTimeout);
-        this.mSendTouchInteractionEndDelayed = new SendAccessibilityEventDelayed(2097152, this.mDetermineUserIntentTimeout);
+        this.mSendHoverEnterAndMoveDelayed = new SendHoverExitDelayed(this, 1);
+        this.mSendHoverExitDelayed = new SendHoverExitDelayed(this, 0);
+        int i = this.mDetermineUserIntentTimeout;
+        this.mSendTouchExplorationEndDelayed = new SendAccessibilityEventDelayed(1024, i);
+        this.mSendTouchInteractionEndDelayed = new SendAccessibilityEventDelayed(2097152, i);
         if (gestureManifold == null) {
-            this.mGestureDetector = new GestureManifold(context, this, this.mState, handler);
+            this.mGestureDetector = new GestureManifold(context, this, touchState);
         } else {
             this.mGestureDetector = gestureManifold;
         }
@@ -83,623 +270,87 @@ public class TouchExplorer extends BaseEventStreamTransformation implements Gest
         this.mTouchExplorationPassthroughRegion = new Region();
     }
 
-    public void setSecDebug(boolean z) {
-        SEC_DEBUG = z;
+    public static void checkForMalformedEvent(MotionEvent motionEvent) {
+        if (motionEvent.getPointerCount() < 0) {
+            throw new IllegalArgumentException("Invalid pointer count: " + motionEvent.getPointerCount());
+        }
+        for (int i = 0; i < motionEvent.getPointerCount(); i++) {
+            try {
+                motionEvent.getPointerId(i);
+                float x = motionEvent.getX(i);
+                float y = motionEvent.getY(i);
+                if (Float.isNaN(x) || Float.isNaN(y) || x < FullScreenMagnificationGestureHandler.MAX_SCALE || y < FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                    throw new IllegalArgumentException("Invalid coordinates: (" + x + ", " + y + ")");
+                }
+            } catch (Exception e) {
+                StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "Encountered exception getting details of pointer ", " / ");
+                m.append(motionEvent.getPointerCount());
+                throw new IllegalArgumentException(m.toString(), e);
+            }
+        }
     }
 
-    public void adjustDetermineUserIntentTimeoutWithDelay() {
-        int i = this.mDetermineUserIntentTimeout + 50;
-        this.mDetermineUserIntentTimeout = i;
-        this.mSendTouchExplorationEndDelayed.setDelay(i);
-        this.mSendTouchInteractionEndDelayed.setDelay(this.mDetermineUserIntentTimeout);
+    public final void clear(int i, MotionEvent motionEvent) {
+        TouchState touchState = this.mState;
+        if (!touchState.isTouchExploring()) {
+            Flags.sendHoverEventsBasedOnEventStream();
+        }
+        sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
+        this.mDraggingPointerId = -1;
+        EventDispatcher eventDispatcher = this.mDispatcher;
+        eventDispatcher.getClass();
+        int pointerIdBits = motionEvent.getPointerIdBits();
+        int pointerCount = motionEvent.getPointerCount();
+        int i2 = pointerIdBits;
+        for (int i3 = 0; i3 < pointerCount; i3++) {
+            int pointerId = motionEvent.getPointerId(i3);
+            TouchState touchState2 = eventDispatcher.mState;
+            if (touchState2.isInjectedPointerDown(pointerId)) {
+                eventDispatcher.sendMotionEvent(eventDispatcher.computeInjectionAction(6, i3), i2, i, motionEvent, touchState2.mLastReceivedEvent);
+                i2 = (~(1 << pointerId)) & i2;
+            }
+        }
+        this.mSendHoverEnterAndMoveDelayed.cancel();
+        this.mSendHoverExitDelayed.cancel();
+        ExitGestureDetectionModeDelayed exitGestureDetectionModeDelayed = this.mExitGestureDetectionModeDelayed;
+        TouchExplorer.this.mHandler.removeCallbacks(exitGestureDetectionModeDelayed);
+        this.mSendTouchExplorationEndDelayed.cancel();
+        this.mSendTouchInteractionEndDelayed.cancel();
+        this.mGestureDetector.clear();
+        eventDispatcher.mLongPressingPointerId = -1;
+        eventDispatcher.mLongPressingPointerDeltaX = 0;
+        eventDispatcher.mLongPressingPointerDeltaY = 0;
+        touchState.clear();
+        this.mAms.onTouchInteractionEnd();
     }
 
     @Override // com.android.server.accessibility.EventStreamTransformation
-    public void clearEvents(int i) {
-        if (i == 4098) {
-            clear();
+    public final void clearEvents(int i) {
+        MotionEvent motionEvent;
+        if (i == 4098 && (motionEvent = this.mState.mLastReceivedEvent) != null) {
+            clear(33554432, motionEvent);
         }
         super.clearEvents(i);
     }
 
-    @Override // com.android.server.accessibility.EventStreamTransformation
-    public void onDestroy() {
-        clear();
-    }
-
-    public final void clear() {
-        MotionEvent lastReceivedEvent = this.mState.getLastReceivedEvent();
-        if (lastReceivedEvent != null) {
-            clear(lastReceivedEvent, 33554432);
+    public final MotionEvent computeDownEventForDrag(MotionEvent motionEvent) {
+        int i;
+        if (this.mState.isTouchExploring() || (i = this.mDraggingPointerId) == -1 || motionEvent == null) {
+            return null;
         }
-    }
-
-    public final void clear(MotionEvent motionEvent, int i) {
-        if (this.mState.isTouchExploring()) {
-            sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
-        }
-        this.mDraggingPointerId = -1;
-        this.mDispatcher.sendUpForInjectedDownPointers(motionEvent, i);
-        this.mSendHoverEnterAndMoveDelayed.cancel();
-        this.mSendHoverExitDelayed.cancel();
-        this.mExitGestureDetectionModeDelayed.cancel();
-        this.mSendTouchExplorationEndDelayed.cancel();
-        this.mSendTouchInteractionEndDelayed.cancel();
-        this.mGestureDetector.clear();
-        this.mDispatcher.clear();
-        this.mState.clear();
-        this.mAms.onTouchInteractionEnd();
-    }
-
-    @Override // com.android.server.accessibility.EventStreamTransformation
-    public void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (this.mAms.getTraceManager().isA11yTracingEnabledForTypes(12288L)) {
-            this.mAms.getTraceManager().logTrace("TouchExplorer.onMotionEvent", 12288L, "event=" + motionEvent + ";rawEvent=" + motionEvent2 + ";policyFlags=" + i);
-        }
-        if (motionEvent.isFromSource(8194) || !motionEvent.isFromSource(4098)) {
-            super.onMotionEvent(motionEvent, motionEvent2, i);
-            return;
-        }
-        try {
-            checkForMalformedEvent(motionEvent);
-            checkForMalformedEvent(motionEvent2);
-            if (DEBUG || SEC_DEBUG) {
-                Slog.d("TouchExplorer", "Received event: " + motionEvent + ", policyFlags=0x" + Integer.toHexString(i));
-                Slog.d("TouchExplorer", this.mState.toString());
-            }
-            this.mState.onReceivedMotionEvent(motionEvent, motionEvent2, i);
-            if (shouldPerformGestureDetection(motionEvent) && this.mGestureDetector.onMotionEvent(motionEvent, motionEvent2, i)) {
-                return;
-            }
-            if (motionEvent.getActionMasked() == 3) {
-                clear(motionEvent, i);
-                return;
-            }
-            if (this.mState.isClear()) {
-                handleMotionEventStateClear(motionEvent, motionEvent2, i);
-                return;
-            }
-            if (this.mState.isTouchInteracting()) {
-                handleMotionEventStateTouchInteracting(motionEvent, motionEvent2, i);
-                return;
-            }
-            if (this.mState.isTouchExploring()) {
-                handleMotionEventStateTouchExploring(motionEvent, motionEvent2, i);
-                return;
-            }
-            if (this.mState.isDragging()) {
-                handleMotionEventStateDragging(motionEvent, motionEvent2, i);
-                return;
-            }
-            if (this.mState.isDelegating()) {
-                handleMotionEventStateDelegating(motionEvent, motionEvent2, i);
-                return;
-            }
-            if (this.mState.isGestureDetecting()) {
-                this.mSendTouchInteractionEndDelayed.cancel();
-                if (this.mState.isServiceDetectingGestures()) {
-                    this.mAms.sendMotionEventToListeningServices(motionEvent2);
-                    return;
-                }
-                return;
-            }
-            Slog.e("TouchExplorer", "Illegal state: " + this.mState);
-            clear(motionEvent, i);
-        } catch (IllegalArgumentException e) {
-            Slog.e("TouchExplorer", "Ignoring malformed event: " + motionEvent.toString(), e);
-        }
-    }
-
-    @Override // com.android.server.accessibility.EventStreamTransformation
-    public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        if (this.mAms.getTraceManager().isA11yTracingEnabledForTypes(12288L)) {
-            this.mAms.getTraceManager().logTrace("TouchExplorer.onAccessibilityEvent", 12288L, "event=" + accessibilityEvent);
-        }
-        int eventType = accessibilityEvent.getEventType();
-        if (eventType == 256) {
-            sendsPendingA11yEventsIfNeeded();
-        }
-        if (eventType == 32768) {
-            for (GestureMatcher gestureMatcher : this.mGestureDetector.getGestures()) {
-                if (gestureMatcher.getGestureId() == 17) {
-                    Slog.d("TouchExplorer", "clear GESTURE_DOUBLE_TAP");
-                    gestureMatcher.clear();
-                }
-            }
-        }
-        this.mState.onReceivedAccessibilityEvent(accessibilityEvent);
-        super.onAccessibilityEvent(accessibilityEvent);
-    }
-
-    public final void sendsPendingA11yEventsIfNeeded() {
-        if (this.mSendHoverExitDelayed.isPending()) {
-            return;
-        }
-        if (this.mSendTouchExplorationEndDelayed.isPending()) {
-            this.mSendTouchExplorationEndDelayed.cancel();
-            this.mDispatcher.sendAccessibilityEvent(1024);
-        }
-        if (this.mSendTouchInteractionEndDelayed.isPending()) {
-            this.mSendTouchInteractionEndDelayed.cancel();
-            this.mDispatcher.sendAccessibilityEvent(2097152);
-        }
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureManifold.Listener
-    public void onDoubleTapAndHold(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (this.mAms.getTraceManager().isA11yTracingEnabledForTypes(12288L)) {
-            this.mAms.getTraceManager().logTrace("TouchExplorer.onDoubleTapAndHold", 12288L, "event=" + motionEvent + ";rawEvent=" + motionEvent2 + ";policyFlags=" + i);
-        }
-        if (this.mDispatcher.longPressWithTouchEvents(motionEvent, i)) {
-            sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
-            if (isSendMotionEventsEnabled()) {
-                dispatchGesture(new AccessibilityGestureEvent(18, this.mDisplayId, this.mGestureDetector.getMotionEvents()));
-            }
-            this.mState.startDelegating();
-        }
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureManifold.Listener
-    public boolean onDoubleTap(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (this.mAms.getTraceManager().isA11yTracingEnabledForTypes(12288L)) {
-            this.mAms.getTraceManager().logTrace("TouchExplorer.onDoubleTap", 12288L, "event=" + motionEvent + ";rawEvent=" + motionEvent2 + ";policyFlags=" + i);
-        }
-        this.mAms.onTouchInteractionEnd();
-        this.mSendHoverEnterAndMoveDelayed.cancel();
-        this.mSendHoverExitDelayed.cancel();
-        if (isSendMotionEventsEnabled()) {
-            dispatchGesture(new AccessibilityGestureEvent(17, this.mDisplayId, this.mGestureDetector.getMotionEvents()));
-        }
-        if (this.mSendTouchExplorationEndDelayed.isPending()) {
-            this.mSendTouchExplorationEndDelayed.forceSendAndRemove();
-        }
-        this.mDispatcher.sendAccessibilityEvent(2097152);
-        this.mSendTouchInteractionEndDelayed.cancel();
-        if (!this.mAms.performActionOnAccessibilityFocusedItem(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK)) {
-            Slog.e("TouchExplorer", "ACTION_CLICK failed. Dispatching motion events to simulate click.");
-            if (motionEvent != null && motionEvent2 != null) {
-                this.mDispatcher.clickWithTouchEvents(motionEvent, motionEvent2, i);
-            }
-        }
-        return true;
-    }
-
-    public void onDoubleTap() {
-        onDoubleTap(this.mState.getLastReceivedEvent(), this.mState.getLastReceivedRawEvent(), this.mState.getLastReceivedPolicyFlags());
-    }
-
-    public void onDoubleTapAndHold() {
-        onDoubleTapAndHold(this.mState.getLastReceivedEvent(), this.mState.getLastReceivedRawEvent(), this.mState.getLastReceivedPolicyFlags());
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureManifold.Listener
-    public boolean onGestureStarted() {
-        if (this.mAms.getTraceManager().isA11yTracingEnabledForTypes(12288L)) {
-            this.mAms.getTraceManager().logTrace("TouchExplorer.onGestureStarted", 12288L);
-        }
-        if (DEBUG) {
-            Slog.d("TouchExplorer", "onGestureStarted()");
-        }
-        this.mSendHoverEnterAndMoveDelayed.cancel();
-        this.mSendHoverExitDelayed.cancel();
-        this.mExitGestureDetectionModeDelayed.post();
-        this.mDispatcher.sendAccessibilityEvent(262144);
-        return false;
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureManifold.Listener
-    public boolean onGestureCompleted(AccessibilityGestureEvent accessibilityGestureEvent) {
-        if (this.mAms.getTraceManager().isA11yTracingEnabledForTypes(12288L)) {
-            this.mAms.getTraceManager().logTrace("TouchExplorer.onGestureCompleted", 12288L, "event=" + accessibilityGestureEvent);
-        }
-        if (DEBUG) {
-            Slog.d("TouchExplorer", "onGestureCompleted() : " + accessibilityGestureEvent.getGestureId());
-        }
-        if (accessibilityGestureEvent.getGestureId() == 1000) {
-            if (AccessibilityUtils.isSetupWizard(this.mContext)) {
-                Slog.d("TouchExplorer", "stop talkback by GESTURE_TO_STOP_TALKBACK");
-                A11yLogger.insertLog(this.mContext, "A11Y9006");
-                this.mAms.setScreenReaderEnabled(false);
-            }
-            return true;
-        }
-        endGestureDetection(true);
-        this.mSendTouchInteractionEndDelayed.cancel();
-        dispatchGesture(accessibilityGestureEvent);
-        return true;
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureManifold.Listener
-    public boolean onGestureCancelled(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (this.mAms.getTraceManager().isA11yTracingEnabledForTypes(12288L)) {
-            this.mAms.getTraceManager().logTrace("TouchExplorer.onGestureCancelled", 12288L, "event=" + motionEvent + ";rawEvent=" + motionEvent2 + ";policyFlags=" + i);
-        }
-        if (this.mState.isGestureDetecting()) {
-            endGestureDetection(motionEvent.getActionMasked() == 1);
-            return true;
-        }
-        if (this.mState.isTouchExploring() && motionEvent.getActionMasked() == 2) {
-            int primaryPointerId = 1 << this.mReceivedPointerTracker.getPrimaryPointerId();
-            this.mSendHoverEnterAndMoveDelayed.addEvent(motionEvent, this.mState.getLastReceivedEvent());
-            this.mSendHoverEnterAndMoveDelayed.forceSendAndRemove();
-            this.mSendHoverExitDelayed.cancel();
-            this.mDispatcher.sendMotionEvent(motionEvent, 7, motionEvent, primaryPointerId, i);
-            return true;
-        }
-        if (isSendMotionEventsEnabled()) {
-            dispatchGesture(new AccessibilityGestureEvent(0, this.mDisplayId, this.mGestureDetector.getMotionEvents()));
-        }
-        return false;
-    }
-
-    public final void handleMotionEventStateClear(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (motionEvent.getActionMasked() != 0) {
-            return;
-        }
-        handleActionDown(motionEvent, motionEvent2, i);
-    }
-
-    public final void handleActionDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        this.mAms.onTouchInteractionStart();
-        this.mSendHoverEnterAndMoveDelayed.cancel();
-        this.mSendHoverEnterAndMoveDelayed.clear();
-        this.mSendHoverExitDelayed.cancel();
-        if (this.mState.isTouchExploring()) {
-            sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
-        }
-        if (this.mState.isClear()) {
-            if (!this.mSendHoverEnterAndMoveDelayed.isPending()) {
-                int primaryPointerId = 1 << this.mReceivedPointerTracker.getPrimaryPointerId();
-                if (this.mState.isServiceDetectingGestures()) {
-                    this.mSendHoverEnterAndMoveDelayed.setPointerIdBits(primaryPointerId);
-                    this.mSendHoverEnterAndMoveDelayed.setPolicyFlags(i);
-                    this.mSendHoverEnterAndMoveDelayed.addEvent(motionEvent, motionEvent2);
-                } else {
-                    this.mSendHoverEnterAndMoveDelayed.post(motionEvent, motionEvent2, primaryPointerId, i);
-                }
-            } else {
-                this.mSendHoverEnterAndMoveDelayed.addEvent(motionEvent, motionEvent2);
-            }
-            this.mSendTouchExplorationEndDelayed.forceSendAndRemove();
-            this.mSendTouchInteractionEndDelayed.forceSendAndRemove();
-            this.mDispatcher.sendAccessibilityEvent(1048576);
-            if (this.mTouchExplorationPassthroughRegion.contains((int) motionEvent.getX(), (int) motionEvent.getY())) {
-                this.mState.startDelegating();
-                MotionEvent obtainNoHistory = MotionEvent.obtainNoHistory(motionEvent);
-                this.mDispatcher.sendMotionEvent(obtainNoHistory, obtainNoHistory.getAction(), motionEvent2, -1, i);
-                this.mSendHoverEnterAndMoveDelayed.cancel();
-            } else if (this.mGestureDetectionPassthroughRegion.contains((int) motionEvent.getX(), (int) motionEvent.getY())) {
-                this.mSendHoverEnterAndMoveDelayed.forceSendAndRemove();
-            }
-        } else {
-            this.mSendTouchInteractionEndDelayed.cancel();
-        }
-        if (this.mState.isServiceDetectingGestures()) {
-            this.mAms.sendMotionEventToListeningServices(motionEvent2);
-        }
-    }
-
-    public final void handleMotionEventStateTouchInteracting(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        int actionMasked = motionEvent.getActionMasked();
-        if (actionMasked == 0) {
-            this.mSendTouchInteractionEndDelayed.cancel();
-            handleActionDown(motionEvent, motionEvent2, i);
-            return;
-        }
-        if (actionMasked == 1) {
-            handleActionUp(motionEvent, motionEvent2, i);
-            return;
-        }
-        if (actionMasked == 2) {
-            handleActionMoveStateTouchInteracting(motionEvent, motionEvent2, i);
-            return;
-        }
-        if (actionMasked == 5) {
-            handleActionPointerDown(motionEvent, motionEvent2, i);
-        } else if (actionMasked == 6 && this.mState.isServiceDetectingGestures()) {
-            this.mAms.sendMotionEventToListeningServices(motionEvent2);
-        }
-    }
-
-    public final void handleMotionEventStateTouchExploring(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        int actionMasked = motionEvent.getActionMasked();
-        if (actionMasked == 1) {
-            handleActionUp(motionEvent, motionEvent2, i);
-        } else if (actionMasked == 2) {
-            handleActionMoveStateTouchExploring(motionEvent, motionEvent2, i);
-        } else {
-            if (actionMasked != 5) {
-                return;
-            }
-            handleActionPointerDown(motionEvent, motionEvent2, i);
-        }
-    }
-
-    public final void handleActionPointerDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (this.mSendHoverEnterAndMoveDelayed.isPending()) {
-            this.mSendHoverEnterAndMoveDelayed.cancel();
-            this.mSendHoverExitDelayed.cancel();
-        } else {
-            sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
-        }
-        if (this.mState.isServiceDetectingGestures()) {
-            this.mAms.sendMotionEventToListeningServices(motionEvent2);
-        }
-    }
-
-    public final void handleActionMoveStateTouchInteracting(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        int findPointerIndex = motionEvent.findPointerIndex(this.mReceivedPointerTracker.getPrimaryPointerId());
-        if (this.mState.isServiceDetectingGestures()) {
-            this.mAms.sendMotionEventToListeningServices(motionEvent2);
-            this.mSendHoverEnterAndMoveDelayed.addEvent(motionEvent, motionEvent2);
-            return;
-        }
-        int pointerCount = motionEvent.getPointerCount();
-        if (pointerCount == 1) {
-            if (this.mSendHoverEnterAndMoveDelayed.isPending()) {
-                this.mSendHoverEnterAndMoveDelayed.addEvent(motionEvent, motionEvent2);
-                return;
-            }
-            return;
-        }
-        if (pointerCount == 2) {
-            if (!this.mGestureDetector.isMultiFingerGesturesEnabled() || this.mGestureDetector.isTwoFingerPassthroughEnabled()) {
-                this.mSendHoverEnterAndMoveDelayed.cancel();
-                this.mSendHoverExitDelayed.cancel();
-                if (this.mGestureDetector.isMultiFingerGesturesEnabled() && this.mGestureDetector.isTwoFingerPassthroughEnabled()) {
-                    if (findPointerIndex < 0) {
-                        return;
-                    }
-                    for (int i2 = 0; i2 < motionEvent.getPointerCount(); i2++) {
-                        int pointerId = motionEvent.getPointerId(i2);
-                        if (!this.mReceivedPointerTracker.isReceivedPointerDown(pointerId)) {
-                            Slog.e("TouchExplorer", "Invalid pointer id: " + pointerId);
-                        }
-                        if (Math.hypot(this.mReceivedPointerTracker.getReceivedPointerDownX(pointerId) - motionEvent2.getX(i2), this.mReceivedPointerTracker.getReceivedPointerDownY(pointerId) - motionEvent2.getY(i2)) < this.mTouchSlop * 2) {
-                            return;
-                        }
-                    }
-                }
-                MotionEvent obtainNoHistory = MotionEvent.obtainNoHistory(motionEvent);
-                if (isDraggingGesture(obtainNoHistory)) {
-                    if (isSendMotionEventsEnabled()) {
-                        dispatchGesture(new AccessibilityGestureEvent(-1, this.mDisplayId, this.mGestureDetector.getMotionEvents()));
-                    }
-                    computeDraggingPointerIdIfNeeded(obtainNoHistory);
-                    int i3 = 1 << this.mDraggingPointerId;
-                    obtainNoHistory.setEdgeFlags(this.mReceivedPointerTracker.getLastReceivedDownEdgeFlags());
-                    MotionEvent computeDownEventForDrag = computeDownEventForDrag(obtainNoHistory);
-                    if (computeDownEventForDrag != null) {
-                        this.mDispatcher.sendMotionEvent(computeDownEventForDrag, 0, motionEvent2, i3, i);
-                        this.mDispatcher.sendMotionEvent(obtainNoHistory, 2, motionEvent2, i3, i);
-                    } else {
-                        this.mDispatcher.sendMotionEvent(obtainNoHistory, 0, motionEvent2, i3, i);
-                    }
-                    this.mState.startDragging();
-                    return;
-                }
-                if (isSendMotionEventsEnabled()) {
-                    dispatchGesture(new AccessibilityGestureEvent(-1, this.mDisplayId, this.mGestureDetector.getMotionEvents()));
-                }
-                this.mState.startDelegating();
-                this.mDispatcher.sendDownForAllNotInjectedPointers(obtainNoHistory, i);
-                return;
-            }
-            return;
-        }
-        if (this.mGestureDetector.isMultiFingerGesturesEnabled()) {
-            if (this.mGestureDetector.isTwoFingerPassthroughEnabled() && motionEvent.getPointerCount() == 3 && allPointersDownOnBottomEdge(motionEvent)) {
-                if (DEBUG) {
-                    Slog.d("TouchExplorer", "Three-finger edge swipe detected.");
-                }
-                if (isSendMotionEventsEnabled()) {
-                    dispatchGesture(new AccessibilityGestureEvent(-1, this.mDisplayId, this.mGestureDetector.getMotionEvents()));
-                }
-                this.mState.startDelegating();
-                this.mGestureDetector.clear();
-                if (this.mState.isTouchExploring()) {
-                    this.mDispatcher.sendDownForAllNotInjectedPointers(motionEvent, i);
-                    return;
-                } else {
-                    this.mDispatcher.sendDownForAllNotInjectedPointersWithOriginalDown(motionEvent, i);
-                    return;
-                }
-            }
-            return;
-        }
-        if (isSendMotionEventsEnabled()) {
-            dispatchGesture(new AccessibilityGestureEvent(-1, this.mDisplayId, this.mGestureDetector.getMotionEvents()));
-        }
-        this.mState.startDelegating();
-        this.mDispatcher.sendDownForAllNotInjectedPointers(MotionEvent.obtainNoHistory(motionEvent), i);
-    }
-
-    public final void handleActionUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (this.mState.isServiceDetectingGestures() && this.mState.isTouchInteracting()) {
-            this.mAms.sendMotionEventToListeningServices(motionEvent2);
-        }
-        this.mAms.onTouchInteractionEnd();
-        int pointerId = 1 << motionEvent.getPointerId(motionEvent.getActionIndex());
-        if (this.mSendHoverEnterAndMoveDelayed.isPending()) {
-            this.mSendHoverExitDelayed.post(motionEvent, motionEvent2, pointerId, i);
-        } else {
-            sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
-        }
-        if (this.mSendTouchInteractionEndDelayed.isPending()) {
-            return;
-        }
-        this.mSendTouchInteractionEndDelayed.post();
-    }
-
-    public final void handleActionMoveStateTouchExploring(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        int primaryPointerId = this.mReceivedPointerTracker.getPrimaryPointerId();
-        int i2 = 1 << primaryPointerId;
-        int findPointerIndex = motionEvent.findPointerIndex(primaryPointerId);
-        int pointerCount = motionEvent.getPointerCount();
-        if (pointerCount == 1) {
-            sendTouchExplorationGestureStartAndHoverEnterIfNeeded(i);
-            this.mDispatcher.sendMotionEvent(motionEvent, 7, motionEvent2, i2, i);
-            return;
-        }
-        if (pointerCount == 2) {
-            if (!this.mGestureDetector.isMultiFingerGesturesEnabled() || this.mGestureDetector.isTwoFingerPassthroughEnabled()) {
-                if (this.mSendHoverEnterAndMoveDelayed.isPending()) {
-                    this.mSendHoverEnterAndMoveDelayed.cancel();
-                    this.mSendHoverExitDelayed.cancel();
-                }
-                if (Math.hypot(this.mReceivedPointerTracker.getReceivedPointerDownX(primaryPointerId) - motionEvent2.getX(findPointerIndex), this.mReceivedPointerTracker.getReceivedPointerDownY(primaryPointerId) - motionEvent2.getY(findPointerIndex)) > this.mDoubleTapSlop) {
-                    handleActionMoveStateTouchInteracting(motionEvent, motionEvent2, i);
-                    return;
-                } else {
-                    sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
-                    return;
-                }
-            }
-            return;
-        }
-        if (this.mGestureDetector.isMultiFingerGesturesEnabled()) {
-            return;
-        }
-        if (this.mSendHoverEnterAndMoveDelayed.isPending()) {
-            this.mSendHoverEnterAndMoveDelayed.cancel();
-            this.mSendHoverExitDelayed.cancel();
-        } else {
-            sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
-        }
-        handleActionMoveStateTouchInteracting(motionEvent, motionEvent2, i);
-    }
-
-    public final void handleMotionEventStateDragging(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        int i2;
-        if (!this.mGestureDetector.isMultiFingerGesturesEnabled() || this.mGestureDetector.isTwoFingerPassthroughEnabled()) {
-            if (motionEvent.findPointerIndex(this.mDraggingPointerId) == -1) {
-                Slog.e("TouchExplorer", "mDraggingPointerId doesn't match any pointers on current event. mDraggingPointerId: " + Integer.toString(this.mDraggingPointerId) + ", Event: " + motionEvent);
-                this.mDraggingPointerId = -1;
-                i2 = 0;
-            } else {
-                i2 = 1 << this.mDraggingPointerId;
-            }
-            int i3 = i2;
-            int actionMasked = motionEvent.getActionMasked();
-            if (actionMasked == 0) {
-                Slog.e("TouchExplorer", "Dragging state can be reached only if two pointers are already down");
-                clear(motionEvent, i);
-                return;
-            }
-            if (actionMasked == 1) {
-                if (motionEvent.getPointerId(GestureUtils.getActionIndex(motionEvent)) == this.mDraggingPointerId) {
-                    this.mDraggingPointerId = -1;
-                    this.mDispatcher.sendMotionEvent(motionEvent, 1, motionEvent2, i3, i);
-                }
-                this.mAms.onTouchInteractionEnd();
-                this.mDispatcher.sendAccessibilityEvent(2097152);
-                return;
-            }
-            if (actionMasked != 2) {
-                if (actionMasked != 5) {
-                    if (actionMasked != 6) {
-                        return;
-                    }
-                    this.mDraggingPointerId = -1;
-                    this.mDispatcher.sendMotionEvent(motionEvent, 1, motionEvent2, i3, i);
-                    return;
-                }
-                if (this.mState.isServiceDetectingGestures()) {
-                    this.mAms.sendMotionEventToListeningServices(motionEvent2);
-                    return;
-                }
-                this.mState.startDelegating();
-                if (this.mDraggingPointerId != -1) {
-                    this.mDispatcher.sendMotionEvent(motionEvent, 1, motionEvent2, i3, i);
-                }
-                this.mDispatcher.sendDownForAllNotInjectedPointers(motionEvent, i);
-                return;
-            }
-            if (this.mDraggingPointerId == -1) {
-                return;
-            }
-            if (this.mState.isServiceDetectingGestures()) {
-                this.mAms.sendMotionEventToListeningServices(motionEvent2);
-                computeDraggingPointerIdIfNeeded(motionEvent);
-                this.mDispatcher.sendMotionEvent(motionEvent, 2, motionEvent2, i3, i);
-                return;
-            }
-            int pointerCount = motionEvent.getPointerCount();
-            if (pointerCount != 1) {
-                if (pointerCount == 2) {
-                    if (isDraggingGesture(motionEvent)) {
-                        computeDraggingPointerIdIfNeeded(motionEvent);
-                        this.mDispatcher.sendMotionEvent(motionEvent, 2, motionEvent2, i3, i);
-                        return;
-                    }
-                    this.mState.startDelegating();
-                    this.mDraggingPointerId = -1;
-                    MotionEvent obtainNoHistory = MotionEvent.obtainNoHistory(motionEvent);
-                    this.mDispatcher.sendMotionEvent(obtainNoHistory, 1, motionEvent2, i3, i);
-                    this.mDispatcher.sendDownForAllNotInjectedPointers(obtainNoHistory, i);
-                    return;
-                }
-                if (this.mState.isServiceDetectingGestures()) {
-                    this.mAms.sendMotionEventToListeningServices(motionEvent2);
-                    return;
-                }
-                this.mState.startDelegating();
-                this.mDraggingPointerId = -1;
-                MotionEvent obtainNoHistory2 = MotionEvent.obtainNoHistory(motionEvent);
-                this.mDispatcher.sendMotionEvent(obtainNoHistory2, 1, motionEvent2, i3, i);
-                this.mDispatcher.sendDownForAllNotInjectedPointers(obtainNoHistory2, i);
-            }
-        }
-    }
-
-    public final void handleMotionEventStateDelegating(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        int actionMasked = motionEvent.getActionMasked();
-        if (actionMasked == 0) {
-            Slog.e("TouchExplorer", "Delegating state can only be reached if there is at least one pointer down!");
-            clear(motionEvent, i);
-        } else {
-            if (actionMasked == 1) {
-                this.mDispatcher.sendMotionEvent(motionEvent, motionEvent.getAction(), motionEvent2, -1, i);
-                this.mAms.onTouchInteractionEnd();
-                this.mDispatcher.clear();
-                this.mDispatcher.sendAccessibilityEvent(2097152);
-                return;
-            }
-            this.mDispatcher.sendMotionEvent(motionEvent, motionEvent.getAction(), motionEvent2, -1, i);
-        }
-    }
-
-    public final void endGestureDetection(boolean z) {
-        this.mAms.onTouchInteractionEnd();
-        this.mDispatcher.sendAccessibilityEvent(524288);
-        if (z) {
-            this.mDispatcher.sendAccessibilityEvent(2097152);
-        }
-        this.mExitGestureDetectionModeDelayed.cancel();
-    }
-
-    public final void sendHoverExitAndTouchExplorationGestureEndIfNeeded(int i) {
-        MotionEvent lastInjectedHoverEvent = this.mState.getLastInjectedHoverEvent();
-        if (lastInjectedHoverEvent == null || lastInjectedHoverEvent.getActionMasked() == 10) {
-            return;
-        }
-        int pointerIdBits = lastInjectedHoverEvent.getPointerIdBits();
-        if (!this.mSendTouchExplorationEndDelayed.isPending()) {
-            this.mSendTouchExplorationEndDelayed.post();
-        }
-        this.mDispatcher.sendMotionEvent(lastInjectedHoverEvent, 10, this.mState.getLastReceivedEvent(), pointerIdBits, i);
-    }
-
-    public final void sendTouchExplorationGestureStartAndHoverEnterIfNeeded(int i) {
-        MotionEvent lastInjectedHoverEvent = this.mState.getLastInjectedHoverEvent();
-        if (lastInjectedHoverEvent == null || lastInjectedHoverEvent.getActionMasked() != 10) {
-            return;
-        }
-        this.mDispatcher.sendMotionEvent(lastInjectedHoverEvent, 9, this.mState.getLastReceivedEvent(), lastInjectedHoverEvent.getPointerIdBits(), i);
-    }
-
-    public final boolean isDraggingGesture(MotionEvent motionEvent) {
-        return GestureUtils.isDraggingGesture(this.mReceivedPointerTracker.getReceivedPointerDownX(0), this.mReceivedPointerTracker.getReceivedPointerDownY(0), this.mReceivedPointerTracker.getReceivedPointerDownX(1), this.mReceivedPointerTracker.getReceivedPointerDownY(1), motionEvent.getX(0), motionEvent.getY(0), motionEvent.getX(1), motionEvent.getY(1), 0.52532196f);
+        TouchState.ReceivedPointerTracker receivedPointerTracker = this.mReceivedPointerTracker;
+        float receivedPointerDownX = receivedPointerTracker.getReceivedPointerDownX(i);
+        float receivedPointerDownY = receivedPointerTracker.getReceivedPointerDownY(this.mDraggingPointerId);
+        long j = receivedPointerTracker.mReceivedPointers[this.mDraggingPointerId].mTime;
+        MotionEvent.PointerCoords pointerCoords = new MotionEvent.PointerCoords();
+        pointerCoords.x = receivedPointerDownX;
+        pointerCoords.y = receivedPointerDownY;
+        MotionEvent.PointerProperties pointerProperties = new MotionEvent.PointerProperties();
+        pointerProperties.id = this.mDraggingPointerId;
+        pointerProperties.toolType = 1;
+        MotionEvent obtain = MotionEvent.obtain(j, j, 0, 1, new MotionEvent.PointerProperties[]{pointerProperties}, new MotionEvent.PointerCoords[]{pointerCoords}, motionEvent.getMetaState(), motionEvent.getButtonState(), motionEvent.getXPrecision(), motionEvent.getYPrecision(), motionEvent.getDeviceId(), motionEvent.getEdgeFlags(), motionEvent.getSource(), motionEvent.getDisplayId(), motionEvent.getFlags());
+        motionEvent.setDownTime(j);
+        return obtain;
     }
 
     public final void computeDraggingPointerIdIfNeeded(MotionEvent motionEvent) {
@@ -722,446 +373,574 @@ public class TouchExplorer extends BaseEventStreamTransformation implements Gest
         }
     }
 
+    public final void dispatchGesture(AccessibilityGestureEvent accessibilityGestureEvent) {
+        if (DEBUG) {
+            Slog.d("TouchExplorer", "Dispatching gesture event:" + accessibilityGestureEvent.toString());
+        }
+        AccessibilityManagerService accessibilityManagerService = this.mAms;
+        synchronized (accessibilityManagerService.mLock) {
+            try {
+                if (!accessibilityManagerService.notifyGestureLocked(accessibilityGestureEvent, false)) {
+                    accessibilityManagerService.notifyGestureLocked(accessibilityGestureEvent, true);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
     public final float getDistanceToClosestEdge(float f, float f2) {
         long j = this.mContext.getResources().getDisplayMetrics().widthPixels;
         long j2 = this.mContext.getResources().getDisplayMetrics().heightPixels;
-        float f3 = ((float) j) - f;
+        float f3 = j - f;
         if (f >= f3) {
             f = f3;
         }
         if (f > f2) {
             f = f2;
         }
-        float f4 = ((float) j2) - f2;
+        float f4 = j2 - f2;
         return f > f4 ? f4 : f;
     }
 
-    public final MotionEvent computeDownEventForDrag(MotionEvent motionEvent) {
-        int i;
-        if (this.mState.isTouchExploring() || (i = this.mDraggingPointerId) == -1 || motionEvent == null) {
-            return null;
+    public final void handleActionDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        AccessibilityWindowManager accessibilityWindowManager = this.mAms.mA11yWindowManager;
+        synchronized (accessibilityWindowManager.mLock) {
+            accessibilityWindowManager.mTouchInteractionInProgress = true;
         }
-        float receivedPointerDownX = this.mReceivedPointerTracker.getReceivedPointerDownX(i);
-        float receivedPointerDownY = this.mReceivedPointerTracker.getReceivedPointerDownY(this.mDraggingPointerId);
-        long receivedPointerDownTime = this.mReceivedPointerTracker.getReceivedPointerDownTime(this.mDraggingPointerId);
-        MotionEvent.PointerCoords[] pointerCoordsArr = {new MotionEvent.PointerCoords()};
-        MotionEvent.PointerCoords pointerCoords = pointerCoordsArr[0];
-        pointerCoords.x = receivedPointerDownX;
-        pointerCoords.y = receivedPointerDownY;
-        MotionEvent.PointerProperties[] pointerPropertiesArr = {new MotionEvent.PointerProperties()};
-        MotionEvent.PointerProperties pointerProperties = pointerPropertiesArr[0];
-        pointerProperties.id = this.mDraggingPointerId;
-        pointerProperties.toolType = 1;
-        MotionEvent obtain = MotionEvent.obtain(receivedPointerDownTime, receivedPointerDownTime, 0, 1, pointerPropertiesArr, pointerCoordsArr, motionEvent.getMetaState(), motionEvent.getButtonState(), motionEvent.getXPrecision(), motionEvent.getYPrecision(), motionEvent.getDeviceId(), motionEvent.getEdgeFlags(), motionEvent.getSource(), motionEvent.getDisplayId(), motionEvent.getFlags());
-        motionEvent.setDownTime(receivedPointerDownTime);
-        return obtain;
+        this.mSendHoverEnterAndMoveDelayed.cancel();
+        this.mSendHoverEnterAndMoveDelayed.clear();
+        this.mSendHoverExitDelayed.cancel();
+        if (!this.mState.isTouchExploring()) {
+            Flags.sendHoverEventsBasedOnEventStream();
+        }
+        sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
+        if (this.mState.mState == 0) {
+            if (this.mSendHoverEnterAndMoveDelayed.isPending()) {
+                this.mSendHoverEnterAndMoveDelayed.addEvent(motionEvent, motionEvent2);
+            } else {
+                int primaryPointerId = 1 << this.mReceivedPointerTracker.getPrimaryPointerId();
+                if (this.mState.mServiceDetectsGestures) {
+                    SendHoverExitDelayed sendHoverExitDelayed = this.mSendHoverEnterAndMoveDelayed;
+                    sendHoverExitDelayed.mPointerIdBits = primaryPointerId;
+                    sendHoverExitDelayed.mPolicyFlags = i;
+                    sendHoverExitDelayed.addEvent(motionEvent, motionEvent2);
+                } else {
+                    SendHoverExitDelayed sendHoverExitDelayed2 = this.mSendHoverEnterAndMoveDelayed;
+                    sendHoverExitDelayed2.cancel();
+                    sendHoverExitDelayed2.addEvent(motionEvent, motionEvent2);
+                    sendHoverExitDelayed2.mPointerIdBits = primaryPointerId;
+                    sendHoverExitDelayed2.mPolicyFlags = i;
+                    sendHoverExitDelayed2.this$0.mHandler.postDelayed(sendHoverExitDelayed2, r0.mDetermineUserIntentTimeout);
+                }
+            }
+            this.mSendTouchExplorationEndDelayed.forceSendAndRemove();
+            this.mSendTouchInteractionEndDelayed.forceSendAndRemove();
+            this.mDispatcher.sendAccessibilityEvent(1048576);
+            if (this.mTouchExplorationPassthroughRegion.contains((int) motionEvent.getX(), (int) motionEvent.getY())) {
+                this.mState.setState(4);
+                MotionEvent obtainNoHistory = MotionEvent.obtainNoHistory(motionEvent);
+                this.mDispatcher.sendMotionEvent(obtainNoHistory.getAction(), -1, i, obtainNoHistory, motionEvent2);
+                this.mSendHoverEnterAndMoveDelayed.cancel();
+            } else if (this.mGestureDetectionPassthroughRegion.contains((int) motionEvent.getX(), (int) motionEvent.getY())) {
+                SendHoverExitDelayed sendHoverExitDelayed3 = this.mSendHoverEnterAndMoveDelayed;
+                if (sendHoverExitDelayed3.isPending()) {
+                    sendHoverExitDelayed3.run();
+                    sendHoverExitDelayed3.cancel();
+                }
+            }
+        } else {
+            this.mSendTouchInteractionEndDelayed.cancel();
+        }
+        if (this.mState.mServiceDetectsGestures) {
+            this.mAms.sendMotionEventToListeningServices(motionEvent2);
+        }
     }
 
-    public final boolean allPointersDownOnBottomEdge(MotionEvent motionEvent) {
-        long j = this.mContext.getResources().getDisplayMetrics().heightPixels;
-        for (int i = 0; i < motionEvent.getPointerCount(); i++) {
-            float receivedPointerDownY = this.mReceivedPointerTracker.getReceivedPointerDownY(motionEvent.getPointerId(i));
-            if (receivedPointerDownY < ((float) j) - this.mEdgeSwipeHeightPixels) {
-                if (DEBUG) {
-                    Slog.d("TouchExplorer", "The pointer is not on the bottom edge" + receivedPointerDownY);
+    public final void handleActionMoveStateTouchInteracting(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        MotionEvent obtain;
+        TouchState.ReceivedPointerTracker receivedPointerTracker = this.mReceivedPointerTracker;
+        int findPointerIndex = motionEvent.findPointerIndex(receivedPointerTracker.getPrimaryPointerId());
+        TouchState touchState = this.mState;
+        boolean z = touchState.mServiceDetectsGestures;
+        SendHoverExitDelayed sendHoverExitDelayed = this.mSendHoverEnterAndMoveDelayed;
+        if (z) {
+            this.mAms.sendMotionEventToListeningServices(motionEvent2);
+            sendHoverExitDelayed.addEvent(motionEvent, motionEvent2);
+            return;
+        }
+        int pointerCount = motionEvent.getPointerCount();
+        if (pointerCount == 1) {
+            if (sendHoverExitDelayed.isPending()) {
+                sendHoverExitDelayed.addEvent(motionEvent, motionEvent2);
+                return;
+            }
+            return;
+        }
+        int i2 = this.mDisplayId;
+        EventDispatcher eventDispatcher = this.mDispatcher;
+        GestureManifold gestureManifold = this.mGestureDetector;
+        if (pointerCount == 2) {
+            boolean z2 = false;
+            if (!gestureManifold.mMultiFingerGesturesEnabled || gestureManifold.mTwoFingerPassthroughEnabled) {
+                sendHoverExitDelayed.cancel();
+                this.mSendHoverExitDelayed.cancel();
+                if (gestureManifold.mMultiFingerGesturesEnabled && gestureManifold.mTwoFingerPassthroughEnabled) {
+                    if (findPointerIndex < 0) {
+                        return;
+                    }
+                    int i3 = 0;
+                    while (i3 < motionEvent.getPointerCount()) {
+                        int pointerId = motionEvent.getPointerId(i3);
+                        if (!((receivedPointerTracker.mReceivedPointersDown & (1 << pointerId)) != 0 ? true : z2)) {
+                            NandswapManager$$ExternalSyntheticOutline0.m(pointerId, "Invalid pointer id: ", "TouchExplorer");
+                        }
+                        EventDispatcher eventDispatcher2 = eventDispatcher;
+                        if (Math.hypot(receivedPointerTracker.getReceivedPointerDownX(pointerId) - motionEvent2.getX(i3), receivedPointerTracker.getReceivedPointerDownY(pointerId) - motionEvent2.getY(i3)) < this.mTouchSlop * 2) {
+                            return;
+                        }
+                        i3++;
+                        eventDispatcher = eventDispatcher2;
+                        z2 = false;
+                    }
                 }
-                return false;
+                EventDispatcher eventDispatcher3 = eventDispatcher;
+                MotionEvent obtainNoHistory = MotionEvent.obtainNoHistory(motionEvent);
+                if (!isDraggingGesture(obtainNoHistory)) {
+                    if (gestureManifold.mSendMotionEventsEnabled) {
+                        dispatchGesture(new AccessibilityGestureEvent(-1, i2, gestureManifold.mEvents));
+                    }
+                    touchState.setState(4);
+                    eventDispatcher3.sendDownForAllNotInjectedPointers(i, obtainNoHistory);
+                    return;
+                }
+                if (gestureManifold.mSendMotionEventsEnabled) {
+                    dispatchGesture(new AccessibilityGestureEvent(-1, i2, gestureManifold.mEvents));
+                }
+                computeDraggingPointerIdIfNeeded(obtainNoHistory);
+                int i4 = 1 << this.mDraggingPointerId;
+                obtainNoHistory.setEdgeFlags(receivedPointerTracker.mLastReceivedDownEdgeFlags);
+                MotionEvent computeDownEventForDrag = computeDownEventForDrag(obtainNoHistory);
+                if (computeDownEventForDrag != null) {
+                    this.mDispatcher.sendMotionEvent(0, i4, i, computeDownEventForDrag, motionEvent2);
+                    this.mDispatcher.sendMotionEvent(2, i4, i, obtainNoHistory, motionEvent2);
+                } else {
+                    this.mDispatcher.sendMotionEvent(0, i4, i, obtainNoHistory, motionEvent2);
+                }
+                touchState.setState(3);
+                return;
+            }
+            return;
+        }
+        if (!gestureManifold.mMultiFingerGesturesEnabled) {
+            if (gestureManifold.mSendMotionEventsEnabled) {
+                dispatchGesture(new AccessibilityGestureEvent(-1, i2, gestureManifold.mEvents));
+            }
+            touchState.setState(4);
+            eventDispatcher.sendDownForAllNotInjectedPointers(i, MotionEvent.obtainNoHistory(motionEvent));
+            return;
+        }
+        if (!gestureManifold.mTwoFingerPassthroughEnabled || motionEvent.getPointerCount() != 3) {
+            return;
+        }
+        long j = this.mContext.getResources().getDisplayMetrics().heightPixels;
+        int i5 = 0;
+        while (true) {
+            int pointerCount2 = motionEvent.getPointerCount();
+            boolean z3 = DEBUG;
+            if (i5 >= pointerCount2) {
+                if (z3) {
+                    Slog.d("TouchExplorer", "Three-finger edge swipe detected.");
+                }
+                if (gestureManifold.mSendMotionEventsEnabled) {
+                    dispatchGesture(new AccessibilityGestureEvent(-1, i2, gestureManifold.mEvents));
+                }
+                touchState.setState(4);
+                gestureManifold.clear();
+                if (touchState.isTouchExploring()) {
+                    eventDispatcher.sendDownForAllNotInjectedPointers(i, motionEvent);
+                    return;
+                }
+                eventDispatcher.getClass();
+                int pointerCount3 = motionEvent.getPointerCount();
+                int pointerCount4 = motionEvent.getPointerCount();
+                TouchState touchState2 = eventDispatcher.mState;
+                if (pointerCount4 != Integer.bitCount(touchState2.mReceivedPointerTracker.mReceivedPointersDown)) {
+                    Slog.w("EventDispatcher", "The pointer count doesn't match the received count.");
+                    obtain = MotionEvent.obtain(motionEvent);
+                } else {
+                    MotionEvent.PointerCoords[] pointerCoordsArr = new MotionEvent.PointerCoords[pointerCount4];
+                    MotionEvent.PointerProperties[] pointerPropertiesArr = new MotionEvent.PointerProperties[pointerCount4];
+                    for (int i6 = 0; i6 < pointerCount4; i6++) {
+                        int pointerId2 = motionEvent.getPointerId(i6);
+                        TouchState.ReceivedPointerTracker receivedPointerTracker2 = touchState2.mReceivedPointerTracker;
+                        float receivedPointerDownX = receivedPointerTracker2.getReceivedPointerDownX(pointerId2);
+                        float receivedPointerDownY = receivedPointerTracker2.getReceivedPointerDownY(pointerId2);
+                        MotionEvent.PointerCoords pointerCoords = new MotionEvent.PointerCoords();
+                        pointerCoordsArr[i6] = pointerCoords;
+                        pointerCoords.x = receivedPointerDownX;
+                        pointerCoords.y = receivedPointerDownY;
+                        MotionEvent.PointerProperties pointerProperties = new MotionEvent.PointerProperties();
+                        pointerPropertiesArr[i6] = pointerProperties;
+                        pointerProperties.id = pointerId2;
+                        pointerProperties.toolType = 1;
+                    }
+                    obtain = MotionEvent.obtain(motionEvent.getDownTime(), motionEvent.getDownTime(), motionEvent.getAction(), pointerCount4, pointerPropertiesArr, pointerCoordsArr, motionEvent.getMetaState(), motionEvent.getButtonState(), motionEvent.getXPrecision(), motionEvent.getYPrecision(), motionEvent.getDeviceId(), motionEvent.getEdgeFlags(), motionEvent.getSource(), motionEvent.getDisplayId(), motionEvent.getFlags());
+                }
+                MotionEvent motionEvent3 = obtain;
+                int i7 = 0;
+                for (int i8 = 0; i8 < pointerCount3; i8++) {
+                    int pointerId3 = motionEvent.getPointerId(i8);
+                    if (!touchState2.isInjectedPointerDown(pointerId3)) {
+                        int i9 = i7 | (1 << pointerId3);
+                        eventDispatcher.sendMotionEvent(eventDispatcher.computeInjectionAction(0, i8), i9, i, motionEvent3, touchState2.mLastReceivedEvent);
+                        i7 = i9;
+                    }
+                }
+                return;
+            }
+            float receivedPointerDownY2 = receivedPointerTracker.getReceivedPointerDownY(motionEvent.getPointerId(i5));
+            if (receivedPointerDownY2 < j - this.mEdgeSwipeHeightPixels) {
+                if (z3) {
+                    Slog.d("TouchExplorer", "The pointer is not on the bottom edge" + receivedPointerDownY2);
+                    return;
+                }
+                return;
+            }
+            i5++;
+        }
+    }
+
+    public final void handleActionPointerDown(int i, MotionEvent motionEvent) {
+        SendHoverExitDelayed sendHoverExitDelayed = this.mSendHoverEnterAndMoveDelayed;
+        if (sendHoverExitDelayed.isPending()) {
+            sendHoverExitDelayed.cancel();
+            this.mSendHoverExitDelayed.cancel();
+        } else {
+            sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
+        }
+        if (this.mState.mServiceDetectsGestures) {
+            this.mAms.sendMotionEventToListeningServices(motionEvent);
+        }
+    }
+
+    public final void handleActionUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        TouchState touchState = this.mState;
+        boolean z = touchState.mServiceDetectsGestures;
+        AccessibilityManagerService accessibilityManagerService = this.mAms;
+        if (z && touchState.mState == 1) {
+            accessibilityManagerService.sendMotionEventToListeningServices(motionEvent2);
+        }
+        accessibilityManagerService.onTouchInteractionEnd();
+        int pointerId = 1 << motionEvent.getPointerId(motionEvent.getActionIndex());
+        SendHoverExitDelayed sendHoverExitDelayed = this.mSendHoverEnterAndMoveDelayed;
+        if (sendHoverExitDelayed.isPending()) {
+            if (sendHoverExitDelayed.isPending()) {
+                sendHoverExitDelayed.this$0.mHandler.removeCallbacks(sendHoverExitDelayed);
+                sendHoverExitDelayed.this$0.mHandler.postDelayed(sendHoverExitDelayed, r2.mDetermineUserIntentTimeout);
+            }
+            SendHoverExitDelayed sendHoverExitDelayed2 = this.mSendHoverExitDelayed;
+            sendHoverExitDelayed2.cancel();
+            sendHoverExitDelayed2.mPrototype = MotionEvent.obtain(motionEvent);
+            sendHoverExitDelayed2.mRawEvent = MotionEvent.obtain(motionEvent2);
+            sendHoverExitDelayed2.mPointerIdBits = pointerId;
+            sendHoverExitDelayed2.mPolicyFlags = i;
+            sendHoverExitDelayed2.this$0.mHandler.postDelayed(sendHoverExitDelayed2, r7.mDetermineUserIntentTimeout);
+        } else {
+            sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
+        }
+        SendAccessibilityEventDelayed sendAccessibilityEventDelayed = this.mSendTouchInteractionEndDelayed;
+        if (sendAccessibilityEventDelayed.isPending()) {
+            return;
+        }
+        TouchExplorer.this.mHandler.postDelayed(sendAccessibilityEventDelayed, sendAccessibilityEventDelayed.mDelay);
+    }
+
+    public final boolean isDraggingGesture(MotionEvent motionEvent) {
+        float x = motionEvent.getX(0);
+        float y = motionEvent.getY(0);
+        float x2 = motionEvent.getX(1);
+        float y2 = motionEvent.getY(1);
+        TouchState.ReceivedPointerTracker receivedPointerTracker = this.mReceivedPointerTracker;
+        float receivedPointerDownX = receivedPointerTracker.getReceivedPointerDownX(0);
+        float receivedPointerDownY = receivedPointerTracker.getReceivedPointerDownY(0);
+        float receivedPointerDownX2 = receivedPointerTracker.getReceivedPointerDownX(1);
+        float receivedPointerDownY2 = receivedPointerTracker.getReceivedPointerDownY(1);
+        float f = x - receivedPointerDownX;
+        float f2 = y - receivedPointerDownY;
+        if (f != FullScreenMagnificationGestureHandler.MAX_SCALE || f2 != FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            float hypot = (float) Math.hypot(f, f2);
+            if (hypot > FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                f /= hypot;
+            }
+            if (hypot > FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                f2 /= hypot;
+            }
+            float f3 = x2 - receivedPointerDownX2;
+            float f4 = y2 - receivedPointerDownY2;
+            if (f3 != FullScreenMagnificationGestureHandler.MAX_SCALE || f4 != FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                float hypot2 = (float) Math.hypot(f3, f4);
+                if (hypot2 > FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                    f3 /= hypot2;
+                }
+                if (hypot2 > FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                    f4 /= hypot2;
+                }
+                if ((f2 * f4) + (f * f3) < 0.52532196f) {
+                    return false;
+                }
             }
         }
         return true;
     }
 
-    @Override // com.android.server.accessibility.BaseEventStreamTransformation, com.android.server.accessibility.EventStreamTransformation
-    public void setNext(EventStreamTransformation eventStreamTransformation) {
-        this.mDispatcher.setReceiver(eventStreamTransformation);
-        super.setNext(eventStreamTransformation);
-    }
-
-    public void setServiceHandlesDoubleTap(boolean z) {
-        this.mGestureDetector.setServiceHandlesDoubleTap(z);
-    }
-
-    public void setMultiFingerGesturesEnabled(boolean z) {
-        this.mGestureDetector.setMultiFingerGesturesEnabled(z);
-    }
-
-    public void setTwoFingerPassthroughEnabled(boolean z) {
-        this.mGestureDetector.setTwoFingerPassthroughEnabled(z);
-    }
-
-    public void setGestureDetectionPassthroughRegion(Region region) {
-        this.mGestureDetectionPassthroughRegion = region;
-    }
-
-    public void setTouchExplorationPassthroughRegion(Region region) {
-        this.mTouchExplorationPassthroughRegion = region;
-    }
-
-    public void setSendMotionEventsEnabled(boolean z) {
-        this.mGestureDetector.setSendMotionEventsEnabled(z);
-    }
-
-    public boolean isSendMotionEventsEnabled() {
-        return this.mGestureDetector.isSendMotionEventsEnabled();
-    }
-
-    public void setServiceDetectsGestures(boolean z) {
-        this.mState.setServiceDetectsGestures(z);
-    }
-
-    public final boolean shouldPerformGestureDetection(MotionEvent motionEvent) {
-        if (this.mState.isServiceDetectingGestures() || this.mState.isDelegating() || this.mState.isDragging()) {
-            return false;
+    @Override // com.android.server.accessibility.EventStreamTransformation
+    public final void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
+        int i;
+        AccessibilityManagerService accessibilityManagerService = this.mAms;
+        if (accessibilityManagerService.mTraceManager.isA11yTracingEnabledForTypes(12288L)) {
+            accessibilityManagerService.mTraceManager.logTrace("TouchExplorer.onAccessibilityEvent", 12288L, "event=" + accessibilityEvent);
         }
-        if (motionEvent.getActionMasked() != 0) {
-            return true;
-        }
-        int x = (int) motionEvent.getX();
-        int y = (int) motionEvent.getY();
-        return (this.mTouchExplorationPassthroughRegion.contains(x, y) || this.mGestureDetectionPassthroughRegion.contains(x, y)) ? false : true;
-    }
-
-    public void requestTouchExploration() {
-        MotionEvent lastReceivedEvent;
-        if (DEBUG) {
-            Slog.d("TouchExplorer", "Starting touch explorer from service.");
-        }
-        if (this.mState.isServiceDetectingGestures() && this.mState.isTouchInteracting()) {
-            this.mHandler.removeCallbacks(this.mSendHoverEnterAndMoveDelayed);
-            int primaryPointerId = this.mReceivedPointerTracker.getPrimaryPointerId();
-            if (primaryPointerId == -1 && (lastReceivedEvent = this.mState.getLastReceivedEvent()) != null) {
-                primaryPointerId = lastReceivedEvent.getPointerId(0);
+        int eventType = accessibilityEvent.getEventType();
+        if (eventType == 256 && !this.mSendHoverExitDelayed.isPending()) {
+            Flags.sendA11yEventsBasedOnState();
+            SendAccessibilityEventDelayed sendAccessibilityEventDelayed = this.mSendTouchExplorationEndDelayed;
+            boolean isPending = sendAccessibilityEventDelayed.isPending();
+            EventDispatcher eventDispatcher = this.mDispatcher;
+            if (isPending) {
+                sendAccessibilityEventDelayed.cancel();
+                eventDispatcher.sendAccessibilityEvent(1024);
             }
-            if (primaryPointerId == -1) {
-                Slog.e("TouchExplorer", "Unable to find a valid pointer for touch exploration.");
-                return;
-            }
-            int lastReceivedPolicyFlags = this.mState.getLastReceivedPolicyFlags();
-            this.mSendHoverEnterAndMoveDelayed.setPointerIdBits(1 << primaryPointerId);
-            this.mSendHoverEnterAndMoveDelayed.setPolicyFlags(lastReceivedPolicyFlags);
-            this.mSendHoverEnterAndMoveDelayed.run();
-            this.mSendHoverEnterAndMoveDelayed.clear();
-            if (this.mReceivedPointerTracker.getReceivedPointerDownCount() == 0) {
-                sendHoverExitAndTouchExplorationGestureEndIfNeeded(lastReceivedPolicyFlags);
+            SendAccessibilityEventDelayed sendAccessibilityEventDelayed2 = this.mSendTouchInteractionEndDelayed;
+            if (sendAccessibilityEventDelayed2.isPending()) {
+                sendAccessibilityEventDelayed2.cancel();
+                eventDispatcher.sendAccessibilityEvent(2097152);
             }
         }
-    }
-
-    public void requestDragging(int i) {
-        if (this.mState.isServiceDetectingGestures()) {
-            if (i < 0 || i > 32 || !this.mReceivedPointerTracker.isReceivedPointerDown(i)) {
-                Slog.e("TouchExplorer", "Trying to drag with invalid pointer: " + i);
-                return;
-            }
-            if (this.mState.isTouchExploring()) {
-                if (this.mSendHoverExitDelayed.isPending()) {
-                    this.mSendHoverExitDelayed.forceSendAndRemove();
-                }
-                if (this.mSendTouchExplorationEndDelayed.isPending()) {
-                    this.mSendTouchExplorationEndDelayed.forceSendAndRemove();
+        if (eventType == 32768) {
+            Iterator it = ((ArrayList) this.mGestureDetector.mGestures).iterator();
+            while (it.hasNext()) {
+                GestureMatcher gestureMatcher = (GestureMatcher) it.next();
+                if (gestureMatcher.mGestureId == 17) {
+                    Slog.d("TouchExplorer", "clear GESTURE_DOUBLE_TAP");
+                    gestureMatcher.clear();
                 }
             }
-            if (!this.mState.isTouchInteracting()) {
-                Slog.e("TouchExplorer", "Error: Trying to drag from " + TouchState.getStateSymbolicName(this.mState.getState()));
-                return;
-            }
-            this.mDraggingPointerId = i;
-            if (DEBUG) {
-                Slog.d("TouchExplorer", "Drag requested on pointer " + this.mDraggingPointerId);
-            }
-            MotionEvent lastReceivedEvent = this.mState.getLastReceivedEvent();
-            MotionEvent lastReceivedRawEvent = this.mState.getLastReceivedRawEvent();
-            if (lastReceivedEvent == null || lastReceivedRawEvent == null) {
-                Slog.e("TouchExplorer", "Unable to start dragging: unable to get last event.");
-                return;
-            }
-            int lastReceivedPolicyFlags = this.mState.getLastReceivedPolicyFlags();
-            int i2 = 1 << this.mDraggingPointerId;
-            lastReceivedEvent.setEdgeFlags(this.mReceivedPointerTracker.getLastReceivedDownEdgeFlags());
-            MotionEvent computeDownEventForDrag = computeDownEventForDrag(lastReceivedEvent);
-            this.mState.startDragging();
-            if (computeDownEventForDrag != null) {
-                this.mDispatcher.sendMotionEvent(computeDownEventForDrag, 0, lastReceivedRawEvent, i2, lastReceivedPolicyFlags);
-                this.mDispatcher.sendMotionEvent(lastReceivedEvent, 2, lastReceivedRawEvent, i2, lastReceivedPolicyFlags);
-            } else {
-                this.mDispatcher.sendMotionEvent(lastReceivedEvent, 0, lastReceivedRawEvent, i2, lastReceivedPolicyFlags);
-            }
         }
-    }
-
-    public void requestDelegating() {
-        if (this.mState.isServiceDetectingGestures()) {
-            if (this.mState.isTouchExploring()) {
-                if (this.mSendHoverExitDelayed.isPending()) {
-                    this.mSendHoverExitDelayed.forceSendAndRemove();
-                }
-                if (this.mSendTouchExplorationEndDelayed.isPending()) {
-                    this.mSendTouchExplorationEndDelayed.forceSendAndRemove();
-                }
-            }
-            if (!this.mState.isTouchInteracting() && !this.mState.isDragging()) {
-                Slog.e("TouchExplorer", "Error: Trying to delegate from " + TouchState.getStateSymbolicName(this.mState.getState()));
-                return;
-            }
-            MotionEvent lastReceivedEvent = this.mState.getLastReceivedEvent();
-            MotionEvent lastReceivedRawEvent = this.mState.getLastReceivedRawEvent();
-            if (lastReceivedEvent == null || lastReceivedRawEvent == null) {
-                Slog.d("TouchExplorer", "Unable to start delegating: unable to get last received event.");
-                return;
-            }
-            int lastReceivedPolicyFlags = this.mState.getLastReceivedPolicyFlags();
-            if (this.mState.isDragging()) {
-                this.mDispatcher.sendMotionEvent(lastReceivedEvent, 1, lastReceivedRawEvent, -1, lastReceivedPolicyFlags);
-            }
-            this.mState.startDelegating();
-            this.mDispatcher.sendDownForAllNotInjectedPointers(lastReceivedEvent, lastReceivedPolicyFlags);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class ExitGestureDetectionModeDelayed implements Runnable {
-        public ExitGestureDetectionModeDelayed() {
-        }
-
-        public void post() {
-            TouchExplorer.this.mHandler.postDelayed(this, 2000L);
-        }
-
-        public void cancel() {
-            TouchExplorer.this.mHandler.removeCallbacks(this);
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            TouchExplorer.this.mDispatcher.sendAccessibilityEvent(524288);
-            TouchExplorer.this.clear();
-        }
-    }
-
-    public static void checkForMalformedEvent(MotionEvent motionEvent) {
-        if (motionEvent.getPointerCount() < 0) {
-            throw new IllegalArgumentException("Invalid pointer count: " + motionEvent.getPointerCount());
-        }
-        for (int i = 0; i < motionEvent.getPointerCount(); i++) {
-            try {
-                motionEvent.getPointerId(i);
-                float x = motionEvent.getX(i);
-                float y = motionEvent.getY(i);
-                if (Float.isNaN(x) || Float.isNaN(y) || x < DisplayPowerController2.RATE_FROM_DOZE_TO_ON || y < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    throw new IllegalArgumentException("Invalid coordinates: (" + x + ", " + y + ")");
-                }
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Encountered exception getting details of pointer " + i + " / " + motionEvent.getPointerCount(), e);
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class SendHoverEnterAndMoveDelayed implements Runnable {
-        public int mPointerIdBits;
-        public int mPolicyFlags;
-        public final String LOG_TAG_SEND_HOVER_DELAYED = "SendHoverEnterAndMoveDelayed";
-        public final List mEvents = new ArrayList();
-        public final List mRawEvents = new ArrayList();
-
-        public SendHoverEnterAndMoveDelayed() {
-        }
-
-        public void post(MotionEvent motionEvent, MotionEvent motionEvent2, int i, int i2) {
-            cancel();
-            addEvent(motionEvent, motionEvent2);
-            this.mPointerIdBits = i;
-            this.mPolicyFlags = i2;
-            TouchExplorer.this.mHandler.postDelayed(this, TouchExplorer.this.mDetermineUserIntentTimeout);
-        }
-
-        public void addEvent(MotionEvent motionEvent, MotionEvent motionEvent2) {
-            this.mEvents.add(MotionEvent.obtain(motionEvent));
-            this.mRawEvents.add(MotionEvent.obtain(motionEvent2));
-        }
-
-        public void cancel() {
-            if (isPending()) {
-                TouchExplorer.this.mHandler.removeCallbacks(this);
-                clear();
-            }
-        }
-
-        public final boolean isPending() {
-            return TouchExplorer.this.mHandler.hasCallbacks(this);
-        }
-
-        public final void clear() {
-            this.mPointerIdBits = -1;
-            this.mPolicyFlags = 0;
-            for (int size = this.mEvents.size() - 1; size >= 0; size--) {
-                ((MotionEvent) this.mEvents.remove(size)).recycle();
-            }
-            for (int size2 = this.mRawEvents.size() - 1; size2 >= 0; size2--) {
-                ((MotionEvent) this.mRawEvents.remove(size2)).recycle();
-            }
-        }
-
-        public void forceSendAndRemove() {
-            if (isPending()) {
-                run();
-                cancel();
-            }
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (TouchExplorer.this.mReceivedPointerTracker.getReceivedPointerDownCount() > 1) {
-                Slog.e("TouchExplorer", "Attempted touch exploration with " + TouchExplorer.this.mReceivedPointerTracker.getReceivedPointerDownCount() + " pointers down.");
-                return;
-            }
-            TouchExplorer.this.mDispatcher.sendAccessibilityEvent(512);
-            if (TouchExplorer.this.isSendMotionEventsEnabled()) {
-                TouchExplorer.this.dispatchGesture(new AccessibilityGestureEvent(-2, TouchExplorer.this.mState.getLastReceivedEvent().getDisplayId(), TouchExplorer.this.mGestureDetector.getMotionEvents()));
-            }
-            if (!this.mEvents.isEmpty() && !this.mRawEvents.isEmpty()) {
-                TouchExplorer.this.mDispatcher.sendMotionEvent((MotionEvent) this.mEvents.get(0), 9, (MotionEvent) this.mRawEvents.get(0), this.mPointerIdBits, this.mPolicyFlags);
-                if (TouchExplorer.DEBUG) {
-                    Slog.d("SendHoverEnterAndMoveDelayed", "Injecting motion event: ACTION_HOVER_ENTER");
-                }
-                int size = this.mEvents.size();
-                for (int i = 1; i < size; i++) {
-                    TouchExplorer.this.mDispatcher.sendMotionEvent((MotionEvent) this.mEvents.get(i), 7, (MotionEvent) this.mRawEvents.get(i), this.mPointerIdBits, this.mPolicyFlags);
-                    if (TouchExplorer.DEBUG) {
-                        Slog.d("SendHoverEnterAndMoveDelayed", "Injecting motion event: ACTION_HOVER_MOVE");
+        TouchState touchState = this.mState;
+        touchState.getClass();
+        int eventType2 = accessibilityEvent.getEventType();
+        if (eventType2 != 32) {
+            if (eventType2 == 128 || eventType2 == 256) {
+                touchState.mLastTouchedWindowId = accessibilityEvent.getWindowId();
+            } else if (eventType2 != 32768) {
+                if (eventType2 == 2097152) {
+                    AccessibilityWindowManager accessibilityWindowManager = touchState.mAms.mA11yWindowManager;
+                    if (accessibilityWindowManager.mHasProxy && (i = accessibilityWindowManager.mLastNonProxyTopFocusedDisplayId) != accessibilityWindowManager.mTopFocusedDisplayId) {
+                        accessibilityWindowManager.mWindowManagerInternal.moveDisplayToTopIfAllowed(i);
                     }
                 }
             }
-            clear();
+            super.onAccessibilityEvent(accessibilityEvent);
         }
-
-        public void setPointerIdBits(int i) {
-            this.mPointerIdBits = i;
+        MotionEvent motionEvent = touchState.mLastInjectedHoverEventForClick;
+        if (motionEvent != null) {
+            motionEvent.recycle();
+            touchState.mLastInjectedHoverEventForClick = null;
         }
+        touchState.mLastTouchedWindowId = -1;
+        super.onAccessibilityEvent(accessibilityEvent);
+    }
 
-        public void setPolicyFlags(int i) {
-            this.mPolicyFlags = i;
+    @Override // com.android.server.accessibility.EventStreamTransformation
+    public final void onDestroy() {
+        MotionEvent motionEvent = this.mState.mLastReceivedEvent;
+        if (motionEvent != null) {
+            clear(33554432, motionEvent);
         }
     }
 
-    /* loaded from: classes.dex */
-    public class SendHoverExitDelayed implements Runnable {
-        public final String LOG_TAG_SEND_HOVER_DELAYED = "SendHoverExitDelayed";
-        public int mPointerIdBits;
-        public int mPolicyFlags;
-        public MotionEvent mPrototype;
-        public MotionEvent mRawEvent;
-
-        public SendHoverExitDelayed() {
+    public final void onDoubleTap(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        AccessibilityManagerService accessibilityManagerService = this.mAms;
+        if (accessibilityManagerService.mTraceManager.isA11yTracingEnabledForTypes(12288L)) {
+            accessibilityManagerService.mTraceManager.logTrace("TouchExplorer.onDoubleTap", 12288L, "event=" + motionEvent + ";rawEvent=" + motionEvent2 + ";policyFlags=" + i);
         }
-
-        public void post(MotionEvent motionEvent, MotionEvent motionEvent2, int i, int i2) {
-            cancel();
-            this.mPrototype = MotionEvent.obtain(motionEvent);
-            this.mRawEvent = MotionEvent.obtain(motionEvent2);
-            this.mPointerIdBits = i;
-            this.mPolicyFlags = i2;
-            TouchExplorer.this.mHandler.postDelayed(this, TouchExplorer.this.mDetermineUserIntentTimeout);
+        accessibilityManagerService.onTouchInteractionEnd();
+        this.mSendHoverEnterAndMoveDelayed.cancel();
+        this.mSendHoverExitDelayed.cancel();
+        GestureManifold gestureManifold = this.mGestureDetector;
+        if (gestureManifold.mSendMotionEventsEnabled) {
+            dispatchGesture(new AccessibilityGestureEvent(17, this.mDisplayId, gestureManifold.mEvents));
         }
-
-        public void cancel() {
-            if (isPending()) {
-                TouchExplorer.this.mHandler.removeCallbacks(this);
-                clear();
-            }
+        SendAccessibilityEventDelayed sendAccessibilityEventDelayed = this.mSendTouchExplorationEndDelayed;
+        if (sendAccessibilityEventDelayed.isPending()) {
+            sendAccessibilityEventDelayed.forceSendAndRemove();
         }
-
-        public final boolean isPending() {
-            return TouchExplorer.this.mHandler.hasCallbacks(this);
+        EventDispatcher eventDispatcher = this.mDispatcher;
+        eventDispatcher.sendAccessibilityEvent(2097152);
+        this.mSendTouchInteractionEndDelayed.cancel();
+        AccessibilityNodeInfo.AccessibilityAction accessibilityAction = AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK;
+        AccessibilityNodeInfo accessibilityFocusNotLocked = accessibilityManagerService.getInteractionBridge().getAccessibilityFocusNotLocked();
+        if ((accessibilityFocusNotLocked == null || !accessibilityFocusNotLocked.getActionList().contains(accessibilityAction)) ? false : accessibilityFocusNotLocked.performAction(accessibilityAction.getId())) {
+            return;
         }
-
-        public final void clear() {
-            MotionEvent motionEvent = this.mPrototype;
-            if (motionEvent != null) {
-                motionEvent.recycle();
-            }
-            MotionEvent motionEvent2 = this.mRawEvent;
-            if (motionEvent2 != null) {
-                motionEvent2.recycle();
-            }
-            this.mPrototype = null;
-            this.mRawEvent = null;
-            this.mPointerIdBits = -1;
-            this.mPolicyFlags = 0;
+        Slog.e("TouchExplorer", "ACTION_CLICK failed. Dispatching motion events to simulate click.");
+        if (motionEvent == null || motionEvent2 == null) {
+            return;
         }
-
-        public void forceSendAndRemove() {
-            if (isPending()) {
-                run();
-                cancel();
-            }
+        int actionIndex = motionEvent.getActionIndex();
+        motionEvent.getPointerId(actionIndex);
+        int computeClickLocation = eventDispatcher.computeClickLocation(eventDispatcher.mTempPoint);
+        if (computeClickLocation == 0) {
+            Slog.e("EventDispatcher", "Unable to compute click location.");
+            return;
         }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (TouchExplorer.DEBUG) {
-                Slog.d("SendHoverExitDelayed", "Injecting motion event: ACTION_HOVER_EXIT");
-            }
-            TouchExplorer.this.mDispatcher.sendMotionEvent(this.mPrototype, 10, this.mRawEvent, this.mPointerIdBits, this.mPolicyFlags);
-            if (!TouchExplorer.this.mSendTouchExplorationEndDelayed.isPending()) {
-                TouchExplorer.this.mSendTouchExplorationEndDelayed.cancel();
-                TouchExplorer.this.mSendTouchExplorationEndDelayed.post();
-            }
-            if (TouchExplorer.this.mSendTouchInteractionEndDelayed.isPending()) {
-                TouchExplorer.this.mSendTouchInteractionEndDelayed.cancel();
-                TouchExplorer.this.mSendTouchInteractionEndDelayed.post();
-            }
-            clear();
-        }
+        MotionEvent.PointerProperties pointerProperties = new MotionEvent.PointerProperties();
+        motionEvent.getPointerProperties(actionIndex, pointerProperties);
+        MotionEvent.PointerCoords pointerCoords = new MotionEvent.PointerCoords();
+        pointerCoords.x = r2.x;
+        pointerCoords.y = r2.y;
+        MotionEvent obtain = MotionEvent.obtain(motionEvent.getDownTime(), motionEvent.getEventTime(), 0, 1, new MotionEvent.PointerProperties[]{pointerProperties}, new MotionEvent.PointerCoords[]{pointerCoords}, 0, 0, 1.0f, 1.0f, motionEvent.getDeviceId(), 0, motionEvent.getSource(), motionEvent.getDisplayId(), motionEvent.getFlags());
+        boolean z = computeClickLocation == 1;
+        int pointerId = 1 << obtain.getPointerId(obtain.getActionIndex());
+        obtain.setTargetAccessibilityFocus(z);
+        eventDispatcher.sendMotionEvent(0, pointerId, i, obtain, motionEvent2);
+        obtain.setTargetAccessibilityFocus(z);
+        eventDispatcher.sendMotionEvent(1, pointerId, i, obtain, motionEvent2);
+        obtain.recycle();
     }
 
-    /* loaded from: classes.dex */
-    public class SendAccessibilityEventDelayed implements Runnable {
-        public int mDelay;
-        public final int mEventType;
-
-        public SendAccessibilityEventDelayed(int i, int i2) {
-            this.mEventType = i;
-            this.mDelay = i2;
+    public final void onDoubleTapAndHold(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        AccessibilityManagerService accessibilityManagerService = this.mAms;
+        if (accessibilityManagerService.mTraceManager.isA11yTracingEnabledForTypes(12288L)) {
+            accessibilityManagerService.mTraceManager.logTrace("TouchExplorer.onDoubleTapAndHold", 12288L, "event=" + motionEvent + ";rawEvent=" + motionEvent2 + ";policyFlags=" + i);
         }
-
-        public void cancel() {
-            TouchExplorer.this.mHandler.removeCallbacks(this);
+        EventDispatcher eventDispatcher = this.mDispatcher;
+        Point point = eventDispatcher.mTempPoint;
+        if (eventDispatcher.computeClickLocation(point) == 0 || motionEvent == null) {
+            return;
         }
-
-        public void post() {
-            TouchExplorer.this.mHandler.postDelayed(this, this.mDelay);
+        int actionIndex = motionEvent.getActionIndex();
+        eventDispatcher.mLongPressingPointerId = motionEvent.getPointerId(actionIndex);
+        eventDispatcher.mLongPressingPointerDeltaX = ((int) motionEvent.getX(actionIndex)) - point.x;
+        eventDispatcher.mLongPressingPointerDeltaY = ((int) motionEvent.getY(actionIndex)) - point.y;
+        eventDispatcher.sendDownForAllNotInjectedPointers(i, motionEvent);
+        sendHoverExitAndTouchExplorationGestureEndIfNeeded(i);
+        GestureManifold gestureManifold = this.mGestureDetector;
+        if (gestureManifold.mSendMotionEventsEnabled) {
+            dispatchGesture(new AccessibilityGestureEvent(18, this.mDisplayId, gestureManifold.mEvents));
         }
-
-        public boolean isPending() {
-            return TouchExplorer.this.mHandler.hasCallbacks(this);
-        }
-
-        public void forceSendAndRemove() {
-            if (isPending()) {
-                run();
-                cancel();
-            }
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            TouchExplorer.this.mDispatcher.sendAccessibilityEvent(this.mEventType);
-        }
-
-        public void setDelay(int i) {
-            this.mDelay = i;
-        }
+        this.mState.setState(4);
     }
 
-    public final void dispatchGesture(AccessibilityGestureEvent accessibilityGestureEvent) {
+    public final void onGestureCompleted(AccessibilityGestureEvent accessibilityGestureEvent) {
+        AccessibilityManagerService accessibilityManagerService = this.mAms;
+        if (accessibilityManagerService.mTraceManager.isA11yTracingEnabledForTypes(12288L)) {
+            accessibilityManagerService.mTraceManager.logTrace("TouchExplorer.onGestureCompleted", 12288L, "event=" + accessibilityGestureEvent);
+        }
         if (DEBUG) {
-            Slog.d("TouchExplorer", "Dispatching gesture event:" + accessibilityGestureEvent.toString());
+            Slog.d("TouchExplorer", "onGestureCompleted() : " + accessibilityGestureEvent.getGestureId());
         }
-        this.mAms.onGesture(accessibilityGestureEvent);
+        if (accessibilityGestureEvent.getGestureId() == 1000) {
+            if (AccessibilityUtils.isSetupWizard(this.mContext)) {
+                Slog.d("TouchExplorer", "stop talkback by GESTURE_TO_STOP_TALKBACK");
+                A11yLogger.insertLog(this.mContext, "A11Y9006");
+                accessibilityManagerService.setScreenReaderEnabled(false);
+                return;
+            }
+            return;
+        }
+        accessibilityManagerService.onTouchInteractionEnd();
+        EventDispatcher eventDispatcher = this.mDispatcher;
+        eventDispatcher.sendAccessibilityEvent(524288);
+        eventDispatcher.sendAccessibilityEvent(2097152);
+        ExitGestureDetectionModeDelayed exitGestureDetectionModeDelayed = this.mExitGestureDetectionModeDelayed;
+        TouchExplorer.this.mHandler.removeCallbacks(exitGestureDetectionModeDelayed);
+        this.mSendTouchInteractionEndDelayed.cancel();
+        dispatchGesture(accessibilityGestureEvent);
     }
 
-    public String toString() {
-        return "TouchExplorer { mTouchState: " + this.mState + ", mDetermineUserIntentTimeout: " + this.mDetermineUserIntentTimeout + ", mDoubleTapSlop: " + this.mDoubleTapSlop + ", mDraggingPointerId: " + this.mDraggingPointerId + " }";
+    public final void onGestureStarted() {
+        AccessibilityManagerService accessibilityManagerService = this.mAms;
+        if (accessibilityManagerService.mTraceManager.isA11yTracingEnabledForTypes(12288L)) {
+            accessibilityManagerService.mTraceManager.logTrace("TouchExplorer.onGestureStarted", 12288L);
+        }
+        if (DEBUG) {
+            Slog.d("TouchExplorer", "onGestureStarted()");
+        }
+        this.mSendHoverEnterAndMoveDelayed.cancel();
+        this.mSendHoverExitDelayed.cancel();
+        ExitGestureDetectionModeDelayed exitGestureDetectionModeDelayed = this.mExitGestureDetectionModeDelayed;
+        TouchExplorer.this.mHandler.postDelayed(exitGestureDetectionModeDelayed, 2000L);
+        this.mDispatcher.sendAccessibilityEvent(262144);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x012b, code lost:
+    
+        if (r16.mGestureDetectionPassthroughRegion.contains(r3, r13) == false) goto L54;
+     */
+    @Override // com.android.server.accessibility.EventStreamTransformation
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void onMotionEvent(android.view.MotionEvent r17, android.view.MotionEvent r18, int r19) {
+        /*
+            Method dump skipped, instructions count: 1086
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.accessibility.gestures.TouchExplorer.onMotionEvent(android.view.MotionEvent, android.view.MotionEvent, int):void");
+    }
+
+    public final void sendHoverExitAndTouchExplorationGestureEndIfNeeded(int i) {
+        TouchState touchState = this.mState;
+        MotionEvent motionEvent = touchState.mLastInjectedHoverEvent;
+        if (motionEvent == null || motionEvent.getActionMasked() == 10) {
+            return;
+        }
+        int pointerIdBits = motionEvent.getPointerIdBits();
+        SendAccessibilityEventDelayed sendAccessibilityEventDelayed = this.mSendTouchExplorationEndDelayed;
+        if (!sendAccessibilityEventDelayed.isPending()) {
+            TouchExplorer.this.mHandler.postDelayed(sendAccessibilityEventDelayed, sendAccessibilityEventDelayed.mDelay);
+        }
+        this.mDispatcher.sendMotionEvent(10, pointerIdBits, i, motionEvent, touchState.mLastReceivedEvent);
+    }
+
+    public final void sendTouchExplorationGestureStartAndHoverEnterIfNeeded(int i) {
+        TouchState touchState = this.mState;
+        if (!touchState.isTouchExploring()) {
+            this.mDispatcher.sendAccessibilityEvent(512);
+        }
+        MotionEvent motionEvent = touchState.mLastInjectedHoverEvent;
+        if (motionEvent == null || motionEvent.getActionMasked() != 10) {
+            return;
+        }
+        this.mDispatcher.sendMotionEvent(9, motionEvent.getPointerIdBits(), i, motionEvent, touchState.mLastReceivedEvent);
+    }
+
+    @Override // com.android.server.accessibility.BaseEventStreamTransformation, com.android.server.accessibility.EventStreamTransformation
+    public final void setNext(EventStreamTransformation eventStreamTransformation) {
+        this.mDispatcher.mReceiver = eventStreamTransformation;
+        this.mNext = eventStreamTransformation;
+    }
+
+    public final void setServiceDetectsGestures(boolean z) {
+        TouchState touchState = this.mState;
+        touchState.getClass();
+        if (DEBUG) {
+            DeviceIdleController$$ExternalSyntheticOutline0.m("serviceDetectsGestures: ", "TouchState", z);
+        }
+        touchState.mServiceDetectsGesturesRequested = z;
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("TouchExplorer { mTouchState: ");
+        sb.append(this.mState);
+        sb.append(", mDetermineUserIntentTimeout: ");
+        sb.append(this.mDetermineUserIntentTimeout);
+        sb.append(", mDoubleTapSlop: ");
+        sb.append(this.mDoubleTapSlop);
+        sb.append(", mDraggingPointerId: ");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.mDraggingPointerId, sb, " }");
     }
 }

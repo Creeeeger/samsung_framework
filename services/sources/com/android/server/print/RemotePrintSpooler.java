@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.graphics.drawable.Icon;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
@@ -20,18 +21,18 @@ import android.print.PrintJobInfo;
 import android.print.PrinterId;
 import android.util.Slog;
 import android.util.TimedRemoteCaller;
-import com.android.internal.os.TransferPipe;
-import com.android.internal.util.dump.DualDumpOutputStream;
-import java.io.IOException;
+import com.android.internal.util.function.pooled.PooledLambda;
+import com.android.server.print.UserState;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import libcore.io.IoUtils;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class RemotePrintSpooler {
     public static final long BIND_SPOOLER_SERVICE_TIMEOUT;
-    public final PrintSpoolerCallbacks mCallbacks;
+    public final UserState mCallbacks;
     public boolean mCanUnbind;
     public final Context mContext;
     public boolean mDestroyed;
@@ -41,57 +42,386 @@ public final class RemotePrintSpooler {
     public IPrintSpooler mRemoteInstance;
     public final UserHandle mUserHandle;
     public final Object mLock = new Object();
-    public final GetPrintJobInfosCaller mGetPrintJobInfosCaller = new GetPrintJobInfosCaller();
-    public final GetPrintJobInfoCaller mGetPrintJobInfoCaller = new GetPrintJobInfoCaller();
-    public final SetPrintJobStateCaller mSetPrintJobStatusCaller = new SetPrintJobStateCaller();
-    public final SetPrintJobTagCaller mSetPrintJobTagCaller = new SetPrintJobTagCaller();
-    public final OnCustomPrinterIconLoadedCaller mCustomPrinterIconLoadedCaller = new OnCustomPrinterIconLoadedCaller();
-    public final ClearCustomPrinterIconCacheCaller mClearCustomPrinterIconCache = new ClearCustomPrinterIconCacheCaller();
-    public final GetCustomPrinterIconCaller mGetCustomPrinterIconCaller = new GetCustomPrinterIconCaller();
-    public final ServiceConnection mServiceConnection = new MyServiceConnection();
+    public final SetPrintJobTagCaller mGetPrintJobInfosCaller = new SetPrintJobTagCaller(4);
+    public final SetPrintJobTagCaller mGetPrintJobInfoCaller = new SetPrintJobTagCaller(3);
+    public final SetPrintJobTagCaller mSetPrintJobStatusCaller = new SetPrintJobTagCaller(6);
+    public final SetPrintJobTagCaller mSetPrintJobTagCaller = new SetPrintJobTagCaller(0);
+    public final SetPrintJobTagCaller mCustomPrinterIconLoadedCaller = new SetPrintJobTagCaller(5);
+    public final SetPrintJobTagCaller mClearCustomPrinterIconCache = new SetPrintJobTagCaller(1);
+    public final SetPrintJobTagCaller mGetCustomPrinterIconCaller = new SetPrintJobTagCaller(2);
+    public final MyServiceConnection mServiceConnection = new MyServiceConnection();
     public final PrintSpoolerClient mClient = new PrintSpoolerClient(this);
 
-    /* loaded from: classes3.dex */
-    public interface PrintSpoolerCallbacks {
-        void onAllPrintJobsForServiceHandled(ComponentName componentName);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MyServiceConnection implements ServiceConnection {
+        public MyServiceConnection() {
+        }
 
-        void onPrintJobQueued(PrintJobInfo printJobInfo);
+        @Override // android.content.ServiceConnection
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            synchronized (RemotePrintSpooler.this.mLock) {
+                RemotePrintSpooler.this.mRemoteInstance = IPrintSpooler.Stub.asInterface(iBinder);
+                RemotePrintSpooler remotePrintSpooler = RemotePrintSpooler.this;
+                remotePrintSpooler.getClass();
+                try {
+                    remotePrintSpooler.mRemoteInstance.setClient(remotePrintSpooler.mClient);
+                } catch (RemoteException e) {
+                    Slog.d("RemotePrintSpooler", "Error setting print spooler client", e);
+                }
+                RemotePrintSpooler.this.mLock.notifyAll();
+            }
+        }
 
-        void onPrintJobStateChanged(PrintJobInfo printJobInfo);
+        @Override // android.content.ServiceConnection
+        public final void onServiceDisconnected(ComponentName componentName) {
+            synchronized (RemotePrintSpooler.this.mLock) {
+                try {
+                    IPrintSpooler iPrintSpooler = RemotePrintSpooler.this.mRemoteInstance;
+                    if (iPrintSpooler != null) {
+                        try {
+                            iPrintSpooler.setClient((IPrintSpoolerClient) null);
+                        } catch (RemoteException e) {
+                            Slog.d("RemotePrintSpooler", "Error clearing print spooler client", e);
+                        }
+                        RemotePrintSpooler.this.mRemoteInstance = null;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PrintSpoolerClient extends IPrintSpoolerClient.Stub {
+        public final WeakReference mWeakSpooler;
+
+        public PrintSpoolerClient(RemotePrintSpooler remotePrintSpooler) {
+            this.mWeakSpooler = new WeakReference(remotePrintSpooler);
+        }
+
+        public final void onAllPrintJobsForServiceHandled(ComponentName componentName) {
+            RemotePrintService remotePrintService;
+            RemotePrintSpooler remotePrintSpooler = (RemotePrintSpooler) this.mWeakSpooler.get();
+            if (remotePrintSpooler != null) {
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    UserState userState = remotePrintSpooler.mCallbacks;
+                    synchronized (userState.mLock) {
+                        userState.throwIfDestroyedLocked();
+                        remotePrintService = (RemotePrintService) userState.mActiveServices.get(componentName);
+                    }
+                    if (remotePrintService != null) {
+                        Handler.getMain().sendMessage(PooledLambda.obtainMessage(new RemotePrintService$$ExternalSyntheticLambda0(2), remotePrintService));
+                    }
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            }
+        }
+
+        public final void onAllPrintJobsHandled() {
+            RemotePrintSpooler remotePrintSpooler = (RemotePrintSpooler) this.mWeakSpooler.get();
+            if (remotePrintSpooler != null) {
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (remotePrintSpooler.mLock) {
+                        remotePrintSpooler.throwIfDestroyedLocked();
+                        remotePrintSpooler.unbindLocked();
+                    }
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            }
+        }
+
+        public final void onPrintJobQueued(PrintJobInfo printJobInfo) {
+            RemotePrintSpooler remotePrintSpooler = (RemotePrintSpooler) this.mWeakSpooler.get();
+            if (remotePrintSpooler != null) {
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    remotePrintSpooler.mCallbacks.onPrintJobQueued(printJobInfo);
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            }
+        }
+
+        public final void onPrintJobStateChanged(PrintJobInfo printJobInfo) {
+            RemotePrintSpooler remotePrintSpooler = (RemotePrintSpooler) this.mWeakSpooler.get();
+            if (remotePrintSpooler != null) {
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    RemotePrintSpooler.m853$$Nest$monPrintJobStateChanged(remotePrintSpooler, printJobInfo);
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SetPrintJobTagCaller extends TimedRemoteCaller {
+        public final AnonymousClass1 mCallback;
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        /* renamed from: com.android.server.print.RemotePrintSpooler$SetPrintJobTagCaller$1, reason: invalid class name */
+        public final class AnonymousClass1 extends IPrintSpoolerCallbacks.Stub {
+            public final /* synthetic */ int $r8$classId = 0;
+            public final /* synthetic */ Object this$0;
+
+            public AnonymousClass1(SetPrintJobTagCaller setPrintJobTagCaller) {
+                this.this$0 = setPrintJobTagCaller;
+            }
+
+            public AnonymousClass1(SetPrintJobTagCaller setPrintJobTagCaller, byte b) {
+                this.this$0 = setPrintJobTagCaller;
+            }
+
+            public AnonymousClass1(SetPrintJobTagCaller setPrintJobTagCaller, byte b, byte b2) {
+                this.this$0 = setPrintJobTagCaller;
+            }
+
+            public AnonymousClass1(SetPrintJobTagCaller setPrintJobTagCaller, byte b, boolean z) {
+                this.this$0 = setPrintJobTagCaller;
+            }
+
+            public AnonymousClass1(SetPrintJobTagCaller setPrintJobTagCaller, char c) {
+                this.this$0 = setPrintJobTagCaller;
+            }
+
+            public AnonymousClass1(SetPrintJobTagCaller setPrintJobTagCaller, int i) {
+                this.this$0 = setPrintJobTagCaller;
+            }
+
+            public AnonymousClass1(SetPrintJobTagCaller setPrintJobTagCaller, short s) {
+                this.this$0 = setPrintJobTagCaller;
+            }
+
+            public void customPrinterIconCacheCleared(int i) {
+                switch (this.$r8$classId) {
+                    case 1:
+                        ((SetPrintJobTagCaller) this.this$0).onRemoteMethodResult(null, i);
+                        break;
+                }
+            }
+
+            public final void customPrinterIconCacheCleared$com$android$server$print$RemotePrintSpooler$BasePrintSpoolerServiceCallbacks(int i) {
+            }
+
+            public final void onCancelPrintJobResult(boolean z, int i) {
+            }
+
+            public void onCustomPrinterIconCached(int i) {
+                switch (this.$r8$classId) {
+                    case 5:
+                        ((SetPrintJobTagCaller) this.this$0).onRemoteMethodResult(null, i);
+                        break;
+                }
+            }
+
+            public final void onCustomPrinterIconCached$com$android$server$print$RemotePrintSpooler$BasePrintSpoolerServiceCallbacks(int i) {
+            }
+
+            public void onGetCustomPrinterIconResult(Icon icon, int i) {
+                switch (this.$r8$classId) {
+                    case 2:
+                        ((SetPrintJobTagCaller) this.this$0).onRemoteMethodResult(icon, i);
+                        break;
+                }
+            }
+
+            public final void onGetCustomPrinterIconResult$com$android$server$print$RemotePrintSpooler$BasePrintSpoolerServiceCallbacks(Icon icon, int i) {
+            }
+
+            public void onGetPrintJobInfoResult(PrintJobInfo printJobInfo, int i) {
+                switch (this.$r8$classId) {
+                    case 3:
+                        ((SetPrintJobTagCaller) this.this$0).onRemoteMethodResult(printJobInfo, i);
+                        break;
+                }
+            }
+
+            public final void onGetPrintJobInfoResult$com$android$server$print$RemotePrintSpooler$BasePrintSpoolerServiceCallbacks(PrintJobInfo printJobInfo, int i) {
+            }
+
+            public void onGetPrintJobInfosResult(List list, int i) {
+                switch (this.$r8$classId) {
+                    case 4:
+                        ((SetPrintJobTagCaller) this.this$0).onRemoteMethodResult(list, i);
+                        break;
+                }
+            }
+
+            public final void onGetPrintJobInfosResult$com$android$server$print$RemotePrintSpooler$BasePrintSpoolerServiceCallbacks(List list, int i) {
+            }
+
+            public void onSetPrintJobStateResult(boolean z, int i) {
+                switch (this.$r8$classId) {
+                    case 6:
+                        ((SetPrintJobTagCaller) this.this$0).onRemoteMethodResult(Boolean.valueOf(z), i);
+                        break;
+                }
+            }
+
+            public final void onSetPrintJobStateResult$com$android$server$print$RemotePrintSpooler$BasePrintSpoolerServiceCallbacks(boolean z, int i) {
+            }
+
+            public void onSetPrintJobTagResult(boolean z, int i) {
+                switch (this.$r8$classId) {
+                    case 0:
+                        ((SetPrintJobTagCaller) this.this$0).onRemoteMethodResult(Boolean.valueOf(z), i);
+                        break;
+                }
+            }
+
+            public final void onSetPrintJobTagResult$com$android$server$print$RemotePrintSpooler$BasePrintSpoolerServiceCallbacks(boolean z, int i) {
+            }
+        }
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public SetPrintJobTagCaller(int i) {
+            super(5000L);
+            switch (i) {
+                case 1:
+                    super(5000L);
+                    this.mCallback = new AnonymousClass1(this, (byte) 0);
+                    break;
+                case 2:
+                    super(5000L);
+                    this.mCallback = new AnonymousClass1(this, (char) 0);
+                    break;
+                case 3:
+                    super(5000L);
+                    this.mCallback = new AnonymousClass1(this, 0);
+                    break;
+                case 4:
+                    super(5000L);
+                    this.mCallback = new AnonymousClass1(this, (short) 0);
+                    break;
+                case 5:
+                    super(5000L);
+                    this.mCallback = new AnonymousClass1(this, (byte) 0, false);
+                    break;
+                case 6:
+                    super(5000L);
+                    this.mCallback = new AnonymousClass1(this, (byte) 0, (byte) 0);
+                    break;
+                default:
+                    this.mCallback = new AnonymousClass1(this);
+                    break;
+            }
+        }
+
+        public void clearCustomPrinterIconCache(IPrintSpooler iPrintSpooler) {
+            int onBeforeRemoteCall = onBeforeRemoteCall();
+            iPrintSpooler.clearCustomPrinterIconCache(this.mCallback, onBeforeRemoteCall);
+        }
+
+        public Icon getCustomPrinterIcon(IPrintSpooler iPrintSpooler, PrinterId printerId) {
+            int onBeforeRemoteCall = onBeforeRemoteCall();
+            iPrintSpooler.getCustomPrinterIcon(printerId, this.mCallback, onBeforeRemoteCall);
+            return (Icon) getResultTimed(onBeforeRemoteCall);
+        }
+
+        public PrintJobInfo getPrintJobInfo(IPrintSpooler iPrintSpooler, PrintJobId printJobId, int i) {
+            int onBeforeRemoteCall = onBeforeRemoteCall();
+            iPrintSpooler.getPrintJobInfo(printJobId, this.mCallback, i, onBeforeRemoteCall);
+            return (PrintJobInfo) getResultTimed(onBeforeRemoteCall);
+        }
+
+        public List getPrintJobInfos(IPrintSpooler iPrintSpooler, ComponentName componentName, int i, int i2) {
+            int onBeforeRemoteCall = onBeforeRemoteCall();
+            iPrintSpooler.getPrintJobInfos(this.mCallback, componentName, i, i2, onBeforeRemoteCall);
+            return (List) getResultTimed(onBeforeRemoteCall);
+        }
+
+        public void onCustomPrinterIconLoaded(IPrintSpooler iPrintSpooler, PrinterId printerId, Icon icon) {
+            int onBeforeRemoteCall = onBeforeRemoteCall();
+            iPrintSpooler.onCustomPrinterIconLoaded(printerId, icon, this.mCallback, onBeforeRemoteCall);
+        }
+
+        public boolean setPrintJobState(IPrintSpooler iPrintSpooler, PrintJobId printJobId, int i, String str) {
+            int onBeforeRemoteCall = onBeforeRemoteCall();
+            iPrintSpooler.setPrintJobState(printJobId, i, str, this.mCallback, onBeforeRemoteCall);
+            return ((Boolean) getResultTimed(onBeforeRemoteCall)).booleanValue();
+        }
+
+        public boolean setPrintJobTag(IPrintSpooler iPrintSpooler, PrintJobId printJobId, String str) {
+            int onBeforeRemoteCall = onBeforeRemoteCall();
+            iPrintSpooler.setPrintJobTag(printJobId, str, this.mCallback, onBeforeRemoteCall);
+            return ((Boolean) getResultTimed(onBeforeRemoteCall)).booleanValue();
+        }
+    }
+
+    /* renamed from: -$$Nest$monPrintJobStateChanged, reason: not valid java name */
+    public static void m853$$Nest$monPrintJobStateChanged(RemotePrintSpooler remotePrintSpooler, PrintJobInfo printJobInfo) {
+        UserState userState = remotePrintSpooler.mCallbacks;
+        UserState.PrintJobForAppCache printJobForAppCache = userState.mPrintJobForAppCache;
+        synchronized (UserState.this.mLock) {
+            try {
+                List list = (List) printJobForAppCache.mPrintJobsForRunningApp.get(printJobInfo.getAppId());
+                if (list != null) {
+                    int size = list.size();
+                    for (int i = 0; i < size; i++) {
+                        if (((PrintJobInfo) list.get(i)).getId().equals(printJobInfo.getId())) {
+                            list.set(i, printJobInfo);
+                        }
+                    }
+                }
+            } finally {
+            }
+        }
+        Handler.getMain().sendMessage(PooledLambda.obtainMessage(new UserState$$ExternalSyntheticLambda4(0), userState, printJobInfo.getId(), PooledLambda.obtainSupplier(printJobInfo.getAppId()).recycleOnUse()));
     }
 
     static {
         BIND_SPOOLER_SERVICE_TIMEOUT = Build.IS_ENG ? 120000L : 10000L;
     }
 
-    public RemotePrintSpooler(Context context, int i, boolean z, PrintSpoolerCallbacks printSpoolerCallbacks) {
+    public RemotePrintSpooler(Context context, int i, boolean z, UserState userState) {
         this.mContext = context;
         this.mUserHandle = new UserHandle(i);
-        this.mCallbacks = printSpoolerCallbacks;
+        this.mCallbacks = userState;
         this.mIsLowPriority = z;
         Intent intent = new Intent();
         this.mIntent = intent;
         intent.setComponent(new ComponentName("com.android.printspooler", "com.android.printspooler.model.PrintSpoolerService"));
     }
 
-    public void increasePriority() {
-        if (this.mIsLowPriority) {
-            this.mIsLowPriority = false;
-            synchronized (this.mLock) {
-                throwIfDestroyedLocked();
-                while (!this.mCanUnbind) {
-                    try {
-                        this.mLock.wait();
-                    } catch (InterruptedException unused) {
-                        Slog.e("RemotePrintSpooler", "Interrupted while waiting for operation to complete");
-                    }
-                }
-                unbindLocked();
+    public final void bindLocked() {
+        Object obj;
+        while (true) {
+            boolean z = this.mIsBinding;
+            obj = this.mLock;
+            if (!z) {
+                break;
+            } else {
+                obj.wait();
             }
+        }
+        if (this.mRemoteInstance != null) {
+            return;
+        }
+        this.mIsBinding = true;
+        try {
+            this.mContext.bindServiceAsUser(this.mIntent, this.mServiceConnection, this.mIsLowPriority ? 1 : 67108865, this.mUserHandle);
+            long uptimeMillis = SystemClock.uptimeMillis();
+            while (this.mRemoteInstance == null) {
+                long uptimeMillis2 = BIND_SPOOLER_SERVICE_TIMEOUT - (SystemClock.uptimeMillis() - uptimeMillis);
+                if (uptimeMillis2 <= 0) {
+                    throw new TimeoutException("Cannot get spooler!");
+                }
+                obj.wait(uptimeMillis2);
+            }
+            this.mCanUnbind = true;
+        } finally {
+            this.mIsBinding = false;
+            obj.notifyAll();
         }
     }
 
-    public final List getPrintJobInfos(ComponentName componentName, int i, int i2) {
+    public final void clearCustomPrinterIconCache() {
         throwIfCalledOnMainThread();
         synchronized (this.mLock) {
             throwIfDestroyedLocked();
@@ -99,53 +429,19 @@ public final class RemotePrintSpooler {
         }
         try {
             try {
-                List printJobInfos = this.mGetPrintJobInfosCaller.getPrintJobInfos(getRemoteInstanceLazy(), componentName, i, i2);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                }
-                return printJobInfos;
-            } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error getting print jobs.", e);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                    return null;
-                }
-            }
-        } catch (Throwable th) {
-            synchronized (this.mLock) {
-                this.mCanUnbind = true;
-                this.mLock.notifyAll();
-                throw th;
-            }
-        }
-    }
-
-    public final void writePrintJobData(ParcelFileDescriptor parcelFileDescriptor, PrintJobId printJobId) {
-        throwIfCalledOnMainThread();
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            this.mCanUnbind = false;
-        }
-        try {
-            try {
-                getRemoteInstanceLazy().writePrintJobData(parcelFileDescriptor, printJobId);
-                IoUtils.closeQuietly(parcelFileDescriptor);
+                this.mClearCustomPrinterIconCache.clearCustomPrinterIconCache(getRemoteInstanceLazy());
                 synchronized (this.mLock) {
                     this.mCanUnbind = true;
                     this.mLock.notifyAll();
                 }
             } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error writing print job data.", e);
-                IoUtils.closeQuietly(parcelFileDescriptor);
+                Slog.e("RemotePrintSpooler", "Error clearing custom printer icon cache.", e);
                 synchronized (this.mLock) {
                     this.mCanUnbind = true;
                     this.mLock.notifyAll();
                 }
             }
         } catch (Throwable th) {
-            IoUtils.closeQuietly(parcelFileDescriptor);
             synchronized (this.mLock) {
                 this.mCanUnbind = true;
                 this.mLock.notifyAll();
@@ -185,6 +481,151 @@ public final class RemotePrintSpooler {
         }
     }
 
+    public final List getPrintJobInfos(int i, int i2, ComponentName componentName) {
+        throwIfCalledOnMainThread();
+        synchronized (this.mLock) {
+            throwIfDestroyedLocked();
+            this.mCanUnbind = false;
+        }
+        try {
+            try {
+                List printJobInfos = this.mGetPrintJobInfosCaller.getPrintJobInfos(getRemoteInstanceLazy(), componentName, i, i2);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    this.mLock.notifyAll();
+                }
+                return printJobInfos;
+            } catch (RemoteException | InterruptedException | TimeoutException e) {
+                Slog.e("RemotePrintSpooler", "Error getting print jobs.", e);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    this.mLock.notifyAll();
+                    return null;
+                }
+            }
+        } catch (Throwable th) {
+            synchronized (this.mLock) {
+                this.mCanUnbind = true;
+                this.mLock.notifyAll();
+                throw th;
+            }
+        }
+    }
+
+    public final IPrintSpooler getRemoteInstanceLazy() {
+        synchronized (this.mLock) {
+            try {
+                IPrintSpooler iPrintSpooler = this.mRemoteInstance;
+                if (iPrintSpooler != null) {
+                    return iPrintSpooler;
+                }
+                bindLocked();
+                return this.mRemoteInstance;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void onCustomPrinterIconLoaded(PrinterId printerId, Icon icon) {
+        throwIfCalledOnMainThread();
+        synchronized (this.mLock) {
+            throwIfDestroyedLocked();
+            this.mCanUnbind = false;
+        }
+        try {
+            try {
+                this.mCustomPrinterIconLoadedCaller.onCustomPrinterIconLoaded(getRemoteInstanceLazy(), printerId, icon);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    this.mLock.notifyAll();
+                }
+            } catch (RemoteException | InterruptedException | TimeoutException e) {
+                Slog.e("RemotePrintSpooler", "Error loading new custom printer icon.", e);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    this.mLock.notifyAll();
+                }
+            }
+        } catch (Throwable th) {
+            synchronized (this.mLock) {
+                this.mCanUnbind = true;
+                this.mLock.notifyAll();
+                throw th;
+            }
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    public final void pruneApprovedPrintServices(List list) {
+        Object obj;
+        throwIfCalledOnMainThread();
+        synchronized (this.mLock) {
+            throwIfDestroyedLocked();
+            this.mCanUnbind = false;
+        }
+        try {
+            try {
+                getRemoteInstanceLazy().pruneApprovedPrintServices(list);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    obj = this.mLock;
+                    obj.notifyAll();
+                }
+                this = obj;
+            } catch (RemoteException | InterruptedException | TimeoutException e) {
+                Slog.e("RemotePrintSpooler", "Error pruning approved print services.", e);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    Object obj2 = this.mLock;
+                    obj2.notifyAll();
+                    this = obj2;
+                }
+            }
+        } catch (Throwable th) {
+            synchronized (this.mLock) {
+                this.mCanUnbind = true;
+                this.mLock.notifyAll();
+                throw th;
+            }
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    public final void setPrintJobCancelling(PrintJobId printJobId) {
+        Object obj;
+        throwIfCalledOnMainThread();
+        synchronized (this.mLock) {
+            throwIfDestroyedLocked();
+            this.mCanUnbind = false;
+        }
+        try {
+            try {
+                getRemoteInstanceLazy().setPrintJobCancelling(printJobId, true);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    obj = this.mLock;
+                    obj.notifyAll();
+                }
+                this = obj;
+            } catch (RemoteException | InterruptedException | TimeoutException e) {
+                Slog.e("RemotePrintSpooler", "Error setting print job cancelling.", e);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    Object obj2 = this.mLock;
+                    obj2.notifyAll();
+                    this = obj2;
+                }
+            }
+        } catch (Throwable th) {
+            synchronized (this.mLock) {
+                this.mCanUnbind = true;
+                this.mLock.notifyAll();
+                throw th;
+            }
+        }
+    }
+
     public final boolean setPrintJobState(PrintJobId printJobId, int i, String str) {
         throwIfCalledOnMainThread();
         synchronized (this.mLock) {
@@ -201,6 +642,37 @@ public final class RemotePrintSpooler {
                 return printJobState;
             } catch (RemoteException | InterruptedException | TimeoutException e) {
                 Slog.e("RemotePrintSpooler", "Error setting print job state.", e);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    this.mLock.notifyAll();
+                    return false;
+                }
+            }
+        } catch (Throwable th) {
+            synchronized (this.mLock) {
+                this.mCanUnbind = true;
+                this.mLock.notifyAll();
+                throw th;
+            }
+        }
+    }
+
+    public final boolean setPrintJobTag(PrintJobId printJobId, String str) {
+        throwIfCalledOnMainThread();
+        synchronized (this.mLock) {
+            throwIfDestroyedLocked();
+            this.mCanUnbind = false;
+        }
+        try {
+            try {
+                boolean printJobTag = this.mSetPrintJobTagCaller.setPrintJobTag(getRemoteInstanceLazy(), printJobId, str);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    this.mLock.notifyAll();
+                }
+                return printJobTag;
+            } catch (RemoteException | InterruptedException | TimeoutException e) {
+                Slog.e("RemotePrintSpooler", "Error setting print job tag.", e);
                 synchronized (this.mLock) {
                     this.mCanUnbind = true;
                     this.mLock.notifyAll();
@@ -252,41 +724,6 @@ public final class RemotePrintSpooler {
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public final void setStatus(PrintJobId printJobId, CharSequence charSequence) {
-        Object obj;
-        throwIfCalledOnMainThread();
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            this.mCanUnbind = false;
-        }
-        try {
-            try {
-                getRemoteInstanceLazy().setStatus(printJobId, charSequence);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    obj = this.mLock;
-                    obj.notifyAll();
-                }
-                this = obj;
-            } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error setting status.", e);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    Object obj2 = this.mLock;
-                    obj2.notifyAll();
-                    this = obj2;
-                }
-            }
-        } catch (Throwable th) {
-            synchronized (this.mLock) {
-                this.mCanUnbind = true;
-                this.mLock.notifyAll();
-                throw th;
-            }
-        }
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
     public final void setStatus(PrintJobId printJobId, int i, CharSequence charSequence) {
         Object obj;
         throwIfCalledOnMainThread();
@@ -321,128 +758,8 @@ public final class RemotePrintSpooler {
         }
     }
 
-    public final void onCustomPrinterIconLoaded(PrinterId printerId, Icon icon) {
-        throwIfCalledOnMainThread();
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            this.mCanUnbind = false;
-        }
-        try {
-            try {
-                this.mCustomPrinterIconLoadedCaller.onCustomPrinterIconLoaded(getRemoteInstanceLazy(), printerId, icon);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                }
-            } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error loading new custom printer icon.", e);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                }
-            }
-        } catch (Throwable th) {
-            synchronized (this.mLock) {
-                this.mCanUnbind = true;
-                this.mLock.notifyAll();
-                throw th;
-            }
-        }
-    }
-
-    public final Icon getCustomPrinterIcon(PrinterId printerId) {
-        throwIfCalledOnMainThread();
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            this.mCanUnbind = false;
-        }
-        try {
-            try {
-                Icon customPrinterIcon = this.mGetCustomPrinterIconCaller.getCustomPrinterIcon(getRemoteInstanceLazy(), printerId);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                }
-                return customPrinterIcon;
-            } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error getting custom printer icon.", e);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                    return null;
-                }
-            }
-        } catch (Throwable th) {
-            synchronized (this.mLock) {
-                this.mCanUnbind = true;
-                this.mLock.notifyAll();
-                throw th;
-            }
-        }
-    }
-
-    public void clearCustomPrinterIconCache() {
-        throwIfCalledOnMainThread();
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            this.mCanUnbind = false;
-        }
-        try {
-            try {
-                this.mClearCustomPrinterIconCache.clearCustomPrinterIconCache(getRemoteInstanceLazy());
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                }
-            } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error clearing custom printer icon cache.", e);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                }
-            }
-        } catch (Throwable th) {
-            synchronized (this.mLock) {
-                this.mCanUnbind = true;
-                this.mLock.notifyAll();
-                throw th;
-            }
-        }
-    }
-
-    public final boolean setPrintJobTag(PrintJobId printJobId, String str) {
-        throwIfCalledOnMainThread();
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            this.mCanUnbind = false;
-        }
-        try {
-            try {
-                boolean printJobTag = this.mSetPrintJobTagCaller.setPrintJobTag(getRemoteInstanceLazy(), printJobId, str);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                }
-                return printJobTag;
-            } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error setting print job tag.", e);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    this.mLock.notifyAll();
-                    return false;
-                }
-            }
-        } catch (Throwable th) {
-            synchronized (this.mLock) {
-                this.mCanUnbind = true;
-                this.mLock.notifyAll();
-                throw th;
-            }
-        }
-    }
-
     /* JADX WARN: Multi-variable type inference failed */
-    public final void setPrintJobCancelling(PrintJobId printJobId, boolean z) {
+    public final void setStatus(PrintJobId printJobId, CharSequence charSequence) {
         Object obj;
         throwIfCalledOnMainThread();
         synchronized (this.mLock) {
@@ -451,7 +768,7 @@ public final class RemotePrintSpooler {
         }
         try {
             try {
-                getRemoteInstanceLazy().setPrintJobCancelling(printJobId, z);
+                getRemoteInstanceLazy().setStatus(printJobId, charSequence);
                 synchronized (this.mLock) {
                     this.mCanUnbind = true;
                     obj = this.mLock;
@@ -459,7 +776,7 @@ public final class RemotePrintSpooler {
                 }
                 this = obj;
             } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error setting print job cancelling.", e);
+                Slog.e("RemotePrintSpooler", "Error setting status.", e);
                 synchronized (this.mLock) {
                     this.mCanUnbind = true;
                     Object obj2 = this.mLock;
@@ -476,146 +793,15 @@ public final class RemotePrintSpooler {
         }
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
-    public final void pruneApprovedPrintServices(List list) {
-        Object obj;
-        throwIfCalledOnMainThread();
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            this.mCanUnbind = false;
-        }
-        try {
-            try {
-                getRemoteInstanceLazy().pruneApprovedPrintServices(list);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    obj = this.mLock;
-                    obj.notifyAll();
-                }
-                this = obj;
-            } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error pruning approved print services.", e);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    Object obj2 = this.mLock;
-                    obj2.notifyAll();
-                    this = obj2;
-                }
-            }
-        } catch (Throwable th) {
-            synchronized (this.mLock) {
-                this.mCanUnbind = true;
-                this.mLock.notifyAll();
-                throw th;
-            }
+    public final void throwIfCalledOnMainThread() {
+        if (Thread.currentThread() == this.mContext.getMainLooper().getThread()) {
+            throw new RuntimeException("Cannot invoke on the main thread");
         }
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
-    public final void removeObsoletePrintJobs() {
-        Object obj;
-        throwIfCalledOnMainThread();
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            this.mCanUnbind = false;
-        }
-        try {
-            try {
-                getRemoteInstanceLazy().removeObsoletePrintJobs();
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    obj = this.mLock;
-                    obj.notifyAll();
-                }
-                this = obj;
-            } catch (RemoteException | InterruptedException | TimeoutException e) {
-                Slog.e("RemotePrintSpooler", "Error removing obsolete print jobs .", e);
-                synchronized (this.mLock) {
-                    this.mCanUnbind = true;
-                    Object obj2 = this.mLock;
-                    obj2.notifyAll();
-                    this = obj2;
-                }
-            }
-        } catch (Throwable th) {
-            synchronized (this.mLock) {
-                this.mCanUnbind = true;
-                this.mLock.notifyAll();
-                throw th;
-            }
-        }
-    }
-
-    public final void destroy() {
-        throwIfCalledOnMainThread();
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            unbindLocked();
-            this.mDestroyed = true;
-            this.mCanUnbind = false;
-        }
-    }
-
-    public void dump(DualDumpOutputStream dualDumpOutputStream) {
-        synchronized (this.mLock) {
-            dualDumpOutputStream.write("is_destroyed", 1133871366145L, this.mDestroyed);
-            dualDumpOutputStream.write("is_bound", 1133871366146L, this.mRemoteInstance != null);
-        }
-        try {
-            if (dualDumpOutputStream.isProto()) {
-                dualDumpOutputStream.write((String) null, 1146756268035L, TransferPipe.dumpAsync(getRemoteInstanceLazy().asBinder(), new String[]{"--proto"}));
-            } else {
-                dualDumpOutputStream.writeNested("internal_state", TransferPipe.dumpAsync(getRemoteInstanceLazy().asBinder(), new String[0]));
-            }
-        } catch (RemoteException | IOException | InterruptedException | TimeoutException e) {
-            Slog.e("RemotePrintSpooler", "Failed to dump remote instance", e);
-        }
-    }
-
-    public final void onAllPrintJobsHandled() {
-        synchronized (this.mLock) {
-            throwIfDestroyedLocked();
-            unbindLocked();
-        }
-    }
-
-    public final void onPrintJobStateChanged(PrintJobInfo printJobInfo) {
-        this.mCallbacks.onPrintJobStateChanged(printJobInfo);
-    }
-
-    public final IPrintSpooler getRemoteInstanceLazy() {
-        synchronized (this.mLock) {
-            IPrintSpooler iPrintSpooler = this.mRemoteInstance;
-            if (iPrintSpooler != null) {
-                return iPrintSpooler;
-            }
-            bindLocked();
-            return this.mRemoteInstance;
-        }
-    }
-
-    public final void bindLocked() {
-        while (this.mIsBinding) {
-            this.mLock.wait();
-        }
-        if (this.mRemoteInstance != null) {
-            return;
-        }
-        this.mIsBinding = true;
-        try {
-            this.mContext.bindServiceAsUser(this.mIntent, this.mServiceConnection, this.mIsLowPriority ? 1 : 67108865, this.mUserHandle);
-            long uptimeMillis = SystemClock.uptimeMillis();
-            while (this.mRemoteInstance == null) {
-                long uptimeMillis2 = BIND_SPOOLER_SERVICE_TIMEOUT - (SystemClock.uptimeMillis() - uptimeMillis);
-                if (uptimeMillis2 <= 0) {
-                    throw new TimeoutException("Cannot get spooler!");
-                }
-                this.mLock.wait(uptimeMillis2);
-            }
-            this.mCanUnbind = true;
-        } finally {
-            this.mIsBinding = false;
-            this.mLock.notifyAll();
+    public final void throwIfDestroyedLocked() {
+        if (this.mDestroyed) {
+            throw new IllegalStateException("Cannot interact with a destroyed instance.");
         }
     }
 
@@ -629,294 +815,43 @@ public final class RemotePrintSpooler {
             } catch (InterruptedException unused) {
             }
         }
-        clearClientLocked();
-        this.mRemoteInstance = null;
-        this.mContext.unbindService(this.mServiceConnection);
-    }
-
-    public final void setClientLocked() {
-        try {
-            this.mRemoteInstance.setClient(this.mClient);
-        } catch (RemoteException e) {
-            Slog.d("RemotePrintSpooler", "Error setting print spooler client", e);
-        }
-    }
-
-    public final void clearClientLocked() {
         try {
             this.mRemoteInstance.setClient((IPrintSpoolerClient) null);
         } catch (RemoteException e) {
             Slog.d("RemotePrintSpooler", "Error clearing print spooler client", e);
         }
+        this.mRemoteInstance = null;
+        this.mContext.unbindService(this.mServiceConnection);
     }
 
-    public final void throwIfDestroyedLocked() {
-        if (this.mDestroyed) {
-            throw new IllegalStateException("Cannot interact with a destroyed instance.");
+    public final void writePrintJobData(ParcelFileDescriptor parcelFileDescriptor, PrintJobId printJobId) {
+        throwIfCalledOnMainThread();
+        synchronized (this.mLock) {
+            throwIfDestroyedLocked();
+            this.mCanUnbind = false;
         }
-    }
-
-    public final void throwIfCalledOnMainThread() {
-        if (Thread.currentThread() == this.mContext.getMainLooper().getThread()) {
-            throw new RuntimeException("Cannot invoke on the main thread");
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class MyServiceConnection implements ServiceConnection {
-        public MyServiceConnection() {
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            synchronized (RemotePrintSpooler.this.mLock) {
-                RemotePrintSpooler.this.mRemoteInstance = IPrintSpooler.Stub.asInterface(iBinder);
-                RemotePrintSpooler.this.setClientLocked();
-                RemotePrintSpooler.this.mLock.notifyAll();
-            }
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName componentName) {
-            synchronized (RemotePrintSpooler.this.mLock) {
-                if (RemotePrintSpooler.this.mRemoteInstance != null) {
-                    RemotePrintSpooler.this.clearClientLocked();
-                    RemotePrintSpooler.this.mRemoteInstance = null;
+        try {
+            try {
+                getRemoteInstanceLazy().writePrintJobData(parcelFileDescriptor, printJobId);
+                IoUtils.closeQuietly(parcelFileDescriptor);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    this.mLock.notifyAll();
+                }
+            } catch (RemoteException | InterruptedException | TimeoutException e) {
+                Slog.e("RemotePrintSpooler", "Error writing print job data.", e);
+                IoUtils.closeQuietly(parcelFileDescriptor);
+                synchronized (this.mLock) {
+                    this.mCanUnbind = true;
+                    this.mLock.notifyAll();
                 }
             }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class GetPrintJobInfosCaller extends TimedRemoteCaller {
-        public final IPrintSpoolerCallbacks mCallback;
-
-        public GetPrintJobInfosCaller() {
-            super(5000L);
-            this.mCallback = new BasePrintSpoolerServiceCallbacks() { // from class: com.android.server.print.RemotePrintSpooler.GetPrintJobInfosCaller.1
-                @Override // com.android.server.print.RemotePrintSpooler.BasePrintSpoolerServiceCallbacks
-                public void onGetPrintJobInfosResult(List list, int i) {
-                    GetPrintJobInfosCaller.this.onRemoteMethodResult(list, i);
-                }
-            };
-        }
-
-        public List getPrintJobInfos(IPrintSpooler iPrintSpooler, ComponentName componentName, int i, int i2) {
-            int onBeforeRemoteCall = onBeforeRemoteCall();
-            iPrintSpooler.getPrintJobInfos(this.mCallback, componentName, i, i2, onBeforeRemoteCall);
-            return (List) getResultTimed(onBeforeRemoteCall);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class GetPrintJobInfoCaller extends TimedRemoteCaller {
-        public final IPrintSpoolerCallbacks mCallback;
-
-        public GetPrintJobInfoCaller() {
-            super(5000L);
-            this.mCallback = new BasePrintSpoolerServiceCallbacks() { // from class: com.android.server.print.RemotePrintSpooler.GetPrintJobInfoCaller.1
-                @Override // com.android.server.print.RemotePrintSpooler.BasePrintSpoolerServiceCallbacks
-                public void onGetPrintJobInfoResult(PrintJobInfo printJobInfo, int i) {
-                    GetPrintJobInfoCaller.this.onRemoteMethodResult(printJobInfo, i);
-                }
-            };
-        }
-
-        public PrintJobInfo getPrintJobInfo(IPrintSpooler iPrintSpooler, PrintJobId printJobId, int i) {
-            int onBeforeRemoteCall = onBeforeRemoteCall();
-            iPrintSpooler.getPrintJobInfo(printJobId, this.mCallback, i, onBeforeRemoteCall);
-            return (PrintJobInfo) getResultTimed(onBeforeRemoteCall);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class SetPrintJobStateCaller extends TimedRemoteCaller {
-        public final IPrintSpoolerCallbacks mCallback;
-
-        public SetPrintJobStateCaller() {
-            super(5000L);
-            this.mCallback = new BasePrintSpoolerServiceCallbacks() { // from class: com.android.server.print.RemotePrintSpooler.SetPrintJobStateCaller.1
-                @Override // com.android.server.print.RemotePrintSpooler.BasePrintSpoolerServiceCallbacks
-                public void onSetPrintJobStateResult(boolean z, int i) {
-                    SetPrintJobStateCaller.this.onRemoteMethodResult(Boolean.valueOf(z), i);
-                }
-            };
-        }
-
-        public boolean setPrintJobState(IPrintSpooler iPrintSpooler, PrintJobId printJobId, int i, String str) {
-            int onBeforeRemoteCall = onBeforeRemoteCall();
-            iPrintSpooler.setPrintJobState(printJobId, i, str, this.mCallback, onBeforeRemoteCall);
-            return ((Boolean) getResultTimed(onBeforeRemoteCall)).booleanValue();
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class SetPrintJobTagCaller extends TimedRemoteCaller {
-        public final IPrintSpoolerCallbacks mCallback;
-
-        public SetPrintJobTagCaller() {
-            super(5000L);
-            this.mCallback = new BasePrintSpoolerServiceCallbacks() { // from class: com.android.server.print.RemotePrintSpooler.SetPrintJobTagCaller.1
-                @Override // com.android.server.print.RemotePrintSpooler.BasePrintSpoolerServiceCallbacks
-                public void onSetPrintJobTagResult(boolean z, int i) {
-                    SetPrintJobTagCaller.this.onRemoteMethodResult(Boolean.valueOf(z), i);
-                }
-            };
-        }
-
-        public boolean setPrintJobTag(IPrintSpooler iPrintSpooler, PrintJobId printJobId, String str) {
-            int onBeforeRemoteCall = onBeforeRemoteCall();
-            iPrintSpooler.setPrintJobTag(printJobId, str, this.mCallback, onBeforeRemoteCall);
-            return ((Boolean) getResultTimed(onBeforeRemoteCall)).booleanValue();
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class OnCustomPrinterIconLoadedCaller extends TimedRemoteCaller {
-        public final IPrintSpoolerCallbacks mCallback;
-
-        public OnCustomPrinterIconLoadedCaller() {
-            super(5000L);
-            this.mCallback = new BasePrintSpoolerServiceCallbacks() { // from class: com.android.server.print.RemotePrintSpooler.OnCustomPrinterIconLoadedCaller.1
-                @Override // com.android.server.print.RemotePrintSpooler.BasePrintSpoolerServiceCallbacks
-                public void onCustomPrinterIconCached(int i) {
-                    OnCustomPrinterIconLoadedCaller.this.onRemoteMethodResult(null, i);
-                }
-            };
-        }
-
-        public Void onCustomPrinterIconLoaded(IPrintSpooler iPrintSpooler, PrinterId printerId, Icon icon) {
-            int onBeforeRemoteCall = onBeforeRemoteCall();
-            iPrintSpooler.onCustomPrinterIconLoaded(printerId, icon, this.mCallback, onBeforeRemoteCall);
-            return (Void) getResultTimed(onBeforeRemoteCall);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class ClearCustomPrinterIconCacheCaller extends TimedRemoteCaller {
-        public final IPrintSpoolerCallbacks mCallback;
-
-        public ClearCustomPrinterIconCacheCaller() {
-            super(5000L);
-            this.mCallback = new BasePrintSpoolerServiceCallbacks() { // from class: com.android.server.print.RemotePrintSpooler.ClearCustomPrinterIconCacheCaller.1
-                @Override // com.android.server.print.RemotePrintSpooler.BasePrintSpoolerServiceCallbacks
-                public void customPrinterIconCacheCleared(int i) {
-                    ClearCustomPrinterIconCacheCaller.this.onRemoteMethodResult(null, i);
-                }
-            };
-        }
-
-        public Void clearCustomPrinterIconCache(IPrintSpooler iPrintSpooler) {
-            int onBeforeRemoteCall = onBeforeRemoteCall();
-            iPrintSpooler.clearCustomPrinterIconCache(this.mCallback, onBeforeRemoteCall);
-            return (Void) getResultTimed(onBeforeRemoteCall);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class GetCustomPrinterIconCaller extends TimedRemoteCaller {
-        public final IPrintSpoolerCallbacks mCallback;
-
-        public GetCustomPrinterIconCaller() {
-            super(5000L);
-            this.mCallback = new BasePrintSpoolerServiceCallbacks() { // from class: com.android.server.print.RemotePrintSpooler.GetCustomPrinterIconCaller.1
-                @Override // com.android.server.print.RemotePrintSpooler.BasePrintSpoolerServiceCallbacks
-                public void onGetCustomPrinterIconResult(Icon icon, int i) {
-                    GetCustomPrinterIconCaller.this.onRemoteMethodResult(icon, i);
-                }
-            };
-        }
-
-        public Icon getCustomPrinterIcon(IPrintSpooler iPrintSpooler, PrinterId printerId) {
-            int onBeforeRemoteCall = onBeforeRemoteCall();
-            iPrintSpooler.getCustomPrinterIcon(printerId, this.mCallback, onBeforeRemoteCall);
-            return (Icon) getResultTimed(onBeforeRemoteCall);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public abstract class BasePrintSpoolerServiceCallbacks extends IPrintSpoolerCallbacks.Stub {
-        public void customPrinterIconCacheCleared(int i) {
-        }
-
-        public void onCancelPrintJobResult(boolean z, int i) {
-        }
-
-        public void onCustomPrinterIconCached(int i) {
-        }
-
-        public void onGetCustomPrinterIconResult(Icon icon, int i) {
-        }
-
-        public void onGetPrintJobInfoResult(PrintJobInfo printJobInfo, int i) {
-        }
-
-        public void onGetPrintJobInfosResult(List list, int i) {
-        }
-
-        public void onSetPrintJobStateResult(boolean z, int i) {
-        }
-
-        public void onSetPrintJobTagResult(boolean z, int i) {
-        }
-
-        public BasePrintSpoolerServiceCallbacks() {
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class PrintSpoolerClient extends IPrintSpoolerClient.Stub {
-        public final WeakReference mWeakSpooler;
-
-        public PrintSpoolerClient(RemotePrintSpooler remotePrintSpooler) {
-            this.mWeakSpooler = new WeakReference(remotePrintSpooler);
-        }
-
-        public void onPrintJobQueued(PrintJobInfo printJobInfo) {
-            RemotePrintSpooler remotePrintSpooler = (RemotePrintSpooler) this.mWeakSpooler.get();
-            if (remotePrintSpooler != null) {
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    remotePrintSpooler.mCallbacks.onPrintJobQueued(printJobInfo);
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            }
-        }
-
-        public void onAllPrintJobsForServiceHandled(ComponentName componentName) {
-            RemotePrintSpooler remotePrintSpooler = (RemotePrintSpooler) this.mWeakSpooler.get();
-            if (remotePrintSpooler != null) {
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    remotePrintSpooler.mCallbacks.onAllPrintJobsForServiceHandled(componentName);
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            }
-        }
-
-        public void onAllPrintJobsHandled() {
-            RemotePrintSpooler remotePrintSpooler = (RemotePrintSpooler) this.mWeakSpooler.get();
-            if (remotePrintSpooler != null) {
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    remotePrintSpooler.onAllPrintJobsHandled();
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            }
-        }
-
-        public void onPrintJobStateChanged(PrintJobInfo printJobInfo) {
-            RemotePrintSpooler remotePrintSpooler = (RemotePrintSpooler) this.mWeakSpooler.get();
-            if (remotePrintSpooler != null) {
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    remotePrintSpooler.onPrintJobStateChanged(printJobInfo);
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
+        } catch (Throwable th) {
+            IoUtils.closeQuietly(parcelFileDescriptor);
+            synchronized (this.mLock) {
+                this.mCanUnbind = true;
+                this.mLock.notifyAll();
+                throw th;
             }
         }
     }

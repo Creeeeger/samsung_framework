@@ -8,11 +8,11 @@ import android.app.IActivityTaskManager;
 import android.app.IProcessObserver;
 import android.app.TaskStackListener;
 import android.content.ComponentName;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.IInterface;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.service.games.CreateGameSessionRequest;
@@ -35,25 +35,30 @@ import com.android.internal.infra.ServiceConnector;
 import com.android.internal.os.BackgroundThread;
 import com.android.internal.util.ScreenshotHelper;
 import com.android.internal.util.ScreenshotRequest;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.UiModeManagerService$13$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.BrailleDisplayConnection$$ExternalSyntheticOutline0;
 import com.android.server.app.GameServiceProviderInstanceImpl;
+import com.android.server.app.GameSessionRecord;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import com.android.server.wm.WindowManagerInternal;
 import com.android.server.wm.WindowManagerService;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public final class GameServiceProviderInstanceImpl implements GameServiceProviderInstance {
+public final class GameServiceProviderInstanceImpl {
     public final IActivityManager mActivityManager;
     public final ActivityManagerInternal mActivityManagerInternal;
     public final IActivityTaskManager mActivityTaskManager;
     public final ActivityTaskManagerInternal mActivityTaskManagerInternal;
     public final Executor mBackgroundExecutor;
-    public final Context mContext;
     public final ServiceConnector mGameServiceConnector;
     public final ServiceConnector mGameSessionServiceConnector;
     public final GameTaskInfoProvider mGameTaskInfoProvider;
@@ -62,207 +67,159 @@ public final class GameServiceProviderInstanceImpl implements GameServiceProvide
     public final UserHandle mUserHandle;
     public final WindowManagerInternal mWindowManagerInternal;
     public final WindowManagerService mWindowManagerService;
-    public final ServiceConnector.ServiceLifecycleCallbacks mGameServiceLifecycleCallbacks = new ServiceConnector.ServiceLifecycleCallbacks() { // from class: com.android.server.app.GameServiceProviderInstanceImpl.1
-        public void onConnected(IGameService iGameService) {
+    public final AnonymousClass1 mGameServiceLifecycleCallbacks = new ServiceConnector.ServiceLifecycleCallbacks() { // from class: com.android.server.app.GameServiceProviderInstanceImpl.1
+        public final void onConnected(IInterface iInterface) {
             try {
-                iGameService.connected(GameServiceProviderInstanceImpl.this.mGameServiceController);
+                ((IGameService) iInterface).connected(GameServiceProviderInstanceImpl.this.mGameServiceController);
             } catch (RemoteException e) {
                 Slog.w("GameServiceProviderInstance", "Failed to send connected event", e);
             }
         }
     };
-    public final ServiceConnector.ServiceLifecycleCallbacks mGameSessionServiceLifecycleCallbacks = new AnonymousClass2();
-    public final WindowManagerInternal.TaskSystemBarsListener mTaskSystemBarsVisibilityListener = new WindowManagerInternal.TaskSystemBarsListener() { // from class: com.android.server.app.GameServiceProviderInstanceImpl.3
+    public final AnonymousClass2 mGameSessionServiceLifecycleCallbacks = new AnonymousClass2();
+    public final AnonymousClass3 mTaskSystemBarsVisibilityListener = new WindowManagerInternal.TaskSystemBarsListener() { // from class: com.android.server.app.GameServiceProviderInstanceImpl.3
         @Override // com.android.server.wm.WindowManagerInternal.TaskSystemBarsListener
-        public void onTransientSystemBarsVisibilityChanged(int i, boolean z, boolean z2) {
-            GameServiceProviderInstanceImpl.this.onTransientSystemBarsVisibilityChanged(i, z, z2);
+        public final void onTransientSystemBarsVisibilityChanged(int i, boolean z, boolean z2) {
+            GameSessionRecord gameSessionRecord;
+            IGameSession iGameSession;
+            GameServiceProviderInstanceImpl gameServiceProviderInstanceImpl = GameServiceProviderInstanceImpl.this;
+            gameServiceProviderInstanceImpl.getClass();
+            if (!z || z2) {
+                synchronized (gameServiceProviderInstanceImpl.mLock) {
+                    gameSessionRecord = (GameSessionRecord) gameServiceProviderInstanceImpl.mGameSessions.get(Integer.valueOf(i));
+                }
+                if (gameSessionRecord == null || (iGameSession = gameSessionRecord.mIGameSession) == null) {
+                    return;
+                }
+                try {
+                    iGameSession.onTransientSystemBarVisibilityFromRevealGestureChanged(z);
+                } catch (RemoteException unused) {
+                    DeviceIdleController$$ExternalSyntheticOutline0.m(i, "Failed to send transient system bars visibility from reveal gesture for task: ", "GameServiceProviderInstance");
+                }
+            }
         }
     };
-    public final TaskStackListener mTaskStackListener = new AnonymousClass4();
-    public final IProcessObserver mProcessObserver = new AnonymousClass5();
-    public final IGameServiceController mGameServiceController = new AnonymousClass6();
-    public final IGameSessionController mGameSessionController = new AnonymousClass7();
+    public final AnonymousClass4 mTaskStackListener = new AnonymousClass4();
+    public final AnonymousClass5 mProcessObserver = new AnonymousClass5();
+    public final AnonymousClass6 mGameServiceController = new AnonymousClass6();
+    public final AnonymousClass7 mGameSessionController = new AnonymousClass7();
     public final Object mLock = new Object();
     public final ConcurrentHashMap mGameSessions = new ConcurrentHashMap();
     public final ConcurrentHashMap mPidToPackageMap = new ConcurrentHashMap();
     public final ConcurrentHashMap mPackageNameToProcessCountMap = new ConcurrentHashMap();
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     /* renamed from: com.android.server.app.GameServiceProviderInstanceImpl$2, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 implements ServiceConnector.ServiceLifecycleCallbacks {
+    public final class AnonymousClass2 implements ServiceConnector.ServiceLifecycleCallbacks {
         public AnonymousClass2() {
         }
 
-        public void onBinderDied() {
+        public final void onBinderDied() {
             GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$2$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
-                    GameServiceProviderInstanceImpl.AnonymousClass2.this.lambda$onBinderDied$0();
+                    GameServiceProviderInstanceImpl.AnonymousClass2 anonymousClass2 = GameServiceProviderInstanceImpl.AnonymousClass2.this;
+                    synchronized (GameServiceProviderInstanceImpl.this.mLock) {
+                        GameServiceProviderInstanceImpl gameServiceProviderInstanceImpl = GameServiceProviderInstanceImpl.this;
+                        Iterator it = gameServiceProviderInstanceImpl.mGameSessions.values().iterator();
+                        while (it.hasNext()) {
+                            gameServiceProviderInstanceImpl.destroyGameSessionFromRecordLocked((GameSessionRecord) it.next());
+                        }
+                        gameServiceProviderInstanceImpl.mGameSessions.clear();
+                    }
                 }
             });
         }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onBinderDied$0() {
-            synchronized (GameServiceProviderInstanceImpl.this.mLock) {
-                GameServiceProviderInstanceImpl.this.destroyAndClearAllGameSessionsLocked();
-            }
-        }
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     /* renamed from: com.android.server.app.GameServiceProviderInstanceImpl$4, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public class AnonymousClass4 extends TaskStackListener {
+    public final class AnonymousClass4 extends TaskStackListener {
         public AnonymousClass4() {
         }
 
-        public void onTaskCreated(final int i, final ComponentName componentName) {
+        public final void onTaskCreated(int i, ComponentName componentName) {
             if (componentName == null) {
                 return;
             }
-            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$4$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GameServiceProviderInstanceImpl.AnonymousClass4.this.lambda$onTaskCreated$0(i, componentName);
-                }
-            });
+            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new GameServiceProviderInstanceImpl$4$$ExternalSyntheticLambda0(this, i, componentName));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onTaskCreated$0(int i, ComponentName componentName) {
-            GameServiceProviderInstanceImpl.this.onTaskCreated(i, componentName);
-        }
-
-        public void onTaskRemoved(final int i) {
+        public final void onTaskFocusChanged(final int i, final boolean z) {
             GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$4$$ExternalSyntheticLambda2
                 @Override // java.lang.Runnable
                 public final void run() {
-                    GameServiceProviderInstanceImpl.AnonymousClass4.this.lambda$onTaskRemoved$1(i);
+                    GameServiceProviderInstanceImpl.AnonymousClass4 anonymousClass4 = GameServiceProviderInstanceImpl.AnonymousClass4.this;
+                    int i2 = i;
+                    boolean z2 = z;
+                    GameServiceProviderInstanceImpl gameServiceProviderInstanceImpl = GameServiceProviderInstanceImpl.this;
+                    synchronized (gameServiceProviderInstanceImpl.mLock) {
+                        gameServiceProviderInstanceImpl.onTaskFocusChangedLocked(i2, z2);
+                    }
                 }
             });
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onTaskRemoved$1(int i) {
-            GameServiceProviderInstanceImpl.this.onTaskRemoved(i);
-        }
-
-        public void onTaskFocusChanged(final int i, final boolean z) {
-            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$4$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GameServiceProviderInstanceImpl.AnonymousClass4.this.lambda$onTaskFocusChanged$2(i, z);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onTaskFocusChanged$2(int i, boolean z) {
-            GameServiceProviderInstanceImpl.this.onTaskFocusChanged(i, z);
+        public final void onTaskRemoved(int i) {
+            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new GameServiceProviderInstanceImpl$4$$ExternalSyntheticLambda1(this, i));
         }
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     /* renamed from: com.android.server.app.GameServiceProviderInstanceImpl$5, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public class AnonymousClass5 extends IProcessObserver.Stub {
-        public void onForegroundServicesChanged(int i, int i2, int i3) {
-        }
-
+    public final class AnonymousClass5 extends IProcessObserver.Stub {
         public AnonymousClass5() {
         }
 
-        public void onForegroundActivitiesChanged(final int i, int i2, boolean z) {
-            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$5$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GameServiceProviderInstanceImpl.AnonymousClass5.this.lambda$onForegroundActivitiesChanged$0(i);
-                }
-            });
+        public final void onForegroundActivitiesChanged(int i, int i2, boolean z) {
+            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new GameServiceProviderInstanceImpl$5$$ExternalSyntheticLambda0(this, i, 0));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onForegroundActivitiesChanged$0(int i) {
-            GameServiceProviderInstanceImpl.this.onForegroundActivitiesChanged(i);
+        public final void onForegroundServicesChanged(int i, int i2, int i3) {
         }
 
-        public void onProcessDied(final int i, int i2) {
-            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$5$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GameServiceProviderInstanceImpl.AnonymousClass5.this.lambda$onProcessDied$1(i);
-                }
-            });
+        public final void onProcessDied(int i, int i2) {
+            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new GameServiceProviderInstanceImpl$5$$ExternalSyntheticLambda0(this, i, 1));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onProcessDied$1(int i) {
-            GameServiceProviderInstanceImpl.this.onProcessDied(i);
+        public final void onProcessStarted(int i, int i2, int i3, String str, String str2) {
         }
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     /* renamed from: com.android.server.app.GameServiceProviderInstanceImpl$6, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public class AnonymousClass6 extends IGameServiceController.Stub {
+    public final class AnonymousClass6 extends IGameServiceController.Stub {
         public AnonymousClass6() {
         }
 
-        public void createGameSession(final int i) {
-            super.createGameSession_enforcePermission();
-            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$6$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GameServiceProviderInstanceImpl.AnonymousClass6.this.lambda$createGameSession$0(i);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$createGameSession$0(int i) {
-            GameServiceProviderInstanceImpl.this.createGameSession(i);
+        public final void createGameSession(int i) {
+            createGameSession_enforcePermission();
+            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new GameServiceProviderInstanceImpl$4$$ExternalSyntheticLambda1(this, i));
         }
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     /* renamed from: com.android.server.app.GameServiceProviderInstanceImpl$7, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public class AnonymousClass7 extends IGameSessionController.Stub {
+    public final class AnonymousClass7 extends IGameSessionController.Stub {
         public AnonymousClass7() {
         }
 
-        public void takeScreenshot(final int i, final AndroidFuture androidFuture) {
-            super.takeScreenshot_enforcePermission();
-            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$7$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GameServiceProviderInstanceImpl.AnonymousClass7.this.lambda$takeScreenshot$0(i, androidFuture);
-                }
-            });
+        public final void restartGame(int i) {
+            restartGame_enforcePermission();
+            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new GameServiceProviderInstanceImpl$4$$ExternalSyntheticLambda1(this, i));
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$takeScreenshot$0(int i, AndroidFuture androidFuture) {
-            GameServiceProviderInstanceImpl.this.takeScreenshot(i, androidFuture);
-        }
-
-        public void restartGame(final int i) {
-            super.restartGame_enforcePermission();
-            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$7$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GameServiceProviderInstanceImpl.AnonymousClass7.this.lambda$restartGame$1(i);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$restartGame$1(int i) {
-            GameServiceProviderInstanceImpl.this.restartGame(i);
+        public final void takeScreenshot(int i, AndroidFuture androidFuture) {
+            takeScreenshot_enforcePermission();
+            GameServiceProviderInstanceImpl.this.mBackgroundExecutor.execute(new GameServiceProviderInstanceImpl$4$$ExternalSyntheticLambda0(this, i, androidFuture));
         }
     }
 
-    public GameServiceProviderInstanceImpl(UserHandle userHandle, Executor executor, Context context, GameTaskInfoProvider gameTaskInfoProvider, IActivityManager iActivityManager, ActivityManagerInternal activityManagerInternal, IActivityTaskManager iActivityTaskManager, WindowManagerService windowManagerService, WindowManagerInternal windowManagerInternal, ActivityTaskManagerInternal activityTaskManagerInternal, ServiceConnector serviceConnector, ServiceConnector serviceConnector2, ScreenshotHelper screenshotHelper) {
+    /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.app.GameServiceProviderInstanceImpl$1] */
+    /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.app.GameServiceProviderInstanceImpl$3] */
+    public GameServiceProviderInstanceImpl(UserHandle userHandle, Executor executor, GameTaskInfoProvider gameTaskInfoProvider, IActivityManager iActivityManager, ActivityManagerInternal activityManagerInternal, IActivityTaskManager iActivityTaskManager, WindowManagerService windowManagerService, WindowManagerInternal windowManagerInternal, ActivityTaskManagerInternal activityTaskManagerInternal, ServiceConnector serviceConnector, ServiceConnector serviceConnector2, ScreenshotHelper screenshotHelper) {
         this.mUserHandle = userHandle;
         this.mBackgroundExecutor = executor;
-        this.mContext = context;
         this.mGameTaskInfoProvider = gameTaskInfoProvider;
         this.mActivityManager = iActivityManager;
         this.mActivityManagerInternal = activityManagerInternal;
@@ -275,17 +232,241 @@ public final class GameServiceProviderInstanceImpl implements GameServiceProvide
         this.mScreenshotHelper = screenshotHelper;
     }
 
-    @Override // com.android.server.app.GameServiceProviderInstance
-    public void start() {
-        synchronized (this.mLock) {
-            startLocked();
+    public static void destroyGameSessionDuringAttach(int i, CreateGameSessionResult createGameSessionResult) {
+        try {
+            createGameSessionResult.getGameSession().onDestroyed();
+        } catch (RemoteException unused) {
+            DeviceIdleController$$ExternalSyntheticOutline0.m(i, "Failed to destroy session: ", "GameServiceProviderInstance");
         }
     }
 
-    @Override // com.android.server.app.GameServiceProviderInstance
-    public void stop() {
-        synchronized (this.mLock) {
-            stopLocked();
+    public final void attachGameSessionLocked(int i, CreateGameSessionResult createGameSessionResult) {
+        GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
+        if (gameSessionRecord == null) {
+            Slog.w("GameServiceProviderInstance", "No associated game session record. Destroying id: " + i);
+            destroyGameSessionDuringAttach(i, createGameSessionResult);
+            return;
+        }
+        if (gameSessionRecord.mState != GameSessionRecord.State.GAME_SESSION_REQUESTED) {
+            destroyGameSessionDuringAttach(i, createGameSessionResult);
+            return;
+        }
+        try {
+            this.mWindowManagerInternal.addTrustedTaskOverlay(i, createGameSessionResult.getSurfacePackage());
+            ConcurrentHashMap concurrentHashMap = this.mGameSessions;
+            Integer valueOf = Integer.valueOf(i);
+            IGameSession gameSession = createGameSessionResult.getGameSession();
+            SurfaceControlViewHost.SurfacePackage surfacePackage = createGameSessionResult.getSurfacePackage();
+            Objects.requireNonNull(gameSession);
+            concurrentHashMap.put(valueOf, new GameSessionRecord(gameSessionRecord.mTaskId, GameSessionRecord.State.GAME_SESSION_ATTACHED, gameSessionRecord.mRootComponentName, gameSession, surfacePackage));
+        } catch (IllegalArgumentException unused) {
+            Slog.w("GameServiceProviderInstance", "Failed to add task overlay. Destroying id: " + i);
+            destroyGameSessionDuringAttach(i, createGameSessionResult);
+        }
+    }
+
+    public final void createGameSessionLocked(final int i) {
+        final GameSessionViewHostConfiguration gameSessionViewHostConfiguration;
+        if (this.mIsRunning) {
+            final GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
+            if (gameSessionRecord == null) {
+                BrailleDisplayConnection$$ExternalSyntheticOutline0.m(i, "No existing game session record found for task (id: ", ") creation. Ignoring.", "GameServiceProviderInstance");
+                return;
+            }
+            if (gameSessionRecord.mState != GameSessionRecord.State.NO_GAME_SESSION_REQUESTED) {
+                BrailleDisplayConnection$$ExternalSyntheticOutline0.m(i, "Existing game session for task (id: ", ") is not awaiting game session request. Ignoring.", "GameServiceProviderInstance");
+                return;
+            }
+            ActivityManager.RunningTaskInfo runningTaskInfo = this.mGameTaskInfoProvider.getRunningTaskInfo(i);
+            if (runningTaskInfo == null) {
+                gameSessionViewHostConfiguration = null;
+            } else {
+                Rect bounds = runningTaskInfo.configuration.windowConfiguration.getBounds();
+                gameSessionViewHostConfiguration = new GameSessionViewHostConfiguration(runningTaskInfo.displayId, bounds.width(), bounds.height());
+            }
+            if (gameSessionViewHostConfiguration == null) {
+                BrailleDisplayConnection$$ExternalSyntheticOutline0.m(i, "Failed to create view host configuration for task (id", ") creation. Ignoring.", "GameServiceProviderInstance");
+                return;
+            }
+            this.mGameSessions.put(Integer.valueOf(i), new GameSessionRecord(gameSessionRecord.mTaskId, GameSessionRecord.State.GAME_SESSION_REQUESTED, gameSessionRecord.mRootComponentName, null, null));
+            final AndroidFuture whenCompleteAsync = new AndroidFuture().orTimeout(10000L, TimeUnit.MILLISECONDS).whenCompleteAsync(new BiConsumer() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda5
+                @Override // java.util.function.BiConsumer
+                public final void accept(Object obj, Object obj2) {
+                    GameServiceProviderInstanceImpl gameServiceProviderInstanceImpl = GameServiceProviderInstanceImpl.this;
+                    GameSessionRecord gameSessionRecord2 = gameSessionRecord;
+                    int i2 = i;
+                    CreateGameSessionResult createGameSessionResult = (CreateGameSessionResult) obj;
+                    Throwable th = (Throwable) obj2;
+                    gameServiceProviderInstanceImpl.getClass();
+                    if (th != null || createGameSessionResult == null) {
+                        Slog.w("GameServiceProviderInstance", "Failed to create GameSession: " + gameSessionRecord2, th);
+                        synchronized (gameServiceProviderInstanceImpl.mLock) {
+                            GameSessionRecord gameSessionRecord3 = (GameSessionRecord) gameServiceProviderInstanceImpl.mGameSessions.remove(Integer.valueOf(i2));
+                            if (gameSessionRecord3 != null) {
+                                gameServiceProviderInstanceImpl.destroyGameSessionFromRecordLocked(gameSessionRecord3);
+                            }
+                        }
+                        return;
+                    }
+                    synchronized (gameServiceProviderInstanceImpl.mLock) {
+                        gameServiceProviderInstanceImpl.attachGameSessionLocked(i2, createGameSessionResult);
+                    }
+                    IGameSession gameSession = createGameSessionResult.getGameSession();
+                    try {
+                        ActivityTaskManager.RootTaskInfo focusedRootTaskInfo = gameServiceProviderInstanceImpl.mActivityTaskManager.getFocusedRootTaskInfo();
+                        if (focusedRootTaskInfo == null || focusedRootTaskInfo.taskId != i2) {
+                            return;
+                        }
+                        gameSession.onTaskFocusChanged(true);
+                    } catch (RemoteException unused) {
+                        DeviceIdleController$$ExternalSyntheticOutline0.m(i2, "Failed to set task focused for ID: ", "GameServiceProviderInstance");
+                    }
+                }
+            }, this.mBackgroundExecutor);
+            this.mGameSessionServiceConnector.post(new ServiceConnector.VoidJob() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda6
+                public final void runNoResult(Object obj) {
+                    GameServiceProviderInstanceImpl gameServiceProviderInstanceImpl = GameServiceProviderInstanceImpl.this;
+                    int i2 = i;
+                    GameSessionRecord gameSessionRecord2 = gameSessionRecord;
+                    GameSessionViewHostConfiguration gameSessionViewHostConfiguration2 = gameSessionViewHostConfiguration;
+                    AndroidFuture androidFuture = whenCompleteAsync;
+                    gameServiceProviderInstanceImpl.getClass();
+                    ((IGameSessionService) obj).create(gameServiceProviderInstanceImpl.mGameSessionController, new CreateGameSessionRequest(i2, gameSessionRecord2.mRootComponentName.getPackageName()), gameSessionViewHostConfiguration2, androidFuture);
+                }
+            });
+        }
+    }
+
+    public final void destroyGameSessionFromRecordLocked(GameSessionRecord gameSessionRecord) {
+        SurfaceControlViewHost.SurfacePackage surfacePackage = gameSessionRecord.mSurfacePackage;
+        if (surfacePackage != null) {
+            try {
+                this.mWindowManagerInternal.removeTrustedTaskOverlay(gameSessionRecord.mTaskId, surfacePackage);
+            } catch (IllegalArgumentException unused) {
+                Slog.i("GameServiceProviderInstance", "Failed to remove task overlay. This is expected if the task is already destroyed: " + gameSessionRecord);
+            }
+        }
+        IGameSession iGameSession = gameSessionRecord.mIGameSession;
+        if (iGameSession != null) {
+            try {
+                iGameSession.onDestroyed();
+            } catch (RemoteException e) {
+                Slog.w("GameServiceProviderInstance", "Failed to destroy session: " + gameSessionRecord, e);
+            }
+        }
+        if (this.mGameSessions.isEmpty()) {
+            this.mGameSessionServiceConnector.unbind();
+        }
+    }
+
+    public final void gameTaskStartedLocked(final GameTaskInfo gameTaskInfo) {
+        if (this.mIsRunning) {
+            if (((GameSessionRecord) this.mGameSessions.get(Integer.valueOf(gameTaskInfo.mTaskId))) != null) {
+                UiModeManagerService$13$$ExternalSyntheticOutline0.m(new StringBuilder("Existing game session found for task (id: "), gameTaskInfo.mTaskId, ") creation. Ignoring.", "GameServiceProviderInstance");
+                return;
+            }
+            int i = gameTaskInfo.mTaskId;
+            this.mGameSessions.put(Integer.valueOf(i), new GameSessionRecord(i, GameSessionRecord.State.NO_GAME_SESSION_REQUESTED, gameTaskInfo.mComponentName, null, null));
+            this.mGameServiceConnector.post(new ServiceConnector.VoidJob() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda4
+                public final void runNoResult(Object obj) {
+                    GameTaskInfo gameTaskInfo2 = GameTaskInfo.this;
+                    ((IGameService) obj).gameStarted(new GameStartedEvent(gameTaskInfo2.mTaskId, gameTaskInfo2.mComponentName.getPackageName()));
+                }
+            });
+        }
+    }
+
+    public final void onForegroundActivitiesChangedLocked(int i) {
+        if (this.mPidToPackageMap.containsKey(Integer.valueOf(i))) {
+            return;
+        }
+        String packageNameByPid = this.mActivityManagerInternal.getPackageNameByPid(i);
+        if (TextUtils.isEmpty(packageNameByPid)) {
+            return;
+        }
+        Iterator it = this.mGameSessions.values().iterator();
+        while (it.hasNext()) {
+            if (packageNameByPid.equals(((GameSessionRecord) it.next()).mRootComponentName.getPackageName())) {
+                this.mPidToPackageMap.put(Integer.valueOf(i), packageNameByPid);
+                int intValue = ((Integer) this.mPackageNameToProcessCountMap.getOrDefault(packageNameByPid, 0)).intValue() + 1;
+                this.mPackageNameToProcessCountMap.put(packageNameByPid, Integer.valueOf(intValue));
+                if (intValue > 0) {
+                    for (GameSessionRecord gameSessionRecord : this.mGameSessions.values()) {
+                        if (gameSessionRecord.mState == GameSessionRecord.State.GAME_SESSION_ENDED_PROCESS_DEATH && packageNameByPid.equals(gameSessionRecord.mRootComponentName.getPackageName())) {
+                            ConcurrentHashMap concurrentHashMap = this.mGameSessions;
+                            int i2 = gameSessionRecord.mTaskId;
+                            concurrentHashMap.put(Integer.valueOf(i2), new GameSessionRecord(i2, GameSessionRecord.State.NO_GAME_SESSION_REQUESTED, gameSessionRecord.mRootComponentName, null, null));
+                            createGameSessionLocked(i2);
+                        }
+                    }
+                    return;
+                }
+                return;
+            }
+        }
+    }
+
+    public final void onProcessDiedLocked(int i) {
+        String str = (String) this.mPidToPackageMap.remove(Integer.valueOf(i));
+        if (str == null) {
+            return;
+        }
+        Integer num = (Integer) this.mPackageNameToProcessCountMap.get(str);
+        if (num == null) {
+            Slog.w("GameServiceProviderInstance", "onProcessDiedLocked(): Missing process count for package");
+            return;
+        }
+        int intValue = num.intValue() - 1;
+        this.mPackageNameToProcessCountMap.put(str, Integer.valueOf(intValue));
+        if (intValue <= 0) {
+            for (GameSessionRecord gameSessionRecord : this.mGameSessions.values()) {
+                if (gameSessionRecord.mIGameSession != null && str.equals(gameSessionRecord.mRootComponentName.getPackageName())) {
+                    GameTaskInfoProvider gameTaskInfoProvider = this.mGameTaskInfoProvider;
+                    int i2 = gameSessionRecord.mTaskId;
+                    ActivityManager.RunningTaskInfo runningTaskInfo = gameTaskInfoProvider.getRunningTaskInfo(i2);
+                    if (runningTaskInfo == null || !runningTaskInfo.isVisible) {
+                        this.mGameSessions.put(Integer.valueOf(i2), new GameSessionRecord(gameSessionRecord.mTaskId, GameSessionRecord.State.GAME_SESSION_ENDED_PROCESS_DEATH, gameSessionRecord.mRootComponentName, null, null));
+                        destroyGameSessionFromRecordLocked(gameSessionRecord);
+                    }
+                }
+            }
+        }
+    }
+
+    public final void onTaskFocusChangedLocked(int i, boolean z) {
+        GameTaskInfo gameTaskInfo;
+        ComponentName componentName;
+        GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
+        if (gameSessionRecord != null) {
+            IGameSession iGameSession = gameSessionRecord.mIGameSession;
+            if (iGameSession == null) {
+                return;
+            }
+            try {
+                iGameSession.onTaskFocusChanged(z);
+                return;
+            } catch (RemoteException unused) {
+                Slog.w("GameServiceProviderInstance", "Failed to notify session of task focus change: " + gameSessionRecord);
+                return;
+            }
+        }
+        if (z) {
+            GameTaskInfoProvider gameTaskInfoProvider = this.mGameTaskInfoProvider;
+            synchronized (gameTaskInfoProvider.mLock) {
+                try {
+                    gameTaskInfo = (GameTaskInfo) gameTaskInfoProvider.mGameTaskInfoCache.get(Integer.valueOf(i));
+                    if (gameTaskInfo == null) {
+                        ActivityManager.RunningTaskInfo runningTaskInfo = gameTaskInfoProvider.getRunningTaskInfo(i);
+                        gameTaskInfo = (runningTaskInfo == null || (componentName = runningTaskInfo.baseActivity) == null) ? null : gameTaskInfoProvider.generateGameInfo(i, componentName);
+                    }
+                } finally {
+                }
+            }
+            if (gameTaskInfo == null) {
+                DeviceIdleController$$ExternalSyntheticOutline0.m(i, "No task info for focused task: ", "GameServiceProviderInstance");
+            } else if (gameTaskInfo.mIsGameTask) {
+                gameTaskStartedLocked(gameTaskInfo);
+            }
         }
     }
 
@@ -324,15 +505,15 @@ public final class GameServiceProviderInstanceImpl implements GameServiceProvide
                 Slog.w("GameServiceProviderInstance", "Failed to unregister task stack listener", e2);
             }
             this.mWindowManagerInternal.unregisterTaskSystemBarsListener(this.mTaskSystemBarsVisibilityListener);
-            destroyAndClearAllGameSessionsLocked();
-            this.mGameServiceConnector.post(new ServiceConnector.VoidJob() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda0
-                public final void runNoResult(Object obj) {
-                    ((IGameService) obj).disconnected();
-                }
-            }).whenComplete(new BiConsumer() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda1
+            Iterator it = this.mGameSessions.values().iterator();
+            while (it.hasNext()) {
+                destroyGameSessionFromRecordLocked((GameSessionRecord) it.next());
+            }
+            this.mGameSessions.clear();
+            this.mGameServiceConnector.post(new GameServiceProviderInstanceImpl$$ExternalSyntheticLambda1()).whenComplete(new BiConsumer() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda2
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
-                    GameServiceProviderInstanceImpl.this.lambda$stopLocked$0((Void) obj, (Throwable) obj2);
+                    GameServiceProviderInstanceImpl.this.mGameServiceConnector.unbind();
                 }
             });
             this.mGameSessionServiceConnector.unbind();
@@ -341,382 +522,57 @@ public final class GameServiceProviderInstanceImpl implements GameServiceProvide
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$stopLocked$0(Void r1, Throwable th) {
-        this.mGameServiceConnector.unbind();
-    }
-
-    public final void onTaskCreated(int i, ComponentName componentName) {
-        GameTaskInfo gameTaskInfo = this.mGameTaskInfoProvider.get(i, componentName);
-        if (gameTaskInfo.mIsGameTask) {
-            synchronized (this.mLock) {
-                gameTaskStartedLocked(gameTaskInfo);
-            }
-        }
-    }
-
-    public final void onTaskFocusChanged(int i, boolean z) {
-        synchronized (this.mLock) {
-            onTaskFocusChangedLocked(i, z);
-        }
-    }
-
-    public final void onTaskFocusChangedLocked(int i, boolean z) {
-        GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
-        if (gameSessionRecord == null) {
-            if (z) {
-                maybeCreateGameSessionForFocusedTaskLocked(i);
-            }
-        } else {
-            if (gameSessionRecord.getGameSession() == null) {
-                return;
-            }
-            try {
-                gameSessionRecord.getGameSession().onTaskFocusChanged(z);
-            } catch (RemoteException unused) {
-                Slog.w("GameServiceProviderInstance", "Failed to notify session of task focus change: " + gameSessionRecord);
-            }
-        }
-    }
-
-    public final void maybeCreateGameSessionForFocusedTaskLocked(int i) {
-        GameTaskInfo gameTaskInfo = this.mGameTaskInfoProvider.get(i);
-        if (gameTaskInfo == null) {
-            Slog.w("GameServiceProviderInstance", "No task info for focused task: " + i);
-            return;
-        }
-        if (gameTaskInfo.mIsGameTask) {
-            gameTaskStartedLocked(gameTaskInfo);
-        }
-    }
-
-    public final void gameTaskStartedLocked(final GameTaskInfo gameTaskInfo) {
-        if (this.mIsRunning) {
-            if (((GameSessionRecord) this.mGameSessions.get(Integer.valueOf(gameTaskInfo.mTaskId))) != null) {
-                Slog.w("GameServiceProviderInstance", "Existing game session found for task (id: " + gameTaskInfo.mTaskId + ") creation. Ignoring.");
-                return;
-            }
-            this.mGameSessions.put(Integer.valueOf(gameTaskInfo.mTaskId), GameSessionRecord.awaitingGameSessionRequest(gameTaskInfo.mTaskId, gameTaskInfo.mComponentName));
-            this.mGameServiceConnector.post(new ServiceConnector.VoidJob() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda5
-                public final void runNoResult(Object obj) {
-                    GameServiceProviderInstanceImpl.lambda$gameTaskStartedLocked$1(GameTaskInfo.this, (IGameService) obj);
-                }
-            });
-        }
-    }
-
-    public static /* synthetic */ void lambda$gameTaskStartedLocked$1(GameTaskInfo gameTaskInfo, IGameService iGameService) {
-        iGameService.gameStarted(new GameStartedEvent(gameTaskInfo.mTaskId, gameTaskInfo.mComponentName.getPackageName()));
-    }
-
-    public final void onTaskRemoved(int i) {
-        synchronized (this.mLock) {
-            if (this.mGameSessions.containsKey(Integer.valueOf(i))) {
-                removeAndDestroyGameSessionIfNecessaryLocked(i);
-            }
-        }
-    }
-
-    public final void onTransientSystemBarsVisibilityChanged(int i, boolean z, boolean z2) {
-        GameSessionRecord gameSessionRecord;
-        IGameSession gameSession;
-        if (!z || z2) {
-            synchronized (this.mLock) {
-                gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
-            }
-            if (gameSessionRecord == null || (gameSession = gameSessionRecord.getGameSession()) == null) {
-                return;
-            }
-            try {
-                gameSession.onTransientSystemBarVisibilityFromRevealGestureChanged(z);
-            } catch (RemoteException unused) {
-                Slog.w("GameServiceProviderInstance", "Failed to send transient system bars visibility from reveal gesture for task: " + i);
-            }
-        }
-    }
-
-    public final void createGameSession(int i) {
-        synchronized (this.mLock) {
-            createGameSessionLocked(i);
-        }
-    }
-
-    public final void createGameSessionLocked(final int i) {
-        if (this.mIsRunning) {
-            final GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
-            if (gameSessionRecord == null) {
-                Slog.w("GameServiceProviderInstance", "No existing game session record found for task (id: " + i + ") creation. Ignoring.");
-                return;
-            }
-            if (!gameSessionRecord.isAwaitingGameSessionRequest()) {
-                Slog.w("GameServiceProviderInstance", "Existing game session for task (id: " + i + ") is not awaiting game session request. Ignoring.");
-                return;
-            }
-            final GameSessionViewHostConfiguration createViewHostConfigurationForTask = createViewHostConfigurationForTask(i);
-            if (createViewHostConfigurationForTask == null) {
-                Slog.w("GameServiceProviderInstance", "Failed to create view host configuration for task (id" + i + ") creation. Ignoring.");
-                return;
-            }
-            this.mGameSessions.put(Integer.valueOf(i), gameSessionRecord.withGameSessionRequested());
-            final AndroidFuture whenCompleteAsync = new AndroidFuture().orTimeout(10000L, TimeUnit.MILLISECONDS).whenCompleteAsync(new BiConsumer() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda3
-                @Override // java.util.function.BiConsumer
-                public final void accept(Object obj, Object obj2) {
-                    GameServiceProviderInstanceImpl.this.lambda$createGameSessionLocked$2(gameSessionRecord, i, (CreateGameSessionResult) obj, (Throwable) obj2);
-                }
-            }, this.mBackgroundExecutor);
-            this.mGameSessionServiceConnector.post(new ServiceConnector.VoidJob() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda4
-                public final void runNoResult(Object obj) {
-                    GameServiceProviderInstanceImpl.this.lambda$createGameSessionLocked$3(i, gameSessionRecord, createViewHostConfigurationForTask, whenCompleteAsync, (IGameSessionService) obj);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$createGameSessionLocked$2(GameSessionRecord gameSessionRecord, int i, CreateGameSessionResult createGameSessionResult, Throwable th) {
-        if (th != null || createGameSessionResult == null) {
-            Slog.w("GameServiceProviderInstance", "Failed to create GameSession: " + gameSessionRecord, th);
-            synchronized (this.mLock) {
-                removeAndDestroyGameSessionIfNecessaryLocked(i);
-            }
-            return;
-        }
-        synchronized (this.mLock) {
-            attachGameSessionLocked(i, createGameSessionResult);
-        }
-        setGameSessionFocusedIfNecessary(i, createGameSessionResult.getGameSession());
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$createGameSessionLocked$3(int i, GameSessionRecord gameSessionRecord, GameSessionViewHostConfiguration gameSessionViewHostConfiguration, AndroidFuture androidFuture, IGameSessionService iGameSessionService) {
-        iGameSessionService.create(this.mGameSessionController, new CreateGameSessionRequest(i, gameSessionRecord.getComponentName().getPackageName()), gameSessionViewHostConfiguration, androidFuture);
-    }
-
-    public final void setGameSessionFocusedIfNecessary(int i, IGameSession iGameSession) {
-        try {
-            ActivityTaskManager.RootTaskInfo focusedRootTaskInfo = this.mActivityTaskManager.getFocusedRootTaskInfo();
-            if (focusedRootTaskInfo == null || focusedRootTaskInfo.taskId != i) {
-                return;
-            }
-            iGameSession.onTaskFocusChanged(true);
-        } catch (RemoteException unused) {
-            Slog.w("GameServiceProviderInstance", "Failed to set task focused for ID: " + i);
-        }
-    }
-
-    public final void attachGameSessionLocked(int i, CreateGameSessionResult createGameSessionResult) {
-        GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
-        if (gameSessionRecord == null) {
-            Slog.w("GameServiceProviderInstance", "No associated game session record. Destroying id: " + i);
-            destroyGameSessionDuringAttach(i, createGameSessionResult);
-            return;
-        }
-        if (!gameSessionRecord.isGameSessionRequested()) {
-            destroyGameSessionDuringAttach(i, createGameSessionResult);
-            return;
-        }
-        try {
-            this.mWindowManagerInternal.addTrustedTaskOverlay(i, createGameSessionResult.getSurfacePackage());
-            this.mGameSessions.put(Integer.valueOf(i), gameSessionRecord.withGameSession(createGameSessionResult.getGameSession(), createGameSessionResult.getSurfacePackage()));
-        } catch (IllegalArgumentException unused) {
-            Slog.w("GameServiceProviderInstance", "Failed to add task overlay. Destroying id: " + i);
-            destroyGameSessionDuringAttach(i, createGameSessionResult);
-        }
-    }
-
-    public final void destroyAndClearAllGameSessionsLocked() {
-        Iterator it = this.mGameSessions.values().iterator();
-        while (it.hasNext()) {
-            destroyGameSessionFromRecordLocked((GameSessionRecord) it.next());
-        }
-        this.mGameSessions.clear();
-    }
-
-    public final void destroyGameSessionDuringAttach(int i, CreateGameSessionResult createGameSessionResult) {
-        try {
-            createGameSessionResult.getGameSession().onDestroyed();
-        } catch (RemoteException unused) {
-            Slog.w("GameServiceProviderInstance", "Failed to destroy session: " + i);
-        }
-    }
-
-    public final void removeAndDestroyGameSessionIfNecessaryLocked(int i) {
-        GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.remove(Integer.valueOf(i));
-        if (gameSessionRecord == null) {
-            return;
-        }
-        destroyGameSessionFromRecordLocked(gameSessionRecord);
-    }
-
-    public final void destroyGameSessionFromRecordLocked(GameSessionRecord gameSessionRecord) {
-        SurfaceControlViewHost.SurfacePackage surfacePackage = gameSessionRecord.getSurfacePackage();
-        if (surfacePackage != null) {
-            try {
-                this.mWindowManagerInternal.removeTrustedTaskOverlay(gameSessionRecord.getTaskId(), surfacePackage);
-            } catch (IllegalArgumentException unused) {
-                Slog.i("GameServiceProviderInstance", "Failed to remove task overlay. This is expected if the task is already destroyed: " + gameSessionRecord);
-            }
-        }
-        IGameSession gameSession = gameSessionRecord.getGameSession();
-        if (gameSession != null) {
-            try {
-                gameSession.onDestroyed();
-            } catch (RemoteException e) {
-                Slog.w("GameServiceProviderInstance", "Failed to destroy session: " + gameSessionRecord, e);
-            }
-        }
-        if (this.mGameSessions.isEmpty()) {
-            this.mGameSessionServiceConnector.unbind();
-        }
-    }
-
-    public final void onForegroundActivitiesChanged(int i) {
-        synchronized (this.mLock) {
-            onForegroundActivitiesChangedLocked(i);
-        }
-    }
-
-    public final void onForegroundActivitiesChangedLocked(int i) {
-        if (this.mPidToPackageMap.containsKey(Integer.valueOf(i))) {
-            return;
-        }
-        String packageNameByPid = this.mActivityManagerInternal.getPackageNameByPid(i);
-        if (!TextUtils.isEmpty(packageNameByPid) && gameSessionExistsForPackageNameLocked(packageNameByPid)) {
-            this.mPidToPackageMap.put(Integer.valueOf(i), packageNameByPid);
-            int intValue = ((Integer) this.mPackageNameToProcessCountMap.getOrDefault(packageNameByPid, 0)).intValue() + 1;
-            this.mPackageNameToProcessCountMap.put(packageNameByPid, Integer.valueOf(intValue));
-            if (intValue > 0) {
-                recreateEndedGameSessionsLocked(packageNameByPid);
-            }
-        }
-    }
-
-    public final void recreateEndedGameSessionsLocked(String str) {
-        for (GameSessionRecord gameSessionRecord : this.mGameSessions.values()) {
-            if (gameSessionRecord.isGameSessionEndedForProcessDeath() && str.equals(gameSessionRecord.getComponentName().getPackageName())) {
-                int taskId = gameSessionRecord.getTaskId();
-                this.mGameSessions.put(Integer.valueOf(taskId), GameSessionRecord.awaitingGameSessionRequest(taskId, gameSessionRecord.getComponentName()));
-                createGameSessionLocked(gameSessionRecord.getTaskId());
-            }
-        }
-    }
-
-    public final void onProcessDied(int i) {
-        synchronized (this.mLock) {
-            onProcessDiedLocked(i);
-        }
-    }
-
-    public final void onProcessDiedLocked(int i) {
-        String str = (String) this.mPidToPackageMap.remove(Integer.valueOf(i));
-        if (str == null) {
-            return;
-        }
-        Integer num = (Integer) this.mPackageNameToProcessCountMap.get(str);
-        if (num == null) {
-            Slog.w("GameServiceProviderInstance", "onProcessDiedLocked(): Missing process count for package");
-            return;
-        }
-        int intValue = num.intValue() - 1;
-        this.mPackageNameToProcessCountMap.put(str, Integer.valueOf(intValue));
-        if (intValue <= 0) {
-            endGameSessionsForPackageLocked(str);
-        }
-    }
-
-    public final void endGameSessionsForPackageLocked(String str) {
-        ActivityManager.RunningTaskInfo runningTaskInfo;
-        for (GameSessionRecord gameSessionRecord : this.mGameSessions.values()) {
-            if (gameSessionRecord.getGameSession() != null && str.equals(gameSessionRecord.getComponentName().getPackageName()) && ((runningTaskInfo = this.mGameTaskInfoProvider.getRunningTaskInfo(gameSessionRecord.getTaskId())) == null || !runningTaskInfo.isVisible)) {
-                this.mGameSessions.put(Integer.valueOf(gameSessionRecord.getTaskId()), gameSessionRecord.withGameSessionEndedOnProcessDeath());
-                destroyGameSessionFromRecordLocked(gameSessionRecord);
-            }
-        }
-    }
-
-    public final boolean gameSessionExistsForPackageNameLocked(String str) {
-        Iterator it = this.mGameSessions.values().iterator();
-        while (it.hasNext()) {
-            if (str.equals(((GameSessionRecord) it.next()).getComponentName().getPackageName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final GameSessionViewHostConfiguration createViewHostConfigurationForTask(int i) {
-        ActivityManager.RunningTaskInfo runningTaskInfo = this.mGameTaskInfoProvider.getRunningTaskInfo(i);
-        if (runningTaskInfo == null) {
-            return null;
-        }
-        Rect bounds = runningTaskInfo.configuration.windowConfiguration.getBounds();
-        return new GameSessionViewHostConfiguration(runningTaskInfo.displayId, bounds.width(), bounds.height());
-    }
-
     public void takeScreenshot(final int i, final AndroidFuture androidFuture) {
         synchronized (this.mLock) {
-            final GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
-            if (gameSessionRecord == null) {
-                Slog.w("GameServiceProviderInstance", "No game session found for id: " + i);
-                androidFuture.complete(GameScreenshotResult.createInternalErrorResult());
-                return;
-            }
-            SurfaceControlViewHost.SurfacePackage surfacePackage = gameSessionRecord.getSurfacePackage();
-            final SurfaceControl surfaceControl = surfacePackage != null ? surfacePackage.getSurfaceControl() : null;
-            this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GameServiceProviderInstanceImpl.this.lambda$takeScreenshot$5(surfaceControl, i, androidFuture, gameSessionRecord);
+            try {
+                final GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
+                if (gameSessionRecord != null) {
+                    SurfaceControlViewHost.SurfacePackage surfacePackage = gameSessionRecord.mSurfacePackage;
+                    final SurfaceControl surfaceControl = surfacePackage != null ? surfacePackage.getSurfaceControl() : null;
+                    this.mBackgroundExecutor.execute(new Runnable() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda0
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            GameServiceProviderInstanceImpl gameServiceProviderInstanceImpl = GameServiceProviderInstanceImpl.this;
+                            SurfaceControl surfaceControl2 = surfaceControl;
+                            int i2 = i;
+                            final AndroidFuture androidFuture2 = androidFuture;
+                            GameSessionRecord gameSessionRecord2 = gameSessionRecord;
+                            gameServiceProviderInstanceImpl.getClass();
+                            ScreenCapture.LayerCaptureArgs.Builder builder = new ScreenCapture.LayerCaptureArgs.Builder((SurfaceControl) null);
+                            if (surfaceControl2 != null) {
+                                builder.setExcludeLayers(new SurfaceControl[]{surfaceControl2});
+                            }
+                            Bitmap captureTaskBitmap = gameServiceProviderInstanceImpl.mWindowManagerService.captureTaskBitmap(i2, builder);
+                            if (captureTaskBitmap == null) {
+                                Slog.w("GameServiceProviderInstance", "Could not get bitmap for id: " + i2);
+                                androidFuture2.complete(GameScreenshotResult.createInternalErrorResult());
+                                return;
+                            }
+                            ActivityManager.RunningTaskInfo runningTaskInfo = gameServiceProviderInstanceImpl.mGameTaskInfoProvider.getRunningTaskInfo(i2);
+                            if (runningTaskInfo == null) {
+                                Slog.w("GameServiceProviderInstance", "Could not get running task info for id: " + i2);
+                                androidFuture2.complete(GameScreenshotResult.createInternalErrorResult());
+                            }
+                            gameServiceProviderInstanceImpl.mScreenshotHelper.takeScreenshot(new ScreenshotRequest.Builder(3, 5).setTopComponent(gameSessionRecord2.mRootComponentName).setTaskId(i2).setUserId(gameServiceProviderInstanceImpl.mUserHandle.getIdentifier()).setBitmap(captureTaskBitmap).setBoundsOnScreen(runningTaskInfo.configuration.windowConfiguration.getBounds()).setInsets(Insets.NONE).build(), BackgroundThread.getHandler(), new Consumer() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda3
+                                @Override // java.util.function.Consumer
+                                public final void accept(Object obj) {
+                                    AndroidFuture androidFuture3 = androidFuture2;
+                                    if (((Uri) obj) == null) {
+                                        androidFuture3.complete(GameScreenshotResult.createInternalErrorResult());
+                                    } else {
+                                        androidFuture3.complete(GameScreenshotResult.createSuccessResult());
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    Slog.w("GameServiceProviderInstance", "No game session found for id: " + i);
+                    androidFuture.complete(GameScreenshotResult.createInternalErrorResult());
                 }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$takeScreenshot$5(SurfaceControl surfaceControl, int i, final AndroidFuture androidFuture, GameSessionRecord gameSessionRecord) {
-        ScreenCapture.LayerCaptureArgs.Builder builder = new ScreenCapture.LayerCaptureArgs.Builder((SurfaceControl) null);
-        if (surfaceControl != null) {
-            builder.setExcludeLayers(new SurfaceControl[]{surfaceControl});
-        }
-        Bitmap captureTaskBitmap = this.mWindowManagerService.captureTaskBitmap(i, builder);
-        if (captureTaskBitmap == null) {
-            Slog.w("GameServiceProviderInstance", "Could not get bitmap for id: " + i);
-            androidFuture.complete(GameScreenshotResult.createInternalErrorResult());
-            return;
-        }
-        ActivityManager.RunningTaskInfo runningTaskInfo = this.mGameTaskInfoProvider.getRunningTaskInfo(i);
-        if (runningTaskInfo == null) {
-            Slog.w("GameServiceProviderInstance", "Could not get running task info for id: " + i);
-            androidFuture.complete(GameScreenshotResult.createInternalErrorResult());
-        }
-        Rect bounds = runningTaskInfo.configuration.windowConfiguration.getBounds();
-        this.mScreenshotHelper.takeScreenshot(new ScreenshotRequest.Builder(3, 5).setTopComponent(gameSessionRecord.getComponentName()).setTaskId(i).setUserId(this.mUserHandle.getIdentifier()).setBitmap(captureTaskBitmap).setBoundsOnScreen(bounds).setInsets(Insets.NONE).build(), BackgroundThread.getHandler(), new Consumer() { // from class: com.android.server.app.GameServiceProviderInstanceImpl$$ExternalSyntheticLambda6
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                GameServiceProviderInstanceImpl.lambda$takeScreenshot$4(androidFuture, (Uri) obj);
+            } catch (Throwable th) {
+                throw th;
             }
-        });
-    }
-
-    public static /* synthetic */ void lambda$takeScreenshot$4(AndroidFuture androidFuture, Uri uri) {
-        if (uri == null) {
-            androidFuture.complete(GameScreenshotResult.createInternalErrorResult());
-        } else {
-            androidFuture.complete(GameScreenshotResult.createSuccessResult());
-        }
-    }
-
-    public final void restartGame(int i) {
-        synchronized (this.mLock) {
-            GameSessionRecord gameSessionRecord = (GameSessionRecord) this.mGameSessions.get(Integer.valueOf(i));
-            if (gameSessionRecord == null) {
-                return;
-            }
-            String packageName = gameSessionRecord.getComponentName().getPackageName();
-            if (packageName == null) {
-                return;
-            }
-            this.mActivityTaskManagerInternal.restartTaskActivityProcessIfVisible(i, packageName);
         }
     }
 }

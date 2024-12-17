@@ -2,21 +2,26 @@ package com.android.server.pm;
 
 import android.util.ArraySet;
 import android.util.Pair;
-import com.android.server.pm.parsing.pkg.ParsedPackage;
+import com.android.internal.pm.parsing.pkg.ParsedPackage;
 import com.android.server.pm.pkg.AndroidPackage;
 import java.io.File;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface PackageAbiHelper {
-    NativeLibraryPaths deriveNativeLibraryPaths(AndroidPackage androidPackage, boolean z, boolean z2, File file);
 
-    Pair derivePackageAbi(AndroidPackage androidPackage, boolean z, boolean z2, String str, File file);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Abis {
+        public final String primary;
+        public final String secondary;
 
-    String getAdjustedAbiForSharedUser(ArraySet arraySet, AndroidPackage androidPackage);
+        public Abis(String str, String str2) {
+            this.primary = str;
+            this.secondary = str2;
+        }
+    }
 
-    Abis getBundledAppAbis(AndroidPackage androidPackage);
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class NativeLibraryPaths {
         public final String nativeLibraryDir;
         public final String nativeLibraryRootDir;
@@ -30,30 +35,16 @@ public interface PackageAbiHelper {
             this.secondaryNativeLibraryDir = str3;
         }
 
-        public void applyTo(ParsedPackage parsedPackage) {
+        public final void applyTo(ParsedPackage parsedPackage) {
             parsedPackage.setNativeLibraryRootDir(this.nativeLibraryRootDir).setNativeLibraryRootRequiresIsa(this.nativeLibraryRootRequiresIsa).setNativeLibraryDir(this.nativeLibraryDir).setSecondaryNativeLibraryDir(this.secondaryNativeLibraryDir);
         }
     }
 
-    /* loaded from: classes3.dex */
-    public final class Abis {
-        public final String primary;
-        public final String secondary;
+    NativeLibraryPaths deriveNativeLibraryPaths(AndroidPackage androidPackage, boolean z, boolean z2, File file);
 
-        public Abis(String str, String str2) {
-            this.primary = str;
-            this.secondary = str2;
-        }
+    Pair derivePackageAbi(AndroidPackage androidPackage, boolean z, boolean z2, String str, File file);
 
-        public void applyTo(ParsedPackage parsedPackage) {
-            parsedPackage.setPrimaryCpuAbi(this.primary).setSecondaryCpuAbi(this.secondary);
-        }
+    String getAdjustedAbiForSharedUser(ArraySet arraySet, AndroidPackage androidPackage);
 
-        public void applyTo(PackageSetting packageSetting) {
-            if (packageSetting != null) {
-                packageSetting.setPrimaryCpuAbi(this.primary);
-                packageSetting.setSecondaryCpuAbi(this.secondary);
-            }
-        }
-    }
+    Abis getBundledAppAbis(AndroidPackage androidPackage);
 }

@@ -19,6 +19,8 @@ import android.util.Log;
 import android.util.Slog;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
+import com.android.media.flags.Flags;
+import com.android.server.VcnManagementService$$ExternalSyntheticOutline0;
 import com.android.server.media.BluetoothRouteController;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
-public class LegacyBluetoothRouteController implements BluetoothRouteController {
-    public static final boolean DEBUG = Log.isLoggable("LBtRouteProvider", 3);
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class LegacyBluetoothRouteController implements BluetoothRouteController {
     public BluetoothA2dp mA2dpProfile;
     public final AudioManager mAudioManager;
     public final BluetoothAdapter mBluetoothAdapter;
@@ -41,79 +43,215 @@ public class LegacyBluetoothRouteController implements BluetoothRouteController 
     public final List mActiveRoutes = new ArrayList();
     public final SparseIntArray mVolumeMap = new SparseIntArray();
     public final BluetoothProfileListener mProfileListener = new BluetoothProfileListener();
-    public final AdapterStateChangedReceiver mAdapterStateChangedReceiver = new AdapterStateChangedReceiver();
-    public final DeviceStateChangedReceiver mDeviceStateChangedReceiver = new DeviceStateChangedReceiver();
+    public final DeviceStateChangedReceiver mAdapterStateChangedReceiver = new DeviceStateChangedReceiver(this, 1);
+    public final DeviceStateChangedReceiver mDeviceStateChangedReceiver = new DeviceStateChangedReceiver(this, 0);
 
-    @Override // com.android.server.media.BluetoothRouteController
-    public boolean selectRoute(String str) {
-        return false;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BluetoothProfileListener implements BluetoothProfile.ServiceListener {
+        public BluetoothProfileListener() {
+        }
+
+        @Override // android.bluetooth.BluetoothProfile.ServiceListener
+        public final void onServiceConnected(int i, BluetoothProfile bluetoothProfile) {
+            List activeDevices;
+            if (i == 2) {
+                LegacyBluetoothRouteController legacyBluetoothRouteController = LegacyBluetoothRouteController.this;
+                legacyBluetoothRouteController.mA2dpProfile = (BluetoothA2dp) bluetoothProfile;
+                activeDevices = legacyBluetoothRouteController.mBluetoothAdapter.getActiveDevices(2);
+            } else if (i == 21) {
+                LegacyBluetoothRouteController legacyBluetoothRouteController2 = LegacyBluetoothRouteController.this;
+                legacyBluetoothRouteController2.mHearingAidProfile = (BluetoothHearingAid) bluetoothProfile;
+                activeDevices = legacyBluetoothRouteController2.mBluetoothAdapter.getActiveDevices(21);
+            } else {
+                if (i != 22) {
+                    return;
+                }
+                LegacyBluetoothRouteController legacyBluetoothRouteController3 = LegacyBluetoothRouteController.this;
+                legacyBluetoothRouteController3.mLeAudioProfile = (BluetoothLeAudio) bluetoothProfile;
+                activeDevices = legacyBluetoothRouteController3.mBluetoothAdapter.getActiveDevices(22);
+            }
+            for (BluetoothDevice bluetoothDevice : bluetoothProfile.getConnectedDevices()) {
+                BluetoothRouteInfo bluetoothRouteInfo = (BluetoothRouteInfo) ((HashMap) LegacyBluetoothRouteController.this.mBluetoothRoutes).get(bluetoothDevice.getAddress());
+                if (bluetoothRouteInfo == null) {
+                    bluetoothRouteInfo = LegacyBluetoothRouteController.this.createBluetoothRoute(bluetoothDevice);
+                    ((HashMap) LegacyBluetoothRouteController.this.mBluetoothRoutes).put(bluetoothDevice.getAddress(), bluetoothRouteInfo);
+                }
+                if (activeDevices.contains(bluetoothDevice)) {
+                    LegacyBluetoothRouteController.this.addActiveRoute(bluetoothRouteInfo);
+                }
+            }
+            LegacyBluetoothRouteController.this.notifyBluetoothRoutesUpdated();
+        }
+
+        @Override // android.bluetooth.BluetoothProfile.ServiceListener
+        public final void onServiceDisconnected(int i) {
+            if (i == 2) {
+                LegacyBluetoothRouteController.this.mA2dpProfile = null;
+            } else if (i == 21) {
+                LegacyBluetoothRouteController.this.mHearingAidProfile = null;
+            } else {
+                if (i != 22) {
+                    return;
+                }
+                LegacyBluetoothRouteController.this.mLeAudioProfile = null;
+            }
+        }
     }
 
-    public LegacyBluetoothRouteController(Context context, BluetoothAdapter bluetoothAdapter, BluetoothRouteController.BluetoothRoutesUpdatedListener bluetoothRoutesUpdatedListener) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BluetoothRouteInfo {
+        public BluetoothDevice mBtDevice;
+        public SparseBooleanArray mConnectedProfiles;
+        public MediaRoute2Info mRoute;
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DeviceStateChangedReceiver extends BroadcastReceiver {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ LegacyBluetoothRouteController this$0;
+
+        public /* synthetic */ DeviceStateChangedReceiver(LegacyBluetoothRouteController legacyBluetoothRouteController, int i) {
+            this.$r8$classId = i;
+            this.this$0 = legacyBluetoothRouteController;
+        }
+
+        public void handleConnectionStateChanged(int i, Intent intent, BluetoothDevice bluetoothDevice) {
+            int intExtra = intent.getIntExtra("android.bluetooth.profile.extra.STATE", -1);
+            BluetoothRouteInfo bluetoothRouteInfo = (BluetoothRouteInfo) ((HashMap) this.this$0.mBluetoothRoutes).get(bluetoothDevice.getAddress());
+            if (intExtra == 2) {
+                if (bluetoothRouteInfo != null) {
+                    bluetoothRouteInfo.mConnectedProfiles.put(i, true);
+                    return;
+                }
+                BluetoothRouteInfo createBluetoothRoute = this.this$0.createBluetoothRoute(bluetoothDevice);
+                if (createBluetoothRoute.mConnectedProfiles.size() > 0) {
+                    ((HashMap) this.this$0.mBluetoothRoutes).put(bluetoothDevice.getAddress(), createBluetoothRoute);
+                    this.this$0.notifyBluetoothRoutesUpdated();
+                    return;
+                }
+                return;
+            }
+            if ((intExtra == 3 || intExtra == 0) && bluetoothRouteInfo != null) {
+                bluetoothRouteInfo.mConnectedProfiles.delete(i);
+                if (bluetoothRouteInfo.mConnectedProfiles.size() == 0) {
+                    LegacyBluetoothRouteController legacyBluetoothRouteController = this.this$0;
+                    BluetoothRouteInfo bluetoothRouteInfo2 = (BluetoothRouteInfo) ((HashMap) legacyBluetoothRouteController.mBluetoothRoutes).remove(bluetoothDevice.getAddress());
+                    Log.d("LBtRouteProvider", "Removing active route: " + bluetoothRouteInfo2.mRoute);
+                    if (((ArrayList) legacyBluetoothRouteController.mActiveRoutes).remove(bluetoothRouteInfo2)) {
+                        legacyBluetoothRouteController.setRouteConnectionState(bluetoothRouteInfo2, 0);
+                    }
+                    this.this$0.notifyBluetoothRoutesUpdated();
+                }
+            }
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            BluetoothDevice bluetoothDevice;
+            switch (this.$r8$classId) {
+                case 0:
+                    bluetoothDevice = (BluetoothDevice) intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE", BluetoothDevice.class);
+                    String action = intent.getAction();
+                    action.getClass();
+                    switch (action) {
+                        case "android.bluetooth.action.LE_AUDIO_CONNECTION_STATE_CHANGED":
+                            handleConnectionStateChanged(22, intent, bluetoothDevice);
+                            break;
+                        case "android.bluetooth.action.LE_AUDIO_ACTIVE_DEVICE_CHANGED":
+                            LegacyBluetoothRouteController.m648$$Nest$mclearActiveRoutesWithType(this.this$0, 26);
+                            if (bluetoothDevice != null) {
+                                Log.d("LBtRouteProvider", "Setting active le audio devices. device=" + bluetoothDevice);
+                                LegacyBluetoothRouteController.m647$$Nest$maddActiveDevices(this.this$0, bluetoothDevice);
+                            }
+                            this.this$0.notifyBluetoothRoutesUpdated();
+                            break;
+                        case "android.bluetooth.hearingaid.profile.action.CONNECTION_STATE_CHANGED":
+                            handleConnectionStateChanged(21, intent, bluetoothDevice);
+                            break;
+                        case "android.bluetooth.a2dp.profile.action.ACTIVE_DEVICE_CHANGED":
+                            LegacyBluetoothRouteController.m648$$Nest$mclearActiveRoutesWithType(this.this$0, 8);
+                            if (bluetoothDevice != null) {
+                                Log.d("LBtRouteProvider", "Setting active a2dp devices. device=" + bluetoothDevice);
+                                LegacyBluetoothRouteController.m647$$Nest$maddActiveDevices(this.this$0, bluetoothDevice);
+                            }
+                            this.this$0.notifyBluetoothRoutesUpdated();
+                            break;
+                        case "android.bluetooth.hearingaid.profile.action.ACTIVE_DEVICE_CHANGED":
+                            LegacyBluetoothRouteController.m648$$Nest$mclearActiveRoutesWithType(this.this$0, 23);
+                            if (bluetoothDevice != null) {
+                                Log.d("LBtRouteProvider", "Setting active hearing aid devices. device=" + bluetoothDevice);
+                                LegacyBluetoothRouteController.m647$$Nest$maddActiveDevices(this.this$0, bluetoothDevice);
+                            }
+                            this.this$0.notifyBluetoothRoutesUpdated();
+                            break;
+                        case "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED":
+                            handleConnectionStateChanged(2, intent, bluetoothDevice);
+                            break;
+                    }
+                default:
+                    int intExtra = intent.getIntExtra("android.bluetooth.adapter.extra.STATE", -1);
+                    if (intExtra != 10 && intExtra != 13) {
+                        if (intExtra == 12) {
+                            this.this$0.buildBluetoothRoutes();
+                            if (!((HashMap) this.this$0.mBluetoothRoutes).isEmpty()) {
+                                this.this$0.notifyBluetoothRoutesUpdated();
+                                break;
+                            }
+                        }
+                    } else {
+                        ((HashMap) this.this$0.mBluetoothRoutes).clear();
+                        this.this$0.notifyBluetoothRoutesUpdated();
+                        break;
+                    }
+                    break;
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$maddActiveDevices, reason: not valid java name */
+    public static void m647$$Nest$maddActiveDevices(LegacyBluetoothRouteController legacyBluetoothRouteController, BluetoothDevice bluetoothDevice) {
+        BluetoothRouteInfo bluetoothRouteInfo = (BluetoothRouteInfo) ((HashMap) legacyBluetoothRouteController.mBluetoothRoutes).get(bluetoothDevice.getAddress());
+        if (bluetoothRouteInfo == null) {
+            bluetoothRouteInfo = legacyBluetoothRouteController.createBluetoothRoute(bluetoothDevice);
+            ((HashMap) legacyBluetoothRouteController.mBluetoothRoutes).put(bluetoothDevice.getAddress(), bluetoothRouteInfo);
+        }
+        legacyBluetoothRouteController.addActiveRoute(bluetoothRouteInfo);
+        for (BluetoothRouteInfo bluetoothRouteInfo2 : ((HashMap) legacyBluetoothRouteController.mBluetoothRoutes).values()) {
+            if (TextUtils.equals(bluetoothRouteInfo2.mRoute.getId(), bluetoothRouteInfo.mRoute.getId()) && !TextUtils.equals(bluetoothRouteInfo2.mBtDevice.getAddress(), bluetoothRouteInfo.mBtDevice.getAddress())) {
+                legacyBluetoothRouteController.addActiveRoute(bluetoothRouteInfo2);
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$mclearActiveRoutesWithType, reason: not valid java name */
+    public static void m648$$Nest$mclearActiveRoutesWithType(LegacyBluetoothRouteController legacyBluetoothRouteController, int i) {
+        legacyBluetoothRouteController.getClass();
+        Log.d("LBtRouteProvider", "Clearing active routes with type. type=" + i);
+        Iterator it = ((ArrayList) legacyBluetoothRouteController.mActiveRoutes).iterator();
+        while (it.hasNext()) {
+            BluetoothRouteInfo bluetoothRouteInfo = (BluetoothRouteInfo) it.next();
+            if (bluetoothRouteInfo.mRoute.getType() == i) {
+                it.remove();
+                legacyBluetoothRouteController.setRouteConnectionState(bluetoothRouteInfo, 0);
+            }
+        }
+    }
+
+    public LegacyBluetoothRouteController(Context context, BluetoothAdapter bluetoothAdapter, SystemMediaRoute2Provider$$ExternalSyntheticLambda2 systemMediaRoute2Provider$$ExternalSyntheticLambda2) {
         this.mContext = context;
         this.mBluetoothAdapter = bluetoothAdapter;
-        this.mListener = bluetoothRoutesUpdatedListener;
+        this.mListener = systemMediaRoute2Provider$$ExternalSyntheticLambda2;
         this.mAudioManager = (AudioManager) context.getSystemService("audio");
         buildBluetoothRoutes();
     }
 
-    @Override // com.android.server.media.BluetoothRouteController
-    public void start(UserHandle userHandle) {
-        this.mBluetoothAdapter.getProfileProxy(this.mContext, this.mProfileListener, 2);
-        this.mBluetoothAdapter.getProfileProxy(this.mContext, this.mProfileListener, 21);
-        this.mBluetoothAdapter.getProfileProxy(this.mContext, this.mProfileListener, 22);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.bluetooth.adapter.action.STATE_CHANGED");
-        this.mContext.registerReceiverAsUser(this.mAdapterStateChangedReceiver, userHandle, intentFilter, null, null);
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("android.bluetooth.a2dp.profile.action.ACTIVE_DEVICE_CHANGED");
-        intentFilter2.addAction("android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED");
-        intentFilter2.addAction("android.bluetooth.hearingaid.profile.action.ACTIVE_DEVICE_CHANGED");
-        intentFilter2.addAction("android.bluetooth.hearingaid.profile.action.CONNECTION_STATE_CHANGED");
-        intentFilter2.addAction("android.bluetooth.action.LE_AUDIO_CONNECTION_STATE_CHANGED");
-        intentFilter2.addAction("android.bluetooth.action.LE_AUDIO_ACTIVE_DEVICE_CHANGED");
-        this.mContext.registerReceiverAsUser(this.mDeviceStateChangedReceiver, userHandle, intentFilter2, null, null);
-    }
-
-    @Override // com.android.server.media.BluetoothRouteController
-    public void stop() {
-        this.mContext.unregisterReceiver(this.mAdapterStateChangedReceiver);
-        this.mContext.unregisterReceiver(this.mDeviceStateChangedReceiver);
-    }
-
-    @Override // com.android.server.media.BluetoothRouteController
-    public void transferTo(String str) {
-        if (str == null) {
-            clearActiveDevices();
-            return;
-        }
-        BluetoothRouteInfo findBluetoothRouteWithRouteId = findBluetoothRouteWithRouteId(str);
-        if (findBluetoothRouteWithRouteId == null) {
-            Slog.w("LBtRouteProvider", "transferTo: Unknown route. ID=" + str);
-            return;
-        }
-        BluetoothAdapter bluetoothAdapter = this.mBluetoothAdapter;
-        if (bluetoothAdapter != null) {
-            bluetoothAdapter.setActiveDevice(findBluetoothRouteWithRouteId.mBtDevice, 0);
-        }
-    }
-
-    public final BluetoothRouteInfo findBluetoothRouteWithRouteId(String str) {
-        if (str == null) {
-            return null;
-        }
-        for (BluetoothRouteInfo bluetoothRouteInfo : this.mBluetoothRoutes.values()) {
-            if (TextUtils.equals(bluetoothRouteInfo.mRoute.getId(), str)) {
-                return bluetoothRouteInfo;
-            }
-        }
-        return null;
-    }
-
-    public final void clearActiveDevices() {
-        BluetoothAdapter bluetoothAdapter = this.mBluetoothAdapter;
-        if (bluetoothAdapter != null) {
-            bluetoothAdapter.removeActiveDevice(0);
+    public final void addActiveRoute(BluetoothRouteInfo bluetoothRouteInfo) {
+        Log.d("LBtRouteProvider", "Adding active route: " + bluetoothRouteInfo.mRoute);
+        if (((ArrayList) this.mActiveRoutes).contains(bluetoothRouteInfo)) {
+            Slog.w("LBtRouteProvider", "addActiveRoute: btRoute is already added.");
+        } else {
+            setRouteConnectionState(bluetoothRouteInfo, 2);
+            ((ArrayList) this.mActiveRoutes).add(bluetoothRouteInfo);
         }
     }
 
@@ -132,84 +270,14 @@ public class LegacyBluetoothRouteController implements BluetoothRouteController 
         }
     }
 
-    @Override // com.android.server.media.BluetoothRouteController
-    public MediaRoute2Info getSelectedRoute() {
-        if (this.mActiveRoutes.isEmpty()) {
-            return null;
-        }
-        return ((BluetoothRouteInfo) this.mActiveRoutes.get(0)).mRoute;
-    }
-
-    @Override // com.android.server.media.BluetoothRouteController
-    public List getTransferableRoutes() {
-        List allBluetoothRoutes = getAllBluetoothRoutes();
-        Iterator it = this.mActiveRoutes.iterator();
-        while (it.hasNext()) {
-            allBluetoothRoutes.remove(((BluetoothRouteInfo) it.next()).mRoute);
-        }
-        return allBluetoothRoutes;
-    }
-
-    @Override // com.android.server.media.BluetoothRouteController
-    public List getAllBluetoothRoutes() {
-        ArrayList arrayList = new ArrayList();
-        ArrayList arrayList2 = new ArrayList();
-        MediaRoute2Info selectedRoute = getSelectedRoute();
-        if (selectedRoute != null) {
-            arrayList.add(selectedRoute);
-            arrayList2.add(selectedRoute.getId());
-        }
-        for (BluetoothRouteInfo bluetoothRouteInfo : this.mBluetoothRoutes.values()) {
-            if (!arrayList2.contains(bluetoothRouteInfo.mRoute.getId())) {
-                arrayList.add(bluetoothRouteInfo.mRoute);
-                arrayList2.add(bluetoothRouteInfo.mRoute.getId());
-            }
-        }
-        return arrayList;
-    }
-
-    @Override // com.android.server.media.BluetoothRouteController
-    public boolean updateVolumeForDevices(int i, int i2) {
-        int i3;
-        boolean z = false;
-        if ((134217728 & i) != 0) {
-            i3 = 23;
-        } else if ((i & 896) != 0) {
-            i3 = 8;
-        } else {
-            if ((i & 536870912) == 0) {
-                return false;
-            }
-            i3 = 26;
-        }
-        this.mVolumeMap.put(i3, i2);
-        for (BluetoothRouteInfo bluetoothRouteInfo : this.mActiveRoutes) {
-            if (bluetoothRouteInfo.mRoute.getType() == i3) {
-                bluetoothRouteInfo.mRoute = new MediaRoute2Info.Builder(bluetoothRouteInfo.mRoute).setVolume(i2).build();
-                z = true;
-            }
-        }
-        if (z) {
-            notifyBluetoothRoutesUpdated();
-        }
-        return true;
-    }
-
-    public final void notifyBluetoothRoutesUpdated() {
-        BluetoothRouteController.BluetoothRoutesUpdatedListener bluetoothRoutesUpdatedListener = this.mListener;
-        if (bluetoothRoutesUpdatedListener != null) {
-            bluetoothRoutesUpdatedListener.onBluetoothRoutesUpdated(getAllBluetoothRoutes());
-        }
-    }
-
     public final BluetoothRouteInfo createBluetoothRoute(BluetoothDevice bluetoothDevice) {
         int i;
         BluetoothRouteInfo bluetoothRouteInfo = new BluetoothRouteInfo();
         bluetoothRouteInfo.mBtDevice = bluetoothDevice;
         String address = bluetoothDevice.getAddress();
-        String name = bluetoothDevice.getName();
-        if (TextUtils.isEmpty(name)) {
-            name = this.mContext.getResources().getText(R.string.unknownName).toString();
+        String alias = Flags.enableUseOfBluetoothDeviceGetAliasForMr2infoGetName() ? bluetoothDevice.getAlias() : bluetoothDevice.getName();
+        if (TextUtils.isEmpty(alias)) {
+            alias = this.mContext.getResources().getText(R.string.unknownName).toString();
         }
         bluetoothRouteInfo.mConnectedProfiles = new SparseBooleanArray();
         BluetoothA2dp bluetoothA2dp = this.mA2dpProfile;
@@ -230,282 +298,153 @@ public class LegacyBluetoothRouteController implements BluetoothRouteController 
             address = "LE_AUDIO_" + this.mLeAudioProfile.getGroupId(bluetoothDevice);
             i = 26;
         }
-        bluetoothRouteInfo.mRoute = new MediaRoute2Info.Builder(address, name).addFeature("android.media.route.feature.LIVE_AUDIO").addFeature("android.media.route.feature.LOCAL_PLAYBACK").setConnectionState(0).setDescription(this.mContext.getResources().getText(R.string.config_overrideComponentUiPackage).toString()).setType(i).setVolumeHandling(1).setVolumeMax(this.mAudioManager.getStreamMaxVolume(3)).setAddress(bluetoothDevice.getAddress()).build();
+        bluetoothRouteInfo.mRoute = new MediaRoute2Info.Builder(address, alias).addFeature("android.media.route.feature.LIVE_AUDIO").addFeature("android.media.route.feature.LOCAL_PLAYBACK").setConnectionState(0).setDescription(this.mContext.getResources().getText(R.string.config_defaultWellbeingPackage).toString()).setType(i).setVolumeHandling(1).setVolumeMax(this.mAudioManager.getStreamMaxVolume(3)).setAddress(bluetoothDevice.getAddress()).build();
         return bluetoothRouteInfo;
     }
 
-    public final void setRouteConnectionState(BluetoothRouteInfo bluetoothRouteInfo, int i) {
-        if (bluetoothRouteInfo == null) {
-            Slog.w("LBtRouteProvider", "setRouteConnectionState: route shouldn't be null");
-            return;
+    @Override // com.android.server.media.BluetoothRouteController
+    public final List getAllBluetoothRoutes() {
+        ArrayList arrayList = new ArrayList();
+        ArrayList arrayList2 = new ArrayList();
+        MediaRoute2Info selectedRoute = getSelectedRoute();
+        if (selectedRoute != null) {
+            arrayList.add(selectedRoute);
+            arrayList2.add(selectedRoute.getId());
         }
+        for (BluetoothRouteInfo bluetoothRouteInfo : ((HashMap) this.mBluetoothRoutes).values()) {
+            if (!arrayList2.contains(bluetoothRouteInfo.mRoute.getId())) {
+                arrayList.add(bluetoothRouteInfo.mRoute);
+                arrayList2.add(bluetoothRouteInfo.mRoute.getId());
+            }
+        }
+        return arrayList;
+    }
+
+    @Override // com.android.server.media.BluetoothRouteController
+    public final MediaRoute2Info getSelectedRoute() {
+        if (((ArrayList) this.mActiveRoutes).isEmpty()) {
+            return null;
+        }
+        return ((BluetoothRouteInfo) ((ArrayList) this.mActiveRoutes).get(0)).mRoute;
+    }
+
+    @Override // com.android.server.media.BluetoothRouteController
+    public final List getTransferableRoutes() {
+        List allBluetoothRoutes = getAllBluetoothRoutes();
+        Iterator it = ((ArrayList) this.mActiveRoutes).iterator();
+        while (it.hasNext()) {
+            ((ArrayList) allBluetoothRoutes).remove(((BluetoothRouteInfo) it.next()).mRoute);
+        }
+        return allBluetoothRoutes;
+    }
+
+    public final void notifyBluetoothRoutesUpdated() {
+        BluetoothRouteController.BluetoothRoutesUpdatedListener bluetoothRoutesUpdatedListener = this.mListener;
+        if (bluetoothRoutesUpdatedListener != null) {
+            bluetoothRoutesUpdatedListener.onBluetoothRoutesUpdated();
+        }
+    }
+
+    public final void setRouteConnectionState(BluetoothRouteInfo bluetoothRouteInfo, int i) {
         if (bluetoothRouteInfo.mRoute.getConnectionState() == i) {
             return;
         }
         MediaRoute2Info.Builder connectionState = new MediaRoute2Info.Builder(bluetoothRouteInfo.mRoute).setConnectionState(i);
-        connectionState.setType(bluetoothRouteInfo.getRouteType());
+        int i2 = 8;
+        connectionState.setType(bluetoothRouteInfo.mConnectedProfiles.get(21, false) ? 23 : bluetoothRouteInfo.mConnectedProfiles.get(22, false) ? 26 : 8);
         if (i == 2) {
-            connectionState.setVolume(this.mVolumeMap.get(bluetoothRouteInfo.getRouteType(), 0));
+            SparseIntArray sparseIntArray = this.mVolumeMap;
+            if (bluetoothRouteInfo.mConnectedProfiles.get(21, false)) {
+                i2 = 23;
+            } else if (bluetoothRouteInfo.mConnectedProfiles.get(22, false)) {
+                i2 = 26;
+            }
+            connectionState.setVolume(sparseIntArray.get(i2, 0));
         }
         bluetoothRouteInfo.mRoute = connectionState.build();
     }
 
-    public final void addActiveRoute(BluetoothRouteInfo bluetoothRouteInfo) {
-        if (bluetoothRouteInfo == null) {
-            Slog.w("LBtRouteProvider", "addActiveRoute: btRoute is null");
-            return;
-        }
-        if (DEBUG) {
-            Log.d("LBtRouteProvider", "Adding active route: " + bluetoothRouteInfo.mRoute);
-        }
-        if (this.mActiveRoutes.contains(bluetoothRouteInfo)) {
-            Slog.w("LBtRouteProvider", "addActiveRoute: btRoute is already added.");
-        } else {
-            setRouteConnectionState(bluetoothRouteInfo, 2);
-            this.mActiveRoutes.add(bluetoothRouteInfo);
-        }
+    @Override // com.android.server.media.BluetoothRouteController
+    public final void start(UserHandle userHandle) {
+        BluetoothAdapter bluetoothAdapter = this.mBluetoothAdapter;
+        Context context = this.mContext;
+        BluetoothProfileListener bluetoothProfileListener = this.mProfileListener;
+        bluetoothAdapter.getProfileProxy(context, bluetoothProfileListener, 2);
+        this.mBluetoothAdapter.getProfileProxy(this.mContext, bluetoothProfileListener, 21);
+        this.mBluetoothAdapter.getProfileProxy(this.mContext, bluetoothProfileListener, 22);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.bluetooth.adapter.action.STATE_CHANGED");
+        this.mContext.registerReceiverAsUser(this.mAdapterStateChangedReceiver, userHandle, intentFilter, null, null);
+        IntentFilter m = VcnManagementService$$ExternalSyntheticOutline0.m("android.bluetooth.a2dp.profile.action.ACTIVE_DEVICE_CHANGED", "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED", "android.bluetooth.hearingaid.profile.action.ACTIVE_DEVICE_CHANGED", "android.bluetooth.hearingaid.profile.action.CONNECTION_STATE_CHANGED", "android.bluetooth.action.LE_AUDIO_CONNECTION_STATE_CHANGED");
+        m.addAction("android.bluetooth.action.LE_AUDIO_ACTIVE_DEVICE_CHANGED");
+        this.mContext.registerReceiverAsUser(this.mDeviceStateChangedReceiver, userHandle, m, null, null);
     }
 
-    public final void removeActiveRoute(BluetoothRouteInfo bluetoothRouteInfo) {
-        if (DEBUG) {
-            Log.d("LBtRouteProvider", "Removing active route: " + bluetoothRouteInfo.mRoute);
-        }
-        if (this.mActiveRoutes.remove(bluetoothRouteInfo)) {
-            setRouteConnectionState(bluetoothRouteInfo, 0);
-        }
+    @Override // com.android.server.media.BluetoothRouteController
+    public final void stop() {
+        this.mContext.unregisterReceiver(this.mAdapterStateChangedReceiver);
+        this.mContext.unregisterReceiver(this.mDeviceStateChangedReceiver);
     }
 
-    public final void clearActiveRoutesWithType(int i) {
-        if (DEBUG) {
-            Log.d("LBtRouteProvider", "Clearing active routes with type. type=" + i);
-        }
-        Iterator it = this.mActiveRoutes.iterator();
-        while (it.hasNext()) {
-            BluetoothRouteInfo bluetoothRouteInfo = (BluetoothRouteInfo) it.next();
-            if (bluetoothRouteInfo.mRoute.getType() == i) {
-                it.remove();
-                setRouteConnectionState(bluetoothRouteInfo, 0);
-            }
-        }
-    }
-
-    public final void addActiveDevices(BluetoothDevice bluetoothDevice) {
-        BluetoothRouteInfo bluetoothRouteInfo = (BluetoothRouteInfo) this.mBluetoothRoutes.get(bluetoothDevice.getAddress());
-        if (bluetoothRouteInfo == null) {
-            bluetoothRouteInfo = createBluetoothRoute(bluetoothDevice);
-            this.mBluetoothRoutes.put(bluetoothDevice.getAddress(), bluetoothRouteInfo);
-        }
-        addActiveRoute(bluetoothRouteInfo);
-        for (BluetoothRouteInfo bluetoothRouteInfo2 : this.mBluetoothRoutes.values()) {
-            if (TextUtils.equals(bluetoothRouteInfo2.mRoute.getId(), bluetoothRouteInfo.mRoute.getId()) && !TextUtils.equals(bluetoothRouteInfo2.mBtDevice.getAddress(), bluetoothRouteInfo.mBtDevice.getAddress())) {
-                addActiveRoute(bluetoothRouteInfo2);
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class BluetoothRouteInfo {
-        public BluetoothDevice mBtDevice;
-        public SparseBooleanArray mConnectedProfiles;
-        public MediaRoute2Info mRoute;
-
-        public BluetoothRouteInfo() {
-        }
-
-        public int getRouteType() {
-            if (this.mConnectedProfiles.get(21, false)) {
-                return 23;
-            }
-            return this.mConnectedProfiles.get(22, false) ? 26 : 8;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class BluetoothProfileListener implements BluetoothProfile.ServiceListener {
-        public BluetoothProfileListener() {
-        }
-
-        @Override // android.bluetooth.BluetoothProfile.ServiceListener
-        public void onServiceConnected(int i, BluetoothProfile bluetoothProfile) {
-            List activeDevices;
-            if (i == 2) {
-                LegacyBluetoothRouteController.this.mA2dpProfile = (BluetoothA2dp) bluetoothProfile;
-                activeDevices = LegacyBluetoothRouteController.this.mBluetoothAdapter.getActiveDevices(2);
-            } else if (i == 21) {
-                LegacyBluetoothRouteController.this.mHearingAidProfile = (BluetoothHearingAid) bluetoothProfile;
-                activeDevices = LegacyBluetoothRouteController.this.mBluetoothAdapter.getActiveDevices(21);
-            } else {
-                if (i != 22) {
-                    return;
-                }
-                LegacyBluetoothRouteController.this.mLeAudioProfile = (BluetoothLeAudio) bluetoothProfile;
-                activeDevices = LegacyBluetoothRouteController.this.mBluetoothAdapter.getActiveDevices(22);
-            }
-            for (BluetoothDevice bluetoothDevice : bluetoothProfile.getConnectedDevices()) {
-                BluetoothRouteInfo bluetoothRouteInfo = (BluetoothRouteInfo) LegacyBluetoothRouteController.this.mBluetoothRoutes.get(bluetoothDevice.getAddress());
-                if (bluetoothRouteInfo == null) {
-                    bluetoothRouteInfo = LegacyBluetoothRouteController.this.createBluetoothRoute(bluetoothDevice);
-                    LegacyBluetoothRouteController.this.mBluetoothRoutes.put(bluetoothDevice.getAddress(), bluetoothRouteInfo);
-                }
-                if (activeDevices.contains(bluetoothDevice)) {
-                    LegacyBluetoothRouteController.this.addActiveRoute(bluetoothRouteInfo);
-                }
-            }
-            LegacyBluetoothRouteController.this.notifyBluetoothRoutesUpdated();
-        }
-
-        @Override // android.bluetooth.BluetoothProfile.ServiceListener
-        public void onServiceDisconnected(int i) {
-            if (i == 2) {
-                LegacyBluetoothRouteController.this.mA2dpProfile = null;
-            } else if (i == 21) {
-                LegacyBluetoothRouteController.this.mHearingAidProfile = null;
-            } else {
-                if (i != 22) {
-                    return;
-                }
-                LegacyBluetoothRouteController.this.mLeAudioProfile = null;
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class AdapterStateChangedReceiver extends BroadcastReceiver {
-        public AdapterStateChangedReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            int intExtra = intent.getIntExtra("android.bluetooth.adapter.extra.STATE", -1);
-            if (intExtra == 10 || intExtra == 13) {
-                LegacyBluetoothRouteController.this.mBluetoothRoutes.clear();
-                LegacyBluetoothRouteController.this.notifyBluetoothRoutesUpdated();
-            } else if (intExtra == 12) {
-                LegacyBluetoothRouteController.this.buildBluetoothRoutes();
-                if (LegacyBluetoothRouteController.this.mBluetoothRoutes.isEmpty()) {
-                    return;
-                }
-                LegacyBluetoothRouteController.this.notifyBluetoothRoutesUpdated();
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class DeviceStateChangedReceiver extends BroadcastReceiver {
-        public DeviceStateChangedReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            BluetoothDevice bluetoothDevice = (BluetoothDevice) intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE", BluetoothDevice.class);
-            String action = intent.getAction();
-            action.hashCode();
-            char c = 65535;
-            switch (action.hashCode()) {
-                case -1765714821:
-                    if (action.equals("android.bluetooth.action.LE_AUDIO_CONNECTION_STATE_CHANGED")) {
-                        c = 0;
-                        break;
-                    }
-                    break;
-                case -749511570:
-                    if (action.equals("android.bluetooth.action.LE_AUDIO_ACTIVE_DEVICE_CHANGED")) {
-                        c = 1;
-                        break;
-                    }
-                    break;
-                case -612790895:
-                    if (action.equals("android.bluetooth.hearingaid.profile.action.CONNECTION_STATE_CHANGED")) {
-                        c = 2;
-                        break;
-                    }
-                    break;
-                case 487423555:
-                    if (action.equals("android.bluetooth.a2dp.profile.action.ACTIVE_DEVICE_CHANGED")) {
-                        c = 3;
-                        break;
-                    }
-                    break;
-                case 1176349464:
-                    if (action.equals("android.bluetooth.hearingaid.profile.action.ACTIVE_DEVICE_CHANGED")) {
-                        c = 4;
-                        break;
-                    }
-                    break;
-                case 1244161670:
-                    if (action.equals("android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")) {
-                        c = 5;
-                        break;
-                    }
-                    break;
-            }
-            switch (c) {
-                case 0:
-                    handleConnectionStateChanged(22, intent, bluetoothDevice);
-                    return;
-                case 1:
-                    LegacyBluetoothRouteController.this.clearActiveRoutesWithType(26);
-                    if (bluetoothDevice != null) {
-                        if (LegacyBluetoothRouteController.DEBUG) {
-                            Log.d("LBtRouteProvider", "Setting active le audio devices. device=" + bluetoothDevice);
-                        }
-                        LegacyBluetoothRouteController.this.addActiveDevices(bluetoothDevice);
-                    }
-                    LegacyBluetoothRouteController.this.notifyBluetoothRoutesUpdated();
-                    return;
-                case 2:
-                    handleConnectionStateChanged(21, intent, bluetoothDevice);
-                    return;
-                case 3:
-                    LegacyBluetoothRouteController.this.clearActiveRoutesWithType(8);
-                    if (bluetoothDevice != null) {
-                        LegacyBluetoothRouteController legacyBluetoothRouteController = LegacyBluetoothRouteController.this;
-                        legacyBluetoothRouteController.addActiveRoute((BluetoothRouteInfo) legacyBluetoothRouteController.mBluetoothRoutes.get(bluetoothDevice.getAddress()));
-                    }
-                    LegacyBluetoothRouteController.this.notifyBluetoothRoutesUpdated();
-                    return;
-                case 4:
-                    LegacyBluetoothRouteController.this.clearActiveRoutesWithType(23);
-                    if (bluetoothDevice != null) {
-                        if (LegacyBluetoothRouteController.DEBUG) {
-                            Log.d("LBtRouteProvider", "Setting active hearing aid devices. device=" + bluetoothDevice);
-                        }
-                        LegacyBluetoothRouteController.this.addActiveDevices(bluetoothDevice);
-                    }
-                    LegacyBluetoothRouteController.this.notifyBluetoothRoutesUpdated();
-                    return;
-                case 5:
-                    handleConnectionStateChanged(2, intent, bluetoothDevice);
-                    return;
-                default:
-                    return;
-            }
-        }
-
-        public final void handleConnectionStateChanged(int i, Intent intent, BluetoothDevice bluetoothDevice) {
-            int intExtra = intent.getIntExtra("android.bluetooth.profile.extra.STATE", -1);
-            BluetoothRouteInfo bluetoothRouteInfo = (BluetoothRouteInfo) LegacyBluetoothRouteController.this.mBluetoothRoutes.get(bluetoothDevice.getAddress());
-            if (intExtra == 2) {
-                if (bluetoothRouteInfo == null) {
-                    BluetoothRouteInfo createBluetoothRoute = LegacyBluetoothRouteController.this.createBluetoothRoute(bluetoothDevice);
-                    if (createBluetoothRoute.mConnectedProfiles.size() > 0) {
-                        LegacyBluetoothRouteController.this.mBluetoothRoutes.put(bluetoothDevice.getAddress(), createBluetoothRoute);
-                        LegacyBluetoothRouteController.this.notifyBluetoothRoutesUpdated();
-                        return;
-                    }
-                    return;
-                }
-                bluetoothRouteInfo.mConnectedProfiles.put(i, true);
+    @Override // com.android.server.media.BluetoothRouteController
+    public final void transferTo(String str) {
+        BluetoothRouteInfo bluetoothRouteInfo;
+        if (str == null) {
+            BluetoothAdapter bluetoothAdapter = this.mBluetoothAdapter;
+            if (bluetoothAdapter != null) {
+                bluetoothAdapter.removeActiveDevice(0);
                 return;
             }
-            if ((intExtra == 3 || intExtra == 0) && bluetoothRouteInfo != null) {
-                bluetoothRouteInfo.mConnectedProfiles.delete(i);
-                if (bluetoothRouteInfo.mConnectedProfiles.size() == 0) {
-                    LegacyBluetoothRouteController legacyBluetoothRouteController = LegacyBluetoothRouteController.this;
-                    legacyBluetoothRouteController.removeActiveRoute((BluetoothRouteInfo) legacyBluetoothRouteController.mBluetoothRoutes.remove(bluetoothDevice.getAddress()));
-                    LegacyBluetoothRouteController.this.notifyBluetoothRoutesUpdated();
+            return;
+        }
+        Iterator it = ((HashMap) this.mBluetoothRoutes).values().iterator();
+        while (true) {
+            if (!it.hasNext()) {
+                bluetoothRouteInfo = null;
+                break;
+            } else {
+                bluetoothRouteInfo = (BluetoothRouteInfo) it.next();
+                if (TextUtils.equals(bluetoothRouteInfo.mRoute.getId(), str)) {
+                    break;
                 }
             }
         }
+        if (bluetoothRouteInfo == null) {
+            Slog.w("LBtRouteProvider", "transferTo: Unknown route. ID=".concat(str));
+            return;
+        }
+        BluetoothAdapter bluetoothAdapter2 = this.mBluetoothAdapter;
+        if (bluetoothAdapter2 != null) {
+            bluetoothAdapter2.setActiveDevice(bluetoothRouteInfo.mBtDevice, 0);
+        }
+    }
+
+    @Override // com.android.server.media.BluetoothRouteController
+    public final boolean updateVolumeForDevices(int i, int i2) {
+        int i3;
+        boolean z = false;
+        if ((134217728 & i) != 0) {
+            i3 = 23;
+        } else if ((i & 896) != 0) {
+            i3 = 8;
+        } else {
+            if ((i & 536870912) == 0) {
+                return false;
+            }
+            i3 = 26;
+        }
+        this.mVolumeMap.put(i3, i2);
+        Iterator it = ((ArrayList) this.mActiveRoutes).iterator();
+        while (it.hasNext()) {
+            BluetoothRouteInfo bluetoothRouteInfo = (BluetoothRouteInfo) it.next();
+            if (bluetoothRouteInfo.mRoute.getType() == i3) {
+                bluetoothRouteInfo.mRoute = new MediaRoute2Info.Builder(bluetoothRouteInfo.mRoute).setVolume(i2).build();
+                z = true;
+            }
+        }
+        if (z) {
+            notifyBluetoothRoutesUpdated();
+        }
+        return true;
     }
 }

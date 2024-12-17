@@ -1,12 +1,16 @@
 package com.android.server.appbinding;
 
 import android.util.KeyValueListParser;
-import android.util.Slog;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerConstants$$ExternalSyntheticOutline0;
+import com.android.server.am.AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0;
+import com.android.server.am.ProcessList$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AppBindingConstants {
+public final class AppBindingConstants {
     public final double SERVICE_RECONNECT_BACKOFF_INCREASE;
     public final long SERVICE_RECONNECT_BACKOFF_SEC;
     public final long SERVICE_RECONNECT_MAX_BACKOFF_SEC;
@@ -21,7 +25,7 @@ public class AppBindingConstants {
         try {
             keyValueListParser.setString(str);
         } catch (IllegalArgumentException unused) {
-            Slog.e("AppBindingService", "Bad setting: " + str);
+            BootReceiver$$ExternalSyntheticOutline0.m("Bad setting: ", str, "AppBindingService");
         }
         long j = keyValueListParser.getLong("service_reconnect_backoff_sec", 10L);
         double d = keyValueListParser.getFloat("service_reconnect_backoff_increase", 2.0f);
@@ -40,31 +44,17 @@ public class AppBindingConstants {
         this.SMS_APP_BIND_FLAGS = i;
     }
 
-    public static AppBindingConstants initializeFromString(String str) {
-        return new AppBindingConstants(str);
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        printWriter.print(str);
+    public final void dump(PrintWriter printWriter) {
+        printWriter.print("  ");
         printWriter.print("Constants: ");
-        printWriter.println(this.sourceSettings);
-        printWriter.print(str);
-        printWriter.print("  SERVICE_RECONNECT_BACKOFF_SEC: ");
-        printWriter.println(this.SERVICE_RECONNECT_BACKOFF_SEC);
-        printWriter.print(str);
-        printWriter.print("  SERVICE_RECONNECT_BACKOFF_INCREASE: ");
+        ProcessList$$ExternalSyntheticOutline0.m(printWriter, this.sourceSettings, "  ", "  SERVICE_RECONNECT_BACKOFF_SEC: ");
+        ActivityManagerConstants$$ExternalSyntheticOutline0.m(this.SERVICE_RECONNECT_BACKOFF_SEC, printWriter, "  ", "  SERVICE_RECONNECT_BACKOFF_INCREASE: ");
         printWriter.println(this.SERVICE_RECONNECT_BACKOFF_INCREASE);
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  SERVICE_RECONNECT_MAX_BACKOFF_SEC: ");
-        printWriter.println(this.SERVICE_RECONNECT_MAX_BACKOFF_SEC);
-        printWriter.print(str);
-        printWriter.print("  SERVICE_STABLE_CONNECTION_THRESHOLD_SEC: ");
-        printWriter.println(this.SERVICE_STABLE_CONNECTION_THRESHOLD_SEC);
-        printWriter.print(str);
-        printWriter.print("  SMS_SERVICE_ENABLED: ");
-        printWriter.println(this.SMS_SERVICE_ENABLED);
-        printWriter.print(str);
-        printWriter.print("  SMS_APP_BIND_FLAGS: 0x");
+        ActivityManagerConstants$$ExternalSyntheticOutline0.m(this.SERVICE_RECONNECT_MAX_BACKOFF_SEC, printWriter, "  ", "  SERVICE_STABLE_CONNECTION_THRESHOLD_SEC: ");
+        ActivityManagerConstants$$ExternalSyntheticOutline0.m(this.SERVICE_STABLE_CONNECTION_THRESHOLD_SEC, printWriter, "  ", "  SMS_SERVICE_ENABLED: ");
+        AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0.m(printWriter, "  ", "  SMS_APP_BIND_FLAGS: 0x", this.SMS_SERVICE_ENABLED);
         printWriter.println(Integer.toHexString(this.SMS_APP_BIND_FLAGS));
     }
 }

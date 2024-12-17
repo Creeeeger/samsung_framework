@@ -2,15 +2,8 @@ package com.android.server.enterprise.adapter;
 
 import java.util.HashMap;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class AdapterRegistry {
-    public static HashMap mAdapterHandles = new HashMap();
-
-    public static Object getAdapter(Class cls) {
-        return mAdapterHandles.get(cls);
-    }
-
-    public static void registerAdapter(Class cls, IAdapterHandle iAdapterHandle) {
-        mAdapterHandles.put(cls, iAdapterHandle);
-    }
+    public static final HashMap mAdapterHandles = new HashMap();
 }

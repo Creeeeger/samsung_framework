@@ -1,7 +1,6 @@
 package co.nstant.in.cbor.model;
 
-import java.util.Objects;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class ChunkableDataItem extends DataItem {
     public boolean chunked;
@@ -9,15 +8,6 @@ public abstract class ChunkableDataItem extends DataItem {
     public ChunkableDataItem(MajorType majorType) {
         super(majorType);
         this.chunked = false;
-    }
-
-    public boolean isChunked() {
-        return this.chunked;
-    }
-
-    public ChunkableDataItem setChunked(boolean z) {
-        this.chunked = z;
-        return this;
     }
 
     @Override // co.nstant.in.cbor.model.DataItem
@@ -30,6 +20,6 @@ public abstract class ChunkableDataItem extends DataItem {
 
     @Override // co.nstant.in.cbor.model.DataItem
     public int hashCode() {
-        return Objects.hashCode(Boolean.valueOf(this.chunked)) ^ super.hashCode();
+        return Boolean.valueOf(this.chunked).hashCode() ^ super.hashCode();
     }
 }

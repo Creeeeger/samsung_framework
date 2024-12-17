@@ -7,48 +7,44 @@ import android.hardware.iris.IIrisService;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.util.Slog;
-import com.android.server.ServiceThread;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
 import com.android.server.SystemService;
+import com.android.server.Watchdog$$ExternalSyntheticOutline0;
 import com.android.server.biometrics.Utils;
 import com.android.server.biometrics.sensors.iris.IrisService;
-import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class IrisService extends SystemService {
+public final class IrisService extends SystemService {
     public final IrisServiceWrapper mServiceWrapper;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class IrisServiceWrapper extends IIrisService.Stub {
         public IrisServiceWrapper() {
         }
 
-        public void registerAuthenticators(final List list) {
-            super.registerAuthenticators_enforcePermission();
-            ServiceThread serviceThread = new ServiceThread("IrisService", 10, true);
-            serviceThread.start();
-            new Handler(serviceThread.getLooper()).post(new Runnable() { // from class: com.android.server.biometrics.sensors.iris.IrisService$IrisServiceWrapper$$ExternalSyntheticLambda0
+        public final void registerAuthenticators(final List list) {
+            registerAuthenticators_enforcePermission();
+            new Handler(Watchdog$$ExternalSyntheticOutline0.m(10, "IrisService", true).getLooper()).post(new Runnable() { // from class: com.android.server.biometrics.sensors.iris.IrisService$IrisServiceWrapper$$ExternalSyntheticLambda0
                 @Override // java.lang.Runnable
                 public final void run() {
-                    IrisService.IrisServiceWrapper.this.lambda$registerAuthenticators$0(list);
+                    IrisService.IrisServiceWrapper irisServiceWrapper = IrisService.IrisServiceWrapper.this;
+                    List<SensorPropertiesInternal> list2 = list;
+                    irisServiceWrapper.getClass();
+                    IBiometricService asInterface = IBiometricService.Stub.asInterface(ServiceManager.getService("biometric"));
+                    for (SensorPropertiesInternal sensorPropertiesInternal : list2) {
+                        int i = sensorPropertiesInternal.sensorId;
+                        int propertyStrengthToAuthenticatorStrength = Utils.propertyStrengthToAuthenticatorStrength(sensorPropertiesInternal.sensorStrength);
+                        IrisService.IrisServiceWrapper irisServiceWrapper2 = IrisService.this.mServiceWrapper;
+                        try {
+                            asInterface.registerAuthenticator(i, 4, propertyStrengthToAuthenticatorStrength, new IrisAuthenticator());
+                        } catch (RemoteException unused) {
+                            NandswapManager$$ExternalSyntheticOutline0.m(i, "Remote exception when registering sensorId: ", "IrisService");
+                        }
+                    }
                 }
             });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$registerAuthenticators$0(List list) {
-            IBiometricService asInterface = IBiometricService.Stub.asInterface(ServiceManager.getService("biometric"));
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                SensorPropertiesInternal sensorPropertiesInternal = (SensorPropertiesInternal) it.next();
-                int i = sensorPropertiesInternal.sensorId;
-                try {
-                    asInterface.registerAuthenticator(i, 4, Utils.propertyStrengthToAuthenticatorStrength(sensorPropertiesInternal.sensorStrength), new IrisAuthenticator(IrisService.this.mServiceWrapper, i));
-                } catch (RemoteException unused) {
-                    Slog.e("IrisService", "Remote exception when registering sensorId: " + i);
-                }
-            }
         }
     }
 
@@ -58,7 +54,7 @@ public class IrisService extends SystemService {
     }
 
     @Override // com.android.server.SystemService
-    public void onStart() {
+    public final void onStart() {
         publishBinderService("iris", this.mServiceWrapper);
     }
 }

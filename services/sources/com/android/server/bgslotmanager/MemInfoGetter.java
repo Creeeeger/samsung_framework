@@ -1,49 +1,13 @@
 package com.android.server.bgslotmanager;
 
-import android.os.IInstalld;
 import android.os.Process;
 import com.android.internal.util.MemInfoReader;
+import com.android.server.knox.dar.ddar.ta.TACommandRequest;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class MemInfoGetter {
-    public final int[][] memoryMBToGBPool = {new int[]{12288, 16}, new int[]{IInstalld.FLAG_FORCE, 12}, new int[]{6144, 8}, new int[]{IInstalld.FLAG_USE_QUOTA, 6}, new int[]{3072, 4}, new int[]{IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES, 3}, new int[]{1024, 2}, new int[]{0, 1}};
-    public MemInfoReader mInfoInner = new MemInfoReader();
-    public final long mTotalMemMb = getTotalMemoryMB();
-
-    public static long getTotalMemoryMB() {
-        return Process.getTotalMemory() / 1048576;
-    }
-
-    public final void readLightMemInfo() {
-        this.mInfoInner.readLightMemInfo();
-    }
-
-    public final long getSwapTotalSizeKb() {
-        readLightMemInfo();
-        return this.mInfoInner.getSwapTotalSizeKb();
-    }
-
-    public long getAvailableMemLegacy() {
-        readLightMemInfo();
-        return (this.mInfoInner.getFreeSize() + this.mInfoInner.getCachedSizeLegacy()) - (this.mInfoInner.getRbinTotalSize() - this.mInfoInner.getRbinAllocedSize());
-    }
-
-    public int getSwapsizeGB() {
-        int swapTotalSizeKb = (int) (getSwapTotalSizeKb() / 1024);
-        for (int[] iArr : this.memoryMBToGBPool) {
-            if (swapTotalSizeKb > iArr[0]) {
-                return iArr[1];
-            }
-        }
-        return 0;
-    }
-
-    public int getPhysicalMemory() {
-        for (int[] iArr : this.memoryMBToGBPool) {
-            if (this.mTotalMemMb > iArr[0]) {
-                return iArr[1];
-            }
-        }
-        return 0;
-    }
+public final class MemInfoGetter {
+    public final int[][] memoryMBToGBPool = {new int[]{12288, 16}, new int[]{8192, 12}, new int[]{6144, 8}, new int[]{4096, 6}, new int[]{TACommandRequest.MAX_DATA_TRANSACTION_SIZE, 4}, new int[]{2048, 3}, new int[]{1024, 2}, new int[]{0, 1}};
+    public final MemInfoReader mInfoInner = new MemInfoReader();
+    public final long mTotalMemMb = Process.getTotalMemory() / 1048576;
 }

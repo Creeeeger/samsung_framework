@@ -1,27 +1,43 @@
 package com.android.server.locksettings;
 
 import android.hardware.rebootescrow.IRebootEscrow;
+import android.os.IBinder;
+import android.os.IInterface;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.ServiceSpecificException;
 import android.util.Slog;
+import com.android.server.HeapdumpWatcher$$ExternalSyntheticOutline0;
 import java.util.NoSuchElementException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
-/* loaded from: classes2.dex */
-public class RebootEscrowProviderHalImpl implements RebootEscrowProviderInterface {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RebootEscrowProviderHalImpl implements RebootEscrowProviderInterface {
     public final Injector mInjector;
 
-    @Override // com.android.server.locksettings.RebootEscrowProviderInterface
-    public int getType() {
-        return 0;
-    }
-
-    /* loaded from: classes2.dex */
-    public class Injector {
-        public IRebootEscrow getRebootEscrow() {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Injector {
+        /* JADX WARN: Multi-variable type inference failed */
+        /* JADX WARN: Type inference failed for: r2v6, types: [android.hardware.rebootescrow.IRebootEscrow] */
+        public static IRebootEscrow getRebootEscrow() {
+            IRebootEscrow.Stub.Proxy proxy;
             try {
-                return IRebootEscrow.Stub.asInterface(ServiceManager.getService("android.hardware.rebootescrow.IRebootEscrow/default"));
+                IBinder service = ServiceManager.getService("android.hardware.rebootescrow.IRebootEscrow/default");
+                int i = IRebootEscrow.Stub.$r8$clinit;
+                if (service == null) {
+                    return null;
+                }
+                IInterface queryLocalInterface = service.queryLocalInterface(IRebootEscrow.DESCRIPTOR);
+                if (queryLocalInterface == null || !(queryLocalInterface instanceof IRebootEscrow)) {
+                    IRebootEscrow.Stub.Proxy proxy2 = new IRebootEscrow.Stub.Proxy();
+                    proxy2.mRemote = service;
+                    proxy = proxy2;
+                } else {
+                    proxy = (IRebootEscrow) queryLocalInterface;
+                }
+                return proxy;
             } catch (NoSuchElementException unused) {
                 Slog.i("RebootEscrowProviderHal", "Device doesn't implement RebootEscrow HAL");
                 return null;
@@ -38,19 +54,30 @@ public class RebootEscrowProviderHalImpl implements RebootEscrowProviderInterfac
     }
 
     @Override // com.android.server.locksettings.RebootEscrowProviderInterface
-    public boolean hasRebootEscrowSupport() {
-        return this.mInjector.getRebootEscrow() != null;
+    public final void clearRebootEscrowKey() {
+        this.mInjector.getClass();
+        IRebootEscrow rebootEscrow = Injector.getRebootEscrow();
+        if (rebootEscrow == null) {
+            return;
+        }
+        try {
+            ((IRebootEscrow.Stub.Proxy) rebootEscrow).storeKey(new byte[32]);
+        } catch (RemoteException | ServiceSpecificException unused) {
+            Slog.w("RebootEscrowProviderHal", "Could not call RebootEscrow HAL to shred key");
+        }
     }
 
     @Override // com.android.server.locksettings.RebootEscrowProviderInterface
-    public RebootEscrowKey getAndClearRebootEscrowKey(SecretKey secretKey) {
-        IRebootEscrow rebootEscrow = this.mInjector.getRebootEscrow();
+    public final RebootEscrowKey getAndClearRebootEscrowKey(SecretKey secretKey) {
+        this.mInjector.getClass();
+        IRebootEscrow rebootEscrow = Injector.getRebootEscrow();
         if (rebootEscrow == null) {
             Slog.w("RebootEscrowProviderHal", "Had reboot escrow data for users, but RebootEscrow HAL is unavailable");
             return null;
         }
         try {
-            byte[] retrieveKey = rebootEscrow.retrieveKey();
+            IRebootEscrow.Stub.Proxy proxy = (IRebootEscrow.Stub.Proxy) rebootEscrow;
+            byte[] retrieveKey = proxy.retrieveKey();
             if (retrieveKey == null) {
                 Slog.w("RebootEscrowProviderHal", "Had reboot escrow data for users, but could not retrieve key");
                 return null;
@@ -67,39 +94,38 @@ public class RebootEscrowProviderHalImpl implements RebootEscrowProviderInterfac
                 Slog.w("RebootEscrowProviderHal", "IRebootEscrow returned an all-zeroes key");
                 return null;
             }
-            rebootEscrow.storeKey(new byte[32]);
-            return RebootEscrowKey.fromKeyBytes(retrieveKey);
-        } catch (ServiceSpecificException e) {
-            Slog.w("RebootEscrowProviderHal", "Got service-specific exception: " + e.errorCode);
-            return null;
+            proxy.storeKey(new byte[32]);
+            return new RebootEscrowKey(new SecretKeySpec(retrieveKey, "AES"));
         } catch (RemoteException unused) {
             Slog.w("RebootEscrowProviderHal", "Could not retrieve escrow data");
             return null;
+        } catch (ServiceSpecificException e) {
+            HeapdumpWatcher$$ExternalSyntheticOutline0.m(new StringBuilder("Got service-specific exception: "), e.errorCode, "RebootEscrowProviderHal");
+            return null;
         }
     }
 
     @Override // com.android.server.locksettings.RebootEscrowProviderInterface
-    public void clearRebootEscrowKey() {
-        IRebootEscrow rebootEscrow = this.mInjector.getRebootEscrow();
-        if (rebootEscrow == null) {
-            return;
-        }
-        try {
-            rebootEscrow.storeKey(new byte[32]);
-        } catch (RemoteException | ServiceSpecificException unused) {
-            Slog.w("RebootEscrowProviderHal", "Could not call RebootEscrow HAL to shred key");
-        }
+    public final int getType() {
+        return 0;
     }
 
     @Override // com.android.server.locksettings.RebootEscrowProviderInterface
-    public boolean storeRebootEscrowKey(RebootEscrowKey rebootEscrowKey, SecretKey secretKey) {
-        IRebootEscrow rebootEscrow = this.mInjector.getRebootEscrow();
+    public final boolean hasRebootEscrowSupport() {
+        this.mInjector.getClass();
+        return Injector.getRebootEscrow() != null;
+    }
+
+    @Override // com.android.server.locksettings.RebootEscrowProviderInterface
+    public final boolean storeRebootEscrowKey(RebootEscrowKey rebootEscrowKey, SecretKey secretKey) {
+        this.mInjector.getClass();
+        IRebootEscrow rebootEscrow = Injector.getRebootEscrow();
         if (rebootEscrow == null) {
             Slog.w("RebootEscrowProviderHal", "Escrow marked as ready, but RebootEscrow HAL is unavailable");
             return false;
         }
         try {
-            rebootEscrow.storeKey(rebootEscrowKey.getKeyBytes());
+            ((IRebootEscrow.Stub.Proxy) rebootEscrow).storeKey(rebootEscrowKey.mKey.getEncoded());
             Slog.i("RebootEscrowProviderHal", "Reboot escrow key stored with RebootEscrow HAL");
             return true;
         } catch (RemoteException | ServiceSpecificException e) {

@@ -1,8 +1,10 @@
 package com.android.server.broadcastradio.hal2;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.broadcastradio.V2_0.ConfigFlag;
-import android.hardware.broadcastradio.V2_0.ITunerSession;
+import android.hardware.broadcastradio.V2_0.IBroadcastRadio;
+import android.hardware.broadcastradio.V2_0.ITunerSession$Proxy;
 import android.hardware.radio.ITuner;
 import android.hardware.radio.ITunerCallback;
 import android.hardware.radio.ProgramList;
@@ -10,28 +12,29 @@ import android.hardware.radio.ProgramSelector;
 import android.hardware.radio.RadioManager;
 import android.net.INetd;
 import android.os.Binder;
+import android.os.HwParcel;
 import android.os.RemoteException;
 import android.util.ArrayMap;
+import android.util.ArraySet;
 import android.util.IndentingPrintWriter;
 import android.util.MutableBoolean;
 import android.util.MutableInt;
-import android.util.Slog;
+import com.android.server.broadcastradio.RadioEventLogger;
 import com.android.server.broadcastradio.RadioServiceUserController;
 import com.android.server.broadcastradio.hal2.RadioModule;
-import com.android.server.broadcastradio.hal2.Utils;
 import com.android.server.utils.Slogf;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TunerSession extends ITuner.Stub {
+public final class TunerSession extends ITuner.Stub {
     public final ITunerCallback mCallback;
     public final RadioEventLogger mEventLogger;
-    public final ITunerSession mHwSession;
+    public final ITunerSession$Proxy mHwSession;
     public final RadioModule mModule;
     public final int mUserId;
     public final Object mLock = new Object();
@@ -40,46 +43,49 @@ public class TunerSession extends ITuner.Stub {
     public ProgramInfoCache mProgramInfoCache = null;
     public RadioManager.BandConfig mDummyConfig = null;
 
-    public TunerSession(RadioModule radioModule, ITunerSession iTunerSession, ITunerCallback iTunerCallback) {
-        Objects.requireNonNull(radioModule);
+    public TunerSession(RadioModule radioModule, ITunerSession$Proxy iTunerSession$Proxy, ITunerCallback iTunerCallback) {
         this.mModule = radioModule;
-        Objects.requireNonNull(iTunerSession);
-        this.mHwSession = iTunerSession;
+        Objects.requireNonNull(iTunerSession$Proxy);
+        this.mHwSession = iTunerSession$Proxy;
         this.mUserId = Binder.getCallingUserHandle().getIdentifier();
         Objects.requireNonNull(iTunerCallback);
         this.mCallback = iTunerCallback;
-        this.mEventLogger = new RadioEventLogger("BcRadio2Srv.session", 25);
+        this.mEventLogger = new RadioEventLogger("BcRadio2Srv.session");
     }
 
-    public void close() {
-        this.mEventLogger.logRadioEvent("Close", new Object[0]);
-        close(null);
-    }
-
-    public void close(Integer num) {
-        this.mEventLogger.logRadioEvent("Close on error %d", num);
+    public final void cancel() {
+        HwParcel hwParcel;
+        HwParcel hwParcel2;
+        Slogf.i("BcRadio2Srv.session", "Cancel");
+        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
+            Slogf.w("BcRadio2Srv.session", "Cannot cancel on HAL 2.0 client from non-current user");
+            return;
+        }
         synchronized (this.mLock) {
-            if (this.mIsClosed) {
-                return;
+            checkNotClosedLocked();
+            ITunerSession$Proxy iTunerSession$Proxy = this.mHwSession;
+            Objects.requireNonNull(iTunerSession$Proxy);
+            try {
+                hwParcel = new HwParcel();
+                hwParcel.writeInterfaceToken("android.hardware.broadcastradio@2.0::ITunerSession");
+                hwParcel2 = new HwParcel();
+            } catch (RemoteException e) {
+                e.rethrowFromSystemServer();
             }
-            this.mIsClosed = true;
-            if (num != null) {
-                try {
-                    this.mCallback.onError(num.intValue());
-                } catch (RemoteException e) {
-                    Slog.w("BcRadio2Srv.session", "mCallback.onError() failed: ", e);
-                }
+            try {
+                iTunerSession$Proxy.mRemote.transact(4, hwParcel, hwParcel2, 0);
+                hwParcel2.verifySuccess();
+                hwParcel.releaseTemporaryStorage();
+                hwParcel2.release();
+            } catch (Throwable th) {
+                hwParcel2.release();
+                throw th;
             }
-            this.mModule.onTunerSessionClosed(this);
         }
     }
 
-    public boolean isClosed() {
-        boolean z;
-        synchronized (this.mLock) {
-            z = this.mIsClosed;
-        }
-        return z;
+    public final void cancelAnnouncement() {
+        Slogf.w("BcRadio2Srv.session", "Announcements control doesn't involve cancelling at the HAL level in HAL 2.0");
     }
 
     public final void checkNotClosedLocked() {
@@ -88,184 +94,33 @@ public class TunerSession extends ITuner.Stub {
         }
     }
 
-    public void setConfiguration(final RadioManager.BandConfig bandConfig) {
-        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
-            Slogf.w("BcRadio2Srv.session", "Cannot set configuration for HAL 2.0 client from non-current user");
-            return;
-        }
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            Objects.requireNonNull(bandConfig);
-            RadioManager.BandConfig bandConfig2 = bandConfig;
-            this.mDummyConfig = bandConfig;
-        }
-        Slog.i("BcRadio2Srv.session", "Ignoring setConfiguration - not applicable for broadcastradio HAL 2.0");
-        this.mModule.fanoutAidlCallback(new RadioModule.AidlCallbackRunnable() { // from class: com.android.server.broadcastradio.hal2.TunerSession$$ExternalSyntheticLambda5
-            @Override // com.android.server.broadcastradio.hal2.RadioModule.AidlCallbackRunnable
-            public final void run(ITunerCallback iTunerCallback) {
-                iTunerCallback.onConfigurationChanged(bandConfig);
-            }
-        });
+    public final void close() {
+        this.mEventLogger.logRadioEvent("Close", new Object[0]);
+        close(null);
     }
 
-    public RadioManager.BandConfig getConfiguration() {
-        RadioManager.BandConfig bandConfig;
+    public final void close(Integer num) {
+        this.mEventLogger.logRadioEvent("Close on error %d", num);
         synchronized (this.mLock) {
-            checkNotClosedLocked();
-            bandConfig = this.mDummyConfig;
-        }
-        return bandConfig;
-    }
-
-    public void setMuted(boolean z) {
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            if (this.mIsMuted == z) {
-                return;
-            }
-            this.mIsMuted = z;
-            Slog.w("BcRadio2Srv.session", "Mute via RadioService is not implemented - please handle it via app");
-        }
-    }
-
-    public boolean isMuted() {
-        boolean z;
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            z = this.mIsMuted;
-        }
-        return z;
-    }
-
-    public void step(boolean z, boolean z2) {
-        RadioEventLogger radioEventLogger = this.mEventLogger;
-        Object[] objArr = new Object[2];
-        objArr[0] = z ? INetd.IF_STATE_DOWN : INetd.IF_STATE_UP;
-        objArr[1] = z2 ? "yes" : "no";
-        radioEventLogger.logRadioEvent("Step with direction %s, skipSubChannel?  %s", objArr);
-        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
-            Slogf.w("BcRadio2Srv.session", "Cannot step on HAL 2.0 client from non-current user");
-            return;
-        }
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            Convert.throwOnError("step", this.mHwSession.step(z ? false : true));
-        }
-    }
-
-    public void seek(boolean z, boolean z2) {
-        RadioEventLogger radioEventLogger = this.mEventLogger;
-        Object[] objArr = new Object[2];
-        objArr[0] = z ? INetd.IF_STATE_DOWN : INetd.IF_STATE_UP;
-        objArr[1] = z2 ? "yes" : "no";
-        radioEventLogger.logRadioEvent("Seek with direction %s, skipSubChannel? %s", objArr);
-        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
-            Slogf.w("BcRadio2Srv.session", "Cannot scan on HAL 2.0 client from non-current user");
-            return;
-        }
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            Convert.throwOnError("step", this.mHwSession.scan(z ? false : true, z2));
-        }
-    }
-
-    public void tune(ProgramSelector programSelector) {
-        this.mEventLogger.logRadioEvent("Tune with selector %s", programSelector);
-        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
-            Slogf.w("BcRadio2Srv.session", "Cannot tune on HAL 2.0 client from non-current user");
-            return;
-        }
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            Convert.throwOnError("tune", this.mHwSession.tune(Convert.programSelectorToHal(programSelector)));
-        }
-    }
-
-    public void cancel() {
-        Slog.i("BcRadio2Srv.session", "Cancel");
-        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
-            Slogf.w("BcRadio2Srv.session", "Cannot cancel on HAL 2.0 client from non-current user");
-            return;
-        }
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            final ITunerSession iTunerSession = this.mHwSession;
-            Objects.requireNonNull(iTunerSession);
-            Utils.maybeRethrow(new Utils.VoidFuncThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal2.TunerSession$$ExternalSyntheticLambda1
-                @Override // com.android.server.broadcastradio.hal2.Utils.VoidFuncThrowingRemoteException
-                public final void exec() {
-                    ITunerSession.this.cancel();
+            try {
+                if (this.mIsClosed) {
+                    return;
                 }
-            });
-        }
-    }
-
-    public void cancelAnnouncement() {
-        Slog.w("BcRadio2Srv.session", "Announcements control doesn't involve cancelling at the HAL level in HAL 2.0");
-    }
-
-    public Bitmap getImage(int i) {
-        this.mEventLogger.logRadioEvent("Get image for %d", Integer.valueOf(i));
-        return this.mModule.getImage(i);
-    }
-
-    public boolean startBackgroundScan() {
-        Slog.w("BcRadio2Srv.session", "Explicit background scan trigger is not supported with HAL 2.0");
-        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
-            Slogf.w("BcRadio2Srv.session", "Cannot start background scan on HAL 2.0 client from non-current user");
-            return false;
-        }
-        this.mModule.fanoutAidlCallback(new RadioModule.AidlCallbackRunnable() { // from class: com.android.server.broadcastradio.hal2.TunerSession$$ExternalSyntheticLambda4
-            @Override // com.android.server.broadcastradio.hal2.RadioModule.AidlCallbackRunnable
-            public final void run(ITunerCallback iTunerCallback) {
-                iTunerCallback.onBackgroundScanComplete();
+                this.mIsClosed = true;
+                if (num != null) {
+                    try {
+                        this.mCallback.onError(num.intValue());
+                    } catch (RemoteException e) {
+                        Slogf.w("BcRadio2Srv.session", "mCallback.onError() failed: ", e);
+                    }
+                }
+                RadioModule radioModule = this.mModule;
+                synchronized (radioModule.mLock) {
+                    radioModule.onTunerSessionsClosedLocked(this);
+                }
+            } catch (Throwable th) {
+                throw th;
             }
-        });
-        return true;
-    }
-
-    public void startProgramListUpdates(ProgramList.Filter filter) {
-        this.mEventLogger.logRadioEvent("start programList updates %s", filter);
-        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
-            Slogf.w("BcRadio2Srv.session", "Cannot start program list updates on HAL 2.0 client from non-current user");
-            return;
-        }
-        if (filter == null) {
-            filter = new ProgramList.Filter(new HashSet(), new HashSet(), true, false);
-        }
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            this.mProgramInfoCache = new ProgramInfoCache(filter);
-        }
-        this.mModule.onTunerSessionProgramListFilterChanged(this);
-    }
-
-    public ProgramList.Filter getProgramListFilter() {
-        ProgramList.Filter filter;
-        synchronized (this.mLock) {
-            ProgramInfoCache programInfoCache = this.mProgramInfoCache;
-            filter = programInfoCache == null ? null : programInfoCache.getFilter();
-        }
-        return filter;
-    }
-
-    public void onMergedProgramListUpdateFromHal(ProgramList.Chunk chunk) {
-        synchronized (this.mLock) {
-            ProgramInfoCache programInfoCache = this.mProgramInfoCache;
-            if (programInfoCache == null) {
-                return;
-            }
-            dispatchClientUpdateChunks(programInfoCache.filterAndApplyChunk(chunk));
-        }
-    }
-
-    public void updateProgramInfoFromHalCache(ProgramInfoCache programInfoCache) {
-        synchronized (this.mLock) {
-            ProgramInfoCache programInfoCache2 = this.mProgramInfoCache;
-            if (programInfoCache2 == null) {
-                return;
-            }
-            dispatchClientUpdateChunks(programInfoCache2.filterAndUpdateFrom(programInfoCache, true));
         }
     }
 
@@ -278,12 +133,271 @@ public class TunerSession extends ITuner.Stub {
             try {
                 this.mCallback.onProgramListUpdated((ProgramList.Chunk) it.next());
             } catch (RemoteException e) {
-                Slog.w("BcRadio2Srv.session", "mCallback.onProgramListUpdated() failed: ", e);
+                Slogf.w("BcRadio2Srv.session", "mCallback.onProgramListUpdated() failed: ", e);
             }
         }
     }
 
-    public void stopProgramListUpdates() {
+    public final void dumpInfo(IndentingPrintWriter indentingPrintWriter) {
+        indentingPrintWriter.printf("TunerSession\n", new Object[0]);
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.printf("HIDL HAL Session: %s\n", new Object[]{this.mHwSession});
+        synchronized (this.mLock) {
+            try {
+                indentingPrintWriter.printf("Is session closed? %s\n", new Object[]{this.mIsClosed ? "Yes" : "No"});
+                indentingPrintWriter.printf("Is muted? %s\n", new Object[]{this.mIsMuted ? "Yes" : "No"});
+                indentingPrintWriter.printf("ProgramInfoCache: %s\n", new Object[]{this.mProgramInfoCache});
+                indentingPrintWriter.printf("Config: %s\n", new Object[]{this.mDummyConfig});
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        indentingPrintWriter.printf("Tuner session events:\n", new Object[0]);
+        indentingPrintWriter.increaseIndent();
+        this.mEventLogger.mEventLogger.dump(indentingPrintWriter);
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.decreaseIndent();
+    }
+
+    public final RadioManager.BandConfig getConfiguration() {
+        RadioManager.BandConfig bandConfig;
+        synchronized (this.mLock) {
+            checkNotClosedLocked();
+            bandConfig = this.mDummyConfig;
+        }
+        return bandConfig;
+    }
+
+    public final Bitmap getImage(int i) {
+        ArrayList arrayList;
+        this.mEventLogger.logRadioEvent("Get image for %d", Integer.valueOf(i));
+        RadioModule radioModule = this.mModule;
+        radioModule.mEventLogger.logRadioEvent("Get image for id %d", Integer.valueOf(i));
+        if (i == 0) {
+            throw new IllegalArgumentException("Image ID is missing");
+        }
+        try {
+            IBroadcastRadio.Proxy proxy = (IBroadcastRadio.Proxy) radioModule.mService;
+            proxy.getClass();
+            HwParcel hwParcel = new HwParcel();
+            hwParcel.writeInterfaceToken("android.hardware.broadcastradio@2.0::IBroadcastRadio");
+            hwParcel.writeInt32(i);
+            HwParcel hwParcel2 = new HwParcel();
+            try {
+                proxy.mRemote.transact(5, hwParcel, hwParcel2, 0);
+                hwParcel2.verifySuccess();
+                hwParcel.releaseTemporaryStorage();
+                arrayList = hwParcel2.readInt8Vector();
+                hwParcel2.release();
+            } catch (Throwable th) {
+                hwParcel2.release();
+                throw th;
+            }
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+            arrayList = null;
+        }
+        int size = arrayList.size();
+        byte[] bArr = new byte[size];
+        for (int i2 = 0; i2 < arrayList.size(); i2++) {
+            bArr[i2] = ((Byte) arrayList.get(i2)).byteValue();
+        }
+        if (size == 0) {
+            return null;
+        }
+        return BitmapFactory.decodeByteArray(bArr, 0, size);
+    }
+
+    public final Map getParameters(List list) {
+        Object obj;
+        Map vendorInfoFromHal;
+        synchronized (this.mLock) {
+            checkNotClosedLocked();
+            try {
+                obj = new TunerSession$$ExternalSyntheticLambda0(2, this, list).exec();
+            } catch (RemoteException e) {
+                e.rethrowFromSystemServer();
+                obj = null;
+            }
+            vendorInfoFromHal = Convert.vendorInfoFromHal((List) obj);
+        }
+        return vendorInfoFromHal;
+    }
+
+    public final boolean isClosed() {
+        boolean z;
+        synchronized (this.mLock) {
+            z = this.mIsClosed;
+        }
+        return z;
+    }
+
+    public final boolean isConfigFlagSet(int i) {
+        boolean z;
+        this.mEventLogger.logRadioEvent("Is ConfigFlagSet for %s", ConfigFlag.toString(i));
+        synchronized (this.mLock) {
+            try {
+                checkNotClosedLocked();
+                MutableInt mutableInt = new MutableInt(1);
+                MutableBoolean mutableBoolean = new MutableBoolean(false);
+                try {
+                    this.mHwSession.isConfigFlagSet(i, new TunerSession$$ExternalSyntheticLambda0(0, mutableInt, mutableBoolean));
+                    Convert.throwOnError(mutableInt.value, "isConfigFlagSet");
+                    z = mutableBoolean.value;
+                } catch (RemoteException e) {
+                    throw new RuntimeException("Failed to check flag " + ConfigFlag.toString(i), e);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return z;
+    }
+
+    public final boolean isConfigFlagSupported(int i) {
+        try {
+            isConfigFlagSet(i);
+            return true;
+        } catch (IllegalStateException | UnsupportedOperationException unused) {
+            return false;
+        }
+    }
+
+    public final boolean isMuted() {
+        boolean z;
+        synchronized (this.mLock) {
+            checkNotClosedLocked();
+            z = this.mIsMuted;
+        }
+        return z;
+    }
+
+    public final void seek(boolean z, boolean z2) {
+        this.mEventLogger.logRadioEvent("Seek with direction %s, skipSubChannel? %s", z ? INetd.IF_STATE_DOWN : INetd.IF_STATE_UP, z2 ? "yes" : "no");
+        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
+            Slogf.w("BcRadio2Srv.session", "Cannot scan on HAL 2.0 client from non-current user");
+            return;
+        }
+        synchronized (this.mLock) {
+            checkNotClosedLocked();
+            Convert.throwOnError(this.mHwSession.scan(!z, z2), "step");
+        }
+    }
+
+    public final void setConfigFlag(int i, boolean z) {
+        this.mEventLogger.logRadioEvent("Set ConfigFlag  %s = %b", ConfigFlag.toString(i), Boolean.valueOf(z));
+        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
+            Slogf.w("BcRadio2Srv.session", "Cannot set config flag for HAL 2.0 client from non-current user");
+            return;
+        }
+        synchronized (this.mLock) {
+            checkNotClosedLocked();
+            Convert.throwOnError(this.mHwSession.setConfigFlag(i, z), "setConfigFlag");
+        }
+    }
+
+    public final void setConfiguration(final RadioManager.BandConfig bandConfig) {
+        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
+            Slogf.w("BcRadio2Srv.session", "Cannot set configuration for HAL 2.0 client from non-current user");
+            return;
+        }
+        synchronized (this.mLock) {
+            checkNotClosedLocked();
+            Objects.requireNonNull(bandConfig);
+            this.mDummyConfig = bandConfig;
+        }
+        Slogf.i("BcRadio2Srv.session", "Ignoring setConfiguration - not applicable for broadcastradio HAL 2.0");
+        RadioModule radioModule = this.mModule;
+        RadioModule.AidlCallbackRunnable aidlCallbackRunnable = new RadioModule.AidlCallbackRunnable() { // from class: com.android.server.broadcastradio.hal2.TunerSession$$ExternalSyntheticLambda4
+            @Override // com.android.server.broadcastradio.hal2.RadioModule.AidlCallbackRunnable
+            public final void run(ITunerCallback iTunerCallback) {
+                iTunerCallback.onConfigurationChanged(bandConfig);
+            }
+        };
+        radioModule.getClass();
+        radioModule.fireLater(new RadioModule$$ExternalSyntheticLambda3(0, radioModule, aidlCallbackRunnable));
+    }
+
+    public final void setMuted(boolean z) {
+        synchronized (this.mLock) {
+            try {
+                checkNotClosedLocked();
+                if (this.mIsMuted == z) {
+                    return;
+                }
+                this.mIsMuted = z;
+                Slogf.w("BcRadio2Srv.session", "Mute via RadioService is not implemented - please handle it via app");
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final Map setParameters(Map map) {
+        Object obj;
+        Map vendorInfoFromHal;
+        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
+            Slogf.w("BcRadio2Srv.session", "Cannot set parameters for HAL 2.0 client from non-current user");
+            return new ArrayMap();
+        }
+        synchronized (this.mLock) {
+            checkNotClosedLocked();
+            try {
+                obj = new TunerSession$$ExternalSyntheticLambda0(1, this, map).exec();
+            } catch (RemoteException e) {
+                e.rethrowFromSystemServer();
+                obj = null;
+            }
+            vendorInfoFromHal = Convert.vendorInfoFromHal((List) obj);
+        }
+        return vendorInfoFromHal;
+    }
+
+    public final boolean startBackgroundScan() {
+        Slogf.w("BcRadio2Srv.session", "Explicit background scan trigger is not supported with HAL 2.0");
+        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
+            Slogf.w("BcRadio2Srv.session", "Cannot start background scan on HAL 2.0 client from non-current user");
+            return false;
+        }
+        RadioModule radioModule = this.mModule;
+        TunerSession$$ExternalSyntheticLambda1 tunerSession$$ExternalSyntheticLambda1 = new TunerSession$$ExternalSyntheticLambda1();
+        radioModule.getClass();
+        radioModule.fireLater(new RadioModule$$ExternalSyntheticLambda3(0, radioModule, tunerSession$$ExternalSyntheticLambda1));
+        return true;
+    }
+
+    public final void startProgramListUpdates(ProgramList.Filter filter) {
+        this.mEventLogger.logRadioEvent("start programList updates %s", filter);
+        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
+            Slogf.w("BcRadio2Srv.session", "Cannot start program list updates on HAL 2.0 client from non-current user");
+            return;
+        }
+        if (filter == null) {
+            filter = new ProgramList.Filter(new ArraySet(), new ArraySet(), true, false);
+        }
+        synchronized (this.mLock) {
+            checkNotClosedLocked();
+            this.mProgramInfoCache = new ProgramInfoCache(filter);
+        }
+        RadioModule radioModule = this.mModule;
+        synchronized (radioModule.mLock) {
+            radioModule.onTunerSessionProgramListFilterChangedLocked(this);
+        }
+    }
+
+    public final void step(boolean z, boolean z2) {
+        this.mEventLogger.logRadioEvent("Step with direction %s, skipSubChannel?  %s", z ? INetd.IF_STATE_DOWN : INetd.IF_STATE_UP, z2 ? "yes" : "no");
+        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
+            Slogf.w("BcRadio2Srv.session", "Cannot step on HAL 2.0 client from non-current user");
+            return;
+        }
+        synchronized (this.mLock) {
+            checkNotClosedLocked();
+            Convert.throwOnError(this.mHwSession.step(!z), "step");
+        }
+    }
+
+    public final void stopProgramListUpdates() {
         this.mEventLogger.logRadioEvent("Stop programList updates", new Object[0]);
         if (!RadioServiceUserController.isCurrentOrSystemUser()) {
             Slogf.w("BcRadio2Srv.session", "Cannot stop program list updates on HAL 2.0 client from non-current user");
@@ -293,124 +407,21 @@ public class TunerSession extends ITuner.Stub {
             checkNotClosedLocked();
             this.mProgramInfoCache = null;
         }
-        this.mModule.onTunerSessionProgramListFilterChanged(this);
-    }
-
-    public boolean isConfigFlagSupported(int i) {
-        try {
-            isConfigFlagSet(i);
-            return true;
-        } catch (IllegalStateException unused) {
-            return true;
-        } catch (UnsupportedOperationException unused2) {
-            return false;
+        RadioModule radioModule = this.mModule;
+        synchronized (radioModule.mLock) {
+            radioModule.onTunerSessionProgramListFilterChangedLocked(this);
         }
     }
 
-    public boolean isConfigFlagSet(int i) {
-        boolean z;
-        this.mEventLogger.logRadioEvent("Is ConfigFlagSet for %s", ConfigFlag.toString(i));
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            final MutableInt mutableInt = new MutableInt(1);
-            final MutableBoolean mutableBoolean = new MutableBoolean(false);
-            try {
-                this.mHwSession.isConfigFlagSet(i, new ITunerSession.isConfigFlagSetCallback() { // from class: com.android.server.broadcastradio.hal2.TunerSession$$ExternalSyntheticLambda0
-                    @Override // android.hardware.broadcastradio.V2_0.ITunerSession.isConfigFlagSetCallback
-                    public final void onValues(int i2, boolean z2) {
-                        TunerSession.lambda$isConfigFlagSet$2(mutableInt, mutableBoolean, i2, z2);
-                    }
-                });
-                Convert.throwOnError("isConfigFlagSet", mutableInt.value);
-                z = mutableBoolean.value;
-            } catch (RemoteException e) {
-                throw new RuntimeException("Failed to check flag " + ConfigFlag.toString(i), e);
-            }
-        }
-        return z;
-    }
-
-    public static /* synthetic */ void lambda$isConfigFlagSet$2(MutableInt mutableInt, MutableBoolean mutableBoolean, int i, boolean z) {
-        mutableInt.value = i;
-        mutableBoolean.value = z;
-    }
-
-    public void setConfigFlag(int i, boolean z) {
-        this.mEventLogger.logRadioEvent("Set ConfigFlag  %s = %b", ConfigFlag.toString(i), Boolean.valueOf(z));
+    public final void tune(ProgramSelector programSelector) {
+        this.mEventLogger.logRadioEvent("Tune with selector %s", programSelector);
         if (!RadioServiceUserController.isCurrentOrSystemUser()) {
-            Slogf.w("BcRadio2Srv.session", "Cannot set config flag for HAL 2.0 client from non-current user");
+            Slogf.w("BcRadio2Srv.session", "Cannot tune on HAL 2.0 client from non-current user");
             return;
         }
         synchronized (this.mLock) {
             checkNotClosedLocked();
-            Convert.throwOnError("setConfigFlag", this.mHwSession.setConfigFlag(i, z));
+            Convert.throwOnError(this.mHwSession.tune(Convert.programSelectorToHal(programSelector)), "tune");
         }
-    }
-
-    public Map setParameters(final Map map) {
-        Map vendorInfoFromHal;
-        if (!RadioServiceUserController.isCurrentOrSystemUser()) {
-            Slogf.w("BcRadio2Srv.session", "Cannot set parameters for HAL 2.0 client from non-current user");
-            return new ArrayMap();
-        }
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            vendorInfoFromHal = Convert.vendorInfoFromHal((List) Utils.maybeRethrow(new Utils.FuncThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal2.TunerSession$$ExternalSyntheticLambda3
-                @Override // com.android.server.broadcastradio.hal2.Utils.FuncThrowingRemoteException
-                public final Object exec() {
-                    ArrayList lambda$setParameters$3;
-                    lambda$setParameters$3 = TunerSession.this.lambda$setParameters$3(map);
-                    return lambda$setParameters$3;
-                }
-            }));
-        }
-        return vendorInfoFromHal;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ ArrayList lambda$setParameters$3(Map map) {
-        return this.mHwSession.setParameters(Convert.vendorInfoToHal(map));
-    }
-
-    public Map getParameters(final List list) {
-        Map vendorInfoFromHal;
-        synchronized (this.mLock) {
-            checkNotClosedLocked();
-            vendorInfoFromHal = Convert.vendorInfoFromHal((List) Utils.maybeRethrow(new Utils.FuncThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal2.TunerSession$$ExternalSyntheticLambda2
-                @Override // com.android.server.broadcastradio.hal2.Utils.FuncThrowingRemoteException
-                public final Object exec() {
-                    ArrayList lambda$getParameters$4;
-                    lambda$getParameters$4 = TunerSession.this.lambda$getParameters$4(list);
-                    return lambda$getParameters$4;
-                }
-            }));
-        }
-        return vendorInfoFromHal;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ ArrayList lambda$getParameters$4(List list) {
-        return this.mHwSession.getParameters(Convert.listToArrayList(list));
-    }
-
-    public void dumpInfo(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.printf("TunerSession\n", new Object[0]);
-        indentingPrintWriter.increaseIndent();
-        indentingPrintWriter.printf("HIDL HAL Session: %s\n", new Object[]{this.mHwSession});
-        synchronized (this.mLock) {
-            Object[] objArr = new Object[1];
-            objArr[0] = this.mIsClosed ? "Yes" : "No";
-            indentingPrintWriter.printf("Is session closed? %s\n", objArr);
-            Object[] objArr2 = new Object[1];
-            objArr2[0] = this.mIsMuted ? "Yes" : "No";
-            indentingPrintWriter.printf("Is muted? %s\n", objArr2);
-            indentingPrintWriter.printf("ProgramInfoCache: %s\n", new Object[]{this.mProgramInfoCache});
-            indentingPrintWriter.printf("Config: %s\n", new Object[]{this.mDummyConfig});
-        }
-        indentingPrintWriter.printf("Tuner session events:\n", new Object[0]);
-        indentingPrintWriter.increaseIndent();
-        this.mEventLogger.dump(indentingPrintWriter);
-        indentingPrintWriter.decreaseIndent();
-        indentingPrintWriter.decreaseIndent();
     }
 }

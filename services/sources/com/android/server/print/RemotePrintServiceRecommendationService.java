@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.UserHandle;
@@ -14,57 +15,81 @@ import android.printservice.recommendation.IRecommendationService;
 import android.printservice.recommendation.IRecommendationServiceCallbacks;
 import android.util.Log;
 import com.android.internal.util.Preconditions;
+import com.android.internal.util.function.pooled.PooledLambda;
 import java.util.List;
 
-/* loaded from: classes3.dex */
-public class RemotePrintServiceRecommendationService {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RemotePrintServiceRecommendationService {
     public final Connection mConnection;
     public final Context mContext;
     public boolean mIsBound;
     public final Object mLock;
     public IRecommendationService mService;
 
-    /* loaded from: classes3.dex */
-    public interface RemotePrintServiceRecommendationServiceCallbacks {
-        void onPrintServiceRecommendationsUpdated(List list);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Connection implements ServiceConnection {
+        public final UserState mCallbacks;
+
+        public Connection(UserState userState) {
+            this.mCallbacks = userState;
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            synchronized (RemotePrintServiceRecommendationService.this.mLock) {
+                RemotePrintServiceRecommendationService.this.mService = IRecommendationService.Stub.asInterface(iBinder);
+                try {
+                    RemotePrintServiceRecommendationService.this.mService.registerCallbacks(new IRecommendationServiceCallbacks.Stub() { // from class: com.android.server.print.RemotePrintServiceRecommendationService.Connection.1
+                        public final void onRecommendationsUpdated(List list) {
+                            synchronized (RemotePrintServiceRecommendationService.this.mLock) {
+                                try {
+                                    RemotePrintServiceRecommendationService remotePrintServiceRecommendationService = RemotePrintServiceRecommendationService.this;
+                                    if (remotePrintServiceRecommendationService.mIsBound && remotePrintServiceRecommendationService.mService != null) {
+                                        if (list != null) {
+                                            Preconditions.checkCollectionElementsNotNull(list, "recommendation");
+                                        }
+                                        UserState userState = Connection.this.mCallbacks;
+                                        userState.getClass();
+                                        Handler.getMain().sendMessage(PooledLambda.obtainMessage(new UserState$$ExternalSyntheticLambda1(1), userState, list));
+                                    }
+                                } catch (Throwable th) {
+                                    throw th;
+                                }
+                            }
+                        }
+                    });
+                } catch (RemoteException e) {
+                    Log.e("RemotePrintServiceRecS", "Could not register callbacks", e);
+                }
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceDisconnected(ComponentName componentName) {
+            Log.w("RemotePrintServiceRecS", "Unexpected termination of connection");
+            synchronized (RemotePrintServiceRecommendationService.this.mLock) {
+                RemotePrintServiceRecommendationService.this.mService = null;
+            }
+        }
     }
 
-    public final Intent getServiceIntent(UserHandle userHandle) {
-        List queryIntentServicesAsUser = this.mContext.getPackageManager().queryIntentServicesAsUser(new Intent("android.printservice.recommendation.RecommendationService"), 268435588, userHandle.getIdentifier());
-        if (queryIntentServicesAsUser.size() != 1) {
-            throw new Exception(queryIntentServicesAsUser.size() + " instead of exactly one service found");
-        }
-        ResolveInfo resolveInfo = (ResolveInfo) queryIntentServicesAsUser.get(0);
-        ServiceInfo serviceInfo = resolveInfo.serviceInfo;
-        ComponentName componentName = new ComponentName(serviceInfo.packageName, serviceInfo.name);
-        ApplicationInfo applicationInfo = this.mContext.getPackageManager().getApplicationInfo(resolveInfo.serviceInfo.packageName, 0);
-        if (applicationInfo == null) {
-            throw new Exception("Cannot read appInfo for service");
-        }
-        if ((applicationInfo.flags & 1) == 0) {
-            throw new Exception("Service is not part of the system");
-        }
-        if (!"android.permission.BIND_PRINT_RECOMMENDATION_SERVICE".equals(resolveInfo.serviceInfo.permission)) {
-            throw new Exception("Service " + componentName.flattenToShortString() + " does not require permission android.permission.BIND_PRINT_RECOMMENDATION_SERVICE");
-        }
-        Intent intent = new Intent();
-        intent.setComponent(componentName);
-        return intent;
-    }
-
-    public RemotePrintServiceRecommendationService(Context context, UserHandle userHandle, RemotePrintServiceRecommendationServiceCallbacks remotePrintServiceRecommendationServiceCallbacks) {
+    public RemotePrintServiceRecommendationService(Context context, UserHandle userHandle, UserState userState) {
         Object obj = new Object();
         this.mLock = obj;
         this.mContext = context;
-        Connection connection = new Connection(remotePrintServiceRecommendationServiceCallbacks);
+        Connection connection = new Connection(userState);
         this.mConnection = connection;
         try {
             Intent serviceIntent = getServiceIntent(userHandle);
             synchronized (obj) {
-                boolean bindServiceAsUser = context.bindServiceAsUser(serviceIntent, connection, 67108865, userHandle);
-                this.mIsBound = bindServiceAsUser;
-                if (!bindServiceAsUser) {
-                    throw new Exception("Failed to bind to service " + serviceIntent);
+                try {
+                    boolean bindServiceAsUser = context.bindServiceAsUser(serviceIntent, connection, 67108865, userHandle);
+                    this.mIsBound = bindServiceAsUser;
+                    if (!bindServiceAsUser) {
+                        throw new Exception("Failed to bind to service " + serviceIntent);
+                    }
+                } finally {
                 }
             }
         } catch (Exception e) {
@@ -72,7 +97,7 @@ public class RemotePrintServiceRecommendationService {
         }
     }
 
-    public void close() {
+    public final void close() {
         synchronized (this.mLock) {
             IRecommendationService iRecommendationService = this.mService;
             if (iRecommendationService != null) {
@@ -90,7 +115,7 @@ public class RemotePrintServiceRecommendationService {
         }
     }
 
-    public void finalize() {
+    public final void finalize() {
         if (this.mIsBound || this.mService != null) {
             Log.w("RemotePrintServiceRecS", "Service still connected on finalize()");
             close();
@@ -98,43 +123,26 @@ public class RemotePrintServiceRecommendationService {
         super.finalize();
     }
 
-    /* loaded from: classes3.dex */
-    public class Connection implements ServiceConnection {
-        public final RemotePrintServiceRecommendationServiceCallbacks mCallbacks;
-
-        public Connection(RemotePrintServiceRecommendationServiceCallbacks remotePrintServiceRecommendationServiceCallbacks) {
-            this.mCallbacks = remotePrintServiceRecommendationServiceCallbacks;
+    public final Intent getServiceIntent(UserHandle userHandle) {
+        List queryIntentServicesAsUser = this.mContext.getPackageManager().queryIntentServicesAsUser(new Intent("android.printservice.recommendation.RecommendationService"), 268435588, userHandle.getIdentifier());
+        if (queryIntentServicesAsUser.size() != 1) {
+            throw new Exception(queryIntentServicesAsUser.size() + " instead of exactly one service found");
         }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            synchronized (RemotePrintServiceRecommendationService.this.mLock) {
-                RemotePrintServiceRecommendationService.this.mService = IRecommendationService.Stub.asInterface(iBinder);
-                try {
-                    RemotePrintServiceRecommendationService.this.mService.registerCallbacks(new IRecommendationServiceCallbacks.Stub() { // from class: com.android.server.print.RemotePrintServiceRecommendationService.Connection.1
-                        public void onRecommendationsUpdated(List list) {
-                            synchronized (RemotePrintServiceRecommendationService.this.mLock) {
-                                if (RemotePrintServiceRecommendationService.this.mIsBound && RemotePrintServiceRecommendationService.this.mService != null) {
-                                    if (list != null) {
-                                        Preconditions.checkCollectionElementsNotNull(list, "recommendation");
-                                    }
-                                    Connection.this.mCallbacks.onPrintServiceRecommendationsUpdated(list);
-                                }
-                            }
-                        }
-                    });
-                } catch (RemoteException e) {
-                    Log.e("RemotePrintServiceRecS", "Could not register callbacks", e);
-                }
-            }
+        ResolveInfo resolveInfo = (ResolveInfo) queryIntentServicesAsUser.get(0);
+        ServiceInfo serviceInfo = resolveInfo.serviceInfo;
+        ComponentName componentName = new ComponentName(serviceInfo.packageName, serviceInfo.name);
+        ApplicationInfo applicationInfo = this.mContext.getPackageManager().getApplicationInfo(resolveInfo.serviceInfo.packageName, 0);
+        if (applicationInfo == null) {
+            throw new Exception("Cannot read appInfo for service");
         }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName componentName) {
-            Log.w("RemotePrintServiceRecS", "Unexpected termination of connection");
-            synchronized (RemotePrintServiceRecommendationService.this.mLock) {
-                RemotePrintServiceRecommendationService.this.mService = null;
-            }
+        if ((applicationInfo.flags & 1) == 0) {
+            throw new Exception("Service is not part of the system");
         }
+        if ("android.permission.BIND_PRINT_RECOMMENDATION_SERVICE".equals(resolveInfo.serviceInfo.permission)) {
+            Intent intent = new Intent();
+            intent.setComponent(componentName);
+            return intent;
+        }
+        throw new Exception("Service " + componentName.flattenToShortString() + " does not require permission android.permission.BIND_PRINT_RECOMMENDATION_SERVICE");
     }
 }

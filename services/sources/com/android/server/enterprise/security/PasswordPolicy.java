@@ -3,7 +3,6 @@ package com.android.server.enterprise.security;
 import android.R;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
-import android.app.IActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.admin.IDevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -16,10 +15,12 @@ import android.content.pm.PackageManager;
 import android.content.pm.UserInfo;
 import android.hardware.fingerprint.FingerprintManager;
 import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
+import android.net.util.NetdService$$ExternalSyntheticOutline0;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
+import android.os.PowerManager;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -33,30 +34,42 @@ import android.util.Log;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.FrameworkStatsLog;
 import com.android.internal.util.FunctionalUtils;
-import com.android.internal.util.jobs.XmlUtils;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
 import com.android.internal.widget.LockPatternUtils;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptService$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.DropBoxManagerService$EntryFile$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.NetworkScoreService$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
+import com.android.server.SystemUpdateManagerService$$ExternalSyntheticOutline0;
+import com.android.server.VcnManagementService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0;
+import com.android.server.am.OomAdjuster$$ExternalSyntheticOutline0;
+import com.android.server.chimera.genie.GenieMemoryManager$ReclaimerHandler$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.EnterpriseService;
 import com.android.server.enterprise.EnterpriseServiceCallback;
 import com.android.server.enterprise.RestrictionToastManager;
 import com.android.server.enterprise.adapter.AdapterRegistry;
 import com.android.server.enterprise.adapter.IPersonaManagerAdapter;
-import com.android.server.enterprise.adapterlayer.LockPatternUtilsAdapter;
-import com.android.server.enterprise.adapterlayer.SystemUIAdapter;
-import com.android.server.enterprise.common.KeyCodeMediator;
+import com.android.server.enterprise.adapterlayer.PersonaManagerAdapter;
 import com.android.server.enterprise.common.KeyCodeRestrictionCallback;
+import com.android.server.enterprise.impl.KeyCodeMediatorImpl;
 import com.android.server.enterprise.license.EnterpriseLicenseService;
 import com.android.server.enterprise.license.IActivationKlmElmObserver;
 import com.android.server.enterprise.storage.EdmStorageProvider;
 import com.android.server.enterprise.utils.Utils;
-import com.android.server.knox.dar.DarManagerService;
 import com.android.server.knox.dar.sdp.SDPLog;
-import com.android.server.knox.dar.sdp.SdpManagerImpl;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
 import com.samsung.android.desktopmode.SemDesktopModeState;
 import com.samsung.android.knox.ContainerProxy;
 import com.samsung.android.knox.ContextInfo;
 import com.samsung.android.knox.EnterpriseDeviceManager;
+import com.samsung.android.knox.SemPersonaManager;
+import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import com.samsung.android.knox.dar.ddar.DualDarManager;
 import com.samsung.android.knox.devicesecurity.IPasswordPolicy;
 import com.samsung.android.knox.license.LicenseResult;
@@ -74,1208 +87,396 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* loaded from: classes2.dex */
-public class PasswordPolicy extends IPasswordPolicy.Stub implements EnterpriseServiceCallback, KeyCodeRestrictionCallback {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class PasswordPolicy extends IPasswordPolicy.Stub implements EnterpriseServiceCallback, KeyCodeRestrictionCallback {
     public static final int[] BIOMETRIC_AUTHENTICATION_TYPES = {1, 4};
-    public ActivationMonitor mActivationMonitor;
-    public final SemDesktopModeManager.DesktopModeBlocker mBlocker;
-    public BroadcastReceiver mBroadCastReceiver;
-    public List mCallersWhitelist;
-    public Context mContext;
-    public DevicePolicyManager mDpm;
+    public final AnonymousClass2 mBlocker;
+    public final AnonymousClass4 mBroadCastReceiver;
+    public final List mCallersWhitelist;
+    public final Context mContext;
+    public final DevicePolicyManager mDpm;
     public EnterpriseDeviceManager mEDM;
-    public EdmStorageProvider mEdmStorageProvider;
+    public final EdmStorageProvider mEdmStorageProvider;
     public final Injector mInjector;
-    public KeyCodeMediator mKeyCodeMediator;
+    public KeyCodeMediatorImpl mKeyCodeMediator;
     public EnterpriseLicenseService mLicenseService;
-    public final LocalService mLocalService;
-    public IPersonaManagerAdapter mPersonaManagerAdapter;
-    public PasswordPolicyCache mPolicyCache;
-    public final BroadcastReceiver mReceiver;
+    public final PowerManager mPM;
+    public final IPersonaManagerAdapter mPersonaManagerAdapter;
+    public final PasswordPolicyCache mPolicyCache;
+    public final AnonymousClass4 mReceiver;
     public final IDevicePolicyManager mService;
     public IStatusBarService mStatusBarService;
-    public TelephonyManager mTelManager;
-    public IBinder mToken;
-    public UserManager mUserManager;
+    public final TelephonyManager mTelManager;
+    public final IBinder mToken;
+    public final UserManager mUserManager;
 
-    @Override // com.android.server.enterprise.common.KeyCodeRestrictionCallback
-    public String getServiceName() {
-        return "PasswordPolicy";
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ActivationMonitor implements IActivationKlmElmObserver {
+        public ActivationMonitor() {
+            if (PasswordPolicy.this.mLicenseService == null) {
+                PasswordPolicy.this.mLicenseService = (EnterpriseLicenseService) EnterpriseService.getPolicyService("enterprise_license_policy");
+            }
+            EnterpriseLicenseService enterpriseLicenseService = PasswordPolicy.this.mLicenseService;
+            if (enterpriseLicenseService != null) {
+                enterpriseLicenseService.enforcePermission$1();
+                ((ArrayList) enterpriseLicenseService.mKlmElmChangeList).add(this);
+            }
+        }
 
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void notifyToAddSystemService(String str, IBinder iBinder) {
-    }
+        @Override // com.android.server.enterprise.license.IActivationKlmElmObserver
+        public final void onUpdateElm(String str, LicenseResult licenseResult) {
+            PasswordPolicy passwordPolicy = PasswordPolicy.this;
+            Log.d("PasswordPolicy", "onUpdateElm is called");
+            try {
+                ((PersonaManagerAdapter) passwordPolicy.mPersonaManagerAdapter).getClass();
+                if (SemPersonaManager.isDoEnabled(0) && licenseResult.isSuccess() && licenseResult.getType() == LicenseResult.Type.ELM_VALIDATION && passwordPolicy.mLicenseService != null) {
+                    ComponentName deviceOwnerComponentOnAnyUser = passwordPolicy.mDpm.getDeviceOwnerComponentOnAnyUser();
+                    if (str == null || deviceOwnerComponentOnAnyUser == null || !str.equals(deviceOwnerComponentOnAnyUser.getPackageName())) {
+                        return;
+                    }
+                    boolean isServiceAvailable = passwordPolicy.mLicenseService.isServiceAvailable(str, "com.samsung.android.knox.permission.KNOX_APP_MGMT");
+                    Log.d("PasswordPolicy", "onUpdateElm - isServiceAvailable : " + isServiceAvailable);
+                    if (!isServiceAvailable || passwordPolicy.mUserManager.getUserInfo(0).isAdminLocked()) {
+                        return;
+                    }
+                    passwordPolicy.setAdminLockEnabledSystemUI(0, false, false);
+                }
+            } catch (Exception e) {
+                Log.e("PasswordPolicy", "onUpdateElm() failed ", e);
+            }
+        }
 
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminAdded(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onPreAdminRemoval(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void systemReady() {
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* renamed from: com.android.server.enterprise.security.PasswordPolicy$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends ArrayList {
-        public AnonymousClass1() {
-            add("com.samsung.android.knox.containercore");
+        @Override // com.android.server.enterprise.license.IActivationKlmElmObserver
+        public final void onUpdateKlm(String str, LicenseResult licenseResult) {
+            PasswordPolicy passwordPolicy = PasswordPolicy.this;
+            Log.d("PasswordPolicy", "onUpdateKlm is called");
+            try {
+                ((PersonaManagerAdapter) passwordPolicy.mPersonaManagerAdapter).getClass();
+                if (SemPersonaManager.isDoEnabled(0) && licenseResult.isSuccess() && licenseResult.getType() == LicenseResult.Type.KLM_VALIDATION && passwordPolicy.mLicenseService != null) {
+                    ComponentName deviceOwnerComponentOnAnyUser = passwordPolicy.mDpm.getDeviceOwnerComponentOnAnyUser();
+                    if (str == null || deviceOwnerComponentOnAnyUser == null || !str.equals(deviceOwnerComponentOnAnyUser.getPackageName())) {
+                        return;
+                    }
+                    boolean isServiceAvailable = passwordPolicy.mLicenseService.isServiceAvailable(str, "com.samsung.android.knox.permission.KNOX_CONTAINER");
+                    Log.d("PasswordPolicy", "onUpdateKlm - isServiceAvailable : " + isServiceAvailable);
+                    if (!isServiceAvailable || passwordPolicy.mUserManager.getUserInfo(0).isAdminLocked()) {
+                        return;
+                    }
+                    passwordPolicy.setAdminLockEnabledSystemUI(0, false, false);
+                }
+            } catch (Exception e) {
+                Log.e("PasswordPolicy", "onUpdateKlm() failed ", e);
+            }
         }
     }
 
-    /* renamed from: com.android.server.enterprise.security.PasswordPolicy$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 implements SemDesktopModeManager.DesktopModeBlocker {
-        public AnonymousClass2() {
-        }
-
-        public String onBlocked() {
-            return PasswordPolicy.this.mContext.getString(R.string.lockscreen_access_pattern_start);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class Injector {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Injector {
         public final Context mContext;
 
         public Injector(Context context) {
             this.mContext = context;
         }
+    }
 
-        public EdmStorageProvider getStorageProvider() {
-            return new EdmStorageProvider(this.mContext);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class LocalService extends PasswordPolicyInternal {
+        public LocalService() {
         }
 
-        public IDevicePolicyManager getDpmInstance() {
-            return IDevicePolicyManager.Stub.asInterface(ServiceManager.getService("device_policy"));
-        }
-
-        public IPersonaManagerAdapter getPersonaManagerAdapterInstance() {
-            return (IPersonaManagerAdapter) AdapterRegistry.getAdapter(IPersonaManagerAdapter.class);
-        }
-
-        public DevicePolicyManager getDevicePolicyManager() {
-            return (DevicePolicyManager) this.mContext.getSystemService("device_policy");
-        }
-
-        public UserManager getUserManager() {
-            return (UserManager) this.mContext.getSystemService("user");
-        }
-
-        public EnterpriseDeviceManager getEDM() {
-            return EnterpriseDeviceManager.getInstance(this.mContext);
-        }
-
-        public long binderClearCallingIdentity() {
-            return Binder.clearCallingIdentity();
-        }
-
-        public void binderRestoreCallingIdentity(long j) {
-            Binder.restoreCallingIdentity(j);
-        }
-
-        public void binderWithCleanCallingIdentity(FunctionalUtils.ThrowingRunnable throwingRunnable) {
-            Binder.withCleanCallingIdentity(throwingRunnable);
-        }
-
-        public final Object binderWithCleanCallingIdentity(FunctionalUtils.ThrowingSupplier throwingSupplier) {
-            return Binder.withCleanCallingIdentity(throwingSupplier);
+        public final int isChangeRequestedAsUser(int i) {
+            int intValue;
+            PasswordPolicyCache passwordPolicyCache = PasswordPolicy.this.mPolicyCache;
+            synchronized (passwordPolicyCache.mLock) {
+                if (((HashMap) passwordPolicyCache.mChangeRequested).get(Integer.valueOf(i)) == null) {
+                    intValue = 0;
+                } else {
+                    intValue = ((Integer) ((HashMap) passwordPolicyCache.mChangeRequested).get(Integer.valueOf(i))).intValue();
+                }
+            }
+            return intValue;
         }
     }
 
+    /* JADX WARN: Type inference failed for: r2v1, types: [com.android.server.enterprise.security.PasswordPolicy$2] */
     public PasswordPolicy(Context context) {
-        this(new Injector(context));
-    }
-
-    public PasswordPolicy(Injector injector) {
-        this.mActivationMonitor = null;
+        Injector injector = new Injector(context);
         this.mLicenseService = null;
         this.mCallersWhitelist = new ArrayList() { // from class: com.android.server.enterprise.security.PasswordPolicy.1
-            public AnonymousClass1() {
+            {
                 add("com.samsung.android.knox.containercore");
             }
         };
         this.mBlocker = new SemDesktopModeManager.DesktopModeBlocker() { // from class: com.android.server.enterprise.security.PasswordPolicy.2
-            public AnonymousClass2() {
-            }
-
-            public String onBlocked() {
-                return PasswordPolicy.this.mContext.getString(R.string.lockscreen_access_pattern_start);
+            public final String onBlocked() {
+                return PasswordPolicy.this.mContext.getString(R.string.heavy_weight_switcher_text);
             }
         };
         this.mStatusBarService = null;
         this.mToken = new Binder();
-        AnonymousClass4 anonymousClass4 = new BroadcastReceiver() { // from class: com.android.server.enterprise.security.PasswordPolicy.4
-            public AnonymousClass4() {
+        final int i = 0;
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver(this) { // from class: com.android.server.enterprise.security.PasswordPolicy.4
+            public final /* synthetic */ PasswordPolicy this$0;
+
+            {
+                this.this$0 = this;
             }
 
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                if ("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL".equals(intent.getAction())) {
-                    PasswordPolicy.this.updateSystemUIMonitor(intent.getIntExtra("com.samsung.android.knox.intent.extra.USER_ID_INTERNAL", 0));
+            public final void onReceive(Context context2, Intent intent) {
+                int i2;
+                switch (i) {
+                    case 0:
+                        if ("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL".equals(intent.getAction())) {
+                            this.this$0.updateSystemUIMonitor$9(intent.getIntExtra("com.samsung.android.knox.intent.extra.USER_ID_INTERNAL", 0));
+                            break;
+                        }
+                        break;
+                    default:
+                        String action = intent.getAction();
+                        int sendingUserId = getSendingUserId();
+                        this.this$0.mInjector.getClass();
+                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                        int currentUser = ActivityManager.getCurrentUser();
+                        if ("com.samsung.android.knox.intent.action.PWD_CHANGE_TIMEOUT_INTERNAL".equals(action)) {
+                            PasswordPolicy passwordPolicy = this.this$0;
+                            if (passwordPolicy.isChangeRequestedAsUserFromDb(sendingUserId) == -1) {
+                                int currentUser2 = ActivityManager.getCurrentUser();
+                                if (passwordPolicy.mTelManager.getCallState() == 0 || sendingUserId != currentUser2) {
+                                    passwordPolicy.setPwdChangeRequestedForUser(2, sendingUserId);
+                                    passwordPolicy.changePasswordAsUser(sendingUserId);
+                                } else {
+                                    passwordPolicy.setPwdChangeRequestedForUser(-3, sendingUserId);
+                                }
+                            }
+                        } else if ("android.intent.action.USER_STARTED".equals(action)) {
+                            int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                            if (intExtra >= 0) {
+                                PasswordPolicy passwordPolicy2 = this.this$0;
+                                int isChangeRequestedAsUserFromDb = passwordPolicy2.isChangeRequestedAsUserFromDb(intExtra);
+                                if (isChangeRequestedAsUserFromDb != -4) {
+                                    if (isChangeRequestedAsUserFromDb != -3) {
+                                        if (isChangeRequestedAsUserFromDb == -2) {
+                                            i2 = 1;
+                                        } else if (isChangeRequestedAsUserFromDb != -1) {
+                                            i2 = 0;
+                                        }
+                                    }
+                                    i2 = 2;
+                                } else {
+                                    i2 = 3;
+                                }
+                                if (i2 != 0) {
+                                    passwordPolicy2.setPwdChangeRequestedForUser(i2, intExtra);
+                                }
+                            }
+                        } else if ("android.intent.action.USER_SWITCHED".equals(action)) {
+                            int intExtra2 = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                            if (intExtra2 >= 0) {
+                                PasswordPolicy passwordPolicy3 = this.this$0;
+                                int isChangeRequestedAsUserFromDb2 = passwordPolicy3.isChangeRequestedAsUserFromDb(intExtra2);
+                                boolean hasPassword = passwordPolicy3.hasPassword(intExtra2);
+                                if (isChangeRequestedAsUserFromDb2 > 0 && !hasPassword) {
+                                    passwordPolicy3.changePasswordAsUser(intExtra2);
+                                }
+                            }
+                        } else if ("android.intent.action.PHONE_STATE".equals(action)) {
+                            if (this.this$0.mTelManager.getCallState() == 0) {
+                                PasswordPolicy passwordPolicy4 = this.this$0;
+                                int isChangeRequestedAsUserFromDb3 = passwordPolicy4.isChangeRequestedAsUserFromDb(currentUser);
+                                int i3 = isChangeRequestedAsUserFromDb3 != -4 ? isChangeRequestedAsUserFromDb3 != -3 ? isChangeRequestedAsUserFromDb3 != -2 ? 0 : 1 : 2 : 3;
+                                if (i3 > 0) {
+                                    passwordPolicy4.setPwdChangeRequestedForUser(i3, currentUser);
+                                    passwordPolicy4.changePasswordAsUser(currentUser);
+                                }
+                            }
+                        } else if ("com.samsung.android.knox.intent.action.NOTIFICATION_PASSWORD_EXPIRED_INTERNAL".equals(action)) {
+                            Log.i("PasswordPolicy", "Received ACTION_PASSWORD_EXPIRING_NOTIFICATION_INTERNAL intent");
+                            long longExtra = intent.getLongExtra("expiration", -1L);
+                            if (longExtra == -1 || longExtra > System.currentTimeMillis()) {
+                                GenieMemoryManager$ReclaimerHandler$$ExternalSyntheticOutline0.m("In grace period or failed to get ", longExtra, "PasswordPolicy");
+                                this.this$0.mInjector.getClass();
+                                Binder.restoreCallingIdentity(clearCallingIdentity);
+                                break;
+                            } else {
+                                Log.i("PasswordPolicy", "Password expired already so launching password screen");
+                                ((PersonaManagerAdapter) this.this$0.mPersonaManagerAdapter).getClass();
+                                if (SemPersonaManager.isKnoxId(sendingUserId)) {
+                                    try {
+                                        ActivityManagerNative.getDefault().forceStopPackage(KnoxCustomManagerService.SETTING_PKG_NAME, sendingUserId);
+                                    } catch (RemoteException unused) {
+                                        Log.d("PasswordPolicy", "forceStopPackage failed");
+                                    }
+                                }
+                                this.this$0.enforcePwdChangeForUser(0, sendingUserId);
+                            }
+                        }
+                        this.this$0.mInjector.getClass();
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                        break;
                 }
             }
         };
-        this.mReceiver = anonymousClass4;
         this.mEDM = null;
-        this.mBroadCastReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.security.PasswordPolicy.5
-            public AnonymousClass5() {
+        final int i2 = 1;
+        BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver(this) { // from class: com.android.server.enterprise.security.PasswordPolicy.4
+            public final /* synthetic */ PasswordPolicy this$0;
+
+            {
+                this.this$0 = this;
             }
 
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                int sendingUserId = getSendingUserId();
-                long binderClearCallingIdentity = PasswordPolicy.this.mInjector.binderClearCallingIdentity();
-                int currentUser = ActivityManager.getCurrentUser();
-                if ("com.samsung.android.knox.intent.action.PWD_CHANGE_TIMEOUT_INTERNAL".equals(action)) {
-                    PasswordPolicy.this.enforcePwdChangeIfNeededOnTimeout(sendingUserId);
-                } else if ("android.intent.action.USER_STARTED".equals(action)) {
-                    int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-                    if (intExtra >= 0) {
-                        PasswordPolicy.this.enforcePwdChangeIfNeededOnStart(intExtra);
-                    }
-                } else if ("android.intent.action.USER_SWITCHED".equals(action)) {
-                    int intExtra2 = intent.getIntExtra("android.intent.extra.user_handle", -1);
-                    if (intExtra2 >= 0) {
-                        PasswordPolicy.this.enforcePwdChangeIfNeededOnSwitch(intExtra2);
-                    }
-                } else if ("android.intent.action.PHONE_STATE".equals(action)) {
-                    if (PasswordPolicy.this.mTelManager.getCallState() == 0) {
-                        PasswordPolicy.this.enforcePwdChangeIfNeededAfterCall(currentUser);
-                    }
-                } else if ("com.samsung.android.knox.intent.action.NOTIFICATION_PASSWORD_EXPIRED_INTERNAL".equals(action)) {
-                    Log.i("PasswordPolicy", "Received ACTION_PASSWORD_EXPIRING_NOTIFICATION_INTERNAL intent");
-                    long longExtra = intent.getLongExtra("expiration", -1L);
-                    if (longExtra == -1 || longExtra > System.currentTimeMillis()) {
-                        Log.i("PasswordPolicy", "In grace period or failed to get " + longExtra);
-                        PasswordPolicy.this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-                        return;
-                    }
-                    Log.i("PasswordPolicy", "Password expired already so launching password screen");
-                    if (PasswordPolicy.this.mPersonaManagerAdapter.isValidKnoxId(sendingUserId)) {
-                        try {
-                            ActivityManagerNative.getDefault().forceStopPackage("com.android.settings", sendingUserId);
-                        } catch (RemoteException unused) {
-                            Log.d("PasswordPolicy", "forceStopPackage failed");
+            public final void onReceive(Context context2, Intent intent) {
+                int i22;
+                switch (i2) {
+                    case 0:
+                        if ("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL".equals(intent.getAction())) {
+                            this.this$0.updateSystemUIMonitor$9(intent.getIntExtra("com.samsung.android.knox.intent.extra.USER_ID_INTERNAL", 0));
+                            break;
                         }
-                    }
-                    PasswordPolicy.this.enforcePwdChangeForUser(0, sendingUserId);
+                        break;
+                    default:
+                        String action = intent.getAction();
+                        int sendingUserId = getSendingUserId();
+                        this.this$0.mInjector.getClass();
+                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                        int currentUser = ActivityManager.getCurrentUser();
+                        if ("com.samsung.android.knox.intent.action.PWD_CHANGE_TIMEOUT_INTERNAL".equals(action)) {
+                            PasswordPolicy passwordPolicy = this.this$0;
+                            if (passwordPolicy.isChangeRequestedAsUserFromDb(sendingUserId) == -1) {
+                                int currentUser2 = ActivityManager.getCurrentUser();
+                                if (passwordPolicy.mTelManager.getCallState() == 0 || sendingUserId != currentUser2) {
+                                    passwordPolicy.setPwdChangeRequestedForUser(2, sendingUserId);
+                                    passwordPolicy.changePasswordAsUser(sendingUserId);
+                                } else {
+                                    passwordPolicy.setPwdChangeRequestedForUser(-3, sendingUserId);
+                                }
+                            }
+                        } else if ("android.intent.action.USER_STARTED".equals(action)) {
+                            int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                            if (intExtra >= 0) {
+                                PasswordPolicy passwordPolicy2 = this.this$0;
+                                int isChangeRequestedAsUserFromDb = passwordPolicy2.isChangeRequestedAsUserFromDb(intExtra);
+                                if (isChangeRequestedAsUserFromDb != -4) {
+                                    if (isChangeRequestedAsUserFromDb != -3) {
+                                        if (isChangeRequestedAsUserFromDb == -2) {
+                                            i22 = 1;
+                                        } else if (isChangeRequestedAsUserFromDb != -1) {
+                                            i22 = 0;
+                                        }
+                                    }
+                                    i22 = 2;
+                                } else {
+                                    i22 = 3;
+                                }
+                                if (i22 != 0) {
+                                    passwordPolicy2.setPwdChangeRequestedForUser(i22, intExtra);
+                                }
+                            }
+                        } else if ("android.intent.action.USER_SWITCHED".equals(action)) {
+                            int intExtra2 = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                            if (intExtra2 >= 0) {
+                                PasswordPolicy passwordPolicy3 = this.this$0;
+                                int isChangeRequestedAsUserFromDb2 = passwordPolicy3.isChangeRequestedAsUserFromDb(intExtra2);
+                                boolean hasPassword = passwordPolicy3.hasPassword(intExtra2);
+                                if (isChangeRequestedAsUserFromDb2 > 0 && !hasPassword) {
+                                    passwordPolicy3.changePasswordAsUser(intExtra2);
+                                }
+                            }
+                        } else if ("android.intent.action.PHONE_STATE".equals(action)) {
+                            if (this.this$0.mTelManager.getCallState() == 0) {
+                                PasswordPolicy passwordPolicy4 = this.this$0;
+                                int isChangeRequestedAsUserFromDb3 = passwordPolicy4.isChangeRequestedAsUserFromDb(currentUser);
+                                int i3 = isChangeRequestedAsUserFromDb3 != -4 ? isChangeRequestedAsUserFromDb3 != -3 ? isChangeRequestedAsUserFromDb3 != -2 ? 0 : 1 : 2 : 3;
+                                if (i3 > 0) {
+                                    passwordPolicy4.setPwdChangeRequestedForUser(i3, currentUser);
+                                    passwordPolicy4.changePasswordAsUser(currentUser);
+                                }
+                            }
+                        } else if ("com.samsung.android.knox.intent.action.NOTIFICATION_PASSWORD_EXPIRED_INTERNAL".equals(action)) {
+                            Log.i("PasswordPolicy", "Received ACTION_PASSWORD_EXPIRING_NOTIFICATION_INTERNAL intent");
+                            long longExtra = intent.getLongExtra("expiration", -1L);
+                            if (longExtra == -1 || longExtra > System.currentTimeMillis()) {
+                                GenieMemoryManager$ReclaimerHandler$$ExternalSyntheticOutline0.m("In grace period or failed to get ", longExtra, "PasswordPolicy");
+                                this.this$0.mInjector.getClass();
+                                Binder.restoreCallingIdentity(clearCallingIdentity);
+                                break;
+                            } else {
+                                Log.i("PasswordPolicy", "Password expired already so launching password screen");
+                                ((PersonaManagerAdapter) this.this$0.mPersonaManagerAdapter).getClass();
+                                if (SemPersonaManager.isKnoxId(sendingUserId)) {
+                                    try {
+                                        ActivityManagerNative.getDefault().forceStopPackage(KnoxCustomManagerService.SETTING_PKG_NAME, sendingUserId);
+                                    } catch (RemoteException unused) {
+                                        Log.d("PasswordPolicy", "forceStopPackage failed");
+                                    }
+                                }
+                                this.this$0.enforcePwdChangeForUser(0, sendingUserId);
+                            }
+                        }
+                        this.this$0.mInjector.getClass();
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                        break;
                 }
-                PasswordPolicy.this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
             }
         };
         this.mInjector = injector;
-        this.mContext = injector.mContext;
-        this.mEdmStorageProvider = injector.getStorageProvider();
-        this.mService = injector.getDpmInstance();
-        this.mDpm = injector.getDevicePolicyManager();
-        this.mUserManager = injector.getUserManager();
-        this.mPersonaManagerAdapter = injector.getPersonaManagerAdapterInstance();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.samsung.android.knox.intent.action.PWD_CHANGE_TIMEOUT_INTERNAL");
-        intentFilter.addAction("android.intent.action.PHONE_STATE");
-        intentFilter.addAction("com.samsung.android.knox.intent.action.NOTIFICATION_PASSWORD_EXPIRED_INTERNAL");
-        intentFilter.addAction("android.intent.action.USER_STARTED");
-        intentFilter.addAction("android.intent.action.USER_SWITCHED");
-        this.mContext.registerReceiverAsUser(this.mBroadCastReceiver, UserHandle.ALL, intentFilter, null, null);
-        this.mContext.registerReceiver(anonymousClass4, new IntentFilter("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL"));
-        this.mTelManager = (TelephonyManager) this.mContext.getSystemService("phone");
+        this.mContext = context;
+        this.mEdmStorageProvider = new EdmStorageProvider(context);
+        this.mService = IDevicePolicyManager.Stub.asInterface(ServiceManager.getService("device_policy"));
+        this.mDpm = (DevicePolicyManager) context.getSystemService("device_policy");
+        UserManager userManager = (UserManager) context.getSystemService("user");
+        this.mUserManager = userManager;
+        this.mPM = (PowerManager) context.getSystemService("power");
+        this.mPersonaManagerAdapter = (IPersonaManagerAdapter) AdapterRegistry.mAdapterHandles.get(IPersonaManagerAdapter.class);
+        context.registerReceiverAsUser(broadcastReceiver2, UserHandle.ALL, VcnManagementService$$ExternalSyntheticOutline0.m("com.samsung.android.knox.intent.action.PWD_CHANGE_TIMEOUT_INTERNAL", "android.intent.action.PHONE_STATE", "com.samsung.android.knox.intent.action.NOTIFICATION_PASSWORD_EXPIRED_INTERNAL", "android.intent.action.USER_STARTED", "android.intent.action.USER_SWITCHED"), null, null, 2);
+        context.registerReceiver(broadcastReceiver, new IntentFilter("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL"), 2);
+        this.mTelManager = (TelephonyManager) context.getSystemService("phone");
         Log.d("PasswordPolicy", "SEC_PRODUCT_FEATURE_COMMON_SUPPORT_KNOX_DESKTOP is true");
-        SemDesktopModeManager semDesktopModeManager = (SemDesktopModeManager) this.mContext.getSystemService("desktopmode");
+        SemDesktopModeManager semDesktopModeManager = (SemDesktopModeManager) context.getSystemService("desktopmode");
         if (semDesktopModeManager != null) {
             semDesktopModeManager.registerListener(new SemDesktopModeManager.DesktopModeListener() { // from class: com.android.server.enterprise.security.PasswordPolicy.3
-                public AnonymousClass3() {
-                }
-
-                public void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) {
+                public final void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) {
                     if (semDesktopModeState.state == 20 && semDesktopModeState.enabled == 3) {
                         Log.d("PasswordPolicy", "listner - Dex Enabling");
-                        if (PasswordPolicy.this.isChangeRequestedAsUser(0) != 0) {
-                            PasswordPolicy.this.registerDexBlocker();
+                        if (PasswordPolicy.this.isChangeRequestedAsUserFromDb(0) != 0) {
+                            PasswordPolicy passwordPolicy = PasswordPolicy.this;
+                            Injector injector2 = passwordPolicy.mInjector;
+                            PasswordPolicy$$ExternalSyntheticLambda51 passwordPolicy$$ExternalSyntheticLambda51 = new PasswordPolicy$$ExternalSyntheticLambda51(1, passwordPolicy);
+                            injector2.getClass();
+                            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda51);
                         }
                     }
                     if (semDesktopModeState.state == 0 && semDesktopModeState.enabled == 2) {
                         Log.d("PasswordPolicy", "listener - Dex Disabled");
-                        if (PasswordPolicy.this.isChangeRequestedAsUser(0) != 0) {
+                        if (PasswordPolicy.this.isChangeRequestedAsUserFromDb(0) != 0) {
                             PasswordPolicy.this.changePasswordAsUserInternal(0);
                         }
                     }
                 }
             });
         }
-        LocalService localService = new LocalService();
-        this.mLocalService = localService;
-        LocalServices.addService(PasswordPolicyInternal.class, localService);
-        initializePolicyCache();
-        this.mActivationMonitor = new ActivationMonitor();
-    }
-
-    /* renamed from: com.android.server.enterprise.security.PasswordPolicy$3 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass3 implements SemDesktopModeManager.DesktopModeListener {
-        public AnonymousClass3() {
-        }
-
-        public void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) {
-            if (semDesktopModeState.state == 20 && semDesktopModeState.enabled == 3) {
-                Log.d("PasswordPolicy", "listner - Dex Enabling");
-                if (PasswordPolicy.this.isChangeRequestedAsUser(0) != 0) {
-                    PasswordPolicy.this.registerDexBlocker();
-                }
-            }
-            if (semDesktopModeState.state == 0 && semDesktopModeState.enabled == 2) {
-                Log.d("PasswordPolicy", "listener - Dex Disabled");
-                if (PasswordPolicy.this.isChangeRequestedAsUser(0) != 0) {
-                    PasswordPolicy.this.changePasswordAsUserInternal(0);
-                }
-            }
-        }
-    }
-
-    public final void initializePolicyCache() {
-        this.mPolicyCache = PasswordPolicyCache.getInstance();
-        updatePolicyCache();
-    }
-
-    public final void updatePolicyCache() {
-        for (UserInfo userInfo : this.mUserManager.getUsers()) {
+        LocalServices.addService(PasswordPolicyInternal.class, new LocalService());
+        this.mPolicyCache = PasswordPolicyCache.INSTANCE;
+        for (UserInfo userInfo : userManager.getUsers()) {
             PasswordPolicyCache passwordPolicyCache = this.mPolicyCache;
-            int i = userInfo.id;
-            passwordPolicyCache.setChangeRequestedAsUser(i, isChangeRequestedAsUserFromDb(i));
+            int i3 = userInfo.id;
+            passwordPolicyCache.setChangeRequestedAsUser(i3, isChangeRequestedAsUserFromDb(i3));
         }
+        new ActivationMonitor();
     }
 
-    /* renamed from: com.android.server.enterprise.security.PasswordPolicy$4 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass4 extends BroadcastReceiver {
-        public AnonymousClass4() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if ("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL".equals(intent.getAction())) {
-                PasswordPolicy.this.updateSystemUIMonitor(intent.getIntExtra("com.samsung.android.knox.intent.extra.USER_ID_INTERNAL", 0));
-            }
-        }
-    }
-
-    public final EnterpriseDeviceManager getEDM() {
-        if (this.mEDM == null) {
-            this.mEDM = this.mInjector.getEDM();
-        }
-        return this.mEDM;
-    }
-
-    public final synchronized IStatusBarService getStatusBarService() {
-        if (this.mStatusBarService == null) {
-            IStatusBarService asInterface = IStatusBarService.Stub.asInterface(ServiceManager.getService("statusbar"));
-            this.mStatusBarService = asInterface;
-            if (asInterface == null) {
-                Log.d("PasswordPolicy", "warning: no STATUS_BAR_SERVICE");
-            }
-        }
-        return this.mStatusBarService;
-    }
-
-    public final ContextInfo enforceSecurityPermission(ContextInfo contextInfo) {
-        return getEDM().enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_SECURITY")));
-    }
-
-    public final ContextInfo enforceOwnerOnlyAndSecurityPermission(ContextInfo contextInfo) {
-        return getEDM().enforceOwnerOnlyAndActiveAdminPermission(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_SECURITY")));
-    }
-
-    public final ContextInfo checkPackageCallerOrEnforcePermission(ContextInfo contextInfo, String str) {
-        String nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
-        return (nameForUid == null || !nameForUid.equals(str)) ? enforceSecurityPermission(contextInfo) : contextInfo;
-    }
-
-    public final ContextInfo enforceOnlySecurityPermission(ContextInfo contextInfo) {
-        return getEDM().enforcePermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_SECURITY")));
-    }
-
-    public final ContextInfo enforceDoPoOnlySecurityPermissionByContext(ContextInfo contextInfo) {
-        return getEDM().enforceDoPoOnlyPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_ADVANCED_SECURITY")));
-    }
-
-    public final void checkPackageCallerOrEnforceSystemUser(String str) {
-        String nameForUid = this.mContext.getPackageManager().getNameForUid(Binder.getCallingUid());
-        if ((nameForUid == null || !nameForUid.equals(str)) && !this.mCallersWhitelist.contains(nameForUid)) {
-            enforceSystemUser();
-        }
-    }
-
-    public boolean setPasswordLockDelay(ContextInfo contextInfo, int i) {
-        ContextInfo enforceOwnerOnlyAndSecurityPermission = enforceOwnerOnlyAndSecurityPermission(contextInfo);
-        if ("2.0".equals(this.mPersonaManagerAdapter.getKnoxInfo().getString("version")) && this.mPersonaManagerAdapter.isValidKnoxId(enforceOwnerOnlyAndSecurityPermission.mContainerId)) {
-            Log.d("PasswordPolicy", "setPasswordLockDelay() failed. because not supported in Knox 2.0");
-            return false;
-        }
-        if (i < -1) {
-            return false;
-        }
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("unlockDelay", Integer.valueOf(i));
-        boolean putValues = this.mEdmStorageProvider.putValues(enforceOwnerOnlyAndSecurityPermission.mCallerUid, enforceOwnerOnlyAndSecurityPermission.mContainerId, "PASSWORD", contentValues);
-        if (putValues) {
-            setPasswordLockDelaySystemUI(Utils.getCallingOrCurrentUserId(enforceOwnerOnlyAndSecurityPermission), getPasswordLockDelay(enforceOwnerOnlyAndSecurityPermission.mContainerId));
-        }
-        return putValues;
-    }
-
-    public final int getPasswordLockDelay(int i) {
-        ArrayList intList = this.mEdmStorageProvider.getIntList(i, "PASSWORD", "unlockDelay");
-        Iterator it = getAllOneLockedChildUsers(i).iterator();
-        while (it.hasNext()) {
-            intList.addAll(this.mEdmStorageProvider.getIntList(((Integer) it.next()).intValue(), "PASSWORD", "unlockDelay"));
-        }
-        Iterator it2 = intList.iterator();
-        int i2 = -1;
-        while (it2.hasNext()) {
-            Integer num = (Integer) it2.next();
-            if (num.intValue() >= 0 && (i2 == -1 || num.intValue() < i2)) {
-                i2 = num.intValue();
-            }
-        }
-        if (i2 < 0) {
-            return -1;
-        }
-        return i2;
-    }
-
-    public int getPasswordLockDelay(ContextInfo contextInfo) {
-        return getPasswordLockDelay(contextInfo.mContainerId);
-    }
-
-    public boolean setRequiredPasswordPattern(ContextInfo contextInfo, final String str) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (str == null || str.length() == 0 || !checkRegex(str)) {
-            return false;
-        }
-        boolean putString = this.mEdmStorageProvider.putString(enforceSecurityPermission.mCallerUid, enforceSecurityPermission.mContainerId, "PASSWORD", "passwordRequiredPattern", str);
-        if (putString) {
-            if (getCurrentPasswordOwner(enforceSecurityPermission) != enforceSecurityPermission.mCallerUid) {
-                removeOwnerFromStack(enforceSecurityPermission);
-                addOwnerToStack(enforceSecurityPermission);
-            }
-            final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-            final int i = enforceSecurityPermission.mCallerUid;
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda5
-                public final void runOrThrow() {
-                    PasswordPolicy.lambda$setRequiredPasswordPattern$0(i, str, callingOrCurrentUserId);
-                }
-            });
-        }
-        return putString;
-    }
-
-    public static /* synthetic */ void lambda$setRequiredPasswordPattern$0(int i, String str, int i2) {
-        AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format("Admin %d has changed password required pattern to %s", Integer.valueOf(i), str), i2);
-    }
-
-    public final boolean checkRegex(String str) {
-        try {
-            Pattern.compile(str);
-            return true;
-        } catch (Exception unused) {
-            return false;
-        }
-    }
-
-    public boolean deleteAllRestrictions(ContextInfo contextInfo) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (this.mEdmStorageProvider.getString(enforceSecurityPermission.mCallerUid, enforceSecurityPermission.mContainerId, "PASSWORD", "passwordRequiredPattern") == null) {
-            return true;
-        }
-        boolean putString = this.mEdmStorageProvider.putString(enforceSecurityPermission.mCallerUid, enforceSecurityPermission.mContainerId, "PASSWORD", "passwordRequiredPattern", null);
-        if (!putString) {
-            return putString;
-        }
-        if (getCurrentPasswordOwner(enforceSecurityPermission) == enforceSecurityPermission.mCallerUid) {
-            ChooseNewPasswordOwner(enforceSecurityPermission);
-            return putString;
-        }
-        removeOwnerFromStack(enforceSecurityPermission);
-        return putString;
-    }
-
-    public String getRequiredPwdPatternRestrictions(ContextInfo contextInfo, boolean z) {
-        ContextInfo checkPackageCallerOrEnforcePermission = checkPackageCallerOrEnforcePermission(contextInfo, "android.uid.system:1000");
-        List allOneLockedChildUsers = getAllOneLockedChildUsers(Utils.getCallingOrCurrentUserId(checkPackageCallerOrEnforcePermission));
-        ArrayList arrayList = new ArrayList();
-        Iterator it = allOneLockedChildUsers.iterator();
-        while (it.hasNext()) {
-            arrayList.addAll(this.mEdmStorageProvider.getStringListAsUser("PASSWORD", "passwordRequiredPattern", ((Integer) it.next()).intValue()));
-        }
-        if (allOneLockedChildUsers.size() != 0) {
-            if (arrayList.size() == 0) {
-                return null;
-            }
-            return (String) arrayList.get(0);
-        }
-        if (z) {
-            int currentPasswordOwner = getCurrentPasswordOwner(checkPackageCallerOrEnforcePermission);
-            if (currentPasswordOwner != -1) {
-                return this.mEdmStorageProvider.getString(currentPasswordOwner, checkPackageCallerOrEnforcePermission.mContainerId, "PASSWORD", "passwordRequiredPattern");
-            }
-            return null;
-        }
-        return this.mEdmStorageProvider.getString(checkPackageCallerOrEnforcePermission.mCallerUid, checkPackageCallerOrEnforcePermission.mContainerId, "PASSWORD", "passwordRequiredPattern");
-    }
-
-    public boolean hasForbiddenNumericSequence(ContextInfo contextInfo, String str) {
-        checkPackageCallerOrEnforceSystemUser("android.uid.system:1000");
-        return containsForbiddenNumericSequence(contextInfo, str);
-    }
-
-    public boolean hasForbiddenCharacterSequence(ContextInfo contextInfo, String str) {
-        checkPackageCallerOrEnforceSystemUser("android.uid.system:1000");
-        return containsForbiddenCharacterSequence(contextInfo, str);
-    }
-
-    public boolean hasForbiddenStringDistance(ContextInfo contextInfo, String str, String str2) {
-        checkPackageCallerOrEnforceSystemUser("android.uid.system:1000");
-        return containsForbiddenStringDistance(contextInfo, str, str2);
-    }
-
-    public boolean hasForbiddenData(ContextInfo contextInfo, String str) {
-        checkPackageCallerOrEnforceSystemUser("android.uid.system:1000");
-        return containsForbiddenData(contextInfo, str);
-    }
-
-    public boolean hasMaxRepeatedCharacters(ContextInfo contextInfo, String str) {
-        checkPackageCallerOrEnforceSystemUser("android.uid.system:1000");
-        return containsMaxRepeatedCharacters(contextInfo, str);
-    }
-
-    public boolean isPasswordPatternMatched(ContextInfo contextInfo, String str) {
-        checkPackageCallerOrEnforceSystemUser("android.uid.system:1000");
-        String requiredPwdPatternRestrictions = getRequiredPwdPatternRestrictions(contextInfo, true);
-        if (requiredPwdPatternRestrictions != null) {
-            return Pattern.compile(requiredPwdPatternRestrictions).matcher(str).matches();
-        }
-        return true;
-    }
-
-    public final void enforceSystemUser() {
-        int callingUid = Binder.getCallingUid();
-        if (UserHandle.getAppId(callingUid) != 5250 && UserHandle.getAppId(callingUid) != Process.myUid()) {
-            throw new SecurityException("Can only be called by system user");
-        }
-    }
-
-    public boolean setPasswordChangeTimeout(ContextInfo contextInfo, int i) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (i < 0) {
-            return false;
-        }
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("passwordChangeTimeout", Integer.valueOf(i));
-        return this.mEdmStorageProvider.putValues(enforceSecurityPermission.mCallerUid, enforceSecurityPermission.mContainerId, "PASSWORD", contentValues);
-    }
-
-    public int getPasswordChangeTimeout(ContextInfo contextInfo) {
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
-        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, "PASSWORD", "passwordChangeTimeout", callingOrCurrentUserId);
-        Iterator it = getAllOneLockedChildUsers(callingOrCurrentUserId).iterator();
-        while (it.hasNext()) {
-            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, "PASSWORD", "passwordChangeTimeout", ((Integer) it.next()).intValue()));
-        }
-        Iterator it2 = intListAsUser.iterator();
-        int i = -1;
-        while (it2.hasNext()) {
-            Integer num = (Integer) it2.next();
-            if (num.intValue() >= 0 && (i == -1 || num.intValue() < i)) {
-                i = num.intValue();
-            }
-        }
-        if (i <= 0) {
-            return 0;
-        }
-        return i;
-    }
-
-    public boolean enforcePwdChange(ContextInfo contextInfo) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-        if (((Integer) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda43
-            public final Object getOrThrow() {
-                Integer lambda$enforcePwdChange$1;
-                lambda$enforcePwdChange$1 = PasswordPolicy.this.lambda$enforcePwdChange$1(callingOrCurrentUserId);
-                return lambda$enforcePwdChange$1;
-            }
-        })).intValue() == 458752) {
-            Log.d("PasswordPolicy", "enforcePwdChange declined because Lock Quality set to Smartcard for user = " + callingOrCurrentUserId);
-            return false;
-        }
-        return enforcePwdChangeForUser(enforceSecurityPermission.mContainerId, callingOrCurrentUserId);
-    }
-
-    public /* synthetic */ Integer lambda$enforcePwdChange$1(int i) {
-        Integer valueOf = Integer.valueOf(new LockPatternUtils(this.mContext).getActivePasswordQuality(i));
-        Log.d("PasswordPolicy", "UCS enabled for user = " + i);
-        Log.d("PasswordPolicy", "current quality = " + valueOf + ", SMART CARD Quality = 458752");
-        return valueOf;
-    }
-
-    public final boolean enforcePwdChangeForUser(int i, int i2) {
-        boolean z;
-        SDPLog.d(String.format("Enforce password change policy applied for user %d by %d", Integer.valueOf(i), Integer.valueOf(i2)));
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            z = true;
-        } catch (Exception e) {
-            Log.e("PasswordPolicy", "Exception during password enforcement: " + e.getMessage());
-            e.printStackTrace();
-            z = false;
-        }
-        if (isPersona(i2)) {
-            setPwdChangeRequestedForUser(i, 1, i2);
-            postPwdResetEventToPersona(i2);
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-            return true;
-        }
-        setPwdChangeRequestedForUser(i, 1, i2);
-        this.mPersonaManagerAdapter.postPwdChangeNotificationForDeviceOwner(i2);
-        boolean hasPassword = hasPassword(i2);
-        int currentUser = ActivityManager.getCurrentUser();
-        if (!hasPassword) {
-            setPwdChangeRequestedForUser(i, 3, i2);
-            if (this.mTelManager.getCallState() != 0 && i2 == currentUser) {
-                setPwdChangeRequestedForUser(i, -4, i2);
-            }
-            changePasswordAsUser(i2);
-        } else {
-            if (this.mTelManager.getCallState() != 0 && i2 == currentUser) {
-                setPwdChangeRequestedForUser(i, -2, i2);
-            }
-            changePasswordAsUser(i2);
-        }
-        this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        return z;
-    }
-
-    public final boolean hasPassword(int i) {
-        Context createContextAsUser;
-        return (isPersona(i) || (createContextAsUser = Utils.createContextAsUser(this.mContext, "android", 0, i)) == null || new LockPatternUtilsAdapter(createContextAsUser).getActivePasswordQuality(i) <= 0) ? false : true;
-    }
-
-    /* renamed from: com.android.server.enterprise.security.PasswordPolicy$5 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass5 extends BroadcastReceiver {
-        public AnonymousClass5() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            int sendingUserId = getSendingUserId();
-            long binderClearCallingIdentity = PasswordPolicy.this.mInjector.binderClearCallingIdentity();
-            int currentUser = ActivityManager.getCurrentUser();
-            if ("com.samsung.android.knox.intent.action.PWD_CHANGE_TIMEOUT_INTERNAL".equals(action)) {
-                PasswordPolicy.this.enforcePwdChangeIfNeededOnTimeout(sendingUserId);
-            } else if ("android.intent.action.USER_STARTED".equals(action)) {
-                int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-                if (intExtra >= 0) {
-                    PasswordPolicy.this.enforcePwdChangeIfNeededOnStart(intExtra);
-                }
-            } else if ("android.intent.action.USER_SWITCHED".equals(action)) {
-                int intExtra2 = intent.getIntExtra("android.intent.extra.user_handle", -1);
-                if (intExtra2 >= 0) {
-                    PasswordPolicy.this.enforcePwdChangeIfNeededOnSwitch(intExtra2);
-                }
-            } else if ("android.intent.action.PHONE_STATE".equals(action)) {
-                if (PasswordPolicy.this.mTelManager.getCallState() == 0) {
-                    PasswordPolicy.this.enforcePwdChangeIfNeededAfterCall(currentUser);
-                }
-            } else if ("com.samsung.android.knox.intent.action.NOTIFICATION_PASSWORD_EXPIRED_INTERNAL".equals(action)) {
-                Log.i("PasswordPolicy", "Received ACTION_PASSWORD_EXPIRING_NOTIFICATION_INTERNAL intent");
-                long longExtra = intent.getLongExtra("expiration", -1L);
-                if (longExtra == -1 || longExtra > System.currentTimeMillis()) {
-                    Log.i("PasswordPolicy", "In grace period or failed to get " + longExtra);
-                    PasswordPolicy.this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-                    return;
-                }
-                Log.i("PasswordPolicy", "Password expired already so launching password screen");
-                if (PasswordPolicy.this.mPersonaManagerAdapter.isValidKnoxId(sendingUserId)) {
-                    try {
-                        ActivityManagerNative.getDefault().forceStopPackage("com.android.settings", sendingUserId);
-                    } catch (RemoteException unused) {
-                        Log.d("PasswordPolicy", "forceStopPackage failed");
-                    }
-                }
-                PasswordPolicy.this.enforcePwdChangeForUser(0, sendingUserId);
-            }
-            PasswordPolicy.this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        }
-    }
-
-    public final void enforcePwdChangeIfNeededOnStart(int i) {
-        int i2;
-        int isChangeRequestedAsUser = isChangeRequestedAsUser(i);
-        if (isChangeRequestedAsUser != -4) {
-            if (isChangeRequestedAsUser != -3) {
-                if (isChangeRequestedAsUser == -2) {
-                    i2 = 1;
-                } else if (isChangeRequestedAsUser != -1) {
-                    i2 = 0;
-                }
-            }
-            i2 = 2;
-        } else {
-            i2 = 3;
-        }
-        if (i2 != 0) {
-            setPwdChangeRequestedForUser(0, i2, i);
-        }
-    }
-
-    public final void enforcePwdChangeIfNeededOnSwitch(int i) {
-        int isChangeRequestedAsUser = isChangeRequestedAsUser(i);
-        boolean hasPassword = hasPassword(i);
-        if (isChangeRequestedAsUser <= 0 || hasPassword) {
-            return;
-        }
-        changePasswordAsUser(i);
-    }
-
-    public final void enforcePwdChangeIfNeededOnTimeout(int i) {
-        if (isChangeRequestedAsUser(i) == -1) {
-            int currentUser = ActivityManager.getCurrentUser();
-            if (this.mTelManager.getCallState() == 0 || i != currentUser) {
-                setPwdChangeRequestedForUser(0, 2, i);
-                changePasswordAsUser(i);
-            } else {
-                setPwdChangeRequestedForUser(0, -3, i);
-            }
-        }
-    }
-
-    public final void enforcePwdChangeIfNeededAfterCall(int i) {
-        int isChangeRequestedAsUser = isChangeRequestedAsUser(i);
-        int i2 = isChangeRequestedAsUser != -4 ? isChangeRequestedAsUser != -3 ? isChangeRequestedAsUser != -2 ? 0 : 1 : 2 : 3;
-        if (i2 > 0) {
-            setPwdChangeRequestedForUser(0, i2, i);
-            changePasswordAsUser(i);
-        }
-    }
-
-    public final void changePasswordAsUser(int i) {
-        if (i == 0) {
-            if (Utils.isDexActivated(this.mContext)) {
-                registerDexBlocker();
-                Log.d("PasswordPolicy", "show pw change window after dex is disabled");
-            } else {
-                changePasswordAsUserInternal(i);
-                registerDexBlocker();
-                Log.d("PasswordPolicy", "show pw change window immediately");
-            }
-            setHomeAndRecentKey(1);
-            return;
-        }
-        changePasswordAsUserInternal(i);
-    }
-
-    public final void changePasswordAsUserInternal(int i) {
-        try {
-            if (isPersona(i)) {
-                postPwdResetEventToPersona(i);
-                return;
-            }
-            if (ActivityManager.getCurrentUser() == i) {
-                UserHandle userHandle = new UserHandle(i);
-                if (!hasPassword(i)) {
-                    Intent intent = new Intent();
-                    intent.setClassName("com.android.settings", "com.android.settings.password.ChooseLockGeneric");
-                    intent.addFlags(268435456);
-                    intent.addFlags(4194304);
-                    intent.addFlags(8388608);
-                    intent.putExtra("lockscreen.password_isenforced", true);
-                    this.mContext.startActivityAsUser(intent, userHandle);
-                    return;
-                }
-                this.mContext.sendBroadcastAsUser(new Intent("com.samsung.android.knox.intent.action.DO_KEYGUARD_INTERNAL"), userHandle);
-            }
-        } catch (Exception e) {
-            Log.e("PasswordPolicy", "handled expected Exception in changePasswordAsUser().", e);
-        }
-    }
-
-    public final boolean postPwdResetEventToPersona(int i) {
-        SdpManagerImpl sdpManager;
-        boolean z = isChangeRequestedAsUser(i) < 1;
-        boolean z2 = isChangeRequestedAsUser(i) >= 1;
-        if (z && z2) {
-            Log.d("PasswordPolicy", "postPwdResetEventToPersona :: Already enforced request pending...");
-            return false;
-        }
-        final Bundle bundle = new Bundle();
-        bundle.putInt("android.intent.extra.user_handle", i);
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda52
-            public final void runOrThrow() {
-                PasswordPolicy.lambda$postPwdResetEventToPersona$2(bundle);
-            }
-        });
-        SDPLog.i("Enforce Password Change requested for user " + i);
-        DarManagerService darManagerService = (DarManagerService) ServiceManager.getService("dar");
-        if (darManagerService != null && (sdpManager = darManagerService.getSdpManager()) != null) {
-            sdpManager.handleEnforcePwdChange(i);
-        }
-        return true;
-    }
-
-    public static /* synthetic */ void lambda$postPwdResetEventToPersona$2(Bundle bundle) {
-        ContainerProxy.sendEvent("knox.container.proxy.EVENT_LOCK_TIMEOUT", bundle);
-        ContainerProxy.sendCommand("knox.container.proxy.COMMAND_ENFORCE_PASSWORD", bundle);
-    }
-
-    public final boolean isPersona(int i) {
-        if (i != 0) {
-            return this.mPersonaManagerAdapter.isValidKnoxId(i);
-        }
-        return false;
-    }
-
-    public boolean setPwdChangeRequested(ContextInfo contextInfo, int i) {
-        return setPwdChangeRequestedForUser(contextInfo.mContainerId, i, Utils.getCallingOrCurrentUserId(contextInfo));
-    }
-
-    public synchronized boolean setPwdChangeRequestedForUser(int i, int i2, final int i3) {
-        boolean z;
-        checkPackageCallerOrEnforceSystemUser("android.uid.system:1000");
-        z = false;
-        try {
-            boolean putGenericValueAsUser = this.mEdmStorageProvider.putGenericValueAsUser("passwordChangeRequested", Integer.toString(i2), i3);
-            if (isDualDarDoEnabled() && i2 == 1) {
-                putGenericValueAsUser = putGenericValueAsUser && setPwdChangeRequestedForInner(i2);
-            }
-            if (this.mEDM == null) {
-                getEDM();
-            }
-            if (putGenericValueAsUser) {
-                int isChangeRequestedAsUser = isChangeRequestedAsUser(i3);
-                this.mPolicyCache.setChangeRequestedAsUser(i3, isChangeRequestedAsUser);
-                setPwdChangeRequestedSystemUI(i3, isChangeRequestedAsUser);
-                if (i3 == 0 && (i2 == 0 || i2 == -1)) {
-                    unRegisterDexBlocker();
-                    if (!isDualDarDoEnabled()) {
-                        setHomeAndRecentKey(i2);
-                    }
-                }
-            }
-            if (i2 == 1) {
-                new LockPatternUtils(this.mContext).requireStrongAuth(2, i3);
-            }
-            if (!this.mEDM.getRestrictionPolicy().isSettingsChangesAllowed(false)) {
-                this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda9
-                    public final void runOrThrow() {
-                        PasswordPolicy.this.lambda$setPwdChangeRequestedForUser$3(i3);
-                    }
-                });
-            }
-            z = putGenericValueAsUser;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return z;
-    }
-
-    public /* synthetic */ void lambda$setPwdChangeRequestedForUser$3(int i) {
-        IActivityManager iActivityManager = ActivityManagerNative.getDefault();
-        List<ActivityManager.RecentTaskInfo> list = iActivityManager.getRecentTasks(12, 0, i).getList();
-        if (list.isEmpty()) {
-            return;
-        }
-        for (ActivityManager.RecentTaskInfo recentTaskInfo : list) {
-            ComponentName component = recentTaskInfo.baseIntent.getComponent();
-            if (component != null) {
-                String packageName = component.getPackageName();
-                Log.w("PasswordPolicy", "packageName " + packageName);
-                if (packageName != null && packageName.equals("com.android.settings")) {
-                    iActivityManager.forceStopPackage("com.android.settings", i);
-                    iActivityManager.removeTask(recentTaskInfo.persistentId);
-                }
-            }
-        }
-    }
-
-    public synchronized boolean setPwdChangeRequestedForInner(int i) {
-        boolean z;
-        checkPackageCallerOrEnforceSystemUser("android.uid.system:1000");
-        try {
-            z = this.mEdmStorageProvider.putGenericValueAsUser("passwordChangeRequested", Integer.toString(i), getInnerAuthUserIdForDualDarDo());
-            if (i == 0) {
-                setHomeAndRecentKey(i);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            z = false;
-        }
-        return z;
-    }
-
-    public final boolean isDualDarDoEnabled() {
-        return DualDarManager.isOnDeviceOwnerEnabled();
-    }
-
-    public final int getInnerAuthUserIdForDualDarDo() {
-        if (isDualDarDoEnabled()) {
-            return new LockPatternUtils(this.mContext).getLockPatternUtilForDualDarDo().getInnerAuthUserForDo();
-        }
-        return -1;
-    }
-
-    public final void setHomeAndRecentKey(int i) {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            if (this.mStatusBarService == null) {
-                this.mStatusBarService = getStatusBarService();
-            }
-            IStatusBarService iStatusBarService = this.mStatusBarService;
-            if (iStatusBarService != null) {
-                if (i > 0) {
-                    iStatusBarService.disable(18874368, this.mToken, "PasswordPolicy");
-                } else {
-                    iStatusBarService.disable(0, this.mToken, "PasswordPolicy");
-                }
-            }
-            KeyCodeMediator keyCodeMediator = this.mKeyCodeMediator;
-            if (keyCodeMediator == null) {
-                Log.e("PasswordPolicy", "mKeyCodeMediator must not be null! This will cause problems on hardware key restriction.");
-            } else {
-                keyCodeMediator.update(3);
-                this.mKeyCodeMediator.update(1001);
-                this.mKeyCodeMediator.update(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CREDENTIAL_MANAGEMENT_APP_REMOVED);
-            }
-        } catch (Exception unused) {
-            Log.d("PasswordPolicy", "setHomeAndRecentKey was failed");
-        }
-        this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-    }
-
-    public final int getUserIdByPackageNameOrUid(ContextInfo contextInfo) {
-        if (contextInfo == null) {
-            contextInfo = new ContextInfo(Binder.getCallingUid());
-        }
-        if (this.mPersonaManagerAdapter.isValidKnoxId(contextInfo.mContainerId)) {
-            return contextInfo.mContainerId;
-        }
-        String nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
-        if (nameForUid != null) {
-            int lastIndexOf = nameForUid.lastIndexOf(XmlUtils.STRING_ARRAY_SEPARATOR);
-            if (lastIndexOf != -1) {
-                nameForUid = nameForUid.substring(0, lastIndexOf);
-            }
-            if (nameForUid.equals("android.uid.systemui") || Process.myPid() == Binder.getCallingPid()) {
-                return ((Integer) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda21
-                    public final Object getOrThrow() {
-                        Integer lambda$getUserIdByPackageNameOrUid$4;
-                        lambda$getUserIdByPackageNameOrUid$4 = PasswordPolicy.lambda$getUserIdByPackageNameOrUid$4();
-                        return lambda$getUserIdByPackageNameOrUid$4;
-                    }
-                })).intValue();
-            }
-        }
-        return UserHandle.getUserId(contextInfo.mCallerUid);
-    }
-
-    public static /* synthetic */ Integer lambda$getUserIdByPackageNameOrUid$4() {
-        return Integer.valueOf(ActivityManager.getCurrentUser());
-    }
-
-    public int isChangeRequested(ContextInfo contextInfo) {
-        return isChangeRequestedAsUser(getUserIdByPackageNameOrUid(contextInfo));
-    }
-
-    public int isChangeRequestedForInner() {
-        return isChangeRequestedAsUser(getInnerAuthUserIdForDualDarDo());
-    }
-
-    public int isChangeRequestedAsUser(int i) {
-        return isChangeRequestedAsUserFromDb(i);
-    }
-
-    public final int isChangeRequestedAsUserFromDb(int i) {
-        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser("passwordChangeRequested", i);
-        if (genericValueAsUser != null) {
-            return Integer.parseInt(genericValueAsUser);
-        }
-        return 0;
-    }
-
-    public boolean setMaximumFailedPasswordsForDisable(ContextInfo contextInfo, final int i) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (i < 0) {
-            return false;
-        }
-        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission.mCallerUid, "PASSWORD", "passwordAttemptDeviceDisable", i);
-        if (putInt) {
-            final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-            final int i2 = enforceSecurityPermission.mCallerUid;
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda41
-                public final void runOrThrow() {
-                    PasswordPolicy.lambda$setMaximumFailedPasswordsForDisable$5(i2, i, callingOrCurrentUserId);
-                }
-            });
-            setMaximumFailedPasswordsForDisableSystemUI(callingOrCurrentUserId, getMaximumFailedPasswordsForDisable(enforceSecurityPermission));
-        }
-        return putInt;
-    }
-
-    public static /* synthetic */ void lambda$setMaximumFailedPasswordsForDisable$5(int i, int i2, int i3) {
-        AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format("Admin %d has changed maximum failed passwords for disable to %d", Integer.valueOf(i), Integer.valueOf(i2)), i3);
-    }
-
-    public int getMaximumFailedPasswordsForDisable(ContextInfo contextInfo) {
-        return getMaximumFailedPasswordsForDisable(Utils.getCallingOrCurrentUserId(contextInfo));
-    }
-
-    public int getMaximumFailedPasswordsForDisable(int i) {
-        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordAttemptDeviceDisable", i);
-        String str = SystemProperties.get("ro.organization_owned");
-        if (str != null && str.equals("true")) {
-            Iterator it = getAllOneLockedChildUsers(i).iterator();
-            while (it.hasNext()) {
-                intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordAttemptDeviceDisable", ((Integer) it.next()).intValue()));
-            }
-        }
-        Iterator it2 = intListAsUser.iterator();
-        int i2 = 0;
-        while (it2.hasNext()) {
-            int intValue = ((Integer) it2.next()).intValue();
-            if (i2 == 0 || (intValue != 0 && i2 > intValue)) {
-                i2 = intValue;
-            }
-        }
-        return i2;
-    }
-
-    public boolean setMaximumNumericSequenceLength(ContextInfo contextInfo, final int i) {
-        if (i < 0) {
-            return false;
-        }
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission.mCallerUid, "PASSWORD", "passwordMaximumNumericSequenceLength", i);
-        if (putInt) {
-            final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-            final int i2 = enforceSecurityPermission.mCallerUid;
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda22
-                public final void runOrThrow() {
-                    PasswordPolicy.lambda$setMaximumNumericSequenceLength$6(i2, i, callingOrCurrentUserId);
-                }
-            });
-        }
-        return putInt;
-    }
-
-    public static /* synthetic */ void lambda$setMaximumNumericSequenceLength$6(int i, int i2, int i3) {
-        AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format("Admin %d has changed password maximum numeric sequence to %d", Integer.valueOf(i), Integer.valueOf(i2)), i3);
-    }
-
-    public int getMaximumNumericSequenceLength(ContextInfo contextInfo) {
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
-        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordMaximumNumericSequenceLength", callingOrCurrentUserId);
-        Iterator it = getAllOneLockedChildUsers(callingOrCurrentUserId).iterator();
-        while (it.hasNext()) {
-            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordMaximumNumericSequenceLength", ((Integer) it.next()).intValue()));
-        }
-        Iterator it2 = intListAsUser.iterator();
-        int i = 0;
-        while (it2.hasNext()) {
-            int intValue = ((Integer) it2.next()).intValue();
-            if (i == 0 || (intValue != 0 && i > intValue)) {
-                i = intValue;
-            }
-        }
-        return i;
-    }
-
-    public final boolean containsForbiddenNumericSequence(ContextInfo contextInfo, String str) {
-        int maximumNumericSequenceLength = getMaximumNumericSequenceLength(contextInfo);
-        if (maximumNumericSequenceLength != 0 && maximumNumericSequenceLength < 16) {
-            Matcher matcher = Pattern.compile("\\d(?=\\d{" + maximumNumericSequenceLength + ",})").matcher(str);
-            while (matcher.find()) {
-                int start = matcher.start();
-                char charAt = str.charAt(start);
-                int charAt2 = str.charAt(start + 1) - charAt;
-                char c = charAt2 == 0 ? (char) 0 : charAt2 > 0 ? (char) 1 : (char) 65535;
-                StringBuilder sb = new StringBuilder(maximumNumericSequenceLength + 5);
-                sb.append('\\');
-                sb.append('Q');
-                sb.append(charAt);
-                for (int i = 0; i < maximumNumericSequenceLength; i++) {
-                    charAt = (char) (charAt + c);
-                    sb.append(charAt);
-                }
-                sb.append('\\');
-                sb.append('E');
-                if (str.substring(start, start + maximumNumericSequenceLength + 1).matches(sb.toString())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean setForbiddenStrings(ContextInfo contextInfo, List list) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        boolean z = false;
-        try {
-            StringBuilder sb = new StringBuilder();
-            if (list == null) {
-                sb.append("");
-            } else {
-                Iterator it = new TreeSet(list).iterator();
-                while (it.hasNext()) {
-                    sb.append(((String) it.next()) + " ");
-                }
-            }
-            final String sb2 = sb.toString();
-            z = this.mEdmStorageProvider.putString(enforceSecurityPermission.mCallerUid, "PASSWORD", "passwordForbiddenStrings", sb2);
-            if (z) {
-                final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-                final int i = enforceSecurityPermission.mCallerUid;
-                this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda50
-                    public final void runOrThrow() {
-                        PasswordPolicy.lambda$setForbiddenStrings$7(i, sb2, callingOrCurrentUserId);
-                    }
-                });
-            }
-        } catch (Exception unused) {
-            Log.w("PasswordPolicy", "setForbiddenStrings() failed.");
-        }
-        return z;
-    }
-
-    public static /* synthetic */ void lambda$setForbiddenStrings$7(int i, String str, int i2) {
-        AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format("Admin %d has changed password forbidden strings to %s", Integer.valueOf(i), str), i2);
-    }
-
-    public List getForbiddenStrings(ContextInfo contextInfo, boolean z) {
-        ContextInfo checkPackageCallerOrEnforcePermission = checkPackageCallerOrEnforcePermission(contextInfo, "android.uid.system:1000");
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(checkPackageCallerOrEnforcePermission);
-        if (z) {
-            List stringListAsUser = this.mEdmStorageProvider.getStringListAsUser("PASSWORD", "passwordForbiddenStrings", callingOrCurrentUserId);
-            Iterator it = getAllOneLockedChildUsers(callingOrCurrentUserId).iterator();
-            while (it.hasNext()) {
-                stringListAsUser.addAll(this.mEdmStorageProvider.getStringListAsUser("PASSWORD", "passwordForbiddenStrings", ((Integer) it.next()).intValue()));
-            }
-            if (stringListAsUser == null || stringListAsUser.size() <= 0) {
-                return null;
-            }
-            ArrayList arrayList = new ArrayList();
-            Iterator it2 = stringListAsUser.iterator();
-            while (it2.hasNext()) {
-                arrayList.addAll(new ArrayList(Arrays.asList(((String) it2.next()).split(" "))));
-            }
-            return arrayList;
-        }
-        String string = this.mEdmStorageProvider.getString(checkPackageCallerOrEnforcePermission.mCallerUid, "PASSWORD", "passwordForbiddenStrings");
-        if (string != null) {
-            return new ArrayList(Arrays.asList(string.split(" ")));
-        }
-        return null;
-    }
-
-    public final boolean containsForbiddenData(ContextInfo contextInfo, String str) {
-        List<String> forbiddenStrings = getForbiddenStrings(contextInfo, true);
-        if (forbiddenStrings != null && forbiddenStrings.size() != 0) {
-            for (String str2 : forbiddenStrings) {
-                if (str2.length() > 0 && str.contains(str2)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean setMaximumCharacterOccurrences(ContextInfo contextInfo, final int i) {
-        if (i < 0) {
-            return false;
-        }
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission.mCallerUid, "PASSWORD", "passwordMaximumCharacterOccurences", i);
-        if (putInt) {
-            final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-            final int i2 = enforceSecurityPermission.mCallerUid;
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda48
-                public final void runOrThrow() {
-                    PasswordPolicy.lambda$setMaximumCharacterOccurrences$8(i2, i, callingOrCurrentUserId);
-                }
-            });
-        }
-        return putInt;
-    }
-
-    public static /* synthetic */ void lambda$setMaximumCharacterOccurrences$8(int i, int i2, int i3) {
-        AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format("Admin %d has changed password maximum character occurrences to %d", Integer.valueOf(i), Integer.valueOf(i2)), i3);
-    }
-
-    public int getMaximumCharacterOccurences(ContextInfo contextInfo) {
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
-        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordMaximumCharacterOccurences", callingOrCurrentUserId);
-        Iterator it = getAllOneLockedChildUsers(callingOrCurrentUserId).iterator();
-        while (it.hasNext()) {
-            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordMaximumCharacterOccurences", ((Integer) it.next()).intValue()));
-        }
-        Iterator it2 = intListAsUser.iterator();
-        int i = 0;
-        while (it2.hasNext()) {
-            int intValue = ((Integer) it2.next()).intValue();
-            if (i == 0 || (intValue != 0 && i > intValue)) {
-                i = intValue;
-            }
-        }
-        return i;
-    }
-
-    public final boolean containsMaxRepeatedCharacters(ContextInfo contextInfo, String str) {
-        int maximumCharacterOccurences = getMaximumCharacterOccurences(contextInfo);
-        if (maximumCharacterOccurences == 0) {
-            return false;
-        }
-        HashMap hashMap = new HashMap();
-        for (char c : str.toCharArray()) {
-            if (hashMap.get(Character.valueOf(c)) != null) {
-                int intValue = ((Integer) hashMap.get(Character.valueOf(c))).intValue();
-                if (intValue == maximumCharacterOccurences) {
-                    Log.d("PasswordPolicy", c + " : " + intValue);
-                    return true;
-                }
-                hashMap.put(Character.valueOf(c), Integer.valueOf(intValue + 1));
-            } else {
-                hashMap.put(Character.valueOf(c), 1);
-            }
-        }
-        return false;
-    }
-
-    public final int getCurrentPasswordOwner(ContextInfo contextInfo) {
-        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser("passwordPatternOwner", Utils.getCallingOrCurrentUserId(contextInfo));
-        if (genericValueAsUser == null) {
-            return -1;
-        }
-        Integer valueOf = Integer.valueOf(Integer.parseInt(genericValueAsUser));
-        Iterator it = this.mEdmStorageProvider.getAdminUidList().iterator();
-        while (it.hasNext()) {
-            if (((Integer) it.next()).intValue() == valueOf.intValue()) {
-                return valueOf.intValue();
-            }
-        }
-        return ChooseNewPasswordOwner(contextInfo);
+    public static IPersonaManagerAdapter getPersonaManagerAdapter$6() {
+        return (IPersonaManagerAdapter) AdapterRegistry.mAdapterHandles.get(IPersonaManagerAdapter.class);
     }
 
     public final int ChooseNewPasswordOwner(ContextInfo contextInfo) {
         int i = contextInfo.mContainerId;
         int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
         ArrayList adminUidList = this.mEdmStorageProvider.getAdminUidList();
-        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser("passwordOwnerHistory", callingOrCurrentUserId);
+        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser(callingOrCurrentUserId, "passwordOwnerHistory");
         int i2 = -1;
         if (genericValueAsUser != null && genericValueAsUser.length() != 0) {
             ArrayList arrayList = new ArrayList();
@@ -1302,1543 +503,208 @@ public class PasswordPolicy extends IPasswordPolicy.Stub implements EnterpriseSe
                 }
                 arrayList.remove(size);
             }
-            if (!arrayList.isEmpty()) {
+            if (arrayList.isEmpty()) {
+                this.mEdmStorageProvider.putGenericValueAsUser(callingOrCurrentUserId, "passwordOwnerHistory", null);
+                this.mEdmStorageProvider.putGenericValueAsUser(callingOrCurrentUserId, "passwordPatternOwner", null);
+            } else {
                 StringBuilder sb = new StringBuilder();
                 Iterator it2 = arrayList.iterator();
                 while (it2.hasNext()) {
                     sb.append(((Integer) it2.next()).intValue() + ",");
                 }
-                this.mEdmStorageProvider.putGenericValueAsUser("passwordOwnerHistory", sb.substring(0, sb.length() - 1), callingOrCurrentUserId);
-                this.mEdmStorageProvider.putGenericValueAsUser("passwordPatternOwner", String.valueOf(i2), callingOrCurrentUserId);
-            } else {
-                this.mEdmStorageProvider.putGenericValueAsUser("passwordOwnerHistory", null, callingOrCurrentUserId);
-                this.mEdmStorageProvider.putGenericValueAsUser("passwordPatternOwner", null, callingOrCurrentUserId);
+                this.mEdmStorageProvider.putGenericValueAsUser(callingOrCurrentUserId, "passwordOwnerHistory", sb.substring(0, sb.length() - 1));
+                this.mEdmStorageProvider.putGenericValueAsUser(callingOrCurrentUserId, "passwordPatternOwner", String.valueOf(i2));
             }
         }
         return i2;
     }
 
-    public final void removeOwnerFromStack(ContextInfo contextInfo) {
-        int i = contextInfo.mContainerId;
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
-        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser("passwordOwnerHistory", callingOrCurrentUserId);
-        if (genericValueAsUser != null) {
-            String[] split = genericValueAsUser.split(",");
-            StringBuilder sb = new StringBuilder();
-            for (String str : split) {
-                Integer valueOf = Integer.valueOf(Integer.parseInt(str));
-                if (valueOf.intValue() != contextInfo.mCallerUid) {
-                    sb.append(valueOf + ",");
-                }
-            }
-            String sb2 = sb.toString();
-            this.mEdmStorageProvider.putGenericValueAsUser("passwordOwnerHistory", sb2.length() == 0 ? null : sb2.substring(0, sb2.length() - 1), callingOrCurrentUserId);
-        }
-    }
-
-    public final void addOwnerToStack(ContextInfo contextInfo) {
-        String valueOf;
-        int i = contextInfo.mContainerId;
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
-        this.mEdmStorageProvider.putGenericValueAsUser("passwordPatternOwner", String.valueOf(contextInfo.mCallerUid), callingOrCurrentUserId);
-        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser("passwordOwnerHistory", callingOrCurrentUserId);
-        if (genericValueAsUser != null) {
-            valueOf = genericValueAsUser + "," + String.valueOf(contextInfo.mCallerUid);
-        } else {
-            valueOf = String.valueOf(contextInfo.mCallerUid);
-        }
-        this.mEdmStorageProvider.putGenericValueAsUser("passwordOwnerHistory", valueOf, callingOrCurrentUserId);
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminRemoved(int i) {
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(new ContextInfo(i, 0));
-        if (callingOrCurrentUserId == ActivityManager.getCurrentUser()) {
-            updateSystemUIMonitor(callingOrCurrentUserId);
-        }
-    }
-
-    @Override // com.android.server.enterprise.common.KeyCodeRestrictionCallback
-    public Set getRestrictedKeyCodes() {
-        if (isChangeRequestedAsUser(0) > 0) {
-            return new HashSet(Arrays.asList(3, 1001, Integer.valueOf(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CREDENTIAL_MANAGEMENT_APP_REMOVED)));
-        }
-        return null;
-    }
-
-    public boolean setScreenLockPatternVisibilityEnabled(ContextInfo contextInfo, final boolean z) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceSecurityPermission.mCallerUid, "PASSWORD", "screenLockPatternVisibility", z);
-        final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda8
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$setScreenLockPatternVisibilityEnabled$9(z, callingOrCurrentUserId);
-            }
-        });
-        return putBoolean;
-    }
-
-    public /* synthetic */ void lambda$setScreenLockPatternVisibilityEnabled$9(boolean z, int i) {
-        new LockPatternUtils(this.mContext).setVisiblePatternEnabled(z, i);
-        UserManager userManager = (UserManager) this.mContext.getSystemService("user");
-        if (!userManager.getUserInfo(i).isManagedProfile() || new LockPatternUtils(this.mContext).isSeparateProfileChallengeEnabled(i)) {
-            return;
-        }
-        new LockPatternUtils(this.mContext).setVisiblePatternEnabled(z, userManager.getProfileParent(i).getUserHandle().getIdentifier());
-    }
-
-    @Override // com.android.server.enterprise.common.KeyCodeCallback
-    public void setMediator(KeyCodeMediator keyCodeMediator) {
-        if (this.mKeyCodeMediator == null) {
-            this.mKeyCodeMediator = keyCodeMediator;
-            keyCodeMediator.registerCallback(this);
-        }
-    }
-
-    @Override // com.android.server.enterprise.common.KeyCodeRestrictionCallback
-    public boolean isKeyCodeInputAllowed(int i) {
-        return !(i == 3 || i == 187 || i == 1001) || isChangeRequestedAsUser(0) <= 0;
-    }
-
-    public boolean isScreenLockPatternVisibilityEnabled(ContextInfo contextInfo) {
-        return isScreenLockPatternVisibilityEnabledAsUser(Utils.getCallingOrCurrentUserId(contextInfo));
-    }
-
-    public boolean isScreenLockPatternVisibilityEnabledAsUser(int i) {
-        ArrayList booleanListAsUser = this.mEdmStorageProvider.getBooleanListAsUser("PASSWORD", "screenLockPatternVisibility", i);
-        Iterator it = getAllOneLockedChildUsers(i).iterator();
-        while (it.hasNext()) {
-            booleanListAsUser.addAll(this.mEdmStorageProvider.getBooleanListAsUser("PASSWORD", "screenLockPatternVisibility", ((Integer) it.next()).intValue()));
-        }
-        Iterator it2 = booleanListAsUser.iterator();
-        while (it2.hasNext()) {
-            boolean booleanValue = ((Boolean) it2.next()).booleanValue();
-            if (!booleanValue) {
-                return booleanValue;
-            }
-        }
-        return true;
-    }
-
-    public boolean setMaximumCharacterSequenceLength(ContextInfo contextInfo, final int i) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (i < 0) {
-            return false;
-        }
-        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission.mCallerUid, enforceSecurityPermission.mContainerId, "PASSWORD", "passwordMaximumCharacterSequenceLength", i);
-        if (putInt) {
-            final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-            final int i2 = enforceSecurityPermission.mCallerUid;
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda47
-                public final void runOrThrow() {
-                    PasswordPolicy.lambda$setMaximumCharacterSequenceLength$10(i2, i, callingOrCurrentUserId);
-                }
-            });
-        }
-        return putInt;
-    }
-
-    public static /* synthetic */ void lambda$setMaximumCharacterSequenceLength$10(int i, int i2, int i3) {
-        AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format("Admin %d has changed password maximum character sequence length to %d", Integer.valueOf(i), Integer.valueOf(i2)), i3);
-    }
-
-    public int getMaximumCharacterSequenceLength(ContextInfo contextInfo) {
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
-        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, "PASSWORD", "passwordMaximumCharacterSequenceLength", callingOrCurrentUserId);
-        Iterator it = getAllOneLockedChildUsers(callingOrCurrentUserId).iterator();
-        while (it.hasNext()) {
-            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, "PASSWORD", "passwordMaximumCharacterSequenceLength", ((Integer) it.next()).intValue()));
-        }
-        Iterator it2 = intListAsUser.iterator();
-        int i = 0;
-        while (it2.hasNext()) {
-            int intValue = ((Integer) it2.next()).intValue();
-            if (i == 0 || (intValue != 0 && i > intValue)) {
-                i = intValue;
-            }
-        }
-        return i;
-    }
-
-    public boolean setMinimumCharacterChangeLength(ContextInfo contextInfo, final int i) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (i < 0) {
-            return false;
-        }
-        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission.mCallerUid, enforceSecurityPermission.mContainerId, "PASSWORD", "passwordMinimumCharacterChangeUpdatingPasswordLength", i);
-        if (putInt) {
-            final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-            final int i2 = enforceSecurityPermission.mCallerUid;
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda39
-                public final void runOrThrow() {
-                    PasswordPolicy.lambda$setMinimumCharacterChangeLength$11(i2, i, callingOrCurrentUserId);
-                }
-            });
-        }
-        return putInt;
-    }
-
-    public static /* synthetic */ void lambda$setMinimumCharacterChangeLength$11(int i, int i2, int i3) {
-        AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format("Admin %d has changed password minimum number of changed characters to %d", Integer.valueOf(i), Integer.valueOf(i2)), i3);
-    }
-
-    public int getMinimumCharacterChangeLength(ContextInfo contextInfo) {
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
-        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, "PASSWORD", "passwordMinimumCharacterChangeUpdatingPasswordLength", callingOrCurrentUserId);
-        Iterator it = getAllOneLockedChildUsers(callingOrCurrentUserId).iterator();
-        while (it.hasNext()) {
-            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, "PASSWORD", "passwordMinimumCharacterChangeUpdatingPasswordLength", ((Integer) it.next()).intValue()));
-        }
-        Iterator it2 = intListAsUser.iterator();
-        int i = 0;
-        while (it2.hasNext()) {
-            int intValue = ((Integer) it2.next()).intValue();
-            if (i == 0 || (intValue != 0 && i < intValue)) {
-                i = intValue;
-            }
-        }
-        return i;
-    }
-
-    public final int computeLevenshteinDistance(CharSequence charSequence, CharSequence charSequence2) {
-        int[][] iArr = (int[][]) Array.newInstance((Class<?>) Integer.TYPE, charSequence.length() + 1, charSequence2.length() + 1);
-        for (int i = 0; i <= charSequence.length(); i++) {
-            iArr[i][0] = i;
-        }
-        for (int i2 = 0; i2 <= charSequence2.length(); i2++) {
-            iArr[0][i2] = i2;
-        }
-        for (int i3 = 1; i3 <= charSequence.length(); i3++) {
-            for (int i4 = 1; i4 <= charSequence2.length(); i4++) {
-                int[] iArr2 = iArr[i3];
-                int i5 = i3 - 1;
-                int i6 = i4 - 1;
-                iArr2[i4] = Math.min(Math.min(iArr[i5][i4] + 1, iArr2[i6] + 1), iArr[i5][i6] + (charSequence.charAt(i5) == charSequence2.charAt(i6) ? 0 : 1));
-            }
-        }
-        return iArr[charSequence.length()][charSequence2.length()];
-    }
-
-    public final boolean containsForbiddenStringDistance(ContextInfo contextInfo, String str, String str2) {
-        int minimumCharacterChangeLength;
-        return (str2 == null || (minimumCharacterChangeLength = getMinimumCharacterChangeLength(contextInfo)) == 0 || computeLevenshteinDistance(str2, str) >= minimumCharacterChangeLength) ? false : true;
-    }
-
-    public final boolean containsForbiddenCharacterSequence(ContextInfo contextInfo, String str) {
-        boolean z;
-        int maximumCharacterSequenceLength = getMaximumCharacterSequenceLength(contextInfo);
-        if (maximumCharacterSequenceLength != 0 && maximumCharacterSequenceLength < 16) {
-            Matcher matcher = Pattern.compile("\\w(?=\\w{" + maximumCharacterSequenceLength + ",})").matcher(str);
-            while (matcher.find()) {
-                int start = matcher.start();
-                char charAt = str.charAt(start);
-                if (Character.isAlphabetic(charAt)) {
-                    int charAt2 = str.charAt(start + 1) - charAt;
-                    char c = charAt2 == 0 ? (char) 0 : charAt2 > 0 ? (char) 1 : (char) 65535;
-                    StringBuilder sb = new StringBuilder(maximumCharacterSequenceLength + 5);
-                    sb.append('\\');
-                    sb.append('Q');
-                    sb.append(charAt);
-                    for (int i = 0; i < maximumCharacterSequenceLength; i++) {
-                        charAt = (char) (charAt + c);
-                        if (!Character.isAlphabetic(str.charAt(start + i + 1)) || !Character.isAlphabetic(charAt)) {
-                            z = true;
-                            break;
-                        }
-                        sb.append(charAt);
-                    }
-                    z = false;
-                    if (z) {
-                        continue;
-                    } else {
-                        sb.append('\\');
-                        sb.append('E');
-                        if (str.substring(start, start + maximumCharacterSequenceLength + 1).matches(sb.toString())) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean setPasswordVisibilityEnabled(ContextInfo contextInfo, final boolean z) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        final int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda37
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$setPasswordVisibilityEnabled$12(callingOrCurrentUserId, z);
-            }
-        });
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceSecurityPermission.mCallerUid, "PASSWORD", "passwordVisibilityEnabled", z);
-        if (putBoolean) {
-            setPasswordVisibilityEnabledSystemUI(callingOrCurrentUserId, z);
-        }
-        return putBoolean;
-    }
-
-    public /* synthetic */ void lambda$setPasswordVisibilityEnabled$12(int i, boolean z) {
-        if (isPasswordVisibilityEnabledAsUser(i) && !z && !isPersona(i)) {
-            Log.d("PasswordPolicy", "do not putIntForUser");
-            Settings.System.putIntForUser(this.mContext.getContentResolver(), "show_password", 0, i);
-        }
-        if (!((UserManager) this.mContext.getSystemService("user")).getUserInfo(i).isManagedProfile() || new LockPatternUtils(this.mContext).isSeparateProfileChallengeEnabled(i)) {
-            return;
-        }
-        Log.d("PasswordPolicy", "!hasSeparateChallenge");
-        Settings.System.putIntForUser(this.mContext.getContentResolver(), "show_password", 0, i);
-    }
-
-    public boolean isPasswordVisibilityEnabled(ContextInfo contextInfo) {
-        return isPasswordVisibilityEnabledAsUser(Utils.getCallingOrCurrentUserId(contextInfo));
-    }
-
-    public boolean isPasswordVisibilityEnabledAsUser(int i) {
-        ArrayList booleanListAsUser = this.mEdmStorageProvider.getBooleanListAsUser("PASSWORD", "passwordVisibilityEnabled", i);
-        Iterator it = getAllOneLockedChildUsers(i).iterator();
-        while (it.hasNext()) {
-            booleanListAsUser.addAll(this.mEdmStorageProvider.getBooleanListAsUser("PASSWORD", "passwordVisibilityEnabled", ((Integer) it.next()).intValue()));
-        }
-        Iterator it2 = booleanListAsUser.iterator();
-        while (it2.hasNext()) {
-            boolean booleanValue = ((Boolean) it2.next()).booleanValue();
-            if (!booleanValue) {
-                return booleanValue;
-            }
-        }
-        return true;
-    }
-
-    public boolean excludeExternalStorageForFailedPasswordsWipe(ContextInfo contextInfo, boolean z) {
-        ContextInfo enforceOwnerOnlyAndSecurityPermission = enforceOwnerOnlyAndSecurityPermission(contextInfo);
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceOwnerOnlyAndSecurityPermission);
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndSecurityPermission.mCallerUid, "PASSWORD", "excludeExternalStorageWipe", z);
-        if (putBoolean) {
-            excludeExternalStorageForFailedPasswordsWipeSystemUI(callingOrCurrentUserId, isExternalStorageForFailedPasswordsWipeExcluded(enforceOwnerOnlyAndSecurityPermission));
-        }
-        return putBoolean;
-    }
-
-    public boolean isExternalStorageForFailedPasswordsWipeExcluded(ContextInfo contextInfo) {
-        return isExternalStorageForFailedPasswordsWipeExcluded(Utils.getCallingOrCurrentUserId(contextInfo));
-    }
-
-    public final boolean isExternalStorageForFailedPasswordsWipeExcluded(int i) {
-        ArrayList booleanListAsUser = this.mEdmStorageProvider.getBooleanListAsUser("PASSWORD", "excludeExternalStorageWipe", i);
-        Iterator it = getAllOneLockedChildUsers(i).iterator();
-        while (it.hasNext()) {
-            booleanListAsUser.addAll(this.mEdmStorageProvider.getBooleanListAsUser("PASSWORD", "excludeExternalStorageWipe", ((Integer) it.next()).intValue()));
-        }
-        if (booleanListAsUser == null || booleanListAsUser.size() == 0) {
-            Log.i("PasswordPolicy", "isExternalStorageForFailedPasswordsWipeExcluded() : no admin enforce password policy. ");
-            return false;
-        }
-        Iterator it2 = booleanListAsUser.iterator();
-        while (it2.hasNext()) {
-            boolean booleanValue = ((Boolean) it2.next()).booleanValue();
-            if (!booleanValue) {
-                return booleanValue;
-            }
-        }
-        return true;
-    }
-
-    public boolean lock(ContextInfo contextInfo) {
-        int mUMContainerOwnerUid;
-        enforceDoPoOnlySecurityPermissionByContext(contextInfo);
-        int i = contextInfo.mContainerId;
-        if (i == 0) {
-            mUMContainerOwnerUid = contextInfo.mCallerUid;
-        } else {
-            mUMContainerOwnerUid = this.mEdmStorageProvider.getMUMContainerOwnerUid(i);
-        }
-        try {
-            if (this.mService.isProfileOwnerOfOrganizationOwnedDeviceMDM(contextInfo.mContainerId)) {
-                i = 0;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Log.d("PasswordPolicy", "lock is called for user : " + contextInfo.mContainerId + ", ownerUid - " + mUMContainerOwnerUid);
-        AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format("Admin %d has successfully locked Workspace", Integer.valueOf(contextInfo.mCallerUid)), UserHandle.getUserId(contextInfo.mCallerUid));
-        setAdminLockEnabledSystemUI(i, true, false);
-        final Bundle bundle = new Bundle();
-        bundle.putInt("android.intent.extra.user_handle", i);
-        bundle.putInt("knox.container.proxy.EXTRA_CONTAINER_OWNER", mUMContainerOwnerUid);
-        return ((Bundle) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda34
-            public final Object getOrThrow() {
-                Bundle lambda$lock$13;
-                lambda$lock$13 = PasswordPolicy.lambda$lock$13(bundle);
-                return lambda$lock$13;
-            }
-        })).getInt("android.intent.extra.RETURN_RESULT") == 0;
-    }
-
-    public static /* synthetic */ Bundle lambda$lock$13(Bundle bundle) {
-        return ContainerProxy.sendPolicyUpdate("knox.container.proxy.POLICY_ADMIN_LOCK", bundle);
-    }
-
-    public boolean unlock(ContextInfo contextInfo) {
-        enforceDoPoOnlySecurityPermissionByContext(contextInfo);
-        final int i = contextInfo.mContainerId;
-        Log.d("PasswordPolicy", "unlock is called for user : " + contextInfo.mContainerId + ", caller uid - " + contextInfo.mCallerUid);
-        try {
-            if (this.mService.isProfileOwnerOfOrganizationOwnedDeviceMDM(contextInfo.mContainerId)) {
-                i = 0;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        final Bundle bundle = new Bundle();
-        bundle.putInt("android.intent.extra.user_handle", i);
-        final int i2 = contextInfo.mCallerUid;
-        return ((Bundle) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda46
-            public final Object getOrThrow() {
-                Bundle lambda$unlock$14;
-                lambda$unlock$14 = PasswordPolicy.this.lambda$unlock$14(i2, i, bundle);
-                return lambda$unlock$14;
-            }
-        })).getInt("android.intent.extra.RETURN_RESULT") == 0;
-    }
-
-    public /* synthetic */ Bundle lambda$unlock$14(int i, int i2, Bundle bundle) {
-        AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format("Admin %d has successfully unlocked Workspace", Integer.valueOf(i)), UserHandle.getUserId(i));
-        setAdminLockEnabledSystemUI(i2, false, false);
-        return ContainerProxy.sendPolicyUpdate("knox.container.proxy.POLICY_ADMIN_UNLOCK", bundle);
-    }
-
-    public final boolean fingerprintAvailable(final Context context) {
-        return ((Boolean) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda16
-            public final Object getOrThrow() {
-                Boolean lambda$fingerprintAvailable$15;
-                lambda$fingerprintAvailable$15 = PasswordPolicy.lambda$fingerprintAvailable$15(context);
-                return lambda$fingerprintAvailable$15;
-            }
-        })).booleanValue();
-    }
-
-    public static /* synthetic */ Boolean lambda$fingerprintAvailable$15(Context context) {
-        return Boolean.valueOf(context.getPackageManager().hasSystemFeature("android.hardware.fingerprint") && ((FingerprintManager) context.getSystemService(FingerprintManager.class)).isHardwareDetected());
-    }
-
-    public final boolean irisAvailable(final Context context) {
-        return ((Boolean) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda4
-            public final Object getOrThrow() {
-                Boolean lambda$irisAvailable$16;
-                lambda$irisAvailable$16 = PasswordPolicy.lambda$irisAvailable$16(context);
-                return lambda$irisAvailable$16;
-            }
-        })).booleanValue();
-    }
-
-    public static /* synthetic */ Boolean lambda$irisAvailable$16(Context context) {
-        return Boolean.valueOf(context.getPackageManager().hasSystemFeature("android.hardware.biometrics.iris"));
-    }
-
-    public boolean setMultifactorAuthenticationEnabled(ContextInfo contextInfo, boolean z) {
-        ContextInfo enforceDoPoOnlySecurityPermissionByContext = enforceDoPoOnlySecurityPermissionByContext(contextInfo);
-        if (!fingerprintAvailable(this.mContext) && !irisAvailable(this.mContext)) {
-            Log.d("PasswordPolicy", "setMultifactorAuthenticationEnabled: two-factor authentication not available");
-            return false;
-        }
-        Log.d("PasswordPolicy", "setMultifactorAuthenticationEnabled is called for user : " + enforceDoPoOnlySecurityPermissionByContext.mContainerId + ", caller uid - " + enforceDoPoOnlySecurityPermissionByContext.mCallerUid + ", enable - " + z);
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceDoPoOnlySecurityPermissionByContext.mCallerUid, "PASSWORD", "multifactorAuthEnabled", z);
-        if (putBoolean) {
-            int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceDoPoOnlySecurityPermissionByContext);
-            setMultifactorAuthenticationEnabledSystemUI(callingOrCurrentUserId, z);
-            boolean z2 = Settings.Secure.getIntForUser(this.mContext.getContentResolver(), "knox_finger_print_plus", 0, callingOrCurrentUserId) == 1;
-            if (!z2 && z) {
-                Log.d("PasswordPolicy", "EnforcePwdChange is called for user as Multifcator needs to be enforced for : " + enforceDoPoOnlySecurityPermissionByContext.mContainerId);
-                enforcePwdChange(enforceDoPoOnlySecurityPermissionByContext);
-            }
-            if (z2 && !z && callingOrCurrentUserId == 0 && (this.mPersonaManagerAdapter.isDoEnabled(callingOrCurrentUserId) || this.mPersonaManagerAdapter.isOrganizationOwnedDeviceWithManagedProfile())) {
-                Log.d("PasswordPolicy", "EnforcePwdChange is called for DO case as Multifcator needs to be removed for : " + enforceDoPoOnlySecurityPermissionByContext.mContainerId);
-                enforcePwdChange(enforceDoPoOnlySecurityPermissionByContext);
-            }
-        }
-        return putBoolean;
-    }
-
-    public boolean isMultifactorAuthenticationEnabled(ContextInfo contextInfo) {
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
-        Log.d("PasswordPolicy", "isMultifactorAuthenticationEnabled is called for user : " + callingOrCurrentUserId + ", caller uid - " + contextInfo.mCallerUid);
-        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser("PASSWORD", "multifactorAuthEnabled", callingOrCurrentUserId).iterator();
-        while (it.hasNext()) {
-            if (((Boolean) it.next()).booleanValue()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isMultifactorAuthenticationEnabled(int i) {
-        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser("PASSWORD", "multifactorAuthEnabled", i).iterator();
-        while (it.hasNext()) {
-            if (((Boolean) it.next()).booleanValue()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int getSuperLockState(int i) {
-        UserManager userManager = this.mUserManager;
-        UserInfo userInfo = userManager != null ? userManager.getUserInfo(i) : null;
-        if (userInfo == null) {
-            return 0;
-        }
-        boolean isAdminLocked = userInfo.isAdminLocked();
-        return userInfo.isLicenseLocked() ? (isAdminLocked ? 1 : 0) + 2 : isAdminLocked ? 1 : 0;
-    }
-
-    public void setPasswordQuality(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda13
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordQuality$17(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordQuality$17(ComponentName componentName, int i, int i2) {
-        try {
-            this.mService.setPasswordQualityMDM(componentName, i, UserHandle.getUserId(i2));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public int getPasswordQuality(ContextInfo contextInfo, final ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Integer num = 0;
-        if (this.mService != null) {
-            num = (Integer) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda20
-                public final Object getOrThrow() {
-                    Integer lambda$getPasswordQuality$18;
-                    lambda$getPasswordQuality$18 = PasswordPolicy.this.lambda$getPasswordQuality$18(componentName, i);
-                    return lambda$getPasswordQuality$18;
-                }
-            });
-        }
-        return num.intValue();
-    }
-
-    public /* synthetic */ Integer lambda$getPasswordQuality$18(ComponentName componentName, int i) {
-        return Integer.valueOf(this.mService.getPasswordQuality(componentName, UserHandle.getUserId(i), false));
-    }
-
-    public void setPasswordMinimumLength(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda18
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordMinimumLength$19(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordMinimumLength$19(ComponentName componentName, int i, int i2) {
-        try {
-            this.mService.setPasswordMinimumLengthMDM(componentName, i, UserHandle.getUserId(i2));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public int getPasswordMinimumLength(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Integer num = 0;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumLength(componentName, UserHandle.getUserId(i), false));
-            }
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordMinimumLength failed " + e);
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordMinimumLength failed " + e2);
-        }
-        return num.intValue();
-    }
-
-    public void setPasswordMinimumUpperCase(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda42
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordMinimumUpperCase$20(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordMinimumUpperCase$20(ComponentName componentName, int i, int i2) {
-        try {
-            this.mService.setPasswordMinimumUpperCaseMDM(componentName, i, UserHandle.getUserId(i2));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public int getPasswordMinimumUpperCase(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Integer num = 0;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumUpperCase(componentName, UserHandle.getUserId(i), false));
-            }
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordMinimumUpperCase failed " + e);
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordMinimumUpperCase failed " + e2);
-        }
-        return num.intValue();
-    }
-
-    public void setPasswordMinimumLowerCase(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda27
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordMinimumLowerCase$21(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordMinimumLowerCase$21(ComponentName componentName, int i, int i2) {
-        try {
-            this.mService.setPasswordMinimumLowerCaseMDM(componentName, i, UserHandle.getUserId(i2));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public int getPasswordMinimumLowerCase(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        Integer num = 0;
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumLowerCase(componentName, UserHandle.getUserId(i), false));
-            }
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordMinimumLowerCase failed " + e);
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordMinimumLowerCase failed " + e2);
-        }
-        return num.intValue();
-    }
-
-    public void setPasswordMinimumLetters(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda44
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordMinimumLetters$22(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordMinimumLetters$22(ComponentName componentName, int i, int i2) {
-        try {
-            this.mService.setPasswordMinimumLettersMDM(componentName, i, UserHandle.getUserId(i2));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public int getPasswordMinimumLetters(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Integer num = 0;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumLetters(componentName, UserHandle.getUserId(i), false));
-            }
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordMinimumLetters failed " + e);
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordMinimumLetters failed " + e2);
-        }
-        return num.intValue();
-    }
-
-    public void setPasswordMinimumNumeric(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda35
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordMinimumNumeric$23(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordMinimumNumeric$23(ComponentName componentName, int i, int i2) {
-        try {
-            this.mService.setPasswordMinimumNumericMDM(componentName, i, UserHandle.getUserId(i2));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public int getPasswordMinimumNumeric(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Integer num = 0;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumNumeric(componentName, UserHandle.getUserId(i), false));
-            }
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordMinimumNumeric failed " + e);
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordMinimumNumeric failed " + e2);
-        }
-        return num.intValue();
-    }
-
-    public void setPasswordMinimumSymbols(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda29
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordMinimumSymbols$24(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordMinimumSymbols$24(ComponentName componentName, int i, int i2) {
-        try {
-            this.mService.setPasswordMinimumSymbolsMDM(componentName, i, UserHandle.getUserId(i2));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public int getPasswordMinimumSymbols(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Integer num = 0;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumSymbols(componentName, UserHandle.getUserId(i), false));
-            }
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordMinimumSymbols failed " + e);
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordMinimumSymbols failed " + e2);
-        }
-        return num.intValue();
-    }
-
-    public void setPasswordMinimumNonLetter(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda36
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordMinimumNonLetter$25(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordMinimumNonLetter$25(ComponentName componentName, int i, int i2) {
-        try {
-            this.mService.setPasswordMinimumNonLetterMDM(componentName, i, UserHandle.getUserId(i2));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public int getPasswordMinimumNonLetter(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Integer num = 0;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumNonLetter(componentName, UserHandle.getUserId(i), false));
-            }
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordMinimumNonLetter failed " + e);
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordMinimumNonLetter failed " + e2);
-        }
-        return num.intValue();
-    }
-
-    public void setPasswordHistoryLength(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda30
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordHistoryLength$26(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordHistoryLength$26(ComponentName componentName, int i, int i2) {
-        try {
-            this.mService.setPasswordHistoryLengthMDM(componentName, i, UserHandle.getUserId(i2));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public int getPasswordHistoryLength(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Integer num = 0;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                num = Integer.valueOf(iDevicePolicyManager.getPasswordHistoryLength(componentName, UserHandle.getUserId(i), false));
-            }
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordHistoryLength failed " + e);
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordHistoryLength failed " + e2);
-        }
-        return num.intValue();
-    }
-
-    public void setPasswordExpirationTimeout(ContextInfo contextInfo, final ComponentName componentName, final long j) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda25
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setPasswordExpirationTimeout$27(componentName, j, i);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setPasswordExpirationTimeout$27(ComponentName componentName, long j, int i) {
-        try {
-            this.mService.setPasswordExpirationTimeoutMDM(componentName, j, UserHandle.getUserId(i));
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
-        }
-    }
-
-    public long getPasswordExpirationTimeout(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                return iDevicePolicyManager.getPasswordExpirationTimeout(componentName, UserHandle.getUserId(i), false);
-            }
-            return 0L;
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordExpirationTimeout failed " + e);
-            return 0L;
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordExpirationTimeout failed " + e2);
-            return 0L;
-        }
-    }
-
-    public long getPasswordExpiration(ContextInfo contextInfo, ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Long l = 0L;
-        try {
-            IDevicePolicyManager iDevicePolicyManager = this.mService;
-            if (iDevicePolicyManager != null) {
-                l = Long.valueOf(iDevicePolicyManager.getPasswordExpiration(componentName, UserHandle.getUserId(i), false));
-            }
-        } catch (RemoteException e) {
-            Log.e("PasswordPolicy", "getPasswordExpiration failed " + e);
-        } catch (Exception e2) {
-            Log.e("PasswordPolicy", "getPasswordExpiration failed " + e2);
-        }
-        return l.longValue();
-    }
-
-    public boolean isActivePasswordSufficient(ContextInfo contextInfo) {
-        final int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Boolean bool = Boolean.FALSE;
-        if (this.mService != null) {
-            bool = (Boolean) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda7
-                public final Object getOrThrow() {
-                    Boolean lambda$isActivePasswordSufficient$28;
-                    lambda$isActivePasswordSufficient$28 = PasswordPolicy.this.lambda$isActivePasswordSufficient$28(i);
-                    return lambda$isActivePasswordSufficient$28;
-                }
-            });
-        }
-        return bool.booleanValue();
-    }
-
-    public /* synthetic */ Boolean lambda$isActivePasswordSufficient$28(int i) {
-        return Boolean.valueOf(this.mService.isActivePasswordSufficient((String) null, UserHandle.getUserId(i), false));
-    }
-
-    public int getCurrentFailedPasswordAttempts(ContextInfo contextInfo) {
-        Integer num = -1;
-        final int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            num = (Integer) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda26
-                public final Object getOrThrow() {
-                    Integer lambda$getCurrentFailedPasswordAttempts$29;
-                    lambda$getCurrentFailedPasswordAttempts$29 = PasswordPolicy.this.lambda$getCurrentFailedPasswordAttempts$29(i);
-                    return lambda$getCurrentFailedPasswordAttempts$29;
-                }
-            });
-        }
-        return num.intValue();
-    }
-
-    public /* synthetic */ Integer lambda$getCurrentFailedPasswordAttempts$29(int i) {
-        return Integer.valueOf(this.mService.getCurrentFailedPasswordAttempts((String) null, UserHandle.getUserId(i), false));
-    }
-
-    public int getCurrentFailedPasswordAttemptsInternal(ContextInfo contextInfo) {
-        Integer num = -1;
-        final int i = enforceOnlySecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            num = (Integer) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda6
-                public final Object getOrThrow() {
-                    Integer lambda$getCurrentFailedPasswordAttemptsInternal$30;
-                    lambda$getCurrentFailedPasswordAttemptsInternal$30 = PasswordPolicy.this.lambda$getCurrentFailedPasswordAttemptsInternal$30(i);
-                    return lambda$getCurrentFailedPasswordAttemptsInternal$30;
-                }
-            });
-        }
-        return num.intValue();
-    }
-
-    public /* synthetic */ Integer lambda$getCurrentFailedPasswordAttemptsInternal$30(int i) {
-        return Integer.valueOf(this.mService.getCurrentFailedPasswordAttempts((String) null, UserHandle.getUserId(i), false));
-    }
-
-    public void setMaximumFailedPasswordsForWipe(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i2 = enforceSecurityPermission(contextInfo).mCallerUid;
-        if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda40
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setMaximumFailedPasswordsForWipe$31(componentName, i, i2);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setMaximumFailedPasswordsForWipe$31(ComponentName componentName, int i, int i2) {
-        this.mService.setMaximumFailedPasswordsForWipeMDM(componentName, i, UserHandle.getUserId(i2));
-    }
-
-    public int getMaximumFailedPasswordsForWipe(ContextInfo contextInfo, final ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        final int i = enforceSecurityPermission(contextInfo).mCallerUid;
-        Integer num = 0;
-        if (this.mService != null) {
-            num = (Integer) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda31
-                public final Object getOrThrow() {
-                    Integer lambda$getMaximumFailedPasswordsForWipe$32;
-                    lambda$getMaximumFailedPasswordsForWipe$32 = PasswordPolicy.this.lambda$getMaximumFailedPasswordsForWipe$32(componentName, i);
-                    return lambda$getMaximumFailedPasswordsForWipe$32;
-                }
-            });
-        }
-        return num.intValue();
-    }
-
-    public /* synthetic */ Integer lambda$getMaximumFailedPasswordsForWipe$32(ComponentName componentName, int i) {
-        return Integer.valueOf(this.mService.getMaximumFailedPasswordsForWipe(componentName, UserHandle.getUserId(i), false));
-    }
-
-    public boolean resetPassword(ContextInfo contextInfo, String str, int i) {
-        throw new SecurityException("resetPassword is deprecated, use resetPasswordWithToken()");
-    }
-
-    public boolean resetPasswordWithToken(ContextInfo contextInfo, final ComponentName componentName, final String str, final byte[] bArr, final int i) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        Boolean bool = Boolean.FALSE;
-        if (this.mService != null) {
-            final int i2 = enforceSecurityPermission.mCallerUid;
-            bool = (Boolean) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda17
-                public final Object getOrThrow() {
-                    Boolean lambda$resetPasswordWithToken$33;
-                    lambda$resetPasswordWithToken$33 = PasswordPolicy.this.lambda$resetPasswordWithToken$33(i2, componentName, str, bArr, i);
-                    return lambda$resetPasswordWithToken$33;
-                }
-            });
-        }
-        return bool.booleanValue();
-    }
-
-    public /* synthetic */ Boolean lambda$resetPasswordWithToken$33(int i, ComponentName componentName, String str, byte[] bArr, int i2) {
-        int userId = UserHandle.getUserId(i);
-        if (new LockPatternUtils(this.mContext).getActivePasswordQuality(userId) == 458752) {
-            Log.d("PasswordPolicy", "resetPassword declined because Lock Quality set to Smartcard for user = " + userId);
-            return Boolean.FALSE;
-        }
-        return Boolean.valueOf(this.mService.resetPasswordWithTokenMDM(componentName, str, bArr, i2, userId));
-    }
-
-    public boolean setResetPasswordToken(ContextInfo contextInfo, final ComponentName componentName, final byte[] bArr) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        Boolean bool = Boolean.FALSE;
-        if (this.mService != null) {
-            final int i = enforceSecurityPermission.mCallerUid;
-            bool = (Boolean) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda14
-                public final Object getOrThrow() {
-                    Boolean lambda$setResetPasswordToken$34;
-                    lambda$setResetPasswordToken$34 = PasswordPolicy.this.lambda$setResetPasswordToken$34(i, componentName, bArr);
-                    return lambda$setResetPasswordToken$34;
-                }
-            });
-        }
-        return bool.booleanValue();
-    }
-
-    public /* synthetic */ Boolean lambda$setResetPasswordToken$34(int i, ComponentName componentName, byte[] bArr) {
-        return Boolean.valueOf(this.mService.setResetPasswordTokenMDM(componentName, bArr, UserHandle.getUserId(i)));
-    }
-
-    public boolean clearResetPasswordToken(ContextInfo contextInfo, final ComponentName componentName) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        Boolean bool = Boolean.FALSE;
-        if (this.mService != null) {
-            final int i = enforceSecurityPermission.mCallerUid;
-            bool = (Boolean) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda10
-                public final Object getOrThrow() {
-                    Boolean lambda$clearResetPasswordToken$35;
-                    lambda$clearResetPasswordToken$35 = PasswordPolicy.this.lambda$clearResetPasswordToken$35(i, componentName);
-                    return lambda$clearResetPasswordToken$35;
-                }
-            });
-        }
-        return bool.booleanValue();
-    }
-
-    public /* synthetic */ Boolean lambda$clearResetPasswordToken$35(int i, ComponentName componentName) {
-        return Boolean.valueOf(this.mService.clearResetPasswordTokenMDM(componentName, UserHandle.getUserId(i)));
-    }
-
-    public boolean isResetPasswordTokenActive(ContextInfo contextInfo, final ComponentName componentName) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        Boolean bool = Boolean.FALSE;
-        if (this.mService != null) {
-            final int i = enforceSecurityPermission.mCallerUid;
-            bool = (Boolean) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda32
-                public final Object getOrThrow() {
-                    Boolean lambda$isResetPasswordTokenActive$36;
-                    lambda$isResetPasswordTokenActive$36 = PasswordPolicy.this.lambda$isResetPasswordTokenActive$36(i, componentName);
-                    return lambda$isResetPasswordTokenActive$36;
-                }
-            });
-        }
-        return bool.booleanValue();
-    }
-
-    public /* synthetic */ Boolean lambda$isResetPasswordTokenActive$36(int i, ComponentName componentName) {
-        return Boolean.valueOf(this.mService.isResetPasswordTokenActiveMDM(componentName, UserHandle.getUserId(i)));
-    }
-
-    public void setMaximumTimeToLock(ContextInfo contextInfo, final ComponentName componentName, final long j) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (this.mService != null) {
-            final int i = enforceSecurityPermission.mCallerUid;
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda33
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setMaximumTimeToLock$37(componentName, j, i);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$setMaximumTimeToLock$37(ComponentName componentName, long j, int i) {
-        this.mService.setMaximumTimeToLockMDM(componentName, j, UserHandle.getUserId(i));
-    }
-
-    public long getMaximumTimeToLock(ContextInfo contextInfo, final ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        Long l = 0L;
-        if (this.mService != null) {
-            final int i = enforceSecurityPermission.mCallerUid;
-            l = (Long) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda23
-                public final Object getOrThrow() {
-                    Long lambda$getMaximumTimeToLock$38;
-                    lambda$getMaximumTimeToLock$38 = PasswordPolicy.this.lambda$getMaximumTimeToLock$38(componentName, i);
-                    return lambda$getMaximumTimeToLock$38;
-                }
-            });
-        }
-        return l.longValue();
-    }
-
-    public /* synthetic */ Long lambda$getMaximumTimeToLock$38(ComponentName componentName, int i) {
-        return Long.valueOf(this.mService.getMaximumTimeToLock(componentName, UserHandle.getUserId(i), false));
-    }
-
-    public final void removeBiometricAuthentication(final int i, final int i2) {
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda0
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$removeBiometricAuthentication$39(i, i2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$removeBiometricAuthentication$39(int i, int i2) {
-        LockPatternUtils lockPatternUtils = new LockPatternUtils(this.mContext);
-        Log.d("PasswordPolicy", "removeBiometricAuthentication()");
-        if ((i & 1) != 0) {
-            setBiometricState(i2, lockPatternUtils, 1, 0);
-        }
-        if ((i & 4) != 0) {
-            setBiometricState(i2, lockPatternUtils, 256, 0);
-        }
-    }
-
-    public final void setBiometricState(int i, LockPatternUtils lockPatternUtils, int i2, int i3) {
-        lockPatternUtils.setBiometricState(i2, i3, i);
-    }
-
-    public boolean setBiometricAuthenticationEnabled(ContextInfo contextInfo, int i, boolean z) {
-        int i2;
-        long binderClearCallingIdentity;
-        int i3;
-        if (i < 0) {
-            return false;
-        }
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission);
-        int i4 = IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
-        try {
-            i2 = this.mEdmStorageProvider.getInt(enforceSecurityPermission.mCallerUid, "PASSWORD", "passwordBioAuthEnabled");
-        } catch (Exception unused) {
-            i2 = 255;
-        }
-        if (i2 >= 0) {
-            i4 = i2;
-        }
-        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission.mCallerUid, "PASSWORD", "passwordBioAuthEnabled", z ? i4 | i : i4 & (~i));
-        if (putInt) {
-            if (!z) {
-                removeBiometricAuthentication(i, callingOrCurrentUserId);
-                binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-                try {
-                    UserManager userManager = (UserManager) this.mContext.getSystemService("user");
-                    if (userManager.getUserInfo(callingOrCurrentUserId).isManagedProfile() && !new LockPatternUtils(this.mContext).isSeparateProfileChallengeEnabled(callingOrCurrentUserId)) {
-                        removeBiometricAuthentication(i, userManager.getProfileParent(callingOrCurrentUserId).getUserHandle().getIdentifier());
-                    }
-                    this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-                } finally {
-                    this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-                }
-            }
-            binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-            if ((i & 2) != 0) {
-                try {
-                    i3 = 1;
-                    AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format(z ? "Admin %d has allowed BIOMETRIC_AUTHENTICATION_IRIS" : "Admin %d has disallowed BIOMETRIC_AUTHENTICATION_IRIS", Integer.valueOf(enforceSecurityPermission.mCallerUid)), callingOrCurrentUserId);
-                } catch (Throwable th) {
-                    throw th;
-                }
-            } else {
-                i3 = 1;
-            }
-            if ((i & 1) != 0) {
-                int myPid = Process.myPid();
-                String str = z ? "Admin %d has allowed BIOMETRIC_AUTHENTICATION_FINGERPRINT" : "Admin %d has disallowed BIOMETRIC_AUTHENTICATION_FINGERPRINT";
-                Object[] objArr = new Object[i3];
-                objArr[0] = Integer.valueOf(enforceSecurityPermission.mCallerUid);
-                AuditLog.logAsUser(5, 1, true, myPid, "PasswordPolicy", String.format(str, objArr), callingOrCurrentUserId);
-            }
-            if ((i & 4) != 0) {
-                AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format(z ? "Admin %d has allowed BIOMETRIC_AUTHENTICATION_FACE" : "Admin %d has disallowed BIOMETRIC_AUTHENTICATION_FACE", Integer.valueOf(enforceSecurityPermission.mCallerUid)), callingOrCurrentUserId);
-            }
-        }
-        return putInt;
-    }
-
-    public boolean isMDMDisabledFP(int i) {
-        Iterator it = this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordBioAuthEnabled", i).iterator();
-        boolean z = false;
-        while (it.hasNext()) {
-            Integer num = (Integer) it.next();
-            if (num.intValue() >= 0 && (num.intValue() & 1) != 1) {
-                z = true;
-            }
-        }
-        if (z) {
-            Log.i("PasswordPolicy", "isMDMDisabledFP: disallowed fingerprint.");
-        }
-        return z;
-    }
-
-    public boolean isBiometricAuthenticationEnabled(ContextInfo contextInfo, int i) {
-        return isBiometricAuthenticationEnabledAsUser(Utils.getCallingOrCurrentUserId(contextInfo), i);
-    }
-
-    public boolean isBiometricAuthenticationEnabledAsUser(int i, int i2) {
-        if (!isValidBioAuth(i2)) {
-            Log.w("PasswordPolicy", "isBiometricAuthenticationEnabledAsUser: bioAuth is wrong value : " + i2 + ", userId = " + i);
-            return false;
-        }
-        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordBioAuthEnabled", i);
-        Iterator it = getAllOneLockedChildUsers(i).iterator();
-        while (it.hasNext()) {
-            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordBioAuthEnabled", ((Integer) it.next()).intValue()));
-        }
-        Iterator it2 = intListAsUser.iterator();
-        boolean z = false;
-        while (it2.hasNext()) {
-            Integer num = (Integer) it2.next();
-            if (num.intValue() >= 0) {
-                if ((num.intValue() & i2) != i2) {
-                    Log.i("PasswordPolicy", "isBiometricAuthenticationEnabledAsUser(): disallowed, " + i2 + ", userId = " + i);
-                    return false;
-                }
-                z = true;
-            }
-        }
-        if (z) {
-            Log.d("PasswordPolicy", "isBiometricAuthenticationEnabledAsUser: return true (hasValue) " + i2);
-            return true;
-        }
-        if (i2 == 1 && !this.mPersonaManagerAdapter.isValidKnoxId(i)) {
-            return true;
-        }
-        if (i2 == 2 && !this.mPersonaManagerAdapter.isValidKnoxId(i)) {
-            return true;
-        }
-        if (i2 == 4 && !this.mPersonaManagerAdapter.isValidKnoxId(i)) {
-            Log.d("PasswordPolicy", "isBiometricAuthenticationEnabledAsUser(FACE): return true ");
-            return true;
-        }
-        Log.d("PasswordPolicy", "isBiometricAuthenticationEnabledAsUser(): allowed as default, " + i2 + ", userId = " + i);
-        return true;
-    }
-
-    public final boolean isValidBioAuth(int i) {
-        if (i == 1) {
-            return true;
-        }
-        if (i != 0 && i >= 0) {
-            while (i % 2 == 0) {
-                i /= 2;
-            }
-            if (i == 1) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isPasswordTableExist(ContextInfo contextInfo) {
-        return !this.mEdmStorageProvider.getIntListAsUser("PASSWORD", "passwordBioAuthEnabled", Utils.getCallingOrCurrentUserId(contextInfo)).isEmpty();
-    }
-
-    public Map getSupportedBiometricAuthentications(ContextInfo contextInfo) {
-        PackageManager packageManager = this.mContext.getPackageManager();
-        HashMap hashMap = new HashMap();
-        if (packageManager != null && packageManager.hasSystemFeature("android.hardware.fingerprint")) {
-            hashMap.put(1, "Fingerprint");
-        }
-        hashMap.put(4, "Face");
-        return hashMap;
-    }
-
-    public void setKeyguardDisabledFeatures(ContextInfo contextInfo, final ComponentName componentName, final int i) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        if (i == 0 || i == 16) {
-            if (this.mService != null) {
-                final int i2 = enforceSecurityPermission.mCallerUid;
-                this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda24
-                    public final void runOrThrow() {
-                        PasswordPolicy.this.lambda$setKeyguardDisabledFeatures$40(componentName, i, i2);
-                    }
-                });
-                return;
-            }
-            return;
-        }
-        throw new IllegalArgumentException("Invalid features " + i + " for container");
-    }
-
-    public /* synthetic */ void lambda$setKeyguardDisabledFeatures$40(ComponentName componentName, int i, int i2) {
-        this.mService.setKeyguardDisabledFeaturesMDM(componentName, i, UserHandle.getUserId(i2));
-    }
-
-    public int getKeyguardDisabledFeatures(ContextInfo contextInfo, final ComponentName componentName) {
-        getEDM().enforceComponentCheck(contextInfo, componentName);
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
-        Integer num = 0;
-        if (this.mService != null) {
-            final int i = enforceSecurityPermission.mCallerUid;
-            num = (Integer) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda19
-                public final Object getOrThrow() {
-                    Integer lambda$getKeyguardDisabledFeatures$41;
-                    lambda$getKeyguardDisabledFeatures$41 = PasswordPolicy.this.lambda$getKeyguardDisabledFeatures$41(componentName, i);
-                    return lambda$getKeyguardDisabledFeatures$41;
-                }
-            });
-        }
-        return num.intValue();
-    }
-
-    public /* synthetic */ Integer lambda$getKeyguardDisabledFeatures$41(ComponentName componentName, int i) {
-        return Integer.valueOf(this.mService.getKeyguardDisabledFeatures(componentName, UserHandle.getUserId(i), false));
-    }
-
-    public int getKeyguardDisabledFeaturesInternal(ComponentName componentName, int i) {
-        int i2;
-        try {
-            i2 = Integer.parseInt(this.mEdmStorageProvider.getGenericValueAsUser("keyguardDisabledFeatures", i));
-        } catch (Exception e) {
-            Log.w("PasswordPolicy", "getKeyguardDisabledFeatures() failed");
-            e.printStackTrace();
-            i2 = 0;
-        }
-        Log.d("PasswordPolicy", "getKeyguardDisabledFeatures() " + i2);
-        return i2;
-    }
-
-    public void setKeyguardDisabledFeaturesInternal(ComponentName componentName, int i, int i2) {
-        enforceSystemUser();
-        if (i != 0 && (i & 16) == 0) {
-            Log.w("PasswordPolicy", "setKeyguardDisabledFeatures() which not supported " + i);
-            return;
-        }
-        try {
-            if (this.mEdmStorageProvider.putGenericValueAsUser("keyguardDisabledFeatures", String.valueOf(1), i2)) {
-                Log.d("PasswordPolicy", "setKeyguardDisabledFeatures() true");
-            } else {
-                Log.d("PasswordPolicy", "setKeyguardDisabledFeatures() false");
-            }
-        } catch (Exception e) {
-            Log.w("PasswordPolicy", "setKeyguardDisabledFeatures() failed");
-            e.printStackTrace();
-        }
-    }
-
-    public void reboot(ContextInfo contextInfo, String str) {
-        boolean z;
-        Log.i("PasswordPolicy", "reboot() called, userId = " + Utils.getCallingOrCurrentUserId(enforceSecurityPermission(contextInfo)));
-        try {
-            z = this.mService.rebootMDM(str);
-        } catch (Exception e) {
-            Log.e("PasswordPolicy", "reboot() has failed. ", e);
-            z = false;
-        }
-        if (z) {
-            RestrictionToastManager.show(R.string.bugreport_option_full_title);
-        }
-    }
-
-    public final void updateSystemUIMonitor(int i) {
-        if (new LockPatternUtils(this.mContext).isSeparateProfileChallengeEnabled(i)) {
-            i = ((UserManager) this.mContext.getSystemService("user")).getProfileParent(i).getUserHandle().getIdentifier();
-        }
-        setPasswordLockDelaySystemUI(i, getPasswordLockDelay(i));
-        setPwdChangeRequestedSystemUI(i, isChangeRequestedAsUser(i));
-        initMaximumFailedPasswordsForDisableSystemUI(i);
-        excludeExternalStorageForFailedPasswordsWipeSystemUI(i, isExternalStorageForFailedPasswordsWipeExcluded(i));
-        setMultifactorAuthenticationEnabledSystemUI(i, isMultifactorAuthenticationEnabled(i));
-        setPasswordVisibilityEnabledSystemUI(i, isPasswordVisibilityEnabledAsUser(i));
-        int superLockState = getSuperLockState(i);
-        setAdminLockEnabledSystemUI(i, (superLockState & 1) != 0, (superLockState & 2) != 0);
-    }
-
-    public final void initMaximumFailedPasswordsForDisableSystemUI(int i) {
-        setMaximumFailedPasswordsForDisableSystemUI(i, getMaximumFailedPasswordsForDisable(i));
-        String str = SystemProperties.get("ro.organization_owned");
-        if (str == null || !str.equals("false")) {
-            return;
-        }
-        for (Integer num : getAllOneLockedChildUsers(i)) {
-            setMaximumFailedPasswordsForDisableSystemUI(num.intValue(), getMaximumFailedPasswordsForDisable(num.intValue()));
-        }
-    }
-
-    public final void setPasswordLockDelaySystemUI(final int i, final int i2) {
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda1
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$setPasswordLockDelaySystemUI$42(i, i2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$setPasswordLockDelaySystemUI$42(int i, int i2) {
-        SystemUIAdapter.getInstance(this.mContext).setPasswordLockDelayAsUser(i, i2);
-    }
-
-    public final void setPwdChangeRequestedSystemUI(final int i, final int i2) {
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda3
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$setPwdChangeRequestedSystemUI$43(i, i2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$setPwdChangeRequestedSystemUI$43(int i, int i2) {
-        SystemUIAdapter.getInstance(this.mContext).setPwdChangeRequestedAsUser(i, i2);
-    }
-
-    public final void setMaximumFailedPasswordsForDisableSystemUI(final int i, final int i2) {
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda12
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$setMaximumFailedPasswordsForDisableSystemUI$44(i2, i);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$setMaximumFailedPasswordsForDisableSystemUI$44(int i, int i2) {
-        SystemUIAdapter systemUIAdapter = SystemUIAdapter.getInstance(this.mContext);
-        if (i > 0) {
-            systemUIAdapter.setMaximumFailedPasswordsForDisableAsUser(i2, i, getPkgNameforMaximumFailedAttemptforDisable(i));
-        } else {
-            systemUIAdapter.setMaximumFailedPasswordsForDisableAsUser(i2, i, null);
-        }
-    }
-
-    public final void excludeExternalStorageForFailedPasswordsWipeSystemUI(final int i, final boolean z) {
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda38
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$excludeExternalStorageForFailedPasswordsWipeSystemUI$45(i, z);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$excludeExternalStorageForFailedPasswordsWipeSystemUI$45(int i, boolean z) {
-        SystemUIAdapter.getInstance(this.mContext).excludeExternalStorageForFailedPasswordsWipeAsUser(i, z);
-    }
-
-    public final void setMultifactorAuthenticationEnabledSystemUI(final int i, final boolean z) {
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda45
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$setMultifactorAuthenticationEnabledSystemUI$46(i, z);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$setMultifactorAuthenticationEnabledSystemUI$46(int i, boolean z) {
-        SystemUIAdapter.getInstance(this.mContext).setMultifactorAuthEnabled(i, z);
-    }
-
-    public final void setPasswordVisibilityEnabledSystemUI(final int i, final boolean z) {
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda49
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$setPasswordVisibilityEnabledSystemUI$47(i, z);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$setPasswordVisibilityEnabledSystemUI$47(int i, boolean z) {
-        SystemUIAdapter.getInstance(this.mContext).setPasswordVisibilityEnabledAsUser(i, z);
-    }
-
-    public final void setAdminLockEnabledSystemUI(final int i, final boolean z, final boolean z2) {
-        if (!z2 || isDualDarLicenseLockedCase(i)) {
-            if (getPersonaManagerAdapter().isKnoxId(i)) {
-                Log.d("PasswordPolicy", "return : this is Knox user");
-                return;
-            }
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda11
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setAdminLockEnabledSystemUI$48(i, z, z2);
-                }
-            });
-            if (z2) {
-                try {
-                    if (this.mUserManager.isUserUnlocked()) {
-                        Log.d("PasswordPolicy", "validateLicenses() called");
-                        this.mLicenseService.validateLicenses();
-                    }
-                } catch (Exception e) {
-                    Log.e("PasswordPolicy", "validateLicenses() failed. ", e);
-                }
-            }
-        }
-    }
-
-    public /* synthetic */ void lambda$setAdminLockEnabledSystemUI$48(int i, boolean z, boolean z2) {
-        SystemUIAdapter.getInstance(this.mContext).setAdminLockEnabled(i, z, z2);
-    }
-
-    public final IPersonaManagerAdapter getPersonaManagerAdapter() {
-        return (IPersonaManagerAdapter) AdapterRegistry.getAdapter(IPersonaManagerAdapter.class);
-    }
-
-    public final boolean isDualDarLicenseLockedCase(int i) {
-        if (getPersonaManagerAdapter().isDoEnabled(i) && getPersonaManagerAdapter().isDarDualEncryptionEnabled(i)) {
-            return true;
-        }
-        if (!this.mDpm.isOrganizationOwnedDeviceWithManagedProfile()) {
-            return false;
-        }
-        Iterator it = this.mUserManager.getProfiles(i).iterator();
-        while (it.hasNext()) {
-            int identifier = ((UserInfo) it.next()).getUserHandle().getIdentifier();
-            if (getPersonaManagerAdapter().isKnoxId(identifier) && getPersonaManagerAdapter().isDarDualEncryptionEnabled(identifier)) {
-                try {
-                    if (this.mService.isProfileOwnerOfOrganizationOwnedDeviceMDM(identifier)) {
-                        return true;
-                    }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean addRequiredPasswordPattern(ContextInfo contextInfo, String str) {
-        ContextInfo enforceSecurityPermission = enforceSecurityPermission(contextInfo);
+    public final boolean addRequiredPasswordPattern(ContextInfo contextInfo, String str) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
         if (str == null || str.length() == 0) {
             return false;
         }
-        String string = this.mEdmStorageProvider.getString(enforceSecurityPermission.mCallerUid, enforceSecurityPermission.mContainerId, "PASSWORD", "passwordRequiredPattern");
+        String string = this.mEdmStorageProvider.getString(enforceSecurityPermission$1.mCallerUid, enforceSecurityPermission$1.mContainerId, "PASSWORD", "passwordRequiredPattern");
         if (string != null) {
-            str = string + "|" + str;
+            str = AnyMotionDetector$$ExternalSyntheticOutline0.m(string, "|", str);
         }
-        return this.mEdmStorageProvider.putString(enforceSecurityPermission.mCallerUid, enforceSecurityPermission.mContainerId, "PASSWORD", "passwordRequiredPattern", str);
+        return this.mEdmStorageProvider.putString(enforceSecurityPermission$1.mCallerUid, enforceSecurityPermission$1.mContainerId, "PASSWORD", "passwordRequiredPattern", str);
+    }
+
+    public final void changePasswordAsUser(int i) {
+        if (i != 0) {
+            changePasswordAsUserInternal(i);
+            return;
+        }
+        if (Utils.isDexActivated(this.mContext)) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda51 passwordPolicy$$ExternalSyntheticLambda51 = new PasswordPolicy$$ExternalSyntheticLambda51(1, this);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda51);
+            Log.d("PasswordPolicy", "show pw change window after dex is disabled");
+        } else {
+            changePasswordAsUserInternal(i);
+            Injector injector2 = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda51 passwordPolicy$$ExternalSyntheticLambda512 = new PasswordPolicy$$ExternalSyntheticLambda51(1, this);
+            injector2.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda512);
+            Log.d("PasswordPolicy", "show pw change window immediately");
+        }
+        setHomeAndRecentKey(1);
+    }
+
+    public final void changePasswordAsUserInternal(int i) {
+        try {
+            if (isPersona(i)) {
+                postPwdResetEventToPersona(i);
+                return;
+            }
+            if (ActivityManager.getCurrentUser() == i) {
+                UserHandle userHandle = new UserHandle(i);
+                if (hasPassword(i)) {
+                    this.mContext.sendBroadcastAsUser(new Intent("com.samsung.android.knox.intent.action.DO_KEYGUARD_INTERNAL"), userHandle);
+                    return;
+                }
+                Intent intent = new Intent();
+                intent.setClassName(KnoxCustomManagerService.SETTING_PKG_NAME, "com.android.settings.password.ChooseLockGeneric");
+                intent.addFlags(268435456);
+                intent.addFlags(4194304);
+                intent.addFlags(8388608);
+                intent.putExtra("lockscreen.password_isenforced", true);
+                this.mContext.startActivityAsUser(intent, userHandle);
+            }
+        } catch (Exception e) {
+            Log.e("PasswordPolicy", "handled expected Exception in changePasswordAsUser().", e);
+        }
+    }
+
+    public final void checkPackageCallerOrEnforceSystemUser() {
+        String nameForUid = this.mContext.getPackageManager().getNameForUid(Binder.getCallingUid());
+        if ((nameForUid == null || !nameForUid.equals("android.uid.system:1000")) && !((ArrayList) this.mCallersWhitelist).contains(nameForUid)) {
+            int callingUid = Binder.getCallingUid();
+            if (UserHandle.getAppId(callingUid) != 5250 && UserHandle.getAppId(callingUid) != Process.myUid()) {
+                throw new SecurityException("Can only be called by system user");
+            }
+        }
+    }
+
+    public final boolean clearResetPasswordToken(ContextInfo contextInfo, ComponentName componentName) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        Boolean bool = Boolean.FALSE;
+        if (this.mService != null) {
+            int i = enforceSecurityPermission$1.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda9 passwordPolicy$$ExternalSyntheticLambda9 = new PasswordPolicy$$ExternalSyntheticLambda9(this, i, componentName, 4);
+            injector.getClass();
+            bool = (Boolean) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda9);
+        }
+        return bool.booleanValue();
+    }
+
+    public final boolean deleteAllRestrictions(ContextInfo contextInfo) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        if (this.mEdmStorageProvider.getString(enforceSecurityPermission$1.mCallerUid, enforceSecurityPermission$1.mContainerId, "PASSWORD", "passwordRequiredPattern") == null) {
+            return true;
+        }
+        boolean putString = this.mEdmStorageProvider.putString(enforceSecurityPermission$1.mCallerUid, enforceSecurityPermission$1.mContainerId, "PASSWORD", "passwordRequiredPattern", null);
+        if (!putString) {
+            return putString;
+        }
+        if (getCurrentPasswordOwner(enforceSecurityPermission$1) == enforceSecurityPermission$1.mCallerUid) {
+            ChooseNewPasswordOwner(enforceSecurityPermission$1);
+            return putString;
+        }
+        removeOwnerFromStack(enforceSecurityPermission$1);
+        return putString;
+    }
+
+    public final ContextInfo enforceDoPoOnlySecurityPermissionByContext(ContextInfo contextInfo) {
+        return getEDM$28().enforceDoPoOnlyPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_ADVANCED_SECURITY")));
+    }
+
+    public final boolean enforcePwdChange(ContextInfo contextInfo) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+        Injector injector = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda2 passwordPolicy$$ExternalSyntheticLambda2 = new PasswordPolicy$$ExternalSyntheticLambda2(this, callingOrCurrentUserId, 2);
+        injector.getClass();
+        if (((Integer) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda2)).intValue() != 458752) {
+            return enforcePwdChangeForUser(enforceSecurityPermission$1.mContainerId, callingOrCurrentUserId);
+        }
+        NetworkScorerAppManager$$ExternalSyntheticOutline0.m(callingOrCurrentUserId, "enforcePwdChange declined because Lock Quality set to Smartcard for user = ", "PasswordPolicy");
+        return false;
+    }
+
+    public final boolean enforcePwdChangeForUser(int i, int i2) {
+        boolean z;
+        SDPLog.d(null, String.format("Enforce password change policy applied for user %d by %d", Integer.valueOf(i), Integer.valueOf(i2)));
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            z = true;
+        } catch (Exception e) {
+            OomAdjuster$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception during password enforcement: "), "PasswordPolicy");
+            z = false;
+        }
+        if (isPersona(i2)) {
+            setPwdChangeRequestedForUser(1, i2);
+            postPwdResetEventToPersona(i2);
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return true;
+        }
+        setPwdChangeRequestedForUser(1, i2);
+        ((PersonaManagerAdapter) this.mPersonaManagerAdapter).getPersonaManager().postPwdChangeNotificationForDeviceOwner(i2);
+        boolean hasPassword = hasPassword(i2);
+        int currentUser = ActivityManager.getCurrentUser();
+        if (hasPassword) {
+            if (this.mTelManager.getCallState() != 0 && i2 == currentUser) {
+                setPwdChangeRequestedForUser(-2, i2);
+            }
+            changePasswordAsUser(i2);
+        } else {
+            setPwdChangeRequestedForUser(3, i2);
+            if (this.mTelManager.getCallState() != 0 && i2 == currentUser) {
+                setPwdChangeRequestedForUser(-4, i2);
+            }
+            changePasswordAsUser(i2);
+        }
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return z;
+    }
+
+    public final ContextInfo enforceSecurityPermission$1(ContextInfo contextInfo) {
+        return getEDM$28().enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_SECURITY")));
+    }
+
+    public final boolean excludeExternalStorageForFailedPasswordsWipe(ContextInfo contextInfo, boolean z) {
+        ContextInfo enforceOwnerOnlyAndActiveAdminPermission = getEDM$28().enforceOwnerOnlyAndActiveAdminPermission(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_SECURITY")));
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceOwnerOnlyAndActiveAdminPermission);
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("PASSWORD", enforceOwnerOnlyAndActiveAdminPermission.mCallerUid, z, 0, "excludeExternalStorageWipe");
+        if (putBoolean) {
+            boolean isExternalStorageForFailedPasswordsWipeExcluded = isExternalStorageForFailedPasswordsWipeExcluded(enforceOwnerOnlyAndActiveAdminPermission);
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda7 passwordPolicy$$ExternalSyntheticLambda7 = new PasswordPolicy$$ExternalSyntheticLambda7(this, callingOrCurrentUserId, isExternalStorageForFailedPasswordsWipeExcluded, 4);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda7);
+        }
+        return putBoolean;
     }
 
     public final List getAllOneLockedChildUsers(int i) {
+        Injector injector;
         UserManager userManager;
         ArrayList arrayList = new ArrayList();
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        Log.d("PasswordPolicy", "userHandle " + i);
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "userHandle ", "PasswordPolicy");
         try {
             try {
                 userManager = (UserManager) this.mContext.getSystemService("user");
             } catch (Exception e) {
                 Log.e("PasswordPolicy", "getAllOneLockedChildUsers() failed. ", e);
+                injector = this.mInjector;
             }
             if (userManager.getUserInfo(i).isManagedProfile()) {
                 Log.d("PasswordPolicy", "getAllOneLockedChildUsers - isManagedProfile() true return empty locked users");
@@ -2855,197 +721,2005 @@ public class PasswordPolicy extends IPasswordPolicy.Stub implements EnterpriseSe
                     }
                 }
             }
+            injector = this.mInjector;
+            injector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
             return arrayList;
         } finally {
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public void notifyPasswordPolicyOneLockChanged(boolean z, final int i) {
-        updateSystemUIMonitor(i);
-        if (z) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda28
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$notifyPasswordPolicyOneLockChanged$49(i);
+    public final int getCurrentFailedPasswordAttempts(ContextInfo contextInfo) {
+        Integer num = -1;
+        int i = enforceSecurityPermission$1(contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda2 passwordPolicy$$ExternalSyntheticLambda2 = new PasswordPolicy$$ExternalSyntheticLambda2(this, i, 0);
+            injector.getClass();
+            num = (Integer) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda2);
+        }
+        return num.intValue();
+    }
+
+    public final int getCurrentFailedPasswordAttemptsInternal(ContextInfo contextInfo) {
+        Integer num = -1;
+        int i = getEDM$28().enforcePermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_SECURITY"))).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda2 passwordPolicy$$ExternalSyntheticLambda2 = new PasswordPolicy$$ExternalSyntheticLambda2(this, i, 4);
+            injector.getClass();
+            num = (Integer) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda2);
+        }
+        return num.intValue();
+    }
+
+    public final int getCurrentPasswordOwner(ContextInfo contextInfo) {
+        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser(Utils.getCallingOrCurrentUserId(contextInfo), "passwordPatternOwner");
+        if (genericValueAsUser == null) {
+            return -1;
+        }
+        int parseInt = Integer.parseInt(genericValueAsUser);
+        Iterator it = this.mEdmStorageProvider.getAdminUidList().iterator();
+        while (it.hasNext()) {
+            if (((Integer) it.next()).intValue() == parseInt) {
+                return parseInt;
+            }
+        }
+        return ChooseNewPasswordOwner(contextInfo);
+    }
+
+    public final EnterpriseDeviceManager getEDM$28() {
+        if (this.mEDM == null) {
+            this.mEDM = EnterpriseDeviceManager.getInstance(this.mInjector.mContext);
+        }
+        return this.mEDM;
+    }
+
+    public final List getForbiddenStrings(ContextInfo contextInfo, boolean z) {
+        String nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
+        if (nameForUid == null || !nameForUid.equals("android.uid.system:1000")) {
+            contextInfo = enforceSecurityPermission$1(contextInfo);
+        }
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        if (!z) {
+            String string = this.mEdmStorageProvider.getString(contextInfo.mCallerUid, 0, "PASSWORD", "passwordForbiddenStrings");
+            if (string != null) {
+                return new ArrayList(Arrays.asList(string.split(" ")));
+            }
+            return null;
+        }
+        List stringListAsUser = this.mEdmStorageProvider.getStringListAsUser(callingOrCurrentUserId, "PASSWORD", "passwordForbiddenStrings");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(callingOrCurrentUserId)).iterator();
+        while (it.hasNext()) {
+            ((ArrayList) stringListAsUser).addAll(this.mEdmStorageProvider.getStringListAsUser(((Integer) it.next()).intValue(), "PASSWORD", "passwordForbiddenStrings"));
+        }
+        ArrayList arrayList = (ArrayList) stringListAsUser;
+        if (arrayList.size() <= 0) {
+            return null;
+        }
+        ArrayList arrayList2 = new ArrayList();
+        Iterator it2 = arrayList.iterator();
+        while (it2.hasNext()) {
+            arrayList2.addAll(new ArrayList(Arrays.asList(((String) it2.next()).split(" "))));
+        }
+        return arrayList2;
+    }
+
+    public final int getKeyguardDisabledFeatures(ContextInfo contextInfo, ComponentName componentName) {
+        ContextInfo m = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo);
+        Integer num = 0;
+        if (this.mService != null) {
+            int i = m.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda9 passwordPolicy$$ExternalSyntheticLambda9 = new PasswordPolicy$$ExternalSyntheticLambda9(this, componentName, i, 5);
+            injector.getClass();
+            num = (Integer) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda9);
+        }
+        return num.intValue();
+    }
+
+    public final int getKeyguardDisabledFeaturesInternal(ComponentName componentName, int i) {
+        int i2;
+        try {
+            i2 = Integer.parseInt(this.mEdmStorageProvider.getGenericValueAsUser(i, "keyguardDisabledFeatures"));
+        } catch (Exception e) {
+            Log.w("PasswordPolicy", "getKeyguardDisabledFeatures() failed");
+            e.printStackTrace();
+            i2 = 0;
+        }
+        NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i2, "getKeyguardDisabledFeatures() ", "PasswordPolicy");
+        return i2;
+    }
+
+    public final int getMaximumCharacterOccurences(ContextInfo contextInfo) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        int i = 0;
+        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(0, callingOrCurrentUserId, "PASSWORD", "passwordMaximumCharacterOccurences");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(callingOrCurrentUserId)).iterator();
+        while (it.hasNext()) {
+            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(0, ((Integer) it.next()).intValue(), "PASSWORD", "passwordMaximumCharacterOccurences"));
+        }
+        Iterator it2 = intListAsUser.iterator();
+        while (it2.hasNext()) {
+            int intValue = ((Integer) it2.next()).intValue();
+            if (i == 0 || (intValue != 0 && i > intValue)) {
+                i = intValue;
+            }
+        }
+        return i;
+    }
+
+    public final int getMaximumCharacterSequenceLength(ContextInfo contextInfo) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, callingOrCurrentUserId, "PASSWORD", "passwordMaximumCharacterSequenceLength");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(callingOrCurrentUserId)).iterator();
+        while (it.hasNext()) {
+            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, ((Integer) it.next()).intValue(), "PASSWORD", "passwordMaximumCharacterSequenceLength"));
+        }
+        Iterator it2 = intListAsUser.iterator();
+        int i = 0;
+        while (it2.hasNext()) {
+            int intValue = ((Integer) it2.next()).intValue();
+            if (i == 0 || (intValue != 0 && i > intValue)) {
+                i = intValue;
+            }
+        }
+        return i;
+    }
+
+    public final int getMaximumFailedPasswordsForDisable(int i) {
+        int i2 = 0;
+        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(0, i, "PASSWORD", "passwordAttemptDeviceDisable");
+        String str = SystemProperties.get("ro.organization_owned");
+        if (str != null && str.equals("true")) {
+            Iterator it = ((ArrayList) getAllOneLockedChildUsers(i)).iterator();
+            while (it.hasNext()) {
+                intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(0, ((Integer) it.next()).intValue(), "PASSWORD", "passwordAttemptDeviceDisable"));
+            }
+        }
+        Iterator it2 = intListAsUser.iterator();
+        while (it2.hasNext()) {
+            int intValue = ((Integer) it2.next()).intValue();
+            if (i2 == 0 || (intValue != 0 && i2 > intValue)) {
+                i2 = intValue;
+            }
+        }
+        return i2;
+    }
+
+    public final int getMaximumFailedPasswordsForDisable(ContextInfo contextInfo) {
+        return getMaximumFailedPasswordsForDisable(Utils.getCallingOrCurrentUserId(contextInfo));
+    }
+
+    public final int getMaximumFailedPasswordsForWipe(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Integer num = 0;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda9 passwordPolicy$$ExternalSyntheticLambda9 = new PasswordPolicy$$ExternalSyntheticLambda9(this, componentName, i, 3);
+            injector.getClass();
+            num = (Integer) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda9);
+        }
+        return num.intValue();
+    }
+
+    public final int getMaximumNumericSequenceLength(ContextInfo contextInfo) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        int i = 0;
+        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(0, callingOrCurrentUserId, "PASSWORD", "passwordMaximumNumericSequenceLength");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(callingOrCurrentUserId)).iterator();
+        while (it.hasNext()) {
+            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(0, ((Integer) it.next()).intValue(), "PASSWORD", "passwordMaximumNumericSequenceLength"));
+        }
+        Iterator it2 = intListAsUser.iterator();
+        while (it2.hasNext()) {
+            int intValue = ((Integer) it2.next()).intValue();
+            if (i == 0 || (intValue != 0 && i > intValue)) {
+                i = intValue;
+            }
+        }
+        return i;
+    }
+
+    public final long getMaximumTimeToLock(ContextInfo contextInfo, ComponentName componentName) {
+        ContextInfo m = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo);
+        Long l = 0L;
+        if (this.mService != null) {
+            int i = m.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda9 passwordPolicy$$ExternalSyntheticLambda9 = new PasswordPolicy$$ExternalSyntheticLambda9(this, componentName, i, 0);
+            injector.getClass();
+            l = (Long) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda9);
+        }
+        return l.longValue();
+    }
+
+    public final int getMinimumCharacterChangeLength(ContextInfo contextInfo) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, callingOrCurrentUserId, "PASSWORD", "passwordMinimumCharacterChangeUpdatingPasswordLength");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(callingOrCurrentUserId)).iterator();
+        while (it.hasNext()) {
+            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, ((Integer) it.next()).intValue(), "PASSWORD", "passwordMinimumCharacterChangeUpdatingPasswordLength"));
+        }
+        Iterator it2 = intListAsUser.iterator();
+        int i = 0;
+        while (it2.hasNext()) {
+            int intValue = ((Integer) it2.next()).intValue();
+            if (i == 0 || (intValue != 0 && i < intValue)) {
+                i = intValue;
+            }
+        }
+        return i;
+    }
+
+    public final int getPasswordChangeTimeout(ContextInfo contextInfo) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, callingOrCurrentUserId, "PASSWORD", "passwordChangeTimeout");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(callingOrCurrentUserId)).iterator();
+        while (it.hasNext()) {
+            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(contextInfo.mContainerId, ((Integer) it.next()).intValue(), "PASSWORD", "passwordChangeTimeout"));
+        }
+        Iterator it2 = intListAsUser.iterator();
+        int i = -1;
+        while (it2.hasNext()) {
+            Integer num = (Integer) it2.next();
+            if (num.intValue() >= 0 && (i == -1 || num.intValue() < i)) {
+                i = num.intValue();
+            }
+        }
+        if (i <= 0) {
+            return 0;
+        }
+        return i;
+    }
+
+    public final long getPasswordExpiration(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Long l = 0L;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                l = Long.valueOf(iDevicePolicyManager.getPasswordExpiration(componentName, UserHandle.getUserId(i), false));
+            }
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordExpiration failed ", e, "PasswordPolicy");
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordExpiration failed ", "PasswordPolicy");
+        }
+        return l.longValue();
+    }
+
+    public final long getPasswordExpirationTimeout(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                return iDevicePolicyManager.getPasswordExpirationTimeout(componentName, UserHandle.getUserId(i), false);
+            }
+            return 0L;
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordExpirationTimeout failed ", e, "PasswordPolicy");
+            return 0L;
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordExpirationTimeout failed ", "PasswordPolicy");
+            return 0L;
+        }
+    }
+
+    public final int getPasswordHistoryLength(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Integer num = 0;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                num = Integer.valueOf(iDevicePolicyManager.getPasswordHistoryLength(componentName, UserHandle.getUserId(i), false));
+            }
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordHistoryLength failed ", e, "PasswordPolicy");
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordHistoryLength failed ", "PasswordPolicy");
+        }
+        return num.intValue();
+    }
+
+    public final int getPasswordLockDelay(int i) {
+        ArrayList intListAsUser = this.mEdmStorageProvider.getIntListAsUser(i, 0, "PASSWORD", "unlockDelay");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(i)).iterator();
+        while (it.hasNext()) {
+            intListAsUser.addAll(this.mEdmStorageProvider.getIntListAsUser(((Integer) it.next()).intValue(), 0, "PASSWORD", "unlockDelay"));
+        }
+        Iterator it2 = intListAsUser.iterator();
+        int i2 = -1;
+        while (it2.hasNext()) {
+            Integer num = (Integer) it2.next();
+            if (num.intValue() >= 0 && (i2 == -1 || num.intValue() < i2)) {
+                i2 = num.intValue();
+            }
+        }
+        if (i2 < 0) {
+            return -1;
+        }
+        return i2;
+    }
+
+    public final int getPasswordLockDelay(ContextInfo contextInfo) {
+        return getPasswordLockDelay(contextInfo.mContainerId);
+    }
+
+    public final int getPasswordMinimumLength(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Integer num = 0;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumLength(componentName, UserHandle.getUserId(i), false));
+            }
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordMinimumLength failed ", e, "PasswordPolicy");
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordMinimumLength failed ", "PasswordPolicy");
+        }
+        return num.intValue();
+    }
+
+    public final int getPasswordMinimumLetters(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Integer num = 0;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumLetters(componentName, UserHandle.getUserId(i), false));
+            }
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordMinimumLetters failed ", e, "PasswordPolicy");
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordMinimumLetters failed ", "PasswordPolicy");
+        }
+        return num.intValue();
+    }
+
+    public final int getPasswordMinimumLowerCase(ContextInfo contextInfo, ComponentName componentName) {
+        Integer num = 0;
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumLowerCase(componentName, UserHandle.getUserId(i), false));
+            }
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordMinimumLowerCase failed ", e, "PasswordPolicy");
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordMinimumLowerCase failed ", "PasswordPolicy");
+        }
+        return num.intValue();
+    }
+
+    public final int getPasswordMinimumNonLetter(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Integer num = 0;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumNonLetter(componentName, UserHandle.getUserId(i), false));
+            }
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordMinimumNonLetter failed ", e, "PasswordPolicy");
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordMinimumNonLetter failed ", "PasswordPolicy");
+        }
+        return num.intValue();
+    }
+
+    public final int getPasswordMinimumNumeric(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Integer num = 0;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumNumeric(componentName, UserHandle.getUserId(i), false));
+            }
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordMinimumNumeric failed ", e, "PasswordPolicy");
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordMinimumNumeric failed ", "PasswordPolicy");
+        }
+        return num.intValue();
+    }
+
+    public final int getPasswordMinimumSymbols(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Integer num = 0;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumSymbols(componentName, UserHandle.getUserId(i), false));
+            }
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordMinimumSymbols failed ", e, "PasswordPolicy");
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordMinimumSymbols failed ", "PasswordPolicy");
+        }
+        return num.intValue();
+    }
+
+    public final int getPasswordMinimumUpperCase(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Integer num = 0;
+        try {
+            IDevicePolicyManager iDevicePolicyManager = this.mService;
+            if (iDevicePolicyManager != null) {
+                num = Integer.valueOf(iDevicePolicyManager.getPasswordMinimumUpperCase(componentName, UserHandle.getUserId(i), false));
+            }
+        } catch (RemoteException e) {
+            NetdService$$ExternalSyntheticOutline0.m("getPasswordMinimumUpperCase failed ", e, "PasswordPolicy");
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "getPasswordMinimumUpperCase failed ", "PasswordPolicy");
+        }
+        return num.intValue();
+    }
+
+    public final int getPasswordQuality(ContextInfo contextInfo, ComponentName componentName) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        Integer num = 0;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda9 passwordPolicy$$ExternalSyntheticLambda9 = new PasswordPolicy$$ExternalSyntheticLambda9(this, componentName, i, 1);
+            injector.getClass();
+            num = (Integer) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda9);
+        }
+        return num.intValue();
+    }
+
+    public final String getRequiredPwdPatternRestrictions(ContextInfo contextInfo, boolean z) {
+        String nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
+        if (nameForUid == null || !nameForUid.equals("android.uid.system:1000")) {
+            contextInfo = enforceSecurityPermission$1(contextInfo);
+        }
+        List allOneLockedChildUsers = getAllOneLockedChildUsers(Utils.getCallingOrCurrentUserId(contextInfo));
+        ArrayList arrayList = new ArrayList();
+        ArrayList arrayList2 = (ArrayList) allOneLockedChildUsers;
+        Iterator it = arrayList2.iterator();
+        while (it.hasNext()) {
+            arrayList.addAll(this.mEdmStorageProvider.getStringListAsUser(((Integer) it.next()).intValue(), "PASSWORD", "passwordRequiredPattern"));
+        }
+        if (arrayList2.size() != 0) {
+            if (arrayList.size() == 0) {
+                return null;
+            }
+            return (String) arrayList.get(0);
+        }
+        if (!z) {
+            return this.mEdmStorageProvider.getString(contextInfo.mCallerUid, contextInfo.mContainerId, "PASSWORD", "passwordRequiredPattern");
+        }
+        int currentPasswordOwner = getCurrentPasswordOwner(contextInfo);
+        if (currentPasswordOwner != -1) {
+            return this.mEdmStorageProvider.getString(currentPasswordOwner, contextInfo.mContainerId, "PASSWORD", "passwordRequiredPattern");
+        }
+        return null;
+    }
+
+    @Override // com.android.server.enterprise.common.KeyCodeRestrictionCallback
+    public final Set getRestrictedKeyCodes() {
+        if (isChangeRequestedAsUserFromDb(0) > 0) {
+            return new HashSet(Arrays.asList(3, 1001, Integer.valueOf(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CREDENTIAL_MANAGEMENT_APP_REMOVED)));
+        }
+        return null;
+    }
+
+    @Override // com.android.server.enterprise.common.KeyCodeRestrictionCallback
+    public final String getServiceName() {
+        return "PasswordPolicy";
+    }
+
+    public final Map getSupportedBiometricAuthentications(ContextInfo contextInfo) {
+        PackageManager packageManager = this.mContext.getPackageManager();
+        HashMap hashMap = new HashMap();
+        if (packageManager != null && packageManager.hasSystemFeature("android.hardware.fingerprint")) {
+            hashMap.put(1, "Fingerprint");
+        }
+        hashMap.put(4, "Face");
+        return hashMap;
+    }
+
+    public final boolean hasForbiddenCharacterSequence(ContextInfo contextInfo, String str) {
+        checkPackageCallerOrEnforceSystemUser();
+        int maximumCharacterSequenceLength = getMaximumCharacterSequenceLength(contextInfo);
+        if (maximumCharacterSequenceLength != 0 && maximumCharacterSequenceLength < 16) {
+            Matcher matcher = Pattern.compile("\\w(?=\\w{" + maximumCharacterSequenceLength + ",})").matcher(str);
+            while (matcher.find()) {
+                int start = matcher.start();
+                char charAt = str.charAt(start);
+                if (Character.isAlphabetic(charAt)) {
+                    int charAt2 = str.charAt(start + 1) - charAt;
+                    char c = charAt2 == 0 ? (char) 0 : charAt2 > 0 ? (char) 1 : (char) 65535;
+                    StringBuilder sb = new StringBuilder(maximumCharacterSequenceLength + 5);
+                    sb.append("\\Q");
+                    sb.append(charAt);
+                    int i = 0;
+                    while (true) {
+                        if (i < maximumCharacterSequenceLength) {
+                            charAt = (char) (charAt + c);
+                            if (Character.isAlphabetic(str.charAt(start + i + 1)) && Character.isAlphabetic(charAt)) {
+                                sb.append(charAt);
+                                i++;
+                            }
+                        } else {
+                            sb.append("\\E");
+                            if (str.substring(start, start + maximumCharacterSequenceLength + 1).matches(sb.toString())) {
+                                return true;
+                            }
+                        }
+                    }
                 }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$notifyPasswordPolicyOneLockChanged$49(int i) {
-        UserManager userManager = (UserManager) this.mContext.getSystemService("user");
-        for (int i2 : BIOMETRIC_AUTHENTICATION_TYPES) {
-            if (!isBiometricAuthenticationEnabledAsUser(i, i2)) {
-                removeBiometricAuthentication(i2, userManager.getProfileParent(i).getUserHandle().getIdentifier());
             }
         }
+        return false;
     }
 
-    public final void registerDexBlocker() {
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda53
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$registerDexBlocker$50();
+    public final boolean hasForbiddenData(ContextInfo contextInfo, String str) {
+        checkPackageCallerOrEnforceSystemUser();
+        List forbiddenStrings = getForbiddenStrings(contextInfo, true);
+        if (forbiddenStrings == null) {
+            return false;
+        }
+        ArrayList arrayList = (ArrayList) forbiddenStrings;
+        if (arrayList.size() == 0) {
+            return false;
+        }
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            String str2 = (String) it.next();
+            if (str2.length() > 0 && str.contains(str2)) {
+                return true;
             }
-        });
+        }
+        return false;
     }
 
-    public /* synthetic */ void lambda$registerDexBlocker$50() {
-        ((SemDesktopModeManager) this.mContext.getApplicationContext().getSystemService("desktopmode")).registerBlocker(this.mBlocker);
-        Log.d("PasswordPolicy", "registerDexBlocker was registered");
-    }
-
-    public final void unRegisterDexBlocker() {
-        this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda51
-            public final void runOrThrow() {
-                PasswordPolicy.this.lambda$unRegisterDexBlocker$51();
+    public final boolean hasForbiddenNumericSequence(ContextInfo contextInfo, String str) {
+        checkPackageCallerOrEnforceSystemUser();
+        int maximumNumericSequenceLength = getMaximumNumericSequenceLength(contextInfo);
+        if (maximumNumericSequenceLength != 0 && maximumNumericSequenceLength < 16) {
+            Matcher matcher = Pattern.compile("\\d(?=\\d{" + maximumNumericSequenceLength + ",})").matcher(str);
+            while (matcher.find()) {
+                int start = matcher.start();
+                char charAt = str.charAt(start);
+                int charAt2 = str.charAt(start + 1) - charAt;
+                char c = charAt2 == 0 ? (char) 0 : charAt2 > 0 ? (char) 1 : (char) 65535;
+                StringBuilder sb = new StringBuilder(maximumNumericSequenceLength + 5);
+                sb.append("\\Q");
+                sb.append(charAt);
+                for (int i = 0; i < maximumNumericSequenceLength; i++) {
+                    charAt = (char) (charAt + c);
+                    sb.append(charAt);
+                }
+                sb.append("\\E");
+                if (str.substring(start, start + maximumNumericSequenceLength + 1).matches(sb.toString())) {
+                    return true;
+                }
             }
-        });
+        }
+        return false;
     }
 
-    public /* synthetic */ void lambda$unRegisterDexBlocker$51() {
-        ((SemDesktopModeManager) this.mContext.getApplicationContext().getSystemService("desktopmode")).unregisterBlocker(this.mBlocker);
-        Log.d("PasswordPolicy", "registerDexBlocker was unregistered");
-    }
-
-    public boolean isClearLockAllowed() {
-        Boolean bool = (Boolean) this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda15
-            public final Object getOrThrow() {
-                Boolean lambda$isClearLockAllowed$52;
-                lambda$isClearLockAllowed$52 = PasswordPolicy.this.lambda$isClearLockAllowed$52();
-                return lambda$isClearLockAllowed$52;
+    public final boolean hasForbiddenStringDistance(ContextInfo contextInfo, String str, String str2) {
+        int minimumCharacterChangeLength;
+        checkPackageCallerOrEnforceSystemUser();
+        if (str2 != null && (minimumCharacterChangeLength = getMinimumCharacterChangeLength(contextInfo)) != 0) {
+            int[][] iArr = (int[][]) Array.newInstance((Class<?>) Integer.TYPE, str2.length() + 1, str.length() + 1);
+            for (int i = 0; i <= str2.length(); i++) {
+                iArr[i][0] = i;
             }
-        });
+            for (int i2 = 0; i2 <= str.length(); i2++) {
+                iArr[0][i2] = i2;
+            }
+            for (int i3 = 1; i3 <= str2.length(); i3++) {
+                for (int i4 = 1; i4 <= str.length(); i4++) {
+                    int[] iArr2 = iArr[i3];
+                    int i5 = i3 - 1;
+                    int i6 = i4 - 1;
+                    iArr2[i4] = Math.min(Math.min(iArr[i5][i4] + 1, iArr2[i6] + 1), iArr[i5][i6] + (str2.charAt(i5) == str.charAt(i6) ? 0 : 1));
+                }
+            }
+            if (iArr[str2.length()][str.length()] < minimumCharacterChangeLength) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final boolean hasMaxRepeatedCharacters(ContextInfo contextInfo, String str) {
+        checkPackageCallerOrEnforceSystemUser();
+        int maximumCharacterOccurences = getMaximumCharacterOccurences(contextInfo);
+        if (maximumCharacterOccurences != 0) {
+            HashMap hashMap = new HashMap();
+            for (char c : str.toCharArray()) {
+                if (hashMap.get(Character.valueOf(c)) != null) {
+                    int intValue = ((Integer) hashMap.get(Character.valueOf(c))).intValue();
+                    if (intValue == maximumCharacterOccurences) {
+                        Log.d("PasswordPolicy", c + " : " + intValue);
+                        return true;
+                    }
+                    hashMap.put(Character.valueOf(c), Integer.valueOf(intValue + 1));
+                } else {
+                    hashMap.put(Character.valueOf(c), 1);
+                }
+            }
+        }
+        return false;
+    }
+
+    public final boolean hasPassword(int i) {
+        Context createContextAsUser;
+        return (isPersona(i) || (createContextAsUser = Utils.createContextAsUser(this.mContext, "android", 0, i)) == null || new LockPatternUtils(createContextAsUser).getActivePasswordQuality(i) <= 0) ? false : true;
+    }
+
+    public final boolean isActivePasswordSufficient(ContextInfo contextInfo) {
+        int i = enforceSecurityPermission$1(contextInfo).mCallerUid;
+        Boolean bool = Boolean.FALSE;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda2 passwordPolicy$$ExternalSyntheticLambda2 = new PasswordPolicy$$ExternalSyntheticLambda2(this, i, 3);
+            injector.getClass();
+            bool = (Boolean) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda2);
+        }
+        return bool.booleanValue();
+    }
+
+    public final boolean isBiometricAuthenticationEnabled(ContextInfo contextInfo, int i) {
+        return isBiometricAuthenticationEnabledAsUser(Utils.getCallingOrCurrentUserId(contextInfo), i);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0017, code lost:
+    
+        if (r4 == 1) goto L13;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean isBiometricAuthenticationEnabledAsUser(int r11, int r12) {
+        /*
+            r10 = this;
+            java.lang.String r0 = ", userId = "
+            java.lang.String r1 = "PasswordPolicy"
+            r2 = 1
+            r3 = 0
+            if (r12 != r2) goto L9
+            goto L19
+        L9:
+            if (r12 == 0) goto Lb8
+            if (r12 >= 0) goto Lf
+            goto Lb8
+        Lf:
+            r4 = r12
+        L10:
+            int r5 = r4 % 2
+            if (r5 != 0) goto L17
+            int r4 = r4 / 2
+            goto L10
+        L17:
+            if (r4 != r2) goto Lb8
+        L19:
+            com.android.server.enterprise.storage.EdmStorageProvider r4 = r10.mEdmStorageProvider
+            java.lang.String r5 = "PASSWORD"
+            java.lang.String r6 = "passwordBioAuthEnabled"
+            java.util.ArrayList r4 = r4.getIntListAsUser(r3, r11, r5, r6)
+            java.util.List r7 = r10.getAllOneLockedChildUsers(r11)
+            java.util.ArrayList r7 = (java.util.ArrayList) r7
+            java.util.Iterator r7 = r7.iterator()
+        L2e:
+            boolean r8 = r7.hasNext()
+            if (r8 == 0) goto L48
+            java.lang.Object r8 = r7.next()
+            java.lang.Integer r8 = (java.lang.Integer) r8
+            com.android.server.enterprise.storage.EdmStorageProvider r9 = r10.mEdmStorageProvider
+            int r8 = r8.intValue()
+            java.util.ArrayList r8 = r9.getIntListAsUser(r3, r8, r5, r6)
+            r4.addAll(r8)
+            goto L2e
+        L48:
+            java.util.Iterator r4 = r4.iterator()
+            r5 = r3
+        L4d:
+            boolean r6 = r4.hasNext()
+            if (r6 == 0) goto L70
+            java.lang.Object r6 = r4.next()
+            java.lang.Integer r6 = (java.lang.Integer) r6
+            int r7 = r6.intValue()
+            if (r7 >= 0) goto L60
+            goto L4d
+        L60:
+            int r5 = r6.intValue()
+            r5 = r5 & r12
+            if (r5 == r12) goto L6e
+            java.lang.String r10 = "isBiometricAuthenticationEnabledAsUser(): disallowed, "
+            com.android.server.accounts.AccountsDb$CeDatabaseHelper$$ExternalSyntheticOutline0.m(r12, r11, r10, r0, r1)
+            return r3
+        L6e:
+            r5 = r2
+            goto L4d
+        L70:
+            if (r5 == 0) goto L79
+            java.lang.String r10 = "isBiometricAuthenticationEnabledAsUser: return true (hasValue) "
+            com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0.m(r12, r10, r1)
+            return r2
+        L79:
+            if (r12 != r2) goto L89
+            com.android.server.enterprise.adapter.IPersonaManagerAdapter r3 = r10.mPersonaManagerAdapter
+            com.android.server.enterprise.adapterlayer.PersonaManagerAdapter r3 = (com.android.server.enterprise.adapterlayer.PersonaManagerAdapter) r3
+            r3.getClass()
+            boolean r3 = com.samsung.android.knox.SemPersonaManager.isKnoxId(r11)
+            if (r3 != 0) goto L89
+            return r2
+        L89:
+            r3 = 2
+            if (r12 != r3) goto L9a
+            com.android.server.enterprise.adapter.IPersonaManagerAdapter r3 = r10.mPersonaManagerAdapter
+            com.android.server.enterprise.adapterlayer.PersonaManagerAdapter r3 = (com.android.server.enterprise.adapterlayer.PersonaManagerAdapter) r3
+            r3.getClass()
+            boolean r3 = com.samsung.android.knox.SemPersonaManager.isKnoxId(r11)
+            if (r3 != 0) goto L9a
+            return r2
+        L9a:
+            r3 = 4
+            if (r12 != r3) goto Lb1
+            com.android.server.enterprise.adapter.IPersonaManagerAdapter r10 = r10.mPersonaManagerAdapter
+            com.android.server.enterprise.adapterlayer.PersonaManagerAdapter r10 = (com.android.server.enterprise.adapterlayer.PersonaManagerAdapter) r10
+            r10.getClass()
+            boolean r10 = com.samsung.android.knox.SemPersonaManager.isKnoxId(r11)
+            if (r10 != 0) goto Lb1
+            java.lang.String r10 = "isBiometricAuthenticationEnabledAsUser(FACE): return true "
+            android.util.Log.d(r1, r10)
+            return r2
+        Lb1:
+            java.lang.String r10 = "isBiometricAuthenticationEnabledAsUser(): allowed as default, "
+            com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0.m(r12, r11, r10, r0, r1)
+            return r2
+        Lb8:
+            java.lang.StringBuilder r10 = new java.lang.StringBuilder
+            java.lang.String r2 = "isBiometricAuthenticationEnabledAsUser: bioAuth is wrong value : "
+            r10.<init>(r2)
+            r10.append(r12)
+            r10.append(r0)
+            r10.append(r11)
+            java.lang.String r10 = r10.toString()
+            android.util.Log.w(r1, r10)
+            return r3
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.security.PasswordPolicy.isBiometricAuthenticationEnabledAsUser(int, int):boolean");
+    }
+
+    public final int isChangeRequested(ContextInfo contextInfo) {
+        int userId;
+        if (contextInfo == null) {
+            contextInfo = new ContextInfo(Binder.getCallingUid());
+        }
+        IPersonaManagerAdapter iPersonaManagerAdapter = this.mPersonaManagerAdapter;
+        int i = contextInfo.mContainerId;
+        ((PersonaManagerAdapter) iPersonaManagerAdapter).getClass();
+        if (SemPersonaManager.isKnoxId(i)) {
+            userId = contextInfo.mContainerId;
+        } else {
+            String nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
+            if (nameForUid != null) {
+                int lastIndexOf = nameForUid.lastIndexOf(":");
+                if (lastIndexOf != -1) {
+                    nameForUid = nameForUid.substring(0, lastIndexOf);
+                }
+                if (nameForUid.equals("android.uid.systemui") || Process.myPid() == Binder.getCallingPid()) {
+                    Injector injector = this.mInjector;
+                    PasswordPolicy$$ExternalSyntheticLambda46 passwordPolicy$$ExternalSyntheticLambda46 = new PasswordPolicy$$ExternalSyntheticLambda46();
+                    injector.getClass();
+                    userId = ((Integer) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda46)).intValue();
+                }
+            }
+            userId = UserHandle.getUserId(contextInfo.mCallerUid);
+        }
+        return isChangeRequestedAsUserFromDb(userId);
+    }
+
+    public final int isChangeRequestedAsUser(int i) {
+        return isChangeRequestedAsUserFromDb(i);
+    }
+
+    public final int isChangeRequestedAsUserFromDb(int i) {
+        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser(i, "passwordChangeRequested");
+        if (genericValueAsUser != null) {
+            return Integer.parseInt(genericValueAsUser);
+        }
+        return 0;
+    }
+
+    public final int isChangeRequestedForInner() {
+        return isChangeRequestedAsUserFromDb(!DualDarManager.isOnDeviceOwnerEnabled() ? -1 : new LockPatternUtils(this.mContext).getLockPatternUtilForDualDarDo().getInnerAuthUserForDo());
+    }
+
+    public final boolean isClearLockAllowed() {
+        Injector injector = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda24 passwordPolicy$$ExternalSyntheticLambda24 = new PasswordPolicy$$ExternalSyntheticLambda24(0, this);
+        injector.getClass();
+        Boolean bool = (Boolean) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda24);
         Log.d("PasswordPolicy", "isClearLockAllowed - true");
         return bool.booleanValue();
     }
 
-    public /* synthetic */ Boolean lambda$isClearLockAllowed$52() {
-        ComponentName deviceOwnerComponentOnCallingUser;
-        Boolean bool = Boolean.TRUE;
-        if (this.mDpm == null || this.mService == null) {
-            return bool;
+    public final boolean isExternalStorageForFailedPasswordsWipeExcluded(int i) {
+        ArrayList booleanListAsUser = this.mEdmStorageProvider.getBooleanListAsUser(i, "PASSWORD", "excludeExternalStorageWipe");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(i)).iterator();
+        while (it.hasNext()) {
+            booleanListAsUser.addAll(this.mEdmStorageProvider.getBooleanListAsUser(((Integer) it.next()).intValue(), "PASSWORD", "excludeExternalStorageWipe"));
         }
-        if (this.mPersonaManagerAdapter.isDoEnabled(0) && (deviceOwnerComponentOnCallingUser = this.mDpm.getDeviceOwnerComponentOnCallingUser()) != null && (this.mDpm.getPasswordQuality(deviceOwnerComponentOnCallingUser, 0) > 0 || this.mDpm.getPasswordMinimumLength(deviceOwnerComponentOnCallingUser, 0) > 0)) {
-            Log.d("PasswordPolicy", "isClearLockAllowed - false due to DO and pwd policy");
-            bool = Boolean.FALSE;
+        if (booleanListAsUser.size() == 0) {
+            Log.i("PasswordPolicy", "isExternalStorageForFailedPasswordsWipeExcluded() : no admin enforce password policy. ");
+            return false;
         }
-        UserManager userManager = this.mUserManager;
-        if (userManager != null) {
-            List users = userManager.getUsers();
-            List allOneLockedChildUsers = getAllOneLockedChildUsers(0);
-            for (int i = 0; i < users.size(); i++) {
-                UserInfo userInfo = (UserInfo) users.get(i);
-                if (userInfo.isManagedProfile()) {
-                    ComponentName profileOwnerAsUser = this.mDpm.getProfileOwnerAsUser(userInfo.id);
-                    if (profileOwnerAsUser != null && (this.mService.getPasswordQuality(profileOwnerAsUser, userInfo.id, true) > 0 || this.mService.getPasswordMinimumLength(profileOwnerAsUser, userInfo.id, true) > 0)) {
-                        Log.d("PasswordPolicy", "isClearLockAllowed - false due to PO and parent pwd policy");
-                        bool = Boolean.FALSE;
-                    }
-                    if (allOneLockedChildUsers.contains(Integer.valueOf(userInfo.id)) && profileOwnerAsUser != null && (this.mDpm.getPasswordQuality(profileOwnerAsUser, userInfo.id) > 0 || this.mDpm.getPasswordMinimumLength(profileOwnerAsUser, userInfo.id) > 0)) {
-                        Log.d("PasswordPolicy", "isClearLockAllowed - false due to PO and one lock");
-                        bool = Boolean.FALSE;
-                    }
-                }
+        Iterator it2 = booleanListAsUser.iterator();
+        while (it2.hasNext()) {
+            boolean booleanValue = ((Boolean) it2.next()).booleanValue();
+            if (!booleanValue) {
+                return booleanValue;
             }
         }
-        if (getMaximumFailedPasswordsForDisable(0) <= 0) {
-            return bool;
-        }
-        Log.d("PasswordPolicy", "isClearLockAllowed - false due to FailedPasswordsForDisable policy");
-        return Boolean.FALSE;
+        return true;
     }
 
-    public final String getPkgNameforMaximumFailedAttemptforDisable(int i) {
-        return this.mContext.getPackageManager().getNameForUid(this.mEdmStorageProvider.getAdminByField("PASSWORD", "passwordAttemptDeviceDisable", Integer.toString(i)));
+    public final boolean isExternalStorageForFailedPasswordsWipeExcluded(ContextInfo contextInfo) {
+        return isExternalStorageForFailedPasswordsWipeExcluded(Utils.getCallingOrCurrentUserId(contextInfo));
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes2.dex */
-    public class LocalService extends PasswordPolicyInternal {
-        public LocalService() {
-        }
-
-        public int isChangeRequestedAsUser(int i) {
-            return PasswordPolicy.this.mPolicyCache.isChangeRequestedAsUser(i);
-        }
+    @Override // com.android.server.enterprise.common.KeyCodeRestrictionCallback
+    public final boolean isKeyCodeInputAllowed(int i) {
+        return !(i == 3 || i == 187 || i == 1001) || isChangeRequestedAsUserFromDb(0) <= 0;
     }
 
-    /* loaded from: classes2.dex */
-    public class ActivationMonitor implements IActivationKlmElmObserver {
-        public /* synthetic */ ActivationMonitor(PasswordPolicy passwordPolicy, ActivationMonitorIA activationMonitorIA) {
-            this();
-        }
-
-        public ActivationMonitor() {
-            getLicenseService();
-            if (PasswordPolicy.this.mLicenseService != null) {
-                PasswordPolicy.this.mLicenseService.addElmKlmObserver(this);
+    public final boolean isMDMDisabledFP(int i) {
+        boolean z = false;
+        Iterator it = this.mEdmStorageProvider.getIntListAsUser(0, i, "PASSWORD", "passwordBioAuthEnabled").iterator();
+        while (it.hasNext()) {
+            Integer num = (Integer) it.next();
+            if (num.intValue() >= 0 && (num.intValue() & 1) != 1) {
+                z = true;
             }
         }
-
-        public final void getLicenseService() {
-            if (PasswordPolicy.this.mLicenseService == null) {
-                PasswordPolicy.this.mLicenseService = (EnterpriseLicenseService) EnterpriseService.getPolicyService("enterprise_license_policy");
-            }
+        if (z) {
+            Log.i("PasswordPolicy", "isMDMDisabledFP: disallowed fingerprint.");
         }
-
-        public final boolean isDeviceOwnerPackage(String str) {
-            ComponentName deviceOwnerComponentOnAnyUser = PasswordPolicy.this.mDpm.getDeviceOwnerComponentOnAnyUser();
-            return (str == null || deviceOwnerComponentOnAnyUser == null || !str.equals(deviceOwnerComponentOnAnyUser.getPackageName())) ? false : true;
-        }
-
-        @Override // com.android.server.enterprise.license.IActivationKlmElmObserver
-        public void onUpdateKlm(String str, LicenseResult licenseResult) {
-            Log.d("PasswordPolicy", "onUpdateKlm is called");
-            try {
-                if (PasswordPolicy.this.mPersonaManagerAdapter.isDoEnabled(0) && licenseResult.isSuccess() && licenseResult.getType() == LicenseResult.Type.KLM_VALIDATION && PasswordPolicy.this.mLicenseService != null && isDeviceOwnerPackage(str)) {
-                    boolean isServiceAvailable = PasswordPolicy.this.mLicenseService.isServiceAvailable(str, "com.samsung.android.knox.permission.KNOX_CONTAINER");
-                    Log.d("PasswordPolicy", "onUpdateKlm - isServiceAvailable : " + isServiceAvailable);
-                    if (!isServiceAvailable || PasswordPolicy.this.mUserManager.getUserInfo(0).isAdminLocked()) {
-                        return;
-                    }
-                    PasswordPolicy.this.setAdminLockEnabledSystemUI(0, false, false);
-                }
-            } catch (Exception e) {
-                Log.e("PasswordPolicy", "onUpdateKlm() failed ", e);
-            }
-        }
-
-        @Override // com.android.server.enterprise.license.IActivationKlmElmObserver
-        public void onUpdateElm(String str, LicenseResult licenseResult) {
-            Log.d("PasswordPolicy", "onUpdateElm is called");
-            try {
-                if (PasswordPolicy.this.mPersonaManagerAdapter.isDoEnabled(0) && licenseResult.isSuccess() && licenseResult.getType() == LicenseResult.Type.ELM_VALIDATION && PasswordPolicy.this.mLicenseService != null && isDeviceOwnerPackage(str)) {
-                    boolean isServiceAvailable = PasswordPolicy.this.mLicenseService.isServiceAvailable(str, "com.samsung.android.knox.permission.KNOX_APP_MGMT");
-                    Log.d("PasswordPolicy", "onUpdateElm - isServiceAvailable : " + isServiceAvailable);
-                    if (!isServiceAvailable || PasswordPolicy.this.mUserManager.getUserInfo(0).isAdminLocked()) {
-                        return;
-                    }
-                    PasswordPolicy.this.setAdminLockEnabledSystemUI(0, false, false);
-                }
-            } catch (Exception e) {
-                Log.e("PasswordPolicy", "onUpdateElm() failed ", e);
-            }
-        }
+        return z;
     }
 
-    public void setTrustAgentConfiguration(ContextInfo contextInfo, final ComponentName componentName, final ComponentName componentName2, final PersistableBundle persistableBundle) {
-        Log.d("PasswordPolicy", "setTrustAgentConfiguration");
-        final int i = enforceSecurityPermission(contextInfo).mCallerUid;
+    public final boolean isMultifactorAuthenticationEnabled(ContextInfo contextInfo) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        GestureWakeup$$ExternalSyntheticOutline0.m(BatteryService$$ExternalSyntheticOutline0.m(callingOrCurrentUserId, "isMultifactorAuthenticationEnabled is called for user : ", ", caller uid - "), contextInfo.mCallerUid, "PasswordPolicy");
+        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(callingOrCurrentUserId, "PASSWORD", "multifactorAuthEnabled").iterator();
+        while (it.hasNext()) {
+            if (((Boolean) it.next()).booleanValue()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final boolean isPasswordPatternMatched(ContextInfo contextInfo, String str) {
+        checkPackageCallerOrEnforceSystemUser();
+        String requiredPwdPatternRestrictions = getRequiredPwdPatternRestrictions(contextInfo, true);
+        if (requiredPwdPatternRestrictions != null) {
+            return Pattern.compile(requiredPwdPatternRestrictions).matcher(str).matches();
+        }
+        return true;
+    }
+
+    public final boolean isPasswordTableExist(ContextInfo contextInfo) {
+        return !this.mEdmStorageProvider.getIntListAsUser(0, Utils.getCallingOrCurrentUserId(contextInfo), "PASSWORD", "passwordBioAuthEnabled").isEmpty();
+    }
+
+    public final boolean isPasswordVisibilityEnabled(ContextInfo contextInfo) {
+        return isPasswordVisibilityEnabledAsUser(Utils.getCallingOrCurrentUserId(contextInfo));
+    }
+
+    public final boolean isPasswordVisibilityEnabledAsUser(int i) {
+        ArrayList booleanListAsUser = this.mEdmStorageProvider.getBooleanListAsUser(i, "PASSWORD", "passwordVisibilityEnabled");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(i)).iterator();
+        while (it.hasNext()) {
+            booleanListAsUser.addAll(this.mEdmStorageProvider.getBooleanListAsUser(((Integer) it.next()).intValue(), "PASSWORD", "passwordVisibilityEnabled"));
+        }
+        Iterator it2 = booleanListAsUser.iterator();
+        while (it2.hasNext()) {
+            boolean booleanValue = ((Boolean) it2.next()).booleanValue();
+            if (!booleanValue) {
+                return booleanValue;
+            }
+        }
+        return true;
+    }
+
+    public final boolean isPersona(int i) {
+        if (i == 0) {
+            return false;
+        }
+        ((PersonaManagerAdapter) this.mPersonaManagerAdapter).getClass();
+        return SemPersonaManager.isKnoxId(i);
+    }
+
+    public final boolean isResetPasswordTokenActive(ContextInfo contextInfo, ComponentName componentName) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        Boolean bool = Boolean.FALSE;
         if (this.mService != null) {
-            this.mInjector.binderWithCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda2
-                public final void runOrThrow() {
-                    PasswordPolicy.this.lambda$setTrustAgentConfiguration$53(i, componentName, componentName2, persistableBundle);
-                }
-            });
+            int i = enforceSecurityPermission$1.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda9 passwordPolicy$$ExternalSyntheticLambda9 = new PasswordPolicy$$ExternalSyntheticLambda9(this, i, componentName, 2);
+            injector.getClass();
+            bool = (Boolean) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda9);
+        }
+        return bool.booleanValue();
+    }
+
+    public final boolean isScreenLockPatternVisibilityEnabled(ContextInfo contextInfo) {
+        return isScreenLockPatternVisibilityEnabledAsUser(Utils.getCallingOrCurrentUserId(contextInfo));
+    }
+
+    public final boolean isScreenLockPatternVisibilityEnabledAsUser(int i) {
+        ArrayList booleanListAsUser = this.mEdmStorageProvider.getBooleanListAsUser(i, "PASSWORD", "screenLockPatternVisibility");
+        Iterator it = ((ArrayList) getAllOneLockedChildUsers(i)).iterator();
+        while (it.hasNext()) {
+            booleanListAsUser.addAll(this.mEdmStorageProvider.getBooleanListAsUser(((Integer) it.next()).intValue(), "PASSWORD", "screenLockPatternVisibility"));
+        }
+        Iterator it2 = booleanListAsUser.iterator();
+        while (it2.hasNext()) {
+            boolean booleanValue = ((Boolean) it2.next()).booleanValue();
+            if (!booleanValue) {
+                return booleanValue;
+            }
+        }
+        return true;
+    }
+
+    public final boolean lock(ContextInfo contextInfo) {
+        enforceDoPoOnlySecurityPermissionByContext(contextInfo);
+        int i = contextInfo.mContainerId;
+        int mUMContainerOwnerUid = i == 0 ? contextInfo.mCallerUid : this.mEdmStorageProvider.getMUMContainerOwnerUid(i);
+        try {
+            if (this.mService.isProfileOwnerOfOrganizationOwnedDeviceMDM(contextInfo.mContainerId)) {
+                i = 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.d("PasswordPolicy", "lock is called for user : " + contextInfo.mContainerId + ", ownerUid - " + mUMContainerOwnerUid);
+        AuditLog.logEventAsUser(UserHandle.getUserId(contextInfo.mCallerUid), 48, new Object[]{Integer.valueOf(contextInfo.mCallerUid)});
+        setAdminLockEnabledSystemUI(i, true, false);
+        Bundle bundle = new Bundle();
+        bundle.putInt("android.intent.extra.user_handle", i);
+        bundle.putInt("knox.container.proxy.EXTRA_CONTAINER_OWNER", mUMContainerOwnerUid);
+        Injector injector = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda24 passwordPolicy$$ExternalSyntheticLambda24 = new PasswordPolicy$$ExternalSyntheticLambda24(1, bundle);
+        injector.getClass();
+        return ((Bundle) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda24)).getInt("android.intent.extra.RETURN_RESULT") == 0;
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void notifyToAddSystemService(String str, IBinder iBinder) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminAdded(int i) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminRemoved(int i) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(new ContextInfo(i, 0));
+        if (callingOrCurrentUserId == ActivityManager.getCurrentUser()) {
+            updateSystemUIMonitor$9(callingOrCurrentUserId);
         }
     }
 
-    public /* synthetic */ void lambda$setTrustAgentConfiguration$53(int i, ComponentName componentName, ComponentName componentName2, PersistableBundle persistableBundle) {
-        try {
-            this.mService.setTrustAgentConfigurationMDM(UserHandle.getUserId(i), componentName, componentName2, persistableBundle);
-        } catch (RemoteException e) {
-            Log.w("PasswordPolicy", "Failed talking with device policy service", e);
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onPreAdminRemoval(int i) {
+    }
+
+    public final void postPwdResetEventToPersona(int i) {
+        boolean z = isChangeRequestedAsUserFromDb(i) < 1;
+        boolean z2 = isChangeRequestedAsUserFromDb(i) >= 1;
+        if (z && z2) {
+            Log.d("PasswordPolicy", "postPwdResetEventToPersona :: Already enforced request pending...");
+            return;
         }
+        Bundle m = SystemUpdateManagerService$$ExternalSyntheticOutline0.m(i, "android.intent.extra.user_handle");
+        Injector injector = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda51 passwordPolicy$$ExternalSyntheticLambda51 = new PasswordPolicy$$ExternalSyntheticLambda51(2, m);
+        injector.getClass();
+        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda51);
+        SDPLog.i("Enforce Password Change requested for user " + i);
+    }
+
+    public final void reboot(ContextInfo contextInfo, String str) {
+        Injector injector;
+        DirEncryptService$$ExternalSyntheticOutline0.m(Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1(contextInfo)), "reboot() called, userId = ", "PasswordPolicy");
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z = false;
+        try {
+            try {
+                PowerManager powerManager = this.mPM;
+                if (powerManager != null) {
+                    powerManager.reboot(str);
+                    z = true;
+                } else {
+                    Log.e("PasswordPolicy", "failed talking with power manager");
+                }
+                injector = this.mInjector;
+            } catch (Exception e) {
+                Log.e("PasswordPolicy", "reboot() has failed. ", e);
+                injector = this.mInjector;
+            }
+            injector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            if (z) {
+                RestrictionToastManager.show(R.string.bugreport_countdown);
+            }
+        } catch (Throwable th) {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final void removeOwnerFromStack(ContextInfo contextInfo) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser(callingOrCurrentUserId, "passwordOwnerHistory");
+        if (genericValueAsUser != null) {
+            String[] split = genericValueAsUser.split(",");
+            StringBuilder sb = new StringBuilder();
+            for (String str : split) {
+                int parseInt = Integer.parseInt(str);
+                Integer valueOf = Integer.valueOf(parseInt);
+                if (parseInt != contextInfo.mCallerUid) {
+                    sb.append(valueOf + ",");
+                }
+            }
+            String sb2 = sb.toString();
+            this.mEdmStorageProvider.putGenericValueAsUser(callingOrCurrentUserId, "passwordOwnerHistory", sb2.length() == 0 ? null : DropBoxManagerService$EntryFile$$ExternalSyntheticOutline0.m(1, 0, sb2));
+        }
+    }
+
+    public final boolean resetPassword(ContextInfo contextInfo, String str, int i) {
+        throw new SecurityException("resetPassword is deprecated, use resetPasswordWithToken()");
+    }
+
+    public final boolean resetPasswordWithToken(ContextInfo contextInfo, final ComponentName componentName, final String str, final byte[] bArr, final int i) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        Boolean bool = Boolean.FALSE;
+        if (this.mService != null) {
+            final int i2 = enforceSecurityPermission$1.mCallerUid;
+            Injector injector = this.mInjector;
+            FunctionalUtils.ThrowingSupplier throwingSupplier = new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda42
+                public final Object getOrThrow() {
+                    PasswordPolicy passwordPolicy = PasswordPolicy.this;
+                    int i3 = i2;
+                    ComponentName componentName2 = componentName;
+                    String str2 = str;
+                    byte[] bArr2 = bArr;
+                    int i4 = i;
+                    passwordPolicy.getClass();
+                    int userId = UserHandle.getUserId(i3);
+                    if (new LockPatternUtils(passwordPolicy.mContext).getActivePasswordQuality(userId) != 458752) {
+                        return Boolean.valueOf(passwordPolicy.mService.resetPasswordWithTokenMDM(componentName2, str2, bArr2, i4, userId));
+                    }
+                    NetworkScorerAppManager$$ExternalSyntheticOutline0.m(userId, "resetPassword declined because Lock Quality set to Smartcard for user = ", "PasswordPolicy");
+                    return Boolean.FALSE;
+                }
+            };
+            injector.getClass();
+            bool = (Boolean) Binder.withCleanCallingIdentity(throwingSupplier);
+        }
+        return bool.booleanValue();
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:5:0x001e, code lost:
+    
+        if (com.samsung.android.knox.SemPersonaManager.isDarDualEncryptionEnabled(r4) != false) goto L29;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void setAdminLockEnabledSystemUI(final int r4, final boolean r5, final boolean r6) {
+        /*
+            r3 = this;
+            if (r6 == 0) goto L8e
+            com.android.server.enterprise.adapter.IPersonaManagerAdapter r0 = getPersonaManagerAdapter$6()
+            com.android.server.enterprise.adapterlayer.PersonaManagerAdapter r0 = (com.android.server.enterprise.adapterlayer.PersonaManagerAdapter) r0
+            r0.getClass()
+            boolean r0 = com.samsung.android.knox.SemPersonaManager.isDoEnabled(r4)
+            if (r0 == 0) goto L21
+            com.android.server.enterprise.adapter.IPersonaManagerAdapter r0 = getPersonaManagerAdapter$6()
+            com.android.server.enterprise.adapterlayer.PersonaManagerAdapter r0 = (com.android.server.enterprise.adapterlayer.PersonaManagerAdapter) r0
+            r0.getClass()
+            boolean r0 = com.samsung.android.knox.SemPersonaManager.isDarDualEncryptionEnabled(r4)
+            if (r0 == 0) goto L21
+            goto L8e
+        L21:
+            android.app.admin.DevicePolicyManager r0 = r3.mDpm
+            boolean r0 = r0.isOrganizationOwnedDeviceWithManagedProfile()
+            if (r0 == 0) goto L73
+            android.os.UserManager r0 = r3.mUserManager
+            java.util.List r0 = r0.getProfiles(r4)
+            java.util.Iterator r0 = r0.iterator()
+        L33:
+            boolean r1 = r0.hasNext()
+            if (r1 == 0) goto L73
+            java.lang.Object r1 = r0.next()
+            android.content.pm.UserInfo r1 = (android.content.pm.UserInfo) r1
+            android.os.UserHandle r1 = r1.getUserHandle()
+            int r1 = r1.getIdentifier()
+            com.android.server.enterprise.adapter.IPersonaManagerAdapter r2 = getPersonaManagerAdapter$6()
+            com.android.server.enterprise.adapterlayer.PersonaManagerAdapter r2 = (com.android.server.enterprise.adapterlayer.PersonaManagerAdapter) r2
+            r2.getClass()
+            boolean r2 = com.samsung.android.knox.SemPersonaManager.isKnoxId(r1)
+            if (r2 == 0) goto L33
+            com.android.server.enterprise.adapter.IPersonaManagerAdapter r2 = getPersonaManagerAdapter$6()
+            com.android.server.enterprise.adapterlayer.PersonaManagerAdapter r2 = (com.android.server.enterprise.adapterlayer.PersonaManagerAdapter) r2
+            r2.getClass()
+            boolean r2 = com.samsung.android.knox.SemPersonaManager.isDarDualEncryptionEnabled(r1)
+            if (r2 == 0) goto L33
+            android.app.admin.IDevicePolicyManager r2 = r3.mService     // Catch: android.os.RemoteException -> L6e
+            boolean r1 = r2.isProfileOwnerOfOrganizationOwnedDeviceMDM(r1)     // Catch: android.os.RemoteException -> L6e
+            if (r1 == 0) goto L33
+            goto L8e
+        L6e:
+            r1 = move-exception
+            r1.printStackTrace()
+            goto L33
+        L73:
+            android.app.admin.DevicePolicyManager r0 = r3.mDpm
+            boolean r0 = r0.isOrganizationOwnedDeviceWithManagedProfile()
+            if (r0 == 0) goto L89
+            com.android.server.enterprise.adapter.IPersonaManagerAdapter r0 = getPersonaManagerAdapter$6()
+            com.android.server.enterprise.adapterlayer.PersonaManagerAdapter r0 = (com.android.server.enterprise.adapterlayer.PersonaManagerAdapter) r0
+            r0.getClass()
+            boolean r0 = com.samsung.android.knox.SemPersonaManager.getUCMDAREncryption()
+            goto L8a
+        L89:
+            r0 = 0
+        L8a:
+            if (r0 == 0) goto L8d
+            goto L8e
+        L8d:
+            return
+        L8e:
+            com.android.server.enterprise.adapter.IPersonaManagerAdapter r0 = getPersonaManagerAdapter$6()
+            com.android.server.enterprise.adapterlayer.PersonaManagerAdapter r0 = (com.android.server.enterprise.adapterlayer.PersonaManagerAdapter) r0
+            r0.getClass()
+            boolean r0 = com.samsung.android.knox.SemPersonaManager.isKnoxId(r4)
+            if (r0 == 0) goto La6
+            java.lang.String r3 = "PasswordPolicy"
+            java.lang.String r4 = "return : this is Knox user"
+            android.util.Log.d(r3, r4)
+            return
+        La6:
+            com.android.server.enterprise.security.PasswordPolicy$Injector r0 = r3.mInjector
+            com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda17 r1 = new com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda17
+            r1.<init>()
+            r0.getClass()
+            android.os.Binder.withCleanCallingIdentity(r1)
+            if (r6 == 0) goto Ld9
+            android.os.UserManager r4 = r3.mUserManager     // Catch: java.lang.Exception -> Ld0
+            boolean r4 = r4.isUserUnlocked()     // Catch: java.lang.Exception -> Ld0
+            if (r4 == 0) goto Ld9
+            java.lang.String r4 = "PasswordPolicy"
+            java.lang.String r5 = "validateLicenses() called"
+            android.util.Log.d(r4, r5)     // Catch: java.lang.Exception -> Ld0
+            com.android.server.enterprise.license.EnterpriseLicenseService r3 = r3.mLicenseService     // Catch: java.lang.Exception -> Ld0
+            monitor-enter(r3)     // Catch: java.lang.Exception -> Ld0
+            r3.validateLicenses$1()     // Catch: java.lang.Throwable -> Lcd
+            monitor-exit(r3)     // Catch: java.lang.Exception -> Ld0
+            goto Ld9
+        Lcd:
+            r4 = move-exception
+            monitor-exit(r3)     // Catch: java.lang.Exception -> Ld0
+            throw r4     // Catch: java.lang.Exception -> Ld0
+        Ld0:
+            r3 = move-exception
+            java.lang.String r4 = "PasswordPolicy"
+            java.lang.String r5 = "validateLicenses() failed. "
+            android.util.Log.e(r4, r5, r3)
+        Ld9:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.security.PasswordPolicy.setAdminLockEnabledSystemUI(int, boolean, boolean):void");
+    }
+
+    public final boolean setBiometricAuthenticationEnabled(ContextInfo contextInfo, int i, boolean z) {
+        int i2;
+        long clearCallingIdentity;
+        if (i < 0) {
+            return false;
+        }
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+        int i3 = IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
+        try {
+            i2 = this.mEdmStorageProvider.getInt(enforceSecurityPermission$1.mCallerUid, 0, "PASSWORD", "passwordBioAuthEnabled");
+        } catch (Exception unused) {
+            i2 = 255;
+        }
+        if (i2 >= 0) {
+            i3 = i2;
+        }
+        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission$1.mCallerUid, 0, z ? i3 | i : (~i) & i3, "PASSWORD", "passwordBioAuthEnabled");
+        if (putInt) {
+            if (!z) {
+                Injector injector = this.mInjector;
+                PasswordPolicy$$ExternalSyntheticLambda4 passwordPolicy$$ExternalSyntheticLambda4 = new PasswordPolicy$$ExternalSyntheticLambda4(this, i, callingOrCurrentUserId, 1);
+                injector.getClass();
+                Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda4);
+                this.mInjector.getClass();
+                clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    UserManager userManager = (UserManager) this.mContext.getSystemService("user");
+                    if (userManager.getUserInfo(callingOrCurrentUserId).isManagedProfile() && !new LockPatternUtils(this.mContext).isSeparateProfileChallengeEnabled(callingOrCurrentUserId)) {
+                        int identifier = userManager.getProfileParent(callingOrCurrentUserId).getUserHandle().getIdentifier();
+                        Injector injector2 = this.mInjector;
+                        PasswordPolicy$$ExternalSyntheticLambda4 passwordPolicy$$ExternalSyntheticLambda42 = new PasswordPolicy$$ExternalSyntheticLambda4(this, i, identifier, 1);
+                        injector2.getClass();
+                        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda42);
+                    }
+                    this.mInjector.getClass();
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                } finally {
+                    this.mInjector.getClass();
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            }
+            this.mInjector.getClass();
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            if ((i & 2) != 0) {
+                try {
+                    AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format(z ? "Admin %d has allowed BIOMETRIC_AUTHENTICATION_IRIS" : "Admin %d has disallowed BIOMETRIC_AUTHENTICATION_IRIS", Integer.valueOf(enforceSecurityPermission$1.mCallerUid)), callingOrCurrentUserId);
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            if ((i & 1) != 0) {
+                AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format(z ? "Admin %d has allowed BIOMETRIC_AUTHENTICATION_FINGERPRINT" : "Admin %d has disallowed BIOMETRIC_AUTHENTICATION_FINGERPRINT", Integer.valueOf(enforceSecurityPermission$1.mCallerUid)), callingOrCurrentUserId);
+            }
+            if ((i & 4) != 0) {
+                AuditLog.logAsUser(5, 1, true, Process.myPid(), "PasswordPolicy", String.format(z ? "Admin %d has allowed BIOMETRIC_AUTHENTICATION_FACE" : "Admin %d has disallowed BIOMETRIC_AUTHENTICATION_FACE", Integer.valueOf(enforceSecurityPermission$1.mCallerUid)), callingOrCurrentUserId);
+            }
+        }
+        return putInt;
+    }
+
+    public final boolean setForbiddenStrings(ContextInfo contextInfo, List list) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        boolean z = false;
+        try {
+            StringBuilder sb = new StringBuilder();
+            if (list == null) {
+                sb.append("");
+            } else {
+                Iterator it = new TreeSet(list).iterator();
+                while (it.hasNext()) {
+                    sb.append(((String) it.next()) + " ");
+                }
+            }
+            String sb2 = sb.toString();
+            z = this.mEdmStorageProvider.putString(enforceSecurityPermission$1.mCallerUid, 0, "PASSWORD", "passwordForbiddenStrings", sb2);
+            if (z) {
+                int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+                int i = enforceSecurityPermission$1.mCallerUid;
+                Injector injector = this.mInjector;
+                PasswordPolicy$$ExternalSyntheticLambda3 passwordPolicy$$ExternalSyntheticLambda3 = new PasswordPolicy$$ExternalSyntheticLambda3(i, sb2, callingOrCurrentUserId, 0);
+                injector.getClass();
+                Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda3);
+            }
+        } catch (Exception unused) {
+            Log.w("PasswordPolicy", "setForbiddenStrings() failed.");
+        }
+        return z;
+    }
+
+    public final void setHomeAndRecentKey(int i) {
+        IStatusBarService iStatusBarService;
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            if (this.mStatusBarService == null) {
+                synchronized (this) {
+                    try {
+                        if (this.mStatusBarService == null) {
+                            IStatusBarService asInterface = IStatusBarService.Stub.asInterface(ServiceManager.getService("statusbar"));
+                            this.mStatusBarService = asInterface;
+                            if (asInterface == null) {
+                                Log.d("PasswordPolicy", "warning: no STATUS_BAR_SERVICE");
+                            }
+                        }
+                        iStatusBarService = this.mStatusBarService;
+                    } finally {
+                    }
+                }
+                this.mStatusBarService = iStatusBarService;
+            }
+            IStatusBarService iStatusBarService2 = this.mStatusBarService;
+            if (iStatusBarService2 != null) {
+                if (i > 0) {
+                    iStatusBarService2.disable(18874368, this.mToken, "PasswordPolicy");
+                } else {
+                    iStatusBarService2.disable(0, this.mToken, "PasswordPolicy");
+                }
+            }
+            KeyCodeMediatorImpl keyCodeMediatorImpl = this.mKeyCodeMediator;
+            if (keyCodeMediatorImpl == null) {
+                Log.e("PasswordPolicy", "mKeyCodeMediator must not be null! This will cause problems on hardware key restriction.");
+            } else {
+                keyCodeMediatorImpl.update(3);
+                this.mKeyCodeMediator.update(1001);
+                this.mKeyCodeMediator.update(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CREDENTIAL_MANAGEMENT_APP_REMOVED);
+            }
+        } catch (Exception unused) {
+            Log.d("PasswordPolicy", "setHomeAndRecentKey was failed");
+        }
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+    }
+
+    public final void setKeyguardDisabledFeatures(ContextInfo contextInfo, ComponentName componentName, int i) {
+        ContextInfo m = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo);
+        if (i != 0 && i != 16) {
+            throw new IllegalArgumentException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "Invalid features ", " for container"));
+        }
+        if (this.mService != null) {
+            int i2 = m.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 9);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final void setKeyguardDisabledFeaturesInternal(ComponentName componentName, int i, int i2) {
+        int callingUid = Binder.getCallingUid();
+        if (UserHandle.getAppId(callingUid) != 5250 && UserHandle.getAppId(callingUid) != Process.myUid()) {
+            throw new SecurityException("Can only be called by system user");
+        }
+        if (i != 0 && (i & 16) == 0) {
+            NetworkScoreService$$ExternalSyntheticOutline0.m(i, "setKeyguardDisabledFeatures() which not supported ", "PasswordPolicy");
+            return;
+        }
+        try {
+            if (this.mEdmStorageProvider.putGenericValueAsUser(i2, "keyguardDisabledFeatures", String.valueOf(1))) {
+                Log.d("PasswordPolicy", "setKeyguardDisabledFeatures() true");
+            } else {
+                Log.d("PasswordPolicy", "setKeyguardDisabledFeatures() false");
+            }
+        } catch (Exception e) {
+            Log.w("PasswordPolicy", "setKeyguardDisabledFeatures() failed");
+            e.printStackTrace();
+        }
+    }
+
+    public final boolean setMaximumCharacterOccurrences(ContextInfo contextInfo, int i) {
+        if (i < 0) {
+            return false;
+        }
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission$1.mCallerUid, 0, i, "PASSWORD", "passwordMaximumCharacterOccurences");
+        if (putInt) {
+            int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+            int i2 = enforceSecurityPermission$1.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda20 passwordPolicy$$ExternalSyntheticLambda20 = new PasswordPolicy$$ExternalSyntheticLambda20(i2, i, callingOrCurrentUserId, 2);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda20);
+        }
+        return putInt;
+    }
+
+    public final boolean setMaximumCharacterSequenceLength(ContextInfo contextInfo, int i) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        if (i < 0) {
+            return false;
+        }
+        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission$1.mCallerUid, enforceSecurityPermission$1.mContainerId, i, "PASSWORD", "passwordMaximumCharacterSequenceLength");
+        if (putInt) {
+            int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+            int i2 = enforceSecurityPermission$1.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda20 passwordPolicy$$ExternalSyntheticLambda20 = new PasswordPolicy$$ExternalSyntheticLambda20(i2, i, callingOrCurrentUserId, 0);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda20);
+        }
+        return putInt;
+    }
+
+    public final boolean setMaximumFailedPasswordsForDisable(ContextInfo contextInfo, int i) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        if (i < 0) {
+            return false;
+        }
+        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission$1.mCallerUid, 0, i, "PASSWORD", "passwordAttemptDeviceDisable");
+        if (putInt) {
+            int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+            int i2 = enforceSecurityPermission$1.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda20 passwordPolicy$$ExternalSyntheticLambda20 = new PasswordPolicy$$ExternalSyntheticLambda20(i2, i, callingOrCurrentUserId, 3);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda20);
+            int maximumFailedPasswordsForDisable = getMaximumFailedPasswordsForDisable(enforceSecurityPermission$1);
+            Injector injector2 = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda4 passwordPolicy$$ExternalSyntheticLambda4 = new PasswordPolicy$$ExternalSyntheticLambda4(this, maximumFailedPasswordsForDisable, callingOrCurrentUserId, 0);
+            injector2.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda4);
+        }
+        return putInt;
+    }
+
+    public final void setMaximumFailedPasswordsForWipe(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 0);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final boolean setMaximumNumericSequenceLength(ContextInfo contextInfo, int i) {
+        if (i < 0) {
+            return false;
+        }
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission$1.mCallerUid, 0, i, "PASSWORD", "passwordMaximumNumericSequenceLength");
+        if (putInt) {
+            int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+            int i2 = enforceSecurityPermission$1.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda20 passwordPolicy$$ExternalSyntheticLambda20 = new PasswordPolicy$$ExternalSyntheticLambda20(i2, i, callingOrCurrentUserId, 4);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda20);
+        }
+        return putInt;
+    }
+
+    public final void setMaximumTimeToLock(ContextInfo contextInfo, ComponentName componentName, long j) {
+        ContextInfo m = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo);
+        if (this.mService != null) {
+            int i = m.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda5 passwordPolicy$$ExternalSyntheticLambda5 = new PasswordPolicy$$ExternalSyntheticLambda5(this, componentName, j, i, 0);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda5);
+        }
+    }
+
+    @Override // com.android.server.enterprise.common.KeyCodeRestrictionCallback
+    public final void setMediator(KeyCodeMediatorImpl keyCodeMediatorImpl) {
+        if (this.mKeyCodeMediator == null) {
+            this.mKeyCodeMediator = keyCodeMediatorImpl;
+            ((HashSet) keyCodeMediatorImpl.mRestrictionCallbacks).add(this);
+        }
+    }
+
+    public final boolean setMinimumCharacterChangeLength(ContextInfo contextInfo, int i) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        if (i < 0) {
+            return false;
+        }
+        boolean putInt = this.mEdmStorageProvider.putInt(enforceSecurityPermission$1.mCallerUid, enforceSecurityPermission$1.mContainerId, i, "PASSWORD", "passwordMinimumCharacterChangeUpdatingPasswordLength");
+        if (putInt) {
+            int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+            int i2 = enforceSecurityPermission$1.mCallerUid;
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda20 passwordPolicy$$ExternalSyntheticLambda20 = new PasswordPolicy$$ExternalSyntheticLambda20(i2, i, callingOrCurrentUserId, 1);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda20);
+        }
+        return putInt;
+    }
+
+    public final boolean setMultifactorAuthenticationEnabled(ContextInfo contextInfo, boolean z) {
+        ContextInfo enforceDoPoOnlySecurityPermissionByContext = enforceDoPoOnlySecurityPermissionByContext(contextInfo);
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceDoPoOnlySecurityPermissionByContext);
+        final Context context = this.mContext;
+        Injector injector = this.mInjector;
+        final int i = 0;
+        FunctionalUtils.ThrowingSupplier throwingSupplier = new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda52
+            public final Object getOrThrow() {
+                int i2 = i;
+                Context context2 = context;
+                switch (i2) {
+                    case 0:
+                        return Boolean.valueOf(context2.getPackageManager().hasSystemFeature("android.hardware.fingerprint") && ((FingerprintManager) context2.getSystemService(FingerprintManager.class)).isHardwareDetected());
+                    default:
+                        return Boolean.valueOf(context2.getPackageManager().hasSystemFeature("android.hardware.biometrics.iris"));
+                }
+            }
+        };
+        injector.getClass();
+        if (!((Boolean) Binder.withCleanCallingIdentity(throwingSupplier)).booleanValue()) {
+            final Context context2 = this.mContext;
+            Injector injector2 = this.mInjector;
+            final int i2 = 1;
+            FunctionalUtils.ThrowingSupplier throwingSupplier2 = new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda52
+                public final Object getOrThrow() {
+                    int i22 = i2;
+                    Context context22 = context2;
+                    switch (i22) {
+                        case 0:
+                            return Boolean.valueOf(context22.getPackageManager().hasSystemFeature("android.hardware.fingerprint") && ((FingerprintManager) context22.getSystemService(FingerprintManager.class)).isHardwareDetected());
+                        default:
+                            return Boolean.valueOf(context22.getPackageManager().hasSystemFeature("android.hardware.biometrics.iris"));
+                    }
+                }
+            };
+            injector2.getClass();
+            if (!((Boolean) Binder.withCleanCallingIdentity(throwingSupplier2)).booleanValue()) {
+                Log.d("PasswordPolicy", "setMultifactorAuthenticationEnabled: two-factor authentication not available");
+                return false;
+            }
+        }
+        if (z) {
+            Injector injector3 = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda2 passwordPolicy$$ExternalSyntheticLambda2 = new PasswordPolicy$$ExternalSyntheticLambda2(this, callingOrCurrentUserId, 1);
+            injector3.getClass();
+            if (((Integer) Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda2)).intValue() == 458752) {
+                NetworkScorerAppManager$$ExternalSyntheticOutline0.m(callingOrCurrentUserId, "two-factor authentication not available because Lock Quality set to Smartcard for user = ", "PasswordPolicy");
+                return false;
+            }
+        }
+        Log.d("PasswordPolicy", "setMultifactorAuthenticationEnabled is called for user : " + enforceDoPoOnlySecurityPermissionByContext.mContainerId + ", caller uid - " + enforceDoPoOnlySecurityPermissionByContext.mCallerUid + ", enable - " + z);
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("PASSWORD", enforceDoPoOnlySecurityPermissionByContext.mCallerUid, z, 0, "multifactorAuthEnabled");
+        if (putBoolean) {
+            Injector injector4 = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda7 passwordPolicy$$ExternalSyntheticLambda7 = new PasswordPolicy$$ExternalSyntheticLambda7(this, callingOrCurrentUserId, z, 0);
+            injector4.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda7);
+            boolean z2 = Settings.Secure.getIntForUser(this.mContext.getContentResolver(), "knox_finger_print_plus", 0, callingOrCurrentUserId) == 1;
+            if (!z2 && z) {
+                Log.d("PasswordPolicy", "EnforcePwdChange is called for user as Multifcator needs to be enforced for : " + enforceDoPoOnlySecurityPermissionByContext.mContainerId);
+                enforcePwdChange(enforceDoPoOnlySecurityPermissionByContext);
+            }
+            if (z2 && !z && callingOrCurrentUserId == 0) {
+                ((PersonaManagerAdapter) this.mPersonaManagerAdapter).getClass();
+                if (SemPersonaManager.isDoEnabled(callingOrCurrentUserId) || ((DevicePolicyManager) ((PersonaManagerAdapter) this.mPersonaManagerAdapter).mContext.getSystemService("device_policy")).isOrganizationOwnedDeviceWithManagedProfile()) {
+                    Log.d("PasswordPolicy", "EnforcePwdChange is called for DO case as Multifcator needs to be removed for : " + enforceDoPoOnlySecurityPermissionByContext.mContainerId);
+                    enforcePwdChange(enforceDoPoOnlySecurityPermissionByContext);
+                }
+            }
+        }
+        return putBoolean;
+    }
+
+    public final boolean setPasswordChangeTimeout(ContextInfo contextInfo, int i) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        if (i < 0) {
+            return false;
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("passwordChangeTimeout", Integer.valueOf(i));
+        return this.mEdmStorageProvider.putValues(enforceSecurityPermission$1.mCallerUid, enforceSecurityPermission$1.mContainerId, "PASSWORD", contentValues);
+    }
+
+    public final void setPasswordExpirationTimeout(ContextInfo contextInfo, ComponentName componentName, long j) {
+        int i = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda5 passwordPolicy$$ExternalSyntheticLambda5 = new PasswordPolicy$$ExternalSyntheticLambda5(this, componentName, j, i, 1);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda5);
+        }
+    }
+
+    public final void setPasswordHistoryLength(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 3);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final boolean setPasswordLockDelay(ContextInfo contextInfo, int i) {
+        ContextInfo enforceOwnerOnlyAndActiveAdminPermission = getEDM$28().enforceOwnerOnlyAndActiveAdminPermission(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_SECURITY")));
+        ((PersonaManagerAdapter) this.mPersonaManagerAdapter).getClass();
+        if ("2.0".equals(SemPersonaManager.getKnoxInfo().getString("version"))) {
+            IPersonaManagerAdapter iPersonaManagerAdapter = this.mPersonaManagerAdapter;
+            int i2 = enforceOwnerOnlyAndActiveAdminPermission.mContainerId;
+            ((PersonaManagerAdapter) iPersonaManagerAdapter).getClass();
+            if (SemPersonaManager.isKnoxId(i2)) {
+                Log.d("PasswordPolicy", "setPasswordLockDelay() failed. because not supported in Knox 2.0");
+                return false;
+            }
+        }
+        if (i < -1) {
+            return false;
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("unlockDelay", Integer.valueOf(i));
+        boolean putValues = this.mEdmStorageProvider.putValues(enforceOwnerOnlyAndActiveAdminPermission.mCallerUid, enforceOwnerOnlyAndActiveAdminPermission.mContainerId, "PASSWORD", contentValues);
+        if (putValues) {
+            int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceOwnerOnlyAndActiveAdminPermission);
+            int passwordLockDelay = getPasswordLockDelay(enforceOwnerOnlyAndActiveAdminPermission.mContainerId);
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda4 passwordPolicy$$ExternalSyntheticLambda4 = new PasswordPolicy$$ExternalSyntheticLambda4(this, callingOrCurrentUserId, passwordLockDelay, 3);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda4);
+        }
+        return putValues;
+    }
+
+    public final void setPasswordMinimumLength(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 7);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final void setPasswordMinimumLetters(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 6);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final void setPasswordMinimumLowerCase(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 2);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final void setPasswordMinimumNonLetter(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 4);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final void setPasswordMinimumNumeric(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 8);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final void setPasswordMinimumSymbols(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 10);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final void setPasswordMinimumUpperCase(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 5);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final void setPasswordQuality(ContextInfo contextInfo, ComponentName componentName, int i) {
+        int i2 = PasswordPolicy$$ExternalSyntheticOutline0.m(this, contextInfo, componentName, contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda6 passwordPolicy$$ExternalSyntheticLambda6 = new PasswordPolicy$$ExternalSyntheticLambda6(this, componentName, i, i2, 1);
+            injector.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda6);
+        }
+    }
+
+    public final boolean setPasswordVisibilityEnabled(ContextInfo contextInfo, boolean z) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+        Injector injector = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda7 passwordPolicy$$ExternalSyntheticLambda7 = new PasswordPolicy$$ExternalSyntheticLambda7(this, callingOrCurrentUserId, z, 2);
+        injector.getClass();
+        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda7);
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("PASSWORD", enforceSecurityPermission$1.mCallerUid, z, 0, "passwordVisibilityEnabled");
+        if (putBoolean) {
+            Injector injector2 = this.mInjector;
+            PasswordPolicy$$ExternalSyntheticLambda7 passwordPolicy$$ExternalSyntheticLambda72 = new PasswordPolicy$$ExternalSyntheticLambda7(this, callingOrCurrentUserId, z, 3);
+            injector2.getClass();
+            Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda72);
+        }
+        return putBoolean;
+    }
+
+    public final boolean setPwdChangeRequested(ContextInfo contextInfo, int i) {
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        int i2 = contextInfo.mContainerId;
+        return setPwdChangeRequestedForUser(i, callingOrCurrentUserId);
+    }
+
+    public final synchronized boolean setPwdChangeRequestedForInner(int i) {
+        boolean z;
+        checkPackageCallerOrEnforceSystemUser();
+        try {
+            z = this.mEdmStorageProvider.putGenericValueAsUser(!DualDarManager.isOnDeviceOwnerEnabled() ? -1 : new LockPatternUtils(this.mContext).getLockPatternUtilForDualDarDo().getInnerAuthUserForDo(), "passwordChangeRequested", Integer.toString(i));
+            if (i == 0) {
+                setHomeAndRecentKey(i);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            z = false;
+        }
+        return z;
+    }
+
+    public final synchronized boolean setPwdChangeRequestedForUser(int i, int i2) {
+        boolean z;
+        try {
+            checkPackageCallerOrEnforceSystemUser();
+            z = false;
+            try {
+                boolean putGenericValueAsUser = this.mEdmStorageProvider.putGenericValueAsUser(i2, "passwordChangeRequested", Integer.toString(i));
+                if (DualDarManager.isOnDeviceOwnerEnabled() && i == 1) {
+                    putGenericValueAsUser = putGenericValueAsUser && setPwdChangeRequestedForInner(i);
+                }
+                if (this.mEDM == null) {
+                    getEDM$28();
+                }
+                if (putGenericValueAsUser) {
+                    int isChangeRequestedAsUserFromDb = isChangeRequestedAsUserFromDb(i2);
+                    this.mPolicyCache.setChangeRequestedAsUser(i2, isChangeRequestedAsUserFromDb);
+                    Injector injector = this.mInjector;
+                    PasswordPolicy$$ExternalSyntheticLambda4 passwordPolicy$$ExternalSyntheticLambda4 = new PasswordPolicy$$ExternalSyntheticLambda4(this, i2, isChangeRequestedAsUserFromDb, 2);
+                    injector.getClass();
+                    Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda4);
+                    if (i2 == 0 && (i == 0 || i == -1)) {
+                        Injector injector2 = this.mInjector;
+                        PasswordPolicy$$ExternalSyntheticLambda51 passwordPolicy$$ExternalSyntheticLambda51 = new PasswordPolicy$$ExternalSyntheticLambda51(0, this);
+                        injector2.getClass();
+                        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda51);
+                        if (!DualDarManager.isOnDeviceOwnerEnabled()) {
+                            setHomeAndRecentKey(i);
+                        }
+                    }
+                }
+                if (i == 1) {
+                    new LockPatternUtils(this.mContext).requireStrongAuth(2, i2);
+                }
+                if (!this.mEDM.getRestrictionPolicy().isSettingsChangesAllowed(false)) {
+                    Injector injector3 = this.mInjector;
+                    PasswordPolicy$$ExternalSyntheticLambda14 passwordPolicy$$ExternalSyntheticLambda14 = new PasswordPolicy$$ExternalSyntheticLambda14(this, i2, 0);
+                    injector3.getClass();
+                    Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda14);
+                }
+                z = putGenericValueAsUser;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Throwable th) {
+            throw th;
+        }
+        return z;
+    }
+
+    public final boolean setRequiredPasswordPattern(ContextInfo contextInfo, String str) {
+        String valueOf;
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        if (str == null || str.length() == 0) {
+            return false;
+        }
+        try {
+            Pattern.compile(str);
+            boolean putString = this.mEdmStorageProvider.putString(enforceSecurityPermission$1.mCallerUid, enforceSecurityPermission$1.mContainerId, "PASSWORD", "passwordRequiredPattern", str);
+            if (putString) {
+                if (getCurrentPasswordOwner(enforceSecurityPermission$1) != enforceSecurityPermission$1.mCallerUid) {
+                    removeOwnerFromStack(enforceSecurityPermission$1);
+                    int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+                    this.mEdmStorageProvider.putGenericValueAsUser(callingOrCurrentUserId, "passwordPatternOwner", String.valueOf(enforceSecurityPermission$1.mCallerUid));
+                    String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser(callingOrCurrentUserId, "passwordOwnerHistory");
+                    if (genericValueAsUser != null) {
+                        StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(genericValueAsUser, ",");
+                        m.append(String.valueOf(enforceSecurityPermission$1.mCallerUid));
+                        valueOf = m.toString();
+                    } else {
+                        valueOf = String.valueOf(enforceSecurityPermission$1.mCallerUid);
+                    }
+                    this.mEdmStorageProvider.putGenericValueAsUser(callingOrCurrentUserId, "passwordOwnerHistory", valueOf);
+                }
+                int callingOrCurrentUserId2 = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+                int i = enforceSecurityPermission$1.mCallerUid;
+                Injector injector = this.mInjector;
+                PasswordPolicy$$ExternalSyntheticLambda3 passwordPolicy$$ExternalSyntheticLambda3 = new PasswordPolicy$$ExternalSyntheticLambda3(i, str, callingOrCurrentUserId2, 1);
+                injector.getClass();
+                Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda3);
+            }
+            return putString;
+        } catch (Exception unused) {
+            return false;
+        }
+    }
+
+    public final boolean setResetPasswordToken(ContextInfo contextInfo, final ComponentName componentName, final byte[] bArr) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        Boolean bool = Boolean.FALSE;
+        if (this.mService != null) {
+            final int i = enforceSecurityPermission$1.mCallerUid;
+            Injector injector = this.mInjector;
+            FunctionalUtils.ThrowingSupplier throwingSupplier = new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda1
+                public final Object getOrThrow() {
+                    PasswordPolicy passwordPolicy = PasswordPolicy.this;
+                    int i2 = i;
+                    ComponentName componentName2 = componentName;
+                    byte[] bArr2 = bArr;
+                    passwordPolicy.getClass();
+                    return Boolean.valueOf(passwordPolicy.mService.setResetPasswordTokenMDM(componentName2, bArr2, UserHandle.getUserId(i2)));
+                }
+            };
+            injector.getClass();
+            bool = (Boolean) Binder.withCleanCallingIdentity(throwingSupplier);
+        }
+        return bool.booleanValue();
+    }
+
+    public final boolean setScreenLockPatternVisibilityEnabled(ContextInfo contextInfo, boolean z) {
+        ContextInfo enforceSecurityPermission$1 = enforceSecurityPermission$1(contextInfo);
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("PASSWORD", enforceSecurityPermission$1.mCallerUid, z, 0, "screenLockPatternVisibility");
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceSecurityPermission$1);
+        Injector injector = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda7 passwordPolicy$$ExternalSyntheticLambda7 = new PasswordPolicy$$ExternalSyntheticLambda7(this, z, callingOrCurrentUserId);
+        injector.getClass();
+        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda7);
+        return putBoolean;
+    }
+
+    public final void setTrustAgentConfiguration(ContextInfo contextInfo, final ComponentName componentName, final ComponentName componentName2, final PersistableBundle persistableBundle) {
+        Log.d("PasswordPolicy", "setTrustAgentConfiguration");
+        final int i = enforceSecurityPermission$1(contextInfo).mCallerUid;
+        if (this.mService != null) {
+            Injector injector = this.mInjector;
+            FunctionalUtils.ThrowingRunnable throwingRunnable = new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda26
+                public final void runOrThrow() {
+                    PasswordPolicy passwordPolicy = PasswordPolicy.this;
+                    int i2 = i;
+                    ComponentName componentName3 = componentName;
+                    ComponentName componentName4 = componentName2;
+                    PersistableBundle persistableBundle2 = persistableBundle;
+                    passwordPolicy.getClass();
+                    try {
+                        passwordPolicy.mService.setTrustAgentConfigurationMDM(UserHandle.getUserId(i2), componentName3, componentName4, persistableBundle2);
+                    } catch (RemoteException e) {
+                        Log.w("PasswordPolicy", "Failed talking with device policy service", e);
+                    }
+                }
+            };
+            injector.getClass();
+            Binder.withCleanCallingIdentity(throwingRunnable);
+        }
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void systemReady() {
+    }
+
+    public final boolean unlock(ContextInfo contextInfo) {
+        enforceDoPoOnlySecurityPermissionByContext(contextInfo);
+        final int i = contextInfo.mContainerId;
+        StringBuilder sb = new StringBuilder("unlock is called for user : ");
+        sb.append(contextInfo.mContainerId);
+        sb.append(", caller uid - ");
+        GestureWakeup$$ExternalSyntheticOutline0.m(sb, contextInfo.mCallerUid, "PasswordPolicy");
+        try {
+            if (this.mService.isProfileOwnerOfOrganizationOwnedDeviceMDM(contextInfo.mContainerId)) {
+                i = 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        final Bundle m = SystemUpdateManagerService$$ExternalSyntheticOutline0.m(i, "android.intent.extra.user_handle");
+        final int i2 = contextInfo.mCallerUid;
+        Injector injector = this.mInjector;
+        FunctionalUtils.ThrowingSupplier throwingSupplier = new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.enterprise.security.PasswordPolicy$$ExternalSyntheticLambda11
+            public final Object getOrThrow() {
+                PasswordPolicy passwordPolicy = PasswordPolicy.this;
+                int i3 = i2;
+                int i4 = i;
+                Bundle bundle = m;
+                passwordPolicy.getClass();
+                AuditLog.logEventAsUser(UserHandle.getUserId(i3), 49, new Object[]{Integer.valueOf(i3)});
+                passwordPolicy.setAdminLockEnabledSystemUI(i4, false, false);
+                return ContainerProxy.sendPolicyUpdate("knox.container.proxy.POLICY_ADMIN_UNLOCK", bundle);
+            }
+        };
+        injector.getClass();
+        return ((Bundle) Binder.withCleanCallingIdentity(throwingSupplier)).getInt("android.intent.extra.RETURN_RESULT") == 0;
+    }
+
+    /* JADX WARN: Type inference failed for: r1v12, types: [boolean, int] */
+    public final void updateSystemUIMonitor$9(int i) {
+        boolean z;
+        int i2;
+        if (new LockPatternUtils(this.mContext).isSeparateProfileChallengeEnabled(i)) {
+            i = ((UserManager) this.mContext.getSystemService("user")).getProfileParent(i).getUserHandle().getIdentifier();
+        }
+        int passwordLockDelay = getPasswordLockDelay(i);
+        Injector injector = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda4 passwordPolicy$$ExternalSyntheticLambda4 = new PasswordPolicy$$ExternalSyntheticLambda4(this, i, passwordLockDelay, 3);
+        injector.getClass();
+        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda4);
+        int isChangeRequestedAsUserFromDb = isChangeRequestedAsUserFromDb(i);
+        Injector injector2 = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda4 passwordPolicy$$ExternalSyntheticLambda42 = new PasswordPolicy$$ExternalSyntheticLambda4(this, i, isChangeRequestedAsUserFromDb, 2);
+        injector2.getClass();
+        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda42);
+        int maximumFailedPasswordsForDisable = getMaximumFailedPasswordsForDisable(i);
+        Injector injector3 = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda4 passwordPolicy$$ExternalSyntheticLambda43 = new PasswordPolicy$$ExternalSyntheticLambda4(this, maximumFailedPasswordsForDisable, i, 0);
+        injector3.getClass();
+        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda43);
+        String str = SystemProperties.get("ro.organization_owned");
+        if (str != null && str.equals("false")) {
+            Iterator it = ((ArrayList) getAllOneLockedChildUsers(i)).iterator();
+            while (it.hasNext()) {
+                Integer num = (Integer) it.next();
+                int intValue = num.intValue();
+                int maximumFailedPasswordsForDisable2 = getMaximumFailedPasswordsForDisable(num.intValue());
+                Injector injector4 = this.mInjector;
+                PasswordPolicy$$ExternalSyntheticLambda4 passwordPolicy$$ExternalSyntheticLambda44 = new PasswordPolicy$$ExternalSyntheticLambda4(this, maximumFailedPasswordsForDisable2, intValue, 0);
+                injector4.getClass();
+                Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda44);
+            }
+        }
+        boolean isExternalStorageForFailedPasswordsWipeExcluded = isExternalStorageForFailedPasswordsWipeExcluded(i);
+        Injector injector5 = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda7 passwordPolicy$$ExternalSyntheticLambda7 = new PasswordPolicy$$ExternalSyntheticLambda7(this, i, isExternalStorageForFailedPasswordsWipeExcluded, 4);
+        injector5.getClass();
+        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda7);
+        Iterator it2 = this.mEdmStorageProvider.getBooleanListAsUser(i, "PASSWORD", "multifactorAuthEnabled").iterator();
+        while (true) {
+            if (!it2.hasNext()) {
+                z = false;
+                break;
+            } else if (((Boolean) it2.next()).booleanValue()) {
+                z = true;
+                break;
+            }
+        }
+        Injector injector6 = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda7 passwordPolicy$$ExternalSyntheticLambda72 = new PasswordPolicy$$ExternalSyntheticLambda7(this, i, z, 0);
+        injector6.getClass();
+        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda72);
+        boolean isPasswordVisibilityEnabledAsUser = isPasswordVisibilityEnabledAsUser(i);
+        Injector injector7 = this.mInjector;
+        PasswordPolicy$$ExternalSyntheticLambda7 passwordPolicy$$ExternalSyntheticLambda73 = new PasswordPolicy$$ExternalSyntheticLambda7(this, i, isPasswordVisibilityEnabledAsUser, 3);
+        injector7.getClass();
+        Binder.withCleanCallingIdentity(passwordPolicy$$ExternalSyntheticLambda73);
+        UserManager userManager = this.mUserManager;
+        UserInfo userInfo = userManager != null ? userManager.getUserInfo(i) : null;
+        if (userInfo != null) {
+            ?? isAdminLocked = userInfo.isAdminLocked();
+            i2 = isAdminLocked;
+            if (userInfo.isLicenseLocked()) {
+                i2 = isAdminLocked + 2;
+            }
+        } else {
+            i2 = 0;
+        }
+        setAdminLockEnabledSystemUI(i, (i2 & 1) != 0, (i2 & 2) != 0);
     }
 }

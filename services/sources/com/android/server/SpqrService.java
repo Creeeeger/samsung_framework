@@ -1,14 +1,15 @@
 package com.android.server;
 
 import android.content.Context;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.os.IBinder;
 import android.os.ISpqrService;
-import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.Slog;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SpqrService extends ProfileService {
+public final class SpqrService extends ProfileService {
     public volatile ISpqrService mService;
 
     public SpqrService(Context context) {
@@ -16,30 +17,27 @@ public class SpqrService extends ProfileService {
         this.packageBlockList = initPackageBlockList("/system/etc/spqr-package-blocklist.conf");
     }
 
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        lambda$selectSuitableProfileService$0();
+    @Override // com.android.server.ProfileService
+    public final boolean checkAppId(int i) {
+        if (i >= 0) {
+            return true;
+        }
+        Slog.w(this.TAG, VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Invalid app id: "));
+        return false;
     }
 
     @Override // com.android.server.ProfileService
-    public IBinder getBinderOfService() {
+    public final IBinder getBinderOfService() {
         return ServiceManager.getService("spqr_service");
     }
 
     @Override // com.android.server.ProfileService
-    public void setInterfaceOfService(IBinder iBinder) {
-        if (iBinder != null) {
-            this.mService = ISpqrService.Stub.asInterface(iBinder);
-        }
-    }
-
-    @Override // com.android.server.ProfileService
-    public void initializeInterfaceOfService() {
+    public final void initializeInterfaceOfService() {
         this.mService = null;
     }
 
     @Override // com.android.server.ProfileService
-    public boolean isServiceRunning() {
+    public final boolean isServiceRunning() {
         if (this.mService != null) {
             return true;
         }
@@ -48,26 +46,7 @@ public class SpqrService extends ProfileService {
     }
 
     @Override // com.android.server.ProfileService
-    public boolean checkAppId(int i) {
-        if (i >= 0) {
-            return true;
-        }
-        Slog.w(this.TAG, "Invalid app id: " + i);
-        return false;
-    }
-
-    public boolean createInvariantProfileLI(String str, String str2, int i, int i2, String str3, String str4, String str5, String str6) {
-        if (!checkUserAndService(i, i2)) {
-            return false;
-        }
-        try {
-        } catch (RemoteException | NullPointerException e) {
-            Slog.e(this.TAG, "Failed to create invariant profile: " + e.getMessage());
-        }
-        if (this.mService.createInvariantProfile(str, str2, i, i2, str3, str4, str5, str6)) {
-            return true;
-        }
-        Slog.e(this.TAG, "Failed to prepare new profile for " + str3);
-        return false;
+    public final void setInterfaceOfService(IBinder iBinder) {
+        this.mService = ISpqrService.Stub.asInterface(iBinder);
     }
 }

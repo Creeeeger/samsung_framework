@@ -1,6 +1,7 @@
 package com.samsung.android.server.audio;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.ContentValues;
 import android.content.Context;
 import android.media.AudioSystem;
 import android.os.Handler;
@@ -8,23 +9,24 @@ import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.Log;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.display.DisplayPowerController2;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.utils.EventLogger;
 import com.samsung.android.audio.AudioManagerHelper;
 import com.samsung.android.media.AudioParameter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 import java.util.function.BiFunction;
-import java.util.function.Predicate;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class DualA2dpVolumeManager {
+public final class DualA2dpVolumeManager {
     public final int MAX_VOLUME;
-    public Handler mBrokerHandler;
-    public AudioSettingsHelper mSettingHelper;
-    public static final float[] VOLUME_TABLE = {DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 0.007943f, 0.01122f, 0.015849f, 0.022387f, 0.031623f, 0.044668f, 0.063096f, 0.089125f, 0.125893f, 0.177828f, 0.251189f, 0.354813f, 0.501187f, 0.707946f, 1.0f};
-    public static float[] FINE_VOLUME_TABLE = new float[FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__BIND_CROSS_PROFILE_SERVICE];
+    public final Handler mBrokerHandler;
+    public final AudioSettingsHelper mSettingHelper;
+    public static final float[] VOLUME_TABLE = {FullScreenMagnificationGestureHandler.MAX_SCALE, 0.007943f, 0.01122f, 0.015849f, 0.022387f, 0.031623f, 0.044668f, 0.063096f, 0.089125f, 0.125893f, 0.177828f, 0.251189f, 0.354813f, 0.501187f, 0.707946f, 1.0f};
+    public static final float[] FINE_VOLUME_TABLE = new float[FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__BIND_CROSS_PROFILE_SERVICE];
     public boolean mDualModeEnabled = false;
     public BluetoothDevice mActiveDevice = null;
     public boolean needVolumeChangedIntent = false;
@@ -37,298 +39,116 @@ public class DualA2dpVolumeManager {
     public final ArrayMap mAbsVolSupported = new ArrayMap(2);
     public final ArrayMap mStoredAbsVolSupported = new ArrayMap();
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PersistVolumeWorker implements Runnable {
+        public final String mAddress;
+        public int mVolume;
+
+        public PersistVolumeWorker(String str, int i) {
+            this.mAddress = str;
+            this.mVolume = i;
+        }
+
+        @Override // java.lang.Runnable
+        public final void run() {
+            AudioSettingsHelper audioSettingsHelper = DualA2dpVolumeManager.this.mSettingHelper;
+            String str = this.mAddress;
+            int i = this.mVolume;
+            audioSettingsHelper.getClass();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("_addr", str);
+            contentValues.put("_index", Integer.valueOf(i));
+            audioSettingsHelper.set(contentValues, "device_addr", "_addr='" + str + "'");
+        }
+    }
+
+    static {
+        int i = 0;
+        while (i < 15) {
+            float[] fArr = VOLUME_TABLE;
+            int i2 = i + 1;
+            float f = (fArr[i2] - fArr[i]) / 10.0f;
+            for (int i3 = 0; i3 < 10; i3++) {
+                FINE_VOLUME_TABLE[(i * 10) + i3] = (i3 * f) + VOLUME_TABLE[i];
+            }
+            i = i2;
+        }
+        FINE_VOLUME_TABLE[150] = 1.0f;
+    }
+
     public DualA2dpVolumeManager(Context context, Handler handler, final int i) {
         this.MAX_VOLUME = i * 10;
-        AudioExecutor.execute(new Runnable() { // from class: com.samsung.android.server.audio.DualA2dpVolumeManager$$ExternalSyntheticLambda2
+        AudioExecutor.execute(new Runnable() { // from class: com.samsung.android.server.audio.DualA2dpVolumeManager$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
-                DualA2dpVolumeManager.this.lambda$new$0(i);
+                DualA2dpVolumeManager dualA2dpVolumeManager = DualA2dpVolumeManager.this;
+                int i2 = i;
+                dualA2dpVolumeManager.getClass();
+                if (AudioSystem.checkAudioFlinger() != 0) {
+                    Log.e("AS.DualA2dpManager", "Cannot access audioserver");
+                    return;
+                }
+                String parameters = AudioSystem.getParameters(new AudioParameter.Builder().setParam("audioParam").setParam("l_volume_table").build().toString());
+                if (TextUtils.isEmpty(parameters)) {
+                    Log.e("AS.DualA2dpManager", "cannot get volume tables. using default table");
+                    return;
+                }
+                float[] fArr = new float[i2 + 1];
+                StringTokenizer stringTokenizer = new StringTokenizer(parameters, ";");
+                int i3 = 0;
+                while (stringTokenizer.hasMoreTokens() && i3 <= i2) {
+                    String nextToken = stringTokenizer.nextToken();
+                    int i4 = i3 + 1;
+                    try {
+                        fArr[i3] = Float.parseFloat(nextToken);
+                        i3 = i4;
+                    } catch (NumberFormatException unused) {
+                        NetworkScorerAppManager$$ExternalSyntheticOutline0.m("invalid value ", nextToken, "AS.DualA2dpManager");
+                        return;
+                    }
+                }
+                if (i3 <= i2) {
+                    Log.e("AS.DualA2dpManager", "incorrect volume table, using default table");
+                    return;
+                }
+                int i5 = 0;
+                while (true) {
+                    float[] fArr2 = DualA2dpVolumeManager.FINE_VOLUME_TABLE;
+                    if (i5 >= i2) {
+                        fArr2[dualA2dpVolumeManager.MAX_VOLUME] = 1.0f;
+                        return;
+                    }
+                    int i6 = i5 + 1;
+                    float f = (fArr[i6] - fArr[i5]) / 10.0f;
+                    for (int i7 = 0; i7 < 10; i7++) {
+                        fArr2[(i5 * 10) + i7] = (i7 * f) + fArr[i5];
+                    }
+                    i5 = i6;
+                }
             }
         });
         this.mSettingHelper = AudioSettingsHelper.getInstance(context);
         this.mBrokerHandler = handler;
     }
 
-    /* renamed from: makeFineMediaVolumeTable, reason: merged with bridge method [inline-methods] */
-    public final void lambda$new$0(int i) {
-        if (AudioSystem.checkAudioFlinger() != 0) {
-            Log.e("AS.DualA2dpManager", "Cannot access audioserver");
-            return;
-        }
-        String parameters = AudioSystem.getParameters(new AudioParameter.Builder().setParam("audioParam").setParam("l_volume_table").build().toString());
-        if (TextUtils.isEmpty(parameters)) {
-            Log.e("AS.DualA2dpManager", "cannot get volume tables. using default table");
-            return;
-        }
-        float[] fArr = new float[i + 1];
-        StringTokenizer stringTokenizer = new StringTokenizer(parameters, KnoxVpnFirewallHelper.DELIMITER);
-        int i2 = 0;
-        while (stringTokenizer.hasMoreTokens() && i2 <= i) {
-            String nextToken = stringTokenizer.nextToken();
-            int i3 = i2 + 1;
-            try {
-                fArr[i2] = Float.parseFloat(nextToken);
-                i2 = i3;
-            } catch (NumberFormatException unused) {
-                Log.w("AS.DualA2dpManager", "invalid value " + nextToken);
-                return;
-            }
-        }
-        if (i2 <= i) {
-            Log.e("AS.DualA2dpManager", "incorrect volume table, using default table");
-            return;
-        }
-        int i4 = 0;
-        while (i4 < i) {
-            int i5 = i4 + 1;
-            float f = (fArr[i5] - fArr[i4]) / 10.0f;
-            for (int i6 = 0; i6 < 10; i6++) {
-                FINE_VOLUME_TABLE[(i4 * 10) + i6] = fArr[i4] + (i6 * f);
-            }
-            i4 = i5;
-        }
-        FINE_VOLUME_TABLE[this.MAX_VOLUME] = 1.0f;
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:26:0x00a2 A[Catch: all -> 0x011a, TryCatch #0 {, blocks: (B:4:0x0003, B:8:0x0040, B:10:0x0048, B:11:0x005f, B:15:0x0059, B:16:0x0086, B:19:0x008c, B:21:0x0090, B:26:0x00a2, B:27:0x0098, B:28:0x00b9, B:30:0x00d1, B:32:0x00d9, B:33:0x0115, B:34:0x0118, B:39:0x010b), top: B:3:0x0003 }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void connectA2dpDevice(android.bluetooth.BluetoothDevice r6, int r7, int r8, int r9, boolean r10, android.bluetooth.BluetoothDevice r11) {
-        /*
-            Method dump skipped, instructions count: 285
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.server.audio.DualA2dpVolumeManager.connectA2dpDevice(android.bluetooth.BluetoothDevice, int, int, int, boolean, android.bluetooth.BluetoothDevice):void");
-    }
-
-    public boolean setActiveDevice(BluetoothDevice bluetoothDevice) {
-        synchronized (this.mConnectedDevicesVolume) {
-            this.mEventLogger.enqueue(new EventLogger.StringEvent("setActive:" + AudioManagerHelper.getAddressForLog(bluetoothDevice) + ",prev:" + AudioManagerHelper.getAddressForLog(this.mActiveDevice)).printLog("AS.DualA2dpManager"));
-            boolean z = true;
-            if (bluetoothDevice == null) {
-                if (this.mActiveDevice == null) {
-                    z = false;
-                }
-                this.mActiveDevice = null;
-                return z;
-            }
-            if (bluetoothDevice.equals(this.mActiveDevice)) {
-                z = false;
-            }
-            this.mActiveDevice = bluetoothDevice;
-            return z;
-        }
-    }
-
-    public void setA2dpDeviceVolume(BluetoothDevice bluetoothDevice, int i) {
-        synchronized (this.mConnectedDevicesVolume) {
-            this.mVolumeLogger.enqueue(new EventLogger.StringEvent("setVolume:" + AudioManagerHelper.getAddressForLog(bluetoothDevice) + ",idx:" + i));
-            if (!this.mConnectedDevicesVolume.containsKey(bluetoothDevice)) {
-                postSaveVolumeDB(bluetoothDevice.getAddress(), getValidIndex(i));
-            } else {
-                this.needVolumeChangedIntent = setVolume(bluetoothDevice, i);
-                updateMainVolume(i);
-            }
-        }
-    }
-
-    public void updateIndividualA2dpVolumes(int i) {
-        synchronized (this.mConnectedDevicesVolume) {
-            this.mVolumeLogger.enqueue(new EventLogger.StringEvent("updateVolume:" + i + ",main:" + this.mMainVolume));
-            if (!this.mDualModeEnabled) {
-                BluetoothDevice bluetoothDevice = this.mActiveDevice;
-                if (bluetoothDevice != null) {
-                    setVolume(bluetoothDevice, i);
-                    updateMainVolume(i);
-                }
-                return;
-            }
-            int i2 = i - this.mMainVolume;
-            this.mMainVolume = -1;
-            this.mMinVolume = this.MAX_VOLUME;
-            int i3 = 0;
-            for (int i4 = 0; i4 < this.mConnectedDevicesVolume.size(); i4++) {
-                int intValue = ((Integer) this.mConnectedDevicesVolume.valueAt(i4)).intValue();
-                if (intValue == this.MAX_VOLUME) {
-                    i3++;
-                }
-                int i5 = intValue + i2;
-                setVolume((BluetoothDevice) this.mConnectedDevicesVolume.keyAt(i4), i5);
-                if (this.mMainVolume < i5) {
-                    this.mMainVolume = i5;
-                }
-                if (this.mMinVolume > i5) {
-                    this.mMinVolume = i5;
-                }
-                this.mMainVolume = getValidIndex(this.mMainVolume);
-                this.mMinVolume = getValidIndex(this.mMinVolume);
-            }
-            this.needVolumeChangedIntent = i3 != this.mConnectedDevicesVolume.size();
-        }
-    }
-
-    public boolean shouldVolumeChangedIntent() {
-        return this.mDualModeEnabled && this.needVolumeChangedIntent;
-    }
-
-    public int getA2dpDeviceVolume(BluetoothDevice bluetoothDevice) {
-        int intValue;
-        synchronized (this.mConnectedDevicesVolume) {
-            intValue = ((Integer) this.mConnectedDevicesVolume.getOrDefault(bluetoothDevice, -1)).intValue();
-        }
-        return intValue;
-    }
-
-    public ArrayMap getA2dpDevices() {
-        ArrayMap arrayMap;
-        synchronized (this.mConnectedDevicesVolume) {
-            arrayMap = new ArrayMap();
-            if (this.mDualModeEnabled) {
-                arrayMap.putAll(this.mConnectedDevicesVolume);
-            } else {
-                int intValue = ((Integer) this.mConnectedDevicesVolume.getOrDefault(this.mActiveDevice, -1)).intValue();
-                if (intValue != -1) {
-                    arrayMap.put(this.mActiveDevice, Integer.valueOf(intValue));
-                }
-            }
-        }
-        return arrayMap;
-    }
-
-    public int getMainVolume() {
-        synchronized (this.mConnectedDevicesVolume) {
-            if (this.mDualModeEnabled) {
-                return this.mMainVolume;
-            }
-            return ((Integer) this.mConnectedDevicesVolume.getOrDefault(this.mActiveDevice, -1)).intValue();
-        }
-    }
-
-    public BluetoothDevice getActiveDevice() {
+    public final void dump(PrintWriter printWriter) {
         BluetoothDevice bluetoothDevice;
-        synchronized (this.mConnectedDevicesVolume) {
-            bluetoothDevice = this.mActiveDevice;
-        }
-        return bluetoothDevice;
-    }
-
-    public void setDualA2dpMode(boolean z, BluetoothDevice bluetoothDevice) {
-        synchronized (this.mConnectedDevicesVolume) {
-            this.mDualModeEnabled = z;
-            if (z) {
-                updateMainVolume();
-            } else {
-                if (bluetoothDevice != null) {
-                    this.mActiveDevice = bluetoothDevice;
-                    Log.i("AS.DualA2dpManager", "mActiveDevice is changed by dual off address = " + this.mActiveDevice.getAddress());
-                }
-                this.mMainVolume = ((Integer) this.mConnectedDevicesVolume.getOrDefault(this.mActiveDevice, -1)).intValue();
-            }
-            this.mEventLogger.enqueue(new EventLogger.StringEvent("Dual:" + z + ",active:" + AudioManagerHelper.getAddressForLog(this.mActiveDevice) + ",vol:" + this.mMainVolume).printLog("AS.DualA2dpManager"));
-        }
-    }
-
-    public boolean isDualA2dpMode() {
-        return this.mDualModeEnabled;
-    }
-
-    public void setAvrcpAbsoluteVolumeSupported(String str, final boolean z) {
-        this.mEventLogger.enqueue(new EventLogger.StringEvent("AVC:" + AudioManagerHelper.getAddressForLog(str) + ",support:" + z).printLog("AS.DualA2dpManager"));
-        synchronized (this.mConnectedDevicesVolume) {
-            if (TextUtils.isEmpty(str)) {
-                this.mAbsVolSupported.replaceAll(new BiFunction() { // from class: com.samsung.android.server.audio.DualA2dpVolumeManager$$ExternalSyntheticLambda0
-                    @Override // java.util.function.BiFunction
-                    public final Object apply(Object obj, Object obj2) {
-                        Boolean valueOf;
-                        valueOf = Boolean.valueOf(z);
-                        return valueOf;
-                    }
-                });
-            } else {
-                this.mAbsVolSupported.put(str, Boolean.valueOf(z));
-                this.mStoredAbsVolSupported.put(str, Boolean.valueOf(z));
-            }
-        }
-    }
-
-    public boolean isAvrcpAbsoluteVolumeSupportedForActiveDevice() {
-        synchronized (this.mConnectedDevicesVolume) {
-            BluetoothDevice bluetoothDevice = this.mActiveDevice;
-            if (bluetoothDevice == null) {
-                return this.mAbsVolSupported.values().stream().anyMatch(new Predicate() { // from class: com.samsung.android.server.audio.DualA2dpVolumeManager$$ExternalSyntheticLambda1
-                    @Override // java.util.function.Predicate
-                    public final boolean test(Object obj) {
-                        boolean booleanValue;
-                        booleanValue = ((Boolean) obj).booleanValue();
-                        return booleanValue;
-                    }
-                });
-            }
-            Boolean bool = (Boolean) this.mAbsVolSupported.getOrDefault(bluetoothDevice.getAddress(), Boolean.FALSE);
-            return bool != null && bool.booleanValue();
-        }
-    }
-
-    public boolean skipSendingAVRCPVolume(int i) {
-        synchronized (this.mConnectedDevicesVolume) {
-            boolean z = false;
-            if (this.mDualModeEnabled) {
-                if ((i == -1 && this.mMainVolume <= 0) || (i == 1 && this.mMinVolume >= this.MAX_VOLUME)) {
-                    z = true;
-                }
-                return z;
-            }
-            int intValue = ((Integer) this.mConnectedDevicesVolume.getOrDefault(this.mActiveDevice, -1)).intValue();
-            if ((i == -1 && intValue <= 0) || (i == 1 && intValue >= this.MAX_VOLUME)) {
-                z = true;
-            }
-            return z;
-        }
-    }
-
-    public final void updateMainVolume() {
-        synchronized (this.mConnectedDevicesVolume) {
-            this.mMainVolume = -1;
-            this.mMinVolume = this.MAX_VOLUME;
-            for (int i = 0; i < this.mConnectedDevicesVolume.size(); i++) {
-                int intValue = ((Integer) this.mConnectedDevicesVolume.valueAt(i)).intValue();
-                if (this.mMainVolume < intValue) {
-                    this.mMainVolume = intValue;
-                }
-                if (this.mMinVolume > intValue) {
-                    this.mMinVolume = intValue;
-                }
-            }
-        }
-    }
-
-    public final void updateMainVolume(int i) {
-        int validIndex = getValidIndex(i);
-        if (validIndex < this.mMinVolume) {
-            this.mMinVolume = validIndex;
-        }
-        if (validIndex > this.mMainVolume) {
-            this.mMainVolume = validIndex;
-        } else {
-            updateMainVolume();
-        }
-    }
-
-    public void dump(PrintWriter printWriter) {
         printWriter.println("");
         printWriter.print("SEC_AUDIO_DUAL_A2DP_VOLUME=");
         printWriter.println(true);
         printWriter.print("  A2dp Devices: ");
         synchronized (this.mConnectedDevicesVolume) {
             for (int i = 0; i < this.mConnectedDevicesVolume.size(); i++) {
-                if (i > 0) {
-                    printWriter.print(", ");
+                try {
+                    if (i > 0) {
+                        printWriter.print(", ");
+                    }
+                    printWriter.print(AudioManagerHelper.getAddressForLog(((BluetoothDevice) this.mConnectedDevicesVolume.keyAt(i)).getAddress()));
+                    printWriter.print(" : ");
+                    printWriter.print(((Integer) this.mConnectedDevicesVolume.valueAt(i)).intValue());
+                } catch (Throwable th) {
+                    throw th;
                 }
-                printWriter.print(AudioManagerHelper.getAddressForLog(((BluetoothDevice) this.mConnectedDevicesVolume.keyAt(i)).getAddress()));
-                printWriter.print(" : ");
-                printWriter.print(((Integer) this.mConnectedDevicesVolume.valueAt(i)).intValue());
             }
             printWriter.println();
             printWriter.println("  AvrcpAbsoluteVolumeSupported");
@@ -344,51 +164,132 @@ public class DualA2dpVolumeManager {
             printWriter.println("main fine volume : " + this.mMainVolume);
         }
         printWriter.print("  Active device: ");
-        printWriter.println("" + AudioManagerHelper.getAddressForLog(getActiveDevice()));
+        synchronized (this.mConnectedDevicesVolume) {
+            bluetoothDevice = this.mActiveDevice;
+        }
+        printWriter.println("" + AudioManagerHelper.getAddressForLog(bluetoothDevice));
         printWriter.print("  Dual Sound: ");
-        printWriter.println("" + this.mDualModeEnabled);
+        BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder(""), this.mDualModeEnabled, printWriter);
         this.mEventLogger.dump(printWriter);
         printWriter.println("");
         this.mVolumeLogger.dump(printWriter);
     }
 
-    static {
-        int i = 0;
-        while (i < 15) {
-            float[] fArr = VOLUME_TABLE;
-            int i2 = i + 1;
-            float f = (fArr[i2] - fArr[i]) / 10.0f;
-            for (int i3 = 0; i3 < 10; i3++) {
-                FINE_VOLUME_TABLE[(i * 10) + i3] = VOLUME_TABLE[i] + (i3 * f);
+    public final int getMainVolume() {
+        synchronized (this.mConnectedDevicesVolume) {
+            try {
+                if (this.mDualModeEnabled) {
+                    return this.mMainVolume;
+                }
+                return ((Integer) this.mConnectedDevicesVolume.getOrDefault(this.mActiveDevice, -1)).intValue();
+            } catch (Throwable th) {
+                throw th;
             }
-            i = i2;
         }
-        FINE_VOLUME_TABLE[150] = 1.0f;
     }
 
-    public final void postSaveVolumeDB(String str, int i) {
-        if (str.equals(this.mPersistVolumeWorker.mAddress)) {
-            this.mBrokerHandler.removeCallbacks(this.mPersistVolumeWorker);
+    public final int getValidIndex(int i) {
+        int i2 = this.MAX_VOLUME;
+        if (i > i2) {
+            return i2;
+        }
+        if (i < 0) {
+            return 0;
+        }
+        return i;
+    }
+
+    public final boolean isAvrcpAbsoluteVolumeSupportedForActiveDevice() {
+        synchronized (this.mConnectedDevicesVolume) {
+            try {
+                BluetoothDevice bluetoothDevice = this.mActiveDevice;
+                if (bluetoothDevice == null) {
+                    return this.mAbsVolSupported.values().stream().anyMatch(new DualA2dpVolumeManager$$ExternalSyntheticLambda1());
+                }
+                Boolean bool = (Boolean) this.mAbsVolSupported.getOrDefault(bluetoothDevice.getAddress(), Boolean.FALSE);
+                return bool != null && bool.booleanValue();
+            } finally {
+            }
+        }
+    }
+
+    public final void postSaveVolumeDB(int i, String str) {
+        boolean equals = str.equals(this.mPersistVolumeWorker.mAddress);
+        Handler handler = this.mBrokerHandler;
+        if (equals) {
+            handler.removeCallbacks(this.mPersistVolumeWorker);
             this.mPersistVolumeWorker.mVolume = i;
         } else {
             this.mPersistVolumeWorker = new PersistVolumeWorker(str, i);
         }
-        this.mBrokerHandler.post(this.mPersistVolumeWorker);
+        handler.post(this.mPersistVolumeWorker);
     }
 
-    /* loaded from: classes2.dex */
-    public class PersistVolumeWorker implements Runnable {
-        public String mAddress;
-        public int mVolume;
-
-        public PersistVolumeWorker(String str, int i) {
-            this.mAddress = str;
-            this.mVolume = i;
+    public final boolean setActiveDevice(BluetoothDevice bluetoothDevice) {
+        synchronized (this.mConnectedDevicesVolume) {
+            try {
+                EventLogger eventLogger = this.mEventLogger;
+                EventLogger.StringEvent stringEvent = new EventLogger.StringEvent("setActive:" + AudioManagerHelper.getAddressForLog(bluetoothDevice) + ",prev:" + AudioManagerHelper.getAddressForLog(this.mActiveDevice));
+                stringEvent.printLog(0, "AS.DualA2dpManager");
+                eventLogger.enqueue(stringEvent);
+                if (bluetoothDevice == null) {
+                    boolean z = this.mActiveDevice != null;
+                    this.mActiveDevice = null;
+                    return z;
+                }
+                boolean equals = true ^ bluetoothDevice.equals(this.mActiveDevice);
+                this.mActiveDevice = bluetoothDevice;
+                return equals;
+            } catch (Throwable th) {
+                throw th;
+            }
         }
+    }
 
-        @Override // java.lang.Runnable
-        public void run() {
-            DualA2dpVolumeManager.this.mSettingHelper.setBTVolumeIndex(this.mAddress, this.mVolume);
+    public final void setAvrcpAbsoluteVolumeSupported(String str, final boolean z) {
+        EventLogger eventLogger = this.mEventLogger;
+        EventLogger.StringEvent stringEvent = new EventLogger.StringEvent("AVC:" + AudioManagerHelper.getAddressForLog(str) + ",support:" + z);
+        stringEvent.printLog(0, "AS.DualA2dpManager");
+        eventLogger.enqueue(stringEvent);
+        synchronized (this.mConnectedDevicesVolume) {
+            try {
+                if (TextUtils.isEmpty(str)) {
+                    this.mAbsVolSupported.replaceAll(new BiFunction() { // from class: com.samsung.android.server.audio.DualA2dpVolumeManager$$ExternalSyntheticLambda2
+                        @Override // java.util.function.BiFunction
+                        public final Object apply(Object obj, Object obj2) {
+                            return Boolean.valueOf(z);
+                        }
+                    });
+                } else {
+                    this.mAbsVolSupported.put(str, Boolean.valueOf(z));
+                    this.mStoredAbsVolSupported.put(str, Boolean.valueOf(z));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setDualA2dpMode(BluetoothDevice bluetoothDevice, boolean z) {
+        synchronized (this.mConnectedDevicesVolume) {
+            try {
+                this.mDualModeEnabled = z;
+                if (z) {
+                    updateMainVolume();
+                } else {
+                    if (bluetoothDevice != null) {
+                        this.mActiveDevice = bluetoothDevice;
+                        Log.i("AS.DualA2dpManager", "mActiveDevice is changed by dual off address = " + this.mActiveDevice.getAddress());
+                    }
+                    this.mMainVolume = ((Integer) this.mConnectedDevicesVolume.getOrDefault(this.mActiveDevice, -1)).intValue();
+                }
+                EventLogger eventLogger = this.mEventLogger;
+                EventLogger.StringEvent stringEvent = new EventLogger.StringEvent("Dual:" + z + ",active:" + AudioManagerHelper.getAddressForLog(this.mActiveDevice) + ",vol:" + this.mMainVolume);
+                stringEvent.printLog(0, "AS.DualA2dpManager");
+                eventLogger.enqueue(stringEvent);
+            } catch (Throwable th) {
+                throw th;
+            }
         }
     }
 
@@ -402,18 +303,39 @@ public class DualA2dpVolumeManager {
         if (num != null && num.intValue() == validIndex) {
             return false;
         }
-        postSaveVolumeDB(bluetoothDevice.getAddress(), validIndex);
+        postSaveVolumeDB(validIndex, bluetoothDevice.getAddress());
         return true;
     }
 
-    public final int getValidIndex(int i) {
-        int i2 = this.MAX_VOLUME;
-        if (i > i2) {
-            return i2;
+    public final void updateMainVolume() {
+        synchronized (this.mConnectedDevicesVolume) {
+            try {
+                this.mMainVolume = -1;
+                this.mMinVolume = this.MAX_VOLUME;
+                for (int i = 0; i < this.mConnectedDevicesVolume.size(); i++) {
+                    int intValue = ((Integer) this.mConnectedDevicesVolume.valueAt(i)).intValue();
+                    if (this.mMainVolume < intValue) {
+                        this.mMainVolume = intValue;
+                    }
+                    if (this.mMinVolume > intValue) {
+                        this.mMinVolume = intValue;
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
         }
-        if (i < 0) {
-            return 0;
+    }
+
+    public final void updateMainVolume(int i) {
+        int validIndex = getValidIndex(i);
+        if (validIndex < this.mMinVolume) {
+            this.mMinVolume = validIndex;
         }
-        return i;
+        if (validIndex > this.mMainVolume) {
+            this.mMainVolume = validIndex;
+        } else {
+            updateMainVolume();
+        }
     }
 }

@@ -10,12 +10,15 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.UserInfo;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
+import android.hardware.usb.V1_1.PortStatus_1_1$$ExternalSyntheticOutline0;
 import android.net.ConnectivityManager;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.INetd;
-import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.net.util.NetdService$$ExternalSyntheticOutline0;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -23,6 +26,7 @@ import android.os.IBinder;
 import android.os.INetworkManagementService;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Parcel;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.ServiceSpecificException;
@@ -35,27 +39,37 @@ import com.android.internal.net.IDomainFilterEventListener;
 import com.android.internal.net.IOemNetd;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.FunctionalUtils;
-import com.android.server.enterprise.adapter.IDnsResolverAdapter;
+import com.android.server.DirEncryptService$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
+import com.android.server.UiModeManagerService$13$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.am.Pageboost$PageboostFileDBHelper$$ExternalSyntheticOutline0;
+import com.android.server.audio.AudioDeviceInventory$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.adapterlayer.DnsResolverAdapter;
+import com.android.server.enterprise.adapterlayer.DnsResolverAdapter$$ExternalSyntheticLambda2;
 import com.android.server.enterprise.adapterlayer.PackageManagerAdapter;
+import com.android.server.enterprise.container.KnoxMUMContainerPolicy$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.storage.EdmStorageProvider;
 import com.android.server.enterprise.storage.EdmStorageProviderBase;
 import com.android.server.enterprise.utils.Utils;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import com.samsung.android.knox.AppIdentity;
 import com.samsung.android.knox.ContextInfo;
-import com.samsung.android.knox.net.firewall.DomainFilterReport;
+import com.samsung.android.knox.analytics.KnoxAnalytics;
+import com.samsung.android.knox.analytics.KnoxAnalyticsData;
 import com.samsung.android.knox.net.firewall.DomainFilterRule;
 import com.samsung.android.knox.net.firewall.FirewallResponse;
 import com.samsung.android.knox.net.firewall.FirewallRuleValidator;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -63,128 +77,630 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-/* loaded from: classes2.dex */
-public class DomainFilter {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DomainFilter {
     public static final int MAX_LIST_SIZE_IN_BYTES = IBinder.getSuggestedMaxIpcSizeBytes();
-    public static String TAG = "DomainFilter";
     public static ConnectivityManager mConnectivityService;
-    public BroadcastReceiver mBootFilterReceiver;
-    public ConnectivityManager.NetworkCallback mCaptivePortalNetworkCallback;
-    public Context mContext;
+    public final AnonymousClass1 mBootFilterReceiver;
+    public final AnonymousClass5 mCaptivePortalNetworkCallback;
+    public final Context mContext;
     public EnforceDnsManager mDnsManager;
-    public IDnsResolverAdapter mDnsResolverAdapter;
-    public Map mDomainFilterBrokenRules;
-    public IDomainFilterEventListener mDomainFilterEventListener;
-    public DomainFilterNapCommon mDomainFilterNapCommon;
-    public Set mDomainReportCache;
-    public EdmStorageProvider mEdmStorageProvider;
-    public Object mExceptionListLock;
-    public FirewallRulesApplier mFirewallRulesApplier;
-    public Thread mInitDaemonCacheThread;
+    public final DnsResolverAdapter mDnsResolverAdapter;
+    public final Map mDomainFilterBrokenRules;
+    public DomainFilterEventListener mDomainFilterEventListener;
+    public final DomainFilterNapCommon mDomainFilterNapCommon;
+    public final Set mDomainReportCache;
+    public final EdmStorageProvider mEdmStorageProvider;
+    public final Object mExceptionListLock;
+    public final FirewallRulesApplier mFirewallRulesApplier;
     public final Injector mInjector;
     public boolean mIsExceptionListApplied;
     public boolean mIsKGExceptionApplied;
-    public Object mKGExceptionListLock;
-    public KnoxNetIdManager mNetIdManager;
+    public final Object mKGExceptionListLock;
+    public final KnoxNetIdManager mNetIdManager;
     public INetd mNetdService;
-    public NetworkManagementHandler mNetworkHandler;
-    public List mNetworkIdList;
-    public Object mNetworkIdListLock;
+    public final NetworkManagementHandler mNetworkHandler;
+    public final List mNetworkIdList;
+    public final Object mNetworkIdListLock;
     public INetworkManagementService mNetworkService;
     public IOemNetd mOemNetdService;
-    public BroadcastReceiver mPackageFilterReceiver;
-    public BlockReport[] mReportCache;
+    public final AnonymousClass1 mPackageFilterReceiver;
+    public final BlockReport[] mReportCache;
     public int mReportCacheIndex;
-    public String mServer;
-    public BroadcastReceiver mUserFilterReceiver;
-    public Map mUserIdMap;
-    public Object mUserIdMapLock;
+    public final String mServer;
+    public final AnonymousClass1 mUserFilterReceiver;
+    public final Map mUserIdMap;
+    public final Object mUserIdMapLock;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes2.dex */
-    public enum Operation {
-        ADD,
-        REMOVE,
-        CLEAR,
-        REPLACE,
-        EXCEPTION,
-        CAP_PORTAL,
-        NET_ID,
-        FLUSHLIBC
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.enterprise.firewall.DomainFilter$1, reason: invalid class name */
+    public final class AnonymousClass1 extends BroadcastReceiver {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ DomainFilter this$0;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes2.dex */
-    public class Injector {
-        public final Context mCtx;
-        public FirewallRulesApplier mFirewallRulesApplier;
-
-        public Injector(Context context, FirewallRulesApplier firewallRulesApplier) {
-            this.mCtx = context;
-            this.mFirewallRulesApplier = firewallRulesApplier;
+        public /* synthetic */ AnonymousClass1(DomainFilter domainFilter, int i) {
+            this.$r8$classId = i;
+            this.this$0 = domainFilter;
         }
 
-        public Context getContext() {
-            return this.mCtx;
-        }
-
-        public EdmStorageProvider getEDMStorageProvider() {
-            return new EdmStorageProvider(this.mCtx);
-        }
-
-        public FirewallRulesApplier getFirewallRulesApplier() {
-            return this.mFirewallRulesApplier;
-        }
-
-        public ArrayList getNetworkIdInfoArray() {
-            return new ArrayList();
-        }
-
-        public NetworkManagementHandler getNetworkManagementHandler(DomainFilter domainFilter, Looper looper) {
-            Objects.requireNonNull(domainFilter);
-            return new NetworkManagementHandler(looper);
-        }
-
-        public Map getUserIdMap() {
-            return new HashMap();
-        }
-
-        public INetd getNetd() {
-            INetd asInterface = INetd.Stub.asInterface(ServiceManager.getService(KnoxVpnFirewallHelper.NETD_SERVICE_NAME));
-            if (asInterface == null) {
-                Log.w(DomainFilter.TAG, "WARNING: returning null INetd instance.");
+        private final void onReceive$com$android$server$enterprise$firewall$DomainFilter$2(Context context, Intent intent) {
+            List list;
+            int i = DomainFilter.MAX_LIST_SIZE_IN_BYTES;
+            Log.i("DomainFilter", "onReceive() - " + intent);
+            if ("android.intent.action.USER_REMOVED".equals(intent.getAction())) {
+                DomainFilter domainFilter = this.this$0;
+                domainFilter.getClass();
+                Log.i("DomainFilter", "onUserRemoved()");
+                int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                if (intExtra != -1) {
+                    Log.i("DomainFilter", "onUserRemoved() - userId = " + intExtra);
+                    Integer valueOf = Integer.valueOf(intExtra);
+                    synchronized (domainFilter.mUserIdMapLock) {
+                        ((HashMap) domainFilter.mUserIdMap).remove(valueOf);
+                    }
+                    if (((HashSet) domainFilter.mDomainReportCache).contains(valueOf)) {
+                        ((HashSet) domainFilter.mDomainReportCache).remove(valueOf);
+                        domainFilter.sendToCache(2, Integer.toString(intExtra), null, null, null, null);
+                        return;
+                    }
+                    return;
+                }
+                return;
             }
-            return asInterface;
-        }
-
-        public IOemNetd getOemNetd() {
-            INetd netd = getNetd();
-            if (netd != null) {
-                try {
-                    return IOemNetd.Stub.asInterface(netd.getOemNetd());
-                } catch (RemoteException e) {
-                    Log.e(DomainFilter.TAG, "getOemNetdService() - failed to retrieve getOemNetdService instance " + e);
+            if ("android.intent.action.USER_ADDED".equals(intent.getAction())) {
+                DomainFilter domainFilter2 = this.this$0;
+                domainFilter2.getClass();
+                Log.i("DomainFilter", "onUserAdded()");
+                int intExtra2 = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                if (intExtra2 != -1) {
+                    DirEncryptService$$ExternalSyntheticOutline0.m(intExtra2, "onUserAdded() - userId = ", "DomainFilter");
+                    synchronized (domainFilter2.mUserIdMapLock) {
+                        try {
+                            if (((Map) ((HashMap) domainFilter2.mUserIdMap).get(Integer.valueOf(intExtra2))) == null) {
+                                HashMap hashMap = new HashMap();
+                                list = domainFilter2.mContext.getPackageManager().getInstalledPackagesAsUser(64, intExtra2);
+                                Iterator it = list.iterator();
+                                while (it.hasNext()) {
+                                    ApplicationInfo applicationInfo = ((PackageInfo) it.next()).applicationInfo;
+                                    hashMap.put(applicationInfo.packageName, Integer.valueOf(applicationInfo.uid));
+                                }
+                                ((HashMap) domainFilter2.mUserIdMap).put(Integer.valueOf(intExtra2), hashMap);
+                            } else {
+                                list = null;
+                            }
+                        } finally {
+                        }
+                    }
+                    synchronized (domainFilter2.mExceptionListLock) {
+                        try {
+                            if (domainFilter2.mIsExceptionListApplied) {
+                                if (list != null && !list.isEmpty()) {
+                                    domainFilter2.processPackageExceptionList(list);
+                                    domainFilter2.processPlatformPackageExceptionList(list);
+                                }
+                                synchronized (domainFilter2.mKGExceptionListLock) {
+                                    try {
+                                        if (domainFilter2.mIsKGExceptionApplied) {
+                                            if (list != null && !list.isEmpty()) {
+                                                domainFilter2.processKGPackageException(list);
+                                            }
+                                        }
+                                    } finally {
+                                    }
+                                }
+                            }
+                        } finally {
+                        }
+                    }
                 }
             }
-            Log.w(DomainFilter.TAG, "WARNING: returning null IOemNetd instance.");
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            Map map;
+            String str;
+            switch (this.$r8$classId) {
+                case 0:
+                    int i = DomainFilter.MAX_LIST_SIZE_IN_BYTES;
+                    Log.i("DomainFilter", "onReceive() - " + intent);
+                    if ("android.intent.action.PACKAGE_ADDED".equals(intent.getAction())) {
+                        this.this$0.packageAdded(intent);
+                        return;
+                    }
+                    if (!"android.intent.action.PACKAGE_REMOVED".equals(intent.getAction())) {
+                        if ("android.intent.action.PACKAGE_REPLACED".equals(intent.getAction())) {
+                            DomainFilter domainFilter = this.this$0;
+                            domainFilter.getClass();
+                            int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                            String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
+                            if (intExtra == -1 || schemeSpecificPart == null) {
+                                Log.i("DomainFilter", "packageReplaced() - Received invalid user id or package name, can't retrieve application info");
+                                return;
+                            }
+                            synchronized (domainFilter.mUserIdMapLock) {
+                                map = (Map) ((HashMap) domainFilter.mUserIdMap).get(Integer.valueOf(intExtra));
+                            }
+                            if (map == null || !map.containsKey(schemeSpecificPart)) {
+                                domainFilter.packageAdded(intent);
+                                return;
+                            }
+                            int intValue = ((Integer) map.get(schemeSpecificPart)).intValue();
+                            int applicationUid = domainFilter.getApplicationUid(intExtra, schemeSpecificPart);
+                            UiModeManagerService$13$$ExternalSyntheticOutline0.m(StorageManagerService$$ExternalSyntheticOutline0.m(intValue, "packageReplaced() - packageName: ", schemeSpecificPart, " oldUid: ", " newUid:"), applicationUid, "DomainFilter");
+                            if (applicationUid == -1) {
+                                Log.i("DomainFilter", "ackageReplaced() - Failed to retrieve app info");
+                                return;
+                            }
+                            synchronized (domainFilter.mUserIdMapLock) {
+                                ((Map) ((HashMap) domainFilter.mUserIdMap).get(Integer.valueOf(intExtra))).put(schemeSpecificPart, Integer.valueOf(applicationUid));
+                            }
+                            if (intValue != applicationUid) {
+                                domainFilter.sendToCache(3, Integer.toString(intValue), Integer.toString(applicationUid), null, null, null);
+                                return;
+                            }
+                            return;
+                        }
+                        return;
+                    }
+                    DomainFilter domainFilter2 = this.this$0;
+                    domainFilter2.getClass();
+                    int intExtra2 = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                    String schemeSpecificPart2 = intent.getData().getSchemeSpecificPart();
+                    Log.i("DomainFilter", "packageRemoved() - packageName: " + schemeSpecificPart2 + " uid: " + intExtra2);
+                    if (intExtra2 == -1 || schemeSpecificPart2 == null) {
+                        return;
+                    }
+                    synchronized (domainFilter2.mUserIdMapLock) {
+                        try {
+                            Map map2 = (Map) ((HashMap) domainFilter2.mUserIdMap).get(Integer.valueOf(intExtra2));
+                            if (map2 == null || !map2.containsKey(schemeSpecificPart2)) {
+                                str = null;
+                            } else {
+                                str = ((Integer) map2.get(schemeSpecificPart2)).toString();
+                                map2.remove(schemeSpecificPart2);
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
+                    if (str != null) {
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(EdmStorageProviderBase.getAdminLUIDWhereIn(0, intExtra2), "#SelectClause#");
+                        contentValues.put("packageName", schemeSpecificPart2);
+                        ArrayList arrayList = (ArrayList) domainFilter2.mEdmStorageProvider.getValues("DomainFilterTable", new String[]{"networkId"}, contentValues);
+                        if (arrayList.isEmpty()) {
+                            return;
+                        }
+                        ContentValues contentValues2 = (ContentValues) arrayList.get(0);
+                        Integer asInteger = contentValues2.getAsInteger("networkId");
+                        int intValue2 = asInteger != null ? asInteger.intValue() : -1;
+                        if (intValue2 != -1) {
+                            domainFilter2.mNetworkHandler.sendMessage(Message.obtain(domainFilter2.mNetworkHandler, 0, Integer.valueOf(intValue2)));
+                            contentValues2.put("networkId", (Integer) (-1));
+                            domainFilter2.mEdmStorageProvider.put("DomainFilterTable", contentValues2, contentValues);
+                        }
+                        domainFilter2.sendToCache(2, str, null, null, null, String.valueOf(intValue2));
+                        return;
+                    }
+                    return;
+                case 1:
+                    onReceive$com$android$server$enterprise$firewall$DomainFilter$2(context, intent);
+                    return;
+                default:
+                    int i2 = DomainFilter.MAX_LIST_SIZE_IN_BYTES;
+                    Log.i("DomainFilter", "onReceive() - " + intent);
+                    if ("android.intent.action.LOCKED_BOOT_COMPLETED".equals(intent.getAction()) || "com.samsung.android.knox.intent.action.EDM_BOOT_COMPLETED_INTERNAL".equals(intent.getAction())) {
+                        new Thread(new AnonymousClass4(1, this)).start();
+                        return;
+                    }
+                    return;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.enterprise.firewall.DomainFilter$4, reason: invalid class name */
+    public final class AnonymousClass4 implements Runnable {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ Object this$0;
+
+        public /* synthetic */ AnonymousClass4(int i, Object obj) {
+            this.$r8$classId = i;
+            this.this$0 = obj;
+        }
+
+        @Override // java.lang.Runnable
+        public final void run() {
+            Iterator it;
+            String str;
+            int i;
+            boolean isDomainFilterReportEnabledAsUser;
+            List<UserInfo> users;
+            boolean z;
+            boolean z2 = true;
+            switch (this.$r8$classId) {
+                case 0:
+                    DomainFilter domainFilter = (DomainFilter) this.this$0;
+                    domainFilter.getClass();
+                    Log.d("DomainFilter", "initDaemonCache()");
+                    EdmStorageProvider edmStorageProvider = domainFilter.mEdmStorageProvider;
+                    ArrayList arrayList = (ArrayList) edmStorageProvider.getValues("DomainFilterTable", null, null);
+                    if (arrayList.isEmpty()) {
+                        Log.i("DomainFilter", "initDaemonCache() - No rules found in db");
+                    } else {
+                        Iterator it2 = arrayList.iterator();
+                        while (it2.hasNext()) {
+                            ContentValues contentValues = (ContentValues) it2.next();
+                            List listFromDb = FirewallUtils.getListFromDb(contentValues, "blacklist", edmStorageProvider);
+                            List listFromDb2 = FirewallUtils.getListFromDb(contentValues, "whitelist", edmStorageProvider);
+                            String asString = contentValues.getAsString("dns1");
+                            if (((ArrayList) listFromDb).isEmpty() && ((ArrayList) listFromDb2).isEmpty() && TextUtils.isEmpty(asString)) {
+                                it = it2;
+                            } else {
+                                Integer asInteger = contentValues.getAsInteger("adminUid");
+                                int intValue = asInteger != null ? asInteger.intValue() : -1;
+                                int userId = UserHandle.getUserId(intValue);
+                                String asString2 = contentValues.getAsString("packageName");
+                                if ("*".equals(asString2)) {
+                                    str = Integer.toString(userId);
+                                    it = it2;
+                                } else {
+                                    int applicationUid = domainFilter.getApplicationUid(userId, asString2);
+                                    it = it2;
+                                    if (applicationUid != -1) {
+                                        String asString3 = contentValues.getAsString("signature");
+                                        if (TextUtils.isEmpty(asString3) || domainFilter.validatePkgSignature(userId, asString2, asString3)) {
+                                            str = Integer.toString(applicationUid);
+                                        } else {
+                                            Log.i("DomainFilter", "initDaemonCache() - app signature mismatch");
+                                        }
+                                    } else {
+                                        str = null;
+                                    }
+                                }
+                                if (str == null) {
+                                    continue;
+                                } else {
+                                    if (asString != null) {
+                                        i = domainFilter.setupNetworkDns(asString, contentValues.getAsString("dns2"));
+                                        if (i != -1) {
+                                            contentValues.put("networkId", Integer.valueOf(i));
+                                            ContentValues contentValues2 = new ContentValues();
+                                            KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(intValue, contentValues2, "adminUid", "packageName", asString2);
+                                            edmStorageProvider.put("DomainFilterTable", contentValues, contentValues2);
+                                        }
+                                    } else {
+                                        i = -1;
+                                    }
+                                    UserManager userManager = (UserManager) domainFilter.mContext.getSystemService("user");
+                                    if (userManager != null) {
+                                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                                        try {
+                                            List users2 = userManager.getUsers();
+                                            if (users2 != null) {
+                                                Iterator it3 = users2.iterator();
+                                                while (it3.hasNext() && (!(isDomainFilterReportEnabledAsUser = domainFilter.isDomainFilterReportEnabledAsUser(((UserInfo) it3.next()).id)) || !domainFilter.registerDomainFilterListener(isDomainFilterReportEnabledAsUser))) {
+                                                }
+                                            }
+                                        } finally {
+                                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                                        }
+                                    }
+                                    domainFilter.sendToCache(0, str, null, listFromDb, listFromDb2, String.valueOf(i));
+                                }
+                            }
+                            it2 = it;
+                        }
+                        DomainFilterNapCommon domainFilterNapCommon = domainFilter.mDomainFilterNapCommon;
+                        domainFilterNapCommon.setDomainFilterEnabled(true);
+                        if (domainFilter.isDomainFilterOnIptablesEnabledAtAll()) {
+                            domainFilterNapCommon.setDomainFilterOnIptablesEnabled(true);
+                        }
+                    }
+                    DomainFilter domainFilter2 = (DomainFilter) this.this$0;
+                    domainFilter2.sendToCache(5, domainFilter2.mServer, null, null, null, null);
+                    DomainFilter domainFilter3 = (DomainFilter) this.this$0;
+                    domainFilter3.sendToCache(4, String.valueOf(domainFilter3.getApplicationUid(0, "com.google.android.captiveportallogin")), null, null, null, null);
+                    return;
+                default:
+                    DomainFilter domainFilter4 = ((AnonymousClass1) this.this$0).this$0;
+                    int i2 = DomainFilter.MAX_LIST_SIZE_IN_BYTES;
+                    domainFilter4.getClass();
+                    Log.i("DomainFilter", "initUserIdMap() - Initializing UserID Mapping");
+                    PackageManager packageManager = domainFilter4.mContext.getPackageManager();
+                    UserManager userManager2 = (UserManager) domainFilter4.mContext.getSystemService("user");
+                    if (userManager2 == null || (users = userManager2.getUsers()) == null) {
+                        return;
+                    }
+                    synchronized (domainFilter4.mExceptionListLock) {
+                        try {
+                            if (domainFilter4.mIsExceptionListApplied || !domainFilter4.hasAnyRuleInDatabase()) {
+                                z = false;
+                            } else {
+                                domainFilter4.mIsExceptionListApplied = true;
+                                z = true;
+                            }
+                        } finally {
+                        }
+                    }
+                    synchronized (domainFilter4.mKGExceptionListLock) {
+                        try {
+                            if (!domainFilter4.mIsKGExceptionApplied && domainFilter4.hasAnyRuleInDatabase() && FirewallUtils.isKGExemptRuleRequired()) {
+                                domainFilter4.mIsKGExceptionApplied = true;
+                            } else {
+                                z2 = false;
+                            }
+                        } finally {
+                        }
+                    }
+                    ArrayList arrayList2 = new ArrayList();
+                    synchronized (domainFilter4.mUserIdMapLock) {
+                        try {
+                            for (UserInfo userInfo : users) {
+                                HashMap hashMap = new HashMap();
+                                List installedPackagesAsUser = packageManager.getInstalledPackagesAsUser(64, userInfo.id);
+                                Iterator it4 = installedPackagesAsUser.iterator();
+                                while (it4.hasNext()) {
+                                    ApplicationInfo applicationInfo = ((PackageInfo) it4.next()).applicationInfo;
+                                    hashMap.put(applicationInfo.packageName, Integer.valueOf(applicationInfo.uid));
+                                }
+                                ((HashMap) domainFilter4.mUserIdMap).put(Integer.valueOf(userInfo.id), hashMap);
+                                arrayList2.addAll(installedPackagesAsUser);
+                            }
+                        } finally {
+                        }
+                    }
+                    if (z) {
+                        domainFilter4.processPackageExceptionList(arrayList2);
+                        domainFilter4.processPlatformPackageExceptionList(arrayList2);
+                    }
+                    if (z2) {
+                        domainFilter4.processKGPackageException(arrayList2);
+                        return;
+                    }
+                    return;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BlockReport {
+        public String mTimeStamp;
+        public String mUid;
+        public String mUrl;
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DomainFilterEventListener extends Binder implements IDomainFilterEventListener {
+        public DomainFilterEventListener() {
+            attachInterface(this, "com.android.internal.net.IDomainFilterEventListener");
+        }
+
+        @Override // android.os.IInterface
+        public final IBinder asBinder() {
+            return this;
+        }
+
+        @Override // android.os.Binder
+        public final boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
+            int i3;
+            if (i >= 1 && i <= 16777215) {
+                parcel.enforceInterface("com.android.internal.net.IDomainFilterEventListener");
+            }
+            if (i == 1598968902) {
+                parcel2.writeString("com.android.internal.net.IDomainFilterEventListener");
+                return true;
+            }
+            if (i != 1) {
+                return super.onTransact(i, parcel, parcel2, i2);
+            }
+            int readInt = parcel.readInt();
+            int readInt2 = parcel.readInt();
+            long readLong = parcel.readLong();
+            String readString = parcel.readString();
+            parcel.enforceNoDataAvail();
+            DomainFilter domainFilter = DomainFilter.this;
+            domainFilter.getClass();
+            String str = null;
+            if (readInt2 < 0) {
+                DirEncryptService$$ExternalSyntheticOutline0.m(readInt2, "getPackageFromRunningProcesses() - Invalid PID provided: ", "DomainFilter");
+            } else if (readInt < 0) {
+                DirEncryptService$$ExternalSyntheticOutline0.m(readInt, "getPackageFromRunningProcesses() - Invalid UID provided: ", "DomainFilter");
+            } else {
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    ActivityManager activityManager = (ActivityManager) domainFilter.mContext.getSystemService("activity");
+                    List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = activityManager != null ? activityManager.getRunningAppProcesses() : null;
+                    if (runningAppProcesses != null) {
+                        Iterator<ActivityManager.RunningAppProcessInfo> it = runningAppProcesses.iterator();
+                        while (true) {
+                            if (!it.hasNext()) {
+                                break;
+                            }
+                            ActivityManager.RunningAppProcessInfo next = it.next();
+                            if (readInt2 == next.pid) {
+                                String[] strArr = next.pkgList;
+                                if (strArr != null) {
+                                    if (strArr.length == 1) {
+                                        str = strArr[0];
+                                    } else {
+                                        ContentValues contentValues = new ContentValues();
+                                        contentValues.put(EdmStorageProviderBase.getAdminLUIDWhereIn(0, UserHandle.getUserId(readInt)), "#SelectClause#");
+                                        ArrayList arrayList = (ArrayList) domainFilter.mEdmStorageProvider.getValues("DomainFilterTable", new String[]{"packageName"}, contentValues);
+                                        if (!arrayList.isEmpty()) {
+                                            List asList = Arrays.asList(next.pkgList);
+                                            Iterator it2 = arrayList.iterator();
+                                            while (it2.hasNext()) {
+                                                str = ((ContentValues) it2.next()).getAsString("packageName");
+                                                if (asList.contains(str)) {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        str = next.pkgList[0];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            }
+            if (str == null) {
+                int i4 = DomainFilter.MAX_LIST_SIZE_IN_BYTES;
+                Log.d("DomainFilter", "failed to find application which was blocked");
+            } else {
+                String valueOf = String.valueOf(readLong);
+                String valueOf2 = String.valueOf(readInt);
+                BlockReport blockReport = new BlockReport();
+                blockReport.mTimeStamp = valueOf;
+                blockReport.mUid = valueOf2;
+                blockReport.mUrl = readString;
+                boolean z = false;
+                for (int i5 = 0; i5 < 5; i5++) {
+                    BlockReport blockReport2 = DomainFilter.this.mReportCache[i5];
+                    if (blockReport2 != null) {
+                        String str2 = blockReport.mTimeStamp;
+                        String str3 = blockReport2.mTimeStamp;
+                        if ((str3 != null || str2 == null) && ((str3 == null || str2 != null) && (str3 == null || str3.equals(str2)))) {
+                            String str4 = blockReport.mUid;
+                            String str5 = blockReport2.mUid;
+                            if ((str5 != null || str4 == null) && ((str5 == null || str4 != null) && (str5 == null || str5.equals(str4)))) {
+                                String str6 = blockReport.mUrl;
+                                String str7 = blockReport2.mUrl;
+                                if ((str7 != null || str6 == null) && ((str7 == null || str6 != null) && (str7 == null || str7.equals(str6)))) {
+                                    z = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!z) {
+                    DomainFilter domainFilter2 = DomainFilter.this;
+                    BlockReport[] blockReportArr = domainFilter2.mReportCache;
+                    int i6 = domainFilter2.mReportCacheIndex;
+                    blockReportArr[i6] = blockReport;
+                    int i7 = i6 + 1;
+                    domainFilter2.mReportCacheIndex = i7;
+                    if (i7 == 5) {
+                        domainFilter2.mReportCacheIndex = 0;
+                    }
+                    ActivityManager.RunningTaskInfo runningTaskInfo = ((ActivityManager) domainFilter2.mContext.getSystemService("activity")).getRunningTasks(1).get(0);
+                    Intent intent = new Intent("com.samsung.android.knox.intent.action.BLOCKED_DOMAIN");
+                    intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_PACKAGENAME", str);
+                    intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_TIMESTAMP", valueOf);
+                    intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_UID", valueOf2);
+                    intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_URL", readString);
+                    if (str.equals(runningTaskInfo.topActivity.getPackageName())) {
+                        intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_ISFOREGROUND", true);
+                    } else {
+                        intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_ISFOREGROUND", false);
+                    }
+                    DomainFilter.this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL, "com.samsung.android.knox.permission.KNOX_FIREWALL");
+                    DomainFilter domainFilter3 = DomainFilter.this;
+                    domainFilter3.getClass();
+                    try {
+                        i3 = UserHandle.getUserId(Integer.parseInt(valueOf2));
+                    } catch (NumberFormatException e) {
+                        Log.e("DomainFilter", "saveReportInDatabase() - Error parsing userId received from daemon.", e);
+                        i3 = -1;
+                    }
+                    if (i3 != -1) {
+                        if (((HashSet) domainFilter3.mDomainReportCache).contains(Integer.valueOf(i3))) {
+                            ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("time", valueOf);
+                            KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(i3, m, "userId", "packageName", str);
+                            m.put("url", readString);
+                            if (domainFilter3.mEdmStorageProvider.insert("DomainFilterReportTable", m) == -1) {
+                                Log.e("DomainFilter", "saveReportInDatabase() - Failed to save domain report in database");
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class Injector {
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class NetworkIdInfo {
+        public final String mDns1;
+        public final String mDns2;
+        public final int mNetId;
+        public int mUsageCounter = 1;
+
+        public NetworkIdInfo(int i, String str, String str2) {
+            this.mNetId = i;
+            this.mDns1 = str;
+            this.mDns2 = str2;
+        }
+
+        public final String toString() {
+            StringBuilder sb = new StringBuilder("{Net Id= ");
+            sb.append(this.mNetId);
+            sb.append(" , DNS(1)=");
+            sb.append(this.mDns1);
+            sb.append(" , DNS(2)=");
+            sb.append(this.mDns2);
+            sb.append(" , counter=");
+            return AmFmBandRange$$ExternalSyntheticOutline0.m(this.mUsageCounter, sb, "}");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class NetworkManagementHandler extends Handler {
+        public NetworkManagementHandler(Looper looper) {
+            super(looper);
+        }
+
+        /* JADX WARN: Removed duplicated region for block: B:11:0x0053  */
+        /* JADX WARN: Removed duplicated region for block: B:14:0x005d  */
+        @Override // android.os.Handler
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void handleMessage(android.os.Message r7) {
+            /*
+                Method dump skipped, instructions count: 244
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.firewall.DomainFilter.NetworkManagementHandler.handleMessage(android.os.Message):void");
+        }
+    }
+
+    /* renamed from: -$$Nest$mextractHost, reason: not valid java name */
+    public static String m515$$Nest$mextractHost(DomainFilter domainFilter, String str) {
+        URL url;
+        domainFilter.getClass();
+        if (str == null) {
             return null;
         }
-
-        public DomainFilterNapCommon getDomainFilterNapCommon() {
-            return DomainFilterNapCommon.getInstance(this.mCtx);
+        try {
+            url = new URL(str);
+        } catch (MalformedURLException unused) {
+            Log.e("DomainFilter", "extractHost() - Invalid url ".concat(str));
+            url = null;
         }
-
-        public IDnsResolverAdapter getDnsResolverAdapter() {
-            return DnsResolverAdapter.getInstance();
+        if (url != null) {
+            return url.getHost();
         }
+        return null;
     }
 
+    /* JADX WARN: Type inference failed for: r3v3, types: [com.android.server.enterprise.firewall.DomainFilter$5] */
     public DomainFilter(Context context, FirewallRulesApplier firewallRulesApplier) {
-        this(new Injector(context, firewallRulesApplier));
-    }
-
-    public DomainFilter(Injector injector) {
+        Injector injector = new Injector();
         this.mUserIdMapLock = new Object();
         this.mNetworkIdListLock = new Object();
         this.mNetIdManager = new KnoxNetIdManager();
@@ -196,1362 +712,153 @@ public class DomainFilter {
         this.mIsKGExceptionApplied = false;
         this.mKGExceptionListLock = new Object();
         this.mDomainFilterBrokenRules = new HashMap();
-        this.mPackageFilterReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.firewall.DomainFilter.1
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                Log.i(DomainFilter.TAG, "onReceive() - " + intent);
-                if ("android.intent.action.PACKAGE_ADDED".equals(intent.getAction())) {
-                    DomainFilter.this.packageAdded(intent);
-                } else if ("android.intent.action.PACKAGE_REMOVED".equals(intent.getAction())) {
-                    DomainFilter.this.packageRemoved(intent);
-                } else if ("android.intent.action.PACKAGE_REPLACED".equals(intent.getAction())) {
-                    DomainFilter.this.packageReplaced(intent);
-                }
-            }
-        };
-        this.mUserFilterReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.firewall.DomainFilter.2
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                Log.i(DomainFilter.TAG, "onReceive() - " + intent);
-                if ("android.intent.action.USER_REMOVED".equals(intent.getAction())) {
-                    DomainFilter.this.onUserRemoved(intent);
-                } else if ("android.intent.action.USER_ADDED".equals(intent.getAction())) {
-                    DomainFilter.this.onUserAdded(intent);
-                }
-            }
-        };
-        this.mBootFilterReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.firewall.DomainFilter.3
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                Log.i(DomainFilter.TAG, "onReceive() - " + intent);
-                if ("android.intent.action.LOCKED_BOOT_COMPLETED".equals(intent.getAction()) || "com.samsung.android.knox.intent.action.EDM_BOOT_COMPLETED_INTERNAL".equals(intent.getAction())) {
-                    new Thread(new Runnable() { // from class: com.android.server.enterprise.firewall.DomainFilter.3.1
-                        @Override // java.lang.Runnable
-                        public void run() {
-                            DomainFilter.this.initUserIdMap();
-                        }
-                    }).start();
-                }
-            }
-        };
+        AnonymousClass1 anonymousClass1 = new AnonymousClass1(this, 0);
+        AnonymousClass1 anonymousClass12 = new AnonymousClass1(this, 1);
+        AnonymousClass1 anonymousClass13 = new AnonymousClass1(this, 2);
         this.mCaptivePortalNetworkCallback = new ConnectivityManager.NetworkCallback() { // from class: com.android.server.enterprise.firewall.DomainFilter.5
             @Override // android.net.ConnectivityManager.NetworkCallback
-            public void onAvailable(Network network) {
+            public final void onAvailable(final Network network) {
                 super.onAvailable(network);
                 try {
                     NetworkCapabilities networkCapabilities = DomainFilter.this.getConnectivityService().getNetworkCapabilities(network);
                     if (networkCapabilities == null || !networkCapabilities.hasCapability(17)) {
                         return;
                     }
-                    Log.i(DomainFilter.TAG, "Captive portal detected");
+                    int i = DomainFilter.MAX_LIST_SIZE_IN_BYTES;
+                    Log.i("DomainFilter", "Captive portal detected");
                     if (DomainFilter.this.hasAnyRuleInDatabase()) {
-                        DomainFilter.this.exemptCaptivePortalHostname(network);
+                        final DomainFilter domainFilter = DomainFilter.this;
+                        domainFilter.getClass();
+                        new Thread(new Runnable() { // from class: com.android.server.enterprise.firewall.DomainFilter.6
+                            /* JADX WARN: Multi-variable type inference failed */
+                            @Override // java.lang.Runnable
+                            public final void run() {
+                                URL url;
+                                DomainFilter.this.getClass();
+                                HttpURLConnection httpURLConnection = null;
+                                HttpURLConnection httpURLConnection2 = null;
+                                try {
+                                    url = new URL("http://connectivitycheck.gstatic.com/generate_204");
+                                } catch (MalformedURLException unused) {
+                                    Log.e("DomainFilter", "Invalid URL http://connectivitycheck.gstatic.com/generate_204");
+                                    url = null;
+                                }
+                                try {
+                                    if (url == null) {
+                                        int i2 = DomainFilter.MAX_LIST_SIZE_IN_BYTES;
+                                        Log.e("DomainFilter", "Captive portal url is null");
+                                        return;
+                                    }
+                                    try {
+                                        HttpURLConnection httpURLConnection3 = (HttpURLConnection) network.openConnection(url);
+                                        try {
+                                            httpURLConnection3.setInstanceFollowRedirects(false);
+                                            httpURLConnection3.setConnectTimeout(10000);
+                                            httpURLConnection3.setReadTimeout(10000);
+                                            httpURLConnection3.setUseCaches(false);
+                                            String headerField = httpURLConnection3.getHeaderField("Location");
+                                            boolean isEmpty = TextUtils.isEmpty(headerField);
+                                            String str = headerField;
+                                            if (!isEmpty) {
+                                                String m515$$Nest$mextractHost = DomainFilter.m515$$Nest$mextractHost(DomainFilter.this, headerField);
+                                                boolean isEmpty2 = TextUtils.isEmpty(m515$$Nest$mextractHost);
+                                                String str2 = isEmpty2;
+                                                if (isEmpty2 == 0) {
+                                                    DomainFilter.this.getClass();
+                                                    boolean validateIpv4Address = FirewallRuleValidator.validateIpv4Address(m515$$Nest$mextractHost);
+                                                    str2 = validateIpv4Address;
+                                                    if (validateIpv4Address == 0) {
+                                                        boolean validateIpv6Address = FirewallRuleValidator.validateIpv6Address(m515$$Nest$mextractHost);
+                                                        if (validateIpv6Address != 0) {
+                                                            str2 = validateIpv6Address;
+                                                        } else {
+                                                            DomainFilter.this.sendToCache(5, m515$$Nest$mextractHost, null, null, null, null);
+                                                            str = validateIpv6Address;
+                                                        }
+                                                    }
+                                                }
+                                                Log.e("DomainFilter", "invalid captive portal host");
+                                                str = str2;
+                                            }
+                                            httpURLConnection3.disconnect();
+                                            httpURLConnection = str;
+                                        } catch (IOException e) {
+                                            e = e;
+                                            httpURLConnection2 = httpURLConnection3;
+                                            int i3 = DomainFilter.MAX_LIST_SIZE_IN_BYTES;
+                                            Log.e("DomainFilter", "Exception occured: " + e.getLocalizedMessage());
+                                            httpURLConnection = httpURLConnection2;
+                                            if (httpURLConnection2 != null) {
+                                                httpURLConnection2.disconnect();
+                                                httpURLConnection = httpURLConnection2;
+                                            }
+                                        } catch (Throwable th) {
+                                            th = th;
+                                            httpURLConnection = httpURLConnection3;
+                                            if (httpURLConnection != null) {
+                                                httpURLConnection.disconnect();
+                                            }
+                                            throw th;
+                                        }
+                                    } catch (IOException e2) {
+                                        e = e2;
+                                    }
+                                } catch (Throwable th2) {
+                                    th = th2;
+                                }
+                            }
+                        }).start();
                     }
                 } catch (Exception e) {
-                    Log.e(DomainFilter.TAG, "Exception occured: " + e.getLocalizedMessage());
+                    int i2 = DomainFilter.MAX_LIST_SIZE_IN_BYTES;
+                    Log.e("DomainFilter", "Exception occured: " + e.getLocalizedMessage());
                 }
             }
         };
         this.mInjector = injector;
-        Context context = injector.getContext();
         Objects.requireNonNull(context);
         this.mContext = context;
-        this.mEdmStorageProvider = injector.getEDMStorageProvider();
-        this.mFirewallRulesApplier = injector.getFirewallRulesApplier();
-        this.mNetworkIdList = injector.getNetworkIdInfoArray();
+        EdmStorageProvider edmStorageProvider = new EdmStorageProvider(context);
+        this.mEdmStorageProvider = edmStorageProvider;
+        this.mFirewallRulesApplier = firewallRulesApplier;
+        this.mNetworkIdList = new ArrayList();
         HandlerThread handlerThread = new HandlerThread("DomainFilterHandlerThread");
         handlerThread.start();
-        this.mNetworkHandler = injector.getNetworkManagementHandler(this, handlerThread.getLooper());
-        this.mUserIdMap = injector.getUserIdMap();
-        this.mDomainFilterNapCommon = injector.getDomainFilterNapCommon();
-        this.mDnsResolverAdapter = injector.getDnsResolverAdapter();
+        this.mNetworkHandler = new NetworkManagementHandler(handlerThread.getLooper());
+        this.mUserIdMap = new HashMap();
+        this.mDomainFilterNapCommon = DomainFilterNapCommon.getInstance(context);
+        this.mDnsResolverAdapter = DnsResolverAdapter.getInstance();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
         intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
         intentFilter.addAction("android.intent.action.PACKAGE_REPLACED");
         intentFilter.addDataScheme("package");
-        this.mContext.registerReceiverAsUser(this.mPackageFilterReceiver, UserHandle.ALL, intentFilter, null, null);
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("android.intent.action.USER_REMOVED");
-        intentFilter2.addAction("android.intent.action.USER_ADDED");
-        this.mContext.registerReceiverAsUser(this.mUserFilterReceiver, UserHandle.ALL, intentFilter2, null, null);
-        IntentFilter intentFilter3 = new IntentFilter();
-        intentFilter3.addAction("android.intent.action.LOCKED_BOOT_COMPLETED");
-        intentFilter3.addAction("com.samsung.android.knox.intent.action.EDM_BOOT_COMPLETED_INTERNAL");
-        this.mContext.registerReceiverAsUser(this.mBootFilterReceiver, UserHandle.ALL, intentFilter3, null, null);
-        String string = Settings.Global.getString(this.mContext.getContentResolver(), "captive_portal_server");
+        UserHandle userHandle = UserHandle.ALL;
+        context.registerReceiverAsUser(anonymousClass1, userHandle, intentFilter, null, null);
+        context.registerReceiverAsUser(anonymousClass12, userHandle, DirEncryptServiceHelper$$ExternalSyntheticOutline0.m("android.intent.action.USER_REMOVED", "android.intent.action.USER_ADDED"), null, null, 2);
+        context.registerReceiverAsUser(anonymousClass13, userHandle, DirEncryptServiceHelper$$ExternalSyntheticOutline0.m("android.intent.action.LOCKED_BOOT_COMPLETED", "com.samsung.android.knox.intent.action.EDM_BOOT_COMPLETED_INTERNAL"), null, null, 2);
+        String string = Settings.Global.getString(context.getContentResolver(), "captive_portal_server");
         this.mServer = string;
         if (string == null) {
             this.mServer = "connectivitycheck.gstatic.com";
         }
-        Thread thread = new Thread(new Runnable() { // from class: com.android.server.enterprise.firewall.DomainFilter.4
-            @Override // java.lang.Runnable
-            public void run() {
-                DomainFilter.this.initDaemonCache();
-                DomainFilter.this.sendToCache(Operation.CAP_PORTAL.ordinal(), DomainFilter.this.mServer, null, null, null, null);
-                DomainFilter.this.sendToCache(Operation.EXCEPTION.ordinal(), DomainFilter.this.getCaptivePortalUid(), null, null, null, null);
-            }
-        });
-        this.mInitDaemonCacheThread = thread;
-        thread.start();
-        initReportCache();
-        registerCaptiveNetworkCallback();
-    }
-
-    public final ConnectivityManager getConnectivityManagerService() {
-        return (ConnectivityManager) this.mContext.getSystemService("connectivity");
-    }
-
-    public final void registerCaptiveNetworkCallback() {
-        getConnectivityManagerService().registerNetworkCallback(new NetworkRequest.Builder().addTransportType(1).addCapability(17).build(), this.mCaptivePortalNetworkCallback);
-    }
-
-    public final void exemptCaptivePortalHostname(final Network network) {
-        new Thread(new Runnable() { // from class: com.android.server.enterprise.firewall.DomainFilter.6
-            @Override // java.lang.Runnable
-            public void run() {
-                URL captivePortalCheckUrl = DomainFilter.this.getCaptivePortalCheckUrl();
-                if (captivePortalCheckUrl == null) {
-                    Log.e(DomainFilter.TAG, "Captive portal url is null");
-                    return;
-                }
-                HttpURLConnection httpURLConnection = null;
-                HttpURLConnection httpURLConnection2 = null;
-                try {
-                    try {
-                        HttpURLConnection httpURLConnection3 = (HttpURLConnection) network.openConnection(captivePortalCheckUrl);
-                        try {
-                            httpURLConnection3.setInstanceFollowRedirects(false);
-                            httpURLConnection3.setConnectTimeout(10000);
-                            httpURLConnection3.setReadTimeout(10000);
-                            httpURLConnection3.setUseCaches(false);
-                            String headerField = httpURLConnection3.getHeaderField("Location");
-                            boolean isEmpty = TextUtils.isEmpty(headerField);
-                            String str = headerField;
-                            if (!isEmpty) {
-                                String extractHost = DomainFilter.this.extractHost(headerField);
-                                if (!TextUtils.isEmpty(extractHost) && !DomainFilter.this.isIpAddress(extractHost)) {
-                                    DomainFilter.this.addHostToCaptivePortalWhitelist(extractHost);
-                                    str = extractHost;
-                                } else {
-                                    Log.e(DomainFilter.TAG, "invalid captive portal host");
-                                    str = "invalid captive portal host";
-                                }
-                            }
-                            httpURLConnection3.disconnect();
-                            httpURLConnection = str;
-                        } catch (IOException e) {
-                            e = e;
-                            httpURLConnection2 = httpURLConnection3;
-                            Log.e(DomainFilter.TAG, "Exception occured: " + e.getLocalizedMessage());
-                            httpURLConnection = httpURLConnection2;
-                            if (httpURLConnection2 != null) {
-                                httpURLConnection2.disconnect();
-                                httpURLConnection = httpURLConnection2;
-                            }
-                        } catch (Throwable th) {
-                            th = th;
-                            httpURLConnection = httpURLConnection3;
-                            if (httpURLConnection != null) {
-                                httpURLConnection.disconnect();
-                            }
-                            throw th;
-                        }
-                    } catch (IOException e2) {
-                        e = e2;
-                    }
-                } catch (Throwable th2) {
-                    th = th2;
-                }
-            }
-        }).start();
-    }
-
-    public final URL getCaptivePortalCheckUrl() {
-        return makeURL("http://connectivitycheck.gstatic.com/generate_204");
-    }
-
-    public static URL makeURL(String str) {
-        try {
-            return new URL(str);
-        } catch (MalformedURLException unused) {
-            Log.e(TAG, "Invalid URL " + str);
-            return null;
-        }
-    }
-
-    public final String getCaptivePortalUid() {
-        return String.valueOf(getApplicationUid("com.google.android.captiveportallogin", 0));
-    }
-
-    public final void initUserIdMap() {
-        List<UserInfo> users;
-        boolean z;
-        boolean z2;
-        Log.i(TAG, "initUserIdMap() - Initializing UserID Mapping");
-        PackageManager packageManager = this.mContext.getPackageManager();
-        UserManager userManager = (UserManager) this.mContext.getSystemService("user");
-        if (userManager == null || (users = userManager.getUsers()) == null) {
-            return;
-        }
-        synchronized (this.mExceptionListLock) {
-            z = false;
-            if (this.mIsExceptionListApplied || !hasAnyRuleInDatabase()) {
-                z2 = false;
-            } else {
-                this.mIsExceptionListApplied = true;
-                z2 = true;
-            }
-        }
-        synchronized (this.mKGExceptionListLock) {
-            if (!this.mIsKGExceptionApplied && hasAnyRuleInDatabase() && FirewallUtils.isKGExemptRuleRequired()) {
-                this.mIsKGExceptionApplied = true;
-                z = true;
-            }
-        }
-        ArrayList arrayList = new ArrayList();
-        synchronized (this.mUserIdMapLock) {
-            for (UserInfo userInfo : users) {
-                HashMap hashMap = new HashMap();
-                List installedPackagesAsUser = packageManager.getInstalledPackagesAsUser(64, userInfo.id);
-                Iterator it = installedPackagesAsUser.iterator();
-                while (it.hasNext()) {
-                    ApplicationInfo applicationInfo = ((PackageInfo) it.next()).applicationInfo;
-                    hashMap.put(applicationInfo.packageName, Integer.valueOf(applicationInfo.uid));
-                }
-                this.mUserIdMap.put(Integer.valueOf(userInfo.id), hashMap);
-                arrayList.addAll(installedPackagesAsUser);
-            }
-        }
-        if (z2) {
-            processPackageExceptionList(arrayList);
-        }
-        if (z) {
-            processKGPackageException(arrayList);
-        }
-    }
-
-    public final void onUserAdded(Intent intent) {
-        List list;
-        Log.i(TAG, "onUserAdded()");
-        int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-        if (intExtra != -1) {
-            Log.i(TAG, "onUserAdded() - userId = " + intExtra);
-            synchronized (this.mUserIdMapLock) {
-                if (((Map) this.mUserIdMap.get(Integer.valueOf(intExtra))) == null) {
-                    HashMap hashMap = new HashMap();
-                    list = this.mContext.getPackageManager().getInstalledPackagesAsUser(64, intExtra);
-                    Iterator it = list.iterator();
-                    while (it.hasNext()) {
-                        ApplicationInfo applicationInfo = ((PackageInfo) it.next()).applicationInfo;
-                        hashMap.put(applicationInfo.packageName, Integer.valueOf(applicationInfo.uid));
-                    }
-                    this.mUserIdMap.put(Integer.valueOf(intExtra), hashMap);
-                } else {
-                    list = null;
-                }
-            }
-            synchronized (this.mExceptionListLock) {
-                if (this.mIsExceptionListApplied) {
-                    if (list != null && !list.isEmpty()) {
-                        processPackageExceptionList(list);
-                    }
-                    synchronized (this.mKGExceptionListLock) {
-                        if (this.mIsKGExceptionApplied) {
-                            if (list == null || list.isEmpty()) {
-                                return;
-                            }
-                            processKGPackageException(list);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public final void onUserRemoved(Intent intent) {
-        Log.i(TAG, "onUserRemoved()");
-        int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-        if (intExtra != -1) {
-            Log.i(TAG, "onUserRemoved() - userId = " + intExtra);
-            Integer valueOf = Integer.valueOf(intExtra);
-            synchronized (this.mUserIdMapLock) {
-                this.mUserIdMap.remove(valueOf);
-            }
-            if (this.mDomainReportCache.contains(valueOf)) {
-                this.mDomainReportCache.remove(valueOf);
-                sendToCache(Operation.CLEAR.ordinal(), Integer.toString(intExtra), null, null, null, null);
-            }
-        }
-    }
-
-    public final int getApplicationUid(String str, int i) {
-        PackageInfo packageInfo;
-        ApplicationInfo applicationInfo;
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                packageInfo = PackageManagerAdapter.getInstance(this.mContext).getPackageInfo(str, 128, i);
-            } catch (Exception e) {
-                Log.e(TAG, "getApplicationUid() - exception getting package info ", e);
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                packageInfo = null;
-            }
-            if (packageInfo == null || (applicationInfo = packageInfo.applicationInfo) == null) {
-                return -1;
-            }
-            return applicationInfo.uid;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final void packageAdded(Intent intent) {
-        String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
-        int i = -1;
-        int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-        if (intExtra == -1 || schemeSpecificPart == null) {
-            Log.i(TAG, "packageAdded() - Received invalid user id or package name, can't retrieve application info");
-            return;
-        }
-        int applicationUid = getApplicationUid(schemeSpecificPart, intExtra);
-        Log.i(TAG, "packageAdded() - packageName: " + schemeSpecificPart + ", uid: " + intExtra);
-        if (applicationUid == -1) {
-            Log.i(TAG, "packageAdded() - Failed to retrieve app info");
-            return;
-        }
-        synchronized (this.mUserIdMapLock) {
-            Integer valueOf = Integer.valueOf(intExtra);
-            if (this.mUserIdMap.get(valueOf) == null) {
-                HashMap hashMap = new HashMap();
-                hashMap.put(schemeSpecificPart, Integer.valueOf(applicationUid));
-                this.mUserIdMap.put(valueOf, hashMap);
-            } else {
-                ((Map) this.mUserIdMap.get(valueOf)).put(schemeSpecificPart, Integer.valueOf(applicationUid));
-            }
-        }
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(EdmStorageProviderBase.getAdminLUIDWhereIn(0, intExtra), "#SelectClause#");
-        contentValues.put("packageName", schemeSpecificPart);
-        List values = this.mEdmStorageProvider.getValues("DomainFilterTable", (String[]) null, contentValues);
-        if (values == null || values.isEmpty()) {
-            return;
-        }
-        ContentValues contentValues2 = (ContentValues) values.get(0);
-        String asString = contentValues2.getAsString("signature");
-        if (TextUtils.isEmpty(asString) || validatePkgSignature(intExtra, schemeSpecificPart, asString)) {
-            List listFromDb = FirewallUtils.getListFromDb(contentValues2, "blacklist", this.mEdmStorageProvider);
-            List listFromDb2 = FirewallUtils.getListFromDb(contentValues2, "whitelist", this.mEdmStorageProvider);
-            String asString2 = contentValues2.getAsString("dns1");
-            if (listFromDb.isEmpty() && listFromDb2.isEmpty() && TextUtils.isEmpty(asString2)) {
-                return;
-            }
-            if (!TextUtils.isEmpty(asString2)) {
-                int i2 = setupNetworkDns(asString2, contentValues2.getAsString("dns2"));
-                if (i2 != -1) {
-                    contentValues2.put("networkId", String.valueOf(i2));
-                    this.mEdmStorageProvider.put("DomainFilterTable", contentValues2, contentValues);
-                }
-                i = i2;
-            }
-            sendToCache(Operation.ADD.ordinal(), String.valueOf(applicationUid), null, listFromDb, listFromDb2, String.valueOf(i));
-            return;
-        }
-        Log.i(TAG, "packageAdded() - Installed app's signature mismatched the one provided by admin.");
-    }
-
-    public final void packageRemoved(Intent intent) {
-        String str;
-        String str2;
-        int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-        String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
-        Log.i(TAG, "packageRemoved() - packageName: " + schemeSpecificPart + " uid: " + intExtra);
-        if (intExtra == -1 || schemeSpecificPart == null) {
-            return;
-        }
-        synchronized (this.mUserIdMapLock) {
-            Map map = (Map) this.mUserIdMap.get(Integer.valueOf(intExtra));
-            if (map == null || !map.containsKey(schemeSpecificPart)) {
-                str = null;
-            } else {
-                str = ((Integer) map.get(schemeSpecificPart)).toString();
-                map.remove(schemeSpecificPart);
-            }
-            str2 = str;
-        }
-        if (str2 != null) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(EdmStorageProviderBase.getAdminLUIDWhereIn(0, intExtra), "#SelectClause#");
-            contentValues.put("packageName", schemeSpecificPart);
-            List values = this.mEdmStorageProvider.getValues("DomainFilterTable", new String[]{"networkId"}, contentValues);
-            if (values == null || values.isEmpty()) {
-                return;
-            }
-            ContentValues contentValues2 = (ContentValues) values.get(0);
-            Integer asInteger = contentValues2.getAsInteger("networkId");
-            int intValue = asInteger != null ? asInteger.intValue() : -1;
-            if (intValue != -1) {
-                this.mNetworkHandler.sendMessage(Message.obtain(this.mNetworkHandler, 0, Integer.valueOf(intValue)));
-                contentValues2.put("networkId", (Integer) (-1));
-                this.mEdmStorageProvider.put("DomainFilterTable", contentValues2, contentValues);
-            }
-            sendToCache(Operation.CLEAR.ordinal(), str2, null, null, null, String.valueOf(intValue));
-        }
-    }
-
-    public final void packageReplaced(Intent intent) {
-        Map map;
-        int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-        String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
-        if (intExtra == -1 || schemeSpecificPart == null) {
-            Log.i(TAG, "packageReplaced() - Received invalid user id or package name, can't retrieve application info");
-            return;
-        }
-        synchronized (this.mUserIdMapLock) {
-            map = (Map) this.mUserIdMap.get(Integer.valueOf(intExtra));
-        }
-        if (map == null || !map.containsKey(schemeSpecificPart)) {
-            packageAdded(intent);
-            return;
-        }
-        int intValue = ((Integer) map.get(schemeSpecificPart)).intValue();
-        int applicationUid = getApplicationUid(schemeSpecificPart, intExtra);
-        Log.i(TAG, "packageReplaced() - packageName: " + schemeSpecificPart + " oldUid: " + intValue + " newUid:" + applicationUid);
-        if (applicationUid == -1) {
-            Log.i(TAG, "ackageReplaced() - Failed to retrieve app info");
-            return;
-        }
-        synchronized (this.mUserIdMapLock) {
-            ((Map) this.mUserIdMap.get(Integer.valueOf(intExtra))).put(schemeSpecificPart, Integer.valueOf(applicationUid));
-        }
-        if (intValue != applicationUid) {
-            sendToCache(Operation.REPLACE.ordinal(), Integer.toString(intValue), Integer.toString(applicationUid), null, null, null);
-        }
-    }
-
-    public final boolean addDomainListInDataBase(int i, String str, List list, String str2, List list2, List list3, Set set) {
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            String str3 = (String) it.next();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("adminUid", Integer.valueOf(i));
-            contentValues.put("packageName", str);
-            contentValues.put("typeList", str2);
-            contentValues.put("domain", str3);
-            ContentValues contentValues2 = new ContentValues();
-            contentValues2.put("adminUid", Integer.valueOf(i));
-            contentValues2.put("packageName", str);
-            contentValues2.put("domain", str3);
-            if (!this.mEdmStorageProvider.put("DomainFilterListTable", contentValues, contentValues2)) {
-                Log.i(TAG, "addDomainListInDataBase()- Any " + str2 + " couldn't be added");
-                rollbackDomainList(i, str, list2, list3, set, true);
-                return false;
-            }
-            set.add(str3);
-        }
-        return true;
-    }
-
-    public final boolean addDomainListInDataBase(ContextInfo contextInfo, DomainFilterRule domainFilterRule, List list, List list2) {
-        int i = contextInfo.mCallerUid;
-        String packageName = domainFilterRule.getApplication().getPackageName();
-        HashSet hashSet = new HashSet();
-        List denyDomains = domainFilterRule.getDenyDomains();
-        List allowDomains = domainFilterRule.getAllowDomains();
-        Log.i(TAG, "addDomainListInDataBase()");
-        boolean addDomainListInDataBase = addDomainListInDataBase(i, packageName, denyDomains, "blacklist", list, list2, hashSet);
-        if (addDomainListInDataBase) {
-            addDomainListInDataBase = addDomainListInDataBase(i, packageName, allowDomains, "whitelist", list, list2, hashSet);
-        }
-        if (addDomainListInDataBase) {
-            Log.i(TAG, "addDomainListInDataBase()- All domains were added");
-        }
-        return addDomainListInDataBase;
-    }
-
-    public final void rollbackDomainList(int i, String str, List list, List list2, Set set, boolean z) {
-        Iterator it = set.iterator();
-        while (it.hasNext()) {
-            String str2 = (String) it.next();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("adminUid", Integer.valueOf(i));
-            contentValues.put("packageName", str);
-            contentValues.put("domain", str2);
-            ContentValues contentValues2 = new ContentValues();
-            if (list.contains(str2)) {
-                contentValues2.put("typeList", "blacklist");
-            } else if (list2.contains(str2)) {
-                contentValues2.put("typeList", "whitelist");
-            }
-            if (z && !list.contains(str2) && !list2.contains(str2)) {
-                this.mEdmStorageProvider.delete("DomainFilterListTable", contentValues);
-                Log.i(TAG, "rollbackDomainList()- Rollback for all domains that were added");
-            } else {
-                Log.i(TAG, "rollbackDomainList()- Rollback for all domains thatwere (Added =" + z + ")");
-                this.mEdmStorageProvider.put("DomainFilterListTable", contentValues2, contentValues);
-            }
-        }
-    }
-
-    public synchronized void populateDomainFilterBrokenRules(ContextInfo contextInfo, List list, int i) {
-        List list2 = (List) this.mDomainFilterBrokenRules.get(Integer.valueOf(i));
-        if (list2 == null) {
-            list2 = new ArrayList();
-        }
-        list2.addAll(list);
-        this.mDomainFilterBrokenRules.put(Integer.valueOf(i), list2);
-    }
-
-    public final synchronized List reassembleDomainFilterBrokenRules(ContextInfo contextInfo, int i) {
-        ArrayList arrayList;
-        boolean z;
-        arrayList = new ArrayList();
-        for (DomainFilterRule domainFilterRule : (List) this.mDomainFilterBrokenRules.get(Integer.valueOf(i))) {
-            Iterator it = arrayList.iterator();
-            while (true) {
-                if (!it.hasNext()) {
-                    z = false;
-                    break;
-                }
-                DomainFilterRule domainFilterRule2 = (DomainFilterRule) it.next();
-                if (domainFilterRule2.getIpcToken() != 0 && domainFilterRule2.getIpcToken() == domainFilterRule.getIpcToken()) {
-                    List denyDomains = domainFilterRule2.getDenyDomains();
-                    List allowDomains = domainFilterRule2.getAllowDomains();
-                    if (denyDomains != null) {
-                        denyDomains.addAll(domainFilterRule.getDenyDomains());
-                    }
-                    if (allowDomains != null) {
-                        allowDomains.addAll(domainFilterRule.getAllowDomains());
-                    }
-                    domainFilterRule2.setDenyDomains(denyDomains);
-                    domainFilterRule2.setAllowDomains(allowDomains);
-                    z = true;
-                }
-            }
-            if (!z) {
-                arrayList.add(domainFilterRule);
-            }
-        }
-        this.mDomainFilterBrokenRules.remove(Integer.valueOf(i));
-        return arrayList;
-    }
-
-    public synchronized FirewallResponse[] addDomainFilterRules(ContextInfo contextInfo, int i) {
-        return addDomainFilterRules(contextInfo, reassembleDomainFilterBrokenRules(contextInfo, i));
-    }
-
-    public synchronized FirewallResponse[] removeDomainFilterRules(ContextInfo contextInfo, int i) {
-        return removeDomainFilterRules(contextInfo, reassembleDomainFilterBrokenRules(contextInfo, i));
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:104:0x031f A[Catch: all -> 0x046a, TryCatch #0 {, blocks: (B:10:0x000b, B:13:0x0013, B:15:0x003a, B:18:0x0052, B:19:0x0054, B:23:0x0062, B:24:0x006e, B:26:0x0074, B:28:0x007c, B:31:0x03ce, B:32:0x009b, B:34:0x00aa, B:36:0x00b0, B:38:0x00b6, B:40:0x00bc, B:42:0x00c6, B:44:0x00d0, B:45:0x00e5, B:47:0x00f4, B:48:0x0112, B:50:0x0128, B:51:0x012f, B:53:0x0137, B:56:0x0141, B:58:0x0159, B:60:0x0167, B:62:0x0161, B:64:0x017d, B:66:0x0183, B:67:0x0199, B:69:0x01e1, B:71:0x01e7, B:72:0x01f2, B:74:0x01fb, B:75:0x0204, B:77:0x020a, B:78:0x0213, B:80:0x0225, B:84:0x029a, B:87:0x02a1, B:89:0x02a8, B:92:0x02c0, B:94:0x02c9, B:96:0x02d2, B:98:0x02db, B:100:0x02e1, B:101:0x02f4, B:102:0x030d, B:104:0x031f, B:106:0x0335, B:107:0x0347, B:109:0x034f, B:111:0x0365, B:113:0x036e, B:117:0x0381, B:118:0x038e, B:120:0x03b0, B:122:0x03b8, B:129:0x0235, B:131:0x0250, B:137:0x0264, B:139:0x027e, B:141:0x0284, B:143:0x0290, B:145:0x0293, B:151:0x020f, B:152:0x0200, B:157:0x03e0, B:159:0x041d, B:162:0x0427, B:164:0x0435, B:166:0x0443, B:170:0x0448, B:176:0x044f, B:5:0x0450, B:21:0x0055, B:22:0x0061), top: B:9:0x000b, inners: #1 }] */
-    /* JADX WARN: Removed duplicated region for block: B:107:0x0347 A[Catch: all -> 0x046a, TryCatch #0 {, blocks: (B:10:0x000b, B:13:0x0013, B:15:0x003a, B:18:0x0052, B:19:0x0054, B:23:0x0062, B:24:0x006e, B:26:0x0074, B:28:0x007c, B:31:0x03ce, B:32:0x009b, B:34:0x00aa, B:36:0x00b0, B:38:0x00b6, B:40:0x00bc, B:42:0x00c6, B:44:0x00d0, B:45:0x00e5, B:47:0x00f4, B:48:0x0112, B:50:0x0128, B:51:0x012f, B:53:0x0137, B:56:0x0141, B:58:0x0159, B:60:0x0167, B:62:0x0161, B:64:0x017d, B:66:0x0183, B:67:0x0199, B:69:0x01e1, B:71:0x01e7, B:72:0x01f2, B:74:0x01fb, B:75:0x0204, B:77:0x020a, B:78:0x0213, B:80:0x0225, B:84:0x029a, B:87:0x02a1, B:89:0x02a8, B:92:0x02c0, B:94:0x02c9, B:96:0x02d2, B:98:0x02db, B:100:0x02e1, B:101:0x02f4, B:102:0x030d, B:104:0x031f, B:106:0x0335, B:107:0x0347, B:109:0x034f, B:111:0x0365, B:113:0x036e, B:117:0x0381, B:118:0x038e, B:120:0x03b0, B:122:0x03b8, B:129:0x0235, B:131:0x0250, B:137:0x0264, B:139:0x027e, B:141:0x0284, B:143:0x0290, B:145:0x0293, B:151:0x020f, B:152:0x0200, B:157:0x03e0, B:159:0x041d, B:162:0x0427, B:164:0x0435, B:166:0x0443, B:170:0x0448, B:176:0x044f, B:5:0x0450, B:21:0x0055, B:22:0x0061), top: B:9:0x000b, inners: #1 }] */
-    /* JADX WARN: Removed duplicated region for block: B:128:0x030a  */
-    /* JADX WARN: Removed duplicated region for block: B:141:0x0284 A[Catch: all -> 0x046a, TryCatch #0 {, blocks: (B:10:0x000b, B:13:0x0013, B:15:0x003a, B:18:0x0052, B:19:0x0054, B:23:0x0062, B:24:0x006e, B:26:0x0074, B:28:0x007c, B:31:0x03ce, B:32:0x009b, B:34:0x00aa, B:36:0x00b0, B:38:0x00b6, B:40:0x00bc, B:42:0x00c6, B:44:0x00d0, B:45:0x00e5, B:47:0x00f4, B:48:0x0112, B:50:0x0128, B:51:0x012f, B:53:0x0137, B:56:0x0141, B:58:0x0159, B:60:0x0167, B:62:0x0161, B:64:0x017d, B:66:0x0183, B:67:0x0199, B:69:0x01e1, B:71:0x01e7, B:72:0x01f2, B:74:0x01fb, B:75:0x0204, B:77:0x020a, B:78:0x0213, B:80:0x0225, B:84:0x029a, B:87:0x02a1, B:89:0x02a8, B:92:0x02c0, B:94:0x02c9, B:96:0x02d2, B:98:0x02db, B:100:0x02e1, B:101:0x02f4, B:102:0x030d, B:104:0x031f, B:106:0x0335, B:107:0x0347, B:109:0x034f, B:111:0x0365, B:113:0x036e, B:117:0x0381, B:118:0x038e, B:120:0x03b0, B:122:0x03b8, B:129:0x0235, B:131:0x0250, B:137:0x0264, B:139:0x027e, B:141:0x0284, B:143:0x0290, B:145:0x0293, B:151:0x020f, B:152:0x0200, B:157:0x03e0, B:159:0x041d, B:162:0x0427, B:164:0x0435, B:166:0x0443, B:170:0x0448, B:176:0x044f, B:5:0x0450, B:21:0x0055, B:22:0x0061), top: B:9:0x000b, inners: #1 }] */
-    /* JADX WARN: Removed duplicated region for block: B:86:0x029f  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public synchronized com.samsung.android.knox.net.firewall.FirewallResponse[] addDomainFilterRules(com.samsung.android.knox.ContextInfo r28, java.util.List r29) {
-        /*
-            Method dump skipped, instructions count: 1133
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.firewall.DomainFilter.addDomainFilterRules(com.samsung.android.knox.ContextInfo, java.util.List):com.samsung.android.knox.net.firewall.FirewallResponse[]");
-    }
-
-    public final boolean removeDomainListInDatabase(ContextInfo contextInfo, DomainFilterRule domainFilterRule, List list, List list2, List list3) {
-        int i = contextInfo.mCallerUid;
-        String packageName = domainFilterRule.getApplication().getPackageName();
-        if (domainFilterRule.getAllowDomains() == null && domainFilterRule.getDenyDomains() == null) {
-            domainFilterRule.setAllowDomains(list3);
-            domainFilterRule.setDenyDomains(list2);
-        } else if (domainFilterRule.getAllowDomains() == null) {
-            domainFilterRule.setAllowDomains(list);
-        } else if (domainFilterRule.getDenyDomains() == null) {
-            domainFilterRule.setDenyDomains(list);
-        }
-        ArrayList arrayList = new ArrayList();
-        if (domainFilterRule.getAllowDomains() != null) {
-            arrayList.addAll(domainFilterRule.getAllowDomains());
-        }
-        if (domainFilterRule.getDenyDomains() != null) {
-            arrayList.addAll(domainFilterRule.getDenyDomains());
-        }
-        HashSet hashSet = new HashSet();
-        for (int i2 = 0; i2 < arrayList.size(); i2++) {
-            String str = (String) arrayList.get(i2);
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("adminUid", Integer.valueOf(i));
-            contentValues.put("packageName", packageName);
-            contentValues.put("domain", str);
-            if (this.mEdmStorageProvider.delete("DomainFilterListTable", contentValues) <= 0) {
-                rollbackDomainList(i, packageName, list2, list3, hashSet, false);
-                Log.i(TAG, "removeDomainListInDatabase()- Any deny domain couldn't be removed");
-                return false;
-            }
-            hashSet.add(str);
-        }
-        Log.i(TAG, "removeDomainListInDatabase()- All domains were removed");
-        return true;
-    }
-
-    public synchronized FirewallResponse[] removeDomainFilterRules(ContextInfo contextInfo, List list) {
-        FirewallResponse[] firewallResponseArr;
-        int i;
-        int i2;
-        char c;
-        int i3;
-        ArrayList arrayList;
-        int i4;
-        HashSet hashSet;
-        boolean z;
-        HashSet hashSet2;
-        boolean z2;
-        ArrayList arrayList2;
-        List list2 = list;
-        synchronized (this) {
-            String str = TAG;
-            StringBuilder sb = new StringBuilder();
-            sb.append("removeDomainFilterRules() - rules.size = ");
-            sb.append(list2 != null ? Integer.valueOf(list.size()) : "0");
-            Log.i(str, sb.toString());
-            int i5 = 0;
-            if (list2 != null && list.isEmpty()) {
-                Log.i(TAG, "removeDomainFilterRules() - No rule specified");
-                return new FirewallResponse[]{new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.OPERATION_NOT_PERMITTED_ERROR, "No rule was specified.")};
-            }
-            int i6 = contextInfo.mCallerUid;
-            int userId = UserHandle.getUserId(i6);
-            int checkAdminInDatabase = checkAdminInDatabase(i6);
-            if (checkAdminInDatabase == 0) {
-                Log.i(TAG, "removeDomainFilterRules() - Database is already empty");
-                firewallResponseArr = new FirewallResponse[]{new FirewallResponse(FirewallResponse.Result.NO_CHANGES, FirewallResponse.ErrorCode.OPERATION_NOT_PERMITTED_ERROR, "The rules are already cleared.")};
-            } else {
-                char c2 = 65535;
-                if (checkAdminInDatabase == -1) {
-                    Log.i(TAG, "removeDomainFilterRules() - Another admin is handling domainfilter rules in the database");
-                    firewallResponseArr = new FirewallResponse[]{new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.NOT_AUTHORIZED_ERROR, "This administrator can't execute this operation because he is not the owner.")};
-                } else {
-                    String[] strArr = null;
-                    if (list2 == DomainFilterRule.CLEAR_ALL) {
-                        FirewallResponse[] firewallResponseArr2 = new FirewallResponse[1];
-                        releaseNetworks(i6);
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put("adminUid", Integer.valueOf(i6));
-                        List values = this.mEdmStorageProvider.getValues("DomainFilterTable", (String[]) null, contentValues);
-                        if (this.mEdmStorageProvider.delete("DomainFilterTable", contentValues) <= 0) {
-                            Log.i(TAG, "removeDomainFilterRules() - Failed to clear rulesfrom the database");
-                            firewallResponseArr2[0] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to clear rules from database.");
-                        } else if (this.mEdmStorageProvider.delete("DomainFilterListTable", contentValues) < 0) {
-                            Iterator it = values.iterator();
-                            while (it.hasNext()) {
-                                this.mEdmStorageProvider.put("DomainFilterTable", (ContentValues) it.next(), contentValues);
-                            }
-                            Log.i(TAG, "removeDomainFilterRules() - Failed to clear rules from the database (url)");
-                            firewallResponseArr2[0] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to clear rules from database.");
-                        } else {
-                            firewallResponseArr2[0] = new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "Rules successfully cleared. Admin: " + i6);
-                            if (isDomainFilterOnIptablesEnabled(contextInfo) && !this.mFirewallRulesApplier.flushDomainChains(Integer.valueOf(userId), false)) {
-                                Log.e(TAG, "flushDomainChains() - Failed to flush domain chains");
-                            }
-                            if (!this.mFirewallRulesApplier.flushDnsPortChains(Integer.valueOf(userId), false, contextInfo)) {
-                                Log.e(TAG, "flushDnsPortChains() - Failed to flush port53 chains");
-                            }
-                            Log.i(TAG, "flushDomainChains() - domain rules successfully removed");
-                        }
-                        updateDaemonCache(contextInfo, null, Operation.CLEAR.ordinal(), null);
-                        firewallResponseArr = firewallResponseArr2;
-                    } else {
-                        int size = list.size();
-                        FirewallResponse[] firewallResponseArr3 = new FirewallResponse[size];
-                        ArrayList arrayList3 = new ArrayList();
-                        int i7 = 0;
-                        while (i7 < list.size()) {
-                            DomainFilterRule domainFilterRule = (DomainFilterRule) list2.get(i7);
-                            FirewallResponse validateApplicationIdentity = validateApplicationIdentity(domainFilterRule.getApplication());
-                            firewallResponseArr3[i7] = validateApplicationIdentity;
-                            if (validateApplicationIdentity != null) {
-                                Log.i(TAG, "removeDomainFilterRules() - Skipping invalid rule - invalidApplication Identity" + firewallResponseArr3[i7].getMessage());
-                                i = i7;
-                                i2 = i6;
-                                c = c2;
-                                i3 = size;
-                                arrayList = arrayList3;
-                            } else {
-                                String packageName = domainFilterRule.getApplication().getPackageName();
-                                ContentValues contentValues2 = new ContentValues();
-                                contentValues2.put("adminUid", Integer.valueOf(i6));
-                                contentValues2.put("packageName", packageName);
-                                List values2 = this.mEdmStorageProvider.getValues("DomainFilterTable", strArr, contentValues2);
-                                if (values2 != null && !values2.isEmpty()) {
-                                    ContentValues contentValues3 = (ContentValues) values2.get(i5);
-                                    String asString = contentValues3.getAsString("signature");
-                                    String signature = domainFilterRule.getApplication().getSignature();
-                                    if ((signature != null && asString == null) || ((signature == null && asString != null) || (signature != null && asString != null && !signature.equals(asString)))) {
-                                        Log.i(TAG, "removeDomainFilterRules() - Skipping invalid rule - signature mismatch");
-                                        firewallResponseArr3[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "Signature does not match with the previous added.");
-                                    } else {
-                                        if (TextUtils.isEmpty(domainFilterRule.getDns1())) {
-                                            i4 = i5;
-                                        } else {
-                                            FirewallResponse removeDnsForApplication = removeDnsForApplication(domainFilterRule, i6, contentValues3);
-                                            firewallResponseArr3[i7] = removeDnsForApplication;
-                                            if (removeDnsForApplication != null) {
-                                                Log.i(TAG, "removeDomainFilterRules() - Skipping rule - Failed to remove DNS");
-                                            } else {
-                                                i4 = 1;
-                                            }
-                                        }
-                                        List listFromDb = FirewallUtils.getListFromDb(contentValues3, "blacklist", this.mEdmStorageProvider);
-                                        List listFromDb2 = FirewallUtils.getListFromDb(contentValues3, "whitelist", this.mEdmStorageProvider);
-                                        prepareDomainUrls(domainFilterRule);
-                                        List denyDomains = domainFilterRule.getDenyDomains();
-                                        List allowDomains = domainFilterRule.getAllowDomains();
-                                        if (denyDomains != null) {
-                                            hashSet = new HashSet(listFromDb);
-                                            z = hashSet.removeAll(denyDomains) | false;
-                                        } else {
-                                            hashSet = new HashSet();
-                                            if (allowDomains != null) {
-                                                arrayList3.addAll(listFromDb);
-                                            }
-                                            z = true;
-                                        }
-                                        if (allowDomains != null) {
-                                            hashSet2 = new HashSet(listFromDb2);
-                                            z2 = z | hashSet2.removeAll(allowDomains);
-                                        } else {
-                                            HashSet hashSet3 = new HashSet();
-                                            boolean z3 = z | true;
-                                            if (denyDomains != null) {
-                                                arrayList3.addAll(listFromDb2);
-                                            }
-                                            hashSet2 = hashSet3;
-                                            z2 = z3;
-                                        }
-                                        if (!z2 && i4 == 0) {
-                                            Log.i(TAG, "removeDomainFilterRules() - Skipping rule - Rule is not in the database");
-                                            firewallResponseArr3[i7] = new FirewallResponse(FirewallResponse.Result.NO_CHANGES, FirewallResponse.ErrorCode.NO_ERROR, "The rule is not in the database.");
-                                        } else {
-                                            boolean z4 = contentValues3.getAsString("dns1") != null;
-                                            if (hashSet.isEmpty() && hashSet2.isEmpty() && (i4 != 0 || !z4)) {
-                                                List values3 = this.mEdmStorageProvider.getValues("DomainFilterTable", (String[]) null, contentValues2);
-                                                if (this.mEdmStorageProvider.delete("DomainFilterTable", contentValues2) <= 0) {
-                                                    Log.e(TAG, "removeDomainFilterRules() - Failed to remove rule fromthe database");
-                                                    firewallResponseArr3[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove/update rule from the database.");
-                                                    i = i7;
-                                                    arrayList2 = arrayList3;
-                                                    i2 = i6;
-                                                    i3 = size;
-                                                } else {
-                                                    i3 = size;
-                                                    int i8 = i6;
-                                                    i = i7;
-                                                    arrayList2 = arrayList3;
-                                                    if (!removeDomainListInDatabase(contextInfo, domainFilterRule, arrayList3, listFromDb, listFromDb2)) {
-                                                        this.mEdmStorageProvider.put("DomainFilterTable", (ContentValues) values3.get(0), contentValues2);
-                                                        Log.e(TAG, "removeDomainFilterRules() - Failed to remove rule fromthe database");
-                                                        firewallResponseArr3[i] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove/update rule from the database.");
-                                                        i2 = i8;
-                                                    } else {
-                                                        Integer asInteger = contentValues3.getAsInteger("networkId");
-                                                        if (asInteger != null) {
-                                                            updateDaemonCache(contextInfo, domainFilterRule, Operation.REMOVE.ordinal(), String.valueOf(asInteger.intValue()));
-                                                            firewallResponseArr3[i] = new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The rule was successfuly removed/updated.");
-                                                            i2 = i8;
-                                                            if (!this.mFirewallRulesApplier.hasDenyRuleInDatabase(i2, packageName) && this.mFirewallRulesApplier.blockPort53(new AppIdentity(packageName, signature), contextInfo, false)) {
-                                                                Log.d(TAG, "unblocking port53 for package = " + packageName);
-                                                            }
-                                                        } else {
-                                                            i2 = i8;
-                                                            Log.e(TAG, "removeDomainFilterRules() - Failed to remove rule from the database");
-                                                            firewallResponseArr3[i] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove/update rule from the database.");
-                                                        }
-                                                    }
-                                                }
-                                                arrayList = arrayList2;
-                                            } else {
-                                                i = i7;
-                                                arrayList = arrayList3;
-                                                i2 = i6;
-                                                i3 = size;
-                                                if (!removeDomainListInDatabase(contextInfo, domainFilterRule, arrayList, listFromDb, listFromDb2)) {
-                                                    Log.e(TAG, "removeDomainFilterRules() - Failed to remove rule from the database");
-                                                    firewallResponseArr3[i] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove/update rule from the database.");
-                                                } else {
-                                                    Integer asInteger2 = i4 != 0 ? contentValues3.getAsInteger("networkId") : null;
-                                                    if (asInteger2 == null) {
-                                                        c = 65535;
-                                                        asInteger2 = -1;
-                                                    } else {
-                                                        c = 65535;
-                                                    }
-                                                    updateDaemonCache(contextInfo, domainFilterRule, Operation.REMOVE.ordinal(), String.valueOf(asInteger2.intValue()));
-                                                    firewallResponseArr3[i] = new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The rule was successfuly removed/updated.");
-                                                }
-                                            }
-                                            c = 65535;
-                                        }
-                                    }
-                                    i = i7;
-                                    arrayList = arrayList3;
-                                    i2 = i6;
-                                    i3 = size;
-                                    c = 65535;
-                                }
-                                i = i7;
-                                i2 = i6;
-                                c = c2;
-                                i3 = size;
-                                arrayList = arrayList3;
-                                Log.i(TAG, "removeDomainFilterRules() - Skipping rule - This rule is not in the database");
-                                firewallResponseArr3[i] = new FirewallResponse(FirewallResponse.Result.NO_CHANGES, FirewallResponse.ErrorCode.NO_ERROR, "The rule is not in the database.");
-                            }
-                            i7 = i + 1;
-                            i6 = i2;
-                            arrayList3 = arrayList;
-                            size = i3;
-                            i5 = 0;
-                            strArr = null;
-                            list2 = list;
-                            c2 = c;
-                        }
-                        ArrayList arrayList4 = arrayList3;
-                        int i9 = size;
-                        if (isDomainFilterOnIptablesEnabled(contextInfo)) {
-                            ArrayList arrayList5 = new ArrayList();
-                            int i10 = 0;
-                            while (true) {
-                                int i11 = i9;
-                                if (i10 >= i11) {
-                                    break;
-                                }
-                                if (firewallResponseArr3[i10].getResult().equals(FirewallResponse.Result.SUCCESS)) {
-                                    arrayList5.add((DomainFilterRule) list.get(i10));
-                                }
-                                i10++;
-                                i9 = i11;
-                            }
-                            removeDomainRules(contextInfo, arrayList5, arrayList4);
-                        }
-                        firewallResponseArr = firewallResponseArr3;
-                    }
-                }
-            }
-            synchronized (this.mExceptionListLock) {
-                if (!hasAnyRuleInDatabase()) {
-                    this.mIsExceptionListApplied = false;
-                    this.mDomainFilterNapCommon.setDomainFilterEnabled(false);
-                }
-            }
-            synchronized (this.mKGExceptionListLock) {
-                if (!hasAnyRuleInDatabase()) {
-                    this.mIsKGExceptionApplied = false;
-                }
-            }
-            maybeClearCaptivePortalHosts();
-            return firewallResponseArr;
-        }
-    }
-
-    public List getDomainFilterRules(ContextInfo contextInfo, List list, int i) {
-        if (!this.mDomainFilterBrokenRules.containsKey(Integer.valueOf(i))) {
-            List domainFilterRules = getDomainFilterRules(contextInfo, list);
-            if (domainFilterRules.isEmpty()) {
-                return null;
-            }
-            this.mDomainFilterBrokenRules.put(Integer.valueOf(i), domainFilterRules);
-        }
-        List list2 = (List) this.mDomainFilterBrokenRules.get(Integer.valueOf(i));
-        if (list2.isEmpty()) {
-            this.mDomainFilterBrokenRules.remove(Integer.valueOf(i));
-            return null;
-        }
-        List pageableRule = pageableRule(list2);
-        this.mDomainFilterBrokenRules.put(Integer.valueOf(i), list2);
-        return pageableRule;
-    }
-
-    public final List pageableRule(List list) {
-        List list2;
-        int i;
-        List list3;
-        int i2;
-        ArrayList arrayList = new ArrayList();
-        ArrayList arrayList2 = new ArrayList();
-        ArrayList arrayList3 = new ArrayList();
-        int i3 = 0;
-        int i4 = 0;
-        while (!list.isEmpty()) {
-            DomainFilterRule domainFilterRule = (DomainFilterRule) list.get(i3);
-            String dns1 = domainFilterRule.getDns1();
-            int length = dns1 != null ? dns1.getBytes(StandardCharsets.UTF_8).length : i3;
-            String dns2 = domainFilterRule.getDns2();
-            int length2 = dns2 != null ? dns2.getBytes(StandardCharsets.UTF_8).length : i3;
-            AppIdentity application = domainFilterRule.getApplication();
-            int i5 = length + length2 + 8;
-            if (application != null) {
-                String signature = application.getSignature();
-                String packageName = application.getPackageName();
-                i5 = i5 + (signature != null ? signature.getBytes(StandardCharsets.UTF_8).length : i3) + (packageName != null ? packageName.getBytes(StandardCharsets.UTF_8).length : i3);
-            }
-            int i6 = i4 + i5;
-            List denyDomains = domainFilterRule.getDenyDomains();
-            List allowDomains = domainFilterRule.getAllowDomains();
-            if (denyDomains.isEmpty() && allowDomains.isEmpty()) {
-                i = i6;
-                list3 = allowDomains;
-                list2 = denyDomains;
-                arrayList.add(new DomainFilterRule(application, arrayList2, arrayList3, dns1, dns2));
-            } else {
-                list2 = denyDomains;
-                i = i6;
-                list3 = allowDomains;
-            }
-            while (!list2.isEmpty()) {
-                List list4 = list2;
-                String str = (String) list4.get(0);
-                int length3 = i + str.getBytes(StandardCharsets.UTF_8).length;
-                if (length3 <= MAX_LIST_SIZE_IN_BYTES) {
-                    arrayList2.add(str);
-                    list4.remove(0);
-                    i = length3;
-                    list2 = list4;
-                } else {
-                    arrayList.add(new DomainFilterRule(application, arrayList2, arrayList3, dns1, dns2));
-                    arrayList2.clear();
-                    domainFilterRule.setDenyDomains(list4);
-                    return arrayList;
-                }
-            }
-            if (list3 != null) {
-                while (!list3.isEmpty()) {
-                    String str2 = (String) list3.get(0);
-                    int length4 = i + str2.getBytes(StandardCharsets.UTF_8).length;
-                    if (length4 <= MAX_LIST_SIZE_IN_BYTES) {
-                        arrayList3.add(str2);
-                        list3.remove(0);
-                        i = length4;
-                    } else {
-                        arrayList.add(new DomainFilterRule(application, arrayList2, arrayList3, dns1, dns2));
-                        arrayList3.clear();
-                        domainFilterRule.setAllowDomains(list3);
-                        return arrayList;
-                    }
-                }
-            }
-            if (!arrayList3.isEmpty() || !arrayList2.isEmpty()) {
-                arrayList.add(new DomainFilterRule(application, arrayList2, arrayList3, dns1, dns2));
-                arrayList2.clear();
-                arrayList3.clear();
-            }
-            if (domainFilterRule.getDenyDomains().isEmpty() && domainFilterRule.getAllowDomains().isEmpty()) {
-                i2 = 0;
-                list.remove(0);
-            } else {
-                i2 = 0;
-            }
-            i3 = i2;
-            i4 = i;
-        }
-        return arrayList;
-    }
-
-    public List getDomainFilterRules(ContextInfo contextInfo, List list) {
-        Log.i(TAG, "getDomainFilterRules()");
-        ArrayList arrayList = new ArrayList();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Integer.valueOf(contextInfo.mCallerUid));
-        for (ContentValues contentValues2 : this.mEdmStorageProvider.getValues("DomainFilterTable", (String[]) null, contentValues)) {
-            String asString = contentValues2.getAsString("packageName");
-            String asString2 = contentValues2.getAsString("signature");
-            if (list == null || list.contains(asString)) {
-                arrayList.add(new DomainFilterRule(new AppIdentity(asString, asString2), FirewallUtils.getListFromDb(contentValues2, "blacklist", this.mEdmStorageProvider), FirewallUtils.getListFromDb(contentValues2, "whitelist", this.mEdmStorageProvider), contentValues2.getAsString("dns1"), contentValues2.getAsString("dns2")));
-            }
-        }
-        contentValues.clear();
-        return arrayList;
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:22:0x0076  */
-    /* JADX WARN: Removed duplicated region for block: B:30:0x00a4  */
-    /* JADX WARN: Removed duplicated region for block: B:37:0x00b2  */
-    /* JADX WARN: Removed duplicated region for block: B:44:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void updateDaemonCache(com.samsung.android.knox.ContextInfo r12, com.samsung.android.knox.net.firewall.DomainFilterRule r13, int r14, java.lang.String r15) {
-        /*
-            r11 = this;
-            java.lang.String r0 = com.android.server.enterprise.firewall.DomainFilter.TAG
-            java.lang.String r1 = "updateDaemonCache()"
-            android.util.Log.i(r0, r1)
-            int r12 = r12.mCallerUid
-            int r12 = android.os.UserHandle.getUserId(r12)
-            com.android.server.enterprise.firewall.DomainFilter$Operation r0 = com.android.server.enterprise.firewall.DomainFilter.Operation.CLEAR
-            int r0 = r0.ordinal()
-            if (r0 != r14) goto L25
-            java.lang.String r3 = java.lang.Integer.toString(r12)
-            r4 = 0
-            r5 = 0
-            r6 = 0
-            r7 = 0
-            r1 = r11
-            r2 = r14
-            r1.sendToCache(r2, r3, r4, r5, r6, r7)
-            goto Ld0
-        L25:
-            if (r13 == 0) goto Ld0
-            com.android.server.enterprise.firewall.DomainFilter$Operation r0 = com.android.server.enterprise.firewall.DomainFilter.Operation.ADD
-            int r0 = r0.ordinal()
-            if (r0 == r14) goto L37
-            com.android.server.enterprise.firewall.DomainFilter$Operation r0 = com.android.server.enterprise.firewall.DomainFilter.Operation.REMOVE
-            int r0 = r0.ordinal()
-            if (r0 != r14) goto Ld0
-        L37:
-            java.lang.Object r0 = r11.mUserIdMapLock
-            monitor-enter(r0)
-            java.util.Map r1 = r11.mUserIdMap     // Catch: java.lang.Throwable -> Lcd
-            java.lang.Integer r2 = java.lang.Integer.valueOf(r12)     // Catch: java.lang.Throwable -> Lcd
-            java.lang.Object r1 = r1.get(r2)     // Catch: java.lang.Throwable -> Lcd
-            java.util.Map r1 = (java.util.Map) r1     // Catch: java.lang.Throwable -> Lcd
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> Lcd
-            com.samsung.android.knox.AppIdentity r0 = r13.getApplication()
-            java.lang.String r0 = r0.getPackageName()
-            java.lang.String r2 = "*"
-            boolean r2 = r2.equals(r0)
-            r3 = 0
-            if (r2 == 0) goto L5e
-            java.lang.String r12 = java.lang.Integer.toString(r12)
-        L5c:
-            r6 = r12
-            goto L74
-        L5e:
-            boolean r12 = r1.containsKey(r0)
-            if (r12 == 0) goto L73
-            java.lang.Object r12 = r1.get(r0)
-            java.lang.Integer r12 = (java.lang.Integer) r12
-            int r12 = r12.intValue()
-            java.lang.String r12 = java.lang.Integer.toString(r12)
-            goto L5c
-        L73:
-            r6 = r3
-        L74:
-            if (r6 == 0) goto Ld0
-            java.util.List r12 = r13.getDenyDomains()
-            if (r12 == 0) goto L89
-            boolean r0 = r12.isEmpty()
-            if (r0 != 0) goto L83
-            goto L9b
-        L83:
-            java.util.ArrayList r12 = new java.util.ArrayList
-            r12.<init>()
-            goto L9b
-        L89:
-            com.android.server.enterprise.firewall.DomainFilter$Operation r12 = com.android.server.enterprise.firewall.DomainFilter.Operation.REMOVE
-            int r12 = r12.ordinal()
-            if (r12 != r14) goto L9d
-            java.util.ArrayList r12 = new java.util.ArrayList
-            r12.<init>()
-            java.lang.String r0 = "ALL"
-            r12.add(r0)
-        L9b:
-            r8 = r12
-            goto L9e
-        L9d:
-            r8 = r3
-        L9e:
-            java.util.List r12 = r13.getAllowDomains()
-            if (r12 == 0) goto Lb2
-            boolean r13 = r12.isEmpty()
-            if (r13 != 0) goto Lac
-            r9 = r12
-            goto Lc5
-        Lac:
-            java.util.ArrayList r3 = new java.util.ArrayList
-            r3.<init>()
-            goto Lc4
-        Lb2:
-            com.android.server.enterprise.firewall.DomainFilter$Operation r12 = com.android.server.enterprise.firewall.DomainFilter.Operation.REMOVE
-            int r12 = r12.ordinal()
-            if (r12 != r14) goto Lc4
-            java.util.ArrayList r3 = new java.util.ArrayList
-            r3.<init>()
-            java.lang.String r12 = "ALL"
-            r3.add(r12)
-        Lc4:
-            r9 = r3
-        Lc5:
-            r7 = 0
-            r4 = r11
-            r5 = r14
-            r10 = r15
-            r4.sendToCache(r5, r6, r7, r8, r9, r10)
-            goto Ld0
-        Lcd:
-            r11 = move-exception
-            monitor-exit(r0)     // Catch: java.lang.Throwable -> Lcd
-            throw r11
-        Ld0:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.firewall.DomainFilter.updateDaemonCache(com.samsung.android.knox.ContextInfo, com.samsung.android.knox.net.firewall.DomainFilterRule, int, java.lang.String):void");
-    }
-
-    public final void initDaemonCache() {
-        String num;
-        Log.d(TAG, "initDaemonCache()");
-        List<ContentValues> values = this.mEdmStorageProvider.getValues("DomainFilterTable", (String[]) null, (ContentValues) null);
-        if (values == null || values.isEmpty()) {
-            Log.i(TAG, "initDaemonCache() - No rules found in db");
-            return;
-        }
-        for (ContentValues contentValues : values) {
-            List listFromDb = FirewallUtils.getListFromDb(contentValues, "blacklist", this.mEdmStorageProvider);
-            List listFromDb2 = FirewallUtils.getListFromDb(contentValues, "whitelist", this.mEdmStorageProvider);
-            String asString = contentValues.getAsString("dns1");
-            if (!listFromDb.isEmpty() || !listFromDb2.isEmpty() || !TextUtils.isEmpty(asString)) {
-                Integer asInteger = contentValues.getAsInteger("adminUid");
-                int i = -1;
-                int intValue = asInteger != null ? asInteger.intValue() : -1;
-                int userId = UserHandle.getUserId(intValue);
-                String asString2 = contentValues.getAsString("packageName");
-                if ("*".equals(asString2)) {
-                    num = Integer.toString(userId);
-                } else {
-                    int applicationUid = getApplicationUid(asString2, userId);
-                    if (applicationUid != -1) {
-                        String asString3 = contentValues.getAsString("signature");
-                        if (TextUtils.isEmpty(asString3) || validatePkgSignature(userId, asString2, asString3)) {
-                            num = Integer.toString(applicationUid);
-                        } else {
-                            Log.i(TAG, "initDaemonCache() - app signature mismatch");
-                        }
-                    } else {
-                        num = null;
-                    }
-                }
-                if (num != null) {
-                    if (asString != null) {
-                        int i2 = setupNetworkDns(asString, contentValues.getAsString("dns2"));
-                        if (i2 != -1) {
-                            contentValues.put("networkId", Integer.valueOf(i2));
-                            ContentValues contentValues2 = new ContentValues();
-                            contentValues2.put("adminUid", Integer.valueOf(intValue));
-                            contentValues2.put("packageName", asString2);
-                            this.mEdmStorageProvider.put("DomainFilterTable", contentValues, contentValues2);
-                        }
-                        i = i2;
-                    }
-                    initDomainFilterReportListener();
-                    sendToCache(Operation.ADD.ordinal(), num, null, listFromDb, listFromDb2, String.valueOf(i));
-                }
-            }
-        }
-        this.mDomainFilterNapCommon.setDomainFilterEnabled(true);
-        if (isDomainFilterOnIptablesEnabledAtAll()) {
-            this.mDomainFilterNapCommon.setDomainFilterOnIptablesEnabled(true);
-        }
-    }
-
-    public final void initReportCache() {
-        Log.i(TAG, "initReportCache()");
+        new Thread(new AnonymousClass4(0, this)).start();
+        Log.i("DomainFilter", "initReportCache()");
         this.mDomainReportCache = new HashSet();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("status", (Integer) 1);
-        List values = this.mEdmStorageProvider.getValues("DomainFilterReportStatus", (String[]) null, contentValues);
-        if (values == null || values.isEmpty()) {
-            return;
-        }
-        Iterator it = values.iterator();
-        while (it.hasNext()) {
-            Integer asInteger = ((ContentValues) it.next()).getAsInteger("userId");
-            this.mDomainReportCache.add(Integer.valueOf(asInteger != null ? asInteger.intValue() : -1));
-        }
-    }
-
-    public final void sendToCache(int i, String str, String str2, List list, List list2, String str3) {
-        ArrayList arrayList = new ArrayList();
-        arrayList.add(str);
-        if (!TextUtils.isEmpty(str2)) {
-            arrayList.add(str2);
-        }
-        if (Operation.CLEAR.ordinal() == i || Operation.REPLACE.ordinal() == i || Operation.EXCEPTION.ordinal() == i || Operation.CAP_PORTAL.ordinal() == i) {
-            executeDomainFilterCommands(i, arrayList);
-            return;
-        }
-        int length = str.getBytes(StandardCharsets.UTF_8).length;
-        if (!TextUtils.isEmpty(str2)) {
-            length += str2.getBytes(StandardCharsets.UTF_8).length;
-        }
-        Operation operation = Operation.ADD;
-        if (operation.ordinal() == i || Operation.REMOVE.ordinal() == i) {
-            if (list != null && !list.isEmpty()) {
-                concatenateListAndExecuteCommand(i, arrayList, length, "BLACKLIST", list);
-            }
-            if (list2 != null && !list2.isEmpty()) {
-                concatenateListAndExecuteCommand(i, arrayList, length, "WHITELIST", list2);
-            }
-            if (TextUtils.isEmpty(str3) || str3.equals("-1")) {
-                return;
-            }
-            arrayList.add(str3);
-            arrayList.add(operation.ordinal() == i ? "ADD" : "REMOVE");
-            executeDomainFilterCommands(Operation.NET_ID.ordinal(), arrayList);
-        }
-    }
-
-    public final IOemNetd getOemNetdService() {
-        IOemNetd iOemNetd = this.mOemNetdService;
-        if (iOemNetd != null) {
-            return iOemNetd;
-        }
-        if (this.mNetdService == null) {
-            connectNativeNetdService();
-        }
-        if (this.mOemNetdService == null && this.mNetdService != null) {
-            this.mOemNetdService = this.mInjector.getOemNetd();
-        }
-        return this.mOemNetdService;
-    }
-
-    public final void flushNetworkDnsCache() {
-        if (getConnectivityService() == null) {
-            Log.e(TAG, "flushNetworkDnsCache() - failed to retrieve ConnectivityService instance");
-            return;
-        }
-        try {
-            final Network activeNetwork = mConnectivityService.getActiveNetwork();
-            if (activeNetwork != null) {
-                Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.firewall.DomainFilter$$ExternalSyntheticLambda0
-                    public final void runOrThrow() {
-                        DomainFilter.this.lambda$flushNetworkDnsCache$0(activeNetwork);
-                    }
-                });
-            }
-        } catch (Exception unused) {
-            Log.e(TAG, "flushNetworkDnsCache() - Failed to getActiveNetwork");
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$flushNetworkDnsCache$0(Network network) {
-        this.mDnsResolverAdapter.flushNetworkCache(network.getNetId());
-    }
-
-    public final void concatenateListAndExecuteCommand(int i, ArrayList arrayList, int i2, String str, List list) {
-        int length = str.getBytes(StandardCharsets.UTF_8).length;
-        ArrayList arrayList2 = new ArrayList();
-        StringBuilder sb = new StringBuilder();
-        int i3 = i2 + length;
-        if (list == null) {
-            arrayList2.addAll(arrayList);
-            arrayList2.add(str);
-            arrayList2.add(null);
-            executeDomainFilterCommands(i, arrayList2);
-            return;
-        }
-        int i4 = i3;
-        int i5 = 0;
-        while (i5 < list.size()) {
-            i4 += ((String) list.get(i5)).getBytes(StandardCharsets.UTF_8).length;
-            if (i4 < 70000) {
-                if (sb.length() == 0) {
-                    sb.append((String) list.get(i5));
-                } else {
-                    sb.append(KnoxVpnFirewallHelper.DELIMITER + ((String) list.get(i5)));
-                }
-                i5++;
-            } else {
-                Log.d(TAG, "concatenateListAndExecuteCommand() - " + sb.toString());
-                arrayList2.addAll(arrayList);
-                arrayList2.add(str);
-                arrayList2.add(sb.toString());
-                sb.setLength(0);
-                executeDomainFilterCommands(i, arrayList2);
-                arrayList2.clear();
-                i4 = i3;
+        contentValues.put(Constants.JSON_CLIENT_DATA_STATUS, (Integer) 1);
+        ArrayList arrayList = (ArrayList) edmStorageProvider.getValues("DomainFilterReportStatus", null, contentValues);
+        if (!arrayList.isEmpty()) {
+            Iterator it = arrayList.iterator();
+            while (it.hasNext()) {
+                Integer asInteger = ((ContentValues) it.next()).getAsInteger("userId");
+                ((HashSet) this.mDomainReportCache).add(Integer.valueOf(asInteger != null ? asInteger.intValue() : -1));
             }
         }
-        if (sb.length() != 0) {
-            Log.d(TAG, "concatenateListAndExecuteCommand() - " + sb.toString());
-            arrayList2.addAll(arrayList);
-            arrayList2.add(str);
-            arrayList2.add(sb.toString());
-            sb.setLength(0);
-            executeDomainFilterCommands(i, arrayList2);
-            arrayList2.clear();
-        }
+        ((ConnectivityManager) this.mContext.getSystemService("connectivity")).registerNetworkCallback(new NetworkRequest.Builder().addTransportType(1).addCapability(17).build(), this.mCaptivePortalNetworkCallback);
     }
 
-    public final synchronized void executeDomainFilterCommands(int i, ArrayList arrayList) {
-        IOemNetd oemNetdService;
-        String[] strArr = (String[]) arrayList.toArray(new String[0]);
-        for (int i2 = 1; i2 <= 3; i2++) {
-            try {
-                oemNetdService = getOemNetdService();
-                this.mOemNetdService = oemNetdService;
-            } catch (RemoteException | ServiceSpecificException unused) {
-                Log.e(TAG, "executeDomainFilterCommands() - attempt " + i2 + " in 3");
-                delayTransaction(500);
-            }
-            if (oemNetdService != null) {
-                oemNetdService.updateDomainFilterCache(i, strArr);
-                delayTransaction(20);
-                return;
-            }
-            continue;
-        }
-        Log.e(TAG, "executeDomainFilterCommands() - Transaction failed. ");
-    }
-
-    public final void delayTransaction(int i) {
-        try {
-            Thread.sleep(i);
-        } catch (InterruptedException e) {
-            Log.e(TAG, "delayTransaction() - failed to delay transaction ", e);
-        }
-    }
-
-    public final int checkAdminInDatabase(int i) {
-        int userId = UserHandle.getUserId(i);
-        List stringListAsUser = this.mEdmStorageProvider.getStringListAsUser("DomainFilterTable", "adminUid", userId);
-        if (stringListAsUser.size() == 0) {
-            stringListAsUser = this.mEdmStorageProvider.getStringListAsUser("DomainFilterOnIptablesApiStatus", "adminUid", userId);
-            if (stringListAsUser.size() == 0) {
-                return 0;
-            }
-        }
-        return Integer.parseInt((String) stringListAsUser.get(0)) == i ? 1 : -1;
-    }
-
-    public void adminRemoved(int i) {
-        Log.i(TAG, "adminRemoved() - adminUid: " + i);
-        int userId = UserHandle.getUserId(i);
-        Integer valueOf = Integer.valueOf(userId);
-        if (!isDomainFilterReportEnabledAsUser(userId) && this.mDomainReportCache.contains(valueOf)) {
-            this.mDomainReportCache.remove(valueOf);
-            clearReportForUser(userId);
-        }
-        maybeClearCaptivePortalHosts();
-    }
-
-    public void onPreAdminRemoval(int i) {
-        Log.i(TAG, "onPreAdminRemoval(adminUid = " + String.valueOf(i) + ")");
-        int userId = UserHandle.getUserId(i);
-        if (checkAdminInDatabase(i) == 1) {
-            sendToCache(Operation.CLEAR.ordinal(), Integer.toString(userId), null, null, null, null);
-            releaseNetworks(i);
-            if (isDomainFilterOnIptablesEnabled(new ContextInfo(i))) {
-                this.mFirewallRulesApplier.flushDomainChains(Integer.valueOf(userId), false);
-            }
-        }
-    }
-
-    public final void prepareDomainUrls(DomainFilterRule domainFilterRule) {
+    public static void prepareDomainUrls(DomainFilterRule domainFilterRule) {
         List allowDomains = domainFilterRule.getAllowDomains();
         if (allowDomains != null && !allowDomains.isEmpty()) {
             for (int i = 0; i < allowDomains.size(); i++) {
@@ -1577,615 +884,46 @@ public class DomainFilter {
         domainFilterRule.setDenyDomains(denyDomains);
     }
 
-    public synchronized FirewallResponse enableDomainFilterOnIptables(ContextInfo contextInfo, boolean z) {
-        int i = contextInfo.mCallerUid;
-        int userId = UserHandle.getUserId(i);
-        if (checkAdminInDatabase(i) == -1) {
-            Log.i(TAG, "enableDomainFilterOnIptables() - Another admin already have domain filter rules in the database");
-            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.NOT_AUTHORIZED_ERROR, "This administrator can't execute this operation because he is not the owner.");
-        }
-        if (z) {
-            if (!this.mFirewallRulesApplier.isDomainFilterOnIptablesSupported()) {
-                Log.i(TAG, "DomainFilterOnIptablesApi not supported.");
-                return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.UNEXPECTED_ERROR, "Failed to enable domain filter on iptables api.");
-            }
-            boolean isDomainFilterOnIptablesEnabledAtAll = isDomainFilterOnIptablesEnabledAtAll();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("adminUid", Integer.valueOf(i));
-            contentValues.put("userId", Integer.valueOf(userId));
-            contentValues.put("status", Boolean.valueOf(z));
-            if (this.mEdmStorageProvider.insert("DomainFilterOnIptablesApiStatus", contentValues) == -1) {
-                Log.e(TAG, "enableDomainFilterOnIptables() - Failed to change DomainFilterOnIptables Api status on database");
-                return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to change DomainFilterOnIptables status on database.");
-            }
-            if (!isDomainFilterOnIptablesEnabledAtAll) {
-                flushNetworkDnsCache();
-                this.mDomainFilterNapCommon.setDomainFilterOnIptablesEnabled(true);
-            }
-            FirewallResponse addDomainRules = addDomainRules(contextInfo, getDomainFilterRules(contextInfo, null));
-            Log.d(TAG, "enableDomainFilterOnIptables() - DomainFilterOnIptables Api successfully enabled");
-            return addDomainRules;
-        }
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("adminUid", Integer.valueOf(i));
-        contentValues2.put("userId", Integer.valueOf(userId));
-        if (this.mEdmStorageProvider.delete("DomainFilterOnIptablesApiStatus", contentValues2) == 0) {
-            Log.e(TAG, "enableDomainFilterOnIptables() - Failed to change DomainFilterOnIptables Api status on database");
-            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to change DomainFilterOnIptables status on database.");
-        }
-        Log.d(TAG, "enableDomainFilterOnIptables() - DomainFilterOnIptables successfully disabled");
-        if (!isDomainFilterOnIptablesEnabledAtAll()) {
-            this.mDomainFilterNapCommon.setDomainFilterOnIptablesEnabled(false);
-        }
-        if (!this.mFirewallRulesApplier.flushDomainChains(Integer.valueOf(userId), false)) {
-            Log.e(TAG, "flushDomainChains() - Failed to flush domain chains");
-            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.UNEXPECTED_ERROR, "Failed to disable domain filter on iptables api.");
-        }
-        Log.i(TAG, "flushDomainChains() - domain rules successfully removed");
-        return new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The domain filter on iptables api was successfully disabled.");
-    }
-
-    public boolean isDomainFilterOnIptablesEnabled(ContextInfo contextInfo) {
-        int i = contextInfo.mCallerUid;
-        int userId = UserHandle.getUserId(i);
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("userId", Integer.valueOf(userId));
-        contentValues.put("adminUid", Integer.valueOf(i));
-        List booleanList = this.mEdmStorageProvider.getBooleanList("DomainFilterOnIptablesApiStatus", "status", contentValues);
-        if (booleanList == null || booleanList.isEmpty()) {
-            return false;
-        }
-        return booleanList.contains(Boolean.TRUE);
-    }
-
-    public final boolean isDomainFilterOnIptablesEnabledAtAll() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("status", (Integer) 1);
-        return this.mEdmStorageProvider.getCount("DomainFilterOnIptablesApiStatus", contentValues) > 0;
-    }
-
-    public synchronized FirewallResponse addDomainRules(ContextInfo contextInfo, List list) {
-        Log.i(TAG, "addDomainRules()");
-        if (list != null && !list.isEmpty()) {
-            return this.mFirewallRulesApplier.addDomainRules(list, contextInfo);
-        }
-        return new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The domain filter on iptables api was successfully enabled.");
-    }
-
-    public synchronized FirewallResponse removeDomainRules(ContextInfo contextInfo, List list, List list2) {
-        Log.i(TAG, "removeDomainRules()");
-        if (list != null && !list.isEmpty()) {
-            return this.mFirewallRulesApplier.removeDomainRules(list, contextInfo, list2);
-        }
-        return new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The domain filter on iptables api was successfully disabled.");
-    }
-
-    public FirewallResponse enableDomainFilterReport(ContextInfo contextInfo, boolean z) {
-        Log.i(TAG, "enableDomainFilterReport()");
-        int i = contextInfo.mCallerUid;
-        int userId = UserHandle.getUserId(i);
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("status", Boolean.valueOf(z));
-        contentValues.put("userId", Integer.valueOf(userId));
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("adminUid", Integer.valueOf(i));
-        if (!this.mEdmStorageProvider.put("DomainFilterReportStatus", contentValues, contentValues2)) {
-            Log.e(TAG, "enableDomainFilterReport() - Failed to change Domain Filter Report status on database");
-            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to change Domain Filter report status on database.");
-        }
-        Integer valueOf = Integer.valueOf(userId);
-        if (z && !this.mDomainReportCache.contains(valueOf)) {
-            this.mDomainReportCache.add(valueOf);
-        } else if (!z && !isDomainFilterReportEnabledAsUser(userId) && this.mDomainReportCache.contains(valueOf)) {
-            this.mDomainReportCache.remove(valueOf);
-            clearReportForUser(userId);
-        }
-        if (z && registerDomainFilterListener(z)) {
-            Log.d(TAG, "enableDomainFilterReport() - Domain Filter Report successfully enabled");
-        } else if (!z && registerDomainFilterListener(z)) {
-            Log.d(TAG, "enableDomainFilterReport() - Domain Filter Report successfully disabled");
-        }
-        return new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, z ? "Domain Report successfully enabled." : "Domain Report successfully disabled.");
-    }
-
-    public final void initDomainFilterReportListener() {
-        boolean isDomainFilterReportEnabledAsUser;
-        UserManager userManager = (UserManager) this.mContext.getSystemService("user");
-        if (userManager != null) {
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                List users = userManager.getUsers();
-                if (users != null) {
-                    Iterator it = users.iterator();
-                    while (it.hasNext() && (!(isDomainFilterReportEnabledAsUser = isDomainFilterReportEnabledAsUser(((UserInfo) it.next()).id)) || !registerDomainFilterListener(isDomainFilterReportEnabledAsUser))) {
-                    }
-                }
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-    }
-
-    public final boolean registerDomainFilterListener(boolean z) {
-        if (z) {
-            if (this.mDomainFilterEventListener != null) {
-                return false;
-            }
-            try {
-                IOemNetd oemNetdService = getOemNetdService();
-                this.mOemNetdService = oemNetdService;
-                if (oemNetdService == null) {
-                    return false;
-                }
-                DomainFilterEventListener domainFilterEventListener = new DomainFilterEventListener();
-                this.mDomainFilterEventListener = domainFilterEventListener;
-                this.mOemNetdService.registerDomainFilterEventListener(domainFilterEventListener);
-                Log.d(TAG, "DomainFilterEventListener registered successfully");
-                return true;
-            } catch (RemoteException | ServiceSpecificException e) {
-                Log.e(TAG, "Failed to register domainFilterEventListener " + e);
-                return false;
-            }
-        }
-        if (this.mDomainFilterEventListener == null) {
-            return false;
-        }
-        try {
-            IOemNetd oemNetdService2 = getOemNetdService();
-            this.mOemNetdService = oemNetdService2;
-            if (oemNetdService2 == null) {
-                return false;
-            }
-            oemNetdService2.unregisterDomainFilterEventListener();
-            this.mDomainFilterEventListener = null;
-            Log.d(TAG, "DomainFilterEventListener unregistered successfully");
-            return true;
-        } catch (RemoteException | ServiceSpecificException e2) {
-            Log.e(TAG, "Failed to unregister domainFilterEventListener " + e2);
-            return false;
-        }
-    }
-
-    public boolean isDomainFilterReportEnabled(ContextInfo contextInfo) {
-        return isDomainFilterReportEnabledAsUser(UserHandle.getUserId(contextInfo.mCallerUid));
-    }
-
-    public final boolean isDomainFilterReportEnabledAsUser(int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("userId", Integer.valueOf(i));
-        List booleanList = this.mEdmStorageProvider.getBooleanList("DomainFilterReportStatus", "status", contentValues);
-        if (booleanList == null || booleanList.isEmpty()) {
-            return false;
-        }
-        return booleanList.contains(Boolean.TRUE);
-    }
-
-    public List getDomainFilterReport(ContextInfo contextInfo, List list) {
-        Log.i(TAG, "getDomainFilterReport()");
-        int userId = UserHandle.getUserId(contextInfo.mCallerUid);
-        ArrayList arrayList = new ArrayList();
-        if (!this.mDomainReportCache.isEmpty() && this.mDomainReportCache.contains(Integer.valueOf(userId))) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("userId", Integer.valueOf(userId));
-            for (ContentValues contentValues2 : this.mEdmStorageProvider.getValues("DomainFilterReportTable", (String[]) null, contentValues)) {
-                String asString = contentValues2.getAsString("packageName");
-                if (list == null || list.contains(asString)) {
-                    Long asLong = contentValues2.getAsLong("time");
-                    arrayList.add(new DomainFilterReport(asString, asLong != null ? asLong.longValue() : 0L, contentValues2.getAsString("url")));
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public final void saveReportInDatabase(String str, String str2, String str3, String str4) {
+    /* JADX WARN: Multi-variable type inference failed */
+    public static void setDomainFilterRulesProperties(DomainFilterRule domainFilterRule, JSONArray jSONArray) {
         int i;
+        if (domainFilterRule.getApplication() == null) {
+            return;
+        }
         try {
-            i = UserHandle.getUserId(Integer.parseInt(str2));
-        } catch (NumberFormatException e) {
-            Log.e(TAG, "saveReportInDatabase() - Error parsing userId received from daemon.", e);
-            i = -1;
-        }
-        if (i == -1 || !this.mDomainReportCache.contains(Integer.valueOf(i))) {
-            return;
-        }
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("time", str);
-        contentValues.put("userId", Integer.valueOf(i));
-        contentValues.put("packageName", str4);
-        contentValues.put("url", str3);
-        if (this.mEdmStorageProvider.insert("DomainFilterReportTable", contentValues) == -1) {
-            Log.e(TAG, "saveReportInDatabase() - Failed to save domain report in database");
-        }
-    }
-
-    public final void clearReportForUser(int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("userId", Integer.valueOf(i));
-        this.mEdmStorageProvider.delete("DomainFilterReportTable", contentValues);
-    }
-
-    /* loaded from: classes2.dex */
-    public class DomainFilterEventListener extends IDomainFilterEventListener.Stub {
-        public DomainFilterEventListener() {
-        }
-
-        @Override // com.android.internal.net.IDomainFilterEventListener
-        public void onDomainFilterReportEvent(int i, int i2, long j, String str) {
-            String packageFromRunningProcesses = DomainFilter.this.getPackageFromRunningProcesses(i2, i);
-            if (packageFromRunningProcesses == null) {
-                Log.d(DomainFilter.TAG, "failed to find application which was blocked");
-                return;
+            JSONObject jSONObject = new JSONObject();
+            jSONObject.put("pN", domainFilterRule.getApplication().getPackageName());
+            if (domainFilterRule.getDns1() == null && domainFilterRule.getDns2() == null) {
+                i = 1;
+                jSONObject.put("cDNS", i);
+                jSONObject.put("rlTp", (!ArrayUtils.isEmpty(domainFilterRule.getAllowDomains()) || ArrayUtils.isEmpty(domainFilterRule.getDenyDomains())) ? ArrayUtils.isEmpty(domainFilterRule.getAllowDomains()) : 2);
+                jSONArray.put(jSONObject);
             }
-            String valueOf = String.valueOf(j);
-            String valueOf2 = String.valueOf(i);
-            BlockReport blockReport = new BlockReport(valueOf, valueOf2, str);
-            boolean z = false;
-            for (int i3 = 0; i3 < 5; i3++) {
-                if (DomainFilter.this.mReportCache[i3] != null && DomainFilter.this.mReportCache[i3].isEqual(blockReport)) {
-                    z = true;
-                }
-            }
-            if (z) {
-                return;
-            }
-            DomainFilter.this.mReportCache[DomainFilter.this.mReportCacheIndex] = blockReport;
-            DomainFilter.this.mReportCacheIndex++;
-            if (DomainFilter.this.mReportCacheIndex == 5) {
-                DomainFilter.this.mReportCacheIndex = 0;
-            }
-            ActivityManager.RunningTaskInfo runningTaskInfo = ((ActivityManager) DomainFilter.this.mContext.getSystemService("activity")).getRunningTasks(1).get(0);
-            Intent intent = new Intent("com.samsung.android.knox.intent.action.BLOCKED_DOMAIN");
-            intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_PACKAGENAME", packageFromRunningProcesses);
-            intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_TIMESTAMP", valueOf);
-            intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_UID", valueOf2);
-            intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_URL", str);
-            if (packageFromRunningProcesses.equals(runningTaskInfo.topActivity.getPackageName())) {
-                intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_ISFOREGROUND", true);
-            } else {
-                intent.putExtra("com.samsung.android.knox.intent.extra.BLOCKED_DOMAIN_ISFOREGROUND", false);
-            }
-            DomainFilter.this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL, "com.samsung.android.knox.permission.KNOX_FIREWALL");
-            DomainFilter.this.saveReportInDatabase(valueOf, valueOf2, str, packageFromRunningProcesses);
+            i = 0;
+            jSONObject.put("cDNS", i);
+            jSONObject.put("rlTp", (!ArrayUtils.isEmpty(domainFilterRule.getAllowDomains()) || ArrayUtils.isEmpty(domainFilterRule.getDenyDomains())) ? ArrayUtils.isEmpty(domainFilterRule.getAllowDomains()) : 2);
+            jSONArray.put(jSONObject);
+        } catch (JSONException e) {
+            Log.e("DomainFilter", "Failed to put rule in json: " + e.getMessage());
         }
     }
 
-    public synchronized FirewallResponse removeDnsForApplication(DomainFilterRule domainFilterRule, int i, ContentValues contentValues) {
-        Log.d(TAG, "removeDnsForApplication() - START");
-        String asString = contentValues.getAsString("dns1");
-        String asString2 = contentValues.getAsString("dns2");
-        String dns1 = domainFilterRule.getDns1();
-        String dns2 = domainFilterRule.getDns2();
-        if (asString != null && dns1.equals(asString) && ((dns2 != null || asString2 == null) && ((dns2 == null || asString2 != null) && (dns2 == null || dns2.equals(asString2))))) {
-            Integer asInteger = contentValues.getAsInteger("networkId");
-            if (asInteger != null && asInteger.intValue() != -1) {
-                this.mNetworkHandler.sendMessage(Message.obtain(this.mNetworkHandler, 0, asInteger));
-                asInteger = -1;
-            }
-            ContentValues contentValues2 = new ContentValues();
-            contentValues2.put("dns1", (String) null);
-            contentValues2.put("dns2", (String) null);
-            contentValues2.put("networkId", asInteger);
-            ContentValues contentValues3 = new ContentValues();
-            String packageName = domainFilterRule.getApplication().getPackageName();
-            contentValues3.put("adminUid", Integer.valueOf(i));
-            contentValues3.put("packageName", packageName);
-            if (this.mEdmStorageProvider.put("DomainFilterTable", contentValues2, contentValues3)) {
-                return null;
-            }
-            Log.e(TAG, "removeDnsForApplication() -  Database error!");
-            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove DNS(s) from database.");
+    public static FirewallResponse validateApplicationIdentity(AppIdentity appIdentity) {
+        if (appIdentity == null) {
+            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "Invalid AppIdentity object.");
         }
-        Log.e(TAG, "removeDnsForApplication() - Invalid parameters!");
-        return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "DNS(s) provided doesn't match DNS(s) in database.");
+        String packageName = appIdentity.getPackageName();
+        String signature = appIdentity.getSignature();
+        if ("*".equals(packageName) && signature != null) {
+            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "There is no signature related to all applications.");
+        }
+        if (FirewallRuleValidator.validatePackageName(packageName)) {
+            return null;
+        }
+        return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Invalid package name. - ", packageName));
     }
 
-    public final int setupNetworkDns(String str, String str2) {
-        boolean z;
-        Exception e;
-        INetd iNetd;
-        int matchNetworkDns = matchNetworkDns(str, str2);
-        if (matchNetworkDns != -1) {
-            return matchNetworkDns;
-        }
-        if (getNetworkManagementService() == null) {
-            Log.e(TAG, "setupNetworkDns() - failed to retrieve NetworkManagementService instance");
-            return -1;
-        }
-        if (getConnectivityService() == null) {
-            Log.e(TAG, "setupNetworkDns() - failed to retrieve ConnectivityService instance");
-            return -1;
-        }
-        boolean z2 = true;
-        do {
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                try {
-                    try {
-                        matchNetworkDns = this.mNetIdManager.reserveNetId();
-                        connectNativeNetdService();
-                        iNetd = this.mNetdService;
-                    } catch (IllegalStateException e2) {
-                        Log.e(TAG, "setupNetworkDns() - Failed creating new network.", e2);
-                    }
-                    if (iNetd == null) {
-                        return -1;
-                    }
-                    try {
-                        iNetd.networkCreateVpn(matchNetworkDns, false);
-                        this.mDnsResolverAdapter.createNetworkCache(matchNetworkDns);
-                        try {
-                            LinkProperties linkProperties = new LinkProperties();
-                            linkProperties.addDnsServer(InetAddress.getByName(str));
-                            if (!TextUtils.isEmpty(str2)) {
-                                linkProperties.addDnsServer(InetAddress.getByName(str2));
-                            }
-                            EnforceDnsManager enforceDnsManager = new EnforceDnsManager(this.mContext, this.mDnsResolverAdapter);
-                            this.mDnsManager = enforceDnsManager;
-                            enforceDnsManager.noteDnsServersForNetwork(matchNetworkDns, linkProperties);
-                            this.mDnsManager.updateDnsUidForNetwork(matchNetworkDns, true);
-                            this.mDnsManager.updateTransportsForNetwork(matchNetworkDns, new int[]{0, 1, 3});
-                            this.mDnsManager.flushVmDnsCache();
-                            synchronized (this.mNetworkIdListLock) {
-                                this.mNetworkIdList.add(new NetworkIdInfo(matchNetworkDns, str, str2));
-                            }
-                            Binder.restoreCallingIdentity(clearCallingIdentity);
-                            z2 = false;
-                        } catch (Exception e3) {
-                            e = e3;
-                            z = true;
-                            if (z) {
-                                Log.e(TAG, "setupNetworkDns() - Failed to set dns for network " + matchNetworkDns, e);
-                                try {
-                                    INetd iNetd2 = this.mNetdService;
-                                    if (iNetd2 != null) {
-                                        iNetd2.networkDestroy(matchNetworkDns);
-                                    }
-                                } catch (Exception e4) {
-                                    Log.e(TAG, "setupNetworkDns() - Failed to remove network", e4);
-                                }
-                            } else {
-                                Log.e(TAG, "setupNetworkDns() - Failed to create new network with id provided.", e);
-                            }
-                            this.mNetIdManager.releaseNetId(matchNetworkDns);
-                        }
-                    } catch (RemoteException | ServiceSpecificException e5) {
-                        Log.e(TAG, "Error creating private network: " + e5.getMessage());
-                        this.mNetIdManager.releaseNetId(matchNetworkDns);
-                        return -1;
-                    }
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            } catch (Exception e6) {
-                z = false;
-                e = e6;
-            }
-        } while (z2);
-        return matchNetworkDns;
-    }
-
-    public final int matchNetworkDns(String str, String str2) {
-        if (this.mNetworkIdList.isEmpty()) {
-            return -1;
-        }
-        synchronized (this.mNetworkIdListLock) {
-            for (NetworkIdInfo networkIdInfo : this.mNetworkIdList) {
-                if (networkIdInfo.getDns1().equals(str) && (str2 == null || networkIdInfo.hasDns2())) {
-                    if (str2 != null || !networkIdInfo.hasDns2()) {
-                        if (str2 == null || networkIdInfo.getDns2().equals(str2)) {
-                            networkIdInfo.increaseCounter();
-                            return networkIdInfo.getNetId();
-                        }
-                    }
-                }
-            }
-            return -1;
-        }
-    }
-
-    public final void releaseNetworkId(int i) {
-        KnoxNetIdManager knoxNetIdManager;
-        if (i == -1 || this.mNetworkIdList.isEmpty()) {
-            Log.i(TAG, "releaseNetworkId() - No network to release");
-            return;
-        }
-        int networkIdInfoIndex = getNetworkIdInfoIndex(i);
-        if (networkIdInfoIndex == -1) {
-            Log.i(TAG, "releaseNetworkId() - No network to release");
-            return;
-        }
-        if (getNetworkManagementService() == null) {
-            Log.e(TAG, "releaseNetworkId() - failed to retrieve NetworkManagementService instance");
-            return;
-        }
-        if (getConnectivityService() == null) {
-            Log.e(TAG, "releaseNetworkId() - failed to retrieve ConnectivityService instance");
-            return;
-        }
-        synchronized (this.mNetworkIdListLock) {
-            if (((NetworkIdInfo) this.mNetworkIdList.get(networkIdInfoIndex)).decreaseCounter() == 0) {
-                this.mNetworkIdList.remove(networkIdInfoIndex);
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    try {
-                        INetd iNetd = this.mNetdService;
-                        if (iNetd != null) {
-                            iNetd.networkDestroy(i);
-                        }
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                        knoxNetIdManager = this.mNetIdManager;
-                    } catch (Exception e) {
-                        Log.e(TAG, "releaseNetworkId() - failed to remove network", e);
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                        knoxNetIdManager = this.mNetIdManager;
-                    }
-                    knoxNetIdManager.releaseNetId(i);
-                } catch (Throwable th) {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                    this.mNetIdManager.releaseNetId(i);
-                    throw th;
-                }
-            }
-        }
-    }
-
-    public final void releaseNetworks(int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Integer.valueOf(i));
-        List values = this.mEdmStorageProvider.getValues("DomainFilterTable", new String[]{"networkId"}, contentValues);
-        if (values == null || values.isEmpty()) {
-            Log.i(TAG, "releaseNetworks() - No rules in database");
-            return;
-        }
-        Iterator it = values.iterator();
-        while (it.hasNext()) {
-            Integer asInteger = ((ContentValues) it.next()).getAsInteger("networkId");
-            int intValue = asInteger != null ? asInteger.intValue() : -1;
-            if (intValue != -1) {
-                this.mNetworkHandler.sendMessage(Message.obtain(this.mNetworkHandler, 0, Integer.valueOf(intValue)));
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class NetworkIdInfo {
-        public final String mDns1;
-        public final String mDns2;
-        public final int mNetId;
-        public int mUsageCounter = 1;
-
-        public NetworkIdInfo(int i, String str, String str2) {
-            this.mNetId = i;
-            this.mDns1 = str;
-            this.mDns2 = str2;
-        }
-
-        public synchronized int increaseCounter() {
-            int i;
-            i = this.mUsageCounter + 1;
-            this.mUsageCounter = i;
-            return i;
-        }
-
-        public synchronized int decreaseCounter() {
-            int i;
-            i = this.mUsageCounter - 1;
-            this.mUsageCounter = i;
-            return i;
-        }
-
-        public String getDns1() {
-            return this.mDns1;
-        }
-
-        public String getDns2() {
-            return this.mDns2;
-        }
-
-        public boolean hasDns2() {
-            return this.mDns2 != null;
-        }
-
-        public int getNetId() {
-            return this.mNetId;
-        }
-
-        public String toString() {
-            return "{Net Id= " + this.mNetId + " , DNS(1)=" + this.mDns1 + " , DNS(2)=" + this.mDns2 + " , counter=" + this.mUsageCounter + "}";
-        }
-    }
-
-    public final int getNetworkIdInfoIndex(int i) {
-        if (this.mNetworkIdList.isEmpty()) {
-            return -1;
-        }
-        synchronized (this.mNetworkIdListLock) {
-            for (int i2 = 0; i2 < this.mNetworkIdList.size(); i2++) {
-                if (i == ((NetworkIdInfo) this.mNetworkIdList.get(i2)).getNetId()) {
-                    return i2;
-                }
-            }
-            return -1;
-        }
-    }
-
-    public final INetworkManagementService getNetworkManagementService() {
-        IBinder service;
-        if (this.mNetworkService == null && (service = ServiceManager.getService("network_management")) != null) {
-            this.mNetworkService = INetworkManagementService.Stub.asInterface(service);
-        }
-        return this.mNetworkService;
-    }
-
-    public final ConnectivityManager getConnectivityService() {
-        if (mConnectivityService == null) {
-            mConnectivityService = (ConnectivityManager) this.mContext.getSystemService("connectivity");
-        }
-        return mConnectivityService;
-    }
-
-    public final boolean validatePkgSignature(int i, String str, String str2) {
-        Context createContextAsUser = Utils.createContextAsUser(this.mContext, "android", 0, i);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return Utils.comparePackageSignature(createContextAsUser, str, str2);
-        } catch (Exception e) {
-            Log.e(TAG, "validatePkgSignature() - Fail to validate application signature.", e);
-            return false;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final boolean verifyAppInstalled(Map map, String str, int i) {
-        if (map != null && map.get(str) != null) {
-            return true;
-        }
-        int applicationUid = getApplicationUid(str, i);
-        if (applicationUid == -1) {
-            return false;
-        }
-        Integer valueOf = Integer.valueOf(i);
-        synchronized (this.mUserIdMapLock) {
-            if (map == null) {
-                HashMap hashMap = new HashMap();
-                hashMap.put(str, Integer.valueOf(applicationUid));
-                this.mUserIdMap.put(valueOf, hashMap);
-            } else {
-                ((Map) this.mUserIdMap.get(valueOf)).put(str, Integer.valueOf(applicationUid));
-                map.put(str, Integer.valueOf(applicationUid));
-            }
-        }
-        return true;
-    }
-
-    /* loaded from: classes2.dex */
-    public class NetworkManagementHandler extends Handler {
-        public NetworkManagementHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            if (message.what != 0) {
-                return;
-            }
-            DomainFilter.this.releaseNetworkId(((Integer) message.obj).intValue());
-        }
-    }
-
-    public final boolean validateDnses(String str, String str2) {
-        if (FirewallRuleValidator.validateIpv4Address(str)) {
-            return str2 == null || FirewallRuleValidator.validateIpv4Address(str2);
-        }
-        if (FirewallRuleValidator.validateIpv6Address(str)) {
-            return str2 == null || FirewallRuleValidator.validateIpv6Address(str2);
-        }
-        return false;
-    }
-
-    public final boolean validateDomains(DomainFilterRule domainFilterRule) {
+    public static boolean validateDomains(DomainFilterRule domainFilterRule) {
         if (domainFilterRule.getDenyDomains() == null && domainFilterRule.getAllowDomains() == null) {
             return false;
         }
@@ -2209,160 +947,800 @@ public class DomainFilter {
         return true;
     }
 
-    public final FirewallResponse validateApplicationIdentity(AppIdentity appIdentity) {
-        if (appIdentity == null) {
-            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "Invalid AppIdentity object.");
-        }
-        String packageName = appIdentity.getPackageName();
-        String signature = appIdentity.getSignature();
-        if ("*".equals(packageName) && signature != null) {
-            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "There is no signature related to all applications.");
-        }
-        if (FirewallRuleValidator.validatePackageName(packageName)) {
-            return null;
-        }
-        return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "Invalid package name. - " + packageName);
-    }
-
-    /* loaded from: classes2.dex */
-    public class BlockReport {
-        public String mTimeStamp;
-        public String mUid;
-        public String mUrl;
-
-        public BlockReport(String str, String str2, String str3) {
-            this.mTimeStamp = str;
-            this.mUid = str2;
-            this.mUrl = str3;
-        }
-
-        public String getTimeStamp() {
-            return this.mTimeStamp;
-        }
-
-        public String getUid() {
-            return this.mUid;
-        }
-
-        public String getUrl() {
-            return this.mUrl;
-        }
-
-        public boolean isEqual(BlockReport blockReport) {
-            if (blockReport == null) {
-                return false;
+    public final synchronized FirewallResponse[] addDomainFilterRules(ContextInfo contextInfo, List list) {
+        Map map;
+        ArrayList arrayList;
+        ArrayList arrayList2;
+        boolean z;
+        int i;
+        Map map2;
+        int i2;
+        JSONArray jSONArray;
+        boolean z2;
+        boolean z3;
+        ContentValues contentValues;
+        List list2;
+        List list3;
+        List list4;
+        ContextInfo contextInfo2;
+        boolean z4;
+        int i3;
+        int i4;
+        Integer asInteger;
+        ContextInfo contextInfo3 = contextInfo;
+        synchronized (this) {
+            ArrayList arrayList3 = (ArrayList) list;
+            boolean z5 = true;
+            int i5 = 0;
+            if (arrayList3.isEmpty()) {
+                Log.i("DomainFilter", "addDomainFilterRules() - No rule specified");
+                return new FirewallResponse[]{new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.OPERATION_NOT_PERMITTED_ERROR, "No rule was specified.")};
             }
-            if ((this.mTimeStamp == null && blockReport.getTimeStamp() != null) || (this.mTimeStamp != null && blockReport.getTimeStamp() == null)) {
-                return false;
+            Log.i("DomainFilter", "addDomainFilterRules() - rules.size = " + arrayList3.size());
+            int i6 = contextInfo3.mCallerUid;
+            int userId = UserHandle.getUserId(i6);
+            if (checkAdminInDatabase(i6) == -1) {
+                Log.i("DomainFilter", "addDomainFilterRules() - Another admin already have domain filter rules in the database");
+                return new FirewallResponse[]{new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.NOT_AUTHORIZED_ERROR, "This administrator can't execute this operation because he is not the owner.")};
             }
-            String str = this.mTimeStamp;
-            if (str != null && !str.equals(blockReport.getTimeStamp())) {
-                return false;
+            synchronized (this.mUserIdMapLock) {
+                map = (Map) ((HashMap) this.mUserIdMap).get(Integer.valueOf(userId));
             }
-            if ((this.mUid == null && blockReport.getUid() != null) || (this.mUid != null && blockReport.getUid() == null)) {
-                return false;
-            }
-            String str2 = this.mUid;
-            if (str2 != null && !str2.equals(blockReport.getUid())) {
-                return false;
-            }
-            if ((this.mUrl == null && blockReport.getUrl() != null) || (this.mUrl != null && blockReport.getUrl() == null)) {
-                return false;
-            }
-            String str3 = this.mUrl;
-            return str3 == null || str3.equals(blockReport.getUrl());
-        }
-    }
-
-    public final String getPackageFromRunningProcesses(int i, int i2) {
-        if (i < 0) {
-            Log.i(TAG, "getPackageFromRunningProcesses() - Invalid PID provided: " + i);
-            return null;
-        }
-        if (i2 < 0) {
-            Log.i(TAG, "getPackageFromRunningProcesses() - Invalid UID provided: " + i2);
-            return null;
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            ActivityManager activityManager = (ActivityManager) this.mContext.getSystemService("activity");
-            List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = activityManager != null ? activityManager.getRunningAppProcesses() : null;
-            if (runningAppProcesses != null) {
-                Iterator<ActivityManager.RunningAppProcessInfo> it = runningAppProcesses.iterator();
-                while (true) {
-                    if (!it.hasNext()) {
-                        break;
-                    }
-                    ActivityManager.RunningAppProcessInfo next = it.next();
-                    if (i == next.pid) {
-                        String[] strArr = next.pkgList;
-                        if (strArr != null) {
-                            if (strArr.length == 1) {
-                                return strArr[0];
+            int size = arrayList3.size();
+            FirewallResponse[] firewallResponseArr = new FirewallResponse[size];
+            JSONArray jSONArray2 = new JSONArray();
+            int i7 = 0;
+            while (i7 < arrayList3.size()) {
+                DomainFilterRule domainFilterRule = (DomainFilterRule) arrayList3.get(i7);
+                if (domainFilterRule == null) {
+                    Log.i("DomainFilter", "addDomainFilterRules() - Skipping invalid rule - No rule specified");
+                    firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.OPERATION_NOT_PERMITTED_ERROR, "No rule was specified.");
+                } else {
+                    String dns1 = domainFilterRule.getDns1();
+                    String dns2 = domainFilterRule.getDns2();
+                    boolean isEmpty = TextUtils.isEmpty(dns1) ^ z5;
+                    if (!isEmpty && TextUtils.isEmpty(dns2) && (domainFilterRule.getDenyDomains() == null || domainFilterRule.getAllowDomains() == null || (domainFilterRule.getDenyDomains().isEmpty() && domainFilterRule.getAllowDomains().isEmpty()))) {
+                        Log.i("DomainFilter", "addDomainFilterRules() - Skipping invalid rule - mandatory parameters missing");
+                        firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "No parameters provided.");
+                    } else {
+                        setDomainFilterRulesProperties(domainFilterRule, jSONArray2);
+                        FirewallResponse validateApplicationIdentity = validateApplicationIdentity(domainFilterRule.getApplication());
+                        firewallResponseArr[i7] = validateApplicationIdentity;
+                        if (validateApplicationIdentity != null) {
+                            Log.i("DomainFilter", "addDomainFilterRules() - Skipping invalid rule - invalid Application Identity: " + firewallResponseArr[i7].getMessage());
+                        } else {
+                            String packageName = domainFilterRule.getApplication().getPackageName();
+                            String signature = domainFilterRule.getApplication().getSignature();
+                            if (TextUtils.isEmpty(signature)) {
+                                arrayList2 = arrayList3;
+                                z = true;
+                            } else {
+                                z = validatePkgSignature(userId, packageName, signature);
+                                arrayList2 = arrayList3;
                             }
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(EdmStorageProviderBase.getAdminLUIDWhereIn(0, UserHandle.getUserId(i2)), "#SelectClause#");
-                            List values = this.mEdmStorageProvider.getValues("DomainFilterTable", new String[]{"packageName"}, contentValues);
-                            if (values != null && !values.isEmpty()) {
-                                List asList = Arrays.asList(next.pkgList);
-                                Iterator it2 = values.iterator();
-                                while (it2.hasNext()) {
-                                    String asString = ((ContentValues) it2.next()).getAsString("packageName");
-                                    if (asList.contains(asString)) {
-                                        return asString;
-                                    }
+                            boolean verifyAppInstalled = !"*".equals(packageName) ? verifyAppInstalled(map, packageName, userId) : true;
+                            if (z || !verifyAppInstalled) {
+                                if ((!isEmpty && !TextUtils.isEmpty(dns2)) || (isEmpty && (!FirewallRuleValidator.validateIpv4Address(dns1) ? !FirewallRuleValidator.validateIpv6Address(dns1) || (dns2 != null && !FirewallRuleValidator.validateIpv6Address(dns2)) : dns2 != null && !FirewallRuleValidator.validateIpv4Address(dns2)))) {
+                                    Log.i("DomainFilter", "addDomainFilterRules() - Skipping invalid rule - invalid DNS");
+                                    firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "Invalid DNS(s) provided");
                                 }
+                                if (validateDomains(domainFilterRule)) {
+                                    i = userId;
+                                    ContentValues contentValues2 = new ContentValues();
+                                    map2 = map;
+                                    i2 = size;
+                                    contentValues2.put("adminUid", Integer.valueOf(i6));
+                                    contentValues2.put("packageName", packageName);
+                                    contentValues2.put("signature", signature);
+                                    ContentValues contentValues3 = new ContentValues();
+                                    jSONArray = jSONArray2;
+                                    contentValues3.put("adminUid", Integer.valueOf(i6));
+                                    contentValues3.put("packageName", packageName);
+                                    List values = this.mEdmStorageProvider.getValues("DomainFilterTable", null, contentValues3);
+                                    ContentValues contentValues4 = new ContentValues();
+                                    ArrayList arrayList4 = (ArrayList) values;
+                                    if (arrayList4.isEmpty()) {
+                                        z2 = false;
+                                    } else {
+                                        contentValues4 = (ContentValues) arrayList4.get(0);
+                                        z2 = true;
+                                    }
+                                    prepareDomainUrls(domainFilterRule);
+                                    List emptyList = domainFilterRule.getDenyDomains() == null ? Collections.emptyList() : domainFilterRule.getDenyDomains();
+                                    List emptyList2 = domainFilterRule.getAllowDomains() == null ? Collections.emptyList() : domainFilterRule.getAllowDomains();
+                                    List arrayList5 = new ArrayList();
+                                    List arrayList6 = new ArrayList();
+                                    if (emptyList.isEmpty() && emptyList2.isEmpty()) {
+                                        list3 = arrayList5;
+                                        z3 = z2;
+                                        list4 = arrayList6;
+                                        contentValues = contentValues3;
+                                    } else {
+                                        z3 = z2;
+                                        List listFromDb = FirewallUtils.getListFromDb(contentValues4, "whitelist", this.mEdmStorageProvider);
+                                        contentValues = contentValues3;
+                                        List listFromDb2 = FirewallUtils.getListFromDb(contentValues4, "blacklist", this.mEdmStorageProvider);
+                                        if (listFromDb2.containsAll(emptyList)) {
+                                            list2 = emptyList2;
+                                            if (listFromDb.containsAll(list2) && !isEmpty) {
+                                                Log.i("DomainFilter", "addDomainFilterRules() - Skipping rule - This rule is already in the database");
+                                                firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.NO_CHANGES, FirewallResponse.ErrorCode.NO_ERROR, "The specified rule is already in the database.");
+                                                contextInfo2 = contextInfo;
+                                                i5 = 0;
+                                                i7++;
+                                                contextInfo3 = contextInfo2;
+                                                userId = i;
+                                                arrayList3 = arrayList2;
+                                                map = map2;
+                                                size = i2;
+                                                jSONArray2 = jSONArray;
+                                                z5 = true;
+                                            }
+                                        } else {
+                                            list2 = emptyList2;
+                                        }
+                                        for (int i8 = 0; i8 < list2.size(); i8++) {
+                                            String str = (String) list2.get(i8);
+                                            if (emptyList.contains(str)) {
+                                                emptyList.remove(str);
+                                            }
+                                        }
+                                        list3 = listFromDb;
+                                        list4 = listFromDb2;
+                                    }
+                                    domainFilterRule.setDenyDomains(emptyList);
+                                    if (isEmpty) {
+                                        if (verifyAppInstalled) {
+                                            i4 = setupNetworkDns(dns1, dns2);
+                                            if (i4 == -1) {
+                                                Log.i("DomainFilter", "addDomainFilterRules() - Skipping invalid rule - Invalid netID");
+                                                firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.UNEXPECTED_ERROR, "Error occurred applying DNS(s)");
+                                                contextInfo2 = contextInfo;
+                                                i5 = 0;
+                                                i7++;
+                                                contextInfo3 = contextInfo2;
+                                                userId = i;
+                                                arrayList3 = arrayList2;
+                                                map = map2;
+                                                size = i2;
+                                                jSONArray2 = jSONArray;
+                                                z5 = true;
+                                            } else if (!contentValues4.containsKey("networkId") || (asInteger = contentValues4.getAsInteger("networkId")) == null) {
+                                                z4 = verifyAppInstalled;
+                                            } else {
+                                                z4 = verifyAppInstalled;
+                                                if (asInteger.intValue() != -1 && i4 != asInteger.intValue()) {
+                                                    this.mNetworkHandler.sendMessage(Message.obtain(this.mNetworkHandler, 0, asInteger));
+                                                }
+                                            }
+                                        } else {
+                                            z4 = verifyAppInstalled;
+                                            i4 = -1;
+                                        }
+                                        contentValues2.put("dns1", dns1);
+                                        contentValues2.put("dns2", dns2);
+                                        contentValues2.put("networkId", Integer.valueOf(i4));
+                                        i3 = i4;
+                                    } else {
+                                        z4 = verifyAppInstalled;
+                                        i3 = -1;
+                                    }
+                                    boolean hasDenyRuleInDatabase = this.mFirewallRulesApplier.hasDenyRuleInDatabase(i6, packageName);
+                                    ContentValues contentValues5 = contentValues;
+                                    if (this.mEdmStorageProvider.put("DomainFilterTable", contentValues2, contentValues5)) {
+                                        contextInfo2 = contextInfo;
+                                        if (addDomainListInDataBase(contextInfo2, domainFilterRule, list4, list3)) {
+                                            if (z4) {
+                                                i5 = 0;
+                                                updateDaemonCache(contextInfo2, domainFilterRule, 0, String.valueOf(i3));
+                                            } else {
+                                                i5 = 0;
+                                            }
+                                            processPackageExceptionListDelayed();
+                                            processKGPackageExceptionDelayed();
+                                            firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The rule(s) was successfully added/updated.");
+                                            this.mDomainFilterNapCommon.setDomainFilterEnabled(true);
+                                            AppIdentity appIdentity = new AppIdentity(packageName, signature);
+                                            if (!hasDenyRuleInDatabase && this.mFirewallRulesApplier.blockPort53(appIdentity, contextInfo2, true)) {
+                                                Log.i("DomainFilter", "blockPort53() - port53 rule added successfully. Package: " + packageName);
+                                            }
+                                            i7++;
+                                            contextInfo3 = contextInfo2;
+                                            userId = i;
+                                            arrayList3 = arrayList2;
+                                            map = map2;
+                                            size = i2;
+                                            jSONArray2 = jSONArray;
+                                            z5 = true;
+                                        } else {
+                                            Log.i("DomainFilter", "addDomainFilterRules() - Failed to add rule in the database -domains list");
+                                            firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to add/update rule in the database.");
+                                            if (!z3) {
+                                                this.mEdmStorageProvider.delete("DomainFilterTable", contentValues5);
+                                            }
+                                            if (isEmpty) {
+                                                this.mNetworkHandler.sendMessage(Message.obtain(this.mNetworkHandler, 0, Integer.valueOf(i3)));
+                                            }
+                                            i5 = 0;
+                                            i7++;
+                                            contextInfo3 = contextInfo2;
+                                            userId = i;
+                                            arrayList3 = arrayList2;
+                                            map = map2;
+                                            size = i2;
+                                            jSONArray2 = jSONArray;
+                                            z5 = true;
+                                        }
+                                    } else {
+                                        Log.i("DomainFilter", "addDomainFilterRules() - Failed to add rule in the database");
+                                        firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to add/update rule in the database.");
+                                        if (isEmpty) {
+                                            this.mNetworkHandler.sendMessage(Message.obtain(this.mNetworkHandler, 0, Integer.valueOf(i3)));
+                                        }
+                                        contextInfo2 = contextInfo;
+                                        i5 = 0;
+                                        i7++;
+                                        contextInfo3 = contextInfo2;
+                                        userId = i;
+                                        arrayList3 = arrayList2;
+                                        map = map2;
+                                        size = i2;
+                                        jSONArray2 = jSONArray;
+                                        z5 = true;
+                                    }
+                                } else {
+                                    Log.i("DomainFilter", "addDomainFilterRules() - Skipping invalid rule - invalid domain");
+                                    firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "Invalid domain.");
+                                }
+                            } else {
+                                Log.i("DomainFilter", "addDomainFilterRules() - Skipping invalid rule - signature mismatch");
+                                firewallResponseArr[i7] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "Given signature does not match with the application.");
                             }
-                            return next.pkgList[0];
+                            i = userId;
+                            i2 = size;
+                            map2 = map;
+                            jSONArray = jSONArray2;
+                            i5 = 0;
+                            contextInfo2 = contextInfo3;
+                            i7++;
+                            contextInfo3 = contextInfo2;
+                            userId = i;
+                            arrayList3 = arrayList2;
+                            map = map2;
+                            size = i2;
+                            jSONArray2 = jSONArray;
+                            z5 = true;
                         }
                     }
                 }
+                arrayList2 = arrayList3;
+                i = userId;
+                i2 = size;
+                map2 = map;
+                jSONArray = jSONArray2;
+                contextInfo2 = contextInfo3;
+                i7++;
+                contextInfo3 = contextInfo2;
+                userId = i;
+                arrayList3 = arrayList2;
+                map = map2;
+                size = i2;
+                jSONArray2 = jSONArray;
+                z5 = true;
             }
-            return null;
+            ContextInfo contextInfo4 = contextInfo3;
+            ArrayList arrayList7 = arrayList3;
+            int i9 = size;
+            KnoxAnalyticsData knoxAnalyticsData = new KnoxAnalyticsData("KNOX_SECURE_NETWORK", 1, "addDomainFilterRules");
+            knoxAnalyticsData.setUserTypeProperty(contextInfo4.mContainerId);
+            knoxAnalyticsData.setProperty("rules", "\"" + jSONArray2.toString() + "\"");
+            KnoxAnalytics.log(knoxAnalyticsData);
+            if (isDomainFilterOnIptablesEnabled(contextInfo)) {
+                ArrayList arrayList8 = new ArrayList();
+                while (i5 < i9) {
+                    if (firewallResponseArr[i5].getResult().equals(FirewallResponse.Result.SUCCESS)) {
+                        arrayList = arrayList7;
+                        arrayList8.add((DomainFilterRule) arrayList.get(i5));
+                    } else {
+                        arrayList = arrayList7;
+                    }
+                    i5++;
+                    arrayList7 = arrayList;
+                }
+                addDomainRules(contextInfo4, arrayList8);
+            }
+            return firewallResponseArr;
+        }
+    }
+
+    public final boolean addDomainListInDataBase(int i, String str, List list, String str2, List list2, List list3, Set set) {
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            String str3 = (String) it.next();
+            ContentValues contentValues = new ContentValues();
+            KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(i, contentValues, "adminUid", "packageName", str);
+            contentValues.put("typeList", str2);
+            contentValues.put("domain", str3);
+            ContentValues contentValues2 = new ContentValues();
+            KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(i, contentValues2, "adminUid", "packageName", str);
+            contentValues2.put("domain", str3);
+            if (!this.mEdmStorageProvider.put("DomainFilterListTable", contentValues, contentValues2)) {
+                AudioDeviceInventory$$ExternalSyntheticOutline0.m("addDomainListInDataBase()- Any ", str2, " couldn't be added", "DomainFilter");
+                rollbackDomainList(i, str, list2, list3, set, true);
+                return false;
+            }
+            ((HashSet) set).add(str3);
+        }
+        return true;
+    }
+
+    public final boolean addDomainListInDataBase(ContextInfo contextInfo, DomainFilterRule domainFilterRule, List list, List list2) {
+        int i = contextInfo.mCallerUid;
+        String packageName = domainFilterRule.getApplication().getPackageName();
+        HashSet hashSet = new HashSet();
+        List denyDomains = domainFilterRule.getDenyDomains();
+        List allowDomains = domainFilterRule.getAllowDomains();
+        Log.i("DomainFilter", "addDomainListInDataBase()");
+        boolean addDomainListInDataBase = addDomainListInDataBase(i, packageName, denyDomains, "blacklist", list, list2, hashSet);
+        if (addDomainListInDataBase) {
+            addDomainListInDataBase = addDomainListInDataBase(i, packageName, allowDomains, "whitelist", list, list2, hashSet);
+        }
+        if (addDomainListInDataBase) {
+            Log.i("DomainFilter", "addDomainListInDataBase()- All domains were added");
+        }
+        return addDomainListInDataBase;
+    }
+
+    public final synchronized FirewallResponse addDomainRules(ContextInfo contextInfo, List list) {
+        Log.i("DomainFilter", "addDomainRules()");
+        if (((ArrayList) list).isEmpty()) {
+            return new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The domain filter on iptables api was successfully enabled.");
+        }
+        return this.mFirewallRulesApplier.addDomainRules(contextInfo, list);
+    }
+
+    public final int checkAdminInDatabase(int i) {
+        int userId = UserHandle.getUserId(i);
+        EdmStorageProvider edmStorageProvider = this.mEdmStorageProvider;
+        List stringListAsUser = edmStorageProvider.getStringListAsUser(userId, "DomainFilterTable", "adminUid");
+        if (((ArrayList) stringListAsUser).size() == 0) {
+            stringListAsUser = edmStorageProvider.getStringListAsUser(userId, "DomainFilterOnIptablesApiStatus", "adminUid");
+            if (((ArrayList) stringListAsUser).size() == 0) {
+                return 0;
+            }
+        }
+        return Integer.parseInt((String) stringListAsUser.get(0)) == i ? 1 : -1;
+    }
+
+    public final void concatenateListAndExecuteCommand(int i, ArrayList arrayList, int i2, String str, List list) {
+        int length = str.getBytes(StandardCharsets.UTF_8).length;
+        ArrayList arrayList2 = new ArrayList();
+        StringBuilder sb = new StringBuilder();
+        int i3 = i2 + length;
+        if (list == null) {
+            arrayList2.addAll(arrayList);
+            arrayList2.add(str);
+            arrayList2.add(null);
+            executeDomainFilterCommands(arrayList2, i);
+            return;
+        }
+        int i4 = i3;
+        int i5 = 0;
+        while (i5 < list.size()) {
+            i4 += ((String) list.get(i5)).getBytes(StandardCharsets.UTF_8).length;
+            if (i4 < 70000) {
+                if (sb.length() == 0) {
+                    sb.append((String) list.get(i5));
+                } else {
+                    sb.append(";" + ((String) list.get(i5)));
+                }
+                i5++;
+            } else {
+                Log.d("DomainFilter", "concatenateListAndExecuteCommand() - " + sb.toString());
+                arrayList2.addAll(arrayList);
+                arrayList2.add(str);
+                arrayList2.add(sb.toString());
+                sb.setLength(0);
+                executeDomainFilterCommands(arrayList2, i);
+                arrayList2.clear();
+                i4 = i3;
+            }
+        }
+        if (sb.length() != 0) {
+            Log.d("DomainFilter", "concatenateListAndExecuteCommand() - " + sb.toString());
+            arrayList2.addAll(arrayList);
+            arrayList2.add(str);
+            arrayList2.add(sb.toString());
+            sb.setLength(0);
+            executeDomainFilterCommands(arrayList2, i);
+            arrayList2.clear();
+        }
+    }
+
+    public final void connectNativeNetdService() {
+        boolean z;
+        INetd asInterface;
+        try {
+            this.mInjector.getClass();
+            asInterface = INetd.Stub.asInterface(ServiceManager.getService("netd"));
+            if (asInterface == null) {
+                Log.w("DomainFilter", "WARNING: returning null INetd instance.");
+            }
+            this.mNetdService = asInterface;
+        } catch (RemoteException unused) {
+            z = false;
+        }
+        if (asInterface == null) {
+            Log.e("DomainFilter", "connectNativeNetdService() - netd is null.");
+            return;
+        }
+        z = asInterface.isAlive();
+        if (z) {
+            return;
+        }
+        Log.e("DomainFilter", "connectNativeNetdService() - Can't connect to NativeNetdService netd");
+    }
+
+    public final synchronized FirewallResponse enableDomainFilterOnIptables(ContextInfo contextInfo, boolean z) {
+        int i = contextInfo.mCallerUid;
+        int userId = UserHandle.getUserId(i);
+        if (checkAdminInDatabase(i) == -1) {
+            Log.i("DomainFilter", "enableDomainFilterOnIptables() - Another admin already have domain filter rules in the database");
+            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.NOT_AUTHORIZED_ERROR, "This administrator can't execute this operation because he is not the owner.");
+        }
+        if (!z) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("adminUid", Integer.valueOf(i));
+            contentValues.put("userId", Integer.valueOf(userId));
+            if (this.mEdmStorageProvider.delete("DomainFilterOnIptablesApiStatus", contentValues) == 0) {
+                Log.e("DomainFilter", "enableDomainFilterOnIptables() - Failed to change DomainFilterOnIptables Api status on database");
+                return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to change DomainFilterOnIptables status on database.");
+            }
+            Log.d("DomainFilter", "enableDomainFilterOnIptables() - DomainFilterOnIptables successfully disabled");
+            if (!isDomainFilterOnIptablesEnabledAtAll()) {
+                this.mDomainFilterNapCommon.setDomainFilterOnIptablesEnabled(false);
+            }
+            if (this.mFirewallRulesApplier.flushDomainChains(Integer.valueOf(userId), false)) {
+                Log.i("DomainFilter", "flushDomainChains() - domain rules successfully removed");
+                return new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The domain filter on iptables api was successfully disabled.");
+            }
+            Log.e("DomainFilter", "flushDomainChains() - Failed to flush domain chains");
+            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.UNEXPECTED_ERROR, "Failed to disable domain filter on iptables api.");
+        }
+        FirewallRulesApplier firewallRulesApplier = this.mFirewallRulesApplier;
+        boolean runShellCommand = firewallRulesApplier.runShellCommand(4, "*filter\n:domainfilter-test -\nCOMMIT\n*filter\n-A domainfilter-test -m domainfilter --blacklist %testing% -j REJECT\nCOMMIT\n");
+        firewallRulesApplier.runShellCommand(4, "*filter\n-D domainfilter-test -m domainfilter --blacklist %testing% -j REJECT\nCOMMIT\n*filter\n-X domainfilter-test\nCOMMIT\n");
+        if (!runShellCommand) {
+            Log.i("DomainFilter", "DomainFilterOnIptablesApi not supported.");
+            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.UNEXPECTED_ERROR, "Failed to enable domain filter on iptables api.");
+        }
+        boolean isDomainFilterOnIptablesEnabledAtAll = isDomainFilterOnIptablesEnabledAtAll();
+        ContentValues contentValues2 = new ContentValues();
+        contentValues2.put("adminUid", Integer.valueOf(i));
+        contentValues2.put("userId", Integer.valueOf(userId));
+        contentValues2.put(Constants.JSON_CLIENT_DATA_STATUS, Boolean.valueOf(z));
+        if (this.mEdmStorageProvider.insert("DomainFilterOnIptablesApiStatus", contentValues2) == -1) {
+            Log.e("DomainFilter", "enableDomainFilterOnIptables() - Failed to change DomainFilterOnIptables Api status on database");
+            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to change DomainFilterOnIptables status on database.");
+        }
+        if (!isDomainFilterOnIptablesEnabledAtAll) {
+            if (getConnectivityService() == null) {
+                Log.e("DomainFilter", "flushNetworkDnsCache() - failed to retrieve ConnectivityService instance");
+            } else {
+                try {
+                    final Network activeNetwork = mConnectivityService.getActiveNetwork();
+                    if (activeNetwork != null) {
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.enterprise.firewall.DomainFilter$$ExternalSyntheticLambda0
+                            public final void runOrThrow() {
+                                DomainFilter domainFilter = DomainFilter.this;
+                                Network network = activeNetwork;
+                                DnsResolverAdapter dnsResolverAdapter = domainFilter.mDnsResolverAdapter;
+                                int netId = network.getNetId();
+                                dnsResolverAdapter.getClass();
+                                Log.d("DnsResolverAdapter", "flushNetworkCache - entered");
+                                dnsResolverAdapter.runWithExceptionHandling(new DnsResolverAdapter$$ExternalSyntheticLambda2(netId, 1));
+                                Log.d("DnsResolverAdapter", "flushNetworkCache - exited");
+                            }
+                        });
+                    }
+                } catch (Exception unused) {
+                    Log.e("DomainFilter", "flushNetworkDnsCache() - Failed to getActiveNetwork");
+                }
+            }
+            this.mDomainFilterNapCommon.setDomainFilterOnIptablesEnabled(true);
+        }
+        FirewallResponse addDomainRules = addDomainRules(contextInfo, getDomainFilterRules(contextInfo, null));
+        Log.d("DomainFilter", "enableDomainFilterOnIptables() - DomainFilterOnIptables Api successfully enabled");
+        return addDomainRules;
+    }
+
+    public final FirewallResponse enableDomainFilterReport(ContextInfo contextInfo, boolean z) {
+        Log.i("DomainFilter", "enableDomainFilterReport()");
+        int i = contextInfo.mCallerUid;
+        int userId = UserHandle.getUserId(i);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Constants.JSON_CLIENT_DATA_STATUS, Boolean.valueOf(z));
+        contentValues.put("userId", Integer.valueOf(userId));
+        ContentValues contentValues2 = new ContentValues();
+        contentValues2.put("adminUid", Integer.valueOf(i));
+        if (!this.mEdmStorageProvider.put("DomainFilterReportStatus", contentValues, contentValues2)) {
+            Log.e("DomainFilter", "enableDomainFilterReport() - Failed to change Domain Filter Report status on database");
+            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to change Domain Filter report status on database.");
+        }
+        Integer valueOf = Integer.valueOf(userId);
+        if (z && !((HashSet) this.mDomainReportCache).contains(valueOf)) {
+            ((HashSet) this.mDomainReportCache).add(valueOf);
+        } else if (!z && !isDomainFilterReportEnabledAsUser(userId) && ((HashSet) this.mDomainReportCache).contains(valueOf)) {
+            ((HashSet) this.mDomainReportCache).remove(valueOf);
+            ContentValues contentValues3 = new ContentValues();
+            contentValues3.put("userId", Integer.valueOf(userId));
+            this.mEdmStorageProvider.delete("DomainFilterReportTable", contentValues3);
+        }
+        if (z && registerDomainFilterListener(z)) {
+            Log.d("DomainFilter", "enableDomainFilterReport() - Domain Filter Report successfully enabled");
+        } else if (!z && registerDomainFilterListener(z)) {
+            Log.d("DomainFilter", "enableDomainFilterReport() - Domain Filter Report successfully disabled");
+        }
+        return new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, z ? "Domain Report successfully enabled." : "Domain Report successfully disabled.");
+    }
+
+    public final synchronized void executeDomainFilterCommands(ArrayList arrayList, int i) {
+        IOemNetd oemNetdService;
+        String[] strArr = (String[]) arrayList.toArray(new String[0]);
+        for (int i2 = 1; i2 <= 3; i2++) {
+            try {
+                oemNetdService = getOemNetdService();
+                this.mOemNetdService = oemNetdService;
+            } catch (RemoteException | ServiceSpecificException unused) {
+                Log.e("DomainFilter", "executeDomainFilterCommands() - attempt " + i2 + " in 3");
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    Log.e("DomainFilter", "delayTransaction() - failed to delay transaction ", e);
+                }
+            }
+            if (oemNetdService != null) {
+                oemNetdService.updateDomainFilterCache(i, strArr);
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e2) {
+                    Log.e("DomainFilter", "delayTransaction() - failed to delay transaction ", e2);
+                }
+                return;
+            }
+            continue;
+        }
+        Log.e("DomainFilter", "executeDomainFilterCommands() - Transaction failed. ");
+    }
+
+    public final int getApplicationUid(int i, String str) {
+        PackageInfo packageInfo;
+        ApplicationInfo applicationInfo;
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                PackageManagerAdapter.getInstance(this.mContext).getClass();
+                packageInfo = PackageManagerAdapter.getPackageInfo(128, i, str);
+            } catch (Exception e) {
+                Log.e("DomainFilter", "getApplicationUid() - exception getting package info ", e);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                packageInfo = null;
+            }
+            if (packageInfo == null || (applicationInfo = packageInfo.applicationInfo) == null) {
+                return -1;
+            }
+            return applicationInfo.uid;
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public final void processPackageExceptionListDelayed() {
-        Log.i(TAG, "processPackageExceptionListDelayed()");
-        synchronized (this.mExceptionListLock) {
-            if (this.mIsExceptionListApplied) {
-                return;
-            }
-            this.mIsExceptionListApplied = true;
-            UserManager userManager = (UserManager) this.mContext.getSystemService("user");
-            if (userManager != null) {
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    List users = userManager.getUsers();
-                    if (users != null) {
-                        Iterator it = users.iterator();
-                        while (it.hasNext()) {
-                            processPackageExceptionList(this.mContext.getPackageManager().getInstalledPackagesAsUser(64, ((UserInfo) it.next()).id));
-                        }
-                    }
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            }
+    public final ConnectivityManager getConnectivityService() {
+        if (mConnectivityService == null) {
+            mConnectivityService = (ConnectivityManager) this.mContext.getSystemService("connectivity");
         }
+        return mConnectivityService;
     }
 
-    public final synchronized void processPackageExceptionList(List list) {
-        Iterator it = FirewallUtils.getUidsToExemptFromPackages(list, this.mContext, false).iterator();
+    public final List getDomainFilterRules(ContextInfo contextInfo, List list) {
+        Log.i("DomainFilter", "getDomainFilterRules()");
+        ArrayList arrayList = new ArrayList();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid", Integer.valueOf(contextInfo.mCallerUid));
+        EdmStorageProvider edmStorageProvider = this.mEdmStorageProvider;
+        Iterator it = ((ArrayList) edmStorageProvider.getValues("DomainFilterTable", null, contentValues)).iterator();
         while (it.hasNext()) {
-            sendToCache(Operation.EXCEPTION.ordinal(), Integer.toString(((Integer) it.next()).intValue()), null, null, null, null);
+            ContentValues contentValues2 = (ContentValues) it.next();
+            String asString = contentValues2.getAsString("packageName");
+            String asString2 = contentValues2.getAsString("signature");
+            if (list == null || list.contains(asString)) {
+                arrayList.add(new DomainFilterRule(new AppIdentity(asString, asString2), FirewallUtils.getListFromDb(contentValues2, "blacklist", edmStorageProvider), FirewallUtils.getListFromDb(contentValues2, "whitelist", edmStorageProvider), contentValues2.getAsString("dns1"), contentValues2.getAsString("dns2")));
+            }
+        }
+        contentValues.clear();
+        return arrayList;
+    }
+
+    public final IOemNetd getOemNetdService() {
+        IOemNetd asInterface;
+        IOemNetd iOemNetd = this.mOemNetdService;
+        if (iOemNetd != null) {
+            return iOemNetd;
+        }
+        if (this.mNetdService == null) {
+            connectNativeNetdService();
+        }
+        if (this.mOemNetdService == null && this.mNetdService != null) {
+            this.mInjector.getClass();
+            INetd asInterface2 = INetd.Stub.asInterface(ServiceManager.getService("netd"));
+            if (asInterface2 == null) {
+                Log.w("DomainFilter", "WARNING: returning null INetd instance.");
+            }
+            if (asInterface2 != null) {
+                try {
+                    asInterface = IOemNetd.Stub.asInterface(asInterface2.getOemNetd());
+                } catch (RemoteException e) {
+                    NetdService$$ExternalSyntheticOutline0.m("getOemNetdService() - failed to retrieve getOemNetdService instance ", e, "DomainFilter");
+                }
+                this.mOemNetdService = asInterface;
+            }
+            Log.w("DomainFilter", "WARNING: returning null IOemNetd instance.");
+            asInterface = null;
+            this.mOemNetdService = asInterface;
+        }
+        return this.mOemNetdService;
+    }
+
+    public final boolean hasAnyRuleInDatabase() {
+        if (((ArrayList) this.mEdmStorageProvider.getValues("DomainFilterTable", null, null)).isEmpty()) {
+            Log.i("DomainFilter", "hasAnyRuleInDatabase(): false");
+            return false;
+        }
+        Log.i("DomainFilter", "hasAnyRuleInDatabase(): true");
+        return true;
+    }
+
+    public final boolean isDomainFilterOnIptablesEnabled(ContextInfo contextInfo) {
+        int i = contextInfo.mCallerUid;
+        int userId = UserHandle.getUserId(i);
+        ContentValues contentValues = new ContentValues();
+        Pageboost$PageboostFileDBHelper$$ExternalSyntheticOutline0.m(userId, contentValues, "userId", i, "adminUid");
+        ArrayList arrayList = (ArrayList) this.mEdmStorageProvider.getBooleanList(contentValues, "DomainFilterOnIptablesApiStatus", Constants.JSON_CLIENT_DATA_STATUS);
+        if (arrayList.isEmpty()) {
+            return false;
+        }
+        return arrayList.contains(Boolean.TRUE);
+    }
+
+    public final boolean isDomainFilterOnIptablesEnabledAtAll() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Constants.JSON_CLIENT_DATA_STATUS, (Integer) 1);
+        return this.mEdmStorageProvider.getCount("DomainFilterOnIptablesApiStatus", contentValues) > 0;
+    }
+
+    public final boolean isDomainFilterReportEnabledAsUser(int i) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("userId", Integer.valueOf(i));
+        ArrayList arrayList = (ArrayList) this.mEdmStorageProvider.getBooleanList(contentValues, "DomainFilterReportStatus", Constants.JSON_CLIENT_DATA_STATUS);
+        if (arrayList.isEmpty()) {
+            return false;
+        }
+        return arrayList.contains(Boolean.TRUE);
+    }
+
+    public final void packageAdded(Intent intent) {
+        String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
+        int i = -1;
+        int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
+        if (intExtra == -1 || schemeSpecificPart == null) {
+            Log.i("DomainFilter", "packageAdded() - Received invalid user id or package name, can't retrieve application info");
+            return;
+        }
+        int applicationUid = getApplicationUid(intExtra, schemeSpecificPart);
+        Log.i("DomainFilter", "packageAdded() - packageName: " + schemeSpecificPart + ", uid: " + intExtra);
+        if (applicationUid == -1) {
+            Log.i("DomainFilter", "packageAdded() - Failed to retrieve app info");
+            return;
+        }
+        synchronized (this.mUserIdMapLock) {
+            try {
+                Integer valueOf = Integer.valueOf(intExtra);
+                if (((HashMap) this.mUserIdMap).get(valueOf) == null) {
+                    HashMap hashMap = new HashMap();
+                    hashMap.put(schemeSpecificPart, Integer.valueOf(applicationUid));
+                    ((HashMap) this.mUserIdMap).put(valueOf, hashMap);
+                } else {
+                    ((Map) ((HashMap) this.mUserIdMap).get(valueOf)).put(schemeSpecificPart, Integer.valueOf(applicationUid));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(EdmStorageProviderBase.getAdminLUIDWhereIn(0, intExtra), "#SelectClause#");
+        contentValues.put("packageName", schemeSpecificPart);
+        ArrayList arrayList = (ArrayList) this.mEdmStorageProvider.getValues("DomainFilterTable", null, contentValues);
+        if (arrayList.isEmpty()) {
+            return;
+        }
+        ContentValues contentValues2 = (ContentValues) arrayList.get(0);
+        String asString = contentValues2.getAsString("signature");
+        if (!TextUtils.isEmpty(asString) && !validatePkgSignature(intExtra, schemeSpecificPart, asString)) {
+            Log.i("DomainFilter", "packageAdded() - Installed app's signature mismatched the one provided by admin.");
+            return;
+        }
+        List listFromDb = FirewallUtils.getListFromDb(contentValues2, "blacklist", this.mEdmStorageProvider);
+        List listFromDb2 = FirewallUtils.getListFromDb(contentValues2, "whitelist", this.mEdmStorageProvider);
+        String asString2 = contentValues2.getAsString("dns1");
+        if (((ArrayList) listFromDb).isEmpty() && ((ArrayList) listFromDb2).isEmpty() && TextUtils.isEmpty(asString2)) {
+            return;
+        }
+        if (!TextUtils.isEmpty(asString2)) {
+            int i2 = setupNetworkDns(asString2, contentValues2.getAsString("dns2"));
+            if (i2 != -1) {
+                contentValues2.put("networkId", String.valueOf(i2));
+                this.mEdmStorageProvider.put("DomainFilterTable", contentValues2, contentValues);
+            }
+            i = i2;
+        }
+        sendToCache(0, String.valueOf(applicationUid), null, listFromDb, listFromDb2, String.valueOf(i));
+    }
+
+    public final synchronized void processKGPackageException(List list) {
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            PackageInfo packageInfo = (PackageInfo) it.next();
+            if ("com.samsung.android.kgclient".equals(packageInfo.applicationInfo.packageName)) {
+                sendToCache(8, Integer.toString(packageInfo.applicationInfo.uid), null, null, null, null);
+            }
         }
     }
 
     public final void processKGPackageExceptionDelayed() {
         if (FirewallUtils.isKGExemptRuleRequired()) {
             synchronized (this.mKGExceptionListLock) {
-                if (this.mIsKGExceptionApplied) {
+                try {
+                    if (this.mIsKGExceptionApplied) {
+                        return;
+                    }
+                    this.mIsKGExceptionApplied = true;
+                    UserManager userManager = (UserManager) this.mContext.getSystemService("user");
+                    if (userManager != null) {
+                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                        try {
+                            List users = userManager.getUsers();
+                            if (users != null) {
+                                Iterator it = users.iterator();
+                                while (it.hasNext()) {
+                                    processKGPackageException(this.mContext.getPackageManager().getInstalledPackagesAsUser(64, ((UserInfo) it.next()).id));
+                                }
+                            }
+                        } finally {
+                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                        }
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    public final synchronized void processPackageExceptionList(List list) {
+        Iterator it = ((ArrayList) FirewallUtils.getUidsToExemptFromPackages(this.mContext, list, false)).iterator();
+        while (it.hasNext()) {
+            sendToCache(4, Integer.toString(((Integer) it.next()).intValue()), null, null, null, null);
+        }
+    }
+
+    public final void processPackageExceptionListDelayed() {
+        Log.i("DomainFilter", "processPackageExceptionListDelayed()");
+        synchronized (this.mExceptionListLock) {
+            try {
+                if (this.mIsExceptionListApplied) {
                     return;
                 }
-                this.mIsKGExceptionApplied = true;
+                this.mIsExceptionListApplied = true;
                 UserManager userManager = (UserManager) this.mContext.getSystemService("user");
                 if (userManager != null) {
                     long clearCallingIdentity = Binder.clearCallingIdentity();
@@ -2371,204 +1749,683 @@ public class DomainFilter {
                         if (users != null) {
                             Iterator it = users.iterator();
                             while (it.hasNext()) {
-                                processKGPackageException(this.mContext.getPackageManager().getInstalledPackagesAsUser(64, ((UserInfo) it.next()).id));
+                                List installedPackagesAsUser = this.mContext.getPackageManager().getInstalledPackagesAsUser(64, ((UserInfo) it.next()).id);
+                                processPackageExceptionList(installedPackagesAsUser);
+                                processPlatformPackageExceptionList(installedPackagesAsUser);
                             }
                         }
                     } finally {
                         Binder.restoreCallingIdentity(clearCallingIdentity);
                     }
                 }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x001d, code lost:
-    
-        sendToCache(com.android.server.enterprise.firewall.DomainFilter.Operation.EXCEPTION.ordinal(), java.lang.Integer.toString(r0.applicationInfo.uid), null, null, null, null);
-     */
+    public final synchronized void processPlatformPackageExceptionList(List list) {
+        Iterator it = ((ArrayList) FirewallUtils.getPlatformUidsToExemptFromPackages(list)).iterator();
+        while (it.hasNext()) {
+            sendToCache(8, Integer.toString(((Integer) it.next()).intValue()), null, null, null, null);
+        }
+    }
+
+    public final synchronized List reassembleDomainFilterBrokenRules(int i) {
+        ArrayList arrayList;
+        try {
+            arrayList = new ArrayList();
+            for (DomainFilterRule domainFilterRule : (List) ((HashMap) this.mDomainFilterBrokenRules).get(Integer.valueOf(i))) {
+                Iterator it = arrayList.iterator();
+                while (true) {
+                    if (!it.hasNext()) {
+                        arrayList.add(domainFilterRule);
+                        break;
+                    }
+                    DomainFilterRule domainFilterRule2 = (DomainFilterRule) it.next();
+                    if (domainFilterRule2.getIpcToken() != 0 && domainFilterRule2.getIpcToken() == domainFilterRule.getIpcToken()) {
+                        List denyDomains = domainFilterRule2.getDenyDomains();
+                        List allowDomains = domainFilterRule2.getAllowDomains();
+                        if (denyDomains != null) {
+                            denyDomains.addAll(domainFilterRule.getDenyDomains());
+                        }
+                        if (allowDomains != null) {
+                            allowDomains.addAll(domainFilterRule.getAllowDomains());
+                        }
+                        domainFilterRule2.setDenyDomains(denyDomains);
+                        domainFilterRule2.setAllowDomains(allowDomains);
+                    }
+                }
+            }
+            ((HashMap) this.mDomainFilterBrokenRules).remove(Integer.valueOf(i));
+        } catch (Throwable th) {
+            throw th;
+        }
+        return arrayList;
+    }
+
+    public final boolean registerDomainFilterListener(boolean z) {
+        if (!z) {
+            if (this.mDomainFilterEventListener == null) {
+                return false;
+            }
+            try {
+                IOemNetd oemNetdService = getOemNetdService();
+                this.mOemNetdService = oemNetdService;
+                if (oemNetdService == null) {
+                    return false;
+                }
+                oemNetdService.unregisterDomainFilterEventListener();
+                this.mDomainFilterEventListener = null;
+                Log.d("DomainFilter", "DomainFilterEventListener unregistered successfully");
+                return true;
+            } catch (RemoteException | ServiceSpecificException e) {
+                DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "Failed to unregister domainFilterEventListener ", "DomainFilter");
+                return false;
+            }
+        }
+        if (this.mDomainFilterEventListener != null) {
+            return false;
+        }
+        try {
+            IOemNetd oemNetdService2 = getOemNetdService();
+            this.mOemNetdService = oemNetdService2;
+            if (oemNetdService2 == null) {
+                return false;
+            }
+            DomainFilterEventListener domainFilterEventListener = new DomainFilterEventListener();
+            this.mDomainFilterEventListener = domainFilterEventListener;
+            this.mOemNetdService.registerDomainFilterEventListener(domainFilterEventListener);
+            Log.d("DomainFilter", "DomainFilterEventListener registered successfully");
+            return true;
+        } catch (RemoteException | ServiceSpecificException e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "Failed to register domainFilterEventListener ", "DomainFilter");
+            return false;
+        }
+    }
+
+    public final void releaseNetworks(int i) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid", Integer.valueOf(i));
+        ArrayList arrayList = (ArrayList) this.mEdmStorageProvider.getValues("DomainFilterTable", new String[]{"networkId"}, contentValues);
+        if (arrayList.isEmpty()) {
+            Log.i("DomainFilter", "releaseNetworks() - No rules in database");
+            return;
+        }
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            Integer asInteger = ((ContentValues) it.next()).getAsInteger("networkId");
+            int intValue = asInteger != null ? asInteger.intValue() : -1;
+            if (intValue != -1) {
+                Integer valueOf = Integer.valueOf(intValue);
+                NetworkManagementHandler networkManagementHandler = this.mNetworkHandler;
+                networkManagementHandler.sendMessage(Message.obtain(networkManagementHandler, 0, valueOf));
+            }
+        }
+    }
+
+    public final synchronized FirewallResponse removeDnsForApplication(DomainFilterRule domainFilterRule, int i, ContentValues contentValues) {
+        try {
+            Log.d("DomainFilter", "removeDnsForApplication() - START");
+            String asString = contentValues.getAsString("dns1");
+            String asString2 = contentValues.getAsString("dns2");
+            String dns1 = domainFilterRule.getDns1();
+            String dns2 = domainFilterRule.getDns2();
+            if (asString != null && dns1.equals(asString) && ((dns2 != null || asString2 == null) && ((dns2 == null || asString2 != null) && (dns2 == null || dns2.equals(asString2))))) {
+                Integer asInteger = contentValues.getAsInteger("networkId");
+                if (asInteger != null && asInteger.intValue() != -1) {
+                    this.mNetworkHandler.sendMessage(Message.obtain(this.mNetworkHandler, 0, asInteger));
+                    asInteger = -1;
+                }
+                ContentValues contentValues2 = new ContentValues();
+                contentValues2.put("dns1", (String) null);
+                contentValues2.put("dns2", (String) null);
+                contentValues2.put("networkId", asInteger);
+                ContentValues contentValues3 = new ContentValues();
+                String packageName = domainFilterRule.getApplication().getPackageName();
+                contentValues3.put("adminUid", Integer.valueOf(i));
+                contentValues3.put("packageName", packageName);
+                if (this.mEdmStorageProvider.put("DomainFilterTable", contentValues2, contentValues3)) {
+                    return null;
+                }
+                Log.e("DomainFilter", "removeDnsForApplication() -  Database error!");
+                return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove DNS(s) from database.");
+            }
+            Log.e("DomainFilter", "removeDnsForApplication() - Invalid parameters!");
+            return new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "DNS(s) provided doesn't match DNS(s) in database.");
+        } catch (Throwable th) {
+            throw th;
+        }
+    }
+
+    public final synchronized FirewallResponse[] removeDomainFilterRules(ContextInfo contextInfo, List list) {
+        FirewallResponse[] firewallResponseArr;
+        int i;
+        HashSet hashSet;
+        boolean z;
+        HashSet hashSet2;
+        boolean z2;
+        int i2;
+        ArrayList arrayList;
+        int i3;
+        char c;
+        boolean z3;
+        ArrayList arrayList2;
+        List list2 = list;
+        synchronized (this) {
+            try {
+                StringBuilder sb = new StringBuilder("removeDomainFilterRules() - rules.size = ");
+                sb.append(list2 != null ? Integer.valueOf(list.size()) : "0");
+                Log.i("DomainFilter", sb.toString());
+                boolean z4 = true;
+                int i4 = 0;
+                if (list2 != null && list.isEmpty()) {
+                    Log.i("DomainFilter", "removeDomainFilterRules() - No rule specified");
+                    return new FirewallResponse[]{new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.OPERATION_NOT_PERMITTED_ERROR, "No rule was specified.")};
+                }
+                int i5 = contextInfo.mCallerUid;
+                int userId = UserHandle.getUserId(i5);
+                int checkAdminInDatabase = checkAdminInDatabase(i5);
+                if (checkAdminInDatabase == 0) {
+                    Log.i("DomainFilter", "removeDomainFilterRules() - Database is already empty");
+                    firewallResponseArr = new FirewallResponse[]{new FirewallResponse(FirewallResponse.Result.NO_CHANGES, FirewallResponse.ErrorCode.OPERATION_NOT_PERMITTED_ERROR, "The rules are already cleared.")};
+                } else {
+                    char c2 = 65535;
+                    if (checkAdminInDatabase == -1) {
+                        Log.i("DomainFilter", "removeDomainFilterRules() - Another admin is handling domainfilter rules in the database");
+                        firewallResponseArr = new FirewallResponse[]{new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.NOT_AUTHORIZED_ERROR, "This administrator can't execute this operation because he is not the owner.")};
+                    } else {
+                        String[] strArr = null;
+                        if (list2 == DomainFilterRule.CLEAR_ALL) {
+                            FirewallResponse[] firewallResponseArr2 = new FirewallResponse[1];
+                            releaseNetworks(i5);
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("adminUid", Integer.valueOf(i5));
+                            List values = this.mEdmStorageProvider.getValues("DomainFilterTable", null, contentValues);
+                            if (this.mEdmStorageProvider.delete("DomainFilterTable", contentValues) <= 0) {
+                                Log.i("DomainFilter", "removeDomainFilterRules() - Failed to clear rulesfrom the database");
+                                firewallResponseArr2[0] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to clear rules from database.");
+                            } else if (this.mEdmStorageProvider.delete("DomainFilterListTable", contentValues) < 0) {
+                                Iterator it = ((ArrayList) values).iterator();
+                                while (it.hasNext()) {
+                                    this.mEdmStorageProvider.put("DomainFilterTable", (ContentValues) it.next(), contentValues);
+                                }
+                                Log.i("DomainFilter", "removeDomainFilterRules() - Failed to clear rules from the database (url)");
+                                firewallResponseArr2[0] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to clear rules from database.");
+                            } else {
+                                firewallResponseArr2[0] = new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "Rules successfully cleared. Admin: " + i5);
+                                if (isDomainFilterOnIptablesEnabled(contextInfo) && !this.mFirewallRulesApplier.flushDomainChains(Integer.valueOf(userId), false)) {
+                                    Log.e("DomainFilter", "flushDomainChains() - Failed to flush domain chains");
+                                }
+                                if (!this.mFirewallRulesApplier.flushDnsPortChains(Integer.valueOf(userId))) {
+                                    Log.e("DomainFilter", "flushDnsPortChains() - Failed to flush port53 chains");
+                                }
+                                Log.i("DomainFilter", "flushDomainChains() - domain rules successfully removed");
+                            }
+                            updateDaemonCache(contextInfo, null, 2, null);
+                            firewallResponseArr = firewallResponseArr2;
+                        } else {
+                            int size = list.size();
+                            FirewallResponse[] firewallResponseArr3 = new FirewallResponse[size];
+                            ArrayList arrayList3 = new ArrayList();
+                            int i6 = 0;
+                            while (i6 < list.size()) {
+                                DomainFilterRule domainFilterRule = (DomainFilterRule) list2.get(i6);
+                                FirewallResponse validateApplicationIdentity = validateApplicationIdentity(domainFilterRule.getApplication());
+                                firewallResponseArr3[i6] = validateApplicationIdentity;
+                                if (validateApplicationIdentity != null) {
+                                    Log.i("DomainFilter", "removeDomainFilterRules() - Skipping invalid rule - invalidApplication Identity" + firewallResponseArr3[i6].getMessage());
+                                    i2 = i6;
+                                    arrayList = arrayList3;
+                                    z3 = z4;
+                                    c = c2;
+                                    i3 = size;
+                                } else {
+                                    String packageName = domainFilterRule.getApplication().getPackageName();
+                                    ContentValues contentValues2 = new ContentValues();
+                                    contentValues2.put("adminUid", Integer.valueOf(i5));
+                                    contentValues2.put("packageName", packageName);
+                                    ArrayList arrayList4 = (ArrayList) this.mEdmStorageProvider.getValues("DomainFilterTable", strArr, contentValues2);
+                                    if (arrayList4.isEmpty()) {
+                                        Log.i("DomainFilter", "removeDomainFilterRules() - Skipping rule - This rule is not in the database");
+                                        firewallResponseArr3[i6] = new FirewallResponse(FirewallResponse.Result.NO_CHANGES, FirewallResponse.ErrorCode.NO_ERROR, "The rule is not in the database.");
+                                        i2 = i6;
+                                        arrayList = arrayList3;
+                                        z3 = z4;
+                                        i3 = size;
+                                        c = 65535;
+                                    } else {
+                                        ContentValues contentValues3 = (ContentValues) arrayList4.get(i4);
+                                        String asString = contentValues3.getAsString("signature");
+                                        String signature = domainFilterRule.getApplication().getSignature();
+                                        if ((signature == null || asString != null) && ((signature != null || asString == null) && (signature == null || asString == null || signature.equals(asString)))) {
+                                            if (TextUtils.isEmpty(domainFilterRule.getDns1())) {
+                                                i = i4;
+                                            } else {
+                                                FirewallResponse removeDnsForApplication = removeDnsForApplication(domainFilterRule, i5, contentValues3);
+                                                firewallResponseArr3[i6] = removeDnsForApplication;
+                                                if (removeDnsForApplication != null) {
+                                                    Log.i("DomainFilter", "removeDomainFilterRules() - Skipping rule - Failed to remove DNS");
+                                                } else {
+                                                    i = 1;
+                                                }
+                                            }
+                                            List listFromDb = FirewallUtils.getListFromDb(contentValues3, "blacklist", this.mEdmStorageProvider);
+                                            List listFromDb2 = FirewallUtils.getListFromDb(contentValues3, "whitelist", this.mEdmStorageProvider);
+                                            prepareDomainUrls(domainFilterRule);
+                                            List denyDomains = domainFilterRule.getDenyDomains();
+                                            List allowDomains = domainFilterRule.getAllowDomains();
+                                            if (denyDomains != null) {
+                                                hashSet = new HashSet(listFromDb);
+                                                z = hashSet.removeAll(denyDomains);
+                                            } else {
+                                                hashSet = new HashSet();
+                                                if (allowDomains != null) {
+                                                    arrayList3.addAll(listFromDb);
+                                                }
+                                                z = true;
+                                            }
+                                            if (allowDomains != null) {
+                                                hashSet2 = new HashSet(listFromDb2);
+                                                z2 = z | hashSet2.removeAll(allowDomains);
+                                            } else {
+                                                HashSet hashSet3 = new HashSet();
+                                                if (denyDomains != null) {
+                                                    arrayList3.addAll(listFromDb2);
+                                                }
+                                                hashSet2 = hashSet3;
+                                                z2 = true;
+                                            }
+                                            if (z2 || i != 0) {
+                                                boolean z5 = contentValues3.getAsString("dns1") != null;
+                                                if (!hashSet.isEmpty() || !hashSet2.isEmpty() || (i == 0 && z5)) {
+                                                    i2 = i6;
+                                                    arrayList = arrayList3;
+                                                    i3 = size;
+                                                    if (removeDomainListInDatabase(contextInfo, domainFilterRule, arrayList, listFromDb, listFromDb2)) {
+                                                        Integer asInteger = i != 0 ? contentValues3.getAsInteger("networkId") : null;
+                                                        if (asInteger == null) {
+                                                            c = 65535;
+                                                            asInteger = -1;
+                                                        } else {
+                                                            c = 65535;
+                                                        }
+                                                        z3 = true;
+                                                        updateDaemonCache(contextInfo, domainFilterRule, 1, String.valueOf(asInteger.intValue()));
+                                                        firewallResponseArr3[i2] = new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The rule was successfuly removed/updated.");
+                                                    } else {
+                                                        Log.e("DomainFilter", "removeDomainFilterRules() - Failed to remove rule from the database");
+                                                        firewallResponseArr3[i2] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove/update rule from the database.");
+                                                        c = 65535;
+                                                        z3 = true;
+                                                    }
+                                                }
+                                                List values2 = this.mEdmStorageProvider.getValues("DomainFilterTable", null, contentValues2);
+                                                if (this.mEdmStorageProvider.delete("DomainFilterTable", contentValues2) <= 0) {
+                                                    Log.e("DomainFilter", "removeDomainFilterRules() - Failed to remove rule fromthe database");
+                                                    firewallResponseArr3[i6] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove/update rule from the database.");
+                                                    i2 = i6;
+                                                    arrayList2 = arrayList3;
+                                                    i3 = size;
+                                                } else {
+                                                    i3 = size;
+                                                    i2 = i6;
+                                                    arrayList2 = arrayList3;
+                                                    if (removeDomainListInDatabase(contextInfo, domainFilterRule, arrayList3, listFromDb, listFromDb2)) {
+                                                        Integer asInteger2 = contentValues3.getAsInteger("networkId");
+                                                        if (asInteger2 != null) {
+                                                            updateDaemonCache(contextInfo, domainFilterRule, 1, String.valueOf(asInteger2.intValue()));
+                                                            firewallResponseArr3[i2] = new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The rule was successfuly removed/updated.");
+                                                            if (!this.mFirewallRulesApplier.hasDenyRuleInDatabase(i5, packageName) && this.mFirewallRulesApplier.blockPort53(new AppIdentity(packageName, signature), contextInfo, false)) {
+                                                                Log.d("DomainFilter", "unblocking port53 for package = " + packageName);
+                                                            }
+                                                        } else {
+                                                            Log.e("DomainFilter", "removeDomainFilterRules() - Failed to remove rule from the database");
+                                                            firewallResponseArr3[i2] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove/update rule from the database.");
+                                                        }
+                                                    } else {
+                                                        this.mEdmStorageProvider.put("DomainFilterTable", (ContentValues) ((ArrayList) values2).get(0), contentValues2);
+                                                        Log.e("DomainFilter", "removeDomainFilterRules() - Failed to remove rule fromthe database");
+                                                        firewallResponseArr3[i2] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.DATABASE_ERROR, "Failed to remove/update rule from the database.");
+                                                    }
+                                                }
+                                                arrayList = arrayList2;
+                                                c = 65535;
+                                                z3 = true;
+                                            } else {
+                                                Log.i("DomainFilter", "removeDomainFilterRules() - Skipping rule - Rule is not in the database");
+                                                firewallResponseArr3[i6] = new FirewallResponse(FirewallResponse.Result.NO_CHANGES, FirewallResponse.ErrorCode.NO_ERROR, "The rule is not in the database.");
+                                            }
+                                        } else {
+                                            Log.i("DomainFilter", "removeDomainFilterRules() - Skipping invalid rule - signature mismatch");
+                                            firewallResponseArr3[i6] = new FirewallResponse(FirewallResponse.Result.FAILED, FirewallResponse.ErrorCode.INVALID_PARAMETER_ERROR, "Signature does not match with the previous added.");
+                                        }
+                                        i2 = i6;
+                                        arrayList = arrayList3;
+                                        i3 = size;
+                                        c = 65535;
+                                        z3 = true;
+                                    }
+                                }
+                                i6 = i2 + 1;
+                                c2 = c;
+                                z4 = z3;
+                                arrayList3 = arrayList;
+                                size = i3;
+                                i4 = 0;
+                                strArr = null;
+                                list2 = list;
+                            }
+                            List list3 = arrayList3;
+                            int i7 = size;
+                            if (isDomainFilterOnIptablesEnabled(contextInfo)) {
+                                ArrayList arrayList5 = new ArrayList();
+                                for (int i8 = 0; i8 < i7; i8++) {
+                                    if (firewallResponseArr3[i8].getResult().equals(FirewallResponse.Result.SUCCESS)) {
+                                        arrayList5.add((DomainFilterRule) list.get(i8));
+                                    }
+                                }
+                                removeDomainRules(contextInfo, arrayList5, list3);
+                            }
+                            firewallResponseArr = firewallResponseArr3;
+                        }
+                    }
+                }
+                synchronized (this.mExceptionListLock) {
+                    try {
+                        if (!hasAnyRuleInDatabase()) {
+                            this.mIsExceptionListApplied = false;
+                            this.mDomainFilterNapCommon.setDomainFilterEnabled(false);
+                        }
+                    } finally {
+                    }
+                }
+                synchronized (this.mKGExceptionListLock) {
+                    try {
+                        if (!hasAnyRuleInDatabase()) {
+                            this.mIsKGExceptionApplied = false;
+                        }
+                    } finally {
+                    }
+                }
+                if (!hasAnyRuleInDatabase()) {
+                    sendToCache(5, "", null, null, null, null);
+                    sendToCache(5, this.mServer, null, null, null, null);
+                }
+                return firewallResponseArr;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final boolean removeDomainListInDatabase(ContextInfo contextInfo, DomainFilterRule domainFilterRule, List list, List list2, List list3) {
+        int i = contextInfo.mCallerUid;
+        String packageName = domainFilterRule.getApplication().getPackageName();
+        if (domainFilterRule.getAllowDomains() == null && domainFilterRule.getDenyDomains() == null) {
+            domainFilterRule.setAllowDomains(list3);
+            domainFilterRule.setDenyDomains(list2);
+        } else if (domainFilterRule.getAllowDomains() == null) {
+            domainFilterRule.setAllowDomains(list);
+        } else if (domainFilterRule.getDenyDomains() == null) {
+            domainFilterRule.setDenyDomains(list);
+        }
+        ArrayList arrayList = new ArrayList();
+        if (domainFilterRule.getAllowDomains() != null) {
+            arrayList.addAll(domainFilterRule.getAllowDomains());
+        }
+        if (domainFilterRule.getDenyDomains() != null) {
+            arrayList.addAll(domainFilterRule.getDenyDomains());
+        }
+        HashSet hashSet = new HashSet();
+        for (int i2 = 0; i2 < arrayList.size(); i2++) {
+            String str = (String) arrayList.get(i2);
+            ContentValues contentValues = new ContentValues();
+            KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(i, contentValues, "adminUid", "packageName", packageName);
+            contentValues.put("domain", str);
+            if (this.mEdmStorageProvider.delete("DomainFilterListTable", contentValues) <= 0) {
+                rollbackDomainList(i, packageName, list2, list3, hashSet, false);
+                Log.i("DomainFilter", "removeDomainListInDatabase()- Any deny domain couldn't be removed");
+                return false;
+            }
+            hashSet.add(str);
+        }
+        Log.i("DomainFilter", "removeDomainListInDatabase()- All domains were removed");
+        return true;
+    }
+
+    public final synchronized void removeDomainRules(ContextInfo contextInfo, List list, List list2) {
+        Log.i("DomainFilter", "removeDomainRules()");
+        if (((ArrayList) list).isEmpty()) {
+            new FirewallResponse(FirewallResponse.Result.SUCCESS, FirewallResponse.ErrorCode.NO_ERROR, "The domain filter on iptables api was successfully disabled.");
+        } else {
+            this.mFirewallRulesApplier.removeDomainRules(contextInfo, list, list2);
+        }
+    }
+
+    public final void rollbackDomainList(int i, String str, List list, List list2, Set set, boolean z) {
+        Iterator it = ((HashSet) set).iterator();
+        while (it.hasNext()) {
+            String str2 = (String) it.next();
+            ContentValues contentValues = new ContentValues();
+            KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(i, contentValues, "adminUid", "packageName", str);
+            contentValues.put("domain", str2);
+            ContentValues contentValues2 = new ContentValues();
+            if (list.contains(str2)) {
+                contentValues2.put("typeList", "blacklist");
+            } else if (list2.contains(str2)) {
+                contentValues2.put("typeList", "whitelist");
+            }
+            EdmStorageProvider edmStorageProvider = this.mEdmStorageProvider;
+            if (!z || list.contains(str2) || list2.contains(str2)) {
+                Log.i("DomainFilter", "rollbackDomainList()- Rollback for all domains thatwere (Added =" + z + ")");
+                edmStorageProvider.put("DomainFilterListTable", contentValues2, contentValues);
+            } else {
+                edmStorageProvider.delete("DomainFilterListTable", contentValues);
+                Log.i("DomainFilter", "rollbackDomainList()- Rollback for all domains that were added");
+            }
+        }
+    }
+
+    public final void sendToCache(int i, String str, String str2, List list, List list2, String str3) {
+        ArrayList m = PortStatus_1_1$$ExternalSyntheticOutline0.m(str);
+        if (!TextUtils.isEmpty(str2)) {
+            m.add(str2);
+        }
+        if (2 == i || 3 == i || 4 == i || 5 == i || 8 == i) {
+            executeDomainFilterCommands(m, i);
+            return;
+        }
+        Charset charset = StandardCharsets.UTF_8;
+        int length = str.getBytes(charset).length;
+        if (!TextUtils.isEmpty(str2)) {
+            length += str2.getBytes(charset).length;
+        }
+        if (i == 0 || 1 == i) {
+            if (list != null && !list.isEmpty()) {
+                concatenateListAndExecuteCommand(i, m, length, "BLACKLIST", list);
+            }
+            if (list2 != null && !list2.isEmpty()) {
+                concatenateListAndExecuteCommand(i, m, length, "WHITELIST", list2);
+            }
+            if (TextUtils.isEmpty(str3) || str3.equals("-1")) {
+                return;
+            }
+            m.add(str3);
+            m.add(i == 0 ? "ADD" : "REMOVE");
+            executeDomainFilterCommands(m, 6);
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:5:0x005a A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:7:0x005b  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final synchronized void processKGPackageException(java.util.List r9) {
+    public final int setupNetworkDns(java.lang.String r13, java.lang.String r14) {
+        /*
+            Method dump skipped, instructions count: 431
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.firewall.DomainFilter.setupNetworkDns(java.lang.String, java.lang.String):int");
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:21:0x0068  */
+    /* JADX WARN: Removed duplicated region for block: B:28:0x008c  */
+    /* JADX WARN: Removed duplicated region for block: B:34:0x009a  */
+    /* JADX WARN: Removed duplicated region for block: B:41:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void updateDaemonCache(com.samsung.android.knox.ContextInfo r9, com.samsung.android.knox.net.firewall.DomainFilterRule r10, int r11, java.lang.String r12) {
         /*
             r8 = this;
-            monitor-enter(r8)
-            java.util.Iterator r9 = r9.iterator()     // Catch: java.lang.Throwable -> L35
-        L5:
-            boolean r0 = r9.hasNext()     // Catch: java.lang.Throwable -> L35
-            if (r0 == 0) goto L33
-            java.lang.Object r0 = r9.next()     // Catch: java.lang.Throwable -> L35
-            android.content.pm.PackageInfo r0 = (android.content.pm.PackageInfo) r0     // Catch: java.lang.Throwable -> L35
-            java.lang.String r1 = "com.samsung.android.kgclient"
-            android.content.pm.ApplicationInfo r2 = r0.applicationInfo     // Catch: java.lang.Throwable -> L35
-            java.lang.String r2 = r2.packageName     // Catch: java.lang.Throwable -> L35
-            boolean r1 = r1.equals(r2)     // Catch: java.lang.Throwable -> L35
-            if (r1 == 0) goto L5
-            com.android.server.enterprise.firewall.DomainFilter$Operation r9 = com.android.server.enterprise.firewall.DomainFilter.Operation.EXCEPTION     // Catch: java.lang.Throwable -> L35
-            int r2 = r9.ordinal()     // Catch: java.lang.Throwable -> L35
-            android.content.pm.ApplicationInfo r9 = r0.applicationInfo     // Catch: java.lang.Throwable -> L35
-            int r9 = r9.uid     // Catch: java.lang.Throwable -> L35
-            java.lang.String r3 = java.lang.Integer.toString(r9)     // Catch: java.lang.Throwable -> L35
+            java.lang.String r1 = "DomainFilter"
+            java.lang.String r3 = "updateDaemonCache()"
+            android.util.Log.i(r1, r3)
+            int r1 = r9.mCallerUid
+            int r1 = android.os.UserHandle.getUserId(r1)
+            r3 = 2
+            if (r3 != r11) goto L20
+            java.lang.String r3 = java.lang.Integer.toString(r1)
             r4 = 0
             r5 = 0
             r6 = 0
             r7 = 0
             r1 = r8
-            r1.sendToCache(r2, r3, r4, r5, r6, r7)     // Catch: java.lang.Throwable -> L35
-        L33:
-            monitor-exit(r8)
+            r2 = r11
+            r1.sendToCache(r2, r3, r4, r5, r6, r7)
+            goto Lb1
+        L20:
+            if (r10 == 0) goto Lb1
+            r3 = 1
+            if (r11 == 0) goto L27
+            if (r3 != r11) goto Lb1
+        L27:
+            java.lang.Object r4 = r8.mUserIdMapLock
+            monitor-enter(r4)
+            java.util.Map r5 = r8.mUserIdMap     // Catch: java.lang.Throwable -> Lae
+            java.lang.Integer r6 = java.lang.Integer.valueOf(r1)     // Catch: java.lang.Throwable -> Lae
+            java.util.HashMap r5 = (java.util.HashMap) r5     // Catch: java.lang.Throwable -> Lae
+            java.lang.Object r5 = r5.get(r6)     // Catch: java.lang.Throwable -> Lae
+            java.util.Map r5 = (java.util.Map) r5     // Catch: java.lang.Throwable -> Lae
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> Lae
+            com.samsung.android.knox.AppIdentity r4 = r10.getApplication()
+            java.lang.String r4 = r4.getPackageName()
+            java.lang.String r6 = "*"
+            boolean r6 = r6.equals(r4)
+            r7 = 0
+            if (r6 == 0) goto L50
+            java.lang.String r1 = java.lang.Integer.toString(r1)
+        L4e:
+            r4 = r1
+            goto L66
+        L50:
+            boolean r1 = r5.containsKey(r4)
+            if (r1 == 0) goto L65
+            java.lang.Object r1 = r5.get(r4)
+            java.lang.Integer r1 = (java.lang.Integer) r1
+            int r1 = r1.intValue()
+            java.lang.String r1 = java.lang.Integer.toString(r1)
+            goto L4e
+        L65:
+            r4 = r7
+        L66:
+            if (r4 == 0) goto Lb1
+            java.util.List r1 = r10.getDenyDomains()
+            if (r1 == 0) goto L7c
+            boolean r5 = r1.isEmpty()
+            if (r5 != 0) goto L76
+        L74:
+            r5 = r1
+            goto L86
+        L76:
+            java.util.ArrayList r1 = new java.util.ArrayList
+            r1.<init>()
+            goto L74
+        L7c:
+            if (r3 != r11) goto L85
+            java.lang.String r1 = "ALL"
+            java.util.ArrayList r1 = android.hardware.usb.V1_1.PortStatus_1_1$$ExternalSyntheticOutline0.m(r1)
+            goto L74
+        L85:
+            r5 = r7
+        L86:
+            java.util.List r1 = r10.getAllowDomains()
+            if (r1 == 0) goto L9a
+            boolean r3 = r1.isEmpty()
+            if (r3 != 0) goto L94
+        L92:
+            r6 = r1
+            goto La4
+        L94:
+            java.util.ArrayList r1 = new java.util.ArrayList
+            r1.<init>()
+            goto L92
+        L9a:
+            if (r3 != r11) goto La3
+            java.lang.String r1 = "ALL"
+            java.util.ArrayList r1 = android.hardware.usb.V1_1.PortStatus_1_1$$ExternalSyntheticOutline0.m(r1)
+            goto L92
+        La3:
+            r6 = r7
+        La4:
+            r7 = 0
+            r1 = r8
+            r2 = r11
+            r3 = r4
+            r4 = r7
+            r7 = r12
+            r1.sendToCache(r2, r3, r4, r5, r6, r7)
+            goto Lb1
+        Lae:
+            r0 = move-exception
+            monitor-exit(r4)     // Catch: java.lang.Throwable -> Lae
+            throw r0
+        Lb1:
             return
-        L35:
-            r9 = move-exception
-            monitor-exit(r8)
-            throw r9
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.firewall.DomainFilter.processKGPackageException(java.util.List):void");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.firewall.DomainFilter.updateDaemonCache(com.samsung.android.knox.ContextInfo, com.samsung.android.knox.net.firewall.DomainFilterRule, int, java.lang.String):void");
     }
 
-    public final boolean hasAnyRuleInDatabase() {
-        List values = this.mEdmStorageProvider.getValues("DomainFilterTable", (String[]) null, (ContentValues) null);
-        if (values == null || values.isEmpty()) {
-            Log.i(TAG, "hasAnyRuleInDatabase(): false");
+    public final boolean validatePkgSignature(int i, String str, String str2) {
+        Context createContextAsUser = Utils.createContextAsUser(this.mContext, "android", 0, i);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            return Utils.comparePackageSignature(0, createContextAsUser, str, str2);
+        } catch (Exception e) {
+            Log.e("DomainFilter", "validatePkgSignature() - Fail to validate application signature.", e);
+            return false;
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final boolean verifyAppInstalled(Map map, String str, int i) {
+        if (map != null && map.get(str) != null) {
+            return true;
+        }
+        int applicationUid = getApplicationUid(i, str);
+        if (applicationUid == -1) {
             return false;
         }
-        Log.i(TAG, "hasAnyRuleInDatabase(): true");
+        Integer valueOf = Integer.valueOf(i);
+        synchronized (this.mUserIdMapLock) {
+            try {
+                if (map == null) {
+                    HashMap hashMap = new HashMap();
+                    hashMap.put(str, Integer.valueOf(applicationUid));
+                    ((HashMap) this.mUserIdMap).put(valueOf, hashMap);
+                } else {
+                    ((Map) ((HashMap) this.mUserIdMap).get(valueOf)).put(str, Integer.valueOf(applicationUid));
+                    map.put(str, Integer.valueOf(applicationUid));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
         return true;
-    }
-
-    public final void addHostToCaptivePortalWhitelist(String str) {
-        sendToCache(Operation.CAP_PORTAL.ordinal(), str, null, null, null, null);
-    }
-
-    public final String extractHost(String str) {
-        URL url;
-        if (str == null) {
-            return null;
-        }
-        try {
-            url = new URL(str);
-        } catch (MalformedURLException unused) {
-            Log.e(TAG, "extractHost() - Invalid url " + str);
-            url = null;
-        }
-        if (url != null) {
-            return url.getHost();
-        }
-        return null;
-    }
-
-    public final boolean isIpAddress(String str) {
-        return FirewallRuleValidator.validateIpv4Address(str) || FirewallRuleValidator.validateIpv6Address(str);
-    }
-
-    public final void maybeClearCaptivePortalHosts() {
-        if (hasAnyRuleInDatabase()) {
-            return;
-        }
-        Operation operation = Operation.CAP_PORTAL;
-        sendToCache(operation.ordinal(), "", null, null, null, null);
-        sendToCache(operation.ordinal(), this.mServer, null, null, null, null);
-    }
-
-    public String getDefaulCaptivePortalURL() {
-        if (!hasAnyRuleInDatabase()) {
-            return null;
-        }
-        String string = Settings.Global.getString(this.mContext.getContentResolver(), "captive_portal_server");
-        if (string == null) {
-            string = "connectivitycheck.gstatic.com";
-        }
-        return "http://" + string + "/generate_204";
-    }
-
-    public final void connectNativeNetdService() {
-        boolean z;
-        INetd netd;
-        try {
-            netd = this.mInjector.getNetd();
-            this.mNetdService = netd;
-        } catch (RemoteException unused) {
-            z = false;
-        }
-        if (netd == null) {
-            Log.e(TAG, "connectNativeNetdService() - netd is null.");
-            return;
-        }
-        z = netd.isAlive();
-        if (z) {
-            return;
-        }
-        Log.e(TAG, "connectNativeNetdService() - Can't connect to NativeNetdService netd");
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:22:0x0051  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void setDomainFilterRulesProperties(com.samsung.android.knox.net.firewall.DomainFilterRule r5, org.json.JSONArray r6) {
-        /*
-            r4 = this;
-            com.samsung.android.knox.AppIdentity r4 = r5.getApplication()
-            if (r4 != 0) goto L7
-            return
-        L7:
-            org.json.JSONObject r4 = new org.json.JSONObject     // Catch: org.json.JSONException -> L5d
-            r4.<init>()     // Catch: org.json.JSONException -> L5d
-            java.lang.String r0 = "pN"
-            com.samsung.android.knox.AppIdentity r1 = r5.getApplication()     // Catch: org.json.JSONException -> L5d
-            java.lang.String r1 = r1.getPackageName()     // Catch: org.json.JSONException -> L5d
-            r4.put(r0, r1)     // Catch: org.json.JSONException -> L5d
-            java.lang.String r0 = r5.getDns1()     // Catch: org.json.JSONException -> L5d
-            r1 = 1
-            r2 = 0
-            if (r0 != 0) goto L2b
-            java.lang.String r0 = r5.getDns2()     // Catch: org.json.JSONException -> L5d
-            if (r0 == 0) goto L29
-            goto L2b
-        L29:
-            r0 = r1
-            goto L2c
-        L2b:
-            r0 = r2
-        L2c:
-            java.lang.String r3 = "cDNS"
-            r4.put(r3, r0)     // Catch: org.json.JSONException -> L5d
-            java.util.List r0 = r5.getAllowDomains()     // Catch: org.json.JSONException -> L5d
-            boolean r0 = com.android.internal.util.ArrayUtils.isEmpty(r0)     // Catch: org.json.JSONException -> L5d
-            if (r0 != 0) goto L47
-            java.util.List r0 = r5.getDenyDomains()     // Catch: org.json.JSONException -> L5d
-            boolean r0 = com.android.internal.util.ArrayUtils.isEmpty(r0)     // Catch: org.json.JSONException -> L5d
-            if (r0 != 0) goto L47
-            r5 = 2
-            goto L53
-        L47:
-            java.util.List r5 = r5.getAllowDomains()     // Catch: org.json.JSONException -> L5d
-            boolean r5 = com.android.internal.util.ArrayUtils.isEmpty(r5)     // Catch: org.json.JSONException -> L5d
-            if (r5 != 0) goto L52
-            r1 = r2
-        L52:
-            r5 = r1
-        L53:
-            java.lang.String r0 = "rlTp"
-            r4.put(r0, r5)     // Catch: org.json.JSONException -> L5d
-            r6.put(r4)     // Catch: org.json.JSONException -> L5d
-            goto L78
-        L5d:
-            r4 = move-exception
-            java.lang.String r5 = com.android.server.enterprise.firewall.DomainFilter.TAG
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder
-            r6.<init>()
-            java.lang.String r0 = "Failed to put rule in json: "
-            r6.append(r0)
-            java.lang.String r4 = r4.getMessage()
-            r6.append(r4)
-            java.lang.String r4 = r6.toString()
-            android.util.Log.e(r5, r4)
-        L78:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.firewall.DomainFilter.setDomainFilterRulesProperties(com.samsung.android.knox.net.firewall.DomainFilterRule, org.json.JSONArray):void");
     }
 }

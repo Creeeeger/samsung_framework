@@ -12,13 +12,168 @@ import android.os.RemoteException;
 import android.util.Slog;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class SoundTriggerInjection implements ISoundTriggerInjection, IBinder.DeathRecipient {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SoundTriggerInjection implements ISoundTriggerInjection, IBinder.DeathRecipient {
     public final Object mClientLock = new Object();
     public ISoundTriggerInjection mClient = null;
     public IInjectGlobalEvent mGlobalEventInjection = null;
 
-    public void registerClient(ISoundTriggerInjection iSoundTriggerInjection) {
+    public final IBinder asBinder() {
+        Slog.wtf("SoundTriggerInjection", "Unexpected asBinder!");
+        throw new UnsupportedOperationException("Calling asBinder on a fake binder object");
+    }
+
+    @Override // android.os.IBinder.DeathRecipient
+    public final void binderDied() {
+        Slog.wtf("SoundTriggerInjection", "Binder died without params");
+    }
+
+    @Override // android.os.IBinder.DeathRecipient
+    public final void binderDied(IBinder iBinder) {
+        synchronized (this.mClientLock) {
+            try {
+                ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+                if (iSoundTriggerInjection != null && iBinder == iSoundTriggerInjection.asBinder()) {
+                    this.mClient = null;
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void onClientAttached(IBinder iBinder, IInjectGlobalEvent iInjectGlobalEvent) {
+        synchronized (this.mClientLock) {
+            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+            if (iSoundTriggerInjection == null) {
+                return;
+            }
+            try {
+                iSoundTriggerInjection.onClientAttached(iBinder, iInjectGlobalEvent);
+            } catch (RemoteException unused) {
+                this.mClient = null;
+            }
+        }
+    }
+
+    public final void onClientDetached(IBinder iBinder) {
+        synchronized (this.mClientLock) {
+            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+            if (iSoundTriggerInjection == null) {
+                return;
+            }
+            try {
+                iSoundTriggerInjection.onClientDetached(iBinder);
+            } catch (RemoteException unused) {
+                this.mClient = null;
+            }
+        }
+    }
+
+    public final void onFrameworkDetached(IInjectGlobalEvent iInjectGlobalEvent) {
+        synchronized (this.mClientLock) {
+            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+            if (iSoundTriggerInjection == null) {
+                return;
+            }
+            try {
+                iSoundTriggerInjection.onFrameworkDetached(iInjectGlobalEvent);
+            } catch (RemoteException unused) {
+                this.mClient = null;
+            }
+        }
+    }
+
+    public final void onParamSet(int i, int i2, IInjectModelEvent iInjectModelEvent) {
+        synchronized (this.mClientLock) {
+            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+            if (iSoundTriggerInjection == null) {
+                return;
+            }
+            try {
+                iSoundTriggerInjection.onParamSet(i, i2, iInjectModelEvent);
+            } catch (RemoteException unused) {
+                this.mClient = null;
+            }
+        }
+    }
+
+    public final void onPreempted() {
+        Slog.wtf("SoundTriggerInjection", "Unexpected preempted!");
+    }
+
+    public final void onRecognitionStarted(int i, RecognitionConfig recognitionConfig, IInjectRecognitionEvent iInjectRecognitionEvent, IInjectModelEvent iInjectModelEvent) {
+        synchronized (this.mClientLock) {
+            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+            if (iSoundTriggerInjection == null) {
+                return;
+            }
+            try {
+                iSoundTriggerInjection.onRecognitionStarted(i, recognitionConfig, iInjectRecognitionEvent, iInjectModelEvent);
+            } catch (RemoteException unused) {
+                this.mClient = null;
+            }
+        }
+    }
+
+    public final void onRecognitionStopped(IInjectRecognitionEvent iInjectRecognitionEvent) {
+        synchronized (this.mClientLock) {
+            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+            if (iSoundTriggerInjection == null) {
+                return;
+            }
+            try {
+                iSoundTriggerInjection.onRecognitionStopped(iInjectRecognitionEvent);
+            } catch (RemoteException unused) {
+                this.mClient = null;
+            }
+        }
+    }
+
+    public final void onRestarted(IInjectGlobalEvent iInjectGlobalEvent) {
+        synchronized (this.mClientLock) {
+            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+            if (iSoundTriggerInjection == null) {
+                return;
+            }
+            try {
+                iSoundTriggerInjection.onRestarted(iInjectGlobalEvent);
+            } catch (RemoteException unused) {
+                this.mClient = null;
+            }
+        }
+    }
+
+    public final void onSoundModelLoaded(SoundModel soundModel, Phrase[] phraseArr, IInjectModelEvent iInjectModelEvent, IInjectGlobalEvent iInjectGlobalEvent) {
+        synchronized (this.mClientLock) {
+            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+            if (iSoundTriggerInjection == null) {
+                return;
+            }
+            try {
+                iSoundTriggerInjection.onSoundModelLoaded(soundModel, phraseArr, iInjectModelEvent, iInjectGlobalEvent);
+            } catch (RemoteException unused) {
+                this.mClient = null;
+            }
+        }
+    }
+
+    public final void onSoundModelUnloaded(IInjectModelEvent iInjectModelEvent) {
+        synchronized (this.mClientLock) {
+            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
+            if (iSoundTriggerInjection == null) {
+                return;
+            }
+            try {
+                iSoundTriggerInjection.onSoundModelUnloaded(iInjectModelEvent);
+            } catch (RemoteException unused) {
+                this.mClient = null;
+            }
+        }
+    }
+
+    public final void registerClient(ISoundTriggerInjection iSoundTriggerInjection) {
         synchronized (this.mClientLock) {
             Objects.requireNonNull(iSoundTriggerInjection);
             ISoundTriggerInjection iSoundTriggerInjection2 = this.mClient;
@@ -43,22 +198,7 @@ public class SoundTriggerInjection implements ISoundTriggerInjection, IBinder.De
         }
     }
 
-    @Override // android.os.IBinder.DeathRecipient
-    public void binderDied() {
-        Slog.wtf("SoundTriggerInjection", "Binder died without params");
-    }
-
-    @Override // android.os.IBinder.DeathRecipient
-    public void binderDied(IBinder iBinder) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection != null && iBinder == iSoundTriggerInjection.asBinder()) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void registerGlobalEventInjection(IInjectGlobalEvent iInjectGlobalEvent) {
+    public final void registerGlobalEventInjection(IInjectGlobalEvent iInjectGlobalEvent) {
         synchronized (this.mClientLock) {
             this.mGlobalEventInjection = iInjectGlobalEvent;
             ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
@@ -71,140 +211,5 @@ public class SoundTriggerInjection implements ISoundTriggerInjection, IBinder.De
                 this.mClient = null;
             }
         }
-    }
-
-    public void onRestarted(IInjectGlobalEvent iInjectGlobalEvent) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection == null) {
-                return;
-            }
-            try {
-                iSoundTriggerInjection.onRestarted(iInjectGlobalEvent);
-            } catch (RemoteException unused) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void onFrameworkDetached(IInjectGlobalEvent iInjectGlobalEvent) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection == null) {
-                return;
-            }
-            try {
-                iSoundTriggerInjection.onFrameworkDetached(iInjectGlobalEvent);
-            } catch (RemoteException unused) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void onClientAttached(IBinder iBinder, IInjectGlobalEvent iInjectGlobalEvent) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection == null) {
-                return;
-            }
-            try {
-                iSoundTriggerInjection.onClientAttached(iBinder, iInjectGlobalEvent);
-            } catch (RemoteException unused) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void onClientDetached(IBinder iBinder) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection == null) {
-                return;
-            }
-            try {
-                iSoundTriggerInjection.onClientDetached(iBinder);
-            } catch (RemoteException unused) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void onSoundModelLoaded(SoundModel soundModel, Phrase[] phraseArr, IInjectModelEvent iInjectModelEvent, IInjectGlobalEvent iInjectGlobalEvent) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection == null) {
-                return;
-            }
-            try {
-                iSoundTriggerInjection.onSoundModelLoaded(soundModel, phraseArr, iInjectModelEvent, iInjectGlobalEvent);
-            } catch (RemoteException unused) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void onParamSet(int i, int i2, IInjectModelEvent iInjectModelEvent) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection == null) {
-                return;
-            }
-            try {
-                iSoundTriggerInjection.onParamSet(i, i2, iInjectModelEvent);
-            } catch (RemoteException unused) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void onRecognitionStarted(int i, RecognitionConfig recognitionConfig, IInjectRecognitionEvent iInjectRecognitionEvent, IInjectModelEvent iInjectModelEvent) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection == null) {
-                return;
-            }
-            try {
-                iSoundTriggerInjection.onRecognitionStarted(i, recognitionConfig, iInjectRecognitionEvent, iInjectModelEvent);
-            } catch (RemoteException unused) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void onRecognitionStopped(IInjectRecognitionEvent iInjectRecognitionEvent) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection == null) {
-                return;
-            }
-            try {
-                iSoundTriggerInjection.onRecognitionStopped(iInjectRecognitionEvent);
-            } catch (RemoteException unused) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void onSoundModelUnloaded(IInjectModelEvent iInjectModelEvent) {
-        synchronized (this.mClientLock) {
-            ISoundTriggerInjection iSoundTriggerInjection = this.mClient;
-            if (iSoundTriggerInjection == null) {
-                return;
-            }
-            try {
-                iSoundTriggerInjection.onSoundModelUnloaded(iInjectModelEvent);
-            } catch (RemoteException unused) {
-                this.mClient = null;
-            }
-        }
-    }
-
-    public void onPreempted() {
-        Slog.wtf("SoundTriggerInjection", "Unexpected preempted!");
-    }
-
-    public IBinder asBinder() {
-        Slog.wtf("SoundTriggerInjection", "Unexpected asBinder!");
-        throw new UnsupportedOperationException("Calling asBinder on a fake binder object");
     }
 }

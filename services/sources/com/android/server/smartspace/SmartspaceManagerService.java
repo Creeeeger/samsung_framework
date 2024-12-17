@@ -13,66 +13,28 @@ import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.os.ShellCallback;
 import android.util.Slog;
+import com.android.internal.hidden_from_bootclasspath.android.app.smartspace.flags.Flags;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.infra.AbstractMasterSystemService;
+import com.android.server.infra.AbstractPerUserSystemService;
 import com.android.server.infra.FrameworkResourcesServiceNameResolver;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import java.io.FileDescriptor;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class SmartspaceManagerService extends AbstractMasterSystemService {
-    public static final String TAG = "SmartspaceManagerService";
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SmartspaceManagerService extends AbstractMasterSystemService {
     public final ActivityTaskManagerInternal mActivityTaskManagerInternal;
 
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public int getMaximumTemporaryServiceDurationMs() {
-        return 120000;
-    }
-
-    public SmartspaceManagerService(Context context) {
-        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.face_acquired_too_high), null, 17);
-        this.mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public SmartspacePerUserService newServiceLocked(int i, boolean z) {
-        return new SmartspacePerUserService(this, this.mLock, i);
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        publishBinderService("smartspace", new SmartspaceManagerStub());
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void enforceCallingPermissionForManagement() {
-        getContext().enforceCallingPermission("android.permission.MANAGE_SMARTSPACE", TAG);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServicePackageUpdatedLocked(int i) {
-        SmartspacePerUserService smartspacePerUserService = (SmartspacePerUserService) peekServiceForUserLocked(i);
-        if (smartspacePerUserService != null) {
-            smartspacePerUserService.onPackageUpdatedLocked();
-        }
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServicePackageRestartedLocked(int i) {
-        SmartspacePerUserService smartspacePerUserService = (SmartspacePerUserService) peekServiceForUserLocked(i);
-        if (smartspacePerUserService != null) {
-            smartspacePerUserService.onPackageRestartedLocked();
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class SmartspaceManagerStub extends ISmartspaceManager.Stub {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SmartspaceManagerStub extends ISmartspaceManager.Stub {
         public SmartspaceManagerStub() {
         }
 
-        public void createSmartspaceSession(final SmartspaceConfig smartspaceConfig, final SmartspaceSessionId smartspaceSessionId, final IBinder iBinder) {
-            runForUserLocked("createSmartspaceSession", smartspaceSessionId, new Consumer() { // from class: com.android.server.smartspace.SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda3
+        public final void createSmartspaceSession(final SmartspaceConfig smartspaceConfig, final SmartspaceSessionId smartspaceSessionId, final IBinder iBinder) {
+            runForUserLocked("createSmartspaceSession", smartspaceSessionId, new Consumer() { // from class: com.android.server.smartspace.SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda1
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
                     ((SmartspacePerUserService) obj).onCreateSmartspaceSessionLocked(smartspaceConfig, smartspaceSessionId, iBinder);
@@ -80,71 +42,99 @@ public class SmartspaceManagerService extends AbstractMasterSystemService {
             });
         }
 
-        public void notifySmartspaceEvent(final SmartspaceSessionId smartspaceSessionId, final SmartspaceTargetEvent smartspaceTargetEvent) {
-            runForUserLocked("notifySmartspaceEvent", smartspaceSessionId, new Consumer() { // from class: com.android.server.smartspace.SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda2
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SmartspacePerUserService) obj).notifySmartspaceEventLocked(smartspaceSessionId, smartspaceTargetEvent);
-                }
-            });
+        public final void destroySmartspaceSession(SmartspaceSessionId smartspaceSessionId) {
+            runForUserLocked("destroySmartspaceSession", smartspaceSessionId, new SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda2(smartspaceSessionId, 0));
         }
 
-        public void requestSmartspaceUpdate(final SmartspaceSessionId smartspaceSessionId) {
-            runForUserLocked("requestSmartspaceUpdate", smartspaceSessionId, new Consumer() { // from class: com.android.server.smartspace.SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda4
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SmartspacePerUserService) obj).requestSmartspaceUpdateLocked(smartspaceSessionId);
-                }
-            });
-        }
-
-        public void registerSmartspaceUpdates(final SmartspaceSessionId smartspaceSessionId, final ISmartspaceCallback iSmartspaceCallback) {
-            runForUserLocked("registerSmartspaceUpdates", smartspaceSessionId, new Consumer() { // from class: com.android.server.smartspace.SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda1
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SmartspacePerUserService) obj).registerSmartspaceUpdatesLocked(smartspaceSessionId, iSmartspaceCallback);
-                }
-            });
-        }
-
-        public void unregisterSmartspaceUpdates(final SmartspaceSessionId smartspaceSessionId, final ISmartspaceCallback iSmartspaceCallback) {
-            runForUserLocked("unregisterSmartspaceUpdates", smartspaceSessionId, new Consumer() { // from class: com.android.server.smartspace.SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SmartspacePerUserService) obj).unregisterSmartspaceUpdatesLocked(smartspaceSessionId, iSmartspaceCallback);
-                }
-            });
-        }
-
-        public void destroySmartspaceSession(final SmartspaceSessionId smartspaceSessionId) {
-            runForUserLocked("destroySmartspaceSession", smartspaceSessionId, new Consumer() { // from class: com.android.server.smartspace.SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda5
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((SmartspacePerUserService) obj).onDestroyLocked(smartspaceSessionId);
-                }
-            });
+        public final void notifySmartspaceEvent(SmartspaceSessionId smartspaceSessionId, SmartspaceTargetEvent smartspaceTargetEvent) {
+            runForUserLocked("notifySmartspaceEvent", smartspaceSessionId, new SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda0(smartspaceSessionId, smartspaceTargetEvent, 2));
         }
 
         /* JADX WARN: Multi-variable type inference failed */
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
             new SmartspaceManagerServiceShellCommand(SmartspaceManagerService.this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+        }
+
+        public final void registerSmartspaceUpdates(SmartspaceSessionId smartspaceSessionId, ISmartspaceCallback iSmartspaceCallback) {
+            runForUserLocked("registerSmartspaceUpdates", smartspaceSessionId, new SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda0(smartspaceSessionId, iSmartspaceCallback, 1));
+        }
+
+        public final void requestSmartspaceUpdate(SmartspaceSessionId smartspaceSessionId) {
+            runForUserLocked("requestSmartspaceUpdate", smartspaceSessionId, new SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda2(smartspaceSessionId, 1));
         }
 
         public final void runForUserLocked(String str, SmartspaceSessionId smartspaceSessionId, Consumer consumer) {
             int handleIncomingUser = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), smartspaceSessionId.getUserHandle().getIdentifier(), false, 0, (String) null, (String) null);
-            if (SmartspaceManagerService.this.getContext().checkCallingPermission("android.permission.MANAGE_SMARTSPACE") != 0 && !SmartspaceManagerService.this.mServiceNameResolver.isTemporary(handleIncomingUser) && !SmartspaceManagerService.this.mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid())) {
-                String str2 = "Permission Denial: Cannot call " + str + " from pid=" + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid();
-                Slog.w(SmartspaceManagerService.TAG, str2);
-                throw new SecurityException(str2);
-            }
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                synchronized (SmartspaceManagerService.this.mLock) {
-                    consumer.accept((SmartspacePerUserService) SmartspaceManagerService.this.getServiceForUserLocked(handleIncomingUser));
+            Context context = SmartspaceManagerService.this.getContext();
+            if (context.checkCallingPermission("android.permission.MANAGE_SMARTSPACE") == 0 || ((Flags.accessSmartspace() && context.checkCallingPermission("android.permission.ACCESS_SMARTSPACE") == 0) || SmartspaceManagerService.this.mServiceNameResolver.isTemporary(handleIncomingUser) || SmartspaceManagerService.this.mActivityTaskManagerInternal.isCallerRecents(Binder.getCallingUid()))) {
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (SmartspaceManagerService.this.mLock) {
+                        consumer.accept((SmartspacePerUserService) SmartspaceManagerService.this.getServiceForUserLocked(handleIncomingUser));
+                    }
+                    return;
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
             }
+            StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Permission Denial: Cannot call ", str, " from pid=");
+            m.append(Binder.getCallingPid());
+            m.append(", uid=");
+            m.append(Binder.getCallingUid());
+            String sb = m.toString();
+            Slog.w("SmartspaceManagerService", sb);
+            throw new SecurityException(sb);
         }
+
+        public final void unregisterSmartspaceUpdates(SmartspaceSessionId smartspaceSessionId, ISmartspaceCallback iSmartspaceCallback) {
+            runForUserLocked("unregisterSmartspaceUpdates", smartspaceSessionId, new SmartspaceManagerService$SmartspaceManagerStub$$ExternalSyntheticLambda0(smartspaceSessionId, iSmartspaceCallback, 0));
+        }
+    }
+
+    public SmartspaceManagerService(Context context) {
+        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.deprecated_abi_message), null, 17);
+        this.mActivityTaskManagerInternal = (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void enforceCallingPermissionForManagement() {
+        getContext().enforceCallingPermission("android.permission.MANAGE_SMARTSPACE", "SmartspaceManagerService");
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final int getMaximumTemporaryServiceDurationMs() {
+        return 120000;
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final AbstractPerUserSystemService newServiceLocked(int i, boolean z) {
+        return new SmartspacePerUserService(this, this.mLock, i);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServicePackageRestartedLocked(int i) {
+        SmartspacePerUserService smartspacePerUserService = (SmartspacePerUserService) peekServiceForUserLocked(i);
+        if (smartspacePerUserService != null) {
+            if (smartspacePerUserService.mMaster.debug) {
+                Slog.v("SmartspacePerUserService", "onPackageRestartedLocked()");
+            }
+            smartspacePerUserService.destroyAndRebindRemoteService$3();
+        }
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServicePackageUpdatedLocked(int i) {
+        SmartspacePerUserService smartspacePerUserService = (SmartspacePerUserService) peekServiceForUserLocked(i);
+        if (smartspacePerUserService != null) {
+            if (smartspacePerUserService.mMaster.debug) {
+                Slog.v("SmartspacePerUserService", "onPackageUpdatedLocked()");
+            }
+            smartspacePerUserService.destroyAndRebindRemoteService$3();
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        publishBinderService("smartspace", new SmartspaceManagerStub());
     }
 }

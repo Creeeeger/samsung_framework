@@ -1,9 +1,6 @@
 package com.android.server.accessibility.magnification;
 
-import android.R;
-import android.content.Context;
-import android.view.ViewConfiguration;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class MagnificationGestureMatcher {
     public static String gestureIdToString(int i) {
@@ -29,9 +26,5 @@ public abstract class MagnificationGestureMatcher {
             default:
                 return "none";
         }
-    }
-
-    public static int getMagnificationMultiTapTimeout(Context context) {
-        return ViewConfiguration.getDoubleTapTimeout() + context.getResources().getInteger(R.integer.leanback_setup_translation_forward_in_content_duration);
     }
 }

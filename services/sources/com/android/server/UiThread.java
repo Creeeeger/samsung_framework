@@ -6,24 +6,37 @@ import android.os.Process;
 import com.samsung.android.rune.CoreRune;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class UiThread extends ServiceThread {
     public static Handler sHandler;
     public static UiThread sInstance;
 
-    public UiThread() {
-        super("android.ui", -2, false);
-    }
-
-    @Override // com.android.server.ServiceThread, android.os.HandlerThread, java.lang.Thread, java.lang.Runnable
-    public void run() {
-        Process.setThreadGroup(Process.myTid(), CoreRune.SYSPERF_BOOST_OPT ? 10 : 5);
-        super.run();
+    public static void dispose() {
+        synchronized (UiThread.class) {
+            try {
+                if (sInstance == null) {
+                    return;
+                }
+                Handler handler = getHandler();
+                final UiThread uiThread = sInstance;
+                Objects.requireNonNull(uiThread);
+                handler.runWithScissors(new Runnable() { // from class: com.android.server.UiThread$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        UiThread.this.quit();
+                    }
+                }, 0L);
+                sInstance = null;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
     public static void ensureThreadLocked() {
         if (sInstance == null) {
-            UiThread uiThread = new UiThread();
+            UiThread uiThread = new UiThread(-2, "android.ui", false);
             sInstance = uiThread;
             uiThread.start();
             Looper looper = sInstance.getLooper();
@@ -51,21 +64,9 @@ public final class UiThread extends ServiceThread {
         return handler;
     }
 
-    public static void dispose() {
-        synchronized (UiThread.class) {
-            if (sInstance == null) {
-                return;
-            }
-            Handler handler = getHandler();
-            final UiThread uiThread = sInstance;
-            Objects.requireNonNull(uiThread);
-            handler.runWithScissors(new Runnable() { // from class: com.android.server.UiThread$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    UiThread.this.quit();
-                }
-            }, 0L);
-            sInstance = null;
-        }
+    @Override // com.android.server.ServiceThread, android.os.HandlerThread, java.lang.Thread, java.lang.Runnable
+    public final void run() {
+        Process.setThreadGroup(Process.myTid(), CoreRune.SYSPERF_BOOST_OPT ? 10 : 5);
+        super.run();
     }
 }

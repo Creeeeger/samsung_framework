@@ -1,62 +1,60 @@
 package com.android.server.backup;
 
 import android.app.backup.BackupAgent;
-import android.app.backup.BackupDataInput;
-import android.app.backup.BackupDataOutput;
-import android.content.ComponentName;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.SigningInfo;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Slog;
 import com.android.server.backup.utils.BackupEligibilityRules;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class PackageManagerBackupAgent extends BackupAgent {
-    public List mAllPackages;
+public final class PackageManagerBackupAgent extends BackupAgent {
+    static final String ANCESTRAL_RECORD_KEY = "@ancestral_record@";
+    static final int ANCESTRAL_RECORD_VERSION = 1;
+    static final String GLOBAL_METADATA_KEY = "@meta@";
+    static final String STATE_FILE_HEADER = "=state=";
+    static final int STATE_FILE_VERSION = 2;
+    public final List mAllPackages;
+    public final HashSet mExisting;
     public boolean mHasMetadata;
-    public PackageManager mPackageManager;
-    public ComponentName mRestoredHome;
-    public String mRestoredHomeInstaller;
-    public ArrayList mRestoredHomeSigHashes;
-    public long mRestoredHomeVersion;
+    public final PackageManager mPackageManager;
     public HashMap mRestoredSignatures;
-    public ComponentName mStoredHomeComponent;
-    public ArrayList mStoredHomeSigHashes;
-    public long mStoredHomeVersion;
+    public final HashMap mStateVersions;
+    public int mStoredAncestralRecordVersion;
     public String mStoredIncrementalVersion;
     public int mStoredSdkVersion;
-    public int mUserId;
-    public HashMap mStateVersions = new HashMap();
-    public final HashSet mExisting = new HashSet();
+    public final int mUserId;
 
-    /* loaded from: classes.dex */
-    public interface RestoreDataConsumer {
-        void consumeRestoreData(BackupDataInput backupDataInput);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LegacyRestoreDataConsumer {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ PackageManagerBackupAgent this$0;
+
+        public /* synthetic */ LegacyRestoreDataConsumer(PackageManagerBackupAgent packageManagerBackupAgent, int i) {
+            this.$r8$classId = i;
+            this.this$0 = packageManagerBackupAgent;
+        }
     }
 
-    /* loaded from: classes.dex */
-    public class Metadata {
-        public ArrayList sigHashes;
-        public long versionCode;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Metadata {
+        public final ArrayList sigHashes;
+        public final long versionCode;
 
         public Metadata(long j, ArrayList arrayList) {
             this.versionCode = j;
@@ -64,18 +62,11 @@ public class PackageManagerBackupAgent extends BackupAgent {
         }
     }
 
-    public PackageManagerBackupAgent(PackageManager packageManager, List list, int i) {
-        init(packageManager, list, i);
-    }
-
-    public PackageManagerBackupAgent(PackageManager packageManager, int i, BackupEligibilityRules backupEligibilityRules) {
-        init(packageManager, null, i);
-        evaluateStorablePackages(backupEligibilityRules);
-    }
-
-    public final void init(PackageManager packageManager, List list, int i) {
+    public PackageManagerBackupAgent(PackageManager packageManager, int i) {
+        this.mStateVersions = new HashMap();
+        this.mExisting = new HashSet();
         this.mPackageManager = packageManager;
-        this.mAllPackages = list;
+        this.mAllPackages = null;
         this.mRestoredSignatures = null;
         this.mHasMetadata = false;
         this.mStoredSdkVersion = Build.VERSION.SDK_INT;
@@ -83,8 +74,17 @@ public class PackageManagerBackupAgent extends BackupAgent {
         this.mUserId = i;
     }
 
-    public void evaluateStorablePackages(BackupEligibilityRules backupEligibilityRules) {
-        this.mAllPackages = getStorableApplications(this.mPackageManager, this.mUserId, backupEligibilityRules);
+    public PackageManagerBackupAgent(PackageManager packageManager, int i, BackupEligibilityRules backupEligibilityRules) {
+        this.mStateVersions = new HashMap();
+        this.mExisting = new HashSet();
+        this.mPackageManager = packageManager;
+        this.mAllPackages = null;
+        this.mRestoredSignatures = null;
+        this.mHasMetadata = false;
+        this.mStoredSdkVersion = Build.VERSION.SDK_INT;
+        this.mStoredIncrementalVersion = Build.VERSION.INCREMENTAL;
+        this.mUserId = i;
+        this.mAllPackages = getStorableApplications(packageManager, i, backupEligibilityRules);
     }
 
     public static List getStorableApplications(PackageManager packageManager, int i, BackupEligibilityRules backupEligibilityRules) {
@@ -97,140 +97,8 @@ public class PackageManagerBackupAgent extends BackupAgent {
         return installedPackagesAsUser;
     }
 
-    public boolean hasMetadata() {
-        return this.mHasMetadata;
-    }
-
-    public Metadata getRestoredMetadata(String str) {
-        HashMap hashMap = this.mRestoredSignatures;
-        if (hashMap == null) {
-            Slog.w("PMBA", "getRestoredMetadata() before metadata read!");
-            return null;
-        }
-        return (Metadata) hashMap.get(str);
-    }
-
-    public Set getRestoredPackages() {
-        HashMap hashMap = this.mRestoredSignatures;
-        if (hashMap == null) {
-            Slog.w("PMBA", "getRestoredPackages() before metadata read!");
-            return null;
-        }
-        return hashMap.keySet();
-    }
-
-    @Override // android.app.backup.BackupAgent
-    public void onBackup(ParcelFileDescriptor parcelFileDescriptor, BackupDataOutput backupDataOutput, ParcelFileDescriptor parcelFileDescriptor2) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
-        parseStateFile(parcelFileDescriptor);
-        String str = this.mStoredIncrementalVersion;
-        if (str == null || !str.equals(Build.VERSION.INCREMENTAL)) {
-            Slog.i("PMBA", "Previous metadata " + this.mStoredIncrementalVersion + " mismatch vs " + Build.VERSION.INCREMENTAL + " - rewriting");
-            this.mExisting.clear();
-        }
-        try {
-            dataOutputStream.writeInt(1);
-            writeEntity(backupDataOutput, "@ancestral_record@", byteArrayOutputStream.toByteArray());
-            try {
-                byteArrayOutputStream.reset();
-                if (!this.mExisting.contains("@meta@")) {
-                    dataOutputStream.writeInt(Build.VERSION.SDK_INT);
-                    dataOutputStream.writeUTF(Build.VERSION.INCREMENTAL);
-                    writeEntity(backupDataOutput, "@meta@", byteArrayOutputStream.toByteArray());
-                } else {
-                    this.mExisting.remove("@meta@");
-                }
-                Iterator it = this.mAllPackages.iterator();
-                while (it.hasNext()) {
-                    String str2 = ((PackageInfo) it.next()).packageName;
-                    if (!str2.equals("@meta@")) {
-                        try {
-                            PackageInfo packageInfoAsUser = this.mPackageManager.getPackageInfoAsUser(str2, 134217728, this.mUserId);
-                            if (this.mExisting.contains(str2)) {
-                                this.mExisting.remove(str2);
-                                if (packageInfoAsUser.getLongVersionCode() == ((Metadata) this.mStateVersions.get(str2)).versionCode) {
-                                }
-                            }
-                            SigningInfo signingInfo = packageInfoAsUser.signingInfo;
-                            if (signingInfo == null) {
-                                Slog.w("PMBA", "Not backing up package " + str2 + " since it appears to have no signatures.");
-                            } else {
-                                byteArrayOutputStream.reset();
-                                if (packageInfoAsUser.versionCodeMajor != 0) {
-                                    dataOutputStream.writeInt(Integer.MIN_VALUE);
-                                    dataOutputStream.writeLong(packageInfoAsUser.getLongVersionCode());
-                                } else {
-                                    dataOutputStream.writeInt(packageInfoAsUser.versionCode);
-                                }
-                                writeSignatureHashArray(dataOutputStream, BackupUtils.hashSignatureArray(signingInfo.getApkContentsSigners()));
-                                writeEntity(backupDataOutput, str2, byteArrayOutputStream.toByteArray());
-                            }
-                        } catch (PackageManager.NameNotFoundException unused) {
-                            this.mExisting.add(str2);
-                        }
-                    }
-                }
-                writeStateFile(this.mAllPackages, parcelFileDescriptor2);
-            } catch (IOException unused2) {
-                Slog.e("PMBA", "Unable to write package backup data file!");
-            }
-        } catch (IOException unused3) {
-            Slog.e("PMBA", "Unable to write package backup data file!");
-        }
-    }
-
-    public static void writeEntity(BackupDataOutput backupDataOutput, String str, byte[] bArr) {
-        backupDataOutput.writeEntityHeader(str, bArr.length);
-        backupDataOutput.writeEntityData(bArr, bArr.length);
-    }
-
-    @Override // android.app.backup.BackupAgent
-    public void onRestore(BackupDataInput backupDataInput, int i, ParcelFileDescriptor parcelFileDescriptor) {
-        RestoreDataConsumer restoreDataConsumer = getRestoreDataConsumer(getAncestralRecordVersionValue(backupDataInput));
-        if (restoreDataConsumer == null) {
-            Slog.w("PMBA", "Ancestral restore set version is unknown to this Android version; not restoring");
-        } else {
-            restoreDataConsumer.consumeRestoreData(backupDataInput);
-        }
-    }
-
-    public final int getAncestralRecordVersionValue(BackupDataInput backupDataInput) {
-        if (backupDataInput.readNextHeader()) {
-            String key = backupDataInput.getKey();
-            int dataSize = backupDataInput.getDataSize();
-            if ("@ancestral_record@".equals(key)) {
-                byte[] bArr = new byte[dataSize];
-                backupDataInput.readEntityData(bArr, 0, dataSize);
-                return new DataInputStream(new ByteArrayInputStream(bArr)).readInt();
-            }
-        }
-        return -1;
-    }
-
-    public final RestoreDataConsumer getRestoreDataConsumer(int i) {
-        byte b = 0;
-        if (i == -1) {
-            return new LegacyRestoreDataConsumer();
-        }
-        if (i == 1) {
-            return new AncestralVersion1RestoreDataConsumer();
-        }
-        Slog.e("PMBA", "Unrecognized ANCESTRAL_RECORD_VERSION: " + i);
-        return null;
-    }
-
-    public static void writeSignatureHashArray(DataOutputStream dataOutputStream, ArrayList arrayList) {
-        dataOutputStream.writeInt(arrayList.size());
-        Iterator it = arrayList.iterator();
-        while (it.hasNext()) {
-            byte[] bArr = (byte[]) it.next();
-            dataOutputStream.writeInt(bArr.length);
-            dataOutputStream.write(bArr);
-        }
-    }
-
     public static ArrayList readSignatureHashArray(DataInputStream dataInputStream) {
+        byte[] bArr;
         try {
             try {
                 int readInt = dataInputStream.readInt();
@@ -242,83 +110,49 @@ public class PackageManagerBackupAgent extends BackupAgent {
                 boolean z = false;
                 for (int i = 0; i < readInt; i++) {
                     int readInt2 = dataInputStream.readInt();
-                    byte[] bArr = new byte[readInt2];
-                    dataInputStream.read(bArr);
-                    arrayList.add(bArr);
+                    byte[] bArr2 = new byte[readInt2];
+                    dataInputStream.read(bArr2);
+                    arrayList.add(bArr2);
                     if (readInt2 != 32) {
                         z = true;
                     }
                 }
-                return z ? BackupUtils.hashSignatureArray(arrayList) : arrayList;
-            } catch (EOFException unused) {
+                if (!z) {
+                    return arrayList;
+                }
+                ArrayList arrayList2 = new ArrayList(arrayList.size());
+                Iterator it = arrayList.iterator();
+                while (it.hasNext()) {
+                    byte[] bArr3 = (byte[]) it.next();
+                    try {
+                        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+                        messageDigest.update(bArr3);
+                        bArr = messageDigest.digest();
+                    } catch (NoSuchAlgorithmException unused) {
+                        Slog.w("BackupUtils", "No SHA-256 algorithm found!");
+                        bArr = null;
+                    }
+                    arrayList2.add(bArr);
+                }
+                return arrayList2;
+            } catch (EOFException unused2) {
                 Slog.w("PMBA", "Read empty signature block");
                 return null;
             }
-        } catch (IOException unused2) {
+        } catch (IOException unused3) {
             Slog.e("PMBA", "Unable to read signatures");
             return null;
         }
     }
 
-    public final void parseStateFile(ParcelFileDescriptor parcelFileDescriptor) {
-        this.mExisting.clear();
-        this.mStateVersions.clear();
-        boolean z = false;
-        this.mStoredSdkVersion = 0;
-        this.mStoredIncrementalVersion = null;
-        this.mStoredHomeComponent = null;
-        this.mStoredHomeVersion = 0L;
-        this.mStoredHomeSigHashes = null;
-        DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(parcelFileDescriptor.getFileDescriptor())));
-        try {
-            String readUTF = dataInputStream.readUTF();
-            if (readUTF.equals("=state=")) {
-                int readInt = dataInputStream.readInt();
-                if (readInt > 2) {
-                    Slog.w("PMBA", "Unsupported state file version " + readInt + ", redoing from start");
-                    return;
-                }
-                readUTF = dataInputStream.readUTF();
-            } else {
-                Slog.i("PMBA", "Older version of saved state - rewriting");
-                z = true;
-            }
-            if (readUTF.equals("@home@")) {
-                this.mStoredHomeComponent = ComponentName.unflattenFromString(dataInputStream.readUTF());
-                this.mStoredHomeVersion = dataInputStream.readLong();
-                this.mStoredHomeSigHashes = readSignatureHashArray(dataInputStream);
-                readUTF = dataInputStream.readUTF();
-            }
-            if (readUTF.equals("@meta@")) {
-                this.mStoredSdkVersion = dataInputStream.readInt();
-                this.mStoredIncrementalVersion = dataInputStream.readUTF();
-                if (!z) {
-                    this.mExisting.add("@meta@");
-                }
-                while (true) {
-                    String readUTF2 = dataInputStream.readUTF();
-                    int readInt2 = dataInputStream.readInt();
-                    long readLong = readInt2 == Integer.MIN_VALUE ? dataInputStream.readLong() : readInt2;
-                    if (!z) {
-                        this.mExisting.add(readUTF2);
-                    }
-                    this.mStateVersions.put(readUTF2, new Metadata(readLong, null));
-                }
-            } else {
-                Slog.e("PMBA", "No global metadata in state file!");
-            }
-        } catch (EOFException unused) {
-        } catch (IOException e) {
-            Slog.e("PMBA", "Unable to read Package Manager state file: " + e);
-        }
-    }
-
-    public final void writeStateFile(List list, ParcelFileDescriptor parcelFileDescriptor) {
+    public static void writeStateFile(List list, ParcelFileDescriptor parcelFileDescriptor) {
         DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(parcelFileDescriptor.getFileDescriptor())));
         try {
-            dataOutputStream.writeUTF("=state=");
+            dataOutputStream.writeUTF(STATE_FILE_HEADER);
             dataOutputStream.writeInt(2);
-            dataOutputStream.writeUTF("@meta@");
+            dataOutputStream.writeUTF(ANCESTRAL_RECORD_KEY);
+            dataOutputStream.writeInt(1);
+            dataOutputStream.writeUTF(GLOBAL_METADATA_KEY);
             dataOutputStream.writeInt(Build.VERSION.SDK_INT);
             dataOutputStream.writeUTF(Build.VERSION.INCREMENTAL);
             Iterator it = list.iterator();
@@ -338,90 +172,40 @@ public class PackageManagerBackupAgent extends BackupAgent {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class LegacyRestoreDataConsumer implements RestoreDataConsumer {
-        public LegacyRestoreDataConsumer() {
-        }
-
-        @Override // com.android.server.backup.PackageManagerBackupAgent.RestoreDataConsumer
-        public void consumeRestoreData(BackupDataInput backupDataInput) {
-            ArrayList arrayList = new ArrayList();
-            HashMap hashMap = new HashMap();
-            while (true) {
-                String key = backupDataInput.getKey();
-                int dataSize = backupDataInput.getDataSize();
-                byte[] bArr = new byte[dataSize];
-                backupDataInput.readEntityData(bArr, 0, dataSize);
-                DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(bArr));
-                if (key.equals("@meta@")) {
-                    PackageManagerBackupAgent.this.mStoredSdkVersion = dataInputStream.readInt();
-                    PackageManagerBackupAgent.this.mStoredIncrementalVersion = dataInputStream.readUTF();
-                    PackageManagerBackupAgent.this.mHasMetadata = true;
-                } else if (key.equals("@home@")) {
-                    PackageManagerBackupAgent.this.mRestoredHome = ComponentName.unflattenFromString(dataInputStream.readUTF());
-                    PackageManagerBackupAgent.this.mRestoredHomeVersion = dataInputStream.readLong();
-                    PackageManagerBackupAgent.this.mRestoredHomeInstaller = dataInputStream.readUTF();
-                    PackageManagerBackupAgent.this.mRestoredHomeSigHashes = PackageManagerBackupAgent.readSignatureHashArray(dataInputStream);
-                } else {
-                    int readInt = dataInputStream.readInt();
-                    long readLong = readInt == Integer.MIN_VALUE ? dataInputStream.readLong() : readInt;
-                    ArrayList readSignatureHashArray = PackageManagerBackupAgent.readSignatureHashArray(dataInputStream);
-                    if (readSignatureHashArray == null || readSignatureHashArray.size() == 0) {
-                        Slog.w("PMBA", "Not restoring package " + key + " since it appears to have no signatures.");
-                    } else {
-                        ApplicationInfo applicationInfo = new ApplicationInfo();
-                        applicationInfo.packageName = key;
-                        arrayList.add(applicationInfo);
-                        hashMap.put(key, new Metadata(readLong, readSignatureHashArray));
-                    }
-                }
-                if (!backupDataInput.readNextHeader()) {
-                    PackageManagerBackupAgent.this.mRestoredSignatures = hashMap;
-                    return;
-                }
-            }
-        }
+    /* JADX WARN: Removed duplicated region for block: B:15:0x012d A[Catch: IOException -> 0x028d, TryCatch #3 {IOException -> 0x028d, blocks: (B:13:0x0125, B:15:0x012d, B:17:0x0167, B:19:0x0172, B:20:0x018e, B:21:0x0194, B:23:0x019a, B:26:0x01a9, B:29:0x01b3, B:31:0x01bb, B:33:0x01c2, B:36:0x01d5, B:52:0x01d9, B:39:0x01f3, B:41:0x01fa, B:42:0x020a, B:43:0x021d, B:45:0x0223, B:47:0x0231, B:50:0x0205, B:59:0x023f, B:63:0x0246, B:66:0x0250, B:67:0x0256, B:69:0x025c, B:71:0x0280, B:76:0x0189, B:77:0x0143, B:79:0x0147, B:80:0x0161), top: B:12:0x0125, inners: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:19:0x0172 A[Catch: IOException -> 0x028d, TryCatch #3 {IOException -> 0x028d, blocks: (B:13:0x0125, B:15:0x012d, B:17:0x0167, B:19:0x0172, B:20:0x018e, B:21:0x0194, B:23:0x019a, B:26:0x01a9, B:29:0x01b3, B:31:0x01bb, B:33:0x01c2, B:36:0x01d5, B:52:0x01d9, B:39:0x01f3, B:41:0x01fa, B:42:0x020a, B:43:0x021d, B:45:0x0223, B:47:0x0231, B:50:0x0205, B:59:0x023f, B:63:0x0246, B:66:0x0250, B:67:0x0256, B:69:0x025c, B:71:0x0280, B:76:0x0189, B:77:0x0143, B:79:0x0147, B:80:0x0161), top: B:12:0x0125, inners: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:23:0x019a A[Catch: IOException -> 0x028d, TRY_LEAVE, TryCatch #3 {IOException -> 0x028d, blocks: (B:13:0x0125, B:15:0x012d, B:17:0x0167, B:19:0x0172, B:20:0x018e, B:21:0x0194, B:23:0x019a, B:26:0x01a9, B:29:0x01b3, B:31:0x01bb, B:33:0x01c2, B:36:0x01d5, B:52:0x01d9, B:39:0x01f3, B:41:0x01fa, B:42:0x020a, B:43:0x021d, B:45:0x0223, B:47:0x0231, B:50:0x0205, B:59:0x023f, B:63:0x0246, B:66:0x0250, B:67:0x0256, B:69:0x025c, B:71:0x0280, B:76:0x0189, B:77:0x0143, B:79:0x0147, B:80:0x0161), top: B:12:0x0125, inners: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:65:0x024e A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:69:0x025c A[Catch: IOException -> 0x028d, LOOP:2: B:67:0x0256->B:69:0x025c, LOOP_END, TryCatch #3 {IOException -> 0x028d, blocks: (B:13:0x0125, B:15:0x012d, B:17:0x0167, B:19:0x0172, B:20:0x018e, B:21:0x0194, B:23:0x019a, B:26:0x01a9, B:29:0x01b3, B:31:0x01bb, B:33:0x01c2, B:36:0x01d5, B:52:0x01d9, B:39:0x01f3, B:41:0x01fa, B:42:0x020a, B:43:0x021d, B:45:0x0223, B:47:0x0231, B:50:0x0205, B:59:0x023f, B:63:0x0246, B:66:0x0250, B:67:0x0256, B:69:0x025c, B:71:0x0280, B:76:0x0189, B:77:0x0143, B:79:0x0147, B:80:0x0161), top: B:12:0x0125, inners: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:76:0x0189 A[Catch: IOException -> 0x028d, TryCatch #3 {IOException -> 0x028d, blocks: (B:13:0x0125, B:15:0x012d, B:17:0x0167, B:19:0x0172, B:20:0x018e, B:21:0x0194, B:23:0x019a, B:26:0x01a9, B:29:0x01b3, B:31:0x01bb, B:33:0x01c2, B:36:0x01d5, B:52:0x01d9, B:39:0x01f3, B:41:0x01fa, B:42:0x020a, B:43:0x021d, B:45:0x0223, B:47:0x0231, B:50:0x0205, B:59:0x023f, B:63:0x0246, B:66:0x0250, B:67:0x0256, B:69:0x025c, B:71:0x0280, B:76:0x0189, B:77:0x0143, B:79:0x0147, B:80:0x0161), top: B:12:0x0125, inners: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:77:0x0143 A[Catch: IOException -> 0x028d, TryCatch #3 {IOException -> 0x028d, blocks: (B:13:0x0125, B:15:0x012d, B:17:0x0167, B:19:0x0172, B:20:0x018e, B:21:0x0194, B:23:0x019a, B:26:0x01a9, B:29:0x01b3, B:31:0x01bb, B:33:0x01c2, B:36:0x01d5, B:52:0x01d9, B:39:0x01f3, B:41:0x01fa, B:42:0x020a, B:43:0x021d, B:45:0x0223, B:47:0x0231, B:50:0x0205, B:59:0x023f, B:63:0x0246, B:66:0x0250, B:67:0x0256, B:69:0x025c, B:71:0x0280, B:76:0x0189, B:77:0x0143, B:79:0x0147, B:80:0x0161), top: B:12:0x0125, inners: #2 }] */
+    @Override // android.app.backup.BackupAgent
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void onBackup(android.os.ParcelFileDescriptor r18, android.app.backup.BackupDataOutput r19, android.os.ParcelFileDescriptor r20) {
+        /*
+            Method dump skipped, instructions count: 659
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.backup.PackageManagerBackupAgent.onBackup(android.os.ParcelFileDescriptor, android.app.backup.BackupDataOutput, android.os.ParcelFileDescriptor):void");
     }
 
-    /* loaded from: classes.dex */
-    public class AncestralVersion1RestoreDataConsumer implements RestoreDataConsumer {
-        public AncestralVersion1RestoreDataConsumer() {
-        }
-
-        @Override // com.android.server.backup.PackageManagerBackupAgent.RestoreDataConsumer
-        public void consumeRestoreData(BackupDataInput backupDataInput) {
-            ArrayList arrayList = new ArrayList();
-            HashMap hashMap = new HashMap();
-            while (backupDataInput.readNextHeader()) {
-                String key = backupDataInput.getKey();
-                int dataSize = backupDataInput.getDataSize();
-                byte[] bArr = new byte[dataSize];
-                backupDataInput.readEntityData(bArr, 0, dataSize);
-                DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(bArr));
-                if (key.equals("@meta@")) {
-                    PackageManagerBackupAgent.this.mStoredSdkVersion = dataInputStream.readInt();
-                    PackageManagerBackupAgent.this.mStoredIncrementalVersion = dataInputStream.readUTF();
-                    PackageManagerBackupAgent.this.mHasMetadata = true;
-                } else if (key.equals("@home@")) {
-                    PackageManagerBackupAgent.this.mRestoredHome = ComponentName.unflattenFromString(dataInputStream.readUTF());
-                    PackageManagerBackupAgent.this.mRestoredHomeVersion = dataInputStream.readLong();
-                    PackageManagerBackupAgent.this.mRestoredHomeInstaller = dataInputStream.readUTF();
-                    PackageManagerBackupAgent.this.mRestoredHomeSigHashes = PackageManagerBackupAgent.readSignatureHashArray(dataInputStream);
-                } else {
-                    int readInt = dataInputStream.readInt();
-                    long readLong = readInt == Integer.MIN_VALUE ? dataInputStream.readLong() : readInt;
-                    ArrayList readSignatureHashArray = PackageManagerBackupAgent.readSignatureHashArray(dataInputStream);
-                    if (readSignatureHashArray == null || readSignatureHashArray.size() == 0) {
-                        Slog.w("PMBA", "Not restoring package " + key + " since it appears to have no signatures.");
-                    } else {
-                        ApplicationInfo applicationInfo = new ApplicationInfo();
-                        applicationInfo.packageName = key;
-                        arrayList.add(applicationInfo);
-                        hashMap.put(key, new Metadata(readLong, readSignatureHashArray));
-                    }
-                }
-            }
-            PackageManagerBackupAgent.this.mRestoredSignatures = hashMap;
-        }
+    /* JADX WARN: Removed duplicated region for block: B:12:0x004c  */
+    /* JADX WARN: Removed duplicated region for block: B:15:0x0052  */
+    /* JADX WARN: Removed duplicated region for block: B:85:0x0043  */
+    /* JADX WARN: Removed duplicated region for block: B:8:0x0031  */
+    @Override // android.app.backup.BackupAgent
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void onRestore(android.app.backup.BackupDataInput r7, int r8, android.os.ParcelFileDescriptor r9) {
+        /*
+            Method dump skipped, instructions count: 422
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.backup.PackageManagerBackupAgent.onRestore(android.app.backup.BackupDataInput, int, android.os.ParcelFileDescriptor):void");
     }
 }

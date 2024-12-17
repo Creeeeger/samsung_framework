@@ -10,13 +10,13 @@ import android.app.job.JobParameters;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.UserInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.DeviceConfig;
 import android.util.ArraySet;
@@ -33,14 +33,15 @@ import android.util.proto.ProtoOutputStream;
 import com.android.internal.app.IBatteryStats;
 import com.android.internal.util.MemInfoReader;
 import com.android.internal.util.jobs.StatLogger;
-import com.android.internal.util.jobs.XmlUtils;
 import com.android.modules.expresslog.Histogram;
 import com.android.server.AppSchedulingModuleThread;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.FileDescriptorWatcher$FileDescriptorLeakWatcher$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.am.mars.filter.filter.JobSchedulerPackageFilter;
-import com.android.server.backup.BackupAgentTimeoutParameters;
-import com.android.server.display.DisplayPowerController2;
 import com.android.server.job.JobConcurrencyManager;
+import com.android.server.job.JobPackageTracker;
 import com.android.server.job.controllers.JobStatus;
 import com.android.server.job.controllers.StateController;
 import com.android.server.job.restrictions.JobRestriction;
@@ -49,17 +50,18 @@ import com.android.server.pm.UserManagerInternal;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
-public class JobConcurrencyManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class JobConcurrencyManager {
     public static final WorkConfigLimitsPerMemoryTrimLevel CONFIG_LIMITS_SCREEN_OFF;
     public static final WorkConfigLimitsPerMemoryTrimLevel CONFIG_LIMITS_SCREEN_ON;
     public static final boolean DEBUG = JobSchedulerService.DEBUG;
-    static final int DEFAULT_CONCURRENCY_LIMIT;
+    public static final int DEFAULT_CONCURRENCY_LIMIT;
     static final long DEFAULT_MAX_WAIT_EJ_MS = 300000;
     static final long DEFAULT_MAX_WAIT_REGULAR_MS = 1800000;
     static final long DEFAULT_MAX_WAIT_UI_MS = 300000;
@@ -71,1189 +73,540 @@ public class JobConcurrencyManager {
     static final int MAX_CONCURRENCY_LIMIT = 64;
     static final int NUM_WORK_TYPES = 7;
     public static final Histogram sConcurrencyHistogramLogger;
-    public static final Comparator sDeterminationComparator;
-    public final SparseArrayMap mActivePkgStats;
-    public final List mActiveServices;
+    public static final JobConcurrencyManager$$ExternalSyntheticLambda2 sDeterminationComparator;
+    public final ActivityManagerInternal mActivityManagerInternal;
     public final Context mContext;
-    public final Pools.Pool mContextAssignmentPool;
     public boolean mCurrentInteractiveState;
     public boolean mEffectiveInteractiveState;
     GracePeriodObserver mGracePeriodObserver;
     public final Handler mHandler;
-    public final ArraySet mIdleContexts;
     public final Injector mInjector;
     public int mLastMemoryTrimLevel;
     public long mLastScreenOffRealtime;
     public long mLastScreenOnRealtime;
     public final Object mLock;
-    public long mMaxWaitEjMs;
-    public long mMaxWaitRegularMs;
-    public boolean mMaxWaitTimeBypassEnabled;
-    public long mMaxWaitUIMs;
     public long mNextSystemStateRefreshTime;
     public final JobNotificationCoordinator mNotificationCoordinator;
-    public int mNumDroppedContexts;
-    public final Consumer mPackageStatsStagingCountClearer;
-    public int mPkgConcurrencyLimitEj;
-    public int mPkgConcurrencyLimitRegular;
-    public final Pools.Pool mPkgStatsPool;
     public PowerManager mPowerManager;
-    public final Runnable mRampUpForScreenOff;
-    public final BroadcastReceiver mReceiver;
-    public final AssignmentInfo mRecycledAssignmentInfo;
-    public final ArraySet mRecycledChanged;
-    public final ArraySet mRecycledIdle;
-    public final ArrayList mRecycledPreferredUidOnly;
-    public final SparseIntArray mRecycledPrivilegedState;
-    public final ArrayList mRecycledStoppable;
-    public final ArraySet mRunningJobs;
-    public long mScreenOffAdjustmentDelayMs;
     public final JobSchedulerService mService;
     boolean mShouldRestrictBgUser;
-    public final StatLogger mStatLogger;
-    public int mSteadyStateConcurrencyLimit;
-    public final WorkCountTracker mWorkCountTracker;
-    public WorkTypeConfig mWorkTypeConfig;
-
-    static {
-        if (ActivityManager.isLowRamDeviceStatic()) {
-            DEFAULT_CONCURRENCY_LIMIT = 8;
-        } else {
-            long totalSize = new MemInfoReader().getTotalSize();
-            if (totalSize <= DataUnit.GIGABYTES.toBytes(6L)) {
-                DEFAULT_CONCURRENCY_LIMIT = 16;
-            } else if (totalSize <= DataUnit.GIGABYTES.toBytes(8L)) {
-                DEFAULT_CONCURRENCY_LIMIT = 20;
-            } else if (totalSize <= DataUnit.GIGABYTES.toBytes(12L)) {
-                DEFAULT_CONCURRENCY_LIMIT = 32;
-            } else {
-                DEFAULT_CONCURRENCY_LIMIT = 40;
-            }
-        }
-        int i = DEFAULT_CONCURRENCY_LIMIT;
-        DEFAULT_PKG_CONCURRENCY_LIMIT_REGULAR = i / 2;
-        CONFIG_LIMITS_SCREEN_ON = new WorkConfigLimitsPerMemoryTrimLevel(new WorkTypeConfig("screen_on_normal", i, (i * 3) / 4, List.of(Pair.create(1, Float.valueOf(0.4f)), Pair.create(2, Float.valueOf(0.2f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.1f)), Pair.create(16, Float.valueOf(0.05f)), Pair.create(32, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.5f)), Pair.create(32, Float.valueOf(0.25f)), Pair.create(64, Float.valueOf(0.2f)))), new WorkTypeConfig("screen_on_moderate", i, i / 2, List.of(Pair.create(1, Float.valueOf(0.4f)), Pair.create(2, Float.valueOf(0.1f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.1f)), Pair.create(16, Float.valueOf(0.1f)), Pair.create(32, Float.valueOf(0.1f))), List.of(Pair.create(16, Float.valueOf(0.4f)), Pair.create(32, Float.valueOf(0.1f)), Pair.create(64, Float.valueOf(0.1f)))), new WorkTypeConfig("screen_on_low", i, (i * 4) / 10, List.of(Pair.create(1, Float.valueOf(0.6f)), Pair.create(2, Float.valueOf(0.1f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.1f))), List.of(Pair.create(16, Float.valueOf(0.33333334f)), Pair.create(32, Float.valueOf(0.16666667f)), Pair.create(64, Float.valueOf(0.16666667f)))), new WorkTypeConfig("screen_on_critical", i, (i * 4) / 10, List.of(Pair.create(1, Float.valueOf(0.7f)), Pair.create(2, Float.valueOf(0.1f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.16666667f)), Pair.create(32, Float.valueOf(0.16666667f)), Pair.create(64, Float.valueOf(0.16666667f)))));
-        CONFIG_LIMITS_SCREEN_OFF = new WorkConfigLimitsPerMemoryTrimLevel(new WorkTypeConfig("screen_off_normal", i, i, List.of(Pair.create(1, Float.valueOf(0.3f)), Pair.create(2, Float.valueOf(0.2f)), Pair.create(4, Float.valueOf(0.2f)), Pair.create(8, Float.valueOf(0.15f)), Pair.create(16, Float.valueOf(0.1f)), Pair.create(32, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.6f)), Pair.create(32, Float.valueOf(0.2f)), Pair.create(64, Float.valueOf(0.2f)))), new WorkTypeConfig("screen_off_moderate", i, (i * 9) / 10, List.of(Pair.create(1, Float.valueOf(0.3f)), Pair.create(2, Float.valueOf(0.2f)), Pair.create(4, Float.valueOf(0.2f)), Pair.create(8, Float.valueOf(0.15f)), Pair.create(16, Float.valueOf(0.1f)), Pair.create(32, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.5f)), Pair.create(32, Float.valueOf(0.1f)), Pair.create(64, Float.valueOf(0.1f)))), new WorkTypeConfig("screen_off_low", i, (i * 6) / 10, List.of(Pair.create(1, Float.valueOf(0.3f)), Pair.create(2, Float.valueOf(0.15f)), Pair.create(4, Float.valueOf(0.15f)), Pair.create(8, Float.valueOf(0.1f)), Pair.create(16, Float.valueOf(0.05f)), Pair.create(32, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.25f)), Pair.create(32, Float.valueOf(0.1f)), Pair.create(64, Float.valueOf(0.1f)))), new WorkTypeConfig("screen_off_critical", i, (i * 4) / 10, List.of(Pair.create(1, Float.valueOf(0.3f)), Pair.create(2, Float.valueOf(0.1f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.1f)), Pair.create(32, Float.valueOf(0.1f)), Pair.create(64, Float.valueOf(0.1f)))));
-        sDeterminationComparator = new Comparator() { // from class: com.android.server.job.JobConcurrencyManager$$ExternalSyntheticLambda2
-            @Override // java.util.Comparator
-            public final int compare(Object obj, Object obj2) {
-                int lambda$static$0;
-                lambda$static$0 = JobConcurrencyManager.lambda$static$0((JobConcurrencyManager.ContextAssignment) obj, (JobConcurrencyManager.ContextAssignment) obj2);
-                return lambda$static$0;
-            }
-        };
-        sConcurrencyHistogramLogger = new Histogram("job_scheduler.value_hist_job_concurrency", new Histogram.UniformOptions(100, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 99.0f));
-    }
-
-    public static String workTypeToString(int i) {
-        if (i == 0) {
-            return "NONE";
-        }
-        if (i == 1) {
-            return "TOP";
-        }
-        if (i == 2) {
-            return "FGS";
-        }
-        if (i == 4) {
-            return "UI";
-        }
-        if (i == 8) {
-            return "EJ";
-        }
-        if (i == 16) {
-            return "BG";
-        }
-        if (i == 32) {
-            return "BGUSER_IMPORTANT";
-        }
-        if (i == 64) {
-            return "BGUSER";
-        }
-        return "WORK(" + i + ")";
-    }
-
-    public static /* synthetic */ int lambda$static$0(ContextAssignment contextAssignment, ContextAssignment contextAssignment2) {
-        if (contextAssignment == contextAssignment2) {
-            return 0;
-        }
-        JobStatus runningJobLocked = contextAssignment.context.getRunningJobLocked();
-        JobStatus runningJobLocked2 = contextAssignment2.context.getRunningJobLocked();
-        if (runningJobLocked == null) {
-            return runningJobLocked2 == null ? 0 : 1;
-        }
-        if (runningJobLocked2 == null) {
-            return -1;
-        }
-        if (runningJobLocked.lastEvaluatedBias == 40) {
-            if (runningJobLocked2.lastEvaluatedBias != 40) {
-                return -1;
-            }
-        } else if (runningJobLocked2.lastEvaluatedBias == 40) {
-            return 1;
-        }
-        return Long.compare(contextAssignment2.context.getExecutionStartTimeElapsed(), contextAssignment.context.getExecutionStartTimeElapsed());
-    }
-
-    public JobConcurrencyManager(JobSchedulerService jobSchedulerService) {
-        this(jobSchedulerService, new Injector());
-    }
-
-    public JobConcurrencyManager(JobSchedulerService jobSchedulerService, Injector injector) {
-        this.mRecycledChanged = new ArraySet();
-        this.mRecycledIdle = new ArraySet();
-        this.mRecycledPreferredUidOnly = new ArrayList();
-        this.mRecycledStoppable = new ArrayList();
-        this.mRecycledAssignmentInfo = new AssignmentInfo();
-        this.mRecycledPrivilegedState = new SparseIntArray();
-        this.mContextAssignmentPool = new Pools.SimplePool(96);
-        this.mActiveServices = new ArrayList();
-        this.mIdleContexts = new ArraySet();
-        this.mNumDroppedContexts = 0;
-        this.mRunningJobs = new ArraySet();
-        this.mWorkCountTracker = new WorkCountTracker();
-        this.mPkgStatsPool = new Pools.SimplePool(96);
-        this.mActivePkgStats = new SparseArrayMap();
-        this.mWorkTypeConfig = CONFIG_LIMITS_SCREEN_OFF.normal;
-        this.mScreenOffAdjustmentDelayMs = 30000L;
-        this.mSteadyStateConcurrencyLimit = DEFAULT_CONCURRENCY_LIMIT;
-        this.mPkgConcurrencyLimitEj = 3;
-        this.mPkgConcurrencyLimitRegular = DEFAULT_PKG_CONCURRENCY_LIMIT_REGULAR;
-        this.mMaxWaitTimeBypassEnabled = true;
-        this.mMaxWaitUIMs = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        this.mMaxWaitEjMs = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        this.mMaxWaitRegularMs = 1800000L;
-        this.mPackageStatsStagingCountClearer = new Consumer() { // from class: com.android.server.job.JobConcurrencyManager$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((JobConcurrencyManager.PackageStats) obj).resetStagedCount();
-            }
-        };
-        this.mStatLogger = new StatLogger(new String[]{"assignJobsToContexts", "refreshSystemState"});
-        this.mReceiver = new BroadcastReceiver() { // from class: com.android.server.job.JobConcurrencyManager.1
-            public AnonymousClass1() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                action.hashCode();
-                char c = 65535;
-                switch (action.hashCode()) {
-                    case -2128145023:
-                        if (action.equals("android.intent.action.SCREEN_OFF")) {
-                            c = 0;
-                            break;
-                        }
-                        break;
-                    case -1454123155:
-                        if (action.equals("android.intent.action.SCREEN_ON")) {
-                            c = 1;
-                            break;
-                        }
-                        break;
-                    case 870701415:
-                        if (action.equals("android.os.action.DEVICE_IDLE_MODE_CHANGED")) {
-                            c = 2;
-                            break;
-                        }
-                        break;
-                    case 1779291251:
-                        if (action.equals("android.os.action.POWER_SAVE_MODE_CHANGED")) {
-                            c = 3;
-                            break;
-                        }
-                        break;
-                }
-                switch (c) {
-                    case 0:
-                        JobConcurrencyManager.this.onInteractiveStateChanged(false);
-                        return;
-                    case 1:
-                        JobConcurrencyManager.this.onInteractiveStateChanged(true);
-                        return;
-                    case 2:
-                        if (JobConcurrencyManager.this.mPowerManager == null || !JobConcurrencyManager.this.mPowerManager.isDeviceIdleMode()) {
-                            return;
-                        }
-                        synchronized (JobConcurrencyManager.this.mLock) {
-                            JobConcurrencyManager.this.stopUnexemptedJobsForDoze();
-                            JobConcurrencyManager.this.stopOvertimeJobsLocked("deep doze");
-                        }
-                        return;
-                    case 3:
-                        if (JobConcurrencyManager.this.mPowerManager == null || !JobConcurrencyManager.this.mPowerManager.isPowerSaveMode()) {
-                            return;
-                        }
-                        synchronized (JobConcurrencyManager.this.mLock) {
-                            JobConcurrencyManager.this.stopOvertimeJobsLocked("battery saver");
-                        }
-                        return;
-                    default:
-                        return;
-                }
-            }
-        };
-        this.mRampUpForScreenOff = new Runnable() { // from class: com.android.server.job.JobConcurrencyManager$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                JobConcurrencyManager.this.rampUpForScreenOff();
-            }
-        };
-        this.mService = jobSchedulerService;
-        this.mLock = jobSchedulerService.getLock();
-        Context testableContext = jobSchedulerService.getTestableContext();
-        this.mContext = testableContext;
-        this.mInjector = injector;
-        this.mNotificationCoordinator = new JobNotificationCoordinator();
-        this.mHandler = AppSchedulingModuleThread.getHandler();
-        this.mGracePeriodObserver = new GracePeriodObserver(testableContext);
-        this.mShouldRestrictBgUser = testableContext.getResources().getBoolean(17891737);
-    }
-
-    public void onSystemReady() {
-        this.mPowerManager = (PowerManager) this.mContext.getSystemService(PowerManager.class);
-        IntentFilter intentFilter = new IntentFilter("android.intent.action.SCREEN_ON");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter.addAction("android.os.action.DEVICE_IDLE_MODE_CHANGED");
-        intentFilter.addAction("android.os.action.POWER_SAVE_MODE_CHANGED");
-        this.mContext.registerReceiver(this.mReceiver, intentFilter);
-        try {
-            ActivityManager.getService().registerUserSwitchObserver(this.mGracePeriodObserver, "JobScheduler.Concurrency");
-        } catch (RemoteException unused) {
-        }
-        onInteractiveStateChanged(this.mPowerManager.isInteractive());
-    }
-
-    public void onThirdPartyAppsCanStart() {
-        IBatteryStats asInterface = IBatteryStats.Stub.asInterface(ServiceManager.getService("batterystats"));
-        for (int i = 0; i < this.mSteadyStateConcurrencyLimit; i++) {
-            ArraySet arraySet = this.mIdleContexts;
-            Injector injector = this.mInjector;
-            JobSchedulerService jobSchedulerService = this.mService;
-            arraySet.add(injector.createJobServiceContext(jobSchedulerService, this, this.mNotificationCoordinator, asInterface, jobSchedulerService.mJobPackageTracker, AppSchedulingModuleThread.get().getLooper()));
-        }
-    }
-
-    public void onAppRemovedLocked(String str, int i) {
-        PackageStats packageStats = (PackageStats) this.mActivePkgStats.get(UserHandle.getUserId(i), str);
-        if (packageStats != null) {
-            if (packageStats.numRunningEj > 0 || packageStats.numRunningRegular > 0) {
-                Slog.w("JobScheduler.Concurrency", str + "(" + i + ") marked as removed before jobs stopped running");
-                return;
-            }
-            this.mActivePkgStats.delete(UserHandle.getUserId(i), str);
-        }
-    }
-
-    public void onUserRemoved(int i) {
-        this.mGracePeriodObserver.onUserRemoved(i);
-    }
-
-    /* renamed from: com.android.server.job.JobConcurrencyManager$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends BroadcastReceiver {
-        public AnonymousClass1() {
-        }
-
+    public final UserManagerInternal mUserManagerInternal;
+    public final ArraySet mRecycledChanged = new ArraySet();
+    public final ArraySet mRecycledIdle = new ArraySet();
+    public final ArrayList mRecycledPreferredUidOnly = new ArrayList();
+    public final ArrayList mRecycledStoppable = new ArrayList();
+    public final AssignmentInfo mRecycledAssignmentInfo = new AssignmentInfo();
+    public final SparseIntArray mRecycledPrivilegedState = new SparseIntArray();
+    public final Pools.Pool mContextAssignmentPool = new Pools.SimplePool(96);
+    public final List mActiveServices = new ArrayList();
+    public final ArraySet mIdleContexts = new ArraySet();
+    public int mNumDroppedContexts = 0;
+    public final ArraySet mRunningJobs = new ArraySet();
+    public final WorkCountTracker mWorkCountTracker = new WorkCountTracker();
+    public final Pools.Pool mPkgStatsPool = new Pools.SimplePool(96);
+    public final SparseArrayMap mActivePkgStats = new SparseArrayMap();
+    public WorkTypeConfig mWorkTypeConfig = CONFIG_LIMITS_SCREEN_OFF.normal;
+    public long mScreenOffAdjustmentDelayMs = 30000;
+    public int mSteadyStateConcurrencyLimit = DEFAULT_CONCURRENCY_LIMIT;
+    public int mPkgConcurrencyLimitEj = 3;
+    public int mPkgConcurrencyLimitRegular = DEFAULT_PKG_CONCURRENCY_LIMIT_REGULAR;
+    public boolean mMaxWaitTimeBypassEnabled = true;
+    public long mMaxWaitUIMs = 300000;
+    public long mMaxWaitEjMs = 300000;
+    public long mMaxWaitRegularMs = 1800000;
+    public final JobConcurrencyManager$$ExternalSyntheticLambda0 mPackageStatsStagingCountClearer = new JobConcurrencyManager$$ExternalSyntheticLambda0();
+    public final StatLogger mStatLogger = new StatLogger(new String[]{"assignJobsToContexts", "refreshSystemState"});
+    public final AnonymousClass1 mReceiver = new BroadcastReceiver() { // from class: com.android.server.job.JobConcurrencyManager.1
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
+            int i;
             String action = intent.getAction();
-            action.hashCode();
-            char c = 65535;
-            switch (action.hashCode()) {
-                case -2128145023:
-                    if (action.equals("android.intent.action.SCREEN_OFF")) {
-                        c = 0;
-                        break;
-                    }
-                    break;
-                case -1454123155:
-                    if (action.equals("android.intent.action.SCREEN_ON")) {
-                        c = 1;
-                        break;
-                    }
-                    break;
-                case 870701415:
-                    if (action.equals("android.os.action.DEVICE_IDLE_MODE_CHANGED")) {
-                        c = 2;
-                        break;
-                    }
-                    break;
-                case 1779291251:
-                    if (action.equals("android.os.action.POWER_SAVE_MODE_CHANGED")) {
-                        c = 3;
-                        break;
-                    }
-                    break;
-            }
-            switch (c) {
-                case 0:
+            action.getClass();
+            switch (action) {
+                case "android.intent.action.SCREEN_OFF":
                     JobConcurrencyManager.this.onInteractiveStateChanged(false);
                     return;
-                case 1:
+                case "android.intent.action.SCREEN_ON":
                     JobConcurrencyManager.this.onInteractiveStateChanged(true);
                     return;
-                case 2:
-                    if (JobConcurrencyManager.this.mPowerManager == null || !JobConcurrencyManager.this.mPowerManager.isDeviceIdleMode()) {
+                case "android.os.action.DEVICE_IDLE_MODE_CHANGED":
+                    PowerManager powerManager = JobConcurrencyManager.this.mPowerManager;
+                    if (powerManager == null || !powerManager.isDeviceIdleMode()) {
                         return;
                     }
                     synchronized (JobConcurrencyManager.this.mLock) {
-                        JobConcurrencyManager.this.stopUnexemptedJobsForDoze();
-                        JobConcurrencyManager.this.stopOvertimeJobsLocked("deep doze");
+                        JobConcurrencyManager jobConcurrencyManager = JobConcurrencyManager.this;
+                        for (i = 0; i < ((ArrayList) jobConcurrencyManager.mActiveServices).size(); i++) {
+                            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) jobConcurrencyManager.mActiveServices).get(i);
+                            JobStatus jobStatus = jobServiceContext.mRunningJob;
+                            if (jobStatus != null && !jobStatus.canRunInDoze()) {
+                                jobServiceContext.cancelExecutingJobLocked(4, 4, "cancelled due to doze");
+                            }
+                        }
+                        JobConcurrencyManager.m605$$Nest$mstopOvertimeJobsLocked(JobConcurrencyManager.this, "deep doze");
                     }
                     return;
-                case 3:
-                    if (JobConcurrencyManager.this.mPowerManager == null || !JobConcurrencyManager.this.mPowerManager.isPowerSaveMode()) {
+                case "android.os.action.POWER_SAVE_MODE_CHANGED":
+                    PowerManager powerManager2 = JobConcurrencyManager.this.mPowerManager;
+                    if (powerManager2 == null || !powerManager2.isPowerSaveMode()) {
                         return;
                     }
                     synchronized (JobConcurrencyManager.this.mLock) {
-                        JobConcurrencyManager.this.stopOvertimeJobsLocked("battery saver");
+                        JobConcurrencyManager.m605$$Nest$mstopOvertimeJobsLocked(JobConcurrencyManager.this, "battery saver");
                     }
                     return;
                 default:
                     return;
             }
         }
+    };
+    public final JobConcurrencyManager$$ExternalSyntheticLambda1 mRampUpForScreenOff = new Runnable() { // from class: com.android.server.job.JobConcurrencyManager$$ExternalSyntheticLambda1
+        @Override // java.lang.Runnable
+        public final void run() {
+            JobConcurrencyManager jobConcurrencyManager = JobConcurrencyManager.this;
+            synchronized (jobConcurrencyManager.mLock) {
+                try {
+                    if (jobConcurrencyManager.mEffectiveInteractiveState) {
+                        if (jobConcurrencyManager.mLastScreenOnRealtime > jobConcurrencyManager.mLastScreenOffRealtime) {
+                            return;
+                        }
+                        JobSchedulerService.sElapsedRealtimeClock.getClass();
+                        if (jobConcurrencyManager.mLastScreenOffRealtime + jobConcurrencyManager.mScreenOffAdjustmentDelayMs > SystemClock.elapsedRealtime()) {
+                            return;
+                        }
+                        jobConcurrencyManager.mEffectiveInteractiveState = false;
+                        if (JobConcurrencyManager.DEBUG) {
+                            Slog.d("JobScheduler.Concurrency", "Ramping up concurrency");
+                        }
+                        jobConcurrencyManager.mService.maybeRunPendingJobsLocked();
+                    }
+                } finally {
+                }
+            }
+        }
+    };
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class AssignmentInfo {
+        public long minPreferredUidOnlyWaitingTimeMs;
+        public int numRunningEj;
+        public int numRunningImmediacyPrivileged;
+        public int numRunningReg;
+        public int numRunningUi;
     }
 
-    public final void onInteractiveStateChanged(boolean z) {
-        synchronized (this.mLock) {
-            if (this.mCurrentInteractiveState == z) {
-                return;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class ContextAssignment {
+        public JobServiceContext context;
+        public JobStatus newJob;
+        public String preemptReason;
+        public String shouldStopJobReason;
+        public long timeUntilStoppableMs;
+        public int preferredUid = -1;
+        public int preemptReasonCode = 0;
+        public int newWorkType = 0;
+
+        public final void clear() {
+            this.context = null;
+            this.preferredUid = -1;
+            this.preemptReason = null;
+            this.preemptReasonCode = 0;
+            this.timeUntilStoppableMs = 0L;
+            this.shouldStopJobReason = null;
+            this.newJob = null;
+            this.newWorkType = 0;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class GracePeriodObserver extends UserSwitchObserver {
+        int mGracePeriod;
+        final SparseLongArray mGracePeriodExpiration = new SparseLongArray();
+        public final Object mLock = new Object();
+        public int mCurrentUserId = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).getCurrentUserId();
+        public final UserManagerInternal mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
+
+        public GracePeriodObserver(Context context) {
+            this.mGracePeriod = Math.max(0, context.getResources().getInteger(R.integer.config_metrics_pull_cooldown_millis));
+        }
+
+        public boolean isWithinGracePeriodForUser(int i) {
+            boolean z;
+            synchronized (this.mLock) {
+                try {
+                    if (i != this.mCurrentUserId) {
+                        JobSchedulerService.sElapsedRealtimeClock.getClass();
+                        if (SystemClock.elapsedRealtime() >= this.mGracePeriodExpiration.get(i, Long.MAX_VALUE)) {
+                            z = false;
+                        }
+                    }
+                    z = true;
+                } finally {
+                }
             }
-            this.mCurrentInteractiveState = z;
-            if (DEBUG) {
-                Slog.d("JobScheduler.Concurrency", "Interactive: " + z);
+            return z;
+        }
+
+        public final void onUserSwitchComplete(int i) {
+            JobSchedulerService.sElapsedRealtimeClock.getClass();
+            long elapsedRealtime = SystemClock.elapsedRealtime() + this.mGracePeriod;
+            synchronized (this.mLock) {
+                try {
+                    int i2 = this.mCurrentUserId;
+                    if (i2 != -10000 && this.mUserManagerInternal.exists(i2)) {
+                        this.mGracePeriodExpiration.append(this.mCurrentUserId, elapsedRealtime);
+                    }
+                    this.mGracePeriodExpiration.delete(i);
+                    this.mCurrentUserId = i;
+                } catch (Throwable th) {
+                    throw th;
+                }
             }
-            long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class Injector {
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class PackageStats {
+        public int numRunningEj;
+        public int numRunningRegular;
+        public int numStagedEj;
+        public int numStagedRegular;
+        public String packageName;
+        public int userId;
+
+        /* renamed from: -$$Nest$madjustRunningCount, reason: not valid java name */
+        public static void m606$$Nest$madjustRunningCount(PackageStats packageStats, boolean z, boolean z2) {
+            if (z2) {
+                packageStats.numRunningEj = Math.max(0, packageStats.numRunningEj + (z ? 1 : -1));
+            } else {
+                packageStats.numRunningRegular = Math.max(0, packageStats.numRunningRegular + (z ? 1 : -1));
+            }
+        }
+
+        /* renamed from: -$$Nest$madjustStagedCount, reason: not valid java name */
+        public static void m607$$Nest$madjustStagedCount(PackageStats packageStats, boolean z, boolean z2) {
+            if (z2) {
+                packageStats.numStagedEj = Math.max(0, packageStats.numStagedEj + (z ? 1 : -1));
+            } else {
+                packageStats.numStagedRegular = Math.max(0, packageStats.numStagedRegular + (z ? 1 : -1));
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class WorkConfigLimitsPerMemoryTrimLevel {
+        public final WorkTypeConfig critical;
+        public final WorkTypeConfig low;
+        public final WorkTypeConfig moderate;
+        public final WorkTypeConfig normal;
+
+        public WorkConfigLimitsPerMemoryTrimLevel(WorkTypeConfig workTypeConfig, WorkTypeConfig workTypeConfig2, WorkTypeConfig workTypeConfig3, WorkTypeConfig workTypeConfig4) {
+            this.normal = workTypeConfig;
+            this.moderate = workTypeConfig2;
+            this.low = workTypeConfig3;
+            this.critical = workTypeConfig4;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class WorkCountTracker {
+        public int mConfigMaxTotal;
+        public final SparseIntArray mConfigNumReservedSlots = new SparseIntArray(7);
+        public final SparseIntArray mConfigAbsoluteMaxSlots = new SparseIntArray(7);
+        public final SparseIntArray mRecycledReserved = new SparseIntArray(7);
+        public final SparseIntArray mNumActuallyReservedSlots = new SparseIntArray(7);
+        public final SparseIntArray mNumPendingJobs = new SparseIntArray(7);
+        public final SparseIntArray mNumRunningJobs = new SparseIntArray(7);
+        public final SparseIntArray mNumStartingJobs = new SparseIntArray(7);
+        public int mNumUnspecializedRemaining = 0;
+
+        public final int adjustPendingJobCount(int i, boolean z) {
+            int i2 = z ? 1 : -1;
+            int i3 = 0;
+            for (int i4 = 1; i4 <= i; i4 <<= 1) {
+                if ((i & i4) == i4) {
+                    SparseIntArray sparseIntArray = this.mNumPendingJobs;
+                    sparseIntArray.put(i4, sparseIntArray.get(i4) + i2);
+                    i3++;
+                }
+            }
+            return i3;
+        }
+
+        public final int canJobStart(int i) {
+            for (int i2 = 1; i2 <= i; i2 <<= 1) {
+                if ((i & i2) == i2) {
+                    if (this.mNumStartingJobs.get(i2) + this.mNumRunningJobs.get(i2) < Math.min(this.mConfigAbsoluteMaxSlots.get(i2), this.mNumActuallyReservedSlots.get(i2) + this.mNumUnspecializedRemaining)) {
+                        return i2;
+                    }
+                }
+            }
+            return 0;
+        }
+
+        public final int canJobStart(int i, int i2) {
+            boolean z;
+            int i3 = this.mNumRunningJobs.get(i2);
+            if (i2 == 0 || i3 <= 0) {
+                z = false;
+            } else {
+                this.mNumRunningJobs.put(i2, i3 - 1);
+                this.mNumUnspecializedRemaining++;
+                z = true;
+            }
+            int canJobStart = canJobStart(i);
             if (z) {
-                this.mLastScreenOnRealtime = millis;
-                this.mEffectiveInteractiveState = true;
-                this.mHandler.removeCallbacks(this.mRampUpForScreenOff);
-            } else {
-                this.mLastScreenOffRealtime = millis;
-                this.mHandler.postDelayed(this.mRampUpForScreenOff, this.mScreenOffAdjustmentDelayMs);
+                this.mNumRunningJobs.put(i2, i3);
+                this.mNumUnspecializedRemaining--;
             }
+            return canJobStart;
         }
-    }
 
-    public final void rampUpForScreenOff() {
-        synchronized (this.mLock) {
-            if (this.mEffectiveInteractiveState) {
-                if (this.mLastScreenOnRealtime > this.mLastScreenOffRealtime) {
-                    return;
+        public final int getPendingJobCount(int i) {
+            return this.mNumPendingJobs.get(i, 0);
+        }
+
+        public final void maybeAdjustReservations(int i) {
+            int max = Math.max(this.mConfigNumReservedSlots.get(i), this.mNumPendingJobs.get(i) + this.mNumStartingJobs.get(i) + this.mNumRunningJobs.get(i));
+            if (max < this.mNumActuallyReservedSlots.get(i)) {
+                this.mNumActuallyReservedSlots.put(i, max);
+                int i2 = 0;
+                for (int i3 = 0; i3 < this.mNumActuallyReservedSlots.size(); i3++) {
+                    int keyAt = this.mNumActuallyReservedSlots.keyAt(i3);
+                    if (i2 == 0 || keyAt < i2) {
+                        int i4 = this.mNumPendingJobs.get(keyAt) + this.mNumStartingJobs.get(keyAt) + this.mNumRunningJobs.get(keyAt);
+                        if (this.mNumActuallyReservedSlots.valueAt(i3) < this.mConfigAbsoluteMaxSlots.get(keyAt) && i4 > this.mNumActuallyReservedSlots.valueAt(i3)) {
+                            i2 = keyAt;
+                        }
+                    }
                 }
-                if (this.mLastScreenOffRealtime + this.mScreenOffAdjustmentDelayMs > JobSchedulerService.sElapsedRealtimeClock.millis()) {
-                    return;
-                }
-                this.mEffectiveInteractiveState = false;
-                if (DEBUG) {
-                    Slog.d("JobScheduler.Concurrency", "Ramping up concurrency");
-                }
-                this.mService.maybeRunPendingJobsLocked();
-            }
-        }
-    }
-
-    public ArraySet getRunningJobsLocked() {
-        return this.mRunningJobs;
-    }
-
-    public boolean isJobRunningLocked(JobStatus jobStatus) {
-        return this.mRunningJobs.contains(jobStatus);
-    }
-
-    public boolean isJobInOvertimeLocked(JobStatus jobStatus) {
-        if (!this.mRunningJobs.contains(jobStatus)) {
-            return false;
-        }
-        for (int size = this.mActiveServices.size() - 1; size >= 0; size--) {
-            if (((JobServiceContext) this.mActiveServices.get(size)).getRunningJobLocked() == jobStatus) {
-                return !r2.isWithinExecutionGuaranteeTime();
-            }
-        }
-        Slog.wtf("JobScheduler.Concurrency", "Couldn't find long running job on a context");
-        this.mRunningJobs.remove(jobStatus);
-        if (jobStatus != null) {
-            JobSchedulerPackageFilter.getInstance().removeRunningJobs(jobStatus.getJob());
-        }
-        return false;
-    }
-
-    public final boolean isSimilarJobRunningLocked(JobStatus jobStatus) {
-        for (int size = this.mRunningJobs.size() - 1; size >= 0; size--) {
-            JobStatus jobStatus2 = (JobStatus) this.mRunningJobs.valueAt(size);
-            if (jobStatus.matches(jobStatus2.getUid(), jobStatus2.getNamespace(), jobStatus2.getJobId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final boolean refreshSystemStateLocked() {
-        long millis = JobSchedulerService.sUptimeMillisClock.millis();
-        if (millis < this.mNextSystemStateRefreshTime) {
-            return false;
-        }
-        long time = this.mStatLogger.getTime();
-        this.mNextSystemStateRefreshTime = millis + 1000;
-        this.mLastMemoryTrimLevel = 0;
-        try {
-            this.mLastMemoryTrimLevel = ActivityManager.getService().getMemoryTrimLevel();
-        } catch (RemoteException unused) {
-        }
-        this.mStatLogger.logDurationStat(1, time);
-        return true;
-    }
-
-    public final void updateCounterConfigLocked() {
-        if (refreshSystemStateLocked()) {
-            WorkConfigLimitsPerMemoryTrimLevel workConfigLimitsPerMemoryTrimLevel = this.mEffectiveInteractiveState ? CONFIG_LIMITS_SCREEN_ON : CONFIG_LIMITS_SCREEN_OFF;
-            int i = this.mLastMemoryTrimLevel;
-            if (i == 1) {
-                this.mWorkTypeConfig = workConfigLimitsPerMemoryTrimLevel.moderate;
-            } else if (i == 2) {
-                this.mWorkTypeConfig = workConfigLimitsPerMemoryTrimLevel.low;
-            } else if (i == 3) {
-                this.mWorkTypeConfig = workConfigLimitsPerMemoryTrimLevel.critical;
-            } else {
-                this.mWorkTypeConfig = workConfigLimitsPerMemoryTrimLevel.normal;
-            }
-            this.mWorkCountTracker.setConfig(this.mWorkTypeConfig);
-        }
-    }
-
-    public void assignJobsToContextsLocked() {
-        long time = this.mStatLogger.getTime();
-        assignJobsToContextsInternalLocked();
-        this.mStatLogger.logDurationStat(0, time);
-    }
-
-    public final void assignJobsToContextsInternalLocked() {
-        boolean z = DEBUG;
-        if (z) {
-            Slog.d("JobScheduler.Concurrency", printPendingQueueLocked());
-        }
-        if (this.mService.getPendingJobQueue().size() == 0) {
-            return;
-        }
-        prepareForAssignmentDeterminationLocked(this.mRecycledIdle, this.mRecycledPreferredUidOnly, this.mRecycledStoppable, this.mRecycledAssignmentInfo);
-        if (z) {
-            Slog.d("JobScheduler.Concurrency", printAssignments("running jobs initial", this.mRecycledStoppable, this.mRecycledPreferredUidOnly));
-        }
-        determineAssignmentsLocked(this.mRecycledChanged, this.mRecycledIdle, this.mRecycledPreferredUidOnly, this.mRecycledStoppable, this.mRecycledAssignmentInfo);
-        if (z) {
-            Slog.d("JobScheduler.Concurrency", printAssignments("running jobs final", this.mRecycledStoppable, this.mRecycledPreferredUidOnly, this.mRecycledChanged));
-            Slog.d("JobScheduler.Concurrency", "work count results: " + this.mWorkCountTracker);
-        }
-        carryOutAssignmentChangesLocked(this.mRecycledChanged);
-        cleanUpAfterAssignmentChangesLocked(this.mRecycledChanged, this.mRecycledIdle, this.mRecycledPreferredUidOnly, this.mRecycledStoppable, this.mRecycledAssignmentInfo, this.mRecycledPrivilegedState);
-        noteConcurrency(true);
-    }
-
-    public void prepareForAssignmentDeterminationLocked(ArraySet arraySet, List list, List list2, AssignmentInfo assignmentInfo) {
-        JobServiceContext createNewJobServiceContext;
-        int i;
-        PendingJobQueue pendingJobQueue = this.mService.getPendingJobQueue();
-        List list3 = this.mActiveServices;
-        updateCounterConfigLocked();
-        this.mWorkCountTracker.resetCounts();
-        int i2 = 1;
-        updateNonRunningPrioritiesLocked(pendingJobQueue, true);
-        int size = list3.size();
-        long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
-        int i3 = 0;
-        long j = Long.MAX_VALUE;
-        while (i3 < size) {
-            JobServiceContext jobServiceContext = (JobServiceContext) list3.get(i3);
-            JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-            ContextAssignment contextAssignment = (ContextAssignment) this.mContextAssignmentPool.acquire();
-            if (contextAssignment == null) {
-                contextAssignment = new ContextAssignment();
-            }
-            contextAssignment.context = jobServiceContext;
-            if (runningJobLocked != null) {
-                this.mWorkCountTracker.incrementRunningJobCount(jobServiceContext.getRunningJobWorkType());
-                contextAssignment.workType = jobServiceContext.getRunningJobWorkType();
-                if (runningJobLocked.startedWithImmediacyPrivilege) {
-                    i = 1;
-                    assignmentInfo.numRunningImmediacyPrivileged++;
+                if (i2 == 0) {
+                    this.mNumUnspecializedRemaining++;
                 } else {
-                    i = 1;
+                    SparseIntArray sparseIntArray = this.mNumActuallyReservedSlots;
+                    sparseIntArray.put(i2, sparseIntArray.get(i2) + 1);
                 }
-                if (runningJobLocked.shouldTreatAsUserInitiatedJob()) {
-                    assignmentInfo.numRunningUi += i;
-                } else if (runningJobLocked.startedAsExpeditedJob) {
-                    assignmentInfo.numRunningEj += i;
-                } else {
-                    assignmentInfo.numRunningReg += i;
+            }
+        }
+
+        public final void stageJob(int i, int i2) {
+            int i3 = this.mNumStartingJobs.get(i) + 1;
+            this.mNumStartingJobs.put(i, i3);
+            if (adjustPendingJobCount(i2, false) > 1) {
+                for (int i4 = 1; i4 <= i2; i4 <<= 1) {
+                    if ((i4 & i2) == i4) {
+                        maybeAdjustReservations(i4);
+                    }
                 }
-            } else {
-                i = i2;
             }
-            contextAssignment.preferredUid = jobServiceContext.getPreferredUid();
-            String shouldStopRunningJobLocked = shouldStopRunningJobLocked(jobServiceContext);
-            contextAssignment.shouldStopJobReason = shouldStopRunningJobLocked;
-            if (shouldStopRunningJobLocked != null) {
-                list2.add(contextAssignment);
-            } else {
-                long remainingGuaranteedTimeMs = jobServiceContext.getRemainingGuaranteedTimeMs(millis);
-                contextAssignment.timeUntilStoppableMs = remainingGuaranteedTimeMs;
-                j = Math.min(j, remainingGuaranteedTimeMs);
-                list.add(contextAssignment);
+            if (this.mNumRunningJobs.get(i) + i3 > this.mNumActuallyReservedSlots.get(i)) {
+                this.mNumUnspecializedRemaining--;
             }
-            i3++;
-            i2 = i;
         }
-        Comparator comparator = sDeterminationComparator;
-        list.sort(comparator);
-        list2.sort(comparator);
-        while (size < this.mSteadyStateConcurrencyLimit) {
-            int size2 = this.mIdleContexts.size();
-            if (size2 > 0) {
-                createNewJobServiceContext = (JobServiceContext) this.mIdleContexts.removeAt(size2 - 1);
-            } else {
-                Slog.w("JobScheduler.Concurrency", "Had fewer than " + this.mSteadyStateConcurrencyLimit + " in existence");
-                createNewJobServiceContext = createNewJobServiceContext();
-            }
-            ContextAssignment contextAssignment2 = (ContextAssignment) this.mContextAssignmentPool.acquire();
-            if (contextAssignment2 == null) {
-                contextAssignment2 = new ContextAssignment();
-            }
-            contextAssignment2.context = createNewJobServiceContext;
-            arraySet.add(contextAssignment2);
-            size++;
+
+        public final String toString() {
+            return "Config={tot=" + this.mConfigMaxTotal + " mins=" + this.mConfigNumReservedSlots + " maxs=" + this.mConfigAbsoluteMaxSlots + "}, act res=" + this.mNumActuallyReservedSlots + ", Pending=" + this.mNumPendingJobs + ", Running=" + this.mNumRunningJobs + ", Staged=" + this.mNumStartingJobs + ", # unspecialized remaining=" + this.mNumUnspecializedRemaining;
         }
-        this.mWorkCountTracker.onCountDone();
-        if (j == Long.MAX_VALUE) {
-            j = 0;
-        }
-        assignmentInfo.minPreferredUidOnlyWaitingTimeMs = j;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:56:0x0152, code lost:
-    
-        if (r11 >= r30.mMaxWaitUIMs) goto L296;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:57:0x0154, code lost:
-    
-        r1 = true;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:110:0x0340  */
-    /* JADX WARN: Removed duplicated region for block: B:118:0x037f  */
-    /* JADX WARN: Removed duplicated region for block: B:123:0x0375  */
-    /* JADX WARN: Removed duplicated region for block: B:127:0x0285  */
-    /* JADX WARN: Removed duplicated region for block: B:41:0x010d  */
-    /* JADX WARN: Removed duplicated region for block: B:88:0x0216  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void determineAssignmentsLocked(android.util.ArraySet r31, android.util.ArraySet r32, java.util.List r33, java.util.List r34, com.android.server.job.JobConcurrencyManager.AssignmentInfo r35) {
-        /*
-            Method dump skipped, instructions count: 927
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.job.JobConcurrencyManager.determineAssignmentsLocked(android.util.ArraySet, android.util.ArraySet, java.util.List, java.util.List, com.android.server.job.JobConcurrencyManager$AssignmentInfo):void");
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class WorkTypeConfig {
+        static final String KEY_PREFIX_MAX_RATIO = "concurrency_max_ratio_";
+        static final String KEY_PREFIX_MAX_TOTAL = "concurrency_max_total_";
+        static final String KEY_PREFIX_MIN_RATIO = "concurrency_min_ratio_";
+        public final String mConfigIdentifier;
+        public final int mDefaultMaxTotal;
+        public int mMaxTotal;
+        public final SparseIntArray mMinReservedSlots = new SparseIntArray(7);
+        public final SparseIntArray mMaxAllowedSlots = new SparseIntArray(7);
+        public final SparseIntArray mDefaultMinReservedSlotsRatio = new SparseIntArray(7);
+        public final SparseIntArray mDefaultMaxAllowedSlotsRatio = new SparseIntArray(7);
 
-    public final void carryOutAssignmentChangesLocked(ArraySet arraySet) {
-        for (int size = arraySet.size() - 1; size >= 0; size--) {
-            ContextAssignment contextAssignment = (ContextAssignment) arraySet.valueAt(size);
-            JobStatus runningJobLocked = contextAssignment.context.getRunningJobLocked();
-            if (runningJobLocked != null) {
-                if (DEBUG) {
-                    Slog.d("JobScheduler.Concurrency", "preempting job: " + runningJobLocked);
+        public WorkTypeConfig(String str, int i, int i2, List list, List list2) {
+            this.mConfigIdentifier = str;
+            int min = Math.min(i2, i);
+            this.mMaxTotal = min;
+            this.mDefaultMaxTotal = min;
+            int i3 = 0;
+            for (int size = list.size() - 1; size >= 0; size--) {
+                float floatValue = ((Float) ((Pair) list.get(size)).second).floatValue();
+                int intValue = ((Integer) ((Pair) list.get(size)).first).intValue();
+                if (floatValue < FullScreenMagnificationGestureHandler.MAX_SCALE || 1.0f <= floatValue) {
+                    throw new IllegalArgumentException("Invalid default min ratio: wt=" + intValue + " minRatio=" + floatValue);
                 }
-                contextAssignment.context.cancelExecutingJobLocked(contextAssignment.preemptReasonCode, 2, contextAssignment.preemptReason);
-            } else {
-                JobStatus jobStatus = contextAssignment.newJob;
-                if (DEBUG) {
-                    Slog.d("JobScheduler.Concurrency", "About to run job on context " + contextAssignment.context.getId() + ", job: " + jobStatus);
+                this.mDefaultMinReservedSlotsRatio.put(intValue, Float.floatToRawIntBits(floatValue));
+                i3 = (int) ((this.mMaxTotal * floatValue) + i3);
+            }
+            int i4 = this.mDefaultMaxTotal;
+            if (i4 < 0 || i3 > i4) {
+                throw new IllegalArgumentException("Invalid default config: t=" + i2 + " min=" + list + " max=" + list2);
+            }
+            for (int size2 = list2.size() - 1; size2 >= 0; size2--) {
+                float floatValue2 = ((Float) ((Pair) list2.get(size2)).second).floatValue();
+                int intValue2 = ((Integer) ((Pair) list2.get(size2)).first).intValue();
+                if (floatValue2 < Float.intBitsToFloat(this.mDefaultMinReservedSlotsRatio.get(intValue2, 0)) || floatValue2 <= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                    throw new IllegalArgumentException("Invalid default config: t=" + i2 + " min=" + list + " max=" + list2);
                 }
-                startJobLocked(contextAssignment.context, jobStatus, contextAssignment.newWorkType);
+                this.mDefaultMaxAllowedSlotsRatio.put(intValue2, Float.floatToRawIntBits(floatValue2));
             }
-            contextAssignment.clear();
-            this.mContextAssignmentPool.release(contextAssignment);
+            update(new DeviceConfig.Properties.Builder("jobscheduler").build(), i);
+        }
+
+        public final void dump(IndentingPrintWriter indentingPrintWriter) {
+            StringBuilder sb = new StringBuilder(KEY_PREFIX_MAX_TOTAL);
+            String str = this.mConfigIdentifier;
+            sb.append(str);
+            indentingPrintWriter.print(sb.toString(), Integer.valueOf(this.mMaxTotal)).println();
+            indentingPrintWriter.print("concurrency_min_ratio_top_" + str, Integer.valueOf(this.mMinReservedSlots.get(1))).println();
+            indentingPrintWriter.print("concurrency_max_ratio_top_" + str, Integer.valueOf(this.mMaxAllowedSlots.get(1))).println();
+            indentingPrintWriter.print("concurrency_min_ratio_fgs_" + str, Integer.valueOf(this.mMinReservedSlots.get(2))).println();
+            indentingPrintWriter.print("concurrency_max_ratio_fgs_" + str, Integer.valueOf(this.mMaxAllowedSlots.get(2))).println();
+            indentingPrintWriter.print("concurrency_min_ratio_ui_" + str, Integer.valueOf(this.mMinReservedSlots.get(4))).println();
+            indentingPrintWriter.print("concurrency_max_ratio_ui_" + str, Integer.valueOf(this.mMaxAllowedSlots.get(4))).println();
+            indentingPrintWriter.print("concurrency_min_ratio_ej_" + str, Integer.valueOf(this.mMinReservedSlots.get(8))).println();
+            indentingPrintWriter.print("concurrency_max_ratio_ej_" + str, Integer.valueOf(this.mMaxAllowedSlots.get(8))).println();
+            indentingPrintWriter.print("concurrency_min_ratio_bg_" + str, Integer.valueOf(this.mMinReservedSlots.get(16))).println();
+            indentingPrintWriter.print("concurrency_max_ratio_bg_" + str, Integer.valueOf(this.mMaxAllowedSlots.get(16))).println();
+            indentingPrintWriter.print("concurrency_min_ratio_bguser_" + str, Integer.valueOf(this.mMinReservedSlots.get(32))).println();
+            indentingPrintWriter.print("concurrency_max_ratio_bguser_" + str, Integer.valueOf(this.mMaxAllowedSlots.get(32))).println();
+            indentingPrintWriter.print("concurrency_min_ratio_bguser_" + str, Integer.valueOf(this.mMinReservedSlots.get(64))).println();
+            indentingPrintWriter.print("concurrency_max_ratio_bguser_" + str, Integer.valueOf(this.mMaxAllowedSlots.get(64))).println();
+        }
+
+        public final int getMaxValue(DeviceConfig.Properties properties, String str, int i, int i2) {
+            return Math.max(1, (int) (this.mMaxTotal * Math.min(1.0f, properties.getFloat(str, Float.intBitsToFloat(this.mDefaultMaxAllowedSlotsRatio.get(i, i2))))));
+        }
+
+        public final int getMinValue(DeviceConfig.Properties properties, String str, int i, int i2, int i3) {
+            return Math.max(i2, Math.min(i3, (int) (this.mMaxTotal * Math.min(1.0f, properties.getFloat(str, Float.intBitsToFloat(this.mDefaultMinReservedSlotsRatio.get(i)))))));
+        }
+
+        public final void update(DeviceConfig.Properties properties, int i) {
+            StringBuilder sb = new StringBuilder(KEY_PREFIX_MAX_TOTAL);
+            String str = this.mConfigIdentifier;
+            sb.append(str);
+            this.mMaxTotal = Math.max(1, Math.min(i, properties.getInt(sb.toString(), this.mDefaultMaxTotal)));
+            int floatToIntBits = Float.floatToIntBits(1.0f);
+            this.mMaxAllowedSlots.clear();
+            int maxValue = getMaxValue(properties, "concurrency_max_ratio_top_" + str, 1, floatToIntBits);
+            this.mMaxAllowedSlots.put(1, maxValue);
+            int maxValue2 = getMaxValue(properties, "concurrency_max_ratio_fgs_" + str, 2, floatToIntBits);
+            this.mMaxAllowedSlots.put(2, maxValue2);
+            int maxValue3 = getMaxValue(properties, "concurrency_max_ratio_ui_" + str, 4, floatToIntBits);
+            this.mMaxAllowedSlots.put(4, maxValue3);
+            int maxValue4 = getMaxValue(properties, "concurrency_max_ratio_ej_" + str, 8, floatToIntBits);
+            this.mMaxAllowedSlots.put(8, maxValue4);
+            int maxValue5 = getMaxValue(properties, "concurrency_max_ratio_bg_" + str, 16, floatToIntBits);
+            this.mMaxAllowedSlots.put(16, maxValue5);
+            int maxValue6 = getMaxValue(properties, "concurrency_max_ratio_bguser_important_" + str, 32, floatToIntBits);
+            this.mMaxAllowedSlots.put(32, maxValue6);
+            int maxValue7 = getMaxValue(properties, "concurrency_max_ratio_bguser_" + str, 64, floatToIntBits);
+            this.mMaxAllowedSlots.put(64, maxValue7);
+            int i2 = this.mMaxTotal;
+            this.mMinReservedSlots.clear();
+            int minValue = getMinValue(properties, "concurrency_min_ratio_top_" + str, 1, 1, Math.min(maxValue, this.mMaxTotal));
+            this.mMinReservedSlots.put(1, minValue);
+            int i3 = i2 - minValue;
+            int minValue2 = getMinValue(properties, "concurrency_min_ratio_fgs_" + str, 2, 0, Math.min(maxValue2, i3));
+            this.mMinReservedSlots.put(2, minValue2);
+            int i4 = i3 - minValue2;
+            int minValue3 = getMinValue(properties, "concurrency_min_ratio_ui_" + str, 4, 0, Math.min(maxValue3, i4));
+            this.mMinReservedSlots.put(4, minValue3);
+            int i5 = i4 - minValue3;
+            int minValue4 = getMinValue(properties, "concurrency_min_ratio_ej_" + str, 8, 0, Math.min(maxValue4, i5));
+            this.mMinReservedSlots.put(8, minValue4);
+            int i6 = i5 - minValue4;
+            int minValue5 = getMinValue(properties, "concurrency_min_ratio_bg_" + str, 16, 0, Math.min(maxValue5, i6));
+            this.mMinReservedSlots.put(16, minValue5);
+            int i7 = i6 - minValue5;
+            int minValue6 = getMinValue(properties, "concurrency_min_ratio_bguser_important_" + str, 32, 0, Math.min(maxValue6, i7));
+            this.mMinReservedSlots.put(32, minValue6);
+            this.mMinReservedSlots.put(64, getMinValue(properties, "concurrency_min_ratio_bguser_" + str, 64, 0, Math.min(maxValue7, i7 - minValue6)));
         }
     }
 
-    public final void cleanUpAfterAssignmentChangesLocked(ArraySet arraySet, ArraySet arraySet2, List list, List list2, AssignmentInfo assignmentInfo, SparseIntArray sparseIntArray) {
-        for (int size = list2.size() - 1; size >= 0; size--) {
-            ContextAssignment contextAssignment = (ContextAssignment) list2.get(size);
-            contextAssignment.clear();
-            this.mContextAssignmentPool.release(contextAssignment);
-        }
-        for (int size2 = list.size() - 1; size2 >= 0; size2--) {
-            ContextAssignment contextAssignment2 = (ContextAssignment) list.get(size2);
-            contextAssignment2.clear();
-            this.mContextAssignmentPool.release(contextAssignment2);
-        }
-        for (int size3 = arraySet2.size() - 1; size3 >= 0; size3--) {
-            ContextAssignment contextAssignment3 = (ContextAssignment) arraySet2.valueAt(size3);
-            this.mIdleContexts.add(contextAssignment3.context);
-            contextAssignment3.clear();
-            this.mContextAssignmentPool.release(contextAssignment3);
-        }
-        arraySet.clear();
-        arraySet2.clear();
-        list2.clear();
-        list.clear();
-        assignmentInfo.clear();
-        sparseIntArray.clear();
-        this.mWorkCountTracker.resetStagingCount();
-        this.mActivePkgStats.forEach(this.mPackageStatsStagingCountClearer);
-    }
-
-    public boolean hasImmediacyPrivilegeLocked(JobStatus jobStatus, SparseIntArray sparseIntArray) {
-        if (!jobStatus.shouldTreatAsExpeditedJob() && !jobStatus.shouldTreatAsUserInitiatedJob()) {
-            return false;
-        }
-        if (jobStatus.lastEvaluatedBias == 40) {
-            return true;
-        }
-        int sourceUid = jobStatus.getSourceUid();
-        int i = sparseIntArray.get(sourceUid, 0);
-        if (i == 1) {
-            return false;
-        }
-        if (i == 2) {
-            return jobStatus.shouldTreatAsUserInitiatedJob();
-        }
-        if (i == 3) {
-            return true;
-        }
-        ActivityManagerInternal activityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
-        if (activityManagerInternal.getUidProcessState(sourceUid) == 2) {
-            sparseIntArray.put(sourceUid, 3);
-            return true;
-        }
-        if (jobStatus.shouldTreatAsExpeditedJob()) {
-            return false;
-        }
-        BackgroundStartPrivileges backgroundStartPrivileges = activityManagerInternal.getBackgroundStartPrivileges(sourceUid);
-        if (DEBUG) {
-            Slog.d("JobScheduler.Concurrency", "Job " + jobStatus.toShortString() + " bsp state: " + backgroundStartPrivileges);
-        }
-        boolean allowsBackgroundActivityStarts = backgroundStartPrivileges.allowsBackgroundActivityStarts();
-        sparseIntArray.put(sourceUid, allowsBackgroundActivityStarts ? 2 : 1);
-        return allowsBackgroundActivityStarts;
-    }
-
-    public void onUidBiasChangedLocked(int i, int i2) {
-        if ((i == 40 || i2 == 40) && this.mService.getPendingJobQueue().size() != 0) {
-            assignJobsToContextsLocked();
-        }
-    }
-
-    public JobServiceContext getRunningJobServiceContextLocked(JobStatus jobStatus) {
-        if (!this.mRunningJobs.contains(jobStatus)) {
-            return null;
-        }
-        for (int i = 0; i < this.mActiveServices.size(); i++) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(i);
-            if (jobServiceContext.getRunningJobLocked() == jobStatus) {
-                return jobServiceContext;
-            }
-        }
-        Slog.wtf("JobScheduler.Concurrency", "Couldn't find running job on a context");
-        this.mRunningJobs.remove(jobStatus);
-        if (jobStatus != null) {
-            JobSchedulerPackageFilter.getInstance().removeRunningJobs(jobStatus.getJob());
-        }
-        return null;
-    }
-
-    public boolean stopJobOnServiceContextLocked(JobStatus jobStatus, int i, int i2, String str) {
-        if (!this.mRunningJobs.contains(jobStatus)) {
-            return false;
-        }
-        for (int i3 = 0; i3 < this.mActiveServices.size(); i3++) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(i3);
-            if (jobServiceContext.getRunningJobLocked() == jobStatus) {
-                jobServiceContext.cancelExecutingJobLocked(i, i2, str);
-                return true;
-            }
-        }
-        Slog.wtf("JobScheduler.Concurrency", "Couldn't find running job on a context");
-        this.mRunningJobs.remove(jobStatus);
-        if (jobStatus != null) {
-            JobSchedulerPackageFilter.getInstance().removeRunningJobs(jobStatus.getJob());
-        }
-        return false;
-    }
-
-    public final void stopUnexemptedJobsForDoze() {
-        for (int i = 0; i < this.mActiveServices.size(); i++) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(i);
-            JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-            if (runningJobLocked != null && !runningJobLocked.canRunInDoze()) {
-                jobServiceContext.cancelExecutingJobLocked(4, 4, "cancelled due to doze");
-            }
-        }
-    }
-
-    public final void stopOvertimeJobsLocked(String str) {
-        for (int i = 0; i < this.mActiveServices.size(); i++) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(i);
-            if (jobServiceContext.getRunningJobLocked() != null && !jobServiceContext.isWithinExecutionGuaranteeTime()) {
+    /* renamed from: -$$Nest$mstopOvertimeJobsLocked, reason: not valid java name */
+    public static void m605$$Nest$mstopOvertimeJobsLocked(JobConcurrencyManager jobConcurrencyManager, String str) {
+        for (int i = 0; i < ((ArrayList) jobConcurrencyManager.mActiveServices).size(); i++) {
+            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) jobConcurrencyManager.mActiveServices).get(i);
+            if (jobServiceContext.mRunningJob != null && !jobServiceContext.isWithinExecutionGuaranteeTime()) {
                 jobServiceContext.cancelExecutingJobLocked(4, 3, str);
             }
         }
     }
 
-    public void maybeStopOvertimeJobsLocked(JobRestriction jobRestriction) {
-        for (int size = this.mActiveServices.size() - 1; size >= 0; size--) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(size);
-            JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-            if (runningJobLocked != null && !jobServiceContext.isWithinExecutionGuaranteeTime() && jobRestriction.isJobRestricted(runningJobLocked)) {
-                jobServiceContext.cancelExecutingJobLocked(jobRestriction.getStopReason(), jobRestriction.getInternalReason(), JobParameters.getInternalReasonCodeDescription(jobRestriction.getInternalReason()));
-            }
-        }
-    }
-
-    public void markJobsForUserStopLocked(int i, String str, String str2) {
-        for (int size = this.mActiveServices.size() - 1; size >= 0; size--) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(size);
-            JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-            if (runningJobLocked != null && i == runningJobLocked.getUserId() && runningJobLocked.getServiceComponent().getPackageName().equals(str)) {
-                jobServiceContext.markForProcessDeathLocked(13, 11, str2);
-            }
-        }
-    }
-
-    public void stopNonReadyActiveJobsLocked() {
-        for (int i = 0; i < this.mActiveServices.size(); i++) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(i);
-            JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-            if (runningJobLocked != null) {
-                if (!runningJobLocked.isReady()) {
-                    if (runningJobLocked.getEffectiveStandbyBucket() == 5 && runningJobLocked.getStopReason() == 12) {
-                        jobServiceContext.cancelExecutingJobLocked(runningJobLocked.getStopReason(), 6, "cancelled due to restricted bucket");
-                    } else {
-                        jobServiceContext.cancelExecutingJobLocked(runningJobLocked.getStopReason(), 1, "cancelled due to unsatisfied constraints");
-                    }
-                } else {
-                    JobRestriction checkIfRestricted = this.mService.checkIfRestricted(runningJobLocked);
-                    if (checkIfRestricted != null) {
-                        int internalReason = checkIfRestricted.getInternalReason();
-                        jobServiceContext.cancelExecutingJobLocked(checkIfRestricted.getStopReason(), internalReason, "restricted due to " + JobParameters.getInternalReasonCodeDescription(internalReason));
-                    }
-                }
-            }
-        }
-    }
-
-    public final void noteConcurrency(boolean z) {
-        this.mService.mJobPackageTracker.noteConcurrency(this.mRunningJobs.size(), this.mWorkCountTracker.getRunningJobCount(1));
-        if (z) {
-            sConcurrencyHistogramLogger.logSample(this.mActiveServices.size());
-        }
-    }
-
-    public final void updateNonRunningPrioritiesLocked(PendingJobQueue pendingJobQueue, boolean z) {
-        pendingJobQueue.resetIterator();
-        while (true) {
-            JobStatus next = pendingJobQueue.next();
-            if (next == null) {
-                return;
-            }
-            if (!this.mRunningJobs.contains(next)) {
-                next.lastEvaluatedBias = this.mService.evaluateJobBiasLocked(next);
-                if (z) {
-                    this.mWorkCountTracker.incrementPendingJobCount(getJobWorkTypes(next));
-                }
-            }
-        }
-    }
-
-    public final PackageStats getPkgStatsLocked(int i, String str) {
-        PackageStats packageStats = (PackageStats) this.mActivePkgStats.get(i, str);
-        if (packageStats != null) {
-            return packageStats;
-        }
-        PackageStats packageStats2 = (PackageStats) this.mPkgStatsPool.acquire();
-        if (packageStats2 == null) {
-            packageStats2 = new PackageStats();
-        }
-        PackageStats packageStats3 = packageStats2;
-        packageStats3.setPackage(i, str);
-        return packageStats3;
-    }
-
-    public boolean isPkgConcurrencyLimitedLocked(JobStatus jobStatus) {
-        PackageStats packageStats;
-        if (jobStatus.lastEvaluatedBias < 40 && this.mService.getPendingJobQueue().size() + this.mRunningJobs.size() >= this.mWorkTypeConfig.getMaxTotal() && (packageStats = (PackageStats) this.mActivePkgStats.get(jobStatus.getSourceUserId(), jobStatus.getSourcePackageName())) != null) {
-            return jobStatus.shouldTreatAsExpeditedJob() ? packageStats.numRunningEj + packageStats.numStagedEj >= this.mPkgConcurrencyLimitEj : packageStats.numRunningRegular + packageStats.numStagedRegular >= this.mPkgConcurrencyLimitRegular;
-        }
-        return false;
-    }
-
-    public final void startJobLocked(JobServiceContext jobServiceContext, JobStatus jobStatus, int i) {
-        List list = this.mService.mControllers;
-        int size = list.size();
-        PowerManager.WakeLock newWakeLock = this.mPowerManager.newWakeLock(1, jobStatus.getTag());
-        newWakeLock.setWorkSource(this.mService.deriveWorkSource(jobStatus.getSourceUid(), jobStatus.getSourcePackageName()));
-        newWakeLock.setReferenceCounted(false);
-        newWakeLock.acquire();
-        for (int i2 = 0; i2 < size; i2++) {
-            try {
-                ((StateController) list.get(i2)).prepareForExecutionLocked(jobStatus);
-            } finally {
-                newWakeLock.release();
-            }
-        }
-        PackageStats pkgStatsLocked = getPkgStatsLocked(jobStatus.getSourceUserId(), jobStatus.getSourcePackageName());
-        pkgStatsLocked.adjustStagedCount(false, jobStatus.shouldTreatAsExpeditedJob());
-        if (!jobServiceContext.executeRunnableJob(jobStatus, i)) {
-            Slog.e("JobScheduler.Concurrency", "Error executing " + jobStatus);
-            this.mWorkCountTracker.onStagedJobFailed(i);
-            for (int i3 = 0; i3 < size; i3++) {
-                ((StateController) list.get(i3)).unprepareFromExecutionLocked(jobStatus);
-            }
+    static {
+        if (ActivityManager.isLowRamDeviceStatic()) {
+            DEFAULT_CONCURRENCY_LIMIT = 8;
         } else {
-            this.mRunningJobs.add(jobStatus);
-            JobSchedulerPackageFilter.getInstance().addRunningJobs(jobStatus.getJob(), jobStatus.getUid());
-            this.mActiveServices.add(jobServiceContext);
-            this.mIdleContexts.remove(jobServiceContext);
-            this.mWorkCountTracker.onJobStarted(i);
-            pkgStatsLocked.adjustRunningCount(true, jobStatus.shouldTreatAsExpeditedJob());
-            this.mActivePkgStats.add(jobStatus.getSourceUserId(), jobStatus.getSourcePackageName(), pkgStatsLocked);
-            this.mService.resetPendingJobReasonCache(jobStatus);
-        }
-        if (this.mService.getPendingJobQueue().remove(jobStatus)) {
-            this.mService.mJobPackageTracker.noteNonpending(jobStatus);
-        }
-    }
-
-    public void onJobCompletedLocked(JobServiceContext jobServiceContext, JobStatus jobStatus, int i) {
-        String str;
-        int jobWorkTypes;
-        int canJobStart;
-        String str2;
-        int jobWorkTypes2;
-        int canJobStart2;
-        this.mWorkCountTracker.onJobFinished(i);
-        this.mRunningJobs.remove(jobStatus);
-        JobSchedulerPackageFilter.getInstance().removeRunningJobs(jobStatus.getJob());
-        this.mActiveServices.remove(jobServiceContext);
-        boolean z = true;
-        if (this.mIdleContexts.size() < 96) {
-            this.mIdleContexts.add(jobServiceContext);
-        } else {
-            this.mNumDroppedContexts++;
-        }
-        PackageStats packageStats = (PackageStats) this.mActivePkgStats.get(jobStatus.getSourceUserId(), jobStatus.getSourcePackageName());
-        if (packageStats == null) {
-            Slog.wtf("JobScheduler.Concurrency", "Running job didn't have an active PackageStats object");
-        } else {
-            packageStats.adjustRunningCount(false, jobStatus.startedAsExpeditedJob);
-            if (packageStats.numRunningEj <= 0 && packageStats.numRunningRegular <= 0) {
-                this.mActivePkgStats.delete(packageStats.userId, packageStats.packageName);
-                this.mPkgStatsPool.release(packageStats);
-            }
-        }
-        PendingJobQueue pendingJobQueue = this.mService.getPendingJobQueue();
-        if (pendingJobQueue.size() == 0) {
-            jobServiceContext.clearPreferredUid();
-            noteConcurrency(false);
-            return;
-        }
-        if (this.mActiveServices.size() >= this.mSteadyStateConcurrencyLimit) {
-            if (this.mMaxWaitTimeBypassEnabled) {
-                long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
-                long j = Long.MAX_VALUE;
-                for (int size = this.mActiveServices.size() - 1; size >= 0; size--) {
-                    j = Math.min(j, ((JobServiceContext) this.mActiveServices.get(size)).getRemainingGuaranteedTimeMs(millis));
-                }
-                z = true ^ (this.mWorkCountTracker.getPendingJobCount(4) <= 0 ? !(this.mWorkCountTracker.getPendingJobCount(8) <= 0 ? j < this.mMaxWaitRegularMs : j < this.mMaxWaitEjMs) : j >= this.mMaxWaitUIMs);
-            }
-            if (z) {
-                jobServiceContext.clearPreferredUid();
-                noteConcurrency(false);
-                return;
-            }
-        }
-        String str3 = "Already running similar job to: ";
-        JobStatus jobStatus2 = null;
-        if (jobServiceContext.getPreferredUid() != -1) {
-            updateCounterConfigLocked();
-            updateNonRunningPrioritiesLocked(pendingJobQueue, false);
-            pendingJobQueue.resetIterator();
-            int i2 = i;
-            int i3 = i2;
-            int i4 = 0;
-            int i5 = 0;
-            JobStatus jobStatus3 = null;
-            while (true) {
-                JobStatus next = pendingJobQueue.next();
-                if (next == null) {
-                    break;
-                }
-                if (this.mRunningJobs.contains(next)) {
-                    Slog.wtf("JobScheduler.Concurrency", "Pending queue contained a running job");
-                    if (DEBUG) {
-                        Slog.e("JobScheduler.Concurrency", "Pending+running job: " + next);
-                    }
-                    pendingJobQueue.remove(next);
-                    str2 = str3;
-                } else {
-                    if (DEBUG && isSimilarJobRunningLocked(next)) {
-                        Slog.w("JobScheduler.Concurrency", str3 + next);
-                    }
-                    str2 = str3;
-                    if (jobServiceContext.getPreferredUid() != next.getUid()) {
-                        if (jobStatus3 == null && !isPkgConcurrencyLimitedLocked(next) && (canJobStart2 = this.mWorkCountTracker.canJobStart((jobWorkTypes2 = getJobWorkTypes(next)))) != 0) {
-                            i5 = jobWorkTypes2;
-                            jobStatus3 = next;
-                            i4 = canJobStart2;
-                        }
-                    } else if ((next.lastEvaluatedBias > jobStatus.lastEvaluatedBias || !isPkgConcurrencyLimitedLocked(next)) && (jobStatus2 == null || jobStatus2.lastEvaluatedBias < next.lastEvaluatedBias)) {
-                        i3 = getJobWorkTypes(next);
-                        int canJobStart3 = this.mWorkCountTracker.canJobStart(i3);
-                        i2 = canJobStart3 == 0 ? i : canJobStart3;
-                        jobStatus2 = next;
-                        str3 = str2;
-                    }
-                }
-                str3 = str2;
-            }
-            if (jobStatus2 != null) {
-                if (DEBUG) {
-                    Slog.d("JobScheduler.Concurrency", "Running job " + jobStatus2 + " as preemption");
-                }
-                this.mWorkCountTracker.stageJob(i2, i3);
-                startJobLocked(jobServiceContext, jobStatus2, i2);
+            long totalSize = new MemInfoReader().getTotalSize();
+            DataUnit dataUnit = DataUnit.GIGABYTES;
+            if (totalSize <= dataUnit.toBytes(6L)) {
+                DEFAULT_CONCURRENCY_LIMIT = 16;
+            } else if (totalSize <= dataUnit.toBytes(8L)) {
+                DEFAULT_CONCURRENCY_LIMIT = 20;
+            } else if (totalSize <= dataUnit.toBytes(12L)) {
+                DEFAULT_CONCURRENCY_LIMIT = 32;
             } else {
-                boolean z2 = DEBUG;
-                if (z2) {
-                    Slog.d("JobScheduler.Concurrency", "Couldn't find preemption job for uid " + jobServiceContext.getPreferredUid());
-                }
-                jobServiceContext.clearPreferredUid();
-                if (jobStatus3 != null) {
-                    if (z2) {
-                        Slog.d("JobScheduler.Concurrency", "Running job " + jobStatus3 + " instead");
-                    }
-                    this.mWorkCountTracker.stageJob(i4, i5);
-                    startJobLocked(jobServiceContext, jobStatus3, i4);
-                }
-            }
-        } else {
-            String str4 = "Already running similar job to: ";
-            if (pendingJobQueue.size() > 0) {
-                updateCounterConfigLocked();
-                updateNonRunningPrioritiesLocked(pendingJobQueue, false);
-                pendingJobQueue.resetIterator();
-                int i6 = i;
-                int i7 = i6;
-                while (true) {
-                    JobStatus next2 = pendingJobQueue.next();
-                    if (next2 == null) {
-                        break;
-                    }
-                    if (this.mRunningJobs.contains(next2)) {
-                        Slog.wtf("JobScheduler.Concurrency", "Pending queue contained a running job");
-                        if (DEBUG) {
-                            Slog.e("JobScheduler.Concurrency", "Pending+running job: " + next2);
-                        }
-                        pendingJobQueue.remove(next2);
-                        str = str4;
-                    } else {
-                        if (DEBUG && isSimilarJobRunningLocked(next2)) {
-                            StringBuilder sb = new StringBuilder();
-                            str = str4;
-                            sb.append(str);
-                            sb.append(next2);
-                            Slog.w("JobScheduler.Concurrency", sb.toString());
-                        } else {
-                            str = str4;
-                        }
-                        if (!isPkgConcurrencyLimitedLocked(next2) && (canJobStart = this.mWorkCountTracker.canJobStart((jobWorkTypes = getJobWorkTypes(next2)))) != 0 && (jobStatus2 == null || jobStatus2.lastEvaluatedBias < next2.lastEvaluatedBias)) {
-                            jobStatus2 = next2;
-                            i7 = jobWorkTypes;
-                            i6 = canJobStart;
-                        }
-                    }
-                    str4 = str;
-                }
-                if (jobStatus2 != null) {
-                    if (DEBUG) {
-                        Slog.d("JobScheduler.Concurrency", "About to run job: " + jobStatus2);
-                    }
-                    this.mWorkCountTracker.stageJob(i6, i7);
-                    startJobLocked(jobServiceContext, jobStatus2, i6);
-                }
+                DEFAULT_CONCURRENCY_LIMIT = 40;
             }
         }
-        noteConcurrency(false);
+        int i = DEFAULT_CONCURRENCY_LIMIT;
+        int i2 = i / 2;
+        DEFAULT_PKG_CONCURRENCY_LIMIT_REGULAR = i2;
+        int i3 = (i * 4) / 10;
+        CONFIG_LIMITS_SCREEN_ON = new WorkConfigLimitsPerMemoryTrimLevel(new WorkTypeConfig("screen_on_normal", i, (i * 3) / 4, List.of(Pair.create(1, Float.valueOf(0.4f)), Pair.create(2, Float.valueOf(0.2f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.1f)), Pair.create(16, Float.valueOf(0.05f)), Pair.create(32, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.5f)), Pair.create(32, Float.valueOf(0.25f)), Pair.create(64, Float.valueOf(0.2f)))), new WorkTypeConfig("screen_on_moderate", i, i2, List.of(Pair.create(1, Float.valueOf(0.4f)), Pair.create(2, Float.valueOf(0.1f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.1f)), Pair.create(16, Float.valueOf(0.1f)), Pair.create(32, Float.valueOf(0.1f))), List.of(Pair.create(16, Float.valueOf(0.4f)), Pair.create(32, Float.valueOf(0.1f)), Pair.create(64, Float.valueOf(0.1f)))), new WorkTypeConfig("screen_on_low", i, i3, List.of(Pair.create(1, Float.valueOf(0.6f)), Pair.create(2, Float.valueOf(0.1f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.1f))), List.of(Pair.create(16, Float.valueOf(0.33333334f)), Pair.create(32, Float.valueOf(0.16666667f)), Pair.create(64, Float.valueOf(0.16666667f)))), new WorkTypeConfig("screen_on_critical", i, i3, List.of(Pair.create(1, Float.valueOf(0.7f)), Pair.create(2, Float.valueOf(0.1f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.16666667f)), Pair.create(32, Float.valueOf(0.16666667f)), Pair.create(64, Float.valueOf(0.16666667f)))));
+        CONFIG_LIMITS_SCREEN_OFF = new WorkConfigLimitsPerMemoryTrimLevel(new WorkTypeConfig("screen_off_normal", i, i, List.of(Pair.create(1, Float.valueOf(0.3f)), Pair.create(2, Float.valueOf(0.2f)), Pair.create(4, Float.valueOf(0.2f)), Pair.create(8, Float.valueOf(0.15f)), Pair.create(16, Float.valueOf(0.1f)), Pair.create(32, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.6f)), Pair.create(32, Float.valueOf(0.2f)), Pair.create(64, Float.valueOf(0.2f)))), new WorkTypeConfig("screen_off_moderate", i, (i * 9) / 10, List.of(Pair.create(1, Float.valueOf(0.3f)), Pair.create(2, Float.valueOf(0.2f)), Pair.create(4, Float.valueOf(0.2f)), Pair.create(8, Float.valueOf(0.15f)), Pair.create(16, Float.valueOf(0.1f)), Pair.create(32, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.5f)), Pair.create(32, Float.valueOf(0.1f)), Pair.create(64, Float.valueOf(0.1f)))), new WorkTypeConfig("screen_off_low", i, (i * 6) / 10, List.of(Pair.create(1, Float.valueOf(0.3f)), Pair.create(2, Float.valueOf(0.15f)), Pair.create(4, Float.valueOf(0.15f)), Pair.create(8, Float.valueOf(0.1f)), Pair.create(16, Float.valueOf(0.05f)), Pair.create(32, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.25f)), Pair.create(32, Float.valueOf(0.1f)), Pair.create(64, Float.valueOf(0.1f)))), new WorkTypeConfig("screen_off_critical", i, i3, List.of(Pair.create(1, Float.valueOf(0.3f)), Pair.create(2, Float.valueOf(0.1f)), Pair.create(4, Float.valueOf(0.1f)), Pair.create(8, Float.valueOf(0.05f))), List.of(Pair.create(16, Float.valueOf(0.1f)), Pair.create(32, Float.valueOf(0.1f)), Pair.create(64, Float.valueOf(0.1f)))));
+        sDeterminationComparator = new JobConcurrencyManager$$ExternalSyntheticLambda2();
+        sConcurrencyHistogramLogger = new Histogram("job_scheduler.value_hist_job_concurrency", new Histogram.UniformOptions(100, FullScreenMagnificationGestureHandler.MAX_SCALE, 99.0f));
     }
 
-    public String shouldStopRunningJobLocked(JobServiceContext jobServiceContext) {
-        JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-        if (runningJobLocked == null || jobServiceContext.isWithinExecutionGuaranteeTime()) {
-            return null;
-        }
-        if (this.mPowerManager.isPowerSaveMode()) {
-            return "battery saver";
-        }
-        if (this.mPowerManager.isDeviceIdleMode()) {
-            return "deep doze";
-        }
-        JobRestriction checkIfRestricted = this.mService.checkIfRestricted(runningJobLocked);
-        if (checkIfRestricted != null) {
-            return "restriction:" + JobParameters.getInternalReasonCodeDescription(checkIfRestricted.getInternalReason());
-        }
-        updateCounterConfigLocked();
-        int runningJobWorkType = jobServiceContext.getRunningJobWorkType();
-        if (this.mRunningJobs.size() > this.mWorkTypeConfig.getMaxTotal() || this.mWorkCountTracker.isOverTypeLimit(runningJobWorkType)) {
-            return "too many jobs running";
-        }
-        PendingJobQueue pendingJobQueue = this.mService.getPendingJobQueue();
-        if (pendingJobQueue.size() == 0) {
-            return null;
-        }
-        if (!runningJobLocked.shouldTreatAsExpeditedJob() && !runningJobLocked.startedAsExpeditedJob) {
-            if (this.mWorkCountTracker.getPendingJobCount(runningJobWorkType) > 0) {
-                return "blocking " + workTypeToString(runningJobWorkType) + " queue";
-            }
-            pendingJobQueue.resetIterator();
-            int i = 127;
-            do {
-                JobStatus next = pendingJobQueue.next();
-                if (next == null) {
-                    break;
-                }
-                int jobWorkTypes = getJobWorkTypes(next);
-                if ((jobWorkTypes & i) > 0 && this.mWorkCountTracker.canJobStart(jobWorkTypes, runningJobWorkType) != 0) {
-                    return "blocking other pending jobs";
-                }
-                i &= ~jobWorkTypes;
-            } while (i != 0);
-            return null;
-        }
-        if (runningJobWorkType == 32 || runningJobWorkType == 64) {
-            if (this.mWorkCountTracker.getPendingJobCount(32) > 0) {
-                return "blocking " + workTypeToString(32) + " queue";
-            }
-            if (this.mWorkCountTracker.getPendingJobCount(8) > 0 && this.mWorkCountTracker.canJobStart(8, runningJobWorkType) != 0) {
-                return "blocking " + workTypeToString(8) + " queue";
-            }
-        } else {
-            if (this.mWorkCountTracker.getPendingJobCount(8) > 0) {
-                return "blocking " + workTypeToString(8) + " queue";
-            }
-            if (runningJobLocked.startedWithImmediacyPrivilege) {
-                int i2 = 0;
-                for (int size = this.mRunningJobs.size() - 1; size >= 0; size--) {
-                    if (((JobStatus) this.mRunningJobs.valueAt(size)).startedWithImmediacyPrivilege) {
-                        i2++;
-                    }
-                }
-                if (i2 > this.mWorkTypeConfig.getMaxTotal() / 2) {
-                    return "prevent immediacy privilege dominance";
-                }
-            }
-        }
-        return null;
-    }
-
-    public boolean executeStopCommandLocked(PrintWriter printWriter, String str, int i, String str2, boolean z, int i2, int i3, int i4) {
-        boolean z2 = false;
-        for (int i5 = 0; i5 < this.mActiveServices.size(); i5++) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(i5);
-            JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-            if (jobServiceContext.stopIfExecutingLocked(str, i, str2, z, i2, i3, i4)) {
-                printWriter.print("Stopping job: ");
-                runningJobLocked.printUniqueId(printWriter);
-                printWriter.print(" ");
-                printWriter.println(runningJobLocked.getServiceComponent().flattenToShortString());
-                z2 = true;
-            }
-        }
-        return z2;
-    }
-
-    public Pair getEstimatedNetworkBytesLocked(String str, int i, String str2, int i2) {
-        for (int i3 = 0; i3 < this.mActiveServices.size(); i3++) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(i3);
-            JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-            if (runningJobLocked != null && runningJobLocked.matches(i, str2, i2) && runningJobLocked.getSourcePackageName().equals(str)) {
-                return jobServiceContext.getEstimatedNetworkBytes();
-            }
-        }
-        return null;
-    }
-
-    public Pair getTransferredNetworkBytesLocked(String str, int i, String str2, int i2) {
-        for (int i3 = 0; i3 < this.mActiveServices.size(); i3++) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(i3);
-            JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-            if (runningJobLocked != null && runningJobLocked.matches(i, str2, i2) && runningJobLocked.getSourcePackageName().equals(str)) {
-                return jobServiceContext.getTransferredNetworkBytes();
-            }
-        }
-        return null;
-    }
-
-    public boolean isNotificationAssociatedWithAnyUserInitiatedJobs(int i, int i2, String str) {
-        return this.mNotificationCoordinator.isNotificationAssociatedWithAnyUserInitiatedJobs(i, i2, str);
-    }
-
-    public boolean isNotificationChannelAssociatedWithAnyUserInitiatedJobs(String str, int i, String str2) {
-        return this.mNotificationCoordinator.isNotificationChannelAssociatedWithAnyUserInitiatedJobs(str, i, str2);
-    }
-
-    public final JobServiceContext createNewJobServiceContext() {
-        return this.mInjector.createJobServiceContext(this.mService, this, this.mNotificationCoordinator, IBatteryStats.Stub.asInterface(ServiceManager.getService("batterystats")), this.mService.mJobPackageTracker, AppSchedulingModuleThread.get().getLooper());
-    }
-
-    public final String printPendingQueueLocked() {
-        StringBuilder sb = new StringBuilder("Pending queue: ");
-        PendingJobQueue pendingJobQueue = this.mService.getPendingJobQueue();
-        pendingJobQueue.resetIterator();
-        while (true) {
-            JobStatus next = pendingJobQueue.next();
-            if (next != null) {
-                sb.append("(");
-                sb.append("{");
-                sb.append(next.getNamespace());
-                sb.append("} ");
-                sb.append(next.getJob().getId());
-                sb.append(", ");
-                sb.append(next.getUid());
-                sb.append(") ");
-            } else {
-                return sb.toString();
-            }
-        }
+    /* JADX WARN: Type inference failed for: r0v25, types: [com.android.server.job.JobConcurrencyManager$1] */
+    /* JADX WARN: Type inference failed for: r0v26, types: [com.android.server.job.JobConcurrencyManager$$ExternalSyntheticLambda1] */
+    public JobConcurrencyManager(JobSchedulerService jobSchedulerService, Injector injector) {
+        this.mService = jobSchedulerService;
+        this.mLock = jobSchedulerService.mLock;
+        Context context = jobSchedulerService.getContext();
+        this.mContext = context;
+        this.mInjector = injector;
+        this.mNotificationCoordinator = new JobNotificationCoordinator();
+        this.mActivityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
+        this.mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
+        this.mHandler = AppSchedulingModuleThread.getHandler();
+        this.mGracePeriodObserver = new GracePeriodObserver(context);
+        this.mShouldRestrictBgUser = context.getResources().getBoolean(R.bool.config_letterboxIsPolicyForIgnoringRequestedOrientationEnabled);
     }
 
     public static String printAssignments(String str, Collection... collectionArr) {
-        StringBuilder sb = new StringBuilder(str + ": ");
+        StringBuilder sb = new StringBuilder(str.concat(": "));
         for (int i = 0; i < collectionArr.length; i++) {
             int i2 = 0;
             for (ContextAssignment contextAssignment : collectionArr[i]) {
                 JobStatus jobStatus = contextAssignment.newJob;
                 if (jobStatus == null) {
-                    jobStatus = contextAssignment.context.getRunningJobLocked();
+                    jobStatus = contextAssignment.context.mRunningJob;
                 }
                 if (i > 0 || i2 > 0) {
                     sb.append(" ");
                 }
                 sb.append("(");
-                sb.append(contextAssignment.context.getId());
+                sb.append(contextAssignment.context.hashCode());
                 sb.append("=");
                 if (jobStatus == null) {
                     sb.append("nothing");
                 } else {
-                    if (jobStatus.getNamespace() != null) {
-                        sb.append(jobStatus.getNamespace());
-                        sb.append(XmlUtils.STRING_ARRAY_SEPARATOR);
+                    String str2 = jobStatus.mNamespace;
+                    if (str2 != null) {
+                        sb.append(str2);
+                        sb.append(":");
                     }
-                    sb.append(jobStatus.getJobId());
+                    sb.append(jobStatus.job.getId());
                     sb.append("/");
-                    sb.append(jobStatus.getUid());
+                    sb.append(jobStatus.callingUid);
                 }
                 sb.append(")");
                 i2++;
@@ -1262,31 +615,209 @@ public class JobConcurrencyManager {
         return sb.toString();
     }
 
-    public void updateConfigLocked() {
-        DeviceConfig.Properties properties = DeviceConfig.getProperties("jobscheduler", new String[0]);
-        this.mSteadyStateConcurrencyLimit = Math.max(8, Math.min(64, properties.getInt("concurrency_limit", DEFAULT_CONCURRENCY_LIMIT)));
-        this.mScreenOffAdjustmentDelayMs = properties.getLong("concurrency_screen_off_adjustment_delay_ms", 30000L);
-        WorkConfigLimitsPerMemoryTrimLevel workConfigLimitsPerMemoryTrimLevel = CONFIG_LIMITS_SCREEN_ON;
-        workConfigLimitsPerMemoryTrimLevel.normal.update(properties, this.mSteadyStateConcurrencyLimit);
-        workConfigLimitsPerMemoryTrimLevel.moderate.update(properties, this.mSteadyStateConcurrencyLimit);
-        workConfigLimitsPerMemoryTrimLevel.low.update(properties, this.mSteadyStateConcurrencyLimit);
-        workConfigLimitsPerMemoryTrimLevel.critical.update(properties, this.mSteadyStateConcurrencyLimit);
-        WorkConfigLimitsPerMemoryTrimLevel workConfigLimitsPerMemoryTrimLevel2 = CONFIG_LIMITS_SCREEN_OFF;
-        workConfigLimitsPerMemoryTrimLevel2.normal.update(properties, this.mSteadyStateConcurrencyLimit);
-        workConfigLimitsPerMemoryTrimLevel2.moderate.update(properties, this.mSteadyStateConcurrencyLimit);
-        workConfigLimitsPerMemoryTrimLevel2.low.update(properties, this.mSteadyStateConcurrencyLimit);
-        workConfigLimitsPerMemoryTrimLevel2.critical.update(properties, this.mSteadyStateConcurrencyLimit);
-        this.mPkgConcurrencyLimitEj = Math.max(1, Math.min(this.mSteadyStateConcurrencyLimit, properties.getInt(KEY_PKG_CONCURRENCY_LIMIT_EJ, 3)));
-        this.mPkgConcurrencyLimitRegular = Math.max(1, Math.min(this.mSteadyStateConcurrencyLimit, properties.getInt(KEY_PKG_CONCURRENCY_LIMIT_REGULAR, DEFAULT_PKG_CONCURRENCY_LIMIT_REGULAR)));
-        this.mMaxWaitTimeBypassEnabled = properties.getBoolean(KEY_ENABLE_MAX_WAIT_TIME_BYPASS, true);
-        long max = Math.max(0L, properties.getLong(KEY_MAX_WAIT_UI_MS, BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS));
-        this.mMaxWaitUIMs = max;
-        long max2 = Math.max(max, properties.getLong("concurrency_max_wait_ej_ms", BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS));
-        this.mMaxWaitEjMs = max2;
-        this.mMaxWaitRegularMs = Math.max(max2, properties.getLong("concurrency_max_wait_regular_ms", 1800000L));
+    public static String workTypeToString(int i) {
+        return i != 0 ? i != 1 ? i != 2 ? i != 4 ? i != 8 ? i != 16 ? i != 32 ? i != 64 ? BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "WORK(", ")") : "BGUSER" : "BGUSER_IMPORTANT" : "BG" : "EJ" : "UI" : "FGS" : "TOP" : "NONE";
     }
 
-    public void dumpLocked(final IndentingPrintWriter indentingPrintWriter, long j, long j2) {
+    public void addRunningJobForTesting(JobStatus jobStatus) {
+        JobServiceContext createNewJobServiceContext;
+        this.mRunningJobs.add(jobStatus);
+        PackageStats.m606$$Nest$madjustRunningCount(getPackageStatsForTesting(jobStatus.sourceUserId, jobStatus.sourcePackageName), true, jobStatus.shouldTreatAsExpeditedJob());
+        if (this.mIdleContexts.size() > 0) {
+            ArraySet arraySet = this.mIdleContexts;
+            createNewJobServiceContext = (JobServiceContext) arraySet.removeAt(arraySet.size() - 1);
+        } else {
+            createNewJobServiceContext = createNewJobServiceContext();
+        }
+        createNewJobServiceContext.executeRunnableJob(jobStatus, this.mWorkCountTracker.canJobStart(getJobWorkTypes(jobStatus)));
+        ((ArrayList) this.mActiveServices).add(createNewJobServiceContext);
+    }
+
+    public final void assignJobsToContextsLocked() {
+        int i;
+        StatLogger statLogger = this.mStatLogger;
+        long time = statLogger.getTime();
+        JobSchedulerService jobSchedulerService = this.mService;
+        boolean z = DEBUG;
+        if (z) {
+            StringBuilder sb = new StringBuilder("Pending queue: ");
+            PendingJobQueue pendingJobQueue = jobSchedulerService.mPendingJobQueue;
+            pendingJobQueue.mNeedToResetIterators = true;
+            while (true) {
+                JobStatus next = pendingJobQueue.next();
+                if (next == null) {
+                    break;
+                }
+                sb.append("({");
+                sb.append(next.mNamespace);
+                sb.append("} ");
+                sb.append(next.job.getId());
+                sb.append(", ");
+                sb.append(next.callingUid);
+                sb.append(") ");
+            }
+            Slog.d("JobScheduler.Concurrency", sb.toString());
+        }
+        if (jobSchedulerService.mPendingJobQueue.mSize == 0) {
+            i = 0;
+        } else {
+            ArraySet arraySet = this.mRecycledIdle;
+            ArrayList arrayList = this.mRecycledPreferredUidOnly;
+            ArrayList arrayList2 = this.mRecycledStoppable;
+            AssignmentInfo assignmentInfo = this.mRecycledAssignmentInfo;
+            prepareForAssignmentDeterminationLocked(arraySet, arrayList, arrayList2, assignmentInfo);
+            if (z) {
+                Slog.d("JobScheduler.Concurrency", printAssignments("running jobs initial", this.mRecycledStoppable, this.mRecycledPreferredUidOnly));
+            }
+            determineAssignmentsLocked(this.mRecycledChanged, this.mRecycledIdle, this.mRecycledPreferredUidOnly, this.mRecycledStoppable, this.mRecycledAssignmentInfo);
+            WorkCountTracker workCountTracker = this.mWorkCountTracker;
+            if (z) {
+                Slog.d("JobScheduler.Concurrency", printAssignments("running jobs final", this.mRecycledStoppable, this.mRecycledPreferredUidOnly, this.mRecycledChanged));
+                Slog.d("JobScheduler.Concurrency", "work count results: " + workCountTracker);
+            }
+            ArraySet arraySet2 = this.mRecycledChanged;
+            for (int size = arraySet2.size() - 1; size >= 0; size--) {
+                ContextAssignment contextAssignment = (ContextAssignment) arraySet2.valueAt(size);
+                JobStatus jobStatus = contextAssignment.context.mRunningJob;
+                if (jobStatus != null) {
+                    if (z) {
+                        Slog.d("JobScheduler.Concurrency", "preempting job: " + jobStatus);
+                    }
+                    contextAssignment.context.cancelExecutingJobLocked(contextAssignment.preemptReasonCode, 2, contextAssignment.preemptReason);
+                } else {
+                    JobStatus jobStatus2 = contextAssignment.newJob;
+                    if (z) {
+                        Slog.d("JobScheduler.Concurrency", "About to run job on context " + contextAssignment.context.hashCode() + ", job: " + jobStatus2);
+                    }
+                    startJobLocked(contextAssignment.newWorkType, contextAssignment.context, jobStatus2);
+                }
+                contextAssignment.clear();
+                this.mContextAssignmentPool.release(contextAssignment);
+            }
+            ArraySet arraySet3 = this.mRecycledChanged;
+            ArraySet arraySet4 = this.mRecycledIdle;
+            ArrayList arrayList3 = this.mRecycledPreferredUidOnly;
+            ArrayList arrayList4 = this.mRecycledStoppable;
+            SparseIntArray sparseIntArray = this.mRecycledPrivilegedState;
+            for (int size2 = arrayList4.size() - 1; size2 >= 0; size2--) {
+                ContextAssignment contextAssignment2 = (ContextAssignment) arrayList4.get(size2);
+                contextAssignment2.clear();
+                this.mContextAssignmentPool.release(contextAssignment2);
+            }
+            for (int size3 = arrayList3.size() - 1; size3 >= 0; size3--) {
+                ContextAssignment contextAssignment3 = (ContextAssignment) arrayList3.get(size3);
+                contextAssignment3.clear();
+                this.mContextAssignmentPool.release(contextAssignment3);
+            }
+            for (int size4 = arraySet4.size() - 1; size4 >= 0; size4--) {
+                ContextAssignment contextAssignment4 = (ContextAssignment) arraySet4.valueAt(size4);
+                this.mIdleContexts.add(contextAssignment4.context);
+                contextAssignment4.clear();
+                this.mContextAssignmentPool.release(contextAssignment4);
+            }
+            arraySet3.clear();
+            arraySet4.clear();
+            arrayList4.clear();
+            arrayList3.clear();
+            assignmentInfo.minPreferredUidOnlyWaitingTimeMs = 0L;
+            assignmentInfo.numRunningImmediacyPrivileged = 0;
+            assignmentInfo.numRunningUi = 0;
+            assignmentInfo.numRunningEj = 0;
+            assignmentInfo.numRunningReg = 0;
+            sparseIntArray.clear();
+            workCountTracker.mNumStartingJobs.clear();
+            this.mActivePkgStats.forEach(this.mPackageStatsStagingCountClearer);
+            noteConcurrency(true);
+            i = 0;
+        }
+        statLogger.logDurationStat(i, time);
+    }
+
+    public final JobServiceContext createNewJobServiceContext() {
+        IBatteryStats asInterface = IBatteryStats.Stub.asInterface(ServiceManager.getService("batterystats"));
+        JobPackageTracker jobPackageTracker = this.mService.mJobPackageTracker;
+        Looper looper = AppSchedulingModuleThread.get().getLooper();
+        this.mInjector.getClass();
+        return new JobServiceContext(this.mService, this, this.mNotificationCoordinator, asInterface, jobPackageTracker, looper);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x0145, code lost:
+    
+        r2 = true;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:117:0x032d  */
+    /* JADX WARN: Removed duplicated region for block: B:125:0x0369  */
+    /* JADX WARN: Removed duplicated region for block: B:130:0x0361  */
+    /* JADX WARN: Removed duplicated region for block: B:134:0x0275  */
+    /* JADX WARN: Removed duplicated region for block: B:42:0x0105  */
+    /* JADX WARN: Removed duplicated region for block: B:97:0x0204  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void determineAssignmentsLocked(android.util.ArraySet r34, android.util.ArraySet r35, java.util.List r36, java.util.List r37, com.android.server.job.JobConcurrencyManager.AssignmentInfo r38) {
+        /*
+            Method dump skipped, instructions count: 902
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.job.JobConcurrencyManager.determineAssignmentsLocked(android.util.ArraySet, android.util.ArraySet, java.util.List, java.util.List, com.android.server.job.JobConcurrencyManager$AssignmentInfo):void");
+    }
+
+    public final void dumpContextInfoLocked(IndentingPrintWriter indentingPrintWriter, JobSchedulerService$$ExternalSyntheticLambda5 jobSchedulerService$$ExternalSyntheticLambda5, long j, long j2) {
+        indentingPrintWriter.println("Active jobs:");
+        indentingPrintWriter.increaseIndent();
+        if (((ArrayList) this.mActiveServices).size() == 0) {
+            indentingPrintWriter.println("N/A");
+        }
+        for (int i = 0; i < ((ArrayList) this.mActiveServices).size(); i++) {
+            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) this.mActiveServices).get(i);
+            JobStatus jobStatus = jobServiceContext.mRunningJob;
+            if (jobStatus == null || jobSchedulerService$$ExternalSyntheticLambda5.test(jobStatus)) {
+                indentingPrintWriter.print("Slot #");
+                indentingPrintWriter.print(i);
+                indentingPrintWriter.print("(ID=");
+                indentingPrintWriter.print(jobServiceContext.hashCode());
+                indentingPrintWriter.print("): ");
+                jobServiceContext.dumpLocked(indentingPrintWriter, j);
+                if (jobStatus != null) {
+                    indentingPrintWriter.increaseIndent();
+                    indentingPrintWriter.increaseIndent();
+                    jobStatus.dump(indentingPrintWriter, false, j);
+                    indentingPrintWriter.decreaseIndent();
+                    indentingPrintWriter.print("Evaluated bias: ");
+                    indentingPrintWriter.println(JobInfo.getBiasString(jobStatus.lastEvaluatedBias));
+                    indentingPrintWriter.print("Active at ");
+                    TimeUtils.formatDuration(jobStatus.madeActive - j2, indentingPrintWriter);
+                    indentingPrintWriter.print(", pending for ");
+                    TimeUtils.formatDuration(jobStatus.madeActive - jobStatus.madePending, indentingPrintWriter);
+                    indentingPrintWriter.decreaseIndent();
+                    indentingPrintWriter.println();
+                }
+            }
+        }
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        indentingPrintWriter.print("Idle contexts (");
+        indentingPrintWriter.print(this.mIdleContexts.size());
+        indentingPrintWriter.println("):");
+        indentingPrintWriter.increaseIndent();
+        for (int i2 = 0; i2 < this.mIdleContexts.size(); i2++) {
+            JobServiceContext jobServiceContext2 = (JobServiceContext) this.mIdleContexts.valueAt(i2);
+            indentingPrintWriter.print("ID=");
+            indentingPrintWriter.print(jobServiceContext2.hashCode());
+            indentingPrintWriter.print(": ");
+            jobServiceContext2.dumpLocked(indentingPrintWriter, j);
+        }
+        indentingPrintWriter.decreaseIndent();
+        if (this.mNumDroppedContexts > 0) {
+            indentingPrintWriter.println();
+            indentingPrintWriter.print("Dropped ");
+            indentingPrintWriter.print(this.mNumDroppedContexts);
+            indentingPrintWriter.println(" contexts");
+        }
+    }
+
+    public final void dumpLocked(final IndentingPrintWriter indentingPrintWriter, long j, long j2) {
         indentingPrintWriter.println("Concurrency:");
         indentingPrintWriter.increaseIndent();
         try {
@@ -1321,13 +852,9 @@ public class JobConcurrencyManager {
             indentingPrintWriter.println();
             indentingPrintWriter.decreaseIndent();
             indentingPrintWriter.print("Screen state: current ");
-            String str = "ON";
             indentingPrintWriter.print(this.mCurrentInteractiveState ? "ON" : "OFF");
             indentingPrintWriter.print("  effective ");
-            if (!this.mEffectiveInteractiveState) {
-                str = "OFF";
-            }
-            indentingPrintWriter.print(str);
+            indentingPrintWriter.print(this.mEffectiveInteractiveState ? "ON" : "OFF");
             indentingPrintWriter.println();
             indentingPrintWriter.print("Last screen ON: ");
             long j3 = j - j2;
@@ -1348,7 +875,18 @@ public class JobConcurrencyManager {
             this.mActivePkgStats.forEach(new Consumer() { // from class: com.android.server.job.JobConcurrencyManager$$ExternalSyntheticLambda3
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    JobConcurrencyManager.PackageStats.m7325$$Nest$mdumpLocked((JobConcurrencyManager.PackageStats) obj, indentingPrintWriter);
+                    IndentingPrintWriter indentingPrintWriter2 = indentingPrintWriter;
+                    JobConcurrencyManager.PackageStats packageStats = (JobConcurrencyManager.PackageStats) obj;
+                    packageStats.getClass();
+                    indentingPrintWriter2.print("PackageStats{");
+                    indentingPrintWriter2.print(packageStats.userId);
+                    indentingPrintWriter2.print(PackageManagerShellCommandDataLoader.STDIN_PATH);
+                    indentingPrintWriter2.print(packageStats.packageName);
+                    indentingPrintWriter2.print("#runEJ", Integer.valueOf(packageStats.numRunningEj));
+                    indentingPrintWriter2.print("#runReg", Integer.valueOf(packageStats.numRunningRegular));
+                    indentingPrintWriter2.print("#stagedEJ", Integer.valueOf(packageStats.numStagedEj));
+                    indentingPrintWriter2.print("#stagedReg", Integer.valueOf(packageStats.numStagedRegular));
+                    indentingPrintWriter2.println("}");
                 }
             });
             indentingPrintWriter.decreaseIndent();
@@ -1362,580 +900,53 @@ public class JobConcurrencyManager {
         }
     }
 
-    public void dumpContextInfoLocked(IndentingPrintWriter indentingPrintWriter, Predicate predicate, long j, long j2) {
-        indentingPrintWriter.println("Active jobs:");
-        indentingPrintWriter.increaseIndent();
-        if (this.mActiveServices.size() == 0) {
-            indentingPrintWriter.println("N/A");
-        }
-        for (int i = 0; i < this.mActiveServices.size(); i++) {
-            JobServiceContext jobServiceContext = (JobServiceContext) this.mActiveServices.get(i);
-            JobStatus runningJobLocked = jobServiceContext.getRunningJobLocked();
-            if (runningJobLocked == null || predicate.test(runningJobLocked)) {
-                indentingPrintWriter.print("Slot #");
-                indentingPrintWriter.print(i);
-                indentingPrintWriter.print("(ID=");
-                indentingPrintWriter.print(jobServiceContext.getId());
-                indentingPrintWriter.print("): ");
-                jobServiceContext.dumpLocked(indentingPrintWriter, j);
-                if (runningJobLocked != null) {
-                    indentingPrintWriter.increaseIndent();
-                    indentingPrintWriter.increaseIndent();
-                    runningJobLocked.dump(indentingPrintWriter, false, j);
-                    indentingPrintWriter.decreaseIndent();
-                    indentingPrintWriter.print("Evaluated bias: ");
-                    indentingPrintWriter.println(JobInfo.getBiasString(runningJobLocked.lastEvaluatedBias));
-                    indentingPrintWriter.print("Active at ");
-                    TimeUtils.formatDuration(runningJobLocked.madeActive - j2, indentingPrintWriter);
-                    indentingPrintWriter.print(", pending for ");
-                    TimeUtils.formatDuration(runningJobLocked.madeActive - runningJobLocked.madePending, indentingPrintWriter);
-                    indentingPrintWriter.decreaseIndent();
-                    indentingPrintWriter.println();
-                }
-            }
-        }
-        indentingPrintWriter.decreaseIndent();
-        indentingPrintWriter.println();
-        indentingPrintWriter.print("Idle contexts (");
-        indentingPrintWriter.print(this.mIdleContexts.size());
-        indentingPrintWriter.println("):");
-        indentingPrintWriter.increaseIndent();
-        for (int i2 = 0; i2 < this.mIdleContexts.size(); i2++) {
-            JobServiceContext jobServiceContext2 = (JobServiceContext) this.mIdleContexts.valueAt(i2);
-            indentingPrintWriter.print("ID=");
-            indentingPrintWriter.print(jobServiceContext2.getId());
-            indentingPrintWriter.print(": ");
-            jobServiceContext2.dumpLocked(indentingPrintWriter, j);
-        }
-        indentingPrintWriter.decreaseIndent();
-        if (this.mNumDroppedContexts > 0) {
-            indentingPrintWriter.println();
-            indentingPrintWriter.print("Dropped ");
-            indentingPrintWriter.print(this.mNumDroppedContexts);
-            indentingPrintWriter.println(" contexts");
-        }
-    }
-
-    public void dumpProtoLocked(ProtoOutputStream protoOutputStream, long j, long j2, long j3) {
-        long start = protoOutputStream.start(j);
+    public final void dumpProtoLocked(ProtoOutputStream protoOutputStream, long j) {
+        long start = protoOutputStream.start(1146756268052L);
         protoOutputStream.write(1133871366145L, this.mCurrentInteractiveState);
         protoOutputStream.write(1133871366146L, this.mEffectiveInteractiveState);
-        protoOutputStream.write(1112396529667L, j3 - this.mLastScreenOnRealtime);
-        protoOutputStream.write(1112396529668L, j3 - this.mLastScreenOffRealtime);
+        protoOutputStream.write(1112396529667L, j - this.mLastScreenOnRealtime);
+        protoOutputStream.write(1112396529668L, j - this.mLastScreenOffRealtime);
         protoOutputStream.write(1120986464262L, this.mLastMemoryTrimLevel);
         this.mStatLogger.dumpProto(protoOutputStream, 1146756268039L);
         protoOutputStream.end(start);
     }
 
-    public boolean shouldRunAsFgUserJob(JobStatus jobStatus) {
-        if (!this.mShouldRestrictBgUser) {
-            return true;
+    public final boolean executeStopCommandLocked(PrintWriter printWriter, String str, int i, String str2, boolean z, int i2, int i3, int i4) {
+        boolean z2 = false;
+        for (int i5 = 0; i5 < ((ArrayList) this.mActiveServices).size(); i5++) {
+            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) this.mActiveServices).get(i5);
+            JobStatus jobStatus = jobServiceContext.mRunningJob;
+            if (jobStatus != null && ((i == -1 || i == UserHandle.getUserId(jobStatus.callingUid)) && ((str == null || str.equals(jobStatus.sourcePackageName)) && Objects.equals(str2, jobStatus.mNamespace) && ((!z || i2 == jobStatus.job.getId()) && jobServiceContext.mVerb == 2)))) {
+                jobServiceContext.mParams.setStopReason(i3, i4, "stop from shell");
+                jobServiceContext.sendStopMessageLocked("stop from shell");
+                printWriter.print("Stopping job: ");
+                jobStatus.printUniqueId(printWriter);
+                printWriter.print(" ");
+                printWriter.println(jobStatus.job.getService().flattenToShortString());
+                z2 = true;
+            }
         }
-        int sourceUserId = jobStatus.getSourceUserId();
-        UserManagerInternal userManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
-        UserInfo userInfo = userManagerInternal.getUserInfo(sourceUserId);
-        int i = userInfo.profileGroupId;
-        if (i != -10000 && i != sourceUserId) {
-            userInfo = userManagerInternal.getUserInfo(i);
-            sourceUserId = i;
-        }
-        return ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).getCurrentUserId() == sourceUserId || userInfo.isPrimary() || this.mGracePeriodObserver.isWithinGracePeriodForUser(sourceUserId);
+        return z2;
     }
 
-    public int getJobWorkTypes(JobStatus jobStatus) {
+    public final Pair getEstimatedNetworkBytesLocked(int i, int i2, String str, String str2) {
+        for (int i3 = 0; i3 < ((ArrayList) this.mActiveServices).size(); i3++) {
+            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) this.mActiveServices).get(i3);
+            JobStatus jobStatus = jobServiceContext.mRunningJob;
+            if (jobStatus != null && jobStatus.matches(i, i2, str2) && jobStatus.sourcePackageName.equals(str)) {
+                return Pair.create(Long.valueOf(jobServiceContext.mEstimatedDownloadBytes), Long.valueOf(jobServiceContext.mEstimatedUploadBytes));
+            }
+        }
+        return null;
+    }
+
+    public final int getJobWorkTypes(JobStatus jobStatus) {
         if (!shouldRunAsFgUserJob(jobStatus)) {
             return ((jobStatus.lastEvaluatedBias >= 35 || jobStatus.shouldTreatAsExpeditedJob() || jobStatus.shouldTreatAsUserInitiatedJob()) ? 32 : 0) | 64;
         }
         int i = jobStatus.lastEvaluatedBias;
         int i2 = i >= 40 ? 1 : i >= 35 ? 2 : 16;
         return jobStatus.shouldTreatAsExpeditedJob() ? i2 | 8 : jobStatus.shouldTreatAsUserInitiatedJob() ? i2 | 4 : i2;
-    }
-
-    /* loaded from: classes2.dex */
-    public class WorkTypeConfig {
-        static final String KEY_PREFIX_MAX_RATIO = "concurrency_max_ratio_";
-        static final String KEY_PREFIX_MAX_TOTAL = "concurrency_max_total_";
-        static final String KEY_PREFIX_MIN_RATIO = "concurrency_min_ratio_";
-        public final String mConfigIdentifier;
-        public final int mDefaultMaxTotal;
-        public int mMaxTotal;
-        public final SparseIntArray mMinReservedSlots = new SparseIntArray(7);
-        public final SparseIntArray mMaxAllowedSlots = new SparseIntArray(7);
-        public final SparseIntArray mDefaultMinReservedSlotsRatio = new SparseIntArray(7);
-        public final SparseIntArray mDefaultMaxAllowedSlotsRatio = new SparseIntArray(7);
-
-        public WorkTypeConfig(String str, int i, int i2, List list, List list2) {
-            this.mConfigIdentifier = str;
-            int min = Math.min(i2, i);
-            this.mMaxTotal = min;
-            this.mDefaultMaxTotal = min;
-            int i3 = 0;
-            for (int size = list.size() - 1; size >= 0; size--) {
-                float floatValue = ((Float) ((Pair) list.get(size)).second).floatValue();
-                int intValue = ((Integer) ((Pair) list.get(size)).first).intValue();
-                if (floatValue < DisplayPowerController2.RATE_FROM_DOZE_TO_ON || 1.0f <= floatValue) {
-                    throw new IllegalArgumentException("Invalid default min ratio: wt=" + intValue + " minRatio=" + floatValue);
-                }
-                this.mDefaultMinReservedSlotsRatio.put(intValue, Float.floatToRawIntBits(floatValue));
-                i3 = (int) (i3 + (this.mMaxTotal * floatValue));
-            }
-            int i4 = this.mDefaultMaxTotal;
-            if (i4 < 0 || i3 > i4) {
-                throw new IllegalArgumentException("Invalid default config: t=" + i2 + " min=" + list + " max=" + list2);
-            }
-            for (int size2 = list2.size() - 1; size2 >= 0; size2--) {
-                float floatValue2 = ((Float) ((Pair) list2.get(size2)).second).floatValue();
-                int intValue2 = ((Integer) ((Pair) list2.get(size2)).first).intValue();
-                if (floatValue2 < Float.intBitsToFloat(this.mDefaultMinReservedSlotsRatio.get(intValue2, 0)) || floatValue2 <= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    throw new IllegalArgumentException("Invalid default config: t=" + i2 + " min=" + list + " max=" + list2);
-                }
-                this.mDefaultMaxAllowedSlotsRatio.put(intValue2, Float.floatToRawIntBits(floatValue2));
-            }
-            update(new DeviceConfig.Properties.Builder("jobscheduler").build(), i);
-        }
-
-        public void update(DeviceConfig.Properties properties, int i) {
-            this.mMaxTotal = Math.max(1, Math.min(i, properties.getInt(KEY_PREFIX_MAX_TOTAL + this.mConfigIdentifier, this.mDefaultMaxTotal)));
-            int floatToIntBits = Float.floatToIntBits(1.0f);
-            this.mMaxAllowedSlots.clear();
-            int maxValue = getMaxValue(properties, "concurrency_max_ratio_top_" + this.mConfigIdentifier, 1, floatToIntBits);
-            this.mMaxAllowedSlots.put(1, maxValue);
-            int maxValue2 = getMaxValue(properties, "concurrency_max_ratio_fgs_" + this.mConfigIdentifier, 2, floatToIntBits);
-            this.mMaxAllowedSlots.put(2, maxValue2);
-            int maxValue3 = getMaxValue(properties, "concurrency_max_ratio_ui_" + this.mConfigIdentifier, 4, floatToIntBits);
-            this.mMaxAllowedSlots.put(4, maxValue3);
-            int maxValue4 = getMaxValue(properties, "concurrency_max_ratio_ej_" + this.mConfigIdentifier, 8, floatToIntBits);
-            this.mMaxAllowedSlots.put(8, maxValue4);
-            int maxValue5 = getMaxValue(properties, "concurrency_max_ratio_bg_" + this.mConfigIdentifier, 16, floatToIntBits);
-            this.mMaxAllowedSlots.put(16, maxValue5);
-            int maxValue6 = getMaxValue(properties, "concurrency_max_ratio_bguser_important_" + this.mConfigIdentifier, 32, floatToIntBits);
-            this.mMaxAllowedSlots.put(32, maxValue6);
-            int maxValue7 = getMaxValue(properties, "concurrency_max_ratio_bguser_" + this.mConfigIdentifier, 64, floatToIntBits);
-            this.mMaxAllowedSlots.put(64, maxValue7);
-            int i2 = this.mMaxTotal;
-            this.mMinReservedSlots.clear();
-            int minValue = getMinValue(properties, "concurrency_min_ratio_top_" + this.mConfigIdentifier, 1, 1, Math.min(maxValue, this.mMaxTotal));
-            this.mMinReservedSlots.put(1, minValue);
-            int i3 = i2 - minValue;
-            int minValue2 = getMinValue(properties, "concurrency_min_ratio_fgs_" + this.mConfigIdentifier, 2, 0, Math.min(maxValue2, i3));
-            this.mMinReservedSlots.put(2, minValue2);
-            int i4 = i3 - minValue2;
-            int minValue3 = getMinValue(properties, "concurrency_min_ratio_ui_" + this.mConfigIdentifier, 4, 0, Math.min(maxValue3, i4));
-            this.mMinReservedSlots.put(4, minValue3);
-            int i5 = i4 - minValue3;
-            int minValue4 = getMinValue(properties, "concurrency_min_ratio_ej_" + this.mConfigIdentifier, 8, 0, Math.min(maxValue4, i5));
-            this.mMinReservedSlots.put(8, minValue4);
-            int i6 = i5 - minValue4;
-            int minValue5 = getMinValue(properties, "concurrency_min_ratio_bg_" + this.mConfigIdentifier, 16, 0, Math.min(maxValue5, i6));
-            this.mMinReservedSlots.put(16, minValue5);
-            int i7 = i6 - minValue5;
-            int minValue6 = getMinValue(properties, "concurrency_min_ratio_bguser_important_" + this.mConfigIdentifier, 32, 0, Math.min(maxValue6, i7));
-            this.mMinReservedSlots.put(32, minValue6);
-            this.mMinReservedSlots.put(64, getMinValue(properties, "concurrency_min_ratio_bguser_" + this.mConfigIdentifier, 64, 0, Math.min(maxValue7, i7 - minValue6)));
-        }
-
-        public final int getMaxValue(DeviceConfig.Properties properties, String str, int i, int i2) {
-            return Math.max(1, (int) (this.mMaxTotal * Math.min(1.0f, properties.getFloat(str, Float.intBitsToFloat(this.mDefaultMaxAllowedSlotsRatio.get(i, i2))))));
-        }
-
-        public final int getMinValue(DeviceConfig.Properties properties, String str, int i, int i2, int i3) {
-            return Math.max(i2, Math.min(i3, (int) (this.mMaxTotal * Math.min(1.0f, properties.getFloat(str, Float.intBitsToFloat(this.mDefaultMinReservedSlotsRatio.get(i)))))));
-        }
-
-        public int getMaxTotal() {
-            return this.mMaxTotal;
-        }
-
-        public int getMax(int i) {
-            return this.mMaxAllowedSlots.get(i, this.mMaxTotal);
-        }
-
-        public int getMinReserved(int i) {
-            return this.mMinReservedSlots.get(i);
-        }
-
-        public void dump(IndentingPrintWriter indentingPrintWriter) {
-            indentingPrintWriter.print(KEY_PREFIX_MAX_TOTAL + this.mConfigIdentifier, Integer.valueOf(this.mMaxTotal)).println();
-            indentingPrintWriter.print("concurrency_min_ratio_top_" + this.mConfigIdentifier, Integer.valueOf(this.mMinReservedSlots.get(1))).println();
-            indentingPrintWriter.print("concurrency_max_ratio_top_" + this.mConfigIdentifier, Integer.valueOf(this.mMaxAllowedSlots.get(1))).println();
-            indentingPrintWriter.print("concurrency_min_ratio_fgs_" + this.mConfigIdentifier, Integer.valueOf(this.mMinReservedSlots.get(2))).println();
-            indentingPrintWriter.print("concurrency_max_ratio_fgs_" + this.mConfigIdentifier, Integer.valueOf(this.mMaxAllowedSlots.get(2))).println();
-            indentingPrintWriter.print("concurrency_min_ratio_ui_" + this.mConfigIdentifier, Integer.valueOf(this.mMinReservedSlots.get(4))).println();
-            indentingPrintWriter.print("concurrency_max_ratio_ui_" + this.mConfigIdentifier, Integer.valueOf(this.mMaxAllowedSlots.get(4))).println();
-            indentingPrintWriter.print("concurrency_min_ratio_ej_" + this.mConfigIdentifier, Integer.valueOf(this.mMinReservedSlots.get(8))).println();
-            indentingPrintWriter.print("concurrency_max_ratio_ej_" + this.mConfigIdentifier, Integer.valueOf(this.mMaxAllowedSlots.get(8))).println();
-            indentingPrintWriter.print("concurrency_min_ratio_bg_" + this.mConfigIdentifier, Integer.valueOf(this.mMinReservedSlots.get(16))).println();
-            indentingPrintWriter.print("concurrency_max_ratio_bg_" + this.mConfigIdentifier, Integer.valueOf(this.mMaxAllowedSlots.get(16))).println();
-            indentingPrintWriter.print("concurrency_min_ratio_bguser_" + this.mConfigIdentifier, Integer.valueOf(this.mMinReservedSlots.get(32))).println();
-            indentingPrintWriter.print("concurrency_max_ratio_bguser_" + this.mConfigIdentifier, Integer.valueOf(this.mMaxAllowedSlots.get(32))).println();
-            indentingPrintWriter.print("concurrency_min_ratio_bguser_" + this.mConfigIdentifier, Integer.valueOf(this.mMinReservedSlots.get(64))).println();
-            indentingPrintWriter.print("concurrency_max_ratio_bguser_" + this.mConfigIdentifier, Integer.valueOf(this.mMaxAllowedSlots.get(64))).println();
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class WorkConfigLimitsPerMemoryTrimLevel {
-        public final WorkTypeConfig critical;
-        public final WorkTypeConfig low;
-        public final WorkTypeConfig moderate;
-        public final WorkTypeConfig normal;
-
-        public WorkConfigLimitsPerMemoryTrimLevel(WorkTypeConfig workTypeConfig, WorkTypeConfig workTypeConfig2, WorkTypeConfig workTypeConfig3, WorkTypeConfig workTypeConfig4) {
-            this.normal = workTypeConfig;
-            this.moderate = workTypeConfig2;
-            this.low = workTypeConfig3;
-            this.critical = workTypeConfig4;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class GracePeriodObserver extends UserSwitchObserver {
-        int mGracePeriod;
-        final SparseLongArray mGracePeriodExpiration = new SparseLongArray();
-        public final Object mLock = new Object();
-        public int mCurrentUserId = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).getCurrentUserId();
-        public final UserManagerInternal mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
-
-        public GracePeriodObserver(Context context) {
-            this.mGracePeriod = Math.max(0, context.getResources().getInteger(R.integer.config_screenBrightnessSettingDefault));
-        }
-
-        public void onUserSwitchComplete(int i) {
-            long millis = JobSchedulerService.sElapsedRealtimeClock.millis() + this.mGracePeriod;
-            synchronized (this.mLock) {
-                int i2 = this.mCurrentUserId;
-                if (i2 != -10000 && this.mUserManagerInternal.exists(i2)) {
-                    this.mGracePeriodExpiration.append(this.mCurrentUserId, millis);
-                }
-                this.mGracePeriodExpiration.delete(i);
-                this.mCurrentUserId = i;
-            }
-        }
-
-        public void onUserRemoved(int i) {
-            synchronized (this.mLock) {
-                this.mGracePeriodExpiration.delete(i);
-            }
-        }
-
-        public boolean isWithinGracePeriodForUser(int i) {
-            boolean z;
-            synchronized (this.mLock) {
-                z = i == this.mCurrentUserId || JobSchedulerService.sElapsedRealtimeClock.millis() < this.mGracePeriodExpiration.get(i, Long.MAX_VALUE);
-            }
-            return z;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class WorkCountTracker {
-        public int mConfigMaxTotal;
-        public final SparseIntArray mConfigNumReservedSlots = new SparseIntArray(7);
-        public final SparseIntArray mConfigAbsoluteMaxSlots = new SparseIntArray(7);
-        public final SparseIntArray mRecycledReserved = new SparseIntArray(7);
-        public final SparseIntArray mNumActuallyReservedSlots = new SparseIntArray(7);
-        public final SparseIntArray mNumPendingJobs = new SparseIntArray(7);
-        public final SparseIntArray mNumRunningJobs = new SparseIntArray(7);
-        public final SparseIntArray mNumStartingJobs = new SparseIntArray(7);
-        public int mNumUnspecializedRemaining = 0;
-
-        public void setConfig(WorkTypeConfig workTypeConfig) {
-            this.mConfigMaxTotal = workTypeConfig.getMaxTotal();
-            for (int i = 1; i < 127; i <<= 1) {
-                this.mConfigNumReservedSlots.put(i, workTypeConfig.getMinReserved(i));
-                this.mConfigAbsoluteMaxSlots.put(i, workTypeConfig.getMax(i));
-            }
-            this.mNumUnspecializedRemaining = this.mConfigMaxTotal;
-            for (int size = this.mNumRunningJobs.size() - 1; size >= 0; size--) {
-                this.mNumUnspecializedRemaining -= Math.max(this.mNumRunningJobs.valueAt(size), this.mConfigNumReservedSlots.get(this.mNumRunningJobs.keyAt(size)));
-            }
-        }
-
-        public void resetCounts() {
-            this.mNumActuallyReservedSlots.clear();
-            this.mNumPendingJobs.clear();
-            this.mNumRunningJobs.clear();
-            resetStagingCount();
-        }
-
-        public void resetStagingCount() {
-            this.mNumStartingJobs.clear();
-        }
-
-        public void incrementRunningJobCount(int i) {
-            SparseIntArray sparseIntArray = this.mNumRunningJobs;
-            sparseIntArray.put(i, sparseIntArray.get(i) + 1);
-        }
-
-        public void incrementPendingJobCount(int i) {
-            adjustPendingJobCount(i, true);
-        }
-
-        public void decrementPendingJobCount(int i) {
-            if (adjustPendingJobCount(i, false) > 1) {
-                for (int i2 = 1; i2 <= i; i2 <<= 1) {
-                    if ((i2 & i) == i2) {
-                        maybeAdjustReservations(i2);
-                    }
-                }
-            }
-        }
-
-        public final int adjustPendingJobCount(int i, boolean z) {
-            int i2 = z ? 1 : -1;
-            int i3 = 0;
-            for (int i4 = 1; i4 <= i; i4 <<= 1) {
-                if ((i & i4) == i4) {
-                    SparseIntArray sparseIntArray = this.mNumPendingJobs;
-                    sparseIntArray.put(i4, sparseIntArray.get(i4) + i2);
-                    i3++;
-                }
-            }
-            return i3;
-        }
-
-        public void stageJob(int i, int i2) {
-            int i3 = this.mNumStartingJobs.get(i) + 1;
-            this.mNumStartingJobs.put(i, i3);
-            decrementPendingJobCount(i2);
-            if (i3 + this.mNumRunningJobs.get(i) > this.mNumActuallyReservedSlots.get(i)) {
-                this.mNumUnspecializedRemaining--;
-            }
-        }
-
-        public void onStagedJobFailed(int i) {
-            int i2 = this.mNumStartingJobs.get(i);
-            if (i2 == 0) {
-                Slog.e("JobScheduler.Concurrency", "# staged jobs for " + i + " went negative.");
-                return;
-            }
-            this.mNumStartingJobs.put(i, i2 - 1);
-            maybeAdjustReservations(i);
-        }
-
-        public final void maybeAdjustReservations(int i) {
-            int max = Math.max(this.mConfigNumReservedSlots.get(i), this.mNumRunningJobs.get(i) + this.mNumStartingJobs.get(i) + this.mNumPendingJobs.get(i));
-            if (max < this.mNumActuallyReservedSlots.get(i)) {
-                this.mNumActuallyReservedSlots.put(i, max);
-                int i2 = 0;
-                for (int i3 = 0; i3 < this.mNumActuallyReservedSlots.size(); i3++) {
-                    int keyAt = this.mNumActuallyReservedSlots.keyAt(i3);
-                    if (i2 == 0 || keyAt < i2) {
-                        int i4 = this.mNumRunningJobs.get(keyAt) + this.mNumStartingJobs.get(keyAt) + this.mNumPendingJobs.get(keyAt);
-                        if (this.mNumActuallyReservedSlots.valueAt(i3) < this.mConfigAbsoluteMaxSlots.get(keyAt) && i4 > this.mNumActuallyReservedSlots.valueAt(i3)) {
-                            i2 = keyAt;
-                        }
-                    }
-                }
-                if (i2 != 0) {
-                    SparseIntArray sparseIntArray = this.mNumActuallyReservedSlots;
-                    sparseIntArray.put(i2, sparseIntArray.get(i2) + 1);
-                } else {
-                    this.mNumUnspecializedRemaining++;
-                }
-            }
-        }
-
-        public void onJobStarted(int i) {
-            SparseIntArray sparseIntArray = this.mNumRunningJobs;
-            sparseIntArray.put(i, sparseIntArray.get(i) + 1);
-            int i2 = this.mNumStartingJobs.get(i);
-            if (i2 == 0) {
-                Slog.e("JobScheduler.Concurrency", "# stated jobs for " + i + " went negative.");
-                return;
-            }
-            this.mNumStartingJobs.put(i, i2 - 1);
-        }
-
-        public void onJobFinished(int i) {
-            int i2 = this.mNumRunningJobs.get(i) - 1;
-            if (i2 < 0) {
-                Slog.e("JobScheduler.Concurrency", "# running jobs for " + i + " went negative.");
-                return;
-            }
-            this.mNumRunningJobs.put(i, i2);
-            maybeAdjustReservations(i);
-        }
-
-        public void onCountDone() {
-            this.mNumUnspecializedRemaining = this.mConfigMaxTotal;
-            for (int i = 1; i < 127; i <<= 1) {
-                int i2 = this.mNumRunningJobs.get(i);
-                this.mRecycledReserved.put(i, i2);
-                this.mNumUnspecializedRemaining -= i2;
-            }
-            for (int i3 = 1; i3 < 127; i3 <<= 1) {
-                int i4 = this.mNumRunningJobs.get(i3) + this.mNumPendingJobs.get(i3);
-                int i5 = this.mRecycledReserved.get(i3);
-                int max = Math.max(0, Math.min(this.mNumUnspecializedRemaining, Math.min(i4, this.mConfigNumReservedSlots.get(i3) - i5)));
-                this.mRecycledReserved.put(i3, i5 + max);
-                this.mNumUnspecializedRemaining -= max;
-            }
-            for (int i6 = 1; i6 < 127; i6 <<= 1) {
-                int i7 = this.mNumRunningJobs.get(i6) + this.mNumPendingJobs.get(i6);
-                int i8 = this.mRecycledReserved.get(i6);
-                int max2 = Math.max(0, Math.min(this.mNumUnspecializedRemaining, Math.min(this.mConfigAbsoluteMaxSlots.get(i6), i7) - i8));
-                this.mNumActuallyReservedSlots.put(i6, i8 + max2);
-                this.mNumUnspecializedRemaining -= max2;
-            }
-        }
-
-        public int canJobStart(int i) {
-            for (int i2 = 1; i2 <= i; i2 <<= 1) {
-                if ((i & i2) == i2) {
-                    if (this.mNumRunningJobs.get(i2) + this.mNumStartingJobs.get(i2) < Math.min(this.mConfigAbsoluteMaxSlots.get(i2), this.mNumActuallyReservedSlots.get(i2) + this.mNumUnspecializedRemaining)) {
-                        return i2;
-                    }
-                }
-            }
-            return 0;
-        }
-
-        public int canJobStart(int i, int i2) {
-            boolean z;
-            int i3 = this.mNumRunningJobs.get(i2);
-            if (i2 == 0 || i3 <= 0) {
-                z = false;
-            } else {
-                this.mNumRunningJobs.put(i2, i3 - 1);
-                this.mNumUnspecializedRemaining++;
-                z = true;
-            }
-            int canJobStart = canJobStart(i);
-            if (z) {
-                this.mNumRunningJobs.put(i2, i3);
-                this.mNumUnspecializedRemaining--;
-            }
-            return canJobStart;
-        }
-
-        public int getPendingJobCount(int i) {
-            return this.mNumPendingJobs.get(i, 0);
-        }
-
-        public int getRunningJobCount(int i) {
-            return this.mNumRunningJobs.get(i, 0);
-        }
-
-        public boolean isOverTypeLimit(int i) {
-            return getRunningJobCount(i) > this.mConfigAbsoluteMaxSlots.get(i);
-        }
-
-        public String toString() {
-            return "Config={tot=" + this.mConfigMaxTotal + " mins=" + this.mConfigNumReservedSlots + " maxs=" + this.mConfigAbsoluteMaxSlots + "}, act res=" + this.mNumActuallyReservedSlots + ", Pending=" + this.mNumPendingJobs + ", Running=" + this.mNumRunningJobs + ", Staged=" + this.mNumStartingJobs + ", # unspecialized remaining=" + this.mNumUnspecializedRemaining;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class PackageStats {
-        public int numRunningEj;
-        public int numRunningRegular;
-        public int numStagedEj;
-        public int numStagedRegular;
-        public String packageName;
-        public int userId;
-
-        /* renamed from: -$$Nest$mdumpLocked */
-        public static /* bridge */ /* synthetic */ void m7325$$Nest$mdumpLocked(PackageStats packageStats, IndentingPrintWriter indentingPrintWriter) {
-            packageStats.dumpLocked(indentingPrintWriter);
-        }
-
-        public final void setPackage(int i, String str) {
-            this.userId = i;
-            this.packageName = str;
-            this.numRunningRegular = 0;
-            this.numRunningEj = 0;
-            resetStagedCount();
-        }
-
-        public final void resetStagedCount() {
-            this.numStagedRegular = 0;
-            this.numStagedEj = 0;
-        }
-
-        public final void adjustRunningCount(boolean z, boolean z2) {
-            if (z2) {
-                this.numRunningEj = Math.max(0, this.numRunningEj + (z ? 1 : -1));
-            } else {
-                this.numRunningRegular = Math.max(0, this.numRunningRegular + (z ? 1 : -1));
-            }
-        }
-
-        public final void adjustStagedCount(boolean z, boolean z2) {
-            if (z2) {
-                this.numStagedEj = Math.max(0, this.numStagedEj + (z ? 1 : -1));
-            } else {
-                this.numStagedRegular = Math.max(0, this.numStagedRegular + (z ? 1 : -1));
-            }
-        }
-
-        public final void dumpLocked(IndentingPrintWriter indentingPrintWriter) {
-            indentingPrintWriter.print("PackageStats{");
-            indentingPrintWriter.print(this.userId);
-            indentingPrintWriter.print(PackageManagerShellCommandDataLoader.STDIN_PATH);
-            indentingPrintWriter.print(this.packageName);
-            indentingPrintWriter.print("#runEJ", Integer.valueOf(this.numRunningEj));
-            indentingPrintWriter.print("#runReg", Integer.valueOf(this.numRunningRegular));
-            indentingPrintWriter.print("#stagedEJ", Integer.valueOf(this.numStagedEj));
-            indentingPrintWriter.print("#stagedReg", Integer.valueOf(this.numStagedRegular));
-            indentingPrintWriter.println("}");
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class ContextAssignment {
-        public JobServiceContext context;
-        public JobStatus newJob;
-        public String preemptReason;
-        public String shouldStopJobReason;
-        public long timeUntilStoppableMs;
-        public int preferredUid = -1;
-        public int workType = 0;
-        public int preemptReasonCode = 0;
-        public int newWorkType = 0;
-
-        public void clear() {
-            this.context = null;
-            this.preferredUid = -1;
-            this.workType = 0;
-            this.preemptReason = null;
-            this.preemptReasonCode = 0;
-            this.timeUntilStoppableMs = 0L;
-            this.shouldStopJobReason = null;
-            this.newJob = null;
-            this.newWorkType = 0;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class AssignmentInfo {
-        public long minPreferredUidOnlyWaitingTimeMs;
-        public int numRunningEj;
-        public int numRunningImmediacyPrivileged;
-        public int numRunningReg;
-        public int numRunningUi;
-
-        public void clear() {
-            this.minPreferredUidOnlyWaitingTimeMs = 0L;
-            this.numRunningImmediacyPrivileged = 0;
-            this.numRunningUi = 0;
-            this.numRunningEj = 0;
-            this.numRunningReg = 0;
-        }
-    }
-
-    public void addRunningJobForTesting(JobStatus jobStatus) {
-        JobServiceContext createNewJobServiceContext;
-        this.mRunningJobs.add(jobStatus);
-        getPackageStatsForTesting(jobStatus.getSourceUserId(), jobStatus.getSourcePackageName()).adjustRunningCount(true, jobStatus.shouldTreatAsExpeditedJob());
-        if (this.mIdleContexts.size() > 0) {
-            ArraySet arraySet = this.mIdleContexts;
-            createNewJobServiceContext = (JobServiceContext) arraySet.removeAt(arraySet.size() - 1);
-        } else {
-            createNewJobServiceContext = createNewJobServiceContext();
-        }
-        createNewJobServiceContext.executeRunnableJob(jobStatus, this.mWorkCountTracker.canJobStart(getJobWorkTypes(jobStatus)));
-        this.mActiveServices.add(createNewJobServiceContext);
     }
 
     public int getPackageConcurrencyLimitEj() {
@@ -1948,10 +959,583 @@ public class JobConcurrencyManager {
         return pkgStatsLocked;
     }
 
-    /* loaded from: classes2.dex */
-    public class Injector {
-        public JobServiceContext createJobServiceContext(JobSchedulerService jobSchedulerService, JobConcurrencyManager jobConcurrencyManager, JobNotificationCoordinator jobNotificationCoordinator, IBatteryStats iBatteryStats, JobPackageTracker jobPackageTracker, Looper looper) {
-            return new JobServiceContext(jobSchedulerService, jobConcurrencyManager, jobNotificationCoordinator, iBatteryStats, jobPackageTracker, looper);
+    public final PackageStats getPkgStatsLocked(int i, String str) {
+        PackageStats packageStats = (PackageStats) this.mActivePkgStats.get(i, str);
+        if (packageStats != null) {
+            return packageStats;
+        }
+        PackageStats packageStats2 = (PackageStats) this.mPkgStatsPool.acquire();
+        if (packageStats2 == null) {
+            packageStats2 = new PackageStats();
+        }
+        PackageStats packageStats3 = packageStats2;
+        packageStats3.userId = i;
+        packageStats3.packageName = str;
+        packageStats3.numRunningRegular = 0;
+        packageStats3.numRunningEj = 0;
+        packageStats3.numStagedRegular = 0;
+        packageStats3.numStagedEj = 0;
+        return packageStats3;
+    }
+
+    public final JobServiceContext getRunningJobServiceContextLocked(JobStatus jobStatus) {
+        if (!this.mRunningJobs.contains(jobStatus)) {
+            return null;
+        }
+        for (int i = 0; i < ((ArrayList) this.mActiveServices).size(); i++) {
+            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) this.mActiveServices).get(i);
+            if (jobServiceContext.mRunningJob == jobStatus) {
+                return jobServiceContext;
+            }
+        }
+        Slog.wtf("JobScheduler.Concurrency", "Couldn't find running job on a context");
+        this.mRunningJobs.remove(jobStatus);
+        if (jobStatus != null) {
+            JobSchedulerPackageFilter jobSchedulerPackageFilter = JobSchedulerPackageFilter.JobSchedulerPackageFilterHolder.INSTANCE;
+            JobInfo jobInfo = jobStatus.job;
+            if (jobInfo != null) {
+                ((HashSet) jobSchedulerPackageFilter.mRunningJobSet).remove(jobInfo);
+            } else {
+                jobSchedulerPackageFilter.getClass();
+            }
+        }
+        return null;
+    }
+
+    public final Pair getTransferredNetworkBytesLocked(int i, int i2, String str, String str2) {
+        for (int i3 = 0; i3 < ((ArrayList) this.mActiveServices).size(); i3++) {
+            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) this.mActiveServices).get(i3);
+            JobStatus jobStatus = jobServiceContext.mRunningJob;
+            if (jobStatus != null && jobStatus.matches(i, i2, str2) && jobStatus.sourcePackageName.equals(str)) {
+                return Pair.create(Long.valueOf(jobServiceContext.mTransferredDownloadBytes), Long.valueOf(jobServiceContext.mTransferredUploadBytes));
+            }
+        }
+        return null;
+    }
+
+    public boolean hasImmediacyPrivilegeLocked(JobStatus jobStatus, SparseIntArray sparseIntArray) {
+        if (!jobStatus.shouldTreatAsExpeditedJob() && !jobStatus.shouldTreatAsUserInitiatedJob()) {
+            return false;
+        }
+        if (jobStatus.lastEvaluatedBias == 40) {
+            return true;
+        }
+        int i = jobStatus.sourceUid;
+        int i2 = sparseIntArray.get(i, 0);
+        if (i2 == 1) {
+            return false;
+        }
+        if (i2 == 2) {
+            return jobStatus.shouldTreatAsUserInitiatedJob();
+        }
+        if (i2 == 3) {
+            return true;
+        }
+        if (this.mActivityManagerInternal.getUidProcessState(i) == 2) {
+            sparseIntArray.put(i, 3);
+            return true;
+        }
+        if (jobStatus.shouldTreatAsExpeditedJob()) {
+            return false;
+        }
+        BackgroundStartPrivileges backgroundStartPrivileges = this.mActivityManagerInternal.getBackgroundStartPrivileges(i);
+        if (DEBUG) {
+            Slog.d("JobScheduler.Concurrency", "Job " + jobStatus.toShortString() + " bsp state: " + backgroundStartPrivileges);
+        }
+        boolean allowsBackgroundActivityStarts = backgroundStartPrivileges.allowsBackgroundActivityStarts();
+        sparseIntArray.put(i, allowsBackgroundActivityStarts ? 2 : 1);
+        return allowsBackgroundActivityStarts;
+    }
+
+    public boolean isPkgConcurrencyLimitedLocked(JobStatus jobStatus) {
+        PackageStats packageStats;
+        if (jobStatus.lastEvaluatedBias >= 40) {
+            return false;
+        }
+        if (this.mRunningJobs.size() + this.mService.mPendingJobQueue.mSize >= this.mWorkTypeConfig.mMaxTotal && (packageStats = (PackageStats) this.mActivePkgStats.get(jobStatus.sourceUserId, jobStatus.sourcePackageName)) != null) {
+            return jobStatus.shouldTreatAsExpeditedJob() ? packageStats.numRunningEj + packageStats.numStagedEj >= this.mPkgConcurrencyLimitEj : packageStats.numRunningRegular + packageStats.numStagedRegular >= this.mPkgConcurrencyLimitRegular;
+        }
+        return false;
+    }
+
+    public final boolean isSimilarJobRunningLocked(JobStatus jobStatus) {
+        for (int size = this.mRunningJobs.size() - 1; size >= 0; size--) {
+            JobStatus jobStatus2 = (JobStatus) this.mRunningJobs.valueAt(size);
+            if (jobStatus.matches(jobStatus2.callingUid, jobStatus2.job.getId(), jobStatus2.mNamespace)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final void markJobsForUserStopLocked(int i, String str, String str2) {
+        for (int size = ((ArrayList) this.mActiveServices).size() - 1; size >= 0; size--) {
+            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) this.mActiveServices).get(size);
+            JobStatus jobStatus = jobServiceContext.mRunningJob;
+            if (jobStatus != null && i == UserHandle.getUserId(jobStatus.callingUid) && jobStatus.job.getService().getPackageName().equals(str)) {
+                if (jobServiceContext.mVerb != 4) {
+                    if (JobServiceContext.DEBUG) {
+                        Slog.d("JobServiceContext", "Marking " + jobServiceContext.mRunningJob.toShortString() + " for death because 13:" + str2);
+                    }
+                    jobServiceContext.mDeathMarkStopReason = 13;
+                    jobServiceContext.mDeathMarkInternalStopReason = 11;
+                    jobServiceContext.mDeathMarkDebugReason = str2;
+                    if (jobServiceContext.mParams.getStopReason() == 0) {
+                        jobServiceContext.mParams.setStopReason(13, 11, str2);
+                    }
+                } else if (JobServiceContext.DEBUG) {
+                    BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("Too late to mark for death (verb="), jobServiceContext.mVerb, "), ignoring.", "JobServiceContext");
+                }
+            }
+        }
+    }
+
+    public final void maybeStopOvertimeJobsLocked(JobRestriction jobRestriction) {
+        for (int size = ((ArrayList) this.mActiveServices).size() - 1; size >= 0; size--) {
+            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) this.mActiveServices).get(size);
+            JobStatus jobStatus = jobServiceContext.mRunningJob;
+            if (jobStatus != null && !jobServiceContext.isWithinExecutionGuaranteeTime() && jobRestriction.isJobRestricted(jobStatus, this.mService.evaluateJobBiasLocked(jobStatus))) {
+                int i = jobRestriction.mInternalReason;
+                jobServiceContext.cancelExecutingJobLocked(jobRestriction.mStopReason, i, JobParameters.getInternalReasonCodeDescription(i));
+            }
+        }
+    }
+
+    public final void noteConcurrency(boolean z) {
+        JobPackageTracker jobPackageTracker = this.mService.mJobPackageTracker;
+        int size = this.mRunningJobs.size();
+        int i = this.mWorkCountTracker.mNumRunningJobs.get(1, 0);
+        JobPackageTracker.DataSet dataSet = jobPackageTracker.mCurDataSet;
+        if (size > dataSet.mMaxTotalActive) {
+            dataSet.mMaxTotalActive = size;
+        }
+        if (i > dataSet.mMaxFgActive) {
+            dataSet.mMaxFgActive = i;
+        }
+        if (z) {
+            sConcurrencyHistogramLogger.logSample(((ArrayList) this.mActiveServices).size());
+        }
+    }
+
+    public final void onAppRemovedLocked(int i, String str) {
+        PackageStats packageStats = (PackageStats) this.mActivePkgStats.get(UserHandle.getUserId(i), str);
+        if (packageStats != null) {
+            if (packageStats.numRunningEj <= 0 && packageStats.numRunningRegular <= 0) {
+                this.mActivePkgStats.delete(UserHandle.getUserId(i), str);
+                return;
+            }
+            Slog.w("JobScheduler.Concurrency", str + "(" + i + ") marked as removed before jobs stopped running");
+        }
+    }
+
+    public final void onInteractiveStateChanged(boolean z) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mCurrentInteractiveState == z) {
+                    return;
+                }
+                this.mCurrentInteractiveState = z;
+                if (DEBUG) {
+                    Slog.d("JobScheduler.Concurrency", "Interactive: " + z);
+                }
+                JobSchedulerService.sElapsedRealtimeClock.getClass();
+                long elapsedRealtime = SystemClock.elapsedRealtime();
+                if (z) {
+                    this.mLastScreenOnRealtime = elapsedRealtime;
+                    this.mEffectiveInteractiveState = true;
+                    this.mHandler.removeCallbacks(this.mRampUpForScreenOff);
+                } else {
+                    this.mLastScreenOffRealtime = elapsedRealtime;
+                    this.mHandler.postDelayed(this.mRampUpForScreenOff, this.mScreenOffAdjustmentDelayMs);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void onThirdPartyAppsCanStart() {
+        IBatteryStats asInterface = IBatteryStats.Stub.asInterface(ServiceManager.getService("batterystats"));
+        for (int i = 0; i < this.mSteadyStateConcurrencyLimit; i++) {
+            ArraySet arraySet = this.mIdleContexts;
+            JobSchedulerService jobSchedulerService = this.mService;
+            JobPackageTracker jobPackageTracker = jobSchedulerService.mJobPackageTracker;
+            Looper looper = AppSchedulingModuleThread.get().getLooper();
+            this.mInjector.getClass();
+            arraySet.add(new JobServiceContext(jobSchedulerService, this, this.mNotificationCoordinator, asInterface, jobPackageTracker, looper));
+        }
+    }
+
+    public final void onUserRemoved(int i) {
+        GracePeriodObserver gracePeriodObserver = this.mGracePeriodObserver;
+        synchronized (gracePeriodObserver.mLock) {
+            gracePeriodObserver.mGracePeriodExpiration.delete(i);
+        }
+    }
+
+    public void prepareForAssignmentDeterminationLocked(ArraySet arraySet, List list, List list2, AssignmentInfo assignmentInfo) {
+        JobServiceContext createNewJobServiceContext;
+        int i;
+        ArrayList arrayList;
+        int i2;
+        PendingJobQueue pendingJobQueue = this.mService.mPendingJobQueue;
+        List list3 = this.mActiveServices;
+        updateCounterConfigLocked();
+        WorkCountTracker workCountTracker = this.mWorkCountTracker;
+        workCountTracker.mNumActuallyReservedSlots.clear();
+        workCountTracker.mNumPendingJobs.clear();
+        workCountTracker.mNumRunningJobs.clear();
+        workCountTracker.mNumStartingJobs.clear();
+        int i3 = 1;
+        updateNonRunningPrioritiesLocked(pendingJobQueue, true);
+        ArrayList arrayList2 = (ArrayList) list3;
+        int size = arrayList2.size();
+        JobSchedulerService.sElapsedRealtimeClock.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        int i4 = 0;
+        long j = Long.MAX_VALUE;
+        while (i4 < size) {
+            JobServiceContext jobServiceContext = (JobServiceContext) arrayList2.get(i4);
+            JobStatus jobStatus = jobServiceContext.mRunningJob;
+            ContextAssignment contextAssignment = (ContextAssignment) this.mContextAssignmentPool.acquire();
+            if (contextAssignment == null) {
+                contextAssignment = new ContextAssignment();
+            }
+            contextAssignment.context = jobServiceContext;
+            if (jobStatus != null) {
+                int i5 = jobServiceContext.mRunningJobWorkType;
+                i = size;
+                SparseIntArray sparseIntArray = workCountTracker.mNumRunningJobs;
+                arrayList = arrayList2;
+                i2 = 1;
+                sparseIntArray.put(i5, sparseIntArray.get(i5) + 1);
+                if (jobStatus.startedWithImmediacyPrivilege) {
+                    assignmentInfo.numRunningImmediacyPrivileged++;
+                }
+                if (jobStatus.shouldTreatAsUserInitiatedJob()) {
+                    assignmentInfo.numRunningUi++;
+                } else if (jobStatus.startedAsExpeditedJob) {
+                    assignmentInfo.numRunningEj++;
+                } else {
+                    assignmentInfo.numRunningReg++;
+                }
+            } else {
+                i = size;
+                arrayList = arrayList2;
+                i2 = i3;
+            }
+            contextAssignment.preferredUid = jobServiceContext.mPreferredUid;
+            String shouldStopRunningJobLocked = shouldStopRunningJobLocked(jobServiceContext);
+            contextAssignment.shouldStopJobReason = shouldStopRunningJobLocked;
+            if (shouldStopRunningJobLocked != null) {
+                list2.add(contextAssignment);
+            } else {
+                long max = Math.max(0L, (jobServiceContext.mExecutionStartTimeElapsed + jobServiceContext.mMinExecutionGuaranteeMillis) - elapsedRealtime);
+                contextAssignment.timeUntilStoppableMs = max;
+                j = Math.min(j, max);
+                list.add(contextAssignment);
+            }
+            i4++;
+            i3 = i2;
+            size = i;
+            arrayList2 = arrayList;
+        }
+        int i6 = size;
+        int i7 = i3;
+        JobConcurrencyManager$$ExternalSyntheticLambda2 jobConcurrencyManager$$ExternalSyntheticLambda2 = sDeterminationComparator;
+        list.sort(jobConcurrencyManager$$ExternalSyntheticLambda2);
+        list2.sort(jobConcurrencyManager$$ExternalSyntheticLambda2);
+        for (int i8 = i6; i8 < this.mSteadyStateConcurrencyLimit; i8++) {
+            int size2 = this.mIdleContexts.size();
+            if (size2 > 0) {
+                createNewJobServiceContext = (JobServiceContext) this.mIdleContexts.removeAt(size2 - 1);
+            } else {
+                Slog.w("JobScheduler.Concurrency", "Had fewer than " + this.mSteadyStateConcurrencyLimit + " in existence");
+                createNewJobServiceContext = createNewJobServiceContext();
+            }
+            ContextAssignment contextAssignment2 = (ContextAssignment) this.mContextAssignmentPool.acquire();
+            if (contextAssignment2 == null) {
+                contextAssignment2 = new ContextAssignment();
+            }
+            contextAssignment2.context = createNewJobServiceContext;
+            arraySet.add(contextAssignment2);
+        }
+        workCountTracker.mNumUnspecializedRemaining = workCountTracker.mConfigMaxTotal;
+        for (int i9 = i7; i9 < 127; i9 <<= 1) {
+            int i10 = workCountTracker.mNumRunningJobs.get(i9);
+            workCountTracker.mRecycledReserved.put(i9, i10);
+            workCountTracker.mNumUnspecializedRemaining -= i10;
+        }
+        for (int i11 = i7; i11 < 127; i11 <<= 1) {
+            int i12 = workCountTracker.mNumPendingJobs.get(i11) + workCountTracker.mNumRunningJobs.get(i11);
+            int i13 = workCountTracker.mRecycledReserved.get(i11);
+            int max2 = Math.max(0, Math.min(workCountTracker.mNumUnspecializedRemaining, Math.min(i12, workCountTracker.mConfigNumReservedSlots.get(i11) - i13)));
+            workCountTracker.mRecycledReserved.put(i11, i13 + max2);
+            workCountTracker.mNumUnspecializedRemaining -= max2;
+        }
+        for (int i14 = i7; i14 < 127; i14 <<= 1) {
+            int i15 = workCountTracker.mNumPendingJobs.get(i14) + workCountTracker.mNumRunningJobs.get(i14);
+            int i16 = workCountTracker.mRecycledReserved.get(i14);
+            int max3 = Math.max(0, Math.min(workCountTracker.mNumUnspecializedRemaining, Math.min(workCountTracker.mConfigAbsoluteMaxSlots.get(i14), i15) - i16));
+            workCountTracker.mNumActuallyReservedSlots.put(i14, i16 + max3);
+            workCountTracker.mNumUnspecializedRemaining -= max3;
+        }
+        if (j == Long.MAX_VALUE) {
+            j = 0;
+        }
+        assignmentInfo.minPreferredUidOnlyWaitingTimeMs = j;
+    }
+
+    public boolean shouldRunAsFgUserJob(JobStatus jobStatus) {
+        if (!this.mShouldRestrictBgUser) {
+            return true;
+        }
+        int i = jobStatus.sourceUserId;
+        UserManagerInternal userManagerInternal = this.mUserManagerInternal;
+        UserInfo userInfo = userManagerInternal.getUserInfo(i);
+        int i2 = userInfo.profileGroupId;
+        if (i2 != -10000 && i2 != i) {
+            userInfo = userManagerInternal.getUserInfo(i2);
+            i = i2;
+        }
+        return this.mActivityManagerInternal.getCurrentUserId() == i || userInfo.isPrimary() || this.mGracePeriodObserver.isWithinGracePeriodForUser(i);
+    }
+
+    public final String shouldStopRunningJobLocked(JobServiceContext jobServiceContext) {
+        JobStatus jobStatus = jobServiceContext.mRunningJob;
+        if (jobStatus == null || jobServiceContext.isWithinExecutionGuaranteeTime()) {
+            return null;
+        }
+        if (this.mPowerManager.isPowerSaveMode()) {
+            return "battery saver";
+        }
+        if (this.mPowerManager.isDeviceIdleMode()) {
+            return "deep doze";
+        }
+        JobSchedulerService jobSchedulerService = this.mService;
+        JobRestriction checkIfRestricted = jobSchedulerService.checkIfRestricted(jobStatus);
+        if (checkIfRestricted != null) {
+            return "restriction:" + JobParameters.getInternalReasonCodeDescription(checkIfRestricted.mInternalReason);
+        }
+        updateCounterConfigLocked();
+        int i = jobServiceContext.mRunningJobWorkType;
+        if (this.mRunningJobs.size() > this.mWorkTypeConfig.mMaxTotal) {
+            return "too many jobs running";
+        }
+        WorkCountTracker workCountTracker = this.mWorkCountTracker;
+        int i2 = 0;
+        if (workCountTracker.mNumRunningJobs.get(i, 0) > workCountTracker.mConfigAbsoluteMaxSlots.get(i)) {
+            return "too many jobs running";
+        }
+        PendingJobQueue pendingJobQueue = jobSchedulerService.mPendingJobQueue;
+        if (pendingJobQueue.mSize == 0) {
+            return null;
+        }
+        if (!jobStatus.shouldTreatAsExpeditedJob() && !jobStatus.startedAsExpeditedJob) {
+            if (workCountTracker.getPendingJobCount(i) > 0) {
+                return "blocking " + workTypeToString(i) + " queue";
+            }
+            pendingJobQueue.mNeedToResetIterators = true;
+            int i3 = 127;
+            do {
+                JobStatus next = pendingJobQueue.next();
+                if (next == null) {
+                    break;
+                }
+                int jobWorkTypes = getJobWorkTypes(next);
+                if ((jobWorkTypes & i3) > 0 && workCountTracker.canJobStart(jobWorkTypes, i) != 0) {
+                    return "blocking other pending jobs";
+                }
+                i3 &= ~jobWorkTypes;
+            } while (i3 != 0);
+            return null;
+        }
+        if (i == 32 || i == 64) {
+            if (workCountTracker.getPendingJobCount(32) > 0) {
+                return "blocking " + workTypeToString(32) + " queue";
+            }
+            if (workCountTracker.getPendingJobCount(8) > 0 && workCountTracker.canJobStart(8, i) != 0) {
+                return "blocking " + workTypeToString(8) + " queue";
+            }
+        } else {
+            if (workCountTracker.getPendingJobCount(8) > 0) {
+                return "blocking " + workTypeToString(8) + " queue";
+            }
+            if (jobStatus.startedWithImmediacyPrivilege) {
+                for (int size = this.mRunningJobs.size() - 1; size >= 0; size--) {
+                    if (((JobStatus) this.mRunningJobs.valueAt(size)).startedWithImmediacyPrivilege) {
+                        i2++;
+                    }
+                }
+                if (i2 > this.mWorkTypeConfig.mMaxTotal / 2) {
+                    return "prevent immediacy privilege dominance";
+                }
+            }
+        }
+        return null;
+    }
+
+    public final void startJobLocked(int i, JobServiceContext jobServiceContext, JobStatus jobStatus) {
+        JobSchedulerService jobSchedulerService = this.mService;
+        ArrayList arrayList = (ArrayList) jobSchedulerService.mControllers;
+        int size = arrayList.size();
+        PowerManager powerManager = this.mPowerManager;
+        String wakelockTag = jobStatus.getWakelockTag();
+        int i2 = jobStatus.sourceUserId;
+        PowerManager.WakeLock newWakeLock = powerManager.newWakeLock(1, wakelockTag);
+        int i3 = jobStatus.sourceUid;
+        String str = jobStatus.sourcePackageName;
+        newWakeLock.setWorkSource(jobSchedulerService.deriveWorkSource(i3, str));
+        newWakeLock.setReferenceCounted(false);
+        newWakeLock.acquire();
+        for (int i4 = 0; i4 < size; i4++) {
+            try {
+                ((StateController) arrayList.get(i4)).prepareForExecutionLocked(jobStatus);
+            } catch (Throwable th) {
+                newWakeLock.release();
+                throw th;
+            }
+        }
+        PackageStats pkgStatsLocked = getPkgStatsLocked(i2, str);
+        PackageStats.m607$$Nest$madjustStagedCount(pkgStatsLocked, false, jobStatus.shouldTreatAsExpeditedJob());
+        boolean executeRunnableJob = jobServiceContext.executeRunnableJob(jobStatus, i);
+        WorkCountTracker workCountTracker = this.mWorkCountTracker;
+        if (executeRunnableJob) {
+            this.mRunningJobs.add(jobStatus);
+            JobSchedulerPackageFilter.JobSchedulerPackageFilterHolder.INSTANCE.addRunningJobs(jobStatus.job, jobStatus.callingUid);
+            ((ArrayList) this.mActiveServices).add(jobServiceContext);
+            this.mIdleContexts.remove(jobServiceContext);
+            SparseIntArray sparseIntArray = workCountTracker.mNumRunningJobs;
+            sparseIntArray.put(i, sparseIntArray.get(i) + 1);
+            int i5 = workCountTracker.mNumStartingJobs.get(i);
+            if (i5 == 0) {
+                FileDescriptorWatcher$FileDescriptorLeakWatcher$$ExternalSyntheticOutline0.m(i, "# stated jobs for ", " went negative.", "JobScheduler.Concurrency");
+            } else {
+                workCountTracker.mNumStartingJobs.put(i, i5 - 1);
+            }
+            PackageStats.m606$$Nest$madjustRunningCount(pkgStatsLocked, true, jobStatus.shouldTreatAsExpeditedJob());
+            this.mActivePkgStats.add(i2, str, pkgStatsLocked);
+            jobSchedulerService.resetPendingJobReasonCache(jobStatus);
+        } else {
+            Slog.e("JobScheduler.Concurrency", "Error executing " + jobStatus);
+            int i6 = workCountTracker.mNumStartingJobs.get(i);
+            if (i6 == 0) {
+                Slog.e("JobScheduler.Concurrency", "# staged jobs for " + i + " went negative.");
+            } else {
+                workCountTracker.mNumStartingJobs.put(i, i6 - 1);
+                workCountTracker.maybeAdjustReservations(i);
+            }
+            for (int i7 = 0; i7 < size; i7++) {
+                ((StateController) arrayList.get(i7)).unprepareFromExecutionLocked(jobStatus);
+            }
+        }
+        if (jobSchedulerService.mPendingJobQueue.remove(jobStatus)) {
+            jobSchedulerService.mJobPackageTracker.noteNonpending(jobStatus);
+        }
+        newWakeLock.release();
+    }
+
+    public final boolean stopJobOnServiceContextLocked(JobStatus jobStatus, int i, int i2, String str) {
+        if (!this.mRunningJobs.contains(jobStatus)) {
+            return false;
+        }
+        for (int i3 = 0; i3 < ((ArrayList) this.mActiveServices).size(); i3++) {
+            JobServiceContext jobServiceContext = (JobServiceContext) ((ArrayList) this.mActiveServices).get(i3);
+            if (jobServiceContext.mRunningJob == jobStatus) {
+                jobServiceContext.cancelExecutingJobLocked(i, i2, str);
+                return true;
+            }
+        }
+        Slog.wtf("JobScheduler.Concurrency", "Couldn't find running job on a context");
+        this.mRunningJobs.remove(jobStatus);
+        if (jobStatus != null) {
+            JobSchedulerPackageFilter jobSchedulerPackageFilter = JobSchedulerPackageFilter.JobSchedulerPackageFilterHolder.INSTANCE;
+            JobInfo jobInfo = jobStatus.job;
+            if (jobInfo != null) {
+                ((HashSet) jobSchedulerPackageFilter.mRunningJobSet).remove(jobInfo);
+            } else {
+                jobSchedulerPackageFilter.getClass();
+            }
+        }
+        return false;
+    }
+
+    public final void updateConfigLocked() {
+        DeviceConfig.Properties properties = DeviceConfig.getProperties("jobscheduler", new String[0]);
+        this.mSteadyStateConcurrencyLimit = Math.max(8, Math.min(64, properties.getInt("concurrency_limit", DEFAULT_CONCURRENCY_LIMIT)));
+        this.mScreenOffAdjustmentDelayMs = properties.getLong("concurrency_screen_off_adjustment_delay_ms", 30000L);
+        WorkConfigLimitsPerMemoryTrimLevel workConfigLimitsPerMemoryTrimLevel = CONFIG_LIMITS_SCREEN_ON;
+        workConfigLimitsPerMemoryTrimLevel.normal.update(properties, this.mSteadyStateConcurrencyLimit);
+        workConfigLimitsPerMemoryTrimLevel.moderate.update(properties, this.mSteadyStateConcurrencyLimit);
+        workConfigLimitsPerMemoryTrimLevel.low.update(properties, this.mSteadyStateConcurrencyLimit);
+        workConfigLimitsPerMemoryTrimLevel.critical.update(properties, this.mSteadyStateConcurrencyLimit);
+        WorkConfigLimitsPerMemoryTrimLevel workConfigLimitsPerMemoryTrimLevel2 = CONFIG_LIMITS_SCREEN_OFF;
+        workConfigLimitsPerMemoryTrimLevel2.normal.update(properties, this.mSteadyStateConcurrencyLimit);
+        workConfigLimitsPerMemoryTrimLevel2.moderate.update(properties, this.mSteadyStateConcurrencyLimit);
+        workConfigLimitsPerMemoryTrimLevel2.low.update(properties, this.mSteadyStateConcurrencyLimit);
+        workConfigLimitsPerMemoryTrimLevel2.critical.update(properties, this.mSteadyStateConcurrencyLimit);
+        this.mPkgConcurrencyLimitEj = Math.max(1, Math.min(this.mSteadyStateConcurrencyLimit, properties.getInt(KEY_PKG_CONCURRENCY_LIMIT_EJ, 3)));
+        this.mPkgConcurrencyLimitRegular = Math.max(1, Math.min(this.mSteadyStateConcurrencyLimit, properties.getInt(KEY_PKG_CONCURRENCY_LIMIT_REGULAR, DEFAULT_PKG_CONCURRENCY_LIMIT_REGULAR)));
+        this.mMaxWaitTimeBypassEnabled = properties.getBoolean(KEY_ENABLE_MAX_WAIT_TIME_BYPASS, true);
+        long max = Math.max(0L, properties.getLong(KEY_MAX_WAIT_UI_MS, 300000L));
+        this.mMaxWaitUIMs = max;
+        long max2 = Math.max(max, properties.getLong("concurrency_max_wait_ej_ms", 300000L));
+        this.mMaxWaitEjMs = max2;
+        this.mMaxWaitRegularMs = Math.max(max2, properties.getLong("concurrency_max_wait_regular_ms", 1800000L));
+    }
+
+    public final void updateCounterConfigLocked() {
+        long millis = JobSchedulerService.sUptimeMillisClock.millis();
+        if (millis < this.mNextSystemStateRefreshTime) {
+            return;
+        }
+        StatLogger statLogger = this.mStatLogger;
+        long time = statLogger.getTime();
+        this.mNextSystemStateRefreshTime = millis + 1000;
+        this.mLastMemoryTrimLevel = 0;
+        try {
+            this.mLastMemoryTrimLevel = ActivityManager.getService().getMemoryTrimLevel();
+        } catch (RemoteException unused) {
+        }
+        statLogger.logDurationStat(1, time);
+        WorkConfigLimitsPerMemoryTrimLevel workConfigLimitsPerMemoryTrimLevel = this.mEffectiveInteractiveState ? CONFIG_LIMITS_SCREEN_ON : CONFIG_LIMITS_SCREEN_OFF;
+        int i = this.mLastMemoryTrimLevel;
+        if (i == 1) {
+            this.mWorkTypeConfig = workConfigLimitsPerMemoryTrimLevel.moderate;
+        } else if (i == 2) {
+            this.mWorkTypeConfig = workConfigLimitsPerMemoryTrimLevel.low;
+        } else if (i != 3) {
+            this.mWorkTypeConfig = workConfigLimitsPerMemoryTrimLevel.normal;
+        } else {
+            this.mWorkTypeConfig = workConfigLimitsPerMemoryTrimLevel.critical;
+        }
+        WorkTypeConfig workTypeConfig = this.mWorkTypeConfig;
+        WorkCountTracker workCountTracker = this.mWorkCountTracker;
+        workCountTracker.getClass();
+        workCountTracker.mConfigMaxTotal = workTypeConfig.mMaxTotal;
+        for (int i2 = 1; i2 < 127; i2 <<= 1) {
+            workCountTracker.mConfigNumReservedSlots.put(i2, workTypeConfig.mMinReservedSlots.get(i2));
+            workCountTracker.mConfigAbsoluteMaxSlots.put(i2, workTypeConfig.mMaxAllowedSlots.get(i2, workTypeConfig.mMaxTotal));
+        }
+        workCountTracker.mNumUnspecializedRemaining = workCountTracker.mConfigMaxTotal;
+        for (int size = workCountTracker.mNumRunningJobs.size() - 1; size >= 0; size--) {
+            workCountTracker.mNumUnspecializedRemaining -= Math.max(workCountTracker.mNumRunningJobs.valueAt(size), workCountTracker.mConfigNumReservedSlots.get(workCountTracker.mNumRunningJobs.keyAt(size)));
+        }
+    }
+
+    public final void updateNonRunningPrioritiesLocked(PendingJobQueue pendingJobQueue, boolean z) {
+        pendingJobQueue.mNeedToResetIterators = true;
+        while (true) {
+            JobStatus next = pendingJobQueue.next();
+            if (next == null) {
+                return;
+            }
+            if (!this.mRunningJobs.contains(next)) {
+                next.lastEvaluatedBias = this.mService.evaluateJobBiasLocked(next);
+                if (z) {
+                    this.mWorkCountTracker.adjustPendingJobCount(getJobWorkTypes(next), true);
+                }
+            }
         }
     }
 }

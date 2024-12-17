@@ -5,20 +5,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Slog;
-import com.samsung.android.knox.custom.KnoxCustomManagerService;
+import com.android.server.ExplicitHealthCheckController$$ExternalSyntheticOutline0;
+import com.samsung.android.knoxguard.service.utils.Constants;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public abstract class IntentRelayManager {
-    public static final String TAG = "KG." + IntentRelayManager.class.getSimpleName();
+public final class IntentRelayManager {
+    public static final boolean LOG = false;
+    public static final String TAG = "KG.IntentRelayManager";
 
     public static void sendRequestedIntent(Context context, String str, Bundle bundle) {
-        Intent intent = new Intent(str);
-        intent.setPackage(KnoxCustomManagerService.KG_PKG_NAME);
+        Intent m = ExplicitHealthCheckController$$ExternalSyntheticOutline0.m(str, "com.samsung.android.kgclient");
         if (bundle != null) {
-            intent.putExtras(bundle);
+            m.putExtras(bundle);
         }
-        intent.addFlags(32);
-        context.sendBroadcastAsUser(intent, UserHandle.ALL, "com.samsung.android.knoxguard.STATUS");
+        m.addFlags(32);
+        context.sendBroadcastAsUser(m, UserHandle.ALL, Constants.KG_PERMISSION);
         Slog.i(TAG, "sends to KG " + str);
     }
 }

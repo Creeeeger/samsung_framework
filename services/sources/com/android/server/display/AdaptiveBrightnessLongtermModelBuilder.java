@@ -1,6 +1,8 @@
 package com.android.server.display;
 
+import android.R;
 import android.app.ActivityTaskManager;
+import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -34,54 +36,60 @@ import android.util.Xml;
 import com.android.internal.display.BrightnessSynchronizer;
 import com.android.internal.os.BackgroundThread;
 import com.android.internal.util.RingBuffer;
-import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.HeimdAllFsService$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.am.KillPolicyManager$$ExternalSyntheticOutline0;
+import com.android.server.am.mars.MARsFreezeStateRecord$$ExternalSyntheticOutline0;
+import com.android.server.chimera.AggressivePolicyHandler$$ExternalSyntheticOutline0;
+import com.android.server.display.AdaptiveBrightnessStatsTracker;
 import com.android.server.display.AdaptiveBrightnessWeightStats;
 import com.android.server.power.PowerManagerUtil;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import libcore.io.IoUtils;
-import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes2.dex */
-public class AdaptiveBrightnessLongtermModelBuilder {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class AdaptiveBrightnessLongtermModelBuilder {
     public AdaptiveBrightnessStatsTracker mAdaptiveBrightnessStatsTracker;
     public boolean mAdaptiveBrightnessStatsTrackerStarted;
-    public final Handler mBgHandler;
     public BrightnessConfiguration mBrightnessConfiguration;
     public final BrightnessMappingStrategy mBrightnessMapper;
-    public BroadcastReceiver mBroadcastReceiver;
+    public Receiver mBroadcastReceiver;
     public boolean mColorSamplingEnabled;
+    public final AnonymousClass1 mComparatorAscendingForLux;
+    public final AnonymousClass1 mComparatorDecsendingForWeight;
     public final ContentResolver mContentResolver;
     public final Context mContext;
     public DisplayListener mDisplayListener;
     public boolean mEventsDirty;
     public float mFrameRate;
-    public final Injector mInjector;
-    public LightData mLastLightData;
     public final float mMaxBrightnessForNonHbmLux;
-    public int[] mMaximumBrightnessLimitCount;
-    public float[] mMaximumBrightnessLimitLux;
+    public final int[] mMaximumBrightnessLimitCount;
+    public final float[] mMaximumBrightnessLimitLux;
     public final Spline mMaximumBrightnessSpline;
     public final Spline mMinimumBrightnessSpline;
     public int mNoFramesToSample;
-    public PackageBroadcastReceiver mPackageBroadcastReceiver;
+    public Receiver mPackageBroadcastReceiver;
     public SettingsObserver mSettingsObserver;
     public boolean mStarted;
     public boolean mTestModeEnabled;
-    public PowerManagerInternal.UserActivityStateListener mUserActivityStateListener;
     public final UserManager mUserManager;
     public volatile boolean mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled;
     public static final long MAX_EVENT_AGE = TimeUnit.DAYS.toMillis(30);
@@ -89,81 +97,672 @@ public class AdaptiveBrightnessLongtermModelBuilder {
     public static final long COLOR_SAMPLE_DURATION = TimeUnit.SECONDS.toSeconds(10);
     public final Object mEventsLock = new Object();
     public RingBuffer mEvents = new RingBuffer(BrightnessChangeEvent.class, 240);
-    public final int mCurrentUserId = 0;
     public final Object mDataCollectionLock = new Object();
     public float mLastBatteryLevel = Float.NaN;
     public float mLastBrightness = -1.0f;
     public float mLastAmbientLux = -1.0f;
     public Spline mLastBrightnessSpline = null;
     public BrightnessChangeEvent mLastBrightnessChangeEvent = null;
-    public final Comparator mComparatorDecsendingForWeight = new Comparator() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder.1
-        @Override // java.util.Comparator
-        public int compare(AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights, AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights2) {
-            if (brightnessWeights2.getWeight() > brightnessWeights.getWeight()) {
-                return 1;
+    public final Injector mInjector = new Injector();
+    public final ModelBuilderHandler mBgHandler = new ModelBuilderHandler(BackgroundThread.getHandler().getLooper());
+    public final LightData mLastLightData = new LightData();
+    public final AnonymousClass3 mUserActivityStateListener = new PowerManagerInternal.UserActivityStateListener() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder.3
+        public final void onChanged(int i) {
+            if (i != 1) {
+                if (i == 0) {
+                    AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder = AdaptiveBrightnessLongtermModelBuilder.this;
+                    if (adaptiveBrightnessLongtermModelBuilder.mAdaptiveBrightnessStatsTrackerStarted) {
+                        AdaptiveBrightnessStatsTracker adaptiveBrightnessStatsTracker = adaptiveBrightnessLongtermModelBuilder.mAdaptiveBrightnessStatsTracker;
+                        synchronized (adaptiveBrightnessStatsTracker) {
+                            AdaptiveBrightnessStatsTracker.Timer timer = adaptiveBrightnessStatsTracker.mTimer;
+                            if (timer.started && !timer.paused) {
+                                timer.totalDurationSec += (float) ((timer.clock.elapsedTimeMillis() - timer.startTimeMillis) / 1000.0d);
+                                timer.paused = true;
+                            }
+                        }
+                        return;
+                    }
+                    return;
+                }
+                return;
             }
-            if (brightnessWeights2.getWeight() < brightnessWeights.getWeight()) {
-                return -1;
+            AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder2 = AdaptiveBrightnessLongtermModelBuilder.this;
+            if (adaptiveBrightnessLongtermModelBuilder2.mAdaptiveBrightnessStatsTrackerStarted) {
+                AdaptiveBrightnessStatsTracker adaptiveBrightnessStatsTracker2 = adaptiveBrightnessLongtermModelBuilder2.mAdaptiveBrightnessStatsTracker;
+                synchronized (adaptiveBrightnessStatsTracker2) {
+                    AdaptiveBrightnessStatsTracker.Timer timer2 = adaptiveBrightnessStatsTracker2.mTimer;
+                    boolean z = timer2.started;
+                    if (z) {
+                        boolean z2 = timer2.paused;
+                        if (z2 && z && z2) {
+                            timer2.startTimeMillis = timer2.clock.elapsedTimeMillis();
+                            timer2.paused = false;
+                        }
+                    } else if (!z) {
+                        timer2.startTimeMillis = timer2.clock.elapsedTimeMillis();
+                        timer2.started = true;
+                    }
+                }
             }
-            if (brightnessWeights2.getLastUserBrightnessTime() > brightnessWeights.getLastUserBrightnessTime()) {
-                return 1;
-            }
-            return brightnessWeights2.getLastUserBrightnessTime() < brightnessWeights.getLastUserBrightnessTime() ? -1 : 0;
-        }
-    };
-    public final Comparator mComparatorAscendingForLux = new Comparator() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder.2
-        @Override // java.util.Comparator
-        public int compare(AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights, AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights2) {
-            if (brightnessWeights.getLux() > brightnessWeights2.getLux()) {
-                return 1;
-            }
-            return brightnessWeights.getLux() < brightnessWeights2.getLux() ? -1 : 0;
         }
     };
 
-    /* loaded from: classes2.dex */
-    public class LightData {
-        public float lux;
-        public long timestamp;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BrightnessChangeValues {
+        public final float brightness;
+        public final Spline brightnessSpline;
+        public final boolean isDefaultBrightnessConfig;
+        public final boolean isUserSetBrightness;
+        public final float powerBrightnessFactor;
+        public final long timestamp;
+        public final String uniqueDisplayId;
 
-        public LightData() {
+        public BrightnessChangeValues(float f, float f2, boolean z, boolean z2, long j, String str, Spline spline) {
+            this.brightness = f;
+            this.powerBrightnessFactor = f2;
+            this.isUserSetBrightness = z;
+            this.isDefaultBrightnessConfig = z2;
+            this.timestamp = j;
+            this.uniqueDisplayId = str;
+            this.brightnessSpline = spline;
         }
     }
 
-    public AdaptiveBrightnessLongtermModelBuilder(Context context, Injector injector, BrightnessMappingStrategy brightnessMappingStrategy) {
-        this.mContext = context;
-        this.mContentResolver = context.getContentResolver();
-        if (injector != null) {
-            this.mInjector = injector;
-        } else {
-            this.mInjector = new Injector();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DisplayListener implements DisplayManager.DisplayListener {
+        public DisplayListener() {
         }
-        this.mBgHandler = new ModelBuilderHandler(this.mInjector.getBackgroundHandler().getLooper());
-        this.mUserManager = (UserManager) context.getSystemService(UserManager.class);
-        this.mLastLightData = new LightData();
-        this.mBrightnessMapper = brightnessMappingStrategy;
-        this.mUserActivityStateListener = new PowerManagerInternal.UserActivityStateListener() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder.3
-            public void onChanged(int i) {
-                if (i == 1) {
-                    if (AdaptiveBrightnessLongtermModelBuilder.this.mAdaptiveBrightnessStatsTrackerStarted) {
-                        AdaptiveBrightnessLongtermModelBuilder.this.mAdaptiveBrightnessStatsTracker.resume();
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public final void onDisplayAdded(int i) {
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public final void onDisplayChanged(int i) {
+            if (i == 0) {
+                AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder = AdaptiveBrightnessLongtermModelBuilder.this;
+                if (adaptiveBrightnessLongtermModelBuilder.mColorSamplingEnabled) {
+                    Context context = adaptiveBrightnessLongtermModelBuilder.mContext;
+                    adaptiveBrightnessLongtermModelBuilder.mInjector.getClass();
+                    if (((DisplayManager) context.getSystemService(DisplayManager.class)).getDisplay(0).getRefreshRate() != adaptiveBrightnessLongtermModelBuilder.mFrameRate) {
+                        adaptiveBrightnessLongtermModelBuilder.disableColorSampling();
+                        adaptiveBrightnessLongtermModelBuilder.enableColorSampling();
                     }
-                } else if (i == 0 && AdaptiveBrightnessLongtermModelBuilder.this.mAdaptiveBrightnessStatsTrackerStarted) {
-                    AdaptiveBrightnessLongtermModelBuilder.this.mAdaptiveBrightnessStatsTracker.pause();
+                }
+            }
+        }
+
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public final void onDisplayRemoved(int i) {
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class Injector {
+        public static AtomicFile getFile(String str) {
+            return new AtomicFile(new File(Environment.getDataSystemDirectory(), str));
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LightData {
+        public float lux;
+        public long timestamp;
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ModelBuilderHandler extends Handler {
+        public ModelBuilderHandler(Looper looper) {
+            super(looper, null, true);
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            AdaptiveBrightnessWeightStats adaptiveBrightnessWeightStats;
+            AdaptiveBrightnessWeightStats.WeightStat[] weightStatArr;
+            AdaptiveBrightnessWeightStats.BrightnessWeights[] brightnessWeightsArr;
+            AdaptiveBrightnessWeightStats.WeightStat[] weightStatArr2;
+            BrightnessConfiguration brightnessConfiguration;
+            int i;
+            float max;
+            switch (message.what) {
+                case 0:
+                    AdaptiveBrightnessLongtermModelBuilder.m432$$Nest$mbackgroundStart(AdaptiveBrightnessLongtermModelBuilder.this, ((Float) message.obj).floatValue());
+                    return;
+                case 1:
+                    BrightnessChangeValues brightnessChangeValues = (BrightnessChangeValues) message.obj;
+                    AdaptiveBrightnessLongtermModelBuilder.m433$$Nest$mhandleBrightnessChanged(AdaptiveBrightnessLongtermModelBuilder.this, brightnessChangeValues.brightness, message.arg1 == 1, brightnessChangeValues.powerBrightnessFactor, brightnessChangeValues.isUserSetBrightness, brightnessChangeValues.isDefaultBrightnessConfig, brightnessChangeValues.timestamp, brightnessChangeValues.uniqueDisplayId, brightnessChangeValues.brightnessSpline);
+                    return;
+                case 2:
+                    AdaptiveBrightnessLongtermModelBuilder.this.stopAdaptiveBrightnessStatsTracker();
+                    AdaptiveBrightnessLongtermModelBuilder.this.disableColorSampling();
+                    return;
+                case 3:
+                    AdaptiveBrightnessLongtermModelBuilder.this.startAdaptiveBrightnessStatsTracker();
+                    AdaptiveBrightnessLongtermModelBuilder.this.enableColorSampling();
+                    return;
+                case 4:
+                    AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder = AdaptiveBrightnessLongtermModelBuilder.this;
+                    BrightnessConfiguration brightnessConfiguration2 = (BrightnessConfiguration) message.obj;
+                    adaptiveBrightnessLongtermModelBuilder.mBrightnessConfiguration = brightnessConfiguration2;
+                    boolean z = brightnessConfiguration2 != null && brightnessConfiguration2.shouldCollectColorSamples();
+                    if (z) {
+                        AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder2 = AdaptiveBrightnessLongtermModelBuilder.this;
+                        if (!adaptiveBrightnessLongtermModelBuilder2.mColorSamplingEnabled) {
+                            adaptiveBrightnessLongtermModelBuilder2.enableColorSampling();
+                            return;
+                        }
+                    }
+                    if (z) {
+                        return;
+                    }
+                    AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder3 = AdaptiveBrightnessLongtermModelBuilder.this;
+                    if (adaptiveBrightnessLongtermModelBuilder3.mColorSamplingEnabled) {
+                        adaptiveBrightnessLongtermModelBuilder3.disableColorSampling();
+                        return;
+                    }
+                    return;
+                case 5:
+                    float intBitsToFloat = Float.intBitsToFloat(message.arg1);
+                    AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder4 = AdaptiveBrightnessLongtermModelBuilder.this;
+                    adaptiveBrightnessLongtermModelBuilder4.mLastAmbientLux = intBitsToFloat;
+                    synchronized (adaptiveBrightnessLongtermModelBuilder4.mDataCollectionLock) {
+                        Slog.v("AdaptiveBrightnessLongtermModelBuilder", "Ambient Lux event " + intBitsToFloat);
+                        LightData lightData = adaptiveBrightnessLongtermModelBuilder4.mLastLightData;
+                        adaptiveBrightnessLongtermModelBuilder4.mInjector.getClass();
+                        lightData.timestamp = System.currentTimeMillis();
+                        adaptiveBrightnessLongtermModelBuilder4.mLastLightData.lux = intBitsToFloat;
+                    }
+                    Slog.d("AdaptiveBrightnessLongtermModelBuilder", "handleAmbientLuxChanged: ambientLux: " + intBitsToFloat);
+                    adaptiveBrightnessLongtermModelBuilder4.updateAdaptiveBrightnessStats(false);
+                    return;
+                case 6:
+                default:
+                    return;
+                case 7:
+                    AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder5 = AdaptiveBrightnessLongtermModelBuilder.this;
+                    adaptiveBrightnessLongtermModelBuilder5.getClass();
+                    Slog.d("AdaptiveBrightnessLongtermModelBuilder", "handleShortTermModelValid()");
+                    AdaptiveBrightnessStatsTracker adaptiveBrightnessStatsTracker = adaptiveBrightnessLongtermModelBuilder5.mAdaptiveBrightnessStatsTracker;
+                    synchronized (adaptiveBrightnessStatsTracker) {
+                        AdaptiveBrightnessStatsTracker.AdaptiveBrightnessStats adaptiveBrightnessStats = adaptiveBrightnessStatsTracker.mAdaptiveBrightnessStats;
+                        adaptiveBrightnessStatsTracker.mInjector.getClass();
+                        LocalDate.now();
+                        adaptiveBrightnessStats.getOrCreateUserStats(0, adaptiveBrightnessStats.mStats).summarizeStats();
+                    }
+                    AdaptiveBrightnessStatsTracker adaptiveBrightnessStatsTracker2 = adaptiveBrightnessLongtermModelBuilder5.mAdaptiveBrightnessStatsTracker;
+                    synchronized (adaptiveBrightnessStatsTracker2) {
+                        AdaptiveBrightnessStatsTracker.AdaptiveBrightnessStats adaptiveBrightnessStats2 = adaptiveBrightnessStatsTracker2.mAdaptiveBrightnessStats;
+                        adaptiveBrightnessWeightStats = ((HashMap) adaptiveBrightnessStats2.mStats).containsKey(0) ? (AdaptiveBrightnessWeightStats) ((HashMap) adaptiveBrightnessStats2.mStats).get(0) : null;
+                    }
+                    if (adaptiveBrightnessWeightStats != null) {
+                        AdaptiveBrightnessWeightStats.BrightnessWeights[] stats = adaptiveBrightnessWeightStats.getStats();
+                        weightStatArr2 = adaptiveBrightnessWeightStats.getTimeCollectorStats();
+                        brightnessWeightsArr = stats;
+                        weightStatArr = adaptiveBrightnessWeightStats.getContinuityCollectorStats();
+                    } else {
+                        weightStatArr = null;
+                        brightnessWeightsArr = null;
+                        weightStatArr2 = null;
+                    }
+                    if (brightnessWeightsArr == null || weightStatArr2 == null || weightStatArr == null) {
+                        return;
+                    }
+                    int length = brightnessWeightsArr.length;
+                    AdaptiveBrightnessWeightStats.BrightnessWeights[] brightnessWeightsArr2 = new AdaptiveBrightnessWeightStats.BrightnessWeights[length];
+                    for (int i2 = 0; i2 < length; i2++) {
+                        brightnessWeightsArr2[i2] = brightnessWeightsArr[i2].copy();
+                    }
+                    Arrays.sort(brightnessWeightsArr2, adaptiveBrightnessLongtermModelBuilder5.mComparatorDecsendingForWeight);
+                    int i3 = 0;
+                    while (i3 < length) {
+                        float lux = brightnessWeightsArr2[i3].getLux();
+                        float brightness = brightnessWeightsArr2[i3].getBrightness();
+                        i3++;
+                        for (int i4 = i3; i4 < length; i4++) {
+                            float lux2 = brightnessWeightsArr2[i4].getLux();
+                            float brightness2 = brightnessWeightsArr2[i4].getBrightness();
+                            if (PowerManagerUtil.USE_PERMISSIBLE_RATIO_FOR_LONGTERM_MODEL) {
+                                float permissibleMinimumRatio = BrightnessMappingStrategy.permissibleMinimumRatio(lux2, lux);
+                                float pow = MathUtils.pow((lux2 + 0.25f) / (lux + 0.25f), 1.0f);
+                                max = lux2 > lux ? MathUtils.constrain(brightness2, permissibleMinimumRatio * brightness, pow * brightness) : MathUtils.constrain(brightness2, pow * brightness, permissibleMinimumRatio * brightness);
+                            } else {
+                                max = lux2 > lux ? MathUtils.max(brightness2, brightness) : MathUtils.min(brightness2, brightness);
+                            }
+                            if (Float.compare(brightness2, max) != 0) {
+                                brightnessWeightsArr2[i4].setBrightness(max);
+                            }
+                        }
+                    }
+                    for (int i5 = 0; i5 < length; i5++) {
+                        float brightness3 = brightnessWeightsArr2[i5].getBrightness();
+                        float f = adaptiveBrightnessLongtermModelBuilder5.mMaxBrightnessForNonHbmLux;
+                        if (brightness3 > f) {
+                            brightnessWeightsArr2[i5].setBrightness(f);
+                        }
+                    }
+                    Arrays.sort(brightnessWeightsArr2, adaptiveBrightnessLongtermModelBuilder5.mComparatorAscendingForLux);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(System.lineSeparator());
+                    for (int i6 = 0; i6 < length; i6 = MARsFreezeStateRecord$$ExternalSyntheticOutline0.m("%9s", new Object[]{brightnessWeightsArr2[i6]}, sb, i6, 1)) {
+                    }
+                    sb.append(System.lineSeparator());
+                    Slog.d("AdaptiveBrightnessLongtermModelBuilder", "lux sorted: " + sb.toString());
+                    float[] fArr = new float[length];
+                    float[] fArr2 = new float[length];
+                    int[] iArr = adaptiveBrightnessLongtermModelBuilder5.mMaximumBrightnessLimitCount;
+                    boolean[] zArr = new boolean[iArr.length];
+                    int i7 = 0;
+                    while (i7 < length) {
+                        fArr[i7] = brightnessWeightsArr2[i7].getLux();
+                        fArr2[i7] = brightnessWeightsArr2[i7].getBrightness();
+                        float interpolate = adaptiveBrightnessLongtermModelBuilder5.mMinimumBrightnessSpline.interpolate(fArr[i7]);
+                        float interpolate2 = adaptiveBrightnessLongtermModelBuilder5.mMaximumBrightnessSpline.interpolate(fArr[i7]);
+                        float constrain = MathUtils.constrain(fArr2[i7], interpolate, interpolate2);
+                        if (BrightnessSynchronizer.floatEquals(fArr2[i7], constrain)) {
+                            i = length;
+                        } else {
+                            i = length;
+                            Slog.d("AdaptiveBrightnessLongtermModelBuilder", "buildBrightnessConfiguration: " + fArr[i7] + " lux, " + fArr2[i7] + " -> " + constrain + " nits Limit: (" + interpolate + " ~ " + interpolate2 + ")");
+                            if (fArr2[i7] > interpolate2) {
+                                int i8 = 0;
+                                while (true) {
+                                    float[] fArr3 = adaptiveBrightnessLongtermModelBuilder5.mMaximumBrightnessLimitLux;
+                                    if (i8 < fArr3.length) {
+                                        if (fArr3[i8] < fArr[i7]) {
+                                            i8++;
+                                        } else if (!zArr[i8]) {
+                                            iArr[i8] = iArr[i8] + 1;
+                                            zArr[i8] = true;
+                                        }
+                                    }
+                                }
+                            }
+                            fArr2[i7] = constrain;
+                        }
+                        i7++;
+                        length = i;
+                    }
+                    try {
+                        BrightnessConfiguration.Builder builder = new BrightnessConfiguration.Builder(fArr, fArr2);
+                        builder.setDescription("sbs:0");
+                        brightnessConfiguration = builder.build();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        brightnessConfiguration = null;
+                    }
+                    if (brightnessConfiguration == null) {
+                        Slog.e("AdaptiveBrightnessLongtermModelBuilder", "handleShortTermModelValid: brightnessConfiguration is null");
+                        return;
+                    }
+                    DisplayManager displayManager = (DisplayManager) adaptiveBrightnessLongtermModelBuilder5.mContext.getSystemService(DisplayManager.class);
+                    ArrayList arrayList = new ArrayList();
+                    ArrayList arrayList2 = new ArrayList();
+                    ArrayList arrayList3 = new ArrayList();
+                    for (AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights : brightnessWeightsArr) {
+                        arrayList.add(Float.toString(brightnessWeights.getWeight()));
+                    }
+                    for (AdaptiveBrightnessWeightStats.WeightStat weightStat : weightStatArr2) {
+                        arrayList2.add(Float.toString(weightStat.getWeight()));
+                    }
+                    for (AdaptiveBrightnessWeightStats.WeightStat weightStat2 : weightStatArr) {
+                        arrayList3.add(Float.toString(weightStat2.getWeight()));
+                    }
+                    displayManager.setBrightnessConfigurationForUser(brightnessConfiguration, 0, "sbs", arrayList, arrayList2, arrayList3);
+                    return;
+                case 8:
+                    AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder6 = AdaptiveBrightnessLongtermModelBuilder.this;
+                    adaptiveBrightnessLongtermModelBuilder6.getClass();
+                    Slog.d("AdaptiveBrightnessLongtermModelBuilder", "handleBrightnessBnrPackageCleared()");
+                    ((DisplayManager) adaptiveBrightnessLongtermModelBuilder6.mContext.getSystemService(DisplayManager.class)).resetBrightnessConfiguration();
+                    return;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Receiver extends BroadcastReceiver {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ AdaptiveBrightnessLongtermModelBuilder this$0;
+
+        public /* synthetic */ Receiver(AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder, int i) {
+            this.$r8$classId = i;
+            this.this$0 = adaptiveBrightnessLongtermModelBuilder;
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            switch (this.$r8$classId) {
+                case 0:
+                    Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Received " + intent.getAction());
+                    String action = intent.getAction();
+                    if (!"android.intent.action.ACTION_SHUTDOWN".equals(action)) {
+                        if (!"android.intent.action.BATTERY_CHANGED".equals(action)) {
+                            if ("android.intent.action.SCREEN_OFF".equals(action)) {
+                                this.this$0.mBgHandler.obtainMessage(2).sendToTarget();
+                                return;
+                            } else {
+                                if ("android.intent.action.SCREEN_ON".equals(action)) {
+                                    this.this$0.mBgHandler.obtainMessage(3).sendToTarget();
+                                    return;
+                                }
+                                return;
+                            }
+                        }
+                        int intExtra = intent.getIntExtra("level", -1);
+                        int intExtra2 = intent.getIntExtra("scale", 0);
+                        if (intExtra == -1 || intExtra2 == 0) {
+                            return;
+                        }
+                        AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder = this.this$0;
+                        synchronized (adaptiveBrightnessLongtermModelBuilder.mDataCollectionLock) {
+                            adaptiveBrightnessLongtermModelBuilder.mLastBatteryLevel = intExtra / intExtra2;
+                        }
+                        return;
+                    }
+                    AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder2 = this.this$0;
+                    adaptiveBrightnessLongtermModelBuilder2.getClass();
+                    Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Stop");
+                    synchronized (adaptiveBrightnessLongtermModelBuilder2.mDataCollectionLock) {
+                        try {
+                            if (adaptiveBrightnessLongtermModelBuilder2.mStarted) {
+                                adaptiveBrightnessLongtermModelBuilder2.mBgHandler.removeMessages(0);
+                                adaptiveBrightnessLongtermModelBuilder2.stopAdaptiveBrightnessStatsTracker();
+                                ((PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class)).unregisterUserActivityStateListener(adaptiveBrightnessLongtermModelBuilder2.mUserActivityStateListener);
+                                Injector injector = adaptiveBrightnessLongtermModelBuilder2.mInjector;
+                                Context context2 = adaptiveBrightnessLongtermModelBuilder2.mContext;
+                                SettingsObserver settingsObserver = adaptiveBrightnessLongtermModelBuilder2.mSettingsObserver;
+                                injector.getClass();
+                                context2.getContentResolver().unregisterContentObserver(settingsObserver);
+                                Injector injector2 = adaptiveBrightnessLongtermModelBuilder2.mInjector;
+                                Context context3 = adaptiveBrightnessLongtermModelBuilder2.mContext;
+                                Receiver receiver = adaptiveBrightnessLongtermModelBuilder2.mBroadcastReceiver;
+                                injector2.getClass();
+                                context3.unregisterReceiver(receiver);
+                                Injector injector3 = adaptiveBrightnessLongtermModelBuilder2.mInjector;
+                                Context context4 = adaptiveBrightnessLongtermModelBuilder2.mContext;
+                                Receiver receiver2 = adaptiveBrightnessLongtermModelBuilder2.mPackageBroadcastReceiver;
+                                injector3.getClass();
+                                context4.unregisterReceiver(receiver2);
+                                Injector injector4 = adaptiveBrightnessLongtermModelBuilder2.mInjector;
+                                Context context5 = adaptiveBrightnessLongtermModelBuilder2.mContext;
+                                injector4.getClass();
+                                int i = BrightnessIdleJob.$r8$clinit;
+                                ((JobScheduler) context5.getSystemService(JobScheduler.class)).cancel(3923512);
+                                synchronized (adaptiveBrightnessLongtermModelBuilder2.mDataCollectionLock) {
+                                    adaptiveBrightnessLongtermModelBuilder2.mStarted = false;
+                                }
+                                adaptiveBrightnessLongtermModelBuilder2.disableColorSampling();
+                            }
+                        } finally {
+                        }
+                    }
+                    AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder3 = this.this$0;
+                    if (adaptiveBrightnessLongtermModelBuilder3.mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled) {
+                        return;
+                    }
+                    adaptiveBrightnessLongtermModelBuilder3.mBgHandler.post(new AdaptiveBrightnessLongtermModelBuilder$$ExternalSyntheticLambda1(adaptiveBrightnessLongtermModelBuilder3));
+                    adaptiveBrightnessLongtermModelBuilder3.mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled = true;
+                    return;
+                default:
+                    Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Received " + intent.getAction());
+                    if ("android.intent.action.PACKAGE_DATA_CLEARED".equals(intent.getAction()) && "com.samsung.android.brightnessbackupservice".equals(intent.getData().getSchemeSpecificPart())) {
+                        this.this$0.mBgHandler.obtainMessage(8).sendToTarget();
+                        return;
+                    }
+                    return;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SettingsObserver extends ContentObserver {
+        public SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z, Uri uri) {
+            Slog.v("AdaptiveBrightnessLongtermModelBuilder", "settings change " + uri);
+            AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder = AdaptiveBrightnessLongtermModelBuilder.this;
+            Injector injector = adaptiveBrightnessLongtermModelBuilder.mInjector;
+            ContentResolver contentResolver = adaptiveBrightnessLongtermModelBuilder.mContentResolver;
+            injector.getClass();
+            if (Settings.System.getIntForUser(contentResolver, "screen_brightness_mode", 0, -2) == 1) {
+                AdaptiveBrightnessLongtermModelBuilder.this.mBgHandler.obtainMessage(3).sendToTarget();
+            } else {
+                AdaptiveBrightnessLongtermModelBuilder.this.mBgHandler.obtainMessage(2).sendToTarget();
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$mbackgroundStart, reason: not valid java name */
+    public static void m432$$Nest$mbackgroundStart(AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder, float f) {
+        synchronized (adaptiveBrightnessLongtermModelBuilder.mEventsLock) {
+            adaptiveBrightnessLongtermModelBuilder.mEventsDirty = true;
+            adaptiveBrightnessLongtermModelBuilder.mEvents.clear();
+            AtomicFile fileWithLegacyFallback = adaptiveBrightnessLongtermModelBuilder.getFileWithLegacyFallback("brightness_events_sec.xml");
+            if (fileWithLegacyFallback.exists()) {
+                FileInputStream fileInputStream = null;
+                try {
+                    try {
+                        fileInputStream = fileWithLegacyFallback.openRead();
+                        adaptiveBrightnessLongtermModelBuilder.readEventsLocked(fileInputStream);
+                    } catch (IOException e) {
+                        fileWithLegacyFallback.delete();
+                        Slog.e("AdaptiveBrightnessLongtermModelBuilder", "Failed to read change mEvents.", e);
+                    }
+                } finally {
+                    IoUtils.closeQuietly(fileInputStream);
+                }
+            }
+        }
+        adaptiveBrightnessLongtermModelBuilder.readAdaptiveBrightnessStats();
+        SettingsObserver settingsObserver = adaptiveBrightnessLongtermModelBuilder.new SettingsObserver(adaptiveBrightnessLongtermModelBuilder.mBgHandler);
+        adaptiveBrightnessLongtermModelBuilder.mSettingsObserver = settingsObserver;
+        Injector injector = adaptiveBrightnessLongtermModelBuilder.mInjector;
+        ContentResolver contentResolver = adaptiveBrightnessLongtermModelBuilder.mContentResolver;
+        injector.getClass();
+        contentResolver.registerContentObserver(Settings.System.getUriFor("screen_brightness_mode"), false, settingsObserver, -1);
+        adaptiveBrightnessLongtermModelBuilder.startAdaptiveBrightnessStatsTracker();
+        ((PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class)).registerUserActivityStateListener(adaptiveBrightnessLongtermModelBuilder.mUserActivityStateListener);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.ACTION_SHUTDOWN");
+        intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
+        intentFilter.addAction("android.intent.action.SCREEN_ON");
+        intentFilter.addAction("android.intent.action.SCREEN_OFF");
+        IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter2.addAction("android.intent.action.PACKAGE_DATA_CLEARED");
+        intentFilter2.addDataScheme("package");
+        adaptiveBrightnessLongtermModelBuilder.mBroadcastReceiver = new Receiver(adaptiveBrightnessLongtermModelBuilder, 0);
+        adaptiveBrightnessLongtermModelBuilder.mPackageBroadcastReceiver = new Receiver(adaptiveBrightnessLongtermModelBuilder, 1);
+        Injector injector2 = adaptiveBrightnessLongtermModelBuilder.mInjector;
+        Context context = adaptiveBrightnessLongtermModelBuilder.mContext;
+        Receiver receiver = adaptiveBrightnessLongtermModelBuilder.mBroadcastReceiver;
+        injector2.getClass();
+        context.registerReceiver(receiver, intentFilter);
+        Injector injector3 = adaptiveBrightnessLongtermModelBuilder.mInjector;
+        Context context2 = adaptiveBrightnessLongtermModelBuilder.mContext;
+        Receiver receiver2 = adaptiveBrightnessLongtermModelBuilder.mPackageBroadcastReceiver;
+        injector3.getClass();
+        context2.registerReceiver(receiver2, intentFilter2);
+        Injector injector4 = adaptiveBrightnessLongtermModelBuilder.mInjector;
+        Context context3 = adaptiveBrightnessLongtermModelBuilder.mContext;
+        injector4.getClass();
+        BrightnessIdleJob.scheduleJob(context3);
+        synchronized (adaptiveBrightnessLongtermModelBuilder.mDataCollectionLock) {
+            adaptiveBrightnessLongtermModelBuilder.mLastBrightness = f;
+            adaptiveBrightnessLongtermModelBuilder.mStarted = true;
+        }
+        adaptiveBrightnessLongtermModelBuilder.enableColorSampling();
+    }
+
+    /* renamed from: -$$Nest$mhandleBrightnessChanged, reason: not valid java name */
+    public static void m433$$Nest$mhandleBrightnessChanged(AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder, float f, boolean z, float f2, boolean z2, boolean z3, long j, String str, Spline spline) {
+        synchronized (adaptiveBrightnessLongtermModelBuilder.mDataCollectionLock) {
+            try {
+                if (adaptiveBrightnessLongtermModelBuilder.mStarted) {
+                    float f3 = adaptiveBrightnessLongtermModelBuilder.mLastBrightness;
+                    adaptiveBrightnessLongtermModelBuilder.mLastBrightness = f;
+                    adaptiveBrightnessLongtermModelBuilder.mLastBrightnessSpline = spline;
+                    Slog.d("AdaptiveBrightnessLongtermModelBuilder", "handleBrightnessChanged: brightness: " + f + " userInitiated: " + z);
+                    if (!z) {
+                        adaptiveBrightnessLongtermModelBuilder.updateAdaptiveBrightnessStats(z);
+                        return;
+                    }
+                    BrightnessChangeEvent.Builder builder = new BrightnessChangeEvent.Builder();
+                    builder.setBrightness(f);
+                    builder.setTimeStamp(j);
+                    builder.setPowerBrightnessFactor(f2);
+                    builder.setUserBrightnessPoint(z2);
+                    builder.setIsDefaultBrightnessConfig(z3);
+                    builder.setUniqueDisplayId(str);
+                    LightData lightData = adaptiveBrightnessLongtermModelBuilder.mLastLightData;
+                    float[] fArr = {lightData.lux};
+                    long[] jArr = {lightData.timestamp};
+                    builder.setLuxValues(fArr);
+                    builder.setLuxTimestamps(jArr);
+                    builder.setBatteryLevel(adaptiveBrightnessLongtermModelBuilder.mLastBatteryLevel);
+                    builder.setLastBrightness(f3);
+                    try {
+                        adaptiveBrightnessLongtermModelBuilder.mInjector.getClass();
+                        ActivityTaskManager.RootTaskInfo focusedRootTaskInfo = ActivityTaskManager.getService().getFocusedRootTaskInfo();
+                        if (focusedRootTaskInfo == null || focusedRootTaskInfo.topActivity == null) {
+                            Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Ignoring event due to null focusedTask.");
+                        } else {
+                            builder.setUserId(focusedRootTaskInfo.userId);
+                            builder.setPackageName(focusedRootTaskInfo.topActivity.getPackageName());
+                            Injector injector = adaptiveBrightnessLongtermModelBuilder.mInjector;
+                            Context context = adaptiveBrightnessLongtermModelBuilder.mContext;
+                            injector.getClass();
+                            builder.setNightMode(((ColorDisplayManager) context.getSystemService(ColorDisplayManager.class)).isNightDisplayActivated());
+                            Injector injector2 = adaptiveBrightnessLongtermModelBuilder.mInjector;
+                            Context context2 = adaptiveBrightnessLongtermModelBuilder.mContext;
+                            injector2.getClass();
+                            builder.setColorTemperature(((ColorDisplayManager) context2.getSystemService(ColorDisplayManager.class)).getNightDisplayColorTemperature());
+                            Injector injector3 = adaptiveBrightnessLongtermModelBuilder.mInjector;
+                            Context context3 = adaptiveBrightnessLongtermModelBuilder.mContext;
+                            injector3.getClass();
+                            builder.setReduceBrightColors(((ColorDisplayManager) context3.getSystemService(ColorDisplayManager.class)).isReduceBrightColorsActivated());
+                            Injector injector4 = adaptiveBrightnessLongtermModelBuilder.mInjector;
+                            Context context4 = adaptiveBrightnessLongtermModelBuilder.mContext;
+                            injector4.getClass();
+                            builder.setReduceBrightColorsStrength(((ColorDisplayManager) context4.getSystemService(ColorDisplayManager.class)).getReduceBrightColorsStrength());
+                            Injector injector5 = adaptiveBrightnessLongtermModelBuilder.mInjector;
+                            Context context5 = adaptiveBrightnessLongtermModelBuilder.mContext;
+                            injector5.getClass();
+                            builder.setReduceBrightColorsOffset(((ColorDisplayManager) context5.getSystemService(ColorDisplayManager.class)).getReduceBrightColorsOffsetFactor() * f);
+                            if (adaptiveBrightnessLongtermModelBuilder.mColorSamplingEnabled) {
+                                Injector injector6 = adaptiveBrightnessLongtermModelBuilder.mInjector;
+                                int i = adaptiveBrightnessLongtermModelBuilder.mNoFramesToSample;
+                                injector6.getClass();
+                                DisplayedContentSample displayedContentSample = ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).getDisplayedContentSample(0, i, 0L);
+                                if (displayedContentSample != null) {
+                                    DisplayedContentSample.ColorComponent colorComponent = DisplayedContentSample.ColorComponent.CHANNEL2;
+                                    if (displayedContentSample.getSampleComponent(colorComponent) != null) {
+                                        builder.setColorValues(displayedContentSample.getSampleComponent(colorComponent), Math.round((displayedContentSample.getNumFrames() / adaptiveBrightnessLongtermModelBuilder.mFrameRate) * 1000.0f));
+                                    }
+                                }
+                            }
+                            BrightnessChangeEvent build = builder.build();
+                            StringBuilder sb = new StringBuilder("Event ");
+                            sb.append(build.brightness);
+                            sb.append(" ");
+                            BootReceiver$$ExternalSyntheticOutline0.m(sb, build.packageName, "AdaptiveBrightnessLongtermModelBuilder");
+                            synchronized (adaptiveBrightnessLongtermModelBuilder.mEventsLock) {
+                                adaptiveBrightnessLongtermModelBuilder.mEventsDirty = true;
+                                adaptiveBrightnessLongtermModelBuilder.mEvents.append(build);
+                            }
+                            adaptiveBrightnessLongtermModelBuilder.mLastBrightnessChangeEvent = build;
+                            adaptiveBrightnessLongtermModelBuilder.updateAdaptiveBrightnessStats(z);
+                        }
+                    } catch (RemoteException unused) {
+                    }
+                }
+            } finally {
+            }
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v15, types: [com.android.server.display.AdaptiveBrightnessLongtermModelBuilder$3] */
+    /* JADX WARN: Type inference failed for: r0v6, types: [com.android.server.display.AdaptiveBrightnessLongtermModelBuilder$1] */
+    /* JADX WARN: Type inference failed for: r0v7, types: [com.android.server.display.AdaptiveBrightnessLongtermModelBuilder$1] */
+    public AdaptiveBrightnessLongtermModelBuilder(Context context, BrightnessMappingStrategy brightnessMappingStrategy) {
+        final int i = 0;
+        this.mComparatorDecsendingForWeight = new Comparator() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder.1
+            @Override // java.util.Comparator
+            public final int compare(Object obj, Object obj2) {
+                switch (i) {
+                    case 0:
+                        AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights = (AdaptiveBrightnessWeightStats.BrightnessWeights) obj;
+                        AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights2 = (AdaptiveBrightnessWeightStats.BrightnessWeights) obj2;
+                        if (brightnessWeights2.getWeight() > brightnessWeights.getWeight()) {
+                            return 1;
+                        }
+                        if (brightnessWeights2.getWeight() >= brightnessWeights.getWeight()) {
+                            if (brightnessWeights2.getLastUserBrightnessTime() > brightnessWeights.getLastUserBrightnessTime()) {
+                                return 1;
+                            }
+                            if (brightnessWeights2.getLastUserBrightnessTime() >= brightnessWeights.getLastUserBrightnessTime()) {
+                                return 0;
+                            }
+                        }
+                        return -1;
+                    default:
+                        AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights3 = (AdaptiveBrightnessWeightStats.BrightnessWeights) obj;
+                        AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights4 = (AdaptiveBrightnessWeightStats.BrightnessWeights) obj2;
+                        if (brightnessWeights3.getLux() > brightnessWeights4.getLux()) {
+                            return 1;
+                        }
+                        return brightnessWeights3.getLux() < brightnessWeights4.getLux() ? -1 : 0;
                 }
             }
         };
+        final int i2 = 1;
+        this.mComparatorAscendingForLux = new Comparator() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder.1
+            @Override // java.util.Comparator
+            public final int compare(Object obj, Object obj2) {
+                switch (i2) {
+                    case 0:
+                        AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights = (AdaptiveBrightnessWeightStats.BrightnessWeights) obj;
+                        AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights2 = (AdaptiveBrightnessWeightStats.BrightnessWeights) obj2;
+                        if (brightnessWeights2.getWeight() > brightnessWeights.getWeight()) {
+                            return 1;
+                        }
+                        if (brightnessWeights2.getWeight() >= brightnessWeights.getWeight()) {
+                            if (brightnessWeights2.getLastUserBrightnessTime() > brightnessWeights.getLastUserBrightnessTime()) {
+                                return 1;
+                            }
+                            if (brightnessWeights2.getLastUserBrightnessTime() >= brightnessWeights.getLastUserBrightnessTime()) {
+                                return 0;
+                            }
+                        }
+                        return -1;
+                    default:
+                        AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights3 = (AdaptiveBrightnessWeightStats.BrightnessWeights) obj;
+                        AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights4 = (AdaptiveBrightnessWeightStats.BrightnessWeights) obj2;
+                        if (brightnessWeights3.getLux() > brightnessWeights4.getLux()) {
+                            return 1;
+                        }
+                        return brightnessWeights3.getLux() < brightnessWeights4.getLux() ? -1 : 0;
+                }
+            }
+        };
+        this.mContext = context;
+        this.mContentResolver = context.getContentResolver();
+        this.mUserManager = (UserManager) context.getSystemService(UserManager.class);
+        this.mBrightnessMapper = brightnessMappingStrategy;
         this.mMaxBrightnessForNonHbmLux = brightnessMappingStrategy.convertToNits(1.0f);
         Resources resources = context.getResources();
-        float[] floatArray = getFloatArray(resources.obtainTypedArray(17236232));
-        float[] floatArray2 = getFloatArray(resources.obtainTypedArray(17236248));
-        float[] floatArray3 = getFloatArray(resources.obtainTypedArray(17236245));
+        float[] floatArray = getFloatArray(resources.obtainTypedArray(R.array.vendor_policy_exempt_apps));
+        float[] floatArray2 = getFloatArray(resources.obtainTypedArray(17236256));
+        float[] floatArray3 = getFloatArray(resources.obtainTypedArray(17236253));
         float[] fArr = new float[floatArray.length];
         float[] fArr2 = new float[floatArray.length];
-        for (int i = 0; i < floatArray.length; i++) {
+        for (int i3 = 0; i3 < floatArray.length; i3++) {
             float f = this.mMaxBrightnessForNonHbmLux;
-            fArr[i] = floatArray2[i] * f;
-            fArr2[i] = f * floatArray3[i];
+            fArr[i3] = floatArray2[i3] * f;
+            fArr2[i3] = f * floatArray3[i3];
         }
         this.mMinimumBrightnessSpline = Spline.createSpline(floatArray, fArr);
         this.mMaximumBrightnessSpline = Spline.createSpline(floatArray, fArr2);
@@ -184,484 +783,414 @@ public class AdaptiveBrightnessLongtermModelBuilder {
         return fArr;
     }
 
-    public void start(float f) {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Start");
-        this.mBgHandler.obtainMessage(0, Float.valueOf(f)).sendToTarget();
-    }
-
-    public final void backgroundStart(float f) {
-        readEvents();
-        readAdaptiveBrightnessStats();
-        SettingsObserver settingsObserver = new SettingsObserver(this.mBgHandler);
-        this.mSettingsObserver = settingsObserver;
-        this.mInjector.registerBrightnessModeObserver(this.mContentResolver, settingsObserver);
-        startAdaptiveBrightnessStatsTracker();
-        ((PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class)).registerUserActivityStateListener(this.mUserActivityStateListener);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.ACTION_SHUTDOWN");
-        intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter.addAction("com.samsung.intent.action.SETTINGS_SOFT_RESET");
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("android.intent.action.PACKAGE_DATA_CLEARED");
-        intentFilter2.addDataScheme("package");
-        this.mBroadcastReceiver = new Receiver();
-        this.mPackageBroadcastReceiver = new PackageBroadcastReceiver();
-        this.mInjector.registerReceiver(this.mContext, this.mBroadcastReceiver, intentFilter);
-        this.mInjector.registerReceiver(this.mContext, this.mPackageBroadcastReceiver, intentFilter2);
-        this.mInjector.scheduleIdleJob(this.mContext);
-        synchronized (this.mDataCollectionLock) {
-            this.mLastBrightness = f;
-            this.mStarted = true;
-        }
-        enableColorSampling();
-    }
-
-    public void stop() {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Stop");
-        synchronized (this.mDataCollectionLock) {
-            if (this.mStarted) {
-                this.mBgHandler.removeMessages(0);
-                stopAdaptiveBrightnessStatsTracker();
-                ((PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class)).unregisterUserActivityStateListener(this.mUserActivityStateListener);
-                this.mInjector.unregisterBrightnessModeObserver(this.mContext, this.mSettingsObserver);
-                this.mInjector.unregisterReceiver(this.mContext, this.mBroadcastReceiver);
-                this.mInjector.unregisterReceiver(this.mContext, this.mPackageBroadcastReceiver);
-                this.mInjector.cancelIdleJob(this.mContext);
-                synchronized (this.mDataCollectionLock) {
-                    this.mStarted = false;
-                }
-                disableColorSampling();
+    public final void disableColorSampling() {
+        if (this.mColorSamplingEnabled) {
+            this.mInjector.getClass();
+            ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).setDisplayedContentSamplingEnabled(0, false, 4, 0);
+            this.mColorSamplingEnabled = false;
+            DisplayListener displayListener = this.mDisplayListener;
+            if (displayListener != null) {
+                ((DisplayManager) this.mContext.getSystemService(DisplayManager.class)).unregisterDisplayListener(displayListener);
+                this.mDisplayListener = null;
             }
+            Slog.i("AdaptiveBrightnessLongtermModelBuilder", "turning off color sampling");
         }
     }
 
-    public void restartAdaptiveBrightnessStatsTracker(final boolean z) {
-        this.mBgHandler.post(new Runnable() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                AdaptiveBrightnessLongtermModelBuilder.this.lambda$restartAdaptiveBrightnessStatsTracker$0(z);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$restartAdaptiveBrightnessStatsTracker$0(boolean z) {
-        readAdaptiveBrightnessStats();
-        if (z) {
-            setMaxWeight(0);
+    public final void dump(final PrintWriter printWriter) {
+        int i;
+        printWriter.println("AdaptiveBrightnessLongtermModelBuilder state:");
+        synchronized (this.mDataCollectionLock) {
+            printWriter.println("  mStarted=" + this.mStarted);
+            printWriter.println("  mLastBatteryLevel=" + this.mLastBatteryLevel);
+            printWriter.println("  mLastBrightness=" + this.mLastBrightness);
+            printWriter.println("  mLastLightData.lux=" + this.mLastLightData.lux);
+            printWriter.println("  mLastLightData.timestamp=" + this.mLastLightData.timestamp);
         }
-        stopAdaptiveBrightnessStatsTracker();
-        startAdaptiveBrightnessStatsTracker();
-    }
-
-    public void clearBrightnessEvents() {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "clearBrightnessEvents()");
         synchronized (this.mEventsLock) {
-            this.mEvents.clear();
-            AtomicFile file = this.mInjector.getFile("brightness_events_sec.xml");
-            if (file != null && file.exists()) {
-                file.delete();
-            }
-            AtomicFile file2 = this.mInjector.getFile("adaptive_brightness_stats_sec.xml");
-            if (file2 != null && file2.exists()) {
-                file2.delete();
-            }
-        }
-    }
-
-    public void persistAdaptiveBrightnessLongtermModelBuilderState() {
-        scheduleWriteAdaptiveBrightnessLongtermModelBuilderState();
-    }
-
-    public void notifyBrightnessChanged(float f, boolean z, float f2, boolean z2, boolean z3, String str, Spline spline) {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", String.format("notifyBrightnessChanged(brightness=%f, userInitiated=%b)", Float.valueOf(f), Boolean.valueOf(z)));
-        this.mBgHandler.obtainMessage(1, z ? 1 : 0, 0, new BrightnessChangeValues(f, f2, z2, z3, this.mInjector.currentTimeMillis(), str, spline)).sendToTarget();
-    }
-
-    public final void handleBrightnessChanged(float f, boolean z, float f2, boolean z2, boolean z3, long j, String str, Spline spline) {
-        DisplayedContentSample sampleColor;
-        synchronized (this.mDataCollectionLock) {
-            if (this.mStarted) {
-                float f3 = this.mLastBrightness;
-                this.mLastBrightness = f;
-                this.mLastBrightnessSpline = spline;
-                Slog.d("AdaptiveBrightnessLongtermModelBuilder", "handleBrightnessChanged: brightness: " + f + " userInitiated: " + z);
-                if (!z) {
-                    updateAdaptiveBrightnessStats(z);
-                    return;
-                }
-                BrightnessChangeEvent.Builder builder = new BrightnessChangeEvent.Builder();
-                builder.setBrightness(f);
-                builder.setTimeStamp(j);
-                builder.setPowerBrightnessFactor(f2);
-                builder.setUserBrightnessPoint(z2);
-                builder.setIsDefaultBrightnessConfig(z3);
-                builder.setUniqueDisplayId(str);
-                LightData lightData = this.mLastLightData;
-                float[] fArr = {lightData.lux};
-                long[] jArr = {lightData.timestamp};
-                builder.setLuxValues(fArr);
-                builder.setLuxTimestamps(jArr);
-                builder.setBatteryLevel(this.mLastBatteryLevel);
-                builder.setLastBrightness(f3);
-                try {
-                    ActivityTaskManager.RootTaskInfo focusedStack = this.mInjector.getFocusedStack();
-                    if (focusedStack != null && focusedStack.topActivity != null) {
-                        builder.setUserId(focusedStack.userId);
-                        builder.setPackageName(focusedStack.topActivity.getPackageName());
-                        builder.setNightMode(this.mInjector.isNightDisplayActivated(this.mContext));
-                        builder.setColorTemperature(this.mInjector.getNightDisplayColorTemperature(this.mContext));
-                        builder.setReduceBrightColors(this.mInjector.isReduceBrightColorsActivated(this.mContext));
-                        builder.setReduceBrightColorsStrength(this.mInjector.getReduceBrightColorsStrength(this.mContext));
-                        builder.setReduceBrightColorsOffset(this.mInjector.getReduceBrightColorsOffsetFactor(this.mContext) * f);
-                        if (this.mColorSamplingEnabled && (sampleColor = this.mInjector.sampleColor(this.mNoFramesToSample)) != null && sampleColor.getSampleComponent(DisplayedContentSample.ColorComponent.CHANNEL2) != null) {
-                            builder.setColorValues(sampleColor.getSampleComponent(DisplayedContentSample.ColorComponent.CHANNEL2), Math.round((((float) sampleColor.getNumFrames()) / this.mFrameRate) * 1000.0f));
-                        }
-                        BrightnessChangeEvent build = builder.build();
-                        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Event " + build.brightness + " " + build.packageName);
-                        synchronized (this.mEventsLock) {
-                            this.mEventsDirty = true;
-                            this.mEvents.append(build);
-                        }
-                        this.mLastBrightnessChangeEvent = build;
-                        updateAdaptiveBrightnessStats(z);
-                        return;
-                    }
-                    Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Ignoring event due to null focusedTask.");
-                } catch (RemoteException unused) {
-                }
-            }
-        }
-    }
-
-    public void notifyAmbientLuxChanged(float f) {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", String.format("notifyAmbientLuxChanged(lux=%f)", Float.valueOf(f)));
-        this.mBgHandler.obtainMessage(5, Float.floatToIntBits(f), 0).sendToTarget();
-    }
-
-    public final void handleAmbientLuxChanged(float f) {
-        this.mLastAmbientLux = f;
-        recordAmbientLuxEvent(f);
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "handleAmbientLuxChanged: ambientLux: " + f);
-        updateAdaptiveBrightnessStats(false);
-    }
-
-    public void notifyShortTermResetValid() {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "notifyShortTermResetValid()");
-        this.mBgHandler.obtainMessage(7).sendToTarget();
-    }
-
-    public boolean isStarted() {
-        boolean z;
-        synchronized (this.mDataCollectionLock) {
-            z = this.mStarted;
-        }
-        return z;
-    }
-
-    public final void handleShortTermModelValid() {
-        AdaptiveBrightnessWeightStats.BrightnessWeights[] brightnessWeightsArr;
-        AdaptiveBrightnessWeightStats.WeightStat[] weightStatArr;
-        AdaptiveBrightnessWeightStats.WeightStat[] weightStatArr2;
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "handleShortTermModelValid()");
-        this.mAdaptiveBrightnessStatsTracker.summarizeStats(0);
-        AdaptiveBrightnessWeightStats userStats = this.mAdaptiveBrightnessStatsTracker.getUserStats(0);
-        if (userStats != null) {
-            brightnessWeightsArr = userStats.getStats();
-            weightStatArr2 = userStats.getTimeCollectorStats();
-            weightStatArr = userStats.getContinuityCollectorStats();
-        } else {
-            brightnessWeightsArr = null;
-            weightStatArr = null;
-            weightStatArr2 = null;
-        }
-        if (brightnessWeightsArr == null || weightStatArr2 == null || weightStatArr == null) {
-            return;
-        }
-        BrightnessConfiguration buildBrightnessConfiguration = buildBrightnessConfiguration(brightnessWeightsArr);
-        if (buildBrightnessConfiguration != null) {
-            DisplayManager displayManager = (DisplayManager) this.mContext.getSystemService(DisplayManager.class);
-            ArrayList arrayList = new ArrayList();
-            ArrayList arrayList2 = new ArrayList();
-            ArrayList arrayList3 = new ArrayList();
-            for (AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights : brightnessWeightsArr) {
-                arrayList.add(Float.toString(brightnessWeights.getWeight()));
-            }
-            for (AdaptiveBrightnessWeightStats.WeightStat weightStat : weightStatArr2) {
-                arrayList2.add(Float.toString(weightStat.getWeight()));
-            }
-            for (AdaptiveBrightnessWeightStats.WeightStat weightStat2 : weightStatArr) {
-                arrayList3.add(Float.toString(weightStat2.getWeight()));
-            }
-            displayManager.setBrightnessConfigurationForUser(buildBrightnessConfiguration, 0, "sbs", arrayList, arrayList2, arrayList3);
-            return;
-        }
-        Slog.e("AdaptiveBrightnessLongtermModelBuilder", "handleShortTermModelValid: brightnessConfiguration is null");
-    }
-
-    public final void handleBrightnessBnrPackageCleared() {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "handleBrightnessBnrPackageCleared()");
-        ((DisplayManager) this.mContext.getSystemService(DisplayManager.class)).resetBrightnessConfiguration();
-    }
-
-    public final BrightnessConfiguration buildBrightnessConfiguration(AdaptiveBrightnessWeightStats.BrightnessWeights[] brightnessWeightsArr) {
-        float min;
-        int length = brightnessWeightsArr.length;
-        AdaptiveBrightnessWeightStats.BrightnessWeights[] brightnessWeightsArr2 = new AdaptiveBrightnessWeightStats.BrightnessWeights[length];
-        for (int i = 0; i < length; i++) {
-            brightnessWeightsArr2[i] = brightnessWeightsArr[i].copy();
-        }
-        Arrays.sort(brightnessWeightsArr2, this.mComparatorDecsendingForWeight);
-        int i2 = 0;
-        while (i2 < length) {
-            float lux = brightnessWeightsArr2[i2].getLux();
-            float brightness = brightnessWeightsArr2[i2].getBrightness();
-            i2++;
-            for (int i3 = i2; i3 < length; i3++) {
-                float lux2 = brightnessWeightsArr2[i3].getLux();
-                float brightness2 = brightnessWeightsArr2[i3].getBrightness();
-                if (PowerManagerUtil.USE_PERMISSIBLE_RATIO_FOR_LONGTERM_MODEL) {
-                    float permissibleMinimumRatio = BrightnessMappingStrategy.permissibleMinimumRatio(lux2, lux);
-                    float permissibleRatio = BrightnessMappingStrategy.permissibleRatio(lux2, lux);
-                    if (lux2 > lux) {
-                        min = MathUtils.constrain(brightness2, permissibleMinimumRatio * brightness, permissibleRatio * brightness);
-                    } else {
-                        min = MathUtils.constrain(brightness2, permissibleRatio * brightness, permissibleMinimumRatio * brightness);
-                    }
-                } else if (lux2 > lux) {
-                    min = MathUtils.max(brightness2, brightness);
-                } else {
-                    min = MathUtils.min(brightness2, brightness);
-                }
-                if (Float.compare(brightness2, min) != 0) {
-                    brightnessWeightsArr2[i3].setBrightness(min);
-                }
-            }
-        }
-        for (int i4 = 0; i4 < length; i4++) {
-            float brightness3 = brightnessWeightsArr2[i4].getBrightness();
-            float f = this.mMaxBrightnessForNonHbmLux;
-            if (brightness3 > f) {
-                brightnessWeightsArr2[i4].setBrightness(f);
-            }
-        }
-        Arrays.sort(brightnessWeightsArr2, this.mComparatorAscendingForLux);
-        printArrayBrightnessWeights(brightnessWeightsArr2, "lux sorted: ");
-        float[] fArr = new float[length];
-        float[] fArr2 = new float[length];
-        boolean[] zArr = new boolean[this.mMaximumBrightnessLimitCount.length];
-        for (int i5 = 0; i5 < length; i5++) {
-            fArr[i5] = brightnessWeightsArr2[i5].getLux();
-            fArr2[i5] = brightnessWeightsArr2[i5].getBrightness();
-            float interpolate = this.mMinimumBrightnessSpline.interpolate(fArr[i5]);
-            float interpolate2 = this.mMaximumBrightnessSpline.interpolate(fArr[i5]);
-            float constrain = MathUtils.constrain(fArr2[i5], interpolate, interpolate2);
-            if (!BrightnessSynchronizer.floatEquals(fArr2[i5], constrain)) {
-                Slog.d("AdaptiveBrightnessLongtermModelBuilder", "buildBrightnessConfiguration: " + fArr[i5] + " lux, " + fArr2[i5] + " -> " + constrain + " nits Limit: (" + interpolate + " ~ " + interpolate2 + ")");
-                if (fArr2[i5] > interpolate2) {
-                    int i6 = 0;
-                    while (true) {
-                        float[] fArr3 = this.mMaximumBrightnessLimitLux;
-                        if (i6 >= fArr3.length) {
-                            break;
-                        }
-                        if (fArr3[i6] < fArr[i5]) {
-                            i6++;
-                        } else if (!zArr[i6]) {
-                            int[] iArr = this.mMaximumBrightnessLimitCount;
-                            iArr[i6] = iArr[i6] + 1;
-                            zArr[i6] = true;
-                        }
-                    }
-                }
-                fArr2[i5] = constrain;
-            }
-        }
-        try {
-            BrightnessConfiguration.Builder builder = new BrightnessConfiguration.Builder(fArr, fArr2);
-            builder.setDescription("sbs:0");
-            return builder.build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public final void printArrayBrightnessWeights(AdaptiveBrightnessWeightStats.BrightnessWeights[] brightnessWeightsArr, String str) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(System.lineSeparator());
-        for (AdaptiveBrightnessWeightStats.BrightnessWeights brightnessWeights : brightnessWeightsArr) {
-            sb.append(String.format("%9s", brightnessWeights));
-        }
-        sb.append(System.lineSeparator());
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", str + sb.toString());
-    }
-
-    public final void setMaxWeight(int i) {
-        this.mAdaptiveBrightnessStatsTracker.setMaxWeight(i);
-    }
-
-    public final void startAdaptiveBrightnessStatsTracker() {
-        if (this.mAdaptiveBrightnessStatsTrackerStarted || !this.mInjector.isInteractive(this.mContext) || !this.mInjector.isBrightnessModeAutomatic(this.mContentResolver) || this.mTestModeEnabled) {
-            return;
-        }
-        this.mAdaptiveBrightnessStatsTracker.start(((PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class)).getLastUserActivityState() == 1);
-        this.mAdaptiveBrightnessStatsTrackerStarted = true;
-    }
-
-    public final void stopAdaptiveBrightnessStatsTracker() {
-        if (this.mAdaptiveBrightnessStatsTrackerStarted) {
-            this.mAdaptiveBrightnessStatsTracker.stop();
-            this.mAdaptiveBrightnessStatsTrackerStarted = false;
-        }
-    }
-
-    public final void scheduleWriteAdaptiveBrightnessLongtermModelBuilderState() {
-        if (this.mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled) {
-            return;
-        }
-        this.mBgHandler.post(new Runnable() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                AdaptiveBrightnessLongtermModelBuilder.this.lambda$scheduleWriteAdaptiveBrightnessLongtermModelBuilderState$1();
-            }
-        });
-        this.mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled = true;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$scheduleWriteAdaptiveBrightnessLongtermModelBuilderState$1() {
-        this.mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled = false;
-        writeEvents();
-        writeAdaptiveBrightnessStats();
-    }
-
-    public final void writeEvents() {
-        FileOutputStream fileOutputStream;
-        synchronized (this.mEventsLock) {
-            if (this.mEventsDirty) {
-                AtomicFile file = this.mInjector.getFile("brightness_events_sec.xml");
-                if (file == null) {
-                    return;
-                }
-                if (this.mEvents.isEmpty()) {
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                    this.mEventsDirty = false;
-                } else {
-                    try {
-                        fileOutputStream = file.startWrite();
-                        try {
-                            writeEventsLocked(fileOutputStream);
-                            file.finishWrite(fileOutputStream);
-                            this.mEventsDirty = false;
-                        } catch (IOException e) {
-                            e = e;
-                            file.failWrite(fileOutputStream);
-                            Slog.e("AdaptiveBrightnessLongtermModelBuilder", "Failed to write change mEvents.", e);
-                        }
-                    } catch (IOException e2) {
-                        e = e2;
-                        fileOutputStream = null;
-                    }
-                }
-            }
-        }
-    }
-
-    public final void writeAdaptiveBrightnessStats() {
-        FileOutputStream fileOutputStream;
-        AtomicFile file = this.mInjector.getFile("adaptive_brightness_stats_sec.xml");
-        if (file == null) {
-            Slog.d("AdaptiveBrightnessLongtermModelBuilder", "writeAdaptiveBrightnessStats: writeTo: " + file);
-            return;
-        }
-        try {
             try {
-                fileOutputStream = file.startWrite();
-                try {
-                    this.mAdaptiveBrightnessStatsTracker.writeStats(fileOutputStream);
-                    file.finishWrite(fileOutputStream);
-                } catch (IOException e) {
-                    e = e;
-                    file.failWrite(fileOutputStream);
-                    Slog.e("AdaptiveBrightnessLongtermModelBuilder", "Failed to write ambient brightness stats. IOException", e);
+                printWriter.println("  mEventsDirty=" + this.mEventsDirty);
+                printWriter.println("  mEvents.size=" + this.mEvents.size());
+                BrightnessChangeEvent[] brightnessChangeEventArr = (BrightnessChangeEvent[]) this.mEvents.toArray();
+                i = 0;
+                for (int i2 = 0; i2 < brightnessChangeEventArr.length; i2++) {
+                    printWriter.print("    " + FORMAT.format(new Date(brightnessChangeEventArr[i2].timeStamp)));
+                    printWriter.print(", userId=" + brightnessChangeEventArr[i2].userId);
+                    printWriter.print(", " + brightnessChangeEventArr[i2].lastBrightness + "->" + brightnessChangeEventArr[i2].brightness);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(", isUserSetBrightness=");
+                    sb.append(brightnessChangeEventArr[i2].isUserSetBrightness);
+                    printWriter.print(sb.toString());
+                    printWriter.print(", powerBrightnessFactor=" + brightnessChangeEventArr[i2].powerBrightnessFactor);
+                    printWriter.print(", isDefaultBrightnessConfig=" + brightnessChangeEventArr[i2].isDefaultBrightnessConfig);
+                    printWriter.print(" {");
+                    for (int i3 = 0; i3 < brightnessChangeEventArr[i2].luxValues.length; i3++) {
+                        if (i3 != 0) {
+                            printWriter.print(", ");
+                        }
+                        printWriter.print("(" + brightnessChangeEventArr[i2].luxValues[i3] + "," + brightnessChangeEventArr[i2].luxTimestamps[i3] + ")");
+                    }
+                    printWriter.println("}");
                 }
-            } catch (Exception e2) {
-                Slog.e("AdaptiveBrightnessLongtermModelBuilder", "Failed to write ambient brightness stats. Exception", e2);
+            } catch (Throwable th) {
+                throw th;
             }
-        } catch (IOException e3) {
-            e = e3;
-            fileOutputStream = null;
+        }
+        printWriter.println("  mMinimumBrightnessSpline=" + this.mMinimumBrightnessSpline);
+        printWriter.println("  mMaximumBrightnessSpline=" + this.mMaximumBrightnessSpline);
+        printWriter.print("  mMaximumBrightnessLimitLux=[");
+        int i4 = 0;
+        while (i4 < this.mMaximumBrightnessLimitLux.length) {
+            StringBuilder sb2 = new StringBuilder();
+            sb2.append(this.mMaximumBrightnessLimitLux[i4]);
+            sb2.append(i4 != this.mMaximumBrightnessLimitLux.length + (-1) ? ", " : "]");
+            printWriter.print(sb2.toString());
+            i4++;
+        }
+        printWriter.println();
+        printWriter.print("  mMaximumBrightnessLimitCount=[");
+        while (i < this.mMaximumBrightnessLimitCount.length) {
+            StringBuilder sb3 = new StringBuilder();
+            sb3.append(this.mMaximumBrightnessLimitCount[i]);
+            sb3.append(i != this.mMaximumBrightnessLimitCount.length + (-1) ? ", " : "]");
+            printWriter.print(sb3.toString());
+            i++;
+        }
+        printWriter.println();
+        BinaryTransparencyService$$ExternalSyntheticOutline0.m(KillPolicyManager$$ExternalSyntheticOutline0.m(new StringBuilder("  mMaxBrightnessForNonHbmLux="), this.mMaxBrightnessForNonHbmLux, printWriter, "  mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled="), this.mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled, printWriter);
+        this.mBgHandler.runWithScissors(new Runnable() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder$$ExternalSyntheticLambda2
+            @Override // java.lang.Runnable
+            public final void run() {
+                AdaptiveBrightnessLongtermModelBuilder adaptiveBrightnessLongtermModelBuilder = AdaptiveBrightnessLongtermModelBuilder.this;
+                PrintWriter printWriter2 = printWriter;
+                AggressivePolicyHandler$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("  mAdaptiveBrightnessStatsTrackerStarted="), adaptiveBrightnessLongtermModelBuilder.mAdaptiveBrightnessStatsTrackerStarted, printWriter2, "  mColorSamplingEnabled="), adaptiveBrightnessLongtermModelBuilder.mColorSamplingEnabled, printWriter2, "  mNoFramesToSample="), adaptiveBrightnessLongtermModelBuilder.mNoFramesToSample, printWriter2, "  mFrameRate="), adaptiveBrightnessLongtermModelBuilder.mFrameRate, printWriter2);
+            }
+        }, 1000L);
+        if (this.mAdaptiveBrightnessStatsTracker != null) {
+            printWriter.println();
+            AdaptiveBrightnessStatsTracker adaptiveBrightnessStatsTracker = this.mAdaptiveBrightnessStatsTracker;
+            synchronized (adaptiveBrightnessStatsTracker) {
+                printWriter.println("AdaptiveBrightnessStats:");
+                printWriter.print(adaptiveBrightnessStatsTracker.mAdaptiveBrightnessStats);
+            }
+        }
+    }
+
+    public final void enableColorSampling() {
+        BrightnessConfiguration brightnessConfiguration;
+        ContentResolver contentResolver = this.mContentResolver;
+        this.mInjector.getClass();
+        if (Settings.System.getIntForUser(contentResolver, "screen_brightness_mode", 0, -2) == 1 && ((PowerManager) this.mContext.getSystemService(PowerManager.class)).isInteractive() && !this.mColorSamplingEnabled && (brightnessConfiguration = this.mBrightnessConfiguration) != null && brightnessConfiguration.shouldCollectColorSamples()) {
+            float refreshRate = ((DisplayManager) this.mContext.getSystemService(DisplayManager.class)).getDisplay(0).getRefreshRate();
+            this.mFrameRate = refreshRate;
+            if (refreshRate <= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                Slog.wtf("AdaptiveBrightnessLongtermModelBuilder", "Default display has a zero or negative framerate.");
+                return;
+            }
+            this.mNoFramesToSample = (int) (refreshRate * COLOR_SAMPLE_DURATION);
+            DisplayedContentSamplingAttributes displayedContentSamplingAttributes = ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).getDisplayedContentSamplingAttributes(0);
+            if (displayedContentSamplingAttributes != null) {
+                Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Color sampling mask=0x" + Integer.toHexString(displayedContentSamplingAttributes.getComponentMask()) + " dataSpace=0x" + Integer.toHexString(displayedContentSamplingAttributes.getDataspace()) + " pixelFormat=0x" + Integer.toHexString(displayedContentSamplingAttributes.getPixelFormat()));
+            }
+            if (displayedContentSamplingAttributes != null && displayedContentSamplingAttributes.getPixelFormat() == 55 && (displayedContentSamplingAttributes.getComponentMask() & 4) != 0) {
+                this.mColorSamplingEnabled = ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).setDisplayedContentSamplingEnabled(0, true, 4, this.mNoFramesToSample);
+                StringBuilder sb = new StringBuilder("turning on color sampling for ");
+                sb.append(this.mNoFramesToSample);
+                sb.append(" frames, success=");
+                HeimdAllFsService$$ExternalSyntheticOutline0.m("AdaptiveBrightnessLongtermModelBuilder", sb, this.mColorSamplingEnabled);
+            }
+            if (this.mColorSamplingEnabled && this.mDisplayListener == null) {
+                DisplayListener displayListener = new DisplayListener();
+                this.mDisplayListener = displayListener;
+                ((DisplayManager) this.mContext.getSystemService(DisplayManager.class)).registerDisplayListener(displayListener, this.mBgHandler);
+            }
         }
     }
 
     public final AtomicFile getFileWithLegacyFallback(String str) {
-        AtomicFile legacyFile;
-        AtomicFile file = this.mInjector.getFile(str);
-        if (file == null || file.exists() || (legacyFile = this.mInjector.getLegacyFile(str)) == null || !legacyFile.exists()) {
-            return file;
-        }
-        Slog.i("AdaptiveBrightnessLongtermModelBuilder", "Reading " + str + " from old location");
-        return legacyFile;
-    }
-
-    public final void readEvents() {
-        synchronized (this.mEventsLock) {
-            this.mEventsDirty = true;
-            this.mEvents.clear();
-            AtomicFile fileWithLegacyFallback = getFileWithLegacyFallback("brightness_events_sec.xml");
-            if (fileWithLegacyFallback != null && fileWithLegacyFallback.exists()) {
-                FileInputStream fileInputStream = null;
-                try {
-                    try {
-                        fileInputStream = fileWithLegacyFallback.openRead();
-                        readEventsLocked(fileInputStream);
-                    } catch (IOException e) {
-                        fileWithLegacyFallback.delete();
-                        Slog.e("AdaptiveBrightnessLongtermModelBuilder", "Failed to read change mEvents.", e);
-                    }
-                } finally {
-                    IoUtils.closeQuietly(fileInputStream);
-                }
+        this.mInjector.getClass();
+        AtomicFile file = Injector.getFile(str);
+        if (!file.exists()) {
+            AtomicFile atomicFile = new AtomicFile(new File(Environment.getDataSystemDeDirectory(), str));
+            if (atomicFile.exists()) {
+                BootReceiver$$ExternalSyntheticOutline0.m58m("Reading ", str, " from old location", "AdaptiveBrightnessLongtermModelBuilder");
+                return atomicFile;
             }
         }
+        return file;
     }
 
     public final void readAdaptiveBrightnessStats() {
-        FileInputStream fileInputStream = null;
-        this.mAdaptiveBrightnessStatsTracker = new AdaptiveBrightnessStatsTracker(this.mUserManager, null, this.mBrightnessMapper);
+        this.mAdaptiveBrightnessStatsTracker = new AdaptiveBrightnessStatsTracker(this.mUserManager, this.mBrightnessMapper);
         AtomicFile fileWithLegacyFallback = getFileWithLegacyFallback("adaptive_brightness_stats_sec.xml");
-        if (fileWithLegacyFallback == null || !fileWithLegacyFallback.exists()) {
-            return;
-        }
-        try {
+        if (fileWithLegacyFallback.exists()) {
+            FileInputStream fileInputStream = null;
             try {
-                fileInputStream = fileWithLegacyFallback.openRead();
-                this.mAdaptiveBrightnessStatsTracker.readStats(fileInputStream);
-            } catch (IOException e) {
-                fileWithLegacyFallback.delete();
-                Slog.e("AdaptiveBrightnessLongtermModelBuilder", "Failed to read ambient brightness stats.", e);
+                try {
+                    fileInputStream = fileWithLegacyFallback.openRead();
+                    AdaptiveBrightnessStatsTracker adaptiveBrightnessStatsTracker = this.mAdaptiveBrightnessStatsTracker;
+                    synchronized (adaptiveBrightnessStatsTracker) {
+                        adaptiveBrightnessStatsTracker.mAdaptiveBrightnessStats.readFromXML(fileInputStream);
+                    }
+                } catch (IOException e) {
+                    fileWithLegacyFallback.delete();
+                    Slog.e("AdaptiveBrightnessLongtermModelBuilder", "Failed to read ambient brightness stats.", e);
+                }
+            } finally {
+                IoUtils.closeQuietly((AutoCloseable) null);
             }
-        } finally {
-            IoUtils.closeQuietly(fileInputStream);
         }
     }
 
-    public void writeEventsLocked(OutputStream outputStream) {
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0048, code lost:
+    
+        if (r9 != 4) goto L62;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0056, code lost:
+    
+        if ("event".equals(r4.getName()) == false) goto L69;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x0058, code lost:
+    
+        r9 = new android.hardware.display.BrightnessChangeEvent.Builder();
+        r9.setBrightness(r4.getAttributeFloat((java.lang.String) null, "nits"));
+        r9.setTimeStamp(r4.getAttributeLong((java.lang.String) null, "timestamp"));
+        r9.setPackageName(r4.getAttributeValue((java.lang.String) null, "packageName"));
+        r10 = r19.mUserManager;
+        r12 = r4.getAttributeInt((java.lang.String) null, "user");
+        r0.getClass();
+        r9.setUserId(r10.getUserHandle(r12));
+        r10 = r4.getAttributeValue((java.lang.String) null, "uniqueDisplayId");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x0096, code lost:
+    
+        if (r10 != null) goto L30;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x0098, code lost:
+    
+        r10 = "";
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x009a, code lost:
+    
+        r9.setUniqueDisplayId(r10);
+        r9.setBatteryLevel(r4.getAttributeFloat((java.lang.String) null, "batteryLevel"));
+        r9.setNightMode(r4.getAttributeBoolean((java.lang.String) null, "nightMode"));
+        r9.setColorTemperature(r4.getAttributeInt((java.lang.String) null, "colorTemperature"));
+        r9.setReduceBrightColors(r4.getAttributeBoolean((java.lang.String) null, "reduceBrightColors"));
+        r9.setReduceBrightColorsStrength(r4.getAttributeInt((java.lang.String) null, "reduceBrightColorsStrength"));
+        r9.setReduceBrightColorsOffset(r4.getAttributeFloat((java.lang.String) null, "reduceBrightColorsOffset"));
+        r9.setLastBrightness(r4.getAttributeFloat((java.lang.String) null, "lastNits"));
+        r10 = r4.getAttributeValue((java.lang.String) null, "lux");
+        r12 = r4.getAttributeValue((java.lang.String) null, "luxTimestamps");
+        r10 = r10.split(",");
+        r12 = r12.split(",");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x00fb, code lost:
+    
+        if (r10.length == r12.length) goto L65;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x00ff, code lost:
+    
+        r13 = r10.length;
+        r14 = new float[r13];
+        r15 = new long[r10.length];
+        r6 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x0106, code lost:
+    
+        if (r6 >= r13) goto L73;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x0108, code lost:
+    
+        r14[r6] = java.lang.Float.parseFloat(r10[r6]);
+        r15[r6] = java.lang.Long.parseLong(r12[r6]);
+        r6 = r6 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x011b, code lost:
+    
+        r9.setLuxValues(r14);
+        r9.setLuxTimestamps(r15);
+        r9.setIsDefaultBrightnessConfig(r4.getAttributeBoolean((java.lang.String) null, "defaultConfig", false));
+        r9.setPowerBrightnessFactor(r4.getAttributeFloat((java.lang.String) null, "powerSaveFactor", 1.0f));
+        r10 = 0;
+        r9.setUserBrightnessPoint(r4.getAttributeBoolean((java.lang.String) null, "userPoint", false));
+        r14 = r4.getAttributeLong((java.lang.String) null, "colorSampleDuration", -1);
+        r6 = r4.getAttributeValue((java.lang.String) null, "colorValueBuckets");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x0155, code lost:
+    
+        if (r14 == (-1)) goto L43;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x0157, code lost:
+    
+        if (r6 == null) goto L43;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x0159, code lost:
+    
+        r6 = r6.split(",");
+        r11 = r6.length;
+        r12 = new long[r11];
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:45:0x0160, code lost:
+    
+        if (r10 >= r11) goto L74;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x0162, code lost:
+    
+        r12[r10] = java.lang.Long.parseLong(r6[r10]);
+        r10 = r10 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:48:0x016d, code lost:
+    
+        r9.setColorValues(r12, r14);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:49:0x0170, code lost:
+    
+        r6 = r9.build();
+        android.util.Slog.i("AdaptiveBrightnessLongtermModelBuilder", "Read event " + r6.brightness + " " + r6.packageName);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x0197, code lost:
+    
+        if (r6.userId == (-1)) goto L50;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x019d, code lost:
+    
+        if (r6.timeStamp <= r7) goto L50;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x01a2, code lost:
+    
+        if (r6.luxValues.length <= 0) goto L50;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:55:0x01a4, code lost:
+    
+        r19.mEvents.append(r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x01a9, code lost:
+    
+        r6 = 1;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void readEventsLocked(java.io.InputStream r20) throws java.io.IOException {
+        /*
+            Method dump skipped, instructions count: 477
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder.readEventsLocked(java.io.InputStream):void");
+    }
+
+    public final void startAdaptiveBrightnessStatsTracker() {
+        if (this.mAdaptiveBrightnessStatsTrackerStarted) {
+            return;
+        }
+        Injector injector = this.mInjector;
+        Context context = this.mContext;
+        injector.getClass();
+        if (((PowerManager) context.getSystemService(PowerManager.class)).isInteractive()) {
+            Injector injector2 = this.mInjector;
+            ContentResolver contentResolver = this.mContentResolver;
+            injector2.getClass();
+            if (Settings.System.getIntForUser(contentResolver, "screen_brightness_mode", 0, -2) != 1 || this.mTestModeEnabled) {
+                return;
+            }
+            PowerManagerInternal powerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
+            AdaptiveBrightnessStatsTracker adaptiveBrightnessStatsTracker = this.mAdaptiveBrightnessStatsTracker;
+            boolean z = powerManagerInternal.getLastUserActivityState() == 1;
+            synchronized (adaptiveBrightnessStatsTracker) {
+                AdaptiveBrightnessStatsTracker.Timer timer = adaptiveBrightnessStatsTracker.mTimer;
+                timer.started = false;
+                timer.paused = false;
+                timer.totalDurationSec = FullScreenMagnificationGestureHandler.MAX_SCALE;
+                if (z) {
+                    timer.startTimeMillis = timer.clock.elapsedTimeMillis();
+                    timer.started = true;
+                }
+            }
+            this.mAdaptiveBrightnessStatsTrackerStarted = true;
+        }
+    }
+
+    public final void stopAdaptiveBrightnessStatsTracker() {
+        if (this.mAdaptiveBrightnessStatsTrackerStarted) {
+            AdaptiveBrightnessStatsTracker adaptiveBrightnessStatsTracker = this.mAdaptiveBrightnessStatsTracker;
+            synchronized (adaptiveBrightnessStatsTracker) {
+                try {
+                    if (adaptiveBrightnessStatsTracker.mTimer.started) {
+                        AdaptiveBrightnessStatsTracker.AdaptiveBrightnessStats adaptiveBrightnessStats = adaptiveBrightnessStatsTracker.mAdaptiveBrightnessStats;
+                        int i = adaptiveBrightnessStatsTracker.mCurrentUserId;
+                        adaptiveBrightnessStatsTracker.mInjector.getClass();
+                        LocalDate.now();
+                        adaptiveBrightnessStats.getOrCreateUserStats(i, adaptiveBrightnessStats.mStats).log(adaptiveBrightnessStatsTracker.mCurrentAmbientLux, adaptiveBrightnessStatsTracker.mCurrentScreenBrightness, adaptiveBrightnessStatsTracker.mTimer.totalDurationSec(), adaptiveBrightnessStatsTracker.mCurrentScreenBrightnessSpline, null, null, false);
+                    }
+                    AdaptiveBrightnessStatsTracker.Timer timer = adaptiveBrightnessStatsTracker.mTimer;
+                    timer.started = false;
+                    timer.paused = false;
+                    timer.totalDurationSec = FullScreenMagnificationGestureHandler.MAX_SCALE;
+                    adaptiveBrightnessStatsTracker.mCurrentAmbientLux = -1.0f;
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            this.mAdaptiveBrightnessStatsTrackerStarted = false;
+        }
+    }
+
+    public final void updateAdaptiveBrightnessStats(boolean z) {
+        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "updateAdaptiveBrightnessStats: l:" + this.mLastAmbientLux + " b:" + this.mLastBrightness + " u: " + z);
+        AdaptiveBrightnessStatsTracker adaptiveBrightnessStatsTracker = this.mAdaptiveBrightnessStatsTracker;
+        float f = this.mLastAmbientLux;
+        float f2 = this.mLastBrightness;
+        Spline spline = this.mLastBrightnessSpline;
+        BrightnessChangeEvent brightnessChangeEvent = this.mLastBrightnessChangeEvent;
+        synchronized (adaptiveBrightnessStatsTracker) {
+            try {
+                if (adaptiveBrightnessStatsTracker.mTimer.started) {
+                    int i = adaptiveBrightnessStatsTracker.mCurrentUserId;
+                    if (i == 0) {
+                        AdaptiveBrightnessStatsTracker.AdaptiveBrightnessStats adaptiveBrightnessStats = adaptiveBrightnessStatsTracker.mAdaptiveBrightnessStats;
+                        adaptiveBrightnessStatsTracker.mInjector.getClass();
+                        LocalDate.now();
+                        adaptiveBrightnessStats.getOrCreateUserStats(i, adaptiveBrightnessStats.mStats).log(adaptiveBrightnessStatsTracker.mCurrentAmbientLux, adaptiveBrightnessStatsTracker.mCurrentScreenBrightness, adaptiveBrightnessStatsTracker.mTimer.totalDurationSec(), adaptiveBrightnessStatsTracker.mCurrentScreenBrightnessSpline, brightnessChangeEvent, spline, z);
+                    } else {
+                        adaptiveBrightnessStatsTracker.mCurrentUserId = 0;
+                    }
+                    AdaptiveBrightnessStatsTracker.Timer timer = adaptiveBrightnessStatsTracker.mTimer;
+                    boolean z2 = !timer.paused;
+                    timer.started = false;
+                    timer.paused = false;
+                    timer.totalDurationSec = FullScreenMagnificationGestureHandler.MAX_SCALE;
+                    if (z2) {
+                        timer.startTimeMillis = timer.clock.elapsedTimeMillis();
+                        timer.started = true;
+                    }
+                }
+                adaptiveBrightnessStatsTracker.mCurrentAmbientLux = f;
+                adaptiveBrightnessStatsTracker.mCurrentScreenBrightness = f2;
+                adaptiveBrightnessStatsTracker.mCurrentScreenBrightnessSpline = spline;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public void writeEventsLocked(OutputStream outputStream) throws IOException {
         TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(outputStream);
         resolveSerializer.startDocument((String) null, Boolean.TRUE);
         resolveSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
         resolveSerializer.startTag((String) null, "events");
         BrightnessChangeEvent[] brightnessChangeEventArr = (BrightnessChangeEvent[]) this.mEvents.toArray();
         this.mEvents.clear();
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Writing events " + brightnessChangeEventArr.length);
-        long currentTimeMillis = this.mInjector.currentTimeMillis() - MAX_EVENT_AGE;
+        DeviceIdleController$$ExternalSyntheticOutline0.m(new StringBuilder("Writing events "), brightnessChangeEventArr.length, "AdaptiveBrightnessLongtermModelBuilder");
+        Injector injector = this.mInjector;
+        injector.getClass();
+        long currentTimeMillis = System.currentTimeMillis() - MAX_EVENT_AGE;
         for (int i = 0; i < brightnessChangeEventArr.length; i++) {
-            int userSerialNumber = this.mInjector.getUserSerialNumber(this.mUserManager, brightnessChangeEventArr[i].userId);
+            UserManager userManager = this.mUserManager;
+            int i2 = brightnessChangeEventArr[i].userId;
+            injector.getClass();
+            int userSerialNumber = userManager.getUserSerialNumber(i2);
             if (userSerialNumber != -1) {
                 BrightnessChangeEvent brightnessChangeEvent = brightnessChangeEventArr[i];
                 if (brightnessChangeEvent.timeStamp > currentTimeMillis) {
@@ -688,13 +1217,13 @@ public class AdaptiveBrightnessLongtermModelBuilder {
                     resolveSerializer.attributeBoolean((String) null, "userPoint", brightnessChangeEventArr[i].isUserSetBrightness);
                     StringBuilder sb = new StringBuilder();
                     StringBuilder sb2 = new StringBuilder();
-                    for (int i2 = 0; i2 < brightnessChangeEventArr[i].luxValues.length; i2++) {
-                        if (i2 > 0) {
+                    for (int i3 = 0; i3 < brightnessChangeEventArr[i].luxValues.length; i3++) {
+                        if (i3 > 0) {
                             sb.append(',');
                             sb2.append(',');
                         }
-                        sb.append(Float.toString(brightnessChangeEventArr[i].luxValues[i2]));
-                        sb2.append(Long.toString(brightnessChangeEventArr[i].luxTimestamps[i2]));
+                        sb.append(Float.toString(brightnessChangeEventArr[i].luxValues[i3]));
+                        sb2.append(Long.toString(brightnessChangeEventArr[i].luxTimestamps[i3]));
                     }
                     resolveSerializer.attribute((String) null, "lux", sb.toString());
                     resolveSerializer.attribute((String) null, "luxTimestamps", sb2.toString());
@@ -703,11 +1232,11 @@ public class AdaptiveBrightnessLongtermModelBuilder {
                     if (jArr != null && jArr.length > 0) {
                         resolveSerializer.attributeLong((String) null, "colorSampleDuration", brightnessChangeEvent2.colorSampleDuration);
                         StringBuilder sb3 = new StringBuilder();
-                        for (int i3 = 0; i3 < brightnessChangeEventArr[i].colorValueBuckets.length; i3++) {
-                            if (i3 > 0) {
+                        for (int i4 = 0; i4 < brightnessChangeEventArr[i].colorValueBuckets.length; i4++) {
+                            if (i4 > 0) {
                                 sb3.append(',');
                             }
-                            sb3.append(Long.toString(brightnessChangeEventArr[i].colorValueBuckets[i3]));
+                            sb3.append(Long.toString(brightnessChangeEventArr[i].colorValueBuckets[i4]));
                         }
                         resolveSerializer.attribute((String) null, "colorValueBuckets", sb3.toString());
                     }
@@ -718,532 +1247,5 @@ public class AdaptiveBrightnessLongtermModelBuilder {
         resolveSerializer.endTag((String) null, "events");
         resolveSerializer.endDocument();
         outputStream.flush();
-    }
-
-    public void readEventsLocked(InputStream inputStream) {
-        int next;
-        int i;
-        try {
-            TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(inputStream);
-            do {
-                next = resolvePullParser.next();
-                i = 1;
-                if (next == 1) {
-                    break;
-                }
-            } while (next != 2);
-            String name = resolvePullParser.getName();
-            if (!"events".equals(name)) {
-                throw new XmlPullParserException("Events not found in brightness tracker file " + name);
-            }
-            long currentTimeMillis = this.mInjector.currentTimeMillis() - MAX_EVENT_AGE;
-            int depth = resolvePullParser.getDepth();
-            while (true) {
-                int next2 = resolvePullParser.next();
-                if (next2 == i) {
-                    return;
-                }
-                if (next2 == 3 && resolvePullParser.getDepth() <= depth) {
-                    return;
-                }
-                if (next2 != 3 && next2 != 4 && "event".equals(resolvePullParser.getName())) {
-                    BrightnessChangeEvent.Builder builder = new BrightnessChangeEvent.Builder();
-                    builder.setBrightness(resolvePullParser.getAttributeFloat((String) null, "nits"));
-                    builder.setTimeStamp(resolvePullParser.getAttributeLong((String) null, "timestamp"));
-                    builder.setPackageName(resolvePullParser.getAttributeValue((String) null, "packageName"));
-                    builder.setUserId(this.mInjector.getUserId(this.mUserManager, resolvePullParser.getAttributeInt((String) null, "user")));
-                    String attributeValue = resolvePullParser.getAttributeValue((String) null, "uniqueDisplayId");
-                    if (attributeValue == null) {
-                        attributeValue = "";
-                    }
-                    builder.setUniqueDisplayId(attributeValue);
-                    builder.setBatteryLevel(resolvePullParser.getAttributeFloat((String) null, "batteryLevel"));
-                    builder.setNightMode(resolvePullParser.getAttributeBoolean((String) null, "nightMode"));
-                    builder.setColorTemperature(resolvePullParser.getAttributeInt((String) null, "colorTemperature"));
-                    builder.setReduceBrightColors(resolvePullParser.getAttributeBoolean((String) null, "reduceBrightColors"));
-                    builder.setReduceBrightColorsStrength(resolvePullParser.getAttributeInt((String) null, "reduceBrightColorsStrength"));
-                    builder.setReduceBrightColorsOffset(resolvePullParser.getAttributeFloat((String) null, "reduceBrightColorsOffset"));
-                    builder.setLastBrightness(resolvePullParser.getAttributeFloat((String) null, "lastNits"));
-                    String attributeValue2 = resolvePullParser.getAttributeValue((String) null, "lux");
-                    String attributeValue3 = resolvePullParser.getAttributeValue((String) null, "luxTimestamps");
-                    String[] split = attributeValue2.split(",");
-                    String[] split2 = attributeValue3.split(",");
-                    if (split.length == split2.length) {
-                        int length = split.length;
-                        float[] fArr = new float[length];
-                        long[] jArr = new long[split.length];
-                        for (int i2 = 0; i2 < length; i2++) {
-                            fArr[i2] = Float.parseFloat(split[i2]);
-                            jArr[i2] = Long.parseLong(split2[i2]);
-                        }
-                        builder.setLuxValues(fArr);
-                        builder.setLuxTimestamps(jArr);
-                        builder.setIsDefaultBrightnessConfig(resolvePullParser.getAttributeBoolean((String) null, "defaultConfig", false));
-                        builder.setPowerBrightnessFactor(resolvePullParser.getAttributeFloat((String) null, "powerSaveFactor", 1.0f));
-                        builder.setUserBrightnessPoint(resolvePullParser.getAttributeBoolean((String) null, "userPoint", false));
-                        long attributeLong = resolvePullParser.getAttributeLong((String) null, "colorSampleDuration", -1L);
-                        String attributeValue4 = resolvePullParser.getAttributeValue((String) null, "colorValueBuckets");
-                        if (attributeLong != -1 && attributeValue4 != null) {
-                            String[] split3 = attributeValue4.split(",");
-                            int length2 = split3.length;
-                            long[] jArr2 = new long[length2];
-                            for (int i3 = 0; i3 < length2; i3++) {
-                                jArr2[i3] = Long.parseLong(split3[i3]);
-                            }
-                            builder.setColorValues(jArr2, attributeLong);
-                        }
-                        BrightnessChangeEvent build = builder.build();
-                        Slog.i("AdaptiveBrightnessLongtermModelBuilder", "Read event " + build.brightness + " " + build.packageName);
-                        if (build.userId != -1 && build.timeStamp > currentTimeMillis && build.luxValues.length > 0) {
-                            this.mEvents.append(build);
-                        }
-                        i = 1;
-                    }
-                }
-            }
-        } catch (IOException | NullPointerException | NumberFormatException | XmlPullParserException e) {
-            this.mEvents = new RingBuffer(BrightnessChangeEvent.class, 20);
-            Slog.e("AdaptiveBrightnessLongtermModelBuilder", "Failed to parse brightness event", e);
-            throw new IOException("failed to parse file", e);
-        }
-    }
-
-    public void dump(final PrintWriter printWriter) {
-        int i;
-        printWriter.println("AdaptiveBrightnessLongtermModelBuilder state:");
-        synchronized (this.mDataCollectionLock) {
-            printWriter.println("  mStarted=" + this.mStarted);
-            printWriter.println("  mLastBatteryLevel=" + this.mLastBatteryLevel);
-            printWriter.println("  mLastBrightness=" + this.mLastBrightness);
-            printWriter.println("  mLastLightData.lux=" + this.mLastLightData.lux);
-            printWriter.println("  mLastLightData.timestamp=" + this.mLastLightData.timestamp);
-        }
-        synchronized (this.mEventsLock) {
-            printWriter.println("  mEventsDirty=" + this.mEventsDirty);
-            printWriter.println("  mEvents.size=" + this.mEvents.size());
-            BrightnessChangeEvent[] brightnessChangeEventArr = (BrightnessChangeEvent[]) this.mEvents.toArray();
-            i = 0;
-            for (int i2 = 0; i2 < brightnessChangeEventArr.length; i2++) {
-                printWriter.print("    " + FORMAT.format(new Date(brightnessChangeEventArr[i2].timeStamp)));
-                printWriter.print(", userId=" + brightnessChangeEventArr[i2].userId);
-                printWriter.print(", " + brightnessChangeEventArr[i2].lastBrightness + "->" + brightnessChangeEventArr[i2].brightness);
-                StringBuilder sb = new StringBuilder();
-                sb.append(", isUserSetBrightness=");
-                sb.append(brightnessChangeEventArr[i2].isUserSetBrightness);
-                printWriter.print(sb.toString());
-                printWriter.print(", powerBrightnessFactor=" + brightnessChangeEventArr[i2].powerBrightnessFactor);
-                printWriter.print(", isDefaultBrightnessConfig=" + brightnessChangeEventArr[i2].isDefaultBrightnessConfig);
-                printWriter.print(" {");
-                for (int i3 = 0; i3 < brightnessChangeEventArr[i2].luxValues.length; i3++) {
-                    if (i3 != 0) {
-                        printWriter.print(", ");
-                    }
-                    printWriter.print("(" + brightnessChangeEventArr[i2].luxValues[i3] + "," + brightnessChangeEventArr[i2].luxTimestamps[i3] + ")");
-                }
-                printWriter.println("}");
-            }
-        }
-        printWriter.println("  mMinimumBrightnessSpline=" + this.mMinimumBrightnessSpline);
-        printWriter.println("  mMaximumBrightnessSpline=" + this.mMaximumBrightnessSpline);
-        printWriter.print("  mMaximumBrightnessLimitLux=[");
-        int i4 = 0;
-        while (i4 < this.mMaximumBrightnessLimitLux.length) {
-            StringBuilder sb2 = new StringBuilder();
-            sb2.append(this.mMaximumBrightnessLimitLux[i4]);
-            sb2.append(i4 != this.mMaximumBrightnessLimitLux.length + (-1) ? ", " : "]");
-            printWriter.print(sb2.toString());
-            i4++;
-        }
-        printWriter.println();
-        printWriter.print("  mMaximumBrightnessLimitCount=[");
-        while (i < this.mMaximumBrightnessLimitCount.length) {
-            StringBuilder sb3 = new StringBuilder();
-            sb3.append(this.mMaximumBrightnessLimitCount[i]);
-            sb3.append(i != this.mMaximumBrightnessLimitCount.length + (-1) ? ", " : "]");
-            printWriter.print(sb3.toString());
-            i++;
-        }
-        printWriter.println();
-        printWriter.println("  mMaxBrightnessForNonHbmLux=" + this.mMaxBrightnessForNonHbmLux);
-        printWriter.println("  mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled=" + this.mWriteAdaptiveBrightnessLongtermModelBuilderStateScheduled);
-        this.mBgHandler.runWithScissors(new Runnable() { // from class: com.android.server.display.AdaptiveBrightnessLongtermModelBuilder$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                AdaptiveBrightnessLongtermModelBuilder.this.lambda$dump$2(printWriter);
-            }
-        }, 1000L);
-        if (this.mAdaptiveBrightnessStatsTracker != null) {
-            printWriter.println();
-            this.mAdaptiveBrightnessStatsTracker.dump(printWriter);
-        }
-    }
-
-    /* renamed from: dumpLocal, reason: merged with bridge method [inline-methods] */
-    public final void lambda$dump$2(PrintWriter printWriter) {
-        printWriter.println("  mAdaptiveBrightnessStatsTrackerStarted=" + this.mAdaptiveBrightnessStatsTrackerStarted);
-        printWriter.println("  mColorSamplingEnabled=" + this.mColorSamplingEnabled);
-        printWriter.println("  mNoFramesToSample=" + this.mNoFramesToSample);
-        printWriter.println("  mFrameRate=" + this.mFrameRate);
-    }
-
-    public final void enableColorSampling() {
-        BrightnessConfiguration brightnessConfiguration;
-        if (this.mInjector.isBrightnessModeAutomatic(this.mContentResolver) && this.mInjector.isInteractive(this.mContext) && !this.mColorSamplingEnabled && (brightnessConfiguration = this.mBrightnessConfiguration) != null && brightnessConfiguration.shouldCollectColorSamples()) {
-            float frameRate = this.mInjector.getFrameRate(this.mContext);
-            this.mFrameRate = frameRate;
-            if (frameRate <= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                Slog.wtf("AdaptiveBrightnessLongtermModelBuilder", "Default display has a zero or negative framerate.");
-                return;
-            }
-            this.mNoFramesToSample = (int) (frameRate * ((float) COLOR_SAMPLE_DURATION));
-            DisplayedContentSamplingAttributes samplingAttributes = this.mInjector.getSamplingAttributes();
-            if (samplingAttributes != null) {
-                Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Color sampling mask=0x" + Integer.toHexString(samplingAttributes.getComponentMask()) + " dataSpace=0x" + Integer.toHexString(samplingAttributes.getDataspace()) + " pixelFormat=0x" + Integer.toHexString(samplingAttributes.getPixelFormat()));
-            }
-            if (samplingAttributes != null && samplingAttributes.getPixelFormat() == 55 && (samplingAttributes.getComponentMask() & 4) != 0) {
-                this.mColorSamplingEnabled = this.mInjector.enableColorSampling(true, this.mNoFramesToSample);
-                Slog.i("AdaptiveBrightnessLongtermModelBuilder", "turning on color sampling for " + this.mNoFramesToSample + " frames, success=" + this.mColorSamplingEnabled);
-            }
-            if (this.mColorSamplingEnabled && this.mDisplayListener == null) {
-                DisplayListener displayListener = new DisplayListener();
-                this.mDisplayListener = displayListener;
-                this.mInjector.registerDisplayListener(this.mContext, displayListener, this.mBgHandler);
-            }
-        }
-    }
-
-    public final void disableColorSampling() {
-        if (this.mColorSamplingEnabled) {
-            this.mInjector.enableColorSampling(false, 0);
-            this.mColorSamplingEnabled = false;
-            DisplayListener displayListener = this.mDisplayListener;
-            if (displayListener != null) {
-                this.mInjector.unRegisterDisplayListener(this.mContext, displayListener);
-                this.mDisplayListener = null;
-            }
-            Slog.i("AdaptiveBrightnessLongtermModelBuilder", "turning off color sampling");
-        }
-    }
-
-    public final void updateColorSampling() {
-        if (this.mColorSamplingEnabled && this.mInjector.getFrameRate(this.mContext) != this.mFrameRate) {
-            disableColorSampling();
-            enableColorSampling();
-        }
-    }
-
-    public final void recordAmbientLuxEvent(float f) {
-        synchronized (this.mDataCollectionLock) {
-            Slog.v("AdaptiveBrightnessLongtermModelBuilder", "Ambient Lux event " + f);
-            this.mLastLightData.timestamp = this.mInjector.currentTimeMillis();
-            this.mLastLightData.lux = f;
-        }
-    }
-
-    public final void updateAdaptiveBrightnessStats(boolean z) {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "updateAdaptiveBrightnessStats: l:" + this.mLastAmbientLux + " b:" + this.mLastBrightness + " u: " + z);
-        this.mAdaptiveBrightnessStatsTracker.add(0, this.mLastAmbientLux, this.mLastBrightness, this.mLastBrightnessSpline, this.mLastBrightnessChangeEvent, z);
-    }
-
-    public final void batteryLevelChanged(int i, int i2) {
-        synchronized (this.mDataCollectionLock) {
-            this.mLastBatteryLevel = i / i2;
-        }
-    }
-
-    public void addBrightnessWeightDirectly(float f, float f2, float f3, float f4) {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "addBrightnessWeightDirectly: l:" + f + " b:" + f2 + " d:" + f3 + " c:" + f4);
-        this.mBrightnessMapper.addUserDataPoint(f, f2);
-        Spline brightnessSpline = this.mBrightnessMapper.getBrightnessSpline();
-        this.mLastBrightnessSpline = brightnessSpline;
-        this.mAdaptiveBrightnessStatsTracker.addDirectly(0, f, f2, f3, brightnessSpline);
-    }
-
-    public void setTestModeEnabled(boolean z) {
-        Slog.d("AdaptiveBrightnessLongtermModelBuilder", "setTestModeEnabled:" + z);
-        if (this.mTestModeEnabled != z) {
-            this.mTestModeEnabled = z;
-            if (z) {
-                this.mBgHandler.obtainMessage(2).sendToTarget();
-            } else {
-                this.mBgHandler.obtainMessage(3).sendToTarget();
-            }
-        }
-    }
-
-    public int[] getBrightnessLearningMaxLimitCount() {
-        int[] iArr = (int[]) this.mMaximumBrightnessLimitCount.clone();
-        Arrays.fill(this.mMaximumBrightnessLimitCount, 0);
-        return iArr;
-    }
-
-    /* loaded from: classes2.dex */
-    public final class DisplayListener implements DisplayManager.DisplayListener {
-        @Override // android.hardware.display.DisplayManager.DisplayListener
-        public void onDisplayAdded(int i) {
-        }
-
-        @Override // android.hardware.display.DisplayManager.DisplayListener
-        public void onDisplayRemoved(int i) {
-        }
-
-        public DisplayListener() {
-        }
-
-        @Override // android.hardware.display.DisplayManager.DisplayListener
-        public void onDisplayChanged(int i) {
-            if (i == 0) {
-                AdaptiveBrightnessLongtermModelBuilder.this.updateColorSampling();
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class SettingsObserver extends ContentObserver {
-        public SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z, Uri uri) {
-            Slog.v("AdaptiveBrightnessLongtermModelBuilder", "settings change " + uri);
-            if (AdaptiveBrightnessLongtermModelBuilder.this.mInjector.isBrightnessModeAutomatic(AdaptiveBrightnessLongtermModelBuilder.this.mContentResolver)) {
-                AdaptiveBrightnessLongtermModelBuilder.this.mBgHandler.obtainMessage(3).sendToTarget();
-            } else {
-                AdaptiveBrightnessLongtermModelBuilder.this.mBgHandler.obtainMessage(2).sendToTarget();
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class Receiver extends BroadcastReceiver {
-        public Receiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Received " + intent.getAction());
-            String action = intent.getAction();
-            if ("android.intent.action.ACTION_SHUTDOWN".equals(action)) {
-                AdaptiveBrightnessLongtermModelBuilder.this.stop();
-                AdaptiveBrightnessLongtermModelBuilder.this.scheduleWriteAdaptiveBrightnessLongtermModelBuilderState();
-                return;
-            }
-            if ("android.intent.action.BATTERY_CHANGED".equals(action)) {
-                int intExtra = intent.getIntExtra("level", -1);
-                int intExtra2 = intent.getIntExtra("scale", 0);
-                if (intExtra == -1 || intExtra2 == 0) {
-                    return;
-                }
-                AdaptiveBrightnessLongtermModelBuilder.this.batteryLevelChanged(intExtra, intExtra2);
-                return;
-            }
-            if ("android.intent.action.SCREEN_OFF".equals(action)) {
-                AdaptiveBrightnessLongtermModelBuilder.this.mBgHandler.obtainMessage(2).sendToTarget();
-            } else if ("android.intent.action.SCREEN_ON".equals(action)) {
-                AdaptiveBrightnessLongtermModelBuilder.this.mBgHandler.obtainMessage(3).sendToTarget();
-            } else if ("com.samsung.intent.action.SETTINGS_SOFT_RESET".equals(action)) {
-                AdaptiveBrightnessLongtermModelBuilder.this.mBgHandler.obtainMessage(8).sendToTarget();
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class PackageBroadcastReceiver extends BroadcastReceiver {
-        public PackageBroadcastReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            Slog.d("AdaptiveBrightnessLongtermModelBuilder", "Received " + intent.getAction());
-            if ("android.intent.action.PACKAGE_DATA_CLEARED".equals(intent.getAction()) && "com.samsung.android.brightnessbackupservice".equals(intent.getData().getSchemeSpecificPart())) {
-                AdaptiveBrightnessLongtermModelBuilder.this.mBgHandler.obtainMessage(8).sendToTarget();
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class ModelBuilderHandler extends Handler {
-        public ModelBuilderHandler(Looper looper) {
-            super(looper, null, true);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            boolean z = false;
-            switch (message.what) {
-                case 0:
-                    AdaptiveBrightnessLongtermModelBuilder.this.backgroundStart(((Float) message.obj).floatValue());
-                    return;
-                case 1:
-                    BrightnessChangeValues brightnessChangeValues = (BrightnessChangeValues) message.obj;
-                    AdaptiveBrightnessLongtermModelBuilder.this.handleBrightnessChanged(brightnessChangeValues.brightness, message.arg1 == 1, brightnessChangeValues.powerBrightnessFactor, brightnessChangeValues.isUserSetBrightness, brightnessChangeValues.isDefaultBrightnessConfig, brightnessChangeValues.timestamp, brightnessChangeValues.uniqueDisplayId, brightnessChangeValues.brightnessSpline);
-                    return;
-                case 2:
-                    AdaptiveBrightnessLongtermModelBuilder.this.stopAdaptiveBrightnessStatsTracker();
-                    AdaptiveBrightnessLongtermModelBuilder.this.disableColorSampling();
-                    return;
-                case 3:
-                    AdaptiveBrightnessLongtermModelBuilder.this.startAdaptiveBrightnessStatsTracker();
-                    AdaptiveBrightnessLongtermModelBuilder.this.enableColorSampling();
-                    return;
-                case 4:
-                    AdaptiveBrightnessLongtermModelBuilder.this.mBrightnessConfiguration = (BrightnessConfiguration) message.obj;
-                    if (AdaptiveBrightnessLongtermModelBuilder.this.mBrightnessConfiguration != null && AdaptiveBrightnessLongtermModelBuilder.this.mBrightnessConfiguration.shouldCollectColorSamples()) {
-                        z = true;
-                    }
-                    if (z && !AdaptiveBrightnessLongtermModelBuilder.this.mColorSamplingEnabled) {
-                        AdaptiveBrightnessLongtermModelBuilder.this.enableColorSampling();
-                        return;
-                    } else {
-                        if (z || !AdaptiveBrightnessLongtermModelBuilder.this.mColorSamplingEnabled) {
-                            return;
-                        }
-                        AdaptiveBrightnessLongtermModelBuilder.this.disableColorSampling();
-                        return;
-                    }
-                case 5:
-                    AdaptiveBrightnessLongtermModelBuilder.this.handleAmbientLuxChanged(Float.intBitsToFloat(message.arg1));
-                    return;
-                case 6:
-                default:
-                    return;
-                case 7:
-                    AdaptiveBrightnessLongtermModelBuilder.this.handleShortTermModelValid();
-                    return;
-                case 8:
-                    AdaptiveBrightnessLongtermModelBuilder.this.handleBrightnessBnrPackageCleared();
-                    return;
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class BrightnessChangeValues {
-        public final float brightness;
-        public final Spline brightnessSpline;
-        public final boolean isDefaultBrightnessConfig;
-        public final boolean isUserSetBrightness;
-        public final float powerBrightnessFactor;
-        public final long timestamp;
-        public final String uniqueDisplayId;
-
-        public BrightnessChangeValues(float f, float f2, boolean z, boolean z2, long j, String str, Spline spline) {
-            this.brightness = f;
-            this.powerBrightnessFactor = f2;
-            this.isUserSetBrightness = z;
-            this.isDefaultBrightnessConfig = z2;
-            this.timestamp = j;
-            this.uniqueDisplayId = str;
-            this.brightnessSpline = spline;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes2.dex */
-    public class Injector {
-        public void registerBrightnessModeObserver(ContentResolver contentResolver, ContentObserver contentObserver) {
-            contentResolver.registerContentObserver(Settings.System.getUriFor("screen_brightness_mode"), false, contentObserver, -1);
-        }
-
-        public void unregisterBrightnessModeObserver(Context context, ContentObserver contentObserver) {
-            context.getContentResolver().unregisterContentObserver(contentObserver);
-        }
-
-        public void registerReceiver(Context context, BroadcastReceiver broadcastReceiver, IntentFilter intentFilter) {
-            context.registerReceiver(broadcastReceiver, intentFilter);
-        }
-
-        public void unregisterReceiver(Context context, BroadcastReceiver broadcastReceiver) {
-            context.unregisterReceiver(broadcastReceiver);
-        }
-
-        public Handler getBackgroundHandler() {
-            return BackgroundThread.getHandler();
-        }
-
-        public boolean isBrightnessModeAutomatic(ContentResolver contentResolver) {
-            return Settings.System.getIntForUser(contentResolver, "screen_brightness_mode", 0, -2) == 1;
-        }
-
-        public AtomicFile getFile(String str) {
-            return new AtomicFile(new File(Environment.getDataSystemDirectory(), str));
-        }
-
-        public AtomicFile getLegacyFile(String str) {
-            return new AtomicFile(new File(Environment.getDataSystemDeDirectory(), str));
-        }
-
-        public long currentTimeMillis() {
-            return System.currentTimeMillis();
-        }
-
-        public int getUserSerialNumber(UserManager userManager, int i) {
-            return userManager.getUserSerialNumber(i);
-        }
-
-        public int getUserId(UserManager userManager, int i) {
-            return userManager.getUserHandle(i);
-        }
-
-        public ActivityTaskManager.RootTaskInfo getFocusedStack() {
-            return ActivityTaskManager.getService().getFocusedRootTaskInfo();
-        }
-
-        public void scheduleIdleJob(Context context) {
-            BrightnessIdleJob.scheduleJob(context);
-        }
-
-        public void cancelIdleJob(Context context) {
-            BrightnessIdleJob.cancelJob(context);
-        }
-
-        public boolean isInteractive(Context context) {
-            return ((PowerManager) context.getSystemService(PowerManager.class)).isInteractive();
-        }
-
-        public int getNightDisplayColorTemperature(Context context) {
-            return ((ColorDisplayManager) context.getSystemService(ColorDisplayManager.class)).getNightDisplayColorTemperature();
-        }
-
-        public boolean isNightDisplayActivated(Context context) {
-            return ((ColorDisplayManager) context.getSystemService(ColorDisplayManager.class)).isNightDisplayActivated();
-        }
-
-        public int getReduceBrightColorsStrength(Context context) {
-            return ((ColorDisplayManager) context.getSystemService(ColorDisplayManager.class)).getReduceBrightColorsStrength();
-        }
-
-        public float getReduceBrightColorsOffsetFactor(Context context) {
-            return ((ColorDisplayManager) context.getSystemService(ColorDisplayManager.class)).getReduceBrightColorsOffsetFactor();
-        }
-
-        public boolean isReduceBrightColorsActivated(Context context) {
-            return ((ColorDisplayManager) context.getSystemService(ColorDisplayManager.class)).isReduceBrightColorsActivated();
-        }
-
-        public DisplayedContentSample sampleColor(int i) {
-            return ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).getDisplayedContentSample(0, i, 0L);
-        }
-
-        public float getFrameRate(Context context) {
-            return ((DisplayManager) context.getSystemService(DisplayManager.class)).getDisplay(0).getRefreshRate();
-        }
-
-        public DisplayedContentSamplingAttributes getSamplingAttributes() {
-            return ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).getDisplayedContentSamplingAttributes(0);
-        }
-
-        public boolean enableColorSampling(boolean z, int i) {
-            return ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).setDisplayedContentSamplingEnabled(0, z, 4, i);
-        }
-
-        public void registerDisplayListener(Context context, DisplayManager.DisplayListener displayListener, Handler handler) {
-            ((DisplayManager) context.getSystemService(DisplayManager.class)).registerDisplayListener(displayListener, handler);
-        }
-
-        public void unRegisterDisplayListener(Context context, DisplayManager.DisplayListener displayListener) {
-            ((DisplayManager) context.getSystemService(DisplayManager.class)).unregisterDisplayListener(displayListener);
-        }
     }
 }

@@ -6,65 +6,83 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.provider.Settings;
 import com.samsung.android.desktopmode.DesktopModeFeature;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
 
-/* loaded from: classes2.dex */
-public class EmergencyModeBlocker implements SemDesktopModeManager.DesktopModeBlocker {
-    public static final String TAG = "[DMS]" + EmergencyModeBlocker.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class EmergencyModeBlocker implements SemDesktopModeManager.DesktopModeBlocker {
+    public static final /* synthetic */ int $r8$clinit = 0;
     public final Context mContext;
     public boolean mEmergencyModeEnabledInSettings;
     public final Injector mInjector;
     public boolean mLimitAppsAndHomeScreenEnabledInSettings;
     public final SemDesktopModeManager mManager;
     public boolean mMpsmEnabledInSettings;
-    public final SettingsListener mSettingListener;
     public final IStateManager mStateManager;
-    public final Runnable mUpdateRunnable = new Runnable() { // from class: com.android.server.desktopmode.EmergencyModeBlocker$$ExternalSyntheticLambda0
+    public final EmergencyModeBlocker$$ExternalSyntheticLambda0 mUpdateRunnable = new Runnable() { // from class: com.android.server.desktopmode.EmergencyModeBlocker$$ExternalSyntheticLambda0
         @Override // java.lang.Runnable
         public final void run() {
-            EmergencyModeBlocker.this.updateBlockerRegistration();
+            EmergencyModeBlocker emergencyModeBlocker = EmergencyModeBlocker.this;
+            if (emergencyModeBlocker.mEnabledInBroadcast || emergencyModeBlocker.mEmergencyModeEnabledInSettings || emergencyModeBlocker.mMpsmEnabledInSettings || emergencyModeBlocker.mLimitAppsAndHomeScreenEnabledInSettings) {
+                if (emergencyModeBlocker.mBlockerRegistered) {
+                    return;
+                }
+                emergencyModeBlocker.mBlockerRegistered = true;
+                emergencyModeBlocker.mManager.registerBlocker(emergencyModeBlocker);
+                ((StateManager) emergencyModeBlocker.mStateManager).setEmergencyModeEnabled(true);
+                return;
+            }
+            if (emergencyModeBlocker.mBlockerRegistered) {
+                emergencyModeBlocker.mBlockerRegistered = false;
+                emergencyModeBlocker.mManager.unregisterBlocker(emergencyModeBlocker);
+                ((StateManager) emergencyModeBlocker.mStateManager).setEmergencyModeEnabled(false);
+            }
         }
     };
     public boolean mEnabledInBroadcast = false;
     public boolean mBlockerRegistered = false;
     public final Handler mHandler = new Handler();
 
-    /* loaded from: classes2.dex */
-    public class BroadcastListener extends BroadcastReceiver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BroadcastListener extends BroadcastReceiver {
         public BroadcastListener() {
         }
 
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             int intExtra = intent.getIntExtra("reason", 0);
             if (DesktopModeFeature.DEBUG) {
-                Log.d(EmergencyModeBlocker.TAG, "EMERGENCY_STATE_CHANGED reason=" + intExtra);
+                int i = EmergencyModeBlocker.$r8$clinit;
+                DesktopModeService$$ExternalSyntheticOutline0.m(intExtra, "EMERGENCY_STATE_CHANGED reason=", "[DMS]EmergencyModeBlocker");
             }
             if (intExtra == 2 || intExtra == 3 || intExtra == 4) {
-                EmergencyModeBlocker.this.mEnabledInBroadcast = true;
-                EmergencyModeBlocker.this.scheduleUpdateBlockerRegistration();
+                EmergencyModeBlocker emergencyModeBlocker = EmergencyModeBlocker.this;
+                emergencyModeBlocker.mEnabledInBroadcast = true;
+                emergencyModeBlocker.scheduleUpdateBlockerRegistration(0);
             } else {
                 if (intExtra != 5) {
                     return;
                 }
-                EmergencyModeBlocker.this.mEnabledInBroadcast = false;
-                EmergencyModeBlocker.this.scheduleUpdateBlockerRegistration(10000);
+                EmergencyModeBlocker emergencyModeBlocker2 = EmergencyModeBlocker.this;
+                emergencyModeBlocker2.mEnabledInBroadcast = false;
+                emergencyModeBlocker2.scheduleUpdateBlockerRegistration(10000);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class SettingsListener extends ContentObserver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SettingsListener extends ContentObserver {
         public SettingsListener() {
             super(null);
         }
 
         @Override // android.database.ContentObserver
-        public void onChange(boolean z) {
+        public final void onChange(boolean z) {
             super.onChange(z);
             EmergencyModeBlocker emergencyModeBlocker = EmergencyModeBlocker.this;
             emergencyModeBlocker.mEmergencyModeEnabledInSettings = emergencyModeBlocker.isEmergencyModeEnabledInSettings();
@@ -73,12 +91,14 @@ public class EmergencyModeBlocker implements SemDesktopModeManager.DesktopModeBl
             EmergencyModeBlocker emergencyModeBlocker3 = EmergencyModeBlocker.this;
             emergencyModeBlocker3.mLimitAppsAndHomeScreenEnabledInSettings = emergencyModeBlocker3.isLimitAppsAndHomeScreenEnabledInSettings();
             if (DesktopModeFeature.DEBUG) {
-                Log.d(EmergencyModeBlocker.TAG, "emergency_mode=" + EmergencyModeBlocker.this.mEmergencyModeEnabledInSettings + ", ultra_powersaving_mode=" + EmergencyModeBlocker.this.mMpsmEnabledInSettings + ", minimal_battery_use=" + EmergencyModeBlocker.this.mLimitAppsAndHomeScreenEnabledInSettings);
+                int i = EmergencyModeBlocker.$r8$clinit;
+                Log.d("[DMS]EmergencyModeBlocker", "emergency_mode=" + EmergencyModeBlocker.this.mEmergencyModeEnabledInSettings + ", ultra_powersaving_mode=" + EmergencyModeBlocker.this.mMpsmEnabledInSettings + ", minimal_battery_use=" + EmergencyModeBlocker.this.mLimitAppsAndHomeScreenEnabledInSettings);
             }
-            EmergencyModeBlocker.this.scheduleUpdateBlockerRegistration();
+            EmergencyModeBlocker.this.scheduleUpdateBlockerRegistration(0);
         }
     }
 
+    /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.desktopmode.EmergencyModeBlocker$$ExternalSyntheticLambda0] */
     public EmergencyModeBlocker(Context context, IStateManager iStateManager, SemDesktopModeManager semDesktopModeManager, Injector injector) {
         this.mEmergencyModeEnabledInSettings = false;
         this.mMpsmEnabledInSettings = false;
@@ -90,78 +110,51 @@ public class EmergencyModeBlocker implements SemDesktopModeManager.DesktopModeBl
         this.mMpsmEnabledInSettings = isMpsmEnabledInSettings();
         this.mLimitAppsAndHomeScreenEnabledInSettings = isLimitAppsAndHomeScreenEnabledInSettings();
         SettingsListener settingsListener = new SettingsListener();
-        this.mSettingListener = settingsListener;
-        context.registerReceiverAsUser(new BroadcastListener(), UserHandle.ALL, new IntentFilter("com.samsung.intent.action.EMERGENCY_STATE_CHANGED"), null, null);
+        context.registerReceiverAsUser(new BroadcastListener(), UserHandle.ALL, new IntentFilter("com.samsung.intent.action.EMERGENCY_STATE_CHANGED"), null, null, 2);
         context.getContentResolver().registerContentObserver(Settings.System.getUriFor("emergency_mode"), false, settingsListener, -1);
         context.getContentResolver().registerContentObserver(Settings.System.getUriFor("ultra_powersaving_mode"), false, settingsListener, -1);
         context.getContentResolver().registerContentObserver(Settings.System.getUriFor("minimal_battery_use"), false, settingsListener, -1);
         this.mManager = semDesktopModeManager;
-        scheduleUpdateBlockerRegistration();
+        scheduleUpdateBlockerRegistration(0);
     }
 
-    public final void scheduleUpdateBlockerRegistration() {
-        scheduleUpdateBlockerRegistration(0);
+    public final boolean isEmergencyModeEnabledInSettings() {
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z = Settings.System.getIntForUser(this.mContext.getContentResolver(), "emergency_mode", 0, -2) != 0;
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return z;
+    }
+
+    public final boolean isLimitAppsAndHomeScreenEnabledInSettings() {
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z = Settings.System.getIntForUser(this.mContext.getContentResolver(), "minimal_battery_use", 0, -2) != 0;
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return z;
+    }
+
+    public final boolean isMpsmEnabledInSettings() {
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z = Settings.System.getIntForUser(this.mContext.getContentResolver(), "ultra_powersaving_mode", 0, -2) != 0;
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return z;
+    }
+
+    public final String onBlocked() {
+        if (!this.mLimitAppsAndHomeScreenEnabledInSettings) {
+            return this.mContext.getString(this.mMpsmEnabledInSettings ? R.string.httpErrorIO : this.mEmergencyModeEnabledInSettings ? R.string.httpErrorAuth : R.string.imProtocolAim);
+        }
+        Context context = this.mContext;
+        return context.getString(R.string.icu_abbrev_wday_month_day_no_year, context.getString(R.string.httpErrorFile));
     }
 
     public final void scheduleUpdateBlockerRegistration(int i) {
         this.mHandler.removeCallbacks(this.mUpdateRunnable);
         this.mHandler.postDelayed(this.mUpdateRunnable, i);
-    }
-
-    public final void updateBlockerRegistration() {
-        if (shouldBlockDesktopMode()) {
-            if (this.mBlockerRegistered) {
-                return;
-            }
-            this.mBlockerRegistered = true;
-            this.mManager.registerBlocker(this);
-            this.mStateManager.setEmergencyModeEnabled(true);
-            return;
-        }
-        if (this.mBlockerRegistered) {
-            this.mBlockerRegistered = false;
-            this.mManager.unregisterBlocker(this);
-            this.mStateManager.setEmergencyModeEnabled(false);
-        }
-    }
-
-    public final boolean isEmergencyModeEnabledInSettings() {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        boolean z = Settings.System.getIntForUser(this.mContext.getContentResolver(), "emergency_mode", 0, -2) != 0;
-        this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        return z;
-    }
-
-    public final boolean isMpsmEnabledInSettings() {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        boolean z = Settings.System.getIntForUser(this.mContext.getContentResolver(), "ultra_powersaving_mode", 0, -2) != 0;
-        this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        return z;
-    }
-
-    public final boolean isLimitAppsAndHomeScreenEnabledInSettings() {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        boolean z = Settings.System.getIntForUser(this.mContext.getContentResolver(), "minimal_battery_use", 0, -2) != 0;
-        this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        return z;
-    }
-
-    public boolean shouldBlockDesktopMode() {
-        return this.mEnabledInBroadcast || this.mEmergencyModeEnabledInSettings || this.mMpsmEnabledInSettings || this.mLimitAppsAndHomeScreenEnabledInSettings;
-    }
-
-    public String onBlocked() {
-        int i;
-        if (this.mLimitAppsAndHomeScreenEnabledInSettings) {
-            Context context = this.mContext;
-            return context.getString(R.string.lockscreen_missing_sim_instructions_long, context.getString(R.string.lockscreen_glogin_forgot_pattern));
-        }
-        Context context2 = this.mContext;
-        if (this.mMpsmEnabledInSettings) {
-            i = R.string.lockscreen_glogin_invalid_input;
-        } else {
-            i = this.mEmergencyModeEnabledInSettings ? R.string.lockscreen_forgot_pattern_button_text : R.string.lockscreen_missing_sim_message;
-        }
-        return context2.getString(i);
     }
 }

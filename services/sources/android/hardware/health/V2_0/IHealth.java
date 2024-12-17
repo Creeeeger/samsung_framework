@@ -1,138 +1,45 @@
 package android.hardware.health.V2_0;
 
+import android.hardware.authsecret.V1_0.IAuthSecret$Proxy$$ExternalSyntheticOutline0;
+import android.hardware.health.Translate;
 import android.hidl.base.V1_0.DebugInfo;
 import android.hidl.base.V1_0.IBase;
+import android.os.BatteryProperty;
 import android.os.HidlSupport;
-import android.os.HwBinder;
 import android.os.HwBlob;
 import android.os.HwParcel;
 import android.os.IHwBinder;
-import android.os.IHwInterface;
 import android.os.NativeHandle;
 import android.os.RemoteException;
-import com.att.iqi.lib.metrics.mm.MM05;
+import android.util.MutableInt;
+import com.android.server.health.HealthServiceWrapperHidl$$ExternalSyntheticLambda1;
+import com.android.server.health.HealthServiceWrapperHidl$$ExternalSyntheticLambda2;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Objects;
+import vendor.samsung.hardware.health.V2_0.ISehHealthInfoCallback$Stub;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IHealth extends IBase {
 
-    /* loaded from: classes.dex */
-    public interface getCapacityCallback {
-        void onValues(int i, int i2);
-    }
-
-    /* loaded from: classes.dex */
-    public interface getChargeCounterCallback {
-        void onValues(int i, int i2);
-    }
-
-    /* loaded from: classes.dex */
-    public interface getChargeStatusCallback {
-        void onValues(int i, int i2);
-    }
-
-    /* loaded from: classes.dex */
-    public interface getCurrentAverageCallback {
-        void onValues(int i, int i2);
-    }
-
-    /* loaded from: classes.dex */
-    public interface getCurrentNowCallback {
-        void onValues(int i, int i2);
-    }
-
-    /* loaded from: classes.dex */
-    public interface getDiskStatsCallback {
-    }
-
-    /* loaded from: classes.dex */
-    public interface getEnergyCounterCallback {
-        void onValues(int i, long j);
-    }
-
-    /* loaded from: classes.dex */
-    public interface getHealthInfoCallback {
-        void onValues(int i, HealthInfo healthInfo);
-    }
-
-    /* loaded from: classes.dex */
-    public interface getStorageInfoCallback {
-    }
-
-    void getCapacity(getCapacityCallback getcapacitycallback);
-
-    void getChargeCounter(getChargeCounterCallback getchargecountercallback);
-
-    void getChargeStatus(getChargeStatusCallback getchargestatuscallback);
-
-    void getCurrentAverage(getCurrentAverageCallback getcurrentaveragecallback);
-
-    void getCurrentNow(getCurrentNowCallback getcurrentnowcallback);
-
-    void getDiskStats(getDiskStatsCallback getdiskstatscallback);
-
-    void getEnergyCounter(getEnergyCounterCallback getenergycountercallback);
-
-    void getHealthInfo(getHealthInfoCallback gethealthinfocallback);
-
-    void getStorageInfo(getStorageInfoCallback getstorageinfocallback);
-
-    @Override // android.hidl.base.V1_0.IBase
-    ArrayList interfaceChain();
-
-    int registerCallback(IHealthInfoCallback iHealthInfoCallback);
-
-    int unregisterCallback(IHealthInfoCallback iHealthInfoCallback);
-
-    int update();
-
-    static IHealth asInterface(IHwBinder iHwBinder) {
-        if (iHwBinder == null) {
-            return null;
-        }
-        IHwInterface queryLocalInterface = iHwBinder.queryLocalInterface("android.hardware.health@2.0::IHealth");
-        if (queryLocalInterface != null && (queryLocalInterface instanceof IHealth)) {
-            return (IHealth) queryLocalInterface;
-        }
-        Proxy proxy = new Proxy(iHwBinder);
-        try {
-            Iterator it = proxy.interfaceChain().iterator();
-            while (it.hasNext()) {
-                if (((String) it.next()).equals("android.hardware.health@2.0::IHealth")) {
-                    return proxy;
-                }
-            }
-        } catch (RemoteException unused) {
-        }
-        return null;
-    }
-
-    static IHealth getService(String str, boolean z) {
-        return asInterface(HwBinder.getService("android.hardware.health@2.0::IHealth", str, z));
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Proxy implements IHealth {
         public IHwBinder mRemote;
 
-        public Proxy(IHwBinder iHwBinder) {
-            Objects.requireNonNull(iHwBinder);
-            this.mRemote = iHwBinder;
-        }
-
         @Override // android.hidl.base.V1_0.IBase
-        public IHwBinder asBinder() {
+        public final IHwBinder asBinder() {
             return this.mRemote;
         }
 
-        public String toString() {
+        @Override // android.hidl.base.V1_0.IBase
+        public final void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName, nativeHandle, arrayList);
+            HwParcel hwParcel = new HwParcel();
             try {
-                return interfaceDescriptor() + "@Proxy";
-            } catch (RemoteException unused) {
-                return "[class or subclass of android.hardware.health@2.0::IHealth]@Proxy";
+                this.mRemote.transact(256131655, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
             }
         }
 
@@ -140,224 +47,160 @@ public interface IHealth extends IBase {
             return HidlSupport.interfacesEqual(this, obj);
         }
 
-        public final int hashCode() {
-            return asBinder().hashCode();
-        }
-
         @Override // android.hardware.health.V2_0.IHealth
-        public int registerCallback(IHealthInfoCallback iHealthInfoCallback) {
+        public final void getCapacity(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            hwParcel.writeStrongBinder(iHealthInfoCallback == null ? null : iHealthInfoCallback.asBinder());
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(1, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
+                this.mRemote.transact(7, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                int readInt32 = hwParcel.readInt32();
+                int readInt322 = hwParcel.readInt32();
+                MutableInt mutableInt = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$0;
+                BatteryProperty batteryProperty = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$1;
+                mutableInt.value = readInt32;
+                if (readInt32 == 0) {
+                    batteryProperty.setLong(readInt322);
+                }
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.health.V2_0.IHealth
-        public int unregisterCallback(IHealthInfoCallback iHealthInfoCallback) {
+        public final void getChargeCounter(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            hwParcel.writeStrongBinder(iHealthInfoCallback == null ? null : iHealthInfoCallback.asBinder());
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(2, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
+                this.mRemote.transact(4, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                int readInt32 = hwParcel.readInt32();
+                int readInt322 = hwParcel.readInt32();
+                MutableInt mutableInt = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$0;
+                BatteryProperty batteryProperty = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$1;
+                mutableInt.value = readInt32;
+                if (readInt32 == 0) {
+                    batteryProperty.setLong(readInt322);
+                }
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.health.V2_0.IHealth
-        public int update() {
+        public final void getChargeStatus(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(3, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
+                this.mRemote.transact(9, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                int readInt32 = hwParcel.readInt32();
+                int readInt322 = hwParcel.readInt32();
+                MutableInt mutableInt = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$0;
+                BatteryProperty batteryProperty = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$1;
+                mutableInt.value = readInt32;
+                if (readInt32 == 0) {
+                    batteryProperty.setLong(readInt322);
+                }
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.health.V2_0.IHealth
-        public void getChargeCounter(getChargeCounterCallback getchargecountercallback) {
+        public final void getCurrentAverage(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(4, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                getchargecountercallback.onValues(hwParcel2.readInt32(), hwParcel2.readInt32());
+                this.mRemote.transact(6, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                int readInt32 = hwParcel.readInt32();
+                int readInt322 = hwParcel.readInt32();
+                MutableInt mutableInt = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$0;
+                BatteryProperty batteryProperty = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$1;
+                mutableInt.value = readInt32;
+                if (readInt32 == 0) {
+                    batteryProperty.setLong(readInt322);
+                }
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.health.V2_0.IHealth
-        public void getCurrentNow(getCurrentNowCallback getcurrentnowcallback) {
+        public final void getCurrentNow(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(5, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                getcurrentnowcallback.onValues(hwParcel2.readInt32(), hwParcel2.readInt32());
+                this.mRemote.transact(5, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                int readInt32 = hwParcel.readInt32();
+                int readInt322 = hwParcel.readInt32();
+                MutableInt mutableInt = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$0;
+                BatteryProperty batteryProperty = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$1;
+                mutableInt.value = readInt32;
+                if (readInt32 == 0) {
+                    batteryProperty.setLong(readInt322);
+                }
             } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.health.V2_0.IHealth
-        public void getCurrentAverage(getCurrentAverageCallback getcurrentaveragecallback) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(6, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                getcurrentaveragecallback.onValues(hwParcel2.readInt32(), hwParcel2.readInt32());
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.health.V2_0.IHealth
-        public void getCapacity(getCapacityCallback getcapacitycallback) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(7, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                getcapacitycallback.onValues(hwParcel2.readInt32(), hwParcel2.readInt32());
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.health.V2_0.IHealth
-        public void getEnergyCounter(getEnergyCounterCallback getenergycountercallback) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(8, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                getenergycountercallback.onValues(hwParcel2.readInt32(), hwParcel2.readInt64());
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.health.V2_0.IHealth
-        public void getChargeStatus(getChargeStatusCallback getchargestatuscallback) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(9, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                getchargestatuscallback.onValues(hwParcel2.readInt32(), hwParcel2.readInt32());
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.health.V2_0.IHealth
-        public void getHealthInfo(getHealthInfoCallback gethealthinfocallback) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.health@2.0::IHealth");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(12, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                int readInt32 = hwParcel2.readInt32();
-                HealthInfo healthInfo = new HealthInfo();
-                healthInfo.readFromParcel(hwParcel2);
-                gethealthinfocallback.onValues(readInt32, healthInfo);
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.health.V2_0.IHealth, android.hidl.base.V1_0.IBase
-        public ArrayList interfaceChain() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256067662, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readStringVector();
-            } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+        public final DebugInfo getDebugInfo() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            hwParcel.writeNativeHandle(nativeHandle);
-            hwParcel.writeStringVector(arrayList);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256131655, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(257049926, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                DebugInfo debugInfo = new DebugInfo();
+                debugInfo.readFromParcel(hwParcel);
+                return debugInfo;
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hardware.health.V2_0.IHealth
+        public final void getEnergyCounter(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(8, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                int readInt32 = hwParcel.readInt32();
+                long readInt64 = hwParcel.readInt64();
+                MutableInt mutableInt = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$0;
+                BatteryProperty batteryProperty = healthServiceWrapperHidl$$ExternalSyntheticLambda1.f$1;
+                mutableInt.value = readInt32;
+                if (readInt32 == 0) {
+                    batteryProperty.setLong(readInt64);
+                }
+            } finally {
+                hwParcel.release();
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public String interfaceDescriptor() {
+        public final ArrayList getHashChain() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256136003, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readString();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public ArrayList getHashChain() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256398152, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(256398152, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
                 ArrayList arrayList = new ArrayList();
-                HwBlob readBuffer = hwParcel2.readBuffer(16L);
+                HwBlob readBuffer = hwParcel.readBuffer(16L);
                 int int32 = readBuffer.getInt32(8L);
-                HwBlob readEmbeddedBuffer = hwParcel2.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
+                HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
                 arrayList.clear();
                 for (int i = 0; i < int32; i++) {
                     byte[] bArr = new byte[32];
@@ -366,332 +209,181 @@ public interface IHealth extends IBase {
                 }
                 return arrayList;
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
-        @Override // android.hidl.base.V1_0.IBase
-        public void setHALInstrumentation() {
+        @Override // android.hardware.health.V2_0.IHealth
+        public final void getHealthInfo(HealthServiceWrapperHidl$$ExternalSyntheticLambda2 healthServiceWrapperHidl$$ExternalSyntheticLambda2) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256462420, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(12, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                int readInt32 = hwParcel.readInt32();
+                HealthInfo healthInfo = new HealthInfo();
+                healthInfo.readEmbeddedFromParcel(hwParcel, hwParcel.readBuffer(112L));
+                if (readInt32 == 0) {
+                    android.hardware.health.V1_0.HealthInfo healthInfo2 = healthInfo.legacy;
+                    android.hardware.health.HealthInfo healthInfo3 = new android.hardware.health.HealthInfo();
+                    Translate.h2aTranslateInternal(healthInfo3, healthInfo2);
+                    healthServiceWrapperHidl$$ExternalSyntheticLambda2.f$0.value = healthInfo3;
+                }
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
-        @Override // android.hidl.base.V1_0.IBase
-        public boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
-            return this.mRemote.linkToDeath(deathRecipient, j);
+        public final int hashCode() {
+            return this.mRemote.hashCode();
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public void ping() {
+        public final ArrayList interfaceChain() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256921159, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(256067662, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readStringVector();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public DebugInfo getDebugInfo() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(257049926, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                DebugInfo debugInfo = new DebugInfo();
-                debugInfo.readFromParcel(hwParcel2);
-                return debugInfo;
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void notifySyspropsChanged() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(257120595, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
-            return this.mRemote.unlinkToDeath(deathRecipient);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public abstract class Stub extends HwBinder implements IHealth {
-        @Override // android.hidl.base.V1_0.IBase
-        public IHwBinder asBinder() {
-            return this;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
         }
 
         @Override // android.hidl.base.V1_0.IBase
         public final String interfaceDescriptor() {
-            return "android.hardware.health@2.0::IHealth";
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256136003, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readString();
+            } finally {
+                hwParcel.release();
+            }
         }
 
         @Override // android.hidl.base.V1_0.IBase
         public final boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
-            return true;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final void ping() {
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final void setHALInstrumentation() {
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
-            return true;
-        }
-
-        @Override // android.hardware.health.V2_0.IHealth, android.hidl.base.V1_0.IBase
-        public final ArrayList interfaceChain() {
-            return new ArrayList(Arrays.asList("android.hardware.health@2.0::IHealth", IBase.kInterfaceName));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final ArrayList getHashChain() {
-            return new ArrayList(Arrays.asList(new byte[]{103, 86, -126, -35, 48, 7, Byte.MIN_VALUE, 92, -104, 94, -86, -20, -111, 97, 42, -68, -120, -12, -62, 91, 52, 49, -5, -124, 7, MM05.IQ_SIP_CALL_STATE_DISCONNECTING, 117, -124, -95, -89, 65, -5}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, -48, 45, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, 36, -13, -51, 105, 87, 19, -109, 36, -72, 59, 24, -54, 76}));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final DebugInfo getDebugInfo() {
-            DebugInfo debugInfo = new DebugInfo();
-            debugInfo.pid = HidlSupport.getPidIfSharable();
-            debugInfo.ptr = 0L;
-            debugInfo.arch = 0;
-            return debugInfo;
+            return this.mRemote.linkToDeath(deathRecipient, j);
         }
 
         @Override // android.hidl.base.V1_0.IBase
         public final void notifySyspropsChanged() {
-            HwBinder.enableInstrumentation();
-        }
-
-        public IHwInterface queryLocalInterface(String str) {
-            if ("android.hardware.health@2.0::IHealth".equals(str)) {
-                return this;
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(257120595, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
             }
-            return null;
         }
 
-        public String toString() {
-            return interfaceDescriptor() + "@Stub";
+        @Override // android.hidl.base.V1_0.IBase
+        public final void ping() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256921159, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
+            }
         }
 
-        public void onTransact(int i, HwParcel hwParcel, final HwParcel hwParcel2, int i2) {
-            switch (i) {
-                case 1:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    int registerCallback = registerCallback(IHealthInfoCallback.asInterface(hwParcel.readStrongBinder()));
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(registerCallback);
-                    hwParcel2.send();
-                    return;
-                case 2:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    int unregisterCallback = unregisterCallback(IHealthInfoCallback.asInterface(hwParcel.readStrongBinder()));
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(unregisterCallback);
-                    hwParcel2.send();
-                    return;
-                case 3:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    int update = update();
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(update);
-                    hwParcel2.send();
-                    return;
-                case 4:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    getChargeCounter(new getChargeCounterCallback() { // from class: android.hardware.health.V2_0.IHealth.Stub.1
-                        @Override // android.hardware.health.V2_0.IHealth.getChargeCounterCallback
-                        public void onValues(int i3, int i4) {
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeInt32(i3);
-                            hwParcel2.writeInt32(i4);
-                            hwParcel2.send();
-                        }
-                    });
-                    return;
-                case 5:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    getCurrentNow(new getCurrentNowCallback() { // from class: android.hardware.health.V2_0.IHealth.Stub.2
-                        @Override // android.hardware.health.V2_0.IHealth.getCurrentNowCallback
-                        public void onValues(int i3, int i4) {
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeInt32(i3);
-                            hwParcel2.writeInt32(i4);
-                            hwParcel2.send();
-                        }
-                    });
-                    return;
-                case 6:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    getCurrentAverage(new getCurrentAverageCallback() { // from class: android.hardware.health.V2_0.IHealth.Stub.3
-                        @Override // android.hardware.health.V2_0.IHealth.getCurrentAverageCallback
-                        public void onValues(int i3, int i4) {
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeInt32(i3);
-                            hwParcel2.writeInt32(i4);
-                            hwParcel2.send();
-                        }
-                    });
-                    return;
-                case 7:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    getCapacity(new getCapacityCallback() { // from class: android.hardware.health.V2_0.IHealth.Stub.4
-                        @Override // android.hardware.health.V2_0.IHealth.getCapacityCallback
-                        public void onValues(int i3, int i4) {
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeInt32(i3);
-                            hwParcel2.writeInt32(i4);
-                            hwParcel2.send();
-                        }
-                    });
-                    return;
-                case 8:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    getEnergyCounter(new getEnergyCounterCallback() { // from class: android.hardware.health.V2_0.IHealth.Stub.5
-                        @Override // android.hardware.health.V2_0.IHealth.getEnergyCounterCallback
-                        public void onValues(int i3, long j) {
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeInt32(i3);
-                            hwParcel2.writeInt64(j);
-                            hwParcel2.send();
-                        }
-                    });
-                    return;
-                case 9:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    getChargeStatus(new getChargeStatusCallback() { // from class: android.hardware.health.V2_0.IHealth.Stub.6
-                        @Override // android.hardware.health.V2_0.IHealth.getChargeStatusCallback
-                        public void onValues(int i3, int i4) {
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeInt32(i3);
-                            hwParcel2.writeInt32(i4);
-                            hwParcel2.send();
-                        }
-                    });
-                    return;
-                case 10:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    getStorageInfo(new getStorageInfoCallback() { // from class: android.hardware.health.V2_0.IHealth.Stub.7
-                    });
-                    return;
-                case 11:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    getDiskStats(new getDiskStatsCallback() { // from class: android.hardware.health.V2_0.IHealth.Stub.8
-                    });
-                    return;
-                case 12:
-                    hwParcel.enforceInterface("android.hardware.health@2.0::IHealth");
-                    getHealthInfo(new getHealthInfoCallback() { // from class: android.hardware.health.V2_0.IHealth.Stub.9
-                        @Override // android.hardware.health.V2_0.IHealth.getHealthInfoCallback
-                        public void onValues(int i3, HealthInfo healthInfo) {
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeInt32(i3);
-                            healthInfo.writeToParcel(hwParcel2);
-                            hwParcel2.send();
-                        }
-                    });
-                    return;
-                default:
-                    switch (i) {
-                        case 256067662:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            ArrayList interfaceChain = interfaceChain();
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeStringVector(interfaceChain);
-                            hwParcel2.send();
-                            return;
-                        case 256131655:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            debug(hwParcel.readNativeHandle(), hwParcel.readStringVector());
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.send();
-                            return;
-                        case 256136003:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            String interfaceDescriptor = interfaceDescriptor();
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.writeString(interfaceDescriptor);
-                            hwParcel2.send();
-                            return;
-                        case 256398152:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            ArrayList hashChain = getHashChain();
-                            hwParcel2.writeStatus(0);
-                            HwBlob hwBlob = new HwBlob(16);
-                            int size = hashChain.size();
-                            hwBlob.putInt32(8L, size);
-                            hwBlob.putBool(12L, false);
-                            HwBlob hwBlob2 = new HwBlob(size * 32);
-                            for (int i3 = 0; i3 < size; i3++) {
-                                long j = i3 * 32;
-                                byte[] bArr = (byte[]) hashChain.get(i3);
-                                if (bArr == null || bArr.length != 32) {
-                                    throw new IllegalArgumentException("Array element is not of the expected length");
-                                }
-                                hwBlob2.putInt8Array(j, bArr);
-                            }
-                            hwBlob.putBlob(0L, hwBlob2);
-                            hwParcel2.writeBuffer(hwBlob);
-                            hwParcel2.send();
-                            return;
-                        case 256462420:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            setHALInstrumentation();
-                            return;
-                        case 256921159:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            ping();
-                            hwParcel2.writeStatus(0);
-                            hwParcel2.send();
-                            return;
-                        case 257049926:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            DebugInfo debugInfo = getDebugInfo();
-                            hwParcel2.writeStatus(0);
-                            debugInfo.writeToParcel(hwParcel2);
-                            hwParcel2.send();
-                            return;
-                        case 257120595:
-                            hwParcel.enforceInterface(IBase.kInterfaceName);
-                            notifySyspropsChanged();
-                            return;
-                        default:
-                            return;
-                    }
+        @Override // android.hardware.health.V2_0.IHealth
+        public final int registerCallback(IHealthInfoCallback iHealthInfoCallback) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
+            m.writeStrongBinder(iHealthInfoCallback == null ? null : (ISehHealthInfoCallback$Stub) iHealthInfoCallback);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(1, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void setHALInstrumentation() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256462420, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        public final String toString() {
+            try {
+                return interfaceDescriptor() + "@Proxy";
+            } catch (RemoteException unused) {
+                return "[class or subclass of android.hardware.health@2.0::IHealth]@Proxy";
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
+            return this.mRemote.unlinkToDeath(deathRecipient);
+        }
+
+        @Override // android.hardware.health.V2_0.IHealth
+        public final int unregisterCallback(IHealthInfoCallback iHealthInfoCallback) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
+            m.writeStrongBinder(iHealthInfoCallback == null ? null : (ISehHealthInfoCallback$Stub) iHealthInfoCallback);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(2, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hardware.health.V2_0.IHealth
+        public final int update() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.health@2.0::IHealth");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(3, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
             }
         }
     }
+
+    void getCapacity(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1);
+
+    void getChargeCounter(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1);
+
+    void getChargeStatus(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1);
+
+    void getCurrentAverage(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1);
+
+    void getCurrentNow(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1);
+
+    void getEnergyCounter(HealthServiceWrapperHidl$$ExternalSyntheticLambda1 healthServiceWrapperHidl$$ExternalSyntheticLambda1);
+
+    void getHealthInfo(HealthServiceWrapperHidl$$ExternalSyntheticLambda2 healthServiceWrapperHidl$$ExternalSyntheticLambda2);
+
+    int registerCallback(IHealthInfoCallback iHealthInfoCallback);
+
+    int unregisterCallback(IHealthInfoCallback iHealthInfoCallback);
+
+    int update();
 }

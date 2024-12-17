@@ -5,13 +5,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ParceledListSlice;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Debug;
 import android.os.Handler;
-import android.os.IInstalld;
 import android.os.IRemoteCallback;
 import android.os.Looper;
 import android.os.Message;
@@ -20,152 +18,328 @@ import android.os.RemoteException;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.view.ContextThemeWrapper;
-import android.view.Display;
-import android.view.InsetsState;
-import android.view.WindowManager;
-import android.view.animation.Animation;
 import android.widget.Toast;
 import com.android.internal.os.SomeArgs;
-import com.android.internal.util.ToBooleanFunction;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
 import com.android.server.wm.Transition;
 import com.google.android.collect.Sets;
-import com.samsung.android.multiwindow.IFreeformCallback;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import com.samsung.android.multiwindow.MultiWindowManager;
-import com.samsung.android.multiwindow.MultiWindowUtils;
 import com.samsung.android.rune.CoreRune;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class FreeformController implements IController {
-    public static final boolean DEBUG = CoreRune.SAFE_DEBUG;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class FreeformController implements IController {
     public final ActivityTaskManagerService mAtm;
     public boolean mBlockToAddForceHideFreeformTasks;
     public boolean mDeferMinimizeCallback;
     public WindowState mForceHideFreeformRequester;
     public WindowState mForceHideMinimizeRequester;
-    public int mFreeformCaptionType;
     public final WindowManagerGlobalLock mGlobalLock;
     public H mH;
-    public FreeformContainerServiceBinder mMinimizeContainerServiceBinder;
-    public int mNewDexCaptionType;
-    public FreeformContainerServiceBinder mSmartPopupViewServiceBinder;
+    public boolean mIsForceHideWithoutAnimation;
+    public final MinimizeContainerServiceBinder mMinimizeContainerServiceBinder;
+    public final SmartPopupViewServiceBinder mSmartPopupViewServiceBinder;
     public WindowState mTmpForceHideFreeformRequester;
     public WindowState mTmpForceHideMinimizeRequester;
     public WindowState mTmpWindow;
     public final TransitionController mTransitionController;
+    public final Rect mTmpRect = new Rect();
+    public int mMaxFreeformOverWrittenCnt = -1;
+    public int mMaxDexFreeformOverWrittenCnt = -1;
     public final ArrayList mDeferredCallbacks = new ArrayList();
     public final RemoteCallbackList mCallbacks = new RemoteCallbackList();
+    public final PointF mFreeformContainerPoint = new PointF(-1.0f, -1.0f);
+    public int mFreeformCaptionType = -1;
     public final ArrayList mForceHiddenFreeformContainers = new ArrayList();
     public final ArrayList mForceHiddenFreeformTasks = new ArrayList();
     public final SparseArray mFreeformCornerRadius = new SparseArray();
-    public int mMaxFreeformOverWrittenCnt = -1;
-    public int mMaxDexFreeformOverWrittenCnt = -1;
-    public final PointF mFreeformContainerPoint = new PointF(-1.0f, -1.0f);
-    public final Rect mTmpRect = new Rect();
 
-    public final boolean hasConfigChangesToResize(int i) {
-        return (i & 128) == 0 && (134217728 & i) == 0 && (i & 7168) != 0;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class H extends Handler {
+        public H(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            int i = message.what;
+            boolean z = true;
+            int i2 = 0;
+            if (i == 1) {
+                Toast.makeText(new ContextThemeWrapper(FreeformController.this.mAtm.mContext, R.style.Theme.DeviceDefault.Light), FreeformController.this.mAtm.mContext.getResources().getString(R.string.indeterminate_progress_11), 0).show();
+                return;
+            }
+            switch (i) {
+                case 101:
+                    FreeformController.this.mMinimizeContainerServiceBinder.bindServiceIfNeeded((String) message.obj);
+                    return;
+                case 102:
+                    FreeformController.this.mMinimizeContainerServiceBinder.unbindServiceIfNeeded((String) message.obj);
+                    return;
+                case 103:
+                    if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
+                        FreeformController.this.mSmartPopupViewServiceBinder.bindServiceIfNeeded((String) message.obj);
+                        return;
+                    }
+                    return;
+                case 104:
+                    if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
+                        FreeformController.this.mSmartPopupViewServiceBinder.unbindServiceIfNeeded((String) message.obj);
+                        return;
+                    }
+                    return;
+                default:
+                    switch (i) {
+                        case 201:
+                            synchronized (FreeformController.this.mCallbacks) {
+                                SomeArgs someArgs = (SomeArgs) message.obj;
+                                ComponentName componentName = (ComponentName) someArgs.arg1;
+                                int i3 = someArgs.argi1;
+                                int i4 = someArgs.argi2;
+                                int i5 = someArgs.argi3;
+                                int i6 = someArgs.argi4;
+                                if (someArgs.argi5 != 1) {
+                                    z = false;
+                                }
+                                int beginBroadcast = FreeformController.this.mCallbacks.beginBroadcast();
+                                while (i2 < beginBroadcast) {
+                                    int i7 = i6;
+                                    try {
+                                        FreeformController.this.mCallbacks.getBroadcastItem(i2).onMinimized(componentName, i3, i4, i5, i6, z);
+                                    } catch (RemoteException unused) {
+                                        Slog.e("FreeformController", "onMinimized, RemoteException occurred");
+                                    }
+                                    i2++;
+                                    i6 = i7;
+                                }
+                                FreeformController.this.mCallbacks.finishBroadcast();
+                            }
+                            return;
+                        case 202:
+                            synchronized (FreeformController.this.mCallbacks) {
+                                int i8 = ((SomeArgs) message.obj).argi1;
+                                int beginBroadcast2 = FreeformController.this.mCallbacks.beginBroadcast();
+                                while (i2 < beginBroadcast2) {
+                                    try {
+                                        FreeformController.this.mCallbacks.getBroadcastItem(i2).onUnminimized(i8);
+                                    } catch (RemoteException unused2) {
+                                        Slog.e("FreeformController", "onRestored, RemoteException occurred");
+                                    }
+                                    i2++;
+                                }
+                                FreeformController.this.mCallbacks.finishBroadcast();
+                            }
+                            return;
+                        case 203:
+                            synchronized (FreeformController.this.mCallbacks) {
+                                int i9 = ((SomeArgs) message.obj).argi1;
+                                int beginBroadcast3 = FreeformController.this.mCallbacks.beginBroadcast();
+                                while (i2 < beginBroadcast3) {
+                                    try {
+                                        FreeformController.this.mCallbacks.getBroadcastItem(i2).onMinimizeAnimationEnd(i9);
+                                    } catch (RemoteException unused3) {
+                                        Slog.e("FreeformController", "onMinimizeAnimationEnd, RemoteException occurred");
+                                    }
+                                    i2++;
+                                }
+                                FreeformController.this.mCallbacks.finishBroadcast();
+                            }
+                            return;
+                        case 204:
+                            synchronized (FreeformController.this.mCallbacks) {
+                                SomeArgs someArgs2 = (SomeArgs) message.obj;
+                                int i10 = someArgs2.argi1;
+                                Point point = (Point) someArgs2.arg1;
+                                int beginBroadcast4 = FreeformController.this.mCallbacks.beginBroadcast();
+                                while (i2 < beginBroadcast4) {
+                                    try {
+                                        FreeformController.this.mCallbacks.getBroadcastItem(i2).onTaskMoveStarted(i10, point);
+                                    } catch (RemoteException unused4) {
+                                        Slog.e("FreeformController", "onTaskMoveStarted, RemoteException occurred");
+                                    }
+                                    i2++;
+                                }
+                                FreeformController.this.mCallbacks.finishBroadcast();
+                            }
+                            return;
+                        case 205:
+                            synchronized (FreeformController.this.mCallbacks) {
+                                SomeArgs someArgs3 = (SomeArgs) message.obj;
+                                int i11 = someArgs3.argi1;
+                                IRemoteCallback iRemoteCallback = (IRemoteCallback) someArgs3.arg1;
+                                int beginBroadcast5 = FreeformController.this.mCallbacks.beginBroadcast();
+                                while (i2 < beginBroadcast5) {
+                                    try {
+                                        FreeformController.this.mCallbacks.getBroadcastItem(i2).onTaskMoveEnded(i11, iRemoteCallback);
+                                    } catch (RemoteException unused5) {
+                                        Slog.e("FreeformController", "onTaskMoveEnded, RemoteException occurred");
+                                    }
+                                    i2++;
+                                }
+                                FreeformController.this.mCallbacks.finishBroadcast();
+                            }
+                            return;
+                        default:
+                            return;
+                    }
+            }
+        }
     }
 
     public FreeformController(ActivityTaskManagerService activityTaskManagerService) {
         this.mAtm = activityTaskManagerService;
-        this.mTransitionController = activityTaskManagerService.getTransitionController();
+        this.mTransitionController = activityTaskManagerService.mWindowOrganizerController.mTransitionController;
         this.mGlobalLock = activityTaskManagerService.mGlobalLock;
-        this.mMinimizeContainerServiceBinder = new MinimizeContainerServiceBinder(activityTaskManagerService);
+        MinimizeContainerServiceBinder minimizeContainerServiceBinder = new MinimizeContainerServiceBinder(activityTaskManagerService);
+        minimizeContainerServiceBinder.mService.setComponent(new ComponentName(Constants.SYSTEMUI_PACKAGE_NAME, "com.android.wm.shell.freeform.MinimizeContainerService"));
+        this.mMinimizeContainerServiceBinder = minimizeContainerServiceBinder;
         if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-            this.mSmartPopupViewServiceBinder = new SmartPopupViewServiceBinder(activityTaskManagerService);
+            SmartPopupViewServiceBinder smartPopupViewServiceBinder = new SmartPopupViewServiceBinder(activityTaskManagerService);
+            smartPopupViewServiceBinder.mService.setComponent(new ComponentName(Constants.SYSTEMUI_PACKAGE_NAME, "com.android.wm.shell.freeform.SmartPopupViewService"));
+            this.mSmartPopupViewServiceBinder = smartPopupViewServiceBinder;
         }
     }
 
-    @Override // com.android.server.wm.IController
-    public void initialize() {
-        this.mH = new H(this.mAtm.mH.getLooper());
+    public static boolean useAlwaysOnTopFreeform(int i, DisplayContent displayContent) {
+        return (displayContent == null || displayContent.isDesktopModeEnabled() || i != 5) ? false : true;
     }
 
-    public void onConfigurationChanged(DisplayContent displayContent) {
-        Resources resources = displayContent.getDisplayPolicy().getContext().getResources();
-        this.mFreeformCornerRadius.put(displayContent.getDisplayId(), Integer.valueOf(resources.getDimensionPixelSize(R.dimen.leanback_setup_alpha_activity_out_bkg_start)));
-    }
-
-    public void bindFreeformContainerService(String str) {
-        scheduleBindMinimizeContainerService(str);
-        if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-            scheduleBindSmartPopupViewService(str);
-        }
-    }
-
-    public void unbindFreeformContainerService(String str) {
-        scheduleUnbindMinimizeContainerService(str);
-        if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-            scheduleUnbindSmartPopupViewService(str);
-        }
-    }
-
-    public void scheduleBindMinimizeContainerService(String str) {
-        Message obtainMessage = this.mH.obtainMessage(101);
-        obtainMessage.obj = str;
-        this.mH.sendMessage(obtainMessage);
-    }
-
-    public void scheduleUnbindMinimizeContainerService(String str) {
-        Message obtainMessage = this.mH.obtainMessage(102);
-        obtainMessage.obj = str;
-        this.mH.sendMessage(obtainMessage);
-    }
-
-    public void scheduleBindSmartPopupViewService(String str) {
-        Message obtainMessage = this.mH.obtainMessage(103);
-        obtainMessage.obj = str;
-        this.mH.sendMessage(obtainMessage);
-    }
-
-    public void scheduleUnbindSmartPopupViewService(String str) {
-        Message obtainMessage = this.mH.obtainMessage(104);
-        obtainMessage.obj = str;
-        this.mH.sendMessage(obtainMessage);
-    }
-
-    public void registerFreeformCallback(IFreeformCallback iFreeformCallback) {
-        synchronized (this.mCallbacks) {
-            this.mCallbacks.register(iFreeformCallback);
-        }
-    }
-
-    public void deferMinimizeStateChangedCallbacks() {
-        this.mDeferMinimizeCallback = true;
-    }
-
-    public void continueMinimizeStateChangedCallbacks() {
+    public final void continueMinimizeStateChangedCallbacks() {
         if (this.mDeferMinimizeCallback) {
             this.mDeferMinimizeCallback = false;
             Iterator it = this.mDeferredCallbacks.iterator();
             while (it.hasNext()) {
-                Message message = (Message) it.next();
-                this.mH.sendMessage(message);
-                if (CoreRune.SAFE_DEBUG) {
-                    Slog.d("FreeformController", "continueMinimizeStateChangedCallbacks: " + message);
-                }
+                this.mH.sendMessage((Message) it.next());
             }
             this.mDeferredCallbacks.clear();
         }
     }
 
-    public void unregisterFreeformCallback(IFreeformCallback iFreeformCallback) {
-        synchronized (this.mCallbacks) {
-            this.mCallbacks.unregister(iFreeformCallback);
+    @Override // com.android.server.wm.IController
+    public final void dumpLocked(PrintWriter printWriter) {
+        printWriter.println("[FreeformController]");
+        if (!this.mForceHiddenFreeformContainers.isEmpty()) {
+            printWriter.println("  mForceHiddenFreeformWindows=" + this.mForceHiddenFreeformContainers);
+        }
+        if (this.mForceHideFreeformRequester != null) {
+            printWriter.println("  mForceHideFreeformRequester=" + this.mForceHideFreeformRequester);
+        }
+        if (this.mForceHideMinimizeRequester != null) {
+            printWriter.println("  mForceHideMinimizeRequester=" + this.mForceHideMinimizeRequester);
+        }
+        if (!this.mForceHiddenFreeformTasks.isEmpty()) {
+            printWriter.println("  mForceHiddenFreeformTasks=" + this.mForceHiddenFreeformTasks);
+        }
+        if (this.mBlockToAddForceHideFreeformTasks) {
+            printWriter.println("  mBlockToAddForceHideFreeformTasks=true");
+        }
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("  mMaxFreeformOverWrittenCnt="), this.mMaxFreeformOverWrittenCnt, printWriter, "  mMaxDexFreeformOverWrittenCnt="), this.mMaxDexFreeformOverWrittenCnt, printWriter);
+        this.mMinimizeContainerServiceBinder.dumpLocked(printWriter);
+        if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
+            this.mSmartPopupViewServiceBinder.dumpLocked(printWriter);
+        }
+        printWriter.println();
+    }
+
+    public final ParceledListSlice getMinimizedFreeformTasksForCurrentUser() {
+        ArrayList arrayList = new ArrayList();
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                DisplayContent displayContent = this.mAtm.mRootWindowContainer.mDefaultDisplay;
+                if (displayContent != null) {
+                    ArrayList arrayList2 = new ArrayList();
+                    displayContent.forAllRootTasks(new DisplayContent$$ExternalSyntheticLambda8(arrayList2, false));
+                    Iterator it = arrayList2.iterator();
+                    while (it.hasNext()) {
+                        Task task = (Task) it.next();
+                        if (task.isMinimized() && this.mAtm.mAmInternal.isCurrentProfile(task.mUserId)) {
+                            arrayList.add(task.getTaskInfo());
+                        }
+                    }
+                }
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
+        return new ParceledListSlice(arrayList);
+    }
+
+    @Override // com.android.server.wm.IController
+    public final void initialize() {
+        this.mH = new H(this.mAtm.mH.getLooper());
+    }
+
+    public final void minimizeExcessiveVisibleFreeformLocked(TaskDisplayArea taskDisplayArea) {
+        int i;
+        ActivityTaskManagerService activityTaskManagerService;
+        int indexOf = taskDisplayArea.mChildren.indexOf(taskDisplayArea.mRootHomeTask);
+        boolean isDesktopModeEnabled = taskDisplayArea.mDisplayContent.getConfiguration().isDesktopModeEnabled();
+        int i2 = 0;
+        boolean z = taskDisplayArea.mDisplayContent.getConfiguration().dexMode == 3;
+        if (!isDesktopModeEnabled) {
+            i = this.mMaxFreeformOverWrittenCnt;
+            if (i <= 0) {
+                i = 5;
+            }
+        } else if (CoreRune.MT_NEW_DEX_LIMIT_RUNNING_APPS && z) {
+            i = 15;
+        } else {
+            i = this.mMaxDexFreeformOverWrittenCnt;
+            if (i <= 0) {
+                i = 20;
+            }
+        }
+        int[] iArr = new int[1];
+        taskDisplayArea.forAllRootTasks(new TaskDisplayArea$$ExternalSyntheticLambda0(2, iArr));
+        int i3 = iArr[0] - 1;
+        while (true) {
+            activityTaskManagerService = this.mAtm;
+            if (i3 <= indexOf) {
+                break;
+            }
+            Task asTask = taskDisplayArea.getChildAt(i3).asTask();
+            if (asTask != null && !asTask.mCreatedByOrganizer && asTask.shouldBeVisible(null) && asTask.getWindowingMode() == 5 && (i2 = i2 + 1) > i) {
+                activityTaskManagerService.mMultiTaskingController.minimizeTaskLocked(-1, -1, asTask, true);
+            }
+            i3--;
+        }
+        if (i2 > i) {
+            final Context createDisplayContext = new ContextThemeWrapper(activityTaskManagerService.mContext, R.style.Theme.DeviceDefault.Light).createDisplayContext(taskDisplayArea.getDisplayContent().mDisplay);
+            final String quantityString = isDesktopModeEnabled ? activityTaskManagerService.mContext.getResources().getQuantityString(R.plurals.duration_days_shortest_future, i, Integer.valueOf(i)) : activityTaskManagerService.mContext.getResources().getString(R.string.mediasize_iso_a6, Integer.valueOf(i));
+            this.mH.post(new Runnable() { // from class: com.android.server.wm.FreeformController$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    Toast.makeText(createDisplayContext, quantityString, 0).show();
+                }
+            });
         }
     }
 
-    public void notifyFreeformMinimizeStateChanged(Task task) {
-        notifyFreeformMinimizeStateChanged(task, -1, -1, true);
+    public final void notifyFreeformMinimizeAnimationEnd(Task task) {
+        if (task.isDexMode()) {
+            return;
+        }
+        SomeArgs obtain = SomeArgs.obtain();
+        obtain.argi1 = task.mTaskId;
+        if (CoreRune.MW_FREEFORM_MINIMIZE_SHELL_TRANSITION) {
+            task.updateMinimizeChangeInfo(0, -1, -1);
+        }
+        H h = this.mH;
+        h.sendMessage(h.obtainMessage(203, obtain));
     }
 
-    public void notifyFreeformMinimizeStateChanged(Task task, int i, int i2, boolean z) {
-        if (task.isDesktopModeEnabled()) {
+    public final void notifyFreeformMinimizeStateChanged(int i, int i2, Task task, boolean z) {
+        if (task.isDexMode()) {
             return;
         }
         SomeArgs obtain = SomeArgs.obtain();
@@ -183,294 +357,149 @@ public class FreeformController implements IController {
         }
     }
 
-    public void notifyFreeformMinimizeAnimationEnd(int i, PointF pointF) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                Task anyTaskForId = this.mAtm.mRootWindowContainer.anyTaskForId(i);
-                if (anyTaskForId != null) {
-                    reportFreeformContainerPoint(pointF);
-                    notifyFreeformMinimizeAnimationEnd(anyTaskForId);
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
+    public final void releaseForceHidePolicyIfNeededLocked(WindowState windowState) {
+        Task task = windowState.getTask();
+        if (this.mForceHiddenFreeformContainers.contains(windowState)) {
+            this.mForceHiddenFreeformContainers.remove(windowState);
+            windowState.show(false);
         }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public void notifyFreeformMinimizeAnimationEnd(Task task) {
-        if (task.isDesktopModeEnabled()) {
+        if (!this.mForceHiddenFreeformTasks.contains(task) || task == null) {
             return;
         }
-        SomeArgs obtain = SomeArgs.obtain();
-        obtain.argi1 = task.mTaskId;
-        if (CoreRune.MW_FREEFORM_MINIMIZE_SHELL_TRANSITION) {
-            task.updateMinimizeChangeInfo(0);
+        this.mForceHiddenFreeformTasks.remove(task);
+        if (this.mIsForceHideWithoutAnimation) {
+            requestForceHideTransition(4, task);
+        } else {
+            requestForceHideTransition(2, task);
         }
-        H h = this.mH;
-        h.sendMessage(h.obtainMessage(203, obtain));
+        task.dispatchTaskInfoChangedIfNeeded(true);
+        if (task.isMinimized()) {
+            this.mAtm.mWindowManager.mTaskSnapshotController.addSkipClosingAppSnapshotTasks(Sets.newArraySet(new Task[]{task}));
+        }
+        Slog.d("FreeformController", "releaseForceHidePolicyIfNeededLocked: " + task);
     }
 
-    public void reportFreeformContainerPoint(PointF pointF) {
-        this.mFreeformContainerPoint.set(pointF);
+    public final void releaseForceHideTaskLocked(Task task) {
+        if (this.mForceHiddenFreeformTasks.contains(task)) {
+            Slog.d("FreeformController", "releaseForceHideTaskLocked: " + task + "");
+            task.forAllWindows((Consumer) new FreeformController$$ExternalSyntheticLambda0(this, 0), true);
+            this.mAtm.mWindowManager.requestTraversal();
+        }
     }
 
-    public PointF getFreeformContainerPoint() {
-        return this.mFreeformContainerPoint;
-    }
-
-    public ParceledListSlice getMinimizedFreeformTasksForCurrentUser() {
-        ArrayList arrayList = new ArrayList();
-        WindowManagerGlobalLock globalLock = this.mAtm.getGlobalLock();
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (globalLock) {
-            try {
-                if (this.mAtm.mRootWindowContainer.getDefaultDisplay() != null) {
-                    for (Task task : this.mAtm.mRootWindowContainer.getDefaultDisplay().getRootTasks(5, 1)) {
-                        if (task.isMinimized() && this.mAtm.mAmInternal.isCurrentProfile(task.mUserId)) {
-                            arrayList.add(task.getTaskInfo());
-                        }
-                    }
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
+    public final void requestForceHideTransition(int i, Task task) {
+        Transition.ChangeInfo changeInfo;
+        TransitionController transitionController = this.mTransitionController;
+        boolean z = false;
+        Transition createTransition = !transitionController.isCollecting() ? transitionController.createTransition(6, 0) : null;
+        Transition transition = transitionController.mCollectingTransition;
+        Transition.ChangeInfo changeInfo2 = transitionController.isCollecting() ? (Transition.ChangeInfo) transitionController.mCollectingTransition.mChanges.get(task) : null;
+        if (changeInfo2 != null) {
+            Rect bounds = task.getBounds();
+            Rect rect = changeInfo2.mAbsoluteBounds;
+            if (task.mSyncGroup == null && ((i == 2 || i == 4) && changeInfo2.mVisible && task.isVisibleRequested() && (bounds.width() != rect.width() || bounds.height() != rect.height()))) {
+                z = true;
             }
         }
-        WindowManagerService.resetPriorityAfterLockedSection();
-        return new ParceledListSlice(arrayList);
+        Slog.d("FreeformController", "requestForceHideTransition: tid #" + task.mTaskId + ", type=" + MultiWindowManager.forceHidingTransitToString(i) + ", forceSync=" + z + ", newTransit=" + createTransition);
+        if (transition != null) {
+            transition.collect(task, z);
+            Transition transition2 = transitionController.mCollectingTransition;
+            if (transition2 != null && (changeInfo = (Transition.ChangeInfo) transition2.mChanges.get(task)) != null) {
+                changeInfo.mForceHidingTransit = i;
+            }
+        }
+        if (createTransition != null) {
+            transitionController.requestStartTransition(createTransition, task, null, null);
+            createTransition.setReady(task, true);
+        }
     }
 
-    public void setFreeformWindowingModeByCornerGestureLocked(int i, int i2, Rect rect) {
-        this.mAtm.deferWindowLayout();
+    public final void scheduleUnbindMinimizeContainerService(String str) {
+        Message obtainMessage = this.mH.obtainMessage(102);
+        obtainMessage.obj = str;
+        this.mH.sendMessage(obtainMessage);
+    }
+
+    public final void setBlockToAddForceHideFreeformTasks(boolean z) {
+        if (this.mBlockToAddForceHideFreeformTasks != z) {
+            this.mBlockToAddForceHideFreeformTasks = z;
+            Slog.d("FreeformController", "setBlockToAddForceHideFreeformTasks: blockToAddForceHide=" + this.mBlockToAddForceHideFreeformTasks + ", Caller=" + Debug.getCaller());
+        }
+    }
+
+    public final void setFreeformWindowingModeByCornerGestureLocked(int i, Rect rect, int i2) {
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        activityTaskManagerService.deferWindowLayout();
         try {
-            Task anyTaskForId = this.mAtm.mRootWindowContainer.anyTaskForId(i, 0);
+            Task anyTaskForId = activityTaskManagerService.mRootWindowContainer.anyTaskForId(i, 0, null, false);
             if (anyTaskForId == null) {
                 Slog.w("FreeformController", "setFreeformWindowingModeByCornerGestureLocked: taskId=" + i + " not found");
-            } else if (this.mAtm.getLockTaskController().isTaskLocked(anyTaskForId)) {
-                this.mAtm.getLockTaskController().showLockTaskToast();
+                return;
+            }
+            if (activityTaskManagerService.mLockTaskController.isTaskLocked(anyTaskForId)) {
+                activityTaskManagerService.mLockTaskController.showLockTaskToast();
                 Slog.w("FreeformController", "setFreeformWindowingModeByCornerGestureLocked: task is locked");
-            } else {
-                DisplayContent displayContent = anyTaskForId.getDisplayContent();
-                if (displayContent == null) {
-                    Slog.w("FreeformController", "setFreeformWindowingModeByCornerGestureLocked: cannot find display");
+                return;
+            }
+            DisplayContent displayContent = anyTaskForId.getDisplayContent();
+            if (displayContent == null) {
+                Slog.w("FreeformController", "setFreeformWindowingModeByCornerGestureLocked: cannot find display");
+                return;
+            }
+            if (anyTaskForId.inSplitScreenWindowingMode()) {
+                if (anyTaskForId.getRootActivity(true, false) == null) {
+                    Slog.w("FreeformController", "setFreeformWindowingModeByCornerGestureLocked: root activity not found");
+                    return;
+                }
+                DisplayContent displayContent2 = anyTaskForId.getDisplayContent();
+                if (displayContent2 != null && displayContent2.mDisplayId == 0) {
+                    anyTaskForId.reparent(displayContent2.getDefaultTaskDisplayArea(), Integer.MAX_VALUE);
+                    anyTaskForId.setWindowingMode(5);
+                    anyTaskForId.setBounds(rect);
+                }
+                return;
+            }
+            if (anyTaskForId.getWindowingMode() != 5) {
+                anyTaskForId.mLastNonFullscreenBounds = new Rect(rect);
+                anyTaskForId.setWindowingMode(5);
+                ActivityRecord topNonFinishingActivity = anyTaskForId.getTopNonFinishingActivity(true, true);
+                if (topNonFinishingActivity != null && !topNonFinishingActivity.noDisplay && topNonFinishingActivity.canForceResizeNonResizable(anyTaskForId.getWindowingMode())) {
+                    activityTaskManagerService.mTaskChangeNotificationController.notifyActivityForcedResizable(anyTaskForId.mTaskId, 3, topNonFinishingActivity.info.applicationInfo.packageName);
+                }
+                if (rect == null || rect.isEmpty()) {
+                    rect = anyTaskForId.getLaunchBounds();
+                }
+            }
+            int rotation = anyTaskForId.getWindowConfiguration().getRotation();
+            if (i2 != rotation) {
+                if (rect != null) {
+                    displayContent.rotateBounds(i2, rect, rotation);
                 } else {
-                    if (anyTaskForId.inSplitScreenWindowingMode()) {
-                        ActivityRecord rootActivity = anyTaskForId.getRootActivity();
-                        if (rootActivity == null) {
-                            Slog.w("FreeformController", "setFreeformWindowingModeByCornerGestureLocked: root activity not found");
-                        } else {
-                            Task task = rootActivity.getTask();
-                            if (task != null) {
-                                DisplayContent displayContent2 = task.getDisplayContent();
-                                if (displayContent2 != null && displayContent2.getDisplayId() == 0) {
-                                    task.reparent(displayContent2.getDefaultTaskDisplayArea(), Integer.MAX_VALUE);
-                                    task.setWindowingMode(5);
-                                    task.setBounds(rect);
-                                }
-                            }
-                        }
-                    } else {
-                        if (anyTaskForId.getWindowingMode() != 5) {
-                            anyTaskForId.mLastNonFullscreenBounds = new Rect(rect);
-                            anyTaskForId.setWindowingMode(5);
-                            notifyActivityForcedResizableIfNeeded(anyTaskForId);
-                            if (rect == null || rect.isEmpty()) {
-                                rect = anyTaskForId.getLaunchBounds();
-                            }
-                        }
-                        int rotation = anyTaskForId.getWindowConfiguration().getRotation();
-                        if (i2 != rotation) {
-                            if (rect != null) {
-                                displayContent.rotateBounds(i2, rotation, rect);
-                            } else {
-                                Slog.w("FreeformController", "setFreeformWindowingModeByCornerGestureLocked: bounds is null");
-                            }
-                        }
-                        anyTaskForId.resize(rect, 2, false);
-                        this.mAtm.mRootWindowContainer.ensureActivitiesVisible(null, 0, true);
-                        this.mAtm.mRootWindowContainer.resumeFocusedTasksTopActivities();
-                    }
+                    Slog.w("FreeformController", "setFreeformWindowingModeByCornerGestureLocked: bounds is null");
                 }
             }
+            anyTaskForId.resize(2, rect);
+            activityTaskManagerService.mRootWindowContainer.ensureActivitiesVisible(true, null);
+            activityTaskManagerService.mRootWindowContainer.resumeFocusedTasksTopActivities();
         } finally {
-            this.mAtm.continueWindowLayout();
+            activityTaskManagerService.continueWindowLayout();
         }
     }
 
-    /* loaded from: classes3.dex */
-    public final class H extends Handler {
-        public H(Looper looper) {
-            super(looper);
+    public final void setMaxVisibleFreeformCountForDex(int i, int i2) {
+        if (i <= 0) {
+            i = -1;
         }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            int i = message.what;
-            int i2 = 0;
-            boolean z = true;
-            if (i != 1) {
-                switch (i) {
-                    case 101:
-                        FreeformController.this.mMinimizeContainerServiceBinder.bindServiceIfNeeded((String) message.obj);
-                        return;
-                    case 102:
-                        FreeformController.this.mMinimizeContainerServiceBinder.unbindServiceIfNeeded((String) message.obj);
-                        return;
-                    case 103:
-                        if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-                            FreeformController.this.mSmartPopupViewServiceBinder.bindServiceIfNeeded((String) message.obj);
-                            return;
-                        }
-                        return;
-                    case 104:
-                        if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-                            FreeformController.this.mSmartPopupViewServiceBinder.unbindServiceIfNeeded((String) message.obj);
-                            return;
-                        }
-                        return;
-                    default:
-                        switch (i) {
-                            case 201:
-                                synchronized (FreeformController.this.mCallbacks) {
-                                    SomeArgs someArgs = (SomeArgs) message.obj;
-                                    ComponentName componentName = (ComponentName) someArgs.arg1;
-                                    int i3 = someArgs.argi1;
-                                    int i4 = someArgs.argi2;
-                                    int i5 = someArgs.argi3;
-                                    int i6 = someArgs.argi4;
-                                    if (someArgs.argi5 != 1) {
-                                        z = false;
-                                    }
-                                    int beginBroadcast = FreeformController.this.mCallbacks.beginBroadcast();
-                                    while (i2 < beginBroadcast) {
-                                        int i7 = i6;
-                                        try {
-                                            FreeformController.this.mCallbacks.getBroadcastItem(i2).onMinimized(componentName, i3, i4, i5, i6, z);
-                                        } catch (RemoteException unused) {
-                                            Slog.e("FreeformController", "onMinimized, RemoteException occurred");
-                                        }
-                                        i2++;
-                                        i6 = i7;
-                                    }
-                                    FreeformController.this.mCallbacks.finishBroadcast();
-                                }
-                                return;
-                            case 202:
-                                synchronized (FreeformController.this.mCallbacks) {
-                                    int i8 = ((SomeArgs) message.obj).argi1;
-                                    int beginBroadcast2 = FreeformController.this.mCallbacks.beginBroadcast();
-                                    while (i2 < beginBroadcast2) {
-                                        try {
-                                            FreeformController.this.mCallbacks.getBroadcastItem(i2).onUnminimized(i8);
-                                        } catch (RemoteException unused2) {
-                                            Slog.e("FreeformController", "onRestored, RemoteException occurred");
-                                        }
-                                        i2++;
-                                    }
-                                    FreeformController.this.mCallbacks.finishBroadcast();
-                                }
-                                return;
-                            case 203:
-                                synchronized (FreeformController.this.mCallbacks) {
-                                    int i9 = ((SomeArgs) message.obj).argi1;
-                                    int beginBroadcast3 = FreeformController.this.mCallbacks.beginBroadcast();
-                                    while (i2 < beginBroadcast3) {
-                                        try {
-                                            FreeformController.this.mCallbacks.getBroadcastItem(i2).onMinimizeAnimationEnd(i9);
-                                        } catch (RemoteException unused3) {
-                                            Slog.e("FreeformController", "onMinimizeAnimationEnd, RemoteException occurred");
-                                        }
-                                        i2++;
-                                    }
-                                    FreeformController.this.mCallbacks.finishBroadcast();
-                                }
-                                return;
-                            case 204:
-                                synchronized (FreeformController.this.mCallbacks) {
-                                    SomeArgs someArgs2 = (SomeArgs) message.obj;
-                                    int i10 = someArgs2.argi1;
-                                    Point point = (Point) someArgs2.arg1;
-                                    int beginBroadcast4 = FreeformController.this.mCallbacks.beginBroadcast();
-                                    while (i2 < beginBroadcast4) {
-                                        try {
-                                            FreeformController.this.mCallbacks.getBroadcastItem(i2).onTaskMoveStarted(i10, point);
-                                        } catch (RemoteException unused4) {
-                                            Slog.e("FreeformController", "onTaskMoveStarted, RemoteException occurred");
-                                        }
-                                        i2++;
-                                    }
-                                    FreeformController.this.mCallbacks.finishBroadcast();
-                                }
-                                return;
-                            case 205:
-                                synchronized (FreeformController.this.mCallbacks) {
-                                    SomeArgs someArgs3 = (SomeArgs) message.obj;
-                                    int i11 = someArgs3.argi1;
-                                    IRemoteCallback iRemoteCallback = (IRemoteCallback) someArgs3.arg1;
-                                    int beginBroadcast5 = FreeformController.this.mCallbacks.beginBroadcast();
-                                    while (i2 < beginBroadcast5) {
-                                        try {
-                                            FreeformController.this.mCallbacks.getBroadcastItem(i2).onTaskMoveEnded(i11, iRemoteCallback);
-                                        } catch (RemoteException unused5) {
-                                            Slog.e("FreeformController", "onTaskMoveEnded, RemoteException occurred");
-                                        }
-                                        i2++;
-                                    }
-                                    FreeformController.this.mCallbacks.finishBroadcast();
-                                }
-                                return;
-                            default:
-                                return;
-                        }
-                }
-            }
-            Toast.makeText(new ContextThemeWrapper(FreeformController.this.mAtm.mContext, R.style.Theme.DeviceDefault.Light), FreeformController.this.mAtm.mContext.getResources().getString(R.string.me), 0).show();
+        this.mMaxFreeformOverWrittenCnt = i;
+        if (i2 <= 0) {
+            i2 = -1;
         }
-    }
-
-    public void showNotSupportMultiWindowToast(ActivityRecord activityRecord) {
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.i("FreeformController", "showNotSupportMultiWindowToast: r=" + activityRecord);
-        }
-        this.mH.removeMessages(1);
-        this.mH.sendEmptyMessage(1);
-    }
-
-    public void notifyActivityForcedResizableIfNeeded(Task task) {
-        ActivityRecord topNonFinishingActivity = task.getTopNonFinishingActivity();
-        if (topNonFinishingActivity == null || topNonFinishingActivity.noDisplay || !topNonFinishingActivity.canForceResizeNonResizable(task.getWindowingMode())) {
-            return;
-        }
-        this.mAtm.getTaskChangeNotificationController().notifyActivityForcedResizable(task.mTaskId, 3, topNonFinishingActivity.info.applicationInfo.packageName);
-    }
-
-    public final int getMaxVisibleFreeformCntLocked(boolean z, int i) {
-        boolean z2 = i == 3;
-        if (z) {
-            if (CoreRune.MT_NEW_DEX_LIMIT_RUNNING_APPS && z2) {
-                return 15;
-            }
-            int i2 = this.mMaxDexFreeformOverWrittenCnt;
-            if (i2 > 0) {
-                return i2;
-            }
-            return 20;
-        }
-        int i3 = this.mMaxFreeformOverWrittenCnt;
-        if (i3 > 0) {
-            return i3;
-        }
-        return 5;
-    }
-
-    public void minimizeExcessiveAllVisibleFreeformLocked() {
-        int childCount = this.mAtm.mRootWindowContainer.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            DisplayContent displayContent = (DisplayContent) this.mAtm.mRootWindowContainer.getChildAt(i);
+        this.mMaxDexFreeformOverWrittenCnt = i2;
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        int childCount = activityTaskManagerService.mRootWindowContainer.getChildCount();
+        for (int i3 = 0; i3 < childCount; i3++) {
+            DisplayContent displayContent = (DisplayContent) activityTaskManagerService.mRootWindowContainer.getChildAt(i3);
             if (displayContent == null) {
                 Slog.w("FreeformController", "minimizeAllFreeformLocked: activityDisplay is null.");
                 return;
@@ -484,430 +513,123 @@ public class FreeformController implements IController {
         }
     }
 
-    public void minimizeExcessiveVisibleFreeformLocked(TaskDisplayArea taskDisplayArea) {
-        int i = 0;
-        int rootTaskIndex = taskDisplayArea.getRootTaskIndex(taskDisplayArea.getRootTask(0, 2));
-        boolean isDesktopModeEnabled = taskDisplayArea.mDisplayContent.getConfiguration().isDesktopModeEnabled();
-        int maxVisibleFreeformCntLocked = getMaxVisibleFreeformCntLocked(isDesktopModeEnabled, taskDisplayArea.mDisplayContent.getConfiguration().dexMode);
-        for (int rootTaskCount = taskDisplayArea.getRootTaskCount() - 1; rootTaskCount > rootTaskIndex; rootTaskCount--) {
-            Task asTask = taskDisplayArea.getChildAt(rootTaskCount).asTask();
-            if (asTask != null && !asTask.mCreatedByOrganizer && isVisibleFreeformRootTaskLocked(asTask) && (i = i + 1) > maxVisibleFreeformCntLocked) {
-                this.mAtm.mMultiTaskingController.minimizeTaskLocked(asTask, true);
-            }
-        }
-        if (i > maxVisibleFreeformCntLocked) {
-            makeMaxCountToastLocked(taskDisplayArea.getDisplayContent().getDisplay(), isDesktopModeEnabled, maxVisibleFreeformCntLocked);
-        }
-    }
-
-    public final boolean isVisibleFreeformRootTaskLocked(Task task) {
-        return task.shouldBeVisible(null) && task.getWindowingMode() == 5;
-    }
-
-    public final void makeMaxCountToastLocked(Display display, boolean z, int i) {
-        final String string;
-        final Context createDisplayContext = new ContextThemeWrapper(this.mAtm.mContext, R.style.Theme.DeviceDefault.Light).createDisplayContext(display);
-        if (z) {
-            string = this.mAtm.mContext.getResources().getQuantityString(R.plurals.duration_days_shortest_future, i, Integer.valueOf(i));
-        } else {
-            string = this.mAtm.mContext.getResources().getString(R.string.permdesc_bindCarrierServices, Integer.valueOf(i));
-        }
-        this.mH.post(new Runnable() { // from class: com.android.server.wm.FreeformController$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                FreeformController.lambda$makeMaxCountToastLocked$0(createDisplayContext, string);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$makeMaxCountToastLocked$0(Context context, String str) {
-        Toast.makeText(context, str, 0).show();
-    }
-
-    public void setMaxVisibleFreeformCountForDex(int i, int i2) {
-        if (i <= 0) {
-            i = -1;
-        }
-        this.mMaxFreeformOverWrittenCnt = i;
-        if (i2 <= 0) {
-            i2 = -1;
-        }
-        this.mMaxDexFreeformOverWrittenCnt = i2;
-        if (DEBUG) {
-            Slog.d("FreeformController", "setMaxVisibleFreeformCount: mMaxFreeformOverWrittenCnt=" + this.mMaxFreeformOverWrittenCnt + ", mMaxDexFreeformOverWrittenCnt=" + this.mMaxDexFreeformOverWrittenCnt + ", caller=" + Debug.getCallers(5));
-        }
-        minimizeExcessiveAllVisibleFreeformLocked();
-    }
-
-    public boolean hasVisibleFreeform(DisplayContent displayContent) {
-        Task topRootTaskInWindowingMode = displayContent.getDefaultTaskDisplayArea().getTopRootTaskInWindowingMode(5);
-        return topRootTaskInWindowingMode != null && topRootTaskInWindowingMode.shouldBeVisible(null);
-    }
-
-    public static boolean useAlwaysOnTopFreeform(int i, DisplayContent displayContent) {
-        return (displayContent == null || displayContent.isDesktopModeEnabled() || i != 5) ? false : true;
-    }
-
-    public void performDisplayOverrideConfigUpdate(final int i, int i2, final float f, final float f2, final Rect rect, final Rect rect2) {
-        final DisplayContent displayContent = this.mAtm.mRootWindowContainer.getDisplayContent(i2);
-        if (displayContent == null) {
-            return;
-        }
-        final boolean z = (i & IInstalld.FLAG_USE_QUOTA) != 0;
-        final boolean hasConfigChangesToResize = hasConfigChangesToResize(i);
-        displayContent.forAllTasks(new Consumer() { // from class: com.android.server.wm.FreeformController$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                FreeformController.this.lambda$performDisplayOverrideConfigUpdate$1(z, i, displayContent, rect, rect2, hasConfigChangesToResize, f, f2, (Task) obj);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$performDisplayOverrideConfigUpdate$1(boolean z, int i, DisplayContent displayContent, Rect rect, Rect rect2, boolean z2, float f, float f2, Task task) {
-        if (z) {
-            task.updateMinMaxSizeIfNeeded();
-        }
-        if (task.isRootTask() && task.inFreeformWindowingMode()) {
-            if (CoreRune.MW_FREEFORM_LARGE_SCREEN_BOUNDS_POLICY && canApplyScreenRatioResize(task, i) && (!CoreRune.MT_SUPPORT_SIZE_COMPAT || !displayContent.isNewDexMode() || SizeCompatPolicyManager.get().getCompatPolicy(task) == null)) {
-                MultiWindowUtils.adjustBoundsForScreenRatio(rect, rect2, task.mLastNonFullscreenBounds, this.mTmpRect);
-                task.resize(this.mTmpRect, 0, false);
-            }
-            if (z2) {
-                task.resize(f, f2);
-            }
-        }
-    }
-
-    public final boolean canApplyScreenRatioResize(Task task, int i) {
-        return ((i & 128) == 0 || !task.inFreeformWindowingMode() || task.getDisplayContent() == null || !task.getDisplayContent().isDefaultDisplay || task.getDisplayContent().isDexMode() || this.mAtm.mWindowManager.isFolded()) ? false : true;
-    }
-
-    public void beginPostLayoutPolicyLw() {
-        DisplayContent defaultDisplayContentLocked = this.mAtm.mWindowManager.getDefaultDisplayContentLocked();
-        if (defaultDisplayContentLocked.isDexMode()) {
-            return;
-        }
-        computeForceHideRequester(defaultDisplayContentLocked);
-        if (this.mForceHideFreeformRequester != this.mTmpForceHideFreeformRequester) {
-            Slog.d("FreeformController", "beginPostLayoutPolicyLw: forceHideRequester changed, old=" + this.mForceHideFreeformRequester + ", new=" + this.mTmpForceHideFreeformRequester);
-            this.mForceHideFreeformRequester = this.mTmpForceHideFreeformRequester;
-            setBlockToAddForceHideFreeformTasks(false);
-        }
-        if (this.mForceHideMinimizeRequester != this.mTmpForceHideMinimizeRequester) {
-            Slog.d("FreeformController", "beginPostLayoutPolicyLw: forceHide minimize Requester changed, old=" + this.mForceHideMinimizeRequester + ", new=" + this.mTmpForceHideMinimizeRequester);
-            this.mForceHideMinimizeRequester = this.mTmpForceHideMinimizeRequester;
-        }
-    }
-
-    public final void computeForceHideRequester(DisplayContent displayContent) {
-        this.mTmpForceHideFreeformRequester = null;
-        this.mTmpForceHideMinimizeRequester = null;
-        displayContent.forAllWindows(new Consumer() { // from class: com.android.server.wm.FreeformController$$ExternalSyntheticLambda4
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                FreeformController.this.lambda$computeForceHideRequester$2((WindowState) obj);
-            }
-        }, true);
-    }
-
-    public /* synthetic */ void lambda$computeForceHideRequester$2(WindowState windowState) {
-        ActivityRecord activityRecord;
-        ActivityRecord activityRecord2;
-        if (!(windowState.isVisible() || (windowState.isVisibleRequested() && (activityRecord2 = windowState.mActivityRecord) != null && activityRecord2.isVisibleRequested())) || windowState.inFreeformWindowingMode()) {
-            return;
-        }
-        if (windowState.getTask() == null || windowState.getTask().shouldBeVisible(null)) {
-            int i = windowState.mAttrs.samsungFlags;
-            if ((this.mTmpForceHideFreeformRequester == null && (67108864 & i) != 0) || ((activityRecord = windowState.mActivityRecord) != null && activityRecord.mRequestFreeformForceHiding)) {
-                this.mTmpForceHideFreeformRequester = windowState;
-            }
-            if (this.mTmpForceHideMinimizeRequester != null || (i & 33554432) == 0) {
-                return;
-            }
-            this.mTmpForceHideMinimizeRequester = windowState;
-        }
-    }
-
-    public void finishPostLayoutPolicyLw() {
-        Task task;
-        TaskDisplayArea defaultTaskDisplayArea = this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea();
-        Task focusedRootTask = defaultTaskDisplayArea != null ? defaultTaskDisplayArea.getFocusedRootTask() : null;
-        if (focusedRootTask != null && focusedRootTask.isFreeformForceHidden() && (task = defaultTaskDisplayArea.getTask(new Predicate() { // from class: com.android.server.wm.FreeformController$$ExternalSyntheticLambda5
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$finishPostLayoutPolicyLw$3;
-                lambda$finishPostLayoutPolicyLw$3 = FreeformController.lambda$finishPostLayoutPolicyLw$3((Task) obj);
-                return lambda$finishPostLayoutPolicyLw$3;
-            }
-        }, true)) != null) {
-            this.mAtm.setFocusedTask(task.mTaskId, null);
-        }
-        setBlockToAddForceHideFreeformTasks(isForceHideRequesterHomeOrRecents());
-    }
-
-    public static /* synthetic */ boolean lambda$finishPostLayoutPolicyLw$3(Task task) {
-        return task.isLeafTask() && task.isTopActivityFocusable() && !task.isFreeformForceHidden();
-    }
-
-    public final boolean isForceHideRequesterHomeOrRecents() {
-        WindowState windowState = this.mForceHideFreeformRequester;
-        return windowState != null && (windowState.isActivityTypeHomeOrRecents() || this.mForceHideFreeformRequester.getWindowType() == 2632);
-    }
-
-    public final void setBlockToAddForceHideFreeformTasks(boolean z) {
-        if (this.mBlockToAddForceHideFreeformTasks != z) {
-            this.mBlockToAddForceHideFreeformTasks = z;
-            Slog.d("FreeformController", "setBlockToAddForceHideFreeformTasks: blockToAddForceHide=" + this.mBlockToAddForceHideFreeformTasks + ", Caller=" + Debug.getCaller());
-        }
-    }
-
-    public final boolean shouldApplyForceHidePolicyLocked(WindowState windowState, boolean z) {
-        WindowState windowState2;
-        Task task = windowState.getTask();
-        DisplayContent displayContent = windowState.getDisplayContent();
-        if (displayContent == null || !displayContent.isDefaultDisplay || displayContent.isDexMode()) {
-            return false;
-        }
-        if (z && this.mForceHideMinimizeRequester != null) {
-            return true;
-        }
-        if (this.mBlockToAddForceHideFreeformTasks && task != null && !this.mForceHiddenFreeformTasks.contains(task)) {
-            return false;
-        }
-        if ((CoreRune.MW_SHELL_CHANGE_TRANSITION && task != null && this.mAtm.mChangeTransitController.isInChangeTransition(task)) || (windowState2 = this.mForceHideFreeformRequester) == null || windowState2 == windowState) {
-            return false;
-        }
-        ActivityRecord activityRecord = windowState2.mActivityRecord;
-        return activityRecord == null || activityRecord != windowState.mActivityRecord;
-    }
-
-    public boolean applyForceHidePolicyIfNeededLocked(WindowState windowState) {
-        boolean z = CoreRune.MW_FREEFORM_MINIMIZE_CONTAINER && windowState.mAttrs.type == 2604;
-        Task task = windowState.getTask();
-        if (((task != null && task.inFreeformWindowingMode()) || z) && shouldApplyForceHidePolicyLocked(windowState, z)) {
-            if (z && !this.mForceHiddenFreeformContainers.contains(windowState)) {
-                this.mForceHiddenFreeformContainers.add(windowState);
-                windowState.hide(true, true);
-            }
-            if (task != null && canBeForceHiddenTask(task) && !this.mForceHiddenFreeformTasks.contains(task)) {
-                this.mAtm.mWindowManager.mTaskSnapshotController.takeSnapshotByForce(task);
-                this.mForceHiddenFreeformTasks.add(task);
-                requestForceHideTransition(task, 1);
-                task.dispatchTaskInfoChangedIfNeeded(true);
-                Slog.d("FreeformController", "applyForceHidePolicyIfNeededLocked: " + task);
-            }
-            return true;
-        }
-        lambda$releaseForceHideTaskLocked$4(windowState);
-        return false;
-    }
-
-    public final boolean canBeForceHiddenTask(Task task) {
-        if (!isForceHideRequesterHomeOrRecents() || task.getTopResumedActivity() != null) {
-            return task.mSurfaceControl != null && task.shouldBeVisible(null);
-        }
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.d("FreeformController", "canBeForceHiddenTask: false, reason=launching_from_recents");
-        }
-        return false;
-    }
-
-    public void releaseForceHideTaskLocked(Task task) {
-        String str;
-        if (this.mForceHiddenFreeformTasks.contains(task)) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("releaseForceHideTaskLocked: ");
-            sb.append(task);
-            if (CoreRune.SAFE_DEBUG) {
-                str = ", Callers=" + Debug.getCallers(3);
-            } else {
-                str = "";
-            }
-            sb.append(str);
-            Slog.d("FreeformController", sb.toString());
-            task.forAllWindows(new Consumer() { // from class: com.android.server.wm.FreeformController$$ExternalSyntheticLambda2
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    FreeformController.this.lambda$releaseForceHideTaskLocked$4((WindowState) obj);
-                }
-            }, true);
-            this.mAtm.mWindowManager.requestTraversal();
-        }
-    }
-
-    /* renamed from: releaseForceHidePolicyIfNeededLocked */
-    public final void lambda$releaseForceHideTaskLocked$4(WindowState windowState) {
-        Task task = windowState.getTask();
-        if (this.mForceHiddenFreeformContainers.contains(windowState)) {
-            this.mForceHiddenFreeformContainers.remove(windowState);
-            windowState.show(false, true);
-        }
-        if (!this.mForceHiddenFreeformTasks.contains(task) || task == null) {
-            return;
-        }
-        this.mForceHiddenFreeformTasks.remove(task);
-        requestForceHideTransition(task, 2);
-        task.dispatchTaskInfoChangedIfNeeded(true);
-        if (task.isMinimized()) {
-            this.mAtm.mWindowManager.mTaskSnapshotController.addSkipClosingAppSnapshotTasks(Sets.newArraySet(new Task[]{task}));
-        }
-        Slog.d("FreeformController", "releaseForceHidePolicyIfNeededLocked: " + task);
-    }
-
-    public final void requestForceHideTransition(Task task, int i) {
-        Transition createTransition = !this.mTransitionController.isCollecting() ? this.mTransitionController.createTransition(6) : null;
-        Transition collectingTransition = this.mTransitionController.getCollectingTransition();
-        boolean shouldAddToSyncSet = shouldAddToSyncSet(task, i);
-        Slog.d("FreeformController", "requestForceHideTransition: tid #" + task.mTaskId + ", type=" + MultiWindowManager.forceHidingTransitToString(i) + ", forceSync=" + shouldAddToSyncSet + ", newTransit=" + createTransition);
-        if (collectingTransition != null) {
-            collectingTransition.collect(task, shouldAddToSyncSet);
-            this.mTransitionController.setForceHidingTransit(task, i);
-        }
-        if (createTransition != null) {
-            this.mTransitionController.requestStartTransition(createTransition, task, null, null);
-            createTransition.setReady(task, true);
-        }
-    }
-
-    public final boolean shouldAddToSyncSet(Task task, int i) {
-        Transition.ChangeInfo changeInfo = this.mTransitionController.isCollecting() ? (Transition.ChangeInfo) this.mTransitionController.getCollectingTransition().mChanges.get(task) : null;
-        if (changeInfo == null) {
-            return false;
-        }
-        Rect bounds = task.getBounds();
-        Rect rect = changeInfo.mAbsoluteBounds;
-        if (task.mSyncGroup == null && i == 2 && changeInfo.mVisible && task.isVisibleRequested()) {
-            return (bounds.width() == rect.width() && bounds.height() == rect.height()) ? false : true;
-        }
-        return false;
-    }
-
-    public void onWindowRemovedLocked(WindowState windowState) {
-        if (this.mForceHiddenFreeformContainers.contains(windowState)) {
-            this.mForceHiddenFreeformContainers.remove(windowState);
-        }
-    }
-
-    public boolean isForceHiddenTask(Task task) {
-        return this.mForceHiddenFreeformTasks.contains(task);
-    }
-
-    public void updateFreeformBoundsForDisplayDeviceTypeChanged(Task task) {
-        Rect mainDisplayBounds;
-        Rect coverDisplayBounds;
+    public final void updateFreeformBoundsForDisplayDeviceTypeChanged(Task task) {
+        Rect rect;
+        Rect rect2;
+        int i;
+        int i2;
         if (task == null || task.getRootTask() == null) {
             return;
         }
-        Configuration globalConfiguration = this.mAtm.getGlobalConfiguration();
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        Configuration globalConfiguration = activityTaskManagerService.getGlobalConfiguration();
         Task rootTask = task.getRootTask();
-        int lastMinimizedDisplayType = rootTask.getLastMinimizedDisplayType();
-        int lastMinimizedRotation = rootTask.getLastMinimizedRotation();
-        if (lastMinimizedDisplayType == -1 || lastMinimizedDisplayType == globalConfiguration.semDisplayDeviceType) {
+        int i3 = rootTask.mLastMinimizedDisplayType;
+        int i4 = rootTask.mLastMinimizedRotation;
+        if (i3 == -1 || i3 == globalConfiguration.semDisplayDeviceType) {
             return;
         }
-        DisplayContent defaultDisplay = this.mAtm.mRootWindowContainer.getDefaultDisplay();
+        DisplayContent displayContent = activityTaskManagerService.mRootWindowContainer.mDefaultDisplay;
         int rotation = globalConfiguration.windowConfiguration.getRotation();
-        Rect bounds = defaultDisplay.getBounds();
+        Rect bounds = displayContent.getBounds();
         boolean z = bounds.width() <= bounds.height();
         boolean z2 = globalConfiguration.semDisplayDeviceType == 0;
         Rect bounds2 = task.getBounds();
-        Rect rect = new Rect();
+        Rect rect3 = new Rect();
         if (z2) {
-            mainDisplayBounds = this.mAtm.mMultiWindowFoldController.getCoverDisplayBounds(z);
+            MultiWindowFoldController multiWindowFoldController = activityTaskManagerService.mMultiWindowFoldController;
+            if (multiWindowFoldController.mCoverDisplayBounds[0].isEmpty()) {
+                multiWindowFoldController.initDisplayBounds(true);
+            }
+            Rect[] rectArr = multiWindowFoldController.mCoverDisplayBounds;
+            rect = z ? rectArr[0] : rectArr[1];
         } else {
-            mainDisplayBounds = this.mAtm.mMultiWindowFoldController.getMainDisplayBounds(z);
+            MultiWindowFoldController multiWindowFoldController2 = activityTaskManagerService.mMultiWindowFoldController;
+            if (multiWindowFoldController2.mMainDisplayBounds[0].isEmpty()) {
+                multiWindowFoldController2.initDisplayBounds(false);
+            }
+            Rect[] rectArr2 = multiWindowFoldController2.mMainDisplayBounds;
+            rect = z ? rectArr2[0] : rectArr2[1];
         }
-        Rect rect2 = mainDisplayBounds;
         if (z2) {
-            coverDisplayBounds = this.mAtm.mMultiWindowFoldController.getMainDisplayBounds(z);
+            MultiWindowFoldController multiWindowFoldController3 = activityTaskManagerService.mMultiWindowFoldController;
+            if (multiWindowFoldController3.mMainDisplayBounds[0].isEmpty()) {
+                multiWindowFoldController3.initDisplayBounds(false);
+            }
+            Rect[] rectArr3 = multiWindowFoldController3.mMainDisplayBounds;
+            rect2 = z ? rectArr3[0] : rectArr3[1];
         } else {
-            coverDisplayBounds = this.mAtm.mMultiWindowFoldController.getCoverDisplayBounds(z);
+            MultiWindowFoldController multiWindowFoldController4 = activityTaskManagerService.mMultiWindowFoldController;
+            if (multiWindowFoldController4.mCoverDisplayBounds[0].isEmpty()) {
+                multiWindowFoldController4.initDisplayBounds(true);
+            }
+            Rect[] rectArr4 = multiWindowFoldController4.mCoverDisplayBounds;
+            rect2 = z ? rectArr4[0] : rectArr4[1];
         }
-        Rect rect3 = coverDisplayBounds;
-        if (lastMinimizedRotation != -1 && rotation != -1 && lastMinimizedRotation != rotation) {
-            defaultDisplay.mDisplayContent.rotateBounds(lastMinimizedRotation, rotation, bounds2);
+        if (i4 != -1 && rotation != -1 && i4 != rotation) {
+            displayContent.mDisplayContent.rotateBounds(i4, bounds2, rotation);
         }
         task.updateMinMaxSizeIfNeeded();
-        calculateFreeformBoundsForLidStateChanged(task, rect2, rect3, bounds2, rect);
-        if (rect.isEmpty()) {
-            return;
+        if (!bounds2.isEmpty()) {
+            rect3.setEmpty();
+            boolean z3 = rect2.width() < bounds2.width();
+            boolean z4 = rect2.height() < bounds2.height();
+            if (z3 || z4) {
+                Rect rect4 = this.mTmpRect;
+                activityTaskManagerService.mWindowManager.getStableInsetsLocked(0, rect4);
+                if (z3) {
+                    rect3.left = rect2.left + rect4.left + 8;
+                    rect3.right = (rect2.right - rect4.right) - 8;
+                } else {
+                    int width = (int) ((rect2.width() - bounds2.width()) * (bounds2.left / (rect.width() - bounds2.width())));
+                    rect3.left = width;
+                    rect3.right = bounds2.width() + width;
+                }
+                if (z4) {
+                    rect3.top = rect2.top + rect4.top + 8;
+                    rect3.bottom = (rect2.bottom - rect4.bottom) - 8;
+                } else {
+                    int height = (int) ((rect2.height() - bounds2.height()) * (bounds2.top / (rect.height() - bounds2.height())));
+                    rect3.top = height;
+                    rect3.bottom = bounds2.height() + height;
+                }
+                int width2 = rect3.width();
+                int height2 = rect3.height();
+                task.adjustForMinimalTaskDimensions(rect3, new Rect(), task.getParent().getConfiguration());
+                rect3.offset(width2 != rect3.width() ? 0 - ((rect3.width() - width2) / 2) : 0, height2 != rect3.height() ? 0 - ((rect3.height() - height2) / 2) : 0);
+            } else {
+                rect3.set(0, 0, bounds2.width(), bounds2.height());
+                rect3.offset((int) ((rect2.width() - bounds2.width()) * (bounds2.left / (rect.width() - bounds2.width()))), (int) ((rect2.height() - bounds2.height()) * (bounds2.top / (rect.height() - bounds2.height()))));
+            }
+            int i5 = rect3.left;
+            if (8 > i5) {
+                i = 8 - i5;
+            } else {
+                int i6 = rect2.right - 8;
+                int i7 = rect3.right;
+                i = i6 < i7 ? i6 - i7 : 0;
+            }
+            int i8 = rect3.top;
+            if (8 > i8) {
+                i2 = 8 - i8;
+            } else {
+                int i9 = rect2.bottom - 8;
+                int i10 = rect3.bottom;
+                i2 = i9 < i10 ? i9 - i10 : 0;
+            }
+            rect3.offset(i, i2);
+            if (task.isFreeformStashed()) {
+                Rect stashedBounds = task.getStashedBounds();
+                rect3.offsetTo(task.isLeftStash() ? stashedBounds.right - rect3.width() : stashedBounds.left, rect3.top);
+            }
         }
-        task.resize(rect, 0, false);
-    }
-
-    public final void calculateFreeformBoundsForLidStateChanged(Task task, Rect rect, Rect rect2, Rect rect3, Rect rect4) {
-        int i;
         if (rect3.isEmpty()) {
             return;
         }
-        rect4.setEmpty();
-        int i2 = 0;
-        boolean z = rect2.width() < rect3.width();
-        boolean z2 = rect2.height() < rect3.height();
-        if (z || z2) {
-            Rect rect5 = this.mTmpRect;
-            this.mAtm.mWindowManager.getStableInsetsLocked(0, rect5);
-            if (z) {
-                rect4.left = rect2.left + rect5.left + 8;
-                rect4.right = (rect2.right - rect5.right) - 8;
-            } else {
-                int width = (int) ((rect2.width() - rect3.width()) * (rect3.left / (rect.width() - rect3.width())));
-                rect4.left = width;
-                rect4.right = rect3.width() + width;
-            }
-            if (z2) {
-                rect4.top = rect2.top + rect5.top + 8;
-                rect4.bottom = (rect2.bottom - rect5.bottom) - 8;
-            } else {
-                int height = (int) ((rect2.height() - rect3.height()) * (rect3.top / (rect.height() - rect3.height())));
-                rect4.top = height;
-                rect4.bottom = rect3.height() + height;
-            }
-            int width2 = rect4.width();
-            int height2 = rect4.height();
-            task.adjustForMinimalTaskDimensions(rect4, new Rect(), task.getParent().getConfiguration());
-            rect4.offset(width2 != rect4.width() ? 0 - ((rect4.width() - width2) / 2) : 0, height2 != rect4.height() ? 0 - ((rect4.height() - height2) / 2) : 0);
-        } else {
-            rect4.set(0, 0, rect3.width(), rect3.height());
-            rect4.offset((int) ((rect2.width() - rect3.width()) * (rect3.left / (rect.width() - rect3.width()))), (int) ((rect2.height() - rect3.height()) * (rect3.top / (rect.height() - rect3.height()))));
-        }
-        int i3 = rect4.left;
-        if (8 > i3) {
-            i = 8 - i3;
-        } else {
-            int i4 = rect2.right;
-            int i5 = i4 - 8;
-            int i6 = rect4.right;
-            i = i5 < i6 ? (i4 - 8) - i6 : 0;
-        }
-        int i7 = rect4.top;
-        if (8 > i7) {
-            i2 = 8 - i7;
-        } else {
-            int i8 = rect2.bottom;
-            int i9 = i8 - 8;
-            int i10 = rect4.bottom;
-            if (i9 < i10) {
-                i2 = (i8 - 8) - i10;
-            }
-        }
-        rect4.offset(i, i2);
-        if (task.isFreeformStashed()) {
-            Rect stashedBounds = task.getStashedBounds();
-            rect4.offsetTo(task.isLeftStash() ? stashedBounds.right - rect4.width() : stashedBounds.left, rect4.top);
-        }
+        task.resize(0, rect3);
     }
 
-    public static Animation loadWindowAnimationIfNeeded(Animation animation, WindowState windowState, int i) {
-        DisplayContent displayContent = windowState.getDisplayContent();
-        if (displayContent == null || !((i == 1 || i == 2) && windowState.inFreeformWindowingMode() && windowState.mAttrs.isFullscreen() && windowState.mAttrs.type == 2 && WindowAnimationSpec.findTranslateAnimation(animation) != null)) {
-            return null;
-        }
-        Slog.d("FreeformController", "loadWindowAnimationIfNeeded: " + windowState + ", transit=" + i);
-        return displayContent.mAppTransition.mTransitionAnimation.loadDefaultAnimationRes(i == 1 ? R.anim.ft_avd_toarrow_rectangle_path_4_animation : R.anim.ft_avd_toarrow_rectangle_path_3_animation);
-    }
-
-    public void updateFreeformHeaderType(int i) {
+    public final void updateFreeformCaptionType(int i) {
         WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
@@ -921,132 +643,5 @@ public class FreeformController implements IController {
             }
         }
         WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public int getDecorCaptionHeight(Resources resources, WindowContainer windowContainer, boolean z, int i) {
-        boolean z2 = CoreRune.MW_CAPTION_SHELL_NEW_DEX_CAPTION_TYPE && resources.getConfiguration().isNewDexMode();
-        if (i == -1) {
-            i = z2 ? this.mNewDexCaptionType : this.mFreeformCaptionType;
-        }
-        if (windowContainer.isDexMode()) {
-            if (windowContainer.inFreeformWindowingMode() || z) {
-                return resources.getDimensionPixelSize(17105720);
-            }
-            return resources.getDimensionPixelSize(17105721);
-        }
-        if (!windowContainer.isNewDexMode()) {
-            if (i == 1) {
-                return resources.getDimensionPixelSize(17105718);
-            }
-            return resources.getDimensionPixelSize(17105719);
-        }
-        if (CoreRune.MW_CAPTION_SHELL_NEW_DEX_CAPTION_TYPE && i == 0) {
-            return resources.getDimensionPixelSize(17105719);
-        }
-        if (windowContainer.inFreeformWindowingMode() || z) {
-            return resources.getDimensionPixelSize(17105722);
-        }
-        return resources.getDimensionPixelSize(17105723);
-    }
-
-    public void updateNewDexHeaderType(int i) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                if (this.mNewDexCaptionType != i) {
-                    this.mNewDexCaptionType = i;
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public int getFreeformThickness(Resources resources) {
-        int dimensionPixelSize = resources.getDimensionPixelSize(17105724);
-        return dimensionPixelSize % 2 == 0 ? dimensionPixelSize : dimensionPixelSize + 1;
-    }
-
-    public void onDisplayRemovedLocked(int i) {
-        this.mFreeformCornerRadius.remove(i);
-    }
-
-    public int getFreeformCornerRadiusLocked(int i) {
-        return ((Integer) this.mFreeformCornerRadius.get(i, 0)).intValue();
-    }
-
-    public boolean canApplyDimsLocked(final WindowState windowState) {
-        if (windowState.mAttrs.isFullscreen() || windowState.getTask() == null) {
-            return true;
-        }
-        this.mTmpWindow = null;
-        final Rect rect = new Rect();
-        rect.set(windowState.getFrame());
-        InsetsState insetsStateWithVisibilityOverride = windowState.getInsetsStateWithVisibilityOverride();
-        int i = windowState.mAttrs.type;
-        int windowingMode = windowState.getWindowingMode();
-        WindowManager.LayoutParams layoutParams = windowState.mAttrs;
-        rect.inset(insetsStateWithVisibilityOverride.calculateVisibleInsets(rect, i, windowingMode, layoutParams.softInputMode, layoutParams.flags));
-        windowState.getTask().forAllWindows(new ToBooleanFunction() { // from class: com.android.server.wm.FreeformController$$ExternalSyntheticLambda1
-            public final boolean apply(Object obj) {
-                boolean lambda$canApplyDimsLocked$6;
-                lambda$canApplyDimsLocked$6 = FreeformController.this.lambda$canApplyDimsLocked$6(windowState, rect, (WindowState) obj);
-                return lambda$canApplyDimsLocked$6;
-            }
-        }, false);
-        return this.mTmpWindow != null;
-    }
-
-    public /* synthetic */ boolean lambda$canApplyDimsLocked$6(WindowState windowState, Rect rect, WindowState windowState2) {
-        ActivityRecord activityRecord = windowState2.mActivityRecord;
-        if (activityRecord != windowState.mActivityRecord && activityRecord != null && (!activityRecord.mVisibleRequested || activityRecord.mIsExiting)) {
-            return false;
-        }
-        if (windowState2 == windowState) {
-            this.mTmpWindow = null;
-            return true;
-        }
-        Rect rect2 = this.mTmpRect;
-        rect2.set(windowState2.getFrame());
-        InsetsState insetsStateWithVisibilityOverride = windowState.getInsetsStateWithVisibilityOverride();
-        int i = windowState2.mAttrs.type;
-        int windowingMode = windowState2.getWindowingMode();
-        WindowManager.LayoutParams layoutParams = windowState2.mAttrs;
-        rect.inset(insetsStateWithVisibilityOverride.calculateVisibleInsets(rect2, i, windowingMode, layoutParams.softInputMode, layoutParams.flags));
-        if (!windowState2.mHasSurface || (!rect2.contains(rect) && (rect2.height() < rect.height() || rect2.width() < rect.width()))) {
-            return false;
-        }
-        this.mTmpWindow = windowState2;
-        return true;
-    }
-
-    @Override // com.android.server.wm.IController
-    public void dumpLocked(PrintWriter printWriter, String str) {
-        printWriter.println("[FreeformController]");
-        if (!this.mForceHiddenFreeformContainers.isEmpty()) {
-            printWriter.println(str + "mForceHiddenFreeformWindows=" + this.mForceHiddenFreeformContainers);
-        }
-        printWriter.println(str + "mMaxFreeformOverWrittenCnt=" + this.mMaxFreeformOverWrittenCnt);
-        printWriter.println(str + "mMaxDexFreeformOverWrittenCnt=" + this.mMaxDexFreeformOverWrittenCnt);
-        if (this.mForceHideFreeformRequester != null) {
-            printWriter.println(str + "mForceHideFreeformRequester=" + this.mForceHideFreeformRequester);
-        }
-        if (this.mForceHideMinimizeRequester != null) {
-            printWriter.println(str + "mForceHideMinimizeRequester=" + this.mForceHideMinimizeRequester);
-        }
-        if (!this.mForceHiddenFreeformTasks.isEmpty()) {
-            printWriter.println(str + "mForceHiddenFreeformTasks=" + this.mForceHiddenFreeformTasks);
-        }
-        if (this.mBlockToAddForceHideFreeformTasks) {
-            printWriter.println(str + "mBlockToAddForceHideFreeformTasks=true");
-        }
-        this.mMinimizeContainerServiceBinder.dumpLocked(printWriter);
-        if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-            this.mSmartPopupViewServiceBinder.dumpLocked(printWriter);
-        }
-        printWriter.println();
     }
 }

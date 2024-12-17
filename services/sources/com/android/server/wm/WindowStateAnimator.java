@@ -3,56 +3,49 @@ package com.android.server.wm;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.UserHandle;
-import android.text.TextUtils;
+import android.util.EventLog;
 import android.util.Slog;
-import android.util.proto.ProtoOutputStream;
 import android.view.Surface;
 import android.view.SurfaceControl;
+import android.view.SurfaceEffects;
 import android.view.WindowManager;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
-import com.android.server.display.DisplayPowerController2;
-import com.android.server.policy.WindowManagerPolicy;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.window.flags.Flags;
 import com.samsung.android.knox.localservice.RemoteInjectionInternal;
 import com.samsung.android.rune.CoreRune;
-import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
-public class WindowStateAnimator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WindowStateAnimator {
     public boolean mAnimationIsEntrance;
     public final WindowAnimator mAnimator;
-    public int mAttrType;
+    public final int mAttrType;
     public final Context mContext;
     public int mDrawState;
     public boolean mEnterAnimationPending;
     public boolean mEnteringAnimation;
     public final boolean mIsWallpaper;
     public boolean mLastHidden;
-    public final WindowManagerPolicy mPolicy;
     public RemoteInjectionInternal mRemoteInjection;
     public final WindowManagerService mService;
     public final Session mSession;
     public WindowSurfaceController mSurfaceController;
     public final WallpaperController mWallpaperControllerLocked;
     public final WindowState mWin;
-    public float mShownAlpha = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    public float mAlpha = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    public float mLastAlpha = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
+    public float mShownAlpha = FullScreenMagnificationGestureHandler.MAX_SCALE;
+    public float mAlpha = FullScreenMagnificationGestureHandler.MAX_SCALE;
+    public float mLastAlpha = FullScreenMagnificationGestureHandler.MAX_SCALE;
     public float mPopOverAlpha = -1.0f;
     public final Rect mSystemDecorRect = new Rect();
-    public String mSurfaceDebugTracker = null;
-
-    public String drawStateToString() {
-        int i = this.mDrawState;
-        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? i != 4 ? Integer.toString(i) : "HAS_DRAWN" : "READY_TO_SHOW" : "COMMIT_DRAW_PENDING" : "DRAW_PENDING" : "NO_SURFACE";
-    }
 
     public WindowStateAnimator(WindowState windowState) {
         WindowManagerService windowManagerService = windowState.mWmService;
         this.mService = windowManagerService;
         this.mAnimator = windowManagerService.mAnimator;
-        this.mPolicy = windowManagerService.mPolicy;
         this.mContext = windowManagerService.mContext;
         this.mWin = windowState;
         this.mSession = windowState.mSession;
@@ -61,212 +54,185 @@ public class WindowStateAnimator {
         this.mWallpaperControllerLocked = windowState.getDisplayContent().mWallpaperController;
     }
 
-    public void onAnimationFinished() {
-        if (ProtoLogCache.WM_DEBUG_ANIM_enabled) {
-            String valueOf = String.valueOf(this);
-            WindowState windowState = this.mWin;
-            boolean z = windowState.mAnimatingExit;
-            ActivityRecord activityRecord = windowState.mActivityRecord;
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ANIM, 1810209625, 60, (String) null, new Object[]{valueOf, Boolean.valueOf(z), Boolean.valueOf(activityRecord != null && activityRecord.reportedVisible)});
-        }
-        this.mWin.checkPolicyVisibilityChange();
-        DisplayContent displayContent = this.mWin.getDisplayContent();
-        int i = this.mAttrType;
-        if ((i == 2000 || i == 2040) && this.mWin.isVisibleByPolicy()) {
-            displayContent.setLayoutNeeded();
-        }
-        this.mWin.onExitAnimationDone();
-        displayContent.pendingLayoutChanges |= 8;
-        if (displayContent.mWallpaperController.isWallpaperTarget(this.mWin)) {
-            displayContent.pendingLayoutChanges |= 4;
-        }
-        ActivityRecord activityRecord2 = this.mWin.mActivityRecord;
-        if (activityRecord2 != null) {
-            activityRecord2.updateReportedVisibilityLocked();
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:65:0x01b8, code lost:
+    
+        if (r24 != 2) goto L132;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:48:0x011c  */
+    /* JADX WARN: Removed duplicated region for block: B:52:0x015b  */
+    /* JADX WARN: Removed duplicated region for block: B:56:0x019d  */
+    /* JADX WARN: Removed duplicated region for block: B:79:0x0207  */
+    /* JADX WARN: Removed duplicated region for block: B:87:0x012f  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean applyAnimationLocked(int r24, boolean r25) {
+        /*
+            Method dump skipped, instructions count: 562
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.WindowStateAnimator.applyAnimationLocked(int, boolean):boolean");
     }
 
-    public void hide(SurfaceControl.Transaction transaction, String str) {
-        if (this.mLastHidden) {
-            return;
+    public final void applyEnterAnimationLocked() {
+        int i;
+        ActivityRecord activityRecord;
+        if (this.mEnterAnimationPending) {
+            this.mEnterAnimationPending = false;
+            i = 1;
+        } else {
+            i = 3;
         }
-        this.mLastHidden = true;
-        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
-        if (windowSurfaceController != null) {
-            windowSurfaceController.hide(transaction, str);
-        }
-    }
-
-    public boolean finishDrawingLocked(SurfaceControl.Transaction transaction) {
+        int i2 = this.mAttrType;
         WindowState windowState = this.mWin;
-        boolean z = false;
-        boolean z2 = windowState.mAttrs.type == 3;
-        if (z2 && ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -344488673, 0, "Finishing drawing window %s: mDrawState=%s", new Object[]{String.valueOf(windowState), String.valueOf(drawStateToString())});
+        if (i2 != 1 && !this.mIsWallpaper && ((activityRecord = windowState.mActivityRecord) == null || !activityRecord.hasStartingWindow())) {
+            applyAnimationLocked(i, true);
         }
-        if (this.mDrawState == 1) {
-            if (ProtoLogCache.WM_DEBUG_DRAW_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_DRAW, -993378225, 0, (String) null, new Object[]{String.valueOf(this.mWin), String.valueOf(this.mSurfaceController)});
-            }
-            if (z2 && ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 829434921, 0, "Draw state now committed in %s", new Object[]{String.valueOf(this.mWin)});
-            }
-            this.mDrawState = 2;
-            z = true;
+        WindowManagerService windowManagerService = this.mService;
+        if (windowManagerService.mAccessibilityController.hasCallbacks()) {
+            windowManagerService.mAccessibilityController.onWindowTransition(windowState, i);
         }
-        if (transaction == null) {
-            return z;
-        }
-        this.mWin.getSyncTransaction().merge(transaction);
-        return true;
     }
 
-    public boolean commitFinishDrawingLocked() {
+    public final boolean commitFinishDrawingLocked() {
         int i = this.mDrawState;
         if (i != 2 && i != 3) {
             return false;
         }
-        if (ProtoLogCache.WM_DEBUG_ANIM_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ANIM, -203358733, 0, (String) null, new Object[]{String.valueOf(this.mSurfaceController)});
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ANIM_enabled[2]) {
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_ANIM, -3490933626936411542L, 0, null, String.valueOf(this.mSurfaceController));
         }
         this.mDrawState = 3;
-        ActivityRecord activityRecord = this.mWin.mActivityRecord;
-        if (activityRecord == null || activityRecord.canShowWindows() || this.mWin.mAttrs.type == 3) {
-            return this.mWin.performShowLocked();
+        WindowState windowState = this.mWin;
+        ActivityRecord activityRecord = windowState.mActivityRecord;
+        if (activityRecord == null || activityRecord.canShowWindows() || windowState.mAttrs.type == 3) {
+            return windowState.performShowLocked();
         }
         return false;
     }
 
-    public void resetDrawState() {
-        this.mDrawState = 1;
-        ActivityRecord activityRecord = this.mWin.mActivityRecord;
-        if (activityRecord == null || activityRecord.isAnimating(1)) {
-            return;
+    public final WindowSurfaceController createSurfaceLocked() {
+        boolean z;
+        int i;
+        Session session = this.mSession;
+        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
+        if (windowSurfaceController != null) {
+            return windowSurfaceController;
         }
-        this.mWin.mActivityRecord.clearAllDrawn();
-    }
-
-    public WindowSurfaceController createSurfaceLocked() {
-        WindowSurfaceController windowSurfaceController;
-        AsyncRotationController asyncRotationController;
         WindowState windowState = this.mWin;
-        WindowSurfaceController windowSurfaceController2 = this.mSurfaceController;
-        if (windowSurfaceController2 != null) {
-            return windowSurfaceController2;
-        }
-        windowState.setHasSurface(false);
-        if (ProtoLogCache.WM_DEBUG_ANIM_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ANIM, 1335791109, 0, (String) null, new Object[]{String.valueOf(this)});
+        windowState.mHasSurface = false;
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ANIM_enabled[2]) {
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_ANIM, -6088246515441976339L, 0, null, String.valueOf(this));
         }
         resetDrawState();
-        this.mService.makeWindowFreezingScreenIfNeededLocked(windowState);
+        WindowManagerService windowManagerService = this.mService;
+        windowManagerService.makeWindowFreezingScreenIfNeededLocked(windowState);
         WindowManager.LayoutParams layoutParams = windowState.mAttrs;
-        int i = windowState.isSecureLocked() ? 132 : 4;
+        int i2 = (Flags.secureWindowState() || !windowState.isSecureLocked()) ? 4 : 132;
         try {
-            RemoteInjectionInternal remoteInjection = getRemoteInjection();
-            if (remoteInjection != null && isWindowNotAnExceptionForDisableRemote(this.mWin)) {
-                if (remoteInjection.isRemoteControlDisabled(UserHandle.getUserId(this.mWin.mOwnerUid))) {
-                    i |= 15728640;
+            if (this.mRemoteInjection == null) {
+                this.mRemoteInjection = (RemoteInjectionInternal) LocalServices.getService(RemoteInjectionInternal.class);
+            }
+            RemoteInjectionInternal remoteInjectionInternal = this.mRemoteInjection;
+            if (remoteInjectionInternal != null && (i = windowState.mAttrs.type) != 2000 && i != 2014 && i != 2017 && i != 2024 && i != 2095 && i != 2226 && i != 2621 && i != 2019 && i != 2020) {
+                switch (i) {
+                    case 2401:
+                    case 2402:
+                    case 2403:
+                        break;
+                    default:
+                        if (remoteInjectionInternal.isRemoteControlDisabled(UserHandle.getUserId(windowState.mOwnerUid))) {
+                            i2 |= 15728640;
+                            break;
+                        }
+                        break;
                 }
             }
         } catch (Exception unused) {
-            Slog.e(StartingSurfaceController.TAG, "Exception occurred while checking for isRemoteControlDisabled");
+            Slog.e("WindowManager", "Exception occurred while checking for isRemoteControlDisabled");
         }
-        WindowManager.LayoutParams layoutParams2 = this.mWin.mAttrs;
-        if ((layoutParams2.privateFlags & 1048576) != 0) {
-            i |= 64;
+        if ((windowState.mAttrs.privateFlags & 1048576) != 0) {
+            i2 |= 64;
         }
-        if ((layoutParams2.samsungFlags & Integer.MIN_VALUE) != 0) {
-            i |= Integer.MIN_VALUE;
-        }
-        if (layoutParams2.type == 2601) {
-            i |= 2097152;
-        }
-        int i2 = i;
+        int i3 = i2;
         try {
             try {
-                try {
-                    WindowSurfaceController windowSurfaceController3 = new WindowSurfaceController(layoutParams.getTitle().toString(), (layoutParams.flags & 16777216) != 0 ? -3 : layoutParams.format, i2, this, layoutParams.type);
-                    this.mSurfaceController = windowSurfaceController3;
-                    windowSurfaceController3.setColorSpaceAgnostic(windowState.getPendingTransaction(), (layoutParams.privateFlags & 16777216) != 0);
-                    windowState.setHasSurface(true);
-                    this.mWin.resetEffects();
-                    windowState.mInputWindowHandle.forceChange();
-                    if (windowState.getDisplayContent().hasTopFixedRotationLaunchingApp() && (asyncRotationController = windowState.getDisplayContent().getAsyncRotationController()) != null) {
-                        asyncRotationController.hideImmediatelyIfNeeded(windowState, "createSurfaceLocked");
-                    }
-                    if (ProtoLogCache.WM_SHOW_SURFACE_ALLOC_enabled) {
-                        try {
-                            ProtoLogImpl.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, 745391677, 336, (String) null, new Object[]{String.valueOf(this.mSurfaceController), String.valueOf(this.mSession.mSurfaceSession), Long.valueOf(this.mSession.mPid), Long.valueOf(layoutParams.format), Long.valueOf(i2), String.valueOf(this)});
-                        } catch (Surface.OutOfResourcesException unused2) {
-                            windowSurfaceController = null;
-                            Slog.w(StartingSurfaceController.TAG, "OutOfResourcesException creating surface");
-                            this.mService.mRoot.reclaimSomeSurfaceMemory(this, "create", true);
-                            this.mDrawState = 0;
-                            return windowSurfaceController;
-                        }
-                    }
-                    this.mLastHidden = true;
-                    return this.mSurfaceController;
-                } catch (Surface.OutOfResourcesException unused3) {
-                    windowSurfaceController = null;
+                z = true;
+            } catch (Surface.OutOfResourcesException unused2) {
+                z = true;
+            }
+            try {
+                this.mSurfaceController = new WindowSurfaceController(layoutParams.getTitle().toString(), (layoutParams.flags & 16777216) != 0 ? -3 : layoutParams.format, i3, this, layoutParams.type);
+                if (!Flags.setScPropertiesInClient()) {
+                    this.mSurfaceController.setColorSpaceAgnostic(windowState.getPendingTransaction(), (layoutParams.privateFlags & 16777216) != 0);
                 }
-            } catch (Surface.OutOfResourcesException unused4) {
-                windowSurfaceController = null;
+                SurfaceControl surfaceControl = this.mSurfaceController.mSurfaceControl;
+                SurfaceControl.Transaction pendingTransaction = windowState.getPendingTransaction();
+                pendingTransaction.setMetadata(surfaceControl, 30, windowState.mAttrs.surfaceType);
+                pendingTransaction.setMetadata(surfaceControl, 31, layoutParams.type == 2601 ? 1 : 0);
+                this.mSurfaceController.setInternalPresentationOnly(windowState.getPendingTransaction(), (layoutParams.samsungFlags & Integer.MIN_VALUE) != 0);
+                windowState.mHasSurface = true;
+                windowState.mLastBlurRadius = 0;
+                windowState.mInputWindowHandle.mChanged = true;
+                if (ProtoLogImpl_54989576.Cache.WM_SHOW_SURFACE_ALLOC_enabled[2]) {
+                    ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, 2353125758087345363L, 336, null, String.valueOf(this.mSurfaceController), String.valueOf(session.mSurfaceSession), Long.valueOf(session.mPid), Long.valueOf(layoutParams.format), Long.valueOf(i3), String.valueOf(this));
+                }
+                this.mLastHidden = true;
+                return this.mSurfaceController;
+            } catch (Surface.OutOfResourcesException unused3) {
+                Slog.w("WindowManager", "OutOfResourcesException creating surface");
+                windowManagerService.mRoot.reclaimSomeSurfaceMemory(this, "create", z);
+                this.mDrawState = 0;
+                return null;
             }
         } catch (Exception e) {
-            Slog.e(StartingSurfaceController.TAG, "Exception creating surface (parent dead?)", e);
+            Slog.e("WindowManager", "Exception creating surface (parent dead?)", e);
             this.mDrawState = 0;
             return null;
         }
     }
 
-    public final RemoteInjectionInternal getRemoteInjection() {
-        if (this.mRemoteInjection == null) {
-            this.mRemoteInjection = (RemoteInjectionInternal) LocalServices.getService(RemoteInjectionInternal.class);
-        }
-        return this.mRemoteInjection;
-    }
-
-    public final boolean isWindowNotAnExceptionForDisableRemote(WindowState windowState) {
-        if (windowState == null) {
-            return true;
-        }
-        int i = windowState.mAttrs.type;
-        if (i == 2000 || i == 2014 || i == 2017 || i == 2024 || i == 2095 || i == 2226 || i == 2621 || i == 2019 || i == 2020) {
-            return false;
-        }
-        switch (i) {
-            case 2401:
-            case 2402:
-            case 2403:
-                return false;
-            default:
-                return true;
+    public final void destroySurface(SurfaceControl.Transaction transaction) {
+        WindowState windowState = this.mWin;
+        try {
+            try {
+                WindowSurfaceController windowSurfaceController = this.mSurfaceController;
+                if (windowSurfaceController != null) {
+                    windowSurfaceController.destroy(transaction);
+                }
+            } catch (RuntimeException e) {
+                Slog.w("WindowManager", "Exception thrown when destroying surface " + this + " surface " + this.mSurfaceController + " session " + this.mSession + ": " + e);
+            }
+        } finally {
+            windowState.mHasSurface = false;
+            this.mSurfaceController = null;
+            this.mDrawState = 0;
         }
     }
 
-    public boolean hasSurface() {
-        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
-        return windowSurfaceController != null && windowSurfaceController.hasSurface();
-    }
-
-    public void destroySurfaceLocked(SurfaceControl.Transaction transaction) {
+    public final void destroySurfaceLocked(SurfaceControl.Transaction transaction) {
         if (this.mSurfaceController == null) {
             return;
         }
         WindowState windowState = this.mWin;
         windowState.mHidden = true;
         try {
-            if (ProtoLogCache.WM_SHOW_SURFACE_ALLOC_enabled) {
-                ProtoLogImpl.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, -1391944764, 0, (String) null, new Object[]{String.valueOf(windowState), String.valueOf(new RuntimeException().fillInStackTrace())});
+            if (ProtoLogImpl_54989576.Cache.WM_SHOW_SURFACE_ALLOC_enabled[2]) {
+                ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, -4491856282178275074L, 0, null, String.valueOf(windowState), String.valueOf(new RuntimeException().fillInStackTrace()));
             }
             destroySurface(transaction);
-            this.mWallpaperControllerLocked.hideWallpapers(this.mWin);
+            boolean ensureWallpaperInTransitions = Flags.ensureWallpaperInTransitions();
+            WallpaperController wallpaperController = this.mWallpaperControllerLocked;
+            if (!ensureWallpaperInTransitions) {
+                wallpaperController.hideWallpapers(windowState);
+            } else if (wallpaperController.isWallpaperTarget(windowState)) {
+                windowState.requestUpdateWallpaperIfNeeded();
+            }
         } catch (RuntimeException e) {
-            Slog.w(StartingSurfaceController.TAG, "Exception thrown when destroying Window " + this + " surface " + this.mSurfaceController + " session " + this.mSession + ": " + e.toString());
+            Slog.w("WindowManager", "Exception thrown when destroying Window " + this + " surface " + this.mSurfaceController + " session " + this.mSession + ": " + e.toString());
         }
-        this.mWin.setHasSurface(false);
+        windowState.mHasSurface = false;
         WindowSurfaceController windowSurfaceController = this.mSurfaceController;
         if (windowSurfaceController != null) {
             windowSurfaceController.setShown(false);
@@ -275,97 +241,189 @@ public class WindowStateAnimator {
         this.mDrawState = 0;
     }
 
-    public void computeShownFrameLocked() {
-        if ((this.mIsWallpaper && this.mService.mRoot.mWallpaperActionPending) || this.mWin.isDragResizeChanged()) {
+    public final String drawStateToString() {
+        int i = this.mDrawState;
+        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? i != 4 ? Integer.toString(i) : "HAS_DRAWN" : "READY_TO_SHOW" : "COMMIT_DRAW_PENDING" : "DRAW_PENDING" : "NO_SURFACE";
+    }
+
+    public final boolean getShown() {
+        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
+        if (windowSurfaceController != null) {
+            return windowSurfaceController.mSurfaceShown;
+        }
+        return false;
+    }
+
+    public final boolean hasSurface() {
+        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
+        return (windowSurfaceController == null || windowSurfaceController.mSurfaceControl == null) ? false : true;
+    }
+
+    public final void hide(SurfaceControl.Transaction transaction, String str) {
+        if (this.mLastHidden) {
             return;
         }
-        this.mShownAlpha = this.mAlpha;
-        if (CoreRune.MW_CAPTION_SHELL_OPACITY) {
-            applyMultiWindowAlpha();
-        }
-        float f = this.mPopOverAlpha;
-        if (f != -1.0f) {
-            this.mShownAlpha = f;
+        this.mLastHidden = true;
+        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
+        if (windowSurfaceController != null) {
+            if (ProtoLogImpl_54989576.Cache.WM_SHOW_TRANSACTIONS_enabled[2]) {
+                ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_TRANSACTIONS, -2055407587764455051L, 0, null, str, String.valueOf(windowSurfaceController.title));
+            }
+            if (!windowSurfaceController.mSurfaceShown || windowSurfaceController.mSurfaceControl == null) {
+                return;
+            }
+            windowSurfaceController.setShown(false);
+            try {
+                transaction.hide(windowSurfaceController.mSurfaceControl);
+                WindowStateAnimator windowStateAnimator = windowSurfaceController.mAnimator;
+                if (windowStateAnimator.mIsWallpaper) {
+                    DisplayContent displayContent = windowStateAnimator.mWin.getDisplayContent();
+                    EventLog.writeEvent(33001, Integer.valueOf(displayContent.mDisplayId), 0, String.valueOf(displayContent.mWallpaperController.mWallpaperTarget));
+                }
+            } catch (RuntimeException unused) {
+                Slog.w("WindowManager", "Exception hiding surface in " + windowSurfaceController);
+            }
         }
     }
 
-    public void prepareSurfaceLocked(SurfaceControl.Transaction transaction) {
+    public final void prepareSurfaceLocked(SurfaceControl.Transaction transaction) {
+        boolean hasSurface = hasSurface();
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_ORIENTATION_enabled;
         WindowState windowState = this.mWin;
-        if (!hasSurface()) {
+        if (!hasSurface) {
             if (windowState.getOrientationChanging() && windowState.isGoneForLayout()) {
-                if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 1756082882, 0, (String) null, new Object[]{String.valueOf(windowState)});
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 8602950884833508970L, 0, null, String.valueOf(windowState));
                 }
                 windowState.setOrientationChanging(false);
                 return;
             }
             return;
         }
-        computeShownFrameLocked();
-        this.mWin.applyBlurEffectInTransaction(transaction);
-        if (!windowState.isOnScreen()) {
-            hide(transaction, "prepareSurfaceLocked");
-            this.mWallpaperControllerLocked.hideWallpapers(windowState);
-            if (windowState.getOrientationChanging() && windowState.isGoneForLayout()) {
-                windowState.setOrientationChanging(false);
-                if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 1756082882, 0, (String) null, new Object[]{String.valueOf(windowState)});
+        if ((!this.mIsWallpaper || !this.mService.mRoot.mWallpaperActionPending) && windowState.mDragResizing == windowState.computeDragResizing()) {
+            this.mShownAlpha = this.mAlpha;
+            float f = this.mPopOverAlpha;
+            if (f != -1.0f) {
+                this.mShownAlpha = f;
+            }
+        }
+        if (windowState.mWinAnimator != null) {
+            WindowManager.LayoutParams layoutParams = windowState.mAttrs;
+            int i = (layoutParams.flags & 2) != 0 && (layoutParams.samsungFlags & 64) != 0 ? (int) ((layoutParams.dimAmount / 0.4f) * 352.0f) : 0;
+            if (windowState.mLastBlurRadius != i) {
+                long j = layoutParams.dimDuration;
+                if (j == -1) {
+                    j = 200;
+                }
+                SurfaceEffects.Effect.Builder pixelEffectType = SurfaceEffects.newBuilder().setPixelEffectType(SurfaceEffects.PixEffectType.BLUR);
+                WindowManager.LayoutParams layoutParams2 = windowState.mAttrs;
+                if (layoutParams2.height == -2 || layoutParams2.width == -2) {
+                    pixelEffectType.makeFullscreen();
+                }
+                boolean z = CoreRune.IS_DEBUG_LEVEL_MID && windowState.mAttrs.type == 2011 && windowState.getDisplayContent().isDefaultDisplay;
+                if (i > 0) {
+                    SurfaceEffects.Effect.Builder animationMode = pixelEffectType.setAnimationMode(SurfaceEffects.AnimationMode.ONCE_STAY_END);
+                    SurfaceEffects.AnimParam animParam = SurfaceEffects.AnimParam.BLUR_RADIUS;
+                    animationMode.addPixAnimation(animParam, 0, windowState.mLastBlurRadius, SurfaceEffects.InterpMode.HOLD).addPixAnimation(animParam, (int) j, i, SurfaceEffects.InterpMode.SMOOTH_IN);
+                    if (z) {
+                        AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "applyBlurEffectInTransaction: Set ONCE_STAY_END blurRadius=", "WindowManager");
+                    }
+                } else {
+                    SurfaceEffects.Effect.Builder animationMode2 = pixelEffectType.setAnimationMode(SurfaceEffects.AnimationMode.ONCE_DESTROY);
+                    SurfaceEffects.AnimParam animParam2 = SurfaceEffects.AnimParam.BLUR_RADIUS;
+                    animationMode2.addPixAnimation(animParam2, 0, windowState.mLastBlurRadius, SurfaceEffects.InterpMode.HOLD).addPixAnimation(animParam2, (int) j, i, SurfaceEffects.InterpMode.SMOOTH_OUT);
+                    if (z) {
+                        AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "applyBlurEffectInTransaction: Set ONCE_DESTROY blurRadius=", "WindowManager");
+                    }
+                }
+                String bytes = pixelEffectType.build().getBytes();
+                SurfaceControl surfaceControl = windowState.mWinAnimator.mSurfaceController.mSurfaceControl;
+                if (surfaceControl != null) {
+                    transaction.startSurfaceAnimation(surfaceControl, bytes);
+                }
+                windowState.mLastBlurRadius = i;
+            }
+        }
+        if (windowState.isOnScreen()) {
+            float f2 = this.mLastAlpha;
+            float f3 = this.mShownAlpha;
+            if (f2 != f3 || this.mLastHidden) {
+                this.mLastAlpha = f3;
+                boolean[] zArr2 = ProtoLogImpl_54989576.Cache.WM_SHOW_TRANSACTIONS_enabled;
+                if (zArr2[2]) {
+                    ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_TRANSACTIONS, -5079712802591263622L, 168, null, String.valueOf(this.mSurfaceController), Double.valueOf(this.mShownAlpha), Double.valueOf(windowState.mHScale), Double.valueOf(windowState.mVScale), String.valueOf(windowState));
+                }
+                WindowSurfaceController windowSurfaceController = this.mSurfaceController;
+                float f4 = this.mShownAlpha;
+                SurfaceControl surfaceControl2 = windowSurfaceController.mSurfaceControl;
+                if (surfaceControl2 != null) {
+                    transaction.setAlpha(surfaceControl2, f4);
+                    if (this.mDrawState == 4 && this.mLastHidden) {
+                        WindowSurfaceController windowSurfaceController2 = this.mSurfaceController;
+                        if (zArr2[2]) {
+                            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_TRANSACTIONS, -8398940245851553814L, 0, null, String.valueOf(windowSurfaceController2.title));
+                        }
+                        if (!windowSurfaceController2.mSurfaceShown) {
+                            windowSurfaceController2.setShown(true);
+                            transaction.show(windowSurfaceController2.mSurfaceControl);
+                            WindowStateAnimator windowStateAnimator = windowSurfaceController2.mAnimator;
+                            if (windowStateAnimator.mIsWallpaper) {
+                                DisplayContent displayContent = windowStateAnimator.mWin.getDisplayContent();
+                                EventLog.writeEvent(33001, Integer.valueOf(displayContent.mDisplayId), 1, String.valueOf(displayContent.mWallpaperController.mWallpaperTarget));
+                            }
+                        }
+                        this.mLastHidden = false;
+                        DisplayContent displayContent2 = windowState.getDisplayContent();
+                        if (!displayContent2.mLastHasContent) {
+                            displayContent2.pendingLayoutChanges |= 8;
+                        }
+                    }
                 }
             }
         } else {
-            float f = this.mLastAlpha;
-            float f2 = this.mShownAlpha;
-            if (f != f2 || this.mLastHidden) {
-                this.mLastAlpha = f2;
-                if (ProtoLogCache.WM_SHOW_TRANSACTIONS_enabled) {
-                    ProtoLogImpl.i(ProtoLogGroup.WM_SHOW_TRANSACTIONS, -1906387645, 168, (String) null, new Object[]{String.valueOf(this.mSurfaceController), Double.valueOf(this.mShownAlpha), Double.valueOf(windowState.mHScale), Double.valueOf(windowState.mVScale), String.valueOf(windowState)});
-                }
-                if (this.mSurfaceController.prepareToShowInTransaction(transaction, this.mShownAlpha) && this.mDrawState == 4 && this.mLastHidden) {
-                    this.mSurfaceController.showRobustly(transaction);
-                    this.mLastHidden = false;
-                    DisplayContent displayContent = windowState.getDisplayContent();
-                    if (!displayContent.getLastHasContent()) {
-                        displayContent.pendingLayoutChanges |= 8;
-                    }
+            hide(transaction, "prepareSurfaceLocked");
+            if (!windowState.mIsWallpaper || !Flags.ensureWallpaperInTransitions()) {
+                this.mWallpaperControllerLocked.hideWallpapers(windowState);
+            }
+            if (windowState.getOrientationChanging() && windowState.isGoneForLayout()) {
+                windowState.setOrientationChanging(false);
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 8602950884833508970L, 0, null, String.valueOf(windowState));
                 }
             }
         }
         if (windowState.getOrientationChanging()) {
-            if (!windowState.isDrawn()) {
-                if (windowState.mDisplayContent.shouldSyncRotationChange(windowState)) {
-                    windowState.mWmService.mRoot.mOrientationChangeComplete = false;
-                    this.mAnimator.mLastWindowFreezeSource = windowState;
-                }
-                if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -1130891072, 0, (String) null, new Object[]{String.valueOf(windowState)});
+            if (windowState.isDrawn()) {
+                windowState.setOrientationChanging(false);
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 7457181879495900576L, 0, null, String.valueOf(windowState));
                     return;
                 }
                 return;
             }
-            windowState.setOrientationChanging(false);
-            if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 916191774, 0, (String) null, new Object[]{String.valueOf(windowState)});
+            if (windowState.mDisplayContent.shouldSyncRotationChange(windowState)) {
+                windowState.mWmService.mRoot.mOrientationChangeComplete = false;
+                this.mAnimator.mLastWindowFreezeSource = windowState;
+            }
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -2824875917893878016L, 0, null, String.valueOf(windowState));
             }
         }
     }
 
-    public void setOpaqueLocked(boolean z) {
-        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
-        if (windowSurfaceController == null) {
+    public final void resetDrawState() {
+        this.mDrawState = 1;
+        WindowState windowState = this.mWin;
+        ActivityRecord activityRecord = windowState.mActivityRecord;
+        if (activityRecord == null || activityRecord.isAnimating(1)) {
             return;
         }
-        windowSurfaceController.setOpaque(z);
+        ActivityRecord activityRecord2 = windowState.mActivityRecord;
+        activityRecord2.allDrawn = false;
+        activityRecord2.mLastAllDrawn = false;
     }
 
-    public void setSecureLocked(boolean z) {
-        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
-        if (windowSurfaceController == null) {
-            return;
-        }
-        windowSurfaceController.setSecure(z);
-    }
-
-    public void setColorSpaceAgnosticLocked(boolean z) {
+    public final void setColorSpaceAgnosticLocked(boolean z) {
         WindowSurfaceController windowSurfaceController = this.mSurfaceController;
         if (windowSurfaceController == null) {
             return;
@@ -373,163 +431,35 @@ public class WindowStateAnimator {
         windowSurfaceController.setColorSpaceAgnostic(this.mWin.getPendingTransaction(), z);
     }
 
-    public void applyEnterAnimationLocked() {
-        int i;
-        if (this.mEnterAnimationPending) {
-            this.mEnterAnimationPending = false;
-            i = 1;
-        } else {
-            i = 3;
-        }
-        if (this.mAttrType != 1 && !this.mIsWallpaper) {
-            applyAnimationLocked(i, true);
-        }
-        if (this.mService.mAccessibilityController.hasCallbacks()) {
-            this.mService.mAccessibilityController.onWindowTransition(this.mWin, i);
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:23:0x009e  */
-    /* JADX WARN: Removed duplicated region for block: B:27:0x00df  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public boolean applyAnimationLocked(int r21, boolean r22) {
-        /*
-            Method dump skipped, instructions count: 310
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.WindowStateAnimator.applyAnimationLocked(int, boolean):boolean");
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
+    public final void setInternalPresentationOnly(boolean z) {
         WindowSurfaceController windowSurfaceController = this.mSurfaceController;
-        if (windowSurfaceController != null) {
-            windowSurfaceController.dumpDebug(protoOutputStream, 1146756268034L);
+        if (windowSurfaceController == null) {
+            return;
         }
-        protoOutputStream.write(1159641169923L, this.mDrawState);
-        this.mSystemDecorRect.dumpDebug(protoOutputStream, 1146756268036L);
-        protoOutputStream.end(start);
+        windowSurfaceController.setInternalPresentationOnly(this.mWin.getPendingTransaction(), z);
     }
 
-    public void dump(PrintWriter printWriter, String str, boolean z) {
-        if (this.mAnimationIsEntrance) {
-            printWriter.print(str);
-            printWriter.print(" mAnimationIsEntrance=");
-            printWriter.print(this.mAnimationIsEntrance);
-        }
+    public final void setOpaqueLocked(boolean z) {
         WindowSurfaceController windowSurfaceController = this.mSurfaceController;
-        if (windowSurfaceController != null) {
-            windowSurfaceController.dump(printWriter, str, z);
+        if (windowSurfaceController == null) {
+            return;
         }
-        if (z) {
-            printWriter.print(str);
-            printWriter.print("mDrawState=");
-            printWriter.print(drawStateToString());
-            printWriter.print(str);
-            printWriter.print(" mLastHidden=");
-            printWriter.println(this.mLastHidden);
-            printWriter.print(str);
-            printWriter.print("mEnterAnimationPending=" + this.mEnterAnimationPending);
-            printWriter.print(str);
-            printWriter.print("mSystemDecorRect=");
-            this.mSystemDecorRect.printShortString(printWriter);
-            printWriter.println();
+        if (ProtoLogImpl_54989576.Cache.WM_SHOW_TRANSACTIONS_enabled[2]) {
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_TRANSACTIONS, 7813672046338784579L, 3, null, Boolean.valueOf(z), String.valueOf(windowSurfaceController.title));
         }
-        if (this.mShownAlpha != 1.0f || this.mAlpha != 1.0f || this.mLastAlpha != 1.0f) {
-            printWriter.print(str);
-            printWriter.print("mShownAlpha=");
-            printWriter.print(this.mShownAlpha);
-            printWriter.print(" mAlpha=");
-            printWriter.print(this.mAlpha);
-            printWriter.print(" mLastAlpha=");
-            printWriter.println(this.mLastAlpha);
+        if (windowSurfaceController.mSurfaceControl == null) {
+            return;
         }
-        if (this.mWin.mGlobalScale != 1.0f) {
-            printWriter.print(str);
-            printWriter.print("mGlobalScale=");
-            printWriter.print(this.mWin.mGlobalScale);
-        }
+        windowSurfaceController.mAnimator.mWin.getPendingTransaction().setOpaque(windowSurfaceController.mSurfaceControl, z);
+        windowSurfaceController.mService.scheduleAnimationLocked();
     }
 
-    public String toString() {
+    public final String toString() {
         StringBuffer stringBuffer = new StringBuffer("WindowStateAnimator{");
         stringBuffer.append(Integer.toHexString(System.identityHashCode(this)));
         stringBuffer.append(' ');
         stringBuffer.append(this.mWin.mAttrs.getTitle());
         stringBuffer.append('}');
         return stringBuffer.toString();
-    }
-
-    public boolean getShown() {
-        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
-        if (windowSurfaceController != null) {
-            return windowSurfaceController.getShown();
-        }
-        return false;
-    }
-
-    public void destroySurface(SurfaceControl.Transaction transaction) {
-        try {
-            try {
-                WindowSurfaceController windowSurfaceController = this.mSurfaceController;
-                if (windowSurfaceController != null) {
-                    windowSurfaceController.destroy(transaction);
-                }
-            } catch (RuntimeException e) {
-                Slog.w(StartingSurfaceController.TAG, "Exception thrown when destroying surface " + this + " surface " + this.mSurfaceController + " session " + this.mSession + ": " + e);
-            }
-        } finally {
-            this.mWin.setHasSurface(false);
-            this.mSurfaceController = null;
-            this.mDrawState = 0;
-        }
-    }
-
-    public SurfaceControl getSurfaceControl() {
-        if (hasSurface()) {
-            return this.mSurfaceController.mSurfaceControl;
-        }
-        return null;
-    }
-
-    public void setInternalPresentationOnly(boolean z) {
-        WindowSurfaceController windowSurfaceController = this.mSurfaceController;
-        if (windowSurfaceController == null) {
-            return;
-        }
-        windowSurfaceController.setInternalPresentationOnly(z);
-    }
-
-    public final void applyMultiWindowAlpha() {
-        if (CoreRune.MW_CAPTION_SHELL_OPACITY) {
-            Task task = this.mWin.getTask();
-            WindowState windowState = this.mWin;
-            if (windowState.mIsImWindow) {
-                WindowState windowState2 = (windowState.getDisplayContent() == null || this.mWin.getDisplayContent().getImeInputTarget() == null) ? null : this.mWin.getDisplayContent().getImeInputTarget().getWindowState();
-                if (windowState2 != null) {
-                    task = windowState2.getTask();
-                }
-            }
-            if (task == null || !task.inFreeformWindowingMode()) {
-                return;
-            }
-            float f = task.mFreeformAlpha;
-            if (f <= DisplayPowerController2.RATE_FROM_DOZE_TO_ON || f >= 1.0f) {
-                return;
-            }
-            this.mShownAlpha *= f;
-        }
-    }
-
-    public boolean consumeSurfaceDebugTracker(SurfaceControl.Transaction transaction) {
-        if (transaction == null || TextUtils.isEmpty(this.mSurfaceDebugTracker)) {
-            return false;
-        }
-        transaction.addDebugName(this.mSurfaceDebugTracker);
-        this.mSurfaceDebugTracker = null;
-        return true;
     }
 }

@@ -3,7 +3,8 @@ package com.android.server.utils;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class SnapshotCache extends Watcher {
     public static final WeakHashMap sCaches = new WeakHashMap();
     public volatile boolean mSealed;
@@ -11,34 +12,35 @@ public abstract class SnapshotCache extends Watcher {
     public final Object mSource;
     public final Statistics mStatistics;
 
-    public abstract Object createSnapshot();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Auto extends SnapshotCache {
+        public final /* synthetic */ int $r8$classId;
 
-    /* loaded from: classes3.dex */
-    public class Statistics {
-        public final String mName;
+        public /* synthetic */ Auto() {
+            this.$r8$classId = 1;
+        }
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public /* synthetic */ Auto(Object obj, Watchable watchable, String str, int i) {
+            super(obj, watchable, str);
+            this.$r8$classId = i;
+        }
+
+        @Override // com.android.server.utils.SnapshotCache
+        public final Object createSnapshot() {
+            switch (this.$r8$classId) {
+                case 0:
+                    return (Snappable) ((Snappable) this.mSource).snapshot();
+                default:
+                    throw new UnsupportedOperationException("cannot snapshot a sealed snaphot");
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Statistics {
         public final AtomicInteger mReused = new AtomicInteger(0);
         public final AtomicInteger mRebuilt = new AtomicInteger(0);
-
-        public Statistics(String str) {
-            this.mName = str;
-        }
-    }
-
-    public SnapshotCache(Object obj, Watchable watchable, String str) {
-        this.mSnapshot = null;
-        this.mSealed = false;
-        this.mSource = obj;
-        watchable.registerObserver(this);
-        if (str != null) {
-            this.mStatistics = new Statistics(str);
-            sCaches.put(this, null);
-        } else {
-            this.mStatistics = null;
-        }
-    }
-
-    public SnapshotCache(Object obj, Watchable watchable) {
-        this(obj, watchable, null);
     }
 
     public SnapshotCache() {
@@ -48,6 +50,21 @@ public abstract class SnapshotCache extends Watcher {
         this.mSealed = true;
         this.mStatistics = null;
     }
+
+    public SnapshotCache(Object obj, Watchable watchable, String str) {
+        this.mSnapshot = null;
+        this.mSealed = false;
+        this.mSource = obj;
+        watchable.registerObserver(this);
+        if (str == null) {
+            this.mStatistics = null;
+        } else {
+            this.mStatistics = new Statistics();
+            sCaches.put(this, null);
+        }
+    }
+
+    public abstract Object createSnapshot();
 
     @Override // com.android.server.utils.Watcher
     public final void onChange(Watchable watchable) {
@@ -59,39 +76,19 @@ public abstract class SnapshotCache extends Watcher {
 
     public final Object snapshot() {
         Object obj = this.mSnapshot;
-        if (obj == null) {
-            obj = createSnapshot();
-            this.mSnapshot = obj;
+        if (obj != null) {
             Statistics statistics = this.mStatistics;
             if (statistics != null) {
-                statistics.mRebuilt.incrementAndGet();
+                statistics.mReused.incrementAndGet();
             }
         } else {
+            obj = createSnapshot();
+            this.mSnapshot = obj;
             Statistics statistics2 = this.mStatistics;
             if (statistics2 != null) {
-                statistics2.mReused.incrementAndGet();
+                statistics2.mRebuilt.incrementAndGet();
             }
         }
         return obj;
-    }
-
-    /* loaded from: classes3.dex */
-    public class Sealed extends SnapshotCache {
-        @Override // com.android.server.utils.SnapshotCache
-        public Object createSnapshot() {
-            throw new UnsupportedOperationException("cannot snapshot a sealed snaphot");
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class Auto extends SnapshotCache {
-        public Auto(Snappable snappable, Watchable watchable, String str) {
-            super(snappable, watchable, str);
-        }
-
-        @Override // com.android.server.utils.SnapshotCache
-        public Snappable createSnapshot() {
-            return (Snappable) ((Snappable) this.mSource).snapshot();
-        }
     }
 }

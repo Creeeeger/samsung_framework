@@ -3,380 +3,338 @@ package com.android.server.display.exynos;
 import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
 import android.os.Build;
 import android.util.Log;
+import com.android.server.VpnManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import java.io.File;
+import java.util.TreeMap;
 
-/* loaded from: classes2.dex */
-public class ExynosDisplayColor {
-    public final boolean DEBUG = "eng".equals(Build.TYPE);
-    public String HW_VER_SYSFS_PATH = "/sys/class/dqe/dqe/dqe_ver";
-    public String GAMMA_EXT_SYSFS_PATH = "/sys/class/dqe/dqe/gamma_ext";
-    public String GAMMA_SYSFS_PATH = "/sys/class/dqe/dqe/gamma";
-    public String DEGAMMA_EXT_SYSFS_PATH = "/sys/class/dqe/dqe/degamma_ext";
-    public String DEGAMMA_SYSFS_PATH = "/sys/class/dqe/dqe/degamma";
-    public String HSC_SYSFS_PATH = "/sys/class/dqe/dqe/hsc";
-    public String CGC_SYSFS_PATH = "/sys/class/dqe/dqe/cgc";
-    public String CGC17_IDX_SYSFS_PATH = "/sys/class/dqe/dqe/cgc17_idx";
-    public String CGC17_ENC_SYSFS_PATH = "/sys/class/dqe/dqe/cgc17_enc";
-    public String CGC17_DEC_SYSFS_PATH = "/sys/class/dqe/dqe/cgc17_dec";
-    public String CGC17_CON_SYSFS_PATH = "/sys/class/dqe/dqe/cgc17_con";
-    public String GAMMA_MATRIX_SYSFS_PATH = "/sys/class/dqe/dqe/gamma_matrix";
-    public String CGC_DITHER_SYSFS_PATH = "/sys/class/dqe/dqe/cgc_dither";
-    public String HSC48_IDX_SYSFS_PATH = "/sys/class/dqe/dqe/hsc48_idx";
-    public String HSC48_LCG_SYSFS_PATH = "/sys/class/dqe/dqe/hsc48_lcg";
-    public String DE_SYSFS_PATH = "/sys/class/dqe/dqe/de";
-    public String COLORTEMP_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_colortemp.xml";
-    public String COLORTEMP_EXT_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_colortemp_ext.xml";
-    public String EYETEMP_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_eyetemp.xml";
-    public String EYETEMP_EXT_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_eyetemp_ext.xml";
-    public String BYPASS_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_bypass.xml";
-    public String RGBGAIN_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_rgbgain.xml";
-    public String RGBGAIN_EXT_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_rgbgain_ext.xml";
-    public String SKINCOLOR_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_skincolor.xml";
-    public String WHITEPOINT_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_whitepoint.xml";
-    public String SHARPNESS_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_sharpness.xml";
-    public String COLORMODE_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_colormode0.xml";
-    public String EXTENSION_OFF = "0";
-    public String EXTENSION_ON = "1";
-    public String[] colortemp_array = null;
-    public String[] colortemp_ext_array = null;
-    public String[] eyetemp_array = null;
-    public String[] eyetemp_ext_array = null;
-    public String[] gamma_bypass_array = null;
-    public String[] gamma_ext_bypass_array = null;
-    public String[] cgc_dither_array = null;
-    public String[] rgain_array = null;
-    public String[] ggain_array = null;
-    public String[] bgain_array = null;
-    public String[] rgain_ext_array = null;
-    public String[] ggain_ext_array = null;
-    public String[] bgain_ext_array = null;
-    public String[] skincolor_array = null;
-    public String[] sharpness_array = null;
-    public String[] whitepoint_array = null;
-    public String[] hsc_bypass_array = null;
-    public float[] rgb_gain = {1.0f, 1.0f, 1.0f};
-    public String hw_ver = null;
-    public String HW_VER_8_0 = "08000000";
-    public ExynosDisplayTune mExynosDisplayTune = null;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ExynosDisplayColor {
+    public final String BYPASS_XML_FILE_PATH;
+    public final String CGC17_CON_SYSFS_PATH;
+    public final String CGC17_DEC_SYSFS_PATH;
+    public final String CGC17_ENC_SYSFS_PATH;
+    public final String CGC17_IDX_SYSFS_PATH;
+    public final String CGC_DITHER_SYSFS_PATH;
+    public final String CGC_SYSFS_PATH;
+    public final String COLORMODE_XML_FILE_PATH;
+    public final String COLORTEMP_XML_FILE_PATH;
+    public final String DE_SYSFS_PATH;
+    public final String EXTENSION_OFF;
+    public final String EXTENSION_ON;
+    public final String EYETEMP_XML_FILE_PATH;
+    public final String GAMMA_EXT_SYSFS_PATH;
+    public final String GAMMA_MATRIX_SYSFS_PATH;
+    public final String GAMMA_SYSFS_PATH;
+    public final String HSC_SYSFS_PATH;
+    public final String HW_VER_8_0;
+    public final String LINEAR_MATRIX_SYSFS_PATH;
+    public final String RGBGAIN_XML_FILE_PATH;
+    public final String SHARPNESS_XML_FILE_PATH;
+    public final String SKINCOLOR_XML_FILE_PATH;
+    public final String WHITEPOINT_XML_FILE_PATH;
+    public boolean bIsColortempOn;
+    public boolean bIsRgbWeightOn;
+    public String[] bgain_array;
+    public String[] cgc_dither_array;
+    public final TreeMap colortemp_map;
+    public String[] eyetemp_array;
+    public String[] gamma_bypass_array;
+    public String[] gamma_ext_bypass_array;
+    public String[] gamma_matrix_bypass_array;
+    public String[] ggain_array;
+    public String[] hsc_bypass_array;
+    public final String hw_ver;
+    public String[] linear_matrix_bypass_array;
+    public int mColortempConvMethod;
+    public ExynosDisplayTune mExynosDisplayTune;
+    public String[] rgain_array;
+    public String[] sharpness_array;
+    public String[] skincolor_array;
+    public String[] whitepoint_array;
 
-    public String getColorEnhancementMode() {
-        return "Off,NATIVE,DISPLAY_P3,SRGB";
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    enum eColortempMethod {
+        /* JADX INFO: Fake field, exist only in values array */
+        Bradford(new float[][]{new float[]{0.8951f, 0.2664f, -0.1614f}, new float[]{-0.750192f, 1.7135f, 0.036705f}, new float[]{0.0389f, -0.0685f, 1.0296f}}, new float[][]{new float[]{0.9869929f, -0.1470543f, 0.1599627f}, new float[]{0.4323053f, 0.5183603f, 0.0492912f}, new float[]{-0.0085287f, 0.0400428f, 0.9684867f}}),
+        /* JADX INFO: Fake field, exist only in values array */
+        VonKries(new float[][]{new float[]{0.40024f, 0.707608f, -0.080811f}, new float[]{-0.226304f, 1.165322f, 0.0457f}, new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE, 0.918222f}}, new float[][]{new float[]{1.8599364f, -1.1293817f, 0.2198974f}, new float[]{0.3611914f, 0.6388125f, -6.4E-6f}, new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE, 1.0890636f}}),
+        /* JADX INFO: Fake field, exist only in values array */
+        XYZScaling(new float[][]{new float[]{1.0f, FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE}, new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, 1.0f, FullScreenMagnificationGestureHandler.MAX_SCALE}, new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE, 1.0f}}, new float[][]{new float[]{1.0f, FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE}, new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, 1.0f, FullScreenMagnificationGestureHandler.MAX_SCALE}, new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE, 1.0f}});
+
+        private final float[][] mFwdMethod;
+        private final float[][] mRewMethod;
+
+        eColortempMethod(float[][] fArr, float[][] fArr2) {
+            this.mFwdMethod = fArr;
+            this.mRewMethod = fArr2;
+        }
+
+        public final float[][] getFwdMethod() {
+            return this.mFwdMethod;
+        }
+
+        public final float[][] getRewMethod() {
+            return this.mRewMethod;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    enum eRGBXYZTransform {
+        /* JADX INFO: Fake field, exist only in values array */
+        sRGB(new float[][]{new float[]{3.24097f, -1.53738f, -0.49861f}, new float[]{-0.96924f, 1.875967f, 0.041555f}, new float[]{0.05563f, -0.20398f, 1.056971f}}, new float[][]{new float[]{0.412391f, 0.357584f, 0.180481f}, new float[]{0.212639f, 0.715169f, 0.072192f}, new float[]{0.019331f, 0.119195f, 0.950532f}}),
+        P3(new float[][]{new float[]{2.493497f, -0.93138f, -0.40271f}, new float[]{-0.82949f, 1.762664f, 0.023625f}, new float[]{0.035846f, -0.07617f, 0.956884f}}, new float[][]{new float[]{0.486571f, 0.265668f, 0.198217f}, new float[]{0.228975f, 0.691739f, 0.079287f}, new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, 0.045113f, 1.043944f}});
+
+        private final float[][] mRGB2XYZ;
+        private final float[][] mXYZ2RGB;
+
+        eRGBXYZTransform(float[][] fArr, float[][] fArr2) {
+            this.mXYZ2RGB = fArr;
+            this.mRGB2XYZ = fArr2;
+        }
+
+        public final float[][] execute(float[][] fArr) {
+            return ExynosDisplayUtils.matrixMultiplication(ExynosDisplayUtils.matrixMultiplication(this.mXYZ2RGB, fArr), this.mRGB2XYZ);
+        }
     }
 
     public ExynosDisplayColor() {
-        checkHWVersion();
-    }
-
-    public void setExynosDisplayTune(ExynosDisplayTune exynosDisplayTune) {
-        this.mExynosDisplayTune = exynosDisplayTune;
-    }
-
-    public final boolean existFile(String str) {
-        File file = new File(str);
-        return file.exists() && file.isFile();
-    }
-
-    public final void checkHWVersion() {
+        boolean equals = "eng".equals(Build.TYPE);
+        this.GAMMA_EXT_SYSFS_PATH = "/sys/class/dqe/dqe/gamma_ext";
+        this.GAMMA_SYSFS_PATH = "/sys/class/dqe/dqe/gamma";
+        this.HSC_SYSFS_PATH = "/sys/class/dqe/dqe/hsc";
+        this.CGC_SYSFS_PATH = "/sys/class/dqe/dqe/cgc";
+        this.CGC17_IDX_SYSFS_PATH = "/sys/class/dqe/dqe/cgc17_idx";
+        this.CGC17_ENC_SYSFS_PATH = "/sys/class/dqe/dqe/cgc17_enc";
+        this.CGC17_DEC_SYSFS_PATH = "/sys/class/dqe/dqe/cgc17_dec";
+        this.CGC17_CON_SYSFS_PATH = "/sys/class/dqe/dqe/cgc17_con";
+        this.GAMMA_MATRIX_SYSFS_PATH = "/sys/class/dqe/dqe/gamma_matrix";
+        this.LINEAR_MATRIX_SYSFS_PATH = "/sys/class/dqe/dqe/linear_matrix";
+        this.CGC_DITHER_SYSFS_PATH = "/sys/class/dqe/dqe/cgc_dither";
+        this.DE_SYSFS_PATH = "/sys/class/dqe/dqe/de";
+        this.COLORTEMP_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_colortemp.xml";
+        this.EYETEMP_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_eyetemp.xml";
+        this.BYPASS_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_bypass.xml";
+        this.RGBGAIN_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_rgbgain.xml";
+        this.SKINCOLOR_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_skincolor.xml";
+        this.WHITEPOINT_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_whitepoint.xml";
+        this.SHARPNESS_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_sharpness.xml";
+        this.COLORMODE_XML_FILE_PATH = "/vendor/etc/dqe/calib_data_colormode0.xml";
+        this.EXTENSION_OFF = "0";
+        this.EXTENSION_ON = "1";
+        this.bIsColortempOn = false;
+        this.mColortempConvMethod = 0;
+        this.bIsRgbWeightOn = false;
+        this.eyetemp_array = null;
+        this.gamma_bypass_array = null;
+        this.gamma_ext_bypass_array = null;
+        this.cgc_dither_array = null;
+        this.linear_matrix_bypass_array = null;
+        this.gamma_matrix_bypass_array = null;
+        this.colortemp_map = new TreeMap();
+        this.rgain_array = null;
+        this.ggain_array = null;
+        this.bgain_array = null;
+        this.skincolor_array = null;
+        this.sharpness_array = null;
+        this.whitepoint_array = null;
+        this.hsc_bypass_array = null;
+        this.HW_VER_8_0 = "08000000";
+        this.mExynosDisplayTune = null;
         this.hw_ver = null;
-        if (existFile(this.HW_VER_SYSFS_PATH)) {
-            this.hw_ver = ExynosDisplayUtils.getStringFromFile(this.HW_VER_SYSFS_PATH);
-            if (this.DEBUG) {
-                Log.d("ExynosDisplayColor", "hw_ver: " + this.hw_ver);
+        File file = new File("/sys/class/dqe/dqe/dqe_ver");
+        if (file.exists() && file.isFile()) {
+            this.hw_ver = ExynosDisplayUtils.getStringFromFile("/sys/class/dqe/dqe/dqe_ver");
+            if (equals) {
+                VpnManagerService$$ExternalSyntheticOutline0.m(new StringBuilder("hw_ver: "), this.hw_ver, "ExynosDisplayColor");
             }
         }
     }
 
-    public void setColorTempValue(int i) {
+    public static float[] T2xy(int i) {
+        float pow;
+        float f;
         try {
-            setGammaValue(this.colortemp_array, this.colortemp_ext_array, i);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setColorTempOn(int i) {
-        try {
-            if (i != 0) {
-                this.colortemp_array = ExynosDisplayUtils.parserXML(this.COLORTEMP_XML_FILE_PATH, "colortemp", "gamma");
-                this.colortemp_ext_array = ExynosDisplayUtils.parserXML(this.COLORTEMP_EXT_XML_FILE_PATH, "colortemp", "gamma");
+            if (i <= 7000) {
+                double d = i;
+                pow = ((((float) Math.pow(10.0d, 3.0d)) * 0.09911f) / i) + ((((float) Math.pow(10.0d, 6.0d)) * 2.9678f) / ((float) Math.pow(d, 2.0d))) + ((((float) Math.pow(10.0d, 9.0d)) * (-4.607f)) / ((float) Math.pow(d, 3.0d)));
+                f = 0.244063f;
             } else {
-                this.colortemp_ext_array = null;
-                this.colortemp_array = null;
+                double d2 = i;
+                pow = ((((float) Math.pow(10.0d, 3.0d)) * 0.24748f) / i) + ((((float) Math.pow(10.0d, 6.0d)) * 1.9018f) / ((float) Math.pow(d2, 2.0d))) + ((((float) Math.pow(10.0d, 9.0d)) * (-2.0064f)) / ((float) Math.pow(d2, 3.0d)));
+                f = 0.23704f;
             }
-            setGammaOn(i);
+            float f2 = pow + f;
+            return new float[]{f2, ((2.87f * f2) + (((float) Math.pow(f2, 2.0d)) * (-3.0f))) - 0.275f};
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 
-    public final void sysfsWriteGamma(String str, String str2) {
-        if (str == null || str2 == null) {
-            return;
-        }
-        ExynosDisplayUtils.sysfsWriteSting(this.GAMMA_EXT_SYSFS_PATH, str2);
-        ExynosDisplayUtils.sysfsWriteSting(this.GAMMA_SYSFS_PATH, str);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:15:0x001c  */
-    /* JADX WARN: Removed duplicated region for block: B:17:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void setGammaValue(java.lang.String[] r3, java.lang.String[] r4, int r5) {
-        /*
-            r2 = this;
-            if (r3 == 0) goto L2e
-            r0 = 0
-            int r1 = r3.length     // Catch: java.lang.Exception -> L15
-            if (r1 != 0) goto L7
-            goto L2e
-        L7:
-            int r1 = r3.length     // Catch: java.lang.Exception -> L15
-            if (r5 < r1) goto Lb
-            return
-        Lb:
-            r3 = r3[r5]     // Catch: java.lang.Exception -> L15
-            if (r4 == 0) goto L1a
-            r4 = r4[r5]     // Catch: java.lang.Exception -> L13
-            r0 = r4
-            goto L1a
-        L13:
-            r4 = move-exception
-            goto L17
-        L15:
-            r4 = move-exception
-            r3 = r0
-        L17:
-            r4.printStackTrace()
-        L1a:
-            if (r3 == 0) goto L2e
-            java.lang.String r4 = "ExynosDisplayColor"
-            java.lang.String r5 = "setGammaValue()"
-            android.util.Log.d(r4, r5)
-            java.lang.String r4 = r2.EXTENSION_OFF
-            r2.sysfsWriteGamma(r3, r4)
-            java.lang.String r3 = r2.EXTENSION_ON
-            r2.sysfsWriteGamma(r0, r3)
-        L2e:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.display.exynos.ExynosDisplayColor.setGammaValue(java.lang.String[], java.lang.String[], int):void");
-    }
-
-    public final void setGammaValue(String str, String str2) {
-        if (str == null) {
-            return;
-        }
-        if (str2 == null) {
-            str2 = null;
-        }
-        Log.d("ExynosDisplayColor", "setGammaValue()");
-        sysfsWriteGamma(str, this.EXTENSION_OFF);
-        sysfsWriteGamma(str2, this.EXTENSION_ON);
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x006e, code lost:
-    
-        android.util.Log.d("ExynosDisplayColor", "setGammaOn()");
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0076, code lost:
-    
-        if (r0 == null) goto L42;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:36:0x0078, code lost:
-    
-        com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r6.CGC_DITHER_SYSFS_PATH, r0);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x007d, code lost:
-    
-        sysfsWriteGamma(r7, r6.EXTENSION_OFF);
-        sysfsWriteGamma(r1, r6.EXTENSION_ON);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x0087, code lost:
-    
-        return;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void setGammaOn(int r7) {
-        /*
-            r6 = this;
-            java.lang.String r7 = "gamma"
-            r0 = 0
-            java.lang.String[] r1 = r6.gamma_bypass_array     // Catch: java.lang.Exception -> L64
-            java.lang.String r2 = "bypass"
-            r3 = 0
-            if (r1 != 0) goto L2a
-            java.lang.String r1 = r6.BYPASS_XML_FILE_PATH     // Catch: java.lang.Exception -> L64
-            java.lang.String[] r1 = com.android.server.display.exynos.ExynosDisplayUtils.parserFactoryXMLText(r1, r2, r7, r3, r3)     // Catch: java.lang.Exception -> L64
-            r6.gamma_bypass_array = r1     // Catch: java.lang.Exception -> L64
-            r6.gamma_ext_bypass_array = r0     // Catch: java.lang.Exception -> L64
-            if (r1 != 0) goto L2a
-            java.lang.String r1 = r6.BYPASS_XML_FILE_PATH     // Catch: java.lang.Exception -> L64
-            r4 = 10
-            java.lang.String[] r1 = com.android.server.display.exynos.ExynosDisplayUtils.parserFactoryXMLText(r1, r2, r7, r4, r3)     // Catch: java.lang.Exception -> L64
-            r6.gamma_bypass_array = r1     // Catch: java.lang.Exception -> L64
-            java.lang.String r1 = r6.BYPASS_XML_FILE_PATH     // Catch: java.lang.Exception -> L64
-            r4 = 8
-            java.lang.String[] r7 = com.android.server.display.exynos.ExynosDisplayUtils.parserFactoryXMLText(r1, r2, r7, r4, r3)     // Catch: java.lang.Exception -> L64
-            r6.gamma_ext_bypass_array = r7     // Catch: java.lang.Exception -> L64
-        L2a:
-            java.lang.String[] r7 = r6.gamma_bypass_array     // Catch: java.lang.Exception -> L64
-            if (r7 == 0) goto L63
-            int r7 = r7.length     // Catch: java.lang.Exception -> L64
-            if (r7 != 0) goto L32
-            goto L63
-        L32:
-            java.lang.String[] r7 = r6.cgc_dither_array     // Catch: java.lang.Exception -> L64
-            if (r7 != 0) goto L40
-            java.lang.String r7 = r6.BYPASS_XML_FILE_PATH     // Catch: java.lang.Exception -> L64
-            java.lang.String r1 = "cgc_dither"
-            java.lang.String[] r7 = com.android.server.display.exynos.ExynosDisplayUtils.parserXML(r7, r2, r1)     // Catch: java.lang.Exception -> L64
-            r6.cgc_dither_array = r7     // Catch: java.lang.Exception -> L64
-        L40:
-            java.lang.String[] r7 = r6.gamma_bypass_array     // Catch: java.lang.Exception -> L64
-            r7 = r7[r3]     // Catch: java.lang.Exception -> L64
-            java.lang.String[] r1 = r6.gamma_ext_bypass_array     // Catch: java.lang.Exception -> L5d
-            if (r1 == 0) goto L4b
-            r1 = r1[r3]     // Catch: java.lang.Exception -> L5d
-            goto L4c
-        L4b:
-            r1 = r0
-        L4c:
-            java.lang.String[] r2 = r6.cgc_dither_array     // Catch: java.lang.Exception -> L57
-            if (r2 == 0) goto L6c
-            int r4 = r2.length     // Catch: java.lang.Exception -> L57
-            if (r4 != 0) goto L54
-            goto L6c
-        L54:
-            r0 = r2[r3]     // Catch: java.lang.Exception -> L57
-            goto L6c
-        L57:
-            r2 = move-exception
-            r5 = r1
-            r1 = r7
-            r7 = r2
-            r2 = r5
-            goto L67
-        L5d:
-            r1 = move-exception
-            r2 = r0
-            r5 = r1
-            r1 = r7
-            r7 = r5
-            goto L67
-        L63:
-            return
-        L64:
-            r7 = move-exception
-            r1 = r0
-            r2 = r1
-        L67:
-            r7.printStackTrace()
-            r7 = r1
-            r1 = r2
-        L6c:
-            if (r7 == 0) goto L87
-            java.lang.String r2 = "ExynosDisplayColor"
-            java.lang.String r3 = "setGammaOn()"
-            android.util.Log.d(r2, r3)
-            if (r0 == 0) goto L7d
-            java.lang.String r2 = r6.CGC_DITHER_SYSFS_PATH
-            com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r2, r0)
-        L7d:
-            java.lang.String r0 = r6.EXTENSION_OFF
-            r6.sysfsWriteGamma(r7, r0)
-            java.lang.String r7 = r6.EXTENSION_ON
-            r6.sysfsWriteGamma(r1, r7)
-        L87:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.display.exynos.ExynosDisplayColor.setGammaOn(int):void");
-    }
-
-    public void setEyeTempValue(int i) {
+    public static float[][] calcChromaticAdaptation(int i, int i2, eColortempMethod ecolortempmethod) {
         try {
-            setGammaValue(this.eyetemp_array, this.eyetemp_ext_array, i);
+            float[][] fwdMethod = ecolortempmethod.getFwdMethod();
+            float[][] rewMethod = ecolortempmethod.getRewMethod();
+            float[] T2xy = T2xy(i);
+            float[] T2xy2 = T2xy(i2);
+            float[] xyY2XYZ = xyY2XYZ(T2xy[0], T2xy[1]);
+            float[] xyY2XYZ2 = xyY2XYZ(T2xy2[0], T2xy2[1]);
+            float[][] matrixMultiplication = ExynosDisplayUtils.matrixMultiplication(fwdMethod, new float[][]{new float[]{xyY2XYZ[0]}, new float[]{xyY2XYZ[1]}, new float[]{xyY2XYZ[2]}});
+            float[][] matrixMultiplication2 = ExynosDisplayUtils.matrixMultiplication(fwdMethod, new float[][]{new float[]{xyY2XYZ2[0]}, new float[]{xyY2XYZ2[1]}, new float[]{xyY2XYZ2[2]}});
+            return ExynosDisplayUtils.matrixMultiplication(ExynosDisplayUtils.matrixMultiplication(rewMethod, new float[][]{new float[]{matrixMultiplication2[0][0] / matrixMultiplication[0][0], FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE}, new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, matrixMultiplication2[1][0] / matrixMultiplication[1][0], FullScreenMagnificationGestureHandler.MAX_SCALE}, new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE, matrixMultiplication2[2][0] / matrixMultiplication[2][0]}}), fwdMethod);
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 
-    public void setEyeTempOn(int i) {
+    public static float[] xyY2XYZ(float f, float f2) {
         try {
-            if (i != 0) {
-                this.eyetemp_array = ExynosDisplayUtils.parserXML(this.EYETEMP_XML_FILE_PATH, "eyetemp", "gamma");
-                this.eyetemp_ext_array = ExynosDisplayUtils.parserXML(this.EYETEMP_EXT_XML_FILE_PATH, "eyetemp", "gamma");
-            } else {
-                this.eyetemp_ext_array = null;
-                this.eyetemp_array = null;
+            return f2 == FullScreenMagnificationGestureHandler.MAX_SCALE ? new float[]{FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE} : new float[]{(f * 1.0f) / f2, 1.0f, (((1.0f - f) - f2) * 1.0f) / f2};
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public final String getColorModePath(String str) {
+        String str2 = this.COLORMODE_XML_FILE_PATH;
+        String str3 = null;
+        try {
+            if (str.equals("bypass")) {
+                return this.BYPASS_XML_FILE_PATH;
             }
-            setGammaOn(i);
+            String pathWithPanel = ExynosDisplayUtils.getPathWithPanel(str2);
+            try {
+                String[] parserFactoryXMLAttribute = ExynosDisplayUtils.parserFactoryXMLAttribute(pathWithPanel, str, null, "subxml");
+                if (parserFactoryXMLAttribute != null && parserFactoryXMLAttribute.length >= 1) {
+                    return str2.substring(0, str2.lastIndexOf(".xml")) + "_" + parserFactoryXMLAttribute[0].split("\\s*,\\s*")[0] + ".xml";
+                }
+                return pathWithPanel;
+            } catch (Exception e) {
+                str3 = pathWithPanel;
+                e = e;
+                e.printStackTrace();
+                return str3;
+            }
+        } catch (Exception e2) {
+            e = e2;
+        }
+    }
+
+    public final String getColorTempFromXml(int i) {
+        try {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (this.colortemp_map.isEmpty()) {
+            return null;
+        }
+        Integer num = (Integer) this.colortemp_map.floorKey(Integer.valueOf(i));
+        if (num != null) {
+            return (String) this.colortemp_map.get(num);
+        }
+        Integer num2 = (Integer) this.colortemp_map.ceilingKey(Integer.valueOf(i));
+        if (num2 != null) {
+            return (String) this.colortemp_map.get(num2);
+        }
+        Log.d("ExynosDisplayColor", "getColorTempFromXml: failed to find " + i);
+        return null;
+    }
+
+    public final void loadColorTempXml() {
+        String pathWithPanel;
+        try {
+            if (this.colortemp_map.isEmpty() && (pathWithPanel = ExynosDisplayUtils.getPathWithPanel(this.COLORTEMP_XML_FILE_PATH)) != null) {
+                String[] parserXML = ExynosDisplayUtils.parserXML(pathWithPanel, "colortemp", "linear_matrix");
+                String[] parserXMLAttribute = ExynosDisplayUtils.parserXMLAttribute(pathWithPanel, "linear_matrix", "temp");
+                if (parserXML != null && parserXMLAttribute != null && parserXML.length == parserXMLAttribute.length) {
+                    for (int i = 0; i < parserXMLAttribute.length; i++) {
+                        this.colortemp_map.put(Integer.valueOf(Integer.parseInt(parserXMLAttribute[i])), parserXML[i]);
+                    }
+                    return;
+                }
+                Log.e("ExynosDisplayColor", "loadColorTempXml: invalid data in ".concat(pathWithPanel));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void setRgbGainValue(int i, int i2, int i3) {
-        String[] strArr;
-        String[] strArr2;
-        String str;
-        String[] strArr3;
-        String[] strArr4;
+    public final void setColorTempOn(int i) {
+        boolean z = i > 0;
         try {
-            String[] strArr5 = this.rgain_array;
-            if (strArr5 == null || strArr5.length == 0 || (strArr = this.ggain_array) == null || strArr.length == 0 || (strArr2 = this.bgain_array) == null || strArr2.length == 0 || i >= strArr5.length || i2 >= strArr.length || i3 >= strArr2.length) {
+            this.bIsColortempOn = z;
+            if (z) {
+                int i2 = i - 1;
+                this.mColortempConvMethod = i2;
+                if (i2 < eColortempMethod.values().length) {
+                    return;
+                }
+                loadColorTempXml();
                 return;
             }
-            String str2 = this.rgain_array[i] + "," + this.ggain_array[i2] + "," + this.bgain_array[i3];
-            String[] strArr6 = this.rgain_ext_array;
-            if (strArr6 == null || strArr6.length == 0 || (strArr3 = this.ggain_ext_array) == null || strArr3.length == 0 || (strArr4 = this.bgain_ext_array) == null || strArr4.length == 0) {
-                str = null;
-            } else {
-                str = this.rgain_ext_array[i] + "," + this.ggain_ext_array[i2] + "," + this.bgain_ext_array[i3];
+            this.colortemp_map.clear();
+            try {
+                if (this.linear_matrix_bypass_array == null) {
+                    this.linear_matrix_bypass_array = ExynosDisplayUtils.parserXML(this.BYPASS_XML_FILE_PATH, "bypass", "linear_matrix");
+                }
+                String[] strArr = this.linear_matrix_bypass_array;
+                if (strArr == null || strArr.length <= 0) {
+                    return;
+                }
+                ExynosDisplayUtils.sysfsWriteSting(this.LINEAR_MATRIX_SYSFS_PATH, strArr[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            setGammaValue(str2, str);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e2) {
+            e2.printStackTrace();
         }
     }
 
-    public void setRgbGainOn(int i) {
+    public final void setColorTempValue(int i, int i2) {
+        String colorTempFromXml;
+        float[][] fArr;
         try {
-            if (i != 0) {
-                this.rgain_array = ExynosDisplayUtils.parserXML(this.RGBGAIN_XML_FILE_PATH, "rgbgain", "red");
-                this.ggain_array = ExynosDisplayUtils.parserXML(this.RGBGAIN_XML_FILE_PATH, "rgbgain", "green");
-                this.bgain_array = ExynosDisplayUtils.parserXML(this.RGBGAIN_XML_FILE_PATH, "rgbgain", "blue");
-                this.rgain_ext_array = ExynosDisplayUtils.parserXML(this.RGBGAIN_EXT_XML_FILE_PATH, "rgbgain", "red");
-                this.ggain_ext_array = ExynosDisplayUtils.parserXML(this.RGBGAIN_EXT_XML_FILE_PATH, "rgbgain", "green");
-                this.bgain_ext_array = ExynosDisplayUtils.parserXML(this.RGBGAIN_EXT_XML_FILE_PATH, "rgbgain", "blue");
-            } else {
-                this.bgain_array = null;
-                this.ggain_array = null;
-                this.rgain_array = null;
-                this.bgain_ext_array = null;
-                this.ggain_ext_array = null;
-                this.rgain_ext_array = null;
+            if (this.bIsColortempOn) {
+                if (this.mColortempConvMethod < eColortempMethod.values().length) {
+                    int i3 = this.mColortempConvMethod;
+                    colorTempFromXml = null;
+                    try {
+                        try {
+                            fArr = eRGBXYZTransform.P3.execute(calcChromaticAdaptation(i, i2, i3 < eColortempMethod.values().length ? eColortempMethod.values()[i3] : eColortempMethod.values()[0]));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            fArr = null;
+                        }
+                        colorTempFromXml = ExynosDisplayUtils.toString(fArr);
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
+                } else {
+                    colorTempFromXml = getColorTempFromXml(i2);
+                }
+                if (colorTempFromXml != null) {
+                    ExynosDisplayUtils.sysfsWriteSting(this.LINEAR_MATRIX_SYSFS_PATH, colorTempFromXml);
+                }
             }
-            setGammaOn(i);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e3) {
+            e3.printStackTrace();
         }
     }
 
-    public void setSkinColorOn(int i) {
+    public final void setEdgeSharpnessOn(int i) {
         String str;
         String[] strArr;
         try {
             if (i != 0) {
-                this.skincolor_array = ExynosDisplayUtils.parserXML(this.SKINCOLOR_XML_FILE_PATH, "skincolor", "hsc");
+                this.sharpness_array = ExynosDisplayUtils.parserXML(this.SHARPNESS_XML_FILE_PATH, "sharpness", "de");
             } else {
-                this.skincolor_array = ExynosDisplayUtils.parserXML(this.BYPASS_XML_FILE_PATH, "bypass", "hsc");
+                this.sharpness_array = ExynosDisplayUtils.parserXML(this.BYPASS_XML_FILE_PATH, "bypass", "de");
             }
-            strArr = this.skincolor_array;
+            strArr = this.sharpness_array;
         } catch (Exception e) {
             e.printStackTrace();
             str = null;
@@ -384,13 +342,154 @@ public class ExynosDisplayColor {
         if (strArr != null && strArr.length != 0) {
             str = strArr[0];
             if (str != null) {
-                Log.d("ExynosDisplayColor", "setSkinColorOn()");
+                Log.d("ExynosDisplayColor", "setEdgeSharpnessOn()");
+                ExynosDisplayUtils.sysfsWriteSting(this.DE_SYSFS_PATH, str);
+            }
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x006d, code lost:
+    
+        android.util.Log.d("ExynosDisplayColor", "setGammaBypass()");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0075, code lost:
+    
+        if (r1 == null) goto L42;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x0077, code lost:
+    
+        com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r7.CGC_DITHER_SYSFS_PATH, r1);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:36:0x007c, code lost:
+    
+        sysfsWriteGamma(r0, r7.EXTENSION_OFF);
+        sysfsWriteGamma(r2, r7.EXTENSION_ON);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x0086, code lost:
+    
+        return;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void setGammaBypass() {
+        /*
+            r7 = this;
+            java.lang.String r0 = "gamma"
+            r1 = 0
+            java.lang.String[] r2 = r7.gamma_bypass_array     // Catch: java.lang.Exception -> L29
+            java.lang.String r3 = "bypass"
+            java.lang.String r4 = r7.BYPASS_XML_FILE_PATH
+            r5 = 0
+            if (r2 != 0) goto L2d
+            java.lang.String[] r2 = com.android.server.display.exynos.ExynosDisplayUtils.parserFactoryXMLText(r5, r5, r4, r3, r0)     // Catch: java.lang.Exception -> L29
+            r7.gamma_bypass_array = r2     // Catch: java.lang.Exception -> L29
+            r7.gamma_ext_bypass_array = r1     // Catch: java.lang.Exception -> L29
+            if (r2 != 0) goto L2d
+            r2 = 10
+            java.lang.String[] r2 = com.android.server.display.exynos.ExynosDisplayUtils.parserFactoryXMLText(r2, r5, r4, r3, r0)     // Catch: java.lang.Exception -> L29
+            r7.gamma_bypass_array = r2     // Catch: java.lang.Exception -> L29
+            r2 = 8
+            java.lang.String[] r0 = com.android.server.display.exynos.ExynosDisplayUtils.parserFactoryXMLText(r2, r5, r4, r3, r0)     // Catch: java.lang.Exception -> L29
+            r7.gamma_ext_bypass_array = r0     // Catch: java.lang.Exception -> L29
+            goto L2d
+        L29:
+            r0 = move-exception
+            r2 = r1
+            r3 = r2
+            goto L66
+        L2d:
+            java.lang.String[] r0 = r7.gamma_bypass_array     // Catch: java.lang.Exception -> L29
+            if (r0 == 0) goto L65
+            int r0 = r0.length     // Catch: java.lang.Exception -> L29
+            if (r0 != 0) goto L35
+            goto L65
+        L35:
+            java.lang.String[] r0 = r7.cgc_dither_array     // Catch: java.lang.Exception -> L29
+            if (r0 != 0) goto L42
+            java.lang.String r0 = "cgc_dither"
+            java.lang.String[] r0 = com.android.server.display.exynos.ExynosDisplayUtils.parserXML(r4, r3, r0)     // Catch: java.lang.Exception -> L29
+            r7.cgc_dither_array = r0     // Catch: java.lang.Exception -> L29
+        L42:
+            java.lang.String[] r0 = r7.gamma_bypass_array     // Catch: java.lang.Exception -> L29
+            r0 = r0[r5]     // Catch: java.lang.Exception -> L29
+            java.lang.String[] r2 = r7.gamma_ext_bypass_array     // Catch: java.lang.Exception -> L4d
+            if (r2 == 0) goto L53
+            r2 = r2[r5]     // Catch: java.lang.Exception -> L4d
+            goto L54
+        L4d:
+            r2 = move-exception
+            r3 = r1
+            r6 = r2
+            r2 = r0
+            r0 = r6
+            goto L66
+        L53:
+            r2 = r1
+        L54:
+            java.lang.String[] r3 = r7.cgc_dither_array     // Catch: java.lang.Exception -> L5f
+            if (r3 == 0) goto L6b
+            int r4 = r3.length     // Catch: java.lang.Exception -> L5f
+            if (r4 != 0) goto L5c
+            goto L6b
+        L5c:
+            r1 = r3[r5]     // Catch: java.lang.Exception -> L5f
+            goto L6b
+        L5f:
+            r3 = move-exception
+            r6 = r2
+            r2 = r0
+            r0 = r3
+            r3 = r6
+            goto L66
+        L65:
+            return
+        L66:
+            r0.printStackTrace()
+            r0 = r2
+            r2 = r3
+        L6b:
+            if (r0 == 0) goto L86
+            java.lang.String r3 = "ExynosDisplayColor"
+            java.lang.String r4 = "setGammaBypass()"
+            android.util.Log.d(r3, r4)
+            if (r1 == 0) goto L7c
+            java.lang.String r3 = r7.CGC_DITHER_SYSFS_PATH
+            com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r3, r1)
+        L7c:
+            java.lang.String r1 = r7.EXTENSION_OFF
+            r7.sysfsWriteGamma(r0, r1)
+            java.lang.String r0 = r7.EXTENSION_ON
+            r7.sysfsWriteGamma(r2, r0)
+        L86:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.display.exynos.ExynosDisplayColor.setGammaBypass():void");
+    }
+
+    public final void setHsvGainOn() {
+        String str;
+        String[] strArr;
+        try {
+            if (this.hsc_bypass_array == null) {
+                this.hsc_bypass_array = ExynosDisplayUtils.parserXML(this.BYPASS_XML_FILE_PATH, "bypass", "hsc");
+            }
+            strArr = this.hsc_bypass_array;
+        } catch (Exception e) {
+            e.printStackTrace();
+            str = null;
+        }
+        if (strArr != null && strArr.length != 0) {
+            str = strArr[0];
+            if (str != null) {
+                Log.d("ExynosDisplayColor", "setHsvGainOn()");
                 ExynosDisplayUtils.sysfsWriteSting(this.HSC_SYSFS_PATH, str);
             }
         }
     }
 
-    public void setHsvGainValue(int i, int i2, int i3) {
+    public final void setHsvGainValue(int i, int i2, int i3) {
         String[] strArr;
         StringBuilder sb = new StringBuilder();
         String str = null;
@@ -455,14 +554,77 @@ public class ExynosDisplayColor {
         }
     }
 
-    public void setHsvGainOn(int i) {
+    public final void setRgbGainOn(int i) {
+        String str = this.RGBGAIN_XML_FILE_PATH;
+        try {
+            if (i != 0) {
+                this.rgain_array = ExynosDisplayUtils.parserXML(str, "rgbgain", "red");
+                this.ggain_array = ExynosDisplayUtils.parserXML(str, "rgbgain", "green");
+                this.bgain_array = ExynosDisplayUtils.parserXML(str, "rgbgain", "blue");
+            } else {
+                this.bgain_array = null;
+                this.ggain_array = null;
+                this.rgain_array = null;
+                setGammaBypass();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public final void setRgbGainValue(int i, int i2, int i3) {
+        String[] strArr;
+        String[] strArr2;
+        try {
+            String[] strArr3 = this.rgain_array;
+            if (strArr3 == null || strArr3.length == 0 || (strArr = this.ggain_array) == null || strArr.length == 0 || (strArr2 = this.bgain_array) == null || strArr2.length == 0 || i >= strArr3.length || i2 >= strArr.length || i3 >= strArr2.length) {
+                return;
+            }
+            String str = this.rgain_array[i] + "," + this.ggain_array[i2] + "," + this.bgain_array[i3];
+            if (str == null) {
+                return;
+            }
+            Log.d("ExynosDisplayColor", "setGammaValue()");
+            sysfsWriteGamma(str, this.EXTENSION_OFF);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public final void setRgbWeightOn(int i) {
+        boolean z = i != 0;
+        try {
+            this.bIsRgbWeightOn = z;
+            if (z) {
+                return;
+            }
+            try {
+                if (this.gamma_matrix_bypass_array == null) {
+                    this.gamma_matrix_bypass_array = ExynosDisplayUtils.parserXML(this.BYPASS_XML_FILE_PATH, "bypass", "gamma_matrix");
+                }
+                String[] strArr = this.gamma_matrix_bypass_array;
+                if (strArr == null || strArr.length <= 0) {
+                    return;
+                }
+                ExynosDisplayUtils.sysfsWriteSting(this.GAMMA_MATRIX_SYSFS_PATH, strArr[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e2) {
+            e2.printStackTrace();
+        }
+    }
+
+    public final void setSkinColorOn(int i) {
         String str;
         String[] strArr;
         try {
-            if (this.hsc_bypass_array == null) {
-                this.hsc_bypass_array = ExynosDisplayUtils.parserXML(this.BYPASS_XML_FILE_PATH, "bypass", "hsc");
+            if (i != 0) {
+                this.skincolor_array = ExynosDisplayUtils.parserXML(this.SKINCOLOR_XML_FILE_PATH, "skincolor", "hsc");
+            } else {
+                this.skincolor_array = ExynosDisplayUtils.parserXML(this.BYPASS_XML_FILE_PATH, "bypass", "hsc");
             }
-            strArr = this.hsc_bypass_array;
+            strArr = this.skincolor_array;
         } catch (Exception e) {
             e.printStackTrace();
             str = null;
@@ -470,364 +632,72 @@ public class ExynosDisplayColor {
         if (strArr != null && strArr.length != 0) {
             str = strArr[0];
             if (str != null) {
-                Log.d("ExynosDisplayColor", "setHsvGainOn()");
+                Log.d("ExynosDisplayColor", "setSkinColorOn()");
                 ExynosDisplayUtils.sysfsWriteSting(this.HSC_SYSFS_PATH, str);
             }
         }
     }
 
-    public void setEdgeSharpnessValue(int i) {
-        String str;
-        String[] strArr;
-        try {
-            strArr = this.sharpness_array;
-        } catch (Exception e) {
-            e.printStackTrace();
-            str = null;
-        }
-        if (strArr == null || strArr.length == 0 || i >= strArr.length) {
-            return;
-        }
-        str = strArr[i];
-        if (str != null) {
-            Log.d("ExynosDisplayColor", "setEdgeSharpnessValue()");
-            ExynosDisplayUtils.sysfsWriteSting(this.DE_SYSFS_PATH, str);
-        }
-    }
-
-    public void setEdgeSharpnessOn(int i) {
-        String str;
-        String[] strArr;
-        try {
-            if (i != 0) {
-                this.sharpness_array = ExynosDisplayUtils.parserXML(this.SHARPNESS_XML_FILE_PATH, "sharpness", "de");
-            } else {
-                this.sharpness_array = ExynosDisplayUtils.parserXML(this.BYPASS_XML_FILE_PATH, "bypass", "de");
-            }
-            strArr = this.sharpness_array;
-        } catch (Exception e) {
-            e.printStackTrace();
-            str = null;
-        }
-        if (strArr != null && strArr.length != 0) {
-            str = strArr[0];
-            if (str != null) {
-                Log.d("ExynosDisplayColor", "setEdgeSharpnessOn()");
-                ExynosDisplayUtils.sysfsWriteSting(this.DE_SYSFS_PATH, str);
-            }
-        }
-    }
-
-    public final String getColorModePath(String str) {
-        String str2 = null;
-        try {
-            if (str.equals("bypass")) {
-                return this.BYPASS_XML_FILE_PATH;
-            }
-            String pathWithPanel = ExynosDisplayUtils.getPathWithPanel(this.COLORMODE_XML_FILE_PATH);
-            try {
-                String[] parserFactoryXMLAttribute = ExynosDisplayUtils.parserFactoryXMLAttribute(pathWithPanel, str, null, "subxml");
-                if (parserFactoryXMLAttribute != null && parserFactoryXMLAttribute.length >= 1) {
-                    String str3 = this.COLORMODE_XML_FILE_PATH;
-                    return str3.substring(0, str3.lastIndexOf(".xml")) + "_" + parserFactoryXMLAttribute[0].split("\\s*,\\s*")[0] + ".xml";
-                }
-                return pathWithPanel;
-            } catch (Exception e) {
-                e = e;
-                str2 = pathWithPanel;
-                e.printStackTrace();
-                return str2;
-            }
-        } catch (Exception e2) {
-            e = e2;
-        }
-    }
-
-    public final String getColorModeName(String str) {
-        String[] parserFactoryXMLAttribute;
-        try {
-            if (!str.equals("bypass") && (parserFactoryXMLAttribute = ExynosDisplayUtils.parserFactoryXMLAttribute(ExynosDisplayUtils.getPathWithPanel(this.COLORMODE_XML_FILE_PATH), str, null, "subxml")) != null) {
-                if (parserFactoryXMLAttribute.length >= 1) {
-                    return "tune";
-                }
-            }
-            return str;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return str;
-        }
-    }
-
-    public void setColorEnhancement(int i) {
-        try {
-            setXMLColorModesImpl(i != 1 ? i != 2 ? i != 3 ? "bypass" : "SRGB" : "DISPLAY_P3" : "NATIVE");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:15:0x002a A[Catch: Exception -> 0x009e, TRY_LEAVE, TryCatch #0 {Exception -> 0x009e, blocks: (B:5:0x000d, B:7:0x0011, B:8:0x001b, B:10:0x0020, B:13:0x0024, B:15:0x002a, B:22:0x003b, B:24:0x0043, B:26:0x0047, B:29:0x0072, B:34:0x0079, B:36:0x007c, B:38:0x008b, B:41:0x008f, B:43:0x0097), top: B:4:0x000d }] */
-    /* JADX WARN: Removed duplicated region for block: B:19:0x0036  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void setWhitePointColorOnCGC17(int r10) {
-        /*
-            r9 = this;
-            java.lang.String r0 = "bypass"
-            if (r10 == 0) goto La
-            java.lang.String r10 = r9.WHITEPOINT_XML_FILE_PATH
-            java.lang.String r1 = "whitepoint"
-            goto Ld
-        La:
-            java.lang.String r10 = r9.BYPASS_XML_FILE_PATH
-            r1 = r0
-        Ld:
-            java.lang.String[] r2 = r9.cgc_dither_array     // Catch: java.lang.Exception -> L9e
-            if (r2 != 0) goto L1b
-            java.lang.String r2 = r9.BYPASS_XML_FILE_PATH     // Catch: java.lang.Exception -> L9e
-            java.lang.String r3 = "cgc_dither"
-            java.lang.String[] r0 = com.android.server.display.exynos.ExynosDisplayUtils.parserXML(r2, r0, r3)     // Catch: java.lang.Exception -> L9e
-            r9.cgc_dither_array = r0     // Catch: java.lang.Exception -> L9e
-        L1b:
-            java.lang.String[] r0 = r9.cgc_dither_array     // Catch: java.lang.Exception -> L9e
-            r2 = 0
-            if (r0 == 0) goto L27
-            int r3 = r0.length     // Catch: java.lang.Exception -> L9e
-            if (r3 != 0) goto L24
-            goto L27
-        L24:
-            r0 = r0[r2]     // Catch: java.lang.Exception -> L9e
-            goto L28
-        L27:
-            r0 = 0
-        L28:
-            if (r0 == 0) goto L2f
-            java.lang.String r3 = r9.CGC_DITHER_SYSFS_PATH     // Catch: java.lang.Exception -> L9e
-            com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r3, r0)     // Catch: java.lang.Exception -> L9e
-        L2f:
-            r0 = r2
-        L30:
-            r3 = 3
-            java.lang.String r4 = "ExynosDisplayColor"
-            r5 = 1
-            if (r0 >= r3) goto L7c
-            r3 = r2
-        L37:
-            r6 = 17
-            if (r3 >= r6) goto L79
-            java.lang.String r6 = "cgc17_enc"
-            java.lang.String[] r6 = com.android.server.display.exynos.ExynosDisplayUtils.parserFactoryXMLText(r10, r1, r6, r0, r3)     // Catch: java.lang.Exception -> L9e
-            if (r6 == 0) goto L72
-            int r7 = r6.length     // Catch: java.lang.Exception -> L9e
-            if (r7 >= r5) goto L47
-            goto L72
-        L47:
-            r6 = r6[r2]     // Catch: java.lang.Exception -> L9e
-            java.lang.StringBuilder r7 = new java.lang.StringBuilder     // Catch: java.lang.Exception -> L9e
-            r7.<init>()     // Catch: java.lang.Exception -> L9e
-            java.lang.String r8 = java.lang.Integer.toString(r0)     // Catch: java.lang.Exception -> L9e
-            r7.append(r8)     // Catch: java.lang.Exception -> L9e
-            java.lang.String r8 = " "
-            r7.append(r8)     // Catch: java.lang.Exception -> L9e
-            java.lang.String r8 = java.lang.Integer.toString(r3)     // Catch: java.lang.Exception -> L9e
-            r7.append(r8)     // Catch: java.lang.Exception -> L9e
-            java.lang.String r7 = r7.toString()     // Catch: java.lang.Exception -> L9e
-            java.lang.String r8 = r9.CGC17_IDX_SYSFS_PATH     // Catch: java.lang.Exception -> L9e
-            com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r8, r7)     // Catch: java.lang.Exception -> L9e
-            java.lang.String r7 = r9.CGC17_ENC_SYSFS_PATH     // Catch: java.lang.Exception -> L9e
-            com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r7, r6)     // Catch: java.lang.Exception -> L9e
-            int r3 = r3 + 1
-            goto L37
-        L72:
-            java.lang.String r9 = "xml cgc17_enc not found"
-            android.util.Log.d(r4, r9)     // Catch: java.lang.Exception -> L9e
-            return
-        L79:
-            int r0 = r0 + 1
-            goto L30
-        L7c:
-            java.lang.String r0 = r9.CGC17_DEC_SYSFS_PATH     // Catch: java.lang.Exception -> L9e
-            java.lang.String r3 = "7"
-            com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r0, r3)     // Catch: java.lang.Exception -> L9e
-            java.lang.String r0 = "cgc17_con"
-            java.lang.String[] r10 = com.android.server.display.exynos.ExynosDisplayUtils.parserFactoryXMLText(r10, r1, r0, r2, r2)     // Catch: java.lang.Exception -> L9e
-            if (r10 == 0) goto L97
-            int r0 = r10.length     // Catch: java.lang.Exception -> L9e
-            if (r0 >= r5) goto L8f
-            goto L97
-        L8f:
-            r10 = r10[r2]     // Catch: java.lang.Exception -> L9e
-            java.lang.String r9 = r9.CGC17_CON_SYSFS_PATH     // Catch: java.lang.Exception -> L9e
-            com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r9, r10)     // Catch: java.lang.Exception -> L9e
-            goto La2
-        L97:
-            java.lang.String r9 = "xml cgc17_con not found"
-            android.util.Log.d(r4, r9)     // Catch: java.lang.Exception -> L9e
-            return
-        L9e:
-            r9 = move-exception
-            r9.printStackTrace()
-        La2:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.display.exynos.ExynosDisplayColor.setWhitePointColorOnCGC17(int):void");
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x004e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x005c, code lost:
     
         android.util.Log.d("ExynosDisplayColor", "setWhitePointColorOn()");
      */
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x0056, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0062, code lost:
     
-        if (r2 == null) goto L32;
+        if (r8 == null) goto L33;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:28:0x0058, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0064, code lost:
     
-        com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r6.CGC_DITHER_SYSFS_PATH, r2);
+        com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r3, r8);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:29:0x005d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0067, code lost:
     
-        com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r6.CGC_SYSFS_PATH, r7);
+        com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r13.CGC_SYSFS_PATH, r14);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x0062, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x008d, code lost:
     
-        return;
+        com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r3, r8);
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final void setWhitePointColorOnCGC(int r7) {
+    public final void setWhitePointColorOn(int r14) {
         /*
-            r6 = this;
-            java.lang.String r0 = "cgc"
-            java.lang.String r1 = "bypass"
-            r2 = 0
-            if (r7 == 0) goto L13
-            java.lang.String r7 = r6.WHITEPOINT_XML_FILE_PATH     // Catch: java.lang.Exception -> L46
-            java.lang.String r3 = "whitepoint"
-            java.lang.String[] r7 = com.android.server.display.exynos.ExynosDisplayUtils.parserXML(r7, r3, r0)     // Catch: java.lang.Exception -> L46
-            r6.whitepoint_array = r7     // Catch: java.lang.Exception -> L46
-            goto L1b
-        L13:
-            java.lang.String r7 = r6.BYPASS_XML_FILE_PATH     // Catch: java.lang.Exception -> L46
-            java.lang.String[] r7 = com.android.server.display.exynos.ExynosDisplayUtils.parserXML(r7, r1, r0)     // Catch: java.lang.Exception -> L46
-            r6.whitepoint_array = r7     // Catch: java.lang.Exception -> L46
-        L1b:
-            java.lang.String[] r7 = r6.whitepoint_array     // Catch: java.lang.Exception -> L46
-            if (r7 == 0) goto L45
-            int r0 = r7.length     // Catch: java.lang.Exception -> L46
-            if (r0 != 0) goto L23
-            goto L45
-        L23:
-            r0 = 0
-            r7 = r7[r0]     // Catch: java.lang.Exception -> L46
-            java.lang.String[] r3 = r6.cgc_dither_array     // Catch: java.lang.Exception -> L40
-            if (r3 != 0) goto L34
-            java.lang.String r3 = r6.BYPASS_XML_FILE_PATH     // Catch: java.lang.Exception -> L40
-            java.lang.String r4 = "cgc_dither"
-            java.lang.String[] r1 = com.android.server.display.exynos.ExynosDisplayUtils.parserXML(r3, r1, r4)     // Catch: java.lang.Exception -> L40
-            r6.cgc_dither_array = r1     // Catch: java.lang.Exception -> L40
-        L34:
-            java.lang.String[] r1 = r6.cgc_dither_array     // Catch: java.lang.Exception -> L40
-            if (r1 == 0) goto L4c
-            int r3 = r1.length     // Catch: java.lang.Exception -> L40
-            if (r3 != 0) goto L3c
-            goto L4c
-        L3c:
-            r0 = r1[r0]     // Catch: java.lang.Exception -> L40
-            r2 = r0
-            goto L4c
-        L40:
-            r0 = move-exception
-            r5 = r0
-            r0 = r7
-            r7 = r5
-            goto L48
-        L45:
-            return
-        L46:
-            r7 = move-exception
-            r0 = r2
-        L48:
-            r7.printStackTrace()
-            r7 = r0
-        L4c:
-            if (r7 == 0) goto L62
-            java.lang.String r0 = "ExynosDisplayColor"
-            java.lang.String r1 = "setWhitePointColorOn()"
-            android.util.Log.d(r0, r1)
-            if (r2 == 0) goto L5d
-            java.lang.String r0 = r6.CGC_DITHER_SYSFS_PATH
-            com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r0, r2)
-        L5d:
-            java.lang.String r6 = r6.CGC_SYSFS_PATH
-            com.android.server.display.exynos.ExynosDisplayUtils.sysfsWriteSting(r6, r7)
-        L62:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.display.exynos.ExynosDisplayColor.setWhitePointColorOnCGC(int):void");
-    }
-
-    public void setWhitePointColorOn(int i) {
-        long currentTimeMillis = System.currentTimeMillis();
-        if (this.hw_ver == null) {
-            setWhitePointColorOnCGC(i);
-        } else {
-            setWhitePointColorOnCGC17(i);
-        }
-        Log.d("ExynosDisplayColor", "elaspedTime: " + (System.currentTimeMillis() - currentTimeMillis));
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:44:0x0148  */
-    /* JADX WARN: Removed duplicated region for block: B:47:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void setRgbGain(float r19, float r20, float r21) {
-        /*
-            Method dump skipped, instructions count: 377
+            Method dump skipped, instructions count: 282
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.display.exynos.ExynosDisplayColor.setRgbGain(float, float, float):void");
-    }
-
-    public static /* synthetic */ boolean lambda$setRgbGain$0(int i) {
-        return i == ",".codePointAt(0);
-    }
-
-    public float[] getRgbGain() {
-        return this.rgb_gain;
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.display.exynos.ExynosDisplayColor.setWhitePointColorOn(int):void");
     }
 
     public final void setXMLColorModesImpl(String str) {
+        String[] parserFactoryXMLAttribute;
         try {
             String colorModePath = getColorModePath(str);
-            String colorModeName = getColorModeName(str);
-            Log.d("ExynosDisplayColor", "setXMLColorModesImpl: xml_path=" + colorModePath + ", mode_name=" + colorModeName);
+            try {
+                if (!str.equals("bypass") && (parserFactoryXMLAttribute = ExynosDisplayUtils.parserFactoryXMLAttribute(ExynosDisplayUtils.getPathWithPanel(this.COLORMODE_XML_FILE_PATH), str, null, "subxml")) != null) {
+                    if (parserFactoryXMLAttribute.length >= 1) {
+                        str = "tune";
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.d("ExynosDisplayColor", "setXMLColorModesImpl: xml_path=" + colorModePath + ", mode_name=" + str);
             ExynosDisplayTune exynosDisplayTune = this.mExynosDisplayTune;
             if (exynosDisplayTune != null) {
-                exynosDisplayTune.setCalibrationDQE(colorModePath, colorModeName);
+                exynosDisplayTune.setCalibrationDQE(colorModePath, str);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e2) {
+            e2.printStackTrace();
         }
     }
 
-    public final void setProductXMLColorModes(String str) {
-        if (str == null) {
+    public final void sysfsWriteGamma(String str, String str2) {
+        if (str == null || str2 == null) {
             return;
         }
-        setXMLColorModesImpl(str);
-    }
-
-    public void setDisplayColorFeature(int i, int i2, String str) {
-        Log.d("ExynosDisplayColor", "setDisplayColorFeature(): " + i + "  " + i2 + "  " + str);
-        if (i == 0 && i2 == 0 && str != null) {
-            setProductXMLColorModes(str);
-        }
+        ExynosDisplayUtils.sysfsWriteSting(this.GAMMA_EXT_SYSFS_PATH, str2);
+        ExynosDisplayUtils.sysfsWriteSting(this.GAMMA_SYSFS_PATH, str);
     }
 }

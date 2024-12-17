@@ -6,20 +6,17 @@ import android.text.TextUtils;
 import com.samsung.android.knox.net.ProxyProperties;
 import java.util.Collections;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class NetworkUtils {
-    public static String getExclusionListAsString(String[] strArr) {
-        return (strArr == null || strArr.length <= 0) ? "" : String.join(",", strArr);
-    }
-
     public static ProxyInfo convertToProxyInfo(ProxyProperties proxyProperties) {
         if (proxyProperties == null) {
             return null;
         }
-        if (!(!TextUtils.isEmpty(proxyProperties.getPacFileUrl()))) {
-            return ProxyInfo.buildDirectProxy(proxyProperties.getHostname(), proxyProperties.getPortNumber(), proxyProperties.getExclusionList() == null ? Collections.EMPTY_LIST : proxyProperties.getExclusionList());
+        if (!TextUtils.isEmpty(proxyProperties.getPacFileUrl())) {
+            return ProxyInfo.buildPacProxy(Uri.parse(proxyProperties.getPacFileUrl()));
         }
-        return ProxyInfo.buildPacProxy(Uri.parse(proxyProperties.getPacFileUrl()));
+        return ProxyInfo.buildDirectProxy(proxyProperties.getHostname(), proxyProperties.getPortNumber(), proxyProperties.getExclusionList() == null ? Collections.EMPTY_LIST : proxyProperties.getExclusionList());
     }
 
     public static String removeDoubleQuotes(String str) {

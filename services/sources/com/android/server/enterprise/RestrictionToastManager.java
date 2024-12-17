@@ -5,25 +5,39 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 import java.util.ArrayList;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class RestrictionToastManager {
     public static RestrictionToastHandler mRestrictionToastHandler;
     public static final ArrayList mRecentlyDisplayedMsgQueue = new ArrayList();
     public static Context mContext = null;
 
-    public static void init(Context context) {
-        mContext = context;
-        HandlerThread handlerThread = new HandlerThread("RestrictionToastManagerThread");
-        handlerThread.start();
-        mRestrictionToastHandler = new RestrictionToastHandler(handlerThread.getLooper());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RestrictionToastHandler extends Handler {
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            String string;
+            int i = message.what;
+            if (i == 1) {
+                RestrictionToastManager.mRecentlyDisplayedMsgQueue.remove(message.obj);
+                Log.d("RestrictionToastManager", "Removed message from recently displayed queue: " + message);
+                return;
+            }
+            if (i != 2 || (string = message.getData().getString("message")) == null || RestrictionToastManager.mContext == null) {
+                return;
+            }
+            try {
+                Toast.makeText(new ContextThemeWrapper(RestrictionToastManager.mContext, R.style.Theme.DeviceDefault.Light), string, 1).show();
+            } catch (Exception e) {
+                RestrictionToastManager$RestrictionToastHandler$$ExternalSyntheticOutline0.m(e, new StringBuilder("displayToast fail : "), "RestrictionToastManager");
+            }
+        }
     }
 
     public static void show(int i) {
@@ -53,35 +67,9 @@ public abstract class RestrictionToastManager {
                     message.what = 2;
                     mRestrictionToastHandler.sendMessage(message);
                     arrayList.add(str);
-                    Log.d("RestrictionToastManager", "Added message to recently displayed queue: " + str);
+                    Log.d("RestrictionToastManager", "Added message to recently displayed queue: ".concat(str));
                     mRestrictionToastHandler.sendMessageDelayed(Message.obtain(mRestrictionToastHandler, 1, str), 3500L);
                 }
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class RestrictionToastHandler extends Handler {
-        public RestrictionToastHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            String string;
-            int i = message.what;
-            if (i == 1) {
-                RestrictionToastManager.mRecentlyDisplayedMsgQueue.remove(message.obj);
-                Log.d("RestrictionToastManager", "Removed message from recently displayed queue: " + message);
-                return;
-            }
-            if (i != 2 || (string = message.getData().getString("message")) == null || RestrictionToastManager.mContext == null) {
-                return;
-            }
-            try {
-                Toast.makeText(new ContextThemeWrapper(RestrictionToastManager.mContext, R.style.Theme.DeviceDefault.Light), string, 1).show();
-            } catch (Exception e) {
-                Log.i("RestrictionToastManager", "displayToast fail : " + e.getMessage());
             }
         }
     }

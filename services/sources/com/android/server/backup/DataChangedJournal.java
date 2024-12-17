@@ -1,19 +1,15 @@
 package com.android.server.backup;
 
-import android.os.IInstalld;
-import android.util.Slog;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class DataChangedJournal {
+public final class DataChangedJournal {
     public final File mFile;
 
     public DataChangedJournal(File file) {
@@ -21,29 +17,20 @@ public class DataChangedJournal {
         this.mFile = file;
     }
 
-    public void addPackage(String str) {
-        RandomAccessFile randomAccessFile = new RandomAccessFile(this.mFile, "rws");
-        try {
-            randomAccessFile.seek(randomAccessFile.length());
-            randomAccessFile.writeUTF(str);
-            randomAccessFile.close();
-        } catch (Throwable th) {
-            try {
-                randomAccessFile.close();
-            } catch (Throwable th2) {
-                th.addSuppressed(th2);
-            }
-            throw th;
+    public final boolean equals(Object obj) {
+        if (obj instanceof DataChangedJournal) {
+            return this.mFile.equals(((DataChangedJournal) obj).mFile);
         }
+        return false;
     }
 
-    public void forEach(Consumer consumer) {
+    public final void forEach(UserBackupManagerService$$ExternalSyntheticLambda13 userBackupManagerService$$ExternalSyntheticLambda13) {
         try {
             try {
                 try {
                     while (true) {
                         try {
-                            consumer.accept(new DataInputStream(new BufferedInputStream(new FileInputStream(this.mFile), IInstalld.FLAG_FORCE)).readUTF());
+                            userBackupManagerService$$ExternalSyntheticLambda13.accept(new DataInputStream(new BufferedInputStream(new FileInputStream(this.mFile), 8192)).readUTF());
                         } finally {
                         }
                     }
@@ -55,40 +42,11 @@ public class DataChangedJournal {
         }
     }
 
-    public boolean delete() {
-        return this.mFile.delete();
-    }
-
-    public int hashCode() {
+    public final int hashCode() {
         return this.mFile.hashCode();
     }
 
-    public boolean equals(Object obj) {
-        if (obj instanceof DataChangedJournal) {
-            return this.mFile.equals(((DataChangedJournal) obj).mFile);
-        }
-        return false;
-    }
-
-    public String toString() {
+    public final String toString() {
         return this.mFile.toString();
-    }
-
-    public static DataChangedJournal newJournal(File file) {
-        Objects.requireNonNull(file);
-        return new DataChangedJournal(File.createTempFile("journal", null, file));
-    }
-
-    public static ArrayList listJournals(File file) {
-        ArrayList arrayList = new ArrayList();
-        File[] listFiles = file.listFiles();
-        if (listFiles == null) {
-            Slog.w("DataChangedJournal", "Failed to read journal files");
-            return arrayList;
-        }
-        for (File file2 : listFiles) {
-            arrayList.add(new DataChangedJournal(file2));
-        }
-        return arrayList;
     }
 }

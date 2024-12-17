@@ -6,115 +6,94 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* compiled from: Maps.kt */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public final class EmptyMap implements Map, Serializable {
+final class EmptyMap implements Map, Serializable {
     public static final EmptyMap INSTANCE = new EmptyMap();
     private static final long serialVersionUID = 8246714829545688274L;
 
     private EmptyMap() {
     }
 
+    private final Object readResolve() {
+        return INSTANCE;
+    }
+
     @Override // java.util.Map
-    public void clear() {
+    public final void clear() {
         throw new UnsupportedOperationException("Operation is not supported for read-only collection");
     }
 
     @Override // java.util.Map
-    public boolean containsKey(Object obj) {
-        return false;
-    }
-
-    public boolean containsValue(Void r1) {
-        Intrinsics.checkNotNullParameter(r1, "value");
+    public final boolean containsKey(Object obj) {
         return false;
     }
 
     @Override // java.util.Map
-    public Void get(Object obj) {
+    public final boolean containsValue(Object obj) {
+        if (!(obj instanceof Void)) {
+            return false;
+        }
+        Intrinsics.checkNotNullParameter("value", (Void) obj);
+        return false;
+    }
+
+    @Override // java.util.Map
+    public final Set entrySet() {
+        return EmptySet.INSTANCE;
+    }
+
+    @Override // java.util.Map
+    public final boolean equals(Object obj) {
+        return (obj instanceof Map) && ((Map) obj).isEmpty();
+    }
+
+    @Override // java.util.Map
+    public final /* bridge */ /* synthetic */ Object get(Object obj) {
         return null;
     }
 
-    public int getSize() {
+    @Override // java.util.Map
+    public final int hashCode() {
         return 0;
     }
 
     @Override // java.util.Map
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override // java.util.Map
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return true;
     }
 
     @Override // java.util.Map
-    public /* bridge */ /* synthetic */ Object put(Object obj, Object obj2) {
+    public final Set keySet() {
+        return EmptySet.INSTANCE;
+    }
+
+    @Override // java.util.Map
+    public final /* bridge */ /* synthetic */ Object put(Object obj, Object obj2) {
         throw new UnsupportedOperationException("Operation is not supported for read-only collection");
     }
 
     @Override // java.util.Map
-    public void putAll(Map map) {
+    public final void putAll(Map map) {
         throw new UnsupportedOperationException("Operation is not supported for read-only collection");
     }
 
     @Override // java.util.Map
-    public Void remove(Object obj) {
+    public final Object remove(Object obj) {
         throw new UnsupportedOperationException("Operation is not supported for read-only collection");
-    }
-
-    public String toString() {
-        return "{}";
-    }
-
-    @Override // java.util.Map
-    public final /* bridge */ boolean containsValue(Object obj) {
-        if (obj instanceof Void) {
-            return containsValue((Void) obj);
-        }
-        return false;
-    }
-
-    @Override // java.util.Map
-    public final /* bridge */ Set entrySet() {
-        return getEntries();
-    }
-
-    @Override // java.util.Map
-    public final /* bridge */ Set keySet() {
-        return getKeys();
     }
 
     @Override // java.util.Map
     public final /* bridge */ int size() {
-        return getSize();
+        return 0;
+    }
+
+    public final String toString() {
+        return "{}";
     }
 
     @Override // java.util.Map
-    public final /* bridge */ Collection values() {
-        return getValues();
-    }
-
-    @Override // java.util.Map
-    public boolean equals(Object obj) {
-        return (obj instanceof Map) && ((Map) obj).isEmpty();
-    }
-
-    public Set getEntries() {
-        return EmptySet.INSTANCE;
-    }
-
-    public Set getKeys() {
-        return EmptySet.INSTANCE;
-    }
-
-    public Collection getValues() {
+    public final Collection values() {
         return EmptyList.INSTANCE;
-    }
-
-    private final Object readResolve() {
-        return INSTANCE;
     }
 }

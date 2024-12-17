@@ -1,20 +1,52 @@
 package com.android.server.media;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.media.MediaRoute2Info;
 import android.os.UserHandle;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public interface BluetoothRouteController {
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface BluetoothRoutesUpdatedListener {
-        void onBluetoothRoutesUpdated(List list);
+        void onBluetoothRoutesUpdated();
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class NoOpBluetoothRouteController implements BluetoothRouteController {
+        @Override // com.android.server.media.BluetoothRouteController
+        public final List getAllBluetoothRoutes() {
+            return Collections.emptyList();
+        }
+
+        @Override // com.android.server.media.BluetoothRouteController
+        public final MediaRoute2Info getSelectedRoute() {
+            return null;
+        }
+
+        @Override // com.android.server.media.BluetoothRouteController
+        public final List getTransferableRoutes() {
+            return Collections.emptyList();
+        }
+
+        @Override // com.android.server.media.BluetoothRouteController
+        public final void start(UserHandle userHandle) {
+        }
+
+        @Override // com.android.server.media.BluetoothRouteController
+        public final void stop() {
+        }
+
+        @Override // com.android.server.media.BluetoothRouteController
+        public final void transferTo(String str) {
+        }
+
+        @Override // com.android.server.media.BluetoothRouteController
+        public final boolean updateVolumeForDevices(int i, int i2) {
+            return false;
+        }
     }
 
     List getAllBluetoothRoutes();
@@ -23,8 +55,6 @@ public interface BluetoothRouteController {
 
     List getTransferableRoutes();
 
-    boolean selectRoute(String str);
-
     void start(UserHandle userHandle);
 
     void stop();
@@ -32,57 +62,4 @@ public interface BluetoothRouteController {
     void transferTo(String str);
 
     boolean updateVolumeForDevices(int i, int i2);
-
-    static BluetoothRouteController createInstance(Context context, BluetoothRoutesUpdatedListener bluetoothRoutesUpdatedListener) {
-        Objects.requireNonNull(context);
-        Objects.requireNonNull(bluetoothRoutesUpdatedListener);
-        BluetoothAdapter adapter = ((BluetoothManager) context.getSystemService("bluetooth")).getAdapter();
-        if (adapter == null) {
-            return new NoOpBluetoothRouteController();
-        }
-        if (MediaFeatureFlagManager.getInstance().getBoolean("BluetoothRouteController__enable_legacy_bluetooth_routes_controller", true)) {
-            return new LegacyBluetoothRouteController(context, adapter, bluetoothRoutesUpdatedListener);
-        }
-        return new AudioPoliciesBluetoothRouteController(context, adapter, bluetoothRoutesUpdatedListener);
-    }
-
-    /* loaded from: classes2.dex */
-    public class NoOpBluetoothRouteController implements BluetoothRouteController {
-        @Override // com.android.server.media.BluetoothRouteController
-        public MediaRoute2Info getSelectedRoute() {
-            return null;
-        }
-
-        @Override // com.android.server.media.BluetoothRouteController
-        public boolean selectRoute(String str) {
-            return false;
-        }
-
-        @Override // com.android.server.media.BluetoothRouteController
-        public void start(UserHandle userHandle) {
-        }
-
-        @Override // com.android.server.media.BluetoothRouteController
-        public void stop() {
-        }
-
-        @Override // com.android.server.media.BluetoothRouteController
-        public void transferTo(String str) {
-        }
-
-        @Override // com.android.server.media.BluetoothRouteController
-        public boolean updateVolumeForDevices(int i, int i2) {
-            return false;
-        }
-
-        @Override // com.android.server.media.BluetoothRouteController
-        public List getTransferableRoutes() {
-            return Collections.emptyList();
-        }
-
-        @Override // com.android.server.media.BluetoothRouteController
-        public List getAllBluetoothRoutes() {
-            return Collections.emptyList();
-        }
-    }
 }

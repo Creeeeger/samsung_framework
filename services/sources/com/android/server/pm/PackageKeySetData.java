@@ -2,10 +2,10 @@ package com.android.server.pm;
 
 import android.util.ArrayMap;
 import com.android.internal.util.ArrayUtils;
-import java.util.Map;
 
-/* loaded from: classes3.dex */
-public class PackageKeySetData {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PackageKeySetData {
     public final ArrayMap mKeySetAliases;
     public long mProperSigningKeySet;
     public long[] mUpgradeKeySets;
@@ -21,63 +21,5 @@ public class PackageKeySetData {
         this.mProperSigningKeySet = packageKeySetData.mProperSigningKeySet;
         this.mUpgradeKeySets = ArrayUtils.cloneOrNull(packageKeySetData.mUpgradeKeySets);
         arrayMap.putAll(packageKeySetData.mKeySetAliases);
-    }
-
-    public void setProperSigningKeySet(long j) {
-        this.mProperSigningKeySet = j;
-    }
-
-    public long getProperSigningKeySet() {
-        return this.mProperSigningKeySet;
-    }
-
-    public void addUpgradeKeySet(String str) {
-        if (str == null) {
-            return;
-        }
-        Long l = (Long) this.mKeySetAliases.get(str);
-        if (l != null) {
-            this.mUpgradeKeySets = ArrayUtils.appendLong(this.mUpgradeKeySets, l.longValue());
-            return;
-        }
-        throw new IllegalArgumentException("Upgrade keyset alias " + str + "does not refer to a defined keyset alias!");
-    }
-
-    public void addUpgradeKeySetById(long j) {
-        this.mUpgradeKeySets = ArrayUtils.appendLong(this.mUpgradeKeySets, j);
-    }
-
-    public void removeAllUpgradeKeySets() {
-        this.mUpgradeKeySets = null;
-    }
-
-    public long[] getUpgradeKeySets() {
-        return this.mUpgradeKeySets;
-    }
-
-    public ArrayMap getAliases() {
-        return this.mKeySetAliases;
-    }
-
-    public void setAliases(Map map) {
-        removeAllDefinedKeySets();
-        this.mKeySetAliases.putAll(map);
-    }
-
-    public void addDefinedKeySet(long j, String str) {
-        this.mKeySetAliases.put(str, Long.valueOf(j));
-    }
-
-    public void removeAllDefinedKeySets() {
-        this.mKeySetAliases.erase();
-    }
-
-    public boolean isUsingDefinedKeySets() {
-        return this.mKeySetAliases.size() > 0;
-    }
-
-    public boolean isUsingUpgradeKeySets() {
-        long[] jArr = this.mUpgradeKeySets;
-        return jArr != null && jArr.length > 0;
     }
 }

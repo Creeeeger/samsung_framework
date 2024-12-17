@@ -1,53 +1,8 @@
 package com.android.server.display.config;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import org.xmlpull.v1.XmlPullParser;
-
-/* loaded from: classes2.dex */
-public class RefreshRateZone {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RefreshRateZone {
     public String id;
     public RefreshRateRange refreshRateRange;
-
-    public final RefreshRateRange getRefreshRateRange() {
-        return this.refreshRateRange;
-    }
-
-    public final void setRefreshRateRange(RefreshRateRange refreshRateRange) {
-        this.refreshRateRange = refreshRateRange;
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String str) {
-        this.id = str;
-    }
-
-    public static RefreshRateZone read(XmlPullParser xmlPullParser) {
-        int next;
-        RefreshRateZone refreshRateZone = new RefreshRateZone();
-        String attributeValue = xmlPullParser.getAttributeValue(null, "id");
-        if (attributeValue != null) {
-            refreshRateZone.setId(attributeValue);
-        }
-        xmlPullParser.getDepth();
-        while (true) {
-            next = xmlPullParser.next();
-            if (next == 1 || next == 3) {
-                break;
-            }
-            if (xmlPullParser.getEventType() == 2) {
-                if (xmlPullParser.getName().equals("refreshRateRange")) {
-                    refreshRateZone.setRefreshRateRange(RefreshRateRange.read(xmlPullParser));
-                } else {
-                    XmlParser.skip(xmlPullParser);
-                }
-            }
-        }
-        if (next == 3) {
-            return refreshRateZone;
-        }
-        throw new DatatypeConfigurationException("RefreshRateZone is not closed");
-    }
 }

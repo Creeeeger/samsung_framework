@@ -1,36 +1,28 @@
 package com.android.server.hdmi;
 
-import android.hardware.hdmi.IHdmiControlCallback;
-
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class SystemAudioActionFromAvr extends SystemAudioAction {
-    public SystemAudioActionFromAvr(HdmiCecLocalDevice hdmiCecLocalDevice, int i, boolean z, IHdmiControlCallback iHdmiControlCallback) {
-        super(hdmiCecLocalDevice, i, z, iHdmiControlCallback);
-        HdmiUtils.verifyAddressType(getSourceAddress(), 0);
-    }
-
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean start() {
-        removeSystemAudioActionInProgress();
-        handleSystemAudioActionFromAvr();
-        return true;
-    }
-
-    public final void handleSystemAudioActionFromAvr() {
-        if (this.mTargetAudioStatus == tv().isSystemAudioActivated()) {
+    public final void start() {
+        HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+        hdmiCecLocalDevice.removeActionExcept(SystemAudioActionFromTv.class, this);
+        hdmiCecLocalDevice.removeActionExcept(SystemAudioActionFromAvr.class, this);
+        HdmiCecLocalDeviceTv hdmiCecLocalDeviceTv = (HdmiCecLocalDeviceTv) hdmiCecLocalDevice;
+        if (this.mTargetAudioStatus == hdmiCecLocalDeviceTv.isSystemAudioActivated()) {
             finishWithCallback(0);
             return;
         }
-        if (tv().isProhibitMode()) {
-            sendCommand(HdmiCecMessageBuilder.buildFeatureAbortCommand(getSourceAddress(), this.mAvrLogicalAddress, 114, 4));
+        if (hdmiCecLocalDeviceTv.mService.isProhibitMode()) {
+            this.mService.sendCecCommand(HdmiCecMessage.build(getSourceAddress(), this.mAvrLogicalAddress, 0, new byte[]{(byte) 114, (byte) 4}), null);
             this.mTargetAudioStatus = false;
             sendSystemAudioModeRequest();
             return;
         }
-        removeAction(SystemAudioAutoInitiationAction.class);
+        hdmiCecLocalDevice.removeActionExcept(SystemAudioAutoInitiationAction.class, null);
         if (this.mTargetAudioStatus) {
             setSystemAudioMode(true);
-            finish();
+            finish(true);
         } else {
             setSystemAudioMode(false);
             finishWithCallback(0);

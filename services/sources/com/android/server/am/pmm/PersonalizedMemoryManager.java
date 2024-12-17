@@ -1,82 +1,28 @@
 package com.android.server.am.pmm;
 
 import android.content.Context;
-import com.android.server.am.ActivityManagerService;
+import android.content.Intent;
+import android.os.UserHandle;
+import android.util.Slog;
+import com.android.server.SystemServiceManager$$ExternalSyntheticOutline0;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class PersonalizedMemoryManager {
-    public ActivityManagerService mActivityManagerService;
-    public Context mContext;
+public final class PersonalizedMemoryManager {
     public DmaBufLeakDetector mDmaBufLeakDetector;
-    public boolean mIsTestMode;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class LazyHolder {
         public static final PersonalizedMemoryManager INSTANCE = new PersonalizedMemoryManager();
     }
 
-    public void init(ActivityManagerService activityManagerService, Context context) {
-        this.mActivityManagerService = activityManagerService;
-        this.mContext = context;
-        HeapDumpHelper.cleanUpPath();
-        this.mDmaBufLeakDetector = new DmaBufLeakDetector();
-    }
-
-    public static PersonalizedMemoryManager getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    public void setTestMode(boolean z) {
-        this.mIsTestMode = z;
-        this.mDmaBufLeakDetector.setTestMode(z);
-    }
-
-    public void receiveDmabufLeakDetectorSource(String str) {
-        DmaBufLeakDetector dmaBufLeakDetector = this.mDmaBufLeakDetector;
-        if (dmaBufLeakDetector != null) {
-            dmaBufLeakDetector.receiveSource(str);
-        }
-    }
-
-    /* renamed from: com.android.server.am.pmm.PersonalizedMemoryManager$1, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public abstract /* synthetic */ class AnonymousClass1 {
-        public static final /* synthetic */ int[] $SwitchMap$com$android$server$am$pmm$PersonalizedMemoryManager$MemoryEventType;
-
-        static {
-            int[] iArr = new int[MemoryEventType.values().length];
-            $SwitchMap$com$android$server$am$pmm$PersonalizedMemoryManager$MemoryEventType = iArr;
-            try {
-                iArr[MemoryEventType.LMKD_KILL.ordinal()] = 1;
-            } catch (NoSuchFieldError unused) {
-            }
-            try {
-                $SwitchMap$com$android$server$am$pmm$PersonalizedMemoryManager$MemoryEventType[MemoryEventType.APP_LAUNCHED.ordinal()] = 2;
-            } catch (NoSuchFieldError unused2) {
-            }
-            try {
-                $SwitchMap$com$android$server$am$pmm$PersonalizedMemoryManager$MemoryEventType[MemoryEventType.PREV_PROC_DIED.ordinal()] = 3;
-            } catch (NoSuchFieldError unused3) {
-            }
-            try {
-                $SwitchMap$com$android$server$am$pmm$PersonalizedMemoryManager$MemoryEventType[MemoryEventType.DEVICE_IDLE.ordinal()] = 4;
-            } catch (NoSuchFieldError unused4) {
-            }
-        }
-    }
-
-    public void onMemoryEvent(Context context, MemoryEventType memoryEventType) {
-        int i = AnonymousClass1.$SwitchMap$com$android$server$am$pmm$PersonalizedMemoryManager$MemoryEventType[memoryEventType.ordinal()];
-        if (i == 1 || i == 2) {
-            this.mDmaBufLeakDetector.onCheckMemoryLeak(context);
-        }
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public enum MemoryEventType {
         LMKD_KILL("LMKD_KILL"),
-        PREV_PROC_DIED("PREV_PROC_DIED"),
-        DEVICE_IDLE("DEVICE_IDLE"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF1("PREV_PROC_DIED"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF2("DEVICE_IDLE"),
         APP_LAUNCHED("APP_LAUNCHED");
 
         private String mTypeName;
@@ -85,13 +31,75 @@ public class PersonalizedMemoryManager {
             this.mTypeName = str;
         }
 
-        public String getTypeName() {
+        @Override // java.lang.Enum
+        public final String toString() {
             return this.mTypeName;
         }
+    }
 
-        @Override // java.lang.Enum
-        public String toString() {
-            return getTypeName();
+    public final void onMemoryEvent(final Context context, MemoryEventType memoryEventType) {
+        int ordinal = memoryEventType.ordinal();
+        if (ordinal == 0 || ordinal == 3) {
+            final DmaBufLeakDetector dmaBufLeakDetector = this.mDmaBufLeakDetector;
+            synchronized (dmaBufLeakDetector) {
+                try {
+                    if (dmaBufLeakDetector.mContext == null) {
+                        dmaBufLeakDetector.mContext = context;
+                        dmaBufLeakDetector.mIsListenerAppInstalled = DmaBufLeakDetector.isListenerAppInstalled(context);
+                    }
+                    if (dmaBufLeakDetector.mIsReporting) {
+                        return;
+                    }
+                    long currentTimeMillis = System.currentTimeMillis();
+                    if (dmaBufLeakDetector.mIsTestMode) {
+                        Slog.d("DmaBufLeakDetector", "getDmaBufSizeKb()=" + DmaBufLeakDetector.getDmaBufSizeKb() + ", getLargestDmaBufProcess()=" + DmaBufLeakDetector.getLargestDmaBufProcess() + ", isCameraRunning()=" + DmaBufLeakDetector.isCameraRunning() + ", mLeakThreshold=" + dmaBufLeakDetector.mLeakThreshold + ", mIsListenerAppInstalled=" + dmaBufLeakDetector.mIsListenerAppInstalled);
+                    } else if (dmaBufLeakDetector.mIsListenerAppInstalled) {
+                        if (currentTimeMillis > dmaBufLeakDetector.mLastLeakTime + 600000) {
+                            if (DmaBufLeakDetector.isCameraRunning() || DmaBufLeakDetector.getDmaBufSizeKb() <= dmaBufLeakDetector.mLeakThreshold) {
+                                return;
+                            }
+                            final String largestDmaBufProcess = DmaBufLeakDetector.getLargestDmaBufProcess();
+                            if (largestDmaBufProcess == null) {
+                                return;
+                            }
+                            if (DmaBufLeakDetector.isCameraRunning() || DmaBufLeakDetector.getDmaBufSizeKb() <= dmaBufLeakDetector.mLeakThreshold) {
+                                return;
+                            }
+                            dmaBufLeakDetector.mLastLeakTime = currentTimeMillis;
+                            dmaBufLeakDetector.mIsReporting = true;
+                            Thread thread = new Thread(new Runnable() { // from class: com.android.server.am.pmm.DmaBufLeakDetector$$ExternalSyntheticLambda1
+                                @Override // java.lang.Runnable
+                                public final void run() {
+                                    DmaBufLeakDetector dmaBufLeakDetector2 = DmaBufLeakDetector.this;
+                                    Context context2 = context;
+                                    String str = largestDmaBufProcess;
+                                    dmaBufLeakDetector2.getClass();
+                                    Intent intent = new Intent();
+                                    intent.setAction("com.sec.android.ISSUE_TRACKER_ACTION");
+                                    intent.putExtra("ERRCODE", -134);
+                                    intent.putExtra("ERRPKG", str);
+                                    intent.putExtra("ERRNAME", "DMABUF");
+                                    intent.putExtra("ERRMSG", "DMABUF_leak");
+                                    context2.sendBroadcastAsUser(intent, UserHandle.SYSTEM);
+                                    dmaBufLeakDetector2.mReportCount++;
+                                    SystemServiceManager$$ExternalSyntheticOutline0.m(new StringBuilder("sent intent to issuetracker. Report Count: "), dmaBufLeakDetector2.mReportCount, "DmaBufLeakDetector");
+                                    dmaBufLeakDetector2.mIsReporting = false;
+                                }
+                            });
+                            thread.setName("DmaBufLeakDetector");
+                            thread.start();
+                        }
+                    } else if (currentTimeMillis > dmaBufLeakDetector.mLastCheckTime + 60000) {
+                        dmaBufLeakDetector.mLastCheckTime = currentTimeMillis;
+                        if (DmaBufLeakDetector.isCameraRunning() || DmaBufLeakDetector.getDmaBufSizeKb() <= dmaBufLeakDetector.mLeakThreshold) {
+                        } else {
+                            DmaBufLeakDetector.getLargestDmaBufProcess();
+                        }
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
         }
     }
 }

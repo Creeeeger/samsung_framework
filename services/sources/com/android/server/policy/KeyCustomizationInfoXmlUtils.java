@@ -12,6 +12,8 @@ import android.util.Slog;
 import android.util.SparseArray;
 import android.util.Xml;
 import com.android.internal.util.FastXmlSerializer;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.WallpaperUpdateReceiver$$ExternalSyntheticOutline0;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import com.samsung.android.view.SemWindowManager;
 import java.io.BufferedReader;
@@ -21,31 +23,30 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import libcore.io.IoUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlSerializer;
 
-/* loaded from: classes3.dex */
-public class KeyCustomizationInfoXmlUtils {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class KeyCustomizationInfoXmlUtils {
     public final KeyCustomizationInfoManager mKeyCustomizationInfoManager;
     public ErrorCode xmlFileErrorCode = ErrorCode.FAIL;
     public float mXmlVersion = -1.0f;
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public enum ErrorCode {
-        SUCCESS(0),
-        FAIL(1),
-        UNKNOWN_ERROR(2),
-        FILE_NOT_FOUND(3);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    enum ErrorCode {
+        SUCCESS("SUCCESS"),
+        FAIL("FAIL"),
+        UNKNOWN_ERROR("UNKNOWN_ERROR"),
+        FILE_NOT_FOUND("FILE_NOT_FOUND");
 
         private final int code;
 
-        ErrorCode(int i) {
-            this.code = i;
+        ErrorCode(String str) {
+            this.code = r2;
         }
     }
 
@@ -53,156 +54,139 @@ public class KeyCustomizationInfoXmlUtils {
         this.mKeyCustomizationInfoManager = keyCustomizationInfoManager;
     }
 
-    public void initXmlVersion() {
-        this.mXmlVersion = 3.1f;
+    public static int getAttributeInt(XmlPullParser xmlPullParser, String str, int i) {
+        String attributeValue = xmlPullParser.getAttributeValue(null, str);
+        return TextUtils.isEmpty(attributeValue) ? i : Integer.parseInt(attributeValue);
     }
 
-    public boolean updateXmlVersionIfNeeded() {
-        if (Float.compare(this.mXmlVersion, 3.1f) == 0) {
-            if (!KeyCustomizationConstants.isSafeDebugInput()) {
-                return false;
-            }
-            Log.d("KeyCustomizationInfoXmlUtils", "the version has same with latest.");
-            return false;
-        }
-        Log.d("KeyCustomizationInfoXmlUtils", "updateXmlVersion old=" + this.mXmlVersion + " new=3.1");
-        this.mXmlVersion = 3.1f;
-        return true;
-    }
-
-    public float getXmlVersion() {
-        return this.mXmlVersion;
-    }
-
-    public void saveSettingsLocked(int i) {
-        Slog.d("KeyCustomizationInfoXmlUtils", "saveSettingsLocked, Callers=" + Debug.getCallers(5));
-        StringWriter stringWriter = new StringWriter();
-        try {
-            FastXmlSerializer fastXmlSerializer = new FastXmlSerializer();
-            fastXmlSerializer.setOutput(stringWriter);
-            fastXmlSerializer.startDocument(null, Boolean.TRUE);
-            fastXmlSerializer.startTag(null, "keycustomize_info_version");
-            fastXmlSerializer.attribute(null, "version", Float.toString(3.1f));
-            fastXmlSerializer.endTag(null, "keycustomize_info_version");
-            for (int i2 : KeyCustomizationConstants.SUPPORT_PRESS_TYPE_ALL) {
-                writeKeyCustomizationAttributes(fastXmlSerializer, (i2 & 3) != 0 ? "press" : (i2 & 4) != 0 ? "long" : (i2 & 8) != 0 ? "double" : (i2 & 16) != 0 ? "triple" : (i2 & 32) != 0 ? "quadruple" : (i2 & 64) != 0 ? "quintuple" : null, this.mKeyCustomizationInfoManager.getInfoMapLocked(i2));
-            }
-            fastXmlSerializer.startTag(null, "hot_key");
-            writeHotKeysAttributes(fastXmlSerializer, this.mKeyCustomizationInfoManager.getHotKeyMapLocked());
-            fastXmlSerializer.endTag(null, "hot_key");
-            fastXmlSerializer.endDocument();
-            fastXmlSerializer.flush();
-        } catch (IOException | IllegalArgumentException | IllegalStateException e) {
-            Slog.w("KeyCustomizationInfoXmlUtils", "failed saveSettings " + e);
-        }
-        writeOutXmlFileLocked(stringWriter, i);
-    }
-
-    public final void writeOutXmlFileLocked(StringWriter stringWriter, int i) {
-        StringBuilder sb;
-        AtomicFile atomicFile = new AtomicFile(new File(getKeyCustomizationDir(i), "key_customize_info.xml"));
-        FileOutputStream fileOutputStream = null;
-        try {
-            try {
-                fileOutputStream = atomicFile.startWrite();
-                fileOutputStream.write(stringWriter.toString().getBytes(StandardCharsets.UTF_8));
-                fileOutputStream.write(10);
-                atomicFile.finishWrite(fileOutputStream);
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    e = e;
-                    sb = new StringBuilder();
-                    sb.append("Unable to close.");
-                    sb.append(e);
-                    Slog.w("KeyCustomizationInfoXmlUtils", sb.toString());
-                }
-            } catch (IOException e2) {
-                atomicFile.failWrite(fileOutputStream);
-                Slog.e("KeyCustomizationInfoXmlUtils", "Unable to open " + atomicFile + " for persisting. " + e2);
-                if (fileOutputStream != null) {
-                    try {
-                        fileOutputStream.close();
-                    } catch (IOException e3) {
-                        e = e3;
-                        sb = new StringBuilder();
-                        sb.append("Unable to close.");
-                        sb.append(e);
-                        Slog.w("KeyCustomizationInfoXmlUtils", sb.toString());
+    public static void parseHotKeysAttributes(XmlPullParser xmlPullParser, SparseArray sparseArray) {
+        String name = xmlPullParser.getName();
+        int eventType = xmlPullParser.getEventType();
+        int i = 0;
+        boolean z = false;
+        String str = null;
+        String str2 = null;
+        do {
+            String name2 = xmlPullParser.getName();
+            if (eventType != 2) {
+                if (eventType == 3) {
+                    if (i != 0 && !TextUtils.isEmpty(str) && !TextUtils.isEmpty(str2)) {
+                        sparseArray.put(i, new ComponentName(str, str2));
+                    }
+                    if (name != null && name.equals(name2)) {
+                        z = true;
                     }
                 }
+            } else if ("key".equals(name2)) {
+                i = getAttributeInt(xmlPullParser, "keyCode", 0);
+                str = xmlPullParser.getAttributeValue(null, "package_name");
+                str2 = xmlPullParser.getAttributeValue(null, "class_name");
             }
-        } catch (Throwable th) {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e4) {
-                    Slog.w("KeyCustomizationInfoXmlUtils", "Unable to close." + e4);
-                }
+            if (!z) {
+                eventType = xmlPullParser.next();
             }
-            throw th;
-        }
+            if (eventType == 1) {
+                return;
+            }
+        } while (!z);
     }
 
-    public final void writeKeyCustomizationAttributes(XmlSerializer xmlSerializer, String str, SparseArray sparseArray) {
-        if (KeyCustomizationConstants.isSafeDebugInput()) {
-            Slog.v("KeyCustomizationInfoXmlUtils", "writeKeyCustomizationAttributes. " + str);
+    public final void addHotKeyInfo(XmlSerializer xmlSerializer) {
+        FastXmlSerializer fastXmlSerializer = (FastXmlSerializer) xmlSerializer;
+        fastXmlSerializer.startTag((String) null, "hot_key");
+        SparseArray sparseArray = this.mKeyCustomizationInfoManager.mHotKeyMap;
+        String str = KeyCustomizationConstants.VOLD_DECRYPT;
+        if (sparseArray != null) {
+            for (int i = 0; i < sparseArray.size(); i++) {
+                fastXmlSerializer.startTag((String) null, "key");
+                int keyAt = sparseArray.keyAt(i);
+                ComponentName componentName = (ComponentName) sparseArray.get(keyAt);
+                fastXmlSerializer.attribute((String) null, "keyCode", Integer.toString(keyAt));
+                if (componentName != null) {
+                    fastXmlSerializer.attribute((String) null, "package_name", componentName.getPackageName());
+                    fastXmlSerializer.attribute((String) null, "class_name", componentName.getClassName());
+                }
+                fastXmlSerializer.endTag((String) null, "key");
+            }
         }
-        xmlSerializer.startTag(null, str);
-        for (int i = 0; i < sparseArray.size(); i++) {
-            SparseArray sparseArray2 = (SparseArray) sparseArray.valueAt(i);
-            for (int i2 = 0; i2 < sparseArray2.size(); i2++) {
-                xmlSerializer.startTag(null, "key");
-                SemWindowManager.KeyCustomizationInfo keyCustomizationInfo = (SemWindowManager.KeyCustomizationInfo) sparseArray2.valueAt(i2);
-                if (keyCustomizationInfo != null) {
-                    xmlSerializer.attribute(null, "keyCode", Integer.toString(keyCustomizationInfo.keyCode));
-                    xmlSerializer.attribute(null, "launchAction", Integer.toString(keyCustomizationInfo.action));
-                    int i3 = keyCustomizationInfo.dispatching;
-                    if (i3 == -1) {
-                        xmlSerializer.attribute(null, "dispatching", Integer.toString(i3));
-                    }
-                    xmlSerializer.attribute(null, "id", Integer.toString(keyCustomizationInfo.id));
-                    int i4 = keyCustomizationInfo.userId;
-                    if (i4 != -2) {
-                        xmlSerializer.attribute(null, "userId", Integer.toString(i4));
-                    }
-                    long j = keyCustomizationInfo.longPressTimeout;
-                    if (j != 0) {
-                        xmlSerializer.attribute(null, "longPressTimeoutMs", Long.toString(j));
-                    }
-                    long j2 = keyCustomizationInfo.multiPressTimeout;
-                    if (j2 != 0) {
-                        xmlSerializer.attribute(null, "multiPressTimeoutMs", Long.toString(j2));
-                    }
-                    if (keyCustomizationInfo.id == 2003 && !TextUtils.isEmpty(keyCustomizationInfo.ownerPackage)) {
-                        xmlSerializer.attribute(null, "ownerPackage", keyCustomizationInfo.ownerPackage);
-                    }
-                    xmlSerializer.startTag(null, KnoxCustomManagerService.INTENT);
-                    Intent intent = keyCustomizationInfo.intent;
-                    if (intent != null) {
-                        xmlSerializer.attribute(null, "action", intent.toUri(1));
+        fastXmlSerializer.endTag((String) null, "hot_key");
+    }
+
+    public final void addKeyInfo(XmlSerializer xmlSerializer) {
+        int[] iArr;
+        int i;
+        int[] iArr2 = KeyCustomizationConstants.SUPPORT_PRESS_TYPE_ALL;
+        int length = iArr2.length;
+        int i2 = 0;
+        while (i2 < length) {
+            int i3 = iArr2[i2];
+            SparseArray infoMapLocked = this.mKeyCustomizationInfoManager.getInfoMapLocked(i3);
+            String str = (i3 & 3) != 0 ? "press" : (i3 & 4) != 0 ? "long" : (i3 & 8) != 0 ? "double" : (i3 & 16) != 0 ? "triple" : (i3 & 32) != 0 ? "quadruple" : (i3 & 64) != 0 ? "quintuple" : null;
+            String str2 = KeyCustomizationConstants.VOLD_DECRYPT;
+            FastXmlSerializer fastXmlSerializer = (FastXmlSerializer) xmlSerializer;
+            fastXmlSerializer.startTag((String) null, str);
+            for (int i4 = 0; i4 < infoMapLocked.size(); i4++) {
+                SparseArray sparseArray = (SparseArray) infoMapLocked.valueAt(i4);
+                int i5 = 0;
+                while (i5 < sparseArray.size()) {
+                    fastXmlSerializer.startTag((String) null, "key");
+                    SemWindowManager.KeyCustomizationInfo keyCustomizationInfo = (SemWindowManager.KeyCustomizationInfo) sparseArray.valueAt(i5);
+                    if (keyCustomizationInfo == null) {
+                        iArr = iArr2;
+                        i = 1;
                     } else {
-                        xmlSerializer.attribute(null, "action", "null");
+                        fastXmlSerializer.attribute((String) null, "keyCode", Integer.toString(keyCustomizationInfo.keyCode));
+                        fastXmlSerializer.attribute((String) null, "launchAction", Integer.toString(keyCustomizationInfo.action));
+                        int i6 = keyCustomizationInfo.dispatching;
+                        if (i6 == -1) {
+                            fastXmlSerializer.attribute((String) null, "dispatching", Integer.toString(i6));
+                        }
+                        fastXmlSerializer.attribute((String) null, "id", Integer.toString(keyCustomizationInfo.id));
+                        int i7 = keyCustomizationInfo.userId;
+                        if (i7 != -2) {
+                            fastXmlSerializer.attribute((String) null, "userId", Integer.toString(i7));
+                        }
+                        iArr = iArr2;
+                        long j = keyCustomizationInfo.longPressTimeout;
+                        if (j != 0) {
+                            fastXmlSerializer.attribute((String) null, "longPressTimeoutMs", Long.toString(j));
+                        }
+                        long j2 = keyCustomizationInfo.multiPressTimeout;
+                        if (j2 != 0) {
+                            fastXmlSerializer.attribute((String) null, "multiPressTimeoutMs", Long.toString(j2));
+                        }
+                        if (keyCustomizationInfo.id == 2003 && !TextUtils.isEmpty(keyCustomizationInfo.ownerPackage)) {
+                            fastXmlSerializer.attribute((String) null, "ownerPackage", keyCustomizationInfo.ownerPackage);
+                        }
+                        fastXmlSerializer.startTag((String) null, KnoxCustomManagerService.INTENT);
+                        Intent intent = keyCustomizationInfo.intent;
+                        if (intent != null) {
+                            i = 1;
+                            fastXmlSerializer.attribute((String) null, "action", intent.toUri(1));
+                        } else {
+                            i = 1;
+                            fastXmlSerializer.attribute((String) null, "action", "null");
+                        }
+                        fastXmlSerializer.endTag((String) null, KnoxCustomManagerService.INTENT);
+                        fastXmlSerializer.endTag((String) null, "key");
                     }
-                    xmlSerializer.endTag(null, KnoxCustomManagerService.INTENT);
-                    xmlSerializer.endTag(null, "key");
+                    i5 += i;
+                    iArr2 = iArr;
                 }
             }
+            fastXmlSerializer.endTag((String) null, str);
+            i2++;
+            iArr2 = iArr2;
         }
-        xmlSerializer.endTag(null, str);
-    }
-
-    public static File getKeyCustomizationDir(int i) {
-        return Environment.getUserSystemDirectory(i);
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    public void loadSettingsLocked(int i) {
+    public final void loadSettingsLocked(int i) {
         BufferedReader bufferedReader;
         Exception e;
         int next;
         Slog.v("KeyCustomizationInfoXmlUtils", "loadSettingsLocked, userId=" + i);
-        File file = new File(getKeyCustomizationDir(i), "key_customize_info.xml");
+        File file = new File(Environment.getUserSystemDirectory(i), "key_customize_info.xml");
         BufferedReader bufferedReader2 = null;
         AppSearchSession appSearchSession = 0;
         try {
@@ -238,9 +222,9 @@ public class KeyCustomizationInfoXmlUtils {
                             } else if ("quintuple".equals(name)) {
                                 parseKeyCustomizationInfoByPress(newPullParser, 64);
                             } else if ("hot_key".equals(name)) {
-                                SparseArray hotKeyMapLocked = this.mKeyCustomizationInfoManager.getHotKeyMapLocked();
-                                hotKeyMapLocked.clear();
-                                parseHotKeysAttributes(newPullParser, hotKeyMapLocked);
+                                SparseArray sparseArray = this.mKeyCustomizationInfoManager.mHotKeyMap;
+                                sparseArray.clear();
+                                parseHotKeysAttributes(newPullParser, sparseArray);
                             }
                         }
                     } while (next != 1);
@@ -271,12 +255,10 @@ public class KeyCustomizationInfoXmlUtils {
     }
 
     public final void parseKeyCustomizationInfoByPress(XmlPullParser xmlPullParser, int i) {
-        SparseArray infoMapLocked = this.mKeyCustomizationInfoManager.getInfoMapLocked(i);
+        Intent intent;
+        KeyCustomizationInfoManager keyCustomizationInfoManager = this.mKeyCustomizationInfoManager;
+        SparseArray infoMapLocked = keyCustomizationInfoManager.getInfoMapLocked(i);
         infoMapLocked.clear();
-        parseKeyCustomizationAttributes(xmlPullParser, infoMapLocked, i);
-    }
-
-    public final void parseKeyCustomizationAttributes(XmlPullParser xmlPullParser, SparseArray sparseArray, int i) {
         String name = xmlPullParser.getName();
         int eventType = xmlPullParser.getEventType();
         SemWindowManager.KeyCustomizationInfo keyCustomizationInfo = null;
@@ -286,10 +268,10 @@ public class KeyCustomizationInfoXmlUtils {
             if (eventType != 2) {
                 if (eventType == 3) {
                     if (keyCustomizationInfo != null && "key".equals(name2)) {
-                        if (sparseArray.get(keyCustomizationInfo.keyCode) == null) {
-                            sparseArray.put(keyCustomizationInfo.keyCode, new SparseArray());
+                        if (infoMapLocked.get(keyCustomizationInfo.keyCode) == null) {
+                            infoMapLocked.put(keyCustomizationInfo.keyCode, new SparseArray());
                         }
-                        ((SparseArray) sparseArray.get(keyCustomizationInfo.keyCode)).put(keyCustomizationInfo.id, keyCustomizationInfo);
+                        ((SparseArray) infoMapLocked.get(keyCustomizationInfo.keyCode)).put(keyCustomizationInfo.id, keyCustomizationInfo);
                     }
                     if (name != null && name.equals(name2)) {
                         z = true;
@@ -311,21 +293,33 @@ public class KeyCustomizationInfoXmlUtils {
                     String attributeValue = xmlPullParser.getAttributeValue(null, "ownerPackage");
                     if (!TextUtils.isEmpty(attributeValue)) {
                         keyCustomizationInfo.ownerPackage = attributeValue;
-                        this.mKeyCustomizationInfoManager.addOwnerPackageList(attributeValue);
+                        keyCustomizationInfoManager.addOwnerPackageList(attributeValue);
                     }
                 }
                 keyCustomizationInfo.press = i;
             } else if (KnoxCustomManagerService.INTENT.equals(name2) && keyCustomizationInfo != null) {
-                Intent restoreFromXml = restoreFromXml(xmlPullParser);
-                keyCustomizationInfo.intent = restoreFromXml;
-                if (restoreFromXml != null && keyCustomizationInfo.id == 2003 && TextUtils.isEmpty(keyCustomizationInfo.ownerPackage)) {
-                    String packageName = restoreFromXml.getComponent() != null ? restoreFromXml.getComponent().getPackageName() : null;
+                String attributeValue2 = xmlPullParser.getAttributeValue(null, "action");
+                if (TextUtils.isEmpty(attributeValue2) || attributeValue2.equals("null")) {
+                    Slog.d("KeyCustomizationInfoXmlUtils", "restoreFromXml intent info is empty or null");
+                    intent = null;
+                } else {
+                    try {
+                        String str = KeyCustomizationConstants.VOLD_DECRYPT;
+                        intent = Intent.parseUri(attributeValue2, 1);
+                    } catch (Exception e) {
+                        Log.e("KeyCustomizationInfoXmlUtils", "restoreFromXml failed ", e);
+                        intent = new Intent();
+                    }
+                }
+                keyCustomizationInfo.intent = intent;
+                if (intent != null && keyCustomizationInfo.id == 2003 && TextUtils.isEmpty(keyCustomizationInfo.ownerPackage)) {
+                    String packageName = intent.getComponent() != null ? intent.getComponent().getPackageName() : null;
                     if (TextUtils.isEmpty(packageName)) {
-                        packageName = restoreFromXml.getPackage();
+                        packageName = intent.getPackage();
                     }
                     if (!TextUtils.isEmpty(packageName)) {
                         keyCustomizationInfo.ownerPackage = packageName;
-                        this.mKeyCustomizationInfoManager.addOwnerPackageList(packageName);
+                        keyCustomizationInfoManager.addOwnerPackageList(packageName);
                     }
                 }
             }
@@ -338,87 +332,53 @@ public class KeyCustomizationInfoXmlUtils {
         } while (!z);
     }
 
-    public final Intent restoreFromXml(XmlPullParser xmlPullParser) {
-        String attributeValue = xmlPullParser.getAttributeValue(null, "action");
-        if (TextUtils.isEmpty(attributeValue) || attributeValue.equals("null")) {
-            Slog.d("KeyCustomizationInfoXmlUtils", "restoreFromXml intent info is empty or null");
-            return null;
-        }
+    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:17:0x0086 -> B:9:0x00ac). Please report as a decompilation issue!!! */
+    public final void saveSettingsLocked(int i) {
+        Slog.d("KeyCustomizationInfoXmlUtils", "saveSettingsLocked, Callers=" + Debug.getCallers(5));
+        StringWriter stringWriter = new StringWriter();
+        FileOutputStream fileOutputStream = null;
         try {
-            if (KeyCustomizationConstants.isSafeDebugInput()) {
-                Slog.d("KeyCustomizationInfoXmlUtils", "restoreFromXml intent info is uri type. uri=" + attributeValue);
-            }
-            return Intent.parseUri(attributeValue, 1);
+            FastXmlSerializer fastXmlSerializer = new FastXmlSerializer();
+            fastXmlSerializer.setOutput(stringWriter);
+            fastXmlSerializer.startDocument((String) null, Boolean.TRUE);
+            fastXmlSerializer.startTag((String) null, "keycustomize_info_version");
+            fastXmlSerializer.attribute((String) null, "version", Float.toString(4.1f));
+            fastXmlSerializer.endTag((String) null, "keycustomize_info_version");
+            addKeyInfo(fastXmlSerializer);
+            addHotKeyInfo(fastXmlSerializer);
+            fastXmlSerializer.endDocument();
+            fastXmlSerializer.flush();
         } catch (Exception e) {
-            Log.e("KeyCustomizationInfoXmlUtils", "restoreFromXml failed ", e);
-            return new Intent();
+            WallpaperUpdateReceiver$$ExternalSyntheticOutline0.m(e, "failed saveSettings ", "KeyCustomizationInfoXmlUtils");
         }
-    }
-
-    public final int getAttributeInt(XmlPullParser xmlPullParser, String str, int i) {
-        String attributeValue = xmlPullParser.getAttributeValue(null, str);
-        return TextUtils.isEmpty(attributeValue) ? i : Integer.parseInt(attributeValue);
-    }
-
-    public ErrorCode getXmlFileErrorCode() {
-        return this.xmlFileErrorCode;
-    }
-
-    public final void writeHotKeysAttributes(XmlSerializer xmlSerializer, SparseArray sparseArray) {
-        if (KeyCustomizationConstants.isSafeDebugInput()) {
-            Slog.v("KeyCustomizationInfoXmlUtils", "writeHotKeysAttributes.");
-        }
-        if (sparseArray == null) {
-            return;
-        }
-        for (int i = 0; i < sparseArray.size(); i++) {
-            xmlSerializer.startTag(null, "key");
-            int keyAt = sparseArray.keyAt(i);
-            ComponentName componentName = (ComponentName) sparseArray.get(keyAt);
-            xmlSerializer.attribute(null, "keyCode", Integer.toString(keyAt));
-            if (componentName != null) {
-                xmlSerializer.attribute(null, "package_name", componentName.getPackageName());
-                xmlSerializer.attribute(null, "class_name", componentName.getClassName());
-            }
-            xmlSerializer.endTag(null, "key");
-        }
-    }
-
-    public final void parseHotKeysAttributes(XmlPullParser xmlPullParser, SparseArray sparseArray) {
-        String name = xmlPullParser.getName();
-        int eventType = xmlPullParser.getEventType();
-        int i = 0;
-        boolean z = false;
-        String str = null;
-        String str2 = null;
-        do {
-            String name2 = xmlPullParser.getName();
-            if (eventType != 2) {
-                if (eventType == 3) {
-                    if (i != 0 && !TextUtils.isEmpty(str) && !TextUtils.isEmpty(str2)) {
-                        sparseArray.put(i, new ComponentName(str, str2));
-                    }
-                    if (name != null && name.equals(name2)) {
-                        z = true;
+        AtomicFile atomicFile = new AtomicFile(new File(Environment.getUserSystemDirectory(i), "key_customize_info.xml"));
+        try {
+            try {
+                try {
+                    fileOutputStream = atomicFile.startWrite();
+                    fileOutputStream.write(stringWriter.toString().getBytes(StandardCharsets.UTF_8));
+                    fileOutputStream.write(10);
+                    atomicFile.finishWrite(fileOutputStream);
+                    fileOutputStream.close();
+                } catch (IOException e2) {
+                    atomicFile.failWrite(fileOutputStream);
+                    Slog.e("KeyCustomizationInfoXmlUtils", "Unable to open " + atomicFile + " for persisting. " + e2);
+                    if (fileOutputStream != null) {
+                        fileOutputStream.close();
                     }
                 }
-            } else if ("key".equals(name2)) {
-                i = getAttributeInt(xmlPullParser, "keyCode", 0);
-                str = xmlPullParser.getAttributeValue(null, "package_name");
-                str2 = xmlPullParser.getAttributeValue(null, "class_name");
+            } catch (IOException e3) {
+                DeviceIdleController$$ExternalSyntheticOutline0.m("Unable to close.", e3, "KeyCustomizationInfoXmlUtils");
             }
-            if (!z) {
-                eventType = xmlPullParser.next();
+        } catch (Throwable th) {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e4) {
+                    DeviceIdleController$$ExternalSyntheticOutline0.m("Unable to close.", e4, "KeyCustomizationInfoXmlUtils");
+                }
             }
-            if (eventType == 1) {
-                return;
-            }
-        } while (!z);
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        printWriter.print(str);
-        printWriter.print("XmlFileErrorCode=");
-        printWriter.println(getXmlFileErrorCode());
+            throw th;
+        }
     }
 }

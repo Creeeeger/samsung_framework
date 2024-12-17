@@ -6,8 +6,6 @@ import android.system.Os;
 import android.util.Base64;
 import android.util.Slog;
 import com.android.internal.util.HexDump;
-import com.android.internal.util.jobs.XmlUtils;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -23,14 +21,57 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class CertificateTransparencyLogInstallReceiver extends ConfigUpdateInstallReceiver {
     public CertificateTransparencyLogInstallReceiver() {
         super("/data/misc/keychain/trusted_ct_logs/", "ct_logs", "metadata/", "version");
     }
 
+    public static void installLog(JSONObject jSONObject, File file) {
+        try {
+            try {
+                File file2 = new File(file, HexDump.toHexString(MessageDigest.getInstance("SHA-256").digest(Base64.decode(jSONObject.getString("key"), 0)), false));
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file2), StandardCharsets.UTF_8);
+                try {
+                    writeLogEntry(outputStreamWriter, "key", jSONObject.getString("key"));
+                    writeLogEntry(outputStreamWriter, "url", jSONObject.getString("url"));
+                    writeLogEntry(outputStreamWriter, "description", jSONObject.getString("description"));
+                    outputStreamWriter.close();
+                    if (file2.setReadable(true, false)) {
+                        return;
+                    }
+                    throw new IOException("Failed to set permissions on " + file2.getCanonicalPath());
+                } finally {
+                }
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (JSONException e2) {
+            throw new IOException("Failed to parse log", e2);
+        }
+    }
+
+    public static void writeLogEntry(OutputStreamWriter outputStreamWriter, String str, String str2) {
+        outputStreamWriter.write(str + ":" + str2 + "\n");
+    }
+
+    public final void deleteOldLogDirectories() {
+        if (this.updateDir.exists()) {
+            final File canonicalFile = new File(this.updateDir, "current").getCanonicalFile();
+            for (File file : this.updateDir.listFiles(new FileFilter() { // from class: com.android.server.updates.CertificateTransparencyLogInstallReceiver.1
+                @Override // java.io.FileFilter
+                public final boolean accept(File file2) {
+                    return !canonicalFile.equals(file2) && file2.getName().startsWith("logs-");
+                }
+            })) {
+                FileUtils.deleteContentsAndDir(file);
+            }
+        }
+    }
+
     @Override // com.android.server.updates.ConfigUpdateInstallReceiver
-    public void install(InputStream inputStream, int i) {
+    public final void install(InputStream inputStream, int i) {
         this.updateDir.mkdir();
         if (!this.updateDir.isDirectory()) {
             throw new IOException("Unable to make directory " + this.updateDir.getCanonicalPath());
@@ -59,7 +100,7 @@ public class CertificateTransparencyLogInstallReceiver extends ConfigUpdateInsta
             try {
                 JSONArray jSONArray = new JSONObject(new String(Streams.readFullyNoClose(inputStream), StandardCharsets.UTF_8)).getJSONArray("logs");
                 for (int i2 = 0; i2 < jSONArray.length(); i2++) {
-                    installLog(file2, jSONArray.getJSONObject(i2));
+                    installLog(jSONArray.getJSONObject(i2), file2);
                 }
                 File file3 = new File(this.updateDir, "new_symlink");
                 try {
@@ -77,52 +118,6 @@ public class CertificateTransparencyLogInstallReceiver extends ConfigUpdateInsta
         } catch (IOException | RuntimeException e3) {
             FileUtils.deleteContentsAndDir(file2);
             throw e3;
-        }
-    }
-
-    public final void installLog(File file, JSONObject jSONObject) {
-        try {
-            File file2 = new File(file, getLogFileName(jSONObject.getString("key")));
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file2), StandardCharsets.UTF_8);
-            try {
-                writeLogEntry(outputStreamWriter, "key", jSONObject.getString("key"));
-                writeLogEntry(outputStreamWriter, "url", jSONObject.getString("url"));
-                writeLogEntry(outputStreamWriter, "description", jSONObject.getString("description"));
-                outputStreamWriter.close();
-                if (file2.setReadable(true, false)) {
-                    return;
-                }
-                throw new IOException("Failed to set permissions on " + file2.getCanonicalPath());
-            } finally {
-            }
-        } catch (JSONException e) {
-            throw new IOException("Failed to parse log", e);
-        }
-    }
-
-    public final String getLogFileName(String str) {
-        try {
-            return HexDump.toHexString(MessageDigest.getInstance("SHA-256").digest(Base64.decode(str, 0)), false);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public final void writeLogEntry(OutputStreamWriter outputStreamWriter, String str, String str2) {
-        outputStreamWriter.write(str + XmlUtils.STRING_ARRAY_SEPARATOR + str2 + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-    }
-
-    public final void deleteOldLogDirectories() {
-        if (this.updateDir.exists()) {
-            final File canonicalFile = new File(this.updateDir, "current").getCanonicalFile();
-            for (File file : this.updateDir.listFiles(new FileFilter() { // from class: com.android.server.updates.CertificateTransparencyLogInstallReceiver.1
-                @Override // java.io.FileFilter
-                public boolean accept(File file2) {
-                    return !canonicalFile.equals(file2) && file2.getName().startsWith("logs-");
-                }
-            })) {
-                FileUtils.deleteContentsAndDir(file);
-            }
         }
     }
 }

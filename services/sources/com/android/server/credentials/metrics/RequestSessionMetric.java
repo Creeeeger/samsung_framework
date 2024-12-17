@@ -1,27 +1,31 @@
 package com.android.server.credentials.metrics;
 
 import android.content.ComponentName;
-import android.credentials.CreateCredentialRequest;
+import android.content.Context;
 import android.credentials.CredentialOption;
 import android.credentials.GetCredentialRequest;
-import android.credentials.ui.UserSelectionDialogResult;
+import android.credentials.selection.IntentCreationResult;
 import android.util.Slog;
+import com.android.server.PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0;
+import com.android.server.WallpaperUpdateReceiver$$ExternalSyntheticOutline0;
 import com.android.server.credentials.MetricUtilities;
 import com.android.server.credentials.ProviderSession;
+import com.android.server.credentials.metrics.OemUiUsageStatus;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class RequestSessionMetric {
+public final class RequestSessionMetric {
     public final CandidateAggregateMetric mCandidateAggregateMetric;
     public final ChosenProviderFinalPhaseMetric mChosenProviderFinalPhaseMetric;
     public final InitialPhaseMetric mInitialPhaseMetric;
     public final int mSessionIdTrackTwo;
     public int mSequenceCounter = 0;
-    public List mCandidateBrowsingPhaseMetric = new ArrayList();
+    public final List mCandidateBrowsingPhaseMetric = new ArrayList();
 
     public RequestSessionMetric(int i, int i2) {
         this.mSessionIdTrackTwo = i2;
@@ -30,229 +34,124 @@ public class RequestSessionMetric {
         this.mChosenProviderFinalPhaseMetric = new ChosenProviderFinalPhaseMetric(i, i2);
     }
 
-    public int returnIncrementSequence() {
-        int i = this.mSequenceCounter + 1;
-        this.mSequenceCounter = i;
-        return i;
-    }
-
-    public InitialPhaseMetric getInitialPhaseMetric() {
-        return this.mInitialPhaseMetric;
-    }
-
-    public void collectInitialPhaseMetricInfo(long j, int i, int i2) {
+    public final void collectChosenMetricViaCandidateTransfer(CandidatePhaseMetric candidatePhaseMetric) {
+        ChosenProviderFinalPhaseMetric chosenProviderFinalPhaseMetric = this.mChosenProviderFinalPhaseMetric;
         try {
-            this.mInitialPhaseMetric.setCredentialServiceStartedTimeNanoseconds(j);
-            this.mInitialPhaseMetric.setCallerUid(i);
-            this.mInitialPhaseMetric.setApiName(i2);
+            chosenProviderFinalPhaseMetric.mChosenUid = candidatePhaseMetric.mCandidateUid;
+            chosenProviderFinalPhaseMetric.mIsPrimary = false;
+            chosenProviderFinalPhaseMetric.mServiceBeganTimeNanoseconds = candidatePhaseMetric.mServiceBeganTimeNanoseconds;
+            chosenProviderFinalPhaseMetric.mQueryStartTimeNanoseconds = candidatePhaseMetric.mStartQueryTimeNanoseconds;
+            chosenProviderFinalPhaseMetric.mQueryEndTimeNanoseconds = candidatePhaseMetric.mQueryFinishTimeNanoseconds;
+            chosenProviderFinalPhaseMetric.mResponseCollective = candidatePhaseMetric.mResponseCollective;
+            chosenProviderFinalPhaseMetric.mFinalFinishTimeNanoseconds = System.nanoTime();
         } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error collecting initial phase metric start info: " + e);
+            PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0.m(e, "Unexpected error during metric candidate to final transfer: ", "RequestSessionMetric");
         }
     }
 
-    public void collectUiReturnedFinalPhase(boolean z) {
+    public final void collectChosenProviderStatus(int i) {
         try {
-            this.mChosenProviderFinalPhaseMetric.setUiReturned(z);
+            this.mChosenProviderFinalPhaseMetric.mChosenProviderStatus = i;
         } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error collecting ui end time metric: " + e);
+            PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0.m(e, "Unexpected error setting chosen provider status metric: ", "RequestSessionMetric");
         }
     }
 
-    public void collectUiCallStartTime(long j) {
+    public final void collectFinalPhaseProviderMetricStatus(boolean z, ProviderStatusForMetrics providerStatusForMetrics) {
         try {
-            this.mChosenProviderFinalPhaseMetric.setUiCallStartTimeNanoseconds(j);
+            ChosenProviderFinalPhaseMetric chosenProviderFinalPhaseMetric = this.mChosenProviderFinalPhaseMetric;
+            chosenProviderFinalPhaseMetric.mHasException = z;
+            chosenProviderFinalPhaseMetric.mChosenProviderStatus = providerStatusForMetrics.getMetricCode();
         } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error collecting ui start metric: " + e);
+            PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0.m(e, "Unexpected error during final phase provider status metric logging: ", "RequestSessionMetric");
         }
     }
 
-    public void collectUiResponseData(boolean z, long j) {
+    public final void collectFrameworkException(String str) {
         try {
-            this.mChosenProviderFinalPhaseMetric.setUiReturned(z);
-            this.mChosenProviderFinalPhaseMetric.setUiCallEndTimeNanoseconds(j);
+            this.mChosenProviderFinalPhaseMetric.mFrameworkException = str.substring(str.length() - 30);
         } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error collecting ui response metric: " + e);
+            WallpaperUpdateReceiver$$ExternalSyntheticOutline0.m(e, "Unexpected error during metric logging: ", "RequestSessionMetric");
         }
     }
 
-    public void collectChosenProviderStatus(int i) {
+    public final void collectGetFlowInitialMetricInfo(GetCredentialRequest getCredentialRequest) {
+        InitialPhaseMetric initialPhaseMetric = this.mInitialPhaseMetric;
         try {
-            this.mChosenProviderFinalPhaseMetric.setChosenProviderStatus(i);
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error setting chosen provider status metric: " + e);
+            initialPhaseMetric.mOriginSpecified = getCredentialRequest.getOrigin() != null;
+            final LinkedHashMap linkedHashMap = new LinkedHashMap();
+            try {
+                getCredentialRequest.getCredentialOptions().forEach(new Consumer() { // from class: com.android.server.credentials.metrics.RequestSessionMetric$$ExternalSyntheticLambda0
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        Map map = linkedHashMap;
+                        String substring = ((CredentialOption) obj).getType().substring(r2.length() - 20);
+                        map.put(substring, Integer.valueOf(((Integer) map.getOrDefault(substring, 0)).intValue() + 1));
+                    }
+                });
+            } catch (Exception e) {
+                Slog.i("RequestSessionMetric", "Unexpected error during get request count map metric logging: " + e);
+            }
+            initialPhaseMetric.mRequestCounts = linkedHashMap;
+        } catch (Exception e2) {
+            PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0.m(e2, "Unexpected error collecting get flow initial metric: ", "RequestSessionMetric");
         }
     }
 
-    public void collectCreateFlowInitialMetricInfo(boolean z, CreateCredentialRequest createCredentialRequest) {
+    public final void collectUiConfigurationResults(Context context, IntentCreationResult intentCreationResult, int i) {
+        ChosenProviderFinalPhaseMetric chosenProviderFinalPhaseMetric = this.mChosenProviderFinalPhaseMetric;
         try {
-            this.mInitialPhaseMetric.setOriginSpecified(z);
-            this.mInitialPhaseMetric.setRequestCounts(Map.of(MetricUtilities.generateMetricKey(createCredentialRequest.getType(), 20), 1));
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error collecting create flow metric: " + e);
-        }
-    }
-
-    public final Map getRequestCountMap(GetCredentialRequest getCredentialRequest) {
-        final LinkedHashMap linkedHashMap = new LinkedHashMap();
-        try {
-            getCredentialRequest.getCredentialOptions().forEach(new Consumer() { // from class: com.android.server.credentials.metrics.RequestSessionMetric$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    RequestSessionMetric.lambda$getRequestCountMap$0(linkedHashMap, (CredentialOption) obj);
+            chosenProviderFinalPhaseMetric.mOemUiUid = MetricUtilities.getPackageUid(context, intentCreationResult.getOemUiPackageName(), i);
+            chosenProviderFinalPhaseMetric.mFallbackUiUid = MetricUtilities.getPackageUid(context, intentCreationResult.getFallbackUiPackageName(), i);
+            int i2 = OemUiUsageStatus.AnonymousClass1.$SwitchMap$android$credentials$selection$IntentCreationResult$OemUiUsageStatus[intentCreationResult.getOemUiUsageStatus().ordinal()];
+            OemUiUsageStatus oemUiUsageStatus = OemUiUsageStatus.UNKNOWN;
+            if (i2 != 1) {
+                if (i2 == 2) {
+                    oemUiUsageStatus = OemUiUsageStatus.SUCCESS;
+                } else if (i2 == 3) {
+                    oemUiUsageStatus = OemUiUsageStatus.FAILURE_NOT_SPECIFIED;
+                } else if (i2 == 4) {
+                    oemUiUsageStatus = OemUiUsageStatus.FAILURE_SPECIFIED_BUT_NOT_FOUND;
+                } else if (i2 == 5) {
+                    oemUiUsageStatus = OemUiUsageStatus.FAILURE_SPECIFIED_BUT_NOT_ENABLED;
                 }
-            });
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error during get request count map metric logging: " + e);
-        }
-        return linkedHashMap;
-    }
-
-    public static /* synthetic */ void lambda$getRequestCountMap$0(Map map, CredentialOption credentialOption) {
-        String generateMetricKey = MetricUtilities.generateMetricKey(credentialOption.getType(), 20);
-        map.put(generateMetricKey, Integer.valueOf(((Integer) map.getOrDefault(generateMetricKey, 0)).intValue() + 1));
-    }
-
-    public void collectGetFlowInitialMetricInfo(GetCredentialRequest getCredentialRequest) {
-        try {
-            this.mInitialPhaseMetric.setOriginSpecified(getCredentialRequest.getOrigin() != null);
-            this.mInitialPhaseMetric.setRequestCounts(getRequestCountMap(getCredentialRequest));
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error collecting get flow initial metric: " + e);
-        }
-    }
-
-    public void collectMetricPerBrowsingSelect(UserSelectionDialogResult userSelectionDialogResult, CandidatePhaseMetric candidatePhaseMetric) {
-        try {
-            CandidateBrowsingPhaseMetric candidateBrowsingPhaseMetric = new CandidateBrowsingPhaseMetric();
-            candidateBrowsingPhaseMetric.setEntryEnum(EntryEnum.getMetricCodeFromString(userSelectionDialogResult.getEntryKey()));
-            candidateBrowsingPhaseMetric.setProviderUid(candidatePhaseMetric.getCandidateUid());
-            this.mCandidateBrowsingPhaseMetric.add(candidateBrowsingPhaseMetric);
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error collecting browsing metric: " + e);
-        }
-    }
-
-    public final void setHasExceptionFinalPhase(boolean z) {
-        try {
-            this.mChosenProviderFinalPhaseMetric.setHasException(z);
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error setting final exception metric: " + e);
-        }
-    }
-
-    public void collectFrameworkException(String str) {
-        try {
-            this.mChosenProviderFinalPhaseMetric.setFrameworkException(MetricUtilities.generateMetricKey(str, 30));
-        } catch (Exception e) {
-            Slog.w("RequestSessionMetric", "Unexpected error during metric logging: " + e);
-        }
-    }
-
-    public void collectFinalPhaseProviderMetricStatus(boolean z, ProviderStatusForMetrics providerStatusForMetrics) {
-        try {
-            this.mChosenProviderFinalPhaseMetric.setHasException(z);
-            this.mChosenProviderFinalPhaseMetric.setChosenProviderStatus(providerStatusForMetrics.getMetricCode());
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error during final phase provider status metric logging: " + e);
-        }
-    }
-
-    public void updateMetricsOnResponseReceived(Map map, ComponentName componentName, boolean z) {
-        try {
-            ProviderSession providerSession = (ProviderSession) map.get(componentName.flattenToString());
-            if (providerSession != null) {
-                collectChosenMetricViaCandidateTransfer(providerSession.getProviderSessionMetric().getCandidatePhasePerProviderMetric(), z);
             }
+            chosenProviderFinalPhaseMetric.mOemUiUsageStatus = oemUiUsageStatus;
         } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Exception upon candidate to chosen metric transfer: " + e);
+            WallpaperUpdateReceiver$$ExternalSyntheticOutline0.m(e, "Unexpected error during ui configuration result collection: ", "RequestSessionMetric");
         }
     }
 
-    public void collectChosenMetricViaCandidateTransfer(CandidatePhaseMetric candidatePhaseMetric, boolean z) {
+    public final void collectUiResponseData(long j) {
         try {
-            this.mChosenProviderFinalPhaseMetric.setChosenUid(candidatePhaseMetric.getCandidateUid());
-            this.mChosenProviderFinalPhaseMetric.setPrimary(z);
-            this.mChosenProviderFinalPhaseMetric.setQueryPhaseLatencyMicroseconds(candidatePhaseMetric.getQueryLatencyMicroseconds());
-            this.mChosenProviderFinalPhaseMetric.setServiceBeganTimeNanoseconds(candidatePhaseMetric.getServiceBeganTimeNanoseconds());
-            this.mChosenProviderFinalPhaseMetric.setQueryStartTimeNanoseconds(candidatePhaseMetric.getStartQueryTimeNanoseconds());
-            this.mChosenProviderFinalPhaseMetric.setQueryEndTimeNanoseconds(candidatePhaseMetric.getQueryFinishTimeNanoseconds());
-            this.mChosenProviderFinalPhaseMetric.setResponseCollective(candidatePhaseMetric.getResponseCollective());
-            this.mChosenProviderFinalPhaseMetric.setFinalFinishTimeNanoseconds(System.nanoTime());
+            ChosenProviderFinalPhaseMetric chosenProviderFinalPhaseMetric = this.mChosenProviderFinalPhaseMetric;
+            chosenProviderFinalPhaseMetric.mUiReturned = true;
+            chosenProviderFinalPhaseMetric.mUiCallEndTimeNanoseconds = j;
         } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error during metric candidate to final transfer: " + e);
+            PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0.m(e, "Unexpected error collecting ui response metric: ", "RequestSessionMetric");
         }
     }
 
-    public void logFailureOrUserCancel(boolean z) {
+    public final void logCandidateAggregateMetrics(Map map) {
+        CandidateAggregateMetric candidateAggregateMetric = this.mCandidateAggregateMetric;
         try {
-            if (z) {
-                setHasExceptionFinalPhase(false);
-                logApiCalledAtFinish(ApiStatus.USER_CANCELED.getMetricCode());
-            } else {
-                logApiCalledAtFinish(ApiStatus.FAILURE.getMetricCode());
-            }
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error during final metric failure emit: " + e);
-        }
-    }
-
-    public void logCandidatePhaseMetrics(Map map) {
-        try {
-            int i = this.mSequenceCounter + 1;
-            this.mSequenceCounter = i;
-            MetricUtilities.logApiCalledCandidatePhase(map, i, this.mInitialPhaseMetric);
-            if (this.mInitialPhaseMetric.getApiName() == ApiName.GET_CREDENTIAL.getMetricCode() || this.mInitialPhaseMetric.getApiName() == ApiName.GET_CREDENTIAL_VIA_REGISTRY.getMetricCode()) {
-                MetricUtilities.logApiCalledCandidateGetMetric(map, this.mSequenceCounter);
-            }
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error during candidate metric emit: " + e);
-        }
-    }
-
-    public void logCandidateAggregateMetrics(Map map) {
-        try {
-            this.mCandidateAggregateMetric.collectAverages(map);
-            CandidateAggregateMetric candidateAggregateMetric = this.mCandidateAggregateMetric;
+            candidateAggregateMetric.collectAverages(map);
             int i = this.mSequenceCounter + 1;
             this.mSequenceCounter = i;
             MetricUtilities.logApiCalledAggregateCandidate(candidateAggregateMetric, i);
         } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error during aggregate candidate logging " + e);
+            PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0.m(e, "Unexpected error during aggregate candidate logging ", "RequestSessionMetric");
         }
     }
 
-    public void logAuthEntry(BrowsedAuthenticationMetric browsedAuthenticationMetric) {
+    public final void updateMetricsOnResponseReceived(Map map, ComponentName componentName) {
         try {
-            if (browsedAuthenticationMetric.getProviderUid() == -1) {
-                Slog.v("RequestSessionMetric", "An authentication entry was not clicked");
-                return;
+            ProviderSession providerSession = (ProviderSession) map.get(componentName.flattenToString());
+            if (providerSession != null) {
+                collectChosenMetricViaCandidateTransfer(providerSession.mProviderSessionMetric.mCandidatePhasePerProviderMetric);
             }
-            int i = this.mSequenceCounter + 1;
-            this.mSequenceCounter = i;
-            MetricUtilities.logApiCalledAuthenticationMetric(browsedAuthenticationMetric, i);
         } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error during auth entry metric emit: " + e);
+            PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0.m(e, "Exception upon candidate to chosen metric transfer: ", "RequestSessionMetric");
         }
-    }
-
-    public void logApiCalledAtFinish(int i) {
-        try {
-            ChosenProviderFinalPhaseMetric chosenProviderFinalPhaseMetric = this.mChosenProviderFinalPhaseMetric;
-            List list = this.mCandidateBrowsingPhaseMetric;
-            int i2 = this.mSequenceCounter + 1;
-            this.mSequenceCounter = i2;
-            MetricUtilities.logApiCalledFinalPhase(chosenProviderFinalPhaseMetric, list, i, i2);
-            ChosenProviderFinalPhaseMetric chosenProviderFinalPhaseMetric2 = this.mChosenProviderFinalPhaseMetric;
-            List list2 = this.mCandidateBrowsingPhaseMetric;
-            int i3 = this.mSequenceCounter + 1;
-            this.mSequenceCounter = i3;
-            MetricUtilities.logApiCalledNoUidFinal(chosenProviderFinalPhaseMetric2, list2, i, i3);
-        } catch (Exception e) {
-            Slog.i("RequestSessionMetric", "Unexpected error during final metric emit: " + e);
-        }
-    }
-
-    public int getSessionIdTrackTwo() {
-        return this.mSessionIdTrackTwo;
     }
 }

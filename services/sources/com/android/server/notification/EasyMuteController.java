@@ -13,25 +13,22 @@ import android.util.Slog;
 import com.samsung.android.gesture.SemMotionEventListener;
 import com.samsung.android.gesture.SemMotionRecognitionEvent;
 import com.samsung.android.gesture.SemMotionRecognitionManager;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class EasyMuteController {
-    public AudioManager mAudioManager;
-    public Context mContext;
-    public final EasyMuteSettingObserver mEasyMuteSettingObserver;
-    public final Handler mHandler;
+public final class EasyMuteController {
+    public final AudioManager mAudioManager;
+    public final Context mContext;
     public boolean mIsRegister;
-    public Method mMethodRingtonePlayer;
+    public final Method mMethodRingtonePlayer;
     public boolean mMotionOn;
     public IBinder mNotificationPlayerBinder;
     public boolean mOverTurnOn;
-    public final String TAG = "EasyMuteController";
-    public final String RINGTONE_PLAYER = "android.media.IRingtonePlayer";
     public SemMotionRecognitionManager mEasyMuteMotionManager = null;
-    public SemMotionEventListener mMotionListener = new SemMotionEventListener() { // from class: com.android.server.notification.EasyMuteController.1
-        public void onMotionEvent(SemMotionRecognitionEvent semMotionRecognitionEvent) {
+    public final AnonymousClass1 mMotionListener = new SemMotionEventListener() { // from class: com.android.server.notification.EasyMuteController.1
+        public final void onMotionEvent(SemMotionRecognitionEvent semMotionRecognitionEvent) {
+            EasyMuteController easyMuteController;
             if (semMotionRecognitionEvent.getMotion() != 10) {
                 return;
             }
@@ -42,34 +39,75 @@ public class EasyMuteController {
                     if (ringtonePlayer != null) {
                         ringtonePlayer.stopAsync();
                     }
-                    if (!EasyMuteController.this.mIsRegister) {
+                    easyMuteController = EasyMuteController.this;
+                    if (!easyMuteController.mIsRegister) {
                         return;
                     }
                 } catch (RemoteException e) {
                     Slog.e("EasyMuteController", "Remote exception", e);
-                    if (!EasyMuteController.this.mIsRegister) {
+                    easyMuteController = EasyMuteController.this;
+                    if (!easyMuteController.mIsRegister) {
                         return;
                     }
                 }
-                EasyMuteController.this.unregisterListener();
+                easyMuteController.unregisterListener();
             } catch (Throwable th) {
-                if (EasyMuteController.this.mIsRegister) {
-                    EasyMuteController.this.unregisterListener();
+                EasyMuteController easyMuteController2 = EasyMuteController.this;
+                if (easyMuteController2.mIsRegister) {
+                    easyMuteController2.unregisterListener();
                 }
                 throw th;
             }
         }
     };
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class EasyMuteSettingObserver extends ContentObserver {
+        public EasyMuteSettingObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z) {
+            boolean z2 = false;
+            boolean z3 = Settings.System.getIntForUser(EasyMuteController.this.mContext.getContentResolver(), "master_motion", 0, -2) != 0;
+            if (z3 && Settings.System.getIntForUser(EasyMuteController.this.mContext.getContentResolver(), "motion_overturn", 0, -2) != 0) {
+                z2 = true;
+            }
+            EasyMuteController easyMuteController = EasyMuteController.this;
+            easyMuteController.getClass();
+            Slog.d("EasyMuteController", "EasyMute updated 1." + z3 + " 2." + z2);
+            if (easyMuteController.mMotionOn == z3 && easyMuteController.mOverTurnOn == z2) {
+                Slog.d("EasyMuteController", "setEasyMuteEnabled no setting changed");
+                return;
+            }
+            easyMuteController.mMotionOn = z3;
+            easyMuteController.mOverTurnOn = z2;
+            if (z3 && z2) {
+                if (easyMuteController.mEasyMuteMotionManager == null) {
+                    easyMuteController.mEasyMuteMotionManager = (SemMotionRecognitionManager) easyMuteController.mContext.getSystemService("motion_recognition");
+                    return;
+                } else {
+                    Slog.d("EasyMuteController", "setEasyMuteEnabled mEasyMuteMotionManager in not null");
+                    return;
+                }
+            }
+            Slog.d("EasyMuteController", "setEasyMuteEnabled setting off");
+            if (easyMuteController.mIsRegister) {
+                easyMuteController.unregisterListener();
+            }
+            easyMuteController.mEasyMuteMotionManager = null;
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r2v0, types: [com.android.server.notification.EasyMuteController$1] */
     public EasyMuteController(Context context) {
         this.mContext = context;
         Handler handler = new Handler();
-        this.mHandler = handler;
-        this.mAudioManager = (AudioManager) this.mContext.getSystemService("audio");
+        this.mAudioManager = (AudioManager) context.getSystemService("audio");
         EasyMuteSettingObserver easyMuteSettingObserver = new EasyMuteSettingObserver(handler);
-        this.mEasyMuteSettingObserver = easyMuteSettingObserver;
-        this.mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor("master_motion"), false, easyMuteSettingObserver);
-        this.mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor("motion_overturn"), false, easyMuteSettingObserver);
+        context.getContentResolver().registerContentObserver(Settings.System.getUriFor("master_motion"), false, easyMuteSettingObserver);
+        context.getContentResolver().registerContentObserver(Settings.System.getUriFor("motion_overturn"), false, easyMuteSettingObserver);
         easyMuteSettingObserver.onChange(false);
         try {
             this.mMethodRingtonePlayer = Class.forName("android.media.IRingtonePlayer").getMethod("setOnCompletionListener", INotificationPlayerOnCompletionListener.class);
@@ -82,132 +120,18 @@ public class EasyMuteController {
         }
     }
 
-    public final void setEasyMuteEnabled(boolean z, boolean z2) {
-        Slog.d("EasyMuteController", "EasyMute updated 1." + z + " 2." + z2);
-        if (this.mMotionOn != z || this.mOverTurnOn != z2) {
-            this.mMotionOn = z;
-            this.mOverTurnOn = z2;
-            if (z && z2) {
-                if (this.mEasyMuteMotionManager == null) {
-                    this.mEasyMuteMotionManager = (SemMotionRecognitionManager) this.mContext.getSystemService("motion_recognition");
-                    return;
-                } else {
-                    Slog.d("EasyMuteController", "setEasyMuteEnabled mEasyMuteMotionManager in not null");
-                    return;
-                }
-            }
-            Slog.d("EasyMuteController", "setEasyMuteEnabled setting off");
-            if (this.mIsRegister) {
-                unregisterListener();
-            }
-            this.mEasyMuteMotionManager = null;
+    public final void unregisterListener() {
+        if (!this.mIsRegister) {
+            Slog.i("EasyMuteController", "UnRegister failed. no registered");
             return;
         }
-        Slog.d("EasyMuteController", "setEasyMuteEnabled no setting changed");
-    }
-
-    public boolean isEnable() {
-        return this.mMotionOn && this.mOverTurnOn;
-    }
-
-    public void registerListener() {
-        if (isEnable() && !this.mIsRegister) {
-            SemMotionRecognitionManager semMotionRecognitionManager = this.mEasyMuteMotionManager;
-            if (semMotionRecognitionManager != null) {
-                semMotionRecognitionManager.registerListener(this.mMotionListener, 1);
-                this.mIsRegister = true;
-                Slog.i("EasyMuteController", "Reg. OverTurn");
-                if (this.mNotificationPlayerBinder == null) {
-                    Object[] objArr = {new INotificationPlayerOnCompletionListener.Stub() { // from class: com.android.server.notification.EasyMuteController.2
-                        public void onCompletion() {
-                            Slog.i("EasyMuteController", "onCompletion");
-                            if (EasyMuteController.this.mIsRegister) {
-                                EasyMuteController.this.unregisterListener();
-                            }
-                        }
-                    }};
-                    try {
-                        IRingtonePlayer ringtonePlayer = this.mAudioManager.getRingtonePlayer();
-                        Method method = this.mMethodRingtonePlayer;
-                        if (method != null) {
-                            IBinder iBinder = (IBinder) method.invoke(ringtonePlayer, objArr);
-                            this.mNotificationPlayerBinder = iBinder;
-                            iBinder.linkToDeath(new IBinder.DeathRecipient() { // from class: com.android.server.notification.EasyMuteController.3
-                                @Override // android.os.IBinder.DeathRecipient
-                                public void binderDied() {
-                                    Slog.i("EasyMuteController", "binderDied()");
-                                    EasyMuteController.this.mNotificationPlayerBinder.unlinkToDeath(this, 0);
-                                    EasyMuteController.this.mNotificationPlayerBinder = null;
-                                    if (EasyMuteController.this.mIsRegister) {
-                                        EasyMuteController.this.unregisterListener();
-                                    }
-                                }
-                            }, 0);
-                            return;
-                        }
-                        return;
-                    } catch (RemoteException unused) {
-                        Slog.w("EasyMuteController", "RemoteException");
-                        return;
-                    } catch (IllegalAccessException unused2) {
-                        Slog.w("EasyMuteController", "IllegalAccessException");
-                        this.mNotificationPlayerBinder = null;
-                        if (this.mIsRegister) {
-                            unregisterListener();
-                            return;
-                        }
-                        return;
-                    } catch (InvocationTargetException unused3) {
-                        Slog.w("EasyMuteController", "InvocationTargetException");
-                        this.mNotificationPlayerBinder = null;
-                        if (this.mIsRegister) {
-                            unregisterListener();
-                            return;
-                        }
-                        return;
-                    }
-                }
-                return;
-            }
-            Slog.d("EasyMuteController", "Register failed. mEasyMuteMotionManager is null");
-            return;
-        }
-        Slog.d("EasyMuteController", "Register failed. already registered or setting not eanbled");
-    }
-
-    public void unregisterListener() {
-        if (this.mIsRegister) {
-            SemMotionRecognitionManager semMotionRecognitionManager = this.mEasyMuteMotionManager;
-            if (semMotionRecognitionManager != null) {
-                semMotionRecognitionManager.unregisterListener(this.mMotionListener);
-                this.mIsRegister = false;
-                Slog.i("EasyMuteController", "UnReg. OverTurn");
-                return;
-            }
+        SemMotionRecognitionManager semMotionRecognitionManager = this.mEasyMuteMotionManager;
+        if (semMotionRecognitionManager == null) {
             Slog.i("EasyMuteController", "UnRegister failed. mEasyMuteMotionManager is null");
             return;
         }
-        Slog.i("EasyMuteController", "UnRegister failed. no registered");
-    }
-
-    /* loaded from: classes2.dex */
-    public class EasyMuteSettingObserver extends ContentObserver {
-        public EasyMuteSettingObserver(Handler handler) {
-            super(handler);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z) {
-            update();
-        }
-
-        public void update() {
-            boolean z = false;
-            boolean z2 = Settings.System.getIntForUser(EasyMuteController.this.mContext.getContentResolver(), "master_motion", 0, -2) != 0;
-            if (z2 && Settings.System.getIntForUser(EasyMuteController.this.mContext.getContentResolver(), "motion_overturn", 0, -2) != 0) {
-                z = true;
-            }
-            EasyMuteController.this.setEasyMuteEnabled(z2, z);
-        }
+        semMotionRecognitionManager.unregisterListener(this.mMotionListener);
+        this.mIsRegister = false;
+        Slog.i("EasyMuteController", "UnReg. OverTurn");
     }
 }

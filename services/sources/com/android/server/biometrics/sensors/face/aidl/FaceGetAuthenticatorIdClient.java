@@ -10,39 +10,36 @@ import com.android.server.biometrics.sensors.HalClientMonitor;
 import java.util.Map;
 import java.util.function.Supplier;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FaceGetAuthenticatorIdClient extends HalClientMonitor {
+public final class FaceGetAuthenticatorIdClient extends HalClientMonitor {
     public final Map mAuthenticatorIds;
 
-    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public int getProtoEnum() {
-        return 5;
-    }
-
-    @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void unableToStart() {
-    }
-
     public FaceGetAuthenticatorIdClient(Context context, Supplier supplier, int i, String str, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, Map map) {
-        super(context, supplier, null, null, i, str, 0, i2, biometricLogger, biometricContext);
+        super(context, supplier, null, null, i, str, 0, i2, biometricLogger, biometricContext, false);
         this.mAuthenticatorIds = map;
     }
 
     @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public void start(ClientMonitorCallback clientMonitorCallback) {
+    public final int getProtoEnum() {
+        return 5;
+    }
+
+    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
+    public final void start(ClientMonitorCallback clientMonitorCallback) {
         super.start(clientMonitorCallback);
         startHalOperation();
     }
 
     @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void startHalOperation() {
+    public final void startHalOperation() {
         try {
             if (SemFaceServiceExImpl.getInstance().isUsingSehAPI()) {
                 SemFaceServiceExImpl.getInstance().daemonGetAuthenticatorId();
             } else {
                 long currentTimeMillis = System.currentTimeMillis();
                 Slog.w("FaceGetAuthenticatorIdClient", "getAuthenticatorId START");
-                ((AidlSession) getFreshDaemon()).getSession().getAuthenticatorId();
+                ((AidlSession) this.mLazyDaemon.get()).mSession.getAuthenticatorId();
                 Slog.w("FaceGetAuthenticatorIdClient", "getAuthenticatorId FINISH (" + (System.currentTimeMillis() - currentTimeMillis) + "ms)");
             }
         } catch (RemoteException e) {
@@ -50,8 +47,7 @@ public class FaceGetAuthenticatorIdClient extends HalClientMonitor {
         }
     }
 
-    public void onAuthenticatorIdRetrieved(long j) {
-        this.mAuthenticatorIds.put(Integer.valueOf(getTargetUserId()), Long.valueOf(j));
-        this.mCallback.onClientFinished(this, true);
+    @Override // com.android.server.biometrics.sensors.HalClientMonitor
+    public final void unableToStart() {
     }
 }

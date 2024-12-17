@@ -9,46 +9,31 @@ import com.samsung.android.knox.analytics.service.KnoxAnalyticsSystemService;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class SALoggingHelper {
-    public void sendSettingLog(String str, Context context, HashMap hashMap) {
-        if (hashMap == null || hashMap.isEmpty()) {
+public abstract class SALoggingHelper {
+    public static void sendSettingLog(Context context, HashMap hashMap) {
+        if (hashMap.isEmpty()) {
             return;
         }
-        if (TextUtils.isEmpty(str)) {
-            str = "PackageManager";
-        }
-        Bundle commonBundle = getCommonBundle();
-        commonBundle.putString("type", KnoxAnalyticsSystemService.STATUS_PARAMETER_NAME);
-        commonBundle.putSerializable("setting", hashMap);
-        Intent commonIntent = getCommonIntent();
-        commonIntent.putExtras(commonBundle);
+        String str = TextUtils.isEmpty("RoleLogger") ? "PackageManager" : "RoleLogger";
+        Bundle bundle = new Bundle();
+        bundle.putString("tracking_id", "7IH-399-559998");
+        bundle.putString("pkg_name", "System");
+        bundle.putString("type", KnoxAnalyticsSystemService.STATUS_PARAMETER_NAME);
+        bundle.putSerializable("setting", hashMap);
+        Intent intent = new Intent();
+        intent.setAction("com.sec.android.diagmonagent.intent.USE_APP_FEATURE_SURVEY");
+        intent.setPackage("com.sec.android.diagmonagent");
+        intent.putExtras(bundle);
         final StringBuilder sb = new StringBuilder(KnoxAnalyticsSystemService.STATUS_PARAMETER_NAME);
         hashMap.forEach(new BiConsumer() { // from class: com.samsung.android.server.pm.SALoggingHelper$$ExternalSyntheticLambda0
             @Override // java.util.function.BiConsumer
             public final void accept(Object obj, Object obj2) {
-                SALoggingHelper.lambda$sendSettingLog$0(sb, (String) obj, (String) obj2);
+                sb.append("\n  " + ((String) obj) + " / " + ((String) obj2));
             }
         });
         Log.i(str, sb.toString());
-        context.sendBroadcast(commonIntent);
-    }
-
-    public static /* synthetic */ void lambda$sendSettingLog$0(StringBuilder sb, String str, String str2) {
-        sb.append("\n  " + str + " / " + str2);
-    }
-
-    public final Bundle getCommonBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putString("tracking_id", "7IH-399-559998");
-        bundle.putString("pkg_name", "System");
-        return bundle;
-    }
-
-    public final Intent getCommonIntent() {
-        Intent intent = new Intent();
-        intent.setAction("com.sec.android.diagmonagent.intent.USE_APP_FEATURE_SURVEY");
-        intent.setPackage("com.sec.android.diagmonagent");
-        return intent;
+        context.sendBroadcast(intent);
     }
 }

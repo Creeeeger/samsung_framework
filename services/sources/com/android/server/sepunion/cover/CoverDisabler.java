@@ -1,7 +1,6 @@
 package com.android.server.sepunion.cover;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -10,47 +9,38 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import com.samsung.android.sepunion.Log;
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class CoverDisabler {
-    public static final String TAG = "CoverManager_" + CoverDisabler.class.getSimpleName();
-    public PowerManager.WakeLock mDisableCoverManagerWakeLock;
+    public final PowerManager.WakeLock mDisableCoverManagerWakeLock;
     public final CoverDisablerHandler mHandler;
-    public final PowerManager mPowerManager;
     public final Object mLock = new Object();
     public final ArrayList mDisableRecords = new ArrayList();
     public boolean mCoverManagerDisabled = false;
     public boolean mRealCoverSwitchState = true;
 
-    public CoverDisabler(Looper looper, Context context) {
-        PowerManager powerManager = (PowerManager) context.getSystemService("power");
-        this.mPowerManager = powerManager;
-        this.mHandler = new CoverDisablerHandler(looper);
-        PowerManager.WakeLock newWakeLock = powerManager.newWakeLock(1, "disable covermanager");
-        this.mDisableCoverManagerWakeLock = newWakeLock;
-        newWakeLock.setReferenceCounted(false);
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class CoverDisablerHandler extends Handler {
         public CoverDisablerHandler(Looper looper) {
             super(looper, null, true);
         }
 
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             if (message.what != 0) {
                 return;
             }
-            CoverDisabler.this.handleDisableCoverManagerLocked(message.arg1 == 1);
+            CoverDisabler coverDisabler = CoverDisabler.this;
+            if (coverDisabler.mDisableCoverManagerWakeLock.isHeld()) {
+                coverDisabler.mDisableCoverManagerWakeLock.release();
+            }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class DisableRecord implements IBinder.DeathRecipient {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DisableRecord implements IBinder.DeathRecipient {
         public boolean disable;
         public String pkg;
         public IBinder token;
@@ -59,8 +49,8 @@ public final class CoverDisabler {
         }
 
         @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            Log.i(CoverDisabler.TAG, "binder died : pkg=" + this.pkg);
+        public final void binderDied() {
+            Log.i("CoverManager_CoverDisabler", "binder died : pkg=" + this.pkg);
             synchronized (CoverDisabler.this.mLock) {
                 CoverDisabler.this.disableCoverManagerLocked(false, this.token, this.pkg);
             }
@@ -68,50 +58,41 @@ public final class CoverDisabler {
         }
     }
 
-    public void setRealCoverSwitchState(boolean z) {
-        this.mRealCoverSwitchState = z;
-    }
-
-    public boolean getRealCoverSwitchState() {
-        return this.mRealCoverSwitchState;
-    }
-
-    public boolean isCoverManagerDisabled() {
-        return this.mCoverManagerDisabled;
-    }
-
-    public void sendCoverSwitchIntent(Context context, boolean z) {
-        if (context == null) {
-            return;
-        }
-        Intent intent = new Intent();
-        intent.setAction("com.samsung.sepunion.cover.SEND_COVER_SWITCH");
-        intent.putExtra("switchState", z);
-        Log.d(TAG, "sendCoverSwitchIntent");
-        context.sendBroadcast(intent);
-    }
-
-    public boolean disableCoverManager(boolean z, IBinder iBinder, String str) {
-        boolean disableCoverManagerLocked;
-        synchronized (this.mLock) {
-            disableCoverManagerLocked = disableCoverManagerLocked(z, iBinder, str);
-        }
-        return disableCoverManagerLocked;
+    public CoverDisabler(Looper looper, Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService("power");
+        this.mHandler = new CoverDisablerHandler(looper);
+        PowerManager.WakeLock newWakeLock = powerManager.newWakeLock(1, "disable covermanager");
+        this.mDisableCoverManagerWakeLock = newWakeLock;
+        newWakeLock.setReferenceCounted(false);
     }
 
     public final boolean disableCoverManagerLocked(boolean z, IBinder iBinder, String str) {
+        boolean z2;
         if (iBinder == null || str == null) {
             return false;
         }
-        Log.d(TAG, "disableCoverManagerLocked : disable=" + z + " pkg=" + str + " token=" + iBinder);
+        Log.d("CoverManager_CoverDisabler", "disableCoverManagerLocked : disable=" + z + " pkg=" + str + " token=" + iBinder);
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             manageDisableListLocked(z, iBinder, str);
-            boolean gatherDisableLocked = gatherDisableLocked();
-            if (gatherDisableLocked == this.mCoverManagerDisabled) {
+            int size = this.mDisableRecords.size();
+            int i = 0;
+            while (true) {
+                if (i >= size) {
+                    z2 = false;
+                    break;
+                }
+                if (((DisableRecord) this.mDisableRecords.get(i)).disable) {
+                    z2 = true;
+                    break;
+                }
+                i++;
+            }
+            if (z2 == this.mCoverManagerDisabled) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
                 return false;
             }
-            this.mCoverManagerDisabled = gatherDisableLocked;
+            this.mCoverManagerDisabled = z2;
             if (!this.mDisableCoverManagerWakeLock.isHeld()) {
                 this.mDisableCoverManagerWakeLock.acquire();
             }
@@ -119,15 +100,11 @@ public final class CoverDisabler {
             obtain.what = 0;
             obtain.arg1 = z ? 1 : 0;
             this.mHandler.sendMessage(obtain);
-            return true;
-        } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final void handleDisableCoverManagerLocked(boolean z) {
-        if (this.mDisableCoverManagerWakeLock.isHeld()) {
-            this.mDisableCoverManagerWakeLock.release();
+            return true;
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
         }
     }
 
@@ -167,32 +144,5 @@ public final class CoverDisabler {
         disableRecord.disable = true;
         disableRecord.token = iBinder;
         disableRecord.pkg = str;
-    }
-
-    public final boolean gatherDisableLocked() {
-        int size = this.mDisableRecords.size();
-        for (int i = 0; i < size; i++) {
-            if (((DisableRecord) this.mDisableRecords.get(i)).disable) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        printWriter.println(" Current CoverDisabler state:");
-        synchronized (this.mLock) {
-            printWriter.println("  mCoverManagerDisabled=" + this.mCoverManagerDisabled);
-            if (this.mCoverManagerDisabled) {
-                printWriter.println("  Real Cover Switch State=" + this.mRealCoverSwitchState);
-            }
-            int size = this.mDisableRecords.size();
-            printWriter.println("  mDisableRecords.size=" + size);
-            for (int i = 0; i < size; i++) {
-                DisableRecord disableRecord = (DisableRecord) this.mDisableRecords.get(i);
-                printWriter.println("    [" + i + "] disable=" + disableRecord.disable + " pkg=" + disableRecord.pkg + " token=" + disableRecord.token);
-            }
-            printWriter.println("  ");
-        }
     }
 }

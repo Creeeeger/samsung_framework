@@ -1,12 +1,12 @@
 package com.android.server.biometrics.sensors;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface ClientMonitorCallback {
-    default void onBiometricAction(int i) {
+    default void onBiometricAction() {
     }
 
-    default void onClientFinished(BaseClientMonitor baseClientMonitor, boolean z) {
-    }
+    void onClientFinished(BaseClientMonitor baseClientMonitor, boolean z);
 
     default void onClientStarted(BaseClientMonitor baseClientMonitor) {
     }

@@ -2,49 +2,65 @@ package com.android.server.autofill;
 
 import android.util.Slog;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.autofill.FieldClassificationEventLogger;
+import com.android.server.accessibility.ProxyManager$$ExternalSyntheticOutline0;
 import java.util.Optional;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class FieldClassificationEventLogger {
-    public Optional mEventInternal = Optional.empty();
+    public Optional mEventInternal;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class FieldClassificationEventInternal {
-        public long mLatencyClassificationRequestMillis = -1;
+        public int mAppPackageUid;
+        public int mCountClassifications;
+        public boolean mIsSessionGc;
+        public long mLatencyClassificationRequestMillis;
+        public int mNextFillRequestId;
+        public int mRequestId;
+        public int mSessionId;
+        public int mStatus;
     }
 
-    public static FieldClassificationEventLogger createLogger() {
-        return new FieldClassificationEventLogger();
-    }
-
-    public void startNewLogForRequest() {
-        if (!this.mEventInternal.isEmpty()) {
-            Slog.w("FieldClassificationEventLogger", "FieldClassificationEventLogger is not empty before starting for a new request");
-        }
-        this.mEventInternal = Optional.of(new FieldClassificationEventInternal());
-    }
-
-    public void maybeSetLatencyMillis(final long j) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((FieldClassificationEventLogger.FieldClassificationEventInternal) obj).mLatencyClassificationRequestMillis = j;
-            }
-        });
-    }
-
-    public void logAndEndEvent() {
+    public final void logAndEndEvent() {
         if (!this.mEventInternal.isPresent()) {
             Slog.w("FieldClassificationEventLogger", "Shouldn't be logging AutofillFieldClassificationEventInternal again for same event");
             return;
         }
         FieldClassificationEventInternal fieldClassificationEventInternal = (FieldClassificationEventInternal) this.mEventInternal.get();
         if (Helper.sVerbose) {
-            Slog.v("FieldClassificationEventLogger", "Log AutofillFieldClassificationEventReported: mLatencyClassificationRequestMillis=" + fieldClassificationEventInternal.mLatencyClassificationRequestMillis);
+            StringBuilder sb = new StringBuilder("Log AutofillFieldClassificationEventReported: mLatencyClassificationRequestMillis=");
+            sb.append(fieldClassificationEventInternal.mLatencyClassificationRequestMillis);
+            sb.append(" mCountClassifications=");
+            sb.append(fieldClassificationEventInternal.mCountClassifications);
+            sb.append(" mSessionId=");
+            sb.append(fieldClassificationEventInternal.mSessionId);
+            sb.append(" mRequestId=");
+            sb.append(fieldClassificationEventInternal.mRequestId);
+            sb.append(" mNextFillRequestId=");
+            sb.append(fieldClassificationEventInternal.mNextFillRequestId);
+            sb.append(" mAppPackageUid=");
+            sb.append(fieldClassificationEventInternal.mAppPackageUid);
+            sb.append(" mStatus=");
+            sb.append(fieldClassificationEventInternal.mStatus);
+            sb.append(" mIsSessionGc=");
+            ProxyManager$$ExternalSyntheticOutline0.m("FieldClassificationEventLogger", sb, fieldClassificationEventInternal.mIsSessionGc);
         }
-        FrameworkStatsLog.write(FrameworkStatsLog.AUTOFILL_FIELD_CLASSIFICATION_EVENT_REPORTED, fieldClassificationEventInternal.mLatencyClassificationRequestMillis);
+        FrameworkStatsLog.write(FrameworkStatsLog.AUTOFILL_FIELD_CLASSIFICATION_EVENT_REPORTED, fieldClassificationEventInternal.mLatencyClassificationRequestMillis, fieldClassificationEventInternal.mCountClassifications, fieldClassificationEventInternal.mSessionId, fieldClassificationEventInternal.mRequestId, fieldClassificationEventInternal.mNextFillRequestId, fieldClassificationEventInternal.mAppPackageUid, fieldClassificationEventInternal.mStatus, fieldClassificationEventInternal.mIsSessionGc);
         this.mEventInternal = Optional.empty();
+    }
+
+    public final void startNewLogForRequest() {
+        if (!this.mEventInternal.isEmpty()) {
+            Slog.w("FieldClassificationEventLogger", "FieldClassificationEventLogger is not empty before starting for a new request");
+        }
+        FieldClassificationEventInternal fieldClassificationEventInternal = new FieldClassificationEventInternal();
+        fieldClassificationEventInternal.mLatencyClassificationRequestMillis = -1L;
+        fieldClassificationEventInternal.mCountClassifications = -1;
+        fieldClassificationEventInternal.mSessionId = -1;
+        fieldClassificationEventInternal.mRequestId = -1;
+        fieldClassificationEventInternal.mNextFillRequestId = -1;
+        fieldClassificationEventInternal.mAppPackageUid = -1;
+        this.mEventInternal = Optional.of(fieldClassificationEventInternal);
     }
 }

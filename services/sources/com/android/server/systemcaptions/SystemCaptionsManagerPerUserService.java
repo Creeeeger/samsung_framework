@@ -5,63 +5,20 @@ import android.content.ComponentName;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.os.RemoteException;
-import android.util.Slog;
+import com.android.server.ambientcontext.AmbientContextManagerPerUserService$$ExternalSyntheticOutline0;
 import com.android.server.infra.AbstractPerUserSystemService;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class SystemCaptionsManagerPerUserService extends AbstractPerUserSystemService {
-    public static final String TAG = "SystemCaptionsManagerPerUserService";
     public RemoteSystemCaptionsManagerService mRemoteService;
 
-    public SystemCaptionsManagerPerUserService(SystemCaptionsManagerService systemCaptionsManagerService, Object obj, boolean z, int i) {
-        super(systemCaptionsManagerService, obj, i);
-    }
-
     @Override // com.android.server.infra.AbstractPerUserSystemService
-    public ServiceInfo newServiceInfoLocked(ComponentName componentName) {
+    public final ServiceInfo newServiceInfoLocked(ComponentName componentName) {
         try {
             return AppGlobals.getPackageManager().getServiceInfo(componentName, 128L, this.mUserId);
         } catch (RemoteException unused) {
-            throw new PackageManager.NameNotFoundException("Could not get service for " + componentName);
+            throw new PackageManager.NameNotFoundException(AmbientContextManagerPerUserService$$ExternalSyntheticOutline0.m(componentName, "Could not get service for "));
         }
-    }
-
-    public void initializeLocked() {
-        if (((SystemCaptionsManagerService) this.mMaster).verbose) {
-            Slog.v(TAG, "initialize()");
-        }
-        if (getRemoteServiceLocked() == null && ((SystemCaptionsManagerService) this.mMaster).verbose) {
-            Slog.v(TAG, "initialize(): Failed to init remote server");
-        }
-    }
-
-    public void destroyLocked() {
-        if (((SystemCaptionsManagerService) this.mMaster).verbose) {
-            Slog.v(TAG, "destroyLocked()");
-        }
-        RemoteSystemCaptionsManagerService remoteSystemCaptionsManagerService = this.mRemoteService;
-        if (remoteSystemCaptionsManagerService != null) {
-            remoteSystemCaptionsManagerService.destroy();
-            this.mRemoteService = null;
-        }
-    }
-
-    public final RemoteSystemCaptionsManagerService getRemoteServiceLocked() {
-        if (this.mRemoteService == null) {
-            String componentNameLocked = getComponentNameLocked();
-            if (componentNameLocked == null) {
-                if (!((SystemCaptionsManagerService) this.mMaster).verbose) {
-                    return null;
-                }
-                Slog.v(TAG, "getRemoteServiceLocked(): Not set");
-                return null;
-            }
-            this.mRemoteService = new RemoteSystemCaptionsManagerService(getContext(), ComponentName.unflattenFromString(componentNameLocked), this.mUserId, ((SystemCaptionsManagerService) this.mMaster).verbose);
-            if (((SystemCaptionsManagerService) this.mMaster).verbose) {
-                Slog.v(TAG, "getRemoteServiceLocked(): initialize for user " + this.mUserId);
-            }
-            this.mRemoteService.initialize();
-        }
-        return this.mRemoteService;
     }
 }

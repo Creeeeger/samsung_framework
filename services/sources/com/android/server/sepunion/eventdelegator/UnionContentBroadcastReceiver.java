@@ -9,17 +9,23 @@ import com.android.server.sepunion.SemDeviceInfoManagerService;
 import com.samsung.android.sepunion.Log;
 import java.util.Iterator;
 
-/* loaded from: classes3.dex */
-public class UnionContentBroadcastReceiver extends BroadcastReceiver {
-    public static final String TAG = SemDeviceInfoManagerService.TAG;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class UnionContentBroadcastReceiver extends BroadcastReceiver {
+    public static final String TAG;
     public final SemDeviceInfoManagerService mService;
+
+    static {
+        int i = SemDeviceInfoManagerService.$r8$clinit;
+        TAG = "SemDeviceInfoManagerService";
+    }
 
     public UnionContentBroadcastReceiver(SemDeviceInfoManagerService semDeviceInfoManagerService) {
         this.mService = semDeviceInfoManagerService;
     }
 
     @Override // android.content.BroadcastReceiver
-    public void onReceive(Context context, Intent intent) {
+    public final void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         int i = intent.getExtras() != null ? intent.getExtras().getInt("android.intent.extra.user_handle") : -10000;
         Log.d(TAG, "onReceive : " + action + ", userId = " + i);
@@ -37,9 +43,13 @@ public class UnionContentBroadcastReceiver extends BroadcastReceiver {
 
     public final void sendIntentAsUser(Intent intent, String str, int i) {
         synchronized (this.mService.mLock) {
-            ListenerContainer listenerContainer = this.mService.getListenerContainer(i);
-            if (listenerContainer.mIntentActionMap.containsKey(str)) {
-                this.mService.sendIntentAction((UnionEventListenerItem) listenerContainer.mIntentActionMap.get(str), intent, i);
+            try {
+                ListenerContainer listenerContainer = this.mService.getListenerContainer(i);
+                if (listenerContainer.mIntentActionMap.containsKey(str)) {
+                    this.mService.sendIntentAction((UnionEventListenerItem) listenerContainer.mIntentActionMap.get(str), intent, i);
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }

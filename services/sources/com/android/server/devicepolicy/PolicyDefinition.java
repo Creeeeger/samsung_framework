@@ -1,8 +1,11 @@
 package com.android.server.devicepolicy;
 
+import android.app.ActivityTaskManager;
 import android.app.admin.AccountTypePolicyKey;
 import android.app.admin.BooleanPolicyValue;
+import android.app.admin.DevicePolicyCache;
 import android.app.admin.DevicePolicyIdentifiers;
+import android.app.admin.DevicePolicyManagerInternal;
 import android.app.admin.IntegerPolicyValue;
 import android.app.admin.IntentFilterPolicyKey;
 import android.app.admin.LockTaskPolicy;
@@ -10,42 +13,59 @@ import android.app.admin.NoArgsPolicyKey;
 import android.app.admin.PackagePermissionPolicyKey;
 import android.app.admin.PackagePolicyKey;
 import android.app.admin.PolicyKey;
-import android.app.admin.PolicyValue;
 import android.app.admin.UserRestrictionPolicyKey;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
+import android.os.Binder;
+import android.os.RemoteException;
+import android.os.UserHandle;
+import android.util.ArraySet;
+import android.util.Slog;
+import com.android.internal.hidden_from_bootclasspath.com.android.net.thread.platform.flags.Flags;
+import com.android.internal.os.BackgroundThread;
+import com.android.internal.util.FunctionalUtils;
 import com.android.internal.util.function.QuadFunction;
 import com.android.modules.utils.TypedXmlPullParser;
-import com.android.modules.utils.TypedXmlSerializer;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.LocalServices;
+import com.android.server.am.MARsPolicyManager;
+import com.android.server.am.mars.filter.filter.ProtectedPackagesFilter;
 import com.android.server.utils.Slogf;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class PolicyDefinition {
-    public static PolicyDefinition AUTO_TIMEZONE;
-    public static final MostRestrictive FALSE_MORE_RESTRICTIVE = new MostRestrictive(List.of(new BooleanPolicyValue(false), new BooleanPolicyValue(true)));
-    public static PolicyDefinition GENERIC_ACCOUNT_MANAGEMENT_DISABLED;
-    public static PolicyDefinition GENERIC_APPLICATION_HIDDEN;
-    public static PolicyDefinition GENERIC_APPLICATION_RESTRICTIONS;
-    public static PolicyDefinition GENERIC_PACKAGE_UNINSTALL_BLOCKED;
-    public static final PolicyDefinition GENERIC_PERMISSION_GRANT;
-    public static PolicyDefinition GENERIC_PERSISTENT_PREFERRED_ACTIVITY;
-    public static PolicyDefinition KEYGUARD_DISABLED_FEATURES;
-    public static PolicyDefinition LOCK_TASK;
-    public static PolicyDefinition PERMITTED_INPUT_METHODS;
-    public static PolicyDefinition PERSONAL_APPS_SUSPENDED;
+    public static final PolicyDefinition AUDIT_LOGGING;
+    public static final PolicyDefinition CONTENT_PROTECTION;
+    public static final PolicyDefinition GENERIC_ACCOUNT_MANAGEMENT_DISABLED;
+    public static final PolicyDefinition GENERIC_APPLICATION_HIDDEN;
+    public static final PolicyDefinition GENERIC_APPLICATION_RESTRICTIONS;
+    public static final PolicyDefinition GENERIC_PACKAGE_UNINSTALL_BLOCKED;
+    public static final PolicyDefinition GENERIC_PERSISTENT_PREFERRED_ACTIVITY;
+    public static final PolicyDefinition LOCK_TASK;
+    public static final PolicyDefinition PACKAGES_SUSPENDED;
+    public static final PolicyDefinition PASSWORD_COMPLEXITY;
+    public static final PolicyDefinition PERMITTED_INPUT_METHODS;
+    public static final PolicyDefinition PERSONAL_APPS_SUSPENDED;
     public static final Map POLICY_DEFINITIONS;
-    public static PolicyDefinition RESET_PASSWORD_TOKEN;
-    public static PolicyDefinition SCREEN_CAPTURE_DISABLED;
+    public static final PolicyDefinition SCREEN_CAPTURE_DISABLED;
+    public static final PolicyDefinition SECURITY_LOGGING;
     public static final MostRestrictive TRUE_MORE_RESTRICTIVE;
-    public static PolicyDefinition USER_CONTROLLED_DISABLED_PACKAGES;
-    public static Map USER_RESTRICTION_FLAGS;
+    public static final PolicyDefinition USB_DATA_SIGNALING;
+    public static final PolicyDefinition USER_CONTROLLED_DISABLED_PACKAGES;
+    public static final Map USER_RESTRICTION_FLAGS;
     public final QuadFunction mPolicyEnforcerCallback;
     public final int mPolicyFlags;
     public final PolicyKey mPolicyKey;
@@ -53,325 +73,3811 @@ public final class PolicyDefinition {
     public final ResolutionMechanism mResolutionMechanism;
 
     static {
-        MostRestrictive mostRestrictive = new MostRestrictive(List.of(new BooleanPolicyValue(true), new BooleanPolicyValue(false)));
-        TRUE_MORE_RESTRICTIVE = mostRestrictive;
-        AUTO_TIMEZONE = new PolicyDefinition(new NoArgsPolicyKey("autoTimezone"), mostRestrictive, 1, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
+        MostRestrictive mostRestrictive = new MostRestrictive(List.of(new BooleanPolicyValue(false), new BooleanPolicyValue(true)));
+        MostRestrictive mostRestrictive2 = new MostRestrictive(List.of(new BooleanPolicyValue(true), new BooleanPolicyValue(false)));
+        TRUE_MORE_RESTRICTIVE = mostRestrictive2;
+        final int i = 0;
+        PolicyDefinition policyDefinition = new PolicyDefinition(new NoArgsPolicyKey("autoTimezone"), mostRestrictive2, 1, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                Boolean lambda$static$0;
-                lambda$static$0 = PolicyDefinition.lambda$static$0((Boolean) obj, (Context) obj2, (Integer) obj3, (PolicyKey) obj4);
-                return lambda$static$0;
+                final int i2;
+                int i3 = 0;
+                switch (i) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i2 = lockTaskPolicy.getFlags();
+                        } else {
+                            i2 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i2);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i3))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i4 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i4));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i4));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i3, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new BooleanPolicySerializer());
-        PolicyDefinition policyDefinition = new PolicyDefinition(new PackagePermissionPolicyKey("permissionGrant"), new MostRestrictive(List.of(new IntegerPolicyValue(2), new IntegerPolicyValue(1), new IntegerPolicyValue(0))), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda5
+        final int i2 = 18;
+        PolicyDefinition policyDefinition2 = new PolicyDefinition(new PackagePermissionPolicyKey("permissionGrant"), new MostRestrictive(List.of(new IntegerPolicyValue(2), new IntegerPolicyValue(1), new IntegerPolicyValue(0))), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                return Boolean.valueOf(PolicyEnforcerCallbacks.setPermissionGrantState((Integer) obj, (Context) obj2, ((Integer) obj3).intValue(), (PolicyKey) obj4));
+                final int i22;
+                int i3 = 0;
+                switch (i2) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i3))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i4 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i4));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i4));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i3, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new IntegerPolicySerializer());
-        GENERIC_PERMISSION_GRANT = policyDefinition;
-        LOCK_TASK = new PolicyDefinition(new NoArgsPolicyKey("lockTask"), new TopPriority(List.of(EnforcingAdmin.getRoleAuthorityOf("android.app.role.SYSTEM_FINANCED_DEVICE_CONTROLLER"), "enterprise")), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda6
+        final int i3 = 1;
+        PolicyDefinition policyDefinition3 = new PolicyDefinition(new NoArgsPolicyKey("securityLogging"), mostRestrictive2, 1, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                Boolean lambda$static$1;
-                lambda$static$1 = PolicyDefinition.lambda$static$1((LockTaskPolicy) obj, (Context) obj2, (Integer) obj3, (PolicyKey) obj4);
-                return lambda$static$1;
+                final int i22;
+                int i32 = 0;
+                switch (i3) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i4 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i4));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i4));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
+            }
+        }, new BooleanPolicySerializer());
+        SECURITY_LOGGING = policyDefinition3;
+        final int i4 = 2;
+        PolicyDefinition policyDefinition4 = new PolicyDefinition(new NoArgsPolicyKey("auditLogging"), mostRestrictive2, 1, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
+            public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
+                final int i22;
+                int i32 = 0;
+                switch (i4) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
+            }
+        }, new BooleanPolicySerializer());
+        AUDIT_LOGGING = policyDefinition4;
+        final int i5 = 3;
+        PolicyDefinition policyDefinition5 = new PolicyDefinition(new NoArgsPolicyKey("lockTask"), new TopPriority(List.of("role:android.app.role.SYSTEM_FINANCED_DEVICE_CONTROLLER", "enterprise")), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
+            public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
+                final int i22;
+                int i32 = 0;
+                switch (i5) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new LockTaskPolicySerializer());
-        USER_CONTROLLED_DISABLED_PACKAGES = new PolicyDefinition(new NoArgsPolicyKey("userControlDisabledPackages"), new StringSetUnion(), new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda7
+        LOCK_TASK = policyDefinition5;
+        final int i6 = 4;
+        PolicyDefinition policyDefinition6 = new PolicyDefinition(new NoArgsPolicyKey("userControlDisabledPackages"), new PackageSetUnion(), 0, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                Boolean lambda$static$2;
-                lambda$static$2 = PolicyDefinition.lambda$static$2((Set) obj, (Context) obj2, (Integer) obj3, (PolicyKey) obj4);
-                return lambda$static$2;
+                final int i22;
+                int i32 = 0;
+                switch (i6) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
-        }, new StringSetPolicySerializer());
-        GENERIC_PERSISTENT_PREFERRED_ACTIVITY = new PolicyDefinition(new IntentFilterPolicyKey("persistentPreferredActivity"), new TopPriority(List.of(EnforcingAdmin.getRoleAuthorityOf("android.app.role.SYSTEM_FINANCED_DEVICE_CONTROLLER"), "enterprise")), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda8
+        }, new PackageSetPolicySerializer());
+        USER_CONTROLLED_DISABLED_PACKAGES = policyDefinition6;
+        final int i7 = 5;
+        PolicyDefinition policyDefinition7 = new PolicyDefinition(new IntentFilterPolicyKey("persistentPreferredActivity"), new TopPriority(List.of("role:android.app.role.SYSTEM_FINANCED_DEVICE_CONTROLLER", "enterprise")), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                return Boolean.valueOf(PolicyEnforcerCallbacks.addPersistentPreferredActivity((ComponentName) obj, (Context) obj2, ((Integer) obj3).intValue(), (PolicyKey) obj4));
+                final int i22;
+                int i32 = 0;
+                switch (i7) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new ComponentNamePolicySerializer());
-        GENERIC_PACKAGE_UNINSTALL_BLOCKED = new PolicyDefinition(new PackagePolicyKey("packageUninstallBlocked"), mostRestrictive, 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda9
+        GENERIC_PERSISTENT_PREFERRED_ACTIVITY = policyDefinition7;
+        final int i8 = 6;
+        PolicyDefinition policyDefinition8 = new PolicyDefinition(new PackagePolicyKey("packageUninstallBlocked"), mostRestrictive2, 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                return Boolean.valueOf(PolicyEnforcerCallbacks.setUninstallBlocked((Boolean) obj, (Context) obj2, ((Integer) obj3).intValue(), (PolicyKey) obj4));
+                final int i22;
+                int i32 = 0;
+                switch (i8) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new BooleanPolicySerializer());
-        GENERIC_APPLICATION_RESTRICTIONS = new PolicyDefinition(new PackagePolicyKey("applicationRestrictions"), new MostRecent(), 10, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda10
+        GENERIC_PACKAGE_UNINSTALL_BLOCKED = policyDefinition8;
+        final int i9 = 7;
+        PolicyDefinition policyDefinition9 = new PolicyDefinition(new PackagePolicyKey("applicationRestrictions"), new MostRecent(), 46, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                Boolean lambda$static$3;
-                lambda$static$3 = PolicyDefinition.lambda$static$3((Bundle) obj, (Context) obj2, (Integer) obj3, (PolicyKey) obj4);
-                return lambda$static$3;
+                final int i22;
+                int i32 = 0;
+                switch (i9) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new BundlePolicySerializer());
-        RESET_PASSWORD_TOKEN = new PolicyDefinition(new NoArgsPolicyKey("resetPasswordToken"), new MostRecent(), 10, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda11
+        GENERIC_APPLICATION_RESTRICTIONS = policyDefinition9;
+        final int i10 = 8;
+        PolicyDefinition policyDefinition10 = new PolicyDefinition(new NoArgsPolicyKey("resetPasswordToken"), new MostRecent(), 10, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                Boolean lambda$static$4;
-                lambda$static$4 = PolicyDefinition.lambda$static$4((Long) obj, (Context) obj2, (Integer) obj3, (PolicyKey) obj4);
-                return lambda$static$4;
+                final int i22;
+                int i32 = 0;
+                switch (i10) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new LongPolicySerializer());
-        KEYGUARD_DISABLED_FEATURES = new PolicyDefinition(new NoArgsPolicyKey("keyguardDisabledFeatures"), new FlagUnion(), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda12
+        final int i11 = 10;
+        PolicyDefinition policyDefinition11 = new PolicyDefinition(new NoArgsPolicyKey("keyguardDisabledFeatures"), new FlagUnion(), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                Boolean lambda$static$5;
-                lambda$static$5 = PolicyDefinition.lambda$static$5((Integer) obj, (Context) obj2, (Integer) obj3, (PolicyKey) obj4);
-                return lambda$static$5;
+                final int i22;
+                int i32 = 0;
+                switch (i11) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new IntegerPolicySerializer());
-        GENERIC_APPLICATION_HIDDEN = new PolicyDefinition(new PackagePolicyKey("applicationHidden"), mostRestrictive, 6, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda13
+        final int i12 = 11;
+        PolicyDefinition policyDefinition12 = new PolicyDefinition(new PackagePolicyKey("applicationHidden"), mostRestrictive2, 6, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                return Boolean.valueOf(PolicyEnforcerCallbacks.setApplicationHidden((Boolean) obj, (Context) obj2, ((Integer) obj3).intValue(), (PolicyKey) obj4));
+                final int i22;
+                int i32 = 0;
+                switch (i12) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new BooleanPolicySerializer());
-        GENERIC_ACCOUNT_MANAGEMENT_DISABLED = new PolicyDefinition(new AccountTypePolicyKey("accountManagementDisabled"), mostRestrictive, 6, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda1
+        GENERIC_APPLICATION_HIDDEN = policyDefinition12;
+        final int i13 = 12;
+        PolicyDefinition policyDefinition13 = new PolicyDefinition(new AccountTypePolicyKey("accountManagementDisabled"), mostRestrictive2, 6, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                Boolean lambda$static$6;
-                lambda$static$6 = PolicyDefinition.lambda$static$6((Boolean) obj, (Context) obj2, (Integer) obj3, (PolicyKey) obj4);
-                return lambda$static$6;
+                final int i22;
+                int i32 = 0;
+                switch (i13) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new BooleanPolicySerializer());
-        PERMITTED_INPUT_METHODS = new PolicyDefinition(new NoArgsPolicyKey("permittedInputMethods"), new MostRecent(), 6, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda2
+        GENERIC_ACCOUNT_MANAGEMENT_DISABLED = policyDefinition13;
+        final int i14 = 13;
+        PolicyDefinition policyDefinition14 = new PolicyDefinition(new NoArgsPolicyKey("permittedInputMethods"), new MostRecent(), 6, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                Boolean lambda$static$7;
-                lambda$static$7 = PolicyDefinition.lambda$static$7((Set) obj, (Context) obj2, (Integer) obj3, (PolicyKey) obj4);
-                return lambda$static$7;
+                final int i22;
+                int i32 = 0;
+                switch (i14) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
-        }, new StringSetPolicySerializer());
-        SCREEN_CAPTURE_DISABLED = new PolicyDefinition(new NoArgsPolicyKey("screenCaptureDisabled"), mostRestrictive, 4, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda3
+        }, new PackageSetPolicySerializer());
+        PERMITTED_INPUT_METHODS = policyDefinition14;
+        final int i15 = 14;
+        PolicyDefinition policyDefinition15 = new PolicyDefinition(new NoArgsPolicyKey("screenCaptureDisabled"), mostRestrictive2, 4, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                return Boolean.valueOf(PolicyEnforcerCallbacks.setScreenCaptureDisabled((Boolean) obj, (Context) obj2, ((Integer) obj3).intValue(), (PolicyKey) obj4));
+                final int i22;
+                int i32 = 0;
+                switch (i15) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new BooleanPolicySerializer());
-        PERSONAL_APPS_SUSPENDED = new PolicyDefinition(new NoArgsPolicyKey("personalAppsSuspended"), new MostRecent(), 6, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda4
+        SCREEN_CAPTURE_DISABLED = policyDefinition15;
+        final int i16 = 15;
+        PolicyDefinition policyDefinition16 = new PolicyDefinition(new NoArgsPolicyKey("personalAppsSuspended"), new MostRecent(), 6, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
             public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                return Boolean.valueOf(PolicyEnforcerCallbacks.setPersonalAppsSuspended((Boolean) obj, (Context) obj2, ((Integer) obj3).intValue(), (PolicyKey) obj4));
+                final int i22;
+                int i32 = 0;
+                switch (i16) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
             }
         }, new BooleanPolicySerializer());
+        PERSONAL_APPS_SUSPENDED = policyDefinition16;
+        final int i17 = 16;
+        PolicyDefinition policyDefinition17 = new PolicyDefinition(new NoArgsPolicyKey("usbDataSignaling"), mostRestrictive, 1, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
+            public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
+                final int i22;
+                int i32 = 0;
+                switch (i17) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
+            }
+        }, new BooleanPolicySerializer());
+        USB_DATA_SIGNALING = policyDefinition17;
+        final int i18 = 17;
+        PolicyDefinition policyDefinition18 = new PolicyDefinition(new NoArgsPolicyKey("contentProtection"), new MostRecent(), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
+            public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
+                final int i22;
+                int i32 = 0;
+                switch (i18) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
+            }
+        }, new IntegerPolicySerializer());
+        CONTENT_PROTECTION = policyDefinition18;
+        final int i19 = 10;
+        PolicyDefinition policyDefinition19 = new PolicyDefinition(new NoArgsPolicyKey("passwordComplexity"), new MostRestrictive(List.of(new IntegerPolicyValue(327680), new IntegerPolicyValue(196608), new IntegerPolicyValue(EndpointMonitorConst.FLAG_TRACING_NETWORK_EVENT_ABNORMAL_PKT), new IntegerPolicyValue(0))), 2, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
+            public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
+                final int i22;
+                int i32 = 0;
+                switch (i19) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
+            }
+        }, new IntegerPolicySerializer());
+        PASSWORD_COMPLEXITY = policyDefinition19;
+        final int i20 = 13;
+        PolicyDefinition policyDefinition20 = new PolicyDefinition(new NoArgsPolicyKey("packagesSuspended"), new PackageSetUnion(), 0, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
+            public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
+                final int i22;
+                int i32 = 0;
+                switch (i20) {
+                    case 0:
+                        String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                        return Boolean.TRUE;
+                    case 1:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool = Boolean.TRUE;
+                        devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                        return bool;
+                    case 2:
+                        ((Integer) obj3).intValue();
+                        DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                        Boolean bool2 = Boolean.TRUE;
+                        devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                        return bool2;
+                    case 3:
+                        LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                        Context context = (Context) obj2;
+                        final int intValue = ((Integer) obj3).intValue();
+                        List emptyList = Collections.emptyList();
+                        if (lockTaskPolicy != null) {
+                            emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                            i22 = lockTaskPolicy.getFlags();
+                        } else {
+                            i22 = 16;
+                        }
+                        String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                        Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue, context, emptyList));
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                            public final void runOrThrow() {
+                                try {
+                                    ActivityTaskManager.getService().updateLockTaskFeatures(intValue, i22);
+                                } catch (RemoteException e) {
+                                    Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 4:
+                        Set set = (Set) obj;
+                        Context context2 = (Context) obj2;
+                        int intValue2 = ((Integer) obj3).intValue();
+                        ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                        List<String> list = set == null ? null : set.stream().toList();
+                        protectedPackagesFilter.getClass();
+                        Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue2 + " package names : " + list);
+                        synchronized (protectedPackagesFilter.mProtectedPackages) {
+                            try {
+                                if (list == null) {
+                                    protectedPackagesFilter.mProtectedPackages.remove(intValue2);
+                                } else {
+                                    protectedPackagesFilter.mProtectedPackages.put(intValue2, new ArraySet(list));
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        if (list != null) {
+                            for (String str : list) {
+                                boolean z = MARsPolicyManager.MARs_ENABLE;
+                                if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str, intValue2, 0)) {
+                                    BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str, "MARsPolicyManager");
+                                }
+                            }
+                        }
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue2, set));
+                        return Boolean.TRUE;
+                    case 5:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                        return Boolean.TRUE;
+                    case 6:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                    case 7:
+                        final Context context3 = (Context) obj2;
+                        final Integer num = (Integer) obj3;
+                        final PolicyKey policyKey = (PolicyKey) obj4;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                            public final void runOrThrow() {
+                                PackagePolicyKey packagePolicyKey = policyKey;
+                                Context context4 = context3;
+                                Integer num2 = num;
+                                String packageName = packagePolicyKey.getPackageName();
+                                Objects.requireNonNull(packageName);
+                                Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                intent.setPackage(packageName);
+                                intent.addFlags(1073741824);
+                                context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 8:
+                        return Boolean.TRUE;
+                    case 9:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                    case 10:
+                        return Boolean.TRUE;
+                    case 11:
+                        return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                    case 12:
+                        return Boolean.TRUE;
+                    case 13:
+                        return Boolean.TRUE;
+                    case 14:
+                        final Boolean bool3 = (Boolean) obj;
+                        final int intValue3 = ((Integer) obj3).intValue();
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                            public final void runOrThrow() {
+                                int i42 = intValue3;
+                                Boolean bool4 = bool3;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                    boolean z2 = bool4 != null && bool4.booleanValue();
+                                    synchronized (devicePolicyCacheImpl.mLock) {
+                                        try {
+                                            if (z2) {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                            } else {
+                                                ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                            }
+                                        } catch (Throwable th2) {
+                                            throw th2;
+                                        }
+                                    }
+                                    BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    case 15:
+                        Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                        return Boolean.TRUE;
+                    case 16:
+                        final Boolean bool4 = (Boolean) obj;
+                        final Context context4 = (Context) obj2;
+                        Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                            public final Object getOrThrow() {
+                                Context context5 = context4;
+                                Boolean bool6 = bool4;
+                                Objects.requireNonNull(context5);
+                                DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                return Boolean.TRUE;
+                            }
+                        });
+                        bool5.getClass();
+                        return bool5;
+                    case 17:
+                        final Integer num2 = (Integer) obj;
+                        final Integer num3 = (Integer) obj3;
+                        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                            public final void runOrThrow() {
+                                Integer num4 = num3;
+                                Integer num5 = num2;
+                                DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                    ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                }
+                            }
+                        });
+                        return Boolean.TRUE;
+                    default:
+                        ((Integer) obj3).intValue();
+                        String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                        Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                        return Boolean.TRUE;
+                }
+            }
+        }, new PackageSetPolicySerializer());
+        PACKAGES_SUSPENDED = policyDefinition20;
         HashMap hashMap = new HashMap();
         POLICY_DEFINITIONS = hashMap;
-        USER_RESTRICTION_FLAGS = new HashMap();
-        hashMap.put("autoTimezone", AUTO_TIMEZONE);
-        hashMap.put("permissionGrant", policyDefinition);
-        hashMap.put("lockTask", LOCK_TASK);
-        hashMap.put("userControlDisabledPackages", USER_CONTROLLED_DISABLED_PACKAGES);
-        hashMap.put("persistentPreferredActivity", GENERIC_PERSISTENT_PREFERRED_ACTIVITY);
-        hashMap.put("packageUninstallBlocked", GENERIC_PACKAGE_UNINSTALL_BLOCKED);
-        hashMap.put("applicationRestrictions", GENERIC_APPLICATION_RESTRICTIONS);
-        hashMap.put("resetPasswordToken", RESET_PASSWORD_TOKEN);
-        hashMap.put("keyguardDisabledFeatures", KEYGUARD_DISABLED_FEATURES);
-        hashMap.put("applicationHidden", GENERIC_APPLICATION_HIDDEN);
-        hashMap.put("accountManagementDisabled", GENERIC_ACCOUNT_MANAGEMENT_DISABLED);
-        hashMap.put("permittedInputMethods", PERMITTED_INPUT_METHODS);
-        hashMap.put("screenCaptureDisabled", SCREEN_CAPTURE_DISABLED);
-        hashMap.put("personalAppsSuspended", PERSONAL_APPS_SUSPENDED);
-        USER_RESTRICTION_FLAGS.put("no_modify_accounts", 0);
-        USER_RESTRICTION_FLAGS.put("no_config_wifi", 0);
-        USER_RESTRICTION_FLAGS.put("no_change_wifi_state", 1);
-        USER_RESTRICTION_FLAGS.put("no_wifi_tethering", 1);
-        USER_RESTRICTION_FLAGS.put("no_grant_admin", 0);
-        USER_RESTRICTION_FLAGS.put("no_sharing_admin_configured_wifi", 0);
-        USER_RESTRICTION_FLAGS.put("no_wifi_direct", 1);
-        USER_RESTRICTION_FLAGS.put("no_add_wifi_config", 1);
-        USER_RESTRICTION_FLAGS.put("no_config_locale", 0);
-        USER_RESTRICTION_FLAGS.put("no_install_apps", 0);
-        USER_RESTRICTION_FLAGS.put("no_uninstall_apps", 0);
-        USER_RESTRICTION_FLAGS.put("no_share_location", 0);
-        USER_RESTRICTION_FLAGS.put("no_airplane_mode", 1);
-        USER_RESTRICTION_FLAGS.put("no_config_brightness", 0);
-        USER_RESTRICTION_FLAGS.put("no_ambient_display", 0);
-        USER_RESTRICTION_FLAGS.put("no_config_screen_timeout", 0);
-        USER_RESTRICTION_FLAGS.put("no_install_unknown_sources", 0);
-        USER_RESTRICTION_FLAGS.put("no_install_unknown_sources_globally", 1);
-        USER_RESTRICTION_FLAGS.put("no_config_bluetooth", 0);
-        USER_RESTRICTION_FLAGS.put("no_bluetooth", 0);
-        USER_RESTRICTION_FLAGS.put("no_bluetooth_sharing", 0);
-        USER_RESTRICTION_FLAGS.put("no_usb_file_transfer", 0);
-        USER_RESTRICTION_FLAGS.put("no_config_credentials", 0);
-        USER_RESTRICTION_FLAGS.put("no_remove_user", 0);
-        USER_RESTRICTION_FLAGS.put("no_remove_managed_profile", 0);
-        USER_RESTRICTION_FLAGS.put("no_debugging_features", 0);
-        USER_RESTRICTION_FLAGS.put("no_config_vpn", 0);
-        USER_RESTRICTION_FLAGS.put("no_config_location", 0);
-        USER_RESTRICTION_FLAGS.put("no_config_date_time", 0);
-        USER_RESTRICTION_FLAGS.put("no_config_tethering", 0);
-        USER_RESTRICTION_FLAGS.put("no_network_reset", 0);
-        USER_RESTRICTION_FLAGS.put("no_factory_reset", 0);
-        USER_RESTRICTION_FLAGS.put("no_add_user", 0);
-        USER_RESTRICTION_FLAGS.put("no_add_managed_profile", 0);
-        USER_RESTRICTION_FLAGS.put("no_add_clone_profile", 0);
-        USER_RESTRICTION_FLAGS.put("ensure_verify_apps", 1);
-        USER_RESTRICTION_FLAGS.put("no_config_cell_broadcasts", 0);
-        USER_RESTRICTION_FLAGS.put("no_config_mobile_networks", 0);
-        USER_RESTRICTION_FLAGS.put("no_control_apps", 0);
-        USER_RESTRICTION_FLAGS.put("no_physical_media", 0);
-        USER_RESTRICTION_FLAGS.put("no_unmute_microphone", 0);
-        USER_RESTRICTION_FLAGS.put("no_adjust_volume", 0);
-        USER_RESTRICTION_FLAGS.put("no_outgoing_calls", 0);
-        USER_RESTRICTION_FLAGS.put("no_sms", 0);
-        USER_RESTRICTION_FLAGS.put("no_fun", 0);
-        USER_RESTRICTION_FLAGS.put("no_create_windows", 0);
-        USER_RESTRICTION_FLAGS.put("no_system_error_dialogs", 0);
-        USER_RESTRICTION_FLAGS.put("no_cross_profile_copy_paste", 0);
-        USER_RESTRICTION_FLAGS.put("no_outgoing_beam", 0);
-        USER_RESTRICTION_FLAGS.put("no_wallpaper", 0);
-        USER_RESTRICTION_FLAGS.put("no_set_wallpaper", 0);
-        USER_RESTRICTION_FLAGS.put("no_safe_boot", 0);
-        USER_RESTRICTION_FLAGS.put("no_record_audio", 0);
-        USER_RESTRICTION_FLAGS.put("no_run_in_background", 0);
-        USER_RESTRICTION_FLAGS.put("no_camera", 0);
-        USER_RESTRICTION_FLAGS.put("disallow_unmute_device", 0);
-        USER_RESTRICTION_FLAGS.put("no_data_roaming", 0);
-        USER_RESTRICTION_FLAGS.put("no_set_user_icon", 0);
-        USER_RESTRICTION_FLAGS.put("no_oem_unlock", 0);
-        USER_RESTRICTION_FLAGS.put("no_unified_password", 0);
-        USER_RESTRICTION_FLAGS.put("allow_parent_profile_app_linking", 0);
-        USER_RESTRICTION_FLAGS.put("no_autofill", 0);
-        USER_RESTRICTION_FLAGS.put("no_content_capture", 0);
-        USER_RESTRICTION_FLAGS.put("no_content_suggestions", 0);
-        USER_RESTRICTION_FLAGS.put("no_user_switch", 1);
-        USER_RESTRICTION_FLAGS.put("no_sharing_into_profile", 0);
-        USER_RESTRICTION_FLAGS.put("no_printing", 0);
-        USER_RESTRICTION_FLAGS.put("disallow_config_private_dns", 1);
-        USER_RESTRICTION_FLAGS.put("disallow_microphone_toggle", 0);
-        USER_RESTRICTION_FLAGS.put("disallow_camera_toggle", 0);
-        USER_RESTRICTION_FLAGS.put("disallow_biometric", 0);
-        USER_RESTRICTION_FLAGS.put("disallow_config_default_apps", 0);
-        USER_RESTRICTION_FLAGS.put("no_cellular_2g", 1);
-        USER_RESTRICTION_FLAGS.put("no_ultra_wideband_radio", 1);
-        for (String str : USER_RESTRICTION_FLAGS.keySet()) {
-            createAndAddUserRestrictionPolicyDefinition(str, ((Integer) USER_RESTRICTION_FLAGS.get(str)).intValue());
+        HashMap hashMap2 = new HashMap();
+        USER_RESTRICTION_FLAGS = hashMap2;
+        hashMap.put("autoTimezone", policyDefinition);
+        hashMap.put("permissionGrant", policyDefinition2);
+        hashMap.put("securityLogging", policyDefinition3);
+        hashMap.put("auditLogging", policyDefinition4);
+        hashMap.put("lockTask", policyDefinition5);
+        hashMap.put("userControlDisabledPackages", policyDefinition6);
+        hashMap.put("persistentPreferredActivity", policyDefinition7);
+        hashMap.put("packageUninstallBlocked", policyDefinition8);
+        hashMap.put("applicationRestrictions", policyDefinition9);
+        hashMap.put("resetPasswordToken", policyDefinition10);
+        hashMap.put("keyguardDisabledFeatures", policyDefinition11);
+        hashMap.put("applicationHidden", policyDefinition12);
+        hashMap.put("accountManagementDisabled", policyDefinition13);
+        hashMap.put("permittedInputMethods", policyDefinition14);
+        hashMap.put("screenCaptureDisabled", policyDefinition15);
+        hashMap.put("personalAppsSuspended", policyDefinition16);
+        hashMap.put("usbDataSignaling", policyDefinition17);
+        hashMap.put("contentProtection", policyDefinition18);
+        hashMap.put("passwordComplexity", policyDefinition19);
+        hashMap.put("packagesSuspended", policyDefinition20);
+        hashMap2.put("no_modify_accounts", 0);
+        hashMap2.put("no_config_wifi", 0);
+        hashMap2.put("no_change_wifi_state", 1);
+        hashMap2.put("no_wifi_tethering", 1);
+        hashMap2.put("no_grant_admin", 0);
+        hashMap2.put("no_sharing_admin_configured_wifi", 0);
+        hashMap2.put("no_wifi_direct", 1);
+        hashMap2.put("no_add_wifi_config", 1);
+        hashMap2.put("no_config_locale", 0);
+        hashMap2.put("no_install_apps", 0);
+        hashMap2.put("no_uninstall_apps", 0);
+        hashMap2.put("no_share_location", 0);
+        hashMap2.put("no_airplane_mode", 1);
+        hashMap2.put("no_config_brightness", 0);
+        hashMap2.put("no_ambient_display", 0);
+        hashMap2.put("no_config_screen_timeout", 0);
+        hashMap2.put("no_install_unknown_sources", 0);
+        hashMap2.put("no_install_unknown_sources_globally", 1);
+        hashMap2.put("no_config_bluetooth", 0);
+        hashMap2.put("no_bluetooth", 0);
+        hashMap2.put("no_bluetooth_sharing", 0);
+        hashMap2.put("no_usb_file_transfer", 0);
+        hashMap2.put("no_config_credentials", 0);
+        hashMap2.put("no_remove_user", 0);
+        hashMap2.put("no_remove_managed_profile", 0);
+        hashMap2.put("no_debugging_features", 0);
+        hashMap2.put("no_config_vpn", 0);
+        hashMap2.put("no_config_location", 0);
+        hashMap2.put("no_config_date_time", 0);
+        hashMap2.put("no_config_tethering", 0);
+        hashMap2.put("no_network_reset", 0);
+        hashMap2.put("no_factory_reset", 0);
+        hashMap2.put("no_add_user", 0);
+        hashMap2.put("no_add_managed_profile", 0);
+        hashMap2.put("no_add_clone_profile", 0);
+        hashMap2.put("no_add_private_profile", 0);
+        hashMap2.put("ensure_verify_apps", 1);
+        hashMap2.put("no_config_cell_broadcasts", 0);
+        hashMap2.put("no_config_mobile_networks", 0);
+        hashMap2.put("no_control_apps", 0);
+        hashMap2.put("no_physical_media", 0);
+        hashMap2.put("no_unmute_microphone", 0);
+        hashMap2.put("no_adjust_volume", 0);
+        hashMap2.put("no_outgoing_calls", 0);
+        hashMap2.put("no_sms", 0);
+        hashMap2.put("no_fun", 0);
+        hashMap2.put("no_create_windows", 0);
+        hashMap2.put("no_system_error_dialogs", 0);
+        hashMap2.put("no_cross_profile_copy_paste", 0);
+        hashMap2.put("no_outgoing_beam", 0);
+        hashMap2.put("no_wallpaper", 0);
+        hashMap2.put("no_set_wallpaper", 0);
+        hashMap2.put("no_safe_boot", 0);
+        hashMap2.put("no_record_audio", 0);
+        hashMap2.put("no_run_in_background", 0);
+        hashMap2.put("no_camera", 0);
+        hashMap2.put("disallow_unmute_device", 0);
+        hashMap2.put("no_data_roaming", 0);
+        hashMap2.put("no_set_user_icon", 0);
+        hashMap2.put("no_oem_unlock", 0);
+        hashMap2.put("no_unified_password", 0);
+        hashMap2.put("allow_parent_profile_app_linking", 0);
+        hashMap2.put("no_autofill", 0);
+        hashMap2.put("no_content_capture", 0);
+        hashMap2.put("no_content_suggestions", 0);
+        hashMap2.put("no_user_switch", 1);
+        hashMap2.put("no_sharing_into_profile", 0);
+        hashMap2.put("no_printing", 0);
+        hashMap2.put("disallow_config_private_dns", 1);
+        hashMap2.put("disallow_microphone_toggle", 0);
+        hashMap2.put("disallow_camera_toggle", 0);
+        hashMap2.put("disallow_biometric", 0);
+        hashMap2.put("disallow_config_default_apps", 0);
+        hashMap2.put("no_cellular_2g", 1);
+        hashMap2.put("no_ultra_wideband_radio", 1);
+        hashMap2.put("no_sim_globally", 1);
+        hashMap2.put("no_assist_content", 0);
+        if (Flags.threadUserRestrictionEnabled()) {
+            hashMap2.put("no_thread_network", 1);
         }
-    }
-
-    public static /* synthetic */ Boolean lambda$static$0(Boolean bool, Context context, Integer num, PolicyKey policyKey) {
-        return Boolean.valueOf(PolicyEnforcerCallbacks.setAutoTimezoneEnabled(bool, context));
-    }
-
-    public static PolicyDefinition PERMISSION_GRANT(String str, String str2) {
-        if (str == null || str2 == null) {
-            return GENERIC_PERMISSION_GRANT;
+        hashMap2.put("no_assist_content", 0);
+        for (String str : hashMap2.keySet()) {
+            int intValue = ((Integer) ((HashMap) USER_RESTRICTION_FLAGS).get(str)).intValue();
+            UserRestrictionPolicyKey userRestrictionPolicyKey = new UserRestrictionPolicyKey(DevicePolicyIdentifiers.getIdentifierForUserRestriction(str), str);
+            int i21 = intValue | 20;
+            final int i22 = 9;
+            PolicyDefinition policyDefinition21 = new PolicyDefinition(userRestrictionPolicyKey, TRUE_MORE_RESTRICTIVE, i21, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda0
+                public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
+                    final int i222;
+                    int i32 = 0;
+                    switch (i22) {
+                        case 0:
+                            String[] strArr = DevicePolicyManagerService.DELEGATIONS;
+                            Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setAutoTimezoneEnabled while flag is off.");
+                            return Boolean.TRUE;
+                        case 1:
+                            ((Integer) obj3).intValue();
+                            DevicePolicyManagerInternal devicePolicyManagerInternal = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                            Boolean bool = Boolean.TRUE;
+                            devicePolicyManagerInternal.enforceSecurityLoggingPolicy(bool.equals((Boolean) obj));
+                            return bool;
+                        case 2:
+                            ((Integer) obj3).intValue();
+                            DevicePolicyManagerInternal devicePolicyManagerInternal2 = (DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class);
+                            Boolean bool2 = Boolean.TRUE;
+                            devicePolicyManagerInternal2.enforceAuditLoggingPolicy(bool2.equals((Boolean) obj));
+                            return bool2;
+                        case 3:
+                            LockTaskPolicy lockTaskPolicy = (LockTaskPolicy) obj;
+                            Context context = (Context) obj2;
+                            final int intValue2 = ((Integer) obj3).intValue();
+                            List emptyList = Collections.emptyList();
+                            if (lockTaskPolicy != null) {
+                                emptyList = List.copyOf(lockTaskPolicy.getPackages());
+                                i222 = lockTaskPolicy.getFlags();
+                            } else {
+                                i222 = 16;
+                            }
+                            String[] strArr2 = DevicePolicyManagerService.DELEGATIONS;
+                            Binder.withCleanCallingIdentity(new DevicePolicyManagerService$$ExternalSyntheticLambda101(intValue2, context, emptyList));
+                            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.DevicePolicyManagerService$$ExternalSyntheticLambda204
+                                public final void runOrThrow() {
+                                    try {
+                                        ActivityTaskManager.getService().updateLockTaskFeatures(intValue2, i222);
+                                    } catch (RemoteException e) {
+                                        Slog.wtf("DevicePolicyManager", "Remote Exception: ", e);
+                                    }
+                                }
+                            });
+                            return Boolean.TRUE;
+                        case 4:
+                            Set set = (Set) obj;
+                            Context context2 = (Context) obj2;
+                            int intValue22 = ((Integer) obj3).intValue();
+                            ProtectedPackagesFilter protectedPackagesFilter = ProtectedPackagesFilter.ProtectedPackagesFilterHolder.INSTANCE;
+                            List<String> list = set == null ? null : set.stream().toList();
+                            protectedPackagesFilter.getClass();
+                            Slog.d("ProtectedPackagesFilter", "updateProtectedPackages is called. userId " + intValue22 + " package names : " + list);
+                            synchronized (protectedPackagesFilter.mProtectedPackages) {
+                                try {
+                                    if (list == null) {
+                                        protectedPackagesFilter.mProtectedPackages.remove(intValue22);
+                                    } else {
+                                        protectedPackagesFilter.mProtectedPackages.put(intValue22, new ArraySet(list));
+                                    }
+                                } catch (Throwable th) {
+                                    throw th;
+                                }
+                            }
+                            if (list != null) {
+                                for (String str2 : list) {
+                                    boolean z = MARsPolicyManager.MARs_ENABLE;
+                                    if (!MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.cancelDisablePolicy(str2, intValue22, 0)) {
+                                        BootReceiver$$ExternalSyntheticOutline0.m("cancelDisablePolicy failed. package : ", str2, "MARsPolicyManager");
+                                    }
+                                }
+                            }
+                            Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(context2, intValue22, set));
+                            return Boolean.TRUE;
+                        case 5:
+                            Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), 2, (PolicyKey) obj4, (ComponentName) obj));
+                            return Boolean.TRUE;
+                        case 6:
+                            return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), 1))));
+                        case 7:
+                            final Context context3 = (Context) obj2;
+                            final Integer num = (Integer) obj3;
+                            final PolicyKey policyKey = (PolicyKey) obj4;
+                            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda4
+                                public final void runOrThrow() {
+                                    PackagePolicyKey packagePolicyKey = policyKey;
+                                    Context context4 = context3;
+                                    Integer num2 = num;
+                                    String packageName = packagePolicyKey.getPackageName();
+                                    Objects.requireNonNull(packageName);
+                                    Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
+                                    intent.setPackage(packageName);
+                                    intent.addFlags(1073741824);
+                                    context4.sendBroadcastAsUser(intent, UserHandle.of(num2.intValue()));
+                                }
+                            });
+                            return Boolean.TRUE;
+                        case 8:
+                            return Boolean.TRUE;
+                        case 9:
+                            return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, ((Integer) obj3).intValue(), (Boolean) obj))));
+                        case 10:
+                            return Boolean.TRUE;
+                        case 11:
+                            return Boolean.valueOf(Boolean.TRUE.equals(Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda3((PolicyKey) obj4, (Boolean) obj, ((Integer) obj3).intValue(), i32))));
+                        case 12:
+                            return Boolean.TRUE;
+                        case 13:
+                            return Boolean.TRUE;
+                        case 14:
+                            final Boolean bool3 = (Boolean) obj;
+                            final int intValue3 = ((Integer) obj3).intValue();
+                            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda1
+                                public final void runOrThrow() {
+                                    int i42 = intValue3;
+                                    Boolean bool4 = bool3;
+                                    DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                    if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                        DevicePolicyCacheImpl devicePolicyCacheImpl = (DevicePolicyCacheImpl) devicePolicyCache;
+                                        boolean z2 = bool4 != null && bool4.booleanValue();
+                                        synchronized (devicePolicyCacheImpl.mLock) {
+                                            try {
+                                                if (z2) {
+                                                    ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).add(Integer.valueOf(i42));
+                                                } else {
+                                                    ((HashSet) devicePolicyCacheImpl.mScreenCaptureDisallowedUsers).remove(Integer.valueOf(i42));
+                                                }
+                                            } catch (Throwable th2) {
+                                                throw th2;
+                                            }
+                                        }
+                                        BackgroundThread.getHandler().post(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda10());
+                                    }
+                                }
+                            });
+                            return Boolean.TRUE;
+                        case 15:
+                            Binder.withCleanCallingIdentity(new PolicyEnforcerCallbacks$$ExternalSyntheticLambda0(((Integer) obj3).intValue(), i32, (Boolean) obj, (Context) obj2));
+                            return Boolean.TRUE;
+                        case 16:
+                            final Boolean bool4 = (Boolean) obj;
+                            final Context context4 = (Context) obj2;
+                            Boolean bool5 = (Boolean) Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingSupplier() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda2
+                                public final Object getOrThrow() {
+                                    Context context5 = context4;
+                                    Boolean bool6 = bool4;
+                                    Objects.requireNonNull(context5);
+                                    DevicePolicyManagerService.updateUsbDataSignal(context5, bool6 == null || bool6.booleanValue());
+                                    return Boolean.TRUE;
+                                }
+                            });
+                            bool5.getClass();
+                            return bool5;
+                        case 17:
+                            final Integer num2 = (Integer) obj;
+                            final Integer num3 = (Integer) obj3;
+                            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.devicepolicy.PolicyEnforcerCallbacks$$ExternalSyntheticLambda6
+                                public final void runOrThrow() {
+                                    Integer num4 = num3;
+                                    Integer num5 = num2;
+                                    DevicePolicyCache devicePolicyCache = DevicePolicyCache.getInstance();
+                                    if (devicePolicyCache instanceof DevicePolicyCacheImpl) {
+                                        ((DevicePolicyCacheImpl) devicePolicyCache).setContentProtectionPolicy(num4.intValue(), num5);
+                                    }
+                                }
+                            });
+                            return Boolean.TRUE;
+                        default:
+                            ((Integer) obj3).intValue();
+                            String[] strArr3 = DevicePolicyManagerService.DELEGATIONS;
+                            Slogf.w("PolicyEnforcerCallbacks", "Trying to enforce setPermissionGrantState while flag is off.");
+                            return Boolean.TRUE;
+                    }
+                }
+            }, new BooleanPolicySerializer());
+            ((HashMap) POLICY_DEFINITIONS).put(userRestrictionPolicyKey.getIdentifier(), policyDefinition21);
         }
-        return GENERIC_PERMISSION_GRANT.createPolicyDefinition(new PackagePermissionPolicyKey("permissionGrant", str, str2));
-    }
-
-    public static /* synthetic */ Boolean lambda$static$1(LockTaskPolicy lockTaskPolicy, Context context, Integer num, PolicyKey policyKey) {
-        return Boolean.valueOf(PolicyEnforcerCallbacks.setLockTask(lockTaskPolicy, context, num.intValue()));
-    }
-
-    public static /* synthetic */ Boolean lambda$static$2(Set set, Context context, Integer num, PolicyKey policyKey) {
-        return Boolean.valueOf(PolicyEnforcerCallbacks.setUserControlDisabledPackages(set, num.intValue()));
-    }
-
-    public static PolicyDefinition PERSISTENT_PREFERRED_ACTIVITY(IntentFilter intentFilter) {
-        if (intentFilter == null) {
-            return GENERIC_PERSISTENT_PREFERRED_ACTIVITY;
-        }
-        return GENERIC_PERSISTENT_PREFERRED_ACTIVITY.createPolicyDefinition(new IntentFilterPolicyKey("persistentPreferredActivity", intentFilter));
-    }
-
-    public static PolicyDefinition PACKAGE_UNINSTALL_BLOCKED(String str) {
-        if (str == null) {
-            return GENERIC_PACKAGE_UNINSTALL_BLOCKED;
-        }
-        return GENERIC_PACKAGE_UNINSTALL_BLOCKED.createPolicyDefinition(new PackagePolicyKey("packageUninstallBlocked", str));
-    }
-
-    public static /* synthetic */ Boolean lambda$static$3(Bundle bundle, Context context, Integer num, PolicyKey policyKey) {
-        return Boolean.TRUE;
-    }
-
-    public static PolicyDefinition APPLICATION_RESTRICTIONS(String str) {
-        if (str == null) {
-            return GENERIC_APPLICATION_RESTRICTIONS;
-        }
-        return GENERIC_APPLICATION_RESTRICTIONS.createPolicyDefinition(new PackagePolicyKey("applicationRestrictions", str));
-    }
-
-    public static /* synthetic */ Boolean lambda$static$4(Long l, Context context, Integer num, PolicyKey policyKey) {
-        return Boolean.TRUE;
-    }
-
-    public static /* synthetic */ Boolean lambda$static$5(Integer num, Context context, Integer num2, PolicyKey policyKey) {
-        return Boolean.TRUE;
-    }
-
-    public static PolicyDefinition APPLICATION_HIDDEN(String str) {
-        if (str == null) {
-            return GENERIC_APPLICATION_HIDDEN;
-        }
-        return GENERIC_APPLICATION_HIDDEN.createPolicyDefinition(new PackagePolicyKey("applicationHidden", str));
-    }
-
-    public static /* synthetic */ Boolean lambda$static$6(Boolean bool, Context context, Integer num, PolicyKey policyKey) {
-        return Boolean.TRUE;
-    }
-
-    public static PolicyDefinition ACCOUNT_MANAGEMENT_DISABLED(String str) {
-        if (str == null) {
-            return GENERIC_ACCOUNT_MANAGEMENT_DISABLED;
-        }
-        return GENERIC_ACCOUNT_MANAGEMENT_DISABLED.createPolicyDefinition(new AccountTypePolicyKey("accountManagementDisabled", str));
-    }
-
-    public static /* synthetic */ Boolean lambda$static$7(Set set, Context context, Integer num, PolicyKey policyKey) {
-        return Boolean.TRUE;
-    }
-
-    public final PolicyDefinition createPolicyDefinition(PolicyKey policyKey) {
-        return new PolicyDefinition(policyKey, this.mResolutionMechanism, this.mPolicyFlags, this.mPolicyEnforcerCallback, this.mPolicySerializer);
-    }
-
-    public static PolicyDefinition getPolicyDefinitionForUserRestriction(String str) {
-        String identifierForUserRestriction = DevicePolicyIdentifiers.getIdentifierForUserRestriction(str);
-        Map map = POLICY_DEFINITIONS;
-        if (!map.containsKey(identifierForUserRestriction)) {
-            throw new IllegalArgumentException("Unsupported user restriction " + str);
-        }
-        return (PolicyDefinition) map.get(identifierForUserRestriction);
-    }
-
-    public PolicyKey getPolicyKey() {
-        return this.mPolicyKey;
-    }
-
-    public ResolutionMechanism getResolutionMechanism() {
-        return this.mResolutionMechanism;
-    }
-
-    public boolean isGlobalOnlyPolicy() {
-        return (this.mPolicyFlags & 1) != 0;
-    }
-
-    public boolean isLocalOnlyPolicy() {
-        return (this.mPolicyFlags & 2) != 0;
-    }
-
-    public boolean isInheritable() {
-        return (this.mPolicyFlags & 4) != 0;
-    }
-
-    public boolean isNonCoexistablePolicy() {
-        return (this.mPolicyFlags & 8) != 0;
-    }
-
-    public boolean isUserRestrictionPolicy() {
-        return (this.mPolicyFlags & 16) != 0;
-    }
-
-    public PolicyValue resolvePolicy(LinkedHashMap linkedHashMap) {
-        return this.mResolutionMechanism.mo5120resolve(linkedHashMap);
-    }
-
-    public boolean enforcePolicy(Object obj, Context context, int i) {
-        return ((Boolean) this.mPolicyEnforcerCallback.apply(obj, context, Integer.valueOf(i), this.mPolicyKey)).booleanValue();
-    }
-
-    public static void createAndAddUserRestrictionPolicyDefinition(String str, int i) {
-        UserRestrictionPolicyKey userRestrictionPolicyKey = new UserRestrictionPolicyKey(DevicePolicyIdentifiers.getIdentifierForUserRestriction(str), str);
-        POLICY_DEFINITIONS.put(userRestrictionPolicyKey.getIdentifier(), new PolicyDefinition(userRestrictionPolicyKey, TRUE_MORE_RESTRICTIVE, i | 20, new QuadFunction() { // from class: com.android.server.devicepolicy.PolicyDefinition$$ExternalSyntheticLambda14
-            public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
-                return Boolean.valueOf(PolicyEnforcerCallbacks.setUserRestriction((Boolean) obj, (Context) obj2, ((Integer) obj3).intValue(), (PolicyKey) obj4));
-            }
-        }, new BooleanPolicySerializer()));
-    }
-
-    public PolicyDefinition(PolicyKey policyKey, ResolutionMechanism resolutionMechanism, QuadFunction quadFunction, PolicySerializer policySerializer) {
-        this(policyKey, resolutionMechanism, 0, quadFunction, policySerializer);
     }
 
     public PolicyDefinition(PolicyKey policyKey, ResolutionMechanism resolutionMechanism, int i, QuadFunction quadFunction, PolicySerializer policySerializer) {
@@ -380,27 +3886,33 @@ public final class PolicyDefinition {
         this.mPolicyFlags = i;
         this.mPolicyEnforcerCallback = quadFunction;
         this.mPolicySerializer = policySerializer;
-        if (isNonCoexistablePolicy() && !isLocalOnlyPolicy()) {
+        if (isNonCoexistablePolicy() && (i & 2) == 0) {
             throw new UnsupportedOperationException("Non-coexistable global policies not supported,please add support.");
         }
     }
 
-    public void saveToXml(TypedXmlSerializer typedXmlSerializer) {
-        this.mPolicyKey.saveToXml(typedXmlSerializer);
+    public static PolicyDefinition ACCOUNT_MANAGEMENT_DISABLED(String str) {
+        PolicyDefinition policyDefinition = GENERIC_ACCOUNT_MANAGEMENT_DISABLED;
+        return str == null ? policyDefinition : policyDefinition.createPolicyDefinition(new AccountTypePolicyKey("accountManagementDisabled", str));
     }
 
-    public static PolicyDefinition readFromXml(TypedXmlPullParser typedXmlPullParser) {
-        PolicyKey readPolicyKeyFromXml = readPolicyKeyFromXml(typedXmlPullParser);
-        if (readPolicyKeyFromXml == null) {
-            Slogf.wtf("PolicyDefinition", "Error parsing PolicyDefinition, PolicyKey is null.");
-            return null;
+    public static PolicyDefinition APPLICATION_RESTRICTIONS(String str) {
+        PolicyDefinition policyDefinition = GENERIC_APPLICATION_RESTRICTIONS;
+        return str == null ? policyDefinition : policyDefinition.createPolicyDefinition(new PackagePolicyKey("applicationRestrictions", str));
+    }
+
+    public static PolicyDefinition PERSISTENT_PREFERRED_ACTIVITY(IntentFilter intentFilter) {
+        PolicyDefinition policyDefinition = GENERIC_PERSISTENT_PREFERRED_ACTIVITY;
+        return intentFilter == null ? policyDefinition : policyDefinition.createPolicyDefinition(new IntentFilterPolicyKey("persistentPreferredActivity", intentFilter));
+    }
+
+    public static PolicyDefinition getPolicyDefinitionForUserRestriction(String str) {
+        String identifierForUserRestriction = DevicePolicyIdentifiers.getIdentifierForUserRestriction(str);
+        Map map = POLICY_DEFINITIONS;
+        if (((HashMap) map).containsKey(identifierForUserRestriction)) {
+            return (PolicyDefinition) ((HashMap) map).get(identifierForUserRestriction);
         }
-        PolicyDefinition policyDefinition = (PolicyDefinition) POLICY_DEFINITIONS.get(readPolicyKeyFromXml.getIdentifier());
-        if (policyDefinition == null) {
-            Slogf.wtf("PolicyDefinition", "Unknown generic policy key: " + readPolicyKeyFromXml);
-            return null;
-        }
-        return policyDefinition.createPolicyDefinition(readPolicyKeyFromXml);
+        throw new IllegalArgumentException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Unsupported user restriction ", str));
     }
 
     public static PolicyKey readPolicyKeyFromXml(TypedXmlPullParser typedXmlPullParser) {
@@ -409,23 +3921,32 @@ public final class PolicyDefinition {
             Slogf.wtf("PolicyDefinition", "Error parsing PolicyKey, GenericPolicyKey is null");
             return null;
         }
-        PolicyDefinition policyDefinition = (PolicyDefinition) POLICY_DEFINITIONS.get(readGenericPolicyKeyFromXml.getIdentifier());
-        if (policyDefinition == null) {
-            Slogf.wtf("PolicyDefinition", "Error parsing PolicyKey, Unknown generic policy key: " + readGenericPolicyKeyFromXml);
-            return null;
+        PolicyDefinition policyDefinition = (PolicyDefinition) ((HashMap) POLICY_DEFINITIONS).get(readGenericPolicyKeyFromXml.getIdentifier());
+        if (policyDefinition != null) {
+            return policyDefinition.mPolicyKey.readFromXml(typedXmlPullParser);
         }
-        return policyDefinition.mPolicyKey.readFromXml(typedXmlPullParser);
+        Slogf.wtf("PolicyDefinition", "Error parsing PolicyKey, Unknown generic policy key: " + readGenericPolicyKeyFromXml);
+        return null;
     }
 
-    public void savePolicyValueToXml(TypedXmlSerializer typedXmlSerializer, Object obj) {
-        this.mPolicySerializer.saveToXml(this.mPolicyKey, typedXmlSerializer, obj);
+    public final PolicyDefinition createPolicyDefinition(PolicyKey policyKey) {
+        return new PolicyDefinition(policyKey, this.mResolutionMechanism, this.mPolicyFlags, this.mPolicyEnforcerCallback, this.mPolicySerializer);
     }
 
-    public PolicyValue readPolicyValueFromXml(TypedXmlPullParser typedXmlPullParser) {
-        return this.mPolicySerializer.mo4926readFromXml(typedXmlPullParser);
+    public final boolean isGlobalOnlyPolicy() {
+        return (this.mPolicyFlags & 1) != 0;
     }
 
-    public String toString() {
-        return "PolicyDefinition{ mPolicyKey= " + this.mPolicyKey + ", mResolutionMechanism= " + this.mResolutionMechanism + ", mPolicyFlags= " + this.mPolicyFlags + " }";
+    public final boolean isNonCoexistablePolicy() {
+        return (this.mPolicyFlags & 8) != 0;
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("PolicyDefinition{ mPolicyKey= ");
+        sb.append(this.mPolicyKey);
+        sb.append(", mResolutionMechanism= ");
+        sb.append(this.mResolutionMechanism);
+        sb.append(", mPolicyFlags= ");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.mPolicyFlags, sb, " }");
     }
 }

@@ -2,40 +2,57 @@ package com.android.server.pm;
 
 import android.content.pm.PackageManager;
 import android.content.pm.UserInfo;
+import android.net.shared.InitialConfiguration$$ExternalSyntheticOutline0;
 import android.os.CreateAppDataArgs;
+import android.os.CreateAppDataResult;
 import android.os.Environment;
 import android.os.FileUtils;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageManagerInternal;
-import android.os.storage.VolumeInfo;
 import android.security.AndroidKeyStoreMaintenance;
 import android.text.TextUtils;
 import android.util.Slog;
 import android.util.TimingsTraceLog;
+import com.android.internal.pm.parsing.pkg.AndroidPackageHidden;
+import com.android.internal.pm.parsing.pkg.AndroidPackageInternal;
 import com.android.internal.util.Preconditions;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
+import com.android.server.AppStateTrackerImpl$MyHandler$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.HeimdAllFsService$$ExternalSyntheticOutline0;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
 import com.android.server.SystemServerInitThreadPool;
 import com.android.server.pm.Installer;
 import com.android.server.pm.PackageManagerLocal;
-import com.android.server.pm.dex.ArtManagerService;
-import com.android.server.pm.parsing.pkg.AndroidPackageUtils;
+import com.android.server.pm.UserManagerService;
+import com.android.server.pm.dex.DexManager;
+import com.android.server.pm.dex.DynamicCodeLogger;
+import com.android.server.pm.dex.PackageDexUsage;
+import com.android.server.pm.dex.PackageDynamicCodeLoading;
 import com.android.server.pm.pkg.AndroidPackage;
-import com.android.server.pm.pkg.PackageState;
 import com.android.server.pm.pkg.PackageStateInternal;
-import com.android.server.pm.pkg.SELinuxUtil;
+import com.android.server.pm.pkg.PackageUserStateImpl;
+import com.android.server.pm.pkg.PackageUserStateInternal;
+import dalvik.system.BlockGuard;
 import dalvik.system.VMRuntime;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 
-/* loaded from: classes3.dex */
-public class AppDataHelper {
-    public final ArtManagerService mArtManagerService;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class AppDataHelper {
     public final PackageManagerServiceInjector mInjector;
     public final Installer mInstaller;
     public final PackageManagerService mPm;
@@ -44,520 +61,43 @@ public class AppDataHelper {
         this.mPm = packageManagerService;
         PackageManagerServiceInjector packageManagerServiceInjector = packageManagerService.mInjector;
         this.mInjector = packageManagerServiceInjector;
-        this.mInstaller = packageManagerServiceInjector.getInstaller();
-        this.mArtManagerService = packageManagerServiceInjector.getArtManagerService();
+        this.mInstaller = packageManagerServiceInjector.mInstaller;
     }
 
-    public void prepareAppDataAfterInstallLIF(AndroidPackage androidPackage) {
-        prepareAppDataPostCommitLIF(androidPackage, 0);
-    }
-
-    public void prepareAppDataPostCommitLIF(final AndroidPackage androidPackage, int i) {
-        PackageSetting packageLPr;
-        int i2;
-        synchronized (this.mPm.mLock) {
-            packageLPr = this.mPm.mSettings.getPackageLPr(androidPackage.getPackageName());
-            this.mPm.mSettings.writeKernelMappingLPr(packageLPr);
-        }
-        if (!shouldHaveAppStorage(androidPackage)) {
-            Slog.w("PackageManager", "Skipping preparing app data for " + androidPackage.getPackageName());
-            return;
-        }
-        Installer.Batch batch = new Installer.Batch();
-        final UserManagerInternal userManagerInternal = this.mInjector.getUserManagerInternal();
-        final StorageManagerInternal storageManagerInternal = (StorageManagerInternal) this.mInjector.getLocalService(StorageManagerInternal.class);
-        for (final UserInfo userInfo : userManagerInternal.getUsers(false)) {
-            if (StorageManager.isUserKeyUnlocked(userInfo.id) && storageManagerInternal.isCeStoragePrepared(userInfo.id)) {
-                i2 = 3;
-            } else if (userManagerInternal.isUserRunning(userInfo.id)) {
-                i2 = 1;
-            }
-            int i3 = i2;
-            if (packageLPr.getInstalled(userInfo.id)) {
-                prepareAppData(batch, androidPackage, i, userInfo.id, i3).thenRun(new Runnable() { // from class: com.android.server.pm.AppDataHelper$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        AppDataHelper.lambda$prepareAppDataPostCommitLIF$0(UserManagerInternal.this, userInfo, androidPackage, storageManagerInternal);
-                    }
-                });
-            }
-        }
-        executeBatchLI(batch);
-    }
-
-    public static /* synthetic */ void lambda$prepareAppDataPostCommitLIF$0(UserManagerInternal userManagerInternal, UserInfo userInfo, AndroidPackage androidPackage, StorageManagerInternal storageManagerInternal) {
-        if (userManagerInternal.isUserUnlockingOrUnlocked(userInfo.id)) {
-            storageManagerInternal.prepareAppDataAfterInstall(androidPackage.getPackageName(), UserHandle.getUid(userInfo.id, UserHandle.getAppId(androidPackage.getUid())));
-        }
-    }
-
-    public final void executeBatchLI(Installer.Batch batch) {
-        try {
-            batch.execute(this.mInstaller);
-        } catch (Installer.InstallerException e) {
-            Slog.w("PackageManager", "Failed to execute pending operations", e);
-        }
-    }
-
-    public final CompletableFuture prepareAppData(Installer.Batch batch, AndroidPackage androidPackage, int i, int i2, int i3) {
-        if (androidPackage == null) {
-            Slog.wtf("PackageManager", "Package was null!", new Throwable());
-            return CompletableFuture.completedFuture(null);
-        }
-        if (!shouldHaveAppStorage(androidPackage)) {
-            Slog.w("PackageManager", "Skipping preparing app data for " + androidPackage.getPackageName());
-            return CompletableFuture.completedFuture(null);
-        }
-        return prepareAppDataLeaf(batch, androidPackage, i, i2, i3);
-    }
-
-    public final void prepareAppDataAndMigrate(Installer.Batch batch, final PackageState packageState, final AndroidPackage androidPackage, final int i, final int i2, final boolean z) {
-        prepareAppData(batch, androidPackage, -1, i, i2).thenRun(new Runnable() { // from class: com.android.server.pm.AppDataHelper$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                AppDataHelper.this.lambda$prepareAppDataAndMigrate$1(z, packageState, androidPackage, i, i2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$prepareAppDataAndMigrate$1(boolean z, PackageState packageState, AndroidPackage androidPackage, int i, int i2) {
-        if (z && maybeMigrateAppDataLIF(packageState, androidPackage, i)) {
-            Installer.Batch batch = new Installer.Batch();
-            prepareAppData(batch, androidPackage, -1, i, i2);
-            executeBatchLI(batch);
-        }
-    }
-
-    public final CompletableFuture prepareAppDataLeaf(Installer.Batch batch, final AndroidPackage androidPackage, int i, final int i2, final int i3) {
-        final PackageSetting packageLPr;
-        String seinfoUser;
-        synchronized (this.mPm.mLock) {
-            packageLPr = this.mPm.mSettings.getPackageLPr(androidPackage.getPackageName());
-            seinfoUser = SELinuxUtil.getSeinfoUser(packageLPr.readUserState(i2));
-        }
-        String volumeUuid = androidPackage.getVolumeUuid();
-        final String packageName = androidPackage.getPackageName();
-        int appId = UserHandle.getAppId(androidPackage.getUid());
-        String seInfo = packageLPr.getSeInfo();
-        Preconditions.checkNotNull(seInfo);
-        final CreateAppDataArgs buildCreateAppDataArgs = Installer.buildCreateAppDataArgs(volumeUuid, packageName, i2, i3, appId, seInfo + seinfoUser, androidPackage.getTargetSdkVersion(), !androidPackage.getUsesSdkLibraries().isEmpty());
-        buildCreateAppDataArgs.previousAppId = i;
-        return batch.createAppData(buildCreateAppDataArgs).whenComplete(new BiConsumer() { // from class: com.android.server.pm.AppDataHelper$$ExternalSyntheticLambda1
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                AppDataHelper.this.lambda$prepareAppDataLeaf$2(packageName, androidPackage, i2, i3, buildCreateAppDataArgs, packageLPr, (Long) obj, (Throwable) obj2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$prepareAppDataLeaf$2(String str, AndroidPackage androidPackage, int i, int i2, CreateAppDataArgs createAppDataArgs, PackageSetting packageSetting, Long l, Throwable th) {
-        if (th != null) {
-            PackageManagerServiceUtils.logCriticalInfo(5, "Failed to create app data for " + str + ", but trying to recover: " + th);
-            destroyAppDataLeafLIF(androidPackage, i, i2);
-            try {
-                l = Long.valueOf(this.mInstaller.createAppData(createAppDataArgs).ceDataInode);
-                PackageManagerServiceUtils.logCriticalInfo(3, "Recovery succeeded!");
-            } catch (Installer.InstallerException unused) {
-                PackageManagerServiceUtils.logCriticalInfo(3, "Recovery failed!");
-            }
-        }
-        if (!DexOptHelper.useArtService() && (this.mPm.isDeviceUpgrading() || this.mPm.isFirstBoot() || i != 0)) {
-            try {
-                this.mArtManagerService.prepareAppProfiles(androidPackage, i, false);
-            } catch (Installer.LegacyDexoptDisabledException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        if ((i2 & 2) != 0 && l.longValue() != -1) {
-            synchronized (this.mPm.mLock) {
-                packageSetting.setCeDataInode(l.longValue(), i);
-            }
-        }
-        prepareAppDataContentsLeafLIF(androidPackage, packageSetting, i, i2);
-    }
-
-    public void prepareAppDataContentsLIF(AndroidPackage androidPackage, PackageStateInternal packageStateInternal, int i, int i2) {
-        if (androidPackage == null) {
-            Slog.wtf("PackageManager", "Package was null!", new Throwable());
-        } else {
-            prepareAppDataContentsLeafLIF(androidPackage, packageStateInternal, i, i2);
-        }
-    }
-
-    public final void prepareAppDataContentsLeafLIF(AndroidPackage androidPackage, PackageStateInternal packageStateInternal, int i, int i2) {
-        String volumeUuid = androidPackage.getVolumeUuid();
-        String packageName = androidPackage.getPackageName();
-        if ((i2 & 2) != 0) {
-            String rawPrimaryCpuAbi = packageStateInternal == null ? AndroidPackageUtils.getRawPrimaryCpuAbi(androidPackage) : packageStateInternal.getPrimaryCpuAbi();
-            if (rawPrimaryCpuAbi == null || VMRuntime.is64BitAbi(rawPrimaryCpuAbi)) {
-                return;
-            }
-            String nativeLibraryDir = androidPackage.getNativeLibraryDir();
-            if (new File(nativeLibraryDir).exists()) {
-                try {
-                    this.mInstaller.linkNativeLibraryDirectory(volumeUuid, packageName, nativeLibraryDir, i);
-                } catch (Installer.InstallerException e) {
-                    Slog.e("PackageManager", "Failed to link native for " + packageName + ": " + e);
-                }
-            }
-        }
-    }
-
-    public final boolean maybeMigrateAppDataLIF(PackageState packageState, AndroidPackage androidPackage, int i) {
-        if (!packageState.isSystem() || StorageManager.isFileEncrypted()) {
-            return false;
-        }
-        try {
-            this.mInstaller.migrateAppData(androidPackage.getVolumeUuid(), androidPackage.getPackageName(), i, androidPackage.isDefaultToDeviceProtectedStorage() ? 1 : 2);
-        } catch (Installer.InstallerException e) {
-            PackageManagerServiceUtils.logCriticalInfo(5, "Failed to migrate " + androidPackage.getPackageName() + ": " + e.getMessage());
-        }
-        return true;
-    }
-
-    public void reconcileAppsData(int i, int i2, boolean z) {
-        Iterator it = ((StorageManager) this.mInjector.getSystemService(StorageManager.class)).getWritablePrivateVolumes().iterator();
-        while (it.hasNext()) {
-            String fsUuid = ((VolumeInfo) it.next()).getFsUuid();
-            synchronized (this.mPm.mInstallLock) {
-                reconcileAppsDataLI(fsUuid, i, i2, z);
-            }
-        }
-    }
-
-    public void reconcileAppsDataLI(String str, int i, int i2, boolean z) {
-        reconcileAppsDataLI(str, i, i2, z, false);
-    }
-
-    public final List reconcileAppsDataLI(String str, int i, int i2, boolean z, boolean z2) {
-        String str2;
-        ArrayList arrayList;
-        ArrayList arrayList2;
-        String str3;
-        int i3;
-        int i4;
-        String str4;
-        String str5;
-        String str6;
-        ArrayList arrayList3;
-        int i5;
-        int i6;
-        Computer computer;
-        String str7;
-        String str8 = "PackageManager";
-        Slog.v("PackageManager", "reconcileAppsData for " + str + " u" + i + " 0x" + Integer.toHexString(i2) + " migrateAppData=" + z);
-        ArrayList arrayList4 = z2 ? new ArrayList() : null;
-        try {
-            this.mInstaller.cleanupInvalidPackageDirs(str, i, i2);
-        } catch (Installer.InstallerException e) {
-            PackageManagerServiceUtils.logCriticalInfo(5, "Failed to cleanup deleted dirs: " + e);
-        }
-        File dataUserCeDirectory = Environment.getDataUserCeDirectory(str, i);
-        File dataUserDeDirectory = Environment.getDataUserDeDirectory(str, i);
-        Computer snapshotComputer = this.mPm.snapshotComputer();
-        String str9 = "Failed to destroy: ";
-        String str10 = " due to: ";
-        String str11 = "Destroying ";
-        if ((i2 & 2) != 0) {
-            if (StorageManager.isFileEncrypted() && !StorageManager.isUserKeyUnlocked(i)) {
-                throw new RuntimeException("Yikes, someone asked us to reconcile CE storage while " + i + " was still locked; this would have caused massive data loss!");
-            }
-            File[] listFilesOrEmpty = FileUtils.listFilesOrEmpty(dataUserCeDirectory);
-            int length = listFilesOrEmpty.length;
-            int i7 = 0;
-            while (i7 < length) {
-                File file = listFilesOrEmpty[i7];
-                File[] fileArr = listFilesOrEmpty;
-                String name = file.getName();
-                try {
-                    assertPackageStorageValid(snapshotComputer, str, name, i);
-                    i5 = i7;
-                    i6 = length;
-                    str4 = str11;
-                    str5 = str10;
-                    str6 = str8;
-                    arrayList3 = arrayList4;
-                    computer = snapshotComputer;
-                    str7 = str9;
-                } catch (PackageManagerException e2) {
-                    int i8 = i7;
-                    PackageManagerServiceUtils.logCriticalInfo(5, str11 + file + str10 + e2);
-                    try {
-                        i5 = i8;
-                        i6 = length;
-                        str4 = str11;
-                        str5 = str10;
-                        str6 = str8;
-                        arrayList3 = arrayList4;
-                        computer = snapshotComputer;
-                        str7 = str9;
-                        try {
-                            this.mInstaller.destroyAppData(str, name, i, 2, 0L);
-                        } catch (Installer.InstallerException e3) {
-                            e = e3;
-                            PackageManagerServiceUtils.logCriticalInfo(5, str7 + e);
-                            i7 = i5 + 1;
-                            str10 = str5;
-                            str9 = str7;
-                            snapshotComputer = computer;
-                            listFilesOrEmpty = fileArr;
-                            length = i6;
-                            str11 = str4;
-                            arrayList4 = arrayList3;
-                            str8 = str6;
-                        }
-                    } catch (Installer.InstallerException e4) {
-                        e = e4;
-                        str4 = str11;
-                        str5 = str10;
-                        str6 = str8;
-                        arrayList3 = arrayList4;
-                        i5 = i8;
-                        i6 = length;
-                        computer = snapshotComputer;
-                        str7 = str9;
-                    }
-                }
-                i7 = i5 + 1;
-                str10 = str5;
-                str9 = str7;
-                snapshotComputer = computer;
-                listFilesOrEmpty = fileArr;
-                length = i6;
-                str11 = str4;
-                arrayList4 = arrayList3;
-                str8 = str6;
-            }
-        }
-        String str12 = str11;
-        String str13 = str10;
-        String str14 = str8;
-        ArrayList arrayList5 = arrayList4;
-        Computer computer2 = snapshotComputer;
-        String str15 = str9;
-        if ((i2 & 1) != 0) {
-            File[] listFilesOrEmpty2 = FileUtils.listFilesOrEmpty(dataUserDeDirectory);
-            int i9 = 0;
-            for (int length2 = listFilesOrEmpty2.length; i9 < length2; length2 = i3) {
-                File file2 = listFilesOrEmpty2[i9];
-                String name2 = file2.getName();
-                try {
-                    assertPackageStorageValid(computer2, str, name2, i);
-                    i3 = length2;
-                    i4 = i9;
-                    str3 = str12;
-                } catch (PackageManagerException e5) {
-                    StringBuilder sb = new StringBuilder();
-                    String str16 = str12;
-                    sb.append(str16);
-                    sb.append(file2);
-                    sb.append(str13);
-                    sb.append(e5);
-                    PackageManagerServiceUtils.logCriticalInfo(5, sb.toString());
-                    try {
-                        str3 = str16;
-                        i3 = length2;
-                        i4 = i9;
-                    } catch (Installer.InstallerException e6) {
-                        e = e6;
-                        str3 = str16;
-                        i3 = length2;
-                        i4 = i9;
-                    }
-                    try {
-                        this.mInstaller.destroyAppData(str, name2, i, 1, 0L);
-                    } catch (Installer.InstallerException e7) {
-                        e = e7;
-                        PackageManagerServiceUtils.logCriticalInfo(5, str15 + e);
-                        i9 = i4 + 1;
-                        str12 = str3;
-                    }
-                }
-                i9 = i4 + 1;
-                str12 = str3;
-            }
-        }
-        Trace.traceBegin(262144L, "prepareAppDataAndMigrate");
-        Installer.Batch batch = new Installer.Batch();
-        int i10 = 0;
-        for (PackageStateInternal packageStateInternal : computer2.getVolumePackages(str)) {
-            String packageName = packageStateInternal.getPackageName();
-            if (packageStateInternal.getPkg() == null) {
-                str2 = str14;
-                Slog.w(str2, "Odd, missing scanned package " + packageName);
-                arrayList = arrayList5;
-            } else {
-                str2 = str14;
-                if (z2 && !packageStateInternal.getPkg().isCoreApp()) {
-                    arrayList = arrayList5;
-                    arrayList.add(packageName);
-                } else {
-                    ArrayList arrayList6 = arrayList5;
-                    if (packageStateInternal.getUserStateOrDefault(i).isInstalled()) {
-                        arrayList2 = arrayList6;
-                        prepareAppDataAndMigrate(batch, packageStateInternal, packageStateInternal.getPkg(), i, i2, z);
-                        i10++;
-                    } else {
-                        arrayList2 = arrayList6;
-                    }
-                    str14 = str2;
-                    arrayList5 = arrayList2;
-                }
-            }
-            arrayList5 = arrayList;
-            str14 = str2;
-        }
-        ArrayList arrayList7 = arrayList5;
-        executeBatchLI(batch);
-        Trace.traceEnd(262144L);
-        Slog.v(str14, "reconcileAppsData finished " + i10 + " packages");
-        return arrayList7;
-    }
-
-    public final void assertPackageStorageValid(Computer computer, String str, String str2, int i) {
-        PackageStateInternal packageStateInternal = computer.getPackageStateInternal(str2);
+    public static void assertPackageStorageValid(Computer computer, String str, String str2, int i) {
+        PackageSetting packageStateInternal = computer.getPackageStateInternal(str2);
         if (packageStateInternal == null) {
-            throw PackageManagerException.ofInternalError("Package " + str2 + " is unknown", -7);
+            throw new PackageManagerException(XmlUtils$$ExternalSyntheticOutline0.m("Package ", str2, " is unknown"), -7);
         }
-        if (!TextUtils.equals(str, packageStateInternal.getVolumeUuid())) {
-            throw PackageManagerException.ofInternalError("Package " + str2 + " found on unknown volume " + str + "; expected volume " + packageStateInternal.getVolumeUuid(), -8);
+        if (!TextUtils.equals(str, packageStateInternal.volumeUuid)) {
+            StringBuilder m = InitialConfiguration$$ExternalSyntheticOutline0.m("Package ", str2, " found on unknown volume ", str, "; expected volume ");
+            m.append(packageStateInternal.volumeUuid);
+            throw new PackageManagerException(m.toString(), -8);
         }
-        if (!packageStateInternal.getUserStateOrDefault(i).isInstalled()) {
-            throw PackageManagerException.ofInternalError("Package " + str2 + " not installed for user " + i, -9);
+        PackageUserStateInternal userStateOrDefault = packageStateInternal.getUserStateOrDefault(i);
+        if (!userStateOrDefault.isInstalled() && !userStateOrDefault.dataExists()) {
+            throw new PackageManagerException(AppStateTrackerImpl$MyHandler$$ExternalSyntheticOutline0.m(i, "Package ", str2, " not installed for user ", " or was deleted without DELETE_KEEP_DATA"), -9);
         }
-        if (packageStateInternal.getPkg() == null || shouldHaveAppStorage(packageStateInternal.getPkg())) {
-            return;
-        }
-        throw PackageManagerException.ofInternalError("Package " + str2 + " shouldn't have storage", -10);
-    }
-
-    public Future fixAppsDataOnBoot() {
-        final int i = StorageManager.isFileEncrypted() ? 1 : 3;
-        final List reconcileAppsDataLI = reconcileAppsDataLI(StorageManager.UUID_PRIVATE_INTERNAL, 0, i, true, true);
-        return SystemServerInitThreadPool.submit(new Runnable() { // from class: com.android.server.pm.AppDataHelper$$ExternalSyntheticLambda3
-            @Override // java.lang.Runnable
-            public final void run() {
-                AppDataHelper.this.lambda$fixAppsDataOnBoot$3(reconcileAppsDataLI, i);
-            }
-        }, "prepareAppData");
-    }
-
-    public /* synthetic */ void lambda$fixAppsDataOnBoot$3(List list, int i) {
-        TimingsTraceLog timingsTraceLog = new TimingsTraceLog("SystemServerTimingAsync", 262144L);
-        timingsTraceLog.traceBegin("AppDataFixup");
-        try {
-            this.mInstaller.fixupAppData(StorageManager.UUID_PRIVATE_INTERNAL, 3);
-        } catch (Installer.InstallerException e) {
-            Slog.w("PackageManager", "Trouble fixing GIDs", e);
-        }
-        timingsTraceLog.traceEnd();
-        timingsTraceLog.traceBegin("AppDataPrepare");
-        if (list == null || list.isEmpty()) {
-            return;
-        }
-        Installer.Batch batch = new Installer.Batch();
-        Iterator it = list.iterator();
-        int i2 = 0;
-        while (it.hasNext()) {
-            PackageStateInternal packageStateInternal = this.mPm.snapshotComputer().getPackageStateInternal((String) it.next());
-            if (packageStateInternal != null && packageStateInternal.getUserStateOrDefault(0).isInstalled()) {
-                prepareAppDataAndMigrate(batch, packageStateInternal, packageStateInternal.getPkg(), 0, i, true);
-                i2++;
-            }
-        }
-        synchronized (this.mPm.mInstallLock) {
-            executeBatchLI(batch);
-        }
-        timingsTraceLog.traceEnd();
-        Slog.i("PackageManager", "Deferred reconcileAppsData finished " + i2 + " packages");
-    }
-
-    public void clearAppDataLIF(AndroidPackage androidPackage, int i, int i2) {
-        if (androidPackage == null) {
-            return;
-        }
-        clearAppDataLeafLIF(androidPackage, i, i2);
-        if ((131072 & i2) == 0) {
-            clearAppProfilesLIF(androidPackage);
+        AndroidPackageInternal androidPackageInternal = packageStateInternal.pkg;
+        if (androidPackageInternal != null && !shouldHaveAppStorage(androidPackageInternal)) {
+            throw new PackageManagerException(XmlUtils$$ExternalSyntheticOutline0.m("Package ", str2, " shouldn't have storage"), -10);
         }
     }
 
-    public final void clearAppDataLeafLIF(AndroidPackage androidPackage, int i, int i2) {
-        PackageStateInternal packageStateInternal = this.mPm.snapshotComputer().getPackageStateInternal(androidPackage.getPackageName());
-        for (int i3 : this.mPm.resolveUserIds(i)) {
-            try {
-                this.mInstaller.clearAppData(androidPackage.getVolumeUuid(), androidPackage.getPackageName(), i3, i2, packageStateInternal != null ? packageStateInternal.getUserStateOrDefault(i3).getCeDataInode() : 0L);
-            } catch (Installer.InstallerException e) {
-                Slog.w("PackageManager", String.valueOf(e));
-            }
-        }
-    }
-
-    public void clearAppProfilesLIF(AndroidPackage androidPackage) {
+    public static void clearAppProfilesLIF(AndroidPackage androidPackage) {
         if (androidPackage == null) {
             Slog.wtf("PackageManager", "Package was null!", new Throwable());
         } else {
-            if (DexOptHelper.useArtService()) {
-                destroyAppProfilesWithArtService(androidPackage);
-                return;
-            }
-            try {
-                this.mArtManagerService.clearAppProfiles(androidPackage);
-            } catch (Installer.LegacyDexoptDisabledException e) {
-                throw new RuntimeException(e);
-            }
+            destroyAppProfilesLIF(androidPackage.getPackageName());
         }
     }
 
-    public void destroyAppDataLIF(AndroidPackage androidPackage, int i, int i2) {
-        if (androidPackage == null) {
-            Slog.wtf("PackageManager", "Package was null!", new Throwable());
-        } else {
-            destroyAppDataLeafLIF(androidPackage, i, i2);
-        }
-    }
-
-    public void destroyAppDataLeafLIF(AndroidPackage androidPackage, int i, int i2) {
-        PackageStateInternal packageStateInternal = this.mPm.snapshotComputer().getPackageStateInternal(androidPackage.getPackageName());
-        for (int i3 : this.mPm.resolveUserIds(i)) {
-            try {
-                this.mInstaller.destroyAppData(androidPackage.getVolumeUuid(), androidPackage.getPackageName(), i3, i2, packageStateInternal != null ? packageStateInternal.getUserStateOrDefault(i3).getCeDataInode() : 0L);
-            } catch (Installer.InstallerException e) {
-                Slog.w("PackageManager", String.valueOf(e));
-            }
-            this.mPm.getDexManager().notifyPackageDataDestroyed(androidPackage.getPackageName(), i);
-            this.mPm.getDynamicCodeLogger().notifyPackageDataDestroyed(androidPackage.getPackageName(), i);
-        }
-    }
-
-    public void destroyAppProfilesLIF(AndroidPackage androidPackage) {
-        if (androidPackage == null) {
-            Slog.wtf("PackageManager", "Package was null!", new Throwable());
-        } else {
-            destroyAppProfilesLeafLIF(androidPackage);
-        }
-    }
-
-    public final void destroyAppProfilesLeafLIF(AndroidPackage androidPackage) {
-        if (DexOptHelper.useArtService()) {
-            destroyAppProfilesWithArtService(androidPackage);
-            return;
-        }
-        try {
-            this.mInstaller.destroyAppProfiles(androidPackage.getPackageName());
-        } catch (Installer.InstallerException e) {
-            Slog.w("PackageManager", String.valueOf(e));
-        } catch (Installer.LegacyDexoptDisabledException e2) {
-            throw new RuntimeException(e2);
-        }
-    }
-
-    public final void destroyAppProfilesWithArtService(AndroidPackage androidPackage) {
-        if (DexOptHelper.artManagerLocalIsInitialized()) {
+    public static void destroyAppProfilesLIF(String str) {
+        if (DexOptHelper.sArtManagerLocalIsInitialized) {
             PackageManagerLocal.FilteredSnapshot withFilteredSnapshot = PackageManagerServiceUtils.getPackageManagerLocal().withFilteredSnapshot();
             try {
                 try {
-                    DexOptHelper.getArtManagerLocal().clearAppProfiles(withFilteredSnapshot, androidPackage.getPackageName());
+                    DexOptHelper.getArtManagerLocal().clearAppProfiles(withFilteredSnapshot, str);
                 } catch (IllegalArgumentException e) {
                     Slog.w("PackageManager", e);
                 }
@@ -577,12 +117,32 @@ public class AppDataHelper {
         }
     }
 
-    public final boolean shouldHaveAppStorage(AndroidPackage androidPackage) {
+    public static boolean shouldHaveAppStorage(AndroidPackage androidPackage) {
         PackageManager.Property property = (PackageManager.Property) androidPackage.getProperties().get("android.internal.PROPERTY_NO_APP_DATA_STORAGE");
         return (property == null || !property.getBoolean()) && androidPackage.getUid() >= 0;
     }
 
-    public void clearKeystoreData(int i, int i2) {
+    public final void clearAppDataLIF(AndroidPackage androidPackage, int i, int i2) {
+        if (androidPackage == null) {
+            return;
+        }
+        String packageName = androidPackage.getPackageName();
+        String volumeUuid = androidPackage.getVolumeUuid();
+        PackageManagerService packageManagerService = this.mPm;
+        PackageSetting packageStateInternal = packageManagerService.snapshotComputer().getPackageStateInternal(packageName);
+        for (int i3 : packageManagerService.resolveUserIds(i)) {
+            try {
+                this.mInstaller.clearAppData(volumeUuid, packageName, i3, i2, packageStateInternal != null ? packageStateInternal.getUserStateOrDefault(i3).getCeDataInode() : 0L);
+            } catch (Installer.InstallerException e) {
+                Slog.w("PackageManager", String.valueOf(e));
+            }
+        }
+        if ((131072 & i2) == 0) {
+            clearAppProfilesLIF(androidPackage);
+        }
+    }
+
+    public final void clearKeystoreData(int i, int i2) {
         if (i2 < 0) {
             return;
         }
@@ -591,12 +151,638 @@ public class AppDataHelper {
             return;
         }
         if (i2 == 5250 || i2 == 1250) {
-            Slog.w("PackageManager", "skip to clear keystore for knox app with " + i2);
+            DeviceIdleController$$ExternalSyntheticOutline0.m(i2, "skip to clear keystore for knox app with ", "PackageManager");
             return;
         }
         int length = this.mPm.resolveUserIds(i).length;
         for (int i3 = 0; i3 < length; i3++) {
             AndroidKeyStoreMaintenance.clearNamespace(0, UserHandle.getUid(r4[i3], i2));
         }
+    }
+
+    public final void destroyAppDataLeafLIF(int i, int i2, String str, String str2) {
+        boolean z;
+        boolean z2;
+        PackageSetting packageStateInternal = this.mPm.snapshotComputer().getPackageStateInternal(str);
+        for (int i3 : this.mPm.resolveUserIds(i)) {
+            try {
+                this.mInstaller.destroyAppData(str2, str, i3, i2, packageStateInternal != null ? packageStateInternal.getUserStateOrDefault(i3).getCeDataInode() : 0L);
+            } catch (Installer.InstallerException e) {
+                Slog.w("PackageManager", String.valueOf(e));
+            }
+            DexManager dexManager = this.mPm.mDexManager;
+            boolean z3 = true;
+            if (i == -1) {
+                PackageDexUsage packageDexUsage = dexManager.mPackageDexUsage;
+                synchronized (packageDexUsage.mPackageUseInfoMap) {
+                    z2 = ((HashMap) packageDexUsage.mPackageUseInfoMap).remove(str) != null;
+                }
+                if (z2) {
+                    dexManager.mPackageDexUsage.maybeWriteAsync(null);
+                }
+            } else {
+                PackageDexUsage packageDexUsage2 = dexManager.mPackageDexUsage;
+                synchronized (packageDexUsage2.mPackageUseInfoMap) {
+                    try {
+                        PackageDexUsage.PackageUseInfo packageUseInfo = (PackageDexUsage.PackageUseInfo) ((HashMap) packageDexUsage2.mPackageUseInfoMap).get(str);
+                        if (packageUseInfo == null) {
+                            z = false;
+                        } else {
+                            Iterator it = ((HashMap) packageUseInfo.mDexUseInfoMap).entrySet().iterator();
+                            z = false;
+                            while (it.hasNext()) {
+                                if (((PackageDexUsage.DexUseInfo) ((Map.Entry) it.next()).getValue()).mOwnerUserId == i) {
+                                    it.remove();
+                                    z = true;
+                                }
+                            }
+                            if (((HashMap) packageUseInfo.mDexUseInfoMap).isEmpty() && !(!((HashMap) packageUseInfo.mPrimaryCodePaths).isEmpty())) {
+                                ((HashMap) packageDexUsage2.mPackageUseInfoMap).remove(str);
+                                z = true;
+                            }
+                        }
+                    } finally {
+                    }
+                }
+                if (z) {
+                    dexManager.mPackageDexUsage.maybeWriteAsync(null);
+                }
+            }
+            DynamicCodeLogger dynamicCodeLogger = this.mPm.mDynamicCodeLogger;
+            if (i == -1) {
+                PackageDynamicCodeLoading packageDynamicCodeLoading = dynamicCodeLogger.mPackageDynamicCodeLoading;
+                synchronized (packageDynamicCodeLoading.mLock) {
+                    if (((HashMap) packageDynamicCodeLoading.mPackageMap).remove(str) == null) {
+                        z3 = false;
+                    }
+                }
+                if (z3) {
+                    dynamicCodeLogger.mPackageDynamicCodeLoading.maybeWriteAsync(null);
+                }
+            } else {
+                PackageDynamicCodeLoading packageDynamicCodeLoading2 = dynamicCodeLogger.mPackageDynamicCodeLoading;
+                if (packageDynamicCodeLoading2.removeUserPackage(i, str)) {
+                    packageDynamicCodeLoading2.maybeWriteAsync(null);
+                }
+            }
+        }
+    }
+
+    public final void executeBatchLI(Installer.Batch batch) {
+        try {
+            batch.execute(this.mInstaller);
+        } catch (Installer.InstallerException e) {
+            Slog.w("PackageManager", "Failed to execute pending operations", e);
+        }
+    }
+
+    public final Future fixAppsDataOnBoot() {
+        final int i = StorageManager.isFileEncrypted() ? 1 : 3;
+        PackageManagerTracedLock packageManagerTracedLock = this.mPm.mInstallLock;
+        packageManagerTracedLock.mLock.lock();
+        try {
+            final List reconcileAppsDataLI = reconcileAppsDataLI(StorageManager.UUID_PRIVATE_INTERNAL, 0, i, true, true);
+            packageManagerTracedLock.close();
+            return SystemServerInitThreadPool.submit("prepareAppData", new Runnable() { // from class: com.android.server.pm.AppDataHelper$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    AppDataHelper appDataHelper = AppDataHelper.this;
+                    List list = reconcileAppsDataLI;
+                    int i2 = i;
+                    appDataHelper.getClass();
+                    TimingsTraceLog timingsTraceLog = new TimingsTraceLog("SystemServerTimingAsync", 262144L);
+                    timingsTraceLog.traceBegin("AppDataFixup");
+                    try {
+                        Installer installer = appDataHelper.mInstaller;
+                        String str = StorageManager.UUID_PRIVATE_INTERNAL;
+                        if (installer.checkBeforeRemote()) {
+                            try {
+                                installer.mInstalld.fixupAppData(str, 3);
+                            } catch (Exception e) {
+                                Installer.InstallerException.from(e);
+                                throw null;
+                            }
+                        }
+                    } catch (Installer.InstallerException e2) {
+                        Slog.w("PackageManager", "Trouble fixing GIDs", e2);
+                    }
+                    timingsTraceLog.traceEnd();
+                    timingsTraceLog.traceBegin("AppDataPrepare");
+                    if (list == null || list.isEmpty()) {
+                        return;
+                    }
+                    Installer.Batch batch = new Installer.Batch();
+                    Iterator it = list.iterator();
+                    int i3 = 0;
+                    while (it.hasNext()) {
+                        PackageSetting packageStateInternal = appDataHelper.mPm.snapshotComputer().getPackageStateInternal((String) it.next());
+                        if (packageStateInternal != null && packageStateInternal.getUserStateOrDefault(0).isInstalled()) {
+                            appDataHelper.prepareAppDataAndMigrate(batch, packageStateInternal.pkg, 0, i2, true);
+                            i3++;
+                        }
+                    }
+                    PackageManagerTracedLock packageManagerTracedLock2 = appDataHelper.mPm.mInstallLock;
+                    packageManagerTracedLock2.mLock.lock();
+                    try {
+                        appDataHelper.executeBatchLI(batch);
+                        packageManagerTracedLock2.close();
+                        timingsTraceLog.traceEnd();
+                        Slog.i("PackageManager", "Deferred reconcileAppsData finished " + i3 + " packages");
+                    } catch (Throwable th) {
+                        try {
+                            packageManagerTracedLock2.close();
+                        } catch (Throwable th2) {
+                            th.addSuppressed(th2);
+                        }
+                        throw th;
+                    }
+                }
+            });
+        } catch (Throwable th) {
+            try {
+                packageManagerTracedLock.close();
+            } catch (Throwable th2) {
+                th.addSuppressed(th2);
+            }
+            throw th;
+        }
+    }
+
+    public final CompletableFuture prepareAppData(Installer.Batch batch, final PackageSetting packageSetting, int i, final int i2, final int i3) {
+        String str;
+        final String str2 = packageSetting.mName;
+        PackageManagerTracedLock packageManagerTracedLock = this.mPm.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                str = packageSetting.readUserState(i2).isInstantApp() ? ":ephemeralapp:complete" : ":complete";
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+        final AndroidPackageInternal androidPackageInternal = packageSetting.pkg;
+        final String str3 = packageSetting.volumeUuid;
+        int i4 = packageSetting.mAppId;
+        String seInfo = packageSetting.getSeInfo();
+        Preconditions.checkNotNull(seInfo);
+        final CreateAppDataArgs buildCreateAppDataArgs = Installer.buildCreateAppDataArgs(i2, i3, packageSetting.getUsesSdkLibraries().length > 0, i4, str3, str2, seInfo + str, packageSetting.mTargetSdkVersion);
+        buildCreateAppDataArgs.previousAppId = i;
+        return batch.createAppData(buildCreateAppDataArgs).whenComplete(new BiConsumer() { // from class: com.android.server.pm.AppDataHelper$$ExternalSyntheticLambda3
+            @Override // java.util.function.BiConsumer
+            public final void accept(Object obj, Object obj2) {
+                AppDataHelper appDataHelper = AppDataHelper.this;
+                String str4 = str2;
+                String str5 = str3;
+                int i5 = i2;
+                int i6 = i3;
+                CreateAppDataArgs createAppDataArgs = buildCreateAppDataArgs;
+                PackageSetting packageSetting2 = packageSetting;
+                AndroidPackage androidPackage = androidPackageInternal;
+                CreateAppDataResult createAppDataResult = (CreateAppDataResult) obj;
+                Throwable th2 = (Throwable) obj2;
+                appDataHelper.getClass();
+                if (th2 != null) {
+                    PackageManagerServiceUtils.logCriticalInfo(5, "Failed to create app data for " + str4 + ", but trying to recover: " + th2);
+                    appDataHelper.destroyAppDataLeafLIF(i5, i6, str4, str5);
+                    try {
+                        Installer installer = appDataHelper.mInstaller;
+                        if (installer.checkBeforeRemote()) {
+                            createAppDataArgs.previousAppId = 0;
+                            try {
+                                createAppDataResult = installer.mInstalld.createAppData(createAppDataArgs);
+                            } catch (Exception e) {
+                                Installer.InstallerException.from(e);
+                                throw null;
+                            }
+                        } else {
+                            CreateAppDataResult createAppDataResult2 = new CreateAppDataResult();
+                            createAppDataResult2.ceDataInode = -1L;
+                            createAppDataResult2.deDataInode = -1L;
+                            createAppDataResult2.exceptionCode = 0;
+                            createAppDataResult2.exceptionMessage = null;
+                            createAppDataResult = createAppDataResult2;
+                        }
+                        PackageManagerServiceUtils.logCriticalInfo(3, "Recovery succeeded!");
+                    } catch (Installer.InstallerException unused) {
+                        PackageManagerServiceUtils.logCriticalInfo(3, "Recovery failed!");
+                    }
+                }
+                long j = createAppDataResult.ceDataInode;
+                long j2 = createAppDataResult.deDataInode;
+                if ((i6 & 2) != 0 && j != -1) {
+                    PackageManagerTracedLock packageManagerTracedLock2 = appDataHelper.mPm.mLock;
+                    boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+                    synchronized (packageManagerTracedLock2) {
+                        try {
+                            PackageUserStateImpl modifyUserState = packageSetting2.modifyUserState(i5);
+                            modifyUserState.mCeDataInode = j;
+                            modifyUserState.onChanged$4();
+                            packageSetting2.onChanged$2();
+                        } finally {
+                        }
+                    }
+                }
+                if ((i6 & 1) != 0 && j2 != -1) {
+                    PackageManagerTracedLock packageManagerTracedLock3 = appDataHelper.mPm.mLock;
+                    boolean z4 = PackageManagerService.DEBUG_COMPRESSION;
+                    synchronized (packageManagerTracedLock3) {
+                        try {
+                            PackageUserStateImpl modifyUserState2 = packageSetting2.modifyUserState(i5);
+                            modifyUserState2.mDeDataInode = j2;
+                            modifyUserState2.onChanged$4();
+                            packageSetting2.onChanged$2();
+                        } finally {
+                        }
+                    }
+                }
+                if (androidPackage != null) {
+                    appDataHelper.prepareAppDataContentsLeafLIF(androidPackage, packageSetting2, i5, i6);
+                }
+            }
+        });
+    }
+
+    public final void prepareAppDataAfterInstallLIF(AndroidPackage androidPackage) {
+        PackageSetting packageLPr;
+        PackageManagerTracedLock packageManagerTracedLock = this.mPm.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                packageLPr = this.mPm.mSettings.getPackageLPr(androidPackage.getPackageName());
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+        ArrayList arrayList = (ArrayList) this.mInjector.getUserManagerService().mLocalService.getUsers(false);
+        int[] iArr = new int[arrayList.size()];
+        int size = arrayList.size();
+        int i = 0;
+        for (int i2 = 0; i2 < size; i2++) {
+            int i3 = ((UserInfo) arrayList.get(i2)).id;
+            if (packageLPr.getInstalled(i3)) {
+                iArr[i] = i3;
+                i++;
+            }
+        }
+        prepareAppDataPostCommitLIF(packageLPr, Arrays.copyOf(iArr, i));
+    }
+
+    public final void prepareAppDataAndMigrate(Installer.Batch batch, AndroidPackage androidPackage, final int i, final int i2, final boolean z) {
+        final PackageSetting packageLPr;
+        if (androidPackage == null) {
+            Slog.wtf("PackageManager", "Package was null!", new Throwable());
+            return;
+        }
+        if (!shouldHaveAppStorage(androidPackage)) {
+            Slog.w("PackageManager", "Skipping preparing app data for " + androidPackage.getPackageName());
+            return;
+        }
+        PackageManagerTracedLock packageManagerTracedLock = this.mPm.mLock;
+        boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                packageLPr = this.mPm.mSettings.getPackageLPr(androidPackage.getPackageName());
+            } catch (Throwable th) {
+                boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+        prepareAppData(batch, packageLPr, -1, i, i2).thenRun(new Runnable() { // from class: com.android.server.pm.AppDataHelper$$ExternalSyntheticLambda1
+            @Override // java.lang.Runnable
+            public final void run() {
+                AppDataHelper appDataHelper = AppDataHelper.this;
+                boolean z4 = z;
+                PackageSetting packageSetting = packageLPr;
+                int i3 = i;
+                int i4 = i2;
+                appDataHelper.getClass();
+                if (z4 && packageSetting.isSystem() && !StorageManager.isFileEncrypted()) {
+                    int i5 = packageSetting.isDefaultToDeviceProtectedStorage() ? 1 : 2;
+                    try {
+                        Installer installer = appDataHelper.mInstaller;
+                        String str = packageSetting.volumeUuid;
+                        String str2 = packageSetting.mName;
+                        if (installer.checkBeforeRemote()) {
+                            try {
+                                installer.mInstalld.migrateAppData(str, str2, i3, i5);
+                            } catch (Exception e) {
+                                Installer.InstallerException.from(e);
+                                throw null;
+                            }
+                        }
+                    } catch (Installer.InstallerException e2) {
+                        PackageManagerServiceUtils.logCriticalInfo(5, "Failed to migrate " + packageSetting.mName + ": " + e2.getMessage());
+                    }
+                    Installer.Batch batch2 = new Installer.Batch();
+                    appDataHelper.prepareAppData(batch2, packageSetting, -1, i3, i4);
+                    appDataHelper.executeBatchLI(batch2);
+                }
+            }
+        });
+    }
+
+    public final void prepareAppDataContentsLeafLIF(AndroidPackage androidPackage, PackageStateInternal packageStateInternal, int i, int i2) {
+        String volumeUuid = androidPackage.getVolumeUuid();
+        String packageName = androidPackage.getPackageName();
+        if ((i2 & 2) != 0) {
+            String primaryCpuAbi = packageStateInternal == null ? ((AndroidPackageHidden) androidPackage).getPrimaryCpuAbi() : packageStateInternal.getPrimaryCpuAbi();
+            if (primaryCpuAbi == null || VMRuntime.is64BitAbi(primaryCpuAbi)) {
+                return;
+            }
+            String nativeLibraryDir = androidPackage.getNativeLibraryDir();
+            if (BatteryService$$ExternalSyntheticOutline0.m45m(nativeLibraryDir)) {
+                try {
+                    Installer installer = this.mInstaller;
+                    if (installer.checkBeforeRemote()) {
+                        BlockGuard.getVmPolicy().onPathAccess(nativeLibraryDir);
+                        try {
+                            installer.mInstalld.linkNativeLibraryDirectory(volumeUuid, packageName, nativeLibraryDir, i);
+                        } catch (Exception e) {
+                            Installer.InstallerException.from(e);
+                            throw null;
+                        }
+                    }
+                } catch (Installer.InstallerException e2) {
+                    Slog.e("PackageManager", "Failed to link native for " + packageName + ": " + e2);
+                }
+            }
+        }
+    }
+
+    public final void prepareAppDataPostCommitLIF(final PackageSetting packageSetting, int[] iArr) {
+        int i;
+        PackageManagerTracedLock packageManagerTracedLock = this.mPm.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                this.mPm.mSettings.writeKernelMappingLPr(packageSetting);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+        AndroidPackageInternal androidPackageInternal = packageSetting.pkg;
+        if (androidPackageInternal != null && !shouldHaveAppStorage(androidPackageInternal)) {
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("Skipping preparing app data for "), packageSetting.mName, "PackageManager");
+            return;
+        }
+        Installer.Batch batch = new Installer.Batch();
+        final UserManagerService.LocalService localService = this.mInjector.getUserManagerService().mLocalService;
+        final StorageManagerInternal storageManagerInternal = (StorageManagerInternal) this.mInjector.mGetLocalServiceProducer.produce(StorageManagerInternal.class);
+        for (final int i2 : iArr) {
+            if (StorageManager.isCeStorageUnlocked(i2) && storageManagerInternal.isCeStoragePrepared(i2)) {
+                i = 3;
+            } else if (localService.isUserRunning(i2)) {
+                i = 1;
+            }
+            prepareAppData(batch, packageSetting, 0, i2, i).thenRun(new Runnable() { // from class: com.android.server.pm.AppDataHelper$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    UserManagerInternal userManagerInternal = UserManagerInternal.this;
+                    int i3 = i2;
+                    PackageSetting packageSetting2 = packageSetting;
+                    StorageManagerInternal storageManagerInternal2 = storageManagerInternal;
+                    if (userManagerInternal.isUserUnlockingOrUnlocked(i3)) {
+                        storageManagerInternal2.prepareAppDataAfterInstall(packageSetting2.mName, UserHandle.getUid(i3, packageSetting2.mAppId));
+                    }
+                }
+            });
+        }
+        executeBatchLI(batch);
+    }
+
+    public final List reconcileAppsDataLI(String str, int i, int i2, boolean z, boolean z2) {
+        ArrayList arrayList;
+        String str2;
+        String str3;
+        String str4;
+        String str5;
+        int i3;
+        Computer computer;
+        String str6;
+        ArrayList arrayList2;
+        ArrayList arrayList3;
+        String str7;
+        String str8;
+        Computer computer2;
+        int i4;
+        int i5;
+        ArrayList arrayList4;
+        String str9;
+        String str10;
+        String str11;
+        int i6;
+        Computer computer3;
+        String str12;
+        int i7;
+        File[] fileArr;
+        int i8;
+        StringBuilder m = StorageManagerService$$ExternalSyntheticOutline0.m(i, "reconcileAppsData for ", str, " u", " 0x");
+        m.append(Integer.toHexString(i2));
+        m.append(" migrateAppData=");
+        m.append(z);
+        String str13 = "PackageManager";
+        Slog.v("PackageManager", m.toString());
+        ArrayList arrayList5 = z2 ? new ArrayList() : null;
+        int i9 = 5;
+        try {
+            Installer installer = this.mInstaller;
+            if (installer.checkBeforeRemote()) {
+                try {
+                    installer.mInstalld.cleanupInvalidPackageDirs(str, i, i2);
+                } catch (Exception e) {
+                    Installer.InstallerException.from(e);
+                    throw null;
+                }
+            }
+        } catch (Installer.InstallerException e2) {
+            PackageManagerServiceUtils.logCriticalInfo(5, "Failed to cleanup deleted dirs: " + e2);
+        }
+        File dataUserCeDirectory = Environment.getDataUserCeDirectory(str, i);
+        File dataUserDeDirectory = Environment.getDataUserDeDirectory(str, i);
+        Computer snapshotComputer = this.mPm.snapshotComputer();
+        String str14 = " due to: ";
+        String str15 = "Destroying ";
+        if ((i2 & 2) == 0) {
+            arrayList = arrayList5;
+            str2 = "PackageManager";
+            str3 = "Destroying ";
+            str4 = " due to: ";
+            str5 = "Failed to destroy: ";
+            i3 = 5;
+            computer = snapshotComputer;
+        } else {
+            if (StorageManager.isFileEncrypted() && !StorageManager.isCeStorageUnlocked(i)) {
+                throw new RuntimeException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "Yikes, someone asked us to reconcile CE storage while ", " was still locked; this would have caused massive data loss!"));
+            }
+            File[] listFilesOrEmpty = FileUtils.listFilesOrEmpty(dataUserCeDirectory);
+            int length = listFilesOrEmpty.length;
+            String str16 = "Failed to destroy: ";
+            int i10 = 0;
+            while (i10 < length) {
+                File file = listFilesOrEmpty[i10];
+                String name = file.getName();
+                try {
+                    assertPackageStorageValid(snapshotComputer, str, name, i);
+                    arrayList4 = arrayList5;
+                    str9 = str13;
+                    i7 = length;
+                    fileArr = listFilesOrEmpty;
+                    str10 = str15;
+                    str11 = str14;
+                    computer3 = snapshotComputer;
+                    str12 = str16;
+                    i6 = 5;
+                    i8 = i10;
+                } catch (PackageManagerException e3) {
+                    int i11 = length;
+                    PackageManagerServiceUtils.logCriticalInfo(5, str15 + file + str14 + e3);
+                    try {
+                        i7 = i11;
+                        fileArr = listFilesOrEmpty;
+                        str10 = str15;
+                        str11 = str14;
+                        arrayList4 = arrayList5;
+                        str12 = str16;
+                        i8 = i10;
+                        str9 = str13;
+                        i6 = 5;
+                        computer3 = snapshotComputer;
+                    } catch (Installer.InstallerException e4) {
+                        e = e4;
+                        arrayList4 = arrayList5;
+                        str9 = str13;
+                        str10 = str15;
+                        str11 = str14;
+                        i6 = 5;
+                        computer3 = snapshotComputer;
+                        str12 = str16;
+                        i7 = i11;
+                        fileArr = listFilesOrEmpty;
+                        i8 = i10;
+                    }
+                    try {
+                        this.mInstaller.destroyAppData(str, name, i, 2, 0L);
+                    } catch (Installer.InstallerException e5) {
+                        e = e5;
+                        PackageManagerServiceUtils.logCriticalInfo(i6, str12 + e);
+                        i10 = i8 + 1;
+                        str16 = str12;
+                        i9 = i6;
+                        str14 = str11;
+                        length = i7;
+                        listFilesOrEmpty = fileArr;
+                        str15 = str10;
+                        arrayList5 = arrayList4;
+                        str13 = str9;
+                        snapshotComputer = computer3;
+                    }
+                }
+                i10 = i8 + 1;
+                str16 = str12;
+                i9 = i6;
+                str14 = str11;
+                length = i7;
+                listFilesOrEmpty = fileArr;
+                str15 = str10;
+                arrayList5 = arrayList4;
+                str13 = str9;
+                snapshotComputer = computer3;
+            }
+            arrayList = arrayList5;
+            str2 = str13;
+            str3 = str15;
+            str4 = str14;
+            i3 = i9;
+            computer = snapshotComputer;
+            str5 = str16;
+        }
+        if ((i2 & 1) != 0) {
+            File[] listFilesOrEmpty2 = FileUtils.listFilesOrEmpty(dataUserDeDirectory);
+            int length2 = listFilesOrEmpty2.length;
+            int i12 = 0;
+            while (i12 < length2) {
+                File file2 = listFilesOrEmpty2[i12];
+                String name2 = file2.getName();
+                Computer computer4 = computer;
+                try {
+                    assertPackageStorageValid(computer4, str, name2, i);
+                    computer2 = computer4;
+                    i4 = length2;
+                    i5 = i12;
+                    str8 = str3;
+                } catch (PackageManagerException e6) {
+                    String str17 = str3;
+                    PackageManagerServiceUtils.logCriticalInfo(i3, str17 + file2 + str4 + e6);
+                    try {
+                        str8 = str17;
+                        computer2 = computer4;
+                        i4 = length2;
+                        i5 = i12;
+                    } catch (Installer.InstallerException e7) {
+                        e = e7;
+                        str8 = str17;
+                        computer2 = computer4;
+                        i4 = length2;
+                        i5 = i12;
+                    }
+                    try {
+                        this.mInstaller.destroyAppData(str, name2, i, 1, 0L);
+                    } catch (Installer.InstallerException e8) {
+                        e = e8;
+                        PackageManagerServiceUtils.logCriticalInfo(i3, str5 + e);
+                        i12 = i5 + 1;
+                        str3 = str8;
+                        length2 = i4;
+                        computer = computer2;
+                    }
+                }
+                i12 = i5 + 1;
+                str3 = str8;
+                length2 = i4;
+                computer = computer2;
+            }
+        }
+        Trace.traceBegin(262144L, "prepareAppDataAndMigrate");
+        Installer.Batch batch = new Installer.Batch();
+        Iterator it = ((ArrayList) computer.getVolumePackages(str)).iterator();
+        int i13 = 0;
+        while (it.hasNext()) {
+            PackageStateInternal packageStateInternal = (PackageStateInternal) it.next();
+            String packageName = packageStateInternal.getPackageName();
+            if (packageStateInternal.getPkg() == null) {
+                str6 = str2;
+                HeimdAllFsService$$ExternalSyntheticOutline0.m("Odd, missing scanned package ", packageName, str6);
+                arrayList2 = arrayList;
+            } else {
+                str6 = str2;
+                if (!z2 || packageStateInternal.getPkg().isCoreApp()) {
+                    ArrayList arrayList6 = arrayList;
+                    if (packageStateInternal.getUserStateOrDefault(i).isInstalled()) {
+                        arrayList3 = arrayList6;
+                        str7 = str6;
+                        prepareAppDataAndMigrate(batch, packageStateInternal.getPkg(), i, i2, z);
+                        i13++;
+                    } else {
+                        arrayList3 = arrayList6;
+                        str7 = str6;
+                    }
+                    arrayList = arrayList3;
+                    str2 = str7;
+                } else {
+                    arrayList2 = arrayList;
+                    arrayList2.add(packageName);
+                }
+            }
+            arrayList = arrayList2;
+            str2 = str6;
+        }
+        ArrayList arrayList7 = arrayList;
+        executeBatchLI(batch);
+        Trace.traceEnd(262144L);
+        Slog.v(str2, "reconcileAppsData finished " + i13 + " packages");
+        return arrayList7;
     }
 }

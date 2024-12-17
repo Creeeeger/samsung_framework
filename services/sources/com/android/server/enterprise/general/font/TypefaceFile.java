@@ -1,27 +1,12 @@
 package com.android.server.enterprise.general.font;
 
-/* loaded from: classes2.dex */
-public class TypefaceFile {
-    public String fileName = null;
-    public String droidName = null;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class TypefaceFile {
+    public String droidName;
+    public String fileName;
 
-    public String getFileName() {
-        return this.fileName;
-    }
-
-    public void setFileName(String str) {
-        this.fileName = str;
-    }
-
-    public String getDroidName() {
-        return this.droidName;
-    }
-
-    public void setDroidName(String str) {
-        this.droidName = str;
-    }
-
-    public String toString() {
+    public final String toString() {
         return "Filename = " + this.fileName + "\nDroidname = " + this.droidName;
     }
 }

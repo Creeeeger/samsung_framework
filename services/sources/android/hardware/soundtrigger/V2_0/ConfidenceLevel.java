@@ -1,10 +1,10 @@
 package android.hardware.soundtrigger.V2_0;
 
-import android.os.HidlSupport;
-import android.os.HwBlob;
-import android.os.HwParcel;
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ConfidenceLevel {
     public int userId = 0;
@@ -22,20 +22,13 @@ public final class ConfidenceLevel {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.userId))), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.levelPercent))));
+        return Objects.hash(AudioConfig$$ExternalSyntheticOutline0.m(this.userId), AudioConfig$$ExternalSyntheticOutline0.m(this.levelPercent));
     }
 
     public final String toString() {
-        return "{.userId = " + this.userId + ", .levelPercent = " + this.levelPercent + "}";
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.userId = hwBlob.getInt32(0 + j);
-        this.levelPercent = hwBlob.getInt32(j + 4);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putInt32(0 + j, this.userId);
-        hwBlob.putInt32(j + 4, this.levelPercent);
+        StringBuilder sb = new StringBuilder("{.userId = ");
+        sb.append(this.userId);
+        sb.append(", .levelPercent = ");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.levelPercent, sb, "}");
     }
 }

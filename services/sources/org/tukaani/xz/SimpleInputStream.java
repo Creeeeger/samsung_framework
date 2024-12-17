@@ -1,15 +1,15 @@
 package org.tukaani.xz;
 
-import android.os.IInstalld;
 import java.io.IOException;
 import java.io.InputStream;
 import org.tukaani.xz.simple.SimpleFilter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class SimpleInputStream extends InputStream {
+public final class SimpleInputStream extends InputStream {
     public InputStream in;
     public final SimpleFilter simpleFilter;
-    public final byte[] filterBuf = new byte[IInstalld.FLAG_USE_QUOTA];
+    public final byte[] filterBuf = new byte[4096];
     public int pos = 0;
     public int filtered = 0;
     public int unfiltered = 0;
@@ -24,7 +24,31 @@ public class SimpleInputStream extends InputStream {
     }
 
     @Override // java.io.InputStream
-    public int read() {
+    public final int available() {
+        if (this.in == null) {
+            throw new XZIOException("Stream closed");
+        }
+        IOException iOException = this.exception;
+        if (iOException == null) {
+            return this.filtered;
+        }
+        throw iOException;
+    }
+
+    @Override // java.io.InputStream, java.io.Closeable, java.lang.AutoCloseable
+    public final void close() {
+        InputStream inputStream = this.in;
+        if (inputStream != null) {
+            try {
+                inputStream.close();
+            } finally {
+                this.in = null;
+            }
+        }
+    }
+
+    @Override // java.io.InputStream
+    public final int read() {
         if (read(this.tempBuf, 0, 1) == -1) {
             return -1;
         }
@@ -32,7 +56,7 @@ public class SimpleInputStream extends InputStream {
     }
 
     @Override // java.io.InputStream
-    public int read(byte[] bArr, int i, int i2) {
+    public final int read(byte[] bArr, int i, int i2) {
         int i3;
         if (i < 0 || i2 < 0 || (i3 = i + i2) < 0 || i3 > bArr.length) {
             throw new IndexOutOfBoundsException();
@@ -71,7 +95,7 @@ public class SimpleInputStream extends InputStream {
                 int i8 = this.pos;
                 int i9 = this.filtered;
                 int i10 = this.unfiltered;
-                int read = this.in.read(this.filterBuf, i8 + i9 + i10, IInstalld.FLAG_USE_QUOTA - ((i8 + i9) + i10));
+                int read = this.in.read(this.filterBuf, i8 + i9 + i10, 4096 - ((i8 + i9) + i10));
                 if (read == -1) {
                     this.endReached = true;
                     this.filtered = this.unfiltered;
@@ -79,7 +103,7 @@ public class SimpleInputStream extends InputStream {
                 } else {
                     int i11 = this.unfiltered + read;
                     this.unfiltered = i11;
-                    int code = this.simpleFilter.code(this.filterBuf, this.pos, i11);
+                    int code = this.simpleFilter.code(this.pos, i11, this.filterBuf);
                     this.filtered = code;
                     this.unfiltered -= code;
                 }
@@ -92,29 +116,5 @@ public class SimpleInputStream extends InputStream {
             return i4;
         }
         return -1;
-    }
-
-    @Override // java.io.InputStream
-    public int available() {
-        if (this.in == null) {
-            throw new XZIOException("Stream closed");
-        }
-        IOException iOException = this.exception;
-        if (iOException != null) {
-            throw iOException;
-        }
-        return this.filtered;
-    }
-
-    @Override // java.io.InputStream, java.io.Closeable, java.lang.AutoCloseable
-    public void close() {
-        InputStream inputStream = this.in;
-        if (inputStream != null) {
-            try {
-                inputStream.close();
-            } finally {
-                this.in = null;
-            }
-        }
     }
 }

@@ -11,13 +11,13 @@ import com.samsung.android.lib.dexcontrol.utils.GsimcLogger;
 import com.samsung.android.lib.dexcontrol.utils.SLog;
 import com.samsung.android.lib.dexcontrol.uvdm.response.IResponseListener;
 import com.samsung.android.lib.dexcontrol.uvdm.response.ResponseResult;
-import com.samsung.android.lib.dexcontrol.uvdm.sender.IUvdmSender;
+import com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmSendExecutor;
 import com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmShortTypeSender;
 import java.util.HashMap;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class DexStation extends FanControlModel {
-    public static final String TAG = "DexStation";
+public final class DexStation extends FanControlModel {
     public static final HashMap mFanLevelMap = new HashMap() { // from class: com.samsung.android.lib.dexcontrol.model.dexstation.DexStation.1
         {
             put(0, Byte.valueOf(HwConstants.IQ_CONFIG_POS_NETWORK_ENABLED));
@@ -26,86 +26,88 @@ public class DexStation extends FanControlModel {
             put(3, (byte) 19);
         }
     };
-    public final BroadcastReceiver mEth0Receiver;
-    public final IResponseListener mIResponseListener;
+    public final AnonymousClass3 mEth0Receiver;
+    public final AnonymousClass2 mIResponseListener;
     public int preFanLevel;
 
-    public void setMessageSender(Context context) {
-        IUvdmSender iUvdmSender = this.mMessageSender;
-        if (iUvdmSender != null) {
-            iUvdmSender.destroy();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.samsung.android.lib.dexcontrol.model.dexstation.DexStation$2, reason: invalid class name */
+    public final class AnonymousClass2 implements IResponseListener {
+        @Override // com.samsung.android.lib.dexcontrol.uvdm.response.IResponseListener
+        public final void onFail(int i, ResponseResult responseResult) {
+            HashMap hashMap = DexStation.mFanLevelMap;
+            SLog.e("DexStation", "error : " + i);
+        }
+
+        @Override // com.samsung.android.lib.dexcontrol.uvdm.response.IResponseListener
+        public final void onSuccess(ResponseResult responseResult) {
+            HashMap hashMap = DexStation.mFanLevelMap;
+            SLog.d("DexStation", "onSuccess");
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r0v1, types: [android.content.BroadcastReceiver, com.samsung.android.lib.dexcontrol.model.dexstation.DexStation$3] */
+    public DexStation(Context context) {
+        super(context, 40992, true);
+        this.preFanLevel = -999;
+        AnonymousClass2 anonymousClass2 = new AnonymousClass2();
+        ?? r0 = new BroadcastReceiver() { // from class: com.samsung.android.lib.dexcontrol.model.dexstation.DexStation.3
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                if (intent.getAction().equals("samsung.net.ethernet.ETH_STATE_CHANGED") && "Connected".equals(intent.getStringExtra("eth_state"))) {
+                    GsimcLogger.insertLog(DexStation.this.mContext, "1ETH");
+                }
+            }
+        };
+        this.mEth0Receiver = r0;
+        UvdmSendExecutor uvdmSendExecutor = this.mMessageSender;
+        if (uvdmSendExecutor != null) {
+            uvdmSendExecutor.destroy();
             this.mMessageSender = null;
         }
         UvdmShortTypeSender uvdmShortTypeSender = new UvdmShortTypeSender(40992);
         this.mMessageSender = uvdmShortTypeSender;
-        uvdmShortTypeSender.setResponseListener(this.mIResponseListener);
-    }
-
-    public DexStation(Context context) {
-        super(context, true, 40992);
-        this.preFanLevel = -999;
-        this.mIResponseListener = new IResponseListener() { // from class: com.samsung.android.lib.dexcontrol.model.dexstation.DexStation.2
-            @Override // com.samsung.android.lib.dexcontrol.uvdm.response.IResponseListener
-            public void onSuccess(ResponseResult responseResult) {
-                SLog.d(DexStation.TAG, "onSuccess");
-            }
-
-            @Override // com.samsung.android.lib.dexcontrol.uvdm.response.IResponseListener
-            public void onFail(int i, ResponseResult responseResult) {
-                SLog.e(DexStation.TAG, "error : " + i);
-            }
-        };
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.samsung.android.lib.dexcontrol.model.dexstation.DexStation.3
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                if (intent.getAction().equals("samsung.net.ethernet.ETH_STATE_CHANGED") && "Connected".equals(intent.getStringExtra("eth_state"))) {
-                    GsimcLogger.insertLog(DexStation.this.getContext(), "1ETH");
-                }
-            }
-        };
-        this.mEth0Receiver = broadcastReceiver;
-        setMessageSender(context);
+        uvdmShortTypeSender.mListener = anonymousClass2;
         creatFanControl();
-        getContext().registerReceiver(broadcastReceiver, new IntentFilter("samsung.net.ethernet.ETH_STATE_CHANGED"));
-    }
-
-    @Override // com.samsung.android.lib.dexcontrol.model.common.BaseModel
-    public void usbDeviceChanged(int i, String str) {
-        if (i == 40992 || i == 21008) {
-            return;
-        }
-        GsimcLogger.insertLog(getContext(), "1USB", str);
-    }
-
-    public final byte[] getFanControlBytes(int i) {
-        SLog.d(TAG, "getFanControlBytes : " + i);
-        return new byte[]{((Byte) mFanLevelMap.get(Integer.valueOf(i))).byteValue()};
+        this.mContext.registerReceiver(r0, new IntentFilter("samsung.net.ethernet.ETH_STATE_CHANGED"), 2);
     }
 
     @Override // com.samsung.android.lib.dexcontrol.model.common.FanControlModel
-    public void onFanControlResult(DexFanControlManager.FAN_LEVEL fan_level) {
+    public final void destroy() {
+        super.destroy();
+        SLog.d("DexStation", "destroy");
+        this.preFanLevel = -999;
+    }
+
+    @Override // com.samsung.android.lib.dexcontrol.model.common.FanControlModel
+    public final void onFanControlResult(DexFanControlManager.FAN_LEVEL fan_level) {
         if (this.mMessageSender != null) {
-            SLog.d(TAG, "onFanControlResult");
-            this.mMessageSender.send(getFanControlBytes(fan_level.getFanLevel()));
+            SLog.d("DexStation", "onFanControlResult");
+            int fanLevel = fan_level.getFanLevel();
+            SLog.d("DexStation", "getFanControlBytes : " + fanLevel);
+            this.mMessageSender.send(500, new byte[]{((Byte) mFanLevelMap.get(Integer.valueOf(fanLevel))).byteValue()});
             if (fan_level.getFanLevel() < 0 || fan_level.getFanLevel() == this.preFanLevel) {
                 return;
             }
-            GsimcLogger.insertLog(getContext(), "1FAN", String.valueOf(fan_level.getFanLevel()));
+            GsimcLogger.insertLog(this.mContext, "1FAN", String.valueOf(fan_level.getFanLevel()));
             this.preFanLevel = fan_level.getFanLevel();
         }
     }
 
-    @Override // com.samsung.android.lib.dexcontrol.model.common.FanControlModel, com.samsung.android.lib.dexcontrol.model.common.BaseModel
-    public void unregisterReceiver() {
-        super.unregisterReceiver();
-        SLog.d(TAG, "unregisterReceiver");
-        getContext().unregisterReceiver(this.mEth0Receiver);
+    @Override // com.samsung.android.lib.dexcontrol.model.common.FanControlModel
+    public final void unregisterReceiver() {
+        this.mContext.unregisterReceiver(this.mUsbDeviceReceiver);
+        this.mContext.unregisterReceiver(this.mDexMonitorIntentReceiver);
+        SLog.d("DexStation", "unregisterReceiver");
+        this.mContext.unregisterReceiver(this.mEth0Receiver);
     }
 
-    @Override // com.samsung.android.lib.dexcontrol.model.common.FanControlModel, com.samsung.android.lib.dexcontrol.model.common.BaseModel
-    public void destroy() {
-        super.destroy();
-        SLog.d(TAG, "destroy");
-        this.preFanLevel = -999;
+    @Override // com.samsung.android.lib.dexcontrol.model.common.BaseModel
+    public final void usbDeviceChanged(int i, String str) {
+        if (i == 40992 || i == 21008) {
+            return;
+        }
+        GsimcLogger.insertLog(this.mContext, "1USB", str);
     }
 }

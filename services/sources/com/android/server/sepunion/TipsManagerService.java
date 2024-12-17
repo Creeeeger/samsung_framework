@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,18 +16,19 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
 import com.samsung.android.emergencymode.SemEmergencyManager;
 import com.samsung.android.knox.custom.LauncherConfigurationInternal;
 import com.samsung.android.sepunion.ITipsManager;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
-public class TipsManagerService extends ITipsManager.Stub implements AbsSemSystemService {
-    public static final String TAG = TipsManagerService.class.getSimpleName();
-    public static Long mLastDeviceConnectMsgTime = new Long(0);
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class TipsManagerService extends ITipsManager.Stub implements AbsSemSystemService {
+    public static final Long mLastDeviceConnectMsgTime = new Long(0);
     public boolean mBootupCompleted;
-    public Context mContext;
+    public final Context mContext;
     public int mDialCount;
     public int mHUNDisplayCount;
     public final TipsPackageReceiver mPackageReceiver;
@@ -36,67 +38,130 @@ public class TipsManagerService extends ITipsManager.Stub implements AbsSemSyste
     public boolean mTipsNetworkGranted;
     public boolean mTipsOnBoot;
     public boolean mTipsPackageExist;
-    public TipsManagerServiceThread mTipsServiceThread;
     public boolean mWaitingCallEnd;
 
-    @Override // com.android.server.sepunion.AbsSemSystemService
-    public void onCreate(Bundle bundle) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TipsHandler extends Handler {
+        public TipsHandler() {
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            TipsManagerService tipsManagerService = TipsManagerService.this;
+            if (SemEmergencyManager.getInstance(tipsManagerService.mContext) != null ? SemEmergencyManager.isEmergencyMode(tipsManagerService.mContext) : false) {
+                Long l = TipsManagerService.mLastDeviceConnectMsgTime;
+                Log.d("TipsManagerService", "[GalaxyTips] Fail to send intent to Tips at emergency mode.");
+                return;
+            }
+            int i = message.what;
+            if (i != 10001) {
+                if (i != 10004) {
+                    return;
+                }
+                Long l2 = TipsManagerService.mLastDeviceConnectMsgTime;
+                Log.e("TipsManagerService", "[GalaxyTips] Send FOTA DONE.");
+                Intent intent = new Intent();
+                intent.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
+                intent.putExtra("tips_extras", 5);
+                try {
+                    tipsManagerService.mContext.startForegroundServiceAsUser(intent, UserHandle.CURRENT);
+                    return;
+                } catch (Exception unused) {
+                    Long l3 = TipsManagerService.mLastDeviceConnectMsgTime;
+                    Log.d("TipsManagerService", "[GalaxyTips] Fail to send FOTA DONE intent to Tips.");
+                    return;
+                }
+            }
+            if (tipsManagerService.mTipsNetworkGranted || tipsManagerService.mHUNDisplayCount >= 3) {
+                return;
+            }
+            Intent intent2 = new Intent();
+            intent2.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
+            intent2.putExtra("tips_extras", 2);
+            try {
+                tipsManagerService.mContext.startForegroundServiceAsUser(intent2, UserHandle.CURRENT);
+            } catch (Exception unused2) {
+                Long l4 = TipsManagerService.mLastDeviceConnectMsgTime;
+                Log.d("TipsManagerService", "[GalaxyTips] Fail to send MSG_START_TIPS_HUN intent to Tips.");
+            }
+            tipsManagerService.mHUNDisplayCount++;
+            TipsManagerService.m873$$Nest$smsendMsg(tipsManagerService.mTipsHandler, 10001, 604800000);
+        }
     }
 
-    /* loaded from: classes3.dex */
-    public class TipsPackageReceiver extends BroadcastReceiver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TipsManagerServiceThread extends Thread {
+        public TipsManagerServiceThread() {
+            super("TipsManagerService");
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public final void run() {
+            Looper.prepare();
+            synchronized (TipsManagerService.this) {
+                TipsManagerService.this.mTipsHandler = TipsManagerService.this.new TipsHandler();
+                TipsManagerService.this.notify();
+            }
+            Looper.loop();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TipsPackageReceiver extends BroadcastReceiver {
         public TipsPackageReceiver() {
         }
 
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("android.intent.action.PACKAGE_INSTALL") || intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {
-                if ("com.samsung.android.app.tips".equals(intent.getData().getEncodedSchemeSpecificPart())) {
-                    Log.e(TipsManagerService.TAG, "[GalaxyTips] Tips was installed. Start to register all filters");
-                    TipsManagerService.this.mTipsPackageExist = true;
-                    if (TipsManagerService.this.mTipsOnBoot) {
-                        context.unregisterReceiver(TipsManagerService.this.mTipReceiver);
-                    }
-                    IntentFilter intentFilter = new IntentFilter();
-                    intentFilter.addAction("android.intent.action.LOCALE_CHANGED");
-                    intentFilter.addAction("samsung.galaxy.tips.application.terminated");
-                    intentFilter.addAction("android.intent.action.USER_SWITCHED");
-                    if (!TipsManagerService.this.mTipsNetworkGranted) {
-                        intentFilter.addAction("samsung.galaxy.tips.network_granted");
-                    }
-                    if (!TipsManagerService.this.mTipsHUNAlreadyShown) {
-                        intentFilter.addAction("android.intent.action.NEW_OUTGOING_CALL");
-                        intentFilter.addAction("android.intent.action.PHONE_STATE");
-                    }
-                    context.registerReceiverAsUser(TipsManagerService.this.mTipReceiver, UserHandle.ALL, intentFilter, null, null);
-                    TipsManagerService.this.mTipsOnBoot = true;
+        public final void onReceive(Context context, Intent intent) {
+            if (!intent.getAction().equals("android.intent.action.PACKAGE_INSTALL") && !intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {
+                if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED") && "com.samsung.android.app.tips".equals(intent.getData().getEncodedSchemeSpecificPart())) {
+                    Long l = TipsManagerService.mLastDeviceConnectMsgTime;
+                    Log.e("TipsManagerService", "[GalaxyTips] Tips was uninstalled.");
+                    TipsManagerService.this.mTipsPackageExist = false;
                     return;
                 }
                 return;
             }
-            if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED") && "com.samsung.android.app.tips".equals(intent.getData().getEncodedSchemeSpecificPart())) {
-                Log.e(TipsManagerService.TAG, "[GalaxyTips] Tips was uninstalled.");
-                TipsManagerService.this.mTipsPackageExist = false;
+            if ("com.samsung.android.app.tips".equals(intent.getData().getEncodedSchemeSpecificPart())) {
+                Long l2 = TipsManagerService.mLastDeviceConnectMsgTime;
+                Log.e("TipsManagerService", "[GalaxyTips] Tips was installed. Start to register all filters");
+                TipsManagerService tipsManagerService = TipsManagerService.this;
+                tipsManagerService.mTipsPackageExist = true;
+                if (tipsManagerService.mTipsOnBoot) {
+                    context.unregisterReceiver(tipsManagerService.mTipReceiver);
+                }
+                IntentFilter m = GmsAlarmManager$$ExternalSyntheticOutline0.m("android.intent.action.LOCALE_CHANGED", "samsung.galaxy.tips.application.terminated", "android.intent.action.USER_SWITCHED");
+                if (!TipsManagerService.this.mTipsNetworkGranted) {
+                    m.addAction("samsung.galaxy.tips.network_granted");
+                }
+                if (!TipsManagerService.this.mTipsHUNAlreadyShown) {
+                    m.addAction("android.intent.action.NEW_OUTGOING_CALL");
+                    m.addAction("android.intent.action.PHONE_STATE");
+                }
+                context.registerReceiverAsUser(TipsManagerService.this.mTipReceiver, UserHandle.ALL, m, null, null, 2);
+                TipsManagerService.this.mTipsOnBoot = true;
             }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class TipsReceiver extends BroadcastReceiver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TipsReceiver extends BroadcastReceiver {
         public TipsReceiver() {
         }
 
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             int intForUser = Settings.Secure.getIntForUser(TipsManagerService.this.mContext.getContentResolver(), "user_setup_complete", 0, -2);
             boolean isEmergencyMode = SemEmergencyManager.getInstance(context) != null ? SemEmergencyManager.isEmergencyMode(context) : false;
             if (intForUser != 1 || isEmergencyMode || !TipsManagerService.this.mTipsPackageExist) {
-                Log.e(TipsManagerService.TAG, "[GalaxyTips] Got a " + intent.getAction() + ". But can't perform.(completeSetupWizard= " + intForUser + " EmergencyMode= " + isEmergencyMode + " TipsExist= " + TipsManagerService.this.mTipsPackageExist + ")");
+                Long l = TipsManagerService.mLastDeviceConnectMsgTime;
+                Log.e("TipsManagerService", "[GalaxyTips] Got a " + intent.getAction() + ". But can't perform.(completeSetupWizard= " + intForUser + " EmergencyMode= " + isEmergencyMode + " TipsExist= " + TipsManagerService.this.mTipsPackageExist + ")");
                 return;
             }
             try {
                 String action = intent.getAction();
-                if (!TipsManagerService.this.mTipsHUNAlreadyShown && !TipsManagerService.this.mWaitingCallEnd && action.equals("android.intent.action.NEW_OUTGOING_CALL")) {
+                TipsManagerService tipsManagerService = TipsManagerService.this;
+                if (!tipsManagerService.mTipsHUNAlreadyShown && !tipsManagerService.mWaitingCallEnd && action.equals("android.intent.action.NEW_OUTGOING_CALL")) {
                     TipsManagerService.this.mWaitingCallEnd = true;
                     return;
                 }
@@ -105,30 +170,30 @@ public class TipsManagerService extends ITipsManager.Stub implements AbsSemSyste
                     if (extras == null || !extras.getString(LauncherConfigurationInternal.KEY_STATE_BOOLEAN).equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                         return;
                     }
-                    TipsManagerService.this.mWaitingCallEnd = false;
-                    if (TipsManagerService.this.mDialCount == 5) {
-                        Log.d(TipsManagerService.TAG, "[GalaxyTips]TIPS Activitation!! WAKE UP");
-                        Settings.System.putIntForUser(TipsManagerService.this.mContext.getContentResolver(), "tips_trigger_count", 1000, -2);
-                        if (!TipsManagerService.this.mTipsNetworkGranted) {
-                            TipsManagerService.sendMsg(TipsManagerService.this.mTipsHandler, 10001, 0, 0, 0, null, 60000);
-                        }
-                        TipsManagerService.this.mTipsHUNAlreadyShown = true;
+                    TipsManagerService tipsManagerService2 = TipsManagerService.this;
+                    tipsManagerService2.mWaitingCallEnd = false;
+                    if (tipsManagerService2.mDialCount != 5) {
+                        ContentResolver contentResolver = tipsManagerService2.mContext.getContentResolver();
+                        TipsManagerService tipsManagerService3 = TipsManagerService.this;
+                        int i = tipsManagerService3.mDialCount + 1;
+                        tipsManagerService3.mDialCount = i;
+                        Settings.System.putIntForUser(contentResolver, "tips_trigger_count", i, -2);
                         return;
                     }
-                    ContentResolver contentResolver = TipsManagerService.this.mContext.getContentResolver();
-                    TipsManagerService tipsManagerService = TipsManagerService.this;
-                    int i = tipsManagerService.mDialCount + 1;
-                    tipsManagerService.mDialCount = i;
-                    Settings.System.putIntForUser(contentResolver, "tips_trigger_count", i, -2);
+                    Long l2 = TipsManagerService.mLastDeviceConnectMsgTime;
+                    Log.d("TipsManagerService", "[GalaxyTips]TIPS Activitation!! WAKE UP");
+                    Settings.System.putIntForUser(TipsManagerService.this.mContext.getContentResolver(), "tips_trigger_count", 1000, -2);
+                    TipsManagerService tipsManagerService4 = TipsManagerService.this;
+                    if (!tipsManagerService4.mTipsNetworkGranted) {
+                        TipsManagerService.m873$$Nest$smsendMsg(tipsManagerService4.mTipsHandler, 10001, 60000);
+                    }
+                    TipsManagerService.this.mTipsHUNAlreadyShown = true;
                     return;
                 }
                 if (!TipsManagerService.this.mTipsNetworkGranted && action.equals("samsung.galaxy.tips.network_granted")) {
-                    TipsManagerService.this.mTipsNetworkGranted = true;
-                    Settings.System.putIntForUser(TipsManagerService.this.mContext.getContentResolver(), "gtips_network_granted", 1, -2);
-                    return;
-                }
-                if (action.equals("samsung.galaxy.tips.application.terminated")) {
-                    Settings.System.putIntForUser(TipsManagerService.this.mContext.getContentResolver(), "tips_regular_hour_timer_renewal_count", 0, -2);
+                    TipsManagerService tipsManagerService5 = TipsManagerService.this;
+                    tipsManagerService5.mTipsNetworkGranted = true;
+                    Settings.System.putIntForUser(tipsManagerService5.mContext.getContentResolver(), "gtips_network_granted", 1, -2);
                     return;
                 }
                 if (TipsManagerService.this.mBootupCompleted && action.equals("android.intent.action.LOCALE_CHANGED")) {
@@ -139,7 +204,8 @@ public class TipsManagerService extends ITipsManager.Stub implements AbsSemSyste
                         TipsManagerService.this.mContext.startForegroundServiceAsUser(intent2, UserHandle.CURRENT);
                         return;
                     } catch (Exception unused) {
-                        Log.d(TipsManagerService.TAG, "[GalaxyTips] Fail to send MSG_NEW_DATA_UPDATED intent to Tips.");
+                        Long l3 = TipsManagerService.mLastDeviceConnectMsgTime;
+                        Log.d("TipsManagerService", "[GalaxyTips] Fail to send MSG_NEW_DATA_UPDATED intent to Tips.");
                         return;
                     }
                 }
@@ -149,15 +215,28 @@ public class TipsManagerService extends ITipsManager.Stub implements AbsSemSyste
                     } else {
                         TipsManagerService.this.mTipsNetworkGranted = false;
                     }
-                    Log.d(TipsManagerService.TAG, "USER_SWITCHED isNetworkGranted " + TipsManagerService.this.mTipsNetworkGranted);
+                    Long l4 = TipsManagerService.mLastDeviceConnectMsgTime;
+                    Log.d("TipsManagerService", "USER_SWITCHED isNetworkGranted " + TipsManagerService.this.mTipsNetworkGranted);
                     return;
                 }
-                if (TipsManagerService.this.mBootupCompleted && action.equals("com.sec.android.app.secsetupwizard.FOTA_SUW_COMPLETE") && TipsManagerService.this.mTipsPackageExist) {
-                    TipsManagerService.sendMsg(TipsManagerService.this.mTipsHandler, 10004, 0, 0, 0, null, 120000);
+                if (TipsManagerService.this.mBootupCompleted && action.equals("com.sec.android.app.secsetupwizard.FOTA_SUW_COMPLETE")) {
+                    TipsManagerService tipsManagerService6 = TipsManagerService.this;
+                    if (tipsManagerService6.mTipsPackageExist) {
+                        TipsManagerService.m873$$Nest$smsendMsg(tipsManagerService6.mTipsHandler, 10004, 120000);
+                    }
                 }
             } catch (Exception unused2) {
-                Log.d(TipsManagerService.TAG, "Fail to send intent to Tips.");
+                Long l5 = TipsManagerService.mLastDeviceConnectMsgTime;
+                Log.d("TipsManagerService", "Fail to send intent to Tips.");
             }
+        }
+    }
+
+    /* renamed from: -$$Nest$smsendMsg, reason: not valid java name */
+    public static void m873$$Nest$smsendMsg(Handler handler, int i, int i2) {
+        handler.removeMessages(i);
+        synchronized (mLastDeviceConnectMsgTime) {
+            handler.sendMessageAtTime(handler.obtainMessage(i, 0, 0, null), SystemClock.uptimeMillis() + i2);
         }
     }
 
@@ -174,16 +253,16 @@ public class TipsManagerService extends ITipsManager.Stub implements AbsSemSyste
         this.mBootupCompleted = false;
         this.mTipsOnBoot = true;
         this.mContext = context;
-        Log.d(TAG, "[GalaxyTips] TipsManagerService");
+        Log.d("TipsManagerService", "[GalaxyTips] TipsManagerService");
         try {
-            this.mContext.getPackageManager().getPackageInfo("com.samsung.android.app.tips", 1);
+            context.getPackageManager().getPackageInfo("com.samsung.android.app.tips", 1);
             IntentFilter intentFilter = new IntentFilter();
-            int intForUser = Settings.System.getIntForUser(this.mContext.getContentResolver(), "tips_trigger_count", 0, -2);
+            int intForUser = Settings.System.getIntForUser(context.getContentResolver(), "tips_trigger_count", 0, -2);
             this.mDialCount = intForUser;
             if (intForUser == 1000) {
                 this.mTipsHUNAlreadyShown = true;
             }
-            if (Settings.System.getIntForUser(this.mContext.getContentResolver(), "gtips_network_granted", 0, -2) == 1) {
+            if (Settings.System.getIntForUser(context.getContentResolver(), "gtips_network_granted", 0, -2) == 1) {
                 this.mTipsNetworkGranted = true;
             }
             intentFilter.addAction("android.intent.action.LOCALE_CHANGED");
@@ -197,7 +276,7 @@ public class TipsManagerService extends ITipsManager.Stub implements AbsSemSyste
                 intentFilter.addAction("android.intent.action.NEW_OUTGOING_CALL");
                 intentFilter.addAction("android.intent.action.PHONE_STATE");
             }
-            this.mContext.registerReceiverAsUser(tipsReceiver, UserHandle.ALL, intentFilter, null, null);
+            context.registerReceiverAsUser(tipsReceiver, UserHandle.ALL, intentFilter, null, null, 2);
         } catch (PackageManager.NameNotFoundException unused) {
             this.mTipsPackageExist = false;
             this.mTipsOnBoot = false;
@@ -207,21 +286,20 @@ public class TipsManagerService extends ITipsManager.Stub implements AbsSemSyste
         intentFilter2.addAction("android.intent.action.PACKAGE_REMOVED");
         intentFilter2.addAction("android.intent.action.PACKAGE_ADDED");
         intentFilter2.addDataScheme("package");
-        this.mContext.registerReceiverAsUser(this.mPackageReceiver, UserHandle.ALL, intentFilter2, null, null);
-        TipsManagerServiceThread tipsManagerServiceThread = new TipsManagerServiceThread();
-        this.mTipsServiceThread = tipsManagerServiceThread;
-        tipsManagerServiceThread.start();
+        this.mContext.registerReceiverAsUser(this.mPackageReceiver, UserHandle.ALL, intentFilter2, null, null, 2);
+        new TipsManagerServiceThread().start();
     }
 
-    @Override // com.android.server.sepunion.AbsSemSystemService
-    public void onBootPhase(int i) {
-        if (i == 1000) {
-            this.mBootupCompleted = true;
+    public static int getDeviceVersion(Context context) {
+        int i = Build.VERSION.SEM_PLATFORM_INT;
+        if (i < 80100) {
+            return 0;
         }
+        return Integer.parseInt(String.valueOf(i / 10000) + String.valueOf((i % 10000) / 100));
     }
 
     @Override // com.android.server.sepunion.AbsSemSystemService
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
         if (strArr != null && strArr.length > 0) {
             String str = strArr[0];
             if ("welcome".equals(str)) {
@@ -261,64 +339,72 @@ public class TipsManagerService extends ITipsManager.Stub implements AbsSemSyste
                 this.mContext.startForegroundServiceAsUser(intent5, UserHandle.CURRENT);
                 return;
             }
-            if ("showrecent".equals(str)) {
+            if ("fotaready".equals(str)) {
                 Intent intent6 = new Intent();
                 intent6.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
-                intent6.putExtra("tips_extras", 6);
+                intent6.putExtra("tips_extras", 4);
+                intent6.putExtra("tips_extras2", strArr[1]);
                 this.mContext.startForegroundServiceAsUser(intent6, UserHandle.CURRENT);
                 return;
             }
-            if ("showcontent".equals(str)) {
+            if ("showrecent".equals(str)) {
                 Intent intent7 = new Intent();
                 intent7.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
-                intent7.putExtra("tips_extras", 7);
-                intent7.putExtra("tips_extras2", strArr[1]);
+                intent7.putExtra("tips_extras", 6);
                 this.mContext.startForegroundServiceAsUser(intent7, UserHandle.CURRENT);
                 return;
             }
-            if ("showjit".equals(str)) {
+            if ("showcontent".equals(str)) {
                 Intent intent8 = new Intent();
                 intent8.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
-                intent8.putExtra("tips_extras", 8);
+                intent8.putExtra("tips_extras", 7);
                 intent8.putExtra("tips_extras2", strArr[1]);
-                if (strArr.length == 2) {
-                    intent8.putExtra("tips_extras4", "");
-                    intent8.putExtra("tips_extras3", "");
-                    intent8.putExtra("tips_extras5", "");
-                    intent8.putExtra("tips_extras6", "");
-                } else if (strArr.length == 3) {
-                    intent8.putExtra("tips_extras4", strArr[2]);
-                    intent8.putExtra("tips_extras3", "");
-                    intent8.putExtra("tips_extras5", "");
-                    intent8.putExtra("tips_extras6", "");
-                } else if (strArr.length == 4) {
-                    intent8.putExtra("tips_extras4", strArr[2]);
-                    intent8.putExtra("tips_extras3", strArr[3]);
-                    intent8.putExtra("tips_extras5", "");
-                    intent8.putExtra("tips_extras6", "");
-                } else if (strArr.length == 5) {
-                    intent8.putExtra("tips_extras4", strArr[2]);
-                    intent8.putExtra("tips_extras3", strArr[3]);
-                    intent8.putExtra("tips_extras5", strArr[4]);
-                    intent8.putExtra("tips_extras6", "");
-                } else if (strArr.length == 6) {
-                    intent8.putExtra("tips_extras4", strArr[2]);
-                    intent8.putExtra("tips_extras3", strArr[3]);
-                    intent8.putExtra("tips_extras5", strArr[4]);
-                    intent8.putExtra("tips_extras6", strArr[5]);
-                }
                 this.mContext.startForegroundServiceAsUser(intent8, UserHandle.CURRENT);
                 return;
             }
-            if ("showtip".equals(str)) {
+            if ("showjit".equals(str)) {
                 Intent intent9 = new Intent();
                 intent9.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
-                intent9.putExtra("tips_extras", 9);
-                intent9.putExtra("tips_id", strArr[1]);
-                intent9.putExtra("tips_title", strArr[2]);
-                intent9.putExtra("tips_text", strArr[3]);
-                intent9.putExtra("tips_condition", Integer.parseInt(strArr[4]));
+                intent9.putExtra("tips_extras", 8);
+                intent9.putExtra("tips_extras2", strArr[1]);
+                if (strArr.length == 2) {
+                    intent9.putExtra("tips_extras4", "");
+                    intent9.putExtra("tips_extras3", "");
+                    intent9.putExtra("tips_extras5", "");
+                    intent9.putExtra("tips_extras6", "");
+                } else if (strArr.length == 3) {
+                    intent9.putExtra("tips_extras4", strArr[2]);
+                    intent9.putExtra("tips_extras3", "");
+                    intent9.putExtra("tips_extras5", "");
+                    intent9.putExtra("tips_extras6", "");
+                } else if (strArr.length == 4) {
+                    intent9.putExtra("tips_extras4", strArr[2]);
+                    intent9.putExtra("tips_extras3", strArr[3]);
+                    intent9.putExtra("tips_extras5", "");
+                    intent9.putExtra("tips_extras6", "");
+                } else if (strArr.length == 5) {
+                    intent9.putExtra("tips_extras4", strArr[2]);
+                    intent9.putExtra("tips_extras3", strArr[3]);
+                    intent9.putExtra("tips_extras5", strArr[4]);
+                    intent9.putExtra("tips_extras6", "");
+                } else if (strArr.length == 6) {
+                    intent9.putExtra("tips_extras4", strArr[2]);
+                    intent9.putExtra("tips_extras3", strArr[3]);
+                    intent9.putExtra("tips_extras5", strArr[4]);
+                    intent9.putExtra("tips_extras6", strArr[5]);
+                }
                 this.mContext.startForegroundServiceAsUser(intent9, UserHandle.CURRENT);
+                return;
+            }
+            if ("showtip".equals(str)) {
+                Intent intent10 = new Intent();
+                intent10.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
+                intent10.putExtra("tips_extras", 9);
+                intent10.putExtra("tips_id", strArr[1]);
+                intent10.putExtra("tips_title", strArr[2]);
+                intent10.putExtra("tips_text", strArr[3]);
+                intent10.putExtra("tips_condition", Integer.parseInt(strArr[4]));
+                this.mContext.startForegroundServiceAsUser(intent10, UserHandle.CURRENT);
                 return;
             }
         }
@@ -339,91 +425,39 @@ public class TipsManagerService extends ITipsManager.Stub implements AbsSemSyste
         printWriter.println(this.mDialCount);
     }
 
-    public static void sendMsg(Handler handler, int i, int i2, int i3, int i4, Object obj, int i5) {
-        if (i2 == 0) {
-            handler.removeMessages(i);
-        } else if (i2 == 1 && handler.hasMessages(i)) {
-            return;
-        }
-        synchronized (mLastDeviceConnectMsgTime) {
-            handler.sendMessageAtTime(handler.obtainMessage(i, i3, i4, obj), SystemClock.uptimeMillis() + i5);
+    public final AbsSemSystemService getSemSystemService(String str) {
+        return null;
+    }
+
+    @Override // com.android.server.sepunion.AbsSemSystemService
+    public final void onBootPhase(int i) {
+        if (i == 1000) {
+            this.mBootupCompleted = true;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class TipsManagerServiceThread extends Thread {
-        public TipsManagerServiceThread() {
-            super("TipsManagerService");
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            Looper.prepare();
-            synchronized (TipsManagerService.this) {
-                TipsManagerService.this.mTipsHandler = new TipsHandler();
-                TipsManagerService.this.notify();
-            }
-            Looper.loop();
-        }
+    public final void onCleanupUser(int i) {
     }
 
-    /* loaded from: classes3.dex */
-    public class TipsHandler extends Handler {
-        public TipsHandler() {
-        }
+    @Override // com.android.server.sepunion.AbsSemSystemService
+    public final void onCreate(Bundle bundle) {
+    }
 
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            if (SemEmergencyManager.getInstance(TipsManagerService.this.mContext) != null ? SemEmergencyManager.isEmergencyMode(TipsManagerService.this.mContext) : false) {
-                Log.d(TipsManagerService.TAG, "[GalaxyTips] Fail to send intent to Tips at emergency mode.");
-                return;
-            }
-            int i = message.what;
-            if (i == 10001) {
-                if (TipsManagerService.this.mTipsNetworkGranted || TipsManagerService.this.mHUNDisplayCount >= 3) {
-                    return;
-                }
-                Intent intent = new Intent();
-                intent.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
-                intent.putExtra("tips_extras", 2);
-                try {
-                    TipsManagerService.this.mContext.startForegroundServiceAsUser(intent, UserHandle.CURRENT);
-                } catch (Exception unused) {
-                    Log.d(TipsManagerService.TAG, "[GalaxyTips] Fail to send MSG_START_TIPS_HUN intent to Tips.");
-                }
-                TipsManagerService.this.mHUNDisplayCount++;
-                TipsManagerService.sendMsg(TipsManagerService.this.mTipsHandler, 10001, 0, 0, 0, null, 604800000);
-                return;
-            }
-            if (i != 10003) {
-                if (i != 10004) {
-                    return;
-                }
-                Log.e(TipsManagerService.TAG, "[GalaxyTips] Send FOTA DONE.");
-                Intent intent2 = new Intent();
-                intent2.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
-                intent2.putExtra("tips_extras", 5);
-                try {
-                    TipsManagerService.this.mContext.startForegroundServiceAsUser(intent2, UserHandle.CURRENT);
-                    return;
-                } catch (Exception unused2) {
-                    Log.d(TipsManagerService.TAG, "[GalaxyTips] Fail to send FOTA DONE intent to Tips.");
-                    return;
-                }
-            }
-            int intForUser = Settings.System.getIntForUser(TipsManagerService.this.mContext.getContentResolver(), "tips_regular_hour_timer_renewal_count", 0, -2);
-            if (intForUser != 0 && intForUser % 720 == 0) {
-                Intent intent3 = new Intent();
-                intent3.setClassName("com.samsung.android.app.tips", "com.samsung.android.app.tips.TipsIntentService");
-                intent3.putExtra("tips_extras", 6);
-                try {
-                    TipsManagerService.this.mContext.startForegroundServiceAsUser(intent3, UserHandle.CURRENT);
-                } catch (Exception unused3) {
-                    Log.d(TipsManagerService.TAG, "[GalaxyTips] Fail to send MSG_CHECK_REGULAR_HOUR intent to Tips.");
-                }
-            }
-            Settings.System.putIntForUser(TipsManagerService.this.mContext.getContentResolver(), "tips_regular_hour_timer_renewal_count", intForUser + 1, -2);
-            TipsManagerService.sendMsg(TipsManagerService.this.mTipsHandler, 10003, 0, 0, 0, null, 3600000);
-        }
+    public final void onDestroy() {
+    }
+
+    public final void onStart() {
+    }
+
+    public final void onStartUser(int i) {
+    }
+
+    public final void onStopUser(int i) {
+    }
+
+    public final void onSwitchUser(int i) {
+    }
+
+    public final void onUnlockUser(int i) {
     }
 }

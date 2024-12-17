@@ -8,28 +8,26 @@ import android.util.DisplayMetrics;
 import android.util.Slog;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import com.android.server.accessibility.gestures.GestureMatcher;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class MultiFingerSwipe extends GestureMatcher {
-    public PointF[] mBase;
+public final class MultiFingerSwipe extends GestureMatcher {
+    public final PointF[] mBase;
     public int mCurrentFingerCount;
-    public int mDirection;
+    public final int mDirection;
     public final float mMinPixelsBetweenSamplesX;
     public final float mMinPixelsBetweenSamplesY;
-    public int[] mPointerIds;
-    public PointF[] mPreviousGesturePoint;
+    public final int[] mPointerIds;
+    public final PointF[] mPreviousGesturePoint;
     public final ArrayList[] mStrokeBuffers;
-    public int mTargetFingerCount;
+    public final int mTargetFingerCount;
     public boolean mTargetFingerCountReached;
-    public int mTouchSlop;
-
-    public static String directionToString(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? "Unknown Direction" : INetd.IF_STATE_DOWN : INetd.IF_STATE_UP : "right" : "left";
-    }
+    public final int mTouchSlop;
 
     public MultiFingerSwipe(Context context, int i, int i2, int i3, GestureMatcher.StateChangeListener stateChangeListener) {
         super(i3, new Handler(context.getMainLooper()), stateChangeListener);
@@ -41,17 +39,24 @@ public class MultiFingerSwipe extends GestureMatcher {
         this.mStrokeBuffers = new ArrayList[i];
         this.mDirection = i2;
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float f = displayMetrics.xdpi;
-        float f2 = GestureUtils.CM_PER_INCH;
-        float f3 = displayMetrics.ydpi / f2;
-        this.mMinPixelsBetweenSamplesX = (f / f2) * 0.25f;
-        this.mMinPixelsBetweenSamplesY = f3 * 0.25f;
+        float f = displayMetrics.xdpi / 2.54f;
+        float f2 = displayMetrics.ydpi / 2.54f;
+        this.mMinPixelsBetweenSamplesX = f * 0.25f;
+        this.mMinPixelsBetweenSamplesY = f2 * 0.25f;
         this.mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         clear();
     }
 
+    public static String directionToString(int i) {
+        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? "Unknown Direction" : INetd.IF_STATE_DOWN : INetd.IF_STATE_UP : "right" : "left";
+    }
+
+    public static int toDirection(float f, float f2) {
+        return Math.abs(f) > Math.abs(f2) ? f < FullScreenMagnificationGestureHandler.MAX_SCALE ? 0 : 1 : f2 < FullScreenMagnificationGestureHandler.MAX_SCALE ? 2 : 3;
+    }
+
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void clear() {
+    public final void clear() {
         this.mTargetFingerCountReached = false;
         this.mCurrentFingerCount = 0;
         for (int i = 0; i < this.mTargetFingerCount; i++) {
@@ -80,9 +85,14 @@ public class MultiFingerSwipe extends GestureMatcher {
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+    public final String getGestureName() {
+        return this.mTargetFingerCount + "-finger Swipe " + directionToString(this.mDirection);
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public final void onDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
         if (this.mCurrentFingerCount > 0) {
-            cancelGesture(motionEvent, motionEvent2, i);
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         this.mCurrentFingerCount = 1;
@@ -90,101 +100,124 @@ public class MultiFingerSwipe extends GestureMatcher {
         int pointerId = motionEvent2.getPointerId(actionIndex);
         int pointerCount = motionEvent2.getPointerCount() - 1;
         if (pointerId < 0) {
-            cancelGesture(motionEvent, motionEvent2, i);
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         int[] iArr = this.mPointerIds;
         if (iArr[pointerCount] != -1) {
-            cancelGesture(motionEvent, motionEvent2, i);
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         iArr[pointerCount] = pointerId;
-        if (Float.isNaN(this.mBase[pointerCount].x) && Float.isNaN(this.mBase[pointerCount].y)) {
-            float x = motionEvent2.getX(actionIndex);
-            float y = motionEvent2.getY(actionIndex);
-            if (x < DisplayPowerController2.RATE_FROM_DOZE_TO_ON || y < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                cancelGesture(motionEvent, motionEvent2, i);
-                return;
-            }
-            PointF pointF = this.mBase[pointerCount];
-            pointF.x = x;
-            pointF.y = y;
-            PointF pointF2 = this.mPreviousGesturePoint[pointerCount];
-            pointF2.x = x;
-            pointF2.y = y;
+        if (!Float.isNaN(this.mBase[pointerCount].x) || !Float.isNaN(this.mBase[pointerCount].y)) {
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
-        cancelGesture(motionEvent, motionEvent2, i);
+        float x = motionEvent2.getX(actionIndex);
+        float y = motionEvent2.getY(actionIndex);
+        if (x < FullScreenMagnificationGestureHandler.MAX_SCALE || y < FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            setState(3, motionEvent, motionEvent2, i);
+            return;
+        }
+        PointF pointF = this.mBase[pointerCount];
+        pointF.x = x;
+        pointF.y = y;
+        PointF pointF2 = this.mPreviousGesturePoint[pointerCount];
+        pointF2.x = x;
+        pointF2.y = y;
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x0120, code lost:
+    
+        setState(3, r18, r19, r20);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x0123, code lost:
+    
+        return;
+     */
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void onMove(android.view.MotionEvent r18, android.view.MotionEvent r19, int r20) {
+        /*
+            Method dump skipped, instructions count: 292
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.accessibility.gestures.MultiFingerSwipe.onMove(android.view.MotionEvent, android.view.MotionEvent, int):void");
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onPointerDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (motionEvent.getPointerCount() > this.mTargetFingerCount) {
-            cancelGesture(motionEvent, motionEvent2, i);
+    public final void onPointerDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        int pointerCount = motionEvent.getPointerCount();
+        int i2 = this.mTargetFingerCount;
+        if (pointerCount > i2) {
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
-        int i2 = this.mCurrentFingerCount + 1;
-        this.mCurrentFingerCount = i2;
-        if (i2 != motionEvent2.getPointerCount()) {
-            cancelGesture(motionEvent, motionEvent2, i);
+        int i3 = this.mCurrentFingerCount + 1;
+        this.mCurrentFingerCount = i3;
+        if (i3 != motionEvent2.getPointerCount()) {
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
-        if (this.mCurrentFingerCount == this.mTargetFingerCount) {
+        if (this.mCurrentFingerCount == i2) {
             this.mTargetFingerCountReached = true;
         }
         int actionIndex = GestureUtils.getActionIndex(motionEvent2);
         int pointerId = motionEvent2.getPointerId(actionIndex);
         if (pointerId < 0) {
-            cancelGesture(motionEvent, motionEvent2, i);
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
-        int i3 = this.mCurrentFingerCount - 1;
+        int i4 = this.mCurrentFingerCount - 1;
         int[] iArr = this.mPointerIds;
-        if (iArr[i3] != -1) {
-            cancelGesture(motionEvent, motionEvent2, i);
+        if (iArr[i4] != -1) {
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
-        iArr[i3] = pointerId;
-        if (Float.isNaN(this.mBase[i3].x) && Float.isNaN(this.mBase[i3].y)) {
-            float x = motionEvent2.getX(actionIndex);
-            float y = motionEvent2.getY(actionIndex);
-            if (x < DisplayPowerController2.RATE_FROM_DOZE_TO_ON || y < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                cancelGesture(motionEvent, motionEvent2, i);
-                return;
-            }
-            PointF pointF = this.mBase[i3];
-            pointF.x = x;
-            pointF.y = y;
-            PointF pointF2 = this.mPreviousGesturePoint[i3];
-            pointF2.x = x;
-            pointF2.y = y;
+        iArr[i4] = pointerId;
+        if (!Float.isNaN(this.mBase[i4].x) || !Float.isNaN(this.mBase[i4].y)) {
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
-        cancelGesture(motionEvent, motionEvent2, i);
+        float x = motionEvent2.getX(actionIndex);
+        float y = motionEvent2.getY(actionIndex);
+        if (x < FullScreenMagnificationGestureHandler.MAX_SCALE || y < FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            setState(3, motionEvent, motionEvent2, i);
+            return;
+        }
+        PointF pointF = this.mBase[i4];
+        pointF.x = x;
+        pointF.y = y;
+        PointF pointF2 = this.mPreviousGesturePoint[i4];
+        pointF2.x = x;
+        pointF2.y = y;
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onPointerUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+    public final void onPointerUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
         if (!this.mTargetFingerCountReached) {
-            cancelGesture(motionEvent, motionEvent2, i);
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         this.mCurrentFingerCount--;
         int actionIndex = GestureUtils.getActionIndex(motionEvent);
         int pointerId = motionEvent.getPointerId(actionIndex);
         if (pointerId < 0) {
-            cancelGesture(motionEvent, motionEvent2, i);
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         int binarySearch = Arrays.binarySearch(this.mPointerIds, pointerId);
         if (binarySearch < 0) {
-            cancelGesture(motionEvent, motionEvent2, i);
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         float x = motionEvent2.getX(actionIndex);
         float y = motionEvent2.getY(actionIndex);
-        if (x < DisplayPowerController2.RATE_FROM_DOZE_TO_ON || y < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            cancelGesture(motionEvent, motionEvent2, i);
+        if (x < FullScreenMagnificationGestureHandler.MAX_SCALE || y < FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         float abs = Math.abs(x - this.mPreviousGesturePoint[binarySearch].x);
@@ -195,84 +228,22 @@ public class MultiFingerSwipe extends GestureMatcher {
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onMove(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        for (int i2 = 0; i2 < this.mTargetFingerCount; i2++) {
-            if (this.mPointerIds[i2] != -1) {
-                boolean z = TouchExplorer.DEBUG;
-                if (z) {
-                    Slog.d(getGestureName(), "Processing move on finger " + i2);
-                }
-                int findPointerIndex = motionEvent2.findPointerIndex(this.mPointerIds[i2]);
-                if (findPointerIndex >= 0) {
-                    float x = motionEvent2.getX(findPointerIndex);
-                    float y = motionEvent2.getY(findPointerIndex);
-                    if (x < DisplayPowerController2.RATE_FROM_DOZE_TO_ON || y < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                        cancelGesture(motionEvent, motionEvent2, i);
-                        return;
-                    }
-                    float abs = Math.abs(x - this.mPreviousGesturePoint[i2].x);
-                    float abs2 = Math.abs(y - this.mPreviousGesturePoint[i2].y);
-                    double hypot = Math.hypot(Math.abs(x - this.mBase[i2].x), Math.abs(y - this.mBase[i2].y));
-                    if (z) {
-                        Slog.d(getGestureName(), "moveDelta:" + hypot);
-                    }
-                    if (getState() == 0) {
-                        int i3 = this.mTargetFingerCount;
-                        if (hypot < this.mTouchSlop * i3) {
-                            continue;
-                        } else {
-                            if (this.mCurrentFingerCount != i3) {
-                                cancelGesture(motionEvent, motionEvent2, i);
-                                return;
-                            }
-                            PointF pointF = this.mBase[i2];
-                            if (toDirection(x - pointF.x, y - pointF.y) != this.mDirection) {
-                                cancelGesture(motionEvent, motionEvent2, i);
-                                return;
-                            }
-                            startGesture(motionEvent, motionEvent2, i);
-                            for (int i4 = 0; i4 < this.mTargetFingerCount; i4++) {
-                                this.mStrokeBuffers[i4].add(new PointF(this.mBase[i4]));
-                            }
-                        }
-                    } else if (getState() == 1) {
-                        PointF pointF2 = this.mBase[i2];
-                        if (toDirection(x - pointF2.x, y - pointF2.y) != this.mDirection) {
-                            cancelGesture(motionEvent, motionEvent2, i);
-                            return;
-                        } else if (abs >= this.mMinPixelsBetweenSamplesX || abs2 >= this.mMinPixelsBetweenSamplesY) {
-                            PointF pointF3 = this.mPreviousGesturePoint[i2];
-                            pointF3.x = x;
-                            pointF3.y = y;
-                            this.mStrokeBuffers[i2].add(new PointF(x, y));
-                        }
-                    } else {
-                        continue;
-                    }
-                } else if (z) {
-                    Slog.d(getGestureName(), "Finger " + i2 + " not found in this event. skipping.");
-                }
-            }
-        }
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (getState() != 1) {
-            cancelGesture(motionEvent, motionEvent2, i);
+    public final void onUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        if (this.mState != 1) {
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         this.mCurrentFingerCount = 0;
         int actionIndex = GestureUtils.getActionIndex(motionEvent);
         int binarySearch = Arrays.binarySearch(this.mPointerIds, motionEvent.getPointerId(actionIndex));
         if (binarySearch < 0) {
-            cancelGesture(motionEvent, motionEvent2, i);
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         float x = motionEvent2.getX(actionIndex);
         float y = motionEvent2.getY(actionIndex);
-        if (x < DisplayPowerController2.RATE_FROM_DOZE_TO_ON || y < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            cancelGesture(motionEvent, motionEvent2, i);
+        if (x < FullScreenMagnificationGestureHandler.MAX_SCALE || y < FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            setState(3, motionEvent, motionEvent2, i);
             return;
         }
         float abs = Math.abs(x - this.mPreviousGesturePoint[binarySearch].x);
@@ -280,66 +251,47 @@ public class MultiFingerSwipe extends GestureMatcher {
         if (abs >= this.mMinPixelsBetweenSamplesX || abs2 >= this.mMinPixelsBetweenSamplesY) {
             this.mStrokeBuffers[binarySearch].add(new PointF(x, y));
         }
-        recognizeGesture(motionEvent, motionEvent2, i);
-    }
-
-    public final void recognizeGesture(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
         for (int i2 = 0; i2 < this.mTargetFingerCount; i2++) {
             boolean z = TouchExplorer.DEBUG;
             if (z) {
-                Slog.d(getGestureName(), "Recognizing finger: " + i2);
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(i2, "Recognizing finger: ", getGestureName());
             }
             if (this.mStrokeBuffers[i2].size() < 2) {
                 Slog.d(getGestureName(), "Too few points.");
-                cancelGesture(motionEvent, motionEvent2, i);
+                setState(3, motionEvent, motionEvent2, i);
                 return;
             }
             ArrayList arrayList = this.mStrokeBuffers[i2];
             if (z) {
                 Slog.d(getGestureName(), "path=" + arrayList.toString());
             }
-            if (!recognizeGesturePath(motionEvent, motionEvent2, i, arrayList)) {
-                cancelGesture(motionEvent, motionEvent2, i);
-                return;
-            }
-        }
-        completeGesture(motionEvent, motionEvent2, i);
-    }
-
-    public final boolean recognizeGesturePath(MotionEvent motionEvent, MotionEvent motionEvent2, int i, ArrayList arrayList) {
-        motionEvent.getDisplayId();
-        int i2 = 0;
-        while (i2 < arrayList.size() - 1) {
-            PointF pointF = (PointF) arrayList.get(i2);
-            i2++;
-            PointF pointF2 = (PointF) arrayList.get(i2);
-            int direction = toDirection(pointF2.x - pointF.x, pointF2.y - pointF.y);
-            if (direction != this.mDirection) {
-                if (TouchExplorer.DEBUG) {
-                    Slog.d(getGestureName(), "Found direction " + directionToString(direction) + " when expecting " + directionToString(this.mDirection));
+            motionEvent.getDisplayId();
+            int i3 = 0;
+            while (i3 < arrayList.size() - 1) {
+                PointF pointF = (PointF) arrayList.get(i3);
+                i3++;
+                PointF pointF2 = (PointF) arrayList.get(i3);
+                int direction = toDirection(pointF2.x - pointF.x, pointF2.y - pointF.y);
+                int i4 = this.mDirection;
+                if (direction != i4) {
+                    if (TouchExplorer.DEBUG) {
+                        Slog.d(getGestureName(), "Found direction " + directionToString(direction) + " when expecting " + directionToString(i4));
+                    }
+                    setState(3, motionEvent, motionEvent2, i);
+                    return;
                 }
-                return false;
+            }
+            if (TouchExplorer.DEBUG) {
+                Slog.d(getGestureName(), "Completed.");
             }
         }
-        if (TouchExplorer.DEBUG) {
-            Slog.d(getGestureName(), "Completed.");
-        }
-        return true;
-    }
-
-    public static int toDirection(float f, float f2) {
-        return Math.abs(f) > Math.abs(f2) ? f < DisplayPowerController2.RATE_FROM_DOZE_TO_ON ? 0 : 1 : f2 < DisplayPowerController2.RATE_FROM_DOZE_TO_ON ? 2 : 3;
+        setState(2, motionEvent, motionEvent2, i);
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public String getGestureName() {
-        return this.mTargetFingerCount + "-finger Swipe " + directionToString(this.mDirection);
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public String toString() {
+    public final String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        if (getState() != 3) {
+        if (this.mState != 3) {
             sb.append(", mBase: ");
             sb.append(Arrays.toString(this.mBase));
             sb.append(", mMinPixelsBetweenSamplesX:");

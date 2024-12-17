@@ -1,34 +1,18 @@
 package com.android.server.usb.descriptors;
 
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class Usb10ASFormatII extends UsbASFormat {
     public int mMaxBitRate;
     public byte mSamFreqType;
     public int[] mSampleRates;
-    public int mSamplesPerFrame;
-
-    public Usb10ASFormatII(int i, byte b, byte b2, byte b3, int i2) {
-        super(i, b, b2, b3, i2);
-    }
-
-    public int getMaxBitRate() {
-        return this.mMaxBitRate;
-    }
-
-    public byte getSamFreqType() {
-        return this.mSamFreqType;
-    }
-
-    public int[] getSampleRates() {
-        return this.mSampleRates;
-    }
 
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
+    public final int parseRawDescriptors(ByteStream byteStream) {
         this.mMaxBitRate = byteStream.unpackUsbShort();
-        this.mSamplesPerFrame = byteStream.unpackUsbShort();
+        byteStream.unpackUsbShort();
         byte b = byteStream.getByte();
         this.mSamFreqType = b;
         int i = b;
@@ -43,24 +27,24 @@ public final class Usb10ASFormatII extends UsbASFormat {
     }
 
     @Override // com.android.server.usb.descriptors.UsbASFormat, com.android.server.usb.descriptors.UsbACInterface, com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        reportCanvas.openList();
-        reportCanvas.writeListItem("Max Bit Rate: " + getMaxBitRate());
-        reportCanvas.writeListItem("Samples Per Frame: " + getMaxBitRate());
-        byte samFreqType = getSamFreqType();
-        int[] sampleRates = getSampleRates();
-        reportCanvas.writeListItem("Sample Freq Type: " + ((int) samFreqType));
-        reportCanvas.openList();
-        if (samFreqType == 0) {
-            reportCanvas.writeListItem("min: " + sampleRates[0]);
-            reportCanvas.writeListItem("max: " + sampleRates[1]);
+    public final void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        textReportCanvas.openList();
+        textReportCanvas.writeListItem("Max Bit Rate: " + this.mMaxBitRate);
+        textReportCanvas.writeListItem("Samples Per Frame: " + this.mMaxBitRate);
+        byte b = this.mSamFreqType;
+        int[] iArr = this.mSampleRates;
+        textReportCanvas.writeListItem("Sample Freq Type: " + ((int) b));
+        textReportCanvas.openList();
+        if (b == 0) {
+            textReportCanvas.writeListItem("min: " + iArr[0]);
+            textReportCanvas.writeListItem("max: " + iArr[1]);
         } else {
-            for (int i = 0; i < samFreqType; i++) {
-                reportCanvas.writeListItem("" + sampleRates[i]);
+            for (int i = 0; i < b; i++) {
+                textReportCanvas.writeListItem("" + iArr[i]);
             }
         }
-        reportCanvas.closeList();
-        reportCanvas.closeList();
+        textReportCanvas.closeList();
+        textReportCanvas.closeList();
     }
 }

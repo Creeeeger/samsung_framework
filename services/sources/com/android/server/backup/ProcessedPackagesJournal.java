@@ -7,10 +7,10 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.HashSet;
 import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ProcessedPackagesJournal {
     public final Set mProcessedPackages = new HashSet();
@@ -18,60 +18,6 @@ public final class ProcessedPackagesJournal {
 
     public ProcessedPackagesJournal(File file) {
         this.mStateDirectory = file;
-    }
-
-    public void init() {
-        synchronized (this.mProcessedPackages) {
-            loadFromDisk();
-        }
-    }
-
-    public boolean hasBeenProcessed(String str) {
-        boolean contains;
-        synchronized (this.mProcessedPackages) {
-            contains = this.mProcessedPackages.contains(str);
-        }
-        return contains;
-    }
-
-    public void addPackage(String str) {
-        synchronized (this.mProcessedPackages) {
-            if (this.mProcessedPackages.add(str)) {
-                File file = new File(this.mStateDirectory, "processed");
-                try {
-                    RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rws");
-                    try {
-                        randomAccessFile.seek(randomAccessFile.length());
-                        randomAccessFile.writeUTF(str);
-                        randomAccessFile.close();
-                    } catch (Throwable th) {
-                        try {
-                            randomAccessFile.close();
-                        } catch (Throwable th2) {
-                            th.addSuppressed(th2);
-                        }
-                        throw th;
-                    }
-                } catch (IOException unused) {
-                    Slog.e("ProcessedPackagesJournal", "Can't log backup of " + str + " to " + file);
-                }
-            }
-        }
-    }
-
-    public Set getPackagesCopy() {
-        HashSet hashSet;
-        synchronized (this.mProcessedPackages) {
-            hashSet = new HashSet(this.mProcessedPackages);
-        }
-        return hashSet;
-    }
-
-    public void reset() {
-        synchronized (this.mProcessedPackages) {
-            this.mProcessedPackages.clear();
-            new File(this.mStateDirectory, "processed").delete();
-        }
     }
 
     public final void loadFromDisk() {
@@ -85,7 +31,7 @@ public final class ProcessedPackagesJournal {
                 try {
                     String readUTF = dataInputStream.readUTF();
                     Slog.v("ProcessedPackagesJournal", "   + " + readUTF);
-                    this.mProcessedPackages.add(readUTF);
+                    ((HashSet) this.mProcessedPackages).add(readUTF);
                 } catch (Throwable th) {
                     try {
                         dataInputStream.close();

@@ -1,80 +1,419 @@
 package org.apache.commons.compress.archivers.sevenz;
 
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.att.iqi.lib.metrics.hw.HwConstants;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
-import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.CharBuffer;
 import java.nio.channels.SeekableByteChannel;
-import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.zip.CRC32;
 import org.apache.commons.compress.utils.BoundedInputStream;
 import org.apache.commons.compress.utils.CRC32VerifyingInputStream;
 import org.apache.commons.compress.utils.IOUtils;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class SevenZFile implements Closeable {
+public final class SevenZFile implements Closeable {
+    public static final byte[] sevenZSignature = {55, 122, -68, -81, 39, 28};
     public final Archive archive;
     public SeekableByteChannel channel;
-    public long compressedBytesReadFromCurrentEntry;
-    public int currentEntryIndex;
-    public int currentFolderIndex;
-    public InputStream currentFolderInputStream;
-    public final ArrayList deferredBlockStreams;
-    public final String fileName;
+    public int currentEntryIndex = -1;
+    public int currentFolderIndex = -1;
+    public InputStream currentFolderInputStream = null;
+    public final ArrayList deferredBlockStreams = new ArrayList();
+    public final String fileName = "unknown archive";
     public byte[] password;
-    public long uncompressedBytesReadFromCurrentEntry;
-    public static final byte[] sevenZSignature = {55, 122, -68, -81, 39, 28};
-    public static final CharsetEncoder PASSWORD_ENCODER = StandardCharsets.UTF_16LE.newEncoder();
 
-    public static /* synthetic */ long access$014(SevenZFile sevenZFile, long j) {
-        long j2 = sevenZFile.compressedBytesReadFromCurrentEntry + j;
-        sevenZFile.compressedBytesReadFromCurrentEntry = j2;
-        return j2;
+    static {
+        StandardCharsets.UTF_16LE.newEncoder();
     }
 
-    public SevenZFile(SeekableByteChannel seekableByteChannel) {
-        this(seekableByteChannel, "unknown archive", null);
+    /* JADX WARN: Code restructure failed: missing block: B:175:0x03f7, code lost:
+    
+        throw new java.io.IOException("Error parsing file names");
+     */
+    /* JADX WARN: Multi-variable type inference failed */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public SevenZFile(org.apache.commons.compress.utils.SeekableInMemoryByteChannel r23) {
+        /*
+            Method dump skipped, instructions count: 1218
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: org.apache.commons.compress.archivers.sevenz.SevenZFile.<init>(org.apache.commons.compress.utils.SeekableInMemoryByteChannel):void");
     }
 
-    public SevenZFile(SeekableByteChannel seekableByteChannel, String str, char[] cArr) {
-        this(seekableByteChannel, str, utf16Decode(cArr), false);
+    public static BitSet readAllOrBits(ByteBuffer byteBuffer, int i) {
+        if ((byteBuffer.get() & 255) == 0) {
+            return readBits(byteBuffer, i);
+        }
+        BitSet bitSet = new BitSet(i);
+        for (int i2 = 0; i2 < i; i2++) {
+            bitSet.set(i2, true);
+        }
+        return bitSet;
     }
 
-    public SevenZFile(SeekableByteChannel seekableByteChannel, String str, byte[] bArr, boolean z) {
-        this.currentEntryIndex = -1;
-        this.currentFolderIndex = -1;
-        this.currentFolderInputStream = null;
-        this.deferredBlockStreams = new ArrayList();
-        this.channel = seekableByteChannel;
-        this.fileName = str;
-        try {
-            this.archive = readHeaders(bArr);
-            if (bArr != null) {
-                this.password = Arrays.copyOf(bArr, bArr.length);
-            } else {
-                this.password = null;
+    public static BitSet readBits(ByteBuffer byteBuffer, int i) {
+        BitSet bitSet = new BitSet(i);
+        int i2 = 0;
+        int i3 = 0;
+        for (int i4 = 0; i4 < i; i4++) {
+            if (i2 == 0) {
+                i3 = byteBuffer.get() & 255;
+                i2 = 128;
             }
-        } catch (Throwable th) {
-            if (z) {
-                this.channel.close();
+            bitSet.set(i4, (i3 & i2) != 0);
+            i2 >>>= 1;
+        }
+        return bitSet;
+    }
+
+    public static void readStreamsInfo(ByteBuffer byteBuffer, Archive archive) {
+        int i;
+        Archive archive2;
+        long j;
+        int i2;
+        int i3 = byteBuffer.get() & 255;
+        if (i3 == 6) {
+            archive.packPos = readUint64(byteBuffer);
+            long readUint64 = readUint64(byteBuffer);
+            int i4 = byteBuffer.get() & 255;
+            if (i4 == 9) {
+                archive.packSizes = new long[(int) readUint64];
+                int i5 = 0;
+                while (true) {
+                    long[] jArr = archive.packSizes;
+                    if (i5 >= jArr.length) {
+                        break;
+                    }
+                    jArr[i5] = readUint64(byteBuffer);
+                    i5++;
+                }
+                i4 = byteBuffer.get() & 255;
             }
-            throw th;
+            if (i4 == 10) {
+                int i6 = (int) readUint64;
+                archive.packCrcsDefined = readAllOrBits(byteBuffer, i6);
+                archive.packCrcs = new long[i6];
+                for (int i7 = 0; i7 < i6; i7++) {
+                    if (archive.packCrcsDefined.get(i7)) {
+                        archive.packCrcs[i7] = byteBuffer.getInt() & 4294967295L;
+                    }
+                }
+                i4 = byteBuffer.get() & 255;
+            }
+            if (i4 != 0) {
+                throw new IOException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i4, "Badly terminated PackInfo (", ")"));
+            }
+            i3 = byteBuffer.get() & 255;
+        }
+        if (i3 == 7) {
+            int i8 = byteBuffer.get() & 255;
+            if (i8 != 11) {
+                throw new IOException(VibrationParam$1$$ExternalSyntheticOutline0.m(i8, "Expected kFolder, got "));
+            }
+            int readUint642 = (int) readUint64(byteBuffer);
+            Folder[] folderArr = new Folder[readUint642];
+            archive.folders = folderArr;
+            if ((byteBuffer.get() & 255) != 0) {
+                throw new IOException("External unsupported");
+            }
+            for (int i9 = 0; i9 < readUint642; i9++) {
+                Folder folder = new Folder();
+                int readUint643 = (int) readUint64(byteBuffer);
+                Coder[] coderArr = new Coder[readUint643];
+                int i10 = 0;
+                long j2 = 0;
+                long j3 = 0;
+                while (i10 < readUint643) {
+                    Coder coder = new Coder();
+                    coder.properties = null;
+                    coderArr[i10] = coder;
+                    byte b = byteBuffer.get();
+                    int i11 = b & 15;
+                    boolean z = (b & HwConstants.IQ_CONFIG_POS_NETWORK_ENABLED) == 0;
+                    boolean z2 = (b & HwConstants.IQ_CONFIG_POS_WIFI_ENABLED) != 0;
+                    int i12 = readUint643;
+                    boolean z3 = (b & 128) != 0;
+                    byte[] bArr = new byte[i11];
+                    coderArr[i10].decompressionMethodId = bArr;
+                    byteBuffer.get(bArr);
+                    if (z) {
+                        Coder coder2 = coderArr[i10];
+                        coder2.numInStreams = 1L;
+                        coder2.numOutStreams = 1L;
+                        readUint642 = readUint642;
+                    } else {
+                        coderArr[i10].numInStreams = readUint64(byteBuffer);
+                        coderArr[i10].numOutStreams = readUint64(byteBuffer);
+                    }
+                    Coder coder3 = coderArr[i10];
+                    j2 += coder3.numInStreams;
+                    j3 += coder3.numOutStreams;
+                    if (z2) {
+                        byte[] bArr2 = new byte[(int) readUint64(byteBuffer)];
+                        coderArr[i10].properties = bArr2;
+                        byteBuffer.get(bArr2);
+                    }
+                    if (z3) {
+                        throw new IOException("Alternative methods are unsupported, please report. The reference implementation doesn't support them either.");
+                    }
+                    i10++;
+                    readUint643 = i12;
+                }
+                folder.coders = coderArr;
+                folder.totalInputStreams = j2;
+                folder.totalOutputStreams = j3;
+                if (j3 == 0) {
+                    throw new IOException("Total output streams can't be 0");
+                }
+                long j4 = j3 - 1;
+                int i13 = (int) j4;
+                BindPair[] bindPairArr = new BindPair[i13];
+                for (int i14 = 0; i14 < i13; i14++) {
+                    BindPair bindPair = new BindPair();
+                    bindPairArr[i14] = bindPair;
+                    bindPair.inIndex = readUint64(byteBuffer);
+                    bindPairArr[i14].outIndex = readUint64(byteBuffer);
+                }
+                folder.bindPairs = bindPairArr;
+                if (j2 < j4) {
+                    throw new IOException("Total input streams can't be less than the number of bind pairs");
+                }
+                long j5 = j2 - j4;
+                int i15 = (int) j5;
+                long[] jArr2 = new long[i15];
+                if (j5 == 1) {
+                    int i16 = 0;
+                    while (true) {
+                        i2 = (int) j2;
+                        if (i16 >= i2) {
+                            break;
+                        }
+                        int i17 = 0;
+                        while (true) {
+                            BindPair[] bindPairArr2 = folder.bindPairs;
+                            if (i17 >= bindPairArr2.length) {
+                                i17 = -1;
+                                break;
+                            } else if (bindPairArr2[i17].inIndex == i16) {
+                                break;
+                            } else {
+                                i17++;
+                            }
+                        }
+                        if (i17 < 0) {
+                            break;
+                        } else {
+                            i16++;
+                        }
+                    }
+                    if (i16 == i2) {
+                        throw new IOException("Couldn't find stream's bind pair index");
+                    }
+                    jArr2[0] = i16;
+                } else {
+                    for (int i18 = 0; i18 < i15; i18++) {
+                        jArr2[i18] = readUint64(byteBuffer);
+                    }
+                }
+                folder.packedStreams = jArr2;
+                folderArr[i9] = folder;
+            }
+            int i19 = byteBuffer.get() & 255;
+            if (i19 != 12) {
+                throw new IOException(VibrationParam$1$$ExternalSyntheticOutline0.m(i19, "Expected kCodersUnpackSize, got "));
+            }
+            for (int i20 = 0; i20 < readUint642; i20++) {
+                Folder folder2 = folderArr[i20];
+                folder2.unpackSizes = new long[(int) folder2.totalOutputStreams];
+                for (int i21 = 0; i21 < folder2.totalOutputStreams; i21++) {
+                    folder2.unpackSizes[i21] = readUint64(byteBuffer);
+                }
+            }
+            int i22 = byteBuffer.get() & 255;
+            if (i22 == 10) {
+                BitSet readAllOrBits = readAllOrBits(byteBuffer, readUint642);
+                for (int i23 = 0; i23 < readUint642; i23++) {
+                    if (readAllOrBits.get(i23)) {
+                        Folder folder3 = folderArr[i23];
+                        folder3.hasCrc = true;
+                        folder3.crc = byteBuffer.getInt() & 4294967295L;
+                    } else {
+                        folderArr[i23].hasCrc = false;
+                    }
+                }
+                i22 = byteBuffer.get() & 255;
+            }
+            if (i22 != 0) {
+                throw new IOException("Badly terminated UnpackInfo");
+            }
+            i3 = byteBuffer.get() & 255;
+            archive2 = archive;
+            i = 0;
+        } else {
+            i = 0;
+            archive2 = archive;
+            archive2.folders = new Folder[0];
+        }
+        if (i3 == 8) {
+            Folder[] folderArr2 = archive2.folders;
+            int length = folderArr2.length;
+            for (int i24 = i; i24 < length; i24++) {
+                folderArr2[i24].numUnpackSubStreams = 1;
+            }
+            int length2 = archive2.folders.length;
+            int i25 = byteBuffer.get() & 255;
+            if (i25 == 13) {
+                Folder[] folderArr3 = archive2.folders;
+                int length3 = folderArr3.length;
+                int i26 = i;
+                int i27 = i26;
+                while (i26 < length3) {
+                    Folder folder4 = folderArr3[i26];
+                    long readUint644 = readUint64(byteBuffer);
+                    folder4.numUnpackSubStreams = (int) readUint644;
+                    i27 = (int) (i27 + readUint644);
+                    i26++;
+                }
+                i25 = byteBuffer.get() & 255;
+                length2 = i27;
+            }
+            SubStreamsInfo subStreamsInfo = new SubStreamsInfo();
+            subStreamsInfo.unpackSizes = new long[length2];
+            subStreamsInfo.hasCrc = new BitSet(length2);
+            subStreamsInfo.crcs = new long[length2];
+            Folder[] folderArr4 = archive2.folders;
+            int length4 = folderArr4.length;
+            int i28 = i;
+            int i29 = i28;
+            while (i28 < length4) {
+                Folder folder5 = folderArr4[i28];
+                if (folder5.numUnpackSubStreams != 0) {
+                    if (i25 == 9) {
+                        int i30 = i29;
+                        j = 0;
+                        int i31 = i;
+                        while (i31 < folder5.numUnpackSubStreams - 1) {
+                            long readUint645 = readUint64(byteBuffer);
+                            subStreamsInfo.unpackSizes[i30] = readUint645;
+                            j += readUint645;
+                            i31++;
+                            i30++;
+                        }
+                        i29 = i30;
+                    } else {
+                        j = 0;
+                    }
+                    subStreamsInfo.unpackSizes[i29] = folder5.getUnpackSize() - j;
+                    i29++;
+                }
+                i28++;
+            }
+            if (i25 == 9) {
+                i25 = byteBuffer.get() & 255;
+            }
+            Folder[] folderArr5 = archive2.folders;
+            int length5 = folderArr5.length;
+            int i32 = i;
+            int i33 = i32;
+            while (i32 < length5) {
+                Folder folder6 = folderArr5[i32];
+                int i34 = folder6.numUnpackSubStreams;
+                if (i34 != 1 || !folder6.hasCrc) {
+                    i33 += i34;
+                }
+                i32++;
+            }
+            if (i25 == 10) {
+                BitSet readAllOrBits2 = readAllOrBits(byteBuffer, i33);
+                long[] jArr3 = new long[i33];
+                for (int i35 = i; i35 < i33; i35++) {
+                    if (readAllOrBits2.get(i35)) {
+                        jArr3[i35] = byteBuffer.getInt() & 4294967295L;
+                    }
+                }
+                Folder[] folderArr6 = archive2.folders;
+                int length6 = folderArr6.length;
+                int i36 = i;
+                int i37 = i36;
+                int i38 = i37;
+                while (i36 < length6) {
+                    Folder folder7 = folderArr6[i36];
+                    if (folder7.numUnpackSubStreams == 1 && folder7.hasCrc) {
+                        subStreamsInfo.hasCrc.set(i37, true);
+                        subStreamsInfo.crcs[i37] = folder7.crc;
+                        i37++;
+                    } else {
+                        int i39 = i38;
+                        int i40 = i37;
+                        for (int i41 = i; i41 < folder7.numUnpackSubStreams; i41++) {
+                            subStreamsInfo.hasCrc.set(i40, readAllOrBits2.get(i39));
+                            subStreamsInfo.crcs[i40] = jArr3[i39];
+                            i40++;
+                            i39++;
+                        }
+                        i37 = i40;
+                        i38 = i39;
+                    }
+                    i36++;
+                }
+                i25 = byteBuffer.get() & 255;
+            }
+            if (i25 != 0) {
+                throw new IOException("Badly terminated SubStreamsInfo");
+            }
+            archive2.subStreamsInfo = subStreamsInfo;
+            i3 = byteBuffer.get() & 255;
+        }
+        if (i3 != 0) {
+            throw new IOException("Badly terminated StreamsInfo");
         }
     }
 
+    public static long readUint64(ByteBuffer byteBuffer) {
+        long j = byteBuffer.get() & 255;
+        int i = 128;
+        long j2 = 0;
+        for (int i2 = 0; i2 < 8; i2++) {
+            if ((i & j) == 0) {
+                return ((j & (i - 1)) << (i2 * 8)) | j2;
+            }
+            j2 |= (byteBuffer.get() & 255) << (i2 * 8);
+            i >>>= 1;
+        }
+        return j2;
+    }
+
+    public static long skipBytesFully(long j, ByteBuffer byteBuffer) {
+        if (j < 1) {
+            return 0L;
+        }
+        int position = byteBuffer.position();
+        long remaining = byteBuffer.remaining();
+        if (remaining < j) {
+            j = remaining;
+        }
+        byteBuffer.position(position + ((int) j));
+        return j;
+    }
+
     @Override // java.io.Closeable, java.lang.AutoCloseable
-    public void close() {
+    public final void close() {
         SeekableByteChannel seekableByteChannel = this.channel;
         if (seekableByteChannel != null) {
             try {
@@ -90,677 +429,180 @@ public class SevenZFile implements Closeable {
         }
     }
 
-    public SevenZArchiveEntry getNextEntry() {
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r0v16, types: [org.apache.commons.compress.utils.CRC32VerifyingInputStream] */
+    public final SevenZArchiveEntry getNextEntry() {
+        long j;
         int i = this.currentEntryIndex;
-        SevenZArchiveEntry[] sevenZArchiveEntryArr = this.archive.files;
+        Archive archive = this.archive;
+        SevenZArchiveEntry[] sevenZArchiveEntryArr = archive.files;
         if (i >= sevenZArchiveEntryArr.length - 1) {
             return null;
         }
         int i2 = i + 1;
         this.currentEntryIndex = i2;
         SevenZArchiveEntry sevenZArchiveEntry = sevenZArchiveEntryArr[i2];
-        buildDecodingStream();
-        this.compressedBytesReadFromCurrentEntry = 0L;
-        this.uncompressedBytesReadFromCurrentEntry = 0L;
+        int i3 = archive.streamMap.fileFolderIndex[i2];
+        if (i3 < 0) {
+            this.deferredBlockStreams.clear();
+        } else {
+            if (this.currentFolderIndex == i3) {
+                sevenZArchiveEntry.setContentMethods(sevenZArchiveEntryArr[i].contentMethods);
+            } else {
+                this.currentFolderIndex = i3;
+                this.deferredBlockStreams.clear();
+                InputStream inputStream = this.currentFolderInputStream;
+                if (inputStream != null) {
+                    inputStream.close();
+                    this.currentFolderInputStream = null;
+                }
+                Archive archive2 = this.archive;
+                Folder folder = archive2.folders[i3];
+                StreamMap streamMap = archive2.streamMap;
+                int i4 = streamMap.folderFirstPackStreamIndex[i3];
+                this.channel.position(archive2.packPos + 32 + streamMap.packStreamOffsets[i4]);
+                FilterInputStream filterInputStream = new FilterInputStream(new BufferedInputStream(new BoundedSeekableByteChannelInputStream(this.channel, this.archive.packSizes[i4]))) { // from class: org.apache.commons.compress.archivers.sevenz.SevenZFile.1
+                    @Override // java.io.FilterInputStream, java.io.InputStream
+                    public final int read() {
+                        int read = ((FilterInputStream) this).in.read();
+                        if (read >= 0) {
+                            SevenZFile.this.getClass();
+                        }
+                        return read;
+                    }
+
+                    @Override // java.io.FilterInputStream, java.io.InputStream
+                    public final int read(byte[] bArr) {
+                        return read(bArr, 0, bArr.length);
+                    }
+
+                    @Override // java.io.FilterInputStream, java.io.InputStream
+                    public final int read(byte[] bArr, int i5, int i6) {
+                        int read = ((FilterInputStream) this).in.read(bArr, i5, i6);
+                        if (read >= 0) {
+                            SevenZFile.this.getClass();
+                        }
+                        return read;
+                    }
+                };
+                LinkedList linkedList = new LinkedList();
+                InputStream inputStream2 = filterInputStream;
+                for (Coder coder : folder.getOrderedCoders()) {
+                    if (coder.numInStreams != 1 || coder.numOutStreams != 1) {
+                        throw new IOException("Multi input/output stream coders are not yet supported");
+                    }
+                    SevenZMethod byId = SevenZMethod.byId(coder.decompressionMethodId);
+                    String str = this.fileName;
+                    if (folder.coders != null) {
+                        int i5 = 0;
+                        while (true) {
+                            Coder[] coderArr = folder.coders;
+                            if (i5 >= coderArr.length) {
+                                break;
+                            }
+                            if (coderArr[i5] == coder) {
+                                j = folder.unpackSizes[i5];
+                                break;
+                            }
+                            i5++;
+                        }
+                        inputStream2 = Coders.addDecoder(str, inputStream2, j, coder, this.password);
+                        linkedList.addFirst(new SevenZMethodConfiguration(byId, ((CoderBase) ((HashMap) Coders.CODER_MAP).get(byId)).getOptionsFromCoder(coder)));
+                    }
+                    j = 0;
+                    inputStream2 = Coders.addDecoder(str, inputStream2, j, coder, this.password);
+                    linkedList.addFirst(new SevenZMethodConfiguration(byId, ((CoderBase) ((HashMap) Coders.CODER_MAP).get(byId)).getOptionsFromCoder(coder)));
+                }
+                sevenZArchiveEntry.setContentMethods(linkedList);
+                if (folder.hasCrc) {
+                    inputStream2 = new CRC32VerifyingInputStream(inputStream2, folder.getUnpackSize(), folder.crc);
+                }
+                this.currentFolderInputStream = inputStream2;
+            }
+            BoundedInputStream boundedInputStream = new BoundedInputStream(this.currentFolderInputStream, sevenZArchiveEntry.size);
+            if (sevenZArchiveEntry.hasCrc) {
+                boundedInputStream = new CRC32VerifyingInputStream(boundedInputStream, sevenZArchiveEntry.size, sevenZArchiveEntry.crc);
+            }
+            this.deferredBlockStreams.add(boundedInputStream);
+        }
         return sevenZArchiveEntry;
     }
 
-    public final Archive readHeaders(byte[] bArr) {
-        ByteBuffer allocate = ByteBuffer.allocate(12);
-        ByteOrder byteOrder = ByteOrder.LITTLE_ENDIAN;
-        ByteBuffer order = allocate.order(byteOrder);
-        readFully(order);
-        byte[] bArr2 = new byte[6];
-        order.get(bArr2);
-        if (!Arrays.equals(bArr2, sevenZSignature)) {
-            throw new IOException("Bad 7z signature");
-        }
-        byte b = order.get();
-        byte b2 = order.get();
-        if (b != 0) {
-            throw new IOException(String.format("Unsupported 7z version (%d,%d)", Byte.valueOf(b), Byte.valueOf(b2)));
-        }
-        StartHeader readStartHeader = readStartHeader(order.getInt() & 4294967295L);
-        long j = readStartHeader.nextHeaderSize;
-        int i = (int) j;
-        if (i != j) {
-            throw new IOException("cannot handle nextHeaderSize " + readStartHeader.nextHeaderSize);
-        }
-        this.channel.position(readStartHeader.nextHeaderOffset + 32);
-        ByteBuffer order2 = ByteBuffer.allocate(i).order(byteOrder);
-        readFully(order2);
-        CRC32 crc32 = new CRC32();
-        crc32.update(order2.array());
-        if (readStartHeader.nextHeaderCrc != crc32.getValue()) {
-            throw new IOException("NextHeader CRC mismatch");
-        }
-        Archive archive = new Archive();
-        int unsignedByte = getUnsignedByte(order2);
-        if (unsignedByte == 23) {
-            order2 = readEncodedHeader(order2, archive, bArr);
-            archive = new Archive();
-            unsignedByte = getUnsignedByte(order2);
-        }
-        if (unsignedByte == 1) {
-            readHeader(order2, archive);
-            return archive;
-        }
-        throw new IOException("Broken or unsupported archive: no Header");
-    }
-
-    public final StartHeader readStartHeader(long j) {
-        StartHeader startHeader = new StartHeader();
-        DataInputStream dataInputStream = new DataInputStream(new CRC32VerifyingInputStream(new BoundedSeekableByteChannelInputStream(this.channel, 20L), 20L, j));
-        try {
-            startHeader.nextHeaderOffset = Long.reverseBytes(dataInputStream.readLong());
-            startHeader.nextHeaderSize = Long.reverseBytes(dataInputStream.readLong());
-            startHeader.nextHeaderCrc = Integer.reverseBytes(dataInputStream.readInt()) & 4294967295L;
-            dataInputStream.close();
-            return startHeader;
-        } catch (Throwable th) {
-            try {
-                dataInputStream.close();
-            } catch (Throwable th2) {
-                th.addSuppressed(th2);
-            }
-            throw th;
-        }
-    }
-
-    public final void readHeader(ByteBuffer byteBuffer, Archive archive) {
-        int unsignedByte = getUnsignedByte(byteBuffer);
-        if (unsignedByte == 2) {
-            readArchiveProperties(byteBuffer);
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-        if (unsignedByte == 3) {
-            throw new IOException("Additional streams unsupported");
-        }
-        if (unsignedByte == 4) {
-            readStreamsInfo(byteBuffer, archive);
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-        if (unsignedByte == 5) {
-            readFilesInfo(byteBuffer, archive);
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-        if (unsignedByte == 0) {
-            return;
-        }
-        throw new IOException("Badly terminated header, found " + unsignedByte);
-    }
-
-    public final void readArchiveProperties(ByteBuffer byteBuffer) {
-        int unsignedByte = getUnsignedByte(byteBuffer);
-        while (unsignedByte != 0) {
-            byteBuffer.get(new byte[(int) readUint64(byteBuffer)]);
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-    }
-
-    public final ByteBuffer readEncodedHeader(ByteBuffer byteBuffer, Archive archive, byte[] bArr) {
-        readStreamsInfo(byteBuffer, archive);
-        Folder folder = archive.folders[0];
-        this.channel.position(archive.packPos + 32 + 0);
-        BoundedSeekableByteChannelInputStream boundedSeekableByteChannelInputStream = new BoundedSeekableByteChannelInputStream(this.channel, archive.packSizes[0]);
-        InputStream inputStream = boundedSeekableByteChannelInputStream;
-        for (Coder coder : folder.getOrderedCoders()) {
-            if (coder.numInStreams != 1 || coder.numOutStreams != 1) {
-                throw new IOException("Multi input/output stream coders are not yet supported");
-            }
-            inputStream = Coders.addDecoder(this.fileName, inputStream, folder.getUnpackSizeForCoder(coder), coder, bArr);
-        }
-        if (folder.hasCrc) {
-            inputStream = new CRC32VerifyingInputStream(inputStream, folder.getUnpackSize(), folder.crc);
-        }
-        byte[] bArr2 = new byte[(int) folder.getUnpackSize()];
-        DataInputStream dataInputStream = new DataInputStream(inputStream);
-        try {
-            dataInputStream.readFully(bArr2);
-            dataInputStream.close();
-            return ByteBuffer.wrap(bArr2).order(ByteOrder.LITTLE_ENDIAN);
-        } catch (Throwable th) {
-            try {
-                dataInputStream.close();
-            } catch (Throwable th2) {
-                th.addSuppressed(th2);
-            }
-            throw th;
-        }
-    }
-
-    public final void readStreamsInfo(ByteBuffer byteBuffer, Archive archive) {
-        int unsignedByte = getUnsignedByte(byteBuffer);
-        if (unsignedByte == 6) {
-            readPackInfo(byteBuffer, archive);
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-        if (unsignedByte == 7) {
-            readUnpackInfo(byteBuffer, archive);
-            unsignedByte = getUnsignedByte(byteBuffer);
+    public final int read(int i, byte[] bArr) {
+        InputStream inputStream;
+        if (this.archive.files[this.currentEntryIndex].size == 0) {
+            inputStream = new ByteArrayInputStream(new byte[0]);
         } else {
-            archive.folders = new Folder[0];
-        }
-        if (unsignedByte == 8) {
-            readSubStreamsInfo(byteBuffer, archive);
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-        if (unsignedByte != 0) {
-            throw new IOException("Badly terminated StreamsInfo");
-        }
-    }
-
-    public final void readPackInfo(ByteBuffer byteBuffer, Archive archive) {
-        archive.packPos = readUint64(byteBuffer);
-        long readUint64 = readUint64(byteBuffer);
-        int unsignedByte = getUnsignedByte(byteBuffer);
-        if (unsignedByte == 9) {
-            archive.packSizes = new long[(int) readUint64];
-            int i = 0;
-            while (true) {
-                long[] jArr = archive.packSizes;
-                if (i >= jArr.length) {
-                    break;
-                }
-                jArr[i] = readUint64(byteBuffer);
-                i++;
+            if (this.deferredBlockStreams.isEmpty()) {
+                throw new IllegalStateException("No current 7z entry (call getNextEntry() first).");
             }
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-        if (unsignedByte == 10) {
-            int i2 = (int) readUint64;
-            archive.packCrcsDefined = readAllOrBits(byteBuffer, i2);
-            archive.packCrcs = new long[i2];
-            for (int i3 = 0; i3 < i2; i3++) {
-                if (archive.packCrcsDefined.get(i3)) {
-                    archive.packCrcs[i3] = byteBuffer.getInt() & 4294967295L;
-                }
-            }
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-        if (unsignedByte == 0) {
-            return;
-        }
-        throw new IOException("Badly terminated PackInfo (" + unsignedByte + ")");
-    }
-
-    public final void readUnpackInfo(ByteBuffer byteBuffer, Archive archive) {
-        int unsignedByte = getUnsignedByte(byteBuffer);
-        if (unsignedByte != 11) {
-            throw new IOException("Expected kFolder, got " + unsignedByte);
-        }
-        int readUint64 = (int) readUint64(byteBuffer);
-        Folder[] folderArr = new Folder[readUint64];
-        archive.folders = folderArr;
-        if (getUnsignedByte(byteBuffer) != 0) {
-            throw new IOException("External unsupported");
-        }
-        for (int i = 0; i < readUint64; i++) {
-            folderArr[i] = readFolder(byteBuffer);
-        }
-        int unsignedByte2 = getUnsignedByte(byteBuffer);
-        if (unsignedByte2 != 12) {
-            throw new IOException("Expected kCodersUnpackSize, got " + unsignedByte2);
-        }
-        for (int i2 = 0; i2 < readUint64; i2++) {
-            Folder folder = folderArr[i2];
-            folder.unpackSizes = new long[(int) folder.totalOutputStreams];
-            for (int i3 = 0; i3 < folder.totalOutputStreams; i3++) {
-                folder.unpackSizes[i3] = readUint64(byteBuffer);
-            }
-        }
-        int unsignedByte3 = getUnsignedByte(byteBuffer);
-        if (unsignedByte3 == 10) {
-            BitSet readAllOrBits = readAllOrBits(byteBuffer, readUint64);
-            for (int i4 = 0; i4 < readUint64; i4++) {
-                if (readAllOrBits.get(i4)) {
-                    Folder folder2 = folderArr[i4];
-                    folder2.hasCrc = true;
-                    folder2.crc = byteBuffer.getInt() & 4294967295L;
-                } else {
-                    folderArr[i4].hasCrc = false;
-                }
-            }
-            unsignedByte3 = getUnsignedByte(byteBuffer);
-        }
-        if (unsignedByte3 != 0) {
-            throw new IOException("Badly terminated UnpackInfo");
-        }
-    }
-
-    public final void readSubStreamsInfo(ByteBuffer byteBuffer, Archive archive) {
-        for (Folder folder : archive.folders) {
-            folder.numUnpackSubStreams = 1;
-        }
-        int length = archive.folders.length;
-        int unsignedByte = getUnsignedByte(byteBuffer);
-        if (unsignedByte == 13) {
-            int i = 0;
-            for (Folder folder2 : archive.folders) {
-                long readUint64 = readUint64(byteBuffer);
-                folder2.numUnpackSubStreams = (int) readUint64;
-                i = (int) (i + readUint64);
-            }
-            unsignedByte = getUnsignedByte(byteBuffer);
-            length = i;
-        }
-        SubStreamsInfo subStreamsInfo = new SubStreamsInfo();
-        subStreamsInfo.unpackSizes = new long[length];
-        subStreamsInfo.hasCrc = new BitSet(length);
-        subStreamsInfo.crcs = new long[length];
-        int i2 = 0;
-        for (Folder folder3 : archive.folders) {
-            if (folder3.numUnpackSubStreams != 0) {
-                long j = 0;
-                if (unsignedByte == 9) {
-                    int i3 = 0;
-                    while (i3 < folder3.numUnpackSubStreams - 1) {
-                        long readUint642 = readUint64(byteBuffer);
-                        subStreamsInfo.unpackSizes[i2] = readUint642;
-                        j += readUint642;
-                        i3++;
-                        i2++;
-                    }
-                }
-                subStreamsInfo.unpackSizes[i2] = folder3.getUnpackSize() - j;
-                i2++;
-            }
-        }
-        if (unsignedByte == 9) {
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-        int i4 = 0;
-        for (Folder folder4 : archive.folders) {
-            int i5 = folder4.numUnpackSubStreams;
-            if (i5 != 1 || !folder4.hasCrc) {
-                i4 += i5;
-            }
-        }
-        if (unsignedByte == 10) {
-            BitSet readAllOrBits = readAllOrBits(byteBuffer, i4);
-            long[] jArr = new long[i4];
-            for (int i6 = 0; i6 < i4; i6++) {
-                if (readAllOrBits.get(i6)) {
-                    jArr[i6] = byteBuffer.getInt() & 4294967295L;
-                }
-            }
-            int i7 = 0;
-            int i8 = 0;
-            for (Folder folder5 : archive.folders) {
-                if (folder5.numUnpackSubStreams == 1 && folder5.hasCrc) {
-                    subStreamsInfo.hasCrc.set(i7, true);
-                    subStreamsInfo.crcs[i7] = folder5.crc;
-                    i7++;
-                } else {
-                    for (int i9 = 0; i9 < folder5.numUnpackSubStreams; i9++) {
-                        subStreamsInfo.hasCrc.set(i7, readAllOrBits.get(i8));
-                        subStreamsInfo.crcs[i7] = jArr[i8];
-                        i7++;
-                        i8++;
-                    }
-                }
-            }
-            unsignedByte = getUnsignedByte(byteBuffer);
-        }
-        if (unsignedByte != 0) {
-            throw new IOException("Badly terminated SubStreamsInfo");
-        }
-        archive.subStreamsInfo = subStreamsInfo;
-    }
-
-    public final Folder readFolder(ByteBuffer byteBuffer) {
-        int i;
-        Folder folder = new Folder();
-        int readUint64 = (int) readUint64(byteBuffer);
-        Coder[] coderArr = new Coder[readUint64];
-        long j = 0;
-        long j2 = 0;
-        for (int i2 = 0; i2 < readUint64; i2++) {
-            coderArr[i2] = new Coder();
-            int unsignedByte = getUnsignedByte(byteBuffer);
-            int i3 = unsignedByte & 15;
-            boolean z = (unsignedByte & 16) == 0;
-            boolean z2 = (unsignedByte & 32) != 0;
-            boolean z3 = (unsignedByte & 128) != 0;
-            byte[] bArr = new byte[i3];
-            coderArr[i2].decompressionMethodId = bArr;
-            byteBuffer.get(bArr);
-            if (z) {
-                Coder coder = coderArr[i2];
-                coder.numInStreams = 1L;
-                coder.numOutStreams = 1L;
-            } else {
-                coderArr[i2].numInStreams = readUint64(byteBuffer);
-                coderArr[i2].numOutStreams = readUint64(byteBuffer);
-            }
-            Coder coder2 = coderArr[i2];
-            j += coder2.numInStreams;
-            j2 += coder2.numOutStreams;
-            if (z2) {
-                byte[] bArr2 = new byte[(int) readUint64(byteBuffer)];
-                coderArr[i2].properties = bArr2;
-                byteBuffer.get(bArr2);
-            }
-            if (z3) {
-                throw new IOException("Alternative methods are unsupported, please report. The reference implementation doesn't support them either.");
-            }
-        }
-        folder.coders = coderArr;
-        folder.totalInputStreams = j;
-        folder.totalOutputStreams = j2;
-        if (j2 == 0) {
-            throw new IOException("Total output streams can't be 0");
-        }
-        long j3 = j2 - 1;
-        int i4 = (int) j3;
-        BindPair[] bindPairArr = new BindPair[i4];
-        for (int i5 = 0; i5 < i4; i5++) {
-            BindPair bindPair = new BindPair();
-            bindPairArr[i5] = bindPair;
-            bindPair.inIndex = readUint64(byteBuffer);
-            bindPairArr[i5].outIndex = readUint64(byteBuffer);
-        }
-        folder.bindPairs = bindPairArr;
-        if (j < j3) {
-            throw new IOException("Total input streams can't be less than the number of bind pairs");
-        }
-        long j4 = j - j3;
-        int i6 = (int) j4;
-        long[] jArr = new long[i6];
-        if (j4 == 1) {
-            int i7 = 0;
-            while (true) {
-                i = (int) j;
-                if (i7 >= i || folder.findBindPairForInStream(i7) < 0) {
-                    break;
-                }
-                i7++;
-            }
-            if (i7 == i) {
-                throw new IOException("Couldn't find stream's bind pair index");
-            }
-            jArr[0] = i7;
-        } else {
-            for (int i8 = 0; i8 < i6; i8++) {
-                jArr[i8] = readUint64(byteBuffer);
-            }
-        }
-        folder.packedStreams = jArr;
-        return folder;
-    }
-
-    public final BitSet readAllOrBits(ByteBuffer byteBuffer, int i) {
-        if (getUnsignedByte(byteBuffer) != 0) {
-            BitSet bitSet = new BitSet(i);
-            for (int i2 = 0; i2 < i; i2++) {
-                bitSet.set(i2, true);
-            }
-            return bitSet;
-        }
-        return readBits(byteBuffer, i);
-    }
-
-    public final BitSet readBits(ByteBuffer byteBuffer, int i) {
-        BitSet bitSet = new BitSet(i);
-        int i2 = 0;
-        int i3 = 0;
-        for (int i4 = 0; i4 < i; i4++) {
-            if (i2 == 0) {
-                i3 = getUnsignedByte(byteBuffer);
-                i2 = 128;
-            }
-            bitSet.set(i4, (i3 & i2) != 0);
-            i2 >>>= 1;
-        }
-        return bitSet;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:100:0x01e0, code lost:
-    
-        throw new java.io.IOException("Error parsing file names");
-     */
-    /* JADX WARN: Multi-variable type inference failed */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void readFilesInfo(java.nio.ByteBuffer r17, org.apache.commons.compress.archivers.sevenz.Archive r18) {
-        /*
-            Method dump skipped, instructions count: 598
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: org.apache.commons.compress.archivers.sevenz.SevenZFile.readFilesInfo(java.nio.ByteBuffer, org.apache.commons.compress.archivers.sevenz.Archive):void");
-    }
-
-    public final void calculateStreamMap(Archive archive) {
-        Folder[] folderArr;
-        StreamMap streamMap = new StreamMap();
-        Folder[] folderArr2 = archive.folders;
-        int length = folderArr2 != null ? folderArr2.length : 0;
-        streamMap.folderFirstPackStreamIndex = new int[length];
-        int i = 0;
-        for (int i2 = 0; i2 < length; i2++) {
-            streamMap.folderFirstPackStreamIndex[i2] = i;
-            i += archive.folders[i2].packedStreams.length;
-        }
-        long[] jArr = archive.packSizes;
-        int length2 = jArr != null ? jArr.length : 0;
-        streamMap.packStreamOffsets = new long[length2];
-        long j = 0;
-        for (int i3 = 0; i3 < length2; i3++) {
-            streamMap.packStreamOffsets[i3] = j;
-            j += archive.packSizes[i3];
-        }
-        streamMap.folderFirstFileIndex = new int[length];
-        streamMap.fileFolderIndex = new int[archive.files.length];
-        int i4 = 0;
-        int i5 = 0;
-        int i6 = 0;
-        while (true) {
-            SevenZArchiveEntry[] sevenZArchiveEntryArr = archive.files;
-            if (i4 < sevenZArchiveEntryArr.length) {
-                if (!sevenZArchiveEntryArr[i4].hasStream() && i5 == 0) {
-                    streamMap.fileFolderIndex[i4] = -1;
-                } else {
-                    if (i5 == 0) {
-                        while (true) {
-                            folderArr = archive.folders;
-                            if (i6 >= folderArr.length) {
-                                break;
-                            }
-                            streamMap.folderFirstFileIndex[i6] = i4;
-                            if (folderArr[i6].numUnpackSubStreams > 0) {
-                                break;
-                            } else {
-                                i6++;
-                            }
-                        }
-                        if (i6 >= folderArr.length) {
-                            throw new IOException("Too few folders in archive");
-                        }
-                    }
-                    streamMap.fileFolderIndex[i4] = i6;
-                    if (archive.files[i4].hasStream() && (i5 = i5 + 1) >= archive.folders[i6].numUnpackSubStreams) {
-                        i6++;
-                        i5 = 0;
-                    }
-                }
-                i4++;
-            } else {
-                archive.streamMap = streamMap;
-                return;
-            }
-        }
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r0v11, types: [org.apache.commons.compress.utils.CRC32VerifyingInputStream] */
-    public final void buildDecodingStream() {
-        Archive archive = this.archive;
-        int[] iArr = archive.streamMap.fileFolderIndex;
-        int i = this.currentEntryIndex;
-        int i2 = iArr[i];
-        if (i2 < 0) {
-            this.deferredBlockStreams.clear();
-            return;
-        }
-        SevenZArchiveEntry[] sevenZArchiveEntryArr = archive.files;
-        SevenZArchiveEntry sevenZArchiveEntry = sevenZArchiveEntryArr[i];
-        if (this.currentFolderIndex == i2) {
-            sevenZArchiveEntry.setContentMethods(sevenZArchiveEntryArr[i - 1].getContentMethods());
-        } else {
-            this.currentFolderIndex = i2;
-            this.deferredBlockStreams.clear();
-            InputStream inputStream = this.currentFolderInputStream;
-            if (inputStream != null) {
-                inputStream.close();
-                this.currentFolderInputStream = null;
-            }
-            Archive archive2 = this.archive;
-            Folder folder = archive2.folders[i2];
-            StreamMap streamMap = archive2.streamMap;
-            int i3 = streamMap.folderFirstPackStreamIndex[i2];
-            this.currentFolderInputStream = buildDecoderStack(folder, archive2.packPos + 32 + streamMap.packStreamOffsets[i3], i3, sevenZArchiveEntry);
-        }
-        BoundedInputStream boundedInputStream = new BoundedInputStream(this.currentFolderInputStream, sevenZArchiveEntry.getSize());
-        if (sevenZArchiveEntry.getHasCrc()) {
-            boundedInputStream = new CRC32VerifyingInputStream(boundedInputStream, sevenZArchiveEntry.getSize(), sevenZArchiveEntry.getCrcValue());
-        }
-        this.deferredBlockStreams.add(boundedInputStream);
-    }
-
-    public final InputStream buildDecoderStack(Folder folder, long j, int i, SevenZArchiveEntry sevenZArchiveEntry) {
-        this.channel.position(j);
-        FilterInputStream filterInputStream = new FilterInputStream(new BufferedInputStream(new BoundedSeekableByteChannelInputStream(this.channel, this.archive.packSizes[i]))) { // from class: org.apache.commons.compress.archivers.sevenz.SevenZFile.1
-            @Override // java.io.FilterInputStream, java.io.InputStream
-            public int read() {
-                int read = ((FilterInputStream) this).in.read();
-                if (read >= 0) {
-                    count(1);
-                }
-                return read;
-            }
-
-            @Override // java.io.FilterInputStream, java.io.InputStream
-            public int read(byte[] bArr) {
-                return read(bArr, 0, bArr.length);
-            }
-
-            @Override // java.io.FilterInputStream, java.io.InputStream
-            public int read(byte[] bArr, int i2, int i3) {
-                int read = ((FilterInputStream) this).in.read(bArr, i2, i3);
-                if (read >= 0) {
-                    count(read);
-                }
-                return read;
-            }
-
-            public final void count(int i2) {
-                SevenZFile.access$014(SevenZFile.this, i2);
-            }
-        };
-        LinkedList linkedList = new LinkedList();
-        InputStream inputStream = filterInputStream;
-        for (Coder coder : folder.getOrderedCoders()) {
-            if (coder.numInStreams != 1 || coder.numOutStreams != 1) {
-                throw new IOException("Multi input/output stream coders are not yet supported");
-            }
-            SevenZMethod byId = SevenZMethod.byId(coder.decompressionMethodId);
-            inputStream = Coders.addDecoder(this.fileName, inputStream, folder.getUnpackSizeForCoder(coder), coder, this.password);
-            linkedList.addFirst(new SevenZMethodConfiguration(byId, Coders.findByMethod(byId).getOptionsFromCoder(coder, inputStream)));
-        }
-        sevenZArchiveEntry.setContentMethods(linkedList);
-        return folder.hasCrc ? new CRC32VerifyingInputStream(inputStream, folder.getUnpackSize(), folder.crc) : inputStream;
-    }
-
-    public final InputStream getCurrentStream() {
-        if (this.archive.files[this.currentEntryIndex].getSize() == 0) {
-            return new ByteArrayInputStream(new byte[0]);
-        }
-        if (this.deferredBlockStreams.isEmpty()) {
-            throw new IllegalStateException("No current 7z entry (call getNextEntry() first).");
-        }
-        while (this.deferredBlockStreams.size() > 1) {
-            InputStream inputStream = (InputStream) this.deferredBlockStreams.remove(0);
-            try {
-                IOUtils.skip(inputStream, Long.MAX_VALUE);
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                this.compressedBytesReadFromCurrentEntry = 0L;
-            } catch (Throwable th) {
-                if (inputStream != null) {
+            while (this.deferredBlockStreams.size() > 1) {
+                InputStream inputStream2 = (InputStream) this.deferredBlockStreams.remove(0);
+                long j = Long.MAX_VALUE;
+                while (j > 0) {
                     try {
-                        inputStream.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
+                        long skip = inputStream2.skip(j);
+                        if (skip == 0) {
+                            break;
+                        }
+                        j -= skip;
+                    } finally {
+                        if (inputStream2 != null) {
+                            try {
+                                inputStream2.close();
+                            } catch (Throwable th) {
+                                th.addSuppressed(th);
+                            }
+                        }
                     }
                 }
-                throw th;
+                while (j > 0) {
+                    byte[] bArr2 = IOUtils.SKIP_BUF;
+                    int min = (int) Math.min(j, 4096L);
+                    if (min < 0 || min > 4096) {
+                        throw new IndexOutOfBoundsException();
+                    }
+                    int i2 = 0;
+                    while (i2 != min) {
+                        int read = inputStream2.read(bArr2, i2, min - i2);
+                        if (read == -1) {
+                            break;
+                        }
+                        i2 += read;
+                    }
+                    if (i2 >= 1) {
+                        j -= i2;
+                    }
+                }
+                if (inputStream2 != null) {
+                    inputStream2.close();
+                }
             }
+            inputStream = (InputStream) this.deferredBlockStreams.get(0);
         }
-        return (InputStream) this.deferredBlockStreams.get(0);
-    }
-
-    public int read(byte[] bArr, int i, int i2) {
-        int read = getCurrentStream().read(bArr, i, i2);
-        if (read > 0) {
-            this.uncompressedBytesReadFromCurrentEntry += read;
-        }
-        return read;
-    }
-
-    public static long readUint64(ByteBuffer byteBuffer) {
-        long unsignedByte = getUnsignedByte(byteBuffer);
-        int i = 128;
-        long j = 0;
-        for (int i2 = 0; i2 < 8; i2++) {
-            if ((i & unsignedByte) == 0) {
-                return ((unsignedByte & (i - 1)) << (i2 * 8)) | j;
-            }
-            j |= getUnsignedByte(byteBuffer) << (i2 * 8);
-            i >>>= 1;
-        }
-        return j;
-    }
-
-    public static int getUnsignedByte(ByteBuffer byteBuffer) {
-        return byteBuffer.get() & 255;
-    }
-
-    public static long skipBytesFully(ByteBuffer byteBuffer, long j) {
-        if (j < 1) {
-            return 0L;
-        }
-        int position = byteBuffer.position();
-        long remaining = byteBuffer.remaining();
-        if (remaining < j) {
-            j = remaining;
-        }
-        byteBuffer.position(position + ((int) j));
-        return j;
+        return inputStream.read(bArr, 0, i);
     }
 
     public final void readFully(ByteBuffer byteBuffer) {
         byteBuffer.rewind();
-        IOUtils.readFully(this.channel, byteBuffer);
+        SeekableByteChannel seekableByteChannel = this.channel;
+        int remaining = byteBuffer.remaining();
+        int i = 0;
+        while (i < remaining) {
+            int read = seekableByteChannel.read(byteBuffer);
+            if (read <= 0) {
+                break;
+            } else {
+                i += read;
+            }
+        }
+        if (i < remaining) {
+            throw new EOFException();
+        }
         byteBuffer.flip();
     }
 
-    public String toString() {
+    public final String toString() {
         return this.archive.toString();
-    }
-
-    public static byte[] utf16Decode(char[] cArr) {
-        if (cArr == null) {
-            return null;
-        }
-        ByteBuffer encode = PASSWORD_ENCODER.encode(CharBuffer.wrap(cArr));
-        if (encode.hasArray()) {
-            return encode.array();
-        }
-        byte[] bArr = new byte[encode.remaining()];
-        encode.get(bArr);
-        return bArr;
     }
 }

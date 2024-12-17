@@ -1,15 +1,7 @@
 package com.android.server.notification;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class AlertRateLimiter {
-    public long mLastNotificationMillis = 0;
-
-    public boolean shouldRateLimitAlert(long j) {
-        long j2 = j - this.mLastNotificationMillis;
-        if (j2 < 0 || j2 < 1000) {
-            return true;
-        }
-        this.mLastNotificationMillis = j;
-        return false;
-    }
+public final class AlertRateLimiter {
+    public long mLastNotificationMillis;
 }

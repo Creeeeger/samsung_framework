@@ -1,5 +1,6 @@
 package com.android.server.timezonedetector;
 
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.os.SystemClock;
 import android.os.TimestampedValue;
 import android.util.IndentingPrintWriter;
@@ -7,7 +8,8 @@ import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.Iterator;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ReferenceWithHistory {
     public final int mMaxHistorySize;
     public int mSetCount;
@@ -15,33 +17,12 @@ public final class ReferenceWithHistory {
 
     public ReferenceWithHistory(int i) {
         if (i < 1) {
-            throw new IllegalArgumentException("maxHistorySize < 1: " + i);
+            throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "maxHistorySize < 1: "));
         }
         this.mMaxHistorySize = i;
     }
 
-    public Object get() {
-        ArrayDeque arrayDeque = this.mValues;
-        if (arrayDeque == null || arrayDeque.isEmpty()) {
-            return null;
-        }
-        return ((TimestampedValue) this.mValues.getFirst()).getValue();
-    }
-
-    public Object set(Object obj) {
-        if (this.mValues == null) {
-            this.mValues = new ArrayDeque(this.mMaxHistorySize);
-        }
-        if (this.mValues.size() >= this.mMaxHistorySize) {
-            this.mValues.removeLast();
-        }
-        Object obj2 = get();
-        this.mValues.addFirst(new TimestampedValue(SystemClock.elapsedRealtime(), obj));
-        this.mSetCount++;
-        return obj2;
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
+    public final void dump(IndentingPrintWriter indentingPrintWriter) {
         ArrayDeque arrayDeque = this.mValues;
         if (arrayDeque == null) {
             indentingPrintWriter.println("{Empty}");
@@ -61,15 +42,30 @@ public final class ReferenceWithHistory {
         indentingPrintWriter.flush();
     }
 
-    public int getHistoryCount() {
+    public final Object get() {
         ArrayDeque arrayDeque = this.mValues;
-        if (arrayDeque == null) {
-            return 0;
+        if (arrayDeque == null || arrayDeque.isEmpty()) {
+            return null;
         }
-        return arrayDeque.size();
+        return ((TimestampedValue) this.mValues.getFirst()).getValue();
     }
 
-    public String toString() {
+    public final Object set(Object obj) {
+        ArrayDeque arrayDeque = this.mValues;
+        int i = this.mMaxHistorySize;
+        if (arrayDeque == null) {
+            this.mValues = new ArrayDeque(i);
+        }
+        if (this.mValues.size() >= i) {
+            this.mValues.removeLast();
+        }
+        Object obj2 = get();
+        this.mValues.addFirst(new TimestampedValue(SystemClock.elapsedRealtime(), obj));
+        this.mSetCount++;
+        return obj2;
+    }
+
+    public final String toString() {
         return String.valueOf(get());
     }
 }

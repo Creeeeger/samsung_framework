@@ -1,265 +1,240 @@
 package com.samsung.android.lib.dexcontrol.uvdm.sender;
 
-import com.samsung.android.lib.dexcontrol.utils.SLog;
-import com.samsung.android.lib.dexcontrol.uvdm.UvdmFileHelper;
 import com.samsung.android.lib.dexcontrol.uvdm.response.ResponseResult;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class UvdmLongTypeSender extends UvdmSendExecutor {
-    public static final String TAG = "UvdmLongTypeSender";
+public final class UvdmLongTypeSender extends UvdmSendExecutor {
     public int mInMsgMinLength;
 
-    public UvdmLongTypeSender(int i) {
-        super(i);
-        this.mInMsgMinLength = 0;
+    @Override // com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmSendExecutor
+    public final String getTag() {
+        return "UvdmLongTypeSender";
     }
 
-    @Override // com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmSendExecutor, com.samsung.android.lib.dexcontrol.uvdm.sender.IUvdmSender
-    public void setInMsgMinLength(int i) {
-        this.mInMsgMinLength = i;
-    }
-
-    public final void replyError(byte[] bArr, int i) {
+    public final void replyError(int i, byte[] bArr) {
         if (this.mListener != null) {
             ResponseResult responseResult = new ResponseResult();
-            responseResult.setData((byte[]) bArr.clone());
+            responseResult.mData = (byte[]) bArr.clone();
             this.mListener.onFail(i, responseResult);
         }
     }
 
-    public final void sleep(int i) {
-        try {
-            Thread.sleep(i);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override // com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmSendExecutor
-    public String getTag() {
-        return TAG;
-    }
-
-    public final void close() {
-        UvdmFileHelper uvdmFileHelper = this.mUvdmFileHelper;
-        if (uvdmFileHelper != null) {
-            int ccic_close = uvdmFileHelper.ccic_close();
-            SLog.d(TAG, "ccic_close : " + ccic_close);
-        }
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:101:0x012c, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:101:0x010c, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:32:0x004e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:103:0x010d, code lost:
     
-        if (r3 != false) goto L35;
+        r11 = r10.mUvdmFileHelper;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:34:0x0054, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:104:0x010f, code lost:
     
-        if (getSenderEnable() != false) goto L32;
+        if (r11 == null) goto L91;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:35:0x0056, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:105:0x0111, code lost:
+    
+        com.samsung.android.lib.dexcontrol.utils.SLog.d("UvdmLongTypeSender", "ccic_close : " + r11.ccic_close());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:107:0x012a, code lost:
+    
+        if (r10.mIsEnabled == false) goto L99;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:108:0x012c, code lost:
+    
+        if (r3 == false) goto L98;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:109:0x012e, code lost:
+    
+        r11 = r10.mListener;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:110:0x0130, code lost:
+    
+        if (r11 == null) goto L97;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:111:0x0132, code lost:
+    
+        r12 = new com.samsung.android.lib.dexcontrol.uvdm.response.ResponseResult();
+        r12.mData = r4;
+        r11.onSuccess(r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:112:0x013d, code lost:
+    
+        com.samsung.android.lib.dexcontrol.utils.SLog.e("UvdmLongTypeSender", "callback is null");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:113:0x0145, code lost:
+    
+        replyError(-3, r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:115:0x014b, code lost:
+    
+        if (r10.mIsEnabled != false) goto L102;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:116:0x014d, code lost:
     
         r10.mUvdmFileHelper = null;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x005e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:118:0x0150, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x0059, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x0051, code lost:
     
-        replyError(r11, -1);
+        if (r3 != false) goto L39;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x005f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x0055, code lost:
+    
+        if (r10.mIsEnabled != false) goto L36;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x0057, code lost:
+    
+        r10.mUvdmFileHelper = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x005f, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x005a, code lost:
+    
+        replyError(-1, r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:45:0x0060, code lost:
     
         r3 = 0;
         r4 = false;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x0063, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x0064, code lost:
     
-        if (r3 >= 10) goto L100;
+        if (r3 >= 10) goto L119;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x0069, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:49:0x0068, code lost:
     
-        if (getSenderEnable() == false) goto L101;
+        if (r10.mIsEnabled == false) goto L120;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:44:0x006b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x006a, code lost:
     
-        if (r4 != false) goto L102;
+        if (r4 != false) goto L121;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:45:0x006d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x006c, code lost:
     
         r4 = r10.mUvdmFileHelper;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x006f, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x006e, code lost:
     
-        if (r4 == null) goto L103;
+        if (r4 == null) goto L122;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:47:0x0071, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x0070, code lost:
     
-        r4 = r4.ioctl_longDataWrite(getPid(), r11);
+        r4 = r4.ioctl_longDataWrite(r10.mPid, r12);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:48:0x0079, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x0076, code lost:
     
-        if (r4 < 0) goto L46;
+        if (r4 < 0) goto L50;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:49:0x007b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:55:0x0078, code lost:
     
         r6 = true;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:50:0x007e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x007b, code lost:
     
-        if (r6 != false) goto L105;
+        if (r6 != false) goto L124;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x0080, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:57:0x007d, code lost:
     
-        com.samsung.android.lib.dexcontrol.utils.SLog.e(com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmLongTypeSender.TAG, "ccic_write failed : " + r4);
+        com.samsung.android.lib.dexcontrol.utils.SLog.e("UvdmLongTypeSender", "ccic_write failed : " + r4);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x0096, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x0093, code lost:
     
         r3 = r3 + 1;
         r4 = r6;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:55:0x007d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x007a, code lost:
     
         r6 = false;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:58:0x009b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x0098, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x009c, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:66:0x0099, code lost:
     
-        if (r4 != false) goto L59;
+        if (r4 != false) goto L66;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x009e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x009b, code lost:
     
-        close();
+        r11 = r10.mUvdmFileHelper;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x00a5, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:68:0x009d, code lost:
     
-        if (getSenderEnable() != false) goto L56;
+        if (r11 == null) goto L60;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:63:0x00a7, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x009f, code lost:
+    
+        com.samsung.android.lib.dexcontrol.utils.SLog.d("UvdmLongTypeSender", "ccic_close : " + r11.ccic_close());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:71:0x00b8, code lost:
+    
+        if (r10.mIsEnabled != false) goto L63;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:72:0x00ba, code lost:
     
         r10.mUvdmFileHelper = null;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:65:0x00af, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:74:0x00c2, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:66:0x00aa, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:75:0x00bd, code lost:
     
-        replyError(r11, -2);
+        replyError(-2, r12);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:67:0x00b0, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x00c3, code lost:
     
         r3 = false;
         r4 = null;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x00b2, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:77:0x00c5, code lost:
     
-        if (r1 >= 10) goto L106;
+        if (r1 >= 10) goto L125;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:70:0x00b8, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:79:0x00c9, code lost:
     
-        if (getSenderEnable() == false) goto L107;
+        if (r10.mIsEnabled == false) goto L126;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:71:0x00ba, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:80:0x00cb, code lost:
     
-        if (r3 != false) goto L108;
+        if (r3 != false) goto L127;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:73:0x00be, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:82:0x00cf, code lost:
     
-        if (r10.mUvdmFileHelper == null) goto L109;
+        if (r10.mUvdmFileHelper == null) goto L128;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:74:0x00c0, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:83:0x00d1, code lost:
     
-        if (r12 <= 0) goto L68;
+        if (r11 <= 0) goto L79;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:75:0x00c2, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:86:0x00d4, code lost:
     
-        sleep(r12);
+        java.lang.Thread.sleep(r11);
      */
-    /* JADX WARN: Code restructure failed: missing block: B:76:0x00c5, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:88:0x00d8, code lost:
     
-        r4 = r10.mUvdmFileHelper.ioctl_longDataRead(getPid());
+        r4 = move-exception;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:77:0x00cf, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:89:0x00d9, code lost:
     
-        if (r4 == null) goto L73;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:79:0x00d4, code lost:
-    
-        if (r4.length < r10.mInMsgMinLength) goto L73;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:80:0x00d6, code lost:
-    
-        r3 = true;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:82:0x00f3, code lost:
-    
-        r1 = r1 + 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:83:0x00d8, code lost:
-    
-        com.samsung.android.lib.dexcontrol.utils.SLog.e(com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmLongTypeSender.TAG, "ccic_read failed : " + com.samsung.android.lib.dexcontrol.utils.Util.byteArrayToHex(r4));
-        r4 = null;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:87:0x00f7, code lost:
-    
-        return;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:89:0x00f8, code lost:
-    
-        close();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:90:0x00ff, code lost:
-    
-        if (getSenderEnable() == false) goto L85;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:91:0x0101, code lost:
-    
-        if (r3 == false) goto L84;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:93:0x0105, code lost:
-    
-        if (r10.mListener == null) goto L83;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:94:0x0107, code lost:
-    
-        r11 = new com.samsung.android.lib.dexcontrol.uvdm.response.ResponseResult();
-        r11.setData(r4);
-        r10.mListener.onSuccess(r11);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:95:0x0115, code lost:
-    
-        com.samsung.android.lib.dexcontrol.utils.SLog.e(getTag(), "callback is null");
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:96:0x011f, code lost:
-    
-        replyError(r11, -3);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:98:0x0127, code lost:
-    
-        if (getSenderEnable() != false) goto L88;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:99:0x0129, code lost:
-    
-        r10.mUvdmFileHelper = null;
+        r4.printStackTrace();
      */
     @Override // com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmSendExecutor
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void sendData(byte[] r11, int r12) {
+    public final void sendData(int r11, byte[] r12) {
         /*
-            Method dump skipped, instructions count: 303
+            Method dump skipped, instructions count: 339
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmLongTypeSender.sendData(byte[], int):void");
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.lib.dexcontrol.uvdm.sender.UvdmLongTypeSender.sendData(int, byte[]):void");
     }
 }

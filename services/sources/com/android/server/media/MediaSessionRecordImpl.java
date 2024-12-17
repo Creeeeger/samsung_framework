@@ -1,29 +1,51 @@
 package com.android.server.media;
 
+import android.app.ForegroundServiceDelegationOptions;
+import android.app.Notification;
 import java.io.PrintWriter;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
-/* loaded from: classes2.dex */
-public interface MediaSessionRecordImpl extends AutoCloseable {
-    void adjustVolume(String str, String str2, int i, int i2, boolean z, int i3, int i4, boolean z2);
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public abstract class MediaSessionRecordImpl {
+    public static final AtomicInteger sNextMediaSessionRecordId = new AtomicInteger(1);
+    public final int mUniqueId = sNextMediaSessionRecordId.getAndIncrement();
 
-    boolean checkPlaybackActiveState(boolean z);
+    public abstract boolean checkPlaybackActiveState(boolean z);
 
-    @Override // java.lang.AutoCloseable
-    void close();
+    public abstract void close();
 
-    void dump(PrintWriter printWriter, String str);
+    public abstract void dump(PrintWriter printWriter, String str);
 
-    String getPackageName();
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        return obj != null && (obj instanceof MediaSessionRecordImpl) && this.mUniqueId == ((MediaSessionRecordImpl) obj).mUniqueId;
+    }
 
-    int getSessionPolicies();
+    public abstract void expireTempEngaged();
 
-    int getUid();
+    public abstract ForegroundServiceDelegationOptions getForegroundServiceDelegationOptions();
 
-    int getUserId();
+    public abstract String getPackageName();
 
-    boolean isActive();
+    public abstract int getSessionPolicies();
 
-    boolean isClosed();
+    public abstract int getUid();
 
-    boolean isSystemPriority();
+    public abstract int getUserId();
+
+    public final int hashCode() {
+        return Objects.hash(Integer.valueOf(this.mUniqueId));
+    }
+
+    public abstract boolean isActive();
+
+    public abstract boolean isClosed();
+
+    public abstract boolean isLinkedToNotification(Notification notification);
+
+    public abstract boolean isSystemPriority();
 }

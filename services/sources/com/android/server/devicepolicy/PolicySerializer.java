@@ -1,14 +1,13 @@
 package com.android.server.devicepolicy;
 
-import android.app.admin.PolicyKey;
 import android.app.admin.PolicyValue;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class PolicySerializer {
-    /* renamed from: readFromXml */
-    public abstract PolicyValue mo4926readFromXml(TypedXmlPullParser typedXmlPullParser);
+    public abstract PolicyValue readFromXml(TypedXmlPullParser typedXmlPullParser);
 
-    public abstract void saveToXml(PolicyKey policyKey, TypedXmlSerializer typedXmlSerializer, Object obj);
+    public abstract void saveToXml(Object obj, TypedXmlSerializer typedXmlSerializer);
 }

@@ -10,22 +10,22 @@ import android.opengl.GLUtils;
 import android.os.SystemProperties;
 import android.util.Log;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class GLHelper {
-    public static final String TAG = "GLHelper";
     public static final int sMaxTextureSize;
 
     static {
-        int i = SystemProperties.getInt("sys.max_texture_size", 0);
-        if (i <= 0) {
-            i = retrieveTextureSizeFromGL();
-        }
-        sMaxTextureSize = i;
-    }
-
-    public static int retrieveTextureSizeFromGL() {
-        try {
-            EGLDisplay eglGetDisplay = EGL14.eglGetDisplay(0);
+        int i;
+        EGLDisplay eglGetDisplay;
+        int i2 = SystemProperties.getInt("sys.max_texture_size", 0);
+        if (i2 <= 0) {
+            try {
+                eglGetDisplay = EGL14.eglGetDisplay(0);
+            } catch (RuntimeException e) {
+                Log.w("GLHelper", "Retrieve from GL failed", e);
+                i = Integer.MAX_VALUE;
+            }
             if (eglGetDisplay == null || eglGetDisplay == EGL14.EGL_NO_DISPLAY) {
                 throw new RuntimeException("eglGetDisplay failed: " + GLUtils.getEGLErrorString(EGL14.eglGetError()));
             }
@@ -54,14 +54,9 @@ public abstract class GLHelper {
             EGL14.eglDestroySurface(eglGetDisplay, eglCreatePbufferSurface);
             EGL14.eglDestroyContext(eglGetDisplay, eglCreateContext);
             EGL14.eglTerminate(eglGetDisplay);
-            return iArr2[0];
-        } catch (RuntimeException e) {
-            Log.w(TAG, "Retrieve from GL failed", e);
-            return Integer.MAX_VALUE;
+            i = iArr2[0];
+            i2 = i;
         }
-    }
-
-    public static int getMaxTextureSize() {
-        return sMaxTextureSize;
+        sMaxTextureSize = i2;
     }
 }

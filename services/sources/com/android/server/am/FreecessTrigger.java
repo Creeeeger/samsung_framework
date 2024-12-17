@@ -4,332 +4,398 @@ import android.app.UiModeManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Message;
 import android.os.PowerManager;
-import android.os.UserHandle;
-import android.util.Slog;
-import com.android.server.am.mars.database.MARsDBManager;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.am.FreecessController;
+import com.android.server.am.FreecessHandler;
+import com.android.server.am.MARsPolicyManager;
+import com.android.server.am.mars.database.MARsDBHandler;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FreecessTrigger {
-    public static String TAG = "FreecessTrigger";
+public final class FreecessTrigger {
     public Context mContext;
-    public BroadcastReceiver mIntentReceiver;
-    public BroadcastReceiver mIntentReceiverForBird;
-    public boolean mIsRegisteredReceiverForEnhancedFreecess;
-    public final BroadcastReceiver mPkgIntentReceiver;
-    public BroadcastReceiver mSmartSwitchIntentReceiver;
-
-    /* loaded from: classes.dex */
-    public abstract class FreecessTriggerHolder {
-        public static final FreecessTrigger INSTANCE = new FreecessTrigger();
-    }
-
-    public /* synthetic */ FreecessTrigger(FreecessTriggerIA freecessTriggerIA) {
-        this();
-    }
-
-    public FreecessTrigger() {
-        this.mIsRegisteredReceiverForEnhancedFreecess = false;
-        this.mIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.am.FreecessTrigger.1
-            public AnonymousClass1() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (action.equals("android.intent.action.SCREEN_ON")) {
-                    FreecessController.getInstance().setScreenOnState(true);
-                    if (FreecessController.getInstance().getFreecessEnabled()) {
-                        if (MARsPolicyManager.getInstance().isChinaPolicyEnabled()) {
-                            FreecessHandler.getInstance().sendUnfreezeActivePackagesMsg("screenOn");
-                        } else {
-                            FreecessHandler.getInstance().sendUnfreezeActivePackagesMsg("screenOn-widget");
-                        }
-                        FreecessHandler.getInstance().sendUnfreezeRequestFocusPackageMsg();
-                        return;
-                    }
-                    return;
-                }
-                if (action.equals("android.intent.action.SCREEN_OFF")) {
-                    FreecessController.getInstance().setScreenOnState(false);
-                    if (FreecessController.getInstance().getScreenOnFreecessEnabled()) {
-                        FreecessHandler.getInstance().removeBgTriggerMsg();
-                    }
-                    if (FreecessTrigger.this.mIsRegisteredReceiverForEnhancedFreecess) {
-                        return;
-                    }
-                    MARsDBManager.getInstance().sendGetRestrictionFlagMsgToMainHandler();
-                    return;
-                }
-                if (action.equals(UiModeManager.ACTION_ENTER_CAR_MODE)) {
-                    FreecessController.getInstance().setCarModeOnState(true);
-                    if (FreecessController.getInstance().getFreecessEnabled()) {
-                        FreecessHandler.getInstance().sendResetAllStateMsg("CarMode");
-                        return;
-                    }
-                    return;
-                }
-                if (action.equals("sec.app.policy.UPDATE.ssrm_update_freecess")) {
-                    if (FreecessController.getInstance().getFreecessEnabled()) {
-                        FreecessHandler.getInstance().sendSCPMChangedPkgMsgToDBHandler();
-                    }
-                } else {
-                    if (action.equals("com.samsung.intent.action.EMERGENCY_STATE_CHANGED")) {
-                        boolean z = intent.getIntExtra("reason", 0) == 3;
-                        FreecessController.getInstance().setEmergencyModeOnState(z);
-                        if (FreecessController.getInstance().getFreecessEnabled() && z) {
-                            FreecessHandler.getInstance().sendResetAllStateMsg("EmeregencyMode");
-                            return;
-                        }
-                        return;
-                    }
-                    if ((action.equals("android.intent.action.ACTION_SHUTDOWN") || action.equals("android.intent.action.REBOOT")) && FreecessController.getInstance().getFreecessEnabled()) {
-                        FreecessHandler.getInstance().sendResetAllStateMsg("ShutDown");
-                    }
-                }
-            }
-        };
-        this.mPkgIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.am.FreecessTrigger.2
-            public AnonymousClass2() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                Uri data;
-                int intExtra;
-                if (!"android.intent.action.PACKAGE_REMOVED".equals(intent.getAction()) || intent.getBooleanExtra("android.intent.extra.REPLACING", false) || (data = intent.getData()) == null || (intExtra = intent.getIntExtra("android.intent.extra.UID", -1)) == -1) {
-                    return;
-                }
-                FreecessHandler.getInstance().sendRemovePackageMsg(data.getSchemeSpecificPart(), intExtra);
-            }
-        };
-        this.mSmartSwitchIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.am.FreecessTrigger.3
-            public AnonymousClass3() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (action == null) {
-                    return;
-                }
-                if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_START".equals(action)) {
-                    FreecessController.getInstance().setFreecessEnableForSmartSwitch(false);
-                    return;
-                }
-                if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_ONGOING".equals(action)) {
-                    MARsPolicyManager.getInstance().addDebugInfoToHistory("FRZ", "OFF by SmartSwitch-Ongoing");
-                    FreecessController.getInstance().setIsSmartSwitchWorking(true);
-                    FreecessHandler.getInstance().sendSetFreecessEnableDelayedMsg(2);
-                } else {
-                    if (!"com.samsung.android.intent.action.SMARTSWITCH_WORK_FINISH".equals(action) || FreecessController.getInstance().getIsDumpstateWorking()) {
-                        return;
-                    }
-                    FreecessHandler.getInstance().removeBgTriggerMsgByObj(11, null);
-                    FreecessController.getInstance().setIsSmartSwitchWorking(false);
-                    FreecessController.getInstance().setFreecessEnableForSmartSwitch(true);
-                }
-            }
-        };
-        this.mIntentReceiverForBird = new BroadcastReceiver() { // from class: com.android.server.am.FreecessTrigger.4
-            public AnonymousClass4() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                PowerManager powerManager;
-                String action = intent.getAction();
-                if ((action.equals("android.os.action.LIGHT_DEVICE_IDLE_MODE_CHANGED") || action.equals("android.os.action.DEVICE_IDLE_MODE_CHANGED")) && (powerManager = (PowerManager) context.getSystemService("power")) != null) {
-                    boolean z = powerManager.isDeviceIdleMode() || powerManager.isLightDeviceIdleMode();
-                    Slog.d(FreecessTrigger.TAG, "doze state changed : " + z);
-                    MARsPolicyManager.getInstance().setDeviceIdleModeState(z);
-                    if (MARsPolicyManager.getInstance().isChinaPolicyEnabled() || z) {
-                        return;
-                    }
-                    FreecessHandler.getInstance().sendUnfreezeActivePackagesMsg("DeviceIdleOFF");
-                }
-            }
-        };
-    }
-
-    public static FreecessTrigger getInstance() {
-        return FreecessTriggerHolder.INSTANCE;
-    }
-
-    public void init(Context context) {
-        this.mContext = context;
-        registerReceiver();
-    }
-
-    public void registerReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter.addAction("sec.app.policy.UPDATE.ssrm_update_freecess");
-        intentFilter.addAction(UiModeManager.ACTION_ENTER_CAR_MODE);
-        intentFilter.addAction("com.samsung.intent.action.EMERGENCY_STATE_CHANGED");
-        intentFilter.addAction("android.intent.action.ACTION_SHUTDOWN");
-        intentFilter.addAction("android.intent.action.REBOOT");
-        intentFilter.setPriority(1000);
-        this.mContext.registerReceiver(this.mIntentReceiver, intentFilter);
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("android.intent.action.PACKAGE_REMOVED");
-        intentFilter2.addDataScheme("package");
-        this.mContext.registerReceiverAsUser(this.mPkgIntentReceiver, UserHandle.ALL, intentFilter2, null, null);
-        IntentFilter intentFilter3 = new IntentFilter();
-        intentFilter3.addAction("com.samsung.android.intent.action.SMARTSWITCH_WORK_START");
-        intentFilter3.addAction("com.samsung.android.intent.action.SMARTSWITCH_WORK_ONGOING");
-        intentFilter3.addAction("com.samsung.android.intent.action.SMARTSWITCH_WORK_FINISH");
-        this.mContext.registerReceiver(this.mSmartSwitchIntentReceiver, intentFilter3, "com.wssnps.permission.COM_WSSNPS", null);
-    }
-
-    /* renamed from: com.android.server.am.FreecessTrigger$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends BroadcastReceiver {
-        public AnonymousClass1() {
-        }
-
+    public final AnonymousClass2 mIntentReceiverForBird;
+    public final AnonymousClass2 mPkgIntentReceiver;
+    public final AnonymousClass2 mSmartSwitchIntentReceiver;
+    public boolean mIsRegisteredReceiverForEnhancedFreecess = false;
+    public final AnonymousClass1 mIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.am.FreecessTrigger.1
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
+            FreecessHandler freecessHandler;
+            FreecessHandler.MainHandler mainHandler;
             String action = intent.getAction();
             if (action.equals("android.intent.action.SCREEN_ON")) {
-                FreecessController.getInstance().setScreenOnState(true);
-                if (FreecessController.getInstance().getFreecessEnabled()) {
-                    if (MARsPolicyManager.getInstance().isChinaPolicyEnabled()) {
-                        FreecessHandler.getInstance().sendUnfreezeActivePackagesMsg("screenOn");
+                boolean z = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                FreecessController freecessController = FreecessController.FreecessControllerHolder.INSTANCE;
+                freecessController.setScreenOnState(true);
+                if (freecessController.mIsFreecessEnable) {
+                    MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.getClass();
+                    if (MARsPolicyManager.isChinaPolicyEnabled()) {
+                        FreecessHandler.FreecessHandlerHolder.INSTANCE.sendUnfreezeActivePackagesMsg("screenOn");
                     } else {
-                        FreecessHandler.getInstance().sendUnfreezeActivePackagesMsg("screenOn-widget");
+                        FreecessHandler.FreecessHandlerHolder.INSTANCE.sendUnfreezeActivePackagesMsg("screenOn-widget");
                     }
-                    FreecessHandler.getInstance().sendUnfreezeRequestFocusPackageMsg();
+                    FreecessHandler freecessHandler2 = FreecessHandler.FreecessHandlerHolder.INSTANCE;
+                    FreecessHandler.MainHandler mainHandler2 = freecessHandler2.mMainHandler;
+                    if (mainHandler2 == null) {
+                        return;
+                    }
+                    mainHandler2.removeMessages(24);
+                    freecessHandler2.mMainHandler.sendMessage(freecessHandler2.mMainHandler.obtainMessage(24));
                     return;
                 }
                 return;
             }
             if (action.equals("android.intent.action.SCREEN_OFF")) {
-                FreecessController.getInstance().setScreenOnState(false);
-                if (FreecessController.getInstance().getScreenOnFreecessEnabled()) {
-                    FreecessHandler.getInstance().removeBgTriggerMsg();
+                boolean z2 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                FreecessController freecessController2 = FreecessController.FreecessControllerHolder.INSTANCE;
+                freecessController2.setScreenOnState(false);
+                if (freecessController2.mIsScreenOnFreecessEnabled) {
+                    FreecessHandler.FreecessHandlerHolder.INSTANCE.removeBgTriggerMsg();
                 }
                 if (FreecessTrigger.this.mIsRegisteredReceiverForEnhancedFreecess) {
                     return;
                 }
-                MARsDBManager.getInstance().sendGetRestrictionFlagMsgToMainHandler();
+                MARsDBHandler.getInstance();
+                MARsDBHandler mARsDBHandler = MARsDBHandler.MARsDBHandlerHolder.INSTANCE;
+                MARsDBHandler.MainHandler mainHandler3 = mARsDBHandler.mMainHandler;
+                if (mainHandler3 == null) {
+                    return;
+                }
+                mARsDBHandler.mMainHandler.sendMessage(mainHandler3.obtainMessage(9));
                 return;
             }
             if (action.equals(UiModeManager.ACTION_ENTER_CAR_MODE)) {
-                FreecessController.getInstance().setCarModeOnState(true);
-                if (FreecessController.getInstance().getFreecessEnabled()) {
-                    FreecessHandler.getInstance().sendResetAllStateMsg("CarMode");
+                boolean z3 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                FreecessController freecessController3 = FreecessController.FreecessControllerHolder.INSTANCE;
+                freecessController3.mCarModeOn = true;
+                if (freecessController3.mIsFreecessEnable) {
+                    FreecessHandler.FreecessHandlerHolder.INSTANCE.sendResetAllStateMsg("CarMode");
                     return;
                 }
                 return;
             }
             if (action.equals("sec.app.policy.UPDATE.ssrm_update_freecess")) {
-                if (FreecessController.getInstance().getFreecessEnabled()) {
-                    FreecessHandler.getInstance().sendSCPMChangedPkgMsgToDBHandler();
+                boolean z4 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                if (!FreecessController.FreecessControllerHolder.INSTANCE.mIsFreecessEnable || (mainHandler = (freecessHandler = FreecessHandler.FreecessHandlerHolder.INSTANCE).mMainHandler) == null) {
+                    return;
                 }
-            } else {
-                if (action.equals("com.samsung.intent.action.EMERGENCY_STATE_CHANGED")) {
-                    boolean z = intent.getIntExtra("reason", 0) == 3;
-                    FreecessController.getInstance().setEmergencyModeOnState(z);
-                    if (FreecessController.getInstance().getFreecessEnabled() && z) {
-                        FreecessHandler.getInstance().sendResetAllStateMsg("EmeregencyMode");
+                freecessHandler.mMainHandler.sendMessageDelayed(mainHandler.obtainMessage(12), 30000L);
+                return;
+            }
+            if (!action.equals("com.samsung.intent.action.EMERGENCY_STATE_CHANGED")) {
+                if (action.equals("android.intent.action.ACTION_SHUTDOWN") || action.equals("android.intent.action.REBOOT")) {
+                    boolean z5 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                    if (FreecessController.FreecessControllerHolder.INSTANCE.mIsFreecessEnable) {
+                        FreecessHandler.FreecessHandlerHolder.INSTANCE.sendResetAllStateMsg("ShutDown");
                         return;
                     }
                     return;
                 }
-                if ((action.equals("android.intent.action.ACTION_SHUTDOWN") || action.equals("android.intent.action.REBOOT")) && FreecessController.getInstance().getFreecessEnabled()) {
-                    FreecessHandler.getInstance().sendResetAllStateMsg("ShutDown");
-                }
-            }
-        }
-    }
-
-    /* renamed from: com.android.server.am.FreecessTrigger$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 extends BroadcastReceiver {
-        public AnonymousClass2() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            Uri data;
-            int intExtra;
-            if (!"android.intent.action.PACKAGE_REMOVED".equals(intent.getAction()) || intent.getBooleanExtra("android.intent.extra.REPLACING", false) || (data = intent.getData()) == null || (intExtra = intent.getIntExtra("android.intent.extra.UID", -1)) == -1) {
                 return;
             }
-            FreecessHandler.getInstance().sendRemovePackageMsg(data.getSchemeSpecificPart(), intExtra);
+            boolean z6 = intent.getIntExtra("reason", 0) == 3;
+            boolean z7 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+            FreecessController freecessController4 = FreecessController.FreecessControllerHolder.INSTANCE;
+            freecessController4.mEmergencyModeOn = z6;
+            if (freecessController4.mIsFreecessEnable && z6) {
+                FreecessHandler.FreecessHandlerHolder.INSTANCE.sendResetAllStateMsg("EmeregencyMode");
+            }
         }
+    };
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public abstract class FreecessTriggerHolder {
+        public static final FreecessTrigger INSTANCE = new FreecessTrigger();
     }
 
-    /* renamed from: com.android.server.am.FreecessTrigger$3 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass3 extends BroadcastReceiver {
-        public AnonymousClass3() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action == null) {
-                return;
-            }
-            if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_START".equals(action)) {
-                FreecessController.getInstance().setFreecessEnableForSmartSwitch(false);
-                return;
-            }
-            if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_ONGOING".equals(action)) {
-                MARsPolicyManager.getInstance().addDebugInfoToHistory("FRZ", "OFF by SmartSwitch-Ongoing");
-                FreecessController.getInstance().setIsSmartSwitchWorking(true);
-                FreecessHandler.getInstance().sendSetFreecessEnableDelayedMsg(2);
-            } else {
-                if (!"com.samsung.android.intent.action.SMARTSWITCH_WORK_FINISH".equals(action) || FreecessController.getInstance().getIsDumpstateWorking()) {
-                    return;
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.am.FreecessTrigger$1] */
+    /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.am.FreecessTrigger$2] */
+    /* JADX WARN: Type inference failed for: r0v3, types: [com.android.server.am.FreecessTrigger$2] */
+    /* JADX WARN: Type inference failed for: r0v4, types: [com.android.server.am.FreecessTrigger$2] */
+    public FreecessTrigger() {
+        final int i = 0;
+        this.mPkgIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.am.FreecessTrigger.2
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context, Intent intent) {
+                Uri data;
+                int intExtra;
+                PowerManager powerManager;
+                boolean z = true;
+                switch (i) {
+                    case 0:
+                        if (!"android.intent.action.PACKAGE_REMOVED".equals(intent.getAction()) || intent.getBooleanExtra("android.intent.extra.REPLACING", false) || (data = intent.getData()) == null || (intExtra = intent.getIntExtra("android.intent.extra.UID", -1)) == -1) {
+                            return;
+                        }
+                        FreecessHandler freecessHandler = FreecessHandler.FreecessHandlerHolder.INSTANCE;
+                        String schemeSpecificPart = data.getSchemeSpecificPart();
+                        if (freecessHandler.mMainHandler == null) {
+                            return;
+                        }
+                        boolean z2 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                        FreecessPkgStatus packageStatus = FreecessController.FreecessControllerHolder.INSTANCE.getPackageStatus(intExtra);
+                        if (packageStatus == null) {
+                            return;
+                        }
+                        String str = packageStatus.name;
+                        freecessHandler.removeBgTriggerMsgByObj(1, str);
+                        freecessHandler.removeBgTriggerMsgByObj(2, str);
+                        freecessHandler.removeBgTriggerMsgByObj(28, str);
+                        freecessHandler.removeBgTriggerMsgByObj(3, str);
+                        freecessHandler.removeBgTriggerMsgByObj(4, str);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("packageName", schemeSpecificPart);
+                        bundle.putInt("uid", intExtra);
+                        Message obtainMessage = freecessHandler.mMainHandler.obtainMessage(16);
+                        obtainMessage.setData(bundle);
+                        freecessHandler.mMainHandler.sendMessage(obtainMessage);
+                        return;
+                    case 1:
+                        String action = intent.getAction();
+                        if (action == null) {
+                            return;
+                        }
+                        if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_START".equals(action)) {
+                            boolean z3 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                            FreecessController freecessController = FreecessController.FreecessControllerHolder.INSTANCE;
+                            if (freecessController.mIsSmartSwitchWorking) {
+                                return;
+                            }
+                            freecessController.mIsSmartSwitchWorking = true;
+                            freecessController.setFreecessEnableForSpecificReason(2, false);
+                            return;
+                        }
+                        if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_ONGOING".equals(action)) {
+                            boolean z4 = MARsPolicyManager.MARs_ENABLE;
+                            MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.addDebugInfoToHistory("FRZ", "OFF by SmartSwitch-Ongoing");
+                            boolean z5 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                            FreecessController.FreecessControllerHolder.INSTANCE.mIsSmartSwitchWorking = true;
+                            FreecessHandler.FreecessHandlerHolder.INSTANCE.sendSetFreecessEnableDelayedMsg(2);
+                            return;
+                        }
+                        if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_FINISH".equals(action)) {
+                            boolean z6 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                            FreecessController freecessController2 = FreecessController.FreecessControllerHolder.INSTANCE;
+                            if (freecessController2.mIsDumpstateWorking) {
+                                return;
+                            }
+                            FreecessHandler.FreecessHandlerHolder.INSTANCE.removeBgTriggerMsgByObj(11, null);
+                            freecessController2.mIsSmartSwitchWorking = false;
+                            freecessController2.setFreecessEnableForSpecificReason(2, true);
+                            return;
+                        }
+                        return;
+                    default:
+                        String action2 = intent.getAction();
+                        if ((action2.equals("android.os.action.LIGHT_DEVICE_IDLE_MODE_CHANGED") || action2.equals("android.os.action.DEVICE_IDLE_MODE_CHANGED")) && (powerManager = (PowerManager) context.getSystemService("power")) != null) {
+                            if (!powerManager.isDeviceIdleMode() && !powerManager.isLightDeviceIdleMode()) {
+                                z = false;
+                            }
+                            DeviceIdleController$$ExternalSyntheticOutline0.m("doze state changed : ", "FreecessTrigger", z);
+                            boolean z7 = MARsPolicyManager.MARs_ENABLE;
+                            MARsPolicyManager mARsPolicyManager = MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE;
+                            synchronized (mARsPolicyManager) {
+                                mARsPolicyManager.mIsDeviceIdleMode = z;
+                            }
+                            if (MARsPolicyManager.isChinaPolicyEnabled() || z) {
+                                return;
+                            }
+                            FreecessHandler.FreecessHandlerHolder.INSTANCE.sendUnfreezeActivePackagesMsg("DeviceIdleOFF");
+                            return;
+                        }
+                        return;
                 }
-                FreecessHandler.getInstance().removeBgTriggerMsgByObj(11, null);
-                FreecessController.getInstance().setIsSmartSwitchWorking(false);
-                FreecessController.getInstance().setFreecessEnableForSmartSwitch(true);
             }
-        }
-    }
-
-    public void registerReceiverForEnhancedFreecess() {
-        if (this.mIsRegisteredReceiverForEnhancedFreecess) {
-            return;
-        }
-        try {
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction("android.os.action.DEVICE_IDLE_MODE_CHANGED");
-            intentFilter.addAction("android.os.action.LIGHT_DEVICE_IDLE_MODE_CHANGED");
-            intentFilter.setPriority(1000);
-            this.mContext.registerReceiver(this.mIntentReceiverForBird, intentFilter);
-            this.mIsRegisteredReceiverForEnhancedFreecess = true;
-        } catch (Exception e) {
-            Slog.e(TAG, "exception registerReceiverForBird " + e);
-        }
-    }
-
-    /* renamed from: com.android.server.am.FreecessTrigger$4 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass4 extends BroadcastReceiver {
-        public AnonymousClass4() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            PowerManager powerManager;
-            String action = intent.getAction();
-            if ((action.equals("android.os.action.LIGHT_DEVICE_IDLE_MODE_CHANGED") || action.equals("android.os.action.DEVICE_IDLE_MODE_CHANGED")) && (powerManager = (PowerManager) context.getSystemService("power")) != null) {
-                boolean z = powerManager.isDeviceIdleMode() || powerManager.isLightDeviceIdleMode();
-                Slog.d(FreecessTrigger.TAG, "doze state changed : " + z);
-                MARsPolicyManager.getInstance().setDeviceIdleModeState(z);
-                if (MARsPolicyManager.getInstance().isChinaPolicyEnabled() || z) {
-                    return;
+        };
+        final int i2 = 1;
+        this.mSmartSwitchIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.am.FreecessTrigger.2
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context, Intent intent) {
+                Uri data;
+                int intExtra;
+                PowerManager powerManager;
+                boolean z = true;
+                switch (i2) {
+                    case 0:
+                        if (!"android.intent.action.PACKAGE_REMOVED".equals(intent.getAction()) || intent.getBooleanExtra("android.intent.extra.REPLACING", false) || (data = intent.getData()) == null || (intExtra = intent.getIntExtra("android.intent.extra.UID", -1)) == -1) {
+                            return;
+                        }
+                        FreecessHandler freecessHandler = FreecessHandler.FreecessHandlerHolder.INSTANCE;
+                        String schemeSpecificPart = data.getSchemeSpecificPart();
+                        if (freecessHandler.mMainHandler == null) {
+                            return;
+                        }
+                        boolean z2 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                        FreecessPkgStatus packageStatus = FreecessController.FreecessControllerHolder.INSTANCE.getPackageStatus(intExtra);
+                        if (packageStatus == null) {
+                            return;
+                        }
+                        String str = packageStatus.name;
+                        freecessHandler.removeBgTriggerMsgByObj(1, str);
+                        freecessHandler.removeBgTriggerMsgByObj(2, str);
+                        freecessHandler.removeBgTriggerMsgByObj(28, str);
+                        freecessHandler.removeBgTriggerMsgByObj(3, str);
+                        freecessHandler.removeBgTriggerMsgByObj(4, str);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("packageName", schemeSpecificPart);
+                        bundle.putInt("uid", intExtra);
+                        Message obtainMessage = freecessHandler.mMainHandler.obtainMessage(16);
+                        obtainMessage.setData(bundle);
+                        freecessHandler.mMainHandler.sendMessage(obtainMessage);
+                        return;
+                    case 1:
+                        String action = intent.getAction();
+                        if (action == null) {
+                            return;
+                        }
+                        if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_START".equals(action)) {
+                            boolean z3 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                            FreecessController freecessController = FreecessController.FreecessControllerHolder.INSTANCE;
+                            if (freecessController.mIsSmartSwitchWorking) {
+                                return;
+                            }
+                            freecessController.mIsSmartSwitchWorking = true;
+                            freecessController.setFreecessEnableForSpecificReason(2, false);
+                            return;
+                        }
+                        if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_ONGOING".equals(action)) {
+                            boolean z4 = MARsPolicyManager.MARs_ENABLE;
+                            MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.addDebugInfoToHistory("FRZ", "OFF by SmartSwitch-Ongoing");
+                            boolean z5 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                            FreecessController.FreecessControllerHolder.INSTANCE.mIsSmartSwitchWorking = true;
+                            FreecessHandler.FreecessHandlerHolder.INSTANCE.sendSetFreecessEnableDelayedMsg(2);
+                            return;
+                        }
+                        if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_FINISH".equals(action)) {
+                            boolean z6 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                            FreecessController freecessController2 = FreecessController.FreecessControllerHolder.INSTANCE;
+                            if (freecessController2.mIsDumpstateWorking) {
+                                return;
+                            }
+                            FreecessHandler.FreecessHandlerHolder.INSTANCE.removeBgTriggerMsgByObj(11, null);
+                            freecessController2.mIsSmartSwitchWorking = false;
+                            freecessController2.setFreecessEnableForSpecificReason(2, true);
+                            return;
+                        }
+                        return;
+                    default:
+                        String action2 = intent.getAction();
+                        if ((action2.equals("android.os.action.LIGHT_DEVICE_IDLE_MODE_CHANGED") || action2.equals("android.os.action.DEVICE_IDLE_MODE_CHANGED")) && (powerManager = (PowerManager) context.getSystemService("power")) != null) {
+                            if (!powerManager.isDeviceIdleMode() && !powerManager.isLightDeviceIdleMode()) {
+                                z = false;
+                            }
+                            DeviceIdleController$$ExternalSyntheticOutline0.m("doze state changed : ", "FreecessTrigger", z);
+                            boolean z7 = MARsPolicyManager.MARs_ENABLE;
+                            MARsPolicyManager mARsPolicyManager = MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE;
+                            synchronized (mARsPolicyManager) {
+                                mARsPolicyManager.mIsDeviceIdleMode = z;
+                            }
+                            if (MARsPolicyManager.isChinaPolicyEnabled() || z) {
+                                return;
+                            }
+                            FreecessHandler.FreecessHandlerHolder.INSTANCE.sendUnfreezeActivePackagesMsg("DeviceIdleOFF");
+                            return;
+                        }
+                        return;
                 }
-                FreecessHandler.getInstance().sendUnfreezeActivePackagesMsg("DeviceIdleOFF");
             }
-        }
+        };
+        final int i3 = 2;
+        this.mIntentReceiverForBird = new BroadcastReceiver() { // from class: com.android.server.am.FreecessTrigger.2
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context, Intent intent) {
+                Uri data;
+                int intExtra;
+                PowerManager powerManager;
+                boolean z = true;
+                switch (i3) {
+                    case 0:
+                        if (!"android.intent.action.PACKAGE_REMOVED".equals(intent.getAction()) || intent.getBooleanExtra("android.intent.extra.REPLACING", false) || (data = intent.getData()) == null || (intExtra = intent.getIntExtra("android.intent.extra.UID", -1)) == -1) {
+                            return;
+                        }
+                        FreecessHandler freecessHandler = FreecessHandler.FreecessHandlerHolder.INSTANCE;
+                        String schemeSpecificPart = data.getSchemeSpecificPart();
+                        if (freecessHandler.mMainHandler == null) {
+                            return;
+                        }
+                        boolean z2 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                        FreecessPkgStatus packageStatus = FreecessController.FreecessControllerHolder.INSTANCE.getPackageStatus(intExtra);
+                        if (packageStatus == null) {
+                            return;
+                        }
+                        String str = packageStatus.name;
+                        freecessHandler.removeBgTriggerMsgByObj(1, str);
+                        freecessHandler.removeBgTriggerMsgByObj(2, str);
+                        freecessHandler.removeBgTriggerMsgByObj(28, str);
+                        freecessHandler.removeBgTriggerMsgByObj(3, str);
+                        freecessHandler.removeBgTriggerMsgByObj(4, str);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("packageName", schemeSpecificPart);
+                        bundle.putInt("uid", intExtra);
+                        Message obtainMessage = freecessHandler.mMainHandler.obtainMessage(16);
+                        obtainMessage.setData(bundle);
+                        freecessHandler.mMainHandler.sendMessage(obtainMessage);
+                        return;
+                    case 1:
+                        String action = intent.getAction();
+                        if (action == null) {
+                            return;
+                        }
+                        if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_START".equals(action)) {
+                            boolean z3 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                            FreecessController freecessController = FreecessController.FreecessControllerHolder.INSTANCE;
+                            if (freecessController.mIsSmartSwitchWorking) {
+                                return;
+                            }
+                            freecessController.mIsSmartSwitchWorking = true;
+                            freecessController.setFreecessEnableForSpecificReason(2, false);
+                            return;
+                        }
+                        if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_ONGOING".equals(action)) {
+                            boolean z4 = MARsPolicyManager.MARs_ENABLE;
+                            MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.addDebugInfoToHistory("FRZ", "OFF by SmartSwitch-Ongoing");
+                            boolean z5 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                            FreecessController.FreecessControllerHolder.INSTANCE.mIsSmartSwitchWorking = true;
+                            FreecessHandler.FreecessHandlerHolder.INSTANCE.sendSetFreecessEnableDelayedMsg(2);
+                            return;
+                        }
+                        if ("com.samsung.android.intent.action.SMARTSWITCH_WORK_FINISH".equals(action)) {
+                            boolean z6 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                            FreecessController freecessController2 = FreecessController.FreecessControllerHolder.INSTANCE;
+                            if (freecessController2.mIsDumpstateWorking) {
+                                return;
+                            }
+                            FreecessHandler.FreecessHandlerHolder.INSTANCE.removeBgTriggerMsgByObj(11, null);
+                            freecessController2.mIsSmartSwitchWorking = false;
+                            freecessController2.setFreecessEnableForSpecificReason(2, true);
+                            return;
+                        }
+                        return;
+                    default:
+                        String action2 = intent.getAction();
+                        if ((action2.equals("android.os.action.LIGHT_DEVICE_IDLE_MODE_CHANGED") || action2.equals("android.os.action.DEVICE_IDLE_MODE_CHANGED")) && (powerManager = (PowerManager) context.getSystemService("power")) != null) {
+                            if (!powerManager.isDeviceIdleMode() && !powerManager.isLightDeviceIdleMode()) {
+                                z = false;
+                            }
+                            DeviceIdleController$$ExternalSyntheticOutline0.m("doze state changed : ", "FreecessTrigger", z);
+                            boolean z7 = MARsPolicyManager.MARs_ENABLE;
+                            MARsPolicyManager mARsPolicyManager = MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE;
+                            synchronized (mARsPolicyManager) {
+                                mARsPolicyManager.mIsDeviceIdleMode = z;
+                            }
+                            if (MARsPolicyManager.isChinaPolicyEnabled() || z) {
+                                return;
+                            }
+                            FreecessHandler.FreecessHandlerHolder.INSTANCE.sendUnfreezeActivePackagesMsg("DeviceIdleOFF");
+                            return;
+                        }
+                        return;
+                }
+            }
+        };
     }
 }

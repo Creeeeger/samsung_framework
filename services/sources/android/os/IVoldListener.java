@@ -1,9 +1,10 @@
 package android.os;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IVoldListener extends IInterface {
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class Default implements IVoldListener {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -11,97 +12,239 @@ public interface IVoldListener extends IInterface {
         }
 
         @Override // android.os.IVoldListener
-        public void onDiskCreated(String str, int i) {
+        public void onDiskCreated(String str, int i) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onDiskDestroyed(String str) {
+        public void onDiskDestroyed(String str) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onDiskMetadataChanged(String str, long j, String str2, String str3) {
+        public void onDiskMetadataChanged(String str, long j, String str2, String str3) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onDiskScanned(String str) {
+        public void onDiskScanned(String str) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onEncryptionStateChanged(String str, String str2, String str3) {
+        public void onEncryptionStateChanged(String str, String str2, String str3) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onVolumeCreated(String str, int i, String str2, String str3, int i2) {
+        public void onVolumeCreated(String str, int i, String str2, String str3, int i2) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onVolumeDestroyed(String str) {
+        public void onVolumeDestroyed(String str) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onVolumeInternalPathChanged(String str, String str2) {
+        public void onVolumeInternalPathChanged(String str, String str2) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onVolumeMetadataChanged(String str, String str2, String str3, String str4) {
+        public void onVolumeMetadataChanged(String str, String str2, String str3, String str4) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onVolumePathChanged(String str, String str2) {
+        public void onVolumePathChanged(String str, String str2) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void onVolumeStateChanged(String str, int i) {
+        public void onVolumeStateChanged(String str, int i, int i2) throws RemoteException {
         }
 
         @Override // android.os.IVoldListener
-        public void sendVoldMessage(String str) {
+        public void sendVoldMessage(String str) throws RemoteException {
         }
     }
 
-    void onDiskCreated(String str, int i);
-
-    void onDiskDestroyed(String str);
-
-    void onDiskMetadataChanged(String str, long j, String str2, String str3);
-
-    void onDiskScanned(String str);
-
-    void onEncryptionStateChanged(String str, String str2, String str3);
-
-    void onVolumeCreated(String str, int i, String str2, String str3, int i2);
-
-    void onVolumeDestroyed(String str);
-
-    void onVolumeInternalPathChanged(String str, String str2);
-
-    void onVolumeMetadataChanged(String str, String str2, String str3, String str4);
-
-    void onVolumePathChanged(String str, String str2);
-
-    void onVolumeStateChanged(String str, int i);
-
-    void sendVoldMessage(String str);
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements IVoldListener {
         public static final String DESCRIPTOR = "android.os.IVoldListener";
-        public static final int TRANSACTION_onDiskCreated = 1;
-        public static final int TRANSACTION_onDiskDestroyed = 4;
-        public static final int TRANSACTION_onDiskMetadataChanged = 3;
-        public static final int TRANSACTION_onDiskScanned = 2;
-        public static final int TRANSACTION_onEncryptionStateChanged = 12;
-        public static final int TRANSACTION_onVolumeCreated = 5;
-        public static final int TRANSACTION_onVolumeDestroyed = 10;
-        public static final int TRANSACTION_onVolumeInternalPathChanged = 9;
-        public static final int TRANSACTION_onVolumeMetadataChanged = 7;
-        public static final int TRANSACTION_onVolumePathChanged = 8;
-        public static final int TRANSACTION_onVolumeStateChanged = 6;
-        public static final int TRANSACTION_sendVoldMessage = 11;
+        static final int TRANSACTION_onDiskCreated = 1;
+        static final int TRANSACTION_onDiskDestroyed = 4;
+        static final int TRANSACTION_onDiskMetadataChanged = 3;
+        static final int TRANSACTION_onDiskScanned = 2;
+        static final int TRANSACTION_onEncryptionStateChanged = 12;
+        static final int TRANSACTION_onVolumeCreated = 5;
+        static final int TRANSACTION_onVolumeDestroyed = 10;
+        static final int TRANSACTION_onVolumeInternalPathChanged = 9;
+        static final int TRANSACTION_onVolumeMetadataChanged = 7;
+        static final int TRANSACTION_onVolumePathChanged = 8;
+        static final int TRANSACTION_onVolumeStateChanged = 6;
+        static final int TRANSACTION_sendVoldMessage = 11;
 
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements IVoldListener {
+            public IBinder mRemote;
+
+            @Override // android.os.IInterface
+            public final IBinder asBinder() {
+                return this.mRemote;
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onDiskCreated(String str, int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(1, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onDiskDestroyed(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(4, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onDiskMetadataChanged(String str, long j, String str2, String str3) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeLong(j);
+                    obtain.writeString(str2);
+                    obtain.writeString(str3);
+                    this.mRemote.transact(3, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onDiskScanned(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(2, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onEncryptionStateChanged(String str, String str2, String str3) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeString(str3);
+                    this.mRemote.transact(12, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeCreated(String str, int i, String str2, String str3, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeString(str2);
+                    obtain.writeString(str3);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(5, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeDestroyed(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(10, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeInternalPathChanged(String str, String str2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    this.mRemote.transact(9, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeMetadataChanged(String str, String str2, String str3, String str4) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeString(str3);
+                    obtain.writeString(str4);
+                    this.mRemote.transact(7, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumePathChanged(String str, String str2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    this.mRemote.transact(8, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeStateChanged(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(6, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void sendVoldMessage(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(11, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
         }
 
         public Stub() {
@@ -116,11 +259,18 @@ public interface IVoldListener extends IInterface {
             if (queryLocalInterface != null && (queryLocalInterface instanceof IVoldListener)) {
                 return (IVoldListener) queryLocalInterface;
             }
-            return new Proxy(iBinder);
+            Proxy proxy = new Proxy();
+            proxy.mRemote = iBinder;
+            return proxy;
+        }
+
+        @Override // android.os.IInterface
+        public IBinder asBinder() {
+            return this;
         }
 
         @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
+        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
             if (i >= 1 && i <= 16777215) {
                 parcel.enforceInterface(DESCRIPTOR);
             }
@@ -165,8 +315,9 @@ public interface IVoldListener extends IInterface {
                 case 6:
                     String readString10 = parcel.readString();
                     int readInt4 = parcel.readInt();
+                    int readInt5 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    onVolumeStateChanged(readString10, readInt4);
+                    onVolumeStateChanged(readString10, readInt4, readInt5);
                     return true;
                 case 7:
                     String readString11 = parcel.readString();
@@ -209,183 +360,29 @@ public interface IVoldListener extends IInterface {
                     return super.onTransact(i, parcel, parcel2, i2);
             }
         }
-
-        /* loaded from: classes.dex */
-        public class Proxy implements IVoldListener {
-            public IBinder mRemote;
-
-            public String getInterfaceDescriptor() {
-                return Stub.DESCRIPTOR;
-            }
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
-
-            @Override // android.os.IInterface
-            public IBinder asBinder() {
-                return this.mRemote;
-            }
-
-            @Override // android.os.IVoldListener
-            public void onDiskCreated(String str, int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(1, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onDiskScanned(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(2, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onDiskMetadataChanged(String str, long j, String str2, String str3) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeLong(j);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    this.mRemote.transact(3, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onDiskDestroyed(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(4, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onVolumeCreated(String str, int i, String str2, String str3, int i2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    obtain.writeInt(i2);
-                    this.mRemote.transact(5, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onVolumeStateChanged(String str, int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(6, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onVolumeMetadataChanged(String str, String str2, String str3, String str4) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    obtain.writeString(str4);
-                    this.mRemote.transact(7, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onVolumePathChanged(String str, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(8, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onVolumeInternalPathChanged(String str, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(9, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onVolumeDestroyed(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(10, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void sendVoldMessage(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(11, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldListener
-            public void onEncryptionStateChanged(String str, String str2, String str3) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    this.mRemote.transact(12, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-        }
     }
+
+    void onDiskCreated(String str, int i) throws RemoteException;
+
+    void onDiskDestroyed(String str) throws RemoteException;
+
+    void onDiskMetadataChanged(String str, long j, String str2, String str3) throws RemoteException;
+
+    void onDiskScanned(String str) throws RemoteException;
+
+    void onEncryptionStateChanged(String str, String str2, String str3) throws RemoteException;
+
+    void onVolumeCreated(String str, int i, String str2, String str3, int i2) throws RemoteException;
+
+    void onVolumeDestroyed(String str) throws RemoteException;
+
+    void onVolumeInternalPathChanged(String str, String str2) throws RemoteException;
+
+    void onVolumeMetadataChanged(String str, String str2, String str3, String str4) throws RemoteException;
+
+    void onVolumePathChanged(String str, String str2) throws RemoteException;
+
+    void onVolumeStateChanged(String str, int i, int i2) throws RemoteException;
+
+    void sendVoldMessage(String str) throws RemoteException;
 }

@@ -1,5 +1,6 @@
 package com.android.server.policy;
 
+import android.R;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,143 +12,106 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
-import com.android.server.policy.SideFpsEventHandler;
+import android.view.accessibility.AccessibilityManager;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/* loaded from: classes3.dex */
-public class SideFpsEventHandler implements View.OnClickListener {
-    public int mBiometricState;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SideFpsEventHandler implements View.OnClickListener {
+    public final AccessibilityManager mAccessibilityManager;
     public final Context mContext;
-    public DialogProvider mDialogProvider;
-    public final int mDismissDialogTimeout;
     public FingerprintManager mFingerprintManager;
     public final Handler mHandler;
-    public long mLastPowerPressTime;
     public final PowerManager mPowerManager;
-    public final AtomicBoolean mSideFpsEventHandlerReady;
-    public final Runnable mTurnOffDialog;
+    public final AtomicBoolean mSideFpsEventHandlerReady = new AtomicBoolean(false);
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.policy.SideFpsEventHandler$2, reason: invalid class name */
+    public final class AnonymousClass2 extends IFingerprintAuthenticatorsRegisteredCallback.Stub {
+        public final /* synthetic */ FingerprintManager val$fingerprintManager;
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        /* renamed from: com.android.server.policy.SideFpsEventHandler$2$1, reason: invalid class name */
+        public final class AnonymousClass1 extends BiometricStateListener {
+            public SideFpsEventHandler$2$1$$ExternalSyntheticLambda0 mStateRunnable = null;
+
+            public AnonymousClass1() {
+            }
+
+            public final void onBiometricAction(int i) {
+                NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "onBiometricAction ", "SideFpsEventHandler");
+                AccessibilityManager accessibilityManager = SideFpsEventHandler.this.mAccessibilityManager;
+                if (accessibilityManager == null || !accessibilityManager.isEnabled()) {
+                    return;
+                }
+                SideFpsEventHandler.this.getClass();
+                SideFpsEventHandler.dismissDialog("mTurnOffDialog");
+            }
+
+            /* JADX WARN: Multi-variable type inference failed */
+            /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.policy.SideFpsEventHandler$2$1$$ExternalSyntheticLambda0, java.lang.Runnable] */
+            public final void onStateChanged(final int i) {
+                NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "onStateChanged : ", "SideFpsEventHandler");
+                SideFpsEventHandler$2$1$$ExternalSyntheticLambda0 sideFpsEventHandler$2$1$$ExternalSyntheticLambda0 = this.mStateRunnable;
+                if (sideFpsEventHandler$2$1$$ExternalSyntheticLambda0 != null) {
+                    SideFpsEventHandler.this.mHandler.removeCallbacks(sideFpsEventHandler$2$1$$ExternalSyntheticLambda0);
+                    this.mStateRunnable = null;
+                }
+                if (i != 0) {
+                    SideFpsEventHandler.this.getClass();
+                    return;
+                }
+                ?? r0 = new Runnable(i) { // from class: com.android.server.policy.SideFpsEventHandler$2$1$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        SideFpsEventHandler.this.getClass();
+                    }
+                };
+                this.mStateRunnable = r0;
+                SideFpsEventHandler.this.mHandler.postDelayed(r0, 500L);
+                SideFpsEventHandler.this.getClass();
+                SideFpsEventHandler.dismissDialog("STATE_IDLE");
+            }
+        }
+
+        public AnonymousClass2(FingerprintManager fingerprintManager) {
+            this.val$fingerprintManager = fingerprintManager;
+        }
+
+        public final void onAllAuthenticatorsRegistered(List list) {
+            if (this.val$fingerprintManager.isPowerbuttonFps()) {
+                this.val$fingerprintManager.registerBiometricStateListener(new AnonymousClass1());
+                SideFpsEventHandler.this.mSideFpsEventHandlerReady.set(true);
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface DialogProvider {
     }
 
-    /* renamed from: -$$Nest$fgetmDialog, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ SideFpsToast m10073$$Nest$fgetmDialog(SideFpsEventHandler sideFpsEventHandler) {
-        sideFpsEventHandler.getClass();
-        return null;
-    }
-
-    public boolean shouldConsumeSinglePress(long j) {
-        return false;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0() {
-        dismissDialog("mTurnOffDialog");
-    }
-
-    public SideFpsEventHandler(Context context, Handler handler, PowerManager powerManager) {
-        this(context, handler, powerManager, new DialogProvider() { // from class: com.android.server.policy.SideFpsEventHandler$$ExternalSyntheticLambda1
-        });
-    }
-
     public SideFpsEventHandler(Context context, Handler handler, PowerManager powerManager, DialogProvider dialogProvider) {
-        this.mTurnOffDialog = new Runnable() { // from class: com.android.server.policy.SideFpsEventHandler$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                SideFpsEventHandler.this.lambda$new$0();
-            }
-        };
         this.mContext = context;
         this.mHandler = handler;
+        this.mAccessibilityManager = (AccessibilityManager) context.getSystemService(AccessibilityManager.class);
         this.mPowerManager = powerManager;
-        this.mBiometricState = 0;
-        this.mSideFpsEventHandlerReady = new AtomicBoolean(false);
-        this.mDialogProvider = dialogProvider;
         context.registerReceiver(new BroadcastReceiver() { // from class: com.android.server.policy.SideFpsEventHandler.1
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                SideFpsEventHandler.m10073$$Nest$fgetmDialog(SideFpsEventHandler.this);
+            public final void onReceive(Context context2, Intent intent) {
+                SideFpsEventHandler.this.getClass();
             }
         }, new IntentFilter("android.intent.action.SCREEN_OFF"));
-        this.mDismissDialogTimeout = context.getResources().getInteger(17695008);
+        context.getResources().getInteger(R.integer.device_idle_idle_to_ms);
+    }
+
+    public static void dismissDialog(String str) {
+        Log.d("SideFpsEventHandler", "Dismissing dialog with reason: ".concat(str));
     }
 
     @Override // android.view.View.OnClickListener
-    public void onClick(View view) {
-        goToSleep(this.mLastPowerPressTime);
-    }
-
-    public void notifyPowerPressed() {
-        Log.i("SideFpsEventHandler", "notifyPowerPressed");
-        if (this.mFingerprintManager == null && this.mSideFpsEventHandlerReady.get()) {
-            this.mFingerprintManager = (FingerprintManager) this.mContext.getSystemService(FingerprintManager.class);
-        }
-        FingerprintManager fingerprintManager = this.mFingerprintManager;
-        if (fingerprintManager == null) {
-            return;
-        }
-        fingerprintManager.onPowerPressed();
-    }
-
-    public final void goToSleep(long j) {
-        this.mPowerManager.goToSleep(j, 4, 0);
-    }
-
-    public void onFingerprintSensorReady() {
-        if (this.mContext.getPackageManager().hasSystemFeature("android.hardware.fingerprint")) {
-            final FingerprintManager fingerprintManager = (FingerprintManager) this.mContext.getSystemService(FingerprintManager.class);
-            fingerprintManager.addAuthenticatorsRegisteredCallback(new IFingerprintAuthenticatorsRegisteredCallback.Stub() { // from class: com.android.server.policy.SideFpsEventHandler.2
-                public void onAllAuthenticatorsRegistered(List list) {
-                    if (fingerprintManager.isPowerbuttonFps()) {
-                        fingerprintManager.registerBiometricStateListener(new AnonymousClass1());
-                        SideFpsEventHandler.this.mSideFpsEventHandlerReady.set(true);
-                    }
-                }
-
-                /* renamed from: com.android.server.policy.SideFpsEventHandler$2$1, reason: invalid class name */
-                /* loaded from: classes3.dex */
-                public class AnonymousClass1 extends BiometricStateListener {
-                    public Runnable mStateRunnable = null;
-
-                    public AnonymousClass1() {
-                    }
-
-                    public void onStateChanged(final int i) {
-                        Log.d("SideFpsEventHandler", "onStateChanged : " + i);
-                        if (this.mStateRunnable != null) {
-                            SideFpsEventHandler.this.mHandler.removeCallbacks(this.mStateRunnable);
-                            this.mStateRunnable = null;
-                        }
-                        if (i == 0) {
-                            this.mStateRunnable = new Runnable() { // from class: com.android.server.policy.SideFpsEventHandler$2$1$$ExternalSyntheticLambda0
-                                @Override // java.lang.Runnable
-                                public final void run() {
-                                    SideFpsEventHandler.AnonymousClass2.AnonymousClass1.this.lambda$onStateChanged$0(i);
-                                }
-                            };
-                            SideFpsEventHandler.this.mHandler.postDelayed(this.mStateRunnable, 500L);
-                            SideFpsEventHandler.this.dismissDialog("STATE_IDLE");
-                            return;
-                        }
-                        SideFpsEventHandler.this.mBiometricState = i;
-                    }
-
-                    /* JADX INFO: Access modifiers changed from: private */
-                    public /* synthetic */ void lambda$onStateChanged$0(int i) {
-                        SideFpsEventHandler.this.mBiometricState = i;
-                    }
-
-                    public void onBiometricAction(int i) {
-                        Log.d("SideFpsEventHandler", "onBiometricAction " + i);
-                    }
-                }
-            });
-        }
-    }
-
-    public final void dismissDialog(String str) {
-        Log.d("SideFpsEventHandler", "Dismissing dialog with reason: " + str);
+    public final void onClick(View view) {
+        this.mPowerManager.goToSleep(0L, 4, 0);
     }
 }

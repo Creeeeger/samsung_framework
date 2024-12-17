@@ -1,133 +1,28 @@
 package com.android.server.wm;
 
-import android.util.ArraySet;
-import android.util.SparseArray;
-import java.io.PrintWriter;
+import android.util.ArrayMap;
+import android.util.Pair;
+import android.window.TaskSnapshot;
+import com.android.server.wm.Transition;
+import com.samsung.android.rune.CoreRune;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class SnapshotController {
-    public int mActivatedType;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SnapshotController {
     public final ActivitySnapshotController mActivitySnapshotController;
     public final SnapshotPersistQueue mSnapshotPersistQueue;
     public final TaskSnapshotController mTaskSnapshotController;
-    public final ArraySet mTmpCloseTasks = new ArraySet();
-    public final ArraySet mTmpOpenTasks = new ArraySet();
-    public final SparseArray mTmpOpenCloseRecord = new SparseArray();
-    public final ArraySet mTmpAnalysisRecord = new ArraySet();
-    public final SparseArray mTransitionStateConsumer = new SparseArray();
-    public final ActivityOrderCheck mActivityOrderCheck = new ActivityOrderCheck();
-    public final ActivityOrderCheck.AnalysisResult mResultHandler = new ActivityOrderCheck.AnalysisResult() { // from class: com.android.server.wm.SnapshotController$$ExternalSyntheticLambda0
-        @Override // com.android.server.wm.SnapshotController.ActivityOrderCheck.AnalysisResult
-        public final void onCheckResult(int i, ActivityRecord activityRecord, ActivityRecord activityRecord2) {
-            SnapshotController.this.lambda$new$0(i, activityRecord, activityRecord2);
-        }
-    };
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(int i, ActivityRecord activityRecord, ActivityRecord activityRecord2) {
-        addTransitionRecord(i, true, activityRecord2);
-        addTransitionRecord(i, false, activityRecord);
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ActivitiesByTask {
+        public final ArrayMap mActivitiesMap = new ArrayMap();
 
-    /* loaded from: classes3.dex */
-    public class ActivityOrderCheck {
-        public ActivityRecord mCloseActivity;
-        public int mCloseIndex;
-        public ActivityRecord mOpenActivity;
-        public int mOpenIndex;
-
-        /* loaded from: classes3.dex */
-        public interface AnalysisResult {
-            void onCheckResult(int i, ActivityRecord activityRecord, ActivityRecord activityRecord2);
-        }
-
-        public ActivityOrderCheck() {
-            this.mOpenIndex = -1;
-            this.mCloseIndex = -1;
-        }
-
-        public final void reset() {
-            this.mOpenActivity = null;
-            this.mCloseActivity = null;
-            this.mOpenIndex = -1;
-            this.mCloseIndex = -1;
-        }
-
-        public final void setTarget(boolean z, ActivityRecord activityRecord, int i) {
-            if (z) {
-                this.mOpenActivity = activityRecord;
-                this.mOpenIndex = i;
-            } else {
-                this.mCloseActivity = activityRecord;
-                this.mCloseIndex = i;
-            }
-        }
-
-        public void analysisOrder(ArraySet arraySet, ArraySet arraySet2, Task task, AnalysisResult analysisResult) {
-            int size = arraySet.size() - 1;
-            while (true) {
-                if (size < 0) {
-                    break;
-                }
-                ActivityRecord activityRecord = (ActivityRecord) arraySet.valueAt(size);
-                if (activityRecord.getTask() == task) {
-                    setTarget(false, activityRecord, task.mChildren.indexOf(activityRecord));
-                    break;
-                }
-                size--;
-            }
-            int size2 = arraySet2.size() - 1;
-            while (true) {
-                if (size2 < 0) {
-                    break;
-                }
-                ActivityRecord activityRecord2 = (ActivityRecord) arraySet2.valueAt(size2);
-                if (activityRecord2.getTask() == task) {
-                    setTarget(true, activityRecord2, task.mChildren.indexOf(activityRecord2));
-                    break;
-                }
-                size2--;
-            }
-            int i = this.mOpenIndex;
-            int i2 = this.mCloseIndex;
-            if (i > i2 && i2 != -1) {
-                analysisResult.onCheckResult(1, this.mCloseActivity, this.mOpenActivity);
-            } else if (i < i2 && i != -1) {
-                analysisResult.onCheckResult(2, this.mCloseActivity, this.mOpenActivity);
-            }
-            reset();
-        }
-    }
-
-    public final void addTransitionRecord(int i, boolean z, WindowContainer windowContainer) {
-        TransitionState transitionState = (TransitionState) this.mTmpOpenCloseRecord.get(i);
-        if (transitionState == null) {
-            transitionState = new TransitionState();
-            this.mTmpOpenCloseRecord.set(i, transitionState);
-        }
-        transitionState.addParticipant(windowContainer, z);
-        this.mTmpAnalysisRecord.add(Integer.valueOf(i));
-    }
-
-    public final void clearRecord() {
-        this.mTmpOpenCloseRecord.clear();
-        this.mTmpAnalysisRecord.clear();
-    }
-
-    /* loaded from: classes3.dex */
-    public class TransitionState {
-        public final ArraySet mOpenParticipant = new ArraySet();
-        public final ArraySet mCloseParticipant = new ArraySet();
-
-        public void addParticipant(WindowContainer windowContainer, boolean z) {
-            (z ? this.mOpenParticipant : this.mCloseParticipant).add(windowContainer);
-        }
-
-        public ArraySet getParticipant(boolean z) {
-            return z ? this.mOpenParticipant : this.mCloseParticipant;
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class OpenCloseActivities {
+            public final ArrayList mOpenActivities = new ArrayList();
+            public final ArrayList mCloseActivities = new ArrayList();
         }
     }
 
@@ -138,117 +33,143 @@ public class SnapshotController {
         this.mActivitySnapshotController = new ActivitySnapshotController(windowManagerService, snapshotPersistQueue);
     }
 
-    public void registerTransitionStateConsumer(int i, Consumer consumer) {
-        ArrayList arrayList = (ArrayList) this.mTransitionStateConsumer.get(i);
-        if (arrayList == null) {
-            arrayList = new ArrayList();
-            this.mTransitionStateConsumer.set(i, arrayList);
-        }
-        if (!arrayList.contains(consumer)) {
-            arrayList.add(consumer);
-        }
-        this.mActivatedType = i | this.mActivatedType;
-    }
-
-    public final boolean hasTransitionStateConsumer(int i) {
-        return (this.mActivatedType & i) != 0;
-    }
-
-    public void systemReady() {
-        this.mSnapshotPersistQueue.systemReady();
-        this.mTaskSnapshotController.systemReady();
-        this.mActivitySnapshotController.systemReady();
-    }
-
-    public void setPause(boolean z) {
-        this.mSnapshotPersistQueue.setPaused(z);
-    }
-
-    public void onAppRemoved(ActivityRecord activityRecord) {
-        this.mTaskSnapshotController.onAppRemoved(activityRecord);
-        this.mActivitySnapshotController.onAppRemoved(activityRecord);
-    }
-
-    public void onAppDied(ActivityRecord activityRecord) {
-        this.mTaskSnapshotController.onAppDied(activityRecord);
-        this.mActivitySnapshotController.onAppDied(activityRecord);
-    }
-
-    public void notifyAppVisibilityChanged(ActivityRecord activityRecord, boolean z) {
-        Task task;
-        if (z || !hasTransitionStateConsumer(8) || (task = activityRecord.getTask()) == null || task.isVisibleRequested()) {
-            return;
-        }
-        addTransitionRecord(8, false, task);
-        this.mActivitySnapshotController.preTransitionStart();
-        notifyTransition(8);
-        this.mActivitySnapshotController.postTransitionStart();
-        clearRecord();
-    }
-
-    public void onTransitionStarting(DisplayContent displayContent) {
-        handleAppTransition(displayContent.mClosingApps, displayContent.mOpeningApps);
-    }
-
-    public void handleAppTransition(ArraySet arraySet, ArraySet arraySet2) {
-        if (this.mActivatedType == 0) {
-            return;
-        }
-        analysisTransition(arraySet, arraySet2);
-        this.mActivitySnapshotController.preTransitionStart();
-        Iterator it = this.mTmpAnalysisRecord.iterator();
-        while (it.hasNext()) {
-            notifyTransition(((Integer) it.next()).intValue());
-        }
-        this.mActivitySnapshotController.postTransitionStart();
-        clearRecord();
-    }
-
-    public final void notifyTransition(int i) {
-        TransitionState transitionState = (TransitionState) this.mTmpOpenCloseRecord.get(i);
-        Iterator it = ((ArrayList) this.mTransitionStateConsumer.get(i)).iterator();
-        while (it.hasNext()) {
-            ((Consumer) it.next()).accept(transitionState);
-        }
-    }
-
-    public final void analysisTransition(ArraySet arraySet, ArraySet arraySet2) {
-        getParticipantTasks(arraySet, this.mTmpCloseTasks, false);
-        getParticipantTasks(arraySet2, this.mTmpOpenTasks, true);
-        for (int size = this.mTmpCloseTasks.size() - 1; size >= 0; size--) {
-            Task task = (Task) this.mTmpCloseTasks.valueAt(size);
-            if (this.mTmpOpenTasks.contains(task)) {
-                if (hasTransitionStateConsumer(1) || hasTransitionStateConsumer(2)) {
-                    this.mActivityOrderCheck.analysisOrder(arraySet, arraySet2, task, this.mResultHandler);
+    public final void onTransactionReady(ArrayList arrayList, int i) {
+        TaskSnapshot captureSnapshot;
+        boolean z = false;
+        boolean z2 = i == 1 || i == 3;
+        boolean z3 = i == 2 || i == 4;
+        TaskSnapshotController taskSnapshotController = this.mTaskSnapshotController;
+        if (!z2 && !z3 && i < 1000) {
+            if (CoreRune.MW_FREEFORM_SHELL_TRANSITION) {
+                Iterator it = arrayList.iterator();
+                Pair pair = null;
+                while (it.hasNext()) {
+                    Transition.ChangeInfo changeInfo = (Transition.ChangeInfo) it.next();
+                    Task asTask = changeInfo.mContainer.asTask();
+                    if (changeInfo.mWindowingMode == 5 && asTask != null && asTask.inFullscreenWindowingMode()) {
+                        z = true;
+                    }
+                    if (asTask != null && !asTask.mCreatedByOrganizer && !asTask.isVisibleRequested() && asTask.getWindowingMode() == 1) {
+                        pair = new Pair(asTask, changeInfo);
+                    }
                 }
-            } else if (hasTransitionStateConsumer(8)) {
-                addTransitionRecord(8, false, task);
+                if (!z || pair == null) {
+                    return;
+                }
+                Task task = (Task) pair.first;
+                taskSnapshotController.mCurrentChangeInfo = (Transition.ChangeInfo) pair.second;
+                try {
+                    taskSnapshotController.recordSnapshot(task);
+                    return;
+                } finally {
+                }
             }
+            return;
         }
-        if (hasTransitionStateConsumer(4)) {
-            for (int size2 = this.mTmpOpenTasks.size() - 1; size2 >= 0; size2--) {
-                WindowContainer windowContainer = (Task) this.mTmpOpenTasks.valueAt(size2);
-                if (!this.mTmpCloseTasks.contains(windowContainer)) {
-                    addTransitionRecord(4, true, windowContainer);
+        ActivitiesByTask activitiesByTask = null;
+        for (int size = arrayList.size() - 1; size >= 0; size--) {
+            Transition.ChangeInfo changeInfo2 = (Transition.ChangeInfo) arrayList.get(size);
+            if (changeInfo2.mWindowingMode != 2) {
+                WindowContainer windowContainer = changeInfo2.mContainer;
+                if (windowContainer.isActivityTypeHome()) {
+                    continue;
+                } else {
+                    Task asTask2 = windowContainer.asTask();
+                    if (asTask2 != null && !asTask2.mCreatedByOrganizer && !asTask2.isVisibleRequested()) {
+                        if (changeInfo2.mChangeTransitMode != 2 || changeInfo2.mWindowingMode != 6 || asTask2.getWindowingMode() != 1) {
+                            if (taskSnapshotController.isInSkipClosingAppSnapshotTasks(asTask2)) {
+                                taskSnapshotController.removeSkipClosingAppSnapshotTasks(asTask2);
+                            } else {
+                                taskSnapshotController.mCurrentChangeInfo = changeInfo2;
+                                try {
+                                    taskSnapshotController.recordSnapshot(asTask2);
+                                } finally {
+                                }
+                            }
+                        }
+                    }
+                    if (!z3 && (windowContainer.asActivityRecord() != null || windowContainer.asTaskFragment() != null)) {
+                        TaskFragment asTaskFragment = windowContainer.asTaskFragment();
+                        ActivityRecord topMostActivity = asTaskFragment != null ? asTaskFragment.getTopMostActivity() : windowContainer.asActivityRecord();
+                        if (topMostActivity != null && topMostActivity.task.isVisibleRequested()) {
+                            if (activitiesByTask == null) {
+                                activitiesByTask = new ActivitiesByTask();
+                            }
+                            ActivitiesByTask.OpenCloseActivities openCloseActivities = (ActivitiesByTask.OpenCloseActivities) activitiesByTask.mActivitiesMap.get(topMostActivity.task);
+                            if (openCloseActivities == null) {
+                                openCloseActivities = new ActivitiesByTask.OpenCloseActivities();
+                                activitiesByTask.mActivitiesMap.put(topMostActivity.task, openCloseActivities);
+                            }
+                            if (topMostActivity.isVisibleRequested()) {
+                                openCloseActivities.mOpenActivities.add(topMostActivity);
+                            } else {
+                                openCloseActivities.mCloseActivities.add(topMostActivity);
+                            }
+                        }
+                    }
                 }
             }
         }
-        this.mTmpCloseTasks.clear();
-        this.mTmpOpenTasks.clear();
-    }
-
-    public final void getParticipantTasks(ArraySet arraySet, ArraySet arraySet2, boolean z) {
-        for (int size = arraySet.size() - 1; size >= 0; size--) {
-            ActivityRecord activityRecord = (ActivityRecord) arraySet.valueAt(size);
-            Task task = activityRecord.getTask();
-            if (task != null && z == activityRecord.isVisibleRequested()) {
-                arraySet2.add(task);
+        if (activitiesByTask != null) {
+            for (int size2 = activitiesByTask.mActivitiesMap.size() - 1; size2 >= 0; size2--) {
+                ActivitiesByTask.OpenCloseActivities openCloseActivities2 = (ActivitiesByTask.OpenCloseActivities) activitiesByTask.mActivitiesMap.valueAt(size2);
+                if (!openCloseActivities2.mOpenActivities.isEmpty()) {
+                    int size3 = openCloseActivities2.mOpenActivities.size() - 1;
+                    while (true) {
+                        if (size3 >= 0) {
+                            if (!((ActivityRecord) openCloseActivities2.mOpenActivities.get(size3)).mOptInOnBackInvoked) {
+                                break;
+                            } else {
+                                size3--;
+                            }
+                        } else if (!openCloseActivities2.mCloseActivities.isEmpty()) {
+                            ArrayList arrayList2 = openCloseActivities2.mCloseActivities;
+                            ActivitySnapshotController activitySnapshotController = this.mActivitySnapshotController;
+                            if (!activitySnapshotController.shouldDisableSnapshots() && !arrayList2.isEmpty()) {
+                                int size4 = arrayList2.size();
+                                int[] iArr = new int[size4];
+                                if (size4 == 1) {
+                                    ActivityRecord activityRecord = (ActivityRecord) arrayList2.get(0);
+                                    if (activitySnapshotController.shouldDisableSnapshots() || (captureSnapshot = activitySnapshotController.captureSnapshot(activityRecord)) == null) {
+                                        captureSnapshot = null;
+                                    } else {
+                                        activitySnapshotController.mCache.putSnapshot(activityRecord, captureSnapshot);
+                                    }
+                                    if (captureSnapshot != null) {
+                                        iArr[0] = ActivitySnapshotController.getSystemHashCode(activityRecord);
+                                        activitySnapshotController.addUserSavedFile(activityRecord.mUserId, captureSnapshot, iArr);
+                                    }
+                                } else {
+                                    Task task2 = ((ActivityRecord) arrayList2.get(0)).task;
+                                    TaskSnapshot snapshot = activitySnapshotController.mService.mTaskSnapshotController.snapshot(task2, activitySnapshotController.mHighResSnapshotScale);
+                                    if (snapshot != null) {
+                                        for (int i2 = 0; i2 < arrayList2.size(); i2++) {
+                                            ActivityRecord activityRecord2 = (ActivityRecord) arrayList2.get(i2);
+                                            ((ActivitySnapshotCache) activitySnapshotController.mCache).putSnapshot(snapshot, activityRecord2);
+                                            iArr[i2] = ActivitySnapshotController.getSystemHashCode(activityRecord2);
+                                        }
+                                        activitySnapshotController.addUserSavedFile(task2.mUserId, snapshot, iArr);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
-    public void dump(PrintWriter printWriter, String str) {
-        this.mTaskSnapshotController.dump(printWriter, str);
-        this.mActivitySnapshotController.dump(printWriter, str);
+    public final void setPause(boolean z) {
+        SnapshotPersistQueue snapshotPersistQueue = this.mSnapshotPersistQueue;
+        synchronized (snapshotPersistQueue.mLock) {
+            try {
+                snapshotPersistQueue.mPaused = z;
+                if (!z) {
+                    snapshotPersistQueue.mLock.notifyAll();
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 }

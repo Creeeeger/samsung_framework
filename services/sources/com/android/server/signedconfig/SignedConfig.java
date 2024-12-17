@@ -1,5 +1,7 @@
 package com.android.server.signedconfig;
 
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,13 +12,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes3.dex */
-public class SignedConfig {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SignedConfig {
     public final List perSdkConfig;
     public final int version;
 
-    /* loaded from: classes3.dex */
-    public class PerSdkConfig {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PerSdkConfig {
         public final int maxSdk;
         public final int minSdk;
         public final Map values;
@@ -33,16 +36,9 @@ public class SignedConfig {
         this.perSdkConfig = Collections.unmodifiableList(list);
     }
 
-    public PerSdkConfig getMatchingConfig(int i) {
-        for (PerSdkConfig perSdkConfig : this.perSdkConfig) {
-            if (perSdkConfig.minSdk <= i && i <= perSdkConfig.maxSdk) {
-                return perSdkConfig;
-            }
-        }
-        return null;
-    }
-
-    public static SignedConfig parse(String str, Set set, Map map) {
+    public static SignedConfig parse(String str) {
+        Set set = GlobalSettingsConfigApplicator.ALLOWED_KEYS;
+        Map map = GlobalSettingsConfigApplicator.KEY_VALUE_MAPPERS;
         try {
             JSONObject jSONObject = new JSONObject(str);
             int i = jSONObject.getInt("version");
@@ -57,14 +53,7 @@ public class SignedConfig {
         }
     }
 
-    public static CharSequence quoted(Object obj) {
-        if (obj == null) {
-            return "null";
-        }
-        return "\"" + obj + "\"";
-    }
-
-    public static PerSdkConfig parsePerSdkConfig(JSONObject jSONObject, Set set, Map map) {
+    public static PerSdkConfig parsePerSdkConfig(JSONObject jSONObject, Set set, Map map) throws JSONException, InvalidConfigException {
         int i = jSONObject.getInt("min_sdk");
         int i2 = jSONObject.getInt("max_sdk");
         JSONObject jSONObject2 = jSONObject.getJSONObject("values");
@@ -73,12 +62,14 @@ public class SignedConfig {
             Object obj = jSONObject2.get(str);
             String obj2 = (obj == JSONObject.NULL || obj == null) ? null : obj.toString();
             if (!set.contains(str)) {
-                throw new InvalidConfigException("Config key " + str + " is not allowed");
+                throw new InvalidConfigException(XmlUtils$$ExternalSyntheticOutline0.m("Config key ", str, " is not allowed"));
             }
             if (map.containsKey(str)) {
                 Map map2 = (Map) map.get(str);
                 if (!map2.containsKey(obj2)) {
-                    throw new InvalidConfigException("Config key " + str + " contains unsupported value " + ((Object) quoted(obj2)));
+                    StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Config key ", str, " contains unsupported value ");
+                    m.append((Object) (obj2 == null ? "null" : "\"" + ((Object) obj2) + "\""));
+                    throw new InvalidConfigException(m.toString());
                 }
                 obj2 = (String) map2.get(obj2);
             }

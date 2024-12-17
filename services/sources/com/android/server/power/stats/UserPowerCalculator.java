@@ -8,15 +8,11 @@ import android.os.UserHandle;
 import android.util.SparseArray;
 import com.android.internal.util.ArrayUtils;
 
-/* loaded from: classes3.dex */
-public class UserPowerCalculator extends PowerCalculator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class UserPowerCalculator extends PowerCalculator {
     @Override // com.android.server.power.stats.PowerCalculator
-    public boolean isPowerComponentSupported(int i) {
-        return true;
-    }
-
-    @Override // com.android.server.power.stats.PowerCalculator
-    public void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
+    public final void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
         int[] userIds = batteryUsageStatsQuery.getUserIds();
         if (ArrayUtils.contains(userIds, -1)) {
             return;
@@ -35,5 +31,10 @@ public class UserPowerCalculator extends PowerCalculator {
                 }
             }
         }
+    }
+
+    @Override // com.android.server.power.stats.PowerCalculator
+    public final boolean isPowerComponentSupported(int i) {
+        return true;
     }
 }

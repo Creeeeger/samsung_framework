@@ -26,7 +26,6 @@ import android.content.pm.Signature;
 import android.content.pm.SigningInfo;
 import android.content.pm.parsing.result.ParseResult;
 import android.content.pm.parsing.result.ParseTypeImpl;
-import android.hardware.biometrics.SensorProperties;
 import android.hardware.face.FaceManager;
 import android.hardware.face.FaceSensorProperties;
 import android.hardware.face.FaceSensorPropertiesInternal;
@@ -46,25 +45,31 @@ import android.os.ShellCallback;
 import android.os.ShellCommand;
 import android.os.SystemProperties;
 import android.provider.DeviceConfig;
+import android.security.Flags;
 import android.text.TextUtils;
 import android.util.PackageUtils;
 import android.util.Slog;
 import android.util.apk.ApkSignatureVerifier;
 import com.android.internal.os.IBinaryTransparencyService;
+import com.android.internal.pm.parsing.pkg.AndroidPackageInternal;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.internal.util.jobs.XmlUtils;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
 import com.android.modules.expresslog.Histogram;
 import com.android.server.BinaryTransparencyService;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.backup.BackupManagerConstants;
-import com.android.server.display.DisplayPowerController2;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import com.android.server.pm.ApexManager;
+import com.android.server.pm.PackageSetting;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.AndroidPackageSplit;
 import com.android.server.pm.pkg.PackageState;
 import com.android.server.pm.pkg.PackageStateInternal;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.runtime.ObjectMethods;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -72,68 +77,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import libcore.util.HexEncoding;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class BinaryTransparencyService extends SystemService {
+public final class BinaryTransparencyService extends SystemService {
     static final String BINARY_HASH_ERROR = "SHA256HashError";
     static final String KEY_ENABLE_BIOMETRIC_PROPERTY_VERIFICATION = "enable_biometric_property_verification";
     static final String SYSPROP_NAME_VBETA_DIGEST = "ro.boot.vbmeta.digest";
     static final String VBMETA_DIGEST_UNAVAILABLE = "vbmeta-digest-unavailable";
     static final String VBMETA_DIGEST_UNINITIALIZED = "vbmeta-digest-uninitialized";
-    public static final Histogram digestAllPackagesLatency = new Histogram("binary_transparency.value_digest_all_packages_latency_uniform", new Histogram.UniformOptions(50, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 500.0f));
-    public BiometricLogger mBiometricLogger;
+    public static final Histogram digestAllPackagesLatency = new Histogram("binary_transparency.value_digest_all_packages_latency_uniform", new Histogram.UniformOptions(50, FullScreenMagnificationGestureHandler.MAX_SCALE, 500.0f));
+    public final BiometricLogger mBiometricLogger;
     public final Context mContext;
     public long mMeasurementsLastRecordedMs;
-    public PackageManagerInternal mPackageManagerInternal;
+    public final PackageManagerInternal mPackageManagerInternal;
     public final BinaryTransparencyServiceImpl mServiceImpl;
     public String mVbmetaDigest;
 
-    public final int toFaceSensorType(int i) {
-        if (i != 1) {
-            return i != 2 ? 0 : 7;
-        }
-        return 6;
-    }
-
-    public final int toFingerprintSensorType(int i) {
-        if (i == 1) {
-            return 1;
-        }
-        if (i == 2) {
-            return 2;
-        }
-        if (i == 3) {
-            return 3;
-        }
-        if (i != 4) {
-            return i != 5 ? 0 : 5;
-        }
-        return 4;
-    }
-
-    public final int toSensorStrength(int i) {
-        if (i == 0) {
-            return 1;
-        }
-        if (i != 1) {
-            return i != 2 ? 0 : 3;
-        }
-        return 2;
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class BinaryTransparencyServiceImpl extends IBinaryTransparencyService.Stub {
         public BinaryTransparencyServiceImpl() {
         }
 
-        public String getSignedImageInfo() {
-            return BinaryTransparencyService.this.mVbmetaDigest;
+        public static Map computeApkContentDigest(String str) {
+            ParseResult verifySignaturesInternal = ApkSignatureVerifier.verifySignaturesInternal(ParseTypeImpl.forDefaultParsing(), str, 2, false);
+            if (!verifySignaturesInternal.isError()) {
+                return ((ApkSignatureVerifier.SigningDetailsWithDigests) verifySignaturesInternal.getResult()).contentDigests;
+            }
+            StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Failed to compute content digest for ", str, " due to: ");
+            m.append(verifySignaturesInternal.getErrorMessage());
+            Slog.e("TransparencyService", m.toString());
+            return null;
         }
 
-        public final String[] computePackageSignerSha256Digests(SigningInfo signingInfo) {
+        public static String[] computePackageSignerSha256Digests(SigningInfo signingInfo) {
             if (signingInfo == null) {
                 Slog.e("TransparencyService", "signingInfo is null");
                 return null;
@@ -146,12 +125,106 @@ public class BinaryTransparencyService extends SystemService {
             return (String[]) arrayList.toArray(new String[1]);
         }
 
+        public static Digest measureApk(String str) {
+            Map computeApkContentDigest = computeApkContentDigest(str);
+            if (computeApkContentDigest == null) {
+                BinaryTransparencyService$$ExternalSyntheticOutline0.m("Failed to compute content digest for ", str, "TransparencyService");
+            } else {
+                if (computeApkContentDigest.containsKey(1)) {
+                    return new Digest(1, (byte[]) computeApkContentDigest.get(1));
+                }
+                if (computeApkContentDigest.containsKey(2)) {
+                    return new Digest(2, (byte[]) computeApkContentDigest.get(2));
+                }
+            }
+            return new Digest(4, PackageUtils.computeSha256DigestForLargeFileAsBytes(str, PackageUtils.createLargeFileBuffer()));
+        }
+
+        public static void writeAppInfoToLog(IBinaryTransparencyService.AppInfo appInfo) {
+            String str = appInfo.packageName;
+            long j = appInfo.longVersion;
+            byte[] bArr = appInfo.digest;
+            FrameworkStatsLog.write(FrameworkStatsLog.MOBILE_BUNDLED_APP_INFO_GATHERED, str, j, bArr != null ? HexEncoding.encodeToString(bArr, false) : null, appInfo.digestAlgorithm, appInfo.signerDigests, appInfo.mbaStatus, appInfo.initiator, appInfo.initiatorSignerDigests, appInfo.installer, appInfo.originator, appInfo.splitName);
+        }
+
+        public final List collectAllApexInfo(boolean z) {
+            ArrayList arrayList = new ArrayList();
+            for (PackageInfo packageInfo : BinaryTransparencyService.m46$$Nest$mgetCurrentInstalledApexs(BinaryTransparencyService.this)) {
+                PackageStateInternal packageStateInternal = BinaryTransparencyService.this.mPackageManagerInternal.getPackageStateInternal(packageInfo.packageName);
+                if (packageStateInternal == null) {
+                    BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("Package state is unavailable, ignoring the APEX "), packageInfo.packageName, "TransparencyService");
+                } else {
+                    PackageSetting packageSetting = (PackageSetting) packageStateInternal;
+                    AndroidPackageInternal androidPackageInternal = packageSetting.pkg;
+                    if (androidPackageInternal == null) {
+                        Slog.w("TransparencyService", "Skipping the missing APK in " + androidPackageInternal.getPath());
+                    } else {
+                        Digest measureApk = measureApk(androidPackageInternal.getPath());
+                        IBinaryTransparencyService.ApexInfo apexInfo = new IBinaryTransparencyService.ApexInfo();
+                        apexInfo.packageName = packageSetting.mName;
+                        apexInfo.longVersion = packageSetting.versionCode;
+                        apexInfo.digest = measureApk.value;
+                        apexInfo.digestAlgorithm = measureApk.algorithm;
+                        apexInfo.signerDigests = computePackageSignerSha256Digests(packageSetting.getSigningInfo());
+                        if (z) {
+                            BinaryTransparencyService binaryTransparencyService = BinaryTransparencyService.this;
+                            String str = packageSetting.mName;
+                            binaryTransparencyService.getClass();
+                            apexInfo.moduleName = ApexManager.getInstance().getApexModuleNameForPackageName(str);
+                        }
+                        arrayList.add(apexInfo);
+                    }
+                }
+            }
+            return arrayList;
+        }
+
+        public final List collectAllSilentInstalledMbaInfo(Bundle bundle) {
+            ArrayList arrayList = new ArrayList();
+            for (PackageInfo packageInfo : BinaryTransparencyService.m47$$Nest$mgetNewlyInstalledMbas(BinaryTransparencyService.this)) {
+                if (!bundle.containsKey(packageInfo.packageName)) {
+                    PackageStateInternal packageStateInternal = BinaryTransparencyService.this.mPackageManagerInternal.getPackageStateInternal(packageInfo.packageName);
+                    if (packageStateInternal == null) {
+                        BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("Package state is unavailable, ignoring the package "), packageInfo.packageName, "TransparencyService");
+                    } else {
+                        arrayList.addAll(collectAppInfo(packageStateInternal, 3));
+                    }
+                }
+            }
+            return arrayList;
+        }
+
+        public final List collectAllUpdatedPreloadInfo(final Bundle bundle) {
+            final ArrayList arrayList = new ArrayList();
+            BinaryTransparencyService.this.mContext.getPackageManager();
+            BinaryTransparencyService.this.mPackageManagerInternal.forEachPackageState(new Consumer() { // from class: com.android.server.BinaryTransparencyService$BinaryTransparencyServiceImpl$$ExternalSyntheticLambda1
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    BinaryTransparencyService.BinaryTransparencyServiceImpl binaryTransparencyServiceImpl = BinaryTransparencyService.BinaryTransparencyServiceImpl.this;
+                    Bundle bundle2 = bundle;
+                    ArrayList arrayList2 = arrayList;
+                    PackageStateInternal packageStateInternal = (PackageStateInternal) obj;
+                    binaryTransparencyServiceImpl.getClass();
+                    if (packageStateInternal.isUpdatedSystemApp() && !bundle2.containsKey(packageStateInternal.getPackageName())) {
+                        Slog.d("TransparencyService", "Preload " + packageStateInternal.getPackageName() + " at " + packageStateInternal.getPath() + " has likely been updated.");
+                        arrayList2.addAll(binaryTransparencyServiceImpl.collectAppInfo(packageStateInternal, 2));
+                    }
+                }
+            });
+            return arrayList;
+        }
+
         public final List collectAppInfo(PackageState packageState, int i) {
             ArrayList arrayList = new ArrayList();
             String packageName = packageState.getPackageName();
             long versionCode = packageState.getVersionCode();
             String[] computePackageSignerSha256Digests = computePackageSignerSha256Digests(packageState.getSigningInfo());
-            for (AndroidPackageSplit androidPackageSplit : packageState.getAndroidPackage().getSplits()) {
+            AndroidPackage androidPackage = packageState.getAndroidPackage();
+            if (androidPackage == null) {
+                Slog.w("TransparencyService", "Skipping the missing APK in " + packageState.getPath());
+                return arrayList;
+            }
+            for (AndroidPackageSplit androidPackageSplit : androidPackage.getSplits()) {
                 IBinaryTransparencyService.AppInfo appInfo = new IBinaryTransparencyService.AppInfo();
                 appInfo.packageName = packageName;
                 appInfo.longVersion = versionCode;
@@ -164,7 +237,19 @@ public class BinaryTransparencyService extends SystemService {
                 arrayList.add(appInfo);
             }
             IBinaryTransparencyService.AppInfo appInfo2 = (IBinaryTransparencyService.AppInfo) arrayList.get(0);
-            InstallSourceInfo installSourceInfo = BinaryTransparencyService.this.getInstallSourceInfo(packageState.getPackageName());
+            BinaryTransparencyService binaryTransparencyService = BinaryTransparencyService.this;
+            String packageName2 = packageState.getPackageName();
+            PackageManager packageManager = binaryTransparencyService.mContext.getPackageManager();
+            InstallSourceInfo installSourceInfo = null;
+            if (packageManager == null) {
+                Slog.e("TransparencyService", "Error obtaining an instance of PackageManager.");
+            } else {
+                try {
+                    installSourceInfo = packageManager.getInstallSourceInfo(packageName2);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
             if (installSourceInfo != null) {
                 appInfo2.initiator = installSourceInfo.getInitiatingPackageName();
                 SigningInfo initiatingPackageSigningInfo = installSourceInfo.getInitiatingPackageSigningInfo();
@@ -177,245 +262,40 @@ public class BinaryTransparencyService extends SystemService {
             return arrayList;
         }
 
-        public final Digest measureApk(String str) {
-            Map computeApkContentDigest = computeApkContentDigest(str);
-            if (computeApkContentDigest == null) {
-                Slog.d("TransparencyService", "Failed to compute content digest for " + str);
-            } else {
-                if (computeApkContentDigest.containsKey(1)) {
-                    return new Digest(1, (byte[]) computeApkContentDigest.get(1));
-                }
-                if (computeApkContentDigest.containsKey(2)) {
-                    return new Digest(2, (byte[]) computeApkContentDigest.get(2));
-                }
-            }
-            return new Digest(4, PackageUtils.computeSha256DigestForLargeFileAsBytes(str, PackageUtils.createLargeFileBuffer()));
-        }
-
-        public void recordMeasurementsForAllPackages() {
-            long currentTimeMillis = System.currentTimeMillis();
-            if (currentTimeMillis - BinaryTransparencyService.this.mMeasurementsLastRecordedMs < BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS) {
-                Slog.d("TransparencyService", "Skip measurement since the last measurement was only taken at " + BinaryTransparencyService.this.mMeasurementsLastRecordedMs + " within the cooldown period");
-                return;
-            }
-            Slog.d("TransparencyService", "Measurement was last taken at " + BinaryTransparencyService.this.mMeasurementsLastRecordedMs + " and is now updated to: " + currentTimeMillis);
-            BinaryTransparencyService.this.mMeasurementsLastRecordedMs = currentTimeMillis;
-            Bundle bundle = new Bundle();
-            for (IBinaryTransparencyService.ApexInfo apexInfo : collectAllApexInfo(false)) {
-                bundle.putBoolean(apexInfo.packageName, true);
-                recordApexInfo(apexInfo);
-            }
-            for (IBinaryTransparencyService.AppInfo appInfo : collectAllUpdatedPreloadInfo(bundle)) {
-                bundle.putBoolean(appInfo.packageName, true);
-                writeAppInfoToLog(appInfo);
-            }
-            if (CompatChanges.isChangeEnabled(245692487L)) {
-                for (IBinaryTransparencyService.AppInfo appInfo2 : collectAllSilentInstalledMbaInfo(bundle)) {
-                    bundle.putBoolean(appInfo2.packageName, true);
-                    writeAppInfoToLog(appInfo2);
-                }
-            }
-            BinaryTransparencyService.digestAllPackagesLatency.logSample((float) (System.currentTimeMillis() - currentTimeMillis));
-        }
-
-        public List collectAllApexInfo(boolean z) {
-            ArrayList arrayList = new ArrayList();
-            for (PackageInfo packageInfo : BinaryTransparencyService.this.getCurrentInstalledApexs()) {
-                PackageStateInternal packageStateInternal = BinaryTransparencyService.this.mPackageManagerInternal.getPackageStateInternal(packageInfo.packageName);
-                if (packageStateInternal == null) {
-                    Slog.w("TransparencyService", "Package state is unavailable, ignoring the APEX " + packageInfo.packageName);
-                } else {
-                    AndroidPackage androidPackage = packageStateInternal.getAndroidPackage();
-                    if (androidPackage == null) {
-                        Slog.w("TransparencyService", "Skipping the missing APK in " + androidPackage.getPath());
-                    } else {
-                        Digest measureApk = measureApk(androidPackage.getPath());
-                        if (measureApk == null) {
-                            Slog.w("TransparencyService", "Skipping the missing APEX in " + androidPackage.getPath());
-                        } else {
-                            IBinaryTransparencyService.ApexInfo apexInfo = new IBinaryTransparencyService.ApexInfo();
-                            apexInfo.packageName = packageStateInternal.getPackageName();
-                            apexInfo.longVersion = packageStateInternal.getVersionCode();
-                            apexInfo.digest = measureApk.value;
-                            apexInfo.digestAlgorithm = measureApk.algorithm;
-                            apexInfo.signerDigests = computePackageSignerSha256Digests(packageStateInternal.getSigningInfo());
-                            if (z) {
-                                apexInfo.moduleName = BinaryTransparencyService.this.apexPackageNameToModuleName(packageStateInternal.getPackageName());
-                            }
-                            arrayList.add(apexInfo);
-                        }
-                    }
-                }
-            }
-            return arrayList;
-        }
-
-        public List collectAllUpdatedPreloadInfo(final Bundle bundle) {
-            final ArrayList arrayList = new ArrayList();
-            BinaryTransparencyService.this.mContext.getPackageManager();
-            BinaryTransparencyService.this.mPackageManagerInternal.forEachPackageState(new Consumer() { // from class: com.android.server.BinaryTransparencyService$BinaryTransparencyServiceImpl$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    BinaryTransparencyService.BinaryTransparencyServiceImpl.this.lambda$collectAllUpdatedPreloadInfo$0(bundle, arrayList, (PackageStateInternal) obj);
-                }
-            });
-            return arrayList;
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$collectAllUpdatedPreloadInfo$0(Bundle bundle, ArrayList arrayList, PackageStateInternal packageStateInternal) {
-            if (packageStateInternal.isUpdatedSystemApp() && !bundle.containsKey(packageStateInternal.getPackageName())) {
-                Slog.d("TransparencyService", "Preload " + packageStateInternal.getPackageName() + " at " + packageStateInternal.getPath() + " has likely been updated.");
-                arrayList.addAll(collectAppInfo(packageStateInternal, 2));
-            }
-        }
-
-        public List collectAllSilentInstalledMbaInfo(Bundle bundle) {
-            ArrayList arrayList = new ArrayList();
-            for (PackageInfo packageInfo : BinaryTransparencyService.this.getNewlyInstalledMbas()) {
-                if (!bundle.containsKey(packageInfo.packageName)) {
-                    PackageStateInternal packageStateInternal = BinaryTransparencyService.this.mPackageManagerInternal.getPackageStateInternal(packageInfo.packageName);
-                    if (packageStateInternal == null) {
-                        Slog.w("TransparencyService", "Package state is unavailable, ignoring the package " + packageInfo.packageName);
-                    } else {
-                        arrayList.addAll(collectAppInfo(packageStateInternal, 3));
-                    }
-                }
-            }
-            return arrayList;
-        }
-
-        public final void recordApexInfo(IBinaryTransparencyService.ApexInfo apexInfo) {
-            String str = apexInfo.packageName;
-            long j = apexInfo.longVersion;
-            byte[] bArr = apexInfo.digest;
-            FrameworkStatsLog.write(FrameworkStatsLog.APEX_INFO_GATHERED, str, j, bArr != null ? HexEncoding.encodeToString(bArr, false) : null, apexInfo.digestAlgorithm, apexInfo.signerDigests);
-        }
-
-        public final void writeAppInfoToLog(IBinaryTransparencyService.AppInfo appInfo) {
-            String str = appInfo.packageName;
-            long j = appInfo.longVersion;
-            byte[] bArr = appInfo.digest;
-            FrameworkStatsLog.write(FrameworkStatsLog.MOBILE_BUNDLED_APP_INFO_GATHERED, str, j, bArr != null ? HexEncoding.encodeToString(bArr, false) : null, appInfo.digestAlgorithm, appInfo.signerDigests, appInfo.mbaStatus, appInfo.initiator, appInfo.initiatorSignerDigests, appInfo.installer, appInfo.originator, appInfo.splitName);
-        }
-
-        public final Map computeApkContentDigest(String str) {
-            ParseResult verifySignaturesInternal = ApkSignatureVerifier.verifySignaturesInternal(ParseTypeImpl.forDefaultParsing(), str, 2, false);
-            if (verifySignaturesInternal.isError()) {
-                Slog.e("TransparencyService", "Failed to compute content digest for " + str + " due to: " + verifySignaturesInternal.getErrorMessage());
-                return null;
-            }
-            return ((ApkSignatureVerifier.SigningDetailsWithDigests) verifySignaturesInternal.getResult()).contentDigests;
+        public final String getSignedImageInfo() {
+            return BinaryTransparencyService.this.mVbmetaDigest;
         }
 
         /* JADX WARN: Multi-variable type inference failed */
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
             new ShellCommand() { // from class: com.android.server.BinaryTransparencyService.BinaryTransparencyServiceImpl.1
-                public final int printSignedImageInfo() {
-                    PrintWriter outPrintWriter = getOutPrintWriter();
-                    boolean z = false;
-                    while (true) {
-                        String nextOption = getNextOption();
-                        if (nextOption != null) {
-                            if (!nextOption.equals("-a")) {
-                                outPrintWriter.println("ERROR: Unknown option: " + nextOption);
-                                return 1;
-                            }
-                            z = true;
-                        } else {
-                            String signedImageInfo = BinaryTransparencyServiceImpl.this.getSignedImageInfo();
-                            outPrintWriter.println("Image Info:");
-                            outPrintWriter.println(Build.FINGERPRINT);
-                            outPrintWriter.println(signedImageInfo);
-                            outPrintWriter.println("");
-                            if (z) {
-                                if (BinaryTransparencyService.this.mContext.getPackageManager() == null) {
-                                    outPrintWriter.println("ERROR: Failed to obtain an instance of package manager.");
-                                    return -1;
-                                }
-                                outPrintWriter.println("Other partitions:");
-                                for (Build.Partition partition : Build.getFingerprintedPartitions()) {
-                                    outPrintWriter.println("Name: " + partition.getName());
-                                    outPrintWriter.println("Fingerprint: " + partition.getFingerprint());
-                                    outPrintWriter.println("Build time (ms): " + partition.getBuildTimeMillis());
-                                }
-                            }
-                            return 0;
-                        }
-                    }
-                }
-
-                public final void printPackageMeasurements(PackageInfo packageInfo, boolean z, PrintWriter printWriter) {
-                    Map computeApkContentDigest = BinaryTransparencyServiceImpl.this.computeApkContentDigest(packageInfo.applicationInfo.sourceDir);
-                    if (computeApkContentDigest == null) {
-                        printWriter.println("ERROR: Failed to compute package content digest for " + packageInfo.applicationInfo.sourceDir);
-                        return;
-                    }
+                public static void printHeadersHelper(PrintWriter printWriter, String str, boolean z) {
+                    printWriter.print(str.concat(" Info [Format: package_name,package_version,"));
                     if (z) {
-                        printWriter.print(PackageUtils.computeSha256DigestForLargeFile(packageInfo.applicationInfo.sourceDir, PackageUtils.createLargeFileBuffer()) + ",");
+                        printWriter.print("package_sha256_digest,");
                     }
-                    for (Map.Entry entry : computeApkContentDigest.entrySet()) {
-                        Integer num = (Integer) entry.getKey();
-                        byte[] bArr = (byte[]) entry.getValue();
-                        printWriter.print(BinaryTransparencyService.this.translateContentDigestAlgorithmIdToString(num.intValue()));
-                        printWriter.print(XmlUtils.STRING_ARRAY_SEPARATOR);
-                        printWriter.print(HexEncoding.encodeToString(bArr, false));
-                        printWriter.print(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                    }
+                    printWriter.print("content_digest_algorithm:content_digest]:\n");
                 }
 
-                public final void printPackageInstallationInfo(PackageInfo packageInfo, boolean z, PrintWriter printWriter) {
-                    printWriter.println("--- Package Installation Info ---");
-                    printWriter.println("Current install location: " + packageInfo.applicationInfo.sourceDir);
-                    if (packageInfo.applicationInfo.sourceDir.startsWith("/data/apex/")) {
-                        String originalApexPreinstalledLocation = BinaryTransparencyService.this.getOriginalApexPreinstalledLocation(packageInfo.packageName);
-                        printWriter.println("|--> Pre-installed package install location: " + originalApexPreinstalledLocation);
-                        if (!originalApexPreinstalledLocation.equals("could-not-be-determined")) {
-                            if (z) {
-                                printWriter.println("|--> Pre-installed package SHA-256 digest: " + PackageUtils.computeSha256DigestForLargeFile(originalApexPreinstalledLocation, PackageUtils.createLargeFileBuffer()));
-                            }
-                            Map computeApkContentDigest = BinaryTransparencyServiceImpl.this.computeApkContentDigest(originalApexPreinstalledLocation);
-                            if (computeApkContentDigest == null) {
-                                printWriter.println("|--> ERROR: Failed to compute package content digest for " + originalApexPreinstalledLocation);
-                            } else {
-                                for (Map.Entry entry : computeApkContentDigest.entrySet()) {
-                                    Integer num = (Integer) entry.getKey();
-                                    printWriter.println("|--> Pre-installed package content digest: " + HexEncoding.encodeToString((byte[]) entry.getValue(), false));
-                                    printWriter.println("|--> Pre-installed package content digest algorithm: " + BinaryTransparencyService.this.translateContentDigestAlgorithmIdToString(num.intValue()));
-                                }
-                            }
-                        }
-                    }
-                    printWriter.println("First install time (ms): " + packageInfo.firstInstallTime);
-                    printWriter.println("Last update time (ms):   " + packageInfo.lastUpdateTime);
-                    printWriter.println("Is preloaded: " + (packageInfo.firstInstallTime == packageInfo.lastUpdateTime));
-                    InstallSourceInfo installSourceInfo = BinaryTransparencyService.this.getInstallSourceInfo(packageInfo.packageName);
-                    if (installSourceInfo == null) {
-                        printWriter.println("ERROR: Unable to obtain installSourceInfo of " + packageInfo.packageName);
-                    } else {
-                        printWriter.println("Installation initiated by: " + installSourceInfo.getInitiatingPackageName());
-                        printWriter.println("Installation done by: " + installSourceInfo.getInstallingPackageName());
-                        printWriter.println("Installation originating from: " + installSourceInfo.getOriginatingPackageName());
-                    }
-                    if (packageInfo.isApex) {
-                        printWriter.println("Is an active APEX: " + packageInfo.isActiveApex);
-                    }
+                public static void printModuleDetails(ModuleInfo moduleInfo, PrintWriter printWriter) {
+                    StringBuilder m$1 = BinaryTransparencyService$$ExternalSyntheticOutline0.m$1(printWriter, "--- Module Details ---", "Module name: ");
+                    m$1.append((Object) moduleInfo.getName());
+                    printWriter.println(m$1.toString());
+                    printWriter.println("Module visibility: ".concat(moduleInfo.isHidden() ? "hidden" : "visible"));
                 }
 
-                public final void printPackageSignerDetails(SigningInfo signingInfo, PrintWriter printWriter) {
+                public static void printPackageSignerDetails(SigningInfo signingInfo, PrintWriter printWriter) {
                     if (signingInfo == null) {
                         printWriter.println("ERROR: Package's signingInfo is null.");
                         return;
                     }
-                    printWriter.println("--- Package Signer Info ---");
-                    printWriter.println("Has multiple signers: " + signingInfo.hasMultipleSigners());
+                    StringBuilder m$1 = BinaryTransparencyService$$ExternalSyntheticOutline0.m$1(printWriter, "--- Package Signer Info ---", "Has multiple signers: ");
+                    m$1.append(signingInfo.hasMultipleSigners());
+                    printWriter.println(m$1.toString());
                     printWriter.println("Signing key has been rotated: " + signingInfo.hasPastSigningCertificates());
-                    Signature[] apkContentsSigners = signingInfo.getApkContentsSigners();
-                    int length = apkContentsSigners.length;
-                    for (int i = 0; i < length; i++) {
-                        Signature signature = apkContentsSigners[i];
+                    for (Signature signature : signingInfo.getApkContentsSigners()) {
                         String encodeToString = HexEncoding.encodeToString(PackageUtils.computeSha256DigestBytes(signature.toByteArray()), false);
-                        printWriter.println("Signer cert's SHA256-digest: " + encodeToString);
+                        BinaryTransparencyService$$ExternalSyntheticOutline0.m50m(printWriter, "Signer cert's SHA256-digest: ", encodeToString);
                         try {
                             printWriter.println("Signing key algorithm: " + signature.getPublicKey().getAlgorithm());
                         } catch (CertificateException e) {
@@ -428,14 +308,13 @@ public class BinaryTransparencyService extends SystemService {
                     printWriter.println("== Signing Cert Lineage (Excluding The Most Recent) ==");
                     printWriter.println("(Certs are sorted in the order of rotation, beginning with the original signing cert)");
                     Signature[] signingCertificateHistory = signingInfo.getSigningCertificateHistory();
-                    int i2 = 0;
-                    while (i2 < signingCertificateHistory.length - 1) {
-                        Signature signature2 = signingCertificateHistory[i2];
+                    int i = 0;
+                    while (i < signingCertificateHistory.length - 1) {
+                        Signature signature2 = signingCertificateHistory[i];
                         String encodeToString2 = HexEncoding.encodeToString(PackageUtils.computeSha256DigestBytes(signature2.toByteArray()), false);
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("  ++ Signer cert #");
-                        i2++;
-                        sb.append(i2);
+                        StringBuilder sb = new StringBuilder("  ++ Signer cert #");
+                        i++;
+                        sb.append(i);
                         sb.append(" ++");
                         printWriter.println(sb.toString());
                         printWriter.println("  Cert SHA256-digest: " + encodeToString2);
@@ -447,38 +326,510 @@ public class BinaryTransparencyService extends SystemService {
                     }
                 }
 
-                public final void printModuleDetails(ModuleInfo moduleInfo, PrintWriter printWriter) {
-                    printWriter.println("--- Module Details ---");
-                    printWriter.println("Module name: " + ((Object) moduleInfo.getName()));
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Module visibility: ");
-                    sb.append(moduleInfo.isHidden() ? "hidden" : "visible");
-                    printWriter.println(sb.toString());
+                /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+                public final int onCommand(String str) {
+                    char c;
+                    String str2;
+                    Iterator<ModuleInfo> it;
+                    PackageInfo packageInfo;
+                    StringBuilder sb;
+                    Object obj;
+                    char c2;
+                    PackageManager packageManager;
+                    String str3;
+                    char c3;
+                    char c4;
+                    char c5;
+                    String str4 = "--no-headers";
+                    if (str == null) {
+                        return handleDefaultCommands(str);
+                    }
+                    PrintWriter outPrintWriter = getOutPrintWriter();
+                    if (!str.equals("get")) {
+                        return handleDefaultCommands(str);
+                    }
+                    String nextArg = getNextArg();
+                    if (nextArg == null) {
+                        printHelpMenu();
+                        return -1;
+                    }
+                    switch (nextArg.hashCode()) {
+                        case -1443097326:
+                            if (nextArg.equals("image_info")) {
+                                c = 0;
+                                break;
+                            }
+                            c = 65535;
+                            break;
+                        case -1195140447:
+                            if (nextArg.equals("module_info")) {
+                                c = 1;
+                                break;
+                            }
+                            c = 65535;
+                            break;
+                        case 636812193:
+                            if (nextArg.equals("mba_info")) {
+                                c = 2;
+                                break;
+                            }
+                            c = 65535;
+                            break;
+                        case 1366866347:
+                            if (nextArg.equals("apex_info")) {
+                                c = 3;
+                                break;
+                            }
+                            c = 65535;
+                            break;
+                        default:
+                            c = 65535;
+                            break;
+                    }
+                    switch (c) {
+                        case 0:
+                            PrintWriter outPrintWriter2 = getOutPrintWriter();
+                            boolean z = false;
+                            while (true) {
+                                String nextOption = getNextOption();
+                                if (nextOption == null) {
+                                    String str5 = BinaryTransparencyService.this.mVbmetaDigest;
+                                    outPrintWriter2.println("Image Info:");
+                                    BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter2, Build.FINGERPRINT, str5, "");
+                                    if (z) {
+                                        if (BinaryTransparencyService.this.mContext.getPackageManager() == null) {
+                                            outPrintWriter2.println("ERROR: Failed to obtain an instance of package manager.");
+                                            break;
+                                        } else {
+                                            outPrintWriter2.println("Other partitions:");
+                                            for (Build.Partition partition : Build.getFingerprintedPartitions()) {
+                                                outPrintWriter2.println("Name: " + partition.getName());
+                                                outPrintWriter2.println("Fingerprint: " + partition.getFingerprint());
+                                                outPrintWriter2.println("Build time (ms): " + partition.getBuildTimeMillis());
+                                            }
+                                            break;
+                                        }
+                                    }
+                                } else if (!nextOption.equals("-a")) {
+                                    outPrintWriter2.println("ERROR: Unknown option: ".concat(nextOption));
+                                    break;
+                                } else {
+                                    z = true;
+                                }
+                            }
+                            break;
+                        case 1:
+                            Object obj2 = "--no-headers";
+                            PrintWriter outPrintWriter3 = getOutPrintWriter();
+                            boolean z2 = false;
+                            boolean z3 = true;
+                            boolean z4 = false;
+                            while (true) {
+                                String nextOption2 = getNextOption();
+                                if (nextOption2 == null) {
+                                    PackageManager packageManager2 = BinaryTransparencyService.this.mContext.getPackageManager();
+                                    if (packageManager2 == null) {
+                                        outPrintWriter3.println("ERROR: Failed to obtain an instance of package manager.");
+                                        break;
+                                    } else {
+                                        String str6 = "Module";
+                                        if (!z2 && z3) {
+                                            printHeadersHelper(outPrintWriter3, "Module", z4);
+                                        }
+                                        Iterator<ModuleInfo> it2 = packageManager2.getInstalledModules(131072).iterator();
+                                        while (it2.hasNext()) {
+                                            ModuleInfo next = it2.next();
+                                            String packageName = next.getPackageName();
+                                            if (z2 && z3) {
+                                                printHeadersHelper(outPrintWriter3, str6, z4);
+                                            }
+                                            try {
+                                                packageInfo = packageManager2.getPackageInfo(packageName, 1207959552);
+                                                outPrintWriter3.print(packageInfo.packageName + ",");
+                                                sb = new StringBuilder();
+                                                str2 = str6;
+                                                it = it2;
+                                            } catch (PackageManager.NameNotFoundException unused) {
+                                                str2 = str6;
+                                                it = it2;
+                                            }
+                                            try {
+                                                sb.append(packageInfo.getLongVersionCode());
+                                                sb.append(",");
+                                                outPrintWriter3.print(sb.toString());
+                                                printPackageMeasurements(packageInfo, z4, outPrintWriter3);
+                                                if (z2) {
+                                                    printModuleDetails(next, outPrintWriter3);
+                                                    printPackageInstallationInfo(packageInfo, z4, outPrintWriter3);
+                                                    printPackageSignerDetails(packageInfo.signingInfo, outPrintWriter3);
+                                                    outPrintWriter3.println("");
+                                                }
+                                            } catch (PackageManager.NameNotFoundException unused2) {
+                                                outPrintWriter3.println(packageName + ",ERROR:Unable to find PackageInfo for this module.");
+                                                if (z2) {
+                                                    printModuleDetails(next, outPrintWriter3);
+                                                    outPrintWriter3.println("");
+                                                }
+                                                str6 = str2;
+                                                it2 = it;
+                                            }
+                                            str6 = str2;
+                                            it2 = it;
+                                        }
+                                        break;
+                                    }
+                                } else {
+                                    switch (nextOption2.hashCode()) {
+                                        case 1506:
+                                            obj = obj2;
+                                            if (nextOption2.equals("-o")) {
+                                                c2 = 0;
+                                                break;
+                                            }
+                                            c2 = 65535;
+                                            break;
+                                        case 1513:
+                                            obj = obj2;
+                                            if (nextOption2.equals("-v")) {
+                                                c2 = 1;
+                                                break;
+                                            }
+                                            c2 = 65535;
+                                            break;
+                                        case 43009159:
+                                            obj = obj2;
+                                            if (nextOption2.equals("--old")) {
+                                                c2 = 2;
+                                                break;
+                                            }
+                                            c2 = 65535;
+                                            break;
+                                        case 967085338:
+                                            obj = obj2;
+                                            if (nextOption2.equals(obj)) {
+                                                c2 = 3;
+                                                break;
+                                            }
+                                            c2 = 65535;
+                                            break;
+                                        case 1737088994:
+                                            if (nextOption2.equals("--verbose")) {
+                                                obj = obj2;
+                                                c2 = 4;
+                                                break;
+                                            }
+                                        default:
+                                            obj = obj2;
+                                            c2 = 65535;
+                                            break;
+                                    }
+                                    switch (c2) {
+                                        case 0:
+                                        case 2:
+                                            z4 = true;
+                                            break;
+                                        case 1:
+                                        case 4:
+                                            z2 = true;
+                                            break;
+                                        case 3:
+                                            z3 = false;
+                                            break;
+                                        default:
+                                            outPrintWriter3.println("ERROR: Unknown option: ".concat(nextOption2));
+                                            break;
+                                    }
+                                    obj2 = obj;
+                                }
+                            }
+                        case 2:
+                            PrintWriter outPrintWriter4 = getOutPrintWriter();
+                            boolean z5 = false;
+                            boolean z6 = false;
+                            boolean z7 = false;
+                            boolean z8 = false;
+                            boolean z9 = true;
+                            while (true) {
+                                String nextOption3 = getNextOption();
+                                if (nextOption3 == null) {
+                                    String str7 = "MBA";
+                                    String str8 = "Preload";
+                                    if (!z5 && z9) {
+                                        if (z6) {
+                                            printHeadersHelper(outPrintWriter4, "Preload", z7);
+                                        } else {
+                                            printHeadersHelper(outPrintWriter4, "MBA", z7);
+                                        }
+                                    }
+                                    PackageManager packageManager3 = BinaryTransparencyService.this.mContext.getPackageManager();
+                                    for (PackageInfo packageInfo2 : packageManager3.getInstalledPackages(PackageManager.PackageInfoFlags.of(136314880L))) {
+                                        if (packageInfo2.signingInfo == null) {
+                                            try {
+                                                packageManager3.getPackageInfo(packageInfo2.packageName, PackageManager.PackageInfoFlags.of(134348800L));
+                                            } catch (PackageManager.NameNotFoundException unused3) {
+                                                packageManager = packageManager3;
+                                                BinaryTransparencyService$$ExternalSyntheticOutline0.m$1(new StringBuilder("Failed to obtain an updated PackageInfo of "), packageInfo2.packageName, "ShellCommand");
+                                            }
+                                        }
+                                        packageManager = packageManager3;
+                                        if (z5 && z9) {
+                                            printHeadersHelper(outPrintWriter4, str8, z7);
+                                        }
+                                        outPrintWriter4.print(packageInfo2.packageName + ",");
+                                        StringBuilder sb2 = new StringBuilder();
+                                        String str9 = str7;
+                                        String str10 = str8;
+                                        sb2.append(packageInfo2.getLongVersionCode());
+                                        sb2.append(",");
+                                        outPrintWriter4.print(sb2.toString());
+                                        printPackageMeasurements(packageInfo2, z7, outPrintWriter4);
+                                        if (z5) {
+                                            printAppDetails(packageInfo2, z8, outPrintWriter4);
+                                            printPackageInstallationInfo(packageInfo2, z7, outPrintWriter4);
+                                            printPackageSignerDetails(packageInfo2.signingInfo, outPrintWriter4);
+                                            outPrintWriter4.println("");
+                                        }
+                                        packageManager3 = packageManager;
+                                        str7 = str9;
+                                        str8 = str10;
+                                    }
+                                    String str11 = str7;
+                                    if (!z6) {
+                                        for (PackageInfo packageInfo3 : BinaryTransparencyService.m47$$Nest$mgetNewlyInstalledMbas(BinaryTransparencyService.this)) {
+                                            if (z5 && z9) {
+                                                printHeadersHelper(outPrintWriter4, str11, z7);
+                                            }
+                                            outPrintWriter4.print(packageInfo3.packageName + ",");
+                                            outPrintWriter4.print(packageInfo3.getLongVersionCode() + ",");
+                                            printPackageMeasurements(packageInfo3, z7, outPrintWriter4);
+                                            if (z5) {
+                                                printAppDetails(packageInfo3, z8, outPrintWriter4);
+                                                printPackageInstallationInfo(packageInfo3, z7, outPrintWriter4);
+                                                printPackageSignerDetails(packageInfo3.signingInfo, outPrintWriter4);
+                                                outPrintWriter4.println("");
+                                            }
+                                        }
+                                        break;
+                                    }
+                                } else {
+                                    switch (nextOption3.hashCode()) {
+                                        case 1503:
+                                            str3 = str4;
+                                            if (nextOption3.equals("-l")) {
+                                                c3 = 0;
+                                                break;
+                                            }
+                                            c3 = 65535;
+                                            break;
+                                        case 1506:
+                                            str3 = str4;
+                                            if (nextOption3.equals("-o")) {
+                                                c3 = 1;
+                                                break;
+                                            }
+                                            c3 = 65535;
+                                            break;
+                                        case 1513:
+                                            str3 = str4;
+                                            if (nextOption3.equals("-v")) {
+                                                c3 = 2;
+                                                break;
+                                            }
+                                            c3 = 65535;
+                                            break;
+                                        case 43009159:
+                                            str3 = str4;
+                                            if (nextOption3.equals("--old")) {
+                                                c3 = 3;
+                                                break;
+                                            }
+                                            c3 = 65535;
+                                            break;
+                                        case 705409647:
+                                            str3 = str4;
+                                            if (nextOption3.equals("--preloads-only")) {
+                                                c3 = 4;
+                                                break;
+                                            }
+                                            c3 = 65535;
+                                            break;
+                                        case 967085338:
+                                            if (nextOption3.equals(str4)) {
+                                                c4 = 5;
+                                                char c6 = c4;
+                                                str3 = str4;
+                                                c3 = c6;
+                                                break;
+                                            }
+                                            str3 = str4;
+                                            c3 = 65535;
+                                            break;
+                                        case 1737088994:
+                                            if (nextOption3.equals("--verbose")) {
+                                                c4 = 6;
+                                                char c62 = c4;
+                                                str3 = str4;
+                                                c3 = c62;
+                                                break;
+                                            }
+                                            str3 = str4;
+                                            c3 = 65535;
+                                            break;
+                                        default:
+                                            str3 = str4;
+                                            c3 = 65535;
+                                            break;
+                                    }
+                                    switch (c3) {
+                                        case 0:
+                                            z8 = true;
+                                            break;
+                                        case 1:
+                                        case 3:
+                                            z7 = true;
+                                            break;
+                                        case 2:
+                                        case 6:
+                                            z5 = true;
+                                            break;
+                                        case 4:
+                                            z6 = true;
+                                            break;
+                                        case 5:
+                                            z9 = false;
+                                            break;
+                                        default:
+                                            outPrintWriter4.println("ERROR: Unknown option: ".concat(nextOption3));
+                                            break;
+                                    }
+                                    str4 = str3;
+                                }
+                            }
+                            break;
+                        case 3:
+                            PrintWriter outPrintWriter5 = getOutPrintWriter();
+                            boolean z10 = true;
+                            boolean z11 = false;
+                            boolean z12 = false;
+                            while (true) {
+                                String nextOption4 = getNextOption();
+                                if (nextOption4 != null) {
+                                    switch (nextOption4.hashCode()) {
+                                        case 1506:
+                                            if (nextOption4.equals("-o")) {
+                                                c5 = 0;
+                                                break;
+                                            }
+                                            c5 = 65535;
+                                            break;
+                                        case 1513:
+                                            if (nextOption4.equals("-v")) {
+                                                c5 = 1;
+                                                break;
+                                            }
+                                            c5 = 65535;
+                                            break;
+                                        case 43009159:
+                                            if (nextOption4.equals("--old")) {
+                                                c5 = 2;
+                                                break;
+                                            }
+                                            c5 = 65535;
+                                            break;
+                                        case 967085338:
+                                            if (nextOption4.equals("--no-headers")) {
+                                                c5 = 3;
+                                                break;
+                                            }
+                                            c5 = 65535;
+                                            break;
+                                        case 1737088994:
+                                            if (nextOption4.equals("--verbose")) {
+                                                c5 = 4;
+                                                break;
+                                            }
+                                            c5 = 65535;
+                                            break;
+                                        default:
+                                            c5 = 65535;
+                                            break;
+                                    }
+                                    switch (c5) {
+                                        case 0:
+                                        case 2:
+                                            z12 = true;
+                                            break;
+                                        case 1:
+                                        case 4:
+                                            z11 = true;
+                                            break;
+                                        case 3:
+                                            z10 = false;
+                                            break;
+                                        default:
+                                            outPrintWriter5.println("ERROR: Unknown option: ".concat(nextOption4));
+                                            break;
+                                    }
+                                } else {
+                                    PackageManager packageManager4 = BinaryTransparencyService.this.mContext.getPackageManager();
+                                    if (packageManager4 == null) {
+                                        outPrintWriter5.println("ERROR: Failed to obtain an instance of package manager.");
+                                        break;
+                                    } else {
+                                        if (!z11 && z10) {
+                                            printHeadersHelper(outPrintWriter5, "APEX", z12);
+                                        }
+                                        for (PackageInfo packageInfo4 : BinaryTransparencyService.m46$$Nest$mgetCurrentInstalledApexs(BinaryTransparencyService.this)) {
+                                            if (z11 && z10) {
+                                                printHeadersHelper(outPrintWriter5, "APEX", z12);
+                                            }
+                                            StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(packageInfo4.packageName, ",");
+                                            m.append(packageInfo4.getLongVersionCode());
+                                            m.append(",");
+                                            outPrintWriter5.print(m.toString());
+                                            printPackageMeasurements(packageInfo4, z12, outPrintWriter5);
+                                            if (z11) {
+                                                try {
+                                                    ModuleInfo moduleInfo = packageManager4.getModuleInfo(packageInfo4.packageName, 0);
+                                                    outPrintWriter5.println("Is a module: true");
+                                                    printModuleDetails(moduleInfo, outPrintWriter5);
+                                                } catch (PackageManager.NameNotFoundException unused4) {
+                                                    outPrintWriter5.println("Is a module: false");
+                                                    printPackageInstallationInfo(packageInfo4, z12, outPrintWriter5);
+                                                    printPackageSignerDetails(packageInfo4.signingInfo, outPrintWriter5);
+                                                    outPrintWriter5.println("");
+                                                }
+                                                printPackageInstallationInfo(packageInfo4, z12, outPrintWriter5);
+                                                printPackageSignerDetails(packageInfo4.signingInfo, outPrintWriter5);
+                                                outPrintWriter5.println("");
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        default:
+                            BinaryTransparencyService$$ExternalSyntheticOutline0.m(outPrintWriter, "ERROR: Unknown info type '", nextArg, "'");
+                            break;
+                    }
+                    return handleDefaultCommands(str);
+                }
+
+                public final void onHelp() {
+                    printHelpMenu();
                 }
 
                 public final void printAppDetails(PackageInfo packageInfo, boolean z, PrintWriter printWriter) {
-                    printWriter.println("--- App Details ---");
-                    printWriter.println("Name: " + packageInfo.applicationInfo.name);
-                    printWriter.println("Label: " + ((Object) BinaryTransparencyService.this.mContext.getPackageManager().getApplicationLabel(packageInfo.applicationInfo)));
+                    StringBuilder m = BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, packageInfo.applicationInfo.name, "Label: ", BinaryTransparencyService$$ExternalSyntheticOutline0.m$1(printWriter, "--- App Details ---", "Name: "));
+                    m.append((Object) BinaryTransparencyService.this.mContext.getPackageManager().getApplicationLabel(packageInfo.applicationInfo));
+                    printWriter.println(m.toString());
                     printWriter.println("Description: " + ((Object) packageInfo.applicationInfo.loadDescription(BinaryTransparencyService.this.mContext.getPackageManager())));
                     printWriter.println("Has code: " + packageInfo.applicationInfo.hasCode());
-                    printWriter.println("Is enabled: " + packageInfo.applicationInfo.enabled);
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Is suspended: ");
                     int i = 0;
-                    sb.append((packageInfo.applicationInfo.flags & 1073741824) != 0);
-                    printWriter.println(sb.toString());
-                    printWriter.println("Compile SDK version: " + packageInfo.compileSdkVersion);
-                    printWriter.println("Target SDK version: " + packageInfo.applicationInfo.targetSdkVersion);
-                    printWriter.println("Is privileged: " + packageInfo.applicationInfo.isPrivilegedApp());
-                    printWriter.println("Is a stub: " + packageInfo.isStub);
-                    printWriter.println("Is a core app: " + packageInfo.coreApp);
-                    printWriter.println("SEInfo: " + packageInfo.applicationInfo.seInfo);
-                    printWriter.println("Component factory: " + packageInfo.applicationInfo.appComponentFactory);
-                    printWriter.println("Process name: " + packageInfo.applicationInfo.processName);
-                    printWriter.println("Task affinity: " + packageInfo.applicationInfo.taskAffinity);
-                    printWriter.println("UID: " + packageInfo.applicationInfo.uid);
-                    printWriter.println("Shared UID: " + packageInfo.sharedUserId);
+                    StringBuilder m2 = BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("Is enabled: "), packageInfo.applicationInfo.enabled, printWriter, "Is suspended: "), (packageInfo.applicationInfo.flags & 1073741824) != 0, printWriter, "Compile SDK version: "), packageInfo.compileSdkVersion, printWriter, "Target SDK version: "), packageInfo.applicationInfo.targetSdkVersion, printWriter, "Is privileged: ");
+                    m2.append(packageInfo.applicationInfo.isPrivilegedApp());
+                    printWriter.println(m2.toString());
+                    BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, packageInfo.applicationInfo.taskAffinity, "UID: ", BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, packageInfo.applicationInfo.processName, "Task affinity: ", BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, packageInfo.applicationInfo.appComponentFactory, "Process name: ", BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, packageInfo.applicationInfo.seInfo, "Component factory: ", BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("Is a stub: "), packageInfo.isStub, printWriter, "Is a core app: "), packageInfo.coreApp, printWriter, "SEInfo: "))))), packageInfo.applicationInfo.uid, printWriter, "Shared UID: "), packageInfo.sharedUserId, printWriter);
                     if (z) {
                         printWriter.println("== App's Shared Libraries ==");
                         List sharedLibraryInfos = packageInfo.applicationInfo.getSharedLibraryInfos();
@@ -487,12 +838,11 @@ public class BinaryTransparencyService extends SystemService {
                         }
                         while (i < sharedLibraryInfos.size()) {
                             SharedLibraryInfo sharedLibraryInfo = (SharedLibraryInfo) sharedLibraryInfos.get(i);
-                            StringBuilder sb2 = new StringBuilder();
-                            sb2.append("  ++ Library #");
+                            StringBuilder sb = new StringBuilder("  ++ Library #");
                             i++;
-                            sb2.append(i);
-                            sb2.append(" ++");
-                            printWriter.println(sb2.toString());
+                            sb.append(i);
+                            sb.append(" ++");
+                            printWriter.println(sb.toString());
                             printWriter.println("  Lib name: " + sharedLibraryInfo.getName());
                             long longVersion = sharedLibraryInfo.getLongVersion();
                             printWriter.print("  Lib version: ");
@@ -501,8 +851,9 @@ public class BinaryTransparencyService extends SystemService {
                             } else {
                                 printWriter.print(longVersion);
                             }
-                            printWriter.print(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                            printWriter.println("  Lib package name (if available): " + sharedLibraryInfo.getPackageName());
+                            StringBuilder m3 = BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, "\n", "  Lib package name (if available): ");
+                            m3.append(sharedLibraryInfo.getPackageName());
+                            printWriter.println(m3.toString());
                             printWriter.println("  Lib path: " + sharedLibraryInfo.getPath());
                             printWriter.print("  Lib type: ");
                             int type = sharedLibraryInfo.getType();
@@ -512,128 +863,16 @@ public class BinaryTransparencyService extends SystemService {
                                 printWriter.print("dynamic");
                             } else if (type == 2) {
                                 printWriter.print("static");
-                            } else if (type == 3) {
-                                printWriter.print("SDK");
-                            } else {
+                            } else if (type != 3) {
                                 printWriter.print("undefined");
+                            } else {
+                                printWriter.print("SDK");
                             }
-                            printWriter.print(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                            printWriter.println("  Is a native lib: " + sharedLibraryInfo.isNative());
+                            StringBuilder m4 = BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, "\n", "  Is a native lib: ");
+                            m4.append(sharedLibraryInfo.isNative());
+                            printWriter.println(m4.toString());
                         }
                     }
-                }
-
-                public final void printHeadersHelper(String str, boolean z, PrintWriter printWriter) {
-                    printWriter.print(str + " Info [Format: package_name,package_version,");
-                    if (z) {
-                        printWriter.print("package_sha256_digest,");
-                    }
-                    printWriter.print("content_digest_algorithm:content_digest]:\n");
-                }
-
-                /* JADX WARN: Removed duplicated region for block: B:22:0x0051 A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:26:0x0068 A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:30:0x006a A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:33:0x0066 A[SYNTHETIC] */
-                /*
-                    Code decompiled incorrectly, please refer to instructions dump.
-                    To view partially-correct code enable 'Show inconsistent code' option in preferences
-                */
-                public final int printAllApexs() {
-                    /*
-                        Method dump skipped, instructions count: 276
-                        To view this dump change 'Code comments level' option to 'DEBUG'
-                    */
-                    throw new UnsupportedOperationException("Method not decompiled: com.android.server.BinaryTransparencyService.BinaryTransparencyServiceImpl.AnonymousClass1.printAllApexs():int");
-                }
-
-                /* JADX WARN: Removed duplicated region for block: B:22:0x0056 A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:26:0x006d A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:30:0x006f A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:33:0x006b A[SYNTHETIC] */
-                /*
-                    Code decompiled incorrectly, please refer to instructions dump.
-                    To view partially-correct code enable 'Show inconsistent code' option in preferences
-                */
-                public final int printAllModules() {
-                    /*
-                        Method dump skipped, instructions count: 316
-                        To view this dump change 'Code comments level' option to 'DEBUG'
-                    */
-                    throw new UnsupportedOperationException("Method not decompiled: com.android.server.BinaryTransparencyService.BinaryTransparencyServiceImpl.AnonymousClass1.printAllModules():int");
-                }
-
-                /* JADX WARN: Removed duplicated region for block: B:28:0x006a A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:32:0x0081 A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:36:0x0083 A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:39:0x0085 A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:42:0x0087 A[SYNTHETIC] */
-                /* JADX WARN: Removed duplicated region for block: B:45:0x007f A[SYNTHETIC] */
-                /*
-                    Code decompiled incorrectly, please refer to instructions dump.
-                    To view partially-correct code enable 'Show inconsistent code' option in preferences
-                */
-                public final int printAllMbas() {
-                    /*
-                        Method dump skipped, instructions count: 462
-                        To view this dump change 'Code comments level' option to 'DEBUG'
-                    */
-                    throw new UnsupportedOperationException("Method not decompiled: com.android.server.BinaryTransparencyService.BinaryTransparencyServiceImpl.AnonymousClass1.printAllMbas():int");
-                }
-
-                public int onCommand(String str) {
-                    if (str == null) {
-                        return handleDefaultCommands(str);
-                    }
-                    PrintWriter outPrintWriter = getOutPrintWriter();
-                    if (str.equals("get")) {
-                        String nextArg = getNextArg();
-                        char c = 65535;
-                        if (nextArg == null) {
-                            printHelpMenu();
-                            return -1;
-                        }
-                        switch (nextArg.hashCode()) {
-                            case -1443097326:
-                                if (nextArg.equals("image_info")) {
-                                    c = 0;
-                                    break;
-                                }
-                                break;
-                            case -1195140447:
-                                if (nextArg.equals("module_info")) {
-                                    c = 1;
-                                    break;
-                                }
-                                break;
-                            case 636812193:
-                                if (nextArg.equals("mba_info")) {
-                                    c = 2;
-                                    break;
-                                }
-                                break;
-                            case 1366866347:
-                                if (nextArg.equals("apex_info")) {
-                                    c = 3;
-                                    break;
-                                }
-                                break;
-                        }
-                        switch (c) {
-                            case 0:
-                                return printSignedImageInfo();
-                            case 1:
-                                return printAllModules();
-                            case 2:
-                                return printAllMbas();
-                            case 3:
-                                return printAllApexs();
-                            default:
-                                outPrintWriter.println(String.format("ERROR: Unknown info type '%s'", nextArg));
-                                return 1;
-                        }
-                    }
-                    return handleDefaultCommands(str);
                 }
 
                 public final void printHelpMenu() {
@@ -642,128 +881,217 @@ public class BinaryTransparencyService extends SystemService {
                     outPrintWriter.println("  help");
                     outPrintWriter.println("    Print this help text.");
                     outPrintWriter.println("");
-                    outPrintWriter.println("  get image_info [-a]");
-                    outPrintWriter.println("    Print information about loaded image (firmware). Options:");
-                    outPrintWriter.println("        -a: lists all other identifiable partitions.");
-                    outPrintWriter.println("");
-                    outPrintWriter.println("  get apex_info [-o] [-v] [--no-headers]");
-                    outPrintWriter.println("    Print information about installed APEXs on device.");
-                    outPrintWriter.println("      -o: also uses the old digest scheme (SHA256) to compute APEX hashes. WARNING: This can be a very slow and CPU-intensive computation.");
-                    outPrintWriter.println("      -v: lists more verbose information about each APEX.");
-                    outPrintWriter.println("      --no-headers: does not print the header if specified.");
-                    outPrintWriter.println("");
-                    outPrintWriter.println("  get module_info [-o] [-v] [--no-headers]");
-                    outPrintWriter.println("    Print information about installed modules on device.");
-                    outPrintWriter.println("      -o: also uses the old digest scheme (SHA256) to compute module hashes. WARNING: This can be a very slow and CPU-intensive computation.");
-                    outPrintWriter.println("      -v: lists more verbose information about each module.");
-                    outPrintWriter.println("      --no-headers: does not print the header if specified.");
-                    outPrintWriter.println("");
-                    outPrintWriter.println("  get mba_info [-o] [-v] [-l] [--no-headers] [--preloads-only]");
-                    outPrintWriter.println("    Print information about installed mobile bundle apps (MBAs on device).");
-                    outPrintWriter.println("      -o: also uses the old digest scheme (SHA256) to compute MBA hashes. WARNING: This can be a very slow and CPU-intensive computation.");
-                    outPrintWriter.println("      -v: lists more verbose information about each app.");
-                    outPrintWriter.println("      -l: lists shared library info. (This option only works when -v option is also specified)");
-                    outPrintWriter.println("      --no-headers: does not print the header if specified.");
-                    outPrintWriter.println("      --preloads-only: lists only preloaded apps. This options can also be combined with others.");
-                    outPrintWriter.println("");
+                    BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  get image_info [-a]", "    Print information about loaded image (firmware). Options:", "        -a: lists all other identifiable partitions.", "");
+                    BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  get apex_info [-o] [-v] [--no-headers]", "    Print information about installed APEXs on device.", "      -o: also uses the old digest scheme (SHA256) to compute APEX hashes. WARNING: This can be a very slow and CPU-intensive computation.", "      -v: lists more verbose information about each APEX.");
+                    BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "      --no-headers: does not print the header if specified.", "", "  get module_info [-o] [-v] [--no-headers]", "    Print information about installed modules on device.");
+                    BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "      -o: also uses the old digest scheme (SHA256) to compute module hashes. WARNING: This can be a very slow and CPU-intensive computation.", "      -v: lists more verbose information about each module.", "      --no-headers: does not print the header if specified.", "");
+                    BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  get mba_info [-o] [-v] [-l] [--no-headers] [--preloads-only]", "    Print information about installed mobile bundle apps (MBAs on device).", "      -o: also uses the old digest scheme (SHA256) to compute MBA hashes. WARNING: This can be a very slow and CPU-intensive computation.", "      -v: lists more verbose information about each app.");
+                    BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "      -l: lists shared library info. (This option only works when -v option is also specified)", "      --no-headers: does not print the header if specified.", "      --preloads-only: lists only preloaded apps. This options can also be combined with others.", "");
                 }
 
-                public void onHelp() {
-                    printHelpMenu();
+                public final void printPackageInstallationInfo(PackageInfo packageInfo, boolean z, PrintWriter printWriter) {
+                    String str;
+                    BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m$1(printWriter, "--- Package Installation Info ---", "Current install location: "), packageInfo.applicationInfo.sourceDir, printWriter);
+                    if (packageInfo.applicationInfo.sourceDir.startsWith("/data/apex/")) {
+                        BinaryTransparencyService binaryTransparencyService = BinaryTransparencyService.this;
+                        String str2 = packageInfo.packageName;
+                        Histogram histogram = BinaryTransparencyService.digestAllPackagesLatency;
+                        binaryTransparencyService.getClass();
+                        try {
+                            String apexModuleNameForPackageName = ApexManager.getInstance().getApexModuleNameForPackageName(str2);
+                            for (ApexInfo apexInfo : IApexService.Stub.asInterface(Binder.allowBlocking(ServiceManager.waitForService("apexservice"))).getAllPackages()) {
+                                if (apexModuleNameForPackageName.equals(apexInfo.moduleName)) {
+                                    str = apexInfo.preinstalledModulePath;
+                                    break;
+                                }
+                            }
+                        } catch (RemoteException e) {
+                            Slog.e("TransparencyService", "Unable to get package list from apexservice", e);
+                        }
+                        str = "could-not-be-determined";
+                        printWriter.println("|--> Pre-installed package install location: " + str);
+                        if (!str.equals("could-not-be-determined")) {
+                            if (z) {
+                                BinaryTransparencyService$$ExternalSyntheticOutline0.m50m(printWriter, "|--> Pre-installed package SHA-256 digest: ", PackageUtils.computeSha256DigestForLargeFile(str, PackageUtils.createLargeFileBuffer()));
+                            }
+                            BinaryTransparencyServiceImpl.this.getClass();
+                            Map computeApkContentDigest = BinaryTransparencyServiceImpl.computeApkContentDigest(str);
+                            if (computeApkContentDigest == null) {
+                                printWriter.println("|--> ERROR: Failed to compute package content digest for ".concat(str));
+                            } else {
+                                for (Map.Entry entry : computeApkContentDigest.entrySet()) {
+                                    Integer num = (Integer) entry.getKey();
+                                    printWriter.println("|--> Pre-installed package content digest: " + HexEncoding.encodeToString((byte[]) entry.getValue(), false));
+                                    printWriter.println("|--> Pre-installed package content digest algorithm: " + BinaryTransparencyService.m49$$Nest$mtranslateContentDigestAlgorithmIdToString(BinaryTransparencyService.this, num.intValue()));
+                                }
+                            }
+                        }
+                    }
+                    StringBuilder m = BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("First install time (ms): "), packageInfo.firstInstallTime, printWriter, "Last update time (ms):   ");
+                    m.append(packageInfo.lastUpdateTime);
+                    printWriter.println(m.toString());
+                    printWriter.println("Is preloaded: " + (packageInfo.firstInstallTime == packageInfo.lastUpdateTime));
+                    BinaryTransparencyService binaryTransparencyService2 = BinaryTransparencyService.this;
+                    String str3 = packageInfo.packageName;
+                    PackageManager packageManager = binaryTransparencyService2.mContext.getPackageManager();
+                    InstallSourceInfo installSourceInfo = null;
+                    if (packageManager == null) {
+                        Slog.e("TransparencyService", "Error obtaining an instance of PackageManager.");
+                    } else {
+                        try {
+                            installSourceInfo = packageManager.getInstallSourceInfo(str3);
+                        } catch (PackageManager.NameNotFoundException e2) {
+                            e2.printStackTrace();
+                        }
+                    }
+                    if (installSourceInfo == null) {
+                        BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("ERROR: Unable to obtain installSourceInfo of "), packageInfo.packageName, printWriter);
+                    } else {
+                        printWriter.println("Installation initiated by: " + installSourceInfo.getInitiatingPackageName());
+                        printWriter.println("Installation done by: " + installSourceInfo.getInstallingPackageName());
+                        printWriter.println("Installation originating from: " + installSourceInfo.getOriginatingPackageName());
+                    }
+                    if (packageInfo.isApex) {
+                        BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("Is an active APEX: "), packageInfo.isActiveApex, printWriter);
+                    }
+                }
+
+                public final void printPackageMeasurements(PackageInfo packageInfo, boolean z, PrintWriter printWriter) {
+                    BinaryTransparencyServiceImpl binaryTransparencyServiceImpl = BinaryTransparencyServiceImpl.this;
+                    String str = packageInfo.applicationInfo.sourceDir;
+                    binaryTransparencyServiceImpl.getClass();
+                    Map computeApkContentDigest = BinaryTransparencyServiceImpl.computeApkContentDigest(str);
+                    if (computeApkContentDigest == null) {
+                        BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("ERROR: Failed to compute package content digest for "), packageInfo.applicationInfo.sourceDir, printWriter);
+                        return;
+                    }
+                    if (z) {
+                        printWriter.print(PackageUtils.computeSha256DigestForLargeFile(packageInfo.applicationInfo.sourceDir, PackageUtils.createLargeFileBuffer()) + ",");
+                    }
+                    for (Map.Entry entry : computeApkContentDigest.entrySet()) {
+                        Integer num = (Integer) entry.getKey();
+                        byte[] bArr = (byte[]) entry.getValue();
+                        printWriter.print(BinaryTransparencyService.m49$$Nest$mtranslateContentDigestAlgorithmIdToString(BinaryTransparencyService.this, num.intValue()));
+                        printWriter.print(":");
+                        printWriter.print(HexEncoding.encodeToString(bArr, false));
+                        printWriter.print("\n");
+                    }
                 }
             }.exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
         }
+
+        public final void recordMeasurementsForAllPackages() {
+            long currentTimeMillis = System.currentTimeMillis();
+            if (currentTimeMillis - BinaryTransparencyService.this.mMeasurementsLastRecordedMs < BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS) {
+                Slog.d("TransparencyService", "Skip measurement since the last measurement was only taken at " + BinaryTransparencyService.this.mMeasurementsLastRecordedMs + " within the cooldown period");
+                return;
+            }
+            Slog.d("TransparencyService", "Measurement was last taken at " + BinaryTransparencyService.this.mMeasurementsLastRecordedMs + " and is now updated to: " + currentTimeMillis);
+            BinaryTransparencyService.this.mMeasurementsLastRecordedMs = currentTimeMillis;
+            Bundle bundle = new Bundle();
+            Iterator it = ((ArrayList) collectAllApexInfo(false)).iterator();
+            while (it.hasNext()) {
+                IBinaryTransparencyService.ApexInfo apexInfo = (IBinaryTransparencyService.ApexInfo) it.next();
+                bundle.putBoolean(apexInfo.packageName, true);
+                String str = apexInfo.packageName;
+                long j = apexInfo.longVersion;
+                byte[] bArr = apexInfo.digest;
+                FrameworkStatsLog.write(FrameworkStatsLog.APEX_INFO_GATHERED, str, j, bArr != null ? HexEncoding.encodeToString(bArr, false) : null, apexInfo.digestAlgorithm, apexInfo.signerDigests);
+            }
+            Iterator it2 = ((ArrayList) collectAllUpdatedPreloadInfo(bundle)).iterator();
+            while (it2.hasNext()) {
+                IBinaryTransparencyService.AppInfo appInfo = (IBinaryTransparencyService.AppInfo) it2.next();
+                bundle.putBoolean(appInfo.packageName, true);
+                writeAppInfoToLog(appInfo);
+            }
+            if (CompatChanges.isChangeEnabled(245692487L)) {
+                Iterator it3 = ((ArrayList) collectAllSilentInstalledMbaInfo(bundle)).iterator();
+                while (it3.hasNext()) {
+                    IBinaryTransparencyService.AppInfo appInfo2 = (IBinaryTransparencyService.AppInfo) it3.next();
+                    bundle.putBoolean(appInfo2.packageName, true);
+                    writeAppInfoToLog(appInfo2);
+                }
+            }
+            BinaryTransparencyService.digestAllPackagesLatency.logSample(System.currentTimeMillis() - currentTimeMillis);
+        }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class BiometricLogger {
         public static final BiometricLogger sInstance = new BiometricLogger();
 
         private BiometricLogger() {
         }
+    }
 
-        public static BiometricLogger getInstance() {
-            return sInstance;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Digest extends Record {
+        public final int algorithm;
+        public final byte[] value;
+
+        public Digest(int i, byte[] bArr) {
+            this.algorithm = i;
+            this.value = bArr;
         }
 
-        public void logStats(int i, int i2, int i3, int i4, String str, String str2, String str3, String str4, String str5) {
-            FrameworkStatsLog.write(FrameworkStatsLog.BIOMETRIC_PROPERTIES_COLLECTED, i, i2, i3, i4, str, str2, str3, str4, str5);
+        @Override // java.lang.Record
+        public final boolean equals(Object obj) {
+            return (boolean) ObjectMethods.bootstrap(MethodHandles.lookup(), "equals", MethodType.methodType(Boolean.TYPE, Digest.class, Object.class), Digest.class, "algorithm;value", "FIELD:Lcom/android/server/BinaryTransparencyService$Digest;->algorithm:I", "FIELD:Lcom/android/server/BinaryTransparencyService$Digest;->value:[B").dynamicInvoker().invoke(this, obj) /* invoke-custom */;
         }
-    }
 
-    public BinaryTransparencyService(Context context) {
-        this(context, BiometricLogger.getInstance());
-    }
+        @Override // java.lang.Record
+        public final int hashCode() {
+            return (int) ObjectMethods.bootstrap(MethodHandles.lookup(), "hashCode", MethodType.methodType(Integer.TYPE, Digest.class), Digest.class, "algorithm;value", "FIELD:Lcom/android/server/BinaryTransparencyService$Digest;->algorithm:I", "FIELD:Lcom/android/server/BinaryTransparencyService$Digest;->value:[B").dynamicInvoker().invoke(this) /* invoke-custom */;
+        }
 
-    public BinaryTransparencyService(Context context, BiometricLogger biometricLogger) {
-        super(context);
-        this.mContext = context;
-        this.mServiceImpl = new BinaryTransparencyServiceImpl();
-        this.mVbmetaDigest = VBMETA_DIGEST_UNINITIALIZED;
-        this.mMeasurementsLastRecordedMs = 0L;
-        this.mPackageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
-        this.mBiometricLogger = biometricLogger;
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        try {
-            publishBinderService("transparency", this.mServiceImpl);
-            Slog.i("TransparencyService", "Started BinaryTransparencyService");
-        } catch (Throwable th) {
-            Slog.e("TransparencyService", "Failed to start BinaryTransparencyService.", th);
+        @Override // java.lang.Record
+        public final String toString() {
+            return (String) ObjectMethods.bootstrap(MethodHandles.lookup(), "toString", MethodType.methodType(String.class, Digest.class), Digest.class, "algorithm;value", "FIELD:Lcom/android/server/BinaryTransparencyService$Digest;->algorithm:I", "FIELD:Lcom/android/server/BinaryTransparencyService$Digest;->value:[B").dynamicInvoker().invoke(this) /* invoke-custom */;
         }
     }
 
-    @Override // com.android.server.SystemService
-    public void onBootPhase(int i) {
-        if (i == 1000) {
-            Slog.i("TransparencyService", "Boot completed. Getting VBMeta Digest.");
-            getVBMetaDigestInformation();
-            Slog.i("TransparencyService", "Boot completed. Collecting biometric system properties.");
-            collectBiometricProperties();
-            Slog.i("TransparencyService", "Scheduling measurements to be taken.");
-            UpdateMeasurementsJobService.scheduleBinaryMeasurements(this.mContext, this);
-            registerAllPackageUpdateObservers();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackageUpdatedReceiver extends BroadcastReceiver {
+        public PackageUpdatedReceiver() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {
+                Uri data = intent.getData();
+                if (data == null) {
+                    Slog.e("TransparencyService", "Shouldn't happen: intent data is null!");
+                    return;
+                }
+                boolean z = false;
+                if (!intent.getBooleanExtra("android.intent.extra.REPLACING", false)) {
+                    Slog.d("TransparencyService", "Not an update. Skipping...");
+                    return;
+                }
+                String schemeSpecificPart = data.getSchemeSpecificPart();
+                try {
+                    BinaryTransparencyService.this.mContext.getPackageManager().getPackageInfo(schemeSpecificPart, PackageManager.PackageInfoFlags.of(2097152L));
+                } catch (PackageManager.NameNotFoundException unused) {
+                    try {
+                        z = BinaryTransparencyService.this.mContext.getPackageManager().getPackageInfo(schemeSpecificPart, PackageManager.PackageInfoFlags.of(1073741824L)).isApex;
+                    } catch (PackageManager.NameNotFoundException unused2) {
+                    }
+                    if (!z) {
+                        return;
+                    }
+                }
+                Slog.d("TransparencyService", schemeSpecificPart + " was updated. Scheduling measurement...");
+                UpdateMeasurementsJobService.scheduleBinaryMeasurements(BinaryTransparencyService.this.mContext);
+            }
         }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class UpdateMeasurementsJobService extends JobService {
+        public static final /* synthetic */ int $r8$clinit = 0;
         public static long sTimeLastRanMs;
 
-        @Override // android.app.job.JobService
-        public boolean onStopJob(JobParameters jobParameters) {
-            return false;
-        }
-
-        @Override // android.app.job.JobService
-        public boolean onStartJob(final JobParameters jobParameters) {
-            Slog.d("TransparencyService", "Job to update binary measurements started.");
-            if (jobParameters.getJobId() != 1740526926) {
-                return false;
-            }
-            Executors.defaultThreadFactory().newThread(new Runnable() { // from class: com.android.server.BinaryTransparencyService$UpdateMeasurementsJobService$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    BinaryTransparencyService.UpdateMeasurementsJobService.this.lambda$onStartJob$0(jobParameters);
-                }
-            }).start();
-            return true;
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onStartJob$0(JobParameters jobParameters) {
-            try {
-                IBinaryTransparencyService.Stub.asInterface(ServiceManager.getService("transparency")).recordMeasurementsForAllPackages();
-                sTimeLastRanMs = System.currentTimeMillis();
-                jobFinished(jobParameters, false);
-            } catch (RemoteException e) {
-                Slog.e("TransparencyService", "Taking binary measurements was interrupted.", e);
-            }
-        }
-
-        public static void scheduleBinaryMeasurements(Context context, BinaryTransparencyService binaryTransparencyService) {
+        public static void scheduleBinaryMeasurements(Context context) {
             Slog.i("TransparencyService", "Scheduling binary content-digest computation job");
             JobScheduler jobScheduler = (JobScheduler) context.getSystemService(JobScheduler.class);
             if (jobScheduler == null) {
@@ -785,204 +1113,58 @@ public class BinaryTransparencyService extends SystemService {
                 Slog.d("TransparencyService", TextUtils.formatSimple("Job %d to measure binaries was scheduled successfully.", new Object[]{1740526926}));
             }
         }
-    }
 
-    public final void logBiometricProperties(SensorProperties sensorProperties, int i, int i2) {
-        int sensorId = sensorProperties.getSensorId();
-        int sensorStrength = toSensorStrength(sensorProperties.getSensorStrength());
-        for (SensorProperties.ComponentInfo componentInfo : sensorProperties.getComponentInfo()) {
-            this.mBiometricLogger.logStats(sensorId, i, i2, sensorStrength, componentInfo.getComponentId().trim(), componentInfo.getHardwareVersion().trim(), componentInfo.getFirmwareVersion().trim(), componentInfo.getSerialNumber().trim(), componentInfo.getSoftwareVersion().trim());
-        }
-    }
-
-    public void collectBiometricProperties() {
-        if (DeviceConfig.getBoolean("biometrics", KEY_ENABLE_BIOMETRIC_PROPERTY_VERIFICATION, false)) {
-            PackageManager packageManager = this.mContext.getPackageManager();
-            FaceManager faceManager = null;
-            FingerprintManager fingerprintManager = (packageManager == null || !packageManager.hasSystemFeature("android.hardware.fingerprint")) ? null : (FingerprintManager) this.mContext.getSystemService(FingerprintManager.class);
-            if (packageManager != null && packageManager.hasSystemFeature("android.hardware.biometrics.face")) {
-                faceManager = (FaceManager) this.mContext.getSystemService(FaceManager.class);
+        @Override // android.app.job.JobService
+        public final boolean onStartJob(final JobParameters jobParameters) {
+            Slog.d("TransparencyService", "Job to update binary measurements started.");
+            if (jobParameters.getJobId() != 1740526926) {
+                return false;
             }
-            if (fingerprintManager != null) {
-                fingerprintManager.addAuthenticatorsRegisteredCallback(new IFingerprintAuthenticatorsRegisteredCallback.Stub() { // from class: com.android.server.BinaryTransparencyService.1
-                    public void onAllAuthenticatorsRegistered(List list) {
-                        Iterator it = list.iterator();
-                        while (it.hasNext()) {
-                            FingerprintSensorProperties from = FingerprintSensorProperties.from((FingerprintSensorPropertiesInternal) it.next());
-                            BinaryTransparencyService binaryTransparencyService = BinaryTransparencyService.this;
-                            binaryTransparencyService.logBiometricProperties(from, 1, binaryTransparencyService.toFingerprintSensorType(from.getSensorType()));
-                        }
+            Executors.defaultThreadFactory().newThread(new Runnable() { // from class: com.android.server.BinaryTransparencyService$UpdateMeasurementsJobService$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    BinaryTransparencyService.UpdateMeasurementsJobService updateMeasurementsJobService = BinaryTransparencyService.UpdateMeasurementsJobService.this;
+                    JobParameters jobParameters2 = jobParameters;
+                    int i = BinaryTransparencyService.UpdateMeasurementsJobService.$r8$clinit;
+                    updateMeasurementsJobService.getClass();
+                    try {
+                        IBinaryTransparencyService.Stub.asInterface(ServiceManager.getService("transparency")).recordMeasurementsForAllPackages();
+                        BinaryTransparencyService.UpdateMeasurementsJobService.sTimeLastRanMs = System.currentTimeMillis();
+                        updateMeasurementsJobService.jobFinished(jobParameters2, false);
+                    } catch (RemoteException e) {
+                        Slog.e("TransparencyService", "Taking binary measurements was interrupted.", e);
                     }
-                });
-            }
-            if (faceManager != null) {
-                faceManager.addAuthenticatorsRegisteredCallback(new IFaceAuthenticatorsRegisteredCallback.Stub() { // from class: com.android.server.BinaryTransparencyService.2
-                    public void onAllAuthenticatorsRegistered(List list) {
-                        Iterator it = list.iterator();
-                        while (it.hasNext()) {
-                            FaceSensorProperties from = FaceSensorProperties.from((FaceSensorPropertiesInternal) it.next());
-                            BinaryTransparencyService binaryTransparencyService = BinaryTransparencyService.this;
-                            binaryTransparencyService.logBiometricProperties(from, 4, binaryTransparencyService.toFaceSensorType(from.getSensorType()));
-                        }
-                    }
-                });
-            }
-        }
-    }
-
-    public final void getVBMetaDigestInformation() {
-        String str = SystemProperties.get(SYSPROP_NAME_VBETA_DIGEST, VBMETA_DIGEST_UNAVAILABLE);
-        this.mVbmetaDigest = str;
-        Slog.d("TransparencyService", String.format("VBMeta Digest: %s", str));
-        FrameworkStatsLog.write(FrameworkStatsLog.VBMETA_DIGEST_REPORTED, this.mVbmetaDigest);
-    }
-
-    public final void registerApkAndNonStagedApexUpdateListener() {
-        Slog.d("TransparencyService", "Registering APK & Non-Staged APEX updates...");
-        IntentFilter intentFilter = new IntentFilter("android.intent.action.PACKAGE_ADDED");
-        intentFilter.addDataScheme("package");
-        this.mContext.registerReceiver(new PackageUpdatedReceiver(), intentFilter);
-    }
-
-    public final void registerStagedApexUpdateObserver() {
-        Slog.d("TransparencyService", "Registering APEX updates...");
-        IPackageManagerNative asInterface = IPackageManagerNative.Stub.asInterface(ServiceManager.getService("package_native"));
-        if (asInterface == null) {
-            Slog.e("TransparencyService", "IPackageManagerNative is null");
-            return;
-        }
-        try {
-            asInterface.registerStagedApexObserver(new IStagedApexObserver.Stub() { // from class: com.android.server.BinaryTransparencyService.3
-                public void onApexStaged(ApexStagedEvent apexStagedEvent) {
-                    Slog.d("TransparencyService", "A new APEX has been staged for update. There are currently " + apexStagedEvent.stagedApexModuleNames.length + " APEX(s) staged for update. Scheduling measurement...");
-                    UpdateMeasurementsJobService.scheduleBinaryMeasurements(BinaryTransparencyService.this.mContext, BinaryTransparencyService.this);
                 }
-            });
-        } catch (RemoteException unused) {
-            Slog.e("TransparencyService", "Failed to register a StagedApexObserver.");
-        }
-    }
-
-    public final boolean isPackagePreloaded(String str) {
-        try {
-            this.mContext.getPackageManager().getPackageInfo(str, PackageManager.PackageInfoFlags.of(2097152L));
+            }).start();
             return true;
-        } catch (PackageManager.NameNotFoundException unused) {
+        }
+
+        @Override // android.app.job.JobService
+        public final boolean onStopJob(JobParameters jobParameters) {
             return false;
         }
     }
 
-    public final boolean isPackageAnApex(String str) {
-        try {
-            return this.mContext.getPackageManager().getPackageInfo(str, PackageManager.PackageInfoFlags.of(1073741824L)).isApex;
-        } catch (PackageManager.NameNotFoundException unused) {
-            return false;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class PackageUpdatedReceiver extends BroadcastReceiver {
-        public PackageUpdatedReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {
-                Uri data = intent.getData();
-                if (data == null) {
-                    Slog.e("TransparencyService", "Shouldn't happen: intent data is null!");
-                    return;
-                }
-                if (!intent.getBooleanExtra("android.intent.extra.REPLACING", false)) {
-                    Slog.d("TransparencyService", "Not an update. Skipping...");
-                    return;
-                }
-                String schemeSpecificPart = data.getSchemeSpecificPart();
-                if (BinaryTransparencyService.this.isPackagePreloaded(schemeSpecificPart) || BinaryTransparencyService.this.isPackageAnApex(schemeSpecificPart)) {
-                    Slog.d("TransparencyService", schemeSpecificPart + " was updated. Scheduling measurement...");
-                    UpdateMeasurementsJobService.scheduleBinaryMeasurements(BinaryTransparencyService.this.mContext, BinaryTransparencyService.this);
-                }
-            }
-        }
-    }
-
-    public final void registerAllPackageUpdateObservers() {
-        registerApkAndNonStagedApexUpdateListener();
-        registerStagedApexUpdateObserver();
-    }
-
-    public final String translateContentDigestAlgorithmIdToString(int i) {
-        if (i == 1) {
-            return "CHUNKED_SHA256";
-        }
-        if (i == 2) {
-            return "CHUNKED_SHA512";
-        }
-        if (i == 3) {
-            return "VERITY_CHUNKED_SHA256";
-        }
-        if (i == 4) {
-            return "SHA256";
-        }
-        return "UNKNOWN_ALGO_ID(" + i + ")";
-    }
-
-    public final List getCurrentInstalledApexs() {
+    /* renamed from: -$$Nest$mgetCurrentInstalledApexs, reason: not valid java name */
+    public static List m46$$Nest$mgetCurrentInstalledApexs(BinaryTransparencyService binaryTransparencyService) {
+        binaryTransparencyService.getClass();
         ArrayList arrayList = new ArrayList();
-        PackageManager packageManager = this.mContext.getPackageManager();
+        PackageManager packageManager = binaryTransparencyService.mContext.getPackageManager();
         if (packageManager == null) {
             Slog.e("TransparencyService", "Error obtaining an instance of PackageManager.");
             return arrayList;
         }
         List<PackageInfo> installedPackages = packageManager.getInstalledPackages(PackageManager.PackageInfoFlags.of(1207959552L));
-        if (installedPackages == null) {
-            Slog.e("TransparencyService", "Error obtaining installed packages (including APEX)");
-            return arrayList;
+        if (installedPackages != null) {
+            return (List) installedPackages.stream().filter(new BinaryTransparencyService$$ExternalSyntheticLambda3()).collect(Collectors.toList());
         }
-        return (List) installedPackages.stream().filter(new Predicate() { // from class: com.android.server.BinaryTransparencyService$$ExternalSyntheticLambda0
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean z;
-                z = ((PackageInfo) obj).isApex;
-                return z;
-            }
-        }).collect(Collectors.toList());
+        Slog.e("TransparencyService", "Error obtaining installed packages (including APEX)");
+        return arrayList;
     }
 
-    public final InstallSourceInfo getInstallSourceInfo(String str) {
-        PackageManager packageManager = this.mContext.getPackageManager();
-        if (packageManager == null) {
-            Slog.e("TransparencyService", "Error obtaining an instance of PackageManager.");
-            return null;
-        }
-        try {
-            return packageManager.getInstallSourceInfo(str);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public final String getOriginalApexPreinstalledLocation(String str) {
-        try {
-            String apexPackageNameToModuleName = apexPackageNameToModuleName(str);
-            for (ApexInfo apexInfo : IApexService.Stub.asInterface(Binder.allowBlocking(ServiceManager.waitForService("apexservice"))).getAllPackages()) {
-                if (apexPackageNameToModuleName.equals(apexInfo.moduleName)) {
-                    return apexInfo.preinstalledModulePath;
-                }
-            }
-            return "could-not-be-determined";
-        } catch (RemoteException e) {
-            Slog.e("TransparencyService", "Unable to get package list from apexservice", e);
-            return "could-not-be-determined";
-        }
-    }
-
-    public final String apexPackageNameToModuleName(String str) {
-        return ApexManager.getInstance().getApexModuleNameForPackageName(str);
-    }
-
-    public final List getNewlyInstalledMbas() {
+    /* renamed from: -$$Nest$mgetNewlyInstalledMbas, reason: not valid java name */
+    public static List m47$$Nest$mgetNewlyInstalledMbas(BinaryTransparencyService binaryTransparencyService) {
+        binaryTransparencyService.getClass();
         ArrayList arrayList = new ArrayList();
         IBackgroundInstallControlService asInterface = IBackgroundInstallControlService.Stub.asInterface(ServiceManager.getService("background_install_control"));
         if (asInterface == null) {
@@ -997,14 +1179,201 @@ public class BinaryTransparencyService extends SystemService {
         }
     }
 
-    /* loaded from: classes.dex */
-    public class Digest {
-        public int algorithm;
-        public byte[] value;
+    /* JADX WARN: Removed duplicated region for block: B:12:0x0027 A[LOOP:0: B:10:0x0021->B:12:0x0027, LOOP_END] */
+    /* renamed from: -$$Nest$mlogBiometricProperties, reason: not valid java name */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void m48$$Nest$mlogBiometricProperties(com.android.server.BinaryTransparencyService r12, android.hardware.biometrics.SensorProperties r13, int r14, int r15) {
+        /*
+            r12.getClass()
+            int r10 = r13.getSensorId()
+            int r0 = r13.getSensorStrength()
+            r1 = 1
+            if (r0 == 0) goto L14
+            r2 = 2
+            if (r0 == r1) goto L18
+            if (r0 == r2) goto L16
+            r1 = 0
+        L14:
+            r11 = r1
+            goto L19
+        L16:
+            r1 = 3
+            goto L14
+        L18:
+            r11 = r2
+        L19:
+            java.util.List r13 = r13.getComponentInfo()
+            java.util.Iterator r13 = r13.iterator()
+        L21:
+            boolean r0 = r13.hasNext()
+            if (r0 == 0) goto L64
+            java.lang.Object r0 = r13.next()
+            android.hardware.biometrics.SensorProperties$ComponentInfo r0 = (android.hardware.biometrics.SensorProperties.ComponentInfo) r0
+            java.lang.String r1 = r0.getComponentId()
+            java.lang.String r5 = r1.trim()
+            java.lang.String r1 = r0.getHardwareVersion()
+            java.lang.String r6 = r1.trim()
+            java.lang.String r1 = r0.getFirmwareVersion()
+            java.lang.String r7 = r1.trim()
+            java.lang.String r1 = r0.getSerialNumber()
+            java.lang.String r8 = r1.trim()
+            java.lang.String r0 = r0.getSoftwareVersion()
+            java.lang.String r9 = r0.trim()
+            com.android.server.BinaryTransparencyService$BiometricLogger r0 = r12.mBiometricLogger
+            r0.getClass()
+            r0 = 587(0x24b, float:8.23E-43)
+            r1 = r10
+            r2 = r14
+            r3 = r15
+            r4 = r11
+            com.android.internal.util.FrameworkStatsLog.write(r0, r1, r2, r3, r4, r5, r6, r7, r8, r9)
+            goto L21
+        L64:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.BinaryTransparencyService.m48$$Nest$mlogBiometricProperties(com.android.server.BinaryTransparencyService, android.hardware.biometrics.SensorProperties, int, int):void");
+    }
 
-        public Digest(int i, byte[] bArr) {
-            this.algorithm = i;
-            this.value = bArr;
+    /* renamed from: -$$Nest$mtranslateContentDigestAlgorithmIdToString, reason: not valid java name */
+    public static String m49$$Nest$mtranslateContentDigestAlgorithmIdToString(BinaryTransparencyService binaryTransparencyService, int i) {
+        binaryTransparencyService.getClass();
+        return i != 1 ? i != 2 ? i != 3 ? i != 4 ? BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "UNKNOWN_ALGO_ID(", ")") : "SHA256" : "VERITY_CHUNKED_SHA256" : "CHUNKED_SHA512" : "CHUNKED_SHA256";
+    }
+
+    public BinaryTransparencyService(Context context) {
+        this(context, BiometricLogger.sInstance);
+    }
+
+    public BinaryTransparencyService(Context context, BiometricLogger biometricLogger) {
+        super(context);
+        this.mContext = context;
+        this.mServiceImpl = new BinaryTransparencyServiceImpl();
+        this.mVbmetaDigest = VBMETA_DIGEST_UNINITIALIZED;
+        this.mMeasurementsLastRecordedMs = 0L;
+        this.mPackageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
+        this.mBiometricLogger = biometricLogger;
+    }
+
+    public void collectBiometricProperties() {
+        if (DeviceConfig.getBoolean("biometrics", KEY_ENABLE_BIOMETRIC_PROPERTY_VERIFICATION, true)) {
+            PackageManager packageManager = this.mContext.getPackageManager();
+            FaceManager faceManager = null;
+            FingerprintManager fingerprintManager = (packageManager == null || !packageManager.hasSystemFeature("android.hardware.fingerprint")) ? null : (FingerprintManager) this.mContext.getSystemService(FingerprintManager.class);
+            if (packageManager != null && packageManager.hasSystemFeature("android.hardware.biometrics.face")) {
+                faceManager = (FaceManager) this.mContext.getSystemService(FaceManager.class);
+            }
+            if (fingerprintManager != null) {
+                fingerprintManager.addAuthenticatorsRegisteredCallback(new IFingerprintAuthenticatorsRegisteredCallback.Stub() { // from class: com.android.server.BinaryTransparencyService.1
+                    public final void onAllAuthenticatorsRegistered(List list) {
+                        int i;
+                        Iterator it = list.iterator();
+                        while (it.hasNext()) {
+                            FingerprintSensorProperties from = FingerprintSensorProperties.from((FingerprintSensorPropertiesInternal) it.next());
+                            BinaryTransparencyService binaryTransparencyService = BinaryTransparencyService.this;
+                            int sensorType = from.getSensorType();
+                            binaryTransparencyService.getClass();
+                            if (sensorType != 1) {
+                                i = 2;
+                                if (sensorType != 2) {
+                                    i = 3;
+                                    if (sensorType != 3) {
+                                        i = 4;
+                                        if (sensorType != 4) {
+                                            i = 5;
+                                            if (sensorType != 5) {
+                                                i = 0;
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                i = 1;
+                            }
+                            BinaryTransparencyService.m48$$Nest$mlogBiometricProperties(binaryTransparencyService, from, 1, i);
+                        }
+                    }
+                });
+            }
+            if (faceManager != null) {
+                faceManager.addAuthenticatorsRegisteredCallback(new IFaceAuthenticatorsRegisteredCallback.Stub() { // from class: com.android.server.BinaryTransparencyService.2
+                    public final void onAllAuthenticatorsRegistered(List list) {
+                        Iterator it = list.iterator();
+                        while (it.hasNext()) {
+                            FaceSensorProperties from = FaceSensorProperties.from((FaceSensorPropertiesInternal) it.next());
+                            BinaryTransparencyService binaryTransparencyService = BinaryTransparencyService.this;
+                            int sensorType = from.getSensorType();
+                            binaryTransparencyService.getClass();
+                            BinaryTransparencyService.m48$$Nest$mlogBiometricProperties(binaryTransparencyService, from, 4, sensorType != 1 ? sensorType != 2 ? 0 : 7 : 6);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onBootPhase(int i) {
+        if (i == 1000) {
+            Slog.i("TransparencyService", "Boot completed. Getting boot integrity data.");
+            String str = SystemProperties.get(SYSPROP_NAME_VBETA_DIGEST, VBMETA_DIGEST_UNAVAILABLE);
+            this.mVbmetaDigest = str;
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m("VBMeta Digest: ", str, "TransparencyService");
+            FrameworkStatsLog.write(FrameworkStatsLog.VBMETA_DIGEST_REPORTED, this.mVbmetaDigest);
+            if (Flags.binaryTransparencySepolicyHash()) {
+                IoThread.getExecutor().execute(new Runnable() { // from class: com.android.server.BinaryTransparencyService$$ExternalSyntheticLambda2
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        String str2;
+                        BinaryTransparencyService binaryTransparencyService = BinaryTransparencyService.this;
+                        binaryTransparencyService.getClass();
+                        byte[] computeSha256DigestForLargeFileAsBytes = PackageUtils.computeSha256DigestForLargeFileAsBytes("/sys/fs/selinux/policy", PackageUtils.createLargeFileBuffer());
+                        if (computeSha256DigestForLargeFileAsBytes != null) {
+                            str2 = HexEncoding.encodeToString(computeSha256DigestForLargeFileAsBytes, false);
+                            BinaryTransparencyService$$ExternalSyntheticOutline0.m("sepolicy hash: ", str2, "TransparencyService");
+                        } else {
+                            str2 = null;
+                        }
+                        FrameworkStatsLog.write(FrameworkStatsLog.BOOT_INTEGRITY_INFO_REPORTED, str2, binaryTransparencyService.mVbmetaDigest);
+                    }
+                });
+            }
+            Slog.i("TransparencyService", "Boot completed. Collecting biometric system properties.");
+            collectBiometricProperties();
+            Slog.i("TransparencyService", "Scheduling measurements to be taken.");
+            UpdateMeasurementsJobService.scheduleBinaryMeasurements(this.mContext);
+            Slog.d("TransparencyService", "Registering APK & Non-Staged APEX updates...");
+            IntentFilter intentFilter = new IntentFilter("android.intent.action.PACKAGE_ADDED");
+            intentFilter.addDataScheme("package");
+            this.mContext.registerReceiver(new PackageUpdatedReceiver(), intentFilter);
+            Slog.d("TransparencyService", "Registering APEX updates...");
+            IPackageManagerNative asInterface = IPackageManagerNative.Stub.asInterface(ServiceManager.getService("package_native"));
+            if (asInterface == null) {
+                Slog.e("TransparencyService", "IPackageManagerNative is null");
+                return;
+            }
+            try {
+                asInterface.registerStagedApexObserver(new IStagedApexObserver.Stub() { // from class: com.android.server.BinaryTransparencyService.3
+                    public final void onApexStaged(ApexStagedEvent apexStagedEvent) {
+                        BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("A new APEX has been staged for update. There are currently "), apexStagedEvent.stagedApexModuleNames.length, " APEX(s) staged for update. Scheduling measurement...", "TransparencyService");
+                        UpdateMeasurementsJobService.scheduleBinaryMeasurements(BinaryTransparencyService.this.mContext);
+                    }
+                });
+            } catch (RemoteException unused) {
+                Slog.e("TransparencyService", "Failed to register a StagedApexObserver.");
+            }
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        try {
+            publishBinderService("transparency", this.mServiceImpl);
+            Slog.i("TransparencyService", "Started BinaryTransparencyService");
+        } catch (Throwable th) {
+            Slog.e("TransparencyService", "Failed to start BinaryTransparencyService.", th);
         }
     }
 }

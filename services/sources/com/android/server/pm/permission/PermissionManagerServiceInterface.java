@@ -4,20 +4,19 @@ import android.content.pm.PermissionGroupInfo;
 import android.content.pm.PermissionInfo;
 import android.permission.IOnPermissionsChangeListener;
 import android.permission.PermissionManagerInternal;
-import com.android.server.pm.permission.PermissionManagerServiceInternal;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageState;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface PermissionManagerServiceInterface extends PermissionManagerInternal {
     boolean addAllowlistedRestrictedPermission(String str, String str2, int i, int i2);
 
     void addOnPermissionsChangeListener(IOnPermissionsChangeListener iOnPermissionsChangeListener);
-
-    void addOnRuntimePermissionStateChangedListener(PermissionManagerServiceInternal.OnRuntimePermissionStateChangedListener onRuntimePermissionStateChangedListener);
 
     boolean addPermission(PermissionInfo permissionInfo, boolean z);
 
@@ -25,25 +24,31 @@ public interface PermissionManagerServiceInterface extends PermissionManagerInte
 
     boolean applyRuntimePermissionsForMDM(String str, List list, int i, int i2);
 
-    int checkPermission(String str, String str2, int i);
+    int checkPermission(String str, String str2, String str3, int i);
 
-    int checkUidPermission(int i, String str);
+    int checkUidPermission(int i, String str, String str2);
+
+    void dump(PrintWriter printWriter, String[] strArr);
 
     Map getAllAppOpPermissionPackages();
 
     List getAllPermissionGroups(int i);
 
-    List getAllPermissionsWithProtection(int i);
+    Map getAllPermissionStates(String str, String str2, int i);
 
-    List getAllPermissionsWithProtectionFlags(int i);
+    List getAllPermissionsWithProtection();
+
+    List getAllPermissionsWithProtectionFlags();
 
     List getAllowlistedRestrictedPermissions(String str, int i, int i2);
 
     String[] getAppOpPermissionPackages(String str);
 
+    String getDefaultPermissionGrantFingerprint(int i);
+
     int[] getGidsForUid(int i);
 
-    Set getGrantedPermissions(String str, int i);
+    Set getGrantedPermissions(int i, String str);
 
     Set getInstalledPermissions(String str);
 
@@ -53,13 +58,13 @@ public interface PermissionManagerServiceInterface extends PermissionManagerInte
 
     List getPackageGrantedPermissionsForMDM(String str);
 
-    int getPermissionFlags(String str, String str2, int i);
+    int getPermissionFlags(String str, String str2, String str3, int i);
 
-    int[] getPermissionGids(String str, int i);
+    int[] getPermissionGids(int i, String str);
 
     PermissionGroupInfo getPermissionGroupInfo(String str, int i);
 
-    PermissionInfo getPermissionInfo(String str, int i, String str2);
+    PermissionInfo getPermissionInfo(int i, String str, String str2);
 
     Permission getPermissionTEMP(String str);
 
@@ -67,17 +72,15 @@ public interface PermissionManagerServiceInterface extends PermissionManagerInte
 
     List getSplitPermissions();
 
-    void grantInstallPermission(String str, String str2);
+    void grantRuntimePermission(String str, String str2, String str3, int i);
 
-    void grantRuntimePermission(String str, String str2, int i);
+    boolean isPermissionRevokedByPolicy(int i, String str, String str2, String str3);
 
-    boolean isPermissionRevokedByPolicy(String str, String str2, int i);
-
-    boolean isPermissionsReviewRequired(String str, int i);
+    boolean isPermissionsReviewRequired(int i, String str);
 
     void onPackageAdded(PackageState packageState, boolean z, AndroidPackage androidPackage);
 
-    void onPackageInstalled(AndroidPackage androidPackage, int i, PermissionManagerServiceInternal.PackageInstalledParams packageInstalledParams, int i2);
+    void onPackageInstalled(AndroidPackage androidPackage, PermissionManagerServiceInternal$PackageInstalledParams permissionManagerServiceInternal$PackageInstalledParams, int i);
 
     void onPackageRemoved(AndroidPackage androidPackage);
 
@@ -91,7 +94,7 @@ public interface PermissionManagerServiceInterface extends PermissionManagerInte
 
     void onUserRemoved(int i);
 
-    List queryPermissionsByGroup(String str, int i);
+    List queryPermissionsByGroup(int i, String str);
 
     void readLegacyPermissionStateTEMP();
 
@@ -109,17 +112,17 @@ public interface PermissionManagerServiceInterface extends PermissionManagerInte
 
     void resetRuntimePermissionsForUser(int i);
 
-    void revokeInstallPermission(String str, String str2);
-
     void revokePostNotificationPermissionWithoutKillForTest(String str, int i);
 
-    void revokeRuntimePermission(String str, String str2, int i, String str3);
+    void revokeRuntimePermission(String str, String str2, String str3, int i, String str4);
+
+    void setDefaultPermissionGrantFingerprint(int i, String str);
 
     int setLicensePermissionsForMDM(String str, Set set);
 
-    boolean shouldShowRequestPermissionRationale(String str, String str2, int i);
+    boolean shouldShowRequestPermissionRationale(int i, String str, String str2, String str3);
 
-    void updatePermissionFlags(String str, String str2, int i, int i2, boolean z, int i3);
+    void updatePermissionFlags(String str, String str2, int i, int i2, boolean z, String str3, int i3);
 
     void updatePermissionFlagsForAllApps(int i, int i2, int i3);
 

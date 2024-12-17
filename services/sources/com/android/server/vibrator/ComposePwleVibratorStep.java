@@ -5,42 +5,14 @@ import android.os.VibrationEffect;
 import android.os.vibrator.RampSegment;
 import android.os.vibrator.VibrationEffectSegment;
 import android.util.Slog;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ComposePwleVibratorStep extends AbstractVibratorStep {
-    public ComposePwleVibratorStep(VibrationStepConductor vibrationStepConductor, long j, VibratorController vibratorController, VibrationEffect.Composed composed, int i, long j2) {
-        super(vibrationStepConductor, Math.max(j, j2), vibratorController, composed, i, j2);
-    }
-
-    @Override // com.android.server.vibrator.Step
-    public List play() {
-        Trace.traceBegin(8388608L, "ComposePwleStep");
-        try {
-            int pwleSizeMax = this.controller.getVibratorInfo().getPwleSizeMax();
-            VibrationEffect.Composed composed = this.effect;
-            int i = this.segmentIndex;
-            if (pwleSizeMax <= 0) {
-                pwleSizeMax = 100;
-            }
-            List unrollRampSegments = unrollRampSegments(composed, i, pwleSizeMax);
-            if (unrollRampSegments.isEmpty()) {
-                Slog.w("VibrationThread", "Ignoring wrong segment for a ComposePwleStep: " + this.effect.getSegments().get(this.segmentIndex));
-                return nextSteps(1);
-            }
-            RampSegment[] rampSegmentArr = (RampSegment[]) unrollRampSegments.toArray(new RampSegment[unrollRampSegments.size()]);
-            long on = this.controller.on(rampSegmentArr, getVibration().id);
-            handleVibratorOnResult(on);
-            getVibration().stats.reportComposePwle(on, rampSegmentArr);
-            return nextSteps(unrollRampSegments.size());
-        } finally {
-            Trace.traceEnd(8388608L);
-        }
-    }
-
-    public final List unrollRampSegments(VibrationEffect.Composed composed, int i, int i2) {
+    public static List unrollRampSegments(VibrationEffect.Composed composed, int i, int i2) {
         ArrayList arrayList = new ArrayList(i2);
         int size = composed.getSegments().size();
         int repeatIndex = composed.getRepeatIndex();
@@ -59,7 +31,9 @@ public final class ComposePwleVibratorStep extends AbstractVibratorStep {
             }
             RampSegment rampSegment2 = rampSegment;
             arrayList.add(rampSegment2);
-            if (isBetterBreakPosition(arrayList, f, i2)) {
+            float endAmplitude = ((RampSegment) arrayList.get(arrayList.size() - 1)).getEndAmplitude();
+            int size2 = arrayList.size();
+            if (size2 <= i2 && (endAmplitude == FullScreenMagnificationGestureHandler.MAX_SCALE || (size2 >= i2 / 2 && endAmplitude <= f))) {
                 f = rampSegment2.getEndAmplitude();
                 i3 = arrayList.size();
             }
@@ -68,15 +42,57 @@ public final class ComposePwleVibratorStep extends AbstractVibratorStep {
         return arrayList.size() > i2 ? arrayList.subList(0, i3) : arrayList;
     }
 
-    public final boolean isBetterBreakPosition(List list, float f, int i) {
-        float endAmplitude = ((RampSegment) list.get(list.size() - 1)).getEndAmplitude();
-        int size = list.size();
-        if (size > i) {
-            return false;
+    @Override // com.android.server.vibrator.Step
+    public final List play() {
+        long composePwle;
+        Trace.traceBegin(8388608L, "ComposePwleStep");
+        try {
+            int pwleSizeMax = this.controller.mVibratorInfo.getPwleSizeMax();
+            VibrationEffect.Composed composed = this.effect;
+            int i = this.segmentIndex;
+            if (pwleSizeMax <= 0) {
+                pwleSizeMax = 100;
+            }
+            List unrollRampSegments = unrollRampSegments(composed, i, pwleSizeMax);
+            if (unrollRampSegments.isEmpty()) {
+                Slog.w("VibrationThread", "Ignoring wrong segment for a ComposePwleStep: " + this.effect.getSegments().get(this.segmentIndex));
+                return nextSteps(1);
+            }
+            Slog.d("VibrationThread", "Compose " + unrollRampSegments + " PWLEs on vibrator " + this.controller.mVibratorInfo.getId());
+            RampSegment[] rampSegmentArr = (RampSegment[]) unrollRampSegments.toArray(new RampSegment[unrollRampSegments.size()]);
+            VibratorController vibratorController = this.controller;
+            long j = this.conductor.mVibration.id;
+            if (vibratorController.mVibratorInfo.hasCapability(1024L)) {
+                synchronized (vibratorController.mLock) {
+                    try {
+                        composePwle = vibratorController.mNativeWrapper.composePwle(rampSegmentArr, vibratorController.mVibratorInfo.getDefaultBraking(), j);
+                        if (composePwle > 0) {
+                            vibratorController.mCurrentAmplitude = -1.0f;
+                            vibratorController.notifyListenerOnVibrating(true);
+                        }
+                    } finally {
+                    }
+                }
+            } else {
+                composePwle = 0;
+            }
+            handleVibratorOnResult(composePwle);
+            VibrationStats vibrationStats = this.conductor.mVibration.stats;
+            vibrationStats.mVibratorComposePwleCount++;
+            vibrationStats.mVibrationPwleTotalSize += rampSegmentArr.length;
+            if (composePwle > 0) {
+                for (RampSegment rampSegment : rampSegmentArr) {
+                    if (rampSegment.getStartAmplitude() == FullScreenMagnificationGestureHandler.MAX_SCALE && rampSegment.getEndAmplitude() == FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                        composePwle -= rampSegment.getDuration();
+                    }
+                }
+                if (composePwle > 0) {
+                    vibrationStats.mVibratorOnTotalDurationMillis += (int) composePwle;
+                }
+            }
+            return nextSteps(unrollRampSegments.size());
+        } finally {
+            Trace.traceEnd(8388608L);
         }
-        if (endAmplitude == DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            return true;
-        }
-        return size >= i / 2 && endAmplitude <= f;
     }
 }

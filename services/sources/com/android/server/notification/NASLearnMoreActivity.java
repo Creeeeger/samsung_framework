@@ -6,18 +6,15 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public class NASLearnMoreActivity extends Activity {
     @Override // android.app.Activity
-    public void onCreate(Bundle bundle) {
+    public final void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        showLearnMoreDialog();
-    }
-
-    public final void showLearnMoreDialog() {
-        AlertDialog create = new AlertDialog.Builder(this).setMessage(R.string.work_mode_off_title).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() { // from class: com.android.server.notification.NASLearnMoreActivity.1
+        AlertDialog create = new AlertDialog.Builder(this).setMessage(R.string.roamingText9).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() { // from class: com.android.server.notification.NASLearnMoreActivity.1
             @Override // android.content.DialogInterface.OnClickListener
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public final void onClick(DialogInterface dialogInterface, int i) {
                 NASLearnMoreActivity.this.finish();
             }
         }).create();

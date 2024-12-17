@@ -1,16 +1,17 @@
 package com.android.server.stats.pull;
 
-import android.os.IInstalld;
 import android.os.Process;
 import android.util.SparseArray;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class ProcfsMemoryUtil {
-    public static final int[] CMDLINE_OUT = {IInstalld.FLAG_USE_QUOTA};
+    public static final int[] CMDLINE_OUT = {4096};
     public static final String[] STATUS_KEYS = {"Uid:", "VmHWM:", "VmRSS:", "RssAnon:", "RssShmem:", "VmSwap:"};
     public static final String[] VMSTAT_KEYS = {"oom_kill"};
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class MemorySnapshot {
         public int anonRssInKilobytes;
         public int rssHighWaterMarkInKilobytes;
@@ -20,39 +21,9 @@ public abstract class ProcfsMemoryUtil {
         public int uid;
     }
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class VmStat {
         public int oomKillCount;
-    }
-
-    public static MemorySnapshot readMemorySnapshotFromProcfs(int i) {
-        String[] strArr = STATUS_KEYS;
-        long[] jArr = new long[strArr.length];
-        jArr[0] = -1;
-        jArr[3] = -1;
-        jArr[4] = -1;
-        jArr[5] = -1;
-        Process.readProcLines("/proc/" + i + "/status", strArr, jArr);
-        if (jArr[0] == -1 || jArr[3] == -1 || jArr[4] == -1 || jArr[5] == -1) {
-            return null;
-        }
-        MemorySnapshot memorySnapshot = new MemorySnapshot();
-        memorySnapshot.uid = (int) jArr[0];
-        memorySnapshot.rssHighWaterMarkInKilobytes = (int) jArr[1];
-        memorySnapshot.rssInKilobytes = (int) jArr[2];
-        memorySnapshot.anonRssInKilobytes = (int) jArr[3];
-        memorySnapshot.rssShmemKilobytes = (int) jArr[4];
-        memorySnapshot.swapInKilobytes = (int) jArr[5];
-        return memorySnapshot;
-    }
-
-    public static String readCmdlineFromProcfs(int i) {
-        String[] strArr = new String[1];
-        StringBuilder sb = new StringBuilder();
-        sb.append("/proc/");
-        sb.append(i);
-        sb.append("/cmdline");
-        return !Process.readProcFile(sb.toString(), CMDLINE_OUT, strArr, null, null) ? "" : strArr[0];
     }
 
     public static SparseArray getProcessCmdlines() {
@@ -70,16 +41,37 @@ public abstract class ProcfsMemoryUtil {
         return sparseArray;
     }
 
-    public static VmStat readVmStat() {
-        String[] strArr = VMSTAT_KEYS;
-        long[] jArr = new long[strArr.length];
-        jArr[0] = -1;
-        Process.readProcLines("/proc/vmstat", strArr, jArr);
-        if (jArr[0] == -1) {
+    public static String readCmdlineFromProcfs(int i) {
+        String[] strArr = new String[1];
+        return !Process.readProcFile(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "/proc/", "/cmdline"), CMDLINE_OUT, strArr, null, null) ? "" : strArr[0];
+    }
+
+    public static MemorySnapshot readMemorySnapshotFromProcfs(int i) {
+        long[] jArr = {-1, 0, 0, -1, -1, -1};
+        Process.readProcLines(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "/proc/", "/status"), STATUS_KEYS, jArr);
+        long j = jArr[0];
+        if (j == -1) {
             return null;
         }
-        VmStat vmStat = new VmStat();
-        vmStat.oomKillCount = (int) jArr[0];
-        return vmStat;
+        long j2 = jArr[3];
+        if (j2 == -1) {
+            return null;
+        }
+        long j3 = jArr[4];
+        if (j3 == -1) {
+            return null;
+        }
+        long j4 = jArr[5];
+        if (j4 == -1) {
+            return null;
+        }
+        MemorySnapshot memorySnapshot = new MemorySnapshot();
+        memorySnapshot.uid = (int) j;
+        memorySnapshot.rssHighWaterMarkInKilobytes = (int) jArr[1];
+        memorySnapshot.rssInKilobytes = (int) jArr[2];
+        memorySnapshot.anonRssInKilobytes = (int) j2;
+        memorySnapshot.rssShmemKilobytes = (int) j3;
+        memorySnapshot.swapInKilobytes = (int) j4;
+        return memorySnapshot;
     }
 }

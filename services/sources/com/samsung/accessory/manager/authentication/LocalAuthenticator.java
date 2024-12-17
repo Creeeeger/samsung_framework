@@ -1,11 +1,11 @@
 package com.samsung.accessory.manager.authentication;
 
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
-/* loaded from: classes.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class LocalAuthenticator {
-    public String convertMsg(int i) {
+    public static String convertMsg(int i) {
         switch (i) {
             case 1:
                 return "MSG_INITIALIZE";
@@ -26,7 +26,7 @@ public abstract class LocalAuthenticator {
         }
     }
 
-    public abstract void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr);
+    public abstract void dump(PrintWriter printWriter);
 
     public abstract void systemReady();
 }

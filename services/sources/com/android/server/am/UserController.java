@@ -5,59 +5,82 @@ import android.app.ActivityManagerInternal;
 import android.app.AppGlobals;
 import android.app.BroadcastOptions;
 import android.app.IStopUserCallback;
-import android.app.IUserSwitchObserver;
 import android.app.KeyguardManager;
-import android.app.admin.DevicePolicyManagerInternal;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManagerInternal;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.IIntentReceiver;
 import android.content.Intent;
 import android.content.PermissionChecker;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackagePartitions;
+import android.content.pm.ResolveInfo;
 import android.content.pm.UserInfo;
 import android.content.pm.UserProperties;
+import android.content.res.Configuration;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.IProgressListener;
-import android.os.IRemoteCallback;
 import android.os.IUserManager;
+import android.os.Looper;
 import android.os.Message;
+import android.os.PowerManagerInternal;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.os.storage.IStorageManager;
 import android.os.storage.StorageManager;
-import android.text.TextUtils;
+import android.provider.Settings;
+import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.EventLog;
 import android.util.IntArray;
+import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.util.proto.ProtoOutputStream;
+import com.android.internal.notification.SystemNotificationChannels;
 import com.android.internal.policy.IKeyguardDismissCallback;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.util.ObjectUtils;
 import com.android.internal.util.Preconditions;
 import com.android.internal.util.ProgressReporter;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.VerifyCredentialResponse;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.CustomizedBinderCallsStatsInternal$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import com.android.server.FactoryResetter;
 import com.android.server.FgThread;
 import com.android.server.LocalServices;
+import com.android.server.SystemService;
 import com.android.server.SystemServiceManager;
+import com.android.server.SystemServiceManager$$ExternalSyntheticOutline0;
+import com.android.server.UiThread;
+import com.android.server.alarm.AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerService;
 import com.android.server.am.UserController;
-import com.android.server.am.UserState;
 import com.android.server.knox.dar.ddar.DDLog;
-import com.android.server.knox.dar.sdp.SdpManagerImpl;
 import com.android.server.pm.PackageManagerShellCommandDataLoader;
 import com.android.server.pm.PersonaServiceHelper;
 import com.android.server.pm.UserJourneyLogger;
@@ -66,46 +89,55 @@ import com.android.server.pm.UserManagerService;
 import com.android.server.utils.Slogf;
 import com.android.server.utils.TimingsTraceAndSlog;
 import com.android.server.wm.ActivityTaskManagerInternal;
+import com.android.server.wm.ActivityTaskManagerService;
+import com.android.server.wm.ActivityTaskManagerServiceExt;
+import com.android.server.wm.DexController;
+import com.android.server.wm.WindowManagerGlobalLock;
 import com.android.server.wm.WindowManagerService;
+import com.samsung.android.app.SemDualAppManager;
 import com.samsung.android.knox.PersonaManagerInternal;
 import com.samsung.android.knox.SemPersonaManager;
+import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import com.samsung.android.knox.dar.ddar.DualDARController;
 import com.samsung.android.knox.dar.ddar.DualDarManager;
 import com.samsung.android.knox.dar.ddar.fsm.Event;
 import com.samsung.android.knox.dar.ddar.fsm.State;
 import com.samsung.android.knox.dar.ddar.fsm.StateMachine;
 import com.samsung.android.server.pm.mm.MaintenanceModeManager;
-import java.io.PrintWriter;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class UserController implements Handler.Callback {
-    public SimpleDateFormat formatter;
+public final class UserController implements Handler.Callback {
     public volatile boolean mAllowUserUnlocking;
-    public volatile boolean mBootCompleted;
     public final SparseIntArray mCompletedEventTypes;
     public volatile ArraySet mCurWaitingUserSwitchCallbacks;
+    public int mCurrentDexMode;
     public int[] mCurrentProfileIds;
-    public volatile int mCurrentUserId;
     public boolean mDelayUserDataLocking;
     public final Handler mHandler;
     public boolean mInitialized;
     public final Injector mInjector;
     public boolean mIsBroadcastSentForSystemUserStarted;
     public boolean mIsBroadcastSentForSystemUserStarting;
-    public final ArrayList mLastActiveUsers;
+    public final ArrayList mLastActiveUsersForDelayedLocking;
     public volatile long mLastUserUnlockingUptime;
-    public final Object mLock;
     public final LockPatternUtils mLockPatternUtils;
     public int mMaxRunningUsers;
     public final List mPendingUserStarts;
@@ -115,40 +147,345 @@ public class UserController implements Handler.Callback {
     public int mStopUserOnSwitch;
     public String mSwitchingFromSystemUserMessage;
     public String mSwitchingToSystemUserMessage;
-    public volatile int mTargetUserId;
     public ArraySet mTimeoutUserSwitchCallbacks;
     public final Handler mUiHandler;
-    public final UserManagerInternal.UserLifecycleListener mUserLifecycleListener;
+    public final AnonymousClass1 mUserLifecycleListener;
     public final ArrayList mUserLru;
     public final SparseIntArray mUserProfileGroupIds;
     public final RemoteCallbackList mUserSwitchObservers;
     public boolean mUserSwitchUiEnabled;
+    public int mBackgroundUserScheduledStopTimeSecs = -1;
+    public final Object mLock = new Object();
+    public volatile int mCurrentUserId = 0;
+    public volatile int mTargetUserId = -10000;
+    public final ArrayDeque mPendingTargetUserIds = new ArrayDeque();
 
-    /* renamed from: com.android.server.am.UserController$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements UserManagerInternal.UserLifecycleListener {
-        public AnonymousClass1() {
-        }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.am.UserController$4, reason: invalid class name */
+    public final class AnonymousClass4 {
+        public final /* synthetic */ int val$userStartMode;
 
-        @Override // com.android.server.pm.UserManagerInternal.UserLifecycleListener
-        public void onUserCreated(UserInfo userInfo, Object obj) {
-            UserController.this.onUserAdded(userInfo);
-        }
-
-        @Override // com.android.server.pm.UserManagerInternal.UserLifecycleListener
-        public void onUserRemoved(UserInfo userInfo) {
-            UserController.this.onUserRemoved(userInfo.id);
+        public AnonymousClass4(int i) {
+            this.val$userStartMode = i;
         }
     }
 
-    public UserController(ActivityManagerService activityManagerService) {
-        this(new Injector(activityManagerService));
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.am.UserController$5, reason: invalid class name */
+    public final class AnonymousClass5 extends IIntentReceiver.Stub {
+        public final /* synthetic */ int $r8$classId = 0;
+        public final /* synthetic */ Object val$finishUserStoppingAsync;
+        public final /* synthetic */ int val$userId;
+
+        public AnonymousClass5(int i, UserController$$ExternalSyntheticLambda1 userController$$ExternalSyntheticLambda1) {
+            this.val$userId = i;
+            this.val$finishUserStoppingAsync = userController$$ExternalSyntheticLambda1;
+        }
+
+        public AnonymousClass5(int i, UserController$$ExternalSyntheticLambda1 userController$$ExternalSyntheticLambda1, byte b) {
+            this.val$userId = i;
+            this.val$finishUserStoppingAsync = userController$$ExternalSyntheticLambda1;
+        }
+
+        public AnonymousClass5(UserController userController, int i) {
+            this.val$finishUserStoppingAsync = userController;
+            this.val$userId = i;
+        }
+
+        public final void performReceive(Intent intent, int i, String str, Bundle bundle, boolean z, boolean z2, int i2) {
+            switch (this.$r8$classId) {
+                case 0:
+                    UserController.asyncTraceEnd(this.val$userId, AmFmBandRange$$ExternalSyntheticOutline0.m(this.val$userId, new StringBuilder("broadcast-ACTION_USER_STOPPING-"), "-[stopUser]"));
+                    ((Runnable) this.val$finishUserStoppingAsync).run();
+                    break;
+                case 1:
+                    UserController.asyncTraceEnd(this.val$userId, AmFmBandRange$$ExternalSyntheticOutline0.m(this.val$userId, new StringBuilder("broadcast-ACTION_SHUTDOWN-"), "-[stopUser]"));
+                    ((Runnable) this.val$finishUserStoppingAsync).run();
+                    break;
+                default:
+                    Slogf.i("ActivityManager", "Finished processing BOOT_COMPLETED for u" + this.val$userId);
+                    ((UserController) this.val$finishUserStoppingAsync).getClass();
+                    break;
+            }
+        }
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.am.UserController$8, reason: invalid class name */
+    public final class AnonymousClass8 extends IIntentReceiver.Stub {
+        public final void performReceive(Intent intent, int i, String str, Bundle bundle, boolean z, boolean z2, int i2) {
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class Injector {
+        public PowerManagerInternal mPowerManagerInternal;
+        public final ActivityManagerService mService;
+        public UserManagerService mUserManager;
+        public UserManagerInternal mUserManagerInternal;
+        public UserSwitchingDialog mUserSwitchingDialog;
+        public final Object mUserSwitchingDialogLock = new Object();
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        /* renamed from: com.android.server.am.UserController$Injector$1, reason: invalid class name */
+        public final class AnonymousClass1 extends IIntentReceiver.Stub {
+            public final PreBootBroadcaster$1 mHandler;
+            public int mIndex = 0;
+            public final Intent mIntent;
+            public final ProgressReporter mProgress;
+            public final boolean mQuiet;
+            public final ActivityManagerService mService;
+            public final List mTargets;
+            public final int mUserId;
+            public final /* synthetic */ Runnable val$onFinish;
+
+            /* JADX WARN: Type inference failed for: r5v2, types: [com.android.server.am.PreBootBroadcaster$1] */
+            public AnonymousClass1(ActivityManagerService activityManagerService, int i, boolean z, UserController$$ExternalSyntheticLambda18 userController$$ExternalSyntheticLambda18) {
+                this.val$onFinish = userController$$ExternalSyntheticLambda18;
+                final Looper looper = UiThread.get().getLooper();
+                this.mHandler = new Handler(looper) { // from class: com.android.server.am.PreBootBroadcaster$1
+                    @Override // android.os.Handler
+                    public final void handleMessage(Message message) {
+                        UserController.Injector.AnonymousClass1 anonymousClass1 = UserController.Injector.AnonymousClass1.this;
+                        Context context = anonymousClass1.mService.mContext;
+                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NotificationManager.class);
+                        int i2 = message.arg1;
+                        int i3 = message.arg2;
+                        int i4 = message.what;
+                        if (i4 != 1) {
+                            if (i4 != 2) {
+                                return;
+                            }
+                            notificationManager.cancelAsUser("PreBootBroadcaster", 13, UserHandle.of(anonymousClass1.mUserId));
+                        } else {
+                            CharSequence text = context.getText(R.string.capability_title_canRetrieveWindowContent);
+                            Intent intent = new Intent();
+                            intent.setClassName(KnoxCustomManagerService.SETTING_PKG_NAME, "com.android.settings.HelpTrampoline");
+                            intent.putExtra("android.intent.extra.TEXT", "help_url_upgrading");
+                            notificationManager.notifyAsUser("PreBootBroadcaster", 13, new Notification.Builder(anonymousClass1.mService.mContext, SystemNotificationChannels.UPDATES).setSmallIcon(17304445).setWhen(0L).setOngoing(true).setTicker(text).setColor(context.getColor(R.color.system_notification_accent_color)).setContentTitle(text).setContentIntent(context.getPackageManager().resolveActivity(intent, 0) != null ? PendingIntent.getActivity(context, 0, intent, 67108864) : null).setVisibility(1).setProgress(i2, i3, false).build(), UserHandle.of(anonymousClass1.mUserId));
+                        }
+                    }
+                };
+                this.mService = activityManagerService;
+                this.mUserId = i;
+                this.mProgress = null;
+                this.mQuiet = z;
+                Intent intent = new Intent("android.intent.action.PRE_BOOT_COMPLETED");
+                this.mIntent = intent;
+                intent.addFlags(33554688);
+                this.mTargets = activityManagerService.mContext.getPackageManager().queryBroadcastReceiversAsUser(intent, 1048576, UserHandle.of(i));
+            }
+
+            public final void performReceive(Intent intent, int i, String str, Bundle bundle, boolean z, boolean z2, int i2) {
+                sendNext();
+            }
+
+            public final void sendNext() {
+                if (this.mIndex >= this.mTargets.size()) {
+                    obtainMessage(2).sendToTarget();
+                    this.val$onFinish.run();
+                    return;
+                }
+                if (!this.mService.isUserRunning(this.mUserId, 0)) {
+                    CustomizedBinderCallsStatsInternal$$ExternalSyntheticOutline0.m(new StringBuilder("User "), this.mUserId, " is no longer running; skipping remaining receivers", "PreBootBroadcaster");
+                    obtainMessage(2).sendToTarget();
+                    this.val$onFinish.run();
+                    return;
+                }
+                if (!this.mQuiet) {
+                    obtainMessage(1, this.mTargets.size(), this.mIndex).sendToTarget();
+                }
+                List list = this.mTargets;
+                int i = this.mIndex;
+                this.mIndex = i + 1;
+                ResolveInfo resolveInfo = (ResolveInfo) list.get(i);
+                ComponentName componentName = resolveInfo.activityInfo.getComponentName();
+                if (this.mProgress != null) {
+                    this.mProgress.setProgress(this.mIndex, this.mTargets.size(), this.mService.mContext.getString(R.string.capability_title_canCaptureFingerprintGestures, resolveInfo.activityInfo.loadLabel(this.mService.mContext.getPackageManager())));
+                }
+                StringBuilder sb = new StringBuilder("Pre-boot of ");
+                sb.append(componentName.toShortString());
+                sb.append(" for user ");
+                SystemServiceManager$$ExternalSyntheticOutline0.m(sb, this.mUserId, "PreBootBroadcaster");
+                EventLog.writeEvent(30045, Integer.valueOf(this.mUserId), componentName.getPackageName());
+                this.mIntent.setComponent(componentName);
+                ActivityManagerInternal activityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
+                long bootTimeTempAllowListDuration = activityManagerInternal != null ? activityManagerInternal.getBootTimeTempAllowListDuration() : 10000L;
+                BroadcastOptions makeBasic = BroadcastOptions.makeBasic();
+                makeBasic.setTemporaryAppAllowlist(bootTimeTempAllowListDuration, 0, 201, "");
+                ActivityManagerService activityManagerService = this.mService;
+                ActivityManagerService.boostPriorityForLockedSection();
+                synchronized (activityManagerService) {
+                    try {
+                        this.mService.broadcastIntentLocked(this.mIntent, this, null, makeBasic.toBundle(), true, ActivityManagerService.MY_PID, Binder.getCallingUid(), Binder.getCallingPid(), this.mUserId);
+                    } catch (Throwable th) {
+                        ActivityManagerService.resetPriorityAfterLockedSection();
+                        throw th;
+                    }
+                }
+                ActivityManagerService.resetPriorityAfterLockedSection();
+            }
+        }
+
+        public Injector(ActivityManagerService activityManagerService) {
+            this.mService = activityManagerService;
+        }
+
+        public final void broadcastIntent(Intent intent, IIntentReceiver iIntentReceiver, String[] strArr, Bundle bundle, int i, int i2, int i3, int i4) {
+            int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -10000);
+            if (intExtra == -10000) {
+                intExtra = i4;
+            }
+            EventLog.writeEvent(30081, Integer.valueOf(intExtra), intent.getAction());
+            TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
+            ActivityManagerService activityManagerService = this.mService;
+            ActivityManagerService.boostPriorityForLockedSection();
+            synchronized (activityManagerService) {
+                try {
+                    timingsTraceAndSlog.traceBegin("broadcastIntent-" + i4 + PackageManagerShellCommandDataLoader.STDIN_PATH + intent.getAction());
+                    this.mService.broadcastIntentLocked(intent, iIntentReceiver, strArr, bundle, false, i, i2, i3, i4);
+                    timingsTraceAndSlog.traceEnd();
+                } catch (Throwable th) {
+                    ActivityManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
+            }
+            ActivityManagerService.resetPriorityAfterLockedSection();
+        }
+
+        public final void clearAllLockedTasks() {
+            ActivityTaskManagerService.LocalService localService = (ActivityTaskManagerService.LocalService) this.mService.mAtmInternal;
+            WindowManagerGlobalLock windowManagerGlobalLock = ActivityTaskManagerService.this.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    ActivityTaskManagerService.this.mLockTaskController.clearLockedTasks("startUser");
+                } catch (Throwable th) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
+            }
+            WindowManagerService.resetPriorityAfterLockedSection();
+        }
+
+        public final void dismissUserSwitchingDialog(Runnable runnable) {
+            synchronized (this.mUserSwitchingDialogLock) {
+                try {
+                    UserSwitchingDialog userSwitchingDialog = this.mUserSwitchingDialog;
+                    if (userSwitchingDialog != null) {
+                        userSwitchingDialog.dismiss(runnable);
+                        this.mUserSwitchingDialog = null;
+                    } else if (runnable != null) {
+                        runnable.run();
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final UserManagerService getUserManager() {
+            if (this.mUserManager == null) {
+                this.mUserManager = IUserManager.Stub.asInterface(ServiceManager.getService("user"));
+            }
+            return this.mUserManager;
+        }
+
+        public final UserManagerInternal getUserManagerInternal() {
+            if (this.mUserManagerInternal == null) {
+                this.mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
+            }
+            return this.mUserManagerInternal;
+        }
+
+        public final void onUserStarting(int i) {
+            SystemServiceManager systemServiceManager = this.mService.mSystemServiceManager;
+            TimingsTraceAndSlog newAsyncLog = TimingsTraceAndSlog.newAsyncLog();
+            SystemService.TargetUser newTargetUser = systemServiceManager.newTargetUser(i);
+            synchronized (systemServiceManager.mTargetUsers) {
+                if (i == 0) {
+                    try {
+                        if (systemServiceManager.mTargetUsers.contains(i)) {
+                            Slog.e("SystemServiceManager", "Skipping starting system user twice");
+                        }
+                    } finally {
+                    }
+                }
+                systemServiceManager.mTargetUsers.put(i, newTargetUser);
+                EventLog.writeEvent(30082, i);
+                systemServiceManager.onUser(newAsyncLog, "Start", null, newTargetUser, null);
+            }
+        }
+
+        public final void setPerformancePowerMode(boolean z) {
+            Slogf.i("ActivityManager", "Setting power mode MODE_FIXED_PERFORMANCE to " + z);
+            if (this.mPowerManagerInternal == null) {
+                this.mPowerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
+            }
+            this.mPowerManagerInternal.setPowerMode(3, z);
+        }
+
+        public final void updateUserConfiguration() {
+            ActivityTaskManagerService.LocalService localService = (ActivityTaskManagerService.LocalService) this.mService.mAtmInternal;
+            WindowManagerGlobalLock windowManagerGlobalLock = ActivityTaskManagerService.this.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    Configuration configuration = new Configuration(ActivityTaskManagerService.this.getGlobalConfiguration());
+                    int currentUserId = ActivityTaskManagerService.this.mAmInternal.getCurrentUserId();
+                    Settings.System.adjustConfigurationForUser(ActivityTaskManagerService.this.mContext.getContentResolver(), configuration, currentUserId, Settings.System.canWrite(ActivityTaskManagerService.this.mContext));
+                    ActivityTaskManagerService.this.updateConfigurationLocked(configuration, false, false, currentUserId);
+                } catch (Throwable th) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
+            }
+            WindowManagerService.resetPriorityAfterLockedSection();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PendingUserStart {
+        public final IProgressListener unlockListener;
+        public final int userId;
+        public final int userStartMode;
+
+        public PendingUserStart(int i, int i2, IProgressListener iProgressListener) {
+            this.userId = i;
+            this.userStartMode = i2;
+            this.unlockListener = iProgressListener;
+        }
+
+        public final String toString() {
+            return "PendingUserStart{userId=" + this.userId + ", userStartMode=" + UserManagerInternal.userStartModeToString(this.userStartMode) + ", unlockListener=" + this.unlockListener + '}';
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UserProgressListener extends IProgressListener.Stub {
+        public volatile long mUnlockStarted;
+
+        public final void onFinished(int i, Bundle bundle) {
+            long uptimeMillis = SystemClock.uptimeMillis() - this.mUnlockStarted;
+            if (i == 0) {
+                new TimingsTraceAndSlog().logDuration("SystemUserUnlock", uptimeMillis);
+            } else {
+                new TimingsTraceAndSlog().logDuration(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "User", "Unlock"), uptimeMillis);
+            }
+        }
+
+        public final void onProgress(int i, int i2, Bundle bundle) {
+            Slogf.d("ActivityManager", "Unlocking user " + i + " progress " + i2);
+        }
+
+        public final void onStarted(int i, Bundle bundle) {
+            Slogf.d("ActivityManager", "Started unlocking user " + i);
+            this.mUnlockStarted = SystemClock.uptimeMillis();
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.am.UserController$1] */
     public UserController(Injector injector) {
-        this.mLock = new Object();
-        this.mCurrentUserId = 0;
-        this.mTargetUserId = -10000;
         SparseArray sparseArray = new SparseArray();
         this.mStartedUsers = sparseArray;
         ArrayList arrayList = new ArrayList();
@@ -158,103 +495,852 @@ public class UserController implements Handler.Callback {
         this.mUserProfileGroupIds = new SparseIntArray();
         this.mUserSwitchObservers = new RemoteCallbackList();
         this.mUserSwitchUiEnabled = true;
-        this.mLastActiveUsers = new ArrayList();
+        this.mLastActiveUsersForDelayedLocking = new ArrayList();
         this.mCompletedEventTypes = new SparseIntArray();
         this.mStopUserOnSwitch = -1;
         this.mLastUserUnlockingUptime = 0L;
+        this.mCurrentDexMode = 0;
         this.mPendingUserStarts = new ArrayList();
         this.mUserLifecycleListener = new UserManagerInternal.UserLifecycleListener() { // from class: com.android.server.am.UserController.1
-            public AnonymousClass1() {
+            @Override // com.android.server.pm.UserManagerInternal.UserLifecycleListener
+            public final void onUserCreated(UserInfo userInfo, Object obj) {
+                UserController userController = UserController.this;
+                userController.getClass();
+                if (userInfo.isProfile()) {
+                    synchronized (userController.mLock) {
+                        try {
+                            if (userInfo.profileGroupId == userController.mCurrentUserId) {
+                                userController.mCurrentProfileIds = ArrayUtils.appendInt(userController.mCurrentProfileIds, userInfo.id);
+                            }
+                            int i = userInfo.profileGroupId;
+                            if (i != -10000) {
+                                userController.mUserProfileGroupIds.put(userInfo.id, i);
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
+                }
             }
 
             @Override // com.android.server.pm.UserManagerInternal.UserLifecycleListener
-            public void onUserCreated(UserInfo userInfo, Object obj) {
-                UserController.this.onUserAdded(userInfo);
-            }
-
-            @Override // com.android.server.pm.UserManagerInternal.UserLifecycleListener
-            public void onUserRemoved(UserInfo userInfo) {
-                UserController.this.onUserRemoved(userInfo.id);
+            public final void onUserRemoved(UserInfo userInfo) {
+                UserController userController = UserController.this;
+                int i = userInfo.id;
+                synchronized (userController.mLock) {
+                    try {
+                        for (int size = userController.mUserProfileGroupIds.size() - 1; size >= 0; size--) {
+                            if (userController.mUserProfileGroupIds.keyAt(size) != i && userController.mUserProfileGroupIds.valueAt(size) != i) {
+                            }
+                            userController.mUserProfileGroupIds.removeAt(size);
+                        }
+                        userController.mCurrentProfileIds = ArrayUtils.removeInt(userController.mCurrentProfileIds, i);
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
             }
         };
-        this.formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         this.mInjector = injector;
-        this.mHandler = injector.getHandler(this);
-        this.mUiHandler = injector.getUiHandler(this);
+        injector.getClass();
+        this.mHandler = new Handler(injector.mService.mHandlerThread.getLooper(), this);
+        this.mUiHandler = new Handler(injector.mService.mUiHandler.getLooper(), this);
         UserState userState = new UserState(UserHandle.SYSTEM);
         userState.mUnlockProgress.addListener(new UserProgressListener());
         sparseArray.put(0, userState);
         arrayList.add(0);
-        this.mLockPatternUtils = injector.getLockPatternUtils();
+        this.mLockPatternUtils = new LockPatternUtils(injector.mService.mContext);
         updateStartedUserArrayLU();
     }
 
-    public void setInitialConfig(boolean z, int i, boolean z2) {
+    public static void asyncTraceBegin(int i, String str) {
+        Slogf.d("ActivityManager", "%s - asyncTraceBegin(%d)", str, Integer.valueOf(i));
+        Trace.asyncTraceBegin(64L, str, i);
+    }
+
+    public static void asyncTraceEnd(int i, String str) {
+        Trace.asyncTraceEnd(64L, str, i);
+        Slogf.d("ActivityManager", "%s - asyncTraceEnd(%d)", str, Integer.valueOf(i));
+    }
+
+    public static void showEventLog(int i, int i2, int i3, String str, String str2) {
+        EventLogTags.writeBootProgressAmsState(i, i2, i3, str, str2);
+        StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "!@AM_BOOT_PROGRESS , uid : ", ", state:  ", ", progress : ");
+        AlarmManagerService$DeliveryTracker$$ExternalSyntheticOutline0.m(i3, ", step : ", str, ", description : ", m);
+        BootReceiver$$ExternalSyntheticOutline0.m(m, str2, "ActivityManager");
+    }
+
+    public final void addUserToUserLru(int i) {
         synchronized (this.mLock) {
-            this.mUserSwitchUiEnabled = z;
-            this.mMaxRunningUsers = i;
-            this.mDelayUserDataLocking = z2;
-            this.mInitialized = true;
+            try {
+                Integer valueOf = Integer.valueOf(i);
+                this.mUserLru.remove(valueOf);
+                this.mUserLru.add(valueOf);
+                int i2 = this.mUserProfileGroupIds.get(i, -10000);
+                Integer valueOf2 = Integer.valueOf(i2);
+                if (i2 != -10000 && !valueOf2.equals(valueOf) && this.mUserLru.remove(valueOf2)) {
+                    this.mUserLru.add(valueOf2);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
         }
     }
 
-    public final boolean isUserSwitchUiEnabled() {
+    public final void broadcastProfileAccessibleStateChanged(int i, int i2, String str) {
+        Intent intent = new Intent(str);
+        intent.putExtra("android.intent.extra.USER", UserHandle.of(i));
+        intent.addFlags(1342177280);
+        this.mInjector.broadcastIntent(intent, null, null, null, ActivityManagerService.MY_PID, Binder.getCallingUid(), Binder.getCallingPid(), i2);
+    }
+
+    public final boolean canDelayDataLockingForUser(int i) {
+        if (!com.android.internal.hidden_from_bootclasspath.android.os.Flags.allowPrivateProfile() || !android.multiuser.Flags.enableBiometricsToUnlockPrivateSpace() || !android.multiuser.Flags.enablePrivateSpaceFeatures()) {
+            return this.mDelayUserDataLocking;
+        }
+        UserProperties userProperties = this.mInjector.getUserManagerInternal().getUserProperties(i);
+        return this.mDelayUserDataLocking || (userProperties != null && userProperties.getAllowStoppingUserWithDelayedLocking());
+    }
+
+    public final void checkCallingHasOneOfThosePermissions(String str, String... strArr) {
+        if (Binder.getCallingUid() == 2000 && MaintenanceModeManager.isInMaintenanceModeFromProperty()) {
+            throw new SecurityException("Cannot control users : unauthorized");
+        }
+        for (String str2 : strArr) {
+            if (this.mInjector.mService.checkCallingPermission(str2) == 0) {
+                return;
+            }
+        }
+        StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Permission denial: ", str, "() from pid=");
+        m.append(Binder.getCallingPid());
+        m.append(", uid=");
+        m.append(Binder.getCallingUid());
+        m.append(" requires ");
+        m.append(strArr.length == 1 ? strArr[0] : "one of " + Arrays.toString(strArr));
+        String sb = m.toString();
+        Slogf.w("ActivityManager", sb);
+        throw new SecurityException(sb);
+    }
+
+    public final void checkGetCurrentUserPermissions() {
+        if (this.mInjector.mService.checkCallingPermission("android.permission.INTERACT_ACROSS_USERS") == 0 || this.mInjector.mService.checkCallingPermission("android.permission.INTERACT_ACROSS_USERS_FULL") == 0) {
+            return;
+        }
+        String str = "Permission Denial: getCurrentUser() from pid=" + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid() + " requires android.permission.INTERACT_ACROSS_USERS";
+        Slogf.w("ActivityManager", str);
+        throw new SecurityException(str);
+    }
+
+    public final void checkHasManageUsersPermission(String str) {
+        if (this.mInjector.mService.checkCallingPermission("android.permission.MANAGE_USERS") == -1) {
+            throw new SecurityException("You need MANAGE_USERS permission to call ".concat(str));
+        }
+    }
+
+    public void completeUserSwitch(int i, int i2) {
         boolean z;
+        UserController$$ExternalSyntheticLambda6 userController$$ExternalSyntheticLambda6 = new UserController$$ExternalSyntheticLambda6(i, i2, 0, this);
         synchronized (this.mLock) {
             z = this.mUserSwitchUiEnabled;
         }
-        return z;
+        if (!z) {
+            userController$$ExternalSyntheticLambda6.run();
+            return;
+        }
+        if (((KeyguardManager) this.mInjector.mService.mContext.getSystemService(KeyguardManager.class)).isDeviceSecure(i2)) {
+            UserController$$ExternalSyntheticLambda7 userController$$ExternalSyntheticLambda7 = new UserController$$ExternalSyntheticLambda7(this, userController$$ExternalSyntheticLambda6, 0);
+            final Injector injector = this.mInjector;
+            Objects.requireNonNull(injector);
+            final int i3 = 0;
+            runWithTimeout(new Consumer() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda15
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    int i4 = i3;
+                    final UserController.Injector injector2 = injector;
+                    final Runnable runnable = (Runnable) obj;
+                    switch (i4) {
+                        case 0:
+                            ActivityManagerService activityManagerService = injector2.mService;
+                            if (!activityManagerService.mWindowManager.isKeyguardLocked()) {
+                                activityManagerService.mAtmInternal.registerScreenObserver(new ActivityTaskManagerInternal.ScreenObserver() { // from class: com.android.server.am.UserController.Injector.2
+                                    @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
+                                    public final void onAwakeStateChanged(boolean z2) {
+                                    }
+
+                                    @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
+                                    public final void onKeyguardStateChanged(boolean z2) {
+                                        if (z2) {
+                                            ActivityTaskManagerService.this.mScreenObservers.remove(this);
+                                            runnable.run();
+                                        }
+                                    }
+                                });
+                                activityManagerService.mWindowManager.lockNow(null);
+                                break;
+                            } else {
+                                runnable.run();
+                                break;
+                            }
+                        default:
+                            injector2.mService.mWindowManager.dismissKeyguard(new IKeyguardDismissCallback.Stub() { // from class: com.android.server.am.UserController.Injector.3
+                                public final void onDismissCancelled() {
+                                    runnable.run();
+                                }
+
+                                public final void onDismissError() {
+                                    runnable.run();
+                                }
+
+                                public final void onDismissSucceeded() {
+                                    runnable.run();
+                                }
+                            }, null);
+                            break;
+                    }
+                }
+            }, 20000, userController$$ExternalSyntheticLambda7, new UserController$$ExternalSyntheticLambda16(0), "showKeyguard");
+            return;
+        }
+        UserController$$ExternalSyntheticLambda7 userController$$ExternalSyntheticLambda72 = new UserController$$ExternalSyntheticLambda7(this, userController$$ExternalSyntheticLambda6, 2);
+        final Injector injector2 = this.mInjector;
+        Objects.requireNonNull(injector2);
+        final int i4 = 1;
+        runWithTimeout(new Consumer() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda15
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                int i42 = i4;
+                final UserController.Injector injector22 = injector2;
+                final Runnable runnable = (Runnable) obj;
+                switch (i42) {
+                    case 0:
+                        ActivityManagerService activityManagerService = injector22.mService;
+                        if (!activityManagerService.mWindowManager.isKeyguardLocked()) {
+                            activityManagerService.mAtmInternal.registerScreenObserver(new ActivityTaskManagerInternal.ScreenObserver() { // from class: com.android.server.am.UserController.Injector.2
+                                @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
+                                public final void onAwakeStateChanged(boolean z2) {
+                                }
+
+                                @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
+                                public final void onKeyguardStateChanged(boolean z2) {
+                                    if (z2) {
+                                        ActivityTaskManagerService.this.mScreenObservers.remove(this);
+                                        runnable.run();
+                                    }
+                                }
+                            });
+                            activityManagerService.mWindowManager.lockNow(null);
+                            break;
+                        } else {
+                            runnable.run();
+                            break;
+                        }
+                    default:
+                        injector22.mService.mWindowManager.dismissKeyguard(new IKeyguardDismissCallback.Stub() { // from class: com.android.server.am.UserController.Injector.3
+                            public final void onDismissCancelled() {
+                                runnable.run();
+                            }
+
+                            public final void onDismissError() {
+                                runnable.run();
+                            }
+
+                            public final void onDismissSucceeded() {
+                                runnable.run();
+                            }
+                        }, null);
+                        break;
+                }
+            }
+        }, 2000, userController$$ExternalSyntheticLambda72, userController$$ExternalSyntheticLambda72, "dismissKeyguard");
     }
 
-    public int getMaxRunningUsers() {
+    public void continueUserSwitch(UserState userState, int i, int i2) {
+        int i3;
+        TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
+        timingsTraceAndSlog.traceBegin("continueUserSwitch-" + i + "-to-" + i2);
+        EventLog.writeEvent(30080, Integer.valueOf(i), Integer.valueOf(i2));
+        this.mHandler.removeMessages(130);
+        Handler handler = this.mHandler;
+        handler.sendMessage(handler.obtainMessage(130, i, i2));
+        userState.switching = false;
+        synchronized (this.mLock) {
+            UserState userState2 = (UserState) this.mStartedUsers.get(i);
+            if (i != 0 && i != this.mCurrentUserId && userState2 != null && (i3 = userState2.state) != 4 && i3 != 5) {
+                UserInfo userInfo = getUserInfo(i);
+                if (userInfo.isEphemeral()) {
+                    ((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).onEphemeralUserStop(i);
+                }
+                if (userInfo.isGuest() || userInfo.isEphemeral()) {
+                    Slogf.i("ActivityManager", "Stopping background guest or ephemeral user " + i);
+                    synchronized (this.mLock) {
+                        stopUsersLU(i, true, false, null, null);
+                    }
+                }
+            }
+        }
+        if (i != 0) {
+            boolean hasUserRestriction = hasUserRestriction("no_run_in_background", i);
+            synchronized (this.mLock) {
+                if (!hasUserRestriction) {
+                    if (!shouldStopUserOnSwitch()) {
+                        ArrayList arrayList = (ArrayList) this.mInjector.getUserManager().getProfiles(i, false);
+                        int size = arrayList.size();
+                        for (int i4 = 0; i4 < size; i4++) {
+                            int i5 = ((UserInfo) arrayList.get(i4)).id;
+                            if (hasUserRestriction("no_run_in_background", i5)) {
+                                Slogf.i("ActivityManager", "Stopping profile %d on user switch", Integer.valueOf(i5));
+                                synchronized (this.mLock) {
+                                    stopUsersLU(i5, false, false, null, null);
+                                }
+                            }
+                        }
+                    }
+                }
+                Slogf.i("ActivityManager", "Stopping user %d and its profiles on user switch", Integer.valueOf(i));
+                stopUsersLU(i, true, false, null, null);
+            }
+        }
+        scheduleStopOfBackgroundUser(i);
+        timingsTraceAndSlog.traceEnd();
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:28:0x00b1  */
+    /* JADX WARN: Type inference failed for: r18v0, types: [long] */
+    /* JADX WARN: Type inference failed for: r18v1 */
+    /* JADX WARN: Type inference failed for: r18v2 */
+    /* JADX WARN: Type inference failed for: r18v3 */
+    /* JADX WARN: Type inference failed for: r18v4 */
+    /* JADX WARN: Type inference failed for: r18v5, types: [java.util.concurrent.atomic.AtomicInteger] */
+    /* JADX WARN: Type inference failed for: r2v3, types: [boolean] */
+    /* JADX WARN: Type inference failed for: r3v14, types: [java.lang.StringBuilder] */
+    /* JADX WARN: Type inference failed for: r4v10, types: [java.lang.String] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void dispatchUserSwitch(final com.android.server.am.UserState r27, final int r28, final int r29) {
+        /*
+            Method dump skipped, instructions count: 388
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.UserController.dispatchUserSwitch(com.android.server.am.UserState, int, int):void");
+    }
+
+    public void dispatchUserSwitchComplete(int i, int i2) {
+        TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
+        timingsTraceAndSlog.traceBegin("dispatchUserSwitchComplete-" + i2);
+        this.mInjector.mService.mWindowManager.setSwitchingUser(false);
+        int beginBroadcast = this.mUserSwitchObservers.beginBroadcast();
+        for (int i3 = 0; i3 < beginBroadcast; i3++) {
+            try {
+                timingsTraceAndSlog.traceBegin("onUserSwitchComplete-" + i2 + " #" + i3 + " " + this.mUserSwitchObservers.getBroadcastCookie(i3));
+                this.mUserSwitchObservers.getBroadcastItem(i3).onUserSwitchComplete(i2);
+                timingsTraceAndSlog.traceEnd();
+            } catch (RemoteException unused) {
+            }
+        }
+        this.mUserSwitchObservers.finishBroadcast();
+        timingsTraceAndSlog.traceBegin("sendUserSwitchBroadcasts-" + i + PackageManagerShellCommandDataLoader.STDIN_PATH + i2);
+        sendUserSwitchBroadcasts(i, i2);
+        timingsTraceAndSlog.traceEnd();
+        timingsTraceAndSlog.traceEnd();
+        endUserSwitch();
+    }
+
+    public final void dumpDebug(ProtoOutputStream protoOutputStream) {
+        synchronized (this.mLock) {
+            try {
+                long start = protoOutputStream.start(1146756268046L);
+                int i = 0;
+                for (int i2 = 0; i2 < this.mStartedUsers.size(); i2++) {
+                    UserState userState = (UserState) this.mStartedUsers.valueAt(i2);
+                    long start2 = protoOutputStream.start(2246267895809L);
+                    protoOutputStream.write(1120986464257L, userState.mHandle.getIdentifier());
+                    long start3 = protoOutputStream.start(1146756268034L);
+                    int i3 = userState.state;
+                    if (i3 != 0) {
+                        int i4 = 1;
+                        if (i3 != 1) {
+                            i4 = 2;
+                            if (i3 != 2) {
+                                i4 = 3;
+                                if (i3 != 3) {
+                                    i4 = 4;
+                                    if (i3 != 4) {
+                                        i4 = 5;
+                                        if (i3 != 5) {
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        i3 = i4;
+                    } else {
+                        i3 = 0;
+                    }
+                    protoOutputStream.write(1159641169921L, i3);
+                    protoOutputStream.write(1133871366146L, userState.switching);
+                    protoOutputStream.end(start3);
+                    protoOutputStream.end(start2);
+                }
+                int i5 = 0;
+                while (true) {
+                    int[] iArr = this.mStartedUserArray;
+                    if (i5 >= iArr.length) {
+                        break;
+                    }
+                    protoOutputStream.write(2220498092034L, iArr[i5]);
+                    i5++;
+                }
+                for (int i6 = 0; i6 < this.mUserLru.size(); i6++) {
+                    protoOutputStream.write(2220498092035L, ((Integer) this.mUserLru.get(i6)).intValue());
+                }
+                if (this.mUserProfileGroupIds.size() > 0) {
+                    for (int i7 = 0; i7 < this.mUserProfileGroupIds.size(); i7++) {
+                        long start4 = protoOutputStream.start(2246267895812L);
+                        protoOutputStream.write(1120986464257L, this.mUserProfileGroupIds.keyAt(i7));
+                        protoOutputStream.write(1120986464258L, this.mUserProfileGroupIds.valueAt(i7));
+                        protoOutputStream.end(start4);
+                    }
+                }
+                protoOutputStream.write(1120986464261L, this.mCurrentUserId);
+                while (true) {
+                    int[] iArr2 = this.mCurrentProfileIds;
+                    if (i < iArr2.length) {
+                        protoOutputStream.write(2220498092038L, iArr2[i]);
+                        i++;
+                    } else {
+                        protoOutputStream.end(start);
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void endUserSwitch() {
+        int intValue;
+        if (android.multiuser.Flags.setPowerModeDuringUserSwitch()) {
+            this.mInjector.setPerformancePowerMode(false);
+        }
+        synchronized (this.mLock) {
+            intValue = ((Integer) ObjectUtils.getOrElse((Integer) this.mPendingTargetUserIds.poll(), -10000)).intValue();
+            this.mTargetUserId = -10000;
+        }
+        if (intValue != -10000) {
+            switchUser(intValue);
+        }
+    }
+
+    public final void enforceShellRestriction(int i) {
+        if (Binder.getCallingUid() == 2000) {
+            if (i < 0 || hasUserRestriction("no_debugging_features", i)) {
+                throw new SecurityException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Shell does not have permission to access user "));
+            }
+        }
+    }
+
+    public final void finishUserBoot(UserState userState, ActivityManagerService.AnonymousClass12 anonymousClass12) {
+        byte[] bArr;
+        int identifier = userState.mHandle.getIdentifier();
+        EventLog.writeEvent(30078, identifier);
+        showEventLog(identifier, userState.state, 0, "finishUserBoot", "NULL");
+        AnyMotionDetector$$ExternalSyntheticOutline0.m(identifier, "Finishing user boot ", "ActivityManager");
+        synchronized (this.mLock) {
+            try {
+                if (this.mStartedUsers.get(identifier) != userState) {
+                    return;
+                }
+                if (userState.setState(0, 1)) {
+                    this.mInjector.getUserManager().mUserJourneyLogger.logUserLifecycleEvent(identifier, 4, 0);
+                    this.mInjector.getUserManagerInternal().setUserState(identifier, userState.state);
+                    if (identifier == 0) {
+                        Injector injector = this.mInjector;
+                        if (!injector.mService.mSystemServiceManager.mRuntimeRestarted) {
+                            injector.getClass();
+                            IPackageManager packageManager = AppGlobals.getPackageManager();
+                            try {
+                                if (!packageManager.isFirstBoot()) {
+                                    if (!packageManager.isDeviceUpgrading()) {
+                                        long elapsedRealtime = SystemClock.elapsedRealtime();
+                                        FrameworkStatsLog.write(240, 12, elapsedRealtime);
+                                        if (elapsedRealtime > 120000) {
+                                            Slogf.wtf("SystemServerTiming", "finishUserBoot took too long. elapsedTimeMs=" + elapsedRealtime);
+                                        }
+                                    }
+                                }
+                            } catch (RemoteException e) {
+                                throw e.rethrowFromSystemServer();
+                            }
+                        }
+                    }
+                    if (!this.mInjector.getUserManager().isPreCreated(identifier)) {
+                        Handler handler = this.mHandler;
+                        handler.sendMessage(handler.obtainMessage(110, identifier, 0));
+                        if (this.mAllowUserUnlocking) {
+                            sendLockedBootCompletedBroadcast(anonymousClass12, identifier);
+                        }
+                    }
+                    showEventLog(identifier, userState.state, 1, "finishUserBoot", "send LOCKED BOOT COMPLETED");
+                }
+                UserInfo profileParent = this.mInjector.getUserManager().getProfileParent(identifier);
+                if (profileParent == null) {
+                    maybeUnlockUser(identifier);
+                } else if (isUserRunning(profileParent.id, 4)) {
+                    StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(identifier, "User ", " (parent ");
+                    m.append(profileParent.id);
+                    m.append("): attempting unlock because parent is unlocked");
+                    Slogf.d("ActivityManager", m.toString());
+                    if (SemPersonaManager.isDarDualEncryptionEnabled(identifier)) {
+                        DualDarUserController dualDarUserController = DualDarUserController.getInstance(this.mInjector);
+                        int i = profileParent.id;
+                        Injector injector2 = dualDarUserController.mInjector;
+                        KeyguardManager keyguardManager = (KeyguardManager) injector2.mService.mContext.getSystemService(KeyguardManager.class);
+                        DDLog.d("DualDAR::DualDarUserController", "fetchOuterLayerKey()", new Object[0]);
+                        try {
+                            bArr = DualDARController.getInstance(injector2.mService.mContext).fetchOuterLayerKey(identifier);
+                        } catch (Exception e2) {
+                            DDLog.e("DualDAR::DualDarUserController", "Exception in fetchOuterLayerKey() : " + e2.toString(), new Object[0]);
+                            bArr = null;
+                        }
+                        if (bArr != null) {
+                            DDLog.d("DualDAR::DualDarUserController", VibrationParam$1$$ExternalSyntheticOutline0.m(identifier, "Trying to unlock DualDAR user after userStart "), new Object[0]);
+                            VerifyCredentialResponse verifyCredentialResponse = VerifyCredentialResponse.ERROR;
+                            if (StateMachine.getCurrentState(identifier) == State.DEVICE_UNLOCK_DATA_UNLOCK) {
+                                DDLog.d("DualDAR::DualDarUserController", VibrationParam$1$$ExternalSyntheticOutline0.m(identifier, "Password2Auth has already been completed for: "), new Object[0]);
+                                verifyCredentialResponse = VerifyCredentialResponse.OK;
+                            } else if (!keyguardManager.isDeviceSecure(identifier)) {
+                                DDLog.d("DualDAR::DualDarUserController", VibrationParam$1$$ExternalSyntheticOutline0.m(identifier, "Do Password2Auth with null credential for: "), new Object[0]);
+                                DDLog.d("DualDAR::DualDarUserController", "onPassword2Auth()", new Object[0]);
+                                if (!SemPersonaManager.isDarDualEncryptionEnabled(identifier)) {
+                                    DDLog.e("DualDAR::DualDarUserController", VibrationParam$1$$ExternalSyntheticOutline0.m(identifier, "User is not DualDAR eligible. so no need to verify DualDAR Passwords"), new Object[0]);
+                                    verifyCredentialResponse = VerifyCredentialResponse.OK;
+                                } else if (DualDARController.getInstance(injector2.mService.mContext).onPassword2Auth(identifier, (byte[]) null)) {
+                                    DDLog.d("DualDAR::DualDarUserController", "onPassword2Auth completed successfully", new Object[0]);
+                                    StateMachine.processEvent(identifier, Event.DDAR_WORKSPACE_AUTH_SUCCESS);
+                                    verifyCredentialResponse = VerifyCredentialResponse.OK;
+                                } else {
+                                    DDLog.e("DualDAR::DualDarUserController", "Authentication Failure by dual dar client", new Object[0]);
+                                }
+                            }
+                            if (verifyCredentialResponse != VerifyCredentialResponse.OK || DualDarManager.isOnDeviceOwner(identifier)) {
+                                DDLog.e("DualDAR::DualDarUserController", "Default Authentication Failure by DualDAR client", new Object[0]);
+                            } else {
+                                DDLog.d("DualDAR::DualDarUserController", VibrationParam$1$$ExternalSyntheticOutline0.m(identifier, "fetch outer layer key and unlock DualDAR user "), new Object[0]);
+                                maybeUnlockUser(identifier);
+                            }
+                        } else {
+                            if (!keyguardManager.isDeviceLocked(i)) {
+                                DDLog.e("DualDAR::DualDarUserController", BinaryTransparencyService$$ExternalSyntheticOutline0.m(identifier, "This should theoretically never happen. Failed to unlock DualDAR user: ", " something went wrong while fetching OLK event though user0 is unlocked."), new Object[0]);
+                            }
+                            DDLog.i("DualDAR::DualDarUserController", "Device is still locked. Do not unlock DualDAR user, yet", new Object[0]);
+                        }
+                    } else {
+                        maybeUnlockUser(identifier);
+                    }
+                } else {
+                    StringBuilder m2 = BatteryService$$ExternalSyntheticOutline0.m(identifier, "User ", " (parent ");
+                    m2.append(profileParent.id);
+                    m2.append("): delaying unlock because parent is locked");
+                    Slogf.d("ActivityManager", m2.toString());
+                }
+                showEventLog(identifier, userState.state, 2, "finishUserBoot", "NULL");
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public void finishUserStopped(UserState userState, boolean z) {
+        ArrayList arrayList;
+        ArrayList arrayList2;
+        int i;
+        boolean z2;
+        boolean z3;
+        TimingsTraceAndSlog timingsTraceAndSlog;
+        ArrayList arrayList3;
+        ArrayList arrayList4;
+        TimingsTraceAndSlog timingsTraceAndSlog2;
+        UserInfo profileParent;
+        boolean z4;
+        int identifier = userState.mHandle.getIdentifier();
+        EventLog.writeEvent(30074, identifier);
+        UserInfo userInfo = getUserInfo(identifier);
+        synchronized (this.mLock) {
+            try {
+                arrayList = new ArrayList(userState.mStopCallbacks);
+                arrayList2 = new ArrayList(userState.mKeyEvictedCallbacks);
+                if (this.mStartedUsers.get(identifier) == userState && userState.state == 5) {
+                    Slogf.i("ActivityManager", "Removing user state from UserController.mStartedUsers for user #" + identifier + " as a result of user being stopped");
+                    this.mStartedUsers.remove(identifier);
+                    this.mUserLru.remove(Integer.valueOf(identifier));
+                    updateStartedUserArrayLU();
+                    if (!z || arrayList2.isEmpty()) {
+                        z4 = z;
+                    } else {
+                        Slogf.wtf("ActivityManager", "Delayed locking enabled while KeyEvictedCallbacks not empty, userId:" + identifier + " callbacks:" + arrayList2);
+                        z4 = false;
+                    }
+                    i = updateUserToLockLU(identifier, z4);
+                    if (i == -10000) {
+                        z3 = false;
+                        z2 = true;
+                    } else {
+                        z2 = true;
+                        z3 = true;
+                    }
+                }
+                i = identifier;
+                z2 = false;
+                z3 = true;
+            } finally {
+            }
+        }
+        TimingsTraceAndSlog timingsTraceAndSlog3 = new TimingsTraceAndSlog();
+        if (z2) {
+            Slogf.i("ActivityManager", "Removing user state from UserManager.mUserStates for user #" + identifier + " as a result of user being stopped");
+            this.mInjector.getUserManagerInternal().removeUserState(identifier);
+            this.mInjector.getClass();
+            ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class)).onUserStopped(identifier);
+            timingsTraceAndSlog3.traceBegin("stopPackagesOfStoppedUser-" + identifier + "-[stopUser]");
+            Injector injector = this.mInjector;
+            ActivityManagerService activityManagerService = injector.mService;
+            ActivityManagerService.boostPriorityForLockedSection();
+            synchronized (activityManagerService) {
+                try {
+                    try {
+                        timingsTraceAndSlog = timingsTraceAndSlog3;
+                        arrayList3 = arrayList2;
+                        arrayList4 = arrayList;
+                        injector.mService.forceStopPackageLocked(null, -1, false, false, true, false, false, identifier, "finish user");
+                        ActivityManagerService.resetPriorityAfterLockedSection();
+                        if (!this.mInjector.getUserManager().isPreCreated(identifier)) {
+                            Intent intent = new Intent("android.intent.action.USER_STOPPED");
+                            intent.addFlags(1342177280);
+                            intent.putExtra("android.intent.extra.user_handle", identifier);
+                            this.mInjector.broadcastIntent(intent, null, null, null, ActivityManagerService.MY_PID, Binder.getCallingUid(), Binder.getCallingPid(), -1);
+                            UserInfo userInfo2 = getUserInfo(identifier);
+                            if (userInfo2 != null && userInfo2.isProfile() && (profileParent = this.mInjector.getUserManager().getProfileParent(identifier)) != null) {
+                                broadcastProfileAccessibleStateChanged(identifier, profileParent.id, "android.intent.action.PROFILE_INACCESSIBLE");
+                            }
+                        }
+                        timingsTraceAndSlog.traceEnd();
+                    } catch (Throwable th) {
+                        th = th;
+                        ActivityManagerService.resetPriorityAfterLockedSection();
+                        throw th;
+                    }
+                } catch (Throwable th2) {
+                    th = th2;
+                    ActivityManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
+            }
+        } else {
+            timingsTraceAndSlog = timingsTraceAndSlog3;
+            arrayList3 = arrayList2;
+            arrayList4 = arrayList;
+        }
+        Iterator it = arrayList4.iterator();
+        while (it.hasNext()) {
+            IStopUserCallback iStopUserCallback = (IStopUserCallback) it.next();
+            if (z2) {
+                try {
+                    timingsTraceAndSlog2 = timingsTraceAndSlog;
+                    try {
+                        timingsTraceAndSlog2.traceBegin("stopCallbacks.userStopped-" + identifier + "-[stopUser]");
+                        iStopUserCallback.userStopped(identifier);
+                        timingsTraceAndSlog2.traceEnd();
+                    } catch (RemoteException unused) {
+                    }
+                } catch (RemoteException unused2) {
+                    timingsTraceAndSlog2 = timingsTraceAndSlog;
+                }
+            } else {
+                timingsTraceAndSlog2 = timingsTraceAndSlog;
+                timingsTraceAndSlog2.traceBegin("stopCallbacks.userStopAborted-" + identifier + "-[stopUser]");
+                iStopUserCallback.userStopAborted(identifier);
+                timingsTraceAndSlog2.traceEnd();
+            }
+            timingsTraceAndSlog = timingsTraceAndSlog2;
+        }
+        TimingsTraceAndSlog timingsTraceAndSlog4 = timingsTraceAndSlog;
+        if (z2) {
+            timingsTraceAndSlog4.traceBegin("systemServiceManagerOnUserStopped-" + identifier + "-[stopUser]");
+            SystemServiceManager systemServiceManager = this.mInjector.mService.mSystemServiceManager;
+            systemServiceManager.getClass();
+            EventLog.writeEvent(30087, identifier);
+            systemServiceManager.onUser(identifier, "Cleanup");
+            synchronized (systemServiceManager.mTargetUsers) {
+                systemServiceManager.mTargetUsers.remove(identifier);
+            }
+            timingsTraceAndSlog4.traceEnd();
+            timingsTraceAndSlog4.traceBegin("taskSupervisorRemoveUser-" + identifier + "-[stopUser]");
+            ActivityTaskManagerService.LocalService localService = (ActivityTaskManagerService.LocalService) this.mInjector.mService.mAtmInternal;
+            WindowManagerGlobalLock windowManagerGlobalLock = ActivityTaskManagerService.this.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    ActivityTaskManagerService.this.mRootWindowContainer.mUserRootTaskInFront.delete(identifier);
+                    ActivityTaskManagerService.this.mPackageConfigPersister.removeUser(identifier);
+                } catch (Throwable th3) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th3;
+                }
+            }
+            WindowManagerService.resetPriorityAfterLockedSection();
+            timingsTraceAndSlog4.traceEnd();
+            if (userInfo.isEphemeral() && !userInfo.preCreated) {
+                this.mInjector.getUserManager().removeUserEvenWhenDisallowed(identifier);
+            }
+            UserJourneyLogger.UserJourneySession logUserJourneyFinishWithError = this.mInjector.getUserManager().mUserJourneyLogger.logUserJourneyFinishWithError(-1, userInfo, 5, -1);
+            if (logUserJourneyFinishWithError != null) {
+                this.mHandler.removeMessages(200, logUserJourneyFinishWithError);
+            }
+            if (z3) {
+                FgThread.getHandler().post(new UserController$$ExternalSyntheticLambda2(this, i, arrayList3, 1));
+            }
+            resumePendingUserStarts(identifier);
+        } else {
+            UserJourneyLogger.UserJourneySession finishAndClearIncompleteUserJourney = this.mInjector.getUserManager().mUserJourneyLogger.finishAndClearIncompleteUserJourney(identifier, 5);
+            if (finishAndClearIncompleteUserJourney != null) {
+                this.mHandler.removeMessages(200, finishAndClearIncompleteUserJourney);
+            }
+        }
+        if (SemPersonaManager.isDarDualEncryptionEnabled(identifier)) {
+            DualDARController.getInstance(DualDarUserController.getInstance(this.mInjector).mInjector.mService.mContext).onUserStopped(identifier);
+        }
+    }
+
+    public final void finishUserUnlockedCompleted(UserState userState) {
+        final int identifier = userState.mHandle.getIdentifier();
+        EventLog.writeEvent(30072, identifier);
+        showEventLog(identifier, userState.state, 2, "finishUserUnlockedCompleted", "NULL");
+        DeviceIdleController$$ExternalSyntheticOutline0.m(identifier, "UserController event: finishUserUnlockedCompleted(", ")", "ActivityManager");
+        synchronized (this.mLock) {
+            try {
+                if (this.mStartedUsers.get(userState.mHandle.getIdentifier()) != userState) {
+                    return;
+                }
+                UserInfo userInfo = getUserInfo(identifier);
+                if (userInfo == null) {
+                    return;
+                }
+                if (!StorageManager.isCeStorageUnlocked(identifier)) {
+                    SystemProperties.set("dev.boot." + identifier + ".user_unlocked", "FAIL-finishUserUnlockedCompleted");
+                    Slog.i("ActivityManager", "!@Boot: StorageManager Unlocked FAIL, finishUserUnlockedCompleted");
+                    return;
+                }
+                showEventLog(identifier, userState.state, 1, "finishUserUnlockedCompleted", "OK StorageManager.isUserKeyUnlocked");
+                this.mInjector.getUserManager().onUserLoggedIn(identifier);
+                final UserController$$ExternalSyntheticLambda3 userController$$ExternalSyntheticLambda3 = new UserController$$ExternalSyntheticLambda3(this, userInfo, 1);
+                if (!userInfo.isInitialized()) {
+                    Slogf.d("ActivityManager", "Initializing user #" + identifier);
+                    if (userInfo.preCreated) {
+                        userController$$ExternalSyntheticLambda3.run();
+                    } else if (identifier != 0) {
+                        this.mInjector.broadcastIntent(BatteryService$$ExternalSyntheticOutline0.m(285212672, "android.intent.action.USER_INITIALIZE"), new IIntentReceiver.Stub() { // from class: com.android.server.am.UserController.2
+                            public final void performReceive(Intent intent, int i, String str, Bundle bundle, boolean z, boolean z2, int i2) {
+                                userController$$ExternalSyntheticLambda3.run();
+                            }
+                        }, null, null, ActivityManagerService.MY_PID, Binder.getCallingUid(), Binder.getCallingPid(), identifier);
+                    }
+                }
+                if (userInfo.preCreated) {
+                    Slogf.i("ActivityManager", "Stopping pre-created user " + userInfo.toFullString());
+                    stopUser(userInfo.id, true, false, null, null);
+                    return;
+                }
+                this.mInjector.getClass();
+                AppWidgetManagerInternal appWidgetManagerInternal = (AppWidgetManagerInternal) LocalServices.getService(AppWidgetManagerInternal.class);
+                if (appWidgetManagerInternal != null) {
+                    FgThread.getHandler().post(new UserController$$ExternalSyntheticLambda5(identifier, 2, appWidgetManagerInternal));
+                }
+                this.mHandler.obtainMessage(105, identifier, 0).sendToTarget();
+                if (com.android.internal.hidden_from_bootclasspath.android.os.Flags.allowPrivateProfile() && android.multiuser.Flags.enablePrivateSpaceFeatures() && userInfo.isPrivateProfile()) {
+                    Slogf.i("ActivityManager", "Skipping BOOT_COMPLETED for private profile user #" + identifier);
+                    return;
+                }
+                Slogf.i("ActivityManager", "Posting BOOT_COMPLETED user #" + identifier);
+                if (identifier == 0) {
+                    Injector injector = this.mInjector;
+                    if (!injector.mService.mSystemServiceManager.mRuntimeRestarted) {
+                        injector.getClass();
+                        IPackageManager packageManager = AppGlobals.getPackageManager();
+                        try {
+                            if (!packageManager.isFirstBoot()) {
+                                if (!packageManager.isDeviceUpgrading()) {
+                                    FrameworkStatsLog.write(240, 13, SystemClock.elapsedRealtime());
+                                }
+                            }
+                        } catch (RemoteException e) {
+                            throw e.rethrowFromSystemServer();
+                        }
+                    }
+                }
+                final Intent intent = new Intent("android.intent.action.BOOT_COMPLETED", (Uri) null);
+                intent.putExtra("android.intent.extra.user_handle", identifier);
+                intent.addFlags(-1996488704);
+                final int callingUid = Binder.getCallingUid();
+                final int callingPid = Binder.getCallingPid();
+                FgThread.getHandler().post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda24
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        UserController userController = UserController.this;
+                        Intent intent2 = intent;
+                        int i = identifier;
+                        int i2 = callingUid;
+                        int i3 = callingPid;
+                        UserController.Injector injector2 = userController.mInjector;
+                        UserController.AnonymousClass5 anonymousClass5 = new UserController.AnonymousClass5(userController, i);
+                        String[] strArr = {"android.permission.RECEIVE_BOOT_COMPLETED"};
+                        ActivityManagerInternal activityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
+                        long bootTimeTempAllowListDuration = activityManagerInternal != null ? activityManagerInternal.getBootTimeTempAllowListDuration() : 10000L;
+                        BroadcastOptions makeBasic = BroadcastOptions.makeBasic();
+                        makeBasic.setTemporaryAppAllowlist(bootTimeTempAllowListDuration, 0, 200, "");
+                        injector2.broadcastIntent(intent2, anonymousClass5, strArr, makeBasic.toBundle(), ActivityManagerService.MY_PID, i2, i3, i);
+                    }
+                });
+                showEventLog(identifier, userState.state, 2, "finishUserUnlockedCompleted", "send BOOT COMPLETED and complete NULL");
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final int getCurrentOrTargetUserIdLU() {
+        return this.mTargetUserId != -10000 ? this.mTargetUserId : this.mCurrentUserId;
+    }
+
+    public final int[] getCurrentProfileIds() {
+        int[] iArr;
+        synchronized (this.mLock) {
+            iArr = this.mCurrentProfileIds;
+        }
+        return iArr;
+    }
+
+    public final UserInfo getCurrentUser() {
+        UserInfo userInfo;
+        checkGetCurrentUserPermissions();
+        if (this.mTargetUserId == -10000) {
+            return getUserInfo(this.mCurrentUserId);
+        }
+        synchronized (this.mLock) {
+            userInfo = getUserInfo(getCurrentOrTargetUserIdLU());
+        }
+        return userInfo;
+    }
+
+    public final int getCurrentUserId() {
         int i;
         synchronized (this.mLock) {
-            i = this.mMaxRunningUsers;
+            i = this.mCurrentUserId;
         }
         return i;
-    }
-
-    public void setStopUserOnSwitch(int i) {
-        if (this.mInjector.checkCallingPermission("android.permission.MANAGE_USERS") == -1 && this.mInjector.checkCallingPermission("android.permission.INTERACT_ACROSS_USERS") == -1) {
-            throw new SecurityException("You either need MANAGE_USERS or INTERACT_ACROSS_USERS permission to call setStopUserOnSwitch()");
-        }
-        synchronized (this.mLock) {
-            Slogf.i("ActivityManager", "setStopUserOnSwitch(): %d -> %d", Integer.valueOf(this.mStopUserOnSwitch), Integer.valueOf(i));
-            this.mStopUserOnSwitch = i;
-        }
-    }
-
-    public final boolean shouldStopUserOnSwitch() {
-        synchronized (this.mLock) {
-            int i = this.mStopUserOnSwitch;
-            if (i != -1) {
-                boolean z = i == 1;
-                Slogf.i("ActivityManager", "shouldStopUserOnSwitch(): returning overridden value (%b)", Boolean.valueOf(z));
-                return z;
-            }
-            int i2 = SystemProperties.getInt("fw.stop_bg_users_on_switch", -1);
-            if (i2 == -1) {
-                return this.mDelayUserDataLocking;
-            }
-            return i2 == 1;
-        }
-    }
-
-    public void finishUserSwitch(final UserState userState) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda9
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserController.this.lambda$finishUserSwitch$0(userState);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$finishUserSwitch$0(UserState userState) {
-        finishUserBoot(userState);
-        startProfiles();
-        synchronized (this.mLock) {
-            stopRunningUsersLU(this.mMaxRunningUsers);
-        }
     }
 
     public List getRunningUsersLU() {
@@ -271,891 +1357,1055 @@ public class UserController implements Handler.Callback {
         return arrayList;
     }
 
-    public final void stopRunningUsersLU(int i) {
-        List runningUsersLU = getRunningUsersLU();
-        Iterator it = runningUsersLU.iterator();
-        while (runningUsersLU.size() > i && it.hasNext()) {
-            Integer num = (Integer) it.next();
-            if (num.intValue() != 0 && num.intValue() != this.mCurrentUserId && stopUsersLU(num.intValue(), false, true, null, null) == 0) {
-                it.remove();
+    public final UserState getStartedUserState(int i) {
+        UserState userState;
+        synchronized (this.mLock) {
+            userState = (UserState) this.mStartedUsers.get(i);
+        }
+        return userState;
+    }
+
+    public final UserInfo getUserInfo(int i) {
+        return this.mInjector.getUserManager().getUserInfo(i);
+    }
+
+    public final int[] getUsers() {
+        UserManagerService userManager = this.mInjector.getUserManager();
+        return userManager != null ? userManager.getUserIds() : new int[]{0};
+    }
+
+    public final int handleIncomingUser(int i, int i2, int i3, boolean z, int i4, String str, String str2) {
+        int i5;
+        String str3;
+        String str4;
+        int userId = UserHandle.getUserId(i2);
+        if (userId == i3) {
+            return i3;
+        }
+        if ((SemDualAppManager.isDualAppId(userId) && i3 == 0) || (SemDualAppManager.isDualAppId(i3) && userId == 0)) {
+            return i3;
+        }
+        int currentUserId = (i3 == -2 || i3 == -3) ? getCurrentUserId() : i3;
+        if (i2 != 0 && i2 != 1000 && i2 != 5250) {
+            boolean isSameProfileGroup = isSameProfileGroup(userId, currentUserId);
+            boolean z2 = true;
+            if (this.mInjector.mService.mAtmInternal.isCallerRecents(i2) && isSameProfileGroup) {
+                i5 = 2;
+                str4 = "android.permission.INTERACT_ACROSS_PROFILES";
+            } else {
+                this.mInjector.getClass();
+                i5 = 2;
+                if (ActivityManagerService.checkComponentPermission(i, i2, "android.permission.INTERACT_ACROSS_USERS_FULL", 0, -1, true) == 0) {
+                    str4 = "android.permission.INTERACT_ACROSS_PROFILES";
+                } else if (i4 == 2) {
+                    z2 = false;
+                    str4 = "android.permission.INTERACT_ACROSS_PROFILES";
+                } else {
+                    if (i4 == 3 && isSameProfileGroup) {
+                        str3 = "android.permission.INTERACT_ACROSS_PROFILES";
+                        if (PermissionChecker.checkPermissionForPreflight(this.mInjector.mService.mContext, str3, i, i2, str2) == 0) {
+                            str4 = str3;
+                        }
+                    } else {
+                        str3 = "android.permission.INTERACT_ACROSS_PROFILES";
+                    }
+                    this.mInjector.getClass();
+                    str4 = str3;
+                    if (ActivityManagerService.checkComponentPermission(i, i2, "android.permission.INTERACT_ACROSS_USERS", 0, -1, true) != 0) {
+                        z2 = false;
+                    } else if (i4 != 0 && i4 != 3) {
+                        if (i4 != 1) {
+                            throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i4, "Unknown mode: "));
+                        }
+                        z2 = isSameProfileGroup;
+                    }
+                }
+                z2 = true;
             }
+            if (!z2) {
+                if (i3 != -3) {
+                    StringBuilder sb = new StringBuilder(128);
+                    sb.append("Permission Denial: ");
+                    sb.append(str);
+                    if (str2 != null) {
+                        sb.append(" from ");
+                        sb.append(str2);
+                    }
+                    sb.append(" asks to run as user ");
+                    sb.append(i3);
+                    sb.append(" but is calling from uid ");
+                    UserHandle.formatUid(sb, i2);
+                    sb.append("; this requires ");
+                    sb.append("android.permission.INTERACT_ACROSS_USERS_FULL");
+                    if (i4 != i5) {
+                        if (i4 == 0 || i4 == 3 || (i4 == 1 && isSameProfileGroup)) {
+                            sb.append(" or ");
+                            sb.append("android.permission.INTERACT_ACROSS_USERS");
+                        }
+                        if (isSameProfileGroup && i4 == 3) {
+                            sb.append(" or ");
+                            sb.append(str4);
+                        }
+                    }
+                    String sb2 = sb.toString();
+                    Slogf.w("ActivityManager", sb2);
+                    throw new SecurityException(sb2);
+                }
+                if (z && userId < 0) {
+                    throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(userId, "Call does not support special user #"));
+                }
+                if (i2 == 2000 || userId < 0 || !hasUserRestriction("no_debugging_features", userId)) {
+                    return userId;
+                }
+                StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(userId, "Shell does not have permission to access user ", "\n ");
+                m.append(Debug.getCallers(3));
+                throw new SecurityException(m.toString());
+            }
+        }
+        userId = currentUserId;
+        if (z) {
+        }
+        if (i2 == 2000) {
+        }
+        return userId;
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Type inference failed for: r8v18, types: [com.android.server.am.UserController$$ExternalSyntheticLambda18] */
+    @Override // android.os.Handler.Callback
+    public final boolean handleMessage(Message message) {
+        FileInputStream fileInputStream;
+        UserInfo profileParent;
+        String str;
+        String str2;
+        int i = 0;
+        switch (message.what) {
+            case 10:
+                dispatchUserSwitch((UserState) message.obj, message.arg1, message.arg2);
+                return false;
+            case 20:
+                continueUserSwitch((UserState) message.obj, message.arg1, message.arg2);
+                return false;
+            case 30:
+                timeoutUserSwitch((UserState) message.obj, message.arg1, message.arg2);
+                return false;
+            case 40:
+                startProfiles();
+                return false;
+            case 50:
+                this.mInjector.mService.mBatteryStatsService.noteEvent(32775, Integer.toString(message.arg1), message.arg1);
+                logUserJourneyBegin(message.arg1, 3);
+                this.mInjector.onUserStarting(message.arg1);
+                scheduleOnUserCompletedEvent(message.arg1, 1, 5000);
+                this.mInjector.getUserManager().mUserJourneyLogger.logUserJourneyFinishWithError(-1, getUserInfo(message.arg1), 3, -1);
+                this.mInjector.getClass();
+                return false;
+            case 60:
+                this.mInjector.mService.mBatteryStatsService.noteEvent(16392, Integer.toString(message.arg2), message.arg2);
+                this.mInjector.mService.mBatteryStatsService.noteEvent(32776, Integer.toString(message.arg1), message.arg1);
+                this.mInjector.mService.mSystemServiceManager.onUserSwitching(message.arg2, message.arg1);
+                scheduleOnUserCompletedEvent(message.arg1, 4, 5000);
+                return false;
+            case 70:
+                int i2 = message.arg1;
+                int beginBroadcast = this.mUserSwitchObservers.beginBroadcast();
+                for (int i3 = 0; i3 < beginBroadcast; i3++) {
+                    try {
+                        this.mUserSwitchObservers.getBroadcastItem(i3).onForegroundProfileSwitch(i2);
+                    } catch (RemoteException unused) {
+                    }
+                }
+                this.mUserSwitchObservers.finishBroadcast();
+                return false;
+            case 80:
+                dispatchUserSwitchComplete(message.arg1, message.arg2);
+                UserJourneyLogger.UserJourneySession logUserSwitchJourneyFinish = this.mInjector.getUserManager().mUserJourneyLogger.logUserSwitchJourneyFinish(message.arg1, getUserInfo(message.arg2));
+                if (logUserSwitchJourneyFinish != null) {
+                    this.mHandler.removeMessages(200, logUserSwitchJourneyFinish);
+                }
+                return false;
+            case 90:
+                int i4 = message.arg1;
+                int i5 = message.arg2;
+                synchronized (this.mLock) {
+                    try {
+                        ArraySet arraySet = this.mTimeoutUserSwitchCallbacks;
+                        if (arraySet != null && !arraySet.isEmpty()) {
+                            Slogf.wtf("ActivityManager", "User switch timeout: from " + i4 + " to " + i5 + ". Observers that didn't respond: " + this.mTimeoutUserSwitchCallbacks);
+                            this.mTimeoutUserSwitchCallbacks = null;
+                        }
+                    } finally {
+                    }
+                }
+                return false;
+            case 100:
+                int i6 = message.arg1;
+                showEventLog(i6, -1, 0, "SYSTEM_USER_UNLOCK_MSG", "NULL");
+                SystemServiceManager systemServiceManager = this.mInjector.mService.mSystemServiceManager;
+                systemServiceManager.getClass();
+                EventLog.writeEvent(30084, i6);
+                systemServiceManager.onUser(i6, "Unlocking");
+                showEventLog(i6, -1, 1, "SYSTEM_USER_UNLOCK_MSG", "Done mSystemServiceManager.onUserUnlocking");
+                FgThread.getHandler().post(new UserController$$ExternalSyntheticLambda5(i6, 0, this));
+                this.mInjector.getUserManager().mUserJourneyLogger.logUserLifecycleEvent(message.arg1, 5, 2);
+                this.mInjector.getUserManager().mUserJourneyLogger.logUserLifecycleEvent(message.arg1, 6, 1);
+                TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
+                timingsTraceAndSlog.traceBegin("finishUserUnlocked-" + i6);
+                final UserState userState = (UserState) message.obj;
+                int identifier = userState.mHandle.getIdentifier();
+                EventLog.writeEvent(30071, identifier);
+                showEventLog(identifier, userState.state, 0, "finishUserUnlocked", "NULL");
+                showEventLog(identifier, userState.state, 1, "finishUserUnlocked", "Try StorageManager.isUserKeyUnlocked");
+                Slog.d("ActivityManager", "UserController event: finishUserUnlocked(" + identifier + ")");
+                if (StorageManager.isCeStorageUnlocked(identifier)) {
+                    showEventLog(identifier, userState.state, 1, "finishUserUnlocked", "OK StorageManager.isUserKeyUnlocked");
+                    synchronized (this.mLock) {
+                        try {
+                            if (this.mStartedUsers.get(userState.mHandle.getIdentifier()) == userState) {
+                                if (userState.setState(2, 3)) {
+                                    this.mInjector.getUserManagerInternal().setUserState(identifier, userState.state);
+                                    userState.mUnlockProgress.finish();
+                                    if (identifier == 0) {
+                                        this.mInjector.mService.startPersistentApps(262144);
+                                    }
+                                    final ContentProviderHelper contentProviderHelper = this.mInjector.mService.mCpHelper;
+                                    ActivityManagerProcLock activityManagerProcLock = contentProviderHelper.mService.mProcLock;
+                                    ActivityManagerService.boostPriorityForProcLockedSection();
+                                    synchronized (activityManagerProcLock) {
+                                        try {
+                                            ArrayMap map = contentProviderHelper.mService.mProcessList.mProcessNames.getMap();
+                                            int size = map.size();
+                                            int i7 = 0;
+                                            while (i7 < size) {
+                                                SparseArray sparseArray = (SparseArray) map.valueAt(i7);
+                                                int size2 = sparseArray.size();
+                                                for (int i8 = i; i8 < size2; i8++) {
+                                                    final ProcessRecord processRecord = (ProcessRecord) sparseArray.valueAt(i8);
+                                                    if (processRecord.userId == identifier && processRecord.mThread != null && !processRecord.mUnlocked) {
+                                                        processRecord.mPkgList.forEachPackage(new Consumer() { // from class: com.android.server.am.ContentProviderHelper$$ExternalSyntheticLambda4
+                                                            /* JADX WARN: Removed duplicated region for block: B:23:0x0056 A[Catch: RemoteException -> 0x009b, TRY_LEAVE, TryCatch #0 {RemoteException -> 0x009b, blocks: (B:3:0x0009, B:5:0x001a, B:7:0x0022, B:9:0x0029, B:11:0x0036, B:15:0x003e, B:17:0x0044, B:21:0x004c, B:23:0x0056, B:31:0x006c, B:34:0x0084), top: B:2:0x0009 }] */
+                                                            /* JADX WARN: Removed duplicated region for block: B:28:0x0066 A[ADDED_TO_REGION] */
+                                                            @Override // java.util.function.Consumer
+                                                            /*
+                                                                Code decompiled incorrectly, please refer to instructions dump.
+                                                                To view partially-correct code enable 'Show inconsistent code' option in preferences
+                                                            */
+                                                            public final void accept(java.lang.Object r13) {
+                                                                /*
+                                                                    r12 = this;
+                                                                    com.android.server.am.ContentProviderHelper r0 = com.android.server.am.ContentProviderHelper.this
+                                                                    com.android.server.am.ProcessRecord r12 = r2
+                                                                    java.lang.String r13 = (java.lang.String) r13
+                                                                    r0.getClass()
+                                                                    android.content.pm.IPackageManager r1 = android.app.AppGlobals.getPackageManager()     // Catch: android.os.RemoteException -> L9b
+                                                                    int r2 = r12.userId     // Catch: android.os.RemoteException -> L9b
+                                                                    r3 = 262152(0x40008, double:1.295203E-318)
+                                                                    android.content.pm.PackageInfo r13 = r1.getPackageInfo(r13, r3, r2)     // Catch: android.os.RemoteException -> L9b
+                                                                    android.app.IApplicationThread r1 = r12.mThread     // Catch: android.os.RemoteException -> L9b
+                                                                    if (r13 == 0) goto L9b
+                                                                    android.content.pm.ProviderInfo[] r2 = r13.providers     // Catch: android.os.RemoteException -> L9b
+                                                                    boolean r2 = com.android.internal.util.ArrayUtils.isEmpty(r2)     // Catch: android.os.RemoteException -> L9b
+                                                                    if (r2 != 0) goto L9b
+                                                                    android.content.pm.ProviderInfo[] r13 = r13.providers     // Catch: android.os.RemoteException -> L9b
+                                                                    int r2 = r13.length     // Catch: android.os.RemoteException -> L9b
+                                                                    r3 = 0
+                                                                    r4 = r3
+                                                                L27:
+                                                                    if (r4 >= r2) goto L9b
+                                                                    r5 = r13[r4]     // Catch: android.os.RemoteException -> L9b
+                                                                    java.lang.String r6 = r5.processName     // Catch: android.os.RemoteException -> L9b
+                                                                    java.lang.String r7 = r12.processName     // Catch: android.os.RemoteException -> L9b
+                                                                    boolean r6 = java.util.Objects.equals(r6, r7)     // Catch: android.os.RemoteException -> L9b
+                                                                    r7 = 1
+                                                                    if (r6 != 0) goto L3d
+                                                                    boolean r6 = r5.multiprocess     // Catch: android.os.RemoteException -> L9b
+                                                                    if (r6 == 0) goto L3b
+                                                                    goto L3d
+                                                                L3b:
+                                                                    r6 = r3
+                                                                    goto L3e
+                                                                L3d:
+                                                                    r6 = r7
+                                                                L3e:
+                                                                    boolean r8 = r0.isSingletonOrSystemUserOnly(r5)     // Catch: android.os.RemoteException -> L9b
+                                                                    if (r8 == 0) goto L4b
+                                                                    int r8 = r12.userId     // Catch: android.os.RemoteException -> L9b
+                                                                    if (r8 != 0) goto L49
+                                                                    goto L4b
+                                                                L49:
+                                                                    r8 = r3
+                                                                    goto L4c
+                                                                L4b:
+                                                                    r8 = r7
+                                                                L4c:
+                                                                    android.content.pm.ApplicationInfo r9 = r5.applicationInfo     // Catch: android.os.RemoteException -> L9b
+                                                                    boolean r9 = r9.isInstantApp()     // Catch: android.os.RemoteException -> L9b
+                                                                    java.lang.String r10 = r5.splitName     // Catch: android.os.RemoteException -> L9b
+                                                                    if (r10 == 0) goto L62
+                                                                    android.content.pm.ApplicationInfo r11 = r5.applicationInfo     // Catch: android.os.RemoteException -> L9b
+                                                                    java.lang.String[] r11 = r11.splitNames     // Catch: android.os.RemoteException -> L9b
+                                                                    boolean r10 = com.android.internal.util.ArrayUtils.contains(r11, r10)     // Catch: android.os.RemoteException -> L9b
+                                                                    if (r10 == 0) goto L61
+                                                                    goto L62
+                                                                L61:
+                                                                    r7 = r3
+                                                                L62:
+                                                                    java.lang.String r10 = "ContentProviderHelper"
+                                                                    if (r6 == 0) goto L84
+                                                                    if (r8 == 0) goto L84
+                                                                    if (r9 == 0) goto L6c
+                                                                    if (r7 == 0) goto L84
+                                                                L6c:
+                                                                    java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch: android.os.RemoteException -> L9b
+                                                                    r6.<init>()     // Catch: android.os.RemoteException -> L9b
+                                                                    java.lang.String r7 = "Installing "
+                                                                    r6.append(r7)     // Catch: android.os.RemoteException -> L9b
+                                                                    r6.append(r5)     // Catch: android.os.RemoteException -> L9b
+                                                                    java.lang.String r6 = r6.toString()     // Catch: android.os.RemoteException -> L9b
+                                                                    android.util.Log.v(r10, r6)     // Catch: android.os.RemoteException -> L9b
+                                                                    r1.scheduleInstallProvider(r5)     // Catch: android.os.RemoteException -> L9b
+                                                                    goto L98
+                                                                L84:
+                                                                    java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch: android.os.RemoteException -> L9b
+                                                                    r6.<init>()     // Catch: android.os.RemoteException -> L9b
+                                                                    java.lang.String r7 = "Skipping "
+                                                                    r6.append(r7)     // Catch: android.os.RemoteException -> L9b
+                                                                    r6.append(r5)     // Catch: android.os.RemoteException -> L9b
+                                                                    java.lang.String r5 = r6.toString()     // Catch: android.os.RemoteException -> L9b
+                                                                    android.util.Log.v(r10, r5)     // Catch: android.os.RemoteException -> L9b
+                                                                L98:
+                                                                    int r4 = r4 + 1
+                                                                    goto L27
+                                                                L9b:
+                                                                    return
+                                                                */
+                                                                throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.ContentProviderHelper$$ExternalSyntheticLambda4.accept(java.lang.Object):void");
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                                i7++;
+                                                i = 0;
+                                            }
+                                        } finally {
+                                            ActivityManagerService.resetPriorityAfterProcLockedSection();
+                                        }
+                                    }
+                                    ActivityManagerService.resetPriorityAfterProcLockedSection();
+                                    if (!this.mInjector.getUserManager().isPreCreated(identifier)) {
+                                        Intent intent = new Intent("android.intent.action.USER_UNLOCKED");
+                                        intent.putExtra("android.intent.extra.user_handle", identifier);
+                                        intent.addFlags(1342177280);
+                                        this.mInjector.broadcastIntent(intent, null, null, null, ActivityManagerService.MY_PID, Binder.getCallingUid(), Binder.getCallingPid(), identifier);
+                                        showEventLog(identifier, userState.state, 1, "finishUserUnlocked", "send USER UNLOCKED");
+                                    }
+                                    UserInfo userInfo = getUserInfo(identifier);
+                                    if (userInfo.isProfile() && (profileParent = this.mInjector.getUserManager().getProfileParent(identifier)) != null) {
+                                        broadcastProfileAccessibleStateChanged(identifier, profileParent.id, "android.intent.action.PROFILE_ACCESSIBLE");
+                                        if (userInfo.isManagedProfile() || userInfo.isCloneProfile()) {
+                                            Intent intent2 = new Intent("android.intent.action.MANAGED_PROFILE_UNLOCKED");
+                                            intent2.putExtra("android.intent.extra.USER", UserHandle.of(identifier));
+                                            intent2.addFlags(1342177280);
+                                            this.mInjector.broadcastIntent(intent2, null, null, null, ActivityManagerService.MY_PID, Binder.getCallingUid(), Binder.getCallingPid(), profileParent.id);
+                                        }
+                                    }
+                                    UserInfo userInfo2 = getUserInfo(identifier);
+                                    this.mInjector.mService.mExt.getClass();
+                                    String str3 = "DUMMY";
+                                    String str4 = ActivityManagerServiceExt.CSC_VERSION;
+                                    if ("DUMMY".equals(str4)) {
+                                        Slog.wtf("ActivityManagerServiceExt", "csc version of property is wrong", new RuntimeException());
+                                    }
+                                    try {
+                                        fileInputStream = new FileInputStream(ActivityManagerServiceExt.PRE_BOOT_CSC_FILE);
+                                    } catch (FileNotFoundException unused2) {
+                                    } catch (IOException e) {
+                                        Slog.w("ActivityManagerServiceExt", "Failure reading pre boot csc", e);
+                                    }
+                                    try {
+                                        DataInputStream dataInputStream = new DataInputStream(new BufferedInputStream(fileInputStream, 1024));
+                                        try {
+                                            str3 = dataInputStream.readUTF();
+                                            dataInputStream.close();
+                                            fileInputStream.close();
+                                            final boolean z = !str4.equals(str3);
+                                            if (!Objects.equals(userInfo2.lastLoggedInFingerprint, PackagePartitions.FINGERPRINT) || SystemProperties.getBoolean("persist.pm.mock-upgrade", false) || z) {
+                                                boolean z2 = userInfo2.isManagedProfile() || userInfo2.isCloneProfile();
+                                                Injector injector = this.mInjector;
+                                                ?? r8 = new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda18
+                                                    @Override // java.lang.Runnable
+                                                    public final void run() {
+                                                        UserController userController = UserController.this;
+                                                        boolean z3 = z;
+                                                        UserState userState2 = userState;
+                                                        if (z3) {
+                                                            userController.mInjector.mService.mExt.getClass();
+                                                            try {
+                                                                FileOutputStream fileOutputStream = new FileOutputStream(ActivityManagerServiceExt.PRE_BOOT_CSC_FILE);
+                                                                try {
+                                                                    DataOutputStream dataOutputStream = new DataOutputStream(new BufferedOutputStream(fileOutputStream, 1024));
+                                                                    try {
+                                                                        dataOutputStream.writeUTF(ActivityManagerServiceExt.CSC_VERSION);
+                                                                        dataOutputStream.flush();
+                                                                        dataOutputStream.close();
+                                                                        fileOutputStream.close();
+                                                                    } finally {
+                                                                    }
+                                                                } finally {
+                                                                }
+                                                            } catch (IOException e2) {
+                                                                Slog.w("ActivityManagerServiceExt", "Failure writing last done pre-boot receivers", e2);
+                                                                ActivityManagerServiceExt.PRE_BOOT_CSC_FILE.delete();
+                                                            }
+                                                        }
+                                                        userController.finishUserUnlockedCompleted(userState2);
+                                                    }
+                                                };
+                                                injector.getClass();
+                                                EventLog.writeEvent(30081, Integer.valueOf(identifier), "android.intent.action.PRE_BOOT_COMPLETED");
+                                                new Injector.AnonymousClass1(injector.mService, identifier, z2, r8).sendNext();
+                                                showEventLog(identifier, userState.state, 1, "finishUserUnlocked", "OK sendPreBootBroadcast");
+                                            } else {
+                                                finishUserUnlockedCompleted(userState);
+                                            }
+                                            showEventLog(identifier, userState.state, 2, "finishUserUnlocked", "NULL");
+                                            FgThread.getHandler().post(new UserController$$ExternalSyntheticLambda16(1));
+                                        } finally {
+                                        }
+                                    } finally {
+                                    }
+                                }
+                            }
+                        } finally {
+                        }
+                    }
+                } else {
+                    SystemProperties.set("dev.boot." + identifier + ".user_unlocked", "FAIL-finishUserUnlocked");
+                    Slog.i("ActivityManager", "!@Boot: StorageManager Unlocked FAIL, finishUserUnlocked");
+                    if (!this.mLockPatternUtils.isSecure(identifier)) {
+                        this.mInjector.mService.mExt.getClass();
+                        SystemProperties.set("dumpstate.process", "unlockfail");
+                        SystemProperties.set("bugreport.mode", "booting_delay");
+                        SystemProperties.set("ctl.start", "bugreportm");
+                    }
+                }
+                timingsTraceAndSlog.traceEnd();
+                showEventLog(i6, -1, 2, "SYSTEM_USER_UNLOCK_MSG", "NULL");
+                return false;
+            case 105:
+                SystemServiceManager systemServiceManager2 = this.mInjector.mService.mSystemServiceManager;
+                int i9 = message.arg1;
+                systemServiceManager2.getClass();
+                EventLog.writeEvent(30085, i9);
+                systemServiceManager2.onUser(i9, "Unlocked");
+                scheduleOnUserCompletedEvent(message.arg1, 2, this.mCurrentUserId != message.arg1 ? 1000 : 5000);
+                this.mInjector.getUserManager().mUserJourneyLogger.logUserLifecycleEvent(message.arg1, 6, 2);
+                return false;
+            case 110:
+                int i10 = message.arg1;
+                int beginBroadcast2 = this.mUserSwitchObservers.beginBroadcast();
+                for (int i11 = 0; i11 < beginBroadcast2; i11++) {
+                    try {
+                        this.mUserSwitchObservers.getBroadcastItem(i11).onLockedBootComplete(i10);
+                    } catch (RemoteException unused3) {
+                    }
+                }
+                this.mUserSwitchObservers.finishBroadcast();
+                return false;
+            case 120:
+                logUserJourneyBegin(message.arg1, 2);
+                int i12 = message.arg1;
+                if (android.multiuser.Flags.setPowerModeDuringUserSwitch()) {
+                    this.mInjector.setPerformancePowerMode(true);
+                }
+                if (!startUser(i12, 1)) {
+                    this.mInjector.mService.mWindowManager.setSwitchingUser(false);
+                    this.mUiHandler.post(new UserController$$ExternalSyntheticLambda7(this, new UserController$$ExternalSyntheticLambda11(this, 0)));
+                }
+                return false;
+            case 130:
+                completeUserSwitch(message.arg1, message.arg2);
+                return false;
+            case 140:
+                reportOnUserCompletedEvent((Integer) message.obj);
+                return false;
+            case 150:
+                processScheduledStopOfBackgroundUser((Integer) message.obj);
+                return false;
+            case 200:
+                this.mInjector.getUserManager().mUserJourneyLogger.finishAndClearIncompleteUserJourney(message.arg1, message.arg2);
+                this.mHandler.removeMessages(200, message.obj);
+                return false;
+            case 1000:
+                Pair pair = (Pair) message.obj;
+                logUserJourneyBegin(((UserInfo) pair.second).id, 1);
+                Injector injector2 = this.mInjector;
+                UserInfo userInfo3 = (UserInfo) pair.first;
+                UserInfo userInfo4 = (UserInfo) pair.second;
+                synchronized (this.mLock) {
+                    str = this.mSwitchingFromSystemUserMessage;
+                }
+                synchronized (this.mLock) {
+                    str2 = this.mSwitchingToSystemUserMessage;
+                }
+                UserController$$ExternalSyntheticLambda3 userController$$ExternalSyntheticLambda3 = new UserController$$ExternalSyntheticLambda3(this, pair, 2);
+                if (injector2.mService.mContext.getPackageManager().hasSystemFeature("android.hardware.type.automotive")) {
+                    Slogf.w("ActivityManager", "Showing user switch dialog on UserController, it could cause a race condition if it's shown by CarSystemUI as well");
+                }
+                synchronized (injector2.mUserSwitchingDialogLock) {
+                    injector2.dismissUserSwitchingDialog(null);
+                    ActivityManagerService activityManagerService = injector2.mService;
+                    UserSwitchingDialog userSwitchingDialog = new UserSwitchingDialog(activityManagerService.mContext, userInfo3, userInfo4, str, str2, activityManagerService.mWindowManager);
+                    injector2.mUserSwitchingDialog = userSwitchingDialog;
+                    userSwitchingDialog.show(userController$$ExternalSyntheticLambda3);
+                }
+                return false;
+            default:
+                return false;
         }
     }
 
-    public boolean canStartMoreUsers() {
+    public final boolean hasStartedUserState(int i) {
         boolean z;
         synchronized (this.mLock) {
-            z = getRunningUsersLU().size() < this.mMaxRunningUsers;
+            z = this.mStartedUsers.get(i) != null;
         }
         return z;
     }
 
-    public final void finishUserBoot(UserState userState) {
-        finishUserBoot(userState, null);
+    public final boolean hasUserRestriction(String str, int i) {
+        return this.mInjector.getUserManager().hasUserRestriction(str, i);
     }
 
-    public final void finishUserBoot(UserState userState, IIntentReceiver iIntentReceiver) {
-        int identifier = userState.mHandle.getIdentifier();
-        EventLog.writeEvent(30078, identifier);
-        showEventLog(identifier, userState.state, 0, "finishUserBoot", "NULL");
-        Slog.d("ActivityManager", "Finishing user boot " + identifier);
+    public final boolean isSameProfileGroup(int i, int i2) {
+        boolean z = true;
+        if (i == i2) {
+            return true;
+        }
         synchronized (this.mLock) {
-            if (this.mStartedUsers.get(identifier) != userState) {
-                return;
+            int i3 = this.mUserProfileGroupIds.get(i, -10000);
+            int i4 = this.mUserProfileGroupIds.get(i2, -10000);
+            if (i3 == -10000 || i3 != i4) {
+                z = false;
             }
-            if (userState.setState(0, 1)) {
-                this.mInjector.getUserJourneyLogger().logUserLifecycleEvent(identifier, 4, 0);
-                this.mInjector.getUserManagerInternal().setUserState(identifier, userState.state);
-                if (identifier == 0 && !this.mInjector.isRuntimeRestarted() && !this.mInjector.isFirstBootOrUpgrade()) {
-                    long elapsedRealtime = SystemClock.elapsedRealtime();
-                    FrameworkStatsLog.write(240, 12, elapsedRealtime);
-                    if (elapsedRealtime > 120000) {
-                        Slogf.wtf("SystemServerTiming", "finishUserBoot took too long. elapsedTimeMs=" + elapsedRealtime);
-                    }
+        }
+        return z;
+    }
+
+    public final boolean isSystemUserStarted() {
+        synchronized (this.mLock) {
+            try {
+                UserState userState = (UserState) this.mStartedUsers.get(0);
+                if (userState == null) {
+                    return false;
                 }
-                if (!this.mInjector.getUserManager().isPreCreated(identifier)) {
-                    Handler handler = this.mHandler;
-                    handler.sendMessage(handler.obtainMessage(110, identifier, 0));
-                    if (this.mAllowUserUnlocking) {
-                        sendLockedBootCompletedBroadcast(iIntentReceiver, identifier);
-                    }
-                }
-                showEventLog(identifier, userState.state, 1, "finishUserBoot", "send LOCKED BOOT COMPLETED");
+                int i = userState.state;
+                return i == 1 || i == 2 || i == 3;
+            } catch (Throwable th) {
+                throw th;
             }
-            if (this.mInjector.getUserManager().isProfile(identifier)) {
-                UserInfo profileParent = this.mInjector.getUserManager().getProfileParent(identifier);
-                if (profileParent != null && isUserRunning(profileParent.id, 4)) {
-                    Slogf.d("ActivityManager", "User " + identifier + " (parent " + profileParent.id + "): attempting unlock because parent is unlocked");
-                    if (SemPersonaManager.isDarDualEncryptionEnabled(identifier)) {
-                        maybeUnlockDualDARUser(identifier, profileParent.id);
-                    } else {
-                        maybeUnlockUser(identifier);
-                    }
-                } else {
-                    Slogf.d("ActivityManager", "User " + identifier + " (parent " + (profileParent == null ? "<null>" : String.valueOf(profileParent.id)) + "): delaying unlock because parent is locked");
-                }
-            } else {
-                maybeUnlockUser(identifier);
-            }
-            showEventLog(identifier, userState.state, 2, "finishUserBoot", "NULL");
         }
     }
 
-    public final boolean maybeUnlockDualDARUser(int i, int i2) {
-        KeyguardManager keyguardManager = this.mInjector.getKeyguardManager();
-        if (fetchOuterLayerKey(i) != null) {
-            DDLog.d("ActivityManager", "Trying to unlock DualDAR user after userStart " + i, new Object[0]);
-            VerifyCredentialResponse verifyCredentialResponse = VerifyCredentialResponse.ERROR;
-            if (StateMachine.getCurrentState(i) == State.DEVICE_UNLOCK_DATA_UNLOCK) {
-                DDLog.d("ActivityManager", "Password2Auth has already been completed for: " + i, new Object[0]);
-                verifyCredentialResponse = VerifyCredentialResponse.OK;
-            } else if (!keyguardManager.isDeviceSecure(i)) {
-                DDLog.d("ActivityManager", "Do Password2Auth with null credential for: " + i, new Object[0]);
-                verifyCredentialResponse = onPassword2Auth(i);
+    public final boolean isUserOrItsParentRunning(int i) {
+        synchronized (this.mLock) {
+            try {
+                if (isUserRunning(i, 0)) {
+                    return true;
+                }
+                int i2 = this.mUserProfileGroupIds.get(i, -10000);
+                if (i2 == -10000) {
+                    return false;
+                }
+                return isUserRunning(i2, 0);
+            } catch (Throwable th) {
+                throw th;
             }
-            if (verifyCredentialResponse == VerifyCredentialResponse.OK && !DualDarManager.isOnDeviceOwner(i)) {
-                DDLog.d("ActivityManager", "fetch outer layer key and unlock DualDAR user " + i, new Object[0]);
-                return maybeUnlockUser(i, null);
-            }
-            DDLog.e("ActivityManager", "Default Authentication Failure by DualDAR client", new Object[0]);
+        }
+    }
+
+    public final boolean isUserRunning(int i, int i2) {
+        UserState startedUserState = getStartedUserState(i);
+        if (startedUserState == null) {
             return false;
         }
-        if (!keyguardManager.isDeviceLocked(i2)) {
-            DDLog.e("ActivityManager", "This should theoretically never happen. Failed to unlock DualDAR user: " + i + " something went wrong while fetching OLK event though user0 is unlocked.", new Object[0]);
+        if ((i2 & 1) != 0) {
+            return true;
+        }
+        if ((i2 & 2) != 0) {
+            int i3 = startedUserState.state;
+            return i3 == 0 || i3 == 1;
+        }
+        if ((i2 & 8) != 0) {
+            int i4 = startedUserState.state;
+            if (i4 == 2 || i4 == 3) {
+                return true;
+            }
+            if (i4 == 4 || i4 == 5) {
+                return StorageManager.isCeStorageUnlocked(i);
+            }
+            return false;
+        }
+        if ((i2 & 4) == 0) {
+            int i5 = startedUserState.state;
+            return (i5 == 4 || i5 == 5) ? false : true;
+        }
+        int i6 = startedUserState.state;
+        if (i6 == 3) {
+            return true;
+        }
+        if (i6 == 4 || i6 == 5) {
+            return StorageManager.isCeStorageUnlocked(i);
         }
         return false;
     }
 
-    public final byte[] fetchOuterLayerKey(int i) {
-        DDLog.d("ActivityManager", "fetchOuterLayerKey()", new Object[0]);
-        try {
-            return DualDARController.getInstance(this.mInjector.getContext()).fetchOuterLayerKey(i);
-        } catch (Exception e) {
-            DDLog.e("ActivityManager", "Exception in fetchOuterLayerKey() : " + e.toString(), new Object[0]);
-            return null;
+    public final void logUserJourneyBegin(int i, int i2) {
+        UserJourneyLogger.UserJourneySession finishAndClearIncompleteUserJourney = this.mInjector.getUserManager().mUserJourneyLogger.finishAndClearIncompleteUserJourney(i, i2);
+        if (finishAndClearIncompleteUserJourney != null) {
+            this.mHandler.removeMessages(200, finishAndClearIncompleteUserJourney);
         }
+        UserJourneyLogger.UserJourneySession logUserJourneyBegin = this.mInjector.getUserManager().mUserJourneyLogger.logUserJourneyBegin(i, i2);
+        Handler handler = this.mHandler;
+        handler.sendMessageDelayed(handler.obtainMessage(200, i, i2, logUserJourneyBegin), 90000L);
     }
 
-    public final VerifyCredentialResponse onPassword2Auth(int i) {
-        DDLog.d("ActivityManager", "onPassword2Auth()", new Object[0]);
-        if (!SemPersonaManager.isDarDualEncryptionEnabled(i)) {
-            DDLog.e("ActivityManager", "User is not DualDAR eligible. so no need to verify DualDAR Passwords" + i, new Object[0]);
-            return VerifyCredentialResponse.OK;
-        }
-        if (!DualDARController.getInstance(this.mInjector.getContext()).onPassword2Auth(i, (byte[]) null)) {
-            DDLog.e("ActivityManager", "Authentication Failure by dual dar client", new Object[0]);
-            return VerifyCredentialResponse.ERROR;
-        }
-        DDLog.d("ActivityManager", "onPassword2Auth completed successfully", new Object[0]);
-        StateMachine.processEvent(i, Event.DDAR_WORKSPACE_AUTH_SUCCESS);
-        return VerifyCredentialResponse.OK;
+    public final void maybeUnlockUser(int i) {
+        showEventLog(i, -1, 0, "maybeUnlockUser", "NULL and no exit");
+        maybeUnlockUser(i, null);
     }
 
-    public final void sendLockedBootCompletedBroadcast(IIntentReceiver iIntentReceiver, int i) {
-        Intent intent = new Intent("android.intent.action.LOCKED_BOOT_COMPLETED", (Uri) null);
-        intent.putExtra("android.intent.extra.user_handle", i);
-        intent.addFlags(-1996488704);
-        this.mInjector.broadcastIntent(intent, null, iIntentReceiver, 0, null, null, new String[]{"android.permission.RECEIVE_BOOT_COMPLETED"}, -1, getTemporaryAppAllowlistBroadcastOptions(202).toBundle(), true, false, ActivityManagerService.MY_PID, 1000, Binder.getCallingUid(), Binder.getCallingPid(), i);
-    }
-
-    public final boolean finishUserUnlocking(final UserState userState) {
-        int i;
-        final int identifier = userState.mHandle.getIdentifier();
-        EventLog.writeEvent(30070, identifier);
-        this.mInjector.getUserJourneyLogger().logUserLifecycleEvent(identifier, 5, 1);
-        showEventLog(identifier, userState.state, 0, "finishUserUnlocking", "NULL");
-        Slog.d("ActivityManager", "UserController event: finishUserUnlocking(" + identifier + ")");
-        if (MaintenanceModeManager.isInMaintenanceMode() && 77 != identifier) {
-            Slog.i("ActivityManager", "Do not unlock user " + identifier + " in Maintenance mode");
-            return false;
-        }
-        if (!StorageManager.isUserKeyUnlocked(identifier)) {
-            SystemProperties.set("dev.boot." + identifier + ".user_unlocked", "FAIL-finishUserUnlocking");
-            Slog.i("ActivityManager", "!@Boot: StorageManager Unlocked FAIL, finishUserUnlocking");
-            return false;
-        }
-        showEventLog(identifier, userState.state, 1, "finishUserUnlocking", "OK StorageManager.isUserKeyUnlocked");
-        synchronized (this.mLock) {
-            if (this.mStartedUsers.get(identifier) == userState && (i = userState.state) == 1) {
-                showEventLog(identifier, i, 1, "finishUserUnlocking", "mUnlockProgress.start()");
-                userState.mUnlockProgress.start();
-                userState.mUnlockProgress.setProgress(5, this.mInjector.getContext().getString(R.string.capital_off));
-                FgThread.getHandler().post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda2
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        UserController.this.lambda$finishUserUnlocking$1(identifier, userState);
-                    }
-                });
-                showEventLog(identifier, userState.state, 2, "finishUserUnlocking", "NULL");
-                return true;
-            }
-            return false;
-        }
-    }
-
-    public /* synthetic */ void lambda$finishUserUnlocking$1(int i, UserState userState) {
-        if (!StorageManager.isUserKeyUnlocked(i)) {
-            Slogf.w("ActivityManager", "User key got locked unexpectedly, leaving user locked.");
-            return;
-        }
-        showEventLog(i, userState.state, 1, "finishUserUnlocking", "Start getUserManager().onBeforeUnlockUser");
-        TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
-        timingsTraceAndSlog.traceBegin("UM.onBeforeUnlockUser-" + i);
-        this.mInjector.getUserManager().onBeforeUnlockUser(i);
-        timingsTraceAndSlog.traceEnd();
-        showEventLog(i, userState.state, 1, "finishUserUnlocking", "End getUserManager().onBeforeUnlockUser");
-        synchronized (this.mLock) {
-            if (userState.setState(1, 2)) {
-                this.mInjector.getUserManagerInternal().setUserState(i, userState.state);
-                userState.mUnlockProgress.setProgress(20);
-                this.mLastUserUnlockingUptime = SystemClock.uptimeMillis();
-                this.mHandler.obtainMessage(100, i, 0, userState).sendToTarget();
-                showEventLog(i, userState.state, 1, "finishUserUnlocking", "sendToTarget USER_UNLOCK_MSG");
-            }
-        }
-    }
-
-    public final void finishUserUnlocked(final UserState userState) {
-        int i;
-        int i2;
-        UserInfo profileParent;
-        int identifier = userState.mHandle.getIdentifier();
-        EventLog.writeEvent(30071, identifier);
-        showEventLog(identifier, userState.state, 0, "finishUserUnlocked", "NULL");
-        showEventLog(identifier, userState.state, 1, "finishUserUnlocked", "Try StorageManager.isUserKeyUnlocked");
-        Slog.d("ActivityManager", "UserController event: finishUserUnlocked(" + identifier + ")");
-        if (!StorageManager.isUserKeyUnlocked(identifier)) {
-            SystemProperties.set("dev.boot." + identifier + ".user_unlocked", "FAIL-finishUserUnlocked");
-            Slog.i("ActivityManager", "!@Boot: StorageManager Unlocked FAIL, finishUserUnlocked");
-            return;
-        }
-        showEventLog(identifier, userState.state, 1, "finishUserUnlocked", "OK StorageManager.isUserKeyUnlocked");
-        synchronized (this.mLock) {
-            if (this.mStartedUsers.get(userState.mHandle.getIdentifier()) != userState) {
-                return;
-            }
-            if (userState.setState(2, 3)) {
-                this.mInjector.getUserManagerInternal().setUserState(identifier, userState.state);
-                userState.mUnlockProgress.finish();
-                if (identifier == 0) {
-                    this.mInjector.startPersistentApps(262144);
-                }
-                this.mInjector.installEncryptionUnawareProviders(identifier);
-                if (this.mInjector.getUserManager().isPreCreated(identifier)) {
-                    i = 1342177280;
-                    i2 = identifier;
-                } else {
-                    Intent intent = new Intent("android.intent.action.USER_UNLOCKED");
-                    intent.putExtra("android.intent.extra.user_handle", identifier);
-                    intent.addFlags(1342177280);
-                    this.mInjector.broadcastIntent(intent, null, null, 0, null, null, null, -1, null, false, false, ActivityManagerService.MY_PID, 1000, Binder.getCallingUid(), Binder.getCallingPid(), identifier);
-                    i2 = identifier;
-                    i = 1342177280;
-                    showEventLog(identifier, userState.state, 1, "finishUserUnlocked", "send USER UNLOCKED");
-                }
-                UserInfo userInfo = getUserInfo(i2);
-                if (userInfo.isProfile() && (profileParent = this.mInjector.getUserManager().getProfileParent(i2)) != null) {
-                    broadcastProfileAccessibleStateChanged(i2, profileParent.id, "android.intent.action.PROFILE_ACCESSIBLE");
-                    if (userInfo.isManagedProfile() || userInfo.isCloneProfile()) {
-                        Intent intent2 = new Intent("android.intent.action.MANAGED_PROFILE_UNLOCKED");
-                        intent2.putExtra("android.intent.extra.USER", UserHandle.of(i2));
-                        intent2.addFlags(i);
-                        this.mInjector.broadcastIntent(intent2, null, null, 0, null, null, null, -1, null, false, false, ActivityManagerService.MY_PID, 1000, Binder.getCallingUid(), Binder.getCallingPid(), profileParent.id);
-                    }
-                }
-                UserInfo userInfo2 = getUserInfo(i2);
-                final boolean isCscVerChanged = this.mInjector.mService.mExt.isCscVerChanged();
-                if (!Objects.equals(userInfo2.lastLoggedInFingerprint, PackagePartitions.FINGERPRINT) || SystemProperties.getBoolean("persist.pm.mock-upgrade", false) || isCscVerChanged) {
-                    this.mInjector.sendPreBootBroadcast(i2, userInfo2.isManagedProfile() || userInfo2.isCloneProfile(), new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda13
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            UserController.this.lambda$finishUserUnlocked$2(isCscVerChanged, userState);
-                        }
-                    });
-                    showEventLog(i2, userState.state, 1, "finishUserUnlocked", "OK sendPreBootBroadcast");
-                } else {
-                    finishUserUnlockedCompleted(userState);
-                }
-                showEventLog(i2, userState.state, 2, "finishUserUnlocked", "NULL");
-                FgThread.getHandler().post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda14
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        UserController.lambda$finishUserUnlocked$3();
-                    }
-                });
-            }
-        }
-    }
-
-    public /* synthetic */ void lambda$finishUserUnlocked$2(boolean z, UserState userState) {
-        if (z) {
-            this.mInjector.mService.mExt.updatePreBootCscFile();
-        }
-        finishUserUnlockedCompleted(userState);
-    }
-
-    public static /* synthetic */ void lambda$finishUserUnlocked$3() {
-        MARsPolicyManager.getInstance().postInit(true);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:26:0x00f9  */
-    /* JADX WARN: Removed duplicated region for block: B:28:0x011f  */
+    /* JADX WARN: Removed duplicated region for block: B:38:0x0172  */
+    /* JADX WARN: Removed duplicated region for block: B:44:0x0179  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final void finishUserUnlockedCompleted(com.android.server.am.UserState r26) {
+    public final boolean maybeUnlockUser(int r12, android.os.IProgressListener r13) {
         /*
-            Method dump skipped, instructions count: 417
+            Method dump skipped, instructions count: 477
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.UserController.finishUserUnlockedCompleted(com.android.server.am.UserState):void");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.UserController.maybeUnlockUser(int, android.os.IProgressListener):boolean");
     }
 
-    public /* synthetic */ void lambda$finishUserUnlockedCompleted$4(UserInfo userInfo) {
-        this.mInjector.getUserManager().makeInitialized(userInfo.id);
-    }
-
-    /* renamed from: com.android.server.am.UserController$2 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass2 extends IIntentReceiver.Stub {
-        public final /* synthetic */ Runnable val$initializeUser;
-
-        public AnonymousClass2(Runnable runnable) {
-            r2 = runnable;
-        }
-
-        public void performReceive(Intent intent, int i, String str, Bundle bundle, boolean z, boolean z2, int i2) {
-            r2.run();
-        }
-    }
-
-    /* renamed from: com.android.server.am.UserController$3 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass3 extends IIntentReceiver.Stub {
-        public final /* synthetic */ int val$userId;
-
-        public AnonymousClass3(int i) {
-            r2 = i;
-        }
-
-        public void performReceive(Intent intent, int i, String str, Bundle bundle, boolean z, boolean z2, int i2) {
-            Slogf.i("ActivityManager", "Finished processing BOOT_COMPLETED for u" + r2);
-            UserController.this.mBootCompleted = true;
-        }
-    }
-
-    public /* synthetic */ void lambda$finishUserUnlockedCompleted$5(Intent intent, int i, int i2, int i3) {
-        this.mInjector.broadcastIntent(intent, null, new IIntentReceiver.Stub() { // from class: com.android.server.am.UserController.3
-            public final /* synthetic */ int val$userId;
-
-            public AnonymousClass3(int i4) {
-                r2 = i4;
-            }
-
-            public void performReceive(Intent intent2, int i4, String str, Bundle bundle, boolean z, boolean z2, int i22) {
-                Slogf.i("ActivityManager", "Finished processing BOOT_COMPLETED for u" + r2);
-                UserController.this.mBootCompleted = true;
-            }
-        }, 0, null, null, new String[]{"android.permission.RECEIVE_BOOT_COMPLETED"}, -1, getTemporaryAppAllowlistBroadcastOptions(200).toBundle(), true, false, ActivityManagerService.MY_PID, 1000, i2, i3, i4);
-    }
-
-    /* renamed from: com.android.server.am.UserController$4 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass4 implements UserState.KeyEvictedCallback {
-        public final /* synthetic */ int val$userStartMode;
-
-        public AnonymousClass4(int i) {
-            this.val$userStartMode = i;
-        }
-
-        public /* synthetic */ void lambda$keyEvicted$0(int i, int i2) {
-            UserController.this.startUser(i, i2);
-        }
-
-        @Override // com.android.server.am.UserState.KeyEvictedCallback
-        public void keyEvicted(final int i) {
-            Handler handler = UserController.this.mHandler;
-            final int i2 = this.val$userStartMode;
-            handler.post(new Runnable() { // from class: com.android.server.am.UserController$4$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    UserController.AnonymousClass4.this.lambda$keyEvicted$0(i, i2);
-                }
-            });
-        }
-    }
-
-    public int restartUser(int i, int i2) {
-        return stopUser(i, true, false, null, new AnonymousClass4(i2));
-    }
-
-    public boolean stopProfile(int i) {
-        boolean z;
-        if (this.mInjector.checkCallingPermission("android.permission.MANAGE_USERS") == -1 && this.mInjector.checkCallingPermission("android.permission.INTERACT_ACROSS_USERS_FULL") == -1) {
-            throw new SecurityException("You either need MANAGE_USERS or INTERACT_ACROSS_USERS_FULL permission to stop a profile");
-        }
-        UserInfo userInfo = getUserInfo(i);
-        if (userInfo == null || !userInfo.isProfile()) {
-            throw new IllegalArgumentException("User " + i + " is not a profile");
-        }
-        enforceShellRestriction("no_debugging_features", i);
-        synchronized (this.mLock) {
-            z = stopUsersLU(i, true, false, null, null) == 0;
-        }
-        return z;
-    }
-
-    public int stopUser(int i, boolean z, boolean z2, IStopUserCallback iStopUserCallback, UserState.KeyEvictedCallback keyEvictedCallback) {
-        int stopUsersLU;
-        checkCallingPermission("android.permission.INTERACT_ACROSS_USERS_FULL", "stopUser");
-        Preconditions.checkArgument(i >= 0, "Invalid user id %d", new Object[]{Integer.valueOf(i)});
-        enforceShellRestriction("no_debugging_features", i);
-        synchronized (this.mLock) {
-            stopUsersLU = stopUsersLU(i, z, z2, iStopUserCallback, keyEvictedCallback);
-        }
-        return stopUsersLU;
-    }
-
-    public final int stopUsersLU(int i, boolean z, boolean z2, IStopUserCallback iStopUserCallback, UserState.KeyEvictedCallback keyEvictedCallback) {
-        if (i == 0) {
-            return -3;
-        }
-        if (isCurrentUserLU(i)) {
-            return -2;
-        }
-        int[] usersToStopLU = getUsersToStopLU(i);
-        for (int i2 : usersToStopLU) {
-            if (i2 == 0 || isCurrentUserLU(i2)) {
-                if (!z) {
-                    return -4;
-                }
-                Slogf.i("ActivityManager", "Force stop user " + i + ". Related users will not be stopped");
-                stopSingleUserLU(i, z2, iStopUserCallback, keyEvictedCallback);
-                return 0;
+    public final void moveUserToForeground(int i, UserState userState) {
+        boolean switchUser;
+        ActivityTaskManagerService.LocalService localService = (ActivityTaskManagerService.LocalService) this.mInjector.mService.mAtmInternal;
+        WindowManagerGlobalLock windowManagerGlobalLock = ActivityTaskManagerService.this.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                switchUser = ActivityTaskManagerService.this.mRootWindowContainer.switchUser(i, userState);
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
             }
         }
-        int length = usersToStopLU.length;
-        for (int i3 = 0; i3 < length; i3++) {
-            int i4 = usersToStopLU[i3];
-            UserState.KeyEvictedCallback keyEvictedCallback2 = null;
-            IStopUserCallback iStopUserCallback2 = i4 == i ? iStopUserCallback : null;
-            if (i4 == i) {
-                keyEvictedCallback2 = keyEvictedCallback;
-            }
-            stopSingleUserLU(i4, z2, iStopUserCallback2, keyEvictedCallback2);
-        }
-        return 0;
-    }
-
-    public final void stopSingleUserLU(final int i, final boolean z, final IStopUserCallback iStopUserCallback, UserState.KeyEvictedCallback keyEvictedCallback) {
-        ArrayList arrayList;
-        Slogf.i("ActivityManager", "stopSingleUserLU userId=" + i);
-        final UserState userState = (UserState) this.mStartedUsers.get(i);
-        if (userState == null) {
-            if (this.mDelayUserDataLocking) {
-                if (z && keyEvictedCallback != null) {
-                    Slogf.wtf("ActivityManager", "allowDelayedLocking set with KeyEvictedCallback, ignore it and lock user:" + i, new RuntimeException());
-                    z = false;
-                }
-                if (!z && this.mLastActiveUsers.remove(Integer.valueOf(i))) {
-                    if (keyEvictedCallback != null) {
-                        arrayList = new ArrayList(1);
-                        arrayList.add(keyEvictedCallback);
-                    } else {
-                        arrayList = null;
-                    }
-                    dispatchUserLocking(i, arrayList);
-                }
-            }
-            if (iStopUserCallback != null) {
-                this.mHandler.post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda4
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        UserController.lambda$stopSingleUserLU$6(iStopUserCallback, i);
-                    }
-                });
-                return;
-            }
-            return;
-        }
-        logUserJourneyBegin(i, 5);
-        if (iStopUserCallback != null) {
-            userState.mStopCallbacks.add(iStopUserCallback);
-        }
-        if (keyEvictedCallback != null) {
-            userState.mKeyEvictedCallbacks.add(keyEvictedCallback);
-        }
-        UserInfo userInfo = getUserInfo(i);
-        this.mInjector.mService.mActivityTaskManager.mExt.stopUser(i, userInfo == null || !userInfo.isEnabled());
-        int i2 = userState.state;
-        if (i2 == 4 || i2 == 5) {
-            return;
-        }
-        userState.setState(4);
-        UserManagerInternal userManagerInternal = this.mInjector.getUserManagerInternal();
-        userManagerInternal.setUserState(i, userState.state);
-        userManagerInternal.unassignUserFromDisplayOnStop(i);
-        updateStartedUserArrayLU();
-        final Runnable runnable = new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda5
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserController.this.lambda$stopSingleUserLU$8(i, userState, z);
-            }
-        };
-        if (this.mInjector.getUserManager().isPreCreated(i)) {
-            runnable.run();
+        WindowManagerService.resetPriorityAfterLockedSection();
+        if (switchUser) {
+            this.mInjector.mService.mAtmInternal.startHomeActivity(i, "moveUserToForeground");
         } else {
-            this.mHandler.post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda6
-                @Override // java.lang.Runnable
-                public final void run() {
-                    UserController.this.lambda$stopSingleUserLU$9(i, runnable);
-                }
-            });
+            this.mInjector.mService.mAtmInternal.resumeTopActivities(false);
         }
+        EventLog.writeEvent(30041, i);
     }
 
-    public static /* synthetic */ void lambda$stopSingleUserLU$6(IStopUserCallback iStopUserCallback, int i) {
-        try {
-            iStopUserCallback.userStopped(i);
-        } catch (RemoteException unused) {
-        }
-    }
-
-    public /* synthetic */ void lambda$stopSingleUserLU$8(final int i, final UserState userState, final boolean z) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda15
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserController.this.lambda$stopSingleUserLU$7(i, userState, z);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$stopSingleUserLU$9(int i, Runnable runnable) {
-        Intent intent = new Intent("android.intent.action.USER_STOPPING");
-        intent.addFlags(1073741824);
-        intent.putExtra("android.intent.extra.user_handle", i);
-        intent.putExtra("android.intent.extra.SHUTDOWN_USERSPACE_ONLY", true);
-        IIntentReceiver anonymousClass5 = new IIntentReceiver.Stub() { // from class: com.android.server.am.UserController.5
-            public final /* synthetic */ Runnable val$finishUserStoppingAsync;
-
-            public AnonymousClass5(Runnable runnable2) {
-                r2 = runnable2;
-            }
-
-            public void performReceive(Intent intent2, int i2, String str, Bundle bundle, boolean z, boolean z2, int i3) {
-                r2.run();
-            }
-        };
-        this.mInjector.clearBroadcastQueueForUser(i);
-        this.mInjector.broadcastIntent(intent, null, anonymousClass5, 0, null, null, new String[]{"android.permission.INTERACT_ACROSS_USERS"}, -1, null, true, false, ActivityManagerService.MY_PID, 1000, Binder.getCallingUid(), Binder.getCallingPid(), -1);
-    }
-
-    /* renamed from: com.android.server.am.UserController$5 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass5 extends IIntentReceiver.Stub {
-        public final /* synthetic */ Runnable val$finishUserStoppingAsync;
-
-        public AnonymousClass5(Runnable runnable2) {
-            r2 = runnable2;
-        }
-
-        public void performReceive(Intent intent2, int i2, String str, Bundle bundle, boolean z, boolean z2, int i3) {
-            r2.run();
-        }
-    }
-
-    /* renamed from: finishUserStopping */
-    public final void lambda$stopSingleUserLU$7(int i, final UserState userState, final boolean z) {
-        EventLog.writeEvent(30073, i);
+    public final void onBootComplete(ActivityManagerService.AnonymousClass12 anonymousClass12) {
+        SparseArray clone;
+        showEventLog(0, -1, 0, "onBootComplete", "NULL");
+        setAllowUserUnlocking(true);
         synchronized (this.mLock) {
-            if (userState.state != 4) {
-                UserJourneyLogger.UserJourneySession logUserJourneyFinishWithError = this.mInjector.getUserJourneyLogger().logUserJourneyFinishWithError(-1, getUserInfo(i), 5, 3);
-                if (logUserJourneyFinishWithError != null) {
-                    this.mHandler.removeMessages(200, logUserJourneyFinishWithError);
-                } else {
-                    this.mInjector.getUserJourneyLogger().logUserJourneyFinishWithError(-1, getUserInfo(i), 5, 0);
-                }
-                return;
-            }
-            userState.setState(5);
-            this.mInjector.getUserManagerInternal().setUserState(i, userState.state);
-            this.mInjector.batteryStatsServiceNoteEvent(16391, Integer.toString(i), i);
-            this.mInjector.getSystemServiceManager().onUserStopping(i);
-            Runnable runnable = new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda19
-                @Override // java.lang.Runnable
-                public final void run() {
-                    UserController.this.lambda$finishUserStopping$11(userState, z);
-                }
-            };
-            if (this.mInjector.getUserManager().isPreCreated(i)) {
-                runnable.run();
-                return;
-            }
-            this.mInjector.broadcastIntent(new Intent("android.intent.action.ACTION_SHUTDOWN"), null, new IIntentReceiver.Stub() { // from class: com.android.server.am.UserController.6
-                public final /* synthetic */ Runnable val$finishUserStoppedAsync;
-
-                public AnonymousClass6(Runnable runnable2) {
-                    r2 = runnable2;
-                }
-
-                public void performReceive(Intent intent, int i2, String str, Bundle bundle, boolean z2, boolean z3, int i3) {
-                    r2.run();
-                }
-            }, 0, null, null, null, -1, null, true, false, ActivityManagerService.MY_PID, 1000, Binder.getCallingUid(), Binder.getCallingPid(), i);
+            clone = this.mStartedUsers.clone();
         }
-    }
-
-    public /* synthetic */ void lambda$finishUserStopping$11(final UserState userState, final boolean z) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda20
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserController.this.lambda$finishUserStopping$10(userState, z);
-            }
-        });
-    }
-
-    /* renamed from: com.android.server.am.UserController$6 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass6 extends IIntentReceiver.Stub {
-        public final /* synthetic */ Runnable val$finishUserStoppedAsync;
-
-        public AnonymousClass6(Runnable runnable2) {
-            r2 = runnable2;
-        }
-
-        public void performReceive(Intent intent, int i2, String str, Bundle bundle, boolean z2, boolean z3, int i3) {
-            r2.run();
-        }
-    }
-
-    /* renamed from: finishUserStopped */
-    public void lambda$finishUserStopping$10(UserState userState, boolean z) {
-        ArrayList arrayList;
-        ArrayList arrayList2;
-        boolean z2;
-        boolean z3;
-        int i;
-        int identifier = userState.mHandle.getIdentifier();
-        EventLog.writeEvent(30074, identifier);
-        UserInfo userInfo = getUserInfo(identifier);
-        synchronized (this.mLock) {
-            arrayList = new ArrayList(userState.mStopCallbacks);
-            arrayList2 = new ArrayList(userState.mKeyEvictedCallbacks);
-            z2 = false;
-            z3 = true;
-            if (this.mStartedUsers.get(identifier) == userState && userState.state == 5) {
-                Slogf.i("ActivityManager", "Removing user state from UserController.mStartedUsers for user #" + identifier + " as a result of user being stopped");
-                this.mStartedUsers.remove(identifier);
-                this.mUserLru.remove(Integer.valueOf(identifier));
-                updateStartedUserArrayLU();
-                if (z && !arrayList2.isEmpty()) {
-                    Slogf.wtf("ActivityManager", "Delayed locking enabled while KeyEvictedCallbacks not empty, userId:" + identifier + " callbacks:" + arrayList2);
-                    z = false;
-                }
-                i = updateUserToLockLU(identifier, z);
-                if (i == -10000) {
-                    z3 = false;
-                    z2 = true;
-                } else {
-                    z2 = true;
-                }
-            }
-            i = identifier;
-        }
-        if (z2) {
-            Slogf.i("ActivityManager", "Removing user state from UserManager.mUserStates for user #" + identifier + " as a result of user being stopped");
-            this.mInjector.getUserManagerInternal().removeUserState(identifier);
-            this.mInjector.activityManagerOnUserStopped(identifier);
-            forceStopUser(identifier, "finish user");
-        }
-        Iterator it = arrayList.iterator();
-        while (it.hasNext()) {
-            IStopUserCallback iStopUserCallback = (IStopUserCallback) it.next();
-            if (z2) {
-                try {
-                    iStopUserCallback.userStopped(identifier);
-                } catch (RemoteException unused) {
-                }
+        Preconditions.checkArgument(clone.keyAt(0) == 0);
+        for (int i = 0; i < clone.size(); i++) {
+            int keyAt = clone.keyAt(i);
+            UserState userState = (UserState) clone.valueAt(i);
+            this.mInjector.getClass();
+            if (UserManager.isHeadlessSystemUserMode()) {
+                sendLockedBootCompletedBroadcast(anonymousClass12, keyAt);
+                maybeUnlockUser(keyAt);
             } else {
-                iStopUserCallback.userStopAborted(identifier);
+                finishUserBoot(userState, anonymousClass12);
             }
         }
-        if (z2) {
-            this.mInjector.systemServiceManagerOnUserStopped(identifier);
-            this.mInjector.taskSupervisorRemoveUser(identifier);
-            if (userInfo.isEphemeral() && !userInfo.preCreated) {
-                this.mInjector.getUserManager().removeUserEvenWhenDisallowed(identifier);
-            }
-            UserJourneyLogger.UserJourneySession logUserJourneyFinish = this.mInjector.getUserJourneyLogger().logUserJourneyFinish(-1, userInfo, 5);
-            if (logUserJourneyFinish != null) {
-                this.mHandler.removeMessages(200, logUserJourneyFinish);
-            }
-            if (z3) {
-                dispatchUserLocking(i, arrayList2);
-            }
-            resumePendingUserStarts(identifier);
-        } else {
-            UserJourneyLogger.UserJourneySession finishAndClearIncompleteUserJourney = this.mInjector.getUserJourneyLogger().finishAndClearIncompleteUserJourney(identifier, 5);
-            if (finishAndClearIncompleteUserJourney != null) {
-                this.mHandler.removeMessages(200, finishAndClearIncompleteUserJourney);
+        showEventLog(0, -1, 2, "onBootComplete", "NULL");
+    }
+
+    public void processScheduledStopOfBackgroundUser(Integer num) {
+        int intValue = num.intValue();
+        Slogf.d("ActivityManager", "Considering stopping background user %d due to inactivity", num);
+        synchronized (this.mLock) {
+            try {
+                if (getCurrentOrTargetUserIdLU() == intValue) {
+                    return;
+                }
+                if (this.mPendingTargetUserIds.contains(num)) {
+                    return;
+                }
+                Slogf.i("ActivityManager", "Stopping background user %d due to inactivity", num);
+                stopUsersLU(intValue, true, true, null, null);
+            } catch (Throwable th) {
+                throw th;
             }
         }
-        if (SemPersonaManager.isDarDualEncryptionEnabled(identifier)) {
-            DualDARController.getInstance(this.mInjector.getContext()).onUserStopped(identifier);
+    }
+
+    public void reportOnUserCompletedEvent(Integer num) {
+        int i;
+        int i2;
+        SystemService.TargetUser targetUser;
+        this.mHandler.removeEqualMessages(140, num);
+        synchronized (this.mCompletedEventTypes) {
+            i = 0;
+            i2 = this.mCompletedEventTypes.get(num.intValue(), 0);
+            this.mCompletedEventTypes.delete(num.intValue());
         }
+        synchronized (this.mLock) {
+            try {
+                UserState userState = (UserState) this.mStartedUsers.get(num.intValue());
+                if (userState != null && userState.state != 5) {
+                    i = 1;
+                }
+                if (userState != null && userState.state == 3) {
+                    i |= 2;
+                }
+                if (num.intValue() == this.mCurrentUserId) {
+                    i |= 4;
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        Slogf.i("ActivityManager", "reportOnUserCompletedEvent(%d): stored=%s, eligible=%s", num, Integer.toBinaryString(i2), Integer.toBinaryString(i));
+        int i3 = i2 & i;
+        Injector injector = this.mInjector;
+        int intValue = num.intValue();
+        SystemServiceManager systemServiceManager = injector.mService.mSystemServiceManager;
+        systemServiceManager.getClass();
+        EventLog.writeEvent(30088, num, Integer.valueOf(i3));
+        if (i3 == 0 || (targetUser = systemServiceManager.getTargetUser(intValue)) == null) {
+            return;
+        }
+        systemServiceManager.onUser(TimingsTraceAndSlog.newAsyncLog(), "CompletedEvent", null, targetUser, new SystemService.UserCompletedEventType(i3));
     }
 
     public final void resumePendingUserStarts(int i) {
         synchronized (this.mLock) {
-            ArrayList arrayList = new ArrayList();
-            for (final PendingUserStart pendingUserStart : this.mPendingUserStarts) {
-                if (pendingUserStart.userId == i) {
-                    Slogf.i("ActivityManager", "resumePendingUserStart for" + pendingUserStart);
-                    this.mHandler.post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda3
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            UserController.this.lambda$resumePendingUserStarts$12(pendingUserStart);
-                        }
-                    });
-                    arrayList.add(pendingUserStart);
-                }
-            }
-            this.mPendingUserStarts.removeAll(arrayList);
-        }
-    }
-
-    public /* synthetic */ void lambda$resumePendingUserStarts$12(PendingUserStart pendingUserStart) {
-        startUser(pendingUserStart.userId, pendingUserStart.userStartMode, pendingUserStart.unlockListener);
-    }
-
-    public final void dispatchUserLocking(final int i, final List list) {
-        FgThread.getHandler().post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda8
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserController.this.lambda$dispatchUserLocking$13(i, list);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$dispatchUserLocking$13(int i, List list) {
-        synchronized (this.mLock) {
-            if (this.mStartedUsers.get(i) != null) {
-                Slogf.w("ActivityManager", "User was restarted, skipping key eviction");
-                return;
-            }
             try {
-                Slogf.i("ActivityManager", "Locking CE storage for user #" + i);
-                this.mInjector.getStorageManager().lockUserKey(i);
-                if (list == null) {
-                    return;
-                }
-                for (int i2 = 0; i2 < list.size(); i2++) {
-                    ((UserState.KeyEvictedCallback) list.get(i2)).keyEvicted(i);
-                }
-            } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
-            }
-        }
-    }
-
-    public final int updateUserToLockLU(int i, boolean z) {
-        if (!this.mDelayUserDataLocking || !z || getUserInfo(i).isEphemeral() || hasUserRestriction("no_run_in_background", i)) {
-            return i;
-        }
-        this.mLastActiveUsers.remove(Integer.valueOf(i));
-        this.mLastActiveUsers.add(0, Integer.valueOf(i));
-        if (this.mStartedUsers.size() + this.mLastActiveUsers.size() > this.mMaxRunningUsers) {
-            int intValue = ((Integer) this.mLastActiveUsers.get(r4.size() - 1)).intValue();
-            this.mLastActiveUsers.remove(r2.size() - 1);
-            Slogf.i("ActivityManager", "finishUserStopped, stopping user:" + i + " lock user:" + intValue);
-            return intValue;
-        }
-        Slogf.i("ActivityManager", "finishUserStopped, user:" + i + ", skip locking");
-        return -10000;
-    }
-
-    public final int[] getUsersToStopLU(int i) {
-        int size = this.mStartedUsers.size();
-        IntArray intArray = new IntArray();
-        intArray.add(i);
-        int i2 = this.mUserProfileGroupIds.get(i, -10000);
-        for (int i3 = 0; i3 < size; i3++) {
-            int identifier = ((UserState) this.mStartedUsers.valueAt(i3)).mHandle.getIdentifier();
-            boolean z = i2 != -10000 && i2 == this.mUserProfileGroupIds.get(identifier, -10000);
-            boolean z2 = identifier == i;
-            if (z && !z2) {
-                intArray.add(identifier);
-            }
-        }
-        return intArray.toArray();
-    }
-
-    public final void forceStopUser(int i, String str) {
-        UserInfo profileParent;
-        this.mInjector.activityManagerForceStopPackage(i, str);
-        if (this.mInjector.getUserManager().isPreCreated(i)) {
-            return;
-        }
-        Intent intent = new Intent("android.intent.action.USER_STOPPED");
-        intent.addFlags(1342177280);
-        intent.putExtra("android.intent.extra.user_handle", i);
-        this.mInjector.broadcastIntent(intent, null, null, 0, null, null, null, -1, null, false, false, ActivityManagerService.MY_PID, 1000, Binder.getCallingUid(), Binder.getCallingPid(), -1);
-        if (!getUserInfo(i).isProfile() || (profileParent = this.mInjector.getUserManager().getProfileParent(i)) == null) {
-            return;
-        }
-        broadcastProfileAccessibleStateChanged(i, profileParent.id, "android.intent.action.PROFILE_INACCESSIBLE");
-    }
-
-    public final void stopGuestOrEphemeralUserIfBackground(int i) {
-        int i2;
-        synchronized (this.mLock) {
-            UserState userState = (UserState) this.mStartedUsers.get(i);
-            if (i != 0 && i != this.mCurrentUserId && userState != null && (i2 = userState.state) != 4 && i2 != 5) {
-                UserInfo userInfo = getUserInfo(i);
-                if (userInfo.isEphemeral()) {
-                    ((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).onEphemeralUserStop(i);
-                }
-                if (userInfo.isGuest() || userInfo.isEphemeral()) {
-                    synchronized (this.mLock) {
-                        stopUsersLU(i, true, false, null, null);
+                ArrayList arrayList = new ArrayList();
+                Iterator it = ((ArrayList) this.mPendingUserStarts).iterator();
+                while (it.hasNext()) {
+                    PendingUserStart pendingUserStart = (PendingUserStart) it.next();
+                    if (pendingUserStart.userId == i) {
+                        Slogf.i("ActivityManager", "resumePendingUserStart for" + pendingUserStart);
+                        this.mHandler.post(new UserController$$ExternalSyntheticLambda3(this, pendingUserStart, 3));
+                        arrayList.add(pendingUserStart);
                     }
                 }
+                ((ArrayList) this.mPendingUserStarts).removeAll(arrayList);
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    public void scheduleStartProfiles() {
-        FgThread.getHandler().post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda16
+    public final void runWithTimeout(Consumer consumer, final int i, final Runnable runnable, final Runnable runnable2, final String str) {
+        final AtomicInteger atomicInteger = new AtomicInteger(0);
+        asyncTraceBegin(0, str);
+        this.mHandler.postDelayed(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda21
             @Override // java.lang.Runnable
             public final void run() {
-                UserController.this.lambda$scheduleStartProfiles$14();
+                AtomicInteger atomicInteger2 = atomicInteger;
+                String str2 = str;
+                int i2 = i;
+                Runnable runnable3 = runnable2;
+                if (atomicInteger2.compareAndSet(0, 1)) {
+                    UserController.asyncTraceEnd(0, str2);
+                    Slogf.w("ActivityManager", "Timeout: %s did not finish in %d ms", str2, Integer.valueOf(i2));
+                    runnable3.run();
+                }
+            }
+        }, i);
+        consumer.accept(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda22
+            @Override // java.lang.Runnable
+            public final void run() {
+                AtomicInteger atomicInteger2 = atomicInteger;
+                String str2 = str;
+                Runnable runnable3 = runnable;
+                if (atomicInteger2.compareAndSet(0, 2)) {
+                    UserController.asyncTraceEnd(0, str2);
+                    runnable3.run();
+                }
             }
         });
     }
 
-    public /* synthetic */ void lambda$scheduleStartProfiles$14() {
-        if (this.mHandler.hasMessages(40)) {
-            return;
-        }
-        Handler handler = this.mHandler;
-        handler.sendMessageDelayed(handler.obtainMessage(40), 1000L);
-    }
-
-    public final void startProfiles() {
-        int currentUserId = getCurrentUserId();
-        int i = 0;
-        List<UserInfo> profiles = this.mInjector.getUserManager().getProfiles(currentUserId, false);
-        ArrayList arrayList = new ArrayList(profiles.size());
-        for (UserInfo userInfo : profiles) {
-            if ((userInfo.flags & 16) == 16 && userInfo.id != currentUserId && shouldStartWithParent(userInfo)) {
-                arrayList.add(userInfo);
+    public void scheduleOnUserCompletedEvent(int i, int i2, int i3) {
+        if (i2 != 0) {
+            synchronized (this.mCompletedEventTypes) {
+                SparseIntArray sparseIntArray = this.mCompletedEventTypes;
+                sparseIntArray.put(i, i2 | sparseIntArray.get(i, 0));
             }
         }
-        int size = arrayList.size();
-        while (i < size && i < getMaxRunningUsers() - 1) {
-            startUser(((UserInfo) arrayList.get(i)).id, 3);
-            i++;
-        }
-        if (i < size) {
-            Slogf.w("ActivityManager", "More profiles than MAX_RUNNING_USERS");
+        Integer valueOf = Integer.valueOf(i);
+        this.mHandler.removeEqualMessages(140, valueOf);
+        Handler handler = this.mHandler;
+        handler.sendMessageDelayed(handler.obtainMessage(140, valueOf), i3);
+    }
+
+    public final void scheduleStopOfBackgroundUser(int i) {
+        int i2;
+        if (android.multiuser.Flags.scheduleStopOfBackgroundUser() && (i2 = this.mBackgroundUserScheduledStopTimeSecs) > 0 && !UserManager.isVisibleBackgroundUsersEnabled() && i != 0) {
+            if (i == this.mInjector.getUserManagerInternal().getMainUserId()) {
+                Slogf.i("ActivityManager", "Exempting user %d from being stopped due to inactivity by virtue of it being the main user", Integer.valueOf(i));
+                return;
+            }
+            Slogf.d("ActivityManager", "Scheduling to stop user %d in %d seconds", Integer.valueOf(i), Integer.valueOf(i2));
+            Integer valueOf = Integer.valueOf(i);
+            this.mHandler.removeEqualMessages(150, valueOf);
+            Handler handler = this.mHandler;
+            handler.sendMessageDelayed(handler.obtainMessage(150, valueOf), i2 * 1000);
         }
     }
 
-    public final boolean shouldStartWithParent(UserInfo userInfo) {
-        UserProperties userProperties = getUserProperties(userInfo.id);
-        return userProperties != null && userProperties.getStartWithParent() && (!userInfo.isQuietModeEnabled() || (((DevicePolicyManagerInternal) LocalServices.getService(DevicePolicyManagerInternal.class)).isKeepProfilesRunningEnabled() && !SemPersonaManager.isSecureFolderId(userInfo.id)));
+    public final void sendContinueUserSwitchLU(UserState userState, int i, int i2) {
+        TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog("ActivityManager");
+        timingsTraceAndSlog.traceBegin("sendContinueUserSwitchLU-" + i + "-to-" + i2);
+        this.mCurWaitingUserSwitchCallbacks = null;
+        this.mHandler.removeMessages(30);
+        Handler handler = this.mHandler;
+        handler.sendMessage(handler.obtainMessage(20, i, i2, userState));
+        timingsTraceAndSlog.traceEnd();
     }
 
-    public boolean startProfile(int i, boolean z, IProgressListener iProgressListener) {
-        if (this.mInjector.checkCallingPermission("android.permission.MANAGE_USERS") == -1 && this.mInjector.checkCallingPermission("android.permission.INTERACT_ACROSS_USERS_FULL") == -1) {
+    public final void sendLockedBootCompletedBroadcast(ActivityManagerService.AnonymousClass12 anonymousClass12, int i) {
+        UserInfo userInfo;
+        if (com.android.internal.hidden_from_bootclasspath.android.os.Flags.allowPrivateProfile() && android.multiuser.Flags.enablePrivateSpaceFeatures() && (userInfo = getUserInfo(i)) != null && userInfo.isPrivateProfile()) {
+            Slogf.i("ActivityManager", "Skipping LOCKED_BOOT_COMPLETED for private profile user #" + i);
+            return;
+        }
+        Intent intent = new Intent("android.intent.action.LOCKED_BOOT_COMPLETED", (Uri) null);
+        intent.putExtra("android.intent.extra.user_handle", i);
+        intent.addFlags(-1996488704);
+        Injector injector = this.mInjector;
+        String[] strArr = {"android.permission.RECEIVE_BOOT_COMPLETED"};
+        ActivityManagerInternal activityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
+        long bootTimeTempAllowListDuration = activityManagerInternal != null ? activityManagerInternal.getBootTimeTempAllowListDuration() : 10000L;
+        BroadcastOptions makeBasic = BroadcastOptions.makeBasic();
+        makeBasic.setTemporaryAppAllowlist(bootTimeTempAllowListDuration, 0, 202, "");
+        injector.broadcastIntent(intent, anonymousClass12, strArr, makeBasic.toBundle(), ActivityManagerService.MY_PID, Binder.getCallingUid(), Binder.getCallingPid(), i);
+    }
+
+    public final void sendUserStartedBroadcast(int i, int i2, int i3) {
+        if (i == 0) {
+            synchronized (this.mLock) {
+                try {
+                    if (this.mIsBroadcastSentForSystemUserStarted) {
+                        return;
+                    } else {
+                        this.mIsBroadcastSentForSystemUserStarted = true;
+                    }
+                } finally {
+                }
+            }
+        }
+        Intent intent = new Intent("android.intent.action.USER_STARTED");
+        intent.addFlags(1342177280);
+        intent.putExtra("android.intent.extra.user_handle", i);
+        this.mInjector.broadcastIntent(intent, null, null, null, ActivityManagerService.MY_PID, i2, i3, i);
+    }
+
+    public final void sendUserStartingBroadcast(int i, int i2, int i3) {
+        if (i == 0) {
+            synchronized (this.mLock) {
+                try {
+                    if (this.mIsBroadcastSentForSystemUserStarting) {
+                        return;
+                    } else {
+                        this.mIsBroadcastSentForSystemUserStarting = true;
+                    }
+                } finally {
+                }
+            }
+        }
+        Intent intent = new Intent("android.intent.action.USER_STARTING");
+        intent.addFlags(1073741824);
+        intent.putExtra("android.intent.extra.user_handle", i);
+        this.mInjector.broadcastIntent(intent, new AnonymousClass8(), new String[]{"android.permission.INTERACT_ACROSS_USERS"}, null, ActivityManagerService.MY_PID, i2, i3, -1);
+    }
+
+    public final void sendUserSwitchBroadcasts(int i, int i2) {
+        int callingUid = Binder.getCallingUid();
+        int callingPid = Binder.getCallingPid();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        String str = "android.intent.extra.USER";
+        String str2 = "android.intent.extra.user_handle";
+        int i3 = 1342177280;
+        if (i >= 0) {
+            try {
+                ArrayList arrayList = (ArrayList) this.mInjector.getUserManager().getProfiles(i, false);
+                int size = arrayList.size();
+                int i4 = 0;
+                while (i4 < size) {
+                    int i5 = ((UserInfo) arrayList.get(i4)).id;
+                    Intent intent = new Intent("android.intent.action.USER_BACKGROUND");
+                    intent.addFlags(i3);
+                    intent.putExtra(str2, i5);
+                    intent.putExtra(str, UserHandle.of(i5));
+                    this.mInjector.broadcastIntent(intent, null, null, null, ActivityManagerService.MY_PID, callingUid, callingPid, i5);
+                    i4++;
+                    str = str;
+                    size = size;
+                    str2 = str2;
+                    i3 = 1342177280;
+                    arrayList = arrayList;
+                }
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                throw th;
+            }
+        }
+        String str3 = str2;
+        String str4 = str;
+        if (i2 >= 0) {
+            ArrayList arrayList2 = (ArrayList) this.mInjector.getUserManager().getProfiles(i2, false);
+            int size2 = arrayList2.size();
+            int i6 = 0;
+            while (i6 < size2) {
+                int i7 = ((UserInfo) arrayList2.get(i6)).id;
+                Intent intent2 = new Intent("android.intent.action.USER_FOREGROUND");
+                intent2.addFlags(1342177280);
+                String str5 = str3;
+                intent2.putExtra(str5, i7);
+                intent2.putExtra(str4, UserHandle.of(i7));
+                this.mInjector.broadcastIntent(intent2, null, null, null, ActivityManagerService.MY_PID, callingUid, callingPid, i7);
+                i6++;
+                size2 = size2;
+                arrayList2 = arrayList2;
+                str3 = str5;
+            }
+            Intent intent3 = new Intent("android.intent.action.USER_SWITCHED");
+            intent3.addFlags(1342177280);
+            intent3.putExtra(str3, i2);
+            intent3.putExtra(str4, UserHandle.of(i2));
+            this.mInjector.broadcastIntent(intent3, null, new String[]{"android.permission.MANAGE_USERS"}, null, ActivityManagerService.MY_PID, callingUid, callingPid, -1);
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+    }
+
+    public void setAllowUserUnlocking(boolean z) {
+        this.mAllowUserUnlocking = z;
+    }
+
+    public final boolean shouldStopUserOnSwitch() {
+        synchronized (this.mLock) {
+            try {
+                int i = this.mStopUserOnSwitch;
+                if (i == -1) {
+                    int i2 = SystemProperties.getInt("fw.stop_bg_users_on_switch", -1);
+                    return i2 == -1 ? this.mDelayUserDataLocking : i2 == 1;
+                }
+                boolean z = i == 1;
+                Slogf.i("ActivityManager", "shouldStopUserOnSwitch(): returning overridden value (%b)", Boolean.valueOf(z));
+                return z;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final boolean startProfile(int i, boolean z, IProgressListener iProgressListener) {
+        if (this.mInjector.mService.checkCallingPermission("android.permission.MANAGE_USERS") == -1 && this.mInjector.mService.checkCallingPermission("android.permission.INTERACT_ACROSS_USERS_FULL") == -1) {
             throw new SecurityException("You either need MANAGE_USERS or INTERACT_ACROSS_USERS_FULL permission to start a profile");
         }
         UserInfo userInfo = getUserInfo(i);
         if (userInfo == null || !userInfo.isProfile()) {
-            throw new IllegalArgumentException("User " + i + " is not a profile");
+            throw new IllegalArgumentException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "User ", " is not a profile"));
         }
-        if (!userInfo.isEnabled() && !z) {
-            Slogf.w("ActivityManager", "Cannot start disabled profile #%d", Integer.valueOf(i));
-            return false;
+        if (userInfo.isEnabled() || z) {
+            return startUserNoChecks(i, 0, 3, iProgressListener);
         }
-        return startUserNoChecks(i, 0, 3, iProgressListener);
+        Slogf.w("ActivityManager", "Cannot start disabled profile #%d", Integer.valueOf(i));
+        return false;
+    }
+
+    public final void startProfiles() {
+        int i;
+        int i2;
+        UserProperties userProperties;
+        int currentUserId = getCurrentUserId();
+        int i3 = 0;
+        ArrayList arrayList = (ArrayList) this.mInjector.getUserManager().getProfiles(currentUserId, false);
+        ArrayList arrayList2 = new ArrayList(arrayList.size());
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            UserInfo userInfo = (UserInfo) it.next();
+            if ((userInfo.flags & 16) == 16 && (i2 = userInfo.id) != currentUserId && (userProperties = this.mInjector.getUserManagerInternal().getUserProperties(i2)) != null && userProperties.getStartWithParent() && !userInfo.isQuietModeEnabled()) {
+                arrayList2.add(userInfo);
+            }
+        }
+        int size = arrayList2.size();
+        while (i3 < size) {
+            synchronized (this.mLock) {
+                i = this.mMaxRunningUsers;
+            }
+            if (i3 >= i - 1) {
+                break;
+            }
+            startUser(((UserInfo) arrayList2.get(i3)).id, 3);
+            i3++;
+        }
+        if (i3 < size) {
+            Slogf.w("ActivityManager", "More profiles than MAX_RUNNING_USERS");
+        }
     }
 
     public boolean startUser(int i, int i2) {
-        return startUser(i, i2, null);
+        checkCallingHasOneOfThosePermissions("startUser", "android.permission.INTERACT_ACROSS_USERS_FULL");
+        return startUserNoChecks(i, 0, i2, null);
     }
 
-    public boolean startUser(int i, int i2, IProgressListener iProgressListener) {
-        checkCallingPermission("android.permission.INTERACT_ACROSS_USERS_FULL", "startUser");
-        return startUserNoChecks(i, 0, i2, iProgressListener);
-    }
-
-    public boolean startUserVisibleOnDisplay(int i, int i2, IProgressListener iProgressListener) {
-        checkCallingHasOneOfThosePermissions("startUserOnDisplay", "android.permission.MANAGE_USERS", "android.permission.INTERACT_ACROSS_USERS");
-        try {
-            return startUserNoChecks(i, i2, 3, iProgressListener);
-        } catch (RuntimeException e) {
-            Slogf.e("ActivityManager", "startUserOnSecondaryDisplay(%d, %d) failed: %s", Integer.valueOf(i), Integer.valueOf(i2), e);
-            return false;
-        }
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:112:0x0382 A[Catch: all -> 0x0075, TryCatch #4 {all -> 0x0075, blocks: (B:10:0x0057, B:12:0x0065, B:14:0x006b, B:15:0x0097, B:17:0x009c, B:18:0x00aa, B:20:0x00b9, B:25:0x00d1, B:27:0x00d7, B:32:0x0115, B:34:0x012d, B:37:0x0151, B:38:0x0159, B:44:0x01b8, B:46:0x01c1, B:48:0x01ce, B:49:0x01d3, B:51:0x01d8, B:52:0x01ec, B:54:0x01f4, B:55:0x01ff, B:59:0x0205, B:62:0x0225, B:64:0x022a, B:67:0x0243, B:69:0x0249, B:70:0x024c, B:72:0x0254, B:73:0x026c, B:77:0x0271, B:79:0x029e, B:81:0x02a2, B:82:0x02c2, B:84:0x02ee, B:86:0x02f4, B:88:0x02fa, B:89:0x030d, B:91:0x0315, B:97:0x034c, B:95:0x0354, B:100:0x0357, B:104:0x035e, B:110:0x037d, B:112:0x0382, B:117:0x03a0, B:118:0x038f, B:120:0x037a, B:126:0x0278, B:128:0x027b, B:129:0x0292, B:133:0x0297, B:137:0x029d, B:141:0x0237, B:142:0x0238, B:153:0x03b2, B:154:0x00f6, B:156:0x00fa, B:161:0x007c, B:164:0x0081, B:170:0x008a, B:173:0x008d, B:40:0x015a, B:42:0x0165, B:43:0x01b7, B:143:0x0186, B:145:0x018a, B:146:0x01af, B:57:0x0200, B:58:0x0204, B:75:0x026d, B:76:0x0270, B:131:0x0293, B:132:0x0296), top: B:9:0x0057, inners: #0, #3, #5, #6 }] */
+    /* JADX WARN: Removed duplicated region for block: B:118:0x038f A[Catch: all -> 0x0075, TryCatch #4 {all -> 0x0075, blocks: (B:10:0x0057, B:12:0x0065, B:14:0x006b, B:15:0x0097, B:17:0x009c, B:18:0x00aa, B:20:0x00b9, B:25:0x00d1, B:27:0x00d7, B:32:0x0115, B:34:0x012d, B:37:0x0151, B:38:0x0159, B:44:0x01b8, B:46:0x01c1, B:48:0x01ce, B:49:0x01d3, B:51:0x01d8, B:52:0x01ec, B:54:0x01f4, B:55:0x01ff, B:59:0x0205, B:62:0x0225, B:64:0x022a, B:67:0x0243, B:69:0x0249, B:70:0x024c, B:72:0x0254, B:73:0x026c, B:77:0x0271, B:79:0x029e, B:81:0x02a2, B:82:0x02c2, B:84:0x02ee, B:86:0x02f4, B:88:0x02fa, B:89:0x030d, B:91:0x0315, B:97:0x034c, B:95:0x0354, B:100:0x0357, B:104:0x035e, B:110:0x037d, B:112:0x0382, B:117:0x03a0, B:118:0x038f, B:120:0x037a, B:126:0x0278, B:128:0x027b, B:129:0x0292, B:133:0x0297, B:137:0x029d, B:141:0x0237, B:142:0x0238, B:153:0x03b2, B:154:0x00f6, B:156:0x00fa, B:161:0x007c, B:164:0x0081, B:170:0x008a, B:173:0x008d, B:40:0x015a, B:42:0x0165, B:43:0x01b7, B:143:0x0186, B:145:0x018a, B:146:0x01af, B:57:0x0200, B:58:0x0204, B:75:0x026d, B:76:0x0270, B:131:0x0293, B:132:0x0296), top: B:9:0x0057, inners: #0, #3, #5, #6 }] */
+    /* JADX WARN: Type inference failed for: r12v0 */
+    /* JADX WARN: Type inference failed for: r12v1, types: [boolean, int] */
+    /* JADX WARN: Type inference failed for: r12v2 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean startUserInternal(final int r20, int r21, int r22, android.os.IProgressListener r23, com.android.server.utils.TimingsTraceAndSlog r24) {
+        /*
+            Method dump skipped, instructions count: 951
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.UserController.startUserInternal(int, int, int, android.os.IProgressListener, com.android.server.utils.TimingsTraceAndSlog):boolean");
     }
 
     public final boolean startUserNoChecks(int i, int i2, int i3, IProgressListener iProgressListener) {
-        String str;
         TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
-        if (SemPersonaManager.isKnoxId(i) && PersonaServiceHelper.shouldBlockUserStart(this.mInjector.getContext(), i)) {
-            return false;
+        if (SemPersonaManager.isKnoxId(i)) {
+            Context context = this.mInjector.mService.mContext;
+            List list = PersonaServiceHelper.ALLOWED_BLUETOOTH_TARGET;
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                Log.d("PersonaServiceHelper", "shouldBlockUserStart() " + i);
+                UserInfo userInfo = PersonaServiceHelper.getUserManager().getUserInfo(i);
+                if (userInfo != null && userInfo.id != 0 && userInfo.isManagedProfile() && userInfo.isDeviceCompromised()) {
+                    Log.w("PersonaServiceHelper", "blocking when device compromised : " + i);
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                    return false;
+                }
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("UserController.startUser-");
+        StringBuilder sb = new StringBuilder("UserController.startUser-");
         sb.append(i);
-        if (i2 == 0) {
-            str = "";
-        } else {
-            str = "-display-" + i2;
-        }
-        sb.append(str);
+        sb.append(i2 == 0 ? "" : VibrationParam$1$$ExternalSyntheticOutline0.m(i2, "-display-"));
         sb.append(PackageManagerShellCommandDataLoader.STDIN_PATH);
         sb.append(i3 == 1 ? "fg" : "bg");
         sb.append("-start-mode-");
@@ -1168,152 +2418,221 @@ public class UserController implements Handler.Callback {
         }
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Removed duplicated region for block: B:105:0x035c A[Catch: all -> 0x038f, TryCatch #5 {all -> 0x038f, blocks: (B:10:0x0054, B:12:0x005f, B:14:0x0065, B:16:0x006f, B:19:0x0074, B:21:0x0078, B:22:0x007b, B:26:0x0083, B:28:0x0088, B:29:0x0098, B:31:0x00a6, B:35:0x00c3, B:37:0x00c9, B:42:0x0111, B:44:0x0129, B:47:0x0153, B:48:0x015b, B:56:0x01cd, B:57:0x01d2, B:59:0x01d7, B:60:0x01eb, B:62:0x01f3, B:63:0x01fc, B:67:0x0206, B:69:0x021e, B:71:0x0234, B:72:0x0254, B:74:0x025c, B:75:0x0274, B:79:0x0279, B:81:0x02a9, B:83:0x02ad, B:84:0x02cd, B:86:0x02ed, B:88:0x02f3, B:90:0x02f9, B:91:0x0306, B:93:0x030e, B:94:0x033e, B:98:0x0345, B:103:0x0357, B:105:0x035c, B:110:0x0378, B:111:0x0369, B:112:0x0354, B:118:0x027f, B:121:0x0283, B:122:0x029a, B:126:0x029f, B:130:0x02a6, B:135:0x023c, B:136:0x023d, B:137:0x0248, B:144:0x038b, B:154:0x038e, B:155:0x00ed, B:157:0x00f1, B:124:0x029b, B:125:0x029e, B:139:0x0249, B:140:0x0253, B:65:0x01fd, B:66:0x0205, B:50:0x015c, B:52:0x0166, B:53:0x01ba, B:54:0x01ca, B:145:0x0185, B:147:0x018a, B:148:0x01b2, B:77:0x0275, B:78:0x0278), top: B:9:0x0054, inners: #0, #1, #2, #3, #4 }] */
-    /* JADX WARN: Removed duplicated region for block: B:111:0x0369 A[Catch: all -> 0x038f, TryCatch #5 {all -> 0x038f, blocks: (B:10:0x0054, B:12:0x005f, B:14:0x0065, B:16:0x006f, B:19:0x0074, B:21:0x0078, B:22:0x007b, B:26:0x0083, B:28:0x0088, B:29:0x0098, B:31:0x00a6, B:35:0x00c3, B:37:0x00c9, B:42:0x0111, B:44:0x0129, B:47:0x0153, B:48:0x015b, B:56:0x01cd, B:57:0x01d2, B:59:0x01d7, B:60:0x01eb, B:62:0x01f3, B:63:0x01fc, B:67:0x0206, B:69:0x021e, B:71:0x0234, B:72:0x0254, B:74:0x025c, B:75:0x0274, B:79:0x0279, B:81:0x02a9, B:83:0x02ad, B:84:0x02cd, B:86:0x02ed, B:88:0x02f3, B:90:0x02f9, B:91:0x0306, B:93:0x030e, B:94:0x033e, B:98:0x0345, B:103:0x0357, B:105:0x035c, B:110:0x0378, B:111:0x0369, B:112:0x0354, B:118:0x027f, B:121:0x0283, B:122:0x029a, B:126:0x029f, B:130:0x02a6, B:135:0x023c, B:136:0x023d, B:137:0x0248, B:144:0x038b, B:154:0x038e, B:155:0x00ed, B:157:0x00f1, B:124:0x029b, B:125:0x029e, B:139:0x0249, B:140:0x0253, B:65:0x01fd, B:66:0x0205, B:50:0x015c, B:52:0x0166, B:53:0x01ba, B:54:0x01ca, B:145:0x0185, B:147:0x018a, B:148:0x01b2, B:77:0x0275, B:78:0x0278), top: B:9:0x0054, inners: #0, #1, #2, #3, #4 }] */
-    /* JADX WARN: Removed duplicated region for block: B:114:0x02cc  */
-    /* JADX WARN: Removed duplicated region for block: B:119:0x0280  */
-    /* JADX WARN: Removed duplicated region for block: B:74:0x025c A[Catch: all -> 0x038f, TryCatch #5 {all -> 0x038f, blocks: (B:10:0x0054, B:12:0x005f, B:14:0x0065, B:16:0x006f, B:19:0x0074, B:21:0x0078, B:22:0x007b, B:26:0x0083, B:28:0x0088, B:29:0x0098, B:31:0x00a6, B:35:0x00c3, B:37:0x00c9, B:42:0x0111, B:44:0x0129, B:47:0x0153, B:48:0x015b, B:56:0x01cd, B:57:0x01d2, B:59:0x01d7, B:60:0x01eb, B:62:0x01f3, B:63:0x01fc, B:67:0x0206, B:69:0x021e, B:71:0x0234, B:72:0x0254, B:74:0x025c, B:75:0x0274, B:79:0x0279, B:81:0x02a9, B:83:0x02ad, B:84:0x02cd, B:86:0x02ed, B:88:0x02f3, B:90:0x02f9, B:91:0x0306, B:93:0x030e, B:94:0x033e, B:98:0x0345, B:103:0x0357, B:105:0x035c, B:110:0x0378, B:111:0x0369, B:112:0x0354, B:118:0x027f, B:121:0x0283, B:122:0x029a, B:126:0x029f, B:130:0x02a6, B:135:0x023c, B:136:0x023d, B:137:0x0248, B:144:0x038b, B:154:0x038e, B:155:0x00ed, B:157:0x00f1, B:124:0x029b, B:125:0x029e, B:139:0x0249, B:140:0x0253, B:65:0x01fd, B:66:0x0205, B:50:0x015c, B:52:0x0166, B:53:0x01ba, B:54:0x01ca, B:145:0x0185, B:147:0x018a, B:148:0x01b2, B:77:0x0275, B:78:0x0278), top: B:9:0x0054, inners: #0, #1, #2, #3, #4 }] */
-    /* JADX WARN: Removed duplicated region for block: B:83:0x02ad A[Catch: all -> 0x038f, TryCatch #5 {all -> 0x038f, blocks: (B:10:0x0054, B:12:0x005f, B:14:0x0065, B:16:0x006f, B:19:0x0074, B:21:0x0078, B:22:0x007b, B:26:0x0083, B:28:0x0088, B:29:0x0098, B:31:0x00a6, B:35:0x00c3, B:37:0x00c9, B:42:0x0111, B:44:0x0129, B:47:0x0153, B:48:0x015b, B:56:0x01cd, B:57:0x01d2, B:59:0x01d7, B:60:0x01eb, B:62:0x01f3, B:63:0x01fc, B:67:0x0206, B:69:0x021e, B:71:0x0234, B:72:0x0254, B:74:0x025c, B:75:0x0274, B:79:0x0279, B:81:0x02a9, B:83:0x02ad, B:84:0x02cd, B:86:0x02ed, B:88:0x02f3, B:90:0x02f9, B:91:0x0306, B:93:0x030e, B:94:0x033e, B:98:0x0345, B:103:0x0357, B:105:0x035c, B:110:0x0378, B:111:0x0369, B:112:0x0354, B:118:0x027f, B:121:0x0283, B:122:0x029a, B:126:0x029f, B:130:0x02a6, B:135:0x023c, B:136:0x023d, B:137:0x0248, B:144:0x038b, B:154:0x038e, B:155:0x00ed, B:157:0x00f1, B:124:0x029b, B:125:0x029e, B:139:0x0249, B:140:0x0253, B:65:0x01fd, B:66:0x0205, B:50:0x015c, B:52:0x0166, B:53:0x01ba, B:54:0x01ca, B:145:0x0185, B:147:0x018a, B:148:0x01b2, B:77:0x0275, B:78:0x0278), top: B:9:0x0054, inners: #0, #1, #2, #3, #4 }] */
-    /* JADX WARN: Removed duplicated region for block: B:93:0x030e A[Catch: all -> 0x038f, TryCatch #5 {all -> 0x038f, blocks: (B:10:0x0054, B:12:0x005f, B:14:0x0065, B:16:0x006f, B:19:0x0074, B:21:0x0078, B:22:0x007b, B:26:0x0083, B:28:0x0088, B:29:0x0098, B:31:0x00a6, B:35:0x00c3, B:37:0x00c9, B:42:0x0111, B:44:0x0129, B:47:0x0153, B:48:0x015b, B:56:0x01cd, B:57:0x01d2, B:59:0x01d7, B:60:0x01eb, B:62:0x01f3, B:63:0x01fc, B:67:0x0206, B:69:0x021e, B:71:0x0234, B:72:0x0254, B:74:0x025c, B:75:0x0274, B:79:0x0279, B:81:0x02a9, B:83:0x02ad, B:84:0x02cd, B:86:0x02ed, B:88:0x02f3, B:90:0x02f9, B:91:0x0306, B:93:0x030e, B:94:0x033e, B:98:0x0345, B:103:0x0357, B:105:0x035c, B:110:0x0378, B:111:0x0369, B:112:0x0354, B:118:0x027f, B:121:0x0283, B:122:0x029a, B:126:0x029f, B:130:0x02a6, B:135:0x023c, B:136:0x023d, B:137:0x0248, B:144:0x038b, B:154:0x038e, B:155:0x00ed, B:157:0x00f1, B:124:0x029b, B:125:0x029e, B:139:0x0249, B:140:0x0253, B:65:0x01fd, B:66:0x0205, B:50:0x015c, B:52:0x0166, B:53:0x01ba, B:54:0x01ca, B:145:0x0185, B:147:0x018a, B:148:0x01b2, B:77:0x0275, B:78:0x0278), top: B:9:0x0054, inners: #0, #1, #2, #3, #4 }] */
-    /* JADX WARN: Removed duplicated region for block: B:96:0x0342  */
-    /* JADX WARN: Type inference failed for: r8v0 */
-    /* JADX WARN: Type inference failed for: r8v1, types: [boolean, int] */
-    /* JADX WARN: Type inference failed for: r8v4 */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final boolean startUserInternal(int r17, int r18, int r19, android.os.IProgressListener r20, com.android.server.utils.TimingsTraceAndSlog r21) {
-        /*
-            Method dump skipped, instructions count: 916
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.UserController.startUserInternal(int, int, int, android.os.IProgressListener, com.android.server.utils.TimingsTraceAndSlog):boolean");
-    }
-
-    public void startUserInForeground(int i) {
-        if (startUser(i, 1)) {
-            return;
-        }
-        this.mInjector.getWindowManager().setSwitchingUser(false);
-        this.mTargetUserId = -10000;
-        dismissUserSwitchDialog(null);
-    }
-
-    public boolean unlockUser(int i, IProgressListener iProgressListener) {
-        showEventLog(i, -1, 0, "unlockUser", "NULL");
-        checkCallingPermission("android.permission.INTERACT_ACROSS_USERS_FULL", "unlockUser");
-        EventLog.writeEvent(30077, i);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            showEventLog(i, -1, 1, "unlockUser", "call maybeUnlockUser");
-            return maybeUnlockUser(i, iProgressListener);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public static void notifyFinished(int i, IProgressListener iProgressListener) {
-        if (iProgressListener == null) {
-            return;
-        }
-        try {
-            iProgressListener.onFinished(i, (Bundle) null);
-        } catch (RemoteException unused) {
-        }
-    }
-
-    public final boolean maybeUnlockUser(int i) {
-        showEventLog(i, -1, 0, "maybeUnlockUser", "NULL and no exit");
-        return maybeUnlockUser(i, null);
-    }
-
-    public final boolean maybeUnlockUser(int i, IProgressListener iProgressListener) {
-        UserState userState;
-        int size;
-        int[] iArr;
-        showEventLog(i, -1, 0, "maybeUnlockUser", "NULL");
-        if (!this.mAllowUserUnlocking) {
-            Slogf.i("ActivityManager", "Not unlocking user %d yet because boot hasn't completed", Integer.valueOf(i));
-            notifyFinished(i, iProgressListener);
-            return false;
-        }
-        if (!StorageManager.isUserKeyUnlocked(i)) {
-            this.mLockPatternUtils.unlockUserKeyIfUnsecured(i);
-        }
-        synchronized (this.mLock) {
-            userState = (UserState) this.mStartedUsers.get(i);
-            if (userState != null) {
-                userState.mUnlockProgress.addListener(iProgressListener);
+    public final void stopExcessRunningUsersLU(int i, ArraySet arraySet) {
+        List runningUsersLU = getRunningUsersLU();
+        Iterator it = runningUsersLU.iterator();
+        while (runningUsersLU.size() > i && it.hasNext()) {
+            Integer num = (Integer) it.next();
+            if (num.intValue() != 0 && num.intValue() != this.mCurrentUserId && !arraySet.contains(num)) {
+                Slogf.i("ActivityManager", "Too many running users (%d). Attempting to stop user %d", Integer.valueOf(runningUsersLU.size()), num);
+                if (stopUsersLU(num.intValue(), false, true, null, null) == 0) {
+                    it.remove();
+                }
             }
         }
-        if (userState == null) {
-            notifyFinished(i, iProgressListener);
-            showEventLog(i, -1, 2, "unlockUserCleared", "NULL and return");
-            return false;
+    }
+
+    public final int stopUser(int i, boolean z, boolean z2, IStopUserCallback iStopUserCallback, AnonymousClass4 anonymousClass4) {
+        int stopUsersLU;
+        TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
+        StringBuilder sb = new StringBuilder("UserController");
+        sb.append(z ? "-stopProfileRegardlessOfParent" : "");
+        sb.append(z2 ? "-allowDelayedLocking" : "");
+        timingsTraceAndSlog.traceBegin(ActiveServices$$ExternalSyntheticOutline0.m(i, iStopUserCallback != null ? "-withStopUserCallback" : "", PackageManagerShellCommandDataLoader.STDIN_PATH, "-[stopUser]", sb));
+        try {
+            checkCallingHasOneOfThosePermissions("stopUser", "android.permission.INTERACT_ACROSS_USERS_FULL");
+            Preconditions.checkArgument(i >= 0, "Invalid user id %d", new Object[]{Integer.valueOf(i)});
+            enforceShellRestriction(i);
+            synchronized (this.mLock) {
+                stopUsersLU = stopUsersLU(i, z, z2, iStopUserCallback, anonymousClass4);
+            }
+            return stopUsersLU;
+        } finally {
+            timingsTraceAndSlog.traceEnd();
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    public final int stopUsersLU(int i, boolean z, boolean z2, IStopUserCallback iStopUserCallback, AnonymousClass4 anonymousClass4) {
+        boolean z3;
+        ArrayList arrayList;
+        int i2;
+        if (i == 0) {
+            return -3;
+        }
+        if (i == getCurrentOrTargetUserIdLU()) {
+            return -2;
+        }
+        if (!z && (i2 = this.mUserProfileGroupIds.get(i, -10000)) != -10000 && i2 != i && (i2 == 0 || i2 == getCurrentOrTargetUserIdLU())) {
+            return -4;
+        }
+        int size = this.mStartedUsers.size();
+        IntArray intArray = new IntArray();
+        intArray.add(i);
+        int i3 = this.mUserProfileGroupIds.get(i, -10000);
+        int i4 = 1;
+        if (i3 == i) {
+            for (int i5 = 0; i5 < size; i5++) {
+                int identifier = ((UserState) this.mStartedUsers.valueAt(i5)).mHandle.getIdentifier();
+                boolean z4 = i3 != -10000 && i3 == this.mUserProfileGroupIds.get(identifier, -10000);
+                boolean z5 = identifier == i;
+                if (z4 && !z5) {
+                    intArray.add(identifier);
+                }
+            }
+        }
+        int[] array = intArray.toArray();
+        for (int i6 : array) {
+            if (i6 == 0 || i6 == getCurrentOrTargetUserIdLU()) {
+                Slogf.e("ActivityManager", "Cannot stop user %d because it is related to user %d. ", Integer.valueOf(i), Integer.valueOf(i6));
+                return -4;
+            }
         }
         TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
-        timingsTraceAndSlog.traceBegin("finishUserUnlocking-" + i);
-        boolean finishUserUnlocking = finishUserUnlocking(userState);
-        timingsTraceAndSlog.traceEnd();
-        if (!finishUserUnlocking) {
-            notifyFinished(i, iProgressListener);
-            return false;
-        }
-        synchronized (this.mLock) {
-            size = this.mStartedUsers.size();
-            iArr = new int[size];
-            for (int i2 = 0; i2 < size; i2++) {
-                iArr[i2] = this.mStartedUsers.keyAt(i2);
+        int length = array.length;
+        int i7 = 0;
+        while (i7 < length) {
+            final int i8 = array[i7];
+            timingsTraceAndSlog.traceBegin("stopSingleUserLU-" + i8 + "-[stopUser]");
+            IStopUserCallback iStopUserCallback2 = i8 == i ? iStopUserCallback : null;
+            AnonymousClass4 anonymousClass42 = i8 == i ? anonymousClass4 : null;
+            Slogf.i("ActivityManager", "stopSingleUserLU userId=" + i8);
+            if (android.multiuser.Flags.scheduleStopOfBackgroundUser()) {
+                this.mHandler.removeEqualMessages(150, Integer.valueOf(i8));
             }
-        }
-        for (int i3 = 0; i3 < size; i3++) {
-            int i4 = iArr[i3];
-            UserInfo profileParent = this.mInjector.getUserManager().getProfileParent(i4);
-            if (profileParent != null && profileParent.id == i && i4 != i) {
-                Slogf.d("ActivityManager", "User " + i4 + " (parent " + profileParent.id + "): attempting unlock because parent was just unlocked");
-                maybeUnlockUser(i4);
+            UserState userState = (UserState) this.mStartedUsers.get(i8);
+            if (userState == null) {
+                if (canDelayDataLockingForUser(i8)) {
+                    if (!z2 || anonymousClass42 == null) {
+                        z3 = z2;
+                    } else {
+                        Slogf.wtf("ActivityManager", VibrationParam$1$$ExternalSyntheticOutline0.m(i8, "allowDelayedLocking set with KeyEvictedCallback, ignore it and lock user:"), new RuntimeException());
+                        z3 = false;
+                    }
+                    if (!z3 && this.mLastActiveUsersForDelayedLocking.remove(Integer.valueOf(i8))) {
+                        if (anonymousClass42 != null) {
+                            arrayList = new ArrayList(i4);
+                            arrayList.add(anonymousClass42);
+                        } else {
+                            arrayList = null;
+                        }
+                        FgThread.getHandler().post(new UserController$$ExternalSyntheticLambda2(this, i8, arrayList, 1));
+                    }
+                }
+                if (iStopUserCallback2 != null) {
+                    this.mHandler.post(new UserController$$ExternalSyntheticLambda5(i8, 1, iStopUserCallback2));
+                }
+            } else {
+                logUserJourneyBegin(i8, 5);
+                if (iStopUserCallback2 != null) {
+                    userState.mStopCallbacks.add(iStopUserCallback2);
+                }
+                if (anonymousClass42 != null) {
+                    userState.mKeyEvictedCallbacks.add(anonymousClass42);
+                }
+                UserInfo userInfo = getUserInfo(i8);
+                final boolean z6 = (userInfo == null || !userInfo.isEnabled()) ? i4 : 0;
+                final ActivityTaskManagerServiceExt activityTaskManagerServiceExt = this.mInjector.mService.mActivityTaskManager.mExt;
+                activityTaskManagerServiceExt.mService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityTaskManagerServiceExt$$ExternalSyntheticLambda3
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        ActivityTaskManagerServiceExt activityTaskManagerServiceExt2 = ActivityTaskManagerServiceExt.this;
+                        int i9 = i8;
+                        boolean z7 = z6;
+                        WindowManagerGlobalLock windowManagerGlobalLock = activityTaskManagerServiceExt2.mService.mGlobalLock;
+                        WindowManagerService.boostPriorityForLockedSection();
+                        synchronized (windowManagerGlobalLock) {
+                            try {
+                                activityTaskManagerServiceExt2.mStartedUserIds.remove(Integer.valueOf(i9));
+                                MultiWindowEnableController multiWindowEnableController = activityTaskManagerServiceExt2.mService.mMultiWindowEnableController;
+                                if (z7) {
+                                    multiWindowEnableController.mMWOffRequesters.remove(i9);
+                                    multiWindowEnableController.mMWOffRequestersLog.remove(i9);
+                                } else {
+                                    multiWindowEnableController.getClass();
+                                }
+                                activityTaskManagerServiceExt2.mCoreStateController.stopUserLocked(i9, z7);
+                            } catch (Throwable th) {
+                                WindowManagerService.resetPriorityAfterLockedSection();
+                                throw th;
+                            }
+                        }
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                    }
+                });
+                int i9 = userState.state;
+                if (i9 != 4 && i9 != 5) {
+                    userState.setState(4);
+                    UserManagerInternal userManagerInternal = this.mInjector.getUserManagerInternal();
+                    TimingsTraceAndSlog timingsTraceAndSlog2 = new TimingsTraceAndSlog();
+                    timingsTraceAndSlog2.traceBegin("setUserState-STATE_STOPPING-" + i8 + "-[stopUser]");
+                    userManagerInternal.setUserState(i8, userState.state);
+                    timingsTraceAndSlog2.traceEnd();
+                    timingsTraceAndSlog2.traceBegin("unassignUserFromDisplayOnStop-" + i8 + "-[stopUser]");
+                    userManagerInternal.unassignUserFromDisplayOnStop(i8);
+                    timingsTraceAndSlog2.traceEnd();
+                    updateStartedUserArrayLU();
+                    UserController$$ExternalSyntheticLambda1 userController$$ExternalSyntheticLambda1 = new UserController$$ExternalSyntheticLambda1(this, i8, userState, z2, 0);
+                    if (this.mInjector.getUserManager().isPreCreated(i8)) {
+                        userController$$ExternalSyntheticLambda1.run();
+                    } else {
+                        this.mHandler.post(new UserController$$ExternalSyntheticLambda2(this, i8, userController$$ExternalSyntheticLambda1, 0));
+                    }
+                }
             }
+            timingsTraceAndSlog.traceEnd();
+            i7++;
+            i4 = 1;
         }
-        showEventLog(i, userState.state, 2, "unlockUserCleared", "NULL");
-        return true;
+        return 0;
     }
 
-    public boolean switchUser(int i) {
-        enforceShellRestriction("no_debugging_features", i);
+    public final boolean switchUser(int i) {
+        enforceShellRestriction(i);
         EventLog.writeEvent(30075, i);
         int currentUserId = getCurrentUserId();
         UserInfo userInfo = getUserInfo(i);
-        if (i == currentUserId) {
-            Slogf.i("ActivityManager", "user #" + i + " is already the current user");
-            return true;
-        }
-        if (userInfo == null) {
-            Slogf.w("ActivityManager", "No user info for user #" + i);
-            return false;
-        }
-        if (!userInfo.supportsSwitchTo()) {
-            Slogf.w("ActivityManager", "Cannot switch to User #" + i + ": not supported");
-            return false;
-        }
-        if (FactoryResetter.isFactoryResetting()) {
-            Slogf.w("ActivityManager", "Cannot switch to User #" + i + ": factory reset in progress");
-            return false;
-        }
-        if (getDexMode() != 0) {
-            Slog.w("ActivityManager", "Cannot switch to User #" + i + ": in dex mode");
-            this.mInjector.mService.mActivityTaskManager.mMultiTaskingController.showCanNotSwitchUserToast();
-            return false;
-        }
         if (MaintenanceModeManager.isInMaintenanceMode() && 77 != i) {
-            Slog.i("ActivityManager", "Cannot switch to User #" + i + " in Maintenance mode");
+            BootReceiver$$ExternalSyntheticOutline0.m(i, "Cannot switch to User #", " in Maintenance mode", "ActivityManager");
             return false;
         }
         synchronized (this.mLock) {
+            if (i == currentUserId) {
+                try {
+                    if (this.mTargetUserId == -10000) {
+                        Slogf.i("ActivityManager", "user #" + i + " is already the current user");
+                        return true;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            if (userInfo == null) {
+                Slogf.w("ActivityManager", "No user info for user #" + i);
+                return false;
+            }
+            if (!userInfo.supportsSwitchTo()) {
+                Slogf.w("ActivityManager", "Cannot switch to User #" + i + ": not supported");
+                return false;
+            }
+            if (FactoryResetter.sFactoryResetting.get()) {
+                Slogf.w("ActivityManager", "Cannot switch to User #" + i + ": factory reset in progress");
+                return false;
+            }
+            if (this.mCurrentDexMode != 0) {
+                Slog.w("ActivityManager", "Cannot switch to User #" + i + ": in dex mode");
+                DexController.H h = this.mInjector.mService.mActivityTaskManager.mMultiTaskingController.mAtm.mDexController.mH;
+                h.sendMessage(h.obtainMessage(10));
+                return false;
+            }
             if (!this.mInitialized) {
                 Slogf.e("ActivityManager", "Cannot switch to User #" + i + ": UserController not ready yet");
                 return false;
+            }
+            if (this.mTargetUserId != -10000) {
+                Slogf.w("ActivityManager", "There is already an ongoing user switch to User #" + this.mTargetUserId + ". User #" + i + " will be added to the queue.");
+                this.mPendingTargetUserIds.offer(Integer.valueOf(i));
+                return true;
             }
             this.mTargetUserId = i;
             boolean z = this.mUserSwitchUiEnabled;
@@ -1323,128 +2642,12 @@ public class UserController implements Handler.Callback {
                 Handler handler = this.mUiHandler;
                 handler.sendMessage(handler.obtainMessage(1000, pair));
             } else {
-                sendStartUserSwitchFgMessage(i);
+                this.mHandler.removeMessages(120);
+                Handler handler2 = this.mHandler;
+                handler2.sendMessage(handler2.obtainMessage(120, i, 0));
             }
             return true;
         }
-    }
-
-    public final void sendStartUserSwitchFgMessage(int i) {
-        this.mHandler.removeMessages(120);
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(120, i, 0));
-    }
-
-    public final void dismissUserSwitchDialog(Runnable runnable) {
-        this.mInjector.dismissUserSwitchingDialog(runnable);
-    }
-
-    public void dismissUserSwitchingDialog(int i) {
-        this.mInjector.dismissUserSwitchingDialog(null);
-    }
-
-    public final void showUserSwitchDialog(final Pair pair) {
-        this.mInjector.showUserSwitchingDialog((UserInfo) pair.first, (UserInfo) pair.second, getSwitchingFromSystemUserMessageUnchecked(), getSwitchingToSystemUserMessageUnchecked(), new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda10
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserController.this.lambda$showUserSwitchDialog$15(pair);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$showUserSwitchDialog$15(Pair pair) {
-        sendStartUserSwitchFgMessage(((UserInfo) pair.second).id);
-    }
-
-    public final void dispatchForegroundProfileChanged(int i) {
-        int beginBroadcast = this.mUserSwitchObservers.beginBroadcast();
-        for (int i2 = 0; i2 < beginBroadcast; i2++) {
-            try {
-                this.mUserSwitchObservers.getBroadcastItem(i2).onForegroundProfileSwitch(i);
-            } catch (RemoteException unused) {
-            }
-        }
-        this.mUserSwitchObservers.finishBroadcast();
-    }
-
-    public void dispatchUserSwitchComplete(int i, int i2) {
-        TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
-        timingsTraceAndSlog.traceBegin("dispatchUserSwitchComplete-" + i2);
-        this.mInjector.getWindowManager().setSwitchingUser(false);
-        int beginBroadcast = this.mUserSwitchObservers.beginBroadcast();
-        for (int i3 = 0; i3 < beginBroadcast; i3++) {
-            try {
-                timingsTraceAndSlog.traceBegin("onUserSwitchComplete-" + i2 + " #" + i3 + " " + this.mUserSwitchObservers.getBroadcastCookie(i3));
-                this.mUserSwitchObservers.getBroadcastItem(i3).onUserSwitchComplete(i2);
-                timingsTraceAndSlog.traceEnd();
-            } catch (RemoteException unused) {
-            }
-        }
-        this.mUserSwitchObservers.finishBroadcast();
-        timingsTraceAndSlog.traceBegin("sendUserSwitchBroadcasts-" + i + PackageManagerShellCommandDataLoader.STDIN_PATH + i2);
-        sendUserSwitchBroadcasts(i, i2);
-        timingsTraceAndSlog.traceEnd();
-        timingsTraceAndSlog.traceEnd();
-    }
-
-    public final void dispatchLockedBootComplete(int i) {
-        int beginBroadcast = this.mUserSwitchObservers.beginBroadcast();
-        for (int i2 = 0; i2 < beginBroadcast; i2++) {
-            try {
-                this.mUserSwitchObservers.getBroadcastItem(i2).onLockedBootComplete(i);
-            } catch (RemoteException unused) {
-            }
-        }
-        this.mUserSwitchObservers.finishBroadcast();
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:11:0x001f A[Catch: all -> 0x0018, TryCatch #0 {all -> 0x0018, blocks: (B:15:0x000f, B:9:0x001d, B:11:0x001f, B:12:0x0028), top: B:14:0x000f }] */
-    /* JADX WARN: Removed duplicated region for block: B:9:0x001d A[Catch: all -> 0x0018, DONT_GENERATE, TryCatch #0 {all -> 0x0018, blocks: (B:15:0x000f, B:9:0x001d, B:11:0x001f, B:12:0x0028), top: B:14:0x000f }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void stopUserOnSwitchIfEnforced(int r9) {
-        /*
-            r8 = this;
-            if (r9 != 0) goto L3
-            return
-        L3:
-            java.lang.String r0 = "no_run_in_background"
-            boolean r0 = r8.hasUserRestriction(r0, r9)
-            java.lang.Object r1 = r8.mLock
-            monitor-enter(r1)
-            if (r0 != 0) goto L1a
-            boolean r0 = r8.shouldStopUserOnSwitch()     // Catch: java.lang.Throwable -> L18
-            if (r0 == 0) goto L16
-            goto L1a
-        L16:
-            r0 = 0
-            goto L1b
-        L18:
-            r8 = move-exception
-            goto L2a
-        L1a:
-            r0 = 1
-        L1b:
-            if (r0 != 0) goto L1f
-            monitor-exit(r1)     // Catch: java.lang.Throwable -> L18
-            return
-        L1f:
-            r4 = 0
-            r5 = 1
-            r6 = 0
-            r7 = 0
-            r2 = r8
-            r3 = r9
-            r2.stopUsersLU(r3, r4, r5, r6, r7)     // Catch: java.lang.Throwable -> L18
-            monitor-exit(r1)     // Catch: java.lang.Throwable -> L18
-            return
-        L2a:
-            monitor-exit(r1)     // Catch: java.lang.Throwable -> L18
-            throw r8
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.UserController.stopUserOnSwitchIfEnforced(int):void");
     }
 
     public final void timeoutUserSwitch(UserState userState, int i, int i2) {
@@ -1461,528 +2664,47 @@ public class UserController implements Handler.Callback {
         timingsTraceAndSlog.traceEnd();
     }
 
-    public final void timeoutUserSwitchCallbacks(int i, int i2) {
-        synchronized (this.mLock) {
-            ArraySet arraySet = this.mTimeoutUserSwitchCallbacks;
-            if (arraySet != null && !arraySet.isEmpty()) {
-                Slogf.wtf("ActivityManager", "User switch timeout: from " + i + " to " + i2 + ". Observers that didn't respond: " + this.mTimeoutUserSwitchCallbacks);
-                this.mTimeoutUserSwitchCallbacks = null;
-            }
-        }
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r2v11 */
-    /* JADX WARN: Type inference failed for: r2v12 */
-    /* JADX WARN: Type inference failed for: r2v14, types: [com.android.server.am.UserController] */
-    /* JADX WARN: Type inference failed for: r2v2 */
-    /* JADX WARN: Type inference failed for: r2v21 */
-    /* JADX WARN: Type inference failed for: r2v22 */
-    /* JADX WARN: Type inference failed for: r2v3 */
-    /* JADX WARN: Type inference failed for: r2v5 */
-    /* JADX WARN: Type inference failed for: r2v6 */
-    /* JADX WARN: Type inference failed for: r2v7 */
-    /* JADX WARN: Type inference failed for: r2v8 */
-    /* JADX WARN: Type inference failed for: r3v10, types: [android.util.TimingsTraceLog] */
-    /* JADX WARN: Type inference failed for: r3v16 */
-    /* JADX WARN: Type inference failed for: r3v3, types: [long] */
-    /* JADX WARN: Type inference failed for: r3v4 */
-    /* JADX WARN: Type inference failed for: r3v5 */
-    /* JADX WARN: Type inference failed for: r3v6 */
-    /* JADX WARN: Type inference failed for: r3v7 */
-    /* JADX WARN: Type inference failed for: r3v8 */
-    /* JADX WARN: Type inference failed for: r3v9 */
-    /* JADX WARN: Type inference failed for: r4v8, types: [java.lang.String] */
-    public void dispatchUserSwitch(UserState userState, int i, int i2) {
-        TimingsTraceAndSlog timingsTraceAndSlog;
-        UserController userController;
-        ?? r2;
-        long j;
-        AtomicInteger atomicInteger;
-        ArraySet arraySet;
-        int i3;
-        AnonymousClass7 anonymousClass7;
-        ?? r4;
-        UserController userController2 = this;
-        int i4 = i2;
-        TimingsTraceAndSlog timingsTraceAndSlog2 = new TimingsTraceAndSlog();
-        timingsTraceAndSlog2.traceBegin("dispatchUserSwitch-" + i + "-to-" + i4);
-        EventLog.writeEvent(30079, Integer.valueOf(i), Integer.valueOf(i2));
-        int beginBroadcast = userController2.mUserSwitchObservers.beginBroadcast();
-        if (beginBroadcast > 0) {
-            int i5 = 0;
-            for (int i6 = 0; i6 < beginBroadcast; i6++) {
-                String str = "#" + i6 + " " + userController2.mUserSwitchObservers.getBroadcastCookie(i6);
-                StringBuilder sb = new StringBuilder();
-                r4 = "onBeforeUserSwitching-";
-                sb.append("onBeforeUserSwitching-");
-                sb.append(str);
-                timingsTraceAndSlog2.traceBegin(sb.toString());
-                try {
-                    userController2.mUserSwitchObservers.getBroadcastItem(i6).onBeforeUserSwitching(i4);
-                } catch (RemoteException unused) {
-                } catch (Throwable th) {
-                    timingsTraceAndSlog2.traceEnd();
-                    throw th;
-                }
-                timingsTraceAndSlog2.traceEnd();
-            }
-            ArraySet arraySet2 = new ArraySet();
-            synchronized (userController2.mLock) {
-                r2 = 1;
-                userState.switching = true;
-                userController2.mCurWaitingUserSwitchCallbacks = arraySet2;
-            }
-            AtomicInteger atomicInteger2 = new AtomicInteger(beginBroadcast);
-            long userSwitchTimeoutMs = getUserSwitchTimeoutMs();
-            long elapsedRealtime = SystemClock.elapsedRealtime();
-            int i7 = r4;
-            while (true) {
-                int i8 = i5;
-                if (i8 >= beginBroadcast) {
-                    timingsTraceAndSlog = timingsTraceAndSlog2;
-                    userController = userController2;
-                    break;
-                }
-                ?? elapsedRealtime2 = SystemClock.elapsedRealtime();
-                try {
-                    String str2 = "#" + i8 + " " + userController2.mUserSwitchObservers.getBroadcastCookie(i8);
-                    synchronized (userController2.mLock) {
-                        try {
-                            arraySet2.add(str2);
-                        } finally {
-                            th = th;
-                            while (true) {
-                                try {
-                                    break;
-                                } catch (Throwable th2) {
-                                    th = th2;
-                                }
-                            }
-                            break;
-                        }
-                    }
-                    j = userSwitchTimeoutMs;
-                    atomicInteger = atomicInteger2;
-                    arraySet = arraySet2;
-                    i3 = beginBroadcast;
-                    TimingsTraceAndSlog timingsTraceAndSlog3 = timingsTraceAndSlog2;
-                    try {
-                        anonymousClass7 = new IRemoteCallback.Stub() { // from class: com.android.server.am.UserController.7
-                            public final /* synthetic */ ArraySet val$curWaitingUserSwitchCallbacks;
-                            public final /* synthetic */ long val$dispatchStartedTime;
-                            public final /* synthetic */ long val$dispatchStartedTimeForObserver;
-                            public final /* synthetic */ String val$name;
-                            public final /* synthetic */ int val$newUserId;
-                            public final /* synthetic */ int val$oldUserId;
-                            public final /* synthetic */ long val$userSwitchTimeoutMs;
-                            public final /* synthetic */ UserState val$uss;
-                            public final /* synthetic */ AtomicInteger val$waitingCallbacksCount;
-
-                            public AnonymousClass7(long elapsedRealtime22, String str22, long elapsedRealtime3, long j2, ArraySet arraySet22, AtomicInteger atomicInteger3, UserState userState2, int i9, int i22) {
-                                r2 = elapsedRealtime22;
-                                r4 = str22;
-                                r5 = elapsedRealtime3;
-                                r7 = j2;
-                                r9 = arraySet22;
-                                r10 = atomicInteger3;
-                                r11 = userState2;
-                                r12 = i9;
-                                r13 = i22;
-                            }
-
-                            public void sendResult(Bundle bundle) {
-                                synchronized (UserController.this.mLock) {
-                                    long elapsedRealtime3 = SystemClock.elapsedRealtime() - r2;
-                                    if (elapsedRealtime3 > 500) {
-                                        Slogf.w("ActivityManager", "User switch slowed down by observer " + r4 + ": result took " + elapsedRealtime3 + " ms to process.");
-                                    }
-                                    long elapsedRealtime4 = SystemClock.elapsedRealtime() - r5;
-                                    if (elapsedRealtime4 > r7) {
-                                        Slogf.e("ActivityManager", "User switch timeout: observer " + r4 + "'s result was received " + elapsedRealtime4 + " ms after dispatchUserSwitch.");
-                                    }
-                                    TimingsTraceAndSlog timingsTraceAndSlog4 = new TimingsTraceAndSlog("ActivityManager");
-                                    timingsTraceAndSlog4.traceBegin("onUserSwitchingReply-" + r4);
-                                    r9.remove(r4);
-                                    if (r10.decrementAndGet() == 0 && r9 == UserController.this.mCurWaitingUserSwitchCallbacks) {
-                                        UserController.this.sendContinueUserSwitchLU(r11, r12, r13);
-                                    }
-                                    timingsTraceAndSlog4.traceEnd();
-                                }
-                            }
-                        };
-                        timingsTraceAndSlog3.traceBegin("onUserSwitching-" + str22);
-                        r2 = this;
-                        elapsedRealtime22 = timingsTraceAndSlog3;
-                    } catch (RemoteException unused2) {
-                        r2 = this;
-                        i8 = i22;
-                        elapsedRealtime22 = timingsTraceAndSlog3;
-                    }
-                } catch (RemoteException unused3) {
-                    i7 = i8;
-                    j2 = userSwitchTimeoutMs;
-                    atomicInteger3 = atomicInteger2;
-                    arraySet = arraySet22;
-                    i3 = beginBroadcast;
-                    elapsedRealtime22 = timingsTraceAndSlog2;
-                    i8 = i4;
-                    r2 = userController2;
-                }
-                try {
-                    i7 = i8;
-                    try {
-                        i8 = i22;
-                        try {
-                            r2.mUserSwitchObservers.getBroadcastItem(i7).onUserSwitching(i8, anonymousClass7);
-                            elapsedRealtime22.traceEnd();
-                        } catch (RemoteException unused4) {
-                            continue;
-                        }
-                    } catch (RemoteException unused5) {
-                        i8 = i22;
-                    }
-                } catch (RemoteException unused6) {
-                    i8 = i22;
-                    r2 = r2;
-                    elapsedRealtime22 = elapsedRealtime22;
-                    i7 = i8;
-                    i5 = i7 + 1;
-                    userController2 = r2;
-                    timingsTraceAndSlog2 = elapsedRealtime22;
-                    i4 = i8;
-                    userSwitchTimeoutMs = j2;
-                    atomicInteger2 = atomicInteger3;
-                    arraySet22 = arraySet;
-                    beginBroadcast = i3;
-                    r2 = r2;
-                    i7 = i7;
-                }
-                i5 = i7 + 1;
-                userController2 = r2;
-                timingsTraceAndSlog2 = elapsedRealtime22;
-                i4 = i8;
-                userSwitchTimeoutMs = j2;
-                atomicInteger2 = atomicInteger3;
-                arraySet22 = arraySet;
-                beginBroadcast = i3;
-                r2 = r2;
-                i7 = i7;
-            }
-        } else {
-            timingsTraceAndSlog = timingsTraceAndSlog2;
-            userController = userController2;
-            synchronized (userController.mLock) {
-                sendContinueUserSwitchLU(userState2, i9, i22);
-            }
-        }
-        userController.mUserSwitchObservers.finishBroadcast();
-        timingsTraceAndSlog.traceEnd();
-    }
-
-    /* renamed from: com.android.server.am.UserController$7 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass7 extends IRemoteCallback.Stub {
-        public final /* synthetic */ ArraySet val$curWaitingUserSwitchCallbacks;
-        public final /* synthetic */ long val$dispatchStartedTime;
-        public final /* synthetic */ long val$dispatchStartedTimeForObserver;
-        public final /* synthetic */ String val$name;
-        public final /* synthetic */ int val$newUserId;
-        public final /* synthetic */ int val$oldUserId;
-        public final /* synthetic */ long val$userSwitchTimeoutMs;
-        public final /* synthetic */ UserState val$uss;
-        public final /* synthetic */ AtomicInteger val$waitingCallbacksCount;
-
-        public AnonymousClass7(long elapsedRealtime22, String str22, long elapsedRealtime3, long j2, ArraySet arraySet22, AtomicInteger atomicInteger3, UserState userState2, int i9, int i22) {
-            r2 = elapsedRealtime22;
-            r4 = str22;
-            r5 = elapsedRealtime3;
-            r7 = j2;
-            r9 = arraySet22;
-            r10 = atomicInteger3;
-            r11 = userState2;
-            r12 = i9;
-            r13 = i22;
-        }
-
-        public void sendResult(Bundle bundle) {
-            synchronized (UserController.this.mLock) {
-                long elapsedRealtime3 = SystemClock.elapsedRealtime() - r2;
-                if (elapsedRealtime3 > 500) {
-                    Slogf.w("ActivityManager", "User switch slowed down by observer " + r4 + ": result took " + elapsedRealtime3 + " ms to process.");
-                }
-                long elapsedRealtime4 = SystemClock.elapsedRealtime() - r5;
-                if (elapsedRealtime4 > r7) {
-                    Slogf.e("ActivityManager", "User switch timeout: observer " + r4 + "'s result was received " + elapsedRealtime4 + " ms after dispatchUserSwitch.");
-                }
-                TimingsTraceAndSlog timingsTraceAndSlog4 = new TimingsTraceAndSlog("ActivityManager");
-                timingsTraceAndSlog4.traceBegin("onUserSwitchingReply-" + r4);
-                r9.remove(r4);
-                if (r10.decrementAndGet() == 0 && r9 == UserController.this.mCurWaitingUserSwitchCallbacks) {
-                    UserController.this.sendContinueUserSwitchLU(r11, r12, r13);
-                }
-                timingsTraceAndSlog4.traceEnd();
-            }
-        }
-    }
-
-    public final void sendContinueUserSwitchLU(UserState userState, int i, int i2) {
-        TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog("ActivityManager");
-        timingsTraceAndSlog.traceBegin("sendContinueUserSwitchLU-" + i + "-to-" + i2);
-        this.mCurWaitingUserSwitchCallbacks = null;
-        this.mHandler.removeMessages(30);
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(20, i, i2, userState));
-        timingsTraceAndSlog.traceEnd();
-    }
-
-    public void continueUserSwitch(UserState userState, int i, int i2) {
-        TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
-        timingsTraceAndSlog.traceBegin("continueUserSwitch-" + i + "-to-" + i2);
-        EventLog.writeEvent(30080, Integer.valueOf(i), Integer.valueOf(i2));
-        this.mHandler.removeMessages(130);
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(130, i, i2));
-        userState.switching = false;
-        stopGuestOrEphemeralUserIfBackground(i);
-        stopUserOnSwitchIfEnforced(i);
-        timingsTraceAndSlog.traceEnd();
-    }
-
-    public void completeUserSwitch(final int i, final int i2) {
-        final boolean isUserSwitchUiEnabled = isUserSwitchUiEnabled();
-        boolean z = isUserSwitchUiEnabled && !this.mInjector.getKeyguardManager().isDeviceSecure(i2);
-        final Injector injector = this.mInjector;
-        Objects.requireNonNull(injector);
-        await(z, new Consumer() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                UserController.Injector.this.dismissKeyguard((Runnable) obj);
-            }
-        }, new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserController.this.lambda$completeUserSwitch$17(isUserSwitchUiEnabled, i, i2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$completeUserSwitch$17(boolean z, final int i, final int i2) {
-        await(z, new Consumer() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda11
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                UserController.this.dismissUserSwitchDialog((Runnable) obj);
-            }
-        }, new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda12
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserController.this.lambda$completeUserSwitch$16(i, i2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$completeUserSwitch$16(int i, int i2) {
-        this.mHandler.removeMessages(80);
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(80, i, i2));
-    }
-
-    public final void await(boolean z, Consumer consumer, Runnable runnable) {
-        if (z) {
-            consumer.accept(runnable);
-        } else {
-            runnable.run();
-        }
-    }
-
-    public final void moveUserToForeground(UserState userState, int i) {
-        if (this.mInjector.taskSupervisorSwitchUser(i, userState)) {
-            this.mInjector.startHomeActivity(i, "moveUserToForeground");
-        } else {
-            this.mInjector.taskSupervisorResumeFocusedStackTopActivity();
-        }
-        EventLogTags.writeAmSwitchUser(i);
-    }
-
-    public void sendUserStartedBroadcast(int i, int i2, int i3) {
-        if (i == 0) {
-            synchronized (this.mLock) {
-                if (this.mIsBroadcastSentForSystemUserStarted) {
-                    return;
-                } else {
-                    this.mIsBroadcastSentForSystemUserStarted = true;
-                }
-            }
-        }
-        Intent intent = new Intent("android.intent.action.USER_STARTED");
-        intent.addFlags(1342177280);
-        intent.putExtra("android.intent.extra.user_handle", i);
-        this.mInjector.broadcastIntent(intent, null, null, 0, null, null, null, -1, null, false, false, ActivityManagerService.MY_PID, 1000, i2, i3, i);
-    }
-
-    public void sendUserStartingBroadcast(int i, int i2, int i3) {
-        if (i == 0) {
-            synchronized (this.mLock) {
-                if (this.mIsBroadcastSentForSystemUserStarting) {
-                    return;
-                } else {
-                    this.mIsBroadcastSentForSystemUserStarting = true;
-                }
-            }
-        }
-        Intent intent = new Intent("android.intent.action.USER_STARTING");
-        intent.addFlags(1073741824);
-        intent.putExtra("android.intent.extra.user_handle", i);
-        this.mInjector.broadcastIntent(intent, null, new IIntentReceiver.Stub() { // from class: com.android.server.am.UserController.8
-            public void performReceive(Intent intent2, int i4, String str, Bundle bundle, boolean z, boolean z2, int i5) {
-            }
-
-            public AnonymousClass8() {
-            }
-        }, 0, null, null, new String[]{"android.permission.INTERACT_ACROSS_USERS"}, -1, null, true, false, ActivityManagerService.MY_PID, 1000, i2, i3, -1);
-    }
-
-    /* renamed from: com.android.server.am.UserController$8 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass8 extends IIntentReceiver.Stub {
-        public void performReceive(Intent intent2, int i4, String str, Bundle bundle, boolean z, boolean z2, int i5) {
-        }
-
-        public AnonymousClass8() {
-        }
-    }
-
-    public void sendUserSwitchBroadcasts(int i, int i2) {
-        int callingUid = Binder.getCallingUid();
-        int callingPid = Binder.getCallingPid();
+    public final boolean unlockUser(int i, IProgressListener iProgressListener) {
+        showEventLog(i, -1, 0, "unlockUser", "NULL");
+        checkCallingHasOneOfThosePermissions("unlockUser", "android.permission.INTERACT_ACROSS_USERS_FULL");
+        EventLog.writeEvent(30077, i);
         long clearCallingIdentity = Binder.clearCallingIdentity();
-        String str = "android.intent.extra.USER";
-        String str2 = "android.intent.extra.user_handle";
-        int i3 = 1342177280;
-        if (i >= 0) {
+        try {
+            showEventLog(i, -1, 1, "unlockUser", "call maybeUnlockUser");
+            return maybeUnlockUser(i, iProgressListener);
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final void updateProfileRelatedCaches() {
+        int i = 0;
+        ArrayList arrayList = (ArrayList) this.mInjector.getUserManager().getProfiles(getCurrentUserId(), false);
+        int size = arrayList.size();
+        int[] iArr = new int[size];
+        for (int i2 = 0; i2 < size; i2++) {
+            iArr[i2] = ((UserInfo) arrayList.get(i2)).id;
+        }
+        List users = this.mInjector.getUserManager().getUsers(true, false, true);
+        synchronized (this.mLock) {
             try {
-                List profiles = this.mInjector.getUserManager().getProfiles(i, false);
-                int size = profiles.size();
-                int i4 = 0;
-                while (i4 < size) {
-                    int i5 = ((UserInfo) profiles.get(i4)).id;
-                    Intent intent = new Intent("android.intent.action.USER_BACKGROUND");
-                    intent.addFlags(i3);
-                    intent.putExtra(str2, i5);
-                    intent.putExtra(str, UserHandle.of(i5));
-                    this.mInjector.broadcastIntent(intent, null, null, 0, null, null, null, -1, null, false, false, ActivityManagerService.MY_PID, 1000, callingUid, callingPid, i5);
-                    i4++;
-                    size = size;
-                    str2 = str2;
-                    str = str;
-                    i3 = 1342177280;
+                this.mCurrentProfileIds = iArr;
+                this.mUserProfileGroupIds.clear();
+                while (true) {
+                    ArrayList arrayList2 = (ArrayList) users;
+                    if (i < arrayList2.size()) {
+                        UserInfo userInfo = (UserInfo) arrayList2.get(i);
+                        int i3 = userInfo.profileGroupId;
+                        if (i3 != -10000) {
+                            this.mUserProfileGroupIds.put(userInfo.id, i3);
+                        }
+                        i++;
+                    }
                 }
             } catch (Throwable th) {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
                 throw th;
             }
         }
-        String str3 = str2;
-        String str4 = str;
-        if (i2 >= 0) {
-            boolean z = false;
-            List profiles2 = this.mInjector.getUserManager().getProfiles(i2, false);
-            int size2 = profiles2.size();
-            int i6 = 0;
-            while (i6 < size2) {
-                int i7 = ((UserInfo) profiles2.get(i6)).id;
-                Intent intent2 = new Intent("android.intent.action.USER_FOREGROUND");
-                intent2.addFlags(1342177280);
-                String str5 = str3;
-                intent2.putExtra(str5, i7);
-                String str6 = str4;
-                intent2.putExtra(str6, UserHandle.of(i7));
-                this.mInjector.broadcastIntent(intent2, null, null, 0, null, null, null, -1, null, false, false, ActivityManagerService.MY_PID, 1000, callingUid, callingPid, i7);
-                i6++;
-                size2 = size2;
-                z = z;
-                str4 = str6;
-                str3 = str5;
-            }
-            Intent intent3 = new Intent("android.intent.action.USER_SWITCHED");
-            intent3.addFlags(1342177280);
-            intent3.putExtra(str3, i2);
-            intent3.putExtra(str4, UserHandle.of(i2));
-            Injector injector = this.mInjector;
-            String[] strArr = new String[1];
-            strArr[z ? 1 : 0] = "android.permission.MANAGE_USERS";
-            injector.broadcastIntent(intent3, null, null, 0, null, null, strArr, -1, null, false, false, ActivityManagerService.MY_PID, 1000, callingUid, callingPid, -1);
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-    }
-
-    public final void broadcastProfileAccessibleStateChanged(int i, int i2, String str) {
-        Intent intent = new Intent(str);
-        intent.putExtra("android.intent.extra.USER", UserHandle.of(i));
-        intent.addFlags(1342177280);
-        this.mInjector.broadcastIntent(intent, null, null, 0, null, null, null, -1, null, false, false, ActivityManagerService.MY_PID, 1000, Binder.getCallingUid(), Binder.getCallingPid(), i2);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:42:0x0115  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int handleIncomingUser(int r18, int r19, int r20, boolean r21, int r22, java.lang.String r23, java.lang.String r24) {
-        /*
-            Method dump skipped, instructions count: 332
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.UserController.handleIncomingUser(int, int, int, boolean, int, java.lang.String, java.lang.String):int");
-    }
-
-    public final boolean canInteractWithAcrossProfilesPermission(int i, boolean z, int i2, int i3, String str) {
-        if (i == 3 && z) {
-            return this.mInjector.checkPermissionForPreflight("android.permission.INTERACT_ACROSS_PROFILES", i2, i3, str);
-        }
-        return false;
-    }
-
-    public int unsafeConvertIncomingUser(int i) {
-        return (i == -2 || i == -3) ? getCurrentUserId() : i;
-    }
-
-    public void ensureNotSpecialUser(int i) {
-        if (i >= 0) {
-            return;
-        }
-        throw new IllegalArgumentException("Call does not support special user #" + i);
-    }
-
-    public void registerUserSwitchObserver(IUserSwitchObserver iUserSwitchObserver, String str) {
-        Objects.requireNonNull(str, "Observer name cannot be null");
-        checkCallingPermission("android.permission.INTERACT_ACROSS_USERS_FULL", "registerUserSwitchObserver");
-        this.mUserSwitchObservers.register(iUserSwitchObserver, str);
-    }
-
-    public void sendForegroundProfileChanged(int i) {
-        this.mHandler.removeMessages(70);
-        this.mHandler.obtainMessage(70, i, 0).sendToTarget();
-    }
-
-    public void unregisterUserSwitchObserver(IUserSwitchObserver iUserSwitchObserver) {
-        this.mUserSwitchObservers.unregister(iUserSwitchObserver);
-    }
-
-    public UserState getStartedUserState(int i) {
-        UserState userState;
-        synchronized (this.mLock) {
-            userState = (UserState) this.mStartedUsers.get(i);
-        }
-        return userState;
-    }
-
-    public boolean hasStartedUserState(int i) {
-        boolean z;
-        synchronized (this.mLock) {
-            z = this.mStartedUsers.get(i) != null;
-        }
-        return z;
     }
 
     public final void updateStartedUserArrayLU() {
@@ -2004,1140 +2726,21 @@ public class UserController implements Handler.Callback {
         }
     }
 
-    public void setAllowUserUnlocking(boolean z) {
-        this.mAllowUserUnlocking = z;
-    }
-
-    public void onBootComplete(IIntentReceiver iIntentReceiver) {
-        SparseArray clone;
-        showEventLog(0, -1, 0, "onBootComplete", "NULL");
-        setAllowUserUnlocking(true);
-        synchronized (this.mLock) {
-            clone = this.mStartedUsers.clone();
+    public final int updateUserToLockLU(int i, boolean z) {
+        if (!canDelayDataLockingForUser(i) || !z || getUserInfo(i).isEphemeral() || hasUserRestriction("no_run_in_background", i)) {
+            return i;
         }
-        Preconditions.checkArgument(clone.keyAt(0) == 0);
-        for (int i = 0; i < clone.size(); i++) {
-            int keyAt = clone.keyAt(i);
-            UserState userState = (UserState) clone.valueAt(i);
-            if (!this.mInjector.isHeadlessSystemUserMode()) {
-                finishUserBoot(userState, iIntentReceiver);
-            } else {
-                sendLockedBootCompletedBroadcast(iIntentReceiver, keyAt);
-                maybeUnlockUser(keyAt);
+        if (this.mDelayUserDataLocking) {
+            this.mLastActiveUsersForDelayedLocking.remove(Integer.valueOf(i));
+            this.mLastActiveUsersForDelayedLocking.add(0, Integer.valueOf(i));
+            if (this.mLastActiveUsersForDelayedLocking.size() + this.mStartedUsers.size() > this.mMaxRunningUsers) {
+                int intValue = ((Integer) this.mLastActiveUsersForDelayedLocking.get(r6.size() - 1)).intValue();
+                this.mLastActiveUsersForDelayedLocking.remove(r4.size() - 1);
+                Slogf.i("ActivityManager", "finishUserStopped: should stop user " + i + " but should lock user " + intValue);
+                return intValue;
             }
         }
-        showEventLog(0, -1, 2, "onBootComplete", "NULL");
-    }
-
-    public void onSystemReady() {
-        this.mInjector.getUserManagerInternal().addUserLifecycleListener(this.mUserLifecycleListener);
-        updateProfileRelatedCaches();
-        this.mInjector.reportCurWakefulnessUsageEvent();
-    }
-
-    public void onSystemUserStarting() {
-        if (this.mInjector.isHeadlessSystemUserMode()) {
-            return;
-        }
-        this.mInjector.onUserStarting(0);
-        this.mInjector.onSystemUserVisibilityChanged(true);
-    }
-
-    public final void updateProfileRelatedCaches() {
-        List profiles = this.mInjector.getUserManager().getProfiles(getCurrentUserId(), false);
-        int size = profiles.size();
-        int[] iArr = new int[size];
-        for (int i = 0; i < size; i++) {
-            iArr[i] = ((UserInfo) profiles.get(i)).id;
-        }
-        List users = this.mInjector.getUserManager().getUsers(false);
-        synchronized (this.mLock) {
-            this.mCurrentProfileIds = iArr;
-            this.mUserProfileGroupIds.clear();
-            for (int i2 = 0; i2 < users.size(); i2++) {
-                UserInfo userInfo = (UserInfo) users.get(i2);
-                int i3 = userInfo.profileGroupId;
-                if (i3 != -10000) {
-                    this.mUserProfileGroupIds.put(userInfo.id, i3);
-                }
-            }
-        }
-    }
-
-    public int[] getStartedUserArray() {
-        int[] iArr;
-        synchronized (this.mLock) {
-            iArr = this.mStartedUserArray;
-        }
-        return iArr;
-    }
-
-    public boolean isUserRunning(int i, int i2) {
-        UserState startedUserState = getStartedUserState(i);
-        if (startedUserState == null) {
-            return false;
-        }
-        if ((i2 & 1) != 0) {
-            return true;
-        }
-        if ((i2 & 2) != 0) {
-            int i3 = startedUserState.state;
-            return i3 == 0 || i3 == 1;
-        }
-        if ((i2 & 8) != 0) {
-            int i4 = startedUserState.state;
-            if (i4 == 2 || i4 == 3) {
-                return true;
-            }
-            if (i4 == 4 || i4 == 5) {
-                return StorageManager.isUserKeyUnlocked(i);
-            }
-            return false;
-        }
-        if ((i2 & 4) != 0) {
-            int i5 = startedUserState.state;
-            if (i5 == 3) {
-                return true;
-            }
-            if (i5 == 4 || i5 == 5) {
-                return StorageManager.isUserKeyUnlocked(i);
-            }
-            return false;
-        }
-        int i6 = startedUserState.state;
-        return (i6 == 4 || i6 == 5) ? false : true;
-    }
-
-    public boolean isSystemUserStarted() {
-        synchronized (this.mLock) {
-            UserState userState = (UserState) this.mStartedUsers.get(0);
-            if (userState == null) {
-                return false;
-            }
-            int i = userState.state;
-            return i == 1 || i == 2 || i == 3;
-        }
-    }
-
-    public final void checkGetCurrentUserPermissions() {
-        if (this.mInjector.checkCallingPermission("android.permission.INTERACT_ACROSS_USERS") == 0 || this.mInjector.checkCallingPermission("android.permission.INTERACT_ACROSS_USERS_FULL") == 0) {
-            return;
-        }
-        String str = "Permission Denial: getCurrentUser() from pid=" + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid() + " requires android.permission.INTERACT_ACROSS_USERS";
-        Slogf.w("ActivityManager", str);
-        throw new SecurityException(str);
-    }
-
-    public UserInfo getCurrentUser() {
-        UserInfo currentUserLU;
-        checkGetCurrentUserPermissions();
-        if (this.mTargetUserId == -10000) {
-            return getUserInfo(this.mCurrentUserId);
-        }
-        synchronized (this.mLock) {
-            currentUserLU = getCurrentUserLU();
-        }
-        return currentUserLU;
-    }
-
-    public int getCurrentUserIdChecked() {
-        checkGetCurrentUserPermissions();
-        if (this.mTargetUserId == -10000) {
-            return this.mCurrentUserId;
-        }
-        return getCurrentOrTargetUserId();
-    }
-
-    public final UserInfo getCurrentUserLU() {
-        return getUserInfo(getCurrentOrTargetUserIdLU());
-    }
-
-    public int getCurrentOrTargetUserId() {
-        int currentOrTargetUserIdLU;
-        synchronized (this.mLock) {
-            currentOrTargetUserIdLU = getCurrentOrTargetUserIdLU();
-        }
-        return currentOrTargetUserIdLU;
-    }
-
-    public final int getCurrentOrTargetUserIdLU() {
-        return this.mTargetUserId != -10000 ? this.mTargetUserId : this.mCurrentUserId;
-    }
-
-    public Pair getCurrentAndTargetUserIds() {
-        Pair pair;
-        synchronized (this.mLock) {
-            pair = new Pair(Integer.valueOf(this.mCurrentUserId), Integer.valueOf(this.mTargetUserId));
-        }
-        return pair;
-    }
-
-    public int getCurrentUserId() {
-        int i;
-        synchronized (this.mLock) {
-            i = this.mCurrentUserId;
-        }
-        return i;
-    }
-
-    public final boolean isCurrentUserLU(int i) {
-        return i == getCurrentOrTargetUserIdLU();
-    }
-
-    public int[] getUsers() {
-        UserManagerService userManager = this.mInjector.getUserManager();
-        return userManager != null ? userManager.getUserIds() : new int[]{0};
-    }
-
-    public final UserInfo getUserInfo(int i) {
-        return this.mInjector.getUserManager().getUserInfo(i);
-    }
-
-    public final UserProperties getUserProperties(int i) {
-        return this.mInjector.getUserManagerInternal().getUserProperties(i);
-    }
-
-    public int[] getUserIds() {
-        return this.mInjector.getUserManager().getUserIds();
-    }
-
-    public int[] expandUserId(int i) {
-        if (i != -1) {
-            return new int[]{i};
-        }
-        return getUsers();
-    }
-
-    public boolean exists(int i) {
-        return this.mInjector.getUserManager().exists(i);
-    }
-
-    public final void checkCallingPermission(String str, String str2) {
-        checkCallingHasOneOfThosePermissions(str2, str);
-    }
-
-    public final void checkCallingHasOneOfThosePermissions(String str, String... strArr) {
-        if (Binder.getCallingUid() == 2000 && MaintenanceModeManager.isInMaintenanceModeFromProperty()) {
-            throw new SecurityException("Cannot control users : unauthorized");
-        }
-        for (String str2 : strArr) {
-            if (this.mInjector.checkCallingPermission(str2) == 0) {
-                return;
-            }
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("Permission denial: ");
-        sb.append(str);
-        sb.append("() from pid=");
-        sb.append(Binder.getCallingPid());
-        sb.append(", uid=");
-        sb.append(Binder.getCallingUid());
-        sb.append(" requires ");
-        sb.append(strArr.length == 1 ? strArr[0] : "one of " + Arrays.toString(strArr));
-        String sb2 = sb.toString();
-        Slogf.w("ActivityManager", sb2);
-        throw new SecurityException(sb2);
-    }
-
-    public final void enforceShellRestriction(String str, int i) {
-        if (Binder.getCallingUid() == 2000) {
-            if (i < 0 || hasUserRestriction(str, i)) {
-                throw new SecurityException("Shell does not have permission to access user " + i);
-            }
-        }
-    }
-
-    public boolean hasUserRestriction(String str, int i) {
-        return this.mInjector.getUserManager().hasUserRestriction(str, i);
-    }
-
-    public boolean isSameProfileGroup(int i, int i2) {
-        boolean z = true;
-        if (i == i2) {
-            return true;
-        }
-        synchronized (this.mLock) {
-            int i3 = this.mUserProfileGroupIds.get(i, -10000);
-            int i4 = this.mUserProfileGroupIds.get(i2, -10000);
-            if (i3 == -10000 || i3 != i4) {
-                z = false;
-            }
-        }
-        return z;
-    }
-
-    public boolean isUserOrItsParentRunning(int i) {
-        synchronized (this.mLock) {
-            if (isUserRunning(i, 0)) {
-                return true;
-            }
-            int i2 = this.mUserProfileGroupIds.get(i, -10000);
-            if (i2 == -10000) {
-                return false;
-            }
-            return isUserRunning(i2, 0);
-        }
-    }
-
-    public boolean isCurrentProfile(int i) {
-        boolean contains;
-        synchronized (this.mLock) {
-            contains = ArrayUtils.contains(this.mCurrentProfileIds, i);
-        }
-        return contains;
-    }
-
-    public int[] getCurrentProfileIds() {
-        int[] iArr;
-        synchronized (this.mLock) {
-            iArr = this.mCurrentProfileIds;
-        }
-        return iArr;
-    }
-
-    public final void onUserAdded(UserInfo userInfo) {
-        if (!userInfo.isProfile() || userInfo.isCloneProfile()) {
-            return;
-        }
-        synchronized (this.mLock) {
-            if (userInfo.profileGroupId == this.mCurrentUserId) {
-                this.mCurrentProfileIds = ArrayUtils.appendInt(this.mCurrentProfileIds, userInfo.id);
-            }
-            this.mUserProfileGroupIds.put(userInfo.id, userInfo.profileGroupId);
-        }
-    }
-
-    public void onUserRemoved(int i) {
-        synchronized (this.mLock) {
-            for (int size = this.mUserProfileGroupIds.size() - 1; size >= 0; size--) {
-                if (this.mUserProfileGroupIds.keyAt(size) == i || this.mUserProfileGroupIds.valueAt(size) == i) {
-                    this.mUserProfileGroupIds.removeAt(size);
-                }
-            }
-            this.mCurrentProfileIds = ArrayUtils.removeInt(this.mCurrentProfileIds, i);
-        }
-    }
-
-    public boolean shouldConfirmCredentials(int i) {
-        UserProperties userProperties;
-        if (getStartedUserState(i) == null || (userProperties = getUserProperties(i)) == null || !userProperties.isCredentialShareableWithParent()) {
-            return false;
-        }
-        if (getPersonaManagerInternal().isKnoxId(i)) {
-            return getPersonaManagerInternal().shouldConfirmCredentials(i);
-        }
-        if (this.mLockPatternUtils.isSeparateProfileChallengeEnabled(i)) {
-            KeyguardManager keyguardManager = this.mInjector.getKeyguardManager();
-            return keyguardManager.isDeviceLocked(i) && keyguardManager.isDeviceSecure(i);
-        }
-        return isUserRunning(i, 2);
-    }
-
-    public final PersonaManagerInternal getPersonaManagerInternal() {
-        if (this.mPersonaManagerInternal == null) {
-            this.mPersonaManagerInternal = (PersonaManagerInternal) LocalServices.getService(PersonaManagerInternal.class);
-        }
-        return this.mPersonaManagerInternal;
-    }
-
-    public void setSwitchingFromSystemUserMessage(String str) {
-        synchronized (this.mLock) {
-            this.mSwitchingFromSystemUserMessage = str;
-        }
-    }
-
-    public void setSwitchingToSystemUserMessage(String str) {
-        synchronized (this.mLock) {
-            this.mSwitchingToSystemUserMessage = str;
-        }
-    }
-
-    public String getSwitchingFromSystemUserMessage() {
-        checkHasManageUsersPermission("getSwitchingFromSystemUserMessage()");
-        return getSwitchingFromSystemUserMessageUnchecked();
-    }
-
-    public String getSwitchingToSystemUserMessage() {
-        checkHasManageUsersPermission("getSwitchingToSystemUserMessage()");
-        return getSwitchingToSystemUserMessageUnchecked();
-    }
-
-    public final String getSwitchingFromSystemUserMessageUnchecked() {
-        String str;
-        synchronized (this.mLock) {
-            str = this.mSwitchingFromSystemUserMessage;
-        }
-        return str;
-    }
-
-    public final String getSwitchingToSystemUserMessageUnchecked() {
-        String str;
-        synchronized (this.mLock) {
-            str = this.mSwitchingToSystemUserMessage;
-        }
-        return str;
-    }
-
-    public final void checkHasManageUsersPermission(String str) {
-        if (this.mInjector.checkCallingPermission("android.permission.MANAGE_USERS") != -1) {
-            return;
-        }
-        throw new SecurityException("You need MANAGE_USERS permission to call " + str);
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        synchronized (this.mLock) {
-            long start = protoOutputStream.start(j);
-            int i = 0;
-            for (int i2 = 0; i2 < this.mStartedUsers.size(); i2++) {
-                UserState userState = (UserState) this.mStartedUsers.valueAt(i2);
-                long start2 = protoOutputStream.start(2246267895809L);
-                protoOutputStream.write(1120986464257L, userState.mHandle.getIdentifier());
-                userState.dumpDebug(protoOutputStream, 1146756268034L);
-                protoOutputStream.end(start2);
-            }
-            int i3 = 0;
-            while (true) {
-                int[] iArr = this.mStartedUserArray;
-                if (i3 >= iArr.length) {
-                    break;
-                }
-                protoOutputStream.write(2220498092034L, iArr[i3]);
-                i3++;
-            }
-            for (int i4 = 0; i4 < this.mUserLru.size(); i4++) {
-                protoOutputStream.write(2220498092035L, ((Integer) this.mUserLru.get(i4)).intValue());
-            }
-            if (this.mUserProfileGroupIds.size() > 0) {
-                for (int i5 = 0; i5 < this.mUserProfileGroupIds.size(); i5++) {
-                    long start3 = protoOutputStream.start(2246267895812L);
-                    protoOutputStream.write(1120986464257L, this.mUserProfileGroupIds.keyAt(i5));
-                    protoOutputStream.write(1120986464258L, this.mUserProfileGroupIds.valueAt(i5));
-                    protoOutputStream.end(start3);
-                }
-            }
-            protoOutputStream.write(1120986464261L, this.mCurrentUserId);
-            while (true) {
-                int[] iArr2 = this.mCurrentProfileIds;
-                if (i < iArr2.length) {
-                    protoOutputStream.write(2220498092038L, iArr2[i]);
-                    i++;
-                } else {
-                    protoOutputStream.end(start);
-                }
-            }
-        }
-    }
-
-    public void dump(PrintWriter printWriter) {
-        synchronized (this.mLock) {
-            printWriter.println("  mStartedUsers:");
-            for (int i = 0; i < this.mStartedUsers.size(); i++) {
-                UserState userState = (UserState) this.mStartedUsers.valueAt(i);
-                printWriter.print("    User #");
-                printWriter.print(userState.mHandle.getIdentifier());
-                printWriter.print(": ");
-                userState.dump("", printWriter);
-            }
-            printWriter.print("  mStartedUserArray: [");
-            for (int i2 = 0; i2 < this.mStartedUserArray.length; i2++) {
-                if (i2 > 0) {
-                    printWriter.print(", ");
-                }
-                printWriter.print(this.mStartedUserArray[i2]);
-            }
-            printWriter.println("]");
-            printWriter.print("  mUserLru: [");
-            for (int i3 = 0; i3 < this.mUserLru.size(); i3++) {
-                if (i3 > 0) {
-                    printWriter.print(", ");
-                }
-                printWriter.print(this.mUserLru.get(i3));
-            }
-            printWriter.println("]");
-            if (this.mUserProfileGroupIds.size() > 0) {
-                printWriter.println("  mUserProfileGroupIds:");
-                for (int i4 = 0; i4 < this.mUserProfileGroupIds.size(); i4++) {
-                    printWriter.print("    User #");
-                    printWriter.print(this.mUserProfileGroupIds.keyAt(i4));
-                    printWriter.print(" -> profile #");
-                    printWriter.println(this.mUserProfileGroupIds.valueAt(i4));
-                }
-            }
-            printWriter.println("  mCurrentProfileIds:" + Arrays.toString(this.mCurrentProfileIds));
-            printWriter.println("  mCurrentUserId:" + this.mCurrentUserId);
-            printWriter.println("  mTargetUserId:" + this.mTargetUserId);
-            printWriter.println("  mLastActiveUsers:" + this.mLastActiveUsers);
-            printWriter.println("  mDelayUserDataLocking:" + this.mDelayUserDataLocking);
-            printWriter.println("  mAllowUserUnlocking:" + this.mAllowUserUnlocking);
-            printWriter.println("  shouldStopUserOnSwitch():" + shouldStopUserOnSwitch());
-            printWriter.println("  mStopUserOnSwitch:" + this.mStopUserOnSwitch);
-            printWriter.println("  mMaxRunningUsers:" + this.mMaxRunningUsers);
-            printWriter.println("  mUserSwitchUiEnabled:" + this.mUserSwitchUiEnabled);
-            printWriter.println("  mInitialized:" + this.mInitialized);
-            printWriter.println("  mIsBroadcastSentForSystemUserStarted:" + this.mIsBroadcastSentForSystemUserStarted);
-            printWriter.println("  mIsBroadcastSentForSystemUserStarting:" + this.mIsBroadcastSentForSystemUserStarting);
-            if (this.mSwitchingFromSystemUserMessage != null) {
-                printWriter.println("  mSwitchingFromSystemUserMessage: " + this.mSwitchingFromSystemUserMessage);
-            }
-            if (this.mSwitchingToSystemUserMessage != null) {
-                printWriter.println("  mSwitchingToSystemUserMessage: " + this.mSwitchingToSystemUserMessage);
-            }
-            printWriter.println("  mLastUserUnlockingUptime: " + this.mLastUserUnlockingUptime);
-        }
-    }
-
-    @Override // android.os.Handler.Callback
-    public boolean handleMessage(Message message) {
-        switch (message.what) {
-            case 10:
-                dispatchUserSwitch((UserState) message.obj, message.arg1, message.arg2);
-                return false;
-            case 20:
-                continueUserSwitch((UserState) message.obj, message.arg1, message.arg2);
-                return false;
-            case 30:
-                timeoutUserSwitch((UserState) message.obj, message.arg1, message.arg2);
-                return false;
-            case 40:
-                startProfiles();
-                return false;
-            case 50:
-                this.mInjector.batteryStatsServiceNoteEvent(32775, Integer.toString(message.arg1), message.arg1);
-                logUserJourneyBegin(message.arg1, 3);
-                this.mInjector.onUserStarting(message.arg1);
-                scheduleOnUserCompletedEvent(message.arg1, 1, 5000);
-                this.mInjector.getUserJourneyLogger().logUserJourneyFinish(-1, getUserInfo(message.arg1), 3);
-                if (this.mInjector.getSdpManager() == null) {
-                    return false;
-                }
-                this.mInjector.getSdpManager().onStartUser(message.arg1);
-                return false;
-            case 60:
-                this.mInjector.batteryStatsServiceNoteEvent(16392, Integer.toString(message.arg2), message.arg2);
-                this.mInjector.batteryStatsServiceNoteEvent(32776, Integer.toString(message.arg1), message.arg1);
-                this.mInjector.getSystemServiceManager().onUserSwitching(message.arg2, message.arg1);
-                scheduleOnUserCompletedEvent(message.arg1, 4, 5000);
-                return false;
-            case 70:
-                dispatchForegroundProfileChanged(message.arg1);
-                return false;
-            case 80:
-                dispatchUserSwitchComplete(message.arg1, message.arg2);
-                UserJourneyLogger.UserJourneySession logUserSwitchJourneyFinish = this.mInjector.getUserJourneyLogger().logUserSwitchJourneyFinish(message.arg1, getUserInfo(message.arg2));
-                if (logUserSwitchJourneyFinish == null) {
-                    return false;
-                }
-                this.mHandler.removeMessages(200, logUserSwitchJourneyFinish);
-                return false;
-            case 90:
-                timeoutUserSwitchCallbacks(message.arg1, message.arg2);
-                return false;
-            case 100:
-                final int i = message.arg1;
-                showEventLog(i, -1, 0, "SYSTEM_USER_UNLOCK_MSG", "NULL");
-                this.mInjector.getSystemServiceManager().onUserUnlocking(i);
-                showEventLog(i, -1, 1, "SYSTEM_USER_UNLOCK_MSG", "Done mSystemServiceManager.onUserUnlocking");
-                FgThread.getHandler().post(new Runnable() { // from class: com.android.server.am.UserController$$ExternalSyntheticLambda7
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        UserController.this.lambda$handleMessage$18(i);
-                    }
-                });
-                this.mInjector.getUserJourneyLogger().logUserLifecycleEvent(message.arg1, 5, 2);
-                this.mInjector.getUserJourneyLogger().logUserLifecycleEvent(message.arg1, 6, 1);
-                TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
-                timingsTraceAndSlog.traceBegin("finishUserUnlocked-" + i);
-                finishUserUnlocked((UserState) message.obj);
-                timingsTraceAndSlog.traceEnd();
-                showEventLog(i, -1, 2, "SYSTEM_USER_UNLOCK_MSG", "NULL");
-                return false;
-            case 105:
-                this.mInjector.getSystemServiceManager().onUserUnlocked(message.arg1);
-                scheduleOnUserCompletedEvent(message.arg1, 2, this.mCurrentUserId != message.arg1 ? 1000 : 5000);
-                this.mInjector.getUserJourneyLogger().logUserLifecycleEvent(message.arg1, 6, 2);
-                return false;
-            case 110:
-                dispatchLockedBootComplete(message.arg1);
-                return false;
-            case 120:
-                logUserJourneyBegin(message.arg1, 2);
-                startUserInForeground(message.arg1);
-                return false;
-            case 130:
-                completeUserSwitch(message.arg1, message.arg2);
-                return false;
-            case 140:
-                reportOnUserCompletedEvent((Integer) message.obj);
-                return false;
-            case 200:
-                this.mInjector.getUserJourneyLogger().finishAndClearIncompleteUserJourney(message.arg1, message.arg2);
-                this.mHandler.removeMessages(200, message.obj);
-                return false;
-            case 1000:
-                Pair pair = (Pair) message.obj;
-                logUserJourneyBegin(((UserInfo) pair.second).id, 1);
-                showUserSwitchDialog(pair);
-                return false;
-            default:
-                return false;
-        }
-    }
-
-    public /* synthetic */ void lambda$handleMessage$18(int i) {
-        this.mInjector.loadUserRecents(i);
-    }
-
-    public void scheduleOnUserCompletedEvent(int i, int i2, int i3) {
-        if (i2 != 0) {
-            synchronized (this.mCompletedEventTypes) {
-                SparseIntArray sparseIntArray = this.mCompletedEventTypes;
-                sparseIntArray.put(i, i2 | sparseIntArray.get(i, 0));
-            }
-        }
-        Integer valueOf = Integer.valueOf(i);
-        this.mHandler.removeEqualMessages(140, valueOf);
-        Handler handler = this.mHandler;
-        handler.sendMessageDelayed(handler.obtainMessage(140, valueOf), i3);
-    }
-
-    public void reportOnUserCompletedEvent(Integer num) {
-        int i;
-        int i2;
-        this.mHandler.removeEqualMessages(140, num);
-        synchronized (this.mCompletedEventTypes) {
-            i = 0;
-            i2 = this.mCompletedEventTypes.get(num.intValue(), 0);
-            this.mCompletedEventTypes.delete(num.intValue());
-        }
-        synchronized (this.mLock) {
-            UserState userState = (UserState) this.mStartedUsers.get(num.intValue());
-            if (userState != null && userState.state != 5) {
-                i = 1;
-            }
-            if (userState != null && userState.state == 3) {
-                i |= 2;
-            }
-            if (num.intValue() == this.mCurrentUserId) {
-                i |= 4;
-            }
-        }
-        Slogf.i("ActivityManager", "reportOnUserCompletedEvent(%d): stored=%s, eligible=%s", num, Integer.toBinaryString(i2), Integer.toBinaryString(i));
-        this.mInjector.systemServiceManagerOnUserCompletedEvent(num.intValue(), i2 & i);
-    }
-
-    public final void logUserJourneyBegin(int i, int i2) {
-        UserJourneyLogger.UserJourneySession finishAndClearIncompleteUserJourney = this.mInjector.getUserJourneyLogger().finishAndClearIncompleteUserJourney(i, i2);
-        if (finishAndClearIncompleteUserJourney != null) {
-            this.mHandler.removeMessages(200, finishAndClearIncompleteUserJourney);
-        }
-        UserJourneyLogger.UserJourneySession logUserJourneyBegin = this.mInjector.getUserJourneyLogger().logUserJourneyBegin(i, i2);
-        Handler handler = this.mHandler;
-        handler.sendMessageDelayed(handler.obtainMessage(200, i, i2, logUserJourneyBegin), 90000L);
-    }
-
-    public final BroadcastOptions getTemporaryAppAllowlistBroadcastOptions(int i) {
-        ActivityManagerInternal activityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
-        long bootTimeTempAllowListDuration = activityManagerInternal != null ? activityManagerInternal.getBootTimeTempAllowListDuration() : 10000L;
-        BroadcastOptions makeBasic = BroadcastOptions.makeBasic();
-        makeBasic.setTemporaryAppAllowlist(bootTimeTempAllowListDuration, 0, i, "");
-        return makeBasic;
-    }
-
-    public static int getUserSwitchTimeoutMs() {
-        String str = SystemProperties.get("debug.usercontroller.user_switch_timeout_ms");
-        if (TextUtils.isEmpty(str)) {
-            return 3000;
-        }
-        try {
-            return Integer.parseInt(str);
-        } catch (NumberFormatException unused) {
-            return 3000;
-        }
-    }
-
-    public long getLastUserUnlockingUptime() {
-        return this.mLastUserUnlockingUptime;
-    }
-
-    /* loaded from: classes.dex */
-    public class UserProgressListener extends IProgressListener.Stub {
-        public volatile long mUnlockStarted;
-
-        public /* synthetic */ UserProgressListener(UserProgressListenerIA userProgressListenerIA) {
-            this();
-        }
-
-        public UserProgressListener() {
-        }
-
-        public void onStarted(int i, Bundle bundle) {
-            Slogf.d("ActivityManager", "Started unlocking user " + i);
-            this.mUnlockStarted = SystemClock.uptimeMillis();
-        }
-
-        public void onProgress(int i, int i2, Bundle bundle) {
-            Slogf.d("ActivityManager", "Unlocking user " + i + " progress " + i2);
-        }
-
-        public void onFinished(int i, Bundle bundle) {
-            long uptimeMillis = SystemClock.uptimeMillis() - this.mUnlockStarted;
-            if (i == 0) {
-                new TimingsTraceAndSlog().logDuration("SystemUserUnlock", uptimeMillis);
-                return;
-            }
-            new TimingsTraceAndSlog().logDuration("User" + i + "Unlock", uptimeMillis);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class PendingUserStart {
-        public final IProgressListener unlockListener;
-        public final int userId;
-        public final int userStartMode;
-
-        public PendingUserStart(int i, int i2, IProgressListener iProgressListener) {
-            this.userId = i;
-            this.userStartMode = i2;
-            this.unlockListener = iProgressListener;
-        }
-
-        public String toString() {
-            return "PendingUserStart{userId=" + this.userId + ", userStartMode=" + UserManagerInternal.userStartModeToString(this.userStartMode) + ", unlockListener=" + this.unlockListener + '}';
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class Injector {
-        public Handler mHandler;
-        public final ActivityManagerService mService;
-        public UserManagerService mUserManager;
-        public UserManagerInternal mUserManagerInternal;
-        public UserSwitchingDialog mUserSwitchingDialog;
-        public final Object mUserSwitchingDialogLock = new Object();
-
-        public SdpManagerImpl getSdpManager() {
-            return null;
-        }
-
-        public Injector(ActivityManagerService activityManagerService) {
-            this.mService = activityManagerService;
-        }
-
-        public Handler getHandler(Handler.Callback callback) {
-            Handler handler = new Handler(this.mService.mHandlerThread.getLooper(), callback);
-            this.mHandler = handler;
-            return handler;
-        }
-
-        public Handler getUiHandler(Handler.Callback callback) {
-            return new Handler(this.mService.mUiHandler.getLooper(), callback);
-        }
-
-        public UserJourneyLogger getUserJourneyLogger() {
-            return getUserManager().getUserJourneyLogger();
-        }
-
-        public Context getContext() {
-            return this.mService.mContext;
-        }
-
-        public LockPatternUtils getLockPatternUtils() {
-            return new LockPatternUtils(getContext());
-        }
-
-        public int broadcastIntent(Intent intent, String str, IIntentReceiver iIntentReceiver, int i, String str2, Bundle bundle, String[] strArr, int i2, Bundle bundle2, boolean z, boolean z2, int i3, int i4, int i5, int i6, int i7) {
-            int broadcastIntentLocked;
-            int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -10000);
-            if (intExtra == -10000) {
-                intExtra = i7;
-            }
-            EventLog.writeEvent(30081, Integer.valueOf(intExtra), intent.getAction());
-            ActivityManagerService activityManagerService = this.mService;
-            boolean z3 = activityManagerService.mEnableModernQueue ? false : z;
-            ActivityManagerService.boostPriorityForLockedSection();
-            synchronized (activityManagerService) {
-                try {
-                    broadcastIntentLocked = this.mService.broadcastIntentLocked(null, null, null, intent, str, iIntentReceiver, i, str2, bundle, strArr, null, null, i2, bundle2, z3, z2, i3, i4, i5, i6, i7);
-                } catch (Throwable th) {
-                    ActivityManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            ActivityManagerService.resetPriorityAfterLockedSection();
-            return broadcastIntentLocked;
-        }
-
-        public int checkCallingPermission(String str) {
-            return this.mService.checkCallingPermission(str);
-        }
-
-        public WindowManagerService getWindowManager() {
-            return this.mService.mWindowManager;
-        }
-
-        public ActivityTaskManagerInternal getActivityTaskManagerInternal() {
-            return this.mService.mAtmInternal;
-        }
-
-        public void activityManagerOnUserStopped(int i) {
-            ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class)).onUserStopped(i);
-        }
-
-        public void systemServiceManagerOnUserStopped(int i) {
-            getSystemServiceManager().onUserStopped(i);
-            if (getSdpManager() != null) {
-                getSdpManager().onCleanupUser(i);
-            }
-        }
-
-        public void systemServiceManagerOnUserCompletedEvent(int i, int i2) {
-            getSystemServiceManager().onUserCompletedEvent(i, i2);
-        }
-
-        public UserManagerService getUserManager() {
-            if (this.mUserManager == null) {
-                this.mUserManager = IUserManager.Stub.asInterface(ServiceManager.getService("user"));
-            }
-            return this.mUserManager;
-        }
-
-        public UserManagerInternal getUserManagerInternal() {
-            if (this.mUserManagerInternal == null) {
-                this.mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
-            }
-            return this.mUserManagerInternal;
-        }
-
-        public KeyguardManager getKeyguardManager() {
-            return (KeyguardManager) this.mService.mContext.getSystemService(KeyguardManager.class);
-        }
-
-        public void batteryStatsServiceNoteEvent(int i, String str, int i2) {
-            this.mService.mBatteryStatsService.noteEvent(i, str, i2);
-        }
-
-        public boolean isRuntimeRestarted() {
-            return getSystemServiceManager().isRuntimeRestarted();
-        }
-
-        public SystemServiceManager getSystemServiceManager() {
-            return this.mService.mSystemServiceManager;
-        }
-
-        public boolean isFirstBootOrUpgrade() {
-            IPackageManager packageManager = AppGlobals.getPackageManager();
-            try {
-                if (!packageManager.isFirstBoot()) {
-                    if (!packageManager.isDeviceUpgrading()) {
-                        return false;
-                    }
-                }
-                return true;
-            } catch (RemoteException e) {
-                throw e.rethrowFromSystemServer();
-            }
-        }
-
-        /* renamed from: com.android.server.am.UserController$Injector$1 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass1 extends PreBootBroadcaster {
-            public final /* synthetic */ Runnable val$onFinish;
-
-            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-            public AnonymousClass1(ActivityManagerService activityManagerService, int i, ProgressReporter progressReporter, boolean z, Runnable runnable) {
-                super(activityManagerService, i, progressReporter, z);
-                r6 = runnable;
-            }
-
-            @Override // com.android.server.am.PreBootBroadcaster
-            public void onFinished() {
-                r6.run();
-            }
-        }
-
-        public void sendPreBootBroadcast(int i, boolean z, Runnable runnable) {
-            EventLog.writeEvent(30081, Integer.valueOf(i), "android.intent.action.PRE_BOOT_COMPLETED");
-            new PreBootBroadcaster(this.mService, i, null, z) { // from class: com.android.server.am.UserController.Injector.1
-                public final /* synthetic */ Runnable val$onFinish;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                public AnonymousClass1(ActivityManagerService activityManagerService, int i2, ProgressReporter progressReporter, boolean z2, Runnable runnable2) {
-                    super(activityManagerService, i2, progressReporter, z2);
-                    r6 = runnable2;
-                }
-
-                @Override // com.android.server.am.PreBootBroadcaster
-                public void onFinished() {
-                    r6.run();
-                }
-            }.sendNext();
-        }
-
-        public void activityManagerForceStopPackage(int i, String str) {
-            ActivityManagerService activityManagerService = this.mService;
-            ActivityManagerService.boostPriorityForLockedSection();
-            synchronized (activityManagerService) {
-                try {
-                    this.mService.forceStopPackageLocked(null, -1, false, false, true, false, false, i, str);
-                } catch (Throwable th) {
-                    ActivityManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            ActivityManagerService.resetPriorityAfterLockedSection();
-        }
-
-        public int checkComponentPermission(String str, int i, int i2, int i3, boolean z) {
-            return ActivityManagerService.checkComponentPermission(str, i, i2, i3, z);
-        }
-
-        public boolean checkPermissionForPreflight(String str, int i, int i2, String str2) {
-            return PermissionChecker.checkPermissionForPreflight(getContext(), str, i, i2, str2) == 0;
-        }
-
-        public void startHomeActivity(int i, String str) {
-            this.mService.mAtmInternal.startHomeActivity(i, str);
-        }
-
-        public void startUserWidgets(final int i) {
-            final AppWidgetManagerInternal appWidgetManagerInternal = (AppWidgetManagerInternal) LocalServices.getService(AppWidgetManagerInternal.class);
-            if (appWidgetManagerInternal != null) {
-                FgThread.getHandler().post(new Runnable() { // from class: com.android.server.am.UserController$Injector$$ExternalSyntheticLambda1
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        appWidgetManagerInternal.unlockUser(i);
-                    }
-                });
-            }
-        }
-
-        public void updateUserConfiguration() {
-            this.mService.mAtmInternal.updateUserConfiguration();
-        }
-
-        public void clearBroadcastQueueForUser(int i) {
-            ActivityManagerService activityManagerService = this.mService;
-            ActivityManagerService.boostPriorityForLockedSection();
-            synchronized (activityManagerService) {
-                try {
-                    this.mService.clearBroadcastQueueForUserLocked(i);
-                } catch (Throwable th) {
-                    ActivityManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            ActivityManagerService.resetPriorityAfterLockedSection();
-        }
-
-        public void loadUserRecents(int i) {
-            this.mService.mAtmInternal.loadRecentTasksForUser(i);
-        }
-
-        public void startPersistentApps(int i) {
-            this.mService.startPersistentApps(i);
-        }
-
-        public void installEncryptionUnawareProviders(int i) {
-            this.mService.mCpHelper.installEncryptionUnawareProviders(i);
-        }
-
-        public void dismissUserSwitchingDialog(Runnable runnable) {
-            synchronized (this.mUserSwitchingDialogLock) {
-                UserSwitchingDialog userSwitchingDialog = this.mUserSwitchingDialog;
-                if (userSwitchingDialog != null) {
-                    userSwitchingDialog.dismiss(runnable);
-                    this.mUserSwitchingDialog = null;
-                } else if (runnable != null) {
-                    runnable.run();
-                }
-            }
-        }
-
-        public void showUserSwitchingDialog(UserInfo userInfo, UserInfo userInfo2, String str, String str2, Runnable runnable) {
-            if (this.mService.mContext.getPackageManager().hasSystemFeature("android.hardware.type.automotive")) {
-                Slogf.w("ActivityManager", "Showing user switch dialog on UserController, it could cause a race condition if it's shown by CarSystemUI as well");
-            }
-            synchronized (this.mUserSwitchingDialogLock) {
-                dismissUserSwitchingDialog(null);
-                UserSwitchingDialog userSwitchingDialog = new UserSwitchingDialog(this.mService.mContext, userInfo, userInfo2, str, str2, getWindowManager());
-                this.mUserSwitchingDialog = userSwitchingDialog;
-                userSwitchingDialog.show(runnable);
-            }
-        }
-
-        public void reportGlobalUsageEvent(int i) {
-            this.mService.reportGlobalUsageEvent(i);
-        }
-
-        public void reportCurWakefulnessUsageEvent() {
-            this.mService.reportCurWakefulnessUsageEvent();
-        }
-
-        public void taskSupervisorRemoveUser(int i) {
-            this.mService.mAtmInternal.removeUser(i);
-        }
-
-        public boolean taskSupervisorSwitchUser(int i, UserState userState) {
-            return this.mService.mAtmInternal.switchUser(i, userState);
-        }
-
-        public void taskSupervisorResumeFocusedStackTopActivity() {
-            this.mService.mAtmInternal.resumeTopActivities(false);
-        }
-
-        public void clearAllLockedTasks(String str) {
-            this.mService.mAtmInternal.clearLockedTasks(str);
-        }
-
-        public boolean isCallerRecents(int i) {
-            return this.mService.mAtmInternal.isCallerRecents(i);
-        }
-
-        public IStorageManager getStorageManager() {
-            return IStorageManager.Stub.asInterface(ServiceManager.getService("mount"));
-        }
-
-        public void dismissKeyguard(final Runnable runnable) {
-            final AtomicBoolean atomicBoolean = new AtomicBoolean(true);
-            Runnable runnable2 = new Runnable() { // from class: com.android.server.am.UserController$Injector$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    UserController.Injector.lambda$dismissKeyguard$1(atomicBoolean, runnable);
-                }
-            };
-            this.mHandler.postDelayed(runnable2, 2000L);
-            getWindowManager().dismissKeyguard(new IKeyguardDismissCallback.Stub() { // from class: com.android.server.am.UserController.Injector.2
-                public final /* synthetic */ Runnable val$runOnce;
-
-                public AnonymousClass2(Runnable runnable22) {
-                    r2 = runnable22;
-                }
-
-                public void onDismissError() {
-                    Injector.this.mHandler.post(r2);
-                }
-
-                public void onDismissSucceeded() {
-                    Injector.this.mHandler.post(r2);
-                }
-
-                public void onDismissCancelled() {
-                    Injector.this.mHandler.post(r2);
-                }
-            }, null);
-        }
-
-        public static /* synthetic */ void lambda$dismissKeyguard$1(AtomicBoolean atomicBoolean, Runnable runnable) {
-            if (atomicBoolean.getAndSet(false)) {
-                runnable.run();
-            }
-        }
-
-        /* renamed from: com.android.server.am.UserController$Injector$2 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass2 extends IKeyguardDismissCallback.Stub {
-            public final /* synthetic */ Runnable val$runOnce;
-
-            public AnonymousClass2(Runnable runnable22) {
-                r2 = runnable22;
-            }
-
-            public void onDismissError() {
-                Injector.this.mHandler.post(r2);
-            }
-
-            public void onDismissSucceeded() {
-                Injector.this.mHandler.post(r2);
-            }
-
-            public void onDismissCancelled() {
-                Injector.this.mHandler.post(r2);
-            }
-        }
-
-        public boolean isHeadlessSystemUserMode() {
-            return UserManager.isHeadlessSystemUserMode();
-        }
-
-        public void onUserStarting(int i) {
-            getSystemServiceManager().onUserStarting(TimingsTraceAndSlog.newAsyncLog(), i);
-        }
-
-        public void onSystemUserVisibilityChanged(boolean z) {
-            getUserManagerInternal().onSystemUserVisibilityChanged(z);
-        }
-
-        public void lockDeviceNowAndWaitForKeyguardShown() {
-            if (getWindowManager().isKeyguardLocked()) {
-                return;
-            }
-            TimingsTraceAndSlog timingsTraceAndSlog = new TimingsTraceAndSlog();
-            timingsTraceAndSlog.traceBegin("lockDeviceNowAndWaitForKeyguardShown");
-            CountDownLatch countDownLatch = new CountDownLatch(1);
-            AnonymousClass3 anonymousClass3 = new ActivityTaskManagerInternal.ScreenObserver() { // from class: com.android.server.am.UserController.Injector.3
-                public final /* synthetic */ CountDownLatch val$latch;
-
-                @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
-                public void onAwakeStateChanged(boolean z) {
-                }
-
-                public AnonymousClass3(CountDownLatch countDownLatch2) {
-                    r2 = countDownLatch2;
-                }
-
-                @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
-                public void onKeyguardStateChanged(boolean z) {
-                    if (z) {
-                        r2.countDown();
-                    }
-                }
-            };
-            getActivityTaskManagerInternal().registerScreenObserver(anonymousClass3);
-            getWindowManager().lockDeviceNow();
-            try {
-                try {
-                    if (countDownLatch2.await(20L, TimeUnit.SECONDS)) {
-                    } else {
-                        throw new RuntimeException("Keyguard is not shown in 20 seconds");
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            } finally {
-                getActivityTaskManagerInternal().unregisterScreenObserver(anonymousClass3);
-                timingsTraceAndSlog.traceEnd();
-            }
-        }
-
-        /* renamed from: com.android.server.am.UserController$Injector$3 */
-        /* loaded from: classes.dex */
-        public class AnonymousClass3 implements ActivityTaskManagerInternal.ScreenObserver {
-            public final /* synthetic */ CountDownLatch val$latch;
-
-            @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
-            public void onAwakeStateChanged(boolean z) {
-            }
-
-            public AnonymousClass3(CountDownLatch countDownLatch2) {
-                r2 = countDownLatch2;
-            }
-
-            @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
-            public void onKeyguardStateChanged(boolean z) {
-                if (z) {
-                    r2.countDown();
-                }
-            }
-        }
-    }
-
-    public final void showEventLog(int i, int i2, int i3, String str, String str2) {
-        EventLogTags.writeBootProgressAmsState(i, i2, i3, str, str2);
-        Slog.d("ActivityManager", "!@AM_BOOT_PROGRESS , uid : " + i + ", state:  " + i2 + ", progress : " + i3 + ", step : " + str + ", description : " + str2);
-    }
-
-    public final int getDexMode() {
-        return this.mInjector.mService.mActivityTaskManager.mMultiTaskingController.getDexMode();
+        Slogf.i("ActivityManager", "finishUserStopped: should stop user " + i + " but without any locking");
+        return -10000;
     }
 }

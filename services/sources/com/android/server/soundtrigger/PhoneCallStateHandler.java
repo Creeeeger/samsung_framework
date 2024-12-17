@@ -1,11 +1,14 @@
 package com.android.server.soundtrigger;
 
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
 import android.util.Slog;
+import com.android.internal.telephony.flags.Flags;
 import com.android.server.soundtrigger.PhoneCallStateHandler;
+import com.android.server.soundtrigger.PhoneCallStateHandler.MyCallStateListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +20,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class PhoneCallStateHandler {
-    public final Callback mCallback;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PhoneCallStateHandler {
+    public final DeviceStateHandler mCallback;
     public final ExecutorService mExecutor;
     public final SubscriptionManager mSubscriptionManager;
     public final TelephonyManager mTelephonyManager;
@@ -27,33 +31,7 @@ public class PhoneCallStateHandler {
     public final List mListenerList = new ArrayList();
     public final AtomicBoolean mIsPhoneCallOngoing = new AtomicBoolean(false);
 
-    /* loaded from: classes3.dex */
-    public interface Callback {
-        void onPhoneCallStateChanged(boolean z);
-    }
-
-    public PhoneCallStateHandler(SubscriptionManager subscriptionManager, TelephonyManager telephonyManager, Callback callback) {
-        ExecutorService newSingleThreadExecutor = Executors.newSingleThreadExecutor();
-        this.mExecutor = newSingleThreadExecutor;
-        Objects.requireNonNull(subscriptionManager);
-        this.mSubscriptionManager = subscriptionManager;
-        Objects.requireNonNull(telephonyManager);
-        this.mTelephonyManager = telephonyManager;
-        Objects.requireNonNull(callback);
-        this.mCallback = callback;
-        subscriptionManager.addOnSubscriptionsChangedListener(newSingleThreadExecutor, new SubscriptionManager.OnSubscriptionsChangedListener() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler.1
-            @Override // android.telephony.SubscriptionManager.OnSubscriptionsChangedListener
-            public void onSubscriptionsChanged() {
-                PhoneCallStateHandler.this.updateTelephonyListeners();
-            }
-
-            public void onAddListenerFailed() {
-                Slog.wtf("SoundTriggerPhoneCallStateHandler", "Failed to add a telephony listener");
-            }
-        });
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class MyCallStateListener extends TelephonyCallback implements TelephonyCallback.CallStateListener {
         public final TelephonyManager mTelephonyManagerForSubId;
 
@@ -61,114 +39,118 @@ public class PhoneCallStateHandler {
             this.mTelephonyManagerForSubId = telephonyManager;
         }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$cleanup$0() {
-            this.mTelephonyManagerForSubId.unregisterTelephonyCallback(this);
-        }
-
-        public void cleanup() {
-            PhoneCallStateHandler.this.mExecutor.execute(new Runnable() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$MyCallStateListener$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    PhoneCallStateHandler.MyCallStateListener.this.lambda$cleanup$0();
-                }
-            });
-        }
-
         @Override // android.telephony.TelephonyCallback.CallStateListener
-        public void onCallStateChanged(int i) {
-            PhoneCallStateHandler.this.updateCallStatus();
-        }
-    }
-
-    public final void updateCallStatus() {
-        boolean checkCallStatus = checkCallStatus();
-        if (this.mIsPhoneCallOngoing.compareAndSet(!checkCallStatus, checkCallStatus)) {
-            this.mCallback.onPhoneCallStateChanged(checkCallStatus);
-        }
-    }
-
-    public final boolean checkCallStatus() {
-        List<SubscriptionInfo> activeSubscriptionInfoList = this.mSubscriptionManager.getActiveSubscriptionInfoList();
-        if (activeSubscriptionInfoList == null) {
-            return false;
-        }
-        return activeSubscriptionInfoList.stream().filter(new Predicate() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$$ExternalSyntheticLambda3
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$checkCallStatus$0;
-                lambda$checkCallStatus$0 = PhoneCallStateHandler.lambda$checkCallStatus$0((SubscriptionInfo) obj);
-                return lambda$checkCallStatus$0;
+        public final void onCallStateChanged(int i) {
+            boolean anyMatch;
+            final PhoneCallStateHandler phoneCallStateHandler = PhoneCallStateHandler.this;
+            List<SubscriptionInfo> activeSubscriptionInfoList = phoneCallStateHandler.mSubscriptionManager.getActiveSubscriptionInfoList();
+            if (activeSubscriptionInfoList == null) {
+                anyMatch = false;
+            } else if (Flags.enforceTelephonyFeatureMapping()) {
+                final int i2 = 1;
+                anyMatch = activeSubscriptionInfoList.stream().filter(new PhoneCallStateHandler$$ExternalSyntheticLambda0(2)).anyMatch(new Predicate() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$$ExternalSyntheticLambda4
+                    @Override // java.util.function.Predicate
+                    public final boolean test(Object obj) {
+                        int i3 = i2;
+                        PhoneCallStateHandler phoneCallStateHandler2 = phoneCallStateHandler;
+                        SubscriptionInfo subscriptionInfo = (SubscriptionInfo) obj;
+                        switch (i3) {
+                            case 0:
+                                break;
+                            default:
+                                phoneCallStateHandler2.getClass();
+                                try {
+                                    break;
+                                }
+                        }
+                        return PhoneCallStateHandler.isCallOngoingFromState(phoneCallStateHandler2.mTelephonyManager.createForSubscriptionId(subscriptionInfo.getSubscriptionId()).getCallStateForSubscription());
+                    }
+                });
+            } else {
+                final int i3 = 0;
+                anyMatch = activeSubscriptionInfoList.stream().filter(new PhoneCallStateHandler$$ExternalSyntheticLambda0(1)).anyMatch(new Predicate() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$$ExternalSyntheticLambda4
+                    @Override // java.util.function.Predicate
+                    public final boolean test(Object obj) {
+                        int i32 = i3;
+                        PhoneCallStateHandler phoneCallStateHandler2 = phoneCallStateHandler;
+                        SubscriptionInfo subscriptionInfo = (SubscriptionInfo) obj;
+                        switch (i32) {
+                            case 0:
+                                break;
+                            default:
+                                phoneCallStateHandler2.getClass();
+                                try {
+                                    break;
+                                }
+                        }
+                        return PhoneCallStateHandler.isCallOngoingFromState(phoneCallStateHandler2.mTelephonyManager.createForSubscriptionId(subscriptionInfo.getSubscriptionId()).getCallStateForSubscription());
+                    }
+                });
             }
-        }).anyMatch(new Predicate() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$$ExternalSyntheticLambda4
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$checkCallStatus$1;
-                lambda$checkCallStatus$1 = PhoneCallStateHandler.this.lambda$checkCallStatus$1((SubscriptionInfo) obj);
-                return lambda$checkCallStatus$1;
+            if (phoneCallStateHandler.mIsPhoneCallOngoing.compareAndSet(!anyMatch, anyMatch)) {
+                phoneCallStateHandler.mCallback.onPhoneCallStateChanged(anyMatch);
+            }
+        }
+    }
+
+    public PhoneCallStateHandler(SubscriptionManager subscriptionManager, TelephonyManager telephonyManager, DeviceStateHandler deviceStateHandler) {
+        ExecutorService newSingleThreadExecutor = Executors.newSingleThreadExecutor();
+        this.mExecutor = newSingleThreadExecutor;
+        Objects.requireNonNull(subscriptionManager);
+        SubscriptionManager createForAllUserProfiles = subscriptionManager.createForAllUserProfiles();
+        this.mSubscriptionManager = createForAllUserProfiles;
+        Objects.requireNonNull(telephonyManager);
+        this.mTelephonyManager = telephonyManager;
+        Objects.requireNonNull(deviceStateHandler);
+        this.mCallback = deviceStateHandler;
+        createForAllUserProfiles.addOnSubscriptionsChangedListener(newSingleThreadExecutor, new SubscriptionManager.OnSubscriptionsChangedListener() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler.1
+            public final void onAddListenerFailed() {
+                Slog.wtf("SoundTriggerPhoneCallStateHandler", "Failed to add a telephony listener");
+            }
+
+            @Override // android.telephony.SubscriptionManager.OnSubscriptionsChangedListener
+            public final void onSubscriptionsChanged() {
+                final PhoneCallStateHandler phoneCallStateHandler = PhoneCallStateHandler.this;
+                synchronized (phoneCallStateHandler.mLock) {
+                    try {
+                        Iterator it = ((ArrayList) phoneCallStateHandler.mListenerList).iterator();
+                        while (it.hasNext()) {
+                            final MyCallStateListener myCallStateListener = (MyCallStateListener) it.next();
+                            PhoneCallStateHandler.this.mExecutor.execute(new Runnable() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$MyCallStateListener$$ExternalSyntheticLambda0
+                                @Override // java.lang.Runnable
+                                public final void run() {
+                                    PhoneCallStateHandler.MyCallStateListener myCallStateListener2 = PhoneCallStateHandler.MyCallStateListener.this;
+                                    myCallStateListener2.mTelephonyManagerForSubId.unregisterTelephonyCallback(myCallStateListener2);
+                                }
+                            });
+                        }
+                        ((ArrayList) phoneCallStateHandler.mListenerList).clear();
+                        List<SubscriptionInfo> activeSubscriptionInfoList = phoneCallStateHandler.mSubscriptionManager.getActiveSubscriptionInfoList();
+                        if (activeSubscriptionInfoList == null) {
+                            return;
+                        }
+                        activeSubscriptionInfoList.stream().filter(new PhoneCallStateHandler$$ExternalSyntheticLambda0(0)).map(new Function() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$$ExternalSyntheticLambda1
+                            @Override // java.util.function.Function
+                            public final Object apply(Object obj) {
+                                return PhoneCallStateHandler.this.mTelephonyManager.createForSubscriptionId(((SubscriptionInfo) obj).getSubscriptionId());
+                            }
+                        }).forEach(new Consumer() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$$ExternalSyntheticLambda2
+                            @Override // java.util.function.Consumer
+                            public final void accept(Object obj) {
+                                PhoneCallStateHandler phoneCallStateHandler2 = PhoneCallStateHandler.this;
+                                TelephonyManager telephonyManager2 = (TelephonyManager) obj;
+                                synchronized (phoneCallStateHandler2.mLock) {
+                                    PhoneCallStateHandler.MyCallStateListener myCallStateListener2 = phoneCallStateHandler2.new MyCallStateListener(telephonyManager2);
+                                    ((ArrayList) phoneCallStateHandler2.mListenerList).add(myCallStateListener2);
+                                    telephonyManager2.registerTelephonyCallback(phoneCallStateHandler2.mExecutor, myCallStateListener2);
+                                }
+                            }
+                        });
+                    } finally {
+                    }
+                }
             }
         });
-    }
-
-    public static /* synthetic */ boolean lambda$checkCallStatus$0(SubscriptionInfo subscriptionInfo) {
-        return subscriptionInfo.getSubscriptionId() != -1;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ boolean lambda$checkCallStatus$1(SubscriptionInfo subscriptionInfo) {
-        return isCallOngoingFromState(this.mTelephonyManager.createForSubscriptionId(subscriptionInfo.getSubscriptionId()).getCallStateForSubscription());
-    }
-
-    public final void updateTelephonyListeners() {
-        synchronized (this.mLock) {
-            Iterator it = this.mListenerList.iterator();
-            while (it.hasNext()) {
-                ((MyCallStateListener) it.next()).cleanup();
-            }
-            this.mListenerList.clear();
-            List<SubscriptionInfo> activeSubscriptionInfoList = this.mSubscriptionManager.getActiveSubscriptionInfoList();
-            if (activeSubscriptionInfoList == null) {
-                return;
-            }
-            activeSubscriptionInfoList.stream().filter(new Predicate() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$updateTelephonyListeners$2;
-                    lambda$updateTelephonyListeners$2 = PhoneCallStateHandler.lambda$updateTelephonyListeners$2((SubscriptionInfo) obj);
-                    return lambda$updateTelephonyListeners$2;
-                }
-            }).map(new Function() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$$ExternalSyntheticLambda1
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    TelephonyManager lambda$updateTelephonyListeners$3;
-                    lambda$updateTelephonyListeners$3 = PhoneCallStateHandler.this.lambda$updateTelephonyListeners$3((SubscriptionInfo) obj);
-                    return lambda$updateTelephonyListeners$3;
-                }
-            }).forEach(new Consumer() { // from class: com.android.server.soundtrigger.PhoneCallStateHandler$$ExternalSyntheticLambda2
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    PhoneCallStateHandler.this.lambda$updateTelephonyListeners$4((TelephonyManager) obj);
-                }
-            });
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$updateTelephonyListeners$2(SubscriptionInfo subscriptionInfo) {
-        return subscriptionInfo.getSubscriptionId() != -1;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ TelephonyManager lambda$updateTelephonyListeners$3(SubscriptionInfo subscriptionInfo) {
-        return this.mTelephonyManager.createForSubscriptionId(subscriptionInfo.getSubscriptionId());
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$updateTelephonyListeners$4(TelephonyManager telephonyManager) {
-        synchronized (this.mLock) {
-            MyCallStateListener myCallStateListener = new MyCallStateListener(telephonyManager);
-            this.mListenerList.add(myCallStateListener);
-            telephonyManager.registerTelephonyCallback(this.mExecutor, myCallStateListener);
-        }
     }
 
     public static boolean isCallOngoingFromState(int i) {
@@ -178,6 +160,6 @@ public class PhoneCallStateHandler {
         if (i == 2) {
             return true;
         }
-        throw new IllegalStateException("Received unexpected call state from Telephony Manager: " + i);
+        throw new IllegalStateException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Received unexpected call state from Telephony Manager: "));
     }
 }

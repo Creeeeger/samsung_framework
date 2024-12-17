@@ -1,43 +1,6 @@
 package com.android.server.location.injector;
 
-import com.android.server.location.nsflp.NSConnectionHelper;
-import com.android.server.location.nsflp.NSLocationProviderHelper;
-import com.android.server.location.nsflp.NSPermissionHelper;
-import com.android.server.location.settings.LocationSettings;
-
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public interface Injector {
-    AlarmHelper getAlarmHelper();
-
-    AppForegroundHelper getAppForegroundHelper();
-
-    AppOpsHelper getAppOpsHelper();
-
-    DeviceIdleHelper getDeviceIdleHelper();
-
-    DeviceStationaryHelper getDeviceStationaryHelper();
-
-    EmergencyHelper getEmergencyHelper();
-
-    LocationPermissionsHelper getLocationPermissionsHelper();
-
-    LocationPowerSaveModeHelper getLocationPowerSaveModeHelper();
-
-    LocationSettings getLocationSettings();
-
-    LocationUsageLogger getLocationUsageLogger();
-
-    NSConnectionHelper getNSConnectionHelper();
-
-    NSLocationProviderHelper getNSLocationProviderHelper();
-
-    NSPermissionHelper getNSPermissionHelper();
-
-    PackageResetHelper getPackageResetHelper();
-
-    ScreenInteractiveHelper getScreenInteractiveHelper();
-
-    SettingsHelper getSettingsHelper();
-
-    UserInfoHelper getUserInfoHelper();
 }

@@ -1,317 +1,145 @@
 package com.android.server.devicepolicy;
 
-import android.app.admin.FullyManagedDeviceProvisioningParams;
-import android.app.admin.ManagedProfileProvisioningParams;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
-import android.os.ServiceSpecificException;
-import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
 import com.android.server.pm.UserManagerInternal;
 import com.android.server.utils.Slogf;
 import com.samsung.android.knox.SemPersonaManager;
 
-/* loaded from: classes2.dex */
-public class DualDarProvisioningHelper {
-    public ServiceConnection connection = new ServiceConnection() { // from class: com.android.server.devicepolicy.DualDarProvisioningHelper.5
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DualDarProvisioningHelper {
+    public final AnonymousClass5 connection = new AnonymousClass5();
+    public final Context mContext;
+    public final UserManagerInternal mUserManagerInternal;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.devicepolicy.DualDarProvisioningHelper$1, reason: invalid class name */
+    public final class AnonymousClass1 extends BroadcastReceiver {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ DualDarProvisioningHelper this$0;
+        public final /* synthetic */ int[] val$errorCode;
+        public final /* synthetic */ boolean[] val$finished;
+        public final /* synthetic */ Object val$mutex;
+        public final /* synthetic */ boolean[] val$success;
+
+        public /* synthetic */ AnonymousClass1(DualDarProvisioningHelper dualDarProvisioningHelper, boolean[] zArr, int[] iArr, Object obj, boolean[] zArr2, int i) {
+            this.$r8$classId = i;
+            this.this$0 = dualDarProvisioningHelper;
+            this.val$success = zArr;
+            this.val$errorCode = iArr;
+            this.val$mutex = obj;
+            this.val$finished = zArr2;
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            switch (this.$r8$classId) {
+                case 0:
+                    String action = intent.getAction();
+                    DualAppManagerService$$ExternalSyntheticOutline0.m("DualDAR Managed Profile Started Service onReceived is called: ", action, "DualDarProvisioningHelper");
+                    this.this$0.mContext.unregisterReceiver(this);
+                    DualDarProvisioningHelper dualDarProvisioningHelper = this.this$0;
+                    dualDarProvisioningHelper.mContext.unbindService(dualDarProvisioningHelper.connection);
+                    if ("com.android.dualdar.started.provisioning_success".equals(action)) {
+                        this.val$success[0] = true;
+                    } else {
+                        this.val$success[0] = false;
+                        this.val$errorCode[0] = intent.getIntExtra("ERROR_CODE", 5);
+                    }
+                    synchronized (this.val$mutex) {
+                        this.val$finished[0] = true;
+                        this.val$mutex.notify();
+                    }
+                    return;
+                case 1:
+                    String action2 = intent.getAction();
+                    DualAppManagerService$$ExternalSyntheticOutline0.m("DualDAR Managed Profile Completed Service onReceived is called: ", action2, "DualDarProvisioningHelper");
+                    this.this$0.mContext.unregisterReceiver(this);
+                    DualDarProvisioningHelper dualDarProvisioningHelper2 = this.this$0;
+                    dualDarProvisioningHelper2.mContext.unbindService(dualDarProvisioningHelper2.connection);
+                    if ("com.android.dualdar.completed.provisioning_success".equals(action2)) {
+                        this.val$success[0] = true;
+                    } else if ("com.android.dualdar.completed.cancelled".equals(action2)) {
+                        this.val$success[0] = true;
+                        Log.d("DualDarProvisioningHelper", "DualDAR is not enabled. dualdar completed provisinoing cacelled.");
+                    } else {
+                        this.val$success[0] = false;
+                        this.val$errorCode[0] = intent.getIntExtra("ERROR_CODE", 5);
+                    }
+                    synchronized (this.val$mutex) {
+                        this.val$finished[0] = true;
+                        this.val$mutex.notify();
+                    }
+                    return;
+                case 2:
+                    String action3 = intent.getAction();
+                    DualAppManagerService$$ExternalSyntheticOutline0.m("DualDAR Managed Device Started Service onReceived is called: ", action3, "DualDarProvisioningHelper");
+                    this.this$0.mContext.unregisterReceiver(this);
+                    DualDarProvisioningHelper dualDarProvisioningHelper3 = this.this$0;
+                    dualDarProvisioningHelper3.mContext.unbindService(dualDarProvisioningHelper3.connection);
+                    if ("com.android.dualdar.started.provisioning_success".equals(action3)) {
+                        this.val$success[0] = true;
+                    } else {
+                        this.val$success[0] = false;
+                        this.val$errorCode[0] = intent.getIntExtra("ERROR_CODE", 5);
+                    }
+                    synchronized (this.val$mutex) {
+                        this.val$finished[0] = true;
+                        this.val$mutex.notify();
+                    }
+                    return;
+                default:
+                    String action4 = intent.getAction();
+                    DualAppManagerService$$ExternalSyntheticOutline0.m("DualDAR Managed Device Completed Service onReceived is called: ", action4, "DualDarProvisioningHelper");
+                    this.this$0.mContext.unregisterReceiver(this);
+                    DualDarProvisioningHelper dualDarProvisioningHelper4 = this.this$0;
+                    dualDarProvisioningHelper4.mContext.unbindService(dualDarProvisioningHelper4.connection);
+                    if ("com.android.dualdar.completed.provisioning_success".equals(action4)) {
+                        this.val$success[0] = true;
+                    } else {
+                        this.val$success[0] = false;
+                        this.val$errorCode[0] = intent.getIntExtra("ERROR_CODE", 5);
+                    }
+                    synchronized (this.val$mutex) {
+                        this.val$finished[0] = true;
+                        this.val$mutex.notify();
+                    }
+                    return;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.devicepolicy.DualDarProvisioningHelper$5, reason: invalid class name */
+    public final class AnonymousClass5 implements ServiceConnection {
         @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             Log.d("DualDarProvisioningHelper", "Service connected!! : " + componentName.toString());
         }
 
         @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName componentName) {
+        public final void onServiceDisconnected(ComponentName componentName) {
             Log.d("DualDarProvisioningHelper", "Service disconnected!! : " + componentName.toString());
         }
-    };
-    public final Context mContext;
-    public final UserManagerInternal mUserManagerInternal;
+    }
 
     public DualDarProvisioningHelper(Context context, UserManagerInternal userManagerInternal) {
         this.mContext = context;
         this.mUserManagerInternal = userManagerInternal;
     }
 
-    public void onCreateAndProvisioningManagedProfileStartedForDualDar(ManagedProfileProvisioningParams managedProfileProvisioningParams) {
-        if (isDualDARConfigured(this.mContext, managedProfileProvisioningParams.getAdminExtras())) {
-            final Object obj = new Object();
-            final boolean[] zArr = {false};
-            final boolean[] zArr2 = new boolean[1];
-            final int[] iArr = new int[1];
-            BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.devicepolicy.DualDarProvisioningHelper.1
-                @Override // android.content.BroadcastReceiver
-                public void onReceive(Context context, Intent intent) {
-                    String action = intent.getAction();
-                    Log.d("DualDarProvisioningHelper", "DualDAR Managed Profile Started Service onReceived is called: " + action);
-                    DualDarProvisioningHelper.this.mContext.unregisterReceiver(this);
-                    DualDarProvisioningHelper.this.mContext.unbindService(DualDarProvisioningHelper.this.connection);
-                    if ("com.android.dualdar.started.provisioning_success".equals(action)) {
-                        zArr2[0] = true;
-                    } else {
-                        zArr2[0] = false;
-                        iArr[0] = intent.getIntExtra("ERROR_CODE", 5);
-                    }
-                    synchronized (obj) {
-                        zArr[0] = true;
-                        obj.notify();
-                    }
-                }
-            };
-            IntentFilter intentFilter = new IntentFilter();
-            setFilterForDualDarStarted(intentFilter);
-            this.mContext.registerReceiver(broadcastReceiver, intentFilter);
-            synchronized (obj) {
-                try {
-                    Log.d("DualDarProvisioningHelper", "Starting Knox DUAL DAR DualDar Started Service");
-                    Intent intent = new Intent();
-                    intent.setComponent(new ComponentName("com.samsung.android.knox.containercore", "com.samsung.android.knox.containercore.provisioning.DualDarStartedService"));
-                    intent.putExtra("DUAL_DAR_PARAMS", getDualDARConfigParams(this.mContext, managedProfileProvisioningParams.getAdminExtras()));
-                    intent.putExtra("DualDARServiceEventFlag", 500);
-                    intent.putExtra("DUAL_DAR_ADMIN_PACKAGE", managedProfileProvisioningParams.getProfileAdminComponentName().getPackageName());
-                    intent.putExtra("DUAL_DAR_INTENT_PROVISIONING", isDualDARIntentProvisioned(this.mContext, managedProfileProvisioningParams.getAdminExtras()));
-                    intent.putExtra("DUAL_DAR_IS_WPCOD", managedProfileProvisioningParams.isOrganizationOwnedProvisioning());
-                    if (isDualDARNativeCrypto(this.mContext, managedProfileProvisioningParams.getAdminExtras())) {
-                        intent.putExtra("DUAL_DAR_CRYPTO_TYPE", 33554432);
-                    } else {
-                        intent.putExtra("DUAL_DAR_CRYPTO_TYPE", 67108864);
-                    }
-                    startProvisionService(intent);
-                    while (!zArr[0]) {
-                        obj.wait();
-                    }
-                } catch (Exception e) {
-                    Log.d("DualDarProvisioningHelper", "Error during onCreateAndProvisionManagedProfileStarted" + e);
-                }
-            }
-            if (zArr2[0]) {
-                return;
-            }
-            throw new ServiceSpecificException(1, "onCreateAndProvisionManagedProfileStarted failed with result: " + iArr[0]);
-        }
-    }
-
-    public final void setFilterForDualDarStarted(IntentFilter intentFilter) {
-        intentFilter.addAction("com.android.dualdar.started.provisioning_success");
-        intentFilter.addAction("com.android.dualdar.started.cancelled");
-        intentFilter.addAction("com.android.dualdar.started.error");
-    }
-
-    public void onCreateAndProvisioningManagedProfileCompletedForDualDar(ManagedProfileProvisioningParams managedProfileProvisioningParams, int i) {
-        if (isDualDARConfigured(this.mContext, managedProfileProvisioningParams.getAdminExtras())) {
-            final Object obj = new Object();
-            final boolean[] zArr = {false};
-            final boolean[] zArr2 = new boolean[1];
-            final int[] iArr = new int[1];
-            BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.devicepolicy.DualDarProvisioningHelper.2
-                @Override // android.content.BroadcastReceiver
-                public void onReceive(Context context, Intent intent) {
-                    String action = intent.getAction();
-                    Log.d("DualDarProvisioningHelper", "DualDAR Managed Profile Completed Service onReceived is called: " + action);
-                    DualDarProvisioningHelper.this.mContext.unregisterReceiver(this);
-                    DualDarProvisioningHelper.this.mContext.unbindService(DualDarProvisioningHelper.this.connection);
-                    if ("com.android.dualdar.completed.provisioning_success".equals(action)) {
-                        zArr2[0] = true;
-                    } else if ("com.android.dualdar.completed.cancelled".equals(action)) {
-                        zArr2[0] = true;
-                        Log.d("DualDarProvisioningHelper", "DualDAR is not enabled. dualdar completed provisinoing cacelled.");
-                    } else {
-                        zArr2[0] = false;
-                        iArr[0] = intent.getIntExtra("ERROR_CODE", 5);
-                    }
-                    synchronized (obj) {
-                        zArr[0] = true;
-                        obj.notify();
-                    }
-                }
-            };
-            IntentFilter intentFilter = new IntentFilter();
-            setFilterForDualDarCompleted(intentFilter);
-            this.mContext.registerReceiver(broadcastReceiver, intentFilter);
-            synchronized (obj) {
-                try {
-                    Log.d("DualDarProvisioningHelper", "Starting Knox DUAL DAR DualDar Completed Service");
-                    Intent intent = new Intent();
-                    intent.setComponent(new ComponentName("com.samsung.android.knox.containercore", "com.samsung.android.knox.containercore.provisioning.DualDarCompletedService"));
-                    intent.putExtra("android.intent.extra.user_handle", i);
-                    intent.putExtra("DUAL_DAR_PARAMS", getDualDARConfigParams(this.mContext, managedProfileProvisioningParams.getAdminExtras()));
-                    intent.putExtra("DualDARServiceEventFlag", 500);
-                    intent.putExtra("DUAL_DAR_ADMIN_PACKAGE", managedProfileProvisioningParams.getProfileAdminComponentName().getPackageName());
-                    intent.putExtra("DUAL_DAR_INTENT_PROVISIONING", isDualDARIntentProvisioned(this.mContext, managedProfileProvisioningParams.getAdminExtras()));
-                    intent.putExtra("DUAL_DAR_IS_WPCOD", managedProfileProvisioningParams.isOrganizationOwnedProvisioning());
-                    if (isDualDARNativeCrypto(this.mContext, managedProfileProvisioningParams.getAdminExtras())) {
-                        intent.putExtra("DUAL_DAR_CRYPTO_TYPE", 33554432);
-                    } else {
-                        intent.putExtra("DUAL_DAR_CRYPTO_TYPE", 67108864);
-                    }
-                    startProvisionService(intent);
-                    while (!zArr[0]) {
-                        obj.wait();
-                    }
-                } catch (Exception e) {
-                    Log.d("DualDarProvisioningHelper", "Error during onCreateAndProvisionManagedProfileCompleted" + e);
-                }
-            }
-            if (zArr2[0]) {
-                return;
-            }
-            throw new ServiceSpecificException(2, "onCreateAndProvisionManagedProfileCompleted failed with result: " + iArr[0]);
-        }
-    }
-
-    public final void setFilterForDualDarCompleted(IntentFilter intentFilter) {
-        intentFilter.addAction("com.android.dualdar.completed.provisioning_success");
-        intentFilter.addAction("com.android.dualdar.completed.cancelled");
-        intentFilter.addAction("com.android.dualdar.completed.error");
-    }
-
-    public void onProvisionFullyManagedDeviceStartedForDualDar(FullyManagedDeviceProvisioningParams fullyManagedDeviceProvisioningParams) {
-        int i;
-        if (isDualDARConfigured(this.mContext, fullyManagedDeviceProvisioningParams.getAdminExtras())) {
-            final Object obj = new Object();
-            final boolean[] zArr = {false};
-            final boolean[] zArr2 = new boolean[1];
-            final int[] iArr = new int[1];
-            BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.devicepolicy.DualDarProvisioningHelper.3
-                @Override // android.content.BroadcastReceiver
-                public void onReceive(Context context, Intent intent) {
-                    String action = intent.getAction();
-                    Log.d("DualDarProvisioningHelper", "DualDAR Managed Device Started Service onReceived is called: " + action);
-                    DualDarProvisioningHelper.this.mContext.unregisterReceiver(this);
-                    DualDarProvisioningHelper.this.mContext.unbindService(DualDarProvisioningHelper.this.connection);
-                    if ("com.android.dualdar.started.provisioning_success".equals(action)) {
-                        zArr2[0] = true;
-                    } else {
-                        zArr2[0] = false;
-                        iArr[0] = intent.getIntExtra("ERROR_CODE", 5);
-                    }
-                    synchronized (obj) {
-                        zArr[0] = true;
-                        obj.notify();
-                    }
-                }
-            };
-            IntentFilter intentFilter = new IntentFilter();
-            setFilterForDualDarStarted(intentFilter);
-            this.mContext.registerReceiver(broadcastReceiver, intentFilter);
-            synchronized (obj) {
-                try {
-                    Log.d("DualDarProvisioningHelper", "Starting Knox DUAL DAR DualDar Started Service");
-                    Intent intent = new Intent();
-                    intent.setComponent(new ComponentName("com.samsung.android.knox.containercore", "com.samsung.android.knox.containercore.provisioning.DualDarStartedService"));
-                    intent.putExtra("android.intent.extra.user_handle", UserHandle.myUserId());
-                    intent.putExtra("DUAL_DAR_PARAMS", getDualDARConfigParams(this.mContext, fullyManagedDeviceProvisioningParams.getAdminExtras()));
-                    intent.putExtra("DualDARServiceEventFlag", 500);
-                    intent.putExtra("DUAL_DAR_ADMIN_PACKAGE", fullyManagedDeviceProvisioningParams.getDeviceAdminComponentName().getPackageName());
-                    intent.putExtra("DUAL_DAR_INTENT_PROVISIONING", isDualDARIntentProvisioned(this.mContext, fullyManagedDeviceProvisioningParams.getAdminExtras()));
-                    intent.putExtra("DUAL_DAR_IS_MANAGED_DEVICE", true);
-                    if (isDualDARNativeCrypto(this.mContext, fullyManagedDeviceProvisioningParams.getAdminExtras())) {
-                        i = 33554432;
-                        intent.putExtra("DUAL_DAR_CRYPTO_TYPE", 33554432);
-                    } else {
-                        i = 67108864;
-                        intent.putExtra("DUAL_DAR_CRYPTO_TYPE", 67108864);
-                    }
-                    if (!this.mUserManagerInternal.setDualDarInfo(0, i)) {
-                        Log.e("DualDarProvisioningHelper", "Failed to set dualdar crypto type to UserInfo");
-                        zArr2[0] = false;
-                        iArr[0] = intent.getIntExtra("ERROR_CODE", 5);
-                    } else {
-                        startProvisionService(intent);
-                        while (!zArr[0]) {
-                            obj.wait();
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.d("DualDarProvisioningHelper", "Error during onProvisionFullyManagedDeviceStarted" + e);
-                }
-            }
-            if (zArr2[0]) {
-                return;
-            }
-            throw new ServiceSpecificException(1, "onProvisionFullyManagedDeviceStarted failed with result: " + iArr[0]);
-        }
-    }
-
-    public void onProvisionFullyManagedDeviceCompletedForDualDar(FullyManagedDeviceProvisioningParams fullyManagedDeviceProvisioningParams) {
-        if (isDualDARConfigured(this.mContext, fullyManagedDeviceProvisioningParams.getAdminExtras())) {
-            final Object obj = new Object();
-            final boolean[] zArr = {false};
-            final boolean[] zArr2 = new boolean[1];
-            final int[] iArr = new int[1];
-            BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.devicepolicy.DualDarProvisioningHelper.4
-                @Override // android.content.BroadcastReceiver
-                public void onReceive(Context context, Intent intent) {
-                    String action = intent.getAction();
-                    Log.d("DualDarProvisioningHelper", "DualDAR Managed Device Completed Service onReceived is called: " + action);
-                    DualDarProvisioningHelper.this.mContext.unregisterReceiver(this);
-                    DualDarProvisioningHelper.this.mContext.unbindService(DualDarProvisioningHelper.this.connection);
-                    if ("com.android.dualdar.completed.provisioning_success".equals(action)) {
-                        zArr2[0] = true;
-                    } else {
-                        zArr2[0] = false;
-                        iArr[0] = intent.getIntExtra("ERROR_CODE", 5);
-                    }
-                    synchronized (obj) {
-                        zArr[0] = true;
-                        obj.notify();
-                    }
-                }
-            };
-            IntentFilter intentFilter = new IntentFilter();
-            setFilterForDualDarCompleted(intentFilter);
-            this.mContext.registerReceiver(broadcastReceiver, intentFilter);
-            synchronized (obj) {
-                try {
-                    Log.d("DualDarProvisioningHelper", "Starting Knox DUAL DAR DualDar Completed Service");
-                    Intent intent = new Intent();
-                    intent.setComponent(new ComponentName("com.samsung.android.knox.containercore", "com.samsung.android.knox.containercore.provisioning.DualDarCompletedService"));
-                    intent.putExtra("android.intent.extra.user_handle", UserHandle.myUserId());
-                    intent.putExtra("DUAL_DAR_PARAMS", getDualDARConfigParams(this.mContext, fullyManagedDeviceProvisioningParams.getAdminExtras()));
-                    intent.putExtra("DUAL_DAR_ADMIN_PACKAGE", fullyManagedDeviceProvisioningParams.getDeviceAdminComponentName().getPackageName());
-                    intent.putExtra("DUAL_DAR_INTENT_PROVISIONING", isDualDARIntentProvisioned(this.mContext, fullyManagedDeviceProvisioningParams.getAdminExtras()));
-                    intent.putExtra("DUAL_DAR_IS_MANAGED_DEVICE", true);
-                    if (isDualDARNativeCrypto(this.mContext, fullyManagedDeviceProvisioningParams.getAdminExtras())) {
-                        intent.putExtra("DUAL_DAR_CRYPTO_TYPE", 33554432);
-                    } else {
-                        intent.putExtra("DUAL_DAR_CRYPTO_TYPE", 67108864);
-                    }
-                    startProvisionService(intent);
-                    while (!zArr[0]) {
-                        obj.wait();
-                    }
-                } catch (Exception e) {
-                    Log.d("DualDarProvisioningHelper", "Error during onProvisionFullyManagedDeviceCompleted" + e);
-                }
-            }
-            if (zArr2[0]) {
-                return;
-            }
-            throw new ServiceSpecificException(7, "onProvisionFullyManagedDeviceCompleted failed with result: " + iArr[0]);
-        }
-    }
-
-    public static boolean isDualDARConfigured(Context context, PersistableBundle persistableBundle) {
-        if (persistableBundle != null && persistableBundle.getBoolean("dualdar-config")) {
-            Slogf.d("DualDarProvisioningHelper", "isDualDARConfigured from provisioning params");
-            return true;
-        }
-        if (getDualDARProfile(context) == null) {
-            return false;
-        }
-        Slogf.d("DualDarProvisioningHelper", "isDualDARConfigured from preset params");
-        return true;
-    }
-
     public static Bundle getDualDARConfigParams(Context context, PersistableBundle persistableBundle) {
-        if (persistableBundle != null && isDualDARIntentProvisioned(context, persistableBundle)) {
+        if (persistableBundle != null && isDualDARIntentProvisioned(persistableBundle)) {
             return new Bundle(persistableBundle).deepCopy();
         }
         Bundle dualDARProfile = getDualDARProfile(context);
@@ -332,14 +160,6 @@ public class DualDarProvisioningHelper {
         return bundle;
     }
 
-    public static boolean isDualDARIntentProvisioned(Context context, PersistableBundle persistableBundle) {
-        if (persistableBundle == null || !persistableBundle.getBoolean("dualdar-config")) {
-            return false;
-        }
-        Slogf.d("DualDarProvisioningHelper", "isDualDARIntentProvisioned from provisioning params");
-        return true;
-    }
-
     public static Bundle getDualDARProfile(Context context) {
         SemPersonaManager semPersonaManager = (SemPersonaManager) context.getSystemService("persona");
         if (semPersonaManager != null) {
@@ -348,7 +168,27 @@ public class DualDarProvisioningHelper {
         return null;
     }
 
-    public final boolean isDualDARNativeCrypto(Context context, PersistableBundle persistableBundle) {
+    public static boolean isDualDARConfigured(Context context, PersistableBundle persistableBundle) {
+        if (persistableBundle != null && persistableBundle.getBoolean("dualdar-config")) {
+            Slogf.d("DualDarProvisioningHelper", "isDualDARConfigured from provisioning params");
+            return true;
+        }
+        if (getDualDARProfile(context) == null) {
+            return false;
+        }
+        Slogf.d("DualDarProvisioningHelper", "isDualDARConfigured from preset params");
+        return true;
+    }
+
+    public static boolean isDualDARIntentProvisioned(PersistableBundle persistableBundle) {
+        if (persistableBundle == null || !persistableBundle.getBoolean("dualdar-config")) {
+            return false;
+        }
+        Slogf.d("DualDarProvisioningHelper", "isDualDARIntentProvisioned from provisioning params");
+        return true;
+    }
+
+    public static boolean isDualDARNativeCrypto(Context context, PersistableBundle persistableBundle) {
         if (persistableBundle != null && !TextUtils.isEmpty(persistableBundle.getString("dualdar-config-client-package"))) {
             Log.d("DualDarProvisioningHelper", "Custom crypto from provisioning params");
             return false;
@@ -362,13 +202,6 @@ public class DualDarProvisioningHelper {
         }
         Log.d("DualDarProvisioningHelper", "isDualDARNativeCrypto from preset params");
         return true;
-    }
-
-    public int getDualDarProfileFlags(ManagedProfileProvisioningParams managedProfileProvisioningParams) {
-        if (isDualDARConfigured(this.mContext, managedProfileProvisioningParams.getAdminExtras())) {
-            return isDualDARNativeCrypto(this.mContext, managedProfileProvisioningParams.getAdminExtras()) ? 33554496 : 67108928;
-        }
-        return 64;
     }
 
     public final void startProvisionService(Intent intent) {

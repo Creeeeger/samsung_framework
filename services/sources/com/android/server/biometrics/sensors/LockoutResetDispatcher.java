@@ -8,21 +8,17 @@ import android.os.IRemoteCallback;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.util.Slog;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class LockoutResetDispatcher implements IBinder.DeathRecipient {
-    final List mClientCallbacks = new ArrayList();
+public final class LockoutResetDispatcher implements IBinder.DeathRecipient {
+    final ConcurrentLinkedQueue mClientCallbacks = new ConcurrentLinkedQueue();
     public final Context mContext;
 
-    @Override // android.os.IBinder.DeathRecipient
-    public void binderDied() {
-    }
-
-    /* loaded from: classes.dex */
-    public class ClientCallback {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ClientCallback {
         public final IBiometricServiceLockoutResetCallback mCallback;
         public final String mOpPackageName;
         public final PowerManager.WakeLock mWakeLock;
@@ -32,22 +28,6 @@ public class LockoutResetDispatcher implements IBinder.DeathRecipient {
             this.mOpPackageName = str;
             this.mCallback = iBiometricServiceLockoutResetCallback;
             this.mWakeLock = powerManager.newWakeLock(1, "LockoutResetMonitor:SendLockoutReset");
-        }
-
-        public void sendLockoutReset(int i) {
-            if (this.mCallback != null) {
-                try {
-                    this.mWakeLock.acquire(2000L);
-                    this.mCallback.onLockoutReset(i, new IRemoteCallback.Stub() { // from class: com.android.server.biometrics.sensors.LockoutResetDispatcher.ClientCallback.1
-                        public void sendResult(Bundle bundle) {
-                            ClientCallback.this.releaseWakelock();
-                        }
-                    });
-                } catch (RemoteException e) {
-                    Slog.w("LockoutResetTracker", "Failed to invoke onLockoutReset: ", e);
-                    releaseWakelock();
-                }
-            }
         }
 
         public final void releaseWakelock() {
@@ -61,7 +41,7 @@ public class LockoutResetDispatcher implements IBinder.DeathRecipient {
         this.mContext = context;
     }
 
-    public synchronized void addCallback(IBiometricServiceLockoutResetCallback iBiometricServiceLockoutResetCallback, String str) {
+    public final synchronized void addCallback(IBiometricServiceLockoutResetCallback iBiometricServiceLockoutResetCallback, String str) {
         if (iBiometricServiceLockoutResetCallback == null) {
             Slog.w("LockoutResetTracker", "Callback from : " + str + " is null");
             return;
@@ -75,7 +55,11 @@ public class LockoutResetDispatcher implements IBinder.DeathRecipient {
     }
 
     @Override // android.os.IBinder.DeathRecipient
-    public synchronized void binderDied(IBinder iBinder) {
+    public final void binderDied() {
+    }
+
+    @Override // android.os.IBinder.DeathRecipient
+    public final synchronized void binderDied(IBinder iBinder) {
         Slog.e("LockoutResetTracker", "Callback binder died: " + iBinder);
         Iterator it = this.mClientCallbacks.iterator();
         while (it.hasNext()) {
@@ -88,10 +72,23 @@ public class LockoutResetDispatcher implements IBinder.DeathRecipient {
         }
     }
 
-    public synchronized void notifyLockoutResetCallbacks(int i) {
+    public final synchronized void notifyLockoutResetCallbacks(int i) {
         Iterator it = this.mClientCallbacks.iterator();
         while (it.hasNext()) {
-            ((ClientCallback) it.next()).sendLockoutReset(i);
+            final ClientCallback clientCallback = (ClientCallback) it.next();
+            if (clientCallback.mCallback != null) {
+                try {
+                    clientCallback.mWakeLock.acquire(2000L);
+                    clientCallback.mCallback.onLockoutReset(i, new IRemoteCallback.Stub() { // from class: com.android.server.biometrics.sensors.LockoutResetDispatcher.ClientCallback.1
+                        public final void sendResult(Bundle bundle) {
+                            ClientCallback.this.releaseWakelock();
+                        }
+                    });
+                } catch (RemoteException e) {
+                    Slog.w("LockoutResetTracker", "Failed to invoke onLockoutReset: ", e);
+                    clientCallback.releaseWakelock();
+                }
+            }
         }
     }
 }

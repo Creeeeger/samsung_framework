@@ -16,89 +16,248 @@ import android.media.soundtrigger_middleware.ISoundTriggerMiddlewareService;
 import android.media.soundtrigger_middleware.ISoundTriggerModule;
 import android.media.soundtrigger_middleware.SoundTriggerModuleDescriptor;
 import android.os.IBinder;
+import com.android.internal.util.LatencyTracker;
 import com.android.server.SystemService;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class SoundTriggerMiddlewareService extends ISoundTriggerMiddlewareService.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SoundTriggerMiddlewareService extends ISoundTriggerMiddlewareService.Stub {
     public final Context mContext;
     public final ISoundTriggerMiddlewareInternal mDelegate;
     public final SoundTriggerInjection mInjection;
 
-    public SoundTriggerMiddlewareService(ISoundTriggerMiddlewareInternal iSoundTriggerMiddlewareInternal, Context context, SoundTriggerInjection soundTriggerInjection) {
-        Objects.requireNonNull(iSoundTriggerMiddlewareInternal);
-        this.mDelegate = iSoundTriggerMiddlewareInternal;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Lifecycle extends SystemService {
+        public Lifecycle(Context context) {
+            super(context);
+        }
+
+        @Override // com.android.server.SystemService
+        public final void onStart() {
+            SoundTriggerInjection soundTriggerInjection = new SoundTriggerInjection();
+            HalFactory[] halFactoryArr = {new DefaultHalFactory(), new FakeHalFactory(soundTriggerInjection)};
+            Context context = getContext();
+            publishBinderService("soundtrigger_middleware", new SoundTriggerMiddlewareService(new SoundTriggerMiddlewareLogging(LatencyTracker.getInstance(context), new SoundTriggerMiddlewareLogging$$ExternalSyntheticLambda0(), new SoundTriggerMiddlewarePermission(new SoundTriggerMiddlewareValidation(new SoundTriggerMiddlewareImpl(halFactoryArr, new AudioSessionProviderImpl())), getContext())), getContext(), soundTriggerInjection));
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ModuleService extends ISoundTriggerModule.Stub {
+        public final ISoundTriggerModule mDelegate;
+
+        public ModuleService(ISoundTriggerModule iSoundTriggerModule) {
+            this.mDelegate = iSoundTriggerModule;
+        }
+
+        public final void detach() {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                this.mDelegate.detach();
+                if (create != null) {
+                    create.close();
+                }
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final void forceRecognitionEvent(int i) {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                this.mDelegate.forceRecognitionEvent(i);
+                if (create != null) {
+                    create.close();
+                }
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final int getModelParameter(int i, int i2) {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                int modelParameter = this.mDelegate.getModelParameter(i, i2);
+                if (create != null) {
+                    create.close();
+                }
+                return modelParameter;
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final int loadModel(SoundModel soundModel) {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                int loadModel = this.mDelegate.loadModel(soundModel);
+                if (create != null) {
+                    create.close();
+                }
+                return loadModel;
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final int loadPhraseModel(PhraseSoundModel phraseSoundModel) {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                int loadPhraseModel = this.mDelegate.loadPhraseModel(phraseSoundModel);
+                if (create != null) {
+                    create.close();
+                }
+                return loadPhraseModel;
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final ModelParameterRange queryModelParameterSupport(int i, int i2) {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                ModelParameterRange queryModelParameterSupport = this.mDelegate.queryModelParameterSupport(i, i2);
+                if (create != null) {
+                    create.close();
+                }
+                return queryModelParameterSupport;
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final void setModelParameter(int i, int i2, int i3) {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                this.mDelegate.setModelParameter(i, i2, i3);
+                if (create != null) {
+                    create.close();
+                }
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final IBinder startRecognition(int i, RecognitionConfig recognitionConfig) {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                IBinder startRecognition = this.mDelegate.startRecognition(i, recognitionConfig);
+                if (create != null) {
+                    create.close();
+                }
+                return startRecognition;
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final void stopRecognition(int i) {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                this.mDelegate.stopRecognition(i);
+                if (create != null) {
+                    create.close();
+                }
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final void unloadModel(int i) {
+            SafeCloseable create = ClearCallingIdentityContext.create();
+            try {
+                this.mDelegate.unloadModel(i);
+                if (create != null) {
+                    create.close();
+                }
+            } catch (Throwable th) {
+                if (create != null) {
+                    try {
+                        create.close();
+                    } catch (Throwable th2) {
+                        th.addSuppressed(th2);
+                    }
+                }
+                throw th;
+            }
+        }
+    }
+
+    public SoundTriggerMiddlewareService(SoundTriggerMiddlewareLogging soundTriggerMiddlewareLogging, Context context, SoundTriggerInjection soundTriggerInjection) {
+        this.mDelegate = soundTriggerMiddlewareLogging;
         this.mContext = context;
         this.mInjection = soundTriggerInjection;
     }
 
-    public SoundTriggerModuleDescriptor[] listModulesAsOriginator(Identity identity) {
-        SafeCloseable establishIdentityDirect = establishIdentityDirect(identity);
-        try {
-            SoundTriggerModuleDescriptor[] listModules = this.mDelegate.listModules();
-            if (establishIdentityDirect != null) {
-                establishIdentityDirect.close();
-            }
-            return listModules;
-        } catch (Throwable th) {
-            if (establishIdentityDirect != null) {
-                try {
-                    establishIdentityDirect.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-            }
-            throw th;
-        }
-    }
-
-    public SoundTriggerModuleDescriptor[] listModulesAsMiddleman(Identity identity, Identity identity2) {
-        SafeCloseable establishIdentityIndirect = establishIdentityIndirect(identity, identity2);
-        try {
-            SoundTriggerModuleDescriptor[] listModules = this.mDelegate.listModules();
-            if (establishIdentityIndirect != null) {
-                establishIdentityIndirect.close();
-            }
-            return listModules;
-        } catch (Throwable th) {
-            if (establishIdentityIndirect != null) {
-                try {
-                    establishIdentityIndirect.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-            }
-            throw th;
-        }
-    }
-
-    public ISoundTriggerModule attachAsOriginator(int i, Identity identity, ISoundTriggerCallback iSoundTriggerCallback) {
-        Objects.requireNonNull(identity);
-        SafeCloseable establishIdentityDirect = establishIdentityDirect(identity);
-        try {
-            ModuleService moduleService = new ModuleService(this.mDelegate.attach(i, iSoundTriggerCallback, false));
-            if (establishIdentityDirect != null) {
-                establishIdentityDirect.close();
-            }
-            return moduleService;
-        } catch (Throwable th) {
-            if (establishIdentityDirect != null) {
-                try {
-                    establishIdentityDirect.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-            }
-            throw th;
-        }
-    }
-
-    public ISoundTriggerModule attachAsMiddleman(int i, Identity identity, Identity identity2, ISoundTriggerCallback iSoundTriggerCallback, boolean z) {
+    public final ISoundTriggerModule attachAsMiddleman(int i, Identity identity, Identity identity2, ISoundTriggerCallback iSoundTriggerCallback, boolean z) {
         Objects.requireNonNull(identity);
         Objects.requireNonNull(identity2);
-        SafeCloseable establishIdentityIndirect = establishIdentityIndirect(identity, identity2);
+        SafeCloseable establishIdentityIndirect = PermissionUtil.establishIdentityIndirect(this.mContext, "android.permission.SOUNDTRIGGER_DELEGATE_IDENTITY", identity, identity2);
         try {
             ModuleService moduleService = new ModuleService(this.mDelegate.attach(i, iSoundTriggerCallback, z));
             if (establishIdentityIndirect != null) {
@@ -117,7 +276,28 @@ public class SoundTriggerMiddlewareService extends ISoundTriggerMiddlewareServic
         }
     }
 
-    public void attachFakeHalInjection(ISoundTriggerInjection iSoundTriggerInjection) {
+    public final ISoundTriggerModule attachAsOriginator(int i, Identity identity, ISoundTriggerCallback iSoundTriggerCallback) {
+        Objects.requireNonNull(identity);
+        SafeCloseable establishIdentityDirect = PermissionUtil.establishIdentityDirect(identity);
+        try {
+            ModuleService moduleService = new ModuleService(this.mDelegate.attach(i, iSoundTriggerCallback, false));
+            if (establishIdentityDirect != null) {
+                establishIdentityDirect.close();
+            }
+            return moduleService;
+        } catch (Throwable th) {
+            if (establishIdentityDirect != null) {
+                try {
+                    establishIdentityDirect.close();
+                } catch (Throwable th2) {
+                    th.addSuppressed(th2);
+                }
+            }
+            throw th;
+        }
+    }
+
+    public final void attachFakeHalInjection(ISoundTriggerInjection iSoundTriggerInjection) {
         PermissionChecker.checkCallingOrSelfPermissionForPreflight(this.mContext, "android.permission.MANAGE_SOUND_TRIGGER");
         SafeCloseable create = ClearCallingIdentityContext.create();
         try {
@@ -139,235 +319,50 @@ public class SoundTriggerMiddlewareService extends ISoundTriggerMiddlewareServic
         }
     }
 
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
         ISoundTriggerMiddlewareInternal iSoundTriggerMiddlewareInternal = this.mDelegate;
         if (iSoundTriggerMiddlewareInternal instanceof Dumpable) {
             ((Dumpable) iSoundTriggerMiddlewareInternal).dump(printWriter);
         }
     }
 
-    public final SafeCloseable establishIdentityIndirect(Identity identity, Identity identity2) {
-        return PermissionUtil.establishIdentityIndirect(this.mContext, "android.permission.SOUNDTRIGGER_DELEGATE_IDENTITY", identity, identity2);
-    }
-
-    public final SafeCloseable establishIdentityDirect(Identity identity) {
-        return PermissionUtil.establishIdentityDirect(identity);
-    }
-
-    /* loaded from: classes3.dex */
-    public final class ModuleService extends ISoundTriggerModule.Stub {
-        public final ISoundTriggerModule mDelegate;
-
-        public ModuleService(ISoundTriggerModule iSoundTriggerModule) {
-            this.mDelegate = iSoundTriggerModule;
-        }
-
-        public int loadModel(SoundModel soundModel) {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                int loadModel = this.mDelegate.loadModel(soundModel);
-                if (create != null) {
-                    create.close();
-                }
-                return loadModel;
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
+    public final SoundTriggerModuleDescriptor[] listModulesAsMiddleman(Identity identity, Identity identity2) {
+        SafeCloseable establishIdentityIndirect = PermissionUtil.establishIdentityIndirect(this.mContext, "android.permission.SOUNDTRIGGER_DELEGATE_IDENTITY", identity, identity2);
+        try {
+            SoundTriggerModuleDescriptor[] listModules = this.mDelegate.listModules();
+            if (establishIdentityIndirect != null) {
+                establishIdentityIndirect.close();
             }
-        }
-
-        public int loadPhraseModel(PhraseSoundModel phraseSoundModel) {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                int loadPhraseModel = this.mDelegate.loadPhraseModel(phraseSoundModel);
-                if (create != null) {
-                    create.close();
+            return listModules;
+        } catch (Throwable th) {
+            if (establishIdentityIndirect != null) {
+                try {
+                    establishIdentityIndirect.close();
+                } catch (Throwable th2) {
+                    th.addSuppressed(th2);
                 }
-                return loadPhraseModel;
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
             }
-        }
-
-        public void unloadModel(int i) {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                this.mDelegate.unloadModel(i);
-                if (create != null) {
-                    create.close();
-                }
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
-            }
-        }
-
-        public IBinder startRecognition(int i, RecognitionConfig recognitionConfig) {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                IBinder startRecognition = this.mDelegate.startRecognition(i, recognitionConfig);
-                if (create != null) {
-                    create.close();
-                }
-                return startRecognition;
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
-            }
-        }
-
-        public void stopRecognition(int i) {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                this.mDelegate.stopRecognition(i);
-                if (create != null) {
-                    create.close();
-                }
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
-            }
-        }
-
-        public void forceRecognitionEvent(int i) {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                this.mDelegate.forceRecognitionEvent(i);
-                if (create != null) {
-                    create.close();
-                }
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
-            }
-        }
-
-        public void setModelParameter(int i, int i2, int i3) {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                this.mDelegate.setModelParameter(i, i2, i3);
-                if (create != null) {
-                    create.close();
-                }
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
-            }
-        }
-
-        public int getModelParameter(int i, int i2) {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                int modelParameter = this.mDelegate.getModelParameter(i, i2);
-                if (create != null) {
-                    create.close();
-                }
-                return modelParameter;
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
-            }
-        }
-
-        public ModelParameterRange queryModelParameterSupport(int i, int i2) {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                ModelParameterRange queryModelParameterSupport = this.mDelegate.queryModelParameterSupport(i, i2);
-                if (create != null) {
-                    create.close();
-                }
-                return queryModelParameterSupport;
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
-            }
-        }
-
-        public void detach() {
-            SafeCloseable create = ClearCallingIdentityContext.create();
-            try {
-                this.mDelegate.detach();
-                if (create != null) {
-                    create.close();
-                }
-            } catch (Throwable th) {
-                if (create != null) {
-                    try {
-                        create.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
-            }
+            throw th;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public final class Lifecycle extends SystemService {
-        public Lifecycle(Context context) {
-            super(context);
-        }
-
-        @Override // com.android.server.SystemService
-        public void onStart() {
-            SoundTriggerInjection soundTriggerInjection = new SoundTriggerInjection();
-            publishBinderService("soundtrigger_middleware", new SoundTriggerMiddlewareService(new SoundTriggerMiddlewareLogging(getContext(), new SoundTriggerMiddlewarePermission(new SoundTriggerMiddlewareValidation(new SoundTriggerMiddlewareImpl(new HalFactory[]{new DefaultHalFactory(), new FakeHalFactory(soundTriggerInjection)}, new AudioSessionProviderImpl())), getContext())), getContext(), soundTriggerInjection));
+    public final SoundTriggerModuleDescriptor[] listModulesAsOriginator(Identity identity) {
+        SafeCloseable establishIdentityDirect = PermissionUtil.establishIdentityDirect(identity);
+        try {
+            SoundTriggerModuleDescriptor[] listModules = this.mDelegate.listModules();
+            if (establishIdentityDirect != null) {
+                establishIdentityDirect.close();
+            }
+            return listModules;
+        } catch (Throwable th) {
+            if (establishIdentityDirect != null) {
+                try {
+                    establishIdentityDirect.close();
+                } catch (Throwable th2) {
+                    th.addSuppressed(th2);
+                }
+            }
+            throw th;
         }
     }
 }

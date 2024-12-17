@@ -1,30 +1,92 @@
 package com.android.server.pm;
 
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManagerInternal;
 import android.content.pm.ShortcutInfo;
-import android.graphics.Bitmap;
+import android.content.pm.SigningInfo;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
+import android.util.Slog;
+import android.util.Xml;
 import com.android.internal.util.Preconditions;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.modules.utils.TypedXmlSerializer;
+import com.android.server.AppStateTrackerImpl$MyHandler$$ExternalSyntheticOutline0;
+import com.android.server.HeimdAllFsService$$ExternalSyntheticOutline0;
+import com.android.server.LocalServices;
+import com.android.server.PinnerService$$ExternalSyntheticOutline0;
+import com.android.server.backup.BackupUtils;
+import com.samsung.android.server.pm.PmLog;
 import java.io.File;
-import java.util.Objects;
-import org.json.JSONObject;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class ShortcutPackageItem {
     public final ShortcutPackageInfo mPackageInfo;
     public final String mPackageName;
     public final int mPackageUserId;
-    public ShortcutBitmapSaver mShortcutBitmapSaver;
+    public final ShortcutBitmapSaver mShortcutBitmapSaver;
     public ShortcutUser mShortcutUser;
-    public final Object mLock = new Object();
-    public final Runnable mSaveShortcutPackageRunner = new Runnable() { // from class: com.android.server.pm.ShortcutPackageItem$$ExternalSyntheticLambda0
+    public final Object mPackageItemLock = new Object();
+    public final ShortcutPackageItem$$ExternalSyntheticLambda0 mSaveShortcutPackageRunner = new Runnable() { // from class: com.android.server.pm.ShortcutPackageItem$$ExternalSyntheticLambda0
         @Override // java.lang.Runnable
         public final void run() {
-            ShortcutPackageItem.this.saveShortcutPackageItem();
+            ShortcutPackageItem shortcutPackageItem = ShortcutPackageItem.this;
+            shortcutPackageItem.waitForBitmapSaves();
+            File shortcutPackageItemFile = shortcutPackageItem.getShortcutPackageItemFile();
+            Slog.d("ShortcutService", "Saving package item " + shortcutPackageItem.mPackageName + " to " + shortcutPackageItemFile);
+            synchronized (shortcutPackageItem.mPackageItemLock) {
+                shortcutPackageItemFile.getParentFile().mkdirs();
+                shortcutPackageItem.saveToFileLocked(shortcutPackageItemFile);
+                shortcutPackageItem.scheduleSaveToAppSearchLocked();
+            }
         }
     };
 
-    public abstract boolean canRestoreAnyVersion();
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.pm.ShortcutPackageItem$$ExternalSyntheticLambda0] */
+    public ShortcutPackageItem(ShortcutUser shortcutUser, int i, String str, ShortcutPackageInfo shortcutPackageInfo) {
+        this.mShortcutUser = shortcutUser;
+        this.mPackageUserId = i;
+        this.mPackageName = (String) Preconditions.checkStringNotEmpty(str);
+        this.mPackageInfo = shortcutPackageInfo;
+        this.mShortcutBitmapSaver = new ShortcutBitmapSaver(shortcutUser.mService);
+    }
+
+    public static ResilientAtomicFile getResilientFile(File file) {
+        String path = file.getPath();
+        return new ResilientAtomicFile(file, new File(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(path, ".backup")), new File(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(path, ".reservecopy")), 505, "shortcut package item", null);
+    }
+
+    public final void attemptToRestoreIfNeededAndSave() {
+        ShortcutPackageInfo shortcutPackageInfo = this.mPackageInfo;
+        if (shortcutPackageInfo.mIsShadow) {
+            ShortcutService shortcutService = this.mShortcutUser.mService;
+            String str = this.mPackageName;
+            int i = this.mPackageUserId;
+            if (shortcutService.isPackageInstalled(i, str)) {
+                int i2 = 102;
+                if (shortcutPackageInfo.mSigHashes.size() > 0) {
+                    PackageInfo packageInfo = shortcutService.getPackageInfo(str, i, true);
+                    packageInfo.getLongVersionCode();
+                    if (!BackupUtils.signaturesMatch(shortcutPackageInfo.mSigHashes, packageInfo, (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class))) {
+                        Slog.w("ShortcutService", "Can't restore: Package signature mismatch");
+                    } else if (shortcutService.mSmartSwitchBackupAllowed.get() || ((packageInfo.applicationInfo.flags & 32768) != 0 && shortcutPackageInfo.mBackupSourceBackupAllowed)) {
+                        i2 = 0;
+                    } else {
+                        Slog.w("ShortcutService", "Can't restore: package didn't or doesn't allow backup");
+                        i2 = 101;
+                    }
+                } else {
+                    shortcutService.wtf(AppStateTrackerImpl$MyHandler$$ExternalSyntheticOutline0.m(i, "Attempted to restore package ", str, "/u", " but signatures not found in the restore data."), null);
+                }
+                onRestored(i2);
+                shortcutPackageInfo.mIsShadow = false;
+                scheduleSave();
+            }
+        }
+    }
 
     public abstract int getOwnerUserId();
 
@@ -32,7 +94,93 @@ public abstract class ShortcutPackageItem {
 
     public abstract void onRestored(int i);
 
+    public final void refreshPackageSignatureAndSave() {
+        ShortcutPackageInfo shortcutPackageInfo = this.mPackageInfo;
+        boolean z = shortcutPackageInfo.mIsShadow;
+        if (z) {
+            return;
+        }
+        ShortcutService shortcutService = this.mShortcutUser.mService;
+        String str = this.mPackageName;
+        if (z) {
+            StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Attempted to refresh package info for shadow package ", str, ", user=");
+            m.append(getOwnerUserId());
+            shortcutService.wtf(m.toString(), null);
+        } else {
+            PackageInfo packageInfo = shortcutService.getPackageInfo(str, this.mPackageUserId, true);
+            if (packageInfo == null) {
+                HeimdAllFsService$$ExternalSyntheticOutline0.m("Package not found: ", str, "ShortcutService");
+            } else {
+                SigningInfo signingInfo = packageInfo.signingInfo;
+                if (signingInfo == null) {
+                    PinnerService$$ExternalSyntheticOutline0.m("Not refreshing signature for ", str, " since it appears to have no signing info.", "ShortcutService");
+                } else {
+                    shortcutPackageInfo.mSigHashes = BackupUtils.hashSignatureArray(signingInfo.getApkContentsSigners());
+                }
+            }
+        }
+        scheduleSave();
+    }
+
+    public final void removeIcon(ShortcutInfo shortcutInfo) {
+        synchronized (this.mPackageItemLock) {
+            this.mShortcutBitmapSaver.getClass();
+            ShortcutBitmapSaver.removeIcon(shortcutInfo);
+        }
+    }
+
+    public final void removeShortcutPackageItem() {
+        synchronized (this.mPackageItemLock) {
+            ResilientAtomicFile resilientFile = getResilientFile(getShortcutPackageItemFile());
+            resilientFile.mFile.delete();
+            resilientFile.mTemporaryBackup.delete();
+            resilientFile.mReserveCopy.delete();
+        }
+    }
+
+    public final void saveToFileLocked(File file) {
+        FileOutputStream startWrite;
+        ResilientAtomicFile resilientFile = getResilientFile(file);
+        FileOutputStream fileOutputStream = null;
+        try {
+            try {
+                startWrite = resilientFile.startWrite();
+            } catch (IOException | XmlPullParserException e) {
+                e = e;
+            }
+            try {
+                TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
+                resolveSerializer.startDocument((String) null, Boolean.TRUE);
+                saveToXml(resolveSerializer, false);
+                resolveSerializer.endDocument();
+                startWrite.flush();
+                resilientFile.finishWrite(startWrite);
+            } catch (IOException | XmlPullParserException e2) {
+                e = e2;
+                fileOutputStream = startWrite;
+                Slog.e("ShortcutService", "Failed to write to file " + resilientFile.mFile, e);
+                PmLog.logDebugInfo("Failed to write to shortcut file " + resilientFile.mFile + ", Error : " + e);
+                resilientFile.failWrite(fileOutputStream);
+                resilientFile.close();
+            }
+            resilientFile.close();
+        } catch (Throwable th) {
+            try {
+                resilientFile.close();
+            } catch (Throwable th2) {
+                th.addSuppressed(th2);
+            }
+            throw th;
+        }
+    }
+
     public abstract void saveToXml(TypedXmlSerializer typedXmlSerializer, boolean z);
+
+    public final void scheduleSave() {
+        ShortcutService shortcutService = this.mShortcutUser.mService;
+        ShortcutPackageItem$$ExternalSyntheticLambda0 shortcutPackageItem$$ExternalSyntheticLambda0 = this.mSaveShortcutPackageRunner;
+        shortcutService.injectPostToHandlerDebounced(shortcutPackageItem$$ExternalSyntheticLambda0, shortcutPackageItem$$ExternalSyntheticLambda0);
+    }
 
     public void scheduleSaveToAppSearchLocked() {
     }
@@ -40,198 +188,9 @@ public abstract class ShortcutPackageItem {
     public void verifyStates() {
     }
 
-    public ShortcutPackageItem(ShortcutUser shortcutUser, int i, String str, ShortcutPackageInfo shortcutPackageInfo) {
-        this.mShortcutUser = shortcutUser;
-        this.mPackageUserId = i;
-        this.mPackageName = (String) Preconditions.checkStringNotEmpty(str);
-        Objects.requireNonNull(shortcutPackageInfo);
-        this.mPackageInfo = shortcutPackageInfo;
-        this.mShortcutBitmapSaver = new ShortcutBitmapSaver(shortcutUser.mService);
-    }
-
-    public void replaceUser(ShortcutUser shortcutUser) {
-        this.mShortcutUser = shortcutUser;
-    }
-
-    public ShortcutUser getUser() {
-        return this.mShortcutUser;
-    }
-
-    public int getPackageUserId() {
-        return this.mPackageUserId;
-    }
-
-    public String getPackageName() {
-        return this.mPackageName;
-    }
-
-    public ShortcutPackageInfo getPackageInfo() {
-        return this.mPackageInfo;
-    }
-
-    public void refreshPackageSignatureAndSave() {
-        if (this.mPackageInfo.isShadow()) {
-            return;
+    public final void waitForBitmapSaves() {
+        synchronized (this.mPackageItemLock) {
+            this.mShortcutBitmapSaver.waitForAllSavesLocked();
         }
-        this.mPackageInfo.refreshSignature(this.mShortcutUser.mService, this);
-        scheduleSave();
-    }
-
-    public void attemptToRestoreIfNeededAndSave() {
-        int canRestoreTo;
-        if (this.mPackageInfo.isShadow()) {
-            ShortcutService shortcutService = this.mShortcutUser.mService;
-            if (shortcutService.isPackageInstalled(this.mPackageName, this.mPackageUserId)) {
-                if (!this.mPackageInfo.hasSignatures()) {
-                    shortcutService.wtf("Attempted to restore package " + this.mPackageName + "/u" + this.mPackageUserId + " but signatures not found in the restore data.");
-                    canRestoreTo = 102;
-                } else {
-                    PackageInfo packageInfoWithSignatures = shortcutService.getPackageInfoWithSignatures(this.mPackageName, this.mPackageUserId);
-                    packageInfoWithSignatures.getLongVersionCode();
-                    canRestoreTo = this.mPackageInfo.canRestoreTo(shortcutService, packageInfoWithSignatures, canRestoreAnyVersion());
-                }
-                onRestored(canRestoreTo);
-                this.mPackageInfo.setShadow(false);
-                scheduleSave();
-            }
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:10:0x0074  */
-    /* JADX WARN: Removed duplicated region for block: B:13:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void saveToFileLocked(java.io.File r5, boolean r6) {
-        /*
-            r4 = this;
-            com.android.server.pm.ResilientAtomicFile r5 = getResilientFile(r5)
-            r0 = 0
-            java.io.FileOutputStream r1 = r5.startWrite()     // Catch: java.lang.Throwable -> L32 java.lang.Throwable -> L34
-            if (r6 == 0) goto L19
-            com.android.modules.utils.TypedXmlSerializer r2 = android.util.Xml.newFastSerializer()     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            java.nio.charset.Charset r3 = java.nio.charset.StandardCharsets.UTF_8     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            java.lang.String r3 = r3.name()     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            r2.setOutput(r1, r3)     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            goto L1d
-        L19:
-            com.android.modules.utils.TypedXmlSerializer r2 = android.util.Xml.resolveSerializer(r1)     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-        L1d:
-            java.lang.Boolean r3 = java.lang.Boolean.TRUE     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            r2.startDocument(r0, r3)     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            r4.saveToXml(r2, r6)     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            r2.endDocument()     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            r1.flush()     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            r5.finishWrite(r1)     // Catch: java.lang.Throwable -> L2f java.lang.Throwable -> L32
-            goto L72
-        L2f:
-            r4 = move-exception
-            r0 = r1
-            goto L35
-        L32:
-            r4 = move-exception
-            goto L78
-        L34:
-            r4 = move-exception
-        L35:
-            java.lang.String r6 = "ShortcutService"
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L32
-            r1.<init>()     // Catch: java.lang.Throwable -> L32
-            java.lang.String r2 = "Failed to write to file "
-            r1.append(r2)     // Catch: java.lang.Throwable -> L32
-            java.io.File r2 = r5.getBaseFile()     // Catch: java.lang.Throwable -> L32
-            r1.append(r2)     // Catch: java.lang.Throwable -> L32
-            java.lang.String r1 = r1.toString()     // Catch: java.lang.Throwable -> L32
-            android.util.Slog.e(r6, r1, r4)     // Catch: java.lang.Throwable -> L32
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L32
-            r6.<init>()     // Catch: java.lang.Throwable -> L32
-            java.lang.String r1 = "Failed to write to shortcut file "
-            r6.append(r1)     // Catch: java.lang.Throwable -> L32
-            java.io.File r1 = r5.getBaseFile()     // Catch: java.lang.Throwable -> L32
-            r6.append(r1)     // Catch: java.lang.Throwable -> L32
-            java.lang.String r1 = ", Error : "
-            r6.append(r1)     // Catch: java.lang.Throwable -> L32
-            r6.append(r4)     // Catch: java.lang.Throwable -> L32
-            java.lang.String r4 = r6.toString()     // Catch: java.lang.Throwable -> L32
-            com.samsung.android.server.pm.PmLog.logDebugInfo(r4)     // Catch: java.lang.Throwable -> L32
-            r5.failWrite(r0)     // Catch: java.lang.Throwable -> L32
-        L72:
-            if (r5 == 0) goto L77
-            r5.close()
-        L77:
-            return
-        L78:
-            if (r5 == 0) goto L82
-            r5.close()     // Catch: java.lang.Throwable -> L7e
-            goto L82
-        L7e:
-            r5 = move-exception
-            r4.addSuppressed(r5)
-        L82:
-            throw r4
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.ShortcutPackageItem.saveToFileLocked(java.io.File, boolean):void");
-    }
-
-    public JSONObject dumpCheckin(boolean z) {
-        JSONObject jSONObject = new JSONObject();
-        jSONObject.put("name", this.mPackageName);
-        return jSONObject;
-    }
-
-    public void scheduleSave() {
-        ShortcutService shortcutService = this.mShortcutUser.mService;
-        Runnable runnable = this.mSaveShortcutPackageRunner;
-        shortcutService.injectPostToHandlerDebounced(runnable, runnable);
-    }
-
-    public void saveShortcutPackageItem() {
-        waitForBitmapSaves();
-        File shortcutPackageItemFile = getShortcutPackageItemFile();
-        synchronized (this.mLock) {
-            shortcutPackageItemFile.getParentFile().mkdirs();
-            saveToFileLocked(shortcutPackageItemFile, false);
-            scheduleSaveToAppSearchLocked();
-        }
-    }
-
-    public boolean waitForBitmapSaves() {
-        boolean waitForAllSavesLocked;
-        synchronized (this.mLock) {
-            waitForAllSavesLocked = this.mShortcutBitmapSaver.waitForAllSavesLocked();
-        }
-        return waitForAllSavesLocked;
-    }
-
-    public void saveBitmap(ShortcutInfo shortcutInfo, int i, Bitmap.CompressFormat compressFormat, int i2) {
-        synchronized (this.mLock) {
-            this.mShortcutBitmapSaver.saveBitmapLocked(shortcutInfo, i, compressFormat, i2);
-        }
-    }
-
-    public String getBitmapPathMayWait(ShortcutInfo shortcutInfo) {
-        String bitmapPathMayWaitLocked;
-        synchronized (this.mLock) {
-            bitmapPathMayWaitLocked = this.mShortcutBitmapSaver.getBitmapPathMayWaitLocked(shortcutInfo);
-        }
-        return bitmapPathMayWaitLocked;
-    }
-
-    public void removeIcon(ShortcutInfo shortcutInfo) {
-        synchronized (this.mLock) {
-            this.mShortcutBitmapSaver.removeIcon(shortcutInfo);
-        }
-    }
-
-    public void removeShortcutPackageItem() {
-        synchronized (this.mLock) {
-            getResilientFile(getShortcutPackageItemFile()).delete();
-        }
-    }
-
-    public static ResilientAtomicFile getResilientFile(File file) {
-        String path = file.getPath();
-        return new ResilientAtomicFile(file, new File(path + ".backup"), new File(path + ".reservecopy"), 505, "shortcut package item", null);
     }
 }

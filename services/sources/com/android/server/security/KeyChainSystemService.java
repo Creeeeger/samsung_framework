@@ -14,15 +14,17 @@ import com.android.server.DeviceIdleInternal;
 import com.android.server.LocalServices;
 import com.android.server.SystemService;
 
-/* loaded from: classes3.dex */
-public class KeyChainSystemService extends SystemService {
-    public final BroadcastReceiver mPackageReceiver;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class KeyChainSystemService extends SystemService {
+    public final AnonymousClass1 mPackageReceiver;
 
+    /* JADX WARN: Type inference failed for: r1v1, types: [com.android.server.security.KeyChainSystemService$1] */
     public KeyChainSystemService(Context context) {
         super(context);
         this.mPackageReceiver = new BroadcastReceiver() { // from class: com.android.server.security.KeyChainSystemService.1
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
+            public final void onReceive(Context context2, Intent intent) {
                 if (intent.getPackage() != null) {
                     return;
                 }
@@ -34,7 +36,14 @@ public class KeyChainSystemService extends SystemService {
                     }
                     intent2.setComponent(resolveSystemService);
                     intent2.setAction(intent.getAction());
-                    KeyChainSystemService.this.startServiceInBackgroundAsUser(intent2, UserHandle.of(getSendingUserId()));
+                    KeyChainSystemService keyChainSystemService = KeyChainSystemService.this;
+                    UserHandle of = UserHandle.of(getSendingUserId());
+                    keyChainSystemService.getClass();
+                    if (intent2.getComponent() == null) {
+                        return;
+                    }
+                    ((DeviceIdleInternal) LocalServices.getService(DeviceIdleInternal.class)).addPowerSaveTempWhitelistApp(Process.myUid(), intent2.getComponent().getPackageName(), 30000L, of.getIdentifier(), false, FrameworkStatsLog.APP_BACKGROUND_RESTRICTIONS_INFO__EXEMPTION_REASON__REASON_KEY_CHAIN, "keychain");
+                    keyChainSystemService.getContext().startServiceAsUser(intent2, of);
                 } catch (RuntimeException e) {
                     Slog.e("KeyChainSystemService", "Unable to forward package removed broadcast to KeyChain", e);
                 }
@@ -43,7 +52,7 @@ public class KeyChainSystemService extends SystemService {
     }
 
     @Override // com.android.server.SystemService
-    public void onStart() {
+    public final void onStart() {
         IntentFilter intentFilter = new IntentFilter("android.intent.action.PACKAGE_REMOVED");
         intentFilter.addDataScheme("package");
         try {
@@ -51,13 +60,5 @@ public class KeyChainSystemService extends SystemService {
         } catch (RuntimeException e) {
             Slog.w("KeyChainSystemService", "Unable to register for package removed broadcast", e);
         }
-    }
-
-    public final void startServiceInBackgroundAsUser(Intent intent, UserHandle userHandle) {
-        if (intent.getComponent() == null) {
-            return;
-        }
-        ((DeviceIdleInternal) LocalServices.getService(DeviceIdleInternal.class)).addPowerSaveTempWhitelistApp(Process.myUid(), intent.getComponent().getPackageName(), 30000L, userHandle.getIdentifier(), false, FrameworkStatsLog.APP_BACKGROUND_RESTRICTIONS_INFO__EXEMPTION_REASON__REASON_KEY_CHAIN, "keychain");
-        getContext().startServiceAsUser(intent, userHandle);
     }
 }

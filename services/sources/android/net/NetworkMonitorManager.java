@@ -5,33 +5,34 @@ import android.os.Binder;
 import android.os.RemoteException;
 import android.util.Log;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class NetworkMonitorManager {
     private final INetworkMonitor mNetworkMonitor;
     private final String mTag;
+
+    public NetworkMonitorManager(INetworkMonitor iNetworkMonitor) {
+        this(iNetworkMonitor, "NetworkMonitorManager");
+    }
 
     public NetworkMonitorManager(INetworkMonitor iNetworkMonitor, String str) {
         this.mNetworkMonitor = iNetworkMonitor;
         this.mTag = str;
     }
 
-    public NetworkMonitorManager(INetworkMonitor iNetworkMonitor) {
-        this(iNetworkMonitor, NetworkMonitorManager.class.getSimpleName());
-    }
-
     private void log(String str, Throwable th) {
         Log.e(this.mTag, str, th);
     }
 
-    public boolean start() {
+    public boolean forceReevaluation(int i) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             try {
-                this.mNetworkMonitor.start();
+                this.mNetworkMonitor.forceReevaluation(i);
                 Binder.restoreCallingIdentity(clearCallingIdentity);
                 return true;
             } catch (RemoteException e) {
-                log("Error in start", e);
+                log("Error in forceReevaluation", e);
                 Binder.restoreCallingIdentity(clearCallingIdentity);
                 return false;
             }
@@ -77,60 +78,6 @@ public class NetworkMonitorManager {
         }
     }
 
-    public boolean setAcceptPartialConnectivity() {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                this.mNetworkMonitor.setAcceptPartialConnectivity();
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                return true;
-            } catch (RemoteException e) {
-                log("Error in setAcceptPartialConnectivity", e);
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                return false;
-            }
-        } catch (Throwable th) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            throw th;
-        }
-    }
-
-    public boolean forceReevaluation(int i) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                this.mNetworkMonitor.forceReevaluation(i);
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                return true;
-            } catch (RemoteException e) {
-                log("Error in forceReevaluation", e);
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                return false;
-            }
-        } catch (Throwable th) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            throw th;
-        }
-    }
-
-    public boolean notifyPrivateDnsChanged(PrivateDnsConfigParcel privateDnsConfigParcel) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                this.mNetworkMonitor.notifyPrivateDnsChanged(privateDnsConfigParcel);
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                return true;
-            } catch (RemoteException e) {
-                log("Error in notifyPrivateDnsChanged", e);
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                return false;
-            }
-        } catch (Throwable th) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            throw th;
-        }
-    }
-
     public boolean notifyDnsResponse(int i) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
@@ -140,6 +87,42 @@ public class NetworkMonitorManager {
                 return true;
             } catch (RemoteException e) {
                 log("Error in notifyDnsResponse", e);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return false;
+            }
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public boolean notifyLinkPropertiesChanged(LinkProperties linkProperties) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                this.mNetworkMonitor.notifyLinkPropertiesChanged(linkProperties);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return true;
+            } catch (RemoteException e) {
+                log("Error in notifyLinkPropertiesChanged", e);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return false;
+            }
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public boolean notifyNetworkCapabilitiesChanged(NetworkCapabilities networkCapabilities) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                this.mNetworkMonitor.notifyNetworkCapabilitiesChanged(networkCapabilities);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return true;
+            } catch (RemoteException e) {
+                log("Error in notifyNetworkCapabilitiesChanged", e);
                 Binder.restoreCallingIdentity(clearCallingIdentity);
                 return false;
             }
@@ -204,15 +187,15 @@ public class NetworkMonitorManager {
         }
     }
 
-    public boolean notifyLinkPropertiesChanged(LinkProperties linkProperties) {
+    public boolean notifyPrivateDnsChanged(PrivateDnsConfigParcel privateDnsConfigParcel) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             try {
-                this.mNetworkMonitor.notifyLinkPropertiesChanged(linkProperties);
+                this.mNetworkMonitor.notifyPrivateDnsChanged(privateDnsConfigParcel);
                 Binder.restoreCallingIdentity(clearCallingIdentity);
                 return true;
             } catch (RemoteException e) {
-                log("Error in notifyLinkPropertiesChanged", e);
+                log("Error in notifyPrivateDnsChanged", e);
                 Binder.restoreCallingIdentity(clearCallingIdentity);
                 return false;
             }
@@ -222,15 +205,33 @@ public class NetworkMonitorManager {
         }
     }
 
-    public boolean notifyNetworkCapabilitiesChanged(NetworkCapabilities networkCapabilities) {
+    public boolean setAcceptPartialConnectivity() {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             try {
-                this.mNetworkMonitor.notifyNetworkCapabilitiesChanged(networkCapabilities);
+                this.mNetworkMonitor.setAcceptPartialConnectivity();
                 Binder.restoreCallingIdentity(clearCallingIdentity);
                 return true;
             } catch (RemoteException e) {
-                log("Error in notifyNetworkCapabilitiesChanged", e);
+                log("Error in setAcceptPartialConnectivity", e);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return false;
+            }
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public boolean start() {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                this.mNetworkMonitor.start();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return true;
+            } catch (RemoteException e) {
+                log("Error in start", e);
                 Binder.restoreCallingIdentity(clearCallingIdentity);
                 return false;
             }

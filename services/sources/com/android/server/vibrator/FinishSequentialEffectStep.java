@@ -1,17 +1,14 @@
 package com.android.server.vibrator;
 
 import android.os.Trace;
+import android.util.Slog;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class FinishSequentialEffectStep extends Step {
     public final StartSequentialEffectStep startedStep;
-
-    @Override // com.android.server.vibrator.Step
-    public boolean isCleanUp() {
-        return true;
-    }
 
     public FinishSequentialEffectStep(StartSequentialEffectStep startSequentialEffectStep) {
         super(startSequentialEffectStep.conductor, Long.MAX_VALUE);
@@ -19,33 +16,31 @@ public final class FinishSequentialEffectStep extends Step {
     }
 
     @Override // com.android.server.vibrator.Step
-    public List play() {
-        List asList;
-        Trace.traceBegin(8388608L, "FinishSequentialEffectStep");
-        try {
-            VibrationStepConductor vibrationStepConductor = this.conductor;
-            vibrationStepConductor.vibratorManagerHooks.noteVibratorOff(vibrationStepConductor.getVibration().callerInfo.uid);
-            Step nextStep = this.startedStep.nextStep();
-            if (nextStep == null) {
-                asList = VibrationStepConductor.EMPTY_STEP_LIST;
-            } else {
-                asList = Arrays.asList(nextStep);
-            }
-            return asList;
-        } finally {
-            Trace.traceEnd(8388608L);
-        }
-    }
-
-    @Override // com.android.server.vibrator.Step
-    public List cancel() {
+    public final List cancel() {
         cancelImmediately();
         return VibrationStepConductor.EMPTY_STEP_LIST;
     }
 
     @Override // com.android.server.vibrator.Step
-    public void cancelImmediately() {
+    public final void cancelImmediately() {
         VibrationStepConductor vibrationStepConductor = this.conductor;
-        vibrationStepConductor.vibratorManagerHooks.noteVibratorOff(vibrationStepConductor.getVibration().callerInfo.uid);
+        vibrationStepConductor.vibratorManagerHooks.noteVibratorOff(vibrationStepConductor.mVibration.callerInfo.uid);
+    }
+
+    @Override // com.android.server.vibrator.Step
+    public final List play() {
+        Trace.traceBegin(8388608L, "FinishSequentialEffectStep");
+        try {
+            Slog.d("VibrationThread", "FinishSequentialEffectStep for effect #" + this.startedStep.currentIndex);
+            VibrationStepConductor vibrationStepConductor = this.conductor;
+            vibrationStepConductor.vibratorManagerHooks.noteVibratorOff(vibrationStepConductor.mVibration.callerInfo.uid);
+            StartSequentialEffectStep nextStep = this.startedStep.nextStep();
+            List asList = nextStep == null ? VibrationStepConductor.EMPTY_STEP_LIST : Arrays.asList(nextStep);
+            Trace.traceEnd(8388608L);
+            return asList;
+        } catch (Throwable th) {
+            Trace.traceEnd(8388608L);
+            throw th;
+        }
     }
 }

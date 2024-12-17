@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class RunningTasks implements Consumer {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RunningTasks implements Consumer {
     public boolean mAllowed;
     public int mCallingUid;
     public boolean mCrossUser;
@@ -23,11 +24,25 @@ public class RunningTasks implements Consumer {
     public final ArrayList mTmpInvisibleTasks = new ArrayList();
     public final ArrayList mTmpFocusedTasks = new ArrayList();
 
-    public void getTasks(int i, List list, int i2, RecentTasks recentTasks, WindowContainer windowContainer, int i3, ArraySet arraySet) {
-        getTasks(i, list, i2, recentTasks, windowContainer, i3, arraySet, false);
+    @Override // java.util.function.Consumer
+    public final void accept(Object obj) {
+        int i;
+        Task task = (Task) obj;
+        if (task.getTopNonFinishingActivity(true, true) == null) {
+            return;
+        }
+        if (task.effectiveUid == this.mCallingUid || (((i = task.mUserId) == this.mUserId || this.mCrossUser || this.mProfileIds.contains(Integer.valueOf(i))) && this.mAllowed)) {
+            if (!this.mFilterOnlyVisibleRecents || task.getActivityType() == 2 || task.getActivityType() == 3 || this.mRecentTasks.isVisibleRecentTask(task)) {
+                if (task.isVisibleRequested()) {
+                    this.mTmpVisibleTasks.add(task);
+                } else {
+                    this.mTmpInvisibleTasks.add(task);
+                }
+            }
+        }
     }
 
-    public void getTasks(int i, List list, int i2, RecentTasks recentTasks, WindowContainer windowContainer, int i3, ArraySet arraySet, boolean z) {
+    public final void getTasks(int i, List list, int i2, RecentTasks recentTasks, WindowContainer windowContainer, int i3, ArraySet arraySet, boolean z) {
         ActivityRecord activityRecord;
         if (i <= 0) {
             return;
@@ -45,19 +60,27 @@ public class RunningTasks implements Consumer {
             ((RootWindowContainer) windowContainer).forAllDisplays(new Consumer() { // from class: com.android.server.wm.RunningTasks$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    RunningTasks.this.lambda$getTasks$0((DisplayContent) obj);
+                    RunningTasks runningTasks = RunningTasks.this;
+                    DisplayContent displayContent = (DisplayContent) obj;
+                    runningTasks.getClass();
+                    ActivityRecord activityRecord2 = displayContent.mFocusedApp;
+                    Task task = activityRecord2 != null ? activityRecord2.task : null;
+                    if (task != null) {
+                        runningTasks.mTmpFocusedTasks.add(task);
+                    }
+                    displayContent.forAllLeafTasks(runningTasks, true);
                 }
             });
         } else {
             DisplayContent displayContent = windowContainer.getDisplayContent();
             Task task = null;
             if (displayContent != null && (activityRecord = displayContent.mFocusedApp) != null) {
-                task = activityRecord.getTask();
+                task = activityRecord.task;
             }
             if (task != null && task.isDescendantOf(windowContainer)) {
                 this.mTmpFocusedTasks.add(task);
             }
-            processTaskInWindowContainer(windowContainer);
+            windowContainer.forAllLeafTasks(this, true);
         }
         int size = this.mTmpVisibleTasks.size();
         for (int i5 = 0; i5 < this.mTmpFocusedTasks.size(); i5++) {
@@ -77,7 +100,17 @@ public class RunningTasks implements Consumer {
         while (i4 < min) {
             Task task3 = (Task) this.mTmpSortedTasks.get(i4);
             if (!z || task3.isVisible()) {
-                list.add(createRunningTaskInfo(task3, i4 < size ? (min + elapsedRealtime) - i4 : -1L));
+                long j = i4 < size ? (min + elapsedRealtime) - i4 : -1L;
+                ActivityManager.RunningTaskInfo runningTaskInfo = new ActivityManager.RunningTaskInfo();
+                task3.fillTaskInfo(runningTaskInfo, !this.mKeepIntentExtra);
+                if (j > 0) {
+                    runningTaskInfo.lastActiveTime = j;
+                }
+                runningTaskInfo.id = runningTaskInfo.taskId;
+                if (!this.mAllowed) {
+                    Task.trimIneffectiveInfo(task3, runningTaskInfo);
+                }
+                list.add(runningTaskInfo);
             }
             i4++;
         }
@@ -85,49 +118,5 @@ public class RunningTasks implements Consumer {
         this.mTmpVisibleTasks.clear();
         this.mTmpInvisibleTasks.clear();
         this.mTmpSortedTasks.clear();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$getTasks$0(DisplayContent displayContent) {
-        ActivityRecord activityRecord = displayContent.mFocusedApp;
-        Task task = activityRecord != null ? activityRecord.getTask() : null;
-        if (task != null) {
-            this.mTmpFocusedTasks.add(task);
-        }
-        processTaskInWindowContainer(displayContent);
-    }
-
-    public final void processTaskInWindowContainer(WindowContainer windowContainer) {
-        windowContainer.forAllLeafTasks(this, true);
-    }
-
-    @Override // java.util.function.Consumer
-    public void accept(Task task) {
-        int i;
-        if (task.getTopNonFinishingActivity() == null) {
-            return;
-        }
-        if (task.effectiveUid == this.mCallingUid || (((i = task.mUserId) == this.mUserId || this.mCrossUser || this.mProfileIds.contains(Integer.valueOf(i))) && this.mAllowed)) {
-            if (!this.mFilterOnlyVisibleRecents || task.getActivityType() == 2 || task.getActivityType() == 3 || this.mRecentTasks.isVisibleRecentTask(task)) {
-                if (task.isVisible() || task.isVisibleRequested()) {
-                    this.mTmpVisibleTasks.add(task);
-                } else {
-                    this.mTmpInvisibleTasks.add(task);
-                }
-            }
-        }
-    }
-
-    public final ActivityManager.RunningTaskInfo createRunningTaskInfo(Task task, long j) {
-        ActivityManager.RunningTaskInfo runningTaskInfo = new ActivityManager.RunningTaskInfo();
-        task.fillTaskInfo(runningTaskInfo, !this.mKeepIntentExtra);
-        if (j > 0) {
-            runningTaskInfo.lastActiveTime = j;
-        }
-        runningTaskInfo.id = runningTaskInfo.taskId;
-        if (!this.mAllowed) {
-            Task.trimIneffectiveInfo(task, runningTaskInfo);
-        }
-        return runningTaskInfo;
     }
 }

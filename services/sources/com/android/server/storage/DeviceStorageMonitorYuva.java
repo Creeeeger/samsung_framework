@@ -1,73 +1,54 @@
 package com.android.server.storage;
 
-import android.app.ActivityManagerNative;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.Log;
-import com.samsung.android.feature.SemCscFeature;
 import java.io.File;
 
-/* loaded from: classes3.dex */
-public class DeviceStorageMonitorYuva {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DeviceStorageMonitorYuva {
     public static final File DATA_PATH = Environment.getDataDirectory();
-    public static final String valueCscYuva = SemCscFeature.getInstance().getString("CscFeature_Common_ConfigYuva");
-    public boolean isSupported;
+    public final boolean isSupported;
     public final Context mContext;
-    public long mMemLowUserThreshold_15;
-    public long mMemLowUserThreshold_20;
+    public final long mMemLowUserThreshold_15;
+    public final long mMemLowUserThreshold_20;
     public boolean mLowUserMemFlag_20 = false;
     public boolean mLowUserMemFlag_15 = false;
-    public boolean isBootCompleted = false;
-    public boolean DEBUG = true;
 
     public DeviceStorageMonitorYuva(Context context) {
+        ApplicationInfo applicationInfo;
+        boolean z = false;
         this.isSupported = false;
         Log.d("DeviceStorageMonitorYuva", "constructor is called");
         this.mContext = context;
         this.mMemLowUserThreshold_20 = getStorageUserMemLowBytes(20);
         this.mMemLowUserThreshold_15 = getStorageUserMemLowBytes(15);
-        this.isSupported = isYuvaSupported();
+        try {
+            applicationInfo = context.getPackageManager().getApplicationInfo("com.samsung.memorysaver", 0);
+        } catch (PackageManager.NameNotFoundException unused) {
+            applicationInfo = null;
+        }
+        if (applicationInfo != null) {
+            Log.d("DeviceStorageMonitorYuva", "device supports YUVA");
+            z = true;
+        } else {
+            Log.d("DeviceStorageMonitorYuva", "device does not support YUVA");
+        }
+        this.isSupported = z;
     }
 
     public final long getStorageUserMemLowBytes(int i) {
         long totalSpace = (DATA_PATH.getTotalSpace() * i) / 100;
-        if (this.DEBUG) {
-            Log.d("DeviceStorageMonitorYuva", "user spcific threshold is calculated ->" + totalSpace);
-        }
+        Log.d("DeviceStorageMonitorYuva", "user spcific threshold is calculated ->" + totalSpace);
         return totalSpace;
     }
 
-    public boolean isYuvaSupported() {
-        if (valueCscYuva.contains("MemorySaver")) {
-            if (!this.DEBUG) {
-                return true;
-            }
-            Log.d("DeviceStorageMonitorYuva", "device supports YUVA");
-            return true;
-        }
-        if (!this.DEBUG) {
-            return false;
-        }
-        Log.d("DeviceStorageMonitorYuva", "device does not support YUVA");
-        return false;
-    }
-
-    public final void sendUserMemLowNotification(int i) {
-        if (this.DEBUG) {
-            Log.d("DeviceStorageMonitorYuva", "Intent ACTION_USER_MEM_LOW broadcasting with (" + i + "%)");
-        }
-        Intent intent = new Intent("com.samsung.android.sm.ACTION_USER_MEM_LOW");
-        intent.setClassName("com.samsung.memorysaver", "com.samsung.memorysaver.receiver.StorageStatusReceiver");
-        intent.putExtra("PERCENT", i);
-        intent.addFlags(268435456);
-        this.mContext.sendBroadcast(intent);
-    }
-
     public final void sendCancelUserMemLowNotification(int i) {
-        if (this.DEBUG) {
-            Log.d("DeviceStorageMonitorYuva", "Intent ACTION_CANCEL_USER_MEM_LOW broadcasting with (" + i + "%)");
-        }
+        Log.d("DeviceStorageMonitorYuva", "Intent ACTION_CANCEL_USER_MEM_LOW broadcasting with (" + i + "%)");
         Intent intent = new Intent("com.samsung.android.sm.ACTION_CANCEL_USER_MEM_LOW");
         intent.setClassName("com.samsung.memorysaver", "com.samsung.memorysaver.receiver.StorageStatusReceiver");
         intent.putExtra("PERCENT", i);
@@ -75,42 +56,12 @@ public class DeviceStorageMonitorYuva {
         this.mContext.sendBroadcast(intent);
     }
 
-    public void onUpdate(long j) {
-        if (this.isSupported) {
-            intentBroadcastForUserLowMem(j);
-        }
-    }
-
-    public final void intentBroadcastForUserLowMem(long j) {
-        if (this.isSupported) {
-            if (j < this.mMemLowUserThreshold_15) {
-                if (!ActivityManagerNative.isSystemReady() || this.mLowUserMemFlag_15) {
-                    return;
-                }
-                this.mLowUserMemFlag_15 = true;
-                sendUserMemLowNotification(15);
-                return;
-            }
-            if (j < this.mMemLowUserThreshold_20) {
-                if (ActivityManagerNative.isSystemReady() && this.mLowUserMemFlag_15) {
-                    this.mLowUserMemFlag_15 = false;
-                    sendCancelUserMemLowNotification(15);
-                }
-                if (!ActivityManagerNative.isSystemReady() || this.mLowUserMemFlag_20) {
-                    return;
-                }
-                this.mLowUserMemFlag_20 = true;
-                sendUserMemLowNotification(20);
-                return;
-            }
-            if (ActivityManagerNative.isSystemReady() && this.mLowUserMemFlag_15) {
-                this.mLowUserMemFlag_15 = false;
-                sendCancelUserMemLowNotification(15);
-            }
-            if (ActivityManagerNative.isSystemReady() && this.mLowUserMemFlag_20) {
-                this.mLowUserMemFlag_20 = false;
-                sendCancelUserMemLowNotification(20);
-            }
-        }
+    public final void sendUserMemLowNotification(int i) {
+        Log.d("DeviceStorageMonitorYuva", "Intent ACTION_USER_MEM_LOW broadcasting with (" + i + "%)");
+        Intent intent = new Intent("com.samsung.android.sm.ACTION_USER_MEM_LOW");
+        intent.setClassName("com.samsung.memorysaver", "com.samsung.memorysaver.receiver.StorageStatusReceiver");
+        intent.putExtra("PERCENT", i);
+        intent.addFlags(268435456);
+        this.mContext.sendBroadcast(intent);
     }
 }

@@ -1,37 +1,26 @@
 package com.android.server.usb.descriptors;
 
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class Usb20ASFormatIII extends UsbASFormat {
     public byte mBitResolution;
     public byte mSubslotSize;
 
-    public Usb20ASFormatIII(int i, byte b, byte b2, byte b3, int i2) {
-        super(i, b, b2, b3, i2);
-    }
-
-    public byte getSubslotSize() {
-        return this.mSubslotSize;
-    }
-
-    public byte getBitResolution() {
-        return this.mBitResolution;
-    }
-
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
+    public final int parseRawDescriptors(ByteStream byteStream) {
         this.mSubslotSize = byteStream.getByte();
         this.mBitResolution = byteStream.getByte();
         return this.mLength;
     }
 
     @Override // com.android.server.usb.descriptors.UsbASFormat, com.android.server.usb.descriptors.UsbACInterface, com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        reportCanvas.openList();
-        reportCanvas.writeListItem("Subslot Size: " + ((int) getSubslotSize()));
-        reportCanvas.writeListItem("Bit Resolution: " + ((int) getBitResolution()));
-        reportCanvas.closeList();
+    public final void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        textReportCanvas.openList();
+        textReportCanvas.writeListItem("Subslot Size: " + ((int) this.mSubslotSize));
+        textReportCanvas.writeListItem("Bit Resolution: " + ((int) this.mBitResolution));
+        textReportCanvas.closeList();
     }
 }

@@ -3,7 +3,6 @@ package com.android.server.vcn;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.vcn.VcnManager;
 import android.os.Handler;
 import android.os.HandlerExecutor;
@@ -17,7 +16,9 @@ import android.telephony.TelephonyManager;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
+import com.android.internal.telephony.flags.Flags;
 import com.android.internal.util.IndentingPrintWriter;
+import com.android.server.VcnManagementService;
 import com.android.server.vcn.util.PersistableBundleUtils;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,210 +30,67 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes3.dex */
-public class TelephonySubscriptionTracker extends BroadcastReceiver {
-    public static final String TAG = TelephonySubscriptionTracker.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class TelephonySubscriptionTracker extends BroadcastReceiver {
     public final ActiveDataSubscriptionIdListener mActiveDataSubIdListener;
     public final TelephonySubscriptionTrackerCallback mCallback;
-    public final CarrierConfigManager.CarrierConfigChangeListener mCarrierConfigChangeListener;
     public final CarrierConfigManager mCarrierConfigManager;
-    public final List mCarrierPrivilegesCallbacks;
     public final Context mContext;
     public TelephonySubscriptionSnapshot mCurrentSnapshot;
     public final Dependencies mDeps;
     public final Handler mHandler;
-    public final Map mReadySubIdsBySlotId;
-    public final Map mSubIdToCarrierConfigMap;
-    public final SubscriptionManager.OnSubscriptionsChangedListener mSubscriptionChangedListener;
+    public final AnonymousClass1 mSubscriptionChangedListener;
     public final SubscriptionManager mSubscriptionManager;
     public final TelephonyManager mTelephonyManager;
-
-    /* loaded from: classes3.dex */
-    public interface TelephonySubscriptionTrackerCallback {
-        void onNewSnapshot(TelephonySubscriptionSnapshot telephonySubscriptionSnapshot);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(int i, int i2, int i3, int i4) {
-        handleActionCarrierConfigChanged(i, i2);
-    }
-
-    public TelephonySubscriptionTracker(Context context, Handler handler, TelephonySubscriptionTrackerCallback telephonySubscriptionTrackerCallback) {
-        this(context, handler, telephonySubscriptionTrackerCallback, new Dependencies());
-    }
-
-    public TelephonySubscriptionTracker(Context context, Handler handler, TelephonySubscriptionTrackerCallback telephonySubscriptionTrackerCallback, Dependencies dependencies) {
-        this.mReadySubIdsBySlotId = new HashMap();
-        this.mSubIdToCarrierConfigMap = new HashMap();
-        this.mCarrierPrivilegesCallbacks = new ArrayList();
-        this.mCarrierConfigChangeListener = new CarrierConfigManager.CarrierConfigChangeListener() { // from class: com.android.server.vcn.TelephonySubscriptionTracker$$ExternalSyntheticLambda0
-            @Override // android.telephony.CarrierConfigManager.CarrierConfigChangeListener
-            public final void onCarrierConfigChanged(int i, int i2, int i3, int i4) {
-                TelephonySubscriptionTracker.this.lambda$new$0(i, i2, i3, i4);
-            }
-        };
-        Objects.requireNonNull(context, "Missing context");
-        this.mContext = context;
-        Objects.requireNonNull(handler, "Missing handler");
-        this.mHandler = handler;
-        Objects.requireNonNull(telephonySubscriptionTrackerCallback, "Missing callback");
-        this.mCallback = telephonySubscriptionTrackerCallback;
-        Objects.requireNonNull(dependencies, "Missing deps");
-        this.mDeps = dependencies;
-        this.mTelephonyManager = (TelephonyManager) context.getSystemService(TelephonyManager.class);
-        this.mSubscriptionManager = (SubscriptionManager) context.getSystemService(SubscriptionManager.class);
-        this.mCarrierConfigManager = (CarrierConfigManager) context.getSystemService(CarrierConfigManager.class);
-        this.mActiveDataSubIdListener = new ActiveDataSubscriptionIdListener();
-        this.mSubscriptionChangedListener = new SubscriptionManager.OnSubscriptionsChangedListener() { // from class: com.android.server.vcn.TelephonySubscriptionTracker.1
-            @Override // android.telephony.SubscriptionManager.OnSubscriptionsChangedListener
-            public void onSubscriptionsChanged() {
-                TelephonySubscriptionTracker.this.handleSubscriptionsChanged();
-            }
-        };
-    }
-
-    public void register() {
-        Executor handlerExecutor = new HandlerExecutor(this.mHandler);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.telephony.action.MULTI_SIM_CONFIG_CHANGED");
-        this.mContext.registerReceiver(this, intentFilter, null, this.mHandler);
-        this.mSubscriptionManager.addOnSubscriptionsChangedListener(handlerExecutor, this.mSubscriptionChangedListener);
-        this.mTelephonyManager.registerTelephonyCallback(handlerExecutor, this.mActiveDataSubIdListener);
-        this.mCarrierConfigManager.registerCarrierConfigChangeListener(handlerExecutor, this.mCarrierConfigChangeListener);
-        registerCarrierPrivilegesCallbacks();
-    }
-
-    public final void registerCarrierPrivilegesCallbacks() {
-        Executor handlerExecutor = new HandlerExecutor(this.mHandler);
-        int activeModemCount = this.mTelephonyManager.getActiveModemCount();
-        for (int i = 0; i < activeModemCount; i++) {
-            try {
-                TelephonyManager.CarrierPrivilegesCallback carrierPrivilegesCallback = new TelephonyManager.CarrierPrivilegesCallback() { // from class: com.android.server.vcn.TelephonySubscriptionTracker.2
-                    public void onCarrierPrivilegesChanged(Set set, Set set2) {
-                        TelephonySubscriptionTracker.this.handleSubscriptionsChanged();
-                    }
-                };
-                this.mTelephonyManager.registerCarrierPrivilegesCallback(i, handlerExecutor, carrierPrivilegesCallback);
-                this.mCarrierPrivilegesCallbacks.add(carrierPrivilegesCallback);
-            } catch (IllegalArgumentException e) {
-                Slog.wtf(TAG, "Encounted exception registering carrier privileges listeners", e);
+    public final Map mReadySubIdsBySlotId = new HashMap();
+    public final Map mSubIdToCarrierConfigMap = new HashMap();
+    public final List mCarrierPrivilegesCallbacks = new ArrayList();
+    public final TelephonySubscriptionTracker$$ExternalSyntheticLambda1 mCarrierConfigChangeListener = new CarrierConfigManager.CarrierConfigChangeListener() { // from class: com.android.server.vcn.TelephonySubscriptionTracker$$ExternalSyntheticLambda1
+        @Override // android.telephony.CarrierConfigManager.CarrierConfigChangeListener
+        public final void onCarrierConfigChanged(int i, int i2, int i3, int i4) {
+            TelephonySubscriptionTracker telephonySubscriptionTracker = TelephonySubscriptionTracker.this;
+            telephonySubscriptionTracker.getClass();
+            if (i == -1) {
                 return;
             }
-        }
-    }
-
-    public final void unregisterCarrierPrivilegesCallbacks() {
-        Iterator it = this.mCarrierPrivilegesCallbacks.iterator();
-        while (it.hasNext()) {
-            this.mTelephonyManager.unregisterCarrierPrivilegesCallback((TelephonyManager.CarrierPrivilegesCallback) it.next());
-        }
-        this.mCarrierPrivilegesCallbacks.clear();
-    }
-
-    public void handleSubscriptionsChanged() {
-        HashMap hashMap = new HashMap();
-        HashMap hashMap2 = new HashMap();
-        List<SubscriptionInfo> allSubscriptionInfoList = this.mSubscriptionManager.getAllSubscriptionInfoList();
-        if (allSubscriptionInfoList == null) {
-            return;
-        }
-        for (SubscriptionInfo subscriptionInfo : allSubscriptionInfoList) {
-            if (subscriptionInfo.getGroupUuid() != null) {
-                hashMap2.put(Integer.valueOf(subscriptionInfo.getSubscriptionId()), subscriptionInfo);
-                if (subscriptionInfo.getSimSlotIndex() != -1 && this.mReadySubIdsBySlotId.values().contains(Integer.valueOf(subscriptionInfo.getSubscriptionId()))) {
-                    TelephonyManager createForSubscriptionId = this.mTelephonyManager.createForSubscriptionId(subscriptionInfo.getSubscriptionId());
-                    ParcelUuid groupUuid = subscriptionInfo.getGroupUuid();
-                    Set set = (Set) hashMap.getOrDefault(groupUuid, new ArraySet());
-                    set.addAll(createForSubscriptionId.getPackagesWithCarrierPrivileges());
-                    hashMap.put(groupUuid, set);
+            if (!SubscriptionManager.isValidSubscriptionId(i2)) {
+                Integer num = (Integer) ((HashMap) telephonySubscriptionTracker.mReadySubIdsBySlotId).remove(Integer.valueOf(i));
+                if (num != null) {
+                    ((HashMap) telephonySubscriptionTracker.mSubIdToCarrierConfigMap).remove(num);
                 }
-            }
-        }
-        final TelephonySubscriptionSnapshot telephonySubscriptionSnapshot = new TelephonySubscriptionSnapshot(this.mDeps.getActiveDataSubscriptionId(), hashMap2, this.mSubIdToCarrierConfigMap, hashMap);
-        if (telephonySubscriptionSnapshot.equals(this.mCurrentSnapshot)) {
-            return;
-        }
-        this.mCurrentSnapshot = telephonySubscriptionSnapshot;
-        this.mHandler.post(new Runnable() { // from class: com.android.server.vcn.TelephonySubscriptionTracker$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                TelephonySubscriptionTracker.this.lambda$handleSubscriptionsChanged$1(telephonySubscriptionSnapshot);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$handleSubscriptionsChanged$1(TelephonySubscriptionSnapshot telephonySubscriptionSnapshot) {
-        this.mCallback.onNewSnapshot(telephonySubscriptionSnapshot);
-    }
-
-    @Override // android.content.BroadcastReceiver
-    public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        action.hashCode();
-        if (action.equals("android.telephony.action.MULTI_SIM_CONFIG_CHANGED")) {
-            handleActionMultiSimConfigChanged(context, intent);
-            return;
-        }
-        Slog.v(TAG, "Unknown intent received with action: " + intent.getAction());
-    }
-
-    public final void handleActionMultiSimConfigChanged(Context context, Intent intent) {
-        unregisterCarrierPrivilegesCallbacks();
-        int activeModemCount = this.mTelephonyManager.getActiveModemCount();
-        Iterator it = this.mReadySubIdsBySlotId.keySet().iterator();
-        while (it.hasNext()) {
-            if (((Integer) it.next()).intValue() >= activeModemCount) {
-                it.remove();
-            }
-        }
-        registerCarrierPrivilegesCallbacks();
-        handleSubscriptionsChanged();
-    }
-
-    public final void handleActionCarrierConfigChanged(int i, int i2) {
-        if (i == -1) {
-            return;
-        }
-        if (SubscriptionManager.isValidSubscriptionId(i2)) {
-            PersistableBundle configForSubId = this.mCarrierConfigManager.getConfigForSubId(i2, VcnManager.VCN_RELATED_CARRIER_CONFIG_KEYS);
-            if (this.mDeps.isConfigForIdentifiedCarrier(configForSubId)) {
-                this.mReadySubIdsBySlotId.put(Integer.valueOf(i), Integer.valueOf(i2));
-                if (!configForSubId.isEmpty()) {
-                    this.mSubIdToCarrierConfigMap.put(Integer.valueOf(i2), new PersistableBundleUtils.PersistableBundleWrapper(configForSubId));
-                }
-                handleSubscriptionsChanged();
+                telephonySubscriptionTracker.handleSubscriptionsChanged();
                 return;
             }
-            return;
+            PersistableBundle carrierConfigSubset = Flags.fixCrashOnGettingConfigWhenPhoneIsGone() ? CarrierConfigManager.getCarrierConfigSubset(telephonySubscriptionTracker.mContext, i2, VcnManager.VCN_RELATED_CARRIER_CONFIG_KEYS) : telephonySubscriptionTracker.mCarrierConfigManager.getConfigForSubId(i2, VcnManager.VCN_RELATED_CARRIER_CONFIG_KEYS);
+            telephonySubscriptionTracker.mDeps.getClass();
+            if (CarrierConfigManager.isConfigForIdentifiedCarrier(carrierConfigSubset)) {
+                ((HashMap) telephonySubscriptionTracker.mReadySubIdsBySlotId).put(Integer.valueOf(i), Integer.valueOf(i2));
+                if (!carrierConfigSubset.isEmpty()) {
+                    ((HashMap) telephonySubscriptionTracker.mSubIdToCarrierConfigMap).put(Integer.valueOf(i2), new PersistableBundleUtils.PersistableBundleWrapper(carrierConfigSubset));
+                }
+                telephonySubscriptionTracker.handleSubscriptionsChanged();
+            }
         }
-        Integer num = (Integer) this.mReadySubIdsBySlotId.remove(Integer.valueOf(i));
-        if (num != null) {
-            this.mSubIdToCarrierConfigMap.remove(num);
+    };
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ActiveDataSubscriptionIdListener extends TelephonyCallback implements TelephonyCallback.ActiveDataSubscriptionIdListener {
+        public ActiveDataSubscriptionIdListener() {
         }
-        handleSubscriptionsChanged();
+
+        @Override // android.telephony.TelephonyCallback.ActiveDataSubscriptionIdListener
+        public final void onActiveDataSubscriptionIdChanged(int i) {
+            TelephonySubscriptionTracker.this.handleSubscriptionsChanged();
+        }
     }
 
-    public void setReadySubIdsBySlotId(Map map) {
-        this.mReadySubIdsBySlotId.clear();
-        this.mReadySubIdsBySlotId.putAll(map);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class Dependencies {
     }
 
-    public void setSubIdToCarrierConfigMap(Map map) {
-        this.mSubIdToCarrierConfigMap.clear();
-        this.mSubIdToCarrierConfigMap.putAll(map);
-    }
-
-    public Map getReadySubIdsBySlotId() {
-        return Collections.unmodifiableMap(this.mReadySubIdsBySlotId);
-    }
-
-    public Map getSubIdToCarrierConfigMap() {
-        return Collections.unmodifiableMap(this.mSubIdToCarrierConfigMap);
-    }
-
-    /* loaded from: classes3.dex */
-    public class TelephonySubscriptionSnapshot {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TelephonySubscriptionSnapshot {
         public static final TelephonySubscriptionSnapshot EMPTY_SNAPSHOT = new TelephonySubscriptionSnapshot(-1, Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
         public final int mActiveDataSubId;
         public final Map mPrivilegedPackages;
@@ -253,76 +111,7 @@ public class TelephonySubscriptionTracker extends BroadcastReceiver {
             this.mPrivilegedPackages = Collections.unmodifiableMap(arrayMap);
         }
 
-        public int getActiveDataSubscriptionId() {
-            return this.mActiveDataSubId;
-        }
-
-        public ParcelUuid getActiveDataSubscriptionGroup() {
-            SubscriptionInfo subscriptionInfo = (SubscriptionInfo) this.mSubIdToInfoMap.get(Integer.valueOf(getActiveDataSubscriptionId()));
-            if (subscriptionInfo == null) {
-                return null;
-            }
-            return subscriptionInfo.getGroupUuid();
-        }
-
-        public boolean packageHasPermissionsForSubscriptionGroup(ParcelUuid parcelUuid, String str) {
-            Set set = (Set) this.mPrivilegedPackages.get(parcelUuid);
-            return set != null && set.contains(str);
-        }
-
-        public ParcelUuid getGroupForSubId(int i) {
-            if (this.mSubIdToInfoMap.containsKey(Integer.valueOf(i))) {
-                return ((SubscriptionInfo) this.mSubIdToInfoMap.get(Integer.valueOf(i))).getGroupUuid();
-            }
-            return null;
-        }
-
-        public Set getAllSubIdsInGroup(ParcelUuid parcelUuid) {
-            ArraySet arraySet = new ArraySet();
-            for (Map.Entry entry : this.mSubIdToInfoMap.entrySet()) {
-                if (parcelUuid.equals(((SubscriptionInfo) entry.getValue()).getGroupUuid())) {
-                    arraySet.add((Integer) entry.getKey());
-                }
-            }
-            return arraySet;
-        }
-
-        public boolean isOpportunistic(int i) {
-            if (this.mSubIdToInfoMap.containsKey(Integer.valueOf(i))) {
-                return ((SubscriptionInfo) this.mSubIdToInfoMap.get(Integer.valueOf(i))).isOpportunistic();
-            }
-            return false;
-        }
-
-        public PersistableBundleUtils.PersistableBundleWrapper getCarrierConfigForSubGrp(ParcelUuid parcelUuid) {
-            Iterator it = getAllSubIdsInGroup(parcelUuid).iterator();
-            PersistableBundleUtils.PersistableBundleWrapper persistableBundleWrapper = null;
-            while (it.hasNext()) {
-                int intValue = ((Integer) it.next()).intValue();
-                PersistableBundleUtils.PersistableBundleWrapper persistableBundleWrapper2 = (PersistableBundleUtils.PersistableBundleWrapper) this.mSubIdToCarrierConfigMap.get(Integer.valueOf(intValue));
-                if (persistableBundleWrapper2 != null) {
-                    if (!isOpportunistic(intValue)) {
-                        return persistableBundleWrapper2;
-                    }
-                    persistableBundleWrapper = persistableBundleWrapper2;
-                }
-            }
-            return persistableBundleWrapper;
-        }
-
-        public int hashCode() {
-            return Objects.hash(Integer.valueOf(this.mActiveDataSubId), this.mSubIdToInfoMap, this.mSubIdToCarrierConfigMap, this.mPrivilegedPackages);
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof TelephonySubscriptionSnapshot)) {
-                return false;
-            }
-            TelephonySubscriptionSnapshot telephonySubscriptionSnapshot = (TelephonySubscriptionSnapshot) obj;
-            return this.mActiveDataSubId == telephonySubscriptionSnapshot.mActiveDataSubId && this.mSubIdToInfoMap.equals(telephonySubscriptionSnapshot.mSubIdToInfoMap) && this.mSubIdToCarrierConfigMap.equals(telephonySubscriptionSnapshot.mSubIdToCarrierConfigMap) && this.mPrivilegedPackages.equals(telephonySubscriptionSnapshot.mPrivilegedPackages);
-        }
-
-        public void dump(IndentingPrintWriter indentingPrintWriter) {
+        public final void dump(IndentingPrintWriter indentingPrintWriter) {
             indentingPrintWriter.println("TelephonySubscriptionSnapshot:");
             indentingPrintWriter.increaseIndent();
             indentingPrintWriter.println("mActiveDataSubId: " + this.mActiveDataSubId);
@@ -332,30 +121,174 @@ public class TelephonySubscriptionTracker extends BroadcastReceiver {
             indentingPrintWriter.decreaseIndent();
         }
 
-        public String toString() {
+        public final boolean equals(Object obj) {
+            if (!(obj instanceof TelephonySubscriptionSnapshot)) {
+                return false;
+            }
+            TelephonySubscriptionSnapshot telephonySubscriptionSnapshot = (TelephonySubscriptionSnapshot) obj;
+            return this.mActiveDataSubId == telephonySubscriptionSnapshot.mActiveDataSubId && this.mSubIdToInfoMap.equals(telephonySubscriptionSnapshot.mSubIdToInfoMap) && this.mSubIdToCarrierConfigMap.equals(telephonySubscriptionSnapshot.mSubIdToCarrierConfigMap) && this.mPrivilegedPackages.equals(telephonySubscriptionSnapshot.mPrivilegedPackages);
+        }
+
+        public final Set getAllSubIdsInGroup(ParcelUuid parcelUuid) {
+            ArraySet arraySet = new ArraySet();
+            for (Map.Entry entry : this.mSubIdToInfoMap.entrySet()) {
+                if (parcelUuid.equals(((SubscriptionInfo) entry.getValue()).getGroupUuid())) {
+                    arraySet.add((Integer) entry.getKey());
+                }
+            }
+            return arraySet;
+        }
+
+        public final PersistableBundleUtils.PersistableBundleWrapper getCarrierConfigForSubGrp(ParcelUuid parcelUuid) {
+            Iterator it = ((ArraySet) getAllSubIdsInGroup(parcelUuid)).iterator();
+            PersistableBundleUtils.PersistableBundleWrapper persistableBundleWrapper = null;
+            while (it.hasNext()) {
+                Integer num = (Integer) it.next();
+                num.intValue();
+                PersistableBundleUtils.PersistableBundleWrapper persistableBundleWrapper2 = (PersistableBundleUtils.PersistableBundleWrapper) this.mSubIdToCarrierConfigMap.get(num);
+                if (persistableBundleWrapper2 != null) {
+                    if (!(this.mSubIdToInfoMap.containsKey(num) ? ((SubscriptionInfo) this.mSubIdToInfoMap.get(num)).isOpportunistic() : false)) {
+                        return persistableBundleWrapper2;
+                    }
+                    persistableBundleWrapper = persistableBundleWrapper2;
+                }
+            }
+            return persistableBundleWrapper;
+        }
+
+        public final int hashCode() {
+            return Objects.hash(Integer.valueOf(this.mActiveDataSubId), this.mSubIdToInfoMap, this.mSubIdToCarrierConfigMap, this.mPrivilegedPackages);
+        }
+
+        public final boolean packageHasPermissionsForSubscriptionGroup(ParcelUuid parcelUuid, String str) {
+            Set set = (Set) this.mPrivilegedPackages.get(parcelUuid);
+            return set != null && set.contains(str);
+        }
+
+        public final String toString() {
             return "TelephonySubscriptionSnapshot{ mActiveDataSubId=" + this.mActiveDataSubId + ", mSubIdToInfoMap=" + this.mSubIdToInfoMap + ", mSubIdToCarrierConfigMap=" + this.mSubIdToCarrierConfigMap + ", mPrivilegedPackages=" + this.mPrivilegedPackages + " }";
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class ActiveDataSubscriptionIdListener extends TelephonyCallback implements TelephonyCallback.ActiveDataSubscriptionIdListener {
-        public ActiveDataSubscriptionIdListener() {
-        }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface TelephonySubscriptionTrackerCallback {
+    }
 
-        @Override // android.telephony.TelephonyCallback.ActiveDataSubscriptionIdListener
-        public void onActiveDataSubscriptionIdChanged(int i) {
-            TelephonySubscriptionTracker.this.handleSubscriptionsChanged();
+    /* JADX WARN: Type inference failed for: r0v3, types: [com.android.server.vcn.TelephonySubscriptionTracker$$ExternalSyntheticLambda1] */
+    /* JADX WARN: Type inference failed for: r2v4, types: [com.android.server.vcn.TelephonySubscriptionTracker$1] */
+    public TelephonySubscriptionTracker(Context context, Handler handler, TelephonySubscriptionTrackerCallback telephonySubscriptionTrackerCallback, Dependencies dependencies) {
+        Objects.requireNonNull(context, "Missing context");
+        this.mContext = context;
+        Objects.requireNonNull(handler, "Missing handler");
+        this.mHandler = handler;
+        Objects.requireNonNull(telephonySubscriptionTrackerCallback, "Missing callback");
+        this.mCallback = telephonySubscriptionTrackerCallback;
+        Objects.requireNonNull(dependencies, "Missing deps");
+        this.mDeps = dependencies;
+        this.mTelephonyManager = (TelephonyManager) context.getSystemService(TelephonyManager.class);
+        this.mSubscriptionManager = (SubscriptionManager) context.getSystemService(SubscriptionManager.class);
+        this.mCarrierConfigManager = (CarrierConfigManager) context.getSystemService(CarrierConfigManager.class);
+        this.mActiveDataSubIdListener = new ActiveDataSubscriptionIdListener();
+        this.mSubscriptionChangedListener = new SubscriptionManager.OnSubscriptionsChangedListener() { // from class: com.android.server.vcn.TelephonySubscriptionTracker.1
+            @Override // android.telephony.SubscriptionManager.OnSubscriptionsChangedListener
+            public final void onSubscriptionsChanged() {
+                TelephonySubscriptionTracker.this.handleSubscriptionsChanged();
+            }
+        };
+    }
+
+    public Map getReadySubIdsBySlotId() {
+        return Collections.unmodifiableMap(this.mReadySubIdsBySlotId);
+    }
+
+    public Map getSubIdToCarrierConfigMap() {
+        return Collections.unmodifiableMap(this.mSubIdToCarrierConfigMap);
+    }
+
+    public final void handleSubscriptionsChanged() {
+        HashMap hashMap = new HashMap();
+        HashMap hashMap2 = new HashMap();
+        List<SubscriptionInfo> allSubscriptionInfoList = this.mSubscriptionManager.getAllSubscriptionInfoList();
+        if (allSubscriptionInfoList == null) {
+            return;
+        }
+        for (SubscriptionInfo subscriptionInfo : allSubscriptionInfoList) {
+            if (subscriptionInfo.getGroupUuid() != null) {
+                hashMap2.put(Integer.valueOf(subscriptionInfo.getSubscriptionId()), subscriptionInfo);
+                if (subscriptionInfo.getSimSlotIndex() != -1 && ((HashMap) this.mReadySubIdsBySlotId).values().contains(Integer.valueOf(subscriptionInfo.getSubscriptionId()))) {
+                    TelephonyManager createForSubscriptionId = this.mTelephonyManager.createForSubscriptionId(subscriptionInfo.getSubscriptionId());
+                    ParcelUuid groupUuid = subscriptionInfo.getGroupUuid();
+                    Set set = (Set) hashMap.getOrDefault(groupUuid, new ArraySet());
+                    set.addAll(createForSubscriptionId.getPackagesWithCarrierPrivileges());
+                    hashMap.put(groupUuid, set);
+                }
+            }
+        }
+        this.mDeps.getClass();
+        final TelephonySubscriptionSnapshot telephonySubscriptionSnapshot = new TelephonySubscriptionSnapshot(SubscriptionManager.getActiveDataSubscriptionId(), hashMap2, this.mSubIdToCarrierConfigMap, hashMap);
+        if (telephonySubscriptionSnapshot.equals(this.mCurrentSnapshot)) {
+            return;
+        }
+        this.mCurrentSnapshot = telephonySubscriptionSnapshot;
+        this.mHandler.post(new Runnable() { // from class: com.android.server.vcn.TelephonySubscriptionTracker$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                TelephonySubscriptionTracker telephonySubscriptionTracker = TelephonySubscriptionTracker.this;
+                ((VcnManagementService.VcnSubscriptionTrackerCallback) telephonySubscriptionTracker.mCallback).onNewSnapshot(telephonySubscriptionSnapshot);
+            }
+        });
+    }
+
+    @Override // android.content.BroadcastReceiver
+    public final void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        action.getClass();
+        if (!action.equals("android.telephony.action.MULTI_SIM_CONFIG_CHANGED")) {
+            Slog.v("TelephonySubscriptionTracker", "Unknown intent received with action: " + intent.getAction());
+            return;
+        }
+        Iterator it = ((ArrayList) this.mCarrierPrivilegesCallbacks).iterator();
+        while (it.hasNext()) {
+            this.mTelephonyManager.unregisterCarrierPrivilegesCallback((TelephonyManager.CarrierPrivilegesCallback) it.next());
+        }
+        ((ArrayList) this.mCarrierPrivilegesCallbacks).clear();
+        int activeModemCount = this.mTelephonyManager.getActiveModemCount();
+        Iterator it2 = ((HashMap) this.mReadySubIdsBySlotId).keySet().iterator();
+        while (it2.hasNext()) {
+            if (((Integer) it2.next()).intValue() >= activeModemCount) {
+                it2.remove();
+            }
+        }
+        registerCarrierPrivilegesCallbacks();
+        handleSubscriptionsChanged();
+    }
+
+    public final void registerCarrierPrivilegesCallbacks() {
+        Executor handlerExecutor = new HandlerExecutor(this.mHandler);
+        int activeModemCount = this.mTelephonyManager.getActiveModemCount();
+        for (int i = 0; i < activeModemCount; i++) {
+            try {
+                TelephonyManager.CarrierPrivilegesCallback carrierPrivilegesCallback = new TelephonyManager.CarrierPrivilegesCallback() { // from class: com.android.server.vcn.TelephonySubscriptionTracker.2
+                    public final void onCarrierPrivilegesChanged(Set set, Set set2) {
+                        TelephonySubscriptionTracker.this.handleSubscriptionsChanged();
+                    }
+                };
+                this.mTelephonyManager.registerCarrierPrivilegesCallback(i, handlerExecutor, carrierPrivilegesCallback);
+                ((ArrayList) this.mCarrierPrivilegesCallbacks).add(carrierPrivilegesCallback);
+            } catch (IllegalArgumentException e) {
+                Slog.wtf("TelephonySubscriptionTracker", "Encounted exception registering carrier privileges listeners", e);
+                return;
+            }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class Dependencies {
-        public boolean isConfigForIdentifiedCarrier(PersistableBundle persistableBundle) {
-            return CarrierConfigManager.isConfigForIdentifiedCarrier(persistableBundle);
-        }
+    public void setReadySubIdsBySlotId(Map map) {
+        ((HashMap) this.mReadySubIdsBySlotId).clear();
+        ((HashMap) this.mReadySubIdsBySlotId).putAll(map);
+    }
 
-        public int getActiveDataSubscriptionId() {
-            return SubscriptionManager.getActiveDataSubscriptionId();
-        }
+    public void setSubIdToCarrierConfigMap(Map map) {
+        ((HashMap) this.mSubIdToCarrierConfigMap).clear();
+        ((HashMap) this.mSubIdToCarrierConfigMap).putAll(map);
     }
 }

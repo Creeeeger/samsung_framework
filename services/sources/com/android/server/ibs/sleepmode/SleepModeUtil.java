@@ -6,13 +6,11 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.provider.Settings;
-import com.android.internal.util.jobs.XmlUtils;
 import com.android.server.power.Slog;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
-import java.util.Calendar;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class SleepModeUtil {
     public static final boolean DEBUG;
 
@@ -21,44 +19,9 @@ public abstract class SleepModeUtil {
         DEBUG = "eng".equals(str) || "userdebug".equals(str);
     }
 
-    public static boolean isPsmEnabled(Context context) {
-        return Settings.Global.getInt(context.getContentResolver(), "low_power", 0) == 1;
-    }
-
-    public static boolean isEmergencyModeEnabled(Context context) {
-        return Settings.System.getInt(context.getContentResolver(), "emergency_mode", 0) == 1;
-    }
-
-    public static boolean isUpsmEnabled(Context context) {
-        return Settings.System.getInt(context.getContentResolver(), "ultra_powersaving_mode", 0) == 1;
-    }
-
-    public static boolean isDeviceIdleMode(Context context) {
-        PowerManager powerManager = (PowerManager) context.getSystemService("power");
-        boolean isDeviceIdleMode = powerManager != null ? powerManager.isDeviceIdleMode() : false;
-        Slog.d("SleepModeUtil", "isIdle is " + isDeviceIdleMode);
-        return isDeviceIdleMode;
-    }
-
-    public static boolean isScreenOn(Context context) {
-        PowerManager powerManager = (PowerManager) context.getSystemService("power");
-        boolean isInteractive = powerManager != null ? powerManager.isInteractive() : false;
-        Slog.d("SleepModeUtil", "screenOn = " + isInteractive);
-        return isInteractive;
-    }
-
-    public static boolean isPowerConnected(Context context) {
-        Intent registerReceiver = context.registerReceiver(null, new IntentFilter("android.intent.action.BATTERY_CHANGED"));
-        boolean z = false;
-        if (registerReceiver == null) {
-            return false;
-        }
-        int intExtra = registerReceiver.getIntExtra("plugged", -1);
-        if (DEBUG ? intExtra == 1 || intExtra == 4 : intExtra == 1 || intExtra == 2 || intExtra == 4) {
-            z = true;
-        }
-        Slog.d("SleepModeUtil", "charging is " + z);
-        return z;
+    public static long getTime(String str) {
+        String[] split = str.split(":");
+        return (Long.valueOf(split[0]).longValue() * 60) + Long.valueOf(split[1]).longValue();
     }
 
     public static boolean handlePowerSavingModeViaApi(Context context, boolean z) {
@@ -83,16 +46,31 @@ public abstract class SleepModeUtil {
         }
     }
 
-    public static boolean isLimitAppsAndHome(Context context) {
-        return Settings.Global.getInt(context.getContentResolver(), "sem_power_mode_limited_apps_and_home_screen", 0) == 1;
+    public static boolean isDeviceIdleMode(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService("power");
+        boolean isDeviceIdleMode = powerManager != null ? powerManager.isDeviceIdleMode() : false;
+        Slog.d("SleepModeUtil", "isIdle is " + isDeviceIdleMode);
+        return isDeviceIdleMode;
     }
 
-    public static long getTime(String str) {
-        String[] split = str.split(XmlUtils.STRING_ARRAY_SEPARATOR);
-        return (Long.valueOf(split[0]).longValue() * 60) + Long.valueOf(split[1]).longValue();
+    public static boolean isPowerConnected(Context context) {
+        Intent registerReceiver = context.registerReceiver(null, new IntentFilter("android.intent.action.BATTERY_CHANGED"), 2);
+        boolean z = false;
+        if (registerReceiver == null) {
+            return false;
+        }
+        int intExtra = registerReceiver.getIntExtra("plugged", -1);
+        if (DEBUG ? intExtra == 1 || intExtra == 4 : intExtra == 1 || intExtra == 2 || intExtra == 4) {
+            z = true;
+        }
+        Slog.d("SleepModeUtil", "charging is " + z);
+        return z;
     }
 
-    public static long getCurTime() {
-        return Calendar.getInstance().getTimeInMillis();
+    public static boolean isScreenOn(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService("power");
+        boolean isInteractive = powerManager != null ? powerManager.isInteractive() : false;
+        Slog.d("SleepModeUtil", "screenOn = " + isInteractive);
+        return isInteractive;
     }
 }

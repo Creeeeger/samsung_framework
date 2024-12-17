@@ -5,18 +5,20 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.IndentingPrintWriter;
+import android.util.LocalLog;
 import android.util.Slog;
-import com.android.server.AlarmManagerInternal;
 import com.android.server.LocalServices;
 import com.android.server.SystemClockTime;
+import com.android.server.alarm.AlarmManagerService;
 import com.android.server.timedetector.TimeDetectorStrategyImpl;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class EnvironmentImpl implements TimeDetectorStrategyImpl.Environment {
-    public final AlarmManagerInternal mAlarmManagerInternal;
+    public final AlarmManagerService.LocalService mAlarmManagerInternal;
     public final Handler mHandler;
     public final PowerManager.WakeLock mWakeLock;
 
@@ -26,50 +28,16 @@ public final class EnvironmentImpl implements TimeDetectorStrategyImpl.Environme
         PowerManager.WakeLock newWakeLock = ((PowerManager) context.getSystemService(PowerManager.class)).newWakeLock(1, "time_detector");
         Objects.requireNonNull(newWakeLock);
         this.mWakeLock = newWakeLock;
-        AlarmManagerInternal alarmManagerInternal = (AlarmManagerInternal) LocalServices.getService(AlarmManagerInternal.class);
-        Objects.requireNonNull(alarmManagerInternal);
-        this.mAlarmManagerInternal = alarmManagerInternal;
+        AlarmManagerService.LocalService localService = (AlarmManagerService.LocalService) LocalServices.getService(AlarmManagerService.LocalService.class);
+        Objects.requireNonNull(localService);
+        this.mAlarmManagerInternal = localService;
     }
 
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public void acquireWakeLock() {
+    public final void acquireWakeLock() {
         if (this.mWakeLock.isHeld()) {
             Slog.wtf("time_detector", "WakeLock " + this.mWakeLock + " already held");
         }
         this.mWakeLock.acquire();
-    }
-
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public long elapsedRealtimeMillis() {
-        return SystemClock.elapsedRealtime();
-    }
-
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public long systemClockMillis() {
-        return System.currentTimeMillis();
-    }
-
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public int systemClockConfidence() {
-        return SystemClockTime.getTimeConfidence();
-    }
-
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public void setSystemClock(long j, int i, String str) {
-        checkWakeLockHeld();
-        this.mAlarmManagerInternal.setTime(j, i, str);
-    }
-
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public void setSystemClockConfidence(int i, String str) {
-        checkWakeLockHeld();
-        SystemClockTime.setConfidence(i, str);
-    }
-
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public void releaseWakeLock() {
-        checkWakeLockHeld();
-        this.mWakeLock.release();
     }
 
     public final void checkWakeLockHeld() {
@@ -79,26 +47,38 @@ public final class EnvironmentImpl implements TimeDetectorStrategyImpl.Environme
         Slog.wtf("time_detector", "WakeLock " + this.mWakeLock + " not held");
     }
 
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public void addDebugLogEntry(String str) {
-        SystemClockTime.addDebugLogEntry(str);
-    }
-
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public void dumpDebugLog(IndentingPrintWriter indentingPrintWriter) {
-        long elapsedRealtimeMillis = elapsedRealtimeMillis();
-        indentingPrintWriter.printf("elapsedRealtimeMillis()=%s (%s)\n", new Object[]{Duration.ofMillis(elapsedRealtimeMillis), Long.valueOf(elapsedRealtimeMillis)});
-        long systemClockMillis = systemClockMillis();
-        indentingPrintWriter.printf("systemClockMillis()=%s (%s)\n", new Object[]{Instant.ofEpochMilli(systemClockMillis), Long.valueOf(systemClockMillis)});
+    public final void dumpDebugLog(IndentingPrintWriter indentingPrintWriter) {
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        indentingPrintWriter.printf("elapsedRealtimeMillis()=%s (%s)\n", new Object[]{Duration.ofMillis(elapsedRealtime), Long.valueOf(elapsedRealtime)});
+        long currentTimeMillis = System.currentTimeMillis();
+        indentingPrintWriter.printf("systemClockMillis()=%s (%s)\n", new Object[]{Instant.ofEpochMilli(currentTimeMillis), Long.valueOf(currentTimeMillis)});
         indentingPrintWriter.println("systemClockConfidence()=" + systemClockConfidence());
         indentingPrintWriter.println("SystemClockTime debug log:");
         indentingPrintWriter.increaseIndent();
-        SystemClockTime.dump(indentingPrintWriter);
+        SystemClockTime.sTimeDebugLog.dump(indentingPrintWriter);
         indentingPrintWriter.decreaseIndent();
     }
 
-    @Override // com.android.server.timedetector.TimeDetectorStrategyImpl.Environment
-    public void runAsync(Runnable runnable) {
-        this.mHandler.post(runnable);
+    public final void releaseWakeLock() {
+        checkWakeLockHeld();
+        this.mWakeLock.release();
+    }
+
+    public final void setSystemClockConfidence(int i, String str) {
+        checkWakeLockHeld();
+        LocalLog localLog = SystemClockTime.sTimeDebugLog;
+        synchronized (SystemClockTime.class) {
+            SystemClockTime.sTimeConfidence = i;
+            SystemClockTime.sTimeDebugLog.log(str);
+        }
+    }
+
+    public final int systemClockConfidence() {
+        int i;
+        LocalLog localLog = SystemClockTime.sTimeDebugLog;
+        synchronized (SystemClockTime.class) {
+            i = SystemClockTime.sTimeConfidence;
+        }
+        return i;
     }
 }

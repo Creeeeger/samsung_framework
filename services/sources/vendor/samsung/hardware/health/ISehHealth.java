@@ -5,138 +5,32 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
-import vendor.samsung.hardware.health.ISehHealthInfoCallback;
+import com.android.server.health.HealthRegCallbackAidl;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public interface ISehHealth extends IInterface {
     public static final String DESCRIPTOR = "vendor$samsung$hardware$health$ISehHealth".replace('$', '.');
 
-    /* loaded from: classes2.dex */
-    public class Default implements ISehHealth {
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return null;
-        }
-
-        @Override // vendor.samsung.hardware.health.ISehHealth
-        public void registerCallback(ISehHealthInfoCallback iSehHealthInfoCallback) {
-        }
-
-        @Override // vendor.samsung.hardware.health.ISehHealth
-        public void sehWriteEnableToParam(int i, boolean z) {
-        }
-
-        @Override // vendor.samsung.hardware.health.ISehHealth
-        public void unregisterCallback(ISehHealthInfoCallback iSehHealthInfoCallback) {
-        }
-
-        @Override // vendor.samsung.hardware.health.ISehHealth
-        public void update() {
-        }
-    }
-
-    String getInterfaceHash();
-
-    int getInterfaceVersion();
-
-    void registerCallback(ISehHealthInfoCallback iSehHealthInfoCallback);
-
-    void sehWriteEnableToParam(int i, boolean z);
-
-    void unregisterCallback(ISehHealthInfoCallback iSehHealthInfoCallback);
-
-    void update();
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements ISehHealth {
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
-        }
+        public static final /* synthetic */ int $r8$clinit = 0;
 
-        public Stub() {
-            markVintfStability();
-            attachInterface(this, ISehHealth.DESCRIPTOR);
-        }
-
-        public static ISehHealth asInterface(IBinder iBinder) {
-            if (iBinder == null) {
-                return null;
-            }
-            IInterface queryLocalInterface = iBinder.queryLocalInterface(ISehHealth.DESCRIPTOR);
-            if (queryLocalInterface != null && (queryLocalInterface instanceof ISehHealth)) {
-                return (ISehHealth) queryLocalInterface;
-            }
-            return new Proxy(iBinder);
-        }
-
-        @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
-            String str = ISehHealth.DESCRIPTOR;
-            if (i >= 1 && i <= 16777215) {
-                parcel.enforceInterface(str);
-            }
-            switch (i) {
-                case 16777214:
-                    parcel2.writeNoException();
-                    parcel2.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    parcel2.writeNoException();
-                    parcel2.writeInt(getInterfaceVersion());
-                    return true;
-                case 1598968902:
-                    parcel2.writeString(str);
-                    return true;
-                default:
-                    if (i == 1) {
-                        ISehHealthInfoCallback asInterface = ISehHealthInfoCallback.Stub.asInterface(parcel.readStrongBinder());
-                        parcel.enforceNoDataAvail();
-                        registerCallback(asInterface);
-                        parcel2.writeNoException();
-                    } else if (i == 2) {
-                        ISehHealthInfoCallback asInterface2 = ISehHealthInfoCallback.Stub.asInterface(parcel.readStrongBinder());
-                        parcel.enforceNoDataAvail();
-                        unregisterCallback(asInterface2);
-                        parcel2.writeNoException();
-                    } else if (i == 3) {
-                        update();
-                        parcel2.writeNoException();
-                    } else if (i == 4) {
-                        int readInt = parcel.readInt();
-                        boolean readBoolean = parcel.readBoolean();
-                        parcel.enforceNoDataAvail();
-                        sehWriteEnableToParam(readInt, readBoolean);
-                        parcel2.writeNoException();
-                    } else {
-                        return super.onTransact(i, parcel, parcel2, i2);
-                    }
-                    return true;
-            }
-        }
-
-        /* loaded from: classes2.dex */
-        public class Proxy implements ISehHealth {
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements ISehHealth {
             public IBinder mRemote;
-            public int mCachedVersion = -1;
-            public String mCachedHash = "-1";
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
 
             @Override // android.os.IInterface
-            public IBinder asBinder() {
+            public final IBinder asBinder() {
                 return this.mRemote;
             }
 
-            @Override // vendor.samsung.hardware.health.ISehHealth
-            public void registerCallback(ISehHealthInfoCallback iSehHealthInfoCallback) {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final void registerCallback(HealthRegCallbackAidl.HalInfoCallback halInfoCallback) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(ISehHealth.DESCRIPTOR);
-                    obtain.writeStrongInterface(iSehHealthInfoCallback);
+                    obtain.writeStrongInterface(halInfoCallback);
                     if (!this.mRemote.transact(1, obtain, obtain2, 0)) {
                         throw new RemoteException("Method registerCallback is unimplemented.");
                     }
@@ -147,13 +41,29 @@ public interface ISehHealth extends IInterface {
                 }
             }
 
-            @Override // vendor.samsung.hardware.health.ISehHealth
-            public void unregisterCallback(ISehHealthInfoCallback iSehHealthInfoCallback) {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final void sehWriteEnableToParam(int i, boolean z) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(ISehHealth.DESCRIPTOR);
-                    obtain.writeStrongInterface(iSehHealthInfoCallback);
+                    obtain.writeInt(i);
+                    obtain.writeBoolean(z);
+                    if (!this.mRemote.transact(4, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method sehWriteEnableToParam is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            public final void unregisterCallback(HealthRegCallbackAidl.HalInfoCallback halInfoCallback) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(ISehHealth.DESCRIPTOR);
+                    obtain.writeStrongInterface(halInfoCallback);
                     if (!this.mRemote.transact(2, obtain, obtain2, 0)) {
                         throw new RemoteException("Method unregisterCallback is unimplemented.");
                     }
@@ -164,32 +74,13 @@ public interface ISehHealth extends IInterface {
                 }
             }
 
-            @Override // vendor.samsung.hardware.health.ISehHealth
-            public void update() {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final void update() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(ISehHealth.DESCRIPTOR);
                     if (!this.mRemote.transact(3, obtain, obtain2, 0)) {
                         throw new RemoteException("Method update is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // vendor.samsung.hardware.health.ISehHealth
-            public void sehWriteEnableToParam(int i, boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(ISehHealth.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeBoolean(z);
-                    if (!this.mRemote.transact(4, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method sehWriteEnableToParam is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {

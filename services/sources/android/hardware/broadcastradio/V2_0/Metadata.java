@@ -1,15 +1,16 @@
 package android.hardware.broadcastradio.V2_0;
 
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import android.os.HidlSupport;
-import android.os.HwBlob;
-import android.os.HwParcel;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class Metadata {
-    public int key = 0;
-    public long intValue = 0;
-    public String stringValue = new String();
+    public long intValue;
+    public int key;
+    public String stringValue;
 
     public final boolean equals(Object obj) {
         if (this == obj) {
@@ -23,18 +24,15 @@ public final class Metadata {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.key))), Integer.valueOf(HidlSupport.deepHashCode(Long.valueOf(this.intValue))), Integer.valueOf(HidlSupport.deepHashCode(this.stringValue)));
+        return Objects.hash(AudioConfig$$ExternalSyntheticOutline0.m(this.key), Integer.valueOf(HidlSupport.deepHashCode(Long.valueOf(this.intValue))), Integer.valueOf(HidlSupport.deepHashCode(this.stringValue)));
     }
 
     public final String toString() {
-        return "{.key = " + this.key + ", .intValue = " + this.intValue + ", .stringValue = " + this.stringValue + "}";
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.key = hwBlob.getInt32(j + 0);
-        this.intValue = hwBlob.getInt64(8 + j);
-        long j2 = j + 16;
-        this.stringValue = hwBlob.getString(j2);
-        hwParcel.readEmbeddedBuffer(r2.getBytes().length + 1, hwBlob.handle(), j2 + 0, false);
+        StringBuilder sb = new StringBuilder("{.key = ");
+        sb.append(this.key);
+        sb.append(", .intValue = ");
+        sb.append(this.intValue);
+        sb.append(", .stringValue = ");
+        return AudioOffloadInfo$$ExternalSyntheticOutline0.m(sb, this.stringValue, "}");
     }
 }

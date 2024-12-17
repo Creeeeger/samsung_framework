@@ -1,83 +1,78 @@
 package com.android.server.biometrics.sensors.face.aidl;
 
 import android.content.Context;
-import android.hardware.keymaster.HardwareAuthToken;
+import android.hardware.biometrics.face.ISession;
 import android.os.RemoteException;
 import android.util.Slog;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
 import com.android.server.biometrics.HardwareAuthTokenUtils;
 import com.android.server.biometrics.log.BiometricContext;
 import com.android.server.biometrics.log.BiometricLogger;
-import com.android.server.biometrics.sensors.AuthSessionCoordinator;
 import com.android.server.biometrics.sensors.ClientMonitorCallback;
 import com.android.server.biometrics.sensors.ErrorConsumer;
 import com.android.server.biometrics.sensors.HalClientMonitor;
-import com.android.server.biometrics.sensors.LockoutCache;
 import com.android.server.biometrics.sensors.LockoutResetDispatcher;
+import com.android.server.biometrics.sensors.LockoutTracker;
+import com.android.server.biometrics.sensors.face.hidl.HidlToAidlSessionAdapter;
 import java.util.function.Supplier;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FaceResetLockoutClient extends HalClientMonitor implements ErrorConsumer {
+public final class FaceResetLockoutClient extends HalClientMonitor implements ErrorConsumer {
     public final int mBiometricStrength;
-    public final HardwareAuthToken mHardwareAuthToken;
-    public final LockoutCache mLockoutCache;
     public final LockoutResetDispatcher mLockoutResetDispatcher;
+    public final LockoutTracker mLockoutTracker;
 
-    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public int getProtoEnum() {
-        return 12;
-    }
-
-    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public boolean interruptsPrecedingClients() {
-        return false;
-    }
-
-    @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void unableToStart() {
-    }
-
-    public FaceResetLockoutClient(Context context, Supplier supplier, int i, String str, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, byte[] bArr, LockoutCache lockoutCache, LockoutResetDispatcher lockoutResetDispatcher, int i3) {
-        super(context, supplier, null, null, i, str, 0, i2, biometricLogger, biometricContext);
+    public FaceResetLockoutClient(Context context, Supplier supplier, int i, String str, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, byte[] bArr, LockoutTracker lockoutTracker, LockoutResetDispatcher lockoutResetDispatcher, int i3) {
+        super(context, supplier, null, null, i, str, 0, i2, biometricLogger, biometricContext, false);
         if (bArr != null) {
-            this.mHardwareAuthToken = HardwareAuthTokenUtils.toHardwareAuthToken(bArr);
-        } else {
-            this.mHardwareAuthToken = null;
+            HardwareAuthTokenUtils.toHardwareAuthToken(bArr);
         }
-        this.mLockoutCache = lockoutCache;
+        this.mLockoutTracker = lockoutTracker;
         this.mLockoutResetDispatcher = lockoutResetDispatcher;
         this.mBiometricStrength = i3;
     }
 
     @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public void start(ClientMonitorCallback clientMonitorCallback) {
+    public final int getProtoEnum() {
+        return 12;
+    }
+
+    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
+    public final boolean interruptsPrecedingClients() {
+        return false;
+    }
+
+    @Override // com.android.server.biometrics.sensors.ErrorConsumer
+    public final void onError(int i, int i2) {
+        NandswapManager$$ExternalSyntheticOutline0.m(i, "Error during resetLockout: ", "FaceResetLockoutClient");
+        this.mCallback.onClientFinished(this, false);
+    }
+
+    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
+    public final void start(ClientMonitorCallback clientMonitorCallback) {
         super.start(clientMonitorCallback);
         startHalOperation();
     }
 
     @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void startHalOperation() {
+    public final void startHalOperation() {
         try {
-            ((AidlSession) getFreshDaemon()).resetLockout(this.mHardwareAuthToken);
+            ISession iSession = ((AidlSession) this.mLazyDaemon.get()).mSession;
+            AidlResponseHandler aidlResponseHandler = ((AidlSession) this.mLazyDaemon.get()).mAidlResponseHandler;
+            if (aidlResponseHandler != null) {
+                aidlResponseHandler.onLockoutCleared();
+            }
+            if (iSession instanceof HidlToAidlSessionAdapter) {
+                this.mCallback.onClientFinished(this, true);
+            }
         } catch (RemoteException e) {
             Slog.e("FaceResetLockoutClient", "Unable to reset lockout", e);
             this.mCallback.onClientFinished(this, false);
         }
     }
 
-    public void onLockoutCleared() {
-        resetLocalLockoutStateToNone(getSensorId(), getTargetUserId(), this.mLockoutCache, this.mLockoutResetDispatcher, getBiometricContext().getAuthSessionCoordinator(), this.mBiometricStrength, getRequestId());
-        this.mCallback.onClientFinished(this, true);
-    }
-
-    public static void resetLocalLockoutStateToNone(int i, int i2, LockoutCache lockoutCache, LockoutResetDispatcher lockoutResetDispatcher, AuthSessionCoordinator authSessionCoordinator, int i3, long j) {
-        authSessionCoordinator.resetLockoutFor(i2, i3, j);
-        lockoutCache.setLockoutModeForUser(i2, 0);
-        lockoutResetDispatcher.notifyLockoutResetCallbacks(i);
-    }
-
-    @Override // com.android.server.biometrics.sensors.ErrorConsumer
-    public void onError(int i, int i2) {
-        Slog.e("FaceResetLockoutClient", "Error during resetLockout: " + i);
-        this.mCallback.onClientFinished(this, false);
+    @Override // com.android.server.biometrics.sensors.HalClientMonitor
+    public final void unableToStart() {
     }
 }

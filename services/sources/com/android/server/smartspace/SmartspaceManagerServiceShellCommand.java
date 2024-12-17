@@ -1,43 +1,44 @@
 package com.android.server.smartspace;
 
 import android.os.ShellCommand;
+import com.android.server.am.ActiveServices$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
-public class SmartspaceManagerServiceShellCommand extends ShellCommand {
-    public static final String TAG = SmartspaceManagerServiceShellCommand.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SmartspaceManagerServiceShellCommand extends ShellCommand {
     public final SmartspaceManagerService mService;
 
     public SmartspaceManagerServiceShellCommand(SmartspaceManagerService smartspaceManagerService) {
         this.mService = smartspaceManagerService;
     }
 
-    public int onCommand(String str) {
+    public final int onCommand(String str) {
         if (str == null) {
             return handleDefaultCommands(str);
         }
         PrintWriter outPrintWriter = getOutPrintWriter();
-        if (str.equals("set")) {
-            String nextArgRequired = getNextArgRequired();
-            nextArgRequired.hashCode();
-            if (nextArgRequired.equals("temporary-service")) {
-                int parseInt = Integer.parseInt(getNextArgRequired());
-                String nextArg = getNextArg();
-                if (nextArg == null) {
-                    this.mService.resetTemporaryService(parseInt);
-                    outPrintWriter.println("SmartspaceService temporarily reset. ");
-                    return 0;
-                }
-                int parseInt2 = Integer.parseInt(getNextArgRequired());
-                this.mService.setTemporaryService(parseInt, nextArg, parseInt2);
-                outPrintWriter.println("SmartspaceService temporarily set to " + nextArg + " for " + parseInt2 + "ms");
-            }
-            return 0;
+        if (!str.equals("set")) {
+            return handleDefaultCommands(str);
         }
-        return handleDefaultCommands(str);
+        String nextArgRequired = getNextArgRequired();
+        nextArgRequired.getClass();
+        if (nextArgRequired.equals("temporary-service")) {
+            int parseInt = Integer.parseInt(getNextArgRequired());
+            String nextArg = getNextArg();
+            if (nextArg == null) {
+                this.mService.resetTemporaryService(parseInt);
+                outPrintWriter.println("SmartspaceService temporarily reset. ");
+                return 0;
+            }
+            int parseInt2 = Integer.parseInt(getNextArgRequired());
+            this.mService.setTemporaryService(parseInt, nextArg, parseInt2);
+            outPrintWriter.println(ActiveServices$$ExternalSyntheticOutline0.m(parseInt2, nextArg, " for ", "ms", new StringBuilder("SmartspaceService temporarily set to ")));
+        }
+        return 0;
     }
 
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         try {
             outPrintWriter.println("SmartspaceManagerService commands:");

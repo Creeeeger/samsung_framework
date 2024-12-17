@@ -5,49 +5,71 @@ import android.content.om.IOverlayManager;
 import android.content.om.OverlayIdentifier;
 import android.content.om.OverlayInfo;
 import android.content.om.OverlayManagerTransaction;
-import android.net.Uri;
+import android.content.om.wallpapertheme.ThemeUtil;
 import android.os.Binder;
+import android.os.FileUtils;
 import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.Trace;
+import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.om.OverlayManagerSettingsHelper;
 import com.android.server.om.OverlayPolicyManager;
-import com.samsung.android.rune.PMRune;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class SemWallpaperThemeManagerWrapper implements ISemWallpaperThemeManager {
+public final class SemWallpaperThemeManagerWrapper {
     public static SemWallpaperThemeManagerWrapper instance;
     public static Context mContext;
-    public static OverlayIdentifier sColorThemeOverlayId = new OverlayIdentifier("android", "SemWT_G_MonetPalette");
+    public static final OverlayIdentifier sColorThemeOverlayId = new OverlayIdentifier("android", "SemWT_G_MonetPalette");
     public static int sGlobalColorThemeSeq = 0;
+    public boolean mIsSuccessLoadMetadata;
+    public boolean mIsThemeParkApplied;
     public OverlayManagerSettingsHelper mSettings;
-    public boolean mIsSuccessLoadMetadata = false;
-    public boolean mIsThemeParkApplied = false;
-    public SemWallpaperThemeManager mWallpaperThemeManager = SemWallpaperThemeManager.getInstance(mContext);
+    public SemWallpaperThemeManager mWallpaperThemeManager;
 
-    public SemWallpaperThemeManagerWrapper() {
-        OverlayPolicyManager.registerPolicy(new SemWallpaperThemeOverlayPolicy(this.mWallpaperThemeManager));
+    public static void deleteFile(File file) {
+        if (file.exists()) {
+            File[] listFiles = file.listFiles();
+            if (listFiles != null) {
+                for (File file2 : listFiles) {
+                    if (file2.isDirectory()) {
+                        deleteFile(file2);
+                    } else {
+                        file2.delete();
+                    }
+                }
+            }
+            file.delete();
+        }
     }
 
-    public static synchronized ISemWallpaperThemeManager getInstance(Context context, OverlayManagerSettingsHelper overlayManagerSettingsHelper) {
+    public static synchronized SemWallpaperThemeManagerWrapper getInstance(Context context, OverlayManagerSettingsHelper overlayManagerSettingsHelper) {
         SemWallpaperThemeManagerWrapper semWallpaperThemeManagerWrapper;
         synchronized (SemWallpaperThemeManagerWrapper.class) {
             mContext = context;
             if (instance == null) {
                 SemWallpaperThemeManagerWrapper semWallpaperThemeManagerWrapper2 = new SemWallpaperThemeManagerWrapper();
+                semWallpaperThemeManagerWrapper2.mIsSuccessLoadMetadata = false;
+                semWallpaperThemeManagerWrapper2.mIsThemeParkApplied = false;
+                if (SemWallpaperThemeManager.sInstance == null) {
+                    SemWallpaperThemeManager.sInstance = new SemWallpaperThemeManager(context);
+                }
+                SemWallpaperThemeManager semWallpaperThemeManager = SemWallpaperThemeManager.sInstance;
+                semWallpaperThemeManagerWrapper2.mWallpaperThemeManager = semWallpaperThemeManager;
+                SemWallpaperThemeOverlayPolicy semWallpaperThemeOverlayPolicy = new SemWallpaperThemeOverlayPolicy(semWallpaperThemeManager);
+                synchronized (OverlayPolicyManager.mLock) {
+                    ((ArrayList) OverlayPolicyManager.policies).add(semWallpaperThemeOverlayPolicy);
+                }
                 instance = semWallpaperThemeManagerWrapper2;
                 semWallpaperThemeManagerWrapper2.mSettings = overlayManagerSettingsHelper;
             }
@@ -56,104 +78,18 @@ public class SemWallpaperThemeManagerWrapper implements ISemWallpaperThemeManage
         return semWallpaperThemeManagerWrapper;
     }
 
-    public final void initTemplateMetadataIfNeeded() {
-        if (this.mIsSuccessLoadMetadata) {
-            return;
-        }
-        this.mWallpaperThemeManager.initTemplateMetadataStatic();
-        this.mWallpaperThemeManager.initTemplateMetadataFromPkg();
-        this.mIsSuccessLoadMetadata = true;
+    public static void increaseColorThemeSeq() {
+        int i = sGlobalColorThemeSeq + 1;
+        sGlobalColorThemeSeq = i;
+        sGlobalColorThemeSeq = Math.max(i, 1);
+        SystemProperties.set("debug.wallpaper.theme.seq", "" + sGlobalColorThemeSeq);
     }
 
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public void initWallpaperTheme() {
-        try {
-            long uptimeMillis = SystemClock.uptimeMillis();
-            if (getColorThemeState() == 1) {
-                initTemplateMetadataIfNeeded();
-                Slog.d("SWT_WTM_Wrapper", "init color theme metadata has finished : " + (SystemClock.uptimeMillis() - uptimeMillis) + "ms");
-                List readLastPalette = this.mWallpaperThemeManager.readLastPalette();
-                if (!readLastPalette.isEmpty()) {
-                    Slog.i("SWT_WTM_Wrapper", "restore palette overlays");
-                    ArrayList arrayList = new ArrayList();
-                    ArrayList arrayList2 = new ArrayList();
-                    this.mWallpaperThemeManager.setPalette(arrayList, arrayList2, this.mWallpaperThemeManager.splitPalette(readLastPalette, arrayList, arrayList2));
-                }
-                if (mContext.getPackageManager().isDeviceUpgrading()) {
-                    OverlayManagerTransaction.Builder builder = new OverlayManagerTransaction.Builder();
-                    this.mWallpaperThemeManager.restoreMonetOverlay(builder, this.mSettings.getNullableOverlayInfo(new OverlayIdentifier("android", "MonetPalette"), 0));
-                    Slog.i("SWT_WTM_Wrapper", "regenerate color theme overlays");
-                    this.mWallpaperThemeManager.registerThemeOverlay(builder);
-                    this.mWallpaperThemeManager.enableThemeOverlay(builder);
-                    Set<Pair> allIdentifiersAndBaseCodePaths = this.mSettings.getAllIdentifiersAndBaseCodePaths();
-                    ArrayList arrayList3 = new ArrayList();
-                    for (Pair pair : allIdentifiersAndBaseCodePaths) {
-                        if (((OverlayIdentifier) pair.first).getOverlayName() != null && ((OverlayIdentifier) pair.first).getOverlayName().startsWith("SemWT_")) {
-                            arrayList3.add((OverlayIdentifier) pair.first);
-                        }
-                    }
-                    if (!arrayList3.isEmpty()) {
-                        Slog.i("SWT_WTM_Wrapper", "unregister unnecessary color theme overlays for fota upgrade");
-                        this.mWallpaperThemeManager.unregisterNotExistedOverlay(builder, arrayList3);
-                    }
-                    this.mWallpaperThemeManager.setPermissionsDirIfExisted();
-                    long uptimeMillis2 = SystemClock.uptimeMillis();
-                    IOverlayManager.Stub.asInterface(ServiceManager.getService("overlay")).commit(builder.build());
-                    Slog.d("SWT_WTM_Wrapper", "restoring color theme has finished, ready:" + (uptimeMillis2 - uptimeMillis) + "ms, commit:" + (SystemClock.uptimeMillis() - uptimeMillis2) + "ms");
-                }
-            }
-        } catch (Exception e) {
-            Slog.e("SWT_WTM_Wrapper", "failed initWallpaperTheme, wallpaper theming will not working, ex = " + e);
-        }
-    }
-
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public void onPackageAdded(String str) {
-        int colorThemeState = getColorThemeState();
-        if (colorThemeState != -1) {
-            try {
-                initTemplateMetadataIfNeeded();
-                this.mWallpaperThemeManager.updateTemplateMetadataFromPkg(str);
-                OverlayManagerTransaction.Builder builder = new OverlayManagerTransaction.Builder();
-                this.mWallpaperThemeManager.updateThemeOverlay(builder, str, colorThemeState);
-                IOverlayManager.Stub.asInterface(ServiceManager.getService("overlay")).commit(builder.build());
-            } catch (Exception e) {
-                Log.e("SWT_WTM_Wrapper", "FAILED at commit for packageAdded, e=" + e);
-            }
-        }
-    }
-
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public void onUserAdded(int i) {
-        this.mWallpaperThemeManager.syncWallpaperThemeStateForUser(i);
-    }
-
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public boolean isRequestForColorTheme(OverlayManagerTransaction overlayManagerTransaction) {
-        OverlayIdentifier overlayIdentifier;
-        if (overlayManagerTransaction.getRequests() == null || !overlayManagerTransaction.getRequests().hasNext()) {
-            return false;
-        }
-        OverlayManagerTransaction.Request request = (OverlayManagerTransaction.Request) overlayManagerTransaction.getRequests().next();
-        String overlayName = (request == null || (overlayIdentifier = request.overlay) == null) ? null : overlayIdentifier.getOverlayName();
-        return overlayName != null && overlayName.startsWith("SemWT_");
-    }
-
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public void applyWallpaperColors(List list, int i, int i2) {
-        Log.i("SWT_WTM_Wrapper", "(Deprecated) invoked applyWallpaperColors, colors=" + list);
-        applyWallpaperColor(list, list, false, false);
-    }
-
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public void applyWallpaperColor(List list, List list2, boolean z) {
-        applyWallpaperColor(list, list2, z, false);
-    }
-
-    public void applyWallpaperColor(List list, List list2, boolean z, boolean z2) {
+    public final void applyWallpaperColor(List list, List list2, boolean z, boolean z2) {
+        SemWallpaperThemeManager semWallpaperThemeManager = this.mWallpaperThemeManager;
         int callingUid = Binder.getCallingUid();
         if (mContext.getPackageManager().checkSignatures(1000, callingUid) != 0) {
-            SemWallpaperThemeManager.saveSWTLog("SWT_WTM_Wrapper", "applyWallpaperColor called by abnormal uid : " + callingUid);
+            ThemeUtil.saveSWTLog("SWT_WTM_Wrapper", "applyWallpaperColor called by abnormal uid : " + callingUid);
             return;
         }
         Log.i("SWT_WTM_Wrapper", "invoked applyWallpaperColor, isGray=" + z + ", colorSS=" + list + ", colorGG=" + list2);
@@ -161,101 +97,71 @@ public class SemWallpaperThemeManagerWrapper implements ISemWallpaperThemeManage
             try {
                 Trace.traceBegin(8192L, "SWT:applyWallpaperColors, wallpaperColors:" + list);
                 initTemplateMetadataIfNeeded();
-                if (!z2 && this.mIsThemeParkApplied) {
-                    this.mWallpaperThemeManager.setTemplateAsColorTheme();
+                if (!z2 && this.mIsThemeParkApplied && semWallpaperThemeManager.setTemplateAsColorTheme()) {
                     this.mIsThemeParkApplied = false;
                 }
                 if (list != null) {
                     long uptimeMillis = SystemClock.uptimeMillis();
-                    this.mWallpaperThemeManager.setPalette(list, list2, z);
+                    semWallpaperThemeManager.mPalette.setPalette(list, list2, z);
                     OverlayManagerTransaction.Builder builder = new OverlayManagerTransaction.Builder();
-                    this.mWallpaperThemeManager.registerMonetOverlay(builder);
-                    this.mWallpaperThemeManager.registerThemeOverlay(builder);
-                    this.mWallpaperThemeManager.enableMonetOverlay(builder);
-                    this.mWallpaperThemeManager.enableThemeOverlay(builder);
+                    semWallpaperThemeManager.registerMonetOverlay(builder);
+                    semWallpaperThemeManager.registerThemeOverlay(builder);
+                    semWallpaperThemeManager.enableMonetOverlay(builder);
+                    semWallpaperThemeManager.enableThemeOverlay(builder);
                     unregisterThemeParkOverlays(builder);
                     try {
                         increaseColorThemeSeq();
                         long uptimeMillis2 = SystemClock.uptimeMillis();
                         IOverlayManager.Stub.asInterface(ServiceManager.getService("overlay")).commit(builder.build());
-                        this.mWallpaperThemeManager.saveWallpaperThemeColor();
-                        this.mWallpaperThemeManager.applyDynamicColor();
-                        this.mWallpaperThemeManager.saveWallpaperThemeState(1);
-                        SemWallpaperThemeManager.saveSWTLog("SWT_WTM_Wrapper", "[Enable] commit OverlayManagerTransaction, dur1:" + (uptimeMillis2 - uptimeMillis) + ", dur2:" + (SystemClock.uptimeMillis() - uptimeMillis2));
+                        semWallpaperThemeManager.saveWallpaperThemeColor();
+                        semWallpaperThemeManager.saveWallpaperThemeState(1);
+                        ThemeUtil.saveSWTLog("SWT_WTM_Wrapper", "[Enable] commit OverlayManagerTransaction, dur1:" + (uptimeMillis2 - uptimeMillis) + ", dur2:" + (SystemClock.uptimeMillis() - uptimeMillis2));
                     } catch (Exception e) {
-                        SemWallpaperThemeManager.saveSWTLog("SWT_WTM_Wrapper", "FAILED at commit, e=" + e);
-                        this.mWallpaperThemeManager.clearCurrentThemeOverlays();
+                        ThemeUtil.saveSWTLog("SWT_WTM_Wrapper", "FAILED at commit, e=" + e);
+                        semWallpaperThemeManager.mCurrentMonetOverlays = null;
+                        semWallpaperThemeManager.mCurrentThemeOverlays = null;
                     }
                     if (!z2) {
-                        setStateAsColorTheme();
+                        File file = new File("/data/overlays/themepark/state_applied.txt");
+                        if (file.exists()) {
+                            file.delete();
+                        }
                     }
                 } else {
-                    this.mWallpaperThemeManager.setPalette(list, list2, z);
+                    semWallpaperThemeManager.mPalette.setPalette(list, list2, z);
                     OverlayManagerTransaction.Builder builder2 = new OverlayManagerTransaction.Builder();
-                    this.mWallpaperThemeManager.disableMonetOverlay(builder2);
-                    this.mWallpaperThemeManager.disableThemeOverlay(builder2);
+                    semWallpaperThemeManager.disableMonetOverlay(builder2);
+                    semWallpaperThemeManager.disableThemeOverlay(builder2);
                     unregisterThemeParkOverlays(builder2);
                     try {
                         increaseColorThemeSeq();
                         long uptimeMillis3 = SystemClock.uptimeMillis();
                         IOverlayManager.Stub.asInterface(ServiceManager.getService("overlay")).commit(builder2.build());
-                        this.mWallpaperThemeManager.saveWallpaperThemeColor();
-                        this.mWallpaperThemeManager.saveWallpaperThemeState(0);
-                        SemWallpaperThemeManager.saveSWTLog("SWT_WTM_Wrapper", "[Disable] commit OverlayManagerTransaction, dur:" + (SystemClock.uptimeMillis() - uptimeMillis3));
+                        semWallpaperThemeManager.saveWallpaperThemeColor();
+                        semWallpaperThemeManager.saveWallpaperThemeState(0);
+                        ThemeUtil.saveSWTLog("SWT_WTM_Wrapper", "[Disable] commit OverlayManagerTransaction, dur:" + (SystemClock.uptimeMillis() - uptimeMillis3));
                     } catch (Exception e2) {
-                        SemWallpaperThemeManager.saveSWTLog("SWT_WTM_Wrapper", "FAILED at commit, e=" + e2);
-                        this.mWallpaperThemeManager.clearCurrentThemeOverlays();
+                        ThemeUtil.saveSWTLog("SWT_WTM_Wrapper", "FAILED at commit, e=" + e2);
+                        semWallpaperThemeManager.mCurrentMonetOverlays = null;
+                        semWallpaperThemeManager.mCurrentThemeOverlays = null;
                     }
-                    setStateAsColorTheme();
+                    File file2 = new File("/data/overlays/themepark/state_applied.txt");
+                    if (file2.exists()) {
+                        file2.delete();
+                    }
                 }
             } catch (Exception e3) {
                 Log.e("SWT_WTM_Wrapper", "FAILED at applyWallpaperColor, e=" + e3);
-                this.mWallpaperThemeManager.clearCurrentThemeOverlays();
+                semWallpaperThemeManager.mCurrentMonetOverlays = null;
+                semWallpaperThemeManager.mCurrentThemeOverlays = null;
             }
         } finally {
             Trace.traceEnd(8192L);
         }
     }
 
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public List getWallpaperColors() {
-        return this.mWallpaperThemeManager.getPalette();
-    }
-
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public List readLastPalette() {
-        List readLastPalette = this.mWallpaperThemeManager.readLastPalette();
-        if (readLastPalette.isEmpty()) {
-            return null;
-        }
-        return readLastPalette.subList(0, 65);
-    }
-
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public boolean getLastPalette(List list, List list2) {
-        List readLastPalette = this.mWallpaperThemeManager.readLastPalette();
-        if (readLastPalette.isEmpty()) {
-            return false;
-        }
-        return this.mWallpaperThemeManager.splitPalette(readLastPalette, list, list2);
-    }
-
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public void dump(PrintWriter printWriter) {
-        printWriter.println("\n Color palette history :");
-        printWriter.println(this.mWallpaperThemeManager.getLogText());
-        if (PMRune.THEME_WALLPAPER_THEMING_DEBUG) {
-            this.mWallpaperThemeManager.dumpInDetail(printWriter);
-        }
-    }
-
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public boolean isColoThemeApplied() {
-        return getColorThemeState() == 1;
-    }
-
     public final int getColorThemeState() {
-        OverlayInfo nullableOverlayInfo = this.mSettings.getNullableOverlayInfo(sColorThemeOverlayId, 0);
+        OverlayInfo nullableOverlayInfo = this.mSettings.mSettings.getNullableOverlayInfo(sColorThemeOverlayId, 0);
         if (nullableOverlayInfo != null) {
             nullableOverlayInfo.isEnabled();
         }
@@ -265,65 +171,82 @@ public class SemWallpaperThemeManagerWrapper implements ISemWallpaperThemeManage
         return nullableOverlayInfo.isEnabled() ? 1 : 0;
     }
 
-    public final void increaseColorThemeSeq() {
-        int i = sGlobalColorThemeSeq + 1;
-        sGlobalColorThemeSeq = i;
-        sGlobalColorThemeSeq = Math.max(i, 1);
-        SystemProperties.set("debug.wallpaper.theme.seq", "" + sGlobalColorThemeSeq);
+    /* JADX WARN: Removed duplicated region for block: B:19:0x00d9 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:42:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void initTemplateMetadataIfNeeded() {
+        /*
+            Method dump skipped, instructions count: 289
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.wallpapertheme.SemWallpaperThemeManagerWrapper.initTemplateMetadataIfNeeded():void");
     }
 
-    @Override // com.android.server.om.wallpapertheme.ISemWallpaperThemeManager
-    public void applyThemeParkWallpaperColor(Uri uri) {
-        initTemplateMetadataIfNeeded();
-        this.mWallpaperThemeManager.setTemplate(uri);
+    public final OverlayManagerTransaction initWallpaperTheme() {
+        SemWallpaperThemeManager semWallpaperThemeManager = this.mWallpaperThemeManager;
         try {
-            InputStream openInputStream = mContext.getContentResolver().openInputStream(uri);
-            try {
+            long uptimeMillis = SystemClock.uptimeMillis();
+            if (getColorThemeState() != 1) {
+                return null;
+            }
+            initTemplateMetadataIfNeeded();
+            Slog.d("SWT_WTM_Wrapper", "init color theme metadata has finished : " + (SystemClock.uptimeMillis() - uptimeMillis) + "ms");
+            semWallpaperThemeManager.getClass();
+            List readLastPalette = SemWallpaperThemeManager.readLastPalette();
+            if (!((ArrayList) readLastPalette).isEmpty()) {
+                Slog.i("SWT_WTM_Wrapper", "restore palette overlays");
                 ArrayList arrayList = new ArrayList();
-                JSONArray jSONArray = new JSONObject(readFromInputStream(openInputStream)).getJSONArray("wallpaperColors");
-                for (int i = 0; i < jSONArray.length(); i++) {
-                    arrayList.add(Integer.valueOf(jSONArray.optInt(i)));
+                ArrayList arrayList2 = new ArrayList();
+                semWallpaperThemeManager.mPalette.setPalette(arrayList, arrayList2, SemWallpaperThemeManager.splitPalette(readLastPalette, arrayList, arrayList2));
+            }
+            if (!SemWallpaperThemeUtils.isFotaUpgrade(mContext)) {
+                return null;
+            }
+            OverlayManagerTransaction.Builder builder = new OverlayManagerTransaction.Builder();
+            semWallpaperThemeManager.restoreMonetOverlay(builder, this.mSettings.mSettings.getNullableOverlayInfo(new OverlayIdentifier("android", "MonetPalette"), 0));
+            Slog.i("SWT_WTM_Wrapper", "regenerate color theme overlays");
+            semWallpaperThemeManager.registerThemeOverlay(builder);
+            semWallpaperThemeManager.enableThemeOverlay(builder);
+            Set allIdentifiersAndBaseCodePaths = this.mSettings.mSettings.getAllIdentifiersAndBaseCodePaths();
+            ArrayList arrayList3 = new ArrayList();
+            Iterator it = ((ArraySet) allIdentifiersAndBaseCodePaths).iterator();
+            while (it.hasNext()) {
+                Pair pair = (Pair) it.next();
+                if (((OverlayIdentifier) pair.first).getOverlayName() != null && ((OverlayIdentifier) pair.first).getOverlayName().startsWith("SemWT_")) {
+                    arrayList3.add((OverlayIdentifier) pair.first);
                 }
-                applyWallpaperColor(arrayList, arrayList, false, true);
-                this.mIsThemeParkApplied = true;
-                if (openInputStream != null) {
-                    openInputStream.close();
+            }
+            if (!arrayList3.isEmpty()) {
+                Slog.i("SWT_WTM_Wrapper", "unregister unnecessary color theme overlays for fota upgrade");
+                semWallpaperThemeManager.unregisterNotExistedOverlay(builder, arrayList3);
+            }
+            try {
+                File file = new File("/data/overlays/wallpapertheme/");
+                if (file.exists()) {
+                    FileUtils.setPermissions(file, 511, -1, -1);
+                    Log.i("SWT_ThemeManager", "success to change color theme directory permissions");
                 }
-            } finally {
+            } catch (Exception e) {
+                Log.w("SWT_ThemeManager", "failed setPermissionsDirIfExisted, e:" + e);
             }
-        } catch (Exception e) {
-            Log.e("SWT_WTM_Wrapper", "Failed at applyThemeParkWallpaperColor, e = ", e);
-        }
-    }
-
-    public final String readFromInputStream(InputStream inputStream) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] bArr = new byte[1024];
-        while (true) {
-            int read = inputStream.read(bArr);
-            if (read != -1) {
-                byteArrayOutputStream.write(bArr, 0, read);
-            } else {
-                return byteArrayOutputStream.toString("UTF-8");
-            }
-        }
-    }
-
-    public final void setStateAsColorTheme() {
-        try {
-            File file = new File("/data/overlays/themepark/state_applied.txt");
-            if (file.exists()) {
-                file.delete();
-            }
-        } catch (Exception e) {
-            Log.e("SWT_WTM_Wrapper", "Failed to delete themepark state file, e = ", e);
+            SemWallpaperThemeUtils.updateFotaUpgradeStatus(mContext);
+            Slog.d("SWT_WTM_Wrapper", "restoring color theme has finished, ready : " + (SystemClock.uptimeMillis() - uptimeMillis) + "ms");
+            return builder.build();
+        } catch (Exception e2) {
+            BootReceiver$$ExternalSyntheticOutline0.m(e2, "failed initWallpaperTheme, wallpaper theming will not working, ex = ", "SWT_WTM_Wrapper");
+            return null;
         }
     }
 
     public final void unregisterThemeParkOverlays(OverlayManagerTransaction.Builder builder) {
-        Set<Pair> allIdentifiersAndBaseCodePaths = this.mSettings.getAllIdentifiersAndBaseCodePaths();
+        Set allIdentifiersAndBaseCodePaths = this.mSettings.mSettings.getAllIdentifiersAndBaseCodePaths();
         ArrayList arrayList = new ArrayList();
-        for (Pair pair : allIdentifiersAndBaseCodePaths) {
+        Iterator it = ((ArraySet) allIdentifiersAndBaseCodePaths).iterator();
+        while (it.hasNext()) {
+            Pair pair = (Pair) it.next();
             if (((OverlayIdentifier) pair.first).getOverlayName() != null && ((OverlayIdentifier) pair.first).getOverlayName().startsWith("ThemePark_")) {
                 arrayList.add((OverlayIdentifier) pair.first);
             }
@@ -331,6 +254,13 @@ public class SemWallpaperThemeManagerWrapper implements ISemWallpaperThemeManage
         if (arrayList.isEmpty()) {
             return;
         }
-        this.mWallpaperThemeManager.unregisterThemeParkOverlay(builder, arrayList);
+        SemWallpaperThemeManager semWallpaperThemeManager = this.mWallpaperThemeManager;
+        semWallpaperThemeManager.getClass();
+        Iterator it2 = arrayList.iterator();
+        while (it2.hasNext()) {
+            builder.unregisterFabricatedOverlay((OverlayIdentifier) it2.next());
+        }
+        semWallpaperThemeManager.saveThemeParkSingleThemeState();
+        Log.i("SWT_ThemeManager", "[ThemePark FRRO] unregister ThemePark overlay : " + arrayList);
     }
 }

@@ -1,7 +1,6 @@
 package com.android.server.location.provider;
 
 import android.location.Location;
-import android.location.LocationResult;
 import android.location.provider.ProviderProperties;
 import android.location.provider.ProviderRequest;
 import android.location.util.identity.CallerIdentity;
@@ -11,40 +10,30 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
-public class MockLocationProvider extends AbstractLocationProvider {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class MockLocationProvider extends AbstractLocationProvider {
     public Location mLocation;
-
-    @Override // com.android.server.location.provider.AbstractLocationProvider
-    public void onExtraCommand(int i, int i2, String str, Bundle bundle) {
-    }
-
-    @Override // com.android.server.location.provider.AbstractLocationProvider
-    public void onSetRequest(ProviderRequest providerRequest) {
-    }
 
     public MockLocationProvider(ProviderProperties providerProperties, CallerIdentity callerIdentity, Set set) {
         super(ConcurrentUtils.DIRECT_EXECUTOR, callerIdentity, providerProperties, set);
     }
 
-    public void setProviderAllowed(boolean z) {
-        setAllowed(z);
-    }
-
-    public void setProviderLocation(Location location) {
-        Location location2 = new Location(location);
-        location2.setIsFromMockProvider(true);
-        this.mLocation = location2;
-        reportLocation(LocationResult.wrap(new Location[]{location2}).validate());
-    }
-
     @Override // com.android.server.location.provider.AbstractLocationProvider
-    public void onFlush(Runnable runnable) {
-        runnable.run();
-    }
-
-    @Override // com.android.server.location.provider.AbstractLocationProvider
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
         printWriter.println("last mock location=" + this.mLocation);
+    }
+
+    @Override // com.android.server.location.provider.AbstractLocationProvider
+    public final void onExtraCommand(int i, String str, Bundle bundle, int i2) {
+    }
+
+    @Override // com.android.server.location.provider.AbstractLocationProvider
+    public final void onFlush(LocationProviderManager$Registration$$ExternalSyntheticLambda0 locationProviderManager$Registration$$ExternalSyntheticLambda0) {
+        locationProviderManager$Registration$$ExternalSyntheticLambda0.run();
+    }
+
+    @Override // com.android.server.location.provider.AbstractLocationProvider
+    public final void onSetRequest(ProviderRequest providerRequest) {
     }
 }

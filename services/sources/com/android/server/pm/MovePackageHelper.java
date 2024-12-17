@@ -11,7 +11,8 @@ import android.content.pm.parsing.ApkLiteParseUtils;
 import android.content.pm.parsing.PackageLite;
 import android.content.pm.parsing.result.ParseResult;
 import android.content.pm.parsing.result.ParseTypeImpl;
-import android.os.Binder;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -19,19 +20,21 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.os.Trace;
 import android.os.UserHandle;
+import android.os.storage.DiskInfo;
 import android.os.storage.StorageManager;
 import android.os.storage.VolumeInfo;
-import android.util.Log;
 import android.util.Slog;
 import android.util.SparseIntArray;
 import com.android.internal.os.SomeArgs;
+import com.android.internal.pm.parsing.pkg.AndroidPackageHidden;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.HeimdAllFsService$$ExternalSyntheticOutline0;
 import com.android.server.pm.Installer;
-import com.android.server.pm.parsing.pkg.AndroidPackageInternal;
-import com.android.server.pm.parsing.pkg.AndroidPackageUtils;
 import com.android.server.pm.pkg.AndroidPackage;
-import com.android.server.pm.pkg.PackageStateInternal;
 import com.android.server.pm.pkg.PackageStateUtils;
 import com.samsung.android.rune.PMRune;
 import java.io.File;
@@ -42,378 +45,54 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class MovePackageHelper {
-    public static Map sMoveIdMapForSd = new HashMap();
-    public static ArrayList sPendingMoves = new ArrayList();
+    public static final Map sMoveIdMapForSd = new HashMap();
+    public static final ArrayList sPendingMoves = new ArrayList();
     public final PackageManagerService mPm;
 
-    public MovePackageHelper(PackageManagerService packageManagerService) {
-        this.mPm = packageManagerService;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.pm.MovePackageHelper$2, reason: invalid class name */
+    public final class AnonymousClass2 implements Runnable {
+        public final /* synthetic */ SdcardParams val$sdParams;
 
-    public void movePackageInternal(final String str, String str2, final int i, int i2, UserHandle userHandle) {
-        String absolutePath;
-        final PackageFreezer freezePackage;
-        File dataAppDirectory;
-        int i3;
-        boolean z;
-        File path;
-        long j;
-        boolean z2;
-        int i4;
-        MoveInfo moveInfo;
-        StorageManager storageManager = (StorageManager) this.mPm.mInjector.getSystemService(StorageManager.class);
-        PackageManager packageManager = this.mPm.mContext.getPackageManager();
-        Computer snapshotComputer = this.mPm.snapshotComputer();
-        PackageStateInternal packageStateForInstalledAndFiltered = snapshotComputer.getPackageStateForInstalledAndFiltered(str, i2, userHandle.getIdentifier());
-        if (packageStateForInstalledAndFiltered == null || packageStateForInstalledAndFiltered.getPkg() == null) {
-            throw new PackageManagerException(-2, "Missing package");
+        public AnonymousClass2(SdcardParams sdcardParams) {
+            this.val$sdParams = sdcardParams;
         }
-        AndroidPackageInternal pkg = packageStateForInstalledAndFiltered.getPkg();
-        if (packageStateForInstalledAndFiltered.isSystem()) {
-            throw new PackageManagerException(-3, "Cannot move system application");
-        }
-        boolean equals = "private".equals(str2);
-        boolean z3 = this.mPm.mContext.getResources().getBoolean(R.bool.config_allowTheaterModeWakeFromLidSwitch);
-        if (equals && !z3) {
-            throw new PackageManagerException(-9, "3rd party apps are not allowed on internal storage");
-        }
-        String volumeUuid = packageStateForInstalledAndFiltered.getVolumeUuid();
-        boolean isExternalAsec = AsecInstallHelper.isExternalAsec(pkg);
-        if (!isExternalAsec) {
-            File file = new File(pkg.getPath());
-            File file2 = new File(file, "oat");
-            VolumeInfo findVolumeByUuid = storageManager.findVolumeByUuid(str2);
-            if (!file.isDirectory() || (!file2.isDirectory() && findVolumeByUuid != null && findVolumeByUuid.getType() != 0)) {
-                throw new PackageManagerException(-6, "Move only supported for modern cluster style installs");
-            }
-        }
-        if (AsecInstallHelper.isExternalAsec(pkg) && str2 != null && !str2.equals("primary_physical")) {
-            throw new PackageManagerException(-6, "Package already moved to " + str2);
-        }
-        if (Objects.equals(volumeUuid, str2) && !AsecInstallHelper.isExternalAsec(pkg)) {
-            throw new PackageManagerException(-6, "Package already moved to " + str2);
-        }
-        if (!pkg.isExternalStorage() && this.mPm.isPackageDeviceAdminOnAnyUser(snapshotComputer, str)) {
-            throw new PackageManagerException(-8, "Device admin cannot be moved");
-        }
-        if (snapshotComputer.getFrozenPackages().containsKey(str)) {
-            throw new PackageManagerException(-7, "Failed to move already frozen package");
-        }
-        final boolean isExternalStorage = pkg.isExternalStorage();
-        File file3 = new File(pkg.getPath());
-        InstallSource installSource = packageStateForInstalledAndFiltered.getInstallSource();
-        String cpuAbiOverride = packageStateForInstalledAndFiltered.getCpuAbiOverride();
-        int appId = UserHandle.getAppId(pkg.getUid());
-        String seInfo = packageStateForInstalledAndFiltered.getSeInfo();
-        String valueOf = String.valueOf(packageManager.getApplicationLabel(AndroidPackageUtils.generateAppInfoWithoutState(pkg)));
-        int targetSdkVersion = pkg.getTargetSdkVersion();
-        int[] queryInstalledUsers = PackageStateUtils.queryInstalledUsers(packageStateForInstalledAndFiltered, this.mPm.mUserManager.getUserIds(), true);
-        if (file3.getParentFile().getName().startsWith("~~")) {
-            absolutePath = file3.getParentFile().getAbsolutePath();
-        } else {
-            absolutePath = file3.getAbsolutePath();
-        }
-        String str3 = absolutePath;
-        synchronized (this.mPm.mLock) {
-            freezePackage = this.mPm.freezePackage(str, -1, "movePackageInternal", 10);
-        }
-        Bundle bundle = new Bundle();
-        bundle.putString("android.intent.extra.PACKAGE_NAME", str);
-        bundle.putString("android.intent.extra.TITLE", valueOf);
-        if (PMRune.PM_INSTALL_TO_SDCARD) {
-            synchronized (sMoveIdMapForSd) {
-                if (sMoveIdMapForSd.containsKey(Integer.valueOf(i))) {
-                    bundle.putString("moveCaller", "smartmanager");
-                }
-            }
-        }
-        this.mPm.mMoveCallbacks.notifyCreated(i, bundle);
-        int i5 = 16;
-        if (Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, str2)) {
-            dataAppDirectory = Environment.getDataAppDirectory(str2);
-            i3 = 16;
-            z = !isExternalAsec;
-        } else {
-            if ("primary_physical".equals(str2)) {
-                path = storageManager.getPrimaryPhysicalVolume().getPath();
-            } else {
-                VolumeInfo findVolumeByUuid2 = storageManager.findVolumeByUuid(str2);
-                if (findVolumeByUuid2 != null && findVolumeByUuid2.getType() == 0) {
-                    path = storageManager.findVolumeByUuid(str2).getPath();
-                    Slog.i("PackageManager", "measurePath: " + path.toString());
-                    i5 = 8;
-                } else {
-                    if (findVolumeByUuid2 == null || findVolumeByUuid2.getType() != 1 || !findVolumeByUuid2.isMountedWritable()) {
-                        freezePackage.close();
-                        throw new PackageManagerException(-6, "Move location not mounted private volume");
-                    }
-                    dataAppDirectory = Environment.getDataAppDirectory(str2);
-                    i3 = 16;
-                    z = true;
-                }
-            }
-            dataAppDirectory = path;
-            i3 = i5;
-            z = false;
-        }
-        if (z) {
-            for (int i6 : queryInstalledUsers) {
-                if (StorageManager.isFileEncrypted() && !StorageManager.isUserKeyUnlocked(i6)) {
-                    freezePackage.close();
-                    throw new PackageManagerException(-10, "User " + i6 + " must be unlocked");
-                }
-            }
-        }
-        PackageStats packageStats = new PackageStats(null, -1);
-        synchronized (this.mPm.mInstallLock) {
-            for (int i7 : queryInstalledUsers) {
-                if (!getPackageSizeInfoLI(str, i7, packageStats)) {
-                    freezePackage.close();
-                    throw new PackageManagerException(-6, "Failed to measure package size");
-                }
-            }
-        }
-        final long usableSpace = dataAppDirectory.getUsableSpace();
-        if (z) {
-            j = packageStats.codeSize + packageStats.dataSize;
-        } else {
-            j = packageStats.codeSize;
-        }
-        if (j > storageManager.getStorageBytesUntilLow(dataAppDirectory)) {
-            freezePackage.close();
-            throw new PackageManagerException(-6, "Not enough free space to move");
-        }
-        this.mPm.mMoveCallbacks.notifyStatusChanged(i, 10);
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final File file4 = dataAppDirectory;
-        IPackageInstallObserver2.Stub stub = new IPackageInstallObserver2.Stub() { // from class: com.android.server.pm.MovePackageHelper.1
-            public void onUserActionRequired(Intent intent) {
-                freezePackage.close();
-                throw new IllegalStateException();
-            }
 
-            public void onPackageInstalled(String str4, int i8, String str5, Bundle bundle2) {
-                countDownLatch.countDown();
-                freezePackage.close();
-                if (PMRune.PM_INSTALL_TO_SDCARD) {
-                    synchronized (MovePackageHelper.sMoveIdMapForSd) {
-                        if (!AsecInstallHelper.getPreMountState()) {
-                            if (MovePackageHelper.sPendingMoves.size() > 0) {
-                                MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(((SdcardParams) MovePackageHelper.sPendingMoves.get(0)).moveId, -6);
-                            }
-                            MovePackageHelper.sMoveIdMapForSd.clear();
-                            MovePackageHelper.sPendingMoves.clear();
-                        } else if (MovePackageHelper.sMoveIdMapForSd.containsKey(Integer.valueOf(i))) {
-                            MovePackageHelper.sPendingMoves.remove(0);
-                            if (MovePackageHelper.sPendingMoves.size() > 0) {
-                                MovePackageHelper.this.startMovePackage((SdcardParams) MovePackageHelper.sPendingMoves.get(0));
-                            }
+        @Override // java.lang.Runnable
+        public final void run() {
+            try {
+                MovePackageHelper movePackageHelper = MovePackageHelper.this;
+                SdcardParams sdcardParams = this.val$sdParams;
+                movePackageHelper.movePackageInternal(sdcardParams.moveId, sdcardParams.callingUid, sdcardParams.user, sdcardParams.packageName, sdcardParams.volumeUuid);
+            } catch (PackageManagerException e) {
+                Slog.w("PackageManager", "Failed to move " + this.val$sdParams.packageName, e);
+                MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(this.val$sdParams.moveId, -6);
+                synchronized (MovePackageHelper.sMoveIdMapForSd) {
+                    try {
+                        ArrayList arrayList = MovePackageHelper.sPendingMoves;
+                        if (arrayList.size() > 0) {
+                            arrayList.remove(0);
                         }
+                        if (e.error == -6) {
+                            Iterator it = arrayList.iterator();
+                            while (it.hasNext()) {
+                                MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(((SdcardParams) it.next()).moveId, -1);
+                            }
+                            MovePackageHelper.sPendingMoves.clear();
+                        }
+                    } catch (Throwable th) {
+                        throw th;
                     }
                 }
-                int installStatusToPublicStatus = PackageManager.installStatusToPublicStatus(i8);
-                if (installStatusToPublicStatus == 0) {
-                    MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(i, 100);
-                    MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(i, -100);
-                    MovePackageHelper.this.logAppMovedStorage(str, isExternalStorage);
-                } else if (installStatusToPublicStatus == 6) {
-                    MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(i, -1);
-                } else {
-                    MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(i, -6);
-                }
             }
-        };
-        if (z) {
-            final long j2 = j;
-            z2 = true;
-            new Thread(new Runnable() { // from class: com.android.server.pm.MovePackageHelper$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MovePackageHelper.this.lambda$movePackageInternal$0(countDownLatch, usableSpace, file4, j2, i);
-                }
-            }).start();
-            moveInfo = new MoveInfo(i, volumeUuid, str2, str, appId, seInfo, targetSdkVersion, str3);
-            i4 = 0;
-        } else {
-            z2 = true;
-            i4 = 0;
-            final long j3 = j;
-            new Thread(new Runnable() { // from class: com.android.server.pm.MovePackageHelper$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MovePackageHelper.this.lambda$movePackageInternal$1(countDownLatch, usableSpace, file4, j3, i);
-                }
-            }).start();
-            moveInfo = null;
-        }
-        int i8 = i3 | 2;
-        OriginInfo fromExistingFile = OriginInfo.fromExistingFile(file3);
-        ParseResult parsePackageLite = ApkLiteParseUtils.parsePackageLite(ParseTypeImpl.forDefaultParsing(), new File(fromExistingFile.mResolvedPath), i4);
-        InstallingSession installingSession = new InstallingSession(fromExistingFile, moveInfo, (IPackageInstallObserver2) stub, i8, installSource, str2, userHandle, cpuAbiOverride, 0, parsePackageLite.isSuccess() ? (PackageLite) parsePackageLite.getResult() : null, this.mPm);
-        installingSession.mIsMoveRequest = z2;
-        installingSession.movePackage();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* JADX WARN: Can't wrap try/catch for region: R(8:8|(4:10|(1:12)(1:16)|13|14)(2:17|18)|15|2|3|4|6|5) */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public /* synthetic */ void lambda$movePackageInternal$0(java.util.concurrent.CountDownLatch r14, long r15, java.io.File r17, long r18, int r20) {
-        /*
-            r13 = this;
-            java.security.SecureRandom r0 = new java.security.SecureRandom
-            r0.<init>()
-            r1 = 0
-            r2 = r1
-        L7:
-            java.util.concurrent.TimeUnit r3 = java.util.concurrent.TimeUnit.SECONDS     // Catch: java.lang.InterruptedException -> L13
-            r4 = 1
-            r6 = r14
-            boolean r3 = r14.await(r4, r3)     // Catch: java.lang.InterruptedException -> L14
-            if (r3 == 0) goto L14
-            return
-        L13:
-            r6 = r14
-        L14:
-            long r3 = r17.getUsableSpace()
-            long r3 = r15 - r3
-            r7 = 80
-            long r3 = r3 * r7
-            long r7 = r3 / r18
-            r9 = 0
-            r11 = 80
-            long r3 = android.util.MathUtils.constrain(r7, r9, r11)
-            int r3 = (int) r3
-            int r3 = r3 + 10
-            if (r2 < r3) goto L39
-            r3 = 90
-            if (r2 >= r3) goto L36
-            r3 = 5
-            int r3 = r0.nextInt(r3)
-            goto L37
-        L36:
-            r3 = r1
-        L37:
-            int r2 = r2 + r3
-            goto L3a
-        L39:
-            r2 = r3
-        L3a:
-            r3 = r13
-            com.android.server.pm.PackageManagerService r4 = r3.mPm
-            com.android.server.pm.MovePackageHelper$MoveCallbacks r4 = r4.mMoveCallbacks
-            r5 = r20
-            r4.notifyStatusChanged(r5, r2)
-            goto L7
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.MovePackageHelper.lambda$movePackageInternal$0(java.util.concurrent.CountDownLatch, long, java.io.File, long, int):void");
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* JADX WARN: Can't wrap try/catch for region: R(9:8|(1:10)(1:21)|(4:12|(1:14)(1:18)|15|16)(2:19|20)|17|2|3|4|6|5) */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public /* synthetic */ void lambda$movePackageInternal$1(java.util.concurrent.CountDownLatch r15, long r16, java.io.File r18, long r19, int r21) {
-        /*
-            r14 = this;
-            java.security.SecureRandom r0 = new java.security.SecureRandom
-            r0.<init>()
-            r1 = 0
-            r2 = r1
-        L7:
-            java.util.concurrent.TimeUnit r3 = java.util.concurrent.TimeUnit.SECONDS     // Catch: java.lang.InterruptedException -> L13
-            r4 = 1
-            r6 = r15
-            boolean r3 = r15.await(r4, r3)     // Catch: java.lang.InterruptedException -> L14
-            if (r3 == 0) goto L14
-            return
-        L13:
-            r6 = r15
-        L14:
-            long r3 = r18.getFreeSpace()
-            long r3 = r16 - r3
-            r7 = 0
-            int r5 = (r19 > r7 ? 1 : (r19 == r7 ? 0 : -1))
-            r7 = 10
-            if (r5 == 0) goto L32
-            r8 = 80
-            long r3 = r3 * r8
-            long r8 = r3 / r19
-            r10 = 0
-            r12 = 80
-            long r3 = android.util.MathUtils.constrain(r8, r10, r12)
-            int r3 = (int) r3
-            int r3 = r3 + r7
-            goto L34
-        L32:
-            r3 = 100
-        L34:
-            if (r2 < r3) goto L42
-            r3 = 90
-            if (r2 >= r3) goto L3f
-            int r3 = r0.nextInt(r7)
-            goto L40
-        L3f:
-            r3 = r1
-        L40:
-            int r2 = r2 + r3
-            goto L43
-        L42:
-            r2 = r3
-        L43:
-            r3 = r14
-            com.android.server.pm.PackageManagerService r4 = r3.mPm
-            com.android.server.pm.MovePackageHelper$MoveCallbacks r4 = r4.mMoveCallbacks
-            r5 = r21
-            r4.notifyStatusChanged(r5, r2)
-            goto L7
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.MovePackageHelper.lambda$movePackageInternal$1(java.util.concurrent.CountDownLatch, long, java.io.File, long, int):void");
-    }
-
-    public final void logAppMovedStorage(String str, boolean z) {
-        AndroidPackage androidPackage = this.mPm.snapshotComputer().getPackage(str);
-        if (androidPackage == null) {
-            return;
-        }
-        int packageExternalStorageType = PackageManagerServiceUtils.getPackageExternalStorageType(((StorageManager) this.mPm.mInjector.getSystemService(StorageManager.class)).findVolumeByUuid(StorageManager.convert(androidPackage.getVolumeUuid()).toString()), androidPackage.isExternalStorage());
-        if (!z && androidPackage.isExternalStorage()) {
-            FrameworkStatsLog.write(183, packageExternalStorageType, 1, str);
-        } else {
-            if (!z || androidPackage.isExternalStorage()) {
-                return;
-            }
-            FrameworkStatsLog.write(183, packageExternalStorageType, 2, str);
         }
     }
 
-    public final boolean getPackageSizeInfoLI(String str, int i, PackageStats packageStats) {
-        PackageStateInternal packageStateInternal = this.mPm.snapshotComputer().getPackageStateInternal(str);
-        if (packageStateInternal == null) {
-            Slog.w("PackageManager", "Failed to find settings for " + str);
-            return false;
-        }
-        try {
-            this.mPm.mInstaller.getAppSize(packageStateInternal.getVolumeUuid(), new String[]{str}, i, 0, packageStateInternal.getAppId(), new long[]{packageStateInternal.getUserStateOrDefault(i).getCeDataInode()}, new String[]{packageStateInternal.getPathString()}, packageStats);
-            if (PackageManagerServiceUtils.isSystemApp(packageStateInternal) && !PackageManagerServiceUtils.isUpdatedSystemApp(packageStateInternal)) {
-                packageStats.codeSize = 0L;
-            }
-            packageStats.dataSize -= packageStats.cacheSize;
-            return true;
-        } catch (Installer.InstallerException e) {
-            Slog.w("PackageManager", String.valueOf(e));
-            return false;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class MoveCallbacks extends Handler {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MoveCallbacks extends Handler {
         public final RemoteCallbackList mCallbacks;
         public final SparseIntArray mLastStatus;
 
@@ -423,21 +102,19 @@ public final class MovePackageHelper {
             this.mLastStatus = new SparseIntArray();
         }
 
-        public void register(IPackageMoveObserver iPackageMoveObserver) {
-            this.mCallbacks.register(iPackageMoveObserver);
-        }
-
-        public void unregister(IPackageMoveObserver iPackageMoveObserver) {
-            this.mCallbacks.unregister(iPackageMoveObserver);
-        }
-
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             SomeArgs someArgs = (SomeArgs) message.obj;
             int beginBroadcast = this.mCallbacks.beginBroadcast();
             for (int i = 0; i < beginBroadcast; i++) {
+                IPackageMoveObserver broadcastItem = this.mCallbacks.getBroadcastItem(i);
                 try {
-                    invokeCallback((IPackageMoveObserver) this.mCallbacks.getBroadcastItem(i), message.what, someArgs);
+                    int i2 = message.what;
+                    if (i2 == 1) {
+                        broadcastItem.onCreated(someArgs.argi1, (Bundle) someArgs.arg2);
+                    } else if (i2 == 2) {
+                        broadcastItem.onStatusChanged(someArgs.argi1, someArgs.argi2, ((Long) someArgs.arg3).longValue());
+                    }
                 } catch (RemoteException unused) {
                 }
             }
@@ -445,43 +122,35 @@ public final class MovePackageHelper {
             someArgs.recycle();
         }
 
-        public final void invokeCallback(IPackageMoveObserver iPackageMoveObserver, int i, SomeArgs someArgs) {
-            if (i == 1) {
-                iPackageMoveObserver.onCreated(someArgs.argi1, (Bundle) someArgs.arg2);
-            } else {
-                if (i != 2) {
-                    return;
-                }
-                iPackageMoveObserver.onStatusChanged(someArgs.argi1, someArgs.argi2, ((Long) someArgs.arg3).longValue());
-            }
-        }
-
-        public void notifyCreated(int i, Bundle bundle) {
-            Slog.v("PackageManager", "Move " + i + " created " + bundle.toString());
+        public final void notifyCreated(int i, Bundle bundle) {
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "Move ", " created ");
+            m.append(bundle.toString());
+            Slog.v("PackageManager", m.toString());
             SomeArgs obtain = SomeArgs.obtain();
             obtain.argi1 = i;
             obtain.arg2 = bundle;
             obtainMessage(1, obtain).sendToTarget();
         }
 
-        public void notifyStatusChanged(int i, int i2) {
+        public final void notifyStatusChanged(int i, int i2) {
             notifyStatusChanged(i, i2, -1L);
         }
 
-        public void notifyStatusChanged(int i, int i2, long j) {
+        public final void notifyStatusChanged(int i, int i2, long j) {
             Slog.v("PackageManager", "Move " + i + " status " + i2);
             if (PMRune.PM_INSTALL_TO_SDCARD) {
-                synchronized (MovePackageHelper.sMoveIdMapForSd) {
-                    if (MovePackageHelper.sMoveIdMapForSd.containsKey(Integer.valueOf(i))) {
+                Map map = MovePackageHelper.sMoveIdMapForSd;
+                synchronized (map) {
+                    if (((HashMap) map).containsKey(Integer.valueOf(i))) {
                         try {
-                            ((IMemorySaverPackageMoveObserver) MovePackageHelper.sMoveIdMapForSd.get(Integer.valueOf(i))).onStatusChanged(i, i2, j);
+                            ((IMemorySaverPackageMoveObserver) ((HashMap) map).get(Integer.valueOf(i))).onStatusChanged(i, i2, j);
                             if (i2 == -100 || i2 == -1 || i2 == -6) {
-                                Slog.v("PackageManager", "Multi move id " + i + " status " + i2 + " sPendingMoves " + MovePackageHelper.sPendingMoves + " sMoveIdMapForSd " + MovePackageHelper.sMoveIdMapForSd);
-                                MovePackageHelper.sMoveIdMapForSd.remove(Integer.valueOf(i));
+                                Slog.v("PackageManager", "Multi move id " + i + " status " + i2 + " sPendingMoves " + MovePackageHelper.sPendingMoves + " sMoveIdMapForSd " + map);
+                                ((HashMap) map).remove(Integer.valueOf(i));
                             }
                         } catch (Exception unused) {
                             Slog.w("PackageManager", "Exception while multi sd move");
-                            MovePackageHelper.sMoveIdMapForSd.remove(Integer.valueOf(i));
+                            ((HashMap) MovePackageHelper.sMoveIdMapForSd).remove(Integer.valueOf(i));
                         }
                     }
                 }
@@ -497,15 +166,15 @@ public final class MovePackageHelper {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class SdcardParams {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SdcardParams {
         public final int callingUid;
         public final int moveId;
         public final String packageName;
         public final UserHandle user;
         public final String volumeUuid;
 
-        public SdcardParams(String str, String str2, int i, UserHandle userHandle, int i2) {
+        public SdcardParams(int i, int i2, UserHandle userHandle, String str, String str2) {
             this.packageName = str;
             this.volumeUuid = str2;
             this.callingUid = i;
@@ -513,64 +182,544 @@ public final class MovePackageHelper {
             this.moveId = i2;
         }
 
-        public String toString() {
-            return "SdcardParams{" + Integer.toHexString(System.identityHashCode(this)) + " PackageName= " + this.packageName + " Volume= " + this.volumeUuid + "}";
+        public final String toString() {
+            StringBuilder sb = new StringBuilder("SdcardParams{");
+            sb.append(Integer.toHexString(System.identityHashCode(this)));
+            sb.append(" PackageName= ");
+            sb.append(this.packageName);
+            sb.append(" Volume= ");
+            return AudioOffloadInfo$$ExternalSyntheticOutline0.m(sb, this.volumeUuid, "}");
         }
     }
 
-    public final void startMovePackage(final SdcardParams sdcardParams) {
-        this.mPm.mHandler.post(new Runnable() { // from class: com.android.server.pm.MovePackageHelper.2
-            @Override // java.lang.Runnable
-            public void run() {
-                try {
-                    MovePackageHelper movePackageHelper = MovePackageHelper.this;
-                    SdcardParams sdcardParams2 = sdcardParams;
-                    movePackageHelper.movePackageInternal(sdcardParams2.packageName, sdcardParams2.volumeUuid, sdcardParams2.moveId, sdcardParams2.callingUid, sdcardParams2.user);
-                } catch (PackageManagerException e) {
-                    Slog.w("PackageManager", "Failed to move " + sdcardParams.packageName, e);
-                    MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(sdcardParams.moveId, -6);
-                    synchronized (MovePackageHelper.sMoveIdMapForSd) {
-                        if (MovePackageHelper.sPendingMoves.size() > 0) {
-                            MovePackageHelper.sPendingMoves.remove(0);
-                        }
-                        if (e.error == -6) {
-                            Iterator it = MovePackageHelper.sPendingMoves.iterator();
-                            while (it.hasNext()) {
-                                MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(((SdcardParams) it.next()).moveId, -1);
-                            }
-                            MovePackageHelper.sPendingMoves.clear();
-                        }
-                    }
-                }
-            }
-        });
+    public MovePackageHelper(PackageManagerService packageManagerService) {
+        this.mPm = packageManagerService;
     }
 
-    public int movePackageToSd(String str, String str2, IMemorySaverPackageMoveObserver iMemorySaverPackageMoveObserver) {
-        this.mPm.mContext.enforceCallingOrSelfPermission("android.permission.MOVE_PACKAGE", null);
-        synchronized (sMoveIdMapForSd) {
-            if (!AsecInstallHelper.getPreMountState()) {
+    public final boolean getPackageSizeInfoLI(String str, int i, PackageStats packageStats) {
+        PackageManagerService packageManagerService = this.mPm;
+        PackageSetting packageStateInternal = packageManagerService.snapshotComputer().getPackageStateInternal(str);
+        if (packageStateInternal == null) {
+            HeimdAllFsService$$ExternalSyntheticOutline0.m("Failed to find settings for ", str, "PackageManager");
+            return false;
+        }
+        try {
+            packageManagerService.mInstaller.getAppSize(packageStateInternal.volumeUuid, new String[]{str}, i, 0, packageStateInternal.mAppId, new long[]{packageStateInternal.getUserStateOrDefault(i).getCeDataInode()}, new String[]{packageStateInternal.mPathString}, packageStats);
+            boolean z = PackageManagerServiceUtils.DEBUG;
+            if ((packageStateInternal.getFlags() & 1) != 0 && (packageStateInternal.getFlags() & 128) == 0) {
+                packageStats.codeSize = 0L;
+            }
+            packageStats.dataSize -= packageStats.cacheSize;
+            return true;
+        } catch (Installer.InstallerException e) {
+            Slog.w("PackageManager", String.valueOf(e));
+            return false;
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r29v0, types: [com.android.server.pm.MovePackageHelper$1] */
+    public final void movePackageInternal(final int i, int i2, UserHandle userHandle, final String str, String str2) {
+        File dataAppDirectory;
+        int i3;
+        boolean z;
+        File path;
+        MoveInfo moveInfo;
+        StorageManager storageManager = (StorageManager) this.mPm.mInjector.mGetSystemServiceProducer.produce(StorageManager.class);
+        PackageManager packageManager = this.mPm.mContext.getPackageManager();
+        Computer snapshotComputer = this.mPm.snapshotComputer();
+        PackageSetting packageStateForInstalledAndFiltered = snapshotComputer.getPackageStateForInstalledAndFiltered(i2, userHandle.getIdentifier(), str);
+        if (packageStateForInstalledAndFiltered == null || packageStateForInstalledAndFiltered.pkg == null) {
+            throw new PackageManagerException(-2, "Missing package");
+        }
+        int[] queryInstalledUsers = PackageStateUtils.queryInstalledUsers(packageStateForInstalledAndFiltered, this.mPm.mUserManager.getUserIds());
+        if (queryInstalledUsers.length <= 0) {
+            throw new PackageManagerException(-2, "Package is not installed for any user");
+        }
+        UserHandle of = UserHandle.of(queryInstalledUsers[0]);
+        for (int i4 : queryInstalledUsers) {
+            if (snapshotComputer.shouldFilterApplicationIncludingUninstalled(packageStateForInstalledAndFiltered, i2, i4)) {
+                throw new PackageManagerException(-2, "Missing package");
+            }
+        }
+        AndroidPackageHidden androidPackageHidden = packageStateForInstalledAndFiltered.pkg;
+        if (packageStateForInstalledAndFiltered.isSystem()) {
+            throw new PackageManagerException(-3, "Cannot move system application");
+        }
+        boolean equals = "private".equals(str2);
+        boolean z2 = this.mPm.mContext.getResources().getBoolean(R.bool.config_allowAutoBrightnessWhileDozing);
+        if (equals && !z2) {
+            throw new PackageManagerException(-9, "3rd party apps are not allowed on internal storage");
+        }
+        boolean isExternalAsec = AsecInstallHelper.isExternalAsec(androidPackageHidden);
+        if (!isExternalAsec) {
+            File file = new File(androidPackageHidden.getPath());
+            File file2 = new File(file, "oat");
+            VolumeInfo findVolumeByUuid = storageManager.findVolumeByUuid(str2);
+            if (!file.isDirectory() || (!file2.isDirectory() && findVolumeByUuid != null && findVolumeByUuid.getType() != 0)) {
+                throw new PackageManagerException(-6, "Move only supported for modern cluster style installs");
+            }
+        }
+        if (AsecInstallHelper.isExternalAsec(androidPackageHidden) && str2 != null && !str2.equals("primary_physical")) {
+            throw new PackageManagerException(-6, "Package already moved to ".concat(str2));
+        }
+        String str3 = packageStateForInstalledAndFiltered.volumeUuid;
+        if (Objects.equals(str3, str2) && !AsecInstallHelper.isExternalAsec(androidPackageHidden)) {
+            throw new PackageManagerException(-6, ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Package already moved to ", str2));
+        }
+        if (!androidPackageHidden.isExternalStorage() && this.mPm.isPackageDeviceAdminOnAnyUser(snapshotComputer, str)) {
+            throw new PackageManagerException(-8, "Device admin cannot be moved");
+        }
+        if (snapshotComputer.getFrozenPackages().mStorage.containsKey(str)) {
+            throw new PackageManagerException(-7, "Failed to move already frozen package");
+        }
+        final boolean isExternalStorage = androidPackageHidden.isExternalStorage();
+        File file3 = new File(androidPackageHidden.getPath());
+        InstallSource installSource = packageStateForInstalledAndFiltered.installSource;
+        String str4 = packageStateForInstalledAndFiltered.mCpuAbiOverride;
+        int appId = UserHandle.getAppId(androidPackageHidden.getUid());
+        String seInfo = packageStateForInstalledAndFiltered.getSeInfo();
+        String valueOf = String.valueOf(packageManager.getApplicationLabel(androidPackageHidden.toAppInfoWithoutState()));
+        int targetSdkVersion = androidPackageHidden.getTargetSdkVersion();
+        String absolutePath = file3.getParentFile().getName().startsWith("~~") ? file3.getParentFile().getAbsolutePath() : file3.getAbsolutePath();
+        PackageManagerTracedLock packageManagerTracedLock = this.mPm.mLock;
+        boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
                 try {
-                    iMemorySaverPackageMoveObserver.onStatusChanged(-1, -6, -1L);
-                } catch (Exception e) {
-                    Log.w("PackageManager", " remote exception on observer " + e);
+                    final PackageFreezer freezePackage = this.mPm.freezePackage(str, -1, "movePackageInternal", 10, null);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("android.intent.extra.PACKAGE_NAME", str);
+                    bundle.putString("android.intent.extra.TITLE", valueOf);
+                    if (PMRune.PM_INSTALL_TO_SDCARD) {
+                        Map map = sMoveIdMapForSd;
+                        synchronized (map) {
+                            try {
+                                if (((HashMap) map).containsKey(Integer.valueOf(i))) {
+                                    bundle.putString("moveCaller", "smartmanager");
+                                }
+                            } finally {
+                            }
+                        }
+                    }
+                    this.mPm.mMoveCallbacks.notifyCreated(i, bundle);
+                    int i5 = 16;
+                    if (Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, str2)) {
+                        boolean z4 = !isExternalAsec;
+                        dataAppDirectory = Environment.getDataAppDirectory(str2);
+                        i3 = 16;
+                        z = z4;
+                    } else {
+                        if ("primary_physical".equals(str2)) {
+                            path = storageManager.getPrimaryPhysicalVolume().getPath();
+                        } else {
+                            VolumeInfo findVolumeByUuid2 = storageManager.findVolumeByUuid(str2);
+                            if (findVolumeByUuid2 != null && findVolumeByUuid2.getType() == 0) {
+                                path = storageManager.findVolumeByUuid(str2).getPath();
+                                Slog.i("PackageManager", "measurePath: " + path.toString());
+                                i5 = 8;
+                            } else {
+                                if (findVolumeByUuid2 == null || findVolumeByUuid2.getType() != 1 || !findVolumeByUuid2.isMountedWritable()) {
+                                    freezePackage.close();
+                                    throw new PackageManagerException(-6, "Move location not mounted private volume");
+                                }
+                                dataAppDirectory = Environment.getDataAppDirectory(str2);
+                                i3 = 16;
+                                z = true;
+                            }
+                        }
+                        dataAppDirectory = path;
+                        i3 = i5;
+                        z = false;
+                    }
+                    if (z) {
+                        for (int i6 : queryInstalledUsers) {
+                            if (StorageManager.isFileEncrypted() && !StorageManager.isCeStorageUnlocked(i6)) {
+                                freezePackage.close();
+                                throw new PackageManagerException(-10, BinaryTransparencyService$$ExternalSyntheticOutline0.m(i6, "User ", " must be unlocked"));
+                            }
+                        }
+                    }
+                    PackageStats packageStats = new PackageStats(null, -1);
+                    PackageManagerTracedLock packageManagerTracedLock2 = this.mPm.mInstallLock;
+                    packageManagerTracedLock2.mLock.lock();
+                    try {
+                        for (int i7 : queryInstalledUsers) {
+                            if (!getPackageSizeInfoLI(str, i7, packageStats)) {
+                                freezePackage.close();
+                                throw new PackageManagerException(-6, "Failed to measure package size");
+                            }
+                        }
+                        packageManagerTracedLock2.close();
+                        final long usableSpace = dataAppDirectory.getUsableSpace();
+                        long j = z ? packageStats.codeSize + packageStats.dataSize : packageStats.codeSize;
+                        if (j > storageManager.getStorageBytesUntilLow(dataAppDirectory)) {
+                            freezePackage.close();
+                            throw new PackageManagerException(-6, "Not enough free space to move");
+                        }
+                        this.mPm.mMoveCallbacks.notifyStatusChanged(i, 10);
+                        final CountDownLatch countDownLatch = new CountDownLatch(1);
+                        ?? r29 = new IPackageInstallObserver2.Stub() { // from class: com.android.server.pm.MovePackageHelper.1
+                            public final void onPackageInstalled(String str5, int i8, String str6, Bundle bundle2) {
+                                DiskInfo disk;
+                                countDownLatch.countDown();
+                                freezePackage.close();
+                                int i9 = 0;
+                                if (PMRune.PM_INSTALL_TO_SDCARD) {
+                                    Map map2 = MovePackageHelper.sMoveIdMapForSd;
+                                    synchronized (map2) {
+                                        try {
+                                            if (!AsecInstallHelper.sPreMounted) {
+                                                ArrayList arrayList = MovePackageHelper.sPendingMoves;
+                                                if (arrayList.size() > 0) {
+                                                    MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(((SdcardParams) arrayList.get(0)).moveId, -6);
+                                                }
+                                                ((HashMap) map2).clear();
+                                                arrayList.clear();
+                                            } else if (((HashMap) map2).containsKey(Integer.valueOf(i))) {
+                                                ArrayList arrayList2 = MovePackageHelper.sPendingMoves;
+                                                arrayList2.remove(0);
+                                                if (arrayList2.size() > 0) {
+                                                    SdcardParams sdcardParams = (SdcardParams) arrayList2.get(0);
+                                                    MovePackageHelper movePackageHelper = MovePackageHelper.this;
+                                                    movePackageHelper.mPm.mHandler.post(movePackageHelper.new AnonymousClass2(sdcardParams));
+                                                }
+                                            }
+                                        } finally {
+                                        }
+                                    }
+                                }
+                                int installStatusToPublicStatus = PackageManager.installStatusToPublicStatus(i8);
+                                if (installStatusToPublicStatus != 0) {
+                                    if (installStatusToPublicStatus != 6) {
+                                        MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(i, -6);
+                                        return;
+                                    } else {
+                                        MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(i, -1);
+                                        return;
+                                    }
+                                }
+                                MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(i, 100);
+                                MovePackageHelper.this.mPm.mMoveCallbacks.notifyStatusChanged(i, -100);
+                                MovePackageHelper movePackageHelper2 = MovePackageHelper.this;
+                                String str7 = str;
+                                boolean z5 = isExternalStorage;
+                                PackageManagerService packageManagerService = movePackageHelper2.mPm;
+                                AndroidPackage androidPackage = packageManagerService.snapshotComputer().getPackage(str7);
+                                if (androidPackage == null) {
+                                    return;
+                                }
+                                VolumeInfo findVolumeByUuid3 = ((StorageManager) packageManagerService.mInjector.mGetSystemServiceProducer.produce(StorageManager.class)).findVolumeByUuid(StorageManager.convert(androidPackage.getVolumeUuid()).toString());
+                                boolean isExternalStorage2 = androidPackage.isExternalStorage();
+                                boolean z6 = PackageManagerServiceUtils.DEBUG;
+                                if (findVolumeByUuid3 != null && (disk = findVolumeByUuid3.getDisk()) != null) {
+                                    if (disk.isSd()) {
+                                        i9 = 1;
+                                    } else if (disk.isUsb()) {
+                                        i9 = 2;
+                                    } else if (isExternalStorage2) {
+                                        i9 = 3;
+                                    }
+                                }
+                                if (!z5 && androidPackage.isExternalStorage()) {
+                                    FrameworkStatsLog.write(183, i9, 1, str7);
+                                } else {
+                                    if (!z5 || androidPackage.isExternalStorage()) {
+                                        return;
+                                    }
+                                    FrameworkStatsLog.write(183, i9, 2, str7);
+                                }
+                            }
+
+                            public final void onUserActionRequired(Intent intent) {
+                                freezePackage.close();
+                                throw new IllegalStateException();
+                            }
+                        };
+                        if (z) {
+                            final int i8 = 0;
+                            final File file4 = dataAppDirectory;
+                            final long j2 = j;
+                            new Thread(new Runnable(this) { // from class: com.android.server.pm.MovePackageHelper$$ExternalSyntheticLambda0
+                                public final /* synthetic */ MovePackageHelper f$0;
+
+                                {
+                                    this.f$0 = this;
+                                }
+
+                                /* JADX WARN: Can't wrap try/catch for region: R(5:30|(4:32|(1:34)(1:38)|35|36)(2:39|40)|37|27|28) */
+                                /* JADX WARN: Can't wrap try/catch for region: R(6:7|(1:9)(1:20)|(4:11|(1:13)(1:17)|14|15)(2:18|19)|16|4|5) */
+                                @Override // java.lang.Runnable
+                                /*
+                                    Code decompiled incorrectly, please refer to instructions dump.
+                                    To view partially-correct code enable 'Show inconsistent code' option in preferences
+                                */
+                                public final void run() {
+                                    /*
+                                        r21 = this;
+                                        r0 = r21
+                                        int r1 = r9
+                                        switch(r1) {
+                                            case 0: goto L5f;
+                                            default: goto L7;
+                                        }
+                                    L7:
+                                        com.android.server.pm.MovePackageHelper r1 = r0.f$0
+                                        java.util.concurrent.CountDownLatch r2 = r2
+                                        long r3 = r3
+                                        java.io.File r5 = r5
+                                        long r6 = r6
+                                        int r8 = r8
+                                        r1.getClass()
+                                        java.security.SecureRandom r9 = new java.security.SecureRandom
+                                        r9.<init>()
+                                        r10 = 0
+                                        r0 = r10
+                                    L1d:
+                                        java.util.concurrent.TimeUnit r11 = java.util.concurrent.TimeUnit.SECONDS     // Catch: java.lang.InterruptedException -> L28
+                                        r12 = 1
+                                        boolean r11 = r2.await(r12, r11)     // Catch: java.lang.InterruptedException -> L28
+                                        if (r11 == 0) goto L28
+                                        return
+                                    L28:
+                                        long r11 = r5.getFreeSpace()
+                                        long r11 = r3 - r11
+                                        r13 = 0
+                                        int r13 = (r6 > r13 ? 1 : (r6 == r13 ? 0 : -1))
+                                        r14 = 10
+                                        if (r13 == 0) goto L46
+                                        r15 = 80
+                                        long r11 = r11 * r15
+                                        long r15 = r11 / r6
+                                        r17 = 0
+                                        r19 = 80
+                                        long r11 = android.util.MathUtils.constrain(r15, r17, r19)
+                                        int r11 = (int) r11
+                                        int r11 = r11 + r14
+                                        goto L48
+                                    L46:
+                                        r11 = 100
+                                    L48:
+                                        if (r0 < r11) goto L56
+                                        r11 = 90
+                                        if (r0 >= r11) goto L53
+                                        int r11 = r9.nextInt(r14)
+                                        goto L54
+                                    L53:
+                                        r11 = r10
+                                    L54:
+                                        int r0 = r0 + r11
+                                        goto L57
+                                    L56:
+                                        r0 = r11
+                                    L57:
+                                        com.android.server.pm.PackageManagerService r11 = r1.mPm
+                                        com.android.server.pm.MovePackageHelper$MoveCallbacks r11 = r11.mMoveCallbacks
+                                        r11.notifyStatusChanged(r8, r0)
+                                        goto L1d
+                                    L5f:
+                                        com.android.server.pm.MovePackageHelper r1 = r0.f$0
+                                        java.util.concurrent.CountDownLatch r2 = r2
+                                        long r3 = r3
+                                        java.io.File r5 = r5
+                                        long r6 = r6
+                                        int r0 = r8
+                                        r1.getClass()
+                                        java.security.SecureRandom r8 = new java.security.SecureRandom
+                                        r8.<init>()
+                                        r9 = 0
+                                        r10 = r9
+                                    L75:
+                                        java.util.concurrent.TimeUnit r11 = java.util.concurrent.TimeUnit.SECONDS     // Catch: java.lang.InterruptedException -> L80
+                                        r12 = 1
+                                        boolean r11 = r2.await(r12, r11)     // Catch: java.lang.InterruptedException -> L80
+                                        if (r11 == 0) goto L80
+                                        return
+                                    L80:
+                                        long r11 = r5.getUsableSpace()
+                                        long r11 = r3 - r11
+                                        r13 = 80
+                                        long r11 = r11 * r13
+                                        long r13 = r11 / r6
+                                        r15 = 0
+                                        r17 = 80
+                                        long r11 = android.util.MathUtils.constrain(r13, r15, r17)
+                                        int r11 = (int) r11
+                                        int r11 = r11 + 10
+                                        if (r10 < r11) goto La5
+                                        r11 = 90
+                                        if (r10 >= r11) goto La2
+                                        r11 = 5
+                                        int r11 = r8.nextInt(r11)
+                                        goto La3
+                                    La2:
+                                        r11 = r9
+                                    La3:
+                                        int r10 = r10 + r11
+                                        goto La6
+                                    La5:
+                                        r10 = r11
+                                    La6:
+                                        com.android.server.pm.PackageManagerService r11 = r1.mPm
+                                        com.android.server.pm.MovePackageHelper$MoveCallbacks r11 = r11.mMoveCallbacks
+                                        r11.notifyStatusChanged(r0, r10)
+                                        goto L75
+                                    */
+                                    throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.MovePackageHelper$$ExternalSyntheticLambda0.run():void");
+                                }
+                            }).start();
+                            moveInfo = new MoveInfo(str3, str2, str, appId, seInfo, targetSdkVersion, absolutePath);
+                        } else {
+                            final int i9 = 1;
+                            final File file5 = dataAppDirectory;
+                            final long j3 = j;
+                            new Thread(new Runnable(this) { // from class: com.android.server.pm.MovePackageHelper$$ExternalSyntheticLambda0
+                                public final /* synthetic */ MovePackageHelper f$0;
+
+                                {
+                                    this.f$0 = this;
+                                }
+
+                                @Override // java.lang.Runnable
+                                public final void run() {
+                                    /*
+                                        this = this;
+                                        r0 = r21
+                                        int r1 = r9
+                                        switch(r1) {
+                                            case 0: goto L5f;
+                                            default: goto L7;
+                                        }
+                                    L7:
+                                        com.android.server.pm.MovePackageHelper r1 = r0.f$0
+                                        java.util.concurrent.CountDownLatch r2 = r2
+                                        long r3 = r3
+                                        java.io.File r5 = r5
+                                        long r6 = r6
+                                        int r8 = r8
+                                        r1.getClass()
+                                        java.security.SecureRandom r9 = new java.security.SecureRandom
+                                        r9.<init>()
+                                        r10 = 0
+                                        r0 = r10
+                                    L1d:
+                                        java.util.concurrent.TimeUnit r11 = java.util.concurrent.TimeUnit.SECONDS     // Catch: java.lang.InterruptedException -> L28
+                                        r12 = 1
+                                        boolean r11 = r2.await(r12, r11)     // Catch: java.lang.InterruptedException -> L28
+                                        if (r11 == 0) goto L28
+                                        return
+                                    L28:
+                                        long r11 = r5.getFreeSpace()
+                                        long r11 = r3 - r11
+                                        r13 = 0
+                                        int r13 = (r6 > r13 ? 1 : (r6 == r13 ? 0 : -1))
+                                        r14 = 10
+                                        if (r13 == 0) goto L46
+                                        r15 = 80
+                                        long r11 = r11 * r15
+                                        long r15 = r11 / r6
+                                        r17 = 0
+                                        r19 = 80
+                                        long r11 = android.util.MathUtils.constrain(r15, r17, r19)
+                                        int r11 = (int) r11
+                                        int r11 = r11 + r14
+                                        goto L48
+                                    L46:
+                                        r11 = 100
+                                    L48:
+                                        if (r0 < r11) goto L56
+                                        r11 = 90
+                                        if (r0 >= r11) goto L53
+                                        int r11 = r9.nextInt(r14)
+                                        goto L54
+                                    L53:
+                                        r11 = r10
+                                    L54:
+                                        int r0 = r0 + r11
+                                        goto L57
+                                    L56:
+                                        r0 = r11
+                                    L57:
+                                        com.android.server.pm.PackageManagerService r11 = r1.mPm
+                                        com.android.server.pm.MovePackageHelper$MoveCallbacks r11 = r11.mMoveCallbacks
+                                        r11.notifyStatusChanged(r8, r0)
+                                        goto L1d
+                                    L5f:
+                                        com.android.server.pm.MovePackageHelper r1 = r0.f$0
+                                        java.util.concurrent.CountDownLatch r2 = r2
+                                        long r3 = r3
+                                        java.io.File r5 = r5
+                                        long r6 = r6
+                                        int r0 = r8
+                                        r1.getClass()
+                                        java.security.SecureRandom r8 = new java.security.SecureRandom
+                                        r8.<init>()
+                                        r9 = 0
+                                        r10 = r9
+                                    L75:
+                                        java.util.concurrent.TimeUnit r11 = java.util.concurrent.TimeUnit.SECONDS     // Catch: java.lang.InterruptedException -> L80
+                                        r12 = 1
+                                        boolean r11 = r2.await(r12, r11)     // Catch: java.lang.InterruptedException -> L80
+                                        if (r11 == 0) goto L80
+                                        return
+                                    L80:
+                                        long r11 = r5.getUsableSpace()
+                                        long r11 = r3 - r11
+                                        r13 = 80
+                                        long r11 = r11 * r13
+                                        long r13 = r11 / r6
+                                        r15 = 0
+                                        r17 = 80
+                                        long r11 = android.util.MathUtils.constrain(r13, r15, r17)
+                                        int r11 = (int) r11
+                                        int r11 = r11 + 10
+                                        if (r10 < r11) goto La5
+                                        r11 = 90
+                                        if (r10 >= r11) goto La2
+                                        r11 = 5
+                                        int r11 = r8.nextInt(r11)
+                                        goto La3
+                                    La2:
+                                        r11 = r9
+                                    La3:
+                                        int r10 = r10 + r11
+                                        goto La6
+                                    La5:
+                                        r10 = r11
+                                    La6:
+                                        com.android.server.pm.PackageManagerService r11 = r1.mPm
+                                        com.android.server.pm.MovePackageHelper$MoveCallbacks r11 = r11.mMoveCallbacks
+                                        r11.notifyStatusChanged(r0, r10)
+                                        goto L75
+                                    */
+                                    throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.MovePackageHelper$$ExternalSyntheticLambda0.run():void");
+                                }
+                            }).start();
+                            moveInfo = null;
+                        }
+                        int i10 = i3 | 2;
+                        OriginInfo originInfo = new OriginInfo(file3, false, true, null);
+                        ParseResult parsePackageLite = ApkLiteParseUtils.parsePackageLite(ParseTypeImpl.forDefaultParsing(), new File(originInfo.mResolvedPath), 0);
+                        PackageLite packageLite = parsePackageLite.isSuccess() ? (PackageLite) parsePackageLite.getResult() : null;
+                        PackageManagerService packageManagerService = this.mPm;
+                        InstallingSession installingSession = new InstallingSession(originInfo, moveInfo, r29, i10, installSource, str2, of, str4, packageLite, packageManagerService);
+                        installingSession.mIsMoveRequest = true;
+                        installingSession.mTraceMethod = "movePackage";
+                        installingSession.mTraceCookie = System.identityHashCode(installingSession);
+                        Trace.asyncTraceBegin(262144L, "movePackage", System.identityHashCode(installingSession));
+                        Trace.asyncTraceBegin(262144L, "queueInstall", System.identityHashCode(installingSession));
+                        packageManagerService.mHandler.post(new InstallingSession$$ExternalSyntheticLambda0(installingSession, 0));
+                    } finally {
+                    }
+                } catch (Throwable th) {
+                    th = th;
+                    boolean z5 = PackageManagerService.DEBUG_COMPRESSION;
+                    throw th;
                 }
-                sMoveIdMapForSd.clear();
-                sPendingMoves.clear();
-                return -1;
+            } catch (Throwable th2) {
+                th = th2;
+                boolean z52 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
             }
-            int callingUid = Binder.getCallingUid();
-            UserHandle userHandle = new UserHandle(UserHandle.getUserId(callingUid));
-            int andIncrement = this.mPm.mNextMoveId.getAndIncrement();
-            if (iMemorySaverPackageMoveObserver != null) {
-                sMoveIdMapForSd.put(Integer.valueOf(andIncrement), iMemorySaverPackageMoveObserver);
-            }
-            SdcardParams sdcardParams = new SdcardParams(str, str2, callingUid, userHandle, andIncrement);
-            sPendingMoves.add(sPendingMoves.size(), sdcardParams);
-            if (sPendingMoves.size() == 1) {
-                startMovePackage(sdcardParams);
-            }
-            return andIncrement;
         }
     }
 }

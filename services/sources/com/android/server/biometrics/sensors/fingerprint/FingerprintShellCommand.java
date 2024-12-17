@@ -1,104 +1,188 @@
 package com.android.server.biometrics.sensors.fingerprint;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.hardware.fingerprint.FingerprintSensorPropertiesInternal;
+import android.os.Binder;
+import android.os.Build;
 import android.os.ShellCommand;
+import android.os.UserHandle;
+import android.util.Pair;
+import android.util.Slog;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.biometrics.AuthenticationStatsCollector;
+import com.android.server.biometrics.Utils;
+import com.android.server.biometrics.sensors.BaseClientMonitor;
+import com.android.server.biometrics.sensors.BiometricNotificationImpl;
+import com.android.server.biometrics.sensors.ClientMonitorCallback;
+import com.android.server.biometrics.sensors.fingerprint.aidl.FingerprintProvider;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FingerprintShellCommand extends ShellCommand {
-    public final Context mContext;
+public final class FingerprintShellCommand extends ShellCommand {
     public final FingerprintService mService;
 
-    public FingerprintShellCommand(Context context, FingerprintService fingerprintService) {
-        this.mContext = context;
+    public FingerprintShellCommand(FingerprintService fingerprintService) {
         this.mService = fingerprintService;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:15:0x002f  */
-    /* JADX WARN: Removed duplicated region for block: B:20:0x004f A[Catch: Exception -> 0x0054, TRY_LEAVE, TryCatch #0 {Exception -> 0x0054, blocks: (B:8:0x0008, B:16:0x0031, B:18:0x004a, B:20:0x004f, B:22:0x0017, B:25:0x0022), top: B:7:0x0008 }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int onCommand(java.lang.String r5) {
-        /*
-            r4 = this;
-            r0 = 1
-            if (r5 != 0) goto L7
-            r4.onHelp()
-            return r0
-        L7:
-            r1 = -1
-            int r2 = r5.hashCode()     // Catch: java.lang.Exception -> L54
-            r3 = 3198785(0x30cf41, float:4.482453E-39)
-            if (r2 == r3) goto L22
-            r3 = 3545755(0x361a9b, float:4.968661E-39)
-            if (r2 == r3) goto L17
-            goto L2c
-        L17:
-            java.lang.String r2 = "sync"
-            boolean r2 = r5.equals(r2)     // Catch: java.lang.Exception -> L54
-            if (r2 == 0) goto L2c
-            r2 = r0
-            goto L2d
-        L22:
-            java.lang.String r2 = "help"
-            boolean r2 = r5.equals(r2)     // Catch: java.lang.Exception -> L54
-            if (r2 == 0) goto L2c
-            r2 = 0
-            goto L2d
-        L2c:
-            r2 = r1
-        L2d:
-            if (r2 == 0) goto L4f
-            if (r2 == r0) goto L4a
-            java.io.PrintWriter r0 = r4.getOutPrintWriter()     // Catch: java.lang.Exception -> L54
-            java.lang.StringBuilder r2 = new java.lang.StringBuilder     // Catch: java.lang.Exception -> L54
-            r2.<init>()     // Catch: java.lang.Exception -> L54
-            java.lang.String r3 = "Unrecognized command: "
-            r2.append(r3)     // Catch: java.lang.Exception -> L54
-            r2.append(r5)     // Catch: java.lang.Exception -> L54
-            java.lang.String r5 = r2.toString()     // Catch: java.lang.Exception -> L54
-            r0.println(r5)     // Catch: java.lang.Exception -> L54
-            goto L6d
-        L4a:
-            int r4 = r4.doSync()     // Catch: java.lang.Exception -> L54
-            return r4
-        L4f:
-            int r4 = r4.doHelp()     // Catch: java.lang.Exception -> L54
-            return r4
-        L54:
-            r5 = move-exception
-            java.io.PrintWriter r4 = r4.getOutPrintWriter()
-            java.lang.StringBuilder r0 = new java.lang.StringBuilder
-            r0.<init>()
-            java.lang.String r2 = "Exception: "
-            r0.append(r2)
-            r0.append(r5)
-            java.lang.String r5 = r0.toString()
-            r4.println(r5)
-        L6d:
-            return r1
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.biometrics.sensors.fingerprint.FingerprintShellCommand.onCommand(java.lang.String):int");
+    public final void doNotify() {
+        FingerprintService fingerprintService = this.mService;
+        Context context = fingerprintService.getContext();
+        boolean z = Utils.DEBUG;
+        if (Binder.getCallingUid() != 2000) {
+            Utils.checkPermission(context, "android.permission.MANAGE_FINGERPRINT");
+        }
+        if (Build.IS_DEBUGGABLE) {
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                Pair singleProvider = fingerprintService.mRegistry.getSingleProvider();
+                if (singleProvider != null) {
+                    AuthenticationStatsCollector authenticationStatsCollector = ((FingerprintProvider) singleProvider.second).mAuthenticationStatsCollector;
+                    BiometricNotificationImpl biometricNotificationImpl = authenticationStatsCollector.mBiometricNotification;
+                    Context context2 = authenticationStatsCollector.mContext;
+                    biometricNotificationImpl.getClass();
+                    BiometricNotificationImpl.sendFpEnrollNotification(context2);
+                } else {
+                    Slog.w("FingerprintService", "Null provider for notification");
+                }
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                throw th;
+            }
+        }
     }
 
-    public void onHelp() {
+    public final void doSimulateVhalFingerDown() {
+        FingerprintService fingerprintService = this.mService;
+        if (Utils.isFingerprintVirtualEnabled(fingerprintService.getContext())) {
+            Slog.i("FingerprintService", "Simulate virtual HAL finger down event");
+            Pair singleProvider = fingerprintService.mRegistry.getSingleProvider();
+            if (singleProvider != null) {
+                ((FingerprintProvider) ((ServiceProvider) singleProvider.second)).simulateVhalFingerDown(UserHandle.getCallingUserId(), ((Integer) singleProvider.first).intValue());
+            }
+        }
+    }
+
+    public final void doSync() {
+        FingerprintService fingerprintService = this.mService;
+        Context context = fingerprintService.getContext();
+        boolean z = Utils.DEBUG;
+        if (Binder.getCallingUid() != 2000) {
+            Utils.checkPermission(context, "android.permission.MANAGE_FINGERPRINT");
+        }
+        if (Utils.isFingerprintVirtualEnabled(fingerprintService.getContext())) {
+            Slog.i("FingerprintService", "Sync virtual enrollments");
+            int currentUser = ActivityManager.getCurrentUser();
+            FingerprintServiceRegistry fingerprintServiceRegistry = fingerprintService.mRegistry;
+            final CountDownLatch countDownLatch = new CountDownLatch(fingerprintServiceRegistry.getProviders().size());
+            Iterator it = fingerprintServiceRegistry.getProviders().iterator();
+            while (it.hasNext()) {
+                FingerprintProvider fingerprintProvider = (FingerprintProvider) ((ServiceProvider) it.next());
+                Iterator it2 = ((ArrayList) fingerprintProvider.getSensorProperties()).iterator();
+                while (it2.hasNext()) {
+                    fingerprintProvider.scheduleInternalCleanup(((FingerprintSensorPropertiesInternal) it2.next()).sensorId, currentUser, new ClientMonitorCallback() { // from class: com.android.server.biometrics.sensors.fingerprint.FingerprintService.3
+                        public final /* synthetic */ CountDownLatch val$latch;
+
+                        public AnonymousClass3(final CountDownLatch countDownLatch2) {
+                            r1 = countDownLatch2;
+                        }
+
+                        @Override // com.android.server.biometrics.sensors.ClientMonitorCallback
+                        public final void onClientFinished(BaseClientMonitor baseClientMonitor, boolean z2) {
+                            r1.countDown();
+                            if (z2) {
+                                return;
+                            }
+                            Slog.e("FingerprintService", "Sync virtual enrollments failed");
+                        }
+                    });
+                }
+            }
+            try {
+                countDownLatch2.await(3L, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                Slog.e("FingerprintService", "Failed to wait for sync finishing", e);
+            }
+        }
+    }
+
+    public final int onCommand(String str) {
+        char c;
+        if (str == null) {
+            onHelp();
+            return 1;
+        }
+        try {
+            switch (str.hashCode()) {
+                case -1014576245:
+                    if (str.equals("fingerdown")) {
+                        c = 2;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case 3198785:
+                    if (str.equals("help")) {
+                        c = 0;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case 3545755:
+                    if (str.equals("sync")) {
+                        c = 1;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                case 595233003:
+                    if (str.equals("notification")) {
+                        c = 3;
+                        break;
+                    }
+                    c = 65535;
+                    break;
+                default:
+                    c = 65535;
+                    break;
+            }
+        } catch (Exception e) {
+            getOutPrintWriter().println("Exception: " + e);
+        }
+        if (c == 0) {
+            onHelp();
+            return 0;
+        }
+        if (c == 1) {
+            doSync();
+            return 0;
+        }
+        if (c == 2) {
+            doSimulateVhalFingerDown();
+            return 0;
+        }
+        if (c != 3) {
+            getOutPrintWriter().println("Unrecognized command: ".concat(str));
+            return -1;
+        }
+        doNotify();
+        return 0;
+    }
+
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.println("Fingerprint Service commands:");
         outPrintWriter.println("  help");
         outPrintWriter.println("      Print this help text.");
         outPrintWriter.println("  sync");
-        outPrintWriter.println("      Sync enrollments now (virtualized sensors only).");
-    }
-
-    public final int doHelp() {
-        onHelp();
-        return 0;
-    }
-
-    public final int doSync() {
-        this.mService.syncEnrollmentsNow();
-        return 0;
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "      Sync enrollments now (virtualized sensors only).", "  fingerdown", "      Simulate finger down event (virtualized sensors only).", "  notification");
+        outPrintWriter.println("     Sends a Fingerprint re-enrollment notification");
     }
 }

@@ -12,35 +12,31 @@ import com.android.server.biometrics.log.BiometricContext;
 import com.android.server.biometrics.log.BiometricLogger;
 import com.android.server.biometrics.sensors.ClientMonitorCallback;
 import com.android.server.biometrics.sensors.StartUserClient;
-import java.util.function.Supplier;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FingerprintStartUserClient extends StartUserClient {
+public final class FingerprintStartUserClient extends StartUserClient {
     public final ISessionCallback mSessionCallback;
 
-    @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void unableToStart() {
-    }
-
-    public FingerprintStartUserClient(Context context, Supplier supplier, IBinder iBinder, int i, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, ISessionCallback iSessionCallback, StartUserClient.UserStartedCallback userStartedCallback) {
-        super(context, supplier, iBinder, i, i2, biometricLogger, biometricContext, userStartedCallback);
-        this.mSessionCallback = iSessionCallback;
+    public FingerprintStartUserClient(Context context, Sensor$$ExternalSyntheticLambda5 sensor$$ExternalSyntheticLambda5, IBinder iBinder, int i, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, SemFpAidlResponseHandler semFpAidlResponseHandler, Sensor$$ExternalSyntheticLambda4 sensor$$ExternalSyntheticLambda4) {
+        super(context, sensor$$ExternalSyntheticLambda5, iBinder, i, i2, biometricLogger, biometricContext, sensor$$ExternalSyntheticLambda4);
+        this.mSessionCallback = semFpAidlResponseHandler;
     }
 
     @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public void start(ClientMonitorCallback clientMonitorCallback) {
+    public final void start(ClientMonitorCallback clientMonitorCallback) {
         super.start(clientMonitorCallback);
         startHalOperation();
     }
 
     @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void startHalOperation() {
+    public final void startHalOperation() {
         try {
-            IFingerprint iFingerprint = (IFingerprint) getFreshDaemon();
+            IFingerprint iFingerprint = (IFingerprint) this.mLazyDaemon.get();
             int interfaceVersion = iFingerprint.getInterfaceVersion();
-            ISession createSession = iFingerprint.createSession(getSensorId(), getTargetUserId(), this.mSessionCallback);
+            ISession createSession = iFingerprint.createSession(this.mSensorId, this.mTargetUserId, this.mSessionCallback);
             Binder.allowBlocking(createSession.asBinder());
-            this.mUserStartedCallback.onUserStarted(getTargetUserId(), createSession, interfaceVersion);
+            this.mUserStartedCallback.onUserStarted(this.mTargetUserId, interfaceVersion, createSession);
             getCallback().onClientFinished(this, true);
         } catch (RemoteException e) {
             Slog.e("FingerprintStartUserClient", "Remote exception", e);
@@ -49,5 +45,9 @@ public class FingerprintStartUserClient extends StartUserClient {
             Slog.e("FingerprintStartUserClient", "np exception", e2);
             getCallback().onClientFinished(this, false);
         }
+    }
+
+    @Override // com.android.server.biometrics.sensors.HalClientMonitor
+    public final void unableToStart() {
     }
 }

@@ -1,45 +1,12 @@
 package com.android.server.devicestate;
 
-import android.R;
-import android.content.Context;
-import android.content.res.Resources;
-import android.text.TextUtils;
-import com.android.server.policy.DeviceStatePolicyImpl;
+import android.util.Dumpable;
 
-/* loaded from: classes2.dex */
-public abstract class DeviceStatePolicy {
-    public final Context mContext;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public abstract class DeviceStatePolicy implements Dumpable {
 
-    public abstract void configureDeviceForState(int i, Runnable runnable);
-
-    public abstract DeviceStateProvider getDeviceStateProvider();
-
-    public DeviceStatePolicy(Context context) {
-        this.mContext = context;
-    }
-
-    /* loaded from: classes2.dex */
-    public final class DefaultProvider implements Provider {
-        @Override // com.android.server.devicestate.DeviceStatePolicy.Provider
-        public DeviceStatePolicy instantiate(Context context) {
-            return new DeviceStatePolicyImpl(context);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public interface Provider {
-        DeviceStatePolicy instantiate(Context context);
-
-        static Provider fromResources(Resources resources) {
-            String string = resources.getString(R.string.face_error_timeout);
-            if (TextUtils.isEmpty(string)) {
-                return new DefaultProvider();
-            }
-            try {
-                return (Provider) Class.forName(string).newInstance();
-            } catch (ClassCastException | ReflectiveOperationException e) {
-                throw new IllegalStateException("Couldn't instantiate class " + string + " for config_deviceSpecificDeviceStatePolicyProvider: make sure it has a public zero-argument constructor and implements DeviceStatePolicy.Provider", e);
-            }
-        }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DefaultProvider {
     }
 }

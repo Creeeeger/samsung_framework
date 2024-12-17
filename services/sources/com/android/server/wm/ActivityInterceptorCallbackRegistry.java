@@ -3,14 +3,20 @@ package com.android.server.wm;
 import android.annotation.SystemApi;
 import android.os.Binder;
 import com.android.server.LocalServices;
+import com.android.server.wm.ActivityTaskManagerService;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 @SystemApi(client = SystemApi.Client.SYSTEM_SERVER)
-/* loaded from: classes3.dex */
+/* loaded from: classes2.dex */
 public class ActivityInterceptorCallbackRegistry {
     public static final ActivityInterceptorCallbackRegistry sInstance = new ActivityInterceptorCallbackRegistry();
 
     public static ActivityInterceptorCallbackRegistry getInstance() {
         return sInstance;
+    }
+
+    public int getCallingUid() {
+        return Binder.getCallingUid();
     }
 
     public void registerActivityInterceptorCallback(int i, ActivityInterceptorCallback activityInterceptorCallback) {
@@ -33,10 +39,20 @@ public class ActivityInterceptorCallbackRegistry {
         if (!ActivityInterceptorCallback.isValidMainlineOrderId(i)) {
             throw new IllegalArgumentException("id is not in the mainline modules range, please useActivityTaskManagerInternal.unregisterActivityStartInterceptor(OrderedId) instead.");
         }
-        ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class)).unregisterActivityStartInterceptor(i);
-    }
-
-    public int getCallingUid() {
-        return Binder.getCallingUid();
+        ActivityTaskManagerService.LocalService localService = (ActivityTaskManagerService.LocalService) ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class));
+        WindowManagerGlobalLock windowManagerGlobalLock = ActivityTaskManagerService.this.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                if (!ActivityTaskManagerService.this.mActivityInterceptorCallbacks.contains(i)) {
+                    throw new IllegalArgumentException("ActivityInterceptorCallback with id (" + i + ") is not registered");
+                }
+                ActivityTaskManagerService.this.mActivityInterceptorCallbacks.remove(i);
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
     }
 }

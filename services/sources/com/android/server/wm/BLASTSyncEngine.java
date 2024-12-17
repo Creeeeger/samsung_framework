@@ -1,5 +1,7 @@
 package com.android.server.wm;
 
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Trace;
@@ -7,212 +9,75 @@ import android.util.ArraySet;
 import android.util.Slog;
 import android.view.SurfaceControl;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import com.android.server.SystemServerInitThreadPool$$ExternalSyntheticLambda1;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptService$$ExternalSyntheticOutline0;
+import com.android.server.HeapdumpWatcher$$ExternalSyntheticOutline0;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
+import com.android.server.ServiceKeeper$$ExternalSyntheticOutline0;
+import com.android.server.SystemServerInitThreadPool$$ExternalSyntheticLambda0;
+import com.android.server.UiModeManagerService$13$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
 import com.android.server.wm.BLASTSyncEngine;
 import com.samsung.android.rune.CoreRune;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.function.Function;
 
-/* loaded from: classes3.dex */
-public class BLASTSyncEngine {
-    public final ArrayList mActiveSyncs;
-    public int mDeferDepth;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class BLASTSyncEngine {
     public final Handler mHandler;
-    public int mNextSyncId;
-    public final ArrayList mOnIdleListeners;
-    public final ArrayList mPendingSyncSets;
-    public final ArrayList mTmpFinishQueue;
-    public final ArrayList mTmpFringe;
     public final WindowManagerService mWm;
+    public int mNextSyncId = 0;
+    public final ArrayList mActiveSyncs = new ArrayList();
+    public final ArrayList mPendingSyncSets = new ArrayList();
+    public final ArrayList mOnIdleListeners = new ArrayList();
+    public final ArrayList mTmpFinishQueue = new ArrayList();
+    public final ArrayList mTmpFringe = new ArrayList();
 
-    /* loaded from: classes3.dex */
-    public class PendingSyncSet {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PendingSyncSet {
         public Runnable mApplySync;
         public Runnable mStartSync;
-
-        public PendingSyncSet() {
-        }
     }
 
-    /* loaded from: classes3.dex */
-    public interface TransactionReadyListener {
-        void onTransactionReady(int i, SurfaceControl.Transaction transaction);
-    }
-
-    /* loaded from: classes3.dex */
-    public class SyncGroup {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SyncGroup {
         public static final ArrayList NO_DEPENDENCIES = new ArrayList();
-        public boolean mAborted;
-        public ArrayList mDependencies;
-        public boolean mIgnoreIndirectMembers;
         public final TransactionReadyListener mListener;
-        public final Runnable mOnTimeout;
-        public SurfaceControl.Transaction mOrphanTransaction;
-        public boolean mReady;
-        public final ArraySet mRootMembers;
+        public final BLASTSyncEngine$SyncGroup$$ExternalSyntheticLambda2 mOnTimeout;
         public final int mSyncId;
-        public int mSyncMethod;
-        public String mTraceName;
+        public final String mSyncName;
+        public final String mTraceName;
+        public int mSyncMethod = 1;
+        public boolean mReady = false;
+        public final ArraySet mRootMembers = new ArraySet();
+        public SurfaceControl.Transaction mOrphanTransaction = null;
+        public boolean mIgnoreIndirectMembers = false;
+        public ArrayList mDependencies = NO_DEPENDENCIES;
 
-        public SyncGroup(TransactionReadyListener transactionReadyListener, int i, String str) {
-            this.mSyncMethod = 1;
-            this.mReady = false;
-            this.mRootMembers = new ArraySet();
-            this.mOrphanTransaction = null;
-            this.mAborted = false;
-            this.mIgnoreIndirectMembers = false;
-            this.mDependencies = NO_DEPENDENCIES;
-            this.mSyncId = i;
-            this.mListener = transactionReadyListener;
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
-                Slog.d(StartingSurfaceController.TAG, "SyncGroup is created, id=" + i + ", name=" + str + ", caller=" + Debug.getCallers(7));
-            }
-            this.mOnTimeout = new Runnable() { // from class: com.android.server.wm.BLASTSyncEngine$SyncGroup$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    BLASTSyncEngine.SyncGroup.this.lambda$new$0();
-                }
-            };
-            if (Trace.isTagEnabled(32L)) {
-                String str2 = str + "SyncGroupReady";
-                this.mTraceName = str2;
-                Trace.asyncTraceBegin(32L, str2, i);
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$new$0() {
-            Slog.w(StartingSurfaceController.TAG, "Sync group " + this.mSyncId + " timeout");
-            WindowManagerGlobalLock windowManagerGlobalLock = BLASTSyncEngine.this.mWm.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    onTimeout();
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            WindowManagerService.resetPriorityAfterLockedSection();
-        }
-
-        public SurfaceControl.Transaction getOrphanTransaction() {
-            if (this.mOrphanTransaction == null) {
-                this.mOrphanTransaction = (SurfaceControl.Transaction) BLASTSyncEngine.this.mWm.mTransactionFactory.get();
-            }
-            return this.mOrphanTransaction;
-        }
-
-        public boolean isIgnoring(WindowContainer windowContainer) {
-            return this.mIgnoreIndirectMembers && windowContainer.asWindowState() == null && windowContainer.mSyncGroup != this;
-        }
-
-        public final boolean tryFinish() {
-            if (!this.mReady) {
-                return false;
-            }
-            if (ProtoLogCache.WM_DEBUG_SYNC_ENGINE_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 966569777, 1, (String) null, new Object[]{Long.valueOf(this.mSyncId), String.valueOf(this.mRootMembers)});
-            }
-            if (!this.mDependencies.isEmpty()) {
-                if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
-                    Slog.d(StartingSurfaceController.TAG, "SyncGroup " + this.mSyncId + ":  Unfinished dependencies: " + this.mDependencies);
-                } else if (ProtoLogCache.WM_DEBUG_SYNC_ENGINE_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 1820873642, 1, (String) null, new Object[]{Long.valueOf(this.mSyncId), String.valueOf(this.mDependencies)});
-                }
-                return false;
-            }
-            for (int size = this.mRootMembers.size() - 1; size >= 0; size--) {
-                WindowContainer windowContainer = (WindowContainer) this.mRootMembers.valueAt(size);
-                if (!windowContainer.isSyncFinished(this)) {
-                    if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
-                        Slog.d(StartingSurfaceController.TAG, "SyncGroup " + this.mSyncId + ":  Unfinished container: " + windowContainer + " mSyncState=" + windowContainer.mSyncState);
-                    } else if (ProtoLogCache.WM_DEBUG_SYNC_ENGINE_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, -230587670, 1, (String) null, new Object[]{Long.valueOf(this.mSyncId), String.valueOf(windowContainer)});
-                    }
-                    return false;
-                }
-            }
-            finishNow();
-            return true;
-        }
-
-        public final void finishNow() {
-            String str = this.mTraceName;
-            if (str != null) {
-                Trace.asyncTraceEnd(32L, str, this.mSyncId);
-            }
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
-                if (ProtoLogCache.WM_FORCE_DEBUG_SYNC_ENGINE_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_FORCE_DEBUG_SYNC_ENGINE, -333895161, 1, "SyncGroup %d: Finished!", new Object[]{Long.valueOf(this.mSyncId)});
-                }
-            } else if (ProtoLogCache.WM_DEBUG_SYNC_ENGINE_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, -1905191109, 1, (String) null, new Object[]{Long.valueOf(this.mSyncId)});
-            }
-            SurfaceControl.Transaction transaction = (SurfaceControl.Transaction) BLASTSyncEngine.this.mWm.mTransactionFactory.get();
-            SurfaceControl.Transaction transaction2 = this.mOrphanTransaction;
-            if (transaction2 != null) {
-                transaction.merge(transaction2);
-            }
-            Iterator it = this.mRootMembers.iterator();
-            while (it.hasNext()) {
-                ((WindowContainer) it.next()).finishSync(transaction, this, false);
-            }
-            ArraySet arraySet = new ArraySet();
-            Iterator it2 = this.mRootMembers.iterator();
-            while (it2.hasNext()) {
-                ((WindowContainer) it2.next()).waitForSyncTransactionCommit(arraySet);
-            }
-            final C1CommitCallback c1CommitCallback = new C1CommitCallback(arraySet, transaction);
-            transaction.addTransactionCommittedListener(new SystemServerInitThreadPool$$ExternalSyntheticLambda1(), new SurfaceControl.TransactionCommittedListener() { // from class: com.android.server.wm.BLASTSyncEngine$SyncGroup$$ExternalSyntheticLambda1
-                @Override // android.view.SurfaceControl.TransactionCommittedListener
-                public final void onTransactionCommitted() {
-                    BLASTSyncEngine.SyncGroup.lambda$finishNow$1(BLASTSyncEngine.SyncGroup.C1CommitCallback.this);
-                }
-            });
-            BLASTSyncEngine.this.mHandler.postDelayed(c1CommitCallback, 5000L);
-            Trace.traceBegin(32L, "onTransactionReady");
-            this.mListener.onTransactionReady(this.mSyncId, transaction);
-            Trace.traceEnd(32L);
-            BLASTSyncEngine.this.mActiveSyncs.remove(this);
-            BLASTSyncEngine.this.mHandler.removeCallbacks(this.mOnTimeout);
-            if (BLASTSyncEngine.this.mActiveSyncs.size() == 0 && !BLASTSyncEngine.this.mPendingSyncSets.isEmpty()) {
-                if (ProtoLogCache.WM_DEBUG_SYNC_ENGINE_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 1730300180, 0, (String) null, (Object[]) null);
-                }
-                final PendingSyncSet pendingSyncSet = (PendingSyncSet) BLASTSyncEngine.this.mPendingSyncSets.remove(0);
-                pendingSyncSet.mStartSync.run();
-                if (BLASTSyncEngine.this.mActiveSyncs.size() == 0) {
-                    throw new IllegalStateException("Pending Sync Set didn't start a sync.");
-                }
-                BLASTSyncEngine.this.mHandler.post(new Runnable() { // from class: com.android.server.wm.BLASTSyncEngine$SyncGroup$$ExternalSyntheticLambda2
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        BLASTSyncEngine.SyncGroup.this.lambda$finishNow$2(pendingSyncSet);
-                    }
-                });
-            }
-            for (int size = BLASTSyncEngine.this.mOnIdleListeners.size() - 1; size >= 0 && BLASTSyncEngine.this.mActiveSyncs.size() <= 0; size--) {
-                ((Runnable) BLASTSyncEngine.this.mOnIdleListeners.get(size)).run();
-            }
-        }
-
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
         /* renamed from: com.android.server.wm.BLASTSyncEngine$SyncGroup$1CommitCallback, reason: invalid class name */
-        /* loaded from: classes3.dex */
-        public class C1CommitCallback implements Runnable {
+        public final class C1CommitCallback implements Runnable {
             public boolean ran = false;
             public final /* synthetic */ SurfaceControl.Transaction val$merged;
+            public final /* synthetic */ long val$mergedTxId;
+            public final /* synthetic */ int val$syncId;
+            public final /* synthetic */ String val$syncName;
             public final /* synthetic */ ArraySet val$wcAwaitingCommit;
 
-            public C1CommitCallback(ArraySet arraySet, SurfaceControl.Transaction transaction) {
+            public C1CommitCallback(ArraySet arraySet, int i, String str, long j, SurfaceControl.Transaction transaction) {
                 this.val$wcAwaitingCommit = arraySet;
+                this.val$syncId = i;
+                this.val$syncName = str;
+                this.val$mergedTxId = j;
                 this.val$merged = transaction;
             }
 
-            public void onCommitted(SurfaceControl.Transaction transaction) {
+            public final void onCommitted(SurfaceControl.Transaction transaction) {
+                BLASTSyncEngine.this.mHandler.removeCallbacks(this);
                 WindowManagerGlobalLock windowManagerGlobalLock = BLASTSyncEngine.this.mWm.mGlobalLock;
                 WindowManagerService.boostPriorityForLockedSection();
                 synchronized (windowManagerGlobalLock) {
@@ -221,7 +86,6 @@ public class BLASTSyncEngine {
                             WindowManagerService.resetPriorityAfterLockedSection();
                             return;
                         }
-                        BLASTSyncEngine.this.mHandler.removeCallbacks(this);
                         this.ran = true;
                         Iterator it = this.val$wcAwaitingCommit.iterator();
                         while (it.hasNext()) {
@@ -229,7 +93,6 @@ public class BLASTSyncEngine {
                         }
                         transaction.apply();
                         this.val$wcAwaitingCommit.clear();
-                        BLASTSyncEngine.this.mWm.mAtmService.getTransitionController().setHasTopUiIfNeeded(false);
                         WindowManagerService.resetPriorityAfterLockedSection();
                     } catch (Throwable th) {
                         WindowManagerService.resetPriorityAfterLockedSection();
@@ -239,14 +102,15 @@ public class BLASTSyncEngine {
             }
 
             @Override // java.lang.Runnable
-            public void run() {
+            public final void run() {
                 Trace.traceBegin(32L, "onTransactionCommitTimeout");
-                Slog.e(StartingSurfaceController.TAG, "WM sent Transaction to organized, but never received commit callback. Application ANR likely to follow.");
+                Slog.e("BLASTSyncEngine", "WM sent Transaction (#" + this.val$syncId + ", " + this.val$syncName + ", tx=" + this.val$mergedTxId + ") to organizer, but never received commit callback. Application ANR likely to follow.");
                 Trace.traceEnd(32L);
                 WindowManagerGlobalLock windowManagerGlobalLock = BLASTSyncEngine.this.mWm.mGlobalLock;
                 WindowManagerService.boostPriorityForLockedSection();
                 synchronized (windowManagerGlobalLock) {
                     try {
+                        SyncGroup.this.mListener.onTransactionCommitTimeout();
                         SurfaceControl.Transaction transaction = this.val$merged;
                         if (transaction.mNativeObject == 0) {
                             transaction = (SurfaceControl.Transaction) BLASTSyncEngine.this.mWm.mTransactionFactory.get();
@@ -261,197 +125,232 @@ public class BLASTSyncEngine {
             }
         }
 
-        public static /* synthetic */ void lambda$finishNow$1(C1CommitCallback c1CommitCallback) {
-            c1CommitCallback.onCommitted(new SurfaceControl.Transaction());
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$finishNow$2(PendingSyncSet pendingSyncSet) {
-            WindowManagerGlobalLock windowManagerGlobalLock = BLASTSyncEngine.this.mWm.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    pendingSyncSet.mApplySync.run();
-                } catch (Throwable th) {
+        /* JADX WARN: Type inference failed for: r2v5, types: [com.android.server.wm.BLASTSyncEngine$SyncGroup$$ExternalSyntheticLambda2] */
+        public SyncGroup(TransactionReadyListener transactionReadyListener, int i, String str) {
+            this.mSyncId = i;
+            this.mSyncName = str;
+            this.mListener = transactionReadyListener;
+            if (CoreRune.FW_SHELL_TRANSITION_LOG) {
+                ActivityManagerService$$ExternalSyntheticOutline0.m(7, DirEncryptService$$ExternalSyntheticOutline0.m(i, "SyncGroup is created, id=", ", name=", str, ", caller="), "BLASTSyncEngine");
+            }
+            this.mOnTimeout = new Runnable() { // from class: com.android.server.wm.BLASTSyncEngine$SyncGroup$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    BLASTSyncEngine.SyncGroup syncGroup = BLASTSyncEngine.SyncGroup.this;
+                    UiModeManagerService$13$$ExternalSyntheticOutline0.m(new StringBuilder("Sync group "), syncGroup.mSyncId, " timeout", "BLASTSyncEngine");
+                    WindowManagerGlobalLock windowManagerGlobalLock = BLASTSyncEngine.this.mWm.mGlobalLock;
+                    WindowManagerService.boostPriorityForLockedSection();
+                    synchronized (windowManagerGlobalLock) {
+                        try {
+                            syncGroup.onTimeout();
+                        } catch (Throwable th) {
+                            WindowManagerService.resetPriorityAfterLockedSection();
+                            throw th;
+                        }
+                    }
                     WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
                 }
+            };
+            if (Trace.isTagEnabled(32L)) {
+                String m$1 = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "SyncGroupReady");
+                this.mTraceName = m$1;
+                Trace.asyncTraceBegin(32L, m$1, i);
             }
-            WindowManagerService.resetPriorityAfterLockedSection();
         }
 
-        public final boolean setReady(boolean z) {
-            if (this.mReady == z) {
-                return false;
+        public final void finishNow() {
+            String str = this.mTraceName;
+            int i = this.mSyncId;
+            if (str != null) {
+                Trace.asyncTraceEnd(32L, str, i);
             }
-            if (ProtoLogCache.WM_DEBUG_SYNC_ENGINE_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, -874087484, 13, (String) null, new Object[]{Long.valueOf(this.mSyncId), Boolean.valueOf(z)});
+            boolean z = CoreRune.FW_SHELL_TRANSITION_LOG;
+            boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_SYNC_ENGINE_enabled;
+            if (z) {
+                if (ProtoLogImpl_54989576.Cache.WM_FORCE_DEBUG_SYNC_ENGINE_enabled[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_FORCE_DEBUG_SYNC_ENGINE, -8466836686903624078L, 1, "SyncGroup %d: Finished!", Long.valueOf(i));
+                }
+            } else if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 6649777898123506907L, 1, null, Long.valueOf(i));
             }
-            this.mReady = z;
-            if (!z) {
-                return true;
+            BLASTSyncEngine bLASTSyncEngine = BLASTSyncEngine.this;
+            SurfaceControl.Transaction transaction = (SurfaceControl.Transaction) bLASTSyncEngine.mWm.mTransactionFactory.get();
+            SurfaceControl.Transaction transaction2 = this.mOrphanTransaction;
+            if (transaction2 != null) {
+                transaction.merge(transaction2);
             }
-            BLASTSyncEngine.this.mWm.mWindowPlacerLocked.requestTraversal();
-            return true;
-        }
-
-        public final void addToSync(WindowContainer windowContainer) {
-            if (this.mRootMembers.contains(windowContainer)) {
-                return;
+            Iterator it = this.mRootMembers.iterator();
+            while (it.hasNext()) {
+                ((WindowContainer) it.next()).finishSync(transaction, this, false);
             }
-            if (ProtoLogCache.WM_DEBUG_SYNC_ENGINE_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, -1973119651, 1, (String) null, new Object[]{Long.valueOf(this.mSyncId), String.valueOf(windowContainer)});
+            ArraySet arraySet = new ArraySet();
+            Iterator it2 = this.mRootMembers.iterator();
+            while (it2.hasNext()) {
+                ((WindowContainer) it2.next()).waitForSyncTransactionCommit(arraySet);
             }
-            SyncGroup syncGroup = windowContainer.getSyncGroup();
-            if (syncGroup != null && syncGroup != this && !syncGroup.isIgnoring(windowContainer)) {
-                Slog.w(StartingSurfaceController.TAG, "SyncGroup " + this.mSyncId + " conflicts with " + syncGroup.mSyncId + ": Making " + this.mSyncId + " depend on " + syncGroup.mSyncId);
-                if (!this.mDependencies.contains(syncGroup)) {
-                    if (syncGroup.dependsOn(this)) {
-                        Slog.w(StartingSurfaceController.TAG, " Detected dependency cycle between " + this.mSyncId + " and " + syncGroup.mSyncId + ": Moving " + windowContainer + " to " + this.mSyncId);
-                        SyncGroup syncGroup2 = windowContainer.mSyncGroup;
-                        if (syncGroup2 == null) {
-                            windowContainer.setSyncGroup(this);
-                        } else {
-                            syncGroup2.mRootMembers.remove(windowContainer);
-                            this.mRootMembers.add(windowContainer);
-                            windowContainer.mSyncGroup = this;
+            final C1CommitCallback c1CommitCallback = new C1CommitCallback(arraySet, this.mSyncId, this.mSyncName, transaction.getId(), transaction);
+            transaction.addTransactionCommittedListener(new SystemServerInitThreadPool$$ExternalSyntheticLambda0(), new SurfaceControl.TransactionCommittedListener() { // from class: com.android.server.wm.BLASTSyncEngine$SyncGroup$$ExternalSyntheticLambda0
+                @Override // android.view.SurfaceControl.TransactionCommittedListener
+                public final void onTransactionCommitted() {
+                    BLASTSyncEngine.SyncGroup.C1CommitCallback.this.onCommitted(new SurfaceControl.Transaction());
+                }
+            });
+            Handler handler = bLASTSyncEngine.mHandler;
+            handler.postDelayed(c1CommitCallback, 5000L);
+            Trace.traceBegin(32L, "onTransactionReady");
+            this.mListener.onTransactionReady(transaction, i);
+            Trace.traceEnd(32L);
+            bLASTSyncEngine.mActiveSyncs.remove(this);
+            handler.removeCallbacks(this.mOnTimeout);
+            if (bLASTSyncEngine.mActiveSyncs.size() == 0 && !bLASTSyncEngine.mPendingSyncSets.isEmpty()) {
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 4174320302463990554L, 0, null, null);
+                }
+                final PendingSyncSet pendingSyncSet = (PendingSyncSet) bLASTSyncEngine.mPendingSyncSets.remove(0);
+                pendingSyncSet.mStartSync.run();
+                if (bLASTSyncEngine.mActiveSyncs.size() == 0) {
+                    throw new IllegalStateException("Pending Sync Set didn't start a sync.");
+                }
+                handler.post(new Runnable() { // from class: com.android.server.wm.BLASTSyncEngine$SyncGroup$$ExternalSyntheticLambda1
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        BLASTSyncEngine.SyncGroup syncGroup = BLASTSyncEngine.SyncGroup.this;
+                        BLASTSyncEngine.PendingSyncSet pendingSyncSet2 = pendingSyncSet;
+                        WindowManagerGlobalLock windowManagerGlobalLock = BLASTSyncEngine.this.mWm.mGlobalLock;
+                        WindowManagerService.boostPriorityForLockedSection();
+                        synchronized (windowManagerGlobalLock) {
+                            try {
+                                pendingSyncSet2.mApplySync.run();
+                            } catch (Throwable th) {
+                                WindowManagerService.resetPriorityAfterLockedSection();
+                                throw th;
+                            }
                         }
-                    } else {
-                        if (this.mDependencies == NO_DEPENDENCIES) {
-                            this.mDependencies = new ArrayList();
-                        }
-                        this.mDependencies.add(syncGroup);
+                        WindowManagerService.resetPriorityAfterLockedSection();
                     }
-                }
-            } else {
-                this.mRootMembers.add(windowContainer);
-                windowContainer.setSyncGroup(this);
+                });
             }
-            windowContainer.prepareSync();
-            if (this.mReady) {
-                BLASTSyncEngine.this.mWm.mWindowPlacerLocked.requestTraversal();
+            for (int size = bLASTSyncEngine.mOnIdleListeners.size() - 1; size >= 0 && bLASTSyncEngine.mActiveSyncs.size() <= 0; size--) {
+                ((Runnable) bLASTSyncEngine.mOnIdleListeners.get(size)).run();
             }
-        }
-
-        public final boolean dependsOn(SyncGroup syncGroup) {
-            if (this.mDependencies.isEmpty()) {
-                return false;
-            }
-            ArrayList arrayList = BLASTSyncEngine.this.mTmpFringe;
-            arrayList.clear();
-            arrayList.add(this);
-            for (int i = 0; i < arrayList.size(); i++) {
-                SyncGroup syncGroup2 = (SyncGroup) arrayList.get(i);
-                if (syncGroup2 == syncGroup) {
-                    arrayList.clear();
-                    return true;
-                }
-                for (int i2 = 0; i2 < syncGroup2.mDependencies.size(); i2++) {
-                    if (!arrayList.contains(syncGroup2.mDependencies.get(i2))) {
-                        arrayList.add((SyncGroup) syncGroup2.mDependencies.get(i2));
-                    }
-                }
-            }
-            arrayList.clear();
-            return false;
-        }
-
-        public void onCancelSync(WindowContainer windowContainer) {
-            this.mRootMembers.remove(windowContainer);
         }
 
         public final void onTimeout() {
-            if (BLASTSyncEngine.this.mActiveSyncs.contains(this)) {
-                ArrayList arrayList = new ArrayList();
+            BLASTSyncEngine bLASTSyncEngine = BLASTSyncEngine.this;
+            if (bLASTSyncEngine.mActiveSyncs.contains(this)) {
                 boolean z = true;
                 for (int size = this.mRootMembers.size() - 1; size >= 0; size--) {
                     WindowContainer windowContainer = (WindowContainer) this.mRootMembers.valueAt(size);
                     if (!windowContainer.isSyncFinished(this)) {
-                        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
-                            Slog.i(StartingSurfaceController.TAG, "Unfinished container: " + windowContainer + " mSyncState=" + windowContainer.mSyncState + (windowContainer.asActivityRecord() != null ? " mPendingRelaunchCount=" + windowContainer.asActivityRecord().mPendingRelaunchCount : ""));
-                            if (windowContainer.getDisplayContent() != null && !arrayList.contains(windowContainer.getDisplayContent())) {
-                                arrayList.add(windowContainer.getDisplayContent());
-                            }
-                        } else {
-                            Slog.i(StartingSurfaceController.TAG, "Unfinished container: " + windowContainer);
-                        }
+                        Slog.i("BLASTSyncEngine", "Unfinished container: " + windowContainer);
+                        windowContainer.forAllActivities(new BLASTSyncEngine$SyncGroup$$ExternalSyntheticLambda3(0));
                         z = false;
-                    }
-                }
-                if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
-                    Iterator it = arrayList.iterator();
-                    while (it.hasNext()) {
-                        DisplayContent displayContent = (DisplayContent) it.next();
-                        if (!displayContent.mUnknownAppVisibilityController.allResolved()) {
-                            Slog.i(StartingSurfaceController.TAG, "Unfinished unknown apps: " + displayContent.mUnknownAppVisibilityController.getDebugMessage());
-                        }
                     }
                 }
                 int size2 = this.mDependencies.size() - 1;
                 while (size2 >= 0) {
-                    Slog.i(StartingSurfaceController.TAG, "Unfinished dependency: " + ((SyncGroup) this.mDependencies.get(size2)).mSyncId);
+                    Slog.i("BLASTSyncEngine", "Unfinished dependency: " + ((SyncGroup) this.mDependencies.get(size2)).mSyncId);
                     size2 += -1;
                     z = false;
                 }
                 if (z && !this.mReady) {
-                    Slog.w(StartingSurfaceController.TAG, "Sync group " + this.mSyncId + " timed-out because not ready. If you see this, please file a bug.");
+                    UiModeManagerService$13$$ExternalSyntheticOutline0.m(new StringBuilder("Sync group "), this.mSyncId, " timed-out because not ready. If you see this, please file a bug.", "BLASTSyncEngine");
+                    this.mListener.onReadyTimeout();
                 }
                 finishNow();
-                BLASTSyncEngine.this.removeFromDependencies(this);
+                bLASTSyncEngine.removeFromDependencies(this);
             }
         }
     }
 
-    public BLASTSyncEngine(WindowManagerService windowManagerService) {
-        this(windowManagerService, windowManagerService.mH);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface TransactionReadyListener {
+        default void onReadyTimeout() {
+        }
+
+        default void onTransactionCommitTimeout() {
+        }
+
+        void onTransactionReady(SurfaceControl.Transaction transaction, int i);
     }
 
     public BLASTSyncEngine(WindowManagerService windowManagerService, Handler handler) {
-        this.mNextSyncId = 0;
-        this.mActiveSyncs = new ArrayList();
-        this.mPendingSyncSets = new ArrayList();
-        this.mOnIdleListeners = new ArrayList();
-        this.mTmpFinishQueue = new ArrayList();
-        this.mTmpFringe = new ArrayList();
-        this.mDeferDepth = 0;
         this.mWm = windowManagerService;
         this.mHandler = handler;
     }
 
-    public SyncGroup prepareSyncSet(TransactionReadyListener transactionReadyListener, String str) {
-        int i = this.mNextSyncId;
-        this.mNextSyncId = i + 1;
-        return new SyncGroup(transactionReadyListener, i, str);
-    }
-
-    public int startSyncSet(TransactionReadyListener transactionReadyListener, long j, String str, boolean z) {
-        SyncGroup prepareSyncSet = prepareSyncSet(transactionReadyListener, str);
-        startSyncSet(prepareSyncSet, j, z);
-        return prepareSyncSet.mSyncId;
-    }
-
-    public void startSyncSet(SyncGroup syncGroup) {
-        startSyncSet(syncGroup, 5000L, false);
-    }
-
-    public void startSyncSet(SyncGroup syncGroup, long j, boolean z) {
-        boolean z2 = this.mActiveSyncs.size() > 0;
-        if (!z && z2) {
-            Slog.e(StartingSurfaceController.TAG, "SyncGroup " + syncGroup.mSyncId + ": Started when there is other active SyncGroup");
+    public final void addToSyncSet(int i, WindowContainer windowContainer) {
+        SyncGroup syncGroup = getSyncGroup(i);
+        if (syncGroup.mRootMembers.contains(windowContainer)) {
+            return;
         }
-        this.mActiveSyncs.add(syncGroup);
-        syncGroup.mIgnoreIndirectMembers = z;
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
-            if (ProtoLogCache.WM_DEBUG_SYNC_ENGINE_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 558153532, 1, (String) null, new Object[]{Long.valueOf(syncGroup.mSyncId), String.valueOf(syncGroup.mListener), String.valueOf(Debug.getCallers(8))});
+        boolean z = ProtoLogImpl_54989576.Cache.WM_DEBUG_SYNC_ENGINE_enabled[1];
+        int i2 = syncGroup.mSyncId;
+        if (z) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, -476337038362199951L, 1, null, Long.valueOf(i2), String.valueOf(windowContainer));
+        }
+        SyncGroup syncGroup2 = windowContainer.getSyncGroup();
+        if (syncGroup2 == null || syncGroup2 == syncGroup || (syncGroup2.mIgnoreIndirectMembers && windowContainer.asWindowState() == null && windowContainer.mSyncGroup != syncGroup2)) {
+            syncGroup.mRootMembers.add(windowContainer);
+            windowContainer.setSyncGroup(syncGroup);
+        } else {
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i2, "SyncGroup ", " conflicts with ");
+            int i3 = syncGroup2.mSyncId;
+            ServiceKeeper$$ExternalSyntheticOutline0.m(i3, i2, ": Making ", " depend on ", m);
+            HeapdumpWatcher$$ExternalSyntheticOutline0.m(m, i3, "BLASTSyncEngine");
+            if (!syncGroup.mDependencies.contains(syncGroup2)) {
+                if (!syncGroup2.mDependencies.isEmpty()) {
+                    ArrayList arrayList = BLASTSyncEngine.this.mTmpFringe;
+                    arrayList.clear();
+                    arrayList.add(syncGroup2);
+                    for (int i4 = 0; i4 < arrayList.size(); i4++) {
+                        SyncGroup syncGroup3 = (SyncGroup) arrayList.get(i4);
+                        if (syncGroup3 == syncGroup) {
+                            arrayList.clear();
+                            Slog.w("BLASTSyncEngine", " Detected dependency cycle between " + i2 + " and " + i3 + ": Moving " + windowContainer + " to " + i2);
+                            SyncGroup syncGroup4 = windowContainer.mSyncGroup;
+                            if (syncGroup4 == null) {
+                                windowContainer.setSyncGroup(syncGroup);
+                            } else {
+                                syncGroup4.mRootMembers.remove(windowContainer);
+                                syncGroup.mRootMembers.add(windowContainer);
+                                windowContainer.mSyncGroup = syncGroup;
+                            }
+                        } else {
+                            for (int i5 = 0; i5 < syncGroup3.mDependencies.size(); i5++) {
+                                if (!arrayList.contains(syncGroup3.mDependencies.get(i5))) {
+                                    arrayList.add((SyncGroup) syncGroup3.mDependencies.get(i5));
+                                }
+                            }
+                        }
+                    }
+                    arrayList.clear();
+                }
+                if (syncGroup.mDependencies == SyncGroup.NO_DEPENDENCIES) {
+                    syncGroup.mDependencies = new ArrayList();
+                }
+                syncGroup.mDependencies.add(syncGroup2);
             }
-        } else if (ProtoLogCache.WM_DEBUG_SYNC_ENGINE_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, -1828118576, 1, (String) null, new Object[]{Long.valueOf(syncGroup.mSyncId), (z && z2) ? "(in parallel) " : "", String.valueOf(syncGroup.mListener)});
         }
-        scheduleTimeout(syncGroup, j);
+        windowContainer.prepareSync();
+        if (windowContainer.mSyncState == 0 && windowContainer.mSyncGroup != null) {
+            Slog.w("BLASTSyncEngine", "addToSync: unset SyncGroup " + windowContainer.mSyncGroup.mSyncId + " for non-sync " + windowContainer);
+            windowContainer.mSyncGroup = null;
+        }
+        if (syncGroup.mReady) {
+            BLASTSyncEngine.this.mWm.mWindowPlacerLocked.requestTraversal();
+        }
     }
 
-    public SyncGroup getSyncSet(int i) {
+    public final SyncGroup getSyncGroup(int i) {
+        SyncGroup syncSet = getSyncSet(i);
+        if (syncSet != null) {
+            return syncSet;
+        }
+        throw new IllegalStateException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "SyncGroup is not started yet id="));
+    }
+
+    public final SyncGroup getSyncSet(int i) {
         for (int i2 = 0; i2 < this.mActiveSyncs.size(); i2++) {
             if (((SyncGroup) this.mActiveSyncs.get(i2)).mSyncId == i) {
                 return (SyncGroup) this.mActiveSyncs.get(i2);
@@ -460,54 +359,68 @@ public class BLASTSyncEngine {
         return null;
     }
 
-    public boolean hasActiveSync() {
+    public final boolean hasActiveSync() {
         return this.mActiveSyncs.size() != 0;
     }
 
-    public void scheduleTimeout(SyncGroup syncGroup, long j) {
-        this.mHandler.postDelayed(syncGroup.mOnTimeout, j);
-    }
-
-    public void addToSyncSet(int i, WindowContainer windowContainer) {
-        getSyncGroup(i).addToSync(windowContainer);
-    }
-
-    public void setSyncMethod(int i, int i2) {
-        SyncGroup syncGroup = getSyncGroup(i);
-        if (!syncGroup.mRootMembers.isEmpty()) {
-            throw new IllegalStateException("Not allow to change sync method after adding group member, id=" + i);
-        }
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
-            Slog.w(StartingSurfaceController.TAG, "setSyncMethod, id=" + i + ", method=" + i2 + ", caller=" + Debug.getCallers(3));
-        }
-        syncGroup.mSyncMethod = i2;
-    }
-
-    public boolean setReady(int i, boolean z) {
-        return getSyncGroup(i).setReady(z);
-    }
-
-    public void setReady(int i) {
-        setReady(i, true);
-    }
-
-    public void abort(int i) {
-        SyncGroup syncGroup = getSyncGroup(i);
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX && this.mDeferDepth > 0) {
-            Slog.d(StartingSurfaceController.TAG, "Deferring abort, id=" + i);
-            syncGroup.mAborted = true;
+    public final void onSurfacePlacement() {
+        if (this.mActiveSyncs.isEmpty()) {
             return;
         }
-        syncGroup.finishNow();
-        removeFromDependencies(syncGroup);
-    }
-
-    public final SyncGroup getSyncGroup(int i) {
-        SyncGroup syncSet = getSyncSet(i);
-        if (syncSet != null) {
-            return syncSet;
+        this.mTmpFinishQueue.addAll(this.mActiveSyncs);
+        int size = (this.mActiveSyncs.size() * (this.mActiveSyncs.size() + 1)) / 2;
+        while (!this.mTmpFinishQueue.isEmpty()) {
+            if (size <= 0) {
+                Slog.e("BLASTSyncEngine", "Trying to finish more syncs than theoretically possible. This should never happen. Most likely a dependency cycle wasn't detected.");
+            }
+            size--;
+            SyncGroup syncGroup = (SyncGroup) this.mTmpFinishQueue.remove(0);
+            int indexOf = this.mActiveSyncs.indexOf(syncGroup);
+            if (indexOf >= 0 && syncGroup.mReady) {
+                boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_SYNC_ENGINE_enabled;
+                boolean z = zArr[1];
+                int i = syncGroup.mSyncId;
+                if (z) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 495867940519492701L, 1, null, Long.valueOf(i), String.valueOf(syncGroup.mRootMembers));
+                }
+                if (syncGroup.mDependencies.isEmpty()) {
+                    int size2 = syncGroup.mRootMembers.size() - 1;
+                    while (true) {
+                        if (size2 >= 0) {
+                            WindowContainer windowContainer = (WindowContainer) syncGroup.mRootMembers.valueAt(size2);
+                            if (windowContainer.isSyncFinished(syncGroup)) {
+                                size2--;
+                            } else if (CoreRune.FW_SHELL_TRANSITION_LOG) {
+                                StringBuilder sb = new StringBuilder("SyncGroup ");
+                                sb.append(i);
+                                sb.append(":  Unfinished container: ");
+                                sb.append(windowContainer);
+                                sb.append(" mSyncState=");
+                                DeviceIdleController$$ExternalSyntheticOutline0.m(sb, windowContainer.mSyncState, "BLASTSyncEngine");
+                            } else if (zArr[1]) {
+                                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 616739530932040800L, 1, null, Long.valueOf(i), String.valueOf(windowContainer));
+                            }
+                        } else {
+                            syncGroup.finishNow();
+                            int i2 = 0;
+                            for (int i3 = 0; i3 < this.mActiveSyncs.size(); i3++) {
+                                SyncGroup syncGroup2 = (SyncGroup) this.mActiveSyncs.get(i3);
+                                if (syncGroup2.mDependencies.remove(syncGroup) && i3 < indexOf && syncGroup2.mDependencies.isEmpty()) {
+                                    this.mTmpFinishQueue.add(i2, (SyncGroup) this.mActiveSyncs.get(i3));
+                                    i2++;
+                                }
+                            }
+                        }
+                    }
+                } else if (CoreRune.FW_SHELL_TRANSITION_LOG) {
+                    StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "SyncGroup ", ":  Unfinished dependencies: ");
+                    m.append(syncGroup.mDependencies);
+                    Slog.d("BLASTSyncEngine", m.toString());
+                } else if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 8452501904614439940L, 1, null, Long.valueOf(i), String.valueOf(syncGroup.mDependencies));
+                }
+            }
         }
-        throw new IllegalStateException("SyncGroup is not started yet id=" + i);
     }
 
     public final void removeFromDependencies(SyncGroup syncGroup) {
@@ -523,74 +436,56 @@ public class BLASTSyncEngine {
         }
     }
 
-    public void onSurfacePlacement() {
-        if (this.mActiveSyncs.isEmpty()) {
-            return;
+    public void scheduleTimeout(SyncGroup syncGroup, long j) {
+        this.mHandler.postDelayed(syncGroup.mOnTimeout, j);
+    }
+
+    public final boolean setReady(int i, boolean z) {
+        SyncGroup syncGroup = getSyncGroup(i);
+        if (syncGroup.mReady == z) {
+            return false;
         }
-        if ((CoreRune.MW_SHELL_TRANSITION_BUG_FIX || CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX) && this.mDeferDepth > 0) {
-            Slog.d(StartingSurfaceController.TAG, "Deferring tryFinish, activeSyncs=" + Arrays.toString(this.mActiveSyncs.stream().map(new Function() { // from class: com.android.server.wm.BLASTSyncEngine$$ExternalSyntheticLambda0
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    Integer lambda$onSurfacePlacement$0;
-                    lambda$onSurfacePlacement$0 = BLASTSyncEngine.lambda$onSurfacePlacement$0((BLASTSyncEngine.SyncGroup) obj);
-                    return lambda$onSurfacePlacement$0;
-                }
-            }).toArray()));
-            return;
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_SYNC_ENGINE_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, 6310906192788668020L, 13, null, Long.valueOf(syncGroup.mSyncId), Boolean.valueOf(z));
         }
-        this.mTmpFinishQueue.addAll(this.mActiveSyncs);
-        int size = ((this.mActiveSyncs.size() + 1) * this.mActiveSyncs.size()) / 2;
-        while (!this.mTmpFinishQueue.isEmpty()) {
-            if (size <= 0) {
-                Slog.e(StartingSurfaceController.TAG, "Trying to finish more syncs than theoretically possible. This should never happen. Most likely a dependency cycle wasn't detected.");
+        syncGroup.mReady = z;
+        if (z) {
+            BLASTSyncEngine.this.mWm.mWindowPlacerLocked.requestTraversal();
+        }
+        return true;
+    }
+
+    public final void setSyncMethod(int i, int i2) {
+        SyncGroup syncGroup = getSyncGroup(i);
+        if (!syncGroup.mRootMembers.isEmpty()) {
+            throw new IllegalStateException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Not allow to change sync method after adding group member, id="));
+        }
+        if (CoreRune.FW_SHELL_TRANSITION_LOG) {
+            StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "setSyncMethod, id=", ", method=", ", caller=");
+            m.append(Debug.getCallers(3));
+            Slog.w("BLASTSyncEngine", m.toString());
+        }
+        syncGroup.mSyncMethod = i2;
+    }
+
+    public final void startSyncSet(SyncGroup syncGroup, long j, boolean z) {
+        boolean z2 = this.mActiveSyncs.size() > 0;
+        if (!z && z2) {
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("SyncGroup "), syncGroup.mSyncId, ": Started when there is other active SyncGroup", "BLASTSyncEngine");
+        }
+        this.mActiveSyncs.add(syncGroup);
+        syncGroup.mIgnoreIndirectMembers = z;
+        boolean z3 = CoreRune.FW_SHELL_TRANSITION_LOG;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_SYNC_ENGINE_enabled;
+        TransactionReadyListener transactionReadyListener = syncGroup.mListener;
+        int i = syncGroup.mSyncId;
+        if (z3) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, -7770445535786616414L, 1, null, Long.valueOf(i), String.valueOf(transactionReadyListener), String.valueOf(Debug.getCallers(8)));
             }
-            size--;
-            SyncGroup syncGroup = (SyncGroup) this.mTmpFinishQueue.remove(0);
-            int indexOf = this.mActiveSyncs.indexOf(syncGroup);
-            if (indexOf >= 0) {
-                if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX && syncGroup.mAborted) {
-                    syncGroup.finishNow();
-                } else if (syncGroup.tryFinish()) {
-                    int i = 0;
-                    for (int i2 = 0; i2 < this.mActiveSyncs.size(); i2++) {
-                        SyncGroup syncGroup2 = (SyncGroup) this.mActiveSyncs.get(i2);
-                        if (syncGroup2.mDependencies.remove(syncGroup) && i2 < indexOf && syncGroup2.mDependencies.isEmpty()) {
-                            this.mTmpFinishQueue.add(i, (SyncGroup) this.mActiveSyncs.get(i2));
-                            i++;
-                        }
-                    }
-                }
-            }
+        } else if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SYNC_ENGINE, -2978812352001196863L, 1, null, Long.valueOf(i), (z && z2) ? "(in parallel) " : "", String.valueOf(transactionReadyListener));
         }
-    }
-
-    public static /* synthetic */ Integer lambda$onSurfacePlacement$0(SyncGroup syncGroup) {
-        return Integer.valueOf(syncGroup.mSyncId);
-    }
-
-    public void queueSyncSet(Runnable runnable, Runnable runnable2) {
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_LOG) {
-            Slog.d(StartingSurfaceController.TAG, "queueSyncSet, caller=" + Debug.getCallers(6));
-        }
-        PendingSyncSet pendingSyncSet = new PendingSyncSet();
-        pendingSyncSet.mStartSync = runnable;
-        pendingSyncSet.mApplySync = runnable2;
-        this.mPendingSyncSets.add(pendingSyncSet);
-    }
-
-    public boolean hasPendingSyncSets() {
-        return !this.mPendingSyncSets.isEmpty();
-    }
-
-    public void addOnIdleListener(Runnable runnable) {
-        this.mOnIdleListeners.add(runnable);
-    }
-
-    public void pause() {
-        this.mDeferDepth++;
-    }
-
-    public void resume() {
-        this.mDeferDepth--;
+        scheduleTimeout(syncGroup, j);
     }
 }

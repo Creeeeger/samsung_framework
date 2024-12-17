@@ -1,16 +1,26 @@
 package com.android.server.tv.tunerresourcemanager;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class CasResource {
     public int mAvailableSessionNum;
     public int mMaxSessionNum;
-    public Map mOwnerClientIdsToSessionNum = new HashMap();
+    public final Map mOwnerClientIdsToSessionNum = new HashMap();
     public final int mSystemId;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class Builder {
+        public int mMaxSessionNum;
+        public final int mSystemId;
+
+        public Builder(int i) {
+            this.mSystemId = i;
+        }
+    }
 
     public CasResource(Builder builder) {
         this.mSystemId = builder.mSystemId;
@@ -19,44 +29,44 @@ public class CasResource {
         this.mAvailableSessionNum = i;
     }
 
-    public int getSystemId() {
-        return this.mSystemId;
+    public final Set getOwnerClientIds() {
+        return ((HashMap) this.mOwnerClientIdsToSessionNum).keySet();
     }
 
-    public int getMaxSessionNum() {
-        return this.mMaxSessionNum;
+    public final String ownersMapToString() {
+        StringBuilder sb = new StringBuilder("{");
+        for (Integer num : ((HashMap) this.mOwnerClientIdsToSessionNum).keySet()) {
+            int intValue = num.intValue();
+            sb.append(" clientId=");
+            sb.append(intValue);
+            sb.append(", owns session num=");
+            sb.append(((HashMap) this.mOwnerClientIdsToSessionNum).get(num));
+            sb.append(",");
+        }
+        sb.append("}");
+        return sb.toString();
     }
 
-    public int getUsedSessionNum() {
-        return this.mMaxSessionNum - this.mAvailableSessionNum;
+    public final void removeOwner(int i) {
+        if (((HashMap) this.mOwnerClientIdsToSessionNum).containsKey(Integer.valueOf(i))) {
+            this.mAvailableSessionNum = ((Integer) ((HashMap) this.mOwnerClientIdsToSessionNum).get(Integer.valueOf(i))).intValue() + this.mAvailableSessionNum;
+            ((HashMap) this.mOwnerClientIdsToSessionNum).remove(Integer.valueOf(i));
+        }
     }
 
-    public boolean isFullyUsed() {
-        return this.mAvailableSessionNum == 0;
-    }
-
-    public void updateMaxSessionNum(int i) {
-        this.mAvailableSessionNum = Math.max(0, this.mAvailableSessionNum + (i - this.mMaxSessionNum));
-        this.mMaxSessionNum = i;
-    }
-
-    public void setOwner(int i) {
-        this.mOwnerClientIdsToSessionNum.put(Integer.valueOf(i), Integer.valueOf(this.mOwnerClientIdsToSessionNum.get(Integer.valueOf(i)) == null ? 1 : ((Integer) this.mOwnerClientIdsToSessionNum.get(Integer.valueOf(i))).intValue() + 1));
+    public final void setOwner(int i) {
+        int intValue;
+        if (((HashMap) this.mOwnerClientIdsToSessionNum).get(Integer.valueOf(i)) == null) {
+            intValue = 1;
+        } else {
+            intValue = ((Integer) ((HashMap) this.mOwnerClientIdsToSessionNum).get(Integer.valueOf(i))).intValue() + 1;
+        }
+        ((HashMap) this.mOwnerClientIdsToSessionNum).put(Integer.valueOf(i), Integer.valueOf(intValue));
         this.mAvailableSessionNum--;
     }
 
-    public void removeOwner(int i) {
-        this.mAvailableSessionNum += ((Integer) this.mOwnerClientIdsToSessionNum.get(Integer.valueOf(i))).intValue();
-        this.mOwnerClientIdsToSessionNum.remove(Integer.valueOf(i));
-    }
-
-    public Set getOwnerClientIds() {
-        return this.mOwnerClientIdsToSessionNum.keySet();
-    }
-
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CasResource[systemId=");
+        StringBuilder sb = new StringBuilder("CasResource[systemId=");
         sb.append(this.mSystemId);
         sb.append(", isFullyUsed=");
         sb.append(this.mAvailableSessionNum == 0);
@@ -65,40 +75,6 @@ public class CasResource {
         sb.append(", ownerClients=");
         sb.append(ownersMapToString());
         sb.append("]");
-        return sb.toString();
-    }
-
-    /* loaded from: classes3.dex */
-    public class Builder {
-        public int mMaxSessionNum;
-        public int mSystemId;
-
-        public Builder(int i) {
-            this.mSystemId = i;
-        }
-
-        public Builder maxSessionNum(int i) {
-            this.mMaxSessionNum = i;
-            return this;
-        }
-
-        public CasResource build() {
-            return new CasResource(this);
-        }
-    }
-
-    public String ownersMapToString() {
-        StringBuilder sb = new StringBuilder("{");
-        Iterator it = this.mOwnerClientIdsToSessionNum.keySet().iterator();
-        while (it.hasNext()) {
-            int intValue = ((Integer) it.next()).intValue();
-            sb.append(" clientId=");
-            sb.append(intValue);
-            sb.append(", owns session num=");
-            sb.append(this.mOwnerClientIdsToSessionNum.get(Integer.valueOf(intValue)));
-            sb.append(",");
-        }
-        sb.append("}");
         return sb.toString();
     }
 }

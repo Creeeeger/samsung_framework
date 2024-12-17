@@ -7,32 +7,36 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.util.IndentingPrintWriter;
 import android.util.Slog;
-import com.android.server.timezonedetector.DeviceActivityMonitor;
+import com.android.server.timezonedetector.TimeZoneDetectorService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class DeviceActivityMonitorImpl implements DeviceActivityMonitor {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DeviceActivityMonitorImpl implements Dumpable {
     public final List mListeners = new ArrayList();
 
-    @Override // com.android.server.timezonedetector.Dumpable
-    public void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
-    }
-
-    public static DeviceActivityMonitor create(Context context, Handler handler) {
-        return new DeviceActivityMonitorImpl(context, handler);
+    /* renamed from: -$$Nest$mnotifyFlightComplete, reason: not valid java name */
+    public static void m973$$Nest$mnotifyFlightComplete(DeviceActivityMonitorImpl deviceActivityMonitorImpl) {
+        ArrayList arrayList;
+        synchronized (deviceActivityMonitorImpl) {
+            arrayList = new ArrayList(deviceActivityMonitorImpl.mListeners);
+        }
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            ((TimeZoneDetectorStrategyImpl) ((TimeZoneDetectorService.Lifecycle.AnonymousClass1) it.next()).val$timeZoneDetectorStrategy).enableTelephonyTimeZoneFallback("onFlightComplete()");
+        }
     }
 
     public DeviceActivityMonitorImpl(Context context, Handler handler) {
         final ContentResolver contentResolver = context.getContentResolver();
         contentResolver.registerContentObserver(Settings.Global.getUriFor("airplane_mode_on"), true, new ContentObserver(handler) { // from class: com.android.server.timezonedetector.DeviceActivityMonitorImpl.1
             @Override // android.database.ContentObserver
-            public void onChange(boolean z) {
+            public final void onChange(boolean z) {
                 try {
                     if (Settings.Global.getInt(contentResolver, "airplane_mode_on") == 0) {
-                        DeviceActivityMonitorImpl.this.notifyFlightComplete();
+                        DeviceActivityMonitorImpl.m973$$Nest$mnotifyFlightComplete(DeviceActivityMonitorImpl.this);
                     }
                 } catch (Settings.SettingNotFoundException e) {
                     Slog.e("time_zone_detector", "Unable to read airplane mode state", e);
@@ -41,20 +45,7 @@ public class DeviceActivityMonitorImpl implements DeviceActivityMonitor {
         });
     }
 
-    @Override // com.android.server.timezonedetector.DeviceActivityMonitor
-    public synchronized void addListener(DeviceActivityMonitor.Listener listener) {
-        Objects.requireNonNull(listener);
-        this.mListeners.add(listener);
-    }
-
-    public final void notifyFlightComplete() {
-        ArrayList arrayList;
-        synchronized (this) {
-            arrayList = new ArrayList(this.mListeners);
-        }
-        Iterator it = arrayList.iterator();
-        while (it.hasNext()) {
-            ((DeviceActivityMonitor.Listener) it.next()).onFlightComplete();
-        }
+    @Override // com.android.server.timezonedetector.Dumpable
+    public final void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
     }
 }

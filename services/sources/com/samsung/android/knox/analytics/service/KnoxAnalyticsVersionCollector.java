@@ -1,17 +1,21 @@
 package com.samsung.android.knox.analytics.service;
 
 import android.content.Context;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Build;
 import android.os.SELinux;
 import android.os.SemSystemProperties;
 import android.os.SystemProperties;
 import android.text.format.DateFormat;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import com.android.server.pm.PackageManagerShellCommandDataLoader;
 import com.samsung.android.knox.EnterpriseKnoxManager;
 import com.samsung.android.knox.analytics.util.KnoxAnalyticsDataConverter;
 import com.samsung.android.knox.analytics.util.KnoxAnalyticsQueryResolver;
 import com.samsung.android.knox.analytics.util.Log;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.text.SimpleDateFormat;
@@ -22,8 +26,9 @@ import java.util.regex.Pattern;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class KnoxAnalyticsVersionCollector {
+public final class KnoxAnalyticsVersionCollector {
     public static final String ANDROID_SECURITY_PATCH_LEVEL = "aSPL";
     public static final String ANDROID_VERSION = "aV";
     public static final String BASEBAND_VERSION = "bbV";
@@ -39,34 +44,7 @@ public class KnoxAnalyticsVersionCollector {
     public static final String MODEL_NUMBER = "mN";
     public static final String SECURITY_SOFTWARE_VERSION = "sSV";
     public static final String SE_ANDROID = "seAS";
-    public static final String TAG = "[KnoxAnalytics] " + KnoxAnalyticsVersionCollector.class.getSimpleName();
-
-    public String generateVersioningBlob() {
-        Log.d(TAG, "Call generateVersioningBlob()");
-        JSONObject jSONObject = new JSONObject();
-        try {
-            try {
-                jSONObject.put(BUILD_NUMBER, getBuildNumber());
-                jSONObject.put(MODEL_NUMBER, getModelNumber());
-                jSONObject.put(CSC_CODE, getCSCCode());
-                jSONObject.put(CSC_COUNTRY, getCSCCountry());
-                jSONObject.put(SE_ANDROID, getSEAndroidVersion());
-                jSONObject.put(ANDROID_VERSION, getAndroidVersion());
-                jSONObject.put(HARDWARE_VERSION, getHardwareVersion());
-                jSONObject.put(ANDROID_SECURITY_PATCH_LEVEL, getAndroidSecurityPathLevel());
-                jSONObject.put(SECURITY_SOFTWARE_VERSION, getSecuritySWVersion());
-                jSONObject.put(KNOX_VERSION, getKnoxVersion());
-                jSONObject.put(KERNEL_VERSION, getKernelVersion());
-                jSONObject.put(KnoxAnalyticsVersion, KnoxAnalyticsSystemService.KNOX_ANALYTICS_SYSTEM_SERVICE_VERSION);
-                return jSONObject.toString();
-            } catch (JSONException unused) {
-                Log.e(TAG, "generateVersioningBlob()");
-                return jSONObject.toString();
-            }
-        } catch (Throwable unused2) {
-            return jSONObject.toString();
-        }
-    }
+    public static final String TAG = "[KnoxAnalytics] KnoxAnalyticsVersionCollector";
 
     public static boolean checkVersioningBlob(Context context) {
         String str = TAG;
@@ -93,61 +71,161 @@ public class KnoxAnalyticsVersionCollector {
         return KnoxAnalyticsQueryResolver.addVersioningBlob(context, intValue, KnoxAnalyticsDataConverter.generateVersioningBlobEvent(generateVersioningBlob, lastEventId, intValue), lastEventId) >= 0;
     }
 
-    public String getAndroidVersion() {
+    public final String KernelVersion(String str) {
+        Matcher matcher = Pattern.compile("Linux version (\\S+) \\((\\S+)\\).*(#\\d+).*((?:Sun|Mon|Tue|Wed|Thu|Fri|Sat).+)").matcher(str);
+        if (!matcher.matches()) {
+            Log.e(TAG, "KernelVersion(): Regex did not match on /proc/version: " + str);
+            return "Unavailable";
+        }
+        if (matcher.groupCount() >= 4) {
+            return matcher.group(1);
+        }
+        Log.e(TAG, "KernelVersion(): Regex match on /proc/version only returned " + matcher.groupCount() + " groups");
+        return "Unavailable";
+    }
+
+    public final String KernelVersionVZW(String str) {
+        Matcher matcher = Pattern.compile("Linux version (\\S+) \\((\\S+?)\\) (?:(\\(gcc.+? \\))|(\\(clang.+?\\))) (#\\d+) (?:.*?)?((Sun|Mon|Tue|Wed|Thu|Fri|Sat).+)").matcher(str);
+        if (!matcher.matches()) {
+            Log.e(TAG, "KernelVersionVZW(): Regex did not match on /proc/version: " + str);
+        } else if (matcher.groupCount() < 4) {
+            Log.e(TAG, "KernelVersionVZW(): Regex match on /proc/version only returned " + matcher.groupCount() + " groups");
+            return "Unavailable";
+        }
+        String[] split = matcher.group(1).split(PackageManagerShellCommandDataLoader.STDIN_PATH);
+        if (split.length == 3) {
+            split[0] = split[0] + PackageManagerShellCommandDataLoader.STDIN_PATH + split[2];
+        }
+        return split[0];
+    }
+
+    public final String generateVersioningBlob() {
+        Log.d(TAG, "Call generateVersioningBlob()");
+        JSONObject jSONObject = new JSONObject();
+        try {
+            try {
+                jSONObject.put(BUILD_NUMBER, getBuildNumber());
+                jSONObject.put(MODEL_NUMBER, Build.MODEL);
+                jSONObject.put(CSC_CODE, SemSystemProperties.getSalesCode());
+                jSONObject.put(CSC_COUNTRY, SemSystemProperties.getCountryCode());
+                jSONObject.put(SE_ANDROID, getSEAndroidVersion());
+                jSONObject.put(ANDROID_VERSION, Build.VERSION.RELEASE);
+                jSONObject.put(HARDWARE_VERSION, getHardwareVersion());
+                jSONObject.put(ANDROID_SECURITY_PATCH_LEVEL, getAndroidSecurityPathLevel());
+                jSONObject.put(SECURITY_SOFTWARE_VERSION, getSecuritySWVersion());
+                jSONObject.put(KNOX_VERSION, getKnoxVersion());
+                jSONObject.put(KERNEL_VERSION, getKernelVersion());
+                jSONObject.put(KnoxAnalyticsVersion, KnoxAnalyticsSystemService.KNOX_ANALYTICS_SYSTEM_SERVICE_VERSION);
+                return jSONObject.toString();
+            } catch (JSONException unused) {
+                Log.e(TAG, "generateVersioningBlob()");
+                return jSONObject.toString();
+            }
+        } catch (Throwable unused2) {
+            return jSONObject.toString();
+        }
+    }
+
+    public final String getAndroidSecurityPathLevel() {
+        String str = Build.VERSION.SECURITY_PATCH;
+        if ("".equals(str)) {
+            return "";
+        }
+        try {
+            return DateFormat.format(DateFormat.getBestDateTimePattern(Locale.getDefault(), "dMMMMyyyy"), new SimpleDateFormat("yyyy-MM-dd").parse(str)).toString();
+        } catch (Exception e) {
+            Log.e(TAG, "getAndroidSecurityPathLevel(): Exception ", e);
+            return str;
+        }
+    }
+
+    public final String getAndroidVersion() {
         return Build.VERSION.RELEASE;
     }
 
-    public String getModelNumber() {
-        return Build.MODEL;
+    public final String getBasebandVersion() {
+        return SystemProperties.get("none".equals(SystemProperties.get("ril.approved_modemver", "none")) ? "gsm.version.baseband" : "ril.approved_modemver", "default");
     }
 
-    public String getCSCCode() {
+    public final String getBuildNumber() {
+        if (!"CHM".equals(SemSystemProperties.getSalesCode())) {
+            return Build.DISPLAY;
+        }
+        StringBuilder sb = new StringBuilder(Build.DISPLAY);
+        try {
+            StringTokenizer stringTokenizer = new StringTokenizer(SystemProperties.get("ro.build.date", "Unknown"), " ");
+            String[] strArr = new String[stringTokenizer.countTokens()];
+            int i = 0;
+            while (stringTokenizer.hasMoreElements()) {
+                strArr[i] = stringTokenizer.nextToken();
+                i++;
+            }
+            if (i != 6) {
+                return sb.toString();
+            }
+            if (strArr[1].compareToIgnoreCase("Jan") == 0) {
+                strArr[1] = Constants.OTP_BIT_KG_ENABLED;
+            } else if (strArr[1].compareToIgnoreCase("Feb") == 0) {
+                strArr[1] = "02";
+            } else if (strArr[1].compareToIgnoreCase("Mar") == 0) {
+                strArr[1] = "03";
+            } else if (strArr[1].compareToIgnoreCase("Apr") == 0) {
+                strArr[1] = "04";
+            } else if (strArr[1].compareToIgnoreCase("May") == 0) {
+                strArr[1] = "05";
+            } else if (strArr[1].compareToIgnoreCase("Jun") == 0) {
+                strArr[1] = "06";
+            } else if (strArr[1].compareToIgnoreCase("Jul") == 0) {
+                strArr[1] = "07";
+            } else if (strArr[1].compareToIgnoreCase("Aug") == 0) {
+                strArr[1] = "08";
+            } else if (strArr[1].compareToIgnoreCase("Sep") == 0) {
+                strArr[1] = "09";
+            } else if (strArr[1].compareToIgnoreCase("Oct") == 0) {
+                strArr[1] = "10";
+            } else if (strArr[1].compareToIgnoreCase("Nov") == 0) {
+                strArr[1] = Constants.OTP_BIT_KG_COMPLETED;
+            } else {
+                strArr[1] = "12";
+            }
+            if (strArr[2].length() != 1) {
+                sb.append("\n");
+                sb.append(strArr[5]);
+                sb.append(PackageManagerShellCommandDataLoader.STDIN_PATH);
+                sb.append(strArr[1]);
+                sb.append(PackageManagerShellCommandDataLoader.STDIN_PATH);
+                sb.append(strArr[2]);
+                return sb.toString();
+            }
+            sb.append("\n");
+            sb.append(strArr[5]);
+            sb.append(PackageManagerShellCommandDataLoader.STDIN_PATH);
+            sb.append(strArr[1]);
+            sb.append(PackageManagerShellCommandDataLoader.STDIN_PATH);
+            sb.append("0");
+            sb.append(strArr[2]);
+            return sb.toString();
+        } catch (NullPointerException unused) {
+            Log.e(TAG, "getBuildNumber(): china version return Normal build number");
+            return sb.toString();
+        }
+    }
+
+    public final String getCSCCode() {
         return SemSystemProperties.getSalesCode();
     }
 
-    public String getCSCCountry() {
+    public final String getCSCCountry() {
         return SemSystemProperties.getCountryCode();
     }
 
-    public String getHardwareVersion() {
+    public final String getHardwareVersion() {
         return SystemProperties.get("ro.revision", "Unknown");
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:4:0x001a, code lost:
-    
-        if ("none".equals(android.os.SystemProperties.get("ril.approved_modemver", "none")) == false) goto L8;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public java.lang.String getBasebandVersion() {
-        /*
-            r2 = this;
-            com.samsung.android.feature.SemCscFeature r2 = com.samsung.android.feature.SemCscFeature.getInstance()
-            java.lang.String r0 = "CscFeature_Setting_ChangeApprovedModemVersion"
-            boolean r2 = r2.getBoolean(r0)
-            if (r2 == 0) goto L1d
-            java.lang.String r2 = "ril.approved_modemver"
-            java.lang.String r0 = "none"
-            java.lang.String r1 = android.os.SystemProperties.get(r2, r0)
-            boolean r0 = r0.equals(r1)
-            if (r0 != 0) goto L1d
-            goto L1f
-        L1d:
-            java.lang.String r2 = "gsm.version.baseband"
-        L1f:
-            java.lang.String r0 = "default"
-            java.lang.String r2 = android.os.SystemProperties.get(r2, r0)
-            return r2
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.knox.analytics.service.KnoxAnalyticsVersionCollector.getBasebandVersion():java.lang.String");
-    }
-
     /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:37:0x0036 -> B:12:0x0051). Please report as a decompilation issue!!! */
-    public String getKernelVersion() {
-        String KernelVersion;
+    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:38:0x003d -> B:13:0x0052). Please report as a decompilation issue!!! */
+    public final String getKernelVersion() {
         String str = "";
         BufferedReader bufferedReader = null;
         BufferedReader bufferedReader2 = null;
@@ -163,12 +241,7 @@ public class KnoxAnalyticsVersionCollector {
                 try {
                     String readLine = bufferedReader3.readLine();
                     boolean equals = "VZW".equals(SemSystemProperties.getSalesCode());
-                    if (equals != 0) {
-                        KernelVersion = KernelVersionVZW(readLine);
-                    } else {
-                        KernelVersion = KernelVersion(readLine);
-                    }
-                    str = KernelVersion;
+                    str = equals != 0 ? KernelVersionVZW(readLine) : KernelVersion(readLine);
                     bufferedReader3.close();
                     bufferedReader3.close();
                     bufferedReader = equals;
@@ -203,188 +276,20 @@ public class KnoxAnalyticsVersionCollector {
         }
     }
 
-    public final String KernelVersion(String str) {
-        Matcher matcher = Pattern.compile("Linux version (\\S+) \\((\\S+)\\).*(#\\d+).*((?:Sun|Mon|Tue|Wed|Thu|Fri|Sat).+)").matcher(str);
-        if (!matcher.matches()) {
-            Log.e(TAG, "KernelVersion(): Regex did not match on /proc/version: " + str);
-            return "Unavailable";
-        }
-        if (matcher.groupCount() < 4) {
-            Log.e(TAG, "KernelVersion(): Regex match on /proc/version only returned " + matcher.groupCount() + " groups");
-            return "Unavailable";
-        }
-        return matcher.group(1);
-    }
-
-    public final String KernelVersionVZW(String str) {
-        Matcher matcher = Pattern.compile("Linux version (\\S+) \\((\\S+?)\\) (?:(\\(gcc.+? \\))|(\\(clang.+?\\))) (#\\d+) (?:.*?)?((Sun|Mon|Tue|Wed|Thu|Fri|Sat).+)").matcher(str);
-        if (!matcher.matches()) {
-            Log.e(TAG, "KernelVersionVZW(): Regex did not match on /proc/version: " + str);
-        } else if (matcher.groupCount() < 4) {
-            Log.e(TAG, "KernelVersionVZW(): Regex match on /proc/version only returned " + matcher.groupCount() + " groups");
-            return "Unavailable";
-        }
-        String[] split = matcher.group(1).split(PackageManagerShellCommandDataLoader.STDIN_PATH);
-        if (split.length == 3) {
-            split[0] = split[0] + PackageManagerShellCommandDataLoader.STDIN_PATH + split[2];
-        }
-        return split[0];
-    }
-
-    public String getBuildNumber() {
-        if ("CHM".equals(SemSystemProperties.getSalesCode())) {
-            StringBuilder sb = new StringBuilder(Build.DISPLAY);
-            try {
-                StringTokenizer stringTokenizer = new StringTokenizer(SystemProperties.get("ro.build.date", "Unknown"), " ");
-                String[] strArr = new String[stringTokenizer.countTokens()];
-                int i = 0;
-                while (stringTokenizer.hasMoreElements()) {
-                    strArr[i] = stringTokenizer.nextToken();
-                    i++;
-                }
-                if (i != 6) {
-                    return sb.toString();
-                }
-                if (strArr[1].compareToIgnoreCase("Jan") == 0) {
-                    strArr[1] = "01";
-                } else if (strArr[1].compareToIgnoreCase("Feb") == 0) {
-                    strArr[1] = "02";
-                } else if (strArr[1].compareToIgnoreCase("Mar") == 0) {
-                    strArr[1] = "03";
-                } else if (strArr[1].compareToIgnoreCase("Apr") == 0) {
-                    strArr[1] = "04";
-                } else if (strArr[1].compareToIgnoreCase("May") == 0) {
-                    strArr[1] = "05";
-                } else if (strArr[1].compareToIgnoreCase("Jun") == 0) {
-                    strArr[1] = "06";
-                } else if (strArr[1].compareToIgnoreCase("Jul") == 0) {
-                    strArr[1] = "07";
-                } else if (strArr[1].compareToIgnoreCase("Aug") == 0) {
-                    strArr[1] = "08";
-                } else if (strArr[1].compareToIgnoreCase("Sep") == 0) {
-                    strArr[1] = "09";
-                } else if (strArr[1].compareToIgnoreCase("Oct") == 0) {
-                    strArr[1] = "10";
-                } else if (strArr[1].compareToIgnoreCase("Nov") == 0) {
-                    strArr[1] = "11";
-                } else {
-                    strArr[1] = "12";
-                }
-                if (strArr[2].length() == 1) {
-                    sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                    sb.append(strArr[5]);
-                    sb.append(PackageManagerShellCommandDataLoader.STDIN_PATH);
-                    sb.append(strArr[1]);
-                    sb.append(PackageManagerShellCommandDataLoader.STDIN_PATH);
-                    sb.append("0");
-                    sb.append(strArr[2]);
-                    return sb.toString();
-                }
-                sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                sb.append(strArr[5]);
-                sb.append(PackageManagerShellCommandDataLoader.STDIN_PATH);
-                sb.append(strArr[1]);
-                sb.append(PackageManagerShellCommandDataLoader.STDIN_PATH);
-                sb.append(strArr[2]);
-                return sb.toString();
-            } catch (NullPointerException unused) {
-                Log.e(TAG, "getBuildNumber(): china version return Normal build number");
-                return sb.toString();
-            }
-        }
-        return Build.DISPLAY;
-    }
-
-    public String getSEAndroidVersion() {
-        if (SELinux.isSELinuxEnabled()) {
-            if (SELinux.isSELinuxEnforced()) {
-                return "Enforcing";
-            }
-            return "Permissive";
-        }
-        return "Disabled";
-    }
-
-    public String getKnoxVersion() {
+    public final String getKnoxVersion() {
         return "Knox " + EnterpriseKnoxManager.getInstance().getVersion().getInternalVersion();
     }
 
-    public String getSecuritySWVersion() {
-        String str;
-        String securityMDFVersion = getSecurityMDFVersion();
-        if ("".equals(securityMDFVersion)) {
-            str = "";
-        } else {
-            str = "MDF " + securityMDFVersion;
-        }
-        String securityWLANVersion = getSecurityWLANVersion();
-        if (!"".equals(securityWLANVersion)) {
-            if ("".equals(str)) {
-                str = str + " ";
-            }
-            str = str + "WLAN " + securityWLANVersion;
-        }
-        String securityVPNVersion = getSecurityVPNVersion();
-        if (!"".equals(securityVPNVersion)) {
-            if ("".equals(str)) {
-                str = str + " ";
-            }
-            str = str + "VPN " + securityVPNVersion;
-        }
-        String securityASKSVersion = getSecurityASKSVersion();
-        if (!"".equals(securityASKSVersion)) {
-            if ("".equals(str)) {
-                str = str + " ";
-            }
-            str = str + "ASKS " + securityASKSVersion;
-        }
-        String securityFIPSVersion = getSecurityFIPSVersion();
-        if (!"".equals(securityFIPSVersion)) {
-            if ("".equals(str)) {
-                str = str + " ";
-            }
-            str = str + securityFIPSVersion;
-        }
-        String securitySPLVersion = getSecuritySPLVersion();
-        if ("".equals(securitySPLVersion)) {
-            return str;
-        }
-        if ("".equals(str)) {
-            str = str + " ";
-        }
-        return str + "SPL " + securitySPLVersion;
+    public final String getModelNumber() {
+        return Build.MODEL;
     }
 
-    public final String getSecurityMDFVersion() {
-        String str = "";
-        if (!"Enabled".equals(SystemProperties.get("ro.security.mdf.ux"))) {
-            return "";
-        }
-        String str2 = "v" + SystemProperties.get("ro.security.mdf.ver");
-        String str3 = " Release " + SystemProperties.get("ro.security.mdf.release");
-        String str4 = SystemProperties.get("security.mdf");
-        if ("Disabled".equals(str4)) {
-            str = " : " + str4;
-        }
-        return str2 + str3 + str;
-    }
-
-    public final String getSecurityWLANVersion() {
-        if ("".equals(SystemProperties.get("ro.security.wlan.ver"))) {
-            return "";
-        }
-        return ("v" + SystemProperties.get("ro.security.wlan.ver")) + (" Release " + SystemProperties.get("ro.security.wlan.release"));
-    }
-
-    public final String getSecurityVPNVersion() {
-        if ("".equals(SystemProperties.get("ro.security.vpnpp.ver"))) {
-            return "";
-        }
-        return ("v" + SystemProperties.get("ro.security.vpnpp.ver")) + (" Release " + SystemProperties.get("ro.security.vpnpp.release"));
+    public final String getSEAndroidVersion() {
+        return SELinux.isSELinuxEnabled() ? SELinux.isSELinuxEnforced() ? "Enforcing" : "Permissive" : "Disabled";
     }
 
     public final String getSecurityASKSVersion() {
-        return ("v" + SystemProperties.get("security.ASKS.version", "0") + " Release ") + SystemProperties.get("security.ASKS.policy_version", "000000");
+        return ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1("v" + SystemProperties.get("security.ASKS.version", "0") + " Release ", SystemProperties.get("security.ASKS.policy_version", "000000"));
     }
 
     public final String getSecurityFIPSVersion() {
@@ -396,30 +301,47 @@ public class KnoxAnalyticsVersionCollector {
         }
         if (!"".equals(SystemProperties.get("ro.security.fips_skc.ver"))) {
             if (!"".equals(str)) {
-                str = str + " ";
+                str = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, " ");
             }
-            str = str + "FIPS SKC v" + SystemProperties.get("ro.security.fips_skc.ver");
+            StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, "FIPS SKC v");
+            m.append(SystemProperties.get("ro.security.fips_skc.ver"));
+            str = m.toString();
         }
         if (!"".equals(SystemProperties.get("ro.security.fips_scrypto.ver"))) {
             if (!"".equals(str)) {
-                str = str + " ";
+                str = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, " ");
             }
-            str = str + "FIPS SCrypto v" + SystemProperties.get("ro.security.fips_scrypto.ver");
+            StringBuilder m2 = Preconditions$$ExternalSyntheticOutline0.m(str, "FIPS SCrypto v");
+            m2.append(SystemProperties.get("ro.security.fips_scrypto.ver"));
+            str = m2.toString();
         }
         if ("".equals(SystemProperties.get("ro.security.fips_fmp.ver"))) {
             return str;
         }
         if (!"".equals(str)) {
-            str = str + " ";
+            str = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, " ");
         }
-        return str + "FIPS FMP v" + SystemProperties.get("ro.security.fips_fmp.ver");
+        StringBuilder m3 = Preconditions$$ExternalSyntheticOutline0.m(str, "FIPS FMP v");
+        m3.append(SystemProperties.get("ro.security.fips_fmp.ver"));
+        return m3.toString();
+    }
+
+    public final String getSecurityMDFVersion() {
+        if (!"Enabled".equals(SystemProperties.get("ro.security.mdf.ux"))) {
+            return "";
+        }
+        String str = "v" + SystemProperties.get("ro.security.mdf.ver");
+        String str2 = " Release " + SystemProperties.get("ro.security.mdf.release");
+        String str3 = SystemProperties.get("security.mdf");
+        return AnyMotionDetector$$ExternalSyntheticOutline0.m(str, str2, "Disabled".equals(str3) ? ConnectivityModuleConnector$$ExternalSyntheticOutline0.m(" : ", str3) : "");
     }
 
     public final String getSecuritySPLVersion() {
         String str;
         String str2 = Build.VERSION.SECURITY_PATCH;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            str = new SimpleDateFormat("MMM-yyyy", Locale.ENGLISH).format(new SimpleDateFormat("yyyy-MM-dd").parse(str2));
+            str = new SimpleDateFormat("MMM-yyyy", Locale.ENGLISH).format(simpleDateFormat.parse(str2));
         } catch (Exception e) {
             Log.e(TAG, "getSecuritySPLVersion(): Exception ", e);
             str = "";
@@ -427,19 +349,63 @@ public class KnoxAnalyticsVersionCollector {
         if ("".equals(str)) {
             return "";
         }
-        return "SMR " + str + " Release " + SystemProperties.get("ro.build.version.security_index", "");
+        StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("SMR ", str, " Release ");
+        m.append(SystemProperties.get("ro.build.version.security_index", ""));
+        return m.toString();
     }
 
-    public String getAndroidSecurityPathLevel() {
-        String str = Build.VERSION.SECURITY_PATCH;
-        if ("".equals(str)) {
+    public final String getSecuritySWVersion() {
+        String securityMDFVersion = getSecurityMDFVersion();
+        String m = !"".equals(securityMDFVersion) ? ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("MDF ", securityMDFVersion) : "";
+        String securityWLANVersion = getSecurityWLANVersion();
+        if (!"".equals(securityWLANVersion)) {
+            if ("".equals(m)) {
+                m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(m, " ");
+            }
+            m = AnyMotionDetector$$ExternalSyntheticOutline0.m(m, "WLAN ", securityWLANVersion);
+        }
+        String securityVPNVersion = getSecurityVPNVersion();
+        if (!"".equals(securityVPNVersion)) {
+            if ("".equals(m)) {
+                m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(m, " ");
+            }
+            m = AnyMotionDetector$$ExternalSyntheticOutline0.m(m, "VPN ", securityVPNVersion);
+        }
+        String securityASKSVersion = getSecurityASKSVersion();
+        if (!"".equals(securityASKSVersion)) {
+            if ("".equals(m)) {
+                m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(m, " ");
+            }
+            m = AnyMotionDetector$$ExternalSyntheticOutline0.m(m, "ASKS ", securityASKSVersion);
+        }
+        String securityFIPSVersion = getSecurityFIPSVersion();
+        if (!"".equals(securityFIPSVersion)) {
+            if ("".equals(m)) {
+                m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(m, " ");
+            }
+            m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(m, securityFIPSVersion);
+        }
+        String securitySPLVersion = getSecuritySPLVersion();
+        if ("".equals(securitySPLVersion)) {
+            return m;
+        }
+        if ("".equals(m)) {
+            m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(m, " ");
+        }
+        return AnyMotionDetector$$ExternalSyntheticOutline0.m(m, "SPL ", securitySPLVersion);
+    }
+
+    public final String getSecurityVPNVersion() {
+        if ("".equals(SystemProperties.get("ro.security.vpnpp.ver"))) {
             return "";
         }
-        try {
-            return DateFormat.format(DateFormat.getBestDateTimePattern(Locale.getDefault(), "dMMMMyyyy"), new SimpleDateFormat("yyyy-MM-dd").parse(str)).toString();
-        } catch (Exception e) {
-            Log.e(TAG, "getAndroidSecurityPathLevel(): Exception ", e);
-            return str;
+        return ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1("v" + SystemProperties.get("ro.security.vpnpp.ver"), " Release " + SystemProperties.get("ro.security.vpnpp.release"));
+    }
+
+    public final String getSecurityWLANVersion() {
+        if ("".equals(SystemProperties.get("ro.security.wlan.ver"))) {
+            return "";
         }
+        return ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1("v" + SystemProperties.get("ro.security.wlan.ver"), " Release " + SystemProperties.get("ro.security.wlan.release"));
     }
 }

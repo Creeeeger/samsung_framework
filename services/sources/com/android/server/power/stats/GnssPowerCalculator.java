@@ -7,19 +7,11 @@ import android.os.UidBatteryConsumer;
 import android.util.SparseArray;
 import com.android.internal.os.PowerProfile;
 
-/* loaded from: classes3.dex */
-public class GnssPowerCalculator extends PowerCalculator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class GnssPowerCalculator extends PowerCalculator {
     public final double mAveragePowerGnssOn;
     public final double[] mAveragePowerPerSignalQuality = new double[2];
-
-    public final double computePower(long j, double d) {
-        return (j * d) / 3600000.0d;
-    }
-
-    @Override // com.android.server.power.stats.PowerCalculator
-    public boolean isPowerComponentSupported(int i) {
-        return i == 10;
-    }
 
     public GnssPowerCalculator(PowerProfile powerProfile) {
         this.mAveragePowerGnssOn = powerProfile.getAveragePowerOrDefault("gps.on", -1.0d);
@@ -29,62 +21,57 @@ public class GnssPowerCalculator extends PowerCalculator {
     }
 
     @Override // com.android.server.power.stats.PowerCalculator
-    public void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
-        double averageGnssPower = getAverageGnssPower(batteryStats, j, 0);
+    public final void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
+        long j3;
+        long totalTimeLocked;
+        int i;
+        double d = this.mAveragePowerGnssOn;
+        int i2 = 0;
+        if (d == -1.0d) {
+            long j4 = 0;
+            double d2 = 0.0d;
+            for (int i3 = 0; i3 < 2; i3++) {
+                long gpsSignalQualityTime = batteryStats.getGpsSignalQualityTime(i3, j, 0) / 1000;
+                j4 += gpsSignalQualityTime;
+                d2 = (this.mAveragePowerPerSignalQuality[i3] * gpsSignalQualityTime) + d2;
+            }
+            d = j4 != 0 ? d2 / j4 : 0.0d;
+        }
         SparseArray uidBatteryConsumerBuilders = builder.getUidBatteryConsumerBuilders();
         int size = uidBatteryConsumerBuilders.size() - 1;
-        double d = 0.0d;
+        double d3 = 0.0d;
         while (size >= 0) {
             UidBatteryConsumer.Builder builder2 = (UidBatteryConsumer.Builder) uidBatteryConsumerBuilders.valueAt(size);
+            double d4 = d;
             long gnssEnergyConsumptionUC = builder2.getBatteryStatsUid().getGnssEnergyConsumptionUC();
-            double d2 = d;
-            int i = size;
-            SparseArray sparseArray = uidBatteryConsumerBuilders;
-            d = !builder2.isVirtualUid() ? d2 + calculateApp(builder2, builder2.getBatteryStatsUid(), PowerCalculator.getPowerModel(gnssEnergyConsumptionUC, batteryUsageStatsQuery), j, averageGnssPower, gnssEnergyConsumptionUC) : d2;
-            size = i - 1;
-            uidBatteryConsumerBuilders = sparseArray;
+            int powerModel = PowerCalculator.getPowerModel(gnssEnergyConsumptionUC, batteryUsageStatsQuery);
+            BatteryStats.Uid.Sensor sensor = (BatteryStats.Uid.Sensor) builder2.getBatteryStatsUid().getSensorStats().get(-10000);
+            if (sensor == null) {
+                totalTimeLocked = 0;
+                i = 2;
+                j3 = 1000;
+            } else {
+                j3 = 1000;
+                totalTimeLocked = sensor.getSensorTime().getTotalTimeLocked(j, i2) / 1000;
+                i = 2;
+            }
+            double d5 = powerModel != i ? (totalTimeLocked * d4) / 3600000.0d : gnssEnergyConsumptionUC * 2.777777777777778E-7d;
+            builder2.setUsageDurationMillis(10, totalTimeLocked).setConsumedPower(10, d5, powerModel);
+            if (!builder2.isVirtualUid()) {
+                d3 += d5;
+            }
+            size--;
+            d = d4;
+            i2 = 0;
         }
         long gnssEnergyConsumptionUC2 = batteryStats.getGnssEnergyConsumptionUC();
-        int powerModel = PowerCalculator.getPowerModel(gnssEnergyConsumptionUC2, batteryUsageStatsQuery);
-        builder.getAggregateBatteryConsumerBuilder(0).setConsumedPower(10, powerModel == 2 ? PowerCalculator.uCtoMah(gnssEnergyConsumptionUC2) : d, powerModel);
-        builder.getAggregateBatteryConsumerBuilder(1).setConsumedPower(10, d, powerModel);
+        int powerModel2 = PowerCalculator.getPowerModel(gnssEnergyConsumptionUC2, batteryUsageStatsQuery);
+        builder.getAggregateBatteryConsumerBuilder(0).setConsumedPower(10, powerModel2 == 2 ? gnssEnergyConsumptionUC2 * 2.777777777777778E-7d : d3, powerModel2);
+        builder.getAggregateBatteryConsumerBuilder(1).setConsumedPower(10, d3, powerModel2);
     }
 
-    public final double calculateApp(UidBatteryConsumer.Builder builder, BatteryStats.Uid uid, int i, long j, double d, long j2) {
-        double uCtoMah;
-        long computeDuration = computeDuration(uid, j, 0);
-        if (i == 2) {
-            uCtoMah = PowerCalculator.uCtoMah(j2);
-        } else {
-            uCtoMah = computePower(computeDuration, d);
-        }
-        builder.setUsageDurationMillis(10, computeDuration).setConsumedPower(10, uCtoMah, i);
-        return uCtoMah;
-    }
-
-    public final long computeDuration(BatteryStats.Uid uid, long j, int i) {
-        BatteryStats.Uid.Sensor sensor = (BatteryStats.Uid.Sensor) uid.getSensorStats().get(-10000);
-        if (sensor == null) {
-            return 0L;
-        }
-        return sensor.getSensorTime().getTotalTimeLocked(j, i) / 1000;
-    }
-
-    public final double getAverageGnssPower(BatteryStats batteryStats, long j, int i) {
-        double d = this.mAveragePowerGnssOn;
-        if (d != -1.0d) {
-            return d;
-        }
-        long j2 = 0;
-        double d2 = 0.0d;
-        for (int i2 = 0; i2 < 2; i2++) {
-            long gpsSignalQualityTime = batteryStats.getGpsSignalQualityTime(i2, j, i);
-            j2 += gpsSignalQualityTime;
-            d2 += this.mAveragePowerPerSignalQuality[i2] * gpsSignalQualityTime;
-        }
-        if (j2 != 0) {
-            return d2 / j2;
-        }
-        return 0.0d;
+    @Override // com.android.server.power.stats.PowerCalculator
+    public final boolean isPowerComponentSupported(int i) {
+        return i == 10;
     }
 }

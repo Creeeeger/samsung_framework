@@ -1,17 +1,18 @@
 package com.android.server.wm;
 
 import android.app.ActivityOptions;
+import android.app.ActivityTaskManager;
 import android.app.WindowConfiguration;
-import android.app.servertransaction.ActivityLifecycleItem;
 import android.app.servertransaction.PauseActivityItem;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Bundle;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.os.UserHandle;
+import android.util.EventLog;
 import android.util.Slog;
 import android.util.proto.ProtoOutputStream;
 import android.view.DisplayInfo;
@@ -19,36 +20,39 @@ import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.WindowInsets;
 import android.window.ITaskFragmentOrganizer;
-import android.window.ScreenCapture;
 import android.window.TaskFragmentAnimationParams;
 import android.window.TaskFragmentInfo;
-import android.window.TaskFragmentOrganizerToken;
+import android.window.WindowContainerToken;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import com.android.server.display.DisplayPowerController2;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerService;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.wm.ActivityRecord;
+import com.android.server.wm.ActivityTaskSupervisor;
 import com.android.server.wm.BLASTSyncEngine;
+import com.android.server.wm.Dimmer;
 import com.android.server.wm.DisplayPolicy;
 import com.android.server.wm.RemoteAnimationController;
+import com.android.server.wm.SizeCompatPolicyManager;
+import com.android.server.wm.TaskFragmentOrganizerController;
 import com.android.server.wm.WindowContainer;
-import com.samsung.android.multiwindow.MultiWindowCoreState;
-import com.samsung.android.multiwindow.MultiWindowUtils;
 import com.samsung.android.rune.CoreRune;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class TaskFragment extends WindowContainer {
     public TaskFragment mAdjacentTaskFragment;
+    public boolean mAllowTransitionWhenEmpty;
     public TaskFragmentAnimationParams mAnimationParams;
     public final ActivityTaskManagerService mAtmService;
-    public HashMap mBackScreenshots;
     public boolean mClearedForReorderActivityToFront;
     public boolean mClearedTaskForReuse;
     public boolean mClearedTaskFragmentForPip;
@@ -56,18 +60,23 @@ public class TaskFragment extends WindowContainer {
     boolean mCreatedByOrganizer;
     public boolean mDelayLastActivityRemoval;
     public boolean mDelayOrganizedTaskFragmentSurfaceUpdate;
-    public Dimmer mDimmer;
+    public final Dimmer mDimmer;
+    public int mEmbeddedDimArea;
     public final EnsureActivitiesVisibleHelper mEnsureActivitiesVisibleHelper;
-    public final EnsureVisibleActivitiesConfigHelper mEnsureVisibleActivitiesConfigHelper;
+    public int mForceHiddenFlags;
+    public boolean mForceTranslucent;
     public final IBinder mFragmentToken;
     public final boolean mIsEmbedded;
     public boolean mIsPlaceholderTaskFragment;
     public boolean mIsRemovalRequested;
+    public boolean mIsolatedNav;
     public ActivityRecord mLastPausedActivity;
     public final Point mLastSurfaceSize;
     public int mMinHeight;
     public int mMinWidth;
+    public boolean mMoveToBottomIfClearWhenLaunch;
     public ActivityRecord mPausingActivity;
+    public boolean mPinned;
     public final Rect mRelativeEmbeddedBounds;
     public ActivityRecord mResumedActivity;
     public final RootWindowContainer mRootWindowContainer;
@@ -84,73 +93,34 @@ public class TaskFragment extends WindowContainer {
     public final Rect mTmpNonDecorBounds;
     public final Rect mTmpStableBounds;
 
-    public static boolean inStageMainOrSide(int i) {
-        return i == 1 || i == 2;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public TaskFragment asTaskFragment() {
-        return this;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean canCreateRemoteAnimationTarget() {
-        return true;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public long getProtoFieldId() {
-        return 1146756268041L;
-    }
-
-    public boolean isForceHidden() {
-        return false;
-    }
-
-    public boolean isForceTranslucent() {
-        return false;
-    }
-
-    /* loaded from: classes3.dex */
-    public class EnsureVisibleActivitiesConfigHelper implements Predicate {
-        public boolean mBehindFullscreen;
-        public boolean mPreserveWindow;
-        public boolean mUpdateConfig;
-
-        public EnsureVisibleActivitiesConfigHelper() {
-        }
-
-        @Override // java.util.function.Predicate
-        public boolean test(ActivityRecord activityRecord) {
-            this.mUpdateConfig |= activityRecord.ensureActivityConfiguration(0, this.mPreserveWindow);
-            boolean occludesParent = activityRecord.occludesParent() | this.mBehindFullscreen;
-            this.mBehindFullscreen = occludesParent;
-            return occludesParent;
-        }
-    }
-
-    public TaskFragment(ActivityTaskManagerService activityTaskManagerService, IBinder iBinder, boolean z) {
-        this(activityTaskManagerService, iBinder, z, true);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ConfigOverrideHint {
+        public Rect mParentAppBoundsOverride;
+        public AppCompatDisplayInsets mTmpCompatInsets;
+        public int mTmpOverrideConfigOrientation;
+        public DisplayInfo mTmpOverrideDisplayInfo;
+        public boolean mUseOverrideInsetsForConfig;
     }
 
     public TaskFragment(ActivityTaskManagerService activityTaskManagerService, IBinder iBinder, boolean z, boolean z2) {
         super(activityTaskManagerService.mWindowManager);
         this.mDimmer = new Dimmer(this);
+        this.mEmbeddedDimArea = 0;
         this.mPausingActivity = null;
         this.mLastPausedActivity = null;
         this.mResumedActivity = null;
         this.mIsPlaceholderTaskFragment = false;
         this.mTaskFragmentOrganizerUid = -1;
         this.mAnimationParams = TaskFragmentAnimationParams.DEFAULT;
+        this.mForceHiddenFlags = 0;
+        this.mForceTranslucent = false;
         this.mLastSurfaceSize = new Point();
         this.mTmpBounds = new Rect();
         this.mTmpAbsBounds = new Rect();
         this.mTmpFullBounds = new Rect();
         this.mTmpStableBounds = new Rect();
         this.mTmpNonDecorBounds = new Rect();
-        this.mBackScreenshots = new HashMap();
         this.mEnsureActivitiesVisibleHelper = new EnsureActivitiesVisibleHelper(this);
-        this.mEnsureVisibleActivitiesConfigHelper = new EnsureVisibleActivitiesConfigHelper();
         this.mAtmService = activityTaskManagerService;
         this.mTaskSupervisor = activityTaskManagerService.mTaskSupervisor;
         this.mRootWindowContainer = activityTaskManagerService.mRootWindowContainer;
@@ -162,1278 +132,25 @@ public class TaskFragment extends WindowContainer {
         this.mRemoteToken = new WindowContainer.RemoteToken(this);
     }
 
-    public static TaskFragment fromTaskFragmentToken(IBinder iBinder, ActivityTaskManagerService activityTaskManagerService) {
-        if (iBinder == null) {
-            return null;
-        }
-        return activityTaskManagerService.mWindowOrganizerController.getTaskFragment(iBinder);
-    }
-
-    public void setAdjacentTaskFragment(TaskFragment taskFragment) {
-        if (this.mAdjacentTaskFragment == taskFragment) {
-            return;
-        }
-        resetAdjacentTaskFragment();
-        if (taskFragment != null) {
-            this.mAdjacentTaskFragment = taskFragment;
-            taskFragment.setAdjacentTaskFragment(this);
-        }
-    }
-
-    public void setCompanionTaskFragment(TaskFragment taskFragment) {
-        this.mCompanionTaskFragment = taskFragment;
-    }
-
-    public TaskFragment getCompanionTaskFragment() {
-        return this.mCompanionTaskFragment;
-    }
-
-    public void resetAdjacentTaskFragment() {
-        TaskFragment taskFragment = this.mAdjacentTaskFragment;
-        if (taskFragment != null && taskFragment.mAdjacentTaskFragment == this) {
-            taskFragment.mAdjacentTaskFragment = null;
-            this.mAdjacentTaskFragment.mDelayLastActivityRemoval = false;
-        }
-        this.mAdjacentTaskFragment = null;
-        this.mDelayLastActivityRemoval = false;
-    }
-
-    public void setTaskFragmentOrganizer(TaskFragmentOrganizerToken taskFragmentOrganizerToken, int i, String str) {
-        this.mTaskFragmentOrganizer = ITaskFragmentOrganizer.Stub.asInterface(taskFragmentOrganizerToken.asBinder());
-        this.mTaskFragmentOrganizerUid = i;
-        this.mTaskFragmentOrganizerProcessName = str;
-    }
-
-    public void onTaskFragmentOrganizerRemoved() {
-        this.mTaskFragmentOrganizer = null;
-    }
-
-    public boolean hasTaskFragmentOrganizer(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
-        return (iTaskFragmentOrganizer == null || this.mTaskFragmentOrganizer == null || !iTaskFragmentOrganizer.asBinder().equals(this.mTaskFragmentOrganizer.asBinder())) ? false : true;
-    }
-
-    public final WindowProcessController getOrganizerProcessIfDifferent(ActivityRecord activityRecord) {
-        String str;
-        if (activityRecord == null || (str = this.mTaskFragmentOrganizerProcessName) == null) {
-            return null;
-        }
-        if (str.equals(activityRecord.processName) && this.mTaskFragmentOrganizerUid == activityRecord.getUid()) {
-            return null;
-        }
-        return this.mAtmService.getProcessController(this.mTaskFragmentOrganizerProcessName, this.mTaskFragmentOrganizerUid);
-    }
-
-    public void setAnimationParams(TaskFragmentAnimationParams taskFragmentAnimationParams) {
-        this.mAnimationParams = taskFragmentAnimationParams;
-    }
-
-    public TaskFragmentAnimationParams getAnimationParams() {
-        return this.mAnimationParams;
-    }
-
-    public TaskFragment getAdjacentTaskFragment() {
-        return this.mAdjacentTaskFragment;
-    }
-
-    public ActivityRecord getTopResumedActivity() {
-        ActivityRecord activityRecord;
-        ActivityRecord resumedActivity = getResumedActivity();
-        int childCount = getChildCount();
-        do {
-            childCount--;
-            activityRecord = null;
-            if (childCount < 0) {
-                return null;
-            }
-            WindowContainer childAt = getChildAt(childCount);
-            if (resumedActivity != null && childAt == resumedActivity) {
-                activityRecord = childAt.asActivityRecord();
-            } else if (childAt.asTaskFragment() != null) {
-                activityRecord = childAt.asTaskFragment().getTopResumedActivity();
-            }
-        } while (activityRecord == null);
-        return activityRecord;
-    }
-
-    public ActivityRecord getResumedActivity() {
-        return this.mResumedActivity;
-    }
-
-    public void setResumedActivity(ActivityRecord activityRecord, String str) {
-        DisplayContent displayContent;
-        warnForNonLeafTaskFragment("setResumedActivity");
-        ActivityRecord activityRecord2 = this.mResumedActivity;
-        if (activityRecord2 == activityRecord) {
-            return;
-        }
-        if (activityRecord != null && activityRecord2 == null) {
-            getTask().touchActiveTime();
-        }
-        ActivityRecord activityRecord3 = this.mResumedActivity;
-        this.mResumedActivity = activityRecord;
-        this.mTaskSupervisor.updateTopResumedActivityIfNeeded(str);
-        if (activityRecord != null && !activityRecord.mDisplayContent.isOnTop()) {
-            activityRecord.mDisplayContent.setFocusedApp(activityRecord);
-        }
-        if (activityRecord == null && (displayContent = activityRecord3.mDisplayContent) != null && displayContent.getFocusedRootTask() == null) {
-            activityRecord3.mDisplayContent.onRunningActivityChanged();
-        } else if (activityRecord != null) {
-            activityRecord.mDisplayContent.onRunningActivityChanged();
-        }
-    }
-
-    public void setPausingActivity(ActivityRecord activityRecord) {
-        this.mPausingActivity = activityRecord;
-    }
-
-    public ActivityRecord getTopPausingActivity() {
-        ActivityRecord activityRecord;
-        ActivityRecord pausingActivity = getPausingActivity();
-        int childCount = getChildCount();
-        do {
-            childCount--;
-            activityRecord = null;
-            if (childCount < 0) {
-                return null;
-            }
-            WindowContainer childAt = getChildAt(childCount);
-            if (pausingActivity != null && childAt == pausingActivity) {
-                activityRecord = childAt.asActivityRecord();
-            } else if (childAt.asTaskFragment() != null) {
-                activityRecord = childAt.asTaskFragment().getTopPausingActivity();
-            }
-        } while (activityRecord == null);
-        return activityRecord;
-    }
-
-    public ActivityRecord getPausingActivity() {
-        return this.mPausingActivity;
-    }
-
-    public int getDisplayId() {
-        DisplayContent displayContent = getDisplayContent();
-        if (displayContent != null) {
-            return displayContent.mDisplayId;
-        }
-        return -1;
-    }
-
-    public Task getTask() {
-        if (asTask() != null) {
-            return asTask();
-        }
-        TaskFragment asTaskFragment = getParent() != null ? getParent().asTaskFragment() : null;
-        if (asTaskFragment != null) {
-            return asTaskFragment.getTask();
-        }
-        return null;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public TaskDisplayArea getDisplayArea() {
-        return (TaskDisplayArea) super.getDisplayArea();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isAttached() {
-        TaskDisplayArea displayArea = getDisplayArea();
-        return (displayArea == null || displayArea.isRemoved()) ? false : true;
-    }
-
-    public TaskFragment getRootTaskFragment() {
-        TaskFragment asTaskFragment;
-        WindowContainer parent = getParent();
-        return (parent == null || (asTaskFragment = parent.asTaskFragment()) == null) ? this : asTaskFragment.getRootTaskFragment();
-    }
-
-    public Task getRootTask() {
-        return getRootTaskFragment().asTask();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isEmbedded() {
-        return this.mIsEmbedded;
-    }
-
-    public int isAllowedToEmbedActivity(ActivityRecord activityRecord) {
-        return isAllowedToEmbedActivity(activityRecord, this.mTaskFragmentOrganizerUid);
-    }
-
-    public int isAllowedToEmbedActivity(ActivityRecord activityRecord, int i) {
-        Bundle bundle;
-        if (!isAllowedToEmbedActivityInUntrustedMode(activityRecord) && !isAllowedToEmbedActivityInTrustedMode(activityRecord, i)) {
+    public static int calculateEmbedActivityMode(Task task, Rect rect) {
+        Rect bounds = task.getBounds();
+        if (bounds.equals(rect) || rect.isEmpty()) {
             return 1;
         }
-        if (smallerThanMinDimension(activityRecord)) {
+        int i = bounds.left;
+        int i2 = rect.left;
+        if (i == i2 && bounds.right != rect.right) {
             return 2;
         }
-        return (CoreRune.MW_EMBED_ACTIVITY && (bundle = activityRecord.info.metaData) != null && bundle.getBoolean("com.samsung.android.multiwindow.embed_activity_not_supported", false)) ? 10 : 0;
-    }
-
-    public boolean smallerThanMinDimension(ActivityRecord activityRecord) {
-        Point minDimensions;
-        Rect bounds = getBounds();
-        Task task = getTask();
-        if (task == null || bounds.equals(task.getBounds()) || (minDimensions = activityRecord.getMinDimensions()) == null) {
-            return false;
-        }
-        return bounds.width() < minDimensions.x || bounds.height() < minDimensions.y;
-    }
-
-    public boolean isAllowedToEmbedActivityInUntrustedMode(ActivityRecord activityRecord) {
-        WindowContainer parent = getParent();
-        return parent != null && parent.getBounds().contains(getBounds()) && (activityRecord.info.flags & 268435456) == 268435456;
-    }
-
-    public boolean isAllowedToEmbedActivityInTrustedMode(ActivityRecord activityRecord) {
-        return isAllowedToEmbedActivityInTrustedMode(activityRecord, this.mTaskFragmentOrganizerUid);
-    }
-
-    public boolean isAllowedToEmbedActivityInTrustedMode(ActivityRecord activityRecord, int i) {
-        if (isFullyTrustedEmbedding(activityRecord, i)) {
-            return true;
-        }
-        Set<String> knownActivityEmbeddingCerts = activityRecord.info.getKnownActivityEmbeddingCerts();
-        if (knownActivityEmbeddingCerts.isEmpty()) {
-            return false;
-        }
-        AndroidPackage androidPackage = this.mAtmService.getPackageManagerInternalLocked().getPackage(i);
-        return androidPackage != null && androidPackage.getSigningDetails().hasAncestorOrSelfWithDigest(knownActivityEmbeddingCerts);
-    }
-
-    public static boolean isFullyTrustedEmbedding(ActivityRecord activityRecord, int i) {
-        return UserHandle.getAppId(i) == 1000 || activityRecord.isUid(i);
-    }
-
-    public static /* synthetic */ boolean lambda$isFullyTrustedEmbedding$0(int i, ActivityRecord activityRecord) {
-        return !isFullyTrustedEmbedding(activityRecord, i);
-    }
-
-    public boolean isFullyTrustedEmbedding(final int i) {
-        return !forAllActivities(new Predicate() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda12
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$isFullyTrustedEmbedding$0;
-                lambda$isFullyTrustedEmbedding$0 = TaskFragment.lambda$isFullyTrustedEmbedding$0(i, (ActivityRecord) obj);
-                return lambda$isFullyTrustedEmbedding$0;
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ boolean lambda$isAllowedToBeEmbeddedInTrustedMode$1(ActivityRecord activityRecord) {
-        return !isAllowedToEmbedActivityInTrustedMode(activityRecord);
-    }
-
-    public boolean isAllowedToBeEmbeddedInTrustedMode() {
-        return !forAllActivities(new Predicate() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda9
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$isAllowedToBeEmbeddedInTrustedMode$1;
-                lambda$isAllowedToBeEmbeddedInTrustedMode$1 = TaskFragment.this.lambda$isAllowedToBeEmbeddedInTrustedMode$1((ActivityRecord) obj);
-                return lambda$isAllowedToBeEmbeddedInTrustedMode$1;
-            }
-        });
-    }
-
-    public TaskFragment getOrganizedTaskFragment() {
-        if (this.mTaskFragmentOrganizer != null) {
-            return this;
-        }
-        TaskFragment asTaskFragment = getParent() != null ? getParent().asTaskFragment() : null;
-        if (asTaskFragment != null) {
-            return asTaskFragment.getOrganizedTaskFragment();
-        }
-        return null;
-    }
-
-    public final void warnForNonLeafTaskFragment(String str) {
-        if (isLeafTaskFragment()) {
-            return;
-        }
-        Slog.w("ActivityTaskManager", str + " on non-leaf task fragment " + this);
-    }
-
-    public boolean hasDirectChildActivities() {
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            if (((WindowContainer) this.mChildren.get(size)).asActivityRecord() != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void cleanUpActivityReferences(ActivityRecord activityRecord) {
-        ActivityRecord activityRecord2 = this.mPausingActivity;
-        if (activityRecord2 != null && activityRecord2 == activityRecord) {
-            this.mPausingActivity = null;
-        }
-        ActivityRecord activityRecord3 = this.mResumedActivity;
-        if (activityRecord3 != null && activityRecord3 == activityRecord) {
-            setResumedActivity(null, "cleanUpActivityReferences");
-        }
-        activityRecord.removeTimeouts();
-    }
-
-    public boolean isLeafTaskFragment() {
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            if (((WindowContainer) this.mChildren.get(size)).asTaskFragment() != null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void onActivityStateChanged(ActivityRecord activityRecord, ActivityRecord.State state, String str) {
-        warnForNonLeafTaskFragment("onActivityStateChanged");
-        if (activityRecord == this.mResumedActivity && state != ActivityRecord.State.RESUMED) {
-            setResumedActivity(null, str + " - onActivityStateChanged");
-        }
-        if (state == ActivityRecord.State.RESUMED) {
-            setResumedActivity(activityRecord, str + " - onActivityStateChanged");
-            this.mTaskSupervisor.mRecentTasks.add(activityRecord.getTask());
-        }
-        WindowProcessController organizerProcessIfDifferent = getOrganizerProcessIfDifferent(activityRecord);
-        if (organizerProcessIfDifferent != null) {
-            this.mTaskSupervisor.onProcessActivityStateChanged(organizerProcessIfDifferent, false);
-            organizerProcessIfDifferent.updateProcessInfo(false, true, true, false);
-        }
-    }
-
-    public boolean handleAppDied(WindowProcessController windowProcessController) {
-        warnForNonLeafTaskFragment("handleAppDied");
-        ActivityRecord activityRecord = this.mPausingActivity;
-        boolean z = false;
-        if (activityRecord != null && activityRecord.app == windowProcessController) {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -1564228464, 0, (String) null, new Object[]{String.valueOf(activityRecord)});
-            }
-            this.mPausingActivity = null;
-            z = true;
-        }
-        ActivityRecord activityRecord2 = this.mLastPausedActivity;
-        if (activityRecord2 != null && activityRecord2.app == windowProcessController) {
-            this.mLastPausedActivity = null;
-        }
-        return z;
-    }
-
-    public void awakeFromSleeping() {
-        if (this.mPausingActivity != null) {
-            Slog.d("ActivityTaskManager", "awakeFromSleeping: previously pausing activity didn't pause");
-            this.mPausingActivity.activityPaused(true);
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:13:0x0049  */
-    /* JADX WARN: Removed duplicated region for block: B:16:0x006a  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public boolean sleepIfPossible(boolean r7) {
-        /*
-            r6 = this;
-            com.android.server.wm.ActivityRecord r0 = r6.mResumedActivity
-            r1 = 0
-            r2 = 0
-            r3 = 1
-            if (r0 == 0) goto L23
-            boolean r4 = com.android.server.wm.ProtoLogCache.WM_DEBUG_STATES_enabled
-            if (r4 == 0) goto L1b
-            java.lang.String r0 = java.lang.String.valueOf(r0)
-            com.android.internal.protolog.ProtoLogGroup r4 = com.android.internal.protolog.ProtoLogGroup.WM_DEBUG_STATES
-            r5 = 987903142(0x3ae234a6, float:0.0017258122)
-            java.lang.Object[] r0 = new java.lang.Object[]{r0}
-            com.android.internal.protolog.ProtoLogImpl.v(r4, r5, r2, r1, r0)
-        L1b:
-            java.lang.String r0 = "sleep"
-            r6.startPausing(r2, r3, r1, r0)
-        L21:
-            r0 = r2
-            goto L3d
-        L23:
-            com.android.server.wm.ActivityRecord r0 = r6.mPausingActivity
-            if (r0 == 0) goto L3c
-            boolean r4 = com.android.server.wm.ProtoLogCache.WM_DEBUG_STATES_enabled
-            if (r4 == 0) goto L21
-            java.lang.String r0 = java.lang.String.valueOf(r0)
-            com.android.internal.protolog.ProtoLogGroup r4 = com.android.internal.protolog.ProtoLogGroup.WM_DEBUG_STATES
-            r5 = 1912291550(0x71fb40de, float:2.488293E30)
-            java.lang.Object[] r0 = new java.lang.Object[]{r0}
-            com.android.internal.protolog.ProtoLogImpl.v(r4, r5, r2, r1, r0)
-            goto L21
-        L3c:
-            r0 = r3
-        L3d:
-            if (r7 != 0) goto L68
-            boolean r7 = r6.containsStoppingActivity()
-            if (r7 == 0) goto L68
-            boolean r7 = com.android.server.wm.ProtoLogCache.WM_DEBUG_STATES_enabled
-            if (r7 == 0) goto L62
-            com.android.server.wm.ActivityTaskSupervisor r7 = r6.mTaskSupervisor
-            java.util.ArrayList r7 = r7.mStoppingActivities
-            int r7 = r7.size()
-            long r4 = (long) r7
-            com.android.internal.protolog.ProtoLogGroup r7 = com.android.internal.protolog.ProtoLogGroup.WM_DEBUG_STATES
-            java.lang.Long r0 = java.lang.Long.valueOf(r4)
-            java.lang.Object[] r0 = new java.lang.Object[]{r0}
-            r4 = 669361121(0x27e5a3e1, float:6.3737946E-15)
-            com.android.internal.protolog.ProtoLogImpl.v(r7, r4, r3, r1, r0)
-        L62:
-            com.android.server.wm.ActivityTaskSupervisor r7 = r6.mTaskSupervisor
-            r7.scheduleIdle()
-            r0 = r2
-        L68:
-            if (r0 == 0) goto L6d
-            r6.updateActivityVisibilities(r1, r2, r2, r3)
-        L6d:
-            return r0
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.sleepIfPossible(boolean):boolean");
-    }
-
-    public final boolean containsStoppingActivity() {
-        for (int size = this.mTaskSupervisor.mStoppingActivities.size() - 1; size >= 0; size--) {
-            if (((ActivityRecord) this.mTaskSupervisor.mStoppingActivities.get(size)).getTaskFragment() == this) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isTranslucent(ActivityRecord activityRecord) {
-        return !isAttached() || isForceHidden() || isForceTranslucent() || this.mTaskSupervisor.mOpaqueActivityHelper.getVisibleOpaqueActivity(this, activityRecord) == null;
-    }
-
-    public boolean isTranslucentForTransition() {
-        return !isAttached() || isForceHidden() || isForceTranslucent() || this.mTaskSupervisor.mOpaqueActivityHelper.getOpaqueActivity(this) == null;
-    }
-
-    public ActivityRecord getTopNonFinishingActivity() {
-        return getTopNonFinishingActivity(true);
-    }
-
-    public static /* synthetic */ boolean lambda$getTopNonFinishingActivity$2(ActivityRecord activityRecord) {
-        return !activityRecord.finishing;
-    }
-
-    public ActivityRecord getTopNonFinishingActivity(boolean z) {
-        if (z) {
-            return getActivity(new Predicate() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda2
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$getTopNonFinishingActivity$2;
-                    lambda$getTopNonFinishingActivity$2 = TaskFragment.lambda$getTopNonFinishingActivity$2((ActivityRecord) obj);
-                    return lambda$getTopNonFinishingActivity$2;
-                }
-            });
-        }
-        return getActivity(new Predicate() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda3
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getTopNonFinishingActivity$3;
-                lambda$getTopNonFinishingActivity$3 = TaskFragment.lambda$getTopNonFinishingActivity$3((ActivityRecord) obj);
-                return lambda$getTopNonFinishingActivity$3;
-            }
-        });
-    }
-
-    public static /* synthetic */ boolean lambda$getTopNonFinishingActivity$3(ActivityRecord activityRecord) {
-        return (activityRecord.finishing || activityRecord.isTaskOverlay()) ? false : true;
-    }
-
-    public ActivityRecord topRunningActivity() {
-        return topRunningActivity(false);
-    }
-
-    public ActivityRecord topRunningActivity(boolean z) {
-        if (getTask() != null && getTask().isMinimized()) {
-            return null;
-        }
-        if (z) {
-            return getActivity(new Predicate() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda6
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$topRunningActivity$4;
-                    lambda$topRunningActivity$4 = TaskFragment.lambda$topRunningActivity$4((ActivityRecord) obj);
-                    return lambda$topRunningActivity$4;
-                }
-            });
-        }
-        return getActivity(new Task$$ExternalSyntheticLambda17());
-    }
-
-    public static /* synthetic */ boolean lambda$topRunningActivity$4(ActivityRecord activityRecord) {
-        return activityRecord.canBeTopRunning() && activityRecord.isFocusable();
-    }
-
-    public int getNonFinishingActivityCount() {
-        final int[] iArr = new int[1];
-        forAllActivities(new Consumer() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TaskFragment.lambda$getNonFinishingActivityCount$5(iArr, (ActivityRecord) obj);
-            }
-        });
-        return iArr[0];
-    }
-
-    public static /* synthetic */ void lambda$getNonFinishingActivityCount$5(int[] iArr, ActivityRecord activityRecord) {
-        if (activityRecord.finishing) {
-            return;
-        }
-        iArr[0] = iArr[0] + 1;
-    }
-
-    public boolean isTopActivityFocusable() {
-        ActivityRecord activityRecord = topRunningActivity();
-        if (activityRecord != null) {
-            return activityRecord.isFocusable();
-        }
-        return isFocusable() && getWindowConfiguration().canReceiveKeys();
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:161:0x0261, code lost:
-    
-        return 2;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:206:0x026e, code lost:
-    
-        if (r1 != false) goto L190;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:207:0x0270, code lost:
-    
-        return 2;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:209:0x0273, code lost:
-    
-        if (com.samsung.android.rune.CoreRune.MW_MULTI_SPLIT_TASK_VISIBILITY == false) goto L200;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:211:0x0279, code lost:
-    
-        if (asTask() == null) goto L200;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:213:0x0280, code lost:
-    
-        if (getStageType() != 4) goto L200;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:214:0x0282, code lost:
-    
-        if (r10 == false) goto L198;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:215:0x0284, code lost:
-    
-        return 2;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:216:0x0285, code lost:
-    
-        if (r11 == false) goto L200;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:217:0x0287, code lost:
-    
-        return 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:218:0x0288, code lost:
-    
-        if (r5 != 0) goto L208;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:220:0x028e, code lost:
-    
-        if (asTask() == null) goto L208;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:222:0x0296, code lost:
-    
-        if (asTask().mHiddenWhileActivatingDrag == false) goto L208;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:224:0x029e, code lost:
-    
-        if (asTask().mIsAnimatingByRecentsAndDragSourceTask != false) goto L208;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:225:0x02a0, code lost:
-    
-        android.util.Slog.d("ActivityTaskManager", "[TWODND] Clear mHiddenWhileActivatingDrag");
-        asTask().mHiddenWhileActivatingDrag = false;
-        asTask().updateSurfaceVisibilityForDragAndDrop();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:226:0x02b3, code lost:
-    
-        return r5;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:227:0x026d, code lost:
-    
-        r1 = true;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:229:0x026d A[EDGE_INSN: B:229:0x026d->B:227:0x026d BREAK  A[LOOP:0: B:35:0x007f->B:55:0x0268], SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:37:0x0084  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int getVisibility(com.android.server.wm.ActivityRecord r18) {
-        /*
-            Method dump skipped, instructions count: 693
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.getVisibility(com.android.server.wm.ActivityRecord):int");
-    }
-
-    public static boolean hasRunningActivity(WindowContainer windowContainer) {
-        return windowContainer.asTaskFragment() != null ? windowContainer.asTaskFragment().topRunningActivity() != null : (windowContainer.asActivityRecord() == null || windowContainer.asActivityRecord().finishing) ? false : true;
-    }
-
-    public static boolean isTranslucent(WindowContainer windowContainer, ActivityRecord activityRecord) {
-        if (windowContainer.asTaskFragment() != null) {
-            return windowContainer.asTaskFragment().isTranslucent(activityRecord);
-        }
-        if (windowContainer.asActivityRecord() != null) {
-            return !windowContainer.asActivityRecord().occludesParent();
-        }
-        return false;
-    }
-
-    public final boolean isTopActivityLaunchedBehind() {
-        ActivityRecord activityRecord = topRunningActivity();
-        return activityRecord != null && activityRecord.mLaunchTaskBehind;
-    }
-
-    public final void updateActivityVisibilities(ActivityRecord activityRecord, int i, boolean z, boolean z2) {
-        this.mTaskSupervisor.beginActivityVisibilityUpdate(getDisplayContent());
-        try {
-            this.mEnsureActivitiesVisibleHelper.process(activityRecord, i, z, z2);
-            this.mTaskSupervisor.endActivityVisibilityUpdate();
-            if (CoreRune.MT_SUPPORT_SIZE_COMPAT) {
-                SizeCompatPolicyManager.get().ensureConfiguration(asTask());
-            }
-        } catch (Throwable th) {
-            this.mTaskSupervisor.endActivityVisibilityUpdate();
-            throw th;
-        }
-    }
-
-    public final boolean resumeTopActivity(ActivityRecord activityRecord, ActivityOptions activityOptions, boolean z) {
-        return resumeTopActivity(activityRecord, activityOptions, z, null);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:179:0x0369  */
-    /* JADX WARN: Removed duplicated region for block: B:186:0x03b4  */
-    /* JADX WARN: Removed duplicated region for block: B:267:0x0576  */
-    /* JADX WARN: Removed duplicated region for block: B:270:0x0580  */
-    /* JADX WARN: Removed duplicated region for block: B:272:0x0579  */
-    /* JADX WARN: Removed duplicated region for block: B:273:0x03b8  */
-    /* JADX WARN: Removed duplicated region for block: B:285:0x039f  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final boolean resumeTopActivity(com.android.server.wm.ActivityRecord r22, android.app.ActivityOptions r23, boolean r24, com.android.server.wm.ActivityRecord r25) {
-        /*
-            Method dump skipped, instructions count: 1431
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.resumeTopActivity(com.android.server.wm.ActivityRecord, android.app.ActivityOptions, boolean, com.android.server.wm.ActivityRecord):boolean");
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$resumeTopActivity$6(Task task, Task task2) {
-        if (task != task2 && task2.inFreeformWindowingMode() && task2.isVisible()) {
-            this.mTransitionController.collect(task2);
-            this.mTransitionController.setResumedAffordance(task2);
-        }
-    }
-
-    public boolean shouldSleepOrShutDownActivities() {
-        return shouldSleepActivities() || this.mAtmService.mShuttingDown;
-    }
-
-    public boolean shouldBeVisible(ActivityRecord activityRecord) {
-        return getVisibility(activityRecord) != 2;
-    }
-
-    public boolean canBeResumed(ActivityRecord activityRecord) {
-        return (getTask() == null || !getTask().isFreeformStashed()) ? isTopActivityFocusable() && getVisibility(activityRecord) == 0 : topRunningActivity() != null && getVisibility(activityRecord) == 0;
-    }
-
-    public boolean isFocusableAndVisible() {
-        return isTopActivityFocusable() && shouldBeVisible(null);
-    }
-
-    public final boolean startPausing(boolean z, ActivityRecord activityRecord, String str) {
-        return startPausing(this.mTaskSupervisor.mUserLeaving, z, activityRecord, str);
-    }
-
-    public boolean startPausing(boolean z, boolean z2, ActivityRecord activityRecord, String str) {
-        return startPausing(z, z2, activityRecord, null, str);
-    }
-
-    public boolean startPausing(boolean z, boolean z2, ActivityRecord activityRecord, ActivityRecord activityRecord2, String str) {
-        boolean z3;
-        boolean z4;
-        boolean z5;
-        boolean z6;
-        if (!hasDirectChildActivities()) {
-            return false;
-        }
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_STATES, -248761393, 0, (String) null, new Object[]{String.valueOf(this), String.valueOf(this.mResumedActivity)});
-        }
-        if (this.mPausingActivity != null) {
-            Slog.wtf("ActivityTaskManager", "Going to pause when pause is already pending for " + this.mPausingActivity + " state=" + this.mPausingActivity.getState());
-            if (!shouldSleepActivities()) {
-                completePause(false, activityRecord);
-            }
-        }
-        ActivityRecord activityRecord3 = this.mResumedActivity;
-        if (activityRecord3 == null) {
-            if (activityRecord == null) {
-                Slog.wtf("ActivityTaskManager", "Trying to pause when nothing is resumed");
-                this.mRootWindowContainer.resumeFocusedTasksTopActivities();
-            }
-            return false;
-        }
-        if (activityRecord3 == activityRecord) {
-            Slog.wtf("ActivityTaskManager", "Trying to pause activity that is in process of being resumed");
-            return false;
-        }
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -957060823, 0, (String) null, new Object[]{String.valueOf(activityRecord3)});
-        }
-        this.mPausingActivity = activityRecord3;
-        this.mLastPausedActivity = activityRecord3;
-        if (!activityRecord3.finishing && activityRecord3.isNoHistory() && !this.mTaskSupervisor.mNoHistoryActivities.contains(activityRecord3)) {
-            this.mTaskSupervisor.mNoHistoryActivities.add(activityRecord3);
-        }
-        ActivityRecord.State state = ActivityRecord.State.PAUSING;
-        activityRecord3.setState(state, "startPausingLocked");
-        activityRecord3.getTask().touchActiveTime();
-        this.mAtmService.updateCpuStats();
-        if (activityRecord != null) {
-            boolean z7 = activityRecord.occludesParent() || this.mAtmService.mAppPairController.shouldAutoPipByAppPair();
-            boolean checkEnterPictureInPictureState = activityRecord3.checkEnterPictureInPictureState("shouldAutoPipWhilePausing", z);
-            if (z && z7 && checkEnterPictureInPictureState && activityRecord3.pictureInPictureArgs.isAutoEnterEnabled()) {
-                z5 = false;
-                z6 = true;
-            } else if (checkEnterPictureInPictureState) {
-                z5 = false;
-                z6 = false;
-            } else {
-                z5 = (activityRecord.info.flags & 16384) != 0;
-                z6 = false;
-            }
-            if (checkEnterPictureInPictureState && !z6) {
-                Slog.d("PipTaskOrganizer", "entering autoPip failed, userLeaving=" + z + " resumingOccludesParent=" + z7 + " isAutoEnterEnabled=" + activityRecord3.pictureInPictureArgs.isAutoEnterEnabled());
-            }
-            z3 = z5;
-            z4 = z6;
-        } else {
-            z3 = false;
-            z4 = false;
-        }
-        if (!activityRecord3.attachedToProcess()) {
-            this.mPausingActivity = null;
-            this.mLastPausedActivity = null;
-            this.mTaskSupervisor.mNoHistoryActivities.remove(activityRecord3);
-        } else if (z4) {
-            activityRecord3.mPauseSchedulePendingForPip = true;
-            boolean enterPictureInPictureMode = this.mAtmService.enterPictureInPictureMode(activityRecord3, activityRecord3.pictureInPictureArgs, false);
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_STATES, -1101551167, 12, (String) null, new Object[]{String.valueOf(activityRecord3), Boolean.valueOf(enterPictureInPictureMode)});
-            }
-        } else {
-            schedulePauseActivity(activityRecord3, z, z3, false, str);
-            this.mAtmService.mAmInternal.onPackagePausedBG(activityRecord3.info.packageName, activityRecord3.launchedFromPackage, activityRecord3.occludesParent(), activityRecord3.mUserId);
-        }
-        if (!z2 && !this.mAtmService.isSleepingOrShuttingDownLocked()) {
-            this.mTaskSupervisor.acquireLaunchWakelock();
-        }
-        if (this.mPausingActivity == null) {
-            if (z4 && activityRecord3.isState(state) && activityRecord3.getLastParentBeforePip() == this) {
-                activityRecord3.activityPaused(false);
-            }
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -648891906, 0, (String) null, (Object[]) null);
-            }
-            if (activityRecord == null) {
-                this.mRootWindowContainer.resumeFocusedTasksTopActivities();
-            }
-            return false;
-        }
-        if (!z2) {
-            activityRecord3.pauseKeyDispatchingLocked();
-        } else if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -1633115609, 0, (String) null, (Object[]) null);
-        }
-        if (z3) {
-            completePause(false, activityRecord);
-            return false;
-        }
-        activityRecord3.schedulePauseTimeout();
-        if (!z2) {
-            this.mTransitionController.setReady(this, false);
-        }
-        return true;
-    }
-
-    public void schedulePauseActivity(ActivityRecord activityRecord, boolean z, boolean z2, boolean z3, String str) {
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 378825104, 0, (String) null, new Object[]{String.valueOf(activityRecord)});
-        }
-        try {
-            activityRecord.mPauseSchedulePendingForPip = false;
-            EventLogTags.writeWmPauseActivity(activityRecord.mUserId, System.identityHashCode(activityRecord), activityRecord.shortComponentName, "userLeaving=" + z, str);
-            this.mAtmService.getLifecycleManager().scheduleTransaction(activityRecord.app.getThread(), activityRecord.token, (ActivityLifecycleItem) PauseActivityItem.obtain(activityRecord.finishing, z, activityRecord.configChangeFlags, z2, z3));
-        } catch (Exception e) {
-            Slog.w("ActivityTaskManager", "Exception thrown during pause", e);
-            this.mPausingActivity = null;
-            this.mLastPausedActivity = null;
-            this.mTaskSupervisor.mNoHistoryActivities.remove(activityRecord);
-        }
-    }
-
-    public void completePause(boolean z, ActivityRecord activityRecord) {
-        ActivityRecord activityRecord2 = this.mPausingActivity;
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 327461496, 0, (String) null, new Object[]{String.valueOf(activityRecord2)});
-        }
-        if (activityRecord2 != null) {
-            activityRecord2.setWillCloseOrEnterPip(false);
-            ActivityRecord.State state = ActivityRecord.State.STOPPING;
-            boolean isState = activityRecord2.isState(state);
-            activityRecord2.setState(ActivityRecord.State.PAUSED, "completePausedLocked");
-            if (activityRecord2.finishing) {
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -312353598, 0, (String) null, new Object[]{String.valueOf(activityRecord2)});
-                }
-                activityRecord2 = activityRecord2.completeFinishing(false, "completePausedLocked");
-            } else if (activityRecord2.attachedToProcess()) {
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -1187377055, 60, (String) null, new Object[]{String.valueOf(activityRecord2), Boolean.valueOf(isState), Boolean.valueOf(activityRecord2.isVisibleRequested())});
-                }
-                if (activityRecord2.deferRelaunchUntilPaused) {
-                    if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 1011462000, 0, (String) null, new Object[]{String.valueOf(activityRecord2)});
-                    }
-                    activityRecord2.relaunchActivityLocked(activityRecord2.preserveWindowOnDeferredRelaunch);
-                } else if (isState) {
-                    activityRecord2.setState(state, "completePausedLocked");
-                } else if (!activityRecord2.isVisibleRequested() || shouldSleepOrShutDownActivities()) {
-                    activityRecord2.setDeferHidingClient(false);
-                    activityRecord2.addToStopping(true, false, "completePauseLocked");
-                }
-            } else {
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -521613870, 0, (String) null, new Object[]{String.valueOf(activityRecord2)});
-                }
-                activityRecord2 = null;
-            }
-            if (activityRecord2 != null) {
-                activityRecord2.stopFreezingScreenLocked(true);
-            }
-            this.mPausingActivity = null;
-        }
-        if (z) {
-            Task topDisplayFocusedRootTask = this.mRootWindowContainer.getTopDisplayFocusedRootTask();
-            if (topDisplayFocusedRootTask != null && !topDisplayFocusedRootTask.shouldSleepOrShutDownActivities()) {
-                this.mRootWindowContainer.resumeFocusedTasksTopActivities(topDisplayFocusedRootTask, activityRecord2, null);
-            } else {
-                ActivityRecord activityRecord3 = topDisplayFocusedRootTask != null ? topDisplayFocusedRootTask.topRunningActivity() : null;
-                if (activityRecord3 == null || (activityRecord2 != null && activityRecord3 != activityRecord2)) {
-                    this.mRootWindowContainer.resumeFocusedTasksTopActivities();
-                }
-            }
-        }
-        if (activityRecord2 != null) {
-            activityRecord2.resumeKeyDispatchingLocked();
-        }
-        this.mRootWindowContainer.ensureActivitiesVisible(activityRecord, 0, false);
-        if (this.mTaskSupervisor.mAppVisibilitiesChangedSinceLastPause || (getDisplayArea() != null && getDisplayArea().hasPinnedTask())) {
-            this.mAtmService.getTaskChangeNotificationController().notifyTaskStackChanged();
-            this.mTaskSupervisor.mAppVisibilitiesChangedSinceLastPause = false;
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public int getOrientation(int i) {
-        if (shouldReportOrientationUnspecified()) {
-            return -1;
-        }
-        if (canSpecifyOrientation()) {
-            return super.getOrientation(i);
-        }
-        return -2;
-    }
-
-    public boolean canSpecifyOrientation() {
-        int windowingMode = getWindowingMode();
-        int activityType = getActivityType();
-        return windowingMode == 1 || activityType == 2 || activityType == 3 || activityType == 4;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean providesOrientation() {
-        return super.providesOrientation() || shouldReportOrientationUnspecified();
-    }
-
-    public final boolean shouldReportOrientationUnspecified() {
-        return getAdjacentTaskFragment() != null && isVisibleRequested();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void forAllTaskFragments(Consumer consumer, boolean z) {
-        super.forAllTaskFragments(consumer, z);
-        consumer.accept(this);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void forAllLeafTaskFragments(Consumer consumer, boolean z) {
-        int size = this.mChildren.size();
-        boolean z2 = true;
-        if (z) {
-            for (int i = size - 1; i >= 0; i--) {
-                TaskFragment asTaskFragment = ((WindowContainer) this.mChildren.get(i)).asTaskFragment();
-                if (asTaskFragment != null) {
-                    asTaskFragment.forAllLeafTaskFragments(consumer, z);
-                    z2 = false;
-                }
-            }
-        } else {
-            for (int i2 = 0; i2 < size; i2++) {
-                TaskFragment asTaskFragment2 = ((WindowContainer) this.mChildren.get(i2)).asTaskFragment();
-                if (asTaskFragment2 != null) {
-                    asTaskFragment2.forAllLeafTaskFragments(consumer, z);
-                    z2 = false;
-                }
-            }
-        }
-        if (z2) {
-            consumer.accept(this);
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean forAllLeafTaskFragments(Predicate predicate) {
-        boolean z = true;
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            TaskFragment asTaskFragment = ((WindowContainer) this.mChildren.get(size)).asTaskFragment();
-            if (asTaskFragment != null) {
-                if (asTaskFragment.forAllLeafTaskFragments(predicate)) {
-                    return true;
-                }
-                z = false;
-            }
-        }
-        if (z) {
-            return predicate.test(this);
-        }
-        return false;
-    }
-
-    public void addChild(ActivityRecord activityRecord) {
-        addChild(activityRecord, Integer.MAX_VALUE);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void addChild(WindowContainer windowContainer, int i) {
-        ActivityRecord activityRecord = topRunningActivity();
-        this.mClearedTaskForReuse = false;
-        this.mClearedTaskFragmentForPip = false;
-        this.mClearedForReorderActivityToFront = false;
-        ActivityRecord asActivityRecord = windowContainer.asActivityRecord();
-        boolean z = asActivityRecord != null;
-        Task task = z ? getTask() : null;
-        boolean z2 = (task == null || task.getTopMostActivity() == null) ? false : true;
-        int activityType = task != null ? task.getActivityType() : 0;
-        super.addChild(windowContainer, i);
-        if (z && task != null) {
-            if (activityRecord != null && BackNavigationController.isScreenshotEnabled()) {
-                if (ProtoLogCache.WM_DEBUG_BACK_PREVIEW_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_BACK_PREVIEW, -134091882, 0, "Screenshotting Activity %s", new Object[]{String.valueOf(activityRecord.mActivityComponent.flattenToString())});
-                }
-                Rect bounds = activityRecord.getBounds();
-                this.mBackScreenshots.put(activityRecord.mActivityComponent.flattenToString(), ScreenCapture.captureLayers(activityRecord.mSurfaceControl, new Rect(0, 0, bounds.width(), bounds.height()), 1.0f));
-            }
-            asActivityRecord.inHistory = true;
-            task.onDescendantActivityAdded(z2, activityType, asActivityRecord);
-        }
-        WindowProcessController organizerProcessIfDifferent = getOrganizerProcessIfDifferent(asActivityRecord);
-        if (organizerProcessIfDifferent != null) {
-            organizerProcessIfDifferent.addEmbeddedActivity(asActivityRecord);
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void onChildPositionChanged(WindowContainer windowContainer) {
-        super.onChildPositionChanged(windowContainer);
-        sendTaskFragmentInfoChanged();
-    }
-
-    public void executeAppTransition(ActivityOptions activityOptions) {
-        this.mDisplayContent.executeAppTransition();
-        ActivityOptions.abort(activityOptions);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public RemoteAnimationTarget createRemoteAnimationTarget(RemoteAnimationController.RemoteAnimationRecord remoteAnimationRecord) {
-        ActivityRecord topMostActivity;
-        if (remoteAnimationRecord.getMode() == 0) {
-            topMostActivity = getActivity(new Predicate() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda7
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$createRemoteAnimationTarget$7;
-                    lambda$createRemoteAnimationTarget$7 = TaskFragment.lambda$createRemoteAnimationTarget$7((ActivityRecord) obj);
-                    return lambda$createRemoteAnimationTarget$7;
-                }
-            });
-        } else {
-            topMostActivity = getTopMostActivity();
-        }
-        if (topMostActivity != null) {
-            return topMostActivity.createRemoteAnimationTarget(remoteAnimationRecord);
-        }
-        return null;
-    }
-
-    public static /* synthetic */ boolean lambda$createRemoteAnimationTarget$7(ActivityRecord activityRecord) {
-        return !activityRecord.finishing && activityRecord.hasChild();
-    }
-
-    public boolean shouldSleepActivities() {
-        Task rootTask = getRootTask();
-        return rootTask != null && rootTask.shouldSleepActivities();
-    }
-
-    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
-    public void resolveOverrideConfiguration(Configuration configuration) {
-        this.mTmpBounds.set(getResolvedOverrideConfiguration().windowConfiguration.getBounds());
-        super.resolveOverrideConfiguration(configuration);
-        Configuration resolvedOverrideConfiguration = getResolvedOverrideConfiguration();
-        Rect rect = this.mRelativeEmbeddedBounds;
-        if (rect != null && !rect.isEmpty()) {
-            resolvedOverrideConfiguration.windowConfiguration.setBounds(translateRelativeBoundsToAbsoluteBounds(this.mRelativeEmbeddedBounds, configuration.windowConfiguration.getBounds()));
-        }
-        int windowingMode = resolvedOverrideConfiguration.windowConfiguration.getWindowingMode();
-        int windowingMode2 = configuration.windowConfiguration.getWindowingMode();
-        if (getActivityType() == 2 && windowingMode == 0) {
-            resolvedOverrideConfiguration.windowConfiguration.setWindowingMode(1);
-            windowingMode = 1;
-        }
-        if (CoreRune.MT_NEW_DEX && getActivityType() == 3 && windowingMode == 0) {
-            resolvedOverrideConfiguration.windowConfiguration.setWindowingMode(1);
-            windowingMode = 1;
-        }
-        if ((!CoreRune.MT_DEX_SIZE_COMPAT_MODE || DexSizeCompatController.getInstance().getCompatPolicy(asTask()) == null) && !supportsMultiWindow() && (!CoreRune.MW_EMBED_ACTIVITY || asTask() != null || !isEmbedded())) {
-            int stage = getResolvedOverrideConfiguration().windowConfiguration.getStage();
-            if (this.mCreatedByOrganizer && asTask() != null && windowingMode == 6 && WindowConfiguration.isSplitScreenWindowingMode(stage) && this.mAtmService.mMultiWindowEnableController.deviceSupportsMultiWindow()) {
-                Slog.d("ActivityTaskManager", "resolveOverrideConfiguration: force allow multi-window, tid #" + asTask().mTaskId);
-            } else {
-                if (windowingMode != 0) {
-                    windowingMode2 = windowingMode;
-                }
-                if (WindowConfiguration.inMultiWindowMode(windowingMode2) && windowingMode2 != 2 && (getTask() == null || !getTask().isDexCompatEnabled())) {
-                    resolvedOverrideConfiguration.windowConfiguration.setWindowingMode(1);
-                }
-            }
-        }
-        Task asTask = asTask();
-        if (asTask != null) {
-            asTask.resolveLeafTaskOnlyOverrideConfigs(configuration, this.mTmpBounds);
-        }
-        computeConfigResourceOverrides(resolvedOverrideConfiguration, configuration);
-    }
-
-    public boolean supportsMultiWindow() {
-        return supportsMultiWindowInDisplayArea(getDisplayArea());
-    }
-
-    public boolean supportsMultiWindowInDefaultDisplayArea() {
-        return supportsMultiWindowInDisplayArea(this.mRootWindowContainer.getDefaultTaskDisplayArea());
-    }
-
-    public boolean supportsMultiWindowInDisplayArea(TaskDisplayArea taskDisplayArea) {
-        return supportsMultiWindowInDisplayArea(taskDisplayArea, false);
-    }
-
-    public boolean supportsMultiWindowInDisplayArea(TaskDisplayArea taskDisplayArea, boolean z) {
-        Task task;
-        ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
-        if ((!activityTaskManagerService.mSupportsMultiWindow && (!z || !activityTaskManagerService.mMultiWindowEnableController.deviceSupportsMultiWindow())) || taskDisplayArea == null || (task = getTask()) == null) {
-            return false;
-        }
-        return this.mAtmService.mMwSupportPolicyController.supportsMultiWindowInDisplayArea(taskDisplayArea, task.mResizeMode, task.isResizeable(), task.mIgnoreDevSettingForNonResizable);
-    }
-
-    public void computeConfigResourceOverrides(Configuration configuration, Configuration configuration2) {
-        computeConfigResourceOverrides(configuration, configuration2, null, null);
-    }
-
-    public void computeConfigResourceOverrides(Configuration configuration, Configuration configuration2, DisplayInfo displayInfo) {
-        if (displayInfo != null) {
-            configuration.screenLayout = 0;
-            invalidateAppBoundsConfig(configuration);
-        }
-        computeConfigResourceOverrides(configuration, configuration2, displayInfo, null);
-    }
-
-    public void computeConfigResourceOverrides(Configuration configuration, Configuration configuration2, ActivityRecord.CompatDisplayInsets compatDisplayInsets) {
-        if (compatDisplayInsets != null) {
-            invalidateAppBoundsConfig(configuration);
-        }
-        computeConfigResourceOverrides(configuration, configuration2, null, compatDisplayInsets);
-    }
-
-    public static void invalidateAppBoundsConfig(Configuration configuration) {
-        Rect appBounds = configuration.windowConfiguration.getAppBounds();
-        if (appBounds != null) {
-            appBounds.setEmpty();
-        }
-        configuration.screenWidthDp = 0;
-        configuration.screenHeightDp = 0;
-    }
-
-    public void computeConfigResourceOverrides(Configuration configuration, Configuration configuration2, DisplayInfo displayInfo, ActivityRecord.CompatDisplayInsets compatDisplayInsets) {
-        computeConfigResourceOverrides(configuration, configuration2, displayInfo, compatDisplayInsets, null);
-    }
-
-    public void computeConfigResourceOverrides(Configuration configuration, Configuration configuration2, DisplayInfo displayInfo, ActivityRecord.CompatDisplayInsets compatDisplayInsets, SizeCompatPolicy sizeCompatPolicy) {
-        boolean contains;
-        Rect appBounds;
-        int scaleDownDensity;
-        if (sizeCompatPolicy != null) {
-            invalidateAppBoundsConfig(configuration);
-        }
-        int windowingMode = configuration.windowConfiguration.getWindowingMode();
-        if (windowingMode == 0) {
-            windowingMode = configuration2.windowConfiguration.getWindowingMode();
-        }
-        float f = configuration.densityDpi;
-        if (f == DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            f = configuration2.densityDpi;
-        }
-        float f2 = f * 0.00625f;
-        if (!isDexMode() && getTask() != null && !getTask().mCreatedByOrganizer && MultiWindowUtils.needToUpdateDensity(windowingMode, getActivityType(), WindowConfiguration.isSplitScreenWindowingMode(configuration2.windowConfiguration)) && (scaleDownDensity = MultiWindowUtils.getScaleDownDensity(configuration2.smallestScreenWidthDp, configuration2.densityDpi)) > 0) {
-            f2 = scaleDownDensity * 0.00625f;
-            configuration.densityDpi = scaleDownDensity;
-        }
-        Rect bounds = configuration2.windowConfiguration.getBounds();
-        Rect bounds2 = configuration.windowConfiguration.getBounds();
-        if (bounds2.isEmpty()) {
-            this.mTmpFullBounds.set(bounds);
-            contains = true;
-        } else {
-            this.mTmpFullBounds.set(bounds2);
-            contains = bounds.contains(bounds2);
-        }
-        boolean z = (compatDisplayInsets == null && sizeCompatPolicy == null) ? false : true;
-        Rect appBounds2 = configuration.windowConfiguration.getAppBounds();
-        if (appBounds2 == null || appBounds2.isEmpty()) {
-            configuration.windowConfiguration.setAppBounds(this.mTmpFullBounds);
-            appBounds2 = configuration.windowConfiguration.getAppBounds();
-            if (!z && windowingMode != 5) {
-                if (contains) {
-                    appBounds = configuration2.windowConfiguration.getAppBounds();
-                } else {
-                    TaskDisplayArea displayArea = getDisplayArea();
-                    appBounds = displayArea != null ? displayArea.getWindowConfiguration().getAppBounds() : null;
-                }
-                if (appBounds != null && !appBounds.isEmpty()) {
-                    appBounds2.intersect(appBounds);
-                }
-            }
-        }
-        if (configuration.screenWidthDp == 0 || configuration.screenHeightDp == 0) {
-            if (!z && WindowConfiguration.isFloating(windowingMode)) {
-                this.mTmpNonDecorBounds.set(this.mTmpFullBounds);
-                this.mTmpStableBounds.set(this.mTmpFullBounds);
-            } else if (!z && (displayInfo != null || getDisplayContent() != null)) {
-                DisplayInfo displayInfo2 = displayInfo != null ? displayInfo : getDisplayContent().getDisplayInfo();
-                if (MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED && inSplitScreenWindowingMode()) {
-                    this.mTmpNonDecorBounds.set(this.mTmpFullBounds);
-                    this.mTmpStableBounds.set(this.mTmpFullBounds);
-                } else if (MultiWindowCoreState.MW_NAVISTAR_SPLIT_IMMERSIVE_MODE_ENABLED && this.mDisplayContent != null && inSplitScreenWindowingMode()) {
-                    this.mTmpNonDecorBounds.set(this.mTmpFullBounds);
-                    this.mTmpStableBounds.set(this.mTmpFullBounds);
-                    this.mTmpBounds.set(0, 0, displayInfo2.logicalWidth, displayInfo2.logicalHeight);
-                    DisplayPolicy.DecorInsets.Info decorInsetsInfo = this.mDisplayContent.getDisplayPolicy().getDecorInsetsInfo(displayInfo2.rotation, displayInfo2.logicalWidth, displayInfo2.logicalHeight);
-                    intersectWithInsetsIfFits(this.mTmpNonDecorBounds, this.mTmpBounds, decorInsetsInfo.mCutoutInsets);
-                    intersectWithInsetsIfFits(this.mTmpStableBounds, this.mTmpBounds, decorInsetsInfo.mExceptNavConfigInsets);
-                } else {
-                    calculateInsetFrames(this.mTmpNonDecorBounds, this.mTmpStableBounds, this.mTmpFullBounds, displayInfo2);
-                }
-            } else {
-                int rotation = configuration.windowConfiguration.getRotation();
-                if (rotation == -1) {
-                    rotation = configuration2.windowConfiguration.getRotation();
-                }
-                if (CoreRune.MT_SUPPORT_SIZE_COMPAT && sizeCompatPolicy != null && rotation != -1 && z) {
-                    this.mTmpNonDecorBounds.set(this.mTmpFullBounds);
-                    this.mTmpStableBounds.set(this.mTmpFullBounds);
-                    sizeCompatPolicy.getBoundsByRotation(this.mTmpBounds, rotation);
-                    intersectWithInsetsIfFits(this.mTmpNonDecorBounds, this.mTmpBounds, sizeCompatPolicy.mNonDecorInsets[rotation]);
-                    intersectWithInsetsIfFits(this.mTmpStableBounds, this.mTmpBounds, sizeCompatPolicy.mStableInsets[rotation]);
-                    appBounds2.set(this.mTmpNonDecorBounds);
-                } else if (rotation != -1 && z) {
-                    this.mTmpNonDecorBounds.set(this.mTmpFullBounds);
-                    this.mTmpStableBounds.set(this.mTmpFullBounds);
-                    compatDisplayInsets.getBoundsByRotation(this.mTmpBounds, rotation);
-                    intersectWithInsetsIfFits(this.mTmpNonDecorBounds, this.mTmpBounds, compatDisplayInsets.mNonDecorInsets[rotation]);
-                    intersectWithInsetsIfFits(this.mTmpStableBounds, this.mTmpBounds, compatDisplayInsets.mStableInsets[rotation]);
-                    appBounds2.set(this.mTmpNonDecorBounds);
-                } else {
-                    this.mTmpNonDecorBounds.set(appBounds2);
-                    this.mTmpStableBounds.set(appBounds2);
-                }
-            }
-            if (configuration.screenWidthDp == 0) {
-                int width = (int) ((this.mTmpStableBounds.width() / f2) + 0.5f);
-                if (contains && !z) {
-                    width = Math.min(width, configuration2.screenWidthDp);
-                }
-                configuration.screenWidthDp = width;
-            }
-            if (configuration.screenHeightDp == 0) {
-                int height = (int) ((this.mTmpStableBounds.height() / f2) + 0.5f);
-                if (contains && !z) {
-                    height = Math.min(height, configuration2.screenHeightDp);
-                }
-                configuration.screenHeightDp = height;
-            }
-            if (configuration.smallestScreenWidthDp == 0) {
-                boolean z2 = windowingMode == 2 && !this.mTmpFullBounds.isEmpty() && this.mTmpFullBounds.equals(bounds);
-                if ((WindowConfiguration.isFloating(windowingMode) || configuration.windowConfiguration.isPopOver()) && !z2) {
-                    configuration.smallestScreenWidthDp = (int) ((Math.min(this.mTmpFullBounds.width(), this.mTmpFullBounds.height()) / f2) + 0.5f);
-                } else if (windowingMode == 6 && this.mIsEmbedded && contains && !bounds2.equals(bounds)) {
-                    configuration.smallestScreenWidthDp = Math.min(configuration.screenWidthDp, configuration.screenHeightDp);
-                }
-            }
-        }
-        if (configuration.orientation == 0) {
-            configuration.orientation = configuration.screenWidthDp <= configuration.screenHeightDp ? 1 : 2;
-        }
-        if (configuration.screenLayout == 0) {
-            int width2 = (int) ((this.mTmpNonDecorBounds.width() / f2) + 0.5f);
-            int height2 = (int) ((this.mTmpNonDecorBounds.height() / f2) + 0.5f);
-            int i = configuration.screenWidthDp;
-            if (i != 0) {
-                width2 = i;
-            }
-            int i2 = configuration.screenHeightDp;
-            if (i2 != 0) {
-                height2 = i2;
-            }
-            configuration.screenLayout = WindowContainer.computeScreenLayout(configuration2.screenLayout, width2, height2);
-        }
-    }
-
-    public void calculateInsetFrames(Rect rect, Rect rect2, Rect rect3, DisplayInfo displayInfo) {
-        rect.set(rect3);
-        rect2.set(rect3);
-        if (this.mDisplayContent == null) {
-            return;
-        }
-        this.mTmpBounds.set(0, 0, displayInfo.logicalWidth, displayInfo.logicalHeight);
-        DisplayPolicy.DecorInsets.Info decorInsetsInfo = this.mDisplayContent.getDisplayPolicy().getDecorInsetsInfo(displayInfo.rotation, displayInfo.logicalWidth, displayInfo.logicalHeight);
-        intersectWithInsetsIfFits(rect, this.mTmpBounds, decorInsetsInfo.mNonDecorInsets);
-        intersectWithInsetsIfFits(rect2, this.mTmpBounds, decorInsetsInfo.mConfigInsets);
+        if (bounds.right == rect.right && i != i2) {
+            return 3;
+        }
+        int i3 = bounds.top;
+        int i4 = rect.top;
+        if (i3 != i4 || bounds.bottom == rect.bottom) {
+            return (bounds.bottom != rect.bottom || i3 == i4) ? 0 : 5;
+        }
+        return 4;
     }
 
     public static void intersectWithInsetsIfFits(Rect rect, Rect rect2, Rect rect3) {
@@ -1459,8 +176,369 @@ public class TaskFragment extends WindowContainer {
         }
     }
 
+    public static boolean isFullyTrustedEmbedding(int i, ActivityRecord activityRecord) {
+        if (UserHandle.getAppId(i) != 1000 && !activityRecord.isUid(i)) {
+            Boolean bool = ActivityTaskManagerService.sIsPip2ExperimentEnabled;
+            if (ActivityManagerService.checkComponentPermission(-1, i, "android.permission.MANAGE_ACTIVITY_TASKS", 0, -1, true) != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isTranslucent(WindowContainer windowContainer, ActivityRecord activityRecord) {
+        if (windowContainer.asTaskFragment() != null) {
+            return windowContainer.asTaskFragment().isTranslucent(activityRecord);
+        }
+        if (windowContainer.asActivityRecord() != null) {
+            return !windowContainer.asActivityRecord().occludesParent(false);
+        }
+        return false;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public void addChild(WindowContainer windowContainer, int i) {
+        topRunningActivity(false);
+        this.mClearedTaskForReuse = false;
+        this.mClearedTaskFragmentForPip = false;
+        this.mClearedForReorderActivityToFront = false;
+        ActivityRecord asActivityRecord = windowContainer.asActivityRecord();
+        boolean z = asActivityRecord != null;
+        Task task = z ? getTask() : null;
+        boolean z2 = (task == null || task.getTopMostActivity() == null) ? false : true;
+        int activityType = task != null ? task.getActivityType() : 0;
+        super.addChild(windowContainer, i);
+        if (z && task != null) {
+            asActivityRecord.inHistory = true;
+            if (!task.isLeafTask()) {
+                Slog.w("ActivityTaskManager", "onDescendantActivityAdded on non-leaf task " + task);
+            }
+            if (z2) {
+                asActivityRecord.setActivityType(activityType);
+            } else {
+                int activityType2 = asActivityRecord.getRequestedOverrideConfiguration().windowConfiguration.getActivityType();
+                if (activityType2 == 0) {
+                    if (activityType == 0) {
+                        activityType = 1;
+                    }
+                    asActivityRecord.getRequestedOverrideConfiguration().windowConfiguration.setActivityType(activityType);
+                    activityType2 = activityType;
+                }
+                task.setActivityType(activityType2);
+                task.isPersistable = asActivityRecord.isPersistable();
+                task.mCallingUid = asActivityRecord.launchedFromUid;
+                task.mCallingPackage = asActivityRecord.launchedFromPackage;
+                task.mCallingFeatureId = asActivityRecord.launchedFromFeatureId;
+                task.maxRecents = Math.min(Math.max(asActivityRecord.info.maxRecents, 1), ActivityTaskManager.getMaxAppRecentsLimitStatic());
+            }
+            task.updateEffectiveIntent();
+        }
+        WindowProcessController organizerProcessIfDifferent = getOrganizerProcessIfDifferent(asActivityRecord);
+        if (organizerProcessIfDifferent != null) {
+            int[] remoteActivityFlags = organizerProcessIfDifferent.getRemoteActivityFlags(asActivityRecord);
+            remoteActivityFlags[0] = remoteActivityFlags[0] | 2;
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean allowEdgeExtension() {
+        return getActivity(new TaskFragment$$ExternalSyntheticLambda0(0)) != null;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final TaskFragment asTaskFragment() {
+        return this;
+    }
+
+    public final void calculateInsetFrames(Rect rect, Rect rect2, Rect rect3, DisplayInfo displayInfo, boolean z) {
+        rect.set(rect3);
+        rect2.set(rect3);
+        if (this.mDisplayContent == null) {
+            return;
+        }
+        this.mTmpBounds.set(0, 0, displayInfo.logicalWidth, displayInfo.logicalHeight);
+        DisplayPolicy.DecorInsets.Info decorInsetsInfo = this.mDisplayContent.mDisplayPolicy.getDecorInsetsInfo(displayInfo.rotation, displayInfo.logicalWidth, displayInfo.logicalHeight);
+        if (z) {
+            intersectWithInsetsIfFits(rect2, this.mTmpBounds, decorInsetsInfo.mOverrideConfigInsets);
+            intersectWithInsetsIfFits(rect, this.mTmpBounds, decorInsetsInfo.mOverrideNonDecorInsets);
+        } else {
+            intersectWithInsetsIfFits(rect2, this.mTmpBounds, decorInsetsInfo.mConfigInsets);
+            intersectWithInsetsIfFits(rect, this.mTmpBounds, decorInsetsInfo.mNonDecorInsets);
+        }
+    }
+
+    public final boolean canBeResumed(ActivityRecord activityRecord) {
+        return (getTask() == null || !getTask().isFreeformStashed()) ? isTopActivityFocusable() && getVisibility(activityRecord) == 0 : topRunningActivity(false) != null && getVisibility(activityRecord) == 0;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean canCreateRemoteAnimationTarget() {
+        return true;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean canCustomizeAppTransition() {
+        return this.mIsEmbedded && matchParentBounds();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean canStartChangeTransition() {
+        Task task = getTask();
+        return (task == null || task.mDragResizing || !super.canStartChangeTransition()) ? false : true;
+    }
+
+    public final void cleanUpActivityReferences(ActivityRecord activityRecord) {
+        ActivityRecord activityRecord2 = this.mPausingActivity;
+        if (activityRecord2 != null && activityRecord2 == activityRecord) {
+            this.mPausingActivity = null;
+        }
+        ActivityRecord activityRecord3 = this.mResumedActivity;
+        if (activityRecord3 != null && activityRecord3 == activityRecord) {
+            setResumedActivity(null, "cleanUpActivityReferences");
+        }
+        activityRecord.removeTimeouts();
+    }
+
+    public final void clearLastPausedActivity() {
+        forAllTaskFragments(new TaskFragment$$ExternalSyntheticLambda10());
+    }
+
+    public void completePause(boolean z, ActivityRecord activityRecord) {
+        ActivityRecord activityRecord2 = this.mPausingActivity;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled;
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, -8936154984341817384L, 0, null, String.valueOf(activityRecord2));
+        }
+        if (activityRecord2 != null) {
+            activityRecord2.mWillCloseOrEnterPip = false;
+            ActivityRecord.State state = ActivityRecord.State.STOPPING;
+            boolean isState = activityRecord2.isState(state);
+            activityRecord2.setState(ActivityRecord.State.PAUSED, "completePausedLocked");
+            this.mPausingActivity = null;
+            if (activityRecord2.finishing) {
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 4971958459026584561L, 0, null, String.valueOf(activityRecord2));
+                }
+                activityRecord2 = activityRecord2.completeFinishing("completePausedLocked", false);
+            } else if (activityRecord2.attachedToProcess()) {
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, -7113165071559345173L, 60, null, String.valueOf(activityRecord2), Boolean.valueOf(isState), Boolean.valueOf(activityRecord2.isVisibleRequested()));
+                }
+                if (isState) {
+                    activityRecord2.setState(state, "completePausedLocked");
+                } else if (!activityRecord2.isVisibleRequested() || shouldSleepOrShutDownActivities()) {
+                    activityRecord2.setDeferHidingClient(false);
+                    activityRecord2.addToStopping("completePauseLocked", true, false);
+                }
+            } else {
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, -3777748052684097788L, 0, null, String.valueOf(activityRecord2));
+                }
+                activityRecord2 = null;
+            }
+            if (activityRecord2 != null) {
+                activityRecord2.stopFreezingScreen(true);
+            }
+        }
+        if (z) {
+            Task topDisplayFocusedRootTask = this.mRootWindowContainer.getTopDisplayFocusedRootTask();
+            if (topDisplayFocusedRootTask == null || topDisplayFocusedRootTask.shouldSleepOrShutDownActivities()) {
+                ActivityRecord activityRecord3 = topDisplayFocusedRootTask != null ? topDisplayFocusedRootTask.topRunningActivity(false) : null;
+                if (activityRecord3 == null || !(activityRecord2 == null || activityRecord3 == activityRecord2)) {
+                    this.mRootWindowContainer.resumeFocusedTasksTopActivities();
+                } else if (CoreRune.FW_SHELL_TRANSITION_BUG_FIX && activityRecord3 == activityRecord2 && this.mTransitionController.isCollecting()) {
+                    this.mTransitionController.mCollectingTransition.setReady(this.mDisplayContent, true);
+                }
+            } else {
+                this.mRootWindowContainer.resumeFocusedTasksTopActivities(topDisplayFocusedRootTask, activityRecord2, null, false);
+            }
+        }
+        if (activityRecord2 != null) {
+            activityRecord2.resumeKeyDispatchingLocked();
+        }
+        this.mRootWindowContainer.ensureActivitiesVisible(true, activityRecord);
+        if (this.mTaskSupervisor.mAppVisibilitiesChangedSinceLastPause || (((TaskDisplayArea) super.getDisplayArea()) != null && ((TaskDisplayArea) super.getDisplayArea()).hasPinnedTask())) {
+            this.mAtmService.mTaskChangeNotificationController.notifyTaskStackChanged();
+            this.mTaskSupervisor.mAppVisibilitiesChangedSinceLastPause = false;
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:47:0x02db  */
+    /* JADX WARN: Removed duplicated region for block: B:54:0x02ea  */
+    /* JADX WARN: Removed duplicated region for block: B:63:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void computeConfigResourceOverrides(android.content.res.Configuration r21, android.content.res.Configuration r22, com.android.server.wm.TaskFragment.ConfigOverrideHint r23, com.android.server.wm.DexSizeCompatController.DexSizeCompatPolicy r24) {
+        /*
+            Method dump skipped, instructions count: 787
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.computeConfigResourceOverrides(android.content.res.Configuration, android.content.res.Configuration, com.android.server.wm.TaskFragment$ConfigOverrideHint, com.android.server.wm.DexSizeCompatController$DexSizeCompatPolicy):void");
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final RemoteAnimationTarget createRemoteAnimationTarget(RemoteAnimationController.RemoteAnimationRecord remoteAnimationRecord) {
+        ActivityRecord activity = remoteAnimationRecord.mMode == 0 ? getActivity(new TaskFragment$$ExternalSyntheticLambda0(5)) : getTopMostActivity();
+        if (activity != null) {
+            return activity.createRemoteAnimationTarget(remoteAnimationRecord);
+        }
+        return null;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public void dump(PrintWriter printWriter, String str, boolean z) {
+        super.dump(printWriter, str, z);
+        StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, "bounds=");
+        m.append(getBounds().toShortString());
+        m.append(this.mIsolatedNav ? ", isolatedNav" : "");
+        printWriter.println(m.toString());
+        String str2 = str + "  ";
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
+            TaskFragment asTaskFragment = windowContainer.asTaskFragment();
+            StringBuilder m2 = Preconditions$$ExternalSyntheticOutline0.m(str, "* ");
+            m2.append((Object) (asTaskFragment != null ? asTaskFragment.toFullString() : windowContainer));
+            printWriter.println(m2.toString());
+            if (asTaskFragment != null) {
+                windowContainer.dump(printWriter, str2, z);
+            }
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    public final boolean dump(final String str, FileDescriptor fileDescriptor, final PrintWriter printWriter, final boolean z, boolean z2, final String str2, final TaskFragment$$ExternalSyntheticLambda15 taskFragment$$ExternalSyntheticLambda15) {
+        boolean z3;
+        Runnable runnable = new Runnable() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda15
+            public final /* synthetic */ boolean f$1 = false;
+
+            @Override // java.lang.Runnable
+            public final void run() {
+                TaskFragment taskFragment = TaskFragment.this;
+                boolean z4 = this.f$1;
+                PrintWriter printWriter2 = printWriter;
+                Runnable runnable2 = taskFragment$$ExternalSyntheticLambda15;
+                String str3 = str;
+                boolean z5 = z;
+                String str4 = str2;
+                taskFragment.getClass();
+                if (z4) {
+                    printWriter2.println();
+                }
+                if (runnable2 != null) {
+                    runnable2.run();
+                }
+                taskFragment.dumpInner(printWriter2, str3, str4, z5);
+            }
+        };
+        if (str2 == null) {
+            runnable.run();
+            runnable = null;
+            z3 = true;
+        } else {
+            z3 = false;
+        }
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
+            if (windowContainer.asTaskFragment() != null) {
+                z3 = windowContainer.asTaskFragment().dump(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "  "), fileDescriptor, printWriter, z, z2, str2, runnable) | z3;
+            } else if (windowContainer.asActivityRecord() != null) {
+                ActivityRecord.dumpActivity(fileDescriptor, printWriter, size, windowContainer.asActivityRecord(), ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "  "), "Hist ", true, !z, z2, str2, false, runnable, getTask());
+            }
+        }
+        return z3;
+    }
+
+    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
+    public void dumpDebug(ProtoOutputStream protoOutputStream, long j, int i) {
+        if (i != 2 || isVisible()) {
+            long start = protoOutputStream.start(j);
+            super.dumpDebug(protoOutputStream, 1146756268033L, i);
+            protoOutputStream.write(1120986464258L, getDisplayId());
+            protoOutputStream.write(1120986464259L, getActivityType());
+            protoOutputStream.write(1120986464260L, this.mMinWidth);
+            protoOutputStream.write(1120986464261L, this.mMinHeight);
+            protoOutputStream.end(start);
+        }
+    }
+
+    public void dumpInner(PrintWriter printWriter, String str, String str2, boolean z) {
+        printWriter.print(str);
+        printWriter.print("* ");
+        printWriter.println(toFullString());
+        Rect requestedOverrideBounds = getRequestedOverrideBounds();
+        if (!requestedOverrideBounds.isEmpty()) {
+            printWriter.println(str + "  mBounds=" + requestedOverrideBounds);
+        }
+        if (this.mIsRemovalRequested) {
+            printWriter.println(str + "  mIsRemovalRequested=true");
+        }
+        if (z) {
+            ActivityTaskSupervisor.printThisActivity(printWriter, this.mLastPausedActivity, str2, -1, false, ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "  mLastPausedActivity: "), null);
+        }
+    }
+
+    public void executeAppTransition(ActivityOptions activityOptions) {
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean fillsParent() {
+        return getWindowingMode() == 1 || matchParentBounds();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void forAllLeafTaskFragments(Consumer consumer, boolean z) {
+        int size = this.mChildren.size();
+        boolean z2 = true;
+        if (z) {
+            for (int i = size - 1; i >= 0; i--) {
+                TaskFragment asTaskFragment = ((WindowContainer) this.mChildren.get(i)).asTaskFragment();
+                if (asTaskFragment != null) {
+                    asTaskFragment.forAllLeafTaskFragments(consumer, z);
+                    z2 = false;
+                }
+            }
+        } else {
+            for (int i2 = 0; i2 < size; i2++) {
+                TaskFragment asTaskFragment2 = ((WindowContainer) this.mChildren.get(i2)).asTaskFragment();
+                if (asTaskFragment2 != null) {
+                    asTaskFragment2.forAllLeafTaskFragments(consumer, z);
+                    z2 = false;
+                }
+            }
+        }
+        if (z2) {
+            consumer.accept(this);
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean forAllLeafTaskFragments(Predicate predicate) {
+        boolean z = true;
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            TaskFragment asTaskFragment = ((WindowContainer) this.mChildren.get(size)).asTaskFragment();
+            if (asTaskFragment != null) {
+                if (asTaskFragment.forAllLeafTaskFragments(predicate)) {
+                    return true;
+                }
+                z = false;
+            }
+        }
+        if (z) {
+            return predicate.test(this);
+        }
+        return false;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void forAllTaskFragments(Consumer consumer, boolean z) {
+        super.forAllTaskFragments(consumer, z);
+        consumer.accept(this);
+    }
+
     @Override // com.android.server.wm.ConfigurationContainer
-    public int getActivityType() {
+    public final int getActivityType() {
         int activityType = super.getActivityType();
         if (activityType != 0 || !hasChild()) {
             return activityType;
@@ -1469,73 +547,508 @@ public class TaskFragment extends WindowContainer {
         return topMostActivity != null ? topMostActivity.getActivityType() : getTopChild().getActivityType();
     }
 
-    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
-    public void onConfigurationChanged(Configuration configuration) {
-        if (CoreRune.MW_SHELL_TRANSITION && this.mIsEmbedded && this.mTransitionController.isShellTransitionsEnabled() && isVisible() && isVisibleRequested() && getRequestedOverrideWindowingMode() == 0 && configuration.windowConfiguration.getWindowingMode() != getWindowingMode()) {
-            this.mTransitionController.collect(this);
-        }
-        super.onConfigurationChanged(configuration);
-        updateOrganizedTaskFragmentSurface();
-        sendTaskFragmentInfoChanged();
-    }
-
-    public void deferOrganizedTaskFragmentSurfaceUpdate() {
-        this.mDelayOrganizedTaskFragmentSurfaceUpdate = true;
-    }
-
-    public void continueOrganizedTaskFragmentSurfaceUpdate() {
-        this.mDelayOrganizedTaskFragmentSurfaceUpdate = false;
-        updateOrganizedTaskFragmentSurface();
-    }
-
-    public void updateOrganizedTaskFragmentSurface() {
-        if (this.mDelayOrganizedTaskFragmentSurfaceUpdate || this.mTaskFragmentOrganizer == null) {
-            return;
-        }
-        boolean z = false;
-        if (CoreRune.MW_EMBED_ACTIVITY && this.mTransitionController.isShellTransitionsEnabled() && this.mTransitionController.isCollecting(this) && !isVisibleRequested() && !isVisible()) {
-            z = true;
-        }
-        if (this.mTransitionController.isShellTransitionsEnabled() && (!this.mTransitionController.isCollecting(this) || z)) {
-            updateOrganizedTaskFragmentSurfaceUnchecked();
-        } else {
-            if (this.mTransitionController.isShellTransitionsEnabled() || isAnimating()) {
-                return;
-            }
-            updateOrganizedTaskFragmentSurfaceUnchecked();
-        }
-    }
-
-    public final void updateOrganizedTaskFragmentSurfaceUnchecked() {
-        SurfaceControl.Transaction syncTransaction = getSyncTransaction();
-        updateSurfacePosition(syncTransaction);
-        updateOrganizedTaskFragmentSurfaceSize(syncTransaction, false);
-    }
-
-    public final void updateOrganizedTaskFragmentSurfaceSize(SurfaceControl.Transaction transaction, boolean z) {
-        Rect bounds;
-        if (this.mTaskFragmentOrganizer == null || this.mSurfaceControl == null || this.mSurfaceAnimator.hasLeash() || this.mSurfaceFreezer.hasLeash()) {
-            return;
-        }
-        if (isClosingWhenResizing()) {
-            bounds = (Rect) this.mDisplayContent.mClosingChangingContainers.get(this);
-        } else {
-            bounds = getBounds();
-        }
-        int width = bounds.width();
-        int height = bounds.height();
-        if (!z) {
-            Point point = this.mLastSurfaceSize;
-            if (width == point.x && height == point.y) {
+    public void getDimBounds(Rect rect) {
+        if (this.mIsEmbedded && isDimmingOnParentTask()) {
+            Dimmer.DimState dimState = getDimmer().mDimState;
+            if ((dimState != null ? dimState.mDimBounds : null) != null) {
+                rect.set(getTask().getBounds());
                 return;
             }
         }
-        transaction.setWindowCrop(this.mSurfaceControl, width, height);
-        this.mLastSurfaceSize.set(width, height);
+        rect.set(getBounds());
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public Dimmer getDimmer() {
+        return (!this.mIsEmbedded || isDimmingOnParentTask()) ? super.getDimmer() : this.mDimmer;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final DisplayArea getDisplayArea() {
+        return (TaskDisplayArea) super.getDisplayArea();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final TaskDisplayArea getDisplayArea() {
+        return (TaskDisplayArea) super.getDisplayArea();
+    }
+
+    public final int getDisplayId() {
+        DisplayContent displayContent = getDisplayContent();
+        if (displayContent != null) {
+            return displayContent.mDisplayId;
+        }
+        return -1;
+    }
+
+    public final int getNonFinishingActivityCount() {
+        int[] iArr = new int[1];
+        forAllActivities(new TaskFragment$$ExternalSyntheticLambda8(0, iArr));
+        return iArr[0];
+    }
+
+    public final TaskFragment getOrganizedTaskFragment() {
+        if (this.mTaskFragmentOrganizer != null) {
+            return this;
+        }
+        TaskFragment asTaskFragment = getParent() != null ? getParent().asTaskFragment() : null;
+        if (asTaskFragment != null) {
+            return asTaskFragment.getOrganizedTaskFragment();
+        }
+        return null;
+    }
+
+    public final WindowProcessController getOrganizerProcessIfDifferent(ActivityRecord activityRecord) {
+        String str;
+        Task task = getTask();
+        if (activityRecord == null || task == null || (str = task.mTaskFragmentHostProcessName) == null) {
+            return null;
+        }
+        if (str.equals(activityRecord.processName) && task.mTaskFragmentHostUid == activityRecord.getUid()) {
+            return null;
+        }
+        return this.mAtmService.getProcessController(task.mTaskFragmentHostUid, task.mTaskFragmentHostProcessName);
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final int getOrientation(int i) {
+        if (this.mAdjacentTaskFragment != null && isVisibleRequested()) {
+            return -1;
+        }
+        int windowingMode = getWindowingMode();
+        int activityType = getActivityType();
+        if (windowingMode == 1 || activityType == 2 || activityType == 3 || activityType == 4) {
+            return super.getOrientation(i);
+        }
+        return -2;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final int getOverrideOrientation() {
+        if (!this.mIsEmbedded || isVisibleRequested()) {
+            return super.getOverrideOrientation();
+        }
+        return -1;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public long getProtoFieldId() {
+        return 1146756268041L;
+    }
+
+    public final Task getRootTask() {
+        return getRootTaskFragment().asTask();
+    }
+
+    public final TaskFragment getRootTaskFragment() {
+        TaskFragment asTaskFragment;
+        WindowContainer parent = getParent();
+        return (parent == null || (asTaskFragment = parent.asTaskFragment()) == null) ? this : asTaskFragment.getRootTaskFragment();
+    }
+
+    public final Task getTask() {
+        if (asTask() != null) {
+            return asTask();
+        }
+        TaskFragment asTaskFragment = getParent() != null ? getParent().asTaskFragment() : null;
+        if (asTaskFragment != null) {
+            return asTaskFragment.getTask();
+        }
+        return null;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final TaskFragment getTaskFragment(Predicate predicate) {
+        TaskFragment taskFragment = super.getTaskFragment(predicate);
+        if (taskFragment != null) {
+            return taskFragment;
+        }
+        if (predicate.test(this)) {
+            return this;
+        }
+        return null;
+    }
+
+    public final TaskFragmentInfo getTaskFragmentInfo() {
+        ApplicationInfo applicationInfo;
+        ArrayList arrayList = new ArrayList();
+        ArrayList arrayList2 = new ArrayList();
+        for (int i = 0; i < getChildCount(); i++) {
+            ActivityRecord asActivityRecord = getChildAt(i).asActivityRecord();
+            if (this.mTaskFragmentOrganizerUid != -1 && asActivityRecord != null && ((asActivityRecord.info.processName.equals(this.mTaskFragmentOrganizerProcessName) || (CoreRune.MW_EMBED_ACTIVITY && (applicationInfo = asActivityRecord.info.applicationInfo) != null && applicationInfo.processName.equals(this.mTaskFragmentOrganizerProcessName))) && asActivityRecord.getUid() == this.mTaskFragmentOrganizerUid && !asActivityRecord.finishing)) {
+                arrayList.add(asActivityRecord.token);
+                if (asActivityRecord.mRequestedLaunchingTaskFragmentToken == this.mFragmentToken) {
+                    arrayList2.add(asActivityRecord.token);
+                }
+            }
+        }
+        Point point = new Point();
+        getRelativePosition(point);
+        IBinder iBinder = this.mFragmentToken;
+        WindowContainerToken windowContainerToken = this.mRemoteToken.toWindowContainerToken();
+        Configuration configuration = getConfiguration();
+        int nonFinishingActivityCount = getNonFinishingActivityCount();
+        boolean shouldBeVisible = shouldBeVisible(null);
+        boolean z = this.mClearedTaskForReuse;
+        boolean z2 = this.mClearedTaskFragmentForPip;
+        boolean z3 = this.mClearedForReorderActivityToFront;
+        int[] iArr = new int[1];
+        int[] iArr2 = new int[1];
+        forAllActivities(new TaskFragment$$ExternalSyntheticLambda13(2, iArr, iArr2));
+        return new TaskFragmentInfo(iBinder, windowContainerToken, configuration, nonFinishingActivityCount, shouldBeVisible, arrayList, arrayList2, point, z, z2, z3, new Point(iArr[0], iArr2[0]));
+    }
+
+    public final ActivityRecord getTopNonFinishingActivity(boolean z, boolean z2) {
+        return z ? z2 ? getActivity(new TaskFragment$$ExternalSyntheticLambda0(1)) : getActivity(new TaskFragment$$ExternalSyntheticLambda0(2)) : z2 ? getActivity(new TaskFragment$$ExternalSyntheticLambda0(3)) : getActivity(new TaskFragment$$ExternalSyntheticLambda0(4));
+    }
+
+    public ActivityRecord getTopPausingActivity() {
+        ActivityRecord activityRecord;
+        ActivityRecord activityRecord2 = this.mPausingActivity;
+        int childCount = getChildCount();
+        do {
+            childCount--;
+            activityRecord = null;
+            if (childCount < 0) {
+                return null;
+            }
+            WindowContainer childAt = getChildAt(childCount);
+            if (activityRecord2 != null && childAt == activityRecord2) {
+                activityRecord = childAt.asActivityRecord();
+            } else if (childAt.asTaskFragment() != null) {
+                activityRecord = childAt.asTaskFragment().getTopPausingActivity();
+            }
+        } while (activityRecord == null);
+        return activityRecord;
+    }
+
+    public ActivityRecord getTopResumedActivity() {
+        ActivityRecord activityRecord;
+        ActivityRecord activityRecord2 = this.mResumedActivity;
+        int childCount = getChildCount();
+        do {
+            childCount--;
+            activityRecord = null;
+            if (childCount < 0) {
+                return null;
+            }
+            WindowContainer childAt = getChildAt(childCount);
+            if (activityRecord2 != null && childAt == activityRecord2) {
+                activityRecord = childAt.asActivityRecord();
+            } else if (childAt.asTaskFragment() != null) {
+                activityRecord = childAt.asTaskFragment().getTopResumedActivity();
+            }
+        } while (activityRecord == null);
+        return activityRecord;
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:252:0x02e4, code lost:
+    
+        if (com.samsung.android.rune.CoreRune.MW_MULTI_SPLIT_TASK_VISIBILITY == false) goto L250;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:254:0x02ea, code lost:
+    
+        if (asTask() == null) goto L250;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:256:0x02f1, code lost:
+    
+        if (getStageType() != 4) goto L250;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:257:0x02f3, code lost:
+    
+        if (r11 == false) goto L247;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:258:0x02f5, code lost:
+    
+        return r1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:259:0x02f6, code lost:
+    
+        if (r12 == false) goto L250;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:260:0x02f8, code lost:
+    
+        return 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:261:0x02fa, code lost:
+    
+        if (r7 != 0) goto L258;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:263:0x0300, code lost:
+    
+        if (asTask() == null) goto L258;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:265:0x0308, code lost:
+    
+        if (asTask().mHiddenWhileActivatingDrag == false) goto L258;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:267:0x0310, code lost:
+    
+        if (asTask().mIsAnimatingByRecentsAndDragSourceTask != false) goto L258;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:268:0x0312, code lost:
+    
+        android.util.Slog.d("ActivityTaskManager", "[TWODND] Clear mHiddenWhileActivatingDrag");
+        asTask().mHiddenWhileActivatingDrag = false;
+        asTask().updateSurfaceVisibilityForDragAndDrop();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:269:0x0325, code lost:
+    
+        return r7;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x00db, code lost:
+    
+        r3 = r6;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:276:0x02e1 A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:55:0x00c3  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int getVisibility(com.android.server.wm.ActivityRecord r21) {
+        /*
+            Method dump skipped, instructions count: 807
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.getVisibility(com.android.server.wm.ActivityRecord):int");
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean handleCompleteDeferredRemoval() {
+        if (!hasChild() ? false : isExitAnimationRunningSelfOrChild()) {
+            return true;
+        }
+        return super.handleCompleteDeferredRemoval();
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x0033, code lost:
+    
+        if ((r9.info.flags & 268435456) == 268435456) goto L19;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x0029, code lost:
+    
+        if (com.android.server.am.ActivityManagerService.checkComponentPermission(-1, r2, "android.permission.EMBED_ANY_APP_IN_UNTRUSTED_MODE", 0, -1, true) == 0) goto L19;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int isAllowedToEmbedActivity(int r8, com.android.server.wm.ActivityRecord r9) {
+        /*
+            r7 = this;
+            com.android.server.wm.WindowContainer r0 = r7.getParent()
+            if (r0 == 0) goto L36
+            android.graphics.Rect r0 = r0.getBounds()
+            android.graphics.Rect r1 = r7.getBounds()
+            boolean r0 = r0.contains(r1)
+            if (r0 != 0) goto L15
+            goto L36
+        L15:
+            int r2 = r7.mTaskFragmentOrganizerUid
+            boolean r0 = com.android.window.flags.Flags.untrustedEmbeddingAnyAppPermission()
+            if (r0 == 0) goto L2c
+            java.lang.Boolean r0 = com.android.server.wm.ActivityTaskManagerService.sIsPip2ExperimentEnabled
+            r5 = -1
+            r6 = 1
+            java.lang.String r3 = "android.permission.EMBED_ANY_APP_IN_UNTRUSTED_MODE"
+            r1 = -1
+            r4 = 0
+            int r0 = com.android.server.am.ActivityManagerService.checkComponentPermission(r1, r2, r3, r4, r5, r6)
+            if (r0 != 0) goto L2c
+            goto L3e
+        L2c:
+            android.content.pm.ActivityInfo r0 = r9.info
+            int r0 = r0.flags
+            r1 = 268435456(0x10000000, float:2.5243549E-29)
+            r0 = r0 & r1
+            if (r0 != r1) goto L36
+            goto L3e
+        L36:
+            boolean r8 = r7.isAllowedToEmbedActivityInTrustedMode(r8, r9)
+            if (r8 != 0) goto L3e
+            r7 = 1
+            return r7
+        L3e:
+            android.graphics.Rect r8 = r7.getBounds()
+            com.android.server.wm.Task r7 = r7.getTask()
+            if (r7 == 0) goto L6c
+            android.graphics.Rect r7 = r7.getBounds()
+            boolean r7 = r8.equals(r7)
+            if (r7 == 0) goto L53
+            goto L6c
+        L53:
+            android.graphics.Point r7 = r9.getMinDimensions()
+            if (r7 != 0) goto L5a
+            goto L6c
+        L5a:
+            int r0 = r7.x
+            int r7 = r7.y
+            int r1 = r8.width()
+            if (r1 < r0) goto L6a
+            int r8 = r8.height()
+            if (r8 >= r7) goto L6c
+        L6a:
+            r7 = 2
+            return r7
+        L6c:
+            boolean r7 = com.samsung.android.rune.CoreRune.MW_EMBED_ACTIVITY
+            r8 = 0
+            if (r7 == 0) goto L82
+            android.content.pm.ActivityInfo r7 = r9.info
+            android.os.Bundle r7 = r7.metaData
+            if (r7 == 0) goto L82
+            java.lang.String r9 = "com.samsung.android.multiwindow.embed_activity_not_supported"
+            boolean r7 = r7.getBoolean(r9, r8)
+            if (r7 == 0) goto L82
+            r7 = 10
+            return r7
+        L82:
+            return r8
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.isAllowedToEmbedActivity(int, com.android.server.wm.ActivityRecord):int");
+    }
+
+    public final boolean isAllowedToEmbedActivityInTrustedMode(int i, ActivityRecord activityRecord) {
+        if (isFullyTrustedEmbedding(i, activityRecord)) {
+            return true;
+        }
+        AndroidPackage androidPackage = this.mAtmService.getPackageManagerInternalLocked().getPackage(i);
+        return androidPackage != null && isAllowedToEmbedActivityInTrustedModeByHostPackage(activityRecord, androidPackage);
+    }
+
+    public boolean isAllowedToEmbedActivityInTrustedModeByHostPackage(ActivityRecord activityRecord, AndroidPackage androidPackage) {
+        Set<String> knownActivityEmbeddingCerts = activityRecord.info.getKnownActivityEmbeddingCerts();
+        if (knownActivityEmbeddingCerts.isEmpty()) {
+            knownActivityEmbeddingCerts = activityRecord.info.applicationInfo.getKnownActivityEmbeddingCerts();
+        }
+        return androidPackage.getSigningDetails().hasAncestorOrSelfWithDigest(knownActivityEmbeddingCerts);
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isAttached() {
+        TaskDisplayArea taskDisplayArea = (TaskDisplayArea) super.getDisplayArea();
+        return (taskDisplayArea == null || taskDisplayArea.mRemoved) ? false : true;
+    }
+
+    public boolean isDimmingOnParentTask() {
+        return this.mEmbeddedDimArea == 1;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isEmbedded() {
+        return this.mIsEmbedded;
+    }
+
+    public final boolean isEmbeddedTaskFragmentInPip() {
+        return isOrganizedTaskFragment() && getTask() != null && getTask().inPinnedWindowingMode();
+    }
+
+    public final boolean isEmbeddedWithBoundsOverride() {
+        Task task;
+        if (!this.mIsEmbedded || (task = getTask()) == null) {
+            return false;
+        }
+        Rect bounds = task.getBounds();
+        Rect bounds2 = getBounds();
+        return !bounds.equals(bounds2) && bounds.contains(bounds2);
+    }
+
+    public final boolean isFocusableAndVisible() {
+        return isTopActivityFocusable() && shouldBeVisible(null);
+    }
+
+    public final boolean isForceHidden() {
+        return this.mForceHiddenFlags != 0;
+    }
+
+    public final boolean isLeafTaskFragment() {
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            if (((WindowContainer) this.mChildren.get(size)).asTaskFragment() != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public boolean isOrganized() {
+        return this.mTaskFragmentOrganizer != null;
+    }
+
+    public final boolean isOrganizedTaskFragment() {
+        return this.mTaskFragmentOrganizer != null;
+    }
+
+    public final boolean isReadyToTransit() {
+        if (!isOrganizedTaskFragment() || getTopNonFinishingActivity(true, true) != null || this.mIsRemovalRequested || this.mAllowTransitionWhenEmpty || isEmbeddedTaskFragmentInPip()) {
+            return true;
+        }
+        if (!this.mClearedTaskFragmentForPip) {
+            return false;
+        }
+        Task task = getTask();
+        return task == null || !task.isVisibleRequested();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isSplitEmbedded() {
+        if (asTask() == null) {
+            return this.mIsEmbedded && !matchParentBounds();
+        }
+        ActivityRecord topVisibleActivity = asTask().getTopVisibleActivity(true, false);
+        return topVisibleActivity != null && topVisibleActivity.isSplitEmbedded();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isSyncFinished(BLASTSyncEngine.SyncGroup syncGroup) {
+        return super.isSyncFinished(syncGroup) && isReadyToTransit();
+    }
+
+    public final boolean isTopActivityFocusable() {
+        ActivityRecord activityRecord = topRunningActivity(false);
+        return activityRecord != null ? activityRecord.isFocusable() : isFocusable() && getWindowConfiguration().canReceiveKeys();
+    }
+
+    public final boolean isTranslucent(ActivityRecord activityRecord) {
+        if (!isAttached() || isForceHidden() || this.mForceTranslucent) {
+            return true;
+        }
+        ActivityTaskSupervisor.OpaqueActivityHelper opaqueActivityHelper = this.mTaskSupervisor.mOpaqueActivityHelper;
+        opaqueActivityHelper.mStarting = activityRecord;
+        opaqueActivityHelper.mIncludeInvisibleAndFinishing = false;
+        opaqueActivityHelper.mIgnoringKeyguard = true;
+        ActivityRecord activity = getActivity(opaqueActivityHelper, true, null);
+        opaqueActivityHelper.mStarting = null;
+        return activity == null;
+    }
+
+    public final boolean isTranslucentAndVisible() {
+        if (!isAttached() || isForceHidden() || this.mForceTranslucent) {
+            return true;
+        }
+        ActivityTaskSupervisor.OpaqueActivityHelper opaqueActivityHelper = this.mTaskSupervisor.mOpaqueActivityHelper;
+        opaqueActivityHelper.mStarting = null;
+        opaqueActivityHelper.mIncludeInvisibleAndFinishing = false;
+        opaqueActivityHelper.mIgnoringKeyguard = false;
+        ActivityRecord activity = getActivity(opaqueActivityHelper, true, null);
+        opaqueActivityHelper.mStarting = null;
+        return activity == null;
+    }
+
+    public final boolean isTranslucentForTransition() {
+        if (!isAttached() || isForceHidden() || this.mForceTranslucent) {
+            return true;
+        }
+        ActivityTaskSupervisor.OpaqueActivityHelper opaqueActivityHelper = this.mTaskSupervisor.mOpaqueActivityHelper;
+        opaqueActivityHelper.mIncludeInvisibleAndFinishing = true;
+        opaqueActivityHelper.mIgnoringKeyguard = true;
+        opaqueActivityHelper.mIgnoreFloatingWindow = false;
+        return getActivity(opaqueActivityHelper, true, null) == null;
     }
 
     @Override // com.android.server.wm.WindowContainer, com.android.server.wm.SurfaceAnimator.Animatable
-    public void onAnimationLeashCreated(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
+    public final void onAnimationLeashCreated(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
         super.onAnimationLeashCreated(transaction, surfaceControl);
         if (this.mTaskFragmentOrganizer != null) {
             Point point = this.mLastSurfaceSize;
@@ -1552,374 +1065,16 @@ public class TaskFragment extends WindowContainer {
     }
 
     @Override // com.android.server.wm.WindowContainer, com.android.server.wm.SurfaceAnimator.Animatable
-    public void onAnimationLeashLost(SurfaceControl.Transaction transaction) {
+    public final void onAnimationLeashLost(SurfaceControl.Transaction transaction) {
         super.onAnimationLeashLost(transaction);
         if (this.mTaskFragmentOrganizer != null) {
             updateOrganizedTaskFragmentSurfaceSize(transaction, true);
         }
     }
 
-    public Rect getRelativeEmbeddedBounds() {
-        Rect rect = this.mRelativeEmbeddedBounds;
-        if (rect != null) {
-            return rect;
-        }
-        throw new IllegalStateException("The TaskFragment is not embedded");
-    }
-
-    public Rect translateRelativeBoundsToAbsoluteBounds(Rect rect, Rect rect2) {
-        if (rect.isEmpty()) {
-            this.mTmpAbsBounds.setEmpty();
-            return this.mTmpAbsBounds;
-        }
-        this.mTmpAbsBounds.set(rect);
-        this.mTmpAbsBounds.offset(rect2.left, rect2.top);
-        if (!isAllowedToBeEmbeddedInTrustedMode() && !rect2.contains(this.mTmpAbsBounds) && !this.mTmpAbsBounds.intersect(rect2)) {
-            this.mTmpAbsBounds.setEmpty();
-        }
-        return this.mTmpAbsBounds;
-    }
-
-    public void recomputeConfiguration() {
-        onRequestedOverrideConfigurationChanged(getRequestedOverrideConfiguration());
-    }
-
-    public void setRelativeEmbeddedBounds(Rect rect) {
-        Rect rect2 = this.mRelativeEmbeddedBounds;
-        if (rect2 == null) {
-            throw new IllegalStateException("The TaskFragment is not embedded");
-        }
-        if (rect2.equals(rect)) {
-            return;
-        }
-        this.mRelativeEmbeddedBounds.set(rect);
-    }
-
-    public boolean shouldStartChangeTransition(Rect rect, Rect rect2) {
-        if (this.mTaskFragmentOrganizer == null || !canStartChangeTransition()) {
-            return false;
-        }
-        if (this.mTransitionController.isShellTransitionsEnabled()) {
-            Rect bounds = getConfiguration().windowConfiguration.getBounds();
-            return (bounds.width() == rect.width() && bounds.height() == rect.height()) ? false : true;
-        }
-        return !rect2.equals(this.mRelativeEmbeddedBounds);
-    }
-
     @Override // com.android.server.wm.WindowContainer
-    public boolean canStartChangeTransition() {
-        Task task = getTask();
-        return (task == null || task.isDragResizing() || !super.canStartChangeTransition()) ? false : true;
-    }
-
-    public boolean setClosingChangingStartBoundsIfNeeded() {
-        DisplayContent displayContent;
-        if (!isOrganizedTaskFragment() || (displayContent = this.mDisplayContent) == null || !displayContent.mChangingContainers.remove(this)) {
-            return false;
-        }
-        this.mDisplayContent.mClosingChangingContainers.put(this, new Rect(this.mSurfaceFreezer.mFreezeBounds));
-        return true;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isSyncFinished(BLASTSyncEngine.SyncGroup syncGroup) {
-        return super.isSyncFinished(syncGroup) && isReadyToTransit();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void setSurfaceControl(SurfaceControl surfaceControl) {
-        super.setSurfaceControl(surfaceControl);
-        if (this.mTaskFragmentOrganizer != null) {
-            updateOrganizedTaskFragmentSurfaceUnchecked();
-            sendTaskFragmentAppeared();
-        }
-    }
-
-    public void sendTaskFragmentInfoChanged() {
-        ITaskFragmentOrganizer iTaskFragmentOrganizer = this.mTaskFragmentOrganizer;
-        if (iTaskFragmentOrganizer != null) {
-            this.mTaskFragmentOrganizerController.onTaskFragmentInfoChanged(iTaskFragmentOrganizer, this);
-        }
-    }
-
-    public void sendTaskFragmentParentInfoChanged() {
-        Task asTask = getParent().asTask();
-        ITaskFragmentOrganizer iTaskFragmentOrganizer = this.mTaskFragmentOrganizer;
-        if (iTaskFragmentOrganizer == null || asTask == null) {
-            return;
-        }
-        this.mTaskFragmentOrganizerController.onTaskFragmentParentInfoChanged(iTaskFragmentOrganizer, asTask);
-    }
-
-    public final void sendTaskFragmentAppeared() {
-        ITaskFragmentOrganizer iTaskFragmentOrganizer = this.mTaskFragmentOrganizer;
-        if (iTaskFragmentOrganizer != null) {
-            this.mTaskFragmentOrganizerController.onTaskFragmentAppeared(iTaskFragmentOrganizer, this);
-        }
-    }
-
-    public final void sendTaskFragmentVanished() {
-        ITaskFragmentOrganizer iTaskFragmentOrganizer = this.mTaskFragmentOrganizer;
-        if (iTaskFragmentOrganizer != null) {
-            this.mTaskFragmentOrganizerController.onTaskFragmentVanished(iTaskFragmentOrganizer, this);
-        }
-    }
-
-    public TaskFragmentInfo getTaskFragmentInfo() {
-        ApplicationInfo applicationInfo;
-        ArrayList arrayList = new ArrayList();
-        ArrayList arrayList2 = new ArrayList();
-        for (int i = 0; i < getChildCount(); i++) {
-            ActivityRecord asActivityRecord = getChildAt(i).asActivityRecord();
-            if (this.mTaskFragmentOrganizerUid != -1 && asActivityRecord != null && ((asActivityRecord.info.processName.equals(this.mTaskFragmentOrganizerProcessName) || (CoreRune.MW_EMBED_ACTIVITY && (applicationInfo = asActivityRecord.info.applicationInfo) != null && applicationInfo.processName.equals(this.mTaskFragmentOrganizerProcessName))) && asActivityRecord.getUid() == this.mTaskFragmentOrganizerUid && !asActivityRecord.finishing)) {
-                arrayList.add(asActivityRecord.token);
-                if (asActivityRecord.mRequestedLaunchingTaskFragmentToken == this.mFragmentToken) {
-                    arrayList2.add(asActivityRecord.token);
-                }
-            }
-        }
-        Point point = new Point();
-        getRelativePosition(point);
-        return new TaskFragmentInfo(this.mFragmentToken, this.mRemoteToken.toWindowContainerToken(), getConfiguration(), getNonFinishingActivityCount(), shouldBeVisible(null), arrayList, arrayList2, point, this.mClearedTaskForReuse, this.mClearedTaskFragmentForPip, this.mClearedForReorderActivityToFront, calculateMinDimension());
-    }
-
-    public Point calculateMinDimension() {
-        final int[] iArr = new int[1];
-        final int[] iArr2 = new int[1];
-        forAllActivities(new Consumer() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TaskFragment.lambda$calculateMinDimension$8(iArr, iArr2, (ActivityRecord) obj);
-            }
-        });
-        return new Point(iArr[0], iArr2[0]);
-    }
-
-    public static /* synthetic */ void lambda$calculateMinDimension$8(int[] iArr, int[] iArr2, ActivityRecord activityRecord) {
-        Point minDimensions;
-        if (activityRecord.finishing || (minDimensions = activityRecord.getMinDimensions()) == null) {
-            return;
-        }
-        iArr[0] = Math.max(iArr[0], minDimensions.x);
-        iArr2[0] = Math.max(iArr2[0], minDimensions.y);
-    }
-
-    public IBinder getFragmentToken() {
-        return this.mFragmentToken;
-    }
-
-    public ITaskFragmentOrganizer getTaskFragmentOrganizer() {
-        return this.mTaskFragmentOrganizer;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isOrganized() {
-        return this.mTaskFragmentOrganizer != null;
-    }
-
-    public final boolean isOrganizedTaskFragment() {
-        return this.mTaskFragmentOrganizer != null;
-    }
-
-    public boolean isEmbeddedWithBoundsOverride() {
-        Task task;
-        if (!this.mIsEmbedded || (task = getTask()) == null) {
-            return false;
-        }
-        Rect bounds = task.getBounds();
-        Rect bounds2 = getBounds();
-        return !bounds.equals(bounds2) && bounds.contains(bounds2);
-    }
-
-    public boolean isTaskVisibleRequested() {
-        Task task = getTask();
-        return task != null && task.isVisibleRequested();
-    }
-
-    public boolean isReadyToTransit() {
-        if (isOrganizedTaskFragment() && getTopNonFinishingActivity() == null && !this.mIsRemovalRequested && !isEmbeddedTaskFragmentInPip()) {
-            return this.mClearedTaskFragmentForPip && !isTaskVisibleRequested();
-        }
-        return true;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean canCustomizeAppTransition() {
-        return isEmbedded() && matchParentBounds();
-    }
-
-    public void clearLastPausedActivity() {
-        forAllTaskFragments(new Consumer() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda8
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((TaskFragment) obj).mLastPausedActivity = null;
-            }
-        });
-    }
-
-    public void setMinDimensions(int i, int i2) {
-        if (asTask() != null) {
-            throw new UnsupportedOperationException("This method must not be used to Task. The  minimum dimension of Task should be passed from Task constructor.");
-        }
-        this.mMinWidth = i;
-        this.mMinHeight = i2;
-    }
-
-    public boolean isEmbeddedTaskFragmentInPip() {
-        return isOrganizedTaskFragment() && getTask() != null && getTask().inPinnedWindowingMode();
-    }
-
-    public boolean shouldRemoveSelfOnLastChildRemoval() {
-        return !this.mCreatedByOrganizer || this.mIsRemovalRequested;
-    }
-
-    public boolean isRemovalRequested() {
-        return this.mIsRemovalRequested;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void removeChild(WindowContainer windowContainer) {
-        removeChild(windowContainer, true);
-    }
-
-    public void removeChild(WindowContainer windowContainer, boolean z) {
-        super.removeChild(windowContainer);
-        ActivityRecord asActivityRecord = windowContainer.asActivityRecord();
-        if (BackNavigationController.isScreenshotEnabled() && asActivityRecord != null) {
-            this.mBackScreenshots.remove(asActivityRecord.mActivityComponent.flattenToString());
-        }
-        WindowProcessController organizerProcessIfDifferent = getOrganizerProcessIfDifferent(asActivityRecord);
-        if (organizerProcessIfDifferent != null) {
-            organizerProcessIfDifferent.removeEmbeddedActivity(asActivityRecord);
-        }
-        if (z && shouldRemoveSelfOnLastChildRemoval() && !hasChild()) {
-            removeImmediately("removeLastChild " + windowContainer);
-        }
-    }
-
-    public void remove(boolean z, String str) {
-        if (!hasChild()) {
-            removeImmediately(str);
-            return;
-        }
-        this.mIsRemovalRequested = true;
-        ArrayList arrayList = new ArrayList();
-        forAllActivities(new Task$$ExternalSyntheticLambda58(arrayList));
-        for (int size = arrayList.size() - 1; size >= 0; size--) {
-            ActivityRecord activityRecord = (ActivityRecord) arrayList.get(size);
-            if (z && activityRecord.isVisible()) {
-                activityRecord.finishIfPossible(str, false);
-            } else if (CoreRune.MW_EMBED_ACTIVITY && z && !activityRecord.isVisible() && activityRecord.isVisibleRequested() && isPlaceholderTaskFragment()) {
-                activityRecord.finishIfPossible(str, false);
-            } else {
-                activityRecord.destroyIfPossible(str);
-            }
-        }
-    }
-
-    public void setDelayLastActivityRemoval(boolean z) {
-        if (!this.mIsEmbedded) {
-            Slog.w("ActivityTaskManager", "Set delaying last activity removal on a non-embedded TF.");
-        }
-        this.mDelayLastActivityRemoval = z;
-    }
-
-    public boolean isDelayLastActivityRemoval() {
-        return this.mDelayLastActivityRemoval;
-    }
-
-    public boolean shouldDeferRemoval() {
-        if (hasChild()) {
-            return isExitAnimationRunningSelfOrChild();
-        }
-        return false;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean handleCompleteDeferredRemoval() {
-        if (shouldDeferRemoval()) {
-            return true;
-        }
-        return super.handleCompleteDeferredRemoval();
-    }
-
-    public void removeImmediately(String str) {
-        Slog.d("ActivityTaskManager", "Remove task fragment: " + str);
-        removeImmediately();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void removeImmediately() {
-        boolean z = false;
-        this.mIsRemovalRequested = false;
-        resetAdjacentTaskFragment();
-        cleanUpEmbeddedTaskFragment();
-        if (this.mClearedTaskFragmentForPip && isTaskVisibleRequested()) {
-            z = true;
-        }
-        super.removeImmediately();
-        sendTaskFragmentVanished();
-        if (!z || this.mDisplayContent == null) {
-            return;
-        }
-        this.mAtmService.addWindowLayoutReasons(2);
-        this.mDisplayContent.executeAppTransition();
-    }
-
-    public final void cleanUpEmbeddedTaskFragment() {
-        if (this.mIsEmbedded) {
-            this.mAtmService.mWindowOrganizerController.cleanUpEmbeddedTaskFragment(this);
-            Task task = getTask();
-            if (task == null) {
-                return;
-            }
-            task.forAllLeafTaskFragments(new Consumer() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda4
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    TaskFragment.this.lambda$cleanUpEmbeddedTaskFragment$10((TaskFragment) obj);
-                }
-            }, false);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$cleanUpEmbeddedTaskFragment$10(TaskFragment taskFragment) {
-        if (taskFragment.getCompanionTaskFragment() == this) {
-            taskFragment.setCompanionTaskFragment(null);
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public Dimmer getDimmer() {
-        if (asTask() == null) {
-            return this.mDimmer;
-        }
-        return super.getDimmer();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void prepareSurfaces() {
-        if (asTask() != null) {
-            super.prepareSurfaces();
-            return;
-        }
-        this.mDimmer.resetDimStates();
-        super.prepareSurfaces();
-        Rect dimBounds = this.mDimmer.getDimBounds();
-        if (dimBounds != null) {
-            if (CoreRune.MW_EMBED_ACTIVITY && !matchParentBounds()) {
-                dimBounds.inset(this.mDisplayContent.getInsetsStateController().getRawInsetsState().calculateInsets(this.mTmpBounds, WindowInsets.Type.navigationBars(), false));
-            }
-            dimBounds.offsetTo(0, 0);
-            if (this.mDimmer.updateDims(getSyncTransaction())) {
-                scheduleAnimation();
-            }
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean fillsParent() {
-        return getWindowingMode() == 1 || matchParentBounds();
+    public void onChildPositionChanged(WindowContainer windowContainer) {
+        sendTaskFragmentInfoChanged();
     }
 
     @Override // com.android.server.wm.WindowContainer
@@ -1931,63 +1086,439 @@ public class TaskFragment extends WindowContainer {
         return true;
     }
 
-    @Override // com.android.server.wm.WindowContainer
-    public TaskFragment getTaskFragment(Predicate predicate) {
-        TaskFragment taskFragment = super.getTaskFragment(predicate);
-        if (taskFragment != null) {
-            return taskFragment;
+    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
+    public void onConfigurationChanged(Configuration configuration) {
+        if (CoreRune.MW_SHELL_TRANSITION && this.mIsEmbedded && this.mTransitionController.isShellTransitionsEnabled() && isVisible() && isVisibleRequested() && getRequestedOverrideWindowingMode() == 0 && configuration.windowConfiguration.getWindowingMode() != getWindowingMode()) {
+            this.mTransitionController.collect(this);
         }
-        if (predicate.test(this)) {
-            return this;
-        }
-        return null;
-    }
-
-    public boolean moveChildToFront(WindowContainer windowContainer) {
-        int distanceFromTop = getDistanceFromTop(windowContainer);
-        positionChildAt(Integer.MAX_VALUE, windowContainer, false);
-        return getDistanceFromTop(windowContainer) != distanceFromTop;
-    }
-
-    public int calculateEmbedActivityMode(Task task, Rect rect) {
-        Rect bounds = task.getBounds();
-        if (bounds.equals(rect) || rect.isEmpty()) {
-            return 1;
-        }
-        int i = bounds.left;
-        int i2 = rect.left;
-        if (i == i2 && bounds.right != rect.right) {
-            return 2;
-        }
-        if (bounds.right == rect.right && i != i2) {
-            return 3;
-        }
-        int i3 = bounds.top;
-        int i4 = rect.top;
-        if (i3 != i4 || bounds.bottom == rect.bottom) {
-            return (bounds.bottom != rect.bottom || i3 == i4) ? 0 : 5;
-        }
-        return 4;
+        super.onConfigurationChanged(configuration);
+        updateOrganizedTaskFragmentSurface();
+        sendTaskFragmentInfoChanged();
     }
 
     @Override // com.android.server.wm.WindowContainer
-    public boolean isSplitEmbedded() {
+    public void prepareSurfaces() {
         if (asTask() != null) {
-            ActivityRecord topVisibleActivity = asTask().getTopVisibleActivity();
-            return topVisibleActivity != null && topVisibleActivity.isSplitEmbedded();
+            super.prepareSurfaces();
+            return;
         }
-        if (asTaskFragment() != null) {
-            return isEmbedded() && !matchParentBounds();
+        Dimmer.DimState dimState = this.mDimmer.mDimState;
+        if (dimState != null) {
+            dimState.mLastDimmingWindow = null;
         }
-        return false;
+        super.prepareSurfaces();
+        Dimmer.DimState dimState2 = this.mDimmer.mDimState;
+        Rect rect = dimState2 != null ? dimState2.mDimBounds : null;
+        if (rect != null) {
+            if (CoreRune.MW_EMBED_ACTIVITY && !matchParentBounds()) {
+                rect.inset(this.mDisplayContent.mInsetsStateController.mState.calculateInsets(this.mTmpBounds, WindowInsets.Type.navigationBars(), false));
+            }
+            rect.offsetTo(0, 0);
+            if (this.mDimmer.updateDims(getSyncTransaction())) {
+                scheduleAnimation();
+            }
+        }
     }
 
-    public void setPlaceholderTaskFragment(boolean z) {
-        this.mIsPlaceholderTaskFragment = z;
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean providesOrientation() {
+        return super.providesOrientation() || (this.mAdjacentTaskFragment != null && isVisibleRequested());
     }
 
-    public boolean isPlaceholderTaskFragment() {
-        return this.mIsPlaceholderTaskFragment;
+    public final void remove(String str, boolean z) {
+        if (!hasChild()) {
+            removeImmediately(str);
+            return;
+        }
+        this.mIsRemovalRequested = true;
+        ArrayList arrayList = new ArrayList();
+        forAllActivities(new Task$$ExternalSyntheticLambda8(2, arrayList));
+        for (int size = arrayList.size() - 1; size >= 0; size--) {
+            ActivityRecord activityRecord = (ActivityRecord) arrayList.get(size);
+            if (z && activityRecord.mVisible) {
+                activityRecord.finishIfPossible(str, false);
+            } else if (CoreRune.MW_EMBED_ACTIVITY && z && !activityRecord.mVisible && activityRecord.isVisibleRequested() && this.mIsPlaceholderTaskFragment) {
+                activityRecord.finishIfPossible(str, false);
+            } else {
+                activityRecord.destroyIfPossible(str);
+            }
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public void removeChild(WindowContainer windowContainer) {
+        removeChild(windowContainer, true);
+    }
+
+    public final void removeChild(WindowContainer windowContainer, boolean z) {
+        super.removeChild(windowContainer);
+        ActivityRecord asActivityRecord = windowContainer.asActivityRecord();
+        WindowProcessController organizerProcessIfDifferent = getOrganizerProcessIfDifferent(asActivityRecord);
+        if (organizerProcessIfDifferent != null) {
+            organizerProcessIfDifferent.removeRemoteActivityFlags(2, asActivityRecord);
+        }
+        if (z && shouldRemoveSelfOnLastChildRemoval() && !hasChild()) {
+            removeImmediately("removeLastChild " + windowContainer);
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public void removeImmediately() {
+        DisplayContent displayContent;
+        Task task;
+        if (asTask() == null) {
+            EventLog.writeEvent(31005, Integer.valueOf(System.identityHashCode(this)), Integer.valueOf(getTask() != null ? getTask().mTaskId : -1));
+        }
+        boolean z = false;
+        this.mIsRemovalRequested = false;
+        resetAdjacentTaskFragment();
+        if (this.mIsEmbedded) {
+            this.mAtmService.mWindowOrganizerController.mLaunchTaskFragments.remove(this.mFragmentToken);
+            Task task2 = getTask();
+            if (task2 != null) {
+                task2.forAllLeafTaskFragments(new TaskFragment$$ExternalSyntheticLambda8(1, this), false);
+            }
+        }
+        if (this.mClearedTaskFragmentForPip && (task = getTask()) != null && task.isVisibleRequested()) {
+            z = true;
+        }
+        super.removeImmediately();
+        ITaskFragmentOrganizer iTaskFragmentOrganizer = this.mTaskFragmentOrganizer;
+        if (iTaskFragmentOrganizer != null) {
+            TaskFragmentOrganizerController taskFragmentOrganizerController = this.mTaskFragmentOrganizerController;
+            taskFragmentOrganizerController.getClass();
+            if (!this.mTaskFragmentVanishedSent) {
+                this.mTaskFragmentVanishedSent = true;
+                TaskFragmentOrganizerController.TaskFragmentOrganizerState validateAndGetState = taskFragmentOrganizerController.validateAndGetState(iTaskFragmentOrganizer);
+                List list = (List) taskFragmentOrganizerController.mPendingTaskFragmentEvents.get(iTaskFragmentOrganizer.asBinder());
+                for (int size = list.size() - 1; size >= 0; size--) {
+                    if (this == ((TaskFragmentOrganizerController.PendingTaskFragmentEvent) list.get(size)).mTaskFragment) {
+                        list.remove(size);
+                    }
+                }
+                taskFragmentOrganizerController.addPendingEvent(new TaskFragmentOrganizerController.PendingTaskFragmentEvent(1, iTaskFragmentOrganizer, this, null, null, null, null, null, null, 0));
+                validateAndGetState.mOrganizedTaskFragments.remove(this);
+                taskFragmentOrganizerController.mAtmService.mWindowManager.mWindowPlacerLocked.requestTraversal();
+            }
+        }
+        if (!z || (displayContent = this.mDisplayContent) == null) {
+            return;
+        }
+        this.mAtmService.mLayoutReasons |= 2;
+        displayContent.executeAppTransition();
+    }
+
+    public void removeImmediately(String str) {
+        Slog.d("ActivityTaskManager", "Remove task fragment: " + str);
+        removeImmediately();
+    }
+
+    public final void resetAdjacentTaskFragment() {
+        TaskFragment taskFragment = this.mAdjacentTaskFragment;
+        if (taskFragment != null && taskFragment.mAdjacentTaskFragment == this) {
+            taskFragment.mAdjacentTaskFragment = null;
+            this.mAdjacentTaskFragment.mDelayLastActivityRemoval = false;
+        }
+        this.mAdjacentTaskFragment = null;
+        this.mDelayLastActivityRemoval = false;
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x0071, code lost:
+    
+        if (com.android.server.wm.DexSizeCompatController.getCompatPolicy(r6) != null) goto L51;
+     */
+    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void resolveOverrideConfiguration(android.content.res.Configuration r12) {
+        /*
+            Method dump skipped, instructions count: 692
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.resolveOverrideConfiguration(android.content.res.Configuration):void");
+    }
+
+    /* JADX WARN: Can't wrap try/catch for region: R(20:177|(1:179)(1:472)|180|(4:182|(2:184|(1:186))|187|(4:193|(1:195)|196|(1:(1:199))(2:200|(2:202|(2:(1:205)|206)(2:207|(3:459|460|(1:(1:467))(1:465))(2:209|(1:211)(2:212|(4:441|442|(1:(2:(2:446|(1:448))|(1:452)))|(1:454))(17:214|(2:413|(2:(2:(2:433|434)|432)|(1:439))(3:417|418|(1:(1:426))(2:423|424)))(4:218|219|(1:409)(2:(4:224|225|226|(1:228))(1:408)|(1:235))|(1:403))|236|(3:238|(3:240|(4:247|(1:249)|250|251)|252)|257)|(1:264)|265|266|(1:268)(3:396|(1:398)|399)|(1:270)(1:395)|271|272|(2:274|(3:276|(1:278)(1:379)|279)(2:380|(1:382)(5:383|(1:385)(1:389)|386|387|388)))(2:390|(1:392)(2:393|388))|(1:281)(1:378)|282|(24:284|(1:369)(1:290)|291|(1:368)|296|(1:300)|(1:302)(1:367)|303|(1:305)|306|(2:308|(2:310|311))|312|313|(1:315)(1:365)|316|(2:318|(2:321|(1:323)(1:324)))|325|(5:327|328|329|330|(1:332)(1:333))|353|(1:355)(1:364)|356|357|(1:359)|361)(5:370|(1:372)(1:377)|373|(1:375)|376)|362|363))))))))|471|236|(0)|(3:260|262|264)|265|266|(0)(0)|(0)(0)|271|272|(0)(0)|(0)(0)|282|(0)(0)|362|363) */
+    /* JADX WARN: Code restructure failed: missing block: B:400:0x0609, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:401:0x060a, code lost:
+    
+        android.util.Slog.w("ActivityTaskManager", "Failed trying to unstop package " + r3.packageName + ": " + r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:435:0x0526, code lost:
+    
+        if (r3.processName.equals(r4.processName) != false) goto L306;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:136:0x0276  */
+    /* JADX WARN: Removed duplicated region for block: B:147:0x02b5  */
+    /* JADX WARN: Removed duplicated region for block: B:168:0x02f8  */
+    /* JADX WARN: Removed duplicated region for block: B:238:0x0562  */
+    /* JADX WARN: Removed duplicated region for block: B:259:0x05b8 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:268:0x05d0  */
+    /* JADX WARN: Removed duplicated region for block: B:270:0x05e4 A[Catch: IllegalArgumentException -> 0x0609, TryCatch #8 {IllegalArgumentException -> 0x0609, blocks: (B:266:0x05c6, B:270:0x05e4, B:271:0x05f7, B:395:0x05f4, B:396:0x05d2, B:398:0x05d6, B:399:0x05e0), top: B:265:0x05c6 }] */
+    /* JADX WARN: Removed duplicated region for block: B:274:0x0629  */
+    /* JADX WARN: Removed duplicated region for block: B:281:0x0680  */
+    /* JADX WARN: Removed duplicated region for block: B:284:0x0694  */
+    /* JADX WARN: Removed duplicated region for block: B:370:0x0869  */
+    /* JADX WARN: Removed duplicated region for block: B:378:0x0684  */
+    /* JADX WARN: Removed duplicated region for block: B:390:0x0669  */
+    /* JADX WARN: Removed duplicated region for block: B:395:0x05f4 A[Catch: IllegalArgumentException -> 0x0609, TryCatch #8 {IllegalArgumentException -> 0x0609, blocks: (B:266:0x05c6, B:270:0x05e4, B:271:0x05f7, B:395:0x05f4, B:396:0x05d2, B:398:0x05d6, B:399:0x05e0), top: B:265:0x05c6 }] */
+    /* JADX WARN: Removed duplicated region for block: B:396:0x05d2 A[Catch: IllegalArgumentException -> 0x0609, TryCatch #8 {IllegalArgumentException -> 0x0609, blocks: (B:266:0x05c6, B:270:0x05e4, B:271:0x05f7, B:395:0x05f4, B:396:0x05d2, B:398:0x05d6, B:399:0x05e0), top: B:265:0x05c6 }] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean resumeTopActivity(com.android.server.wm.ActivityRecord r26, android.app.ActivityOptions r27, boolean r28) {
+        /*
+            Method dump skipped, instructions count: 2197
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.resumeTopActivity(com.android.server.wm.ActivityRecord, android.app.ActivityOptions, boolean):boolean");
+    }
+
+    public final void schedulePauseActivity(ActivityRecord activityRecord, boolean z, boolean z2, boolean z3, String str) {
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 1917394294249960915L, 0, null, String.valueOf(activityRecord));
+        }
+        try {
+            activityRecord.mPauseSchedulePendingForPip = false;
+            int i = activityRecord.mUserId;
+            int identityHashCode = System.identityHashCode(activityRecord);
+            EventLog.writeEvent(30013, Integer.valueOf(i), Integer.valueOf(identityHashCode), activityRecord.shortComponentName, "userLeaving=" + z, str);
+            this.mAtmService.mLifecycleManager.scheduleTransactionItem(activityRecord.app.mThread, PauseActivityItem.obtain(activityRecord.token, activityRecord.finishing, z, z2, z3));
+        } catch (Exception e) {
+            Slog.w("ActivityTaskManager", "Exception thrown during pause", e);
+            this.mPausingActivity = null;
+            this.mLastPausedActivity = null;
+            this.mTaskSupervisor.mNoHistoryActivities.remove(activityRecord);
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x0048, code lost:
+    
+        r4 = new com.android.server.wm.TaskFragmentOrganizerController.PendingTaskFragmentEvent(2, r2, r13, null, null, null, null, null, null, 0);
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void sendTaskFragmentInfoChanged() {
+        /*
+            r13 = this;
+            android.window.ITaskFragmentOrganizer r2 = r13.mTaskFragmentOrganizer
+            if (r2 == 0) goto L71
+            com.android.server.wm.TaskFragmentOrganizerController r11 = r13.mTaskFragmentOrganizerController
+            r11.getClass()
+            boolean r0 = r13.mTaskFragmentVanishedSent
+            if (r0 == 0) goto Le
+            goto L71
+        Le:
+            r11.validateAndGetState(r2)
+            boolean r0 = r13.mTaskFragmentAppearedSent
+            if (r0 != 0) goto L16
+            goto L71
+        L16:
+            android.window.ITaskFragmentOrganizer r0 = r13.mTaskFragmentOrganizer
+            android.util.ArrayMap r1 = r11.mPendingTaskFragmentEvents
+            android.os.IBinder r0 = r0.asBinder()
+            java.lang.Object r0 = r1.get(r0)
+            java.util.List r0 = (java.util.List) r0
+            int r1 = r0.size()
+            r3 = 1
+            int r1 = r1 - r3
+        L2a:
+            if (r1 < 0) goto L45
+            java.lang.Object r4 = r0.get(r1)
+            com.android.server.wm.TaskFragmentOrganizerController$PendingTaskFragmentEvent r4 = (com.android.server.wm.TaskFragmentOrganizerController.PendingTaskFragmentEvent) r4
+            com.android.server.wm.TaskFragment r5 = r4.mTaskFragment
+            if (r13 != r5) goto L42
+            int r5 = r4.mEventType
+            if (r5 == 0) goto L46
+            if (r5 == r3) goto L46
+            r6 = 2
+            if (r5 == r6) goto L46
+            r6 = 3
+            if (r5 == r6) goto L46
+        L42:
+            int r1 = r1 + (-1)
+            goto L2a
+        L45:
+            r4 = 0
+        L46:
+            if (r4 != 0) goto L59
+            com.android.server.wm.TaskFragmentOrganizerController$PendingTaskFragmentEvent r12 = new com.android.server.wm.TaskFragmentOrganizerController$PendingTaskFragmentEvent
+            r7 = 0
+            r8 = 0
+            r1 = 2
+            r4 = 0
+            r5 = 0
+            r6 = 0
+            r9 = 0
+            r10 = 0
+            r0 = r12
+            r3 = r13
+            r0.<init>(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10)
+            r4 = r12
+            goto L6e
+        L59:
+            android.util.ArrayMap r13 = r11.mPendingTaskFragmentEvents
+            android.window.ITaskFragmentOrganizer r0 = r4.mTaskFragmentOrg
+            android.os.IBinder r0 = r0.asBinder()
+            java.lang.Object r13 = r13.get(r0)
+            java.util.List r13 = (java.util.List) r13
+            r13.remove(r4)
+            r0 = 0
+            r4.mDeferTime = r0
+        L6e:
+            r11.addPendingEvent(r4)
+        L71:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.sendTaskFragmentInfoChanged():void");
+    }
+
+    public final void setAdjacentTaskFragment(TaskFragment taskFragment) {
+        if (this.mAdjacentTaskFragment == taskFragment) {
+            return;
+        }
+        resetAdjacentTaskFragment();
+        if (taskFragment != null) {
+            this.mAdjacentTaskFragment = taskFragment;
+            taskFragment.setAdjacentTaskFragment(this);
+        }
+    }
+
+    public boolean setForceHidden(int i, boolean z) {
+        int i2 = this.mForceHiddenFlags;
+        int i3 = z ? i | i2 : (~i) & i2;
+        if (i2 == i3) {
+            return false;
+        }
+        this.mForceHiddenFlags = i3;
+        return true;
+    }
+
+    public void setPausingActivity(ActivityRecord activityRecord) {
+        this.mPausingActivity = activityRecord;
+    }
+
+    public final void setRelativeEmbeddedBounds(Rect rect) {
+        Rect rect2 = this.mRelativeEmbeddedBounds;
+        if (rect2 == null) {
+            throw new IllegalStateException("The TaskFragment is not embedded");
+        }
+        if (rect2.equals(rect)) {
+            return;
+        }
+        this.mRelativeEmbeddedBounds.set(rect);
+    }
+
+    public final void setResumedActivity(ActivityRecord activityRecord, String str) {
+        DisplayContent displayContent;
+        ActivityRecord activityRecord2 = this.mResumedActivity;
+        if (activityRecord2 == activityRecord) {
+            return;
+        }
+        if (activityRecord != null && activityRecord2 == null) {
+            Task task = getTask();
+            task.getClass();
+            task.lastActiveTime = SystemClock.elapsedRealtime();
+        }
+        ActivityRecord activityRecord3 = this.mResumedActivity;
+        this.mResumedActivity = activityRecord;
+        ActivityRecord updateTopResumedActivityIfNeeded = this.mTaskSupervisor.updateTopResumedActivityIfNeeded(str);
+        if (this.mResumedActivity != null && updateTopResumedActivityIfNeeded != null && updateTopResumedActivityIfNeeded.isEmbedded() && updateTopResumedActivityIfNeeded.getTaskFragment().mAdjacentTaskFragment == this) {
+            this.mAtmService.setLastResumedActivityUncheckLocked(this.mResumedActivity, str);
+        }
+        if (activityRecord != null && !activityRecord.mDisplayContent.isOnTop()) {
+            activityRecord.mDisplayContent.setFocusedApp(activityRecord);
+        }
+        if (activityRecord == null && (displayContent = activityRecord3.mDisplayContent) != null && displayContent.getFocusedRootTask() == null) {
+            activityRecord3.mDisplayContent.onRunningActivityChanged();
+        } else if (activityRecord != null) {
+            activityRecord.mDisplayContent.onRunningActivityChanged();
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public void setSurfaceControl(SurfaceControl surfaceControl) {
+        super.setSurfaceControl(surfaceControl);
+        if (this.mTaskFragmentOrganizer != null) {
+            SurfaceControl.Transaction syncTransaction = getSyncTransaction();
+            updateSurfacePosition(syncTransaction);
+            updateOrganizedTaskFragmentSurfaceSize(syncTransaction, false);
+            ITaskFragmentOrganizer iTaskFragmentOrganizer = this.mTaskFragmentOrganizer;
+            if (iTaskFragmentOrganizer != null) {
+                TaskFragmentOrganizerController taskFragmentOrganizerController = this.mTaskFragmentOrganizerController;
+                taskFragmentOrganizerController.getClass();
+                if (this.mTaskFragmentVanishedSent) {
+                    return;
+                }
+                if (getTask() == null) {
+                    Slog.w("TaskFragmentOrganizerController", "onTaskFragmentAppeared failed because it is not attached tf=" + this);
+                    return;
+                }
+                TaskFragmentOrganizerController.TaskFragmentOrganizerState validateAndGetState = taskFragmentOrganizerController.validateAndGetState(iTaskFragmentOrganizer);
+                if (this.mTaskFragmentAppearedSent || validateAndGetState.mOrganizedTaskFragments.contains(this)) {
+                    return;
+                }
+                validateAndGetState.mOrganizedTaskFragments.add(this);
+                if (taskFragmentOrganizerController.getPendingTaskFragmentEvent(this, 0) == null) {
+                    taskFragmentOrganizerController.addPendingEvent(new TaskFragmentOrganizerController.PendingTaskFragmentEvent(0, iTaskFragmentOrganizer, this, null, null, null, null, null, null, 0));
+                }
+            }
+        }
+    }
+
+    public final boolean shouldBeVisible(ActivityRecord activityRecord) {
+        return getVisibility(activityRecord) != 2;
+    }
+
+    public final boolean shouldRemoveSelfOnLastChildRemoval() {
+        return !this.mCreatedByOrganizer || this.mIsRemovalRequested;
+    }
+
+    public boolean shouldSleepActivities() {
+        Task rootTask = getRootTask();
+        return rootTask != null && rootTask.shouldSleepActivities();
+    }
+
+    public final boolean shouldSleepOrShutDownActivities() {
+        return shouldSleepActivities() || this.mAtmService.mShuttingDown;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:72:0x01ad  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean startPausing$1(com.android.server.wm.ActivityRecord r23, java.lang.String r24, boolean r25, boolean r26) {
+        /*
+            Method dump skipped, instructions count: 762
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskFragment.startPausing$1(com.android.server.wm.ActivityRecord, java.lang.String, boolean, boolean):boolean");
+    }
+
+    public final boolean supportsMultiWindow() {
+        return supportsMultiWindowInDisplayArea((TaskDisplayArea) super.getDisplayArea(), false);
+    }
+
+    public final boolean supportsMultiWindowInDefaultDisplayArea() {
+        return supportsMultiWindowInDisplayArea(this.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea(), false);
+    }
+
+    public final boolean supportsMultiWindowInDisplayArea(TaskDisplayArea taskDisplayArea, boolean z) {
+        Task task;
+        ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
+        if ((!activityTaskManagerService.mSupportsMultiWindow && (!z || !activityTaskManagerService.mMultiWindowEnableController.mDeviceSupportsMultiWindow)) || taskDisplayArea == null || (task = getTask()) == null) {
+            return false;
+        }
+        return this.mAtmService.mMwSupportPolicyController.supportsMultiWindowInDisplayArea(taskDisplayArea, task.mResizeMode, task.isResizeable(true), task.mIgnoreDevSettingForNonResizable);
     }
 
     public String toFullString() {
@@ -2014,123 +1545,86 @@ public class TaskFragment extends WindowContainer {
         return "TaskFragment{" + Integer.toHexString(System.identityHashCode(this)) + " mode=" + WindowConfiguration.windowingModeToString(getWindowingMode()) + "}";
     }
 
-    public boolean dump(final String str, FileDescriptor fileDescriptor, final PrintWriter printWriter, final boolean z, boolean z2, final String str2, final boolean z3, final Runnable runnable) {
-        boolean z4;
-        Runnable runnable2 = new Runnable() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda11
-            @Override // java.lang.Runnable
-            public final void run() {
-                TaskFragment.this.lambda$dump$11(z3, printWriter, runnable, str, z, str2);
-            }
-        };
-        if (str2 == null) {
-            runnable2.run();
-            runnable2 = null;
-            z4 = true;
-        } else {
-            z4 = false;
+    public final ActivityRecord topRunningActivity(boolean z) {
+        if (getTask() == null || !getTask().isMinimized()) {
+            return z ? getActivity(new TaskFragment$$ExternalSyntheticLambda0(6)) : getActivity(new ActivityStarter$$ExternalSyntheticLambda0(1));
         }
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
-            if (windowContainer.asTaskFragment() != null) {
-                z4 = windowContainer.asTaskFragment().dump(str + "  ", fileDescriptor, printWriter, z, z2, str2, z3, runnable2) | z4;
-            } else if (windowContainer.asActivityRecord() != null) {
-                ActivityRecord.dumpActivity(fileDescriptor, printWriter, size, windowContainer.asActivityRecord(), str + "  ", "Hist ", true, !z, z2, str2, false, runnable2, getTask());
-            }
-        }
-        return z4;
+        return null;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$dump$11(boolean z, PrintWriter printWriter, Runnable runnable, String str, boolean z2, String str2) {
-        if (z) {
-            printWriter.println();
+    public final Rect translateRelativeBoundsToAbsoluteBounds(Rect rect, Rect rect2) {
+        if (rect.isEmpty()) {
+            this.mTmpAbsBounds.setEmpty();
+            return this.mTmpAbsBounds;
         }
-        if (runnable != null) {
-            runnable.run();
+        this.mTmpAbsBounds.set(rect);
+        this.mTmpAbsBounds.offset(rect2.left, rect2.top);
+        if (!(!forAllActivities(new TaskFragment$$ExternalSyntheticLambda6(this))) && !rect2.contains(this.mTmpAbsBounds) && !this.mTmpAbsBounds.intersect(rect2)) {
+            this.mTmpAbsBounds.setEmpty();
         }
-        dumpInner(str, printWriter, z2, str2);
+        return this.mTmpAbsBounds;
     }
 
-    public void dumpInner(String str, PrintWriter printWriter, boolean z, String str2) {
-        int size;
-        printWriter.print(str);
-        printWriter.print("* ");
-        printWriter.println(toFullString());
-        Rect requestedOverrideBounds = getRequestedOverrideBounds();
-        if (!requestedOverrideBounds.isEmpty()) {
-            printWriter.println(str + "  mBounds=" + requestedOverrideBounds);
+    public final void updateActivityVisibilities(boolean z, ActivityRecord activityRecord) {
+        this.mTaskSupervisor.beginActivityVisibilityUpdate(getDisplayContent());
+        try {
+            this.mEnsureActivitiesVisibleHelper.process(z, activityRecord);
+            this.mTaskSupervisor.endActivityVisibilityUpdate();
+            if (CoreRune.MT_SIZE_COMPAT_POLICY) {
+                SizeCompatPolicyManager sizeCompatPolicyManager = SizeCompatPolicyManager.LazyHolder.sManager;
+                Task asTask = asTask();
+                sizeCompatPolicyManager.getClass();
+                SizeCompatPolicyManager.ensureConfiguration(asTask);
+            }
+        } catch (Throwable th) {
+            this.mTaskSupervisor.endActivityVisibilityUpdate();
+            throw th;
         }
-        if (this.mIsRemovalRequested) {
-            printWriter.println(str + "  mIsRemovalRequested=true");
-        }
-        if (z) {
-            ActivityTaskSupervisor.printThisActivity(printWriter, this.mLastPausedActivity, str2, false, str + "  mLastPausedActivity: ", null);
-        }
-        Intent baseIntent = getTask() != null ? getTask().getBaseIntent() : null;
-        if (baseIntent == null || baseIntent.getExtras() == null || (size = baseIntent.getExtras().getSize()) <= 20000) {
+    }
+
+    public final void updateOrganizedTaskFragmentSurface() {
+        if (this.mDelayOrganizedTaskFragmentSurfaceUpdate || this.mTaskFragmentOrganizer == null) {
             return;
         }
-        printWriter.println(str + "  baseIntent extra sz : " + size);
+        boolean z = CoreRune.MW_EMBED_ACTIVITY && this.mTransitionController.isShellTransitionsEnabled() && this.mTransitionController.isCollecting(this) && !isVisibleRequested() && !isVisible();
+        if (this.mTransitionController.isShellTransitionsEnabled() && (!this.mTransitionController.isCollecting(this) || z)) {
+            SurfaceControl.Transaction syncTransaction = getSyncTransaction();
+            updateSurfacePosition(syncTransaction);
+            updateOrganizedTaskFragmentSurfaceSize(syncTransaction, false);
+        } else {
+            if (this.mTransitionController.isShellTransitionsEnabled() || isAnimating()) {
+                return;
+            }
+            SurfaceControl.Transaction syncTransaction2 = getSyncTransaction();
+            updateSurfacePosition(syncTransaction2);
+            updateOrganizedTaskFragmentSurfaceSize(syncTransaction2, false);
+        }
     }
 
-    @Override // com.android.server.wm.WindowContainer
-    public void dump(PrintWriter printWriter, String str, boolean z) {
-        super.dump(printWriter, str, z);
-        printWriter.println(str + "bounds=" + getBounds().toShortString());
-        StringBuilder sb = new StringBuilder();
-        sb.append(str);
-        sb.append("  ");
-        String sb2 = sb.toString();
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
-            TaskFragment asTaskFragment = windowContainer.asTaskFragment();
-            StringBuilder sb3 = new StringBuilder();
-            sb3.append(str);
-            sb3.append("* ");
-            sb3.append((Object) (asTaskFragment != null ? asTaskFragment.toFullString() : windowContainer));
-            printWriter.println(sb3.toString());
-            if (asTaskFragment != null) {
-                windowContainer.dump(printWriter, sb2, z);
+    public final void updateOrganizedTaskFragmentSurfaceSize(SurfaceControl.Transaction transaction, boolean z) {
+        if (this.mTaskFragmentOrganizer == null || this.mSurfaceControl == null || this.mSurfaceAnimator.hasLeash() || this.mSurfaceFreezer.hasLeash()) {
+            return;
+        }
+        Rect bounds = isClosingWhenResizing() ? (Rect) this.mDisplayContent.mClosingChangingContainers.get(this) : getBounds();
+        int width = bounds.width();
+        int height = bounds.height();
+        if (!z) {
+            Point point = this.mLastSurfaceSize;
+            if (width == point.x && height == point.y) {
+                return;
             }
         }
+        transaction.setWindowCrop(this.mSurfaceControl, width, height);
+        this.mLastSurfaceSize.set(width, height);
     }
 
     @Override // com.android.server.wm.WindowContainer
     public void writeIdentifierToProto(ProtoOutputStream protoOutputStream, long j) {
         long start = protoOutputStream.start(j);
         protoOutputStream.write(1120986464257L, System.identityHashCode(this));
-        ActivityRecord activityRecord = topRunningActivity();
+        ActivityRecord activityRecord = topRunningActivity(false);
         protoOutputStream.write(1120986464258L, activityRecord != null ? activityRecord.mUserId : -10000);
         protoOutputStream.write(1138166333443L, activityRecord != null ? activityRecord.intent.getComponent().flattenToShortString() : "TaskFragment");
         protoOutputStream.end(start);
-    }
-
-    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j, int i) {
-        if (i != 2 || isVisible()) {
-            long start = protoOutputStream.start(j);
-            super.dumpDebug(protoOutputStream, 1146756268033L, i);
-            protoOutputStream.write(1120986464258L, getDisplayId());
-            protoOutputStream.write(1120986464259L, getActivityType());
-            protoOutputStream.write(1120986464260L, this.mMinWidth);
-            protoOutputStream.write(1120986464261L, this.mMinHeight);
-            protoOutputStream.end(start);
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$allowEdgeExtension$12(ActivityRecord activityRecord) {
-        return activityRecord.isInTransition() && activityRecord.allowEdgeExtension();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean allowEdgeExtension() {
-        return getActivity(new Predicate() { // from class: com.android.server.wm.TaskFragment$$ExternalSyntheticLambda5
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$allowEdgeExtension$12;
-                lambda$allowEdgeExtension$12 = TaskFragment.lambda$allowEdgeExtension$12((ActivityRecord) obj);
-                return lambda$allowEdgeExtension$12;
-            }
-        }) != null;
     }
 }

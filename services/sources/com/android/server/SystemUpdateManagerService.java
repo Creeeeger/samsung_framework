@@ -10,20 +10,18 @@ import android.provider.Settings;
 import android.util.AtomicFile;
 import android.util.Slog;
 import android.util.Xml;
-import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SystemUpdateManagerService extends ISystemUpdateManager.Stub {
+public final class SystemUpdateManagerService extends ISystemUpdateManager.Stub {
     public final Context mContext;
     public final AtomicFile mFile;
-    public int mLastStatus;
     public int mLastUid;
     public final Object mLock;
 
@@ -31,7 +29,6 @@ public class SystemUpdateManagerService extends ISystemUpdateManager.Stub {
         Object obj = new Object();
         this.mLock = obj;
         this.mLastUid = -1;
-        this.mLastStatus = 0;
         this.mContext = context;
         this.mFile = new AtomicFile(new File(Environment.getDataSystemDirectory(), "system-update-info.xml"));
         synchronized (obj) {
@@ -39,25 +36,142 @@ public class SystemUpdateManagerService extends ISystemUpdateManager.Stub {
         }
     }
 
-    public void updateSystemUpdateInfo(PersistableBundle persistableBundle) {
-        this.mContext.enforceCallingOrSelfPermission("android.permission.RECOVERY", "SystemUpdateManagerService");
-        int i = persistableBundle.getInt("status", 0);
-        if (i == 0) {
-            Slog.w("SystemUpdateManagerService", "Invalid status info. Ignored");
-            return;
-        }
-        int callingUid = Binder.getCallingUid();
-        int i2 = this.mLastUid;
-        if (i2 == -1 || i2 == callingUid || i != 1) {
-            synchronized (this.mLock) {
-                saveSystemUpdateInfoLocked(persistableBundle, callingUid);
-            }
-            return;
-        }
-        Slog.i("SystemUpdateManagerService", "Inactive updater reporting IDLE status. Ignored");
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0024, code lost:
+    
+        r1 = android.os.PersistableBundle.restoreFromXml(r3);
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final android.os.Bundle loadSystemUpdateInfoLocked() {
+        /*
+            r7 = this;
+            java.lang.String r0 = "SystemUpdateManagerService"
+            r1 = 0
+            android.util.AtomicFile r2 = r7.mFile     // Catch: java.io.IOException -> L2e org.xmlpull.v1.XmlPullParserException -> L30 java.io.FileNotFoundException -> L4a
+            java.io.FileInputStream r2 = r2.openRead()     // Catch: java.io.IOException -> L2e org.xmlpull.v1.XmlPullParserException -> L30 java.io.FileNotFoundException -> L4a
+            com.android.modules.utils.TypedXmlPullParser r3 = android.util.Xml.resolvePullParser(r2)     // Catch: java.lang.Throwable -> L32
+        Ld:
+            int r4 = r3.next()     // Catch: java.lang.Throwable -> L32
+            r5 = 1
+            if (r4 == r5) goto L28
+            r5 = 2
+            if (r4 != r5) goto Ld
+            java.lang.String r4 = "info"
+            java.lang.String r5 = r3.getName()     // Catch: java.lang.Throwable -> L32
+            boolean r4 = r4.equals(r5)     // Catch: java.lang.Throwable -> L32
+            if (r4 == 0) goto Ld
+            android.os.PersistableBundle r1 = android.os.PersistableBundle.restoreFromXml(r3)     // Catch: java.lang.Throwable -> L32
+        L28:
+            if (r2 == 0) goto L61
+            r2.close()     // Catch: java.io.IOException -> L2e org.xmlpull.v1.XmlPullParserException -> L30 java.io.FileNotFoundException -> L4a
+            goto L61
+        L2e:
+            r2 = move-exception
+            goto L3e
+        L30:
+            r2 = move-exception
+            goto L44
+        L32:
+            r3 = move-exception
+            if (r2 == 0) goto L3d
+            r2.close()     // Catch: java.lang.Throwable -> L39
+            goto L3d
+        L39:
+            r2 = move-exception
+            r3.addSuppressed(r2)     // Catch: java.io.IOException -> L2e org.xmlpull.v1.XmlPullParserException -> L30 java.io.FileNotFoundException -> L4a
+        L3d:
+            throw r3     // Catch: java.io.IOException -> L2e org.xmlpull.v1.XmlPullParserException -> L30 java.io.FileNotFoundException -> L4a
+        L3e:
+            java.lang.String r3 = "Failed to read the info file:"
+            android.util.Slog.e(r0, r3, r2)
+            goto L61
+        L44:
+            java.lang.String r3 = "Failed to parse the info file:"
+            android.util.Slog.e(r0, r3, r2)
+            goto L61
+        L4a:
+            java.lang.StringBuilder r2 = new java.lang.StringBuilder
+            java.lang.String r3 = "No existing info file "
+            r2.<init>(r3)
+            android.util.AtomicFile r3 = r7.mFile
+            java.io.File r3 = r3.getBaseFile()
+            r2.append(r3)
+            java.lang.String r2 = r2.toString()
+            android.util.Slog.i(r0, r2)
+        L61:
+            if (r1 != 0) goto L68
+            android.os.Bundle r7 = r7.removeInfoFileAndGetDefaultInfoBundleLocked()
+            return r7
+        L68:
+            java.lang.String r2 = "version"
+            r3 = -1
+            int r2 = r1.getInt(r2, r3)
+            if (r2 != r3) goto L7c
+            java.lang.String r1 = "Invalid info file (invalid version). Ignored"
+            android.util.Slog.w(r0, r1)
+            android.os.Bundle r7 = r7.removeInfoFileAndGetDefaultInfoBundleLocked()
+            return r7
+        L7c:
+            java.lang.String r2 = "uid"
+            int r2 = r1.getInt(r2, r3)
+            if (r2 != r3) goto L8f
+            java.lang.String r1 = "Invalid info file (invalid UID). Ignored"
+            android.util.Slog.w(r0, r1)
+            android.os.Bundle r7 = r7.removeInfoFileAndGetDefaultInfoBundleLocked()
+            return r7
+        L8f:
+            java.lang.String r4 = "boot-count"
+            int r4 = r1.getInt(r4, r3)
+            if (r4 == r3) goto Ld7
+            android.content.Context r3 = r7.mContext
+            android.content.ContentResolver r3 = r3.getContentResolver()
+            java.lang.String r5 = "boot_count"
+            r6 = 0
+            int r3 = android.provider.Settings.Global.getInt(r3, r5, r6)
+            if (r4 == r3) goto La9
+            goto Ld7
+        La9:
+            java.lang.String r3 = "info-bundle"
+            android.os.PersistableBundle r1 = r1.getPersistableBundle(r3)
+            if (r1 != 0) goto Lbc
+            java.lang.String r1 = "Invalid info file (missing info). Ignored"
+            android.util.Slog.w(r0, r1)
+            android.os.Bundle r7 = r7.removeInfoFileAndGetDefaultInfoBundleLocked()
+            return r7
+        Lbc:
+            java.lang.String r3 = "status"
+            int r3 = r1.getInt(r3, r6)
+            if (r3 != 0) goto Lcf
+            java.lang.String r1 = "Invalid info file (invalid status). Ignored"
+            android.util.Slog.w(r0, r1)
+            android.os.Bundle r7 = r7.removeInfoFileAndGetDefaultInfoBundleLocked()
+            return r7
+        Lcf:
+            r7.mLastUid = r2
+            android.os.Bundle r7 = new android.os.Bundle
+            r7.<init>(r1)
+            return r7
+        Ld7:
+            java.lang.String r1 = "Outdated info file. Ignored"
+            android.util.Slog.w(r0, r1)
+            android.os.Bundle r7 = r7.removeInfoFileAndGetDefaultInfoBundleLocked()
+            return r7
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.SystemUpdateManagerService.loadSystemUpdateInfoLocked():android.os.Bundle");
     }
 
-    public Bundle retrieveSystemUpdateInfo() {
+    public final Bundle removeInfoFileAndGetDefaultInfoBundleLocked() {
+        if (this.mFile.exists()) {
+            Slog.i("SystemUpdateManagerService", "Removing info file");
+            this.mFile.delete();
+        }
+        this.mLastUid = -1;
+        return SystemUpdateManagerService$$ExternalSyntheticOutline0.m(0, Constants.JSON_CLIENT_DATA_STATUS);
+    }
+
+    public final Bundle retrieveSystemUpdateInfo() {
         Bundle loadSystemUpdateInfoLocked;
         if (this.mContext.checkCallingOrSelfPermission("android.permission.READ_SYSTEM_UPDATE_INFO") == -1 && this.mContext.checkCallingOrSelfPermission("android.permission.RECOVERY") == -1) {
             throw new SecurityException("Can't read system update info. Requiring READ_SYSTEM_UPDATE_INFO or RECOVERY permission.");
@@ -68,122 +182,53 @@ public class SystemUpdateManagerService extends ISystemUpdateManager.Stub {
         return loadSystemUpdateInfoLocked;
     }
 
-    public final Bundle loadSystemUpdateInfoLocked() {
-        PersistableBundle persistableBundle = null;
-        try {
-            FileInputStream openRead = this.mFile.openRead();
-            try {
-                persistableBundle = readInfoFileLocked(Xml.resolvePullParser(openRead));
-                if (openRead != null) {
-                    openRead.close();
-                }
-            } finally {
-            }
-        } catch (FileNotFoundException unused) {
-            Slog.i("SystemUpdateManagerService", "No existing info file " + this.mFile.getBaseFile());
-        } catch (IOException e) {
-            Slog.e("SystemUpdateManagerService", "Failed to read the info file:", e);
-        } catch (XmlPullParserException e2) {
-            Slog.e("SystemUpdateManagerService", "Failed to parse the info file:", e2);
-        }
-        if (persistableBundle == null) {
-            return removeInfoFileAndGetDefaultInfoBundleLocked();
-        }
-        if (persistableBundle.getInt("version", -1) == -1) {
-            Slog.w("SystemUpdateManagerService", "Invalid info file (invalid version). Ignored");
-            return removeInfoFileAndGetDefaultInfoBundleLocked();
-        }
-        int i = persistableBundle.getInt("uid", -1);
-        if (i == -1) {
-            Slog.w("SystemUpdateManagerService", "Invalid info file (invalid UID). Ignored");
-            return removeInfoFileAndGetDefaultInfoBundleLocked();
-        }
-        int i2 = persistableBundle.getInt("boot-count", -1);
-        if (i2 == -1 || i2 != getBootCount()) {
-            Slog.w("SystemUpdateManagerService", "Outdated info file. Ignored");
-            return removeInfoFileAndGetDefaultInfoBundleLocked();
-        }
-        PersistableBundle persistableBundle2 = persistableBundle.getPersistableBundle("info-bundle");
-        if (persistableBundle2 == null) {
-            Slog.w("SystemUpdateManagerService", "Invalid info file (missing info). Ignored");
-            return removeInfoFileAndGetDefaultInfoBundleLocked();
-        }
-        int i3 = persistableBundle2.getInt("status", 0);
-        if (i3 == 0) {
-            Slog.w("SystemUpdateManagerService", "Invalid info file (invalid status). Ignored");
-            return removeInfoFileAndGetDefaultInfoBundleLocked();
-        }
-        this.mLastStatus = i3;
-        this.mLastUid = i;
-        return new Bundle(persistableBundle2);
-    }
-
-    public final void saveSystemUpdateInfoLocked(PersistableBundle persistableBundle, int i) {
+    public final void saveSystemUpdateInfoLocked(int i, PersistableBundle persistableBundle) {
         PersistableBundle persistableBundle2 = new PersistableBundle();
         persistableBundle2.putPersistableBundle("info-bundle", persistableBundle);
         persistableBundle2.putInt("version", 0);
         persistableBundle2.putInt("uid", i);
-        persistableBundle2.putInt("boot-count", getBootCount());
-        if (writeInfoFileLocked(persistableBundle2)) {
-            this.mLastUid = i;
-            this.mLastStatus = persistableBundle.getInt("status");
-        }
-    }
-
-    public final PersistableBundle readInfoFileLocked(TypedXmlPullParser typedXmlPullParser) {
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1) {
-                return null;
-            }
-            if (next == 2 && "info".equals(typedXmlPullParser.getName())) {
-                return PersistableBundle.restoreFromXml(typedXmlPullParser);
-            }
-        }
-    }
-
-    public final boolean writeInfoFileLocked(PersistableBundle persistableBundle) {
-        FileOutputStream startWrite;
+        persistableBundle2.putInt("boot-count", Settings.Global.getInt(this.mContext.getContentResolver(), "boot_count", 0));
         FileOutputStream fileOutputStream = null;
         try {
-            startWrite = this.mFile.startWrite();
-        } catch (IOException | XmlPullParserException e) {
-            e = e;
-        }
-        try {
-            TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
-            resolveSerializer.startDocument((String) null, Boolean.TRUE);
-            resolveSerializer.startTag((String) null, "info");
-            persistableBundle.saveToXml(resolveSerializer);
-            resolveSerializer.endTag((String) null, "info");
-            resolveSerializer.endDocument();
-            this.mFile.finishWrite(startWrite);
-            return true;
+            FileOutputStream startWrite = this.mFile.startWrite();
+            try {
+                TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
+                resolveSerializer.startDocument((String) null, Boolean.TRUE);
+                resolveSerializer.startTag((String) null, "info");
+                persistableBundle2.saveToXml(resolveSerializer);
+                resolveSerializer.endTag((String) null, "info");
+                resolveSerializer.endDocument();
+                this.mFile.finishWrite(startWrite);
+                this.mLastUid = i;
+                persistableBundle.getInt(Constants.JSON_CLIENT_DATA_STATUS);
+            } catch (IOException | XmlPullParserException e) {
+                e = e;
+                fileOutputStream = startWrite;
+                Slog.e("SystemUpdateManagerService", "Failed to save the info file:", e);
+                if (fileOutputStream != null) {
+                    this.mFile.failWrite(fileOutputStream);
+                }
+            }
         } catch (IOException | XmlPullParserException e2) {
             e = e2;
-            fileOutputStream = startWrite;
-            Slog.e("SystemUpdateManagerService", "Failed to save the info file:", e);
-            if (fileOutputStream == null) {
-                return false;
-            }
-            this.mFile.failWrite(fileOutputStream);
-            return false;
         }
     }
 
-    public final Bundle removeInfoFileAndGetDefaultInfoBundleLocked() {
-        if (this.mFile.exists()) {
-            Slog.i("SystemUpdateManagerService", "Removing info file");
-            this.mFile.delete();
+    public final void updateSystemUpdateInfo(PersistableBundle persistableBundle) {
+        updateSystemUpdateInfo_enforcePermission();
+        int i = persistableBundle.getInt(Constants.JSON_CLIENT_DATA_STATUS, 0);
+        if (i == 0) {
+            Slog.w("SystemUpdateManagerService", "Invalid status info. Ignored");
+            return;
         }
-        this.mLastStatus = 0;
-        this.mLastUid = -1;
-        Bundle bundle = new Bundle();
-        bundle.putInt("status", 0);
-        return bundle;
-    }
-
-    public final int getBootCount() {
-        return Settings.Global.getInt(this.mContext.getContentResolver(), "boot_count", 0);
+        int callingUid = Binder.getCallingUid();
+        int i2 = this.mLastUid;
+        if (i2 != -1 && i2 != callingUid && i == 1) {
+            Slog.i("SystemUpdateManagerService", "Inactive updater reporting IDLE status. Ignored");
+            return;
+        }
+        synchronized (this.mLock) {
+            saveSystemUpdateInfoLocked(callingUid, persistableBundle);
+        }
     }
 }

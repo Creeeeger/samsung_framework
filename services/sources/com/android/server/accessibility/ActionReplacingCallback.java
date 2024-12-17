@@ -12,9 +12,9 @@ import android.view.accessibility.IAccessibilityInteractionConnectionCallback;
 import java.util.ArrayList;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ActionReplacingCallback extends IAccessibilityInteractionConnectionCallback.Stub {
-    public final IAccessibilityInteractionConnection mConnectionWithReplacementActions;
+public final class ActionReplacingCallback extends IAccessibilityInteractionConnectionCallback.Stub {
     public final int mInteractionId;
     public AccessibilityNodeInfo mNodeFromOriginalWindow;
     public AccessibilityNodeInfo mNodeWithReplacementActions;
@@ -30,7 +30,6 @@ public class ActionReplacingCallback extends IAccessibilityInteractionConnection
 
     public ActionReplacingCallback(IAccessibilityInteractionConnectionCallback iAccessibilityInteractionConnectionCallback, IAccessibilityInteractionConnection iAccessibilityInteractionConnection, int i, int i2, long j) {
         this.mServiceCallback = iAccessibilityInteractionConnectionCallback;
-        this.mConnectionWithReplacementActions = iAccessibilityInteractionConnection;
         this.mInteractionId = i;
         int i3 = i + 1;
         this.mNodeWithReplacementActionsInteractionId = i3;
@@ -43,133 +42,6 @@ public class ActionReplacingCallback extends IAccessibilityInteractionConnection
             }
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void setFindAccessibilityNodeInfoResult(AccessibilityNodeInfo accessibilityNodeInfo, int i) {
-        synchronized (this.mLock) {
-            if (i == this.mInteractionId) {
-                this.mNodeFromOriginalWindow = accessibilityNodeInfo;
-                this.mSetFindNodeFromOriginalWindowCalled = true;
-            } else if (i == this.mNodeWithReplacementActionsInteractionId) {
-                this.mNodeWithReplacementActions = accessibilityNodeInfo;
-                this.mReplacementNodeIsReadyOrFailed = true;
-            } else {
-                Slog.e("ActionReplacingCallback", "Callback with unexpected interactionId");
-                return;
-            }
-            replaceInfoActionsAndCallServiceIfReady();
-        }
-    }
-
-    public void setFindAccessibilityNodeInfosResult(List list, int i) {
-        synchronized (this.mLock) {
-            if (i == this.mInteractionId) {
-                this.mNodesFromOriginalWindow = list;
-                this.mSetFindNodesFromOriginalWindowCalled = true;
-            } else if (i == this.mNodeWithReplacementActionsInteractionId) {
-                setNodeWithReplacementActionsFromList(list);
-                this.mReplacementNodeIsReadyOrFailed = true;
-            } else {
-                Slog.e("ActionReplacingCallback", "Callback with unexpected interactionId");
-                return;
-            }
-            replaceInfoActionsAndCallServiceIfReady();
-        }
-    }
-
-    public void setPrefetchAccessibilityNodeInfoResult(List list, int i) {
-        synchronized (this.mLock) {
-            if (i == this.mInteractionId) {
-                this.mPrefetchedNodesFromOriginalWindow = list;
-                this.mSetPrefetchFromOriginalWindowCalled = true;
-                replaceInfoActionsAndCallServiceIfReady();
-                return;
-            }
-            Slog.e("ActionReplacingCallback", "Callback with unexpected interactionId");
-        }
-    }
-
-    public final void replaceInfoActionsAndCallServiceIfReady() {
-        replaceInfoActionsAndCallService();
-        replaceInfosActionsAndCallService();
-        replacePrefetchInfosActionsAndCallService();
-    }
-
-    public final void setNodeWithReplacementActionsFromList(List list) {
-        for (int i = 0; i < list.size(); i++) {
-            AccessibilityNodeInfo accessibilityNodeInfo = (AccessibilityNodeInfo) list.get(i);
-            if (accessibilityNodeInfo.getSourceNodeId() == AccessibilityNodeInfo.ROOT_NODE_ID) {
-                this.mNodeWithReplacementActions = accessibilityNodeInfo;
-            }
-        }
-    }
-
-    public void setPerformAccessibilityActionResult(boolean z, int i) {
-        this.mServiceCallback.setPerformAccessibilityActionResult(z, i);
-    }
-
-    public void sendTakeScreenshotOfWindowError(int i, int i2) {
-        this.mServiceCallback.sendTakeScreenshotOfWindowError(i, i2);
-    }
-
-    public final void replaceInfoActionsAndCallService() {
-        boolean z;
-        AccessibilityNodeInfo accessibilityNodeInfo;
-        AccessibilityNodeInfo accessibilityNodeInfo2;
-        synchronized (this.mLock) {
-            z = this.mReplacementNodeIsReadyOrFailed && this.mSetFindNodeFromOriginalWindowCalled;
-            if (z && (accessibilityNodeInfo2 = this.mNodeFromOriginalWindow) != null) {
-                replaceActionsOnInfoLocked(accessibilityNodeInfo2);
-                this.mSetFindNodeFromOriginalWindowCalled = false;
-            }
-            accessibilityNodeInfo = this.mNodeFromOriginalWindow;
-        }
-        if (z) {
-            try {
-                this.mServiceCallback.setFindAccessibilityNodeInfoResult(accessibilityNodeInfo, this.mInteractionId);
-            } catch (RemoteException unused) {
-            }
-        }
-    }
-
-    public final void replaceInfosActionsAndCallService() {
-        boolean z;
-        List list;
-        synchronized (this.mLock) {
-            z = this.mReplacementNodeIsReadyOrFailed && this.mSetFindNodesFromOriginalWindowCalled;
-            if (z) {
-                list = replaceActionsLocked(this.mNodesFromOriginalWindow);
-                this.mSetFindNodesFromOriginalWindowCalled = false;
-            } else {
-                list = null;
-            }
-        }
-        if (z) {
-            try {
-                this.mServiceCallback.setFindAccessibilityNodeInfosResult(list, this.mInteractionId);
-            } catch (RemoteException unused) {
-            }
-        }
-    }
-
-    public final void replacePrefetchInfosActionsAndCallService() {
-        boolean z;
-        List list;
-        synchronized (this.mLock) {
-            z = this.mReplacementNodeIsReadyOrFailed && this.mSetPrefetchFromOriginalWindowCalled;
-            if (z) {
-                list = replaceActionsLocked(this.mPrefetchedNodesFromOriginalWindow);
-                this.mSetPrefetchFromOriginalWindowCalled = false;
-            } else {
-                list = null;
-            }
-        }
-        if (z) {
-            try {
-                this.mServiceCallback.setPrefetchAccessibilityNodeInfoResult(list, this.mInteractionId);
-            } catch (RemoteException unused) {
-            }
         }
     }
 
@@ -211,5 +83,140 @@ public class ActionReplacingCallback extends IAccessibilityInteractionConnection
         accessibilityNodeInfo.setScrollable(this.mNodeWithReplacementActions.isScrollable());
         accessibilityNodeInfo.setLongClickable(this.mNodeWithReplacementActions.isLongClickable());
         accessibilityNodeInfo.setDismissable(this.mNodeWithReplacementActions.isDismissable());
+    }
+
+    public final void replaceInfoActionsAndCallServiceIfReady() {
+        boolean z;
+        boolean z2;
+        AccessibilityNodeInfo accessibilityNodeInfo;
+        boolean z3;
+        List list;
+        List list2;
+        AccessibilityNodeInfo accessibilityNodeInfo2;
+        synchronized (this.mLock) {
+            try {
+                z = true;
+                z2 = this.mReplacementNodeIsReadyOrFailed && this.mSetFindNodeFromOriginalWindowCalled;
+                if (z2 && (accessibilityNodeInfo2 = this.mNodeFromOriginalWindow) != null) {
+                    replaceActionsOnInfoLocked(accessibilityNodeInfo2);
+                    this.mSetFindNodeFromOriginalWindowCalled = false;
+                }
+                accessibilityNodeInfo = this.mNodeFromOriginalWindow;
+            } finally {
+            }
+        }
+        if (z2) {
+            try {
+                this.mServiceCallback.setFindAccessibilityNodeInfoResult(accessibilityNodeInfo, this.mInteractionId);
+            } catch (RemoteException unused) {
+            }
+        }
+        synchronized (this.mLock) {
+            try {
+                z3 = this.mReplacementNodeIsReadyOrFailed && this.mSetFindNodesFromOriginalWindowCalled;
+                list = null;
+                if (z3) {
+                    list2 = replaceActionsLocked(this.mNodesFromOriginalWindow);
+                    this.mSetFindNodesFromOriginalWindowCalled = false;
+                } else {
+                    list2 = null;
+                }
+            } finally {
+            }
+        }
+        if (z3) {
+            try {
+                this.mServiceCallback.setFindAccessibilityNodeInfosResult(list2, this.mInteractionId);
+            } catch (RemoteException unused2) {
+            }
+        }
+        synchronized (this.mLock) {
+            try {
+                if (!this.mReplacementNodeIsReadyOrFailed || !this.mSetPrefetchFromOriginalWindowCalled) {
+                    z = false;
+                }
+                if (z) {
+                    list = replaceActionsLocked(this.mPrefetchedNodesFromOriginalWindow);
+                    this.mSetPrefetchFromOriginalWindowCalled = false;
+                }
+            } finally {
+            }
+        }
+        if (z) {
+            try {
+                this.mServiceCallback.setPrefetchAccessibilityNodeInfoResult(list, this.mInteractionId);
+            } catch (RemoteException unused3) {
+            }
+        }
+    }
+
+    public final void sendAttachOverlayResult(int i, int i2) {
+        this.mServiceCallback.sendAttachOverlayResult(i, i2);
+    }
+
+    public final void sendTakeScreenshotOfWindowError(int i, int i2) {
+        this.mServiceCallback.sendTakeScreenshotOfWindowError(i, i2);
+    }
+
+    public final void setFindAccessibilityNodeInfoResult(AccessibilityNodeInfo accessibilityNodeInfo, int i) {
+        synchronized (this.mLock) {
+            try {
+                if (i == this.mInteractionId) {
+                    this.mNodeFromOriginalWindow = accessibilityNodeInfo;
+                    this.mSetFindNodeFromOriginalWindowCalled = true;
+                } else if (i != this.mNodeWithReplacementActionsInteractionId) {
+                    Slog.e("ActionReplacingCallback", "Callback with unexpected interactionId");
+                    return;
+                } else {
+                    this.mNodeWithReplacementActions = accessibilityNodeInfo;
+                    this.mReplacementNodeIsReadyOrFailed = true;
+                }
+                replaceInfoActionsAndCallServiceIfReady();
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setFindAccessibilityNodeInfosResult(List list, int i) {
+        synchronized (this.mLock) {
+            try {
+                if (i == this.mInteractionId) {
+                    this.mNodesFromOriginalWindow = list;
+                    this.mSetFindNodesFromOriginalWindowCalled = true;
+                } else {
+                    if (i != this.mNodeWithReplacementActionsInteractionId) {
+                        Slog.e("ActionReplacingCallback", "Callback with unexpected interactionId");
+                        return;
+                    }
+                    for (int i2 = 0; i2 < list.size(); i2++) {
+                        AccessibilityNodeInfo accessibilityNodeInfo = (AccessibilityNodeInfo) list.get(i2);
+                        if (accessibilityNodeInfo.getSourceNodeId() == AccessibilityNodeInfo.ROOT_NODE_ID) {
+                            this.mNodeWithReplacementActions = accessibilityNodeInfo;
+                        }
+                    }
+                    this.mReplacementNodeIsReadyOrFailed = true;
+                }
+                replaceInfoActionsAndCallServiceIfReady();
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setPerformAccessibilityActionResult(boolean z, int i) {
+        this.mServiceCallback.setPerformAccessibilityActionResult(z, i);
+    }
+
+    public final void setPrefetchAccessibilityNodeInfoResult(List list, int i) {
+        synchronized (this.mLock) {
+            if (i != this.mInteractionId) {
+                Slog.e("ActionReplacingCallback", "Callback with unexpected interactionId");
+                return;
+            }
+            this.mPrefetchedNodesFromOriginalWindow = list;
+            this.mSetPrefetchFromOriginalWindowCalled = true;
+            replaceInfoActionsAndCallServiceIfReady();
+        }
     }
 }

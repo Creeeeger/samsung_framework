@@ -1,19 +1,20 @@
 package com.android.server.credentials.metrics;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public enum ApiStatus {
-    SUCCESS(1),
-    FAILURE(2),
-    CLIENT_CANCELED(4),
-    USER_CANCELED(3);
+    SUCCESS("SUCCESS"),
+    FAILURE("FAILURE"),
+    CLIENT_CANCELED("CLIENT_CANCELED"),
+    USER_CANCELED("USER_CANCELED");
 
     private final int mInnerMetricCode;
 
-    ApiStatus(int i) {
-        this.mInnerMetricCode = i;
+    ApiStatus(String str) {
+        this.mInnerMetricCode = r2;
     }
 
-    public int getMetricCode() {
+    public final int getMetricCode() {
         return this.mInnerMetricCode;
     }
 }

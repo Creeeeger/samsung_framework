@@ -17,25 +17,37 @@ import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.RemoteException;
 import android.os.ResultReceiver;
 import android.os.ShellCallback;
 import android.os.UserHandle;
 import android.util.ArrayMap;
+import android.util.ArraySet;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.Xml;
 import com.android.internal.app.AssistUtils;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.ServiceThread;
 import com.android.server.SystemService;
+import com.android.server.pm.PackageManagerService;
+import com.android.server.slice.PinnedSliceState;
+import com.android.server.slice.SliceClientPermissions;
+import com.android.server.slice.SlicePermissionManager;
+import com.android.server.slice.SliceProviderPermissions;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.function.Predicate;
@@ -45,42 +57,111 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
-/* loaded from: classes3.dex */
-public class SliceManagerService extends ISliceManager.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SliceManagerService extends ISliceManager.Stub {
+    public static final /* synthetic */ int $r8$clinit = 0;
     public final AppOpsManager mAppOps;
     public final UsageStatsManagerInternal mAppUsageStats;
     public final AssistUtils mAssistUtils;
-    public final SparseArray mAssistantLookup;
-    public String mCachedDefaultHome;
     public final Context mContext;
     public final Handler mHandler;
-    public final SparseArray mHomeLookup;
-    public final Object mLock;
     public final PackageManagerInternal mPackageManagerInternal;
     public final SlicePermissionManager mPermissions;
-    public final ArrayMap mPinnedSlicesByUri;
-    public final BroadcastReceiver mReceiver;
-    public RoleObserver mRoleObserver;
+    public final AnonymousClass1 mReceiver;
+    public final Object mLock = new Object();
+    public final ArrayMap mPinnedSlicesByUri = new ArrayMap();
+    public final SparseArray mAssistantLookup = new SparseArray();
+    public final SparseArray mHomeLookup = new SparseArray();
+    public String mCachedDefaultHome = null;
 
-    public final void onUnlockUser(int i) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Lifecycle extends SystemService {
+        public SliceManagerService mService;
+
+        public Lifecycle(Context context) {
+            super(context);
+        }
+
+        @Override // com.android.server.SystemService
+        public final void onBootPhase(int i) {
+            if (i == 550) {
+                SliceManagerService sliceManagerService = this.mService;
+                int i2 = SliceManagerService.$r8$clinit;
+                sliceManagerService.getClass();
+            }
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        /* JADX WARN: Type inference failed for: r0v0, types: [android.os.IBinder, com.android.server.slice.SliceManagerService] */
+        @Override // com.android.server.SystemService
+        public final void onStart() {
+            Context context = getContext();
+            ServiceThread serviceThread = new ServiceThread(10, "SliceManagerService", true);
+            serviceThread.start();
+            ?? sliceManagerService = new SliceManagerService(context, serviceThread.getLooper());
+            this.mService = sliceManagerService;
+            publishBinderService("slice", sliceManagerService);
+        }
+
+        @Override // com.android.server.SystemService
+        public final void onUserStopping(SystemService.TargetUser targetUser) {
+            SliceManagerService sliceManagerService = this.mService;
+            final int userIdentifier = targetUser.getUserIdentifier();
+            synchronized (sliceManagerService.mLock) {
+                sliceManagerService.mPinnedSlicesByUri.values().removeIf(new Predicate() { // from class: com.android.server.slice.SliceManagerService$$ExternalSyntheticLambda3
+                    @Override // java.util.function.Predicate
+                    public final boolean test(Object obj) {
+                        return ContentProvider.getUserIdFromUri(((PinnedSliceState) obj).mUri) == userIdentifier;
+                    }
+                });
+            }
+        }
+
+        @Override // com.android.server.SystemService
+        public final void onUserUnlocking(SystemService.TargetUser targetUser) {
+            SliceManagerService sliceManagerService = this.mService;
+            targetUser.getUserIdentifier();
+            int i = SliceManagerService.$r8$clinit;
+            sliceManagerService.getClass();
+        }
     }
 
-    public final void systemReady() {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackageMatchingCache {
+        public String mCurrentPkg;
+        public final Supplier mPkgSource;
+
+        public PackageMatchingCache(Supplier supplier) {
+            this.mPkgSource = supplier;
+        }
     }
 
-    public SliceManagerService(Context context) {
-        this(context, createHandler().getLooper());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RoleObserver implements OnRoleHoldersChangedListener {
+        public final Executor mExecutor;
+
+        public RoleObserver() {
+            Executor mainExecutor = SliceManagerService.this.mContext.getMainExecutor();
+            this.mExecutor = mainExecutor;
+            RoleManager roleManager = (RoleManager) SliceManagerService.this.mContext.getSystemService(RoleManager.class);
+            if (roleManager != null) {
+                roleManager.addOnRoleHoldersChangedListenerAsUser(mainExecutor, this, UserHandle.ALL);
+                SliceManagerService.this.mCachedDefaultHome = null;
+            }
+        }
+
+        public final void onRoleHoldersChanged(String str, UserHandle userHandle) {
+            if ("android.app.role.HOME".equals(str)) {
+                SliceManagerService.this.mCachedDefaultHome = null;
+            }
+        }
     }
 
     public SliceManagerService(Context context, Looper looper) {
-        this.mLock = new Object();
-        this.mPinnedSlicesByUri = new ArrayMap();
-        this.mAssistantLookup = new SparseArray();
-        this.mHomeLookup = new SparseArray();
-        this.mCachedDefaultHome = null;
         BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.slice.SliceManagerService.1
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
+            public final void onReceive(Context context2, Intent intent) {
                 int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -10000);
                 if (intExtra == -10000) {
                     Slog.w("SliceManagerService", "Intent broadcast does not contain user handle: " + intent);
@@ -93,18 +174,14 @@ public class SliceManagerService extends ISliceManager.Stub {
                     return;
                 }
                 String action = intent.getAction();
-                action.hashCode();
-                if (!action.equals("android.intent.action.PACKAGE_DATA_CLEARED")) {
-                    if (action.equals("android.intent.action.PACKAGE_REMOVED") && !intent.getBooleanExtra("android.intent.extra.REPLACING", false)) {
-                        SliceManagerService.this.mPermissions.removePkg(schemeSpecificPart, intExtra);
-                        return;
-                    }
-                    return;
+                action.getClass();
+                if (action.equals("android.intent.action.PACKAGE_DATA_CLEARED")) {
+                    SliceManagerService.this.mPermissions.removePkg(intExtra, schemeSpecificPart);
+                } else if (action.equals("android.intent.action.PACKAGE_REMOVED") && !intent.getBooleanExtra("android.intent.extra.REPLACING", false)) {
+                    SliceManagerService.this.mPermissions.removePkg(intExtra, schemeSpecificPart);
                 }
-                SliceManagerService.this.mPermissions.removePkg(schemeSpecificPart, intExtra);
             }
         };
-        this.mReceiver = broadcastReceiver;
         this.mContext = context;
         PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
         Objects.requireNonNull(packageManagerInternal);
@@ -114,117 +191,43 @@ public class SliceManagerService extends ISliceManager.Stub {
         Handler handler = new Handler(looper);
         this.mHandler = handler;
         this.mAppUsageStats = (UsageStatsManagerInternal) LocalServices.getService(UsageStatsManagerInternal.class);
-        this.mPermissions = new SlicePermissionManager(context, looper);
+        this.mPermissions = new SlicePermissionManager(context, looper, new File(Environment.getDataDirectory(), "system/slice"));
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.intent.action.PACKAGE_DATA_CLEARED");
         intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
         intentFilter.addDataScheme("package");
-        this.mRoleObserver = new RoleObserver();
+        new RoleObserver();
         context.registerReceiverAsUser(broadcastReceiver, UserHandle.ALL, intentFilter, null, handler);
     }
 
-    public final void onStopUser(final int i) {
-        synchronized (this.mLock) {
-            this.mPinnedSlicesByUri.values().removeIf(new Predicate() { // from class: com.android.server.slice.SliceManagerService$$ExternalSyntheticLambda3
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$onStopUser$0;
-                    lambda$onStopUser$0 = SliceManagerService.lambda$onStopUser$0(i, (PinnedSliceState) obj);
-                    return lambda$onStopUser$0;
-                }
-            });
+    public final void applyRestore(byte[] bArr, int i) {
+        if (Binder.getCallingUid() != 1000) {
+            throw new SecurityException("Caller must be system");
         }
-    }
-
-    public static /* synthetic */ boolean lambda$onStopUser$0(int i, PinnedSliceState pinnedSliceState) {
-        return ContentProvider.getUserIdFromUri(pinnedSliceState.getUri()) == i;
-    }
-
-    public Uri[] getPinnedSlices(String str) {
-        verifyCaller(str);
-        int identifier = Binder.getCallingUserHandle().getIdentifier();
-        ArrayList arrayList = new ArrayList();
-        synchronized (this.mLock) {
-            for (PinnedSliceState pinnedSliceState : this.mPinnedSlicesByUri.values()) {
-                if (Objects.equals(str, pinnedSliceState.getPkg())) {
-                    Uri uri = pinnedSliceState.getUri();
-                    if (ContentProvider.getUserIdFromUri(uri, identifier) == identifier) {
-                        arrayList.add(ContentProvider.getUriWithoutUserId(uri));
-                    }
-                }
-            }
-        }
-        return (Uri[]) arrayList.toArray(new Uri[arrayList.size()]);
-    }
-
-    public void pinSlice(final String str, Uri uri, SliceSpec[] sliceSpecArr, IBinder iBinder) {
-        verifyCaller(str);
-        enforceAccess(str, uri);
-        final int identifier = Binder.getCallingUserHandle().getIdentifier();
-        Uri maybeAddUserId = ContentProvider.maybeAddUserId(uri, identifier);
-        final String providerPkg = getProviderPkg(maybeAddUserId, identifier);
-        getOrCreatePinnedSlice(maybeAddUserId, providerPkg).pin(str, sliceSpecArr, iBinder);
-        this.mHandler.post(new Runnable() { // from class: com.android.server.slice.SliceManagerService$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                SliceManagerService.this.lambda$pinSlice$1(providerPkg, str, identifier);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$pinSlice$1(String str, String str2, int i) {
-        if (str == null || Objects.equals(str2, str)) {
+        if (bArr == null) {
+            DeviceIdleController$$ExternalSyntheticOutline0.m(i, "applyRestore: no payload to restore for user ", "SliceManagerService");
             return;
         }
-        this.mAppUsageStats.reportEvent(str, i, (isAssistant(str2, i) || isDefaultHomeApp(str2, i)) ? 13 : 14);
-    }
-
-    public void unpinSlice(String str, Uri uri, IBinder iBinder) {
-        verifyCaller(str);
-        enforceAccess(str, uri);
-        Uri maybeAddUserId = ContentProvider.maybeAddUserId(uri, Binder.getCallingUserHandle().getIdentifier());
+        if (i != 0) {
+            DeviceIdleController$$ExternalSyntheticOutline0.m(i, "applyRestore: cannot restore policy for user ", "SliceManagerService");
+            return;
+        }
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bArr);
         try {
-            PinnedSliceState pinnedSlice = getPinnedSlice(maybeAddUserId);
-            if (pinnedSlice == null || !pinnedSlice.unpin(str, iBinder)) {
-                return;
-            }
-            removePinnedSlice(maybeAddUserId);
-        } catch (IllegalStateException e) {
-            Slog.w("SliceManagerService", e.getMessage());
+            XmlPullParser newPullParser = XmlPullParserFactory.newInstance().newPullParser();
+            newPullParser.setInput(byteArrayInputStream, Xml.Encoding.UTF_8.name());
+            this.mPermissions.readRestore(newPullParser);
+        } catch (IOException | NumberFormatException | XmlPullParserException e) {
+            Slog.w("SliceManagerService", "applyRestore: error reading payload", e);
         }
     }
 
-    public boolean hasSliceAccess(String str) {
-        verifyCaller(str);
-        return hasFullSliceAccess(str, Binder.getCallingUserHandle().getIdentifier());
-    }
-
-    public SliceSpec[] getPinnedSpecs(Uri uri, String str) {
-        verifyCaller(str);
-        enforceAccess(str, uri);
-        return getPinnedSlice(ContentProvider.maybeAddUserId(uri, Binder.getCallingUserHandle().getIdentifier())).getSpecs();
-    }
-
-    public void grantSlicePermission(String str, String str2, Uri uri) {
-        verifyCaller(str);
-        int identifier = Binder.getCallingUserHandle().getIdentifier();
-        enforceOwner(str, uri, identifier);
-        this.mPermissions.grantSliceAccess(str2, identifier, str, identifier, uri);
-    }
-
-    public void revokeSlicePermission(String str, String str2, Uri uri) {
-        verifyCaller(str);
-        int identifier = Binder.getCallingUserHandle().getIdentifier();
-        enforceOwner(str, uri, identifier);
-        this.mPermissions.revokeSliceAccess(str2, identifier, str, identifier, uri);
-    }
-
-    public int checkSlicePermission(Uri uri, String str, int i, int i2, String[] strArr) {
+    public final int checkSlicePermission(Uri uri, String str, int i, int i2, String[] strArr) {
         return checkSlicePermissionInternal(uri, str, null, i, i2, strArr);
     }
 
     public final int checkSlicePermissionInternal(Uri uri, String str, String str2, int i, int i2, String[] strArr) {
+        boolean z;
         int userId = UserHandle.getUserId(i2);
         if (str2 == null) {
             String[] packagesForUid = this.mContext.getPackageManager().getPackagesForUid(i2);
@@ -239,7 +242,42 @@ public class SliceManagerService extends ISliceManager.Stub {
             }
             return -1;
         }
-        if (hasFullSliceAccess(str2, userId) || this.mPermissions.hasPermission(str2, userId, uri)) {
+        if (hasFullSliceAccess(userId, str2)) {
+            return 0;
+        }
+        SlicePermissionManager slicePermissionManager = this.mPermissions;
+        slicePermissionManager.getClass();
+        SliceClientPermissions client = slicePermissionManager.getClient(new SlicePermissionManager.PkgUser(str2, userId));
+        int userIdFromUri = ContentProvider.getUserIdFromUri(uri, userId);
+        boolean z2 = true;
+        if (!client.mHasFullAccess) {
+            Uri uriWithoutUserId = ContentProvider.getUriWithoutUserId(uri);
+            synchronized (client) {
+                if ("content".equals(uriWithoutUserId.getScheme())) {
+                    SlicePermissionManager.PkgUser pkgUser = new SlicePermissionManager.PkgUser(uriWithoutUserId.getAuthority(), userIdFromUri);
+                    synchronized (client) {
+                        SliceClientPermissions.SliceAuthority sliceAuthority = (SliceClientPermissions.SliceAuthority) client.mAuths.get(pkgUser);
+                        if (sliceAuthority != null) {
+                            List<String> pathSegments = uriWithoutUserId.getPathSegments();
+                            Iterator it = sliceAuthority.mPaths.iterator();
+                            while (it.hasNext()) {
+                                if (SliceClientPermissions.SliceAuthority.isPathPrefixMatch((String[]) it.next(), (String[]) pathSegments.toArray(new String[pathSegments.size()]))) {
+                                    z = true;
+                                    break;
+                                }
+                            }
+                        }
+                        z = false;
+                    }
+                } else {
+                    z = false;
+                }
+            }
+            if (!z) {
+                z2 = false;
+            }
+        }
+        if (z2) {
             return 0;
         }
         if (strArr != null && str != null) {
@@ -247,8 +285,8 @@ public class SliceManagerService extends ISliceManager.Stub {
             verifyCaller(str);
             for (String str3 : strArr) {
                 if (this.mContext.checkPermission(str3, i, i2) == 0) {
-                    int userIdFromUri = ContentProvider.getUserIdFromUri(uri, userId);
-                    this.mPermissions.grantSliceAccess(str2, userId, getProviderPkg(uri, userIdFromUri), userIdFromUri, uri);
+                    int userIdFromUri2 = ContentProvider.getUserIdFromUri(uri, userId);
+                    this.mPermissions.grantSliceAccess(str2, userId, getProviderPkg(userIdFromUri2, uri), userIdFromUri2, uri);
                     return 0;
                 }
             }
@@ -256,31 +294,60 @@ public class SliceManagerService extends ISliceManager.Stub {
         return -1;
     }
 
-    public void grantPermissionFromUser(Uri uri, String str, String str2, boolean z) {
-        verifyCaller(str2);
-        getContext().enforceCallingOrSelfPermission("android.permission.MANAGE_SLICE_PERMISSIONS", "Slice granting requires MANAGE_SLICE_PERMISSIONS");
-        int identifier = Binder.getCallingUserHandle().getIdentifier();
-        if (z) {
-            this.mPermissions.grantFullAccess(str, identifier);
-        } else {
-            Uri build = uri.buildUpon().path("").build();
-            int userIdFromUri = ContentProvider.getUserIdFromUri(build, identifier);
-            this.mPermissions.grantSliceAccess(str, identifier, getProviderPkg(build, userIdFromUri), userIdFromUri, build);
+    public PinnedSliceState createPinnedSlice(Uri uri, String str) {
+        return new PinnedSliceState(this, uri, str);
+    }
+
+    public final void enforceAccess(Uri uri, String str) {
+        if (checkSlicePermissionInternal(uri, null, str, Binder.getCallingPid(), Binder.getCallingUid(), null) != 0 && !Objects.equals(str, getProviderPkg(ContentProvider.getUserIdFromUri(uri, Binder.getCallingUserHandle().getIdentifier()), uri))) {
+            throw new SecurityException("Access to slice " + uri + " is required");
         }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            this.mContext.getContentResolver().notifyChange(uri, null);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
+        int identifier = Binder.getCallingUserHandle().getIdentifier();
+        if (ContentProvider.getUserIdFromUri(uri, identifier) != identifier) {
+            this.mContext.enforceCallingOrSelfPermission("android.permission.INTERACT_ACROSS_USERS_FULL", "Slice interaction across users requires INTERACT_ACROSS_USERS_FULL");
         }
     }
 
-    public byte[] getBackupPayload(int i) {
+    public final void enforceOwner(String str, Uri uri, int i) {
+        if (!Objects.equals(getProviderPkg(i, uri), str) || str == null) {
+            throw new SecurityException("Caller must own " + uri);
+        }
+    }
+
+    public final String[] getAllPackagesGranted(String str) {
+        ArrayList arrayList;
+        ArraySet arraySet;
+        String providerPkg = getProviderPkg(0, new Uri.Builder().scheme("content").authority(str).build());
+        if (providerPkg == null) {
+            return new String[0];
+        }
+        SlicePermissionManager slicePermissionManager = this.mPermissions;
+        slicePermissionManager.getClass();
+        ArraySet arraySet2 = new ArraySet();
+        SliceProviderPermissions provider = slicePermissionManager.getProvider(new SlicePermissionManager.PkgUser(providerPkg, 0));
+        synchronized (provider) {
+            arrayList = new ArrayList(provider.mAuths.values());
+        }
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            SliceProviderPermissions.SliceAuthority sliceAuthority = (SliceProviderPermissions.SliceAuthority) it.next();
+            synchronized (sliceAuthority) {
+                arraySet = new ArraySet(sliceAuthority.mPkgs);
+            }
+            Iterator it2 = arraySet.iterator();
+            while (it2.hasNext()) {
+                arraySet2.add(((SlicePermissionManager.PkgUser) it2.next()).mPkg);
+            }
+        }
+        return (String[]) arraySet2.toArray(new String[arraySet2.size()]);
+    }
+
+    public final byte[] getBackupPayload(int i) {
         if (Binder.getCallingUid() != 1000) {
             throw new SecurityException("Caller must be system");
         }
         if (i != 0) {
-            Slog.w("SliceManagerService", "getBackupPayload: cannot backup policy for user " + i);
+            DeviceIdleController$$ExternalSyntheticOutline0.m(i, "getBackupPayload: cannot backup policy for user ", "SliceManagerService");
             return null;
         }
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -296,186 +363,7 @@ public class SliceManagerService extends ISliceManager.Stub {
         }
     }
 
-    public void applyRestore(byte[] bArr, int i) {
-        if (Binder.getCallingUid() != 1000) {
-            throw new SecurityException("Caller must be system");
-        }
-        if (bArr == null) {
-            Slog.w("SliceManagerService", "applyRestore: no payload to restore for user " + i);
-            return;
-        }
-        if (i != 0) {
-            Slog.w("SliceManagerService", "applyRestore: cannot restore policy for user " + i);
-            return;
-        }
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bArr);
-        try {
-            XmlPullParser newPullParser = XmlPullParserFactory.newInstance().newPullParser();
-            newPullParser.setInput(byteArrayInputStream, Xml.Encoding.UTF_8.name());
-            this.mPermissions.readRestore(newPullParser);
-        } catch (IOException | NumberFormatException | XmlPullParserException e) {
-            Slog.w("SliceManagerService", "applyRestore: error reading payload", e);
-        }
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
-        new SliceShellCommand(this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
-    }
-
-    public final void enforceOwner(String str, Uri uri, int i) {
-        if (!Objects.equals(getProviderPkg(uri, i), str) || str == null) {
-            throw new SecurityException("Caller must own " + uri);
-        }
-    }
-
-    public void removePinnedSlice(Uri uri) {
-        synchronized (this.mLock) {
-            ((PinnedSliceState) this.mPinnedSlicesByUri.remove(uri)).destroy();
-        }
-    }
-
-    public final PinnedSliceState getPinnedSlice(Uri uri) {
-        PinnedSliceState pinnedSliceState;
-        synchronized (this.mLock) {
-            pinnedSliceState = (PinnedSliceState) this.mPinnedSlicesByUri.get(uri);
-            if (pinnedSliceState == null) {
-                throw new IllegalStateException(String.format("Slice %s not pinned", uri.toString()));
-            }
-        }
-        return pinnedSliceState;
-    }
-
-    public final PinnedSliceState getOrCreatePinnedSlice(Uri uri, String str) {
-        PinnedSliceState pinnedSliceState;
-        synchronized (this.mLock) {
-            pinnedSliceState = (PinnedSliceState) this.mPinnedSlicesByUri.get(uri);
-            if (pinnedSliceState == null) {
-                pinnedSliceState = createPinnedSlice(uri, str);
-                this.mPinnedSlicesByUri.put(uri, pinnedSliceState);
-            }
-        }
-        return pinnedSliceState;
-    }
-
-    public PinnedSliceState createPinnedSlice(Uri uri, String str) {
-        return new PinnedSliceState(this, uri, str);
-    }
-
-    public Object getLock() {
-        return this.mLock;
-    }
-
-    public Context getContext() {
-        return this.mContext;
-    }
-
-    public Handler getHandler() {
-        return this.mHandler;
-    }
-
-    public int checkAccess(String str, Uri uri, int i, int i2) {
-        return checkSlicePermissionInternal(uri, null, str, i2, i, null);
-    }
-
-    public final String getProviderPkg(Uri uri, int i) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            ProviderInfo resolveContentProviderAsUser = this.mContext.getPackageManager().resolveContentProviderAsUser(ContentProvider.getUriWithoutUserId(uri).getAuthority(), 0, ContentProvider.getUserIdFromUri(uri, i));
-            return resolveContentProviderAsUser == null ? null : resolveContentProviderAsUser.packageName;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final void enforceCrossUser(String str, Uri uri) {
-        int identifier = Binder.getCallingUserHandle().getIdentifier();
-        if (ContentProvider.getUserIdFromUri(uri, identifier) != identifier) {
-            getContext().enforceCallingOrSelfPermission("android.permission.INTERACT_ACROSS_USERS_FULL", "Slice interaction across users requires INTERACT_ACROSS_USERS_FULL");
-        }
-    }
-
-    public final void enforceAccess(String str, Uri uri) {
-        if (checkAccess(str, uri, Binder.getCallingUid(), Binder.getCallingPid()) != 0 && !Objects.equals(str, getProviderPkg(uri, ContentProvider.getUserIdFromUri(uri, Binder.getCallingUserHandle().getIdentifier())))) {
-            throw new SecurityException("Access to slice " + uri + " is required");
-        }
-        enforceCrossUser(str, uri);
-    }
-
-    public final void verifyCaller(String str) {
-        this.mAppOps.checkPackage(Binder.getCallingUid(), str);
-    }
-
-    public final boolean hasFullSliceAccess(String str, int i) {
-        boolean z;
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            if (!isDefaultHomeApp(str, i) && !isAssistant(str, i)) {
-                if (!isGrantedFullAccess(str, i)) {
-                    z = false;
-                    return z;
-                }
-            }
-            z = true;
-            return z;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final boolean isAssistant(String str, int i) {
-        return getAssistantMatcher(i).matches(str);
-    }
-
-    public final boolean isDefaultHomeApp(String str, int i) {
-        return getHomeMatcher(i).matches(str);
-    }
-
-    public final PackageMatchingCache getAssistantMatcher(final int i) {
-        PackageMatchingCache packageMatchingCache = (PackageMatchingCache) this.mAssistantLookup.get(i);
-        if (packageMatchingCache != null) {
-            return packageMatchingCache;
-        }
-        PackageMatchingCache packageMatchingCache2 = new PackageMatchingCache(new Supplier() { // from class: com.android.server.slice.SliceManagerService$$ExternalSyntheticLambda0
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                String lambda$getAssistantMatcher$2;
-                lambda$getAssistantMatcher$2 = SliceManagerService.this.lambda$getAssistantMatcher$2(i);
-                return lambda$getAssistantMatcher$2;
-            }
-        });
-        this.mAssistantLookup.put(i, packageMatchingCache2);
-        return packageMatchingCache2;
-    }
-
-    public final PackageMatchingCache getHomeMatcher(final int i) {
-        PackageMatchingCache packageMatchingCache = (PackageMatchingCache) this.mHomeLookup.get(i);
-        if (packageMatchingCache != null) {
-            return packageMatchingCache;
-        }
-        PackageMatchingCache packageMatchingCache2 = new PackageMatchingCache(new Supplier() { // from class: com.android.server.slice.SliceManagerService$$ExternalSyntheticLambda2
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                String lambda$getHomeMatcher$3;
-                lambda$getHomeMatcher$3 = SliceManagerService.this.lambda$getHomeMatcher$3(i);
-                return lambda$getHomeMatcher$3;
-            }
-        });
-        this.mHomeLookup.put(i, packageMatchingCache2);
-        return packageMatchingCache2;
-    }
-
-    /* renamed from: getAssistant, reason: merged with bridge method [inline-methods] */
-    public final String lambda$getAssistantMatcher$2(int i) {
-        ComponentName assistComponentForUser = this.mAssistUtils.getAssistComponentForUser(i);
-        if (assistComponentForUser == null) {
-            return null;
-        }
-        return assistComponentForUser.getPackageName();
-    }
-
-    /* renamed from: getDefaultHome, reason: merged with bridge method [inline-methods] */
-    public String lambda$getHomeMatcher$3(int i) {
+    public String getDefaultHome(int i) {
         String str = this.mCachedDefaultHome;
         if (str != null) {
             return str;
@@ -483,7 +371,7 @@ public class SliceManagerService extends ISliceManager.Stub {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             ArrayList arrayList = new ArrayList();
-            ComponentName homeActivitiesAsUser = this.mPackageManagerInternal.getHomeActivitiesAsUser(arrayList, i);
+            ComponentName homeActivitiesAsUser = ((PackageManagerService.PackageManagerInternalImpl) this.mPackageManagerInternal).mService.snapshotComputer().getHomeActivitiesAsUser(i, arrayList);
             this.mCachedDefaultHome = homeActivitiesAsUser != null ? homeActivitiesAsUser.getPackageName() : null;
             if (homeActivitiesAsUser == null) {
                 int size = arrayList.size();
@@ -496,111 +384,256 @@ public class SliceManagerService extends ISliceManager.Stub {
                     }
                 }
             }
-            return homeActivitiesAsUser != null ? homeActivitiesAsUser.getPackageName() : null;
+            String packageName = homeActivitiesAsUser != null ? homeActivitiesAsUser.getPackageName() : null;
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return packageName;
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final PinnedSliceState getPinnedSlice(Uri uri) {
+        PinnedSliceState pinnedSliceState;
+        synchronized (this.mLock) {
+            try {
+                pinnedSliceState = (PinnedSliceState) this.mPinnedSlicesByUri.get(uri);
+                if (pinnedSliceState == null) {
+                    throw new IllegalStateException("Slice " + uri.toString() + " not pinned");
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return pinnedSliceState;
+    }
+
+    public final Uri[] getPinnedSlices(String str) {
+        verifyCaller(str);
+        int identifier = Binder.getCallingUserHandle().getIdentifier();
+        ArrayList arrayList = new ArrayList();
+        synchronized (this.mLock) {
+            try {
+                for (PinnedSliceState pinnedSliceState : this.mPinnedSlicesByUri.values()) {
+                    if (Objects.equals(str, pinnedSliceState.mPkg)) {
+                        Uri uri = pinnedSliceState.mUri;
+                        if (ContentProvider.getUserIdFromUri(uri, identifier) == identifier) {
+                            arrayList.add(ContentProvider.getUriWithoutUserId(uri));
+                        }
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return (Uri[]) arrayList.toArray(new Uri[arrayList.size()]);
+    }
+
+    public final SliceSpec[] getPinnedSpecs(Uri uri, String str) {
+        verifyCaller(str);
+        enforceAccess(uri, str);
+        return getPinnedSlice(ContentProvider.maybeAddUserId(uri, Binder.getCallingUserHandle().getIdentifier())).mSupportedSpecs;
+    }
+
+    public final String getProviderPkg(int i, Uri uri) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            ProviderInfo resolveContentProviderAsUser = this.mContext.getPackageManager().resolveContentProviderAsUser(ContentProvider.getUriWithoutUserId(uri).getAuthority(), 0, ContentProvider.getUserIdFromUri(uri, i));
+            return resolveContentProviderAsUser == null ? null : resolveContentProviderAsUser.packageName;
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public void invalidateCachedDefaultHome() {
-        this.mCachedDefaultHome = null;
+    public final void grantPermissionFromUser(Uri uri, String str, String str2, boolean z) {
+        verifyCaller(str2);
+        this.mContext.enforceCallingOrSelfPermission("android.permission.MANAGE_SLICE_PERMISSIONS", "Slice granting requires MANAGE_SLICE_PERMISSIONS");
+        int identifier = Binder.getCallingUserHandle().getIdentifier();
+        if (z) {
+            SlicePermissionManager slicePermissionManager = this.mPermissions;
+            slicePermissionManager.getClass();
+            SliceClientPermissions client = slicePermissionManager.getClient(new SlicePermissionManager.PkgUser(str, identifier));
+            if (!client.mHasFullAccess) {
+                client.mHasFullAccess = true;
+                client.mTracker.onPersistableDirty(client);
+            }
+        } else {
+            Uri build = uri.buildUpon().path("").build();
+            int userIdFromUri = ContentProvider.getUserIdFromUri(build, identifier);
+            this.mPermissions.grantSliceAccess(str, identifier, getProviderPkg(userIdFromUri, build), userIdFromUri, build);
+        }
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            this.mContext.getContentResolver().notifyChange(uri, null);
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
     }
 
-    /* loaded from: classes3.dex */
-    public class RoleObserver implements OnRoleHoldersChangedListener {
-        public final Executor mExecutor;
-        public RoleManager mRm;
+    public final void grantSlicePermission(String str, String str2, Uri uri) {
+        verifyCaller(str);
+        int identifier = Binder.getCallingUserHandle().getIdentifier();
+        enforceOwner(str, uri, identifier);
+        this.mPermissions.grantSliceAccess(str2, identifier, str, identifier, uri);
+    }
 
-        public RoleObserver() {
-            this.mExecutor = SliceManagerService.this.mContext.getMainExecutor();
-            register();
+    public final boolean hasFullSliceAccess(int i, String str) {
+        boolean z;
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            if (!isDefaultHomeApp(i, str) && !isAssistant(i, str)) {
+                SlicePermissionManager slicePermissionManager = this.mPermissions;
+                slicePermissionManager.getClass();
+                if (!slicePermissionManager.getClient(new SlicePermissionManager.PkgUser(str, i)).mHasFullAccess) {
+                    z = false;
+                    return z;
+                }
+            }
+            z = true;
+            return z;
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
         }
+    }
 
-        public void register() {
-            RoleManager roleManager = (RoleManager) SliceManagerService.this.mContext.getSystemService(RoleManager.class);
-            this.mRm = roleManager;
-            if (roleManager != null) {
-                roleManager.addOnRoleHoldersChangedListenerAsUser(this.mExecutor, this, UserHandle.ALL);
-                SliceManagerService.this.invalidateCachedDefaultHome();
+    public final boolean hasSliceAccess(String str) {
+        verifyCaller(str);
+        return hasFullSliceAccess(Binder.getCallingUserHandle().getIdentifier(), str);
+    }
+
+    public final boolean isAssistant(int i, String str) {
+        PackageMatchingCache packageMatchingCache = (PackageMatchingCache) this.mAssistantLookup.get(i);
+        if (packageMatchingCache == null) {
+            packageMatchingCache = new PackageMatchingCache(new SliceManagerService$$ExternalSyntheticLambda0(this, i, 0));
+            this.mAssistantLookup.put(i, packageMatchingCache);
+        }
+        if (str == null) {
+            return false;
+        }
+        if (str.equals(packageMatchingCache.mCurrentPkg)) {
+            return true;
+        }
+        String str2 = (String) packageMatchingCache.mPkgSource.get();
+        packageMatchingCache.mCurrentPkg = str2;
+        return str.equals(str2);
+    }
+
+    public final boolean isDefaultHomeApp(int i, String str) {
+        PackageMatchingCache packageMatchingCache = (PackageMatchingCache) this.mHomeLookup.get(i);
+        if (packageMatchingCache == null) {
+            packageMatchingCache = new PackageMatchingCache(new SliceManagerService$$ExternalSyntheticLambda0(this, i, 1));
+            this.mHomeLookup.put(i, packageMatchingCache);
+        }
+        if (str == null) {
+            return false;
+        }
+        if (str.equals(packageMatchingCache.mCurrentPkg)) {
+            return true;
+        }
+        String str2 = (String) packageMatchingCache.mPkgSource.get();
+        packageMatchingCache.mCurrentPkg = str2;
+        return str.equals(str2);
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+        new SliceShellCommand(this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+    }
+
+    public final void pinSlice(final String str, Uri uri, SliceSpec[] sliceSpecArr, IBinder iBinder) {
+        PinnedSliceState pinnedSliceState;
+        verifyCaller(str);
+        enforceAccess(uri, str);
+        final int identifier = Binder.getCallingUserHandle().getIdentifier();
+        Uri maybeAddUserId = ContentProvider.maybeAddUserId(uri, identifier);
+        final String providerPkg = getProviderPkg(identifier, maybeAddUserId);
+        synchronized (this.mLock) {
+            try {
+                pinnedSliceState = (PinnedSliceState) this.mPinnedSlicesByUri.get(maybeAddUserId);
+                if (pinnedSliceState == null) {
+                    pinnedSliceState = createPinnedSlice(maybeAddUserId, providerPkg);
+                    this.mPinnedSlicesByUri.put(maybeAddUserId, pinnedSliceState);
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
+        synchronized (pinnedSliceState.mLock) {
+            ArrayMap arrayMap = pinnedSliceState.mListeners;
+            Binder.getCallingUid();
+            Binder.getCallingPid();
+            PinnedSliceState.ListenerInfo listenerInfo = new PinnedSliceState.ListenerInfo();
+            listenerInfo.token = iBinder;
+            arrayMap.put(iBinder, listenerInfo);
+            try {
+                iBinder.linkToDeath(pinnedSliceState.mDeathRecipient, 0);
+            } catch (RemoteException unused) {
+            }
+            pinnedSliceState.mergeSpecs(sliceSpecArr);
+            pinnedSliceState.setSlicePinned(true);
+        }
+        this.mHandler.post(new Runnable() { // from class: com.android.server.slice.SliceManagerService$$ExternalSyntheticLambda1
+            @Override // java.lang.Runnable
+            public final void run() {
+                SliceManagerService sliceManagerService = SliceManagerService.this;
+                String str2 = providerPkg;
+                String str3 = str;
+                int i = identifier;
+                sliceManagerService.getClass();
+                if (str2 == null || Objects.equals(str3, str2)) {
+                    return;
+                }
+                sliceManagerService.mAppUsageStats.reportEvent(i, (sliceManagerService.isAssistant(i, str3) || sliceManagerService.isDefaultHomeApp(i, str3)) ? 13 : 14, str2);
+            }
+        });
+    }
 
-        public void onRoleHoldersChanged(String str, UserHandle userHandle) {
-            if ("android.app.role.HOME".equals(str)) {
-                SliceManagerService.this.invalidateCachedDefaultHome();
+    public final void removePinnedSlice(Uri uri) {
+        synchronized (this.mLock) {
+            ((PinnedSliceState) this.mPinnedSlicesByUri.remove(uri)).setSlicePinned(false);
+        }
+    }
+
+    public final void revokeSlicePermission(String str, String str2, Uri uri) {
+        verifyCaller(str);
+        int identifier = Binder.getCallingUserHandle().getIdentifier();
+        enforceOwner(str, uri, identifier);
+        SlicePermissionManager slicePermissionManager = this.mPermissions;
+        slicePermissionManager.getClass();
+        SliceClientPermissions.SliceAuthority orCreateAuthority = slicePermissionManager.getClient(new SlicePermissionManager.PkgUser(str2, identifier)).getOrCreateAuthority(new SlicePermissionManager.PkgUser(uri.getAuthority(), identifier), new SlicePermissionManager.PkgUser(str, identifier));
+        List<String> pathSegments = uri.getPathSegments();
+        String[] strArr = (String[]) pathSegments.toArray(new String[pathSegments.size()]);
+        boolean z = false;
+        for (int size = orCreateAuthority.mPaths.size() - 1; size >= 0; size--) {
+            if (SliceClientPermissions.SliceAuthority.isPathPrefixMatch(strArr, (String[]) orCreateAuthority.mPaths.valueAt(size))) {
+                orCreateAuthority.mPaths.removeAt(size);
+                z = true;
             }
         }
-    }
-
-    public final boolean isGrantedFullAccess(String str, int i) {
-        return this.mPermissions.hasFullAccess(str, i);
-    }
-
-    public static ServiceThread createHandler() {
-        ServiceThread serviceThread = new ServiceThread("SliceManagerService", 10, true);
-        serviceThread.start();
-        return serviceThread;
-    }
-
-    public String[] getAllPackagesGranted(String str) {
-        String providerPkg = getProviderPkg(new Uri.Builder().scheme("content").authority(str).build(), 0);
-        return providerPkg == null ? new String[0] : this.mPermissions.getAllPackagesGranted(providerPkg);
-    }
-
-    /* loaded from: classes3.dex */
-    public class PackageMatchingCache {
-        public String mCurrentPkg;
-        public final Supplier mPkgSource;
-
-        public PackageMatchingCache(Supplier supplier) {
-            this.mPkgSource = supplier;
+        if (z) {
+            orCreateAuthority.mTracker.onPersistableDirty(orCreateAuthority);
         }
+    }
 
-        public boolean matches(String str) {
-            if (str == null) {
-                return false;
+    public final void unpinSlice(String str, Uri uri, IBinder iBinder) {
+        verifyCaller(str);
+        enforceAccess(uri, str);
+        Uri maybeAddUserId = ContentProvider.maybeAddUserId(uri, Binder.getCallingUserHandle().getIdentifier());
+        try {
+            PinnedSliceState pinnedSlice = getPinnedSlice(maybeAddUserId);
+            synchronized (pinnedSlice.mLock) {
+                iBinder.unlinkToDeath(pinnedSlice.mDeathRecipient, 0);
+                pinnedSlice.mListeners.remove(iBinder);
             }
-            if (str.equals(this.mCurrentPkg)) {
-                return true;
+            if (!pinnedSlice.hasPinOrListener()) {
+                removePinnedSlice(maybeAddUserId);
             }
-            String str2 = (String) this.mPkgSource.get();
-            this.mCurrentPkg = str2;
-            return str.equals(str2);
+        } catch (IllegalStateException e) {
+            Slog.w("SliceManagerService", e.getMessage());
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class Lifecycle extends SystemService {
-        public SliceManagerService mService;
-
-        public Lifecycle(Context context) {
-            super(context);
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.slice.SliceManagerService, android.os.IBinder] */
-        @Override // com.android.server.SystemService
-        public void onStart() {
-            ?? sliceManagerService = new SliceManagerService(getContext());
-            this.mService = sliceManagerService;
-            publishBinderService("slice", sliceManagerService);
-        }
-
-        @Override // com.android.server.SystemService
-        public void onBootPhase(int i) {
-            if (i == 550) {
-                this.mService.systemReady();
-            }
-        }
-
-        @Override // com.android.server.SystemService
-        public void onUserUnlocking(SystemService.TargetUser targetUser) {
-            this.mService.onUnlockUser(targetUser.getUserIdentifier());
-        }
-
-        @Override // com.android.server.SystemService
-        public void onUserStopping(SystemService.TargetUser targetUser) {
-            this.mService.onStopUser(targetUser.getUserIdentifier());
-        }
+    public final void verifyCaller(String str) {
+        this.mAppOps.checkPackage(Binder.getCallingUid(), str);
     }
 }

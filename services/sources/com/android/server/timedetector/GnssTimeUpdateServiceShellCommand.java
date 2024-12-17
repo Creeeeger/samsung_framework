@@ -1,11 +1,13 @@
 package com.android.server.timedetector;
 
+import android.os.Binder;
 import android.os.ShellCommand;
 import java.io.PrintWriter;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class GnssTimeUpdateServiceShellCommand extends ShellCommand {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class GnssTimeUpdateServiceShellCommand extends ShellCommand {
     public final GnssTimeUpdateService mGnssTimeUpdateService;
 
     public GnssTimeUpdateServiceShellCommand(GnssTimeUpdateService gnssTimeUpdateService) {
@@ -13,22 +15,26 @@ public class GnssTimeUpdateServiceShellCommand extends ShellCommand {
         this.mGnssTimeUpdateService = gnssTimeUpdateService;
     }
 
-    public int onCommand(String str) {
-        if (str == null) {
-            return handleDefaultCommands(str);
-        }
-        if (str.equals("start_gnss_listening")) {
-            return runStartGnssListening();
+    public final int onCommand(String str) {
+        if (str != null && str.equals("start_gnss_listening")) {
+            GnssTimeUpdateService gnssTimeUpdateService = this.mGnssTimeUpdateService;
+            gnssTimeUpdateService.mContext.enforceCallingPermission("android.permission.SET_TIME", "Start GNSS listening");
+            gnssTimeUpdateService.mLocalLog.log("startGnssListening() called");
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                boolean startGnssListeningInternal = gnssTimeUpdateService.startGnssListeningInternal();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                getOutPrintWriter().println(startGnssListeningInternal);
+                return 0;
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                throw th;
+            }
         }
         return handleDefaultCommands(str);
     }
 
-    public final int runStartGnssListening() {
-        getOutPrintWriter().println(this.mGnssTimeUpdateService.startGnssListening());
-        return 0;
-    }
-
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.printf("Network Time Update Service (%s) commands:\n", "gnss_time_update_service");
         outPrintWriter.printf("  help\n", new Object[0]);

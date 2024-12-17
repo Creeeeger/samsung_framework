@@ -3,29 +3,16 @@ package com.android.server.alarm;
 import android.os.Build;
 import java.io.PrintWriter;
 
-/* compiled from: AppSyncInfo.java */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class AppSyncWrapper {
-    public static final boolean LOG = "eng".equals(Build.TYPE);
-
-    /* compiled from: AppSyncInfo.java */
-    /* loaded from: classes.dex */
-    public enum SET_TYPE {
-        APPSYNC3P_PACKAGES,
-        SUSPICIOUS_PACKAGES,
-        CSC_PACKAGES,
-        ALLOWLIST_PACKAGES,
-        ALLOWLIST3P_PACKAGES,
-        PRELOADED_PACKAGES,
-        SUSPICIOUS_PACKAGES_FROM_CONFIG,
-        ALLOWLIST_PACKAGES_FROM_CONFIG,
-        ALLOWLIST3P_PACKAGES_FROM_CONFIG,
-        NONE
+    static {
+        "eng".equals(Build.TYPE);
     }
 
-    public abstract void dump(PrintWriter printWriter, String str);
+    public abstract void dump(PrintWriter printWriter);
 
     public abstract long getWindowLength();
 
-    public abstract boolean isAdjustableAlarm(int i, long j, long j2, long j3, int i2, String str);
+    public abstract boolean isAdjustableAlarm(int i, int i2, long j, long j2, long j3, String str);
 }

@@ -1,8 +1,8 @@
 package com.android.server.am.mars.database;
 
 import android.net.Uri;
-import android.os.IInstalld;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class FASTableContract {
     public static final Uri SMART_MGR_FORCED_APP_STANDBY_URI = Uri.parse("content://com.sec.android.sdhms.fasprovider/ForcedAppStandby");
@@ -17,16 +17,30 @@ public abstract class FASTableContract {
     public static final Uri SMART_MGR_APP_STARTUP_URI = Uri.parse("content://com.samsung.android.sm.appstart/appstart_record");
     public static final Uri SMART_MGR_FREEZE_EXCLUDE_LIST_URI = Uri.parse("content://com.samsung.android.sm/FreezeExcludeList");
 
+    public static int convertDBValueToDisableReason(String str) {
+        if ("default".equals(str)) {
+            return 0;
+        }
+        if ("added_from_mars_auto".equals(str)) {
+            return 1;
+        }
+        if ("added_from_user_manual".equals(str)) {
+            return 2;
+        }
+        if ("deleted_from_mars_auto".equals(str)) {
+            return 4;
+        }
+        if ("deleted_from_user_manual".equals(str)) {
+            return 8;
+        }
+        if ("added_from_mars_auto_specific".equals(str)) {
+            return 16;
+        }
+        return "added_from_anomaly_manual".equals(str) ? 32 : -1;
+    }
+
     public static String convertDisableReasonToDBValue(int i) {
         return i != 0 ? i != 1 ? i != 2 ? i != 4 ? i != 8 ? i != 16 ? i != 32 ? "null" : "added_from_anomaly_manual" : "added_from_mars_auto_specific" : "deleted_from_user_manual" : "deleted_from_mars_auto" : "added_from_user_manual" : "added_from_mars_auto" : "default";
-    }
-
-    public static String convertFASTypeToReason(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 4 ? i != 8 ? i != 16 ? i != 32 ? i != 64 ? i != 128 ? i != 256 ? i != 512 ? i != 2048 ? i != 4096 ? "null" : "deleted_from_unknown" : "deleted_from_policy_in_china" : "deleted_from_post_o" : "deleted_from_user_manual" : "deleted_from_mars_auto" : "added_from_unknown" : "added_from_policy_in_china" : "added_from_pre_o" : "added_from_anomaly_manual" : "added_from_anomaly_auto" : "added_from_user_manual" : "added_from_mars_auto" : "default";
-    }
-
-    public static String convertStateToDBExtrasValue(int i) {
-        return i != 2 ? i != 4 ? i != 8 ? i != 16 ? "0" : "4" : "3" : "2" : "1";
     }
 
     public static int convertFASReasonToValue(String str) {
@@ -67,49 +81,16 @@ public abstract class FASTableContract {
             return 512;
         }
         if ("deleted_from_policy_in_china".equals(str)) {
-            return IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES;
+            return 2048;
         }
-        if ("deleted_from_unknown".equals(str)) {
-            return IInstalld.FLAG_USE_QUOTA;
-        }
-        return -1;
+        return "deleted_from_unknown".equals(str) ? 4096 : -1;
     }
 
-    public static int convertDBValueToState(String str) {
-        if (str == null || "0".equals(str)) {
-            return 1;
-        }
-        if ("1".equals(str)) {
-            return 2;
-        }
-        if ("2".equals(str)) {
-            return 4;
-        }
-        if ("3".equals(str)) {
-            return 8;
-        }
-        return "4".equals(str) ? 16 : 1;
+    public static String convertFASTypeToReason(int i) {
+        return i != 0 ? i != 1 ? i != 2 ? i != 4 ? i != 8 ? i != 16 ? i != 32 ? i != 64 ? i != 128 ? i != 256 ? i != 512 ? i != 2048 ? i != 4096 ? "null" : "deleted_from_unknown" : "deleted_from_policy_in_china" : "deleted_from_post_o" : "deleted_from_user_manual" : "deleted_from_mars_auto" : "added_from_unknown" : "added_from_policy_in_china" : "added_from_pre_o" : "added_from_anomaly_manual" : "added_from_anomaly_auto" : "added_from_user_manual" : "added_from_mars_auto" : "default";
     }
 
-    public static int convertDBValueToDisableReason(String str) {
-        if ("default".equals(str)) {
-            return 0;
-        }
-        if ("added_from_mars_auto".equals(str)) {
-            return 1;
-        }
-        if ("added_from_user_manual".equals(str)) {
-            return 2;
-        }
-        if ("deleted_from_mars_auto".equals(str)) {
-            return 4;
-        }
-        if ("deleted_from_user_manual".equals(str)) {
-            return 8;
-        }
-        if ("added_from_mars_auto_specific".equals(str)) {
-            return 16;
-        }
-        return "added_from_anomaly_manual".equals(str) ? 32 : -1;
+    public static String convertStateToDBExtrasValue(int i) {
+        return i != 2 ? i != 4 ? i != 8 ? i != 16 ? "0" : "4" : "3" : "2" : "1";
     }
 }

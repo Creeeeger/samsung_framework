@@ -4,45 +4,17 @@ import android.metrics.LogMaker;
 import android.os.SystemClock;
 import com.android.internal.logging.MetricsLogger;
 
-/* loaded from: classes3.dex */
-public class DisplayFoldDurationLogger {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DisplayFoldDurationLogger {
     public volatile int mScreenState = -1;
     public volatile Long mLastChanged = null;
     public final MetricsLogger mLogger = new MetricsLogger();
 
-    public void onFinishedWakingUp(Boolean bool) {
-        if (bool == null) {
-            this.mScreenState = -1;
-        } else if (bool.booleanValue()) {
-            this.mScreenState = 2;
-        } else {
-            this.mScreenState = 1;
-        }
-        this.mLastChanged = Long.valueOf(SystemClock.uptimeMillis());
-    }
-
-    public void onFinishedGoingToSleep() {
-        log();
-        this.mScreenState = 0;
-        this.mLastChanged = null;
-    }
-
-    public void setDeviceFolded(boolean z) {
-        if (isOn()) {
-            log();
-            this.mScreenState = z ? 2 : 1;
-            this.mLastChanged = Long.valueOf(SystemClock.uptimeMillis());
-        }
-    }
-
-    public void logFocusedAppWithFoldState(boolean z, String str) {
-        this.mLogger.write(new LogMaker(1594).setType(4).setSubtype(z ? 1 : 0).setPackageName(str));
-    }
-
     public final void log() {
         int i;
         Long l = this.mLastChanged;
-        if (l == null) {
+        if (l == null || this.mLastChanged == null) {
             return;
         }
         int i2 = this.mScreenState;
@@ -54,9 +26,5 @@ public class DisplayFoldDurationLogger {
             i = -2147483647;
         }
         this.mLogger.write(new LogMaker(1594).setType(4).setSubtype(i).setLatency(SystemClock.uptimeMillis() - l.longValue()));
-    }
-
-    public final boolean isOn() {
-        return this.mScreenState == 1 || this.mScreenState == 2;
     }
 }

@@ -1,51 +1,49 @@
 package com.android.server.hdmi;
 
-import android.hardware.hdmi.IHdmiControlCallback;
 import com.android.server.hdmi.HdmiControlService;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class RequestArcTerminationAction extends RequestArcAction {
-    public RequestArcTerminationAction(HdmiCecLocalDevice hdmiCecLocalDevice, int i) {
-        super(hdmiCecLocalDevice, i);
-    }
-
-    public RequestArcTerminationAction(HdmiCecLocalDevice hdmiCecLocalDevice, int i, IHdmiControlCallback iHdmiControlCallback) {
-        super(hdmiCecLocalDevice, i, iHdmiControlCallback);
-    }
-
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean start() {
-        this.mState = 1;
-        addTimer(1, 2000);
-        sendCommand(HdmiCecMessageBuilder.buildRequestArcTermination(getSourceAddress(), this.mAvrAddress), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.RequestArcTerminationAction.1
-            @Override // com.android.server.hdmi.HdmiControlService.SendMessageCallback
-            public void onSendCompleted(int i) {
-                if (i != 0) {
-                    RequestArcTerminationAction.this.disableArcTransmission();
-                    RequestArcTerminationAction.this.finishWithCallback(3);
-                }
-            }
-        });
-        return true;
-    }
-
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean processCommand(HdmiCecMessage hdmiCecMessage) {
-        if (this.mState == 1 && HdmiUtils.checkCommandSource(hdmiCecMessage, this.mAvrAddress, "RequestArcTerminationAction")) {
-            int opcode = hdmiCecMessage.getOpcode();
-            if (opcode != 0) {
-                if (opcode != 197) {
+    public final boolean processCommand(HdmiCecMessage hdmiCecMessage) {
+        if (this.mState == 1) {
+            int i = this.mAvrAddress;
+            if (HdmiUtils.checkCommandSource(hdmiCecMessage, i, "RequestArcTerminationAction")) {
+                int i2 = hdmiCecMessage.mOpcode;
+                if (i2 != 0) {
+                    if (i2 != 197) {
+                        return false;
+                    }
+                    finishWithCallback(0);
                     return false;
                 }
-                finishWithCallback(0);
-                return false;
-            }
-            if ((hdmiCecMessage.getParams()[0] & 255) == 196) {
-                disableArcTransmission();
-                finishWithCallback(3);
-                return true;
+                if ((hdmiCecMessage.mParams[0] & 255) == 196) {
+                    HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+                    hdmiCecLocalDevice.addAndStartAction(new SetArcTransmissionStateAction(hdmiCecLocalDevice, i, false));
+                    finishWithCallback(3);
+                    return true;
+                }
             }
         }
         return false;
+    }
+
+    @Override // com.android.server.hdmi.HdmiCecFeatureAction
+    public final void start() {
+        this.mState = 1;
+        addTimer(1, 2000);
+        this.mService.sendCecCommand(HdmiCecMessage.build(getSourceAddress(), this.mAvrAddress, 196), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.RequestArcTerminationAction.1
+            @Override // com.android.server.hdmi.HdmiControlService.SendMessageCallback
+            public final void onSendCompleted(int i) {
+                if (i != 0) {
+                    RequestArcTerminationAction requestArcTerminationAction = RequestArcTerminationAction.this;
+                    int i2 = requestArcTerminationAction.mAvrAddress;
+                    HdmiCecLocalDevice hdmiCecLocalDevice = requestArcTerminationAction.mSource;
+                    hdmiCecLocalDevice.addAndStartAction(new SetArcTransmissionStateAction(hdmiCecLocalDevice, i2, false));
+                    requestArcTerminationAction.finishWithCallback(3);
+                }
+            }
+        });
     }
 }

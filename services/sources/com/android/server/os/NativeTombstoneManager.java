@@ -2,41 +2,28 @@ package com.android.server.os;
 
 import android.app.ApplicationExitInfo;
 import android.app.IParcelFileDescriptorRetriever;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.FileObserver;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.os.UserHandle;
-import android.system.ErrnoException;
-import android.system.Os;
-import android.system.StructTimespec;
 import android.util.Slog;
 import android.util.SparseArray;
-import android.util.proto.ProtoInputStream;
-import android.util.proto.ProtoParseException;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.BootReceiver;
 import com.android.server.ServiceThread;
 import com.android.server.os.NativeTombstoneManager;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
-import libcore.io.IoUtils;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class NativeTombstoneManager {
-    public static final String TAG = "NativeTombstoneManager";
     public static final File TOMBSTONE_DIR = new File("/data/tombstones");
     public final Context mContext;
     public final Handler mHandler;
@@ -45,249 +32,43 @@ public final class NativeTombstoneManager {
     public final Object mLock = new Object();
     public final SparseArray mTombstones = new SparseArray();
 
-    public NativeTombstoneManager(Context context) {
-        this.mContext = context;
-        ServiceThread serviceThread = new ServiceThread(TAG + ":tombstoneWatcher", 10, true);
-        serviceThread.start();
-        this.mHandler = serviceThread.getThreadHandler();
-        TombstoneWatcher tombstoneWatcher = new TombstoneWatcher();
-        this.mWatcher = tombstoneWatcher;
-        tombstoneWatcher.startWatching();
-    }
-
-    public void onSystemReady() {
-        registerForUserRemoval();
-        registerForPackageRemoval();
-        this.mHandler.post(new Runnable() { // from class: com.android.server.os.NativeTombstoneManager$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                NativeTombstoneManager.this.lambda$onSystemReady$0();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onSystemReady$0() {
-        File[] listFiles = TOMBSTONE_DIR.listFiles();
-        for (int i = 0; listFiles != null && i < listFiles.length; i++) {
-            if (listFiles[i].isFile()) {
-                handleTombstone(listFiles[i]);
-            }
-        }
-    }
-
-    public final void handleTombstone(File file) {
-        File file2;
-        String name = file.getName();
-        if (name.endsWith(".tmp")) {
-            this.mTmpFileLock.lock();
-            try {
-                file.delete();
-                return;
-            } finally {
-                this.mTmpFileLock.unlock();
-            }
-        }
-        if (name.startsWith("tombstone_")) {
-            boolean endsWith = name.endsWith(".pb");
-            if (endsWith) {
-                file2 = file;
-            } else {
-                file2 = new File(file.getAbsolutePath() + ".pb");
-            }
-            Optional handleProtoTombstone = handleProtoTombstone(file2, endsWith);
-            BootReceiver.addTombstoneToDropBox(this.mContext, file, endsWith, handleProtoTombstone.isPresent() ? ((TombstoneFile) handleProtoTombstone.get()).getProcessName() : "UNKNOWN", this.mTmpFileLock);
-        }
-    }
-
-    public final Optional handleProtoTombstone(File file, boolean z) {
-        String name = file.getName();
-        if (!name.endsWith(".pb")) {
-            Slog.w(TAG, "unexpected tombstone name: " + file);
-            return Optional.empty();
-        }
-        try {
-            int parseInt = Integer.parseInt(name.substring(10).substring(0, r0.length() - 3));
-            if (parseInt < 0 || parseInt > 99) {
-                Slog.w(TAG, "unexpected tombstone name: " + file);
-                return Optional.empty();
-            }
-            try {
-                ParcelFileDescriptor open = ParcelFileDescriptor.open(file, 805306368);
-                Optional parse = TombstoneFile.parse(open);
-                if (!parse.isPresent()) {
-                    IoUtils.closeQuietly(open);
-                    return Optional.empty();
-                }
-                if (z) {
-                    synchronized (this.mLock) {
-                        TombstoneFile tombstoneFile = (TombstoneFile) this.mTombstones.get(parseInt);
-                        if (tombstoneFile != null) {
-                            tombstoneFile.dispose();
-                        }
-                        this.mTombstones.put(parseInt, (TombstoneFile) parse.get());
-                    }
-                }
-                return parse;
-            } catch (FileNotFoundException e) {
-                Slog.w(TAG, "failed to open " + file, e);
-                return Optional.empty();
-            }
-        } catch (NumberFormatException unused) {
-            Slog.w(TAG, "unexpected tombstone name: " + file);
-            return Optional.empty();
-        }
-    }
-
-    public void purge(final Optional optional, final Optional optional2) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.os.NativeTombstoneManager$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                NativeTombstoneManager.this.lambda$purge$1(optional, optional2);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$purge$1(Optional optional, Optional optional2) {
-        synchronized (this.mLock) {
-            for (int size = this.mTombstones.size() - 1; size >= 0; size--) {
-                TombstoneFile tombstoneFile = (TombstoneFile) this.mTombstones.valueAt(size);
-                if (tombstoneFile.matches(optional, optional2)) {
-                    tombstoneFile.purge();
-                    this.mTombstones.removeAt(size);
-                }
-            }
-        }
-    }
-
-    public final void purgePackage(int i, boolean z) {
-        Optional of;
-        int appId = UserHandle.getAppId(i);
-        if (z) {
-            of = Optional.empty();
-        } else {
-            of = Optional.of(Integer.valueOf(UserHandle.getUserId(i)));
-        }
-        purge(of, Optional.of(Integer.valueOf(appId)));
-    }
-
-    public final void purgeUser(int i) {
-        purge(Optional.of(Integer.valueOf(i)), Optional.empty());
-    }
-
-    public final void registerForPackageRemoval() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.PACKAGE_FULLY_REMOVED");
-        intentFilter.addDataScheme("package");
-        this.mContext.registerReceiverForAllUsers(new BroadcastReceiver() { // from class: com.android.server.os.NativeTombstoneManager.1
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                int intExtra = intent.getIntExtra("android.intent.extra.UID", -10000);
-                if (intExtra == -10000) {
-                    return;
-                }
-                NativeTombstoneManager.this.purgePackage(intExtra, intent.getBooleanExtra("android.intent.extra.REMOVED_FOR_ALL_USERS", false));
-            }
-        }, intentFilter, null, this.mHandler);
-    }
-
-    public final void registerForUserRemoval() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.USER_REMOVED");
-        this.mContext.registerReceiverForAllUsers(new BroadcastReceiver() { // from class: com.android.server.os.NativeTombstoneManager.2
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-                if (intExtra < 1) {
-                    return;
-                }
-                NativeTombstoneManager.this.purgeUser(intExtra);
-            }
-        }, intentFilter, null, this.mHandler);
-    }
-
-    public void collectTombstones(final ArrayList arrayList, int i, final int i2, final int i3) {
-        final CompletableFuture completableFuture = new CompletableFuture();
-        if (UserHandle.isApp(i)) {
-            final int userId = UserHandle.getUserId(i);
-            final int appId = UserHandle.getAppId(i);
-            this.mHandler.post(new Runnable() { // from class: com.android.server.os.NativeTombstoneManager$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    NativeTombstoneManager.this.lambda$collectTombstones$3(userId, appId, i2, arrayList, i3, completableFuture);
-                }
-            });
-            try {
-                completableFuture.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$collectTombstones$3(int i, int i2, int i3, ArrayList arrayList, int i4, CompletableFuture completableFuture) {
-        boolean z;
-        synchronized (this.mLock) {
-            int size = this.mTombstones.size();
-            z = false;
-            for (int i5 = 0; i5 < size; i5++) {
-                TombstoneFile tombstoneFile = (TombstoneFile) this.mTombstones.valueAt(i5);
-                if (tombstoneFile.matches(Optional.of(Integer.valueOf(i)), Optional.of(Integer.valueOf(i2))) && (i3 == 0 || tombstoneFile.mPid == i3)) {
-                    int size2 = arrayList.size();
-                    for (int i6 = 0; i6 < size2; i6++) {
-                        ApplicationExitInfo applicationExitInfo = (ApplicationExitInfo) arrayList.get(i6);
-                        if (tombstoneFile.matches(applicationExitInfo)) {
-                            applicationExitInfo.setNativeTombstoneRetriever(tombstoneFile.getPfdRetriever());
-                        }
-                    }
-                    if (arrayList.size() < i4) {
-                        arrayList.add(tombstoneFile.toAppExitInfo());
-                        z = true;
-                    }
-                }
-            }
-        }
-        if (z) {
-            Collections.sort(arrayList, new Comparator() { // from class: com.android.server.os.NativeTombstoneManager$$ExternalSyntheticLambda3
-                @Override // java.util.Comparator
-                public final int compare(Object obj, Object obj2) {
-                    int lambda$collectTombstones$2;
-                    lambda$collectTombstones$2 = NativeTombstoneManager.lambda$collectTombstones$2((ApplicationExitInfo) obj, (ApplicationExitInfo) obj2);
-                    return lambda$collectTombstones$2;
-                }
-            });
-        }
-        completableFuture.complete(null);
-    }
-
-    public static /* synthetic */ int lambda$collectTombstones$2(ApplicationExitInfo applicationExitInfo, ApplicationExitInfo applicationExitInfo2) {
-        long timestamp = applicationExitInfo2.getTimestamp() - applicationExitInfo.getTimestamp();
-        if (timestamp < 0) {
-            return -1;
-        }
-        return timestamp == 0 ? 0 : 1;
-    }
-
-    /* loaded from: classes2.dex */
-    public class TombstoneFile {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TombstoneFile {
         public int mAppId;
         public String mCrashReason;
         public final ParcelFileDescriptor mPfd;
         public int mPid;
         public String mProcessName;
         public boolean mPurged = false;
-        public final IParcelFileDescriptorRetriever mRetriever = new ParcelFileDescriptorRetriever();
+        public final ParcelFileDescriptorRetriever mRetriever = new ParcelFileDescriptorRetriever();
         public long mTimestampMs;
         public int mUid;
         public int mUserId;
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class ParcelFileDescriptorRetriever extends IParcelFileDescriptorRetriever.Stub {
+            public ParcelFileDescriptorRetriever() {
+            }
+
+            public final ParcelFileDescriptor getPfd() {
+                if (TombstoneFile.this.mPurged) {
+                    return null;
+                }
+                try {
+                    return ParcelFileDescriptor.open(new File("/proc/self/fd/" + TombstoneFile.this.mPfd.getFd()), 268435456);
+                } catch (FileNotFoundException e) {
+                    File file = NativeTombstoneManager.TOMBSTONE_DIR;
+                    Slog.e("NativeTombstoneManager", "failed to reopen file descriptor as read-only", e);
+                    return null;
+                }
+            }
+        }
 
         public TombstoneFile(ParcelFileDescriptor parcelFileDescriptor) {
             this.mPfd = parcelFileDescriptor;
         }
 
-        public boolean matches(Optional optional, Optional optional2) {
+        public final boolean matches(Optional optional, Optional optional2) {
             if (this.mPurged) {
                 return false;
             }
@@ -297,103 +78,7 @@ public final class NativeTombstoneManager {
             return false;
         }
 
-        public boolean matches(ApplicationExitInfo applicationExitInfo) {
-            return applicationExitInfo.getReason() == 5 && applicationExitInfo.getPid() == this.mPid && applicationExitInfo.getRealUid() == this.mUid && Math.abs(applicationExitInfo.getTimestamp() - this.mTimestampMs) <= 5000;
-        }
-
-        public String getProcessName() {
-            return this.mProcessName;
-        }
-
-        public void dispose() {
-            IoUtils.closeQuietly(this.mPfd);
-        }
-
-        public void purge() {
-            if (this.mPurged) {
-                return;
-            }
-            try {
-                Os.ftruncate(this.mPfd.getFileDescriptor(), 0L);
-            } catch (ErrnoException e) {
-                Slog.e(NativeTombstoneManager.TAG, "Failed to truncate tombstone", e);
-            }
-            this.mPurged = true;
-        }
-
-        public static Optional parse(ParcelFileDescriptor parcelFileDescriptor) {
-            long j;
-            ProtoInputStream protoInputStream = new ProtoInputStream(new FileInputStream(parcelFileDescriptor.getFileDescriptor()));
-            int i = 0;
-            String str = null;
-            String str2 = "";
-            String str3 = str2;
-            int i2 = 0;
-            while (protoInputStream.nextField() != -1) {
-                try {
-                    int fieldNumber = protoInputStream.getFieldNumber();
-                    if (fieldNumber == 5) {
-                        i2 = protoInputStream.readInt(1155346202629L);
-                    } else if (fieldNumber != 15) {
-                        if (fieldNumber == 7) {
-                            i = protoInputStream.readInt(1155346202631L);
-                        } else if (fieldNumber == 8) {
-                            str3 = protoInputStream.readString(1138166333448L);
-                        } else if (fieldNumber == 9 && str == null) {
-                            str = protoInputStream.readString(2237677961225L);
-                        }
-                    } else if (str2.equals("")) {
-                        long start = protoInputStream.start(2246267895823L);
-                        while (true) {
-                            if (protoInputStream.nextField() != -1) {
-                                if (protoInputStream.getFieldNumber() == 1) {
-                                    str2 = protoInputStream.readString(1138166333441L);
-                                    break;
-                                }
-                            } else {
-                                break;
-                            }
-                        }
-                        protoInputStream.end(start);
-                    }
-                } catch (IOException | ProtoParseException e) {
-                    Slog.e(NativeTombstoneManager.TAG, "Failed to parse tombstone", e);
-                    return Optional.empty();
-                }
-            }
-            if (!UserHandle.isApp(i)) {
-                Slog.e(NativeTombstoneManager.TAG, "Tombstone's UID (" + i + ") not an app, ignoring");
-                return Optional.empty();
-            }
-            try {
-                StructTimespec structTimespec = Os.fstat(parcelFileDescriptor.getFileDescriptor()).st_atim;
-                j = (structTimespec.tv_sec * 1000) + (structTimespec.tv_nsec / 1000000);
-            } catch (ErrnoException e2) {
-                Slog.e(NativeTombstoneManager.TAG, "Failed to get timestamp of tombstone", e2);
-                j = 0;
-            }
-            int userId = UserHandle.getUserId(i);
-            int appId = UserHandle.getAppId(i);
-            if (!str3.startsWith("u:r:untrusted_app")) {
-                Slog.e(NativeTombstoneManager.TAG, "Tombstone has invalid selinux label (" + str3 + "), ignoring");
-                return Optional.empty();
-            }
-            TombstoneFile tombstoneFile = new TombstoneFile(parcelFileDescriptor);
-            tombstoneFile.mUserId = userId;
-            tombstoneFile.mAppId = appId;
-            tombstoneFile.mPid = i2;
-            tombstoneFile.mUid = i;
-            tombstoneFile.mProcessName = str != null ? str : "";
-            tombstoneFile.mTimestampMs = j;
-            tombstoneFile.mCrashReason = str2;
-            return Optional.of(tombstoneFile);
-        }
-
-        public IParcelFileDescriptorRetriever getPfdRetriever() {
-            return this.mRetriever;
-        }
-
-        public ApplicationExitInfo toAppExitInfo() {
+        public final ApplicationExitInfo toAppExitInfo() {
             ApplicationExitInfo applicationExitInfo = new ApplicationExitInfo();
             applicationExitInfo.setPid(this.mPid);
             applicationExitInfo.setRealUid(this.mUid);
@@ -413,52 +98,143 @@ public final class NativeTombstoneManager {
             applicationExitInfo.setNativeTombstoneRetriever(this.mRetriever);
             return applicationExitInfo;
         }
-
-        /* loaded from: classes2.dex */
-        public class ParcelFileDescriptorRetriever extends IParcelFileDescriptorRetriever.Stub {
-            public ParcelFileDescriptorRetriever() {
-            }
-
-            public ParcelFileDescriptor getPfd() {
-                if (TombstoneFile.this.mPurged) {
-                    return null;
-                }
-                try {
-                    return ParcelFileDescriptor.open(new File("/proc/self/fd/" + TombstoneFile.this.mPfd.getFd()), 268435456);
-                } catch (FileNotFoundException e) {
-                    Slog.e(NativeTombstoneManager.TAG, "failed to reopen file descriptor as read-only", e);
-                    return null;
-                }
-            }
-        }
     }
 
-    /* loaded from: classes2.dex */
-    public class TombstoneWatcher extends FileObserver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TombstoneWatcher extends FileObserver {
         public TombstoneWatcher() {
             super(NativeTombstoneManager.TOMBSTONE_DIR, FrameworkStatsLog.NON_A11Y_TOOL_SERVICE_WARNING_REPORT);
         }
 
         @Override // android.os.FileObserver
-        public void onEvent(int i, final String str) {
-            if (str == null) {
-                Slog.w(NativeTombstoneManager.TAG, "path is null at TombstoneWatcher.onEvent()");
-            } else {
+        public final void onEvent(int i, final String str) {
+            if (str != null) {
                 NativeTombstoneManager.this.mHandler.post(new Runnable() { // from class: com.android.server.os.NativeTombstoneManager$TombstoneWatcher$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
-                        NativeTombstoneManager.TombstoneWatcher.this.lambda$onEvent$0(str);
+                        NativeTombstoneManager.TombstoneWatcher tombstoneWatcher = NativeTombstoneManager.TombstoneWatcher.this;
+                        String str2 = str;
+                        tombstoneWatcher.getClass();
+                        if (str2.endsWith(".tmp")) {
+                            return;
+                        }
+                        NativeTombstoneManager.this.handleTombstone(new File(NativeTombstoneManager.TOMBSTONE_DIR, str2));
                     }
                 });
+            } else {
+                File file = NativeTombstoneManager.TOMBSTONE_DIR;
+                Slog.w("NativeTombstoneManager", "path is null at TombstoneWatcher.onEvent()");
             }
         }
+    }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onEvent$0(String str) {
-            if (str.endsWith(".tmp")) {
-                return;
+    public NativeTombstoneManager(Context context) {
+        this.mContext = context;
+        ServiceThread serviceThread = new ServiceThread(10, "NativeTombstoneManager:tombstoneWatcher", true);
+        serviceThread.start();
+        this.mHandler = serviceThread.getThreadHandler();
+        TombstoneWatcher tombstoneWatcher = new TombstoneWatcher();
+        this.mWatcher = tombstoneWatcher;
+        tombstoneWatcher.startWatching();
+    }
+
+    public final void collectTombstones(final ArrayList arrayList, int i, final int i2, final int i3) {
+        final CompletableFuture completableFuture = new CompletableFuture();
+        if (UserHandle.isApp(i)) {
+            final int userId = UserHandle.getUserId(i);
+            final int appId = UserHandle.getAppId(i);
+            this.mHandler.post(new Runnable() { // from class: com.android.server.os.NativeTombstoneManager$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    boolean z;
+                    NativeTombstoneManager nativeTombstoneManager;
+                    int i4;
+                    NativeTombstoneManager nativeTombstoneManager2 = NativeTombstoneManager.this;
+                    int i5 = userId;
+                    int i6 = appId;
+                    int i7 = i2;
+                    ArrayList arrayList2 = arrayList;
+                    int i8 = i3;
+                    CompletableFuture completableFuture2 = completableFuture;
+                    synchronized (nativeTombstoneManager2.mLock) {
+                        try {
+                            int size = nativeTombstoneManager2.mTombstones.size();
+                            int i9 = 0;
+                            z = false;
+                            while (i9 < size) {
+                                NativeTombstoneManager.TombstoneFile tombstoneFile = (NativeTombstoneManager.TombstoneFile) nativeTombstoneManager2.mTombstones.valueAt(i9);
+                                if (tombstoneFile.matches(Optional.of(Integer.valueOf(i5)), Optional.of(Integer.valueOf(i6))) && (i7 == 0 || tombstoneFile.mPid == i7)) {
+                                    int size2 = arrayList2.size();
+                                    int i10 = 0;
+                                    while (true) {
+                                        if (i10 < size2) {
+                                            ApplicationExitInfo applicationExitInfo = (ApplicationExitInfo) arrayList2.get(i10);
+                                            nativeTombstoneManager = nativeTombstoneManager2;
+                                            if (applicationExitInfo.getReason() == 5 && applicationExitInfo.getPid() == tombstoneFile.mPid && applicationExitInfo.getRealUid() == tombstoneFile.mUid) {
+                                                i4 = i5;
+                                                if (Math.abs(applicationExitInfo.getTimestamp() - tombstoneFile.mTimestampMs) <= 10000) {
+                                                    applicationExitInfo.setNativeTombstoneRetriever(tombstoneFile.mRetriever);
+                                                    break;
+                                                } else {
+                                                    i10++;
+                                                    i5 = i4;
+                                                    nativeTombstoneManager2 = nativeTombstoneManager;
+                                                }
+                                            }
+                                            i4 = i5;
+                                            i10++;
+                                            i5 = i4;
+                                            nativeTombstoneManager2 = nativeTombstoneManager;
+                                        } else {
+                                            nativeTombstoneManager = nativeTombstoneManager2;
+                                            i4 = i5;
+                                            if (arrayList2.size() < i8) {
+                                                arrayList2.add(tombstoneFile.toAppExitInfo());
+                                                z = true;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    nativeTombstoneManager = nativeTombstoneManager2;
+                                    i4 = i5;
+                                }
+                                i9++;
+                                i5 = i4;
+                                nativeTombstoneManager2 = nativeTombstoneManager;
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
+                    if (z) {
+                        Collections.sort(arrayList2, new NativeTombstoneManager$$ExternalSyntheticLambda3());
+                    }
+                    completableFuture2.complete(null);
+                }
+            });
+            try {
+                completableFuture.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
             }
-            NativeTombstoneManager.this.handleTombstone(new File(NativeTombstoneManager.TOMBSTONE_DIR, str));
         }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:112:0x01e9  */
+    /* JADX WARN: Removed duplicated region for block: B:113:0x01f4  */
+    /* JADX WARN: Removed duplicated region for block: B:24:0x026a  */
+    /* JADX WARN: Removed duplicated region for block: B:27:0x0287  */
+    /* JADX WARN: Removed duplicated region for block: B:30:0x028e  */
+    /* JADX WARN: Removed duplicated region for block: B:55:0x0273  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void handleTombstone(java.io.File r20) {
+        /*
+            Method dump skipped, instructions count: 775
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.os.NativeTombstoneManager.handleTombstone(java.io.File):void");
     }
 }

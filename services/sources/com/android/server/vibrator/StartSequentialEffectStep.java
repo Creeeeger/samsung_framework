@@ -1,6 +1,7 @@
 package com.android.server.vibrator;
 
 import android.os.CombinedVibration;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.VibrationEffect;
@@ -8,221 +9,60 @@ import android.os.vibrator.PrebakedSegment;
 import android.os.vibrator.PrimitiveSegment;
 import android.os.vibrator.StepSegment;
 import android.os.vibrator.VibrationEffectSegment;
+import android.util.Slog;
 import android.util.SparseArray;
+import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.vibrator.VibratorController;
+import com.android.server.vibrator.VibratorManagerService;
 import com.samsung.android.vibrator.VibRune;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class StartSequentialEffectStep extends Step {
     public final int currentIndex;
     public long mVibratorsOnMaxDuration;
     public final CombinedVibration.Sequential sequentialEffect;
 
-    @Override // com.android.server.vibrator.Step
-    public void cancelImmediately() {
-    }
-
-    public StartSequentialEffectStep(VibrationStepConductor vibrationStepConductor, CombinedVibration.Sequential sequential) {
-        this(vibrationStepConductor, SystemClock.uptimeMillis() + ((Integer) sequential.getDelays().get(0)).intValue(), sequential, 0);
-    }
-
-    public StartSequentialEffectStep(VibrationStepConductor vibrationStepConductor, long j, CombinedVibration.Sequential sequential, int i) {
-        super(vibrationStepConductor, j);
-        this.sequentialEffect = sequential;
-        this.currentIndex = i;
-    }
-
-    @Override // com.android.server.vibrator.Step
-    public long getVibratorOnDuration() {
-        return this.mVibratorsOnMaxDuration;
-    }
-
-    @Override // com.android.server.vibrator.Step
-    public List play() {
-        Trace.traceBegin(8388608L, "StartSequentialEffectStep");
-        ArrayList arrayList = new ArrayList();
-        this.mVibratorsOnMaxDuration = -1L;
-        try {
-            DeviceEffectMap createEffectToVibratorMapping = createEffectToVibratorMapping((CombinedVibration) this.sequentialEffect.getEffects().get(this.currentIndex));
-            if (createEffectToVibratorMapping == null) {
-                return arrayList;
-            }
-            if (this.conductor.getVibrators().size() != 0) {
-                VibrationEffect.Composed composed = this.conductor.getComposed();
-                StepSegment stepSegment = (VibrationEffectSegment) composed.getSegments().get(0);
-                VibratorController vibratorController = (VibratorController) this.conductor.getVibrators().get(0);
-                if (vibratorController == null) {
-                    long j = this.mVibratorsOnMaxDuration;
-                    if (j >= 0) {
-                        Step finishSequentialEffectStep = j > 0 ? new FinishSequentialEffectStep(this) : nextStep();
-                        if (finishSequentialEffectStep != null) {
-                            arrayList.add(finishSequentialEffectStep);
-                        }
-                    }
-                    Trace.traceEnd(8388608L);
-                    return arrayList;
-                }
-                if (stepSegment instanceof StepSegment) {
-                    StepSegment stepSegment2 = stepSegment;
-                    int semGetMagnitude = composed.semGetMagnitude() > -1 ? composed.semGetMagnitude() : this.conductor.getVibration().getMagnitude();
-                    if (VibRune.SUPPORT_RAM_INDEX_HAPTIC()) {
-                        vibratorController.performPrebakedHapticPattern(0L, semGetMagnitude, false);
-                    } else if (vibratorController.isSupportIntensityControl()) {
-                        vibratorController.setIntensity(semGetMagnitude);
-                    }
-                    if (vibratorController.isSupportFrequencyControl()) {
-                        vibratorController.setFrequencyType(stepSegment2.getFrequencyHz());
-                    }
-                } else if (stepSegment instanceof PrimitiveSegment) {
-                    if (vibratorController.isSupportIntensityControl()) {
-                        vibratorController.setIntensity(composed.semGetMagnitude() > -1 ? composed.semGetMagnitude() : this.conductor.getVibration().getMagnitude());
-                    } else {
-                        vibratorController.setAmplitude(1.0f);
-                    }
-                }
-            }
-            this.mVibratorsOnMaxDuration = startVibrating(createEffectToVibratorMapping, arrayList);
-            VibrationStepConductor vibrationStepConductor = this.conductor;
-            vibrationStepConductor.vibratorManagerHooks.noteVibratorOn(vibrationStepConductor.getVibration().callerInfo.uid, this.mVibratorsOnMaxDuration);
-            long j2 = this.mVibratorsOnMaxDuration;
-            if (j2 >= 0) {
-                Step finishSequentialEffectStep2 = j2 > 0 ? new FinishSequentialEffectStep(this) : nextStep();
-                if (finishSequentialEffectStep2 != null) {
-                    arrayList.add(finishSequentialEffectStep2);
-                }
-            }
-            Trace.traceEnd(8388608L);
-            return arrayList;
-        } finally {
-            long j3 = this.mVibratorsOnMaxDuration;
-            if (j3 >= 0) {
-                Step finishSequentialEffectStep3 = j3 > 0 ? new FinishSequentialEffectStep(this) : nextStep();
-                if (finishSequentialEffectStep3 != null) {
-                    arrayList.add(finishSequentialEffectStep3);
-                }
-            }
-            Trace.traceEnd(8388608L);
-        }
-    }
-
-    @Override // com.android.server.vibrator.Step
-    public List cancel() {
-        return VibrationStepConductor.EMPTY_STEP_LIST;
-    }
-
-    public Step nextStep() {
-        int i = this.currentIndex + 1;
-        if (i >= this.sequentialEffect.getEffects().size()) {
-            return null;
-        }
-        return new StartSequentialEffectStep(this.conductor, SystemClock.uptimeMillis() + ((Integer) this.sequentialEffect.getDelays().get(i)).intValue(), this.sequentialEffect, i);
-    }
-
-    public final DeviceEffectMap createEffectToVibratorMapping(CombinedVibration combinedVibration) {
-        if (combinedVibration instanceof CombinedVibration.Mono) {
-            return new DeviceEffectMap((CombinedVibration.Mono) combinedVibration);
-        }
-        if (combinedVibration instanceof CombinedVibration.Stereo) {
-            return new DeviceEffectMap((CombinedVibration.Stereo) combinedVibration);
-        }
-        return null;
-    }
-
-    public final long startVibrating(DeviceEffectMap deviceEffectMap, List list) {
-        boolean z;
-        int size = deviceEffectMap.size();
-        if (size == 0) {
-            return 0L;
-        }
-        AbstractVibratorStep[] abstractVibratorStepArr = new AbstractVibratorStep[size];
-        long uptimeMillis = SystemClock.uptimeMillis();
-        boolean z2 = false;
-        int i = 0;
-        while (i < size) {
-            VibrationStepConductor vibrationStepConductor = this.conductor;
-            int i2 = i;
-            abstractVibratorStepArr[i2] = vibrationStepConductor.nextVibrateStep(uptimeMillis, (VibratorController) vibrationStepConductor.getVibrators().get(deviceEffectMap.vibratorIdAt(i)), deviceEffectMap.effectAt(i), 0, 0L);
-            i = i2 + 1;
-        }
-        if (size == 1) {
-            return startVibrating(abstractVibratorStepArr[0], list);
-        }
-        boolean prepareSyncedVibration = this.conductor.vibratorManagerHooks.prepareSyncedVibration(deviceEffectMap.getRequiredSyncCapabilities(), deviceEffectMap.getVibratorIds());
-        long j = 0;
-        int i3 = 0;
-        while (true) {
-            if (i3 >= size) {
-                z = false;
-                break;
-            }
-            long startVibrating = startVibrating(abstractVibratorStepArr[i3], list);
-            if (startVibrating < 0) {
-                z = true;
-                break;
-            }
-            j = Math.max(j, startVibrating);
-            i3++;
-        }
-        if (prepareSyncedVibration && !z && j > 0) {
-            z2 = this.conductor.vibratorManagerHooks.triggerSyncedVibration(getVibration().id);
-            z &= z2;
-        }
-        if (z) {
-            for (int size2 = list.size() - 1; size2 >= 0; size2--) {
-                ((Step) list.remove(size2)).cancelImmediately();
-            }
-        }
-        if (prepareSyncedVibration && !z2) {
-            this.conductor.vibratorManagerHooks.cancelSyncedVibration();
-        }
-        if (z) {
-            return -1L;
-        }
-        return j;
-    }
-
-    public final long startVibrating(AbstractVibratorStep abstractVibratorStep, List list) {
-        list.addAll(abstractVibratorStep.play());
-        long vibratorOnDuration = abstractVibratorStep.getVibratorOnDuration();
-        return vibratorOnDuration < 0 ? vibratorOnDuration : Math.max(vibratorOnDuration, abstractVibratorStep.effect.getDuration());
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class DeviceEffectMap {
         public final long mRequiredSyncCapabilities;
         public final SparseArray mVibratorEffects;
         public final int[] mVibratorIds;
 
-        public final boolean requireMixedTriggerCapability(long j, long j2) {
-            return ((j & j2) == 0 || (j & (~j2)) == 0) ? false : true;
-        }
-
-        public DeviceEffectMap(CombinedVibration.Mono mono) {
-            SparseArray vibrators = StartSequentialEffectStep.this.conductor.getVibrators();
-            this.mVibratorEffects = new SparseArray(vibrators.size());
-            this.mVibratorIds = new int[vibrators.size()];
-            for (int i = 0; i < vibrators.size(); i++) {
-                int keyAt = vibrators.keyAt(i);
-                VibrationEffect.Composed apply = StartSequentialEffectStep.this.conductor.deviceEffectAdapter.apply(mono.getEffect(), ((VibratorController) vibrators.valueAt(i)).getVibratorInfo());
-                if (apply instanceof VibrationEffect.Composed) {
-                    this.mVibratorEffects.put(keyAt, apply);
+        public DeviceEffectMap(StartSequentialEffectStep startSequentialEffectStep, CombinedVibration.Mono mono) {
+            SparseArray sparseArray = startSequentialEffectStep.conductor.mDeviceAdapter.mAvailableVibrators;
+            VibrationEffect.Composed effect = mono.getEffect();
+            if (effect instanceof VibrationEffect.Composed) {
+                this.mVibratorEffects = new SparseArray(sparseArray.size());
+                this.mVibratorIds = new int[sparseArray.size()];
+                VibrationEffect.Composed composed = effect;
+                for (int i = 0; i < sparseArray.size(); i++) {
+                    int keyAt = sparseArray.keyAt(i);
+                    this.mVibratorEffects.put(keyAt, composed);
                     this.mVibratorIds[i] = keyAt;
                 }
+            } else {
+                Slog.wtf("VibrationThread", "Unable to map device vibrators to unexpected effect: " + effect);
+                this.mVibratorEffects = new SparseArray();
+                this.mVibratorIds = new int[0];
             }
             this.mRequiredSyncCapabilities = calculateRequiredSyncCapabilities(this.mVibratorEffects);
         }
 
-        public DeviceEffectMap(CombinedVibration.Stereo stereo) {
-            SparseArray vibrators = StartSequentialEffectStep.this.conductor.getVibrators();
+        public DeviceEffectMap(StartSequentialEffectStep startSequentialEffectStep, CombinedVibration.Stereo stereo) {
+            SparseArray sparseArray = startSequentialEffectStep.conductor.mDeviceAdapter.mAvailableVibrators;
             SparseArray effects = stereo.getEffects();
             this.mVibratorEffects = new SparseArray();
             for (int i = 0; i < effects.size(); i++) {
                 int keyAt = effects.keyAt(i);
-                if (vibrators.contains(keyAt)) {
-                    VibrationEffect.Composed apply = StartSequentialEffectStep.this.conductor.deviceEffectAdapter.apply((VibrationEffect) effects.valueAt(i), ((VibratorController) vibrators.valueAt(i)).getVibratorInfo());
-                    if (apply instanceof VibrationEffect.Composed) {
-                        this.mVibratorEffects.put(keyAt, apply);
+                if (sparseArray.contains(keyAt)) {
+                    VibrationEffect.Composed composed = (VibrationEffect) effects.valueAt(i);
+                    if (composed instanceof VibrationEffect.Composed) {
+                        this.mVibratorEffects.put(keyAt, composed);
+                    } else {
+                        Slog.wtf("VibrationThread", "Unable to map device vibrators to unexpected effect: " + composed);
                     }
                 }
             }
@@ -233,27 +73,7 @@ public final class StartSequentialEffectStep extends Step {
             this.mRequiredSyncCapabilities = calculateRequiredSyncCapabilities(this.mVibratorEffects);
         }
 
-        public int size() {
-            return this.mVibratorIds.length;
-        }
-
-        public long getRequiredSyncCapabilities() {
-            return this.mRequiredSyncCapabilities;
-        }
-
-        public int[] getVibratorIds() {
-            return this.mVibratorIds;
-        }
-
-        public int vibratorIdAt(int i) {
-            return this.mVibratorEffects.keyAt(i);
-        }
-
-        public VibrationEffect.Composed effectAt(int i) {
-            return (VibrationEffect.Composed) this.mVibratorEffects.valueAt(i);
-        }
-
-        public final long calculateRequiredSyncCapabilities(SparseArray sparseArray) {
+        public static long calculateRequiredSyncCapabilities(SparseArray sparseArray) {
             long j = 0;
             for (int i = 0; i < sparseArray.size(); i++) {
                 VibrationEffectSegment vibrationEffectSegment = (VibrationEffectSegment) ((VibrationEffect.Composed) sparseArray.valueAt(i)).getSegments().get(0);
@@ -272,7 +92,208 @@ public final class StartSequentialEffectStep extends Step {
             if (requireMixedTriggerCapability(j, 8L)) {
                 i2 |= 64;
             }
-            return 1 | j | i2;
+            return j | 1 | i2;
         }
+
+        public static boolean requireMixedTriggerCapability(long j, long j2) {
+            return ((j & j2) == 0 || (j & (~j2)) == 0) ? false : true;
+        }
+    }
+
+    public StartSequentialEffectStep(VibrationStepConductor vibrationStepConductor, long j, CombinedVibration.Sequential sequential, int i) {
+        super(vibrationStepConductor, j);
+        this.sequentialEffect = sequential;
+        this.currentIndex = i;
+    }
+
+    @Override // com.android.server.vibrator.Step
+    public final List cancel() {
+        return VibrationStepConductor.EMPTY_STEP_LIST;
+    }
+
+    @Override // com.android.server.vibrator.Step
+    public final void cancelImmediately() {
+    }
+
+    @Override // com.android.server.vibrator.Step
+    public final long getVibratorOnDuration() {
+        return this.mVibratorsOnMaxDuration;
+    }
+
+    public final StartSequentialEffectStep nextStep() {
+        int i = this.currentIndex + 1;
+        if (i >= this.sequentialEffect.getEffects().size()) {
+            return null;
+        }
+        return new StartSequentialEffectStep(this.conductor, SystemClock.uptimeMillis() + ((Integer) this.sequentialEffect.getDelays().get(i)).intValue(), this.sequentialEffect, i);
+    }
+
+    @Override // com.android.server.vibrator.Step
+    public final List play() {
+        Trace.traceBegin(8388608L, "StartSequentialEffectStep");
+        ArrayList arrayList = new ArrayList();
+        this.mVibratorsOnMaxDuration = -1L;
+        try {
+            Slog.d("VibrationThread", "StartSequentialEffectStep for effect #" + this.currentIndex);
+            CombinedVibration.Mono mono = (CombinedVibration) this.sequentialEffect.getEffects().get(this.currentIndex);
+            DeviceEffectMap deviceEffectMap = mono instanceof CombinedVibration.Mono ? new DeviceEffectMap(this, mono) : mono instanceof CombinedVibration.Stereo ? new DeviceEffectMap(this, (CombinedVibration.Stereo) mono) : null;
+            if (deviceEffectMap == null) {
+                long j = this.mVibratorsOnMaxDuration;
+                if (j >= 0) {
+                    Step finishSequentialEffectStep = j > 0 ? new FinishSequentialEffectStep(this) : nextStep();
+                    if (finishSequentialEffectStep != null) {
+                        arrayList.add(finishSequentialEffectStep);
+                    }
+                }
+                Trace.traceEnd(8388608L);
+                return arrayList;
+            }
+            if (this.conductor.mDeviceAdapter.mAvailableVibrators.size() != 0) {
+                VibrationEffect.Composed composed = this.conductor.mComposed;
+                StepSegment stepSegment = (VibrationEffectSegment) composed.getSegments().get(0);
+                VibratorController vibratorController = (VibratorController) this.conductor.mDeviceAdapter.mAvailableVibrators.get(0);
+                if (vibratorController == null) {
+                    long j2 = this.mVibratorsOnMaxDuration;
+                    if (j2 >= 0) {
+                        Step finishSequentialEffectStep2 = j2 > 0 ? new FinishSequentialEffectStep(this) : nextStep();
+                        if (finishSequentialEffectStep2 != null) {
+                            arrayList.add(finishSequentialEffectStep2);
+                        }
+                    }
+                    Trace.traceEnd(8388608L);
+                    return arrayList;
+                }
+                VibratorController.NativeWrapper nativeWrapper = vibratorController.mNativeWrapper;
+                if (stepSegment instanceof StepSegment) {
+                    StepSegment stepSegment2 = stepSegment;
+                    int semGetMagnitude = composed.semGetMagnitude() > -1 ? composed.semGetMagnitude() : this.conductor.mVibration.mMagnitude;
+                    if (VibRune.SUPPORT_CIRRUS_HAPTIC()) {
+                        vibratorController.mNativeWrapper.performPrebakedHapticPattern(0L, semGetMagnitude, false);
+                        vibratorController.notifyListenerOnVibrating(true);
+                    } else if (vibratorController.mSupportIntensityControl) {
+                        nativeWrapper.setIntensity(semGetMagnitude);
+                    }
+                    if (vibratorController.mSupportFrequencyControl) {
+                        nativeWrapper.setFrequencyType((long) stepSegment2.getFrequencyHz());
+                    }
+                } else if (stepSegment instanceof PrimitiveSegment) {
+                    if (vibratorController.mSupportIntensityControl) {
+                        nativeWrapper.setIntensity(composed.semGetMagnitude() > -1 ? composed.semGetMagnitude() : this.conductor.mVibration.mMagnitude);
+                    } else {
+                        vibratorController.setAmplitude(1.0f);
+                    }
+                }
+            }
+            final long startVibrating = startVibrating(deviceEffectMap, arrayList);
+            this.mVibratorsOnMaxDuration = startVibrating;
+            VibrationStepConductor vibrationStepConductor = this.conductor;
+            VibratorManagerService.VibrationThreadCallbacks vibrationThreadCallbacks = vibrationStepConductor.vibratorManagerHooks;
+            final int i = vibrationStepConductor.mVibration.callerInfo.uid;
+            VibratorManagerService vibratorManagerService = (VibratorManagerService) vibrationThreadCallbacks.this$0;
+            if (startVibrating > 0) {
+                if (startVibrating == Long.MAX_VALUE) {
+                    startVibrating = 5000;
+                }
+                try {
+                    vibratorManagerService.mBatteryStatsService.noteVibratorOn(i, startVibrating);
+                    VibratorFrameworkStatsLogger vibratorFrameworkStatsLogger = vibratorManagerService.mFrameworkStatsLogger;
+                    vibratorFrameworkStatsLogger.getClass();
+                    vibratorFrameworkStatsLogger.mHandler.post(new Runnable() { // from class: com.android.server.vibrator.VibratorFrameworkStatsLogger$$ExternalSyntheticLambda1
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            FrameworkStatsLog.write_non_chained(84, i, (String) null, 1, startVibrating);
+                        }
+                    });
+                } catch (RemoteException e) {
+                    Slog.e("VibratorManagerService", "Error logging VibratorStateChanged to ON", e);
+                }
+            }
+            long j3 = this.mVibratorsOnMaxDuration;
+            if (j3 >= 0) {
+                Step finishSequentialEffectStep3 = j3 > 0 ? new FinishSequentialEffectStep(this) : nextStep();
+                if (finishSequentialEffectStep3 != null) {
+                    arrayList.add(finishSequentialEffectStep3);
+                }
+            }
+            Trace.traceEnd(8388608L);
+            return arrayList;
+        } catch (Throwable th) {
+            long j4 = this.mVibratorsOnMaxDuration;
+            if (j4 >= 0) {
+                Step finishSequentialEffectStep4 = j4 > 0 ? new FinishSequentialEffectStep(this) : nextStep();
+                if (finishSequentialEffectStep4 != null) {
+                    arrayList.add(finishSequentialEffectStep4);
+                }
+            }
+            Trace.traceEnd(8388608L);
+            throw th;
+        }
+    }
+
+    public final long startVibrating(DeviceEffectMap deviceEffectMap, List list) {
+        boolean z;
+        int[] iArr = deviceEffectMap.mVibratorIds;
+        int length = iArr.length;
+        if (length == 0) {
+            return 0L;
+        }
+        AbstractVibratorStep[] abstractVibratorStepArr = new AbstractVibratorStep[length];
+        long uptimeMillis = SystemClock.uptimeMillis();
+        boolean z2 = false;
+        int i = 0;
+        while (i < length) {
+            VibrationStepConductor vibrationStepConductor = this.conductor;
+            int i2 = i;
+            abstractVibratorStepArr[i2] = vibrationStepConductor.nextVibrateStep(uptimeMillis, (VibratorController) vibrationStepConductor.mDeviceAdapter.mAvailableVibrators.get(deviceEffectMap.mVibratorEffects.keyAt(i)), (VibrationEffect.Composed) deviceEffectMap.mVibratorEffects.valueAt(i), 0, 0L);
+            i = i2 + 1;
+        }
+        if (length == 1) {
+            AbstractVibratorStep abstractVibratorStep = abstractVibratorStepArr[0];
+            ((ArrayList) list).addAll(abstractVibratorStep.play());
+            long j = abstractVibratorStep.mVibratorOnResult;
+            return j < 0 ? j : Math.max(j, abstractVibratorStep.effect.getDuration());
+        }
+        VibratorManagerService vibratorManagerService = (VibratorManagerService) this.conductor.vibratorManagerHooks.this$0;
+        long j2 = vibratorManagerService.mCapabilities;
+        long j3 = deviceEffectMap.mRequiredSyncCapabilities;
+        boolean nativePrepareSynced = (j2 & j3) != j3 ? false : VibratorManagerService.nativePrepareSynced(vibratorManagerService.mNativeWrapper.mNativeServicePtr, iArr);
+        long j4 = 0;
+        int i3 = 0;
+        while (true) {
+            if (i3 >= length) {
+                z = false;
+                break;
+            }
+            AbstractVibratorStep abstractVibratorStep2 = abstractVibratorStepArr[i3];
+            ((ArrayList) list).addAll(abstractVibratorStep2.play());
+            long j5 = abstractVibratorStep2.mVibratorOnResult;
+            if (j5 >= 0) {
+                j5 = Math.max(j5, abstractVibratorStep2.effect.getDuration());
+            }
+            if (j5 < 0) {
+                z = true;
+                break;
+            }
+            j4 = Math.max(j4, j5);
+            i3++;
+        }
+        if (nativePrepareSynced && !z && j4 > 0) {
+            VibrationStepConductor vibrationStepConductor2 = this.conductor;
+            z2 = VibratorManagerService.nativeTriggerSynced(((VibratorManagerService) vibrationStepConductor2.vibratorManagerHooks.this$0).mNativeWrapper.mNativeServicePtr, vibrationStepConductor2.mVibration.id);
+            z &= z2;
+        }
+        if (z) {
+            ArrayList arrayList = (ArrayList) list;
+            for (int size = arrayList.size() - 1; size >= 0; size--) {
+                ((Step) arrayList.remove(size)).cancelImmediately();
+            }
+        }
+        if (nativePrepareSynced && !z2) {
+            ((VibratorManagerService) this.conductor.vibratorManagerHooks.this$0).mNativeWrapper.cancelSynced();
+        }
+        if (z) {
+            return -1L;
+        }
+        return j4;
     }
 }

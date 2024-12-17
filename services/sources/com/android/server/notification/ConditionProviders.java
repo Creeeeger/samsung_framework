@@ -7,114 +7,164 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.IPackageManager;
 import android.content.pm.ServiceInfo;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.RemoteException;
+import android.os.SystemProperties;
 import android.service.notification.Condition;
 import android.service.notification.IConditionProvider;
+import android.service.notification.ZenModeConfig;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
+import android.util.LocalLog;
+import android.util.Log;
 import android.util.Slog;
-import com.android.internal.util.jobs.XmlUtils;
 import com.android.modules.utils.TypedXmlSerializer;
+import com.android.server.HeimdAllFsService$$ExternalSyntheticOutline0;
+import com.android.server.ambientcontext.AmbientContextManagerPerUserService$$ExternalSyntheticOutline0;
 import com.android.server.notification.ManagedServices;
 import com.android.server.notification.NotificationManagerService;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class ConditionProviders extends ManagedServices {
+public final class ConditionProviders extends ManagedServices {
     static final String TAG_ENABLED_DND_APPS = "dnd_apps";
     public Callback mCallback;
     public final ArrayList mRecords;
     public final ArraySet mSystemConditionProviderNames;
     public final ArraySet mSystemConditionProviders;
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface Callback {
-        void onBootComplete();
-
-        void onConditionChanged(Uri uri, Condition condition);
-
-        void onServiceAdded(ComponentName componentName);
-
-        void onUserSwitched();
     }
 
-    @Override // com.android.server.notification.ManagedServices
-    public void ensureFilters(ServiceInfo serviceInfo, int i) {
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ConditionRecord {
+        public final ComponentName component;
+        public Condition condition;
+        public final Uri id;
+        public ManagedServices.ManagedServiceInfo info;
+        public boolean subscribed;
 
-    @Override // com.android.server.notification.ManagedServices
-    public String getRequiredPermission() {
-        return null;
-    }
+        public ConditionRecord(ComponentName componentName, Uri uri) {
+            this.id = uri;
+            this.component = componentName;
+        }
 
-    @Override // com.android.server.notification.ManagedServices
-    public boolean isValidEntry(String str, int i) {
-        return true;
+        public final String toString() {
+            return "ConditionRecord[id=" + this.id + ",component=" + this.component + ",subscribed=" + this.subscribed + ']';
+        }
     }
 
     public ConditionProviders(Context context, ManagedServices.UserProfiles userProfiles, IPackageManager iPackageManager) {
         super(context, new Object(), userProfiles, iPackageManager);
         this.mRecords = new ArrayList();
         this.mSystemConditionProviders = new ArraySet();
-        this.mSystemConditionProviderNames = safeSet(PropConfig.getStringArray(this.mContext, "system.condition.providers", 17236313));
-        this.mApprovalLevel = 0;
-    }
-
-    public void setCallback(Callback callback) {
-        this.mCallback = callback;
-    }
-
-    public boolean isSystemProviderEnabled(String str) {
-        return this.mSystemConditionProviderNames.contains(str);
-    }
-
-    public void addSystemProvider(SystemConditionProviderService systemConditionProviderService) {
-        this.mSystemConditionProviders.add(systemConditionProviderService);
-        systemConditionProviderService.attachBase(this.mContext);
-        registerSystemService(systemConditionProviderService.asInterface(), systemConditionProviderService.getComponent(), 0, 1000);
-    }
-
-    public Iterable getSystemProviders() {
-        return this.mSystemConditionProviders;
-    }
-
-    public boolean resetPackage(String str, int i) {
-        ArraySet arraySet;
-        boolean isPackageOrComponentAllowed = super.isPackageOrComponentAllowed(str, i);
-        boolean isDefaultComponentOrPackage = super.isDefaultComponentOrPackage(str);
-        if (!isPackageOrComponentAllowed && isDefaultComponentOrPackage) {
-            setPackageOrComponentEnabled(str, i, true, true);
-            synchronized (this.mApproved) {
-                ArrayMap arrayMap = (ArrayMap) this.mApproved.get(Integer.valueOf(i));
-                if (arrayMap != null && (arraySet = (ArraySet) arrayMap.get(Boolean.FALSE)) != null) {
-                    String packageName = getPackageName(str);
-                    if (arraySet.contains(packageName)) {
-                        arraySet.remove(packageName);
-                    }
+        Context context2 = this.mContext;
+        String str = SystemProperties.get("system.condition.providers", "UNSET");
+        String[] split = !"UNSET".equals(str) ? str.split(",") : context2.getResources().getStringArray(17236326);
+        ArraySet arraySet = new ArraySet();
+        if (split != null && split.length != 0) {
+            for (String str2 : split) {
+                if (str2 != null) {
+                    arraySet.add(str2);
                 }
             }
         }
-        if (isPackageOrComponentAllowed && !isDefaultComponentOrPackage) {
-            setPackageOrComponentEnabled(str, i, true, false);
+        this.mSystemConditionProviderNames = arraySet;
+        this.mApprovalLevel = 0;
+    }
+
+    public final void addSystemProvider(SystemConditionProviderService systemConditionProviderService) {
+        this.mSystemConditionProviders.add(systemConditionProviderService);
+        systemConditionProviderService.attachBase(this.mContext);
+        IConditionProvider asInterface = systemConditionProviderService.asInterface();
+        ComponentName component = systemConditionProviderService.getComponent();
+        checkNotNull(asInterface);
+        ManagedServices.ManagedServiceInfo registerServiceImpl = registerServiceImpl(new ManagedServices.ManagedServiceInfo(asInterface, component, 0, true, null, 10000, 1000));
+        if (registerServiceImpl != null) {
+            onServiceAdded(registerServiceImpl);
         }
-        return !isPackageOrComponentAllowed && isDefaultComponentOrPackage;
     }
 
     @Override // com.android.server.notification.ManagedServices
-    public void writeDefaults(TypedXmlSerializer typedXmlSerializer) {
-        synchronized (this.mDefaultsLock) {
-            typedXmlSerializer.attribute((String) null, "defaults", String.join(XmlUtils.STRING_ARRAY_SEPARATOR, this.mDefaultPackages));
+    public final boolean allowRebindForParentUser() {
+        return true;
+    }
+
+    @Override // com.android.server.notification.ManagedServices
+    public final IInterface asInterface(IBinder iBinder) {
+        return IConditionProvider.Stub.asInterface(iBinder);
+    }
+
+    @Override // com.android.server.notification.ManagedServices
+    public final void dump(PrintWriter printWriter, NotificationManagerService.DumpFilter dumpFilter) {
+        int i;
+        String format;
+        super.dump(printWriter, dumpFilter);
+        synchronized (this.mMutex) {
+            try {
+                printWriter.print("    mRecords(");
+                printWriter.print(this.mRecords.size());
+                printWriter.println("):");
+                for (int i2 = 0; i2 < this.mRecords.size(); i2++) {
+                    ConditionRecord conditionRecord = (ConditionRecord) this.mRecords.get(i2);
+                    if (dumpFilter.matches(conditionRecord.component)) {
+                        printWriter.print("      ");
+                        printWriter.println(conditionRecord);
+                        Uri uri = conditionRecord.id;
+                        boolean z = CountdownConditionProvider.DEBUG;
+                        long tryParseCountdownConditionId = ZenModeConfig.tryParseCountdownConditionId(uri);
+                        if (tryParseCountdownConditionId == 0) {
+                            format = null;
+                        } else {
+                            long currentTimeMillis = System.currentTimeMillis();
+                            format = String.format("Scheduled for %s, %s in the future (%s), now=%s", SystemConditionProviderService.ts(tryParseCountdownConditionId), Long.valueOf(tryParseCountdownConditionId - currentTimeMillis), DateUtils.getRelativeTimeSpanString(tryParseCountdownConditionId, currentTimeMillis, 60000L), SystemConditionProviderService.ts(currentTimeMillis));
+                        }
+                        if (format != null) {
+                            printWriter.print("        (");
+                            printWriter.print(format);
+                            printWriter.println(")");
+                        }
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        printWriter.print("    mSystemConditionProviders: ");
+        printWriter.println(this.mSystemConditionProviderNames);
+        for (i = 0; i < this.mSystemConditionProviders.size(); i++) {
+            ((SystemConditionProviderService) this.mSystemConditionProviders.valueAt(i)).dump(printWriter);
         }
     }
 
     @Override // com.android.server.notification.ManagedServices
-    public ManagedServices.Config getConfig() {
+    public final void ensureFilters(ServiceInfo serviceInfo, int i) {
+    }
+
+    public final void ensureRecordExists(ComponentName componentName, Uri uri, IConditionProvider iConditionProvider) {
+        synchronized (this.mMutex) {
+            try {
+                ConditionRecord recordLocked = getRecordLocked(uri, componentName, true);
+                if (recordLocked.info == null) {
+                    recordLocked.info = checkServiceTokenLocked(iConditionProvider);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.notification.ManagedServices
+    public final ManagedServices.Config getConfig() {
         ManagedServices.Config config = new ManagedServices.Config();
         config.caption = "condition provider";
         config.serviceInterface = "android.service.notification.ConditionProviderService";
@@ -123,132 +173,31 @@ public class ConditionProviders extends ManagedServices {
         config.secondarySettingName = "enabled_notification_listeners";
         config.bindPermission = "android.permission.BIND_CONDITION_PROVIDER_SERVICE";
         config.settingsAction = "android.settings.ACTION_CONDITION_PROVIDER_SETTINGS";
-        config.clientLabel = R.string.edit_accessibility_shortcut_menu_button;
+        config.clientLabel = R.string.config_wimaxStateTrackerClassname;
         return config;
     }
 
-    @Override // com.android.server.notification.ManagedServices
-    public void dump(PrintWriter printWriter, NotificationManagerService.DumpFilter dumpFilter) {
-        int i;
-        super.dump(printWriter, dumpFilter);
-        synchronized (this.mMutex) {
-            printWriter.print("    mRecords(");
-            printWriter.print(this.mRecords.size());
-            printWriter.println("):");
-            for (int i2 = 0; i2 < this.mRecords.size(); i2++) {
-                ConditionRecord conditionRecord = (ConditionRecord) this.mRecords.get(i2);
-                if (dumpFilter == null || dumpFilter.matches(conditionRecord.component)) {
-                    printWriter.print("      ");
-                    printWriter.println(conditionRecord);
-                    String tryParseDescription = CountdownConditionProvider.tryParseDescription(conditionRecord.id);
-                    if (tryParseDescription != null) {
-                        printWriter.print("        (");
-                        printWriter.print(tryParseDescription);
-                        printWriter.println(")");
-                    }
+    public final ConditionRecord getRecordLocked(Uri uri, ComponentName componentName, boolean z) {
+        if (uri != null && componentName != null) {
+            int size = this.mRecords.size();
+            for (int i = 0; i < size; i++) {
+                ConditionRecord conditionRecord = (ConditionRecord) this.mRecords.get(i);
+                if (conditionRecord.id.equals(uri) && conditionRecord.component.equals(componentName)) {
+                    return conditionRecord;
                 }
             }
-        }
-        printWriter.print("    mSystemConditionProviders: ");
-        printWriter.println(this.mSystemConditionProviderNames);
-        for (i = 0; i < this.mSystemConditionProviders.size(); i++) {
-            ((SystemConditionProviderService) this.mSystemConditionProviders.valueAt(i)).dump(printWriter, dumpFilter);
-        }
-    }
-
-    @Override // com.android.server.notification.ManagedServices
-    public IInterface asInterface(IBinder iBinder) {
-        return IConditionProvider.Stub.asInterface(iBinder);
-    }
-
-    @Override // com.android.server.notification.ManagedServices
-    public boolean checkType(IInterface iInterface) {
-        return iInterface instanceof IConditionProvider;
-    }
-
-    @Override // com.android.server.notification.ManagedServices
-    public void onBootPhaseAppsCanStart() {
-        super.onBootPhaseAppsCanStart();
-        for (int i = 0; i < this.mSystemConditionProviders.size(); i++) {
-            ((SystemConditionProviderService) this.mSystemConditionProviders.valueAt(i)).onBootComplete();
-        }
-        Callback callback = this.mCallback;
-        if (callback != null) {
-            callback.onBootComplete();
-        }
-    }
-
-    @Override // com.android.server.notification.ManagedServices
-    public void onUserSwitched(int i) {
-        super.onUserSwitched(i);
-        Callback callback = this.mCallback;
-        if (callback != null) {
-            callback.onUserSwitched();
-        }
-    }
-
-    @Override // com.android.server.notification.ManagedServices
-    public void onServiceAdded(ManagedServices.ManagedServiceInfo managedServiceInfo) {
-        try {
-            provider(managedServiceInfo).onConnected();
-        } catch (RemoteException e) {
-            Slog.e(this.TAG, "can't connect to service " + managedServiceInfo, e);
-        }
-        Callback callback = this.mCallback;
-        if (callback != null) {
-            callback.onServiceAdded(managedServiceInfo.component);
-        }
-    }
-
-    @Override // com.android.server.notification.ManagedServices
-    public void loadDefaultsFromConfig() {
-        String string = this.mContext.getResources().getString(R.string.ext_media_unmounting_notification_message);
-        if (string != null) {
-            String[] split = string.split(XmlUtils.STRING_ARRAY_SEPARATOR);
-            for (int i = 0; i < split.length; i++) {
-                if (!TextUtils.isEmpty(split[i])) {
-                    addDefaultComponentOrPackage(split[i]);
-                }
+            if (z) {
+                ConditionRecord conditionRecord2 = new ConditionRecord(componentName, uri);
+                this.mRecords.add(conditionRecord2);
+                return conditionRecord2;
             }
         }
+        return null;
     }
 
     @Override // com.android.server.notification.ManagedServices
-    public void onServiceRemovedLocked(ManagedServices.ManagedServiceInfo managedServiceInfo) {
-        if (managedServiceInfo == null) {
-            return;
-        }
-        for (int size = this.mRecords.size() - 1; size >= 0; size--) {
-            if (((ConditionRecord) this.mRecords.get(size)).component.equals(managedServiceInfo.component)) {
-                this.mRecords.remove(size);
-            }
-        }
-    }
-
-    @Override // com.android.server.notification.ManagedServices
-    public void onPackagesChanged(boolean z, String[] strArr, int[] iArr) {
-        if (z) {
-            INotificationManager service = NotificationManager.getService();
-            if (strArr != null && strArr.length > 0) {
-                for (String str : strArr) {
-                    try {
-                        service.removeAutomaticZenRules(str);
-                        service.setNotificationPolicyAccessGranted(str, false);
-                    } catch (Exception e) {
-                        Slog.e(this.TAG, "Failed to clean up rules for " + str, e);
-                    }
-                }
-            }
-        }
-        super.onPackagesChanged(z, strArr, iArr);
-    }
-
-    public ManagedServices.ManagedServiceInfo checkServiceToken(IConditionProvider iConditionProvider) {
-        ManagedServices.ManagedServiceInfo checkServiceTokenLocked;
-        synchronized (this.mMutex) {
-            checkServiceTokenLocked = checkServiceTokenLocked(iConditionProvider);
-        }
-        return checkServiceTokenLocked;
+    public final String getRequiredPermission() {
+        return null;
     }
 
     public final Condition[] getValidConditions(String str, Condition[] conditionArr) {
@@ -259,12 +208,13 @@ public class ConditionProviders extends ManagedServices {
         ArrayMap arrayMap = new ArrayMap(length);
         for (int i = 0; i < length; i++) {
             Condition condition = conditionArr[i];
+            String str2 = this.TAG;
             if (condition == null) {
-                Slog.w(this.TAG, "Ignoring null condition from " + str);
+                HeimdAllFsService$$ExternalSyntheticOutline0.m("Ignoring null condition from ", str, str2);
             } else {
                 Uri uri = condition.id;
                 if (arrayMap.containsKey(uri)) {
-                    Slog.w(this.TAG, "Ignoring condition from " + str + " for duplicate id: " + uri);
+                    Slog.w(str2, "Ignoring condition from " + str + " for duplicate id: " + uri);
                 } else {
                     arrayMap.put(uri, conditionArr[i]);
                 }
@@ -284,195 +234,155 @@ public class ConditionProviders extends ManagedServices {
         return conditionArr2;
     }
 
-    public final ConditionRecord getRecordLocked(Uri uri, ComponentName componentName, boolean z) {
-        if (uri != null && componentName != null) {
-            int size = this.mRecords.size();
-            for (int i = 0; i < size; i++) {
-                ConditionRecord conditionRecord = (ConditionRecord) this.mRecords.get(i);
-                if (conditionRecord.id.equals(uri) && conditionRecord.component.equals(componentName)) {
-                    return conditionRecord;
-                }
-            }
-            if (z) {
-                ConditionRecord conditionRecord2 = new ConditionRecord(uri, componentName);
-                this.mRecords.add(conditionRecord2);
-                return conditionRecord2;
-            }
-        }
-        return null;
+    @Override // com.android.server.notification.ManagedServices
+    public final boolean isValidEntry(int i, String str) {
+        return true;
     }
 
-    public void notifyConditions(String str, ManagedServices.ManagedServiceInfo managedServiceInfo, Condition[] conditionArr) {
-        synchronized (this.mMutex) {
-            if (this.DEBUG) {
-                String str2 = this.TAG;
-                StringBuilder sb = new StringBuilder();
-                sb.append("notifyConditions pkg=");
-                sb.append(str);
-                sb.append(" info=");
-                sb.append(managedServiceInfo);
-                sb.append(" conditions=");
-                sb.append(conditionArr == null ? null : Arrays.asList(conditionArr));
-                Slog.d(str2, sb.toString());
-            }
-            Condition[] validConditions = getValidConditions(str, conditionArr);
-            if (validConditions != null && validConditions.length != 0) {
-                for (Condition condition : validConditions) {
-                    ConditionRecord recordLocked = getRecordLocked(condition.id, managedServiceInfo.component, true);
-                    recordLocked.info = managedServiceInfo;
-                    recordLocked.condition = condition;
+    @Override // com.android.server.notification.ManagedServices
+    public final void loadDefaultsFromConfig() {
+        String string = this.mContext.getResources().getString(R.string.day);
+        if (string != null) {
+            String[] split = string.split(":");
+            for (int i = 0; i < split.length; i++) {
+                if (!TextUtils.isEmpty(split[i])) {
+                    addDefaultComponentOrPackage(split[i]);
                 }
-                for (Condition condition2 : validConditions) {
-                    Callback callback = this.mCallback;
-                    if (callback != null) {
-                        callback.onConditionChanged(condition2.id, condition2);
+            }
+        }
+    }
+
+    @Override // com.android.server.notification.ManagedServices
+    public final void onPackagesChanged(boolean z, String[] strArr, int[] iArr) {
+        if (z) {
+            INotificationManager service = NotificationManager.getService();
+            if (strArr != null && strArr.length > 0) {
+                for (String str : strArr) {
+                    try {
+                        service.removeAutomaticZenRules(str, false);
+                        service.setNotificationPolicyAccessGranted(str, false);
+                    } catch (Exception e) {
+                        Slog.e(this.TAG, ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Failed to clean up rules for ", str), e);
                     }
                 }
             }
         }
+        super.onPackagesChanged(z, strArr, iArr);
     }
 
-    public IConditionProvider findConditionProvider(ComponentName componentName) {
-        if (componentName == null) {
-            return null;
+    @Override // com.android.server.notification.ManagedServices
+    public final void onServiceAdded(ManagedServices.ManagedServiceInfo managedServiceInfo) {
+        try {
+            (managedServiceInfo == null ? null : managedServiceInfo.service).onConnected();
+        } catch (RemoteException e) {
+            Slog.e(this.TAG, "can't connect to service " + managedServiceInfo, e);
         }
-        for (ManagedServices.ManagedServiceInfo managedServiceInfo : getServices()) {
-            if (componentName.equals(managedServiceInfo.component)) {
-                return provider(managedServiceInfo);
+        Callback callback = this.mCallback;
+        if (callback != null) {
+            ComponentName componentName = managedServiceInfo.component;
+            ZenModeConditions zenModeConditions = (ZenModeConditions) callback;
+            if (ZenModeConditions.DEBUG) {
+                Log.d("ZenModeHelper", "onServiceAdded " + componentName);
             }
-        }
-        return null;
-    }
-
-    public Condition findCondition(ComponentName componentName, Uri uri) {
-        Condition condition;
-        if (componentName == null || uri == null) {
-            return null;
-        }
-        synchronized (this.mMutex) {
-            ConditionRecord recordLocked = getRecordLocked(uri, componentName, false);
-            condition = recordLocked != null ? recordLocked.condition : null;
-        }
-        return condition;
-    }
-
-    public void ensureRecordExists(ComponentName componentName, Uri uri, IConditionProvider iConditionProvider) {
-        synchronized (this.mMutex) {
-            ConditionRecord recordLocked = getRecordLocked(uri, componentName, true);
-            if (recordLocked.info == null) {
-                recordLocked.info = checkServiceTokenLocked(iConditionProvider);
+            int callingUid = Binder.getCallingUid();
+            ZenModeHelper zenModeHelper = zenModeConditions.mHelper;
+            ZenModeConfig config = zenModeHelper.getConfig();
+            int i = callingUid == 1000 ? 5 : 4;
+            String m = AmbientContextManagerPerUserService$$ExternalSyntheticOutline0.m(componentName, "zmc.onServiceAdded:");
+            synchronized (zenModeHelper.mConfigLock) {
+                zenModeHelper.setConfigLocked(config, i, m, componentName, true, callingUid);
             }
         }
     }
 
-    public boolean subscribeIfNecessary(ComponentName componentName, Uri uri, boolean z) {
-        synchronized (this.mMutex) {
-            ConditionRecord recordLocked = getRecordLocked(uri, componentName, false);
-            if (recordLocked == null) {
-                Slog.w(this.TAG, "Unable to subscribe to " + componentName + " " + uri);
-                return false;
-            }
-            if (recordLocked.subscribed && z) {
-                return true;
-            }
-            subscribeLocked(recordLocked);
-            return recordLocked.subscribed;
+    @Override // com.android.server.notification.ManagedServices
+    public final void onServiceRemovedLocked(ManagedServices.ManagedServiceInfo managedServiceInfo) {
+        if (managedServiceInfo == null) {
+            return;
         }
-    }
-
-    public void unsubscribeIfNecessary(ComponentName componentName, Uri uri) {
-        synchronized (this.mMutex) {
-            ConditionRecord recordLocked = getRecordLocked(uri, componentName, false);
-            if (recordLocked == null) {
-                Slog.w(this.TAG, "Unable to unsubscribe to " + componentName + " " + uri);
-                return;
-            }
-            if (recordLocked.subscribed) {
-                unsubscribeLocked(recordLocked);
+        for (int size = this.mRecords.size() - 1; size >= 0; size--) {
+            if (((ConditionRecord) this.mRecords.get(size)).component.equals(managedServiceInfo.component)) {
+                this.mRecords.remove(size);
             }
         }
     }
 
     public final void subscribeLocked(ConditionRecord conditionRecord) {
-        if (this.DEBUG) {
-            Slog.d(this.TAG, "subscribeLocked " + conditionRecord);
+        boolean z = this.DEBUG;
+        String str = this.TAG;
+        if (z) {
+            Slog.d(str, "subscribeLocked " + conditionRecord);
         }
-        IConditionProvider provider = provider(conditionRecord);
-        if (provider != null) {
+        ManagedServices.ManagedServiceInfo managedServiceInfo = conditionRecord.info;
+        RemoteException remoteException = null;
+        IConditionProvider iConditionProvider = managedServiceInfo == null ? null : managedServiceInfo.service;
+        if (iConditionProvider != null) {
             try {
-                Slog.d(this.TAG, "Subscribing to " + conditionRecord.id + " with " + conditionRecord.component);
-                provider.onSubscribe(conditionRecord.id);
+                Slog.d(str, "Subscribing to " + conditionRecord.id + " with " + conditionRecord.component);
+                iConditionProvider.onSubscribe(conditionRecord.id);
                 conditionRecord.subscribed = true;
             } catch (RemoteException e) {
-                e = e;
-                Slog.w(this.TAG, "Error subscribing to " + conditionRecord, e);
+                remoteException = e;
+                Slog.w(str, "Error subscribing to " + conditionRecord, remoteException);
             }
         }
-        e = null;
-        ZenLog.traceSubscribe(conditionRecord != null ? conditionRecord.id : null, provider, e);
+        Uri uri = conditionRecord.id;
+        LocalLog localLog = ZenLog.STATE_CHANGES;
+        StringBuilder sb = new StringBuilder();
+        sb.append(uri);
+        sb.append(",");
+        sb.append(iConditionProvider == null ? "no provider" : remoteException != null ? remoteException.getMessage() : "ok");
+        ZenLog.append(9, sb.toString());
     }
 
-    public static ArraySet safeSet(Object... objArr) {
-        ArraySet arraySet = new ArraySet();
-        if (objArr != null && objArr.length != 0) {
-            for (Object obj : objArr) {
-                if (obj != null) {
-                    arraySet.add(obj);
+    public final void unsubscribeIfNecessary(ComponentName componentName, Uri uri) {
+        synchronized (this.mMutex) {
+            try {
+                ConditionRecord recordLocked = getRecordLocked(uri, componentName, false);
+                if (recordLocked != null) {
+                    if (recordLocked.subscribed) {
+                        unsubscribeLocked(recordLocked);
+                    }
+                } else {
+                    Slog.w(this.TAG, "Unable to unsubscribe to " + componentName + " " + uri);
                 }
+            } catch (Throwable th) {
+                throw th;
             }
         }
-        return arraySet;
     }
 
     public final void unsubscribeLocked(ConditionRecord conditionRecord) {
-        if (this.DEBUG) {
-            Slog.d(this.TAG, "unsubscribeLocked " + conditionRecord);
+        boolean z = this.DEBUG;
+        String str = this.TAG;
+        if (z) {
+            Slog.d(str, "unsubscribeLocked " + conditionRecord);
         }
-        IConditionProvider provider = provider(conditionRecord);
-        if (provider != null) {
+        ManagedServices.ManagedServiceInfo managedServiceInfo = conditionRecord.info;
+        RemoteException e = null;
+        IConditionProvider iConditionProvider = managedServiceInfo == null ? null : managedServiceInfo.service;
+        if (iConditionProvider != null) {
             try {
-                provider.onUnsubscribe(conditionRecord.id);
-                e = null;
-            } catch (RemoteException e) {
-                e = e;
-                Slog.w(this.TAG, "Error unsubscribing to " + conditionRecord, e);
+                iConditionProvider.onUnsubscribe(conditionRecord.id);
+            } catch (RemoteException e2) {
+                e = e2;
+                Slog.w(str, "Error unsubscribing to " + conditionRecord, e);
             }
             conditionRecord.subscribed = false;
-        } else {
-            e = null;
         }
-        ZenLog.traceUnsubscribe(conditionRecord != null ? conditionRecord.id : null, provider, e);
+        Uri uri = conditionRecord.id;
+        LocalLog localLog = ZenLog.STATE_CHANGES;
+        StringBuilder sb = new StringBuilder();
+        sb.append(uri);
+        sb.append(",");
+        sb.append(iConditionProvider == null ? "no provider" : e != null ? e.getMessage() : "ok");
+        ZenLog.append(10, sb.toString());
     }
 
-    public static IConditionProvider provider(ConditionRecord conditionRecord) {
-        if (conditionRecord == null) {
-            return null;
-        }
-        return provider(conditionRecord.info);
-    }
-
-    public static IConditionProvider provider(ManagedServices.ManagedServiceInfo managedServiceInfo) {
-        if (managedServiceInfo == null) {
-            return null;
-        }
-        return managedServiceInfo.service;
-    }
-
-    /* loaded from: classes2.dex */
-    public class ConditionRecord {
-        public final ComponentName component;
-        public Condition condition;
-        public final Uri id;
-        public ManagedServices.ManagedServiceInfo info;
-        public boolean subscribed;
-
-        public ConditionRecord(Uri uri, ComponentName componentName) {
-            this.id = uri;
-            this.component = componentName;
-        }
-
-        public String toString() {
-            return "ConditionRecord[id=" + this.id + ",component=" + this.component + ",subscribed=" + this.subscribed + ']';
+    @Override // com.android.server.notification.ManagedServices
+    public final void writeDefaults(TypedXmlSerializer typedXmlSerializer) {
+        synchronized (this.mDefaultsLock) {
+            typedXmlSerializer.attribute((String) null, "defaults", String.join(":", this.mDefaultPackages));
         }
     }
 }

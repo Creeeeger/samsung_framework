@@ -1,410 +1,246 @@
 package com.android.server.wm;
 
 import android.R;
-import android.app.servertransaction.ClientTransaction;
-import android.app.servertransaction.RefreshCallbackItem;
-import android.app.servertransaction.ResumeActivityItem;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.hardware.camera2.CameraManager;
-import android.os.Handler;
-import android.os.RemoteException;
-import android.util.ArrayMap;
-import android.util.ArraySet;
 import android.widget.Toast;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
 import com.android.server.UiThread;
+import com.android.server.wm.ActivityRefresher;
+import com.android.server.wm.CameraStateMonitor;
+import com.android.server.wm.utils.OptPropFactory;
 import com.samsung.android.rune.CoreRune;
-import java.util.Map;
-import java.util.Set;
 
-/* loaded from: classes3.dex */
-public final class DisplayRotationCompatPolicy {
-    public final CameraManager.AvailabilityCallback mAvailabilityCallback;
-    public final CameraIdPackageNameBiMap mCameraIdPackageBiMap;
-    public final CameraManager mCameraManager;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DisplayRotationCompatPolicy implements CameraStateMonitor.CameraCompatStateListener, ActivityRefresher.Evaluator {
+    public final ActivityRefresher mActivityRefresher;
+    public final CameraStateMonitor mCameraStateMonitor;
+    public Task mCameraTask;
     public final DisplayContent mDisplayContent;
-    public final Handler mHandler;
-    public int mLastReportedOrientation;
-    public final Set mScheduledOrientationUpdateCameraIdSet;
-    public final Set mScheduledToBeRemovedCameraIdSet;
+    public boolean mIsRunning;
+    public int mLastReportedOrientation = -2;
     public final WindowManagerService mWmService;
 
-    public DisplayRotationCompatPolicy(DisplayContent displayContent) {
-        this(displayContent, displayContent.mWmService.mH);
-    }
-
-    public DisplayRotationCompatPolicy(DisplayContent displayContent, Handler handler) {
-        this.mCameraIdPackageBiMap = new CameraIdPackageNameBiMap();
-        this.mScheduledToBeRemovedCameraIdSet = new ArraySet();
-        this.mScheduledOrientationUpdateCameraIdSet = new ArraySet();
-        CameraManager.AvailabilityCallback availabilityCallback = new CameraManager.AvailabilityCallback() { // from class: com.android.server.wm.DisplayRotationCompatPolicy.1
-            public void onCameraOpened(String str, String str2) {
-                DisplayRotationCompatPolicy.this.notifyCameraOpened(str, str2);
-            }
-
-            public void onCameraClosed(String str) {
-                DisplayRotationCompatPolicy.this.notifyCameraClosed(str);
-            }
-        };
-        this.mAvailabilityCallback = availabilityCallback;
-        this.mLastReportedOrientation = -2;
-        this.mHandler = handler;
+    public DisplayRotationCompatPolicy(DisplayContent displayContent, CameraStateMonitor cameraStateMonitor, ActivityRefresher activityRefresher) {
         this.mDisplayContent = displayContent;
-        WindowManagerService windowManagerService = displayContent.mWmService;
-        this.mWmService = windowManagerService;
-        CameraManager cameraManager = (CameraManager) windowManagerService.mContext.getSystemService(CameraManager.class);
-        this.mCameraManager = cameraManager;
-        cameraManager.registerAvailabilityCallback(windowManagerService.mContext.getMainExecutor(), availabilityCallback);
+        this.mWmService = displayContent.mWmService;
+        this.mCameraStateMonitor = cameraStateMonitor;
+        this.mActivityRefresher = activityRefresher;
     }
 
-    public void dispose() {
-        this.mCameraManager.unregisterAvailabilityCallback(this.mAvailabilityCallback);
+    public final boolean isCameraActive(boolean z, ActivityRecord activityRecord) {
+        return ((z && activityRecord.inMultiWindowMode()) || this.mCameraStateMonitor.getCameraIdForActivity(activityRecord) == null) ? false : true;
     }
 
-    public int getOrientation() {
-        int orientationInternal = getOrientationInternal();
-        this.mLastReportedOrientation = orientationInternal;
-        if (orientationInternal != -1) {
-            rememberOverriddenOrientationIfNeeded();
-        } else {
-            restoreOverriddenOrientationIfNeeded();
-        }
-        return this.mLastReportedOrientation;
+    public boolean isRunning() {
+        return this.mIsRunning;
     }
 
-    public final synchronized int getOrientationInternal() {
-        if (!isTreatmentEnabledForDisplay()) {
-            return -1;
+    public final boolean isTreatmentEnabledForActivity(boolean z, ActivityRecord activityRecord) {
+        Task task;
+        ActivityRecord activityBelow;
+        if (activityRecord == null || !isCameraActive(z, activityRecord)) {
+            return false;
         }
-        ActivityRecord activityRecord = this.mDisplayContent.topRunningActivity(true);
-        if (!isTreatmentEnabledForActivity(activityRecord)) {
-            return -1;
-        }
-        boolean z = activityRecord.getRequestedConfigurationOrientation() == 1;
-        if (CoreRune.FW_ORIENTATION_CONTROL_WITH_CAMERA_COMPAT && !z && belowActivityRequestedConfigurationOrientation(activityRecord) == 1) {
-            z = true;
-        }
-        boolean z2 = this.mDisplayContent.getNaturalOrientation() == 1;
-        int i = (!(z && z2) && (z || z2)) ? 0 : 1;
-        if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -1812743677, FrameworkStatsLog.CAMERA_SHOT_LATENCY_REPORTED__MODE__CONTROL_DS_MODE_HYBRID_NNHDR_MERGE_QZ, (String) null, new Object[]{Long.valueOf(this.mDisplayContent.mDisplayId), String.valueOf(ActivityInfo.screenOrientationToString(i)), Boolean.valueOf(z), Boolean.valueOf(z2)});
-        }
-        return i;
-    }
-
-    public void onActivityConfigurationChanging(final ActivityRecord activityRecord, Configuration configuration, Configuration configuration2) {
-        if (isTreatmentEnabledForDisplay() && this.mWmService.mLetterboxConfiguration.isCameraCompatRefreshEnabled() && shouldRefreshActivity(activityRecord, configuration, configuration2)) {
-            boolean z = this.mWmService.mLetterboxConfiguration.isCameraCompatRefreshCycleThroughStopEnabled() && !activityRecord.mLetterboxUiController.shouldRefreshActivityViaPauseForCameraCompat();
-            try {
-                activityRecord.mLetterboxUiController.setIsRefreshAfterRotationRequested(true);
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 1511273241, 0, (String) null, new Object[]{String.valueOf(activityRecord)});
-                }
-                ClientTransaction obtain = ClientTransaction.obtain(activityRecord.app.getThread(), activityRecord.token);
-                obtain.addCallback(RefreshCallbackItem.obtain(z ? 5 : 4));
-                obtain.setLifecycleStateRequest(ResumeActivityItem.obtain(false, false));
-                activityRecord.mAtmService.getLifecycleManager().scheduleTransaction(obtain);
-                this.mHandler.postDelayed(new Runnable() { // from class: com.android.server.wm.DisplayRotationCompatPolicy$$ExternalSyntheticLambda2
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        DisplayRotationCompatPolicy.this.lambda$onActivityConfigurationChanging$0(activityRecord);
-                    }
-                }, 2000L);
-            } catch (RemoteException unused) {
-                activityRecord.mLetterboxUiController.setIsRefreshAfterRotationRequested(false);
+        if (activityRecord.getRequestedConfigurationOrientation() == 0) {
+            if (!CoreRune.MT_APP_COMPAT_CAMERA_POLICY) {
+                return false;
+            }
+            if (((activityRecord.occludesParent(false) || (task = activityRecord.task) == null || (activityBelow = task.getActivityBelow(activityRecord)) == null) ? 0 : activityBelow.getRequestedConfigurationOrientation()) == 0) {
+                return false;
             }
         }
-    }
-
-    /* renamed from: onActivityRefreshed, reason: merged with bridge method [inline-methods] */
-    public void lambda$onActivityConfigurationChanging$0(ActivityRecord activityRecord) {
-        activityRecord.mLetterboxUiController.setIsRefreshAfterRotationRequested(false);
-    }
-
-    public void onScreenRotationAnimationFinished() {
-        if (!isTreatmentEnabledForDisplay() || this.mCameraIdPackageBiMap.isEmpty() || !isTreatmentEnabledForActivity(this.mDisplayContent.topRunningActivity(true)) || CoreRune.FW_ORIENTATION_CONTROL_WITH_CAMERA_COMPAT) {
-            return;
-        }
-        showToast(R.string.lockscreen_sound_on_label);
-    }
-
-    public String getSummaryForDisplayRotationHistoryRecord() {
-        String str;
-        if (isTreatmentEnabledForDisplay()) {
-            ActivityRecord activityRecord = this.mDisplayContent.topRunningActivity(true);
-            StringBuilder sb = new StringBuilder();
-            sb.append(" mLastReportedOrientation=");
-            sb.append(ActivityInfo.screenOrientationToString(this.mLastReportedOrientation));
-            sb.append(" topActivity=");
-            sb.append(activityRecord == null ? "null" : activityRecord.shortComponentName);
-            sb.append(" isTreatmentEnabledForActivity=");
-            sb.append(isTreatmentEnabledForActivity(activityRecord));
-            sb.append(" CameraIdPackageNameBiMap=");
-            sb.append(this.mCameraIdPackageBiMap.getSummaryForDisplayRotationHistoryRecord());
-            str = sb.toString();
-        } else {
-            str = "";
-        }
-        return "DisplayRotationCompatPolicy{ isTreatmentEnabledForDisplay=" + isTreatmentEnabledForDisplay() + str + " }";
-    }
-
-    public final void restoreOverriddenOrientationIfNeeded() {
-        if (isOrientationOverridden() && this.mDisplayContent.getRotationReversionController().revertOverride(1)) {
-            if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -529187878, 0, (String) null, (Object[]) null);
-            }
-            this.mDisplayContent.mLastOrientationSource = null;
-        }
-    }
-
-    public final boolean isOrientationOverridden() {
-        return this.mDisplayContent.getRotationReversionController().isOverrideActive(1);
-    }
-
-    public final void rememberOverriddenOrientationIfNeeded() {
-        if (isOrientationOverridden()) {
-            return;
-        }
-        this.mDisplayContent.getRotationReversionController().beforeOverrideApplied(1);
-        if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -1643780158, 1, (String) null, new Object[]{Long.valueOf(this.mDisplayContent.getLastOrientation())});
-        }
-    }
-
-    public final boolean shouldRefreshActivity(ActivityRecord activityRecord, Configuration configuration, Configuration configuration2) {
-        return ((configuration.windowConfiguration.getDisplayRotation() != configuration2.windowConfiguration.getDisplayRotation()) || activityRecord.mLetterboxUiController.isCameraCompatSplitScreenAspectRatioAllowed()) && isTreatmentEnabledForActivity(activityRecord) && activityRecord.mLetterboxUiController.shouldRefreshActivityForCameraCompat();
+        return (activityRecord.getOverrideOrientation() == 5 || activityRecord.getOverrideOrientation() == 14 || !activityRecord.mAppCompatController.mAppCompatOverrides.mAppCompatCameraOverrides.shouldForceRotateForCameraCompat()) ? false : true;
     }
 
     public final boolean isTreatmentEnabledForDisplay() {
-        return this.mWmService.mLetterboxConfiguration.isCameraCompatTreatmentEnabled(true) && (this.mDisplayContent.getIgnoreOrientationRequest() || CoreRune.FW_ORIENTATION_CONTROL_WITH_CAMERA_COMPAT) && this.mDisplayContent.getDisplay().getType() == 1;
-    }
-
-    public boolean isActivityEligibleForOrientationOverride(ActivityRecord activityRecord) {
-        return isTreatmentEnabledForDisplay() && isCameraActive(activityRecord, true);
-    }
-
-    public boolean isTreatmentEnabledForActivity(ActivityRecord activityRecord) {
-        return isTreatmentEnabledForActivity(activityRecord, true);
-    }
-
-    public final boolean isTreatmentEnabledForActivity(ActivityRecord activityRecord, boolean z) {
-        return (activityRecord == null || !isCameraActive(activityRecord, z) || (activityRecord.getRequestedConfigurationOrientation() == 0 && (!CoreRune.FW_ORIENTATION_CONTROL_WITH_CAMERA_COMPAT || belowActivityRequestedConfigurationOrientation(activityRecord) == 0)) || activityRecord.getOverrideOrientation() == 5 || activityRecord.getOverrideOrientation() == 14) ? false : true;
-    }
-
-    public final int belowActivityRequestedConfigurationOrientation(ActivityRecord activityRecord) {
-        Task task;
-        ActivityRecord activityBelow;
-        if (activityRecord.occludesParent() || (task = activityRecord.getTask()) == null || (activityBelow = task.getActivityBelow(activityRecord)) == null) {
-            return 0;
-        }
-        return activityBelow.getRequestedConfigurationOrientation();
-    }
-
-    public final boolean isCameraActive(ActivityRecord activityRecord, boolean z) {
-        return !(z && activityRecord.inMultiWindowMode()) && this.mCameraIdPackageBiMap.containsPackageName(activityRecord.packageName) && activityRecord.mLetterboxUiController.shouldForceRotateForCameraCompat();
-    }
-
-    public final synchronized void notifyCameraOpened(final String str, final String str2) {
-        this.mScheduledToBeRemovedCameraIdSet.remove(str);
-        if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -627759820, 1, (String) null, new Object[]{Long.valueOf(this.mDisplayContent.mDisplayId), String.valueOf(str), String.valueOf(str2)});
-        }
-        this.mScheduledOrientationUpdateCameraIdSet.add(str);
-        this.mHandler.postDelayed(new Runnable() { // from class: com.android.server.wm.DisplayRotationCompatPolicy$$ExternalSyntheticLambda4
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayRotationCompatPolicy.this.lambda$notifyCameraOpened$1(str, str2);
+        if (this.mWmService.mAppCompatConfiguration.mDeviceConfig.getFlagValue("enable_compat_camera_treatment")) {
+            DisplayContent displayContent = this.mDisplayContent;
+            if (displayContent.getIgnoreOrientationRequest() && displayContent.mDisplay.getType() == 1) {
+                return true;
             }
-        }, 1000L);
-    }
-
-    /* renamed from: delayedUpdateOrientationWithWmLock, reason: merged with bridge method [inline-methods] */
-    public final void lambda$notifyCameraOpened$1(String str, String str2) {
-        synchronized (this) {
-            if (this.mScheduledOrientationUpdateCameraIdSet.remove(str)) {
-                this.mCameraIdPackageBiMap.put(str2, str);
-                WindowManagerGlobalLock windowManagerGlobalLock = this.mWmService.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        ActivityRecord activityRecord = this.mDisplayContent.topRunningActivity(true);
-                        if (activityRecord != null && activityRecord.getTask() != null) {
-                            if (activityRecord.getWindowingMode() == 1) {
-                                activityRecord.mLetterboxUiController.recomputeConfigurationForCameraCompatIfNeeded();
-                                this.mDisplayContent.updateOrientation();
-                                WindowManagerService.resetPriorityAfterLockedSection();
-                                return;
-                            }
-                            if (activityRecord.getTask().getWindowingMode() == 6 && isTreatmentEnabledForActivity(activityRecord, false)) {
-                                PackageManager packageManager = this.mWmService.mContext.getPackageManager();
-                                try {
-                                    showToast(R.string.lockscreen_storage_locked, (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(str2, 0)));
-                                } catch (PackageManager.NameNotFoundException unused) {
-                                    if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                                        ProtoLogImpl.e(ProtoLogGroup.WM_DEBUG_ORIENTATION, -479665533, 0, (String) null, new Object[]{String.valueOf(str2)});
-                                    }
-                                }
-                            }
-                            WindowManagerService.resetPriorityAfterLockedSection();
-                            return;
-                        }
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-            }
-        }
-    }
-
-    public void showToast(final int i) {
-        UiThread.getHandler().post(new Runnable() { // from class: com.android.server.wm.DisplayRotationCompatPolicy$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayRotationCompatPolicy.this.lambda$showToast$2(i);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$showToast$2(int i) {
-        Toast.makeText(this.mWmService.mContext, i, 1).show();
-    }
-
-    public void showToast(final int i, final String str) {
-        UiThread.getHandler().post(new Runnable() { // from class: com.android.server.wm.DisplayRotationCompatPolicy$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayRotationCompatPolicy.this.lambda$showToast$3(i, str);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$showToast$3(int i, String str) {
-        Context context = this.mWmService.mContext;
-        Toast.makeText(context, context.getString(i, str), 1).show();
-    }
-
-    public final synchronized void notifyCameraClosed(String str) {
-        if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -81260230, 1, (String) null, new Object[]{Long.valueOf(this.mDisplayContent.mDisplayId), String.valueOf(str)});
-        }
-        this.mScheduledToBeRemovedCameraIdSet.add(str);
-        this.mScheduledOrientationUpdateCameraIdSet.remove(str);
-        scheduleRemoveCameraId(str);
-    }
-
-    public final void scheduleRemoveCameraId(final String str) {
-        this.mHandler.postDelayed(new Runnable() { // from class: com.android.server.wm.DisplayRotationCompatPolicy$$ExternalSyntheticLambda3
-            @Override // java.lang.Runnable
-            public final void run() {
-                DisplayRotationCompatPolicy.this.lambda$scheduleRemoveCameraId$4(str);
-            }
-        }, 2000L);
-    }
-
-    /* renamed from: removeCameraId, reason: merged with bridge method [inline-methods] */
-    public final void lambda$scheduleRemoveCameraId$4(String str) {
-        synchronized (this) {
-            if (this.mScheduledToBeRemovedCameraIdSet.remove(str)) {
-                if (isActivityForCameraIdRefreshing(str)) {
-                    if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -1631991057, 1, (String) null, new Object[]{Long.valueOf(this.mDisplayContent.mDisplayId), String.valueOf(str)});
-                    }
-                    this.mScheduledToBeRemovedCameraIdSet.add(str);
-                    scheduleRemoveCameraId(str);
-                    return;
-                }
-                this.mCameraIdPackageBiMap.removeCameraId(str);
-                if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -799396645, 1, (String) null, new Object[]{Long.valueOf(this.mDisplayContent.mDisplayId), String.valueOf(str)});
-                }
-                WindowManagerGlobalLock windowManagerGlobalLock = this.mWmService.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        ActivityRecord activityRecord = this.mDisplayContent.topRunningActivity(true);
-                        if (activityRecord != null && activityRecord.getWindowingMode() == 1) {
-                            activityRecord.mLetterboxUiController.recomputeConfigurationForCameraCompatIfNeeded();
-                            this.mDisplayContent.updateOrientation();
-                            WindowManagerService.resetPriorityAfterLockedSection();
-                            return;
-                        }
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-            }
-        }
-    }
-
-    public final boolean isActivityForCameraIdRefreshing(String str) {
-        String cameraId;
-        ActivityRecord activityRecord = this.mDisplayContent.topRunningActivity(true);
-        if (isTreatmentEnabledForActivity(activityRecord) && (cameraId = this.mCameraIdPackageBiMap.getCameraId(activityRecord.packageName)) != null && cameraId == str) {
-            return activityRecord.mLetterboxUiController.isRefreshAfterRotationRequested();
         }
         return false;
     }
 
-    /* loaded from: classes3.dex */
-    public class CameraIdPackageNameBiMap {
-        public final Map mCameraIdToPackageMap;
-        public final Map mPackageToCameraIdMap;
+    /* JADX WARN: Removed duplicated region for block: B:19:0x0046 A[Catch: all -> 0x0066, TryCatch #0 {all -> 0x0066, blocks: (B:12:0x0020, B:14:0x0026, B:17:0x0033, B:19:0x0046, B:21:0x004c, B:22:0x0068, B:24:0x006a), top: B:11:0x0020 }] */
+    /* JADX WARN: Removed duplicated region for block: B:24:0x006a A[Catch: all -> 0x0066, DONT_GENERATE, TRY_LEAVE, TryCatch #0 {all -> 0x0066, blocks: (B:12:0x0020, B:14:0x0026, B:17:0x0033, B:19:0x0046, B:21:0x004c, B:22:0x0068, B:24:0x006a), top: B:11:0x0020 }] */
+    @Override // com.android.server.wm.CameraStateMonitor.CameraCompatStateListener
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean onCameraClosed(java.lang.String r13) {
+        /*
+            r12 = this;
+            boolean r0 = com.android.window.flags.Flags.cameraCompatFullscreenPickSameTaskActivity()
+            r1 = 0
+            r2 = 0
+            r3 = 1
+            if (r0 == 0) goto L14
+            com.android.server.wm.Task r0 = r12.mCameraTask
+            if (r0 == 0) goto L12
+            com.android.server.wm.ActivityRecord r0 = r0.getTopActivity(r3, r2)
+            goto L1a
+        L12:
+            r0 = r1
+            goto L1a
+        L14:
+            com.android.server.wm.DisplayContent r0 = r12.mDisplayContent
+            com.android.server.wm.ActivityRecord r0 = r0.topRunningActivity(r3)
+        L1a:
+            r12.mCameraTask = r1
+            if (r0 != 0) goto L1f
+            return r3
+        L1f:
+            monitor-enter(r12)
+            boolean r1 = r12.isTreatmentEnabledForActivity(r3, r0)     // Catch: java.lang.Throwable -> L66
+            if (r1 == 0) goto L43
+            com.android.server.wm.CameraStateMonitor r1 = r12.mCameraStateMonitor     // Catch: java.lang.Throwable -> L66
+            java.lang.String r1 = r1.getCameraIdForActivity(r0)     // Catch: java.lang.Throwable -> L66
+            boolean r13 = r13.equals(r1)     // Catch: java.lang.Throwable -> L66
+            if (r13 != 0) goto L33
+            goto L43
+        L33:
+            com.android.server.wm.ActivityRefresher r13 = r12.mActivityRefresher     // Catch: java.lang.Throwable -> L66
+            r13.getClass()     // Catch: java.lang.Throwable -> L66
+            com.android.server.wm.AppCompatController r13 = r0.mAppCompatController     // Catch: java.lang.Throwable -> L66
+            com.android.server.wm.AppCompatOverrides r13 = r13.mAppCompatOverrides     // Catch: java.lang.Throwable -> L66
+            com.android.server.wm.AppCompatCameraOverrides r13 = r13.mAppCompatCameraOverrides     // Catch: java.lang.Throwable -> L66
+            com.android.server.wm.AppCompatCameraOverrides$AppCompatCameraOverridesState r13 = r13.mAppCompatCameraOverridesState     // Catch: java.lang.Throwable -> L66
+            boolean r13 = r13.mIsRefreshRequested     // Catch: java.lang.Throwable -> L66
+            goto L44
+        L43:
+            r13 = r2
+        L44:
+            if (r13 == 0) goto L6a
+            boolean[] r13 = com.android.internal.protolog.ProtoLogImpl_54989576.Cache.WM_DEBUG_ORIENTATION_enabled     // Catch: java.lang.Throwable -> L66
+            boolean r13 = r13[r3]     // Catch: java.lang.Throwable -> L66
+            if (r13 == 0) goto L68
+            com.android.server.wm.DisplayContent r13 = r12.mDisplayContent     // Catch: java.lang.Throwable -> L66
+            int r13 = r13.mDisplayId     // Catch: java.lang.Throwable -> L66
+            long r0 = (long) r13     // Catch: java.lang.Throwable -> L66
+            com.android.internal.protolog.ProtoLogGroup r3 = com.android.internal.protolog.ProtoLogGroup.WM_DEBUG_ORIENTATION     // Catch: java.lang.Throwable -> L66
+            java.lang.Long r13 = java.lang.Long.valueOf(r0)     // Catch: java.lang.Throwable -> L66
+            java.lang.Object[] r8 = new java.lang.Object[]{r13}     // Catch: java.lang.Throwable -> L66
+            r6 = 1
+            r7 = 0
+            r4 = -5121743609317543819(0xb8ebe952d0003075, double:-1.6798574785979571E-34)
+            com.android.internal.protolog.ProtoLogImpl_54989576.v(r3, r4, r6, r7, r8)     // Catch: java.lang.Throwable -> L66
+            goto L68
+        L66:
+            r13 = move-exception
+            goto Lb9
+        L68:
+            monitor-exit(r12)     // Catch: java.lang.Throwable -> L66
+            return r2
+        L6a:
+            monitor-exit(r12)     // Catch: java.lang.Throwable -> L66
+            boolean[] r13 = com.android.internal.protolog.ProtoLogImpl_54989576.Cache.WM_DEBUG_ORIENTATION_enabled
+            boolean r13 = r13[r3]
+            if (r13 == 0) goto L8a
+            com.android.server.wm.DisplayContent r13 = r12.mDisplayContent
+            int r13 = r13.mDisplayId
+            long r4 = (long) r13
+            com.android.internal.protolog.ProtoLogGroup r6 = com.android.internal.protolog.ProtoLogGroup.WM_DEBUG_ORIENTATION
+            java.lang.Long r13 = java.lang.Long.valueOf(r4)
+            java.lang.Object[] r11 = new java.lang.Object[]{r13}
+            r9 = 1
+            r10 = 0
+            r7 = 1769752961776628557(0x188f6cf132e4334d, double:2.204122436059243E-190)
+            com.android.internal.protolog.ProtoLogImpl_54989576.v(r6, r7, r9, r10, r11)
+        L8a:
+            int r13 = r0.getWindowingMode()
+            if (r13 == r3) goto L91
+            return r3
+        L91:
+            com.android.server.wm.AppCompatController r13 = r0.mAppCompatController
+            com.android.server.wm.AppCompatOverrides r13 = r13.mAppCompatOverrides
+            com.android.server.wm.AppCompatCameraOverrides r13 = r13.mAppCompatCameraOverrides
+            com.android.server.wm.ActivityRecord r1 = r13.mActivityRecord
+            android.content.pm.ActivityInfo r1 = r1.info
+            r4 = 265456536(0xfd28b98, double:1.31152955E-315)
+            boolean r1 = r1.isChangeEnabled(r4)
+            if (r1 != 0) goto Lb0
+            boolean r1 = r13.isCameraCompatSplitScreenAspectRatioAllowed()
+            if (r1 != 0) goto Lb0
+            boolean r13 = r13.shouldOverrideMinAspectRatioForCamera()
+            if (r13 == 0) goto Lb3
+        Lb0:
+            r0.recomputeConfiguration()
+        Lb3:
+            com.android.server.wm.DisplayContent r12 = r12.mDisplayContent
+            r12.updateOrientation(r2)
+            return r3
+        Lb9:
+            monitor-exit(r12)     // Catch: java.lang.Throwable -> L66
+            throw r13
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DisplayRotationCompatPolicy.onCameraClosed(java.lang.String):boolean");
+    }
 
-        public CameraIdPackageNameBiMap() {
-            this.mPackageToCameraIdMap = new ArrayMap();
-            this.mCameraIdToPackageMap = new ArrayMap();
-        }
-
-        public boolean isEmpty() {
-            return this.mCameraIdToPackageMap.isEmpty();
-        }
-
-        public void put(String str, String str2) {
-            removePackageName(str);
-            removeCameraId(str2);
-            this.mPackageToCameraIdMap.put(str, str2);
-            this.mCameraIdToPackageMap.put(str2, str);
-        }
-
-        public boolean containsPackageName(String str) {
-            return this.mPackageToCameraIdMap.containsKey(str);
-        }
-
-        public String getCameraId(String str) {
-            return (String) this.mPackageToCameraIdMap.get(str);
-        }
-
-        public void removeCameraId(String str) {
-            String str2 = (String) this.mCameraIdToPackageMap.get(str);
-            if (str2 == null) {
-                return;
+    @Override // com.android.server.wm.CameraStateMonitor.CameraCompatStateListener
+    public final void onCameraOpened(ActivityRecord activityRecord) {
+        this.mCameraTask = activityRecord.task;
+        if (activityRecord.getWindowingMode() == 1) {
+            AppCompatCameraOverrides appCompatCameraOverrides = activityRecord.mAppCompatController.mAppCompatOverrides.mAppCompatCameraOverrides;
+            if (appCompatCameraOverrides.mActivityRecord.info.isChangeEnabled(265456536L) || appCompatCameraOverrides.isCameraCompatSplitScreenAspectRatioAllowed() || appCompatCameraOverrides.shouldOverrideMinAspectRatioForCamera()) {
+                activityRecord.recomputeConfiguration();
             }
-            this.mPackageToCameraIdMap.remove(str2, str);
-            this.mCameraIdToPackageMap.remove(str, str2);
+            this.mDisplayContent.updateOrientation(false);
+            return;
         }
-
-        public String getSummaryForDisplayRotationHistoryRecord() {
-            return "{ mPackageToCameraIdMap=" + this.mPackageToCameraIdMap + " }";
-        }
-
-        public final void removePackageName(String str) {
-            String str2 = (String) this.mPackageToCameraIdMap.get(str);
-            if (str2 == null) {
-                return;
+        Task task = this.mCameraTask;
+        if (task != null && task.getWindowingMode() == 6 && isTreatmentEnabledForActivity(false, activityRecord)) {
+            PackageManager packageManager = this.mWmService.mContext.getPackageManager();
+            try {
+                showToast(R.string.ime_action_done, (String) packageManager.getApplicationLabel(packageManager.getApplicationInfo(activityRecord.packageName, 0)));
+            } catch (PackageManager.NameNotFoundException unused) {
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ORIENTATION_enabled[4]) {
+                    ProtoLogImpl_54989576.e(ProtoLogGroup.WM_DEBUG_ORIENTATION, -1534784331886673955L, 0, null, String.valueOf(activityRecord.packageName));
+                }
             }
-            this.mPackageToCameraIdMap.remove(str, str2);
-            this.mCameraIdToPackageMap.remove(str2, str);
         }
+    }
+
+    @Override // com.android.server.wm.ActivityRefresher.Evaluator
+    public final boolean shouldRefreshActivity(ActivityRecord activityRecord, Configuration configuration, Configuration configuration2) {
+        boolean z = configuration.windowConfiguration.getDisplayRotation() != configuration2.windowConfiguration.getDisplayRotation();
+        if (!isTreatmentEnabledForDisplay() || !isTreatmentEnabledForActivity(true, activityRecord)) {
+            return false;
+        }
+        AppCompatCameraOverrides appCompatCameraOverrides = activityRecord.mAppCompatController.mAppCompatOverrides.mAppCompatCameraOverrides;
+        boolean isChangeEnabled = appCompatCameraOverrides.mActivityRecord.info.isChangeEnabled(264304459L);
+        OptPropFactory.OptProp optProp = appCompatCameraOverrides.mCameraCompatAllowRefreshOptProp;
+        if (!optProp.mCondition.getAsBoolean() || optProp.getValue() == 0 || isChangeEnabled) {
+            return false;
+        }
+        return z || activityRecord.mAppCompatController.mAppCompatOverrides.mAppCompatCameraOverrides.isCameraCompatSplitScreenAspectRatioAllowed();
+    }
+
+    public void showToast(final int i) {
+        UiThread.getHandler().post(new Runnable() { // from class: com.android.server.wm.DisplayRotationCompatPolicy$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                DisplayRotationCompatPolicy displayRotationCompatPolicy = DisplayRotationCompatPolicy.this;
+                Toast.makeText(displayRotationCompatPolicy.mWmService.mContext, i, 1).show();
+            }
+        });
+    }
+
+    public void showToast(final int i, final String str) {
+        UiThread.getHandler().post(new Runnable() { // from class: com.android.server.wm.DisplayRotationCompatPolicy$$ExternalSyntheticLambda1
+            @Override // java.lang.Runnable
+            public final void run() {
+                DisplayRotationCompatPolicy displayRotationCompatPolicy = DisplayRotationCompatPolicy.this;
+                int i2 = i;
+                String str2 = str;
+                Context context = displayRotationCompatPolicy.mWmService.mContext;
+                Toast.makeText(context, context.getString(i2, str2), 1).show();
+            }
+        });
     }
 }

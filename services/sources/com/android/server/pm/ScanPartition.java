@@ -1,18 +1,36 @@
 package com.android.server.pm;
 
 import android.content.pm.PackagePartitions;
-import com.android.internal.util.jobs.XmlUtils;
 import com.android.server.pm.ApexManager;
 import java.io.File;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class ScanPartition extends PackagePartitions.SystemPartition {
     public final ApexManager.ActiveApexInfo apexInfo;
     public final int scanFlag;
 
     public ScanPartition(PackagePartitions.SystemPartition systemPartition) {
         super(systemPartition);
-        this.scanFlag = scanFlagForPartition(systemPartition);
+        int i;
+        int i2 = systemPartition.type;
+        if (i2 == 0) {
+            i = 0;
+        } else if (i2 == 1) {
+            i = 524288;
+        } else if (i2 == 2) {
+            i = 4194304;
+        } else if (i2 == 3) {
+            i = 262144;
+        } else if (i2 == 4) {
+            i = 1048576;
+        } else {
+            if (i2 != 5) {
+                throw new IllegalStateException("Unable to determine scan flag for " + systemPartition.getFolder());
+            }
+            i = 2097152;
+        }
+        this.scanFlag = i;
         this.apexInfo = null;
     }
 
@@ -20,40 +38,11 @@ public class ScanPartition extends PackagePartitions.SystemPartition {
         super(file, scanPartition);
         int i = scanPartition.scanFlag;
         this.apexInfo = activeApexInfo;
-        if (activeApexInfo != null) {
-            i |= 8388608;
-            i = activeApexInfo.isFactory ? i | 33554432 : i;
-            if (activeApexInfo.activeApexChanged) {
-                i |= 16777216;
-            }
-        }
-        this.scanFlag = i;
+        int i2 = activeApexInfo.isFactory ? 41943040 | i : 8388608 | i;
+        this.scanFlag = activeApexInfo.activeApexChanged ? i2 | 16777216 : i2;
     }
 
-    public static int scanFlagForPartition(PackagePartitions.SystemPartition systemPartition) {
-        int i = systemPartition.type;
-        if (i == 0) {
-            return 0;
-        }
-        if (i == 1) {
-            return 524288;
-        }
-        if (i == 2) {
-            return 4194304;
-        }
-        if (i == 3) {
-            return 262144;
-        }
-        if (i == 4) {
-            return 1048576;
-        }
-        if (i == 5) {
-            return 2097152;
-        }
-        throw new IllegalStateException("Unable to determine scan flag for " + systemPartition.getFolder());
-    }
-
-    public String toString() {
-        return getFolder().getAbsolutePath() + XmlUtils.STRING_ARRAY_SEPARATOR + this.scanFlag;
+    public final String toString() {
+        return getFolder().getAbsolutePath() + ":" + this.scanFlag;
     }
 }

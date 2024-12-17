@@ -1,20 +1,22 @@
 package com.android.server.pm;
 
-import android.content.pm.IOtaDexopt;
 import android.os.RemoteException;
 import android.os.ShellCommand;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.UiModeManagerService$13$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
 import java.util.Locale;
 
-/* loaded from: classes3.dex */
-public class OtaDexoptShellCommand extends ShellCommand {
-    public final IOtaDexopt mInterface;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class OtaDexoptShellCommand extends ShellCommand {
+    public final OtaDexoptService mInterface;
 
     public OtaDexoptShellCommand(OtaDexoptService otaDexoptService) {
         this.mInterface = otaDexoptService;
     }
 
-    public int onCommand(String str) {
+    public final int onCommand(String str) {
         char c;
         if (str == null) {
             return handleDefaultCommands((String) null);
@@ -69,80 +71,50 @@ public class OtaDexoptShellCommand extends ShellCommand {
                     break;
             }
             if (c == 0) {
-                return runOtaPrepare();
+                this.mInterface.prepare();
+                getOutPrintWriter().println("Success");
+                return 0;
             }
             if (c == 1) {
-                return runOtaCleanup();
+                this.mInterface.cleanup();
+                return 0;
             }
             if (c == 2) {
-                return runOtaDone();
+                PrintWriter outPrintWriter2 = getOutPrintWriter();
+                if (this.mInterface.isDone()) {
+                    outPrintWriter2.println("OTA complete.");
+                } else {
+                    outPrintWriter2.println("OTA incomplete.");
+                }
+                return 0;
             }
             if (c == 3) {
-                return runOtaStep();
+                this.mInterface.dexoptNextPackage();
+                throw null;
             }
             if (c == 4) {
-                return runOtaNext();
+                getOutPrintWriter().println(this.mInterface.nextDexoptCommand());
+                return 0;
             }
-            if (c == 5) {
-                return runOtaProgress();
+            if (c != 5) {
+                return handleDefaultCommands(str);
             }
-            return handleDefaultCommands(str);
+            getOutPrintWriter().format(Locale.ROOT, "%.2f", Float.valueOf(this.mInterface.getProgress()));
+            return 0;
         } catch (RemoteException e) {
-            outPrintWriter.println("Remote exception: " + e);
+            UiModeManagerService$13$$ExternalSyntheticOutline0.m("Remote exception: ", e, outPrintWriter);
             return -1;
         }
     }
 
-    public final int runOtaPrepare() {
-        this.mInterface.prepare();
-        getOutPrintWriter().println("Success");
-        return 0;
-    }
-
-    public final int runOtaCleanup() {
-        this.mInterface.cleanup();
-        return 0;
-    }
-
-    public final int runOtaDone() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        if (this.mInterface.isDone()) {
-            outPrintWriter.println("OTA complete.");
-            return 0;
-        }
-        outPrintWriter.println("OTA incomplete.");
-        return 0;
-    }
-
-    public final int runOtaStep() {
-        this.mInterface.dexoptNextPackage();
-        return 0;
-    }
-
-    public final int runOtaNext() {
-        getOutPrintWriter().println(this.mInterface.nextDexoptCommand());
-        return 0;
-    }
-
-    public final int runOtaProgress() {
-        getOutPrintWriter().format(Locale.ROOT, "%.2f", Float.valueOf(this.mInterface.getProgress()));
-        return 0;
-    }
-
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.println("OTA Dexopt (ota) commands:");
         outPrintWriter.println("  help");
         outPrintWriter.println("    Print this help text.");
         outPrintWriter.println("");
-        outPrintWriter.println("  prepare");
-        outPrintWriter.println("    Prepare an OTA dexopt pass, collecting all packages.");
-        outPrintWriter.println("  done");
-        outPrintWriter.println("    Replies whether the OTA is complete or not.");
-        outPrintWriter.println("  step");
-        outPrintWriter.println("    OTA dexopt the next package.");
-        outPrintWriter.println("  next");
-        outPrintWriter.println("    Get parameters for OTA dexopt of the next package.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  prepare", "    Prepare an OTA dexopt pass, collecting all packages.", "  done", "    Replies whether the OTA is complete or not.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  step", "    OTA dexopt the next package.", "  next", "    Get parameters for OTA dexopt of the next package.");
         outPrintWriter.println("  cleanup");
         outPrintWriter.println("    Clean up internal states. Ends an OTA session.");
     }

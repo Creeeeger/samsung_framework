@@ -9,282 +9,42 @@ import android.provider.Settings;
 import android.util.MathUtils;
 import android.util.Slog;
 import android.view.MotionEvent;
-import android.view.accessibility.A11yLogger;
 import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.MagnificationAnimationCallback;
 import com.android.internal.accessibility.util.AccessibilityStatsLogUtils;
 import com.android.internal.accessibility.util.AccessibilityUtils;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.accessibility.AccessibilityTraceManager;
+import com.android.server.accessibility.Flags;
 import com.android.server.accessibility.gestures.GestureMatcher;
 import com.android.server.accessibility.gestures.MultiTap;
 import com.android.server.accessibility.gestures.MultiTapAndHold;
 import com.android.server.accessibility.magnification.MagnificationGestureHandler;
-import com.android.server.accessibility.magnification.MagnificationGesturesObserver;
-import com.android.server.accessibility.magnification.MotionEventDispatcherDelegate;
 import com.android.server.accessibility.magnification.PanningScalingHandler;
+import com.samsung.android.knoxguard.service.utils.Constants;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedList;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class WindowMagnificationGestureHandler extends MagnificationGestureHandler {
+public final class WindowMagnificationGestureHandler extends MagnificationGestureHandler {
     public static final boolean DEBUG_DETECTING;
     public static final boolean DEBUG_STATE_TRANSITIONS;
+    public static final float MAX_SCALE;
     public final Context mContext;
     State mCurrentState;
     final DelegatingState mDelegatingState;
     final DetectingState mDetectingState;
-    public MotionEventDispatcherDelegate mMotionEventDispatcherDelegate;
+    public final MagnificationConnectionManager mMagnificationConnectionManager;
+    public final MotionEventDispatcherDelegate mMotionEventDispatcherDelegate;
     final PanningScalingGestureState mObservePanningScalingState;
     State mPreviousState;
     public final Point mTempPoint;
     public long mTripleTapAndHoldStartedTime;
     final ViewportDraggingState mViewportDraggingState;
-    public final WindowMagnificationManager mWindowMagnificationMgr;
 
-    @Override // com.android.server.accessibility.magnification.MagnificationGestureHandler
-    public int getMode() {
-        return 2;
-    }
-
-    static {
-        boolean z = MagnificationGestureHandler.DEBUG_ALL;
-        DEBUG_STATE_TRANSITIONS = z | false;
-        DEBUG_DETECTING = z | false;
-    }
-
-    public WindowMagnificationGestureHandler(Context context, WindowMagnificationManager windowMagnificationManager, AccessibilityTraceManager accessibilityTraceManager, MagnificationGestureHandler.Callback callback, boolean z, boolean z2, int i) {
-        super(i, z, z2, accessibilityTraceManager, callback);
-        this.mTempPoint = new Point();
-        this.mTripleTapAndHoldStartedTime = 0L;
-        if (MagnificationGestureHandler.DEBUG_ALL) {
-            Slog.i(this.mLogTag, "WindowMagnificationGestureHandler() , displayId = " + i + ")");
-        }
-        this.mContext = context;
-        this.mWindowMagnificationMgr = windowMagnificationManager;
-        MotionEventDispatcherDelegate motionEventDispatcherDelegate = new MotionEventDispatcherDelegate(context, new MotionEventDispatcherDelegate.EventDispatcher() { // from class: com.android.server.accessibility.magnification.WindowMagnificationGestureHandler$$ExternalSyntheticLambda0
-            @Override // com.android.server.accessibility.magnification.MotionEventDispatcherDelegate.EventDispatcher
-            public final void dispatchMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i2) {
-                WindowMagnificationGestureHandler.this.lambda$new$0(motionEvent, motionEvent2, i2);
-            }
-        });
-        this.mMotionEventDispatcherDelegate = motionEventDispatcherDelegate;
-        this.mDelegatingState = new DelegatingState(motionEventDispatcherDelegate);
-        DetectingState detectingState = new DetectingState(context, this.mDetectTripleTap);
-        this.mDetectingState = detectingState;
-        this.mViewportDraggingState = new ViewportDraggingState();
-        this.mObservePanningScalingState = new PanningScalingGestureState(new PanningScalingHandler(context, 8.0f, 1.0f, true, new PanningScalingHandler.MagnificationDelegate() { // from class: com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.1
-            @Override // com.android.server.accessibility.magnification.PanningScalingHandler.MagnificationDelegate
-            public boolean processScroll(int i2, float f, float f2) {
-                return WindowMagnificationGestureHandler.this.mWindowMagnificationMgr.processScroll(i2, f, f2);
-            }
-
-            @Override // com.android.server.accessibility.magnification.PanningScalingHandler.MagnificationDelegate
-            public void setScale(int i2, float f) {
-                WindowMagnificationGestureHandler.this.mWindowMagnificationMgr.setScale(i2, f);
-            }
-
-            @Override // com.android.server.accessibility.magnification.PanningScalingHandler.MagnificationDelegate
-            public float getScale(int i2) {
-                return WindowMagnificationGestureHandler.this.mWindowMagnificationMgr.getScale(i2);
-            }
-        }));
-        transitionTo(detectingState);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        dispatchTransformedEvent(motionEvent, motionEvent2, i);
-    }
-
-    @Override // com.android.server.accessibility.magnification.MagnificationGestureHandler
-    public void onMotionEventInternal(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        this.mObservePanningScalingState.mPanningScalingHandler.onTouchEvent(motionEvent);
-        this.mCurrentState.onMotionEvent(motionEvent, motionEvent2, i);
-    }
-
-    @Override // com.android.server.accessibility.EventStreamTransformation
-    public void clearEvents(int i) {
-        if (i == 4098) {
-            resetToDetectState();
-        }
-        super.clearEvents(i);
-    }
-
-    @Override // com.android.server.accessibility.EventStreamTransformation
-    public void onDestroy() {
-        if (MagnificationGestureHandler.DEBUG_ALL) {
-            Slog.i(this.mLogTag, "onDestroy(); delayed = " + this.mDetectingState.toString());
-        }
-        this.mWindowMagnificationMgr.disableWindowMagnification(this.mDisplayId, true);
-        resetToDetectState();
-    }
-
-    @Override // com.android.server.accessibility.magnification.MagnificationGestureHandler
-    public void handleShortcutTriggered() {
-        getScreenSize(this.mTempPoint);
-        toggleMagnification(r0.x / 2.0f, r0.y / 2.0f, 0);
-    }
-
-    public final void getScreenSize(Point point) {
-        this.mContext.getDisplay().getRealSize(point);
-    }
-
-    @Override // com.android.server.accessibility.magnification.MagnificationGestureHandler
-    public void magnificationDisactivate() {
-        if (this.mWindowMagnificationMgr.isWindowMagnifierEnabled(this.mDisplayId)) {
-            disableWindowMagnifier();
-        }
-    }
-
-    public final void enableWindowMagnifier(float f, float f2, int i) {
-        if (MagnificationGestureHandler.DEBUG_ALL) {
-            Slog.i(this.mLogTag, "enableWindowMagnifier :" + f + ", " + f2 + ", " + i);
-        }
-        this.mWindowMagnificationMgr.enableWindowMagnification(this.mDisplayId, MathUtils.constrain(this.mWindowMagnificationMgr.getPersistedScale(this.mDisplayId), 1.0f, 8.0f), f, f2, i);
-    }
-
-    public final void disableWindowMagnifier() {
-        if (MagnificationGestureHandler.DEBUG_ALL) {
-            Slog.i(this.mLogTag, "disableWindowMagnifier()");
-        }
-        this.mWindowMagnificationMgr.disableWindowMagnification(this.mDisplayId, false);
-    }
-
-    public final void toggleMagnification(float f, float f2, int i) {
-        if (this.mWindowMagnificationMgr.isWindowMagnifierEnabled(this.mDisplayId)) {
-            disableWindowMagnifier();
-            boolean z = Settings.System.getIntForUser(this.mContext.getContentResolver(), "accessibility_am_magnification_mode", 0, -2) == 1;
-            Intent intent = new Intent();
-            intent.setAction("com.samsung.accessibility.action.GET_MAGNFICATION_STATUS");
-            intent.putExtra("status", false);
-            this.mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
-            if (z) {
-                enableWindowMagnifier(f, f2, i);
-                return;
-            }
-            return;
-        }
-        enableWindowMagnifier(f, f2, i);
-        Intent intent2 = new Intent();
-        intent2.setAction("com.samsung.accessibility.action.GET_MAGNFICATION_STATUS");
-        intent2.putExtra("status", true);
-        this.mContext.sendBroadcastAsUser(intent2, UserHandle.CURRENT);
-        AccessibilityUtils.updateProfile(this.mContext, "com.android.server.accessibility.MagnificationController");
-    }
-
-    public final void onTripleTap(MotionEvent motionEvent) {
-        if (DEBUG_DETECTING) {
-            Slog.i(this.mLogTag, "onTripleTap()");
-        }
-        toggleMagnification(motionEvent.getX(), motionEvent.getY(), 0);
-        A11yLogger.insertLog(this.mContext, "A11Y9004", A11yLogger.createDimension("Magnification"));
-    }
-
-    public void onTripleTapAndHold(MotionEvent motionEvent) {
-        if (DEBUG_DETECTING) {
-            Slog.i(this.mLogTag, "onTripleTapAndHold()");
-        }
-        this.mViewportDraggingState.mEnabledBeforeDrag = this.mWindowMagnificationMgr.isWindowMagnifierEnabled(this.mDisplayId);
-        enableWindowMagnifier(motionEvent.getX(), motionEvent.getY(), 1);
-        this.mTripleTapAndHoldStartedTime = SystemClock.uptimeMillis();
-        transitionTo(this.mViewportDraggingState);
-    }
-
-    public void releaseTripleTapAndHold() {
-        if (!this.mViewportDraggingState.mEnabledBeforeDrag) {
-            this.mWindowMagnificationMgr.disableWindowMagnification(this.mDisplayId, true);
-        }
-        transitionTo(this.mDetectingState);
-        if (this.mTripleTapAndHoldStartedTime != 0) {
-            logMagnificationTripleTapAndHoldSession(SystemClock.uptimeMillis() - this.mTripleTapAndHoldStartedTime);
-            this.mTripleTapAndHoldStartedTime = 0L;
-        }
-    }
-
-    public void logMagnificationTripleTapAndHoldSession(long j) {
-        AccessibilityStatsLogUtils.logMagnificationTripleTapAndHoldSession(j);
-    }
-
-    public void resetToDetectState() {
-        transitionTo(this.mDetectingState);
-    }
-
-    /* loaded from: classes.dex */
-    public interface State {
-        default void onEnter() {
-        }
-
-        default void onExit() {
-        }
-
-        void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i);
-
-        default String name() {
-            return getClass().getSimpleName();
-        }
-
-        static String nameOf(State state) {
-            return state != null ? state.name() : "null";
-        }
-    }
-
-    public final void transitionTo(State state) {
-        if (DEBUG_STATE_TRANSITIONS) {
-            String str = this.mLogTag;
-            StringBuilder sb = new StringBuilder();
-            sb.append("state transition: ");
-            sb.append((State.nameOf(this.mCurrentState) + " -> " + State.nameOf(state) + " at " + Arrays.asList((StackTraceElement[]) Arrays.copyOfRange(new RuntimeException().getStackTrace(), 1, 5))).replace(getClass().getName(), ""));
-            Slog.i(str, sb.toString());
-        }
-        State state2 = this.mCurrentState;
-        this.mPreviousState = state2;
-        if (state2 != null) {
-            state2.onExit();
-        }
-        this.mCurrentState = state;
-        if (state != null) {
-            state.onEnter();
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class PanningScalingGestureState implements State {
-        public final PanningScalingHandler mPanningScalingHandler;
-
-        public PanningScalingGestureState(PanningScalingHandler panningScalingHandler) {
-            this.mPanningScalingHandler = panningScalingHandler;
-        }
-
-        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
-        public void onEnter() {
-            this.mPanningScalingHandler.setEnabled(true);
-        }
-
-        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
-        public void onExit() {
-            this.mPanningScalingHandler.setEnabled(false);
-            WindowMagnificationGestureHandler.this.mWindowMagnificationMgr.persistScale(WindowMagnificationGestureHandler.this.mDisplayId);
-            clear();
-        }
-
-        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
-        public void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-            int actionMasked = motionEvent.getActionMasked();
-            if (actionMasked == 1 || actionMasked == 3) {
-                WindowMagnificationGestureHandler windowMagnificationGestureHandler = WindowMagnificationGestureHandler.this;
-                windowMagnificationGestureHandler.transitionTo(windowMagnificationGestureHandler.mDetectingState);
-            }
-        }
-
-        public void clear() {
-            this.mPanningScalingHandler.clear();
-        }
-
-        public String toString() {
-            return "PanningScalingState{mPanningScalingHandler=" + this.mPanningScalingHandler + '}';
-        }
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class DelegatingState implements State {
         public final MotionEventDispatcherDelegate mMotionEventDispatcherDelegate;
 
@@ -293,7 +53,7 @@ public class WindowMagnificationGestureHandler extends MagnificationGestureHandl
         }
 
         @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
-        public void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        public final void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
             this.mMotionEventDispatcherDelegate.dispatchMotionEvent(motionEvent, motionEvent2, i);
             int actionMasked = motionEvent.getActionMasked();
             if (actionMasked == 1 || actionMasked == 3) {
@@ -303,7 +63,140 @@ public class WindowMagnificationGestureHandler extends MagnificationGestureHandl
         }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DetectingState implements State {
+        public final MagnificationGesturesObserver mGesturesObserver;
+
+        public DetectingState(Context context) {
+            Flags.enableMagnificationMultipleFingerMultipleTapGesture();
+            boolean z = WindowMagnificationGestureHandler.this.mDetectSingleFingerTripleTap;
+            MultiTap multiTap = new MultiTap(context, z ? 3 : 1, z ? 105 : 103, null);
+            boolean z2 = WindowMagnificationGestureHandler.this.mDetectSingleFingerTripleTap;
+            MultiTapAndHold multiTapAndHold = new MultiTapAndHold(context, z2 ? 3 : 1, z2 ? 106 : 104, null);
+            MultiTap multiTap2 = new MultiTap(context, z2 ? 3 : 2, z2 ? 105 : 201, null);
+            MultiTapAndHold multiTapAndHold2 = new MultiTapAndHold(context, z2 ? 3 : 2, z2 ? 106 : 202, null);
+            boolean semIsScreenReaderEnabled = ((AccessibilityManager) WindowMagnificationGestureHandler.this.mContext.getSystemService("accessibility")).semIsScreenReaderEnabled();
+            this.mGesturesObserver = new MagnificationGesturesObserver(this, new SimpleSwipe(context), semIsScreenReaderEnabled ? multiTap2 : multiTap, semIsScreenReaderEnabled ? multiTapAndHold2 : multiTapAndHold, new TwoFingersDownOrSwipe(context));
+        }
+
+        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
+        public final void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+            MagnificationGesturesObserver magnificationGesturesObserver = this.mGesturesObserver;
+            magnificationGesturesObserver.getClass();
+            boolean z = MagnificationGesturesObserver.DBG;
+            if (z) {
+                Slog.d("MagnificationGesturesObserver", "DetectGesture: event = " + motionEvent);
+            }
+            magnificationGesturesObserver.mLastEvent = MotionEvent.obtain(motionEvent);
+            MotionEvent obtain = MotionEvent.obtain(motionEvent);
+            MotionEvent obtain2 = MotionEvent.obtain(motionEvent2);
+            MotionEventInfo motionEventInfo = new MotionEventInfo();
+            motionEventInfo.mEvent = obtain;
+            motionEventInfo.mRawEvent = obtain2;
+            motionEventInfo.mPolicyFlags = i;
+            if (magnificationGesturesObserver.mDelayedEventQueue == null) {
+                magnificationGesturesObserver.mDelayedEventQueue = new LinkedList();
+            }
+            ((LinkedList) magnificationGesturesObserver.mDelayedEventQueue).add(motionEventInfo);
+            WindowMagnificationGestureHandler windowMagnificationGestureHandler = WindowMagnificationGestureHandler.this;
+            if (!windowMagnificationGestureHandler.mMagnificationConnectionManager.isWindowMagnifierEnabled(windowMagnificationGestureHandler.mDisplayId) && !windowMagnificationGestureHandler.mDetectSingleFingerTripleTap) {
+                magnificationGesturesObserver.notifyDetectionCancel();
+                return;
+            }
+            if (motionEvent.getActionMasked() == 0) {
+                magnificationGesturesObserver.mLastDownEventTime = motionEvent.getDownTime();
+            }
+            GesturesObserver gesturesObserver = magnificationGesturesObserver.mGesturesObserver;
+            if (!gesturesObserver.mObserveStarted) {
+                if (motionEvent.getActionMasked() != 0) {
+                    MagnificationGesturesObserver magnificationGesturesObserver2 = (MagnificationGesturesObserver) gesturesObserver.mListener;
+                    if (z) {
+                        magnificationGesturesObserver2.getClass();
+                        Slog.d("MagnificationGesturesObserver", "onGestureCancelled:  event = " + motionEvent);
+                    }
+                    magnificationGesturesObserver2.notifyDetectionCancel();
+                    gesturesObserver.clear$1();
+                    return;
+                }
+                gesturesObserver.mObserveStarted = true;
+            }
+            gesturesObserver.mProcessMotionEvent = true;
+            for (int i2 = 0; i2 < ((ArrayList) gesturesObserver.mGestureMatchers).size(); i2++) {
+                GestureMatcher gestureMatcher = (GestureMatcher) ((ArrayList) gesturesObserver.mGestureMatchers).get(i2);
+                gestureMatcher.onMotionEvent(motionEvent, motionEvent2, i);
+                if (gestureMatcher.mState == 2) {
+                    gesturesObserver.clear$1();
+                    gesturesObserver.mProcessMotionEvent = false;
+                    return;
+                }
+            }
+            gesturesObserver.mProcessMotionEvent = false;
+        }
+
+        public final String toString() {
+            return "DetectingState{mGestureTimeoutObserver=" + this.mGesturesObserver + '}';
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PanningScalingGestureState implements State {
+        public final PanningScalingHandler mPanningScalingHandler;
+
+        public PanningScalingGestureState(PanningScalingHandler panningScalingHandler) {
+            this.mPanningScalingHandler = panningScalingHandler;
+        }
+
+        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
+        public final void onEnter() {
+            PanningScalingHandler panningScalingHandler = this.mPanningScalingHandler;
+            panningScalingHandler.mInitialScaleFactor = -1.0f;
+            panningScalingHandler.mScaling = false;
+            panningScalingHandler.mEnable = true;
+        }
+
+        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
+        public final void onExit() {
+            PanningScalingHandler panningScalingHandler = this.mPanningScalingHandler;
+            panningScalingHandler.mInitialScaleFactor = -1.0f;
+            panningScalingHandler.mScaling = false;
+            panningScalingHandler.mEnable = false;
+            WindowMagnificationGestureHandler windowMagnificationGestureHandler = WindowMagnificationGestureHandler.this;
+            MagnificationConnectionManager magnificationConnectionManager = windowMagnificationGestureHandler.mMagnificationConnectionManager;
+            int i = windowMagnificationGestureHandler.mDisplayId;
+            float scale = magnificationConnectionManager.getScale(i);
+            if (scale >= 1.0f) {
+                magnificationConnectionManager.mScaleProvider.putScale(scale, i);
+            }
+            panningScalingHandler.mInitialScaleFactor = -1.0f;
+            panningScalingHandler.mScaling = false;
+        }
+
+        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
+        public final void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+            int actionMasked = motionEvent.getActionMasked();
+            if (actionMasked == 1 || actionMasked == 3) {
+                WindowMagnificationGestureHandler windowMagnificationGestureHandler = WindowMagnificationGestureHandler.this;
+                windowMagnificationGestureHandler.transitionTo(windowMagnificationGestureHandler.mDetectingState);
+            }
+        }
+
+        public final String toString() {
+            return "PanningScalingState{mPanningScalingHandler=" + this.mPanningScalingHandler + '}';
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface State {
+        default void onEnter() {
+        }
+
+        default void onExit() {
+        }
+
+        void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i);
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class ViewportDraggingState implements State {
         public boolean mEnabledBeforeDrag;
         public float mLastX = Float.NaN;
@@ -313,12 +206,19 @@ public class WindowMagnificationGestureHandler extends MagnificationGestureHandl
         }
 
         @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
-        public void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        public final void onExit() {
+            this.mLastX = Float.NaN;
+            this.mLastY = Float.NaN;
+        }
+
+        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
+        public final void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
             int actionMasked = motionEvent.getActionMasked();
+            WindowMagnificationGestureHandler windowMagnificationGestureHandler = WindowMagnificationGestureHandler.this;
             if (actionMasked != 1) {
                 if (actionMasked == 2) {
                     if (!Float.isNaN(this.mLastX) && !Float.isNaN(this.mLastY)) {
-                        WindowMagnificationGestureHandler.this.mWindowMagnificationMgr.moveWindowMagnification(WindowMagnificationGestureHandler.this.mDisplayId, motionEvent.getX() - this.mLastX, motionEvent.getY() - this.mLastY);
+                        windowMagnificationGestureHandler.mMagnificationConnectionManager.moveWindowMagnification(windowMagnificationGestureHandler.mDisplayId, motionEvent.getX() - this.mLastX, motionEvent.getY() - this.mLastY);
                     }
                     this.mLastX = motionEvent.getX();
                     this.mLastY = motionEvent.getY();
@@ -328,99 +228,204 @@ public class WindowMagnificationGestureHandler extends MagnificationGestureHandl
                     return;
                 }
             }
-            WindowMagnificationGestureHandler.this.releaseTripleTapAndHold();
+            windowMagnificationGestureHandler.releaseTripleTapAndHold();
         }
 
-        public void clear() {
-            this.mLastX = Float.NaN;
-            this.mLastY = Float.NaN;
-        }
-
-        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
-        public void onExit() {
-            clear();
-        }
-
-        public String toString() {
+        public final String toString() {
             return "ViewportDraggingState{mLastX=" + this.mLastX + ",mLastY=" + this.mLastY + '}';
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class DetectingState implements State, MagnificationGesturesObserver.Callback {
-        public final boolean mDetectTripleTap;
-        public final MagnificationGesturesObserver mGesturesObserver;
+    static {
+        boolean z = MagnificationGestureHandler.DEBUG_ALL;
+        DEBUG_STATE_TRANSITIONS = z;
+        DEBUG_DETECTING = z;
+        MAX_SCALE = MagnificationScaleProvider.MAX_SCALE;
+    }
 
-        public DetectingState(Context context, boolean z) {
-            this.mDetectTripleTap = z;
-            MultiTap multiTap = new MultiTap(context, z ? 3 : 1, z ? 105 : 103, null);
-            MultiTapAndHold multiTapAndHold = new MultiTapAndHold(context, z ? 3 : 1, z ? 106 : 104, null);
-            MultiTap multiTap2 = new MultiTap(context, z ? 3 : 2, z ? 105 : 201, null);
-            MultiTapAndHold multiTapAndHold2 = new MultiTapAndHold(context, z ? 3 : 2, z ? 106 : 202, null);
-            boolean isScreenReaderEnabled = WindowMagnificationGestureHandler.this.isScreenReaderEnabled();
-            GestureMatcher[] gestureMatcherArr = new GestureMatcher[4];
-            gestureMatcherArr[0] = new SimpleSwipe(context);
-            gestureMatcherArr[1] = isScreenReaderEnabled ? multiTap2 : multiTap;
-            gestureMatcherArr[2] = isScreenReaderEnabled ? multiTapAndHold2 : multiTapAndHold;
-            gestureMatcherArr[3] = new TwoFingersDownOrSwipe(context);
-            this.mGesturesObserver = new MagnificationGesturesObserver(this, gestureMatcherArr);
+    /* JADX WARN: Type inference failed for: r11v1, types: [com.android.server.accessibility.magnification.WindowMagnificationGestureHandler$1] */
+    public WindowMagnificationGestureHandler(Context context, MagnificationConnectionManager magnificationConnectionManager, AccessibilityTraceManager accessibilityTraceManager, MagnificationGestureHandler.Callback callback, boolean z, boolean z2, boolean z3, int i) {
+        super(i, z, z3, accessibilityTraceManager, callback);
+        this.mTempPoint = new Point();
+        this.mTripleTapAndHoldStartedTime = 0L;
+        if (MagnificationGestureHandler.DEBUG_ALL) {
+            BootReceiver$$ExternalSyntheticOutline0.m(i, "WindowMagnificationGestureHandler() , displayId = ", ")", this.mLogTag);
         }
-
-        @Override // com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.State
-        public void onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-            this.mGesturesObserver.onMotionEvent(motionEvent, motionEvent2, i);
-        }
-
-        public String toString() {
-            return "DetectingState{mGestureTimeoutObserver=" + this.mGesturesObserver + '}';
-        }
-
-        @Override // com.android.server.accessibility.magnification.MagnificationGesturesObserver.Callback
-        public boolean shouldStopDetection(MotionEvent motionEvent) {
-            return (WindowMagnificationGestureHandler.this.mWindowMagnificationMgr.isWindowMagnifierEnabled(WindowMagnificationGestureHandler.this.mDisplayId) || this.mDetectTripleTap) ? false : true;
-        }
-
-        @Override // com.android.server.accessibility.magnification.MagnificationGesturesObserver.Callback
-        public void onGestureCompleted(int i, long j, List list, MotionEvent motionEvent) {
-            if (WindowMagnificationGestureHandler.DEBUG_DETECTING) {
-                Slog.d(WindowMagnificationGestureHandler.this.mLogTag, "onGestureDetected : gesture = " + MagnificationGestureMatcher.gestureIdToString(i));
-                Slog.d(WindowMagnificationGestureHandler.this.mLogTag, "onGestureDetected : delayedEventQueue = " + list);
+        this.mContext = context;
+        this.mMagnificationConnectionManager = magnificationConnectionManager;
+        MotionEventDispatcherDelegate motionEventDispatcherDelegate = new MotionEventDispatcherDelegate(context, new WindowMagnificationGestureHandler$$ExternalSyntheticLambda1(this));
+        this.mMotionEventDispatcherDelegate = motionEventDispatcherDelegate;
+        this.mDelegatingState = new DelegatingState(motionEventDispatcherDelegate);
+        DetectingState detectingState = new DetectingState(context);
+        this.mDetectingState = detectingState;
+        this.mViewportDraggingState = new ViewportDraggingState();
+        this.mObservePanningScalingState = new PanningScalingGestureState(new PanningScalingHandler(context, MAX_SCALE, new PanningScalingHandler.MagnificationDelegate() { // from class: com.android.server.accessibility.magnification.WindowMagnificationGestureHandler.1
+            @Override // com.android.server.accessibility.magnification.PanningScalingHandler.MagnificationDelegate
+            public final float getScale(int i2) {
+                return WindowMagnificationGestureHandler.this.mMagnificationConnectionManager.getScale(i2);
             }
-            if (i == 101 && WindowMagnificationGestureHandler.this.mWindowMagnificationMgr.pointersInWindow(WindowMagnificationGestureHandler.this.mDisplayId, motionEvent) > 0 && WindowMagnificationGestureHandler.this.mWindowMagnificationMgr.isWindowMagnifierEnabled(WindowMagnificationGestureHandler.this.mDisplayId)) {
-                WindowMagnificationGestureHandler windowMagnificationGestureHandler = WindowMagnificationGestureHandler.this;
-                windowMagnificationGestureHandler.transitionTo(windowMagnificationGestureHandler.mObservePanningScalingState);
-            } else if (i == 105) {
-                WindowMagnificationGestureHandler.this.onTripleTap(motionEvent);
-            } else if (i == 106) {
-                WindowMagnificationGestureHandler.this.onTripleTapAndHold(motionEvent);
-            } else {
-                WindowMagnificationGestureHandler.this.mMotionEventDispatcherDelegate.sendDelayedMotionEvents(list, j);
-                changeToDelegateStateIfNeed(motionEvent);
-            }
-        }
 
-        @Override // com.android.server.accessibility.magnification.MagnificationGesturesObserver.Callback
-        public void onGestureCancelled(long j, List list, MotionEvent motionEvent) {
-            if (WindowMagnificationGestureHandler.DEBUG_DETECTING) {
-                Slog.d(WindowMagnificationGestureHandler.this.mLogTag, "onGestureCancelled : delayedEventQueue = " + list);
+            @Override // com.android.server.accessibility.magnification.PanningScalingHandler.MagnificationDelegate
+            public final void processScroll(int i2, float f, float f2) {
+                WindowMagnificationGestureHandler.this.mMagnificationConnectionManager.processScroll(i2, f, f2);
             }
-            WindowMagnificationGestureHandler.this.mMotionEventDispatcherDelegate.sendDelayedMotionEvents(list, j);
-            changeToDelegateStateIfNeed(motionEvent);
-        }
 
-        public final void changeToDelegateStateIfNeed(MotionEvent motionEvent) {
-            if (motionEvent == null || !(motionEvent.getActionMasked() == 1 || motionEvent.getActionMasked() == 3)) {
-                WindowMagnificationGestureHandler windowMagnificationGestureHandler = WindowMagnificationGestureHandler.this;
-                windowMagnificationGestureHandler.transitionTo(windowMagnificationGestureHandler.mDelegatingState);
+            @Override // com.android.server.accessibility.magnification.PanningScalingHandler.MagnificationDelegate
+            public final void setScale(float f, int i2) {
+                WindowMagnificationGestureHandler.this.mMagnificationConnectionManager.setScale(f, i2);
             }
+        }));
+        transitionTo(detectingState);
+    }
+
+    @Override // com.android.server.accessibility.EventStreamTransformation
+    public final void clearEvents(int i) {
+        if (i == 4098) {
+            transitionTo(this.mDetectingState);
+        }
+        super.clearEvents(i);
+    }
+
+    public final void enableWindowMagnifier(int i, float f, float f2) {
+        if (MagnificationGestureHandler.DEBUG_ALL) {
+            Slog.i(this.mLogTag, "enableWindowMagnifier :" + f + ", " + f2 + ", " + i);
+        }
+        this.mMagnificationConnectionManager.enableWindowMagnification(this.mDisplayId, MathUtils.constrain(MathUtils.constrain(this.mMagnificationConnectionManager.mScaleProvider.getScale(this.mDisplayId), 1.0f, MagnificationScaleProvider.MAX_SCALE), 1.0f, MAX_SCALE), f, f2, MagnificationAnimationCallback.STUB_ANIMATION_CALLBACK, i, 0);
+    }
+
+    @Override // com.android.server.accessibility.magnification.MagnificationGestureHandler
+    public final int getMode() {
+        return 2;
+    }
+
+    @Override // com.android.server.accessibility.magnification.MagnificationGestureHandler
+    public final void handleShortcutTriggered() {
+        this.mContext.getDisplay().getRealSize(this.mTempPoint);
+        toggleMagnification(r0.x / 2.0f, r0.y / 2.0f);
+    }
+
+    public void logMagnificationTripleTapAndHoldSession(long j) {
+        AccessibilityStatsLogUtils.logMagnificationTripleTapAndHoldSession(j);
+    }
+
+    @Override // com.android.server.accessibility.magnification.MagnificationGestureHandler
+    public final void magnificationDisactivate$1() {
+        MagnificationConnectionManager magnificationConnectionManager = this.mMagnificationConnectionManager;
+        int i = this.mDisplayId;
+        if (magnificationConnectionManager.isWindowMagnifierEnabled(i)) {
+            if (MagnificationGestureHandler.DEBUG_ALL) {
+                Slog.i(this.mLogTag, "disableWindowMagnifier()");
+            }
+            magnificationConnectionManager.disableWindowMagnification(i, false);
         }
     }
 
-    public String toString() {
-        return "WindowMagnificationGestureHandler{mDetectingState=" + this.mDetectingState + ", mDelegatingState=" + this.mDelegatingState + ", mViewportDraggingState=" + this.mViewportDraggingState + ", mMagnifiedInteractionState=" + this.mObservePanningScalingState + ", mCurrentState=" + State.nameOf(this.mCurrentState) + ", mPreviousState=" + State.nameOf(this.mPreviousState) + ", mWindowMagnificationMgr=" + this.mWindowMagnificationMgr + ", mDisplayId=" + this.mDisplayId + '}';
+    @Override // com.android.server.accessibility.EventStreamTransformation
+    public final void onDestroy() {
+        if (MagnificationGestureHandler.DEBUG_ALL) {
+            Slog.i(this.mLogTag, "onDestroy(); delayed = " + this.mDetectingState.toString());
+        }
+        this.mMagnificationConnectionManager.disableWindowMagnification(this.mDisplayId, true);
+        transitionTo(this.mDetectingState);
     }
 
-    public final boolean isScreenReaderEnabled() {
-        return ((AccessibilityManager) this.mContext.getSystemService("accessibility")).semIsScreenReaderEnabled();
+    @Override // com.android.server.accessibility.magnification.MagnificationGestureHandler
+    public final void onMotionEventInternal(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        PanningScalingHandler panningScalingHandler = this.mObservePanningScalingState.mPanningScalingHandler;
+        panningScalingHandler.mScaleGestureDetector.onTouchEvent(motionEvent);
+        panningScalingHandler.mScrollGestureDetector.onTouchEvent(motionEvent);
+        this.mCurrentState.onMotionEvent(motionEvent, motionEvent2, i);
+    }
+
+    public void onTripleTapAndHold(MotionEvent motionEvent) {
+        if (DEBUG_DETECTING) {
+            Slog.i(this.mLogTag, "onTripleTapAndHold()");
+        }
+        this.mViewportDraggingState.mEnabledBeforeDrag = this.mMagnificationConnectionManager.isWindowMagnifierEnabled(this.mDisplayId);
+        enableWindowMagnifier(1, motionEvent.getX(), motionEvent.getY());
+        this.mTripleTapAndHoldStartedTime = SystemClock.uptimeMillis();
+        transitionTo(this.mViewportDraggingState);
+    }
+
+    public void releaseTripleTapAndHold() {
+        if (!this.mViewportDraggingState.mEnabledBeforeDrag) {
+            this.mMagnificationConnectionManager.disableWindowMagnification(this.mDisplayId, true);
+        }
+        transitionTo(this.mDetectingState);
+        if (this.mTripleTapAndHoldStartedTime != 0) {
+            logMagnificationTripleTapAndHoldSession(SystemClock.uptimeMillis() - this.mTripleTapAndHoldStartedTime);
+            this.mTripleTapAndHoldStartedTime = 0L;
+        }
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("WindowMagnificationGestureHandler{mDetectingState=");
+        sb.append(this.mDetectingState);
+        sb.append(", mDelegatingState=");
+        sb.append(this.mDelegatingState);
+        sb.append(", mViewportDraggingState=");
+        sb.append(this.mViewportDraggingState);
+        sb.append(", mMagnifiedInteractionState=");
+        sb.append(this.mObservePanningScalingState);
+        sb.append(", mCurrentState=");
+        State state = this.mCurrentState;
+        sb.append(state != null ? state.getClass().getSimpleName() : "null");
+        sb.append(", mPreviousState=");
+        State state2 = this.mPreviousState;
+        sb.append(state2 != null ? state2.getClass().getSimpleName() : "null");
+        sb.append(", mMagnificationConnectionManager=");
+        sb.append(this.mMagnificationConnectionManager);
+        sb.append(", mDisplayId=");
+        return WindowMagnificationGestureHandler$$ExternalSyntheticOutline0.m(sb, this.mDisplayId, '}');
+    }
+
+    public final void toggleMagnification(float f, float f2) {
+        MagnificationConnectionManager magnificationConnectionManager = this.mMagnificationConnectionManager;
+        int i = this.mDisplayId;
+        if (!magnificationConnectionManager.isWindowMagnifierEnabled(i)) {
+            enableWindowMagnifier(0, f, f2);
+            Intent intent = new Intent();
+            intent.setAction("com.samsung.accessibility.action.GET_MAGNFICATION_STATUS");
+            intent.putExtra(Constants.JSON_CLIENT_DATA_STATUS, true);
+            this.mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
+            AccessibilityUtils.updateProfile(this.mContext, "com.android.server.accessibility.MagnificationController");
+            return;
+        }
+        if (MagnificationGestureHandler.DEBUG_ALL) {
+            Slog.i(this.mLogTag, "disableWindowMagnifier()");
+        }
+        magnificationConnectionManager.disableWindowMagnification(i, false);
+        boolean z = Settings.System.getIntForUser(this.mContext.getContentResolver(), "accessibility_am_magnification_mode", 0, -2) == 1;
+        Intent intent2 = new Intent();
+        intent2.setAction("com.samsung.accessibility.action.GET_MAGNFICATION_STATUS");
+        intent2.putExtra(Constants.JSON_CLIENT_DATA_STATUS, false);
+        this.mContext.sendBroadcastAsUser(intent2, UserHandle.CURRENT);
+        if (z) {
+            enableWindowMagnifier(0, f, f2);
+        }
+    }
+
+    public final void transitionTo(State state) {
+        if (DEBUG_STATE_TRANSITIONS) {
+            StringBuilder sb = new StringBuilder("state transition: ");
+            StringBuilder sb2 = new StringBuilder();
+            State state2 = this.mCurrentState;
+            sb2.append(state2 != null ? state2.getClass().getSimpleName() : "null");
+            sb2.append(" -> ");
+            sb2.append(state != null ? state.getClass().getSimpleName() : "null");
+            sb2.append(" at ");
+            sb2.append(Arrays.asList((StackTraceElement[]) Arrays.copyOfRange(new RuntimeException().getStackTrace(), 1, 5)));
+            sb.append(sb2.toString().replace(WindowMagnificationGestureHandler.class.getName(), ""));
+            Slog.i(this.mLogTag, sb.toString());
+        }
+        State state3 = this.mCurrentState;
+        this.mPreviousState = state3;
+        if (state3 != null) {
+            state3.onExit();
+        }
+        this.mCurrentState = state;
+        if (state != null) {
+            state.onEnter();
+        }
     }
 }

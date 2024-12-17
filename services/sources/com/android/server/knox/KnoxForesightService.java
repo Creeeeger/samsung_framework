@@ -9,41 +9,115 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.IInstalld;
 import android.util.Log;
 import com.samsung.android.knox.IBasicCommand;
 import dalvik.system.DexClassLoader;
 import java.lang.reflect.InvocationTargetException;
 
-/* loaded from: classes2.dex */
-public class KnoxForesightService extends IBasicCommand.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class KnoxForesightService extends IBasicCommand.Stub {
     public static String KFAgentVersion;
     public static int sClassLoadCount;
     public static KnoxForesightService sInstance;
-    public Thread clientThread;
+    public AnonymousClass1 clientThread;
     public DexClassLoader dexClassLoader;
-    public IBasicCommand kfAgent;
     public Context mContext;
 
-    public KnoxForesightService(Context context) {
-        this.mContext = context;
-        registerReceivers();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ForesightPackageReceiver extends BroadcastReceiver {
+        public ForesightPackageReceiver() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            Log.d("KnoxForesightService", "ForesightPackageReceiver: " + intent);
+            String action = intent.getAction();
+            action.getClass();
+            if (!action.equals("android.intent.action.PACKAGE_ADDED")) {
+                Log.w("KnoxForesightService", "Received unknown intent: " + intent);
+            } else {
+                KnoxForesightService.this.getClass();
+                Uri data = intent.getData();
+                if ("com.samsung.android.knox.foresight".equals(data != null ? data.getSchemeSpecificPart() : null)) {
+                    KnoxForesightService.this.initializeKnoxForesight();
+                } else {
+                    Log.d("KnoxForesightService", "package name not matched");
+                }
+            }
+        }
     }
 
     public static synchronized KnoxForesightService getInstance(Context context) {
         KnoxForesightService knoxForesightService;
         synchronized (KnoxForesightService.class) {
-            if (sInstance == null) {
-                sInstance = new KnoxForesightService(context);
+            try {
+                if (sInstance == null) {
+                    KnoxForesightService knoxForesightService2 = new KnoxForesightService();
+                    knoxForesightService2.mContext = context;
+                    IntentFilter intentFilter = new IntentFilter();
+                    intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
+                    intentFilter.addDataScheme("package");
+                    intentFilter.addDataSchemeSpecificPart("com.samsung.android.knox.foresight", 0);
+                    context.registerReceiver(knoxForesightService2.new ForesightPackageReceiver(), intentFilter, null, null);
+                    sInstance = knoxForesightService2;
+                }
+                knoxForesightService = sInstance;
+            } catch (Throwable th) {
+                throw th;
             }
-            knoxForesightService = sInstance;
         }
         return knoxForesightService;
     }
 
-    public Bundle sendCmd(Bundle bundle) {
+    /* JADX WARN: Type inference failed for: r4v1, types: [com.android.server.knox.KnoxForesightService$1] */
+    public final void initializeKnoxForesight() {
+        String str;
+        if (this.mContext.getPackageManager().checkSignatures("android", "com.samsung.android.knox.foresight") != 0) {
+            Log.d("KnoxForesightService", "signature is not matched, ignore");
+            return;
+        }
+        try {
+            PackageInfo packageInfo = this.mContext.getPackageManager().getPackageInfo("com.samsung.android.knox.foresight", 8192);
+            String str2 = packageInfo.applicationInfo.publicSourceDir;
+            this.clientThread = new Thread() { // from class: com.android.server.knox.KnoxForesightService.1
+                @Override // java.lang.Thread, java.lang.Runnable
+                public final void run() {
+                    Log.d("KnoxForesightService", "systemclassloader : " + ClassLoader.getSystemClassLoader().toString());
+                    try {
+                        getContextClassLoader().loadClass("com.samsung.android.knox.foresight.framework.system.SystemServiceEntry").getMethod("initialize", Context.class).invoke(null, KnoxForesightService.this.mContext);
+                    } catch (ClassNotFoundException | NoSuchMethodException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e2) {
+                        e2.printStackTrace();
+                    } catch (InvocationTargetException e3) {
+                        e3.printStackTrace();
+                    } catch (Exception e4) {
+                        e4.printStackTrace();
+                    }
+                }
+            };
+            if (this.dexClassLoader != null && (str = KFAgentVersion) != null) {
+                int i = sClassLoadCount;
+                sClassLoadCount = i + 1;
+                if (i >= 5 || str.equals(packageInfo.versionName)) {
+                    Log.d("KnoxForesightService", "ignore for max load count exceeded " + sClassLoadCount + "/" + KFAgentVersion);
+                    setContextClassLoader(this.dexClassLoader);
+                    start();
+                }
+            }
+            KFAgentVersion = packageInfo.versionName;
+            this.dexClassLoader = new DexClassLoader(str2, null, null, this.mContext.getClass().getClassLoader());
+            setContextClassLoader(this.dexClassLoader);
+            start();
+        } catch (PackageManager.NameNotFoundException unused) {
+            Log.d("KnoxForesightService", "KnoxForesight is not installed");
+        }
+    }
+
+    public final Bundle sendCmd(Bundle bundle) {
         Log.d("KnoxForesightService", "sendCmd " + bundle);
-        if (!checkPlatformSignatureByUid(Binder.getCallingUid())) {
+        if (this.mContext.getPackageManager().checkSignatures(1000, Binder.getCallingUid()) != 0) {
             Log.d("KnoxForesightService", "caller not allowed : " + Binder.getCallingUid());
             throw new SecurityException("caller not allowed : " + Binder.getCallingUid());
         }
@@ -65,107 +139,12 @@ public class KnoxForesightService extends IBasicCommand.Stub {
         return null;
     }
 
-    public void setCaller(IBasicCommand iBasicCommand) {
+    public final void setCaller(IBasicCommand iBasicCommand) {
         Log.d("KnoxForesightService", "setCaller");
-        if (!checkPlatformSignatureByUid(Binder.getCallingUid())) {
-            Log.d("KnoxForesightService", "caller not allowed : " + Binder.getCallingUid());
-            throw new SecurityException("caller not allowed : " + Binder.getCallingUid());
-        }
-        this.kfAgent = iBasicCommand;
-    }
-
-    public void initializeKnoxForesight() {
-        String str;
-        if (!checkPlatformSignature()) {
-            Log.d("KnoxForesightService", "signature is not matched, ignore");
+        if (this.mContext.getPackageManager().checkSignatures(1000, Binder.getCallingUid()) == 0) {
             return;
         }
-        try {
-            PackageInfo packageInfo = this.mContext.getPackageManager().getPackageInfo("com.samsung.android.knox.foresight", IInstalld.FLAG_FORCE);
-            String str2 = packageInfo.applicationInfo.publicSourceDir;
-            this.clientThread = createThread();
-            if (this.dexClassLoader != null && (str = KFAgentVersion) != null) {
-                int i = sClassLoadCount;
-                sClassLoadCount = i + 1;
-                if (i >= 5 || str.equals(packageInfo.versionName)) {
-                    Log.d("KnoxForesightService", "ignore for max load count exceeded " + sClassLoadCount + "/" + KFAgentVersion);
-                    this.clientThread.setContextClassLoader(this.dexClassLoader);
-                    this.clientThread.start();
-                }
-            }
-            KFAgentVersion = packageInfo.versionName;
-            this.dexClassLoader = new DexClassLoader(str2, null, null, this.mContext.getClass().getClassLoader());
-            this.clientThread.setContextClassLoader(this.dexClassLoader);
-            this.clientThread.start();
-        } catch (PackageManager.NameNotFoundException unused) {
-            Log.d("KnoxForesightService", "KnoxForesight is not installed");
-        }
-    }
-
-    public final Thread createThread() {
-        return new Thread() { // from class: com.android.server.knox.KnoxForesightService.1
-            @Override // java.lang.Thread, java.lang.Runnable
-            public void run() {
-                Log.d("KnoxForesightService", "systemclassloader : " + ClassLoader.getSystemClassLoader().toString());
-                try {
-                    getContextClassLoader().loadClass("com.samsung.android.knox.foresight.framework.system.SystemServiceEntry").getMethod("initialize", Context.class).invoke(null, KnoxForesightService.this.mContext);
-                } catch (ClassNotFoundException | NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e2) {
-                    e2.printStackTrace();
-                } catch (InvocationTargetException e3) {
-                    e3.printStackTrace();
-                } catch (Exception e4) {
-                    e4.printStackTrace();
-                }
-            }
-        };
-    }
-
-    public final void registerReceivers() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
-        intentFilter.addDataScheme("package");
-        intentFilter.addDataSchemeSpecificPart("com.samsung.android.knox.foresight", 0);
-        this.mContext.registerReceiver(new ForesightPackageReceiver(), intentFilter, null, null);
-    }
-
-    /* loaded from: classes2.dex */
-    public class ForesightPackageReceiver extends BroadcastReceiver {
-        public ForesightPackageReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            Log.d("KnoxForesightService", "ForesightPackageReceiver: " + intent);
-            String action = intent.getAction();
-            action.hashCode();
-            if (action.equals("android.intent.action.PACKAGE_ADDED")) {
-                if ("com.samsung.android.knox.foresight".equals(KnoxForesightService.this.getPackageName(intent))) {
-                    KnoxForesightService.this.initializeKnoxForesight();
-                    return;
-                } else {
-                    Log.d("KnoxForesightService", "package name not matched");
-                    return;
-                }
-            }
-            Log.w("KnoxForesightService", "Received unknown intent: " + intent);
-        }
-    }
-
-    public boolean checkPlatformSignature() {
-        return this.mContext.getPackageManager().checkSignatures("android", "com.samsung.android.knox.foresight") == 0;
-    }
-
-    public boolean checkPlatformSignatureByUid(int i) {
-        return this.mContext.getPackageManager().checkSignatures(1000, i) == 0;
-    }
-
-    public String getPackageName(Intent intent) {
-        Uri data = intent.getData();
-        if (data != null) {
-            return data.getSchemeSpecificPart();
-        }
-        return null;
+        Log.d("KnoxForesightService", "caller not allowed : " + Binder.getCallingUid());
+        throw new SecurityException("caller not allowed : " + Binder.getCallingUid());
     }
 }

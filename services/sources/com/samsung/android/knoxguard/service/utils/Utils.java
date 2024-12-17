@@ -6,7 +6,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.RemoteException;
@@ -15,17 +18,18 @@ import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Slog;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.internal.widget.ILockSettings;
 import com.android.internal.widget.RemoteLockInfo;
-import com.android.server.backup.BackupAgentTimeoutParameters;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.MagnificationConnectionManager$$ExternalSyntheticOutline0;
+import com.samsung.android.feature.SemCscFeature;
 import com.samsung.android.knox.analytics.activation.ActivationMonitor;
 import com.samsung.android.knoxguard.service.KnoxGuardNative;
 import com.samsung.android.knoxguard.service.KnoxGuardSeService;
-import com.samsung.android.knoxguard.service.KnoxGuardService;
-import com.samsung.android.service.RemoteLockControl.KnoxGuard.KnoxGuardVaultException;
-import com.samsung.android.service.RemoteLockControl.KnoxGuard.KnoxGuardVaultManager;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,24 +38,125 @@ import java.nio.charset.StandardCharsets;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public abstract class Utils {
-    public static final String TAG = "KG." + Utils.class.getSimpleName();
+public final class Utils {
+    public static final String TAG = "KG.Utils";
     public static ILockSettings mLockSettingsService;
 
-    public static boolean isStateForEnrolledDevice(int i) {
-        return 2 == i || 3 == i;
-    }
-
-    public static boolean isSupportKGOnSEC() {
-        return true;
-    }
-
-    public static boolean isExistFile(String str) {
-        if (str != null) {
-            return new File(str).exists();
+    public static void autoLockDevice(Context context, String str) {
+        String string;
+        String string2;
+        if (isTabletDevice()) {
+            string = context.getString(R.string.permdesc_manageOngoingCalls);
+            string2 = context.getString(R.string.permdesc_imagesWrite);
+        } else {
+            string = context.getString(R.string.permdesc_manageNetworkPolicy);
+            string2 = context.getString(R.string.permdesc_highSamplingRateSensors);
         }
-        return false;
+        String str2 = string;
+        if (str != null && !str.isEmpty()) {
+            string2 = BootReceiver$$ExternalSyntheticOutline0.m(" (", str, ")\n\n", string2);
+        }
+        setRemoteLockToLockscreen(context, 3, true, string2, "", "", true, str2, 0, 0L, 0, true, null, true);
+    }
+
+    public static RemoteLockInfo buildDefaultRetryLockInfo(Context context) {
+        String string;
+        String string2;
+        if (isTabletDevice()) {
+            string = context.getString(R.string.permdesc_manageOngoingCalls);
+            string2 = context.getString(R.string.permdesc_imagesWrite);
+        } else {
+            string = context.getString(R.string.permdesc_manageNetworkPolicy);
+            string2 = context.getString(R.string.permdesc_highSamplingRateSensors);
+        }
+        return new RemoteLockInfo.Builder(3, true).setClientName(string).setPhoneNumber("").setEmailAddress("").setMessage(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m(" (2002)\n\n", string2)).setAllowFailCount(0).setEnableEmergencyCall(true).setLockTimeOut(0L).setBlockCount(0).setSkipPinContainer(true).setBundle((Bundle) null).setSkipSupportContainer(true).build();
+    }
+
+    public static void checkCaller(Context context) {
+        if (!"com.samsung.android.kgclient".equals(context.getPackageManager().getNameForUid(Binder.getCallingUid()))) {
+            throw new SecurityException("caller should be com.samsung.android.kgclient");
+        }
+    }
+
+    public static void checkCallerAndKgPermission(Context context) {
+        checkPermission(context, Constants.KG_PERMISSION);
+        checkCaller(context);
+    }
+
+    public static boolean checkPermission(Context context, String str) {
+        if (context.checkCallingPermission(str) == 0) {
+            return true;
+        }
+        throw new SecurityException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("does not have ", str));
+    }
+
+    public static String getKGPolicyCompany() {
+        try {
+            String str = TAG;
+            Slog.d(str, "getKGPolicyCompany");
+            String stringResult = KnoxGuardSeService.getStringResult(KnoxGuardNative.getKGPolicyRefactor());
+            if (stringResult == null) {
+                return null;
+            }
+            JSONObject jSONObject = new JSONObject(stringResult);
+            String string = !jSONObject.isNull(Constants.JSON_KG_POLICY_GENERAL) ? jSONObject.getJSONObject(Constants.JSON_KG_POLICY_GENERAL).getString("companyName") : null;
+            Slog.d(str, "getKGPolicyCompany company " + string);
+            return string;
+        } catch (JSONException unused) {
+            Slog.e(TAG, "getKGPolicyCompany Exception: Parsing Error!");
+            return null;
+        } catch (Exception e) {
+            Slog.e(TAG, "getKGPolicyCompany Exception: " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public static PendingIntent getPendingIntentForRetryLockAction(Context context, int i) {
+        Intent intent = new Intent(Constants.INTENT_RETRY_LOCK);
+        intent.putExtra(Constants.ALARM_TYPE, i);
+        return PendingIntent.getBroadcast(context, i, intent, 201326592);
+    }
+
+    public static String getRlcClientDataCompany(Context context) {
+        return null;
+    }
+
+    public static String getRlcClientDataMessageType(Context context) {
+        return null;
+    }
+
+    public static int getStateAndSetToKGSystemProperty() {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        int intResult = KnoxGuardSeService.getIntResult(KnoxGuardNative.tz_getTAState(KnoxGuardNative.KGTA_PARAM_DEFAULT), true);
+        int i = 5;
+        if (intResult >= 0 && intResult <= 5) {
+            i = intResult;
+        }
+        String str = TAG;
+        StringBuilder sb = new StringBuilder("getStateAndSetToKGSystemProperty - knox.kg.state : ");
+        String[] strArr = Constants.strState;
+        BootReceiver$$ExternalSyntheticOutline0.m(sb, strArr[i], str);
+        try {
+            SystemProperties.set(Constants.KG_SYSTEM_PROPERTY, strArr[i]);
+        } catch (Exception e) {
+            MagnificationConnectionManager$$ExternalSyntheticOutline0.m(e, new StringBuilder("Cannot set SystemProperty(knox.kg.state) - "), TAG);
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return intResult;
+    }
+
+    public static String getStringSystemProperty(String str, String str2) {
+        if (str == null || str.isEmpty()) {
+            return str2;
+        }
+        try {
+            return SystemProperties.get(str, str2);
+        } catch (Exception e) {
+            MagnificationConnectionManager$$ExternalSyntheticOutline0.m(e, DumpUtils$$ExternalSyntheticOutline0.m("Cannot get String property(", str, ") - "), TAG);
+            return str2;
+        }
     }
 
     public static String getTextFromFile(String str) {
@@ -115,177 +220,153 @@ public abstract class Utils {
                 } catch (Exception unused8) {
                     str = null;
                 }
-            } catch (Throwable th2) {
-                th = th2;
+            } catch (IOException unused9) {
+                Slog.w(TAG, "Stream closing error");
+                return str;
             }
-        } catch (IOException unused9) {
-            Slog.w(TAG, "Stream closing error");
+        } catch (Throwable th2) {
+            th = th2;
         }
     }
 
-    public static boolean checkPermission(Context context, String str) {
-        if (context.checkCallingPermission(str) == 0) {
+    public static boolean isChinaDevice() {
+        String str = SystemProperties.get(ActivationMonitor.COUNTRY_CODE_PROPERTY, "");
+        return str != null && str.equalsIgnoreCase(ActivationMonitor.CHINA_COUNTRY_CODE);
+    }
+
+    public static boolean isEqualOrAbove(int i) {
+        return Build.VERSION.SDK_INT >= i;
+    }
+
+    public static boolean isExistFile(String str) {
+        if (str != null) {
+            return BatteryService$$ExternalSyntheticOutline0.m45m(str);
+        }
+        return false;
+    }
+
+    public static boolean isOtpBitFusedWithActive() {
+        boolean equals = Constants.OTP_BIT_KG_ENABLED.equals(getStringSystemProperty(Constants.KG_OTP_BIT_SYSTEM_PROPERTY, Constants.OTP_BIT_KG_UNKNOWN));
+        DeviceIdleController$$ExternalSyntheticOutline0.m("isOtpBitFusedWithActive - ", TAG, equals);
+        return equals;
+    }
+
+    public static boolean isPackageInstalled(Context context, String str) {
+        try {
+            context.getPackageManager().getPackageInfo(str, 1);
             return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            Slog.e(TAG, e.getMessage(), e);
+            return false;
         }
-        throw new SecurityException("does not have " + str);
     }
 
-    public static String getRlcState(Context context) {
-        String str = TAG;
-        Slog.d(str, "getRlcState.");
+    public static boolean isRetryLockAlarmRunning(Context context, int i) {
+        Intent intent = new Intent(Constants.INTENT_RETRY_LOCK);
+        intent.putExtra(Constants.ALARM_TYPE, i);
+        return PendingIntent.getBroadcast(context, i, intent, 603979776) != null;
+    }
+
+    public static boolean isSetupWizardFinished(Context context) {
+        return Settings.Global.getInt(context.getContentResolver(), "device_provisioned", 0) != 0;
+    }
+
+    public static boolean isSingleOtpBitFused() {
+        boolean equals = "1".equals(getStringSystemProperty(Constants.KG_OTP_BIT_SYSTEM_PROPERTY, Constants.OTP_BIT_KG_UNKNOWN));
+        DeviceIdleController$$ExternalSyntheticOutline0.m("isSingleOtpBitFused - ", TAG, equals);
+        return equals;
+    }
+
+    public static boolean isSingleOtpBitFusedAndStateIsNotCompleted(int i) {
+        return isSingleOtpBitFused() && 4 != i;
+    }
+
+    public static boolean isSingleOtpBitFusedAndStateIsNotCompleted(String str) {
+        return isSingleOtpBitFused() && !Constants.strState[4].equals(str);
+    }
+
+    public static boolean isSkipSupportContainerSupported() {
         try {
-            KnoxGuardVaultManager kgvm = KnoxGuardService.getKGVM();
-            if (kgvm == null) {
-                Slog.d(str, "mKGVM is null");
-                kgvm = new KnoxGuardVaultManager(context);
-            }
-            String query = kgvm.query();
-            Slog.d(str, "getRlcState rlcState : " + query);
-            return query;
-        } catch (KnoxGuardVaultException unused) {
-            Slog.e(TAG, "KnoxGuardVaultManager not supported (KnoxGuardVaultException)");
-            return null;
-        } catch (Exception e) {
-            Slog.e(TAG, "Exception: " + e);
-            return null;
+            new RemoteLockInfo.Builder(3, true).setSkipSupportContainer(true).build();
+            return true;
+        } catch (NoSuchMethodError e) {
+            Slog.e(TAG, "call isSkipSupportContainerSupported : " + e);
+            e.printStackTrace();
+            return false;
         }
     }
 
-    public static String getRlcClientDataCompany(Context context) {
-        try {
-            KnoxGuardVaultManager kgvm = KnoxGuardService.getKGVM();
-            if (kgvm == null) {
-                Slog.d(TAG, "mKGVM is null");
-                kgvm = new KnoxGuardVaultManager(context);
-            }
-            String clientData = kgvm.getClientData();
-            String str = TAG;
-            Slog.d(str, "getRlcClientDataCompany clientData : " + clientData);
-            JSONObject jSONObject = new JSONObject(clientData);
-            String string = !jSONObject.isNull("companyName") ? jSONObject.getString("companyName") : null;
-            Slog.d(str, "getRlcClientDataCompany company " + string);
-            return string;
-        } catch (JSONException unused) {
-            Slog.e(TAG, "Parsing Error!");
-            return null;
-        } catch (KnoxGuardVaultException unused2) {
-            Slog.e(TAG, "KnoxGuardVaultManager not supported (KnoxGuardVaultException)");
-            return null;
-        }
+    public static boolean isStateForEnrolledDevice(int i) {
+        return 2 == i || 3 == i;
     }
 
-    public static String getKGPolicyCompany() {
-        try {
-            String str = TAG;
-            Slog.d(str, "getKGPolicyCompany");
-            String stringResult = KnoxGuardSeService.getStringResult(KnoxGuardNative.getKGPolicyRefactor());
-            if (stringResult == null) {
-                return null;
-            }
-            JSONObject jSONObject = new JSONObject(stringResult);
-            String string = !jSONObject.isNull("generalInfo") ? jSONObject.getJSONObject("generalInfo").getString("companyName") : null;
-            Slog.d(str, "getKGPolicyCompany company " + string);
-            return string;
-        } catch (JSONException unused) {
-            Slog.e(TAG, "getKGPolicyCompany Exception: Parsing Error!");
-            return null;
-        } catch (Exception e) {
-            Slog.e(TAG, "getKGPolicyCompany Exception: " + e.getMessage(), e);
-            return null;
-        }
+    public static boolean isStateForEnrolledDevice(String str) {
+        return str != null && (Constants.RLC_STATE_NORMAL.equalsIgnoreCase(str) || Constants.RLC_STATE_BLINKED.equalsIgnoreCase(str) || Constants.RLC_STATE_LOCKED.equalsIgnoreCase(str));
     }
 
-    public static void setCheckingStateToRlc(Context context) {
-        String str = TAG;
-        Slog.d(str, "setCheckingStateToRlc");
-        try {
-            KnoxGuardVaultManager kgvm = KnoxGuardService.getKGVM();
-            if (kgvm == null) {
-                Slog.d(str, "mKGVM is null");
-                kgvm = new KnoxGuardVaultManager(context);
-            }
-            Slog.d(str, "setCheckingStateToRlc result " + kgvm.setRestrictedDevice());
-        } catch (KnoxGuardVaultException e) {
-            Slog.e(TAG, "setCheckingStateToRlc Exception " + e.getMessage(), e);
-        } catch (Exception e2) {
-            Slog.e(TAG, "setCheckingStateToRlc Exception " + e2.getMessage(), e2);
-        }
+    public static boolean isSupportKGOnCsc() {
+        return SemCscFeature.getInstance().getInt(Constants.CSC_FEATURE_SUPPORT_KNOXGUARD, 0) != 0;
     }
 
-    public static void autoLockDevice(Context context, String str) {
-        String string;
-        String string2;
-        String str2;
-        if (isTabletDevice()) {
-            string = context.getString(R.string.phoneTypeWorkPager);
-            string2 = context.getString(R.string.phoneTypePager);
-        } else {
-            string = context.getString(R.string.phoneTypeWorkMobile);
-            string2 = context.getString(R.string.phoneTypeOtherFax);
-        }
-        String str3 = string;
-        if (str == null || str.isEmpty()) {
-            str2 = string2;
-        } else {
-            str2 = " (" + str + ")\n\n" + string2;
-        }
-        setRemoteLockToLockscreen(context, 3, true, str2, "", "", true, str3, 0, 0L, 0, true, null);
+    public static boolean isSupportKGOnSEC() {
+        return false;
     }
 
-    public static void lockDevice(Context context, String str) {
-        String format;
-        String str2;
-        String rlcClientDataCompany = getRlcClientDataCompany(context);
-        if (isTabletDevice()) {
-            if (rlcClientDataCompany != null) {
-                format = String.format(context.getString(R.string.phoneTypeTtyTdd), "Device Services", rlcClientDataCompany);
-            } else {
-                format = String.format(context.getString(R.string.phoneTypeWork), "Device Services");
-                rlcClientDataCompany = context.getString(R.string.phoneTypeWorkPager);
-            }
-        } else if (rlcClientDataCompany != null) {
-            format = String.format(context.getString(R.string.phoneTypeRadio), "Device Services", rlcClientDataCompany);
-        } else {
-            format = String.format(context.getString(R.string.phoneTypeTelex), "Device Services");
-            rlcClientDataCompany = context.getString(R.string.phoneTypeWorkMobile);
-        }
-        if (str == null || str.isEmpty()) {
-            str2 = format;
-        } else {
-            str2 = " (" + str + ")\n\n" + format;
-        }
-        if (rlcClientDataCompany == null) {
-            rlcClientDataCompany = context.getString(R.string.phoneTypeWorkMobile);
-        }
-        setRemoteLockToLockscreen(context, 3, true, str2, "", "", true, rlcClientDataCompany, 0, 0L, 0, true, null);
+    public static boolean isTabletDevice() {
+        String str = SystemProperties.get("ro.build.characteristics");
+        return str != null && str.contains("tablet");
     }
 
     public static void lockSeDevice(Context context, String str) {
         String format;
-        String str2;
         String kGPolicyCompany = getKGPolicyCompany();
         if (isTabletDevice()) {
             if (kGPolicyCompany != null) {
-                format = String.format(context.getString(R.string.phoneTypeTtyTdd), "Device Services", kGPolicyCompany);
+                format = String.format(context.getString(R.string.permdesc_killBackgroundProcesses), "Device Services", kGPolicyCompany);
             } else {
-                format = String.format(context.getString(R.string.phoneTypeWork), "Device Services");
-                kGPolicyCompany = context.getString(R.string.phoneTypeWorkPager);
+                format = String.format(context.getString(R.string.permdesc_manageFingerprint), "Device Services");
+                kGPolicyCompany = context.getString(R.string.permdesc_manageOngoingCalls);
             }
         } else if (kGPolicyCompany != null) {
-            format = String.format(context.getString(R.string.phoneTypeRadio), "Device Services", kGPolicyCompany);
+            format = String.format(context.getString(R.string.permdesc_install_shortcut), "Device Services", kGPolicyCompany);
         } else {
-            format = String.format(context.getString(R.string.phoneTypeTelex), "Device Services");
-            kGPolicyCompany = context.getString(R.string.phoneTypeWorkMobile);
+            format = String.format(context.getString(R.string.permdesc_invokeCarrierSetup), "Device Services");
+            kGPolicyCompany = context.getString(R.string.permdesc_manageNetworkPolicy);
         }
-        if (str == null || str.isEmpty()) {
-            str2 = format;
-        } else {
-            str2 = " (" + str + ")\n\n" + format;
+        if (str != null && !str.isEmpty()) {
+            format = BootReceiver$$ExternalSyntheticOutline0.m(" (", str, ")\n\n", format);
         }
-        if (kGPolicyCompany == null) {
-            kGPolicyCompany = context.getString(R.string.phoneTypeWorkMobile);
+        setRemoteLockToLockscreen(context, 3, true, format, "", "", true, kGPolicyCompany != null ? kGPolicyCompany : context.getString(R.string.permdesc_manageNetworkPolicy), 0, 0L, 0, true, null, true);
+    }
+
+    public static boolean performLockscreen(ILockSettings iLockSettings, RemoteLockInfo remoteLockInfo, boolean z) throws RemoteException {
+        KnoxGuardSeService.setUserPresentReceiverEnabled(z);
+        boolean knoxGuard = iLockSettings.setKnoxGuard(ActivityManager.getCurrentUser(), remoteLockInfo);
+        KnoxGuardSeService.setLockResult(knoxGuard);
+        return knoxGuard;
+    }
+
+    public static void powerOff(Context context, int i) {
+        Slog.i(TAG, "powerOff by " + i);
+        ((PowerManager) context.getSystemService("power")).shutdown(false, String.format("KnoxGuard : system recovery (%d)", Integer.valueOf(i)), false);
+    }
+
+    public static void setKGSystemProperty() {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        int intResult = KnoxGuardSeService.getIntResult(KnoxGuardNative.tz_getTAState(KnoxGuardNative.KGTA_PARAM_DEFAULT), false);
+        if (intResult < 0 || intResult > 5) {
+            intResult = 5;
         }
-        setRemoteLockToLockscreen(context, 3, true, str2, "", "", true, kGPolicyCompany, 0, 0L, 0, true, null);
+        String str = TAG;
+        StringBuilder sb = new StringBuilder("setKGSystemProperty - knox.kg.state : ");
+        String[] strArr = Constants.strState;
+        BootReceiver$$ExternalSyntheticOutline0.m(sb, strArr[intResult], str);
+        try {
+            SystemProperties.set(Constants.KG_SYSTEM_PROPERTY, strArr[intResult]);
+        } catch (Exception e) {
+            MagnificationConnectionManager$$ExternalSyntheticOutline0.m(e, new StringBuilder("Cannot set SystemProperty(knox.kg.state) - "), TAG);
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
     }
 
     public static void setRemoteLockToLockscreen(Context context, int i, boolean z, String str, String str2, String str3, boolean z2, String str4, int i2, long j, int i3, boolean z3, Bundle bundle) {
@@ -310,161 +391,6 @@ public abstract class Utils {
         }
     }
 
-    public static boolean performLockscreen(ILockSettings iLockSettings, RemoteLockInfo remoteLockInfo, boolean z) {
-        if (Constants.IS_SUPPORT_KGTA) {
-            KnoxGuardSeService.setUserPresentReceiverEnabled(z);
-        }
-        boolean knoxGuard = iLockSettings.setKnoxGuard(ActivityManager.getCurrentUser(), remoteLockInfo);
-        KnoxGuardSeService.setLockResult(knoxGuard);
-        return knoxGuard;
-    }
-
-    public static boolean isSkipSupportContainerSupported() {
-        try {
-            new RemoteLockInfo.Builder(3, true).setSkipSupportContainer(true).build();
-            return true;
-        } catch (NoSuchMethodError e) {
-            Slog.e(TAG, "call isSkipSupportContainerSupported : " + e);
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean isSetupWizardFinished(Context context) {
-        return Settings.Global.getInt(context.getContentResolver(), "device_provisioned", 0) != 0;
-    }
-
-    public static boolean isTabletDevice() {
-        String str = SystemProperties.get("ro.build.characteristics");
-        return str != null && str.contains("tablet");
-    }
-
-    public static boolean isChinaDevice() {
-        String str = SystemProperties.get(ActivationMonitor.COUNTRY_CODE_PROPERTY, "");
-        return str != null && str.equalsIgnoreCase(ActivationMonitor.CHINA_COUNTRY_CODE);
-    }
-
-    public static boolean isStateForEnrolledDevice(String str) {
-        return str != null && ("Normal".equalsIgnoreCase(str) || "Blink".equalsIgnoreCase(str) || "Locked".equalsIgnoreCase(str));
-    }
-
-    public static String getStringSystemProperty(String str, String str2) {
-        if (str == null || str.isEmpty()) {
-            return str2;
-        }
-        try {
-            return SystemProperties.get(str, str2);
-        } catch (Exception e) {
-            Slog.w(TAG, "Cannot get String property(" + str + ") - " + e.getMessage());
-            return str2;
-        }
-    }
-
-    public static int getStateAndSetToKGSystemProperty() {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        int intResult = KnoxGuardSeService.getIntResult(KnoxGuardNative.getTAStateRefactor());
-        int i = 5;
-        if (intResult >= 0 && intResult <= 5) {
-            i = intResult;
-        }
-        String str = TAG;
-        StringBuilder sb = new StringBuilder();
-        sb.append("getStateAndSetToKGSystemProperty - knox.kg.state : ");
-        String[] strArr = Constants.strState;
-        sb.append(strArr[i]);
-        Slog.d(str, sb.toString());
-        try {
-            SystemProperties.set("knox.kg.state", strArr[i]);
-        } catch (Exception e) {
-            Slog.w(TAG, "Cannot set SystemProperty(knox.kg.state) - " + e.getMessage());
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-        return intResult;
-    }
-
-    public static void setKGSystemProperty() {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        int intResult = KnoxGuardSeService.getIntResult(KnoxGuardNative.getTAStateRefactor(), false);
-        if (intResult < 0 || intResult > 5) {
-            intResult = 5;
-        }
-        String str = TAG;
-        StringBuilder sb = new StringBuilder();
-        sb.append("setKGSystemProperty - knox.kg.state : ");
-        String[] strArr = Constants.strState;
-        sb.append(strArr[intResult]);
-        Slog.d(str, sb.toString());
-        try {
-            SystemProperties.set("knox.kg.state", strArr[intResult]);
-        } catch (Exception e) {
-            Slog.w(TAG, "Cannot set SystemProperty(knox.kg.state) - " + e.getMessage());
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-    }
-
-    public static boolean needClientHealthCheck() {
-        int tAState = KnoxGuardNative.getTAState();
-        Slog.i(TAG, "needClientHealthCheck state : " + tAState);
-        if (KnoxGuardSeService.getTAVersion() >= 3) {
-            return isOtpBitFusedWithActiveAndStateIsNotCompleted(tAState);
-        }
-        return isOtpBitFusedWithActive() || 3 == tAState || 2 == tAState;
-    }
-
-    public static void startClientHealthCheckAlarm(Context context) {
-        String str = TAG;
-        Slog.i(str, "startClientHealthCheckAlarm");
-        if (needClientHealthCheck()) {
-            long elapsedRealtime = SystemClock.elapsedRealtime() + BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService("alarm");
-            Intent intent = new Intent("com.samsung.android.knoxguard.CLIENT_HEALTH_CHECK");
-            intent.putExtra("alarm_type", 0);
-            PendingIntent broadcast = PendingIntent.getBroadcast(context, 0, intent, 67108864);
-            if (broadcast != null && alarmManager != null) {
-                alarmManager.setExactAndAllowWhileIdle(2, elapsedRealtime, broadcast);
-                Slog.i(str, "startClientHealthCheckAlarm - alarm scheduled @" + System.currentTimeMillis());
-                return;
-            }
-            Slog.e(str, "startClientHealthCheckAlarm - null pi or am");
-        }
-    }
-
-    public static void startRetryLockAlarm(Context context, RemoteLockInfo remoteLockInfo) {
-        String str = TAG;
-        Slog.i(str, "startRetryLockAlarm");
-        if (isRetryLockAlarmRunning(context, 1)) {
-            Slog.i(str, "Retry lock alarm is already running!!! - do nothing.");
-            return;
-        }
-        KnoxGuardSeService.setRetryRemoteLockInfo(remoteLockInfo);
-        long elapsedRealtime = SystemClock.elapsedRealtime() + BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService("alarm");
-        PendingIntent pendingIntentForRetryLockAction = getPendingIntentForRetryLockAction(context, 1);
-        if (pendingIntentForRetryLockAction != null && alarmManager != null) {
-            alarmManager.setExactAndAllowWhileIdle(2, elapsedRealtime, pendingIntentForRetryLockAction);
-            Slog.i(str, "startRetryLockAlarm - alarm scheduled @" + System.currentTimeMillis());
-            return;
-        }
-        Slog.e(str, "startRetryLockAlarm - null pi or am");
-    }
-
-    public static boolean isRetryLockAlarmRunning(Context context, int i) {
-        Intent intent = new Intent("com.samsung.android.knoxguard.RETRY_LOCK");
-        intent.putExtra("alarm_type", i);
-        return PendingIntent.getBroadcast(context, i, intent, 603979776) != null;
-    }
-
-    public static PendingIntent getPendingIntentForRetryLockAction(Context context, int i) {
-        Intent intent = new Intent("com.samsung.android.knoxguard.RETRY_LOCK");
-        intent.putExtra("alarm_type", i);
-        return PendingIntent.getBroadcast(context, i, intent, 201326592);
-    }
-
-    public static void powerOff(Context context, int i) {
-        Slog.i(TAG, "powerOff by " + i);
-        ((PowerManager) context.getSystemService("power")).shutdown(false, String.format("KnoxGuard : system recovery (%d)", Integer.valueOf(i)), false);
-    }
-
     public static boolean setRetryLock(Context context) {
         try {
             if (mLockSettingsService == null) {
@@ -485,37 +411,22 @@ public abstract class Utils {
         }
     }
 
-    public static RemoteLockInfo buildDefaultRetryLockInfo(Context context) {
-        String string;
-        String string2;
-        if (isTabletDevice()) {
-            string = context.getString(R.string.phoneTypeWorkPager);
-            string2 = context.getString(R.string.phoneTypePager);
-        } else {
-            string = context.getString(R.string.phoneTypeWorkMobile);
-            string2 = context.getString(R.string.phoneTypeOtherFax);
+    public static void startRetryLockAlarm(Context context, RemoteLockInfo remoteLockInfo) {
+        String str = TAG;
+        Slog.i(str, "startRetryLockAlarm");
+        if (isRetryLockAlarmRunning(context, 1)) {
+            Slog.i(str, "Retry lock alarm is already running!!! - do nothing.");
+            return;
         }
-        return new RemoteLockInfo.Builder(3, true).setClientName(string).setPhoneNumber("").setEmailAddress("").setMessage(" (2002)\n\n" + string2).setAllowFailCount(0).setEnableEmergencyCall(true).setLockTimeOut(0L).setBlockCount(0).setSkipPinContainer(true).setBundle((Bundle) null).setSkipSupportContainer(true).build();
-    }
-
-    public static boolean isOtpBitFusedWithActiveAndStateIsNotCompleted(int i) {
-        return isOtpBitFusedWithActive() && 4 != i;
-    }
-
-    public static boolean isOtpBitFusedWithActiveAndStateIsNotCompleted(String str) {
-        return isOtpBitFusedWithActive() && !Constants.strState[4].equals(str);
-    }
-
-    public static boolean isOtpBitFusedWithActive() {
-        String stringSystemProperty = getStringSystemProperty("ro.boot.kg.bit", "FF");
-        boolean z = "01".equals(stringSystemProperty) || "1".equals(stringSystemProperty);
-        Slog.d(TAG, "isOtpBitFusedWithActive - " + z);
-        return z;
-    }
-
-    public static boolean isSingleOtpBitFusedWithActive() {
-        boolean equals = "1".equals(getStringSystemProperty("ro.boot.kg.bit", "FF"));
-        Slog.d(TAG, "isSingleOtpBitFusedWithActive - " + equals);
-        return equals;
+        KnoxGuardSeService.setRetryRemoteLockInfo(remoteLockInfo);
+        long elapsedRealtime = SystemClock.elapsedRealtime() + 300000;
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService("alarm");
+        PendingIntent pendingIntentForRetryLockAction = getPendingIntentForRetryLockAction(context, 1);
+        if (pendingIntentForRetryLockAction == null || alarmManager == null) {
+            Slog.e(str, "startRetryLockAlarm - null pi or am");
+            return;
+        }
+        alarmManager.setExactAndAllowWhileIdle(2, elapsedRealtime, pendingIntentForRetryLockAction);
+        Slog.i(str, "startRetryLockAlarm - alarm scheduled @" + System.currentTimeMillis());
     }
 }

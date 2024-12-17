@@ -1,67 +1,44 @@
 package com.android.server.wm;
 
-import android.app.ActivityOptions;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.util.Slog;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 
-/* compiled from: DexRestartAppInfo.java */
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class StartActivityFromRecentsInfo extends DexRestartAppInfo {
-    public StartActivityFromRecentsInfo(String str, int i, ApplicationInfo applicationInfo, Task task, ActivityOptions activityOptions, int i2) {
-        super(str, i, applicationInfo, task, activityOptions, i2);
-    }
-
     @Override // com.android.server.wm.DexRestartAppInfo
-    public CharSequence getAppName(Context context, ActivityTaskSupervisor activityTaskSupervisor) {
-        ActivityRecord rootActivity;
-        ActivityInfo activityInfo;
-        Task task = this.mReusedTask;
-        return (task == null || (rootActivity = task.getRootActivity()) == null || (activityInfo = rootActivity.info) == null) ? "" : activityInfo.loadLabel(context.getPackageManager());
-    }
-
-    @Override // com.android.server.wm.DexRestartAppInfo
-    public void startResult(final ActivityTaskManagerService activityTaskManagerService, int i) {
+    public final void startResult(int i, final ActivityTaskManagerService activityTaskManagerService) {
         if (this.mReusedTask == null) {
             Slog.w("DexController", "startResult: mReusedTask=null");
             return;
         }
         DisplayContent displayContent = activityTaskManagerService.mRootWindowContainer.getDisplayContent(i);
         if (displayContent == null) {
-            Slog.w("DexController", "startResult: failed, cannot find display#" + i);
+            DeviceIdleController$$ExternalSyntheticOutline0.m(i, "startResult: failed, cannot find display#", "DexController");
             return;
         }
         this.mOptions.setLaunchDisplayId(i);
-        if (DexRestartAppInfo.SAFE_DEBUG) {
-            Slog.d("DexController", "startResult: windowingMode=" + this.mOptions.getLaunchWindowingMode() + " targetDisplayId=" + i);
-        }
-        displayContent.prepareAppTransition(1);
+        displayContent.prepareAppTransition(1, 0);
         activityTaskManagerService.mH.post(new Runnable() { // from class: com.android.server.wm.StartActivityFromRecentsInfo$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
-                StartActivityFromRecentsInfo.this.lambda$startResult$0(activityTaskManagerService);
+                StartActivityFromRecentsInfo startActivityFromRecentsInfo = StartActivityFromRecentsInfo.this;
+                ActivityTaskManagerService activityTaskManagerService2 = activityTaskManagerService;
+                startActivityFromRecentsInfo.getClass();
+                try {
+                    activityTaskManagerService2.mDexController.mStartFromRecentInfo = true;
+                    activityTaskManagerService2.startActivityFromRecents(startActivityFromRecentsInfo.mReusedTask.mTaskId, startActivityFromRecentsInfo.mOptions.toBundle());
+                } catch (IllegalArgumentException unused) {
+                } catch (Throwable th) {
+                    activityTaskManagerService2.mDexController.mStartFromRecentInfo = false;
+                    throw th;
+                }
+                activityTaskManagerService2.mDexController.mStartFromRecentInfo = false;
             }
         });
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$startResult$0(ActivityTaskManagerService activityTaskManagerService) {
-        try {
-            try {
-                activityTaskManagerService.mDexController.doPendingStartRecent();
-                activityTaskManagerService.startActivityFromRecents(this.mReusedTask.mTaskId, this.mOptions.toBundle());
-            } catch (IllegalArgumentException e) {
-                if (DexRestartAppInfo.SAFE_DEBUG) {
-                    e.printStackTrace();
-                }
-            }
-        } finally {
-            activityTaskManagerService.mDexController.finishPendingStartRecent();
-        }
-    }
-
-    public String toString() {
-        return "START_ACTIVITY_FROM_RECENTS_TYPE, launchTaskId : " + this.mLaunchTaskId + ", processName : " + this.mProcessName + ", uid : " + this.mUid;
+    public final String toString() {
+        return "START_ACTIVITY_FROM_RECENTS_TYPE, launchTaskId : 0, processName : " + this.mProcessName + ", uid : " + this.mUid;
     }
 }

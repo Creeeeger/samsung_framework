@@ -1,78 +1,25 @@
 package com.android.server.pm.permission;
 
+import android.content.pm.PermissionInfo;
 import android.util.ArrayMap;
-import android.util.ArraySet;
 import com.android.internal.util.XmlUtils;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
-import com.android.server.pm.DumpState;
+import com.android.server.pm.CrossProfileIntentFilter$$ExternalSyntheticOutline0;
 import com.android.server.pm.PackageManagerService;
-import java.io.PrintWriter;
+import com.android.server.pm.PackageManagerServiceUtils;
+import com.android.server.pm.PackageManagerTracedLock;
+import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-/* loaded from: classes3.dex */
-public class LegacyPermissionSettings {
-    public final Object mLock;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class LegacyPermissionSettings {
     public final ArrayMap mPermissions = new ArrayMap();
     public final ArrayMap mPermissionTrees = new ArrayMap();
-
-    public LegacyPermissionSettings(Object obj) {
-        this.mLock = obj;
-    }
-
-    public List getPermissions() {
-        ArrayList arrayList;
-        synchronized (this.mLock) {
-            arrayList = new ArrayList(this.mPermissions.values());
-        }
-        return arrayList;
-    }
-
-    public List getPermissionTrees() {
-        ArrayList arrayList;
-        synchronized (this.mLock) {
-            arrayList = new ArrayList(this.mPermissionTrees.values());
-        }
-        return arrayList;
-    }
-
-    public void replacePermissions(List list) {
-        synchronized (this.mLock) {
-            this.mPermissions.clear();
-            int size = list.size();
-            for (int i = 0; i < size; i++) {
-                LegacyPermission legacyPermission = (LegacyPermission) list.get(i);
-                this.mPermissions.put(legacyPermission.getPermissionInfo().name, legacyPermission);
-            }
-        }
-    }
-
-    public void replacePermissionTrees(List list) {
-        synchronized (this.mLock) {
-            this.mPermissionTrees.clear();
-            int size = list.size();
-            for (int i = 0; i < size; i++) {
-                LegacyPermission legacyPermission = (LegacyPermission) list.get(i);
-                this.mPermissionTrees.put(legacyPermission.getPermissionInfo().name, legacyPermission);
-            }
-        }
-    }
-
-    public void readPermissions(TypedXmlPullParser typedXmlPullParser) {
-        synchronized (this.mLock) {
-            readPermissions(this.mPermissions, typedXmlPullParser);
-        }
-    }
-
-    public void readPermissionTrees(TypedXmlPullParser typedXmlPullParser) {
-        synchronized (this.mLock) {
-            readPermissions(this.mPermissionTrees, typedXmlPullParser);
-        }
-    }
+    public final PackageManagerTracedLock mLock = new PackageManagerTracedLock(null);
 
     public static void readPermissions(ArrayMap arrayMap, TypedXmlPullParser typedXmlPullParser) {
         int depth = typedXmlPullParser.getDepth();
@@ -85,56 +32,166 @@ public class LegacyPermissionSettings {
                 return;
             }
             if (next != 3 && next != 4) {
-                if (!LegacyPermission.read(arrayMap, typedXmlPullParser)) {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element reading permissions: " + typedXmlPullParser.getName() + " at " + typedXmlPullParser.getPositionDescription());
+                if (typedXmlPullParser.getName().equals("item")) {
+                    String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
+                    String attributeValue2 = typedXmlPullParser.getAttributeValue((String) null, "package");
+                    String attributeValue3 = typedXmlPullParser.getAttributeValue((String) null, "type");
+                    if (attributeValue == null || attributeValue2 == null) {
+                        String m = CrossProfileIntentFilter$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Error in package manager settings: permissions has no name at "));
+                        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                        PackageManagerServiceUtils.logCriticalInfo(5, m);
+                    } else {
+                        boolean equals = "dynamic".equals(attributeValue3);
+                        LegacyPermission legacyPermission = (LegacyPermission) arrayMap.get(attributeValue);
+                        if (legacyPermission == null || legacyPermission.mType != 1) {
+                            legacyPermission = new LegacyPermission(equals ? 2 : 0, attributeValue.intern(), attributeValue2);
+                        }
+                        legacyPermission.mPermissionInfo.protectionLevel = typedXmlPullParser.getAttributeInt((String) null, "protection", 0);
+                        PermissionInfo permissionInfo = legacyPermission.mPermissionInfo;
+                        permissionInfo.protectionLevel = PermissionInfo.fixProtectionLevel(permissionInfo.protectionLevel);
+                        if (equals) {
+                            legacyPermission.mPermissionInfo.icon = typedXmlPullParser.getAttributeInt((String) null, KnoxCustomManagerService.ICON, 0);
+                            legacyPermission.mPermissionInfo.nonLocalizedLabel = typedXmlPullParser.getAttributeValue((String) null, "label");
+                        }
+                        arrayMap.put(legacyPermission.mPermissionInfo.name, legacyPermission);
+                        XmlUtils.skipCurrentTag(typedXmlPullParser);
+                    }
                 }
+                String str = "Unknown element reading permissions: " + typedXmlPullParser.getName() + " at " + typedXmlPullParser.getPositionDescription();
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                PackageManagerServiceUtils.logCriticalInfo(5, str);
                 XmlUtils.skipCurrentTag(typedXmlPullParser);
             }
         }
     }
 
-    public void writePermissions(TypedXmlSerializer typedXmlSerializer) {
-        synchronized (this.mLock) {
-            Iterator it = this.mPermissions.values().iterator();
-            while (it.hasNext()) {
-                ((LegacyPermission) it.next()).write(typedXmlSerializer);
+    public final List getPermissionTrees() {
+        ArrayList arrayList;
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                arrayList = new ArrayList(this.mPermissionTrees.values());
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+        return arrayList;
+    }
+
+    public final List getPermissions() {
+        ArrayList arrayList;
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                arrayList = new ArrayList(this.mPermissions.values());
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+        return arrayList;
+    }
+
+    public final void readPermissionTrees(TypedXmlPullParser typedXmlPullParser) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                readPermissions(this.mPermissionTrees, typedXmlPullParser);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
             }
         }
     }
 
-    public void writePermissionTrees(TypedXmlSerializer typedXmlSerializer) {
-        synchronized (this.mLock) {
-            Iterator it = this.mPermissionTrees.values().iterator();
-            while (it.hasNext()) {
-                ((LegacyPermission) it.next()).write(typedXmlSerializer);
+    public final void readPermissions(TypedXmlPullParser typedXmlPullParser) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                readPermissions(this.mPermissions, typedXmlPullParser);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
             }
         }
     }
 
-    public static void dumpPermissions(PrintWriter printWriter, String str, ArraySet arraySet, List list, Map map, boolean z, DumpState dumpState) {
-        int size = list.size();
-        boolean z2 = false;
-        for (int i = 0; i < size; i++) {
-            z2 = ((LegacyPermission) list.get(i)).dump(printWriter, str, arraySet, z, z2, dumpState);
-        }
-        if (str == null && arraySet == null) {
-            boolean z3 = true;
-            for (Map.Entry entry : map.entrySet()) {
-                if (z3) {
-                    if (dumpState.onTitlePrinted()) {
-                        printWriter.println();
-                    }
-                    printWriter.println("AppOp Permissions:");
-                    z3 = false;
+    public final void replacePermissionTrees(List list) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                this.mPermissionTrees.clear();
+                ArrayList arrayList = (ArrayList) list;
+                int size = arrayList.size();
+                for (int i = 0; i < size; i++) {
+                    LegacyPermission legacyPermission = (LegacyPermission) arrayList.get(i);
+                    this.mPermissionTrees.put(legacyPermission.mPermissionInfo.name, legacyPermission);
                 }
-                printWriter.print("  AppOp Permission ");
-                printWriter.print((String) entry.getKey());
-                printWriter.println(com.android.internal.util.jobs.XmlUtils.STRING_ARRAY_SEPARATOR);
-                for (String str2 : (Set) entry.getValue()) {
-                    printWriter.print("    ");
-                    printWriter.println(str2);
-                }
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
             }
         }
+        boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+    }
+
+    public final void replacePermissions(List list) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                this.mPermissions.clear();
+                ArrayList arrayList = (ArrayList) list;
+                int size = arrayList.size();
+                for (int i = 0; i < size; i++) {
+                    LegacyPermission legacyPermission = (LegacyPermission) arrayList.get(i);
+                    this.mPermissions.put(legacyPermission.mPermissionInfo.name, legacyPermission);
+                }
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+        boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+    }
+
+    public final void writePermissionTrees(TypedXmlSerializer typedXmlSerializer) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                Iterator it = this.mPermissionTrees.values().iterator();
+                while (it.hasNext()) {
+                    ((LegacyPermission) it.next()).write(typedXmlSerializer);
+                }
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+        boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+    }
+
+    public final void writePermissions(TypedXmlSerializer typedXmlSerializer) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                Iterator it = this.mPermissions.values().iterator();
+                while (it.hasNext()) {
+                    ((LegacyPermission) it.next()).write(typedXmlSerializer);
+                }
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+        boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
     }
 }

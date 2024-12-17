@@ -3,20 +3,22 @@ package com.android.server.pm;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ResolveInfo;
 import android.os.Binder;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
 import com.samsung.android.server.pm.PmLog;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class PreferredActivityLog {
     public static void logDroppingPreferredActivity(PreferredActivity preferredActivity, List list, String str) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Dropping Preferred: " + preferredActivity.mPref.mShortComponent + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        StringBuilder sb2 = new StringBuilder();
-        sb2.append(str);
-        sb2.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+        StringBuilder sb2 = new StringBuilder("Dropping Preferred: ");
+        PreferredComponent preferredComponent = preferredActivity.mPref;
+        sb2.append(preferredComponent.mShortComponent);
+        sb2.append("\n");
         sb.append(sb2.toString());
-        String[] strArr = preferredActivity.mPref.mSetComponents;
+        sb.append(str + "\n");
+        String[] strArr = preferredComponent.mSetComponents;
         int i = 0;
         if (strArr != null) {
             sb.append("Sets:\n");
@@ -25,21 +27,19 @@ public abstract class PreferredActivityLog {
                 sb.append("  " + strArr[i2]);
                 i2++;
                 if (i2 < strArr.length) {
-                    sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+                    sb.append("\n");
                 }
             }
         }
         if (list != null) {
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-            sb.append("Query sets: ");
-            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+            sb.append("\nQuery sets: \n");
             int size = list.size();
             while (i < size) {
                 ActivityInfo activityInfo = ((ResolveInfo) list.get(i)).activityInfo;
                 sb.append("  " + activityInfo.packageName + "/" + activityInfo.name);
                 i++;
                 if (i < size) {
-                    sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+                    sb.append("\n");
                 }
             }
         }
@@ -48,8 +48,12 @@ public abstract class PreferredActivityLog {
 
     public static void logPreferenceChange(PreferredActivity preferredActivity, String str) {
         StringBuilder sb = new StringBuilder();
-        sb.append(str + ": " + preferredActivity.mPref.mShortComponent + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        String[] strArr = preferredActivity.mPref.mSetComponents;
+        StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, ": ");
+        PreferredComponent preferredComponent = preferredActivity.mPref;
+        m.append(preferredComponent.mShortComponent);
+        m.append("\n");
+        sb.append(m.toString());
+        String[] strArr = preferredComponent.mSetComponents;
         if (strArr != null) {
             sb.append("Sets:\n");
             int i = 0;
@@ -57,7 +61,7 @@ public abstract class PreferredActivityLog {
                 sb.append("  " + strArr[i]);
                 i++;
                 if (i < strArr.length) {
-                    sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+                    sb.append("\n");
                 }
             }
         }

@@ -1,22 +1,15 @@
 package com.android.server.enterprise.adapterlayer;
 
 import android.net.IDnsResolver;
-import android.net.ResolverOptionsParcel;
-import android.net.ResolverParamsParcel;
-import android.os.RemoteException;
-import android.os.ServiceManager;
-import android.os.ServiceSpecificException;
-import android.util.Log;
-import com.android.server.enterprise.adapter.IDnsResolverAdapter;
 
-/* loaded from: classes2.dex */
-public class DnsResolverAdapter implements IDnsResolverAdapter {
-    public static final String TAG = "DnsResolverAdapter";
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DnsResolverAdapter {
     public static DnsResolverAdapter sInstance;
     public static final Object sLock = new Object();
     public volatile IDnsResolver mDnsResolver;
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface CheckedRemoteRequest {
         void execute(IDnsResolver iDnsResolver);
     }
@@ -25,94 +18,62 @@ public class DnsResolverAdapter implements IDnsResolverAdapter {
         DnsResolverAdapter dnsResolverAdapter = sInstance;
         if (dnsResolverAdapter == null) {
             synchronized (sLock) {
-                dnsResolverAdapter = sInstance;
-                if (dnsResolverAdapter == null) {
-                    dnsResolverAdapter = new DnsResolverAdapter();
-                    sInstance = dnsResolverAdapter;
+                try {
+                    dnsResolverAdapter = sInstance;
+                    if (dnsResolverAdapter == null) {
+                        dnsResolverAdapter = new DnsResolverAdapter();
+                        sInstance = dnsResolverAdapter;
+                    }
+                } finally {
                 }
             }
         }
         return dnsResolverAdapter;
     }
 
-    public void updateEnforceDnsUidForNetwork(final int i, final boolean z) {
-        String str = TAG;
-        Log.d(str, "updateEnforceDnsUidForNetwork - entered");
-        runWithExceptionHandling(new CheckedRemoteRequest() { // from class: com.android.server.enterprise.adapterlayer.DnsResolverAdapter$$ExternalSyntheticLambda0
-            @Override // com.android.server.enterprise.adapterlayer.DnsResolverAdapter.CheckedRemoteRequest
-            public final void execute(IDnsResolver iDnsResolver) {
-                DnsResolverAdapter.lambda$updateEnforceDnsUidForNetwork$0(z, i, iDnsResolver);
-            }
-        });
-        Log.d(str, "updateEnforceDnsUidForNetwork - exited");
-    }
-
-    public static /* synthetic */ void lambda$updateEnforceDnsUidForNetwork$0(boolean z, int i, IDnsResolver iDnsResolver) {
-        ResolverOptionsParcel resolverOptionsParcel = new ResolverOptionsParcel();
-        resolverOptionsParcel.enforceDnsUid = z;
-        iDnsResolver.setResolverOptions(i, resolverOptionsParcel);
-    }
-
-    @Override // com.android.server.enterprise.adapter.IDnsResolverAdapter
-    public void setResolverConfiguration(final ResolverParamsParcel resolverParamsParcel) {
-        String str = TAG;
-        Log.d(str, "setResolverConfiguration - entered");
-        runWithExceptionHandling(new CheckedRemoteRequest() { // from class: com.android.server.enterprise.adapterlayer.DnsResolverAdapter$$ExternalSyntheticLambda1
-            @Override // com.android.server.enterprise.adapterlayer.DnsResolverAdapter.CheckedRemoteRequest
-            public final void execute(IDnsResolver iDnsResolver) {
-                iDnsResolver.setResolverConfiguration(ResolverParamsParcel.this);
-            }
-        });
-        Log.d(str, "setResolverConfiguration - exited");
-    }
-
-    @Override // com.android.server.enterprise.adapter.IDnsResolverAdapter
-    public void createNetworkCache(final int i) {
-        String str = TAG;
-        Log.d(str, "createNetworkCache - entered");
-        runWithExceptionHandling(new CheckedRemoteRequest() { // from class: com.android.server.enterprise.adapterlayer.DnsResolverAdapter$$ExternalSyntheticLambda2
-            @Override // com.android.server.enterprise.adapterlayer.DnsResolverAdapter.CheckedRemoteRequest
-            public final void execute(IDnsResolver iDnsResolver) {
-                iDnsResolver.createNetworkCache(i);
-            }
-        });
-        Log.d(str, "createNetworkCache - exited");
-    }
-
-    @Override // com.android.server.enterprise.adapter.IDnsResolverAdapter
-    public void flushNetworkCache(final int i) {
-        String str = TAG;
-        Log.d(str, "flushNetworkCache - entered");
-        runWithExceptionHandling(new CheckedRemoteRequest() { // from class: com.android.server.enterprise.adapterlayer.DnsResolverAdapter$$ExternalSyntheticLambda3
-            @Override // com.android.server.enterprise.adapterlayer.DnsResolverAdapter.CheckedRemoteRequest
-            public final void execute(IDnsResolver iDnsResolver) {
-                iDnsResolver.flushNetworkCache(i);
-            }
-        });
-        Log.d(str, "flushNetworkCache - exited");
-    }
-
-    public final void runWithExceptionHandling(CheckedRemoteRequest checkedRemoteRequest) {
-        if (getDnsResolver() == null) {
-            Log.e(TAG, "Failed to get dns resolver service");
-            return;
-        }
-        try {
-            checkedRemoteRequest.execute(this.mDnsResolver);
-            Log.d(TAG, "dnsresolver called successfully");
-        } catch (RemoteException | ServiceSpecificException e) {
-            Log.e(TAG, "Error calling dnsresolver service: " + e);
-        }
-    }
-
-    public final IDnsResolver getDnsResolver() {
-        if (this.mDnsResolver == null) {
-            if (ServiceManager.getService("dnsresolver") == null) {
-                Log.e(TAG, "updateEnforceDnsUidForNetwork: Failed to get binder for dns resolver service");
-                return null;
-            }
-            this.mDnsResolver = IDnsResolver.Stub.asInterface(ServiceManager.getService("dnsresolver"));
-        }
-        return this.mDnsResolver;
+    /* JADX WARN: Removed duplicated region for block: B:10:0x002b A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:7:0x0025  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void runWithExceptionHandling(com.android.server.enterprise.adapterlayer.DnsResolverAdapter.CheckedRemoteRequest r4) {
+        /*
+            r3 = this;
+            android.net.IDnsResolver r0 = r3.mDnsResolver
+            java.lang.String r1 = "DnsResolverAdapter"
+            if (r0 != 0) goto L21
+            java.lang.String r0 = "dnsresolver"
+            android.os.IBinder r2 = android.os.ServiceManager.getService(r0)
+            if (r2 != 0) goto L17
+            java.lang.String r0 = "updateEnforceDnsUidForNetwork: Failed to get binder for dns resolver service"
+            android.util.Log.e(r1, r0)
+            r0 = 0
+            goto L23
+        L17:
+            android.os.IBinder r0 = android.os.ServiceManager.getService(r0)
+            android.net.IDnsResolver r0 = android.net.IDnsResolver.Stub.asInterface(r0)
+            r3.mDnsResolver = r0
+        L21:
+            android.net.IDnsResolver r0 = r3.mDnsResolver
+        L23:
+            if (r0 != 0) goto L2b
+            java.lang.String r3 = "Failed to get dns resolver service"
+            android.util.Log.e(r1, r3)
+            return
+        L2b:
+            android.net.IDnsResolver r3 = r3.mDnsResolver     // Catch: java.lang.Throwable -> L37
+            r4.execute(r3)     // Catch: java.lang.Throwable -> L37
+            java.lang.String r3 = "dnsresolver called successfully"
+            android.util.Log.d(r1, r3)     // Catch: java.lang.Throwable -> L37
+            goto L3d
+        L37:
+            r3 = move-exception
+            java.lang.String r4 = "Error calling dnsresolver service: "
+            com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(r3, r4, r1)
+        L3d:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.adapterlayer.DnsResolverAdapter.runWithExceptionHandling(com.android.server.enterprise.adapterlayer.DnsResolverAdapter$CheckedRemoteRequest):void");
     }
 }

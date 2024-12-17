@@ -1,6 +1,7 @@
 package com.android.server.devicepolicy;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.admin.flags.Flags;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,15 +12,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.ServiceManager;
-import android.os.UserHandle;
 import android.provider.Telephony;
 import android.text.TextUtils;
 import android.util.ArraySet;
-import android.util.IndentingPrintWriter;
-import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.IAccessibilityManager;
 import android.view.inputmethod.InputMethodInfo;
+import com.android.internal.telephony.SmsApplication;
 import com.android.server.inputmethod.InputMethodManagerInternal;
 import com.android.server.utils.Slogf;
 import java.util.ArrayList;
@@ -27,65 +26,15 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class PersonalAppsSuspensionHelper {
     public final Context mContext;
     public final PackageManager mPackageManager;
 
-    public static PersonalAppsSuspensionHelper forUser(Context context, int i) {
-        return new PersonalAppsSuspensionHelper(context.createContextAsUser(UserHandle.of(i), 0));
-    }
-
     public PersonalAppsSuspensionHelper(Context context) {
         this.mContext = context;
         this.mPackageManager = context.getPackageManager();
-    }
-
-    public String[] getPersonalAppsForSuspension() {
-        List<PackageInfo> installedPackages = this.mPackageManager.getInstalledPackages(786432);
-        ArraySet arraySet = new ArraySet();
-        for (PackageInfo packageInfo : installedPackages) {
-            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
-            if ((!applicationInfo.isSystemApp() && !applicationInfo.isUpdatedSystemApp()) || hasLauncherIntent(packageInfo.packageName)) {
-                arraySet.add(packageInfo.packageName);
-            }
-        }
-        arraySet.removeAll(getCriticalPackages());
-        arraySet.removeAll(getSystemLauncherPackages());
-        arraySet.removeAll(getAccessibilityServices());
-        arraySet.removeAll(getInputMethodPackages());
-        arraySet.remove(Telephony.Sms.getDefaultSmsPackage(this.mContext));
-        arraySet.remove(getSettingsPackageName());
-        for (String str : this.mPackageManager.getUnsuspendablePackages((String[]) arraySet.toArray(new String[0]))) {
-            arraySet.remove(str);
-        }
-        if (Log.isLoggable("DevicePolicyManager", 4)) {
-            Slogf.i("DevicePolicyManager", "Packages subject to suspension: %s", String.join(",", arraySet));
-        }
-        return (String[]) arraySet.toArray(new String[0]);
-    }
-
-    public final List getSystemLauncherPackages() {
-        ArrayList arrayList = new ArrayList();
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.HOME");
-        for (ResolveInfo resolveInfo : this.mPackageManager.queryIntentActivities(intent, 786432)) {
-            ActivityInfo activityInfo = resolveInfo.activityInfo;
-            if (activityInfo == null || TextUtils.isEmpty(activityInfo.packageName)) {
-                Slogf.wtf("DevicePolicyManager", "Could not find package name for launcher app %s", resolveInfo);
-            } else {
-                String str = resolveInfo.activityInfo.packageName;
-                try {
-                    ApplicationInfo applicationInfo = this.mPackageManager.getApplicationInfo(str, 786432);
-                    if (applicationInfo.isSystemApp() || applicationInfo.isUpdatedSystemApp()) {
-                        arrayList.add(str);
-                    }
-                } catch (PackageManager.NameNotFoundException unused) {
-                    Slogf.e("DevicePolicyManager", "Could not find application info for launcher app: %s", str);
-                }
-            }
-        }
-        return arrayList;
     }
 
     public final List getAccessibilityServices() {
@@ -121,38 +70,63 @@ public final class PersonalAppsSuspensionHelper {
         return arrayList;
     }
 
-    public final String getSettingsPackageName() {
-        Intent intent = new Intent("android.settings.SETTINGS");
-        intent.addCategory("android.intent.category.DEFAULT");
-        ResolveInfo resolveActivity = this.mPackageManager.resolveActivity(intent, 786432);
-        if (resolveActivity != null) {
-            return resolveActivity.activityInfo.packageName;
+    public final String[] getPersonalAppsForSuspension() {
+        String defaultSmsPackage;
+        List<PackageInfo> installedPackages = this.mPackageManager.getInstalledPackages(786432);
+        ArraySet arraySet = new ArraySet();
+        for (PackageInfo packageInfo : installedPackages) {
+            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            if (applicationInfo.isSystemApp() || applicationInfo.isUpdatedSystemApp()) {
+                String str = packageInfo.packageName;
+                Intent intent = new Intent("android.intent.action.MAIN");
+                intent.addCategory("android.intent.category.LAUNCHER");
+                intent.setPackage(str);
+                List<ResolveInfo> queryIntentActivities = this.mPackageManager.queryIntentActivities(intent, 786432);
+                if (queryIntentActivities != null && !queryIntentActivities.isEmpty()) {
+                }
+            }
+            arraySet.add(packageInfo.packageName);
         }
-        return null;
+        arraySet.removeAll(Arrays.asList(this.mContext.getResources().getStringArray(17236281)));
+        arraySet.removeAll(getSystemLauncherPackages());
+        arraySet.removeAll(getAccessibilityServices());
+        arraySet.removeAll(getInputMethodPackages());
+        if (Flags.defaultSmsPersonalAppSuspensionFixEnabled()) {
+            Context context = this.mContext;
+            ComponentName defaultSmsApplicationAsUser = SmsApplication.getDefaultSmsApplicationAsUser(context, false, context.getUser());
+            defaultSmsPackage = defaultSmsApplicationAsUser != null ? defaultSmsApplicationAsUser.getPackageName() : null;
+        } else {
+            defaultSmsPackage = Telephony.Sms.getDefaultSmsPackage(this.mContext);
+        }
+        arraySet.remove(defaultSmsPackage);
+        Intent intent2 = new Intent("android.settings.SETTINGS");
+        intent2.addCategory("android.intent.category.DEFAULT");
+        ResolveInfo resolveActivity = this.mPackageManager.resolveActivity(intent2, 786432);
+        arraySet.remove(resolveActivity != null ? resolveActivity.activityInfo.packageName : null);
+        for (String str2 : this.mPackageManager.getUnsuspendablePackages((String[]) arraySet.toArray(new String[0]))) {
+            arraySet.remove(str2);
+        }
+        return (String[]) arraySet.toArray(new String[0]);
     }
 
-    public final List getCriticalPackages() {
-        return Arrays.asList(this.mContext.getResources().getStringArray(17236272));
-    }
-
-    public final boolean hasLauncherIntent(String str) {
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.LAUNCHER");
-        intent.setPackage(str);
-        List<ResolveInfo> queryIntentActivities = this.mPackageManager.queryIntentActivities(intent, 786432);
-        return (queryIntentActivities == null || queryIntentActivities.isEmpty()) ? false : true;
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.println("PersonalAppsSuspensionHelper");
-        indentingPrintWriter.increaseIndent();
-        DevicePolicyManagerService.dumpApps(indentingPrintWriter, "critical packages", getCriticalPackages());
-        DevicePolicyManagerService.dumpApps(indentingPrintWriter, "launcher packages", getSystemLauncherPackages());
-        DevicePolicyManagerService.dumpApps(indentingPrintWriter, "accessibility services", getAccessibilityServices());
-        DevicePolicyManagerService.dumpApps(indentingPrintWriter, "input method packages", getInputMethodPackages());
-        indentingPrintWriter.printf("SMS package: %s\n", new Object[]{Telephony.Sms.getDefaultSmsPackage(this.mContext)});
-        indentingPrintWriter.printf("Settings package: %s\n", new Object[]{getSettingsPackageName()});
-        DevicePolicyManagerService.dumpApps(indentingPrintWriter, "Packages subject to suspension", getPersonalAppsForSuspension());
-        indentingPrintWriter.decreaseIndent();
+    public final List getSystemLauncherPackages() {
+        ArrayList arrayList = new ArrayList();
+        for (ResolveInfo resolveInfo : this.mPackageManager.queryIntentActivities(PersonalAppsSuspensionHelper$$ExternalSyntheticOutline0.m("android.intent.action.MAIN", "android.intent.category.HOME"), 786432)) {
+            ActivityInfo activityInfo = resolveInfo.activityInfo;
+            if (activityInfo == null || TextUtils.isEmpty(activityInfo.packageName)) {
+                Slogf.wtf("DevicePolicyManager", "Could not find package name for launcher app %s", resolveInfo);
+            } else {
+                String str = resolveInfo.activityInfo.packageName;
+                try {
+                    ApplicationInfo applicationInfo = this.mPackageManager.getApplicationInfo(str, 786432);
+                    if (applicationInfo.isSystemApp() || applicationInfo.isUpdatedSystemApp()) {
+                        arrayList.add(str);
+                    }
+                } catch (PackageManager.NameNotFoundException unused) {
+                    Slogf.e("DevicePolicyManager", "Could not find application info for launcher app: %s", str);
+                }
+            }
+        }
+        return arrayList;
     }
 }

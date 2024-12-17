@@ -1,22 +1,14 @@
 package com.android.server.permission.access;
 
-/* compiled from: AccessState.kt */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class MutateStateScope extends GetStateScope {
-    public final AccessState newState;
+    public final MutableAccessState newState;
     public final AccessState oldState;
 
-    public final AccessState getOldState() {
-        return this.oldState;
-    }
-
-    public final AccessState getNewState() {
-        return this.newState;
-    }
-
-    public MutateStateScope(AccessState accessState, AccessState accessState2) {
-        super(accessState2);
+    public MutateStateScope(AccessState accessState, MutableAccessState mutableAccessState) {
+        super(mutableAccessState);
         this.oldState = accessState;
-        this.newState = accessState2;
+        this.newState = mutableAccessState;
     }
 }

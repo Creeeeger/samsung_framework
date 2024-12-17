@@ -1,22 +1,38 @@
 package com.android.server.timezonedetector;
 
 import android.app.time.TimeZoneCapabilities;
-import android.app.time.TimeZoneConfiguration;
 import android.os.UserHandle;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ConfigurationInternal {
     public final boolean mAutoDetectionEnabledSetting;
     public final boolean mEnhancedMetricsCollectionEnabled;
     public final boolean mGeoDetectionEnabledSetting;
     public final boolean mGeoDetectionRunInBackgroundEnabled;
     public final boolean mGeoDetectionSupported;
+    public final boolean mGeoLocationFbEnabledSetting;
     public final boolean mLocationEnabledSetting;
     public final boolean mTelephonyDetectionSupported;
     public final boolean mTelephonyFallbackSupported;
     public final boolean mUserConfigAllowed;
     public final int mUserId;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Builder {
+        public boolean mAutoDetectionEnabledSetting;
+        public boolean mEnhancedMetricsCollectionEnabled;
+        public boolean mGeoDetectionEnabledSetting;
+        public boolean mGeoDetectionRunInBackgroundEnabled;
+        public boolean mGeoDetectionSupported;
+        public boolean mGeoLocationFbEnabledSetting;
+        public boolean mLocationEnabledSetting;
+        public boolean mTelephonyDetectionSupported;
+        public boolean mTelephonyFallbackSupported;
+        public boolean mUserConfigAllowed;
+        public Integer mUserId;
+    }
 
     public ConfigurationInternal(Builder builder) {
         this.mTelephonyDetectionSupported = builder.mTelephonyDetectionSupported;
@@ -31,109 +47,28 @@ public final class ConfigurationInternal {
         this.mUserConfigAllowed = builder.mUserConfigAllowed;
         this.mLocationEnabledSetting = builder.mLocationEnabledSetting;
         this.mGeoDetectionEnabledSetting = builder.mGeoDetectionEnabledSetting;
+        this.mGeoLocationFbEnabledSetting = builder.mGeoLocationFbEnabledSetting;
     }
 
-    public boolean isAutoDetectionSupported() {
-        return this.mTelephonyDetectionSupported || this.mGeoDetectionSupported;
-    }
-
-    public boolean isTelephonyDetectionSupported() {
-        return this.mTelephonyDetectionSupported;
-    }
-
-    public boolean isGeoDetectionSupported() {
-        return this.mGeoDetectionSupported;
-    }
-
-    public boolean isTelephonyFallbackSupported() {
-        return this.mTelephonyFallbackSupported;
-    }
-
-    public boolean getGeoDetectionRunInBackgroundEnabledSetting() {
-        return this.mGeoDetectionRunInBackgroundEnabled;
-    }
-
-    public boolean isEnhancedMetricsCollectionEnabled() {
-        return this.mEnhancedMetricsCollectionEnabled;
-    }
-
-    public boolean getAutoDetectionEnabledSetting() {
-        return this.mAutoDetectionEnabledSetting;
-    }
-
-    public boolean getAutoDetectionEnabledBehavior() {
-        return isAutoDetectionSupported() && getAutoDetectionEnabledSetting();
-    }
-
-    public int getUserId() {
-        return this.mUserId;
-    }
-
-    public boolean isUserConfigAllowed() {
-        return this.mUserConfigAllowed;
-    }
-
-    public boolean getLocationEnabledSetting() {
-        return this.mLocationEnabledSetting;
-    }
-
-    public boolean getGeoDetectionEnabledSetting() {
-        return this.mGeoDetectionEnabledSetting;
-    }
-
-    public int getDetectionMode() {
-        if (!isAutoDetectionSupported() || !getAutoDetectionEnabledSetting()) {
-            return 1;
-        }
-        if (getGeoDetectionEnabledBehavior()) {
-            return 2;
-        }
-        return isTelephonyDetectionSupported() ? 3 : 0;
-    }
-
-    public final boolean getGeoDetectionEnabledBehavior() {
-        if (!isGeoDetectionSupported() || !getLocationEnabledSetting()) {
-            return false;
-        }
-        if (isTelephonyDetectionSupported()) {
-            return getGeoDetectionEnabledSetting();
-        }
-        return true;
-    }
-
-    public boolean isGeoDetectionExecutionEnabled() {
-        return getDetectionMode() == 2 || getGeoDetectionRunInBackgroundEnabledBehavior();
-    }
-
-    public final boolean getGeoDetectionRunInBackgroundEnabledBehavior() {
-        return isGeoDetectionSupported() && getLocationEnabledSetting() && getAutoDetectionEnabledSetting() && getGeoDetectionRunInBackgroundEnabledSetting();
-    }
-
-    public TimeZoneCapabilities asCapabilities(boolean z) {
+    public final TimeZoneCapabilities asCapabilities() {
         TimeZoneCapabilities.Builder builder = new TimeZoneCapabilities.Builder(UserHandle.of(this.mUserId));
-        boolean z2 = isUserConfigAllowed() || z;
-        int i = 20;
-        int i2 = 10;
-        builder.setConfigureAutoDetectionEnabledCapability(!isAutoDetectionSupported() ? 10 : !z2 ? 20 : 40);
-        builder.setUseLocationEnabled(this.mLocationEnabledSetting);
-        boolean isGeoDetectionSupported = isGeoDetectionSupported();
-        boolean isTelephonyDetectionSupported = isTelephonyDetectionSupported();
-        if (isGeoDetectionSupported && isTelephonyDetectionSupported) {
-            i2 = (this.mAutoDetectionEnabledSetting && getLocationEnabledSetting()) ? 40 : 30;
+        boolean isAutoDetectionSupported = isAutoDetectionSupported();
+        boolean z = this.mUserConfigAllowed;
+        int i = 10;
+        builder.setConfigureAutoDetectionEnabledCapability(!isAutoDetectionSupported ? 10 : !z ? 20 : 40);
+        boolean z2 = this.mLocationEnabledSetting;
+        builder.setUseLocationEnabled(z2);
+        boolean z3 = this.mGeoDetectionSupported;
+        boolean z4 = this.mAutoDetectionEnabledSetting;
+        if (z3 && this.mTelephonyDetectionSupported) {
+            i = (z4 && z2) ? 40 : 30;
         }
-        builder.setConfigureGeoDetectionEnabledCapability(i2);
-        if (z2) {
-            i = getAutoDetectionEnabledBehavior() ? 30 : 40;
-        }
-        builder.setSetManualTimeZoneCapability(i);
+        builder.setConfigureGeoDetectionEnabledCapability(i);
+        builder.setSetManualTimeZoneCapability(z ? (isAutoDetectionSupported() && z4) ? 30 : 40 : 20);
         return builder.build();
     }
 
-    public TimeZoneConfiguration asConfiguration() {
-        return new TimeZoneConfiguration.Builder().setAutoDetectionEnabled(getAutoDetectionEnabledSetting()).setGeoDetectionEnabled(getGeoDetectionEnabledSetting()).build();
-    }
-
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -141,82 +76,37 @@ public final class ConfigurationInternal {
             return false;
         }
         ConfigurationInternal configurationInternal = (ConfigurationInternal) obj;
-        return this.mUserId == configurationInternal.mUserId && this.mUserConfigAllowed == configurationInternal.mUserConfigAllowed && this.mTelephonyDetectionSupported == configurationInternal.mTelephonyDetectionSupported && this.mGeoDetectionSupported == configurationInternal.mGeoDetectionSupported && this.mTelephonyFallbackSupported == configurationInternal.mTelephonyFallbackSupported && this.mGeoDetectionRunInBackgroundEnabled == configurationInternal.mGeoDetectionRunInBackgroundEnabled && this.mEnhancedMetricsCollectionEnabled == configurationInternal.mEnhancedMetricsCollectionEnabled && this.mAutoDetectionEnabledSetting == configurationInternal.mAutoDetectionEnabledSetting && this.mLocationEnabledSetting == configurationInternal.mLocationEnabledSetting && this.mGeoDetectionEnabledSetting == configurationInternal.mGeoDetectionEnabledSetting;
+        return this.mUserId == configurationInternal.mUserId && this.mUserConfigAllowed == configurationInternal.mUserConfigAllowed && this.mTelephonyDetectionSupported == configurationInternal.mTelephonyDetectionSupported && this.mGeoDetectionSupported == configurationInternal.mGeoDetectionSupported && this.mTelephonyFallbackSupported == configurationInternal.mTelephonyFallbackSupported && this.mGeoDetectionRunInBackgroundEnabled == configurationInternal.mGeoDetectionRunInBackgroundEnabled && this.mEnhancedMetricsCollectionEnabled == configurationInternal.mEnhancedMetricsCollectionEnabled && this.mAutoDetectionEnabledSetting == configurationInternal.mAutoDetectionEnabledSetting && this.mLocationEnabledSetting == configurationInternal.mLocationEnabledSetting && this.mGeoLocationFbEnabledSetting == configurationInternal.mGeoLocationFbEnabledSetting && this.mGeoDetectionEnabledSetting == configurationInternal.mGeoDetectionEnabledSetting;
     }
 
-    public int hashCode() {
-        return Objects.hash(Integer.valueOf(this.mUserId), Boolean.valueOf(this.mUserConfigAllowed), Boolean.valueOf(this.mTelephonyDetectionSupported), Boolean.valueOf(this.mGeoDetectionSupported), Boolean.valueOf(this.mTelephonyFallbackSupported), Boolean.valueOf(this.mGeoDetectionRunInBackgroundEnabled), Boolean.valueOf(this.mEnhancedMetricsCollectionEnabled), Boolean.valueOf(this.mAutoDetectionEnabledSetting), Boolean.valueOf(this.mLocationEnabledSetting), Boolean.valueOf(this.mGeoDetectionEnabledSetting));
+    public final int getDetectionMode() {
+        boolean z = true;
+        if (!isAutoDetectionSupported() || !this.mAutoDetectionEnabledSetting) {
+            return 1;
+        }
+        boolean z2 = this.mGeoDetectionSupported;
+        boolean z3 = this.mTelephonyDetectionSupported;
+        if (!z2 || !this.mLocationEnabledSetting) {
+            z = false;
+        } else if (z3) {
+            z = this.mGeoDetectionEnabledSetting;
+        }
+        return z ? (z3 && this.mGeoLocationFbEnabledSetting) ? 3 : 2 : z3 ? 3 : 0;
     }
 
-    public String toString() {
-        return "ConfigurationInternal{mUserId=" + this.mUserId + ", mUserConfigAllowed=" + this.mUserConfigAllowed + ", mTelephonyDetectionSupported=" + this.mTelephonyDetectionSupported + ", mGeoDetectionSupported=" + this.mGeoDetectionSupported + ", mTelephonyFallbackSupported=" + this.mTelephonyFallbackSupported + ", mGeoDetectionRunInBackgroundEnabled=" + this.mGeoDetectionRunInBackgroundEnabled + ", mEnhancedMetricsCollectionEnabled=" + this.mEnhancedMetricsCollectionEnabled + ", mAutoDetectionEnabledSetting=" + this.mAutoDetectionEnabledSetting + ", mLocationEnabledSetting=" + this.mLocationEnabledSetting + ", mGeoDetectionEnabledSetting=" + this.mGeoDetectionEnabledSetting + '}';
+    public final int hashCode() {
+        return Objects.hash(Integer.valueOf(this.mUserId), Boolean.valueOf(this.mUserConfigAllowed), Boolean.valueOf(this.mTelephonyDetectionSupported), Boolean.valueOf(this.mGeoDetectionSupported), Boolean.valueOf(this.mTelephonyFallbackSupported), Boolean.valueOf(this.mGeoDetectionRunInBackgroundEnabled), Boolean.valueOf(this.mEnhancedMetricsCollectionEnabled), Boolean.valueOf(this.mGeoLocationFbEnabledSetting), Boolean.valueOf(this.mAutoDetectionEnabledSetting), Boolean.valueOf(this.mLocationEnabledSetting), Boolean.valueOf(this.mGeoDetectionEnabledSetting));
     }
 
-    /* loaded from: classes3.dex */
-    public class Builder {
-        public boolean mAutoDetectionEnabledSetting;
-        public boolean mEnhancedMetricsCollectionEnabled;
-        public boolean mGeoDetectionEnabledSetting;
-        public boolean mGeoDetectionRunInBackgroundEnabled;
-        public boolean mGeoDetectionSupported;
-        public boolean mLocationEnabledSetting;
-        public boolean mTelephonyDetectionSupported;
-        public boolean mTelephonyFallbackSupported;
-        public boolean mUserConfigAllowed;
-        public Integer mUserId;
+    public final boolean isAutoDetectionSupported() {
+        return this.mTelephonyDetectionSupported || this.mGeoDetectionSupported;
+    }
 
-        public Builder setUserId(int i) {
-            this.mUserId = Integer.valueOf(i);
-            return this;
-        }
+    public final boolean isGeoDetectionExecutionEnabled() {
+        return getDetectionMode() == 2 || (this.mGeoDetectionSupported && this.mLocationEnabledSetting && this.mAutoDetectionEnabledSetting && this.mGeoDetectionRunInBackgroundEnabled);
+    }
 
-        public Builder setUserConfigAllowed(boolean z) {
-            this.mUserConfigAllowed = z;
-            return this;
-        }
-
-        public Builder setTelephonyDetectionFeatureSupported(boolean z) {
-            this.mTelephonyDetectionSupported = z;
-            return this;
-        }
-
-        public Builder setGeoDetectionFeatureSupported(boolean z) {
-            this.mGeoDetectionSupported = z;
-            return this;
-        }
-
-        public Builder setTelephonyFallbackSupported(boolean z) {
-            this.mTelephonyFallbackSupported = z;
-            return this;
-        }
-
-        public Builder setGeoDetectionRunInBackgroundEnabled(boolean z) {
-            this.mGeoDetectionRunInBackgroundEnabled = z;
-            return this;
-        }
-
-        public Builder setEnhancedMetricsCollectionEnabled(boolean z) {
-            this.mEnhancedMetricsCollectionEnabled = z;
-            return this;
-        }
-
-        public Builder setAutoDetectionEnabledSetting(boolean z) {
-            this.mAutoDetectionEnabledSetting = z;
-            return this;
-        }
-
-        public Builder setLocationEnabledSetting(boolean z) {
-            this.mLocationEnabledSetting = z;
-            return this;
-        }
-
-        public Builder setGeoDetectionEnabledSetting(boolean z) {
-            this.mGeoDetectionEnabledSetting = z;
-            return this;
-        }
-
-        public ConfigurationInternal build() {
-            return new ConfigurationInternal(this);
-        }
+    public final String toString() {
+        return "ConfigurationInternal{mUserId=" + this.mUserId + ", mUserConfigAllowed=" + this.mUserConfigAllowed + ", mTelephonyDetectionSupported=" + this.mTelephonyDetectionSupported + ", mGeoDetectionSupported=" + this.mGeoDetectionSupported + ", mTelephonyFallbackSupported=" + this.mTelephonyFallbackSupported + ", mGeoDetectionRunInBackgroundEnabled=" + this.mGeoDetectionRunInBackgroundEnabled + ", mEnhancedMetricsCollectionEnabled=" + this.mEnhancedMetricsCollectionEnabled + ", mAutoDetectionEnabledSetting=" + this.mAutoDetectionEnabledSetting + ", mLocationEnabledSetting=" + this.mLocationEnabledSetting + ", mGeoDetectionEnabledSetting=" + this.mGeoDetectionEnabledSetting + ", mGeoLocationFbEnabledSetting=" + this.mGeoLocationFbEnabledSetting + '}';
     }
 }

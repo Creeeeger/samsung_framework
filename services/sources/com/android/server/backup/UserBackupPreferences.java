@@ -3,13 +3,10 @@ package com.android.server.backup;
 import android.content.Context;
 import android.content.SharedPreferences;
 import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class UserBackupPreferences {
+public final class UserBackupPreferences {
     public final SharedPreferences.Editor mEditor;
     public final SharedPreferences mPreferences;
 
@@ -17,16 +14,5 @@ public class UserBackupPreferences {
         SharedPreferences sharedPreferences = context.getSharedPreferences(new File(file, "backup_preferences"), 0);
         this.mPreferences = sharedPreferences;
         this.mEditor = sharedPreferences.edit();
-    }
-
-    public void addExcludedKeys(String str, List list) {
-        HashSet hashSet = new HashSet(this.mPreferences.getStringSet(str, Collections.emptySet()));
-        hashSet.addAll(list);
-        this.mEditor.putStringSet(str, hashSet);
-        this.mEditor.commit();
-    }
-
-    public Set getExcludedRestoreKeysForPackage(String str) {
-        return this.mPreferences.getStringSet(str, Collections.emptySet());
     }
 }

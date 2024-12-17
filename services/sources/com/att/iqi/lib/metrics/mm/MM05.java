@@ -3,9 +3,11 @@ package com.att.iqi.lib.metrics.mm;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.att.iqi.lib.Metric;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class MM05 extends Metric {
     public static final byte IQ_SIP_CALL_STATE_ANSWERED = 8;
     public static final byte IQ_SIP_CALL_STATE_CONNECTED = 9;
@@ -38,11 +40,6 @@ public class MM05 extends Metric {
         reset();
     }
 
-    public void reset() {
-        this.m_ucCallState = (byte) 0;
-        this.m_szCallId = "";
-    }
-
     public MM05(Parcel parcel) {
         super(parcel);
         if (parcel.readInt() >= 1) {
@@ -51,13 +48,24 @@ public class MM05 extends Metric {
         }
     }
 
-    public MM05 setCallState(byte b) {
-        this.m_ucCallState = b;
-        return this;
+    public String getCallId() {
+        return this.m_szCallId;
     }
 
     public byte getRegState() {
         return this.m_ucCallState;
+    }
+
+    public void reset() {
+        this.m_ucCallState = (byte) 0;
+        this.m_szCallId = "";
+    }
+
+    @Override // com.att.iqi.lib.Metric
+    public int serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
+        byteBuffer.put(this.m_ucCallState);
+        stringOut(byteBuffer, this.m_szCallId);
+        return byteBuffer.position();
     }
 
     public MM05 setCallId(String str) {
@@ -65,15 +73,9 @@ public class MM05 extends Metric {
         return this;
     }
 
-    public String getCallId() {
-        return this.m_szCallId;
-    }
-
-    @Override // com.att.iqi.lib.Metric
-    public int serialize(ByteBuffer byteBuffer) {
-        byteBuffer.put(this.m_ucCallState);
-        stringOut(byteBuffer, this.m_szCallId);
-        return byteBuffer.position();
+    public MM05 setCallState(byte b) {
+        this.m_ucCallState = b;
+        return this;
     }
 
     @Override // com.att.iqi.lib.Metric, android.os.Parcelable

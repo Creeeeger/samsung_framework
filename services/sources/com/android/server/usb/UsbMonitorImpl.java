@@ -4,25 +4,18 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.sysfwutil.Slog;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import libcore.io.IoUtils;
 
-/* loaded from: classes3.dex */
-public class UsbMonitorImpl {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class UsbMonitorImpl {
     public final UsbStatsHandler mHandler;
 
-    public UsbMonitorImpl(Looper looper) {
-        this.mHandler = new UsbStatsHandler(looper);
-    }
-
-    public void systemReady() {
-        this.mHandler.sendEmptyMessage(0);
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class UsbStatsHandler extends Handler {
         public String mCurrentUsbStats;
         public final File mLogFile;
@@ -35,36 +28,28 @@ public class UsbMonitorImpl {
             this.mCurrentUsbStats = "none";
         }
 
-        public void sendMessageDelayed(int i, long j) {
-            removeMessages(i);
-            sendMessageDelayed(Message.obtain(this, i), j);
-        }
-
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             int i = message.what;
-            if (i == 0) {
-                finishBoot();
+            if (i != 0) {
+                if (i == 1) {
+                    updateUsbStats();
+                    return;
+                }
+                Slog.e("UsbStatsMonitor", "Unexpected message " + message.what);
                 return;
             }
-            if (i == 1) {
-                updateUsbStats();
-                return;
-            }
-            Slog.e("UsbStatsMonitor", "Unexpected message " + message.what);
-        }
-
-        public final void finishBoot() {
             Slog.d("UsbStatsMonitor", "finishBoot");
             if (!this.mSysFs.exists()) {
                 Slog.e("UsbStatsMonitor", "No sysfs node");
                 return;
             }
-            if (this.mLogFile.exists()) {
-                UsbMonitorImpl usbMonitorImpl = UsbMonitorImpl.this;
-                usbMonitorImpl.stringToFile(this.mSysFs, usbMonitorImpl.readFileAsStringOrNull(this.mLogFile));
+            boolean exists = this.mLogFile.exists();
+            UsbMonitorImpl usbMonitorImpl = UsbMonitorImpl.this;
+            if (exists) {
+                UsbMonitorImpl.m1024$$Nest$mstringToFile(usbMonitorImpl, this.mSysFs, UsbMonitorImpl.m1023$$Nest$mreadFileAsStringOrNull(usbMonitorImpl, this.mLogFile));
             } else {
-                UsbMonitorImpl.this.stringToFile(this.mSysFs, "0");
+                UsbMonitorImpl.m1024$$Nest$mstringToFile(usbMonitorImpl, this.mSysFs, "0");
                 try {
                     if (this.mLogFile.getParentFile() != null) {
                         this.mLogFile.getParentFile().mkdirs();
@@ -79,21 +64,22 @@ public class UsbMonitorImpl {
         }
 
         public final void updateUsbStats() {
-            String readFileAsStringOrNull = UsbMonitorImpl.this.readFileAsStringOrNull(this.mSysFs);
-            if (readFileAsStringOrNull != null && !readFileAsStringOrNull.equals(this.mCurrentUsbStats)) {
-                this.mCurrentUsbStats = readFileAsStringOrNull;
-                UsbMonitorImpl.this.stringToFile(this.mLogFile, readFileAsStringOrNull);
+            File file = this.mSysFs;
+            UsbMonitorImpl usbMonitorImpl = UsbMonitorImpl.this;
+            String m1023$$Nest$mreadFileAsStringOrNull = UsbMonitorImpl.m1023$$Nest$mreadFileAsStringOrNull(usbMonitorImpl, file);
+            if (m1023$$Nest$mreadFileAsStringOrNull != null && !m1023$$Nest$mreadFileAsStringOrNull.equals(this.mCurrentUsbStats)) {
+                this.mCurrentUsbStats = m1023$$Nest$mreadFileAsStringOrNull;
+                UsbMonitorImpl.m1024$$Nest$mstringToFile(usbMonitorImpl, this.mLogFile, m1023$$Nest$mreadFileAsStringOrNull);
             }
             Slog.d("UsbStatsMonitor", this.mCurrentUsbStats);
-            sendMessageDelayed(1, 60000L);
-        }
-
-        public void dump(PrintWriter printWriter) {
-            printWriter.println("Current USB Stats: " + this.mCurrentUsbStats);
+            removeMessages(1);
+            sendMessageDelayed(Message.obtain(this, 1), 60000L);
         }
     }
 
-    public final String readFileAsStringOrNull(File file) {
+    /* renamed from: -$$Nest$mreadFileAsStringOrNull, reason: not valid java name */
+    public static String m1023$$Nest$mreadFileAsStringOrNull(UsbMonitorImpl usbMonitorImpl, File file) {
+        usbMonitorImpl.getClass();
         try {
             return IoUtils.readFileAsString(file.getAbsolutePath()).trim();
         } catch (IOException e) {
@@ -102,52 +88,79 @@ public class UsbMonitorImpl {
         }
     }
 
-    public final void stringToFile(File file, String str) {
-        if (!file.exists() || str == null) {
-            return;
-        }
-        FileWriter fileWriter = null;
-        try {
-            try {
-                try {
-                    FileWriter fileWriter2 = new FileWriter(file);
-                    try {
-                        fileWriter2.write(str);
-                        fileWriter2.close();
-                    } catch (IOException e) {
-                        e = e;
-                        fileWriter = fileWriter2;
-                        Slog.e("UsbStatsMonitor", "Couldn't write " + file.getAbsolutePath(), e);
-                        if (fileWriter != null) {
-                            fileWriter.close();
-                        }
-                    } catch (Throwable th) {
-                        th = th;
-                        fileWriter = fileWriter2;
-                        if (fileWriter != null) {
-                            try {
-                                fileWriter.close();
-                            } catch (IOException unused) {
-                                Slog.e("UsbStatsMonitor", "Couldn't close stream");
-                            }
-                        }
-                        throw th;
-                    }
-                } catch (IOException e2) {
-                    e = e2;
-                }
-            } catch (IOException unused2) {
-                Slog.e("UsbStatsMonitor", "Couldn't close stream");
-            }
-        } catch (Throwable th2) {
-            th = th2;
-        }
+    /*  JADX ERROR: JadxRuntimeException in pass: RegionMakerVisitor
+        jadx.core.utils.exceptions.JadxRuntimeException: Can't find top splitter block for handler:B:19:0x001f
+        	at jadx.core.utils.BlockUtils.getTopSplitterForHandler(BlockUtils.java:1179)
+        	at jadx.core.dex.visitors.regions.maker.ExcHandlersRegionMaker.collectHandlerRegions(ExcHandlersRegionMaker.java:53)
+        	at jadx.core.dex.visitors.regions.maker.ExcHandlersRegionMaker.process(ExcHandlersRegionMaker.java:38)
+        	at jadx.core.dex.visitors.regions.RegionMakerVisitor.visit(RegionMakerVisitor.java:27)
+        */
+    /* renamed from: -$$Nest$mstringToFile, reason: not valid java name */
+    public static void m1024$$Nest$mstringToFile(com.android.server.usb.UsbMonitorImpl r4, java.io.File r5, java.lang.String r6) {
+        /*
+            r4.getClass()
+            java.lang.String r4 = "Couldn't close stream"
+            java.lang.String r0 = "UsbStatsMonitor"
+            java.lang.String r1 = "Couldn't write "
+            boolean r2 = r5.exists()
+            if (r2 == 0) goto L4f
+            if (r6 != 0) goto L12
+            goto L4f
+        L12:
+            r2 = 0
+            java.io.FileWriter r3 = new java.io.FileWriter     // Catch: java.lang.Throwable -> L29 java.io.IOException -> L2b
+            r3.<init>(r5)     // Catch: java.lang.Throwable -> L29 java.io.IOException -> L2b
+            r3.write(r6)     // Catch: java.lang.Throwable -> L23 java.io.IOException -> L26
+            r3.close()     // Catch: java.io.IOException -> L1f
+            goto L4f
+        L1f:
+            android.util.sysfwutil.Slog.e(r0, r4)
+            goto L4f
+        L23:
+            r5 = move-exception
+            r2 = r3
+            goto L45
+        L26:
+            r6 = move-exception
+            r2 = r3
+            goto L2c
+        L29:
+            r5 = move-exception
+            goto L45
+        L2b:
+            r6 = move-exception
+        L2c:
+            java.lang.StringBuilder r3 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L29
+            r3.<init>(r1)     // Catch: java.lang.Throwable -> L29
+            java.lang.String r5 = r5.getAbsolutePath()     // Catch: java.lang.Throwable -> L29
+            r3.append(r5)     // Catch: java.lang.Throwable -> L29
+            java.lang.String r5 = r3.toString()     // Catch: java.lang.Throwable -> L29
+            android.util.sysfwutil.Slog.e(r0, r5, r6)     // Catch: java.lang.Throwable -> L29
+            if (r2 == 0) goto L4f
+            r2.close()     // Catch: java.io.IOException -> L1f
+            goto L4f
+        L45:
+            if (r2 == 0) goto L4e
+            r2.close()     // Catch: java.io.IOException -> L4b
+            goto L4e
+        L4b:
+            android.util.sysfwutil.Slog.e(r0, r4)
+        L4e:
+            throw r5
+        L4f:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.usb.UsbMonitorImpl.m1024$$Nest$mstringToFile(com.android.server.usb.UsbMonitorImpl, java.io.File, java.lang.String):void");
     }
 
-    public void dump(PrintWriter printWriter) {
+    public UsbMonitorImpl(Looper looper) {
+        this.mHandler = new UsbStatsHandler(looper);
+    }
+
+    public final void dump(PrintWriter printWriter) {
         UsbStatsHandler usbStatsHandler = this.mHandler;
         if (usbStatsHandler != null) {
-            usbStatsHandler.dump(printWriter);
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("Current USB Stats: "), usbStatsHandler.mCurrentUsbStats, printWriter);
         }
     }
 }

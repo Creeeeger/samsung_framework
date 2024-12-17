@@ -1,12 +1,12 @@
 package com.android.server.integrity.model;
 
-import android.os.IInstalld;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-/* loaded from: classes2.dex */
-public class BitOutputStream {
-    public final byte[] mBuffer = new byte[IInstalld.FLAG_USE_QUOTA];
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class BitOutputStream {
+    public final byte[] mBuffer = new byte[4096];
     public int mNextBitIndex = 0;
     public final OutputStream mOutputStream;
 
@@ -14,7 +14,20 @@ public class BitOutputStream {
         this.mOutputStream = outputStream;
     }
 
-    public void setNext(int i, int i2) {
+    public final void flush() {
+        int i = this.mNextBitIndex;
+        int i2 = i / 8;
+        if (i % 8 != 0) {
+            i2++;
+        }
+        OutputStream outputStream = this.mOutputStream;
+        byte[] bArr = this.mBuffer;
+        outputStream.write(bArr, 0, i2);
+        this.mNextBitIndex = 0;
+        Arrays.fill(bArr, (byte) 0);
+    }
+
+    public final void setNext(int i, int i2) {
         if (i <= 0) {
             return;
         }
@@ -30,36 +43,18 @@ public class BitOutputStream {
         }
     }
 
-    public void setNext(boolean z) {
+    public final void setNext(boolean z) {
         int i = this.mNextBitIndex / 8;
+        byte[] bArr = this.mBuffer;
         if (i == 4096) {
-            this.mOutputStream.write(this.mBuffer);
-            reset();
+            this.mOutputStream.write(bArr);
             i = 0;
+            this.mNextBitIndex = 0;
+            Arrays.fill(bArr, (byte) 0);
         }
         if (z) {
-            byte[] bArr = this.mBuffer;
             bArr[i] = (byte) (bArr[i] | (1 << (7 - (this.mNextBitIndex % 8))));
         }
         this.mNextBitIndex++;
-    }
-
-    public void setNext() {
-        setNext(true);
-    }
-
-    public void flush() {
-        int i = this.mNextBitIndex;
-        int i2 = i / 8;
-        if (i % 8 != 0) {
-            i2++;
-        }
-        this.mOutputStream.write(this.mBuffer, 0, i2);
-        reset();
-    }
-
-    public final void reset() {
-        this.mNextBitIndex = 0;
-        Arrays.fill(this.mBuffer, (byte) 0);
     }
 }

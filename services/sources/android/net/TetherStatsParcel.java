@@ -1,24 +1,14 @@
 package android.net;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
 import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class TetherStatsParcel implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.net.TetherStatsParcel.1
-        @Override // android.os.Parcelable.Creator
-        public TetherStatsParcel createFromParcel(Parcel parcel) {
-            TetherStatsParcel tetherStatsParcel = new TetherStatsParcel();
-            tetherStatsParcel.readFromParcel(parcel);
-            return tetherStatsParcel;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public TetherStatsParcel[] newArray(int i) {
-            return new TetherStatsParcel[i];
-        }
-    };
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public String iface;
     public long rxBytes = 0;
     public long rxPackets = 0;
@@ -26,25 +16,25 @@ public class TetherStatsParcel implements Parcelable {
     public long txPackets = 0;
     public int ifIndex = 0;
 
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return 0;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.net.TetherStatsParcel$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            TetherStatsParcel tetherStatsParcel = new TetherStatsParcel();
+            tetherStatsParcel.readFromParcel(parcel);
+            return tetherStatsParcel;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new TetherStatsParcel[i];
+        }
     }
 
     @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeString(this.iface);
-        parcel.writeLong(this.rxBytes);
-        parcel.writeLong(this.rxPackets);
-        parcel.writeLong(this.txBytes);
-        parcel.writeLong(this.txPackets);
-        parcel.writeInt(this.ifIndex);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
+    public int describeContents() {
+        return 0;
     }
 
     public final void readFromParcel(Parcel parcel) {
@@ -98,5 +88,18 @@ public class TetherStatsParcel implements Parcelable {
             parcel.setDataPosition(dataPosition + readInt);
             throw th;
         }
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeString(this.iface);
+        parcel.writeLong(this.rxBytes);
+        parcel.writeLong(this.rxPackets);
+        parcel.writeLong(this.txBytes);
+        parcel.writeLong(this.txPackets);
+        int m = SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(parcel, this.ifIndex, dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(m, dataPosition, parcel, m);
     }
 }

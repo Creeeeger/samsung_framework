@@ -1,37 +1,22 @@
 package com.android.server.usb.descriptors;
 
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class Usb20ACOutputTerminal extends UsbACTerminal {
     public byte mClkSoureID;
     public int mControls;
     public byte mSourceID;
     public byte mTerminalID;
 
-    public Usb20ACOutputTerminal(int i, byte b, byte b2, int i2) {
-        super(i, b, b2, i2);
-    }
-
-    public byte getSourceID() {
-        return this.mSourceID;
-    }
-
-    public byte getClkSourceID() {
-        return this.mClkSoureID;
-    }
-
-    public int getControls() {
-        return this.mControls;
-    }
-
     @Override // com.android.server.usb.descriptors.UsbACTerminal
-    public byte getTerminalID() {
+    public final byte getTerminalID() {
         return this.mTerminalID;
     }
 
     @Override // com.android.server.usb.descriptors.UsbACTerminal, com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
+    public final int parseRawDescriptors(ByteStream byteStream) {
         super.parseRawDescriptors(byteStream);
         this.mSourceID = byteStream.getByte();
         this.mClkSoureID = byteStream.getByte();
@@ -41,13 +26,13 @@ public final class Usb20ACOutputTerminal extends UsbACTerminal {
     }
 
     @Override // com.android.server.usb.descriptors.UsbACTerminal, com.android.server.usb.descriptors.UsbACInterface, com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        reportCanvas.openList();
-        reportCanvas.writeListItem("Source ID:" + ((int) getSourceID()));
-        reportCanvas.writeListItem("Clock Source ID: " + ((int) getClkSourceID()));
-        reportCanvas.writeListItem("Controls: " + ReportCanvas.getHexString(getControls()));
-        reportCanvas.writeListItem("Terminal Name ID: " + ((int) getTerminalID()));
-        reportCanvas.closeList();
+    public final void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        textReportCanvas.openList();
+        textReportCanvas.writeListItem("Source ID:" + ((int) this.mSourceID));
+        textReportCanvas.writeListItem("Clock Source ID: " + ((int) this.mClkSoureID));
+        textReportCanvas.writeListItem("Controls: " + TextReportCanvas.getHexString(this.mControls));
+        textReportCanvas.writeListItem("Terminal Name ID: " + ((int) this.mTerminalID));
+        textReportCanvas.closeList();
     }
 }

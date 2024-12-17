@@ -1,73 +1,65 @@
 package com.android.server.biometrics.sensors.fingerprint.aidl;
 
 import android.content.Context;
-import android.hardware.keymaster.HardwareAuthToken;
-import android.util.Slog;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
 import com.android.server.biometrics.HardwareAuthTokenUtils;
 import com.android.server.biometrics.log.BiometricContext;
 import com.android.server.biometrics.log.BiometricLogger;
-import com.android.server.biometrics.sensors.AuthSessionCoordinator;
 import com.android.server.biometrics.sensors.ClientMonitorCallback;
 import com.android.server.biometrics.sensors.ErrorConsumer;
 import com.android.server.biometrics.sensors.HalClientMonitor;
-import com.android.server.biometrics.sensors.LockoutCache;
 import com.android.server.biometrics.sensors.LockoutResetDispatcher;
+import com.android.server.biometrics.sensors.LockoutTracker;
 import java.util.function.Supplier;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FingerprintResetLockoutClient extends HalClientMonitor implements ErrorConsumer {
+public final class FingerprintResetLockoutClient extends HalClientMonitor implements ErrorConsumer {
     public final int mBiometricStrength;
-    public final HardwareAuthToken mHardwareAuthToken;
-    public final LockoutCache mLockoutCache;
+    public final LockoutTracker mLockoutCache;
     public final LockoutResetDispatcher mLockoutResetDispatcher;
 
-    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public int getProtoEnum() {
-        return 12;
-    }
-
-    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public boolean interruptsPrecedingClients() {
-        return true;
-    }
-
-    @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void unableToStart() {
-    }
-
-    public FingerprintResetLockoutClient(Context context, Supplier supplier, int i, String str, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, byte[] bArr, LockoutCache lockoutCache, LockoutResetDispatcher lockoutResetDispatcher, int i3) {
-        super(context, supplier, null, null, i, str, 0, i2, biometricLogger, biometricContext);
-        this.mHardwareAuthToken = HardwareAuthTokenUtils.toHardwareAuthToken(bArr);
-        this.mLockoutCache = lockoutCache;
+    public FingerprintResetLockoutClient(Context context, Supplier supplier, int i, String str, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, byte[] bArr, LockoutTracker lockoutTracker, LockoutResetDispatcher lockoutResetDispatcher, int i3) {
+        super(context, supplier, null, null, i, str, 0, i2, biometricLogger, biometricContext, false);
+        if (bArr != null) {
+            HardwareAuthTokenUtils.toHardwareAuthToken(bArr);
+        }
+        this.mLockoutCache = lockoutTracker;
         this.mLockoutResetDispatcher = lockoutResetDispatcher;
         this.mBiometricStrength = i3;
     }
 
     @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public void start(ClientMonitorCallback clientMonitorCallback) {
+    public final int getProtoEnum() {
+        return 12;
+    }
+
+    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
+    public final boolean interruptsPrecedingClients() {
+        return true;
+    }
+
+    @Override // com.android.server.biometrics.sensors.ErrorConsumer
+    public final void onError(int i, int i2) {
+        NandswapManager$$ExternalSyntheticOutline0.m(i, "Error during resetLockout: ", "FingerprintResetLockoutClient");
+        this.mCallback.onClientFinished(this, false);
+    }
+
+    @Override // com.android.server.biometrics.sensors.BaseClientMonitor
+    public final void start(ClientMonitorCallback clientMonitorCallback) {
         super.start(clientMonitorCallback);
         startHalOperation();
     }
 
     @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void startHalOperation() {
-        ((AidlSession) getFreshDaemon()).resetLockout(this.mHardwareAuthToken);
+    public final void startHalOperation() {
+        SemFpAidlResponseHandler semFpAidlResponseHandler = ((AidlSession) this.mLazyDaemon.get()).mAidlResponseHandler;
+        if (semFpAidlResponseHandler != null) {
+            semFpAidlResponseHandler.onLockoutCleared();
+        }
     }
 
-    public void onLockoutCleared() {
-        resetLocalLockoutStateToNone(getSensorId(), getTargetUserId(), this.mLockoutCache, this.mLockoutResetDispatcher, getBiometricContext().getAuthSessionCoordinator(), this.mBiometricStrength, getRequestId());
-        this.mCallback.onClientFinished(this, true);
-    }
-
-    public static void resetLocalLockoutStateToNone(int i, int i2, LockoutCache lockoutCache, LockoutResetDispatcher lockoutResetDispatcher, AuthSessionCoordinator authSessionCoordinator, int i3, long j) {
-        lockoutCache.setLockoutModeForUser(i2, 0);
-        lockoutResetDispatcher.notifyLockoutResetCallbacks(i);
-        authSessionCoordinator.resetLockoutFor(i2, i3, j);
-    }
-
-    @Override // com.android.server.biometrics.sensors.ErrorConsumer
-    public void onError(int i, int i2) {
-        Slog.e("FingerprintResetLockoutClient", "Error during resetLockout: " + i);
-        this.mCallback.onClientFinished(this, false);
+    @Override // com.android.server.biometrics.sensors.HalClientMonitor
+    public final void unableToStart() {
     }
 }

@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -12,8 +13,10 @@ import android.util.Log;
 import android.util.TimeUtils;
 import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class PersistentConnection {
+    public final PersistentConnection$$ExternalSyntheticLambda0 mBindForBackoffRunnable;
     public boolean mBound;
     public final ComponentName mComponentName;
     public final Context mContext;
@@ -32,71 +35,147 @@ public abstract class PersistentConnection {
     public final long mResetBackoffDelay;
     public Object mService;
     public boolean mShouldBeBound;
+    public final PersistentConnection$$ExternalSyntheticLambda0 mStableCheck;
     public final String mTag;
     public final int mUserId;
     public final Object mLock = new Object();
-    public final ServiceConnection mServiceConnection = new ServiceConnection() { // from class: com.android.server.am.PersistentConnection.1
+    public final AnonymousClass1 mServiceConnection = new ServiceConnection() { // from class: com.android.server.am.PersistentConnection.1
         @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        public final void onBindingDied(ComponentName componentName) {
             synchronized (PersistentConnection.this.mLock) {
-                if (!PersistentConnection.this.mBound) {
-                    Log.w(PersistentConnection.this.mTag, "Connected: " + PersistentConnection.this.mComponentName.flattenToShortString() + " u" + PersistentConnection.this.mUserId + " but not bound, ignore.");
-                    return;
+                try {
+                    PersistentConnection persistentConnection = PersistentConnection.this;
+                    if (!persistentConnection.mBound) {
+                        Log.w(persistentConnection.mTag, "Binding died: " + PersistentConnection.this.mComponentName.flattenToShortString() + " u" + PersistentConnection.this.mUserId + " but not bound, ignore.");
+                        return;
+                    }
+                    Log.w(persistentConnection.mTag, "Binding died: " + PersistentConnection.this.mComponentName.flattenToShortString() + " u" + PersistentConnection.this.mUserId);
+                    PersistentConnection persistentConnection2 = PersistentConnection.this;
+                    persistentConnection2.mNumBindingDied = persistentConnection2.mNumBindingDied + 1;
+                    persistentConnection2.scheduleRebindLocked();
+                } catch (Throwable th) {
+                    throw th;
                 }
-                Log.i(PersistentConnection.this.mTag, "Connected: " + PersistentConnection.this.mComponentName.flattenToShortString() + " u" + PersistentConnection.this.mUserId);
-                PersistentConnection persistentConnection = PersistentConnection.this;
-                persistentConnection.mNumConnected = persistentConnection.mNumConnected + 1;
-                PersistentConnection.this.mIsConnected = true;
-                PersistentConnection persistentConnection2 = PersistentConnection.this;
-                persistentConnection2.mLastConnectedTime = persistentConnection2.injectUptimeMillis();
-                PersistentConnection persistentConnection3 = PersistentConnection.this;
-                persistentConnection3.mService = persistentConnection3.asInterface(iBinder);
-                PersistentConnection.this.scheduleStableCheckLocked();
             }
         }
 
         @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName componentName) {
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            synchronized (PersistentConnection.this.mLock) {
+                try {
+                    PersistentConnection persistentConnection = PersistentConnection.this;
+                    if (!persistentConnection.mBound) {
+                        Log.w(persistentConnection.mTag, "Connected: " + PersistentConnection.this.mComponentName.flattenToShortString() + " u" + PersistentConnection.this.mUserId + " but not bound, ignore.");
+                        return;
+                    }
+                    Log.i(persistentConnection.mTag, "Connected: " + PersistentConnection.this.mComponentName.flattenToShortString() + " u" + PersistentConnection.this.mUserId);
+                    PersistentConnection persistentConnection2 = PersistentConnection.this;
+                    persistentConnection2.mNumConnected = persistentConnection2.mNumConnected + 1;
+                    persistentConnection2.mIsConnected = true;
+                    persistentConnection2.mLastConnectedTime = persistentConnection2.injectUptimeMillis();
+                    PersistentConnection persistentConnection3 = PersistentConnection.this;
+                    persistentConnection3.mService = persistentConnection3.asInterface(iBinder);
+                    PersistentConnection persistentConnection4 = PersistentConnection.this;
+                    persistentConnection4.injectRemoveCallbacks(persistentConnection4.mStableCheck);
+                    persistentConnection4.injectPostAtTime(persistentConnection4.mStableCheck, persistentConnection4.injectUptimeMillis() + persistentConnection4.mResetBackoffDelay);
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceDisconnected(ComponentName componentName) {
             synchronized (PersistentConnection.this.mLock) {
                 Log.i(PersistentConnection.this.mTag, "Disconnected: " + PersistentConnection.this.mComponentName.flattenToShortString() + " u" + PersistentConnection.this.mUserId);
                 PersistentConnection persistentConnection = PersistentConnection.this;
                 persistentConnection.mNumDisconnected = persistentConnection.mNumDisconnected + 1;
-                PersistentConnection.this.cleanUpConnectionLocked();
-            }
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onBindingDied(ComponentName componentName) {
-            synchronized (PersistentConnection.this.mLock) {
-                if (!PersistentConnection.this.mBound) {
-                    Log.w(PersistentConnection.this.mTag, "Binding died: " + PersistentConnection.this.mComponentName.flattenToShortString() + " u" + PersistentConnection.this.mUserId + " but not bound, ignore.");
-                    return;
-                }
-                Log.w(PersistentConnection.this.mTag, "Binding died: " + PersistentConnection.this.mComponentName.flattenToShortString() + " u" + PersistentConnection.this.mUserId);
-                PersistentConnection persistentConnection = PersistentConnection.this;
-                persistentConnection.mNumBindingDied = persistentConnection.mNumBindingDied + 1;
-                PersistentConnection.this.scheduleRebindLocked();
+                persistentConnection.mIsConnected = false;
+                persistentConnection.injectRemoveCallbacks(persistentConnection.mStableCheck);
             }
         }
     };
-    public final Runnable mBindForBackoffRunnable = new Runnable() { // from class: com.android.server.am.PersistentConnection$$ExternalSyntheticLambda0
-        @Override // java.lang.Runnable
-        public final void run() {
-            PersistentConnection.this.lambda$new$0();
-        }
-    };
-    public final Runnable mStableCheck = new Runnable() { // from class: com.android.server.am.PersistentConnection$$ExternalSyntheticLambda1
-        @Override // java.lang.Runnable
-        public final void run() {
-            PersistentConnection.this.stableConnectionCheck();
-        }
-    };
 
-    public abstract Object asInterface(IBinder iBinder);
-
-    public abstract int getBindFlags();
-
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.am.PersistentConnection$1] */
+    /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.am.PersistentConnection$$ExternalSyntheticLambda0] */
+    /* JADX WARN: Type inference failed for: r0v3, types: [com.android.server.am.PersistentConnection$$ExternalSyntheticLambda0] */
     public PersistentConnection(String str, Context context, Handler handler, int i, ComponentName componentName, long j, double d, long j2, long j3) {
+        final int i2 = 0;
+        this.mBindForBackoffRunnable = new Runnable(this) { // from class: com.android.server.am.PersistentConnection$$ExternalSyntheticLambda0
+            public final /* synthetic */ PersistentConnection f$0;
+
+            {
+                this.f$0 = this;
+            }
+
+            @Override // java.lang.Runnable
+            public final void run() {
+                int i3 = i2;
+                PersistentConnection persistentConnection = this.f$0;
+                switch (i3) {
+                    case 0:
+                        synchronized (persistentConnection.mLock) {
+                            try {
+                                if (persistentConnection.mShouldBeBound) {
+                                    persistentConnection.bindInnerLocked(false);
+                                    return;
+                                }
+                                return;
+                            } finally {
+                            }
+                        }
+                    default:
+                        synchronized (persistentConnection.mLock) {
+                            try {
+                                long injectUptimeMillis = (persistentConnection.mLastConnectedTime + persistentConnection.mResetBackoffDelay) - persistentConnection.injectUptimeMillis();
+                                if (persistentConnection.mBound && persistentConnection.mIsConnected && injectUptimeMillis <= 0) {
+                                    persistentConnection.resetBackoffLocked();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                }
+            }
+        };
+        final int i3 = 1;
+        this.mStableCheck = new Runnable(this) { // from class: com.android.server.am.PersistentConnection$$ExternalSyntheticLambda0
+            public final /* synthetic */ PersistentConnection f$0;
+
+            {
+                this.f$0 = this;
+            }
+
+            @Override // java.lang.Runnable
+            public final void run() {
+                int i32 = i3;
+                PersistentConnection persistentConnection = this.f$0;
+                switch (i32) {
+                    case 0:
+                        synchronized (persistentConnection.mLock) {
+                            try {
+                                if (persistentConnection.mShouldBeBound) {
+                                    persistentConnection.bindInnerLocked(false);
+                                    return;
+                                }
+                                return;
+                            } finally {
+                            }
+                        }
+                    default:
+                        synchronized (persistentConnection.mLock) {
+                            try {
+                                long injectUptimeMillis = (persistentConnection.mLastConnectedTime + persistentConnection.mResetBackoffDelay) - persistentConnection.injectUptimeMillis();
+                                if (persistentConnection.mBound && persistentConnection.mIsConnected && injectUptimeMillis <= 0) {
+                                    persistentConnection.resetBackoffLocked();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                }
+            }
+        };
         this.mTag = str;
         this.mContext = context;
         this.mHandler = handler;
@@ -110,38 +189,72 @@ public abstract class PersistentConnection {
         this.mNextBackoffMs = j4;
     }
 
-    public final ComponentName getComponentName() {
-        return this.mComponentName;
-    }
+    public abstract Object asInterface(IBinder iBinder);
 
-    public final int getUserId() {
-        return this.mUserId;
-    }
-
-    public final boolean isBound() {
-        boolean z;
-        synchronized (this.mLock) {
-            z = this.mBound;
+    public final void bindInnerLocked(boolean z) {
+        injectRemoveCallbacks(this.mBindForBackoffRunnable);
+        this.mRebindScheduled = false;
+        if (this.mBound) {
+            return;
         }
-        return z;
-    }
-
-    public final boolean isConnected() {
-        boolean z;
-        synchronized (this.mLock) {
-            z = this.mIsConnected;
+        this.mBound = true;
+        injectRemoveCallbacks(this.mStableCheck);
+        if (z) {
+            resetBackoffLocked();
         }
-        return z;
+        Intent component = new Intent().setComponent(this.mComponentName);
+        Context context = this.mContext;
+        int bindFlags = getBindFlags() | 1;
+        int i = this.mUserId;
+        if (context.bindServiceAsUser(component, this.mServiceConnection, bindFlags, this.mHandler, UserHandle.of(i))) {
+            return;
+        }
+        Log.e(this.mTag, "Binding: " + component.getComponent() + " u" + i + " failed.");
     }
 
-    public final void bind() {
+    public final void dump(String str, PrintWriter printWriter) {
         synchronized (this.mLock) {
-            this.mShouldBeBound = true;
-            bindInnerLocked(true);
+            try {
+                printWriter.print(str);
+                printWriter.print(this.mComponentName.flattenToShortString());
+                printWriter.print(" u");
+                printWriter.print(this.mUserId);
+                printWriter.print(this.mBound ? " [bound]" : " [not bound]");
+                printWriter.print(this.mIsConnected ? " [connected]" : " [not connected]");
+                if (this.mRebindScheduled) {
+                    printWriter.print(" reconnect in ");
+                    TimeUtils.formatDuration(this.mReconnectTime - injectUptimeMillis(), printWriter);
+                }
+                printWriter.println();
+                printWriter.print(str);
+                printWriter.print("  Next backoff(sec): ");
+                printWriter.print(this.mNextBackoffMs / 1000);
+                printWriter.println();
+                printWriter.print(str);
+                printWriter.print("  Connected: ");
+                printWriter.print(this.mNumConnected);
+                printWriter.print("  Disconnected: ");
+                printWriter.print(this.mNumDisconnected);
+                printWriter.print("  Died: ");
+                printWriter.print(this.mNumBindingDied);
+                if (this.mIsConnected) {
+                    printWriter.print("  Duration: ");
+                    TimeUtils.formatDuration(injectUptimeMillis() - this.mLastConnectedTime, printWriter);
+                }
+                printWriter.println();
+            } catch (Throwable th) {
+                throw th;
+            }
         }
     }
 
-    public long getNextBackoffMs() {
+    public abstract int getBindFlags();
+
+    public Runnable getBindForBackoffRunnableForTest() {
+        return this.mBindForBackoffRunnable;
+    }
+
+    public final long getNextBackoffMs() {
         long j;
         synchronized (this.mLock) {
             j = this.mNextBackoffMs;
@@ -149,15 +262,19 @@ public abstract class PersistentConnection {
         return j;
     }
 
-    public int getNumConnected() {
+    public long getNextBackoffMsForTest() {
+        return this.mNextBackoffMs;
+    }
+
+    public final int getNumBindingDied() {
         int i;
         synchronized (this.mLock) {
-            i = this.mNumConnected;
+            i = this.mNumBindingDied;
         }
         return i;
     }
 
-    public int getNumDisconnected() {
+    public final int getNumDisconnected() {
         int i;
         synchronized (this.mLock) {
             i = this.mNumDisconnected;
@@ -165,12 +282,28 @@ public abstract class PersistentConnection {
         return i;
     }
 
-    public int getNumBindingDied() {
-        int i;
-        synchronized (this.mLock) {
-            i = this.mNumBindingDied;
-        }
-        return i;
+    public long getReconnectTimeForTest() {
+        return this.mReconnectTime;
+    }
+
+    public ServiceConnection getServiceConnectionForTest() {
+        return this.mServiceConnection;
+    }
+
+    public Runnable getStableCheckRunnableForTest() {
+        return this.mStableCheck;
+    }
+
+    public void injectPostAtTime(Runnable runnable, long j) {
+        this.mHandler.postAtTime(runnable, j);
+    }
+
+    public void injectRemoveCallbacks(Runnable runnable) {
+        this.mHandler.removeCallbacks(runnable);
+    }
+
+    public long injectUptimeMillis() {
+        return SystemClock.uptimeMillis();
     }
 
     public final void resetBackoffLocked() {
@@ -182,157 +315,40 @@ public abstract class PersistentConnection {
         }
     }
 
-    public final void bindInnerLocked(boolean z) {
-        unscheduleRebindLocked();
-        if (this.mBound) {
+    public final void scheduleRebindLocked() {
+        unbindLocked();
+        if (this.mRebindScheduled) {
             return;
         }
-        this.mBound = true;
-        unscheduleStableCheckLocked();
-        if (z) {
-            resetBackoffLocked();
-        }
-        Intent component = new Intent().setComponent(this.mComponentName);
-        if (this.mContext.bindServiceAsUser(component, this.mServiceConnection, getBindFlags() | 1, this.mHandler, UserHandle.of(this.mUserId))) {
-            return;
-        }
-        Log.e(this.mTag, "Binding: " + component.getComponent() + " u" + this.mUserId + " failed.");
+        Log.i(this.mTag, AudioConfig$$ExternalSyntheticOutline0.m(new StringBuilder("Scheduling to reconnect in "), this.mNextBackoffMs, " ms (uptime)"));
+        long injectUptimeMillis = injectUptimeMillis() + this.mNextBackoffMs;
+        this.mReconnectTime = injectUptimeMillis;
+        injectPostAtTime(this.mBindForBackoffRunnable, injectUptimeMillis);
+        this.mNextBackoffMs = Math.min(this.mRebindMaxBackoffMs, (long) (this.mNextBackoffMs * this.mRebindBackoffIncrease));
+        this.mRebindScheduled = true;
     }
 
-    /* renamed from: bindForBackoff, reason: merged with bridge method [inline-methods] */
-    public final void lambda$new$0() {
-        synchronized (this.mLock) {
-            if (this.mShouldBeBound) {
-                bindInnerLocked(false);
-            }
-        }
-    }
-
-    public final void cleanUpConnectionLocked() {
-        this.mIsConnected = false;
-        this.mService = null;
-        unscheduleStableCheckLocked();
+    public boolean shouldBeBoundForTest() {
+        return this.mShouldBeBound;
     }
 
     public final void unbind() {
         synchronized (this.mLock) {
             this.mShouldBeBound = false;
             unbindLocked();
-            unscheduleStableCheckLocked();
+            injectRemoveCallbacks(this.mStableCheck);
         }
     }
 
     public final void unbindLocked() {
-        unscheduleRebindLocked();
+        injectRemoveCallbacks(this.mBindForBackoffRunnable);
+        this.mRebindScheduled = false;
         if (this.mBound) {
             Log.i(this.mTag, "Stopping: " + this.mComponentName.flattenToShortString() + " u" + this.mUserId);
             this.mBound = false;
             this.mContext.unbindService(this.mServiceConnection);
-            cleanUpConnectionLocked();
+            this.mIsConnected = false;
+            injectRemoveCallbacks(this.mStableCheck);
         }
-    }
-
-    public void unscheduleRebindLocked() {
-        injectRemoveCallbacks(this.mBindForBackoffRunnable);
-        this.mRebindScheduled = false;
-    }
-
-    public void scheduleRebindLocked() {
-        unbindLocked();
-        if (this.mRebindScheduled) {
-            return;
-        }
-        Log.i(this.mTag, "Scheduling to reconnect in " + this.mNextBackoffMs + " ms (uptime)");
-        long injectUptimeMillis = injectUptimeMillis() + this.mNextBackoffMs;
-        this.mReconnectTime = injectUptimeMillis;
-        injectPostAtTime(this.mBindForBackoffRunnable, injectUptimeMillis);
-        this.mNextBackoffMs = Math.min(this.mRebindMaxBackoffMs, (long) (((double) this.mNextBackoffMs) * this.mRebindBackoffIncrease));
-        this.mRebindScheduled = true;
-    }
-
-    public final void stableConnectionCheck() {
-        synchronized (this.mLock) {
-            long injectUptimeMillis = (this.mLastConnectedTime + this.mResetBackoffDelay) - injectUptimeMillis();
-            if (this.mBound && this.mIsConnected && injectUptimeMillis <= 0) {
-                resetBackoffLocked();
-            }
-        }
-    }
-
-    public final void unscheduleStableCheckLocked() {
-        injectRemoveCallbacks(this.mStableCheck);
-    }
-
-    public final void scheduleStableCheckLocked() {
-        unscheduleStableCheckLocked();
-        injectPostAtTime(this.mStableCheck, injectUptimeMillis() + this.mResetBackoffDelay);
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        synchronized (this.mLock) {
-            printWriter.print(str);
-            printWriter.print(this.mComponentName.flattenToShortString());
-            printWriter.print(" u");
-            printWriter.print(this.mUserId);
-            printWriter.print(this.mBound ? " [bound]" : " [not bound]");
-            printWriter.print(this.mIsConnected ? " [connected]" : " [not connected]");
-            if (this.mRebindScheduled) {
-                printWriter.print(" reconnect in ");
-                TimeUtils.formatDuration(this.mReconnectTime - injectUptimeMillis(), printWriter);
-            }
-            printWriter.println();
-            printWriter.print(str);
-            printWriter.print("  Next backoff(sec): ");
-            printWriter.print(this.mNextBackoffMs / 1000);
-            printWriter.println();
-            printWriter.print(str);
-            printWriter.print("  Connected: ");
-            printWriter.print(this.mNumConnected);
-            printWriter.print("  Disconnected: ");
-            printWriter.print(this.mNumDisconnected);
-            printWriter.print("  Died: ");
-            printWriter.print(this.mNumBindingDied);
-            if (this.mIsConnected) {
-                printWriter.print("  Duration: ");
-                TimeUtils.formatDuration(injectUptimeMillis() - this.mLastConnectedTime, printWriter);
-            }
-            printWriter.println();
-        }
-    }
-
-    public void injectRemoveCallbacks(Runnable runnable) {
-        this.mHandler.removeCallbacks(runnable);
-    }
-
-    public void injectPostAtTime(Runnable runnable, long j) {
-        this.mHandler.postAtTime(runnable, j);
-    }
-
-    public long injectUptimeMillis() {
-        return SystemClock.uptimeMillis();
-    }
-
-    public long getNextBackoffMsForTest() {
-        return this.mNextBackoffMs;
-    }
-
-    public long getReconnectTimeForTest() {
-        return this.mReconnectTime;
-    }
-
-    public ServiceConnection getServiceConnectionForTest() {
-        return this.mServiceConnection;
-    }
-
-    public Runnable getBindForBackoffRunnableForTest() {
-        return this.mBindForBackoffRunnable;
-    }
-
-    public Runnable getStableCheckRunnableForTest() {
-        return this.mStableCheck;
-    }
-
-    public boolean shouldBeBoundForTest() {
-        return this.mShouldBeBound;
     }
 }

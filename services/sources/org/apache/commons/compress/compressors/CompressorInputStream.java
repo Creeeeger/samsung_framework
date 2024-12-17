@@ -2,17 +2,7 @@ package org.apache.commons.compress.compressors;
 
 import java.io.InputStream;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class CompressorInputStream extends InputStream {
-    public long bytesRead = 0;
-
-    public void count(int i) {
-        count(i);
-    }
-
-    public void count(long j) {
-        if (j != -1) {
-            this.bytesRead += j;
-        }
-    }
 }

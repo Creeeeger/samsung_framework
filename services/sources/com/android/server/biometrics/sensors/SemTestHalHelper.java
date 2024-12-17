@@ -1,63 +1,34 @@
 package com.android.server.biometrics.sensors;
 
-import android.util.Pair;
 import android.util.Slog;
 import com.android.internal.util.FrameworkStatsLog;
 import com.android.server.biometrics.SemBiometricFeature;
-import com.android.server.biometrics.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SemTestHalHelper {
+public final class SemTestHalHelper {
     public final int mBiometricType;
     public final Callback mCallback;
     public long mDelayAuthAction;
     public final List mEnrollActionList = new ArrayList();
     public final List mAuthActionList = new ArrayList();
 
-    /* loaded from: classes.dex */
-    public interface Callback {
-        void deliverAcquiredEvent(int i, int i2);
-
-        void deliverAuthenticationResult(int i);
-
-        void deliverEnrollResult(int i);
-
-        default void deliverEnumerate(int i, int i2, int i3) {
-        }
-
-        void deliverErrorEvent(int i, int i2);
-
-        default void deliverTspEvent(int i) {
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public enum CallbackType {
-        ACQUIRED,
-        ERROR,
-        ENROLL_RESULT,
-        AUTHENTICATED,
-        REMOVED,
-        ENUMERATE,
-        TSP_FOD
-    }
-
-    /* loaded from: classes.dex */
-    public class Action implements Runnable {
-        public int biometricId;
-        public Callback callback;
-        public CallbackType callbackType;
-        public int code;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Action implements Runnable {
+        public final Callback callback;
+        public final CallbackType callbackType;
+        public final int code;
         public long delay;
-        public int groupId;
-        public int value;
-        public int vendorCode;
+        public final int value;
+        public final int vendorCode;
+
+        public Action(CallbackType callbackType, Callback callback, int i) {
+            this(callbackType, callback, 0, 0);
+            this.value = i;
+        }
 
         public Action(CallbackType callbackType, Callback callback, int i, int i2) {
             this.callbackType = callbackType;
@@ -67,104 +38,84 @@ public class SemTestHalHelper {
             this.delay = new Random().nextInt(1000);
         }
 
-        public Action(CallbackType callbackType, Callback callback, int i) {
-            this(callbackType, callback, 0, 0);
-            this.value = i;
-        }
-
         @Override // java.lang.Runnable
-        public void run() {
-            Slog.d("SemTestHalHelper", "Run: " + toDebugString());
-            switch (AnonymousClass1.$SwitchMap$com$android$server$biometrics$sensors$SemTestHalHelper$CallbackType[this.callbackType.ordinal()]) {
-                case 1:
-                    this.callback.deliverAcquiredEvent(this.code, this.vendorCode);
-                    return;
-                case 2:
-                    this.callback.deliverErrorEvent(this.code, this.vendorCode);
-                    return;
-                case 3:
-                    this.callback.deliverEnrollResult(this.value);
-                    return;
-                case 4:
-                    this.callback.deliverAuthenticationResult(this.value);
-                    return;
-                case 5:
-                    this.callback.deliverTspEvent(this.value);
-                    return;
-                case 6:
-                    this.callback.deliverEnumerate(this.biometricId, this.groupId, this.value);
-                    return;
-                default:
-                    return;
+        public final void run() {
+            StringBuilder sb = new StringBuilder("Run: ");
+            sb.append(this.callbackType.name() + ": " + this.code + ", " + this.vendorCode + ", " + this.value + ", delay = " + this.delay);
+            Slog.d("SemTestHalHelper", sb.toString());
+            int ordinal = this.callbackType.ordinal();
+            if (ordinal == 0) {
+                this.callback.deliverAcquiredEvent(this.code, this.vendorCode);
+                return;
             }
-        }
-
-        public boolean isFinishEnroll() {
-            return this.callbackType == CallbackType.ENROLL_RESULT && this.value == 0;
-        }
-
-        public Action setDelay(long j) {
-            this.delay = j;
-            return this;
-        }
-
-        public long getDelay() {
-            return this.delay;
-        }
-
-        public CallbackType getCallbackType() {
-            return this.callbackType;
-        }
-
-        public int getCode() {
-            return this.code;
-        }
-
-        public int getVendorCode() {
-            return this.vendorCode;
-        }
-
-        public int getValue() {
-            return this.value;
-        }
-
-        public String toDebugString() {
-            return this.callbackType.name() + ": " + this.code + ", " + this.vendorCode + ", " + this.value + ", delay = " + this.delay;
+            if (ordinal == 1) {
+                this.callback.deliverErrorEvent(this.code, this.vendorCode);
+                return;
+            }
+            if (ordinal == 2) {
+                this.callback.deliverEnrollResult(this.value);
+                return;
+            }
+            if (ordinal == 3) {
+                this.callback.deliverAuthenticationResult(this.value);
+            } else if (ordinal == 5) {
+                this.callback.getClass();
+            } else {
+                if (ordinal != 6) {
+                    return;
+                }
+                this.callback.deliverTspEvent(this.value);
+            }
         }
     }
 
-    /* renamed from: com.android.server.biometrics.sensors.SemTestHalHelper$1, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public abstract /* synthetic */ class AnonymousClass1 {
-        public static final /* synthetic */ int[] $SwitchMap$com$android$server$biometrics$sensors$SemTestHalHelper$CallbackType;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface Callback {
+        void deliverAcquiredEvent(int i, int i2);
+
+        void deliverAuthenticationResult(int i);
+
+        void deliverEnrollResult(int i);
+
+        void deliverErrorEvent(int i, int i2);
+
+        default void deliverTspEvent(int i) {
+        }
+    }
+
+    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CallbackType {
+        public static final /* synthetic */ CallbackType[] $VALUES;
+        public static final CallbackType ACQUIRED;
+        public static final CallbackType AUTHENTICATED;
+        public static final CallbackType ENROLL_RESULT;
+        public static final CallbackType ERROR;
+        public static final CallbackType TSP_FOD;
 
         static {
-            int[] iArr = new int[CallbackType.values().length];
-            $SwitchMap$com$android$server$biometrics$sensors$SemTestHalHelper$CallbackType = iArr;
-            try {
-                iArr[CallbackType.ACQUIRED.ordinal()] = 1;
-            } catch (NoSuchFieldError unused) {
-            }
-            try {
-                $SwitchMap$com$android$server$biometrics$sensors$SemTestHalHelper$CallbackType[CallbackType.ERROR.ordinal()] = 2;
-            } catch (NoSuchFieldError unused2) {
-            }
-            try {
-                $SwitchMap$com$android$server$biometrics$sensors$SemTestHalHelper$CallbackType[CallbackType.ENROLL_RESULT.ordinal()] = 3;
-            } catch (NoSuchFieldError unused3) {
-            }
-            try {
-                $SwitchMap$com$android$server$biometrics$sensors$SemTestHalHelper$CallbackType[CallbackType.AUTHENTICATED.ordinal()] = 4;
-            } catch (NoSuchFieldError unused4) {
-            }
-            try {
-                $SwitchMap$com$android$server$biometrics$sensors$SemTestHalHelper$CallbackType[CallbackType.TSP_FOD.ordinal()] = 5;
-            } catch (NoSuchFieldError unused5) {
-            }
-            try {
-                $SwitchMap$com$android$server$biometrics$sensors$SemTestHalHelper$CallbackType[CallbackType.ENUMERATE.ordinal()] = 6;
-            } catch (NoSuchFieldError unused6) {
-            }
+            CallbackType callbackType = new CallbackType("ACQUIRED", 0);
+            ACQUIRED = callbackType;
+            CallbackType callbackType2 = new CallbackType("ERROR", 1);
+            ERROR = callbackType2;
+            CallbackType callbackType3 = new CallbackType("ENROLL_RESULT", 2);
+            ENROLL_RESULT = callbackType3;
+            CallbackType callbackType4 = new CallbackType("AUTHENTICATED", 3);
+            AUTHENTICATED = callbackType4;
+            CallbackType callbackType5 = new CallbackType("REMOVED", 4);
+            CallbackType callbackType6 = new CallbackType("ENUMERATE", 5);
+            CallbackType callbackType7 = new CallbackType("TSP_FOD", 6);
+            TSP_FOD = callbackType7;
+            $VALUES = new CallbackType[]{callbackType, callbackType2, callbackType3, callbackType4, callbackType5, callbackType6, callbackType7};
+        }
+
+        public static CallbackType valueOf(String str) {
+            return (CallbackType) Enum.valueOf(CallbackType.class, str);
+        }
+
+        public static CallbackType[] values() {
+            return (CallbackType[]) $VALUES.clone();
         }
     }
 
@@ -173,168 +124,72 @@ public class SemTestHalHelper {
         this.mCallback = callback;
     }
 
-    public void initActions() {
-        this.mAuthActionList.clear();
-        this.mEnrollActionList.clear();
-        initDefaultAction();
-        JSONObject jSONObject = Utils.getJSONObject(getActionPath());
-        if (jSONObject != null) {
-            makeActionFromJSONObject(jSONObject);
+    public final void addFpCaptureFailedAction(int i, int i2, List list) {
+        CallbackType callbackType = CallbackType.ACQUIRED;
+        Callback callback = this.mCallback;
+        list.add(new Action(callbackType, callback, 6, 10001));
+        boolean z = SemBiometricFeature.FP_FEATURE_SENSOR_IS_OPTICAL;
+        CallbackType callbackType2 = CallbackType.TSP_FOD;
+        if (z) {
+            list.add(new Action(callbackType2, callback, 2));
         }
-    }
-
-    public List getEnrollActionList() {
-        return this.mEnrollActionList;
-    }
-
-    public List getAuthActionList() {
-        return this.mAuthActionList;
-    }
-
-    public long getDelayAuthAction() {
-        return this.mDelayAuthAction;
-    }
-
-    public final void initDefaultAction() {
-        addDefaultEnrollAction();
-        addDefaultAuthenticateAction();
-    }
-
-    public final void addDefaultEnrollAction() {
-        this.mEnrollActionList.clear();
-        if (this.mBiometricType == 2) {
-            for (int i = 1; i <= 5; i++) {
-                addFpDefaultCaptureSuccessAction(this.mEnrollActionList);
-                this.mEnrollActionList.add(new Action(CallbackType.ENROLL_RESULT, this.mCallback, 100 - (i * 20)));
-                addFingerLeaveAction(this.mEnrollActionList);
-            }
+        list.add(new Action(callbackType, callback, 6, 10002));
+        list.add(new Action(callbackType, callback, 6, 10003));
+        if (z) {
+            list.add(new Action(callbackType2, callback, 1));
         }
-        if (this.mBiometricType == 8) {
-            addFaceDefaultEnrollSuccessAction(this.mEnrollActionList);
-        }
-    }
-
-    public final void addDefaultAuthenticateAction() {
-        this.mAuthActionList.clear();
-        if (this.mBiometricType == 2) {
-            addFpAuthenticateAction(this.mAuthActionList, false);
-            addFpCaptureFailedAction(this.mAuthActionList, 1, 0);
-            addFpCaptureFailedAction(this.mAuthActionList, 6, 1003);
-            addFpAuthenticateAction(this.mAuthActionList, true);
-        }
-        if (this.mBiometricType == 8) {
-            addFaceDefaultAuthSuccessAction(this.mAuthActionList);
-        }
+        list.add(new Action(callbackType, callback, 6, FrameworkStatsLog.BLUETOOTH_BYTES_TRANSFER));
+        list.add(new Action(callbackType, callback, i, i2));
+        list.add(new Action(callbackType, callback, 6, 10004));
     }
 
     public final void addFpDefaultCaptureSuccessAction(List list) {
         CallbackType callbackType = CallbackType.ACQUIRED;
-        list.add(new Action(callbackType, this.mCallback, 6, 10001));
+        Callback callback = this.mCallback;
+        list.add(new Action(callbackType, callback, 6, 10001));
         boolean z = SemBiometricFeature.FP_FEATURE_SENSOR_IS_OPTICAL;
+        CallbackType callbackType2 = CallbackType.TSP_FOD;
         if (z) {
-            list.add(new Action(CallbackType.TSP_FOD, this.mCallback, 2));
+            list.add(new Action(callbackType2, callback, 2));
         }
-        list.add(new Action(callbackType, this.mCallback, 6, 10002));
-        list.add(new Action(callbackType, this.mCallback, 6, 10003));
+        list.add(new Action(callbackType, callback, 6, 10002));
+        list.add(new Action(callbackType, callback, 6, 10003));
         if (z) {
-            list.add(new Action(CallbackType.TSP_FOD, this.mCallback, 1));
+            list.add(new Action(callbackType2, callback, 1));
         }
-        list.add(new Action(callbackType, this.mCallback, 6, FrameworkStatsLog.SUBSYSTEM_SLEEP_STATE));
+        list.add(new Action(callbackType, callback, 6, FrameworkStatsLog.SUBSYSTEM_SLEEP_STATE));
     }
 
-    public final void addFpCaptureFailedAction(List list, int i, int i2) {
-        CallbackType callbackType = CallbackType.ACQUIRED;
-        list.add(new Action(callbackType, this.mCallback, 6, 10001));
-        boolean z = SemBiometricFeature.FP_FEATURE_SENSOR_IS_OPTICAL;
-        if (z) {
-            list.add(new Action(CallbackType.TSP_FOD, this.mCallback, 2));
-        }
-        list.add(new Action(callbackType, this.mCallback, 6, 10002));
-        list.add(new Action(callbackType, this.mCallback, 6, 10003));
-        if (z) {
-            list.add(new Action(CallbackType.TSP_FOD, this.mCallback, 1));
-        }
-        list.add(new Action(callbackType, this.mCallback, 6, FrameworkStatsLog.BLUETOOTH_BYTES_TRANSFER));
-        list.add(new Action(callbackType, this.mCallback, i, i2));
-        list.add(new Action(callbackType, this.mCallback, 6, 10004));
-    }
-
-    public final void addFingerLeaveAction(List list) {
-        list.add(new Action(CallbackType.ACQUIRED, this.mCallback, 6, 10004));
-    }
-
-    public final void addFpAuthenticateAction(List list, boolean z) {
-        addFpDefaultCaptureSuccessAction(list);
-        list.add(new Action(CallbackType.AUTHENTICATED, this.mCallback, z ? 1 : 0));
-        addFingerLeaveAction(list);
-    }
-
-    public final String getActionPath() {
-        int i = this.mBiometricType;
-        return i == 2 ? "/data/.biometric/fingerprint/tpa.json" : i == 8 ? "/data/.biometric/face/tpa.json" : "";
-    }
-
-    public final void addFaceDefaultEnrollSuccessAction(List list) {
-        CallbackType callbackType = CallbackType.ENROLL_RESULT;
-        list.add(new Action(callbackType, this.mCallback, 70).setDelay(1000L));
-        list.add(new Action(callbackType, this.mCallback, 50).setDelay(1000L));
-        list.add(new Action(callbackType, this.mCallback, 30).setDelay(1000L));
-        list.add(new Action(callbackType, this.mCallback, 0).setDelay(1000L));
-    }
-
-    public final void addFaceDefaultAuthSuccessAction(List list) {
-        list.add(new Action(CallbackType.ACQUIRED, this.mCallback, 1, 0).setDelay(1000L));
-        list.add(new Action(CallbackType.AUTHENTICATED, this.mCallback, 1).setDelay(1000L));
-    }
-
-    public final void makeActionFromJSONObject(JSONObject jSONObject) {
-        Action action;
-        ArrayList<Pair> arrayList = new ArrayList();
-        arrayList.add(new Pair("enroll", this.mEnrollActionList));
-        arrayList.add(new Pair("authenticate", this.mAuthActionList));
-        for (Pair pair : arrayList) {
-            Slog.d("SemTestHalHelper", "makeActionFromJSONObject: parse key = " + ((String) pair.first));
-            try {
-                if (!jSONObject.has((String) pair.first)) {
-                    Slog.d("SemTestHalHelper", "makeActionFromJSONObject: No Key, use default");
-                } else {
-                    JSONObject jSONObject2 = jSONObject.getJSONObject((String) pair.first);
-                    if (!jSONObject2.has("actionList")) {
-                        Slog.d("SemTestHalHelper", "makeActionFromJSONObject: No actionList, use default");
-                    } else {
-                        if (jSONObject2.has("delay")) {
-                            this.mDelayAuthAction = jSONObject2.getLong("delay");
-                            Slog.d("SemTestHalHelper", "makeActionFromJSONObject: key = " + ((String) pair.first) + ", delay = " + this.mDelayAuthAction);
-                        }
-                        JSONArray jSONArray = jSONObject2.getJSONArray("actionList");
-                        int length = jSONArray.length();
-                        ((List) pair.second).clear();
-                        for (int i = 0; i < length; i++) {
-                            JSONObject jSONObject3 = jSONArray.getJSONObject(i);
-                            int i2 = jSONObject3.getInt("type");
-                            if (i2 == 1) {
-                                action = new Action(CallbackType.ACQUIRED, this.mCallback, jSONObject3.getInt("acquiredInfo"), jSONObject3.getInt("vendorCode"));
-                            } else if (i2 == 2) {
-                                action = new Action(CallbackType.ENROLL_RESULT, this.mCallback, jSONObject3.getInt("remaining"));
-                            } else if (i2 == 3) {
-                                action = new Action(CallbackType.AUTHENTICATED, this.mCallback, jSONObject3.getInt("Id"));
-                            } else if (i2 == 4) {
-                                action = new Action(CallbackType.ERROR, this.mCallback, jSONObject3.getInt("errorCode"), jSONObject3.getInt("vendorCode"));
-                            } else {
-                                action = i2 != 7 ? null : new Action(CallbackType.TSP_FOD, this.mCallback, jSONObject3.getInt("TspEvent"));
-                            }
-                            if (action != null) {
-                                if (jSONObject3.has("delay")) {
-                                    action.setDelay(jSONObject3.getLong("delay"));
-                                }
-                                ((List) pair.second).add(action);
-                            }
-                        }
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+    /* JADX WARN: Can't wrap try/catch for region: R(8:96|97|98|99|(5:100|101|(2:103|105)|(2:106|107)|108)|109|110|111) */
+    /* JADX WARN: Code restructure failed: missing block: B:113:0x0171, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:114:0x0172, code lost:
+    
+        r0.printStackTrace();
+        r0 = null;
+     */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x0179  */
+    /* JADX WARN: Removed duplicated region for block: B:55:0x02a2 A[Catch: JSONException -> 0x021b, TryCatch #5 {JSONException -> 0x021b, blocks: (B:40:0x020e, B:41:0x0223, B:43:0x0235, B:55:0x02a2, B:57:0x02a8, B:58:0x02ae, B:62:0x0255, B:63:0x0263, B:65:0x0277, B:66:0x0283, B:67:0x0290), top: B:39:0x020e }] */
+    /* JADX WARN: Removed duplicated region for block: B:61:0x02b5 A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:93:0x02ca A[ORIG_RETURN, RETURN] */
+    /* JADX WARN: Type inference failed for: r11v1 */
+    /* JADX WARN: Type inference failed for: r11v2 */
+    /* JADX WARN: Type inference failed for: r11v3, types: [java.io.BufferedReader] */
+    /* JADX WARN: Type inference failed for: r11v4 */
+    /* JADX WARN: Type inference failed for: r12v17, types: [int] */
+    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:139:0x013e -> B:94:0x0167). Please report as a decompilation issue!!! */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void initActions() {
+        /*
+            Method dump skipped, instructions count: 738
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.biometrics.sensors.SemTestHalHelper.initActions():void");
     }
 }

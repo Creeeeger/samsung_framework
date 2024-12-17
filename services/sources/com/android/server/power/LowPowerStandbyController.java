@@ -1,7 +1,6 @@
 package com.android.server.power;
 
 import android.R;
-import android.app.ActivityManager;
 import android.app.ActivityManagerInternal;
 import android.app.AlarmManager;
 import android.app.IActivityManager;
@@ -11,11 +10,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -24,6 +24,7 @@ import android.os.PowerManager;
 import android.os.PowerManagerInternal;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.DeviceConfig;
@@ -31,22 +32,25 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.AtomicFile;
-import android.util.IndentingPrintWriter;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.util.Xml;
 import android.util.proto.ProtoOutputStream;
+import com.android.internal.util.ArrayUtils;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.PowerAllowlistInternal;
-import com.android.server.net.NetworkPolicyManagerInternal;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
+import com.android.server.net.NetworkPolicyManagerService;
+import com.android.server.net.NetworkPolicyManagerService$$ExternalSyntheticLambda0;
+import com.android.server.power.LowPowerStandbyController;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,14 +61,15 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
-public class LowPowerStandbyController {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class LowPowerStandbyController {
     static final PowerManager.LowPowerStandbyPolicy DEFAULT_POLICY = new PowerManager.LowPowerStandbyPolicy("DEFAULT_POLICY", Collections.emptySet(), 1, Collections.emptySet());
     public boolean mActiveDuringMaintenance;
     public final Supplier mActivityManager;
     public ActivityManagerInternal mActivityManagerInternal;
     public AlarmManager mAlarmManager;
-    public final BroadcastReceiver mBroadcastReceiver;
+    public final AnonymousClass1 mBroadcastReceiver;
     public final Clock mClock;
     public final Context mContext;
     public final DeviceConfigWrapper mDeviceConfig;
@@ -72,36 +77,217 @@ public class LowPowerStandbyController {
     public boolean mEnableStandbyPorts;
     public boolean mEnabledByDefaultConfig;
     public boolean mForceActive;
-    public final Handler mHandler;
+    public final LowPowerStandbyHandler mHandler;
     public boolean mIdleSinceNonInteractive;
     public boolean mIsActive;
     public boolean mIsDeviceIdle;
     public boolean mIsEnabled;
     public boolean mIsInteractive;
     public long mLastInteractiveTimeElapsed;
-    public final LowPowerStandbyControllerInternal mLocalService;
-    public final Object mLock;
-    public final AlarmManager.OnAlarmListener mOnStandbyTimeoutExpired;
-    public final BroadcastReceiver mPackageBroadcastReceiver;
-    public final PhoneCallServiceTracker mPhoneCallServiceTracker;
+    public final AnonymousClass1 mPackageBroadcastReceiver;
     public PowerManager.LowPowerStandbyPolicy mPolicy;
     public final File mPolicyFile;
     public PowerManager mPowerManager;
     public final SettingsObserver mSettingsObserver;
-    public final List mStandbyPortLocks;
     public int mStandbyTimeoutConfig;
     public boolean mSupportedConfig;
-    public final TempAllowlistChangeListener mTempAllowlistChangeListener;
-    public final SparseIntArray mUidAllowedReasons;
-    public final BroadcastReceiver mUserReceiver;
+    public final AnonymousClass1 mUserReceiver;
+    public final Object mLock = new Object();
+    public final LowPowerStandbyController$$ExternalSyntheticLambda1 mOnStandbyTimeoutExpired = new AlarmManager.OnAlarmListener() { // from class: com.android.server.power.LowPowerStandbyController$$ExternalSyntheticLambda1
+        @Override // android.app.AlarmManager.OnAlarmListener
+        public final void onAlarm() {
+            LowPowerStandbyController lowPowerStandbyController = LowPowerStandbyController.this;
+            synchronized (lowPowerStandbyController.mLock) {
+                lowPowerStandbyController.updateActiveLocked();
+            }
+        }
+    };
+    public final LocalService mLocalService = new LocalService();
+    public final SparseIntArray mUidAllowedReasons = new SparseIntArray();
+    public final List mLowPowerStandbyManagingPackages = new ArrayList();
+    public final List mStandbyPortLocks = new ArrayList();
+    public final TempAllowlistChangeListener mTempAllowlistChangeListener = new TempAllowlistChangeListener();
+    public final PhoneCallServiceTracker mPhoneCallServiceTracker = new PhoneCallServiceTracker();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes3.dex */
-    public interface Clock {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    interface Clock {
         long elapsedRealtime();
+
+        long uptimeMillis();
     }
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class DeviceConfigWrapper {
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalService {
+        public LocalService() {
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LowPowerStandbyHandler extends Handler {
+        public LowPowerStandbyHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            int i = message.what;
+            if (i == 0) {
+                LowPowerStandbyController lowPowerStandbyController = LowPowerStandbyController.this;
+                synchronized (lowPowerStandbyController.mLock) {
+                    lowPowerStandbyController.updateActiveLocked();
+                }
+                return;
+            }
+            if (i == 1) {
+                boolean booleanValue = ((Boolean) message.obj).booleanValue();
+                LowPowerStandbyController.this.getClass();
+                PowerManagerInternal powerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
+                NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl networkPolicyManagerInternalImpl = (NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl) LocalServices.getService(NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl.class);
+                powerManagerInternal.setLowPowerStandbyActive(booleanValue);
+                networkPolicyManagerInternalImpl.getClass();
+                Trace.traceBegin(2097152L, "setLowPowerStandbyActive");
+                try {
+                    synchronized (NetworkPolicyManagerService.this.mUidRulesFirstLock) {
+                        try {
+                            if (NetworkPolicyManagerService.this.mLowPowerStandbyActive != booleanValue) {
+                                NetworkPolicyManagerService.this.mLowPowerStandbyActive = booleanValue;
+                                synchronized (NetworkPolicyManagerService.this.mNetworkPoliciesSecondLock) {
+                                    if (NetworkPolicyManagerService.this.mSystemReady) {
+                                        NetworkPolicyManagerService.this.forEachUid("updateRulesForRestrictPower", new NetworkPolicyManagerService$$ExternalSyntheticLambda0(4, networkPolicyManagerInternalImpl));
+                                        NetworkPolicyManagerService.this.updateRulesForLowPowerStandbyUL();
+                                    }
+                                }
+                            }
+                        } finally {
+                        }
+                    }
+                    return;
+                } finally {
+                    Trace.traceEnd(2097152L);
+                }
+            }
+            if (i != 2) {
+                if (i == 3) {
+                    LowPowerStandbyController lowPowerStandbyController2 = LowPowerStandbyController.this;
+                    lowPowerStandbyController2.sendExplicitBroadcast("android.os.action.LOW_POWER_STANDBY_POLICY_CHANGED");
+                    return;
+                }
+                if (i != 4) {
+                    if (i != 5) {
+                        return;
+                    }
+                    LowPowerStandbyController lowPowerStandbyController3 = LowPowerStandbyController.this;
+                    lowPowerStandbyController3.getClass();
+                    Intent intent = new Intent("android.os.action.LOW_POWER_STANDBY_PORTS_CHANGED");
+                    intent.addFlags(268435456);
+                    lowPowerStandbyController3.mContext.sendBroadcastAsUser(intent, UserHandle.ALL, "android.permission.MANAGE_LOW_POWER_STANDBY");
+                    return;
+                }
+                int i2 = message.arg1;
+                PhoneCallServiceTracker phoneCallServiceTracker = LowPowerStandbyController.this.mPhoneCallServiceTracker;
+                boolean z = phoneCallServiceTracker.mUidsWithPhoneCallService.get(i2);
+                boolean hasRunningForegroundService = LowPowerStandbyController.this.mActivityManagerInternal.hasRunningForegroundService(i2, 4);
+                if (hasRunningForegroundService == z) {
+                    return;
+                }
+                if (hasRunningForegroundService) {
+                    phoneCallServiceTracker.mUidsWithPhoneCallService.append(i2, true);
+                    LowPowerStandbyController.m792$$Nest$maddToAllowlistInternal(LowPowerStandbyController.this, i2, 4);
+                    return;
+                } else {
+                    phoneCallServiceTracker.mUidsWithPhoneCallService.delete(i2);
+                    LowPowerStandbyController.m793$$Nest$mremoveFromAllowlistInternal(LowPowerStandbyController.this, i2, 4);
+                    return;
+                }
+            }
+            int[] iArr = (int[]) message.obj;
+            LowPowerStandbyController.this.getClass();
+            PowerManagerInternal powerManagerInternal2 = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
+            NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl networkPolicyManagerInternalImpl2 = (NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl) LocalServices.getService(NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl.class);
+            powerManagerInternal2.setLowPowerStandbyAllowlist(iArr);
+            synchronized (NetworkPolicyManagerService.this.mUidRulesFirstLock) {
+                try {
+                    SparseBooleanArray sparseBooleanArray = new SparseBooleanArray();
+                    for (int i3 = 0; i3 < NetworkPolicyManagerService.this.mLowPowerStandbyAllowlistUids.size(); i3++) {
+                        int keyAt = NetworkPolicyManagerService.this.mLowPowerStandbyAllowlistUids.keyAt(i3);
+                        if (!ArrayUtils.contains(iArr, keyAt)) {
+                            sparseBooleanArray.put(keyAt, true);
+                        }
+                    }
+                    for (int i4 = 0; i4 < sparseBooleanArray.size(); i4++) {
+                        NetworkPolicyManagerService.this.mLowPowerStandbyAllowlistUids.delete(sparseBooleanArray.keyAt(i4));
+                    }
+                    for (int i5 : iArr) {
+                        if (NetworkPolicyManagerService.this.mLowPowerStandbyAllowlistUids.indexOfKey(i5) < 0) {
+                            sparseBooleanArray.append(i5, true);
+                            NetworkPolicyManagerService.this.mLowPowerStandbyAllowlistUids.append(i5, true);
+                        }
+                    }
+                    if (NetworkPolicyManagerService.this.mLowPowerStandbyActive) {
+                        synchronized (NetworkPolicyManagerService.this.mNetworkPoliciesSecondLock) {
+                            if (NetworkPolicyManagerService.this.mSystemReady) {
+                                for (int i6 = 0; i6 < sparseBooleanArray.size(); i6++) {
+                                    int keyAt2 = sparseBooleanArray.keyAt(i6);
+                                    NetworkPolicyManagerService.this.updateRulesForPowerRestrictionsUL(keyAt2, -1);
+                                    NetworkPolicyManagerService.this.updateRuleForLowPowerStandbyUL(keyAt2);
+                                }
+                            }
+                        }
+                    }
+                } finally {
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PhoneCallServiceTracker extends IForegroundServiceObserver.Stub {
+        public boolean mRegistered = false;
+        public final SparseBooleanArray mUidsWithPhoneCallService = new SparseBooleanArray();
+
+        public PhoneCallServiceTracker() {
+        }
+
+        public final void onForegroundStateChanged(IBinder iBinder, String str, int i, boolean z) {
+            try {
+                Message obtainMessage = LowPowerStandbyController.this.mHandler.obtainMessage(4, LowPowerStandbyController.this.mContext.getPackageManager().getPackageUidAsUser(str, i), 0);
+                LowPowerStandbyController lowPowerStandbyController = LowPowerStandbyController.this;
+                lowPowerStandbyController.mHandler.sendMessageAtTime(obtainMessage, lowPowerStandbyController.mClock.uptimeMillis());
+            } catch (PackageManager.NameNotFoundException unused) {
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RealClock implements Clock {
+        @Override // com.android.server.power.LowPowerStandbyController.Clock
+        public final long elapsedRealtime() {
+            return SystemClock.elapsedRealtime();
+        }
+
+        @Override // com.android.server.power.LowPowerStandbyController.Clock
+        public final long uptimeMillis() {
+            return SystemClock.uptimeMillis();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SettingsObserver extends ContentObserver {
+        public SettingsObserver(LowPowerStandbyHandler lowPowerStandbyHandler) {
+            super(lowPowerStandbyHandler);
+        }
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z, Uri uri) {
+            LowPowerStandbyController.this.onSettingsChanged();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class StandbyPortsLock implements IBinder.DeathRecipient {
         public final List mPorts;
         public final IBinder mToken;
@@ -113,132 +299,251 @@ public class LowPowerStandbyController {
             this.mPorts = list;
         }
 
-        public boolean linkToDeath() {
-            try {
-                this.mToken.linkToDeath(this, 0);
-                return true;
-            } catch (RemoteException unused) {
-                android.util.Slog.i("LowPowerStandbyController", "StandbyPorts token already died");
-                return false;
-            }
-        }
-
-        public void unlinkToDeath() {
-            this.mToken.unlinkToDeath(this, 0);
-        }
-
-        public IBinder getToken() {
-            return this.mToken;
-        }
-
-        public int getUid() {
-            return this.mUid;
-        }
-
-        public List getPorts() {
-            return this.mPorts;
-        }
-
         @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
+        public final void binderDied() {
             LowPowerStandbyController.this.releaseStandbyPorts(this.mToken);
         }
     }
 
-    public LowPowerStandbyController(Context context, Looper looper) {
-        this(context, looper, new Clock() { // from class: com.android.server.power.LowPowerStandbyController$$ExternalSyntheticLambda3
-            @Override // com.android.server.power.LowPowerStandbyController.Clock
-            public final long elapsedRealtime() {
-                return SystemClock.elapsedRealtime();
-            }
-        }, new DeviceConfigWrapper(), new Supplier() { // from class: com.android.server.power.LowPowerStandbyController$$ExternalSyntheticLambda4
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                IActivityManager lambda$new$0;
-                lambda$new$0 = LowPowerStandbyController.lambda$new$0();
-                return lambda$new$0;
-            }
-        }, new File(Environment.getDataSystemDirectory(), "low_power_standby_policy.xml"));
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TempAllowlistChangeListener implements PowerAllowlistInternal.TempAllowlistChangeListener {
+        public TempAllowlistChangeListener() {
+        }
+
+        public final void onAppAdded(int i) {
+            LowPowerStandbyController.m792$$Nest$maddToAllowlistInternal(LowPowerStandbyController.this, i, 2);
+        }
+
+        public final void onAppRemoved(int i) {
+            LowPowerStandbyController.m793$$Nest$mremoveFromAllowlistInternal(LowPowerStandbyController.this, i, 2);
+        }
     }
 
-    public static /* synthetic */ IActivityManager lambda$new$0() {
-        return ActivityManager.getService();
-    }
-
-    public LowPowerStandbyController(Context context, Looper looper, Clock clock, DeviceConfigWrapper deviceConfigWrapper, Supplier supplier, File file) {
-        this.mLock = new Object();
-        this.mOnStandbyTimeoutExpired = new AlarmManager.OnAlarmListener() { // from class: com.android.server.power.LowPowerStandbyController$$ExternalSyntheticLambda0
-            @Override // android.app.AlarmManager.OnAlarmListener
-            public final void onAlarm() {
-                LowPowerStandbyController.this.onStandbyTimeoutExpired();
-            }
-        };
-        this.mLocalService = new LocalService();
-        this.mUidAllowedReasons = new SparseIntArray();
-        this.mStandbyPortLocks = new ArrayList();
-        this.mBroadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.power.LowPowerStandbyController.1
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                String action = intent.getAction();
-                action.hashCode();
-                char c = 65535;
-                switch (action.hashCode()) {
-                    case -2128145023:
-                        if (action.equals("android.intent.action.SCREEN_OFF")) {
-                            c = 0;
-                            break;
+    /* renamed from: -$$Nest$maddToAllowlistInternal, reason: not valid java name */
+    public static void m792$$Nest$maddToAllowlistInternal(LowPowerStandbyController lowPowerStandbyController, int i, int i2) {
+        synchronized (lowPowerStandbyController.mLock) {
+            try {
+                if (lowPowerStandbyController.mSupportedConfig) {
+                    if (i2 != 0 && (lowPowerStandbyController.mUidAllowedReasons.get(i) & i2) == 0) {
+                        lowPowerStandbyController.mUidAllowedReasons.put(i, lowPowerStandbyController.mUidAllowedReasons.get(i) | i2);
+                        if ((lowPowerStandbyController.getPolicy().getAllowedReasons() & i2) != 0) {
+                            lowPowerStandbyController.enqueueNotifyAllowlistChangedLocked();
                         }
-                        break;
-                    case -1454123155:
-                        if (action.equals("android.intent.action.SCREEN_ON")) {
-                            c = 1;
-                            break;
-                        }
-                        break;
-                    case 870701415:
-                        if (action.equals("android.os.action.DEVICE_IDLE_MODE_CHANGED")) {
-                            c = 2;
-                            break;
-                        }
-                        break;
-                }
-                switch (c) {
-                    case 0:
-                        LowPowerStandbyController.this.onNonInteractive();
-                        return;
-                    case 1:
-                        LowPowerStandbyController.this.onInteractive();
-                        return;
-                    case 2:
-                        LowPowerStandbyController.this.onDeviceIdleModeChanged();
-                        return;
-                    default:
-                        return;
-                }
-            }
-        };
-        this.mTempAllowlistChangeListener = new TempAllowlistChangeListener();
-        this.mPhoneCallServiceTracker = new PhoneCallServiceTracker();
-        this.mPackageBroadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.power.LowPowerStandbyController.2
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                if (intent.getBooleanExtra("android.intent.extra.REPLACING", false)) {
-                    return;
-                }
-                Uri data = intent.getData();
-                String schemeSpecificPart = data != null ? data.getSchemeSpecificPart() : null;
-                synchronized (LowPowerStandbyController.this.mLock) {
-                    if (LowPowerStandbyController.this.getPolicy().getExemptPackages().contains(schemeSpecificPart)) {
-                        LowPowerStandbyController.this.enqueueNotifyAllowlistChangedLocked();
                     }
                 }
+            } finally {
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$mremoveFromAllowlistInternal, reason: not valid java name */
+    public static void m793$$Nest$mremoveFromAllowlistInternal(LowPowerStandbyController lowPowerStandbyController, int i, int i2) {
+        synchronized (lowPowerStandbyController.mLock) {
+            try {
+                if (lowPowerStandbyController.mSupportedConfig) {
+                    if (i2 != 0 && (lowPowerStandbyController.mUidAllowedReasons.get(i) & i2) != 0) {
+                        int i3 = lowPowerStandbyController.mUidAllowedReasons.get(i);
+                        if (i3 != 0) {
+                            int i4 = i3 & (~i2);
+                            if (i4 == 0) {
+                                SparseIntArray sparseIntArray = lowPowerStandbyController.mUidAllowedReasons;
+                                sparseIntArray.removeAt(sparseIntArray.indexOfKey(i));
+                            } else {
+                                lowPowerStandbyController.mUidAllowedReasons.put(i, i4);
+                            }
+                        }
+                        if ((lowPowerStandbyController.getPolicy().getAllowedReasons() & i2) != 0) {
+                            lowPowerStandbyController.enqueueNotifyAllowlistChangedLocked();
+                        }
+                    }
+                }
+            } finally {
+            }
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.power.LowPowerStandbyController$$ExternalSyntheticLambda1] */
+    /* JADX WARN: Type inference failed for: r0v10, types: [com.android.server.power.LowPowerStandbyController$1] */
+    /* JADX WARN: Type inference failed for: r0v6, types: [com.android.server.power.LowPowerStandbyController$1] */
+    /* JADX WARN: Type inference failed for: r0v9, types: [com.android.server.power.LowPowerStandbyController$1] */
+    public LowPowerStandbyController(Context context, Looper looper, Clock clock, DeviceConfigWrapper deviceConfigWrapper, Supplier supplier, File file) {
+        final int i = 0;
+        this.mBroadcastReceiver = new BroadcastReceiver(this) { // from class: com.android.server.power.LowPowerStandbyController.1
+            public final /* synthetic */ LowPowerStandbyController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                boolean z = true;
+                switch (i) {
+                    case 0:
+                        String action = intent.getAction();
+                        action.getClass();
+                        switch (action) {
+                            case "android.intent.action.SCREEN_OFF":
+                                this.this$0.onNonInteractive();
+                                return;
+                            case "android.intent.action.SCREEN_ON":
+                                this.this$0.onInteractive();
+                                return;
+                            case "android.os.action.DEVICE_IDLE_MODE_CHANGED":
+                                LowPowerStandbyController lowPowerStandbyController = this.this$0;
+                                synchronized (lowPowerStandbyController.mLock) {
+                                    boolean isDeviceIdleMode = lowPowerStandbyController.mPowerManager.isDeviceIdleMode();
+                                    lowPowerStandbyController.mIsDeviceIdle = isDeviceIdleMode;
+                                    if (!lowPowerStandbyController.mIdleSinceNonInteractive && !isDeviceIdleMode) {
+                                        z = false;
+                                    }
+                                    lowPowerStandbyController.mIdleSinceNonInteractive = z;
+                                    lowPowerStandbyController.updateActiveLocked();
+                                }
+                                return;
+                            default:
+                                return;
+                        }
+                    case 1:
+                        if (intent.getBooleanExtra("android.intent.extra.REPLACING", false)) {
+                            return;
+                        }
+                        Uri data = intent.getData();
+                        String schemeSpecificPart = data != null ? data.getSchemeSpecificPart() : null;
+                        synchronized (this.this$0.mLock) {
+                            try {
+                                if (this.this$0.getPolicy().getExemptPackages().contains(schemeSpecificPart)) {
+                                    this.this$0.enqueueNotifyAllowlistChangedLocked();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                    default:
+                        synchronized (this.this$0.mLock) {
+                            this.this$0.enqueueNotifyAllowlistChangedLocked();
+                        }
+                        return;
+                }
             }
         };
-        this.mUserReceiver = new BroadcastReceiver() { // from class: com.android.server.power.LowPowerStandbyController.3
+        final int i2 = 1;
+        this.mPackageBroadcastReceiver = new BroadcastReceiver(this) { // from class: com.android.server.power.LowPowerStandbyController.1
+            public final /* synthetic */ LowPowerStandbyController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                synchronized (LowPowerStandbyController.this.mLock) {
-                    LowPowerStandbyController.this.enqueueNotifyAllowlistChangedLocked();
+            public final void onReceive(Context context2, Intent intent) {
+                boolean z = true;
+                switch (i2) {
+                    case 0:
+                        String action = intent.getAction();
+                        action.getClass();
+                        switch (action) {
+                            case "android.intent.action.SCREEN_OFF":
+                                this.this$0.onNonInteractive();
+                                return;
+                            case "android.intent.action.SCREEN_ON":
+                                this.this$0.onInteractive();
+                                return;
+                            case "android.os.action.DEVICE_IDLE_MODE_CHANGED":
+                                LowPowerStandbyController lowPowerStandbyController = this.this$0;
+                                synchronized (lowPowerStandbyController.mLock) {
+                                    boolean isDeviceIdleMode = lowPowerStandbyController.mPowerManager.isDeviceIdleMode();
+                                    lowPowerStandbyController.mIsDeviceIdle = isDeviceIdleMode;
+                                    if (!lowPowerStandbyController.mIdleSinceNonInteractive && !isDeviceIdleMode) {
+                                        z = false;
+                                    }
+                                    lowPowerStandbyController.mIdleSinceNonInteractive = z;
+                                    lowPowerStandbyController.updateActiveLocked();
+                                }
+                                return;
+                            default:
+                                return;
+                        }
+                    case 1:
+                        if (intent.getBooleanExtra("android.intent.extra.REPLACING", false)) {
+                            return;
+                        }
+                        Uri data = intent.getData();
+                        String schemeSpecificPart = data != null ? data.getSchemeSpecificPart() : null;
+                        synchronized (this.this$0.mLock) {
+                            try {
+                                if (this.this$0.getPolicy().getExemptPackages().contains(schemeSpecificPart)) {
+                                    this.this$0.enqueueNotifyAllowlistChangedLocked();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                    default:
+                        synchronized (this.this$0.mLock) {
+                            this.this$0.enqueueNotifyAllowlistChangedLocked();
+                        }
+                        return;
+                }
+            }
+        };
+        final int i3 = 2;
+        this.mUserReceiver = new BroadcastReceiver(this) { // from class: com.android.server.power.LowPowerStandbyController.1
+            public final /* synthetic */ LowPowerStandbyController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                boolean z = true;
+                switch (i3) {
+                    case 0:
+                        String action = intent.getAction();
+                        action.getClass();
+                        switch (action) {
+                            case "android.intent.action.SCREEN_OFF":
+                                this.this$0.onNonInteractive();
+                                return;
+                            case "android.intent.action.SCREEN_ON":
+                                this.this$0.onInteractive();
+                                return;
+                            case "android.os.action.DEVICE_IDLE_MODE_CHANGED":
+                                LowPowerStandbyController lowPowerStandbyController = this.this$0;
+                                synchronized (lowPowerStandbyController.mLock) {
+                                    boolean isDeviceIdleMode = lowPowerStandbyController.mPowerManager.isDeviceIdleMode();
+                                    lowPowerStandbyController.mIsDeviceIdle = isDeviceIdleMode;
+                                    if (!lowPowerStandbyController.mIdleSinceNonInteractive && !isDeviceIdleMode) {
+                                        z = false;
+                                    }
+                                    lowPowerStandbyController.mIdleSinceNonInteractive = z;
+                                    lowPowerStandbyController.updateActiveLocked();
+                                }
+                                return;
+                            default:
+                                return;
+                        }
+                    case 1:
+                        if (intent.getBooleanExtra("android.intent.extra.REPLACING", false)) {
+                            return;
+                        }
+                        Uri data = intent.getData();
+                        String schemeSpecificPart = data != null ? data.getSchemeSpecificPart() : null;
+                        synchronized (this.this$0.mLock) {
+                            try {
+                                if (this.this$0.getPolicy().getExemptPackages().contains(schemeSpecificPart)) {
+                                    this.this$0.enqueueNotifyAllowlistChangedLocked();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                    default:
+                        synchronized (this.this$0.mLock) {
+                            this.this$0.enqueueNotifyAllowlistChangedLocked();
+                        }
+                        return;
                 }
             }
         };
@@ -252,82 +557,242 @@ public class LowPowerStandbyController {
         this.mPolicyFile = file;
     }
 
-    public void systemReady() {
-        Resources resources = this.mContext.getResources();
+    public static void writeTagValue(TypedXmlSerializer typedXmlSerializer, String str, String str2) {
+        if (TextUtils.isEmpty(str2)) {
+            return;
+        }
+        typedXmlSerializer.startTag((String) null, str);
+        typedXmlSerializer.attribute((String) null, "value", str2);
+        typedXmlSerializer.endTag((String) null, str);
+    }
+
+    public final void acquireStandbyPorts(IBinder iBinder, List list, int i) {
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            int portNumber = ((PowerManager.LowPowerStandbyPortDescription) it.next()).getPortNumber();
+            if (portNumber < 0 || portNumber > 65535) {
+                throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(portNumber, "port out of range:"));
+            }
+        }
+        StandbyPortsLock standbyPortsLock = new StandbyPortsLock(iBinder, i, list);
         synchronized (this.mLock) {
-            boolean z = resources.getBoolean(17891761);
-            this.mSupportedConfig = z;
-            if (z) {
-                this.mAlarmManager = (AlarmManager) this.mContext.getSystemService(AlarmManager.class);
-                this.mPowerManager = (PowerManager) this.mContext.getSystemService(PowerManager.class);
-                this.mActivityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
-                this.mStandbyTimeoutConfig = resources.getInteger(R.integer.config_valid_wappush_index);
-                this.mEnabledByDefaultConfig = resources.getBoolean(17891760);
-                this.mIsInteractive = this.mPowerManager.isInteractive();
-                this.mContext.getContentResolver().registerContentObserver(Settings.Global.getUriFor("low_power_standby_enabled"), false, this.mSettingsObserver, -1);
-                this.mContext.getContentResolver().registerContentObserver(Settings.Global.getUriFor("low_power_standby_active_during_maintenance"), false, this.mSettingsObserver, -1);
-                this.mDeviceConfig.registerPropertyUpdateListener(this.mContext.getMainExecutor(), new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.power.LowPowerStandbyController$$ExternalSyntheticLambda1
-                    public final void onPropertiesChanged(DeviceConfig.Properties properties) {
-                        LowPowerStandbyController.this.lambda$systemReady$1(properties);
+            if (findIndexOfStandbyPorts(iBinder) != -1) {
+                return;
+            }
+            try {
+                iBinder.linkToDeath(standbyPortsLock, 0);
+                ((ArrayList) this.mStandbyPortLocks).add(standbyPortsLock);
+                if (this.mEnableStandbyPorts && isEnabled() && isPackageExempt(i)) {
+                    LowPowerStandbyHandler lowPowerStandbyHandler = this.mHandler;
+                    lowPowerStandbyHandler.sendMessageAtTime(lowPowerStandbyHandler.obtainMessage(5), this.mClock.uptimeMillis());
+                }
+            } catch (RemoteException unused) {
+                android.util.Slog.i("LowPowerStandbyController", "StandbyPorts token already died");
+            }
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:11:0x00a5 A[Catch: all -> 0x0060, TryCatch #0 {all -> 0x0060, blocks: (B:4:0x0015, B:6:0x005b, B:9:0x008f, B:11:0x00a5, B:12:0x00f6, B:13:0x0102, B:15:0x010a, B:17:0x0112, B:19:0x012d, B:22:0x0130, B:24:0x013f, B:25:0x014e, B:27:0x0154, B:29:0x0162, B:30:0x0165, B:35:0x0063), top: B:3:0x0015 }] */
+    /* JADX WARN: Removed duplicated region for block: B:15:0x010a A[Catch: all -> 0x0060, TryCatch #0 {all -> 0x0060, blocks: (B:4:0x0015, B:6:0x005b, B:9:0x008f, B:11:0x00a5, B:12:0x00f6, B:13:0x0102, B:15:0x010a, B:17:0x0112, B:19:0x012d, B:22:0x0130, B:24:0x013f, B:25:0x014e, B:27:0x0154, B:29:0x0162, B:30:0x0165, B:35:0x0063), top: B:3:0x0015 }] */
+    /* JADX WARN: Removed duplicated region for block: B:24:0x013f A[Catch: all -> 0x0060, TryCatch #0 {all -> 0x0060, blocks: (B:4:0x0015, B:6:0x005b, B:9:0x008f, B:11:0x00a5, B:12:0x00f6, B:13:0x0102, B:15:0x010a, B:17:0x0112, B:19:0x012d, B:22:0x0130, B:24:0x013f, B:25:0x014e, B:27:0x0154, B:29:0x0162, B:30:0x0165, B:35:0x0063), top: B:3:0x0015 }] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void dump(java.io.PrintWriter r5) {
+        /*
+            Method dump skipped, instructions count: 364
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.power.LowPowerStandbyController.dump(java.io.PrintWriter):void");
+    }
+
+    public final void dumpProto(ProtoOutputStream protoOutputStream) {
+        synchronized (this.mLock) {
+            try {
+                long start = protoOutputStream.start(1146756268088L);
+                protoOutputStream.write(1133871366145L, this.mIsActive);
+                protoOutputStream.write(1133871366146L, this.mIsEnabled);
+                protoOutputStream.write(1133871366147L, this.mSupportedConfig);
+                protoOutputStream.write(1133871366148L, this.mEnabledByDefaultConfig);
+                protoOutputStream.write(1133871366149L, this.mIsInteractive);
+                protoOutputStream.write(1112396529670L, this.mLastInteractiveTimeElapsed);
+                protoOutputStream.write(1120986464263L, this.mStandbyTimeoutConfig);
+                protoOutputStream.write(1133871366152L, this.mIdleSinceNonInteractive);
+                protoOutputStream.write(1133871366153L, this.mIsDeviceIdle);
+                for (int i : getAllowlistUidsLocked()) {
+                    protoOutputStream.write(2220498092042L, i);
+                }
+                PowerManager.LowPowerStandbyPolicy policy = getPolicy();
+                if (policy != null) {
+                    long start2 = protoOutputStream.start(1146756268043L);
+                    protoOutputStream.write(1138166333441L, policy.getIdentifier());
+                    Iterator it = policy.getExemptPackages().iterator();
+                    while (it.hasNext()) {
+                        protoOutputStream.write(2237677961218L, (String) it.next());
                     }
-                });
-                this.mEnableCustomPolicy = this.mDeviceConfig.enableCustomPolicy();
-                this.mEnableStandbyPorts = this.mDeviceConfig.enableStandbyPorts();
-                if (this.mEnableCustomPolicy) {
-                    this.mPolicy = loadPolicy();
-                } else {
-                    this.mPolicy = DEFAULT_POLICY;
+                    protoOutputStream.write(1120986464259L, policy.getAllowedReasons());
+                    Iterator it2 = policy.getAllowedFeatures().iterator();
+                    while (it2.hasNext()) {
+                        protoOutputStream.write(2237677961220L, (String) it2.next());
+                    }
+                    protoOutputStream.end(start2);
                 }
-                initSettingsLocked();
-                updateSettingsLocked();
-                if (this.mIsEnabled) {
-                    registerListeners();
-                }
-                LocalServices.addService(LowPowerStandbyControllerInternal.class, this.mLocalService);
+                protoOutputStream.end(start);
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$systemReady$1(DeviceConfig.Properties properties) {
-        onDeviceConfigFlagsChanged();
+    public final void enqueueNotifyAllowlistChangedLocked() {
+        int[] allowlistUidsLocked = getAllowlistUidsLocked();
+        LowPowerStandbyHandler lowPowerStandbyHandler = this.mHandler;
+        lowPowerStandbyHandler.sendMessageAtTime(lowPowerStandbyHandler.obtainMessage(2, allowlistUidsLocked), this.mClock.uptimeMillis());
     }
 
-    public final void onDeviceConfigFlagsChanged() {
+    public final int findIndexOfStandbyPorts(IBinder iBinder) {
+        for (int i = 0; i < ((ArrayList) this.mStandbyPortLocks).size(); i++) {
+            if (((StandbyPortsLock) ((ArrayList) this.mStandbyPortLocks).get(i)).mToken == iBinder) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public final List getActiveStandbyPorts() {
+        ArrayList arrayList = new ArrayList();
         synchronized (this.mLock) {
-            boolean enableCustomPolicy = this.mDeviceConfig.enableCustomPolicy();
-            if (this.mEnableCustomPolicy != enableCustomPolicy) {
-                enqueueNotifyPolicyChangedLocked();
-                enqueueNotifyAllowlistChangedLocked();
-                this.mEnableCustomPolicy = enableCustomPolicy;
+            try {
+                if (isEnabled() && this.mEnableStandbyPorts) {
+                    List exemptPackageAppIdsLocked = getExemptPackageAppIdsLocked();
+                    Iterator it = ((ArrayList) this.mStandbyPortLocks).iterator();
+                    while (it.hasNext()) {
+                        StandbyPortsLock standbyPortsLock = (StandbyPortsLock) it.next();
+                        if (((ArrayList) exemptPackageAppIdsLocked).contains(Integer.valueOf(UserHandle.getAppId(standbyPortsLock.mUid)))) {
+                            arrayList.addAll(standbyPortsLock.mPorts);
+                        }
+                    }
+                    return arrayList;
+                }
+                return arrayList;
+            } finally {
             }
-            this.mEnableStandbyPorts = this.mDeviceConfig.enableStandbyPorts();
         }
     }
 
-    public final void initSettingsLocked() {
-        ContentResolver contentResolver = this.mContext.getContentResolver();
-        if (this.mSupportedConfig && Settings.Global.getInt(contentResolver, "low_power_standby_enabled", -1) == -1) {
-            Settings.Global.putInt(contentResolver, "low_power_standby_enabled", this.mEnabledByDefaultConfig ? 1 : 0);
+    public final int[] getAllowlistUidsLocked() {
+        List userHandles = ((UserManager) this.mContext.getSystemService(UserManager.class)).getUserHandles(true);
+        ArraySet arraySet = new ArraySet(this.mUidAllowedReasons.size());
+        PowerManager.LowPowerStandbyPolicy policy = getPolicy();
+        if (policy == null) {
+            return new int[0];
+        }
+        int allowedReasons = policy.getAllowedReasons();
+        for (int i = 0; i < this.mUidAllowedReasons.size(); i++) {
+            Integer valueOf = Integer.valueOf(this.mUidAllowedReasons.keyAt(i));
+            if ((this.mUidAllowedReasons.valueAt(i) & allowedReasons) != 0) {
+                arraySet.add(valueOf);
+            }
+        }
+        Iterator it = ((ArrayList) getExemptPackageAppIdsLocked()).iterator();
+        while (it.hasNext()) {
+            int appId = UserHandle.getAppId(((Integer) it.next()).intValue());
+            int size = userHandles.size();
+            int[] iArr = new int[size];
+            for (int i2 = 0; i2 < userHandles.size(); i2++) {
+                iArr[i2] = ((UserHandle) userHandles.get(i2)).getUid(appId);
+            }
+            for (int i3 = 0; i3 < size; i3++) {
+                arraySet.add(Integer.valueOf(iArr[i3]));
+            }
+        }
+        int[] iArr2 = new int[arraySet.size()];
+        for (int i4 = 0; i4 < arraySet.size(); i4++) {
+            iArr2[i4] = ((Integer) arraySet.valueAt(i4)).intValue();
+        }
+        Arrays.sort(iArr2);
+        return iArr2;
+    }
+
+    public final List getExemptPackageAppIdsLocked() {
+        PackageManager packageManager = this.mContext.getPackageManager();
+        PowerManager.LowPowerStandbyPolicy policy = getPolicy();
+        ArrayList arrayList = new ArrayList();
+        if (policy == null) {
+            return arrayList;
+        }
+        Iterator it = policy.getExemptPackages().iterator();
+        while (it.hasNext()) {
+            try {
+                arrayList.add(Integer.valueOf(UserHandle.getAppId(packageManager.getPackageUid((String) it.next(), PackageManager.PackageInfoFlags.of(0L)))));
+            } catch (PackageManager.NameNotFoundException unused) {
+            }
+        }
+        return arrayList;
+    }
+
+    public final PowerManager.LowPowerStandbyPolicy getPolicy() {
+        synchronized (this.mLock) {
+            try {
+                if (!this.mSupportedConfig) {
+                    return null;
+                }
+                if (!this.mEnableCustomPolicy) {
+                    return DEFAULT_POLICY;
+                }
+                PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy = this.mPolicy;
+                if (lowPowerStandbyPolicy == null) {
+                    lowPowerStandbyPolicy = DEFAULT_POLICY;
+                }
+                return lowPowerStandbyPolicy;
+            } catch (Throwable th) {
+                throw th;
+            }
         }
     }
 
-    public final void updateSettingsLocked() {
-        ContentResolver contentResolver = this.mContext.getContentResolver();
-        this.mIsEnabled = this.mSupportedConfig && Settings.Global.getInt(contentResolver, "low_power_standby_enabled", this.mEnabledByDefaultConfig ? 1 : 0) != 0;
-        this.mActiveDuringMaintenance = Settings.Global.getInt(contentResolver, "low_power_standby_active_during_maintenance", 0) != 0;
-        updateActiveLocked();
+    public boolean isActive() {
+        boolean z;
+        synchronized (this.mLock) {
+            z = this.mIsActive;
+        }
+        return z;
+    }
+
+    public final boolean isEnabled() {
+        boolean z;
+        synchronized (this.mLock) {
+            try {
+                z = this.mSupportedConfig && this.mIsEnabled;
+            } finally {
+            }
+        }
+        return z;
+    }
+
+    public final boolean isPackageExempt(int i) {
+        synchronized (this.mLock) {
+            try {
+                if (!isEnabled()) {
+                    return true;
+                }
+                return ((ArrayList) getExemptPackageAppIdsLocked()).contains(Integer.valueOf(UserHandle.getAppId(i)));
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
     public final PowerManager.LowPowerStandbyPolicy loadPolicy() {
         char c;
-        AtomicFile policyFile = getPolicyFile();
-        if (!policyFile.exists()) {
+        AtomicFile atomicFile = new AtomicFile(this.mPolicyFile);
+        if (!atomicFile.exists()) {
             return null;
         }
         try {
             try {
-                FileInputStream openRead = policyFile.openRead();
+                FileInputStream openRead = atomicFile.openRead();
                 try {
                     ArraySet arraySet = new ArraySet();
                     ArraySet arraySet2 = new ArraySet();
@@ -353,37 +818,43 @@ public class LowPowerStandbyController {
                                             c = 0;
                                             break;
                                         }
+                                        c = 65535;
                                         break;
                                     case -764820798:
                                         if (name.equals("allowed-features")) {
                                             c = 3;
                                             break;
                                         }
+                                        c = 65535;
                                         break;
                                     case 1342665610:
                                         if (name.equals("allowed-reasons")) {
                                             c = 2;
                                             break;
                                         }
+                                        c = 65535;
                                         break;
                                     case 2046809176:
                                         if (name.equals("exempt-package")) {
                                             c = 1;
                                             break;
                                         }
+                                        c = 65535;
+                                        break;
+                                    default:
+                                        c = 65535;
                                         break;
                                 }
-                                c = 65535;
                                 if (c == 0) {
                                     str = resolvePullParser.getAttributeValue((String) null, "value");
                                 } else if (c == 1) {
                                     arraySet.add(resolvePullParser.getAttributeValue((String) null, "value"));
                                 } else if (c == 2) {
                                     i = resolvePullParser.getAttributeInt((String) null, "value");
-                                } else if (c == 3) {
-                                    arraySet2.add(resolvePullParser.getAttributeValue((String) null, "value"));
-                                } else {
+                                } else if (c != 3) {
                                     android.util.Slog.e("LowPowerStandbyController", "Invalid tag: " + name);
+                                } else {
+                                    arraySet2.add(resolvePullParser.getAttributeValue((String) null, "value"));
                                 }
                             } else if (!"low-power-standby-policy".equals(name)) {
                                 android.util.Slog.e("LowPowerStandbyController", "Invalid root tag: " + name);
@@ -404,92 +875,31 @@ public class LowPowerStandbyController {
                     }
                     throw th;
                 }
-            } catch (FileNotFoundException unused) {
+            } catch (IOException | IllegalArgumentException | NullPointerException | XmlPullParserException e) {
+                android.util.Slog.e("LowPowerStandbyController", "Failed to read policy file " + atomicFile.getBaseFile(), e);
                 return null;
             }
-        } catch (IOException | IllegalArgumentException | NullPointerException | XmlPullParserException e) {
-            android.util.Slog.e("LowPowerStandbyController", "Failed to read policy file " + policyFile.getBaseFile(), e);
+        } catch (FileNotFoundException unused) {
             return null;
         }
     }
 
-    public static void writeTagValue(TypedXmlSerializer typedXmlSerializer, String str, String str2) {
-        if (TextUtils.isEmpty(str2)) {
-            return;
-        }
-        typedXmlSerializer.startTag((String) null, str);
-        typedXmlSerializer.attribute((String) null, "value", str2);
-        typedXmlSerializer.endTag((String) null, str);
+    public final void onDisabledLocked() {
+        this.mAlarmManager.cancel(this.mOnStandbyTimeoutExpired);
+        this.mContext.unregisterReceiver(this.mBroadcastReceiver);
+        this.mContext.unregisterReceiver(this.mPackageBroadcastReceiver);
+        this.mContext.unregisterReceiver(this.mUserReceiver);
+        ((PowerAllowlistInternal) LocalServices.getService(PowerAllowlistInternal.class)).unregisterTempAllowlistChangeListener(this.mTempAllowlistChangeListener);
+        updateActiveLocked();
     }
 
-    public static void writeTagValue(TypedXmlSerializer typedXmlSerializer, String str, int i) {
-        typedXmlSerializer.startTag((String) null, str);
-        typedXmlSerializer.attributeInt((String) null, "value", i);
-        typedXmlSerializer.endTag((String) null, str);
-    }
-
-    /* renamed from: savePolicy, reason: merged with bridge method [inline-methods] */
-    public final void lambda$enqueueSavePolicy$2(PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy) {
-        AtomicFile policyFile = getPolicyFile();
-        if (lowPowerStandbyPolicy == null) {
-            policyFile.delete();
-            return;
-        }
-        FileOutputStream fileOutputStream = null;
-        try {
-            policyFile.getBaseFile().mkdirs();
-            FileOutputStream startWrite = policyFile.startWrite();
-            try {
-                TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
-                resolveSerializer.startDocument((String) null, Boolean.TRUE);
-                resolveSerializer.startTag((String) null, "low-power-standby-policy");
-                writeTagValue(resolveSerializer, "identifier", lowPowerStandbyPolicy.getIdentifier());
-                Iterator it = lowPowerStandbyPolicy.getExemptPackages().iterator();
-                while (it.hasNext()) {
-                    writeTagValue(resolveSerializer, "exempt-package", (String) it.next());
-                }
-                writeTagValue(resolveSerializer, "allowed-reasons", lowPowerStandbyPolicy.getAllowedReasons());
-                Iterator it2 = lowPowerStandbyPolicy.getAllowedFeatures().iterator();
-                while (it2.hasNext()) {
-                    writeTagValue(resolveSerializer, "allowed-features", (String) it2.next());
-                }
-                resolveSerializer.endTag((String) null, "low-power-standby-policy");
-                resolveSerializer.endDocument();
-                policyFile.finishWrite(startWrite);
-            } catch (IOException e) {
-                e = e;
-                fileOutputStream = startWrite;
-                android.util.Slog.e("LowPowerStandbyController", "Failed to write policy to file " + policyFile.getBaseFile(), e);
-                policyFile.failWrite(fileOutputStream);
-            }
-        } catch (IOException e2) {
-            e = e2;
-        }
-    }
-
-    public final void enqueueSavePolicy(final PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.power.LowPowerStandbyController$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                LowPowerStandbyController.this.lambda$enqueueSavePolicy$2(lowPowerStandbyPolicy);
-            }
-        });
-    }
-
-    public final AtomicFile getPolicyFile() {
-        return new AtomicFile(this.mPolicyFile);
-    }
-
-    public final void updateActiveLocked() {
-        boolean z = true;
-        boolean z2 = this.mClock.elapsedRealtime() - this.mLastInteractiveTimeElapsed >= ((long) this.mStandbyTimeoutConfig);
-        boolean z3 = this.mIdleSinceNonInteractive && !this.mIsDeviceIdle;
-        if (!this.mForceActive && (!this.mIsEnabled || this.mIsInteractive || !z2 || (z3 && !this.mActiveDuringMaintenance))) {
-            z = false;
-        }
-        if (this.mIsActive != z) {
-            this.mIsActive = z;
-            enqueueNotifyActiveChangedLocked();
+    public final void onInteractive() {
+        synchronized (this.mLock) {
+            this.mAlarmManager.cancel(this.mOnStandbyTimeoutExpired);
+            this.mIsInteractive = true;
+            this.mIsDeviceIdle = false;
+            this.mIdleSinceNonInteractive = false;
+            updateActiveLocked();
         }
     }
 
@@ -500,717 +910,296 @@ public class LowPowerStandbyController {
             this.mIsDeviceIdle = false;
             this.mLastInteractiveTimeElapsed = elapsedRealtime;
             if (this.mStandbyTimeoutConfig > 0) {
-                scheduleStandbyTimeoutAlarmLocked();
+                this.mAlarmManager.setExact(2, this.mClock.elapsedRealtime() + this.mStandbyTimeoutConfig, "LowPowerStandbyController.StandbyTimeout", this.mOnStandbyTimeoutExpired, this.mHandler);
             }
             updateActiveLocked();
         }
-    }
-
-    public final void onInteractive() {
-        synchronized (this.mLock) {
-            cancelStandbyTimeoutAlarmLocked();
-            this.mIsInteractive = true;
-            this.mIsDeviceIdle = false;
-            this.mIdleSinceNonInteractive = false;
-            updateActiveLocked();
-        }
-    }
-
-    public final void scheduleStandbyTimeoutAlarmLocked() {
-        this.mAlarmManager.setExact(2, SystemClock.elapsedRealtime() + this.mStandbyTimeoutConfig, "LowPowerStandbyController.StandbyTimeout", this.mOnStandbyTimeoutExpired, this.mHandler);
-    }
-
-    public final void cancelStandbyTimeoutAlarmLocked() {
-        this.mAlarmManager.cancel(this.mOnStandbyTimeoutExpired);
-    }
-
-    public final void onDeviceIdleModeChanged() {
-        boolean z;
-        synchronized (this.mLock) {
-            boolean isDeviceIdleMode = this.mPowerManager.isDeviceIdleMode();
-            this.mIsDeviceIdle = isDeviceIdleMode;
-            if (!this.mIdleSinceNonInteractive && !isDeviceIdleMode) {
-                z = false;
-                this.mIdleSinceNonInteractive = z;
-                updateActiveLocked();
-            }
-            z = true;
-            this.mIdleSinceNonInteractive = z;
-            updateActiveLocked();
-        }
-    }
-
-    public final void onEnabledLocked() {
-        if (this.mPowerManager.isInteractive()) {
-            onInteractive();
-        } else {
-            onNonInteractive();
-        }
-        registerListeners();
-    }
-
-    public final void onDisabledLocked() {
-        cancelStandbyTimeoutAlarmLocked();
-        unregisterListeners();
-        updateActiveLocked();
     }
 
     public void onSettingsChanged() {
         synchronized (this.mLock) {
-            boolean z = this.mIsEnabled;
-            updateSettingsLocked();
-            boolean z2 = this.mIsEnabled;
-            if (z2 != z) {
-                if (z2) {
-                    onEnabledLocked();
-                } else {
-                    onDisabledLocked();
+            try {
+                boolean z = this.mIsEnabled;
+                updateSettingsLocked();
+                boolean z2 = this.mIsEnabled;
+                if (z2 != z) {
+                    if (z2) {
+                        if (this.mPowerManager.isInteractive()) {
+                            onInteractive();
+                        } else {
+                            onNonInteractive();
+                        }
+                        registerListeners();
+                    } else {
+                        onDisabledLocked();
+                    }
+                    sendExplicitBroadcast("android.os.action.LOW_POWER_STANDBY_ENABLED_CHANGED");
                 }
-                notifyEnabledChangedLocked();
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
     public final void registerListeners() {
+        this.mContext.registerReceiver(this.mBroadcastReceiver, GmsAlarmManager$$ExternalSyntheticOutline0.m("android.os.action.DEVICE_IDLE_MODE_CHANGED", "android.intent.action.SCREEN_ON", "android.intent.action.SCREEN_OFF"));
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.os.action.DEVICE_IDLE_MODE_CHANGED");
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        this.mContext.registerReceiver(this.mBroadcastReceiver, intentFilter);
+        intentFilter.addDataScheme("package");
+        intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
+        intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
+        intentFilter.setPriority(1000);
+        this.mContext.registerReceiver(this.mPackageBroadcastReceiver, intentFilter);
         IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addDataScheme("package");
-        intentFilter2.addAction("android.intent.action.PACKAGE_ADDED");
-        intentFilter2.addAction("android.intent.action.PACKAGE_REMOVED");
-        intentFilter2.setPriority(1000);
-        this.mContext.registerReceiver(this.mPackageBroadcastReceiver, intentFilter2);
-        IntentFilter intentFilter3 = new IntentFilter();
-        intentFilter3.addAction("android.intent.action.USER_ADDED");
-        intentFilter3.addAction("android.intent.action.USER_REMOVED");
-        this.mContext.registerReceiver(this.mUserReceiver, intentFilter3, null, this.mHandler);
+        intentFilter2.addAction("android.intent.action.USER_ADDED");
+        intentFilter2.addAction("android.intent.action.USER_REMOVED");
+        this.mContext.registerReceiver(this.mUserReceiver, intentFilter2, null, this.mHandler);
         ((PowerAllowlistInternal) LocalServices.getService(PowerAllowlistInternal.class)).registerTempAllowlistChangeListener(this.mTempAllowlistChangeListener);
-        this.mPhoneCallServiceTracker.register();
-    }
-
-    public final void unregisterListeners() {
-        this.mContext.unregisterReceiver(this.mBroadcastReceiver);
-        this.mContext.unregisterReceiver(this.mPackageBroadcastReceiver);
-        this.mContext.unregisterReceiver(this.mUserReceiver);
-        ((PowerAllowlistInternal) LocalServices.getService(PowerAllowlistInternal.class)).unregisterTempAllowlistChangeListener(this.mTempAllowlistChangeListener);
-    }
-
-    public final void notifyEnabledChangedLocked() {
-        Intent intent = new Intent("android.os.action.LOW_POWER_STANDBY_ENABLED_CHANGED");
-        intent.addFlags(1342177280);
-        this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
-    }
-
-    public final void enqueueNotifyPolicyChangedLocked() {
-        long elapsedRealtime = this.mClock.elapsedRealtime();
-        this.mHandler.sendMessageAtTime(this.mHandler.obtainMessage(3, getPolicy()), elapsedRealtime);
-    }
-
-    public final void notifyPolicyChanged(PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy) {
-        Intent intent = new Intent("android.os.action.LOW_POWER_STANDBY_POLICY_CHANGED");
-        intent.addFlags(1342177280);
-        this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
-    }
-
-    public final void onStandbyTimeoutExpired() {
-        synchronized (this.mLock) {
-            updateActiveLocked();
+        PhoneCallServiceTracker phoneCallServiceTracker = this.mPhoneCallServiceTracker;
+        if (phoneCallServiceTracker.mRegistered) {
+            return;
+        }
+        try {
+            ((IActivityManager) LowPowerStandbyController.this.mActivityManager.get()).registerForegroundServiceObserver(phoneCallServiceTracker);
+            phoneCallServiceTracker.mRegistered = true;
+        } catch (RemoteException unused) {
         }
     }
 
-    public final void enqueueNotifyActiveChangedLocked() {
-        long elapsedRealtime = this.mClock.elapsedRealtime();
-        this.mHandler.sendMessageAtTime(this.mHandler.obtainMessage(1, Boolean.valueOf(this.mIsActive)), elapsedRealtime);
-    }
-
-    public final void notifyActiveChanged(boolean z) {
-        PowerManagerInternal powerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
-        NetworkPolicyManagerInternal networkPolicyManagerInternal = (NetworkPolicyManagerInternal) LocalServices.getService(NetworkPolicyManagerInternal.class);
-        powerManagerInternal.setLowPowerStandbyActive(z);
-        networkPolicyManagerInternal.setLowPowerStandbyActive(z);
-    }
-
-    public boolean isActive() {
-        boolean z;
+    public final void releaseStandbyPorts(IBinder iBinder) {
         synchronized (this.mLock) {
-            z = this.mIsActive;
-        }
-        return z;
-    }
-
-    public boolean isSupported() {
-        boolean z;
-        synchronized (this.mLock) {
-            z = this.mSupportedConfig;
-        }
-        return z;
-    }
-
-    public boolean isEnabled() {
-        boolean z;
-        synchronized (this.mLock) {
-            z = this.mSupportedConfig && this.mIsEnabled;
-        }
-        return z;
-    }
-
-    public void setEnabled(boolean z) {
-        synchronized (this.mLock) {
-            if (!this.mSupportedConfig) {
-                android.util.Slog.w("LowPowerStandbyController", "Low Power Standby cannot be enabled because it is not supported on this device");
-            } else {
-                Settings.Global.putInt(this.mContext.getContentResolver(), "low_power_standby_enabled", z ? 1 : 0);
-                onSettingsChanged();
+            try {
+                int findIndexOfStandbyPorts = findIndexOfStandbyPorts(iBinder);
+                if (findIndexOfStandbyPorts == -1) {
+                    return;
+                }
+                StandbyPortsLock standbyPortsLock = (StandbyPortsLock) ((ArrayList) this.mStandbyPortLocks).remove(findIndexOfStandbyPorts);
+                standbyPortsLock.mToken.unlinkToDeath(standbyPortsLock, 0);
+                if (this.mEnableStandbyPorts && isEnabled() && isPackageExempt(standbyPortsLock.mUid)) {
+                    LowPowerStandbyHandler lowPowerStandbyHandler = this.mHandler;
+                    lowPowerStandbyHandler.sendMessageAtTime(lowPowerStandbyHandler.obtainMessage(5), this.mClock.uptimeMillis());
+                }
+            } catch (Throwable th) {
+                throw th;
             }
+        }
+    }
+
+    public final void sendExplicitBroadcast(String str) {
+        this.mContext.sendBroadcastAsUser(BatteryService$$ExternalSyntheticOutline0.m(1342177280, str), UserHandle.ALL);
+        Intent intent = new Intent(str);
+        intent.addFlags(268435456);
+        Iterator it = ((ArrayList) this.mLowPowerStandbyManagingPackages).iterator();
+        while (it.hasNext()) {
+            String str2 = (String) it.next();
+            Intent intent2 = new Intent(intent);
+            intent2.setPackage(str2);
+            this.mContext.sendBroadcastAsUser(intent2, UserHandle.ALL, "android.permission.MANAGE_LOW_POWER_STANDBY");
         }
     }
 
     public void setActiveDuringMaintenance(boolean z) {
         synchronized (this.mLock) {
-            if (!this.mSupportedConfig) {
-                android.util.Slog.w("LowPowerStandbyController", "Low Power Standby settings cannot be changed because it is not supported on this device");
-            } else {
-                Settings.Global.putInt(this.mContext.getContentResolver(), "low_power_standby_active_during_maintenance", z ? 1 : 0);
-                onSettingsChanged();
-            }
-        }
-    }
-
-    public void forceActive(boolean z) {
-        synchronized (this.mLock) {
-            this.mForceActive = z;
-            updateActiveLocked();
-        }
-    }
-
-    public void setPolicy(PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy) {
-        synchronized (this.mLock) {
-            if (!this.mSupportedConfig) {
-                android.util.Slog.w("LowPowerStandbyController", "Low Power Standby policy cannot be changed because it is not supported on this device");
-                return;
-            }
-            if (!this.mEnableCustomPolicy) {
-                android.util.Slog.d("LowPowerStandbyController", "Custom policies are not enabled.");
-                return;
-            }
-            if (Objects.equals(this.mPolicy, lowPowerStandbyPolicy)) {
-                return;
-            }
-            boolean policyChangeAffectsAllowlistLocked = policyChangeAffectsAllowlistLocked(this.mPolicy, lowPowerStandbyPolicy);
-            this.mPolicy = lowPowerStandbyPolicy;
-            enqueueSavePolicy(lowPowerStandbyPolicy);
-            if (policyChangeAffectsAllowlistLocked) {
-                enqueueNotifyAllowlistChangedLocked();
-            }
-            enqueueNotifyPolicyChangedLocked();
-        }
-    }
-
-    public PowerManager.LowPowerStandbyPolicy getPolicy() {
-        synchronized (this.mLock) {
-            if (!this.mSupportedConfig) {
-                return null;
-            }
-            if (this.mEnableCustomPolicy) {
-                return policyOrDefault(this.mPolicy);
-            }
-            return DEFAULT_POLICY;
-        }
-    }
-
-    public final PowerManager.LowPowerStandbyPolicy policyOrDefault(PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy) {
-        return lowPowerStandbyPolicy == null ? DEFAULT_POLICY : lowPowerStandbyPolicy;
-    }
-
-    public boolean isPackageExempt(int i) {
-        synchronized (this.mLock) {
-            if (!isEnabled()) {
-                return true;
-            }
-            return getExemptPackageAppIdsLocked().contains(Integer.valueOf(UserHandle.getAppId(i)));
-        }
-    }
-
-    public boolean isAllowed(int i) {
-        synchronized (this.mLock) {
-            boolean z = true;
-            if (!isEnabled()) {
-                return true;
-            }
-            if ((getPolicy().getAllowedReasons() & i) == 0) {
-                z = false;
-            }
-            return z;
-        }
-    }
-
-    public boolean isAllowed(String str) {
-        synchronized (this.mLock) {
-            boolean z = true;
-            if (!this.mSupportedConfig) {
-                return true;
-            }
-            if (isEnabled() && !getPolicy().getAllowedFeatures().contains(str)) {
-                z = false;
-            }
-            return z;
-        }
-    }
-
-    public final int findIndexOfStandbyPorts(IBinder iBinder) {
-        for (int i = 0; i < this.mStandbyPortLocks.size(); i++) {
-            if (((StandbyPortsLock) this.mStandbyPortLocks.get(i)).getToken() == iBinder) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public void acquireStandbyPorts(IBinder iBinder, int i, List list) {
-        validatePorts(list);
-        StandbyPortsLock standbyPortsLock = new StandbyPortsLock(iBinder, i, list);
-        synchronized (this.mLock) {
-            if (findIndexOfStandbyPorts(iBinder) != -1) {
-                return;
-            }
-            if (standbyPortsLock.linkToDeath()) {
-                this.mStandbyPortLocks.add(standbyPortsLock);
-                if (this.mEnableStandbyPorts && isEnabled() && isPackageExempt(i)) {
-                    enqueueNotifyStandbyPortsChangedLocked();
+            try {
+                if (!this.mSupportedConfig) {
+                    android.util.Slog.w("LowPowerStandbyController", "Low Power Standby settings cannot be changed because it is not supported on this device");
+                } else {
+                    Settings.Global.putInt(this.mContext.getContentResolver(), "low_power_standby_active_during_maintenance", z ? 1 : 0);
+                    onSettingsChanged();
                 }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    public void validatePorts(List list) {
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            int portNumber = ((PowerManager.LowPowerStandbyPortDescription) it.next()).getPortNumber();
-            if (portNumber < 0 || portNumber > 65535) {
-                throw new IllegalArgumentException("port out of range:" + portNumber);
-            }
-        }
-    }
-
-    public void releaseStandbyPorts(IBinder iBinder) {
+    public final void setEnabled(boolean z) {
         synchronized (this.mLock) {
-            int findIndexOfStandbyPorts = findIndexOfStandbyPorts(iBinder);
-            if (findIndexOfStandbyPorts == -1) {
-                return;
-            }
-            StandbyPortsLock standbyPortsLock = (StandbyPortsLock) this.mStandbyPortLocks.remove(findIndexOfStandbyPorts);
-            standbyPortsLock.unlinkToDeath();
-            if (this.mEnableStandbyPorts && isEnabled() && isPackageExempt(standbyPortsLock.getUid())) {
-                enqueueNotifyStandbyPortsChangedLocked();
+            try {
+                if (!this.mSupportedConfig) {
+                    android.util.Slog.w("LowPowerStandbyController", "Low Power Standby cannot be enabled because it is not supported on this device");
+                } else {
+                    Settings.Global.putInt(this.mContext.getContentResolver(), "low_power_standby_enabled", z ? 1 : 0);
+                    onSettingsChanged();
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    public List getActiveStandbyPorts() {
-        ArrayList arrayList = new ArrayList();
+    public final void setPolicy(final PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy) {
         synchronized (this.mLock) {
-            if (isEnabled() && this.mEnableStandbyPorts) {
-                List exemptPackageAppIdsLocked = getExemptPackageAppIdsLocked();
-                for (StandbyPortsLock standbyPortsLock : this.mStandbyPortLocks) {
-                    if (exemptPackageAppIdsLocked.contains(Integer.valueOf(UserHandle.getAppId(standbyPortsLock.getUid())))) {
-                        arrayList.addAll(standbyPortsLock.getPorts());
-                    }
-                }
-                return arrayList;
-            }
-            return arrayList;
-        }
-    }
-
-    public final boolean policyChangeAffectsAllowlistLocked(PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy, PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy2) {
-        PowerManager.LowPowerStandbyPolicy policyOrDefault = policyOrDefault(lowPowerStandbyPolicy);
-        PowerManager.LowPowerStandbyPolicy policyOrDefault2 = policyOrDefault(lowPowerStandbyPolicy2);
-        int i = 0;
-        for (int i2 = 0; i2 < this.mUidAllowedReasons.size(); i2++) {
-            i |= this.mUidAllowedReasons.valueAt(i2);
-        }
-        return ((policyOrDefault.getAllowedReasons() ^ policyOrDefault2.getAllowedReasons()) & i) != 0 || (policyOrDefault.getExemptPackages().equals(policyOrDefault2.getExemptPackages()) ^ true);
-    }
-
-    public void dump(PrintWriter printWriter) {
-        IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ");
-        indentingPrintWriter.println();
-        indentingPrintWriter.println("Low Power Standby Controller:");
-        indentingPrintWriter.increaseIndent();
-        synchronized (this.mLock) {
-            indentingPrintWriter.print("mIsActive=");
-            indentingPrintWriter.println(this.mIsActive);
-            indentingPrintWriter.print("mIsEnabled=");
-            indentingPrintWriter.println(this.mIsEnabled);
-            indentingPrintWriter.print("mSupportedConfig=");
-            indentingPrintWriter.println(this.mSupportedConfig);
-            indentingPrintWriter.print("mEnabledByDefaultConfig=");
-            indentingPrintWriter.println(this.mEnabledByDefaultConfig);
-            indentingPrintWriter.print("mStandbyTimeoutConfig=");
-            indentingPrintWriter.println(this.mStandbyTimeoutConfig);
-            indentingPrintWriter.print("mEnableCustomPolicy=");
-            indentingPrintWriter.println(this.mEnableCustomPolicy);
-            if (this.mIsActive || this.mIsEnabled) {
-                indentingPrintWriter.print("mIsInteractive=");
-                indentingPrintWriter.println(this.mIsInteractive);
-                indentingPrintWriter.print("mLastInteractiveTime=");
-                indentingPrintWriter.println(this.mLastInteractiveTimeElapsed);
-                indentingPrintWriter.print("mIdleSinceNonInteractive=");
-                indentingPrintWriter.println(this.mIdleSinceNonInteractive);
-                indentingPrintWriter.print("mIsDeviceIdle=");
-                indentingPrintWriter.println(this.mIsDeviceIdle);
-            }
-            int[] allowlistUidsLocked = getAllowlistUidsLocked();
-            indentingPrintWriter.print("Allowed UIDs=");
-            indentingPrintWriter.println(Arrays.toString(allowlistUidsLocked));
-            PowerManager.LowPowerStandbyPolicy policy = getPolicy();
-            if (policy != null) {
-                indentingPrintWriter.println();
-                indentingPrintWriter.println("mPolicy:");
-                indentingPrintWriter.increaseIndent();
-                indentingPrintWriter.print("mIdentifier=");
-                indentingPrintWriter.println(policy.getIdentifier());
-                indentingPrintWriter.print("mExemptPackages=");
-                indentingPrintWriter.println(String.join(",", policy.getExemptPackages()));
-                indentingPrintWriter.print("mAllowedReasons=");
-                indentingPrintWriter.println(PowerManager.lowPowerStandbyAllowedReasonsToString(policy.getAllowedReasons()));
-                indentingPrintWriter.print("mAllowedFeatures=");
-                indentingPrintWriter.println(String.join(",", policy.getAllowedFeatures()));
-                indentingPrintWriter.decreaseIndent();
-            }
-            indentingPrintWriter.println();
-            indentingPrintWriter.println("UID allowed reasons:");
-            indentingPrintWriter.increaseIndent();
-            for (int i = 0; i < this.mUidAllowedReasons.size(); i++) {
-                if (this.mUidAllowedReasons.valueAt(i) > 0) {
-                    indentingPrintWriter.print(this.mUidAllowedReasons.keyAt(i));
-                    indentingPrintWriter.print(": ");
-                    indentingPrintWriter.println(PowerManager.lowPowerStandbyAllowedReasonsToString(this.mUidAllowedReasons.valueAt(i)));
-                }
-            }
-            indentingPrintWriter.decreaseIndent();
-            List activeStandbyPorts = getActiveStandbyPorts();
-            if (!activeStandbyPorts.isEmpty()) {
-                indentingPrintWriter.println();
-                indentingPrintWriter.println("Active standby ports locks:");
-                indentingPrintWriter.increaseIndent();
-                Iterator it = activeStandbyPorts.iterator();
-                while (it.hasNext()) {
-                    indentingPrintWriter.print(((PowerManager.LowPowerStandbyPortDescription) it.next()).toString());
-                }
-                indentingPrintWriter.decreaseIndent();
-            }
-        }
-        indentingPrintWriter.decreaseIndent();
-    }
-
-    public void dumpProto(ProtoOutputStream protoOutputStream, long j) {
-        synchronized (this.mLock) {
-            long start = protoOutputStream.start(j);
-            protoOutputStream.write(1133871366145L, this.mIsActive);
-            protoOutputStream.write(1133871366146L, this.mIsEnabled);
-            protoOutputStream.write(1133871366147L, this.mSupportedConfig);
-            protoOutputStream.write(1133871366148L, this.mEnabledByDefaultConfig);
-            protoOutputStream.write(1133871366149L, this.mIsInteractive);
-            protoOutputStream.write(1112396529670L, this.mLastInteractiveTimeElapsed);
-            protoOutputStream.write(1120986464263L, this.mStandbyTimeoutConfig);
-            protoOutputStream.write(1133871366152L, this.mIdleSinceNonInteractive);
-            protoOutputStream.write(1133871366153L, this.mIsDeviceIdle);
-            for (int i : getAllowlistUidsLocked()) {
-                protoOutputStream.write(2220498092042L, i);
-            }
-            PowerManager.LowPowerStandbyPolicy policy = getPolicy();
-            if (policy != null) {
-                long start2 = protoOutputStream.start(1146756268043L);
-                protoOutputStream.write(1138166333441L, policy.getIdentifier());
-                Iterator it = policy.getExemptPackages().iterator();
-                while (it.hasNext()) {
-                    protoOutputStream.write(2237677961218L, (String) it.next());
-                }
-                protoOutputStream.write(1120986464259L, policy.getAllowedReasons());
-                Iterator it2 = policy.getAllowedFeatures().iterator();
-                while (it2.hasNext()) {
-                    protoOutputStream.write(2237677961220L, (String) it2.next());
-                }
-                protoOutputStream.end(start2);
-            }
-            protoOutputStream.end(start);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class LowPowerStandbyHandler extends Handler {
-        public LowPowerStandbyHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            int i = message.what;
-            if (i == 0) {
-                LowPowerStandbyController.this.onStandbyTimeoutExpired();
-                return;
-            }
-            if (i == 1) {
-                LowPowerStandbyController.this.notifyActiveChanged(((Boolean) message.obj).booleanValue());
-                return;
-            }
-            if (i == 2) {
-                LowPowerStandbyController.this.notifyAllowlistChanged((int[]) message.obj);
-            } else {
-                if (i == 3) {
-                    LowPowerStandbyController.this.notifyPolicyChanged((PowerManager.LowPowerStandbyPolicy) message.obj);
+            try {
+                if (!this.mSupportedConfig) {
+                    android.util.Slog.w("LowPowerStandbyController", "Low Power Standby policy cannot be changed because it is not supported on this device");
                     return;
                 }
-                if (i == 4) {
-                    LowPowerStandbyController.this.mPhoneCallServiceTracker.foregroundServiceStateChanged(message.arg1);
-                } else {
-                    if (i != 5) {
-                        return;
-                    }
-                    LowPowerStandbyController.this.notifyStandbyPortsChanged();
+                if (!this.mEnableCustomPolicy) {
+                    android.util.Slog.d("LowPowerStandbyController", "Custom policies are not enabled.");
+                    return;
                 }
+                if (Objects.equals(this.mPolicy, lowPowerStandbyPolicy)) {
+                    return;
+                }
+                PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy2 = this.mPolicy;
+                if (lowPowerStandbyPolicy2 == null) {
+                    lowPowerStandbyPolicy2 = DEFAULT_POLICY;
+                }
+                PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy3 = lowPowerStandbyPolicy == null ? DEFAULT_POLICY : lowPowerStandbyPolicy;
+                int i = 0;
+                for (int i2 = 0; i2 < this.mUidAllowedReasons.size(); i2++) {
+                    i |= this.mUidAllowedReasons.valueAt(i2);
+                }
+                boolean z = ((lowPowerStandbyPolicy2.getAllowedReasons() ^ lowPowerStandbyPolicy3.getAllowedReasons()) & i) != 0 || (lowPowerStandbyPolicy2.getExemptPackages().equals(lowPowerStandbyPolicy3.getExemptPackages()) ^ true);
+                this.mPolicy = lowPowerStandbyPolicy;
+                this.mHandler.post(new Runnable() { // from class: com.android.server.power.LowPowerStandbyController$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        FileOutputStream startWrite;
+                        LowPowerStandbyController lowPowerStandbyController = LowPowerStandbyController.this;
+                        PowerManager.LowPowerStandbyPolicy lowPowerStandbyPolicy4 = lowPowerStandbyPolicy;
+                        lowPowerStandbyController.getClass();
+                        AtomicFile atomicFile = new AtomicFile(lowPowerStandbyController.mPolicyFile);
+                        if (lowPowerStandbyPolicy4 == null) {
+                            atomicFile.delete();
+                            return;
+                        }
+                        FileOutputStream fileOutputStream = null;
+                        try {
+                            atomicFile.getBaseFile().mkdirs();
+                            startWrite = atomicFile.startWrite();
+                        } catch (IOException e) {
+                            e = e;
+                        }
+                        try {
+                            TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
+                            resolveSerializer.startDocument((String) null, Boolean.TRUE);
+                            resolveSerializer.startTag((String) null, "low-power-standby-policy");
+                            LowPowerStandbyController.writeTagValue(resolveSerializer, "identifier", lowPowerStandbyPolicy4.getIdentifier());
+                            Iterator it = lowPowerStandbyPolicy4.getExemptPackages().iterator();
+                            while (it.hasNext()) {
+                                LowPowerStandbyController.writeTagValue(resolveSerializer, "exempt-package", (String) it.next());
+                            }
+                            int allowedReasons = lowPowerStandbyPolicy4.getAllowedReasons();
+                            resolveSerializer.startTag((String) null, "allowed-reasons");
+                            resolveSerializer.attributeInt((String) null, "value", allowedReasons);
+                            resolveSerializer.endTag((String) null, "allowed-reasons");
+                            Iterator it2 = lowPowerStandbyPolicy4.getAllowedFeatures().iterator();
+                            while (it2.hasNext()) {
+                                LowPowerStandbyController.writeTagValue(resolveSerializer, "allowed-features", (String) it2.next());
+                            }
+                            resolveSerializer.endTag((String) null, "low-power-standby-policy");
+                            resolveSerializer.endDocument();
+                            atomicFile.finishWrite(startWrite);
+                        } catch (IOException e2) {
+                            e = e2;
+                            fileOutputStream = startWrite;
+                            android.util.Slog.e("LowPowerStandbyController", "Failed to write policy to file " + atomicFile.getBaseFile(), e);
+                            atomicFile.failWrite(fileOutputStream);
+                        }
+                    }
+                });
+                if (z) {
+                    enqueueNotifyAllowlistChangedLocked();
+                }
+                PowerManager.LowPowerStandbyPolicy policy = getPolicy();
+                LowPowerStandbyHandler lowPowerStandbyHandler = this.mHandler;
+                lowPowerStandbyHandler.sendMessageAtTime(lowPowerStandbyHandler.obtainMessage(3, policy), this.mClock.uptimeMillis());
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    public final boolean hasAllowedReasonLocked(int i, int i2) {
-        return (this.mUidAllowedReasons.get(i) & i2) != 0;
-    }
-
-    public final boolean addAllowedReasonLocked(int i, int i2) {
-        int i3 = this.mUidAllowedReasons.get(i);
-        int i4 = i2 | i3;
-        this.mUidAllowedReasons.put(i, i4);
-        return i3 != i4;
-    }
-
-    public final boolean removeAllowedReasonLocked(int i, int i2) {
-        int i3 = this.mUidAllowedReasons.get(i);
-        if (i3 == 0) {
-            return false;
-        }
-        int i4 = (~i2) & i3;
-        if (i4 == 0) {
-            SparseIntArray sparseIntArray = this.mUidAllowedReasons;
-            sparseIntArray.removeAt(sparseIntArray.indexOfKey(i));
-        } else {
-            this.mUidAllowedReasons.put(i, i4);
-        }
-        return i3 != i4;
-    }
-
-    public final void addToAllowlistInternal(int i, int i2) {
+    public void systemReady() {
+        Resources resources = this.mContext.getResources();
         synchronized (this.mLock) {
-            if (this.mSupportedConfig) {
-                if (i2 != 0 && !hasAllowedReasonLocked(i, i2)) {
-                    addAllowedReasonLocked(i, i2);
-                    if ((getPolicy().getAllowedReasons() & i2) != 0) {
-                        enqueueNotifyAllowlistChangedLocked();
+            try {
+                boolean z = resources.getBoolean(R.bool.config_navBarAlwaysShowOnSideEdgeGesture);
+                this.mSupportedConfig = z;
+                if (z) {
+                    for (PackageInfo packageInfo : this.mContext.getPackageManager().getPackagesHoldingPermissions(new String[]{"android.permission.MANAGE_LOW_POWER_STANDBY"}, 1048576)) {
+                        ((ArrayList) this.mLowPowerStandbyManagingPackages).add(packageInfo.packageName);
                     }
-                }
-            }
-        }
-    }
-
-    public final void removeFromAllowlistInternal(int i, int i2) {
-        synchronized (this.mLock) {
-            if (this.mSupportedConfig) {
-                if (i2 != 0 && hasAllowedReasonLocked(i, i2)) {
-                    removeAllowedReasonLocked(i, i2);
-                    if ((getPolicy().getAllowedReasons() & i2) != 0) {
-                        enqueueNotifyAllowlistChangedLocked();
+                    this.mAlarmManager = (AlarmManager) this.mContext.getSystemService(AlarmManager.class);
+                    this.mPowerManager = (PowerManager) this.mContext.getSystemService(PowerManager.class);
+                    this.mActivityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
+                    this.mStandbyTimeoutConfig = resources.getInteger(R.integer.config_notificationStripRemoteViewSizeBytes);
+                    this.mEnabledByDefaultConfig = resources.getBoolean(R.bool.config_multiuserVisibleBackgroundUsersOnDefaultDisplay);
+                    this.mIsInteractive = this.mPowerManager.isInteractive();
+                    this.mContext.getContentResolver().registerContentObserver(Settings.Global.getUriFor("low_power_standby_enabled"), false, this.mSettingsObserver, -1);
+                    this.mContext.getContentResolver().registerContentObserver(Settings.Global.getUriFor("low_power_standby_active_during_maintenance"), false, this.mSettingsObserver, -1);
+                    DeviceConfigWrapper deviceConfigWrapper = this.mDeviceConfig;
+                    Executor mainExecutor = this.mContext.getMainExecutor();
+                    DeviceConfig.OnPropertiesChangedListener onPropertiesChangedListener = new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.power.LowPowerStandbyController$$ExternalSyntheticLambda3
+                        public final void onPropertiesChanged(DeviceConfig.Properties properties) {
+                            LowPowerStandbyController lowPowerStandbyController = LowPowerStandbyController.this;
+                            synchronized (lowPowerStandbyController.mLock) {
+                                try {
+                                    lowPowerStandbyController.mDeviceConfig.getClass();
+                                    boolean z2 = DeviceConfig.getBoolean("low_power_standby", "enable_policy", true);
+                                    if (lowPowerStandbyController.mEnableCustomPolicy != z2) {
+                                        PowerManager.LowPowerStandbyPolicy policy = lowPowerStandbyController.getPolicy();
+                                        LowPowerStandbyController.LowPowerStandbyHandler lowPowerStandbyHandler = lowPowerStandbyController.mHandler;
+                                        lowPowerStandbyHandler.sendMessageAtTime(lowPowerStandbyHandler.obtainMessage(3, policy), lowPowerStandbyController.mClock.uptimeMillis());
+                                        lowPowerStandbyController.enqueueNotifyAllowlistChangedLocked();
+                                        lowPowerStandbyController.mEnableCustomPolicy = z2;
+                                    }
+                                    lowPowerStandbyController.mDeviceConfig.getClass();
+                                    lowPowerStandbyController.mEnableStandbyPorts = DeviceConfig.getBoolean("low_power_standby", "enable_standby_ports", true);
+                                } catch (Throwable th) {
+                                    throw th;
+                                }
+                            }
+                        }
+                    };
+                    deviceConfigWrapper.getClass();
+                    DeviceConfig.addOnPropertiesChangedListener("low_power_standby", mainExecutor, onPropertiesChangedListener);
+                    this.mDeviceConfig.getClass();
+                    this.mEnableCustomPolicy = DeviceConfig.getBoolean("low_power_standby", "enable_policy", true);
+                    this.mDeviceConfig.getClass();
+                    this.mEnableStandbyPorts = DeviceConfig.getBoolean("low_power_standby", "enable_standby_ports", true);
+                    if (this.mEnableCustomPolicy) {
+                        this.mPolicy = loadPolicy();
+                    } else {
+                        this.mPolicy = DEFAULT_POLICY;
                     }
+                    ContentResolver contentResolver = this.mContext.getContentResolver();
+                    if (this.mSupportedConfig && Settings.Global.getInt(contentResolver, "low_power_standby_enabled", -1) == -1) {
+                        Settings.Global.putInt(contentResolver, "low_power_standby_enabled", this.mEnabledByDefaultConfig ? 1 : 0);
+                    }
+                    updateSettingsLocked();
+                    if (this.mIsEnabled) {
+                        registerListeners();
+                    }
+                    LocalServices.addService(LocalService.class, this.mLocalService);
                 }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    public final List getExemptPackageAppIdsLocked() {
-        PackageManager packageManager = this.mContext.getPackageManager();
-        PowerManager.LowPowerStandbyPolicy policy = getPolicy();
-        ArrayList arrayList = new ArrayList();
-        if (policy == null) {
-            return arrayList;
+    public final void updateActiveLocked() {
+        Clock clock = this.mClock;
+        boolean z = false;
+        boolean z2 = clock.elapsedRealtime() - this.mLastInteractiveTimeElapsed >= ((long) this.mStandbyTimeoutConfig);
+        boolean z3 = this.mIdleSinceNonInteractive && !this.mIsDeviceIdle;
+        if (this.mForceActive || (this.mIsEnabled && !this.mIsInteractive && z2 && (!z3 || this.mActiveDuringMaintenance))) {
+            z = true;
         }
-        Iterator it = policy.getExemptPackages().iterator();
-        while (it.hasNext()) {
-            try {
-                arrayList.add(Integer.valueOf(UserHandle.getAppId(packageManager.getPackageUid((String) it.next(), PackageManager.PackageInfoFlags.of(0L)))));
-            } catch (PackageManager.NameNotFoundException unused) {
-            }
-        }
-        return arrayList;
-    }
-
-    public final int[] getAllowlistUidsLocked() {
-        List userHandles = ((UserManager) this.mContext.getSystemService(UserManager.class)).getUserHandles(true);
-        ArraySet arraySet = new ArraySet(this.mUidAllowedReasons.size());
-        PowerManager.LowPowerStandbyPolicy policy = getPolicy();
-        if (policy == null) {
-            return new int[0];
-        }
-        int allowedReasons = policy.getAllowedReasons();
-        for (int i = 0; i < this.mUidAllowedReasons.size(); i++) {
-            Integer valueOf = Integer.valueOf(this.mUidAllowedReasons.keyAt(i));
-            if ((this.mUidAllowedReasons.valueAt(i) & allowedReasons) != 0) {
-                arraySet.add(valueOf);
-            }
-        }
-        Iterator it = getExemptPackageAppIdsLocked().iterator();
-        while (it.hasNext()) {
-            for (int i2 : uidsForAppId(((Integer) it.next()).intValue(), userHandles)) {
-                arraySet.add(Integer.valueOf(i2));
-            }
-        }
-        int[] iArr = new int[arraySet.size()];
-        for (int i3 = 0; i3 < arraySet.size(); i3++) {
-            iArr[i3] = ((Integer) arraySet.valueAt(i3)).intValue();
-        }
-        Arrays.sort(iArr);
-        return iArr;
-    }
-
-    public final int[] uidsForAppId(int i, List list) {
-        int appId = UserHandle.getAppId(i);
-        int[] iArr = new int[list.size()];
-        for (int i2 = 0; i2 < list.size(); i2++) {
-            iArr[i2] = ((UserHandle) list.get(i2)).getUid(appId);
-        }
-        return iArr;
-    }
-
-    public final void enqueueNotifyAllowlistChangedLocked() {
-        long elapsedRealtime = this.mClock.elapsedRealtime();
-        this.mHandler.sendMessageAtTime(this.mHandler.obtainMessage(2, getAllowlistUidsLocked()), elapsedRealtime);
-    }
-
-    public final void notifyAllowlistChanged(int[] iArr) {
-        PowerManagerInternal powerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
-        NetworkPolicyManagerInternal networkPolicyManagerInternal = (NetworkPolicyManagerInternal) LocalServices.getService(NetworkPolicyManagerInternal.class);
-        powerManagerInternal.setLowPowerStandbyAllowlist(iArr);
-        networkPolicyManagerInternal.setLowPowerStandbyAllowlist(iArr);
-    }
-
-    public final void enqueueNotifyStandbyPortsChangedLocked() {
-        long elapsedRealtime = this.mClock.elapsedRealtime();
-        this.mHandler.sendMessageAtTime(this.mHandler.obtainMessage(5), elapsedRealtime);
-    }
-
-    public final void notifyStandbyPortsChanged() {
-        Intent intent = new Intent("android.os.action.LOW_POWER_STANDBY_PORTS_CHANGED");
-        intent.addFlags(1342177280);
-        this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL, "android.permission.MANAGE_LOW_POWER_STANDBY");
-    }
-
-    /* loaded from: classes3.dex */
-    public class DeviceConfigWrapper {
-        public boolean enableCustomPolicy() {
-            return DeviceConfig.getBoolean("low_power_standby", "enable_policy", false);
-        }
-
-        public boolean enableStandbyPorts() {
-            return DeviceConfig.getBoolean("low_power_standby", "enable_standby_ports", false);
-        }
-
-        public void registerPropertyUpdateListener(Executor executor, DeviceConfig.OnPropertiesChangedListener onPropertiesChangedListener) {
-            DeviceConfig.addOnPropertiesChangedListener("low_power_standby", executor, onPropertiesChangedListener);
+        if (this.mIsActive != z) {
+            this.mIsActive = z;
+            Boolean valueOf = Boolean.valueOf(z);
+            LowPowerStandbyHandler lowPowerStandbyHandler = this.mHandler;
+            lowPowerStandbyHandler.sendMessageAtTime(lowPowerStandbyHandler.obtainMessage(1, valueOf), clock.uptimeMillis());
         }
     }
 
-    /* loaded from: classes3.dex */
-    public final class LocalService extends LowPowerStandbyControllerInternal {
-        public LocalService() {
-        }
-
-        @Override // com.android.server.power.LowPowerStandbyControllerInternal
-        public void addToAllowlist(int i, int i2) {
-            LowPowerStandbyController.this.addToAllowlistInternal(i, i2);
-        }
-
-        @Override // com.android.server.power.LowPowerStandbyControllerInternal
-        public void removeFromAllowlist(int i, int i2) {
-            LowPowerStandbyController.this.removeFromAllowlistInternal(i, i2);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class SettingsObserver extends ContentObserver {
-        public SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z, Uri uri) {
-            LowPowerStandbyController.this.onSettingsChanged();
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class TempAllowlistChangeListener implements PowerAllowlistInternal.TempAllowlistChangeListener {
-        public TempAllowlistChangeListener() {
-        }
-
-        public void onAppAdded(int i) {
-            LowPowerStandbyController.this.addToAllowlistInternal(i, 2);
-        }
-
-        public void onAppRemoved(int i) {
-            LowPowerStandbyController.this.removeFromAllowlistInternal(i, 2);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class PhoneCallServiceTracker extends IForegroundServiceObserver.Stub {
-        public boolean mRegistered = false;
-        public final SparseBooleanArray mUidsWithPhoneCallService = new SparseBooleanArray();
-
-        public PhoneCallServiceTracker() {
-        }
-
-        public void register() {
-            if (this.mRegistered) {
-                return;
-            }
-            try {
-                ((IActivityManager) LowPowerStandbyController.this.mActivityManager.get()).registerForegroundServiceObserver(this);
-                this.mRegistered = true;
-            } catch (RemoteException unused) {
-            }
-        }
-
-        public void onForegroundStateChanged(IBinder iBinder, String str, int i, boolean z) {
-            try {
-                long elapsedRealtime = LowPowerStandbyController.this.mClock.elapsedRealtime();
-                LowPowerStandbyController.this.mHandler.sendMessageAtTime(LowPowerStandbyController.this.mHandler.obtainMessage(4, LowPowerStandbyController.this.mContext.getPackageManager().getPackageUidAsUser(str, i), 0), elapsedRealtime);
-            } catch (PackageManager.NameNotFoundException unused) {
-            }
-        }
-
-        public void foregroundServiceStateChanged(int i) {
-            boolean z = this.mUidsWithPhoneCallService.get(i);
-            boolean hasRunningForegroundService = LowPowerStandbyController.this.mActivityManagerInternal.hasRunningForegroundService(i, 4);
-            if (hasRunningForegroundService == z) {
-                return;
-            }
-            if (hasRunningForegroundService) {
-                this.mUidsWithPhoneCallService.append(i, true);
-                uidStartedPhoneCallService(i);
-            } else {
-                this.mUidsWithPhoneCallService.delete(i);
-                uidStoppedPhoneCallService(i);
-            }
-        }
-
-        public final void uidStartedPhoneCallService(int i) {
-            LowPowerStandbyController.this.addToAllowlistInternal(i, 4);
-        }
-
-        public final void uidStoppedPhoneCallService(int i) {
-            LowPowerStandbyController.this.removeFromAllowlistInternal(i, 4);
-        }
+    public final void updateSettingsLocked() {
+        ContentResolver contentResolver = this.mContext.getContentResolver();
+        this.mIsEnabled = this.mSupportedConfig && Settings.Global.getInt(contentResolver, "low_power_standby_enabled", this.mEnabledByDefaultConfig ? 1 : 0) != 0;
+        this.mActiveDuringMaintenance = Settings.Global.getInt(contentResolver, "low_power_standby_active_during_maintenance", 0) != 0;
+        updateActiveLocked();
     }
 }

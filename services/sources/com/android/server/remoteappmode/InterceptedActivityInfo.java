@@ -1,28 +1,10 @@
 package com.android.server.remoteappmode;
 
-import android.content.Intent;
-import com.android.server.uri.NeededUriGrants;
 import com.android.server.wm.RemoteAppController;
 
-/* loaded from: classes3.dex */
-public class InterceptedActivityInfo {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class InterceptedActivityInfo {
     public RemoteAppController.CallerInfo callerInfo;
-    public Intent intent;
-    public NeededUriGrants intentGrants;
     public int userId;
-
-    public InterceptedActivityInfo(Intent intent, RemoteAppController.CallerInfo callerInfo, NeededUriGrants neededUriGrants, int i) {
-        this.intent = intent;
-        this.callerInfo = callerInfo;
-        this.intentGrants = neededUriGrants;
-        this.userId = i;
-    }
-
-    public RemoteAppController.CallerInfo getCallerInfo() {
-        return this.callerInfo;
-    }
-
-    public int getUserId() {
-        return this.userId;
-    }
 }

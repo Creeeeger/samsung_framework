@@ -1,6 +1,5 @@
 package com.android.server.content;
 
-import android.accounts.Account;
 import android.app.job.JobParameters;
 import android.os.Build;
 import android.os.Environment;
@@ -14,9 +13,8 @@ import android.util.Log;
 import android.util.Slog;
 import com.android.internal.util.IntPair;
 import com.android.server.IoThread;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
 import com.android.server.backup.BackupManagerConstants;
-import com.android.server.content.SyncManager;
-import com.android.server.content.SyncStorageEngine;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -30,45 +28,13 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import libcore.io.IoUtils;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class SyncLogger {
     public static SyncLogger sInstance;
 
-    public void dumpAll(PrintWriter printWriter) {
-    }
-
-    public boolean enabled() {
-        return false;
-    }
-
-    public String jobParametersToString(JobParameters jobParameters) {
-        return "";
-    }
-
-    public void log(Object... objArr) {
-    }
-
-    public void purgeOldLogs() {
-    }
-
-    public static synchronized SyncLogger getInstance() {
-        SyncLogger syncLogger;
-        synchronized (SyncLogger.class) {
-            if (sInstance == null) {
-                String str = SystemProperties.get("debug.synclog");
-                if ((Build.IS_DEBUGGABLE || "1".equals(str) || Log.isLoggable("SyncLogger", 2)) && !"0".equals(str)) {
-                    sInstance = new RotatingFileLogger();
-                } else {
-                    sInstance = new SyncLogger();
-                }
-            }
-            syncLogger = sInstance;
-        }
-        return syncLogger;
-    }
-
-    /* loaded from: classes.dex */
-    public class RotatingFileLogger extends SyncLogger {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RotatingFileLogger extends SyncLogger {
         public long mCurrentLogFileDayTimestamp;
         public boolean mErrorShown;
         public Writer mLogWriter;
@@ -82,103 +48,56 @@ public class SyncLogger {
         public final File mLogPath = new File(Environment.getDataSystemDirectory(), "syncmanager-log");
         public final MyHandler mHandler = new MyHandler(IoThread.get().getLooper());
 
-        @Override // com.android.server.content.SyncLogger
-        public boolean enabled() {
-            return true;
-        }
-
-        public final void handleException(String str, Exception exc) {
-            if (this.mErrorShown) {
-                return;
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class MyHandler extends Handler {
+            public MyHandler(Looper looper) {
+                super(looper);
             }
-            Slog.e("SyncLogger", str, exc);
-            this.mErrorShown = true;
-        }
 
-        @Override // com.android.server.content.SyncLogger
-        public void log(Object... objArr) {
-            if (objArr == null) {
-                return;
-            }
-            this.mHandler.log(System.currentTimeMillis(), objArr);
-        }
-
-        public void logInner(long j, Object[] objArr) {
-            synchronized (this.mLock) {
-                openLogLocked(j);
-                if (this.mLogWriter == null) {
+            @Override // android.os.Handler
+            public final void handleMessage(Message message) {
+                if (message.what != 1) {
                     return;
                 }
-                this.mStringBuilder.setLength(0);
-                this.mCachedDate.setTime(j);
-                this.mStringBuilder.append(sTimestampFormat.format(this.mCachedDate));
-                this.mStringBuilder.append(' ');
-                this.mStringBuilder.append(Process.myTid());
-                this.mStringBuilder.append(' ');
-                int length = this.mStringBuilder.length();
-                for (Object obj : objArr) {
-                    this.mStringBuilder.append(obj);
-                }
-                this.mStringBuilder.append('\n');
-                try {
-                    this.mLogWriter.append((CharSequence) this.mStringBuilder);
-                    this.mLogWriter.flush();
-                    if (DO_LOGCAT) {
-                        Log.d("SyncLogger", this.mStringBuilder.substring(length));
-                    }
-                } catch (IOException e) {
-                    handleException("Failed to write log", e);
-                }
-            }
-        }
-
-        public final void openLogLocked(long j) {
-            long j2 = j % BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS;
-            if (this.mLogWriter == null || j2 != this.mCurrentLogFileDayTimestamp) {
-                closeCurrentLogLocked();
-                this.mCurrentLogFileDayTimestamp = j2;
-                this.mCachedDate.setTime(j);
-                File file = new File(this.mLogPath, "synclog-" + sFilenameDateFormat.format(this.mCachedDate) + ".log");
-                file.getParentFile().mkdirs();
-                try {
-                    this.mLogWriter = new FileWriter(file, true);
-                } catch (IOException e) {
-                    handleException("Failed to open log file: " + file, e);
-                }
-            }
-        }
-
-        public final void closeCurrentLogLocked() {
-            IoUtils.closeQuietly(this.mLogWriter);
-            this.mLogWriter = null;
-        }
-
-        @Override // com.android.server.content.SyncLogger
-        public void purgeOldLogs() {
-            synchronized (this.mLock) {
-                FileUtils.deleteOlderFiles(this.mLogPath, 1, this.mKeepAgeMs);
-            }
-        }
-
-        @Override // com.android.server.content.SyncLogger
-        public String jobParametersToString(JobParameters jobParameters) {
-            return SyncJobService.jobParametersToString(jobParameters);
-        }
-
-        @Override // com.android.server.content.SyncLogger
-        public void dumpAll(PrintWriter printWriter) {
-            synchronized (this.mLock) {
-                String[] list = this.mLogPath.list();
-                if (list != null && list.length != 0) {
-                    Arrays.sort(list);
-                    for (String str : list) {
-                        dumpFile(printWriter, new File(this.mLogPath, str));
+                RotatingFileLogger rotatingFileLogger = RotatingFileLogger.this;
+                long of = IntPair.of(message.arg1, message.arg2);
+                Object[] objArr = (Object[]) message.obj;
+                synchronized (rotatingFileLogger.mLock) {
+                    try {
+                        rotatingFileLogger.openLogLocked(of);
+                        if (rotatingFileLogger.mLogWriter == null) {
+                            return;
+                        }
+                        rotatingFileLogger.mStringBuilder.setLength(0);
+                        rotatingFileLogger.mCachedDate.setTime(of);
+                        rotatingFileLogger.mStringBuilder.append(RotatingFileLogger.sTimestampFormat.format(rotatingFileLogger.mCachedDate));
+                        rotatingFileLogger.mStringBuilder.append(' ');
+                        rotatingFileLogger.mStringBuilder.append(Process.myTid());
+                        rotatingFileLogger.mStringBuilder.append(' ');
+                        int length = rotatingFileLogger.mStringBuilder.length();
+                        for (Object obj : objArr) {
+                            rotatingFileLogger.mStringBuilder.append(obj);
+                        }
+                        rotatingFileLogger.mStringBuilder.append('\n');
+                        try {
+                            rotatingFileLogger.mLogWriter.append((CharSequence) rotatingFileLogger.mStringBuilder);
+                            rotatingFileLogger.mLogWriter.flush();
+                            if (RotatingFileLogger.DO_LOGCAT) {
+                                Log.d("SyncLogger", rotatingFileLogger.mStringBuilder.substring(length));
+                            }
+                        } catch (IOException e) {
+                            if (!rotatingFileLogger.mErrorShown) {
+                                Slog.e("SyncLogger", "Failed to write log", e);
+                                rotatingFileLogger.mErrorShown = true;
+                            }
+                        }
+                    } finally {
                     }
                 }
             }
         }
 
-        public final void dumpFile(PrintWriter printWriter, File file) {
+        public static void dumpFile(File file, PrintWriter printWriter) {
             Slog.w("SyncLogger", "Dumping " + file);
             char[] cArr = new char[32768];
             try {
@@ -199,39 +118,102 @@ public class SyncLogger {
             }
         }
 
-        /* loaded from: classes.dex */
-        public class MyHandler extends Handler {
-            public MyHandler(Looper looper) {
-                super(looper);
-            }
-
-            public void log(long j, Object[] objArr) {
-                obtainMessage(1, IntPair.first(j), IntPair.second(j), objArr).sendToTarget();
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message message) {
-                if (message.what != 1) {
-                    return;
+        @Override // com.android.server.content.SyncLogger
+        public final void dumpAll(PrintWriter printWriter) {
+            synchronized (this.mLock) {
+                try {
+                    String[] list = this.mLogPath.list();
+                    if (list != null && list.length != 0) {
+                        Arrays.sort(list);
+                        for (String str : list) {
+                            dumpFile(new File(this.mLogPath, str), printWriter);
+                        }
+                    }
+                } finally {
                 }
-                RotatingFileLogger.this.logInner(IntPair.of(message.arg1, message.arg2), (Object[]) message.obj);
+            }
+        }
+
+        @Override // com.android.server.content.SyncLogger
+        public final String jobParametersToString(JobParameters jobParameters) {
+            return SyncJobService.jobParametersToString(jobParameters);
+        }
+
+        @Override // com.android.server.content.SyncLogger
+        public final void log(Object... objArr) {
+            long currentTimeMillis = System.currentTimeMillis();
+            MyHandler myHandler = this.mHandler;
+            myHandler.getClass();
+            myHandler.obtainMessage(1, IntPair.first(currentTimeMillis), IntPair.second(currentTimeMillis), objArr).sendToTarget();
+        }
+
+        public final void openLogLocked(long j) {
+            long j2 = j % BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS;
+            Writer writer = this.mLogWriter;
+            if (writer == null || j2 != this.mCurrentLogFileDayTimestamp) {
+                IoUtils.closeQuietly(writer);
+                this.mLogWriter = null;
+                this.mCurrentLogFileDayTimestamp = j2;
+                this.mCachedDate.setTime(j);
+                File file = new File(this.mLogPath, "synclog-" + sFilenameDateFormat.format(this.mCachedDate) + ".log");
+                file.getParentFile().mkdirs();
+                try {
+                    this.mLogWriter = new FileWriter(file, true);
+                } catch (IOException e) {
+                    String m = AccountManagerService$$ExternalSyntheticOutline0.m(file, "Failed to open log file: ");
+                    if (this.mErrorShown) {
+                        return;
+                    }
+                    Slog.e("SyncLogger", m, e);
+                    this.mErrorShown = true;
+                }
+            }
+        }
+
+        @Override // com.android.server.content.SyncLogger
+        public final void purgeOldLogs() {
+            synchronized (this.mLock) {
+                FileUtils.deleteOlderFiles(this.mLogPath, 1, this.mKeepAgeMs);
             }
         }
     }
 
-    public static String logSafe(Account account) {
-        return account == null ? "[null]" : account.toSafeString();
+    public static synchronized SyncLogger getInstance() {
+        SyncLogger syncLogger;
+        synchronized (SyncLogger.class) {
+            try {
+                if (sInstance == null) {
+                    String str = SystemProperties.get("debug.synclog");
+                    if (!Build.IS_DEBUGGABLE) {
+                        if (!"1".equals(str)) {
+                            if (Log.isLoggable("SyncLogger", 2)) {
+                            }
+                            sInstance = new SyncLogger();
+                        }
+                    }
+                    if (!"0".equals(str)) {
+                        sInstance = new RotatingFileLogger();
+                    }
+                    sInstance = new SyncLogger();
+                }
+                syncLogger = sInstance;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return syncLogger;
     }
 
-    public static String logSafe(SyncStorageEngine.EndPoint endPoint) {
-        return endPoint == null ? "[null]" : endPoint.toSafeString();
+    public void dumpAll(PrintWriter printWriter) {
     }
 
-    public static String logSafe(SyncOperation syncOperation) {
-        return syncOperation == null ? "[null]" : syncOperation.toSafeString();
+    public String jobParametersToString(JobParameters jobParameters) {
+        return "";
     }
 
-    public static String logSafe(SyncManager.ActiveSyncContext activeSyncContext) {
-        return activeSyncContext == null ? "[null]" : activeSyncContext.toSafeString();
+    public void log(Object... objArr) {
+    }
+
+    public void purgeOldLogs() {
     }
 }

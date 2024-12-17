@@ -2,39 +2,15 @@ package com.android.server.wm;
 
 import android.util.ArrayMap;
 import android.util.ArraySet;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
-/* loaded from: classes3.dex */
-public class AnimatingActivityRegistry {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class AnimatingActivityRegistry {
+    public ArraySet mAnimatingActivities;
     public boolean mEndingDeferredFinish;
-    public ArraySet mAnimatingActivities = new ArraySet();
-    public ArrayMap mFinishedTokens = new ArrayMap();
-    public ArrayList mTmpRunnableList = new ArrayList();
-
-    public void notifyStarting(ActivityRecord activityRecord) {
-        this.mAnimatingActivities.add(activityRecord);
-    }
-
-    public void notifyFinished(ActivityRecord activityRecord) {
-        this.mAnimatingActivities.remove(activityRecord);
-        this.mFinishedTokens.remove(activityRecord);
-        if (this.mAnimatingActivities.isEmpty()) {
-            endDeferringFinished();
-        }
-    }
-
-    public boolean notifyAboutToFinish(ActivityRecord activityRecord, Runnable runnable) {
-        if (!this.mAnimatingActivities.remove(activityRecord)) {
-            return false;
-        }
-        if (this.mAnimatingActivities.isEmpty()) {
-            endDeferringFinished();
-            return false;
-        }
-        this.mFinishedTokens.put(activityRecord, runnable);
-        return true;
-    }
+    public ArrayMap mFinishedTokens;
+    public ArrayList mTmpRunnableList;
 
     public final void endDeferringFinished() {
         if (this.mEndingDeferredFinish) {
@@ -50,23 +26,10 @@ public class AnimatingActivityRegistry {
                 ((Runnable) this.mTmpRunnableList.get(size2)).run();
             }
             this.mTmpRunnableList.clear();
-        } finally {
             this.mEndingDeferredFinish = false;
+        } catch (Throwable th) {
+            this.mEndingDeferredFinish = false;
+            throw th;
         }
-    }
-
-    public void dump(PrintWriter printWriter, String str, String str2) {
-        if (this.mAnimatingActivities.isEmpty() && this.mFinishedTokens.isEmpty()) {
-            return;
-        }
-        printWriter.print(str2);
-        printWriter.println(str);
-        String str3 = str2 + "  ";
-        printWriter.print(str3);
-        printWriter.print("mAnimatingActivities=");
-        printWriter.println(this.mAnimatingActivities);
-        printWriter.print(str3);
-        printWriter.print("mFinishedTokens=");
-        printWriter.println(this.mFinishedTokens);
     }
 }

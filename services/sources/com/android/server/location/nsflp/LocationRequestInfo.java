@@ -1,21 +1,13 @@
 package com.android.server.location.nsflp;
 
+import android.hardware.biometrics.face.V1_0.OptionalBool$$ExternalSyntheticOutline0;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
-public class LocationRequestInfo implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: com.android.server.location.nsflp.LocationRequestInfo.1
-        @Override // android.os.Parcelable.Creator
-        public LocationRequestInfo createFromParcel(Parcel parcel) {
-            return new LocationRequestInfo(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public LocationRequestInfo[] newArray(int i) {
-            return new LocationRequestInfo[i];
-        }
-    };
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class LocationRequestInfo implements Parcelable {
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public long backgroundDuration;
     public long backgroundTime;
     public long interval;
@@ -40,141 +32,66 @@ public class LocationRequestInfo implements Parcelable {
     public int uid;
     public String versionName;
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.location.nsflp.LocationRequestInfo$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            LocationRequestInfo locationRequestInfo = new LocationRequestInfo();
+            locationRequestInfo.isPassive = false;
+            locationRequestInfo.isHighPowerRequest = false;
+            locationRequestInfo.lastUpdateTime = 0L;
+            locationRequestInfo.isAllowed = true;
+            locationRequestInfo.packageName = parcel.readString();
+            locationRequestInfo.versionName = parcel.readString();
+            locationRequestInfo.listenerId = parcel.readString();
+            locationRequestInfo.provider = parcel.readString();
+            locationRequestInfo.quality = parcel.readInt();
+            locationRequestInfo.requestTime = parcel.readLong();
+            locationRequestInfo.removedTime = parcel.readLong();
+            locationRequestInfo.backgroundTime = parcel.readLong();
+            locationRequestInfo.backgroundDuration = parcel.readLong();
+            locationRequestInfo.interval = parcel.readLong();
+            locationRequestInfo.minUpdateInterval = parcel.readLong();
+            locationRequestInfo.maxWaitTime = parcel.readLong();
+            locationRequestInfo.requester = parcel.readInt();
+            locationRequestInfo.isForeground = parcel.readInt() != 0;
+            locationRequestInfo.numUpdates = parcel.readInt();
+            locationRequestInfo.uid = parcel.readInt();
+            locationRequestInfo.pid = parcel.readInt();
+            locationRequestInfo.isListenerType = parcel.readByte() != 0;
+            locationRequestInfo.isSystemApp = parcel.readByte() != 0;
+            locationRequestInfo.isPassive = parcel.readByte() != 0;
+            locationRequestInfo.isHighPowerRequest = parcel.readByte() != 0;
+            locationRequestInfo.lastUpdateTime = parcel.readLong();
+            locationRequestInfo.isAllowed = parcel.readByte() != 0;
+            return locationRequestInfo;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new LocationRequestInfo[i];
+        }
+    }
+
     @Override // android.os.Parcelable
-    public int describeContents() {
+    public final int describeContents() {
         return 0;
     }
 
-    public LocationRequestInfo(Builder builder) {
-        this.isPassive = false;
-        this.isHighPowerRequest = false;
-        this.lastUpdateTime = 0L;
-        this.isAllowed = true;
-        this.packageName = builder.packageName;
-        this.versionName = builder.versionName;
-        this.listenerId = builder.listenerId;
-        this.provider = builder.provider;
-        this.quality = builder.quality;
-        this.requestTime = builder.requestTime;
-        this.backgroundTime = builder.backgroundTime;
-        this.interval = builder.interval;
-        this.minUpdateInterval = builder.minUpdateInterval;
-        this.maxWaitTime = builder.maxWaitTime;
-        this.requester = builder.requester;
-        this.isForeground = builder.isForeground;
-        this.numUpdates = builder.numUpdates;
-        this.uid = builder.uid;
-        this.pid = builder.pid;
-        this.isListenerType = builder.isListenerType;
-        this.isAllowed = builder.isAllowed;
-        this.isHighPowerRequest = builder.isHighPowerRequest;
-    }
-
-    public String toString() {
-        return this.packageName + "[" + this.provider + "," + this.interval + "," + this.isForeground + "]";
-    }
-
-    /* loaded from: classes2.dex */
-    public final class Builder {
-        public long backgroundTime;
-        public long interval;
-        public boolean isAllowed;
-        public boolean isForeground;
-        public boolean isHighPowerRequest;
-        public boolean isListenerType;
-        public String listenerId;
-        public long maxWaitTime;
-        public long minUpdateInterval;
-        public int numUpdates = Integer.MAX_VALUE;
-        public String packageName;
-        public int pid;
-        public String provider;
-        public int quality;
-        public long requestTime;
-        public int requester;
-        public int uid;
-        public String versionName;
-
-        public Builder setPackageName(String str) {
-            this.packageName = str;
-            return this;
-        }
-
-        public Builder setListenerId(String str) {
-            this.listenerId = str;
-            return this;
-        }
-
-        public Builder setProvider(String str) {
-            this.provider = str;
-            return this;
-        }
-
-        public Builder setQuality(int i) {
-            this.quality = i;
-            return this;
-        }
-
-        public Builder setRequestTime(long j) {
-            this.requestTime = j;
-            return this;
-        }
-
-        public Builder setInterval(long j) {
-            this.interval = j;
-            return this;
-        }
-
-        public Builder setMinUpdateInterval(long j) {
-            this.minUpdateInterval = j;
-            return this;
-        }
-
-        public Builder setMaxWaitTime(long j) {
-            this.maxWaitTime = j;
-            return this;
-        }
-
-        public Builder setForeground(boolean z) {
-            this.isForeground = z;
-            return this;
-        }
-
-        public Builder setListenerType(boolean z) {
-            this.isListenerType = z;
-            return this;
-        }
-
-        public Builder setAllowed(boolean z) {
-            this.isAllowed = z;
-            return this;
-        }
-
-        public Builder setHighPowerRequest(boolean z) {
-            this.isHighPowerRequest = z;
-            return this;
-        }
-
-        public LocationRequestInfo build() {
-            if (this.provider == null || this.listenerId == null || this.packageName == null) {
-                throw new NullPointerException("New requestInfo mandatory fields are null,PackageName=" + this.packageName + "/ListenerId=" + this.listenerId + "/Provider=" + this.provider + "/isAllowed=" + this.isAllowed);
-            }
-            return new LocationRequestInfo(this);
-        }
-
-        public Builder setUid(int i) {
-            this.uid = i;
-            return this;
-        }
-
-        public Builder setPid(int i) {
-            this.pid = i;
-            return this;
-        }
+    public final String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.packageName);
+        sb.append("[");
+        sb.append(this.provider);
+        sb.append(",");
+        sb.append(this.interval);
+        sb.append(",");
+        return OptionalBool$$ExternalSyntheticOutline0.m("]", sb, this.isForeground);
     }
 
     @Override // android.os.Parcelable
-    public void writeToParcel(Parcel parcel, int i) {
+    public final void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.packageName);
         parcel.writeString(this.versionName);
         parcel.writeString(this.listenerId);
@@ -198,35 +115,5 @@ public class LocationRequestInfo implements Parcelable {
         parcel.writeByte(this.isHighPowerRequest ? (byte) 1 : (byte) 0);
         parcel.writeLong(this.lastUpdateTime);
         parcel.writeByte(this.isAllowed ? (byte) 1 : (byte) 0);
-    }
-
-    public LocationRequestInfo(Parcel parcel) {
-        this.isPassive = false;
-        this.isHighPowerRequest = false;
-        this.lastUpdateTime = 0L;
-        this.isAllowed = true;
-        this.packageName = parcel.readString();
-        this.versionName = parcel.readString();
-        this.listenerId = parcel.readString();
-        this.provider = parcel.readString();
-        this.quality = parcel.readInt();
-        this.requestTime = parcel.readLong();
-        this.removedTime = parcel.readLong();
-        this.backgroundTime = parcel.readLong();
-        this.backgroundDuration = parcel.readLong();
-        this.interval = parcel.readLong();
-        this.minUpdateInterval = parcel.readLong();
-        this.maxWaitTime = parcel.readLong();
-        this.requester = parcel.readInt();
-        this.isForeground = parcel.readInt() != 0;
-        this.numUpdates = parcel.readInt();
-        this.uid = parcel.readInt();
-        this.pid = parcel.readInt();
-        this.isListenerType = parcel.readByte() != 0;
-        this.isSystemApp = parcel.readByte() != 0;
-        this.isPassive = parcel.readByte() != 0;
-        this.isHighPowerRequest = parcel.readByte() != 0;
-        this.lastUpdateTime = parcel.readLong();
-        this.isAllowed = parcel.readByte() != 0;
     }
 }

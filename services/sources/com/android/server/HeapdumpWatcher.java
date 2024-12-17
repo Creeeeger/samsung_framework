@@ -14,61 +14,26 @@ import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class HeapdumpWatcher {
+public final class HeapdumpWatcher {
     public static Context mContext;
     public ActivityManagerService mActivity;
+    public final WatchdogSoftdog softdog;
     public static final double THRESHOLD_OF_HEAPSIZE = (Runtime.getRuntime().maxMemory() * 0.96d) / 1048576.0d;
     public static boolean mHeapDumped = false;
     public int mOverThresholdCnt = 0;
     public int mScreenOffCount = 0;
     public long mAllocatedMemory = 0;
-    public final WatchdogSoftdog softdog = WatchdogSoftdog.getInstance();
 
-    public void initInstance(Context context, ActivityManagerService activityManagerService) {
-        mContext = context;
-        this.mActivity = activityManagerService;
-    }
-
-    public void setAllocatedMemory(long j) {
-        this.mAllocatedMemory = j;
-    }
-
-    public void checkHeap() {
-        if (this.mAllocatedMemory < THRESHOLD_OF_HEAPSIZE) {
-            this.mOverThresholdCnt = 0;
-            this.mScreenOffCount = 0;
-            return;
+    public HeapdumpWatcher() {
+        if (WatchdogSoftdog.sInstance == null) {
+            WatchdogSoftdog watchdogSoftdog = new WatchdogSoftdog();
+            watchdogSoftdog.mSoftdogTimeout = 100;
+            watchdogSoftdog.mSoftdogDisabled = true;
+            WatchdogSoftdog.sInstance = watchdogSoftdog;
         }
-        this.mOverThresholdCnt++;
-        Slog.e("Watchdog:HeapdumpWatcher", "!@ The heap has been allocated excessively. OverThresholdCnt : " + this.mOverThresholdCnt);
-        int i = this.mOverThresholdCnt;
-        if (i < 20) {
-            if (i == 2) {
-                makeHeapDump();
-            }
-        } else if (checkConditionToThrowOOM()) {
-            throw new OutOfMemoryError("HeapFull, " + this.mAllocatedMemory + "MB was used");
-        }
-    }
-
-    public final boolean checkConditionToThrowOOM() {
-        return checkScreenOff() && checkBackgroundAudio() && checkCall();
-    }
-
-    public boolean checkScreenOff() {
-        PowerManager powerManager = (PowerManager) mContext.getSystemService("power");
-        if (powerManager != null && powerManager.isInteractive()) {
-            Slog.d("Watchdog:HeapdumpWatcher", "screen is on now");
-            this.mScreenOffCount = 0;
-        } else {
-            this.mScreenOffCount++;
-        }
-        if (this.mScreenOffCount > 2) {
-            return true;
-        }
-        Slog.w("Watchdog:HeapdumpWatcher", "!@ screen is on now (or off few seconds ago) cnt : " + this.mScreenOffCount);
-        return false;
+        this.softdog = WatchdogSoftdog.sInstance;
     }
 
     public boolean checkBackgroundAudio() {
@@ -96,6 +61,21 @@ public class HeapdumpWatcher {
         return false;
     }
 
+    public boolean checkScreenOff() {
+        PowerManager powerManager = (PowerManager) mContext.getSystemService("power");
+        if (powerManager == null || !powerManager.isInteractive()) {
+            this.mScreenOffCount++;
+        } else {
+            Slog.d("Watchdog:HeapdumpWatcher", "screen is on now");
+            this.mScreenOffCount = 0;
+        }
+        if (this.mScreenOffCount > 2) {
+            return true;
+        }
+        HeapdumpWatcher$$ExternalSyntheticOutline0.m(new StringBuilder("!@ screen is on now (or off few seconds ago) cnt : "), this.mScreenOffCount, "Watchdog:HeapdumpWatcher");
+        return false;
+    }
+
     public final void makeHeapDump() {
         if (mHeapDumped) {
             return;
@@ -103,13 +83,9 @@ public class HeapdumpWatcher {
         ActivityManagerService activityManagerService = this.mActivity;
         if (activityManagerService == null || activityManagerService.isHeapDumpAllowed()) {
             mHeapDumped = true;
-            new Thread("watchdogHeapDump") { // from class: com.android.server.HeapdumpWatcher.1
-                public AnonymousClass1(String str) {
-                    super(str);
-                }
-
+            new Thread() { // from class: com.android.server.HeapdumpWatcher.1
                 @Override // java.lang.Thread, java.lang.Runnable
-                public void run() {
+                public final void run() {
                     try {
                         if (!Files.exists(Paths.get("/data/log/core", new String[0]), new LinkOption[0])) {
                             Slog.w("Watchdog:HeapdumpWatcher", " create folder /data/log/core");
@@ -125,31 +101,6 @@ public class HeapdumpWatcher {
                     }
                 }
             }.start();
-        }
-    }
-
-    /* renamed from: com.android.server.HeapdumpWatcher$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends Thread {
-        public AnonymousClass1(String str) {
-            super(str);
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            try {
-                if (!Files.exists(Paths.get("/data/log/core", new String[0]), new LinkOption[0])) {
-                    Slog.w("Watchdog:HeapdumpWatcher", " create folder /data/log/core");
-                    Files.createDirectory(Paths.get("/data/log/core", new String[0]), PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxrwx")));
-                }
-                Slog.i("Watchdog:HeapdumpWatcher", "Start dumping for java heapdump");
-                HeapdumpWatcher.this.softdog.softdogKick(1000);
-                Debug.dumpHprofData("/data/log/core/system_server.hprof");
-            } catch (IOException unused) {
-                Slog.w("Watchdog:HeapdumpWatcher", "IOException: Cannot dump for java heapdump");
-            } catch (RuntimeException unused2) {
-                Slog.w("Watchdog:HeapdumpWatcher", "RuntimeException: Cannot dump for java heapdump");
-            }
         }
     }
 }

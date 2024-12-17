@@ -50,8 +50,12 @@ import com.android.internal.net.VpnConfig;
 import com.android.internal.notification.SystemNotificationChannels;
 import com.android.internal.util.FunctionalUtils;
 import com.android.net.module.util.NetworkStackConstants;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
+import com.android.server.VpnManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0;
 import com.android.server.net.BaseNetworkObserver;
-import com.samsung.android.knox.SemPersonaManager;
 import com.samsung.android.knox.net.vpn.IKnoxVpnPolicy;
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -59,11 +63,13 @@ import java.net.Inet6Address;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import libcore.io.IoUtils;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class EnterpriseVpn {
     public static final boolean DBG = Debug.semIsProductDev();
@@ -73,175 +79,28 @@ public class EnterpriseVpn {
     public final ConnectivityManager mConnectivityManager;
     public final Context mContext;
     public String mInterface;
-    public int mLegacyState;
+    public final AnonymousClass3 mLocaleChangedReceiver;
     public final Looper mLooper;
     public final INetd mNetd;
-    public NetworkAgent mNetworkAgent;
+    public AnonymousClass1 mNetworkAgent;
     public NetworkCapabilities mNetworkCapabilities;
     public final NetworkInfo mNetworkInfo;
     public final NetworkProvider mNetworkProvider;
     public final INetworkManagementService mNms;
-    public int mOwnerUID;
-    public String mPackage;
+    public final AnonymousClass2 mObserver;
+    public final int mOwnerUID;
+    public final String mPackage;
     public String mProfileName;
     public final int mUserId;
     public final UserManager mUserManager;
-    public SemPersonaManager mPersonaManager = null;
     public boolean isMetaDataEnabled = false;
     public ProxyInfo mHttpProxyInfo = null;
     public String mV6Address = null;
     public boolean isVpnObjectRemoved = false;
     public final Set knoxVpnUidRanges = new ArraySet();
-    public NotificationManager mNotificationManager = null;
-    public INetworkManagementEventObserver mObserver = new BaseNetworkObserver() { // from class: com.android.server.connectivity.EnterpriseVpn.2
-        public void interfaceRemoved(String str) {
-            synchronized (EnterpriseVpn.this) {
-                if (str.equals(EnterpriseVpn.this.mInterface) && EnterpriseVpn.this.jniCheck(str) == 0) {
-                    Log.d("knoxEnterpriseVpn", "Interface removed: " + str);
-                    try {
-                        if (EnterpriseVpn.this.mConnection != null) {
-                            EnterpriseVpn.this.mContext.unbindService(EnterpriseVpn.this.mConnection);
-                            EnterpriseVpn.this.closeInterface();
-                            EnterpriseVpn.this.dismissConnectingNotification(str);
-                            EnterpriseVpn.this.updateState(NetworkInfo.DetailedState.DISCONNECTING, "agentDisconnect");
-                            EnterpriseVpn.m4239$$Nest$smgetService().disconnectKnoxVpn(EnterpriseVpn.this.mProfileName, EnterpriseVpn.this.mOwnerUID);
-                            EnterpriseVpn.this.cleanupVpnStateLocked();
-                            EnterpriseVpn.m4238$$Nest$smgetKnoxVpnService().removeVpnUidRanges(EnterpriseVpn.this.mProfileName);
-                            if (EnterpriseVpn.this.isVpnObjectRemoved) {
-                                Log.d("knoxEnterpriseVpn", "resetting the network capability and unregistering the observer since the interface is removed");
-                                EnterpriseVpn enterpriseVpn = EnterpriseVpn.this;
-                                enterpriseVpn.hideNotification(enterpriseVpn.mUserId);
-                                EnterpriseVpn.this.cleanupObjects();
-                            }
-                        }
-                    } catch (Exception e) {
-                        Log.e("knoxEnterpriseVpn", "Exception at  interfaceRemoved : " + Log.getStackTraceString(e));
-                    }
-                }
-            }
-        }
-    };
-    public final BroadcastReceiver mLocaleChangedReceiver = new BroadcastReceiver() { // from class: com.android.server.connectivity.EnterpriseVpn.3
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action != null && action.equals("android.intent.action.LOCALE_CHANGED")) {
-                Log.d("knoxEnterpriseVpn", "Locale changed. Updating Knox vpn notification and the number of user present is ");
-                if (EnterpriseVpn.this.mNetworkInfo == null || !EnterpriseVpn.this.mNetworkInfo.isConnected()) {
-                    return;
-                }
-                EnterpriseVpn.this.updateNotification();
-            }
-        }
-    };
 
-    /* renamed from: -$$Nest$smgetKnoxVpnService, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ IKnoxVpnPolicy m4238$$Nest$smgetKnoxVpnService() {
-        return getKnoxVpnService();
-    }
-
-    /* renamed from: -$$Nest$smgetService, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ IVpnManager m4239$$Nest$smgetService() {
-        return getService();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public native int jniCheck(String str);
-
-    private native int jniCreateknoxvpn(int i, boolean z);
-
-    private native String jniGetName(int i);
-
-    private native void jniReset(String str);
-
-    private native int jniSetAddresses(String str, String str2);
-
-    public final void dismissConnectingNotification() {
-    }
-
-    public final void dismissConnectingNotification(String str) {
-    }
-
-    public final int getActiveVpnType() {
-        return 4;
-    }
-
-    public EnterpriseVpn(Looper looper, Context context, INetworkManagementService iNetworkManagementService, INetd iNetd, int i, String str, int i2) {
-        this.mContext = context;
-        this.mConnectivityManager = (ConnectivityManager) context.getSystemService(ConnectivityManager.class);
-        this.mNms = iNetworkManagementService;
-        this.mNetd = iNetd;
-        this.mUserId = i;
-        this.mLooper = looper;
-        this.mUserManager = (UserManager) context.getSystemService(UserManager.class);
-        this.mPackage = str;
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                iNetworkManagementService.registerObserver(this.mObserver);
-                int appUid = getAppUid(this.mPackage, i);
-                this.mOwnerUID = appUid;
-                if (appUid != -1 && i2 != 1) {
-                    iNetworkManagementService.allowProtect(appUid);
-                }
-            } catch (Exception e) {
-                Log.e("knoxEnterpriseVpn", "Unable to register mObserver or protecting socket failed : " + Log.getStackTraceString(e));
-            }
-            NetworkProvider networkProvider = new NetworkProvider(context, looper, "VpnNetworkProvider:" + this.mUserId);
-            this.mNetworkProvider = networkProvider;
-            this.mConnectivityManager.registerNetworkProvider(networkProvider);
-            this.mNetworkInfo = new NetworkInfo(17, 0, "VPN", "");
-            this.mNetworkCapabilities = new NetworkCapabilities.Builder().addTransportType(4).removeCapability(15).addCapability(28).setTransportInfo(new VpnTransportInfo(-1, (String) null)).build();
-            registerLocaleChangedReceiver();
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public static IVpnManager getService() {
-        return IVpnManager.Stub.asInterface(ServiceManager.getService("vpn_management"));
-    }
-
-    public static IKnoxVpnPolicy getKnoxVpnService() {
-        return IKnoxVpnPolicy.Stub.asInterface(ServiceManager.getService("knox_vpn_policy"));
-    }
-
-    public void updateState(NetworkInfo.DetailedState detailedState, String str) {
-        Log.d("knoxEnterpriseVpn", "setting state=" + detailedState + ", reason=" + str);
-        this.mLegacyState = LegacyVpnInfo.stateFromNetworkInfo(detailedState);
-        this.mNetworkInfo.setDetailedState(detailedState, str, null);
-        int i = AnonymousClass4.$SwitchMap$android$net$NetworkInfo$DetailedState[detailedState.ordinal()];
-        if (i == 1) {
-            NetworkAgent networkAgent = this.mNetworkAgent;
-            if (networkAgent != null) {
-                networkAgent.markConnected();
-                return;
-            }
-            return;
-        }
-        if (i == 2 || i == 3) {
-            NetworkAgent networkAgent2 = this.mNetworkAgent;
-            if (networkAgent2 != null) {
-                networkAgent2.unregister();
-                this.mNetworkAgent = null;
-                return;
-            }
-            return;
-        }
-        if (i == 4) {
-            if (this.mNetworkAgent != null) {
-                throw new IllegalStateException("VPN can only go to CONNECTING state when the agent is null.");
-            }
-        } else {
-            if (i == 5) {
-                return;
-            }
-            throw new IllegalArgumentException("Illegal state argument " + detailedState);
-        }
-    }
-
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     /* renamed from: com.android.server.connectivity.EnterpriseVpn$4, reason: invalid class name */
-    /* loaded from: classes.dex */
     public abstract /* synthetic */ class AnonymousClass4 {
         public static final /* synthetic */ int[] $SwitchMap$android$net$NetworkInfo$DetailedState;
 
@@ -271,8 +130,396 @@ public class EnterpriseVpn {
         }
     }
 
-    public final void resetNetworkCapabilities() {
-        this.mNetworkCapabilities = new NetworkCapabilities.Builder(this.mNetworkCapabilities).setUids((Set) null).setTransportInfo(new VpnTransportInfo(-1, (String) null)).build();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Connection implements ServiceConnection {
+        public IBinder mService;
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            this.mService = iBinder;
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceDisconnected(ComponentName componentName) {
+        }
+    }
+
+    /* renamed from: -$$Nest$mcleanupVpnStateLocked, reason: not valid java name */
+    public static void m364$$Nest$mcleanupVpnStateLocked(EnterpriseVpn enterpriseVpn) {
+        enterpriseVpn.getClass();
+        enterpriseVpn.mNetworkCapabilities = new NetworkCapabilities.Builder(enterpriseVpn.mNetworkCapabilities).setUids((Set) null).setTransportInfo(new VpnTransportInfo(-1, (String) null)).build();
+        enterpriseVpn.mConfig = null;
+        enterpriseVpn.mInterface = null;
+        enterpriseVpn.mConnection = null;
+        enterpriseVpn.updateState(NetworkInfo.DetailedState.DISCONNECTED, "agentDisconnect");
+    }
+
+    /* renamed from: -$$Nest$mcloseInterface, reason: not valid java name */
+    public static void m365$$Nest$mcloseInterface(EnterpriseVpn enterpriseVpn) {
+        String str = enterpriseVpn.mInterface;
+        if (str != null) {
+            enterpriseVpn.jniReset(str);
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r4v0, types: [com.android.server.connectivity.EnterpriseVpn$3] */
+    public EnterpriseVpn(Looper looper, Context context, INetworkManagementService iNetworkManagementService, INetd iNetd, int i, String str, int i2) {
+        int i3;
+        INetworkManagementEventObserver iNetworkManagementEventObserver = new BaseNetworkObserver() { // from class: com.android.server.connectivity.EnterpriseVpn.2
+            public final void interfaceRemoved(String str2) {
+                synchronized (EnterpriseVpn.this) {
+                    if (str2.equals(EnterpriseVpn.this.mInterface) && EnterpriseVpn.this.jniCheck(str2) == 0) {
+                        Log.d("knoxEnterpriseVpn", "Interface removed: ".concat(str2));
+                        try {
+                            EnterpriseVpn enterpriseVpn = EnterpriseVpn.this;
+                            Connection connection = enterpriseVpn.mConnection;
+                            if (connection != null) {
+                                enterpriseVpn.mContext.unbindService(connection);
+                                EnterpriseVpn.m365$$Nest$mcloseInterface(EnterpriseVpn.this);
+                                EnterpriseVpn.this.getClass();
+                                EnterpriseVpn.this.updateState(NetworkInfo.DetailedState.DISCONNECTING, "agentDisconnect");
+                                IVpnManager asInterface = IVpnManager.Stub.asInterface(ServiceManager.getService("vpn_management"));
+                                EnterpriseVpn enterpriseVpn2 = EnterpriseVpn.this;
+                                asInterface.disconnectKnoxVpn(enterpriseVpn2.mProfileName, enterpriseVpn2.mOwnerUID);
+                                EnterpriseVpn.m364$$Nest$mcleanupVpnStateLocked(EnterpriseVpn.this);
+                                EnterpriseVpn.getKnoxVpnService().removeVpnUidRanges(EnterpriseVpn.this.mProfileName);
+                                if (EnterpriseVpn.this.isVpnObjectRemoved) {
+                                    Log.d("knoxEnterpriseVpn", "resetting the network capability and unregistering the observer since the interface is removed");
+                                    EnterpriseVpn enterpriseVpn3 = EnterpriseVpn.this;
+                                    enterpriseVpn3.hideNotification(enterpriseVpn3.mUserId);
+                                    EnterpriseVpn.this.cleanupObjects();
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e("knoxEnterpriseVpn", "Exception at  interfaceRemoved : " + Log.getStackTraceString(e));
+                        }
+                    }
+                }
+            }
+        };
+        this.mObserver = iNetworkManagementEventObserver;
+        this.mLocaleChangedReceiver = new BroadcastReceiver() { // from class: com.android.server.connectivity.EnterpriseVpn.3
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                String action = intent.getAction();
+                if (action != null && action.equals("android.intent.action.LOCALE_CHANGED")) {
+                    Log.d("knoxEnterpriseVpn", "Locale changed. Updating Knox vpn notification and the number of user present is ");
+                    NetworkInfo networkInfo = EnterpriseVpn.this.mNetworkInfo;
+                    if (networkInfo == null || !networkInfo.isConnected()) {
+                        return;
+                    }
+                    EnterpriseVpn enterpriseVpn = EnterpriseVpn.this;
+                    boolean z = EnterpriseVpn.DBG;
+                    if (z) {
+                        GestureWakeup$$ExternalSyntheticOutline0.m(new StringBuilder("updateNotification > user : "), enterpriseVpn.mUserId, "knoxEnterpriseVpn");
+                    } else {
+                        enterpriseVpn.getClass();
+                    }
+                    long clearCallingIdentity = Binder.clearCallingIdentity();
+                    try {
+                        try {
+                            NotificationManager notificationManager = (NotificationManager) enterpriseVpn.mContext.getSystemService("notification");
+                            enterpriseVpn.mContext.getString(R.string.permdesc_postNotification);
+                            enterpriseVpn.mContext.getString(R.string.permdesc_persistentActivity);
+                            if (z) {
+                                Log.d("knoxEnterpriseVpn", "updateNotification > vpn type is per-app");
+                            }
+                            List domainsByProfileName = EnterpriseVpn.getDomainsByProfileName(enterpriseVpn.mConfig.session);
+                            if (domainsByProfileName != null) {
+                                Iterator it = domainsByProfileName.iterator();
+                                while (it.hasNext()) {
+                                    int parseInt = Integer.parseInt((String) it.next());
+                                    boolean z2 = EnterpriseVpn.getKnoxVpnService().getNotificationDismissibleFlagInternal(parseInt) != 0;
+                                    Notification createNotification = enterpriseVpn.createNotification(VpnConfig.getIntentForStatusPanelRefreshAsUser(enterpriseVpn.mContext, parseInt), z2);
+                                    if (z2) {
+                                        notificationManager.notifyAsUser("Knox_Notification", 100000, createNotification, new UserHandle(parseInt));
+                                    } else {
+                                        notificationManager.notifyAsUser(null, 100000 + parseInt, createNotification, new UserHandle(parseInt));
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.d("knoxEnterpriseVpn", "Exception: " + Log.getStackTraceString(e));
+                        }
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                    } catch (Throwable th) {
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                        throw th;
+                    }
+                }
+            }
+        };
+        this.mContext = context;
+        this.mConnectivityManager = (ConnectivityManager) context.getSystemService(ConnectivityManager.class);
+        this.mNms = iNetworkManagementService;
+        this.mNetd = iNetd;
+        this.mUserId = i;
+        this.mLooper = looper;
+        this.mUserManager = (UserManager) context.getSystemService(UserManager.class);
+        this.mPackage = str;
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                iNetworkManagementService.registerObserver(iNetworkManagementEventObserver);
+                try {
+                    i3 = context.getPackageManager().getPackageUidAsUser(str, i);
+                } catch (PackageManager.NameNotFoundException unused) {
+                    i3 = -1;
+                }
+                this.mOwnerUID = i3;
+                if (i3 != -1 && i2 != 1) {
+                    this.mNms.allowProtect(i3);
+                }
+            } catch (Exception e) {
+                Log.e("knoxEnterpriseVpn", "Unable to register mObserver or protecting socket failed : " + Log.getStackTraceString(e));
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            NetworkProvider networkProvider = new NetworkProvider(context, looper, "VpnNetworkProvider:" + this.mUserId);
+            this.mNetworkProvider = networkProvider;
+            this.mConnectivityManager.registerNetworkProvider(networkProvider);
+            this.mNetworkInfo = new NetworkInfo(17, 0, "VPN", "");
+            this.mNetworkCapabilities = new NetworkCapabilities.Builder().addTransportType(4).removeCapability(15).addCapability(28).setTransportInfo(new VpnTransportInfo(-1, (String) null)).build();
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            this.mContext.registerReceiverAsUser(this.mLocaleChangedReceiver, UserHandle.ALL, new IntentFilter("android.intent.action.LOCALE_CHANGED"), null, null);
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public static List getDomainsByProfileName(String str) {
+        if (DBG) {
+            Log.d("knoxEnterpriseVpn", "getDomainsByProfileName()");
+        }
+        try {
+            return getKnoxVpnService().getDomainsByProfileName(str);
+        } catch (Exception e) {
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception: "), "knoxEnterpriseVpn");
+            return null;
+        }
+    }
+
+    public static IKnoxVpnPolicy getKnoxVpnService() {
+        return IKnoxVpnPolicy.Stub.asInterface(ServiceManager.getService("knox_vpn_policy"));
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public native int jniCheck(String str);
+
+    private native int jniCreateknoxvpn(int i, boolean z);
+
+    private native String jniGetName(int i);
+
+    private native void jniReset(String str);
+
+    private native int jniSetAddresses(String str, String str2);
+
+    /* JADX WARN: Type inference failed for: r11v0, types: [com.android.server.connectivity.EnterpriseVpn$1] */
+    public final void agentConnect() {
+        LinkProperties makeLinkProperties = makeLinkProperties();
+        NetworkCapabilities.Builder builder = new NetworkCapabilities.Builder(this.mNetworkCapabilities);
+        builder.addCapability(12);
+        updateState(NetworkInfo.DetailedState.CONNECTING, "agentConnect");
+        NetworkAgentConfig build = new NetworkAgentConfig.Builder().setBypassableVpn(false).build();
+        int i = this.mOwnerUID;
+        builder.setOwnerUid(i);
+        builder.setAdministratorUids(new int[]{i});
+        builder.setUids(this.knoxVpnUidRanges);
+        builder.setTransportInfo(new VpnTransportInfo(4, (String) null));
+        this.mNetworkCapabilities = builder.build();
+        this.mNetworkAgent = new NetworkAgent(this.mContext, this.mLooper, this.mNetworkCapabilities, makeLinkProperties, new NetworkScore.Builder().setLegacyInt(101).build(), build, this.mNetworkProvider) { // from class: com.android.server.connectivity.EnterpriseVpn.1
+            public final void onNetworkCreated() {
+                int i2;
+                Log.d("knoxEnterpriseVpn", "knox vpn network is created");
+                EnterpriseVpn enterpriseVpn = EnterpriseVpn.this;
+                boolean z = EnterpriseVpn.DBG;
+                enterpriseVpn.getClass();
+                try {
+                    int chainingEnabledForProfile = EnterpriseVpn.getKnoxVpnService().getChainingEnabledForProfile(enterpriseVpn.mOwnerUID);
+                    synchronized (enterpriseVpn) {
+                        AnonymousClass1 anonymousClass1 = enterpriseVpn.mNetworkAgent;
+                        i2 = 0;
+                        if (anonymousClass1 != null) {
+                            Network network = anonymousClass1.getNetwork();
+                            if (network != null) {
+                                i2 = network.getNetId();
+                            }
+                        }
+                    }
+                    int i3 = i2;
+                    if (chainingEnabledForProfile == 1) {
+                        enterpriseVpn.mNms.setNetworkInfo(i3, true, enterpriseVpn.mOwnerUID);
+                    }
+                    EnterpriseVpn.getKnoxVpnService().addVpnUidRanges(enterpriseVpn.mProfileName, i3, enterpriseVpn.mInterface, enterpriseVpn.mAddress, enterpriseVpn.mV6Address);
+                    enterpriseVpn.showNotification(enterpriseVpn.mProfileName, true);
+                } catch (Exception e) {
+                    VpnManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Error occured "), "knoxEnterpriseVpn");
+                }
+            }
+
+            public final void onNetworkDestroyed() {
+                Log.d("knoxEnterpriseVpn", "knox vpn network is destroyed");
+            }
+
+            public final void onNetworkUnwanted() {
+            }
+        };
+        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.connectivity.EnterpriseVpn$$ExternalSyntheticLambda1
+            public final void runOrThrow() {
+                EnterpriseVpn enterpriseVpn = EnterpriseVpn.this;
+                boolean z = EnterpriseVpn.DBG;
+                enterpriseVpn.getClass();
+                try {
+                    enterpriseVpn.mNetworkAgent.register();
+                } catch (Exception e) {
+                    enterpriseVpn.mNetworkAgent = null;
+                    throw e;
+                }
+            }
+        });
+        setUnderlyingNetworks((List) null);
+        updateState(NetworkInfo.DetailedState.CONNECTED, "agentConnect");
+    }
+
+    public final void applyBlockingRulesToUidRange(boolean z) {
+        try {
+            this.mConnectivityManager.setRequireVpnForUids(z, this.knoxVpnUidRanges);
+        } catch (RuntimeException e) {
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m("Updating blocked=", " for UIDs ", z);
+            m.append(Arrays.toString(((ArraySet) this.knoxVpnUidRanges).toArray()));
+            m.append(" failed");
+            Log.e("knoxEnterpriseVpn", m.toString(), e);
+        }
+    }
+
+    public final void cleanupObjects() {
+        if (this.mInterface != null) {
+            Log.e("knoxEnterpriseVpn", "Delay resetting the network capability and unregistering the observer since the interface is not removed yet");
+            this.isVpnObjectRemoved = true;
+            return;
+        }
+        resetUidListInNetworkCapabilities();
+        try {
+            this.mNms.unregisterObserver(this.mObserver);
+        } catch (RemoteException unused) {
+        }
+        AnonymousClass3 anonymousClass3 = this.mLocaleChangedReceiver;
+        if (anonymousClass3 != null) {
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            this.mContext.unregisterReceiver(anonymousClass3);
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+        this.mConnectivityManager.unregisterNetworkProvider(this.mNetworkProvider);
+    }
+
+    public final Notification createNotification(PendingIntent pendingIntent, boolean z) {
+        String string = this.mContext.getString(R.string.permdesc_postNotification);
+        return new Notification.Builder(this.mContext, SystemNotificationChannels.VPN).setSmallIcon(17304846).setContentTitle(string).setContentText(this.mContext.getString(R.string.permdesc_persistentActivity)).setContentIntent(pendingIntent).setDefaults(0).setOngoing(z).setPriority(2).getNotification();
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r5v0, types: [int] */
+    /* JADX WARN: Type inference failed for: r5v4, types: [long] */
+    public final synchronized ParcelFileDescriptor establish(VpnConfig vpnConfig) {
+        long callingUid = Binder.getCallingUid();
+        if (callingUid != this.mOwnerUID) {
+            Log.e("knoxEnterpriseVpn", "establish failed due to caller mismatch " + this.mOwnerUID + Binder.getCallingUid());
+            return null;
+        }
+        try {
+            Intent intent = new Intent("android.net.VpnService");
+            intent.setClassName(this.mPackage, vpnConfig.user);
+            callingUid = Binder.clearCallingIdentity();
+            try {
+                if (this.mUserManager.getUserInfo(this.mUserId).isRestricted() || this.mUserManager.hasUserRestriction("no_config_vpn")) {
+                    throw new SecurityException("Restricted users cannot establish VPNs");
+                }
+                ResolveInfo resolveService = AppGlobals.getPackageManager().resolveService(intent, (String) null, 0L, this.mUserId);
+                if (resolveService == null) {
+                    throw new SecurityException("Cannot find " + vpnConfig.user);
+                }
+                if (!"android.permission.BIND_VPN_SERVICE".equals(resolveService.serviceInfo.permission)) {
+                    throw new SecurityException(vpnConfig.user + " does not require android.permission.BIND_VPN_SERVICE");
+                }
+                Binder.restoreCallingIdentity(callingUid);
+                this.mProfileName = vpnConfig.session;
+                ParcelFileDescriptor adoptFd = ParcelFileDescriptor.adoptFd(jniCreateknoxvpn(vpnConfig.mtu, this.isMetaDataEnabled));
+                try {
+                    try {
+                        IoUtils.setBlocking(adoptFd.getFileDescriptor(), vpnConfig.blocking);
+                        String jniGetName = jniGetName(adoptFd.getFd());
+                        StringBuilder sb = new StringBuilder();
+                        for (LinkAddress linkAddress : vpnConfig.addresses) {
+                            sb.append(" ");
+                            sb.append(linkAddress);
+                        }
+                        if (jniSetAddresses(jniGetName, sb.toString()) < 1) {
+                            throw new IllegalArgumentException("At least one address must be specified");
+                        }
+                        Connection connection = new Connection();
+                        if (!this.mContext.bindServiceAsUser(intent, connection, 67108865, new UserHandle(this.mUserId))) {
+                            throw new IllegalStateException("Cannot bind " + vpnConfig.user);
+                        }
+                        Connection connection2 = this.mConnection;
+                        if (connection2 != null) {
+                            this.mContext.unbindService(connection2);
+                        }
+                        String str = this.mInterface;
+                        if (str != null && !str.equals(jniGetName)) {
+                            jniReset(this.mInterface);
+                        }
+                        this.mConnection = connection;
+                        this.mInterface = jniGetName;
+                        vpnConfig.user = this.mPackage;
+                        vpnConfig.interfaze = jniGetName;
+                        vpnConfig.startTime = SystemClock.elapsedRealtime();
+                        this.mConfig = vpnConfig;
+                        this.mNetworkAgent = null;
+                        updateState(NetworkInfo.DetailedState.CONNECTING, "establish");
+                        agentConnect();
+                        Log.i("knoxEnterpriseVpn", "Established by " + vpnConfig.user + " on " + this.mInterface);
+                        return adoptFd;
+                    } catch (RuntimeException e) {
+                        Log.e("knoxEnterpriseVpn", "Exception in creating tun interface" + Log.getStackTraceString(e));
+                        IoUtils.closeQuietly(adoptFd);
+                        updateState(NetworkInfo.DetailedState.DISCONNECTED, "agentDisconnect");
+                        throw e;
+                    }
+                } catch (IOException e2) {
+                    throw new IllegalStateException("Cannot set tunnel's fd as blocking=" + vpnConfig.blocking, e2);
+                }
+            } catch (RemoteException unused) {
+                throw new SecurityException("Cannot find " + vpnConfig.user);
+            }
+        } finally {
+            Binder.restoreCallingIdentity(callingUid);
+        }
+    }
+
+    public final void hideNotification(int i) {
+        if (DBG) {
+            NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "hideNotification > domain : ", "knoxEnterpriseVpn");
+        }
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                NotificationManager notificationManager = (NotificationManager) this.mContext.getSystemService("notification");
+                if (getKnoxVpnService().getNotificationDismissibleFlagInternal(i) == 1) {
+                    notificationManager.cancelAsUser("Knox_Notification", 100000, new UserHandle(i));
+                } else {
+                    notificationManager.cancelAsUser(null, 100000 + i, new UserHandle(i));
+                }
+            } catch (Exception e) {
+                Log.d("knoxEnterpriseVpn", "Exception: " + Log.getStackTraceString(e));
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public boolean isCallerEstablishedOwnerLocked() {
+        return (this.mNetworkAgent == null || this.mInterface == null || Binder.getCallingUid() != this.mOwnerUID) ? false : true;
     }
 
     public final LinkProperties makeLinkProperties() {
@@ -322,299 +569,47 @@ public class EnterpriseVpn {
         return linkProperties;
     }
 
-    public final void agentConnect() {
-        LinkProperties makeLinkProperties = makeLinkProperties();
-        NetworkCapabilities.Builder builder = new NetworkCapabilities.Builder(this.mNetworkCapabilities);
-        builder.addCapability(12);
-        updateState(NetworkInfo.DetailedState.CONNECTING, "agentConnect");
-        NetworkAgentConfig build = new NetworkAgentConfig.Builder().setBypassableVpn(false).build();
-        builder.setOwnerUid(this.mOwnerUID);
-        builder.setAdministratorUids(new int[]{this.mOwnerUID});
-        builder.setUids(this.knoxVpnUidRanges);
-        builder.setTransportInfo(new VpnTransportInfo(getActiveVpnType(), (String) null));
-        this.mNetworkCapabilities = builder.build();
-        this.mNetworkAgent = new NetworkAgent(this.mContext, this.mLooper, "VPN", this.mNetworkCapabilities, makeLinkProperties, new NetworkScore.Builder().setLegacyInt(101).build(), build, this.mNetworkProvider) { // from class: com.android.server.connectivity.EnterpriseVpn.1
-            public void onNetworkUnwanted() {
-            }
-
-            public void onNetworkCreated() {
-                Log.d("knoxEnterpriseVpn", "knox vpn network is created");
-                EnterpriseVpn.this.onKnoxVpnConnected();
-            }
-
-            public void onNetworkDestroyed() {
-                Log.d("knoxEnterpriseVpn", "knox vpn network is destroyed");
-            }
-        };
-        Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.connectivity.EnterpriseVpn$$ExternalSyntheticLambda0
-            public final void runOrThrow() {
-                EnterpriseVpn.this.lambda$agentConnect$0();
-            }
-        });
-        this.mNetworkAgent.setUnderlyingNetworks((List) null);
-        updateState(NetworkInfo.DetailedState.CONNECTED, "agentConnect");
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$agentConnect$0() {
-        try {
-            this.mNetworkAgent.register();
-        } catch (Exception e) {
-            this.mNetworkAgent = null;
-            throw e;
+    public final void refreshNotification(int i, boolean z) {
+        if (DBG) {
+            Log.d("knoxEnterpriseVpn", "refreshNotification > domain : " + i + ", optionAdd : " + z);
         }
-    }
-
-    public final void agentDisconnect() {
-        updateState(NetworkInfo.DetailedState.DISCONNECTED, "agentDisconnect");
-    }
-
-    public synchronized ParcelFileDescriptor establish(VpnConfig vpnConfig) {
-        if (Binder.getCallingUid() != this.mOwnerUID) {
-            Log.e("knoxEnterpriseVpn", "establish failed due to caller mismatch " + this.mOwnerUID + Binder.getCallingUid());
-            return null;
-        }
-        Intent intent = new Intent("android.net.VpnService");
-        intent.setClassName(this.mPackage, vpnConfig.user);
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             try {
-                if (this.mUserManager.getUserInfo(this.mUserId).isRestricted() || this.mUserManager.hasUserRestriction("no_config_vpn")) {
-                    throw new SecurityException("Restricted users cannot establish VPNs");
+                NotificationManager notificationManager = (NotificationManager) this.mContext.getSystemService("notification");
+                boolean z2 = getKnoxVpnService().getNotificationDismissibleFlagInternal(i) != 0;
+                Notification createNotification = createNotification(VpnConfig.getIntentForStatusPanelEnterpriseVpnAsUser(this.mContext, this.mConfig, z, i), z2);
+                if (z2) {
+                    notificationManager.notifyAsUser("Knox_Notification", 100000, createNotification, new UserHandle(i));
+                } else {
+                    notificationManager.notifyAsUser(null, 100000 + i, createNotification, new UserHandle(i));
                 }
-                ResolveInfo resolveService = AppGlobals.getPackageManager().resolveService(intent, (String) null, 0L, this.mUserId);
-                if (resolveService == null) {
-                    throw new SecurityException("Cannot find " + vpnConfig.user);
-                }
-                if (!"android.permission.BIND_VPN_SERVICE".equals(resolveService.serviceInfo.permission)) {
-                    throw new SecurityException(vpnConfig.user + " does not require android.permission.BIND_VPN_SERVICE");
-                }
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                this.mProfileName = vpnConfig.session;
-                ParcelFileDescriptor adoptFd = ParcelFileDescriptor.adoptFd(jniCreateknoxvpn(vpnConfig.mtu, this.isMetaDataEnabled));
-                try {
-                    try {
-                        IoUtils.setBlocking(adoptFd.getFileDescriptor(), vpnConfig.blocking);
-                        String jniGetName = jniGetName(adoptFd.getFd());
-                        StringBuilder sb = new StringBuilder();
-                        for (LinkAddress linkAddress : vpnConfig.addresses) {
-                            sb.append(" ");
-                            sb.append(linkAddress);
-                        }
-                        if (jniSetAddresses(jniGetName, sb.toString()) < 1) {
-                            throw new IllegalArgumentException("At least one address must be specified");
-                        }
-                        Connection connection = new Connection();
-                        if (!this.mContext.bindServiceAsUser(intent, connection, 67108865, new UserHandle(this.mUserId))) {
-                            throw new IllegalStateException("Cannot bind " + vpnConfig.user);
-                        }
-                        Connection connection2 = this.mConnection;
-                        if (connection2 != null) {
-                            this.mContext.unbindService(connection2);
-                        }
-                        String str = this.mInterface;
-                        if (str != null && !str.equals(jniGetName)) {
-                            jniReset(this.mInterface);
-                        }
-                        this.mConnection = connection;
-                        this.mInterface = jniGetName;
-                        vpnConfig.user = this.mPackage;
-                        vpnConfig.interfaze = jniGetName;
-                        vpnConfig.startTime = SystemClock.elapsedRealtime();
-                        this.mConfig = vpnConfig;
-                        this.mNetworkAgent = null;
-                        updateState(NetworkInfo.DetailedState.CONNECTING, "establish");
-                        agentConnect();
-                        Log.i("knoxEnterpriseVpn", "Established by " + vpnConfig.user + " on " + this.mInterface);
-                        return adoptFd;
-                    } catch (IOException e) {
-                        throw new IllegalStateException("Cannot set tunnel's fd as blocking=" + vpnConfig.blocking, e);
-                    }
-                } catch (RuntimeException e2) {
-                    Log.e("knoxEnterpriseVpn", "Exception in creating tun interface" + Log.getStackTraceString(e2));
-                    dismissConnectingNotification();
-                    IoUtils.closeQuietly(adoptFd);
-                    agentDisconnect();
-                    throw e2;
-                }
-            } catch (RemoteException unused) {
-                throw new SecurityException("Cannot find " + vpnConfig.user);
+            } catch (Exception e) {
+                Log.d("knoxEnterpriseVpn", "Exception: " + Log.getStackTraceString(e));
             }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
         } catch (Throwable th) {
             Binder.restoreCallingIdentity(clearCallingIdentity);
             throw th;
         }
     }
 
-    public final void cleanupVpnStateLocked() {
-        resetNetworkCapabilities();
-        this.mConfig = null;
-        this.mInterface = null;
-        this.mConnection = null;
-        agentDisconnect();
-    }
-
-    public final void closeInterface() {
-        String str = this.mInterface;
-        if (str != null) {
-            jniReset(str);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class Connection implements ServiceConnection {
-        public IBinder mService;
-
-        public Connection() {
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            this.mService = iBinder;
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName componentName) {
-            this.mService = null;
-        }
-    }
-
-    public static Range createUidRangeForUser(int i) {
-        return new Range(Integer.valueOf(i * 100000), Integer.valueOf(((i + 1) * 100000) - 1));
-    }
-
-    public void updateUidRangesToPerAppVpn(boolean z, Set set) {
-        Log.d("knoxEnterpriseVpn", "updateUidRangesToPerAppVpn " + z);
-        Iterator it = set.iterator();
-        while (it.hasNext()) {
-            int intValue = ((Integer) it.next()).intValue();
-            if (z) {
-                this.knoxVpnUidRanges.add(new Range(Integer.valueOf(intValue), Integer.valueOf(intValue)));
-            } else {
-                this.knoxVpnUidRanges.remove(new Range(Integer.valueOf(intValue), Integer.valueOf(intValue)));
-            }
-        }
-        updateUidListInNetworkCapabilities();
-    }
-
-    public void updateUidRangesToUserVpn(boolean z, int i) {
-        Log.d("knoxEnterpriseVpn", "updateUidRangesToUserVpn " + z + " " + i);
-        int i2 = (i * 100000) + 1;
-        int i3 = i2 + (-1) + 99999;
-        if (z) {
-            this.knoxVpnUidRanges.add(new Range(Integer.valueOf(i2), Integer.valueOf(i3)));
-        } else {
-            this.knoxVpnUidRanges.remove(new Range(Integer.valueOf(i2), Integer.valueOf(i3)));
-        }
-        updateUidListInNetworkCapabilities();
-    }
-
-    public void updateUidRangesToUserVpnWithBlackList(int i, Set set) {
-        Log.d("knoxEnterpriseVpn", "updateUidRangesToUserVpnWithBlackList " + i);
-        if (set.size() <= 0) {
-            return;
-        }
-        ArrayList arrayList = new ArrayList(set);
-        Collections.sort(arrayList);
-        Range createUidRangeForUser = createUidRangeForUser(i);
-        int intValue = ((Integer) createUidRangeForUser.getLower()).intValue() + 1;
-        Iterator it = arrayList.iterator();
-        while (it.hasNext()) {
-            int intValue2 = ((Integer) it.next()).intValue();
-            if (intValue2 == intValue) {
-                intValue++;
-            } else {
-                this.knoxVpnUidRanges.add(new Range(Integer.valueOf(intValue), Integer.valueOf(intValue2 - 1)));
-                intValue = intValue2 + 1;
-            }
-        }
-        if (intValue <= ((Integer) createUidRangeForUser.getUpper()).intValue()) {
-            this.knoxVpnUidRanges.add(new Range(Integer.valueOf(intValue), (Integer) createUidRangeForUser.getUpper()));
-        }
-        updateUidListInNetworkCapabilities();
-    }
-
-    public final void updateUidListInNetworkCapabilities() {
-        for (Range range : this.knoxVpnUidRanges) {
-            Log.d("knoxEnterpriseVpn", "uidRange going to be updated is " + range.getLower() + " " + range.getUpper() + " for profile " + this.mProfileName);
-        }
-        NetworkCapabilities build = new NetworkCapabilities.Builder(this.mNetworkCapabilities).setUids(this.knoxVpnUidRanges).build();
-        this.mNetworkCapabilities = build;
-        NetworkAgent networkAgent = this.mNetworkAgent;
-        if (networkAgent != null) {
-            networkAgent.sendNetworkCapabilities(build);
-        }
-    }
-
-    public void resetUidListInNetworkCapabilities() {
+    public final void resetUidListInNetworkCapabilities() {
         applyBlockingRulesToUidRange(false);
-        this.knoxVpnUidRanges.clear();
+        ((ArraySet) this.knoxVpnUidRanges).clear();
         NetworkCapabilities build = new NetworkCapabilities.Builder(this.mNetworkCapabilities).setUids((Set) null).build();
         this.mNetworkCapabilities = build;
-        NetworkAgent networkAgent = this.mNetworkAgent;
-        if (networkAgent != null) {
-            networkAgent.sendNetworkCapabilities(build);
+        AnonymousClass1 anonymousClass1 = this.mNetworkAgent;
+        if (anonymousClass1 != null) {
+            anonymousClass1.sendNetworkCapabilities(build);
         }
     }
 
-    public void updateLocalProxyInfo(ProxyInfo proxyInfo) {
-        this.mHttpProxyInfo = proxyInfo;
-        NetworkAgent networkAgent = this.mNetworkAgent;
-        if (networkAgent == null || this.mInterface == null) {
-            return;
-        }
-        networkAgent.sendLinkProperties(makeLinkProperties());
-    }
-
-    public void applyBlockingRulesToUidRange(boolean z) {
-        try {
-            this.mConnectivityManager.setRequireVpnForUids(z, this.knoxVpnUidRanges);
-        } catch (RuntimeException e) {
-            Log.e("knoxEnterpriseVpn", "Updating blocked=" + z + " for UIDs " + Arrays.toString(this.knoxVpnUidRanges.toArray()) + " failed", e);
-        }
-    }
-
-    public void cleanupObjects() {
-        if (this.mInterface != null) {
-            Log.e("knoxEnterpriseVpn", "Delay resetting the network capability and unregistering the observer since the interface is not removed yet");
-            this.isVpnObjectRemoved = true;
-        } else {
-            resetUidListInNetworkCapabilities();
-            try {
-                this.mNms.unregisterObserver(this.mObserver);
-            } catch (RemoteException unused) {
-            }
-            unregisterLocaleChangedReceiver();
-            this.mConnectivityManager.unregisterNetworkProvider(this.mNetworkProvider);
-        }
-    }
-
-    public final void onKnoxVpnConnected() {
-        try {
-            int chainingEnabledForProfile = getKnoxVpnService().getChainingEnabledForProfile(this.mOwnerUID);
-            int netId = getNetId();
-            if (chainingEnabledForProfile == 1) {
-                this.mNms.setNetworkInfo(netId, true, this.mOwnerUID);
-            }
-            getKnoxVpnService().addVpnUidRanges(this.mProfileName, netId, this.mInterface, this.mAddress, this.mV6Address);
-            showNotification(this.mProfileName, true);
-        } catch (Exception e) {
-            Log.e("knoxEnterpriseVpn", "Error occured " + Log.getStackTraceString(e));
-        }
-    }
-
-    public final Notification createNotification(PendingIntent pendingIntent) {
-        String string = this.mContext.getString(R.string.policydesc_watchLogin);
-        return new Notification.Builder(this.mContext, SystemNotificationChannels.VPN).setSmallIcon(17304615).setContentTitle(string).setContentText(this.mContext.getString(R.string.policydesc_setGlobalProxy)).setContentIntent(pendingIntent).setDefaults(0).setOngoing(true).setPriority(2).getNotification();
-    }
-
-    public void showNotification(String str, boolean z) {
+    public final void showNotification(String str, boolean z) {
+        int i = this.mUserId;
         boolean z2 = DBG;
         if (z2) {
             Log.d("knoxEnterpriseVpn", "showNotification > profileName : " + str + " , optionAdd : " + z);
-        }
-        if (z) {
-            dismissConnectingNotification();
         }
         NotificationManager notificationManager = (NotificationManager) this.mContext.getSystemService("notification");
         VpnConfig vpnConfig = this.mConfig;
@@ -626,122 +621,49 @@ public class EnterpriseVpn {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             List domainsByProfileName = getDomainsByProfileName(vpnConfig.session);
-            if (domainsByProfileName != null && domainsByProfileName.size() > 0) {
+            int i2 = 100000;
+            if (domainsByProfileName == null || domainsByProfileName.size() <= 0) {
+                boolean z3 = getKnoxVpnService().getNotificationDismissibleFlagInternal(i) != 0;
+                Notification createNotification = createNotification(VpnConfig.getIntentForStatusPanelEnterpriseVpnAsUser(this.mContext, vpnConfig, false, i), z3);
+                if (z3) {
+                    notificationManager.notifyAsUser("Knox_Notification", 100000, createNotification, new UserHandle(i));
+                } else {
+                    notificationManager.notifyAsUser(null, i + 100000, createNotification, new UserHandle(i));
+                }
+                if (z2) {
+                    Log.d("knoxEnterpriseVpn", "showNotification > keyicon notified to user for non installed apps " + i);
+                }
+            } else {
                 Iterator it = domainsByProfileName.iterator();
                 while (it.hasNext()) {
                     int parseInt = Integer.parseInt((String) it.next());
-                    Notification createNotification = createNotification(VpnConfig.getIntentForStatusPanelEnterpriseVpnAsUser(this.mContext, vpnConfig, z, parseInt));
-                    if (getKnoxVpnService().getNotificationDismissibleFlagInternal(parseInt) == 1) {
-                        notificationManager.notifyAsUser("Knox_Notification", 100000, createNotification, new UserHandle(parseInt));
+                    boolean z4 = getKnoxVpnService().getNotificationDismissibleFlagInternal(parseInt) != 0;
+                    Notification createNotification2 = createNotification(VpnConfig.getIntentForStatusPanelEnterpriseVpnAsUser(this.mContext, vpnConfig, z, parseInt), z4);
+                    if (z4) {
+                        notificationManager.notifyAsUser("Knox_Notification", i2, createNotification2, new UserHandle(parseInt));
                     } else {
-                        notificationManager.notifyAsUser(null, parseInt + 100000, createNotification, new UserHandle(parseInt));
+                        notificationManager.notifyAsUser(null, parseInt + i2, createNotification2, new UserHandle(parseInt));
                     }
-                    if (DBG) {
+                    if (z2) {
                         Log.d("knoxEnterpriseVpn", "showNotification > keyicon notified to user " + parseInt);
                     }
-                }
-            } else {
-                Notification createNotification2 = createNotification(VpnConfig.getIntentForStatusPanelEnterpriseVpnAsUser(this.mContext, vpnConfig, false, this.mUserId));
-                if (getKnoxVpnService().getNotificationDismissibleFlagInternal(this.mUserId) == 1) {
-                    notificationManager.notifyAsUser("Knox_Notification", 100000, createNotification2, new UserHandle(this.mUserId));
-                } else {
-                    notificationManager.notifyAsUser(null, this.mUserId + 100000, createNotification2, new UserHandle(this.mUserId));
-                }
-                if (z2) {
-                    Log.d("knoxEnterpriseVpn", "showNotification > keyicon notified to user for non installed apps " + this.mUserId);
+                    i2 = 100000;
                 }
             }
         } catch (Exception e) {
-            Log.d("knoxEnterpriseVpn", "Exception: " + Log.getStackTraceString(e));
+            EnterpriseVpn$$ExternalSyntheticOutline0.m(e, new StringBuilder("Exception: "), "knoxEnterpriseVpn");
         }
         Binder.restoreCallingIdentity(clearCallingIdentity);
     }
 
-    public final void updateNotification() {
-        boolean z = DBG;
-        if (z) {
-            Log.d("knoxEnterpriseVpn", "updateNotification > user : " + this.mUserId);
-        }
+    public final void updateNotificationIcon(int i) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             try {
                 NotificationManager notificationManager = (NotificationManager) this.mContext.getSystemService("notification");
-                this.mContext.getString(R.string.policydesc_watchLogin);
-                this.mContext.getString(R.string.policydesc_setGlobalProxy);
+                boolean z = getKnoxVpnService().getNotificationDismissibleFlagInternal(i) != 0;
+                Notification createNotification = createNotification(VpnConfig.getIntentForStatusPanelRefreshAsUser(this.mContext, i), z);
                 if (z) {
-                    Log.d("knoxEnterpriseVpn", "updateNotification > vpn type is per-app");
-                }
-                List domainsByProfileName = getDomainsByProfileName(this.mConfig.session);
-                if (domainsByProfileName != null) {
-                    Iterator it = domainsByProfileName.iterator();
-                    while (it.hasNext()) {
-                        int parseInt = Integer.parseInt((String) it.next());
-                        Notification createNotification = createNotification(VpnConfig.getIntentForStatusPanelRefreshAsUser(this.mContext, parseInt));
-                        if (getKnoxVpnService().getNotificationDismissibleFlagInternal(parseInt) == 1) {
-                            notificationManager.notifyAsUser("Knox_Notification", 100000, createNotification, new UserHandle(parseInt));
-                        } else {
-                            notificationManager.notifyAsUser(null, 100000 + parseInt, createNotification, new UserHandle(parseInt));
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                Log.d("knoxEnterpriseVpn", "Exception: " + Log.getStackTraceString(e));
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void hideNotification(int i) {
-        if (DBG) {
-            Log.d("knoxEnterpriseVpn", "hideNotification > domain : " + i);
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                NotificationManager notificationManager = (NotificationManager) this.mContext.getSystemService("notification");
-                if (getKnoxVpnService().getNotificationDismissibleFlagInternal(i) == 1) {
-                    notificationManager.cancelAsUser("Knox_Notification", 100000, new UserHandle(i));
-                } else {
-                    notificationManager.cancelAsUser(null, 100000 + i, new UserHandle(i));
-                }
-            } catch (Exception e) {
-                Log.d("knoxEnterpriseVpn", "Exception: " + Log.getStackTraceString(e));
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void refreshNotification(boolean z, int i) {
-        if (DBG) {
-            Log.d("knoxEnterpriseVpn", "refreshNotification > domain : " + i + ", optionAdd : " + z);
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                NotificationManager notificationManager = (NotificationManager) this.mContext.getSystemService("notification");
-                Notification createNotification = createNotification(VpnConfig.getIntentForStatusPanelEnterpriseVpnAsUser(this.mContext, this.mConfig, z, i));
-                if (getKnoxVpnService().getNotificationDismissibleFlagInternal(i) == 1) {
-                    notificationManager.notifyAsUser("Knox_Notification", 100000, createNotification, new UserHandle(i));
-                } else {
-                    notificationManager.notifyAsUser(null, 100000 + i, createNotification, new UserHandle(i));
-                }
-            } catch (Exception e) {
-                Log.d("knoxEnterpriseVpn", "Exception: " + Log.getStackTraceString(e));
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void setNotificationDismissibleFlag(int i, int i2) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                NotificationManager notificationManager = (NotificationManager) this.mContext.getSystemService("notification");
-                Notification createNotification = createNotification(VpnConfig.getIntentForStatusPanelRefreshAsUser(this.mContext, i));
-                if (getKnoxVpnService().getNotificationDismissibleFlagInternal(i) == 1) {
                     notificationManager.cancelAsUser(null, i + 100000, new UserHandle(i));
                     notificationManager.notifyAsUser("Knox_Notification", 100000, createNotification, new UserHandle(i));
                 } else {
@@ -751,74 +673,116 @@ public class EnterpriseVpn {
             } catch (Exception e) {
                 Log.d("knoxEnterpriseVpn", "Exception: " + Log.getStackTraceString(e));
             }
-        } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final List getDomainsByProfileName(String str) {
-        if (DBG) {
-            Log.d("knoxEnterpriseVpn", "getDomainsByProfileName()");
-        }
-        try {
-            return getKnoxVpnService().getDomainsByProfileName(str);
-        } catch (Exception e) {
-            Log.d("knoxEnterpriseVpn", "Exception: " + Log.getStackTraceString(e));
-            return null;
-        }
-    }
-
-    public final void registerLocaleChangedReceiver() {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        this.mContext.registerReceiverAsUser(this.mLocaleChangedReceiver, UserHandle.ALL, new IntentFilter("android.intent.action.LOCALE_CHANGED"), null, null);
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-    }
-
-    public final void unregisterLocaleChangedReceiver() {
-        if (this.mLocaleChangedReceiver != null) {
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            this.mContext.unregisterReceiver(this.mLocaleChangedReceiver);
+        } catch (Throwable th) {
             Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
         }
     }
 
-    public void setMetaDataStateInIP(boolean z) {
-        this.isMetaDataEnabled = z;
-    }
-
-    public final int getAppUid(String str, int i) {
-        try {
-            return this.mContext.getPackageManager().getPackageUidAsUser(str, i);
-        } catch (PackageManager.NameNotFoundException unused) {
-            return -1;
+    public final void updateState(NetworkInfo.DetailedState detailedState, String str) {
+        Log.d("knoxEnterpriseVpn", "setting state=" + detailedState + ", reason=" + str);
+        LegacyVpnInfo.stateFromNetworkInfo(detailedState);
+        this.mNetworkInfo.setDetailedState(detailedState, str, null);
+        int i = AnonymousClass4.$SwitchMap$android$net$NetworkInfo$DetailedState[detailedState.ordinal()];
+        if (i == 1) {
+            AnonymousClass1 anonymousClass1 = this.mNetworkAgent;
+            if (anonymousClass1 != null) {
+                anonymousClass1.markConnected();
+                return;
+            }
+            return;
+        }
+        if (i == 2 || i == 3) {
+            AnonymousClass1 anonymousClass12 = this.mNetworkAgent;
+            if (anonymousClass12 != null) {
+                anonymousClass12.unregister();
+                this.mNetworkAgent = null;
+                return;
+            }
+            return;
+        }
+        if (i == 4) {
+            if (this.mNetworkAgent != null) {
+                throw new IllegalStateException("VPN can only go to CONNECTING state when the agent is null.");
+            }
+        } else {
+            if (i == 5) {
+                return;
+            }
+            throw new IllegalArgumentException("Illegal state argument " + detailedState);
         }
     }
 
-    public NetworkInfo getNetworkInfo() {
-        return this.mNetworkInfo;
-    }
-
-    public synchronized int getNetId() {
-        NetworkAgent networkAgent = this.mNetworkAgent;
-        if (networkAgent == null) {
-            return 0;
+    public final void updateUidListInNetworkCapabilities() {
+        Iterator it = ((ArraySet) this.knoxVpnUidRanges).iterator();
+        while (it.hasNext()) {
+            Range range = (Range) it.next();
+            StringBuilder sb = new StringBuilder("uidRange going to be updated is ");
+            sb.append(range.getLower());
+            sb.append(" ");
+            sb.append(range.getUpper());
+            sb.append(" for profile ");
+            VpnManagerService$$ExternalSyntheticOutline0.m(sb, this.mProfileName, "knoxEnterpriseVpn");
         }
-        Network network = networkAgent.getNetwork();
-        if (network == null) {
-            return 0;
+        NetworkCapabilities build = new NetworkCapabilities.Builder(this.mNetworkCapabilities).setUids(this.knoxVpnUidRanges).build();
+        this.mNetworkCapabilities = build;
+        AnonymousClass1 anonymousClass1 = this.mNetworkAgent;
+        if (anonymousClass1 != null) {
+            anonymousClass1.sendNetworkCapabilities(build);
         }
-        return network.getNetId();
     }
 
-    public final boolean isRunningLocked() {
-        return (this.mNetworkAgent == null || this.mInterface == null) ? false : true;
+    public final void updateUidRangesToPerAppVpn(Set set, boolean z) {
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("updateUidRangesToPerAppVpn ", "knoxEnterpriseVpn", z);
+        Iterator it = ((HashSet) set).iterator();
+        while (it.hasNext()) {
+            Integer num = (Integer) it.next();
+            num.getClass();
+            if (z) {
+                ((ArraySet) this.knoxVpnUidRanges).add(new Range(num, num));
+            } else {
+                ((ArraySet) this.knoxVpnUidRanges).remove(new Range(num, num));
+            }
+        }
+        updateUidListInNetworkCapabilities();
     }
 
-    public boolean isCallerEstablishedOwnerLocked() {
-        return isRunningLocked() && Binder.getCallingUid() == this.mOwnerUID;
+    public final void updateUidRangesToUserVpn(int i, boolean z) {
+        Log.d("knoxEnterpriseVpn", "updateUidRangesToUserVpn " + z + " " + i);
+        int i2 = i * 100000;
+        int i3 = i2 + 1;
+        int i4 = i2 + 99999;
+        if (z) {
+            ((ArraySet) this.knoxVpnUidRanges).add(new Range(Integer.valueOf(i3), Integer.valueOf(i4)));
+        } else {
+            ((ArraySet) this.knoxVpnUidRanges).remove(new Range(Integer.valueOf(i3), Integer.valueOf(i4)));
+        }
+        updateUidListInNetworkCapabilities();
     }
 
-    public String getInterfaceName() {
-        return this.mInterface;
+    public final void updateUidRangesToUserVpnWithBlackList(int i, Set set) {
+        NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "updateUidRangesToUserVpnWithBlackList ", "knoxEnterpriseVpn");
+        if (((HashSet) set).size() <= 0) {
+            return;
+        }
+        ArrayList arrayList = new ArrayList(set);
+        Collections.sort(arrayList);
+        Range range = new Range(Integer.valueOf(i * 100000), Integer.valueOf(((i + 1) * 100000) - 1));
+        int intValue = ((Integer) range.getLower()).intValue() + 1;
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            int intValue2 = ((Integer) it.next()).intValue();
+            if (intValue2 == intValue) {
+                intValue++;
+            } else {
+                ((ArraySet) this.knoxVpnUidRanges).add(new Range(Integer.valueOf(intValue), Integer.valueOf(intValue2 - 1)));
+                intValue = intValue2 + 1;
+            }
+        }
+        if (intValue <= ((Integer) range.getUpper()).intValue()) {
+            ((ArraySet) this.knoxVpnUidRanges).add(new Range(Integer.valueOf(intValue), (Integer) range.getUpper()));
+        }
+        updateUidListInNetworkCapabilities();
     }
 }

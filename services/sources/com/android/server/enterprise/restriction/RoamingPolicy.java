@@ -13,6 +13,9 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.EnterpriseServiceCallback;
 import com.android.server.enterprise.adapterlayer.SystemUIAdapter;
 import com.android.server.enterprise.storage.EdmStorageProvider;
@@ -28,62 +31,136 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-/* loaded from: classes2.dex */
-public class RoamingPolicy extends IRoamingPolicy.Stub implements EnterpriseServiceCallback {
-    public Context mContext;
-    public EdmStorageProvider mEdmStorageProvider;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RoamingPolicy extends IRoamingPolicy.Stub implements EnterpriseServiceCallback {
+    public final Context mContext;
+    public EnterpriseDeviceManager mEDM;
+    public final EdmStorageProvider mEdmStorageProvider;
     public EnterpriseDumpHelper mEnterpriseDumpHelper;
-    public final BroadcastReceiver mReceiver;
-    public TelephonyManager mTelMgr;
     public String mPolicyState = "";
-    public final BroadcastReceiver mSimFactoryIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.restriction.RoamingPolicy.1
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if ("android.intent.action.SERVICE_STATE".equals(intent.getAction())) {
-                RoamingPolicy.this.blockSyncIfRoaming();
-            }
-        }
-    };
-    public EnterpriseDeviceManager mEDM = null;
+    public final AnonymousClass1 mReceiver;
+    public final AnonymousClass1 mSimFactoryIntentReceiver;
+    public final TelephonyManager mTelMgr;
 
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void notifyToAddSystemService(String str, IBinder iBinder) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminAdded(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onPreAdminRemoval(int i) {
-    }
-
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r0v1, types: [android.content.BroadcastReceiver, com.android.server.enterprise.restriction.RoamingPolicy$1] */
     public RoamingPolicy(Context context) {
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.restriction.RoamingPolicy.2
+        final int i = 0;
+        ?? r0 = new BroadcastReceiver(this) { // from class: com.android.server.enterprise.restriction.RoamingPolicy.1
+            public final /* synthetic */ RoamingPolicy this$0;
+
+            {
+                this.this$0 = this;
+            }
+
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                if ("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL".equals(intent.getAction())) {
-                    RoamingPolicy.this.updateSystemUIMonitor(intent.getIntExtra("com.samsung.android.knox.intent.extra.USER_ID_INTERNAL", 0));
+            public final void onReceive(Context context2, Intent intent) {
+                switch (i) {
+                    case 0:
+                        if ("android.intent.action.SERVICE_STATE".equals(intent.getAction())) {
+                            RoamingPolicy roamingPolicy = this.this$0;
+                            boolean isNetworkRoaming = roamingPolicy.mTelMgr.isNetworkRoaming();
+                            if (roamingPolicy.mTelMgr.getPhoneCount() > 1) {
+                                String semGetTelephonyProperty = TelephonyManager.semGetTelephonyProperty(SubscriptionManager.getPhoneId(SubscriptionManager.getDefaultDataSubscriptionId()), "gsm.operator.isroaming", "false");
+                                isNetworkRoaming = !TextUtils.isEmpty(semGetTelephonyProperty) && semGetTelephonyProperty.equals("true");
+                            }
+                            if (!isNetworkRoaming) {
+                                Log.d("RoamingPolicy", "Leaving Roaming");
+                                roamingPolicy.restoreUserAutoSyncSetting();
+                                break;
+                            } else {
+                                Log.d("RoamingPolicy", "Entering Roaming");
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put("name", "nonRoamingAutoSyncSetting");
+                                String str = ContentResolver.getMasterSyncAutomatically() ? "1" : "0";
+                                ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("value", str);
+                                Log.d("RoamingPolicy", "storeUserAutoSyncSetting : storing user sync setting as ".concat(str));
+                                roamingPolicy.mEdmStorageProvider.put("generic", m, contentValues);
+                                RoamingPolicy.setMasterSyncAutomatically(roamingPolicy.isRoamingSyncEnabled(null));
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                        if ("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL".equals(intent.getAction())) {
+                            int intExtra = intent.getIntExtra("com.samsung.android.knox.intent.extra.USER_ID_INTERNAL", 0);
+                            RoamingPolicy roamingPolicy2 = this.this$0;
+                            roamingPolicy2.setRoamingDataAllowedSystemUI(intExtra, roamingPolicy2.isRoamingDataEnabled(null));
+                            break;
+                        }
+                        break;
                 }
             }
         };
-        this.mReceiver = broadcastReceiver;
+        this.mSimFactoryIntentReceiver = r0;
+        this.mEDM = null;
+        final int i2 = 1;
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver(this) { // from class: com.android.server.enterprise.restriction.RoamingPolicy.1
+            public final /* synthetic */ RoamingPolicy this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                switch (i2) {
+                    case 0:
+                        if ("android.intent.action.SERVICE_STATE".equals(intent.getAction())) {
+                            RoamingPolicy roamingPolicy = this.this$0;
+                            boolean isNetworkRoaming = roamingPolicy.mTelMgr.isNetworkRoaming();
+                            if (roamingPolicy.mTelMgr.getPhoneCount() > 1) {
+                                String semGetTelephonyProperty = TelephonyManager.semGetTelephonyProperty(SubscriptionManager.getPhoneId(SubscriptionManager.getDefaultDataSubscriptionId()), "gsm.operator.isroaming", "false");
+                                isNetworkRoaming = !TextUtils.isEmpty(semGetTelephonyProperty) && semGetTelephonyProperty.equals("true");
+                            }
+                            if (!isNetworkRoaming) {
+                                Log.d("RoamingPolicy", "Leaving Roaming");
+                                roamingPolicy.restoreUserAutoSyncSetting();
+                                break;
+                            } else {
+                                Log.d("RoamingPolicy", "Entering Roaming");
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put("name", "nonRoamingAutoSyncSetting");
+                                String str = ContentResolver.getMasterSyncAutomatically() ? "1" : "0";
+                                ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("value", str);
+                                Log.d("RoamingPolicy", "storeUserAutoSyncSetting : storing user sync setting as ".concat(str));
+                                roamingPolicy.mEdmStorageProvider.put("generic", m, contentValues);
+                                RoamingPolicy.setMasterSyncAutomatically(roamingPolicy.isRoamingSyncEnabled(null));
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                        if ("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL".equals(intent.getAction())) {
+                            int intExtra = intent.getIntExtra("com.samsung.android.knox.intent.extra.USER_ID_INTERNAL", 0);
+                            RoamingPolicy roamingPolicy2 = this.this$0;
+                            roamingPolicy2.setRoamingDataAllowedSystemUI(intExtra, roamingPolicy2.isRoamingDataEnabled(null));
+                            break;
+                        }
+                        break;
+                }
+            }
+        };
         this.mContext = context;
         this.mTelMgr = (TelephonyManager) context.getSystemService("phone");
-        this.mEdmStorageProvider = new EdmStorageProvider(this.mContext);
+        this.mEdmStorageProvider = new EdmStorageProvider(context);
         if (!isRoamingSyncEnabled(null)) {
-            registerRoamingListener();
+            Log.d("RoamingPolicy", "registering roaming listener");
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction("android.intent.action.SERVICE_STATE");
+            this.mContext.registerReceiver(r0, intentFilter);
         }
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL");
-        this.mContext.registerReceiver(broadcastReceiver, intentFilter);
+        IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter2.addAction("com.samsung.android.knox.intent.action.KNOXFRAMEWORK_SYSTEMUI_UPDATE_INTENT_INTERNAL");
+        context.registerReceiver(broadcastReceiver, intentFilter2, 2);
     }
 
-    public final void registerRoamingListener() {
-        Log.d("RoamingPolicy", "registering roaming listener");
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.SERVICE_STATE");
-        this.mContext.registerReceiver(this.mSimFactoryIntentReceiver, intentFilter);
+    public static void setMasterSyncAutomatically(boolean z) {
+        for (int i : UserManagerService.getInstance().getUserIds()) {
+            ContentResolver.setMasterSyncAutomaticallyAsUser(z, i);
+            Log.d("RoamingPolicy", "setMasterSyncAutomatically : userid = " + i);
+        }
     }
 
     public final void deregisterRoamingListener() {
@@ -96,85 +173,27 @@ public class RoamingPolicy extends IRoamingPolicy.Stub implements EnterpriseServ
         }
     }
 
-    public final void storeUserAutoSyncSetting() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", "nonRoamingAutoSyncSetting");
-        String str = ContentResolver.getMasterSyncAutomatically() ? "1" : "0";
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("value", str);
-        Log.d("RoamingPolicy", "storeUserAutoSyncSetting : storing user sync setting as " + str);
-        this.mEdmStorageProvider.put("generic", contentValues2, contentValues);
-    }
-
-    public final void restoreUserAutoSyncSetting() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", "nonRoamingAutoSyncSetting");
-        String string = this.mEdmStorageProvider.getString("generic", "value", contentValues);
-        Log.d("RoamingPolicy", "restoreUserAutoSyncSetting : stored user sync setting is " + string);
-        if (string != null) {
-            setMasterSyncAutomatically("1".equals(string));
-            this.mEdmStorageProvider.delete("generic", contentValues);
-        }
-    }
-
-    public final void setMasterSyncAutomatically(boolean z) {
-        for (int i : UserManagerService.getInstance().getUserIds()) {
-            ContentResolver.setMasterSyncAutomaticallyAsUser(z, i);
-            Log.d("RoamingPolicy", "setMasterSyncAutomatically : userid = " + i);
-        }
-    }
-
-    public final void blockSyncIfRoaming() {
-        boolean isNetworkRoaming = this.mTelMgr.isNetworkRoaming();
-        if (this.mTelMgr.getPhoneCount() > 1) {
-            String semGetTelephonyProperty = TelephonyManager.semGetTelephonyProperty(SubscriptionManager.getPhoneId(SubscriptionManager.getDefaultDataSubscriptionId()), "gsm.operator.isroaming", "false");
-            isNetworkRoaming = !TextUtils.isEmpty(semGetTelephonyProperty) && semGetTelephonyProperty.equals("true");
-        }
-        if (isNetworkRoaming) {
-            Log.d("RoamingPolicy", "Entering Roaming");
-            storeUserAutoSyncSetting();
-            setMasterSyncAutomatically(isRoamingSyncEnabled(null));
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+        if (this.mContext.checkCallingOrSelfPermission("android.permission.DUMP") != 0) {
+            printWriter.println("Permission Denial: can't dump Roaming Policy");
         } else {
-            Log.d("RoamingPolicy", "Leaving Roaming");
-            restoreUserAutoSyncSetting();
+            if (this.mPolicyState.isEmpty()) {
+                return;
+            }
+            printWriter.print(this.mPolicyState);
         }
-    }
-
-    public final EnterpriseDeviceManager getEDM() {
-        if (this.mEDM == null) {
-            this.mEDM = EnterpriseDeviceManager.getInstance(this.mContext);
-        }
-        return this.mEDM;
     }
 
     public final ContextInfo enforceOwnerOnlyAndRoamingPermission(ContextInfo contextInfo) {
-        return getEDM().enforceOwnerOnlyAndActiveAdminPermission(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_ROAMING")));
-    }
-
-    public boolean setRoamingSync(ContextInfo contextInfo, boolean z) {
-        ContextInfo enforceOwnerOnlyAndRoamingPermission = enforceOwnerOnlyAndRoamingPermission(contextInfo);
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndRoamingPermission.mCallerUid, "ROAMING", "roamingSyncEnabled", z);
-        Log.d("RoamingPolicy", "setRoamingSync : " + z);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            if (!isRoamingSyncEnabled(enforceOwnerOnlyAndRoamingPermission)) {
-                registerRoamingListener();
-            } else {
-                deregisterRoamingListener();
-                restoreUserAutoSyncSetting();
-            }
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            updatePolicyState();
-            return putBoolean;
-        } catch (Throwable th) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            throw th;
+        if (this.mEDM == null) {
+            this.mEDM = EnterpriseDeviceManager.getInstance(this.mContext);
         }
+        return this.mEDM.enforceOwnerOnlyAndActiveAdminPermission(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_ROAMING")));
     }
 
-    public boolean isRoamingSyncEnabled(ContextInfo contextInfo) {
+    public final boolean isRoamingDataEnabled(ContextInfo contextInfo) {
         boolean z;
-        Iterator it = this.mEdmStorageProvider.getBooleanList("ROAMING", "roamingSyncEnabled").iterator();
+        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "ROAMING", "roamingDataEnabled").iterator();
         while (true) {
             if (!it.hasNext()) {
                 z = true;
@@ -185,37 +204,95 @@ public class RoamingPolicy extends IRoamingPolicy.Stub implements EnterpriseServ
                 break;
             }
         }
-        Log.d("RoamingPolicy", "isRoamingSyncEnabled : " + z);
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("isDataRoamingEnabled : ", "RoamingPolicy", z);
         return z;
     }
 
-    public boolean setRoamingPush(ContextInfo contextInfo, boolean z) {
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndRoamingPermission(contextInfo).mCallerUid, "ROAMING", "roamingPushEnabled", z);
-        Log.d("RoamingPolicy", "setRoamingPush : " + z);
+    public final boolean isRoamingPushEnabled(ContextInfo contextInfo) {
+        boolean z;
+        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "ROAMING", "roamingPushEnabled").iterator();
+        while (true) {
+            if (!it.hasNext()) {
+                z = true;
+                break;
+            }
+            z = ((Boolean) it.next()).booleanValue();
+            if (!z) {
+                break;
+            }
+        }
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("isRoamingPushEnabled : ", "RoamingPolicy", z);
+        return z;
+    }
+
+    public final boolean isRoamingSyncEnabled(ContextInfo contextInfo) {
+        boolean z;
+        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "ROAMING", "roamingSyncEnabled").iterator();
+        while (true) {
+            if (!it.hasNext()) {
+                z = true;
+                break;
+            }
+            z = ((Boolean) it.next()).booleanValue();
+            if (!z) {
+                break;
+            }
+        }
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("isRoamingSyncEnabled : ", "RoamingPolicy", z);
+        return z;
+    }
+
+    public final boolean isRoamingVoiceCallsEnabled(ContextInfo contextInfo) {
+        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "ROAMING", "roamingVoiceCallsEnabled").iterator();
+        while (it.hasNext()) {
+            boolean booleanValue = ((Boolean) it.next()).booleanValue();
+            if (!booleanValue) {
+                return booleanValue;
+            }
+        }
+        return true;
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void notifyToAddSystemService(String str, IBinder iBinder) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminAdded(int i) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminRemoved(int i) {
+        Log.d("RoamingPolicy", "onAdminRemoved : " + i);
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(new ContextInfo(i, 0));
+        if (isRoamingSyncEnabled(null)) {
+            Log.d("RoamingPolicy", "Roaming Sync is not being applied, so de-register listener and restore sync setting");
+            deregisterRoamingListener();
+            restoreUserAutoSyncSetting();
+        }
+        if (callingOrCurrentUserId == ActivityManager.getCurrentUser()) {
+            setRoamingDataAllowedSystemUI(callingOrCurrentUserId, isRoamingDataEnabled(null));
+        }
         updatePolicyState();
-        return putBoolean;
     }
 
-    public boolean isRoamingPushEnabled(ContextInfo contextInfo) {
-        boolean z;
-        Iterator it = this.mEdmStorageProvider.getBooleanList("ROAMING", "roamingPushEnabled").iterator();
-        while (true) {
-            if (!it.hasNext()) {
-                z = true;
-                break;
-            }
-            z = ((Boolean) it.next()).booleanValue();
-            if (!z) {
-                break;
-            }
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onPreAdminRemoval(int i) {
+    }
+
+    public final void restoreUserAutoSyncSetting() {
+        ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("name", "nonRoamingAutoSyncSetting");
+        String string = this.mEdmStorageProvider.getString(m, "generic", "value");
+        DualAppManagerService$$ExternalSyntheticOutline0.m("restoreUserAutoSyncSetting : stored user sync setting is ", string, "RoamingPolicy");
+        if (string != null) {
+            setMasterSyncAutomatically("1".equals(string));
+            this.mEdmStorageProvider.delete("generic", m);
         }
-        Log.d("RoamingPolicy", "isRoamingPushEnabled : " + z);
-        return z;
     }
 
-    public boolean setRoamingData(ContextInfo contextInfo, boolean z) {
+    public final boolean setRoamingData(ContextInfo contextInfo, boolean z) {
         ContextInfo enforceOwnerOnlyAndRoamingPermission = enforceOwnerOnlyAndRoamingPermission(contextInfo);
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndRoamingPermission.mCallerUid, "ROAMING", "roamingDataEnabled", z);
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("ROAMING", enforceOwnerOnlyAndRoamingPermission.mCallerUid, z, 0, "roamingDataEnabled");
         int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(enforceOwnerOnlyAndRoamingPermission);
         if (!isRoamingDataEnabled(enforceOwnerOnlyAndRoamingPermission)) {
             Intent intent = new Intent("com.samsung.android.knox.intent.action.ROAMING_SETROAMINGDATA_INTERNAL");
@@ -231,64 +308,6 @@ public class RoamingPolicy extends IRoamingPolicy.Stub implements EnterpriseServ
         return putBoolean;
     }
 
-    public boolean isRoamingDataEnabled(ContextInfo contextInfo) {
-        boolean z;
-        Iterator it = this.mEdmStorageProvider.getBooleanList("ROAMING", "roamingDataEnabled").iterator();
-        while (true) {
-            if (!it.hasNext()) {
-                z = true;
-                break;
-            }
-            z = ((Boolean) it.next()).booleanValue();
-            if (!z) {
-                break;
-            }
-        }
-        Log.d("RoamingPolicy", "isDataRoamingEnabled : " + z);
-        return z;
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminRemoved(int i) {
-        Log.d("RoamingPolicy", "onAdminRemoved : " + i);
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(new ContextInfo(i, 0));
-        if (isRoamingSyncEnabled(null)) {
-            Log.d("RoamingPolicy", "Roaming Sync is not being applied, so de-register listener and restore sync setting");
-            deregisterRoamingListener();
-            restoreUserAutoSyncSetting();
-        }
-        if (callingOrCurrentUserId == ActivityManager.getCurrentUser()) {
-            updateSystemUIMonitor(callingOrCurrentUserId);
-        }
-        updatePolicyState();
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void systemReady() {
-        updatePolicyState();
-    }
-
-    public boolean setRoamingVoiceCalls(ContextInfo contextInfo, boolean z) {
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndRoamingPermission(contextInfo).mCallerUid, "ROAMING", "roamingVoiceCallsEnabled", z);
-        updatePolicyState();
-        return putBoolean;
-    }
-
-    public boolean isRoamingVoiceCallsEnabled(ContextInfo contextInfo) {
-        Iterator it = this.mEdmStorageProvider.getBooleanList("ROAMING", "roamingVoiceCallsEnabled").iterator();
-        while (it.hasNext()) {
-            boolean booleanValue = ((Boolean) it.next()).booleanValue();
-            if (!booleanValue) {
-                return booleanValue;
-            }
-        }
-        return true;
-    }
-
-    public final void updateSystemUIMonitor(int i) {
-        setRoamingDataAllowedSystemUI(i, isRoamingDataEnabled(null));
-    }
-
     public final void setRoamingDataAllowedSystemUI(int i, boolean z) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
@@ -302,25 +321,56 @@ public class RoamingPolicy extends IRoamingPolicy.Stub implements EnterpriseServ
         }
     }
 
-    public final void updatePolicyState() {
-        this.mPolicyState = getEnterpriseDumpHelper().readTable("ROAMING", new String[]{"adminUid", "roamingSyncEnabled", "roamingPushEnabled", "roamingDataEnabled", "roamingVoiceCallsEnabled"});
+    public final boolean setRoamingPush(ContextInfo contextInfo, boolean z) {
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("ROAMING", enforceOwnerOnlyAndRoamingPermission(contextInfo).mCallerUid, z, 0, "roamingPushEnabled");
+        Log.d("RoamingPolicy", "setRoamingPush : " + z);
+        updatePolicyState();
+        return putBoolean;
     }
 
-    public final EnterpriseDumpHelper getEnterpriseDumpHelper() {
+    public final boolean setRoamingSync(ContextInfo contextInfo, boolean z) {
+        ContextInfo enforceOwnerOnlyAndRoamingPermission = enforceOwnerOnlyAndRoamingPermission(contextInfo);
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("ROAMING", enforceOwnerOnlyAndRoamingPermission.mCallerUid, z, 0, "roamingSyncEnabled");
+        Log.d("RoamingPolicy", "setRoamingSync : " + z);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            if (isRoamingSyncEnabled(enforceOwnerOnlyAndRoamingPermission)) {
+                deregisterRoamingListener();
+                restoreUserAutoSyncSetting();
+            } else {
+                Log.d("RoamingPolicy", "registering roaming listener");
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction("android.intent.action.SERVICE_STATE");
+                this.mContext.registerReceiver(this.mSimFactoryIntentReceiver, intentFilter);
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            updatePolicyState();
+            return putBoolean;
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final boolean setRoamingVoiceCalls(ContextInfo contextInfo, boolean z) {
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("ROAMING", enforceOwnerOnlyAndRoamingPermission(contextInfo).mCallerUid, z, 0, "roamingVoiceCallsEnabled");
+        updatePolicyState();
+        return putBoolean;
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void systemReady() {
+        updatePolicyState();
+    }
+
+    public final void updatePolicyState() {
         if (this.mEnterpriseDumpHelper == null) {
             this.mEnterpriseDumpHelper = new EnterpriseDumpHelper(this.mContext);
         }
-        return this.mEnterpriseDumpHelper;
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        if (this.mContext.checkCallingOrSelfPermission("android.permission.DUMP") != 0) {
-            printWriter.println("Permission Denial: can't dump Roaming Policy");
-        } else {
-            if (this.mPolicyState.isEmpty()) {
-                return;
-            }
-            printWriter.print(this.mPolicyState);
+        String readColumns = this.mEnterpriseDumpHelper.readColumns("ROAMING", new String[]{"adminUid", "roamingSyncEnabled", "roamingPushEnabled", "roamingDataEnabled", "roamingVoiceCallsEnabled"}, null, null);
+        if (readColumns == null) {
+            readColumns = "";
         }
+        this.mPolicyState = readColumns;
     }
 }

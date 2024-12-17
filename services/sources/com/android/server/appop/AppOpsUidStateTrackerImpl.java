@@ -3,352 +3,62 @@ package com.android.server.appop;
 import android.app.ActivityManager;
 import android.app.ActivityManagerInternal;
 import android.app.AppOpsManager;
-import android.os.Handler;
+import android.os.SystemProperties;
 import android.util.ArrayMap;
-import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.util.SparseLongArray;
 import android.util.TimeUtils;
+import com.android.internal.hidden_from_bootclasspath.android.permission.flags.Flags;
 import com.android.internal.os.Clock;
-import com.android.internal.util.function.HeptConsumer;
-import com.android.internal.util.function.QuadConsumer;
-import com.android.internal.util.function.QuintConsumer;
 import com.android.internal.util.function.pooled.PooledLambda;
 import com.android.server.appop.AppOpsService;
-import com.android.server.appop.AppOpsUidStateTracker;
-import com.android.server.appop.AppOpsUidStateTrackerImpl;
 import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.util.concurrent.Executor;
-import java.util.function.BiConsumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AppOpsUidStateTrackerImpl implements AppOpsUidStateTracker {
-    public ActivityManagerInternal mActivityManagerInternal;
-    public SparseBooleanArray mAppWidgetVisible;
-    public SparseIntArray mCapability;
+public final class AppOpsUidStateTrackerImpl implements AppOpsUidStateTracker {
+    public static final boolean DEBUG = "0x4948".equals(SystemProperties.get("ro.boot.debug_level", "unknown"));
+    public static final boolean DEBUG_MID = "0x494d".equals(SystemProperties.get("ro.boot.debug_level", "unknown"));
+    public final ActivityManagerInternal mActivityManagerInternal;
     public final Clock mClock;
-    public AppOpsService.Constants mConstants;
+    public final AppOpsService.Constants mConstants;
     public final EventLog mEventLog;
     public final DelayableExecutor mExecutor;
-    public SparseBooleanArray mPendingAppWidgetVisible;
-    public SparseIntArray mPendingCapability;
-    public SparseLongArray mPendingCommitTime;
-    public SparseBooleanArray mPendingGone;
-    public SparseIntArray mPendingUidStates;
-    public ArrayMap mUidStateChangedCallbacks;
-    public SparseIntArray mUidStates;
+    public final SparseIntArray mUidStates = new SparseIntArray();
+    public final SparseIntArray mPendingUidStates = new SparseIntArray();
+    public final SparseIntArray mCapability = new SparseIntArray();
+    public final SparseIntArray mPendingCapability = new SparseIntArray();
+    public final SparseBooleanArray mAppWidgetVisible = new SparseBooleanArray();
+    public final SparseBooleanArray mPendingAppWidgetVisible = new SparseBooleanArray();
+    public final SparseLongArray mPendingCommitTime = new SparseLongArray();
+    public final SparseBooleanArray mPendingGone = new SparseBooleanArray();
+    public final ArrayMap mUidStateChangedCallbacks = new ArrayMap();
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public interface DelayableExecutor extends Executor {
-        @Override // java.util.concurrent.Executor
-        void execute(Runnable runnable);
-
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    interface DelayableExecutor extends Executor {
         void executeDelayed(Runnable runnable, long j);
     }
 
-    public final int getOpCapability(int i) {
-        if (i == 0 || i == 1) {
-            return 1;
-        }
-        if (i == 26) {
-            return 2;
-        }
-        if (i == 27) {
-            return 4;
-        }
-        if (i == 41 || i == 42) {
-            return 1;
-        }
-        return i != 121 ? 0 : 4;
-    }
-
-    /* renamed from: com.android.server.appop.AppOpsUidStateTrackerImpl$1, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 implements DelayableExecutor {
-        public final /* synthetic */ Handler val$handler;
-        public final /* synthetic */ Executor val$lockingExecutor;
-
-        public AnonymousClass1(Handler handler, Executor executor) {
-            this.val$handler = handler;
-            this.val$lockingExecutor = executor;
-        }
-
-        @Override // com.android.server.appop.AppOpsUidStateTrackerImpl.DelayableExecutor, java.util.concurrent.Executor
-        public void execute(final Runnable runnable) {
-            Handler handler = this.val$handler;
-            final Executor executor = this.val$lockingExecutor;
-            handler.post(new Runnable() { // from class: com.android.server.appop.AppOpsUidStateTrackerImpl$1$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    executor.execute(runnable);
-                }
-            });
-        }
-
-        @Override // com.android.server.appop.AppOpsUidStateTrackerImpl.DelayableExecutor
-        public void executeDelayed(final Runnable runnable, long j) {
-            Handler handler = this.val$handler;
-            final Executor executor = this.val$lockingExecutor;
-            handler.postDelayed(new Runnable() { // from class: com.android.server.appop.AppOpsUidStateTrackerImpl$1$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    executor.execute(runnable);
-                }
-            }, j);
-        }
-    }
-
-    public AppOpsUidStateTrackerImpl(ActivityManagerInternal activityManagerInternal, Handler handler, Executor executor, Clock clock, AppOpsService.Constants constants) {
-        this(activityManagerInternal, new AnonymousClass1(handler, executor), clock, constants, handler.getLooper().getThread());
-    }
-
-    public AppOpsUidStateTrackerImpl(ActivityManagerInternal activityManagerInternal, DelayableExecutor delayableExecutor, Clock clock, AppOpsService.Constants constants, Thread thread) {
-        this.mUidStates = new SparseIntArray();
-        this.mPendingUidStates = new SparseIntArray();
-        this.mCapability = new SparseIntArray();
-        this.mPendingCapability = new SparseIntArray();
-        this.mAppWidgetVisible = new SparseBooleanArray();
-        this.mPendingAppWidgetVisible = new SparseBooleanArray();
-        this.mPendingCommitTime = new SparseLongArray();
-        this.mPendingGone = new SparseBooleanArray();
-        this.mUidStateChangedCallbacks = new ArrayMap();
-        this.mActivityManagerInternal = activityManagerInternal;
-        this.mExecutor = delayableExecutor;
-        this.mClock = clock;
-        this.mConstants = constants;
-        this.mEventLog = new EventLog(delayableExecutor, thread);
-    }
-
-    @Override // com.android.server.appop.AppOpsUidStateTracker
-    public int getUidState(int i) {
-        return getUidStateLocked(i);
-    }
-
-    public final int getUidStateLocked(int i) {
-        updateUidPendingStateIfNeeded(i);
-        return this.mUidStates.get(i, 700);
-    }
-
-    @Override // com.android.server.appop.AppOpsUidStateTracker
-    public int evalMode(int i, int i2, int i3) {
-        if (i3 != 4) {
-            return i3;
-        }
-        int uidState = getUidState(i);
-        int uidCapability = getUidCapability(i);
-        int evalModeInternal = evalModeInternal(i, i2, uidState, uidCapability);
-        this.mEventLog.logEvalForegroundMode(i, uidState, uidCapability, i2, evalModeInternal);
-        return evalModeInternal;
-    }
-
-    public final int evalModeInternal(int i, int i2, int i3, int i4) {
-        if (!getUidAppWidgetVisible(i) && !this.mActivityManagerInternal.isPendingTopUid(i) && !this.mActivityManagerInternal.isTempAllowlistedForFgsWhileInUse(i)) {
-            int opCapability = getOpCapability(i2);
-            if (opCapability != 0) {
-                return (opCapability & i4) == 0 ? 1 : 0;
-            }
-            if (i3 > AppOpsManager.resolveFirstUnrestrictedUidState(i2)) {
-                return 1;
-            }
-        }
-        return 0;
-    }
-
-    @Override // com.android.server.appop.AppOpsUidStateTracker
-    public boolean isUidInForeground(int i) {
-        return evalMode(i, -1, 4) == 0;
-    }
-
-    @Override // com.android.server.appop.AppOpsUidStateTracker
-    public void addUidStateChangedCallback(Executor executor, AppOpsUidStateTracker.UidStateChangedCallback uidStateChangedCallback) {
-        if (this.mUidStateChangedCallbacks.containsKey(uidStateChangedCallback)) {
-            throw new IllegalStateException("Callback is already registered.");
-        }
-        this.mUidStateChangedCallbacks.put(uidStateChangedCallback, executor);
-    }
-
-    @Override // com.android.server.appop.AppOpsUidStateTracker
-    public void updateAppWidgetVisibility(SparseArray sparseArray, boolean z) {
-        int size = sparseArray.size();
-        for (int i = 0; i < size; i++) {
-            int keyAt = sparseArray.keyAt(i);
-            this.mPendingAppWidgetVisible.put(keyAt, z);
-            commitUidPendingState(keyAt);
-        }
-    }
-
-    @Override // com.android.server.appop.AppOpsUidStateTracker
-    public void updateUidProcState(int i, int i2, int i3) {
-        long j;
-        int processStateToUidState = AppOpsUidStateTracker.processStateToUidState(i2);
-        int i4 = this.mUidStates.get(i, 700);
-        int i5 = this.mCapability.get(i, 0);
-        int i6 = this.mPendingUidStates.get(i, 700);
-        int i7 = this.mPendingCapability.get(i, 0);
-        long j2 = this.mPendingCommitTime.get(i, 0L);
-        if (j2 != 0 || (processStateToUidState == i4 && i3 == i5)) {
-            if (j2 == 0) {
-                return;
-            }
-            if (processStateToUidState == i6 && i3 == i7) {
-                return;
-            }
-        }
-        this.mEventLog.logUpdateUidProcState(i, i2, i3);
-        this.mPendingUidStates.put(i, processStateToUidState);
-        this.mPendingCapability.put(i, i3);
-        if (i2 == 20) {
-            this.mPendingGone.put(i, true);
-            commitUidPendingState(i);
-            return;
-        }
-        if (processStateToUidState < i4 || (processStateToUidState <= 500 && i4 > 500)) {
-            commitUidPendingState(i);
-            return;
-        }
-        if (processStateToUidState == i4 && i3 != i5) {
-            commitUidPendingState(i);
-            return;
-        }
-        if (processStateToUidState <= 500) {
-            commitUidPendingState(i);
-            return;
-        }
-        if (j2 == 0) {
-            if (i4 <= 200) {
-                j = this.mConstants.TOP_STATE_SETTLE_TIME;
-            } else if (i4 <= 400) {
-                j = this.mConstants.FG_SERVICE_STATE_SETTLE_TIME;
-            } else {
-                j = this.mConstants.BG_STATE_SETTLE_TIME;
-            }
-            this.mPendingCommitTime.put(i, this.mClock.elapsedRealtime() + j);
-            this.mExecutor.executeDelayed(PooledLambda.obtainRunnable(new BiConsumer() { // from class: com.android.server.appop.AppOpsUidStateTrackerImpl$$ExternalSyntheticLambda0
-                @Override // java.util.function.BiConsumer
-                public final void accept(Object obj, Object obj2) {
-                    ((AppOpsUidStateTrackerImpl) obj).updateUidPendingStateIfNeeded(((Integer) obj2).intValue());
-                }
-            }, this, Integer.valueOf(i)), j + 1);
-        }
-    }
-
-    @Override // com.android.server.appop.AppOpsUidStateTracker
-    public void dumpUidState(PrintWriter printWriter, int i, long j) {
-        int i2 = this.mUidStates.get(i, 700);
-        int i3 = this.mPendingUidStates.get(i, i2);
-        printWriter.print("    state=");
-        printWriter.println(AppOpsManager.getUidStateName(i2));
-        if (i2 != i3) {
-            printWriter.print("    pendingState=");
-            printWriter.println(AppOpsManager.getUidStateName(i3));
-        }
-        int i4 = this.mCapability.get(i, 0);
-        int i5 = this.mPendingCapability.get(i, i4);
-        printWriter.print("    capability=");
-        ActivityManager.printCapabilitiesFull(printWriter, i4);
-        printWriter.println();
-        if (i4 != i5) {
-            printWriter.print("    pendingCapability=");
-            ActivityManager.printCapabilitiesFull(printWriter, i5);
-            printWriter.println();
-        }
-        boolean z = this.mAppWidgetVisible.get(i, false);
-        boolean z2 = this.mPendingAppWidgetVisible.get(i, z);
-        printWriter.print("    appWidgetVisible=");
-        printWriter.println(z);
-        if (z != z2) {
-            printWriter.print("    pendingAppWidgetVisible=");
-            printWriter.println(z2);
-        }
-        long j2 = this.mPendingCommitTime.get(i, 0L);
-        if (j2 != 0) {
-            printWriter.print("    pendingStateCommitTime=");
-            TimeUtils.formatDuration(j2, j, printWriter);
-            printWriter.println();
-        }
-    }
-
-    @Override // com.android.server.appop.AppOpsUidStateTracker
-    public void dumpEvents(PrintWriter printWriter) {
-        this.mEventLog.dumpEvents(printWriter);
-    }
-
-    public final void updateUidPendingStateIfNeeded(int i) {
-        updateUidPendingStateIfNeededLocked(i);
-    }
-
-    public final void updateUidPendingStateIfNeededLocked(int i) {
-        if (this.mPendingCommitTime.get(i, 0L) == 0 || this.mClock.elapsedRealtime() < this.mPendingCommitTime.get(i)) {
-            return;
-        }
-        commitUidPendingState(i);
-    }
-
-    public final void commitUidPendingState(int i) {
-        int i2 = this.mPendingUidStates.get(i, this.mUidStates.get(i, 700));
-        int i3 = this.mPendingCapability.get(i, this.mCapability.get(i, 0));
-        boolean z = this.mPendingAppWidgetVisible.get(i, this.mAppWidgetVisible.get(i, false));
-        int i4 = this.mUidStates.get(i, 700);
-        int i5 = this.mCapability.get(i, 0);
-        boolean z2 = this.mAppWidgetVisible.get(i, false);
-        if (i4 != i2 || i5 != i3 || z2 != z) {
-            boolean z3 = ((i4 <= 500) == (i2 <= 500) && i5 == i3 && z2 == z) ? false : true;
-            if (z3) {
-                this.mEventLog.logCommitUidState(i, i2, i3, z, z2 != z);
-            }
-            for (int i6 = 0; i6 < this.mUidStateChangedCallbacks.size(); i6++) {
-                ((Executor) this.mUidStateChangedCallbacks.valueAt(i6)).execute(PooledLambda.obtainRunnable(new QuadConsumer() { // from class: com.android.server.appop.AppOpsUidStateTrackerImpl$$ExternalSyntheticLambda1
-                    public final void accept(Object obj, Object obj2, Object obj3, Object obj4) {
-                        ((AppOpsUidStateTracker.UidStateChangedCallback) obj).onUidStateChanged(((Integer) obj2).intValue(), ((Integer) obj3).intValue(), ((Boolean) obj4).booleanValue());
-                    }
-                }, (AppOpsUidStateTracker.UidStateChangedCallback) this.mUidStateChangedCallbacks.keyAt(i6), Integer.valueOf(i), Integer.valueOf(i2), Boolean.valueOf(z3)));
-            }
-        }
-        if (this.mPendingGone.get(i, false)) {
-            this.mUidStates.delete(i);
-            this.mCapability.delete(i);
-            this.mAppWidgetVisible.delete(i);
-            this.mPendingGone.delete(i);
-        } else {
-            this.mUidStates.put(i, i2);
-            this.mCapability.put(i, i3);
-            this.mAppWidgetVisible.put(i, z);
-        }
-        this.mPendingUidStates.delete(i);
-        this.mPendingCapability.delete(i);
-        this.mPendingAppWidgetVisible.delete(i);
-        this.mPendingCommitTime.delete(i);
-    }
-
-    public final int getUidCapability(int i) {
-        return this.mCapability.get(i, 0);
-    }
-
-    public final boolean getUidAppWidgetVisible(int i) {
-        return this.mAppWidgetVisible.get(i, false);
-    }
-
-    /* loaded from: classes.dex */
-    public class EventLog {
-        public int[][] mCommitUidStateLog;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class EventLog {
+        public final int[][] mCommitUidStateLog;
         public int mCommitUidStateLogHead;
         public int mCommitUidStateLogSize;
-        public long[] mCommitUidStateLogTimestamps;
-        public int[][] mEvalForegroundModeLog;
+        public final long[] mCommitUidStateLogTimestamps;
+        public final int[][] mEvalForegroundModeLog;
         public int mEvalForegroundModeLogHead;
         public int mEvalForegroundModeLogSize;
-        public long[] mEvalForegroundModeLogTimestamps;
+        public final long[] mEvalForegroundModeLogTimestamps;
         public final DelayableExecutor mExecutor;
-        public final Thread mExecutorThread;
-        public int[][] mUpdateUidProcStateLog;
+        public final int[][] mUpdateUidProcStateLog;
         public int mUpdateUidProcStateLogHead;
         public int mUpdateUidProcStateLogSize;
-        public long[] mUpdateUidProcStateLogTimestamps;
+        public final long[] mUpdateUidProcStateLogTimestamps;
 
-        public EventLog(DelayableExecutor delayableExecutor, Thread thread) {
+        public EventLog(DelayableExecutor delayableExecutor) {
             Class cls = Integer.TYPE;
             this.mUpdateUidProcStateLog = (int[][]) Array.newInstance((Class<?>) cls, 200, 3);
             this.mUpdateUidProcStateLogTimestamps = new long[200];
@@ -363,181 +73,280 @@ public class AppOpsUidStateTrackerImpl implements AppOpsUidStateTracker {
             this.mEvalForegroundModeLogSize = 0;
             this.mEvalForegroundModeLogHead = 0;
             this.mExecutor = delayableExecutor;
-            this.mExecutorThread = thread;
         }
+    }
 
-        public void logUpdateUidProcState(int i, int i2, int i3) {
-            this.mExecutor.execute(PooledLambda.obtainRunnable(new QuintConsumer() { // from class: com.android.server.appop.AppOpsUidStateTrackerImpl$EventLog$$ExternalSyntheticLambda1
-                public final void accept(Object obj, Object obj2, Object obj3, Object obj4, Object obj5) {
-                    ((AppOpsUidStateTrackerImpl.EventLog) obj).logUpdateUidProcStateAsync(((Long) obj2).longValue(), ((Integer) obj3).intValue(), ((Integer) obj4).intValue(), ((Integer) obj5).intValue());
+    public AppOpsUidStateTrackerImpl(ActivityManagerInternal activityManagerInternal, DelayableExecutor delayableExecutor, Clock clock, AppOpsService.Constants constants, Thread thread) {
+        this.mActivityManagerInternal = activityManagerInternal;
+        this.mExecutor = delayableExecutor;
+        this.mClock = clock;
+        this.mConstants = constants;
+        this.mEventLog = new EventLog(delayableExecutor);
+    }
+
+    public final void commitUidPendingState(int i) {
+        int i2 = this.mPendingUidStates.get(i, this.mUidStates.get(i, 700));
+        int i3 = this.mPendingCapability.get(i, this.mCapability.get(i, 0));
+        boolean z = this.mPendingAppWidgetVisible.get(i, this.mAppWidgetVisible.get(i, false));
+        int i4 = this.mUidStates.get(i, 700);
+        int i5 = this.mCapability.get(i, 0);
+        boolean z2 = this.mAppWidgetVisible.get(i, false);
+        boolean z3 = ((i4 <= 500) == (i2 <= 500) && i5 == i3 && z2 == z) ? false : true;
+        if (i4 != i2 || i5 != i3 || z2 != z) {
+            if (z3) {
+                boolean z4 = z2 != z;
+                EventLog eventLog = this.mEventLog;
+                eventLog.getClass();
+                eventLog.mExecutor.execute(PooledLambda.obtainRunnable(new AppOpsUidStateTrackerImpl$EventLog$$ExternalSyntheticLambda0(1), eventLog, Long.valueOf(System.currentTimeMillis()), Integer.valueOf(i), Integer.valueOf(i2), Integer.valueOf(i3), Boolean.valueOf(z), Boolean.valueOf(z4)));
+            }
+            for (int i6 = 0; i6 < this.mUidStateChangedCallbacks.size(); i6++) {
+                ((Executor) this.mUidStateChangedCallbacks.valueAt(i6)).execute(PooledLambda.obtainRunnable(new AppOpsUidStateTrackerImpl$$ExternalSyntheticLambda1(), (AppOpsService$$ExternalSyntheticLambda12) this.mUidStateChangedCallbacks.keyAt(i6), Integer.valueOf(i), Integer.valueOf(i2), Boolean.valueOf(z3)));
+            }
+        }
+        if (this.mPendingGone.get(i, false)) {
+            this.mUidStates.delete(i);
+            this.mCapability.delete(i);
+            this.mAppWidgetVisible.delete(i);
+            this.mPendingGone.delete(i);
+            if (Flags.finishRunningOpsForKilledPackages()) {
+                for (int i7 = 0; i7 < this.mUidStateChangedCallbacks.size(); i7++) {
+                    ((Executor) this.mUidStateChangedCallbacks.valueAt(i7)).execute(PooledLambda.obtainRunnable(new AppOpsUidStateTrackerImpl$$ExternalSyntheticLambda1(), (AppOpsService$$ExternalSyntheticLambda12) this.mUidStateChangedCallbacks.keyAt(i7), Integer.valueOf(i), Integer.MAX_VALUE, Boolean.valueOf(z3)));
                 }
-            }, this, Long.valueOf(System.currentTimeMillis()), Integer.valueOf(i), Integer.valueOf(i2), Integer.valueOf(i3)));
+            }
+        } else {
+            this.mUidStates.put(i, i2);
+            this.mCapability.put(i, i3);
+            this.mAppWidgetVisible.put(i, z);
         }
+        this.mPendingUidStates.delete(i);
+        this.mPendingCapability.delete(i);
+        this.mPendingAppWidgetVisible.delete(i);
+        this.mPendingCommitTime.delete(i);
+    }
 
-        public void logUpdateUidProcStateAsync(long j, int i, int i2, int i3) {
-            int i4 = this.mUpdateUidProcStateLogHead;
-            int i5 = this.mUpdateUidProcStateLogSize;
-            int i6 = (i4 + i5) % 200;
-            if (i5 == 200) {
-                this.mUpdateUidProcStateLogHead = (i4 + 1) % 200;
+    public final void dumpEvents(PrintWriter printWriter) {
+        int i = 0;
+        int i2 = 0;
+        int i3 = 0;
+        while (true) {
+            EventLog eventLog = this.mEventLog;
+            int i4 = eventLog.mUpdateUidProcStateLogSize;
+            if (i >= i4 && i2 >= eventLog.mCommitUidStateLogSize && i3 >= eventLog.mEvalForegroundModeLogSize) {
+                return;
+            }
+            int i5 = (eventLog.mUpdateUidProcStateLogHead + i) % 200;
+            int i6 = (eventLog.mCommitUidStateLogHead + i2) % 200;
+            int i7 = (eventLog.mEvalForegroundModeLogHead + i3) % 200;
+            long[] jArr = eventLog.mUpdateUidProcStateLogTimestamps;
+            long j = i < i4 ? jArr[i5] : Long.MAX_VALUE;
+            int i8 = eventLog.mCommitUidStateLogSize;
+            long[] jArr2 = eventLog.mCommitUidStateLogTimestamps;
+            long j2 = i2 < i8 ? jArr2[i6] : Long.MAX_VALUE;
+            int i9 = eventLog.mEvalForegroundModeLogSize;
+            long[] jArr3 = eventLog.mEvalForegroundModeLogTimestamps;
+            long j3 = i3 < i9 ? jArr3[i7] : Long.MAX_VALUE;
+            int i10 = i3;
+            if (j <= j2 && j <= j3) {
+                long j4 = jArr[i5];
+                int[] iArr = eventLog.mUpdateUidProcStateLog[i5];
+                int i11 = iArr[0];
+                int i12 = iArr[1];
+                int i13 = iArr[2];
+                TimeUtils.dumpTime(printWriter, j4);
+                printWriter.print(" UPDATE_UID_PROC_STATE");
+                printWriter.print(" uid=");
+                printWriter.print(String.format("%-8d", Integer.valueOf(i11)));
+                printWriter.print(" procState=");
+                printWriter.print(String.format("%-30s", ActivityManager.procStateToString(i12)));
+                printWriter.print(" capability=");
+                printWriter.print(ActivityManager.getCapabilitiesSummary(i13) + " ");
+                printWriter.println();
+                i++;
+            } else if (j2 <= j3) {
+                long j5 = jArr2[i6];
+                int[] iArr2 = eventLog.mCommitUidStateLog[i6];
+                int i14 = iArr2[0];
+                int i15 = iArr2[1];
+                int i16 = iArr2[2];
+                int i17 = iArr2[3];
+                boolean z = (i17 & 1) != 0;
+                boolean z2 = (i17 & 2) != 0;
+                TimeUtils.dumpTime(printWriter, j5);
+                printWriter.print(" COMMIT_UID_STATE     ");
+                printWriter.print(" uid=");
+                printWriter.print(String.format("%-8d", Integer.valueOf(i14)));
+                printWriter.print(" uidState=");
+                printWriter.print(String.format("%-30s", AppOpsManager.uidStateToString(i15)));
+                printWriter.print(" capability=");
+                printWriter.print(ActivityManager.getCapabilitiesSummary(i16) + " ");
+                printWriter.print(" appWidgetVisible=");
+                printWriter.print(z);
+                if (z2) {
+                    printWriter.print(" (changed)");
+                }
+                printWriter.println();
+                i2++;
             } else {
-                this.mUpdateUidProcStateLogSize = i5 + 1;
+                long j6 = jArr3[i7];
+                int[] iArr3 = eventLog.mEvalForegroundModeLog[i7];
+                int i18 = iArr3[0];
+                int i19 = iArr3[1];
+                int i20 = iArr3[2];
+                int i21 = iArr3[3];
+                int i22 = iArr3[4];
+                TimeUtils.dumpTime(printWriter, j6);
+                printWriter.print(" EVAL_FOREGROUND_MODE ");
+                printWriter.print(" uid=");
+                printWriter.print(String.format("%-8d", Integer.valueOf(i18)));
+                printWriter.print(" uidState=");
+                printWriter.print(String.format("%-30s", AppOpsManager.uidStateToString(i19)));
+                printWriter.print(" capability=");
+                printWriter.print(ActivityManager.getCapabilitiesSummary(i20) + " ");
+                printWriter.print(" code=");
+                printWriter.print(String.format("%-20s", AppOpsManager.opToName(i21)));
+                printWriter.print(" result=");
+                printWriter.print(AppOpsManager.modeToName(i22));
+                printWriter.println();
+                i3 = i10 + 1;
             }
-            int[] iArr = this.mUpdateUidProcStateLog[i6];
-            iArr[0] = i;
-            iArr[1] = i2;
-            iArr[2] = i3;
-            this.mUpdateUidProcStateLogTimestamps[i6] = j;
+            i3 = i10;
         }
+    }
 
-        public void logCommitUidState(int i, int i2, int i3, boolean z, boolean z2) {
-            this.mExecutor.execute(PooledLambda.obtainRunnable(new HeptConsumer() { // from class: com.android.server.appop.AppOpsUidStateTrackerImpl$EventLog$$ExternalSyntheticLambda2
-                public final void accept(Object obj, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7) {
-                    ((AppOpsUidStateTrackerImpl.EventLog) obj).logCommitUidStateAsync(((Long) obj2).longValue(), ((Integer) obj3).intValue(), ((Integer) obj4).intValue(), ((Integer) obj5).intValue(), ((Boolean) obj6).booleanValue(), ((Boolean) obj7).booleanValue());
-                }
-            }, this, Long.valueOf(System.currentTimeMillis()), Integer.valueOf(i), Integer.valueOf(i2), Integer.valueOf(i3), Boolean.valueOf(z), Boolean.valueOf(z2)));
-        }
+    /* JADX WARN: Removed duplicated region for block: B:30:0x0065  */
+    /* JADX WARN: Removed duplicated region for block: B:36:0x007c  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int evalMode(int r13, int r14, int r15) {
+        /*
+            r12 = this;
+            r0 = 4
+            if (r15 == r0) goto L4
+            return r15
+        L4:
+            r12.updateUidPendingStateIfNeeded(r13)
+            android.util.SparseIntArray r15 = r12.mUidStates
+            r1 = 700(0x2bc, float:9.81E-43)
+            int r15 = r15.get(r13, r1)
+            android.util.SparseIntArray r1 = r12.mCapability
+            r2 = 0
+            int r1 = r1.get(r13, r2)
+            android.util.SparseBooleanArray r3 = r12.mAppWidgetVisible
+            boolean r3 = r3.get(r13, r2)
+            if (r3 != 0) goto La7
+            android.app.ActivityManagerInternal r3 = r12.mActivityManagerInternal
+            boolean r3 = r3.isPendingTopUid(r13)
+            if (r3 != 0) goto La7
+            android.app.ActivityManagerInternal r3 = r12.mActivityManagerInternal
+            boolean r3 = r3.isTempAllowlistedForFgsWhileInUse(r13)
+            if (r3 == 0) goto L30
+            goto La7
+        L30:
+            r3 = 1
+            if (r14 == 0) goto L54
+            if (r14 == r3) goto L54
+            r4 = 26
+            if (r14 == r4) goto L52
+            r4 = 27
+            if (r14 == r4) goto L55
+            r4 = 32
+            if (r14 == r4) goto L4f
+            r4 = 121(0x79, float:1.7E-43)
+            if (r14 == r4) goto L55
+            r0 = 41
+            if (r14 == r0) goto L54
+            r0 = 42
+            if (r14 == r0) goto L54
+            r0 = r2
+            goto L55
+        L4f:
+            r0 = 64
+            goto L55
+        L52:
+            r0 = 2
+            goto L55
+        L54:
+            r0 = r3
+        L55:
+            java.lang.String r4 = " opCapability= "
+            java.lang.String r5 = " uidCapability= "
+            java.lang.String r6 = " uidState= "
+            java.lang.String r7 = " code= "
+            java.lang.String r8 = "AppOps"
+            boolean r9 = com.android.server.appop.AppOpsUidStateTrackerImpl.DEBUG
+            boolean r10 = com.android.server.appop.AppOpsUidStateTrackerImpl.DEBUG_MID
+            if (r0 == 0) goto L7c
+            r11 = r1 & r0
+            if (r11 != 0) goto La7
+            if (r10 != 0) goto L6d
+            if (r9 == 0) goto L7a
+        L6d:
+            java.lang.String r2 = "evalModeInternal uidCapability: uid= "
+            java.lang.StringBuilder r2 = com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0.m(r13, r14, r2, r7, r6)
+            com.android.server.ServiceKeeper$$ExternalSyntheticOutline0.m(r15, r1, r5, r4, r2)
+            com.android.server.HeapdumpWatcher$$ExternalSyntheticOutline0.m(r2, r0, r8)
+        L7a:
+            r2 = r3
+            goto La7
+        L7c:
+            int r11 = android.app.AppOpsManager.resolveFirstUnrestrictedUidState(r14)
+            if (r15 <= r11) goto La7
+            if (r10 != 0) goto L86
+            if (r9 == 0) goto L7a
+        L86:
+            java.lang.String r2 = "evalModeInternal uidState: uid= "
+            java.lang.StringBuilder r2 = com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0.m(r13, r14, r2, r7, r6)
+            com.android.server.ServiceKeeper$$ExternalSyntheticOutline0.m(r15, r1, r5, r4, r2)
+            r2.append(r0)
+            java.lang.String r0 = " first unrestricted state= "
+            r2.append(r0)
+            int r0 = android.app.AppOpsManager.resolveFirstUnrestrictedUidState(r14)
+            r2.append(r0)
+            java.lang.String r0 = r2.toString()
+            android.util.Slog.w(r8, r0)
+            goto L7a
+        La7:
+            com.android.server.appop.AppOpsUidStateTrackerImpl$EventLog r12 = r12.mEventLog
+            r12.getClass()
+            com.android.server.appop.AppOpsUidStateTrackerImpl$EventLog$$ExternalSyntheticLambda0 r3 = new com.android.server.appop.AppOpsUidStateTrackerImpl$EventLog$$ExternalSyntheticLambda0
+            r0 = 0
+            r3.<init>(r0)
+            long r4 = java.lang.System.currentTimeMillis()
+            java.lang.Long r5 = java.lang.Long.valueOf(r4)
+            java.lang.Integer r6 = java.lang.Integer.valueOf(r13)
+            java.lang.Integer r7 = java.lang.Integer.valueOf(r15)
+            java.lang.Integer r8 = java.lang.Integer.valueOf(r1)
+            java.lang.Integer r9 = java.lang.Integer.valueOf(r14)
+            java.lang.Integer r10 = java.lang.Integer.valueOf(r2)
+            r4 = r12
+            com.android.internal.util.function.pooled.PooledRunnable r13 = com.android.internal.util.function.pooled.PooledLambda.obtainRunnable(r3, r4, r5, r6, r7, r8, r9, r10)
+            com.android.server.appop.AppOpsUidStateTrackerImpl$DelayableExecutor r12 = r12.mExecutor
+            r12.execute(r13)
+            return r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.appop.AppOpsUidStateTrackerImpl.evalMode(int, int, int):int");
+    }
 
-        public void logCommitUidStateAsync(long j, int i, int i2, int i3, boolean z, boolean z2) {
-            int i4 = this.mCommitUidStateLogHead;
-            int i5 = this.mCommitUidStateLogSize;
-            int i6 = (i4 + i5) % 200;
-            if (i5 == 200) {
-                this.mCommitUidStateLogHead = (i4 + 1) % 200;
-            } else {
-                this.mCommitUidStateLogSize = i5 + 1;
-            }
-            int[] iArr = this.mCommitUidStateLog[i6];
-            iArr[0] = i;
-            iArr[1] = i2;
-            iArr[2] = i3;
-            iArr[3] = 0;
-            if (z) {
-                iArr[3] = 0 + 1;
-            }
-            if (z2) {
-                iArr[3] = iArr[3] + 2;
-            }
-            this.mCommitUidStateLogTimestamps[i6] = j;
+    public final void updateUidPendingStateIfNeeded(int i) {
+        if (this.mPendingCommitTime.get(i, 0L) == 0 || this.mClock.elapsedRealtime() < this.mPendingCommitTime.get(i)) {
+            return;
         }
+        commitUidPendingState(i);
+    }
 
-        public void logEvalForegroundMode(int i, int i2, int i3, int i4, int i5) {
-            this.mExecutor.execute(PooledLambda.obtainRunnable(new HeptConsumer() { // from class: com.android.server.appop.AppOpsUidStateTrackerImpl$EventLog$$ExternalSyntheticLambda0
-                public final void accept(Object obj, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6, Object obj7) {
-                    ((AppOpsUidStateTrackerImpl.EventLog) obj).logEvalForegroundModeAsync(((Long) obj2).longValue(), ((Integer) obj3).intValue(), ((Integer) obj4).intValue(), ((Integer) obj5).intValue(), ((Integer) obj6).intValue(), ((Integer) obj7).intValue());
-                }
-            }, this, Long.valueOf(System.currentTimeMillis()), Integer.valueOf(i), Integer.valueOf(i2), Integer.valueOf(i3), Integer.valueOf(i4), Integer.valueOf(i5)));
-        }
-
-        public void logEvalForegroundModeAsync(long j, int i, int i2, int i3, int i4, int i5) {
-            int i6 = this.mEvalForegroundModeLogHead;
-            int i7 = this.mEvalForegroundModeLogSize;
-            int i8 = (i6 + i7) % 200;
-            if (i7 == 200) {
-                this.mEvalForegroundModeLogHead = (i6 + 1) % 200;
-            } else {
-                this.mEvalForegroundModeLogSize = i7 + 1;
-            }
-            int[] iArr = this.mEvalForegroundModeLog[i8];
-            iArr[0] = i;
-            iArr[1] = i2;
-            iArr[2] = i3;
-            iArr[3] = i4;
-            iArr[4] = i5;
-            this.mEvalForegroundModeLogTimestamps[i8] = j;
-        }
-
-        public void dumpEvents(PrintWriter printWriter) {
-            int i = 0;
-            int i2 = 0;
-            int i3 = 0;
-            while (true) {
-                int i4 = this.mUpdateUidProcStateLogSize;
-                if (i >= i4 && i2 >= this.mCommitUidStateLogSize && i3 >= this.mEvalForegroundModeLogSize) {
-                    return;
-                }
-                int i5 = (this.mUpdateUidProcStateLogHead + i) % 200;
-                int i6 = (this.mCommitUidStateLogHead + i2) % 200;
-                int i7 = (this.mEvalForegroundModeLogHead + i3) % 200;
-                long j = i < i4 ? this.mUpdateUidProcStateLogTimestamps[i5] : Long.MAX_VALUE;
-                long j2 = i2 < this.mCommitUidStateLogSize ? this.mCommitUidStateLogTimestamps[i6] : Long.MAX_VALUE;
-                long j3 = i3 < this.mEvalForegroundModeLogSize ? this.mEvalForegroundModeLogTimestamps[i7] : Long.MAX_VALUE;
-                if (j <= j2 && j <= j3) {
-                    dumpUpdateUidProcState(printWriter, i5);
-                    i++;
-                } else if (j2 <= j3) {
-                    dumpCommitUidState(printWriter, i6);
-                    i2++;
-                } else {
-                    dumpEvalForegroundMode(printWriter, i7);
-                    i3++;
-                }
-            }
-        }
-
-        public void dumpUpdateUidProcState(PrintWriter printWriter, int i) {
-            long j = this.mUpdateUidProcStateLogTimestamps[i];
-            int[] iArr = this.mUpdateUidProcStateLog[i];
-            int i2 = iArr[0];
-            int i3 = iArr[1];
-            int i4 = iArr[2];
-            TimeUtils.dumpTime(printWriter, j);
-            printWriter.print(" UPDATE_UID_PROC_STATE");
-            printWriter.print(" uid=");
-            printWriter.print(String.format("%-8d", Integer.valueOf(i2)));
-            printWriter.print(" procState=");
-            printWriter.print(String.format("%-30s", ActivityManager.procStateToString(i3)));
-            printWriter.print(" capability=");
-            printWriter.print(ActivityManager.getCapabilitiesSummary(i4) + " ");
-            printWriter.println();
-        }
-
-        public void dumpCommitUidState(PrintWriter printWriter, int i) {
-            long j = this.mCommitUidStateLogTimestamps[i];
-            int[] iArr = this.mCommitUidStateLog[i];
-            int i2 = iArr[0];
-            int i3 = iArr[1];
-            int i4 = iArr[2];
-            int i5 = iArr[3];
-            boolean z = (i5 & 1) != 0;
-            boolean z2 = (i5 & 2) != 0;
-            TimeUtils.dumpTime(printWriter, j);
-            printWriter.print(" COMMIT_UID_STATE     ");
-            printWriter.print(" uid=");
-            printWriter.print(String.format("%-8d", Integer.valueOf(i2)));
-            printWriter.print(" uidState=");
-            printWriter.print(String.format("%-30s", AppOpsManager.uidStateToString(i3)));
-            printWriter.print(" capability=");
-            printWriter.print(ActivityManager.getCapabilitiesSummary(i4) + " ");
-            printWriter.print(" appWidgetVisible=");
-            printWriter.print(z);
-            if (z2) {
-                printWriter.print(" (changed)");
-            }
-            printWriter.println();
-        }
-
-        public void dumpEvalForegroundMode(PrintWriter printWriter, int i) {
-            long j = this.mEvalForegroundModeLogTimestamps[i];
-            int[] iArr = this.mEvalForegroundModeLog[i];
-            int i2 = iArr[0];
-            int i3 = iArr[1];
-            int i4 = iArr[2];
-            int i5 = iArr[3];
-            int i6 = iArr[4];
-            TimeUtils.dumpTime(printWriter, j);
-            printWriter.print(" EVAL_FOREGROUND_MODE ");
-            printWriter.print(" uid=");
-            printWriter.print(String.format("%-8d", Integer.valueOf(i2)));
-            printWriter.print(" uidState=");
-            printWriter.print(String.format("%-30s", AppOpsManager.uidStateToString(i3)));
-            printWriter.print(" capability=");
-            printWriter.print(ActivityManager.getCapabilitiesSummary(i4) + " ");
-            printWriter.print(" code=");
-            printWriter.print(String.format("%-20s", AppOpsManager.opToName(i5)));
-            printWriter.print(" result=");
-            printWriter.print(AppOpsManager.modeToName(i6));
-            printWriter.println();
-        }
+    /* JADX WARN: Removed duplicated region for block: B:36:0x005f  */
+    /* JADX WARN: Removed duplicated region for block: B:39:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void updateUidProcState(int r21, int r22, int r23) {
+        /*
+            Method dump skipped, instructions count: 237
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.appop.AppOpsUidStateTrackerImpl.updateUidProcState(int, int, int):void");
     }
 }

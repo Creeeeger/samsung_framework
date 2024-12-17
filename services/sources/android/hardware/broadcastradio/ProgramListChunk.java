@@ -7,28 +7,116 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ProgramListChunk implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.hardware.broadcastradio.ProgramListChunk.1
+public final class ProgramListChunk implements Parcelable {
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
+    public boolean complete;
+    public ProgramInfo[] modified;
+    public boolean purge;
+    public ProgramIdentifier[] removed;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.hardware.broadcastradio.ProgramListChunk$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
         @Override // android.os.Parcelable.Creator
-        public ProgramListChunk createFromParcel(Parcel parcel) {
+        public final Object createFromParcel(Parcel parcel) {
             ProgramListChunk programListChunk = new ProgramListChunk();
-            programListChunk.readFromParcel(parcel);
-            return programListChunk;
+            programListChunk.purge = false;
+            programListChunk.complete = false;
+            int dataPosition = parcel.dataPosition();
+            int readInt = parcel.readInt();
+            try {
+                if (readInt < 4) {
+                    throw new BadParcelableException("Parcelable too small");
+                }
+                if (parcel.dataPosition() - dataPosition < readInt) {
+                    programListChunk.purge = parcel.readBoolean();
+                    if (parcel.dataPosition() - dataPosition < readInt) {
+                        programListChunk.complete = parcel.readBoolean();
+                        if (parcel.dataPosition() - dataPosition < readInt) {
+                            programListChunk.modified = (ProgramInfo[]) parcel.createTypedArray(ProgramInfo.CREATOR);
+                            if (parcel.dataPosition() - dataPosition < readInt) {
+                                programListChunk.removed = (ProgramIdentifier[]) parcel.createTypedArray(ProgramIdentifier.CREATOR);
+                                if (dataPosition > Integer.MAX_VALUE - readInt) {
+                                    throw new BadParcelableException("Overflow in the size of parcelable");
+                                }
+                            } else if (dataPosition > Integer.MAX_VALUE - readInt) {
+                                throw new BadParcelableException("Overflow in the size of parcelable");
+                            }
+                        } else if (dataPosition > Integer.MAX_VALUE - readInt) {
+                            throw new BadParcelableException("Overflow in the size of parcelable");
+                        }
+                    } else if (dataPosition > Integer.MAX_VALUE - readInt) {
+                        throw new BadParcelableException("Overflow in the size of parcelable");
+                    }
+                } else if (dataPosition > Integer.MAX_VALUE - readInt) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                parcel.setDataPosition(dataPosition + readInt);
+                return programListChunk;
+            } catch (Throwable th) {
+                if (dataPosition > Integer.MAX_VALUE - readInt) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                parcel.setDataPosition(dataPosition + readInt);
+                throw th;
+            }
         }
 
         @Override // android.os.Parcelable.Creator
-        public ProgramListChunk[] newArray(int i) {
+        public final Object[] newArray(int i) {
             return new ProgramListChunk[i];
         }
-    };
-    public ProgramInfo[] modified;
-    public ProgramIdentifier[] removed;
-    public boolean purge = false;
-    public boolean complete = false;
+    }
+
+    public static int describeContents(Object obj) {
+        if (obj == null) {
+            return 0;
+        }
+        if (!(obj instanceof Object[])) {
+            if (obj instanceof Parcelable) {
+                return ((Parcelable) obj).describeContents();
+            }
+            return 0;
+        }
+        int i = 0;
+        for (Object obj2 : (Object[]) obj) {
+            i |= describeContents(obj2);
+        }
+        return i;
+    }
+
+    @Override // android.os.Parcelable
+    public final int describeContents() {
+        return describeContents(this.removed) | describeContents(this.modified);
+    }
+
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || !(obj instanceof ProgramListChunk)) {
+            return false;
+        }
+        ProgramListChunk programListChunk = (ProgramListChunk) obj;
+        return Objects.deepEquals(Boolean.valueOf(this.purge), Boolean.valueOf(programListChunk.purge)) && Objects.deepEquals(Boolean.valueOf(this.complete), Boolean.valueOf(programListChunk.complete)) && Objects.deepEquals(this.modified, programListChunk.modified) && Objects.deepEquals(this.removed, programListChunk.removed);
+    }
 
     public final int getStability() {
         return 1;
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    public final int hashCode() {
+        return Arrays.deepHashCode(Arrays.asList(Boolean.valueOf(this.purge), Boolean.valueOf(this.complete), this.modified, this.removed).toArray());
+    }
+
+    public final String toString() {
+        StringJoiner stringJoiner = new StringJoiner(", ", "{", "}");
+        stringJoiner.add("purge: " + this.purge);
+        stringJoiner.add("complete: " + this.complete);
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(stringJoiner, AmFmRegionConfig$$ExternalSyntheticOutline0.m(Arrays.toString(this.removed), "ProgramListChunk", AmFmRegionConfig$$ExternalSyntheticOutline0.m(Arrays.toString(this.modified), "removed: ", new StringBuilder("modified: "), stringJoiner), stringJoiner));
     }
 
     @Override // android.os.Parcelable
@@ -43,95 +131,5 @@ public class ProgramListChunk implements Parcelable {
         parcel.setDataPosition(dataPosition);
         parcel.writeInt(dataPosition2 - dataPosition);
         parcel.setDataPosition(dataPosition2);
-    }
-
-    public final void readFromParcel(Parcel parcel) {
-        int dataPosition = parcel.dataPosition();
-        int readInt = parcel.readInt();
-        try {
-            if (readInt < 4) {
-                throw new BadParcelableException("Parcelable too small");
-            }
-            if (parcel.dataPosition() - dataPosition < readInt) {
-                this.purge = parcel.readBoolean();
-                if (parcel.dataPosition() - dataPosition < readInt) {
-                    this.complete = parcel.readBoolean();
-                    if (parcel.dataPosition() - dataPosition < readInt) {
-                        this.modified = (ProgramInfo[]) parcel.createTypedArray(ProgramInfo.CREATOR);
-                        if (parcel.dataPosition() - dataPosition < readInt) {
-                            this.removed = (ProgramIdentifier[]) parcel.createTypedArray(ProgramIdentifier.CREATOR);
-                            if (dataPosition > Integer.MAX_VALUE - readInt) {
-                                throw new BadParcelableException("Overflow in the size of parcelable");
-                            }
-                            parcel.setDataPosition(dataPosition + readInt);
-                            return;
-                        }
-                        if (dataPosition > Integer.MAX_VALUE - readInt) {
-                            throw new BadParcelableException("Overflow in the size of parcelable");
-                        }
-                    } else if (dataPosition > Integer.MAX_VALUE - readInt) {
-                        throw new BadParcelableException("Overflow in the size of parcelable");
-                    }
-                } else if (dataPosition > Integer.MAX_VALUE - readInt) {
-                    throw new BadParcelableException("Overflow in the size of parcelable");
-                }
-            } else if (dataPosition > Integer.MAX_VALUE - readInt) {
-                throw new BadParcelableException("Overflow in the size of parcelable");
-            }
-            parcel.setDataPosition(dataPosition + readInt);
-        } catch (Throwable th) {
-            if (dataPosition > Integer.MAX_VALUE - readInt) {
-                throw new BadParcelableException("Overflow in the size of parcelable");
-            }
-            parcel.setDataPosition(dataPosition + readInt);
-            throw th;
-        }
-    }
-
-    public String toString() {
-        StringJoiner stringJoiner = new StringJoiner(", ", "{", "}");
-        stringJoiner.add("purge: " + this.purge);
-        stringJoiner.add("complete: " + this.complete);
-        stringJoiner.add("modified: " + Arrays.toString(this.modified));
-        stringJoiner.add("removed: " + Arrays.toString(this.removed));
-        return "android.hardware.broadcastradio.ProgramListChunk" + stringJoiner.toString();
-    }
-
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || !(obj instanceof ProgramListChunk)) {
-            return false;
-        }
-        ProgramListChunk programListChunk = (ProgramListChunk) obj;
-        return Objects.deepEquals(Boolean.valueOf(this.purge), Boolean.valueOf(programListChunk.purge)) && Objects.deepEquals(Boolean.valueOf(this.complete), Boolean.valueOf(programListChunk.complete)) && Objects.deepEquals(this.modified, programListChunk.modified) && Objects.deepEquals(this.removed, programListChunk.removed);
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    public int hashCode() {
-        return Arrays.deepHashCode(Arrays.asList(Boolean.valueOf(this.purge), Boolean.valueOf(this.complete), this.modified, this.removed).toArray());
-    }
-
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return describeContents(this.removed) | describeContents(this.modified) | 0;
-    }
-
-    public final int describeContents(Object obj) {
-        if (obj == null) {
-            return 0;
-        }
-        if (obj instanceof Object[]) {
-            int i = 0;
-            for (Object obj2 : (Object[]) obj) {
-                i |= describeContents(obj2);
-            }
-            return i;
-        }
-        if (obj instanceof Parcelable) {
-            return ((Parcelable) obj).describeContents();
-        }
-        return 0;
     }
 }

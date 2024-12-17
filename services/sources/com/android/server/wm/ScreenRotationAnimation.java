@@ -22,22 +22,24 @@ import android.view.animation.Transformation;
 import android.window.ScreenCapture;
 import com.android.internal.policy.TransitionAnimation;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.display.DisplayControl;
-import com.android.server.display.DisplayPowerController2;
 import com.android.server.wm.LocalAnimationAdapter;
 import com.android.server.wm.SimpleSurfaceAnimatable;
 import com.android.server.wm.SurfaceAnimator;
-import com.android.server.wm.utils.CoordinateTransforms;
+import com.android.window.flags.Flags;
 import com.samsung.android.rune.CoreRune;
 import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class ScreenRotationAnimation {
-    public boolean mAnimRunning;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ScreenRotationAnimation {
     public SurfaceControl mBackColorSurface;
     public final Context mContext;
     public int mCurRotation;
@@ -47,7 +49,6 @@ public class ScreenRotationAnimation {
     public BlackFrame mEnteringBlackFrame;
     public boolean mFinishAnimReady;
     public long mFinishAnimStartTime;
-    public boolean mHasBlackSnapshot;
     public final int mOriginalHeight;
     public final int mOriginalRotation;
     public final int mOriginalWidth;
@@ -57,7 +58,7 @@ public class ScreenRotationAnimation {
     public SurfaceControl[] mRoundedCornerOverlay;
     public SurfaceControl mScreenshotLayer;
     public final WindowManagerService mService;
-    public float mStartLuma;
+    public final float mStartLuma;
     public boolean mStarted;
     public SurfaceRotationAnimationController mSurfaceRotationAnimationController;
     public final float[] mTmpFloats = new float[9];
@@ -65,12 +66,193 @@ public class ScreenRotationAnimation {
     public final Transformation mRotateEnterTransformation = new Transformation();
     public final Matrix mSnapshotInitialMatrix = new Matrix();
 
-    public ScreenRotationAnimation(DisplayContent displayContent, int i) {
-        int i2;
-        boolean z;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SurfaceRotationAnimationController {
+        public SurfaceAnimator mDisplayAnimator;
+        public SurfaceAnimator mEnterBlackFrameAnimator;
+        public SurfaceAnimator mRotateScreenAnimator;
+        public SurfaceAnimator mScreenshotRotationAnimator;
+
+        public SurfaceRotationAnimationController() {
+        }
+
+        public static WindowAnimationSpec createWindowAnimationSpec(Animation animation) {
+            return new WindowAnimationSpec(animation, new Point(0, 0), false, FullScreenMagnificationGestureHandler.MAX_SCALE);
+        }
+
+        public final SimpleSurfaceAnimatable.Builder initializeBuilder() {
+            SimpleSurfaceAnimatable.Builder builder = new SimpleSurfaceAnimatable.Builder();
+            builder.mWidth = -1;
+            builder.mHeight = -1;
+            builder.mAnimationLeashParent = null;
+            builder.mSurfaceControl = null;
+            builder.mParentSurfaceControl = null;
+            ScreenRotationAnimation screenRotationAnimation = ScreenRotationAnimation.this;
+            final DisplayContent displayContent = screenRotationAnimation.mDisplayContent;
+            Objects.requireNonNull(displayContent);
+            final int i = 0;
+            builder.mSyncTransactionSupplier = new Supplier() { // from class: com.android.server.wm.ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda1
+                @Override // java.util.function.Supplier
+                public final Object get() {
+                    int i2 = i;
+                    DisplayContent displayContent2 = displayContent;
+                    switch (i2) {
+                        case 0:
+                            return displayContent2.getSyncTransaction();
+                        case 1:
+                            return displayContent2.getPendingTransaction();
+                        default:
+                            return displayContent2.makeOverlay();
+                    }
+                }
+            };
+            final DisplayContent displayContent2 = screenRotationAnimation.mDisplayContent;
+            Objects.requireNonNull(displayContent2);
+            final int i2 = 1;
+            builder.mPendingTransactionSupplier = new Supplier() { // from class: com.android.server.wm.ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda1
+                @Override // java.util.function.Supplier
+                public final Object get() {
+                    int i22 = i2;
+                    DisplayContent displayContent22 = displayContent2;
+                    switch (i22) {
+                        case 0:
+                            return displayContent22.getSyncTransaction();
+                        case 1:
+                            return displayContent22.getPendingTransaction();
+                        default:
+                            return displayContent22.makeOverlay();
+                    }
+                }
+            };
+            Objects.requireNonNull(displayContent2);
+            builder.mCommitTransactionRunnable = new Runnable() { // from class: com.android.server.wm.ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda3
+                @Override // java.lang.Runnable
+                public final void run() {
+                    DisplayContent.this.commitPendingTransaction();
+                }
+            };
+            Objects.requireNonNull(displayContent2);
+            final int i3 = 2;
+            builder.mAnimationLeashFactory = new Supplier() { // from class: com.android.server.wm.ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda1
+                @Override // java.util.function.Supplier
+                public final Object get() {
+                    int i22 = i3;
+                    DisplayContent displayContent22 = displayContent2;
+                    switch (i22) {
+                        case 0:
+                            return displayContent22.getSyncTransaction();
+                        case 1:
+                            return displayContent22.getPendingTransaction();
+                        default:
+                            return displayContent22.makeOverlay();
+                    }
+                }
+            };
+            return builder;
+        }
+
+        public final boolean isAnimating() {
+            SurfaceAnimator surfaceAnimator;
+            SurfaceAnimator surfaceAnimator2;
+            SurfaceAnimator surfaceAnimator3;
+            SurfaceAnimator surfaceAnimator4 = this.mDisplayAnimator;
+            return (surfaceAnimator4 != null && surfaceAnimator4.isAnimating()) || ((surfaceAnimator = this.mEnterBlackFrameAnimator) != null && surfaceAnimator.isAnimating()) || (((surfaceAnimator2 = this.mRotateScreenAnimator) != null && surfaceAnimator2.isAnimating()) || ((surfaceAnimator3 = this.mScreenshotRotationAnimator) != null && surfaceAnimator3.isAnimating()));
+        }
+
+        public final SurfaceAnimator startAnimation(SimpleSurfaceAnimatable simpleSurfaceAnimatable, WindowAnimationSpec windowAnimationSpec, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback) {
+            ScreenRotationAnimation screenRotationAnimation = ScreenRotationAnimation.this;
+            SurfaceAnimator surfaceAnimator = new SurfaceAnimator(simpleSurfaceAnimatable, onAnimationFinishedCallback, screenRotationAnimation.mService);
+            surfaceAnimator.startAnimation(screenRotationAnimation.mDisplayContent.getPendingTransaction(), new LocalAnimationAdapter(windowAnimationSpec, screenRotationAnimation.mService.mSurfaceAnimationRunner), false, 2, null, null, null, null);
+            return surfaceAnimator;
+        }
+
+        public final void startColorAnimation() {
+            boolean z = CoreRune.FW_BLACK_SNAPSHOT_TRANSITION;
+            ScreenRotationAnimation screenRotationAnimation = ScreenRotationAnimation.this;
+            if (z && screenRotationAnimation.mBackColorSurface == null) {
+                return;
+            }
+            final int integer = screenRotationAnimation.mContext.getResources().getInteger(R.integer.date_picker_header_max_lines_material);
+            WindowManagerService windowManagerService = screenRotationAnimation.mService;
+            SurfaceAnimationRunner surfaceAnimationRunner = windowManagerService.mSurfaceAnimationRunner;
+            final float[] fArr = new float[3];
+            float f = screenRotationAnimation.mStartLuma;
+            final int rgb = Color.rgb(f, f, f);
+            float f2 = screenRotationAnimation.mEndLuma;
+            final int rgb2 = Color.rgb(f2, f2, f2);
+            final long currentAnimatorScale = ((long) windowManagerService.getCurrentAnimatorScale()) * integer;
+            final ArgbEvaluator argbEvaluator = ArgbEvaluator.getInstance();
+            surfaceAnimationRunner.startAnimation(new LocalAnimationAdapter.AnimationSpec() { // from class: com.android.server.wm.ScreenRotationAnimation.SurfaceRotationAnimationController.1
+                @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+                public final void apply(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, long j) {
+                    Color valueOf = Color.valueOf(((Integer) argbEvaluator.evaluate(getFraction(j), Integer.valueOf(rgb), Integer.valueOf(rgb2))).intValue());
+                    float red = valueOf.red();
+                    float[] fArr2 = fArr;
+                    fArr2[0] = red;
+                    fArr2[1] = valueOf.green();
+                    fArr2[2] = valueOf.blue();
+                    if (surfaceControl.isValid()) {
+                        transaction.setColor(surfaceControl, fArr2);
+                    }
+                }
+
+                @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+                public final void dump(PrintWriter printWriter, String str) {
+                    StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, "startLuma=");
+                    SurfaceRotationAnimationController surfaceRotationAnimationController = SurfaceRotationAnimationController.this;
+                    m.append(ScreenRotationAnimation.this.mStartLuma);
+                    m.append(" endLuma=");
+                    m.append(ScreenRotationAnimation.this.mEndLuma);
+                    m.append(" durationMs=");
+                    AccessibilityManagerService$$ExternalSyntheticOutline0.m(m, integer, printWriter);
+                }
+
+                @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+                public final void dumpDebugInner(ProtoOutputStream protoOutputStream) {
+                    long start = protoOutputStream.start(1146756268036L);
+                    SurfaceRotationAnimationController surfaceRotationAnimationController = SurfaceRotationAnimationController.this;
+                    protoOutputStream.write(1108101562369L, ScreenRotationAnimation.this.mStartLuma);
+                    protoOutputStream.write(1108101562370L, ScreenRotationAnimation.this.mEndLuma);
+                    protoOutputStream.write(1112396529667L, integer);
+                    protoOutputStream.end(start);
+                }
+
+                @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
+                public final long getDuration() {
+                    return currentAnimatorScale;
+                }
+            }, screenRotationAnimation.mBackColorSurface, screenRotationAnimation.mDisplayContent.getPendingTransaction(), null);
+        }
+
+        public final SurfaceAnimator startDisplayRotation() {
+            SimpleSurfaceAnimatable.Builder initializeBuilder = initializeBuilder();
+            ScreenRotationAnimation screenRotationAnimation = ScreenRotationAnimation.this;
+            initializeBuilder.mAnimationLeashParent = screenRotationAnimation.mDisplayContent.getSurfaceControl();
+            DisplayContent displayContent = screenRotationAnimation.mDisplayContent;
+            initializeBuilder.mSurfaceControl = displayContent.getWindowingLayer();
+            initializeBuilder.mParentSurfaceControl = displayContent.getSurfaceControl();
+            initializeBuilder.mWidth = displayContent.getSurfaceWidth();
+            initializeBuilder.mHeight = displayContent.getSurfaceHeight();
+            SurfaceAnimator startAnimation = startAnimation(initializeBuilder.build(), createWindowAnimationSpec(screenRotationAnimation.mRotateEnterAnimation), new ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda0(this));
+            Rect bounds = displayContent.getBounds();
+            displayContent.getPendingTransaction().setWindowCrop(startAnimation.mLeash, bounds.width(), bounds.height());
+            return startAnimation;
+        }
+
+        public final SurfaceAnimator startScreenshotAlphaAnimation() {
+            SimpleSurfaceAnimatable.Builder initializeBuilder = initializeBuilder();
+            ScreenRotationAnimation screenRotationAnimation = ScreenRotationAnimation.this;
+            initializeBuilder.mSurfaceControl = screenRotationAnimation.mScreenshotLayer;
+            DisplayContent displayContent = screenRotationAnimation.mDisplayContent;
+            initializeBuilder.mAnimationLeashParent = displayContent.mOverlayLayer;
+            initializeBuilder.mWidth = displayContent.getSurfaceWidth();
+            initializeBuilder.mHeight = displayContent.getSurfaceHeight();
+            return startAnimation(initializeBuilder.build(), createWindowAnimationSpec(screenRotationAnimation.mRotateAlphaAnimation), new ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda0(this));
+        }
+    }
+
+    public ScreenRotationAnimation(int i, DisplayContent displayContent) {
         ScreenCapture.ScreenshotHardwareBuffer captureLayers;
-        boolean z2;
-        WindowContainer windowContainer;
         WindowManagerService windowManagerService = displayContent.mWmService;
         this.mService = windowManagerService;
         this.mContext = windowManagerService.mContext;
@@ -78,83 +260,74 @@ public class ScreenRotationAnimation {
         Rect bounds = displayContent.getBounds();
         int width = bounds.width();
         int height = bounds.height();
-        DisplayInfo displayInfo = displayContent.getDisplayInfo();
-        int i3 = displayInfo.rotation;
-        if (CoreRune.FW_BLACK_SNAPSHOT_TRANSITION) {
-            boolean shouldHasBlackSnapshot = shouldHasBlackSnapshot();
-            this.mHasBlackSnapshot = shouldHasBlackSnapshot;
-            if (CoreRune.SAFE_DEBUG && shouldHasBlackSnapshot) {
-                Slog.d(StartingSurfaceController.TAG, "BlackScreenshot is triggered, isScreenTurnedOn=" + windowManagerService.mExt.mPolicyExt.isScreenTurnedOn());
-            }
-        }
+        DisplayInfo displayInfo = displayContent.mDisplayInfo;
+        int i2 = displayInfo.rotation;
         this.mOriginalRotation = i;
-        int deltaRotation = RotationUtils.deltaRotation(i, i3);
-        boolean z3 = deltaRotation == 1 || deltaRotation == 3;
-        int i4 = z3 ? height : width;
-        this.mOriginalWidth = i4;
-        int i5 = z3 ? width : height;
-        this.mOriginalHeight = i5;
-        int i6 = displayInfo.logicalWidth;
-        int i7 = displayInfo.logicalHeight;
-        boolean z4 = (i6 > i4) == (i7 > i5) && !(i6 == i4 && i7 == i5);
+        int deltaRotation = RotationUtils.deltaRotation(i, i2);
+        boolean z = deltaRotation == 1 || deltaRotation == 3;
+        int i3 = z ? height : width;
+        this.mOriginalWidth = i3;
+        int i4 = z ? width : height;
+        this.mOriginalHeight = i4;
+        int i5 = displayInfo.logicalWidth;
+        int i6 = displayInfo.logicalHeight;
+        boolean z2 = (i5 > i3) == (i6 > i4) && !(i5 == i3 && i6 == i4);
         this.mSurfaceRotationAnimationController = new SurfaceRotationAnimationController();
-        boolean hasSecureWindowOnScreen = displayContent.hasSecureWindowOnScreen();
-        int displayId = displayContent.getDisplayId();
+        boolean z3 = displayContent.getWindow(new DisplayContent$$ExternalSyntheticLambda7(3)) != null;
+        int i7 = displayContent.mDisplayId;
         SurfaceControl.Transaction transaction = (SurfaceControl.Transaction) windowManagerService.mTransactionFactory.get();
         try {
-            if (CoreRune.FW_BLACK_SNAPSHOT_TRANSITION && this.mHasBlackSnapshot) {
+            boolean z4 = z3;
+            if (CoreRune.FW_BLACK_SNAPSHOT_TRANSITION && displayContent.isSizeRatioChanging()) {
                 SurfaceControl build = displayContent.makeOverlay().setName("BlackSnapshotLayer").setOpaque(true).setColorLayer().setCallsite("ScreenRotationAnimation").build();
                 this.mScreenshotLayer = build;
-                transaction.setLayer(build, 2010000);
-                transaction.setAlpha(this.mScreenshotLayer, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
+                transaction.setMetadata(build, 30, 1);
+                transaction.setLayer(this.mScreenshotLayer, 2010000);
+                transaction.setAlpha(this.mScreenshotLayer, FullScreenMagnificationGestureHandler.MAX_SCALE);
                 transaction.show(this.mScreenshotLayer);
             } else {
-                if (z4) {
+                if (z2 && !Flags.deleteCaptureDisplay()) {
                     DisplayAddress.Physical physical = displayInfo.address;
                     if (!(physical instanceof DisplayAddress.Physical)) {
-                        Slog.e(StartingSurfaceController.TAG, "Display does not have a physical address: " + displayId);
+                        Slog.e("WindowManager", "Display does not have a physical address: " + i7);
                         return;
                     }
                     IBinder physicalDisplayToken = DisplayControl.getPhysicalDisplayToken(physical.getPhysicalDisplayId());
                     if (physicalDisplayToken == null) {
-                        Slog.e(StartingSurfaceController.TAG, "Display token is null.");
+                        Slog.e("WindowManager", "Display token is null.");
                         return;
+                    } else {
+                        setSkipScreenshotForRoundedCornerOverlays(transaction, false);
+                        this.mRoundedCornerOverlay = displayContent.findRoundedCornerOverlays();
+                        captureLayers = ScreenCapture.captureDisplay(new ScreenCapture.DisplayCaptureArgs.Builder(physicalDisplayToken).setSourceCrop(new Rect(0, 0, width, height)).setAllowProtected(true).setCaptureSecureLayers(true).setHintForSeamlessTransition(true).build());
                     }
-                    setSkipScreenshotForRoundedCornerOverlays(false, transaction);
-                    this.mRoundedCornerOverlay = displayContent.findRoundedCornerOverlays();
-                    z = hasSecureWindowOnScreen;
-                    captureLayers = ScreenCapture.captureDisplay(new ScreenCapture.DisplayCaptureArgs.Builder(physicalDisplayToken).setSourceCrop(new Rect(0, 0, width, height)).setAllowProtected(true).setCaptureSecureLayers(true).setHintForSeamlessTransition(true).build());
+                } else if (z2) {
+                    setSkipScreenshotForRoundedCornerOverlays(transaction, false);
+                    captureLayers = ScreenCapture.captureLayers(new ScreenCapture.LayerCaptureArgs.Builder(displayContent.getSurfaceControl()).setCaptureSecureLayers(true).setAllowProtected(true).setSourceCrop(new Rect(0, 0, width, height)).setHintForSeamlessTransition(true).build());
                 } else {
-                    z = hasSecureWindowOnScreen;
                     captureLayers = ScreenCapture.captureLayers(new ScreenCapture.LayerCaptureArgs.Builder(displayContent.getSurfaceControl()).setCaptureSecureLayers(true).setAllowProtected(true).setSourceCrop(new Rect(0, 0, width, height)).setHintForSeamlessTransition(true).build());
                 }
                 if (captureLayers == null) {
-                    Slog.w(StartingSurfaceController.TAG, "Unable to take screenshot of display " + displayId);
+                    Slog.w("WindowManager", "Unable to take screenshot of display " + i7);
                     return;
                 }
-                if (captureLayers.containsSecureLayers()) {
-                    windowContainer = null;
-                    z2 = true;
-                } else {
-                    z2 = z;
-                    windowContainer = null;
-                }
-                this.mBackColorSurface = displayContent.makeChildSurface(windowContainer).setName("BackColorSurface").setColorLayer().setCallsite("ScreenRotationAnimation").build();
-                SurfaceControl build2 = displayContent.makeOverlay().setName("RotationLayer").setOpaque(true).setSecure(z2).setCallsite("ScreenRotationAnimation").setBLASTLayer().build();
+                boolean z5 = captureLayers.containsSecureLayers() ? true : z4;
+                this.mBackColorSurface = displayContent.makeChildSurface(null).setName("BackColorSurface").setColorLayer().setCallsite("ScreenRotationAnimation").build();
+                SurfaceControl build2 = displayContent.makeOverlay().setName("RotationLayer").setOpaque(true).setSecure(z5).setCallsite("ScreenRotationAnimation").setBLASTLayer().build();
                 this.mScreenshotLayer = build2;
-                InputMonitor.setTrustedOverlayInputInfo(build2, transaction, displayId, "RotationLayer");
+                transaction.setMetadata(build2, 30, 1);
+                InputMonitor.setTrustedOverlayInputInfo(this.mScreenshotLayer, transaction, i7, "RotationLayer");
                 this.mEnterBlackFrameLayer = displayContent.makeOverlay().setName("EnterBlackFrameLayer").setContainerLayer().setCallsite("ScreenRotationAnimation").build();
                 HardwareBuffer hardwareBuffer = captureLayers.getHardwareBuffer();
                 Trace.traceBegin(32L, "ScreenRotationAnimation#getMedianBorderLuma");
-                this.mStartLuma = TransitionAnimation.getBorderLuma(hardwareBuffer, captureLayers.getColorSpace());
+                float borderLuma = TransitionAnimation.getBorderLuma(hardwareBuffer, captureLayers.getColorSpace());
+                this.mStartLuma = borderLuma;
                 Trace.traceEnd(32L);
                 transaction.setLayer(this.mScreenshotLayer, 2010000);
                 transaction.reparent(this.mBackColorSurface, displayContent.getSurfaceControl());
                 transaction.setDimmingEnabled(this.mScreenshotLayer, !captureLayers.containsHdrLayers());
                 transaction.setLayer(this.mBackColorSurface, -1);
-                SurfaceControl surfaceControl = this.mBackColorSurface;
-                float f = this.mStartLuma;
-                transaction.setColor(surfaceControl, new float[]{f, f, f});
+                transaction.setColor(this.mBackColorSurface, new float[]{borderLuma, borderLuma, borderLuma});
                 transaction.setAlpha(this.mBackColorSurface, 1.0f);
                 transaction.setBuffer(this.mScreenshotLayer, hardwareBuffer);
                 transaction.setColorSpace(this.mScreenshotLayer, captureLayers.getColorSpace());
@@ -163,200 +336,89 @@ public class ScreenRotationAnimation {
                 hardwareBuffer.close();
                 SurfaceControl[] surfaceControlArr = this.mRoundedCornerOverlay;
                 if (surfaceControlArr != null) {
-                    for (SurfaceControl surfaceControl2 : surfaceControlArr) {
-                        if (surfaceControl2.isValid()) {
-                            transaction.hide(surfaceControl2);
+                    for (SurfaceControl surfaceControl : surfaceControlArr) {
+                        if (surfaceControl.isValid()) {
+                            transaction.hide(surfaceControl);
                         }
                     }
                 }
             }
         } catch (Surface.OutOfResourcesException e) {
-            Slog.w(StartingSurfaceController.TAG, "Unable to allocate freeze surface", e);
+            Slog.w("WindowManager", "Unable to allocate freeze surface", e);
         }
-        if (this.mScreenshotLayer == null || !z4) {
-            i2 = 0;
+        if (this.mScreenshotLayer != null && z2) {
+            displayContent.getPendingTransaction().setGeometry(this.mScreenshotLayer, new Rect(0, 0, this.mOriginalWidth, this.mOriginalHeight), new Rect(0, 0, i5, i6), 0);
+        }
+        if (ProtoLogImpl_54989576.Cache.WM_SHOW_SURFACE_ALLOC_enabled[2]) {
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, 8010999385228654193L, 0, null, String.valueOf(this.mScreenshotLayer));
+        }
+        if (i == i2) {
+            setRotation(transaction, i2);
         } else {
-            i2 = 0;
-            displayContent.getPendingTransaction().setGeometry(this.mScreenshotLayer, new Rect(0, 0, this.mOriginalWidth, this.mOriginalHeight), new Rect(0, 0, i6, i7), 0);
-        }
-        if (ProtoLogCache.WM_SHOW_SURFACE_ALLOC_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, 10608884, i2, (String) null, new Object[]{String.valueOf(this.mScreenshotLayer)});
-        }
-        if (i == i3) {
-            setRotation(transaction, i3);
-        } else {
-            this.mCurRotation = i3;
+            this.mCurRotation = i2;
             this.mSnapshotInitialMatrix.reset();
             setRotationTransform(transaction, this.mSnapshotInitialMatrix);
         }
         transaction.apply();
     }
 
-    public void setSkipScreenshotForRoundedCornerOverlays(final boolean z, final SurfaceControl.Transaction transaction) {
-        this.mDisplayContent.forAllWindows(new Consumer() { // from class: com.android.server.wm.ScreenRotationAnimation$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ScreenRotationAnimation.lambda$setSkipScreenshotForRoundedCornerOverlays$0(transaction, z, (WindowState) obj);
-            }
-        }, false);
-        if (z) {
-            return;
-        }
-        transaction.apply(true);
-    }
-
-    public static /* synthetic */ void lambda$setSkipScreenshotForRoundedCornerOverlays$0(SurfaceControl.Transaction transaction, boolean z, WindowState windowState) {
-        if (windowState.mToken.mRoundedCornerOverlay && windowState.isVisible() && windowState.mWinAnimator.hasSurface()) {
-            transaction.setSkipScreenshot(windowState.mWinAnimator.mSurfaceController.mSurfaceControl, z);
-        }
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        protoOutputStream.write(1133871366145L, this.mStarted);
-        protoOutputStream.write(1133871366146L, this.mAnimRunning);
-        protoOutputStream.end(start);
-    }
-
-    public boolean hasScreenshot() {
-        return this.mScreenshotLayer != null;
-    }
-
-    public final void setRotationTransform(SurfaceControl.Transaction transaction, Matrix matrix) {
-        if (this.mScreenshotLayer == null) {
-            return;
-        }
-        matrix.getValues(this.mTmpFloats);
-        float[] fArr = this.mTmpFloats;
-        transaction.setPosition(this.mScreenshotLayer, fArr[2], fArr[5]);
-        SurfaceControl surfaceControl = this.mScreenshotLayer;
-        float[] fArr2 = this.mTmpFloats;
-        transaction.setMatrix(surfaceControl, fArr2[0], fArr2[3], fArr2[1], fArr2[4]);
-        transaction.setAlpha(this.mScreenshotLayer, 1.0f);
-        transaction.show(this.mScreenshotLayer);
-    }
-
-    public void printTo(String str, PrintWriter printWriter) {
-        printWriter.print(str);
-        printWriter.print("mSurface=");
-        printWriter.print(this.mScreenshotLayer);
-        printWriter.print(str);
-        printWriter.print("mEnteringBlackFrame=");
-        printWriter.println(this.mEnteringBlackFrame);
-        BlackFrame blackFrame = this.mEnteringBlackFrame;
-        if (blackFrame != null) {
-            blackFrame.printTo(str + "  ", printWriter);
-        }
-        printWriter.print(str);
-        printWriter.print("mCurRotation=");
-        printWriter.print(this.mCurRotation);
-        printWriter.print(" mOriginalRotation=");
-        printWriter.println(this.mOriginalRotation);
-        printWriter.print(str);
-        printWriter.print("mOriginalWidth=");
-        printWriter.print(this.mOriginalWidth);
-        printWriter.print(" mOriginalHeight=");
-        printWriter.println(this.mOriginalHeight);
-        printWriter.print(str);
-        printWriter.print("mStarted=");
-        printWriter.print(this.mStarted);
-        printWriter.print(" mAnimRunning=");
-        printWriter.print(this.mAnimRunning);
-        printWriter.print(" mFinishAnimReady=");
-        printWriter.print(this.mFinishAnimReady);
-        printWriter.print(" mFinishAnimStartTime=");
-        printWriter.println(this.mFinishAnimStartTime);
-        printWriter.print(str);
-        printWriter.print("mRotateExitAnimation=");
-        printWriter.print(this.mRotateExitAnimation);
-        printWriter.print(" ");
-        this.mRotateExitTransformation.printShortString(printWriter);
-        printWriter.println();
-        printWriter.print(str);
-        printWriter.print("mRotateEnterAnimation=");
-        printWriter.print(this.mRotateEnterAnimation);
-        printWriter.print(" ");
-        this.mRotateEnterTransformation.printShortString(printWriter);
-        printWriter.println();
-        printWriter.print(str);
-        printWriter.print("mSnapshotInitialMatrix=");
-        this.mSnapshotInitialMatrix.dump(printWriter);
-        printWriter.println();
-    }
-
-    public void setRotation(SurfaceControl.Transaction transaction, int i) {
-        this.mCurRotation = i;
-        CoordinateTransforms.computeRotationMatrix(RotationUtils.deltaRotation(i, this.mOriginalRotation), this.mOriginalWidth, this.mOriginalHeight, this.mSnapshotInitialMatrix);
-        setRotationTransform(transaction, this.mSnapshotInitialMatrix);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:22:0x00dd  */
-    /* JADX WARN: Removed duplicated region for block: B:25:0x0132  */
-    /* JADX WARN: Removed duplicated region for block: B:35:0x0178  */
-    /* JADX WARN: Removed duplicated region for block: B:37:0x017e  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final boolean startAnimation(android.view.SurfaceControl.Transaction r21, long r22, float r24, int r25, int r26, int r27, int r28) {
-        /*
-            Method dump skipped, instructions count: 388
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ScreenRotationAnimation.startAnimation(android.view.SurfaceControl$Transaction, long, float, int, int, int, int):boolean");
-    }
-
-    public boolean dismiss(SurfaceControl.Transaction transaction, long j, float f, int i, int i2, int i3, int i4) {
-        if (this.mScreenshotLayer == null) {
-            return false;
-        }
-        if (!this.mStarted) {
-            this.mEndLuma = TransitionAnimation.getBorderLuma(this.mDisplayContent.getWindowingLayer(), i, i2);
-            startAnimation(transaction, j, f, i, i2, i3, i4);
-        }
-        if (!this.mStarted) {
-            return false;
-        }
-        this.mFinishAnimReady = true;
-        return true;
-    }
-
-    public void kill() {
+    public final void kill() {
         SurfaceRotationAnimationController surfaceRotationAnimationController = this.mSurfaceRotationAnimationController;
         if (surfaceRotationAnimationController != null) {
-            surfaceRotationAnimationController.cancel();
+            SurfaceAnimator surfaceAnimator = surfaceRotationAnimationController.mEnterBlackFrameAnimator;
+            if (surfaceAnimator != null) {
+                surfaceAnimator.cancelAnimation();
+            }
+            SurfaceAnimator surfaceAnimator2 = surfaceRotationAnimationController.mScreenshotRotationAnimator;
+            if (surfaceAnimator2 != null) {
+                surfaceAnimator2.cancelAnimation();
+            }
+            SurfaceAnimator surfaceAnimator3 = surfaceRotationAnimationController.mRotateScreenAnimator;
+            if (surfaceAnimator3 != null) {
+                surfaceAnimator3.cancelAnimation();
+            }
+            SurfaceAnimator surfaceAnimator4 = surfaceRotationAnimationController.mDisplayAnimator;
+            if (surfaceAnimator4 != null) {
+                surfaceAnimator4.cancelAnimation();
+            }
+            ScreenRotationAnimation screenRotationAnimation = ScreenRotationAnimation.this;
+            SurfaceControl surfaceControl = screenRotationAnimation.mBackColorSurface;
+            if (surfaceControl != null) {
+                screenRotationAnimation.mService.mSurfaceAnimationRunner.onAnimationCancelled(surfaceControl);
+            }
             this.mSurfaceRotationAnimationController = null;
         }
-        SurfaceControl surfaceControl = this.mScreenshotLayer;
-        if (surfaceControl != null) {
-            if (ProtoLogCache.WM_SHOW_SURFACE_ALLOC_enabled) {
-                ProtoLogImpl.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, 1089714158, 0, (String) null, new Object[]{String.valueOf(surfaceControl)});
+        SurfaceControl surfaceControl2 = this.mScreenshotLayer;
+        if (surfaceControl2 != null) {
+            if (ProtoLogImpl_54989576.Cache.WM_SHOW_SURFACE_ALLOC_enabled[2]) {
+                ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, -5825336546511998057L, 0, null, String.valueOf(surfaceControl2));
             }
             SurfaceControl.Transaction transaction = (SurfaceControl.Transaction) this.mService.mTransactionFactory.get();
             if (this.mScreenshotLayer.isValid()) {
                 transaction.remove(this.mScreenshotLayer);
             }
             this.mScreenshotLayer = null;
-            SurfaceControl surfaceControl2 = this.mEnterBlackFrameLayer;
-            if (surfaceControl2 != null) {
-                if (surfaceControl2.isValid()) {
+            SurfaceControl surfaceControl3 = this.mEnterBlackFrameLayer;
+            if (surfaceControl3 != null) {
+                if (surfaceControl3.isValid()) {
                     transaction.remove(this.mEnterBlackFrameLayer);
                 }
                 this.mEnterBlackFrameLayer = null;
             }
-            SurfaceControl surfaceControl3 = this.mBackColorSurface;
-            if (surfaceControl3 != null) {
-                if (surfaceControl3.isValid()) {
+            SurfaceControl surfaceControl4 = this.mBackColorSurface;
+            if (surfaceControl4 != null) {
+                if (surfaceControl4.isValid()) {
                     transaction.remove(this.mBackColorSurface);
                 }
                 this.mBackColorSurface = null;
             }
             if (this.mRoundedCornerOverlay != null) {
-                if (this.mDisplayContent.getRotationAnimation() == null || this.mDisplayContent.getRotationAnimation() == this) {
-                    setSkipScreenshotForRoundedCornerOverlays(true, transaction);
-                    for (SurfaceControl surfaceControl4 : this.mRoundedCornerOverlay) {
-                        if (surfaceControl4.isValid()) {
-                            transaction.show(surfaceControl4);
+                ScreenRotationAnimation screenRotationAnimation2 = this.mDisplayContent.mScreenRotationAnimation;
+                if (screenRotationAnimation2 == null || screenRotationAnimation2 == this) {
+                    setSkipScreenshotForRoundedCornerOverlays(transaction, true);
+                    for (SurfaceControl surfaceControl5 : this.mRoundedCornerOverlay) {
+                        if (surfaceControl5.isValid()) {
+                            transaction.show(surfaceControl5);
                         }
                     }
                 }
@@ -386,303 +448,58 @@ public class ScreenRotationAnimation {
         }
     }
 
-    public boolean isAnimating() {
-        SurfaceRotationAnimationController surfaceRotationAnimationController = this.mSurfaceRotationAnimationController;
-        return surfaceRotationAnimationController != null && surfaceRotationAnimationController.isAnimating();
+    public final void setRotation(SurfaceControl.Transaction transaction, int i) {
+        this.mCurRotation = i;
+        int deltaRotation = RotationUtils.deltaRotation(i, this.mOriginalRotation);
+        Matrix matrix = this.mSnapshotInitialMatrix;
+        if (deltaRotation != 0) {
+            int i2 = this.mOriginalHeight;
+            if (deltaRotation != 1) {
+                int i3 = this.mOriginalWidth;
+                if (deltaRotation == 2) {
+                    matrix.setRotate(180.0f);
+                    matrix.postTranslate(i3, i2);
+                } else if (deltaRotation == 3) {
+                    matrix.setRotate(270.0f);
+                    matrix.postTranslate(FullScreenMagnificationGestureHandler.MAX_SCALE, i3);
+                }
+            } else {
+                matrix.setRotate(90.0f);
+                matrix.postTranslate(i2, FullScreenMagnificationGestureHandler.MAX_SCALE);
+            }
+        } else {
+            matrix.reset();
+        }
+        setRotationTransform(transaction, this.mSnapshotInitialMatrix);
     }
 
-    /* loaded from: classes3.dex */
-    public class SurfaceRotationAnimationController {
-        public SurfaceAnimator mDisplayAnimator;
-        public SurfaceAnimator mEnterBlackFrameAnimator;
-        public SurfaceAnimator mRotateScreenAnimator;
-        public SurfaceAnimator mScreenshotRotationAnimator;
-
-        public SurfaceRotationAnimationController() {
+    public final void setRotationTransform(SurfaceControl.Transaction transaction, Matrix matrix) {
+        if (this.mScreenshotLayer == null) {
+            return;
         }
-
-        public void startCustomAnimation() {
-            try {
-                ScreenRotationAnimation.this.mService.mSurfaceAnimationRunner.deferStartingAnimations();
-                this.mRotateScreenAnimator = startScreenshotAlphaAnimation();
-                this.mDisplayAnimator = startDisplayRotation();
-                if (ScreenRotationAnimation.this.mEnteringBlackFrame != null) {
-                    this.mEnterBlackFrameAnimator = startEnterBlackFrameAnimation();
-                }
-            } finally {
-                ScreenRotationAnimation.this.mService.mSurfaceAnimationRunner.continueStartingAnimations();
-            }
-        }
-
-        public void startScreenRotationAnimation() {
-            try {
-                ScreenRotationAnimation.this.mService.mSurfaceAnimationRunner.deferStartingAnimations();
-                this.mDisplayAnimator = startDisplayRotation();
-                this.mScreenshotRotationAnimator = startScreenshotRotationAnimation();
-                startColorAnimation();
-            } finally {
-                ScreenRotationAnimation.this.mService.mSurfaceAnimationRunner.continueStartingAnimations();
-            }
-        }
-
-        public final SimpleSurfaceAnimatable.Builder initializeBuilder() {
-            SimpleSurfaceAnimatable.Builder builder = new SimpleSurfaceAnimatable.Builder();
-            final DisplayContent displayContent = ScreenRotationAnimation.this.mDisplayContent;
-            Objects.requireNonNull(displayContent);
-            SimpleSurfaceAnimatable.Builder syncTransactionSupplier = builder.setSyncTransactionSupplier(new Supplier() { // from class: com.android.server.wm.ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda1
-                @Override // java.util.function.Supplier
-                public final Object get() {
-                    return DisplayContent.this.getSyncTransaction();
-                }
-            });
-            final DisplayContent displayContent2 = ScreenRotationAnimation.this.mDisplayContent;
-            Objects.requireNonNull(displayContent2);
-            SimpleSurfaceAnimatable.Builder pendingTransactionSupplier = syncTransactionSupplier.setPendingTransactionSupplier(new Supplier() { // from class: com.android.server.wm.ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda2
-                @Override // java.util.function.Supplier
-                public final Object get() {
-                    return DisplayContent.this.getPendingTransaction();
-                }
-            });
-            final DisplayContent displayContent3 = ScreenRotationAnimation.this.mDisplayContent;
-            Objects.requireNonNull(displayContent3);
-            SimpleSurfaceAnimatable.Builder commitTransactionRunnable = pendingTransactionSupplier.setCommitTransactionRunnable(new Runnable() { // from class: com.android.server.wm.ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda3
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DisplayContent.this.commitPendingTransaction();
-                }
-            });
-            final DisplayContent displayContent4 = ScreenRotationAnimation.this.mDisplayContent;
-            Objects.requireNonNull(displayContent4);
-            return commitTransactionRunnable.setAnimationLeashSupplier(new Supplier() { // from class: com.android.server.wm.ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda4
-                @Override // java.util.function.Supplier
-                public final Object get() {
-                    return DisplayContent.this.makeOverlay();
-                }
-            });
-        }
-
-        public final SurfaceAnimator startDisplayRotation() {
-            SurfaceAnimator startAnimation = startAnimation(initializeBuilder().setAnimationLeashParent(ScreenRotationAnimation.this.mDisplayContent.getSurfaceControl()).setSurfaceControl(ScreenRotationAnimation.this.mDisplayContent.getWindowingLayer()).setParentSurfaceControl(ScreenRotationAnimation.this.mDisplayContent.getSurfaceControl()).setWidth(ScreenRotationAnimation.this.mDisplayContent.getSurfaceWidth()).setHeight(ScreenRotationAnimation.this.mDisplayContent.getSurfaceHeight()).build(), createWindowAnimationSpec(ScreenRotationAnimation.this.mRotateEnterAnimation), new ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda0(this));
-            Rect bounds = ScreenRotationAnimation.this.mDisplayContent.getBounds();
-            ScreenRotationAnimation.this.mDisplayContent.getPendingTransaction().setWindowCrop(startAnimation.mLeash, bounds.width(), bounds.height());
-            return startAnimation;
-        }
-
-        public final SurfaceAnimator startScreenshotAlphaAnimation() {
-            return startAnimation(initializeBuilder().setSurfaceControl(ScreenRotationAnimation.this.mScreenshotLayer).setAnimationLeashParent(ScreenRotationAnimation.this.mDisplayContent.getOverlayLayer()).setWidth(ScreenRotationAnimation.this.mDisplayContent.getSurfaceWidth()).setHeight(ScreenRotationAnimation.this.mDisplayContent.getSurfaceHeight()).build(), createWindowAnimationSpec(ScreenRotationAnimation.this.mRotateAlphaAnimation), new ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda0(this));
-        }
-
-        public final SurfaceAnimator startEnterBlackFrameAnimation() {
-            return startAnimation(initializeBuilder().setSurfaceControl(ScreenRotationAnimation.this.mEnterBlackFrameLayer).setAnimationLeashParent(ScreenRotationAnimation.this.mDisplayContent.getOverlayLayer()).build(), createWindowAnimationSpec(ScreenRotationAnimation.this.mRotateEnterAnimation), new ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda0(this));
-        }
-
-        public final SurfaceAnimator startScreenshotRotationAnimation() {
-            return startAnimation(initializeBuilder().setSurfaceControl(ScreenRotationAnimation.this.mScreenshotLayer).setAnimationLeashParent(ScreenRotationAnimation.this.mDisplayContent.getOverlayLayer()).build(), createWindowAnimationSpec(ScreenRotationAnimation.this.mRotateExitAnimation), new ScreenRotationAnimation$SurfaceRotationAnimationController$$ExternalSyntheticLambda0(this));
-        }
-
-        public final void startColorAnimation() {
-            if (CoreRune.FW_BLACK_SNAPSHOT_TRANSITION && ScreenRotationAnimation.this.mBackColorSurface == null) {
-                return;
-            }
-            int integer = ScreenRotationAnimation.this.mContext.getResources().getInteger(R.integer.preference_fragment_scrollbarStyle);
-            ScreenRotationAnimation.this.mService.mSurfaceAnimationRunner.startAnimation(new LocalAnimationAdapter.AnimationSpec() { // from class: com.android.server.wm.ScreenRotationAnimation.SurfaceRotationAnimationController.1
-                public final /* synthetic */ int val$colorTransitionMs;
-                public final /* synthetic */ long val$duration;
-                public final /* synthetic */ int val$endColor;
-                public final /* synthetic */ float[] val$rgbTmpFloat;
-                public final /* synthetic */ int val$startColor;
-                public final /* synthetic */ ArgbEvaluator val$va;
-
-                public AnonymousClass1(long j, ArgbEvaluator argbEvaluator, int i, int i2, float[] fArr, int integer2) {
-                    r2 = j;
-                    r4 = argbEvaluator;
-                    r5 = i;
-                    r6 = i2;
-                    r7 = fArr;
-                    r8 = integer2;
-                }
-
-                @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-                public long getDuration() {
-                    return r2;
-                }
-
-                @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-                public void apply(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, long j) {
-                    Color valueOf = Color.valueOf(((Integer) r4.evaluate(getFraction((float) j), Integer.valueOf(r5), Integer.valueOf(r6))).intValue());
-                    r7[0] = valueOf.red();
-                    r7[1] = valueOf.green();
-                    r7[2] = valueOf.blue();
-                    if (surfaceControl.isValid()) {
-                        transaction.setColor(surfaceControl, r7);
-                    }
-                }
-
-                @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-                public void dump(PrintWriter printWriter, String str) {
-                    printWriter.println(str + "startLuma=" + ScreenRotationAnimation.this.mStartLuma + " endLuma=" + ScreenRotationAnimation.this.mEndLuma + " durationMs=" + r8);
-                }
-
-                @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-                public void dumpDebugInner(ProtoOutputStream protoOutputStream) {
-                    long start = protoOutputStream.start(1146756268036L);
-                    protoOutputStream.write(1108101562369L, ScreenRotationAnimation.this.mStartLuma);
-                    protoOutputStream.write(1108101562370L, ScreenRotationAnimation.this.mEndLuma);
-                    protoOutputStream.write(1112396529667L, r8);
-                    protoOutputStream.end(start);
-                }
-            }, ScreenRotationAnimation.this.mBackColorSurface, ScreenRotationAnimation.this.mDisplayContent.getPendingTransaction(), null);
-        }
-
-        /* renamed from: com.android.server.wm.ScreenRotationAnimation$SurfaceRotationAnimationController$1 */
-        /* loaded from: classes3.dex */
-        public class AnonymousClass1 implements LocalAnimationAdapter.AnimationSpec {
-            public final /* synthetic */ int val$colorTransitionMs;
-            public final /* synthetic */ long val$duration;
-            public final /* synthetic */ int val$endColor;
-            public final /* synthetic */ float[] val$rgbTmpFloat;
-            public final /* synthetic */ int val$startColor;
-            public final /* synthetic */ ArgbEvaluator val$va;
-
-            public AnonymousClass1(long j, ArgbEvaluator argbEvaluator, int i, int i2, float[] fArr, int integer2) {
-                r2 = j;
-                r4 = argbEvaluator;
-                r5 = i;
-                r6 = i2;
-                r7 = fArr;
-                r8 = integer2;
-            }
-
-            @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-            public long getDuration() {
-                return r2;
-            }
-
-            @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-            public void apply(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, long j) {
-                Color valueOf = Color.valueOf(((Integer) r4.evaluate(getFraction((float) j), Integer.valueOf(r5), Integer.valueOf(r6))).intValue());
-                r7[0] = valueOf.red();
-                r7[1] = valueOf.green();
-                r7[2] = valueOf.blue();
-                if (surfaceControl.isValid()) {
-                    transaction.setColor(surfaceControl, r7);
-                }
-            }
-
-            @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-            public void dump(PrintWriter printWriter, String str) {
-                printWriter.println(str + "startLuma=" + ScreenRotationAnimation.this.mStartLuma + " endLuma=" + ScreenRotationAnimation.this.mEndLuma + " durationMs=" + r8);
-            }
-
-            @Override // com.android.server.wm.LocalAnimationAdapter.AnimationSpec
-            public void dumpDebugInner(ProtoOutputStream protoOutputStream) {
-                long start = protoOutputStream.start(1146756268036L);
-                protoOutputStream.write(1108101562369L, ScreenRotationAnimation.this.mStartLuma);
-                protoOutputStream.write(1108101562370L, ScreenRotationAnimation.this.mEndLuma);
-                protoOutputStream.write(1112396529667L, r8);
-                protoOutputStream.end(start);
-            }
-        }
-
-        public final WindowAnimationSpec createWindowAnimationSpec(Animation animation) {
-            return new WindowAnimationSpec(animation, new Point(0, 0), false, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
-        }
-
-        public final SurfaceAnimator startAnimation(SurfaceAnimator.Animatable animatable, LocalAnimationAdapter.AnimationSpec animationSpec, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback) {
-            SurfaceAnimator surfaceAnimator = new SurfaceAnimator(animatable, onAnimationFinishedCallback, ScreenRotationAnimation.this.mService);
-            surfaceAnimator.startAnimation(ScreenRotationAnimation.this.mDisplayContent.getPendingTransaction(), new LocalAnimationAdapter(animationSpec, ScreenRotationAnimation.this.mService.mSurfaceAnimationRunner), false, 2);
-            return surfaceAnimator;
-        }
-
-        public final void onAnimationEnd(int i, AnimationAdapter animationAdapter) {
-            WindowManagerGlobalLock windowManagerGlobalLock = ScreenRotationAnimation.this.mService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    if (isAnimating()) {
-                        if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                            long j = i;
-                            SurfaceAnimator surfaceAnimator = this.mDisplayAnimator;
-                            String valueOf = String.valueOf(surfaceAnimator != null ? Boolean.valueOf(surfaceAnimator.isAnimating()) : null);
-                            SurfaceAnimator surfaceAnimator2 = this.mEnterBlackFrameAnimator;
-                            String valueOf2 = String.valueOf(surfaceAnimator2 != null ? Boolean.valueOf(surfaceAnimator2.isAnimating()) : null);
-                            SurfaceAnimator surfaceAnimator3 = this.mRotateScreenAnimator;
-                            String valueOf3 = String.valueOf(surfaceAnimator3 != null ? Boolean.valueOf(surfaceAnimator3.isAnimating()) : null);
-                            SurfaceAnimator surfaceAnimator4 = this.mScreenshotRotationAnimator;
-                            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 1346895820, 1, (String) null, new Object[]{Long.valueOf(j), valueOf, valueOf2, valueOf3, String.valueOf(surfaceAnimator4 != null ? Boolean.valueOf(surfaceAnimator4.isAnimating()) : null)});
-                        }
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        return;
-                    }
-                    if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                        ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_ORIENTATION, 200829729, 0, (String) null, (Object[]) null);
-                    }
-                    this.mEnterBlackFrameAnimator = null;
-                    this.mScreenshotRotationAnimator = null;
-                    this.mRotateScreenAnimator = null;
-                    ScreenRotationAnimation.this.mService.mAnimator.mBulkUpdateParams |= 1;
-                    ScreenRotationAnimation rotationAnimation = ScreenRotationAnimation.this.mDisplayContent.getRotationAnimation();
-                    ScreenRotationAnimation screenRotationAnimation = ScreenRotationAnimation.this;
-                    if (rotationAnimation == screenRotationAnimation) {
-                        screenRotationAnimation.mDisplayContent.setRotationAnimation(null);
-                        if (ScreenRotationAnimation.this.mDisplayContent.mDisplayRotationCompatPolicy != null) {
-                            ScreenRotationAnimation.this.mDisplayContent.mDisplayRotationCompatPolicy.onScreenRotationAnimationFinished();
-                        }
-                    } else {
-                        screenRotationAnimation.kill();
-                    }
-                    ScreenRotationAnimation.this.mService.updateRotation(false, false);
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-        }
-
-        public void cancel() {
-            SurfaceAnimator surfaceAnimator = this.mEnterBlackFrameAnimator;
-            if (surfaceAnimator != null) {
-                surfaceAnimator.cancelAnimation();
-            }
-            SurfaceAnimator surfaceAnimator2 = this.mScreenshotRotationAnimator;
-            if (surfaceAnimator2 != null) {
-                surfaceAnimator2.cancelAnimation();
-            }
-            SurfaceAnimator surfaceAnimator3 = this.mRotateScreenAnimator;
-            if (surfaceAnimator3 != null) {
-                surfaceAnimator3.cancelAnimation();
-            }
-            SurfaceAnimator surfaceAnimator4 = this.mDisplayAnimator;
-            if (surfaceAnimator4 != null) {
-                surfaceAnimator4.cancelAnimation();
-            }
-            if (ScreenRotationAnimation.this.mBackColorSurface != null) {
-                ScreenRotationAnimation.this.mService.mSurfaceAnimationRunner.onAnimationCancelled(ScreenRotationAnimation.this.mBackColorSurface);
-            }
-        }
-
-        public boolean isAnimating() {
-            SurfaceAnimator surfaceAnimator;
-            SurfaceAnimator surfaceAnimator2;
-            SurfaceAnimator surfaceAnimator3;
-            SurfaceAnimator surfaceAnimator4 = this.mDisplayAnimator;
-            return (surfaceAnimator4 != null && surfaceAnimator4.isAnimating()) || ((surfaceAnimator = this.mEnterBlackFrameAnimator) != null && surfaceAnimator.isAnimating()) || (((surfaceAnimator2 = this.mRotateScreenAnimator) != null && surfaceAnimator2.isAnimating()) || ((surfaceAnimator3 = this.mScreenshotRotationAnimator) != null && surfaceAnimator3.isAnimating()));
-        }
+        float[] fArr = this.mTmpFloats;
+        matrix.getValues(fArr);
+        transaction.setPosition(this.mScreenshotLayer, fArr[2], fArr[5]);
+        transaction.setMatrix(this.mScreenshotLayer, fArr[0], fArr[3], fArr[1], fArr[4]);
+        transaction.setAlpha(this.mScreenshotLayer, 1.0f);
+        transaction.show(this.mScreenshotLayer);
     }
 
-    public final boolean shouldHasBlackSnapshot() {
-        DisplayContent displayContent = this.mDisplayContent;
-        if (displayContent.mHasBlackSnapshot) {
-            return true;
+    public final void setSkipScreenshotForRoundedCornerOverlays(final SurfaceControl.Transaction transaction, final boolean z) {
+        this.mDisplayContent.forAllWindows(new Consumer() { // from class: com.android.server.wm.ScreenRotationAnimation$$ExternalSyntheticLambda0
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                SurfaceControl.Transaction transaction2 = transaction;
+                boolean z2 = z;
+                WindowState windowState = (WindowState) obj;
+                if (windowState.mToken.mRoundedCornerOverlay && windowState.isVisible() && windowState.mWinAnimator.hasSurface()) {
+                    transaction2.setSkipScreenshot(windowState.mWinAnimator.mSurfaceController.mSurfaceControl, z2);
+                }
+            }
+        }, false);
+        if (z) {
+            return;
         }
-        if (displayContent.getDisplayId() == 2 && this.mService.mAtmService.mDexController.getDexModeLocked() == 2) {
-            return false;
-        }
-        DisplayContent displayContent2 = this.mDisplayContent;
-        if (displayContent2.isDefaultDisplay) {
-            return !this.mService.mExt.mPolicyExt.isScreenTurnedOn();
-        }
-        return displayContent2.getDisplay().getState() != 2;
+        transaction.apply(true);
     }
 }

@@ -1,14 +1,10 @@
 package com.android.server.companion.securechannel;
 
-import android.security.keystore.KeyGenParameterSpec;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.cert.Certificate;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class KeyStoreUtils {
     public static KeyStore loadKeyStore() {
@@ -18,40 +14,6 @@ public abstract class KeyStoreUtils {
             return keyStore;
         } catch (IOException e) {
             throw new KeyStoreException("Failed to load Android Keystore.", e);
-        }
-    }
-
-    public static byte[] getEncodedCertificateChain(String str) {
-        Certificate[] certificateChain = loadKeyStore().getCertificateChain(str);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        for (Certificate certificate : certificateChain) {
-            byteArrayOutputStream.writeBytes(certificate.getEncoded());
-        }
-        return byteArrayOutputStream.toByteArray();
-    }
-
-    public static void generateAttestationKeyPair(String str, byte[] bArr) {
-        KeyGenParameterSpec build = new KeyGenParameterSpec.Builder(str, 12).setAttestationChallenge(bArr).setDigests("SHA-256").build();
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC", "AndroidKeyStore");
-        keyPairGenerator.initialize(build);
-        keyPairGenerator.generateKeyPair();
-    }
-
-    public static boolean aliasExists(String str) {
-        try {
-            return loadKeyStore().containsAlias(str);
-        } catch (GeneralSecurityException unused) {
-            return false;
-        }
-    }
-
-    public static void cleanUp(String str) {
-        try {
-            KeyStore loadKeyStore = loadKeyStore();
-            if (loadKeyStore.containsAlias(str)) {
-                loadKeyStore.deleteEntry(str);
-            }
-        } catch (Exception unused) {
         }
     }
 }

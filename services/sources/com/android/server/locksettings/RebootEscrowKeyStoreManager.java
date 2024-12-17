@@ -1,19 +1,18 @@
 package com.android.server.locksettings;
 
-import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore2.AndroidKeyStoreLoadStoreParameter;
 import android.util.Slog;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-/* loaded from: classes2.dex */
-public class RebootEscrowKeyStoreManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RebootEscrowKeyStoreManager {
     public final Object mKeyStoreLock = new Object();
 
-    public final SecretKey getKeyStoreEncryptionKeyLocked() {
+    public static SecretKey getKeyStoreEncryptionKeyLocked() {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeystore");
             keyStore.load(new AndroidKeyStoreLoadStoreParameter(120));
@@ -21,45 +20,6 @@ public class RebootEscrowKeyStoreManager {
         } catch (IOException | GeneralSecurityException e) {
             Slog.e("RebootEscrowKeyStoreManager", "Unable to get encryption key from keystore.", e);
             return null;
-        }
-    }
-
-    public SecretKey getKeyStoreEncryptionKey() {
-        SecretKey keyStoreEncryptionKeyLocked;
-        synchronized (this.mKeyStoreLock) {
-            keyStoreEncryptionKeyLocked = getKeyStoreEncryptionKeyLocked();
-        }
-        return keyStoreEncryptionKeyLocked;
-    }
-
-    public void clearKeyStoreEncryptionKey() {
-        synchronized (this.mKeyStoreLock) {
-            try {
-                KeyStore keyStore = KeyStore.getInstance("AndroidKeystore");
-                keyStore.load(new AndroidKeyStoreLoadStoreParameter(120));
-                keyStore.deleteEntry("reboot_escrow_key_store_encryption_key");
-            } catch (IOException | GeneralSecurityException e) {
-                Slog.e("RebootEscrowKeyStoreManager", "Unable to delete encryption key in keystore.", e);
-            }
-        }
-    }
-
-    public SecretKey generateKeyStoreEncryptionKeyIfNeeded() {
-        synchronized (this.mKeyStoreLock) {
-            SecretKey keyStoreEncryptionKeyLocked = getKeyStoreEncryptionKeyLocked();
-            if (keyStoreEncryptionKeyLocked != null) {
-                return keyStoreEncryptionKeyLocked;
-            }
-            try {
-                KeyGenerator keyGenerator = KeyGenerator.getInstance("AES", "AndroidKeyStore");
-                KeyGenParameterSpec.Builder encryptionPaddings = new KeyGenParameterSpec.Builder("reboot_escrow_key_store_encryption_key", 3).setKeySize(256).setBlockModes("GCM").setEncryptionPaddings("NoPadding");
-                encryptionPaddings.setNamespace(120);
-                keyGenerator.init(encryptionPaddings.build());
-                return keyGenerator.generateKey();
-            } catch (GeneralSecurityException e) {
-                Slog.e("RebootEscrowKeyStoreManager", "Unable to generate key from keystore.", e);
-                return null;
-            }
         }
     }
 }

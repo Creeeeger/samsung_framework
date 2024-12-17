@@ -1,9 +1,6 @@
 package com.samsung.android.camera.requestinjector;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.ProviderInfo;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.hardware.ICameraService;
@@ -18,8 +15,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class VtCameraProviderObserver extends ContentObserver {
+public final class VtCameraProviderObserver extends ContentObserver {
     public static final Uri VT_CAMERA_SETTING_AUTHORITY_URI = Uri.parse("content://com.samsung.android.vtcamerasettings.VsetInfoProvider");
     public final List mAllowedPackageList;
     public final CameraServiceWorker mCameraServiceWorker;
@@ -34,13 +32,28 @@ public class VtCameraProviderObserver extends ContentObserver {
         this.mContext = context;
     }
 
+    public final void dump(PrintWriter printWriter) {
+        synchronized (this.mListMapLock) {
+            try {
+                printWriter.println("\n\tDump of Request Injector Allow List");
+                printWriter.println("\t\tTotal # of allow list: " + ((ArrayList) this.mAllowedPackageList).size());
+                Iterator it = ((ArrayList) this.mAllowedPackageList).iterator();
+                while (it.hasNext()) {
+                    printWriter.println("\t\t" + ((String) it.next()));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
     @Override // android.database.ContentObserver
-    public void onChange(boolean z) {
+    public final void onChange(boolean z) {
         Slog.i("VtCameraProviderObserver", "VtCameraProviderObserver.onChange(" + z + ")");
         Logger.log(Logger.ID.REQUEST_INJECTOR_SERVICE, "VtCameraProviderObserver.onChange(" + z + ")");
         synchronized (this.mListMapLock) {
-            this.mAllowedPackageList.clear();
             try {
+                ((ArrayList) this.mAllowedPackageList).clear();
                 Cursor query = this.mContext.getContentResolver().query(Uri.withAppendedPath(VT_CAMERA_SETTING_AUTHORITY_URI, "AllowedAppInfo"), null, null, null, null);
                 if (query != null) {
                     try {
@@ -51,7 +64,7 @@ public class VtCameraProviderObserver extends ContentObserver {
                                 if (string != null && !string.isEmpty()) {
                                     Slog.i("VtCameraProviderObserver", "Adding " + string + "(" + i + ") to allow list");
                                     Logger.log(Logger.ID.REQUEST_INJECTOR_SERVICE, "onChange: Adding " + string + "(" + i + ") to allow list");
-                                    this.mAllowedPackageList.add(string);
+                                    ((ArrayList) this.mAllowedPackageList).add(string);
                                 }
                             }
                         }
@@ -70,24 +83,13 @@ public class VtCameraProviderObserver extends ContentObserver {
             } catch (Exception e) {
                 Slog.e("VtCameraProviderObserver", "Unable to query from VT Camera setting provider", e);
                 Logger.log(Logger.ID.REQUEST_INJECTOR_SERVICE, "Unable to query from VT Camera setting provider, " + e);
+            } finally {
             }
         }
         updateCameraService();
     }
 
-    public void tryRegisterContentObserver() {
-        if (providerExistOrNot()) {
-            this.mContext.getContentResolver().registerContentObserver(Uri.withAppendedPath(VT_CAMERA_SETTING_AUTHORITY_URI, "AllowedAppInfo"), false, this, -1);
-            Slog.i("VtCameraProviderObserver", "VT Camera provider exist. Observer registered.");
-            Logger.log(Logger.ID.REQUEST_INJECTOR_SERVICE, "VT Camera provider exist. Observer registered.");
-            onChange(true);
-            return;
-        }
-        Slog.i("VtCameraProviderObserver", "VT Camera provider does not exist. Skip observer register.");
-        Logger.log(Logger.ID.REQUEST_INJECTOR_SERVICE, "VT Camera provider does not exist. Skip observer register.");
-    }
-
-    public void updateCameraService() {
+    public final void updateCameraService() {
         ICameraService cameraService = this.mCameraServiceWorker.getCameraService();
         int i = 0;
         while (cameraService == null) {
@@ -107,7 +109,7 @@ public class VtCameraProviderObserver extends ContentObserver {
         }
         synchronized (this.mListMapLock) {
             try {
-                cameraService.updateRequestInjectorAllowedList((String[]) this.mAllowedPackageList.toArray(new String[0]));
+                cameraService.updateRequestInjectorAllowedList((String[]) ((ArrayList) this.mAllowedPackageList).toArray(new String[0]));
                 Slog.i("VtCameraProviderObserver", "Updating allowed package list for request injector is done");
                 Logger.log(Logger.ID.REQUEST_INJECTOR_SERVICE, "Updating allowed package list for request injector is done");
             } catch (RemoteException e) {
@@ -115,38 +117,5 @@ public class VtCameraProviderObserver extends ContentObserver {
                 Logger.log(Logger.ID.REQUEST_INJECTOR_SERVICE, "Fail to update allowed package list for Request Injector" + e);
             }
         }
-    }
-
-    public void dump(PrintWriter printWriter) {
-        synchronized (this.mListMapLock) {
-            printWriter.println("\n\tDump of Request Injector Allow List");
-            printWriter.println("\t\tTotal # of allow list: " + this.mAllowedPackageList.size());
-            Iterator it = this.mAllowedPackageList.iterator();
-            while (it.hasNext()) {
-                printWriter.println("\t\t" + ((String) it.next()));
-            }
-        }
-    }
-
-    public final boolean providerExistOrNot() {
-        try {
-            PackageInfo packageInfo = this.mContext.getPackageManager().getPackageInfo("com.samsung.android.vtcamerasettings", 8);
-            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
-            if (applicationInfo != null && (applicationInfo.isSystemApp() || applicationInfo.isUpdatedSystemApp())) {
-                ProviderInfo[] providerInfoArr = packageInfo.providers;
-                if (providerInfoArr != null) {
-                    for (ProviderInfo providerInfo : providerInfoArr) {
-                        if ("com.samsung.android.vtcamerasettings.VsetInfoProvider".equals(providerInfo.authority)) {
-                            return true;
-                        }
-                    }
-                }
-            } else {
-                Slog.e("VtCameraProviderObserver", "Provider exist, but not (updated-)system app.");
-            }
-        } catch (Exception e) {
-            Slog.e("VtCameraProviderObserver", "providerExistOrNot " + e);
-        }
-        return false;
     }
 }

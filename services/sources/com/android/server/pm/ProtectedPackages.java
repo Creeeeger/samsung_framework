@@ -2,14 +2,12 @@ package com.android.server.pm;
 
 import android.R;
 import android.content.Context;
-import android.util.ArraySet;
 import android.util.SparseArray;
-import java.util.List;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
-public class ProtectedPackages {
-    public final Context mContext;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ProtectedPackages {
     public String mDeviceOwnerPackage;
     public int mDeviceOwnerUserId;
     public final String mDeviceProvisioningPackage;
@@ -17,29 +15,18 @@ public class ProtectedPackages {
     public SparseArray mProfileOwnerPackages;
 
     public ProtectedPackages(Context context) {
-        this.mContext = context;
-        this.mDeviceProvisioningPackage = context.getResources().getString(R.string.face_error_no_space);
+        this.mDeviceProvisioningPackage = context.getResources().getString(R.string.display_manager_built_in_display_name);
     }
 
-    public synchronized void setDeviceAndProfileOwnerPackages(int i, String str, SparseArray sparseArray) {
-        this.mDeviceOwnerUserId = i;
-        SparseArray sparseArray2 = null;
-        if (i == -10000) {
-            str = null;
+    public final synchronized String getDeviceOwnerOrProfileOwnerPackage(int i) {
+        if (this.mDeviceOwnerUserId == i) {
+            return this.mDeviceOwnerPackage;
         }
-        this.mDeviceOwnerPackage = str;
-        if (sparseArray != null) {
-            sparseArray2 = sparseArray.clone();
+        SparseArray sparseArray = this.mProfileOwnerPackages;
+        if (sparseArray == null) {
+            return null;
         }
-        this.mProfileOwnerPackages = sparseArray2;
-    }
-
-    public synchronized void setOwnerProtectedPackages(int i, List list) {
-        if (list == null) {
-            this.mOwnerProtectedPackages.remove(i);
-        } else {
-            this.mOwnerProtectedPackages.put(i, new ArraySet(list));
-        }
+        return (String) sparseArray.get(i);
     }
 
     public final synchronized boolean hasDeviceOwnerOrProfileOwner(int i, String str) {
@@ -59,61 +46,6 @@ public class ProtectedPackages {
         return false;
     }
 
-    public synchronized String getDeviceOwnerOrProfileOwnerPackage(int i) {
-        if (this.mDeviceOwnerUserId == i) {
-            return this.mDeviceOwnerPackage;
-        }
-        SparseArray sparseArray = this.mProfileOwnerPackages;
-        if (sparseArray == null) {
-            return null;
-        }
-        return (String) sparseArray.get(i);
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x000f, code lost:
-    
-        if (isOwnerProtectedPackage(r2, r3) != false) goto L8;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final synchronized boolean isProtectedPackage(int r2, java.lang.String r3) {
-        /*
-            r1 = this;
-            monitor-enter(r1)
-            if (r3 == 0) goto L16
-            java.lang.String r0 = r1.mDeviceProvisioningPackage     // Catch: java.lang.Throwable -> L13
-            boolean r0 = r3.equals(r0)     // Catch: java.lang.Throwable -> L13
-            if (r0 != 0) goto L11
-            boolean r2 = r1.isOwnerProtectedPackage(r2, r3)     // Catch: java.lang.Throwable -> L13
-            if (r2 == 0) goto L16
-        L11:
-            r2 = 1
-            goto L17
-        L13:
-            r2 = move-exception
-            monitor-exit(r1)
-            throw r2
-        L16:
-            r2 = 0
-        L17:
-            monitor-exit(r1)
-            return r2
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.ProtectedPackages.isProtectedPackage(int, java.lang.String):boolean");
-    }
-
-    public final synchronized boolean isOwnerProtectedPackage(int i, String str) {
-        boolean isPackageProtectedForUser;
-        if (hasProtectedPackages(i)) {
-            isPackageProtectedForUser = isPackageProtectedForUser(i, str);
-        } else {
-            isPackageProtectedForUser = isPackageProtectedForUser(-1, str);
-        }
-        return isPackageProtectedForUser;
-    }
-
     public final synchronized boolean isPackageProtectedForUser(int i, String str) {
         boolean z;
         int indexOfKey = this.mOwnerProtectedPackages.indexOfKey(i);
@@ -123,15 +55,70 @@ public class ProtectedPackages {
         return z;
     }
 
-    public final synchronized boolean hasProtectedPackages(int i) {
-        return this.mOwnerProtectedPackages.indexOfKey(i) >= 0;
-    }
-
-    public boolean isPackageStateProtected(int i, String str) {
+    public final boolean isPackageStateProtected(int i, String str) {
         return hasDeviceOwnerOrProfileOwner(i, str) || isProtectedPackage(i, str);
     }
 
-    public boolean isPackageDataProtected(int i, String str) {
-        return hasDeviceOwnerOrProfileOwner(i, str) || isProtectedPackage(i, str);
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x002a, code lost:
+    
+        if (r4 != false) goto L27;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final synchronized boolean isProtectedPackage(int r4, java.lang.String r5) {
+        /*
+            r3 = this;
+            monitor-enter(r3)
+            r0 = 0
+            if (r5 == 0) goto L37
+            java.lang.String r1 = r3.mDeviceProvisioningPackage     // Catch: java.lang.Throwable -> L34
+            boolean r1 = r5.equals(r1)     // Catch: java.lang.Throwable -> L34
+            r2 = 1
+            if (r1 != 0) goto L32
+            monitor-enter(r3)     // Catch: java.lang.Throwable -> L34
+            monitor-enter(r3)     // Catch: java.lang.Throwable -> L22
+            android.util.SparseArray r1 = r3.mOwnerProtectedPackages     // Catch: java.lang.Throwable -> L2d
+            int r1 = r1.indexOfKey(r4)     // Catch: java.lang.Throwable -> L2d
+            if (r1 < 0) goto L19
+            r1 = r2
+            goto L1a
+        L19:
+            r1 = r0
+        L1a:
+            monitor-exit(r3)     // Catch: java.lang.Throwable -> L22
+            if (r1 == 0) goto L24
+            boolean r4 = r3.isPackageProtectedForUser(r4, r5)     // Catch: java.lang.Throwable -> L22
+            goto L29
+        L22:
+            r4 = move-exception
+            goto L30
+        L24:
+            r4 = -1
+            boolean r4 = r3.isPackageProtectedForUser(r4, r5)     // Catch: java.lang.Throwable -> L22
+        L29:
+            monitor-exit(r3)     // Catch: java.lang.Throwable -> L34
+            if (r4 == 0) goto L37
+            goto L32
+        L2d:
+            r4 = move-exception
+            monitor-exit(r3)     // Catch: java.lang.Throwable -> L22
+            throw r4     // Catch: java.lang.Throwable -> L22
+        L30:
+            monitor-exit(r3)     // Catch: java.lang.Throwable -> L34
+            throw r4     // Catch: java.lang.Throwable -> L34
+        L32:
+            r0 = r2
+            goto L37
+        L34:
+            r4 = move-exception
+            monitor-exit(r3)
+            throw r4
+        L37:
+            monitor-exit(r3)
+            return r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.ProtectedPackages.isProtectedPackage(int, java.lang.String):boolean");
     }
 }

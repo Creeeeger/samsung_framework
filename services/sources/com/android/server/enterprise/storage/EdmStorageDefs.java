@@ -1,11 +1,13 @@
 package com.android.server.enterprise.storage;
 
-import android.os.IInstalld;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class EdmStorageDefs {
     public static final Map sAppPackageNameControlMasks = Collections.unmodifiableMap(new HashMap() { // from class: com.android.server.enterprise.storage.EdmStorageDefs.1
         {
@@ -20,13 +22,13 @@ public abstract class EdmStorageDefs {
             put(256, "APP_PKGNAME_NOTIFICATION_BLOCKLIST_MASK");
             put(512, "APP_PKGNAME_NOTIFICATION_ALLOWLIST_MASK");
             put(1024, "APP_UNINSTALLATION_ALLOWLIST_MASK");
-            put(Integer.valueOf(IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES), "APP_PKGNAME_REVOCATION_CHECK_MASK");
-            put(Integer.valueOf(IInstalld.FLAG_USE_QUOTA), "APP_PKGNAME_OCSP_CHECK_MASK");
-            put(Integer.valueOf(IInstalld.FLAG_FORCE), "APP_PKGNAME_CLEARDATA_BLOCKLIST_MASK");
-            put(16384, "APP_PKGNAME_CLEARDATA_ALLOWLIST_MASK");
+            put(2048, "APP_PKGNAME_REVOCATION_CHECK_MASK");
+            put(4096, "APP_PKGNAME_OCSP_CHECK_MASK");
+            put(8192, "APP_PKGNAME_CLEARDATA_BLOCKLIST_MASK");
+            put(Integer.valueOf(EndpointMonitorConst.FLAG_TRACING_PROCESS_PERMISSIONS_MODIFICATION), "APP_PKGNAME_CLEARDATA_ALLOWLIST_MASK");
             put(32768, "APP_PKGNAME_CLEARCACHE_BLOCKLIST_MASK");
-            put(65536, "APP_PKGNAME_CLEARCACHE_ALLOWLIST_MASK");
-            put(Integer.valueOf(IInstalld.FLAG_CLEAR_APP_DATA_KEEP_ART_PROFILES), "APP_PKGNAME_UPDATE_BLOCKLIST_MASK");
+            put(Integer.valueOf(EndpointMonitorConst.FLAG_TRACING_NETWORK_EVENT_ABNORMAL_PKT), "APP_PKGNAME_CLEARCACHE_ALLOWLIST_MASK");
+            put(131072, "APP_PKGNAME_UPDATE_BLOCKLIST_MASK");
             put(262144, "APP_PKGNAME_UPDATE_ALLOWLIST_MASK");
             put(524288, "APP_PKGNAME_START_BLOCKLIST_MASK");
             put(1048576, "APP_PKGNAME_START_ALLOWLIST_MASK");
@@ -40,7 +42,6 @@ public abstract class EdmStorageDefs {
             put(1073741824, "APP_PKGNAME_CAMERA_ALLOWLIST_MASK");
         }
     });
-    public static String[] FIREWALL_RULE_COLUMNS = {"id", "adminUid", "ipAddress", "portNumber", "portLocation", "packageName", "signature", "networkInterface", "networkInterfaceStr", "direction", "protocol", "addressType", "targetIpAddress", "ruleType", "targetPortNumber", "status"};
-    public static String[] FIREWALL_POLICY_STATUS_COLUMNS = {"adminUid", "userID"};
-    public static String[] FIREWALL_HOSTNAMES_COLUMNS = {"adminUid", "ipAddress", "hostName"};
+    public static final String[] FIREWALL_RULE_COLUMNS = {"id", "adminUid", "ipAddress", "portNumber", "portLocation", "packageName", "signature", "networkInterface", "networkInterfaceStr", "direction", "protocol", "addressType", "targetIpAddress", "ruleType", "targetPortNumber", Constants.JSON_CLIENT_DATA_STATUS};
+    public static final String[] FIREWALL_POLICY_STATUS_COLUMNS = {"adminUid", "userID"};
 }

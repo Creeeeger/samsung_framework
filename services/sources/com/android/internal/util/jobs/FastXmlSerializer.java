@@ -1,5 +1,6 @@
 package com.android.internal.util.jobs;
 
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -14,22 +15,23 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import org.xmlpull.v1.XmlSerializer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class FastXmlSerializer implements XmlSerializer {
-    public static final int DEFAULT_BUFFER_LEN = 32768;
-    public static final String[] ESCAPE_TABLE = {"&#0;", "&#1;", "&#2;", "&#3;", "&#4;", "&#5;", "&#6;", "&#7;", "&#8;", "&#9;", "&#10;", "&#11;", "&#12;", "&#13;", "&#14;", "&#15;", "&#16;", "&#17;", "&#18;", "&#19;", "&#20;", "&#21;", "&#22;", "&#23;", "&#24;", "&#25;", "&#26;", "&#27;", "&#28;", "&#29;", "&#30;", "&#31;", null, null, "&quot;", null, null, null, "&amp;", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "&lt;", null, "&gt;", null};
-    public static String sSpace = "                                                              ";
-    public final int mBufferLen;
-    public ByteBuffer mBytes;
-    public CharsetEncoder mCharset;
-    public boolean mInTag;
-    public boolean mIndent;
-    public boolean mLineStart;
-    public int mNesting;
-    public OutputStream mOutputStream;
-    public int mPos;
-    public final char[] mText;
-    public Writer mWriter;
+    private static final int DEFAULT_BUFFER_LEN = 32768;
+    private static final String[] ESCAPE_TABLE = {"&#0;", "&#1;", "&#2;", "&#3;", "&#4;", "&#5;", "&#6;", "&#7;", "&#8;", "&#9;", "&#10;", "&#11;", "&#12;", "&#13;", "&#14;", "&#15;", "&#16;", "&#17;", "&#18;", "&#19;", "&#20;", "&#21;", "&#22;", "&#23;", "&#24;", "&#25;", "&#26;", "&#27;", "&#28;", "&#29;", "&#30;", "&#31;", null, null, "&quot;", null, null, null, "&amp;", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "&lt;", null, "&gt;", null};
+    private static String sSpace = "                                                              ";
+    private final int mBufferLen;
+    private ByteBuffer mBytes;
+    private CharsetEncoder mCharset;
+    private boolean mInTag;
+    private boolean mIndent;
+    private boolean mLineStart;
+    private int mNesting;
+    private OutputStream mOutputStream;
+    private int mPos;
+    private final char[] mText;
+    private Writer mWriter;
 
     public FastXmlSerializer() {
         this(32768);
@@ -45,7 +47,7 @@ public class FastXmlSerializer implements XmlSerializer {
         this.mBytes = ByteBuffer.allocate(i);
     }
 
-    public final void append(char c) {
+    private void append(char c) throws IOException {
         int i = this.mPos;
         if (i >= this.mBufferLen - 1) {
             flush();
@@ -55,7 +57,11 @@ public class FastXmlSerializer implements XmlSerializer {
         this.mPos = i + 1;
     }
 
-    public final void append(String str, int i, int i2) {
+    private void append(String str) throws IOException {
+        append(str, 0, str.length());
+    }
+
+    private void append(String str, int i, int i2) throws IOException {
         int i3 = this.mBufferLen;
         if (i2 <= i3) {
             int i4 = this.mPos;
@@ -79,7 +85,7 @@ public class FastXmlSerializer implements XmlSerializer {
         }
     }
 
-    public final void append(char[] cArr, int i, int i2) {
+    private void append(char[] cArr, int i, int i2) throws IOException {
         int i3 = this.mBufferLen;
         if (i2 <= i3) {
             int i4 = this.mPos;
@@ -103,11 +109,7 @@ public class FastXmlSerializer implements XmlSerializer {
         }
     }
 
-    public final void append(String str) {
-        append(str, 0, str.length());
-    }
-
-    public final void appendIndent(int i) {
+    private void appendIndent(int i) throws IOException {
         int i2 = i * 4;
         if (i2 > sSpace.length()) {
             i2 = sSpace.length();
@@ -115,7 +117,7 @@ public class FastXmlSerializer implements XmlSerializer {
         append(sSpace, 0, i2);
     }
 
-    public final void escapeAndAppendString(String str) {
+    private void escapeAndAppendString(String str) throws IOException {
         String str2;
         int length = str.length();
         String[] strArr = ESCAPE_TABLE;
@@ -138,7 +140,7 @@ public class FastXmlSerializer implements XmlSerializer {
         }
     }
 
-    public final void escapeAndAppendString(char[] cArr, int i, int i2) {
+    private void escapeAndAppendString(char[] cArr, int i, int i2) throws IOException {
         String str;
         String[] strArr = ESCAPE_TABLE;
         char length = (char) strArr.length;
@@ -160,8 +162,17 @@ public class FastXmlSerializer implements XmlSerializer {
         }
     }
 
+    private void flushBytes() throws IOException {
+        int position = this.mBytes.position();
+        if (position > 0) {
+            this.mBytes.flip();
+            this.mOutputStream.write(this.mBytes.array(), 0, position);
+            this.mBytes.clear();
+        }
+    }
+
     @Override // org.xmlpull.v1.XmlSerializer
-    public XmlSerializer attribute(String str, String str2, String str3) {
+    public XmlSerializer attribute(String str, String str2, String str3) throws IOException, IllegalArgumentException, IllegalStateException {
         append(' ');
         if (str != null) {
             append(str);
@@ -176,27 +187,27 @@ public class FastXmlSerializer implements XmlSerializer {
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void cdsect(String str) {
+    public void cdsect(String str) throws IOException, IllegalArgumentException, IllegalStateException {
         throw new UnsupportedOperationException();
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void comment(String str) {
+    public void comment(String str) throws IOException, IllegalArgumentException, IllegalStateException {
         throw new UnsupportedOperationException();
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void docdecl(String str) {
+    public void docdecl(String str) throws IOException, IllegalArgumentException, IllegalStateException {
         throw new UnsupportedOperationException();
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void endDocument() {
+    public void endDocument() throws IOException, IllegalArgumentException, IllegalStateException {
         flush();
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public XmlSerializer endTag(String str, String str2) {
+    public XmlSerializer endTag(String str, String str2) throws IOException, IllegalArgumentException, IllegalStateException {
         int i = this.mNesting - 1;
         this.mNesting = i;
         if (this.mInTag) {
@@ -219,21 +230,12 @@ public class FastXmlSerializer implements XmlSerializer {
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void entityRef(String str) {
+    public void entityRef(String str) throws IOException, IllegalArgumentException, IllegalStateException {
         throw new UnsupportedOperationException();
     }
 
-    public final void flushBytes() {
-        int position = this.mBytes.position();
-        if (position > 0) {
-            this.mBytes.flip();
-            this.mOutputStream.write(this.mBytes.array(), 0, position);
-            this.mBytes.clear();
-        }
-    }
-
     @Override // org.xmlpull.v1.XmlSerializer
-    public void flush() {
+    public void flush() throws IOException {
         int i = this.mPos;
         if (i > 0) {
             if (this.mOutputStream != null) {
@@ -277,7 +279,7 @@ public class FastXmlSerializer implements XmlSerializer {
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public String getPrefix(String str, boolean z) {
+    public String getPrefix(String str, boolean z) throws IllegalArgumentException {
         throw new UnsupportedOperationException();
     }
 
@@ -287,31 +289,32 @@ public class FastXmlSerializer implements XmlSerializer {
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void ignorableWhitespace(String str) {
+    public void ignorableWhitespace(String str) throws IOException, IllegalArgumentException, IllegalStateException {
         throw new UnsupportedOperationException();
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void processingInstruction(String str) {
+    public void processingInstruction(String str) throws IOException, IllegalArgumentException, IllegalStateException {
         throw new UnsupportedOperationException();
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void setFeature(String str, boolean z) {
-        if (str.equals("http://xmlpull.org/v1/doc/features.html#indent-output")) {
-            this.mIndent = true;
-            return;
+    public void setFeature(String str, boolean z) throws IllegalArgumentException, IllegalStateException {
+        if (!str.equals("http://xmlpull.org/v1/doc/features.html#indent-output")) {
+            throw new UnsupportedOperationException();
         }
-        throw new UnsupportedOperationException();
+        this.mIndent = true;
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void setOutput(OutputStream outputStream, String str) {
+    public void setOutput(OutputStream outputStream, String str) throws IOException, IllegalArgumentException, IllegalStateException {
         if (outputStream == null) {
             throw new IllegalArgumentException();
         }
         try {
-            this.mCharset = Charset.forName(str).newEncoder().onMalformedInput(CodingErrorAction.REPLACE).onUnmappableCharacter(CodingErrorAction.REPLACE);
+            CharsetEncoder newEncoder = Charset.forName(str).newEncoder();
+            CodingErrorAction codingErrorAction = CodingErrorAction.REPLACE;
+            this.mCharset = newEncoder.onMalformedInput(codingErrorAction).onUnmappableCharacter(codingErrorAction);
             this.mOutputStream = outputStream;
         } catch (IllegalCharsetNameException e) {
             throw ((UnsupportedEncodingException) new UnsupportedEncodingException(str).initCause(e));
@@ -321,36 +324,32 @@ public class FastXmlSerializer implements XmlSerializer {
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void setOutput(Writer writer) {
+    public void setOutput(Writer writer) throws IOException, IllegalArgumentException, IllegalStateException {
         this.mWriter = writer;
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void setPrefix(String str, String str2) {
+    public void setPrefix(String str, String str2) throws IOException, IllegalArgumentException, IllegalStateException {
         throw new UnsupportedOperationException();
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void setProperty(String str, Object obj) {
+    public void setProperty(String str, Object obj) throws IllegalArgumentException, IllegalStateException {
         throw new UnsupportedOperationException();
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public void startDocument(String str, Boolean bool) {
+    public void startDocument(String str, Boolean bool) throws IOException, IllegalArgumentException, IllegalStateException {
         append("<?xml version='1.0' encoding='utf-8'");
         if (bool != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(" standalone='");
-            sb.append(bool.booleanValue() ? "yes" : "no");
-            sb.append("'");
-            append(sb.toString());
+            append(AudioOffloadInfo$$ExternalSyntheticOutline0.m(new StringBuilder(" standalone='"), bool.booleanValue() ? "yes" : "no", "'"));
         }
         append(" ?>\n");
         this.mLineStart = true;
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public XmlSerializer startTag(String str, String str2) {
+    public XmlSerializer startTag(String str, String str2) throws IOException, IllegalArgumentException, IllegalStateException {
         if (this.mInTag) {
             append(">\n");
         }
@@ -370,20 +369,7 @@ public class FastXmlSerializer implements XmlSerializer {
     }
 
     @Override // org.xmlpull.v1.XmlSerializer
-    public XmlSerializer text(char[] cArr, int i, int i2) {
-        if (this.mInTag) {
-            append(">");
-            this.mInTag = false;
-        }
-        escapeAndAppendString(cArr, i, i2);
-        if (this.mIndent) {
-            this.mLineStart = cArr[(i + i2) - 1] == '\n';
-        }
-        return this;
-    }
-
-    @Override // org.xmlpull.v1.XmlSerializer
-    public XmlSerializer text(String str) {
+    public XmlSerializer text(String str) throws IOException, IllegalArgumentException, IllegalStateException {
         boolean z = false;
         if (this.mInTag) {
             append(">");
@@ -395,6 +381,19 @@ public class FastXmlSerializer implements XmlSerializer {
                 z = true;
             }
             this.mLineStart = z;
+        }
+        return this;
+    }
+
+    @Override // org.xmlpull.v1.XmlSerializer
+    public XmlSerializer text(char[] cArr, int i, int i2) throws IOException, IllegalArgumentException, IllegalStateException {
+        if (this.mInTag) {
+            append(">");
+            this.mInTag = false;
+        }
+        escapeAndAppendString(cArr, i, i2);
+        if (this.mIndent) {
+            this.mLineStart = cArr[(i + i2) - 1] == '\n';
         }
         return this;
     }

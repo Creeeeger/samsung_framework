@@ -3,37 +3,37 @@ package android.os;
 import android.os.IDumpstateListener;
 import java.io.FileDescriptor;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IDumpstate extends IInterface {
     public static final int BUGREPORT_FLAG_DEFER_CONSENT = 2;
+    public static final int BUGREPORT_FLAG_KEEP_BUGREPORT_ON_RETRIEVAL = 4;
     public static final int BUGREPORT_FLAG_USE_PREDUMPED_UI_DATA = 1;
-    public static final int BUGREPORT_MODE_APP_ANR = 15;
-    public static final int BUGREPORT_MODE_APP_ERROR = 13;
-    public static final int BUGREPORT_MODE_APP_NATIVE = 14;
-    public static final int BUGREPORT_MODE_BOOT_DELAY = 7;
-    public static final int BUGREPORT_MODE_BOOT_ENOSPC = 8;
+    public static final int BUGREPORT_MODE_APP_ANR = 16;
+    public static final int BUGREPORT_MODE_APP_ERROR = 14;
+    public static final int BUGREPORT_MODE_APP_NATIVE = 15;
+    public static final int BUGREPORT_MODE_BOOT_DELAY = 8;
+    public static final int BUGREPORT_MODE_BOOT_ENOSPC = 9;
+    public static final int BUGREPORT_MODE_BY_KEY = 21;
     public static final int BUGREPORT_MODE_DEFAULT = 6;
     public static final int BUGREPORT_MODE_ENOSPC = 18;
     public static final int BUGREPORT_MODE_FULL = 0;
     public static final int BUGREPORT_MODE_INTERACTIVE = 1;
-    public static final int BUGREPORT_MODE_KEYSTORE = 22;
-    public static final int BUGREPORT_MODE_LIGHT = 19;
+    public static final int BUGREPORT_MODE_LIGHT = 17;
+    public static final int BUGREPORT_MODE_ONBOARDING = 7;
     public static final int BUGREPORT_MODE_REMOTE = 2;
-    public static final int BUGREPORT_MODE_SHUTDOWN_BROADCAST = 16;
-    public static final int BUGREPORT_MODE_SHUTDOWN_DELAY = 17;
-    public static final int BUGREPORT_MODE_SILENT_UT = 23;
-    public static final int BUGREPORT_MODE_SKEYMASTER = 21;
-    public static final int BUGREPORT_MODE_SVCAGENT = 20;
-    public static final int BUGREPORT_MODE_SYS_ERROR = 10;
-    public static final int BUGREPORT_MODE_SYS_NATIVE = 11;
-    public static final int BUGREPORT_MODE_SYS_RESCUE = 9;
-    public static final int BUGREPORT_MODE_SYS_WATCHDOG = 12;
+    public static final int BUGREPORT_MODE_SHUTDOWN_BROADCAST = 19;
+    public static final int BUGREPORT_MODE_SHUTDOWN_DELAY = 20;
+    public static final int BUGREPORT_MODE_SYS_ERROR = 11;
+    public static final int BUGREPORT_MODE_SYS_NATIVE = 12;
+    public static final int BUGREPORT_MODE_SYS_RESCUE = 10;
+    public static final int BUGREPORT_MODE_SYS_WATCHDOG = 13;
     public static final int BUGREPORT_MODE_TELEPHONY = 4;
     public static final int BUGREPORT_MODE_WEAR = 3;
     public static final int BUGREPORT_MODE_WIFI = 5;
     public static final String DESCRIPTOR = "android.os.IDumpstate";
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class Default implements IDumpstate {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -41,40 +41,113 @@ public interface IDumpstate extends IInterface {
         }
 
         @Override // android.os.IDumpstate
-        public void cancelBugreport(int i, String str) {
+        public void cancelBugreport(int i, String str) throws RemoteException {
         }
 
         @Override // android.os.IDumpstate
-        public void preDumpUiData(String str) {
+        public void preDumpUiData(String str) throws RemoteException {
         }
 
         @Override // android.os.IDumpstate
-        public void retrieveBugreport(int i, String str, FileDescriptor fileDescriptor, String str2, IDumpstateListener iDumpstateListener) {
+        public void retrieveBugreport(int i, String str, int i2, FileDescriptor fileDescriptor, String str2, boolean z, boolean z2, IDumpstateListener iDumpstateListener) throws RemoteException {
         }
 
         @Override // android.os.IDumpstate
-        public void startBugreport(int i, String str, FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, int i2, int i3, IDumpstateListener iDumpstateListener, boolean z) {
+        public void startBugreport(int i, String str, FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, int i2, int i3, IDumpstateListener iDumpstateListener, boolean z, boolean z2) throws RemoteException {
         }
     }
 
-    void cancelBugreport(int i, String str);
-
-    void preDumpUiData(String str);
-
-    void retrieveBugreport(int i, String str, FileDescriptor fileDescriptor, String str2, IDumpstateListener iDumpstateListener);
-
-    void startBugreport(int i, String str, FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, int i2, int i3, IDumpstateListener iDumpstateListener, boolean z);
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements IDumpstate {
-        public static final int TRANSACTION_cancelBugreport = 3;
-        public static final int TRANSACTION_preDumpUiData = 1;
-        public static final int TRANSACTION_retrieveBugreport = 4;
-        public static final int TRANSACTION_startBugreport = 2;
+        static final int TRANSACTION_cancelBugreport = 3;
+        static final int TRANSACTION_preDumpUiData = 1;
+        static final int TRANSACTION_retrieveBugreport = 4;
+        static final int TRANSACTION_startBugreport = 2;
 
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements IDumpstate {
+            public IBinder mRemote;
+
+            @Override // android.os.IInterface
+            public final IBinder asBinder() {
+                return this.mRemote;
+            }
+
+            @Override // android.os.IDumpstate
+            public final void cancelBugreport(int i, String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(IDumpstate.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeString(str);
+                    this.mRemote.transact(3, obtain, obtain2, 0);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IDumpstate
+            public final void preDumpUiData(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(IDumpstate.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(1, obtain, obtain2, 0);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IDumpstate
+            public final void retrieveBugreport(int i, String str, int i2, FileDescriptor fileDescriptor, String str2, boolean z, boolean z2, IDumpstateListener iDumpstateListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(IDumpstate.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeString(str);
+                    obtain.writeInt(i2);
+                    obtain.writeRawFileDescriptor(fileDescriptor);
+                    obtain.writeString(str2);
+                    obtain.writeBoolean(z);
+                    obtain.writeBoolean(z2);
+                    obtain.writeStrongInterface(iDumpstateListener);
+                    this.mRemote.transact(4, obtain, obtain2, 0);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IDumpstate
+            public final void startBugreport(int i, String str, FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, int i2, int i3, IDumpstateListener iDumpstateListener, boolean z, boolean z2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(IDumpstate.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeString(str);
+                    obtain.writeRawFileDescriptor(fileDescriptor);
+                    obtain.writeRawFileDescriptor(fileDescriptor2);
+                    obtain.writeInt(i2);
+                    obtain.writeInt(i3);
+                    obtain.writeStrongInterface(iDumpstateListener);
+                    obtain.writeBoolean(z);
+                    obtain.writeBoolean(z2);
+                    this.mRemote.transact(2, obtain, obtain2, 0);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
         }
 
         public Stub() {
@@ -89,11 +162,18 @@ public interface IDumpstate extends IInterface {
             if (queryLocalInterface != null && (queryLocalInterface instanceof IDumpstate)) {
                 return (IDumpstate) queryLocalInterface;
             }
-            return new Proxy(iBinder);
+            Proxy proxy = new Proxy();
+            proxy.mRemote = iBinder;
+            return proxy;
+        }
+
+        @Override // android.os.IInterface
+        public IBinder asBinder() {
+            return this;
         }
 
         @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
+        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
             if (i >= 1 && i <= 16777215) {
                 parcel.enforceInterface(IDumpstate.DESCRIPTOR);
             }
@@ -115,8 +195,9 @@ public interface IDumpstate extends IInterface {
                 int readInt3 = parcel.readInt();
                 IDumpstateListener asInterface = IDumpstateListener.Stub.asInterface(parcel.readStrongBinder());
                 boolean readBoolean = parcel.readBoolean();
+                boolean readBoolean2 = parcel.readBoolean();
                 parcel.enforceNoDataAvail();
-                startBugreport(readInt, readString2, readRawFileDescriptor, readRawFileDescriptor2, readInt2, readInt3, asInterface, readBoolean);
+                startBugreport(readInt, readString2, readRawFileDescriptor, readRawFileDescriptor2, readInt2, readInt3, asInterface, readBoolean, readBoolean2);
                 parcel2.writeNoException();
             } else if (i == 3) {
                 int readInt4 = parcel.readInt();
@@ -124,109 +205,31 @@ public interface IDumpstate extends IInterface {
                 parcel.enforceNoDataAvail();
                 cancelBugreport(readInt4, readString3);
                 parcel2.writeNoException();
-            } else if (i == 4) {
+            } else {
+                if (i != 4) {
+                    return super.onTransact(i, parcel, parcel2, i2);
+                }
                 int readInt5 = parcel.readInt();
                 String readString4 = parcel.readString();
+                int readInt6 = parcel.readInt();
                 FileDescriptor readRawFileDescriptor3 = parcel.readRawFileDescriptor();
                 String readString5 = parcel.readString();
+                boolean readBoolean3 = parcel.readBoolean();
+                boolean readBoolean4 = parcel.readBoolean();
                 IDumpstateListener asInterface2 = IDumpstateListener.Stub.asInterface(parcel.readStrongBinder());
                 parcel.enforceNoDataAvail();
-                retrieveBugreport(readInt5, readString4, readRawFileDescriptor3, readString5, asInterface2);
+                retrieveBugreport(readInt5, readString4, readInt6, readRawFileDescriptor3, readString5, readBoolean3, readBoolean4, asInterface2);
                 parcel2.writeNoException();
-            } else {
-                return super.onTransact(i, parcel, parcel2, i2);
             }
             return true;
         }
-
-        /* loaded from: classes.dex */
-        public class Proxy implements IDumpstate {
-            public IBinder mRemote;
-
-            public String getInterfaceDescriptor() {
-                return IDumpstate.DESCRIPTOR;
-            }
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
-
-            @Override // android.os.IInterface
-            public IBinder asBinder() {
-                return this.mRemote;
-            }
-
-            @Override // android.os.IDumpstate
-            public void preDumpUiData(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(IDumpstate.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IDumpstate
-            public void startBugreport(int i, String str, FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, int i2, int i3, IDumpstateListener iDumpstateListener, boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(IDumpstate.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    obtain.writeRawFileDescriptor(fileDescriptor);
-                    obtain.writeRawFileDescriptor(fileDescriptor2);
-                    obtain.writeInt(i2);
-                    obtain.writeInt(i3);
-                    obtain.writeStrongInterface(iDumpstateListener);
-                    obtain.writeBoolean(z);
-                    this.mRemote.transact(2, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IDumpstate
-            public void cancelBugreport(int i, String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(IDumpstate.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    this.mRemote.transact(3, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IDumpstate
-            public void retrieveBugreport(int i, String str, FileDescriptor fileDescriptor, String str2, IDumpstateListener iDumpstateListener) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(IDumpstate.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    obtain.writeRawFileDescriptor(fileDescriptor);
-                    obtain.writeString(str2);
-                    obtain.writeStrongInterface(iDumpstateListener);
-                    this.mRemote.transact(4, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-        }
     }
+
+    void cancelBugreport(int i, String str) throws RemoteException;
+
+    void preDumpUiData(String str) throws RemoteException;
+
+    void retrieveBugreport(int i, String str, int i2, FileDescriptor fileDescriptor, String str2, boolean z, boolean z2, IDumpstateListener iDumpstateListener) throws RemoteException;
+
+    void startBugreport(int i, String str, FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, int i2, int i3, IDumpstateListener iDumpstateListener, boolean z, boolean z2) throws RemoteException;
 }

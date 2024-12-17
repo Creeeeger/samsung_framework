@@ -3,45 +3,40 @@ package com.samsung.android.lib.dexcontrol.fancontrol;
 import com.samsung.android.lib.dexcontrol.utils.SLog;
 import java.util.TimerTask;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class DexFanHoldingTimerTask extends TimerTask {
-    public static final String TAG = DexFanHoldingTimerTask.class.getSimpleName();
-    public IDexFanModeControl mIDexFanModeControl;
-    public String mSender;
+public final class DexFanHoldingTimerTask extends TimerTask {
+    public final DexFanControlManager mIDexFanModeControl;
+    public final String mSender;
     public boolean mSetUpdate = false;
 
-    public DexFanHoldingTimerTask(IDexFanModeControl iDexFanModeControl, String str) {
-        this.mIDexFanModeControl = iDexFanModeControl;
+    public DexFanHoldingTimerTask(DexFanControlManager dexFanControlManager, String str) {
+        this.mIDexFanModeControl = dexFanControlManager;
         this.mSender = str;
     }
 
-    public String getSender() {
-        return this.mSender;
-    }
-
-    public void setUpdate(boolean z) {
-        SLog.i(TAG, "setUpdate - " + z);
-        this.mSetUpdate = z;
-    }
-
     @Override // java.util.TimerTask
-    public boolean cancel() {
-        SLog.i(TAG, "DexFanHoldingTimerTask - " + this.mSender + " is canceled");
+    public final boolean cancel() {
+        SLog.i("DexFanHoldingTimerTask", "DexFanHoldingTimerTask - " + this.mSender + " is canceled");
         destroy();
         return super.cancel();
     }
 
-    @Override // java.util.TimerTask, java.lang.Runnable
-    public void run() {
-        SLog.i(TAG, "DexFanHoldingTimerTask - " + this.mSender + " is finished");
-        destroy();
-    }
-
     public final void destroy() {
-        IDexFanModeControl iDexFanModeControl = this.mIDexFanModeControl;
-        if (iDexFanModeControl != null && !this.mSetUpdate) {
-            iDexFanModeControl.onFinishedFanHoldingTimerTask(this);
+        DexFanControlManager dexFanControlManager = this.mIDexFanModeControl;
+        if (dexFanControlManager != null && !this.mSetUpdate) {
+            SLog.d("DexFanControlManager", "before remove:" + dexFanControlManager.getFanHoldingRequestCount());
+            dexFanControlManager.getFanHoldingTimerTaskList().remove(this);
+            SLog.d("DexFanControlManager", "after remove:" + dexFanControlManager.getFanHoldingRequestCount());
+            dexFanControlManager.getCurrentFanMode().onChangedFanHoldingRequestCount(dexFanControlManager.getFanHoldingRequestCount());
+            dexFanControlManager.controlFanLevel();
         }
         this.mSetUpdate = false;
+    }
+
+    @Override // java.util.TimerTask, java.lang.Runnable
+    public final void run() {
+        SLog.i("DexFanHoldingTimerTask", "DexFanHoldingTimerTask - " + this.mSender + " is finished");
+        destroy();
     }
 }

@@ -4,16 +4,22 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.credentials.CredentialProviderInfo;
-import android.credentials.ui.ProviderData;
-import android.credentials.ui.ProviderPendingIntentResponse;
+import android.credentials.selection.ProviderData;
+import android.credentials.selection.ProviderPendingIntentResponse;
 import android.os.ICancellationSignal;
-import android.os.RemoteException;
 import android.util.Slog;
+import com.android.server.PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0;
 import com.android.server.credentials.RemoteCredentialService;
+import com.android.server.credentials.metrics.BrowsedAuthenticationMetric;
+import com.android.server.credentials.metrics.CandidatePhaseMetric;
+import com.android.server.credentials.metrics.InitialPhaseMetric;
 import com.android.server.credentials.metrics.ProviderSessionMetric;
+import com.android.server.credentials.metrics.ProviderStatusForMetrics;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class ProviderSession implements RemoteCredentialService.ProviderCallbacks {
     public final ProviderInternalCallback mCallbacks;
@@ -23,68 +29,92 @@ public abstract class ProviderSession implements RemoteCredentialService.Provide
     public final Object mProviderRequest;
     public Object mProviderResponse;
     public final ProviderSessionMetric mProviderSessionMetric;
-    public int mProviderSessionUid;
+    public final int mProviderSessionUid;
     public final RemoteCredentialService mRemoteCredentialService;
-    public final int mUserId;
     public Status mStatus = Status.NOT_STARTED;
     public Boolean mProviderResponseSet = Boolean.FALSE;
-    public final CredentialProviderInfo mProviderInfo = null;
 
-    /* loaded from: classes.dex */
-    enum CredentialsSource {
-        REMOTE_PROVIDER,
-        REGISTRY,
-        AUTH_ENTRY
+    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class CredentialsSource {
+        public static final /* synthetic */ CredentialsSource[] $VALUES;
+        public static final CredentialsSource AUTH_ENTRY;
+        public static final CredentialsSource REGISTRY;
+        public static final CredentialsSource REMOTE_PROVIDER;
+
+        static {
+            CredentialsSource credentialsSource = new CredentialsSource("REMOTE_PROVIDER", 0);
+            REMOTE_PROVIDER = credentialsSource;
+            CredentialsSource credentialsSource2 = new CredentialsSource("REGISTRY", 1);
+            REGISTRY = credentialsSource2;
+            CredentialsSource credentialsSource3 = new CredentialsSource("AUTH_ENTRY", 2);
+            AUTH_ENTRY = credentialsSource3;
+            $VALUES = new CredentialsSource[]{credentialsSource, credentialsSource2, credentialsSource3};
+        }
+
+        public static CredentialsSource valueOf(String str) {
+            return (CredentialsSource) Enum.valueOf(CredentialsSource.class, str);
+        }
+
+        public static CredentialsSource[] values() {
+            return (CredentialsSource[]) $VALUES.clone();
+        }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface ProviderInternalCallback {
-        void onFinalErrorReceived(ComponentName componentName, String str, String str2);
+        void onFinalErrorReceived(String str, String str2);
 
         void onFinalResponseReceived(ComponentName componentName, Object obj);
 
         void onProviderStatusChanged(Status status, ComponentName componentName, CredentialsSource credentialsSource);
     }
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public enum Status {
-        NOT_STARTED,
-        PENDING,
-        CREDENTIALS_RECEIVED,
-        SERVICE_DEAD,
-        SAVE_ENTRIES_RECEIVED,
-        CANCELED,
-        EMPTY_RESPONSE,
-        NO_CREDENTIALS_FROM_AUTH_ENTRY,
-        COMPLETE
-    }
+    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class Status {
+        public static final /* synthetic */ Status[] $VALUES;
+        public static final Status CANCELED;
+        public static final Status COMPLETE;
+        public static final Status CREDENTIALS_RECEIVED;
+        public static final Status EMPTY_RESPONSE;
+        public static final Status NOT_STARTED;
+        public static final Status NO_CREDENTIALS_FROM_AUTH_ENTRY;
+        public static final Status PENDING;
+        public static final Status SAVE_ENTRIES_RECEIVED;
+        public static final Status SERVICE_DEAD;
 
-    public abstract void invokeSession();
+        static {
+            Status status = new Status("NOT_STARTED", 0);
+            NOT_STARTED = status;
+            Status status2 = new Status("PENDING", 1);
+            PENDING = status2;
+            Status status3 = new Status("CREDENTIALS_RECEIVED", 2);
+            CREDENTIALS_RECEIVED = status3;
+            Status status4 = new Status("SERVICE_DEAD", 3);
+            SERVICE_DEAD = status4;
+            Status status5 = new Status("SAVE_ENTRIES_RECEIVED", 4);
+            SAVE_ENTRIES_RECEIVED = status5;
+            Status status6 = new Status("CANCELED", 5);
+            CANCELED = status6;
+            Status status7 = new Status("EMPTY_RESPONSE", 6);
+            EMPTY_RESPONSE = status7;
+            Status status8 = new Status("NO_CREDENTIALS_FROM_AUTH_ENTRY", 7);
+            NO_CREDENTIALS_FROM_AUTH_ENTRY = status8;
+            Status status9 = new Status("COMPLETE", 8);
+            COMPLETE = status9;
+            $VALUES = new Status[]{status, status2, status3, status4, status5, status6, status7, status8, status9};
+        }
 
-    public abstract void onUiEntrySelected(String str, String str2, ProviderPendingIntentResponse providerPendingIntentResponse);
+        public static Status valueOf(String str) {
+            return (Status) Enum.valueOf(Status.class, str);
+        }
 
-    /* renamed from: prepareUiData */
-    public abstract ProviderData mo4474prepareUiData();
-
-    public static boolean isUiInvokingStatus(Status status) {
-        return status == Status.CREDENTIALS_RECEIVED || status == Status.SAVE_ENTRIES_RECEIVED || status == Status.NO_CREDENTIALS_FROM_AUTH_ENTRY;
-    }
-
-    public static boolean isStatusWaitingForRemoteResponse(Status status) {
-        return status == Status.PENDING;
-    }
-
-    public static boolean isTerminatingStatus(Status status) {
-        return status == Status.CANCELED || status == Status.SERVICE_DEAD;
-    }
-
-    public static boolean isCompletionStatus(Status status) {
-        return status == Status.COMPLETE || status == Status.EMPTY_RESPONSE;
-    }
-
-    public ProviderSessionMetric getProviderSessionMetric() {
-        return this.mProviderSessionMetric;
+        public static Status[] values() {
+            return (Status[]) $VALUES.clone();
+        }
     }
 
     /* JADX WARN: Multi-variable type inference failed */
@@ -92,63 +122,23 @@ public abstract class ProviderSession implements RemoteCredentialService.Provide
         this.mContext = context;
         this.mProviderRequest = obj;
         this.mCallbacks = providerInternalCallback;
-        this.mUserId = i;
         this.mComponentName = componentName;
         this.mRemoteCredentialService = remoteCredentialService;
-        this.mProviderSessionUid = MetricUtilities.getPackageUid(context, componentName);
-        this.mProviderSessionMetric = new ProviderSessionMetric(((RequestSession) providerInternalCallback).mRequestSessionMetric.getSessionIdTrackTwo());
+        this.mProviderSessionUid = componentName == null ? -1 : MetricUtilities.getPackageUid(context, componentName.getPackageName(), i);
+        this.mProviderSessionMetric = new ProviderSessionMetric(((RequestSession) providerInternalCallback).mRequestSessionMetric.mSessionIdTrackTwo);
     }
 
     public static String generateUniqueId() {
         return UUID.randomUUID().toString();
     }
 
-    public void cancelProviderRemoteSession() {
-        try {
-            ICancellationSignal iCancellationSignal = this.mProviderCancellationSignal;
-            if (iCancellationSignal != null) {
-                iCancellationSignal.cancel();
-            }
-            setStatus(Status.CANCELED);
-        } catch (RemoteException e) {
-            Slog.e("ProviderSession", "Issue while cancelling provider session: ", e);
-        }
+    public static boolean isUiInvokingStatus(Status status) {
+        return status == Status.CREDENTIALS_RECEIVED || status == Status.SAVE_ENTRIES_RECEIVED || status == Status.NO_CREDENTIALS_FROM_AUTH_ENTRY;
     }
 
-    public void setStatus(Status status) {
-        this.mStatus = status;
-    }
-
-    public Status getStatus() {
-        return this.mStatus;
-    }
-
-    public ComponentName getComponentName() {
-        return this.mComponentName;
-    }
-
-    public void updateStatusAndInvokeCallback(Status status, CredentialsSource credentialsSource) {
-        setStatus(status);
-        CredentialProviderInfo credentialProviderInfo = this.mProviderInfo;
-        this.mProviderSessionMetric.collectCandidateMetricUpdate(isTerminatingStatus(status) || isStatusWaitingForRemoteResponse(status), isCompletionStatus(status) || isUiInvokingStatus(status), this.mProviderSessionUid, credentialsSource == CredentialsSource.AUTH_ENTRY, credentialProviderInfo != null && credentialProviderInfo.isPrimary());
-        this.mCallbacks.onProviderStatusChanged(status, this.mComponentName, credentialsSource);
-    }
-
-    public void startCandidateMetrics() {
-        this.mProviderSessionMetric.collectCandidateMetricSetupViaInitialMetric(((RequestSession) this.mCallbacks).mRequestSessionMetric.getInitialPhaseMetric());
-    }
-
-    public Boolean isProviderResponseSet() {
-        return Boolean.valueOf(this.mProviderResponse != null || this.mProviderResponseSet.booleanValue());
-    }
-
-    public void invokeCallbackWithError(String str, String str2) {
-        this.mCallbacks.onFinalErrorReceived(this.mComponentName, str, str2);
-    }
-
-    public boolean enforceRemoteEntryRestrictions(ComponentName componentName) {
+    public final boolean enforceRemoteEntryRestrictions(ComponentName componentName) {
         if (!this.mComponentName.equals(componentName)) {
-            Slog.w("ProviderSession", "Remote entry being dropped as it is not from the service configured by the OEM.");
+            Slog.w("CredentialManager", "Remote entry being dropped as it is not from the service configured by the OEM.");
             return false;
         }
         try {
@@ -160,8 +150,67 @@ public abstract class ProviderSession implements RemoteCredentialService.Provide
             }
             return false;
         } catch (PackageManager.NameNotFoundException | SecurityException e) {
-            Slog.e("ProviderSession", "Error getting info for " + this.mComponentName.flattenToString(), e);
+            Slog.e("CredentialManager", "Error getting info for " + this.mComponentName.flattenToString(), e);
             return false;
         }
+    }
+
+    public abstract void invokeSession();
+
+    public abstract void onUiEntrySelected(String str, String str2, ProviderPendingIntentResponse providerPendingIntentResponse);
+
+    public abstract ProviderData prepareUiData();
+
+    public final void startCandidateMetrics() {
+        InitialPhaseMetric initialPhaseMetric = ((RequestSession) this.mCallbacks).mRequestSessionMetric.mInitialPhaseMetric;
+        ProviderSessionMetric providerSessionMetric = this.mProviderSessionMetric;
+        providerSessionMetric.getClass();
+        try {
+            CandidatePhaseMetric candidatePhaseMetric = providerSessionMetric.mCandidatePhasePerProviderMetric;
+            candidatePhaseMetric.mServiceBeganTimeNanoseconds = initialPhaseMetric.mCredentialServiceStartedTimeNanoseconds;
+            candidatePhaseMetric.mStartQueryTimeNanoseconds = System.nanoTime();
+        } catch (Exception e) {
+            PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0.m(e, "Unexpected error during candidate setup metric logging: ", "ProviderSessionMetric");
+        }
+    }
+
+    public final void updateStatusAndInvokeCallback(Status status, CredentialsSource credentialsSource) {
+        this.mStatus = status;
+        boolean z = (status == Status.CANCELED || status == Status.SERVICE_DEAD) || status == Status.PENDING;
+        boolean z2 = status == Status.COMPLETE || status == Status.EMPTY_RESPONSE || isUiInvokingStatus(status);
+        boolean z3 = credentialsSource == CredentialsSource.AUTH_ENTRY;
+        ProviderSessionMetric providerSessionMetric = this.mProviderSessionMetric;
+        CandidatePhaseMetric candidatePhaseMetric = providerSessionMetric.mCandidatePhasePerProviderMetric;
+        ProviderStatusForMetrics providerStatusForMetrics = ProviderStatusForMetrics.QUERY_SUCCESS;
+        ProviderStatusForMetrics providerStatusForMetrics2 = ProviderStatusForMetrics.QUERY_FAILURE;
+        int i = this.mProviderSessionUid;
+        try {
+            if (z3) {
+                List list = providerSessionMetric.mBrowsedAuthenticationMetric;
+                BrowsedAuthenticationMetric browsedAuthenticationMetric = (BrowsedAuthenticationMetric) ((ArrayList) list).get(((ArrayList) list).size() - 1);
+                browsedAuthenticationMetric.mProviderUid = i;
+                if (z) {
+                    browsedAuthenticationMetric.mAuthReturned = false;
+                    browsedAuthenticationMetric.mProviderStatus = providerStatusForMetrics2.getMetricCode();
+                } else if (z2) {
+                    browsedAuthenticationMetric.mAuthReturned = true;
+                    browsedAuthenticationMetric.mProviderStatus = providerStatusForMetrics.getMetricCode();
+                }
+            } else {
+                candidatePhaseMetric.mIsPrimary = false;
+                candidatePhaseMetric.mCandidateUid = i;
+                candidatePhaseMetric.mQueryFinishTimeNanoseconds = System.nanoTime();
+                if (z) {
+                    candidatePhaseMetric.mQueryReturned = false;
+                    candidatePhaseMetric.mProviderQueryStatus = providerStatusForMetrics2.getMetricCode();
+                } else if (z2) {
+                    candidatePhaseMetric.mQueryReturned = true;
+                    candidatePhaseMetric.mProviderQueryStatus = providerStatusForMetrics.getMetricCode();
+                }
+            }
+        } catch (Exception e) {
+            PackageWatchdog$BootThreshold$$ExternalSyntheticOutline0.m(e, "Unexpected error during candidate update metric logging: ", "ProviderSessionMetric");
+        }
+        this.mCallbacks.onProviderStatusChanged(status, this.mComponentName, credentialsSource);
     }
 }

@@ -6,14 +6,14 @@ import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/* loaded from: classes2.dex */
-public class RuleParser {
-    public static final String TAG = "RuleParser";
-    public String mPacakagePublicSignature;
-    public String mPackageName;
-    public String mPolicyVersion;
-    public int mProcLength;
-    public int mProcessProcLength;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RuleParser {
+    public final String mPacakagePublicSignature;
+    public final String mPackageName;
+    public final String mPolicyVersion;
+    public final int mProcLength;
+    public final int mProcessProcLength;
     public final ArrayList mProcList = new ArrayList();
     public final ArrayList mProcessProcList = new ArrayList();
 
@@ -40,39 +40,29 @@ public class RuleParser {
         this.mProcessProcLength = this.mProcessProcList.size();
     }
 
-    public String getVersion() {
-        return this.mPolicyVersion;
-    }
-
-    public String getPackagePublicSignature() {
-        return this.mPacakagePublicSignature;
-    }
-
-    public String getPackageName() {
-        return this.mPackageName;
-    }
-
-    public ArrayList getProcList() {
-        if (this.mProcList.size() <= 0 || this.mProcList.size() != this.mProcLength) {
-            Log.e(TAG, "Invalid proc : " + this.mProcList.size() + "/" + this.mProcLength);
-            return null;
+    public final ArrayList getProcList() {
+        int size = this.mProcList.size();
+        int i = this.mProcLength;
+        if (size > 0 && this.mProcList.size() == i) {
+            return this.mProcList;
         }
-        return this.mProcList;
+        Log.e("RuleParser", "Invalid proc : " + this.mProcList.size() + "/" + i);
+        return null;
     }
 
-    public ArrayList getProcessProcList() {
-        if (this.mProcessProcList.size() <= 0 || this.mProcessProcList.size() != this.mProcessProcLength) {
-            Log.e(TAG, "Invalid process proc : " + this.mProcessProcList.size() + "/" + this.mProcessProcList);
-            return null;
+    public final ArrayList getProcessProcList() {
+        if (this.mProcessProcList.size() > 0 && this.mProcessProcList.size() == this.mProcessProcLength) {
+            return this.mProcessProcList;
         }
-        return this.mProcessProcList;
+        Log.e("RuleParser", "Invalid process proc : " + this.mProcessProcList.size() + "/" + this.mProcessProcList);
+        return null;
     }
 
-    public String toString() {
+    public final String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getVersion());
+        sb.append(this.mPolicyVersion);
         sb.append("|");
-        sb.append(getPackageName());
+        sb.append(this.mPackageName);
         sb.append("|");
         sb.append(this.mProcList.size());
         sb.append("|");

@@ -8,140 +8,28 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import vendor.samsung.hardware.biometrics.face.ISehSession;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public interface ISehFace extends IInterface {
     public static final String DESCRIPTOR = "vendor$samsung$hardware$biometrics$face$ISehFace".replace('$', '.');
 
-    /* loaded from: classes2.dex */
-    public class Default implements ISehFace {
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return null;
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.ISehFace
-        public ISehSession createSession(int i, int i2, ISessionCallback iSessionCallback) {
-            return null;
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.ISehFace
-        public int getInterfaceVersion() {
-            return 0;
-        }
-    }
-
-    ISehSession createSession(int i, int i2, ISessionCallback iSessionCallback);
-
-    String getInterfaceHash();
-
-    int getInterfaceVersion();
-
-    int getServicePid();
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements ISehFace {
-        public static String getDefaultTransactionName(int i) {
-            if (i == 1) {
-                return "getServicePid";
-            }
-            if (i == 2) {
-                return "createSession";
-            }
-            switch (i) {
-                case 16777214:
-                    return "getInterfaceHash";
-                case 16777215:
-                    return "getInterfaceVersion";
-                default:
-                    return null;
-            }
-        }
+        public static final /* synthetic */ int $r8$clinit = 0;
 
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
-        }
-
-        public int getMaxTransactionId() {
-            return 16777214;
-        }
-
-        public Stub() {
-            markVintfStability();
-            attachInterface(this, ISehFace.DESCRIPTOR);
-        }
-
-        public static ISehFace asInterface(IBinder iBinder) {
-            if (iBinder == null) {
-                return null;
-            }
-            IInterface queryLocalInterface = iBinder.queryLocalInterface(ISehFace.DESCRIPTOR);
-            if (queryLocalInterface != null && (queryLocalInterface instanceof ISehFace)) {
-                return (ISehFace) queryLocalInterface;
-            }
-            return new Proxy(iBinder);
-        }
-
-        public String getTransactionName(int i) {
-            return getDefaultTransactionName(i);
-        }
-
-        @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
-            String str = ISehFace.DESCRIPTOR;
-            if (i >= 1 && i <= 16777215) {
-                parcel.enforceInterface(str);
-            }
-            switch (i) {
-                case 16777214:
-                    parcel2.writeNoException();
-                    parcel2.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    parcel2.writeNoException();
-                    parcel2.writeInt(getInterfaceVersion());
-                    return true;
-                case 1598968902:
-                    parcel2.writeString(str);
-                    return true;
-                default:
-                    if (i == 1) {
-                        int servicePid = getServicePid();
-                        parcel2.writeNoException();
-                        parcel2.writeInt(servicePid);
-                    } else if (i == 2) {
-                        int readInt = parcel.readInt();
-                        int readInt2 = parcel.readInt();
-                        ISessionCallback asInterface = ISessionCallback.Stub.asInterface(parcel.readStrongBinder());
-                        parcel.enforceNoDataAvail();
-                        ISehSession createSession = createSession(readInt, readInt2, asInterface);
-                        parcel2.writeNoException();
-                        parcel2.writeStrongInterface(createSession);
-                    } else {
-                        return super.onTransact(i, parcel, parcel2, i2);
-                    }
-                    return true;
-            }
-        }
-
-        /* loaded from: classes2.dex */
-        public class Proxy implements ISehFace {
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements ISehFace {
+            public int mCachedVersion;
             public IBinder mRemote;
-            public int mCachedVersion = -1;
-            public String mCachedHash = "-1";
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
 
             @Override // android.os.IInterface
-            public IBinder asBinder() {
+            public final IBinder asBinder() {
                 return this.mRemote;
             }
 
-            @Override // vendor.samsung.hardware.biometrics.face.ISehFace
-            public ISehSession createSession(int i, int i2, ISessionCallback iSessionCallback) {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final ISehSession createSession(int i, int i2, ISessionCallback iSessionCallback) {
+                ISehSession iSehSession;
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(ISehFace.DESCRIPTOR);
@@ -152,17 +40,30 @@ public interface ISehFace extends IInterface {
                         throw new RemoteException("Method createSession is unimplemented.");
                     }
                     obtain2.readException();
-                    return ISehSession.Stub.asInterface(obtain2.readStrongBinder());
+                    IBinder readStrongBinder = obtain2.readStrongBinder();
+                    int i3 = ISehSession.Stub.$r8$clinit;
+                    if (readStrongBinder == null) {
+                        iSehSession = null;
+                    } else {
+                        IInterface queryLocalInterface = readStrongBinder.queryLocalInterface(ISehSession.DESCRIPTOR);
+                        if (queryLocalInterface == null || !(queryLocalInterface instanceof ISehSession)) {
+                            ISehSession.Stub.Proxy proxy = new ISehSession.Stub.Proxy();
+                            proxy.mRemote = readStrongBinder;
+                            iSehSession = proxy;
+                        } else {
+                            iSehSession = (ISehSession) queryLocalInterface;
+                        }
+                    }
+                    return iSehSession;
                 } finally {
                     obtain2.recycle();
                     obtain.recycle();
                 }
             }
 
-            @Override // vendor.samsung.hardware.biometrics.face.ISehFace
-            public int getInterfaceVersion() {
+            public final int getInterfaceVersion() {
                 if (this.mCachedVersion == -1) {
-                    Parcel obtain = Parcel.obtain(asBinder());
+                    Parcel obtain = Parcel.obtain(this.mRemote);
                     Parcel obtain2 = Parcel.obtain();
                     try {
                         obtain.writeInterfaceToken(ISehFace.DESCRIPTOR);

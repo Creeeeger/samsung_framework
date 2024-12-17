@@ -1,19 +1,29 @@
 package com.android.server.appop;
 
 import android.content.AttributionSource;
-import com.android.internal.util.function.HexFunction;
-import com.android.server.appop.AppOpsService;
+import android.os.IBinder;
+import com.android.internal.util.function.QuadFunction;
 
-/* compiled from: R8$$SyntheticClass */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public final /* synthetic */ class AppOpsService$CheckOpsDelegateDispatcher$$ExternalSyntheticLambda5 implements HexFunction {
+public final /* synthetic */ class AppOpsService$CheckOpsDelegateDispatcher$$ExternalSyntheticLambda5 implements QuadFunction {
+    public final /* synthetic */ int $r8$classId;
     public final /* synthetic */ AppOpsService f$0;
 
-    public /* synthetic */ AppOpsService$CheckOpsDelegateDispatcher$$ExternalSyntheticLambda5(AppOpsService appOpsService) {
+    public /* synthetic */ AppOpsService$CheckOpsDelegateDispatcher$$ExternalSyntheticLambda5(AppOpsService appOpsService, int i) {
+        this.$r8$classId = i;
         this.f$0 = appOpsService;
     }
 
-    public final Object apply(Object obj, Object obj2, Object obj3, Object obj4, Object obj5, Object obj6) {
-        return AppOpsService.CheckOpsDelegateDispatcher.m2451$r8$lambda$i5BgzdKGjmZM_Fo82DEvnLzfGw(this.f$0, ((Integer) obj).intValue(), (AttributionSource) obj2, ((Boolean) obj3).booleanValue(), (String) obj4, ((Boolean) obj5).booleanValue(), ((Boolean) obj6).booleanValue());
+    public final Object apply(Object obj, Object obj2, Object obj3, Object obj4) {
+        int i = this.$r8$classId;
+        AppOpsService appOpsService = this.f$0;
+        switch (i) {
+            case 0:
+                return Integer.valueOf(AppOpsService.m230$$Nest$mcheckAudioOperationImpl(appOpsService, ((Integer) obj).intValue(), ((Integer) obj2).intValue(), ((Integer) obj3).intValue(), (String) obj4));
+            default:
+                AppOpsService.m233$$Nest$mfinishProxyOperationImpl(appOpsService, (IBinder) obj, ((Integer) obj2).intValue(), (AttributionSource) obj3, ((Boolean) obj4).booleanValue());
+                return null;
+        }
     }
 }

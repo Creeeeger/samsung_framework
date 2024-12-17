@@ -1,73 +1,72 @@
 package com.android.server.pm.dex;
 
 import android.content.pm.SharedLibraryInfo;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.util.Slog;
 import android.util.SparseArray;
 import com.android.internal.os.ClassLoaderFactory;
-import com.android.internal.util.ArrayUtils;
-import com.android.internal.util.jobs.XmlUtils;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
-import com.android.server.pm.pkg.AndroidPackage;
-import java.io.File;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class DexoptUtils {
     public static final String SHARED_LIBRARY_LOADER_TYPE = ClassLoaderFactory.getPathClassLoaderName();
 
-    public static String[] getClassLoaderContexts(AndroidPackage androidPackage, List list, boolean[] zArr) {
-        String encodeSharedLibraries = list != null ? encodeSharedLibraries(list) : "";
-        String encodeClassLoader = encodeClassLoader("", androidPackage.getClassLoaderName(), encodeSharedLibraries);
-        if (ArrayUtils.isEmpty(androidPackage.getSplitCodePaths())) {
-            return new String[]{encodeClassLoader};
-        }
-        String[] splitRelativeCodePaths = getSplitRelativeCodePaths(androidPackage);
-        String name = new File(androidPackage.getBaseApkPath()).getName();
-        int i = 1;
-        int length = splitRelativeCodePaths.length + 1;
-        String[] strArr = new String[length];
-        if (!zArr[0]) {
-            encodeClassLoader = null;
-        }
-        strArr[0] = encodeClassLoader;
-        SparseArray splitDependencies = androidPackage.getSplitDependencies();
-        if (!androidPackage.isIsolatedSplitLoading() || splitDependencies == null || splitDependencies.size() == 0) {
-            while (i < length) {
-                if (zArr[i]) {
-                    strArr[i] = encodeClassLoader(name, androidPackage.getClassLoaderName(), encodeSharedLibraries);
-                } else {
-                    strArr[i] = null;
-                }
-                name = encodeClasspath(name, splitRelativeCodePaths[i - 1]);
-                i++;
-            }
+    public static String encodeClassLoader(String str, String str2) {
+        str.getClass();
+        if (ClassLoaderFactory.isPathClassLoaderName(str2)) {
+            str2 = "PCL";
+        } else if (ClassLoaderFactory.isDelegateLastClassLoaderName(str2)) {
+            str2 = "DLC";
         } else {
-            String[] strArr2 = new String[splitRelativeCodePaths.length];
-            for (int i2 = 0; i2 < splitRelativeCodePaths.length; i2++) {
-                strArr2[i2] = encodeClassLoader(splitRelativeCodePaths[i2], androidPackage.getSplitClassLoaderNames()[i2]);
-            }
-            String encodeClassLoader2 = encodeClassLoader(name, androidPackage.getClassLoaderName());
-            for (int i3 = 1; i3 < splitDependencies.size(); i3++) {
-                int keyAt = splitDependencies.keyAt(i3);
-                if (zArr[keyAt]) {
-                    getParentDependencies(keyAt, strArr2, splitDependencies, strArr, encodeClassLoader2);
-                }
-            }
-            while (i < length) {
-                String encodeClassLoader3 = encodeClassLoader("", androidPackage.getSplitClassLoaderNames()[i - 1]);
-                if (zArr[i]) {
-                    if (strArr[i] != null) {
-                        encodeClassLoader3 = encodeClassLoaderChain(encodeClassLoader3, strArr[i]) + encodeSharedLibraries;
-                    }
-                    strArr[i] = encodeClassLoader3;
-                } else {
-                    strArr[i] = null;
-                }
-                i++;
-            }
+            Slog.wtf("DexoptUtils", "Unsupported classLoaderName: " + str2);
         }
-        return strArr;
+        return str2 + "[" + str + "]";
+    }
+
+    public static String encodeClassLoaderChain(String str, String str2) {
+        return str.isEmpty() ? str2 : str2.isEmpty() ? str : AnyMotionDetector$$ExternalSyntheticOutline0.m(str, ";", str2);
+    }
+
+    public static String encodeSharedLibraries(List list) {
+        String str;
+        Iterator it = list.iterator();
+        String str2 = "{";
+        boolean z = true;
+        while (it.hasNext()) {
+            SharedLibraryInfo sharedLibraryInfo = (SharedLibraryInfo) it.next();
+            if (!z) {
+                str2 = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str2, "#");
+            }
+            StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(str2);
+            List allCodePaths = sharedLibraryInfo.getAllCodePaths();
+            String[] strArr = (String[]) allCodePaths.toArray(new String[allCodePaths.size()]);
+            if (strArr == null || strArr.length == 0) {
+                str = "";
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (String str3 : strArr) {
+                    if (sb.length() != 0) {
+                        sb.append(":");
+                    }
+                    sb.append(str3);
+                }
+                str = sb.toString();
+            }
+            String encodeClassLoader = encodeClassLoader(str, SHARED_LIBRARY_LOADER_TYPE);
+            if (sharedLibraryInfo.getDependencies() != null) {
+                StringBuilder m2 = BootReceiver$$ExternalSyntheticOutline0.m(encodeClassLoader);
+                m2.append(encodeSharedLibraries(sharedLibraryInfo.getDependencies()));
+                encodeClassLoader = m2.toString();
+            }
+            m.append(encodeClassLoader);
+            str2 = m.toString();
+            z = false;
+        }
+        return ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str2, "}");
     }
 
     public static String getParentDependencies(int i, String[] strArr, SparseArray sparseArray, String[] strArr2, String str) {
@@ -85,92 +84,5 @@ public abstract class DexoptUtils {
         }
         strArr2[i] = parentDependencies;
         return parentDependencies;
-    }
-
-    public static String encodeSharedLibrary(SharedLibraryInfo sharedLibraryInfo) {
-        List allCodePaths = sharedLibraryInfo.getAllCodePaths();
-        String encodeClassLoader = encodeClassLoader(encodeClasspath((String[]) allCodePaths.toArray(new String[allCodePaths.size()])), SHARED_LIBRARY_LOADER_TYPE);
-        if (sharedLibraryInfo.getDependencies() == null) {
-            return encodeClassLoader;
-        }
-        return encodeClassLoader + encodeSharedLibraries(sharedLibraryInfo.getDependencies());
-    }
-
-    public static String encodeSharedLibraries(List list) {
-        Iterator it = list.iterator();
-        String str = "{";
-        boolean z = true;
-        while (it.hasNext()) {
-            SharedLibraryInfo sharedLibraryInfo = (SharedLibraryInfo) it.next();
-            if (!z) {
-                str = str + "#";
-            }
-            str = str + encodeSharedLibrary(sharedLibraryInfo);
-            z = false;
-        }
-        return str + "}";
-    }
-
-    public static String encodeClasspath(String[] strArr) {
-        if (strArr == null || strArr.length == 0) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String str : strArr) {
-            if (sb.length() != 0) {
-                sb.append(XmlUtils.STRING_ARRAY_SEPARATOR);
-            }
-            sb.append(str);
-        }
-        return sb.toString();
-    }
-
-    public static String encodeClasspath(String str, String str2) {
-        if (str.isEmpty()) {
-            return str2;
-        }
-        return str + XmlUtils.STRING_ARRAY_SEPARATOR + str2;
-    }
-
-    public static String encodeClassLoader(String str, String str2) {
-        str.getClass();
-        if (ClassLoaderFactory.isPathClassLoaderName(str2)) {
-            str2 = "PCL";
-        } else if (ClassLoaderFactory.isDelegateLastClassLoaderName(str2)) {
-            str2 = "DLC";
-        } else {
-            Slog.wtf("DexoptUtils", "Unsupported classLoaderName: " + str2);
-        }
-        return str2 + "[" + str + "]";
-    }
-
-    public static String encodeClassLoader(String str, String str2, String str3) {
-        return encodeClassLoader(str, str2) + str3;
-    }
-
-    public static String encodeClassLoaderChain(String str, String str2) {
-        if (str.isEmpty()) {
-            return str2;
-        }
-        if (str2.isEmpty()) {
-            return str;
-        }
-        return str + KnoxVpnFirewallHelper.DELIMITER + str2;
-    }
-
-    public static String[] getSplitRelativeCodePaths(AndroidPackage androidPackage) {
-        String parent = new File(androidPackage.getBaseApkPath()).getParent();
-        String[] splitCodePaths = androidPackage.getSplitCodePaths();
-        int size = ArrayUtils.size(splitCodePaths);
-        String[] strArr = new String[size];
-        for (int i = 0; i < size; i++) {
-            File file = new File(splitCodePaths[i]);
-            strArr[i] = file.getName();
-            String parent2 = file.getParent();
-            if (!parent2.equals(parent)) {
-                Slog.wtf("DexoptUtils", "Split paths have different base paths: " + parent2 + " and " + parent);
-            }
-        }
-        return strArr;
     }
 }

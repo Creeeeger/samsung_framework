@@ -6,181 +6,26 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IOemLock extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$oemlock$IOemLock".replace('$', '.');
 
-    /* loaded from: classes.dex */
-    public class Default implements IOemLock {
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return null;
-        }
-
-        @Override // android.hardware.oemlock.IOemLock
-        public String getName() {
-            return null;
-        }
-
-        @Override // android.hardware.oemlock.IOemLock
-        public boolean isOemUnlockAllowedByCarrier() {
-            return false;
-        }
-
-        @Override // android.hardware.oemlock.IOemLock
-        public boolean isOemUnlockAllowedByDevice() {
-            return false;
-        }
-
-        @Override // android.hardware.oemlock.IOemLock
-        public int setOemUnlockAllowedByCarrier(boolean z, byte[] bArr) {
-            return 0;
-        }
-
-        @Override // android.hardware.oemlock.IOemLock
-        public void setOemUnlockAllowedByDevice(boolean z) {
-        }
-    }
-
-    String getInterfaceHash();
-
-    int getInterfaceVersion();
-
-    String getName();
-
-    boolean isOemUnlockAllowedByCarrier();
-
-    boolean isOemUnlockAllowedByDevice();
-
-    int setOemUnlockAllowedByCarrier(boolean z, byte[] bArr);
-
-    void setOemUnlockAllowedByDevice(boolean z);
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements IOemLock {
-        public static String getDefaultTransactionName(int i) {
-            if (i == 1) {
-                return "getName";
-            }
-            if (i == 2) {
-                return "isOemUnlockAllowedByCarrier";
-            }
-            if (i == 3) {
-                return "isOemUnlockAllowedByDevice";
-            }
-            if (i == 4) {
-                return "setOemUnlockAllowedByCarrier";
-            }
-            if (i == 5) {
-                return "setOemUnlockAllowedByDevice";
-            }
-            switch (i) {
-                case 16777214:
-                    return "getInterfaceHash";
-                case 16777215:
-                    return "getInterfaceVersion";
-                default:
-                    return null;
-            }
-        }
+        public static final /* synthetic */ int $r8$clinit = 0;
 
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
-        }
-
-        public int getMaxTransactionId() {
-            return 16777214;
-        }
-
-        public Stub() {
-            markVintfStability();
-            attachInterface(this, IOemLock.DESCRIPTOR);
-        }
-
-        public static IOemLock asInterface(IBinder iBinder) {
-            if (iBinder == null) {
-                return null;
-            }
-            IInterface queryLocalInterface = iBinder.queryLocalInterface(IOemLock.DESCRIPTOR);
-            if (queryLocalInterface != null && (queryLocalInterface instanceof IOemLock)) {
-                return (IOemLock) queryLocalInterface;
-            }
-            return new Proxy(iBinder);
-        }
-
-        public String getTransactionName(int i) {
-            return getDefaultTransactionName(i);
-        }
-
-        @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
-            String str = IOemLock.DESCRIPTOR;
-            if (i >= 1 && i <= 16777215) {
-                parcel.enforceInterface(str);
-            }
-            switch (i) {
-                case 16777214:
-                    parcel2.writeNoException();
-                    parcel2.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    parcel2.writeNoException();
-                    parcel2.writeInt(getInterfaceVersion());
-                    return true;
-                case 1598968902:
-                    parcel2.writeString(str);
-                    return true;
-                default:
-                    if (i == 1) {
-                        String name = getName();
-                        parcel2.writeNoException();
-                        parcel2.writeString(name);
-                    } else if (i == 2) {
-                        boolean isOemUnlockAllowedByCarrier = isOemUnlockAllowedByCarrier();
-                        parcel2.writeNoException();
-                        parcel2.writeBoolean(isOemUnlockAllowedByCarrier);
-                    } else if (i == 3) {
-                        boolean isOemUnlockAllowedByDevice = isOemUnlockAllowedByDevice();
-                        parcel2.writeNoException();
-                        parcel2.writeBoolean(isOemUnlockAllowedByDevice);
-                    } else if (i == 4) {
-                        boolean readBoolean = parcel.readBoolean();
-                        byte[] createByteArray = parcel.createByteArray();
-                        parcel.enforceNoDataAvail();
-                        int oemUnlockAllowedByCarrier = setOemUnlockAllowedByCarrier(readBoolean, createByteArray);
-                        parcel2.writeNoException();
-                        parcel2.writeInt(oemUnlockAllowedByCarrier);
-                    } else if (i == 5) {
-                        boolean readBoolean2 = parcel.readBoolean();
-                        parcel.enforceNoDataAvail();
-                        setOemUnlockAllowedByDevice(readBoolean2);
-                        parcel2.writeNoException();
-                    } else {
-                        return super.onTransact(i, parcel, parcel2, i2);
-                    }
-                    return true;
-            }
-        }
-
-        /* loaded from: classes.dex */
-        public class Proxy implements IOemLock {
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements IOemLock {
             public IBinder mRemote;
-            public int mCachedVersion = -1;
-            public String mCachedHash = "-1";
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
 
             @Override // android.os.IInterface
-            public IBinder asBinder() {
+            public final IBinder asBinder() {
                 return this.mRemote;
             }
 
-            @Override // android.hardware.oemlock.IOemLock
-            public String getName() {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final String getName() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(IOemLock.DESCRIPTOR);
@@ -195,9 +40,8 @@ public interface IOemLock extends IInterface {
                 }
             }
 
-            @Override // android.hardware.oemlock.IOemLock
-            public boolean isOemUnlockAllowedByCarrier() {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final boolean isOemUnlockAllowedByCarrier() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(IOemLock.DESCRIPTOR);
@@ -212,9 +56,8 @@ public interface IOemLock extends IInterface {
                 }
             }
 
-            @Override // android.hardware.oemlock.IOemLock
-            public boolean isOemUnlockAllowedByDevice() {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final boolean isOemUnlockAllowedByDevice() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(IOemLock.DESCRIPTOR);
@@ -229,9 +72,8 @@ public interface IOemLock extends IInterface {
                 }
             }
 
-            @Override // android.hardware.oemlock.IOemLock
-            public int setOemUnlockAllowedByCarrier(boolean z, byte[] bArr) {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final int setOemUnlockAllowedByCarrier(boolean z, byte[] bArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(IOemLock.DESCRIPTOR);
@@ -248,9 +90,8 @@ public interface IOemLock extends IInterface {
                 }
             }
 
-            @Override // android.hardware.oemlock.IOemLock
-            public void setOemUnlockAllowedByDevice(boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final void setOemUnlockAllowedByDevice(boolean z) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(IOemLock.DESCRIPTOR);

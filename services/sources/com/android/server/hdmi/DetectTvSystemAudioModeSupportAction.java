@@ -1,50 +1,23 @@
 package com.android.server.hdmi;
 
-import android.hardware.hdmi.IHdmiControlCallback;
+import com.android.server.hdmi.HdmiCecFeatureAction;
 import com.android.server.hdmi.HdmiCecLocalDeviceAudioSystem;
-import com.android.server.hdmi.HdmiControlService;
+import java.util.Map;
 
-/* loaded from: classes2.dex */
-public class DetectTvSystemAudioModeSupportAction extends HdmiCecFeatureAction {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DetectTvSystemAudioModeSupportAction extends HdmiCecFeatureAction {
     public HdmiCecLocalDeviceAudioSystem.TvSystemAudioModeSupportedCallback mCallback;
     public int mSendSetSystemAudioModeRetryCount;
 
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public /* bridge */ /* synthetic */ void addCallback(IHdmiControlCallback iHdmiControlCallback) {
-        super.addCallback(iHdmiControlCallback);
-    }
-
-    public DetectTvSystemAudioModeSupportAction(HdmiCecLocalDevice hdmiCecLocalDevice, HdmiCecLocalDeviceAudioSystem.TvSystemAudioModeSupportedCallback tvSystemAudioModeSupportedCallback) {
-        super(hdmiCecLocalDevice);
-        this.mSendSetSystemAudioModeRetryCount = 0;
-        this.mCallback = tvSystemAudioModeSupportedCallback;
+    public final void finishAction(boolean z) {
+        this.mCallback.onResult(z);
+        ((HdmiCecLocalDeviceAudioSystem) this.mSource).mTvSystemAudioModeSupport = Boolean.valueOf(z);
+        finish(true);
     }
 
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean start() {
-        this.mState = 1;
-        addTimer(1, 2000);
-        sendSetSystemAudioMode();
-        return true;
-    }
-
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean processCommand(HdmiCecMessage hdmiCecMessage) {
-        if (hdmiCecMessage.getOpcode() != 0 || this.mState != 1 || HdmiUtils.getAbortFeatureOpcode(hdmiCecMessage) != 114) {
-            return false;
-        }
-        if (HdmiUtils.getAbortReason(hdmiCecMessage) == 1) {
-            this.mActionTimer.clearTimerMessage();
-            this.mState = 2;
-            addTimer(2, 300);
-        } else {
-            finishAction(false);
-        }
-        return true;
-    }
-
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public void handleTimerEvent(int i) {
+    public final void handleTimerEvent(int i) {
         int i2 = this.mState;
         if (i2 != i) {
             return;
@@ -58,33 +31,39 @@ public class DetectTvSystemAudioModeSupportAction extends HdmiCecFeatureAction {
         }
         int i3 = this.mSendSetSystemAudioModeRetryCount + 1;
         this.mSendSetSystemAudioModeRetryCount = i3;
-        if (i3 < 5) {
-            this.mState = 1;
-            addTimer(1, 2000);
-            sendSetSystemAudioMode();
+        if (i3 >= 5) {
+            finishAction(false);
             return;
         }
-        finishAction(false);
+        this.mState = 1;
+        addTimer(1, 2000);
+        sendCommand(HdmiCecMessageBuilder.buildCommandWithBooleanParam(getSourceAddress(), 0, 114, true), new DetectTvSystemAudioModeSupportAction$$ExternalSyntheticLambda0(this));
     }
 
-    public void sendSetSystemAudioMode() {
-        sendCommand(HdmiCecMessageBuilder.buildSetSystemAudioMode(getSourceAddress(), 0, true), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.DetectTvSystemAudioModeSupportAction$$ExternalSyntheticLambda0
-            @Override // com.android.server.hdmi.HdmiControlService.SendMessageCallback
-            public final void onSendCompleted(int i) {
-                DetectTvSystemAudioModeSupportAction.this.lambda$sendSetSystemAudioMode$0(i);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$sendSetSystemAudioMode$0(int i) {
-        if (i != 0) {
-            finishAction(false);
+    @Override // com.android.server.hdmi.HdmiCecFeatureAction
+    public final boolean processCommand(HdmiCecMessage hdmiCecMessage) {
+        if (hdmiCecMessage.mOpcode != 0 || this.mState != 1) {
+            return false;
         }
+        Map map = HdmiUtils.ADDRESS_TO_TYPE;
+        byte[] bArr = hdmiCecMessage.mParams;
+        if ((bArr[0] & 255) == 114) {
+            if (bArr[1] == 1) {
+                ((HdmiCecFeatureAction.ActionTimerHandler) this.mActionTimer).clearTimerMessage();
+                this.mState = 2;
+                addTimer(2, 300);
+            } else {
+                finishAction(false);
+            }
+            return true;
+        }
+        return false;
     }
 
-    public final void finishAction(boolean z) {
-        this.mCallback.onResult(z);
-        audioSystem().setTvSystemAudioModeSupport(z);
-        finish();
+    @Override // com.android.server.hdmi.HdmiCecFeatureAction
+    public final void start() {
+        this.mState = 1;
+        addTimer(1, 2000);
+        sendCommand(HdmiCecMessageBuilder.buildCommandWithBooleanParam(getSourceAddress(), 0, 114, true), new DetectTvSystemAudioModeSupportAction$$ExternalSyntheticLambda0(this));
     }
 }

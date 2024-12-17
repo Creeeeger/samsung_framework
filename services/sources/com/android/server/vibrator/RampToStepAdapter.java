@@ -5,68 +5,80 @@ import android.os.vibrator.RampSegment;
 import android.os.vibrator.StepSegment;
 import android.os.vibrator.VibrationEffectSegment;
 import android.util.MathUtils;
-import com.android.server.display.DisplayPowerController2;
-import com.android.server.vibrator.VibrationEffectAdapters;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes3.dex */
-public final class RampToStepAdapter implements VibrationEffectAdapters.SegmentsAdapter {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RampToStepAdapter implements VibrationSegmentsAdapter {
     public final int mStepDuration;
 
     public RampToStepAdapter(int i) {
         this.mStepDuration = i;
     }
 
-    @Override // com.android.server.vibrator.VibrationEffectAdapters.SegmentsAdapter
-    public int apply(List list, int i, VibratorInfo vibratorInfo) {
+    public static float fillEmptyFrequency(VibratorInfo vibratorInfo, float f) {
+        return Float.isNaN(vibratorInfo.getResonantFrequencyHz()) ? FullScreenMagnificationGestureHandler.MAX_SCALE : f == FullScreenMagnificationGestureHandler.MAX_SCALE ? vibratorInfo.getResonantFrequencyHz() : f;
+    }
+
+    @Override // com.android.server.vibrator.VibrationSegmentsAdapter
+    public final int adaptToVibrator(VibratorInfo vibratorInfo, List list, int i) {
+        int i2;
+        List list2;
+        int i3;
         if (vibratorInfo.hasCapability(1024L)) {
             return i;
         }
-        int size = list.size();
-        int i2 = 0;
-        while (i2 < size) {
-            VibrationEffectSegment vibrationEffectSegment = (VibrationEffectSegment) list.get(i2);
-            if (vibrationEffectSegment instanceof RampSegment) {
-                List apply = apply(vibratorInfo, (RampSegment) vibrationEffectSegment);
-                list.remove(i2);
-                list.addAll(i2, apply);
-                int size2 = apply.size() - 1;
-                if (i > i2) {
-                    i += size2;
+        ArrayList arrayList = (ArrayList) list;
+        int i4 = 0;
+        int size = arrayList.size();
+        int i5 = 0;
+        int i6 = i;
+        while (i5 < size) {
+            RampSegment rampSegment = (VibrationEffectSegment) arrayList.get(i5);
+            if (rampSegment instanceof RampSegment) {
+                RampSegment rampSegment2 = rampSegment;
+                if (Float.compare(rampSegment2.getStartAmplitude(), rampSegment2.getEndAmplitude()) == 0) {
+                    StepSegment[] stepSegmentArr = new StepSegment[1];
+                    stepSegmentArr[i4] = new StepSegment(rampSegment2.getStartAmplitude(), fillEmptyFrequency(vibratorInfo, rampSegment2.getStartFrequencyHz()), (int) rampSegment2.getDuration());
+                    list2 = Arrays.asList(stepSegmentArr);
+                } else {
+                    ArrayList arrayList2 = new ArrayList();
+                    long duration = rampSegment2.getDuration();
+                    int i7 = this.mStepDuration;
+                    int i8 = ((int) ((duration + i7) - 1)) / i7;
+                    int i9 = i4;
+                    while (true) {
+                        i2 = i8 - 1;
+                        if (i9 >= i2) {
+                            break;
+                        }
+                        float f = i9 / i8;
+                        arrayList2.add(new StepSegment(MathUtils.lerp(rampSegment2.getStartAmplitude(), rampSegment2.getEndAmplitude(), f), MathUtils.lerp(fillEmptyFrequency(vibratorInfo, rampSegment2.getStartFrequencyHz()), fillEmptyFrequency(vibratorInfo, rampSegment2.getEndFrequencyHz()), f), i7));
+                        i9++;
+                        i8 = i8;
+                    }
+                    arrayList2.add(new StepSegment(rampSegment2.getEndAmplitude(), fillEmptyFrequency(vibratorInfo, rampSegment2.getEndFrequencyHz()), ((int) rampSegment2.getDuration()) - (i7 * i2)));
+                    list2 = arrayList2;
                 }
-                i2 += size2;
-                size += size2;
-            }
-            i2++;
-        }
-        return i;
-    }
-
-    public final List apply(VibratorInfo vibratorInfo, RampSegment rampSegment) {
-        if (Float.compare(rampSegment.getStartAmplitude(), rampSegment.getEndAmplitude()) == 0) {
-            return Arrays.asList(new StepSegment(rampSegment.getStartAmplitude(), fillEmptyFrequency(vibratorInfo, rampSegment.getStartFrequencyHz()), (int) rampSegment.getDuration()));
-        }
-        ArrayList arrayList = new ArrayList();
-        long duration = rampSegment.getDuration();
-        int i = this.mStepDuration;
-        int i2 = ((int) ((duration + i) - 1)) / i;
-        int i3 = 0;
-        while (true) {
-            int i4 = i2 - 1;
-            if (i3 < i4) {
-                float f = i3 / i2;
-                arrayList.add(new StepSegment(MathUtils.lerp(rampSegment.getStartAmplitude(), rampSegment.getEndAmplitude(), f), MathUtils.lerp(fillEmptyFrequency(vibratorInfo, rampSegment.getStartFrequencyHz()), fillEmptyFrequency(vibratorInfo, rampSegment.getEndFrequencyHz()), f), this.mStepDuration));
-                i3++;
+                arrayList.remove(i5);
+                arrayList.addAll(i5, list2);
+                int size2 = list2.size();
+                i3 = 1;
+                int i10 = size2 - 1;
+                if (i6 > i5) {
+                    i6 += i10;
+                }
+                i5 += i10;
+                size += i10;
             } else {
-                arrayList.add(new StepSegment(rampSegment.getEndAmplitude(), fillEmptyFrequency(vibratorInfo, rampSegment.getEndFrequencyHz()), ((int) rampSegment.getDuration()) - (this.mStepDuration * i4)));
-                return arrayList;
+                i3 = 1;
             }
+            i5 += i3;
+            i4 = 0;
         }
-    }
-
-    public static float fillEmptyFrequency(VibratorInfo vibratorInfo, float f) {
-        return f == DisplayPowerController2.RATE_FROM_DOZE_TO_ON ? vibratorInfo.getResonantFrequencyHz() : f;
+        return i6;
     }
 }

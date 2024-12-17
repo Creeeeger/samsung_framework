@@ -1,12 +1,12 @@
 package com.android.server.pm;
 
 import android.content.pm.SigningDetails;
-import android.util.ArrayMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ReconciledPackage {
     public final Map mAllPackages;
     public final List mAllowedSharedLibraryInfos;
@@ -27,14 +27,5 @@ public final class ReconciledPackage {
         this.mSigningDetails = signingDetails;
         this.mSharedUserSignaturesChanged = z;
         this.mRemoveAppKeySetData = z2;
-    }
-
-    public Map getCombinedAvailablePackages() {
-        ArrayMap arrayMap = new ArrayMap(this.mAllPackages.size() + this.mInstallRequests.size());
-        arrayMap.putAll(this.mAllPackages);
-        for (InstallRequest installRequest : this.mInstallRequests) {
-            arrayMap.put(installRequest.getScannedPackageSetting().getPackageName(), installRequest.getParsedPackage());
-        }
-        return arrayMap;
     }
 }

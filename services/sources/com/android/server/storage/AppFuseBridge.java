@@ -6,15 +6,32 @@ import android.util.SparseArray;
 import com.android.internal.os.FuseUnavailableMountException;
 import com.android.internal.util.Preconditions;
 import com.android.server.AppFuseMountException;
+import com.android.server.StorageManagerService;
 import java.util.concurrent.CountDownLatch;
 import libcore.io.IoUtils;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class AppFuseBridge implements Runnable {
     public static final String APPFUSE_MOUNT_NAME_TEMPLATE = "/mnt/appfuse/%d_%d";
     public static final String TAG = "AppFuseBridge";
     public final SparseArray mScopes = new SparseArray();
     public long mNativeLoop = native_new();
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public abstract class MountScope implements AutoCloseable {
+        public final int mountId;
+        public final int uid;
+        public final CountDownLatch mMounted = new CountDownLatch(1);
+        public boolean mMountResult = false;
+
+        public MountScope(int i, int i2) {
+            this.uid = i;
+            this.mountId = i2;
+        }
+
+        public abstract ParcelFileDescriptor open();
+    }
 
     private native int native_add_bridge(long j, int i, int i2);
 
@@ -28,7 +45,7 @@ public class AppFuseBridge implements Runnable {
 
     private native void native_unlock();
 
-    public ParcelFileDescriptor addBridge(MountScope mountScope) {
+    public final ParcelFileDescriptor addBridge(MountScope mountScope) throws FuseUnavailableMountException, AppFuseMountException {
         ParcelFileDescriptor adoptFd;
         native_lock();
         try {
@@ -55,16 +72,27 @@ public class AppFuseBridge implements Runnable {
         }
     }
 
-    @Override // java.lang.Runnable
-    public void run() {
-        native_start_loop(this.mNativeLoop);
-        synchronized (this) {
-            native_delete(this.mNativeLoop);
-            this.mNativeLoop = 0L;
+    public final synchronized void onClosed(int i) {
+        MountScope mountScope = (MountScope) this.mScopes.get(i);
+        if (mountScope != null) {
+            if (mountScope.mMounted.getCount() != 0) {
+                mountScope.mMountResult = false;
+                mountScope.mMounted.countDown();
+            }
+            IoUtils.closeQuietly(mountScope);
+            this.mScopes.remove(i);
         }
     }
 
-    public ParcelFileDescriptor openFile(int i, int i2, int i3) {
+    public final synchronized void onMount(int i) {
+        MountScope mountScope = (MountScope) this.mScopes.get(i);
+        if (mountScope != null && mountScope.mMounted.getCount() != 0) {
+            mountScope.mMountResult = true;
+            mountScope.mMounted.countDown();
+        }
+    }
+
+    public final ParcelFileDescriptor openFile(int i, int i2, int i3) throws FuseUnavailableMountException, InterruptedException {
         MountScope mountScope;
         synchronized (this) {
             mountScope = (MountScope) this.mScopes.get(i);
@@ -72,59 +100,31 @@ public class AppFuseBridge implements Runnable {
                 throw new FuseUnavailableMountException(i);
             }
         }
-        if (!mountScope.waitForMount()) {
+        mountScope.mMounted.await();
+        if (!mountScope.mMountResult) {
             throw new FuseUnavailableMountException(i);
         }
         try {
-            return mountScope.openFile(i, i2, FileUtils.translateModePfdToPosix(i3));
+            int translateModePfdToPosix = FileUtils.translateModePfdToPosix(i3);
+            StorageManagerService.AppFuseMountScope appFuseMountScope = (StorageManagerService.AppFuseMountScope) mountScope;
+            StorageManagerService.this.getClass();
+            StorageManagerService.extendWatchdogTimeout("#openFile might be slow");
+            try {
+                return new ParcelFileDescriptor(StorageManagerService.this.mVold.openAppFuseFile(appFuseMountScope.uid, i, i2, translateModePfdToPosix));
+            } catch (Exception e) {
+                throw new AppFuseMountException("Failed to open", e);
+            }
         } catch (AppFuseMountException unused) {
             throw new FuseUnavailableMountException(i);
         }
     }
 
-    public final synchronized void onMount(int i) {
-        MountScope mountScope = (MountScope) this.mScopes.get(i);
-        if (mountScope != null) {
-            mountScope.setMountResultLocked(true);
-        }
-    }
-
-    public final synchronized void onClosed(int i) {
-        MountScope mountScope = (MountScope) this.mScopes.get(i);
-        if (mountScope != null) {
-            mountScope.setMountResultLocked(false);
-            IoUtils.closeQuietly(mountScope);
-            this.mScopes.remove(i);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public abstract class MountScope implements AutoCloseable {
-        public final int mountId;
-        public final int uid;
-        public final CountDownLatch mMounted = new CountDownLatch(1);
-        public boolean mMountResult = false;
-
-        public abstract ParcelFileDescriptor open();
-
-        public abstract ParcelFileDescriptor openFile(int i, int i2, int i3);
-
-        public MountScope(int i, int i2) {
-            this.uid = i;
-            this.mountId = i2;
-        }
-
-        public void setMountResultLocked(boolean z) {
-            if (this.mMounted.getCount() == 0) {
-                return;
-            }
-            this.mMountResult = z;
-            this.mMounted.countDown();
-        }
-
-        public boolean waitForMount() {
-            this.mMounted.await();
-            return this.mMountResult;
+    @Override // java.lang.Runnable
+    public final void run() {
+        native_start_loop(this.mNativeLoop);
+        synchronized (this) {
+            native_delete(this.mNativeLoop);
+            this.mNativeLoop = 0L;
         }
     }
 }

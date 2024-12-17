@@ -1,21 +1,23 @@
 package android.hardware.broadcastradio.V2_0;
 
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 import android.os.HidlSupport;
 import android.os.HwBlob;
 import android.os.HwParcel;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ProgramInfo {
     public int infoFlags;
-    public ProgramSelector selector = new ProgramSelector();
-    public ProgramIdentifier logicallyTunedTo = new ProgramIdentifier();
-    public ProgramIdentifier physicallyTunedTo = new ProgramIdentifier();
-    public ArrayList relatedContent = new ArrayList();
+    public final ProgramSelector selector = new ProgramSelector();
+    public final ProgramIdentifier logicallyTunedTo = new ProgramIdentifier();
+    public final ProgramIdentifier physicallyTunedTo = new ProgramIdentifier();
+    public final ArrayList relatedContent = new ArrayList();
     public int signalQuality = 0;
-    public ArrayList metadata = new ArrayList();
-    public ArrayList vendorInfo = new ArrayList();
+    public final ArrayList metadata = new ArrayList();
+    public final ArrayList vendorInfo = new ArrayList();
 
     public final boolean equals(Object obj) {
         if (this == obj) {
@@ -29,49 +31,102 @@ public final class ProgramInfo {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.selector)), Integer.valueOf(HidlSupport.deepHashCode(this.logicallyTunedTo)), Integer.valueOf(HidlSupport.deepHashCode(this.physicallyTunedTo)), Integer.valueOf(HidlSupport.deepHashCode(this.relatedContent)), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.infoFlags))), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.signalQuality))), Integer.valueOf(HidlSupport.deepHashCode(this.metadata)), Integer.valueOf(HidlSupport.deepHashCode(this.vendorInfo)));
-    }
-
-    public final String toString() {
-        return "{.selector = " + this.selector + ", .logicallyTunedTo = " + this.logicallyTunedTo + ", .physicallyTunedTo = " + this.physicallyTunedTo + ", .relatedContent = " + this.relatedContent + ", .infoFlags = " + ProgramInfoFlags.dumpBitfield(this.infoFlags) + ", .signalQuality = " + this.signalQuality + ", .metadata = " + this.metadata + ", .vendorInfo = " + this.vendorInfo + "}";
-    }
-
-    public final void readFromParcel(HwParcel hwParcel) {
-        readEmbeddedFromParcel(hwParcel, hwParcel.readBuffer(120L), 0L);
+        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.selector)), Integer.valueOf(HidlSupport.deepHashCode(this.logicallyTunedTo)), Integer.valueOf(HidlSupport.deepHashCode(this.physicallyTunedTo)), Integer.valueOf(HidlSupport.deepHashCode(this.relatedContent)), AudioConfig$$ExternalSyntheticOutline0.m(this.infoFlags), AudioConfig$$ExternalSyntheticOutline0.m(this.signalQuality), Integer.valueOf(HidlSupport.deepHashCode(this.metadata)), Integer.valueOf(HidlSupport.deepHashCode(this.vendorInfo)));
     }
 
     public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.selector.readEmbeddedFromParcel(hwParcel, hwBlob, j + 0);
-        this.logicallyTunedTo.readEmbeddedFromParcel(hwParcel, hwBlob, j + 32);
-        this.physicallyTunedTo.readEmbeddedFromParcel(hwParcel, hwBlob, j + 48);
-        long j2 = j + 64;
-        int int32 = hwBlob.getInt32(j2 + 8);
-        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 16, hwBlob.handle(), j2 + 0, true);
+        this.selector.readEmbeddedFromParcel(hwParcel, hwBlob, j);
+        this.logicallyTunedTo.readEmbeddedFromParcel(hwBlob, 32 + j);
+        this.physicallyTunedTo.readEmbeddedFromParcel(hwBlob, 48 + j);
+        int int32 = hwBlob.getInt32(72 + j);
+        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 16, hwBlob.handle(), j + 64, true);
         this.relatedContent.clear();
-        for (int i = 0; i < int32; i++) {
+        int i = 0;
+        for (int i2 = 0; i2 < int32; i2++) {
             ProgramIdentifier programIdentifier = new ProgramIdentifier();
-            programIdentifier.readEmbeddedFromParcel(hwParcel, readEmbeddedBuffer, i * 16);
+            programIdentifier.readEmbeddedFromParcel(readEmbeddedBuffer, i2 * 16);
             this.relatedContent.add(programIdentifier);
         }
-        this.infoFlags = hwBlob.getInt32(j + 80);
-        this.signalQuality = hwBlob.getInt32(j + 84);
-        long j3 = j + 88;
-        int int322 = hwBlob.getInt32(j3 + 8);
-        HwBlob readEmbeddedBuffer2 = hwParcel.readEmbeddedBuffer(int322 * 32, hwBlob.handle(), j3 + 0, true);
+        this.infoFlags = hwBlob.getInt32(80 + j);
+        this.signalQuality = hwBlob.getInt32(84 + j);
+        int int322 = hwBlob.getInt32(96 + j);
+        HwBlob readEmbeddedBuffer2 = hwParcel.readEmbeddedBuffer(int322 * 32, hwBlob.handle(), j + 88, true);
         this.metadata.clear();
-        for (int i2 = 0; i2 < int322; i2++) {
+        int i3 = 0;
+        while (i3 < int322) {
             Metadata metadata = new Metadata();
-            metadata.readEmbeddedFromParcel(hwParcel, readEmbeddedBuffer2, i2 * 32);
+            metadata.key = i;
+            metadata.intValue = 0L;
+            metadata.stringValue = new String();
+            long j2 = i3 * 32;
+            metadata.key = readEmbeddedBuffer2.getInt32(j2);
+            metadata.intValue = readEmbeddedBuffer2.getInt64(8 + j2);
+            long j3 = j2 + 16;
+            metadata.stringValue = readEmbeddedBuffer2.getString(j3);
+            hwParcel.readEmbeddedBuffer(r1.getBytes().length + 1, readEmbeddedBuffer2.handle(), j3, false);
             this.metadata.add(metadata);
+            i3++;
+            i = 0;
         }
-        long j4 = j + 104;
-        int int323 = hwBlob.getInt32(8 + j4);
-        HwBlob readEmbeddedBuffer3 = hwParcel.readEmbeddedBuffer(int323 * 32, hwBlob.handle(), j4 + 0, true);
+        int int323 = hwBlob.getInt32(112 + j);
+        HwBlob readEmbeddedBuffer3 = hwParcel.readEmbeddedBuffer(int323 * 32, hwBlob.handle(), j + 104, true);
         this.vendorInfo.clear();
-        for (int i3 = 0; i3 < int323; i3++) {
+        for (int i4 = 0; i4 < int323; i4++) {
             VendorKeyValue vendorKeyValue = new VendorKeyValue();
-            vendorKeyValue.readEmbeddedFromParcel(hwParcel, readEmbeddedBuffer3, i3 * 32);
+            vendorKeyValue.readEmbeddedFromParcel(hwParcel, readEmbeddedBuffer3, i4 * 32);
             this.vendorInfo.add(vendorKeyValue);
         }
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("{.selector = ");
+        sb.append(this.selector);
+        sb.append(", .logicallyTunedTo = ");
+        sb.append(this.logicallyTunedTo);
+        sb.append(", .physicallyTunedTo = ");
+        sb.append(this.physicallyTunedTo);
+        sb.append(", .relatedContent = ");
+        sb.append(this.relatedContent);
+        sb.append(", .infoFlags = ");
+        int i = this.infoFlags;
+        ArrayList arrayList = new ArrayList();
+        int i2 = 1;
+        if ((i & 1) == 1) {
+            arrayList.add("LIVE");
+        } else {
+            i2 = 0;
+        }
+        if ((i & 2) == 2) {
+            arrayList.add("MUTED");
+            i2 |= 2;
+        }
+        if ((i & 4) == 4) {
+            arrayList.add("TRAFFIC_PROGRAM");
+            i2 |= 4;
+        }
+        if ((i & 8) == 8) {
+            arrayList.add("TRAFFIC_ANNOUNCEMENT");
+            i2 |= 8;
+        }
+        if ((i & 16) == 16) {
+            arrayList.add("TUNED");
+            i2 |= 16;
+        }
+        if ((i & 32) == 32) {
+            arrayList.add("STEREO");
+            i2 |= 32;
+        }
+        if (i != i2) {
+            arrayList.add("0x" + Integer.toHexString(i & (~i2)));
+        }
+        sb.append(String.join(" | ", arrayList));
+        sb.append(", .signalQuality = ");
+        sb.append(this.signalQuality);
+        sb.append(", .metadata = ");
+        sb.append(this.metadata);
+        sb.append(", .vendorInfo = ");
+        sb.append(this.vendorInfo);
+        sb.append("}");
+        return sb.toString();
     }
 }

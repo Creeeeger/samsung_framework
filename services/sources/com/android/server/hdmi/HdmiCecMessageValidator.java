@@ -4,53 +4,146 @@ import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
 import android.util.SparseArray;
 import com.android.internal.util.FrameworkStatsLog;
 import com.android.server.location.gnss.hal.GnssNative;
-import com.att.iqi.lib.metrics.hw.HwConstants;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class HdmiCecMessageValidator {
     public static final SparseArray sValidationInfo = new SparseArray();
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AsciiValidator implements ParameterValidator {
+        public final /* synthetic */ int $r8$classId;
+        public final int mMaxLength;
+        public final int mMinLength;
+
+        public AsciiValidator() {
+            this.$r8$classId = 0;
+            this.mMinLength = 3;
+            this.mMaxLength = 3;
+        }
+
+        public AsciiValidator(int i) {
+            this.$r8$classId = 0;
+            this.mMinLength = 1;
+            this.mMaxLength = 14;
+        }
+
+        public AsciiValidator(int i, int i2) {
+            this.$r8$classId = 1;
+            this.mMinLength = i;
+            this.mMaxLength = i2;
+        }
+
+        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
+        public final int isValid(byte[] bArr) {
+            switch (this.$r8$classId) {
+                case 0:
+                    if (bArr.length < this.mMinLength) {
+                        return 4;
+                    }
+                    boolean z = false;
+                    for (int i = 0; i < bArr.length && i < this.mMaxLength; i++) {
+                        if (!HdmiCecMessageValidator.isWithinRange(bArr[i], 32, 126)) {
+                            return HdmiCecMessageValidator.m573$$Nest$smtoErrorCode(z);
+                        }
+                    }
+                    z = true;
+                    return HdmiCecMessageValidator.m573$$Nest$smtoErrorCode(z);
+                default:
+                    if (bArr.length < 1) {
+                        return 4;
+                    }
+                    return HdmiCecMessageValidator.m573$$Nest$smtoErrorCode(HdmiCecMessageValidator.isWithinRange(bArr[0], this.mMinLength, this.mMaxLength));
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class FixedLengthValidator implements ParameterValidator {
+        public final /* synthetic */ int $r8$classId;
+        public final int mLength;
+
+        public /* synthetic */ FixedLengthValidator(int i, int i2) {
+            this.$r8$classId = i2;
+            this.mLength = i;
+        }
+
+        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
+        public final int isValid(byte[] bArr) {
+            switch (this.$r8$classId) {
+                case 0:
+                    if (bArr.length < this.mLength) {
+                    }
+                    break;
+                default:
+                    if (bArr.length < this.mLength) {
+                    }
+                    break;
+            }
+            return 0;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface ParameterValidator {
         int isValid(byte[] bArr);
     }
 
-    public static boolean isValidAnalogueFrequency(int i) {
-        int i2 = i & GnssNative.GNSS_AIDING_TYPE_ALL;
-        return (i2 == 0 || i2 == 65535) ? false : true;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class PlayModeValidator implements ParameterValidator {
+        public final /* synthetic */ int $r8$classId;
 
-    public static boolean isValidDisplayControl(int i) {
-        int i2 = i & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
-        return i2 == 0 || i2 == 64 || i2 == 128 || i2 == 192;
-    }
-
-    public static boolean isValidType(int i) {
-        return i >= 0 && i <= 7 && i != 2;
-    }
-
-    public static boolean isValidUiBroadcastType(int i) {
-        return i == 0 || i == 1 || i == 16 || i == 32 || i == 48 || i == 64 || i == 80 || i == 96 || i == 112 || i == 128 || i == 144 || i == 145 || i == 160;
-    }
-
-    public static boolean isWithinRange(int i, int i2, int i3) {
-        int i4 = i & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
-        return i4 >= i2 && i4 <= i3;
-    }
-
-    public static int toErrorCode(boolean z) {
-        return z ? 0 : 3;
-    }
-
-    public static int validateAddress(int i, int i2, int i3, int i4) {
-        if (((1 << i) & i3) == 0) {
-            return 1;
+        public /* synthetic */ PlayModeValidator(int i) {
+            this.$r8$classId = i;
         }
-        return ((1 << i2) & i4) == 0 ? 2 : 0;
+
+        /* JADX WARN: Code restructure failed: missing block: B:109:0x0113, code lost:
+        
+            if ((r11.length - 1) >= 2) goto L100;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:80:0x00d7, code lost:
+        
+            if (com.android.server.hdmi.HdmiCecMessageValidator.isWithinRange(r11[4], 0, 31) != false) goto L80;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:91:0x00fe, code lost:
+        
+            if (r1 != 11) goto L110;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:95:0x0102, code lost:
+        
+            if ((r11.length - 1) < 2) goto L110;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:96:0x0115, code lost:
+        
+            r1 = 1;
+         */
+        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public int isValid(byte[] r11) {
+            /*
+                Method dump skipped, instructions count: 982
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.hdmi.HdmiCecMessageValidator.PlayModeValidator.isValid(byte[]):int");
+        }
     }
 
-    /* loaded from: classes2.dex */
-    public class ValidationInfo {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SystemAudioModeRequestValidator extends PlayModeValidator {
+        @Override // com.android.server.hdmi.HdmiCecMessageValidator.PlayModeValidator, com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
+        public final int isValid(byte[] bArr) {
+            if (bArr.length == 0) {
+                return 0;
+            }
+            return super.isValid(bArr);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ValidationInfo {
         public final ParameterValidator parameterValidator;
         public final int validDestinations;
         public final int validSources;
@@ -62,16 +155,32 @@ public abstract class HdmiCecMessageValidator {
         }
     }
 
+    /* renamed from: -$$Nest$smisValidPlayMode, reason: not valid java name */
+    public static boolean m571$$Nest$smisValidPlayMode(int i) {
+        return isWithinRange(i, 5, 7) || isWithinRange(i, 9, 11) || isWithinRange(i, 21, 23) || isWithinRange(i, 25, 27) || isWithinRange(i, 36, 37) || i == 32;
+    }
+
+    /* renamed from: -$$Nest$smisValidRecordingSequence, reason: not valid java name */
+    public static boolean m572$$Nest$smisValidRecordingSequence(int i) {
+        return (i & 128) == 0 && Integer.bitCount(i & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) <= 1;
+    }
+
+    /* renamed from: -$$Nest$smtoErrorCode, reason: not valid java name */
+    public static int m573$$Nest$smtoErrorCode(boolean z) {
+        return z ? 0 : 3;
+    }
+
     static {
-        PhysicalAddressValidator physicalAddressValidator = new PhysicalAddressValidator();
-        addValidationInfo(130, physicalAddressValidator, 64985, 32768);
-        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__RESOLVER_EMPTY_STATE_WORK_APPS_DISABLED, physicalAddressValidator, 32767, 32767);
-        addValidationInfo(132, new ReportPhysicalAddressValidator(), GnssNative.GNSS_AIDING_TYPE_ALL, 32768);
-        addValidationInfo(128, new RoutingChangeValidator(), GnssNative.GNSS_AIDING_TYPE_ALL, 32768);
-        addValidationInfo(129, physicalAddressValidator, GnssNative.GNSS_AIDING_TYPE_ALL, 32768);
-        addValidationInfo(134, physicalAddressValidator, 32767, 32768);
-        addValidationInfo(112, new SystemAudioModeRequestValidator(), 32767, 32767);
-        FixedLengthValidator fixedLengthValidator = new FixedLengthValidator(0);
+        PlayModeValidator playModeValidator = new PlayModeValidator(5);
+        addValidationInfo(130, playModeValidator, 65503, 32768);
+        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__RESOLVER_EMPTY_STATE_WORK_APPS_DISABLED, playModeValidator, 32767, 32767);
+        addValidationInfo(132, new PlayModeValidator(7), GnssNative.GNSS_AIDING_TYPE_ALL, 32768);
+        addValidationInfo(128, new PlayModeValidator(8), GnssNative.GNSS_AIDING_TYPE_ALL, 32768);
+        addValidationInfo(129, playModeValidator, GnssNative.GNSS_AIDING_TYPE_ALL, 32768);
+        addValidationInfo(134, playModeValidator, 32767, 32768);
+        addValidationInfo(112, new SystemAudioModeRequestValidator(5), 32767, 32767);
+        int i = 0;
+        FixedLengthValidator fixedLengthValidator = new FixedLengthValidator(i, 0);
         addValidationInfo(IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT, fixedLengthValidator, 32767, 32767);
         addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__RESOLVER_EMPTY_STATE_NO_SHARING_TO_WORK, fixedLengthValidator, 32767, 32767);
         addValidationInfo(145, fixedLengthValidator, GnssNative.GNSS_AIDING_TYPE_ALL, 32767);
@@ -81,6 +190,7 @@ public abstract class HdmiCecMessageValidator {
         addValidationInfo(70, fixedLengthValidator, 32767, 32767);
         addValidationInfo(131, fixedLengthValidator, GnssNative.GNSS_AIDING_TYPE_ALL, 32767);
         addValidationInfo(125, fixedLengthValidator, 32767, 32767);
+        int i2 = 4;
         addValidationInfo(4, fixedLengthValidator, 32767, 32767);
         addValidationInfo(192, fixedLengthValidator, 32767, 32767);
         addValidationInfo(11, fixedLengthValidator, 32767, 32767);
@@ -97,106 +207,90 @@ public abstract class HdmiCecMessageValidator {
         addValidationInfo(5, fixedLengthValidator, 32767, 32767);
         addValidationInfo(69, fixedLengthValidator, 32767, 32767);
         addValidationInfo(139, fixedLengthValidator, 32767, GnssNative.GNSS_AIDING_TYPE_ALL);
-        addValidationInfo(9, new VariableLengthValidator(1, 8), 32767, 32767);
-        addValidationInfo(10, new RecordStatusInfoValidator(), 32767, 32767);
-        addValidationInfo(51, new AnalogueTimerValidator(), 32767, 32767);
-        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__PROVISIONING_DPC_SETUP_COMPLETED, new DigitalTimerValidator(), 32767, 32767);
-        addValidationInfo(161, new ExternalTimerValidator(), 32767, 32767);
-        addValidationInfo(52, new AnalogueTimerValidator(), 32767, 32767);
-        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__BIND_CROSS_PROFILE_SERVICE, new DigitalTimerValidator(), 32767, 32767);
-        addValidationInfo(162, new ExternalTimerValidator(), 32767, 32767);
-        addValidationInfo(103, new AsciiValidator(1, 14), 32767, 32767);
-        addValidationInfo(67, new TimerClearedStatusValidator(), 32767, 32767);
-        addValidationInfo(53, new TimerStatusValidator(), 32767, 32767);
-        FixedLengthValidator fixedLengthValidator2 = new FixedLengthValidator(1);
+        int i3 = 1;
+        addValidationInfo(9, new FixedLengthValidator(i3, 1), 32767, 32767);
+        addValidationInfo(10, new PlayModeValidator(6), 32767, 32767);
+        addValidationInfo(51, new PlayModeValidator(1), 32767, 32767);
+        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__PROVISIONING_DPC_SETUP_COMPLETED, new PlayModeValidator(2), 32767, 32767);
+        addValidationInfo(161, new PlayModeValidator(3), 32767, 32767);
+        addValidationInfo(52, new PlayModeValidator(1), 32767, 32767);
+        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__BIND_CROSS_PROFILE_SERVICE, new PlayModeValidator(2), 32767, 32767);
+        addValidationInfo(162, new PlayModeValidator(3), 32767, 32767);
+        addValidationInfo(103, new AsciiValidator(0), 32767, 32767);
+        addValidationInfo(67, new PlayModeValidator(12), 32767, 32767);
+        addValidationInfo(53, new PlayModeValidator(13), 32767, 32767);
+        FixedLengthValidator fixedLengthValidator2 = new FixedLengthValidator(i3, 0);
         addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__RESOLVER_EMPTY_STATE_NO_SHARING_TO_PERSONAL, fixedLengthValidator2, 32767, 32767);
-        addValidationInfo(50, new AsciiValidator(3), 32767, 32768);
-        MinimumOneByteRangeValidator minimumOneByteRangeValidator = new MinimumOneByteRangeValidator(1, 3);
-        addValidationInfo(66, new MinimumOneByteRangeValidator(1, 4), 32767, 32767);
-        addValidationInfo(27, new MinimumOneByteRangeValidator(17, 31), 32767, 32767);
-        addValidationInfo(26, minimumOneByteRangeValidator, 32767, 32767);
-        addValidationInfo(65, new PlayModeValidator(), 32767, 32767);
-        addValidationInfo(8, minimumOneByteRangeValidator, 32767, 32767);
-        addValidationInfo(146, new SelectAnalogueServiceValidator(), 32767, 32767);
-        addValidationInfo(147, new SelectDigitalServiceValidator(), 32767, 32767);
-        addValidationInfo(7, new TunerDeviceStatusValidator(), 32767, 32767);
-        VariableLengthValidator variableLengthValidator = new VariableLengthValidator(0, 14);
-        addValidationInfo(135, new FixedLengthValidator(3), 32767, 32768);
-        addValidationInfo(137, new VariableLengthValidator(1, 14), GnssNative.GNSS_AIDING_TYPE_ALL, 32767);
-        addValidationInfo(160, new VariableLengthValidator(4, 14), GnssNative.GNSS_AIDING_TYPE_ALL, GnssNative.GNSS_AIDING_TYPE_ALL);
-        addValidationInfo(138, variableLengthValidator, GnssNative.GNSS_AIDING_TYPE_ALL, GnssNative.GNSS_AIDING_TYPE_ALL);
-        addValidationInfo(100, new OsdStringValidator(), 32767, 32767);
-        addValidationInfo(71, new AsciiValidator(1, 14), 32767, 32767);
-        addValidationInfo(141, new MinimumOneByteRangeValidator(0, 2), 32767, 32767);
-        addValidationInfo(142, new MinimumOneByteRangeValidator(0, 1), 32767, 32767);
-        addValidationInfo(68, new UserControlPressedValidator(), 32767, 32767);
-        addValidationInfo(144, new MinimumOneByteRangeValidator(0, 3), 32767, GnssNative.GNSS_AIDING_TYPE_ALL);
-        addValidationInfo(0, new FixedLengthValidator(2), 32767, 32767);
+        addValidationInfo(50, new AsciiValidator(), 1, 32768);
+        int i4 = 3;
+        AsciiValidator asciiValidator = new AsciiValidator(1, 3);
+        addValidationInfo(66, new AsciiValidator(1, 4), 32767, 32767);
+        addValidationInfo(27, new AsciiValidator(17, 31), 32767, 32767);
+        addValidationInfo(26, asciiValidator, 32767, 32767);
+        addValidationInfo(65, new PlayModeValidator(0), 32767, 32767);
+        addValidationInfo(8, asciiValidator, 32767, 32767);
+        addValidationInfo(146, new PlayModeValidator(9), 32767, 32767);
+        addValidationInfo(147, new PlayModeValidator(10), 32767, 32767);
+        addValidationInfo(7, new PlayModeValidator(14), 32767, 32767);
+        FixedLengthValidator fixedLengthValidator3 = new FixedLengthValidator(i, 1);
+        addValidationInfo(135, new FixedLengthValidator(i4, 0), 32767, 32768);
+        addValidationInfo(137, new FixedLengthValidator(i3, 1), GnssNative.GNSS_AIDING_TYPE_ALL, 32767);
+        addValidationInfo(160, new FixedLengthValidator(i2, 1), GnssNative.GNSS_AIDING_TYPE_ALL, GnssNative.GNSS_AIDING_TYPE_ALL);
+        addValidationInfo(138, fixedLengthValidator3, GnssNative.GNSS_AIDING_TYPE_ALL, GnssNative.GNSS_AIDING_TYPE_ALL);
+        addValidationInfo(100, new PlayModeValidator(4), 32767, 32767);
+        addValidationInfo(71, new AsciiValidator(0), 32767, 32767);
+        addValidationInfo(141, new AsciiValidator(0, 2), 32767, 32767);
+        addValidationInfo(142, new AsciiValidator(0, 1), 32767, 32767);
+        addValidationInfo(68, new PlayModeValidator(15), 32767, 32767);
+        addValidationInfo(144, new AsciiValidator(0, 3), 32767, GnssNative.GNSS_AIDING_TYPE_ALL);
+        int i5 = 0;
+        addValidationInfo(0, new FixedLengthValidator(2, i5), 32767, 32767);
         addValidationInfo(122, fixedLengthValidator2, 32767, 32767);
-        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_LAUNCHED_FROM_SETTINGS, new FixedLengthValidator(3), 32767, 32767);
+        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_LAUNCHED_FROM_SETTINGS, new FixedLengthValidator(i4, i5), 32767, 32767);
         addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_ADMIN_RESTRICTED, fixedLengthValidator2, 32767, 32767);
-        addValidationInfo(114, new MinimumOneByteRangeValidator(0, 1), 32767, GnssNative.GNSS_AIDING_TYPE_ALL);
-        addValidationInfo(126, new SingleByteRangeValidator(0, 1), 32767, 32767);
-        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__PROVISIONING_ORGANIZATION_OWNED_MANAGED_PROFILE, new MinimumOneByteRangeValidator(0, 6), 32767, 32767);
+        addValidationInfo(114, new PlayModeValidator(11), 32, GnssNative.GNSS_AIDING_TYPE_ALL);
+        addValidationInfo(126, new PlayModeValidator(11), 32767, 32767);
+        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__PROVISIONING_ORGANIZATION_OWNED_MANAGED_PROFILE, new AsciiValidator(0, 6), 32767, 32767);
         addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_MISSING_WORK_APP, fixedLengthValidator, GnssNative.GNSS_AIDING_TYPE_ALL, 32767);
-        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_MISSING_INSTALL_BANNER_INTENT, physicalAddressValidator, 32767, 32768);
-        addValidationInfo(168, new VariableLengthValidator(4, 14), 32767, 32768);
-        addValidationInfo(FrameworkStatsLog.INTEGRITY_RULES_PUSHED, variableLengthValidator, GnssNative.GNSS_AIDING_TYPE_ALL, 32768);
+        addValidationInfo(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_MISSING_INSTALL_BANNER_INTENT, playModeValidator, 32767, 32768);
+        addValidationInfo(168, new FixedLengthValidator(i2, 1), 32767, 32768);
+        addValidationInfo(FrameworkStatsLog.INTEGRITY_RULES_PUSHED, fixedLengthValidator3, GnssNative.GNSS_AIDING_TYPE_ALL, 32768);
     }
 
     public static void addValidationInfo(int i, ParameterValidator parameterValidator, int i2, int i3) {
         sValidationInfo.append(i, new ValidationInfo(parameterValidator, i2, i3));
     }
 
-    public static int validate(int i, int i2, int i3, byte[] bArr) {
-        ValidationInfo validationInfo = (ValidationInfo) sValidationInfo.get(i3);
-        if (validationInfo == null) {
-            HdmiLogger.warning("No validation information for the opcode: " + i3, new Object[0]);
-            return 0;
-        }
-        int validateAddress = validateAddress(i, i2, validationInfo.validSources, validationInfo.validDestinations);
-        if (validateAddress != 0) {
-            return validateAddress;
-        }
-        int isValid = validationInfo.parameterValidator.isValid(bArr);
-        if (isValid != 0) {
-            return isValid;
-        }
-        return 0;
+    public static boolean isValidAnalogueFrequency(int i) {
+        int i2 = i & GnssNative.GNSS_AIDING_TYPE_ALL;
+        return (i2 == 0 || i2 == 65535) ? false : true;
     }
 
-    /* loaded from: classes2.dex */
-    public class FixedLengthValidator implements ParameterValidator {
-        public final int mLength;
-
-        public FixedLengthValidator(int i) {
-            this.mLength = i;
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            return bArr.length < this.mLength ? 4 : 0;
-        }
+    public static boolean isValidChannelIdentifier(int i, byte[] bArr) {
+        int i2 = bArr[i] & 252;
+        return i2 == 4 ? bArr.length - i >= 3 : i2 == 8 && bArr.length - i >= 4;
     }
 
-    /* loaded from: classes2.dex */
-    public class VariableLengthValidator implements ParameterValidator {
-        public final int mMaxLength;
-        public final int mMinLength;
-
-        public VariableLengthValidator(int i, int i2) {
-            this.mMinLength = i;
-            this.mMaxLength = i2;
+    public static boolean isValidDigitalServiceIdentification(int i, byte[] bArr) {
+        byte b = bArr[i];
+        int i2 = b & 128;
+        int i3 = b & Byte.MAX_VALUE;
+        int i4 = i + 1;
+        if (i2 == 0) {
+            return i3 == 0 || isWithinRange(i3, 8, 10) ? bArr.length - i4 >= 6 : (i3 == 1 || isWithinRange(i3, 16, 18)) ? bArr.length - i4 >= 4 : (i3 == 2 || isWithinRange(i3, 24, 27)) && bArr.length - i4 >= 6;
         }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            return bArr.length < this.mMinLength ? 4 : 0;
+        if (i2 == 128 && (i3 == 0 || isWithinRange(i3, 8, 10) || i3 == 1 || isWithinRange(i3, 16, 18) || i3 == 2 || isWithinRange(i3, 24, 27))) {
+            return isValidChannelIdentifier(i4, bArr);
         }
+        return false;
     }
 
-    public static boolean isValidPhysicalAddress(byte[] bArr, int i) {
-        int twoBytesToInt = HdmiUtils.twoBytesToInt(bArr, i);
+    public static boolean isValidMinute(int i) {
+        return isWithinRange(i, 0, 59);
+    }
+
+    public static boolean isValidPhysicalAddress(int i, byte[] bArr) {
+        int twoBytesToInt = HdmiUtils.twoBytesToInt(i, bArr);
         while (twoBytesToInt != 0) {
             int i2 = 61440 & twoBytesToInt;
             twoBytesToInt = (twoBytesToInt << 4) & GnssNative.GNSS_AIDING_TYPE_ALL;
@@ -207,502 +301,15 @@ public abstract class HdmiCecMessageValidator {
         return true;
     }
 
-    public static boolean isValidAsciiString(byte[] bArr, int i, int i2) {
-        while (i < bArr.length && i < i2) {
-            if (!isWithinRange(bArr[i], 32, 126)) {
-                return false;
-            }
-            i++;
-        }
-        return true;
+    public static boolean isWithinRange(int i, int i2, int i3) {
+        int i4 = i & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
+        return i4 >= i2 && i4 <= i3;
     }
 
-    public static boolean isValidDayOfMonth(int i) {
-        return isWithinRange(i, 1, 31);
-    }
-
-    public static boolean isValidMonthOfYear(int i) {
-        return isWithinRange(i, 1, 12);
-    }
-
-    public static boolean isValidHour(int i) {
-        return isWithinRange(i, 0, 23);
-    }
-
-    public static boolean isValidMinute(int i) {
-        return isWithinRange(i, 0, 59);
-    }
-
-    public static boolean isValidDurationHours(int i) {
-        return isWithinRange(i, 0, 99);
-    }
-
-    public static boolean isValidRecordingSequence(int i) {
-        int i2 = i & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
-        return (i2 & 128) == 0 && Integer.bitCount(i2) <= 1;
-    }
-
-    public static boolean isValidAnalogueBroadcastType(int i) {
-        return isWithinRange(i, 0, 2);
-    }
-
-    public static boolean isValidBroadcastSystem(int i) {
-        return isWithinRange(i, 0, 31);
-    }
-
-    public static boolean isAribDbs(int i) {
-        return i == 0 || isWithinRange(i, 8, 10);
-    }
-
-    public static boolean isAtscDbs(int i) {
-        return i == 1 || isWithinRange(i, 16, 18);
-    }
-
-    public static boolean isDvbDbs(int i) {
-        return i == 2 || isWithinRange(i, 24, 27);
-    }
-
-    public static boolean isValidDigitalBroadcastSystem(int i) {
-        return isAribDbs(i) || isAtscDbs(i) || isDvbDbs(i);
-    }
-
-    public static boolean isValidChannelIdentifier(byte[] bArr, int i) {
-        int i2 = bArr[i] & 252;
-        return i2 == 4 ? bArr.length - i >= 3 : i2 == 8 && bArr.length - i >= 4;
-    }
-
-    public static boolean isValidDigitalServiceIdentification(byte[] bArr, int i) {
-        byte b = bArr[i];
-        int i2 = b & 128;
-        int i3 = b & Byte.MAX_VALUE;
-        int i4 = i + 1;
-        if (i2 == 0) {
-            return isAribDbs(i3) ? bArr.length - i4 >= 6 : isAtscDbs(i3) ? bArr.length - i4 >= 4 : isDvbDbs(i3) && bArr.length - i4 >= 6;
+    public static int validateAddress(int i, int i2, int i3, int i4) {
+        if (((1 << i) & i3) == 0) {
+            return 1;
         }
-        if (i2 == 128 && isValidDigitalBroadcastSystem(i3)) {
-            return isValidChannelIdentifier(bArr, i4);
-        }
-        return false;
-    }
-
-    public static boolean isValidExternalPlug(int i) {
-        return isWithinRange(i, 1, IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT);
-    }
-
-    public static boolean isValidExternalSource(byte[] bArr, int i) {
-        byte b = bArr[i];
-        int i2 = i + 1;
-        if (b == 4) {
-            return isValidExternalPlug(bArr[i2]);
-        }
-        if (b != 5 || bArr.length - i2 < 2) {
-            return false;
-        }
-        return isValidPhysicalAddress(bArr, i2);
-    }
-
-    public static boolean isValidProgrammedInfo(int i) {
-        return isWithinRange(i, 0, 11);
-    }
-
-    public static boolean isValidNotProgrammedErrorInfo(int i) {
-        return isWithinRange(i, 0, 14);
-    }
-
-    public static boolean isValidTimerStatusData(byte[] bArr, int i) {
-        boolean z;
-        byte b = bArr[i];
-        if ((b & HwConstants.IQ_CONFIG_POS_NETWORK_ENABLED) == 16) {
-            int i2 = b & 15;
-            if (isValidProgrammedInfo(i2)) {
-                if (i2 != 9 && i2 != 11) {
-                    return true;
-                }
-                z = true;
-            }
-            z = false;
-        } else {
-            int i3 = b & 15;
-            if (isValidNotProgrammedErrorInfo(i3)) {
-                if (i3 != 14) {
-                    return true;
-                }
-                z = true;
-            }
-            z = false;
-        }
-        int i4 = i + 1;
-        if (!z || bArr.length - i4 < 2) {
-            return false;
-        }
-        return isValidDurationHours(bArr[i4]) && isValidMinute(bArr[i4 + 1]);
-    }
-
-    public static boolean isValidPlayMode(int i) {
-        return isWithinRange(i, 5, 7) || isWithinRange(i, 9, 11) || isWithinRange(i, 21, 23) || isWithinRange(i, 25, 27) || isWithinRange(i, 36, 37) || i == 32;
-    }
-
-    public static boolean isValidUiSoundPresenationControl(int i) {
-        int i2 = i & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
-        return i2 == 32 || i2 == 48 || i2 == 128 || i2 == 144 || i2 == 160 || isWithinRange(i2, 177, FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CREDENTIAL_MANAGEMENT_APP_REQUEST_POLICY) || isWithinRange(i2, 193, 195);
-    }
-
-    public static boolean isValidTunerDeviceInfo(byte[] bArr) {
-        int i = bArr[0] & Byte.MAX_VALUE;
-        if (i == 0) {
-            if (bArr.length >= 5) {
-                return isValidDigitalServiceIdentification(bArr, 1);
-            }
-            return false;
-        }
-        if (i == 1) {
-            return true;
-        }
-        return i == 2 && bArr.length >= 5 && isValidAnalogueBroadcastType(bArr[1]) && isValidAnalogueFrequency(HdmiUtils.twoBytesToInt(bArr, 2)) && isValidBroadcastSystem(bArr[4]);
-    }
-
-    /* loaded from: classes2.dex */
-    public class PhysicalAddressValidator implements ParameterValidator {
-        public PhysicalAddressValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 2) {
-                return 4;
-            }
-            return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidPhysicalAddress(bArr, 0));
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class SystemAudioModeRequestValidator extends PhysicalAddressValidator {
-        public SystemAudioModeRequestValidator() {
-            super();
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.PhysicalAddressValidator, com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length == 0) {
-                return 0;
-            }
-            return super.isValid(bArr);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class ReportPhysicalAddressValidator implements ParameterValidator {
-        public ReportPhysicalAddressValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 3) {
-                return 4;
-            }
-            boolean z = false;
-            if (HdmiCecMessageValidator.isValidPhysicalAddress(bArr, 0) && HdmiCecMessageValidator.isValidType(bArr[2])) {
-                z = true;
-            }
-            return HdmiCecMessageValidator.toErrorCode(z);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class RoutingChangeValidator implements ParameterValidator {
-        public RoutingChangeValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 4) {
-                return 4;
-            }
-            boolean z = false;
-            if (HdmiCecMessageValidator.isValidPhysicalAddress(bArr, 0) && HdmiCecMessageValidator.isValidPhysicalAddress(bArr, 2)) {
-                z = true;
-            }
-            return HdmiCecMessageValidator.toErrorCode(z);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class RecordStatusInfoValidator implements ParameterValidator {
-        public RecordStatusInfoValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            boolean z = true;
-            if (bArr.length < 1) {
-                return 4;
-            }
-            if (!HdmiCecMessageValidator.isWithinRange(bArr[0], 1, 7) && !HdmiCecMessageValidator.isWithinRange(bArr[0], 9, 14) && !HdmiCecMessageValidator.isWithinRange(bArr[0], 16, 23) && !HdmiCecMessageValidator.isWithinRange(bArr[0], 26, 27) && bArr[0] != 31) {
-                z = false;
-            }
-            return HdmiCecMessageValidator.toErrorCode(z);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class AsciiValidator implements ParameterValidator {
-        public final int mMaxLength;
-        public final int mMinLength;
-
-        public AsciiValidator(int i) {
-            this.mMinLength = i;
-            this.mMaxLength = i;
-        }
-
-        public AsciiValidator(int i, int i2) {
-            this.mMinLength = i;
-            this.mMaxLength = i2;
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < this.mMinLength) {
-                return 4;
-            }
-            return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidAsciiString(bArr, 0, this.mMaxLength));
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class OsdStringValidator implements ParameterValidator {
-        public OsdStringValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 2) {
-                return 4;
-            }
-            boolean z = false;
-            if (HdmiCecMessageValidator.isValidDisplayControl(bArr[0]) && HdmiCecMessageValidator.isValidAsciiString(bArr, 1, 14)) {
-                z = true;
-            }
-            return HdmiCecMessageValidator.toErrorCode(z);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class MinimumOneByteRangeValidator implements ParameterValidator {
-        public final int mMaxValue;
-        public final int mMinValue;
-
-        public MinimumOneByteRangeValidator(int i, int i2) {
-            this.mMinValue = i;
-            this.mMaxValue = i2;
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 1) {
-                return 4;
-            }
-            return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isWithinRange(bArr[0], this.mMinValue, this.mMaxValue));
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class SingleByteRangeValidator implements ParameterValidator {
-        public final int mMaxValue;
-        public final int mMinValue;
-
-        public SingleByteRangeValidator(int i, int i2) {
-            this.mMinValue = i;
-            this.mMaxValue = i2;
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 1) {
-                return 4;
-            }
-            if (bArr.length > 1) {
-                return 5;
-            }
-            return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isWithinRange(bArr[0], this.mMinValue, this.mMaxValue));
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class AnalogueTimerValidator implements ParameterValidator {
-        public AnalogueTimerValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 11) {
-                return 4;
-            }
-            boolean z = false;
-            if (HdmiCecMessageValidator.isValidDayOfMonth(bArr[0]) && HdmiCecMessageValidator.isValidMonthOfYear(bArr[1]) && HdmiCecMessageValidator.isValidHour(bArr[2]) && HdmiCecMessageValidator.isValidMinute(bArr[3]) && HdmiCecMessageValidator.isValidDurationHours(bArr[4]) && HdmiCecMessageValidator.isValidMinute(bArr[5]) && HdmiCecMessageValidator.isValidRecordingSequence(bArr[6]) && HdmiCecMessageValidator.isValidAnalogueBroadcastType(bArr[7]) && HdmiCecMessageValidator.isValidAnalogueFrequency(HdmiUtils.twoBytesToInt(bArr, 8)) && HdmiCecMessageValidator.isValidBroadcastSystem(bArr[10])) {
-                z = true;
-            }
-            return HdmiCecMessageValidator.toErrorCode(z);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class DigitalTimerValidator implements ParameterValidator {
-        public DigitalTimerValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 11) {
-                return 4;
-            }
-            boolean z = false;
-            if (HdmiCecMessageValidator.isValidDayOfMonth(bArr[0]) && HdmiCecMessageValidator.isValidMonthOfYear(bArr[1]) && HdmiCecMessageValidator.isValidHour(bArr[2]) && HdmiCecMessageValidator.isValidMinute(bArr[3]) && HdmiCecMessageValidator.isValidDurationHours(bArr[4]) && HdmiCecMessageValidator.isValidMinute(bArr[5]) && HdmiCecMessageValidator.isValidRecordingSequence(bArr[6]) && HdmiCecMessageValidator.isValidDigitalServiceIdentification(bArr, 7)) {
-                z = true;
-            }
-            return HdmiCecMessageValidator.toErrorCode(z);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class ExternalTimerValidator implements ParameterValidator {
-        public ExternalTimerValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 9) {
-                return 4;
-            }
-            boolean z = false;
-            if (HdmiCecMessageValidator.isValidDayOfMonth(bArr[0]) && HdmiCecMessageValidator.isValidMonthOfYear(bArr[1]) && HdmiCecMessageValidator.isValidHour(bArr[2]) && HdmiCecMessageValidator.isValidMinute(bArr[3]) && HdmiCecMessageValidator.isValidDurationHours(bArr[4]) && HdmiCecMessageValidator.isValidMinute(bArr[5]) && HdmiCecMessageValidator.isValidRecordingSequence(bArr[6]) && HdmiCecMessageValidator.isValidExternalSource(bArr, 7)) {
-                z = true;
-            }
-            return HdmiCecMessageValidator.toErrorCode(z);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class TimerClearedStatusValidator implements ParameterValidator {
-        public TimerClearedStatusValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            boolean z = true;
-            if (bArr.length < 1) {
-                return 4;
-            }
-            if (!HdmiCecMessageValidator.isWithinRange(bArr[0], 0, 2) && (bArr[0] & 255) != 128) {
-                z = false;
-            }
-            return HdmiCecMessageValidator.toErrorCode(z);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class TimerStatusValidator implements ParameterValidator {
-        public TimerStatusValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 1) {
-                return 4;
-            }
-            return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidTimerStatusData(bArr, 0));
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class PlayModeValidator implements ParameterValidator {
-        public PlayModeValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 1) {
-                return 4;
-            }
-            return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidPlayMode(bArr[0]));
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class SelectAnalogueServiceValidator implements ParameterValidator {
-        public SelectAnalogueServiceValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 4) {
-                return 4;
-            }
-            boolean z = false;
-            if (HdmiCecMessageValidator.isValidAnalogueBroadcastType(bArr[0]) && HdmiCecMessageValidator.isValidAnalogueFrequency(HdmiUtils.twoBytesToInt(bArr, 1)) && HdmiCecMessageValidator.isValidBroadcastSystem(bArr[3])) {
-                z = true;
-            }
-            return HdmiCecMessageValidator.toErrorCode(z);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class SelectDigitalServiceValidator implements ParameterValidator {
-        public SelectDigitalServiceValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 4) {
-                return 4;
-            }
-            return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidDigitalServiceIdentification(bArr, 0));
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class TunerDeviceStatusValidator implements ParameterValidator {
-        public TunerDeviceStatusValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 1) {
-                return 4;
-            }
-            return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidTunerDeviceInfo(bArr));
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class UserControlPressedValidator implements ParameterValidator {
-        public UserControlPressedValidator() {
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecMessageValidator.ParameterValidator
-        public int isValid(byte[] bArr) {
-            if (bArr.length < 1) {
-                return 4;
-            }
-            if (bArr.length == 1) {
-                return 0;
-            }
-            byte b = bArr[0];
-            if (b == 86) {
-                return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidUiBroadcastType(bArr[1]));
-            }
-            if (b == 87) {
-                return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidUiSoundPresenationControl(bArr[1]));
-            }
-            if (b == 96) {
-                return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidPlayMode(bArr[1]));
-            }
-            if (b != 103) {
-                return 0;
-            }
-            if (bArr.length >= 4) {
-                return HdmiCecMessageValidator.toErrorCode(HdmiCecMessageValidator.isValidChannelIdentifier(bArr, 1));
-            }
-            return 4;
-        }
+        return ((1 << i2) & i4) == 0 ? 2 : 0;
     }
 }

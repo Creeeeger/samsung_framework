@@ -4,29 +4,22 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.ResultReceiver;
+import android.os.IInterface;
 import android.service.translation.ITranslationService;
 import android.util.Slog;
-import android.view.translation.TranslationContext;
 import com.android.internal.infra.ServiceConnector;
-import com.android.internal.os.IResultReceiver;
-import java.util.function.Function;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 final class RemoteTranslationService extends ServiceConnector.Impl {
-    public static final String TAG = RemoteTranslationService.class.getSimpleName();
+    public static final /* synthetic */ int $r8$clinit = 0;
     private final ComponentName mComponentName;
     private final long mIdleUnbindTimeoutMs;
     private final IBinder mRemoteCallback;
     private final int mRequestTimeoutMs;
 
-    public RemoteTranslationService(Context context, ComponentName componentName, int i, boolean z, IBinder iBinder) {
-        super(context, new Intent("android.service.translation.TranslationService").setComponent(componentName), z ? 4194304 : 0, i, new Function() { // from class: com.android.server.translation.RemoteTranslationService$$ExternalSyntheticLambda0
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return ITranslationService.Stub.asInterface((IBinder) obj);
-            }
-        });
+    public RemoteTranslationService(Context context, ComponentName componentName, int i, IBinder iBinder) {
+        super(context, new Intent("android.service.translation.TranslationService").setComponent(componentName), 0, i, new RemoteTranslationService$$ExternalSyntheticLambda0());
         this.mIdleUnbindTimeoutMs = 0L;
         this.mRequestTimeoutMs = 5000;
         this.mComponentName = componentName;
@@ -34,7 +27,12 @@ final class RemoteTranslationService extends ServiceConnector.Impl {
         connect();
     }
 
-    public void onServiceConnectionStatusChanged(ITranslationService iTranslationService, boolean z) {
+    public final long getAutoDisconnectTimeoutMs() {
+        return this.mIdleUnbindTimeoutMs;
+    }
+
+    public final void onServiceConnectionStatusChanged(IInterface iInterface, boolean z) {
+        ITranslationService iTranslationService = (ITranslationService) iInterface;
         try {
             if (z) {
                 iTranslationService.onConnected(this.mRemoteCallback);
@@ -42,27 +40,7 @@ final class RemoteTranslationService extends ServiceConnector.Impl {
                 iTranslationService.onDisconnected();
             }
         } catch (Exception e) {
-            Slog.w(TAG, "Exception calling onServiceConnectionStatusChanged(" + z + "): ", e);
+            Slog.w("RemoteTranslationService", "Exception calling onServiceConnectionStatusChanged(" + z + "): ", e);
         }
-    }
-
-    public long getAutoDisconnectTimeoutMs() {
-        return this.mIdleUnbindTimeoutMs;
-    }
-
-    public void onSessionCreated(final TranslationContext translationContext, final int i, final IResultReceiver iResultReceiver) {
-        run(new ServiceConnector.VoidJob() { // from class: com.android.server.translation.RemoteTranslationService$$ExternalSyntheticLambda1
-            public final void runNoResult(Object obj) {
-                ((ITranslationService) obj).onCreateTranslationSession(translationContext, i, iResultReceiver);
-            }
-        });
-    }
-
-    public void onTranslationCapabilitiesRequest(final int i, final int i2, final ResultReceiver resultReceiver) {
-        run(new ServiceConnector.VoidJob() { // from class: com.android.server.translation.RemoteTranslationService$$ExternalSyntheticLambda2
-            public final void runNoResult(Object obj) {
-                ((ITranslationService) obj).onTranslationCapabilitiesRequest(i, i2, resultReceiver);
-            }
-        });
     }
 }

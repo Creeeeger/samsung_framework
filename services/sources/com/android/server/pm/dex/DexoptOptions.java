@@ -1,12 +1,14 @@
 package com.android.server.pm.dex;
 
-import android.os.IInstalld;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.hardware.audio.common.V2_0.AudioChannelMask$$ExternalSyntheticOutline0;
 import android.util.Log;
 import com.android.server.art.model.DexoptParams;
 import com.android.server.pm.PackageManagerServiceCompilerMapping;
 import dalvik.system.DexFile;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class DexoptOptions {
     public final int mCompilationReason;
     public final String mCompilerFilter;
@@ -14,79 +16,19 @@ public final class DexoptOptions {
     public final String mPackageName;
     public final String mSplitName;
 
-    public DexoptOptions(String str, int i, int i2) {
-        this(str, i, PackageManagerServiceCompilerMapping.getCompilerFilterForReason(i), null, i2);
+    public DexoptOptions(int i, int i2, String str) {
+        this(i, i2, str, PackageManagerServiceCompilerMapping.getAndCheckValidity(i), null);
     }
 
-    public DexoptOptions(String str, int i, String str2, String str3, int i2) {
+    public DexoptOptions(int i, int i2, String str, String str2, String str3) {
         if ((i2 & (-3696)) != 0) {
-            throw new IllegalArgumentException("Invalid flags : " + Integer.toHexString(i2));
+            throw new IllegalArgumentException(AudioChannelMask$$ExternalSyntheticOutline0.m(new StringBuilder("Invalid flags : "), i2));
         }
         this.mPackageName = str;
         this.mCompilerFilter = str2;
         this.mFlags = i2;
         this.mSplitName = str3;
         this.mCompilationReason = i;
-    }
-
-    public String getPackageName() {
-        return this.mPackageName;
-    }
-
-    public boolean isCheckForProfileUpdates() {
-        return (this.mFlags & 1) != 0;
-    }
-
-    public String getCompilerFilter() {
-        return this.mCompilerFilter;
-    }
-
-    public boolean isForce() {
-        return (this.mFlags & 2) != 0;
-    }
-
-    public boolean isBootComplete() {
-        return (this.mFlags & 4) != 0;
-    }
-
-    public boolean isDexoptOnlySecondaryDex() {
-        return (this.mFlags & 8) != 0;
-    }
-
-    public boolean isDowngrade() {
-        return (this.mFlags & 32) != 0;
-    }
-
-    public boolean isDexoptAsSharedLibrary() {
-        return (this.mFlags & 64) != 0;
-    }
-
-    public boolean isDexoptIdleBackgroundJob() {
-        return (this.mFlags & 512) != 0;
-    }
-
-    public boolean isDexoptInstallWithDexMetadata() {
-        return (this.mFlags & 1024) != 0;
-    }
-
-    public boolean isDexoptInstallForRestore() {
-        return (this.mFlags & IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES) != 0;
-    }
-
-    public String getSplitName() {
-        return this.mSplitName;
-    }
-
-    public int getFlags() {
-        return this.mFlags;
-    }
-
-    public int getCompilationReason() {
-        return this.mCompilationReason;
-    }
-
-    public boolean isCompilationEnabled() {
-        return !this.mCompilerFilter.equals("skip");
     }
 
     public static String convertToArtServiceDexoptReason(int i) {
@@ -98,7 +40,7 @@ public final class DexoptOptions {
             case 2:
             case 10:
             case 14:
-                throw new UnsupportedOperationException("ART Service unsupported compilation reason " + i);
+                throw new UnsupportedOperationException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "ART Service unsupported compilation reason "));
             case 3:
                 return "install";
             case 4:
@@ -132,30 +74,33 @@ public final class DexoptOptions {
                     case 25:
                         return "labs";
                     default:
-                        throw new IllegalArgumentException("Invalid compilation reason " + i);
+                        throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Invalid compilation reason "));
                 }
         }
     }
 
-    public DexoptParams convertToDexoptParams(int i) {
-        if (this.mSplitName != null) {
-            throw new UnsupportedOperationException("Request to optimize only split " + this.mSplitName + " for " + this.mPackageName);
-        }
-        if ((this.mFlags & 1) == 0 && DexFile.isProfileGuidedCompilerFilter(this.mCompilerFilter)) {
-            throw new IllegalArgumentException("DEXOPT_CHECK_FOR_PROFILES_UPDATES must be set with profile guided filter");
+    public final DexoptParams convertToDexoptParams(int i) {
+        String str = this.mPackageName;
+        String str2 = this.mSplitName;
+        if (str2 != null) {
+            throw new UnsupportedOperationException("Request to optimize only split " + str2 + " for " + str);
         }
         int i2 = this.mFlags;
+        int i3 = i2 & 1;
+        String str3 = this.mCompilerFilter;
+        if (i3 == 0 && DexFile.isProfileGuidedCompilerFilter(str3)) {
+            throw new IllegalArgumentException("DEXOPT_CHECK_FOR_PROFILES_UPDATES must be set with profile guided filter");
+        }
         if ((i2 & 2) != 0) {
             i |= 16;
         }
-        int i3 = (i2 & 8) != 0 ? i | 2 : i | 1;
+        int i4 = (i2 & 8) != 0 ? i | 2 : i | 1;
         if ((i2 & 32) != 0) {
-            i3 |= 8;
+            i4 |= 8;
         }
         if ((i2 & 1024) == 0) {
-            Log.w("DexoptOptions", "DEXOPT_INSTALL_WITH_DEX_METADATA_FILE not set in request to optimise " + this.mPackageName + " - ART Service will unconditionally use a DM file if present.");
+            Log.w("DexoptOptions", "DEXOPT_INSTALL_WITH_DEX_METADATA_FILE not set in request to optimise " + str + " - ART Service will unconditionally use a DM file if present.");
         }
-        int i4 = this.mFlags;
-        return new DexoptParams.Builder(convertToArtServiceDexoptReason(this.mCompilationReason), i3).setCompilerFilter(this.mCompilerFilter).setPriorityClass((i4 & 4) != 0 ? (i4 & IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES) != 0 ? 80 : (i4 & 512) != 0 ? 40 : 60 : 100).build();
+        return new DexoptParams.Builder(convertToArtServiceDexoptReason(this.mCompilationReason), i4).setCompilerFilter(str3).setPriorityClass((i2 & 4) != 0 ? (i2 & 2048) != 0 ? 80 : (i2 & 512) != 0 ? 40 : 60 : 100).build();
     }
 }

@@ -1,47 +1,199 @@
 package com.android.server.cocktailbar.policy.state;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.util.Slog;
 import android.util.SparseArray;
-import com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy;
+import com.android.server.SystemServiceManager$$ExternalSyntheticOutline0;
+import com.android.server.cocktailbar.policy.state.CocktailBarStatePolicyController;
+import com.android.server.location.gnss.hal.GnssNative;
 import com.samsung.android.cocktailbar.CocktailBarStateInfo;
 import com.samsung.android.util.SemLog;
+import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public abstract class AbsCocktailBarStatePolicy implements CocktailBarStatePolicy {
-    public static final String TAG = "AbsCocktailBarStatePolicy";
-    public Handler mCocktailBarStateHandler;
+public abstract class AbsCocktailBarStatePolicy {
+    public CocktailBarStateHandler mCocktailBarStateHandler;
     public HandlerThread mCocktailBarStateThread;
-    public CocktailBarStatePolicy.OnCocktailBarStateListener mListener;
+    public final CocktailBarStatePolicy$OnCocktailBarStateListener mListener;
     public final CocktailBarStateInfo mStateInfo = new CocktailBarStateInfo(2);
-    public int mWindowType = 1;
+    public final int mWindowType = 1;
     public final SparseArray mLockMap = new SparseArray();
     public final Object mLock = new Object();
 
-    public abstract void handleNotifyCurrentStateToBinder(IBinder iBinder);
-
-    public abstract void handleUpdateActivate(boolean z);
-
-    public abstract void handleUpdateCocktailBarWindowType(int i, String str);
-
-    public abstract void handleUpdatePosition(int i);
-
-    public abstract void handleUpdateVisibility(int i);
-
-    @Override // com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy
-    public void initialize() {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.cocktailbar.policy.state.AbsCocktailBarStatePolicy$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Runnable {
+        @Override // java.lang.Runnable
+        public final void run() {
+            Process.setThreadPriority(-4);
+            Process.setCanSelfBackground(false);
+        }
     }
 
-    public AbsCocktailBarStatePolicy(Context context, CocktailBarStatePolicy.OnCocktailBarStateListener onCocktailBarStateListener) {
-        this.mListener = onCocktailBarStateListener;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CocktailBarStateHandler extends Handler {
+        public CocktailBarStateHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            SemLog.i("AbsCocktailBarStatePolicy", "handleMessage: entry what = " + message.what);
+            int i = message.what;
+            if (i == 1) {
+                AbsCocktailBarStatePolicy absCocktailBarStatePolicy = AbsCocktailBarStatePolicy.this;
+                int i2 = message.arg1;
+                OverlayCocktailBarStatePolicy overlayCocktailBarStatePolicy = (OverlayCocktailBarStatePolicy) absCocktailBarStatePolicy;
+                if (OverlayCocktailBarStatePolicy.DEBUG) {
+                    Slog.i("OverlayCocktailBarStatePolicy", "handleUpdateVisibility: mVisibility = " + overlayCocktailBarStatePolicy.mStateInfo.visibility + " visibility = " + i2);
+                }
+                if (overlayCocktailBarStatePolicy.mStateInfo.visibility != i2) {
+                    CocktailBarStateInfo cocktailBarStateInfo = new CocktailBarStateInfo(i2);
+                    cocktailBarStateInfo.changeFlag = 1 | cocktailBarStateInfo.changeFlag;
+                    ((CocktailBarStatePolicyController) overlayCocktailBarStatePolicy.mListener).notifyCocktailBarState(cocktailBarStateInfo);
+                    overlayCocktailBarStatePolicy.mStateInfo.visibility = i2;
+                    return;
+                }
+                return;
+            }
+            if (i == 4) {
+                AbsCocktailBarStatePolicy absCocktailBarStatePolicy2 = AbsCocktailBarStatePolicy.this;
+                int i3 = message.arg1;
+                OverlayCocktailBarStatePolicy overlayCocktailBarStatePolicy2 = (OverlayCocktailBarStatePolicy) absCocktailBarStatePolicy2;
+                if (OverlayCocktailBarStatePolicy.DEBUG) {
+                    Slog.i("OverlayCocktailBarStatePolicy", "handleUpdatePosition: mPosition = " + overlayCocktailBarStatePolicy2.mStateInfo.position + " position = " + i3);
+                }
+                if (overlayCocktailBarStatePolicy2.mStateInfo.position != i3) {
+                    CocktailBarStateInfo cocktailBarStateInfo2 = new CocktailBarStateInfo(overlayCocktailBarStatePolicy2.mStateInfo.visibility);
+                    cocktailBarStateInfo2.position = i3;
+                    cocktailBarStateInfo2.changeFlag |= 4;
+                    ((CocktailBarStatePolicyController) overlayCocktailBarStatePolicy2.mListener).notifyCocktailBarState(cocktailBarStateInfo2);
+                }
+                AbsCocktailBarStatePolicy.this.mStateInfo.position = message.arg1;
+                return;
+            }
+            if (i == 6) {
+                AbsCocktailBarStatePolicy absCocktailBarStatePolicy3 = AbsCocktailBarStatePolicy.this;
+                int i4 = message.arg1;
+                Object obj = message.obj;
+                String str = obj != null ? (String) obj : null;
+                OverlayCocktailBarStatePolicy overlayCocktailBarStatePolicy3 = (OverlayCocktailBarStatePolicy) absCocktailBarStatePolicy3;
+                overlayCocktailBarStatePolicy3.getClass();
+                CocktailBarStateInfo cocktailBarStateInfo3 = new CocktailBarStateInfo(overlayCocktailBarStatePolicy3.mStateInfo.visibility);
+                cocktailBarStateInfo3.windowType = i4;
+                cocktailBarStateInfo3.changeFlag |= 128;
+                CocktailBarStatePolicyController cocktailBarStatePolicyController = (CocktailBarStatePolicyController) overlayCocktailBarStatePolicy3.mListener;
+                if (CocktailBarStatePolicyController.DEBUG) {
+                    cocktailBarStatePolicyController.getClass();
+                    StringBuilder sb = new StringBuilder("notifyCocktailBarStateExceptCallingPackage: visibility = ");
+                    sb.append(cocktailBarStateInfo3.visibility);
+                    sb.append(" windowType = ");
+                    sb.append(cocktailBarStateInfo3.windowType);
+                    sb.append(" changeFlag = ");
+                    SystemServiceManager$$ExternalSyntheticOutline0.m(sb, cocktailBarStateInfo3.changeFlag, "CocktailBarStatePolicyController");
+                }
+                synchronized (cocktailBarStatePolicyController.mStateListeners) {
+                    try {
+                        if (cocktailBarStateInfo3.changeFlag == 128) {
+                            Iterator it = cocktailBarStatePolicyController.mStateListeners.iterator();
+                            while (it.hasNext()) {
+                                CocktailBarStatePolicyController.CocktailBarStateListenerInfo cocktailBarStateListenerInfo = (CocktailBarStatePolicyController.CocktailBarStateListenerInfo) it.next();
+                                if (str != null && str.equals(cocktailBarStateListenerInfo.component.getPackageName())) {
+                                }
+                                cocktailBarStateListenerInfo.onCocktailBarStateChanged(cocktailBarStateInfo3);
+                            }
+                        } else {
+                            Iterator it2 = cocktailBarStatePolicyController.mStateListeners.iterator();
+                            while (it2.hasNext()) {
+                                ((CocktailBarStatePolicyController.CocktailBarStateListenerInfo) it2.next()).onCocktailBarStateChanged(cocktailBarStateInfo3);
+                            }
+                        }
+                    } finally {
+                    }
+                }
+                AbsCocktailBarStatePolicy.this.mStateInfo.windowType = message.arg1;
+                return;
+            }
+            if (i == 49) {
+                boolean z = message.arg1 == 1;
+                OverlayCocktailBarStatePolicy overlayCocktailBarStatePolicy4 = (OverlayCocktailBarStatePolicy) AbsCocktailBarStatePolicy.this;
+                if (overlayCocktailBarStatePolicy4.mStateInfo.activate != z) {
+                    CocktailBarStateInfo cocktailBarStateInfo4 = new CocktailBarStateInfo(overlayCocktailBarStatePolicy4.mStateInfo.visibility);
+                    cocktailBarStateInfo4.activate = z;
+                    cocktailBarStateInfo4.changeFlag |= 64;
+                    ((CocktailBarStatePolicyController) overlayCocktailBarStatePolicy4.mListener).notifyCocktailBarState(cocktailBarStateInfo4);
+                }
+                AbsCocktailBarStatePolicy.this.mStateInfo.activate = z;
+                return;
+            }
+            if (i != 51) {
+                if (i != 101) {
+                    return;
+                }
+                AbsCocktailBarStatePolicy absCocktailBarStatePolicy4 = AbsCocktailBarStatePolicy.this;
+                synchronized (absCocktailBarStatePolicy4.mLock) {
+                    try {
+                        HandlerThread handlerThread = absCocktailBarStatePolicy4.mCocktailBarStateThread;
+                        if (handlerThread != null) {
+                            handlerThread.quitSafely();
+                            absCocktailBarStatePolicy4.mCocktailBarStateThread = null;
+                            absCocktailBarStatePolicy4.mCocktailBarStateHandler = null;
+                        }
+                    } finally {
+                    }
+                }
+                return;
+            }
+            AbsCocktailBarStatePolicy absCocktailBarStatePolicy5 = AbsCocktailBarStatePolicy.this;
+            IBinder iBinder = (IBinder) message.obj;
+            OverlayCocktailBarStatePolicy overlayCocktailBarStatePolicy5 = (OverlayCocktailBarStatePolicy) absCocktailBarStatePolicy5;
+            if (OverlayCocktailBarStatePolicy.DEBUG) {
+                overlayCocktailBarStatePolicy5.getClass();
+                Slog.i("OverlayCocktailBarStatePolicy", "handleNotifyCurrentStateToBinder");
+            }
+            CocktailBarStateInfo clone = overlayCocktailBarStatePolicy5.mStateInfo.clone();
+            clone.lockState &= GnssNative.GNSS_AIDING_TYPE_ALL;
+            clone.changeFlag = 77;
+            CocktailBarStatePolicyController cocktailBarStatePolicyController2 = (CocktailBarStatePolicyController) overlayCocktailBarStatePolicy5.mListener;
+            if (CocktailBarStatePolicyController.DEBUG) {
+                cocktailBarStatePolicyController2.getClass();
+                StringBuilder sb2 = new StringBuilder("notifyCocktailBarStateToBinder: visibility = ");
+                sb2.append(clone.visibility);
+                sb2.append(" position = ");
+                sb2.append(clone.position);
+                sb2.append(" showtimeout = ");
+                SystemServiceManager$$ExternalSyntheticOutline0.m(sb2, clone.showTimeout, "CocktailBarStatePolicyController");
+            }
+            synchronized (cocktailBarStatePolicyController2.mStateListeners) {
+                try {
+                    Iterator it3 = cocktailBarStatePolicyController2.mStateListeners.iterator();
+                    while (true) {
+                        if (!it3.hasNext()) {
+                            break;
+                        }
+                        CocktailBarStatePolicyController.CocktailBarStateListenerInfo cocktailBarStateListenerInfo2 = (CocktailBarStatePolicyController.CocktailBarStateListenerInfo) it3.next();
+                        if (iBinder.equals(cocktailBarStateListenerInfo2.token)) {
+                            cocktailBarStateListenerInfo2.onCocktailBarStateChanged(clone);
+                            break;
+                        }
+                    }
+                } finally {
+                }
+            }
+        }
     }
 
-    public final void createHandlerThreadLocked() {
+    public AbsCocktailBarStatePolicy(CocktailBarStatePolicyController cocktailBarStatePolicyController) {
+        this.mListener = cocktailBarStatePolicyController;
+    }
+
+    public final void enqueueMessageLocked(Message message, boolean z) {
         if (this.mCocktailBarStateThread == null) {
             HandlerThread handlerThread = new HandlerThread("CocktailBarVisibility");
             this.mCocktailBarStateThread = handlerThread;
@@ -49,157 +201,40 @@ public abstract class AbsCocktailBarStatePolicy implements CocktailBarStatePolic
             synchronized (this.mLock) {
                 CocktailBarStateHandler cocktailBarStateHandler = new CocktailBarStateHandler(this.mCocktailBarStateThread.getLooper());
                 this.mCocktailBarStateHandler = cocktailBarStateHandler;
-                cocktailBarStateHandler.post(new Runnable() { // from class: com.android.server.cocktailbar.policy.state.AbsCocktailBarStatePolicy.1
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        Process.setThreadPriority(-4);
-                        Process.setCanSelfBackground(false);
-                    }
-                });
+                cocktailBarStateHandler.post(new AnonymousClass1());
             }
         }
-    }
-
-    public final void quitHandlerThread() {
-        synchronized (this.mLock) {
-            HandlerThread handlerThread = this.mCocktailBarStateThread;
-            if (handlerThread != null) {
-                handlerThread.quitSafely();
-                this.mCocktailBarStateThread = null;
-                this.mCocktailBarStateHandler = null;
-            }
-        }
-    }
-
-    @Override // com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy
-    public void updateVisibility(int i) {
-        synchronized (this.mLock) {
-            Message obtain = Message.obtain();
-            obtain.what = 1;
-            obtain.arg1 = i;
-            enqueueMessageLocked(obtain, 0L, true);
-        }
-    }
-
-    public final void enqueueMessageLocked(Message message, long j, boolean z) {
-        createHandlerThreadLocked();
         if (z) {
-            removeQueuedMessageLocked(message.what);
+            int i = message.what;
+            CocktailBarStateHandler cocktailBarStateHandler2 = this.mCocktailBarStateHandler;
+            if (cocktailBarStateHandler2 != null) {
+                cocktailBarStateHandler2.removeMessages(i);
+            }
         }
-        Handler handler = this.mCocktailBarStateHandler;
-        if (handler != null) {
-            handler.sendMessageDelayed(message, j);
-            updateThreadExpireTimeLocked(j);
-        }
-    }
-
-    public final void updateThreadExpireTimeLocked(long j) {
-        this.mCocktailBarStateHandler.removeMessages(101);
-        this.mCocktailBarStateHandler.sendEmptyMessageDelayed(101, 5000L);
-    }
-
-    public final void removeQueuedMessageLocked(int i) {
-        Handler handler = this.mCocktailBarStateHandler;
-        if (handler != null) {
-            handler.removeMessages(i);
+        CocktailBarStateHandler cocktailBarStateHandler3 = this.mCocktailBarStateHandler;
+        if (cocktailBarStateHandler3 != null) {
+            cocktailBarStateHandler3.sendMessageDelayed(message, 0L);
+            this.mCocktailBarStateHandler.removeMessages(101);
+            this.mCocktailBarStateHandler.sendEmptyMessageDelayed(101, 5000L);
         }
     }
 
-    @Override // com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy
-    public void updatePosition(int i) {
-        synchronized (this.mLock) {
-            Message obtain = Message.obtain();
-            obtain.what = 4;
-            obtain.arg1 = i;
-            enqueueMessageLocked(obtain, 0L, true);
-        }
-    }
-
-    @Override // com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy
-    public void notifyStateToBinder(IBinder iBinder) {
-        synchronized (this.mLock) {
-            Message obtain = Message.obtain();
-            obtain.what = 51;
-            obtain.obj = iBinder;
-            enqueueMessageLocked(obtain, 0L, false);
-        }
-    }
-
-    @Override // com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy
-    public int getWindowType() {
-        return this.mWindowType;
-    }
-
-    @Override // com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy
-    public CocktailBarStateInfo getCocktailBarStateInfo() {
-        return this.mStateInfo;
-    }
-
-    @Override // com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy
-    public void updateActivate(boolean z) {
+    public final void updateActivate(boolean z) {
         synchronized (this.mLock) {
             Message obtain = Message.obtain();
             obtain.what = 49;
             obtain.arg1 = z ? 1 : 0;
-            enqueueMessageLocked(obtain, 0L, true);
+            enqueueMessageLocked(obtain, true);
         }
     }
 
-    @Override // com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy
-    public void updateCocktailBarWindowType(int i, String str) {
+    public final void updateCocktailBarWindowType(int i, String str) {
         synchronized (this.mLock) {
             Message obtain = Message.obtain();
             obtain.what = 6;
             obtain.arg1 = i;
             obtain.obj = str;
-            enqueueMessageLocked(obtain, 0L, true);
-        }
-    }
-
-    @Override // com.android.server.cocktailbar.policy.state.CocktailBarStatePolicy
-    public String dump() {
-        return ((((("[LockState : ") + this.mLockMap.toString()) + " : " + this.mStateInfo.lockState) + " Visibility : " + this.mStateInfo.visibility) + " CocktailBarWindowType : " + this.mStateInfo.windowType) + " WindowType : " + this.mWindowType;
-    }
-
-    /* loaded from: classes.dex */
-    public final class CocktailBarStateHandler extends Handler {
-        public CocktailBarStateHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            SemLog.i(AbsCocktailBarStatePolicy.TAG, "handleMessage: entry what = " + message.what);
-            int i = message.what;
-            if (i == 1) {
-                AbsCocktailBarStatePolicy.this.handleUpdateVisibility(message.arg1);
-                return;
-            }
-            if (i == 4) {
-                AbsCocktailBarStatePolicy.this.handleUpdatePosition(message.arg1);
-                AbsCocktailBarStatePolicy.this.mStateInfo.position = message.arg1;
-                return;
-            }
-            if (i == 6) {
-                AbsCocktailBarStatePolicy absCocktailBarStatePolicy = AbsCocktailBarStatePolicy.this;
-                int i2 = message.arg1;
-                Object obj = message.obj;
-                absCocktailBarStatePolicy.handleUpdateCocktailBarWindowType(i2, obj != null ? (String) obj : null);
-                AbsCocktailBarStatePolicy.this.mStateInfo.windowType = message.arg1;
-                return;
-            }
-            if (i == 49) {
-                boolean z = message.arg1 == 1;
-                AbsCocktailBarStatePolicy.this.handleUpdateActivate(z);
-                AbsCocktailBarStatePolicy.this.mStateInfo.activate = z;
-            } else if (i == 51) {
-                AbsCocktailBarStatePolicy.this.handleNotifyCurrentStateToBinder((IBinder) message.obj);
-            } else {
-                if (i != 101) {
-                    return;
-                }
-                AbsCocktailBarStatePolicy.this.quitHandlerThread();
-            }
+            enqueueMessageLocked(obtain, true);
         }
     }
 }

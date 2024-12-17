@@ -1,12 +1,10 @@
 package com.android.server.usb.descriptors.tree;
 
-import com.android.server.audio.CurrentDeviceManager$$ExternalSyntheticThrowCCEIfNotNull0;
 import com.android.server.usb.descriptors.UsbInterfaceDescriptor;
-import com.android.server.usb.descriptors.report.ReportCanvas;
 import java.util.ArrayList;
-import java.util.Iterator;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class UsbDescriptorsInterfaceNode extends UsbDescriptorsTreeNode {
     public final UsbInterfaceDescriptor mInterfaceDescriptor;
     public final ArrayList mEndpointNodes = new ArrayList();
@@ -14,32 +12,5 @@ public final class UsbDescriptorsInterfaceNode extends UsbDescriptorsTreeNode {
 
     public UsbDescriptorsInterfaceNode(UsbInterfaceDescriptor usbInterfaceDescriptor) {
         this.mInterfaceDescriptor = usbInterfaceDescriptor;
-    }
-
-    public void addEndpointNode(UsbDescriptorsEndpointNode usbDescriptorsEndpointNode) {
-        this.mEndpointNodes.add(usbDescriptorsEndpointNode);
-    }
-
-    public void report(ReportCanvas reportCanvas) {
-        this.mInterfaceDescriptor.report(reportCanvas);
-        if (this.mACInterfaceNodes.size() > 0) {
-            reportCanvas.writeParagraph("Audio Class Interfaces", false);
-            reportCanvas.openList();
-            Iterator it = this.mACInterfaceNodes.iterator();
-            if (it.hasNext()) {
-                CurrentDeviceManager$$ExternalSyntheticThrowCCEIfNotNull0.m(it.next());
-                throw null;
-            }
-            reportCanvas.closeList();
-        }
-        if (this.mEndpointNodes.size() > 0) {
-            reportCanvas.writeParagraph("Endpoints", false);
-            reportCanvas.openList();
-            Iterator it2 = this.mEndpointNodes.iterator();
-            while (it2.hasNext()) {
-                ((UsbDescriptorsEndpointNode) it2.next()).report(reportCanvas);
-            }
-            reportCanvas.closeList();
-        }
     }
 }

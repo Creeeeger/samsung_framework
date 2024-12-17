@@ -3,6 +3,7 @@ package co.nstant.in.cbor.model;
 import java.math.BigInteger;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class Number extends DataItem {
     public final BigInteger value;
@@ -13,12 +14,8 @@ public abstract class Number extends DataItem {
         this.value = bigInteger;
     }
 
-    public BigInteger getValue() {
-        return this.value;
-    }
-
     @Override // co.nstant.in.cbor.model.DataItem
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (obj instanceof Number) {
             return super.equals(obj) && this.value.equals(((Number) obj).value);
         }
@@ -26,11 +23,11 @@ public abstract class Number extends DataItem {
     }
 
     @Override // co.nstant.in.cbor.model.DataItem
-    public int hashCode() {
+    public final int hashCode() {
         return this.value.hashCode() ^ super.hashCode();
     }
 
-    public String toString() {
+    public final String toString() {
         return this.value.toString();
     }
 }

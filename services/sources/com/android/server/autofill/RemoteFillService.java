@@ -4,12 +4,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.ICancellationSignal;
+import android.os.IInterface;
 import android.os.RemoteException;
 import android.service.autofill.FillRequest;
 import android.service.autofill.FillResponse;
+import android.service.autofill.Flags;
 import android.service.autofill.IAutoFillService;
 import android.service.autofill.IFillCallback;
 import android.service.autofill.ISaveCallback;
@@ -18,63 +19,263 @@ import android.util.Slog;
 import com.android.internal.infra.AbstractRemoteService;
 import com.android.internal.infra.AndroidFuture;
 import com.android.internal.infra.ServiceConnector;
-import com.android.internal.os.IResultReceiver;
+import com.android.server.autofill.RemoteFillService;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
-/* JADX INFO: Access modifiers changed from: package-private */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public final class RemoteFillService extends ServiceConnector.Impl {
+final class RemoteFillService extends ServiceConnector.Impl {
+    public static final /* synthetic */ int $r8$clinit = 0;
     private final FillServiceCallbacks mCallbacks;
     private final ComponentName mComponentName;
+    private AtomicReference mConvertCredentialCallback;
+    private AtomicReference mFillCallback;
+    private final boolean mIsCredentialAutofillService;
     private final Object mLock;
     private CompletableFuture mPendingFillRequest;
     private int mPendingFillRequestId;
+    private AtomicReference mSaveCallback;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.autofill.RemoteFillService$1, reason: invalid class name */
+    public final class AnonymousClass1 extends IFillCallback.Stub {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ RemoteFillService this$0;
+        public final /* synthetic */ AtomicReference val$cancellationSink;
+        public final /* synthetic */ CompletableFuture val$fillRequest;
+        public final /* synthetic */ AtomicReference val$futureRef;
+
+        public /* synthetic */ AnonymousClass1(RemoteFillService remoteFillService, AtomicReference atomicReference, AtomicReference atomicReference2, CompletableFuture completableFuture, int i) {
+            this.$r8$classId = i;
+            this.this$0 = remoteFillService;
+            this.val$futureRef = atomicReference;
+            this.val$cancellationSink = atomicReference2;
+            this.val$fillRequest = completableFuture;
+        }
+
+        public final void onCancellable(ICancellationSignal iCancellationSignal) {
+            switch (this.$r8$classId) {
+                case 0:
+                    CompletableFuture completableFuture = (CompletableFuture) this.val$futureRef.get();
+                    if (completableFuture != null && completableFuture.isCancelled()) {
+                        RemoteFillService remoteFillService = this.this$0;
+                        int i = RemoteFillService.$r8$clinit;
+                        remoteFillService.getClass();
+                        RemoteFillService.dispatchCancellationSignal(iCancellationSignal);
+                        break;
+                    } else {
+                        this.val$cancellationSink.set(iCancellationSignal);
+                        break;
+                    }
+                default:
+                    CompletableFuture completableFuture2 = (CompletableFuture) this.val$futureRef.get();
+                    if (completableFuture2 != null && completableFuture2.isCancelled()) {
+                        RemoteFillService remoteFillService2 = this.this$0;
+                        int i2 = RemoteFillService.$r8$clinit;
+                        remoteFillService2.getClass();
+                        RemoteFillService.dispatchCancellationSignal(iCancellationSignal);
+                        break;
+                    } else {
+                        this.val$cancellationSink.set(iCancellationSignal);
+                        break;
+                    }
+            }
+        }
+
+        public final void onFailure(int i, CharSequence charSequence) {
+            switch (this.$r8$classId) {
+                case 0:
+                    this.val$fillRequest.completeExceptionally(new RuntimeException(charSequence == null ? "" : String.valueOf(charSequence)));
+                    break;
+                default:
+                    this.val$fillRequest.completeExceptionally(new RuntimeException(charSequence == null ? "" : String.valueOf(charSequence)));
+                    break;
+            }
+        }
+
+        public final void onSuccess(FillResponse fillResponse) {
+            switch (this.$r8$classId) {
+                case 0:
+                    this.val$fillRequest.complete(fillResponse);
+                    break;
+                default:
+                    this.val$fillRequest.complete(fillResponse);
+                    break;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.autofill.RemoteFillService$4, reason: invalid class name */
+    public final class AnonymousClass4 extends ISaveCallback.Stub {
+        public final /* synthetic */ int $r8$classId = 1;
+        public Object val$save;
+
+        public /* synthetic */ AnonymousClass4() {
+        }
+
+        public AnonymousClass4(CompletableFuture completableFuture) {
+            this.val$save = completableFuture;
+        }
+
+        public final void onFailure(CharSequence charSequence) {
+            switch (this.$r8$classId) {
+                case 0:
+                    ((CompletableFuture) this.val$save).completeExceptionally(new RuntimeException(String.valueOf(charSequence)));
+                    break;
+                default:
+                    ISaveCallback iSaveCallback = (ISaveCallback) ((WeakReference) this.val$save).get();
+                    if (iSaveCallback != null) {
+                        iSaveCallback.onFailure(charSequence);
+                        break;
+                    }
+                    break;
+            }
+        }
+
+        public final void onSuccess(IntentSender intentSender) {
+            switch (this.$r8$classId) {
+                case 0:
+                    ((CompletableFuture) this.val$save).complete(intentSender);
+                    break;
+                default:
+                    ISaveCallback iSaveCallback = (ISaveCallback) ((WeakReference) this.val$save).get();
+                    if (iSaveCallback != null) {
+                        iSaveCallback.onSuccess(intentSender);
+                        break;
+                    }
+                    break;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface FillServiceCallbacks extends AbstractRemoteService.VultureCallback {
-        void onFillRequestFailure(int i, CharSequence charSequence);
+        void onFillRequestFailure(int i, Throwable th);
 
-        void onFillRequestSuccess(int i, FillResponse fillResponse, String str, int i2);
+        void onFillRequestSuccess(int i, FillResponse fillResponse, int i2);
 
-        void onFillRequestTimeout(int i);
-
-        void onSaveRequestFailure(CharSequence charSequence, String str);
+        void onSaveRequestFailure(String str, CharSequence charSequence);
 
         void onSaveRequestSuccess(String str, IntentSender intentSender);
     }
 
-    public long getAutoDisconnectTimeoutMs() {
-        return 5000L;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class IFillCallbackDelegate extends IFillCallback.Stub {
+        public WeakReference mCallbackWeakRef;
+
+        public final void onCancellable(ICancellationSignal iCancellationSignal) {
+            IFillCallback iFillCallback = (IFillCallback) this.mCallbackWeakRef.get();
+            if (iFillCallback != null) {
+                iFillCallback.onCancellable(iCancellationSignal);
+            }
+        }
+
+        public final void onFailure(int i, CharSequence charSequence) {
+            IFillCallback iFillCallback = (IFillCallback) this.mCallbackWeakRef.get();
+            if (iFillCallback != null) {
+                iFillCallback.onFailure(i, charSequence);
+            }
+        }
+
+        public final void onSuccess(FillResponse fillResponse) {
+            IFillCallback iFillCallback = (IFillCallback) this.mCallbackWeakRef.get();
+            if (iFillCallback != null) {
+                iFillCallback.onSuccess(fillResponse);
+            }
+        }
     }
 
-    public RemoteFillService(Context context, ComponentName componentName, int i, FillServiceCallbacks fillServiceCallbacks, boolean z) {
-        super(context, new Intent("android.service.autofill.AutofillService").setComponent(componentName), (z ? 4194304 : 0) | 1048576, i, new Function() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda0
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return IAutoFillService.Stub.asInterface((IBinder) obj);
-            }
-        });
+    public static CompletableFuture $r8$lambda$0drfjd02UtjtR1pzZwZfvLOqncQ(RemoteFillService remoteFillService, SaveRequest saveRequest, IAutoFillService iAutoFillService) {
+        remoteFillService.getClass();
+        if (Helper.sVerbose) {
+            Slog.v("RemoteFillService", "calling onSaveRequest()");
+        }
+        CompletableFuture completableFuture = new CompletableFuture();
+        ISaveCallback anonymousClass4 = new AnonymousClass4(completableFuture);
+        if (Flags.remoteFillServiceUseWeakReference()) {
+            remoteFillService.mSaveCallback = new AtomicReference(anonymousClass4);
+            ISaveCallback anonymousClass42 = new AnonymousClass4();
+            anonymousClass42.val$save = new WeakReference(anonymousClass4);
+            anonymousClass4 = anonymousClass42;
+        }
+        iAutoFillService.onSaveRequest(saveRequest, anonymousClass4);
+        return completableFuture;
+    }
+
+    public static /* synthetic */ void $r8$lambda$1hw0FNOarmG_sgD3O92JoX9WtBE(RemoteFillService remoteFillService, Throwable th, IntentSender intentSender) {
+        if (th == null) {
+            remoteFillService.mCallbacks.onSaveRequestSuccess(remoteFillService.mComponentName.getPackageName(), intentSender);
+            return;
+        }
+        remoteFillService.mCallbacks.onSaveRequestFailure(th.getMessage(), remoteFillService.mComponentName.getPackageName());
+    }
+
+    public static /* synthetic */ void $r8$lambda$BpMSr5I3_9bplEhls6FgDTRLWpg(RemoteFillService remoteFillService, Throwable th, FillRequest fillRequest, FillResponse fillResponse, AtomicReference atomicReference) {
+        synchronized (remoteFillService.mLock) {
+            remoteFillService.mPendingFillRequest = null;
+            remoteFillService.mPendingFillRequestId = Integer.MIN_VALUE;
+        }
+        FillServiceCallbacks fillServiceCallbacks = remoteFillService.mCallbacks;
+        if (fillServiceCallbacks == null) {
+            Slog.w("RemoteFillService", "Error calling RemoteFillService - service already unbound");
+            return;
+        }
+        if (th == null) {
+            int id = fillRequest.getId();
+            remoteFillService.mComponentName.getPackageName();
+            fillServiceCallbacks.onFillRequestSuccess(id, fillResponse, fillRequest.getFlags());
+            return;
+        }
+        Slog.e("RemoteFillService", "Error calling on fill request", th);
+        if (th instanceof TimeoutException) {
+            dispatchCancellationSignal((ICancellationSignal) atomicReference.get());
+            remoteFillService.mCallbacks.onFillRequestFailure(fillRequest.getId(), th);
+        } else if (th instanceof CancellationException) {
+            dispatchCancellationSignal((ICancellationSignal) atomicReference.get());
+        } else {
+            remoteFillService.mCallbacks.onFillRequestFailure(fillRequest.getId(), th);
+        }
+    }
+
+    public static /* synthetic */ void $r8$lambda$PXtmzf6bY2FCvCgDzGBClXL04mI(RemoteFillService remoteFillService, Throwable th, FillRequest fillRequest, FillResponse fillResponse, AtomicReference atomicReference) {
+        synchronized (remoteFillService.mLock) {
+            remoteFillService.mPendingFillRequest = null;
+            remoteFillService.mPendingFillRequestId = Integer.MIN_VALUE;
+        }
+        if (th == null) {
+            FillServiceCallbacks fillServiceCallbacks = remoteFillService.mCallbacks;
+            int id = fillRequest.getId();
+            remoteFillService.mComponentName.getPackageName();
+            fillServiceCallbacks.onFillRequestSuccess(id, fillResponse, fillRequest.getFlags());
+            return;
+        }
+        Slog.e("RemoteFillService", "Error calling on fill request", th);
+        if (th instanceof TimeoutException) {
+            dispatchCancellationSignal((ICancellationSignal) atomicReference.get());
+            remoteFillService.mCallbacks.onFillRequestFailure(fillRequest.getId(), th);
+        } else if (th instanceof CancellationException) {
+            dispatchCancellationSignal((ICancellationSignal) atomicReference.get());
+        } else {
+            remoteFillService.mCallbacks.onFillRequestFailure(fillRequest.getId(), th);
+        }
+    }
+
+    public RemoteFillService(Context context, ComponentName componentName, int i, FillServiceCallbacks fillServiceCallbacks, boolean z, ComponentName componentName2) {
+        super(context, new Intent("android.service.autofill.AutofillService").setComponent(componentName), (z ? 4194304 : 0) | 1048576, i, new RemoteFillService$$ExternalSyntheticLambda2());
         this.mLock = new Object();
         this.mPendingFillRequestId = Integer.MIN_VALUE;
         this.mCallbacks = fillServiceCallbacks;
         this.mComponentName = componentName;
+        this.mIsCredentialAutofillService = componentName.equals(componentName2);
     }
 
-    public void onServiceConnectionStatusChanged(IAutoFillService iAutoFillService, boolean z) {
-        try {
-            iAutoFillService.onConnectedStateChanged(z);
-        } catch (Exception e) {
-            Slog.w("RemoteFillService", "Exception calling onConnectedStateChanged(" + z + "): " + e);
-        }
-    }
-
-    public final void dispatchCancellationSignal(ICancellationSignal iCancellationSignal) {
+    public static void dispatchCancellationSignal(ICancellationSignal iCancellationSignal) {
         if (iCancellationSignal == null) {
             return;
         }
@@ -85,31 +286,64 @@ public final class RemoteFillService extends ServiceConnector.Impl {
         }
     }
 
-    public void addLast(ServiceConnector.Job job) {
+    public final void addLast(Object obj) {
         cancelPendingJobs();
-        super.addLast(job);
+        super.addLast((ServiceConnector.Job) obj);
     }
 
-    public int cancelCurrentRequest() {
+    public final int cancelCurrentRequest() {
         int i;
         synchronized (this.mLock) {
-            CompletableFuture completableFuture = this.mPendingFillRequest;
-            i = (completableFuture == null || !completableFuture.cancel(false)) ? Integer.MIN_VALUE : this.mPendingFillRequestId;
+            try {
+                CompletableFuture completableFuture = this.mPendingFillRequest;
+                i = (completableFuture == null || !completableFuture.cancel(false)) ? Integer.MIN_VALUE : this.mPendingFillRequestId;
+            } catch (Throwable th) {
+                throw th;
+            }
         }
         return i;
     }
 
-    public void onFillRequest(final FillRequest fillRequest) {
+    public final long getAutoDisconnectTimeoutMs() {
+        return 5000L;
+    }
+
+    public final boolean isCredentialAutofillService() {
+        return this.mIsCredentialAutofillService;
+    }
+
+    public final IFillCallback maybeWrapWithWeakReference(IFillCallback iFillCallback) {
+        if (!Flags.remoteFillServiceUseWeakReference()) {
+            return iFillCallback;
+        }
+        this.mFillCallback = new AtomicReference(iFillCallback);
+        IFillCallbackDelegate iFillCallbackDelegate = new IFillCallbackDelegate();
+        iFillCallbackDelegate.mCallbackWeakRef = new WeakReference(iFillCallback);
+        return iFillCallbackDelegate;
+    }
+
+    public final void onFillCredentialRequest(final FillRequest fillRequest, final IBinder iBinder) {
         if (Helper.sVerbose) {
             Slog.v("RemoteFillService", "onFillRequest:" + fillRequest);
         }
         final AtomicReference atomicReference = new AtomicReference();
         final AtomicReference atomicReference2 = new AtomicReference();
-        AndroidFuture orTimeout = postAsync(new ServiceConnector.Job() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda2
+        AndroidFuture orTimeout = postAsync(new ServiceConnector.Job() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda5
             public final Object run(Object obj) {
-                CompletableFuture lambda$onFillRequest$0;
-                lambda$onFillRequest$0 = RemoteFillService.this.lambda$onFillRequest$0(fillRequest, atomicReference2, atomicReference, (IAutoFillService) obj);
-                return lambda$onFillRequest$0;
+                RemoteFillService remoteFillService = RemoteFillService.this;
+                FillRequest fillRequest2 = fillRequest;
+                AtomicReference atomicReference3 = atomicReference2;
+                AtomicReference atomicReference4 = atomicReference;
+                IBinder iBinder2 = iBinder;
+                IAutoFillService iAutoFillService = (IAutoFillService) obj;
+                int i = RemoteFillService.$r8$clinit;
+                remoteFillService.getClass();
+                if (Helper.sVerbose) {
+                    Slog.v("RemoteFillService", "calling onFillRequest() for id=" + fillRequest2.getId());
+                }
+                CompletableFuture completableFuture = new CompletableFuture();
+                iAutoFillService.onFillCredentialRequest(fillRequest2, remoteFillService.maybeWrapWithWeakReference(new RemoteFillService.AnonymousClass1(remoteFillService, atomicReference3, atomicReference4, completableFuture, 0)), iBinder2);
+                return completableFuture;
             }
         }).orTimeout(5000L, TimeUnit.MILLISECONDS);
         atomicReference2.set(orTimeout);
@@ -117,133 +351,45 @@ public final class RemoteFillService extends ServiceConnector.Impl {
             this.mPendingFillRequest = orTimeout;
             this.mPendingFillRequestId = fillRequest.getId();
         }
-        orTimeout.whenComplete(new BiConsumer() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda3
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                RemoteFillService.this.lambda$onFillRequest$2(fillRequest, atomicReference, (FillResponse) obj, (Throwable) obj2);
-            }
-        });
+        orTimeout.whenComplete(new RemoteFillService$$ExternalSyntheticLambda4(this, fillRequest, atomicReference, 1));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ CompletableFuture lambda$onFillRequest$0(FillRequest fillRequest, final AtomicReference atomicReference, final AtomicReference atomicReference2, IAutoFillService iAutoFillService) {
+    public final void onFillRequest(final FillRequest fillRequest) {
         if (Helper.sVerbose) {
-            Slog.v("RemoteFillService", "calling onFillRequest() for id=" + fillRequest.getId());
+            Slog.v("RemoteFillService", "onFillRequest:" + fillRequest);
         }
-        final CompletableFuture completableFuture = new CompletableFuture();
-        iAutoFillService.onFillRequest(fillRequest, new IFillCallback.Stub() { // from class: com.android.server.autofill.RemoteFillService.1
-            public void onCancellable(ICancellationSignal iCancellationSignal) {
-                CompletableFuture completableFuture2 = (CompletableFuture) atomicReference.get();
-                if (completableFuture2 != null && completableFuture2.isCancelled()) {
-                    RemoteFillService.this.dispatchCancellationSignal(iCancellationSignal);
-                } else {
-                    atomicReference2.set(iCancellationSignal);
-                }
-            }
-
-            public void onSuccess(FillResponse fillResponse) {
-                completableFuture.complete(fillResponse);
-            }
-
-            public void onFailure(int i, CharSequence charSequence) {
-                completableFuture.completeExceptionally(new RuntimeException(charSequence == null ? "" : String.valueOf(charSequence)));
-            }
-        });
-        return completableFuture;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onFillRequest$2(final FillRequest fillRequest, final AtomicReference atomicReference, final FillResponse fillResponse, final Throwable th) {
-        Handler.getMain().post(new Runnable() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda4
-            @Override // java.lang.Runnable
-            public final void run() {
-                RemoteFillService.this.lambda$onFillRequest$1(th, fillRequest, fillResponse, atomicReference);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onFillRequest$1(Throwable th, FillRequest fillRequest, FillResponse fillResponse, AtomicReference atomicReference) {
-        synchronized (this.mLock) {
-            this.mPendingFillRequest = null;
-            this.mPendingFillRequestId = Integer.MIN_VALUE;
-        }
-        if (th == null) {
-            this.mCallbacks.onFillRequestSuccess(fillRequest.getId(), fillResponse, this.mComponentName.getPackageName(), fillRequest.getFlags());
-            return;
-        }
-        Slog.e("RemoteFillService", "Error calling on fill request", th);
-        if (th instanceof TimeoutException) {
-            dispatchCancellationSignal((ICancellationSignal) atomicReference.get());
-            this.mCallbacks.onFillRequestTimeout(fillRequest.getId());
-        } else if (th instanceof CancellationException) {
-            dispatchCancellationSignal((ICancellationSignal) atomicReference.get());
-        } else {
-            this.mCallbacks.onFillRequestFailure(fillRequest.getId(), th.getMessage());
-        }
-    }
-
-    public void onSaveRequest(final SaveRequest saveRequest) {
-        postAsync(new ServiceConnector.Job() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda5
+        final AtomicReference atomicReference = new AtomicReference();
+        final AtomicReference atomicReference2 = new AtomicReference();
+        AndroidFuture orTimeout = postAsync(new ServiceConnector.Job() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda3
             public final Object run(Object obj) {
-                CompletableFuture lambda$onSaveRequest$3;
-                lambda$onSaveRequest$3 = RemoteFillService.this.lambda$onSaveRequest$3(saveRequest, (IAutoFillService) obj);
-                return lambda$onSaveRequest$3;
+                RemoteFillService remoteFillService = RemoteFillService.this;
+                FillRequest fillRequest2 = fillRequest;
+                AtomicReference atomicReference3 = atomicReference2;
+                AtomicReference atomicReference4 = atomicReference;
+                IAutoFillService iAutoFillService = (IAutoFillService) obj;
+                int i = RemoteFillService.$r8$clinit;
+                remoteFillService.getClass();
+                if (Helper.sVerbose) {
+                    Slog.v("RemoteFillService", "calling onFillRequest() for id=" + fillRequest2.getId());
+                }
+                CompletableFuture completableFuture = new CompletableFuture();
+                iAutoFillService.onFillRequest(fillRequest2, remoteFillService.maybeWrapWithWeakReference(new RemoteFillService.AnonymousClass1(remoteFillService, atomicReference3, atomicReference4, completableFuture, 1)));
+                return completableFuture;
             }
-        }).orTimeout(5000L, TimeUnit.MILLISECONDS).whenComplete(new BiConsumer() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda6
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                RemoteFillService.this.lambda$onSaveRequest$5((IntentSender) obj, (Throwable) obj2);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ CompletableFuture lambda$onSaveRequest$3(SaveRequest saveRequest, IAutoFillService iAutoFillService) {
-        if (Helper.sVerbose) {
-            Slog.v("RemoteFillService", "calling onSaveRequest()");
+        }).orTimeout(5000L, TimeUnit.MILLISECONDS);
+        atomicReference2.set(orTimeout);
+        synchronized (this.mLock) {
+            this.mPendingFillRequest = orTimeout;
+            this.mPendingFillRequestId = fillRequest.getId();
         }
-        final CompletableFuture completableFuture = new CompletableFuture();
-        iAutoFillService.onSaveRequest(saveRequest, new ISaveCallback.Stub() { // from class: com.android.server.autofill.RemoteFillService.2
-            public void onSuccess(IntentSender intentSender) {
-                completableFuture.complete(intentSender);
-            }
-
-            public void onFailure(CharSequence charSequence) {
-                completableFuture.completeExceptionally(new RuntimeException(String.valueOf(charSequence)));
-            }
-        });
-        return completableFuture;
+        orTimeout.whenComplete(new RemoteFillService$$ExternalSyntheticLambda4(this, fillRequest, atomicReference, 0));
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onSaveRequest$5(final IntentSender intentSender, final Throwable th) {
-        Handler.getMain().post(new Runnable() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda7
-            @Override // java.lang.Runnable
-            public final void run() {
-                RemoteFillService.this.lambda$onSaveRequest$4(th, intentSender);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onSaveRequest$4(Throwable th, IntentSender intentSender) {
-        if (th == null) {
-            this.mCallbacks.onSaveRequestSuccess(this.mComponentName.getPackageName(), intentSender);
-        } else {
-            this.mCallbacks.onSaveRequestFailure(this.mComponentName.getPackageName(), th.getMessage());
+    public final void onServiceConnectionStatusChanged(IInterface iInterface, boolean z) {
+        try {
+            ((IAutoFillService) iInterface).onConnectedStateChanged(z);
+        } catch (Exception e) {
+            Slog.w("RemoteFillService", "Exception calling onConnectedStateChanged(" + z + "): " + e);
         }
-    }
-
-    public void onSavedPasswordCountRequest(final IResultReceiver iResultReceiver) {
-        run(new ServiceConnector.VoidJob() { // from class: com.android.server.autofill.RemoteFillService$$ExternalSyntheticLambda1
-            public final void runNoResult(Object obj) {
-                ((IAutoFillService) obj).onSavedPasswordCountRequest(iResultReceiver);
-            }
-        });
-    }
-
-    public void destroy() {
-        unbind();
     }
 }

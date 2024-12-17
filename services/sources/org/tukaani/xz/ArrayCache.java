@@ -1,24 +1,7 @@
 package org.tukaani.xz;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class ArrayCache {
-    public static volatile ArrayCache defaultCache;
-    public static final ArrayCache dummyCache;
-
-    public void putArray(byte[] bArr) {
-    }
-
-    static {
-        ArrayCache arrayCache = new ArrayCache();
-        dummyCache = arrayCache;
-        defaultCache = arrayCache;
-    }
-
-    public static ArrayCache getDefaultCache() {
-        return defaultCache;
-    }
-
-    public byte[] getByteArray(int i, boolean z) {
-        return new byte[i];
-    }
+public final class ArrayCache {
+    public static volatile ArrayCache defaultCache = new ArrayCache();
 }

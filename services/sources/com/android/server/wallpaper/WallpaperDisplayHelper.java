@@ -1,24 +1,38 @@
 package com.android.server.wallpaper;
 
+import android.app.WallpaperManager;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.os.Binder;
 import android.os.Debug;
+import android.util.Pair;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.view.Display;
-import android.view.DisplayInfo;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.wm.WindowManagerInternal;
-import java.util.function.Consumer;
+import com.android.window.flags.Flags;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-/* loaded from: classes3.dex */
-public class WallpaperDisplayHelper {
-    public static final String TAG = "WallpaperDisplayHelper";
-    public final SparseArray mDisplayDatas = new SparseArray();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WallpaperDisplayHelper {
     public final DisplayManager mDisplayManager;
+    public final boolean mIsFoldable;
     public final WindowManagerInternal mWindowManagerInternal;
+    public final SparseArray mDisplayDatas = new SparseArray();
+    public final SparseArray mDefaultDisplaySizes = new SparseArray();
+    public final List mFoldableOrientationPairs = new ArrayList();
+    public final boolean mIsLargeScreen = false;
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class DisplayData {
         public final int mDisplayId;
         public int mWidth = -1;
@@ -30,12 +44,54 @@ public class WallpaperDisplayHelper {
         }
     }
 
-    public WallpaperDisplayHelper(DisplayManager displayManager, WindowManagerInternal windowManagerInternal) {
+    public WallpaperDisplayHelper(DisplayManager displayManager, WindowManager windowManager, WindowManagerInternal windowManagerInternal, boolean z) {
         this.mDisplayManager = displayManager;
         this.mWindowManagerInternal = windowManagerInternal;
+        this.mIsFoldable = z;
+        if (Flags.multiCrop()) {
+            Set<WindowMetrics> possibleMaximumWindowMetrics = windowManager.getPossibleMaximumWindowMetrics(0);
+            boolean z2 = z && possibleMaximumWindowMetrics.size() == 2;
+            int i = -1;
+            float f = 0.0f;
+            for (WindowMetrics windowMetrics : possibleMaximumWindowMetrics) {
+                Rect bounds = windowMetrics.getBounds();
+                Point point = new Point(bounds.width(), bounds.height());
+                for (Point point2 : List.of(point, new Point(point.y, point.x))) {
+                    int orientation = WallpaperManager.getOrientation(point2);
+                    Point point3 = (Point) this.mDefaultDisplaySizes.get(orientation);
+                    if (point3 == null || point3.x * point3.y < point2.x * point2.y) {
+                        this.mDefaultDisplaySizes.put(orientation, point2);
+                    }
+                }
+                this.mIsLargeScreen |= ((float) point.x) / windowMetrics.getDensity() >= 600.0f;
+                if (z2) {
+                    int orientation2 = WallpaperManager.getOrientation(point);
+                    float density = (point.x * point.y) / (windowMetrics.getDensity() * windowMetrics.getDensity());
+                    if (f <= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                        i = orientation2;
+                        f = density;
+                    } else {
+                        Pair pair = density > f ? new Pair(Integer.valueOf(i), Integer.valueOf(orientation2)) : new Pair(Integer.valueOf(orientation2), Integer.valueOf(i));
+                        Pair pair2 = new Pair(Integer.valueOf(WallpaperManager.getRotatedOrientation(((Integer) pair.first).intValue())), Integer.valueOf(WallpaperManager.getRotatedOrientation(((Integer) pair.second).intValue())));
+                        ((ArrayList) this.mFoldableOrientationPairs).add(pair);
+                        ((ArrayList) this.mFoldableOrientationPairs).add(pair2);
+                    }
+                }
+            }
+        }
     }
 
-    public DisplayData getDisplayDataOrCreate(int i) {
+    public final void ensureSaneWallpaperDisplaySize(DisplayData displayData, int i) {
+        int maximumSizeDimension = getMaximumSizeDimension(i);
+        if (displayData.mWidth < maximumSizeDimension) {
+            displayData.mWidth = maximumSizeDimension;
+        }
+        if (displayData.mHeight < maximumSizeDimension) {
+            displayData.mHeight = maximumSizeDimension;
+        }
+    }
+
+    public final DisplayData getDisplayDataOrCreate(int i) {
         DisplayData displayData = (DisplayData) this.mDisplayDatas.get(i);
         if (displayData != null) {
             return displayData;
@@ -46,54 +102,40 @@ public class WallpaperDisplayHelper {
         return displayData2;
     }
 
-    public void removeDisplayData(int i) {
-        this.mDisplayDatas.remove(i);
+    public final int getFoldedOrientation(int i) {
+        Iterator it = ((ArrayList) this.mFoldableOrientationPairs).iterator();
+        while (it.hasNext()) {
+            Pair pair = (Pair) it.next();
+            if (((Integer) pair.second).equals(Integer.valueOf(i))) {
+                return ((Integer) pair.first).intValue();
+            }
+        }
+        return -1;
     }
 
-    public void ensureSaneWallpaperDisplaySize(DisplayData displayData, int i) {
-        int maximumSizeDimension = getMaximumSizeDimension(i);
-        if (displayData.mWidth < maximumSizeDimension) {
-            displayData.mWidth = maximumSizeDimension;
-        }
-        if (displayData.mHeight < maximumSizeDimension) {
-            displayData.mHeight = maximumSizeDimension;
-        }
-    }
-
-    public int getMaximumSizeDimension(int i) {
+    public final int getMaximumSizeDimension(int i) {
         Display display = this.mDisplayManager.getDisplay(i);
         if (display == null) {
-            Slog.w(TAG, "Invalid displayId=" + i + " " + Debug.getCallers(4));
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "Invalid displayId=", " ");
+            m.append(Debug.getCallers(4));
+            Slog.w("WallpaperDisplayHelper", m.toString());
             display = this.mDisplayManager.getDisplay(0);
         }
         return display.getMaximumSizeDimension();
     }
 
-    public void forEachDisplayData(Consumer consumer) {
-        for (int size = this.mDisplayDatas.size() - 1; size >= 0; size--) {
-            consumer.accept((DisplayData) this.mDisplayDatas.valueAt(size));
+    public final int getUnfoldedOrientation(int i) {
+        Iterator it = ((ArrayList) this.mFoldableOrientationPairs).iterator();
+        while (it.hasNext()) {
+            Pair pair = (Pair) it.next();
+            if (((Integer) pair.first).equals(Integer.valueOf(i))) {
+                return ((Integer) pair.second).intValue();
+            }
         }
+        return -1;
     }
 
-    public Display[] getDisplays() {
-        return this.mDisplayManager.getDisplays();
-    }
-
-    public Display[] getDisplays(String str) {
-        return this.mDisplayManager.getDisplays(str);
-    }
-
-    public DisplayInfo getDisplayInfo(int i) {
-        DisplayInfo displayInfo = new DisplayInfo();
-        this.mDisplayManager.getDisplay(i).getDisplayInfo(displayInfo);
-        return displayInfo;
-    }
-
-    public boolean isUsableDisplay(int i, int i2) {
-        return isUsableDisplay(this.mDisplayManager.getDisplay(i), i2);
-    }
-
-    public boolean isUsableDisplay(Display display, int i) {
+    public final boolean isUsableDisplay(Display display, int i) {
         if (display == null || !display.hasAccess(i)) {
             return false;
         }
@@ -103,13 +145,9 @@ public class WallpaperDisplayHelper {
         }
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            return this.mWindowManagerInternal.shouldShowSystemDecorOnDisplay(displayId);
+            return this.mWindowManagerInternal.isHomeSupportedOnDisplay(displayId);
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
-    }
-
-    public boolean isValidDisplay(int i) {
-        return this.mDisplayManager.getDisplay(i) != null;
     }
 }

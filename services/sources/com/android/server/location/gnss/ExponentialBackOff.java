@@ -1,33 +1,11 @@
 package com.android.server.location.gnss;
 
-/* loaded from: classes2.dex */
-public class ExponentialBackOff {
-    public long mCurrentIntervalMillis;
-    public final long mInitIntervalMillis;
-    public final long mMaxIntervalMillis;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ExponentialBackOff {
+    public long mCurrentIntervalMillis = 150000;
 
-    public ExponentialBackOff(long j, long j2) {
-        this.mInitIntervalMillis = j;
-        this.mMaxIntervalMillis = j2;
-        this.mCurrentIntervalMillis = j / 2;
-    }
-
-    public long nextBackoffMillis() {
-        long j = this.mCurrentIntervalMillis;
-        long j2 = this.mMaxIntervalMillis;
-        if (j > j2) {
-            return j2;
-        }
-        long j3 = j * 2;
-        this.mCurrentIntervalMillis = j3;
-        return j3;
-    }
-
-    public void reset() {
-        this.mCurrentIntervalMillis = this.mInitIntervalMillis / 2;
-    }
-
-    public String toString() {
-        return "ExponentialBackOff{mInitIntervalMillis=" + this.mInitIntervalMillis + ", mMaxIntervalMillis=" + this.mMaxIntervalMillis + ", mCurrentIntervalMillis=" + this.mCurrentIntervalMillis + '}';
+    public final String toString() {
+        return "ExponentialBackOff{mInitIntervalMillis=300000, mMaxIntervalMillis=14400000, mCurrentIntervalMillis=" + this.mCurrentIntervalMillis + '}';
     }
 }

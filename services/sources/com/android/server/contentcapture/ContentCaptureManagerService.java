@@ -3,6 +3,7 @@ package com.android.server.contentcapture;
 import android.R;
 import android.app.ActivityManagerInternal;
 import android.app.ActivityThread;
+import android.app.admin.DevicePolicyCache;
 import android.app.assist.ActivityId;
 import android.content.ComponentName;
 import android.content.ContentCaptureOptions;
@@ -10,11 +11,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityPresentationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ParceledListSlice;
 import android.content.pm.UserInfo;
 import android.database.ContentObserver;
 import android.os.Binder;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -27,6 +27,7 @@ import android.os.UserHandle;
 import android.provider.DeviceConfig;
 import android.provider.Settings;
 import android.service.contentcapture.ContentCaptureService;
+import android.service.contentcapture.ContentCaptureServiceInfo;
 import android.service.contentcapture.IDataShareCallback;
 import android.service.contentcapture.IDataShareReadAdapter;
 import android.service.voice.VoiceInteractionManagerInternal;
@@ -37,25 +38,44 @@ import android.util.Slog;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.contentcapture.ContentCaptureHelper;
+import android.view.contentcapture.ContentCaptureManager;
 import android.view.contentcapture.DataRemovalRequest;
 import android.view.contentcapture.DataShareRequest;
 import android.view.contentcapture.IContentCaptureManager;
 import android.view.contentcapture.IContentCaptureOptionsCallback;
 import android.view.contentcapture.IDataShareWriteAdapter;
 import com.android.internal.infra.GlobalWhitelistState;
+import com.android.internal.os.BackgroundThread;
 import com.android.internal.os.IResultReceiver;
 import com.android.internal.util.DumpUtils;
+import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.util.FunctionalUtils;
 import com.android.internal.util.SyncResultReceiver;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.PinnerService$$ExternalSyntheticOutline0;
 import com.android.server.SystemService;
-import com.android.server.backup.BackupAgentTimeoutParameters;
+import com.android.server.accessibility.ProxyManager$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerConstants$$ExternalSyntheticOutline0;
+import com.android.server.am.AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0;
+import com.android.server.am.BroadcastStats$$ExternalSyntheticOutline0;
 import com.android.server.contentcapture.ContentCaptureManagerService;
+import com.android.server.contentprotection.ContentProtectionAllowlistManager;
+import com.android.server.contentprotection.ContentProtectionConsentManager;
+import com.android.server.contentprotection.RemoteContentProtectionService;
+import com.android.server.contentprotection.RemoteContentProtectionService$$ExternalSyntheticLambda1;
 import com.android.server.infra.AbstractMasterSystemService;
+import com.android.server.infra.AbstractPerUserSystemService;
 import com.android.server.infra.FrameworkResourcesServiceNameResolver;
+import com.android.server.infra.ServiceNameBaseResolver;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -63,16 +83,27 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
+import java.util.function.Function;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ContentCaptureManagerService extends AbstractMasterSystemService {
-    public static final String TAG = "ContentCaptureManagerService";
+    public boolean activityStartAssistDataEnabled;
     public ActivityManagerInternal mAm;
     public final RemoteCallbackList mCallbacks;
     public final ContentCaptureManagerServiceStub mContentCaptureManagerServiceStub;
+    public ContentProtectionAllowlistManager mContentProtectionAllowlistManager;
+    public ContentProtectionConsentManager mContentProtectionConsentManager;
+    public ComponentName mContentProtectionServiceComponentName;
     public final Executor mDataShareExecutor;
+    public long mDevCfgContentProtectionAllowlistDelayMs;
+    public long mDevCfgContentProtectionAutoDisconnectTimeoutMs;
+    public int mDevCfgContentProtectionBufferSize;
+    public List mDevCfgContentProtectionOptionalGroups;
+    public int mDevCfgContentProtectionOptionalGroupsThreshold;
+    public List mDevCfgContentProtectionRequiredGroups;
     public boolean mDevCfgDisableFlushForViewTreeAppearing;
+    public boolean mDevCfgEnableContentProtectionReceiver;
     public int mDevCfgIdleFlushingFrequencyMs;
     public int mDevCfgIdleUnbindTimeoutMs;
     public int mDevCfgLogHistorySize;
@@ -87,13 +118,844 @@ public final class ContentCaptureManagerService extends AbstractMasterSystemServ
     public final Set mPackagesWithShareRequests;
     public final LocalLog mRequestsHistory;
 
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public int getMaximumTemporaryServiceDurationMs() {
-        return 120000;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ContentCaptureManagerServiceStub extends IContentCaptureManager.Stub {
+        public ContentCaptureManagerServiceStub() {
+        }
+
+        public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+            boolean z = true;
+            if (DumpUtils.checkDumpPermission(ContentCaptureManagerService.this.getContext(), "ContentCaptureManagerService", printWriter)) {
+                if (strArr != null) {
+                    boolean z2 = true;
+                    for (String str : strArr) {
+                        str.getClass();
+                        if (str.equals("--no-history")) {
+                            z2 = false;
+                        } else {
+                            if (str.equals("--help")) {
+                                printWriter.println("Usage: dumpsys content_capture [--no-history]");
+                                return;
+                            }
+                            Slog.w("ContentCaptureManagerService", "Ignoring invalid dump arg: ".concat(str));
+                        }
+                    }
+                    z = z2;
+                }
+                synchronized (ContentCaptureManagerService.this.mLock) {
+                    ContentCaptureManagerService.this.dumpLocked(printWriter);
+                }
+                printWriter.print("Requests history: ");
+                if (ContentCaptureManagerService.this.mRequestsHistory == null) {
+                    printWriter.println("disabled by device config");
+                } else {
+                    if (!z) {
+                        printWriter.println();
+                        return;
+                    }
+                    printWriter.println();
+                    ContentCaptureManagerService.this.mRequestsHistory.reverseDump(fileDescriptor, printWriter, strArr);
+                    printWriter.println();
+                }
+            }
+        }
+
+        public final void finishSession(int i) {
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (ContentCaptureManagerService.this.mLock) {
+                ((ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId)).finishSessionLocked(i);
+            }
+        }
+
+        public final void getContentCaptureConditions(final String str, IResultReceiver iResultReceiver) {
+            ArrayList list;
+            if (ContentCaptureManagerService.m383$$Nest$mthrowsSecurityException(ContentCaptureManagerService.this, iResultReceiver, new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$ContentCaptureManagerServiceStub$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ContentCaptureManagerService.ContentCaptureManagerServiceStub contentCaptureManagerServiceStub = ContentCaptureManagerService.ContentCaptureManagerServiceStub.this;
+                    ContentCaptureManagerService.this.assertCalledByPackageOwner(str);
+                }
+            })) {
+                return;
+            }
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (ContentCaptureManagerService.this.mLock) {
+                ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId);
+                list = contentCapturePerUserService == null ? null : ContentCaptureHelper.toList((ArraySet) contentCapturePerUserService.mConditionsByPkg.get(str));
+            }
+            try {
+                iResultReceiver.send(0, SyncResultReceiver.bundleFor(list));
+            } catch (RemoteException e) {
+                AccountManagerService$$ExternalSyntheticOutline0.m("Unable to send getServiceComponentName(): ", e, "ContentCaptureManagerService");
+            }
+        }
+
+        public final void getServiceComponentName(IResultReceiver iResultReceiver) {
+            ComponentName serviceComponentName;
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (ContentCaptureManagerService.this.mLock) {
+                serviceComponentName = ((ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId)).getServiceComponentName();
+            }
+            try {
+                iResultReceiver.send(0, SyncResultReceiver.bundleFor(serviceComponentName));
+            } catch (RemoteException e) {
+                AccountManagerService$$ExternalSyntheticOutline0.m("Unable to send service component name: ", e, "ContentCaptureManagerService");
+            }
+        }
+
+        public final void getServiceSettingsActivity(IResultReceiver iResultReceiver) {
+            String settingsActivity;
+            if (ContentCaptureManagerService.m383$$Nest$mthrowsSecurityException(ContentCaptureManagerService.this, iResultReceiver, new ContentCaptureManagerService$ContentCaptureManagerServiceStub$$ExternalSyntheticLambda1(this, 0))) {
+                return;
+            }
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (ContentCaptureManagerService.this.mLock) {
+                try {
+                    ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId);
+                    if (contentCapturePerUserService == null) {
+                        return;
+                    }
+                    ContentCaptureServiceInfo contentCaptureServiceInfo = contentCapturePerUserService.mInfo;
+                    ComponentName componentName = null;
+                    if (contentCaptureServiceInfo != null && (settingsActivity = contentCaptureServiceInfo.getSettingsActivity()) != null) {
+                        componentName = new ComponentName(contentCapturePerUserService.mInfo.getServiceInfo().packageName, settingsActivity);
+                    }
+                    try {
+                        iResultReceiver.send(0, SyncResultReceiver.bundleFor(componentName));
+                    } catch (RemoteException e) {
+                        AccountManagerService$$ExternalSyntheticOutline0.m("Unable to send getServiceSettingsIntent(): ", e, "ContentCaptureManagerService");
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        /* JADX WARN: Removed duplicated region for block: B:19:0x0034  */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void isContentCaptureFeatureEnabled(com.android.internal.os.IResultReceiver r5) {
+            /*
+                r4 = this;
+                com.android.server.contentcapture.ContentCaptureManagerService r0 = com.android.server.contentcapture.ContentCaptureManagerService.this
+                java.lang.Object r0 = r0.mLock
+                monitor-enter(r0)
+                com.android.server.contentcapture.ContentCaptureManagerService r1 = com.android.server.contentcapture.ContentCaptureManagerService.this     // Catch: java.lang.Throwable -> L15
+                com.android.server.contentcapture.ContentCaptureManagerService$ContentCaptureManagerServiceStub$$ExternalSyntheticLambda1 r2 = new com.android.server.contentcapture.ContentCaptureManagerService$ContentCaptureManagerServiceStub$$ExternalSyntheticLambda1     // Catch: java.lang.Throwable -> L15
+                r3 = 1
+                r2.<init>(r4, r3)     // Catch: java.lang.Throwable -> L15
+                boolean r1 = com.android.server.contentcapture.ContentCaptureManagerService.m383$$Nest$mthrowsSecurityException(r1, r5, r2)     // Catch: java.lang.Throwable -> L15
+                if (r1 == 0) goto L17
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L15
+                return
+            L15:
+                r4 = move-exception
+                goto L43
+            L17:
+                int r1 = android.os.UserHandle.getCallingUserId()     // Catch: java.lang.Throwable -> L15
+                com.android.server.contentcapture.ContentCaptureManagerService r4 = com.android.server.contentcapture.ContentCaptureManagerService.this     // Catch: java.lang.Throwable -> L15
+                boolean r2 = r4.mDisabledByDeviceConfig     // Catch: java.lang.Throwable -> L15
+                r3 = 1
+                if (r2 != 0) goto L2f
+                android.util.SparseBooleanArray r4 = r4.mDisabledBySettings     // Catch: java.lang.Throwable -> L15
+                if (r4 == 0) goto L2d
+                boolean r4 = r4.get(r1)     // Catch: java.lang.Throwable -> L15
+                if (r4 == 0) goto L2d
+                goto L2f
+            L2d:
+                r4 = r3
+                goto L30
+            L2f:
+                r4 = 0
+            L30:
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L15
+                if (r4 == 0) goto L34
+                goto L35
+            L34:
+                r3 = 2
+            L35:
+                r4 = 0
+                r5.send(r3, r4)     // Catch: android.os.RemoteException -> L3a
+                goto L42
+            L3a:
+                r4 = move-exception
+                java.lang.String r5 = "ContentCaptureManagerService"
+                java.lang.String r0 = "Unable to send isContentCaptureFeatureEnabled(): "
+                com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0.m(r0, r4, r5)
+            L42:
+                return
+            L43:
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L15
+                throw r4
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.contentcapture.ContentCaptureManagerService.ContentCaptureManagerServiceStub.isContentCaptureFeatureEnabled(com.android.internal.os.IResultReceiver):void");
+        }
+
+        public final void onLoginDetected(final ParceledListSlice parceledListSlice) {
+            Binder.withCleanCallingIdentity(new FunctionalUtils.ThrowingRunnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$ContentCaptureManagerServiceStub$$ExternalSyntheticLambda0
+                public final void runOrThrow() {
+                    ContentCaptureManagerService.ContentCaptureManagerServiceStub contentCaptureManagerServiceStub = ContentCaptureManagerService.ContentCaptureManagerServiceStub.this;
+                    ParceledListSlice parceledListSlice2 = parceledListSlice;
+                    RemoteContentProtectionService createRemoteContentProtectionService = ContentCaptureManagerService.this.createRemoteContentProtectionService();
+                    if (createRemoteContentProtectionService == null) {
+                        return;
+                    }
+                    try {
+                        createRemoteContentProtectionService.run(new RemoteContentProtectionService$$ExternalSyntheticLambda1(1, parceledListSlice2));
+                    } catch (Exception e) {
+                        Slog.e("ContentCaptureManagerService", "Failed to call remote service", e);
+                    }
+                }
+            });
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+            new ContentCaptureManagerServiceShellCommand(ContentCaptureManagerService.this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+        }
+
+        public final void registerContentCaptureOptionsCallback(String str, IContentCaptureOptionsCallback iContentCaptureOptionsCallback) {
+            ContentCaptureManagerService.this.assertCalledByPackageOwner(str);
+            ContentCaptureManagerService.this.mCallbacks.register(iContentCaptureOptionsCallback, str);
+            ContentCaptureOptions options = ContentCaptureManagerService.this.mGlobalContentCaptureOptions.getOptions(UserHandle.getCallingUserId(), str);
+            if (options != null) {
+                try {
+                    iContentCaptureOptionsCallback.setContentCaptureOptions(options);
+                } catch (RemoteException e) {
+                    AccountManagerService$$ExternalSyntheticOutline0.m("Unable to send setContentCaptureOptions(): ", e, "ContentCaptureManagerService");
+                }
+            }
+        }
+
+        public final void removeData(DataRemovalRequest dataRemovalRequest) {
+            Objects.requireNonNull(dataRemovalRequest);
+            ContentCaptureManagerService.this.assertCalledByPackageOwner(dataRemovalRequest.getPackageName());
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (ContentCaptureManagerService.this.mLock) {
+                ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId);
+                if (contentCapturePerUserService.isEnabledLocked()) {
+                    contentCapturePerUserService.assertCallerLocked(dataRemovalRequest.getPackageName());
+                    contentCapturePerUserService.mRemoteService.onDataRemovalRequest(dataRemovalRequest);
+                }
+            }
+        }
+
+        public final void resetTemporaryService(int i) {
+            ContentCaptureManagerService.this.resetTemporaryService(i);
+        }
+
+        public final void setDefaultServiceEnabled(int i, boolean z) {
+            ContentCaptureManagerService.this.setDefaultServiceEnabled(i, z);
+        }
+
+        public final void setTemporaryService(int i, String str, int i2) {
+            ContentCaptureManagerService.this.setTemporaryService(i, str, i2);
+        }
+
+        public final void shareData(DataShareRequest dataShareRequest, IDataShareWriteAdapter iDataShareWriteAdapter) {
+            Objects.requireNonNull(dataShareRequest);
+            Objects.requireNonNull(iDataShareWriteAdapter);
+            ContentCaptureManagerService.this.assertCalledByPackageOwner(dataShareRequest.getPackageName());
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (ContentCaptureManagerService.this.mLock) {
+                ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId);
+                if (((HashSet) ContentCaptureManagerService.this.mPackagesWithShareRequests).size() < 10) {
+                    if (!((HashSet) ContentCaptureManagerService.this.mPackagesWithShareRequests).contains(dataShareRequest.getPackageName())) {
+                        DataShareCallbackDelegate dataShareCallbackDelegate = new DataShareCallbackDelegate(dataShareRequest, iDataShareWriteAdapter, ContentCaptureManagerService.this);
+                        if (contentCapturePerUserService.isEnabledLocked()) {
+                            contentCapturePerUserService.assertCallerLocked(dataShareRequest.getPackageName());
+                            contentCapturePerUserService.mRemoteService.onDataShareRequest(dataShareRequest, dataShareCallbackDelegate);
+                        }
+                        return;
+                    }
+                }
+                try {
+                    FrameworkStatsLog.write(207, 14, ContentCaptureManagerService.this.mServiceNameResolver.getServiceName(callingUserId), (String) null, 0, 0);
+                    iDataShareWriteAdapter.error(2);
+                } catch (RemoteException unused) {
+                    Slog.e("ContentCaptureManagerService", "Failed to send error message to client");
+                }
+            }
+        }
+
+        public final void startSession(IBinder iBinder, IBinder iBinder2, ComponentName componentName, int i, int i2, IResultReceiver iResultReceiver) {
+            Objects.requireNonNull(iBinder);
+            Objects.requireNonNull(iBinder2);
+            int callingUserId = UserHandle.getCallingUserId();
+            ContentCaptureManagerService contentCaptureManagerService = ContentCaptureManagerService.this;
+            synchronized (contentCaptureManagerService.mLock) {
+                try {
+                    if (contentCaptureManagerService.mAm == null) {
+                        contentCaptureManagerService.mAm = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
+                    }
+                } finally {
+                }
+            }
+            ActivityPresentationInfo activityPresentationInfo = contentCaptureManagerService.mAm.getActivityPresentationInfo(iBinder);
+            synchronized (ContentCaptureManagerService.this.mLock) {
+                try {
+                    ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId);
+                    ServiceNameBaseResolver serviceNameBaseResolver = ContentCaptureManagerService.this.mServiceNameResolver;
+                    String defaultServiceName = serviceNameBaseResolver.getDefaultServiceName(callingUserId);
+                    if ((defaultServiceName == null ? false : defaultServiceName.equals(serviceNameBaseResolver.getServiceName(callingUserId))) || ContentCaptureManagerService.this.isCalledByServiceLocked("startSession()")) {
+                        contentCapturePerUserService.startSessionLocked(iBinder, iBinder2, activityPresentationInfo, i, Binder.getCallingUid(), i2, iResultReceiver);
+                    } else {
+                        ContentCaptureService.setClientState(iResultReceiver, 4, (IBinder) null);
+                    }
+                } finally {
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DataShareCallbackDelegate extends IDataShareCallback.Stub {
+        public final IDataShareWriteAdapter mClientAdapter;
+        public final DataShareRequest mDataShareRequest;
+        public final AtomicBoolean mLoggedWriteFinish = new AtomicBoolean(false);
+        public final ContentCaptureManagerService mParentService;
+
+        public DataShareCallbackDelegate(DataShareRequest dataShareRequest, IDataShareWriteAdapter iDataShareWriteAdapter, ContentCaptureManagerService contentCaptureManagerService) {
+            this.mDataShareRequest = dataShareRequest;
+            this.mClientAdapter = iDataShareWriteAdapter;
+            this.mParentService = contentCaptureManagerService;
+        }
+
+        public static void bestEffortCloseFileDescriptors(ParcelFileDescriptor... parcelFileDescriptorArr) {
+            for (ParcelFileDescriptor parcelFileDescriptor : parcelFileDescriptorArr) {
+                try {
+                    parcelFileDescriptor.close();
+                } catch (IOException e) {
+                    Slog.e("ContentCaptureManagerService", "Failed to close a file descriptor", e);
+                }
+            }
+        }
+
+        public static Pair createPipe() {
+            try {
+                ParcelFileDescriptor[] createPipe = ParcelFileDescriptor.createPipe();
+                if (createPipe.length != 2) {
+                    Slog.e("ContentCaptureManagerService", "Failed to create a content capture data-sharing pipe, unexpected number of file descriptors");
+                    return null;
+                }
+                if (createPipe[0].getFileDescriptor().valid() && createPipe[1].getFileDescriptor().valid()) {
+                    return Pair.create(createPipe[0], createPipe[1]);
+                }
+                Slog.e("ContentCaptureManagerService", "Failed to create a content capture data-sharing pipe, didn't receive a pair of valid file descriptors.");
+                return null;
+            } catch (IOException e) {
+                Slog.e("ContentCaptureManagerService", "Failed to create a content capture data-sharing pipe", e);
+                return null;
+            }
+        }
+
+        public static void sendErrorSignal(IDataShareWriteAdapter iDataShareWriteAdapter, IDataShareReadAdapter iDataShareReadAdapter, int i) {
+            try {
+                iDataShareWriteAdapter.error(i);
+            } catch (RemoteException e) {
+                Slog.e("ContentCaptureManagerService", "Failed to call error() the client operation", e);
+            }
+            try {
+                iDataShareReadAdapter.error(i);
+            } catch (RemoteException e2) {
+                Slog.e("ContentCaptureManagerService", "Failed to call error() the service operation", e2);
+            }
+        }
+
+        public final void accept(final IDataShareReadAdapter iDataShareReadAdapter) {
+            Slog.i("ContentCaptureManagerService", "Data share request accepted by Content Capture service");
+            logServiceEvent(7);
+            Pair createPipe = createPipe();
+            if (createPipe == null) {
+                logServiceEvent(12);
+                sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
+                return;
+            }
+            final ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor) createPipe.second;
+            final ParcelFileDescriptor parcelFileDescriptor2 = (ParcelFileDescriptor) createPipe.first;
+            Pair createPipe2 = createPipe();
+            if (createPipe2 == null) {
+                logServiceEvent(13);
+                bestEffortCloseFileDescriptors(parcelFileDescriptor, parcelFileDescriptor2);
+                sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
+                return;
+            }
+            final ParcelFileDescriptor parcelFileDescriptor3 = (ParcelFileDescriptor) createPipe2.second;
+            final ParcelFileDescriptor parcelFileDescriptor4 = (ParcelFileDescriptor) createPipe2.first;
+            synchronized (this.mParentService.mLock) {
+                ((HashSet) this.mParentService.mPackagesWithShareRequests).add(this.mDataShareRequest.getPackageName());
+            }
+            try {
+                this.mClientAdapter.write(parcelFileDescriptor);
+            } catch (RemoteException e) {
+                Slog.e("ContentCaptureManagerService", "Failed to call write() the client operation", e);
+                logServiceEvent(12);
+            }
+            try {
+                iDataShareReadAdapter.start(parcelFileDescriptor4);
+                bestEffortCloseFileDescriptors(parcelFileDescriptor, parcelFileDescriptor4);
+                this.mParentService.mDataShareExecutor.execute(new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$DataShareCallbackDelegate$$ExternalSyntheticLambda0
+                    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:121:0x0068 -> B:34:0x00f0). Please report as a decompilation issue!!! */
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        ParcelFileDescriptor.AutoCloseInputStream autoCloseInputStream;
+                        ParcelFileDescriptor.AutoCloseOutputStream autoCloseOutputStream;
+                        ContentCaptureManagerService.DataShareCallbackDelegate dataShareCallbackDelegate = ContentCaptureManagerService.DataShareCallbackDelegate.this;
+                        ParcelFileDescriptor parcelFileDescriptor5 = parcelFileDescriptor2;
+                        ParcelFileDescriptor parcelFileDescriptor6 = parcelFileDescriptor3;
+                        IDataShareReadAdapter iDataShareReadAdapter2 = iDataShareReadAdapter;
+                        dataShareCallbackDelegate.getClass();
+                        boolean z = false;
+                        try {
+                        } catch (RemoteException e2) {
+                            Slog.e("ContentCaptureManagerService", "Failed to call finish() the service operation", e2);
+                        }
+                        try {
+                            try {
+                                autoCloseInputStream = new ParcelFileDescriptor.AutoCloseInputStream(parcelFileDescriptor5);
+                                try {
+                                    autoCloseOutputStream = new ParcelFileDescriptor.AutoCloseOutputStream(parcelFileDescriptor6);
+                                } catch (Throwable th) {
+                                    th = th;
+                                    try {
+                                        autoCloseInputStream.close();
+                                    } catch (Throwable th2) {
+                                        th.addSuppressed(th2);
+                                    }
+                                    throw th;
+                                }
+                            } catch (IOException e3) {
+                                e = e3;
+                            }
+                            try {
+                                byte[] bArr = new byte[1024];
+                                boolean z2 = false;
+                                while (true) {
+                                    try {
+                                        int read = autoCloseInputStream.read(bArr);
+                                        if (read == -1) {
+                                            try {
+                                                break;
+                                            } catch (Throwable th3) {
+                                                th = th3;
+                                                z = z2;
+                                                autoCloseInputStream.close();
+                                                throw th;
+                                            }
+                                        }
+                                        autoCloseOutputStream.write(bArr, 0, read);
+                                        z2 = true;
+                                    } catch (Throwable th4) {
+                                        th = th4;
+                                        z = z2;
+                                        try {
+                                            autoCloseOutputStream.close();
+                                        } catch (Throwable th5) {
+                                            th.addSuppressed(th5);
+                                        }
+                                        throw th;
+                                    }
+                                }
+                                autoCloseOutputStream.close();
+                                try {
+                                    autoCloseInputStream.close();
+                                    synchronized (dataShareCallbackDelegate.mParentService.mLock) {
+                                        ((HashSet) dataShareCallbackDelegate.mParentService.mPackagesWithShareRequests).remove(dataShareCallbackDelegate.mDataShareRequest.getPackageName());
+                                    }
+                                } catch (IOException e4) {
+                                    e = e4;
+                                    z = z2;
+                                    Slog.e("ContentCaptureManagerService", "Failed to pipe client and service streams", e);
+                                    dataShareCallbackDelegate.logServiceEvent(10);
+                                    ContentCaptureManagerService.DataShareCallbackDelegate.sendErrorSignal(dataShareCallbackDelegate.mClientAdapter, iDataShareReadAdapter2, 1);
+                                    synchronized (dataShareCallbackDelegate.mParentService.mLock) {
+                                        ((HashSet) dataShareCallbackDelegate.mParentService.mPackagesWithShareRequests).remove(dataShareCallbackDelegate.mDataShareRequest.getPackageName());
+                                    }
+                                    if (z) {
+                                        if (!dataShareCallbackDelegate.mLoggedWriteFinish.get()) {
+                                            dataShareCallbackDelegate.logServiceEvent(9);
+                                            dataShareCallbackDelegate.mLoggedWriteFinish.set(true);
+                                        }
+                                        try {
+                                            dataShareCallbackDelegate.mClientAdapter.finish();
+                                        } catch (RemoteException e5) {
+                                            Slog.e("ContentCaptureManagerService", "Failed to call finish() the client operation", e5);
+                                        }
+                                        iDataShareReadAdapter2.finish();
+                                        return;
+                                    }
+                                    dataShareCallbackDelegate.logServiceEvent(11);
+                                    ContentCaptureManagerService.DataShareCallbackDelegate.sendErrorSignal(dataShareCallbackDelegate.mClientAdapter, iDataShareReadAdapter2, 1);
+                                } catch (Throwable th6) {
+                                    th = th6;
+                                    z = z2;
+                                    synchronized (dataShareCallbackDelegate.mParentService.mLock) {
+                                        ((HashSet) dataShareCallbackDelegate.mParentService.mPackagesWithShareRequests).remove(dataShareCallbackDelegate.mDataShareRequest.getPackageName());
+                                    }
+                                    if (z) {
+                                        if (!dataShareCallbackDelegate.mLoggedWriteFinish.get()) {
+                                            dataShareCallbackDelegate.logServiceEvent(9);
+                                            dataShareCallbackDelegate.mLoggedWriteFinish.set(true);
+                                        }
+                                        try {
+                                            dataShareCallbackDelegate.mClientAdapter.finish();
+                                        } catch (RemoteException e6) {
+                                            Slog.e("ContentCaptureManagerService", "Failed to call finish() the client operation", e6);
+                                        }
+                                        try {
+                                            iDataShareReadAdapter2.finish();
+                                        } catch (RemoteException e7) {
+                                            Slog.e("ContentCaptureManagerService", "Failed to call finish() the service operation", e7);
+                                        }
+                                    } else {
+                                        dataShareCallbackDelegate.logServiceEvent(11);
+                                        ContentCaptureManagerService.DataShareCallbackDelegate.sendErrorSignal(dataShareCallbackDelegate.mClientAdapter, iDataShareReadAdapter2, 1);
+                                    }
+                                    throw th;
+                                }
+                                if (z2) {
+                                    if (!dataShareCallbackDelegate.mLoggedWriteFinish.get()) {
+                                        dataShareCallbackDelegate.logServiceEvent(9);
+                                        dataShareCallbackDelegate.mLoggedWriteFinish.set(true);
+                                    }
+                                    try {
+                                        dataShareCallbackDelegate.mClientAdapter.finish();
+                                    } catch (RemoteException e8) {
+                                        Slog.e("ContentCaptureManagerService", "Failed to call finish() the client operation", e8);
+                                    }
+                                    iDataShareReadAdapter2.finish();
+                                    return;
+                                }
+                                dataShareCallbackDelegate.logServiceEvent(11);
+                                ContentCaptureManagerService.DataShareCallbackDelegate.sendErrorSignal(dataShareCallbackDelegate.mClientAdapter, iDataShareReadAdapter2, 1);
+                            } catch (Throwable th7) {
+                                th = th7;
+                            }
+                        } catch (Throwable th8) {
+                            th = th8;
+                        }
+                    }
+                });
+                this.mParentService.mHandler.postDelayed(new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$DataShareCallbackDelegate$$ExternalSyntheticLambda1
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        ContentCaptureManagerService.DataShareCallbackDelegate dataShareCallbackDelegate = ContentCaptureManagerService.DataShareCallbackDelegate.this;
+                        ParcelFileDescriptor parcelFileDescriptor5 = parcelFileDescriptor;
+                        ParcelFileDescriptor parcelFileDescriptor6 = parcelFileDescriptor2;
+                        ParcelFileDescriptor parcelFileDescriptor7 = parcelFileDescriptor3;
+                        ParcelFileDescriptor parcelFileDescriptor8 = parcelFileDescriptor4;
+                        IDataShareReadAdapter iDataShareReadAdapter2 = iDataShareReadAdapter;
+                        synchronized (dataShareCallbackDelegate.mParentService.mLock) {
+                            try {
+                                ((HashSet) dataShareCallbackDelegate.mParentService.mPackagesWithShareRequests).remove(dataShareCallbackDelegate.mDataShareRequest.getPackageName());
+                                boolean z = (parcelFileDescriptor6.getFileDescriptor().valid() || parcelFileDescriptor7.getFileDescriptor().valid()) ? false : true;
+                                if (z) {
+                                    if (!dataShareCallbackDelegate.mLoggedWriteFinish.get()) {
+                                        dataShareCallbackDelegate.logServiceEvent(9);
+                                        dataShareCallbackDelegate.mLoggedWriteFinish.set(true);
+                                    }
+                                    Slog.i("ContentCaptureManagerService", "Content capture data sharing session terminated successfully for package '" + dataShareCallbackDelegate.mDataShareRequest.getPackageName() + "'");
+                                } else {
+                                    dataShareCallbackDelegate.logServiceEvent(15);
+                                    Slog.i("ContentCaptureManagerService", "Reached the timeout of Content Capture data sharing session for package '" + dataShareCallbackDelegate.mDataShareRequest.getPackageName() + "', terminating the pipe.");
+                                }
+                                ContentCaptureManagerService.DataShareCallbackDelegate.bestEffortCloseFileDescriptors(parcelFileDescriptor5, parcelFileDescriptor6, parcelFileDescriptor7, parcelFileDescriptor8);
+                                if (!z) {
+                                    ContentCaptureManagerService.DataShareCallbackDelegate.sendErrorSignal(dataShareCallbackDelegate.mClientAdapter, iDataShareReadAdapter2, 3);
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                    }
+                }, 300000L);
+            } catch (RemoteException e2) {
+                Slog.e("ContentCaptureManagerService", "Failed to call start() the service operation", e2);
+                logServiceEvent(13);
+                sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
+                bestEffortCloseFileDescriptors(parcelFileDescriptor, parcelFileDescriptor2, parcelFileDescriptor3, parcelFileDescriptor4);
+                synchronized (this.mParentService.mLock) {
+                    ((HashSet) this.mParentService.mPackagesWithShareRequests).remove(this.mDataShareRequest.getPackageName());
+                }
+            }
+        }
+
+        public final void logServiceEvent(int i) {
+            FrameworkStatsLog.write(207, i, this.mParentService.mServiceNameResolver.getServiceName(UserHandle.getCallingUserId()), (String) null, 0, 0);
+        }
+
+        public final void reject() {
+            Slog.i("ContentCaptureManagerService", "Data share request rejected by Content Capture service");
+            logServiceEvent(8);
+            try {
+                this.mClientAdapter.rejected();
+            } catch (RemoteException e) {
+                Slog.w("ContentCaptureManagerService", "Failed to call rejected() the client operation", e);
+                try {
+                    this.mClientAdapter.error(1);
+                } catch (RemoteException e2) {
+                    Slog.w("ContentCaptureManagerService", "Failed to call error() the client operation", e2);
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class GlobalContentCaptureOptions extends GlobalWhitelistState {
+        public final SparseArray mServicePackages = new SparseArray();
+        public final SparseBooleanArray mTemporaryServices = new SparseBooleanArray();
+
+        /* renamed from: -$$Nest$msetServiceInfo, reason: not valid java name */
+        public static void m384$$Nest$msetServiceInfo(GlobalContentCaptureOptions globalContentCaptureOptions, int i, String str, boolean z) {
+            synchronized (((GlobalWhitelistState) globalContentCaptureOptions).mGlobalWhitelistStateLock) {
+                try {
+                    if (z) {
+                        globalContentCaptureOptions.mTemporaryServices.put(i, true);
+                    } else {
+                        globalContentCaptureOptions.mTemporaryServices.delete(i);
+                    }
+                    if (str != null) {
+                        ComponentName unflattenFromString = ComponentName.unflattenFromString(str);
+                        if (unflattenFromString == null) {
+                            Slog.w("ContentCaptureManagerService", "setServiceInfo(): invalid name: ".concat(str));
+                            globalContentCaptureOptions.mServicePackages.remove(i);
+                        } else {
+                            globalContentCaptureOptions.mServicePackages.put(i, unflattenFromString.getPackageName());
+                        }
+                    } else {
+                        globalContentCaptureOptions.mServicePackages.remove(i);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public GlobalContentCaptureOptions() {
+        }
+
+        public final void dump(String str, PrintWriter printWriter) {
+            super.dump(str, printWriter);
+            synchronized (((GlobalWhitelistState) this).mGlobalWhitelistStateLock) {
+                try {
+                    if (this.mServicePackages.size() > 0) {
+                        printWriter.print(str);
+                        printWriter.print("Service packages: ");
+                        printWriter.println(this.mServicePackages);
+                    }
+                    if (this.mTemporaryServices.size() > 0) {
+                        printWriter.print(str);
+                        printWriter.print("Temp services: ");
+                        printWriter.println(this.mTemporaryServices);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        /* JADX WARN: Removed duplicated region for block: B:46:0x00f7 A[Catch: all -> 0x0111, TryCatch #0 {all -> 0x0111, blocks: (B:38:0x00ab, B:44:0x00c6, B:46:0x00f7, B:47:0x0113), top: B:37:0x00ab }] */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final android.content.ContentCaptureOptions getOptions(int r22, java.lang.String r23) {
+            /*
+                Method dump skipped, instructions count: 281
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.contentcapture.ContentCaptureManagerService.GlobalContentCaptureOptions.getOptions(int, java.lang.String):android.content.ContentCaptureOptions");
+        }
+
+        /* JADX WARN: Code restructure failed: missing block: B:25:0x0044, code lost:
+        
+            if (r1.mDevicePolicyManagerInternal.isUserOrganizationManaged(r5) == false) goto L26;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:26:0x0046, code lost:
+        
+            r5 = true;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:54:0x0062, code lost:
+        
+            if (r5 != 2) goto L27;
+         */
+        /* JADX WARN: Removed duplicated region for block: B:30:0x0071  */
+        /* JADX WARN: Removed duplicated region for block: B:45:0x0082 A[ORIG_RETURN, RETURN] */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final boolean isContentProtectionReceiverEnabled(int r5, java.lang.String r6) {
+            /*
+                r4 = this;
+                com.android.server.contentcapture.ContentCaptureManagerService r0 = com.android.server.contentcapture.ContentCaptureManagerService.this
+                java.lang.Object r0 = r0.mLock
+                monitor-enter(r0)
+                com.android.server.contentcapture.ContentCaptureManagerService r1 = com.android.server.contentcapture.ContentCaptureManagerService.this     // Catch: java.lang.Throwable -> L83
+                boolean r2 = r1.mDevCfgEnableContentProtectionReceiver     // Catch: java.lang.Throwable -> L83
+                r3 = 0
+                if (r2 == 0) goto L85
+                android.content.ComponentName r2 = r1.mContentProtectionServiceComponentName     // Catch: java.lang.Throwable -> L83
+                if (r2 == 0) goto L85
+                com.android.server.contentprotection.ContentProtectionAllowlistManager r2 = r1.mContentProtectionAllowlistManager     // Catch: java.lang.Throwable -> L83
+                if (r2 == 0) goto L85
+                com.android.server.contentprotection.ContentProtectionConsentManager r2 = r1.mContentProtectionConsentManager     // Catch: java.lang.Throwable -> L83
+                if (r2 == 0) goto L85
+                java.util.List r2 = r1.mDevCfgContentProtectionRequiredGroups     // Catch: java.lang.Throwable -> L83
+                boolean r2 = r2.isEmpty()     // Catch: java.lang.Throwable -> L83
+                if (r2 == 0) goto L28
+                java.util.List r1 = r1.mDevCfgContentProtectionOptionalGroups     // Catch: java.lang.Throwable -> L83
+                boolean r1 = r1.isEmpty()     // Catch: java.lang.Throwable -> L83
+                if (r1 != 0) goto L85
+            L28:
+                com.android.server.contentcapture.ContentCaptureManagerService r4 = com.android.server.contentcapture.ContentCaptureManagerService.this     // Catch: java.lang.Throwable -> L83
+                com.android.server.contentprotection.ContentProtectionConsentManager r1 = r4.mContentProtectionConsentManager     // Catch: java.lang.Throwable -> L83
+                com.android.server.contentprotection.ContentProtectionAllowlistManager r4 = r4.mContentProtectionAllowlistManager     // Catch: java.lang.Throwable -> L83
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L83
+                boolean r0 = r1.mCachedPackageVerifierConsent
+                r2 = 1
+                if (r0 == 0) goto L6e
+                boolean r0 = com.android.internal.hidden_from_bootclasspath.android.view.contentprotection.flags.Flags.manageDevicePolicyEnabled()
+                if (r0 != 0) goto L4a
+                boolean r0 = r1.mCachedContentProtectionUserConsent
+                if (r0 == 0) goto L48
+                android.app.admin.DevicePolicyManagerInternal r0 = r1.mDevicePolicyManagerInternal
+                boolean r5 = r0.isUserOrganizationManaged(r5)
+                if (r5 != 0) goto L48
+            L46:
+                r5 = r2
+                goto L6a
+            L48:
+                r5 = r3
+                goto L6a
+            L4a:
+                android.app.admin.DevicePolicyManagerInternal r0 = r1.mDevicePolicyManagerInternal
+                boolean r0 = r0.isUserOrganizationManaged(r5)
+                if (r0 == 0) goto L68
+                boolean r0 = com.android.internal.hidden_from_bootclasspath.android.view.contentprotection.flags.Flags.manageDevicePolicyEnabled()
+                if (r0 != 0) goto L59
+                goto L48
+            L59:
+                android.app.admin.DevicePolicyCache r0 = r1.mDevicePolicyCache
+                int r5 = r0.getContentProtectionPolicy(r5)
+                if (r5 == 0) goto L65
+                r0 = 2
+                if (r5 == r0) goto L46
+                goto L48
+            L65:
+                boolean r5 = r1.mCachedContentProtectionUserConsent
+                goto L6a
+            L68:
+                boolean r5 = r1.mCachedContentProtectionUserConsent
+            L6a:
+                if (r5 == 0) goto L6e
+                r5 = r2
+                goto L6f
+            L6e:
+                r5 = r3
+            L6f:
+                if (r5 == 0) goto L82
+                java.lang.Object r5 = r4.mLock
+                monitor-enter(r5)
+                java.util.Set r4 = r4.mAllowedPackages     // Catch: java.lang.Throwable -> L7f
+                monitor-exit(r5)     // Catch: java.lang.Throwable -> L7f
+                boolean r4 = r4.contains(r6)
+                if (r4 == 0) goto L82
+                r3 = r2
+                goto L82
+            L7f:
+                r4 = move-exception
+                monitor-exit(r5)     // Catch: java.lang.Throwable -> L7f
+                throw r4
+            L82:
+                return r3
+            L83:
+                r4 = move-exception
+                goto L87
+            L85:
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L83
+                return r3
+            L87:
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L83
+                throw r4
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.contentcapture.ContentCaptureManagerService.GlobalContentCaptureOptions.isContentProtectionReceiverEnabled(int, java.lang.String):boolean");
+        }
+
+        public final boolean isWhitelisted(int i, ComponentName componentName) {
+            return super.isWhitelisted(i, componentName) || isContentProtectionReceiverEnabled(i, componentName.getPackageName());
+        }
+
+        public final boolean isWhitelisted(int i, String str) {
+            return super.isWhitelisted(i, str) || isContentProtectionReceiverEnabled(i, str);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalService {
+        public LocalService() {
+        }
+
+        public final boolean isContentCaptureServiceForUser(int i, int i2) {
+            synchronized (ContentCaptureManagerService.this.mLock) {
+                try {
+                    if (ContentCaptureManagerService.this.isDisabledLocked(i2)) {
+                        if (ContentCaptureManagerService.this.verbose) {
+                            Slog.v("ContentCaptureManagerService", "isContentCaptureServiceForUser() disabled!");
+                        }
+                        return false;
+                    }
+                    ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(i2);
+                    if (contentCapturePerUserService != null) {
+                        return i == contentCapturePerUserService.getServiceUidLocked();
+                    }
+                    return false;
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void notifyActivityEvent(int i, ComponentName componentName, int i2, ActivityId activityId) {
+            synchronized (ContentCaptureManagerService.this.mLock) {
+                try {
+                    if (ContentCaptureManagerService.this.isDisabledLocked(i)) {
+                        if (ContentCaptureManagerService.this.verbose) {
+                            Slog.v("ContentCaptureManagerService", "notifyActivityEvent() disabled!");
+                        }
+                    } else {
+                        ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(i);
+                        if (contentCapturePerUserService != null) {
+                            contentCapturePerUserService.onActivityEventLocked(activityId, componentName, i2);
+                        }
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$mthrowsSecurityException, reason: not valid java name */
+    public static boolean m383$$Nest$mthrowsSecurityException(ContentCaptureManagerService contentCaptureManagerService, IResultReceiver iResultReceiver, Runnable runnable) {
+        contentCaptureManagerService.getClass();
+        try {
+            runnable.run();
+            return false;
+        } catch (SecurityException e) {
+            try {
+                iResultReceiver.send(-1, SyncResultReceiver.bundleFor(e.getMessage()));
+            } catch (RemoteException e2) {
+                Slog.w("ContentCaptureManagerService", "Unable to send security exception (" + e + "): ", e2);
+            }
+            return true;
+        }
     }
 
     public ContentCaptureManagerService(Context context) {
-        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.ext_media_status_removed), "no_content_capture", 1);
+        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.date_picker_increment_day_button), "no_content_capture", 1);
         this.mLocalService = new LocalService();
         this.mContentCaptureManagerServiceStub = new ContentCaptureManagerServiceStub();
         this.mDataShareExecutor = Executors.newCachedThreadPool();
@@ -101,107 +963,82 @@ public final class ContentCaptureManagerService extends AbstractMasterSystemServ
         this.mPackagesWithShareRequests = new HashSet();
         this.mCallbacks = new RemoteCallbackList();
         this.mGlobalContentCaptureOptions = new GlobalContentCaptureOptions();
+        this.mDevCfgContentProtectionRequiredGroups = ContentCaptureManager.DEFAULT_CONTENT_PROTECTION_REQUIRED_GROUPS;
+        this.mDevCfgContentProtectionOptionalGroups = ContentCaptureManager.DEFAULT_CONTENT_PROTECTION_OPTIONAL_GROUPS;
         DeviceConfig.addOnPropertiesChangedListener("content_capture", ActivityThread.currentApplication().getMainExecutor(), new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$$ExternalSyntheticLambda0
             public final void onPropertiesChanged(DeviceConfig.Properties properties) {
-                ContentCaptureManagerService.this.lambda$new$0(properties);
+                ContentCaptureManagerService contentCaptureManagerService = ContentCaptureManagerService.this;
+                contentCaptureManagerService.getClass();
+                for (String str : properties.getKeyset()) {
+                    str.getClass();
+                    switch (str) {
+                        case "disable_flush_for_view_tree_appearing":
+                        case "enable_content_protection_receiver":
+                        case "content_protection_optional_groups_config":
+                        case "content_protection_allowlist_delay_ms":
+                        case "content_protection_buffer_size":
+                        case "text_change_flush_frequency":
+                        case "content_protection_required_groups_config":
+                        case "log_history_size":
+                        case "content_protection_optional_groups_threshold":
+                        case "max_buffer_size":
+                        case "content_protection_allowlist_timeout_ms":
+                        case "content_protection_auto_disconnect_timeout_ms":
+                        case "idle_unbind_timeout":
+                        case "idle_flush_frequency":
+                            contentCaptureManagerService.setFineTuneParamsFromDeviceConfig();
+                            return;
+                        case "logging_level":
+                            contentCaptureManagerService.setLoggingLevelFromDeviceConfig();
+                            return;
+                        case "service_explicitly_enabled":
+                            contentCaptureManagerService.setDisabledByDeviceConfig(properties.getString(str, (String) null));
+                            return;
+                        case "enable_activity_start_assist_content":
+                            contentCaptureManagerService.setActivityStartAssistDataEnabled();
+                            break;
+                    }
+                    Slog.i("ContentCaptureManagerService", "Ignoring change on ".concat(str));
+                }
             }
         });
-        setDeviceConfigProperties();
+        setLoggingLevelFromDeviceConfig();
+        setFineTuneParamsFromDeviceConfig();
+        setDisabledByDeviceConfig(DeviceConfig.getProperty("content_capture", "service_explicitly_enabled"));
+        setActivityStartAssistDataEnabled();
         if (this.mDevCfgLogHistorySize > 0) {
             if (this.debug) {
-                Slog.d(TAG, "log history size: " + this.mDevCfgLogHistorySize);
+                DeviceIdleController$$ExternalSyntheticOutline0.m(new StringBuilder("log history size: "), this.mDevCfgLogHistorySize, "ContentCaptureManagerService");
             }
             this.mRequestsHistory = new LocalLog(this.mDevCfgLogHistorySize);
         } else {
             if (this.debug) {
-                Slog.d(TAG, "disabled log history because size is " + this.mDevCfgLogHistorySize);
+                DeviceIdleController$$ExternalSyntheticOutline0.m(new StringBuilder("disabled log history because size is "), this.mDevCfgLogHistorySize, "ContentCaptureManagerService");
             }
             this.mRequestsHistory = null;
         }
         List supportedUsers = getSupportedUsers();
-        for (int i = 0; i < supportedUsers.size(); i++) {
-            int i2 = ((UserInfo) supportedUsers.get(i)).id;
-            if (!isEnabledBySettings(i2)) {
-                Slog.i(TAG, "user " + i2 + " disabled by settings");
+        int i = 0;
+        while (true) {
+            ArrayList arrayList = (ArrayList) supportedUsers;
+            if (i >= arrayList.size()) {
+                return;
+            }
+            int i2 = ((UserInfo) arrayList.get(i)).id;
+            if (!(Settings.Secure.getIntForUser(getContext().getContentResolver(), "content_capture_enabled", 1, i2) == 1)) {
+                BootReceiver$$ExternalSyntheticOutline0.m(i2, "user ", " disabled by settings", "ContentCaptureManagerService");
                 if (this.mDisabledBySettings == null) {
                     this.mDisabledBySettings = new SparseBooleanArray(1);
                 }
                 this.mDisabledBySettings.put(i2, true);
             }
-            this.mGlobalContentCaptureOptions.setServiceInfo(i2, this.mServiceNameResolver.getServiceName(i2), this.mServiceNameResolver.isTemporary(i2));
+            GlobalContentCaptureOptions.m384$$Nest$msetServiceInfo(this.mGlobalContentCaptureOptions, i2, this.mServiceNameResolver.getServiceName(i2), this.mServiceNameResolver.isTemporary(i2));
+            i++;
         }
     }
 
     @Override // com.android.server.infra.AbstractMasterSystemService
-    public ContentCapturePerUserService newServiceLocked(int i, boolean z) {
-        return new ContentCapturePerUserService(this, this.mLock, z, i);
-    }
-
-    @Override // com.android.server.SystemService
-    public boolean isUserSupported(SystemService.TargetUser targetUser) {
-        return targetUser.isFull() || targetUser.isProfile();
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        publishBinderService("content_capture", this.mContentCaptureManagerServiceStub);
-        publishLocalService(ContentCaptureManagerInternal.class, this.mLocalService);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServiceRemoved(ContentCapturePerUserService contentCapturePerUserService, int i) {
-        contentCapturePerUserService.destroyLocked();
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServicePackageUpdatingLocked(int i) {
-        ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) getServiceForUserLocked(i);
-        if (contentCapturePerUserService != null) {
-            contentCapturePerUserService.onPackageUpdatingLocked();
-        }
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServicePackageUpdatedLocked(int i) {
-        ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) getServiceForUserLocked(i);
-        if (contentCapturePerUserService != null) {
-            contentCapturePerUserService.onPackageUpdatedLocked();
-        }
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServiceNameChanged(int i, String str, boolean z) {
-        this.mGlobalContentCaptureOptions.setServiceInfo(i, str, z);
-        super.onServiceNameChanged(i, str, z);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void enforceCallingPermissionForManagement() {
-        getContext().enforceCallingPermission("android.permission.MANAGE_CONTENT_CAPTURE", TAG);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void registerForExtraSettingsChanges(ContentResolver contentResolver, ContentObserver contentObserver) {
-        contentResolver.registerContentObserver(Settings.Secure.getUriFor("content_capture_enabled"), false, contentObserver, -1);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onSettingsChanged(int i, String str) {
-        str.hashCode();
-        if (str.equals("content_capture_enabled")) {
-            setContentCaptureFeatureEnabledBySettingsForUser(i, isEnabledBySettings(i));
-            return;
-        }
-        Slog.w(TAG, "Unexpected property (" + str + "); updating cache instead");
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public boolean isDisabledLocked(int i) {
-        return this.mDisabledByDeviceConfig || isDisabledBySettingsLocked(i) || super.isDisabledLocked(i);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void assertCalledByPackageOwner(String str) {
+    public final void assertCalledByPackageOwner(String str) {
         try {
             super.assertCalledByPackageOwner(str);
         } catch (SecurityException e) {
@@ -223,170 +1060,489 @@ public final class ContentCaptureManagerService extends AbstractMasterSystemServ
         }
     }
 
-    public final boolean isDisabledBySettingsLocked(int i) {
-        SparseBooleanArray sparseBooleanArray = this.mDisabledBySettings;
-        return sparseBooleanArray != null && sparseBooleanArray.get(i);
+    public ContentProtectionAllowlistManager createContentProtectionAllowlistManager(long j) {
+        return new ContentProtectionAllowlistManager(this, BackgroundThread.getHandler(), j);
     }
 
-    public final boolean isEnabledBySettings(int i) {
-        return Settings.Secure.getIntForUser(getContext().getContentResolver(), "content_capture_enabled", 1, i) == 1;
+    public ContentProtectionConsentManager createContentProtectionConsentManager() {
+        return new ContentProtectionConsentManager(BackgroundThread.getHandler(), getContext().getContentResolver(), DevicePolicyCache.getInstance());
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:31:0x0080 A[LOOP:0: B:2:0x0008->B:31:0x0080, LOOP_END] */
-    /* JADX WARN: Removed duplicated region for block: B:32:0x0098 A[SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:36:0x00a1 A[SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:39:0x00a5 A[SYNTHETIC] */
-    /* renamed from: onDeviceConfigChange, reason: merged with bridge method [inline-methods] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void lambda$new$0(android.provider.DeviceConfig.Properties r6) {
-        /*
-            r5 = this;
-            java.util.Set r0 = r6.getKeyset()
-            java.util.Iterator r0 = r0.iterator()
-        L8:
-            boolean r1 = r0.hasNext()
-            if (r1 == 0) goto La8
-            java.lang.Object r1 = r0.next()
-            java.lang.String r1 = (java.lang.String) r1
-            r1.hashCode()
-            int r2 = r1.hashCode()
-            r3 = -1
-            switch(r2) {
-                case -2119665698: goto L73;
-                case -1970239836: goto L67;
-                case -302650995: goto L5b;
-                case -148969820: goto L4f;
-                case 227845607: goto L43;
-                case 1119140421: goto L37;
-                case 1568835651: goto L2c;
-                case 2068460406: goto L21;
-                default: goto L1f;
-            }
-        L1f:
-            goto L7d
-        L21:
-            java.lang.String r2 = "idle_flush_frequency"
-            boolean r2 = r1.equals(r2)
-            if (r2 != 0) goto L2a
-            goto L7d
-        L2a:
-            r3 = 7
-            goto L7d
-        L2c:
-            java.lang.String r2 = "idle_unbind_timeout"
-            boolean r2 = r1.equals(r2)
-            if (r2 != 0) goto L35
-            goto L7d
-        L35:
-            r3 = 6
-            goto L7d
-        L37:
-            java.lang.String r2 = "max_buffer_size"
-            boolean r2 = r1.equals(r2)
-            if (r2 != 0) goto L41
-            goto L7d
-        L41:
-            r3 = 5
-            goto L7d
-        L43:
-            java.lang.String r2 = "log_history_size"
-            boolean r2 = r1.equals(r2)
-            if (r2 != 0) goto L4d
-            goto L7d
-        L4d:
-            r3 = 4
-            goto L7d
-        L4f:
-            java.lang.String r2 = "text_change_flush_frequency"
-            boolean r2 = r1.equals(r2)
-            if (r2 != 0) goto L59
-            goto L7d
-        L59:
-            r3 = 3
-            goto L7d
-        L5b:
-            java.lang.String r2 = "service_explicitly_enabled"
-            boolean r2 = r1.equals(r2)
-            if (r2 != 0) goto L65
-            goto L7d
-        L65:
-            r3 = 2
-            goto L7d
-        L67:
-            java.lang.String r2 = "logging_level"
-            boolean r2 = r1.equals(r2)
-            if (r2 != 0) goto L71
-            goto L7d
-        L71:
-            r3 = 1
-            goto L7d
-        L73:
-            java.lang.String r2 = "disable_flush_for_view_tree_appearing"
-            boolean r2 = r1.equals(r2)
-            if (r2 != 0) goto L7c
-            goto L7d
-        L7c:
-            r3 = 0
-        L7d:
-            switch(r3) {
-                case 0: goto La5;
-                case 1: goto La1;
-                case 2: goto L98;
-                case 3: goto La5;
-                case 4: goto La5;
-                case 5: goto La5;
-                case 6: goto La5;
-                case 7: goto La5;
-                default: goto L80;
-            }
-        L80:
-            java.lang.String r2 = com.android.server.contentcapture.ContentCaptureManagerService.TAG
-            java.lang.StringBuilder r3 = new java.lang.StringBuilder
-            r3.<init>()
-            java.lang.String r4 = "Ignoring change on "
-            r3.append(r4)
-            r3.append(r1)
-            java.lang.String r1 = r3.toString()
-            android.util.Slog.i(r2, r1)
-            goto L8
-        L98:
-            r0 = 0
-            java.lang.String r6 = r6.getString(r1, r0)
-            r5.setDisabledByDeviceConfig(r6)
-            return
-        La1:
-            r5.setLoggingLevelFromDeviceConfig()
-            return
-        La5:
-            r5.setFineTuneParamsFromDeviceConfig()
-        La8:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.contentcapture.ContentCaptureManagerService.lambda$new$0(android.provider.DeviceConfig$Properties):void");
+    public ContentCaptureServiceInfo createContentProtectionServiceInfo(ComponentName componentName) throws PackageManager.NameNotFoundException {
+        return new ContentCaptureServiceInfo(getContext(), componentName, false, UserHandle.getCallingUserId());
     }
 
-    public final void setFineTuneParamsFromDeviceConfig() {
+    public final RemoteContentProtectionService createRemoteContentProtectionService() {
+        ComponentName componentName;
         synchronized (this.mLock) {
-            this.mDevCfgMaxBufferSize = DeviceConfig.getInt("content_capture", "max_buffer_size", 500);
-            this.mDevCfgIdleFlushingFrequencyMs = DeviceConfig.getInt("content_capture", "idle_flush_frequency", 5000);
-            this.mDevCfgTextChangeFlushingFrequencyMs = DeviceConfig.getInt("content_capture", "text_change_flush_frequency", 1000);
-            this.mDevCfgLogHistorySize = DeviceConfig.getInt("content_capture", "log_history_size", 20);
-            this.mDevCfgIdleUnbindTimeoutMs = DeviceConfig.getInt("content_capture", "idle_unbind_timeout", 0);
-            this.mDevCfgDisableFlushForViewTreeAppearing = DeviceConfig.getBoolean("content_capture", "disable_flush_for_view_tree_appearing", false);
-            if (enableTimeout()) {
-                this.mDevCfgIdleUnbindTimeoutMs = 120000;
+            if (this.mDevCfgEnableContentProtectionReceiver && (componentName = this.mContentProtectionServiceComponentName) != null) {
+                long j = this.mDevCfgContentProtectionAutoDisconnectTimeoutMs;
+                try {
+                    createContentProtectionServiceInfo(componentName);
+                    return createRemoteContentProtectionService(componentName, j);
+                } catch (Exception unused) {
+                    return null;
+                }
             }
-            if (this.verbose) {
-                Slog.v(TAG, "setFineTuneParamsFromDeviceConfig(): bufferSize=" + this.mDevCfgMaxBufferSize + ", idleFlush=" + this.mDevCfgIdleFlushingFrequencyMs + ", textFluxh=" + this.mDevCfgTextChangeFlushingFrequencyMs + ", logHistory=" + this.mDevCfgLogHistorySize + ", idleUnbindTimeoutMs=" + this.mDevCfgIdleUnbindTimeoutMs + ", disableFlushForViewTreeAppearing=" + this.mDevCfgDisableFlushForViewTreeAppearing);
+            return null;
+        }
+    }
+
+    public RemoteContentProtectionService createRemoteContentProtectionService(ComponentName componentName, long j) {
+        return new RemoteContentProtectionService(getContext(), componentName, UserHandle.getCallingUserId(), isBindInstantServiceAllowed(), j);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void dumpLocked(PrintWriter printWriter) {
+        super.dumpLocked(printWriter);
+        printWriter.print("");
+        printWriter.print("Users disabled by Settings: ");
+        printWriter.println(this.mDisabledBySettings);
+        printWriter.print("");
+        printWriter.println("DeviceConfig Settings: ");
+        printWriter.print("  ");
+        printWriter.print("disabled: ");
+        AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0.m(printWriter, "  ", "loggingLevel: ", this.mDisabledByDeviceConfig);
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mDevCfgLoggingLevel, printWriter, "  ", "maxBufferSize: ");
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mDevCfgMaxBufferSize, printWriter, "  ", "idleFlushingFrequencyMs: ");
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mDevCfgIdleFlushingFrequencyMs, printWriter, "  ", "textChangeFlushingFrequencyMs: ");
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mDevCfgTextChangeFlushingFrequencyMs, printWriter, "  ", "logHistorySize: ");
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mDevCfgLogHistorySize, printWriter, "  ", "idleUnbindTimeoutMs: ");
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mDevCfgIdleUnbindTimeoutMs, printWriter, "  ", "disableFlushForViewTreeAppearing: ");
+        AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0.m(printWriter, "  ", "enableContentProtectionReceiver: ", this.mDevCfgDisableFlushForViewTreeAppearing);
+        AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0.m(printWriter, "  ", "contentProtectionBufferSize: ", this.mDevCfgEnableContentProtectionReceiver);
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mDevCfgContentProtectionBufferSize, printWriter, "  ", "contentProtectionRequiredGroupsSize: ");
+        printWriter.println(this.mDevCfgContentProtectionRequiredGroups.size());
+        printWriter.print("  ");
+        printWriter.print("contentProtectionOptionalGroupsSize: ");
+        printWriter.println(this.mDevCfgContentProtectionOptionalGroups.size());
+        printWriter.print("  ");
+        printWriter.print("contentProtectionOptionalGroupsThreshold: ");
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mDevCfgContentProtectionOptionalGroupsThreshold, printWriter, "  ", "contentProtectionAllowlistDelayMs: ");
+        ActivityManagerConstants$$ExternalSyntheticOutline0.m(this.mDevCfgContentProtectionAllowlistDelayMs, printWriter, "  ", "contentProtectionAllowlistTimeoutMs: ");
+        ActivityManagerConstants$$ExternalSyntheticOutline0.m(0L, printWriter, "  ", "contentProtectionAutoDisconnectTimeoutMs: ");
+        ActivityManagerConstants$$ExternalSyntheticOutline0.m(this.mDevCfgContentProtectionAutoDisconnectTimeoutMs, printWriter, "  ", "activityStartAssistDataEnabled: ");
+        printWriter.println(this.activityStartAssistDataEnabled);
+        printWriter.print("");
+        printWriter.println("Global Options:");
+        this.mGlobalContentCaptureOptions.dump("  ", printWriter);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void enforceCallingPermissionForManagement() {
+        getContext().enforceCallingPermission("android.permission.MANAGE_CONTENT_CAPTURE", "ContentCaptureManagerService");
+    }
+
+    public ContentCaptureManagerServiceStub getContentCaptureManagerServiceStub() {
+        return this.mContentCaptureManagerServiceStub;
+    }
+
+    public String getContentProtectionServiceFlatComponentName() {
+        return getContext().getString(R.string.date_picker_increment_month_button);
+    }
+
+    public boolean getDeviceConfigEnableContentProtectionReceiver() {
+        return DeviceConfig.getBoolean("content_capture", "enable_content_protection_receiver", false);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final int getMaximumTemporaryServiceDurationMs() {
+        return 120000;
+    }
+
+    public final boolean isCalledByServiceLocked(String str) {
+        int callingUserId = UserHandle.getCallingUserId();
+        int callingUid = Binder.getCallingUid();
+        String serviceName = this.mServiceNameResolver.getServiceName(callingUserId);
+        if (serviceName == null) {
+            Slog.e("ContentCaptureManagerService", str + ": called by UID " + callingUid + ", but there's no service set for user " + callingUserId);
+            return false;
+        }
+        ComponentName unflattenFromString = ComponentName.unflattenFromString(serviceName);
+        if (unflattenFromString == null) {
+            Slog.w("ContentCaptureManagerService", str + ": invalid service name: " + serviceName);
+            return false;
+        }
+        try {
+            int packageUidAsUser = getContext().getPackageManager().getPackageUidAsUser(unflattenFromString.getPackageName(), UserHandle.getCallingUserId());
+            if (callingUid == packageUidAsUser) {
+                return true;
+            }
+            Slog.e("ContentCaptureManagerService", str + ": called by UID " + callingUid + ", but service UID is " + packageUidAsUser);
+            return false;
+        } catch (PackageManager.NameNotFoundException unused) {
+            Slog.w("ContentCaptureManagerService", str + ": could not verify UID for " + serviceName);
+            return false;
+        }
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final boolean isDisabledLocked(int i) {
+        SparseBooleanArray sparseBooleanArray;
+        return this.mDisabledByDeviceConfig || ((sparseBooleanArray = this.mDisabledBySettings) != null && sparseBooleanArray.get(i)) || super.isDisabledLocked(i);
+    }
+
+    @Override // com.android.server.SystemService
+    public final boolean isUserSupported(SystemService.TargetUser targetUser) {
+        return targetUser.isFull() || targetUser.isProfile();
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final AbstractPerUserSystemService newServiceLocked(int i, boolean z) {
+        return new ContentCapturePerUserService(this, this.mLock, z, i);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServiceNameChanged(int i, String str, boolean z) {
+        GlobalContentCaptureOptions.m384$$Nest$msetServiceInfo(this.mGlobalContentCaptureOptions, i, str, z);
+        super.onServiceNameChanged(i, str, z);
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServicePackageUpdatedLocked(int i) {
+        ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) getServiceForUserLocked(i);
+        if (contentCapturePerUserService != null) {
+            contentCapturePerUserService.updateRemoteServiceLocked(!contentCapturePerUserService.isEnabledLocked());
+            contentCapturePerUserService.resurrectSessionsLocked$1();
+        }
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServicePackageUpdatingLocked(int i) {
+        ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) getServiceForUserLocked(i);
+        if (contentCapturePerUserService != null) {
+            int size = contentCapturePerUserService.mSessions.size();
+            if (((ContentCaptureManagerService) contentCapturePerUserService.mMaster).debug) {
+                DeviceIdleController$$ExternalSyntheticOutline0.m(size, "Pausing ", " sessions while package is updating", "ContentCapturePerUserService");
+            }
+            for (int i2 = 0; i2 < size; i2++) {
+                ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) contentCapturePerUserService.mSessions.valueAt(i2);
+                if (contentCaptureServerSession.mService.mMaster.verbose) {
+                    Slog.v("ContentCaptureServerSession", "pausing " + contentCaptureServerSession.mActivityToken);
+                }
+                ContentCaptureService.setClientState(contentCaptureServerSession.mSessionStateReceiver, 2052, (IBinder) null);
             }
         }
     }
 
-    public final boolean enableTimeout() {
-        return getContext().getPackageManager().hasSystemFeature("com.samsung.feature.samsung_experience_mobile_lite");
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServiceRemoved(AbstractPerUserSystemService abstractPerUserSystemService, int i) {
+        ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) abstractPerUserSystemService;
+        if (((ContentCaptureManagerService) contentCapturePerUserService.mMaster).debug) {
+            Slog.d("ContentCapturePerUserService", "destroyLocked()");
+        }
+        RemoteContentCaptureService remoteContentCaptureService = contentCapturePerUserService.mRemoteService;
+        if (remoteContentCaptureService != null) {
+            remoteContentCaptureService.destroy();
+        }
+        contentCapturePerUserService.destroySessionsLocked();
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onSettingsChanged(int i, String str) {
+        if (!str.equals("content_capture_enabled")) {
+            PinnerService$$ExternalSyntheticOutline0.m("Unexpected property (", str, "); updating cache instead", "ContentCaptureManagerService");
+            return;
+        }
+        boolean z = true;
+        boolean z2 = Settings.Secure.getIntForUser(getContext().getContentResolver(), "content_capture_enabled", 1, i) == 1;
+        synchronized (this.mLock) {
+            try {
+                if (this.mDisabledBySettings == null) {
+                    this.mDisabledBySettings = new SparseBooleanArray();
+                }
+                if (!((!this.mDisabledBySettings.get(i)) ^ z2)) {
+                    if (this.debug) {
+                        Slog.d("ContentCaptureManagerService", "setContentCaptureFeatureEnabledForUser(): already " + z2);
+                    }
+                    return;
+                }
+                if (z2) {
+                    Slog.i("ContentCaptureManagerService", "setContentCaptureFeatureEnabled(): enabling service for user " + i);
+                    this.mDisabledBySettings.delete(i);
+                } else {
+                    Slog.i("ContentCaptureManagerService", "setContentCaptureFeatureEnabled(): disabling service for user " + i);
+                    this.mDisabledBySettings.put(i, true);
+                }
+                if (z2 && !this.mDisabledByDeviceConfig) {
+                    z = false;
+                }
+                getServiceForUserLocked(i);
+                updateCachedServiceListLocked(i, z);
+            } finally {
+            }
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        publishBinderService("content_capture", this.mContentCaptureManagerServiceStub);
+        publishLocalService(LocalService.class, this.mLocalService);
+    }
+
+    public List parseContentProtectionGroupsConfig(String str) {
+        if (this.verbose) {
+            Slog.v("ContentCaptureManagerService", "parseContentProtectionGroupsConfig: " + str);
+        }
+        return str == null ? Collections.emptyList() : Arrays.stream(str.split(";")).map(new Function() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$$ExternalSyntheticLambda1
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                ContentCaptureManagerService.this.getClass();
+                return Arrays.stream(((String) obj).split(",")).filter(new ContentCaptureManagerService$$ExternalSyntheticLambda2(1)).toList();
+            }
+        }).filter(new ContentCaptureManagerService$$ExternalSyntheticLambda2(0)).toList();
+    }
+
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void registerForExtraSettingsChanges(ContentResolver contentResolver, ContentObserver contentObserver) {
+        contentResolver.registerContentObserver(Settings.Secure.getUriFor("content_capture_enabled"), false, contentObserver, -1);
+    }
+
+    public final void setActivityStartAssistDataEnabled() {
+        synchronized (this.mLock) {
+            this.activityStartAssistDataEnabled = DeviceConfig.getBoolean("content_capture", "enable_activity_start_assist_content", false);
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:33:0x00a4  */
+    /* JADX WARN: Removed duplicated region for block: B:36:0x00a7  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void setDisabledByDeviceConfig(java.lang.String r10) {
+        /*
+            r9 = this;
+            java.lang.String r0 = "setDisabledByDeviceConfig(): set to "
+            java.lang.String r1 = "setDisabledByDeviceConfig(): already "
+            boolean r2 = r9.verbose
+            if (r2 == 0) goto L1e
+            java.lang.String r2 = "ContentCaptureManagerService"
+            java.lang.StringBuilder r3 = new java.lang.StringBuilder
+            java.lang.String r4 = "setDisabledByDeviceConfig(): explicitlyEnabled="
+            r3.<init>(r4)
+            r3.append(r10)
+            java.lang.String r3 = r3.toString()
+            android.util.Slog.v(r2, r3)
+        L1e:
+            java.util.List r2 = r9.getSupportedUsers()
+            r3 = 1
+            r4 = 0
+            if (r10 == 0) goto L31
+            java.lang.String r5 = "false"
+            boolean r10 = r10.equalsIgnoreCase(r5)
+            if (r10 == 0) goto L31
+            r10 = r3
+            goto L32
+        L31:
+            r10 = r4
+        L32:
+            java.lang.Object r5 = r9.mLock
+            monitor-enter(r5)
+            boolean r6 = r9.mDisabledByDeviceConfig     // Catch: java.lang.Throwable -> L4f
+            if (r6 != r10) goto L54
+            boolean r9 = r9.verbose     // Catch: java.lang.Throwable -> L4f
+            if (r9 == 0) goto L52
+            java.lang.String r9 = "ContentCaptureManagerService"
+            java.lang.StringBuilder r0 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L4f
+            r0.<init>(r1)     // Catch: java.lang.Throwable -> L4f
+            r0.append(r10)     // Catch: java.lang.Throwable -> L4f
+            java.lang.String r10 = r0.toString()     // Catch: java.lang.Throwable -> L4f
+            android.util.Slog.v(r9, r10)     // Catch: java.lang.Throwable -> L4f
+            goto L52
+        L4f:
+            r9 = move-exception
+            goto Lbe
+        L52:
+            monitor-exit(r5)     // Catch: java.lang.Throwable -> L4f
+            return
+        L54:
+            r9.mDisabledByDeviceConfig = r10     // Catch: java.lang.Throwable -> L4f
+            java.lang.String r10 = "ContentCaptureManagerService"
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L4f
+            r1.<init>(r0)     // Catch: java.lang.Throwable -> L4f
+            boolean r0 = r9.mDisabledByDeviceConfig     // Catch: java.lang.Throwable -> L4f
+            r1.append(r0)     // Catch: java.lang.Throwable -> L4f
+            java.lang.String r0 = r1.toString()     // Catch: java.lang.Throwable -> L4f
+            android.util.Slog.i(r10, r0)     // Catch: java.lang.Throwable -> L4f
+            r10 = r4
+        L6a:
+            r0 = r2
+            java.util.ArrayList r0 = (java.util.ArrayList) r0     // Catch: java.lang.Throwable -> L4f
+            int r1 = r0.size()     // Catch: java.lang.Throwable -> L4f
+            if (r10 >= r1) goto Lbc
+            java.lang.Object r0 = r0.get(r10)     // Catch: java.lang.Throwable -> L4f
+            android.content.pm.UserInfo r0 = (android.content.pm.UserInfo) r0     // Catch: java.lang.Throwable -> L4f
+            int r0 = r0.id     // Catch: java.lang.Throwable -> L4f
+            boolean r1 = r9.mDisabledByDeviceConfig     // Catch: java.lang.Throwable -> L4f
+            if (r1 != 0) goto L8c
+            android.util.SparseBooleanArray r1 = r9.mDisabledBySettings     // Catch: java.lang.Throwable -> L4f
+            if (r1 == 0) goto L8a
+            boolean r1 = r1.get(r0)     // Catch: java.lang.Throwable -> L4f
+            if (r1 == 0) goto L8a
+            goto L8c
+        L8a:
+            r1 = r4
+            goto L8d
+        L8c:
+            r1 = r3
+        L8d:
+            java.lang.String r6 = "ContentCaptureManagerService"
+            java.lang.StringBuilder r7 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L4f
+            r7.<init>()     // Catch: java.lang.Throwable -> L4f
+            java.lang.String r8 = "setDisabledByDeviceConfig(): updating service for user "
+            r7.append(r8)     // Catch: java.lang.Throwable -> L4f
+            r7.append(r0)     // Catch: java.lang.Throwable -> L4f
+            java.lang.String r8 = " to "
+            r7.append(r8)     // Catch: java.lang.Throwable -> L4f
+            if (r1 == 0) goto La7
+            java.lang.String r8 = "'disabled'"
+            goto La9
+        La7:
+            java.lang.String r8 = "'enabled'"
+        La9:
+            r7.append(r8)     // Catch: java.lang.Throwable -> L4f
+            java.lang.String r7 = r7.toString()     // Catch: java.lang.Throwable -> L4f
+            android.util.Slog.i(r6, r7)     // Catch: java.lang.Throwable -> L4f
+            r9.getServiceForUserLocked(r0)     // Catch: java.lang.Throwable -> L4f
+            r9.updateCachedServiceListLocked(r0, r1)     // Catch: java.lang.Throwable -> L4f
+            int r10 = r10 + 1
+            goto L6a
+        Lbc:
+            monitor-exit(r5)     // Catch: java.lang.Throwable -> L4f
+            return
+        Lbe:
+            monitor-exit(r5)     // Catch: java.lang.Throwable -> L4f
+            throw r9
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.contentcapture.ContentCaptureManagerService.setDisabledByDeviceConfig(java.lang.String):void");
+    }
+
+    public void setFineTuneParamsFromDeviceConfig() {
+        boolean z;
+        boolean deviceConfigEnableContentProtectionReceiver;
+        String string;
+        String string2;
+        int i;
+        long j;
+        ContentProtectionAllowlistManager contentProtectionAllowlistManager;
+        long j2;
+        long j3;
+        ContentProtectionAllowlistManager contentProtectionAllowlistManager2;
+        ContentProtectionConsentManager contentProtectionConsentManager;
+        synchronized (this.mLock) {
+            try {
+                this.mDevCfgMaxBufferSize = DeviceConfig.getInt("content_capture", "max_buffer_size", 500);
+                this.mDevCfgIdleFlushingFrequencyMs = DeviceConfig.getInt("content_capture", "idle_flush_frequency", 5000);
+                this.mDevCfgTextChangeFlushingFrequencyMs = DeviceConfig.getInt("content_capture", "text_change_flush_frequency", 1000);
+                this.mDevCfgLogHistorySize = DeviceConfig.getInt("content_capture", "log_history_size", 20);
+                this.mDevCfgIdleUnbindTimeoutMs = DeviceConfig.getInt("content_capture", "idle_unbind_timeout", 0);
+                this.mDevCfgDisableFlushForViewTreeAppearing = DeviceConfig.getBoolean("content_capture", "disable_flush_for_view_tree_appearing", false);
+                z = this.mDevCfgEnableContentProtectionReceiver;
+                deviceConfigEnableContentProtectionReceiver = getDeviceConfigEnableContentProtectionReceiver();
+                this.mDevCfgContentProtectionBufferSize = DeviceConfig.getInt("content_capture", "content_protection_buffer_size", 150);
+                string = DeviceConfig.getString("content_capture", "content_protection_required_groups_config", "");
+                string2 = DeviceConfig.getString("content_capture", "content_protection_optional_groups_config", "");
+                i = DeviceConfig.getInt("content_capture", "content_protection_optional_groups_threshold", 0);
+                long j4 = DeviceConfig.getLong("content_capture", "content_protection_allowlist_delay_ms", 30000L);
+                j = DeviceConfig.getLong("content_capture", "content_protection_allowlist_timeout_ms", 250L);
+                this.mDevCfgContentProtectionAutoDisconnectTimeoutMs = DeviceConfig.getLong("content_capture", "content_protection_auto_disconnect_timeout_ms", 3000L);
+                contentProtectionAllowlistManager = this.mContentProtectionAllowlistManager;
+                if (getContext().getPackageManager().hasSystemFeature("com.samsung.feature.samsung_experience_mobile_lite")) {
+                    this.mDevCfgIdleUnbindTimeoutMs = 120000;
+                }
+                if (this.verbose) {
+                    StringBuilder sb = new StringBuilder("setFineTuneParamsFromDeviceConfig(): bufferSize=");
+                    sb.append(this.mDevCfgMaxBufferSize);
+                    sb.append(", idleFlush=");
+                    sb.append(this.mDevCfgIdleFlushingFrequencyMs);
+                    sb.append(", textFlush=");
+                    sb.append(this.mDevCfgTextChangeFlushingFrequencyMs);
+                    sb.append(", logHistory=");
+                    sb.append(this.mDevCfgLogHistorySize);
+                    sb.append(", idleUnbindTimeoutMs=");
+                    sb.append(this.mDevCfgIdleUnbindTimeoutMs);
+                    sb.append(", disableFlushForViewTreeAppearing=");
+                    sb.append(this.mDevCfgDisableFlushForViewTreeAppearing);
+                    sb.append(", enableContentProtectionReceiver=");
+                    sb.append(deviceConfigEnableContentProtectionReceiver);
+                    sb.append(", contentProtectionBufferSize=");
+                    sb.append(this.mDevCfgContentProtectionBufferSize);
+                    sb.append(", contentProtectionRequiredGroupsConfig=");
+                    sb.append(string);
+                    sb.append(", contentProtectionOptionalGroupsConfig=");
+                    sb.append(string2);
+                    sb.append(", contentProtectionOptionalGroupsThreshold=");
+                    sb.append(i);
+                    sb.append(", contentProtectionAllowlistDelayMs=");
+                    sb.append(j4);
+                    sb.append(", contentProtectionAllowlistTimeoutMs=");
+                    sb.append(j);
+                    sb.append(", contentProtectionAutoDisconnectTimeoutMs=");
+                    j2 = j4;
+                    sb.append(this.mDevCfgContentProtectionAutoDisconnectTimeoutMs);
+                    Slog.v("ContentCaptureManagerService", sb.toString());
+                } else {
+                    j2 = j4;
+                }
+            } finally {
+            }
+        }
+        List parseContentProtectionGroupsConfig = parseContentProtectionGroupsConfig(string);
+        List parseContentProtectionGroupsConfig2 = parseContentProtectionGroupsConfig(string2);
+        if (contentProtectionAllowlistManager != null && !deviceConfigEnableContentProtectionReceiver) {
+            contentProtectionAllowlistManager.stop();
+        }
+        ComponentName componentName = null;
+        if (z || !deviceConfigEnableContentProtectionReceiver) {
+            j3 = j2;
+            contentProtectionAllowlistManager2 = null;
+            contentProtectionConsentManager = null;
+        } else {
+            String contentProtectionServiceFlatComponentName = getContentProtectionServiceFlatComponentName();
+            ComponentName unflattenFromString = contentProtectionServiceFlatComponentName == null ? null : ComponentName.unflattenFromString(contentProtectionServiceFlatComponentName);
+            if (unflattenFromString != null) {
+                final ContentProtectionAllowlistManager createContentProtectionAllowlistManager = createContentProtectionAllowlistManager(j);
+                if (createContentProtectionAllowlistManager.mStarted) {
+                    j3 = j2;
+                } else {
+                    createContentProtectionAllowlistManager.mStarted = true;
+                    j3 = j2;
+                    createContentProtectionAllowlistManager.mHandler.postDelayed(new Runnable() { // from class: com.android.server.contentprotection.ContentProtectionAllowlistManager$$ExternalSyntheticLambda0
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            ContentProtectionAllowlistManager contentProtectionAllowlistManager3 = ContentProtectionAllowlistManager.this;
+                            contentProtectionAllowlistManager3.handlePackagesChanged();
+                            contentProtectionAllowlistManager3.mPackageMonitor.register(contentProtectionAllowlistManager3.mContentCaptureManagerService.getContext(), UserHandle.ALL, contentProtectionAllowlistManager3.mHandler);
+                        }
+                    }, createContentProtectionAllowlistManager.mHandlerToken, j3);
+                }
+                contentProtectionConsentManager = createContentProtectionConsentManager();
+                ComponentName componentName2 = unflattenFromString;
+                contentProtectionAllowlistManager2 = createContentProtectionAllowlistManager;
+                componentName = componentName2;
+            } else {
+                j3 = j2;
+                contentProtectionConsentManager = null;
+                componentName = unflattenFromString;
+                contentProtectionAllowlistManager2 = null;
+            }
+        }
+        synchronized (this.mLock) {
+            try {
+                this.mDevCfgEnableContentProtectionReceiver = deviceConfigEnableContentProtectionReceiver;
+                this.mDevCfgContentProtectionRequiredGroups = parseContentProtectionGroupsConfig;
+                this.mDevCfgContentProtectionOptionalGroups = parseContentProtectionGroupsConfig2;
+                this.mDevCfgContentProtectionOptionalGroupsThreshold = i;
+                this.mDevCfgContentProtectionAllowlistDelayMs = j3;
+                if (z ^ deviceConfigEnableContentProtectionReceiver) {
+                    this.mContentProtectionServiceComponentName = componentName;
+                    this.mContentProtectionAllowlistManager = contentProtectionAllowlistManager2;
+                    this.mContentProtectionConsentManager = contentProtectionConsentManager;
+                }
+            } finally {
+            }
+        }
     }
 
     public final void setLoggingLevelFromDeviceConfig() {
@@ -397,978 +1553,12 @@ public final class ContentCaptureManagerService extends AbstractMasterSystemServ
         this.verbose = z;
         this.debug = ContentCaptureHelper.sDebug;
         if (z) {
-            Slog.v(TAG, "setLoggingLevelFromDeviceConfig(): level=" + this.mDevCfgLoggingLevel + ", debug=" + this.debug + ", verbose=" + this.verbose);
-        }
-    }
-
-    public final void setDeviceConfigProperties() {
-        setLoggingLevelFromDeviceConfig();
-        setFineTuneParamsFromDeviceConfig();
-        setDisabledByDeviceConfig(DeviceConfig.getProperty("content_capture", "service_explicitly_enabled"));
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:31:0x00a1  */
-    /* JADX WARN: Removed duplicated region for block: B:34:0x00a4  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void setDisabledByDeviceConfig(java.lang.String r10) {
-        /*
-            r9 = this;
-            boolean r0 = r9.verbose
-            if (r0 == 0) goto L1b
-            java.lang.String r0 = com.android.server.contentcapture.ContentCaptureManagerService.TAG
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder
-            r1.<init>()
-            java.lang.String r2 = "setDisabledByDeviceConfig(): explicitlyEnabled="
-            r1.append(r2)
-            r1.append(r10)
-            java.lang.String r1 = r1.toString()
-            android.util.Slog.v(r0, r1)
-        L1b:
-            java.util.List r0 = r9.getSupportedUsers()
-            r1 = 1
-            r2 = 0
-            if (r10 == 0) goto L2d
-            java.lang.String r3 = "false"
-            boolean r10 = r10.equalsIgnoreCase(r3)
-            if (r10 == 0) goto L2d
-            r10 = r1
-            goto L2e
-        L2d:
-            r10 = r2
-        L2e:
-            java.lang.Object r3 = r9.mLock
-            monitor-enter(r3)
-            boolean r4 = r9.mDisabledByDeviceConfig     // Catch: java.lang.Throwable -> Lb8
-            if (r4 != r10) goto L52
-            boolean r9 = r9.verbose     // Catch: java.lang.Throwable -> Lb8
-            if (r9 == 0) goto L50
-            java.lang.String r9 = com.android.server.contentcapture.ContentCaptureManagerService.TAG     // Catch: java.lang.Throwable -> Lb8
-            java.lang.StringBuilder r0 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lb8
-            r0.<init>()     // Catch: java.lang.Throwable -> Lb8
-            java.lang.String r1 = "setDisabledByDeviceConfig(): already "
-            r0.append(r1)     // Catch: java.lang.Throwable -> Lb8
-            r0.append(r10)     // Catch: java.lang.Throwable -> Lb8
-            java.lang.String r10 = r0.toString()     // Catch: java.lang.Throwable -> Lb8
-            android.util.Slog.v(r9, r10)     // Catch: java.lang.Throwable -> Lb8
-        L50:
-            monitor-exit(r3)     // Catch: java.lang.Throwable -> Lb8
-            return
-        L52:
-            r9.mDisabledByDeviceConfig = r10     // Catch: java.lang.Throwable -> Lb8
-            java.lang.String r10 = com.android.server.contentcapture.ContentCaptureManagerService.TAG     // Catch: java.lang.Throwable -> Lb8
-            java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lb8
-            r4.<init>()     // Catch: java.lang.Throwable -> Lb8
-            java.lang.String r5 = "setDisabledByDeviceConfig(): set to "
-            r4.append(r5)     // Catch: java.lang.Throwable -> Lb8
-            boolean r5 = r9.mDisabledByDeviceConfig     // Catch: java.lang.Throwable -> Lb8
-            r4.append(r5)     // Catch: java.lang.Throwable -> Lb8
-            java.lang.String r4 = r4.toString()     // Catch: java.lang.Throwable -> Lb8
-            android.util.Slog.i(r10, r4)     // Catch: java.lang.Throwable -> Lb8
-            r10 = r2
-        L6e:
-            int r4 = r0.size()     // Catch: java.lang.Throwable -> Lb8
-            if (r10 >= r4) goto Lb6
-            java.lang.Object r4 = r0.get(r10)     // Catch: java.lang.Throwable -> Lb8
-            android.content.pm.UserInfo r4 = (android.content.pm.UserInfo) r4     // Catch: java.lang.Throwable -> Lb8
-            int r4 = r4.id     // Catch: java.lang.Throwable -> Lb8
-            boolean r5 = r9.mDisabledByDeviceConfig     // Catch: java.lang.Throwable -> Lb8
-            if (r5 != 0) goto L89
-            boolean r5 = r9.isDisabledBySettingsLocked(r4)     // Catch: java.lang.Throwable -> Lb8
-            if (r5 == 0) goto L87
-            goto L89
-        L87:
-            r5 = r2
-            goto L8a
-        L89:
-            r5 = r1
-        L8a:
-            java.lang.String r6 = com.android.server.contentcapture.ContentCaptureManagerService.TAG     // Catch: java.lang.Throwable -> Lb8
-            java.lang.StringBuilder r7 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lb8
-            r7.<init>()     // Catch: java.lang.Throwable -> Lb8
-            java.lang.String r8 = "setDisabledByDeviceConfig(): updating service for user "
-            r7.append(r8)     // Catch: java.lang.Throwable -> Lb8
-            r7.append(r4)     // Catch: java.lang.Throwable -> Lb8
-            java.lang.String r8 = " to "
-            r7.append(r8)     // Catch: java.lang.Throwable -> Lb8
-            if (r5 == 0) goto La4
-            java.lang.String r8 = "'disabled'"
-            goto La6
-        La4:
-            java.lang.String r8 = "'enabled'"
-        La6:
-            r7.append(r8)     // Catch: java.lang.Throwable -> Lb8
-            java.lang.String r7 = r7.toString()     // Catch: java.lang.Throwable -> Lb8
-            android.util.Slog.i(r6, r7)     // Catch: java.lang.Throwable -> Lb8
-            r9.updateCachedServiceLocked(r4, r5)     // Catch: java.lang.Throwable -> Lb8
-            int r10 = r10 + 1
-            goto L6e
-        Lb6:
-            monitor-exit(r3)     // Catch: java.lang.Throwable -> Lb8
-            return
-        Lb8:
-            r9 = move-exception
-            monitor-exit(r3)     // Catch: java.lang.Throwable -> Lb8
-            throw r9
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.contentcapture.ContentCaptureManagerService.setDisabledByDeviceConfig(java.lang.String):void");
-    }
-
-    public final void setContentCaptureFeatureEnabledBySettingsForUser(int i, boolean z) {
-        synchronized (this.mLock) {
-            if (this.mDisabledBySettings == null) {
-                this.mDisabledBySettings = new SparseBooleanArray();
-            }
-            boolean z2 = true;
-            if (!((!this.mDisabledBySettings.get(i)) ^ z)) {
-                if (this.debug) {
-                    Slog.d(TAG, "setContentCaptureFeatureEnabledForUser(): already " + z);
-                }
-                return;
-            }
-            if (z) {
-                Slog.i(TAG, "setContentCaptureFeatureEnabled(): enabling service for user " + i);
-                this.mDisabledBySettings.delete(i);
-            } else {
-                Slog.i(TAG, "setContentCaptureFeatureEnabled(): disabling service for user " + i);
-                this.mDisabledBySettings.put(i, true);
-            }
-            if (z && !this.mDisabledByDeviceConfig) {
-                z2 = false;
-            }
-            updateCachedServiceLocked(i, z2);
-        }
-    }
-
-    public void destroySessions(int i, IResultReceiver iResultReceiver) {
-        Slog.i(TAG, "destroySessions() for userId " + i);
-        enforceCallingPermissionForManagement();
-        synchronized (this.mLock) {
-            if (i != -1) {
-                ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) peekServiceForUserLocked(i);
-                if (contentCapturePerUserService != null) {
-                    contentCapturePerUserService.destroySessionsLocked();
-                }
-            } else {
-                visitServicesLocked(new AbstractMasterSystemService.Visitor() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$$ExternalSyntheticLambda1
-                    @Override // com.android.server.infra.AbstractMasterSystemService.Visitor
-                    public final void visit(Object obj) {
-                        ((ContentCapturePerUserService) obj).destroySessionsLocked();
-                    }
-                });
-            }
-        }
-        try {
-            iResultReceiver.send(0, new Bundle());
-        } catch (RemoteException unused) {
-        }
-    }
-
-    public void listSessions(int i, IResultReceiver iResultReceiver) {
-        Slog.i(TAG, "listSessions() for userId " + i);
-        enforceCallingPermissionForManagement();
-        Bundle bundle = new Bundle();
-        final ArrayList<String> arrayList = new ArrayList<>();
-        synchronized (this.mLock) {
-            if (i != -1) {
-                ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) peekServiceForUserLocked(i);
-                if (contentCapturePerUserService != null) {
-                    contentCapturePerUserService.listSessionsLocked(arrayList);
-                }
-            } else {
-                visitServicesLocked(new AbstractMasterSystemService.Visitor() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$$ExternalSyntheticLambda2
-                    @Override // com.android.server.infra.AbstractMasterSystemService.Visitor
-                    public final void visit(Object obj) {
-                        ((ContentCapturePerUserService) obj).listSessionsLocked(arrayList);
-                    }
-                });
-            }
-        }
-        bundle.putStringArrayList("sessions", arrayList);
-        try {
-            iResultReceiver.send(0, bundle);
-        } catch (RemoteException unused) {
-        }
-    }
-
-    public void updateOptions(final String str, final ContentCaptureOptions contentCaptureOptions) {
-        this.mCallbacks.broadcast(new BiConsumer() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$$ExternalSyntheticLambda3
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                ContentCaptureManagerService.lambda$updateOptions$3(str, contentCaptureOptions, (IContentCaptureOptionsCallback) obj, obj2);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$updateOptions$3(String str, ContentCaptureOptions contentCaptureOptions, IContentCaptureOptionsCallback iContentCaptureOptionsCallback, Object obj) {
-        if (obj.equals(str)) {
-            try {
-                iContentCaptureOptionsCallback.setContentCaptureOptions(contentCaptureOptions);
-            } catch (RemoteException e) {
-                Slog.w(TAG, "Unable to send setContentCaptureOptions(): " + e);
-            }
-        }
-    }
-
-    public final ActivityManagerInternal getAmInternal() {
-        synchronized (this.mLock) {
-            if (this.mAm == null) {
-                this.mAm = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
-            }
-        }
-        return this.mAm;
-    }
-
-    public final void assertCalledByServiceLocked(String str) {
-        if (!isCalledByServiceLocked(str)) {
-            throw new SecurityException("caller is not user's ContentCapture service");
-        }
-    }
-
-    public final boolean isCalledByServiceLocked(String str) {
-        int callingUserId = UserHandle.getCallingUserId();
-        int callingUid = Binder.getCallingUid();
-        String serviceName = this.mServiceNameResolver.getServiceName(callingUserId);
-        if (serviceName == null) {
-            Slog.e(TAG, str + ": called by UID " + callingUid + ", but there's no service set for user " + callingUserId);
-            return false;
-        }
-        ComponentName unflattenFromString = ComponentName.unflattenFromString(serviceName);
-        if (unflattenFromString == null) {
-            Slog.w(TAG, str + ": invalid service name: " + serviceName);
-            return false;
-        }
-        try {
-            int packageUidAsUser = getContext().getPackageManager().getPackageUidAsUser(unflattenFromString.getPackageName(), UserHandle.getCallingUserId());
-            if (callingUid == packageUidAsUser) {
-                return true;
-            }
-            Slog.e(TAG, str + ": called by UID " + callingUid + ", but service UID is " + packageUidAsUser);
-            return false;
-        } catch (PackageManager.NameNotFoundException unused) {
-            Slog.w(TAG, str + ": could not verify UID for " + serviceName);
-            return false;
-        }
-    }
-
-    public final boolean throwsSecurityException(IResultReceiver iResultReceiver, Runnable runnable) {
-        try {
-            runnable.run();
-            return false;
-        } catch (SecurityException e) {
-            try {
-                iResultReceiver.send(-1, SyncResultReceiver.bundleFor(e.getMessage()));
-                return true;
-            } catch (RemoteException e2) {
-                Slog.w(TAG, "Unable to send security exception (" + e + "): ", e2);
-                return true;
-            }
-        }
-    }
-
-    public final boolean isDefaultServiceLocked(int i) {
-        String defaultServiceName = this.mServiceNameResolver.getDefaultServiceName(i);
-        if (defaultServiceName == null) {
-            return false;
-        }
-        return defaultServiceName.equals(this.mServiceNameResolver.getServiceName(i));
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void dumpLocked(String str, PrintWriter printWriter) {
-        super.dumpLocked(str, printWriter);
-        String str2 = str + "  ";
-        printWriter.print(str);
-        printWriter.print("Users disabled by Settings: ");
-        printWriter.println(this.mDisabledBySettings);
-        printWriter.print(str);
-        printWriter.println("DeviceConfig Settings: ");
-        printWriter.print(str2);
-        printWriter.print("disabled: ");
-        printWriter.println(this.mDisabledByDeviceConfig);
-        printWriter.print(str2);
-        printWriter.print("loggingLevel: ");
-        printWriter.println(this.mDevCfgLoggingLevel);
-        printWriter.print(str2);
-        printWriter.print("maxBufferSize: ");
-        printWriter.println(this.mDevCfgMaxBufferSize);
-        printWriter.print(str2);
-        printWriter.print("idleFlushingFrequencyMs: ");
-        printWriter.println(this.mDevCfgIdleFlushingFrequencyMs);
-        printWriter.print(str2);
-        printWriter.print("textChangeFlushingFrequencyMs: ");
-        printWriter.println(this.mDevCfgTextChangeFlushingFrequencyMs);
-        printWriter.print(str2);
-        printWriter.print("logHistorySize: ");
-        printWriter.println(this.mDevCfgLogHistorySize);
-        printWriter.print(str2);
-        printWriter.print("idleUnbindTimeoutMs: ");
-        printWriter.println(this.mDevCfgIdleUnbindTimeoutMs);
-        printWriter.print(str2);
-        printWriter.print("disableFlushForViewTreeAppearing: ");
-        printWriter.println(this.mDevCfgDisableFlushForViewTreeAppearing);
-        printWriter.print(str);
-        printWriter.println("Global Options:");
-        this.mGlobalContentCaptureOptions.dump(str2, printWriter);
-    }
-
-    /* loaded from: classes.dex */
-    public final class ContentCaptureManagerServiceStub extends IContentCaptureManager.Stub {
-        public ContentCaptureManagerServiceStub() {
-        }
-
-        public void startSession(IBinder iBinder, IBinder iBinder2, ComponentName componentName, int i, int i2, IResultReceiver iResultReceiver) {
-            Objects.requireNonNull(iBinder);
-            Objects.requireNonNull(iBinder2);
-            int callingUserId = UserHandle.getCallingUserId();
-            ActivityPresentationInfo activityPresentationInfo = ContentCaptureManagerService.this.getAmInternal().getActivityPresentationInfo(iBinder);
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId);
-                if (!ContentCaptureManagerService.this.isDefaultServiceLocked(callingUserId) && !ContentCaptureManagerService.this.isCalledByServiceLocked("startSession()")) {
-                    ContentCaptureService.setClientState(iResultReceiver, 4, (IBinder) null);
-                } else {
-                    contentCapturePerUserService.startSessionLocked(iBinder, iBinder2, activityPresentationInfo, i, Binder.getCallingUid(), i2, iResultReceiver);
-                }
-            }
-        }
-
-        public void finishSession(int i) {
-            int callingUserId = UserHandle.getCallingUserId();
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                ((ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId)).finishSessionLocked(i);
-            }
-        }
-
-        public void getServiceComponentName(IResultReceiver iResultReceiver) {
-            ComponentName serviceComponentName;
-            int callingUserId = UserHandle.getCallingUserId();
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                serviceComponentName = ((ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId)).getServiceComponentName();
-            }
-            try {
-                iResultReceiver.send(0, SyncResultReceiver.bundleFor(serviceComponentName));
-            } catch (RemoteException e) {
-                Slog.w(ContentCaptureManagerService.TAG, "Unable to send service component name: " + e);
-            }
-        }
-
-        public void removeData(DataRemovalRequest dataRemovalRequest) {
-            Objects.requireNonNull(dataRemovalRequest);
-            ContentCaptureManagerService.this.assertCalledByPackageOwner(dataRemovalRequest.getPackageName());
-            int callingUserId = UserHandle.getCallingUserId();
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                ((ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId)).removeDataLocked(dataRemovalRequest);
-            }
-        }
-
-        public void shareData(DataShareRequest dataShareRequest, IDataShareWriteAdapter iDataShareWriteAdapter) {
-            Objects.requireNonNull(dataShareRequest);
-            Objects.requireNonNull(iDataShareWriteAdapter);
-            ContentCaptureManagerService.this.assertCalledByPackageOwner(dataShareRequest.getPackageName());
-            int callingUserId = UserHandle.getCallingUserId();
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId);
-                if (ContentCaptureManagerService.this.mPackagesWithShareRequests.size() < 10 && !ContentCaptureManagerService.this.mPackagesWithShareRequests.contains(dataShareRequest.getPackageName())) {
-                    contentCapturePerUserService.onDataSharedLocked(dataShareRequest, new DataShareCallbackDelegate(dataShareRequest, iDataShareWriteAdapter, ContentCaptureManagerService.this));
-                    return;
-                }
-                try {
-                    ContentCaptureMetricsLogger.writeServiceEvent(14, ContentCaptureManagerService.this.mServiceNameResolver.getServiceName(callingUserId));
-                    iDataShareWriteAdapter.error(2);
-                } catch (RemoteException unused) {
-                    Slog.e(ContentCaptureManagerService.TAG, "Failed to send error message to client");
-                }
-            }
-        }
-
-        public void isContentCaptureFeatureEnabled(IResultReceiver iResultReceiver) {
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                if (ContentCaptureManagerService.this.throwsSecurityException(iResultReceiver, new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$ContentCaptureManagerServiceStub$$ExternalSyntheticLambda1
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        ContentCaptureManagerService.ContentCaptureManagerServiceStub.this.lambda$isContentCaptureFeatureEnabled$0();
-                    }
-                })) {
-                    return;
-                }
-                try {
-                    iResultReceiver.send(!ContentCaptureManagerService.this.mDisabledByDeviceConfig && !ContentCaptureManagerService.this.isDisabledBySettingsLocked(UserHandle.getCallingUserId()) ? 1 : 2, (Bundle) null);
-                } catch (RemoteException e) {
-                    Slog.w(ContentCaptureManagerService.TAG, "Unable to send isContentCaptureFeatureEnabled(): " + e);
-                }
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$isContentCaptureFeatureEnabled$0() {
-            ContentCaptureManagerService.this.assertCalledByServiceLocked("isContentCaptureFeatureEnabled()");
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$getServiceSettingsActivity$1() {
-            ContentCaptureManagerService.this.enforceCallingPermissionForManagement();
-        }
-
-        public void getServiceSettingsActivity(IResultReceiver iResultReceiver) {
-            if (ContentCaptureManagerService.this.throwsSecurityException(iResultReceiver, new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$ContentCaptureManagerServiceStub$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    ContentCaptureManagerService.ContentCaptureManagerServiceStub.this.lambda$getServiceSettingsActivity$1();
-                }
-            })) {
-                return;
-            }
-            int callingUserId = UserHandle.getCallingUserId();
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId);
-                if (contentCapturePerUserService == null) {
-                    return;
-                }
-                ComponentName serviceSettingsActivityLocked = contentCapturePerUserService.getServiceSettingsActivityLocked();
-                try {
-                    iResultReceiver.send(0, SyncResultReceiver.bundleFor(serviceSettingsActivityLocked));
-                } catch (RemoteException e) {
-                    Slog.w(ContentCaptureManagerService.TAG, "Unable to send getServiceSettingsIntent(): " + e);
-                }
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$getContentCaptureConditions$2(String str) {
-            ContentCaptureManagerService.this.assertCalledByPackageOwner(str);
-        }
-
-        public void getContentCaptureConditions(final String str, IResultReceiver iResultReceiver) {
-            ArrayList list;
-            if (ContentCaptureManagerService.this.throwsSecurityException(iResultReceiver, new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$ContentCaptureManagerServiceStub$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    ContentCaptureManagerService.ContentCaptureManagerServiceStub.this.lambda$getContentCaptureConditions$2(str);
-                }
-            })) {
-                return;
-            }
-            int callingUserId = UserHandle.getCallingUserId();
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(callingUserId);
-                list = contentCapturePerUserService == null ? null : ContentCaptureHelper.toList(contentCapturePerUserService.getContentCaptureConditionsLocked(str));
-            }
-            try {
-                iResultReceiver.send(0, SyncResultReceiver.bundleFor(list));
-            } catch (RemoteException e) {
-                Slog.w(ContentCaptureManagerService.TAG, "Unable to send getServiceComponentName(): " + e);
-            }
-        }
-
-        public void registerContentCaptureOptionsCallback(String str, IContentCaptureOptionsCallback iContentCaptureOptionsCallback) {
-            ContentCaptureManagerService.this.assertCalledByPackageOwner(str);
-            ContentCaptureManagerService.this.mCallbacks.register(iContentCaptureOptionsCallback, str);
-            ContentCaptureOptions options = ContentCaptureManagerService.this.mGlobalContentCaptureOptions.getOptions(UserHandle.getCallingUserId(), str);
-            if (options != null) {
-                try {
-                    iContentCaptureOptionsCallback.setContentCaptureOptions(options);
-                } catch (RemoteException e) {
-                    Slog.w(ContentCaptureManagerService.TAG, "Unable to send setContentCaptureOptions(): " + e);
-                }
-            }
-        }
-
-        public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-            if (DumpUtils.checkDumpPermission(ContentCaptureManagerService.this.getContext(), ContentCaptureManagerService.TAG, printWriter)) {
-                boolean z = true;
-                if (strArr != null) {
-                    for (String str : strArr) {
-                        str.hashCode();
-                        if (str.equals("--no-history")) {
-                            z = false;
-                        } else {
-                            if (str.equals("--help")) {
-                                printWriter.println("Usage: dumpsys content_capture [--no-history]");
-                                return;
-                            }
-                            Slog.w(ContentCaptureManagerService.TAG, "Ignoring invalid dump arg: " + str);
-                        }
-                    }
-                }
-                synchronized (ContentCaptureManagerService.this.mLock) {
-                    ContentCaptureManagerService.this.dumpLocked("", printWriter);
-                }
-                printWriter.print("Requests history: ");
-                if (ContentCaptureManagerService.this.mRequestsHistory == null) {
-                    printWriter.println("disabled by device config");
-                } else {
-                    if (z) {
-                        printWriter.println();
-                        ContentCaptureManagerService.this.mRequestsHistory.reverseDump(fileDescriptor, printWriter, strArr);
-                        printWriter.println();
-                        return;
-                    }
-                    printWriter.println();
-                }
-            }
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
-            new ContentCaptureManagerServiceShellCommand(ContentCaptureManagerService.this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
-        }
-
-        public void resetTemporaryService(int i) {
-            ContentCaptureManagerService.this.resetTemporaryService(i);
-        }
-
-        public void setTemporaryService(int i, String str, int i2) {
-            ContentCaptureManagerService.this.setTemporaryService(i, str, i2);
-        }
-
-        public void setDefaultServiceEnabled(int i, boolean z) {
-            ContentCaptureManagerService.this.setDefaultServiceEnabled(i, z);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class LocalService extends ContentCaptureManagerInternal {
-        public LocalService() {
-        }
-
-        @Override // com.android.server.contentcapture.ContentCaptureManagerInternal
-        public boolean isContentCaptureServiceForUser(int i, int i2) {
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                if (!ContentCaptureManagerService.this.isDisabledLocked(i2)) {
-                    ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(i2);
-                    if (contentCapturePerUserService == null) {
-                        return false;
-                    }
-                    return contentCapturePerUserService.isContentCaptureServiceForUserLocked(i);
-                }
-                if (ContentCaptureManagerService.this.verbose) {
-                    Slog.v(ContentCaptureManagerService.TAG, "isContentCaptureServiceForUser() disabled!");
-                }
-                return false;
-            }
-        }
-
-        @Override // com.android.server.contentcapture.ContentCaptureManagerInternal
-        public boolean sendActivityAssistData(int i, IBinder iBinder, Bundle bundle) {
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                if (!ContentCaptureManagerService.this.isDisabledLocked(i)) {
-                    ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(i);
-                    if (contentCapturePerUserService == null) {
-                        return false;
-                    }
-                    return contentCapturePerUserService.sendActivityAssistDataLocked(iBinder, bundle);
-                }
-                if (ContentCaptureManagerService.this.verbose) {
-                    Slog.v(ContentCaptureManagerService.TAG, "sendActivityAssistData() disabled!");
-                }
-                return false;
-            }
-        }
-
-        @Override // com.android.server.contentcapture.ContentCaptureManagerInternal
-        public ContentCaptureOptions getOptionsForPackage(int i, String str) {
-            return ContentCaptureManagerService.this.mGlobalContentCaptureOptions.getOptions(i, str);
-        }
-
-        @Override // com.android.server.contentcapture.ContentCaptureManagerInternal
-        public void notifyActivityEvent(int i, ComponentName componentName, int i2, ActivityId activityId) {
-            synchronized (ContentCaptureManagerService.this.mLock) {
-                if (!ContentCaptureManagerService.this.isDisabledLocked(i)) {
-                    ContentCapturePerUserService contentCapturePerUserService = (ContentCapturePerUserService) ContentCaptureManagerService.this.getServiceForUserLocked(i);
-                    if (contentCapturePerUserService != null) {
-                        contentCapturePerUserService.onActivityEventLocked(activityId, componentName, i2);
-                    }
-                } else {
-                    if (ContentCaptureManagerService.this.verbose) {
-                        Slog.v(ContentCaptureManagerService.TAG, "notifyActivityEvent() disabled!");
-                    }
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class GlobalContentCaptureOptions extends GlobalWhitelistState {
-        public final SparseArray mServicePackages = new SparseArray();
-        public final SparseBooleanArray mTemporaryServices = new SparseBooleanArray();
-
-        public GlobalContentCaptureOptions() {
-        }
-
-        public final void setServiceInfo(int i, String str, boolean z) {
-            synchronized (((GlobalWhitelistState) this).mGlobalWhitelistStateLock) {
-                if (z) {
-                    this.mTemporaryServices.put(i, true);
-                } else {
-                    this.mTemporaryServices.delete(i);
-                }
-                if (str != null) {
-                    ComponentName unflattenFromString = ComponentName.unflattenFromString(str);
-                    if (unflattenFromString == null) {
-                        Slog.w(ContentCaptureManagerService.TAG, "setServiceInfo(): invalid name: " + str);
-                        this.mServicePackages.remove(i);
-                    } else {
-                        this.mServicePackages.put(i, unflattenFromString.getPackageName());
-                    }
-                } else {
-                    this.mServicePackages.remove(i);
-                }
-            }
-        }
-
-        public ContentCaptureOptions getOptions(int i, String str) {
-            ArraySet arraySet;
-            ContentCaptureOptions contentCaptureOptions;
-            synchronized (((GlobalWhitelistState) this).mGlobalWhitelistStateLock) {
-                boolean isWhitelisted = isWhitelisted(i, str);
-                if (isWhitelisted) {
-                    arraySet = null;
-                } else {
-                    ArraySet whitelistedComponents = getWhitelistedComponents(i, str);
-                    if (whitelistedComponents == null && str.equals(this.mServicePackages.get(i))) {
-                        if (ContentCaptureManagerService.this.verbose) {
-                            Slog.v(ContentCaptureManagerService.TAG, "getOptionsForPackage() lite for " + str);
-                        }
-                        return new ContentCaptureOptions(ContentCaptureManagerService.this.mDevCfgLoggingLevel);
-                    }
-                    arraySet = whitelistedComponents;
-                }
-                if (Build.IS_USER && ContentCaptureManagerService.this.mServiceNameResolver.isTemporary(i) && !str.equals(this.mServicePackages.get(i))) {
-                    Slog.w(ContentCaptureManagerService.TAG, "Ignoring package " + str + " while using temporary service " + ((String) this.mServicePackages.get(i)));
-                    return null;
-                }
-                if (isWhitelisted || arraySet != null) {
-                    synchronized (ContentCaptureManagerService.this.mLock) {
-                        ContentCaptureManagerService contentCaptureManagerService = ContentCaptureManagerService.this;
-                        contentCaptureOptions = new ContentCaptureOptions(contentCaptureManagerService.mDevCfgLoggingLevel, contentCaptureManagerService.mDevCfgMaxBufferSize, contentCaptureManagerService.mDevCfgIdleFlushingFrequencyMs, contentCaptureManagerService.mDevCfgTextChangeFlushingFrequencyMs, contentCaptureManagerService.mDevCfgLogHistorySize, contentCaptureManagerService.mDevCfgDisableFlushForViewTreeAppearing, arraySet);
-                        if (ContentCaptureManagerService.this.verbose) {
-                            Slog.v(ContentCaptureManagerService.TAG, "getOptionsForPackage(" + str + "): " + contentCaptureOptions);
-                        }
-                    }
-                    return contentCaptureOptions;
-                }
-                if (ContentCaptureManagerService.this.verbose) {
-                    Slog.v(ContentCaptureManagerService.TAG, "getOptionsForPackage(" + str + "): not whitelisted");
-                }
-                return null;
-            }
-        }
-
-        public void dump(String str, PrintWriter printWriter) {
-            super.dump(str, printWriter);
-            synchronized (((GlobalWhitelistState) this).mGlobalWhitelistStateLock) {
-                if (this.mServicePackages.size() > 0) {
-                    printWriter.print(str);
-                    printWriter.print("Service packages: ");
-                    printWriter.println(this.mServicePackages);
-                }
-                if (this.mTemporaryServices.size() > 0) {
-                    printWriter.print(str);
-                    printWriter.print("Temp services: ");
-                    printWriter.println(this.mTemporaryServices);
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class DataShareCallbackDelegate extends IDataShareCallback.Stub {
-        public final IDataShareWriteAdapter mClientAdapter;
-        public final DataShareRequest mDataShareRequest;
-        public final AtomicBoolean mLoggedWriteFinish = new AtomicBoolean(false);
-        public final ContentCaptureManagerService mParentService;
-
-        public DataShareCallbackDelegate(DataShareRequest dataShareRequest, IDataShareWriteAdapter iDataShareWriteAdapter, ContentCaptureManagerService contentCaptureManagerService) {
-            this.mDataShareRequest = dataShareRequest;
-            this.mClientAdapter = iDataShareWriteAdapter;
-            this.mParentService = contentCaptureManagerService;
-        }
-
-        public void accept(final IDataShareReadAdapter iDataShareReadAdapter) {
-            Slog.i(ContentCaptureManagerService.TAG, "Data share request accepted by Content Capture service");
-            logServiceEvent(7);
-            Pair createPipe = createPipe();
-            if (createPipe == null) {
-                logServiceEvent(12);
-                sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
-                return;
-            }
-            final ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor) createPipe.second;
-            final ParcelFileDescriptor parcelFileDescriptor2 = (ParcelFileDescriptor) createPipe.first;
-            Pair createPipe2 = createPipe();
-            if (createPipe2 == null) {
-                logServiceEvent(13);
-                bestEffortCloseFileDescriptors(parcelFileDescriptor, parcelFileDescriptor2);
-                sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
-                return;
-            }
-            final ParcelFileDescriptor parcelFileDescriptor3 = (ParcelFileDescriptor) createPipe2.second;
-            final ParcelFileDescriptor parcelFileDescriptor4 = (ParcelFileDescriptor) createPipe2.first;
-            synchronized (this.mParentService.mLock) {
-                this.mParentService.mPackagesWithShareRequests.add(this.mDataShareRequest.getPackageName());
-            }
-            if (!setUpSharingPipeline(this.mClientAdapter, iDataShareReadAdapter, parcelFileDescriptor, parcelFileDescriptor4)) {
-                sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
-                bestEffortCloseFileDescriptors(parcelFileDescriptor, parcelFileDescriptor2, parcelFileDescriptor3, parcelFileDescriptor4);
-                synchronized (this.mParentService.mLock) {
-                    this.mParentService.mPackagesWithShareRequests.remove(this.mDataShareRequest.getPackageName());
-                }
-                return;
-            }
-            bestEffortCloseFileDescriptors(parcelFileDescriptor, parcelFileDescriptor4);
-            this.mParentService.mDataShareExecutor.execute(new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$DataShareCallbackDelegate$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    ContentCaptureManagerService.DataShareCallbackDelegate.this.lambda$accept$0(parcelFileDescriptor2, parcelFileDescriptor3, iDataShareReadAdapter);
-                }
-            });
-            this.mParentService.mHandler.postDelayed(new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$DataShareCallbackDelegate$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    ContentCaptureManagerService.DataShareCallbackDelegate.this.lambda$accept$1(parcelFileDescriptor, parcelFileDescriptor2, parcelFileDescriptor3, parcelFileDescriptor4, iDataShareReadAdapter);
-                }
-            }, BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:119:0x00dd -> B:34:0x00ef). Please report as a decompilation issue!!! */
-        public /* synthetic */ void lambda$accept$0(ParcelFileDescriptor parcelFileDescriptor, ParcelFileDescriptor parcelFileDescriptor2, IDataShareReadAdapter iDataShareReadAdapter) {
-            boolean z;
-            boolean z2 = false;
-            try {
-                try {
-                    try {
-                        ParcelFileDescriptor.AutoCloseInputStream autoCloseInputStream = new ParcelFileDescriptor.AutoCloseInputStream(parcelFileDescriptor);
-                        try {
-                            ParcelFileDescriptor.AutoCloseOutputStream autoCloseOutputStream = new ParcelFileDescriptor.AutoCloseOutputStream(parcelFileDescriptor2);
-                            try {
-                                byte[] bArr = new byte[1024];
-                                z = false;
-                                while (true) {
-                                    try {
-                                        int read = autoCloseInputStream.read(bArr);
-                                        if (read == -1) {
-                                            try {
-                                                break;
-                                            } catch (Throwable th) {
-                                                th = th;
-                                                z2 = z;
-                                                try {
-                                                    autoCloseInputStream.close();
-                                                } catch (Throwable th2) {
-                                                    th.addSuppressed(th2);
-                                                }
-                                                throw th;
-                                            }
-                                        }
-                                        autoCloseOutputStream.write(bArr, 0, read);
-                                        z = true;
-                                    } catch (Throwable th3) {
-                                        th = th3;
-                                        z2 = z;
-                                        try {
-                                            autoCloseOutputStream.close();
-                                        } catch (Throwable th4) {
-                                            th.addSuppressed(th4);
-                                        }
-                                        throw th;
-                                    }
-                                }
-                                autoCloseOutputStream.close();
-                                try {
-                                    autoCloseInputStream.close();
-                                    synchronized (this.mParentService.mLock) {
-                                        this.mParentService.mPackagesWithShareRequests.remove(this.mDataShareRequest.getPackageName());
-                                    }
-                                } catch (IOException e) {
-                                    e = e;
-                                    z2 = z;
-                                    Slog.e(ContentCaptureManagerService.TAG, "Failed to pipe client and service streams", e);
-                                    logServiceEvent(10);
-                                    sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
-                                    synchronized (this.mParentService.mLock) {
-                                        this.mParentService.mPackagesWithShareRequests.remove(this.mDataShareRequest.getPackageName());
-                                    }
-                                    if (z2) {
-                                        if (!this.mLoggedWriteFinish.get()) {
-                                            logServiceEvent(9);
-                                            this.mLoggedWriteFinish.set(true);
-                                        }
-                                        try {
-                                            this.mClientAdapter.finish();
-                                        } catch (RemoteException e2) {
-                                            Slog.e(ContentCaptureManagerService.TAG, "Failed to call finish() the client operation", e2);
-                                        }
-                                        iDataShareReadAdapter.finish();
-                                        return;
-                                    }
-                                    logServiceEvent(11);
-                                    sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
-                                } catch (Throwable th5) {
-                                    th = th5;
-                                    z2 = z;
-                                    synchronized (this.mParentService.mLock) {
-                                        this.mParentService.mPackagesWithShareRequests.remove(this.mDataShareRequest.getPackageName());
-                                    }
-                                    if (z2) {
-                                        if (!this.mLoggedWriteFinish.get()) {
-                                            logServiceEvent(9);
-                                            this.mLoggedWriteFinish.set(true);
-                                        }
-                                        try {
-                                            this.mClientAdapter.finish();
-                                        } catch (RemoteException e3) {
-                                            Slog.e(ContentCaptureManagerService.TAG, "Failed to call finish() the client operation", e3);
-                                        }
-                                        try {
-                                            iDataShareReadAdapter.finish();
-                                        } catch (RemoteException e4) {
-                                            Slog.e(ContentCaptureManagerService.TAG, "Failed to call finish() the service operation", e4);
-                                        }
-                                    } else {
-                                        logServiceEvent(11);
-                                        sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
-                                    }
-                                    throw th;
-                                }
-                            } catch (Throwable th6) {
-                                th = th6;
-                            }
-                        } catch (Throwable th7) {
-                            th = th7;
-                            autoCloseInputStream.close();
-                            throw th;
-                        }
-                    } catch (IOException e5) {
-                        e = e5;
-                    }
-                } catch (RemoteException e6) {
-                    Slog.e(ContentCaptureManagerService.TAG, "Failed to call finish() the service operation", e6);
-                }
-                if (z) {
-                    if (!this.mLoggedWriteFinish.get()) {
-                        logServiceEvent(9);
-                        this.mLoggedWriteFinish.set(true);
-                    }
-                    try {
-                        this.mClientAdapter.finish();
-                    } catch (RemoteException e7) {
-                        Slog.e(ContentCaptureManagerService.TAG, "Failed to call finish() the client operation", e7);
-                    }
-                    iDataShareReadAdapter.finish();
-                    return;
-                }
-                logServiceEvent(11);
-                sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 1);
-            } catch (Throwable th8) {
-                th = th8;
-            }
-        }
-
-        public void reject() {
-            Slog.i(ContentCaptureManagerService.TAG, "Data share request rejected by Content Capture service");
-            logServiceEvent(8);
-            try {
-                this.mClientAdapter.rejected();
-            } catch (RemoteException e) {
-                Slog.w(ContentCaptureManagerService.TAG, "Failed to call rejected() the client operation", e);
-                try {
-                    this.mClientAdapter.error(1);
-                } catch (RemoteException e2) {
-                    Slog.w(ContentCaptureManagerService.TAG, "Failed to call error() the client operation", e2);
-                }
-            }
-        }
-
-        public final boolean setUpSharingPipeline(IDataShareWriteAdapter iDataShareWriteAdapter, IDataShareReadAdapter iDataShareReadAdapter, ParcelFileDescriptor parcelFileDescriptor, ParcelFileDescriptor parcelFileDescriptor2) {
-            try {
-                iDataShareWriteAdapter.write(parcelFileDescriptor);
-                try {
-                    iDataShareReadAdapter.start(parcelFileDescriptor2);
-                    return true;
-                } catch (RemoteException e) {
-                    Slog.e(ContentCaptureManagerService.TAG, "Failed to call start() the service operation", e);
-                    logServiceEvent(13);
-                    return false;
-                }
-            } catch (RemoteException e2) {
-                Slog.e(ContentCaptureManagerService.TAG, "Failed to call write() the client operation", e2);
-                logServiceEvent(12);
-                return false;
-            }
-        }
-
-        /* renamed from: enforceDataSharingTtl, reason: merged with bridge method [inline-methods] */
-        public final void lambda$accept$1(ParcelFileDescriptor parcelFileDescriptor, ParcelFileDescriptor parcelFileDescriptor2, ParcelFileDescriptor parcelFileDescriptor3, ParcelFileDescriptor parcelFileDescriptor4, IDataShareReadAdapter iDataShareReadAdapter) {
-            synchronized (this.mParentService.mLock) {
-                this.mParentService.mPackagesWithShareRequests.remove(this.mDataShareRequest.getPackageName());
-                boolean z = (parcelFileDescriptor2.getFileDescriptor().valid() || parcelFileDescriptor3.getFileDescriptor().valid()) ? false : true;
-                if (z) {
-                    if (!this.mLoggedWriteFinish.get()) {
-                        logServiceEvent(9);
-                        this.mLoggedWriteFinish.set(true);
-                    }
-                    Slog.i(ContentCaptureManagerService.TAG, "Content capture data sharing session terminated successfully for package '" + this.mDataShareRequest.getPackageName() + "'");
-                } else {
-                    logServiceEvent(15);
-                    Slog.i(ContentCaptureManagerService.TAG, "Reached the timeout of Content Capture data sharing session for package '" + this.mDataShareRequest.getPackageName() + "', terminating the pipe.");
-                }
-                bestEffortCloseFileDescriptors(parcelFileDescriptor, parcelFileDescriptor2, parcelFileDescriptor3, parcelFileDescriptor4);
-                if (!z) {
-                    sendErrorSignal(this.mClientAdapter, iDataShareReadAdapter, 3);
-                }
-            }
-        }
-
-        public final Pair createPipe() {
-            try {
-                ParcelFileDescriptor[] createPipe = ParcelFileDescriptor.createPipe();
-                if (createPipe.length != 2) {
-                    Slog.e(ContentCaptureManagerService.TAG, "Failed to create a content capture data-sharing pipe, unexpected number of file descriptors");
-                    return null;
-                }
-                if (!createPipe[0].getFileDescriptor().valid() || !createPipe[1].getFileDescriptor().valid()) {
-                    Slog.e(ContentCaptureManagerService.TAG, "Failed to create a content capture data-sharing pipe, didn't receive a pair of valid file descriptors.");
-                    return null;
-                }
-                return Pair.create(createPipe[0], createPipe[1]);
-            } catch (IOException e) {
-                Slog.e(ContentCaptureManagerService.TAG, "Failed to create a content capture data-sharing pipe", e);
-                return null;
-            }
-        }
-
-        public final void bestEffortCloseFileDescriptor(ParcelFileDescriptor parcelFileDescriptor) {
-            try {
-                parcelFileDescriptor.close();
-            } catch (IOException e) {
-                Slog.e(ContentCaptureManagerService.TAG, "Failed to close a file descriptor", e);
-            }
-        }
-
-        public final void bestEffortCloseFileDescriptors(ParcelFileDescriptor... parcelFileDescriptorArr) {
-            for (ParcelFileDescriptor parcelFileDescriptor : parcelFileDescriptorArr) {
-                bestEffortCloseFileDescriptor(parcelFileDescriptor);
-            }
-        }
-
-        public static void sendErrorSignal(IDataShareWriteAdapter iDataShareWriteAdapter, IDataShareReadAdapter iDataShareReadAdapter, int i) {
-            try {
-                iDataShareWriteAdapter.error(i);
-            } catch (RemoteException e) {
-                Slog.e(ContentCaptureManagerService.TAG, "Failed to call error() the client operation", e);
-            }
-            try {
-                iDataShareReadAdapter.error(i);
-            } catch (RemoteException e2) {
-                Slog.e(ContentCaptureManagerService.TAG, "Failed to call error() the service operation", e2);
-            }
-        }
-
-        public final void logServiceEvent(int i) {
-            ContentCaptureMetricsLogger.writeServiceEvent(i, this.mParentService.mServiceNameResolver.getServiceName(UserHandle.getCallingUserId()));
+            StringBuilder sb = new StringBuilder("setLoggingLevelFromDeviceConfig(): level=");
+            sb.append(this.mDevCfgLoggingLevel);
+            sb.append(", debug=");
+            sb.append(this.debug);
+            sb.append(", verbose=");
+            ProxyManager$$ExternalSyntheticOutline0.m("ContentCaptureManagerService", sb, this.verbose);
         }
     }
 }

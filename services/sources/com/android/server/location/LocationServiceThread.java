@@ -6,20 +6,17 @@ import android.os.Looper;
 import com.android.server.ServiceThread;
 import java.util.concurrent.Executor;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class LocationServiceThread extends ServiceThread {
     public static Handler sHandler;
     public static HandlerExecutor sHandlerExecutor;
     public static LocationServiceThread sInstance;
 
-    public LocationServiceThread() {
-        super("LocationProviderManagerThread", 0, true);
-    }
-
     public static synchronized void ensureThreadLocked() {
         synchronized (LocationServiceThread.class) {
             if (sInstance == null) {
-                LocationServiceThread locationServiceThread = new LocationServiceThread();
+                LocationServiceThread locationServiceThread = new LocationServiceThread(0, "LocationProviderManagerThread", true);
                 sInstance = locationServiceThread;
                 locationServiceThread.start();
                 Looper looper = sInstance.getLooper();
@@ -31,15 +28,6 @@ public final class LocationServiceThread extends ServiceThread {
         }
     }
 
-    public static Handler getHandler() {
-        Handler handler;
-        synchronized (LocationServiceThread.class) {
-            ensureThreadLocked();
-            handler = sHandler;
-        }
-        return handler;
-    }
-
     public static Executor getExecutor() {
         HandlerExecutor handlerExecutor;
         synchronized (LocationServiceThread.class) {
@@ -47,5 +35,14 @@ public final class LocationServiceThread extends ServiceThread {
             handlerExecutor = sHandlerExecutor;
         }
         return handlerExecutor;
+    }
+
+    public static Handler getHandler() {
+        Handler handler;
+        synchronized (LocationServiceThread.class) {
+            ensureThreadLocked();
+            handler = sHandler;
+        }
+        return handler;
     }
 }

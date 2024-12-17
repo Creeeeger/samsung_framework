@@ -2,56 +2,52 @@ package com.android.server.am.mars.filter.filter;
 
 import android.content.Context;
 import android.os.SystemClock;
+import com.android.server.am.MARsPackageInfo;
 import com.android.server.am.MARsPolicyManager;
+import com.android.server.am.mars.MARsUtils;
 import com.android.server.am.mars.filter.IFilter;
-import com.android.server.backup.BackupAgentTimeoutParameters;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class RecentUsedPackageFilter implements IFilter {
-    public static String TAG = "MARs:" + RecentUsedPackageFilter.class.getSimpleName();
+public final class RecentUsedPackageFilter implements IFilter {
     public ArrayList RogueApp;
-    public Context mContext;
-    public long mUnUsedTime;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class RecentUsedPackageFilterHolder {
-        public static final RecentUsedPackageFilter INSTANCE = new RecentUsedPackageFilter();
-    }
+        public static final RecentUsedPackageFilter INSTANCE;
 
-    @Override // com.android.server.am.mars.filter.IFilter
-    public void deInit() {
-    }
-
-    public RecentUsedPackageFilter() {
-        this.mContext = null;
-        this.mUnUsedTime = 900000L;
-        this.RogueApp = new ArrayList(Arrays.asList("com.codoon.gps", "com.traffic.panda"));
-    }
-
-    public static RecentUsedPackageFilter getInstance() {
-        return RecentUsedPackageFilterHolder.INSTANCE;
-    }
-
-    public final void setContext(Context context) {
-        this.mContext = context;
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public void init(Context context) {
-        setContext(context);
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public int filter(String str, int i, int i2, int i3) {
-        if (i3 == 4) {
-            this.mUnUsedTime = 60000L;
-        } else if (MARsPolicyManager.getInstance().isChinaPolicyEnabled() && this.RogueApp.contains(str)) {
-            this.mUnUsedTime = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        } else {
-            this.mUnUsedTime = 900000L;
+        static {
+            RecentUsedPackageFilter recentUsedPackageFilter = new RecentUsedPackageFilter();
+            recentUsedPackageFilter.RogueApp = new ArrayList(Arrays.asList("com.codoon.gps", "com.traffic.panda"));
+            INSTANCE = recentUsedPackageFilter;
         }
-        return !(((SystemClock.elapsedRealtime() - this.mUnUsedTime) > MARsPolicyManager.getInstance().getLastUsedTime(str, i) ? 1 : ((SystemClock.elapsedRealtime() - this.mUnUsedTime) == MARsPolicyManager.getInstance().getLastUsedTime(str, i) ? 0 : -1)) > 0) ? 1 : 0;
+    }
+
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void deInit() {
+    }
+
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final int filter(int i, int i2, int i3, String str) {
+        long j;
+        long j2 = i3 == 4 ? 60000L : (MARsUtils.isChinaPolicyEnabled() && this.RogueApp.contains(str)) ? 300000L : 900000L;
+        boolean z = MARsUtils.IS_SUPPORT_FREEZE_FG_SERVICE_FEATURE;
+        boolean z2 = MARsPolicyManager.MARs_ENABLE;
+        MARsPolicyManager mARsPolicyManager = MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE;
+        mARsPolicyManager.getClass();
+        synchronized (MARsPolicyManager.MARsLock) {
+            try {
+                MARsPackageInfo mARsPackageInfo = MARsPolicyManager.getMARsPackageInfo(mARsPolicyManager.mMARsTargetPackages, str, i);
+                j = mARsPackageInfo != null ? mARsPackageInfo.lastUsedTime : -900000L;
+            } finally {
+            }
+        }
+        return SystemClock.elapsedRealtime() - j2 > j ? 0 : 1;
+    }
+
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void init(Context context) {
     }
 }

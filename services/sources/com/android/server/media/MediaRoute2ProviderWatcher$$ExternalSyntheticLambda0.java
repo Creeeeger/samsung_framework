@@ -1,7 +1,7 @@
 package com.android.server.media;
 
-/* compiled from: R8$$SyntheticClass */
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final /* synthetic */ class MediaRoute2ProviderWatcher$$ExternalSyntheticLambda0 implements Runnable {
     public final /* synthetic */ MediaRoute2ProviderWatcher f$0;
 
@@ -11,6 +11,6 @@ public final /* synthetic */ class MediaRoute2ProviderWatcher$$ExternalSynthetic
 
     @Override // java.lang.Runnable
     public final void run() {
-        MediaRoute2ProviderWatcher.$r8$lambda$RkX_X9DZsiIbQrxVNOznlR87kW4(this.f$0);
+        MediaRoute2ProviderWatcher.$r8$lambda$uxDP7YbvEhxettSyL1qhqc8pTDY(this.f$0);
     }
 }

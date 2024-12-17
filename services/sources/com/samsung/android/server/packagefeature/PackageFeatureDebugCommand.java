@@ -1,24 +1,37 @@
 package com.samsung.android.server.packagefeature;
 
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.server.RCPManagerService$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public class PackageFeatureDebugCommand {
     public final String[] mCommands;
-
-    public String adjustExtra(String str, String str2) {
-        return null;
-    }
 
     public PackageFeatureDebugCommand(String... strArr) {
         this.mCommands = strArr;
     }
 
-    public boolean assertValidOptions(PrintWriter printWriter, String[] strArr, String str) {
-        return assertPackageNamesOnly(printWriter, strArr, str);
+    public static String getCommandOptions(String str, String str2, String str3) {
+        StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("  ", str, str2);
+        if (str3 != null) {
+            RCPManagerService$$ExternalSyntheticOutline0.m$1(m, " [", str3, "]");
+        }
+        return m.toString();
     }
 
-    public boolean assertPackageNamesOnly(PrintWriter printWriter, String[] strArr, String str) {
+    public static void printOptions(PrintWriter printWriter, String str, String str2) {
+        printWriter.println(str.concat(" options:"));
+        printWriter.println(getCommandOptions(str, " [packageName]", str2));
+        printWriter.println(getCommandOptions(str, " [packageName:packageName:...]", str2));
+    }
+
+    public String adjustExtra(String str) {
+        return null;
+    }
+
+    public boolean assertValidOptions(String str, String[] strArr, PrintWriter printWriter) {
         boolean z = false;
         if (strArr.length == 1 && strArr[0] != null) {
             z = true;
@@ -27,24 +40,5 @@ public class PackageFeatureDebugCommand {
             printOptions(printWriter, str, null);
         }
         return z;
-    }
-
-    public void printOptions(PrintWriter printWriter, String str, String str2) {
-        printWriter.println(str + " options:");
-        printWriter.println(getCommandOptions("  ", str, " [packageName]", str2));
-        printWriter.println(getCommandOptions("  ", str, " [packageName:packageName:...]", str2));
-    }
-
-    public String getCommandOptions(String str, String str2, String str3, String str4) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(str);
-        sb.append(str2);
-        sb.append(str3);
-        if (str4 != null) {
-            sb.append(" [");
-            sb.append(str4);
-            sb.append("]");
-        }
-        return sb.toString();
     }
 }

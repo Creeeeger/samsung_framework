@@ -1,42 +1,47 @@
 package com.android.server.locksettings.recoverablekeystore;
 
 import android.util.Log;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
 import com.android.server.locksettings.recoverablekeystore.storage.RecoverableKeyStoreDb;
 import java.util.Locale;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-/* loaded from: classes2.dex */
-public class RecoverableKeyGenerator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RecoverableKeyGenerator {
     public final RecoverableKeyStoreDb mDatabase;
     public final KeyGenerator mKeyGenerator;
-
-    public static RecoverableKeyGenerator newInstance(RecoverableKeyStoreDb recoverableKeyStoreDb) {
-        return new RecoverableKeyGenerator(KeyGenerator.getInstance("AES"), recoverableKeyStoreDb);
-    }
 
     public RecoverableKeyGenerator(KeyGenerator keyGenerator, RecoverableKeyStoreDb recoverableKeyStoreDb) {
         this.mKeyGenerator = keyGenerator;
         this.mDatabase = recoverableKeyStoreDb;
     }
 
-    public byte[] generateAndStoreKey(PlatformEncryptionKey platformEncryptionKey, int i, int i2, String str, byte[] bArr) {
+    public final byte[] generateAndStoreKey(PlatformEncryptionKey platformEncryptionKey, int i, int i2, String str, byte[] bArr) {
         this.mKeyGenerator.init(256);
         SecretKey generateKey = this.mKeyGenerator.generateKey();
-        if (this.mDatabase.insertKey(i, i2, str, WrappedKey.fromSecretKey(platformEncryptionKey, generateKey, bArr)) == -1) {
-            throw new RecoverableKeyStorageException(String.format(Locale.US, "Failed writing (%d, %s) to database.", Integer.valueOf(i2), str));
+        WrappedKey fromSecretKey = WrappedKey.fromSecretKey(platformEncryptionKey, generateKey, bArr);
+        RecoverableKeyStoreDb recoverableKeyStoreDb = this.mDatabase;
+        if (recoverableKeyStoreDb.insertKey(i, i2, str, fromSecretKey) == -1) {
+            Locale locale = Locale.US;
+            throw new RecoverableKeyStorageException(AccountManagerService$$ExternalSyntheticOutline0.m(i2, "Failed writing (", ", ", str, ") to database."));
         }
-        if (this.mDatabase.setShouldCreateSnapshot(i, i2, true) < 0) {
+        if (recoverableKeyStoreDb.setShouldCreateSnapshot(i, i2) < 0) {
             Log.e("PlatformKeyGen", "Failed to set the shoudCreateSnapshot flag in the local DB.");
         }
         return generateKey.getEncoded();
     }
 
-    public void importKey(PlatformEncryptionKey platformEncryptionKey, int i, int i2, String str, byte[] bArr, byte[] bArr2) {
-        if (this.mDatabase.insertKey(i, i2, str, WrappedKey.fromSecretKey(platformEncryptionKey, new SecretKeySpec(bArr, "AES"), bArr2)) == -1) {
-            throw new RecoverableKeyStorageException(String.format(Locale.US, "Failed writing (%d, %s) to database.", Integer.valueOf(i2), str));
+    public final void importKey(PlatformEncryptionKey platformEncryptionKey, int i, int i2, String str, byte[] bArr, byte[] bArr2) {
+        WrappedKey fromSecretKey = WrappedKey.fromSecretKey(platformEncryptionKey, new SecretKeySpec(bArr, "AES"), bArr2);
+        RecoverableKeyStoreDb recoverableKeyStoreDb = this.mDatabase;
+        if (recoverableKeyStoreDb.insertKey(i, i2, str, fromSecretKey) != -1) {
+            recoverableKeyStoreDb.setShouldCreateSnapshot(i, i2);
+        } else {
+            Locale locale = Locale.US;
+            throw new RecoverableKeyStorageException(AccountManagerService$$ExternalSyntheticOutline0.m(i2, "Failed writing (", ", ", str, ") to database."));
         }
-        this.mDatabase.setShouldCreateSnapshot(i, i2, true);
     }
 }

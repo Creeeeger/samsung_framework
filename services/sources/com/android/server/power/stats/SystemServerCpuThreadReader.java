@@ -1,26 +1,23 @@
 package com.android.server.power.stats;
 
-import android.os.Process;
 import com.android.internal.os.KernelSingleProcessCpuThreadReader;
+import java.io.IOException;
 
-/* loaded from: classes3.dex */
-public class SystemServerCpuThreadReader {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SystemServerCpuThreadReader {
     public final SystemServiceCpuThreadTimes mDeltaCpuThreadTimes;
     public final KernelSingleProcessCpuThreadReader mKernelCpuThreadReader;
     public long[] mLastBinderThreadCpuTimesUs;
     public long[] mLastThreadCpuTimesUs;
 
-    /* loaded from: classes3.dex */
-    public class SystemServiceCpuThreadTimes {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SystemServiceCpuThreadTimes {
         public long[] binderThreadCpuTimesUs;
         public long[] threadCpuTimesUs;
     }
 
-    public static SystemServerCpuThreadReader create() {
-        return new SystemServerCpuThreadReader(KernelSingleProcessCpuThreadReader.create(Process.myPid()));
-    }
-
-    public SystemServerCpuThreadReader(int i, KernelSingleProcessCpuThreadReader.CpuTimeInStateReader cpuTimeInStateReader) {
+    public SystemServerCpuThreadReader(int i, KernelSingleProcessCpuThreadReader.CpuTimeInStateReader cpuTimeInStateReader) throws IOException {
         this(new KernelSingleProcessCpuThreadReader(i, cpuTimeInStateReader));
     }
 
@@ -29,20 +26,13 @@ public class SystemServerCpuThreadReader {
         this.mKernelCpuThreadReader = kernelSingleProcessCpuThreadReader;
     }
 
-    public void startTrackingThreadCpuTime() {
-        this.mKernelCpuThreadReader.startTrackingThreadCpuTimes();
-    }
-
-    public void setBinderThreadNativeTids(int[] iArr) {
-        this.mKernelCpuThreadReader.setSelectedThreadIds(iArr);
-    }
-
-    public SystemServiceCpuThreadTimes readDelta() {
+    public final SystemServiceCpuThreadTimes readDelta() {
         int cpuFrequencyCount = this.mKernelCpuThreadReader.getCpuFrequencyCount();
-        if (this.mLastThreadCpuTimesUs == null) {
+        long[] jArr = this.mLastThreadCpuTimesUs;
+        SystemServiceCpuThreadTimes systemServiceCpuThreadTimes = this.mDeltaCpuThreadTimes;
+        if (jArr == null) {
             this.mLastThreadCpuTimesUs = new long[cpuFrequencyCount];
             this.mLastBinderThreadCpuTimesUs = new long[cpuFrequencyCount];
-            SystemServiceCpuThreadTimes systemServiceCpuThreadTimes = this.mDeltaCpuThreadTimes;
             systemServiceCpuThreadTimes.threadCpuTimesUs = new long[cpuFrequencyCount];
             systemServiceCpuThreadTimes.binderThreadCpuTimesUs = new long[cpuFrequencyCount];
         }
@@ -53,26 +43,10 @@ public class SystemServerCpuThreadReader {
         for (int i = cpuFrequencyCount - 1; i >= 0; i--) {
             long j = processCpuUsage.threadCpuTimesMillis[i] * 1000;
             long j2 = processCpuUsage.selectedThreadCpuTimesMillis[i] * 1000;
-            this.mDeltaCpuThreadTimes.threadCpuTimesUs[i] = Math.max(0L, j - this.mLastThreadCpuTimesUs[i]);
-            this.mDeltaCpuThreadTimes.binderThreadCpuTimesUs[i] = Math.max(0L, j2 - this.mLastBinderThreadCpuTimesUs[i]);
+            systemServiceCpuThreadTimes.threadCpuTimesUs[i] = Math.max(0L, j - this.mLastThreadCpuTimesUs[i]);
+            systemServiceCpuThreadTimes.binderThreadCpuTimesUs[i] = Math.max(0L, j2 - this.mLastBinderThreadCpuTimesUs[i]);
             this.mLastThreadCpuTimesUs[i] = j;
             this.mLastBinderThreadCpuTimesUs[i] = j2;
-        }
-        return this.mDeltaCpuThreadTimes;
-    }
-
-    public SystemServiceCpuThreadTimes readAbsolute() {
-        int cpuFrequencyCount = this.mKernelCpuThreadReader.getCpuFrequencyCount();
-        KernelSingleProcessCpuThreadReader.ProcessCpuUsage processCpuUsage = this.mKernelCpuThreadReader.getProcessCpuUsage();
-        if (processCpuUsage == null) {
-            return null;
-        }
-        SystemServiceCpuThreadTimes systemServiceCpuThreadTimes = new SystemServiceCpuThreadTimes();
-        systemServiceCpuThreadTimes.threadCpuTimesUs = new long[cpuFrequencyCount];
-        systemServiceCpuThreadTimes.binderThreadCpuTimesUs = new long[cpuFrequencyCount];
-        for (int i = 0; i < cpuFrequencyCount; i++) {
-            systemServiceCpuThreadTimes.threadCpuTimesUs[i] = processCpuUsage.threadCpuTimesMillis[i] * 1000;
-            systemServiceCpuThreadTimes.binderThreadCpuTimesUs[i] = processCpuUsage.selectedThreadCpuTimesMillis[i] * 1000;
         }
         return systemServiceCpuThreadTimes;
     }

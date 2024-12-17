@@ -6,6 +6,7 @@ import android.os.IVoldTaskListener;
 import android.os.incremental.IncrementalFileSystemControlParcel;
 import java.io.FileDescriptor;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IVold extends IInterface {
     public static final int DDP_NG_ENOSPC = 2;
@@ -42,26 +43,26 @@ public interface IVold extends IInterface {
     public static final int VOLUME_TYPE_PUBLIC = 0;
     public static final int VOLUME_TYPE_STUB = 5;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class Default implements IVold {
         @Override // android.os.IVold
-        public void abortChanges(String str, boolean z) {
+        public void abortChanges(String str, boolean z) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void abortFuse() {
+        public void abortFuse() throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void abortIdleMaint(IVoldTaskListener iVoldTaskListener) {
+        public void abortIdleMaint(IVoldTaskListener iVoldTaskListener) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void addAppIds(String[] strArr, int[] iArr) {
+        public void addAppIds(String[] strArr, int[] iArr) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void addSandboxIds(int[] iArr, String[] strArr) {
+        public void addSandboxIds(int[] iArr, String[] strArr) throws RemoteException {
         }
 
         @Override // android.os.IInterface
@@ -70,742 +71,2469 @@ public interface IVold extends IInterface {
         }
 
         @Override // android.os.IVold
-        public void asecCreate(String str, int i, String str2, String str3, int i2, boolean z) {
+        public void asecCreate(String str, int i, String str2, String str3, int i2, boolean z) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void asecDestroy(String str, boolean z) {
+        public void asecDestroy(String str, boolean z) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void asecFinalize(String str) {
+        public void asecFinalize(String str) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void asecFixperms(String str, int i, String str2) {
+        public void asecFixperms(String str, int i, String str2) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public String asecFsPath(String str) {
+        public String asecFsPath(String str) throws RemoteException {
             return null;
         }
 
         @Override // android.os.IVold
-        public int asecGetUsedSpace(String str) {
+        public int asecGetUsedSpace(String str) throws RemoteException {
             return 0;
         }
 
         @Override // android.os.IVold
-        public String[] asecList() {
+        public String[] asecList() throws RemoteException {
             return null;
         }
 
         @Override // android.os.IVold
-        public void asecMount(String str, String str2, int i, boolean z) {
+        public void asecMount(String str, String str2, int i, boolean z) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public String asecPath(String str) {
+        public String asecPath(String str) throws RemoteException {
             return null;
         }
 
         @Override // android.os.IVold
-        public void asecRename(String str, String str2) {
+        public void asecRename(String str, String str2) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void asecResize(String str, int i, String str2) {
+        public void asecResize(String str, int i, String str2) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void asecTrim(String str, int i, String str2) {
+        public void asecTrim(String str, int i, String str2) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void asecUnmount(String str, boolean z) {
+        public void asecUnmount(String str, boolean z) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void benchmark(String str, IVoldTaskListener iVoldTaskListener) {
+        public void benchmark(String str, IVoldTaskListener iVoldTaskListener) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void bindMount(String str, String str2) {
+        public void bindMount(String str, String str2) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void commitChanges() {
+        public void commitChanges() throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void cpFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) {
+        public void cpFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public String createObb(String str, int i) {
+        public String createObb(String str, int i) throws RemoteException {
             return null;
         }
 
         @Override // android.os.IVold
-        public String createStubVolume(String str, String str2, String str3, String str4, String str5, int i) {
-            return null;
-        }
-
-        @Override // android.os.IVold
-        public void createUserKey(int i, int i2, boolean z) {
-        }
-
-        @Override // android.os.IVold
-        public void destroyDsuMetadataKey(String str) {
-        }
-
-        @Override // android.os.IVold
-        public void destroyObb(String str) {
-        }
-
-        @Override // android.os.IVold
-        public void destroySandboxForApp(String str, String str2, int i) {
-        }
-
-        @Override // android.os.IVold
-        public void destroyStubVolume(String str) {
-        }
-
-        @Override // android.os.IVold
-        public void destroyUserKey(int i) {
-        }
-
-        @Override // android.os.IVold
-        public void destroyUserStorage(String str, int i, int i2) {
-        }
-
-        @Override // android.os.IVold
-        public void earlyBootEnded() {
-        }
-
-        @Override // android.os.IVold
-        public void encryptFstab(String str, String str2, boolean z, String str3, String str4) {
-        }
-
-        @Override // android.os.IVold
-        public void ensureAppDirsCreated(String[] strArr, int i) {
-        }
-
-        @Override // android.os.IVold
-        public void fbeEnable() {
-        }
-
-        @Override // android.os.IVold
-        public void fixupAppDir(String str, int i) {
-        }
-
-        @Override // android.os.IVold
-        public void forgetPartition(String str, String str2) {
-        }
-
-        @Override // android.os.IVold
-        public void format(String str, String str2) {
-        }
-
-        @Override // android.os.IVold
-        public void fstrim(int i, IVoldTaskListener iVoldTaskListener) {
-        }
-
-        @Override // android.os.IVold
-        public int getStorageLifeTime() {
+        public int createPassStorage(String str, int i, int i2) throws RemoteException {
             return 0;
         }
 
         @Override // android.os.IVold
-        public int[] getUnlockedUsers() {
+        public String createStubVolume(String str, String str2, String str3, String str4, String str5, int i) throws RemoteException {
             return null;
         }
 
         @Override // android.os.IVold
-        public long getUsedF2fsFileNode() {
+        public void createUserStorageKeys(int i, boolean z) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void destroyDsuMetadataKey(String str) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void destroyObb(String str) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public int destroyPassStorage(String str, int i, int i2) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.os.IVold
+        public void destroySandboxForApp(String str, String str2, int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void destroyStubVolume(String str) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void destroyUserStorage(String str, int i, int i2) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void destroyUserStorageKeys(int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void earlyBootEnded() throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void encryptFstab(String str, String str2, boolean z, String str3, boolean z2, String[] strArr) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void ensureAppDirsCreated(String[] strArr, int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void fbeEnable() throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void fixupAppDir(String str, int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void forgetPartition(String str, String str2) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void format(String str, String str2) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void fstrim(int i, IVoldTaskListener iVoldTaskListener) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public String getPassStorage(String str, int i, int i2) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.os.IVold
+        public int getStorageLifeTime() throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.os.IVold
+        public int getStorageRemainingLifetime() throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.os.IVold
+        public long getStorageSize() throws RemoteException {
             return 0L;
         }
 
         @Override // android.os.IVold
-        public int getWriteAmount() {
+        public int[] getUnlockedUsers() throws RemoteException {
+            return null;
+        }
+
+        @Override // android.os.IVold
+        public long getUsedF2fsFileNode() throws RemoteException {
+            return 0L;
+        }
+
+        @Override // android.os.IVold
+        public int getWriteAmount() throws RemoteException {
             return 0;
         }
 
         @Override // android.os.IVold
-        public boolean incFsEnabled() {
+        public boolean incFsEnabled() throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public void initUser0() {
+        public void initUser0() throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public boolean isCheckpointing() {
+        public boolean isCheckpointing() throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public boolean isSensitive(String str) {
+        public boolean isPassUnlocked(String str, int i, int i2) throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public void lockUserKey(int i) {
-        }
-
-        @Override // android.os.IVold
-        public void markBootAttempt() {
-        }
-
-        @Override // android.os.IVold
-        public void monitor() {
-        }
-
-        @Override // android.os.IVold
-        public void mount(String str, int i, int i2, IVoldMountCallback iVoldMountCallback) {
-        }
-
-        @Override // android.os.IVold
-        public FileDescriptor mountAppFuse(int i, int i2) {
-            return null;
-        }
-
-        @Override // android.os.IVold
-        public void mountFstab(String str, String str2, String str3) {
-        }
-
-        @Override // android.os.IVold
-        public IncrementalFileSystemControlParcel mountIncFs(String str, String str2, int i, String str3) {
-            return null;
-        }
-
-        @Override // android.os.IVold
-        public boolean mountSdpMediaStorageCmd(int i) {
+        public boolean isSensitive(String str) throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public void moveStorage(String str, String str2, IVoldTaskListener iVoldTaskListener) {
+        public void lockCeStorage(int i) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void mvFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) {
-        }
-
-        @Override // android.os.IVold
-        public boolean needsCheckpoint() {
-            return false;
-        }
-
-        @Override // android.os.IVold
-        public boolean needsRollback() {
-            return false;
-        }
-
-        @Override // android.os.IVold
-        public void onSecureKeyguardStateChanged(boolean z) {
-        }
-
-        @Override // android.os.IVold
-        public void onUserAdded(int i, int i2, int i3) {
-        }
-
-        @Override // android.os.IVold
-        public void onUserRemoved(int i) {
-        }
-
-        @Override // android.os.IVold
-        public void onUserStarted(int i) {
-        }
-
-        @Override // android.os.IVold
-        public void onUserStopped(int i) {
-        }
-
-        @Override // android.os.IVold
-        public FileDescriptor openAppFuseFile(int i, int i2, int i3, int i4) {
-            return null;
-        }
-
-        @Override // android.os.IVold
-        public void partition(String str, int i, int i2) {
-        }
-
-        @Override // android.os.IVold
-        public void prepareCheckpoint() {
-        }
-
-        @Override // android.os.IVold
-        public void prepareSandboxForApp(String str, int i, String str2, int i2) {
-        }
-
-        @Override // android.os.IVold
-        public void prepareUserStorage(String str, int i, int i2, int i3) {
-        }
-
-        @Override // android.os.IVold
-        public void refreshLatestWrite() {
-        }
-
-        @Override // android.os.IVold
-        public void remountAppStorageDirs(int i, int i2, String[] strArr) {
-        }
-
-        @Override // android.os.IVold
-        public void remountUid(int i, int i2) {
-        }
-
-        @Override // android.os.IVold
-        public int reserveDataBlocks(long j) {
+        public int lockPassStorage(String str, int i, int i2) throws RemoteException {
             return 0;
         }
 
         @Override // android.os.IVold
-        public void reset() {
+        public void markBootAttempt() throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void resetCheckpoint() {
+        public void monitor() throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void restoreCheckpoint(String str) {
+        public void mount(String str, int i, int i2, IVoldMountCallback iVoldMountCallback) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void restoreCheckpointPart(String str, int i) {
+        public FileDescriptor mountAppFuse(int i, int i2) throws RemoteException {
+            return null;
         }
 
         @Override // android.os.IVold
-        public void runIdleMaint(boolean z, IVoldTaskListener iVoldTaskListener) {
+        public void mountFstab(String str, String str2, boolean z, String[] strArr) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void sdeEnable(String str, int i, int i2, boolean z, IVoldTaskListener iVoldTaskListener, IVoldMountCallback iVoldMountCallback) {
+        public IncrementalFileSystemControlParcel mountIncFs(String str, String str2, int i, String str3) throws RemoteException {
+            return null;
         }
 
         @Override // android.os.IVold
-        public void sdeMoveMountHidden(String str, int i, int i2, IVoldMountCallback iVoldMountCallback) {
-        }
-
-        @Override // android.os.IVold
-        public void setDebugForExternal(String str) {
-        }
-
-        @Override // android.os.IVold
-        public boolean setDualDARPolicyCmd(int i, int i2) {
+        public boolean mountSdpMediaStorageCmd(int i) throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public void setGCUrgentPace(int i, int i2, float f, float f2, int i3, int i4, int i5) {
+        public void moveStorage(String str, String str2, IVoldTaskListener iVoldTaskListener) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void setIncFsMountOptions(IncrementalFileSystemControlParcel incrementalFileSystemControlParcel, boolean z, boolean z2, String str) {
+        public void mvFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void setListener(IVoldListener iVoldListener) {
-        }
-
-        @Override // android.os.IVold
-        public void setMpUidForFileSystem(int i) {
-        }
-
-        @Override // android.os.IVold
-        public boolean setSdpPolicyCmd(int i) {
+        public boolean needsCheckpoint() throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public boolean setSdpPolicyToPathCmd(int i, String str) {
+        public boolean needsRollback() throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public boolean setSensitive(int i, String str) {
+        public void onSecureKeyguardStateChanged(boolean z) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void onUserAdded(int i, int i2, int i3) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void onUserRemoved(int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void onUserStarted(int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void onUserStopped(int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public FileDescriptor openAppFuseFile(int i, int i2, int i3, int i4) throws RemoteException {
+            return null;
+        }
+
+        @Override // android.os.IVold
+        public void partition(String str, int i, int i2) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void prepareCheckpoint() throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void prepareSandboxForApp(String str, int i, String str2, int i2) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void prepareUserStorage(String str, int i, int i2) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void refreshLatestWrite() throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void remountAppStorageDirs(int i, int i2, String[] strArr) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void remountUid(int i, int i2) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public int reserveDataBlocks(long j) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.os.IVold
+        public void reset() throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void resetCheckpoint() throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void restoreCheckpoint(String str) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void restoreCheckpointPart(String str, int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void runIdleDefrag(IVoldTaskListener iVoldTaskListener) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void runIdleMaint(boolean z, IVoldTaskListener iVoldTaskListener) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void sdeEnable(String str, int i, int i2, boolean z, IVoldTaskListener iVoldTaskListener, IVoldMountCallback iVoldMountCallback) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void setCeStorageProtection(int i, byte[] bArr) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public boolean setDualDARPolicyCmd(int i, int i2) throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public void setStorageBindingSeed(byte[] bArr) {
+        public void setGCUrgentPace(int i, int i2, float f, float f2, int i3, int i4, int i5) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void setUserKeyProtection(int i, String str) {
+        public void setIncFsMountOptions(IncrementalFileSystemControlParcel incrementalFileSystemControlParcel, boolean z, boolean z2, String str) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void setupAppDir(String str, int i) {
+        public void setListener(IVoldListener iVoldListener) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public boolean shrinkDataDdp(long j) {
+        public void setMpUidForFileSystem(int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public boolean setSdpPolicyCmd(int i) throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public void shutdown() {
-        }
-
-        @Override // android.os.IVold
-        public void startCheckpoint(int i) {
-        }
-
-        @Override // android.os.IVold
-        public boolean supportsBlockCheckpoint() {
+        public boolean setSdpPolicyToPathCmd(int i, String str) throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public boolean supportsCheckpoint() {
+        public boolean setSensitive(int i, String str) throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public boolean supportsFileCheckpoint() {
+        public void setStorageBindingSeed(byte[] bArr) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void setupAppDir(String str, int i) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public boolean shrinkDataDdp(long j) throws RemoteException {
             return false;
         }
 
         @Override // android.os.IVold
-        public void unlockUserKey(int i, int i2, String str, String str2) {
+        public void shutdown() throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void unmount(String str) {
+        public void startCheckpoint(int i) throws RemoteException {
         }
 
         @Override // android.os.IVold
-        public void unmountAppFuse(int i, int i2) {
+        public boolean supportsBlockCheckpoint() throws RemoteException {
+            return false;
         }
 
         @Override // android.os.IVold
-        public void unmountAppStorageDirs(int i, int i2, String[] strArr) {
+        public boolean supportsCheckpoint() throws RemoteException {
+            return false;
         }
 
         @Override // android.os.IVold
-        public void unmountIncFs(String str) {
+        public boolean supportsFileCheckpoint() throws RemoteException {
+            return false;
+        }
+
+        @Override // android.os.IVold
+        public void unlockCeStorage(int i, byte[] bArr) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public int unlockPassStorage(String str, int i, int i2) throws RemoteException {
+            return 0;
+        }
+
+        @Override // android.os.IVold
+        public void unmount(String str) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void unmountAppFuse(int i, int i2) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void unmountAppStorageDirs(int i, int i2, String[] strArr) throws RemoteException {
+        }
+
+        @Override // android.os.IVold
+        public void unmountIncFs(String str) throws RemoteException {
         }
     }
 
-    void abortChanges(String str, boolean z);
-
-    void abortFuse();
-
-    void abortIdleMaint(IVoldTaskListener iVoldTaskListener);
-
-    void addAppIds(String[] strArr, int[] iArr);
-
-    void addSandboxIds(int[] iArr, String[] strArr);
-
-    void asecCreate(String str, int i, String str2, String str3, int i2, boolean z);
-
-    void asecDestroy(String str, boolean z);
-
-    void asecFinalize(String str);
-
-    void asecFixperms(String str, int i, String str2);
-
-    String asecFsPath(String str);
-
-    int asecGetUsedSpace(String str);
-
-    String[] asecList();
-
-    void asecMount(String str, String str2, int i, boolean z);
-
-    String asecPath(String str);
-
-    void asecRename(String str, String str2);
-
-    void asecResize(String str, int i, String str2);
-
-    void asecTrim(String str, int i, String str2);
-
-    void asecUnmount(String str, boolean z);
-
-    void benchmark(String str, IVoldTaskListener iVoldTaskListener);
-
-    void bindMount(String str, String str2);
-
-    void commitChanges();
-
-    void cpFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener);
-
-    String createObb(String str, int i);
-
-    String createStubVolume(String str, String str2, String str3, String str4, String str5, int i);
-
-    void createUserKey(int i, int i2, boolean z);
-
-    void destroyDsuMetadataKey(String str);
-
-    void destroyObb(String str);
-
-    void destroySandboxForApp(String str, String str2, int i);
-
-    void destroyStubVolume(String str);
-
-    void destroyUserKey(int i);
-
-    void destroyUserStorage(String str, int i, int i2);
-
-    void earlyBootEnded();
-
-    void encryptFstab(String str, String str2, boolean z, String str3, String str4);
-
-    void ensureAppDirsCreated(String[] strArr, int i);
-
-    void fbeEnable();
-
-    void fixupAppDir(String str, int i);
-
-    void forgetPartition(String str, String str2);
-
-    void format(String str, String str2);
-
-    void fstrim(int i, IVoldTaskListener iVoldTaskListener);
-
-    int getStorageLifeTime();
-
-    int[] getUnlockedUsers();
-
-    long getUsedF2fsFileNode();
-
-    int getWriteAmount();
-
-    boolean incFsEnabled();
-
-    void initUser0();
-
-    boolean isCheckpointing();
-
-    boolean isSensitive(String str);
-
-    void lockUserKey(int i);
-
-    void markBootAttempt();
-
-    void monitor();
-
-    void mount(String str, int i, int i2, IVoldMountCallback iVoldMountCallback);
-
-    FileDescriptor mountAppFuse(int i, int i2);
-
-    void mountFstab(String str, String str2, String str3);
-
-    IncrementalFileSystemControlParcel mountIncFs(String str, String str2, int i, String str3);
-
-    boolean mountSdpMediaStorageCmd(int i);
-
-    void moveStorage(String str, String str2, IVoldTaskListener iVoldTaskListener);
-
-    void mvFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener);
-
-    boolean needsCheckpoint();
-
-    boolean needsRollback();
-
-    void onSecureKeyguardStateChanged(boolean z);
-
-    void onUserAdded(int i, int i2, int i3);
-
-    void onUserRemoved(int i);
-
-    void onUserStarted(int i);
-
-    void onUserStopped(int i);
-
-    FileDescriptor openAppFuseFile(int i, int i2, int i3, int i4);
-
-    void partition(String str, int i, int i2);
-
-    void prepareCheckpoint();
-
-    void prepareSandboxForApp(String str, int i, String str2, int i2);
-
-    void prepareUserStorage(String str, int i, int i2, int i3);
-
-    void refreshLatestWrite();
-
-    void remountAppStorageDirs(int i, int i2, String[] strArr);
-
-    void remountUid(int i, int i2);
-
-    int reserveDataBlocks(long j);
-
-    void reset();
-
-    void resetCheckpoint();
-
-    void restoreCheckpoint(String str);
-
-    void restoreCheckpointPart(String str, int i);
-
-    void runIdleMaint(boolean z, IVoldTaskListener iVoldTaskListener);
-
-    void sdeEnable(String str, int i, int i2, boolean z, IVoldTaskListener iVoldTaskListener, IVoldMountCallback iVoldMountCallback);
-
-    void sdeMoveMountHidden(String str, int i, int i2, IVoldMountCallback iVoldMountCallback);
-
-    void setDebugForExternal(String str);
-
-    boolean setDualDARPolicyCmd(int i, int i2);
-
-    void setGCUrgentPace(int i, int i2, float f, float f2, int i3, int i4, int i5);
-
-    void setIncFsMountOptions(IncrementalFileSystemControlParcel incrementalFileSystemControlParcel, boolean z, boolean z2, String str);
-
-    void setListener(IVoldListener iVoldListener);
-
-    void setMpUidForFileSystem(int i);
-
-    boolean setSdpPolicyCmd(int i);
-
-    boolean setSdpPolicyToPathCmd(int i, String str);
-
-    boolean setSensitive(int i, String str);
-
-    void setStorageBindingSeed(byte[] bArr);
-
-    void setUserKeyProtection(int i, String str);
-
-    void setupAppDir(String str, int i);
-
-    boolean shrinkDataDdp(long j);
-
-    void shutdown();
-
-    void startCheckpoint(int i);
-
-    boolean supportsBlockCheckpoint();
-
-    boolean supportsCheckpoint();
-
-    boolean supportsFileCheckpoint();
-
-    void unlockUserKey(int i, int i2, String str, String str2);
-
-    void unmount(String str);
-
-    void unmountAppFuse(int i, int i2);
-
-    void unmountAppStorageDirs(int i, int i2, String[] strArr);
-
-    void unmountIncFs(String str);
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements IVold {
         public static final String DESCRIPTOR = "android.os.IVold";
-        public static final int TRANSACTION_abortChanges = 59;
-        public static final int TRANSACTION_abortFuse = 2;
-        public static final int TRANSACTION_abortIdleMaint = 30;
-        public static final int TRANSACTION_addAppIds = 10;
-        public static final int TRANSACTION_addSandboxIds = 11;
-        public static final int TRANSACTION_asecCreate = 83;
-        public static final int TRANSACTION_asecDestroy = 87;
-        public static final int TRANSACTION_asecFinalize = 85;
-        public static final int TRANSACTION_asecFixperms = 86;
-        public static final int TRANSACTION_asecFsPath = 92;
-        public static final int TRANSACTION_asecGetUsedSpace = 95;
-        public static final int TRANSACTION_asecList = 93;
-        public static final int TRANSACTION_asecMount = 88;
-        public static final int TRANSACTION_asecPath = 91;
-        public static final int TRANSACTION_asecRename = 90;
-        public static final int TRANSACTION_asecResize = 84;
-        public static final int TRANSACTION_asecTrim = 94;
-        public static final int TRANSACTION_asecUnmount = 89;
-        public static final int TRANSACTION_benchmark = 18;
-        public static final int TRANSACTION_bindMount = 77;
-        public static final int TRANSACTION_commitChanges = 60;
-        public static final int TRANSACTION_cpFileAtData = 81;
-        public static final int TRANSACTION_createObb = 26;
-        public static final int TRANSACTION_createStubVolume = 70;
-        public static final int TRANSACTION_createUserKey = 44;
-        public static final int TRANSACTION_destroyDsuMetadataKey = 78;
-        public static final int TRANSACTION_destroyObb = 27;
-        public static final int TRANSACTION_destroySandboxForApp = 54;
-        public static final int TRANSACTION_destroyStubVolume = 71;
-        public static final int TRANSACTION_destroyUserKey = 45;
-        public static final int TRANSACTION_destroyUserStorage = 52;
-        public static final int TRANSACTION_earlyBootEnded = 69;
-        public static final int TRANSACTION_encryptFstab = 42;
-        public static final int TRANSACTION_ensureAppDirsCreated = 25;
-        public static final int TRANSACTION_fbeEnable = 39;
-        public static final int TRANSACTION_fixupAppDir = 24;
-        public static final int TRANSACTION_forgetPartition = 14;
-        public static final int TRANSACTION_format = 17;
-        public static final int TRANSACTION_fstrim = 28;
-        public static final int TRANSACTION_getStorageLifeTime = 31;
-        public static final int TRANSACTION_getUnlockedUsers = 47;
-        public static final int TRANSACTION_getUsedF2fsFileNode = 79;
-        public static final int TRANSACTION_getWriteAmount = 34;
-        public static final int TRANSACTION_incFsEnabled = 73;
-        public static final int TRANSACTION_initUser0 = 40;
-        public static final int TRANSACTION_isCheckpointing = 58;
-        public static final int TRANSACTION_isSensitive = 97;
-        public static final int TRANSACTION_lockUserKey = 49;
-        public static final int TRANSACTION_markBootAttempt = 64;
-        public static final int TRANSACTION_monitor = 3;
-        public static final int TRANSACTION_mount = 15;
-        public static final int TRANSACTION_mountAppFuse = 35;
-        public static final int TRANSACTION_mountFstab = 41;
-        public static final int TRANSACTION_mountIncFs = 74;
-        public static final int TRANSACTION_mountSdpMediaStorageCmd = 98;
-        public static final int TRANSACTION_moveStorage = 19;
-        public static final int TRANSACTION_mvFileAtData = 80;
-        public static final int TRANSACTION_needsCheckpoint = 56;
-        public static final int TRANSACTION_needsRollback = 57;
-        public static final int TRANSACTION_onSecureKeyguardStateChanged = 12;
-        public static final int TRANSACTION_onUserAdded = 6;
-        public static final int TRANSACTION_onUserRemoved = 7;
-        public static final int TRANSACTION_onUserStarted = 8;
-        public static final int TRANSACTION_onUserStopped = 9;
-        public static final int TRANSACTION_openAppFuseFile = 72;
-        public static final int TRANSACTION_partition = 13;
-        public static final int TRANSACTION_prepareCheckpoint = 61;
-        public static final int TRANSACTION_prepareSandboxForApp = 53;
-        public static final int TRANSACTION_prepareUserStorage = 51;
-        public static final int TRANSACTION_refreshLatestWrite = 33;
-        public static final int TRANSACTION_remountAppStorageDirs = 21;
-        public static final int TRANSACTION_remountUid = 20;
-        public static final int TRANSACTION_reserveDataBlocks = 103;
-        public static final int TRANSACTION_reset = 4;
-        public static final int TRANSACTION_resetCheckpoint = 68;
-        public static final int TRANSACTION_restoreCheckpoint = 62;
-        public static final int TRANSACTION_restoreCheckpointPart = 63;
-        public static final int TRANSACTION_runIdleMaint = 29;
-        public static final int TRANSACTION_sdeEnable = 37;
-        public static final int TRANSACTION_sdeMoveMountHidden = 38;
-        public static final int TRANSACTION_setDebugForExternal = 50;
-        public static final int TRANSACTION_setDualDARPolicyCmd = 101;
-        public static final int TRANSACTION_setGCUrgentPace = 32;
-        public static final int TRANSACTION_setIncFsMountOptions = 76;
-        public static final int TRANSACTION_setListener = 1;
-        public static final int TRANSACTION_setMpUidForFileSystem = 82;
-        public static final int TRANSACTION_setSdpPolicyCmd = 99;
-        public static final int TRANSACTION_setSdpPolicyToPathCmd = 100;
-        public static final int TRANSACTION_setSensitive = 96;
-        public static final int TRANSACTION_setStorageBindingSeed = 43;
-        public static final int TRANSACTION_setUserKeyProtection = 46;
-        public static final int TRANSACTION_setupAppDir = 23;
-        public static final int TRANSACTION_shrinkDataDdp = 102;
-        public static final int TRANSACTION_shutdown = 5;
-        public static final int TRANSACTION_startCheckpoint = 55;
-        public static final int TRANSACTION_supportsBlockCheckpoint = 66;
-        public static final int TRANSACTION_supportsCheckpoint = 65;
-        public static final int TRANSACTION_supportsFileCheckpoint = 67;
-        public static final int TRANSACTION_unlockUserKey = 48;
-        public static final int TRANSACTION_unmount = 16;
-        public static final int TRANSACTION_unmountAppFuse = 36;
-        public static final int TRANSACTION_unmountAppStorageDirs = 22;
-        public static final int TRANSACTION_unmountIncFs = 75;
+        static final int TRANSACTION_abortChanges = 63;
+        static final int TRANSACTION_abortFuse = 2;
+        static final int TRANSACTION_abortIdleMaint = 30;
+        static final int TRANSACTION_addAppIds = 10;
+        static final int TRANSACTION_addSandboxIds = 11;
+        static final int TRANSACTION_asecCreate = 90;
+        static final int TRANSACTION_asecDestroy = 94;
+        static final int TRANSACTION_asecFinalize = 92;
+        static final int TRANSACTION_asecFixperms = 93;
+        static final int TRANSACTION_asecFsPath = 99;
+        static final int TRANSACTION_asecGetUsedSpace = 102;
+        static final int TRANSACTION_asecList = 100;
+        static final int TRANSACTION_asecMount = 95;
+        static final int TRANSACTION_asecPath = 98;
+        static final int TRANSACTION_asecRename = 97;
+        static final int TRANSACTION_asecResize = 91;
+        static final int TRANSACTION_asecTrim = 101;
+        static final int TRANSACTION_asecUnmount = 96;
+        static final int TRANSACTION_benchmark = 18;
+        static final int TRANSACTION_bindMount = 81;
+        static final int TRANSACTION_commitChanges = 64;
+        static final int TRANSACTION_cpFileAtData = 88;
+        static final int TRANSACTION_createObb = 26;
+        static final int TRANSACTION_createPassStorage = 46;
+        static final int TRANSACTION_createStubVolume = 74;
+        static final int TRANSACTION_createUserStorageKeys = 43;
+        static final int TRANSACTION_destroyDsuMetadataKey = 82;
+        static final int TRANSACTION_destroyObb = 27;
+        static final int TRANSACTION_destroyPassStorage = 47;
+        static final int TRANSACTION_destroySandboxForApp = 58;
+        static final int TRANSACTION_destroyStubVolume = 75;
+        static final int TRANSACTION_destroyUserStorage = 56;
+        static final int TRANSACTION_destroyUserStorageKeys = 44;
+        static final int TRANSACTION_earlyBootEnded = 73;
+        static final int TRANSACTION_encryptFstab = 41;
+        static final int TRANSACTION_ensureAppDirsCreated = 25;
+        static final int TRANSACTION_fbeEnable = 38;
+        static final int TRANSACTION_fixupAppDir = 24;
+        static final int TRANSACTION_forgetPartition = 14;
+        static final int TRANSACTION_format = 17;
+        static final int TRANSACTION_fstrim = 28;
+        static final int TRANSACTION_getPassStorage = 50;
+        static final int TRANSACTION_getStorageLifeTime = 31;
+        static final int TRANSACTION_getStorageRemainingLifetime = 84;
+        static final int TRANSACTION_getStorageSize = 83;
+        static final int TRANSACTION_getUnlockedUsers = 52;
+        static final int TRANSACTION_getUsedF2fsFileNode = 86;
+        static final int TRANSACTION_getWriteAmount = 34;
+        static final int TRANSACTION_incFsEnabled = 77;
+        static final int TRANSACTION_initUser0 = 39;
+        static final int TRANSACTION_isCheckpointing = 62;
+        static final int TRANSACTION_isPassUnlocked = 51;
+        static final int TRANSACTION_isSensitive = 104;
+        static final int TRANSACTION_lockCeStorage = 54;
+        static final int TRANSACTION_lockPassStorage = 48;
+        static final int TRANSACTION_markBootAttempt = 68;
+        static final int TRANSACTION_monitor = 3;
+        static final int TRANSACTION_mount = 15;
+        static final int TRANSACTION_mountAppFuse = 35;
+        static final int TRANSACTION_mountFstab = 40;
+        static final int TRANSACTION_mountIncFs = 78;
+        static final int TRANSACTION_mountSdpMediaStorageCmd = 105;
+        static final int TRANSACTION_moveStorage = 19;
+        static final int TRANSACTION_mvFileAtData = 87;
+        static final int TRANSACTION_needsCheckpoint = 60;
+        static final int TRANSACTION_needsRollback = 61;
+        static final int TRANSACTION_onSecureKeyguardStateChanged = 12;
+        static final int TRANSACTION_onUserAdded = 6;
+        static final int TRANSACTION_onUserRemoved = 7;
+        static final int TRANSACTION_onUserStarted = 8;
+        static final int TRANSACTION_onUserStopped = 9;
+        static final int TRANSACTION_openAppFuseFile = 76;
+        static final int TRANSACTION_partition = 13;
+        static final int TRANSACTION_prepareCheckpoint = 65;
+        static final int TRANSACTION_prepareSandboxForApp = 57;
+        static final int TRANSACTION_prepareUserStorage = 55;
+        static final int TRANSACTION_refreshLatestWrite = 33;
+        static final int TRANSACTION_remountAppStorageDirs = 21;
+        static final int TRANSACTION_remountUid = 20;
+        static final int TRANSACTION_reserveDataBlocks = 110;
+        static final int TRANSACTION_reset = 4;
+        static final int TRANSACTION_resetCheckpoint = 72;
+        static final int TRANSACTION_restoreCheckpoint = 66;
+        static final int TRANSACTION_restoreCheckpointPart = 67;
+        static final int TRANSACTION_runIdleDefrag = 85;
+        static final int TRANSACTION_runIdleMaint = 29;
+        static final int TRANSACTION_sdeEnable = 37;
+        static final int TRANSACTION_setCeStorageProtection = 45;
+        static final int TRANSACTION_setDualDARPolicyCmd = 108;
+        static final int TRANSACTION_setGCUrgentPace = 32;
+        static final int TRANSACTION_setIncFsMountOptions = 80;
+        static final int TRANSACTION_setListener = 1;
+        static final int TRANSACTION_setMpUidForFileSystem = 89;
+        static final int TRANSACTION_setSdpPolicyCmd = 106;
+        static final int TRANSACTION_setSdpPolicyToPathCmd = 107;
+        static final int TRANSACTION_setSensitive = 103;
+        static final int TRANSACTION_setStorageBindingSeed = 42;
+        static final int TRANSACTION_setupAppDir = 23;
+        static final int TRANSACTION_shrinkDataDdp = 109;
+        static final int TRANSACTION_shutdown = 5;
+        static final int TRANSACTION_startCheckpoint = 59;
+        static final int TRANSACTION_supportsBlockCheckpoint = 70;
+        static final int TRANSACTION_supportsCheckpoint = 69;
+        static final int TRANSACTION_supportsFileCheckpoint = 71;
+        static final int TRANSACTION_unlockCeStorage = 53;
+        static final int TRANSACTION_unlockPassStorage = 49;
+        static final int TRANSACTION_unmount = 16;
+        static final int TRANSACTION_unmountAppFuse = 36;
+        static final int TRANSACTION_unmountAppStorageDirs = 22;
+        static final int TRANSACTION_unmountIncFs = 79;
 
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements IVold {
+            public IBinder mRemote;
+
+            @Override // android.os.IVold
+            public final void abortChanges(String str, boolean z) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeBoolean(z);
+                    this.mRemote.transact(63, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void abortFuse() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(2, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void abortIdleMaint(IVoldTaskListener iVoldTaskListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeStrongInterface(iVoldTaskListener);
+                    this.mRemote.transact(30, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void addAppIds(String[] strArr, int[] iArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeStringArray(strArr);
+                    obtain.writeIntArray(iArr);
+                    this.mRemote.transact(10, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void addSandboxIds(int[] iArr, String[] strArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeIntArray(iArr);
+                    obtain.writeStringArray(strArr);
+                    this.mRemote.transact(11, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IInterface
+            public final IBinder asBinder() {
+                return this.mRemote;
+            }
+
+            @Override // android.os.IVold
+            public final void asecCreate(String str, int i, String str2, String str3, int i2, boolean z) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeString(str2);
+                    obtain.writeString(str3);
+                    obtain.writeInt(i2);
+                    obtain.writeBoolean(z);
+                    this.mRemote.transact(90, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void asecDestroy(String str, boolean z) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeBoolean(z);
+                    this.mRemote.transact(94, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void asecFinalize(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(92, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void asecFixperms(String str, int i, String str2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeString(str2);
+                    this.mRemote.transact(93, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final String asecFsPath(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(99, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readString();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int asecGetUsedSpace(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(102, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final String[] asecList() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(100, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.createStringArray();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void asecMount(String str, String str2, int i, boolean z) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i);
+                    obtain.writeBoolean(z);
+                    this.mRemote.transact(95, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final String asecPath(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(98, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readString();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void asecRename(String str, String str2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    this.mRemote.transact(97, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void asecResize(String str, int i, String str2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeString(str2);
+                    this.mRemote.transact(91, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void asecTrim(String str, int i, String str2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeString(str2);
+                    this.mRemote.transact(101, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void asecUnmount(String str, boolean z) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeBoolean(z);
+                    this.mRemote.transact(96, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void benchmark(String str, IVoldTaskListener iVoldTaskListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeStrongInterface(iVoldTaskListener);
+                    this.mRemote.transact(18, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void bindMount(String str, String str2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    this.mRemote.transact(81, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void commitChanges() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(64, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void cpFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeStrongInterface(iVoldTaskListener);
+                    this.mRemote.transact(88, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final String createObb(String str, int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(26, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readString();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int createPassStorage(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(46, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final String createStubVolume(String str, String str2, String str3, String str4, String str5, int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeString(str3);
+                    obtain.writeString(str4);
+                    obtain.writeString(str5);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(74, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readString();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void createUserStorageKeys(int i, boolean z) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeBoolean(z);
+                    this.mRemote.transact(43, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void destroyDsuMetadataKey(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(82, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void destroyObb(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(27, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int destroyPassStorage(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(47, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void destroySandboxForApp(String str, String str2, int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(58, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void destroyStubVolume(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(75, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void destroyUserStorage(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(56, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void destroyUserStorageKeys(int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(44, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void earlyBootEnded() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(73, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void encryptFstab(String str, String str2, boolean z, String str3, boolean z2, String[] strArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeBoolean(z);
+                    obtain.writeString(str3);
+                    obtain.writeBoolean(z2);
+                    obtain.writeStringArray(strArr);
+                    this.mRemote.transact(41, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void ensureAppDirsCreated(String[] strArr, int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeStringArray(strArr);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(25, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void fbeEnable() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(38, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void fixupAppDir(String str, int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(24, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void forgetPartition(String str, String str2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    this.mRemote.transact(14, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void format(String str, String str2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    this.mRemote.transact(17, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void fstrim(int i, IVoldTaskListener iVoldTaskListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeStrongInterface(iVoldTaskListener);
+                    this.mRemote.transact(28, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final String getPassStorage(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(50, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readString();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int getStorageLifeTime() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(31, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int getStorageRemainingLifetime() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(84, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final long getStorageSize() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(83, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readLong();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int[] getUnlockedUsers() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(52, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.createIntArray();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final long getUsedF2fsFileNode() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(86, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readLong();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int getWriteAmount() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(34, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean incFsEnabled() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(77, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void initUser0() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(39, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean isCheckpointing() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(62, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean isPassUnlocked(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(51, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean isSensitive(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(104, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void lockCeStorage(int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(54, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int lockPassStorage(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(48, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void markBootAttempt() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(68, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void monitor() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(3, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void mount(String str, int i, int i2, IVoldMountCallback iVoldMountCallback) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeStrongInterface(iVoldMountCallback);
+                    this.mRemote.transact(15, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final FileDescriptor mountAppFuse(int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(35, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readRawFileDescriptor();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void mountFstab(String str, String str2, boolean z, String[] strArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeBoolean(z);
+                    obtain.writeStringArray(strArr);
+                    this.mRemote.transact(40, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final IncrementalFileSystemControlParcel mountIncFs(String str, String str2, int i, String str3) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i);
+                    obtain.writeString(str3);
+                    this.mRemote.transact(78, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return (IncrementalFileSystemControlParcel) obtain2.readTypedObject(IncrementalFileSystemControlParcel.CREATOR);
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean mountSdpMediaStorageCmd(int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(105, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void moveStorage(String str, String str2, IVoldTaskListener iVoldTaskListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeStrongInterface(iVoldTaskListener);
+                    this.mRemote.transact(19, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void mvFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeStrongInterface(iVoldTaskListener);
+                    this.mRemote.transact(87, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean needsCheckpoint() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(60, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean needsRollback() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(61, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void onSecureKeyguardStateChanged(boolean z) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeBoolean(z);
+                    this.mRemote.transact(12, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void onUserAdded(int i, int i2, int i3) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeInt(i3);
+                    this.mRemote.transact(6, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void onUserRemoved(int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(7, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void onUserStarted(int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(8, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void onUserStopped(int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(9, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final FileDescriptor openAppFuseFile(int i, int i2, int i3, int i4) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeInt(i3);
+                    obtain.writeInt(i4);
+                    this.mRemote.transact(76, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readRawFileDescriptor();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void partition(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(13, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void prepareCheckpoint() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(65, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void prepareSandboxForApp(String str, int i, String str2, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(57, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void prepareUserStorage(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(55, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void refreshLatestWrite() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(33, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void remountAppStorageDirs(int i, int i2, String[] strArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeStringArray(strArr);
+                    this.mRemote.transact(21, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void remountUid(int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(20, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int reserveDataBlocks(long j) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeLong(j);
+                    this.mRemote.transact(110, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void reset() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(4, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void resetCheckpoint() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(72, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void restoreCheckpoint(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(66, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void restoreCheckpointPart(String str, int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(67, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void runIdleDefrag(IVoldTaskListener iVoldTaskListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeStrongInterface(iVoldTaskListener);
+                    this.mRemote.transact(85, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void runIdleMaint(boolean z, IVoldTaskListener iVoldTaskListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeBoolean(z);
+                    obtain.writeStrongInterface(iVoldTaskListener);
+                    this.mRemote.transact(29, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void sdeEnable(String str, int i, int i2, boolean z, IVoldTaskListener iVoldTaskListener, IVoldMountCallback iVoldMountCallback) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeBoolean(z);
+                    obtain.writeStrongInterface(iVoldTaskListener);
+                    obtain.writeStrongInterface(iVoldMountCallback);
+                    this.mRemote.transact(37, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void setCeStorageProtection(int i, byte[] bArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeByteArray(bArr);
+                    this.mRemote.transact(45, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean setDualDARPolicyCmd(int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(108, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void setGCUrgentPace(int i, int i2, float f, float f2, int i3, int i4, int i5) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeFloat(f);
+                    obtain.writeFloat(f2);
+                    obtain.writeInt(i3);
+                    obtain.writeInt(i4);
+                    obtain.writeInt(i5);
+                    this.mRemote.transact(32, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void setIncFsMountOptions(IncrementalFileSystemControlParcel incrementalFileSystemControlParcel, boolean z, boolean z2, String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(incrementalFileSystemControlParcel, 0);
+                    obtain.writeBoolean(z);
+                    obtain.writeBoolean(z2);
+                    obtain.writeString(str);
+                    this.mRemote.transact(80, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void setListener(IVoldListener iVoldListener) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeStrongInterface(iVoldListener);
+                    this.mRemote.transact(1, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void setMpUidForFileSystem(int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(89, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean setSdpPolicyCmd(int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(106, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean setSdpPolicyToPathCmd(int i, String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeString(str);
+                    this.mRemote.transact(107, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean setSensitive(int i, String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeString(str);
+                    this.mRemote.transact(103, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void setStorageBindingSeed(byte[] bArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeByteArray(bArr);
+                    this.mRemote.transact(42, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void setupAppDir(String str, int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(23, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean shrinkDataDdp(long j) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeLong(j);
+                    this.mRemote.transact(109, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void shutdown() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(5, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void startCheckpoint(int i) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    this.mRemote.transact(59, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean supportsBlockCheckpoint() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(70, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean supportsCheckpoint() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(69, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final boolean supportsFileCheckpoint() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    this.mRemote.transact(71, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void unlockCeStorage(int i, byte[] bArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeByteArray(bArr);
+                    this.mRemote.transact(53, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final int unlockPassStorage(String str, int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(49, obtain, obtain2, 32);
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void unmount(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(16, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void unmountAppFuse(int i, int i2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    this.mRemote.transact(36, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void unmountAppStorageDirs(int i, int i2, String[] strArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeStringArray(strArr);
+                    this.mRemote.transact(22, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVold
+            public final void unmountIncFs(String str) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                obtain.markSensitive();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    this.mRemote.transact(79, obtain, obtain2, 32);
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
         }
 
         public Stub() {
@@ -820,11 +2548,18 @@ public interface IVold extends IInterface {
             if (queryLocalInterface != null && (queryLocalInterface instanceof IVold)) {
                 return (IVold) queryLocalInterface;
             }
-            return new Proxy(iBinder);
+            Proxy proxy = new Proxy();
+            proxy.mRemote = iBinder;
+            return proxy;
+        }
+
+        @Override // android.os.IInterface
+        public IBinder asBinder() {
+            return this;
         }
 
         @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
+        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
             if (i >= 1 && i <= 16777215) {
                 parcel.enforceInterface(DESCRIPTOR);
             }
@@ -1084,455 +2819,508 @@ public interface IVold extends IInterface {
                     parcel2.writeNoException();
                     return true;
                 case 38:
-                    String readString16 = parcel.readString();
-                    int readInt33 = parcel.readInt();
-                    int readInt34 = parcel.readInt();
-                    IVoldMountCallback asInterface10 = IVoldMountCallback.Stub.asInterface(parcel.readStrongBinder());
-                    parcel.enforceNoDataAvail();
-                    sdeMoveMountHidden(readString16, readInt33, readInt34, asInterface10);
-                    parcel2.writeNoException();
-                    return true;
-                case 39:
                     fbeEnable();
                     parcel2.writeNoException();
                     return true;
-                case 40:
+                case 39:
                     initUser0();
                     parcel2.writeNoException();
                     return true;
-                case 41:
+                case 40:
+                    String readString16 = parcel.readString();
                     String readString17 = parcel.readString();
+                    boolean readBoolean4 = parcel.readBoolean();
+                    String[] createStringArray6 = parcel.createStringArray();
+                    parcel.enforceNoDataAvail();
+                    mountFstab(readString16, readString17, readBoolean4, createStringArray6);
+                    parcel2.writeNoException();
+                    return true;
+                case 41:
                     String readString18 = parcel.readString();
                     String readString19 = parcel.readString();
+                    boolean readBoolean5 = parcel.readBoolean();
+                    String readString20 = parcel.readString();
+                    boolean readBoolean6 = parcel.readBoolean();
+                    String[] createStringArray7 = parcel.createStringArray();
                     parcel.enforceNoDataAvail();
-                    mountFstab(readString17, readString18, readString19);
+                    encryptFstab(readString18, readString19, readBoolean5, readString20, readBoolean6, createStringArray7);
                     parcel2.writeNoException();
                     return true;
                 case 42:
-                    String readString20 = parcel.readString();
-                    String readString21 = parcel.readString();
-                    boolean readBoolean4 = parcel.readBoolean();
-                    String readString22 = parcel.readString();
-                    String readString23 = parcel.readString();
-                    parcel.enforceNoDataAvail();
-                    encryptFstab(readString20, readString21, readBoolean4, readString22, readString23);
-                    parcel2.writeNoException();
-                    return true;
-                case 43:
                     byte[] createByteArray = parcel.createByteArray();
                     parcel.enforceNoDataAvail();
                     setStorageBindingSeed(createByteArray);
                     parcel2.writeNoException();
                     return true;
-                case 44:
-                    int readInt35 = parcel.readInt();
-                    int readInt36 = parcel.readInt();
-                    boolean readBoolean5 = parcel.readBoolean();
+                case 43:
+                    int readInt33 = parcel.readInt();
+                    boolean readBoolean7 = parcel.readBoolean();
                     parcel.enforceNoDataAvail();
-                    createUserKey(readInt35, readInt36, readBoolean5);
+                    createUserStorageKeys(readInt33, readBoolean7);
+                    parcel2.writeNoException();
+                    return true;
+                case 44:
+                    int readInt34 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    destroyUserStorageKeys(readInt34);
                     parcel2.writeNoException();
                     return true;
                 case 45:
-                    int readInt37 = parcel.readInt();
+                    int readInt35 = parcel.readInt();
+                    byte[] createByteArray2 = parcel.createByteArray();
                     parcel.enforceNoDataAvail();
-                    destroyUserKey(readInt37);
+                    setCeStorageProtection(readInt35, createByteArray2);
                     parcel2.writeNoException();
                     return true;
                 case 46:
-                    int readInt38 = parcel.readInt();
-                    String readString24 = parcel.readString();
+                    String readString21 = parcel.readString();
+                    int readInt36 = parcel.readInt();
+                    int readInt37 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    setUserKeyProtection(readInt38, readString24);
+                    int createPassStorage = createPassStorage(readString21, readInt36, readInt37);
                     parcel2.writeNoException();
+                    parcel2.writeInt(createPassStorage);
                     return true;
                 case 47:
+                    String readString22 = parcel.readString();
+                    int readInt38 = parcel.readInt();
+                    int readInt39 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    int destroyPassStorage = destroyPassStorage(readString22, readInt38, readInt39);
+                    parcel2.writeNoException();
+                    parcel2.writeInt(destroyPassStorage);
+                    return true;
+                case 48:
+                    String readString23 = parcel.readString();
+                    int readInt40 = parcel.readInt();
+                    int readInt41 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    int lockPassStorage = lockPassStorage(readString23, readInt40, readInt41);
+                    parcel2.writeNoException();
+                    parcel2.writeInt(lockPassStorage);
+                    return true;
+                case 49:
+                    String readString24 = parcel.readString();
+                    int readInt42 = parcel.readInt();
+                    int readInt43 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    int unlockPassStorage = unlockPassStorage(readString24, readInt42, readInt43);
+                    parcel2.writeNoException();
+                    parcel2.writeInt(unlockPassStorage);
+                    return true;
+                case 50:
+                    String readString25 = parcel.readString();
+                    int readInt44 = parcel.readInt();
+                    int readInt45 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    String passStorage = getPassStorage(readString25, readInt44, readInt45);
+                    parcel2.writeNoException();
+                    parcel2.writeString(passStorage);
+                    return true;
+                case 51:
+                    String readString26 = parcel.readString();
+                    int readInt46 = parcel.readInt();
+                    int readInt47 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    boolean isPassUnlocked = isPassUnlocked(readString26, readInt46, readInt47);
+                    parcel2.writeNoException();
+                    parcel2.writeBoolean(isPassUnlocked);
+                    return true;
+                case 52:
                     int[] unlockedUsers = getUnlockedUsers();
                     parcel2.writeNoException();
                     parcel2.writeIntArray(unlockedUsers);
                     return true;
-                case 48:
-                    int readInt39 = parcel.readInt();
-                    int readInt40 = parcel.readInt();
-                    String readString25 = parcel.readString();
-                    String readString26 = parcel.readString();
-                    parcel.enforceNoDataAvail();
-                    unlockUserKey(readInt39, readInt40, readString25, readString26);
-                    parcel2.writeNoException();
-                    return true;
-                case 49:
-                    int readInt41 = parcel.readInt();
-                    parcel.enforceNoDataAvail();
-                    lockUserKey(readInt41);
-                    parcel2.writeNoException();
-                    return true;
-                case 50:
-                    String readString27 = parcel.readString();
-                    parcel.enforceNoDataAvail();
-                    setDebugForExternal(readString27);
-                    parcel2.writeNoException();
-                    return true;
-                case 51:
-                    String readString28 = parcel.readString();
-                    int readInt42 = parcel.readInt();
-                    int readInt43 = parcel.readInt();
-                    int readInt44 = parcel.readInt();
-                    parcel.enforceNoDataAvail();
-                    prepareUserStorage(readString28, readInt42, readInt43, readInt44);
-                    parcel2.writeNoException();
-                    return true;
-                case 52:
-                    String readString29 = parcel.readString();
-                    int readInt45 = parcel.readInt();
-                    int readInt46 = parcel.readInt();
-                    parcel.enforceNoDataAvail();
-                    destroyUserStorage(readString29, readInt45, readInt46);
-                    parcel2.writeNoException();
-                    return true;
                 case 53:
-                    String readString30 = parcel.readString();
-                    int readInt47 = parcel.readInt();
-                    String readString31 = parcel.readString();
                     int readInt48 = parcel.readInt();
+                    byte[] createByteArray3 = parcel.createByteArray();
                     parcel.enforceNoDataAvail();
-                    prepareSandboxForApp(readString30, readInt47, readString31, readInt48);
+                    unlockCeStorage(readInt48, createByteArray3);
                     parcel2.writeNoException();
                     return true;
                 case 54:
-                    String readString32 = parcel.readString();
-                    String readString33 = parcel.readString();
                     int readInt49 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    destroySandboxForApp(readString32, readString33, readInt49);
+                    lockCeStorage(readInt49);
                     parcel2.writeNoException();
                     return true;
                 case 55:
+                    String readString27 = parcel.readString();
                     int readInt50 = parcel.readInt();
+                    int readInt51 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    startCheckpoint(readInt50);
+                    prepareUserStorage(readString27, readInt50, readInt51);
                     parcel2.writeNoException();
                     return true;
                 case 56:
+                    String readString28 = parcel.readString();
+                    int readInt52 = parcel.readInt();
+                    int readInt53 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    destroyUserStorage(readString28, readInt52, readInt53);
+                    parcel2.writeNoException();
+                    return true;
+                case 57:
+                    String readString29 = parcel.readString();
+                    int readInt54 = parcel.readInt();
+                    String readString30 = parcel.readString();
+                    int readInt55 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    prepareSandboxForApp(readString29, readInt54, readString30, readInt55);
+                    parcel2.writeNoException();
+                    return true;
+                case 58:
+                    String readString31 = parcel.readString();
+                    String readString32 = parcel.readString();
+                    int readInt56 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    destroySandboxForApp(readString31, readString32, readInt56);
+                    parcel2.writeNoException();
+                    return true;
+                case 59:
+                    int readInt57 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    startCheckpoint(readInt57);
+                    parcel2.writeNoException();
+                    return true;
+                case 60:
                     boolean needsCheckpoint = needsCheckpoint();
                     parcel2.writeNoException();
                     parcel2.writeBoolean(needsCheckpoint);
                     return true;
-                case 57:
+                case 61:
                     boolean needsRollback = needsRollback();
                     parcel2.writeNoException();
                     parcel2.writeBoolean(needsRollback);
                     return true;
-                case 58:
+                case 62:
                     boolean isCheckpointing = isCheckpointing();
                     parcel2.writeNoException();
                     parcel2.writeBoolean(isCheckpointing);
                     return true;
-                case 59:
-                    String readString34 = parcel.readString();
-                    boolean readBoolean6 = parcel.readBoolean();
-                    parcel.enforceNoDataAvail();
-                    abortChanges(readString34, readBoolean6);
-                    parcel2.writeNoException();
-                    return true;
-                case 60:
-                    commitChanges();
-                    parcel2.writeNoException();
-                    return true;
-                case 61:
-                    prepareCheckpoint();
-                    parcel2.writeNoException();
-                    return true;
-                case 62:
-                    String readString35 = parcel.readString();
-                    parcel.enforceNoDataAvail();
-                    restoreCheckpoint(readString35);
-                    parcel2.writeNoException();
-                    return true;
                 case 63:
-                    String readString36 = parcel.readString();
-                    int readInt51 = parcel.readInt();
+                    String readString33 = parcel.readString();
+                    boolean readBoolean8 = parcel.readBoolean();
                     parcel.enforceNoDataAvail();
-                    restoreCheckpointPart(readString36, readInt51);
+                    abortChanges(readString33, readBoolean8);
                     parcel2.writeNoException();
                     return true;
                 case 64:
-                    markBootAttempt();
+                    commitChanges();
                     parcel2.writeNoException();
                     return true;
                 case 65:
+                    prepareCheckpoint();
+                    parcel2.writeNoException();
+                    return true;
+                case 66:
+                    String readString34 = parcel.readString();
+                    parcel.enforceNoDataAvail();
+                    restoreCheckpoint(readString34);
+                    parcel2.writeNoException();
+                    return true;
+                case 67:
+                    String readString35 = parcel.readString();
+                    int readInt58 = parcel.readInt();
+                    parcel.enforceNoDataAvail();
+                    restoreCheckpointPart(readString35, readInt58);
+                    parcel2.writeNoException();
+                    return true;
+                case 68:
+                    markBootAttempt();
+                    parcel2.writeNoException();
+                    return true;
+                case 69:
                     boolean supportsCheckpoint = supportsCheckpoint();
                     parcel2.writeNoException();
                     parcel2.writeBoolean(supportsCheckpoint);
                     return true;
-                case 66:
+                case 70:
                     boolean supportsBlockCheckpoint = supportsBlockCheckpoint();
                     parcel2.writeNoException();
                     parcel2.writeBoolean(supportsBlockCheckpoint);
                     return true;
-                case 67:
+                case 71:
                     boolean supportsFileCheckpoint = supportsFileCheckpoint();
                     parcel2.writeNoException();
                     parcel2.writeBoolean(supportsFileCheckpoint);
                     return true;
-                case 68:
+                case 72:
                     resetCheckpoint();
                     parcel2.writeNoException();
                     return true;
-                case 69:
+                case 73:
                     earlyBootEnded();
                     parcel2.writeNoException();
                     return true;
-                case 70:
+                case 74:
+                    String readString36 = parcel.readString();
                     String readString37 = parcel.readString();
                     String readString38 = parcel.readString();
                     String readString39 = parcel.readString();
                     String readString40 = parcel.readString();
-                    String readString41 = parcel.readString();
-                    int readInt52 = parcel.readInt();
+                    int readInt59 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    String createStubVolume = createStubVolume(readString37, readString38, readString39, readString40, readString41, readInt52);
+                    String createStubVolume = createStubVolume(readString36, readString37, readString38, readString39, readString40, readInt59);
                     parcel2.writeNoException();
                     parcel2.writeString(createStubVolume);
                     return true;
-                case 71:
-                    String readString42 = parcel.readString();
+                case 75:
+                    String readString41 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    destroyStubVolume(readString42);
+                    destroyStubVolume(readString41);
                     parcel2.writeNoException();
                     return true;
-                case 72:
-                    int readInt53 = parcel.readInt();
-                    int readInt54 = parcel.readInt();
-                    int readInt55 = parcel.readInt();
-                    int readInt56 = parcel.readInt();
+                case 76:
+                    int readInt60 = parcel.readInt();
+                    int readInt61 = parcel.readInt();
+                    int readInt62 = parcel.readInt();
+                    int readInt63 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    FileDescriptor openAppFuseFile = openAppFuseFile(readInt53, readInt54, readInt55, readInt56);
+                    FileDescriptor openAppFuseFile = openAppFuseFile(readInt60, readInt61, readInt62, readInt63);
                     parcel2.writeNoException();
                     parcel2.writeRawFileDescriptor(openAppFuseFile);
                     return true;
-                case 73:
+                case 77:
                     boolean incFsEnabled = incFsEnabled();
                     parcel2.writeNoException();
                     parcel2.writeBoolean(incFsEnabled);
                     return true;
-                case 74:
+                case 78:
+                    String readString42 = parcel.readString();
                     String readString43 = parcel.readString();
+                    int readInt64 = parcel.readInt();
                     String readString44 = parcel.readString();
-                    int readInt57 = parcel.readInt();
-                    String readString45 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    IncrementalFileSystemControlParcel mountIncFs = mountIncFs(readString43, readString44, readInt57, readString45);
+                    IncrementalFileSystemControlParcel mountIncFs = mountIncFs(readString42, readString43, readInt64, readString44);
                     parcel2.writeNoException();
                     parcel2.writeTypedObject(mountIncFs, 1);
                     return true;
-                case 75:
+                case 79:
+                    String readString45 = parcel.readString();
+                    parcel.enforceNoDataAvail();
+                    unmountIncFs(readString45);
+                    parcel2.writeNoException();
+                    return true;
+                case 80:
+                    IncrementalFileSystemControlParcel incrementalFileSystemControlParcel = (IncrementalFileSystemControlParcel) parcel.readTypedObject(IncrementalFileSystemControlParcel.CREATOR);
+                    boolean readBoolean9 = parcel.readBoolean();
+                    boolean readBoolean10 = parcel.readBoolean();
                     String readString46 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    unmountIncFs(readString46);
+                    setIncFsMountOptions(incrementalFileSystemControlParcel, readBoolean9, readBoolean10, readString46);
                     parcel2.writeNoException();
                     return true;
-                case 76:
-                    IncrementalFileSystemControlParcel incrementalFileSystemControlParcel = (IncrementalFileSystemControlParcel) parcel.readTypedObject(IncrementalFileSystemControlParcel.CREATOR);
-                    boolean readBoolean7 = parcel.readBoolean();
-                    boolean readBoolean8 = parcel.readBoolean();
+                case 81:
                     String readString47 = parcel.readString();
+                    String readString48 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    setIncFsMountOptions(incrementalFileSystemControlParcel, readBoolean7, readBoolean8, readString47);
+                    bindMount(readString47, readString48);
                     parcel2.writeNoException();
                     return true;
-                case 77:
-                    String readString48 = parcel.readString();
+                case 82:
                     String readString49 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    bindMount(readString48, readString49);
+                    destroyDsuMetadataKey(readString49);
                     parcel2.writeNoException();
                     return true;
-                case 78:
-                    String readString50 = parcel.readString();
+                case 83:
+                    long storageSize = getStorageSize();
+                    parcel2.writeNoException();
+                    parcel2.writeLong(storageSize);
+                    return true;
+                case 84:
+                    int storageRemainingLifetime = getStorageRemainingLifetime();
+                    parcel2.writeNoException();
+                    parcel2.writeInt(storageRemainingLifetime);
+                    return true;
+                case 85:
+                    IVoldTaskListener asInterface10 = IVoldTaskListener.Stub.asInterface(parcel.readStrongBinder());
                     parcel.enforceNoDataAvail();
-                    destroyDsuMetadataKey(readString50);
+                    runIdleDefrag(asInterface10);
                     parcel2.writeNoException();
                     return true;
-                case 79:
+                case 86:
                     long usedF2fsFileNode = getUsedF2fsFileNode();
                     parcel2.writeNoException();
                     parcel2.writeLong(usedF2fsFileNode);
                     return true;
-                case 80:
+                case 87:
+                    String readString50 = parcel.readString();
                     String readString51 = parcel.readString();
-                    String readString52 = parcel.readString();
-                    int readInt58 = parcel.readInt();
-                    int readInt59 = parcel.readInt();
+                    int readInt65 = parcel.readInt();
+                    int readInt66 = parcel.readInt();
                     IVoldTaskListener asInterface11 = IVoldTaskListener.Stub.asInterface(parcel.readStrongBinder());
                     parcel.enforceNoDataAvail();
-                    mvFileAtData(readString51, readString52, readInt58, readInt59, asInterface11);
-                    parcel2.writeNoException();
-                    return true;
-                case 81:
-                    String readString53 = parcel.readString();
-                    String readString54 = parcel.readString();
-                    int readInt60 = parcel.readInt();
-                    int readInt61 = parcel.readInt();
-                    IVoldTaskListener asInterface12 = IVoldTaskListener.Stub.asInterface(parcel.readStrongBinder());
-                    parcel.enforceNoDataAvail();
-                    cpFileAtData(readString53, readString54, readInt60, readInt61, asInterface12);
-                    parcel2.writeNoException();
-                    return true;
-                case 82:
-                    int readInt62 = parcel.readInt();
-                    parcel.enforceNoDataAvail();
-                    setMpUidForFileSystem(readInt62);
-                    parcel2.writeNoException();
-                    return true;
-                case 83:
-                    String readString55 = parcel.readString();
-                    int readInt63 = parcel.readInt();
-                    String readString56 = parcel.readString();
-                    String readString57 = parcel.readString();
-                    int readInt64 = parcel.readInt();
-                    boolean readBoolean9 = parcel.readBoolean();
-                    parcel.enforceNoDataAvail();
-                    asecCreate(readString55, readInt63, readString56, readString57, readInt64, readBoolean9);
-                    parcel2.writeNoException();
-                    return true;
-                case 84:
-                    String readString58 = parcel.readString();
-                    int readInt65 = parcel.readInt();
-                    String readString59 = parcel.readString();
-                    parcel.enforceNoDataAvail();
-                    asecResize(readString58, readInt65, readString59);
-                    parcel2.writeNoException();
-                    return true;
-                case 85:
-                    String readString60 = parcel.readString();
-                    parcel.enforceNoDataAvail();
-                    asecFinalize(readString60);
-                    parcel2.writeNoException();
-                    return true;
-                case 86:
-                    String readString61 = parcel.readString();
-                    int readInt66 = parcel.readInt();
-                    String readString62 = parcel.readString();
-                    parcel.enforceNoDataAvail();
-                    asecFixperms(readString61, readInt66, readString62);
-                    parcel2.writeNoException();
-                    return true;
-                case 87:
-                    String readString63 = parcel.readString();
-                    boolean readBoolean10 = parcel.readBoolean();
-                    parcel.enforceNoDataAvail();
-                    asecDestroy(readString63, readBoolean10);
+                    mvFileAtData(readString50, readString51, readInt65, readInt66, asInterface11);
                     parcel2.writeNoException();
                     return true;
                 case 88:
-                    String readString64 = parcel.readString();
-                    String readString65 = parcel.readString();
+                    String readString52 = parcel.readString();
+                    String readString53 = parcel.readString();
                     int readInt67 = parcel.readInt();
-                    boolean readBoolean11 = parcel.readBoolean();
+                    int readInt68 = parcel.readInt();
+                    IVoldTaskListener asInterface12 = IVoldTaskListener.Stub.asInterface(parcel.readStrongBinder());
                     parcel.enforceNoDataAvail();
-                    asecMount(readString64, readString65, readInt67, readBoolean11);
+                    cpFileAtData(readString52, readString53, readInt67, readInt68, asInterface12);
                     parcel2.writeNoException();
                     return true;
                 case 89:
-                    String readString66 = parcel.readString();
-                    boolean readBoolean12 = parcel.readBoolean();
+                    int readInt69 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    asecUnmount(readString66, readBoolean12);
+                    setMpUidForFileSystem(readInt69);
                     parcel2.writeNoException();
                     return true;
                 case 90:
-                    String readString67 = parcel.readString();
-                    String readString68 = parcel.readString();
+                    String readString54 = parcel.readString();
+                    int readInt70 = parcel.readInt();
+                    String readString55 = parcel.readString();
+                    String readString56 = parcel.readString();
+                    int readInt71 = parcel.readInt();
+                    boolean readBoolean11 = parcel.readBoolean();
                     parcel.enforceNoDataAvail();
-                    asecRename(readString67, readString68);
+                    asecCreate(readString54, readInt70, readString55, readString56, readInt71, readBoolean11);
                     parcel2.writeNoException();
                     return true;
                 case 91:
-                    String readString69 = parcel.readString();
+                    String readString57 = parcel.readString();
+                    int readInt72 = parcel.readInt();
+                    String readString58 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    String asecPath = asecPath(readString69);
+                    asecResize(readString57, readInt72, readString58);
+                    parcel2.writeNoException();
+                    return true;
+                case 92:
+                    String readString59 = parcel.readString();
+                    parcel.enforceNoDataAvail();
+                    asecFinalize(readString59);
+                    parcel2.writeNoException();
+                    return true;
+                case 93:
+                    String readString60 = parcel.readString();
+                    int readInt73 = parcel.readInt();
+                    String readString61 = parcel.readString();
+                    parcel.enforceNoDataAvail();
+                    asecFixperms(readString60, readInt73, readString61);
+                    parcel2.writeNoException();
+                    return true;
+                case 94:
+                    String readString62 = parcel.readString();
+                    boolean readBoolean12 = parcel.readBoolean();
+                    parcel.enforceNoDataAvail();
+                    asecDestroy(readString62, readBoolean12);
+                    parcel2.writeNoException();
+                    return true;
+                case 95:
+                    String readString63 = parcel.readString();
+                    String readString64 = parcel.readString();
+                    int readInt74 = parcel.readInt();
+                    boolean readBoolean13 = parcel.readBoolean();
+                    parcel.enforceNoDataAvail();
+                    asecMount(readString63, readString64, readInt74, readBoolean13);
+                    parcel2.writeNoException();
+                    return true;
+                case 96:
+                    String readString65 = parcel.readString();
+                    boolean readBoolean14 = parcel.readBoolean();
+                    parcel.enforceNoDataAvail();
+                    asecUnmount(readString65, readBoolean14);
+                    parcel2.writeNoException();
+                    return true;
+                case 97:
+                    String readString66 = parcel.readString();
+                    String readString67 = parcel.readString();
+                    parcel.enforceNoDataAvail();
+                    asecRename(readString66, readString67);
+                    parcel2.writeNoException();
+                    return true;
+                case 98:
+                    String readString68 = parcel.readString();
+                    parcel.enforceNoDataAvail();
+                    String asecPath = asecPath(readString68);
                     parcel2.writeNoException();
                     parcel2.writeString(asecPath);
                     return true;
-                case 92:
-                    String readString70 = parcel.readString();
+                case 99:
+                    String readString69 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    String asecFsPath = asecFsPath(readString70);
+                    String asecFsPath = asecFsPath(readString69);
                     parcel2.writeNoException();
                     parcel2.writeString(asecFsPath);
                     return true;
-                case 93:
+                case 100:
                     String[] asecList = asecList();
                     parcel2.writeNoException();
                     parcel2.writeStringArray(asecList);
                     return true;
-                case 94:
+                case 101:
+                    String readString70 = parcel.readString();
+                    int readInt75 = parcel.readInt();
                     String readString71 = parcel.readString();
-                    int readInt68 = parcel.readInt();
-                    String readString72 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    asecTrim(readString71, readInt68, readString72);
+                    asecTrim(readString70, readInt75, readString71);
                     parcel2.writeNoException();
                     return true;
-                case 95:
-                    String readString73 = parcel.readString();
+                case 102:
+                    String readString72 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    int asecGetUsedSpace = asecGetUsedSpace(readString73);
+                    int asecGetUsedSpace = asecGetUsedSpace(readString72);
                     parcel2.writeNoException();
                     parcel2.writeInt(asecGetUsedSpace);
                     return true;
-                case 96:
-                    int readInt69 = parcel.readInt();
-                    String readString74 = parcel.readString();
+                case 103:
+                    int readInt76 = parcel.readInt();
+                    String readString73 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    boolean sensitive = setSensitive(readInt69, readString74);
+                    boolean sensitive = setSensitive(readInt76, readString73);
                     parcel2.writeNoException();
                     parcel2.writeBoolean(sensitive);
                     return true;
-                case 97:
-                    String readString75 = parcel.readString();
+                case 104:
+                    String readString74 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    boolean isSensitive = isSensitive(readString75);
+                    boolean isSensitive = isSensitive(readString74);
                     parcel2.writeNoException();
                     parcel2.writeBoolean(isSensitive);
                     return true;
-                case 98:
-                    int readInt70 = parcel.readInt();
+                case 105:
+                    int readInt77 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    boolean mountSdpMediaStorageCmd = mountSdpMediaStorageCmd(readInt70);
+                    boolean mountSdpMediaStorageCmd = mountSdpMediaStorageCmd(readInt77);
                     parcel2.writeNoException();
                     parcel2.writeBoolean(mountSdpMediaStorageCmd);
                     return true;
-                case 99:
-                    int readInt71 = parcel.readInt();
+                case 106:
+                    int readInt78 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    boolean sdpPolicyCmd = setSdpPolicyCmd(readInt71);
+                    boolean sdpPolicyCmd = setSdpPolicyCmd(readInt78);
                     parcel2.writeNoException();
                     parcel2.writeBoolean(sdpPolicyCmd);
                     return true;
-                case 100:
-                    int readInt72 = parcel.readInt();
-                    String readString76 = parcel.readString();
+                case 107:
+                    int readInt79 = parcel.readInt();
+                    String readString75 = parcel.readString();
                     parcel.enforceNoDataAvail();
-                    boolean sdpPolicyToPathCmd = setSdpPolicyToPathCmd(readInt72, readString76);
+                    boolean sdpPolicyToPathCmd = setSdpPolicyToPathCmd(readInt79, readString75);
                     parcel2.writeNoException();
                     parcel2.writeBoolean(sdpPolicyToPathCmd);
                     return true;
-                case 101:
-                    int readInt73 = parcel.readInt();
-                    int readInt74 = parcel.readInt();
+                case 108:
+                    int readInt80 = parcel.readInt();
+                    int readInt81 = parcel.readInt();
                     parcel.enforceNoDataAvail();
-                    boolean dualDARPolicyCmd = setDualDARPolicyCmd(readInt73, readInt74);
+                    boolean dualDARPolicyCmd = setDualDARPolicyCmd(readInt80, readInt81);
                     parcel2.writeNoException();
                     parcel2.writeBoolean(dualDARPolicyCmd);
                     return true;
-                case 102:
+                case 109:
                     long readLong = parcel.readLong();
                     parcel.enforceNoDataAvail();
                     boolean shrinkDataDdp = shrinkDataDdp(readLong);
                     parcel2.writeNoException();
                     parcel2.writeBoolean(shrinkDataDdp);
                     return true;
-                case 103:
+                case 110:
                     long readLong2 = parcel.readLong();
                     parcel.enforceNoDataAvail();
                     int reserveDataBlocks = reserveDataBlocks(readLong2);
@@ -1543,1680 +3331,225 @@ public interface IVold extends IInterface {
                     return super.onTransact(i, parcel, parcel2, i2);
             }
         }
-
-        /* loaded from: classes.dex */
-        public class Proxy implements IVold {
-            public IBinder mRemote;
-
-            public String getInterfaceDescriptor() {
-                return Stub.DESCRIPTOR;
-            }
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
-
-            @Override // android.os.IInterface
-            public IBinder asBinder() {
-                return this.mRemote;
-            }
-
-            @Override // android.os.IVold
-            public void setListener(IVoldListener iVoldListener) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeStrongInterface(iVoldListener);
-                    this.mRemote.transact(1, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void abortFuse() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(2, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void monitor() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(3, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void reset() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(4, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void shutdown() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(5, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void onUserAdded(int i, int i2, int i3) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeInt(i3);
-                    this.mRemote.transact(6, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void onUserRemoved(int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(7, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void onUserStarted(int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(8, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void onUserStopped(int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(9, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void addAppIds(String[] strArr, int[] iArr) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeStringArray(strArr);
-                    obtain.writeIntArray(iArr);
-                    this.mRemote.transact(10, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void addSandboxIds(int[] iArr, String[] strArr) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeIntArray(iArr);
-                    obtain.writeStringArray(strArr);
-                    this.mRemote.transact(11, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void onSecureKeyguardStateChanged(boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeBoolean(z);
-                    this.mRemote.transact(12, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void partition(String str, int i, int i2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    this.mRemote.transact(13, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void forgetPartition(String str, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(14, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void mount(String str, int i, int i2, IVoldMountCallback iVoldMountCallback) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeStrongInterface(iVoldMountCallback);
-                    this.mRemote.transact(15, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void unmount(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(16, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void format(String str, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(17, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void benchmark(String str, IVoldTaskListener iVoldTaskListener) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeStrongInterface(iVoldTaskListener);
-                    this.mRemote.transact(18, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void moveStorage(String str, String str2, IVoldTaskListener iVoldTaskListener) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeStrongInterface(iVoldTaskListener);
-                    this.mRemote.transact(19, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void remountUid(int i, int i2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    this.mRemote.transact(20, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void remountAppStorageDirs(int i, int i2, String[] strArr) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeStringArray(strArr);
-                    this.mRemote.transact(21, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void unmountAppStorageDirs(int i, int i2, String[] strArr) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeStringArray(strArr);
-                    this.mRemote.transact(22, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void setupAppDir(String str, int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(23, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void fixupAppDir(String str, int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(24, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void ensureAppDirsCreated(String[] strArr, int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeStringArray(strArr);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(25, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public String createObb(String str, int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(26, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readString();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void destroyObb(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(27, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void fstrim(int i, IVoldTaskListener iVoldTaskListener) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeStrongInterface(iVoldTaskListener);
-                    this.mRemote.transact(28, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void runIdleMaint(boolean z, IVoldTaskListener iVoldTaskListener) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeBoolean(z);
-                    obtain.writeStrongInterface(iVoldTaskListener);
-                    this.mRemote.transact(29, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void abortIdleMaint(IVoldTaskListener iVoldTaskListener) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeStrongInterface(iVoldTaskListener);
-                    this.mRemote.transact(30, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public int getStorageLifeTime() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(31, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readInt();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void setGCUrgentPace(int i, int i2, float f, float f2, int i3, int i4, int i5) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeFloat(f);
-                    obtain.writeFloat(f2);
-                    obtain.writeInt(i3);
-                    obtain.writeInt(i4);
-                    obtain.writeInt(i5);
-                    this.mRemote.transact(32, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void refreshLatestWrite() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(33, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public int getWriteAmount() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(34, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readInt();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public FileDescriptor mountAppFuse(int i, int i2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    this.mRemote.transact(35, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readRawFileDescriptor();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void unmountAppFuse(int i, int i2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    this.mRemote.transact(36, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void sdeEnable(String str, int i, int i2, boolean z, IVoldTaskListener iVoldTaskListener, IVoldMountCallback iVoldMountCallback) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeBoolean(z);
-                    obtain.writeStrongInterface(iVoldTaskListener);
-                    obtain.writeStrongInterface(iVoldMountCallback);
-                    this.mRemote.transact(37, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void sdeMoveMountHidden(String str, int i, int i2, IVoldMountCallback iVoldMountCallback) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeStrongInterface(iVoldMountCallback);
-                    this.mRemote.transact(38, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void fbeEnable() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(39, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void initUser0() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(40, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void mountFstab(String str, String str2, String str3) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    this.mRemote.transact(41, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void encryptFstab(String str, String str2, boolean z, String str3, String str4) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeBoolean(z);
-                    obtain.writeString(str3);
-                    obtain.writeString(str4);
-                    this.mRemote.transact(42, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void setStorageBindingSeed(byte[] bArr) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeByteArray(bArr);
-                    this.mRemote.transact(43, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void createUserKey(int i, int i2, boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeBoolean(z);
-                    this.mRemote.transact(44, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void destroyUserKey(int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(45, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void setUserKeyProtection(int i, String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    this.mRemote.transact(46, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public int[] getUnlockedUsers() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(47, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.createIntArray();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void unlockUserKey(int i, int i2, String str, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(48, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void lockUserKey(int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(49, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void setDebugForExternal(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(50, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void prepareUserStorage(String str, int i, int i2, int i3) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeInt(i3);
-                    this.mRemote.transact(51, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void destroyUserStorage(String str, int i, int i2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    this.mRemote.transact(52, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void prepareSandboxForApp(String str, int i, String str2, int i2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i2);
-                    this.mRemote.transact(53, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void destroySandboxForApp(String str, String str2, int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(54, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void startCheckpoint(int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(55, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean needsCheckpoint() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(56, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean needsRollback() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(57, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean isCheckpointing() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(58, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void abortChanges(String str, boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeBoolean(z);
-                    this.mRemote.transact(59, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void commitChanges() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(60, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void prepareCheckpoint() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(61, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void restoreCheckpoint(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(62, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void restoreCheckpointPart(String str, int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(63, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void markBootAttempt() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(64, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean supportsCheckpoint() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(65, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean supportsBlockCheckpoint() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(66, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean supportsFileCheckpoint() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(67, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void resetCheckpoint() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(68, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void earlyBootEnded() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(69, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public String createStubVolume(String str, String str2, String str3, String str4, String str5, int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    obtain.writeString(str4);
-                    obtain.writeString(str5);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(70, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readString();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void destroyStubVolume(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(71, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public FileDescriptor openAppFuseFile(int i, int i2, int i3, int i4) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeInt(i3);
-                    obtain.writeInt(i4);
-                    this.mRemote.transact(72, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readRawFileDescriptor();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean incFsEnabled() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(73, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public IncrementalFileSystemControlParcel mountIncFs(String str, String str2, int i, String str3) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i);
-                    obtain.writeString(str3);
-                    this.mRemote.transact(74, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return (IncrementalFileSystemControlParcel) obtain2.readTypedObject(IncrementalFileSystemControlParcel.CREATOR);
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void unmountIncFs(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(75, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void setIncFsMountOptions(IncrementalFileSystemControlParcel incrementalFileSystemControlParcel, boolean z, boolean z2, String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(incrementalFileSystemControlParcel, 0);
-                    obtain.writeBoolean(z);
-                    obtain.writeBoolean(z2);
-                    obtain.writeString(str);
-                    this.mRemote.transact(76, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void bindMount(String str, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(77, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void destroyDsuMetadataKey(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(78, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public long getUsedF2fsFileNode() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(79, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readLong();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void mvFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeStrongInterface(iVoldTaskListener);
-                    this.mRemote.transact(80, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void cpFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeStrongInterface(iVoldTaskListener);
-                    this.mRemote.transact(81, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void setMpUidForFileSystem(int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(82, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void asecCreate(String str, int i, String str2, String str3, int i2, boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    obtain.writeInt(i2);
-                    obtain.writeBoolean(z);
-                    this.mRemote.transact(83, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void asecResize(String str, int i, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(84, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void asecFinalize(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(85, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void asecFixperms(String str, int i, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(86, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void asecDestroy(String str, boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeBoolean(z);
-                    this.mRemote.transact(87, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void asecMount(String str, String str2, int i, boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i);
-                    obtain.writeBoolean(z);
-                    this.mRemote.transact(88, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void asecUnmount(String str, boolean z) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeBoolean(z);
-                    this.mRemote.transact(89, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void asecRename(String str, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(90, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public String asecPath(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(91, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readString();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public String asecFsPath(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(92, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readString();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public String[] asecList() {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    this.mRemote.transact(93, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.createStringArray();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public void asecTrim(String str, int i, String str2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeString(str2);
-                    this.mRemote.transact(94, obtain, obtain2, 0);
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public int asecGetUsedSpace(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(95, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readInt();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean setSensitive(int i, String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    this.mRemote.transact(96, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean isSensitive(String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    this.mRemote.transact(97, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean mountSdpMediaStorageCmd(int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(98, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean setSdpPolicyCmd(int i) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    this.mRemote.transact(99, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean setSdpPolicyToPathCmd(int i, String str) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    this.mRemote.transact(100, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean setDualDARPolicyCmd(int i, int i2) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    this.mRemote.transact(101, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public boolean shrinkDataDdp(long j) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeLong(j);
-                    this.mRemote.transact(102, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVold
-            public int reserveDataBlocks(long j) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeLong(j);
-                    this.mRemote.transact(103, obtain, obtain2, 0);
-                    obtain2.readException();
-                    return obtain2.readInt();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-        }
     }
+
+    void abortChanges(String str, boolean z) throws RemoteException;
+
+    void abortFuse() throws RemoteException;
+
+    void abortIdleMaint(IVoldTaskListener iVoldTaskListener) throws RemoteException;
+
+    void addAppIds(String[] strArr, int[] iArr) throws RemoteException;
+
+    void addSandboxIds(int[] iArr, String[] strArr) throws RemoteException;
+
+    void asecCreate(String str, int i, String str2, String str3, int i2, boolean z) throws RemoteException;
+
+    void asecDestroy(String str, boolean z) throws RemoteException;
+
+    void asecFinalize(String str) throws RemoteException;
+
+    void asecFixperms(String str, int i, String str2) throws RemoteException;
+
+    String asecFsPath(String str) throws RemoteException;
+
+    int asecGetUsedSpace(String str) throws RemoteException;
+
+    String[] asecList() throws RemoteException;
+
+    void asecMount(String str, String str2, int i, boolean z) throws RemoteException;
+
+    String asecPath(String str) throws RemoteException;
+
+    void asecRename(String str, String str2) throws RemoteException;
+
+    void asecResize(String str, int i, String str2) throws RemoteException;
+
+    void asecTrim(String str, int i, String str2) throws RemoteException;
+
+    void asecUnmount(String str, boolean z) throws RemoteException;
+
+    void benchmark(String str, IVoldTaskListener iVoldTaskListener) throws RemoteException;
+
+    void bindMount(String str, String str2) throws RemoteException;
+
+    void commitChanges() throws RemoteException;
+
+    void cpFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) throws RemoteException;
+
+    String createObb(String str, int i) throws RemoteException;
+
+    int createPassStorage(String str, int i, int i2) throws RemoteException;
+
+    String createStubVolume(String str, String str2, String str3, String str4, String str5, int i) throws RemoteException;
+
+    void createUserStorageKeys(int i, boolean z) throws RemoteException;
+
+    void destroyDsuMetadataKey(String str) throws RemoteException;
+
+    void destroyObb(String str) throws RemoteException;
+
+    int destroyPassStorage(String str, int i, int i2) throws RemoteException;
+
+    void destroySandboxForApp(String str, String str2, int i) throws RemoteException;
+
+    void destroyStubVolume(String str) throws RemoteException;
+
+    void destroyUserStorage(String str, int i, int i2) throws RemoteException;
+
+    void destroyUserStorageKeys(int i) throws RemoteException;
+
+    void earlyBootEnded() throws RemoteException;
+
+    void encryptFstab(String str, String str2, boolean z, String str3, boolean z2, String[] strArr) throws RemoteException;
+
+    void ensureAppDirsCreated(String[] strArr, int i) throws RemoteException;
+
+    void fbeEnable() throws RemoteException;
+
+    void fixupAppDir(String str, int i) throws RemoteException;
+
+    void forgetPartition(String str, String str2) throws RemoteException;
+
+    void format(String str, String str2) throws RemoteException;
+
+    void fstrim(int i, IVoldTaskListener iVoldTaskListener) throws RemoteException;
+
+    String getPassStorage(String str, int i, int i2) throws RemoteException;
+
+    int getStorageLifeTime() throws RemoteException;
+
+    int getStorageRemainingLifetime() throws RemoteException;
+
+    long getStorageSize() throws RemoteException;
+
+    int[] getUnlockedUsers() throws RemoteException;
+
+    long getUsedF2fsFileNode() throws RemoteException;
+
+    int getWriteAmount() throws RemoteException;
+
+    boolean incFsEnabled() throws RemoteException;
+
+    void initUser0() throws RemoteException;
+
+    boolean isCheckpointing() throws RemoteException;
+
+    boolean isPassUnlocked(String str, int i, int i2) throws RemoteException;
+
+    boolean isSensitive(String str) throws RemoteException;
+
+    void lockCeStorage(int i) throws RemoteException;
+
+    int lockPassStorage(String str, int i, int i2) throws RemoteException;
+
+    void markBootAttempt() throws RemoteException;
+
+    void monitor() throws RemoteException;
+
+    void mount(String str, int i, int i2, IVoldMountCallback iVoldMountCallback) throws RemoteException;
+
+    FileDescriptor mountAppFuse(int i, int i2) throws RemoteException;
+
+    void mountFstab(String str, String str2, boolean z, String[] strArr) throws RemoteException;
+
+    IncrementalFileSystemControlParcel mountIncFs(String str, String str2, int i, String str3) throws RemoteException;
+
+    boolean mountSdpMediaStorageCmd(int i) throws RemoteException;
+
+    void moveStorage(String str, String str2, IVoldTaskListener iVoldTaskListener) throws RemoteException;
+
+    void mvFileAtData(String str, String str2, int i, int i2, IVoldTaskListener iVoldTaskListener) throws RemoteException;
+
+    boolean needsCheckpoint() throws RemoteException;
+
+    boolean needsRollback() throws RemoteException;
+
+    void onSecureKeyguardStateChanged(boolean z) throws RemoteException;
+
+    void onUserAdded(int i, int i2, int i3) throws RemoteException;
+
+    void onUserRemoved(int i) throws RemoteException;
+
+    void onUserStarted(int i) throws RemoteException;
+
+    void onUserStopped(int i) throws RemoteException;
+
+    FileDescriptor openAppFuseFile(int i, int i2, int i3, int i4) throws RemoteException;
+
+    void partition(String str, int i, int i2) throws RemoteException;
+
+    void prepareCheckpoint() throws RemoteException;
+
+    void prepareSandboxForApp(String str, int i, String str2, int i2) throws RemoteException;
+
+    void prepareUserStorage(String str, int i, int i2) throws RemoteException;
+
+    void refreshLatestWrite() throws RemoteException;
+
+    void remountAppStorageDirs(int i, int i2, String[] strArr) throws RemoteException;
+
+    void remountUid(int i, int i2) throws RemoteException;
+
+    int reserveDataBlocks(long j) throws RemoteException;
+
+    void reset() throws RemoteException;
+
+    void resetCheckpoint() throws RemoteException;
+
+    void restoreCheckpoint(String str) throws RemoteException;
+
+    void restoreCheckpointPart(String str, int i) throws RemoteException;
+
+    void runIdleDefrag(IVoldTaskListener iVoldTaskListener) throws RemoteException;
+
+    void runIdleMaint(boolean z, IVoldTaskListener iVoldTaskListener) throws RemoteException;
+
+    void sdeEnable(String str, int i, int i2, boolean z, IVoldTaskListener iVoldTaskListener, IVoldMountCallback iVoldMountCallback) throws RemoteException;
+
+    void setCeStorageProtection(int i, byte[] bArr) throws RemoteException;
+
+    boolean setDualDARPolicyCmd(int i, int i2) throws RemoteException;
+
+    void setGCUrgentPace(int i, int i2, float f, float f2, int i3, int i4, int i5) throws RemoteException;
+
+    void setIncFsMountOptions(IncrementalFileSystemControlParcel incrementalFileSystemControlParcel, boolean z, boolean z2, String str) throws RemoteException;
+
+    void setListener(IVoldListener iVoldListener) throws RemoteException;
+
+    void setMpUidForFileSystem(int i) throws RemoteException;
+
+    boolean setSdpPolicyCmd(int i) throws RemoteException;
+
+    boolean setSdpPolicyToPathCmd(int i, String str) throws RemoteException;
+
+    boolean setSensitive(int i, String str) throws RemoteException;
+
+    void setStorageBindingSeed(byte[] bArr) throws RemoteException;
+
+    void setupAppDir(String str, int i) throws RemoteException;
+
+    boolean shrinkDataDdp(long j) throws RemoteException;
+
+    void shutdown() throws RemoteException;
+
+    void startCheckpoint(int i) throws RemoteException;
+
+    boolean supportsBlockCheckpoint() throws RemoteException;
+
+    boolean supportsCheckpoint() throws RemoteException;
+
+    boolean supportsFileCheckpoint() throws RemoteException;
+
+    void unlockCeStorage(int i, byte[] bArr) throws RemoteException;
+
+    int unlockPassStorage(String str, int i, int i2) throws RemoteException;
+
+    void unmount(String str) throws RemoteException;
+
+    void unmountAppFuse(int i, int i2) throws RemoteException;
+
+    void unmountAppStorageDirs(int i, int i2, String[] strArr) throws RemoteException;
+
+    void unmountIncFs(String str) throws RemoteException;
 }

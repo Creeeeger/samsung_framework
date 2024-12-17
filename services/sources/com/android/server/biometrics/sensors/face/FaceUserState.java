@@ -1,7 +1,6 @@
 package com.android.server.biometrics.sensors.face;
 
 import android.R;
-import android.content.Context;
 import android.hardware.face.Face;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
@@ -9,35 +8,11 @@ import com.android.server.biometrics.sensors.BiometricUserState;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FaceUserState extends BiometricUserState {
+public final class FaceUserState extends BiometricUserState {
     @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public String getBiometricsTag() {
-        return "faces";
-    }
-
-    @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public int getNameTemplateResource() {
-        return R.string.new_app_description;
-    }
-
-    public FaceUserState(Context context, int i, String str) {
-        super(context, i, str);
-    }
-
-    @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public ArrayList getCopy(ArrayList arrayList) {
-        ArrayList arrayList2 = new ArrayList();
-        Iterator it = arrayList.iterator();
-        while (it.hasNext()) {
-            Face face = (Face) it.next();
-            arrayList2.add(new Face(face.getName(), face.getBiometricId(), face.getDeviceId()));
-        }
-        return arrayList2;
-    }
-
-    @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public void doWriteState(TypedXmlSerializer typedXmlSerializer) {
+    public final void doWriteState(TypedXmlSerializer typedXmlSerializer) {
         ArrayList copy;
         synchronized (this) {
             copy = getCopy(this.mBiometrics);
@@ -56,7 +31,33 @@ public class FaceUserState extends BiometricUserState {
     }
 
     @Override // com.android.server.biometrics.sensors.BiometricUserState
-    public void parseBiometricsLocked(TypedXmlPullParser typedXmlPullParser) {
+    public final String getBiometricsTag() {
+        return "faces";
+    }
+
+    @Override // com.android.server.biometrics.sensors.BiometricUserState
+    public final ArrayList getCopy(ArrayList arrayList) {
+        ArrayList arrayList2 = new ArrayList();
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            Face face = (Face) it.next();
+            arrayList2.add(new Face(face.getName(), face.getBiometricId(), face.getDeviceId()));
+        }
+        return arrayList2;
+    }
+
+    @Override // com.android.server.biometrics.sensors.BiometricUserState
+    public final String getLegacyFileName() {
+        return "settings_face.xml";
+    }
+
+    @Override // com.android.server.biometrics.sensors.BiometricUserState
+    public final int getNameTemplateResource() {
+        return R.string.lock_pattern_view_aspect;
+    }
+
+    @Override // com.android.server.biometrics.sensors.BiometricUserState
+    public final void parseBiometricsLocked(TypedXmlPullParser typedXmlPullParser) {
         int depth = typedXmlPullParser.getDepth();
         while (true) {
             int next = typedXmlPullParser.next();

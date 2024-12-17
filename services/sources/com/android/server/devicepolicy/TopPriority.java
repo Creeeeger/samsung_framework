@@ -1,16 +1,21 @@
 package com.android.server.devicepolicy;
 
+import android.app.admin.DeviceAdminAuthority;
+import android.app.admin.DpcAuthority;
 import android.app.admin.PolicyValue;
+import android.app.admin.RoleAuthority;
+import android.app.admin.UnknownAuthority;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class TopPriority extends ResolutionMechanism {
     public final List mHighestToLowestPriorityAuthorities;
 
@@ -20,8 +25,16 @@ public final class TopPriority extends ResolutionMechanism {
     }
 
     @Override // com.android.server.devicepolicy.ResolutionMechanism
-    /* renamed from: resolve */
-    public PolicyValue mo5120resolve(LinkedHashMap linkedHashMap) {
+    public final android.app.admin.ResolutionMechanism getParcelableResolutionMechanism() {
+        ArrayList arrayList = new ArrayList();
+        for (String str : this.mHighestToLowestPriorityAuthorities) {
+            arrayList.add((str == null || str.isEmpty()) ? UnknownAuthority.UNKNOWN_AUTHORITY : "enterprise".equals(str) ? DpcAuthority.DPC_AUTHORITY : "device_admin".equals(str) ? DeviceAdminAuthority.DEVICE_ADMIN_AUTHORITY : str.startsWith("role:") ? new RoleAuthority(Set.of(str.substring(5))) : UnknownAuthority.UNKNOWN_AUTHORITY);
+        }
+        return new android.app.admin.TopPriority(arrayList);
+    }
+
+    @Override // com.android.server.devicepolicy.ResolutionMechanism
+    public final PolicyValue resolve(LinkedHashMap linkedHashMap) {
         if (linkedHashMap.isEmpty()) {
             return null;
         }
@@ -29,9 +42,7 @@ public final class TopPriority extends ResolutionMechanism {
             Optional findFirst = linkedHashMap.keySet().stream().filter(new Predicate() { // from class: com.android.server.devicepolicy.TopPriority$$ExternalSyntheticLambda0
                 @Override // java.util.function.Predicate
                 public final boolean test(Object obj) {
-                    boolean lambda$resolve$0;
-                    lambda$resolve$0 = TopPriority.lambda$resolve$0(str, (EnforcingAdmin) obj);
-                    return lambda$resolve$0;
+                    return ((EnforcingAdmin) obj).hasAuthority(str);
                 }
             }).findFirst();
             if (findFirst.isPresent()) {
@@ -41,26 +52,7 @@ public final class TopPriority extends ResolutionMechanism {
         return (PolicyValue) ((Map.Entry) linkedHashMap.entrySet().stream().findFirst().get()).getValue();
     }
 
-    public static /* synthetic */ boolean lambda$resolve$0(String str, EnforcingAdmin enforcingAdmin) {
-        return enforcingAdmin.hasAuthority(str);
-    }
-
-    @Override // com.android.server.devicepolicy.ResolutionMechanism
-    /* renamed from: getParcelableResolutionMechanism, reason: merged with bridge method [inline-methods] */
-    public android.app.admin.TopPriority mo5119getParcelableResolutionMechanism() {
-        return new android.app.admin.TopPriority(getParcelableAuthorities());
-    }
-
-    public final List getParcelableAuthorities() {
-        ArrayList arrayList = new ArrayList();
-        Iterator it = this.mHighestToLowestPriorityAuthorities.iterator();
-        while (it.hasNext()) {
-            arrayList.add(EnforcingAdmin.getParcelableAuthority((String) it.next()));
-        }
-        return arrayList;
-    }
-
-    public String toString() {
+    public final String toString() {
         return "TopPriority { mHighestToLowestPriorityAuthorities= " + this.mHighestToLowestPriorityAuthorities + " }";
     }
 }

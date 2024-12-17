@@ -5,13 +5,13 @@ import android.os.ShellCommand;
 import android.util.Slog;
 import com.android.internal.app.IVoiceInteractionSessionShowCallback;
 import com.android.server.voiceinteraction.VoiceInteractionManagerService;
-import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import java.io.PrintWriter;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class VoiceInteractionManagerServiceShellCommand extends ShellCommand {
     public final VoiceInteractionManagerService.VoiceInteractionManagerServiceStub mService;
 
@@ -19,61 +19,99 @@ public final class VoiceInteractionManagerServiceShellCommand extends ShellComma
         this.mService = voiceInteractionManagerServiceStub;
     }
 
-    public int onCommand(String str) {
+    public static void handleError(PrintWriter printWriter, Exception exc, String str) {
+        Slog.e("VoiceInteractionManager", "error calling ".concat(str), exc);
+        printWriter.printf("Error calling %s: %s\n", str, exc);
+    }
+
+    public final int onCommand(String str) {
+        final PrintWriter outPrintWriter;
         if (str == null) {
             return handleDefaultCommands(str);
         }
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1097066044:
-                if (str.equals("set-debug-hotword-logging")) {
-                    c = 0;
+        outPrintWriter = getOutPrintWriter();
+        switch (str) {
+            case "set-debug-hotword-logging":
+                boolean parseBoolean = Boolean.parseBoolean(getNextArgRequired());
+                Slog.i("VoiceInteractionManager", "setDebugHotwordLogging(): " + parseBoolean);
+                try {
+                    VoiceInteractionManagerService.VoiceInteractionManagerServiceStub voiceInteractionManagerServiceStub = this.mService;
+                    synchronized (voiceInteractionManagerServiceStub) {
+                        try {
+                            if (voiceInteractionManagerServiceStub.mImpl == null) {
+                                Slog.w("VoiceInteractionManager", "setTemporaryLogging without running voice interaction service");
+                            } else {
+                                voiceInteractionManagerServiceStub.mImpl.setDebugHotwordLoggingLocked(parseBoolean);
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
                     break;
+                } catch (Exception e) {
+                    handleError(outPrintWriter, e, "setDebugHotwordLogging()");
+                    return 1;
+                }
+            case "hide":
+                Slog.i("VoiceInteractionManager", "requestHide()");
+                try {
+                    this.mService.hideCurrentSession();
+                    break;
+                } catch (Exception e2) {
+                    handleError(outPrintWriter, e2, "requestHide()");
+                    return 1;
+                }
+            case "show":
+                Slog.i("VoiceInteractionManager", "requestShow()");
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                final AtomicInteger atomicInteger = new AtomicInteger();
+                try {
+                    if (!this.mService.showSessionForActiveService(new Bundle(), 0, null, new IVoiceInteractionSessionShowCallback.Stub() { // from class: com.android.server.voiceinteraction.VoiceInteractionManagerServiceShellCommand.1
+                        public final void onFailed() {
+                            Slog.w("VoiceInteractionManager", "onFailed()");
+                            outPrintWriter.println("callback failed");
+                            atomicInteger.set(1);
+                            countDownLatch.countDown();
+                        }
+
+                        public final void onShown() {
+                            Slog.d("VoiceInteractionManager", "onShown()");
+                            atomicInteger.set(0);
+                            countDownLatch.countDown();
+                        }
+                    }, null)) {
+                        outPrintWriter.println("showSessionForActiveService() returned false");
+                    } else if (!countDownLatch.await(5000L, TimeUnit.MILLISECONDS)) {
+                        outPrintWriter.printf("Callback not called in %d ms\n", 5000L);
+                    }
+                } catch (Exception e3) {
+                    handleError(outPrintWriter, e3, "showSessionForActiveService()");
                 }
                 break;
-            case 3202370:
-                if (str.equals("hide")) {
-                    c = 1;
+            case "disable":
+                boolean parseBoolean2 = Boolean.parseBoolean(getNextArgRequired());
+                Slog.i("VoiceInteractionManager", "requestDisable(): " + parseBoolean2);
+                try {
+                    this.mService.setDisabled(parseBoolean2);
                     break;
+                } catch (Exception e4) {
+                    handleError(outPrintWriter, e4, "requestDisable()");
+                    return 1;
                 }
-                break;
-            case 3529469:
-                if (str.equals(KnoxCustomManagerService.SHOW)) {
-                    c = 2;
+            case "restart-detection":
+                Slog.i("VoiceInteractionManager", "requestRestartDetection()");
+                try {
+                    this.mService.forceRestartHotwordDetector();
                     break;
+                } catch (Exception e5) {
+                    handleError(outPrintWriter, e5, "requestRestartDetection()");
+                    return 1;
                 }
-                break;
-            case 1671308008:
-                if (str.equals("disable")) {
-                    c = 3;
-                    break;
-                }
-                break;
-            case 1718895687:
-                if (str.equals("restart-detection")) {
-                    c = 4;
-                    break;
-                }
-                break;
         }
-        switch (c) {
-            case 0:
-                return setDebugHotwordLogging(outPrintWriter);
-            case 1:
-                return requestHide(outPrintWriter);
-            case 2:
-                return requestShow(outPrintWriter);
-            case 3:
-                return requestDisable(outPrintWriter);
-            case 4:
-                return requestRestartDetection(outPrintWriter);
-            default:
-                return handleDefaultCommands(str);
-        }
+        return handleDefaultCommands(str);
     }
 
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         try {
             outPrintWriter.println("VoiceInteraction Service (voiceinteraction) commands:");
@@ -107,85 +145,5 @@ public final class VoiceInteractionManagerServiceShellCommand extends ShellComma
             }
             throw th;
         }
-    }
-
-    public final int requestShow(final PrintWriter printWriter) {
-        Slog.i("VoiceInteractionManager", "requestShow()");
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final AtomicInteger atomicInteger = new AtomicInteger();
-        try {
-            if (!this.mService.showSessionForActiveService(new Bundle(), 0, null, new IVoiceInteractionSessionShowCallback.Stub() { // from class: com.android.server.voiceinteraction.VoiceInteractionManagerServiceShellCommand.1
-                public void onFailed() {
-                    Slog.w("VoiceInteractionManager", "onFailed()");
-                    printWriter.println("callback failed");
-                    atomicInteger.set(1);
-                    countDownLatch.countDown();
-                }
-
-                public void onShown() {
-                    Slog.d("VoiceInteractionManager", "onShown()");
-                    atomicInteger.set(0);
-                    countDownLatch.countDown();
-                }
-            }, null)) {
-                printWriter.println("showSessionForActiveService() returned false");
-                return 1;
-            }
-            if (countDownLatch.await(5000L, TimeUnit.MILLISECONDS)) {
-                return 0;
-            }
-            printWriter.printf("Callback not called in %d ms\n", 5000L);
-            return 1;
-        } catch (Exception e) {
-            return handleError(printWriter, "showSessionForActiveService()", e);
-        }
-    }
-
-    public final int requestHide(PrintWriter printWriter) {
-        Slog.i("VoiceInteractionManager", "requestHide()");
-        try {
-            this.mService.hideCurrentSession();
-            return 0;
-        } catch (Exception e) {
-            return handleError(printWriter, "requestHide()", e);
-        }
-    }
-
-    public final int requestDisable(PrintWriter printWriter) {
-        boolean parseBoolean = Boolean.parseBoolean(getNextArgRequired());
-        Slog.i("VoiceInteractionManager", "requestDisable(): " + parseBoolean);
-        try {
-            this.mService.setDisabled(parseBoolean);
-            return 0;
-        } catch (Exception e) {
-            return handleError(printWriter, "requestDisable()", e);
-        }
-    }
-
-    public final int requestRestartDetection(PrintWriter printWriter) {
-        Slog.i("VoiceInteractionManager", "requestRestartDetection()");
-        try {
-            this.mService.forceRestartHotwordDetector();
-            return 0;
-        } catch (Exception e) {
-            return handleError(printWriter, "requestRestartDetection()", e);
-        }
-    }
-
-    public final int setDebugHotwordLogging(PrintWriter printWriter) {
-        boolean parseBoolean = Boolean.parseBoolean(getNextArgRequired());
-        Slog.i("VoiceInteractionManager", "setDebugHotwordLogging(): " + parseBoolean);
-        try {
-            this.mService.setDebugHotwordLogging(parseBoolean);
-            return 0;
-        } catch (Exception e) {
-            return handleError(printWriter, "setDebugHotwordLogging()", e);
-        }
-    }
-
-    public static int handleError(PrintWriter printWriter, String str, Exception exc) {
-        Slog.e("VoiceInteractionManager", "error calling " + str, exc);
-        printWriter.printf("Error calling %s: %s\n", str, exc);
-        return 1;
     }
 }

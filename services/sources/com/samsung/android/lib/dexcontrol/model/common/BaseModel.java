@@ -5,38 +5,37 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
-import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
-import com.android.internal.util.FrameworkStatsLog;
 import com.samsung.android.lib.dexcontrol.utils.SLog;
 import java.util.HashMap;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class BaseModel {
-    public static final String TAG = "BaseModel";
     public Context mContext;
+    public final AnonymousClass3 mUsbDeviceReceiver;
     public final HashMap mUsbClassMap = new HashMap() { // from class: com.samsung.android.lib.dexcontrol.model.common.BaseModel.1
         {
-            put(Integer.valueOf(USB_CLASS_CODE.AUDIO.getValue()), "A");
-            put(Integer.valueOf(USB_CLASS_CODE.COMMUNICATIONS_AND_CDC_CONTROL.getValue()), "B");
-            put(Integer.valueOf(USB_CLASS_CODE.HID.getValue()), "C");
-            put(Integer.valueOf(USB_CLASS_CODE.PHYSICAL.getValue()), "D");
-            put(Integer.valueOf(USB_CLASS_CODE.IMAGE.getValue()), "E");
-            put(Integer.valueOf(USB_CLASS_CODE.PRINTER.getValue()), "F");
-            put(Integer.valueOf(USB_CLASS_CODE.MASS_STORAGE.getValue()), "G");
-            put(Integer.valueOf(USB_CLASS_CODE.HUB.getValue()), "H");
-            put(Integer.valueOf(USB_CLASS_CODE.CDC_DATA.getValue()), "I");
-            put(Integer.valueOf(USB_CLASS_CODE.SMART_CARD.getValue()), "J");
-            put(Integer.valueOf(USB_CLASS_CODE.CONTENT_SECURITY.getValue()), "K");
-            put(Integer.valueOf(USB_CLASS_CODE.VIDEO.getValue()), "L");
-            put(Integer.valueOf(USB_CLASS_CODE.PERSOLNAL_HEALTHCARE.getValue()), "M");
-            put(Integer.valueOf(USB_CLASS_CODE.AUDIO_VIDEO_DEVICES.getValue()), "N");
-            put(Integer.valueOf(USB_CLASS_CODE.BILLBOARD_DEVICE_CLASS.getValue()), "O");
-            put(Integer.valueOf(USB_CLASS_CODE.USB_TYPE_C_BRIDGE_CLASS.getValue()), "P");
-            put(Integer.valueOf(USB_CLASS_CODE.DIAGONOSTIC_DEVICES.getValue()), "Q");
-            put(Integer.valueOf(USB_CLASS_CODE.WIRELESS_CONTROLLER.getValue()), "R");
-            put(Integer.valueOf(USB_CLASS_CODE.MISCELLANEOUS.getValue()), "S");
-            put(Integer.valueOf(USB_CLASS_CODE.APPLICATION_SPECIFIC.getValue()), "T");
-            put(Integer.valueOf(USB_CLASS_CODE.VENDOR_SPECIFIC.getValue()), "U");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.AUDIO, this, "A");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.COMMUNICATIONS_AND_CDC_CONTROL, this, "B");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.HID, this, "C");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.PHYSICAL, this, "D");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.IMAGE, this, "E");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.PRINTER, this, "F");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.MASS_STORAGE, this, "G");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.HUB, this, "H");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.CDC_DATA, this, "I");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.SMART_CARD, this, "J");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.CONTENT_SECURITY, this, "K");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.VIDEO, this, "L");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.PERSOLNAL_HEALTHCARE, this, "M");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.AUDIO_VIDEO_DEVICES, this, "N");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.BILLBOARD_DEVICE_CLASS, this, "O");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.USB_TYPE_C_BRIDGE_CLASS, this, "P");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.DIAGONOSTIC_DEVICES, this, "Q");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.WIRELESS_CONTROLLER, this, "R");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.MISCELLANEOUS, this, "S");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.APPLICATION_SPECIFIC, this, "T");
+            BaseModel$1$$ExternalSyntheticOutline0.m(USB_CLASS_CODE.VENDOR_SPECIFIC, this, "U");
         }
     };
     public final HashMap mTATypeMap = new HashMap() { // from class: com.samsung.android.lib.dexcontrol.model.common.BaseModel.2
@@ -49,111 +48,89 @@ public abstract class BaseModel {
             put(Integer.valueOf(TA_TYPE_CODE.QC.getValue()), "Q");
         }
     };
-    public final BroadcastReceiver mUsbDeviceReceiver = new BroadcastReceiver() { // from class: com.samsung.android.lib.dexcontrol.model.common.BaseModel.3
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            action.hashCode();
-            if (!action.equals("android.hardware.usb.action.USB_DEVICE_ATTACHED")) {
-                SLog.e(BaseModel.TAG, "Not in Case");
-                return;
-            }
-            UsbDevice usbDevice = (UsbDevice) intent.getParcelableExtra("device");
-            if (usbDevice != null) {
-                BaseModel.this.updateUsbClassInfo(usbDevice);
-            }
-        }
-    };
 
-    public abstract void usbDeviceChanged(int i, String str);
-
-    /* loaded from: classes2.dex */
-    public enum USB_CLASS_CODE {
-        AUDIO(1),
-        COMMUNICATIONS_AND_CDC_CONTROL(2),
-        HID(3),
-        PHYSICAL(5),
-        IMAGE(6),
-        PRINTER(7),
-        MASS_STORAGE(8),
-        HUB(9),
-        CDC_DATA(10),
-        SMART_CARD(11),
-        CONTENT_SECURITY(13),
-        VIDEO(14),
-        PERSOLNAL_HEALTHCARE(15),
-        AUDIO_VIDEO_DEVICES(16),
-        BILLBOARD_DEVICE_CLASS(17),
-        USB_TYPE_C_BRIDGE_CLASS(18),
-        DIAGONOSTIC_DEVICES(FrameworkStatsLog.CAMERA_SHOT_LATENCY_REPORTED__MODE__CONTROL_DS_MODE_ASTRO),
-        WIRELESS_CONTROLLER(224),
-        MISCELLANEOUS(FrameworkStatsLog.BOOT_TIME_EVENT_DURATION_REPORTED),
-        APPLICATION_SPECIFIC(FrameworkStatsLog.APP_FREEZE_CHANGED),
-        VENDOR_SPECIFIC(IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT);
-
-        private final int mValue;
-
-        USB_CLASS_CODE(int i) {
-            this.mValue = i;
-        }
-
-        public int getValue() {
-            return this.mValue;
-        }
-    }
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public enum TA_TYPE_CODE {
-        PD(1),
-        SDP(2),
-        CDP(3),
-        DCP(4),
-        AFC(5),
-        QC(6);
+        PD("PD"),
+        SDP("SDP"),
+        CDP("CDP"),
+        DCP("DCP"),
+        AFC("AFC"),
+        QC("QC");
 
         private final int mValue;
 
-        TA_TYPE_CODE(int i) {
-            this.mValue = i;
+        TA_TYPE_CODE(String str) {
+            this.mValue = r2;
         }
 
-        public int getValue() {
+        public final int getValue() {
             return this.mValue;
         }
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public enum USB_CLASS_CODE {
+        AUDIO("AUDIO"),
+        COMMUNICATIONS_AND_CDC_CONTROL("COMMUNICATIONS_AND_CDC_CONTROL"),
+        HID("HID"),
+        PHYSICAL("PHYSICAL"),
+        IMAGE("IMAGE"),
+        PRINTER("PRINTER"),
+        MASS_STORAGE("MASS_STORAGE"),
+        HUB("HUB"),
+        CDC_DATA("CDC_DATA"),
+        SMART_CARD("SMART_CARD"),
+        CONTENT_SECURITY("CONTENT_SECURITY"),
+        VIDEO("VIDEO"),
+        PERSOLNAL_HEALTHCARE("PERSOLNAL_HEALTHCARE"),
+        AUDIO_VIDEO_DEVICES("AUDIO_VIDEO_DEVICES"),
+        BILLBOARD_DEVICE_CLASS("BILLBOARD_DEVICE_CLASS"),
+        USB_TYPE_C_BRIDGE_CLASS("USB_TYPE_C_BRIDGE_CLASS"),
+        DIAGONOSTIC_DEVICES("DIAGONOSTIC_DEVICES"),
+        WIRELESS_CONTROLLER("WIRELESS_CONTROLLER"),
+        MISCELLANEOUS("MISCELLANEOUS"),
+        APPLICATION_SPECIFIC("APPLICATION_SPECIFIC"),
+        VENDOR_SPECIFIC("VENDOR_SPECIFIC");
+
+        private final int mValue;
+
+        USB_CLASS_CODE(String str) {
+            this.mValue = r2;
+        }
+
+        public final int getValue() {
+            return this.mValue;
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r0v3, types: [android.content.BroadcastReceiver, com.samsung.android.lib.dexcontrol.model.common.BaseModel$3] */
     public BaseModel(Context context) {
         this.mContext = null;
+        ?? r0 = new BroadcastReceiver() { // from class: com.samsung.android.lib.dexcontrol.model.common.BaseModel.3
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                String action = intent.getAction();
+                action.getClass();
+                if (!action.equals("android.hardware.usb.action.USB_DEVICE_ATTACHED")) {
+                    SLog.e("BaseModel", "Not in Case");
+                    return;
+                }
+                UsbDevice usbDevice = (UsbDevice) intent.getParcelableExtra("device");
+                if (usbDevice != null) {
+                    BaseModel baseModel = BaseModel.this;
+                    baseModel.getClass();
+                    if (usbDevice.getInterfaceCount() > 0) {
+                        baseModel.usbDeviceChanged(usbDevice.getProductId(), (String) baseModel.mUsbClassMap.get(Integer.valueOf(usbDevice.getInterface(0).getInterfaceClass())));
+                    }
+                }
+            }
+        };
+        this.mUsbDeviceReceiver = r0;
         this.mContext = context;
-        init();
+        this.mContext.registerReceiver(r0, new IntentFilter("android.hardware.usb.action.USB_DEVICE_ATTACHED"), 2);
     }
 
-    public final void init() {
-        registerUsbReceiver();
-    }
-
-    public Context getContext() {
-        return this.mContext;
-    }
-
-    public final void registerUsbReceiver() {
-        this.mContext.registerReceiver(this.mUsbDeviceReceiver, new IntentFilter("android.hardware.usb.action.USB_DEVICE_ATTACHED"));
-    }
-
-    public final void updateUsbClassInfo(UsbDevice usbDevice) {
-        if (usbDevice.getInterfaceCount() > 0) {
-            usbDeviceChanged(usbDevice.getProductId(), (String) this.mUsbClassMap.get(Integer.valueOf(usbDevice.getInterface(0).getInterfaceClass())));
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public void unregisterReceiver() {
-        getContext().unregisterReceiver(this.mUsbDeviceReceiver);
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    public void destroy() {
-        unregisterReceiver();
-        this.mContext = null;
-    }
+    public abstract void usbDeviceChanged(int i, String str);
 }

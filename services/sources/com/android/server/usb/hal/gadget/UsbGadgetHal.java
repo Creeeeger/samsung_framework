@@ -1,6 +1,7 @@
 package com.android.server.usb.hal.gadget;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface UsbGadgetHal {
     void getCurrentUsbFunctions(long j);
 
@@ -10,5 +11,5 @@ public interface UsbGadgetHal {
 
     void reset(long j);
 
-    void setCurrentUsbFunctions(int i, long j, boolean z, int i2, long j2);
+    void setCurrentUsbFunctions(int i, long j, long j2, boolean z);
 }

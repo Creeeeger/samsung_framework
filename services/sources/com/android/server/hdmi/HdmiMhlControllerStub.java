@@ -2,42 +2,14 @@ package com.android.server.hdmi;
 
 import android.hardware.hdmi.HdmiPortInfo;
 import android.util.SparseArray;
-import com.android.internal.util.IndentingPrintWriter;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class HdmiMhlControllerStub {
-    public static final SparseArray mLocalDevices = new SparseArray();
-    public static final HdmiPortInfo[] EMPTY_PORT_INFO = new HdmiPortInfo[0];
+    public static final HdmiPortInfo[] EMPTY_PORT_INFO;
 
-    public void clearAllLocalDevices() {
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-    }
-
-    public HdmiMhlLocalDeviceStub getLocalDevice(int i) {
-        return null;
-    }
-
-    public HdmiMhlLocalDeviceStub getLocalDeviceById(int i) {
-        return null;
-    }
-
-    public boolean isReady() {
-        return false;
-    }
-
-    public void setOption(int i, int i2) {
-    }
-
-    public HdmiMhlControllerStub(HdmiControlService hdmiControlService) {
-    }
-
-    public static HdmiMhlControllerStub create(HdmiControlService hdmiControlService) {
-        return new HdmiMhlControllerStub(hdmiControlService);
-    }
-
-    public HdmiPortInfo[] getPortInfos() {
-        return EMPTY_PORT_INFO;
+    static {
+        new SparseArray();
+        EMPTY_PORT_INFO = new HdmiPortInfo[0];
     }
 }

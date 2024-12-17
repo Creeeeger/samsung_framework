@@ -3,8 +3,10 @@ package com.samsung.android.displayquality;
 import android.content.Context;
 import android.os.Build;
 import android.util.Slog;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import com.samsung.android.displayquality.ISemDisplayQualityManager;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public class SemDisplayQualityManagerService extends ISemDisplayQualityManager.Stub {
     private static final String TAG = "SemDisplayQualityManagerService";
@@ -31,7 +33,12 @@ public class SemDisplayQualityManagerService extends ISemDisplayQualityManager.S
         this.mLock = new Object();
         this.mContext = context;
         this.displayQuality = new SemDisplayQuality(context);
-        Slog.d(TAG, "platform:" + str2 + " outdoor:" + z + " adaptiveSync:" + z2);
+        StringBuilder sb = new StringBuilder("platform:");
+        sb.append(str2);
+        sb.append(" outdoor:");
+        sb.append(z);
+        sb.append(" adaptiveSync:");
+        AnyMotionDetector$$ExternalSyntheticOutline0.m(TAG, sb, z2);
     }
 
     public void enhanceDisplayOutdoorVisibilityByLux(int i) {

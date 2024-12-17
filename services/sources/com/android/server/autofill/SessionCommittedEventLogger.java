@@ -1,78 +1,36 @@
 package com.android.server.autofill;
 
-import android.util.Slog;
-import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.autofill.SessionCommittedEventLogger;
 import java.util.Optional;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class SessionCommittedEventLogger {
-    public Optional mEventInternal = Optional.of(new SessionCommittedEventInternal());
+    public Optional mEventInternal;
     public final int mSessionId;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class SessionCommittedEventInternal {
-        public int mComponentPackageUid = -1;
-        public int mRequestCount = 0;
-        public int mCommitReason = 0;
-        public long mSessionDurationMillis = 0;
+        public int mCommitReason;
+        public int mComponentPackageUid;
+        public boolean mLastFillResponseHasSaveInfo;
+        public int mRequestCount;
+        public int mSaveDataTypeCount;
+        public int mSaveInfoCount;
+        public int mServiceUid;
+        public long mSessionDurationMillis;
     }
 
     public SessionCommittedEventLogger(int i) {
         this.mSessionId = i;
-    }
-
-    public static SessionCommittedEventLogger forSessionId(int i) {
-        return new SessionCommittedEventLogger(i);
-    }
-
-    public void maybeSetComponentPackageUid(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.SessionCommittedEventLogger$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((SessionCommittedEventLogger.SessionCommittedEventInternal) obj).mComponentPackageUid = i;
-            }
-        });
-    }
-
-    public void maybeSetRequestCount(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.SessionCommittedEventLogger$$ExternalSyntheticLambda2
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((SessionCommittedEventLogger.SessionCommittedEventInternal) obj).mRequestCount = i;
-            }
-        });
-    }
-
-    public void maybeSetCommitReason(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.SessionCommittedEventLogger$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((SessionCommittedEventLogger.SessionCommittedEventInternal) obj).mCommitReason = i;
-            }
-        });
-    }
-
-    public void maybeSetSessionDurationMillis(final long j) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.SessionCommittedEventLogger$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((SessionCommittedEventLogger.SessionCommittedEventInternal) obj).mSessionDurationMillis = j;
-            }
-        });
-    }
-
-    public void logAndEndEvent() {
-        if (!this.mEventInternal.isPresent()) {
-            Slog.w("SessionCommittedEventLogger", "Shouldn't be logging AutofillSessionCommitted again for same session.");
-            return;
-        }
-        SessionCommittedEventInternal sessionCommittedEventInternal = (SessionCommittedEventInternal) this.mEventInternal.get();
-        if (Helper.sVerbose) {
-            Slog.v("SessionCommittedEventLogger", "Log AutofillSessionCommitted: sessionId=" + this.mSessionId + " mComponentPackageUid=" + sessionCommittedEventInternal.mComponentPackageUid + " mRequestCount=" + sessionCommittedEventInternal.mRequestCount + " mCommitReason=" + sessionCommittedEventInternal.mCommitReason + " mSessionDurationMillis=" + sessionCommittedEventInternal.mSessionDurationMillis);
-        }
-        FrameworkStatsLog.write(FrameworkStatsLog.AUTOFILL_SESSION_COMMITTED, this.mSessionId, sessionCommittedEventInternal.mComponentPackageUid, sessionCommittedEventInternal.mRequestCount, sessionCommittedEventInternal.mCommitReason, sessionCommittedEventInternal.mSessionDurationMillis);
-        this.mEventInternal = Optional.empty();
+        SessionCommittedEventInternal sessionCommittedEventInternal = new SessionCommittedEventInternal();
+        sessionCommittedEventInternal.mComponentPackageUid = -1;
+        sessionCommittedEventInternal.mRequestCount = 0;
+        sessionCommittedEventInternal.mCommitReason = 0;
+        sessionCommittedEventInternal.mSessionDurationMillis = 0L;
+        sessionCommittedEventInternal.mSaveInfoCount = -1;
+        sessionCommittedEventInternal.mSaveDataTypeCount = -1;
+        sessionCommittedEventInternal.mLastFillResponseHasSaveInfo = false;
+        sessionCommittedEventInternal.mServiceUid = -1;
+        this.mEventInternal = Optional.of(sessionCommittedEventInternal);
     }
 }

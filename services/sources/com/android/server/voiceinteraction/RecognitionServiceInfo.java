@@ -1,41 +1,27 @@
 package com.android.server.voiceinteraction;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Xml;
 import com.android.internal.R;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
-public class RecognitionServiceInfo {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RecognitionServiceInfo {
     public final String mParseError;
     public final boolean mSelectableAsDefault;
     public final ServiceInfo mServiceInfo;
 
-    public static List getAvailableServices(Context context, int i) {
-        ArrayList arrayList = new ArrayList();
-        Iterator it = context.getPackageManager().queryIntentServicesAsUser(new Intent("android.speech.RecognitionService"), 786432, i).iterator();
-        while (it.hasNext()) {
-            RecognitionServiceInfo parseInfo = parseInfo(context.getPackageManager(), ((ResolveInfo) it.next()).serviceInfo);
-            if (!TextUtils.isEmpty(parseInfo.mParseError)) {
-                Log.w("RecognitionServiceInfo", "Parse error in getAvailableServices: " + parseInfo.mParseError);
-            }
-            arrayList.add(parseInfo);
-        }
-        return arrayList;
+    public RecognitionServiceInfo(ServiceInfo serviceInfo, boolean z, String str) {
+        this.mServiceInfo = serviceInfo;
+        this.mSelectableAsDefault = z;
+        this.mParseError = str;
     }
 
     public static RecognitionServiceInfo parseInfo(PackageManager packageManager, ServiceInfo serviceInfo) {
@@ -78,23 +64,5 @@ public class RecognitionServiceInfo {
             }
             throw th;
         }
-    }
-
-    public RecognitionServiceInfo(ServiceInfo serviceInfo, boolean z, String str) {
-        this.mServiceInfo = serviceInfo;
-        this.mSelectableAsDefault = z;
-        this.mParseError = str;
-    }
-
-    public String getParseError() {
-        return this.mParseError;
-    }
-
-    public ServiceInfo getServiceInfo() {
-        return this.mServiceInfo;
-    }
-
-    public boolean isSelectableAsDefault() {
-        return this.mSelectableAsDefault;
     }
 }

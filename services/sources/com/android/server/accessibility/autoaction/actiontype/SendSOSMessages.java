@@ -1,34 +1,21 @@
 package com.android.server.accessibility.autoaction.actiontype;
 
-import android.R;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.provider.Settings;
 import android.util.Log;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SendSOSMessages extends CornerActionType {
+public final class SendSOSMessages extends CornerActionType {
     public Context mContext;
     public int mUserId;
 
-    public static int getStringResId() {
-        return R.string.app_running_notification_text;
-    }
-
-    public SendSOSMessages(Context context, int i) {
-        this.mContext = context;
-        this.mUserId = i;
-    }
-
-    public static SendSOSMessages createAction(Context context, int i) {
-        return new SendSOSMessages(context, i);
-    }
-
     @Override // com.android.server.accessibility.autoaction.actiontype.CornerActionType
-    public void performCornerAction(int i) {
+    public final void performCornerAction(int i) {
         new Thread(new Runnable() { // from class: com.android.server.accessibility.autoaction.actiontype.SendSOSMessages.1
             @Override // java.lang.Runnable
-            public void run() {
+            public final void run() {
                 try {
                     Thread.sleep(100L);
                     int intForUser = Settings.System.getIntForUser(SendSOSMessages.this.mContext.getContentResolver(), "send_emergency_message_power_number", 5, SendSOSMessages.this.mUserId);

@@ -1,14 +1,14 @@
 package com.android.server.pm.pkg;
 
 import android.content.pm.SharedLibraryInfo;
-import android.text.TextUtils;
 import com.android.server.pm.PackageSetting;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/* loaded from: classes3.dex */
-public class PackageStateUnserialized {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PackageStateUnserialized {
     public boolean apkInUpdatedApex;
     public boolean hiddenUntilInstalled;
     public volatile long[] lastPackageUsageTimeInMills;
@@ -20,31 +20,28 @@ public class PackageStateUnserialized {
     public List usesLibraryInfos = Collections.emptyList();
     public List usesLibraryFiles = Collections.emptyList();
 
-    public final long[] lazyInitLastPackageUsageTimeInMills() {
-        return new long[8];
-    }
-
     public PackageStateUnserialized(PackageSetting packageSetting) {
         this.mPackageSetting = packageSetting;
     }
 
-    public PackageStateUnserialized setLastPackageUsageTimeInMills(int i, long j) {
-        if (i < 0 || i >= 8) {
-            return this;
+    public final long[] getLastPackageUsageTimeInMills() {
+        long[] jArr = this.lastPackageUsageTimeInMills;
+        if (jArr == null) {
+            synchronized (this) {
+                try {
+                    jArr = this.lastPackageUsageTimeInMills;
+                    if (jArr == null) {
+                        jArr = new long[8];
+                        this.lastPackageUsageTimeInMills = jArr;
+                    }
+                } finally {
+                }
+            }
         }
-        getLastPackageUsageTimeInMills()[i] = j;
-        return this;
+        return jArr;
     }
 
-    public long getLatestPackageUseTimeInMills() {
-        long j = 0;
-        for (long j2 : getLastPackageUsageTimeInMills()) {
-            j = Math.max(j, j2);
-        }
-        return j;
-    }
-
-    public long getLatestForegroundPackageUseTimeInMills() {
+    public final long getLatestForegroundPackageUseTimeInMills() {
         int[] iArr = {0, 2};
         long j = 0;
         for (int i = 0; i < 2; i++) {
@@ -53,130 +50,25 @@ public class PackageStateUnserialized {
         return j;
     }
 
-    public void updateFrom(PackageStateUnserialized packageStateUnserialized) {
-        this.hiddenUntilInstalled = packageStateUnserialized.hiddenUntilInstalled;
-        if (!packageStateUnserialized.usesLibraryInfos.isEmpty()) {
-            this.usesLibraryInfos = new ArrayList(packageStateUnserialized.usesLibraryInfos);
+    public final long getLatestPackageUseTimeInMills() {
+        long j = 0;
+        for (long j2 : getLastPackageUsageTimeInMills()) {
+            j = Math.max(j, j2);
         }
-        if (!packageStateUnserialized.usesLibraryFiles.isEmpty()) {
-            this.usesLibraryFiles = new ArrayList(packageStateUnserialized.usesLibraryFiles);
-        }
-        this.updatedSystemApp = packageStateUnserialized.updatedSystemApp;
-        this.apkInUpdatedApex = packageStateUnserialized.apkInUpdatedApex;
-        this.lastPackageUsageTimeInMills = packageStateUnserialized.lastPackageUsageTimeInMills;
-        this.overrideSeInfo = packageStateUnserialized.overrideSeInfo;
-        this.seInfo = packageStateUnserialized.seInfo;
-        this.mApexModuleName = packageStateUnserialized.mApexModuleName;
-        this.mPackageSetting.onChanged();
+        return j;
     }
 
-    public List getNonNativeUsesLibraryInfos() {
-        ArrayList arrayList = new ArrayList();
-        this.usesLibraryInfos = getUsesLibraryInfos();
-        for (int i = 0; i < this.usesLibraryInfos.size(); i++) {
-            SharedLibraryWrapper sharedLibraryWrapper = (SharedLibraryWrapper) this.usesLibraryInfos.get(i);
-            if (!sharedLibraryWrapper.isNative()) {
-                arrayList.add(sharedLibraryWrapper.getInfo());
-            }
-        }
-        return arrayList;
+    public final void setUpdatedSystemApp(boolean z) {
+        this.updatedSystemApp = z;
+        this.mPackageSetting.onChanged$2();
     }
 
-    public PackageStateUnserialized setHiddenUntilInstalled(boolean z) {
-        this.hiddenUntilInstalled = z;
-        this.mPackageSetting.onChanged();
-        return this;
-    }
-
-    public PackageStateUnserialized setUsesLibraryInfos(List list) {
+    public final void setUsesLibraryInfos(List list) {
         ArrayList arrayList = new ArrayList();
         for (int i = 0; i < list.size(); i++) {
             arrayList.add(new SharedLibraryWrapper((SharedLibraryInfo) list.get(i)));
         }
         this.usesLibraryInfos = arrayList;
-        this.mPackageSetting.onChanged();
-        return this;
-    }
-
-    public PackageStateUnserialized setUsesLibraryFiles(List list) {
-        this.usesLibraryFiles = list;
-        this.mPackageSetting.onChanged();
-        return this;
-    }
-
-    public PackageStateUnserialized setUpdatedSystemApp(boolean z) {
-        this.updatedSystemApp = z;
-        this.mPackageSetting.onChanged();
-        return this;
-    }
-
-    public PackageStateUnserialized setApkInUpdatedApex(boolean z) {
-        this.apkInUpdatedApex = z;
-        this.mPackageSetting.onChanged();
-        return this;
-    }
-
-    public PackageStateUnserialized setOverrideSeInfo(String str) {
-        this.overrideSeInfo = str;
-        this.mPackageSetting.onChanged();
-        return this;
-    }
-
-    public PackageStateUnserialized setSeInfo(String str) {
-        this.seInfo = TextUtils.safeIntern(str);
-        this.mPackageSetting.onChanged();
-        return this;
-    }
-
-    public PackageStateUnserialized setApexModuleName(String str) {
-        this.mApexModuleName = str;
-        this.mPackageSetting.onChanged();
-        return this;
-    }
-
-    public boolean isHiddenUntilInstalled() {
-        return this.hiddenUntilInstalled;
-    }
-
-    public List getUsesLibraryInfos() {
-        return this.usesLibraryInfos;
-    }
-
-    public List getUsesLibraryFiles() {
-        return this.usesLibraryFiles;
-    }
-
-    public boolean isUpdatedSystemApp() {
-        return this.updatedSystemApp;
-    }
-
-    public boolean isApkInUpdatedApex() {
-        return this.apkInUpdatedApex;
-    }
-
-    public long[] getLastPackageUsageTimeInMills() {
-        long[] jArr = this.lastPackageUsageTimeInMills;
-        if (jArr == null) {
-            synchronized (this) {
-                jArr = this.lastPackageUsageTimeInMills;
-                if (jArr == null) {
-                    jArr = lazyInitLastPackageUsageTimeInMills();
-                    this.lastPackageUsageTimeInMills = jArr;
-                }
-            }
-        }
-        return jArr;
-    }
-
-    public String getOverrideSeInfo() {
-        return this.overrideSeInfo;
-    }
-
-    public String getSeInfo() {
-        return this.seInfo;
-    }
-
-    public String getApexModuleName() {
-        return this.mApexModuleName;
+        this.mPackageSetting.onChanged$2();
     }
 }

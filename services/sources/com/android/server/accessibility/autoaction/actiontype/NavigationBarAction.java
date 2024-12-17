@@ -1,6 +1,5 @@
 package com.android.server.accessibility.autoaction.actiontype;
 
-import android.R;
 import android.app.Instrumentation;
 import android.app.StatusBarManager;
 import android.content.Context;
@@ -8,131 +7,58 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.view.accessibility.AccessibilityManager;
 import com.android.internal.accessibility.util.AccessibilityUtils;
+import com.android.server.ExplicitHealthCheckController$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.statusbar.StatusBarManagerInternal;
+import com.android.server.statusbar.StatusBarManagerService;
+import com.samsung.android.knoxguard.service.utils.Constants;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class NavigationBarAction extends CornerActionType {
+public final class NavigationBarAction extends CornerActionType {
     public Context mContext;
     public String mType;
     public int mUserId;
 
-    public NavigationBarAction(Context context, String str, int i) {
-        this.mContext = context;
-        this.mType = str;
-        this.mUserId = i;
-    }
-
-    public static NavigationBarAction createAction(Context context, String str, int i) {
-        return new NavigationBarAction(context, str, i);
-    }
-
-    public static int getStringResId(String str) {
-        str.hashCode();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1961431229:
-                if (str.equals("accessibility_button")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case 3015911:
-                if (str.equals("back")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 3208415:
-                if (str.equals("home")) {
-                    c = 2;
-                    break;
-                }
-                break;
-            case 1082295672:
-                if (str.equals("recents")) {
-                    c = 3;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return R.string.android_upgrading_complete;
-            case 1:
-                return R.string.android_upgrading_fstrim;
-            case 2:
-                return R.string.anr_activity_process;
-            case 3:
-                return R.string.app_category_image;
-            default:
-                throw new IllegalArgumentException("Wrong NavigationBar Action Type");
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.accessibility.autoaction.actiontype.NavigationBarAction$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Runnable {
+        @Override // java.lang.Runnable
+        public final void run() {
+            try {
+                Thread.sleep(100L);
+                new Instrumentation().sendKeyDownUpSync(4);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override // com.android.server.accessibility.autoaction.actiontype.CornerActionType
-    public void performCornerAction(int i) {
+    public final void performCornerAction(int i) {
         StatusBarManagerInternal statusBarManagerInternal;
         String str = this.mType;
-        str.hashCode();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1961431229:
-                if (str.equals("accessibility_button")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case 3015911:
-                if (str.equals("back")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 3208415:
-                if (str.equals("home")) {
-                    c = 2;
-                    break;
-                }
-                break;
-            case 1082295672:
-                if (str.equals("recents")) {
-                    c = 3;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
+        str.getClass();
+        switch (str) {
+            case "accessibility_button":
                 if (Settings.Secure.getIntForUser(this.mContext.getContentResolver(), "accessibility_button_mode", 0, this.mUserId) != 1) {
                     AccessibilityManager.getInstance(this.mContext).notifyAccessibilityButtonClicked(i);
                     return;
+                } else {
+                    this.mContext.sendBroadcast(ExplicitHealthCheckController$$ExternalSyntheticOutline0.m("com.android.systemui.accessibility.floatingmenu.SHOW", Constants.SYSTEMUI_PACKAGE_NAME));
+                    return;
                 }
-                Intent intent = new Intent("com.android.systemui.accessibility.floatingmenu.SHOW");
-                intent.setPackage("com.android.systemui");
-                this.mContext.sendBroadcast(intent);
+            case "back":
+                new Thread(new AnonymousClass1()).start();
                 return;
-            case 1:
-                new Thread(new Runnable() { // from class: com.android.server.accessibility.autoaction.actiontype.NavigationBarAction.1
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        try {
-                            Thread.sleep(100L);
-                            new Instrumentation().sendKeyDownUpSync(4);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-                return;
-            case 2:
+            case "home":
                 this.mContext.sendBroadcast(new Intent("SYSTEM_ACTION_HOME"));
                 return;
-            case 3:
+            case "recents":
                 if (AccessibilityUtils.makeToastForCoverScreen(this.mContext, (String) null) || (statusBarManagerInternal = (StatusBarManagerInternal) LocalServices.getService(StatusBarManagerInternal.class)) == null) {
                     return;
                 }
-                statusBarManagerInternal.toggleRecentAppsToType(StatusBarManager.getNaturalBarTypeByDisplayId(this.mContext, i));
+                ((StatusBarManagerService.AnonymousClass2) statusBarManagerInternal).toggleRecentAppsToType(StatusBarManager.getNaturalBarTypeByDisplayId(this.mContext, i));
                 return;
             default:
                 throw new IllegalArgumentException("Wrong NavigationBar Action Type");

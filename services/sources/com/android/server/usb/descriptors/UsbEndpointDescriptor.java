@@ -1,119 +1,84 @@
 package com.android.server.usb.descriptors;
 
-import android.hardware.usb.UsbEndpoint;
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 
-/* loaded from: classes3.dex */
-public class UsbEndpointDescriptor extends UsbDescriptor {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class UsbEndpointDescriptor extends UsbDescriptor {
     public int mAttributes;
     public UsbDescriptor mClassSpecificEndpointDescriptor;
     public int mEndpointAddress;
     public int mInterval;
     public int mPacketSize;
-    public byte mRefresh;
-    public byte mSyncAddress;
 
-    public UsbEndpointDescriptor(int i, byte b) {
-        super(i, b);
-        this.mHierarchyLevel = 4;
-    }
-
-    public int getEndpointAddress() {
-        return this.mEndpointAddress & 15;
-    }
-
-    public int getAttributes() {
-        return this.mAttributes;
-    }
-
-    public int getPacketSize() {
-        return this.mPacketSize;
-    }
-
-    public int getInterval() {
-        return this.mInterval;
-    }
-
-    public int getDirection() {
+    public final int getDirection() {
         return this.mEndpointAddress & (-128);
     }
 
-    public void setClassSpecificEndpointDescriptor(UsbDescriptor usbDescriptor) {
-        this.mClassSpecificEndpointDescriptor = usbDescriptor;
-    }
-
-    public UsbDescriptor getClassSpecificEndpointDescriptor() {
-        return this.mClassSpecificEndpointDescriptor;
-    }
-
-    public UsbEndpoint toAndroid(UsbDescriptorParser usbDescriptorParser) {
-        return new UsbEndpoint(this.mEndpointAddress, this.mAttributes, this.mPacketSize, this.mInterval);
-    }
-
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
+    public final int parseRawDescriptors(ByteStream byteStream) {
         this.mEndpointAddress = byteStream.getUnsignedByte();
         this.mAttributes = byteStream.getUnsignedByte();
         this.mPacketSize = byteStream.unpackUsbShort();
         this.mInterval = byteStream.getUnsignedByte();
-        if (this.mLength == 9) {
-            this.mRefresh = byteStream.getByte();
-            this.mSyncAddress = byteStream.getByte();
+        int i = this.mLength;
+        if (i == 9) {
+            byteStream.getByte();
+            byteStream.getByte();
         }
-        return this.mLength;
+        return i;
     }
 
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        reportCanvas.openList();
-        StringBuilder sb = new StringBuilder();
-        sb.append("Address: ");
-        sb.append(ReportCanvas.getHexString(getEndpointAddress()));
+    public final void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        textReportCanvas.openList();
+        StringBuilder sb = new StringBuilder("Address: ");
+        sb.append(TextReportCanvas.getHexString(this.mEndpointAddress & 15));
         sb.append(getDirection() == 0 ? " [out]" : " [in]");
-        reportCanvas.writeListItem(sb.toString());
-        int attributes = getAttributes();
-        reportCanvas.openListItem();
-        reportCanvas.write("Attributes: " + ReportCanvas.getHexString(attributes) + " ");
-        int i = attributes & 3;
-        if (i == 0) {
-            reportCanvas.write("Control");
-        } else if (i == 1) {
-            reportCanvas.write("Iso");
-        } else if (i == 2) {
-            reportCanvas.write("Bulk");
-        } else if (i == 3) {
-            reportCanvas.write("Interrupt");
+        textReportCanvas.writeListItem(sb.toString());
+        int i = this.mAttributes;
+        textReportCanvas.openListItem();
+        textReportCanvas.write("Attributes: " + TextReportCanvas.getHexString(i) + " ");
+        int i2 = i & 3;
+        if (i2 == 0) {
+            textReportCanvas.write("Control");
+        } else if (i2 == 1) {
+            textReportCanvas.write("Iso");
+        } else if (i2 == 2) {
+            textReportCanvas.write("Bulk");
+        } else if (i2 == 3) {
+            textReportCanvas.write("Interrupt");
         }
-        reportCanvas.closeListItem();
-        if (i == 1) {
-            reportCanvas.openListItem();
-            reportCanvas.write("Aync: ");
-            int i2 = attributes & 12;
-            if (i2 == 0) {
-                reportCanvas.write("NONE");
-            } else if (i2 == 4) {
-                reportCanvas.write("ASYNC");
-            } else if (i2 == 8) {
-                reportCanvas.write("ADAPTIVE ASYNC");
-            }
-            reportCanvas.closeListItem();
-            reportCanvas.openListItem();
-            reportCanvas.write("Useage: ");
-            int i3 = attributes & 48;
+        textReportCanvas.closeListItem();
+        if (i2 == 1) {
+            textReportCanvas.openListItem();
+            textReportCanvas.write("Aync: ");
+            int i3 = i & 12;
             if (i3 == 0) {
-                reportCanvas.write("DATA");
-            } else if (i3 == 16) {
-                reportCanvas.write("FEEDBACK");
-            } else if (i3 == 32) {
-                reportCanvas.write("EXPLICIT FEEDBACK");
-            } else if (i3 == 48) {
-                reportCanvas.write("RESERVED");
+                textReportCanvas.write("NONE");
+            } else if (i3 == 4) {
+                textReportCanvas.write("ASYNC");
+            } else if (i3 == 8) {
+                textReportCanvas.write("ADAPTIVE ASYNC");
             }
-            reportCanvas.closeListItem();
+            textReportCanvas.closeListItem();
+            textReportCanvas.openListItem();
+            textReportCanvas.write("Useage: ");
+            int i4 = i & 48;
+            if (i4 == 0) {
+                textReportCanvas.write("DATA");
+            } else if (i4 == 16) {
+                textReportCanvas.write("FEEDBACK");
+            } else if (i4 == 32) {
+                textReportCanvas.write("EXPLICIT FEEDBACK");
+            } else if (i4 == 48) {
+                textReportCanvas.write("RESERVED");
+            }
+            textReportCanvas.closeListItem();
         }
-        reportCanvas.writeListItem("Package Size: " + getPacketSize());
-        reportCanvas.writeListItem("Interval: " + getInterval());
-        reportCanvas.closeList();
+        textReportCanvas.writeListItem("Package Size: " + this.mPacketSize);
+        textReportCanvas.writeListItem("Interval: " + this.mInterval);
+        textReportCanvas.closeList();
     }
 }

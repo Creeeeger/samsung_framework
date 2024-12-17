@@ -2,18 +2,15 @@ package com.android.server.input;
 
 import android.os.IBinder;
 import android.os.InputConstants;
-import android.util.Slog;
 import android.view.InputApplicationHandle;
 import android.view.InputChannel;
 import android.view.InputWindowHandle;
 import android.view.SurfaceControl;
-import com.android.server.display.DisplayPowerController2;
-import com.samsung.android.rune.CoreRune;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 
-/* loaded from: classes2.dex */
-public class GestureMonitorSpyWindow {
-    public static final String TAG = "GestureMonitorSpyWindow";
-    public final InputApplicationHandle mApplicationHandle;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class GestureMonitorSpyWindow {
     public final InputChannel mClientChannel;
     public final SurfaceControl mInputSurface;
     public final IBinder mMonitorToken;
@@ -23,47 +20,29 @@ public class GestureMonitorSpyWindow {
         this.mMonitorToken = iBinder;
         this.mClientChannel = inputChannel;
         this.mInputSurface = surfaceControl;
-        InputApplicationHandle inputApplicationHandle = new InputApplicationHandle((IBinder) null, str, InputConstants.DEFAULT_DISPATCHING_TIMEOUT_MILLIS);
-        this.mApplicationHandle = inputApplicationHandle;
-        InputWindowHandle inputWindowHandle = new InputWindowHandle(inputApplicationHandle, i);
+        long j = InputConstants.DEFAULT_DISPATCHING_TIMEOUT_MILLIS;
+        InputWindowHandle inputWindowHandle = new InputWindowHandle(new InputApplicationHandle((IBinder) null, str, j), i);
         this.mWindowHandle = inputWindowHandle;
         inputWindowHandle.name = str;
         inputWindowHandle.token = inputChannel.getToken();
         inputWindowHandle.layoutParamsType = 2015;
-        inputWindowHandle.dispatchingTimeoutMillis = InputConstants.DEFAULT_DISPATCHING_TIMEOUT_MILLIS;
+        inputWindowHandle.dispatchingTimeoutMillis = j;
         inputWindowHandle.ownerPid = i2;
         inputWindowHandle.ownerUid = i3;
         inputWindowHandle.scaleFactor = 1.0f;
         inputWindowHandle.replaceTouchableRegionWithCrop((SurfaceControl) null);
-        inputWindowHandle.inputConfig = 16644;
+        inputWindowHandle.inputConfig = 16388;
         SurfaceControl.Transaction transaction = new SurfaceControl.Transaction();
+        inputWindowHandle.setTrustedOverlay(transaction, surfaceControl, true);
         transaction.setInputWindowInfo(surfaceControl, inputWindowHandle);
-        transaction.setLayer(surfaceControl, Integer.MAX_VALUE);
         transaction.setLayer(surfaceControl, 1);
-        transaction.setPosition(surfaceControl, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
+        transaction.setPosition(surfaceControl, FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE);
         transaction.setCrop(surfaceControl, null);
         transaction.show(surfaceControl);
         transaction.apply();
     }
 
-    public void remove() {
-        SurfaceControl.Transaction transaction = new SurfaceControl.Transaction();
-        transaction.hide(this.mInputSurface);
-        transaction.remove(this.mInputSurface);
-        transaction.apply();
-        this.mClientChannel.dispose();
-    }
-
-    public void configureSurface(SurfaceControl.Transaction transaction, int i, SurfaceControl surfaceControl) {
-        if (this.mWindowHandle.displayId == i && this.mInputSurface.isValid()) {
-            if (CoreRune.SAFE_DEBUG) {
-                Slog.d(TAG, "configureSurface, mInputSurface=" + this.mInputSurface + ", parentSurface=" + surfaceControl);
-            }
-            transaction.reparent(this.mInputSurface, surfaceControl);
-        }
-    }
-
-    public String dump() {
+    public final String dump() {
         return "name='" + this.mWindowHandle.name + "', inputChannelToken=" + this.mClientChannel.getToken() + " displayId=" + this.mWindowHandle.displayId;
     }
 }

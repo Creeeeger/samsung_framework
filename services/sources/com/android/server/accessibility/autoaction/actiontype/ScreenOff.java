@@ -1,27 +1,15 @@
 package com.android.server.accessibility.autoaction.actiontype;
 
-import android.R;
 import android.content.Context;
 import android.content.Intent;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ScreenOff extends CornerActionType {
+public final class ScreenOff extends CornerActionType {
     public Context mContext;
 
-    public static int getStringResId() {
-        return R.string.app_category_video;
-    }
-
-    public ScreenOff(Context context) {
-        this.mContext = context;
-    }
-
-    public static ScreenOff createAction(Context context) {
-        return new ScreenOff(context);
-    }
-
     @Override // com.android.server.accessibility.autoaction.actiontype.CornerActionType
-    public void performCornerAction(int i) {
+    public final void performCornerAction(int i) {
         this.mContext.sendBroadcast(new Intent("SYSTEM_ACTION_LOCK_SCREEN"));
     }
 }

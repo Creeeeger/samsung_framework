@@ -1,15 +1,9 @@
 package org.tukaani.xz;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class BCJOptions extends FilterOptions {
-    public final int alignment;
-    public int startOffset = 0;
-
-    public BCJOptions(int i) {
-        this.alignment = i;
-    }
-
-    public Object clone() {
+    public final Object clone() {
         try {
             return super.clone();
         } catch (CloneNotSupportedException unused) {

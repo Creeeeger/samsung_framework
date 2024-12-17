@@ -1,6 +1,6 @@
 package com.android.server.locksettings;
 
-import java.io.ByteArrayInputStream;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,20 +16,20 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class AesEncryptionUtil {
     public static byte[] decrypt(SecretKey secretKey, DataInputStream dataInputStream) {
         Objects.requireNonNull(secretKey);
-        Objects.requireNonNull(dataInputStream);
         int readInt = dataInputStream.readInt();
         if (readInt < 0 || readInt > 32) {
-            throw new IOException("IV out of range: " + readInt);
+            throw new IOException(VibrationParam$1$$ExternalSyntheticOutline0.m(readInt, "IV out of range: "));
         }
         byte[] bArr = new byte[readInt];
         dataInputStream.readFully(bArr);
         int readInt2 = dataInputStream.readInt();
         if (readInt2 < 0) {
-            throw new IOException("Invalid cipher text size: " + readInt2);
+            throw new IOException(VibrationParam$1$$ExternalSyntheticOutline0.m(readInt2, "Invalid cipher text size: "));
         }
         byte[] bArr2 = new byte[readInt2];
         dataInputStream.readFully(bArr2);
@@ -42,13 +42,7 @@ public abstract class AesEncryptionUtil {
         }
     }
 
-    public static byte[] decrypt(SecretKey secretKey, byte[] bArr) {
-        Objects.requireNonNull(secretKey);
-        Objects.requireNonNull(bArr);
-        return decrypt(secretKey, new DataInputStream(new ByteArrayInputStream(bArr)));
-    }
-
-    public static byte[] encrypt(SecretKey secretKey, byte[] bArr) {
+    public static byte[] encrypt(byte[] bArr, SecretKey secretKey) {
         Objects.requireNonNull(secretKey);
         Objects.requireNonNull(bArr);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

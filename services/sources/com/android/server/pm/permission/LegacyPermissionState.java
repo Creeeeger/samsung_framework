@@ -1,5 +1,6 @@
 package com.android.server.pm.permission;
 
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.util.ArrayMap;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
@@ -8,12 +9,71 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class LegacyPermissionState {
     public final SparseArray mUserStates = new SparseArray();
     public final SparseBooleanArray mMissing = new SparseBooleanArray();
 
-    public void copyFrom(LegacyPermissionState legacyPermissionState) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PermissionState {
+        public final int mFlags;
+        public final boolean mGranted;
+        public final String mName;
+        public final boolean mRuntime;
+
+        public PermissionState(PermissionState permissionState) {
+            this.mName = permissionState.mName;
+            this.mRuntime = permissionState.mRuntime;
+            this.mGranted = permissionState.mGranted;
+            this.mFlags = permissionState.mFlags;
+        }
+
+        public PermissionState(String str, boolean z, boolean z2, int i) {
+            this.mName = str;
+            this.mRuntime = z;
+            this.mGranted = z2;
+            this.mFlags = i;
+        }
+
+        public final boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || PermissionState.class != obj.getClass()) {
+                return false;
+            }
+            PermissionState permissionState = (PermissionState) obj;
+            return this.mRuntime == permissionState.mRuntime && this.mGranted == permissionState.mGranted && this.mFlags == permissionState.mFlags && Objects.equals(this.mName, permissionState.mName);
+        }
+
+        public final int hashCode() {
+            return Objects.hash(this.mName, Boolean.valueOf(this.mRuntime), Boolean.valueOf(this.mGranted), Integer.valueOf(this.mFlags));
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UserState {
+        public final ArrayMap mPermissionStates = new ArrayMap();
+
+        public UserState() {
+        }
+
+        public UserState(UserState userState) {
+            int size = userState.mPermissionStates.size();
+            for (int i = 0; i < size; i++) {
+                this.mPermissionStates.put((String) userState.mPermissionStates.keyAt(i), new PermissionState((PermissionState) userState.mPermissionStates.valueAt(i)));
+            }
+        }
+    }
+
+    public static void checkUserId(int i) {
+        if (i < 0) {
+            throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Invalid user ID "));
+        }
+    }
+
+    public final void copyFrom(LegacyPermissionState legacyPermissionState) {
         if (legacyPermissionState == this) {
             return;
         }
@@ -29,12 +89,7 @@ public final class LegacyPermissionState {
         }
     }
 
-    public void reset() {
-        this.mUserStates.clear();
-        this.mMissing.clear();
-    }
-
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -55,32 +110,19 @@ public final class LegacyPermissionState {
         return Objects.equals(this.mMissing, legacyPermissionState.mMissing);
     }
 
-    public PermissionState getPermissionState(String str, int i) {
+    public final Collection getPermissionStates(int i) {
         checkUserId(i);
         UserState userState = (UserState) this.mUserStates.get(i);
-        if (userState == null) {
-            return null;
-        }
-        return userState.getPermissionState(str);
+        return userState == null ? Collections.emptyList() : Collections.unmodifiableCollection(userState.mPermissionStates.values());
     }
 
-    public void putPermissionState(PermissionState permissionState, int i) {
-        checkUserId(i);
-        UserState userState = (UserState) this.mUserStates.get(i);
-        if (userState == null) {
-            userState = new UserState();
-            this.mUserStates.put(i, userState);
-        }
-        userState.putPermissionState(permissionState);
-    }
-
-    public boolean hasPermissionState(Collection collection) {
+    public final boolean hasPermissionState(Collection collection) {
         int size = this.mUserStates.size();
         for (int i = 0; i < size; i++) {
             UserState userState = (UserState) this.mUserStates.valueAt(i);
             Iterator it = collection.iterator();
             while (it.hasNext()) {
-                if (userState.getPermissionState((String) it.next()) != null) {
+                if (((PermissionState) userState.mPermissionStates.get((String) it.next())) != null) {
                     return true;
                 }
             }
@@ -88,113 +130,22 @@ public final class LegacyPermissionState {
         return false;
     }
 
-    public Collection getPermissionStates(int i) {
+    public final void putPermissionState(PermissionState permissionState, int i) {
         checkUserId(i);
         UserState userState = (UserState) this.mUserStates.get(i);
         if (userState == null) {
-            return Collections.emptyList();
+            userState = new UserState();
+            this.mUserStates.put(i, userState);
         }
-        return userState.getPermissionStates();
+        userState.mPermissionStates.put(permissionState.mName, permissionState);
     }
 
-    public boolean isMissing(int i) {
-        checkUserId(i);
-        return this.mMissing.get(i);
-    }
-
-    public void setMissing(boolean z, int i) {
+    public final void setMissing(int i, boolean z) {
         checkUserId(i);
         if (z) {
             this.mMissing.put(i, true);
         } else {
             this.mMissing.delete(i);
-        }
-    }
-
-    public static void checkUserId(int i) {
-        if (i >= 0) {
-            return;
-        }
-        throw new IllegalArgumentException("Invalid user ID " + i);
-    }
-
-    /* loaded from: classes3.dex */
-    public final class UserState {
-        public final ArrayMap mPermissionStates = new ArrayMap();
-
-        public UserState() {
-        }
-
-        public UserState(UserState userState) {
-            int size = userState.mPermissionStates.size();
-            for (int i = 0; i < size; i++) {
-                this.mPermissionStates.put((String) userState.mPermissionStates.keyAt(i), new PermissionState((PermissionState) userState.mPermissionStates.valueAt(i)));
-            }
-        }
-
-        public PermissionState getPermissionState(String str) {
-            return (PermissionState) this.mPermissionStates.get(str);
-        }
-
-        public void putPermissionState(PermissionState permissionState) {
-            this.mPermissionStates.put(permissionState.getName(), permissionState);
-        }
-
-        public Collection getPermissionStates() {
-            return Collections.unmodifiableCollection(this.mPermissionStates.values());
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class PermissionState {
-        public final int mFlags;
-        public final boolean mGranted;
-        public final String mName;
-        public final boolean mRuntime;
-
-        public PermissionState(String str, boolean z, boolean z2, int i) {
-            this.mName = str;
-            this.mRuntime = z;
-            this.mGranted = z2;
-            this.mFlags = i;
-        }
-
-        public PermissionState(PermissionState permissionState) {
-            this.mName = permissionState.mName;
-            this.mRuntime = permissionState.mRuntime;
-            this.mGranted = permissionState.mGranted;
-            this.mFlags = permissionState.mFlags;
-        }
-
-        public String getName() {
-            return this.mName;
-        }
-
-        public boolean isRuntime() {
-            return this.mRuntime;
-        }
-
-        public boolean isGranted() {
-            return this.mGranted;
-        }
-
-        public int getFlags() {
-            return this.mFlags;
-        }
-
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null || PermissionState.class != obj.getClass()) {
-                return false;
-            }
-            PermissionState permissionState = (PermissionState) obj;
-            return this.mRuntime == permissionState.mRuntime && this.mGranted == permissionState.mGranted && this.mFlags == permissionState.mFlags && Objects.equals(this.mName, permissionState.mName);
-        }
-
-        public int hashCode() {
-            return Objects.hash(this.mName, Boolean.valueOf(this.mRuntime), Boolean.valueOf(this.mGranted), Integer.valueOf(this.mFlags));
         }
     }
 }

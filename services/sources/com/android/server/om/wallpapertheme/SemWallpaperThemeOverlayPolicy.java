@@ -1,14 +1,17 @@
 package com.android.server.om.wallpapertheme;
 
 import android.content.om.WallpaperThemeConstants;
+import android.content.om.wallpapertheme.MetaDataManager;
 import android.content.pm.overlay.OverlayPaths;
+import android.net.shared.InitialConfiguration$$ExternalSyntheticOutline0;
 import android.util.Slog;
 import com.android.server.om.OverlayPolicyManager;
 import java.util.ArrayList;
+import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class SemWallpaperThemeOverlayPolicy implements OverlayPolicyManager.OverlayPackagePolicy {
-    public static final String TAG = "SemWallpaperThemeOverlayPolicy";
     public final SemWallpaperThemeManager mWallpaperThemeManager;
 
     public SemWallpaperThemeOverlayPolicy(SemWallpaperThemeManager semWallpaperThemeManager) {
@@ -16,39 +19,36 @@ public final class SemWallpaperThemeOverlayPolicy implements OverlayPolicyManage
     }
 
     @Override // com.android.server.om.OverlayPolicyManager.OverlayPackagePolicy
-    public boolean retainOverlay(String str, OverlayPaths overlayPaths, String str2, int i) {
-        if (!isSemWallpaperThemeOverlay(str)) {
+    public final boolean retainOverlay(String str, OverlayPaths overlayPaths, String str2) {
+        if (!str.startsWith("/data/resource-cache/android-SemWT")) {
             return true;
         }
-        Slog.e(TAG, "for " + str2 + " checking " + str + " with existing " + overlayPaths);
+        StringBuilder m = InitialConfiguration$$ExternalSyntheticOutline0.m("for ", str2, " checking ", str, " with existing ");
+        m.append(overlayPaths);
+        Slog.e("SemWallpaperThemeOverlayPolicy", m.toString());
         if ("android".equals(str2)) {
-            if (isGoogleWallpaperThemeOverlay(str)) {
+            if (str.startsWith("/data/resource-cache/android-SemWT_G_MonetPalette")) {
                 return false;
             }
         } else {
             if (WallpaperThemeConstants.colorThemingDisableList.contains(str2)) {
                 return false;
             }
-            ArrayList packageNameList = this.mWallpaperThemeManager.getPackageNameList();
-            if (packageNameList == null) {
-                return true;
+            SemWallpaperThemeManager semWallpaperThemeManager = this.mWallpaperThemeManager;
+            semWallpaperThemeManager.getClass();
+            ArrayList arrayList = new ArrayList();
+            Iterator it = semWallpaperThemeManager.mMetaDataManager.getPackageList().iterator();
+            while (it.hasNext()) {
+                arrayList.add(((MetaDataManager.Package) it.next()).getPackageName());
             }
-            if (packageNameList.contains(str2)) {
-                if (isGoogleWallpaperThemeOverlay(str)) {
+            if (arrayList.contains(str2)) {
+                if (str.startsWith("/data/resource-cache/android-SemWT_G_MonetPalette")) {
                     return false;
                 }
-            } else if (!isGoogleWallpaperThemeOverlay(str)) {
+            } else if (!str.startsWith("/data/resource-cache/android-SemWT_G_MonetPalette")) {
                 return false;
             }
         }
         return true;
-    }
-
-    public final boolean isSemWallpaperThemeOverlay(String str) {
-        return str.startsWith("/data/resource-cache/android-SemWT");
-    }
-
-    public final boolean isGoogleWallpaperThemeOverlay(String str) {
-        return str.startsWith("/data/resource-cache/android-SemWT_G_MonetPalette");
     }
 }

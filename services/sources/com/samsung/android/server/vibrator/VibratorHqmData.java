@@ -2,24 +2,17 @@ package com.samsung.android.server.vibrator;
 
 import java.util.HashMap;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class VibratorHqmData {
+public final class VibratorHqmData {
     public int mAlarmCount;
     public int mExtraCount;
-    public HashMap mLoggingData = new HashMap();
+    public HashMap mLoggingData;
     public int mNotificationCount;
     public int mRingCount;
     public int mTouchCount;
 
-    public void clear() {
-        this.mRingCount = 0;
-        this.mAlarmCount = 0;
-        this.mNotificationCount = 0;
-        this.mTouchCount = 0;
-        this.mExtraCount = 0;
-    }
-
-    public void increaseCount(int i) {
+    public final void increaseCount(int i) {
         int i2;
         if (i == 17) {
             int i3 = this.mAlarmCount;
@@ -49,13 +42,11 @@ public class VibratorHqmData {
             this.mLoggingData.put("FW_NVPC", Integer.valueOf(i2));
             return;
         }
-        int i7 = this.mExtraCount;
-        i2 = i7 < Integer.MAX_VALUE ? i7 + 1 : Integer.MAX_VALUE;
-        this.mExtraCount = i2;
-        this.mLoggingData.put("FW_EVPC", Integer.valueOf(i2));
-    }
-
-    public int get(String str) {
-        return ((Integer) this.mLoggingData.getOrDefault(str, 0)).intValue();
+        int i7 = this.mExtraCount + 1;
+        this.mExtraCount = i7;
+        if (i7 >= Integer.MAX_VALUE) {
+            this.mExtraCount = Integer.MAX_VALUE;
+        }
+        this.mLoggingData.put("FW_EVPC", Integer.valueOf(this.mExtraCount));
     }
 }

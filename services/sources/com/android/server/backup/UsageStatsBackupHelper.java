@@ -9,8 +9,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class UsageStatsBackupHelper extends BlobBackupHelper {
+public final class UsageStatsBackupHelper extends BlobBackupHelper {
     public final int mUserId;
 
     public UsageStatsBackupHelper(int i) {
@@ -18,7 +19,22 @@ public class UsageStatsBackupHelper extends BlobBackupHelper {
         this.mUserId = i;
     }
 
-    public byte[] getBackupPayload(String str) {
+    public final void applyRestoredPayload(String str, byte[] bArr) {
+        if ("usage_stats".equals(str)) {
+            UsageStatsManagerInternal usageStatsManagerInternal = (UsageStatsManagerInternal) LocalServices.getService(UsageStatsManagerInternal.class);
+            DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(bArr));
+            try {
+                dataInputStream.readInt();
+                int length = bArr.length - 4;
+                byte[] bArr2 = new byte[length];
+                dataInputStream.read(bArr2, 0, length);
+                usageStatsManagerInternal.applyRestoredPayload(this.mUserId, str, bArr2);
+            } catch (IOException unused) {
+            }
+        }
+    }
+
+    public final byte[] getBackupPayload(String str) {
         if (!"usage_stats".equals(str)) {
             return null;
         }
@@ -32,20 +48,5 @@ public class UsageStatsBackupHelper extends BlobBackupHelper {
             byteArrayOutputStream.reset();
         }
         return byteArrayOutputStream.toByteArray();
-    }
-
-    public void applyRestoredPayload(String str, byte[] bArr) {
-        if ("usage_stats".equals(str)) {
-            UsageStatsManagerInternal usageStatsManagerInternal = (UsageStatsManagerInternal) LocalServices.getService(UsageStatsManagerInternal.class);
-            DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(bArr));
-            try {
-                dataInputStream.readInt();
-                int length = bArr.length - 4;
-                byte[] bArr2 = new byte[length];
-                dataInputStream.read(bArr2, 0, length);
-                usageStatsManagerInternal.applyRestoredPayload(this.mUserId, str, bArr2);
-            } catch (IOException unused) {
-            }
-        }
     }
 }

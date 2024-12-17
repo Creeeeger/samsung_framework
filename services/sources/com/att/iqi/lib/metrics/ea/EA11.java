@@ -3,9 +3,11 @@ package com.att.iqi.lib.metrics.ea;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.att.iqi.lib.Metric;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class EA11 extends Metric {
     public static final String KEY_ALERT_REMINDER_INTERVAL = "alert_reminder_interval";
     private static final byte SETTING_DISABLED = 0;
@@ -68,6 +70,16 @@ public class EA11 extends Metric {
         this.szInterval = parcel.readString();
     }
 
+    private void advanceField() {
+        int i = this.mBooleanShift;
+        if (i != 0) {
+            this.mBooleanShift = i - 2;
+        } else {
+            this.mBooleanIndex++;
+            this.mBooleanShift = 6;
+        }
+    }
+
     public String[] getPreferenceKeys() {
         this.mBooleanIndex = 0;
         this.mBooleanShift = 6;
@@ -76,17 +88,14 @@ public class EA11 extends Metric {
         return sPreferenceKeys;
     }
 
-    private void advanceField() {
-        int i = this.mBooleanShift;
-        if (i == 0) {
-            this.mBooleanIndex++;
-            this.mBooleanShift = 6;
-        } else {
-            this.mBooleanShift = i - 2;
-        }
+    @Override // com.att.iqi.lib.Metric
+    public int serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
+        byteBuffer.put(this.dwFlags);
+        stringOut(byteBuffer, this.szInterval);
+        return byteBuffer.position();
     }
 
-    public EA11 setBoolean(boolean z) {
+    public EA11 setBoolean(boolean z) throws IllegalStateException {
         int i = this.mBooleanIndex;
         byte[] bArr = this.dwFlags;
         if (i >= bArr.length) {
@@ -101,21 +110,14 @@ public class EA11 extends Metric {
         return this;
     }
 
-    public EA11 setUnknown() {
-        advanceField();
-        return this;
-    }
-
     public EA11 setInterval(String str) {
         this.szInterval = str;
         return this;
     }
 
-    @Override // com.att.iqi.lib.Metric
-    public int serialize(ByteBuffer byteBuffer) {
-        byteBuffer.put(this.dwFlags);
-        stringOut(byteBuffer, this.szInterval);
-        return byteBuffer.position();
+    public EA11 setUnknown() {
+        advanceField();
+        return this;
     }
 
     @Override // com.att.iqi.lib.Metric, android.os.Parcelable

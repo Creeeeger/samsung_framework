@@ -4,23 +4,29 @@ import android.os.Process;
 import com.android.server.AnimationThread;
 import com.android.server.ThreadPriorityBooster;
 
-/* loaded from: classes3.dex */
-public class WindowManagerThreadPriorityBooster extends ThreadPriorityBooster {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WindowManagerThreadPriorityBooster extends ThreadPriorityBooster {
     public final int mAnimationThreadId;
     public boolean mAppTransitionRunning;
-    public boolean mBoundsAnimationRunning;
     public final Object mLock;
     public final int mSurfaceAnimationThreadId;
 
     public WindowManagerThreadPriorityBooster() {
         super(-4, 5);
+        SurfaceAnimationThread surfaceAnimationThread;
         this.mLock = new Object();
         this.mAnimationThreadId = AnimationThread.get().getThreadId();
-        this.mSurfaceAnimationThreadId = SurfaceAnimationThread.get().getThreadId();
+        SurfaceAnimationThread surfaceAnimationThread2 = SurfaceAnimationThread.sInstance;
+        synchronized (SurfaceAnimationThread.class) {
+            SurfaceAnimationThread.ensureThreadLocked();
+            surfaceAnimationThread = SurfaceAnimationThread.sInstance;
+        }
+        this.mSurfaceAnimationThreadId = surfaceAnimationThread.getThreadId();
     }
 
     @Override // com.android.server.ThreadPriorityBooster
-    public void boost() {
+    public final void boost() {
         int myTid = Process.myTid();
         if (myTid == this.mAnimationThreadId || myTid == this.mSurfaceAnimationThreadId) {
             return;
@@ -29,27 +35,11 @@ public class WindowManagerThreadPriorityBooster extends ThreadPriorityBooster {
     }
 
     @Override // com.android.server.ThreadPriorityBooster
-    public void reset() {
+    public final void reset() {
         int myTid = Process.myTid();
         if (myTid == this.mAnimationThreadId || myTid == this.mSurfaceAnimationThreadId) {
             return;
         }
         super.reset();
-    }
-
-    public void setAppTransitionRunning(boolean z) {
-        synchronized (this.mLock) {
-            if (this.mAppTransitionRunning != z) {
-                this.mAppTransitionRunning = z;
-                updatePriorityLocked();
-            }
-        }
-    }
-
-    public final void updatePriorityLocked() {
-        int i = (this.mAppTransitionRunning || this.mBoundsAnimationRunning) ? -10 : -4;
-        setBoostToPriority(i);
-        Process.setThreadPriority(this.mAnimationThreadId, i);
-        Process.setThreadPriority(this.mSurfaceAnimationThreadId, i);
     }
 }

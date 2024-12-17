@@ -7,63 +7,43 @@ import com.android.server.desktopmode.StateManager;
 import com.samsung.android.desktopmode.DesktopModeFeature;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
 
-/* loaded from: classes2.dex */
-public class BootInitBlocker {
-    public static final String TAG = "[DMS]" + BootInitBlocker.class.getSimpleName();
-    public final SemDesktopModeManager.DesktopModeBlocker mBlocker = new SemDesktopModeManager.DesktopModeBlocker() { // from class: com.android.server.desktopmode.BootInitBlocker$$ExternalSyntheticLambda0
-        public final String onBlocked() {
-            String lambda$new$0;
-            lambda$new$0 = BootInitBlocker.lambda$new$0();
-            return lambda$new$0;
-        }
-    };
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class BootInitBlocker {
+    public final BootInitBlocker$$ExternalSyntheticLambda0 mBlocker = new BootInitBlocker$$ExternalSyntheticLambda0();
     public final SemDesktopModeManager mDesktopModeManager;
     public final Handler mHandler;
     public final IStateManager mStateManager;
 
-    public static /* synthetic */ String lambda$new$0() {
-        return null;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.desktopmode.BootInitBlocker$1, reason: invalid class name */
+    public final class AnonymousClass1 extends StateManager.StateListener {
+        public AnonymousClass1() {
+        }
+
+        @Override // com.android.server.desktopmode.StateManager.StateListener
+        public final void onUserChanged(StateManager.InternalState internalState) {
+            BootInitBlocker bootInitBlocker = BootInitBlocker.this;
+            bootInitBlocker.mHandler.postDelayed(new Runnable() { // from class: com.android.server.desktopmode.BootInitBlocker$1$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    BootInitBlocker.AnonymousClass1 anonymousClass1 = BootInitBlocker.AnonymousClass1.this;
+                    anonymousClass1.getClass();
+                    if (DesktopModeFeature.DEBUG) {
+                        Log.d("[DMS]BootInitBlocker", "unregisterBlocker");
+                    }
+                    BootInitBlocker bootInitBlocker2 = BootInitBlocker.this;
+                    bootInitBlocker2.mDesktopModeManager.unregisterBlocker(bootInitBlocker2.mBlocker);
+                    ((StateManager) bootInitBlocker2.mStateManager).notifyBootInitBlockerRegistered(false);
+                }
+            }, 3000L);
+            ((StateManager) bootInitBlocker.mStateManager).unregisterListener(this);
+        }
     }
 
     public BootInitBlocker(ServiceThread serviceThread, IStateManager iStateManager, SemDesktopModeManager semDesktopModeManager) {
         this.mHandler = new Handler(serviceThread.getLooper());
         this.mStateManager = iStateManager;
         this.mDesktopModeManager = semDesktopModeManager;
-    }
-
-    public void register() {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "registerBlocker");
-        }
-        this.mDesktopModeManager.registerBlocker(this.mBlocker);
-        this.mStateManager.notifyBootInitBlockerRegistered(true);
-        this.mStateManager.registerListener(new AnonymousClass1());
-    }
-
-    /* renamed from: com.android.server.desktopmode.BootInitBlocker$1, reason: invalid class name */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends StateManager.StateListener {
-        public AnonymousClass1() {
-        }
-
-        @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onUserChanged(State state) {
-            BootInitBlocker.this.mHandler.postDelayed(new Runnable() { // from class: com.android.server.desktopmode.BootInitBlocker$1$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    BootInitBlocker.AnonymousClass1.this.lambda$onUserChanged$0();
-                }
-            }, 3000L);
-            BootInitBlocker.this.mStateManager.unregisterListener(this);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onUserChanged$0() {
-            if (DesktopModeFeature.DEBUG) {
-                Log.d(BootInitBlocker.TAG, "unregisterBlocker");
-            }
-            BootInitBlocker.this.mDesktopModeManager.unregisterBlocker(BootInitBlocker.this.mBlocker);
-            BootInitBlocker.this.mStateManager.notifyBootInitBlockerRegistered(false);
-        }
     }
 }

@@ -2,58 +2,29 @@ package com.android.server.wm;
 
 import android.view.WindowInsets;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class DisplayRotationImmersiveAppCompatPolicy {
+    public final AppCompatConfiguration mAppCompatConfiguration;
     public final DisplayContent mDisplayContent;
     public final DisplayRotation mDisplayRotation;
-    public final LetterboxConfiguration mLetterboxConfiguration;
 
-    public static DisplayRotationImmersiveAppCompatPolicy createIfNeeded(LetterboxConfiguration letterboxConfiguration, DisplayRotation displayRotation, DisplayContent displayContent) {
-        if (letterboxConfiguration.isDisplayRotationImmersiveAppCompatPolicyEnabled(false)) {
-            return new DisplayRotationImmersiveAppCompatPolicy(letterboxConfiguration, displayRotation, displayContent);
-        }
-        return null;
-    }
-
-    public DisplayRotationImmersiveAppCompatPolicy(LetterboxConfiguration letterboxConfiguration, DisplayRotation displayRotation, DisplayContent displayContent) {
+    public DisplayRotationImmersiveAppCompatPolicy(AppCompatConfiguration appCompatConfiguration, DisplayRotation displayRotation, DisplayContent displayContent) {
         this.mDisplayRotation = displayRotation;
-        this.mLetterboxConfiguration = letterboxConfiguration;
+        this.mAppCompatConfiguration = appCompatConfiguration;
         this.mDisplayContent = displayContent;
-    }
-
-    public boolean isRotationLockEnforced(int i) {
-        boolean isRotationLockEnforcedLocked;
-        if (!this.mLetterboxConfiguration.isDisplayRotationImmersiveAppCompatPolicyEnabled(true)) {
-            return false;
-        }
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mDisplayContent.mWmService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                isRotationLockEnforcedLocked = isRotationLockEnforcedLocked(i);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-        return isRotationLockEnforcedLocked;
     }
 
     public final boolean isRotationLockEnforcedLocked(int i) {
         ActivityRecord activityRecord;
-        return (!this.mDisplayContent.getIgnoreOrientationRequest() || (activityRecord = this.mDisplayContent.topRunningActivity()) == null || !hasRequestedToHideStatusAndNavBars(activityRecord) || activityRecord.getTask() == null || activityRecord.getTask().getWindowingMode() != 1 || activityRecord.areBoundsLetterboxed() || activityRecord.getRequestedConfigurationOrientation() == 0 || activityRecord.getRequestedConfigurationOrientation() == surfaceRotationToConfigurationOrientation(i)) ? false : true;
-    }
-
-    public final boolean hasRequestedToHideStatusAndNavBars(ActivityRecord activityRecord) {
-        WindowState findMainWindow = activityRecord.findMainWindow();
-        return findMainWindow != null && (findMainWindow.getRequestedVisibleTypes() & (WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars())) == 0;
-    }
-
-    public final int surfaceRotationToConfigurationOrientation(int i) {
-        if (this.mDisplayRotation.isAnyPortrait(i)) {
-            return 1;
+        WindowState findMainWindow;
+        Task task;
+        DisplayContent displayContent = this.mDisplayContent;
+        if (!displayContent.getIgnoreOrientationRequest() || (activityRecord = displayContent.topRunningActivity(false)) == null || (findMainWindow = activityRecord.findMainWindow(true)) == null || (findMainWindow.mRequestedVisibleTypes & (WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars())) != 0 || (task = activityRecord.task) == null || task.getWindowingMode() != 1 || activityRecord.areBoundsLetterboxed() || activityRecord.getRequestedConfigurationOrientation() == 0) {
+            return false;
         }
-        return this.mDisplayRotation.isLandscapeOrSeascape(i) ? 2 : 0;
+        int requestedConfigurationOrientation = activityRecord.getRequestedConfigurationOrientation();
+        DisplayRotation displayRotation = this.mDisplayRotation;
+        return requestedConfigurationOrientation != (displayRotation.isAnyPortrait(i) ? 1 : displayRotation.isLandscapeOrSeascape(i) ? 2 : 0);
     }
 }

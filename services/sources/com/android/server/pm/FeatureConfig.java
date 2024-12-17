@@ -1,11 +1,12 @@
 package com.android.server.pm;
 
+import com.android.server.pm.AppsFilterImpl;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageStateInternal;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes3.dex */
-public interface FeatureConfig {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+interface FeatureConfig {
     void enableLogging(int i, boolean z);
 
     boolean isGloballyEnabled();
@@ -16,7 +17,7 @@ public interface FeatureConfig {
 
     boolean packageIsEnabled(AndroidPackage androidPackage);
 
-    FeatureConfig snapshot();
+    AppsFilterImpl.FeatureConfigImpl snapshot();
 
     void updatePackageState(PackageStateInternal packageStateInternal, boolean z);
 }

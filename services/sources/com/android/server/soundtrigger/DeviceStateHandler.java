@@ -1,9 +1,8 @@
 package com.android.server.soundtrigger;
 
-import com.android.server.soundtrigger.DeviceStateHandler;
-import com.android.server.soundtrigger.PhoneCallStateHandler;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import com.android.server.utils.EventLogger;
-import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,8 +11,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes3.dex */
-public class DeviceStateHandler implements PhoneCallStateHandler.Callback {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DeviceStateHandler {
     public final Executor mCallbackExecutor;
     public final EventLogger mEventLogger;
     public final Object mLock = new Object();
@@ -21,159 +21,35 @@ public class DeviceStateHandler implements PhoneCallStateHandler.Callback {
     public int mSoundTriggerPowerSaveMode = 0;
     public boolean mIsPhoneCallOngoing = false;
     public NotificationTask mPhoneStateChangePendingNotify = null;
-    public Set mCallbackSet = ConcurrentHashMap.newKeySet(4);
+    public final Set mCallbackSet = ConcurrentHashMap.newKeySet(4);
     public final Executor mDelayedNotificationExecutor = Executors.newSingleThreadExecutor();
 
-    /* loaded from: classes3.dex */
-    public interface DeviceStateListener {
-        void onSoundTriggerDeviceStateUpdate(SoundTriggerDeviceState soundTriggerDeviceState);
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DeviceStateEvent extends EventLogger.Event {
+        public final SoundTriggerDeviceState mSoundTriggerDeviceState;
 
-    /* loaded from: classes3.dex */
-    public enum SoundTriggerDeviceState {
-        DISABLE,
-        CRITICAL,
-        ENABLE
-    }
+        public DeviceStateEvent(SoundTriggerDeviceState soundTriggerDeviceState) {
+            this.mSoundTriggerDeviceState = soundTriggerDeviceState;
+        }
 
-    public void onPowerModeChanged(int i) {
-        this.mEventLogger.enqueue(new SoundTriggerPowerEvent(i));
-        synchronized (this.mLock) {
-            if (i == this.mSoundTriggerPowerSaveMode) {
-                return;
-            }
-            this.mSoundTriggerPowerSaveMode = i;
-            evaluateStateChange();
+        @Override // com.android.server.utils.EventLogger.Event
+        public final String eventToString() {
+            return "DeviceStateChange: " + this.mSoundTriggerDeviceState.name();
         }
     }
 
-    @Override // com.android.server.soundtrigger.PhoneCallStateHandler.Callback
-    public void onPhoneCallStateChanged(boolean z) {
-        this.mEventLogger.enqueue(new PhoneCallEvent(z));
-        synchronized (this.mLock) {
-            if (this.mIsPhoneCallOngoing == z) {
-                return;
-            }
-            NotificationTask notificationTask = this.mPhoneStateChangePendingNotify;
-            if (notificationTask != null) {
-                notificationTask.cancel();
-                this.mPhoneStateChangePendingNotify = null;
-            }
-            this.mIsPhoneCallOngoing = z;
-            if (!z) {
-                NotificationTask notificationTask2 = new NotificationTask(new Runnable() { // from class: com.android.server.soundtrigger.DeviceStateHandler.1
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        synchronized (DeviceStateHandler.this.mLock) {
-                            if (DeviceStateHandler.this.mPhoneStateChangePendingNotify != null && DeviceStateHandler.this.mPhoneStateChangePendingNotify.runnableEquals(this)) {
-                                DeviceStateHandler.this.mPhoneStateChangePendingNotify = null;
-                                DeviceStateHandler.this.evaluateStateChange();
-                            }
-                        }
-                    }
-                }, 1000L);
-                this.mPhoneStateChangePendingNotify = notificationTask2;
-                this.mDelayedNotificationExecutor.execute(notificationTask2);
-            } else {
-                evaluateStateChange();
-            }
-        }
-    }
-
-    public DeviceStateHandler(Executor executor, EventLogger eventLogger) {
-        Objects.requireNonNull(executor);
-        this.mCallbackExecutor = executor;
-        Objects.requireNonNull(eventLogger);
-        this.mEventLogger = eventLogger;
-    }
-
-    public SoundTriggerDeviceState getDeviceState() {
-        SoundTriggerDeviceState soundTriggerDeviceState;
-        synchronized (this.mLock) {
-            soundTriggerDeviceState = this.mSoundTriggerDeviceState;
-        }
-        return soundTriggerDeviceState;
-    }
-
-    public void registerListener(final DeviceStateListener deviceStateListener) {
-        final SoundTriggerDeviceState deviceState = getDeviceState();
-        this.mCallbackExecutor.execute(new Runnable() { // from class: com.android.server.soundtrigger.DeviceStateHandler$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                DeviceStateHandler.DeviceStateListener.this.onSoundTriggerDeviceStateUpdate(deviceState);
-            }
-        });
-        this.mCallbackSet.add(deviceStateListener);
-    }
-
-    public void unregisterListener(DeviceStateListener deviceStateListener) {
-        this.mCallbackSet.remove(deviceStateListener);
-    }
-
-    public void dump(PrintWriter printWriter) {
-        synchronized (this.mLock) {
-            printWriter.println("DeviceState: " + this.mSoundTriggerDeviceState.name());
-            printWriter.println("PhoneState: " + this.mIsPhoneCallOngoing);
-            printWriter.println("PowerSaveMode: " + this.mSoundTriggerPowerSaveMode);
-        }
-    }
-
-    public final void evaluateStateChange() {
-        SoundTriggerDeviceState computeState = computeState();
-        if (this.mPhoneStateChangePendingNotify != null || this.mSoundTriggerDeviceState == computeState) {
-            return;
-        }
-        this.mSoundTriggerDeviceState = computeState;
-        this.mEventLogger.enqueue(new DeviceStateEvent(this.mSoundTriggerDeviceState));
-        final SoundTriggerDeviceState soundTriggerDeviceState = this.mSoundTriggerDeviceState;
-        for (final DeviceStateListener deviceStateListener : this.mCallbackSet) {
-            this.mCallbackExecutor.execute(new Runnable() { // from class: com.android.server.soundtrigger.DeviceStateHandler$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DeviceStateHandler.DeviceStateListener.this.onSoundTriggerDeviceStateUpdate(soundTriggerDeviceState);
-                }
-            });
-        }
-    }
-
-    public final SoundTriggerDeviceState computeState() {
-        if (this.mIsPhoneCallOngoing) {
-            return SoundTriggerDeviceState.DISABLE;
-        }
-        int i = this.mSoundTriggerPowerSaveMode;
-        if (i == 0) {
-            return SoundTriggerDeviceState.ENABLE;
-        }
-        if (i == 1) {
-            return SoundTriggerDeviceState.CRITICAL;
-        }
-        if (i == 2) {
-            return SoundTriggerDeviceState.DISABLE;
-        }
-        throw new IllegalStateException("Received unexpected power state code" + this.mSoundTriggerPowerSaveMode);
-    }
-
-    /* loaded from: classes3.dex */
-    public class NotificationTask implements Runnable {
-        public final CountDownLatch mCancelLatch = new CountDownLatch(1);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class NotificationTask implements Runnable {
         public final Runnable mRunnable;
-        public final long mWaitInMillis;
+        public final CountDownLatch mCancelLatch = new CountDownLatch(1);
+        public final long mWaitInMillis = 1000;
 
-        public NotificationTask(Runnable runnable, long j) {
-            this.mRunnable = runnable;
-            this.mWaitInMillis = j;
-        }
-
-        public void cancel() {
-            this.mCancelLatch.countDown();
-        }
-
-        public boolean runnableEquals(Runnable runnable) {
-            return this.mRunnable == runnable;
+        public NotificationTask(AnonymousClass1 anonymousClass1) {
+            this.mRunnable = anonymousClass1;
         }
 
         @Override // java.lang.Runnable
-        public void run() {
+        public final void run() {
             try {
                 if (this.mCancelLatch.await(this.mWaitInMillis, TimeUnit.MILLISECONDS)) {
                     return;
@@ -186,8 +62,8 @@ public class DeviceStateHandler implements PhoneCallStateHandler.Callback {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class PhoneCallEvent extends EventLogger.Event {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PhoneCallEvent extends EventLogger.Event {
         public final boolean mIsInPhoneCall;
 
         public PhoneCallEvent(boolean z) {
@@ -195,13 +71,41 @@ public class DeviceStateHandler implements PhoneCallStateHandler.Callback {
         }
 
         @Override // com.android.server.utils.EventLogger.Event
-        public String eventToString() {
+        public final String eventToString() {
             return "PhoneCallChange - inPhoneCall: " + this.mIsInPhoneCall;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class SoundTriggerPowerEvent extends EventLogger.Event {
+    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SoundTriggerDeviceState {
+        public static final /* synthetic */ SoundTriggerDeviceState[] $VALUES;
+        public static final SoundTriggerDeviceState CRITICAL;
+        public static final SoundTriggerDeviceState DISABLE;
+        public static final SoundTriggerDeviceState ENABLE;
+
+        static {
+            SoundTriggerDeviceState soundTriggerDeviceState = new SoundTriggerDeviceState("DISABLE", 0);
+            DISABLE = soundTriggerDeviceState;
+            SoundTriggerDeviceState soundTriggerDeviceState2 = new SoundTriggerDeviceState("CRITICAL", 1);
+            CRITICAL = soundTriggerDeviceState2;
+            SoundTriggerDeviceState soundTriggerDeviceState3 = new SoundTriggerDeviceState("ENABLE", 2);
+            ENABLE = soundTriggerDeviceState3;
+            $VALUES = new SoundTriggerDeviceState[]{soundTriggerDeviceState, soundTriggerDeviceState2, soundTriggerDeviceState3};
+        }
+
+        public static SoundTriggerDeviceState valueOf(String str) {
+            return (SoundTriggerDeviceState) Enum.valueOf(SoundTriggerDeviceState.class, str);
+        }
+
+        public static SoundTriggerDeviceState[] values() {
+            return (SoundTriggerDeviceState[]) $VALUES.clone();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SoundTriggerPowerEvent extends EventLogger.Event {
         public final int mSoundTriggerPowerState;
 
         public SoundTriggerPowerEvent(int i) {
@@ -209,36 +113,105 @@ public class DeviceStateHandler implements PhoneCallStateHandler.Callback {
         }
 
         @Override // com.android.server.utils.EventLogger.Event
-        public String eventToString() {
-            return "SoundTriggerPowerChange: " + stateToString();
-        }
-
-        public final String stateToString() {
+        public final String eventToString() {
+            StringBuilder sb = new StringBuilder("SoundTriggerPowerChange: ");
             int i = this.mSoundTriggerPowerState;
-            if (i == 0) {
-                return "All enabled";
-            }
-            if (i == 1) {
-                return "Critical only";
-            }
-            if (i == 2) {
-                return "All disabled";
-            }
-            return "Unknown power state: " + this.mSoundTriggerPowerState;
+            sb.append(i != 0 ? i != 1 ? i != 2 ? VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Unknown power state: ") : "All disabled" : "Critical only" : "All enabled");
+            return sb.toString();
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class DeviceStateEvent extends EventLogger.Event {
-        public final SoundTriggerDeviceState mSoundTriggerDeviceState;
+    public DeviceStateHandler(Executor executor, EventLogger eventLogger) {
+        Objects.requireNonNull(executor);
+        this.mCallbackExecutor = executor;
+        this.mEventLogger = eventLogger;
+    }
 
-        public DeviceStateEvent(SoundTriggerDeviceState soundTriggerDeviceState) {
-            this.mSoundTriggerDeviceState = soundTriggerDeviceState;
+    public final void evaluateStateChange() {
+        boolean z = this.mIsPhoneCallOngoing;
+        SoundTriggerDeviceState soundTriggerDeviceState = SoundTriggerDeviceState.DISABLE;
+        if (!z) {
+            int i = this.mSoundTriggerPowerSaveMode;
+            if (i == 0) {
+                soundTriggerDeviceState = SoundTriggerDeviceState.ENABLE;
+            } else if (i == 1) {
+                soundTriggerDeviceState = SoundTriggerDeviceState.CRITICAL;
+            } else if (i != 2) {
+                throw new IllegalStateException("Received unexpected power state code" + this.mSoundTriggerPowerSaveMode);
+            }
         }
+        if (this.mPhoneStateChangePendingNotify != null || this.mSoundTriggerDeviceState == soundTriggerDeviceState) {
+            return;
+        }
+        this.mSoundTriggerDeviceState = soundTriggerDeviceState;
+        this.mEventLogger.enqueue(new DeviceStateEvent(this.mSoundTriggerDeviceState));
+        SoundTriggerDeviceState soundTriggerDeviceState2 = this.mSoundTriggerDeviceState;
+        Iterator it = this.mCallbackSet.iterator();
+        while (it.hasNext()) {
+            this.mCallbackExecutor.execute(new DeviceStateHandler$$ExternalSyntheticLambda0((SoundTriggerService$SoundTriggerSessionStub$$ExternalSyntheticLambda1) it.next(), soundTriggerDeviceState2, 0));
+        }
+    }
 
-        @Override // com.android.server.utils.EventLogger.Event
-        public String eventToString() {
-            return "DeviceStateChange: " + this.mSoundTriggerDeviceState.name();
+    /* JADX WARN: Type inference failed for: r1v3, types: [com.android.server.soundtrigger.DeviceStateHandler$1] */
+    public final void onPhoneCallStateChanged(boolean z) {
+        this.mEventLogger.enqueue(new PhoneCallEvent(z));
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsPhoneCallOngoing == z) {
+                    return;
+                }
+                NotificationTask notificationTask = this.mPhoneStateChangePendingNotify;
+                if (notificationTask != null) {
+                    notificationTask.mCancelLatch.countDown();
+                    this.mPhoneStateChangePendingNotify = null;
+                }
+                this.mIsPhoneCallOngoing = z;
+                if (z) {
+                    evaluateStateChange();
+                } else {
+                    NotificationTask notificationTask2 = new NotificationTask(new Runnable() { // from class: com.android.server.soundtrigger.DeviceStateHandler.1
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            synchronized (DeviceStateHandler.this.mLock) {
+                                DeviceStateHandler deviceStateHandler = DeviceStateHandler.this;
+                                NotificationTask notificationTask3 = deviceStateHandler.mPhoneStateChangePendingNotify;
+                                if (notificationTask3 != null && notificationTask3.mRunnable == this) {
+                                    deviceStateHandler.mPhoneStateChangePendingNotify = null;
+                                    deviceStateHandler.evaluateStateChange();
+                                }
+                            }
+                        }
+                    });
+                    this.mPhoneStateChangePendingNotify = notificationTask2;
+                    this.mDelayedNotificationExecutor.execute(notificationTask2);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
         }
+    }
+
+    public final void onPowerModeChanged(int i) {
+        this.mEventLogger.enqueue(new SoundTriggerPowerEvent(i));
+        synchronized (this.mLock) {
+            try {
+                if (i == this.mSoundTriggerPowerSaveMode) {
+                    return;
+                }
+                this.mSoundTriggerPowerSaveMode = i;
+                evaluateStateChange();
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void registerListener(SoundTriggerService$SoundTriggerSessionStub$$ExternalSyntheticLambda1 soundTriggerService$SoundTriggerSessionStub$$ExternalSyntheticLambda1) {
+        SoundTriggerDeviceState soundTriggerDeviceState;
+        synchronized (this.mLock) {
+            soundTriggerDeviceState = this.mSoundTriggerDeviceState;
+        }
+        this.mCallbackExecutor.execute(new DeviceStateHandler$$ExternalSyntheticLambda0(soundTriggerService$SoundTriggerSessionStub$$ExternalSyntheticLambda1, soundTriggerDeviceState, 1));
+        this.mCallbackSet.add(soundTriggerService$SoundTriggerSessionStub$$ExternalSyntheticLambda1);
     }
 }

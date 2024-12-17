@@ -8,218 +8,208 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.os.VibrationAttributes;
-import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.telephony.TelephonyManager;
 import android.util.Slog;
 import com.android.internal.os.BackgroundThread;
-import com.android.server.notification.SmartAlertController;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import com.samsung.android.gesture.SemMotionEventListener;
 import com.samsung.android.gesture.SemMotionRecognitionEvent;
 import com.samsung.android.gesture.SemMotionRecognitionManager;
 import com.samsung.android.knox.custom.LauncherConfigurationInternal;
 import java.util.ArrayList;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class SmartAlertController {
-    public IntentFilter filter;
-    public Context mContext;
+public final class SmartAlertController {
+    public final IntentFilter filter;
+    public final Context mContext;
     public final Handler mHandler;
     public boolean mInCall;
-    public final PowerManager mPM;
-    public final SmartAlertSettingObserver mSmartAlertSettingObserver;
-    public Vibrator mVibrator;
+    public final Vibrator mVibrator;
     public final PowerManager.WakeLock mWakeLock;
     public SemMotionRecognitionManager mSmartAlertMotionManager = null;
     public boolean mMotionEnabled = false;
     public boolean mMotionRegistered = false;
     public boolean mMissedEventExist = false;
-    public long[] mPickUpVibratePattern = {0, 75, 25, 75, 300};
+    public final long[] mPickUpVibratePattern = {0, 75, 25, 75, 300};
     public boolean mScreenOn = false;
-    public SemMotionEventListener mSmartAlertMotionListener = new AnonymousClass1();
-    public final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.notification.SmartAlertController.4
+    public final AnonymousClass1 mSmartAlertMotionListener = new AnonymousClass1();
+    public final AnonymousClass4 mIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.notification.SmartAlertController.4
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals("android.intent.action.SCREEN_ON")) {
                 SmartAlertController.this.mScreenOn = true;
                 int intExtra = intent.getIntExtra("why", 0);
-                Slog.d("SmartAlertController", "ACTION_SCREEN_ON, reason = " + intExtra);
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(intExtra, "ACTION_SCREEN_ON, reason = ", "SmartAlertController");
                 SmartAlertController.this.unregisterListener(intExtra == 7);
                 return;
             }
-            if (action.equals("android.intent.action.SCREEN_OFF")) {
-                Slog.d("SmartAlertController", "ACTION_SCREEN_OFF");
-                SmartAlertController.this.mScreenOn = false;
-                if (SmartAlertController.this.mMissedEventExist) {
-                    SmartAlertController.this.registerListener();
-                    return;
+            if (!action.equals("android.intent.action.SCREEN_OFF")) {
+                if (action.equals("android.intent.action.PHONE_STATE")) {
+                    SmartAlertController.this.mInCall = TelephonyManager.EXTRA_STATE_OFFHOOK.equals(intent.getStringExtra(LauncherConfigurationInternal.KEY_STATE_BOOLEAN));
                 }
-                return;
-            }
-            if (action.equals("android.intent.action.PHONE_STATE")) {
-                SmartAlertController.this.mInCall = TelephonyManager.EXTRA_STATE_OFFHOOK.equals(intent.getStringExtra(LauncherConfigurationInternal.KEY_STATE_BOOLEAN));
+            } else {
+                Slog.d("SmartAlertController", "ACTION_SCREEN_OFF");
+                SmartAlertController smartAlertController = SmartAlertController.this;
+                smartAlertController.mScreenOn = false;
+                if (smartAlertController.mMissedEventExist) {
+                    smartAlertController.new AnonymousClass3().start();
+                }
             }
         }
     };
 
-    public SmartAlertController(Context context) {
-        this.mContext = context;
-        Handler handler = new Handler();
-        this.mHandler = handler;
-        this.mVibrator = (Vibrator) this.mContext.getSystemService("vibrator");
-        PowerManager powerManager = (PowerManager) this.mContext.getSystemService("power");
-        this.mPM = powerManager;
-        this.mWakeLock = powerManager.newWakeLock(1, "SmartAlert");
-        IntentFilter intentFilter = new IntentFilter();
-        this.filter = intentFilter;
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        this.filter.addAction("android.intent.action.SCREEN_OFF");
-        this.filter.addAction("android.intent.action.PHONE_STATE");
-        SmartAlertSettingObserver smartAlertSettingObserver = new SmartAlertSettingObserver(handler);
-        this.mSmartAlertSettingObserver = smartAlertSettingObserver;
-        this.mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor("motion_pick_up"), false, smartAlertSettingObserver);
-        smartAlertSettingObserver.onChange(false);
-    }
-
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     /* renamed from: com.android.server.notification.SmartAlertController$1, reason: invalid class name */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements SemMotionEventListener {
+    public final class AnonymousClass1 implements SemMotionEventListener {
         public AnonymousClass1() {
         }
 
-        public void onMotionEvent(SemMotionRecognitionEvent semMotionRecognitionEvent) {
+        public final void onMotionEvent(SemMotionRecognitionEvent semMotionRecognitionEvent) {
             if (semMotionRecognitionEvent.getMotion() != 67) {
                 return;
             }
             Slog.d("SmartAlertController", "SmartAlert - SemMotionRecognitionEvent.SMART_ALERT");
             SmartAlertController.this.mWakeLock.acquire(1000L);
-            new Handler().postDelayed(new Runnable() { // from class: com.android.server.notification.SmartAlertController$1$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    SmartAlertController.AnonymousClass1.this.lambda$onMotionEvent$0();
-                }
-            }, 500L);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onMotionEvent$0() {
-            if (SmartAlertController.this.mInCall) {
-                Slog.d("SmartAlertController", "SmartAlert - inCall, vibration will be returned");
-            } else {
-                Slog.d("SmartAlertController", "SmartAlert - vibrate");
-                SmartAlertController.this.mVibrator.vibrate(1000, "android", VibrationEffect.createWaveform(SmartAlertController.this.mPickUpVibratePattern, -1), "SmartAlertController", new VibrationAttributes.Builder().setUsage(49).setFlags(1).build());
-            }
+            new Handler().postDelayed(new SmartAlertController$$ExternalSyntheticLambda0(1, this), 500L);
         }
     }
 
-    public final void setSmartAlertEnabled(boolean z) {
-        Slog.d("SmartAlertController", "setSmartAlertEnabled:" + z + " pre:" + this.mMotionEnabled);
-        if (z != this.mMotionEnabled) {
-            this.mMotionEnabled = z;
-            if (z) {
-                this.mContext.registerReceiver(this.mIntentReceiver, this.filter);
-                if (this.mSmartAlertMotionManager == null) {
-                    this.mSmartAlertMotionManager = (SemMotionRecognitionManager) this.mContext.getSystemService("motion_recognition");
-                    return;
-                }
-                return;
-            }
-            this.mContext.unregisterReceiver(this.mIntentReceiver);
-            if (this.mMotionRegistered) {
-                unregisterListener(false);
-            }
-            this.mSmartAlertMotionManager = null;
-        }
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.notification.SmartAlertController$2, reason: invalid class name */
+    public final class AnonymousClass2 implements Runnable {
+        public final /* synthetic */ ArrayList val$notiList;
 
-    public void checkMissedEvent(final ArrayList arrayList) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.notification.SmartAlertController.2
-            @Override // java.lang.Runnable
-            public void run() {
-                int currentUser = ActivityManager.getCurrentUser();
-                synchronized (arrayList) {
+        public AnonymousClass2(ArrayList arrayList) {
+            this.val$notiList = arrayList;
+        }
+
+        @Override // java.lang.Runnable
+        public final void run() {
+            int currentUser = ActivityManager.getCurrentUser();
+            synchronized (this.val$notiList) {
+                try {
                     SmartAlertController.this.mMissedEventExist = false;
-                    int size = arrayList.size();
+                    int size = this.val$notiList.size();
                     int i = 0;
                     while (true) {
                         if (i >= size) {
                             break;
                         }
-                        StatusBarNotification sbn = ((NotificationRecord) arrayList.get(i)).getSbn();
-                        if (sbn.getNotification() != null && sbn.getNotification().semMissedCount > 0 && ((sbn.getNotification().getBubbleMetadata() == null || (sbn.getNotification().getBubbleMetadata() != null && !sbn.getNotification().getBubbleMetadata().isNotificationSuppressed())) && currentUser == sbn.getUserId())) {
-                            Slog.d("SmartAlertController", "SmartAlert - Found Missed Event");
-                            SmartAlertController.this.mMissedEventExist = true;
-                            break;
+                        StatusBarNotification statusBarNotification = ((NotificationRecord) this.val$notiList.get(i)).sbn;
+                        if (statusBarNotification.getNotification() != null) {
+                            if (statusBarNotification.getNotification().semMissedCount <= 0) {
+                                continue;
+                            } else {
+                                if (statusBarNotification.getNotification().getBubbleMetadata() != null) {
+                                    if (statusBarNotification.getNotification().getBubbleMetadata() != null && !statusBarNotification.getNotification().getBubbleMetadata().isNotificationSuppressed()) {
+                                    }
+                                }
+                                if (currentUser == statusBarNotification.getUserId()) {
+                                    Slog.d("SmartAlertController", "SmartAlert - Found Missed Event");
+                                    SmartAlertController.this.mMissedEventExist = true;
+                                    break;
+                                }
+                            }
                         }
                         i++;
                     }
-                    if (!SmartAlertController.this.mScreenOn && SmartAlertController.this.mMissedEventExist) {
-                        SmartAlertController.this.registerListener();
+                    SmartAlertController smartAlertController = SmartAlertController.this;
+                    if (!smartAlertController.mScreenOn && smartAlertController.mMissedEventExist) {
+                        smartAlertController.new AnonymousClass3().start();
                     }
-                    if (!SmartAlertController.this.mMissedEventExist) {
-                        SmartAlertController.this.unregisterListener(false);
+                    SmartAlertController smartAlertController2 = SmartAlertController.this;
+                    if (!smartAlertController2.mMissedEventExist) {
+                        smartAlertController2.unregisterListener(false);
                     }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
-        });
-    }
-
-    public void registerListener() {
-        new Thread() { // from class: com.android.server.notification.SmartAlertController.3
-            @Override // java.lang.Thread, java.lang.Runnable
-            public void run() {
-                if (!SmartAlertController.this.mMotionRegistered && SmartAlertController.this.mMotionEnabled) {
-                    if (SmartAlertController.this.mSmartAlertMotionManager != null) {
-                        SmartAlertController.this.mSmartAlertMotionManager.registerListener(SmartAlertController.this.mSmartAlertMotionListener, 4);
-                        SmartAlertController.this.mMotionRegistered = true;
-                        Slog.d("SmartAlertController", "SmartAlert - registerListener");
-                        return;
-                    }
-                    Slog.d("SmartAlertController", "SmartAlert - mSmartAlertMotionManager is null");
-                    return;
-                }
-                Slog.d("SmartAlertController", "SmartAlert - already registered or Setting disabled");
-            }
-        }.start();
-    }
-
-    public void unregisterListener(boolean z) {
-        BackgroundThread.getHandler().postDelayed(new Runnable() { // from class: com.android.server.notification.SmartAlertController$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                SmartAlertController.this.lambda$unregisterListener$0();
-            }
-        }, z ? 500 : 0);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$unregisterListener$0() {
-        SemMotionRecognitionManager semMotionRecognitionManager;
-        if (!this.mMotionRegistered || (semMotionRecognitionManager = this.mSmartAlertMotionManager) == null) {
-            return;
         }
-        semMotionRecognitionManager.unregisterListener(this.mSmartAlertMotionListener);
-        this.mMotionRegistered = false;
-        Slog.d("SmartAlertController", "SmartAlert - unregisterListener");
     }
 
-    /* loaded from: classes2.dex */
-    public class SmartAlertSettingObserver extends ContentObserver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.notification.SmartAlertController$3, reason: invalid class name */
+    public final class AnonymousClass3 extends Thread {
+        public AnonymousClass3() {
+        }
+
+        @Override // java.lang.Thread, java.lang.Runnable
+        public final void run() {
+            SmartAlertController smartAlertController = SmartAlertController.this;
+            if (smartAlertController.mMotionRegistered || !smartAlertController.mMotionEnabled) {
+                Slog.d("SmartAlertController", "SmartAlert - already registered or Setting disabled");
+                return;
+            }
+            SemMotionRecognitionManager semMotionRecognitionManager = smartAlertController.mSmartAlertMotionManager;
+            if (semMotionRecognitionManager == null) {
+                Slog.d("SmartAlertController", "SmartAlert - mSmartAlertMotionManager is null");
+                return;
+            }
+            semMotionRecognitionManager.registerListener(smartAlertController.mSmartAlertMotionListener, 4);
+            SmartAlertController.this.mMotionRegistered = true;
+            Slog.d("SmartAlertController", "SmartAlert - registerListener");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SmartAlertSettingObserver extends ContentObserver {
         public SmartAlertSettingObserver(Handler handler) {
             super(handler);
         }
 
         @Override // android.database.ContentObserver
-        public void onChange(boolean z) {
-            update();
+        public final void onChange(boolean z) {
+            boolean z2 = Settings.System.getIntForUser(SmartAlertController.this.mContext.getContentResolver(), "motion_pick_up", 1, -2) != 0;
+            SmartAlertController smartAlertController = SmartAlertController.this;
+            smartAlertController.getClass();
+            StringBuilder sb = new StringBuilder("setSmartAlertEnabled:");
+            sb.append(z2);
+            sb.append(" pre:");
+            AnyMotionDetector$$ExternalSyntheticOutline0.m("SmartAlertController", sb, smartAlertController.mMotionEnabled);
+            if (z2 != smartAlertController.mMotionEnabled) {
+                smartAlertController.mMotionEnabled = z2;
+                AnonymousClass4 anonymousClass4 = smartAlertController.mIntentReceiver;
+                if (z2) {
+                    smartAlertController.mContext.registerReceiver(anonymousClass4, smartAlertController.filter);
+                    if (smartAlertController.mSmartAlertMotionManager == null) {
+                        smartAlertController.mSmartAlertMotionManager = (SemMotionRecognitionManager) smartAlertController.mContext.getSystemService("motion_recognition");
+                        return;
+                    }
+                    return;
+                }
+                smartAlertController.mContext.unregisterReceiver(anonymousClass4);
+                if (smartAlertController.mMotionRegistered) {
+                    smartAlertController.unregisterListener(false);
+                }
+                smartAlertController.mSmartAlertMotionManager = null;
+            }
         }
+    }
 
-        public void update() {
-            SmartAlertController.this.setSmartAlertEnabled(Settings.System.getIntForUser(SmartAlertController.this.mContext.getContentResolver(), "motion_pick_up", 1, -2) != 0);
-        }
+    /* JADX WARN: Type inference failed for: r1v3, types: [com.android.server.notification.SmartAlertController$4] */
+    public SmartAlertController(Context context) {
+        this.mContext = context;
+        Handler handler = new Handler();
+        this.mHandler = handler;
+        this.mVibrator = (Vibrator) context.getSystemService("vibrator");
+        this.mWakeLock = ((PowerManager) context.getSystemService("power")).newWakeLock(1, "SmartAlert");
+        IntentFilter intentFilter = new IntentFilter();
+        this.filter = intentFilter;
+        intentFilter.addAction("android.intent.action.SCREEN_ON");
+        intentFilter.addAction("android.intent.action.SCREEN_OFF");
+        intentFilter.addAction("android.intent.action.PHONE_STATE");
+        SmartAlertSettingObserver smartAlertSettingObserver = new SmartAlertSettingObserver(handler);
+        context.getContentResolver().registerContentObserver(Settings.System.getUriFor("motion_pick_up"), false, smartAlertSettingObserver);
+        smartAlertSettingObserver.onChange(false);
+    }
+
+    public final void unregisterListener(boolean z) {
+        BackgroundThread.getHandler().postDelayed(new SmartAlertController$$ExternalSyntheticLambda0(0, this), z ? 500 : 0);
     }
 }

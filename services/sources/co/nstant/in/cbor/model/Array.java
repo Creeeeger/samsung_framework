@@ -2,38 +2,23 @@ package co.nstant.in.cbor.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class Array extends ChunkableDataItem {
     public final ArrayList objects;
-
-    @Override // co.nstant.in.cbor.model.ChunkableDataItem
-    public /* bridge */ /* synthetic */ boolean isChunked() {
-        return super.isChunked();
-    }
-
-    @Override // co.nstant.in.cbor.model.ChunkableDataItem
-    public /* bridge */ /* synthetic */ ChunkableDataItem setChunked(boolean z) {
-        return super.setChunked(z);
-    }
 
     public Array() {
         super(MajorType.ARRAY);
         this.objects = new ArrayList();
     }
 
-    public Array add(DataItem dataItem) {
+    public final void add(DataItem dataItem) {
         this.objects.add(dataItem);
-        return this;
-    }
-
-    public List getDataItems() {
-        return this.objects;
     }
 
     @Override // co.nstant.in.cbor.model.ChunkableDataItem, co.nstant.in.cbor.model.DataItem
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (obj instanceof Array) {
             return super.equals(obj) && this.objects.equals(((Array) obj).objects);
         }
@@ -41,13 +26,13 @@ public class Array extends ChunkableDataItem {
     }
 
     @Override // co.nstant.in.cbor.model.ChunkableDataItem, co.nstant.in.cbor.model.DataItem
-    public int hashCode() {
+    public final int hashCode() {
         return this.objects.hashCode() ^ super.hashCode();
     }
 
-    public String toString() {
+    public final String toString() {
         StringBuilder sb = new StringBuilder("[");
-        if (isChunked()) {
+        if (this.chunked) {
             sb.append("_ ");
         }
         sb.append(Arrays.toString(this.objects.toArray()).substring(1));

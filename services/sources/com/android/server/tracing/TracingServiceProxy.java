@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.os.Binder;
-import android.os.IBinder;
 import android.os.IMessenger;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
@@ -18,139 +17,136 @@ import android.util.LruCache;
 import android.util.Slog;
 import com.android.internal.infra.ServiceConnector;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 import com.android.server.SystemService;
 import java.io.IOException;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
-/* loaded from: classes3.dex */
-public class TracingServiceProxy extends SystemService {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class TracingServiceProxy extends SystemService {
     public final LruCache mCachedReporterServices;
     public final Context mContext;
     public final PackageManager mPackageManager;
-    public final ITracingServiceProxy.Stub mTracingServiceProxy;
+    public boolean mServicePublished;
+    public final AnonymousClass1 mTracingServiceProxy;
 
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.tracing.TracingServiceProxy$1] */
     public TracingServiceProxy(Context context) {
         super(context);
+        this.mServicePublished = false;
         this.mTracingServiceProxy = new ITracingServiceProxy.Stub() { // from class: com.android.server.tracing.TracingServiceProxy.1
-            public void notifyTraceSessionEnded(boolean z) {
-                TracingServiceProxy.this.notifyTraceur(z);
+            public final void notifyTraceSessionEnded(boolean z) {
+                TracingServiceProxy tracingServiceProxy = TracingServiceProxy.this;
+                tracingServiceProxy.getClass();
+                Intent intent = new Intent();
+                try {
+                    intent.setClassName(tracingServiceProxy.mPackageManager.getPackageInfo("com.android.traceur", 1048576).packageName, "com.android.traceur.StopTraceService");
+                    if (z) {
+                        intent.setAction("com.android.traceur.NOTIFY_SESSION_STOLEN");
+                    } else {
+                        intent.setAction("com.android.traceur.NOTIFY_SESSION_STOPPED");
+                    }
+                    long clearCallingIdentity = Binder.clearCallingIdentity();
+                    try {
+                        try {
+                            tracingServiceProxy.mContext.startForegroundServiceAsUser(intent, UserHandle.SYSTEM);
+                        } catch (RuntimeException e) {
+                            Log.e("TracingServiceProxy", "Failed to notifyTraceSessionEnded", e);
+                        }
+                    } finally {
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                    }
+                } catch (PackageManager.NameNotFoundException e2) {
+                    Log.e("TracingServiceProxy", "Failed to locate Traceur", e2);
+                }
             }
 
-            public void reportTrace(TraceReportParams traceReportParams) {
-                TracingServiceProxy.this.reportTrace(traceReportParams);
+            public final void reportTrace(final TraceReportParams traceReportParams) {
+                ServiceInfo serviceInfo;
+                TracingServiceProxy tracingServiceProxy = TracingServiceProxy.this;
+                tracingServiceProxy.getClass();
+                FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 1, traceReportParams.uuidLsb, traceReportParams.uuidMsb);
+                ComponentName componentName = new ComponentName(traceReportParams.reporterPackageName, traceReportParams.reporterClassName);
+                try {
+                    serviceInfo = tracingServiceProxy.mPackageManager.getServiceInfo(componentName, 0);
+                } catch (PackageManager.NameNotFoundException unused) {
+                    Slog.e("TracingServiceProxy", "Trace reporting service " + componentName.toShortString() + " does not exist");
+                }
+                if (!"android.permission.BIND_TRACE_REPORT_SERVICE".equals(serviceInfo.permission)) {
+                    StringBuilder sb = new StringBuilder("Trace reporting service ");
+                    sb.append(componentName.toShortString());
+                    sb.append(" does not request android.permission.BIND_TRACE_REPORT_SERVICE permission; instead requests ");
+                    BinaryTransparencyService$$ExternalSyntheticOutline0.m$1(sb, serviceInfo.permission, "TracingServiceProxy");
+                    FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 3, traceReportParams.uuidLsb, traceReportParams.uuidMsb);
+                    return;
+                }
+                boolean hasPermission = tracingServiceProxy.hasPermission(componentName, "android.permission.DUMP");
+                boolean hasPermission2 = tracingServiceProxy.hasPermission(componentName, "android.permission.PACKAGE_USAGE_STATS");
+                if (!hasPermission || !hasPermission2) {
+                    FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 4, traceReportParams.uuidLsb, traceReportParams.uuidMsb);
+                    return;
+                }
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    tracingServiceProxy.getOrCreateReporterService(componentName).post(new ServiceConnector.VoidJob() { // from class: com.android.server.tracing.TracingServiceProxy$$ExternalSyntheticLambda1
+                        public final void runNoResult(Object obj) {
+                            TraceReportParams traceReportParams2 = traceReportParams;
+                            IMessenger iMessenger = (IMessenger) obj;
+                            if (traceReportParams2.usePipeForTesting) {
+                                ParcelFileDescriptor[] createPipe = ParcelFileDescriptor.createPipe();
+                                ParcelFileDescriptor.AutoCloseInputStream autoCloseInputStream = new ParcelFileDescriptor.AutoCloseInputStream(traceReportParams2.fd);
+                                try {
+                                    ParcelFileDescriptor.AutoCloseOutputStream autoCloseOutputStream = new ParcelFileDescriptor.AutoCloseOutputStream(createPipe[1]);
+                                    try {
+                                        byte[] readNBytes = autoCloseInputStream.readNBytes(1024);
+                                        if (readNBytes.length == 1024) {
+                                            throw new IllegalArgumentException("Trace file too large when |usePipeForTesting| is set.");
+                                        }
+                                        autoCloseOutputStream.write(readNBytes);
+                                        autoCloseOutputStream.close();
+                                        autoCloseInputStream.close();
+                                        traceReportParams2.fd = createPipe[0];
+                                    } finally {
+                                    }
+                                } catch (Throwable th) {
+                                    try {
+                                        autoCloseInputStream.close();
+                                    } catch (Throwable th2) {
+                                        th.addSuppressed(th2);
+                                    }
+                                    throw th;
+                                }
+                            }
+                            Message obtain = Message.obtain();
+                            obtain.what = 1;
+                            obtain.obj = traceReportParams2;
+                            iMessenger.send(obtain);
+                            FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 2, traceReportParams2.uuidLsb, traceReportParams2.uuidMsb);
+                        }
+                    }).whenComplete(new BiConsumer() { // from class: com.android.server.tracing.TracingServiceProxy$$ExternalSyntheticLambda2
+                        @Override // java.util.function.BiConsumer
+                        public final void accept(Object obj, Object obj2) {
+                            TraceReportParams traceReportParams2 = traceReportParams;
+                            Throwable th = (Throwable) obj2;
+                            if (th != null) {
+                                FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 5, traceReportParams2.uuidLsb, traceReportParams2.uuidMsb);
+                                Slog.e("TracingServiceProxy", "Failed to report trace", th);
+                            }
+                            try {
+                                traceReportParams2.fd.close();
+                            } catch (IOException unused2) {
+                            }
+                        }
+                    });
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
             }
         };
         this.mContext = context;
         this.mPackageManager = context.getPackageManager();
         this.mCachedReporterServices = new LruCache(8);
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        publishBinderService("tracing.proxy", this.mTracingServiceProxy);
-    }
-
-    public final void notifyTraceur(boolean z) {
-        Intent intent = new Intent();
-        try {
-            intent.setClassName(this.mPackageManager.getPackageInfo("com.android.traceur", 1048576).packageName, "com.android.traceur.StopTraceService");
-            if (z) {
-                intent.setAction("com.android.traceur.NOTIFY_SESSION_STOLEN");
-            } else {
-                intent.setAction("com.android.traceur.NOTIFY_SESSION_STOPPED");
-            }
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                try {
-                    this.mContext.startForegroundServiceAsUser(intent, UserHandle.SYSTEM);
-                } catch (RuntimeException e) {
-                    Log.e("TracingServiceProxy", "Failed to notifyTraceSessionEnded", e);
-                }
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        } catch (PackageManager.NameNotFoundException e2) {
-            Log.e("TracingServiceProxy", "Failed to locate Traceur", e2);
-        }
-    }
-
-    public final void reportTrace(TraceReportParams traceReportParams) {
-        FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 1, traceReportParams.uuidLsb, traceReportParams.uuidMsb);
-        ComponentName componentName = new ComponentName(traceReportParams.reporterPackageName, traceReportParams.reporterClassName);
-        if (!hasBindServicePermission(componentName)) {
-            FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 3, traceReportParams.uuidLsb, traceReportParams.uuidMsb);
-            return;
-        }
-        boolean hasPermission = hasPermission(componentName, "android.permission.DUMP");
-        boolean hasPermission2 = hasPermission(componentName, "android.permission.PACKAGE_USAGE_STATS");
-        if (!hasPermission || !hasPermission2) {
-            FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 4, traceReportParams.uuidLsb, traceReportParams.uuidMsb);
-            return;
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            reportTrace(getOrCreateReporterService(componentName), traceReportParams);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final void reportTrace(ServiceConnector serviceConnector, final TraceReportParams traceReportParams) {
-        serviceConnector.post(new ServiceConnector.VoidJob() { // from class: com.android.server.tracing.TracingServiceProxy$$ExternalSyntheticLambda0
-            public final void runNoResult(Object obj) {
-                TracingServiceProxy.lambda$reportTrace$0(traceReportParams, (IMessenger) obj);
-            }
-        }).whenComplete(new BiConsumer() { // from class: com.android.server.tracing.TracingServiceProxy$$ExternalSyntheticLambda1
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                TracingServiceProxy.lambda$reportTrace$1(traceReportParams, (Void) obj, (Throwable) obj2);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$reportTrace$0(TraceReportParams traceReportParams, IMessenger iMessenger) {
-        if (traceReportParams.usePipeForTesting) {
-            ParcelFileDescriptor[] createPipe = ParcelFileDescriptor.createPipe();
-            ParcelFileDescriptor.AutoCloseInputStream autoCloseInputStream = new ParcelFileDescriptor.AutoCloseInputStream(traceReportParams.fd);
-            try {
-                ParcelFileDescriptor.AutoCloseOutputStream autoCloseOutputStream = new ParcelFileDescriptor.AutoCloseOutputStream(createPipe[1]);
-                try {
-                    byte[] readNBytes = autoCloseInputStream.readNBytes(1024);
-                    if (readNBytes.length == 1024) {
-                        throw new IllegalArgumentException("Trace file too large when |usePipeForTesting| is set.");
-                    }
-                    autoCloseOutputStream.write(readNBytes);
-                    autoCloseOutputStream.close();
-                    autoCloseInputStream.close();
-                    traceReportParams.fd = createPipe[0];
-                } finally {
-                }
-            } catch (Throwable th) {
-                try {
-                    autoCloseInputStream.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-                throw th;
-            }
-        }
-        Message obtain = Message.obtain();
-        obtain.what = 1;
-        obtain.obj = traceReportParams;
-        iMessenger.send(obtain);
-        FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 2, traceReportParams.uuidLsb, traceReportParams.uuidMsb);
-    }
-
-    public static /* synthetic */ void lambda$reportTrace$1(TraceReportParams traceReportParams, Void r7, Throwable th) {
-        if (th != null) {
-            FrameworkStatsLog.write(FrameworkStatsLog.TRACING_SERVICE_REPORT_EVENT, 5, traceReportParams.uuidLsb, traceReportParams.uuidMsb);
-            Slog.e("TracingServiceProxy", "Failed to report trace", th);
-        }
-        try {
-            traceReportParams.fd.close();
-        } catch (IOException unused) {
-        }
     }
 
     public final ServiceConnector getOrCreateReporterService(ComponentName componentName) {
@@ -161,17 +157,12 @@ public class TracingServiceProxy extends SystemService {
         Intent intent = new Intent();
         intent.setComponent(componentName);
         Context context = this.mContext;
-        ServiceConnector.Impl impl = new ServiceConnector.Impl(context, intent, 33, context.getUser().getIdentifier(), new Function() { // from class: com.android.server.tracing.TracingServiceProxy$$ExternalSyntheticLambda2
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return IMessenger.Stub.asInterface((IBinder) obj);
-            }
-        }) { // from class: com.android.server.tracing.TracingServiceProxy.2
-            public long getAutoDisconnectTimeoutMs() {
+        ServiceConnector.Impl impl = new ServiceConnector.Impl(context, intent, context.getUser().getIdentifier(), new TracingServiceProxy$$ExternalSyntheticLambda0()) { // from class: com.android.server.tracing.TracingServiceProxy.2
+            public final long getAutoDisconnectTimeoutMs() {
                 return 15000L;
             }
 
-            public long getRequestTimeoutMs() {
+            public final long getRequestTimeoutMs() {
                 return 10000L;
             }
         };
@@ -187,17 +178,16 @@ public class TracingServiceProxy extends SystemService {
         return false;
     }
 
-    public final boolean hasBindServicePermission(ComponentName componentName) {
-        try {
-            ServiceInfo serviceInfo = this.mPackageManager.getServiceInfo(componentName, 0);
-            if ("android.permission.BIND_TRACE_REPORT_SERVICE".equals(serviceInfo.permission)) {
-                return true;
-            }
-            Slog.e("TracingServiceProxy", "Trace reporting service " + componentName.toShortString() + " does not request android.permission.BIND_TRACE_REPORT_SERVICE permission; instead requests " + serviceInfo.permission);
-            return false;
-        } catch (PackageManager.NameNotFoundException unused) {
-            Slog.e("TracingServiceProxy", "Trace reporting service " + componentName.toShortString() + " does not exist");
-            return false;
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onUserUnlocking(SystemService.TargetUser targetUser) {
+        if (this.mServicePublished) {
+            return;
         }
+        publishBinderService("tracing.proxy", this.mTracingServiceProxy);
+        this.mServicePublished = true;
     }
 }

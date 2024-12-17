@@ -1,12 +1,14 @@
 package com.android.server.usage;
 
+import android.hardware.usb.V1_1.PortStatus_1_1$$ExternalSyntheticOutline0;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
 import android.util.SparseArray;
 import java.util.ArrayList;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class PackagesTokenData {
     public int counter = 1;
     public final SparseArray tokensToPackagesMap = new SparseArray();
@@ -14,7 +16,7 @@ public final class PackagesTokenData {
     public final ArrayMap removedPackagesMap = new ArrayMap();
     public final ArraySet removedPackageTokens = new ArraySet();
 
-    public int getPackageTokenOrAdd(String str, long j) {
+    public final int getPackageTokenOrAdd(long j, String str) {
         Long l = (Long) this.removedPackagesMap.get(str);
         if (l != null && l.longValue() > j) {
             return -1;
@@ -30,14 +32,24 @@ public final class PackagesTokenData {
         }
         int i = this.counter;
         this.counter = i + 1;
-        ArrayList arrayList = new ArrayList();
-        arrayList.add(str);
+        ArrayList m = PortStatus_1_1$$ExternalSyntheticOutline0.m(str);
         arrayMap.put(str, Integer.valueOf(i));
-        this.tokensToPackagesMap.put(i, arrayList);
+        this.tokensToPackagesMap.put(i, m);
         return i;
     }
 
-    public int getTokenOrAdd(int i, String str, String str2) {
+    public final String getString(int i, int i2) {
+        try {
+            return (String) ((ArrayList) this.tokensToPackagesMap.get(i)).get(i2);
+        } catch (IndexOutOfBoundsException unused) {
+            return null;
+        } catch (NullPointerException e) {
+            Slog.e("PackagesTokenData", "Unable to find tokenized strings for package " + i, e);
+            return null;
+        }
+    }
+
+    public final int getTokenOrAdd(int i, String str, String str2) {
         if (str.equals(str2)) {
             return 0;
         }
@@ -51,34 +63,16 @@ public final class PackagesTokenData {
         return size;
     }
 
-    public String getPackageString(int i) {
-        ArrayList arrayList = (ArrayList) this.tokensToPackagesMap.get(i);
-        if (arrayList == null) {
-            return null;
-        }
-        return (String) arrayList.get(0);
-    }
-
-    public String getString(int i, int i2) {
-        try {
-            return (String) ((ArrayList) this.tokensToPackagesMap.get(i)).get(i2);
-        } catch (IndexOutOfBoundsException unused) {
-            return null;
-        } catch (NullPointerException e) {
-            Slog.e("PackagesTokenData", "Unable to find tokenized strings for package " + i, e);
-            return null;
-        }
-    }
-
-    public int removePackage(String str, long j) {
+    public final int removePackage(long j, String str) {
         this.removedPackagesMap.put(str, Long.valueOf(j));
         if (!this.packagesToTokensMap.containsKey(str)) {
             return -1;
         }
-        int intValue = ((Integer) ((ArrayMap) this.packagesToTokensMap.get(str)).get(str)).intValue();
+        Integer num = (Integer) ((ArrayMap) this.packagesToTokensMap.get(str)).get(str);
+        int intValue = num.intValue();
         this.packagesToTokensMap.remove(str);
         this.tokensToPackagesMap.delete(intValue);
-        this.removedPackageTokens.add(Integer.valueOf(intValue));
+        this.removedPackageTokens.add(num);
         return intValue;
     }
 }

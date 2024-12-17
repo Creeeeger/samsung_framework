@@ -1,24 +1,14 @@
 package co.nstant.in.cbor.model;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class Map extends ChunkableDataItem {
+public final class Map extends ChunkableDataItem {
     public final List keys;
     public final HashMap map;
-
-    @Override // co.nstant.in.cbor.model.ChunkableDataItem
-    public /* bridge */ /* synthetic */ boolean isChunked() {
-        return super.isChunked();
-    }
-
-    @Override // co.nstant.in.cbor.model.ChunkableDataItem
-    public /* bridge */ /* synthetic */ ChunkableDataItem setChunked(boolean z) {
-        return super.setChunked(z);
-    }
 
     public Map() {
         super(MajorType.MAP);
@@ -32,23 +22,8 @@ public class Map extends ChunkableDataItem {
         this.map = new HashMap(i);
     }
 
-    public Map put(DataItem dataItem, DataItem dataItem2) {
-        if (this.map.put(dataItem, dataItem2) == null) {
-            this.keys.add(dataItem);
-        }
-        return this;
-    }
-
-    public DataItem get(DataItem dataItem) {
-        return (DataItem) this.map.get(dataItem);
-    }
-
-    public Collection getKeys() {
-        return this.keys;
-    }
-
     @Override // co.nstant.in.cbor.model.ChunkableDataItem, co.nstant.in.cbor.model.DataItem
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (obj instanceof Map) {
             return super.equals(obj) && this.map.equals(((Map) obj).map);
         }
@@ -56,13 +31,13 @@ public class Map extends ChunkableDataItem {
     }
 
     @Override // co.nstant.in.cbor.model.ChunkableDataItem, co.nstant.in.cbor.model.DataItem
-    public int hashCode() {
+    public final int hashCode() {
         return this.map.hashCode() ^ super.hashCode();
     }
 
-    public String toString() {
+    public final String toString() {
         StringBuilder sb = new StringBuilder();
-        if (isChunked()) {
+        if (this.chunked) {
             sb.append("{_ ");
         } else {
             sb.append("{ ");

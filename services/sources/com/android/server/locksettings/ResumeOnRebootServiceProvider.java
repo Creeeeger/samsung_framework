@@ -5,172 +5,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.pm.ServiceInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
-import android.os.ParcelableException;
 import android.os.RemoteCallback;
 import android.os.RemoteException;
-import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.provider.DeviceConfig;
 import android.service.resumeonreboot.IResumeOnRebootService;
 import android.util.Slog;
 import com.android.internal.os.BackgroundThread;
-import java.io.IOException;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/* loaded from: classes2.dex */
-public class ResumeOnRebootServiceProvider {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ResumeOnRebootServiceProvider {
     public static final String PROVIDER_PACKAGE = DeviceConfig.getString("ota", "resume_on_reboot_service_package", "");
     public final Context mContext;
     public final PackageManager mPackageManager;
 
-    public ResumeOnRebootServiceProvider(Context context) {
-        this(context, context.getPackageManager());
-    }
-
-    public ResumeOnRebootServiceProvider(Context context, PackageManager packageManager) {
-        this.mContext = context;
-        this.mPackageManager = packageManager;
-    }
-
-    public final ServiceInfo resolveService() {
-        int i;
-        Intent intent = new Intent();
-        intent.setAction("android.service.resumeonreboot.ResumeOnRebootService");
-        String str = SystemProperties.get("persist.sys.resume_on_reboot_provider_package", "");
-        if (!str.isEmpty()) {
-            Slog.i("ResumeOnRebootServiceProvider", "Using test app: " + str);
-            intent.setPackage(str);
-            i = 4;
-        } else {
-            String str2 = PROVIDER_PACKAGE;
-            if (str2 != null && !str2.equals("")) {
-                intent.setPackage(str2);
-            }
-            i = 1048580;
-        }
-        for (ResolveInfo resolveInfo : this.mPackageManager.queryIntentServices(intent, i)) {
-            ServiceInfo serviceInfo = resolveInfo.serviceInfo;
-            if (serviceInfo != null && "android.permission.BIND_RESUME_ON_REBOOT_SERVICE".equals(serviceInfo.permission)) {
-                return resolveInfo.serviceInfo;
-            }
-        }
-        return null;
-    }
-
-    public ResumeOnRebootServiceConnection getServiceConnection() {
-        ServiceInfo resolveService = resolveService();
-        if (resolveService == null) {
-            return null;
-        }
-        return new ResumeOnRebootServiceConnection(this.mContext, resolveService.getComponentName());
-    }
-
-    /* loaded from: classes2.dex */
-    public class ResumeOnRebootServiceConnection {
-        public IResumeOnRebootService mBinder;
-        public final ComponentName mComponentName;
-        public final Context mContext;
-        public ServiceConnection mServiceConnection;
-
-        public ResumeOnRebootServiceConnection(Context context, ComponentName componentName) {
-            this.mContext = context;
-            this.mComponentName = componentName;
-        }
-
-        public void unbindService() {
-            ServiceConnection serviceConnection = this.mServiceConnection;
-            if (serviceConnection != null) {
-                this.mContext.unbindService(serviceConnection);
-            }
-            this.mBinder = null;
-        }
-
-        public void bindToService(long j) {
-            IResumeOnRebootService iResumeOnRebootService = this.mBinder;
-            if (iResumeOnRebootService == null || !iResumeOnRebootService.asBinder().isBinderAlive()) {
-                final CountDownLatch countDownLatch = new CountDownLatch(1);
-                Intent intent = new Intent();
-                intent.setComponent(this.mComponentName);
-                ServiceConnection serviceConnection = new ServiceConnection() { // from class: com.android.server.locksettings.ResumeOnRebootServiceProvider.ResumeOnRebootServiceConnection.1
-                    @Override // android.content.ServiceConnection
-                    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                        ResumeOnRebootServiceConnection.this.mBinder = IResumeOnRebootService.Stub.asInterface(iBinder);
-                        countDownLatch.countDown();
-                    }
-
-                    @Override // android.content.ServiceConnection
-                    public void onServiceDisconnected(ComponentName componentName) {
-                        ResumeOnRebootServiceConnection.this.mBinder = null;
-                    }
-                };
-                this.mServiceConnection = serviceConnection;
-                if (!this.mContext.bindServiceAsUser(intent, serviceConnection, 67108865, BackgroundThread.getHandler(), UserHandle.SYSTEM)) {
-                    Slog.e("ResumeOnRebootServiceConnection", "Binding: " + this.mComponentName + " u" + UserHandle.SYSTEM + " failed.");
-                    return;
-                }
-                waitForLatch(countDownLatch, "serviceConnection", j);
-            }
-        }
-
-        public byte[] wrapBlob(byte[] bArr, long j, long j2) {
-            IResumeOnRebootService iResumeOnRebootService = this.mBinder;
-            if (iResumeOnRebootService == null || !iResumeOnRebootService.asBinder().isBinderAlive()) {
-                throw new RemoteException("Service not bound");
-            }
-            CountDownLatch countDownLatch = new CountDownLatch(1);
-            ResumeOnRebootServiceCallback resumeOnRebootServiceCallback = new ResumeOnRebootServiceCallback(countDownLatch);
-            this.mBinder.wrapSecret(bArr, j, new RemoteCallback(resumeOnRebootServiceCallback));
-            waitForLatch(countDownLatch, "wrapSecret", j2);
-            if (resumeOnRebootServiceCallback.getResult().containsKey("exception_key")) {
-                throwTypedException((ParcelableException) resumeOnRebootServiceCallback.getResult().getParcelable("exception_key", ParcelableException.class));
-            }
-            return resumeOnRebootServiceCallback.mResult.getByteArray("wrapped_blob_key");
-        }
-
-        public byte[] unwrap(byte[] bArr, long j) {
-            IResumeOnRebootService iResumeOnRebootService = this.mBinder;
-            if (iResumeOnRebootService == null || !iResumeOnRebootService.asBinder().isBinderAlive()) {
-                throw new RemoteException("Service not bound");
-            }
-            CountDownLatch countDownLatch = new CountDownLatch(1);
-            ResumeOnRebootServiceCallback resumeOnRebootServiceCallback = new ResumeOnRebootServiceCallback(countDownLatch);
-            this.mBinder.unwrap(bArr, new RemoteCallback(resumeOnRebootServiceCallback));
-            waitForLatch(countDownLatch, "unWrapSecret", j);
-            if (resumeOnRebootServiceCallback.getResult().containsKey("exception_key")) {
-                throwTypedException((ParcelableException) resumeOnRebootServiceCallback.getResult().getParcelable("exception_key", ParcelableException.class));
-            }
-            return resumeOnRebootServiceCallback.getResult().getByteArray("unrwapped_blob_key");
-        }
-
-        public final void throwTypedException(ParcelableException parcelableException) {
-            if (parcelableException != null && (parcelableException.getCause() instanceof IOException)) {
-                parcelableException.maybeRethrow(IOException.class);
-                return;
-            }
-            throw new RemoteException("ResumeOnRebootServiceConnection wrap/unwrap failed", parcelableException, true, true);
-        }
-
-        public final void waitForLatch(CountDownLatch countDownLatch, String str, long j) {
-            try {
-                if (countDownLatch.await(j, TimeUnit.SECONDS)) {
-                    return;
-                }
-                throw new TimeoutException("Latch wait for " + str + " elapsed");
-            } catch (InterruptedException unused) {
-                Thread.currentThread().interrupt();
-                throw new RemoteException("Latch wait for " + str + " interrupted");
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class ResumeOnRebootServiceCallback implements RemoteCallback.OnResultListener {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ResumeOnRebootServiceCallback implements RemoteCallback.OnResultListener {
         public Bundle mResult;
         public final CountDownLatch mResultLatch;
 
@@ -178,13 +36,71 @@ public class ResumeOnRebootServiceProvider {
             this.mResultLatch = countDownLatch;
         }
 
-        public void onResult(Bundle bundle) {
+        public final void onResult(Bundle bundle) {
             this.mResult = bundle;
             this.mResultLatch.countDown();
         }
+    }
 
-        public final Bundle getResult() {
-            return this.mResult;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ResumeOnRebootServiceConnection {
+        public IResumeOnRebootService mBinder;
+        public final ComponentName mComponentName;
+        public final Context mContext;
+        public AnonymousClass1 mServiceConnection;
+
+        public ResumeOnRebootServiceConnection(Context context, ComponentName componentName) {
+            this.mContext = context;
+            this.mComponentName = componentName;
         }
+
+        public static void waitForLatch(CountDownLatch countDownLatch, long j, String str) {
+            try {
+                if (countDownLatch.await(j, TimeUnit.SECONDS)) {
+                    return;
+                }
+                throw new TimeoutException("Latch wait for " + str + " elapsed");
+            } catch (InterruptedException unused) {
+                Thread.currentThread().interrupt();
+                throw new RemoteException(XmlUtils$$ExternalSyntheticOutline0.m("Latch wait for ", str, " interrupted"));
+            }
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        /* JADX WARN: Type inference failed for: r4v0, types: [android.content.ServiceConnection, com.android.server.locksettings.ResumeOnRebootServiceProvider$ResumeOnRebootServiceConnection$1] */
+        public final void bindToService(long j) {
+            IResumeOnRebootService iResumeOnRebootService = this.mBinder;
+            if (iResumeOnRebootService == null || !iResumeOnRebootService.asBinder().isBinderAlive()) {
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                Intent intent = new Intent();
+                intent.setComponent(this.mComponentName);
+                ?? r4 = new ServiceConnection() { // from class: com.android.server.locksettings.ResumeOnRebootServiceProvider.ResumeOnRebootServiceConnection.1
+                    @Override // android.content.ServiceConnection
+                    public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                        ResumeOnRebootServiceConnection.this.mBinder = IResumeOnRebootService.Stub.asInterface(iBinder);
+                        countDownLatch.countDown();
+                    }
+
+                    @Override // android.content.ServiceConnection
+                    public final void onServiceDisconnected(ComponentName componentName) {
+                        ResumeOnRebootServiceConnection.this.mBinder = null;
+                    }
+                };
+                this.mServiceConnection = r4;
+                Context context = this.mContext;
+                Handler handler = BackgroundThread.getHandler();
+                UserHandle userHandle = UserHandle.SYSTEM;
+                if (context.bindServiceAsUser(intent, r4, 67108865, handler, userHandle)) {
+                    waitForLatch(countDownLatch, j, "serviceConnection");
+                    return;
+                }
+                Slog.e("ResumeOnRebootServiceConnection", "Binding: " + this.mComponentName + " u" + userHandle + " failed.");
+            }
+        }
+    }
+
+    public ResumeOnRebootServiceProvider(Context context, PackageManager packageManager) {
+        this.mContext = context;
+        this.mPackageManager = packageManager;
     }
 }

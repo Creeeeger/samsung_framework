@@ -10,7 +10,6 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import com.android.server.graphics.fonts.UpdatableFontDir;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
@@ -19,57 +18,26 @@ import java.nio.MappedByteBuffer;
 import java.nio.NioUtils;
 import java.nio.channels.FileChannel;
 
-/* loaded from: classes2.dex */
-public class OtfFontFileParser implements UpdatableFontDir.FontFileParser {
-    @Override // com.android.server.graphics.fonts.UpdatableFontDir.FontFileParser
-    public String getPostScriptName(File file) {
-        ByteBuffer mmap = mmap(file);
-        try {
-            return FontFileUtil.getPostScriptName(mmap, 0);
-        } finally {
-            unmap(mmap);
-        }
-    }
-
-    @Override // com.android.server.graphics.fonts.UpdatableFontDir.FontFileParser
-    public String buildFontFileName(File file) {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class OtfFontFileParser {
+    /* JADX WARN: Finally extract failed */
+    public static String buildFontFileName(File file) {
         ByteBuffer mmap = mmap(file);
         try {
             String postScriptName = FontFileUtil.getPostScriptName(mmap, 0);
             int isPostScriptType1Font = FontFileUtil.isPostScriptType1Font(mmap, 0);
             int isCollectionFont = FontFileUtil.isCollectionFont(mmap);
             if (!TextUtils.isEmpty(postScriptName) && isPostScriptType1Font != -1 && isCollectionFont != -1) {
-                return postScriptName + (isCollectionFont == 1 ? isPostScriptType1Font == 1 ? ".otc" : ".ttc" : isPostScriptType1Font == 1 ? ".otf" : ".ttf");
+                String str = postScriptName + (isCollectionFont == 1 ? isPostScriptType1Font == 1 ? ".otc" : ".ttc" : isPostScriptType1Font == 1 ? ".otf" : ".ttf");
+                unmap(mmap);
+                return str;
             }
             unmap(mmap);
             return null;
-        } finally {
+        } catch (Throwable th) {
             unmap(mmap);
-        }
-    }
-
-    @Override // com.android.server.graphics.fonts.UpdatableFontDir.FontFileParser
-    public long getRevision(File file) {
-        ByteBuffer mmap = mmap(file);
-        try {
-            return FontFileUtil.getRevision(mmap, 0);
-        } finally {
-            unmap(mmap);
-        }
-    }
-
-    @Override // com.android.server.graphics.fonts.UpdatableFontDir.FontFileParser
-    public void tryToCreateTypeface(File file) {
-        ByteBuffer mmap = mmap(file);
-        try {
-            Typeface build = new Typeface.CustomFallbackBuilder(new FontFamily.Builder(new Font.Builder(mmap).build()).build()).build();
-            TextPaint textPaint = new TextPaint();
-            textPaint.setTextSize(24.0f);
-            textPaint.setTypeface(build);
-            StaticLayout build2 = StaticLayout.Builder.obtain("abcXYZ@- 🫖🇺🇸💏🏻👨🏼\u200d❤️\u200d💋\u200d👨🏿", 0, 34, textPaint, (int) Math.ceil(Layout.getDesiredWidth("abcXYZ@- 🫖🇺🇸💏🏻👨🏼\u200d❤️\u200d💋\u200d👨🏿", textPaint))).build();
-            build2.draw(new Canvas(Bitmap.createBitmap(build2.getWidth(), build2.getHeight(), Bitmap.Config.ALPHA_8)));
-        } finally {
-            unmap(mmap);
+            throw th;
         }
     }
 
@@ -87,6 +55,20 @@ public class OtfFontFileParser implements UpdatableFontDir.FontFileParser {
                 th.addSuppressed(th2);
             }
             throw th;
+        }
+    }
+
+    public static void tryToCreateTypeface(File file) {
+        ByteBuffer mmap = mmap(file);
+        try {
+            Typeface build = new Typeface.CustomFallbackBuilder(new FontFamily.Builder(new Font.Builder(mmap).build()).build()).build();
+            TextPaint textPaint = new TextPaint();
+            textPaint.setTextSize(24.0f);
+            textPaint.setTypeface(build);
+            StaticLayout build2 = StaticLayout.Builder.obtain("abcXYZ@- 🫖🇺🇸💏🏻👨🏼\u200d❤️\u200d💋\u200d👨🏿", 0, 34, textPaint, (int) Math.ceil(Layout.getDesiredWidth("abcXYZ@- 🫖🇺🇸💏🏻👨🏼\u200d❤️\u200d💋\u200d👨🏿", textPaint))).build();
+            build2.draw(new Canvas(Bitmap.createBitmap(build2.getWidth(), build2.getHeight(), Bitmap.Config.ALPHA_8)));
+        } finally {
+            unmap(mmap);
         }
     }
 

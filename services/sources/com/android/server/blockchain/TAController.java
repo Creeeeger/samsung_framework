@@ -1,6 +1,5 @@
 package com.android.server.blockchain;
 
-import android.blockchain.BlockchainTZServiceConfig;
 import android.blockchain.ITAController;
 import android.blockchain.TACommandRequest;
 import android.blockchain.TACommandResponse;
@@ -9,27 +8,53 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import java.io.IOException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TAController extends ITAController.Stub {
+public final class TAController extends ITAController.Stub {
     public static final boolean DEBUG = BlockchainTZService.DEBUG;
-    public boolean SET_QSEE_SECURE_UI = false;
+    public boolean SET_QSEE_SECURE_UI;
     public Context mContext;
     public BlockchainTZNative mNative;
     public int mTAId;
 
-    public TAController(Context context, int i, BlockchainTZServiceConfig.TAConfig tAConfig) {
-        if (DEBUG) {
-            Log.d("BlockchainTZService", "TAController constructor: taId = " + i + "; maxSendCmdSize = " + tAConfig.maxSendCmdSize + "; maxRecvRespSize = " + tAConfig.maxRecvRespSize);
+    public final boolean loadTA(ParcelFileDescriptor parcelFileDescriptor, long j, long j2) {
+        synchronized (this) {
+            try {
+                BlockchainTZService.checkCallerPermissionFor("loadTA");
+                boolean z = DEBUG;
+                if (z) {
+                    Log.d("BlockchainTZService", "TAController::loadTA");
+                }
+                if (parcelFileDescriptor == null) {
+                    return false;
+                }
+                int fd = parcelFileDescriptor.getFd();
+                if (z) {
+                    Log.d("BlockchainTZService", "TA fd=" + fd + " offset=" + j + " size=" + j2);
+                }
+                try {
+                    return this.mNative.loadTA(this.mContext, fd, j, j2);
+                } finally {
+                    try {
+                        parcelFileDescriptor.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
         }
-        this.mContext = context;
-        this.mTAId = i;
-        this.mNative = new BlockchainTZNative(i, tAConfig.taTechnology, tAConfig.rootName, tAConfig.processName, tAConfig.maxSendCmdSize, tAConfig.maxRecvRespSize);
     }
 
-    public TACommandResponse processTACommand(TACommandRequest tACommandRequest) {
+    public final TACommandResponse processTACommand(TACommandRequest tACommandRequest) {
         TACommandResponse processTACommand;
-        if (isBinderAlive()) {
-            synchronized (this) {
+        if (!isBinderAlive()) {
+            Log.e("BlockchainTZService", "binder for cmd is died");
+            return null;
+        }
+        synchronized (this) {
+            try {
                 BlockchainTZService.checkCallerPermissionFor("processTACommand");
                 if (DEBUG) {
                     Log.d("BlockchainTZService", "TAController::processTACommand: request = " + tACommandRequest + "; request.mCommandId = " + tACommandRequest.mCommandId + "; this.mTAId = " + this.mTAId);
@@ -39,47 +64,25 @@ public class TAController extends ITAController.Stub {
                 }
                 processTACommand = this.mNative.processTACommand(tACommandRequest);
                 this.SET_QSEE_SECURE_UI = false;
+            } catch (Throwable th) {
+                throw th;
             }
-            return processTACommand;
         }
-        Log.e("BlockchainTZService", "binder for cmd is died");
-        return null;
+        return processTACommand;
     }
 
-    public boolean loadTA(ParcelFileDescriptor parcelFileDescriptor, long j, long j2) {
+    public final void unloadTA() {
         synchronized (this) {
-            BlockchainTZService.checkCallerPermissionFor("loadTA");
-            boolean z = DEBUG;
-            if (z) {
-                Log.d("BlockchainTZService", "TAController::loadTA");
-            }
-            if (parcelFileDescriptor == null) {
-                return false;
-            }
-            int fd = parcelFileDescriptor.getFd();
-            if (z) {
-                Log.d("BlockchainTZService", "TA fd=" + fd + " offset=" + j + " size=" + j2);
-            }
             try {
-                return this.mNative.loadTA(this.mContext, fd, j, j2);
-            } finally {
-                try {
-                    parcelFileDescriptor.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                BlockchainTZService.checkCallerPermissionFor("unloadTA");
+                if (DEBUG) {
+                    Log.d("BlockchainTZService", "TAController::unloadTA");
                 }
+                this.SET_QSEE_SECURE_UI = false;
+                this.mNative.unloadTA();
+            } catch (Throwable th) {
+                throw th;
             }
-        }
-    }
-
-    public void unloadTA() {
-        synchronized (this) {
-            BlockchainTZService.checkCallerPermissionFor("unloadTA");
-            if (DEBUG) {
-                Log.d("BlockchainTZService", "TAController::unloadTA");
-            }
-            this.SET_QSEE_SECURE_UI = false;
-            this.mNative.unloadTA();
         }
     }
 }

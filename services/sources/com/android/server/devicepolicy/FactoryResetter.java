@@ -12,10 +12,11 @@ import com.android.internal.util.Preconditions;
 import com.android.server.utils.Slogf;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class FactoryResetter {
-    public static final String TAG = "FactoryResetter";
     public final Context mContext;
     public final boolean mForce;
     public final String mReason;
@@ -25,35 +26,98 @@ public final class FactoryResetter {
     public final boolean mWipeEuicc;
     public final boolean mWipeFactoryResetProtection;
 
-    public boolean factoryReset() {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Builder {
+        public final Context mContext;
+        public boolean mForce;
+        public String mReason;
+        public DevicePolicySafetyChecker mSafetyChecker;
+        public boolean mShutdown;
+        public boolean mWipeAdoptableStorage;
+        public boolean mWipeEuicc;
+        public boolean mWipeFactoryResetProtection;
+
+        public Builder(Context context) {
+            Objects.requireNonNull(context);
+            this.mContext = context;
+        }
+    }
+
+    public FactoryResetter(Builder builder) {
+        this.mContext = builder.mContext;
+        this.mSafetyChecker = builder.mSafetyChecker;
+        this.mReason = builder.mReason;
+        this.mShutdown = builder.mShutdown;
+        this.mForce = builder.mForce;
+        this.mWipeEuicc = builder.mWipeEuicc;
+        this.mWipeAdoptableStorage = builder.mWipeAdoptableStorage;
+        this.mWipeFactoryResetProtection = builder.mWipeFactoryResetProtection;
+    }
+
+    public final boolean factoryReset() {
         Preconditions.checkCallAuthorization(this.mContext.checkCallingOrSelfPermission("android.permission.MASTER_CLEAR") == 0);
-        com.android.server.FactoryResetter.setFactoryResetting(this.mContext);
+        Context context = this.mContext;
+        AtomicBoolean atomicBoolean = com.android.server.FactoryResetter.sFactoryResetting;
+        Preconditions.checkCallAuthorization(context.checkCallingOrSelfPermission("android.permission.MASTER_CLEAR") == 0);
+        com.android.server.FactoryResetter.sFactoryResetting.set(true);
         if (this.mSafetyChecker == null) {
             factoryResetInternalUnchecked();
             return true;
         }
         IResultReceiver.Stub stub = new IResultReceiver.Stub() { // from class: com.android.server.devicepolicy.FactoryResetter.1
-            public void send(int i, Bundle bundle) {
-                Slogf.i(FactoryResetter.TAG, "Factory reset confirmed by %s, proceeding", FactoryResetter.this.mSafetyChecker);
+            public final void send(int i, Bundle bundle) {
+                Slogf.i("FactoryResetter", "Factory reset confirmed by %s, proceeding", FactoryResetter.this.mSafetyChecker);
                 try {
                     FactoryResetter.this.factoryResetInternalUnchecked();
                 } catch (IOException e) {
-                    Slogf.wtf(FactoryResetter.TAG, e, "IOException calling underlying systems", new Object[0]);
+                    Slogf.wtf("FactoryResetter", e, "IOException calling underlying systems", new Object[0]);
                 }
             }
         };
-        Slogf.i(TAG, "Delaying factory reset until %s confirms", this.mSafetyChecker);
+        Slogf.i("FactoryResetter", "Delaying factory reset until %s confirms", this.mSafetyChecker);
         this.mSafetyChecker.onFactoryReset(stub);
         return false;
     }
 
-    public String toString() {
+    public final void factoryResetInternalUnchecked() {
+        boolean z = this.mShutdown;
+        Boolean valueOf = Boolean.valueOf(z);
+        boolean z2 = this.mForce;
+        Boolean valueOf2 = Boolean.valueOf(z2);
+        boolean z3 = this.mWipeEuicc;
+        Boolean valueOf3 = Boolean.valueOf(z3);
+        boolean z4 = this.mWipeAdoptableStorage;
+        Boolean valueOf4 = Boolean.valueOf(z4);
+        boolean z5 = this.mWipeFactoryResetProtection;
+        Slogf.i("FactoryResetter", "factoryReset(): reason=%s, shutdown=%b, force=%b, wipeEuicc=%b, wipeAdoptableStorage=%b, wipeFRP=%b", this.mReason, valueOf, valueOf2, valueOf3, valueOf4, Boolean.valueOf(z5));
+        UserManager userManager = (UserManager) this.mContext.getSystemService(UserManager.class);
+        if (!z2 && userManager.hasUserRestriction("no_factory_reset")) {
+            throw new SecurityException("Factory reset is not allowed for this user.");
+        }
+        if (z5) {
+            PersistentDataBlockManager persistentDataBlockManager = (PersistentDataBlockManager) this.mContext.getSystemService(PersistentDataBlockManager.class);
+            if (persistentDataBlockManager != null) {
+                Slogf.w("FactoryResetter", "Wiping factory reset protection");
+                persistentDataBlockManager.wipe();
+            } else {
+                Slogf.w("FactoryResetter", "No need to wipe factory reset protection");
+            }
+        }
+        if (z4) {
+            Slogf.w("FactoryResetter", "Wiping adoptable storage");
+            ((StorageManager) this.mContext.getSystemService(StorageManager.class)).wipeAdoptableDisks();
+        }
+        RecoverySystem.rebootWipeUserData(this.mContext, z, this.mReason, z2, z3);
+    }
+
+    public final String toString() {
         StringBuilder sb = new StringBuilder("FactoryResetter[");
-        if (this.mReason == null) {
+        String str = this.mReason;
+        if (str == null) {
             sb.append("no_reason");
         } else {
             sb.append("reason='");
-            sb.append(this.mReason);
+            sb.append(str);
             sb.append("'");
         }
         if (this.mSafetyChecker != null) {
@@ -76,100 +140,5 @@ public final class FactoryResetter {
         }
         sb.append(']');
         return sb.toString();
-    }
-
-    public final void factoryResetInternalUnchecked() {
-        String str = TAG;
-        Slogf.i(str, "factoryReset(): reason=%s, shutdown=%b, force=%b, wipeEuicc=%b, wipeAdoptableStorage=%b, wipeFRP=%b", this.mReason, Boolean.valueOf(this.mShutdown), Boolean.valueOf(this.mForce), Boolean.valueOf(this.mWipeEuicc), Boolean.valueOf(this.mWipeAdoptableStorage), Boolean.valueOf(this.mWipeFactoryResetProtection));
-        UserManager userManager = (UserManager) this.mContext.getSystemService(UserManager.class);
-        if (!this.mForce && userManager.hasUserRestriction("no_factory_reset")) {
-            throw new SecurityException("Factory reset is not allowed for this user.");
-        }
-        if (this.mWipeFactoryResetProtection) {
-            PersistentDataBlockManager persistentDataBlockManager = (PersistentDataBlockManager) this.mContext.getSystemService(PersistentDataBlockManager.class);
-            if (persistentDataBlockManager != null) {
-                Slogf.w(str, "Wiping factory reset protection");
-                persistentDataBlockManager.wipe();
-            } else {
-                Slogf.w(str, "No need to wipe factory reset protection");
-            }
-        }
-        if (this.mWipeAdoptableStorage) {
-            Slogf.w(str, "Wiping adoptable storage");
-            ((StorageManager) this.mContext.getSystemService(StorageManager.class)).wipeAdoptableDisks();
-        }
-        RecoverySystem.rebootWipeUserData(this.mContext, this.mShutdown, this.mReason, this.mForce, this.mWipeEuicc);
-    }
-
-    public FactoryResetter(Builder builder) {
-        this.mContext = builder.mContext;
-        this.mSafetyChecker = builder.mSafetyChecker;
-        this.mReason = builder.mReason;
-        this.mShutdown = builder.mShutdown;
-        this.mForce = builder.mForce;
-        this.mWipeEuicc = builder.mWipeEuicc;
-        this.mWipeAdoptableStorage = builder.mWipeAdoptableStorage;
-        this.mWipeFactoryResetProtection = builder.mWipeFactoryResetProtection;
-    }
-
-    public static Builder newBuilder(Context context) {
-        return new Builder(context);
-    }
-
-    /* loaded from: classes2.dex */
-    public final class Builder {
-        public final Context mContext;
-        public boolean mForce;
-        public String mReason;
-        public DevicePolicySafetyChecker mSafetyChecker;
-        public boolean mShutdown;
-        public boolean mWipeAdoptableStorage;
-        public boolean mWipeEuicc;
-        public boolean mWipeFactoryResetProtection;
-
-        public Builder(Context context) {
-            Objects.requireNonNull(context);
-            this.mContext = context;
-        }
-
-        public Builder setSafetyChecker(DevicePolicySafetyChecker devicePolicySafetyChecker) {
-            this.mSafetyChecker = devicePolicySafetyChecker;
-            return this;
-        }
-
-        public Builder setReason(String str) {
-            Objects.requireNonNull(str);
-            this.mReason = str;
-            return this;
-        }
-
-        public Builder setShutdown(boolean z) {
-            this.mShutdown = z;
-            return this;
-        }
-
-        public Builder setForce(boolean z) {
-            this.mForce = z;
-            return this;
-        }
-
-        public Builder setWipeEuicc(boolean z) {
-            this.mWipeEuicc = z;
-            return this;
-        }
-
-        public Builder setWipeAdoptableStorage(boolean z) {
-            this.mWipeAdoptableStorage = z;
-            return this;
-        }
-
-        public Builder setWipeFactoryResetProtection(boolean z) {
-            this.mWipeFactoryResetProtection = z;
-            return this;
-        }
-
-        public FactoryResetter build() {
-            return new FactoryResetter(this);
-        }
     }
 }

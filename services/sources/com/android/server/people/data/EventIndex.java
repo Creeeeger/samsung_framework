@@ -4,7 +4,6 @@ import android.text.format.DateFormat;
 import android.util.Range;
 import android.util.Slog;
 import android.util.proto.ProtoInputStream;
-import android.util.proto.ProtoOutputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,43 +16,124 @@ import java.util.Objects;
 import java.util.TimeZone;
 import java.util.function.Function;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class EventIndex {
-    public static final String TAG = "EventIndex";
+public final class EventIndex {
+    public static final EventIndex EMPTY = new EventIndex();
+    public static final List TIME_SLOT_FACTORIES;
     public final long[] mEventBitmaps;
     public final Injector mInjector;
     public long mLastUpdatedTime;
     public final Object mLock;
-    public static final EventIndex EMPTY = new EventIndex();
-    public static final List TIME_SLOT_FACTORIES = Collections.unmodifiableList(Arrays.asList(new Function() { // from class: com.android.server.people.data.EventIndex$$ExternalSyntheticLambda0
-        @Override // java.util.function.Function
-        public final Object apply(Object obj) {
-            Range createOneDayLongTimeSlot;
-            createOneDayLongTimeSlot = EventIndex.createOneDayLongTimeSlot(((Long) obj).longValue());
-            return createOneDayLongTimeSlot;
-        }
-    }, new Function() { // from class: com.android.server.people.data.EventIndex$$ExternalSyntheticLambda1
-        @Override // java.util.function.Function
-        public final Object apply(Object obj) {
-            Range createFourHoursLongTimeSlot;
-            createFourHoursLongTimeSlot = EventIndex.createFourHoursLongTimeSlot(((Long) obj).longValue());
-            return createFourHoursLongTimeSlot;
-        }
-    }, new Function() { // from class: com.android.server.people.data.EventIndex$$ExternalSyntheticLambda2
-        @Override // java.util.function.Function
-        public final Object apply(Object obj) {
-            Range createOneHourLongTimeSlot;
-            createOneHourLongTimeSlot = EventIndex.createOneHourLongTimeSlot(((Long) obj).longValue());
-            return createOneHourLongTimeSlot;
-        }
-    }, new Function() { // from class: com.android.server.people.data.EventIndex$$ExternalSyntheticLambda3
-        @Override // java.util.function.Function
-        public final Object apply(Object obj) {
-            Range createTwoMinutesLongTimeSlot;
-            createTwoMinutesLongTimeSlot = EventIndex.createTwoMinutesLongTimeSlot(((Long) obj).longValue());
-            return createTwoMinutesLongTimeSlot;
-        }
-    }));
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class Injector {
+    }
+
+    static {
+        final int i = 0;
+        final int i2 = 1;
+        final int i3 = 2;
+        final int i4 = 3;
+        TIME_SLOT_FACTORIES = Collections.unmodifiableList(Arrays.asList(new Function() { // from class: com.android.server.people.data.EventIndex$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                Long l = (Long) obj;
+                switch (i) {
+                    case 0:
+                        LocalDateTime truncatedTo = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.DAYS);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(truncatedTo)), Long.valueOf(EventIndex.toEpochMilli(truncatedTo.plusDays(1L))));
+                    case 1:
+                        LocalDateTime minusHours = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.HOURS).minusHours(EventIndex.toLocalDateTime(r2).getHour() % 4);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(minusHours)), Long.valueOf(EventIndex.toEpochMilli(minusHours.plusHours(4L))));
+                    case 2:
+                        LocalDateTime truncatedTo2 = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.HOURS);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(truncatedTo2)), Long.valueOf(EventIndex.toEpochMilli(truncatedTo2.plusHours(1L))));
+                    default:
+                        LocalDateTime minusMinutes = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.MINUTES).minusMinutes(EventIndex.toLocalDateTime(r2).getMinute() % 2);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(minusMinutes)), Long.valueOf(EventIndex.toEpochMilli(minusMinutes.plusMinutes(2L))));
+                }
+            }
+        }, new Function() { // from class: com.android.server.people.data.EventIndex$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                Long l = (Long) obj;
+                switch (i2) {
+                    case 0:
+                        LocalDateTime truncatedTo = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.DAYS);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(truncatedTo)), Long.valueOf(EventIndex.toEpochMilli(truncatedTo.plusDays(1L))));
+                    case 1:
+                        LocalDateTime minusHours = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.HOURS).minusHours(EventIndex.toLocalDateTime(r2).getHour() % 4);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(minusHours)), Long.valueOf(EventIndex.toEpochMilli(minusHours.plusHours(4L))));
+                    case 2:
+                        LocalDateTime truncatedTo2 = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.HOURS);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(truncatedTo2)), Long.valueOf(EventIndex.toEpochMilli(truncatedTo2.plusHours(1L))));
+                    default:
+                        LocalDateTime minusMinutes = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.MINUTES).minusMinutes(EventIndex.toLocalDateTime(r2).getMinute() % 2);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(minusMinutes)), Long.valueOf(EventIndex.toEpochMilli(minusMinutes.plusMinutes(2L))));
+                }
+            }
+        }, new Function() { // from class: com.android.server.people.data.EventIndex$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                Long l = (Long) obj;
+                switch (i3) {
+                    case 0:
+                        LocalDateTime truncatedTo = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.DAYS);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(truncatedTo)), Long.valueOf(EventIndex.toEpochMilli(truncatedTo.plusDays(1L))));
+                    case 1:
+                        LocalDateTime minusHours = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.HOURS).minusHours(EventIndex.toLocalDateTime(r2).getHour() % 4);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(minusHours)), Long.valueOf(EventIndex.toEpochMilli(minusHours.plusHours(4L))));
+                    case 2:
+                        LocalDateTime truncatedTo2 = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.HOURS);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(truncatedTo2)), Long.valueOf(EventIndex.toEpochMilli(truncatedTo2.plusHours(1L))));
+                    default:
+                        LocalDateTime minusMinutes = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.MINUTES).minusMinutes(EventIndex.toLocalDateTime(r2).getMinute() % 2);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(minusMinutes)), Long.valueOf(EventIndex.toEpochMilli(minusMinutes.plusMinutes(2L))));
+                }
+            }
+        }, new Function() { // from class: com.android.server.people.data.EventIndex$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                Long l = (Long) obj;
+                switch (i4) {
+                    case 0:
+                        LocalDateTime truncatedTo = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.DAYS);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(truncatedTo)), Long.valueOf(EventIndex.toEpochMilli(truncatedTo.plusDays(1L))));
+                    case 1:
+                        LocalDateTime minusHours = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.HOURS).minusHours(EventIndex.toLocalDateTime(r2).getHour() % 4);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(minusHours)), Long.valueOf(EventIndex.toEpochMilli(minusHours.plusHours(4L))));
+                    case 2:
+                        LocalDateTime truncatedTo2 = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.HOURS);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(truncatedTo2)), Long.valueOf(EventIndex.toEpochMilli(truncatedTo2.plusHours(1L))));
+                    default:
+                        LocalDateTime minusMinutes = EventIndex.toLocalDateTime(l.longValue()).truncatedTo(ChronoUnit.MINUTES).minusMinutes(EventIndex.toLocalDateTime(r2).getMinute() % 2);
+                        return Range.create(Long.valueOf(EventIndex.toEpochMilli(minusMinutes)), Long.valueOf(EventIndex.toEpochMilli(minusMinutes.plusMinutes(2L))));
+                }
+            }
+        }));
+    }
+
+    public EventIndex() {
+        this(new Injector());
+    }
+
+    /* JADX WARN: 'this' call moved to the top of the method (can break code semantics) */
+    public EventIndex(Injector injector) {
+        this(injector, new long[]{0, 0, 0, 0}, System.currentTimeMillis());
+        injector.getClass();
+    }
+
+    public EventIndex(Injector injector, long[] jArr, long j) {
+        this.mLock = new Object();
+        this.mInjector = injector;
+        this.mEventBitmaps = Arrays.copyOf(jArr, 4);
+        this.mLastUpdatedTime = j;
+    }
+
+    public EventIndex(EventIndex eventIndex) {
+        this(eventIndex.mInjector, eventIndex.mEventBitmaps, eventIndex.mLastUpdatedTime);
+    }
 
     public static EventIndex combine(EventIndex eventIndex, EventIndex eventIndex2) {
         long j = eventIndex.mLastUpdatedTime;
@@ -71,118 +151,47 @@ public class EventIndex {
         return eventIndex4;
     }
 
-    public EventIndex() {
-        this(new Injector());
-    }
-
-    public EventIndex(EventIndex eventIndex) {
-        this(eventIndex.mInjector, eventIndex.mEventBitmaps, eventIndex.mLastUpdatedTime);
-    }
-
-    public EventIndex(Injector injector) {
-        this(injector, new long[]{0, 0, 0, 0}, injector.currentTimeMillis());
-    }
-
-    public EventIndex(Injector injector, long[] jArr, long j) {
-        this.mLock = new Object();
-        this.mInjector = injector;
-        this.mEventBitmaps = Arrays.copyOf(jArr, 4);
-        this.mLastUpdatedTime = j;
-    }
-
-    public Range getMostRecentActiveTimeSlot() {
-        synchronized (this.mLock) {
-            for (int i = 3; i >= 0; i--) {
-                if (this.mEventBitmaps[i] != 0) {
-                    Range range = (Range) ((Function) TIME_SLOT_FACTORIES.get(i)).apply(Long.valueOf(this.mLastUpdatedTime));
-                    long duration = getDuration(range) * Long.numberOfTrailingZeros(this.mEventBitmaps[i]);
-                    return Range.create(Long.valueOf(((Long) range.getLower()).longValue() - duration), Long.valueOf(((Long) range.getUpper()).longValue() - duration));
-                }
+    public static List combineTimeSlotLists(List list, List list2) {
+        ArrayList arrayList = new ArrayList();
+        int i = 0;
+        int i2 = 0;
+        while (i < list.size()) {
+            ArrayList arrayList2 = (ArrayList) list2;
+            if (i2 >= arrayList2.size()) {
+                break;
             }
-            return null;
+            Range range = (Range) list.get(i);
+            Range range2 = (Range) arrayList2.get(i2);
+            if (range.contains(range2)) {
+                arrayList.add(range2);
+                i++;
+            } else if (((Long) range.getLower()).longValue() < ((Long) range2.getLower()).longValue()) {
+                arrayList.add(range2);
+            } else {
+                arrayList.add(range);
+                i++;
+            }
+            i2++;
         }
-    }
-
-    public List getActiveTimeSlots() {
-        List arrayList = new ArrayList();
-        synchronized (this.mLock) {
-            for (int i = 0; i < 4; i++) {
-                arrayList = combineTimeSlotLists(arrayList, getActiveTimeSlotsForType(i));
+        if (i < list.size()) {
+            arrayList.addAll(list.subList(i, list.size()));
+        } else {
+            ArrayList arrayList3 = (ArrayList) list2;
+            if (i2 < arrayList3.size()) {
+                arrayList.addAll(arrayList3.subList(i2, arrayList3.size()));
             }
         }
-        Collections.reverse(arrayList);
         return arrayList;
     }
 
-    public boolean isEmpty() {
-        synchronized (this.mLock) {
-            for (int i = 0; i < 4; i++) {
-                if (this.mEventBitmaps[i] != 0) {
-                    return false;
-                }
-            }
-            return true;
-        }
+    public static int diffTimeSlots(int i, long j, long j2) {
+        Function function = (Function) TIME_SLOT_FACTORIES.get(i);
+        Range range = (Range) function.apply(Long.valueOf(j));
+        return (int) ((((Long) ((Range) function.apply(Long.valueOf(j2))).getLower()).longValue() - ((Long) range.getLower()).longValue()) / getDuration(range));
     }
 
-    public void addEvent(long j) {
-        if (EMPTY == this) {
-            throw new IllegalStateException("EMPTY instance is immutable");
-        }
-        synchronized (this.mLock) {
-            long currentTimeMillis = this.mInjector.currentTimeMillis();
-            updateEventBitmaps(currentTimeMillis);
-            for (int i = 0; i < 4; i++) {
-                int diffTimeSlots = diffTimeSlots(i, j, currentTimeMillis);
-                if (diffTimeSlots < 64) {
-                    long[] jArr = this.mEventBitmaps;
-                    jArr[i] = jArr[i] | (1 << diffTimeSlots);
-                }
-            }
-        }
-    }
-
-    public String toString() {
-        return "EventIndex {perDayEventBitmap=0b" + Long.toBinaryString(this.mEventBitmaps[0]) + ", perFourHoursEventBitmap=0b" + Long.toBinaryString(this.mEventBitmaps[1]) + ", perHourEventBitmap=0b" + Long.toBinaryString(this.mEventBitmaps[2]) + ", perTwoMinutesEventBitmap=0b" + Long.toBinaryString(this.mEventBitmaps[3]) + ", lastUpdatedTime=" + DateFormat.format("yyyy-MM-dd HH:mm:ss", this.mLastUpdatedTime) + "}";
-    }
-
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof EventIndex)) {
-            return false;
-        }
-        EventIndex eventIndex = (EventIndex) obj;
-        return this.mLastUpdatedTime == eventIndex.mLastUpdatedTime && Arrays.equals(this.mEventBitmaps, eventIndex.mEventBitmaps);
-    }
-
-    public int hashCode() {
-        return Objects.hash(Long.valueOf(this.mLastUpdatedTime), Integer.valueOf(Arrays.hashCode(this.mEventBitmaps)));
-    }
-
-    public synchronized void writeToProto(ProtoOutputStream protoOutputStream) {
-        for (long j : this.mEventBitmaps) {
-            protoOutputStream.write(2211908157441L, j);
-        }
-        protoOutputStream.write(1112396529666L, this.mLastUpdatedTime);
-    }
-
-    public final void updateEventBitmaps(long j) {
-        for (int i = 0; i < 4; i++) {
-            int diffTimeSlots = diffTimeSlots(i, this.mLastUpdatedTime, j);
-            if (diffTimeSlots < 64) {
-                long[] jArr = this.mEventBitmaps;
-                jArr[i] = jArr[i] << diffTimeSlots;
-            } else {
-                this.mEventBitmaps[i] = 0;
-            }
-        }
-        long[] jArr2 = this.mEventBitmaps;
-        long j2 = jArr2[0] << 1;
-        jArr2[0] = j2;
-        jArr2[0] = j2 >>> 1;
-        this.mLastUpdatedTime = j;
+    public static long getDuration(Range range) {
+        return ((Long) range.getUpper()).longValue() - ((Long) range.getLower()).longValue();
     }
 
     public static EventIndex readFromProto(ProtoInputStream protoInputStream) {
@@ -194,17 +203,13 @@ public class EventIndex {
             if (fieldNumber == 1) {
                 jArr[i] = protoInputStream.readLong(2211908157441L);
                 i++;
-            } else if (fieldNumber == 2) {
-                j = protoInputStream.readLong(1112396529666L);
+            } else if (fieldNumber != 2) {
+                Slog.e("EventIndex", "Could not read undefined field: " + protoInputStream.getFieldNumber());
             } else {
-                Slog.e(TAG, "Could not read undefined field: " + protoInputStream.getFieldNumber());
+                j = protoInputStream.readLong(1112396529666L);
             }
         }
         return new EventIndex(new Injector(), jArr, j);
-    }
-
-    public static LocalDateTime toLocalDateTime(long j) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(j), TimeZone.getDefault().toZoneId());
     }
 
     /* JADX WARN: Type inference failed for: r2v1, types: [java.time.ZonedDateTime] */
@@ -212,14 +217,56 @@ public class EventIndex {
         return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
-    public static long getDuration(Range range) {
-        return ((Long) range.getUpper()).longValue() - ((Long) range.getLower()).longValue();
+    public static LocalDateTime toLocalDateTime(long j) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(j), TimeZone.getDefault().toZoneId());
     }
 
-    public static int diffTimeSlots(int i, long j, long j2) {
-        Function function = (Function) TIME_SLOT_FACTORIES.get(i);
-        Range range = (Range) function.apply(Long.valueOf(j));
-        return (int) ((((Long) ((Range) function.apply(Long.valueOf(j2))).getLower()).longValue() - ((Long) range.getLower()).longValue()) / getDuration(range));
+    public final void addEvent(long j) {
+        if (EMPTY == this) {
+            throw new IllegalStateException("EMPTY instance is immutable");
+        }
+        synchronized (this.mLock) {
+            try {
+                this.mInjector.getClass();
+                long currentTimeMillis = System.currentTimeMillis();
+                updateEventBitmaps(currentTimeMillis);
+                for (int i = 0; i < 4; i++) {
+                    int diffTimeSlots = diffTimeSlots(i, j, currentTimeMillis);
+                    if (diffTimeSlots < 64) {
+                        long[] jArr = this.mEventBitmaps;
+                        jArr[i] = jArr[i] | (1 << diffTimeSlots);
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EventIndex)) {
+            return false;
+        }
+        EventIndex eventIndex = (EventIndex) obj;
+        return this.mLastUpdatedTime == eventIndex.mLastUpdatedTime && Arrays.equals(this.mEventBitmaps, eventIndex.mEventBitmaps);
+    }
+
+    public final List getActiveTimeSlots() {
+        List arrayList = new ArrayList();
+        synchronized (this.mLock) {
+            for (int i = 0; i < 4; i++) {
+                try {
+                    arrayList = combineTimeSlotLists(arrayList, getActiveTimeSlotsForType(i));
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+        Collections.reverse(arrayList);
+        return arrayList;
     }
 
     public final List getActiveTimeSlotsForType(int i) {
@@ -243,56 +290,59 @@ public class EventIndex {
         return arrayList;
     }
 
-    public static List combineTimeSlotLists(List list, List list2) {
-        ArrayList arrayList = new ArrayList();
-        int i = 0;
-        int i2 = 0;
-        while (i < list.size() && i2 < list2.size()) {
-            Range range = (Range) list.get(i);
-            Range range2 = (Range) list2.get(i2);
-            if (range.contains(range2)) {
-                arrayList.add(range2);
-                i++;
-            } else if (((Long) range.getLower()).longValue() < ((Long) range2.getLower()).longValue()) {
-                arrayList.add(range2);
-            } else {
-                arrayList.add(range);
-                i++;
+    public final int hashCode() {
+        return Objects.hash(Long.valueOf(this.mLastUpdatedTime), Integer.valueOf(Arrays.hashCode(this.mEventBitmaps)));
+    }
+
+    public final boolean isEmpty() {
+        synchronized (this.mLock) {
+            for (int i = 0; i < 4; i++) {
+                try {
+                    if (this.mEventBitmaps[i] != 0) {
+                        return false;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
             }
-            i2++;
+            return true;
         }
-        if (i < list.size()) {
-            arrayList.addAll(list.subList(i, list.size()));
-        } else if (i2 < list2.size()) {
-            arrayList.addAll(list2.subList(i2, list2.size()));
-        }
-        return arrayList;
     }
 
-    public static Range createOneDayLongTimeSlot(long j) {
-        LocalDateTime truncatedTo = toLocalDateTime(j).truncatedTo(ChronoUnit.DAYS);
-        return Range.create(Long.valueOf(toEpochMilli(truncatedTo)), Long.valueOf(toEpochMilli(truncatedTo.plusDays(1L))));
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("EventIndex {perDayEventBitmap=0b");
+        long[] jArr = this.mEventBitmaps;
+        sb.append(Long.toBinaryString(jArr[0]));
+        sb.append(", perFourHoursEventBitmap=0b");
+        sb.append(Long.toBinaryString(jArr[1]));
+        sb.append(", perHourEventBitmap=0b");
+        sb.append(Long.toBinaryString(jArr[2]));
+        sb.append(", perTwoMinutesEventBitmap=0b");
+        sb.append(Long.toBinaryString(jArr[3]));
+        sb.append(", lastUpdatedTime=");
+        sb.append(DateFormat.format("yyyy-MM-dd HH:mm:ss", this.mLastUpdatedTime));
+        sb.append("}");
+        return sb.toString();
     }
 
-    public static Range createFourHoursLongTimeSlot(long j) {
-        LocalDateTime minusHours = toLocalDateTime(j).truncatedTo(ChronoUnit.HOURS).minusHours(toLocalDateTime(j).getHour() % 4);
-        return Range.create(Long.valueOf(toEpochMilli(minusHours)), Long.valueOf(toEpochMilli(minusHours.plusHours(4L))));
-    }
-
-    public static Range createOneHourLongTimeSlot(long j) {
-        LocalDateTime truncatedTo = toLocalDateTime(j).truncatedTo(ChronoUnit.HOURS);
-        return Range.create(Long.valueOf(toEpochMilli(truncatedTo)), Long.valueOf(toEpochMilli(truncatedTo.plusHours(1L))));
-    }
-
-    public static Range createTwoMinutesLongTimeSlot(long j) {
-        LocalDateTime minusMinutes = toLocalDateTime(j).truncatedTo(ChronoUnit.MINUTES).minusMinutes(toLocalDateTime(j).getMinute() % 2);
-        return Range.create(Long.valueOf(toEpochMilli(minusMinutes)), Long.valueOf(toEpochMilli(minusMinutes.plusMinutes(2L))));
-    }
-
-    /* loaded from: classes2.dex */
-    class Injector {
-        public long currentTimeMillis() {
-            return System.currentTimeMillis();
+    public final void updateEventBitmaps(long j) {
+        int i = 0;
+        while (true) {
+            long[] jArr = this.mEventBitmaps;
+            if (i >= 4) {
+                long j2 = jArr[0] << 1;
+                jArr[0] = j2;
+                jArr[0] = j2 >>> 1;
+                this.mLastUpdatedTime = j;
+                return;
+            }
+            int diffTimeSlots = diffTimeSlots(i, this.mLastUpdatedTime, j);
+            if (diffTimeSlots < 64) {
+                jArr[i] = jArr[i] << diffTimeSlots;
+            } else {
+                jArr[i] = 0;
+            }
+            i++;
         }
     }
 }

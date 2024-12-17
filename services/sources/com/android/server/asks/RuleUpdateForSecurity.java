@@ -1,10 +1,12 @@
 package com.android.server.asks;
 
-import android.os.Binder;
-import android.os.IInstalld;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import android.os.SystemProperties;
 import android.util.Slog;
 import android.util.jar.StrictJarFile;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,240 +14,284 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class RuleUpdateForSecurity {
-    public RUFSContainer mContainer;
-    public String TAG = "AASA_RuleUpdateForSecurity_RUFS";
+public final class RuleUpdateForSecurity {
+    public final RUFSContainer mContainer;
     public String mVersionFromDevice = "";
-    public String device_basePath = "/data/system/.aasa";
     public String device_policyCopyPath = "";
     public String device_policyUnzipPath = "";
-
-    public final byte inverseEachBit(byte b, int i) {
-        return (byte) (((byte) ((b >> i) & 1)) == 0 ? (1 << i) | b : (~(1 << i)) & b);
-    }
+    public String mVersionFromToken = "";
 
     public RuleUpdateForSecurity(RUFSContainer rUFSContainer) {
         this.mContainer = rUFSContainer;
     }
 
-    public boolean isUpdatePolicy(String str) {
-        String policyVersion;
-        RUFSContainer rUFSContainer = this.mContainer;
-        if (rUFSContainer == null || (policyVersion = rUFSContainer.getPolicyVersion()) == null || policyVersion.length() <= 0) {
-            return false;
-        }
-        try {
-            Slog.i(this.TAG, "token:" + policyVersion + " device:" + str);
-            if (Integer.parseInt(policyVersion) <= Integer.parseInt(str)) {
-                return false;
-            }
-            try {
-                this.mVersionFromDevice = str;
-                Slog.i(this.TAG, " Now try to update");
-            } catch (NumberFormatException unused) {
-            }
-            return true;
-        } catch (NumberFormatException unused2) {
-            return false;
-        }
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:45:0x01aa, code lost:
-    
-        if (r0 == null) goto L55;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x01a6, code lost:
-    
-        r0.close();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:50:0x01a4, code lost:
-    
-        if (r0 == null) goto L55;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public boolean updatePolicy(java.lang.String r9, boolean r10) {
-        /*
-            Method dump skipped, instructions count: 430
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.asks.RuleUpdateForSecurity.updatePolicy(java.lang.String, boolean):boolean");
-    }
-
-    public final boolean copyFileUsingStream(File file, File file2) {
-        FileOutputStream fileOutputStream;
-        FileInputStream fileInputStream = null;
-        try {
-            FileInputStream fileInputStream2 = new FileInputStream(file);
-            try {
-                fileOutputStream = new FileOutputStream(file2);
-                try {
-                    byte[] bArr = new byte[IInstalld.FLAG_USE_QUOTA];
-                    while (true) {
-                        int read = fileInputStream2.read(bArr);
-                        if (read > 0) {
-                            fileOutputStream.write(bArr, 0, read);
-                        } else {
-                            try {
-                                break;
-                            } catch (IOException e) {
-                                System.out.println("" + e);
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    fileInputStream2.close();
-                    fileOutputStream.close();
-                    return true;
-                } catch (IOException unused) {
-                    fileInputStream = fileInputStream2;
-                    if (fileInputStream != null) {
-                        try {
-                            fileInputStream.close();
-                        } catch (IOException e2) {
-                            System.out.println("" + e2);
-                            e2.printStackTrace();
-                            return false;
-                        }
-                    }
-                    if (fileOutputStream == null) {
-                        return false;
-                    }
-                    fileOutputStream.close();
-                    return false;
-                } catch (Throwable th) {
-                    th = th;
-                    fileInputStream = fileInputStream2;
-                    if (fileInputStream != null) {
-                        try {
-                            fileInputStream.close();
-                        } catch (IOException e3) {
-                            System.out.println("" + e3);
-                            e3.printStackTrace();
-                            throw th;
-                        }
-                    }
-                    if (fileOutputStream != null) {
-                        fileOutputStream.close();
-                    }
-                    throw th;
-                }
-            } catch (IOException unused2) {
-                fileOutputStream = null;
-            } catch (Throwable th2) {
-                th = th2;
-                fileOutputStream = null;
-            }
-        } catch (IOException unused3) {
-            fileOutputStream = null;
-        } catch (Throwable th3) {
-            th = th3;
-            fileOutputStream = null;
-        }
-    }
-
-    public final boolean checkTargetModelAndCarrier(ArrayList arrayList, ArrayList arrayList2) {
-        String str = SystemProperties.get("ro.product.model");
-        String str2 = SystemProperties.get("ro.csc.sales_code");
-        boolean z = true;
-        if (!arrayList.contains("ALL") || arrayList.size() != 1 ? !arrayList.contains(str) || ((!arrayList2.contains("ALL") || arrayList2.size() != 1) && !arrayList2.contains(str2)) : (!arrayList2.contains("ALL") || arrayList2.size() != 1) && !arrayList2.contains(str2)) {
-            z = false;
-        }
-        Slog.d(this.TAG, "checkTargetModelAndCarrier() : result = " + z);
-        return z;
-    }
-
-    public final void checkTargetAndRemoveIfNot(String str, String str2, String str3, String str4) {
-        ArrayList arrayList;
+    public static void checkTargetAndRemoveIfNot(String str, String str2, String str3, String str4) {
         if (str3 == null || str4 == null) {
             return;
         }
         String[] split = str3.split(",");
         String[] split2 = str4.split(",");
-        ArrayList arrayList2 = null;
+        ArrayList arrayList = new ArrayList();
+        ArrayList arrayList2 = new ArrayList();
+        boolean z = false;
         if (split != null) {
-            arrayList = new ArrayList();
             for (String str5 : split) {
                 arrayList.add(str5);
             }
-        } else {
-            arrayList = null;
         }
         if (split2 != null) {
-            arrayList2 = new ArrayList();
             for (String str6 : split2) {
                 arrayList2.add(str6);
             }
         }
-        if (checkTargetModelAndCarrier(arrayList, arrayList2)) {
+        String str7 = SystemProperties.get("ro.product.model");
+        String str8 = SystemProperties.get("ro.csc.sales_code");
+        if (!arrayList.contains("ALL") || arrayList.size() != 1 ? !(!arrayList.contains(str7) || ((!arrayList2.contains("ALL") || arrayList2.size() != 1) && !arrayList2.contains(str8))) : !((!arrayList2.contains("ALL") || arrayList2.size() != 1) && !arrayList2.contains(str8))) {
+            z = true;
+        }
+        DeviceIdleController$$ExternalSyntheticOutline0.m("checkTargetModelAndCarrier() : result = ", "AASA_RuleUpdateForSecurity_RUFS", z);
+        if (z) {
             return;
         }
-        File file = new File(str + File.separator + str2);
+        File file = new File(AudioOffloadInfo$$ExternalSyntheticOutline0.m(BootReceiver$$ExternalSyntheticOutline0.m(str), File.separator, str2));
         if (file.exists()) {
-            Slog.v(this.TAG, str2 + " is not target here");
+            Slog.v("AASA_RuleUpdateForSecurity_RUFS", str2.concat(" is not target here"));
             file.delete();
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x010f, code lost:
+    public static void copyFile(File file, File file2) {
+        if (!file2.exists() && !file2.createNewFile()) {
+            Slog.e("AASA_RuleUpdateForSecurity_RUFS", "Failed to create new file: " + file2.getAbsolutePath());
+            throw new IOException("Failed to create new file");
+        }
+        FileChannel channel = new FileInputStream(file).getChannel();
+        try {
+            FileChannel channel2 = new FileOutputStream(file2).getChannel();
+            try {
+                channel2.transferFrom(channel, 0L, channel.size());
+                channel2.close();
+                channel.close();
+            } finally {
+            }
+        } catch (Throwable th) {
+            if (channel != null) {
+                try {
+                    channel.close();
+                } catch (Throwable th2) {
+                    th.addSuppressed(th2);
+                }
+            }
+            throw th;
+        }
+    }
+
+    public static boolean deleteDirectoryWithContents(File file) {
+        File[] listFiles;
+        if (file == null) {
+            Slog.e("AASA_RuleUpdateForSecurity_RUFS", "file is null");
+            return false;
+        }
+        if (file.isDirectory() && (listFiles = file.listFiles()) != null) {
+            for (File file2 : listFiles) {
+                if (!deleteDirectoryWithContents(file2)) {
+                    Slog.e("AASA_RuleUpdateForSecurity_RUFS", "Filed to delete: " + file2.getAbsolutePath());
+                    return false;
+                }
+            }
+        }
+        return file.delete();
+    }
+
+    public static byte[] descramble(byte[] bArr) {
+        byte[] bArr2 = new byte[bArr.length];
+        for (int i = 0; i < bArr.length; i++) {
+            int charAt = ("ASKSRUFS!!".charAt(i % 10) % 2) + 1;
+            byte b = bArr[i];
+            byte b2 = (byte) ((b >> charAt) & 1);
+            int i2 = 1 << charAt;
+            bArr2[i] = (byte) (b2 == 0 ? i2 | b : (~i2) & b);
+        }
+        return bArr2;
+    }
+
+    public static String digest(StrictJarFile strictJarFile, ZipEntry zipEntry) {
+        MessageDigest messageDigest;
+        InputStream inputStream = null;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            messageDigest = null;
+        }
+        try {
+            try {
+                inputStream = strictJarFile.getInputStream(zipEntry);
+                byte[] bArr = new byte[4096];
+                if (inputStream != null) {
+                    while (true) {
+                        int read = inputStream.read(bArr, 0, 4096);
+                        if (read == -1) {
+                            break;
+                        }
+                        messageDigest.update(bArr, 0, read);
+                    }
+                    inputStream.close();
+                }
+            } catch (IOException e2) {
+                System.err.println(" + No IO " + e2.toString());
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (RuntimeException e3) {
+                System.err.println(" + No RUN " + e3.toString());
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }
+        } catch (IOException unused) {
+        }
+        byte[] digest = messageDigest.digest();
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) {
+            int i = (b >>> 4) & 15;
+            int i2 = 0;
+            while (true) {
+                sb.append((char) ((i < 0 || i > 9) ? i + 87 : i + 48));
+                i = b & 15;
+                int i3 = i2 + 1;
+                if (i2 >= 1) {
+                    break;
+                }
+                i2 = i3;
+            }
+        }
+        return sb.toString();
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0020, code lost:
     
-        if (r1 != 3) goto L30;
+        r3 = r1.group(1);
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final boolean applyPolicies(java.lang.String r10, java.lang.String r11) {
+    public static java.lang.String extractVersionFromFile(java.io.File r3) {
         /*
-            Method dump skipped, instructions count: 337
-            To view this dump change 'Code comments level' option to 'DEBUG'
+            java.io.BufferedReader r0 = new java.io.BufferedReader
+            java.io.FileReader r1 = new java.io.FileReader
+            r1.<init>(r3)
+            r0.<init>(r1)
+            java.lang.String r3 = "<VERSION\\s+value=\"(\\d{8})\""
+            java.util.regex.Pattern r3 = java.util.regex.Pattern.compile(r3)     // Catch: java.lang.Throwable -> L26
+        L10:
+            java.lang.String r1 = r0.readLine()     // Catch: java.lang.Throwable -> L26
+            if (r1 == 0) goto L28
+            java.util.regex.Matcher r1 = r3.matcher(r1)     // Catch: java.lang.Throwable -> L26
+            boolean r2 = r1.find()     // Catch: java.lang.Throwable -> L26
+            if (r2 == 0) goto L10
+            r3 = 1
+            java.lang.String r3 = r1.group(r3)     // Catch: java.lang.Throwable -> L26
+            goto L29
+        L26:
+            r3 = move-exception
+            goto L2d
+        L28:
+            r3 = 0
+        L29:
+            r0.close()
+            return r3
+        L2d:
+            r0.close()     // Catch: java.lang.Throwable -> L31
+            goto L35
+        L31:
+            r0 = move-exception
+            r3.addSuppressed(r0)
+        L35:
+            throw r3
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.asks.RuleUpdateForSecurity.applyPolicies(java.lang.String, java.lang.String):boolean");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.asks.RuleUpdateForSecurity.extractVersionFromFile(java.io.File):java.lang.String");
     }
 
-    public final void deleteDir(File file) {
-        if (file != null) {
-            File[] listFiles = file.listFiles();
-            if (listFiles != null) {
-                for (File file2 : listFiles) {
-                    deleteDir(file2);
+    public static String getScpmPolicyVersion() {
+        String str = "00000000";
+        try {
+            FileInputStream fileInputStream = new FileInputStream("/data/system/.aasa/ASKS.zip");
+            try {
+                ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+                while (true) {
+                    try {
+                        ZipEntry nextEntry = zipInputStream.getNextEntry();
+                        if (nextEntry == null) {
+                            break;
+                        }
+                        if ("version.txt".equals(nextEntry.getName())) {
+                            byte[] bArr = new byte[8];
+                            byte[] bArr2 = new byte[2];
+                            zipInputStream.read(bArr, 0, 8);
+                            String str2 = new String(bArr);
+                            try {
+                                Slog.i("PackageInformation", "version : " + str2);
+                                zipInputStream.read(bArr2, 0, 2);
+                                String str3 = new String(bArr2);
+                                if ("0x1".equals(SystemProperties.get("ro.boot.em.status"))) {
+                                    Slog.d("PackageInformation", "tag : " + str3);
+                                }
+                                if ("_D".equals(str3)) {
+                                    str = str2 + "_D";
+                                } else {
+                                    str = str2 + "_B";
+                                }
+                                Slog.i("PackageInformation", "scpm policy version : " + str);
+                            } catch (Throwable th) {
+                                th = th;
+                                str = str2;
+                                try {
+                                    zipInputStream.close();
+                                } catch (Throwable th2) {
+                                    th.addSuppressed(th2);
+                                }
+                                throw th;
+                            }
+                        }
+                        zipInputStream.closeEntry();
+                    } catch (Throwable th3) {
+                        th = th3;
+                    }
                 }
+                zipInputStream.close();
+                fileInputStream.close();
+            } finally {
             }
-            if (file.exists()) {
-                file.delete();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return str;
     }
 
-    public final byte[] descramble(byte[] bArr, String str) {
-        byte[] bArr2 = new byte[bArr.length];
-        for (int i = 0; i < bArr.length; i++) {
-            bArr2[i] = inverseEachBit(bArr[i], (str.charAt(i % str.length()) % 2) + 1);
+    public static ZipEntry getTargetInfoEntry(int i, StrictJarFile strictJarFile) {
+        if (i == 1) {
+            ZipEntry findEntry = strictJarFile.findEntry("SEC-INF/targetinfo");
+            return findEntry == null ? strictJarFile.findEntry("META-INF/SEC-INF/targetinfo") : findEntry;
         }
-        return bArr2;
+        if (i == 2) {
+            return strictJarFile.findEntry("targetinfo");
+        }
+        throw new IllegalStateException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Unexpected value: "));
     }
 
-    public static void writeFile(byte[] bArr, String str) {
-        File file = new File(str);
-        if (file.getParentFile() != null && !file.getParentFile().exists()) {
-            file.getParentFile().mkdir();
-        }
-        FileOutputStream fileOutputStream = new FileOutputStream(str);
-        fileOutputStream.write(bArr);
-        fileOutputStream.close();
-    }
-
-    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:57:0x002d -> B:13:0x0061). Please report as a decompilation issue!!! */
-    public final byte[] readFile(StrictJarFile strictJarFile, ZipEntry zipEntry) {
+    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:58:0x0032 -> B:15:0x0062). Please report as a decompilation issue!!! */
+    public static byte[] readFile(StrictJarFile strictJarFile, ZipEntry zipEntry) {
         BufferedInputStream bufferedInputStream;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byte[] bArr = new byte[1048576];
@@ -287,16 +333,16 @@ public class RuleUpdateForSecurity {
                                             e2.printStackTrace();
                                         }
                                     }
-                                    if (bufferedInputStream != null) {
-                                        try {
-                                            bufferedInputStream.close();
-                                            throw th;
-                                        } catch (IOException e3) {
-                                            e3.printStackTrace();
-                                            throw th;
-                                        }
+                                    if (bufferedInputStream == null) {
+                                        throw th;
                                     }
-                                    throw th;
+                                    try {
+                                        bufferedInputStream.close();
+                                        throw th;
+                                    } catch (IOException e3) {
+                                        e3.printStackTrace();
+                                        throw th;
+                                    }
                                 } catch (Exception unused2) {
                                     throw th;
                                 }
@@ -330,218 +376,81 @@ public class RuleUpdateForSecurity {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public final String digest(StrictJarFile strictJarFile, ZipEntry zipEntry) {
-        MessageDigest messageDigest;
-        InputStream inputStream = null;
-        try {
-            messageDigest = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            messageDigest = null;
+    public static void writeFile(String str, byte[] bArr) {
+        File file = new File(str);
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            file.getParentFile().mkdir();
         }
-        if (zipEntry == null) {
-            return null;
-        }
-        try {
-            inputStream = strictJarFile.getInputStream(zipEntry);
-            byte[] bArr = new byte[IInstalld.FLAG_USE_QUOTA];
-            if (inputStream != null) {
-                while (true) {
-                    int read = inputStream.read(bArr, 0, IInstalld.FLAG_USE_QUOTA);
-                    if (read == -1) {
-                        break;
-                    }
-                    messageDigest.update(bArr, 0, read);
-                }
-                inputStream.close();
-            }
-        } catch (IOException e2) {
-            System.err.println(" + No IO " + e2.toString());
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        } catch (RuntimeException e3) {
-            System.err.println(" + No RUN " + e3.toString());
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        }
-        return convertToHex(messageDigest.digest());
+        FileOutputStream fileOutputStream = new FileOutputStream(str);
+        fileOutputStream.write(bArr);
+        fileOutputStream.close();
     }
 
-    public final boolean unzip(String str, String str2) {
-        ZipInputStream zipInputStream;
-        FileInputStream fileInputStream;
-        File file = new File(str2);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        byte[] bArr = new byte[IInstalld.FLAG_USE_QUOTA];
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileInputStream = new FileInputStream(str);
-            try {
-                zipInputStream = new ZipInputStream(fileInputStream);
-                try {
-                    try {
-                        ZipEntry nextEntry = zipInputStream.getNextEntry();
-                        while (nextEntry != null) {
-                            File file2 = new File(str2 + File.separator + nextEntry.getName());
-                            new File(file2.getParent()).mkdirs();
-                            FileOutputStream fileOutputStream2 = new FileOutputStream(file2);
-                            while (true) {
-                                try {
-                                    int read = zipInputStream.read(bArr);
-                                    if (read <= 0) {
-                                        break;
-                                    }
-                                    fileOutputStream2.write(bArr, 0, read);
-                                } catch (IOException e) {
-                                    e = e;
-                                    fileOutputStream = fileOutputStream2;
-                                    e.printStackTrace();
-                                    if (fileOutputStream != null) {
-                                        try {
-                                            fileOutputStream.close();
-                                        } catch (IOException unused) {
-                                        }
-                                    }
-                                    if (zipInputStream != null) {
-                                        try {
-                                            zipInputStream.closeEntry();
-                                            zipInputStream.close();
-                                        } catch (IOException unused2) {
-                                        }
-                                    }
-                                    if (fileInputStream == null) {
-                                        return false;
-                                    }
-                                    try {
-                                        fileInputStream.close();
-                                        return false;
-                                    } catch (IOException unused3) {
-                                        return false;
-                                    }
-                                } catch (Throwable th) {
-                                    th = th;
-                                    fileOutputStream = fileOutputStream2;
-                                    if (fileOutputStream != null) {
-                                        try {
-                                            fileOutputStream.close();
-                                        } catch (IOException unused4) {
-                                        }
-                                    }
-                                    if (zipInputStream != null) {
-                                        try {
-                                            zipInputStream.closeEntry();
-                                            zipInputStream.close();
-                                        } catch (IOException unused5) {
-                                        }
-                                    }
-                                    if (fileInputStream != null) {
-                                        try {
-                                            fileInputStream.close();
-                                            throw th;
-                                        } catch (IOException unused6) {
-                                            throw th;
-                                        }
-                                    }
-                                    throw th;
-                                }
-                            }
-                            zipInputStream.closeEntry();
-                            ZipEntry nextEntry2 = zipInputStream.getNextEntry();
-                            fileOutputStream2.close();
-                            nextEntry = nextEntry2;
-                        }
-                        try {
-                            zipInputStream.closeEntry();
-                            zipInputStream.close();
-                        } catch (IOException unused7) {
-                        }
-                        try {
-                            fileInputStream.close();
-                        } catch (IOException unused8) {
-                        }
-                        return true;
-                    } catch (Throwable th2) {
-                        th = th2;
-                    }
-                } catch (IOException e2) {
-                    e = e2;
-                }
-            } catch (IOException e3) {
-                e = e3;
-                zipInputStream = null;
-            } catch (Throwable th3) {
-                th = th3;
-                zipInputStream = null;
-            }
-        } catch (IOException e4) {
-            e = e4;
-            zipInputStream = null;
-            fileInputStream = null;
-        } catch (Throwable th4) {
-            th = th4;
-            zipInputStream = null;
-            fileInputStream = null;
-        }
-    }
-
-    public final String convertToHex(byte[] bArr) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bArr) {
-            int i = (b >>> 4) & 15;
-            int i2 = 0;
-            while (true) {
-                sb.append((char) ((i < 0 || i > 9) ? (i - 10) + 97 : i + 48));
-                i = b & 15;
-                int i3 = i2 + 1;
-                if (i2 >= 1) {
-                    break;
-                }
-                i2 = i3;
-            }
-        }
-        return sb.toString();
-    }
-
-    public final boolean compSizeofUncompressFiles(String str) {
+    public final boolean isUpdatePolicy(String str) {
+        boolean z = false;
         RUFSContainer rUFSContainer = this.mContainer;
-        if (rUFSContainer == null) {
-            return false;
-        }
-        try {
-            long sizeofFiles = rUFSContainer.getSizeofFiles();
-            long sizeofFiles2 = getSizeofFiles(str);
-            if (Long.compare(sizeofFiles, sizeofFiles2) == 0) {
-                return true;
+        if (rUFSContainer != null) {
+            String str2 = rUFSContainer.mIsDelta ? rUFSContainer.mRUFSpolicyDeltaVersion : rUFSContainer.mRUFSpolicyVersion;
+            if (str2 != null && str2.length() > 0) {
+                try {
+                    Slog.i("AASA_RuleUpdateForSecurity_RUFS", "token:" + str2 + " device:" + str);
+                    if (Integer.parseInt(str2) > Integer.parseInt(str)) {
+                        z = true;
+                        this.mVersionFromDevice = str;
+                        this.mVersionFromToken = str2;
+                        Slog.i("AASA_RuleUpdateForSecurity_RUFS", " Now try to update");
+                    } else {
+                        Slog.i("AASA_RuleUpdateForSecurity_RUFS", "Current policy is latest version.");
+                    }
+                } catch (NumberFormatException unused) {
+                    Slog.e("AASA_RuleUpdateForSecurity_RUFS", "The version format is wrong !!");
+                }
             }
-            Slog.i(this.TAG, "size of all files   token:" + sizeofFiles + " device:" + sizeofFiles2);
-            return false;
-        } catch (NumberFormatException unused) {
-            return false;
         }
+        return z;
     }
 
-    public final long getSizeofFiles(String str) {
-        try {
-            File file = new File(str);
-            if (!file.isDirectory()) {
-                return 0L;
-            }
-            long j = 0;
-            for (File file2 : file.listFiles()) {
-                j += file2.length();
-            }
-            return j;
-        } catch (Exception e) {
-            System.out.println("Error:" + e);
-            return 0L;
-        }
-    }
-
-    public final boolean enforcePermissionCheckForASKS() {
-        return Binder.getCallingUid() == 1000;
+    /* JADX WARN: Can't wrap try/catch for region: R(13:17|18|19|20|21|(1:22)|(8:24|25|(2:27|28)(1:(3:228|229|(2:231|(1:233))(1:235))(1:236))|29|30|(28:32|(1:34)|35|36|37|38|39|40|41|(3:43|(3:44|45|(4:47|48|49|51))|194)|201|202|203|204|161|162|59|(2:61|(9:63|64|65|66|67|68|(4:72|(3:75|76|73)|77|78)|80|(1:82)(2:84|85)))|92|(3:94|(3:97|(3:99|(2:101|(2:103|104)(2:106|107))(3:108|109|111)|105)(3:134|(4:136|137|138|(4:141|142|143|(2:145|146)(1:147)))(1:158)|105)|95)|159)|160|114|(2:116|(3:118|(1:120)(1:122)|121)(1:123))|124|(1:(3:127|128|(2:130|131)))(1:133)|132|128|(0))(1:223)|90|91)(1:237)|234|29|30|(0)(0)|90|91) */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x0223, code lost:
+    
+        if (r7 == null) goto L85;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:83:0x028f, code lost:
+    
+        if (r3 == false) goto L191;
+     */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:116:0x036d  */
+    /* JADX WARN: Removed duplicated region for block: B:126:0x03d8  */
+    /* JADX WARN: Removed duplicated region for block: B:130:0x0412  */
+    /* JADX WARN: Removed duplicated region for block: B:133:0x03dd  */
+    /* JADX WARN: Removed duplicated region for block: B:165:0x021d A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:169:0x0218 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:178:0x0430 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:184:? A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:185:0x0428 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:189:0x0423 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:223:0x0434  */
+    /* JADX WARN: Removed duplicated region for block: B:32:0x0158  */
+    /* JADX WARN: Type inference failed for: r0v18 */
+    /* JADX WARN: Type inference failed for: r0v30 */
+    /* JADX WARN: Type inference failed for: r0v87 */
+    /* JADX WARN: Type inference failed for: r0v88 */
+    /* JADX WARN: Type inference failed for: r7v14 */
+    /* JADX WARN: Type inference failed for: r7v15, types: [int] */
+    /* JADX WARN: Type inference failed for: r7v24 */
+    /* JADX WARN: Type inference failed for: r9v26 */
+    /* JADX WARN: Type inference failed for: r9v27, types: [int] */
+    /* JADX WARN: Type inference failed for: r9v33 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean updatePolicy(int r20, java.lang.String r21) {
+        /*
+            Method dump skipped, instructions count: 1079
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.asks.RuleUpdateForSecurity.updatePolicy(int, java.lang.String):boolean");
     }
 }

@@ -2,13 +2,14 @@ package com.android.server.pm.verify.domain.models;
 
 import android.annotation.NonNull;
 import android.annotation.UserIdInt;
+import android.hardware.biometrics.face.V1_0.OptionalBool$$ExternalSyntheticOutline0;
 import android.util.ArraySet;
 import com.android.internal.util.AnnotationValidations;
 import java.util.Objects;
-import java.util.Set;
 
-/* loaded from: classes3.dex */
-public class DomainVerificationInternalUserState {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DomainVerificationInternalUserState {
     public final ArraySet mEnabledHosts;
     public boolean mLinkHandlingAllowed;
     public final int mUserId;
@@ -17,31 +18,6 @@ public class DomainVerificationInternalUserState {
         this.mLinkHandlingAllowed = true;
         this.mUserId = i;
         this.mEnabledHosts = new ArraySet();
-    }
-
-    public DomainVerificationInternalUserState addHosts(ArraySet arraySet) {
-        this.mEnabledHosts.addAll(arraySet);
-        return this;
-    }
-
-    public DomainVerificationInternalUserState addHosts(Set set) {
-        this.mEnabledHosts.addAll(set);
-        return this;
-    }
-
-    public DomainVerificationInternalUserState removeHost(String str) {
-        this.mEnabledHosts.remove(str);
-        return this;
-    }
-
-    public DomainVerificationInternalUserState removeHosts(Set set) {
-        this.mEnabledHosts.removeAll(set);
-        return this;
-    }
-
-    public DomainVerificationInternalUserState retainHosts(Set set) {
-        this.mEnabledHosts.retainAll(set);
-        return this;
     }
 
     public DomainVerificationInternalUserState(int i, ArraySet arraySet, boolean z) {
@@ -53,39 +29,27 @@ public class DomainVerificationInternalUserState {
         this.mLinkHandlingAllowed = z;
     }
 
-    public int getUserId() {
-        return this.mUserId;
-    }
-
-    public ArraySet getEnabledHosts() {
-        return this.mEnabledHosts;
-    }
-
-    public boolean isLinkHandlingAllowed() {
-        return this.mLinkHandlingAllowed;
-    }
-
-    public DomainVerificationInternalUserState setLinkHandlingAllowed(boolean z) {
-        this.mLinkHandlingAllowed = z;
-        return this;
-    }
-
-    public String toString() {
-        return "DomainVerificationInternalUserState { userId = " + this.mUserId + ", enabledHosts = " + this.mEnabledHosts + ", linkHandlingAllowed = " + this.mLinkHandlingAllowed + " }";
-    }
-
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (obj == null || DomainVerificationInternalUserState.class != obj.getClass()) {
             return false;
         }
         DomainVerificationInternalUserState domainVerificationInternalUserState = (DomainVerificationInternalUserState) obj;
         return this.mUserId == domainVerificationInternalUserState.mUserId && Objects.equals(this.mEnabledHosts, domainVerificationInternalUserState.mEnabledHosts) && this.mLinkHandlingAllowed == domainVerificationInternalUserState.mLinkHandlingAllowed;
     }
 
-    public int hashCode() {
-        return ((((this.mUserId + 31) * 31) + Objects.hashCode(this.mEnabledHosts)) * 31) + Boolean.hashCode(this.mLinkHandlingAllowed);
+    public final int hashCode() {
+        return Boolean.hashCode(this.mLinkHandlingAllowed) + ((Objects.hashCode(this.mEnabledHosts) + ((this.mUserId + 31) * 31)) * 31);
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("DomainVerificationInternalUserState { userId = ");
+        sb.append(this.mUserId);
+        sb.append(", enabledHosts = ");
+        sb.append(this.mEnabledHosts);
+        sb.append(", linkHandlingAllowed = ");
+        return OptionalBool$$ExternalSyntheticOutline0.m(" }", sb, this.mLinkHandlingAllowed);
     }
 }

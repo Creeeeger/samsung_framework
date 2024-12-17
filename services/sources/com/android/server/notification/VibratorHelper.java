@@ -1,5 +1,6 @@
 package com.android.server.notification;
 
+import android.R;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -11,11 +12,11 @@ import android.util.Slog;
 import java.time.Duration;
 import java.util.Arrays;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class VibratorHelper {
     public static final long[] DEFAULT_VIBRATE_PATTERN = {0, 250, 250, 250};
-    public final long[] mDefaultPattern;
-    public final float[] mDefaultPwlePattern;
+    public final int mDefaultVibrationAmplitude;
     public final long[] mFallbackPattern;
     public final float[] mFallbackPwlePattern;
     public final Vibrator mVibrator;
@@ -24,22 +25,11 @@ public final class VibratorHelper {
         this.mVibrator = (Vibrator) context.getSystemService(Vibrator.class);
         Resources resources = context.getResources();
         long[] jArr = DEFAULT_VIBRATE_PATTERN;
-        this.mDefaultPattern = getLongArray(resources, 17236159, 17, jArr);
-        this.mFallbackPattern = getLongArray(context.getResources(), 17236258, 17, jArr);
-        this.mDefaultPwlePattern = getFloatArray(context.getResources(), 17236160);
-        this.mFallbackPwlePattern = getFloatArray(context.getResources(), 17236259);
-    }
-
-    public static VibrationEffect createWaveformVibration(long[] jArr, boolean z) {
-        if (jArr == null) {
-            return null;
-        }
-        try {
-            return VibrationEffect.createWaveform(jArr, z ? 0 : -1);
-        } catch (IllegalArgumentException unused) {
-            Slog.e("NotificationVibratorHelper", "Error creating vibration waveform with pattern: " + Arrays.toString(jArr));
-            return null;
-        }
+        getLongArray(resources, R.array.config_smallAreaDetectionAllowlist, jArr);
+        this.mFallbackPattern = getLongArray(context.getResources(), 17236266, jArr);
+        getFloatArray(context.getResources(), R.array.config_sms_enabled_locking_shift_tables);
+        this.mFallbackPwlePattern = getFloatArray(context.getResources(), 17236267);
+        this.mDefaultVibrationAmplitude = context.getResources().getInteger(R.integer.config_dreamOpenAnimationDuration);
     }
 
     public static VibrationEffect createPwleWaveformVibration(float[] fArr, boolean z) {
@@ -63,22 +53,16 @@ public final class VibratorHelper {
         }
     }
 
-    public void vibrate(VibrationEffect vibrationEffect, AudioAttributes audioAttributes, String str) {
-        this.mVibrator.vibrate(1000, "android", vibrationEffect, str, new VibrationAttributes.Builder(audioAttributes).build());
-    }
-
-    public void cancelVibration() {
-        this.mVibrator.cancel(-15);
-    }
-
-    public VibrationEffect createFallbackVibration(boolean z) {
-        VibrationEffect createPwleWaveformVibration;
-        return (!this.mVibrator.hasFrequencyControl() || (createPwleWaveformVibration = createPwleWaveformVibration(this.mFallbackPwlePattern, z)) == null) ? createWaveformVibration(this.mFallbackPattern, z) : createPwleWaveformVibration;
-    }
-
-    public VibrationEffect createDefaultVibration(boolean z) {
-        VibrationEffect createPwleWaveformVibration;
-        return (!this.mVibrator.hasFrequencyControl() || (createPwleWaveformVibration = createPwleWaveformVibration(this.mDefaultPwlePattern, z)) == null) ? createWaveformVibration(this.mDefaultPattern, z) : createPwleWaveformVibration;
+    public static VibrationEffect createWaveformVibration(long[] jArr, boolean z) {
+        if (jArr == null) {
+            return null;
+        }
+        try {
+            return VibrationEffect.createWaveform(jArr, z ? 0 : -1);
+        } catch (IllegalArgumentException unused) {
+            Slog.e("NotificationVibratorHelper", "Error creating vibration waveform with pattern: " + Arrays.toString(jArr));
+            return null;
+        }
     }
 
     public static float[] getFloatArray(Resources resources, int i) {
@@ -100,18 +84,20 @@ public final class VibratorHelper {
         }
     }
 
-    public static long[] getLongArray(Resources resources, int i, int i2, long[] jArr) {
+    public static long[] getLongArray(Resources resources, int i, long[] jArr) {
         int[] intArray = resources.getIntArray(i);
         if (intArray == null) {
             return jArr;
         }
-        if (intArray.length <= i2) {
-            i2 = intArray.length;
-        }
-        long[] jArr2 = new long[i2];
-        for (int i3 = 0; i3 < i2; i3++) {
-            jArr2[i3] = intArray[i3];
+        int length = intArray.length <= 17 ? intArray.length : 17;
+        long[] jArr2 = new long[length];
+        for (int i2 = 0; i2 < length; i2++) {
+            jArr2[i2] = intArray[i2];
         }
         return jArr2;
+    }
+
+    public final void vibrate(VibrationEffect vibrationEffect, AudioAttributes audioAttributes, String str) {
+        this.mVibrator.vibrate(1000, "android", vibrationEffect, str, new VibrationAttributes.Builder(audioAttributes).build());
     }
 }

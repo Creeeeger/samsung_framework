@@ -1,52 +1,108 @@
 package com.android.server.location.nsflp;
 
+import android.os.Binder;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import com.android.server.am.StackTracesDumpHelper$$ExternalSyntheticLambda1;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
-public class NSUtLogger extends Handler {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class NSUtLogger extends Handler {
     public long mDirectorySize;
     public int mFileCount;
     public Map mFileSizeMap;
+    public final NSKmlWriter mNsKmlWriter;
     public int mOccurredExceptionCount;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LogInfo {
+        public String data;
+        public String path;
+        public int type;
+    }
 
     public NSUtLogger(Looper looper) {
         super(looper);
+        this.mNsKmlWriter = new NSKmlWriter();
     }
 
-    @Override // android.os.Handler
-    public void handleMessage(Message message) {
-        if (message.what == 1) {
-            try {
-                LogInfo logInfo = (LogInfo) message.obj;
-                File file = new File(logInfo.path);
-                if (!file.exists() && !createFile(file)) {
-                    Log.e("NSUtLogger", "writeFile, cannot create file");
-                } else {
-                    writeData(logInfo.type, file, logInfo.data);
-                }
-            } catch (Exception e) {
-                Log.e("NSUtLogger", "Failed to writeUtLog, exception=" + e.toString());
-            } catch (OutOfMemoryError e2) {
-                Log.e("NSUtLogger", "Failed to writeUtLog, error=" + e2.toString());
+    public static boolean createFile(File file) {
+        if (!isCallerSystem()) {
+            return false;
+        }
+        File file2 = null;
+        if (isCallerSystem()) {
+            File file3 = new File("/data/log/gps/issuetracker/");
+            if (file3.exists()) {
+                Log.v("NSUtLogger", "Directory[/data/log/gps/issuetracker/] already exists");
+            } else if (file3.mkdirs()) {
+                Log.i("NSUtLogger", "Success to create the directory");
+            } else {
+                Log.e("NSUtLogger", "Failed to create the directory");
             }
+            file2 = file3;
+        }
+        if (file2 == null) {
+            Log.e("NSUtLogger", "createFile, directory is null");
+            return false;
+        }
+        if (makeFile(file)) {
+            return true;
+        }
+        Log.e("NSUtLogger", "createFile, failed to make file");
+        return false;
+    }
+
+    public static boolean deleteFile(File file) {
+        if (!isCallerSystem()) {
+            return false;
+        }
+        if (file.exists()) {
+            boolean delete = file.delete();
+            Log.v("NSUtLogger", "success deleteFile " + delete);
+            return delete;
+        }
+        Log.v("NSUtLogger", file + "file is not existed");
+        return false;
+    }
+
+    public static boolean isCallerSystem() {
+        return Binder.getCallingUid() == 1000;
+    }
+
+    public static boolean makeFile(File file) {
+        boolean z = false;
+        if (!isCallerSystem()) {
+            return false;
+        }
+        try {
+            if (file.exists()) {
+                Log.v("NSUtLogger", file + " exists");
+            } else {
+                try {
+                    z = file.createNewFile();
+                    Log.v("NSUtLogger", "isSuccess = " + z);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.v("NSUtLogger", "isSuccess = false");
+                    return false;
+                }
+            }
+            return z;
+        } catch (Throwable th) {
+            Log.v("NSUtLogger", "isSuccess = false");
+            throw th;
         }
     }
 
     public static boolean writeFile(File file, byte[] bArr, boolean z) {
-        if (file != null && file.exists() && bArr != null) {
+        if (isCallerSystem() && file.exists() && bArr != null) {
             try {
                 FileOutputStream fileOutputStream = new FileOutputStream(file, z);
                 try {
@@ -62,175 +118,51 @@ public class NSUtLogger extends Handler {
         return false;
     }
 
-    public static boolean deleteFile(File file) {
-        if (file.exists()) {
-            boolean delete = file.delete();
-            Log.v("NSUtLogger", "success deleteFile " + delete);
-            return delete;
-        }
-        Log.v("NSUtLogger", file + "file is not existed");
-        return false;
-    }
-
-    public final boolean createFile(File file) {
-        if (makeDirectory("/data/log/gps/issuetracker/") == null) {
-            Log.e("NSUtLogger", "createFile, directory is null");
-            return false;
-        }
-        if (makeFile(file)) {
-            return true;
-        }
-        Log.e("NSUtLogger", "createFile, failed to make file");
-        return false;
-    }
-
-    public final File makeDirectory(String str) {
-        File file = new File(str);
-        if (!file.exists()) {
-            if (file.mkdirs()) {
-                Log.i("NSUtLogger", "Success to create the directory");
-            } else {
-                Log.e("NSUtLogger", "Failed to create the directory");
-                return null;
-            }
-        } else {
-            Log.v("NSUtLogger", "Directory[" + str + "] already exists");
-        }
-        return file;
-    }
-
-    public void writeData(int i, File file, String str) {
-        long length = str.length();
-        if (file == null) {
-            Log.e("NSUtLogger", "writeData, file is null");
-            return;
-        }
-        File file2 = new File("/data/log/gps/issuetracker/");
-        if (this.mFileSizeMap == null) {
-            this.mFileSizeMap = new HashMap();
-            this.mDirectorySize = createFileSizeMap(file2);
-        }
-        if (this.mFileCount >= 500 || this.mDirectorySize >= 104857600) {
-            if (this.mOccurredExceptionCount >= 3) {
-                Log.i("NSUtLogger", "writeData, occurred exception count is over so return");
-                return;
-            }
-            deleteOldFiles(length);
-        }
-        if (writeFile(file, str.getBytes(StandardCharsets.UTF_8), true)) {
-            Log.i("NSUtLogger", "writeData, success write data " + file);
-            updateFileSizeMap(file);
-            if (i != 3 && writeKmzFile(i, file)) {
-                updateFileSizeMap(new File(file.toString().replace(".txt", ".kmz")));
-                return;
-            }
-            return;
-        }
-        Log.e("NSUtLogger", "writeData, failed write data");
-    }
-
-    public final long createFileSizeMap(File file) {
-        File[] listFiles = file.listFiles();
-        long j = 0;
-        if (listFiles != null && listFiles.length != 0) {
-            for (File file2 : listFiles) {
-                long length = file2.length();
-                j += length;
-                this.mFileSizeMap.put(file2.getName(), Long.valueOf(length));
-                this.mFileCount++;
-            }
-        }
-        return j;
-    }
-
-    public void deleteOldFiles(long j) {
-        File[] listFiles = new File("/data/log/gps/issuetracker/").listFiles(new FileFilter() { // from class: com.android.server.location.nsflp.NSUtLogger$$ExternalSyntheticLambda0
-            @Override // java.io.FileFilter
-            public final boolean accept(File file) {
-                boolean lambda$deleteOldFiles$0;
-                lambda$deleteOldFiles$0 = NSUtLogger.lambda$deleteOldFiles$0(file);
-                return lambda$deleteOldFiles$0;
-            }
-        });
-        if (listFiles == null) {
-            return;
-        }
-        try {
-            Arrays.sort(listFiles, Comparator.comparingLong(new StackTracesDumpHelper$$ExternalSyntheticLambda1()));
-            int length = listFiles.length;
-            int i = 0;
-            while (true) {
-                if (i >= length) {
-                    break;
+    @Override // android.os.Handler
+    public final void handleMessage(Message message) {
+        if (message.what == 1) {
+            try {
+                LogInfo logInfo = (LogInfo) message.obj;
+                File file = new File(logInfo.path);
+                if (file.exists() || createFile(file)) {
+                    writeData(logInfo.type, file, logInfo.data);
+                } else {
+                    Log.e("NSUtLogger", "writeFile, cannot create file");
                 }
-                File file = listFiles[i];
-                long length2 = file.length();
-                String name = file.getName();
-                if (deleteFile(file)) {
-                    this.mDirectorySize -= length2;
-                    this.mFileSizeMap.remove(name);
-                    this.mFileCount--;
-                }
-                if (this.mFileCount < 500 && this.mDirectorySize < 104857600) {
-                    Log.i("NSUtLogger", "deleteOldFiles, file count=" + this.mFileCount + ", directory size=" + this.mDirectorySize + ",dataLength=" + j);
-                    break;
-                }
-                i++;
+            } catch (Exception e) {
+                Log.e("NSUtLogger", "Failed to writeUtLog, exception=" + e.toString());
+            } catch (OutOfMemoryError e2) {
+                Log.e("NSUtLogger", "Failed to writeUtLog, error=" + e2.toString());
             }
-            this.mOccurredExceptionCount = 0;
-        } catch (IllegalArgumentException e) {
-            this.mOccurredExceptionCount++;
-            Log.e("NSUtLogger", "deleteOldFiles, " + e.toString() + " , count : " + this.mOccurredExceptionCount);
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$deleteOldFiles$0(File file) {
-        return !file.getName().equals("crash_history.txt");
-    }
-
-    public static boolean makeFile(File file) {
-        boolean z = false;
-        try {
-            if (!file.exists()) {
-                z = file.createNewFile();
-            } else {
-                Log.v("NSUtLogger", file + " exists");
-            }
-            return z;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            Log.v("NSUtLogger", "isSuccess = false");
         }
     }
 
     public final void updateFileSizeMap(File file) {
         String name = file.getName();
         long length = file.length();
-        if (this.mFileSizeMap.containsKey(name)) {
-            this.mDirectorySize += length - ((Long) this.mFileSizeMap.get(name)).longValue();
+        if (((HashMap) this.mFileSizeMap).containsKey(name)) {
+            this.mDirectorySize += length - ((Long) ((HashMap) this.mFileSizeMap).get(name)).longValue();
         } else {
             this.mDirectorySize += length;
             this.mFileCount++;
         }
-        this.mFileSizeMap.put(name, Long.valueOf(length));
+        ((HashMap) this.mFileSizeMap).put(name, Long.valueOf(length));
     }
 
-    public final boolean writeKmzFile(int i, File file) {
-        return new NSKmlWriter().createKmzFile(i, file);
-    }
-
-    /* loaded from: classes2.dex */
-    public class LogInfo {
-        public String data;
-        public String path;
-        public int type;
-
-        public LogInfo(int i, String str, String str2) {
-            this.type = i;
-            this.path = str;
-            this.data = str2;
-        }
+    /* JADX WARN: Removed duplicated region for block: B:177:0x059e  */
+    /* JADX WARN: Removed duplicated region for block: B:180:0x05c4  */
+    /* JADX WARN: Removed duplicated region for block: B:29:0x0938  */
+    /* JADX WARN: Removed duplicated region for block: B:31:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Unreachable blocks removed: 1, instructions: 1 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void writeData(int r50, java.io.File r51, java.lang.String r52) {
+        /*
+            Method dump skipped, instructions count: 2386
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.location.nsflp.NSUtLogger.writeData(int, java.io.File, java.lang.String):void");
     }
 }

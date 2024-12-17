@@ -1,69 +1,43 @@
 package com.android.server.utils;
 
-import android.util.ArraySet;
 import android.util.SparseSetArray;
 
-/* loaded from: classes3.dex */
-public class WatchedSparseSetArray extends WatchableImpl implements Snappable {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WatchedSparseSetArray extends WatchableImpl implements Snappable {
     public final SparseSetArray mStorage;
-
-    public final void onChanged() {
-        dispatchChange(this);
-    }
 
     public WatchedSparseSetArray() {
         this.mStorage = new SparseSetArray();
-    }
-
-    public WatchedSparseSetArray(WatchedSparseSetArray watchedSparseSetArray) {
-        this.mStorage = new SparseSetArray(watchedSparseSetArray.untrackedStorage());
     }
 
     public WatchedSparseSetArray(SparseSetArray sparseSetArray) {
         this.mStorage = sparseSetArray;
     }
 
-    public SparseSetArray untrackedStorage() {
-        return this.mStorage;
+    public WatchedSparseSetArray(WatchedSparseSetArray watchedSparseSetArray) {
+        this.mStorage = new SparseSetArray(watchedSparseSetArray.mStorage);
     }
 
-    public boolean add(int i, Object obj) {
+    public final boolean add(int i, Object obj) {
         boolean add = this.mStorage.add(i, obj);
-        onChanged();
+        dispatchChange(this);
         return add;
     }
 
-    public boolean contains(int i, Object obj) {
-        return this.mStorage.contains(i, obj);
-    }
-
-    public ArraySet get(int i) {
-        return this.mStorage.get(i);
-    }
-
-    public boolean remove(int i, Object obj) {
-        if (!this.mStorage.remove(i, obj)) {
-            return false;
-        }
-        onChanged();
-        return true;
-    }
-
-    public void remove(int i) {
+    public final void remove(int i) {
         this.mStorage.remove(i);
-        onChanged();
+        dispatchChange(this);
     }
 
-    public int size() {
-        return this.mStorage.size();
-    }
-
-    public int keyAt(int i) {
-        return this.mStorage.keyAt(i);
+    public final void remove(int i, Object obj) {
+        if (this.mStorage.remove(i, obj)) {
+            dispatchChange(this);
+        }
     }
 
     @Override // com.android.server.utils.Snappable
-    public Object snapshot() {
+    public final Object snapshot() {
         WatchedSparseSetArray watchedSparseSetArray = new WatchedSparseSetArray(this);
         watchedSparseSetArray.seal();
         return watchedSparseSetArray;

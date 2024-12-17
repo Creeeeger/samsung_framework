@@ -1,67 +1,53 @@
 package com.android.server.cocktailbar.mode;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.IntentFilter;
-import android.os.UserHandle;
-import com.android.server.cocktailbar.mode.CocktailBarMode;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class AbsPrivateMode implements CocktailBarMode {
-    public int mCocktailType;
-    public Context mContext;
-    public CocktailBarMode.OnCocktailBarModeListener mListener;
-    public int mPrivateModeId;
-    public String mPrivateModeName;
-    public int mRegistratonType;
+    public final int mCocktailType;
+    public final Context mContext;
+    public final int mPrivateModeId;
+    public final String mPrivateModeName = getDefinedPrivateModeName();
+    public final int mRegistratonType;
 
-    public abstract int getDefinedCocktailType();
-
-    public abstract String getDefinedPrivateModeName();
-
-    public abstract boolean isEnableMode();
-
-    public AbsPrivateMode(Context context, int i, CocktailBarMode.OnCocktailBarModeListener onCocktailBarModeListener) {
+    public AbsPrivateMode(Context context, int i) {
         this.mRegistratonType = 0;
         this.mCocktailType = 1;
         this.mContext = context;
         this.mPrivateModeId = i;
         this.mCocktailType = getDefinedCocktailType();
-        this.mPrivateModeName = getDefinedPrivateModeName();
-        this.mListener = onCocktailBarModeListener;
-    }
-
-    public AbsPrivateMode(Context context, int i, BroadcastReceiver broadcastReceiver, CocktailBarMode.OnCocktailBarModeListener onCocktailBarModeListener) {
-        this(context, i, onCocktailBarModeListener);
         this.mRegistratonType = 1;
     }
 
     @Override // com.android.server.cocktailbar.mode.CocktailBarMode
-    public int renewMode(int i) {
-        return isEnableMode() ? getModeId() : i;
+    public final int getCocktailType() {
+        return this.mCocktailType;
+    }
+
+    public abstract int getDefinedCocktailType();
+
+    public abstract String getDefinedPrivateModeName();
+
+    @Override // com.android.server.cocktailbar.mode.CocktailBarMode
+    public final int getModeId() {
+        return this.mPrivateModeId;
     }
 
     @Override // com.android.server.cocktailbar.mode.CocktailBarMode
-    public String getModeName() {
+    public final String getModeName() {
         return this.mPrivateModeName;
     }
 
     @Override // com.android.server.cocktailbar.mode.CocktailBarMode
-    public int getRegistrationType() {
+    public final int getRegistrationType() {
         return this.mRegistratonType;
     }
 
-    @Override // com.android.server.cocktailbar.mode.CocktailBarMode
-    public int getCocktailType() {
-        return this.mCocktailType;
-    }
+    public abstract boolean isEnableMode();
 
     @Override // com.android.server.cocktailbar.mode.CocktailBarMode
-    public int getModeId() {
-        return this.mPrivateModeId;
-    }
-
-    public void registerBroadcastReceiver(BroadcastReceiver broadcastReceiver, IntentFilter intentFilter) {
-        this.mContext.registerReceiverAsUser(broadcastReceiver, UserHandle.ALL, intentFilter, null, null);
+    public final int renewMode(int i) {
+        return isEnableMode() ? this.mPrivateModeId : i;
     }
 }

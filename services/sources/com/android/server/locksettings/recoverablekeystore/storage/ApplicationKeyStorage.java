@@ -1,73 +1,64 @@
 package com.android.server.locksettings.recoverablekeystore.storage;
 
 import android.os.ServiceSpecificException;
-import android.security.KeyStore2;
 import android.security.keystore.KeyProtection;
-import android.system.keystore2.KeyDescriptor;
 import android.util.Log;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.am.ActiveServices$$ExternalSyntheticOutline0;
 import com.android.server.locksettings.recoverablekeystore.KeyStoreProxy;
 import com.android.server.locksettings.recoverablekeystore.KeyStoreProxyImpl;
+import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.Locale;
 import javax.crypto.spec.SecretKeySpec;
 
-/* loaded from: classes2.dex */
-public class ApplicationKeyStorage {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ApplicationKeyStorage {
     public final KeyStoreProxy mKeyStore;
-
-    public static ApplicationKeyStorage getInstance() {
-        return new ApplicationKeyStorage(new KeyStoreProxyImpl(KeyStoreProxyImpl.getAndLoadAndroidKeyStore()));
-    }
 
     public ApplicationKeyStorage(KeyStoreProxy keyStoreProxy) {
         this.mKeyStore = keyStoreProxy;
     }
 
-    public String getGrantAlias(int i, int i2, String str) {
-        Log.i("RecoverableAppKeyStore", String.format(Locale.US, "Get %d/%d/%s", Integer.valueOf(i), Integer.valueOf(i2), str));
-        return makeKeystoreEngineGrantString(i2, getInternalAlias(i, i2, str));
+    public static ApplicationKeyStorage getInstance() {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        try {
+            keyStore.load(null);
+            return new ApplicationKeyStorage(new KeyStoreProxyImpl(keyStore));
+        } catch (IOException | NoSuchAlgorithmException | CertificateException e) {
+            throw new KeyStoreException("Unable to load keystore.", e);
+        }
     }
 
-    public void setSymmetricKeyEntry(int i, int i2, String str, byte[] bArr) {
-        Log.i("RecoverableAppKeyStore", String.format(Locale.US, "Set %d/%d/%s: %d bytes of key material", Integer.valueOf(i), Integer.valueOf(i2), str, Integer.valueOf(bArr.length)));
+    public static String getInternalAlias(int i, int i2, String str) {
+        StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "com.android.server.locksettings.recoverablekeystore/application/", "/", "/");
+        m.append(str);
+        return m.toString();
+    }
+
+    public final void deleteEntry(int i, int i2, String str) {
+        Locale locale = Locale.US;
+        DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "Del ", "/", "/"), str, "RecoverableAppKeyStore");
         try {
-            this.mKeyStore.setEntry(getInternalAlias(i, i2, str), new KeyStore.SecretKeyEntry(new SecretKeySpec(bArr, "AES")), new KeyProtection.Builder(3).setBlockModes("GCM").setEncryptionPaddings("NoPadding").build());
+            KeyStoreProxy keyStoreProxy = this.mKeyStore;
+            ((KeyStoreProxyImpl) keyStoreProxy).mKeyStore.deleteEntry(getInternalAlias(i, i2, str));
         } catch (KeyStoreException e) {
             throw new ServiceSpecificException(22, e.getMessage());
         }
     }
 
-    public void deleteEntry(int i, int i2, String str) {
-        Log.i("RecoverableAppKeyStore", String.format(Locale.US, "Del %d/%d/%s", Integer.valueOf(i), Integer.valueOf(i2), str));
+    public final void setSymmetricKeyEntry(int i, int i2, byte[] bArr, String str) {
+        Locale locale = Locale.US;
+        Log.i("RecoverableAppKeyStore", ActiveServices$$ExternalSyntheticOutline0.m(bArr.length, str, ": ", " bytes of key material", ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "Set ", "/", "/")));
         try {
-            this.mKeyStore.deleteEntry(getInternalAlias(i, i2, str));
+            KeyStoreProxy keyStoreProxy = this.mKeyStore;
+            ((KeyStoreProxyImpl) keyStoreProxy).mKeyStore.setEntry(getInternalAlias(i, i2, str), new KeyStore.SecretKeyEntry(new SecretKeySpec(bArr, "AES")), new KeyProtection.Builder(3).setBlockModes("GCM").setEncryptionPaddings("NoPadding").build());
         } catch (KeyStoreException e) {
-            throw new ServiceSpecificException(22, e.getMessage());
-        }
-    }
-
-    public final String getInternalAlias(int i, int i2, String str) {
-        return "com.android.server.locksettings.recoverablekeystore/application/" + i + "/" + i2 + "/" + str;
-    }
-
-    public final String makeKeystoreEngineGrantString(int i, String str) {
-        if (str == null) {
-            return null;
-        }
-        KeyDescriptor keyDescriptor = new KeyDescriptor();
-        keyDescriptor.domain = 0;
-        keyDescriptor.nspace = -1L;
-        keyDescriptor.alias = str;
-        keyDescriptor.blob = null;
-        try {
-            return String.format("%s%016X", "recoverable_key:", Long.valueOf(KeyStore2.getInstance().grant(keyDescriptor, i, 261).nspace));
-        } catch (android.security.KeyStoreException e) {
-            if (e.getNumericErrorCode() == 6) {
-                Log.e("RecoverableAppKeyStore", "Failed to get grant for KeyStore key - key not found", e);
-                throw new ServiceSpecificException(30, e.getMessage());
-            }
-            Log.e("RecoverableAppKeyStore", "Failed to get grant for KeyStore key.", e);
             throw new ServiceSpecificException(22, e.getMessage());
         }
     }

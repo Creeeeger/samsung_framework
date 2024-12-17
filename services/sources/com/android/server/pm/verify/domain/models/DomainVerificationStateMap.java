@@ -5,58 +5,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-/* loaded from: classes3.dex */
-public class DomainVerificationStateMap {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DomainVerificationStateMap {
     public final ArrayMap mPackageNameMap = new ArrayMap();
     public final ArrayMap mDomainSetIdMap = new ArrayMap();
 
-    public int size() {
-        return this.mPackageNameMap.size();
-    }
-
-    public Object valueAt(int i) {
-        return this.mPackageNameMap.valueAt(i);
-    }
-
-    public Object get(String str) {
-        return this.mPackageNameMap.get(str);
-    }
-
-    public Object get(UUID uuid) {
-        return this.mDomainSetIdMap.get(uuid);
-    }
-
-    public void put(String str, UUID uuid, Object obj) {
-        if (this.mPackageNameMap.containsKey(str)) {
-            remove(str);
-        }
-        this.mPackageNameMap.put(str, obj);
-        this.mDomainSetIdMap.put(uuid, obj);
-    }
-
-    public Object remove(String str) {
+    public final void put(String str, UUID uuid, DomainVerificationPkgState domainVerificationPkgState) {
+        Object remove;
         int indexOfValue;
-        Object remove = this.mPackageNameMap.remove(str);
-        if (remove != null && (indexOfValue = this.mDomainSetIdMap.indexOfValue(remove)) >= 0) {
+        if (this.mPackageNameMap.containsKey(str) && (remove = this.mPackageNameMap.remove(str)) != null && (indexOfValue = this.mDomainSetIdMap.indexOfValue(remove)) >= 0) {
             this.mDomainSetIdMap.removeAt(indexOfValue);
         }
-        return remove;
+        this.mPackageNameMap.put(str, domainVerificationPkgState);
+        this.mDomainSetIdMap.put(uuid, domainVerificationPkgState);
     }
 
-    public Object remove(UUID uuid) {
-        int indexOfValue;
-        Object remove = this.mDomainSetIdMap.remove(uuid);
-        if (remove != null && (indexOfValue = this.mPackageNameMap.indexOfValue(remove)) >= 0) {
-            this.mPackageNameMap.removeAt(indexOfValue);
-        }
-        return remove;
+    public final String toString() {
+        return "DomainVerificationStateMap{packageNameMap=" + this.mPackageNameMap + ", domainSetIdMap=" + this.mDomainSetIdMap + '}';
     }
 
     public Collection values() {
         return new ArrayList(this.mPackageNameMap.values());
-    }
-
-    public String toString() {
-        return "DomainVerificationStateMap{packageNameMap=" + this.mPackageNameMap + ", domainSetIdMap=" + this.mDomainSetIdMap + '}';
     }
 }

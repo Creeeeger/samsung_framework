@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
@@ -18,6 +19,7 @@ import android.util.Slog;
 import java.io.File;
 import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class ConnectivityModuleConnector {
     private static final String CONFIG_ALWAYS_RATELIMIT_NETWORKSTACK_CRASH = "always_ratelimit_networkstack_crash";
@@ -34,19 +36,69 @@ public class ConnectivityModuleConnector {
     private final Dependencies mDeps;
     private final ArraySet mHealthListeners;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface ConnectivityModuleHealthListener {
         void onNetworkStackFailure(String str);
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface Dependencies {
         Intent getModuleServiceIntent(PackageManager packageManager, String str, String str2, boolean z);
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DependenciesImpl implements Dependencies {
+        @Override // android.net.ConnectivityModuleConnector.Dependencies
+        public final Intent getModuleServiceIntent(PackageManager packageManager, String str, String str2, boolean z) {
+            if (z) {
+                str = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, ConnectivityModuleConnector.IN_PROCESS_SUFFIX);
+            }
+            Intent intent = new Intent(str);
+            ComponentName resolveSystemService = intent.resolveSystemService(packageManager, 0);
+            if (resolveSystemService == null) {
+                return null;
+            }
+            intent.setComponent(resolveSystemService);
+            try {
+                int packageUidAsUser = packageManager.getPackageUidAsUser(resolveSystemService.getPackageName(), 0);
+                if (packageUidAsUser != (z ? 1000 : 1073)) {
+                    throw new SecurityException(VibrationParam$1$$ExternalSyntheticOutline0.m(packageUidAsUser, "Invalid network stack UID: "));
+                }
+                if (!z) {
+                    ConnectivityModuleConnector.checkModuleServicePermission(packageManager, resolveSystemService, str2);
+                }
+                return intent;
+            } catch (PackageManager.NameNotFoundException e) {
+                throw new SecurityException("Could not check network stack UID; package not found.", e);
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface ModuleServiceCallback {
         void onModuleServiceConnected(IBinder iBinder);
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ModuleServiceConnection implements ServiceConnection {
+        public final ModuleServiceCallback mModuleServiceCallback;
+        public final String mPackageName;
+
+        public ModuleServiceConnection(String str, ModuleServiceCallback moduleServiceCallback) {
+            this.mPackageName = str;
+            this.mModuleServiceCallback = moduleServiceCallback;
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            ConnectivityModuleConnector.this.logi("Networking module service connected");
+            this.mModuleServiceCallback.onModuleServiceConnected(iBinder);
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceDisconnected(ComponentName componentName) {
+            ConnectivityModuleConnector.this.maybeCrashWithTerribleFailure("Lost network stack. This is not the root cause of any issue, it is a side effect of a crash that happened earlier. Earlier logs should point to the actual issue.", this.mPackageName);
+        }
     }
 
     private ConnectivityModuleConnector() {
@@ -58,109 +110,54 @@ public class ConnectivityModuleConnector {
         this.mDeps = dependencies;
     }
 
+    /* JADX INFO: Access modifiers changed from: private */
+    public static void checkModuleServicePermission(PackageManager packageManager, ComponentName componentName, String str) {
+        if (packageManager.checkPermission(str, componentName.getPackageName()) != 0) {
+            throw new SecurityException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Networking module does not have permission ", str));
+        }
+    }
+
     public static synchronized ConnectivityModuleConnector getInstance() {
         ConnectivityModuleConnector connectivityModuleConnector;
         synchronized (ConnectivityModuleConnector.class) {
-            if (sInstance == null) {
-                sInstance = new ConnectivityModuleConnector();
+            try {
+                if (sInstance == null) {
+                    sInstance = new ConnectivityModuleConnector();
+                }
+                connectivityModuleConnector = sInstance;
+            } catch (Throwable th) {
+                throw th;
             }
-            connectivityModuleConnector = sInstance;
         }
         return connectivityModuleConnector;
     }
 
-    public void init(Context context) {
-        log("Network stack init");
-        this.mContext = context;
-    }
-
-    /* loaded from: classes.dex */
-    public class DependenciesImpl implements Dependencies {
-        public DependenciesImpl() {
-        }
-
-        @Override // android.net.ConnectivityModuleConnector.Dependencies
-        public Intent getModuleServiceIntent(PackageManager packageManager, String str, String str2, boolean z) {
-            if (z) {
-                str = str + ConnectivityModuleConnector.IN_PROCESS_SUFFIX;
-            }
-            Intent intent = new Intent(str);
-            ComponentName resolveSystemService = intent.resolveSystemService(packageManager, 0);
-            if (resolveSystemService == null) {
-                return null;
-            }
-            intent.setComponent(resolveSystemService);
-            try {
-                int packageUidAsUser = packageManager.getPackageUidAsUser(resolveSystemService.getPackageName(), 0);
-                if (packageUidAsUser == (z ? 1000 : 1073)) {
-                    if (!z) {
-                        ConnectivityModuleConnector.checkModuleServicePermission(packageManager, resolveSystemService, str2);
-                    }
-                    return intent;
-                }
-                throw new SecurityException("Invalid network stack UID: " + packageUidAsUser);
-            } catch (PackageManager.NameNotFoundException e) {
-                throw new SecurityException("Could not check network stack UID; package not found.", e);
-            }
+    private SharedPreferences getSharedPreferences() {
+        try {
+            return this.mContext.createDeviceProtectedStorageContext().getSharedPreferences(new File(Environment.getDataSystemDeDirectory(0), PREFS_FILE), 0);
+        } catch (Throwable th) {
+            this.logWtf("Error loading shared preferences", th);
+            return null;
         }
     }
 
-    public void registerHealthListener(ConnectivityModuleHealthListener connectivityModuleHealthListener) {
-        synchronized (this.mHealthListeners) {
-            this.mHealthListeners.add(connectivityModuleHealthListener);
-        }
+    private void log(String str) {
+        Log.d(TAG, str);
     }
 
-    public void startModuleService(String str, String str2, ModuleServiceCallback moduleServiceCallback) {
-        log("Starting networking module " + str);
-        PackageManager packageManager = this.mContext.getPackageManager();
-        Intent moduleServiceIntent = this.mDeps.getModuleServiceIntent(packageManager, str, str2, true);
-        if (moduleServiceIntent == null) {
-            moduleServiceIntent = this.mDeps.getModuleServiceIntent(packageManager, str, str2, false);
-            log("Starting networking module in network_stack process");
-        } else {
-            log("Starting networking module in system_server process");
-        }
-        if (moduleServiceIntent == null) {
-            maybeCrashWithTerribleFailure("Could not resolve the networking module", null);
-            return;
-        }
-        String packageName = moduleServiceIntent.getComponent().getPackageName();
-        if (!this.mContext.bindServiceAsUser(moduleServiceIntent, new ModuleServiceConnection(packageName, moduleServiceCallback), 65, UserHandle.SYSTEM)) {
-            maybeCrashWithTerribleFailure("Could not bind to networking module in-process, or in app with " + moduleServiceIntent, packageName);
-            return;
-        }
-        log("Networking module service start requested");
+    private void logWtf(String str, Throwable th) {
+        String str2 = TAG;
+        Slog.wtf(str2, str, th);
+        Log.e(str2, str, th);
     }
 
-    /* loaded from: classes.dex */
-    public class ModuleServiceConnection implements ServiceConnection {
-        public final ModuleServiceCallback mModuleServiceCallback;
-        public final String mPackageName;
-
-        public ModuleServiceConnection(String str, ModuleServiceCallback moduleServiceCallback) {
-            this.mPackageName = str;
-            this.mModuleServiceCallback = moduleServiceCallback;
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            ConnectivityModuleConnector.this.logi("Networking module service connected");
-            this.mModuleServiceCallback.onModuleServiceConnected(iBinder);
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName componentName) {
-            ConnectivityModuleConnector.this.maybeCrashWithTerribleFailure("Lost network stack. This is not the root cause of any issue, it is a side effect of a crash that happened earlier. Earlier logs should point to the actual issue.", this.mPackageName);
-        }
+    private void loge(String str, Throwable th) {
+        Log.e(TAG, str, th);
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public static void checkModuleServicePermission(PackageManager packageManager, ComponentName componentName, String str) {
-        if (packageManager.checkPermission(str, componentName.getPackageName()) == 0) {
-            return;
-        }
-        throw new SecurityException("Networking module does not have permission " + str);
+    public void logi(String str) {
+        Log.i(TAG, str);
     }
 
     /* JADX INFO: Access modifiers changed from: private */
@@ -177,7 +174,7 @@ public class ConnectivityModuleConnector {
         long tryGetLastCrashTime = tryGetLastCrashTime(sharedPreferences);
         boolean z3 = Build.IS_DEBUGGABLE && !z2;
         boolean z4 = elapsedRealtime < j2;
-        if ((tryGetLastCrashTime != 0 && tryGetLastCrashTime < currentTimeMillis) && currentTimeMillis < tryGetLastCrashTime + j) {
+        if (tryGetLastCrashTime != 0 && tryGetLastCrashTime < currentTimeMillis && currentTimeMillis < tryGetLastCrashTime + j) {
             z = true;
         }
         if (z3 || !(z4 || z)) {
@@ -192,15 +189,6 @@ public class ConnectivityModuleConnector {
             while (it.hasNext()) {
                 ((ConnectivityModuleHealthListener) it.next()).onNetworkStackFailure(str2);
             }
-        }
-    }
-
-    private SharedPreferences getSharedPreferences() {
-        try {
-            return this.mContext.createDeviceProtectedStorageContext().getSharedPreferences(new File(Environment.getDataSystemDeDirectory(0), PREFS_FILE), 0);
-        } catch (Throwable th) {
-            this.logWtf("Error loading shared preferences", th);
-            return null;
         }
     }
 
@@ -227,22 +215,36 @@ public class ConnectivityModuleConnector {
         }
     }
 
-    private void log(String str) {
-        Log.d(TAG, str);
+    public void init(Context context) {
+        log("Network stack init");
+        this.mContext = context;
     }
 
-    private void logWtf(String str, Throwable th) {
-        String str2 = TAG;
-        Slog.wtf(str2, str, th);
-        Log.e(str2, str, th);
+    public void registerHealthListener(ConnectivityModuleHealthListener connectivityModuleHealthListener) {
+        synchronized (this.mHealthListeners) {
+            this.mHealthListeners.add(connectivityModuleHealthListener);
+        }
     }
 
-    private void loge(String str, Throwable th) {
-        Log.e(TAG, str, th);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void logi(String str) {
-        Log.i(TAG, str);
+    public void startModuleService(String str, String str2, ModuleServiceCallback moduleServiceCallback) {
+        logi(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Starting networking module ", str));
+        PackageManager packageManager = this.mContext.getPackageManager();
+        Intent moduleServiceIntent = this.mDeps.getModuleServiceIntent(packageManager, str, str2, true);
+        if (moduleServiceIntent == null) {
+            moduleServiceIntent = this.mDeps.getModuleServiceIntent(packageManager, str, str2, false);
+            logi("Starting networking module in network_stack process");
+        } else {
+            logi("Starting networking module in system_server process");
+        }
+        if (moduleServiceIntent == null) {
+            maybeCrashWithTerribleFailure("Could not resolve the networking module", null);
+            return;
+        }
+        String packageName = moduleServiceIntent.getComponent().getPackageName();
+        if (this.mContext.bindServiceAsUser(moduleServiceIntent, new ModuleServiceConnection(packageName, moduleServiceCallback), 65, UserHandle.SYSTEM)) {
+            log("Networking module service start requested");
+            return;
+        }
+        maybeCrashWithTerribleFailure("Could not bind to networking module in-process, or in app with " + moduleServiceIntent, packageName);
     }
 }

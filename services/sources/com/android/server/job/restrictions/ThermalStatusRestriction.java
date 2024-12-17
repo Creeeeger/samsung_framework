@@ -1,63 +1,36 @@
 package com.android.server.job.restrictions;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.PowerManager;
 import android.util.IndentingPrintWriter;
-import android.util.Slog;
-import com.android.server.job.JobSchedulerService;
+import com.android.server.SystemServiceManager$$ExternalSyntheticOutline0;
+import com.android.server.job.Flags;
 import com.android.server.job.controllers.JobStatus;
 
-/* loaded from: classes2.dex */
-public class ThermalStatusRestriction extends JobRestriction {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ThermalStatusRestriction extends JobRestriction {
     public boolean mForceRestricted;
-    public boolean mIncrease;
-    public BroadcastReceiver mSIOPTracker;
+    public boolean mIncreased;
+    public AnonymousClass2 mSIOPTracker;
     public volatile int mThermalStatus;
 
-    public ThermalStatusRestriction(JobSchedulerService jobSchedulerService) {
-        super(jobSchedulerService, 4, 12, 5);
-        this.mThermalStatus = 0;
-        this.mSIOPTracker = new BroadcastReceiver() { // from class: com.android.server.job.restrictions.ThermalStatusRestriction.2
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                boolean booleanExtra = intent.getBooleanExtra("job_restriction", false);
-                if (ThermalStatusRestriction.this.mForceRestricted != booleanExtra) {
-                    ThermalStatusRestriction.this.mForceRestricted = booleanExtra;
-                    Slog.i("ThermalStatusRestriction", "Receieved: forceRestrict = " + booleanExtra);
-                    ThermalStatusRestriction thermalStatusRestriction = ThermalStatusRestriction.this;
-                    thermalStatusRestriction.mService.onRestrictionStateChanged(thermalStatusRestriction, thermalStatusRestriction.mForceRestricted || ThermalStatusRestriction.this.mIncrease);
-                }
-            }
-        };
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.samsung.intent.action.SIOP_LEVEL_CHANGED");
-        this.mService.getContext().registerReceiver(this.mSIOPTracker, intentFilter);
+    @Override // com.android.server.job.restrictions.JobRestriction
+    public final void dumpConstants(IndentingPrintWriter indentingPrintWriter) {
+        indentingPrintWriter.print("Thermal status: ");
+        indentingPrintWriter.println(this.mThermalStatus);
+    }
+
+    public int getThermalStatus() {
+        return this.mThermalStatus;
     }
 
     @Override // com.android.server.job.restrictions.JobRestriction
-    public void onSystemServicesReady() {
-        ((PowerManager) this.mService.getTestableContext().getSystemService(PowerManager.class)).addThermalStatusListener(new PowerManager.OnThermalStatusChangedListener() { // from class: com.android.server.job.restrictions.ThermalStatusRestriction.1
-            @Override // android.os.PowerManager.OnThermalStatusChangedListener
-            public void onThermalStatusChanged(int i) {
-                boolean z = (i >= 1 && i <= 3) || (ThermalStatusRestriction.this.mThermalStatus >= 1 && i < 1) || (ThermalStatusRestriction.this.mThermalStatus < 3 && i > 3);
-                ThermalStatusRestriction thermalStatusRestriction = ThermalStatusRestriction.this;
-                thermalStatusRestriction.mIncrease = thermalStatusRestriction.mThermalStatus < i;
-                ThermalStatusRestriction.this.mThermalStatus = i;
-                if (z) {
-                    Slog.i("ThermalStatusRestriction", "ThermalStatus changed to " + ThermalStatusRestriction.this.mThermalStatus);
-                    ThermalStatusRestriction thermalStatusRestriction2 = ThermalStatusRestriction.this;
-                    thermalStatusRestriction2.mService.onRestrictionStateChanged(thermalStatusRestriction2, thermalStatusRestriction2.mIncrease);
-                }
-            }
-        });
-    }
-
-    @Override // com.android.server.job.restrictions.JobRestriction
-    public boolean isJobRestricted(JobStatus jobStatus) {
-        if (jobStatus.overrideState == 2 && "android".equals(jobStatus.getSourcePackageName()) && (jobStatus.getJobId() == 800 || jobStatus.getJobId() == 801)) {
+    public final boolean isJobRestricted(JobStatus jobStatus, int i) {
+        Flags.thermalRestrictionsToFgsJobs();
+        if (i >= 35) {
+            return false;
+        }
+        if (jobStatus.overrideState == 2 && "android".equals(jobStatus.sourcePackageName) && (jobStatus.job.getId() == 800 || jobStatus.job.getId() == 801)) {
             return false;
         }
         if (this.mThermalStatus >= 3 || this.mForceRestricted) {
@@ -71,6 +44,7 @@ public class ThermalStatusRestriction extends JobRestriction {
             if (jobStatus.shouldTreatAsExpeditedJob()) {
                 return jobStatus.getNumPreviousAttempts() > 0 || (this.mService.isCurrentlyRunningLocked(jobStatus) && this.mService.isJobInOvertimeLocked(jobStatus));
             }
+            Flags.thermalRestrictionsToFgsJobs();
             if (effectivePriority == 400) {
                 return !this.mService.isCurrentlyRunningLocked(jobStatus) || this.mService.isJobInOvertimeLocked(jobStatus);
             }
@@ -79,6 +53,7 @@ public class ThermalStatusRestriction extends JobRestriction {
         if (this.mThermalStatus < 1) {
             return false;
         }
+        Flags.thermalRestrictionsToFgsJobs();
         if (effectivePriority != 100) {
             if (effectivePriority != 200) {
                 return false;
@@ -90,15 +65,21 @@ public class ThermalStatusRestriction extends JobRestriction {
         return true;
     }
 
-    public int getThermalStatus() {
-        return this.mThermalStatus;
-    }
-
     @Override // com.android.server.job.restrictions.JobRestriction
-    public void dumpConstants(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.print("Thermal status: ");
-        indentingPrintWriter.println(this.mThermalStatus);
-        indentingPrintWriter.print("  Force restrict: ");
-        indentingPrintWriter.println(this.mForceRestricted);
+    public final void onSystemServicesReady() {
+        ((PowerManager) this.mService.getContext().getSystemService(PowerManager.class)).addThermalStatusListener(new PowerManager.OnThermalStatusChangedListener() { // from class: com.android.server.job.restrictions.ThermalStatusRestriction.1
+            @Override // android.os.PowerManager.OnThermalStatusChangedListener
+            public final void onThermalStatusChanged(int i) {
+                boolean z = (i >= 1 && i <= 3) || (ThermalStatusRestriction.this.mThermalStatus >= 1 && i < 1) || (ThermalStatusRestriction.this.mThermalStatus < 3 && i > 3);
+                ThermalStatusRestriction thermalStatusRestriction = ThermalStatusRestriction.this;
+                thermalStatusRestriction.mIncreased = thermalStatusRestriction.mThermalStatus < i;
+                ThermalStatusRestriction.this.mThermalStatus = i;
+                if (z) {
+                    SystemServiceManager$$ExternalSyntheticOutline0.m(new StringBuilder("ThermalStatus changed to "), ThermalStatusRestriction.this.mThermalStatus, "ThermalStatusRestriction");
+                    ThermalStatusRestriction thermalStatusRestriction2 = ThermalStatusRestriction.this;
+                    thermalStatusRestriction2.mService.onRestrictionStateChanged(thermalStatusRestriction2, thermalStatusRestriction2.mIncreased);
+                }
+            }
+        });
     }
 }

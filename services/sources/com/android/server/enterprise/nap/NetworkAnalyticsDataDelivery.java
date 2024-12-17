@@ -13,6 +13,10 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.util.Log;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
+import com.android.server.VpnManagerService$$ExternalSyntheticOutline0;
+import com.android.server.enterprise.nap.NetworkAnalyticsConfigStore;
+import com.android.server.enterprise.nap.NetworkAnalyticsService;
 import com.android.server.pm.PackageManagerService;
 import com.samsung.android.knox.net.nap.serviceprovider.INetworkAnalyticsService;
 import java.io.BufferedReader;
@@ -25,34 +29,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
-public class NetworkAnalyticsDataDelivery {
-    public static final boolean DBG = NetworkAnalyticsService.DBG;
-    public static Set appset;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class NetworkAnalyticsDataDelivery {
     public static NetworkAnalyticsDataDelivery mInstance;
-    public static PackageManagerService.IPackageManagerImpl pmsImp;
     public List dataEntry;
+    public DataDeliveryHandler mHandler;
+    public HandlerThread mHandlerThread;
+    public List registeredDataRecipients;
     public long startTimer;
-    public List registeredDataRecipients = null;
-    public Object syncObject = new Object();
-    public HandlerThread mHandlerThread = null;
-    public DataDeliveryHandler mHandler = null;
+    public Object syncObject;
+    public static final boolean DBG = NetworkAnalyticsService.DBG;
+    public static final PackageManagerService.IPackageManagerImpl pmsImp = (PackageManagerService.IPackageManagerImpl) ServiceManager.getService("package");
+    public static final Set appset = Collections.synchronizedSet(new HashSet());
 
-    static {
-        getPackageManagerImpl();
-        appset = Collections.synchronizedSet(new HashSet());
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AppInfoSet {
+        public final String hash;
+        public final String packageName;
+        public final String processName;
+        public final String truncatedProcessName;
+        public final int uid;
+        public final int userId;
 
-    /* loaded from: classes2.dex */
-    public class AppInfoSet {
-        public String hash;
-        public String packageName;
-        public String processName;
-        public String truncatedProcessName;
-        public int uid;
-        public int userId;
-
-        public AppInfoSet(int i, String str, String str2, String str3, String str4, int i2) {
+        public AppInfoSet(int i, String str, String str2, int i2, String str3, String str4) {
             this.uid = i;
             this.packageName = str;
             this.processName = str2;
@@ -62,232 +62,56 @@ public class NetworkAnalyticsDataDelivery {
         }
     }
 
-    public NetworkAnalyticsDataDelivery() {
-        this.dataEntry = null;
-        this.startTimer = 0L;
-        this.dataEntry = new ArrayList();
-        this.startTimer = System.currentTimeMillis();
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DataDeliveryHandler extends Handler {
+        public DataDeliveryHandler(Looper looper) {
+            super(looper);
+        }
 
-    public static NetworkAnalyticsDataDelivery getInstance() {
-        if (mInstance == null) {
-            mInstance = new NetworkAnalyticsDataDelivery();
-        }
-        return mInstance;
-    }
-
-    public void addNAPDataRecipient(DataDeliveryHelper dataDeliveryHelper) {
-        if (!validateRecipientObject(dataDeliveryHelper) && DBG) {
-            Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "adding recipient failed for recipient: " + dataDeliveryHelper.getIdentifier());
-        }
-        String identifier = dataDeliveryHelper.getIdentifier();
-        boolean z = DBG;
-        if (z) {
-            Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "adding recipient for data collection:" + identifier);
-        }
-        synchronized (this.syncObject) {
-            if (isDataRecipientPresent(NetworkAnalyticsService.getVendorNameFromTransformedName(identifier), NetworkAnalyticsService.getCidFromTransformedName(identifier)) < 0) {
-                getRecipientList().add(dataDeliveryHelper);
-                if (z) {
-                    Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "added recipient for data collection:" + identifier);
-                }
-            }
-        }
-    }
-
-    public void removeNAPDataRecipient(String str, int i) {
-        synchronized (this.syncObject) {
-            int isDataRecipientPresent = isDataRecipientPresent(str, i);
-            if (isDataRecipientPresent < 0) {
-                return;
-            }
-            if (DBG) {
-                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "removeNAPDataRecipient: removing recipient for data collection:" + NetworkAnalyticsService.getTransformedVendorName(str, i));
-            }
-            getRecipientList().remove(isDataRecipientPresent);
-        }
-    }
-
-    public void removeDataRecipientsForPackage(String str, int i) {
-        synchronized (this.syncObject) {
-            Iterator it = getRecipientList().iterator();
-            while (it.hasNext()) {
-                DataDeliveryHelper dataDeliveryHelper = (DataDeliveryHelper) it.next();
-                if (dataDeliveryHelper.getProfile().getPackageName().equals(str) && dataDeliveryHelper.getProfile().getUserId() == i) {
-                    Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "removeDataRecipientsForPackage: removing recipient for package:" + str + i + dataDeliveryHelper.getProfile().getProfileName());
-                    it.remove();
-                }
-            }
-        }
-    }
-
-    public int deliverData(List list) {
-        if (list == null || list.size() <= 0) {
-            return -1;
-        }
-        synchronized (this.syncObject) {
-            List<DataDeliveryHelper> recipientList = getRecipientList();
-            if (recipientList != null && recipientList.size() > 0) {
-                for (DataDeliveryHelper dataDeliveryHelper : recipientList) {
-                    try {
-                        INetworkAnalyticsService serviceBinder = dataDeliveryHelper.getServiceBinder();
-                        String profileName = dataDeliveryHelper.getProfile().getProfileName();
-                        if (serviceBinder == null) {
-                            if (DBG) {
-                                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "deliverData: service connection is null for entry:" + dataDeliveryHelper.getIdentifier());
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            String str;
+            List<DataDeliveryHelper> recipientList;
+            if (message.what == 1 && (str = (String) message.obj) != null) {
+                ((ArrayList) NetworkAnalyticsDataDelivery.this.dataEntry).add(str);
+                if (((ArrayList) NetworkAnalyticsDataDelivery.this.dataEntry).size() >= 50 || System.currentTimeMillis() - NetworkAnalyticsDataDelivery.this.startTimer > 10000) {
+                    NetworkAnalyticsDataDelivery networkAnalyticsDataDelivery = NetworkAnalyticsDataDelivery.this;
+                    List list = networkAnalyticsDataDelivery.dataEntry;
+                    if (list != null && ((ArrayList) list).size() > 0) {
+                        synchronized (networkAnalyticsDataDelivery.syncObject) {
+                            try {
+                                recipientList = networkAnalyticsDataDelivery.getRecipientList();
+                            } catch (Exception e) {
+                                Log.e("NetworkAnalytics:NetworkAnalyticsDataDelivery", "deliverData: Exception ", e);
+                            } catch (RemoteException e2) {
+                                Log.e("NetworkAnalytics:NetworkAnalyticsDataDelivery", "deliverData: RemoteException ", e2);
+                            } finally {
                             }
-                        } else {
-                            List augmentedData = getAugmentedData(dataDeliveryHelper, list);
-                            if (augmentedData != null && augmentedData.size() > 0) {
-                                serviceBinder.onDataAvailable(profileName, augmentedData);
+                            if (recipientList != null && recipientList.size() > 0) {
+                                for (DataDeliveryHelper dataDeliveryHelper : recipientList) {
+                                    NetworkAnalyticsService.NetworkAnalyticsServiceConnection networkAnalyticsServiceConnection = dataDeliveryHelper.serviceConnection;
+                                    INetworkAnalyticsService iNetworkAnalyticsService = networkAnalyticsServiceConnection != null ? networkAnalyticsServiceConnection.napInterface : null;
+                                    String str2 = dataDeliveryHelper.profile.profileName;
+                                    if (iNetworkAnalyticsService != null) {
+                                        List augmentedData = NetworkAnalyticsDataDelivery.getAugmentedData(dataDeliveryHelper, list);
+                                        if (augmentedData != null && augmentedData.size() > 0) {
+                                            iNetworkAnalyticsService.onDataAvailable(str2, augmentedData);
+                                        }
+                                    } else if (NetworkAnalyticsDataDelivery.DBG) {
+                                        Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "deliverData: service connection is null for entry:" + dataDeliveryHelper.identifier);
+                                    }
+                                }
+                            }
+                            if (NetworkAnalyticsDataDelivery.DBG) {
+                                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "deliverData: No data delivery herlper entries.");
                             }
                         }
-                    } catch (RemoteException e) {
-                        Log.e("NetworkAnalytics:NetworkAnalyticsDataDelivery", "deliverData: RemoteException ", e);
-                    } catch (Exception e2) {
-                        Log.e("NetworkAnalytics:NetworkAnalyticsDataDelivery", "deliverData: Exception ", e2);
                     }
-                }
-                return 0;
-            }
-            if (DBG) {
-                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "deliverData: No data delivery herlper entries.");
-            }
-            return -1;
-        }
-    }
-
-    public int accumulateData(String str) {
-        sendMessageToHandler(1, 0, 0, str);
-        return 0;
-    }
-
-    public void initializeHandlerThread() {
-        HandlerThread handlerThread = new HandlerThread("DataDeliveryHandler", 10);
-        this.mHandlerThread = handlerThread;
-        handlerThread.start();
-        this.mHandler = new DataDeliveryHandler(this.mHandlerThread.getLooper());
-    }
-
-    public static String getHashFromCache(int i, String str) {
-        synchronized (appset) {
-            for (AppInfoSet appInfoSet : appset) {
-                if (appInfoSet.uid == i && (appInfoSet.processName.equalsIgnoreCase(str) || appInfoSet.truncatedProcessName.equalsIgnoreCase(str))) {
-                    return appInfoSet.hash;
-                }
-            }
-            return null;
-        }
-    }
-
-    public static String getHashFromCacheBasedOnUid(int i) {
-        synchronized (appset) {
-            for (AppInfoSet appInfoSet : appset) {
-                if (appInfoSet.uid == i) {
-                    return appInfoSet.hash;
-                }
-            }
-            return null;
-        }
-    }
-
-    public static void insertHashIntoCache(AppInfoSet appInfoSet) {
-        boolean z = DBG;
-        if (z) {
-            Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "insertHashIntoCache Called");
-        }
-        synchronized (appset) {
-            if (z) {
-                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "DataDelivery hash cache insertion uid:" + appInfoSet.uid + " pacName:" + appInfoSet.packageName + " procName:" + appInfoSet.processName + " trunProcName:" + appInfoSet.truncatedProcessName + " hash:" + appInfoSet.hash);
-            }
-            appset.add(appInfoSet);
-        }
-    }
-
-    public static void updateHashCache(int i, String str) {
-        if (DBG) {
-            Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "updateHashCache Called");
-        }
-        synchronized (appset) {
-            Iterator it = appset.iterator();
-            while (it.hasNext()) {
-                AppInfoSet appInfoSet = (AppInfoSet) it.next();
-                if (appInfoSet.uid == i && appInfoSet.packageName.equalsIgnoreCase(str)) {
-                    if (DBG) {
-                        Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "DataDelivery hash cache deletion uid:" + appInfoSet.uid + " pacName:" + appInfoSet.packageName + " procName:" + appInfoSet.processName + " trunProcName:" + appInfoSet.truncatedProcessName + " hash:" + appInfoSet.hash);
-                    }
-                    it.remove();
+                    ((ArrayList) NetworkAnalyticsDataDelivery.this.dataEntry).clear();
+                    NetworkAnalyticsDataDelivery.this.startTimer = System.currentTimeMillis();
                 }
             }
         }
-    }
-
-    public static void updateHashCacheForUser(int i) {
-        if (DBG) {
-            Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "updateHashCacheForUser Called");
-        }
-        synchronized (appset) {
-            Iterator it = appset.iterator();
-            while (it.hasNext()) {
-                AppInfoSet appInfoSet = (AppInfoSet) it.next();
-                if (appInfoSet.userId == i) {
-                    if (DBG) {
-                        Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "DataDelivery hash cache user deletion uid:" + appInfoSet.uid + " pacName:" + appInfoSet.packageName + " procName:" + appInfoSet.processName + " trunProcName:" + appInfoSet.truncatedProcessName + " hash:" + appInfoSet.hash);
-                    }
-                    it.remove();
-                }
-            }
-        }
-    }
-
-    public static void clearHashCacheEntire() {
-        synchronized (appset) {
-            boolean z = DBG;
-            if (z) {
-                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "clearHashCacheEntire Called : cache size: " + appset.size());
-            }
-            appset.clear();
-            if (z) {
-                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "DataDelivery hash cache entire deletion : cache size: " + appset.size());
-            }
-        }
-    }
-
-    public static String getPackageHash(int i, String str) {
-        String hashFromCache;
-        try {
-            hashFromCache = getHashFromCache(i, str);
-        } catch (Exception e) {
-            Log.e("NetworkAnalytics:NetworkAnalyticsDataDelivery", "getPackageHash: Exception", e);
-        }
-        if (hashFromCache != null) {
-            return hashFromCache;
-        }
-        String checkIfProcessIsDaemon = checkIfProcessIsDaemon(str);
-        if (checkIfProcessIsDaemon != null && !checkIfProcessIsDaemon.isEmpty() && !checkIfProcessIsDaemon.equals("null")) {
-            File file = new File(checkIfProcessIsDaemon);
-            if (!file.exists()) {
-                return null;
-            }
-            String hash = getHash(file);
-            if (hash != null) {
-                return hash;
-            }
-        } else {
-            String checkSingleUidAndCalculateHash = checkSingleUidAndCalculateHash(i, str);
-            if (checkSingleUidAndCalculateHash != null) {
-                return checkSingleUidAndCalculateHash;
-            }
-            String fileLocationFromProcessNameAndCalculateHash = getFileLocationFromProcessNameAndCalculateHash(i, str);
-            if (fileLocationFromProcessNameAndCalculateHash != null) {
-                return fileLocationFromProcessNameAndCalculateHash;
-            }
-            String packageNameFromPathAndCalculateHash = getPackageNameFromPathAndCalculateHash(i, str);
-            if (packageNameFromPathAndCalculateHash != null) {
-                return packageNameFromPathAndCalculateHash;
-            }
-        }
-        return null;
     }
 
     public static String checkIfProcessIsDaemon(String str) {
@@ -312,6 +136,7 @@ public class NetworkAnalyticsDataDelivery {
 
     public static String checkSingleUidAndCalculateHash(int i, String str) {
         PackageManagerService.IPackageManagerImpl iPackageManagerImpl;
+        String str2;
         AppInfoSet appInfoSet;
         try {
             iPackageManagerImpl = pmsImp;
@@ -327,28 +152,44 @@ public class NetworkAnalyticsDataDelivery {
             return null;
         }
         if (packagesForUid.length == 1) {
-            String hashFromCacheBasedOnUid = getHashFromCacheBasedOnUid(i);
-            if (hashFromCacheBasedOnUid != null) {
-                return hashFromCacheBasedOnUid;
+            Set set = appset;
+            synchronized (set) {
+                try {
+                    Iterator it = set.iterator();
+                    while (true) {
+                        if (!it.hasNext()) {
+                            str2 = null;
+                            break;
+                        }
+                        AppInfoSet appInfoSet2 = (AppInfoSet) it.next();
+                        if (appInfoSet2.uid == i) {
+                            str2 = appInfoSet2.hash;
+                        }
+                    }
+                } finally {
+                }
             }
-            String str2 = packagesForUid[0];
-            ApplicationInfo applicationInfo = pmsImp.getApplicationInfo(str2, 0L, UserHandle.getUserId(i));
+            if (str2 != null) {
+                return str2;
+            }
+            String str3 = packagesForUid[0];
+            ApplicationInfo applicationInfo = pmsImp.getApplicationInfo(str3, 0L, UserHandle.getUserId(i));
             if (applicationInfo != null && applicationInfo.sourceDir != null) {
                 File file = new File(applicationInfo.sourceDir);
                 if (!file.exists()) {
-                    Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "unable to find the file location for the process:" + str + "for package " + str2 + "for uid " + i);
+                    Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "unable to find the file location for the process:" + str + "for package " + str3 + "for uid " + i);
                     return null;
                 }
                 String hash = getHash(file);
                 if (hash != null) {
-                    String str3 = applicationInfo.processName;
-                    if (str3 != null) {
-                        if (str3.length() > 15) {
-                            String str4 = applicationInfo.processName;
-                            appInfoSet = new AppInfoSet(i, str2, str4, str4.substring(str4.length() - 15), hash, UserHandle.getUserId(i));
-                        } else {
+                    String str4 = applicationInfo.processName;
+                    if (str4 != null) {
+                        if (str4.length() > 15) {
                             String str5 = applicationInfo.processName;
-                            appInfoSet = new AppInfoSet(i, str2, str5, str5, hash, UserHandle.getUserId(i));
+                            appInfoSet = new AppInfoSet(i, str3, str5, UserHandle.getUserId(i), str5.substring(str5.length() - 15), hash);
+                        } else {
+                            String str6 = applicationInfo.processName;
+                            appInfoSet = new AppInfoSet(i, str3, str6, UserHandle.getUserId(i), str6, hash);
                         }
                         insertHashIntoCache(appInfoSet);
                     }
@@ -357,6 +198,203 @@ public class NetworkAnalyticsDataDelivery {
             }
         }
         return null;
+    }
+
+    public static void clearHashCacheEntire() {
+        Set set = appset;
+        synchronized (set) {
+            try {
+                boolean z = DBG;
+                if (z) {
+                    Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "clearHashCacheEntire Called : cache size: " + set.size());
+                }
+                set.clear();
+                if (z) {
+                    Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "DataDelivery hash cache entire deletion : cache size: " + set.size());
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public static String compareProcessNamesAndCalculateHash(int i, String str, String str2, String str3, ApplicationInfo applicationInfo) {
+        if (str != null && str2 != null && str3 != null && applicationInfo != null) {
+            try {
+                if (str3.length() > 15) {
+                    if (!str3.substring(str3.length() - 15).equalsIgnoreCase(str)) {
+                        if (str3.equalsIgnoreCase(str)) {
+                        }
+                    }
+                    if (applicationInfo.sourceDir != null) {
+                        File file = new File(applicationInfo.sourceDir);
+                        if (!file.exists()) {
+                            Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "unable to find the file location for the process:" + str + "for package " + str2 + "for uid " + i);
+                            return null;
+                        }
+                        String hash = getHash(file);
+                        if (hash != null) {
+                            insertHashIntoCache(new AppInfoSet(i, str2, str3, UserHandle.getUserId(i), str3.substring(str3.length() - 15), hash));
+                            return hash;
+                        }
+                    }
+                } else if (str3.equalsIgnoreCase(str) && applicationInfo.sourceDir != null) {
+                    File file2 = new File(applicationInfo.sourceDir);
+                    if (!file2.exists()) {
+                        Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "unable to find the file location for the process:" + str + "for package " + str2 + "for uid " + i);
+                        return null;
+                    }
+                    String hash2 = getHash(file2);
+                    if (hash2 != null) {
+                        insertHashIntoCache(new AppInfoSet(i, str2, str3, UserHandle.getUserId(i), str3, hash2));
+                        return hash2;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /* JADX WARN: Can't wrap try/catch for region: R(31:13|(11:14|15|17|18|20|21|22|23|24|25|26)|(4:240|241|242|(3:244|245|(6:247|(0)|249|62|(2:64|65)(1:67)|66))(1:251))(1:28)|29|30|31|(2:231|232)|34|(3:228|229|230)|37|(3:225|226|227)|40|(3:222|223|224)|43|(3:219|220|221)|46|(3:216|217|218)|49|(3:213|214|215)|52|(2:211|212)(1:55)|56|57|(3:68|69|(62:71|(1:206)|74|(4:188|189|190|(3:193|194|(53:199|200|78|(2:186|187)|81|(4:168|169|170|(3:173|174|(23:179|180|85|(2:166|167)|88|(3:163|164|165)|91|(3:160|161|162)|94|(3:157|158|159)|97|(3:154|155|156)(1:100)|101|(4:139|140|141|(2:143|(3:145|146|147)(1:151)))(1:104)|105|(4:123|124|125|126)|108|(3:120|121|122)(1:111)|112|61|62|(0)(0)|66)(1:178)))|84|85|(0)|166|167|88|(0)|163|164|165|91|(0)|160|161|162|94|(0)|157|158|159|97|(0)|154|155|156|101|(0)|139|140|141|(0)|105|(0)|123|124|125|126|108|(0)|120|121|122|112|61|62|(0)(0)|66)(1:198)))|77|78|(0)|186|187|81|(0)|168|169|170|(51:173|174|(1:176)|179|180|85|(0)|166|167|88|(0)|163|164|165|91|(0)|160|161|162|94|(0)|157|158|159|97|(0)|154|155|156|101|(0)|139|140|141|(0)|105|(0)|123|124|125|126|108|(0)|120|121|122|112|61|62|(0)(0)|66)|84|85|(0)|166|167|88|(0)|163|164|165|91|(0)|160|161|162|94|(0)|157|158|159|97|(0)|154|155|156|101|(0)|139|140|141|(0)|105|(0)|123|124|125|126|108|(0)|120|121|122|112|61|62|(0)(0)|66))|59|60|61|62|(0)(0)|66|11) */
+    /* JADX WARN: Can't wrap try/catch for region: R(41:13|14|15|17|18|20|21|22|23|24|25|26|(4:240|241|242|(3:244|245|(6:247|(0)|249|62|(2:64|65)(1:67)|66))(1:251))(1:28)|29|30|31|(2:231|232)|34|(3:228|229|230)|37|(3:225|226|227)|40|(3:222|223|224)|43|(3:219|220|221)|46|(3:216|217|218)|49|(3:213|214|215)|52|(2:211|212)(1:55)|56|57|(3:68|69|(62:71|(1:206)|74|(4:188|189|190|(3:193|194|(53:199|200|78|(2:186|187)|81|(4:168|169|170|(3:173|174|(23:179|180|85|(2:166|167)|88|(3:163|164|165)|91|(3:160|161|162)|94|(3:157|158|159)|97|(3:154|155|156)(1:100)|101|(4:139|140|141|(2:143|(3:145|146|147)(1:151)))(1:104)|105|(4:123|124|125|126)|108|(3:120|121|122)(1:111)|112|61|62|(0)(0)|66)(1:178)))|84|85|(0)|166|167|88|(0)|163|164|165|91|(0)|160|161|162|94|(0)|157|158|159|97|(0)|154|155|156|101|(0)|139|140|141|(0)|105|(0)|123|124|125|126|108|(0)|120|121|122|112|61|62|(0)(0)|66)(1:198)))|77|78|(0)|186|187|81|(0)|168|169|170|(51:173|174|(1:176)|179|180|85|(0)|166|167|88|(0)|163|164|165|91|(0)|160|161|162|94|(0)|157|158|159|97|(0)|154|155|156|101|(0)|139|140|141|(0)|105|(0)|123|124|125|126|108|(0)|120|121|122|112|61|62|(0)(0)|66)|84|85|(0)|166|167|88|(0)|163|164|165|91|(0)|160|161|162|94|(0)|157|158|159|97|(0)|154|155|156|101|(0)|139|140|141|(0)|105|(0)|123|124|125|126|108|(0)|120|121|122|112|61|62|(0)(0)|66))|59|60|61|62|(0)(0)|66|11) */
+    /* JADX WARN: Can't wrap try/catch for region: R(62:71|(1:206)|74|(4:188|189|190|(3:193|194|(53:199|200|78|(2:186|187)|81|(4:168|169|170|(3:173|174|(23:179|180|85|(2:166|167)|88|(3:163|164|165)|91|(3:160|161|162)|94|(3:157|158|159)|97|(3:154|155|156)(1:100)|101|(4:139|140|141|(2:143|(3:145|146|147)(1:151)))(1:104)|105|(4:123|124|125|126)|108|(3:120|121|122)(1:111)|112|61|62|(0)(0)|66)(1:178)))|84|85|(0)|166|167|88|(0)|163|164|165|91|(0)|160|161|162|94|(0)|157|158|159|97|(0)|154|155|156|101|(0)|139|140|141|(0)|105|(0)|123|124|125|126|108|(0)|120|121|122|112|61|62|(0)(0)|66)(1:198)))|77|78|(0)|186|187|81|(0)|168|169|170|(51:173|174|(1:176)|179|180|85|(0)|166|167|88|(0)|163|164|165|91|(0)|160|161|162|94|(0)|157|158|159|97|(0)|154|155|156|101|(0)|139|140|141|(0)|105|(0)|123|124|125|126|108|(0)|120|121|122|112|61|62|(0)(0)|66)|84|85|(0)|166|167|88|(0)|163|164|165|91|(0)|160|161|162|94|(0)|157|158|159|97|(0)|154|155|156|101|(0)|139|140|141|(0)|105|(0)|123|124|125|126|108|(0)|120|121|122|112|61|62|(0)(0)|66) */
+    /* JADX WARN: Code restructure failed: missing block: B:114:0x02ba, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:115:0x02bb, code lost:
+    
+        r4 = r17;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:116:0x0304, code lost:
+    
+        android.util.Log.e(r4, "processData: JSONException", r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:117:0x0302, code lost:
+    
+        r0 = r9;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:118:0x02b8, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:119:0x02fa, code lost:
+    
+        r4 = r17;
+        android.util.Log.e(r4, "processData: Exception", r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:128:0x02c3, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:129:0x02c4, code lost:
+    
+        r2 = r18;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:130:0x02c6, code lost:
+    
+        r9 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:131:0x02be, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:132:0x02bf, code lost:
+    
+        r2 = r18;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:133:0x00b4, code lost:
+    
+        r9 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:134:0x02cd, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:135:0x02ce, code lost:
+    
+        r9 = r3;
+        r2 = r18;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:136:0x02c8, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:137:0x02c9, code lost:
+    
+        r9 = r3;
+        r2 = r18;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:153:0x028a, code lost:
+    
+        r5 = "dnsuid";
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:210:0x02ea, code lost:
+    
+        r9 = r1;
+        r2 = r18;
+        r1 = r20;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:234:0x02df, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:235:0x02e0, code lost:
+    
+        r9 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:236:0x02e1, code lost:
+    
+        r2 = r18;
+        r1 = r20;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:237:0x02d8, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:238:0x02d9, code lost:
+    
+        r9 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:239:0x02da, code lost:
+    
+        r2 = r18;
+        r1 = r20;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:250:0x00ab, code lost:
+    
+        if (r9 != r10) goto L30;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:252:0x00c2, code lost:
+    
+        if (r9 != r10) goto L30;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:103:0x0266 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:107:0x0294 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:110:0x02a2 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:143:0x0272 A[Catch: Exception -> 0x028a, TRY_LEAVE, TryCatch #6 {Exception -> 0x028a, blocks: (B:141:0x026c, B:143:0x0272), top: B:140:0x026c }] */
+    /* JADX WARN: Removed duplicated region for block: B:172:0x01e1 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:64:0x030f  */
+    /* JADX WARN: Removed duplicated region for block: B:67:0x0312 A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:80:0x01bc A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:83:0x01cd A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:87:0x0212 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:90:0x0221 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:93:0x0231 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:96:0x0241 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:99:0x0251 A[ADDED_TO_REGION] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static java.util.List getAugmentedData(com.android.server.enterprise.nap.DataDeliveryHelper r25, java.util.List r26) {
+        /*
+            Method dump skipped, instructions count: 802
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.nap.NetworkAnalyticsDataDelivery.getAugmentedData(com.android.server.enterprise.nap.DataDeliveryHelper, java.util.List):java.util.List");
     }
 
     public static String getFileLocationFromProcessNameAndCalculateHash(int i, String str) {
@@ -425,8 +463,204 @@ public class NetworkAnalyticsDataDelivery {
         return null;
     }
 
+    /* JADX WARN: Not initialized variable reg: 4, insn: 0x0022: MOVE (r2 I:??[OBJECT, ARRAY]) = (r4 I:??[OBJECT, ARRAY]), block:B:49:0x0022 */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x0095 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:24:0x0096  */
+    /* JADX WARN: Removed duplicated region for block: B:52:0x009d A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static java.lang.String getHash(java.io.File r8) {
+        /*
+            java.lang.String r0 = "close FileInputStream: IOException"
+            java.lang.String r1 = "NetworkAnalytics:NetworkAnalyticsDataDelivery"
+            r2 = 0
+            java.lang.String r3 = "SHA-256"
+            java.security.MessageDigest r3 = java.security.MessageDigest.getInstance(r3)     // Catch: java.lang.Throwable -> L62 java.io.IOException -> L64 java.io.FileNotFoundException -> L68 java.security.NoSuchAlgorithmException -> L6c
+            java.io.FileInputStream r4 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L62 java.io.IOException -> L64 java.io.FileNotFoundException -> L68 java.security.NoSuchAlgorithmException -> L6c
+            r4.<init>(r8)     // Catch: java.lang.Throwable -> L62 java.io.IOException -> L64 java.io.FileNotFoundException -> L68 java.security.NoSuchAlgorithmException -> L6c
+            r8 = 1024(0x400, float:1.435E-42)
+            byte[] r8 = new byte[r8]     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L25 java.io.FileNotFoundException -> L28 java.security.NoSuchAlgorithmException -> L2b
+        L15:
+            int r5 = r4.read(r8)     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L25 java.io.FileNotFoundException -> L28 java.security.NoSuchAlgorithmException -> L2b
+            r6 = -1
+            r7 = 0
+            if (r5 == r6) goto L2f
+            r3.update(r8, r7, r5)     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L25 java.io.FileNotFoundException -> L28 java.security.NoSuchAlgorithmException -> L2b
+            goto L15
+        L21:
+            r8 = move-exception
+            r2 = r4
+            goto L9b
+        L25:
+            r8 = move-exception
+            r3 = r2
+            goto L70
+        L28:
+            r8 = move-exception
+            r3 = r2
+            goto L7c
+        L2b:
+            r8 = move-exception
+            r3 = r2
+            goto L88
+        L2f:
+            byte[] r8 = r3.digest()     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L25 java.io.FileNotFoundException -> L28 java.security.NoSuchAlgorithmException -> L2b
+            java.lang.StringBuffer r3 = new java.lang.StringBuffer     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L25 java.io.FileNotFoundException -> L28 java.security.NoSuchAlgorithmException -> L2b
+            r3.<init>()     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L25 java.io.FileNotFoundException -> L28 java.security.NoSuchAlgorithmException -> L2b
+        L38:
+            int r5 = r8.length     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L53 java.io.FileNotFoundException -> L55 java.security.NoSuchAlgorithmException -> L57
+            if (r7 >= r5) goto L59
+            java.lang.String r5 = "%02X"
+            r6 = r8[r7]     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L53 java.io.FileNotFoundException -> L55 java.security.NoSuchAlgorithmException -> L57
+            r6 = r6 & 255(0xff, float:3.57E-43)
+            java.lang.Integer r6 = java.lang.Integer.valueOf(r6)     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L53 java.io.FileNotFoundException -> L55 java.security.NoSuchAlgorithmException -> L57
+            java.lang.Object[] r6 = new java.lang.Object[]{r6}     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L53 java.io.FileNotFoundException -> L55 java.security.NoSuchAlgorithmException -> L57
+            java.lang.String r5 = java.lang.String.format(r5, r6)     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L53 java.io.FileNotFoundException -> L55 java.security.NoSuchAlgorithmException -> L57
+            r3.append(r5)     // Catch: java.lang.Throwable -> L21 java.io.IOException -> L53 java.io.FileNotFoundException -> L55 java.security.NoSuchAlgorithmException -> L57
+            int r7 = r7 + 1
+            goto L38
+        L53:
+            r8 = move-exception
+            goto L70
+        L55:
+            r8 = move-exception
+            goto L7c
+        L57:
+            r8 = move-exception
+            goto L88
+        L59:
+            r4.close()     // Catch: java.io.IOException -> L5d
+            goto L93
+        L5d:
+            r8 = move-exception
+            android.util.Log.e(r1, r0, r8)
+            goto L93
+        L62:
+            r8 = move-exception
+            goto L9b
+        L64:
+            r8 = move-exception
+            r3 = r2
+            r4 = r3
+            goto L70
+        L68:
+            r8 = move-exception
+            r3 = r2
+            r4 = r3
+            goto L7c
+        L6c:
+            r8 = move-exception
+            r3 = r2
+            r4 = r3
+            goto L88
+        L70:
+            java.lang.String r5 = "getHash: IOException"
+            android.util.Log.e(r1, r5, r8)     // Catch: java.lang.Throwable -> L21
+            if (r4 == 0) goto L93
+            r4.close()     // Catch: java.io.IOException -> L5d
+            goto L93
+        L7c:
+            java.lang.String r5 = "getHash: FileNotFoundException"
+            android.util.Log.e(r1, r5, r8)     // Catch: java.lang.Throwable -> L21
+            if (r4 == 0) goto L93
+            r4.close()     // Catch: java.io.IOException -> L5d
+            goto L93
+        L88:
+            java.lang.String r5 = "getHash: NoSuchAlgorithmException"
+            android.util.Log.e(r1, r5, r8)     // Catch: java.lang.Throwable -> L21
+            if (r4 == 0) goto L93
+            r4.close()     // Catch: java.io.IOException -> L5d
+        L93:
+            if (r3 != 0) goto L96
+            return r2
+        L96:
+            java.lang.String r8 = r3.toString()
+            return r8
+        L9b:
+            if (r2 == 0) goto La5
+            r2.close()     // Catch: java.io.IOException -> La1
+            goto La5
+        La1:
+            r2 = move-exception
+            android.util.Log.e(r1, r0, r2)
+        La5:
+            throw r8
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.nap.NetworkAnalyticsDataDelivery.getHash(java.io.File):java.lang.String");
+    }
+
+    public static String getHashFromCache(int i, String str) {
+        Set<AppInfoSet> set = appset;
+        synchronized (set) {
+            try {
+                for (AppInfoSet appInfoSet : set) {
+                    if (appInfoSet.uid != i || (!appInfoSet.processName.equalsIgnoreCase(str) && !appInfoSet.truncatedProcessName.equalsIgnoreCase(str))) {
+                    }
+                    return appInfoSet.hash;
+                }
+                return null;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public static NetworkAnalyticsDataDelivery getInstance() {
+        if (mInstance == null) {
+            NetworkAnalyticsDataDelivery networkAnalyticsDataDelivery = new NetworkAnalyticsDataDelivery();
+            networkAnalyticsDataDelivery.dataEntry = null;
+            networkAnalyticsDataDelivery.startTimer = 0L;
+            networkAnalyticsDataDelivery.registeredDataRecipients = null;
+            networkAnalyticsDataDelivery.syncObject = new Object();
+            networkAnalyticsDataDelivery.mHandlerThread = null;
+            networkAnalyticsDataDelivery.mHandler = null;
+            networkAnalyticsDataDelivery.dataEntry = new ArrayList();
+            networkAnalyticsDataDelivery.startTimer = System.currentTimeMillis();
+            mInstance = networkAnalyticsDataDelivery;
+        }
+        return mInstance;
+    }
+
+    public static String getPackageHash(int i, String str) {
+        String hashFromCache;
+        try {
+            hashFromCache = getHashFromCache(i, str);
+        } catch (Exception e) {
+            Log.e("NetworkAnalytics:NetworkAnalyticsDataDelivery", "getPackageHash: Exception", e);
+        }
+        if (hashFromCache != null) {
+            return hashFromCache;
+        }
+        String checkIfProcessIsDaemon = checkIfProcessIsDaemon(str);
+        if (checkIfProcessIsDaemon == null || checkIfProcessIsDaemon.isEmpty() || checkIfProcessIsDaemon.equals("null")) {
+            String checkSingleUidAndCalculateHash = checkSingleUidAndCalculateHash(i, str);
+            if (checkSingleUidAndCalculateHash != null) {
+                return checkSingleUidAndCalculateHash;
+            }
+            String fileLocationFromProcessNameAndCalculateHash = getFileLocationFromProcessNameAndCalculateHash(i, str);
+            if (fileLocationFromProcessNameAndCalculateHash != null) {
+                return fileLocationFromProcessNameAndCalculateHash;
+            }
+            String packageNameFromPathAndCalculateHash = getPackageNameFromPathAndCalculateHash(i, str);
+            if (packageNameFromPathAndCalculateHash != null) {
+                return packageNameFromPathAndCalculateHash;
+            }
+        } else {
+            File file = new File(checkIfProcessIsDaemon);
+            if (!file.exists()) {
+                return null;
+            }
+            String hash = getHash(file);
+            if (hash != null) {
+                return hash;
+            }
+        }
+        return null;
+    }
+
     public static String getPackageNameFromPathAndCalculateHash(int i, String str) {
-        String str2;
         String[] packagesForUid;
         ApplicationInfo applicationInfo;
         try {
@@ -438,11 +672,7 @@ public class NetworkAnalyticsDataDelivery {
         }
         String[] split = str.split("/");
         if (split.length >= 4) {
-            if (split[2].equals("data")) {
-                str2 = split[3];
-            } else {
-                str2 = (split.length >= 5 && split[2].equals("user") && Integer.toString(UserHandle.getUserId(i)).equals(split[3])) ? split[4] : null;
-            }
+            String str2 = split[2].equals("data") ? split[3] : (split.length >= 5 && split[2].equals("user") && Integer.toString(UserHandle.getUserId(i)).equals(split[3])) ? split[4] : null;
             if (str2 == null || (packagesForUid = pmsImp.getPackagesForUid(i)) == null) {
                 return null;
             }
@@ -463,248 +693,116 @@ public class NetworkAnalyticsDataDelivery {
         return null;
     }
 
-    public static String compareProcessNamesAndCalculateHash(int i, String str, String str2, String str3, ApplicationInfo applicationInfo) {
-        if (str != null && str2 != null && str3 != null && applicationInfo != null) {
+    public static void insertHashIntoCache(AppInfoSet appInfoSet) {
+        boolean z = DBG;
+        if (z) {
+            Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "insertHashIntoCache Called");
+        }
+        Set set = appset;
+        synchronized (set) {
+            if (z) {
+                try {
+                    Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "DataDelivery hash cache insertion uid:" + appInfoSet.uid + " pacName:" + appInfoSet.packageName + " procName:" + appInfoSet.processName + " trunProcName:" + appInfoSet.truncatedProcessName + " hash:" + appInfoSet.hash);
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            set.add(appInfoSet);
+        }
+    }
+
+    public final void addNAPDataRecipient(DataDeliveryHelper dataDeliveryHelper) {
+        if ((dataDeliveryHelper.profile == null || dataDeliveryHelper.serviceConnection == null) && DBG) {
+            VpnManagerService$$ExternalSyntheticOutline0.m(new StringBuilder("adding recipient failed for recipient: "), dataDeliveryHelper.identifier, "NetworkAnalytics:NetworkAnalyticsDataDelivery");
+        }
+        String str = dataDeliveryHelper.identifier;
+        boolean z = DBG;
+        if (z) {
+            DualAppManagerService$$ExternalSyntheticOutline0.m("adding recipient for data collection:", str, "NetworkAnalytics:NetworkAnalyticsDataDelivery");
+        }
+        synchronized (this.syncObject) {
             try {
-                if (str3.length() > 15) {
-                    if ((str3.substring(str3.length() - 15).equalsIgnoreCase(str) || str3.equalsIgnoreCase(str)) && applicationInfo.sourceDir != null) {
-                        File file = new File(applicationInfo.sourceDir);
-                        if (!file.exists()) {
-                            Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "unable to find the file location for the process:" + str + "for package " + str2 + "for uid " + i);
-                            return null;
-                        }
-                        String hash = getHash(file);
-                        if (hash != null) {
-                            insertHashIntoCache(new AppInfoSet(i, str2, str3, str3.substring(str3.length() - 15), hash, UserHandle.getUserId(i)));
-                            return hash;
-                        }
-                    }
-                } else if (str3.equalsIgnoreCase(str) && applicationInfo.sourceDir != null) {
-                    File file2 = new File(applicationInfo.sourceDir);
-                    if (!file2.exists()) {
-                        Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "unable to find the file location for the process:" + str + "for package " + str2 + "for uid " + i);
-                        return null;
-                    }
-                    String hash2 = getHash(file2);
-                    if (hash2 != null) {
-                        insertHashIntoCache(new AppInfoSet(i, str2, str3, str3, hash2, UserHandle.getUserId(i)));
-                        return hash2;
+                if (isDataRecipientPresent(NetworkAnalyticsService.getCidFromTransformedName(str), str.substring(0, str.indexOf("__"))) < 0) {
+                    getRecipientList().add(dataDeliveryHelper);
+                    if (z) {
+                        Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "added recipient for data collection:".concat(str));
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Throwable th) {
+                throw th;
             }
         }
-        return null;
     }
 
-    /* JADX WARN: Not initialized variable reg: 4, insn: 0x0092: MOVE (r2 I:??[OBJECT, ARRAY]) = (r4 I:??[OBJECT, ARRAY]), block:B:66:0x0092 */
-    /* JADX WARN: Removed duplicated region for block: B:23:0x008b A[RETURN] */
-    /* JADX WARN: Removed duplicated region for block: B:25:0x008c  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static java.lang.String getHash(java.io.File r10) {
-        /*
-            java.lang.String r0 = "close FileInputStream: IOException"
-            java.lang.String r1 = "NetworkAnalytics:NetworkAnalyticsDataDelivery"
-            r2 = 0
-            java.lang.String r3 = "SHA-256"
-            java.security.MessageDigest r3 = java.security.MessageDigest.getInstance(r3)     // Catch: java.lang.Throwable -> L5e java.io.IOException -> L60 java.io.FileNotFoundException -> L6e java.security.NoSuchAlgorithmException -> L7c
-            java.io.FileInputStream r4 = new java.io.FileInputStream     // Catch: java.lang.Throwable -> L5e java.io.IOException -> L60 java.io.FileNotFoundException -> L6e java.security.NoSuchAlgorithmException -> L7c
-            r4.<init>(r10)     // Catch: java.lang.Throwable -> L5e java.io.IOException -> L60 java.io.FileNotFoundException -> L6e java.security.NoSuchAlgorithmException -> L7c
-            r10 = 1024(0x400, float:1.435E-42)
-            byte[] r10 = new byte[r10]     // Catch: java.io.IOException -> L55 java.io.FileNotFoundException -> L58 java.security.NoSuchAlgorithmException -> L5b java.lang.Throwable -> L91
-        L14:
-            int r5 = r4.read(r10)     // Catch: java.io.IOException -> L55 java.io.FileNotFoundException -> L58 java.security.NoSuchAlgorithmException -> L5b java.lang.Throwable -> L91
-            r6 = -1
-            r7 = 0
-            if (r5 == r6) goto L20
-            r3.update(r10, r7, r5)     // Catch: java.io.IOException -> L55 java.io.FileNotFoundException -> L58 java.security.NoSuchAlgorithmException -> L5b java.lang.Throwable -> L91
-            goto L14
-        L20:
-            byte[] r10 = r3.digest()     // Catch: java.io.IOException -> L55 java.io.FileNotFoundException -> L58 java.security.NoSuchAlgorithmException -> L5b java.lang.Throwable -> L91
-            java.lang.StringBuffer r3 = new java.lang.StringBuffer     // Catch: java.io.IOException -> L55 java.io.FileNotFoundException -> L58 java.security.NoSuchAlgorithmException -> L5b java.lang.Throwable -> L91
-            r3.<init>()     // Catch: java.io.IOException -> L55 java.io.FileNotFoundException -> L58 java.security.NoSuchAlgorithmException -> L5b java.lang.Throwable -> L91
-            r5 = r7
-        L2a:
-            int r6 = r10.length     // Catch: java.io.IOException -> L4f java.io.FileNotFoundException -> L51 java.security.NoSuchAlgorithmException -> L53 java.lang.Throwable -> L91
-            if (r5 >= r6) goto L46
-            java.lang.String r6 = "%02X"
-            r8 = 1
-            java.lang.Object[] r8 = new java.lang.Object[r8]     // Catch: java.io.IOException -> L4f java.io.FileNotFoundException -> L51 java.security.NoSuchAlgorithmException -> L53 java.lang.Throwable -> L91
-            r9 = r10[r5]     // Catch: java.io.IOException -> L4f java.io.FileNotFoundException -> L51 java.security.NoSuchAlgorithmException -> L53 java.lang.Throwable -> L91
-            r9 = r9 & 255(0xff, float:3.57E-43)
-            java.lang.Integer r9 = java.lang.Integer.valueOf(r9)     // Catch: java.io.IOException -> L4f java.io.FileNotFoundException -> L51 java.security.NoSuchAlgorithmException -> L53 java.lang.Throwable -> L91
-            r8[r7] = r9     // Catch: java.io.IOException -> L4f java.io.FileNotFoundException -> L51 java.security.NoSuchAlgorithmException -> L53 java.lang.Throwable -> L91
-            java.lang.String r6 = java.lang.String.format(r6, r8)     // Catch: java.io.IOException -> L4f java.io.FileNotFoundException -> L51 java.security.NoSuchAlgorithmException -> L53 java.lang.Throwable -> L91
-            r3.append(r6)     // Catch: java.io.IOException -> L4f java.io.FileNotFoundException -> L51 java.security.NoSuchAlgorithmException -> L53 java.lang.Throwable -> L91
-            int r5 = r5 + 1
-            goto L2a
-        L46:
-            r4.close()     // Catch: java.io.IOException -> L4a
-            goto L89
-        L4a:
-            r10 = move-exception
-            android.util.Log.e(r1, r0, r10)
-            goto L89
-        L4f:
-            r10 = move-exception
-            goto L63
-        L51:
-            r10 = move-exception
-            goto L71
-        L53:
-            r10 = move-exception
-            goto L7f
-        L55:
-            r10 = move-exception
-            r3 = r2
-            goto L63
-        L58:
-            r10 = move-exception
-            r3 = r2
-            goto L71
-        L5b:
-            r10 = move-exception
-            r3 = r2
-            goto L7f
-        L5e:
-            r10 = move-exception
-            goto L93
-        L60:
-            r10 = move-exception
-            r3 = r2
-            r4 = r3
-        L63:
-            java.lang.String r5 = "getHash: IOException"
-            android.util.Log.e(r1, r5, r10)     // Catch: java.lang.Throwable -> L91
-            if (r4 == 0) goto L89
-            r4.close()     // Catch: java.io.IOException -> L4a
-            goto L89
-        L6e:
-            r10 = move-exception
-            r3 = r2
-            r4 = r3
-        L71:
-            java.lang.String r5 = "getHash: FileNotFoundException"
-            android.util.Log.e(r1, r5, r10)     // Catch: java.lang.Throwable -> L91
-            if (r4 == 0) goto L89
-            r4.close()     // Catch: java.io.IOException -> L4a
-            goto L89
-        L7c:
-            r10 = move-exception
-            r3 = r2
-            r4 = r3
-        L7f:
-            java.lang.String r5 = "getHash: NoSuchAlgorithmException"
-            android.util.Log.e(r1, r5, r10)     // Catch: java.lang.Throwable -> L91
-            if (r4 == 0) goto L89
-            r4.close()     // Catch: java.io.IOException -> L4a
-        L89:
-            if (r3 != 0) goto L8c
-            return r2
-        L8c:
-            java.lang.String r10 = r3.toString()
-            return r10
-        L91:
-            r10 = move-exception
-            r2 = r4
-        L93:
-            if (r2 == 0) goto L9d
-            r2.close()     // Catch: java.io.IOException -> L99
-            goto L9d
-        L99:
-            r2 = move-exception
-            android.util.Log.e(r1, r0, r2)
-        L9d:
-            throw r10
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.nap.NetworkAnalyticsDataDelivery.getHash(java.io.File):java.lang.String");
-    }
-
-    public static PackageManagerService.IPackageManagerImpl getPackageManagerImpl() {
-        if (pmsImp == null) {
-            pmsImp = (PackageManagerService.IPackageManagerImpl) ServiceManager.getService("package");
-        }
-        return pmsImp;
-    }
-
-    public final void sendMessageToHandler(int i, int i2, int i3, Object obj) {
-        DataDeliveryHandler dataDeliveryHandler = this.mHandler;
-        if (dataDeliveryHandler != null) {
-            this.mHandler.sendMessage(Message.obtain(dataDeliveryHandler, i, i2, i3, obj));
-        }
-    }
-
-    public final List getAugmentedData(DataDeliveryHelper dataDeliveryHelper, List list) {
-        ArrayList arrayList = null;
-        if (dataDeliveryHelper == null || list == null) {
-            if (DBG) {
-                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "getAugmentedData: Helper or data is null.");
-            }
-            return null;
-        }
-        if (list.size() > 0) {
-            arrayList = new ArrayList();
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                String processData = dataDeliveryHelper.processData((String) it.next());
-                if (processData != null) {
-                    arrayList.add(processData);
+    public final List getRecipientList() {
+        List list;
+        synchronized (this.syncObject) {
+            try {
+                if (this.registeredDataRecipients == null) {
+                    this.registeredDataRecipients = new ArrayList();
                 }
+                list = this.registeredDataRecipients;
+            } catch (Throwable th) {
+                throw th;
             }
         }
-        return arrayList;
+        return list;
     }
 
-    public final boolean validateRecipientObject(DataDeliveryHelper dataDeliveryHelper) {
-        return (dataDeliveryHelper == null || dataDeliveryHelper.getProfile() == null || dataDeliveryHelper.getServiceConnection() == null) ? false : true;
+    public final void initializeHandlerThread() {
+        HandlerThread handlerThread = new HandlerThread("DataDeliveryHandler", 10);
+        this.mHandlerThread = handlerThread;
+        handlerThread.start();
+        this.mHandler = new DataDeliveryHandler(this.mHandlerThread.getLooper());
     }
 
-    public final int isDataRecipientPresent(String str, int i) {
+    public final int isDataRecipientPresent(int i, String str) {
         List recipientList = getRecipientList();
         for (int i2 = 0; i2 < recipientList.size(); i2++) {
-            if (((DataDeliveryHelper) recipientList.get(i2)).getIdentifier().equals(NetworkAnalyticsService.getTransformedVendorName(str, i))) {
+            if (((DataDeliveryHelper) recipientList.get(i2)).identifier.equals(NetworkAnalyticsService.getTransformedVendorName(i, str))) {
                 if (!DBG) {
                     return i2;
                 }
-                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "isDataRecipientPresent: found recipient:" + NetworkAnalyticsService.getTransformedVendorName(str, i));
+                Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "isDataRecipientPresent: found recipient:" + NetworkAnalyticsService.getTransformedVendorName(i, str));
                 return i2;
             }
         }
         return -1;
     }
 
-    public List getRecipientList() {
-        List list;
+    public final void removeDataRecipientsForPackage(int i, String str) {
         synchronized (this.syncObject) {
-            if (this.registeredDataRecipients == null) {
-                this.registeredDataRecipients = new ArrayList();
+            try {
+                Iterator it = getRecipientList().iterator();
+                while (it.hasNext()) {
+                    DataDeliveryHelper dataDeliveryHelper = (DataDeliveryHelper) it.next();
+                    if (dataDeliveryHelper.profile.packageName.equals(str)) {
+                        NetworkAnalyticsConfigStore.NAPConfigProfile nAPConfigProfile = dataDeliveryHelper.profile;
+                        if (nAPConfigProfile.userId == i) {
+                            Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "removeDataRecipientsForPackage: removing recipient for package:" + str + i + nAPConfigProfile.profileName);
+                            it.remove();
+                        }
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
             }
-            list = this.registeredDataRecipients;
         }
-        return list;
     }
 
-    /* loaded from: classes2.dex */
-    public class DataDeliveryHandler extends Handler {
-        public DataDeliveryHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            String str;
-            if (message.what == 1 && (str = (String) message.obj) != null) {
-                NetworkAnalyticsDataDelivery.this.dataEntry.add(str);
-                if (NetworkAnalyticsDataDelivery.this.dataEntry.size() >= 50 || System.currentTimeMillis() - NetworkAnalyticsDataDelivery.this.startTimer > 10000) {
-                    NetworkAnalyticsDataDelivery networkAnalyticsDataDelivery = NetworkAnalyticsDataDelivery.this;
-                    networkAnalyticsDataDelivery.deliverData(networkAnalyticsDataDelivery.dataEntry);
-                    NetworkAnalyticsDataDelivery.this.dataEntry.clear();
-                    NetworkAnalyticsDataDelivery.this.startTimer = System.currentTimeMillis();
+    public final void removeNAPDataRecipient(int i, String str) {
+        synchronized (this.syncObject) {
+            try {
+                int isDataRecipientPresent = isDataRecipientPresent(i, str);
+                if (isDataRecipientPresent < 0) {
+                    return;
                 }
+                if (DBG) {
+                    Log.d("NetworkAnalytics:NetworkAnalyticsDataDelivery", "removeNAPDataRecipient: removing recipient for data collection:" + NetworkAnalyticsService.getTransformedVendorName(i, str));
+                }
+                getRecipientList().remove(isDataRecipientPresent);
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }

@@ -2,7 +2,8 @@ package com.android.server.hdmi;
 
 import android.util.SparseIntArray;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class UnmodifiableSparseIntArray {
     public final SparseIntArray mArray;
 
@@ -10,11 +11,7 @@ public final class UnmodifiableSparseIntArray {
         this.mArray = sparseIntArray;
     }
 
-    public int get(int i, int i2) {
-        return this.mArray.get(i, i2);
-    }
-
-    public String toString() {
+    public final String toString() {
         return this.mArray.toString();
     }
 }

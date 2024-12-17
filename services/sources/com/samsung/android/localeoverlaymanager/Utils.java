@@ -1,72 +1,53 @@
 package com.samsung.android.localeoverlaymanager;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Debug;
 import android.os.LocaleList;
+import android.os.SystemProperties;
+import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.app.LocalePicker;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.RCPManagerService$$ExternalSyntheticOutline0;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class Utils {
-    public static final String TAG = "LOM" + Utils.class.getSimpleName();
-    public static int sCurrentUserId = 0;
-
-    public static int getCurrentUserId() {
-        return sCurrentUserId;
-    }
-
-    public static void setCurrentUserId(int i) {
-        LogWriter.logDebugInfoAndLogcat(TAG, "setCurrentUserId() called with: userId = [" + i + "]");
-        sCurrentUserId = i;
-    }
-
-    public static String getPathForUser(String str, int i) {
-        return String.format(str, Integer.valueOf(i));
-    }
+    public static int sCurrentUserId;
 
     public static void deleteFile(File file) {
-        if (file != null) {
-            try {
-                Files.delete(file.toPath());
-            } catch (IOException unused) {
-                Log.e(TAG, Debug.getCaller() + ": Unable to delete file - " + file);
-            }
+        try {
+            Files.delete(file.toPath());
+        } catch (IOException unused) {
+            Log.e("LOMUtils", Debug.getCaller() + ": Unable to delete file - " + file);
         }
     }
 
-    public static void deleteFilesInDir(File file) {
-        Log.d(TAG, "deleteFilesInDir() called with: dir = [" + file + "]");
-        File[] listFiles = file.listFiles();
-        if (listFiles != null) {
-            for (File file2 : listFiles) {
-                try {
-                    Files.delete(file2.toPath());
-                } catch (IOException unused) {
-                    Log.e(TAG, Debug.getCaller() + ": Unable to delete file - " + file);
-                }
+    public static Set getLocalesListAsSet(LocaleList localeList) {
+        HashSet hashSet = new HashSet();
+        for (int i = 0; i < localeList.size(); i++) {
+            String language = localeList.get(i).getLanguage();
+            if (language.length() == 3) {
+                Log.i("LOMUtils", "localeChanged: trying to get ISO_639_1 mapping for locale: ".concat(language));
+                language = (String) ((HashMap) OverlayConstants.ISO_639_2_TO_639_1_MAPPING).get(language);
+            }
+            if (language != null) {
+                hashSet.add(language);
             }
         }
-    }
-
-    public static void deleteDisabledLocaleOverlays(List list) {
-        Log.i(TAG, "deleteDisabledLocaleOverlays");
-        File file = new File("/data/overlays/current_locale_apks/files/");
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            File file2 = new File(file, ((String) it.next()) + ".apk");
-            if (file2.exists()) {
-                Log.i(TAG, "Deleting Overlay: " + file2.getName());
-                deleteFile(file2);
-            }
-        }
+        handleNewLocaleCodes(hashSet);
+        return hashSet;
     }
 
     public static Set getSystemLocales() {
@@ -75,36 +56,53 @@ public abstract class Utils {
         for (int i = 0; i < locales.size(); i++) {
             String language = locales.get(i).getLanguage();
             if (language.length() == 3) {
-                Log.i(TAG, "updateOverlays: trying to get ISO_639_1 mapping for locale: " + language);
-                language = (String) OverlayConstants.ISO_639_2_TO_639_1_MAPPING.get(language);
+                Log.i("LOMUtils", "updateOverlays: trying to get ISO_639_1 mapping for locale: ".concat(language));
+                language = (String) ((HashMap) OverlayConstants.ISO_639_2_TO_639_1_MAPPING).get(language);
             }
             if (language != null) {
                 hashSet.add(language);
             }
         }
+        handleNewLocaleCodes(hashSet);
         return hashSet;
     }
 
-    public static Set getLocalesListAsSet(LocaleList localeList) {
-        HashSet hashSet = new HashSet();
-        for (int i = 0; i < localeList.size(); i++) {
-            String language = localeList.get(i).getLanguage();
-            if (language.length() == 3) {
-                Log.i(TAG, "localeChanged: trying to get ISO_639_1 mapping for locale: " + language);
-                language = (String) OverlayConstants.ISO_639_2_TO_639_1_MAPPING.get(language);
-            }
-            if (language != null) {
-                hashSet.add(language);
+    public static void handleNewLocaleCodes(Set set) {
+        for (String str : ((HashMap) OverlayConstants.SPECIAL_LOCALE_CODES_EQUIVALENTS).keySet()) {
+            if (set.remove(str)) {
+                StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("replacing code: ", str, "with : ");
+                Map map = OverlayConstants.SPECIAL_LOCALE_CODES_EQUIVALENTS;
+                DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(m, (String) ((HashMap) map).get(str), "LOMUtils");
+                set.add((String) ((HashMap) map).get(str));
             }
         }
-        return hashSet;
     }
 
-    public static boolean isValidPackage(Context context, String str) {
+    public static String readCSCVersion() {
+        String str = "";
+        String str2 = SystemProperties.get("ril.official_cscver", "");
+        if (!TextUtils.isEmpty(str2)) {
+            return str2;
+        }
+        Log.i("LOMUtils", "reading CSC Version from file");
         try {
-            return context.getPackageManager().getPackageUidAsUser(str, PackageManager.PackageInfoFlags.of(0L), 0) >= 0;
-        } catch (PackageManager.NameNotFoundException unused) {
-            return false;
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("system/CSCVersion.txt"), Charset.defaultCharset()));
+            try {
+                String readLine = bufferedReader.readLine();
+                if (readLine != null && !readLine.isEmpty()) {
+                    str = readLine.trim();
+                }
+                bufferedReader.close();
+            } finally {
+            }
+        } catch (Exception e) {
+            RCPManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("readTextFromFile failed: "), "LOMUtils");
         }
+        return str;
+    }
+
+    public static void setCurrentUserId(int i) {
+        LogWriter.logDebugInfoAndLogcat("LOMUtils", "setCurrentUserId() called with: userId = [" + i + "]");
+        sCurrentUserId = i;
     }
 }

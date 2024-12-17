@@ -4,65 +4,28 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Binder;
 import com.android.internal.util.Preconditions;
-import com.android.server.location.LocationServiceThread;
 import com.android.server.location.nsflp.NSPermissionHelper;
-import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-/* loaded from: classes2.dex */
-public class SystemAppForegroundHelper extends AppForegroundHelper {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class SystemAppForegroundHelper {
     public ActivityManager mActivityManager;
     public final Context mContext;
+    public final CopyOnWriteArrayList mListeners = new CopyOnWriteArrayList();
     public NSPermissionHelper mNSPermissionHelper;
 
     public SystemAppForegroundHelper(Context context) {
         this.mContext = context;
     }
 
-    public void onSystemReady() {
-        if (this.mActivityManager != null) {
-            return;
-        }
-        ActivityManager activityManager = (ActivityManager) this.mContext.getSystemService(ActivityManager.class);
-        Objects.requireNonNull(activityManager);
-        this.mActivityManager = activityManager;
-        activityManager.addOnUidImportanceListener(new ActivityManager.OnUidImportanceListener() { // from class: com.android.server.location.injector.SystemAppForegroundHelper$$ExternalSyntheticLambda0
-            public final void onUidImportance(int i, int i2) {
-                SystemAppForegroundHelper.this.onAppForegroundChanged(i, i2);
-            }
-        }, 125);
-    }
-
-    public final void onAppForegroundChanged(final int i, int i2) {
-        final boolean isForeground = AppForegroundHelper.isForeground(i2);
-        LocationServiceThread.getHandler().post(new Runnable() { // from class: com.android.server.location.injector.SystemAppForegroundHelper$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                SystemAppForegroundHelper.this.lambda$onAppForegroundChanged$0(i, isForeground);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onAppForegroundChanged$0(int i, boolean z) {
-        NSPermissionHelper nSPermissionHelper = this.mNSPermissionHelper;
-        if (nSPermissionHelper != null) {
-            nSPermissionHelper.updateUidForegroundChanged(i, z);
-        }
-        notifyAppForeground(i, z);
-    }
-
-    @Override // com.android.server.location.injector.AppForegroundHelper
-    public boolean isAppForeground(int i) {
+    public final boolean isAppForeground(int i) {
         Preconditions.checkState(this.mActivityManager != null);
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            return AppForegroundHelper.isForeground(this.mActivityManager.getUidImportance(i));
+            return this.mActivityManager.getUidImportance(i) <= 125;
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
-    }
-
-    public void setNSPermissionHelper(NSPermissionHelper nSPermissionHelper) {
-        this.mNSPermissionHelper = nSPermissionHelper;
     }
 }

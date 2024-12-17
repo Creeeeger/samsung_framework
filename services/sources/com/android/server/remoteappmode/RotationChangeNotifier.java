@@ -1,91 +1,51 @@
 package com.android.server.remoteappmode;
 
-import android.content.Context;
-import android.os.Binder;
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.ArrayMap;
+import android.view.WindowManagerGlobal;
 import com.samsung.android.remoteappmode.IRotationChangeListener;
 import java.util.Map;
 
-/* loaded from: classes3.dex */
-public class RotationChangeNotifier {
-    public static final String TAG = "RotationChangeNotifier";
-    public Context mContext;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RotationChangeNotifier {
     public final Map mRotationChangedListeners = new ArrayMap();
 
-    public RotationChangeNotifier(Context context) {
-        this.mContext = context;
-    }
-
-    public boolean registerRotationChangeListener(IRotationChangeListener iRotationChangeListener, String str, int i) {
-        synchronized (this.mRotationChangedListeners) {
-            IBinder asBinder = iRotationChangeListener.asBinder();
-            try {
-                if (str.length() > 100) {
-                    str = str.substring(0, 100);
-                }
-                RotationChangedListenerInfo rotationChangedListenerInfo = new RotationChangedListenerInfo(iRotationChangeListener, str, Binder.getCallingPid(), Binder.getCallingUid(), i);
-                rotationChangedListenerInfo.registerRotationWatcher(i);
-                asBinder.linkToDeath(rotationChangedListenerInfo, 0);
-                this.mRotationChangedListeners.put(asBinder, rotationChangedListenerInfo);
-            } catch (RemoteException unused) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean unregisterRotationChangeListener(IRotationChangeListener iRotationChangeListener) {
-        synchronized (this.mRotationChangedListeners) {
-            RotationChangedListenerInfo rotationChangedListenerInfo = (RotationChangedListenerInfo) this.mRotationChangedListeners.remove(iRotationChangeListener.asBinder());
-            if (rotationChangedListenerInfo == null) {
-                return false;
-            }
-            rotationChangedListenerInfo.unregisterRotationWatcher();
-            rotationChangedListenerInfo.listener.asBinder().unlinkToDeath(rotationChangedListenerInfo, 0);
-            return true;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class RotationChangedListenerInfo extends ListenerInfo {
-        public IRotationChangeListener listener;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RotationChangedListenerInfo extends ListenerInfo {
+        public final IRotationChangeListener listener;
         public RemoteAppRotationWatcher mWatcher;
 
-        public RotationChangedListenerInfo(IRotationChangeListener iRotationChangeListener, String str, int i, int i2, int i3) {
-            super(str, i, i2);
+        public RotationChangedListenerInfo(IRotationChangeListener iRotationChangeListener, String str, int i, int i2) {
+            super(i, i2, str);
             this.listener = iRotationChangeListener;
         }
 
-        @Override // com.android.server.remoteappmode.ListenerInfo, android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            super.binderDied();
+        @Override // android.os.IBinder.DeathRecipient
+        public final void binderDied() {
             synchronized (RotationChangeNotifier.this.mRotationChangedListeners) {
-                RotationChangeNotifier.this.mRotationChangedListeners.remove(this.listener.asBinder());
+                ((ArrayMap) RotationChangeNotifier.this.mRotationChangedListeners).remove(this.listener.asBinder());
                 try {
-                    unregisterRotationWatcher();
+                    RemoteAppRotationWatcher remoteAppRotationWatcher = this.mWatcher;
+                    if (remoteAppRotationWatcher != null) {
+                        remoteAppRotationWatcher.listener = null;
+                        WindowManagerGlobal.getWindowManagerService().removeRotationWatcher(remoteAppRotationWatcher);
+                    }
                 } catch (RemoteException e) {
-                    Log.e(RotationChangeNotifier.TAG, " binderDied: RemoteException " + e.getMessage());
+                    Log.e("RotationChangeNotifier", " binderDied: RemoteException " + e.getMessage());
                 }
             }
             this.listener.asBinder().unlinkToDeath(this, 0);
         }
 
-        public void registerRotationWatcher(int i) {
+        public final void registerRotationWatcher(int i) {
             if (this.mWatcher == null) {
                 RemoteAppRotationWatcher remoteAppRotationWatcher = new RemoteAppRotationWatcher();
                 this.mWatcher = remoteAppRotationWatcher;
-                remoteAppRotationWatcher.setRotationChangeListener(i, this.listener);
+                remoteAppRotationWatcher.listener = this.listener;
+                remoteAppRotationWatcher.mDisplayId = i;
+                WindowManagerGlobal.getWindowManagerService().watchRotation(remoteAppRotationWatcher, i);
             }
-        }
-
-        public void unregisterRotationWatcher() {
-            RemoteAppRotationWatcher remoteAppRotationWatcher = this.mWatcher;
-            if (remoteAppRotationWatcher == null) {
-                return;
-            }
-            remoteAppRotationWatcher.removeRotationChangeListenr();
         }
     }
 }

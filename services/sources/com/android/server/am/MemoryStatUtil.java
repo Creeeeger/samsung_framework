@@ -5,12 +5,15 @@ import android.os.SystemProperties;
 import android.system.Os;
 import android.system.OsConstants;
 import android.util.Slog;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class MemoryStatUtil {
     public static final int PAGE_SIZE = (int) Os.sysconf(OsConstants._SC_PAGESIZE);
@@ -21,38 +24,13 @@ public abstract class MemoryStatUtil {
     public static final Pattern CACHE_IN_BYTES = Pattern.compile("total_cache (\\d+)");
     public static final Pattern SWAP_IN_BYTES = Pattern.compile("total_swap (\\d+)");
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class MemoryStat {
         public long cacheInBytes;
         public long pgfault;
         public long pgmajfault;
         public long rssInBytes;
         public long swapInBytes;
-    }
-
-    public static MemoryStat readMemoryStatFromFilesystem(int i, int i2) {
-        return hasMemcg() ? readMemoryStatFromMemcg(i, i2) : readMemoryStatFromProcfs(i2);
-    }
-
-    public static MemoryStat readMemoryStatFromMemcg(int i, int i2) {
-        return parseMemoryStatFromMemcg(readFileContents(String.format(Locale.US, "/dev/memcg/apps/uid_%d/pid_%d/memory.stat", Integer.valueOf(i), Integer.valueOf(i2))));
-    }
-
-    public static MemoryStat readMemoryStatFromProcfs(int i) {
-        return parseMemoryStatFromProcfs(readFileContents(String.format(Locale.US, "/proc/%d/stat", Integer.valueOf(i))));
-    }
-
-    public static String readFileContents(String str) {
-        File file = new File(str);
-        if (!file.exists()) {
-            return null;
-        }
-        try {
-            return FileUtils.readTextFile(file, 0, null);
-        } catch (IOException e) {
-            Slog.e("ActivityManager", "Failed to read file:", e);
-            return null;
-        }
     }
 
     public static MemoryStat parseMemoryStatFromMemcg(String str) {
@@ -87,8 +65,30 @@ public abstract class MemoryStatUtil {
         return null;
     }
 
-    public static boolean hasMemcg() {
-        return DEVICE_HAS_PER_APP_MEMCG;
+    public static MemoryStat readMemoryStatFromFilesystem(int i, int i2) {
+        String str = null;
+        if (DEVICE_HAS_PER_APP_MEMCG) {
+            Locale locale = Locale.US;
+            File file = new File(DualAppManagerService$$ExternalSyntheticOutline0.m(i, i2, "/dev/memcg/apps/uid_", "/pid_", "/memory.stat"));
+            if (file.exists()) {
+                try {
+                    str = FileUtils.readTextFile(file, 0, null);
+                } catch (IOException e) {
+                    Slog.e("ActivityManager", "Failed to read file:", e);
+                }
+            }
+            return parseMemoryStatFromMemcg(str);
+        }
+        Locale locale2 = Locale.US;
+        File file2 = new File(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i2, "/proc/", "/stat"));
+        if (file2.exists()) {
+            try {
+                str = FileUtils.readTextFile(file2, 0, null);
+            } catch (IOException e2) {
+                Slog.e("ActivityManager", "Failed to read file:", e2);
+            }
+        }
+        return parseMemoryStatFromProcfs(str);
     }
 
     public static long tryParseLong(Pattern pattern, String str) {

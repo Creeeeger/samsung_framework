@@ -2,29 +2,27 @@ package com.android.server.wm;
 
 import android.graphics.Insets;
 import android.graphics.Point;
-import android.os.Trace;
+import android.os.RemoteException;
 import android.util.ArrayMap;
 import android.util.ArraySet;
+import android.util.Slog;
 import android.util.SparseArray;
-import android.util.proto.ProtoOutputStream;
 import android.view.InsetsSource;
 import android.view.InsetsSourceControl;
 import android.view.InsetsState;
 import android.view.SurfaceControl;
 import android.view.WindowInsets;
-import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import com.android.internal.util.jobs.XmlUtils;
+import android.view.inputmethod.Flags;
+import com.android.server.accessibility.AbstractAccessibilityServiceConnection$$ExternalSyntheticOutline0;
 import com.android.server.inputmethod.InputMethodManagerInternal;
-import com.android.server.wm.InsetsStateController;
-import com.samsung.android.rune.CoreRune;
-import java.io.PrintWriter;
+import com.android.server.wm.AccessibilityController;
+import com.android.server.wm.DisplayContent;
 import java.util.ArrayList;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-/* loaded from: classes3.dex */
-public class InsetsStateController {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class InsetsStateController {
     public final DisplayContent mDisplayContent;
     public int mForcedConsumingTypes;
     public final InsetsState mLastState = new InsetsState();
@@ -34,83 +32,64 @@ public class InsetsStateController {
     public final SparseArray mIdControlTargetMap = new SparseArray();
     public final SparseArray mIdFakeControlTargetMap = new SparseArray();
     public final ArraySet mPendingControlChanged = new ArraySet();
-    public final Consumer mDispatchInsetsChanged = new Consumer() { // from class: com.android.server.wm.InsetsStateController$$ExternalSyntheticLambda3
-        @Override // java.util.function.Consumer
-        public final void accept(Object obj) {
-            InsetsStateController.lambda$new$0((WindowState) obj);
-        }
-    };
-    public final InsetsControlTarget mEmptyImeControlTarget = new AnonymousClass1();
-
-    public static /* synthetic */ void lambda$new$0(WindowState windowState) {
-        if (windowState.isReadyToDispatchInsetsState()) {
-            windowState.notifyInsetsChanged();
-        }
-    }
-
-    /* renamed from: com.android.server.wm.InsetsStateController$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements InsetsControlTarget {
-        public AnonymousClass1() {
-        }
-
+    public final InsetsStateController$$ExternalSyntheticLambda2 mDispatchInsetsChanged = new InsetsStateController$$ExternalSyntheticLambda2();
+    public final AnonymousClass1 mEmptyImeControlTarget = new InsetsControlTarget() { // from class: com.android.server.wm.InsetsStateController.1
         @Override // com.android.server.wm.InsetsControlTarget
-        public void notifyInsetsControlChanged() {
-            InsetsSourceControl[] controlsForDispatch = InsetsStateController.this.getControlsForDispatch(this);
+        public final void notifyInsetsControlChanged(final int i) {
+            InsetsStateController insetsStateController = InsetsStateController.this;
+            InsetsSourceControl[] controlsForDispatch = insetsStateController.getControlsForDispatch(this);
             if (controlsForDispatch == null) {
                 return;
             }
             for (InsetsSourceControl insetsSourceControl : controlsForDispatch) {
                 if (insetsSourceControl.getType() == WindowInsets.Type.ime()) {
-                    InsetsStateController.this.mDisplayContent.mWmService.mH.post(new Runnable() { // from class: com.android.server.wm.InsetsStateController$1$$ExternalSyntheticLambda0
+                    insetsStateController.mDisplayContent.mWmService.mH.post(new Runnable(i) { // from class: com.android.server.wm.InsetsStateController$1$$ExternalSyntheticLambda0
+                        public final /* synthetic */ int f$0;
+
                         @Override // java.lang.Runnable
                         public final void run() {
-                            InsetsStateController.AnonymousClass1.lambda$notifyInsetsControlChanged$0();
+                            InputMethodManagerInternal.get().removeImeSurface();
                         }
                     });
                 }
             }
         }
+    };
 
-        public static /* synthetic */ void lambda$notifyInsetsControlChanged$0() {
-            InputMethodManagerInternal.get().removeImeSurface();
-        }
-    }
-
+    /* JADX WARN: Type inference failed for: r0v8, types: [com.android.server.wm.InsetsStateController$1] */
     public InsetsStateController(DisplayContent displayContent) {
         this.mDisplayContent = displayContent;
     }
 
-    public InsetsState getRawInsetsState() {
-        return this.mState;
+    public final void collectPolicyControlledTypes(ArrayList arrayList, int i) {
+        SparseArray sparseArray = this.mProviders;
+        for (int size = sparseArray.size() - 1; size >= 0; size--) {
+            InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) sparseArray.valueAt(size);
+            if (insetsSourceProvider.mSource.getType() == i) {
+                arrayList.add(insetsSourceProvider);
+            }
+        }
     }
 
-    public InsetsSourceControl[] getControlsForDispatch(InsetsControlTarget insetsControlTarget) {
+    public final InsetsSourceControl[] getControlsForDispatch(InsetsControlTarget insetsControlTarget) {
         boolean z;
         boolean z2;
         ArrayList arrayList = (ArrayList) this.mControlTargetProvidersMap.get(insetsControlTarget);
         if (insetsControlTarget.getWindow() != null) {
             z = PolicyControl.shouldApplyImmersiveStatus(insetsControlTarget.getWindow());
-            z2 = PolicyControl.shouldApplyImmersiveNavigation(insetsControlTarget.getWindow());
+            z2 = PolicyControl.shouldApplyImmersiveNavigation(insetsControlTarget.getWindow(), false);
             if (z || z2) {
-                if (arrayList == null) {
-                    arrayList = new ArrayList();
-                } else {
-                    arrayList = new ArrayList(arrayList);
-                }
+                arrayList = arrayList == null ? new ArrayList() : new ArrayList(arrayList);
                 if (z) {
-                    collectPolicyControlledTypes(WindowInsets.Type.statusBars(), arrayList);
+                    collectPolicyControlledTypes(arrayList, WindowInsets.Type.statusBars());
                 }
                 if (z2) {
-                    collectPolicyControlledTypes(WindowInsets.Type.navigationBars(), arrayList);
+                    collectPolicyControlledTypes(arrayList, WindowInsets.Type.navigationBars());
                 }
             }
         } else {
             z = false;
             z2 = false;
-        }
-        if (!CoreRune.CARLIFE_NAVBAR || !this.mDisplayContent.isCarLifeDisplay()) {
-            arrayList = this.mDisplayContent.getDisplayPolicy().mExt.getTaskbarController().adjustInsetsControlForTaskbar(arrayList);
         }
         if (arrayList == null) {
             return null;
@@ -118,9 +97,10 @@ public class InsetsStateController {
         int size = arrayList.size();
         InsetsSourceControl[] insetsSourceControlArr = new InsetsSourceControl[size];
         for (int i = 0; i < size; i++) {
-            InsetsSource source = ((InsetsSourceProvider) arrayList.get(i)).getSource();
-            if (isPolicyControlledType(source.getType(), z, z2)) {
-                insetsSourceControlArr[i] = new InsetsSourceControl(source.getId(), source.getType(), (SurfaceControl) null, false, new Point(), Insets.NONE, true);
+            InsetsSource insetsSource = ((InsetsSourceProvider) arrayList.get(i)).mSource;
+            int type = insetsSource.getType();
+            if ((z && type == WindowInsets.Type.statusBars()) || (z2 && type == WindowInsets.Type.navigationBars())) {
+                insetsSourceControlArr[i] = new InsetsSourceControl(insetsSource.getId(), insetsSource.getType(), (SurfaceControl) null, false, new Point(), Insets.NONE, true);
             } else {
                 insetsSourceControlArr[i] = ((InsetsSourceProvider) arrayList.get(i)).getControl(insetsControlTarget);
             }
@@ -128,180 +108,145 @@ public class InsetsStateController {
         return insetsSourceControlArr;
     }
 
-    public SparseArray getSourceProviders() {
-        return this.mProviders;
-    }
-
-    public InsetsSourceProvider getOrCreateSourceProvider(int i, int i2) {
-        InsetsSourceProvider insetsSourceProvider;
-        InsetsSourceProvider insetsSourceProvider2 = (InsetsSourceProvider) this.mProviders.get(i);
-        if (insetsSourceProvider2 != null) {
-            return insetsSourceProvider2;
-        }
-        InsetsSource orCreateSource = this.mState.getOrCreateSource(i, i2);
-        if (i == InsetsSource.ID_IME) {
-            insetsSourceProvider = new ImeInsetsSourceProvider(orCreateSource, this, this.mDisplayContent);
-        } else {
-            insetsSourceProvider = new InsetsSourceProvider(orCreateSource, this, this.mDisplayContent);
-        }
-        insetsSourceProvider.setFlags((i2 & this.mForcedConsumingTypes) != 0 ? 4 : 0, 4);
-        this.mProviders.put(i, insetsSourceProvider);
-        return insetsSourceProvider;
-    }
-
-    public ImeInsetsSourceProvider getImeSourceProvider() {
+    public final ImeInsetsSourceProvider getImeSourceProvider() {
         return (ImeInsetsSourceProvider) getOrCreateSourceProvider(InsetsSource.ID_IME, WindowInsets.Type.ime());
     }
 
-    public void removeSourceProvider(int i) {
-        if (i != InsetsSource.ID_IME) {
-            this.mState.removeSource(i);
-            this.mProviders.remove(i);
+    public final InsetsSourceProvider getOrCreateSourceProvider(int i, int i2) {
+        InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) this.mProviders.get(i);
+        if (insetsSourceProvider != null) {
+            return insetsSourceProvider;
+        }
+        InsetsSource orCreateSource = this.mState.getOrCreateSource(i, i2);
+        int i3 = InsetsSource.ID_IME;
+        DisplayContent displayContent = this.mDisplayContent;
+        InsetsSourceProvider imeInsetsSourceProvider = i == i3 ? new ImeInsetsSourceProvider(orCreateSource, this, displayContent) : new InsetsSourceProvider(orCreateSource, this, displayContent);
+        imeInsetsSourceProvider.setFlags((i2 & this.mForcedConsumingTypes) != 0 ? 4 : 0);
+        this.mProviders.put(i, imeInsetsSourceProvider);
+        return imeInsetsSourceProvider;
+    }
+
+    public final void notifyControlChanged(InsetsControlTarget insetsControlTarget) {
+        this.mPendingControlChanged.add(insetsControlTarget);
+        notifyPendingInsetsControlChanged();
+        if (Flags.refactorInsetsController()) {
+            notifyInsetsChanged();
+            DisplayContent displayContent = this.mDisplayContent;
+            displayContent.updateSystemGestureExclusion();
+            displayContent.updateKeepClearAreas();
+            displayContent.mDisplayPolicy.updateSystemBarAttributes();
         }
     }
 
-    public void setForcedConsumingTypes(int i) {
-        if (this.mForcedConsumingTypes != i) {
-            this.mForcedConsumingTypes = i;
-            boolean z = false;
-            for (int size = this.mProviders.size() - 1; size >= 0; size--) {
-                InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) this.mProviders.valueAt(size);
-                z |= insetsSourceProvider.setFlags((insetsSourceProvider.getSource().getType() & i) != 0 ? 4 : 0, 4);
+    public final void notifyInsetsChanged() {
+        DisplayContent displayContent = this.mDisplayContent;
+        ActivityRecord activityRecord = displayContent.mFixedRotationLaunchingApp;
+        if (activityRecord != null) {
+            InsetsState insetsState = activityRecord.isFixedRotationTransforming() ? activityRecord.mFixedRotationTransformState.mDisplayFrames.mInsetsState : null;
+            if (insetsState != null) {
+                InsetsState.traverse(insetsState, displayContent.mInsetsStateController.mState, DisplayContent.COPY_SOURCE_VISIBILITY);
             }
-            if (z) {
-                notifyInsetsChanged();
+        }
+        displayContent.forAllWindows((Consumer) this.mDispatchInsetsChanged, true);
+        DisplayContent.RemoteInsetsControlTarget remoteInsetsControlTarget = displayContent.mRemoteInsetsControlTarget;
+        if (remoteInsetsControlTarget != null) {
+            try {
+                remoteInsetsControlTarget.mRemoteInsetsController.insetsChanged(DisplayContent.this.mInsetsStateController.mState);
+            } catch (RemoteException e) {
+                Slog.w("WindowManager", "Failed to deliver inset state change", e);
+            }
+        }
+        if (displayContent.mWmService.mAccessibilityController.hasCallbacks()) {
+            InsetsControlTarget insetsControlTarget = displayContent.mImeControlTarget;
+            boolean z = insetsControlTarget != null && insetsControlTarget.isRequestedVisible(WindowInsets.Type.ime());
+            AccessibilityController accessibilityController = displayContent.mWmService.mAccessibilityController;
+            int i = displayContent.mDisplayId;
+            AccessibilityController.AccessibilityControllerInternalImpl accessibilityControllerInternalImpl = accessibilityController.mAccessibilityTracing;
+            if (accessibilityControllerInternalImpl.isTracingEnabled(2048L)) {
+                accessibilityControllerInternalImpl.logTrace("AccessibilityController.updateImeVisibilityIfNeeded", 2048L, AbstractAccessibilityServiceConnection$$ExternalSyntheticOutline0.m(i, "displayId=", ";shown=", z));
+            }
+            if (accessibilityController.mIsImeVisibleArray.get(i, false) == z) {
+                return;
+            }
+            accessibilityController.mIsImeVisibleArray.put(i, z);
+            AccessibilityController.DisplayMagnifier displayMagnifier = (AccessibilityController.DisplayMagnifier) accessibilityController.mDisplayMagnifiers.get(i);
+            if (displayMagnifier != null) {
+                displayMagnifier.notifyImeWindowVisibilityChanged(z);
             }
         }
     }
 
-    public void onPostLayout() {
-        if (containsDeferTarget()) {
+    public final void notifyPendingInsetsControlChanged() {
+        if (this.mPendingControlChanged.isEmpty()) {
             return;
         }
-        Trace.traceBegin(32L, "ISC.onPostLayout");
-        for (int size = this.mProviders.size() - 1; size >= 0; size--) {
-            ((InsetsSourceProvider) this.mProviders.valueAt(size)).onPostLayout();
-        }
-        if (!this.mLastState.equals(this.mState)) {
-            this.mLastState.set(this.mState, true);
-            notifyInsetsChanged();
-        }
-        Trace.traceEnd(32L);
-    }
-
-    public void updateAboveInsetsState(boolean z) {
-        InsetsState insetsState = new InsetsState();
-        insetsState.set(this.mState, WindowInsets.Type.displayCutout() | WindowInsets.Type.systemGestures() | WindowInsets.Type.mandatorySystemGestures());
-        SparseArray sparseArray = new SparseArray();
-        ArraySet arraySet = new ArraySet();
-        this.mDisplayContent.updateAboveInsetsState(insetsState, sparseArray, arraySet);
-        if (z) {
-            for (int size = arraySet.size() - 1; size >= 0; size--) {
-                this.mDispatchInsetsChanged.accept((WindowState) arraySet.valueAt(size));
+        this.mDisplayContent.mWmService.mAnimator.addAfterPrepareSurfacesRunnable(new Runnable() { // from class: com.android.server.wm.InsetsStateController$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                InsetsStateController insetsStateController = InsetsStateController.this;
+                for (int size = insetsStateController.mProviders.size() - 1; size >= 0; size--) {
+                    ((InsetsSourceProvider) insetsStateController.mProviders.valueAt(size)).mIsLeashReadyForDispatching = true;
+                }
+                ArraySet arraySet = new ArraySet();
+                int i = insetsStateController.mDisplayContent.mDisplayId;
+                for (int size2 = insetsStateController.mPendingControlChanged.size() - 1; size2 >= 0; size2--) {
+                    InsetsControlTarget insetsControlTarget = (InsetsControlTarget) insetsStateController.mPendingControlChanged.valueAt(size2);
+                    insetsControlTarget.notifyInsetsControlChanged(i);
+                    if (insetsStateController.mControlTargetProvidersMap.containsKey(insetsControlTarget)) {
+                        arraySet.add(insetsControlTarget);
+                    }
+                }
+                insetsStateController.mPendingControlChanged.clear();
+                for (int size3 = arraySet.size() - 1; size3 >= 0; size3--) {
+                    insetsStateController.onRequestedVisibleTypesChanged((InsetsControlTarget) arraySet.valueAt(size3));
+                }
+                arraySet.clear();
+                insetsStateController.getImeSourceProvider().checkAndStartShowImePostLayout();
             }
-        }
+        });
     }
 
-    public void onDisplayFramesUpdated(boolean z) {
-        final ArrayList arrayList = new ArrayList();
-        this.mDisplayContent.forAllWindows(new Consumer() { // from class: com.android.server.wm.InsetsStateController$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                InsetsStateController.this.lambda$onDisplayFramesUpdated$1(arrayList, (WindowState) obj);
-            }
-        }, true);
-        if (z) {
-            for (int size = arrayList.size() - 1; size >= 0; size--) {
-                this.mDispatchInsetsChanged.accept((WindowState) arrayList.get(size));
-            }
-        }
-    }
-
-    public /* synthetic */ void lambda$onDisplayFramesUpdated$1(ArrayList arrayList, WindowState windowState) {
-        windowState.mAboveInsetsState.set(this.mState, WindowInsets.Type.displayCutout());
-        arrayList.add(windowState);
-    }
-
-    public void onInsetsModified(InsetsControlTarget insetsControlTarget) {
-        boolean z = false;
-        for (int size = this.mProviders.size() - 1; size >= 0; size--) {
-            z |= ((InsetsSourceProvider) this.mProviders.valueAt(size)).updateClientVisibility(insetsControlTarget);
-        }
-        if (z) {
-            notifyInsetsChanged();
-            this.mDisplayContent.updateSystemGestureExclusion();
-            this.mDisplayContent.updateKeepClearAreas();
-            this.mDisplayContent.getDisplayPolicy().updateSystemBarAttributes();
-        }
-    }
-
-    public int getFakeControllingTypes(InsetsControlTarget insetsControlTarget) {
-        int i = 0;
-        for (int size = this.mProviders.size() - 1; size >= 0; size--) {
-            InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) this.mProviders.valueAt(size);
-            if (insetsControlTarget == insetsSourceProvider.getFakeControlTarget()) {
-                i |= insetsSourceProvider.getSource().getType();
-            }
-        }
-        return i;
-    }
-
-    public void onImeControlTargetChanged(InsetsControlTarget insetsControlTarget) {
-        if (insetsControlTarget == null) {
-            insetsControlTarget = this.mEmptyImeControlTarget;
-        }
-        onControlTargetChanged(getImeSourceProvider(), insetsControlTarget, false);
-        if (ProtoLogCache.WM_DEBUG_IME_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_IME, 1658605381, 0, (String) null, new Object[]{String.valueOf(insetsControlTarget != null ? insetsControlTarget.getWindow() : "null")});
-        }
-        notifyPendingInsetsControlChanged();
-    }
-
-    public void onBarControlTargetChanged(InsetsControlTarget insetsControlTarget, InsetsControlTarget insetsControlTarget2, InsetsControlTarget insetsControlTarget3, InsetsControlTarget insetsControlTarget4) {
-        for (int size = this.mProviders.size() - 1; size >= 0; size--) {
-            InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) this.mProviders.valueAt(size);
-            int type = insetsSourceProvider.getSource().getType();
-            if (type == WindowInsets.Type.statusBars()) {
-                onControlTargetChanged(insetsSourceProvider, insetsControlTarget, false);
-                onControlTargetChanged(insetsSourceProvider, insetsControlTarget2, true);
-            } else if (type == WindowInsets.Type.navigationBars()) {
-                onControlTargetChanged(insetsSourceProvider, insetsControlTarget3, false);
-                onControlTargetChanged(insetsSourceProvider, insetsControlTarget4, true);
-            }
-        }
-        notifyPendingInsetsControlChanged();
-    }
-
-    public void notifyControlRevoked(InsetsControlTarget insetsControlTarget, InsetsSourceProvider insetsSourceProvider) {
-        removeFromControlMaps(insetsControlTarget, insetsSourceProvider, false);
-    }
-
-    public final void onControlTargetChanged(InsetsSourceProvider insetsSourceProvider, InsetsControlTarget insetsControlTarget, boolean z) {
-        InsetsControlTarget insetsControlTarget2;
-        if (z) {
-            insetsControlTarget2 = (InsetsControlTarget) this.mIdFakeControlTargetMap.get(insetsSourceProvider.getSource().getId());
-        } else {
-            insetsControlTarget2 = (InsetsControlTarget) this.mIdControlTargetMap.get(insetsSourceProvider.getSource().getId());
-        }
-        if (insetsControlTarget != insetsControlTarget2 && insetsSourceProvider.isControllable()) {
-            if (z) {
-                insetsSourceProvider.updateFakeControlTarget(insetsControlTarget);
-            } else {
+    public final void onControlTargetChanged(InsetsControlTarget insetsControlTarget, InsetsSourceProvider insetsSourceProvider, boolean z) {
+        InsetsControlTarget insetsControlTarget2 = z ? (InsetsControlTarget) this.mIdFakeControlTargetMap.get(insetsSourceProvider.mSource.getId()) : (InsetsControlTarget) this.mIdControlTargetMap.get(insetsSourceProvider.mSource.getId());
+        if (insetsControlTarget != insetsControlTarget2 && insetsSourceProvider.mControllable) {
+            if (!z) {
                 insetsSourceProvider.updateControlForTarget(insetsControlTarget, false);
-                insetsControlTarget = insetsSourceProvider.getControlTarget();
+                insetsControlTarget = insetsSourceProvider.mControlTarget;
                 if (insetsControlTarget == insetsControlTarget2) {
                     return;
                 }
+            } else if (insetsControlTarget != insetsSourceProvider.mFakeControlTarget) {
+                insetsSourceProvider.mFakeControlTarget = insetsControlTarget;
+                Slog.d("InsetsSourceProvider", "updateFakeControlTarget: fakeControl=" + insetsSourceProvider.mFakeControl + ", fakeTarget=" + insetsControlTarget);
             }
             if (insetsControlTarget2 != null) {
                 removeFromControlMaps(insetsControlTarget2, insetsSourceProvider, z);
                 this.mPendingControlChanged.add(insetsControlTarget2);
             }
             if (insetsControlTarget != null) {
-                addToControlMaps(insetsControlTarget, insetsSourceProvider, z);
+                ((ArrayList) this.mControlTargetProvidersMap.computeIfAbsent(insetsControlTarget, new InsetsStateController$$ExternalSyntheticLambda3())).add(insetsSourceProvider);
+                if (z) {
+                    this.mIdFakeControlTargetMap.put(insetsSourceProvider.mSource.getId(), insetsControlTarget);
+                } else {
+                    this.mIdControlTargetMap.put(insetsSourceProvider.mSource.getId(), insetsControlTarget);
+                }
                 this.mPendingControlChanged.add(insetsControlTarget);
             }
         }
+    }
+
+    public final void onRequestedVisibleTypesChanged(InsetsControlTarget insetsControlTarget) {
+        boolean z = false;
+        for (int size = this.mProviders.size() - 1; size >= 0; size--) {
+            z |= ((InsetsSourceProvider) this.mProviders.valueAt(size)).updateClientVisibility(insetsControlTarget);
+        }
+        if (Flags.refactorInsetsController() || !z) {
+            return;
+        }
+        notifyInsetsChanged();
+        DisplayContent displayContent = this.mDisplayContent;
+        displayContent.updateSystemGestureExclusion();
+        displayContent.mDisplayPolicy.updateSystemBarAttributes();
     }
 
     public final void removeFromControlMaps(InsetsControlTarget insetsControlTarget, InsetsSourceProvider insetsSourceProvider, boolean z) {
@@ -314,136 +259,22 @@ public class InsetsStateController {
             this.mControlTargetProvidersMap.remove(insetsControlTarget);
         }
         if (z) {
-            this.mIdFakeControlTargetMap.remove(insetsSourceProvider.getSource().getId());
+            this.mIdFakeControlTargetMap.remove(insetsSourceProvider.mSource.getId());
         } else {
-            this.mIdControlTargetMap.remove(insetsSourceProvider.getSource().getId());
+            this.mIdControlTargetMap.remove(insetsSourceProvider.mSource.getId());
         }
     }
 
-    public final void addToControlMaps(InsetsControlTarget insetsControlTarget, InsetsSourceProvider insetsSourceProvider, boolean z) {
-        ((ArrayList) this.mControlTargetProvidersMap.computeIfAbsent(insetsControlTarget, new Function() { // from class: com.android.server.wm.InsetsStateController$$ExternalSyntheticLambda1
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                ArrayList lambda$addToControlMaps$2;
-                lambda$addToControlMaps$2 = InsetsStateController.lambda$addToControlMaps$2((InsetsControlTarget) obj);
-                return lambda$addToControlMaps$2;
-            }
-        })).add(insetsSourceProvider);
-        if (z) {
-            this.mIdFakeControlTargetMap.put(insetsSourceProvider.getSource().getId(), insetsControlTarget);
-        } else {
-            this.mIdControlTargetMap.put(insetsSourceProvider.getSource().getId(), insetsControlTarget);
-        }
-    }
-
-    public static /* synthetic */ ArrayList lambda$addToControlMaps$2(InsetsControlTarget insetsControlTarget) {
-        return new ArrayList();
-    }
-
-    public void notifyControlChanged(InsetsControlTarget insetsControlTarget) {
-        this.mPendingControlChanged.add(insetsControlTarget);
-        notifyPendingInsetsControlChanged();
-    }
-
-    public final void notifyPendingInsetsControlChanged() {
-        if (this.mPendingControlChanged.isEmpty()) {
-            return;
-        }
-        this.mDisplayContent.mWmService.mAnimator.addAfterPrepareSurfacesRunnable(new Runnable() { // from class: com.android.server.wm.InsetsStateController$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                InsetsStateController.this.lambda$notifyPendingInsetsControlChanged$3();
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$notifyPendingInsetsControlChanged$3() {
-        for (int size = this.mProviders.size() - 1; size >= 0; size--) {
-            ((InsetsSourceProvider) this.mProviders.valueAt(size)).onSurfaceTransactionApplied();
-        }
+    public final void updateAboveInsetsState(boolean z) {
+        InsetsState insetsState = new InsetsState();
+        insetsState.set(this.mState, WindowInsets.Type.displayCutout() | WindowInsets.Type.systemGestures() | WindowInsets.Type.mandatorySystemGestures());
+        SparseArray sparseArray = new SparseArray();
         ArraySet arraySet = new ArraySet();
-        for (int size2 = this.mPendingControlChanged.size() - 1; size2 >= 0; size2--) {
-            InsetsControlTarget insetsControlTarget = (InsetsControlTarget) this.mPendingControlChanged.valueAt(size2);
-            insetsControlTarget.notifyInsetsControlChanged();
-            if (this.mControlTargetProvidersMap.containsKey(insetsControlTarget)) {
-                arraySet.add(insetsControlTarget);
+        this.mDisplayContent.updateAboveInsetsState(insetsState, sparseArray, arraySet);
+        if (z) {
+            for (int size = arraySet.size() - 1; size >= 0; size--) {
+                this.mDispatchInsetsChanged.accept((WindowState) arraySet.valueAt(size));
             }
         }
-        this.mPendingControlChanged.clear();
-        for (int size3 = arraySet.size() - 1; size3 >= 0; size3--) {
-            onInsetsModified((InsetsControlTarget) arraySet.valueAt(size3));
-        }
-        arraySet.clear();
-    }
-
-    public void notifyInsetsChanged() {
-        this.mDisplayContent.notifyInsetsChanged(this.mDispatchInsetsChanged);
-    }
-
-    public final boolean containsDeferTarget() {
-        for (int size = this.mProviders.size() - 1; size >= 0; size--) {
-            if (((InsetsSourceProvider) this.mProviders.valueAt(size)).shouldDeferUpdate()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        printWriter.println(str + "WindowInsetsStateController");
-        String str2 = str + "  ";
-        this.mState.dump(str2, printWriter);
-        printWriter.println(str2 + "Control map:");
-        for (int size = this.mControlTargetProvidersMap.size() + (-1); size >= 0; size--) {
-            InsetsControlTarget insetsControlTarget = (InsetsControlTarget) this.mControlTargetProvidersMap.keyAt(size);
-            printWriter.print(str2 + "  ");
-            printWriter.print(insetsControlTarget);
-            printWriter.println(XmlUtils.STRING_ARRAY_SEPARATOR);
-            ArrayList arrayList = (ArrayList) this.mControlTargetProvidersMap.valueAt(size);
-            for (int size2 = arrayList.size() - 1; size2 >= 0; size2--) {
-                InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) arrayList.get(size2);
-                if (insetsSourceProvider != null) {
-                    printWriter.print(str2 + "    ");
-                    if (insetsControlTarget == insetsSourceProvider.getFakeControlTarget()) {
-                        printWriter.print("(fake) ");
-                    }
-                    printWriter.println(insetsSourceProvider.getControl(insetsControlTarget));
-                }
-            }
-        }
-        if (this.mControlTargetProvidersMap.isEmpty()) {
-            printWriter.print(str2 + "  none");
-        }
-        printWriter.println(str2 + "InsetsSourceProviders:");
-        for (int size3 = this.mProviders.size() + (-1); size3 >= 0; size3 += -1) {
-            ((InsetsSourceProvider) this.mProviders.valueAt(size3)).dump(printWriter, str2 + "  ");
-        }
-        if (this.mForcedConsumingTypes != 0) {
-            printWriter.println(str2 + "mForcedConsumingTypes=" + WindowInsets.Type.toString(this.mForcedConsumingTypes));
-        }
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, int i) {
-        for (int size = this.mProviders.size() - 1; size >= 0; size--) {
-            InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) this.mProviders.valueAt(size);
-            insetsSourceProvider.dumpDebug(protoOutputStream, insetsSourceProvider.getSource().getType() == WindowInsets.Type.ime() ? 1146756268063L : 2246267895843L, i);
-        }
-    }
-
-    public final void collectPolicyControlledTypes(int i, ArrayList arrayList) {
-        SparseArray sourceProviders = getSourceProviders();
-        for (int size = sourceProviders.size() - 1; size >= 0; size--) {
-            InsetsSourceProvider insetsSourceProvider = (InsetsSourceProvider) sourceProviders.valueAt(size);
-            if (insetsSourceProvider.getSource().getType() == i) {
-                arrayList.add(insetsSourceProvider);
-            }
-        }
-    }
-
-    public final boolean isPolicyControlledType(int i, boolean z, boolean z2) {
-        if (z && i == WindowInsets.Type.statusBars()) {
-            return true;
-        }
-        return z2 && i == WindowInsets.Type.navigationBars();
     }
 }

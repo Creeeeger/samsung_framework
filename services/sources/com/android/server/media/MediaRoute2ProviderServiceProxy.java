@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.IMediaRoute2ProviderService;
 import android.media.IMediaRoute2ProviderServiceCallback;
+import android.media.MediaRoute2Info;
 import android.media.MediaRoute2ProviderInfo;
 import android.media.RouteDiscoveryPreference;
 import android.media.RoutingSessionInfo;
@@ -17,23 +18,26 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.LongSparseArray;
 import android.util.Slog;
-import com.android.internal.util.function.TriConsumer;
 import com.android.internal.util.function.pooled.PooledLambda;
+import com.android.media.flags.Flags;
 import com.android.server.media.MediaRoute2Provider;
 import com.android.server.media.MediaRoute2ProviderServiceProxy;
+import com.android.server.media.MediaRouter2ServiceImpl;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
-public final class MediaRoute2ProviderServiceProxy extends MediaRoute2Provider implements ServiceConnection {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class MediaRoute2ProviderServiceProxy extends MediaRoute2Provider {
     public static final boolean DEBUG = Log.isLoggable("MR2ProviderSvcProxy", 3);
     public Connection mActiveConnection;
     public boolean mBound;
@@ -45,162 +49,260 @@ public final class MediaRoute2ProviderServiceProxy extends MediaRoute2Provider i
     public RouteDiscoveryPreference mLastDiscoveryPreference;
     public boolean mLastDiscoveryPreferenceIncludesThisPackage;
     public final List mReleasingSessions;
+    public final LongSparseArray mRequestIdToSessionCreationRequest;
     public boolean mRunning;
+    public final ServiceConnectionImpl mServiceConnection;
+    public final Map mSessionOriginalIdToTransferRequest;
     public final int mUserId;
 
-    public MediaRoute2ProviderServiceProxy(Context context, ComponentName componentName, boolean z, int i) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Connection implements IBinder.DeathRecipient {
+        public final ServiceCallbackStub mCallbackStub = new ServiceCallbackStub(this);
+        public final IMediaRoute2ProviderService mService;
+
+        public Connection(IMediaRoute2ProviderService iMediaRoute2ProviderService) {
+            this.mService = iMediaRoute2ProviderService;
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public final void binderDied() {
+            MediaRoute2ProviderServiceProxy.this.mHandler.post(new MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda1(0, this));
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ServiceCallbackStub extends IMediaRoute2ProviderServiceCallback.Stub {
+        public final WeakReference mConnectionRef;
+
+        public ServiceCallbackStub(Connection connection) {
+            this.mConnectionRef = new WeakReference(connection);
+        }
+
+        public final void notifyProviderUpdated(MediaRoute2ProviderInfo mediaRoute2ProviderInfo) {
+            Objects.requireNonNull(mediaRoute2ProviderInfo, "providerInfo must not be null");
+            for (MediaRoute2Info mediaRoute2Info : mediaRoute2ProviderInfo.getRoutes()) {
+                if (mediaRoute2Info.isSystemRoute()) {
+                    throw new SecurityException("Only the system is allowed to publish system routes. Disallowed route: " + mediaRoute2Info);
+                }
+                if (mediaRoute2Info.getSuitabilityStatus() == 2) {
+                    throw new SecurityException("Only the system is allowed to set not suitable for transfer status. Disallowed route: " + mediaRoute2Info);
+                }
+                if (mediaRoute2Info.isSystemRouteType()) {
+                    throw new SecurityException("Only the system is allowed to publish routes with system route types. Disallowed route: " + mediaRoute2Info);
+                }
+            }
+            Connection connection = (Connection) this.mConnectionRef.get();
+            if (connection != null) {
+                MediaRoute2ProviderServiceProxy.this.mHandler.post(new MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda2(0, connection, mediaRoute2ProviderInfo));
+            }
+        }
+
+        public final void notifyRequestFailed(final long j, final int i) {
+            final Connection connection = (Connection) this.mConnectionRef.get();
+            if (connection != null) {
+                MediaRoute2ProviderServiceProxy.this.mHandler.post(new Runnable() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        MediaRoute2ProviderServiceProxy.Connection connection2 = MediaRoute2ProviderServiceProxy.Connection.this;
+                        long j2 = j;
+                        int i2 = i;
+                        MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy = MediaRoute2ProviderServiceProxy.this;
+                        mediaRoute2ProviderServiceProxy.getClass();
+                        if (Flags.enableBuiltInSpeakerRouteSuitabilityStatuses()) {
+                            synchronized (mediaRoute2ProviderServiceProxy.mLock) {
+                                mediaRoute2ProviderServiceProxy.mRequestIdToSessionCreationRequest.remove(j2);
+                            }
+                        }
+                        if (mediaRoute2ProviderServiceProxy.mActiveConnection != connection2) {
+                            return;
+                        }
+                        if (j2 == 0) {
+                            Slog.w("MR2ProviderSvcProxy", "onRequestFailed: Ignoring requestId REQUEST_ID_NONE");
+                        } else {
+                            ((MediaRouter2ServiceImpl.UserHandler) mediaRoute2ProviderServiceProxy.mCallback).onRequestFailed(mediaRoute2ProviderServiceProxy, j2, i2);
+                        }
+                    }
+                });
+            }
+        }
+
+        public final void notifySessionCreated(final long j, final RoutingSessionInfo routingSessionInfo) {
+            final Connection connection = (Connection) this.mConnectionRef.get();
+            if (connection != null) {
+                MediaRoute2ProviderServiceProxy.this.mHandler.post(new Runnable() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda4
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        MediaRoute2ProviderServiceProxy.Connection connection2 = MediaRoute2ProviderServiceProxy.Connection.this;
+                        long j2 = j;
+                        RoutingSessionInfo routingSessionInfo2 = routingSessionInfo;
+                        MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy = MediaRoute2ProviderServiceProxy.this;
+                        if (mediaRoute2ProviderServiceProxy.mActiveConnection != connection2) {
+                            return;
+                        }
+                        if (routingSessionInfo2 == null) {
+                            Slog.w("MR2ProviderSvcProxy", "onSessionCreated: Ignoring null session sent from " + mediaRoute2ProviderServiceProxy.mComponentName);
+                            return;
+                        }
+                        RoutingSessionInfo assignProviderIdForSession = mediaRoute2ProviderServiceProxy.assignProviderIdForSession(routingSessionInfo2);
+                        final String id = assignProviderIdForSession.getId();
+                        synchronized (mediaRoute2ProviderServiceProxy.mLock) {
+                            try {
+                                if (Flags.enableBuiltInSpeakerRouteSuitabilityStatuses()) {
+                                    assignProviderIdForSession = mediaRoute2ProviderServiceProxy.createSessionWithPopulatedTransferInitiationDataLocked(j2, null, assignProviderIdForSession);
+                                }
+                                final int i = 0;
+                                if (!mediaRoute2ProviderServiceProxy.mSessionInfos.stream().anyMatch(new Predicate() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$$ExternalSyntheticLambda0
+                                    @Override // java.util.function.Predicate
+                                    public final boolean test(Object obj) {
+                                        int i2 = i;
+                                        String str = id;
+                                        RoutingSessionInfo routingSessionInfo3 = (RoutingSessionInfo) obj;
+                                        switch (i2) {
+                                        }
+                                        return TextUtils.equals(routingSessionInfo3.getId(), str);
+                                    }
+                                })) {
+                                    final int i2 = 1;
+                                    if (!mediaRoute2ProviderServiceProxy.mReleasingSessions.stream().anyMatch(new Predicate() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$$ExternalSyntheticLambda0
+                                        @Override // java.util.function.Predicate
+                                        public final boolean test(Object obj) {
+                                            int i22 = i2;
+                                            String str = id;
+                                            RoutingSessionInfo routingSessionInfo3 = (RoutingSessionInfo) obj;
+                                            switch (i22) {
+                                            }
+                                            return TextUtils.equals(routingSessionInfo3.getId(), str);
+                                        }
+                                    })) {
+                                        ((ArrayList) mediaRoute2ProviderServiceProxy.mSessionInfos).add(assignProviderIdForSession);
+                                        ((MediaRouter2ServiceImpl.UserHandler) mediaRoute2ProviderServiceProxy.mCallback).onSessionCreated(mediaRoute2ProviderServiceProxy, j2, assignProviderIdForSession);
+                                        return;
+                                    }
+                                }
+                                Slog.w("MR2ProviderSvcProxy", "onSessionCreated: Duplicate session already exists. Ignoring.");
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        public final void notifySessionReleased(RoutingSessionInfo routingSessionInfo) {
+            Connection connection = (Connection) this.mConnectionRef.get();
+            if (connection != null) {
+                MediaRoute2ProviderServiceProxy.this.mHandler.post(new MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda2(connection, routingSessionInfo));
+            }
+        }
+
+        public final void notifySessionsUpdated(List list) {
+            Connection connection = (Connection) this.mConnectionRef.get();
+            if (connection != null) {
+                MediaRoute2ProviderServiceProxy.this.mHandler.post(new MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda2(2, connection, list));
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ServiceConnectionImpl implements ServiceConnection {
+        public ServiceConnectionImpl() {
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onBindingDied(ComponentName componentName) {
+            if (Flags.enableMr2ServiceNonMainBgThread()) {
+                MediaRoute2ProviderServiceProxy.this.mHandler.post(new MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda2(4, this, componentName));
+            } else {
+                MediaRoute2ProviderServiceProxy.m649$$Nest$monBindingDiedInternal(MediaRoute2ProviderServiceProxy.this, componentName);
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            if (Flags.enableMr2ServiceNonMainBgThread()) {
+                MediaRoute2ProviderServiceProxy.this.mHandler.post(new MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda2(3, this, iBinder));
+            } else {
+                MediaRoute2ProviderServiceProxy.m650$$Nest$monServiceConnectedInternal(MediaRoute2ProviderServiceProxy.this, iBinder);
+            }
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceDisconnected(ComponentName componentName) {
+            if (Flags.enableMr2ServiceNonMainBgThread()) {
+                MediaRoute2ProviderServiceProxy.this.mHandler.post(new MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda1(2, this));
+            } else {
+                MediaRoute2ProviderServiceProxy.m651$$Nest$monServiceDisconnectedInternal(MediaRoute2ProviderServiceProxy.this);
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$monBindingDiedInternal, reason: not valid java name */
+    public static void m649$$Nest$monBindingDiedInternal(MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy, ComponentName componentName) {
+        mediaRoute2ProviderServiceProxy.unbind();
+        if (Flags.enablePreventionOfKeepAliveRouteProviders()) {
+            Slog.w("MR2ProviderSvcProxy", TextUtils.formatSimple("Route provider service (%s) binding died, but we did not rebind.", new Object[]{componentName.toString()}));
+        } else if (mediaRoute2ProviderServiceProxy.shouldBind()) {
+            Slog.w("MR2ProviderSvcProxy", TextUtils.formatSimple("Rebound to provider service (%s) after binding died.", new Object[]{componentName.toString()}));
+            mediaRoute2ProviderServiceProxy.bind();
+        }
+    }
+
+    /* renamed from: -$$Nest$monServiceConnectedInternal, reason: not valid java name */
+    public static void m650$$Nest$monServiceConnectedInternal(MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy, IBinder iBinder) {
+        boolean z = DEBUG;
+        if (z) {
+            mediaRoute2ProviderServiceProxy.getClass();
+            Slog.d("MR2ProviderSvcProxy", mediaRoute2ProviderServiceProxy + ": Connected");
+        }
+        if (mediaRoute2ProviderServiceProxy.mBound) {
+            mediaRoute2ProviderServiceProxy.disconnect();
+            IMediaRoute2ProviderService asInterface = IMediaRoute2ProviderService.Stub.asInterface(iBinder);
+            if (asInterface == null) {
+                Slog.e("MR2ProviderSvcProxy", mediaRoute2ProviderServiceProxy + ": Service returned invalid binder");
+                return;
+            }
+            Connection connection = mediaRoute2ProviderServiceProxy.new Connection(asInterface);
+            try {
+                asInterface.asBinder().linkToDeath(connection, 0);
+                asInterface.setCallback(connection.mCallbackStub);
+                mediaRoute2ProviderServiceProxy.mHandler.post(new MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda1(1, connection));
+                mediaRoute2ProviderServiceProxy.mActiveConnection = connection;
+            } catch (RemoteException unused) {
+                connection.binderDied();
+                if (z) {
+                    Slog.d("MR2ProviderSvcProxy", mediaRoute2ProviderServiceProxy + ": Registration failed");
+                }
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$monServiceDisconnectedInternal, reason: not valid java name */
+    public static void m651$$Nest$monServiceDisconnectedInternal(MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy) {
+        if (DEBUG) {
+            mediaRoute2ProviderServiceProxy.getClass();
+            Slog.d("MR2ProviderSvcProxy", mediaRoute2ProviderServiceProxy + ": Service disconnected");
+        }
+        mediaRoute2ProviderServiceProxy.disconnect();
+    }
+
+    public MediaRoute2ProviderServiceProxy(Context context, Looper looper, ComponentName componentName, boolean z, int i) {
         super(componentName);
+        this.mServiceConnection = new ServiceConnectionImpl();
         this.mLastDiscoveryPreference = null;
         this.mLastDiscoveryPreferenceIncludesThisPackage = false;
         this.mReleasingSessions = new ArrayList();
         Objects.requireNonNull(context, "Context must not be null.");
         this.mContext = context;
+        this.mRequestIdToSessionCreationRequest = new LongSparseArray();
+        this.mSessionOriginalIdToTransferRequest = new HashMap();
         this.mIsSelfScanOnlyProvider = z;
         this.mUserId = i;
-        this.mHandler = new Handler(Looper.myLooper());
+        this.mHandler = new Handler(looper);
     }
 
-    public void setManagerScanning(boolean z) {
-        if (this.mIsManagerScanning != z) {
-            this.mIsManagerScanning = z;
-            updateBinding();
-        }
-    }
-
-    @Override // com.android.server.media.MediaRoute2Provider
-    public void requestCreateSession(long j, String str, String str2, Bundle bundle) {
-        if (this.mConnectionReady) {
-            this.mActiveConnection.requestCreateSession(j, str, str2, bundle);
-            updateBinding();
-        }
-    }
-
-    @Override // com.android.server.media.MediaRoute2Provider
-    public void releaseSession(long j, String str) {
-        if (this.mConnectionReady) {
-            this.mActiveConnection.releaseSession(j, str);
-            updateBinding();
-        }
-    }
-
-    @Override // com.android.server.media.MediaRoute2Provider
-    public void updateDiscoveryPreference(Set set, RouteDiscoveryPreference routeDiscoveryPreference) {
-        this.mLastDiscoveryPreference = routeDiscoveryPreference;
-        this.mLastDiscoveryPreferenceIncludesThisPackage = set.contains(this.mComponentName.getPackageName());
-        if (this.mConnectionReady) {
-            this.mActiveConnection.updateDiscoveryPreference(routeDiscoveryPreference);
-        }
-        updateBinding();
-    }
-
-    @Override // com.android.server.media.MediaRoute2Provider
-    public void selectRoute(long j, String str, String str2) {
-        if (this.mConnectionReady) {
-            this.mActiveConnection.selectRoute(j, str, str2);
-        }
-    }
-
-    @Override // com.android.server.media.MediaRoute2Provider
-    public void deselectRoute(long j, String str, String str2) {
-        if (this.mConnectionReady) {
-            this.mActiveConnection.deselectRoute(j, str, str2);
-        }
-    }
-
-    @Override // com.android.server.media.MediaRoute2Provider
-    public void transferToRoute(long j, String str, String str2) {
-        if (this.mConnectionReady) {
-            this.mActiveConnection.transferToRoute(j, str, str2);
-        }
-    }
-
-    @Override // com.android.server.media.MediaRoute2Provider
-    public void setRouteVolume(long j, String str, int i) {
-        if (this.mConnectionReady) {
-            this.mActiveConnection.setRouteVolume(j, str, i);
-            updateBinding();
-        }
-    }
-
-    @Override // com.android.server.media.MediaRoute2Provider
-    public void setSessionVolume(long j, String str, int i) {
-        if (this.mConnectionReady) {
-            this.mActiveConnection.setSessionVolume(j, str, i);
-            updateBinding();
-        }
-    }
-
-    @Override // com.android.server.media.MediaRoute2Provider
-    public void prepareReleaseSession(String str) {
-        synchronized (this.mLock) {
-            Iterator it = this.mSessionInfos.iterator();
-            while (true) {
-                if (!it.hasNext()) {
-                    break;
-                }
-                RoutingSessionInfo routingSessionInfo = (RoutingSessionInfo) it.next();
-                if (TextUtils.equals(routingSessionInfo.getId(), str)) {
-                    this.mSessionInfos.remove(routingSessionInfo);
-                    this.mReleasingSessions.add(routingSessionInfo);
-                    break;
-                }
-            }
-        }
-    }
-
-    public boolean hasComponentName(String str, String str2) {
-        return this.mComponentName.getPackageName().equals(str) && this.mComponentName.getClassName().equals(str2);
-    }
-
-    public void start() {
-        if (this.mRunning) {
-            return;
-        }
-        if (DEBUG) {
-            Slog.d("MR2ProviderSvcProxy", this + ": Starting");
-        }
-        this.mRunning = true;
-        updateBinding();
-    }
-
-    public void stop() {
-        if (this.mRunning) {
-            if (DEBUG) {
-                Slog.d("MR2ProviderSvcProxy", this + ": Stopping");
-            }
-            this.mRunning = false;
-            updateBinding();
-        }
-    }
-
-    public void rebindIfDisconnected() {
-        if (this.mActiveConnection == null && shouldBind()) {
-            unbind();
-            bind();
-        }
-    }
-
-    public final void updateBinding() {
-        if (shouldBind()) {
-            bind();
-        } else {
-            unbind();
-        }
-    }
-
-    public final boolean shouldBind() {
-        boolean z = false;
-        if (!this.mRunning) {
-            return false;
-        }
-        RouteDiscoveryPreference routeDiscoveryPreference = this.mLastDiscoveryPreference;
-        if (routeDiscoveryPreference != null && !routeDiscoveryPreference.getPreferredFeatures().isEmpty()) {
-            z = true;
-        }
-        if (this.mIsSelfScanOnlyProvider) {
-            z &= this.mLastDiscoveryPreferenceIncludesThisPackage;
-        }
-        return (!getSessionInfos().isEmpty()) | this.mIsManagerScanning | z;
+    public final RoutingSessionInfo assignProviderIdForSession(RoutingSessionInfo routingSessionInfo) {
+        return new RoutingSessionInfo.Builder(routingSessionInfo).setOwnerPackageName(this.mComponentName.getPackageName()).setProviderId(this.mUniqueId).build();
     }
 
     public final void bind() {
@@ -214,15 +316,331 @@ public final class MediaRoute2ProviderServiceProxy extends MediaRoute2Provider i
         Intent intent = new Intent("android.media.MediaRoute2ProviderService");
         intent.setComponent(this.mComponentName);
         try {
-            boolean bindServiceAsUser = this.mContext.bindServiceAsUser(intent, this, 67108865, new UserHandle(this.mUserId));
+            boolean bindServiceAsUser = this.mContext.bindServiceAsUser(intent, this.mServiceConnection, 67108865, new UserHandle(this.mUserId));
             this.mBound = bindServiceAsUser;
             if (bindServiceAsUser || !z) {
                 return;
             }
             Slog.d("MR2ProviderSvcProxy", this + ": Bind failed");
         } catch (SecurityException e) {
-            if (DEBUG) {
+            if (z) {
                 Slog.d("MR2ProviderSvcProxy", this + ": Bind failed", e);
+            }
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0062, code lost:
+    
+        if (r2.anyMatch(new com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest$$ExternalSyntheticLambda1(r3)) != false) goto L16;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:12:0x0068  */
+    /* JADX WARN: Removed duplicated region for block: B:19:0x008e  */
+    /* JADX WARN: Removed duplicated region for block: B:20:0x009a  */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x006f  */
+    /* JADX WARN: Removed duplicated region for block: B:9:0x0043  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final android.media.RoutingSessionInfo createSessionWithPopulatedTransferInitiationDataLocked(long r6, android.media.RoutingSessionInfo r8, android.media.RoutingSessionInfo r9) {
+        /*
+            r5 = this;
+            if (r8 == 0) goto L11
+            java.util.Map r6 = r5.mSessionOriginalIdToTransferRequest
+            java.lang.String r7 = r9.getOriginalId()
+            java.util.HashMap r6 = (java.util.HashMap) r6
+            java.lang.Object r6 = r6.get(r7)
+            com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest r6 = (com.android.server.media.MediaRoute2Provider.SessionCreationOrTransferRequest) r6
+            goto L19
+        L11:
+            android.util.LongSparseArray r0 = r5.mRequestIdToSessionCreationRequest
+            java.lang.Object r6 = r0.get(r6)
+            com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest r6 = (com.android.server.media.MediaRoute2Provider.SessionCreationOrTransferRequest) r6
+        L19:
+            r7 = 1
+            r0 = 0
+            if (r6 == 0) goto L40
+            java.util.List r1 = r9.getSelectedRoutes()
+            java.util.stream.Stream r1 = r1.stream()
+            com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest$$ExternalSyntheticLambda0 r2 = new com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest$$ExternalSyntheticLambda0
+            r2.<init>()
+            java.util.stream.Stream r1 = r1.map(r2)
+            java.lang.String r2 = r6.mTargetOriginalRouteId
+            java.util.Objects.requireNonNull(r2)
+            com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest$$ExternalSyntheticLambda1 r3 = new com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest$$ExternalSyntheticLambda1
+            r3.<init>(r2)
+            boolean r1 = r1.anyMatch(r3)
+            if (r1 == 0) goto L40
+            r1 = r7
+            goto L41
+        L40:
+            r1 = r0
+        L41:
+            if (r6 == 0) goto L65
+            java.util.List r2 = r9.getTransferableRoutes()
+            java.util.stream.Stream r2 = r2.stream()
+            com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest$$ExternalSyntheticLambda0 r3 = new com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest$$ExternalSyntheticLambda0
+            r3.<init>()
+            java.util.stream.Stream r2 = r2.map(r3)
+            java.lang.String r3 = r6.mTargetOriginalRouteId
+            java.util.Objects.requireNonNull(r3)
+            com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest$$ExternalSyntheticLambda1 r4 = new com.android.server.media.MediaRoute2Provider$SessionCreationOrTransferRequest$$ExternalSyntheticLambda1
+            r4.<init>(r3)
+            boolean r2 = r2.anyMatch(r4)
+            if (r2 == 0) goto L65
+            goto L66
+        L65:
+            r7 = r0
+        L66:
+            if (r1 == 0) goto L6f
+            int r0 = r6.mTransferReason
+            android.os.UserHandle r2 = r6.mTransferInitiatorUserHandle
+            java.lang.String r3 = r6.mTransferInitiatorPackageName
+            goto L88
+        L6f:
+            if (r8 == 0) goto L7e
+            int r0 = r8.getTransferReason()
+            android.os.UserHandle r2 = r8.getTransferInitiatorUserHandle()
+            java.lang.String r3 = r8.getTransferInitiatorPackageName()
+            goto L88
+        L7e:
+            int r2 = r5.mUserId
+            android.os.UserHandle r2 = android.os.UserHandle.of(r2)
+            java.lang.String r3 = r9.getClientPackageName()
+        L88:
+            if (r1 != 0) goto L8c
+            if (r7 != 0) goto La3
+        L8c:
+            if (r8 == 0) goto L9a
+            java.util.Map r5 = r5.mSessionOriginalIdToTransferRequest
+            java.lang.String r6 = r9.getId()
+            java.util.HashMap r5 = (java.util.HashMap) r5
+            r5.remove(r6)
+            goto La3
+        L9a:
+            if (r6 == 0) goto La3
+            android.util.LongSparseArray r5 = r5.mRequestIdToSessionCreationRequest
+            long r6 = r6.mRequestId
+            r5.remove(r6)
+        La3:
+            android.media.RoutingSessionInfo$Builder r5 = new android.media.RoutingSessionInfo$Builder
+            r5.<init>(r9)
+            android.media.RoutingSessionInfo$Builder r5 = r5.setTransferInitiator(r2, r3)
+            android.media.RoutingSessionInfo$Builder r5 = r5.setTransferReason(r0)
+            android.media.RoutingSessionInfo r5 = r5.build()
+            return r5
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.media.MediaRoute2ProviderServiceProxy.createSessionWithPopulatedTransferInitiationDataLocked(long, android.media.RoutingSessionInfo, android.media.RoutingSessionInfo):android.media.RoutingSessionInfo");
+    }
+
+    @Override // com.android.server.media.MediaRoute2Provider
+    public final void deselectRoute(String str, long j, String str2) {
+        if (this.mConnectionReady) {
+            Connection connection = this.mActiveConnection;
+            connection.getClass();
+            try {
+                connection.mService.deselectRoute(j, str, str2);
+            } catch (RemoteException e) {
+                Slog.e("MR2ProviderSvcProxy", "deselectRoute: Failed to deliver request.", e);
+            }
+        }
+    }
+
+    public final void disconnect() {
+        Connection connection = this.mActiveConnection;
+        if (connection != null) {
+            this.mConnectionReady = false;
+            connection.mService.asBinder().unlinkToDeath(connection, 0);
+            connection.mCallbackStub.mConnectionRef.clear();
+            this.mActiveConnection = null;
+            setProviderState(null);
+            notifyProviderState();
+            synchronized (this.mLock) {
+                try {
+                    Iterator it = ((ArrayList) this.mSessionInfos).iterator();
+                    while (it.hasNext()) {
+                        RoutingSessionInfo routingSessionInfo = (RoutingSessionInfo) it.next();
+                        MediaRouter2ServiceImpl.UserHandler userHandler = (MediaRouter2ServiceImpl.UserHandler) this.mCallback;
+                        userHandler.getClass();
+                        userHandler.sendMessage(PooledLambda.obtainMessage(new MediaRouter2ServiceImpl$$ExternalSyntheticLambda3(4), userHandler, this, routingSessionInfo));
+                    }
+                    ((ArrayList) this.mSessionInfos).clear();
+                    ((ArrayList) this.mReleasingSessions).clear();
+                    this.mRequestIdToSessionCreationRequest.clear();
+                    ((HashMap) this.mSessionOriginalIdToTransferRequest).clear();
+                } finally {
+                }
+            }
+        }
+    }
+
+    @Override // com.android.server.media.MediaRoute2Provider
+    public final String getDebugString() {
+        int size;
+        int size2;
+        synchronized (this.mLock) {
+            size = this.mRequestIdToSessionCreationRequest.size();
+            size2 = ((HashMap) this.mSessionOriginalIdToTransferRequest).size();
+        }
+        return TextUtils.formatSimple("ProviderServiceProxy - package: %s, bound: %b, connection (active:%b, ready:%b), pending (session creations: %d, transfers: %d)", new Object[]{this.mComponentName.getPackageName(), Boolean.valueOf(this.mBound), Boolean.valueOf(this.mActiveConnection != null), Boolean.valueOf(this.mConnectionReady), Integer.valueOf(size), Integer.valueOf(size2)});
+    }
+
+    @Override // com.android.server.media.MediaRoute2Provider
+    public final void prepareReleaseSession(String str) {
+        synchronized (this.mLock) {
+            try {
+                Iterator it = ((ArrayList) this.mSessionInfos).iterator();
+                while (true) {
+                    if (!it.hasNext()) {
+                        break;
+                    }
+                    RoutingSessionInfo routingSessionInfo = (RoutingSessionInfo) it.next();
+                    if (TextUtils.equals(routingSessionInfo.getId(), str)) {
+                        ((ArrayList) this.mSessionInfos).remove(routingSessionInfo);
+                        ((ArrayList) this.mReleasingSessions).add(routingSessionInfo);
+                        break;
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.media.MediaRoute2Provider
+    public final void releaseSession(long j, String str) {
+        if (this.mConnectionReady) {
+            if (Flags.enableBuiltInSpeakerRouteSuitabilityStatuses()) {
+                synchronized (this.mLock) {
+                    ((HashMap) this.mSessionOriginalIdToTransferRequest).remove(str);
+                }
+            }
+            Connection connection = this.mActiveConnection;
+            connection.getClass();
+            try {
+                connection.mService.releaseSession(j, str);
+            } catch (RemoteException unused) {
+                Slog.e("MR2ProviderSvcProxy", "releaseSession: Failed to deliver request.");
+            }
+            updateBinding();
+        }
+    }
+
+    @Override // com.android.server.media.MediaRoute2Provider
+    public final void requestCreateSession(long j, String str, String str2, Bundle bundle, int i, UserHandle userHandle, String str3) {
+        if (this.mConnectionReady) {
+            if (Flags.enableBuiltInSpeakerRouteSuitabilityStatuses()) {
+                synchronized (this.mLock) {
+                    this.mRequestIdToSessionCreationRequest.put(j, new MediaRoute2Provider.SessionCreationOrTransferRequest(j, str2, i, userHandle, str3));
+                }
+            }
+            Connection connection = this.mActiveConnection;
+            connection.getClass();
+            try {
+                connection.mService.requestCreateSession(j, str, str2, bundle);
+            } catch (RemoteException unused) {
+                Slog.e("MR2ProviderSvcProxy", "requestCreateSession: Failed to deliver request.");
+            }
+            updateBinding();
+        }
+    }
+
+    @Override // com.android.server.media.MediaRoute2Provider
+    public final void selectRoute(String str, long j, String str2) {
+        if (this.mConnectionReady) {
+            Connection connection = this.mActiveConnection;
+            connection.getClass();
+            try {
+                connection.mService.selectRoute(j, str, str2);
+            } catch (RemoteException e) {
+                Slog.e("MR2ProviderSvcProxy", "selectRoute: Failed to deliver request.", e);
+            }
+        }
+    }
+
+    @Override // com.android.server.media.MediaRoute2Provider
+    public final void setRouteVolume(int i, String str, long j) {
+        if (this.mConnectionReady) {
+            Connection connection = this.mActiveConnection;
+            connection.getClass();
+            try {
+                connection.mService.setRouteVolume(j, str, i);
+            } catch (RemoteException e) {
+                Slog.e("MR2ProviderSvcProxy", "setRouteVolume: Failed to deliver request.", e);
+            }
+            updateBinding();
+        }
+    }
+
+    @Override // com.android.server.media.MediaRoute2Provider
+    public final void setSessionVolume(int i, String str, long j) {
+        if (this.mConnectionReady) {
+            Connection connection = this.mActiveConnection;
+            connection.getClass();
+            try {
+                connection.mService.setSessionVolume(j, str, i);
+            } catch (RemoteException e) {
+                Slog.e("MR2ProviderSvcProxy", "setSessionVolume: Failed to deliver request.", e);
+            }
+            updateBinding();
+        }
+    }
+
+    public final boolean shouldBind() {
+        if (!this.mRunning) {
+            return false;
+        }
+        boolean z = this.mIsManagerScanning && !Flags.enablePreventionOfManagerScansWhenNoAppsScan();
+        if (!((ArrayList) getSessionInfos()).isEmpty() || z) {
+            return true;
+        }
+        RouteDiscoveryPreference routeDiscoveryPreference = this.mLastDiscoveryPreference;
+        if (routeDiscoveryPreference == null || routeDiscoveryPreference.getPreferredFeatures().isEmpty()) {
+            return false;
+        }
+        return this.mLastDiscoveryPreferenceIncludesThisPackage || !this.mIsSelfScanOnlyProvider;
+    }
+
+    public final void start(boolean z) {
+        if (!this.mRunning) {
+            if (DEBUG) {
+                Slog.d("MR2ProviderSvcProxy", this + ": Starting");
+            }
+            this.mRunning = true;
+            if (!Flags.enablePreventionOfKeepAliveRouteProviders()) {
+                updateBinding();
+            }
+        }
+        if (z && this.mActiveConnection == null && shouldBind()) {
+            unbind();
+            bind();
+        }
+    }
+
+    public final void stop() {
+        if (this.mRunning) {
+            if (DEBUG) {
+                Slog.d("MR2ProviderSvcProxy", this + ": Stopping");
+            }
+            this.mRunning = false;
+            updateBinding();
+        }
+    }
+
+    @Override // com.android.server.media.MediaRoute2Provider
+    public final void transferToRoute(long j, UserHandle userHandle, String str, String str2, String str3, int i) {
+        if (this.mConnectionReady) {
+            if (Flags.enableBuiltInSpeakerRouteSuitabilityStatuses()) {
+                synchronized (this.mLock) {
+                    ((HashMap) this.mSessionOriginalIdToTransferRequest).put(str2, new MediaRoute2Provider.SessionCreationOrTransferRequest(j, str3, i, userHandle, str));
+                }
+            }
+            Connection connection = this.mActiveConnection;
+            connection.getClass();
+            try {
+                connection.mService.transferToRoute(j, str2, str3);
+            } catch (RemoteException e) {
+                Slog.e("MR2ProviderSvcProxy", "transferToRoute: Failed to deliver request.", e);
             }
         }
     }
@@ -234,521 +652,31 @@ public final class MediaRoute2ProviderServiceProxy extends MediaRoute2Provider i
             }
             this.mBound = false;
             disconnect();
-            this.mContext.unbindService(this);
+            this.mContext.unbindService(this.mServiceConnection);
         }
     }
 
-    @Override // android.content.ServiceConnection
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        boolean z = DEBUG;
-        if (z) {
-            Slog.d("MR2ProviderSvcProxy", this + ": Connected");
-        }
-        if (this.mBound) {
-            disconnect();
-            IMediaRoute2ProviderService asInterface = IMediaRoute2ProviderService.Stub.asInterface(iBinder);
-            if (asInterface != null) {
-                Connection connection = new Connection(asInterface);
-                if (connection.register()) {
-                    this.mActiveConnection = connection;
-                    return;
-                } else {
-                    if (z) {
-                        Slog.d("MR2ProviderSvcProxy", this + ": Registration failed");
-                        return;
-                    }
-                    return;
-                }
-            }
-            Slog.e("MR2ProviderSvcProxy", this + ": Service returned invalid binder");
-        }
-    }
-
-    @Override // android.content.ServiceConnection
-    public void onServiceDisconnected(ComponentName componentName) {
-        if (DEBUG) {
-            Slog.d("MR2ProviderSvcProxy", this + ": Service disconnected");
-        }
-        disconnect();
-    }
-
-    @Override // android.content.ServiceConnection
-    public void onBindingDied(ComponentName componentName) {
-        if (DEBUG) {
-            Slog.d("MR2ProviderSvcProxy", this + ": Service binding died");
-        }
-        unbind();
+    public final void updateBinding() {
         if (shouldBind()) {
             bind();
-        }
-    }
-
-    public final void onConnectionReady(Connection connection) {
-        Set of;
-        if (this.mActiveConnection == connection) {
-            this.mConnectionReady = true;
-            if (this.mLastDiscoveryPreference != null) {
-                if (this.mLastDiscoveryPreferenceIncludesThisPackage) {
-                    of = Set.of(this.mComponentName.getPackageName());
-                } else {
-                    of = Set.of();
-                }
-                updateDiscoveryPreference(of, this.mLastDiscoveryPreference);
-            }
-        }
-    }
-
-    public final void onConnectionDied(Connection connection) {
-        if (this.mActiveConnection == connection) {
-            if (DEBUG) {
-                Slog.d("MR2ProviderSvcProxy", this + ": Service connection died");
-            }
-            disconnect();
-        }
-    }
-
-    public final void onProviderUpdated(Connection connection, MediaRoute2ProviderInfo mediaRoute2ProviderInfo) {
-        if (this.mActiveConnection != connection) {
-            return;
-        }
-        if (DEBUG) {
-            Slog.d("MR2ProviderSvcProxy", this + ": updated");
-        }
-        setAndNotifyProviderState(mediaRoute2ProviderInfo);
-    }
-
-    public final void onSessionCreated(Connection connection, long j, RoutingSessionInfo routingSessionInfo) {
-        if (this.mActiveConnection != connection) {
-            return;
-        }
-        if (routingSessionInfo == null) {
-            Slog.w("MR2ProviderSvcProxy", "onSessionCreated: Ignoring null session sent from " + this.mComponentName);
-            return;
-        }
-        RoutingSessionInfo assignProviderIdForSession = assignProviderIdForSession(routingSessionInfo);
-        final String id = assignProviderIdForSession.getId();
-        synchronized (this.mLock) {
-            if (!this.mSessionInfos.stream().anyMatch(new Predicate() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$$ExternalSyntheticLambda1
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$onSessionCreated$0;
-                    lambda$onSessionCreated$0 = MediaRoute2ProviderServiceProxy.lambda$onSessionCreated$0(id, (RoutingSessionInfo) obj);
-                    return lambda$onSessionCreated$0;
-                }
-            }) && !this.mReleasingSessions.stream().anyMatch(new Predicate() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$$ExternalSyntheticLambda2
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$onSessionCreated$1;
-                    lambda$onSessionCreated$1 = MediaRoute2ProviderServiceProxy.lambda$onSessionCreated$1(id, (RoutingSessionInfo) obj);
-                    return lambda$onSessionCreated$1;
-                }
-            })) {
-                this.mSessionInfos.add(assignProviderIdForSession);
-                this.mCallback.onSessionCreated(this, j, assignProviderIdForSession);
-                return;
-            }
-            Slog.w("MR2ProviderSvcProxy", "onSessionCreated: Duplicate session already exists. Ignoring.");
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$onSessionCreated$0(String str, RoutingSessionInfo routingSessionInfo) {
-        return TextUtils.equals(routingSessionInfo.getId(), str);
-    }
-
-    public static /* synthetic */ boolean lambda$onSessionCreated$1(String str, RoutingSessionInfo routingSessionInfo) {
-        return TextUtils.equals(routingSessionInfo.getId(), str);
-    }
-
-    public final int findSessionByIdLocked(RoutingSessionInfo routingSessionInfo) {
-        for (int i = 0; i < this.mSessionInfos.size(); i++) {
-            if (TextUtils.equals(((RoutingSessionInfo) this.mSessionInfos.get(i)).getId(), routingSessionInfo.getId())) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public final void onSessionsUpdated(Connection connection, List list) {
-        if (this.mActiveConnection != connection) {
-            return;
-        }
-        synchronized (this.mLock) {
-            Iterator it = list.iterator();
-            int i = 0;
-            while (it.hasNext()) {
-                RoutingSessionInfo routingSessionInfo = (RoutingSessionInfo) it.next();
-                if (routingSessionInfo != null) {
-                    RoutingSessionInfo assignProviderIdForSession = assignProviderIdForSession(routingSessionInfo);
-                    int findSessionByIdLocked = findSessionByIdLocked(assignProviderIdForSession);
-                    if (findSessionByIdLocked < 0) {
-                        this.mSessionInfos.add(i, assignProviderIdForSession);
-                        dispatchSessionCreated(0L, assignProviderIdForSession);
-                        i++;
-                    } else if (findSessionByIdLocked < i) {
-                        Slog.w("MR2ProviderSvcProxy", "Ignoring duplicate session ID: " + assignProviderIdForSession.getId());
-                    } else {
-                        this.mSessionInfos.set(findSessionByIdLocked, assignProviderIdForSession);
-                        Collections.swap(this.mSessionInfos, findSessionByIdLocked, i);
-                        dispatchSessionUpdated(assignProviderIdForSession);
-                        i++;
-                    }
-                }
-            }
-            for (int size = this.mSessionInfos.size() - 1; size >= i; size--) {
-                dispatchSessionReleased((RoutingSessionInfo) this.mSessionInfos.remove(size));
-            }
-        }
-    }
-
-    public final void onSessionReleased(Connection connection, RoutingSessionInfo routingSessionInfo) {
-        boolean z;
-        if (this.mActiveConnection != connection) {
-            return;
-        }
-        if (routingSessionInfo == null) {
-            Slog.w("MR2ProviderSvcProxy", "onSessionReleased: Ignoring null session sent from " + this.mComponentName);
-            return;
-        }
-        RoutingSessionInfo assignProviderIdForSession = assignProviderIdForSession(routingSessionInfo);
-        synchronized (this.mLock) {
-            Iterator it = this.mSessionInfos.iterator();
-            while (true) {
-                if (!it.hasNext()) {
-                    z = false;
-                    break;
-                }
-                RoutingSessionInfo routingSessionInfo2 = (RoutingSessionInfo) it.next();
-                if (TextUtils.equals(routingSessionInfo2.getId(), assignProviderIdForSession.getId())) {
-                    this.mSessionInfos.remove(routingSessionInfo2);
-                    z = true;
-                    break;
-                }
-            }
-            if (!z) {
-                for (RoutingSessionInfo routingSessionInfo3 : this.mReleasingSessions) {
-                    if (TextUtils.equals(routingSessionInfo3.getId(), assignProviderIdForSession.getId())) {
-                        this.mReleasingSessions.remove(routingSessionInfo3);
-                        return;
-                    }
-                }
-            }
-            if (!z) {
-                Slog.w("MR2ProviderSvcProxy", "onSessionReleased: Matching session info not found");
-            } else {
-                this.mCallback.onSessionReleased(this, assignProviderIdForSession);
-            }
-        }
-    }
-
-    public final void dispatchSessionCreated(long j, RoutingSessionInfo routingSessionInfo) {
-        Handler handler = this.mHandler;
-        final MediaRoute2Provider.Callback callback = this.mCallback;
-        Objects.requireNonNull(callback);
-        handler.sendMessage(PooledLambda.obtainMessage(new TriConsumer() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$$ExternalSyntheticLambda4
-            public final void accept(Object obj, Object obj2, Object obj3) {
-                MediaRoute2Provider.Callback.this.onSessionCreated((MediaRoute2ProviderServiceProxy) obj, ((Long) obj2).longValue(), (RoutingSessionInfo) obj3);
-            }
-        }, this, Long.valueOf(j), routingSessionInfo));
-    }
-
-    public final void dispatchSessionUpdated(RoutingSessionInfo routingSessionInfo) {
-        Handler handler = this.mHandler;
-        final MediaRoute2Provider.Callback callback = this.mCallback;
-        Objects.requireNonNull(callback);
-        handler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$$ExternalSyntheticLambda0
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                MediaRoute2Provider.Callback.this.onSessionUpdated((MediaRoute2ProviderServiceProxy) obj, (RoutingSessionInfo) obj2);
-            }
-        }, this, routingSessionInfo));
-    }
-
-    public final void dispatchSessionReleased(RoutingSessionInfo routingSessionInfo) {
-        Handler handler = this.mHandler;
-        final MediaRoute2Provider.Callback callback = this.mCallback;
-        Objects.requireNonNull(callback);
-        handler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$$ExternalSyntheticLambda3
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                MediaRoute2Provider.Callback.this.onSessionReleased((MediaRoute2ProviderServiceProxy) obj, (RoutingSessionInfo) obj2);
-            }
-        }, this, routingSessionInfo));
-    }
-
-    public final RoutingSessionInfo assignProviderIdForSession(RoutingSessionInfo routingSessionInfo) {
-        return new RoutingSessionInfo.Builder(routingSessionInfo).setOwnerPackageName(this.mComponentName.getPackageName()).setProviderId(getUniqueId()).build();
-    }
-
-    public final void onRequestFailed(Connection connection, long j, int i) {
-        if (this.mActiveConnection != connection) {
-            return;
-        }
-        if (j == 0) {
-            Slog.w("MR2ProviderSvcProxy", "onRequestFailed: Ignoring requestId REQUEST_ID_NONE");
         } else {
-            this.mCallback.onRequestFailed(this, j, i);
-        }
-    }
-
-    public final void disconnect() {
-        Connection connection = this.mActiveConnection;
-        if (connection != null) {
-            this.mConnectionReady = false;
-            connection.dispose();
-            this.mActiveConnection = null;
-            setAndNotifyProviderState(null);
-            synchronized (this.mLock) {
-                Iterator it = this.mSessionInfos.iterator();
-                while (it.hasNext()) {
-                    this.mCallback.onSessionReleased(this, (RoutingSessionInfo) it.next());
-                }
-                this.mSessionInfos.clear();
-                this.mReleasingSessions.clear();
-            }
+            unbind();
         }
     }
 
     @Override // com.android.server.media.MediaRoute2Provider
-    public String getDebugString() {
-        Object[] objArr = new Object[4];
-        objArr[0] = this.mComponentName.getPackageName();
-        objArr[1] = Boolean.valueOf(this.mBound);
-        objArr[2] = Boolean.valueOf(this.mActiveConnection != null);
-        objArr[3] = Boolean.valueOf(this.mConnectionReady);
-        return TextUtils.formatSimple("ProviderServiceProxy - package: %s, bound: %b, connection (active:%b, ready:%b)", objArr);
-    }
-
-    /* loaded from: classes2.dex */
-    public final class Connection implements IBinder.DeathRecipient {
-        public final ServiceCallbackStub mCallbackStub = new ServiceCallbackStub(this);
-        public final IMediaRoute2ProviderService mService;
-
-        public Connection(IMediaRoute2ProviderService iMediaRoute2ProviderService) {
-            this.mService = iMediaRoute2ProviderService;
-        }
-
-        public boolean register() {
+    public final void updateDiscoveryPreference(Set set, RouteDiscoveryPreference routeDiscoveryPreference) {
+        this.mLastDiscoveryPreference = routeDiscoveryPreference;
+        this.mLastDiscoveryPreferenceIncludesThisPackage = set.contains(this.mComponentName.getPackageName());
+        if (this.mConnectionReady) {
+            Connection connection = this.mActiveConnection;
+            connection.getClass();
             try {
-                this.mService.asBinder().linkToDeath(this, 0);
-                this.mService.setCallback(this.mCallbackStub);
-                MediaRoute2ProviderServiceProxy.this.mHandler.post(new Runnable() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda6
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        MediaRoute2ProviderServiceProxy.Connection.this.lambda$register$0();
-                    }
-                });
-                return true;
-            } catch (RemoteException unused) {
-                binderDied();
-                return false;
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$register$0() {
-            MediaRoute2ProviderServiceProxy.this.onConnectionReady(this);
-        }
-
-        public void dispose() {
-            this.mService.asBinder().unlinkToDeath(this, 0);
-            this.mCallbackStub.dispose();
-        }
-
-        public void requestCreateSession(long j, String str, String str2, Bundle bundle) {
-            try {
-                this.mService.requestCreateSession(j, str, str2, bundle);
-            } catch (RemoteException unused) {
-                Slog.e("MR2ProviderSvcProxy", "requestCreateSession: Failed to deliver request.");
-            }
-        }
-
-        public void releaseSession(long j, String str) {
-            try {
-                this.mService.releaseSession(j, str);
-            } catch (RemoteException unused) {
-                Slog.e("MR2ProviderSvcProxy", "releaseSession: Failed to deliver request.");
-            }
-        }
-
-        public void updateDiscoveryPreference(RouteDiscoveryPreference routeDiscoveryPreference) {
-            try {
-                this.mService.updateDiscoveryPreference(routeDiscoveryPreference);
+                connection.mService.updateDiscoveryPreference(routeDiscoveryPreference);
             } catch (RemoteException unused) {
                 Slog.e("MR2ProviderSvcProxy", "updateDiscoveryPreference: Failed to deliver request.");
             }
         }
-
-        public void selectRoute(long j, String str, String str2) {
-            try {
-                this.mService.selectRoute(j, str, str2);
-            } catch (RemoteException e) {
-                Slog.e("MR2ProviderSvcProxy", "selectRoute: Failed to deliver request.", e);
-            }
-        }
-
-        public void deselectRoute(long j, String str, String str2) {
-            try {
-                this.mService.deselectRoute(j, str, str2);
-            } catch (RemoteException e) {
-                Slog.e("MR2ProviderSvcProxy", "deselectRoute: Failed to deliver request.", e);
-            }
-        }
-
-        public void transferToRoute(long j, String str, String str2) {
-            try {
-                this.mService.transferToRoute(j, str, str2);
-            } catch (RemoteException e) {
-                Slog.e("MR2ProviderSvcProxy", "transferToRoute: Failed to deliver request.", e);
-            }
-        }
-
-        public void setRouteVolume(long j, String str, int i) {
-            try {
-                this.mService.setRouteVolume(j, str, i);
-            } catch (RemoteException e) {
-                Slog.e("MR2ProviderSvcProxy", "setRouteVolume: Failed to deliver request.", e);
-            }
-        }
-
-        public void setSessionVolume(long j, String str, int i) {
-            try {
-                this.mService.setSessionVolume(j, str, i);
-            } catch (RemoteException e) {
-                Slog.e("MR2ProviderSvcProxy", "setSessionVolume: Failed to deliver request.", e);
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$binderDied$1() {
-            MediaRoute2ProviderServiceProxy.this.onConnectionDied(this);
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            MediaRoute2ProviderServiceProxy.this.mHandler.post(new Runnable() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MediaRoute2ProviderServiceProxy.Connection.this.lambda$binderDied$1();
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$postProviderUpdated$2(MediaRoute2ProviderInfo mediaRoute2ProviderInfo) {
-            MediaRoute2ProviderServiceProxy.this.onProviderUpdated(this, mediaRoute2ProviderInfo);
-        }
-
-        public void postProviderUpdated(final MediaRoute2ProviderInfo mediaRoute2ProviderInfo) {
-            MediaRoute2ProviderServiceProxy.this.mHandler.post(new Runnable() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda3
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MediaRoute2ProviderServiceProxy.Connection.this.lambda$postProviderUpdated$2(mediaRoute2ProviderInfo);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$postSessionCreated$3(long j, RoutingSessionInfo routingSessionInfo) {
-            MediaRoute2ProviderServiceProxy.this.onSessionCreated(this, j, routingSessionInfo);
-        }
-
-        public void postSessionCreated(final long j, final RoutingSessionInfo routingSessionInfo) {
-            MediaRoute2ProviderServiceProxy.this.mHandler.post(new Runnable() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda5
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MediaRoute2ProviderServiceProxy.Connection.this.lambda$postSessionCreated$3(j, routingSessionInfo);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$postSessionsUpdated$4(List list) {
-            MediaRoute2ProviderServiceProxy.this.onSessionsUpdated(this, list);
-        }
-
-        public void postSessionsUpdated(final List list) {
-            MediaRoute2ProviderServiceProxy.this.mHandler.post(new Runnable() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MediaRoute2ProviderServiceProxy.Connection.this.lambda$postSessionsUpdated$4(list);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$postSessionReleased$5(RoutingSessionInfo routingSessionInfo) {
-            MediaRoute2ProviderServiceProxy.this.onSessionReleased(this, routingSessionInfo);
-        }
-
-        public void postSessionReleased(final RoutingSessionInfo routingSessionInfo) {
-            MediaRoute2ProviderServiceProxy.this.mHandler.post(new Runnable() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MediaRoute2ProviderServiceProxy.Connection.this.lambda$postSessionReleased$5(routingSessionInfo);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$postRequestFailed$6(long j, int i) {
-            MediaRoute2ProviderServiceProxy.this.onRequestFailed(this, j, i);
-        }
-
-        public void postRequestFailed(final long j, final int i) {
-            MediaRoute2ProviderServiceProxy.this.mHandler.post(new Runnable() { // from class: com.android.server.media.MediaRoute2ProviderServiceProxy$Connection$$ExternalSyntheticLambda4
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MediaRoute2ProviderServiceProxy.Connection.this.lambda$postRequestFailed$6(j, i);
-                }
-            });
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class ServiceCallbackStub extends IMediaRoute2ProviderServiceCallback.Stub {
-        public final WeakReference mConnectionRef;
-
-        public ServiceCallbackStub(Connection connection) {
-            this.mConnectionRef = new WeakReference(connection);
-        }
-
-        public void dispose() {
-            this.mConnectionRef.clear();
-        }
-
-        public void notifyProviderUpdated(MediaRoute2ProviderInfo mediaRoute2ProviderInfo) {
-            Connection connection = (Connection) this.mConnectionRef.get();
-            if (connection != null) {
-                connection.postProviderUpdated(mediaRoute2ProviderInfo);
-            }
-        }
-
-        public void notifySessionCreated(long j, RoutingSessionInfo routingSessionInfo) {
-            Connection connection = (Connection) this.mConnectionRef.get();
-            if (connection != null) {
-                connection.postSessionCreated(j, routingSessionInfo);
-            }
-        }
-
-        public void notifySessionsUpdated(List list) {
-            Connection connection = (Connection) this.mConnectionRef.get();
-            if (connection != null) {
-                connection.postSessionsUpdated(list);
-            }
-        }
-
-        public void notifySessionReleased(RoutingSessionInfo routingSessionInfo) {
-            Connection connection = (Connection) this.mConnectionRef.get();
-            if (connection != null) {
-                connection.postSessionReleased(routingSessionInfo);
-            }
-        }
-
-        public void notifyRequestFailed(long j, int i) {
-            Connection connection = (Connection) this.mConnectionRef.get();
-            if (connection != null) {
-                connection.postRequestFailed(j, i);
-            }
-        }
+        updateBinding();
     }
 }

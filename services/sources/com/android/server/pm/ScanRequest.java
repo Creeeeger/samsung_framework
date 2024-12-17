@@ -1,10 +1,11 @@
 package com.android.server.pm;
 
 import android.os.UserHandle;
-import com.android.server.pm.parsing.pkg.ParsedPackage;
+import com.android.internal.pm.parsing.pkg.ParsedPackage;
 import com.android.server.pm.pkg.AndroidPackage;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 final class ScanRequest {
     public final String mCpuAbiOverride;
     public final PackageSetting mDisabledPkgSetting;
@@ -27,7 +28,7 @@ final class ScanRequest {
         this.mPkgSetting = packageSetting;
         this.mOldSharedUserSetting = sharedUserSetting;
         this.mSharedUserSetting = sharedUserSetting2;
-        this.mOldPkgSetting = packageSetting == null ? null : new PackageSetting(packageSetting);
+        this.mOldPkgSetting = packageSetting == null ? null : new PackageSetting(packageSetting, false);
         this.mDisabledPkgSetting = packageSetting2;
         this.mOriginalPkgSetting = packageSetting3;
         this.mRealPkgName = str;

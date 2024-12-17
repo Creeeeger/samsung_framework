@@ -8,13 +8,16 @@ import android.os.Binder;
 import android.os.PowerManager;
 import com.android.internal.util.Preconditions;
 import com.android.server.FgThread;
-import java.util.Objects;
+import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-/* loaded from: classes2.dex */
-public class SystemDeviceIdleHelper extends DeviceIdleHelper {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class SystemDeviceIdleHelper {
     public final Context mContext;
+    public final CopyOnWriteArrayList mListeners = new CopyOnWriteArrayList();
     public PowerManager mPowerManager;
-    public BroadcastReceiver mReceiver;
+    public AnonymousClass1 mReceiver;
     public boolean mRegistrationRequired;
     public boolean mSystemReady;
 
@@ -22,55 +25,47 @@ public class SystemDeviceIdleHelper extends DeviceIdleHelper {
         this.mContext = context;
     }
 
-    public synchronized void onSystemReady() {
-        this.mSystemReady = true;
-        PowerManager powerManager = (PowerManager) this.mContext.getSystemService(PowerManager.class);
-        Objects.requireNonNull(powerManager);
-        PowerManager powerManager2 = powerManager;
-        this.mPowerManager = powerManager;
-        onRegistrationStateChanged();
+    public final synchronized void addListener(DeviceIdleHelper$DeviceIdleListener deviceIdleHelper$DeviceIdleListener) {
+        if (this.mListeners.add(deviceIdleHelper$DeviceIdleListener) && this.mListeners.size() == 1) {
+            synchronized (this) {
+                this.mRegistrationRequired = true;
+                onRegistrationStateChanged();
+            }
+        }
     }
 
-    @Override // com.android.server.location.injector.DeviceIdleHelper
-    public synchronized void registerInternal() {
-        this.mRegistrationRequired = true;
-        onRegistrationStateChanged();
-    }
-
-    @Override // com.android.server.location.injector.DeviceIdleHelper
-    public synchronized void unregisterInternal() {
-        this.mRegistrationRequired = false;
-        onRegistrationStateChanged();
-    }
-
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r2v2, types: [android.content.BroadcastReceiver, com.android.server.location.injector.SystemDeviceIdleHelper$1] */
     public final void onRegistrationStateChanged() {
-        BroadcastReceiver broadcastReceiver;
+        AnonymousClass1 anonymousClass1;
         if (this.mSystemReady) {
             long clearCallingIdentity = Binder.clearCallingIdentity();
             try {
                 boolean z = this.mRegistrationRequired;
                 if (z && this.mReceiver == null) {
-                    BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() { // from class: com.android.server.location.injector.SystemDeviceIdleHelper.1
+                    ?? r2 = new BroadcastReceiver() { // from class: com.android.server.location.injector.SystemDeviceIdleHelper.1
                         @Override // android.content.BroadcastReceiver
-                        public void onReceive(Context context, Intent intent) {
-                            SystemDeviceIdleHelper.this.notifyDeviceIdleChanged();
+                        public final void onReceive(Context context, Intent intent) {
+                            SystemDeviceIdleHelper systemDeviceIdleHelper = SystemDeviceIdleHelper.this;
+                            Preconditions.checkState(systemDeviceIdleHelper.mPowerManager != null);
+                            boolean isDeviceIdleMode = systemDeviceIdleHelper.mPowerManager.isDeviceIdleMode();
+                            Iterator it = systemDeviceIdleHelper.mListeners.iterator();
+                            while (it.hasNext()) {
+                                ((DeviceIdleHelper$DeviceIdleListener) it.next()).onDeviceIdleChanged(isDeviceIdleMode);
+                            }
                         }
                     };
-                    this.mContext.registerReceiver(broadcastReceiver2, new IntentFilter("android.os.action.DEVICE_IDLE_MODE_CHANGED"), null, FgThread.getHandler());
-                    this.mReceiver = broadcastReceiver2;
-                } else if (!z && (broadcastReceiver = this.mReceiver) != null) {
+                    this.mContext.registerReceiver(r2, new IntentFilter("android.os.action.DEVICE_IDLE_MODE_CHANGED"), null, FgThread.getHandler());
+                    this.mReceiver = r2;
+                } else if (!z && (anonymousClass1 = this.mReceiver) != null) {
                     this.mReceiver = null;
-                    this.mContext.unregisterReceiver(broadcastReceiver);
+                    this.mContext.unregisterReceiver(anonymousClass1);
                 }
-            } finally {
                 Binder.restoreCallingIdentity(clearCallingIdentity);
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                throw th;
             }
         }
-    }
-
-    @Override // com.android.server.location.injector.DeviceIdleHelper
-    public boolean isDeviceIdle() {
-        Preconditions.checkState(this.mPowerManager != null);
-        return this.mPowerManager.isDeviceIdleMode();
     }
 }

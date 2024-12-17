@@ -9,64 +9,77 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import com.samsung.android.sepunion.Log;
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
-public class CoverTestModeUtils {
-    public OnCoverTestModeChanged mCallback;
-    public Context mContext;
-    public ContentObserver mObserver;
-    public Handler mTestModeChangeHandler = new Handler() { // from class: com.android.server.sepunion.cover.CoverTestModeUtils.1
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class CoverTestModeUtils {
+    public static final boolean SHIPPED = !Debug.semIsProductDev();
+    public static int sCurrentTestMode = -1;
+    public static Rect sCurrentTestVisibleRect = new Rect();
+    public final OnCoverTestModeChanged mCallback;
+    public final Context mContext;
+    public final AnonymousClass2 mObserver;
+    public final AnonymousClass1 mTestModeChangeHandler = new Handler() { // from class: com.android.server.sepunion.cover.CoverTestModeUtils.1
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            if (CoverTestModeUtils.sCurrentTestMode != -1) {
-                CoverTestModeUtils.this.mCallback.onCoverTestModeChanged(CoverTestModeUtils.sCurrentTestMode, true);
+        public final void handleMessage(Message message) {
+            int i = CoverTestModeUtils.sCurrentTestMode;
+            if (i != -1) {
+                CoverTestModeUtils.this.mCallback.onCoverTestModeChanged(i, true);
             }
         }
     };
-    public ContentObserver mVisibleRectObserver;
-    public static final String TAG = "CoverManager_" + CoverTestModeUtils.class.getSimpleName();
-    public static final boolean SHIPPED = Debug.semIsProductDev() ^ true;
-    public static int sCurrentTestMode = -1;
-    public static Rect sCurrentTestVisibleRect = new Rect();
+    public final AnonymousClass3 mVisibleRectObserver;
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface OnCoverTestModeChanged {
         void onCoverTestModeChanged(int i, boolean z);
     }
 
+    /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.sepunion.cover.CoverTestModeUtils$1] */
     public CoverTestModeUtils(Context context, OnCoverTestModeChanged onCoverTestModeChanged) {
         if (SHIPPED) {
-            Log.d(TAG, "This version has been shipped!! Then cover test mode is not available");
+            Log.d("CoverManager_CoverTestModeUtils", "This version has been shipped!! Then cover test mode is not available");
             return;
         }
         this.mContext = context;
         this.mCallback = onCoverTestModeChanged;
-        this.mObserver = new ContentObserver(new Handler()) { // from class: com.android.server.sepunion.cover.CoverTestModeUtils.2
+        ContentObserver contentObserver = new ContentObserver(new Handler()) { // from class: com.android.server.sepunion.cover.CoverTestModeUtils.2
             @Override // android.database.ContentObserver
-            public void onChange(boolean z, Uri uri) {
-                CoverTestModeUtils.this.updateCoverTestMode(CoverTestModeUtils.this.getTestModeFromSetting());
+            public final void onChange(boolean z, Uri uri) {
+                OnCoverTestModeChanged onCoverTestModeChanged2;
+                CoverTestModeUtils coverTestModeUtils = CoverTestModeUtils.this;
+                boolean z2 = CoverTestModeUtils.SHIPPED;
+                int i = Settings.System.getInt(coverTestModeUtils.mContext.getContentResolver(), "cover_test_mode", -1);
+                CoverTestModeUtils coverTestModeUtils2 = CoverTestModeUtils.this;
+                coverTestModeUtils2.getClass();
+                Log.d("CoverManager_CoverTestModeUtils", "updateCoverTestMode() sCurrentTestMode = " + CoverTestModeUtils.sCurrentTestMode + ", currentTestMode = " + i);
+                int i2 = CoverTestModeUtils.sCurrentTestMode;
+                if (i2 == i || (onCoverTestModeChanged2 = coverTestModeUtils2.mCallback) == null) {
+                    return;
+                }
+                if (i2 != -1) {
+                    onCoverTestModeChanged2.onCoverTestModeChanged(i2, false);
+                }
+                CoverTestModeUtils.sCurrentTestMode = i;
+                coverTestModeUtils2.mTestModeChangeHandler.sendEmptyMessageDelayed(0, 500L);
             }
         };
-        this.mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor("cover_test_mode"), false, this.mObserver);
-        sCurrentTestMode = getTestModeFromSetting();
-        this.mVisibleRectObserver = new ContentObserver(new Handler()) { // from class: com.android.server.sepunion.cover.CoverTestModeUtils.3
+        context.getContentResolver().registerContentObserver(Settings.System.getUriFor("cover_test_mode"), false, contentObserver);
+        sCurrentTestMode = Settings.System.getInt(this.mContext.getContentResolver(), "cover_test_mode", -1);
+        ContentObserver contentObserver2 = new ContentObserver(new Handler()) { // from class: com.android.server.sepunion.cover.CoverTestModeUtils.3
             @Override // android.database.ContentObserver
-            public void onChange(boolean z, Uri uri) {
-                CoverTestModeUtils.sCurrentTestVisibleRect = CoverTestModeUtils.this.getTestVisibleRectFromSetting();
+            public final void onChange(boolean z, Uri uri) {
+                CoverTestModeUtils coverTestModeUtils = CoverTestModeUtils.this;
+                boolean z2 = CoverTestModeUtils.SHIPPED;
+                CoverTestModeUtils.sCurrentTestVisibleRect = coverTestModeUtils.getTestVisibleRectFromSetting();
             }
         };
-        this.mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor("cover_test_visible_rect"), false, this.mVisibleRectObserver);
+        context.getContentResolver().registerContentObserver(Settings.System.getUriFor("cover_test_visible_rect"), false, contentObserver2);
         sCurrentTestVisibleRect = getTestVisibleRectFromSetting();
     }
 
-    public final int getTestModeFromSetting() {
-        return Settings.System.getInt(this.mContext.getContentResolver(), "cover_test_mode", -1);
-    }
-
-    public void setTestModeToSetting(int i) {
-        Settings.System.putInt(this.mContext.getContentResolver(), "cover_test_mode", i);
+    public static boolean isTestMode() {
+        return (SHIPPED || sCurrentTestMode == -1) ? false : true;
     }
 
     public final Rect getTestVisibleRectFromSetting() {
@@ -86,47 +99,7 @@ public class CoverTestModeUtils {
         return rect;
     }
 
-    public void setTestVisibleRectToSetting(Rect rect) {
-        Settings.System.putString(this.mContext.getContentResolver(), "cover_test_visible_rect", rect.left + "," + rect.top + "," + rect.right + "," + rect.bottom);
-    }
-
-    public final void updateCoverTestMode(int i) {
-        OnCoverTestModeChanged onCoverTestModeChanged;
-        Log.d(TAG, "updateCoverTestMode() sCurrentTestMode = " + sCurrentTestMode + ", currentTestMode = " + i);
-        int i2 = sCurrentTestMode;
-        if (i2 == i || (onCoverTestModeChanged = this.mCallback) == null) {
-            return;
-        }
-        if (i2 != -1) {
-            onCoverTestModeChanged.onCoverTestModeChanged(i2, false);
-        }
-        sCurrentTestMode = i;
-        this.mTestModeChangeHandler.sendEmptyMessageDelayed(0, 500L);
-    }
-
-    public static boolean isTestMode() {
-        return (SHIPPED || sCurrentTestMode == -1) ? false : true;
-    }
-
-    public static int getTestCoverType() {
-        if (SHIPPED) {
-            return -1;
-        }
-        return sCurrentTestMode;
-    }
-
-    public static Rect getTestVisibleRect() {
-        return sCurrentTestVisibleRect;
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        printWriter.println(" Current CoverTestModeUtils state:");
-        printWriter.print("  SHIPPED=");
-        printWriter.println(SHIPPED);
-        printWriter.print("  sCurrentTestMode=");
-        printWriter.println(sCurrentTestMode);
-        printWriter.print("  sCurrentTestVisibleRect=");
-        printWriter.println(sCurrentTestVisibleRect);
-        printWriter.println("  ");
+    public final void setTestModeToSetting(int i) {
+        Settings.System.putInt(this.mContext.getContentResolver(), "cover_test_mode", i);
     }
 }

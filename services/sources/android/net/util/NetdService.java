@@ -5,25 +5,21 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.util.Log;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class NetdService {
     private static final long BASE_TIMEOUT_MS = 100;
     private static final long MAX_TIMEOUT_MS = 1000;
     private static final String TAG = "NetdService";
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface NetdCommand {
-        void run(INetd iNetd);
+        void run(INetd iNetd) throws RemoteException;
     }
 
-    public static INetd getInstance() {
-        INetd asInterface = INetd.Stub.asInterface(ServiceManager.getService(KnoxVpnFirewallHelper.NETD_SERVICE_NAME));
-        if (asInterface == null) {
-            Log.w(TAG, "WARNING: returning null INetd instance.");
-        }
-        return asInterface;
+    public static INetd get() {
+        return get(-1L);
     }
 
     public static INetd get(long j) {
@@ -41,7 +37,7 @@ public class NetdService {
             if (elapsedRealtime2 <= 0) {
                 return null;
             }
-            j2 = Math.min(Math.min(j2 + 100, 1000L), elapsedRealtime2);
+            j2 = Math.min(Math.min(j2 + 100, MAX_TIMEOUT_MS), elapsedRealtime2);
             try {
                 Thread.sleep(j2);
             } catch (InterruptedException unused) {
@@ -49,8 +45,12 @@ public class NetdService {
         }
     }
 
-    public static INetd get() {
-        return get(-1L);
+    public static INetd getInstance() {
+        INetd asInterface = INetd.Stub.asInterface(ServiceManager.getService("netd"));
+        if (asInterface == null) {
+            Log.w(TAG, "WARNING: returning null INetd instance.");
+        }
+        return asInterface;
     }
 
     public static void run(NetdCommand netdCommand) {
@@ -59,7 +59,7 @@ public class NetdService {
                 netdCommand.run(get());
                 return;
             } catch (RemoteException e) {
-                Log.e(TAG, "error communicating with netd: " + e);
+                NetdService$$ExternalSyntheticOutline0.m("error communicating with netd: ", e, TAG);
             }
         }
     }

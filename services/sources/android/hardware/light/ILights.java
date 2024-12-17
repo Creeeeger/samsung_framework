@@ -4,99 +4,57 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
+import android.os.RemoteException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface ILights extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$light$ILights".replace('$', '.');
 
-    /* loaded from: classes.dex */
-    public class Default implements ILights {
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return null;
-        }
-    }
-
-    String getInterfaceHash();
-
-    int getInterfaceVersion();
-
-    HwLight[] getLights();
-
-    void setLightState(int i, HwLightState hwLightState);
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements ILights {
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
-        }
+        public static final /* synthetic */ int $r8$clinit = 0;
 
-        public Stub() {
-            markVintfStability();
-            attachInterface(this, ILights.DESCRIPTOR);
-        }
-
-        public static ILights asInterface(IBinder iBinder) {
-            if (iBinder == null) {
-                return null;
-            }
-            IInterface queryLocalInterface = iBinder.queryLocalInterface(ILights.DESCRIPTOR);
-            if (queryLocalInterface != null && (queryLocalInterface instanceof ILights)) {
-                return (ILights) queryLocalInterface;
-            }
-            return new Proxy(iBinder);
-        }
-
-        @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
-            String str = ILights.DESCRIPTOR;
-            if (i >= 1 && i <= 16777215) {
-                parcel.enforceInterface(str);
-            }
-            switch (i) {
-                case 16777214:
-                    parcel2.writeNoException();
-                    parcel2.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    parcel2.writeNoException();
-                    parcel2.writeInt(getInterfaceVersion());
-                    return true;
-                case 1598968902:
-                    parcel2.writeString(str);
-                    return true;
-                default:
-                    if (i == 1) {
-                        int readInt = parcel.readInt();
-                        HwLightState hwLightState = (HwLightState) parcel.readTypedObject(HwLightState.CREATOR);
-                        parcel.enforceNoDataAvail();
-                        setLightState(readInt, hwLightState);
-                        parcel2.writeNoException();
-                    } else if (i == 2) {
-                        HwLight[] lights = getLights();
-                        parcel2.writeNoException();
-                        parcel2.writeTypedArray(lights, 1);
-                    } else {
-                        return super.onTransact(i, parcel, parcel2, i2);
-                    }
-                    return true;
-            }
-        }
-
-        /* loaded from: classes.dex */
-        public class Proxy implements ILights {
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements ILights {
             public IBinder mRemote;
-            public int mCachedVersion = -1;
-            public String mCachedHash = "-1";
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
 
             @Override // android.os.IInterface
-            public IBinder asBinder() {
+            public final IBinder asBinder() {
                 return this.mRemote;
+            }
+
+            public final HwLight[] getLights() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(ILights.DESCRIPTOR);
+                    if (!this.mRemote.transact(2, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method getLights is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return (HwLight[]) obtain2.createTypedArray(HwLight.CREATOR);
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            public final void setLightState(int i, HwLightState hwLightState) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(ILights.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeTypedObject(hwLightState, 0);
+                    if (!this.mRemote.transact(1, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method setLightState is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
             }
         }
     }

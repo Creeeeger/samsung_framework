@@ -1,111 +1,132 @@
 package com.android.server.wm;
 
-import android.graphics.Point;
-import android.os.Debug;
-import android.util.Slog;
+import android.content.Context;
 import android.view.SurfaceControl;
-import android.view.WindowManager;
-import android.window.TransitionInfo;
-import com.android.internal.policy.TransitionAnimation;
-import com.android.server.display.DisplayPowerController2;
-import com.samsung.android.rune.CoreRune;
-import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class DimAnimator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DimAnimator {
     public final WindowContainer mContainer;
+    public final Context mContext;
     SurfaceControl mDimAnimationLayer;
+    public int mTransitType = 0;
 
     public DimAnimator(WindowContainer windowContainer) {
         this.mContainer = windowContainer;
+        this.mContext = windowContainer.mWmService.mContext;
     }
 
-    public void createDimAnimationLayerIfNeeded(int i, boolean z, WindowManager.LayoutParams layoutParams) {
-        if (canCreateDimAnimationLayer(i, z, layoutParams, null)) {
-            createDimAnimationLayer();
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x0058, code lost:
+    
+        if (r5 != false) goto L39;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean canCreateDimAnimationLayer(int r4, boolean r5, android.view.WindowManager.LayoutParams r6, android.window.TransitionInfo.Change r7) {
+        /*
+            r3 = this;
+            com.android.server.wm.WindowContainer r3 = r3.mContainer
+            com.android.server.wm.WindowManagerService r0 = r3.mWmService
+            float r0 = r0.getTransitionAnimationScaleLocked()
+            r1 = 0
+            int r0 = (r0 > r1 ? 1 : (r0 == r1 ? 0 : -1))
+            r2 = 0
+            if (r0 > 0) goto Lf
+            return r2
+        Lf:
+            com.android.server.wm.ActivityRecord r0 = r3.asActivityRecord()
+            if (r0 != 0) goto L1c
+            com.android.server.wm.Task r0 = r3.asTask()
+            if (r0 != 0) goto L1c
+            return r2
+        L1c:
+            if (r7 == 0) goto L26
+            int r7 = r7.getMode()
+            r0 = 6
+            if (r7 != r0) goto L26
+            return r2
+        L26:
+            if (r6 == 0) goto L3e
+            float r7 = r6.dimAmount
+            int r0 = (r7 > r1 ? 1 : (r7 == r1 ? 0 : -1))
+            if (r0 <= 0) goto L35
+            r0 = 1065353216(0x3f800000, float:1.0)
+            int r7 = (r7 > r0 ? 1 : (r7 == r0 ? 0 : -1))
+            if (r7 >= 0) goto L35
+            return r2
+        L35:
+            int r6 = r6.windowAnimations
+            boolean r6 = com.android.internal.policy.TransitionAnimation.isDefaultPackageAnimRes(r6)
+            if (r6 != 0) goto L3e
+            return r2
+        L3e:
+            com.android.server.wm.DisplayContent r6 = r3.getDisplayContent()
+            boolean r6 = r6.isDefaultDisplay
+            if (r6 != 0) goto L47
+            return r2
+        L47:
+            r6 = 1
+            if (r4 == r6) goto L58
+            r7 = 2
+            if (r4 == r7) goto L54
+            r7 = 3
+            if (r4 == r7) goto L58
+            r7 = 4
+            if (r4 == r7) goto L54
+            return r2
+        L54:
+            if (r5 != 0) goto L57
+            goto L5a
+        L57:
+            return r2
+        L58:
+            if (r5 == 0) goto L74
+        L5a:
+            boolean r4 = r3.inMultiWindowMode()
+            if (r4 != 0) goto L74
+            boolean r4 = r3.fillsParent()
+            if (r4 != 0) goto L67
+            goto L74
+        L67:
+            com.android.server.wm.DimAnimator$$ExternalSyntheticLambda0 r4 = new com.android.server.wm.DimAnimator$$ExternalSyntheticLambda0
+            r4.<init>()
+            com.android.server.wm.ActivityRecord r3 = r3.getActivity(r4)
+            if (r3 == 0) goto L73
+            return r2
+        L73:
+            return r6
+        L74:
+            return r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DimAnimator.canCreateDimAnimationLayer(int, boolean, android.view.WindowManager$LayoutParams, android.window.TransitionInfo$Change):boolean");
     }
 
-    public boolean canCreateDimAnimationLayer(int i, boolean z, WindowManager.LayoutParams layoutParams, TransitionInfo.Change change) {
-        if (this.mContainer.mWmService.getTransitionAnimationScaleLocked() <= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            return false;
-        }
-        if (this.mContainer.asActivityRecord() == null && this.mContainer.asTask() == null) {
-            return false;
-        }
-        if (change != null && change.getMode() == 6) {
-            return false;
-        }
-        if (layoutParams != null) {
-            float f = layoutParams.dimAmount;
-            if ((f > DisplayPowerController2.RATE_FROM_DOZE_TO_ON && f < 1.0f) || !TransitionAnimation.isDefaultPackageAnimRes(layoutParams.windowAnimations)) {
-                return false;
-            }
-        }
-        if (this.mContainer.getDisplayContent().isDefaultDisplay) {
-            return (i == 1 || i == 3) && z && !this.mContainer.inMultiWindowMode() && this.mContainer.fillsParent() && this.mContainer.getActivity(new Predicate() { // from class: com.android.server.wm.DimAnimator$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$canCreateDimAnimationLayer$0;
-                    lambda$canCreateDimAnimationLayer$0 = DimAnimator.lambda$canCreateDimAnimationLayer$0((ActivityRecord) obj);
-                    return lambda$canCreateDimAnimationLayer$0;
-                }
-            }) == null;
-        }
-        return false;
-    }
-
-    public static /* synthetic */ boolean lambda$canCreateDimAnimationLayer$0(ActivityRecord activityRecord) {
-        return activityRecord.isVisibleRequested() && (!activityRecord.fillsParent() || activityRecord.showWallpaper());
-    }
-
-    public void createDimAnimationLayer() {
+    public void createDimAnimationLayer(int i) {
         finishDimAnimation(0);
         if (this.mDimAnimationLayer == null) {
-            this.mDimAnimationLayer = this.mContainer.makeChildSurface(null).setName("DimAnimationLayer for " + this.mContainer.getName()).setColorLayer().setParent(this.mContainer.getDisplayContent().getSurfaceControl()).setCallsite("WindowContainer#createAnimatingDimLayer").build();
-            if (CoreRune.SAFE_DEBUG) {
-                Slog.d(StartingSurfaceController.TAG, "createDimAnimationLayer, mDimAnimationLayer=" + this.mDimAnimationLayer + ", caller=" + Debug.getCallers(6));
-            }
+            this.mTransitType = i;
+            WindowContainer windowContainer = this.mContainer;
+            this.mDimAnimationLayer = windowContainer.makeChildSurface(null).setName("DimAnimationLayer for " + windowContainer.getName()).setColorLayer().setParent(windowContainer.getDisplayContent().getSurfaceControl()).setCallsite("WindowContainer#createAnimatingDimLayer").build();
         }
     }
 
-    public void startDimAnimation(SurfaceControl.Transaction transaction) {
+    public final void finishDimAnimation(int i) {
         SurfaceControl surfaceControl = this.mDimAnimationLayer;
         if (surfaceControl == null || !surfaceControl.isValid()) {
             return;
         }
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.d(StartingSurfaceController.TAG, "startDimAnimation, mDimAnimationLayer=" + this.mDimAnimationLayer + ", caller=" + Debug.getCallers(6));
-        }
-        WindowAnimationSpec createDimAnimationSpec = createDimAnimationSpec();
-        transaction.setRelativeLayer(this.mDimAnimationLayer, this.mContainer.getSurfaceControl(), -1);
-        transaction.setAlpha(this.mDimAnimationLayer, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
-        transaction.show(this.mDimAnimationLayer);
         WindowContainer windowContainer = this.mContainer;
-        windowContainer.mWmService.mSurfaceAnimationRunner.startAnimation(createDimAnimationSpec, this.mDimAnimationLayer, windowContainer.getSyncTransaction(), null);
-        this.mContainer.scheduleAnimation();
-    }
-
-    public void finishDimAnimation(int i) {
-        SurfaceControl surfaceControl = this.mDimAnimationLayer;
-        if (surfaceControl == null || !surfaceControl.isValid()) {
-            return;
-        }
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.d(StartingSurfaceController.TAG, "finishDimAnimation, mDimAnimationLayer=" + this.mDimAnimationLayer + ", caller=" + Debug.getCallers(6));
-        }
-        this.mContainer.mWmService.mSurfaceAnimationRunner.onAnimationCancelled(this.mDimAnimationLayer);
-        this.mContainer.getSyncTransaction().reparent(this.mDimAnimationLayer, null);
+        windowContainer.mWmService.mSurfaceAnimationRunner.onAnimationCancelled(this.mDimAnimationLayer);
+        windowContainer.getSyncTransaction().reparent(this.mDimAnimationLayer, null);
         this.mDimAnimationLayer = null;
-        this.mContainer.scheduleAnimation();
+        this.mTransitType = 0;
+        windowContainer.scheduleAnimation();
         if ((i & 2) != 0) {
-            for (WindowContainer parent = this.mContainer.getParent(); parent != null; parent = parent.getParent()) {
+            for (WindowContainer parent = windowContainer.getParent(); parent != null; parent = parent.getParent()) {
                 parent.mDimAnimator.finishDimAnimation(2);
             }
         }
-    }
-
-    public final WindowAnimationSpec createDimAnimationSpec() {
-        return new WindowAnimationSpec(this.mContainer.getDisplayContent().mAppTransition.mTransitionAnimation.loadDimAnimation(), new Point(0, 0), false, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
     }
 }

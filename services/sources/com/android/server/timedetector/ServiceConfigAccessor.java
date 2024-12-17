@@ -1,15 +1,6 @@
 package com.android.server.timedetector;
 
-import android.app.time.TimeConfiguration;
-import com.android.server.timezonedetector.StateChangeListener;
-
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface ServiceConfigAccessor {
-    void addConfigurationInternalChangeListener(StateChangeListener stateChangeListener);
-
-    ConfigurationInternal getConfigurationInternal(int i);
-
-    ConfigurationInternal getCurrentUserConfigurationInternal();
-
-    boolean updateConfiguration(int i, TimeConfiguration timeConfiguration, boolean z);
 }

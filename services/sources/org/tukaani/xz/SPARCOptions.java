@@ -3,19 +3,13 @@ package org.tukaani.xz;
 import java.io.InputStream;
 import org.tukaani.xz.simple.SPARC;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class SPARCOptions extends BCJOptions {
-    @Override // org.tukaani.xz.BCJOptions
-    public /* bridge */ /* synthetic */ Object clone() {
-        return super.clone();
-    }
-
-    public SPARCOptions() {
-        super(4);
-    }
-
+public final class SPARCOptions extends BCJOptions {
     @Override // org.tukaani.xz.FilterOptions
-    public InputStream getInputStream(InputStream inputStream, ArrayCache arrayCache) {
-        return new SimpleInputStream(inputStream, new SPARC(false, this.startOffset));
+    public final InputStream getInputStream(InputStream inputStream, ArrayCache arrayCache) {
+        SPARC sparc = new SPARC();
+        sparc.pos = 0;
+        return new SimpleInputStream(inputStream, sparc);
     }
 }

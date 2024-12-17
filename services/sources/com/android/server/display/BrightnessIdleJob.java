@@ -7,15 +7,14 @@ import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.hardware.display.DisplayManagerInternal;
+import android.util.Slog;
 import com.android.server.LocalServices;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public class BrightnessIdleJob extends JobService {
-    @Override // android.app.job.JobService
-    public boolean onStopJob(JobParameters jobParameters) {
-        return false;
-    }
+    public static final /* synthetic */ int $r8$clinit = 0;
 
     public static void scheduleJob(Context context) {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(JobScheduler.class);
@@ -30,13 +29,17 @@ public class BrightnessIdleJob extends JobService {
         }
     }
 
-    public static void cancelJob(Context context) {
-        ((JobScheduler) context.getSystemService(JobScheduler.class)).cancel(3923512);
+    @Override // android.app.job.JobService
+    public final boolean onStartJob(JobParameters jobParameters) {
+        if (BrightnessTracker.DEBUG) {
+            Slog.d("BrightnessTracker", "Scheduled write of brightness events");
+        }
+        ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).persistBrightnessTrackerState();
+        return false;
     }
 
     @Override // android.app.job.JobService
-    public boolean onStartJob(JobParameters jobParameters) {
-        ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).persistBrightnessTrackerState();
+    public final boolean onStopJob(JobParameters jobParameters) {
         return false;
     }
 }

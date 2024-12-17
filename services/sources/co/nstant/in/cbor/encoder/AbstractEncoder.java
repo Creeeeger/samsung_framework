@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class AbstractEncoder {
     public final CborEncoder encoder;
@@ -20,15 +21,7 @@ public abstract class AbstractEncoder {
         this.outputStream = outputStream;
     }
 
-    public void encodeTypeChunked(MajorType majorType) {
-        try {
-            this.outputStream.write((majorType.getValue() << 5) | AdditionalInformation.INDEFINITE.getValue());
-        } catch (IOException e) {
-            throw new CborException(e);
-        }
-    }
-
-    public void encodeTypeAndLength(MajorType majorType, long j) {
+    public final void encodeTypeAndLength(MajorType majorType, long j) {
         int value = majorType.getValue() << 5;
         if (j <= 23) {
             write((int) (value | j));
@@ -64,7 +57,7 @@ public abstract class AbstractEncoder {
         write((int) (j & 255));
     }
 
-    public void encodeTypeAndLength(MajorType majorType, BigInteger bigInteger) {
+    public final void encodeTypeAndLength(MajorType majorType, BigInteger bigInteger) {
         boolean z = majorType == MajorType.NEGATIVE_INTEGER;
         int value = majorType.getValue() << 5;
         if (bigInteger.compareTo(BigInteger.valueOf(24L)) == -1) {
@@ -92,28 +85,37 @@ public abstract class AbstractEncoder {
             write((int) (longValue2 & 255));
             return;
         }
-        if (bigInteger.compareTo(new BigInteger("18446744073709551616")) == -1) {
-            write(value | AdditionalInformation.EIGHT_BYTES.getValue());
-            BigInteger valueOf = BigInteger.valueOf(255L);
-            write(bigInteger.shiftRight(56).and(valueOf).intValue());
-            write(bigInteger.shiftRight(48).and(valueOf).intValue());
-            write(bigInteger.shiftRight(40).and(valueOf).intValue());
-            write(bigInteger.shiftRight(32).and(valueOf).intValue());
-            write(bigInteger.shiftRight(24).and(valueOf).intValue());
-            write(bigInteger.shiftRight(16).and(valueOf).intValue());
-            write(bigInteger.shiftRight(8).and(valueOf).intValue());
-            write(bigInteger.and(valueOf).intValue());
+        if (bigInteger.compareTo(new BigInteger("18446744073709551616")) != -1) {
+            CborEncoder cborEncoder = this.encoder;
+            if (z) {
+                cborEncoder.encode(new Tag(3L));
+            } else {
+                cborEncoder.encode(new Tag(2L));
+            }
+            cborEncoder.encode(new ByteString(bigInteger.toByteArray()));
             return;
         }
-        if (z) {
-            this.encoder.encode(new Tag(3L));
-        } else {
-            this.encoder.encode(new Tag(2L));
-        }
-        this.encoder.encode(new ByteString(bigInteger.toByteArray()));
+        write(value | AdditionalInformation.EIGHT_BYTES.getValue());
+        BigInteger valueOf = BigInteger.valueOf(255L);
+        write(bigInteger.shiftRight(56).and(valueOf).intValue());
+        write(bigInteger.shiftRight(48).and(valueOf).intValue());
+        write(bigInteger.shiftRight(40).and(valueOf).intValue());
+        write(bigInteger.shiftRight(32).and(valueOf).intValue());
+        write(bigInteger.shiftRight(24).and(valueOf).intValue());
+        write(bigInteger.shiftRight(16).and(valueOf).intValue());
+        write(bigInteger.shiftRight(8).and(valueOf).intValue());
+        write(bigInteger.and(valueOf).intValue());
     }
 
-    public void write(int i) {
+    public final void encodeTypeChunked(MajorType majorType) {
+        try {
+            this.outputStream.write((majorType.getValue() << 5) | AdditionalInformation.INDEFINITE.getValue());
+        } catch (IOException e) {
+            throw new CborException(e);
+        }
+    }
+
+    public final void write(int i) {
         try {
             this.outputStream.write(i);
         } catch (IOException e) {
@@ -121,7 +123,7 @@ public abstract class AbstractEncoder {
         }
     }
 
-    public void write(byte[] bArr) {
+    public final void write(byte[] bArr) {
         try {
             this.outputStream.write(bArr);
         } catch (IOException e) {

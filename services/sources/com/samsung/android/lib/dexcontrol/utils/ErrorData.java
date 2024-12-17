@@ -1,24 +1,14 @@
 package com.samsung.android.lib.dexcontrol.utils;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class ErrorData {
+public final class ErrorData {
     public int mDexFanErrorCntr;
     public int mUvdmOpenErrorCntr;
     public int mUvdmReadErrorCntr;
     public int mUvdmWriteErrorCntr;
 
-    public void reset() {
-        this.mUvdmOpenErrorCntr = 0;
-        this.mUvdmWriteErrorCntr = 0;
-        this.mUvdmReadErrorCntr = 0;
-        this.mDexFanErrorCntr = 0;
-    }
-
-    public ErrorData() {
-        reset();
-    }
-
-    public void count(int i) {
+    public final void count(int i) {
         if (i == -5) {
             this.mDexFanErrorCntr++;
             return;
@@ -33,21 +23,5 @@ public class ErrorData {
             }
             this.mUvdmOpenErrorCntr++;
         }
-    }
-
-    public int getCountNumber(int i) {
-        if (i == -5) {
-            return this.mDexFanErrorCntr;
-        }
-        if (i == -3) {
-            return this.mUvdmReadErrorCntr;
-        }
-        if (i == -2) {
-            return this.mUvdmWriteErrorCntr;
-        }
-        if (i != -1) {
-            return 0;
-        }
-        return this.mUvdmOpenErrorCntr;
     }
 }

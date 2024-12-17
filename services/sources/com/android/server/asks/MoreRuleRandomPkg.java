@@ -1,17 +1,14 @@
 package com.android.server.asks;
 
 import android.net.INetd;
-import android.os.SystemProperties;
 import android.util.Slog;
 import com.samsung.android.knox.analytics.service.KnoxAnalyticsSystemService;
 import java.util.HashMap;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class MoreRuleRandomPkg {
-    public static int MAX_ABNORMAL_CNT = 15;
-    public static int NEED_RANDOM_CNT = 1;
-
-    public final boolean isRandom(String str) {
+public abstract class MoreRuleRandomPkg {
+    public static boolean isRandom(String str) {
         if (str.length() < 4) {
             Slog.e("PackageInformation_RandomPkg", "less than 4");
             return false;
@@ -706,30 +703,6 @@ public class MoreRuleRandomPkg {
             }
         }
         int i4 = length - i2;
-        return i2 <= i4 || i4 >= MAX_ABNORMAL_CNT;
-    }
-
-    public int getResult(String str) {
-        if (isDevDevice()) {
-            Slog.d("PackageInformation_RandomPkg", "check_moreRule_RandomPkg + :" + str);
-        }
-        if (str == null) {
-            return 4;
-        }
-        String[] split = str.split("\\.");
-        int i = 0;
-        for (String str2 : split) {
-            if (isRandom(str2)) {
-                i++;
-            }
-            if (i == NEED_RANDOM_CNT) {
-                break;
-            }
-        }
-        return (i == NEED_RANDOM_CNT || i == split.length) ? 0 : 4;
-    }
-
-    public final boolean isDevDevice() {
-        return "0x1".equals(SystemProperties.get("ro.boot.em.status"));
+        return i2 <= i4 || i4 >= 15;
     }
 }

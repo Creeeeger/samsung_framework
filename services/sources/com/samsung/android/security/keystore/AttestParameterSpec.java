@@ -4,6 +4,7 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.text.TextUtils;
 import javax.security.auth.x500.X500Principal;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class AttestParameterSpec {
     public final String mAlgorithm;
@@ -11,96 +12,26 @@ public final class AttestParameterSpec {
     public final byte[] mChallenge;
     public final boolean mDeviceAttestation;
     public final boolean mDevicePropertiesAttestationIncluded;
+    public final String mExtendedKeyUsage;
     public final String mPackageName;
+    public final boolean mSAKUidRequired;
     public final KeyGenParameterSpec mSpec;
     public final boolean mVerifiableIntegrity;
 
-    public AttestParameterSpec(String str, byte[] bArr, boolean z, boolean z2, boolean z3, String str2, KeyGenParameterSpec keyGenParameterSpec, X500Principal x500Principal) {
-        if (TextUtils.isEmpty(str)) {
+    public AttestParameterSpec(byte[] bArr, boolean z, boolean z2, KeyGenParameterSpec keyGenParameterSpec) {
+        if (TextUtils.isEmpty("EC")) {
             this.mAlgorithm = "EC";
         } else {
-            this.mAlgorithm = str;
+            this.mAlgorithm = "EC";
         }
-        this.mChallenge = cloneIfNotNull(bArr);
-        this.mDeviceAttestation = z;
-        this.mVerifiableIntegrity = z2;
-        this.mDevicePropertiesAttestationIncluded = z3;
-        this.mPackageName = str2;
+        this.mChallenge = bArr != null ? (byte[]) bArr.clone() : null;
+        this.mDeviceAttestation = false;
+        this.mVerifiableIntegrity = z;
+        this.mDevicePropertiesAttestationIncluded = false;
+        this.mSAKUidRequired = z2;
+        this.mExtendedKeyUsage = null;
+        this.mPackageName = null;
         this.mSpec = keyGenParameterSpec;
-        this.mCertificateSubject = x500Principal;
-    }
-
-    public String getAlgorithm() {
-        return this.mAlgorithm;
-    }
-
-    public byte[] getChallenge() {
-        return this.mChallenge;
-    }
-
-    public X500Principal getCertificateSubject() {
-        return this.mCertificateSubject;
-    }
-
-    public boolean isDeviceAttestation() {
-        return this.mDeviceAttestation;
-    }
-
-    public boolean isVerifiableIntegrity() {
-        return this.mVerifiableIntegrity;
-    }
-
-    public boolean isDevicePropertiesAttestationIncluded() {
-        return this.mDevicePropertiesAttestationIncluded;
-    }
-
-    public String getPackageName() {
-        return this.mPackageName;
-    }
-
-    public KeyGenParameterSpec getKeyGenParameterSpec() {
-        return this.mSpec;
-    }
-
-    /* loaded from: classes2.dex */
-    public final class Builder {
-        public final byte[] mChallenge;
-        public KeyGenParameterSpec mSpec;
-        public String mAlgorithm = "EC";
-        public boolean mDeviceAttestation = false;
-        public boolean mVerifiableIntegrity = false;
-        public boolean mDevicePropertiesAttestationIncluded = false;
-        public String mPackageName = null;
-        public X500Principal mCertificateSubject = null;
-
-        public Builder(String str, byte[] bArr) {
-            if (str == null) {
-                throw new NullPointerException("alias == null");
-            }
-            if (str.isEmpty()) {
-                throw new IllegalArgumentException("alias must not be empty");
-            }
-            if (bArr == null) {
-                throw new NullPointerException("challenge == null");
-            }
-            this.mSpec = new KeyGenParameterSpec.Builder(str, 4).setDigests("NONE", "SHA-1", "SHA-224", "SHA-256", "SHA-384", "SHA-512").build();
-            this.mChallenge = bArr;
-        }
-
-        public Builder setVerifiableIntegrity(boolean z) {
-            this.mVerifiableIntegrity = z;
-            return this;
-        }
-
-        public AttestParameterSpec build() {
-            return new AttestParameterSpec(this.mAlgorithm, this.mChallenge, this.mDeviceAttestation, this.mVerifiableIntegrity, this.mDevicePropertiesAttestationIncluded, this.mPackageName, this.mSpec, this.mCertificateSubject);
-        }
-    }
-
-    public final byte[] cloneIfNotNull(byte[] bArr) {
-        if (bArr != null) {
-            return (byte[]) bArr.clone();
-        }
-        return null;
+        this.mCertificateSubject = null;
     }
 }

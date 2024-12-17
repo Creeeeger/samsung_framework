@@ -7,15 +7,11 @@ import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.UserHandle;
 import android.util.Slog;
-import com.android.internal.util.function.pooled.PooledLambda;
-import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class RemoteSystemCaptionsManagerService {
-    public static final String TAG = "RemoteSystemCaptionsManagerService";
-    public final ComponentName mComponentName;
     public final Context mContext;
     public final Intent mIntent;
     public IBinder mService;
@@ -27,118 +23,52 @@ public final class RemoteSystemCaptionsManagerService {
     public boolean mDestroyed = false;
     public final Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public RemoteSystemCaptionsManagerService(Context context, ComponentName componentName, int i, boolean z) {
-        this.mContext = context;
-        this.mComponentName = componentName;
-        this.mUserId = i;
-        this.mVerbose = z;
-        this.mIntent = new Intent("android.service.systemcaptions.SystemCaptionsManagerService").setComponent(componentName);
-    }
-
-    public void initialize() {
-        if (this.mVerbose) {
-            Slog.v(TAG, "initialize()");
-        }
-        scheduleBind();
-    }
-
-    public void destroy() {
-        this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.server.systemcaptions.RemoteSystemCaptionsManagerService$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((RemoteSystemCaptionsManagerService) obj).handleDestroy();
-            }
-        }, this));
-    }
-
-    public void handleDestroy() {
-        if (this.mVerbose) {
-            Slog.v(TAG, "handleDestroy()");
-        }
-        synchronized (this.mLock) {
-            if (this.mDestroyed) {
-                if (this.mVerbose) {
-                    Slog.v(TAG, "handleDestroy(): Already destroyed");
-                }
-            } else {
-                this.mDestroyed = true;
-                ensureUnboundLocked();
-            }
-        }
-    }
-
-    public final void scheduleBind() {
-        if (this.mHandler.hasMessages(1)) {
-            if (this.mVerbose) {
-                Slog.v(TAG, "scheduleBind(): already scheduled");
-                return;
-            }
-            return;
-        }
-        this.mHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.server.systemcaptions.RemoteSystemCaptionsManagerService$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((RemoteSystemCaptionsManagerService) obj).handleEnsureBound();
-            }
-        }, this).setWhat(1));
-    }
-
-    public final void handleEnsureBound() {
-        synchronized (this.mLock) {
-            if (this.mService == null && !this.mBinding) {
-                if (this.mVerbose) {
-                    Slog.v(TAG, "handleEnsureBound(): binding");
-                }
-                this.mBinding = true;
-                if (!this.mContext.bindServiceAsUser(this.mIntent, this.mServiceConnection, 67112961, this.mHandler, new UserHandle(this.mUserId))) {
-                    Slog.w(TAG, "Could not bind to " + this.mIntent + " with flags 67112961");
-                    this.mBinding = false;
-                    this.mService = null;
-                }
-            }
-        }
-    }
-
-    public final void ensureUnboundLocked() {
-        if (this.mService != null || this.mBinding) {
-            this.mBinding = false;
-            this.mService = null;
-            if (this.mVerbose) {
-                Slog.v(TAG, "ensureUnbound(): unbinding");
-            }
-            this.mContext.unbindService(this.mServiceConnection);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class RemoteServiceConnection implements ServiceConnection {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RemoteServiceConnection implements ServiceConnection {
         public RemoteServiceConnection() {
         }
 
         @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             synchronized (RemoteSystemCaptionsManagerService.this.mLock) {
-                if (RemoteSystemCaptionsManagerService.this.mVerbose) {
-                    Slog.v(RemoteSystemCaptionsManagerService.TAG, "onServiceConnected()");
+                try {
+                    if (RemoteSystemCaptionsManagerService.this.mVerbose) {
+                        Slog.v("RemoteSystemCaptionsManagerService", "onServiceConnected()");
+                    }
+                    RemoteSystemCaptionsManagerService remoteSystemCaptionsManagerService = RemoteSystemCaptionsManagerService.this;
+                    if (!remoteSystemCaptionsManagerService.mDestroyed && remoteSystemCaptionsManagerService.mBinding) {
+                        remoteSystemCaptionsManagerService.mBinding = false;
+                        remoteSystemCaptionsManagerService.mService = iBinder;
+                        return;
+                    }
+                    Slog.wtf("RemoteSystemCaptionsManagerService", "onServiceConnected() dispatched after unbindService");
+                } catch (Throwable th) {
+                    throw th;
                 }
-                if (!RemoteSystemCaptionsManagerService.this.mDestroyed && RemoteSystemCaptionsManagerService.this.mBinding) {
-                    RemoteSystemCaptionsManagerService.this.mBinding = false;
-                    RemoteSystemCaptionsManagerService.this.mService = iBinder;
-                    return;
-                }
-                Slog.wtf(RemoteSystemCaptionsManagerService.TAG, "onServiceConnected() dispatched after unbindService");
             }
         }
 
         @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName componentName) {
+        public final void onServiceDisconnected(ComponentName componentName) {
             synchronized (RemoteSystemCaptionsManagerService.this.mLock) {
-                if (RemoteSystemCaptionsManagerService.this.mVerbose) {
-                    Slog.v(RemoteSystemCaptionsManagerService.TAG, "onServiceDisconnected()");
+                try {
+                    if (RemoteSystemCaptionsManagerService.this.mVerbose) {
+                        Slog.v("RemoteSystemCaptionsManagerService", "onServiceDisconnected()");
+                    }
+                    RemoteSystemCaptionsManagerService remoteSystemCaptionsManagerService = RemoteSystemCaptionsManagerService.this;
+                    remoteSystemCaptionsManagerService.mBinding = true;
+                    remoteSystemCaptionsManagerService.mService = null;
+                } catch (Throwable th) {
+                    throw th;
                 }
-                RemoteSystemCaptionsManagerService.this.mBinding = true;
-                RemoteSystemCaptionsManagerService.this.mService = null;
             }
         }
+    }
+
+    public RemoteSystemCaptionsManagerService(Context context, ComponentName componentName, boolean z, int i) {
+        this.mContext = context;
+        this.mUserId = i;
+        this.mVerbose = z;
+        this.mIntent = new Intent("android.service.systemcaptions.SystemCaptionsManagerService").setComponent(componentName);
     }
 }

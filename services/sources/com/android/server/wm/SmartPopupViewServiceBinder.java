@@ -6,40 +6,34 @@ import com.samsung.android.multiwindow.SmartPopupViewUtil;
 import com.samsung.android.rune.CoreRune;
 import java.util.List;
 
-/* loaded from: classes3.dex */
-public class SmartPopupViewServiceBinder extends FreeformContainerServiceBinder {
-    public SmartPopupViewServiceBinder(ActivityTaskManagerService activityTaskManagerService) {
-        super(activityTaskManagerService);
-        setServiceComponent("com.android.systemui", "com.android.wm.shell.freeform.SmartPopupViewService");
-    }
-
-    @Override // com.android.server.wm.FreeformContainerServiceBinder
-    public boolean okToBind() {
-        return CoreRune.MW_FREEFORM_SMART_POPUP_VIEW && super.okToBind() && hasSmartPopupViewPackage() && isSmartPopupViewOn();
-    }
-
-    @Override // com.android.server.wm.FreeformContainerServiceBinder
-    public boolean okToUnbind() {
-        if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-            return (!super.okToUnbind() && hasSmartPopupViewPackage() && isSmartPopupViewOn()) ? false : true;
-        }
-        return false;
-    }
-
-    public final boolean hasSmartPopupViewPackage() {
-        List packageStrListFromDB = SmartPopupViewUtil.getPackageStrListFromDB(this.mAtm.mContext);
-        return (packageStrListFromDB == null || packageStrListFromDB.isEmpty()) ? false : true;
-    }
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SmartPopupViewServiceBinder extends FreeformContainerServiceBinder {
     public final boolean isSmartPopupViewOn() {
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
         try {
-            int currentUserId = this.mAtm.getCurrentUserId();
-            boolean z = Settings.Secure.getIntForUser(this.mAtm.mContext.getContentResolver(), "notification_bubbles", currentUserId) == 2;
+            int currentUserId = activityTaskManagerService.mAmInternal.getCurrentUserId();
+            boolean z = Settings.Secure.getIntForUser(activityTaskManagerService.mContext.getContentResolver(), "notification_bubbles", currentUserId) == 2;
             Slog.i(this.TAG, "isSmartPopupViewOn=" + z + "  userId=" + currentUserId);
             return z;
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override // com.android.server.wm.FreeformContainerServiceBinder
+    public final boolean okToBind() {
+        List packageStrListFromDB;
+        return CoreRune.MW_FREEFORM_SMART_POPUP_VIEW && super.okToBind() && (packageStrListFromDB = SmartPopupViewUtil.getPackageStrListFromDB(this.mAtm.mContext)) != null && !packageStrListFromDB.isEmpty() && isSmartPopupViewOn();
+    }
+
+    @Override // com.android.server.wm.FreeformContainerServiceBinder
+    public final boolean okToUnbind() {
+        List packageStrListFromDB;
+        if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
+            return (okToBind() ^ true) || (packageStrListFromDB = SmartPopupViewUtil.getPackageStrListFromDB(this.mAtm.mContext)) == null || packageStrListFromDB.isEmpty() || !isSmartPopupViewOn();
+        }
+        return false;
     }
 }

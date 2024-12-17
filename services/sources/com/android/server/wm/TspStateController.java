@@ -1,10 +1,9 @@
 package com.android.server.wm;
 
-import android.R;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.database.ContentObserver;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,24 +12,28 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.Slog;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import android.view.WindowManager;
+import com.android.server.DirEncryptService$$ExternalSyntheticOutline0;
+import com.android.server.wm.TspStateController;
 import com.samsung.android.game.SemGameManager;
 import com.samsung.android.hardware.secinputdev.SemInputDeviceManager;
+import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import com.samsung.android.rune.CoreRune;
 import com.samsung.android.sepunion.Log;
 import com.samsung.android.sepunion.SemCustomDumpManager;
 
-/* loaded from: classes3.dex */
-public class TspStateController {
-    public final Runnable clearDeadzoneHole;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class TspStateController {
+    public final TspStateController$$ExternalSyntheticLambda1 clearDeadzoneHole;
     public final TspGripCommand m3rdPartyGameTspCommand;
     public final TspGripCommand m3rdPartyTspCommand;
     public final TspGripCommand m3rdPartyTspCommandForIme;
     public boolean mAwake;
-    public Context mContext;
+    public final Context mContext;
     public final TspGripCommand mCurrentCommand;
     public final TspGripCommand mCustomTspCommand;
-    public ArrayMap mDeadzoneHoleMap;
+    public final ArrayMap mDeadzoneHoleMap;
     public final TspGripCommand mDeviceDefaultTspCommand;
     public final DeviceSize mDeviceSize;
     public String mFocusedWindow;
@@ -50,593 +53,192 @@ public class TspStateController {
     public String mReserveLandCmd;
     public String mReservePortCmd;
     public SemInputDeviceManager mSemInputDeviceManager;
-    public SettingsObserver mSettingsObserver;
-    public TspDebug mTspDebug;
-    public int mTspDebugSetting;
+    public final TspDebug mTspDebug;
     public String mTspThresholdSetting;
     public static final Uri URI_SETTING_TSP_THRESHOLD = Settings.Secure.getUriFor("setting_tsp_threshold");
     public static final Uri URI_SETTING_TSP_DEBUG = Settings.Secure.getUriFor("setting_tsp_debug");
 
-    /* loaded from: classes3.dex */
-    public final class HoleInfo {
-        public int direction;
-        public int endY;
-        public int startY;
-
-        public HoleInfo(int i, int i2, int i3) {
-            this.direction = i;
-            this.startY = i2;
-            this.endY = i3;
-        }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DeviceSize {
+        public int height;
+        public int initHeight;
+        public int initWidth;
+        public int width;
     }
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class H extends Handler {
         public H() {
         }
 
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
+            WindowState windowState;
+            boolean z;
+            Bundle bundle;
             int i = message.what;
-            if (i == 1) {
-                TspStateController.this.updateWindowPolicyInner((WindowState) message.obj);
-            } else if (i == 2) {
-                TspStateController.this.updateImePolicyInner((WindowState) message.obj);
-            } else {
-                if (i != 3) {
-                    return;
-                }
-                TspStateController.this.finishScreenTurningOnInner();
-            }
-        }
-    }
-
-    public TspStateController(Context context) {
-        this.mDeviceDefaultTspCommand = new TspGripCommand(CoreRune.IS_TABLET_DEVICE ? 3 : 1);
-        this.m3rdPartyTspCommand = new TspGripCommand(CoreRune.IS_TABLET_DEVICE ? 6 : 4);
-        this.m3rdPartyTspCommandForIme = new TspGripCommand(CoreRune.IS_TABLET_DEVICE ? 9 : 7);
-        this.m3rdPartyGameTspCommand = new TspGripCommand(10);
-        this.mCustomTspCommand = new TspGripCommand(13);
-        this.mCurrentCommand = new TspGripCommand(13);
-        this.mLastNoteMode = true;
-        this.mIsPortrait = false;
-        this.mIsEnabledCustomSetting = false;
-        this.mDeadzoneHoleMap = new ArrayMap();
-        this.mTspThresholdSetting = "";
-        this.mTspDebugSetting = 0;
-        H h = new H();
-        this.mH = h;
-        this.mSemInputDeviceManager = null;
-        this.clearDeadzoneHole = new Runnable() { // from class: com.android.server.wm.TspStateController$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                TspStateController.this.clearDeadzoneHole();
-            }
-        };
-        this.mAwake = true;
-        this.mContext = context;
-        SettingsObserver settingsObserver = new SettingsObserver(h);
-        this.mSettingsObserver = settingsObserver;
-        settingsObserver.observe();
-        DeviceSize deviceSize = new DeviceSize();
-        this.mDeviceSize = deviceSize;
-        initDefaultValues();
-        updateCustomValue();
-        this.mTspDebug = new TspDebug(deviceSize.initWidth, deviceSize.initHeight);
-        toggleTspDebug();
-        Log.addLogString("tspstatemanager", "init");
-        writeTspCommandToSysfs("0,0,0,0", 3);
-        ((SemCustomDumpManager) this.mContext.getSystemService("semcustomdump")).setDumpState("tspstatemanager", (String) null);
-    }
-
-    public final void initDefaultValues() {
-        this.mDeviceDefaultTspCommand.parse(this.mDeviceSize, null, false);
-        this.m3rdPartyTspCommand.parse(this.mDeviceSize, null, false);
-        this.m3rdPartyTspCommandForIme.parse(this.mDeviceSize, null, false);
-        if (CoreRune.FW_USE_SMALLER_GRIPZONE_ON_GAME) {
-            this.m3rdPartyGameTspCommand.parse(this.mDeviceSize, null, false);
-        }
-    }
-
-    public final void updateCustomValue() {
-        String str = this.mTspThresholdSetting;
-        if (TextUtils.isEmpty(str)) {
-            str = this.mContext.getResources().getString(R.string.httpErrorFailedSslHandshake);
-        }
-        Slog.d("TspStateManager", "updateCustomValue customSetting=" + str);
-        this.mIsEnabledCustomSetting = false;
-        if (TextUtils.isEmpty(str)) {
-            return;
-        }
-        this.mIsEnabledCustomSetting = this.mCustomTspCommand.parse(this.mDeviceSize, parseCommand(0, str), false);
-        String parseCommand = parseCommand(1, str);
-        this.m3rdPartyTspCommand.parse(this.mDeviceSize, parseCommand, false);
-        this.m3rdPartyTspCommandForIme.parse(this.mDeviceSize, parseCommand, false);
-    }
-
-    public final String parseCommand(int i, String str) {
-        if (TextUtils.isEmpty(str)) {
-            return null;
-        }
-        String[] split = str.split(KnoxVpnFirewallHelper.DELIMITER);
-        if (split.length <= i) {
-            return null;
-        }
-        return split[i];
-    }
-
-    public void toggleTspDebug() {
-        this.mTspDebug.setEnabled(Settings.Secure.getInt(this.mContext.getContentResolver(), "setting_tsp_debug", 0) == 1);
-    }
-
-    public void updateTspCustomCommand() {
-        initDefaultValues();
-        updateCustomValue();
-        Log.addLogString("tspstatemanager", "onChange " + this.mCustomTspCommand);
-        updateWindowPolicy(this.mLastFocusedWindow);
-    }
-
-    public void systemReady() {
-        SemInputDeviceManager semInputDeviceManager = (SemInputDeviceManager) this.mContext.getSystemService("SemInputDeviceManagerService");
-        this.mSemInputDeviceManager = semInputDeviceManager;
-        if (semInputDeviceManager == null) {
-            Slog.d("TspStateManager", "systemReady: failed to get the service");
-        }
-    }
-
-    public void setDefaultDisplaySizeDensity(int i, int i2, int i3, int i4) {
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.d("TspStateManager", "setDefaultDisplaySizeDensity initWidth=" + i3 + ", initHeight=" + i4 + ", w=" + i + ", h=" + i2);
-        }
-        this.mDeviceSize.set(i, i2, i3, i4);
-        initDefaultValues();
-        updateCustomValue();
-        TspDebug tspDebug = this.mTspDebug;
-        DeviceSize deviceSize = this.mDeviceSize;
-        tspDebug.setInitDisplaySize(deviceSize.initWidth, deviceSize.initHeight);
-    }
-
-    public void updateImeTargetWindow(WindowState windowState) {
-        this.mImeTargetWindow = windowState;
-    }
-
-    public void updateImeWindowVisibility(boolean z) {
-        this.mImeWindowVisible = z;
-        if (z) {
-            return;
-        }
-        this.mImeWindow = null;
-    }
-
-    public void updateWindowsPolicy(WindowState windowState, WindowState windowState2, WindowState windowState3) {
-        if (windowState2 != null && windowState2 != windowState3) {
-            if (windowState2 == windowState) {
-                updateWindowPolicy(windowState);
-            }
-        } else if (this.mImeWindowVisible && this.mImeTargetWindow == windowState) {
-            updateImePolicy(windowState3);
-        } else if (windowState != null) {
-            updateWindowPolicy(windowState);
-        }
-    }
-
-    public void updateWindowPolicy(WindowState windowState) {
-        this.mLastFocusedWindow = windowState;
-        removeAllMessages();
-        this.mH.sendMessageDelayed(Message.obtain(this.mH, 1, windowState), 500L);
-    }
-
-    public void updateImePolicy(WindowState windowState) {
-        removeAllMessages();
-        this.mH.sendMessage(Message.obtain(this.mH, 2, windowState));
-    }
-
-    public void finishScreenTurningOn() {
-        if (this.mH.hasMessages(3)) {
-            this.mH.removeMessages(3);
-        }
-        this.mH.sendMessage(Message.obtain(this.mH, 3));
-    }
-
-    public final void removeAllMessages() {
-        if (this.mH.hasMessages(1)) {
-            this.mH.removeMessages(1);
-        }
-        if (this.mH.hasMessages(2)) {
-            this.mH.removeMessages(2);
-        }
-    }
-
-    public final void updateWindowPolicyInner(WindowState windowState) {
-        WindowState windowState2;
-        boolean isTspNoteMode;
-        boolean z = true;
-        boolean z2 = false;
-        if (CoreRune.FW_TSP_SIP_MODE) {
-            boolean z3 = this.mIsImmShowing;
-            if (z3 && (windowState != this.mImeTargetWindow || !this.mImeWindowVisible)) {
-                this.mIsImmShowing = false;
-                writeTspCommandToSysfs("0", 5);
-            } else if (!z3 && this.mImeWindowVisible && windowState == this.mImeTargetWindow) {
-                this.mIsImmShowing = true;
-                writeTspCommandToSysfs("1", 5);
-            }
-        }
-        if (CoreRune.FW_TSP_NOTE_MODE && windowState != null && this.mLastNoteMode != (isTspNoteMode = windowState.isTspNoteMode())) {
-            this.mLastNoteMode = isTspNoteMode;
-            writeTspCommandToSysfs(isTspNoteMode ? "1" : "0", 6);
-        }
-        if (CoreRune.FW_TSP_DEADZONE) {
-            if (windowState != null && this.mImeTargetWindow == windowState && (windowState2 = this.mImeWindow) != null && this.mImeWindowVisible) {
-                updateImePolicy(windowState2);
-                return;
-            }
-            this.mCurrentCommand.set(this.mDeviceDefaultTspCommand);
-            if (windowState != null) {
-                boolean isSystemWindow = isSystemWindow(windowState);
-                if (isSystemWindow) {
-                    z2 = isSystemWindow;
-                } else {
-                    String str = windowState.getAttrs().packageName;
-                    if (str == null || (!str.startsWith("com.sec.android.") && !str.startsWith("com.samsung."))) {
-                        z = false;
+            boolean z2 = true;
+            boolean z3 = false;
+            TspStateController tspStateController = TspStateController.this;
+            if (i != 1) {
+                if (i != 2) {
+                    if (i != 3) {
+                        return;
                     }
-                    z2 = z;
-                }
-                if (!z2) {
-                    if (CoreRune.FW_USE_SMALLER_GRIPZONE_ON_GAME && isForegroundGame()) {
-                        this.mCurrentCommand.set(this.m3rdPartyGameTspCommand);
+                    if (tspStateController.mIsPortrait && tspStateController.mReservePortCmd != null) {
+                        Log.addLogString("tspstatemanager", "finishScreenTurningOn TSP_COMMAND_TYPE_PORT");
+                        tspStateController.writeTspCommandToSysfsInner(1, tspStateController.mReservePortCmd, true);
+                        tspStateController.mLastPortCmd = tspStateController.mReservePortCmd;
+                        return;
                     } else {
-                        this.mCurrentCommand.set(this.m3rdPartyTspCommand);
+                        if (tspStateController.mReserveLandCmd != null) {
+                            Log.addLogString("tspstatemanager", "finishScreenTurningOn TSP_COMMAND_TYPE_LAND");
+                            tspStateController.writeTspCommandToSysfsInner(2, tspStateController.mReserveLandCmd, true);
+                            tspStateController.mLastLandCmd = tspStateController.mReserveLandCmd;
+                            return;
+                        }
+                        return;
                     }
                 }
-                this.mFocusedWindow = windowState.toString();
-                this.mCurrentCommand.parse(this.mDeviceSize, windowState.getTspDeadzone());
-            }
-            if (CoreRune.SAFE_DEBUG) {
-                Slog.d("TspStateManager", "updateWindowPolicy focusedWindow=" + windowState + ", isDeviceDefault=" + z2 + ", command=" + this.mCurrentCommand);
-            }
-            updateTspCommand(this.mCurrentCommand);
-        }
-    }
-
-    public final boolean isSystemWindow(WindowState windowState) {
-        return windowState.getAttrs().type >= 2000 && windowState.getAttrs().type <= 2999;
-    }
-
-    public final boolean isForegroundGame() {
-        if (this.mGameManager == null) {
-            this.mGameManager = new SemGameManager();
-        }
-        try {
-            SemGameManager semGameManager = this.mGameManager;
-            if (semGameManager != null) {
-                return semGameManager.isForegroundGame();
-            }
-            return false;
-        } catch (Exception e) {
-            Slog.e("TspStateManager", "Exception in checking isForegroundGame, " + e.toString());
-            return false;
-        }
-    }
-
-    public final void updateTspCommand(TspGripCommand tspGripCommand) {
-        if (this.mIsEnabledCustomSetting) {
-            tspGripCommand.set(this.mCustomTspCommand);
-        }
-        String makePortCommand = makePortCommand(tspGripCommand);
-        if (!makePortCommand.equals(this.mLastPortCmd) && this.mIsPortrait) {
-            writeTspCommandToSysfs(makePortCommand, 1);
-            this.mLastPortCmd = makePortCommand;
-        }
-        this.mReservePortCmd = makePortCommand;
-        String makeLandCommand = makeLandCommand(tspGripCommand);
-        if (!makeLandCommand.equals(this.mLastLandCmd) && !this.mIsPortrait) {
-            writeTspCommandToSysfs(makeLandCommand, 2);
-            this.mLastLandCmd = makeLandCommand;
-        }
-        this.mReserveLandCmd = makeLandCommand;
-    }
-
-    public final String makePortCommand(TspGripCommand tspGripCommand) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("1,");
-        sb.append(tspGripCommand.mPortEdgeZone);
-        sb.append(',');
-        sb.append(tspGripCommand.mPortX1);
-        sb.append(',');
-        sb.append(tspGripCommand.mPortX2);
-        sb.append(',');
-        sb.append(tspGripCommand.mPortY1);
-        if (CoreRune.FW_TSP_DEADZONE_V3) {
-            sb.append(',');
-            sb.append(tspGripCommand.mPortX3);
-            sb.append(',');
-            sb.append(tspGripCommand.mPortY2);
-        }
-        return sb.toString();
-    }
-
-    public final String makeLandCommand(TspGripCommand tspGripCommand) {
-        return "2,1," + tspGripCommand.mLandEdgeZone + ',' + tspGripCommand.mLandX1 + ',' + tspGripCommand.mLandTopRejectWidth + ',' + tspGripCommand.mLandBottomRejectWidth + ',' + tspGripCommand.mLandTopGripWidth + ',' + tspGripCommand.mLandBottomGripWidth;
-    }
-
-    public final void updateImePolicyInner(WindowState windowState) {
-        Bundle tspDeadzone;
-        if (CoreRune.FW_TSP_SIP_MODE && !this.mIsImmShowing) {
-            this.mIsImmShowing = true;
-            writeTspCommandToSysfs("1", 5);
-        }
-        if (CoreRune.FW_TSP_DEADZONE) {
-            if (!CoreRune.IS_TABLET_DEVICE) {
-                this.mCurrentCommand.reset();
-            }
-            String string = Settings.Secure.getString(this.mContext.getContentResolver(), "default_input_method");
-            if (TextUtils.isEmpty(string) || (!string.contains("SamsungKeypad") && !string.contains("honeyboard"))) {
-                this.mCurrentCommand.set(this.m3rdPartyTspCommandForIme);
-            }
-            if (windowState != null && (tspDeadzone = windowState.getTspDeadzone()) != null) {
-                this.mCurrentCommand.parse(this.mDeviceSize, tspDeadzone);
-            }
-            if (CoreRune.SAFE_DEBUG) {
-                Slog.d("TspStateManager", "updateImePolicy imeWindow=" + windowState + ", command=" + this.mCurrentCommand);
-            }
-            this.mImeWindow = windowState;
-            updateTspCommand(this.mCurrentCommand);
-        }
-    }
-
-    public final void finishScreenTurningOnInner() {
-        if (this.mIsPortrait && this.mReservePortCmd != null) {
-            Log.addLogString("tspstatemanager", "finishScreenTurningOn TSP_COMMAND_TYPE_PORT");
-            writeTspCommandToSysfsInner(this.mReservePortCmd, 1, true);
-            this.mLastPortCmd = this.mReservePortCmd;
-        } else if (this.mReserveLandCmd != null) {
-            Log.addLogString("tspstatemanager", "finishScreenTurningOn TSP_COMMAND_TYPE_LAND");
-            writeTspCommandToSysfsInner(this.mReserveLandCmd, 2, true);
-            this.mLastLandCmd = this.mReserveLandCmd;
-        }
-    }
-
-    public void setDeadzoneHole(Bundle bundle) {
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.d("TspStateManager", "setDeadzoneHole ");
-        }
-        if (bundle == null) {
-            Slog.w("TspStateManager", "setDeadzoneHole hole is null");
-            return;
-        }
-        String string = bundle.getString("dead_zone_process_name", null);
-        if (string == null) {
-            Slog.w("TspStateManager", "setDeadzoneHole invalid name key");
-            return;
-        }
-        int i = bundle.getInt("dead_zone_direction", 0);
-        int i2 = bundle.getInt("dead_zone_port_y1", 0);
-        int i3 = bundle.getInt("dead_zone_port_y2", 0);
-        Slog.d("TspStateManager", "holeName: " + string + ", direction: " + i + ", startY: " + i2 + ", endY: " + i3);
-        if (!CoreRune.FW_TSP_DEADZONEHOLE_LAND && i > 2) {
-            Slog.d("TspStateManager", "does not support top/bottom deadzone hole!");
-            return;
-        }
-        ArrayMap arrayMap = new ArrayMap();
-        synchronized (this.mDeadzoneHoleMap) {
-            if (i == 0 || i2 < 0 || i3 < 0 || i2 == i3) {
-                if (this.mDeadzoneHoleMap.containsKey(string)) {
-                    this.mDeadzoneHoleMap.remove(string);
-                }
-            } else {
-                this.mDeadzoneHoleMap.put(string, new HoleInfo(i, Math.min(i2, i3), Math.max(i2, i3)));
-            }
-            int size = this.mDeadzoneHoleMap.size();
-            for (int i4 = 0; i4 < size; i4++) {
-                ArrayMap arrayMap2 = this.mDeadzoneHoleMap;
-                HoleInfo holeInfo = (HoleInfo) arrayMap2.get(arrayMap2.keyAt(i4));
-                if (holeInfo != null) {
-                    Rect rect = (Rect) arrayMap.get(Integer.valueOf(holeInfo.direction));
-                    if (rect == null) {
-                        rect = new Rect(0, holeInfo.startY, 0, holeInfo.endY);
-                    } else {
-                        rect.top = Math.min(rect.top, holeInfo.startY);
-                        rect.bottom = Math.max(rect.bottom, holeInfo.endY);
+                Object obj = message.obj;
+                if (obj instanceof WindowState) {
+                    WindowState windowState2 = (WindowState) obj;
+                    tspStateController.getClass();
+                    if (CoreRune.FW_TSP_SIP_MODE && !tspStateController.mIsImmShowing) {
+                        tspStateController.mIsImmShowing = true;
+                        tspStateController.writeTspCommandToSysfsInner(5, "1", false);
                     }
-                    arrayMap.put(Integer.valueOf(holeInfo.direction), rect);
-                }
-            }
-        }
-        adjustToDisplaySize(arrayMap);
-    }
-
-    public final void adjustToDisplaySize(ArrayMap arrayMap) {
-        int size = arrayMap.size();
-        this.mH.removeCallbacks(this.clearDeadzoneHole);
-        if (size == 0) {
-            clearDeadzoneHole();
-            return;
-        }
-        for (int i = 0; i < size; i++) {
-            int intValue = ((Integer) arrayMap.keyAt(i)).intValue();
-            Rect rect = (Rect) arrayMap.get(Integer.valueOf(intValue));
-            DeviceSize deviceSize = this.mDeviceSize;
-            int tspHeightPixel = TspGripCommand.getTspHeightPixel(deviceSize.height, deviceSize.initHeight, rect.top);
-            DeviceSize deviceSize2 = this.mDeviceSize;
-            writeDeadzoneHoleCmd(intValue, tspHeightPixel, TspGripCommand.getTspHeightPixel(deviceSize2.height, deviceSize2.initHeight, rect.bottom));
-        }
-    }
-
-    public final void writeDeadzoneHoleCmd(int i, int i2, int i3) {
-        String str = "0," + i + ',' + i2 + ',' + i3;
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.d("TspStateManager", "setDeadzoneHole " + this.mLastDeadzoneHole + " --> " + str);
-        }
-        if (str.equals(this.mLastDeadzoneHole)) {
-            return;
-        }
-        this.mLastDeadzoneHole = str;
-        Log.addLogString("tspstatemanager", "setDeadzoneHole");
-        writeTspCommandToSysfs(this.mLastDeadzoneHole, 3);
-    }
-
-    public final void writeTspCommandToSysfs(String str, int i) {
-        writeTspCommandToSysfsInner(str, i, false);
-    }
-
-    public final void writeTspCommandToSysfsInner(final String str, final int i, final boolean z) {
-        new Thread(new Runnable() { // from class: com.android.server.wm.TspStateController$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                TspStateController.this.lambda$writeTspCommandToSysfsInner$0(z, i, str);
-            }
-        }, "tspStateManager").start();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$writeTspCommandToSysfsInner$0(boolean z, int i, String str) {
-        if (this.mSemInputDeviceManager != null) {
-            if (this.mAwake || z) {
-                if (i == 5) {
-                    Log.addLogString("tspstatemanager", "[" + i + "]" + str);
-                    this.mSemInputDeviceManager.setSipMode(Integer.parseInt(str));
-                } else if (i == 6) {
-                    Log.addLogString("tspstatemanager", "[" + i + "]" + str);
-                    this.mSemInputDeviceManager.setNoteMode(Integer.parseInt(str));
-                } else {
-                    if (this.mFocusedWindow != null) {
-                        Log.addLogString("tspstatemanager", "[" + i + "]window : " + str + ": " + this.mFocusedWindow);
-                        this.mFocusedWindow = null;
-                    } else {
-                        Log.addLogString("tspstatemanager", "[" + i + "]" + str);
+                    if (CoreRune.FW_TSP_DEADZONE) {
+                        boolean z4 = CoreRune.IS_TABLET_DEVICE;
+                        TspGripCommand tspGripCommand = tspStateController.mCurrentCommand;
+                        if (!z4) {
+                            tspGripCommand.reset();
+                        }
+                        String string = Settings.Secure.getString(tspStateController.mContext.getContentResolver(), "default_input_method");
+                        if (TextUtils.isEmpty(string) || (!string.contains("SamsungKeypad") && !string.contains("honeyboard"))) {
+                            tspGripCommand.set(tspStateController.m3rdPartyTspCommandForIme);
+                        }
+                        if (windowState2 != null && (bundle = windowState2.mTspDeadzone) != null) {
+                            tspGripCommand.parse(tspStateController.mDeviceSize, bundle);
+                        }
+                        tspStateController.mImeWindow = windowState2;
+                        tspStateController.updateTspCommand(tspGripCommand);
+                        return;
                     }
-                    this.mSemInputDeviceManager.setGripData(str);
-                }
-                Slog.d("TspStateManager", "wrote command: cmd=" + str + ", type=" + i);
-                if (i != 5) {
-                    this.mTspDebug.updateTspState(this.mContext, str, i);
                     return;
                 }
                 return;
             }
-            return;
-        }
-        Slog.d("TspStateManager", "mSemInputDeviceManager is null");
-    }
-
-    public void setOrientation(boolean z) {
-        if (CoreRune.FW_TSP_DEADZONE) {
-            setOrientation(z, false);
-        }
-    }
-
-    public void setOrientation(boolean z, boolean z2) {
-        if (this.mIsPortrait != z || z2) {
-            this.mIsPortrait = z;
-            synchronized (this.mDeadzoneHoleMap) {
-                this.mDeadzoneHoleMap.clear();
-            }
-            if (!this.mH.hasCallbacks(this.clearDeadzoneHole)) {
-                this.mH.postDelayed(this.clearDeadzoneHole, 150L);
-            }
-            if (this.mIsPortrait) {
-                String str = this.mReservePortCmd;
-                if (str == null) {
-                    Slog.e("TspStateManager", "setOrientation mReservePortCmd is null.");
-                    return;
+            Object obj2 = message.obj;
+            if (obj2 instanceof WindowState) {
+                WindowState windowState3 = (WindowState) obj2;
+                tspStateController.getClass();
+                if (CoreRune.FW_TSP_SIP_MODE) {
+                    boolean z5 = tspStateController.mIsImmShowing;
+                    if (z5 && (windowState3 != tspStateController.mImeTargetWindow || !tspStateController.mImeWindowVisible)) {
+                        tspStateController.mIsImmShowing = false;
+                        tspStateController.writeTspCommandToSysfsInner(5, "0", false);
+                    } else if (!z5 && tspStateController.mImeWindowVisible && windowState3 == tspStateController.mImeTargetWindow) {
+                        tspStateController.mIsImmShowing = true;
+                        tspStateController.writeTspCommandToSysfsInner(5, "1", false);
+                    }
                 }
-                if (!str.equals(this.mLastPortCmd)) {
-                    Log.addLogString("tspstatemanager", "setOrientation TSP_COMMAND_TYPE_PORT : " + this.mReservePortCmd);
-                    writeTspCommandToSysfs(this.mReservePortCmd, 1);
-                    this.mLastPortCmd = this.mReservePortCmd;
-                    return;
+                if (CoreRune.FW_TSP_NOTE_MODE && windowState3 != null && tspStateController.mLastNoteMode != (z = windowState3.mIsTspNoteMode)) {
+                    tspStateController.mLastNoteMode = z;
+                    tspStateController.writeTspCommandToSysfsInner(6, z ? "1" : "0", false);
                 }
-                Log.addLogString("tspstatemanager", "setOrientation TSP_COMMAND_TYPE_SAME");
-                writeTspCommandToSysfs("2,0", 4);
-                return;
+                if (CoreRune.FW_TSP_DEADZONE) {
+                    if (windowState3 != null && tspStateController.mImeTargetWindow == windowState3 && (windowState = tspStateController.mImeWindow) != null && tspStateController.mImeWindowVisible) {
+                        H h = tspStateController.mH;
+                        if (h.hasMessages(1)) {
+                            h.removeMessages(1);
+                        }
+                        if (h.hasMessages(2)) {
+                            h.removeMessages(2);
+                        }
+                        h.sendMessage(Message.obtain(h, 2, windowState));
+                        return;
+                    }
+                    TspGripCommand tspGripCommand2 = tspStateController.mCurrentCommand;
+                    tspGripCommand2.set(tspStateController.mDeviceDefaultTspCommand);
+                    if (windowState3 != null) {
+                        WindowManager.LayoutParams layoutParams = windowState3.mAttrs;
+                        int i2 = layoutParams.type;
+                        boolean z6 = i2 >= 2000 && i2 <= 2999;
+                        if (!z6) {
+                            String str = layoutParams.packageName;
+                            if (str == null || (!str.startsWith("com.sec.android.") && !str.startsWith("com.samsung.") && !str.equals(KnoxCustomManagerService.SETTING_PKG_NAME))) {
+                                z2 = false;
+                            }
+                            z6 = z2;
+                        }
+                        if (!z6) {
+                            if (CoreRune.FW_USE_SMALLER_GRIPZONE_ON_GAME) {
+                                if (tspStateController.mGameManager == null) {
+                                    tspStateController.mGameManager = new SemGameManager();
+                                }
+                                try {
+                                    SemGameManager semGameManager = tspStateController.mGameManager;
+                                    if (semGameManager != null) {
+                                        z3 = semGameManager.isForegroundGame();
+                                    }
+                                } catch (Exception e) {
+                                    Slog.e("TspStateManager", "Exception in checking isForegroundGame, " + e.toString());
+                                }
+                                if (z3) {
+                                    tspGripCommand2.set(tspStateController.m3rdPartyGameTspCommand);
+                                }
+                            }
+                            tspGripCommand2.set(tspStateController.m3rdPartyTspCommand);
+                        }
+                        tspStateController.mFocusedWindow = windowState3.toString();
+                        tspGripCommand2.parse(tspStateController.mDeviceSize, windowState3.mTspDeadzone);
+                    }
+                    tspStateController.updateTspCommand(tspGripCommand2);
+                }
             }
-            if (this.mReserveLandCmd == null) {
-                Slog.e("TspStateManager", "setOrientation mReserveLandCmd is null.");
-                return;
-            }
-            Log.addLogString("tspstatemanager", "setOrientation TSP_COMMAND_TYPE_LAND : " + this.mReserveLandCmd);
-            writeTspCommandToSysfs(this.mReserveLandCmd, 2);
-            this.mLastLandCmd = this.mReserveLandCmd;
         }
     }
 
-    public final void clearDeadzoneHole() {
-        writeDeadzoneHoleCmd(0, 0, 0);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class HoleInfo {
+        public int direction;
+        public int endY;
+        public int startY;
     }
 
-    public void startedWakingUp() {
-        this.mAwake = true;
-        if (CoreRune.FW_TSP_SIP_MODE) {
-            writeTspCommandToSysfs(this.mImeWindowVisible ? "1" : "0", 5);
-        }
-        if (CoreRune.FW_TSP_NOTE_MODE && this.mFocusedWindow != null) {
-            writeTspCommandToSysfs(this.mLastNoteMode ? "1" : "0", 6);
-        }
-        if (CoreRune.FW_TSP_DEADZONE) {
-            setOrientation(this.mIsPortrait, true);
-        }
-    }
-
-    public void startedGoingToSleep() {
-        this.mAwake = false;
-    }
-
-    /* loaded from: classes3.dex */
-    public class SettingsObserver extends ContentObserver {
-        public SettingsObserver(Handler handler) {
-            super(handler);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SettingsObserver extends ContentObserver {
+        public SettingsObserver(H h) {
+            super(h);
         }
 
         @Override // android.database.ContentObserver
-        public void onChange(boolean z, Uri uri) {
+        public final void onChange(boolean z, Uri uri) {
             if (uri == null) {
                 return;
             }
-            if (TspStateController.URI_SETTING_TSP_THRESHOLD.equals(uri)) {
-                TspStateController tspStateController = TspStateController.this;
-                tspStateController.mTspThresholdSetting = Settings.Secure.getString(tspStateController.mContext.getContentResolver(), "setting_tsp_threshold");
-                TspStateController.this.updateTspCustomCommand();
-            } else if (TspStateController.URI_SETTING_TSP_DEBUG.equals(uri)) {
-                TspStateController tspStateController2 = TspStateController.this;
-                tspStateController2.mTspDebugSetting = Settings.Secure.getInt(tspStateController2.mContext.getContentResolver(), "setting_tsp_debug", 0);
-                TspStateController.this.toggleTspDebug();
+            if (!TspStateController.URI_SETTING_TSP_THRESHOLD.equals(uri)) {
+                if (TspStateController.URI_SETTING_TSP_DEBUG.equals(uri)) {
+                    Settings.Secure.getInt(TspStateController.this.mContext.getContentResolver(), "setting_tsp_debug", 0);
+                    TspStateController tspStateController = TspStateController.this;
+                    tspStateController.mTspDebug.mEnabled = Settings.Secure.getInt(tspStateController.mContext.getContentResolver(), "setting_tsp_debug", 0) == 1;
+                    return;
+                }
+                return;
             }
-        }
-
-        public void observe() {
-            ContentResolver contentResolver = TspStateController.this.mContext.getContentResolver();
-            contentResolver.registerContentObserver(TspStateController.URI_SETTING_TSP_THRESHOLD, false, this, -1);
-            contentResolver.registerContentObserver(TspStateController.URI_SETTING_TSP_DEBUG, false, this, -1);
-            TspStateController tspStateController = TspStateController.this;
-            tspStateController.mTspThresholdSetting = Settings.Secure.getString(tspStateController.mContext.getContentResolver(), "setting_tsp_threshold");
             TspStateController tspStateController2 = TspStateController.this;
-            tspStateController2.mTspDebugSetting = Settings.Secure.getInt(tspStateController2.mContext.getContentResolver(), "setting_tsp_debug", 0);
+            tspStateController2.mTspThresholdSetting = Settings.Secure.getString(tspStateController2.mContext.getContentResolver(), "setting_tsp_threshold");
+            TspStateController tspStateController3 = TspStateController.this;
+            tspStateController3.initDefaultValues();
+            tspStateController3.updateCustomValue();
+            Log.addLogString("tspstatemanager", "onChange " + tspStateController3.mCustomTspCommand);
+            tspStateController3.updateWindowPolicy(tspStateController3.mLastFocusedWindow);
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class DeviceSize {
-        public int initWidth = -1;
-        public int initHeight = -1;
-        public int width = -1;
-        public int height = -1;
-
-        public void set(int i, int i2, int i3, int i4) {
-            this.width = i;
-            this.height = i2;
-            this.initWidth = i3;
-            this.initHeight = i4;
-        }
-    }
-
-    public void printLastGripCmd() {
-        Slog.d("TspStateManager", "lastGripCmd=" + this.mTspDebug.updateDebugString().toString());
-    }
-
-    /* loaded from: classes3.dex */
-    public class TspDebug {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TspDebug {
         public boolean mEnabled;
         public String mHoleCommand;
         public int mInitDisplayHeight;
@@ -646,26 +248,7 @@ public class TspStateController {
         public String mLastNoteMode;
         public String mPortCommand;
 
-        public TspDebug(int i, int i2) {
-            setInitDisplaySize(i, i2);
-        }
-
-        public void updateTspState(Context context, String str, int i) {
-            if (i == 1) {
-                this.mPortCommand = str;
-                this.mLastCommand = str;
-            } else if (i == 2) {
-                this.mLandCommand = str;
-                this.mLastCommand = str;
-            } else if (i == 3) {
-                this.mHoleCommand = str;
-            } else if (i == 6) {
-                this.mLastNoteMode = str;
-            }
-            writeToSettings(context, updateDebugString());
-        }
-
-        public StringBuilder updateDebugString() {
+        public final StringBuilder updateDebugString() {
             StringBuilder sb = new StringBuilder();
             sb.append(this.mInitDisplayWidth);
             sb.append(',');
@@ -680,21 +263,284 @@ public class TspStateController {
             sb.append(this.mLastCommand);
             return sb;
         }
+    }
 
-        public final void writeToSettings(Context context, StringBuilder sb) {
-            if (this.mEnabled) {
-                Settings.Secure.putString(context.getContentResolver(), "setting_last_grip_cmd", sb.toString());
-                Settings.Secure.putString(context.getContentResolver(), "setting_last_note_mode", this.mLastNoteMode);
+    /* JADX WARN: Type inference failed for: r5v0, types: [com.android.server.wm.TspStateController$$ExternalSyntheticLambda1] */
+    public TspStateController(Context context) {
+        boolean z = CoreRune.IS_TABLET_DEVICE;
+        this.mDeviceDefaultTspCommand = new TspGripCommand(z ? 3 : 1);
+        this.m3rdPartyTspCommand = new TspGripCommand(z ? 6 : 4);
+        this.m3rdPartyTspCommandForIme = new TspGripCommand(z ? 9 : 7);
+        this.m3rdPartyGameTspCommand = new TspGripCommand(10);
+        this.mCustomTspCommand = new TspGripCommand(13);
+        this.mCurrentCommand = new TspGripCommand(13);
+        this.mLastNoteMode = true;
+        this.mIsPortrait = true;
+        this.mIsEnabledCustomSetting = false;
+        this.mDeadzoneHoleMap = new ArrayMap();
+        this.mTspThresholdSetting = "";
+        H h = new H();
+        this.mH = h;
+        this.mSemInputDeviceManager = null;
+        this.clearDeadzoneHole = new Runnable() { // from class: com.android.server.wm.TspStateController$$ExternalSyntheticLambda1
+            @Override // java.lang.Runnable
+            public final void run() {
+                TspStateController.this.writeDeadzoneHoleCmd(0, 0, 0);
             }
-        }
+        };
+        this.mAwake = true;
+        this.mContext = context;
+        SettingsObserver settingsObserver = new SettingsObserver(h);
+        ContentResolver contentResolver = context.getContentResolver();
+        contentResolver.registerContentObserver(URI_SETTING_TSP_THRESHOLD, false, settingsObserver, -1);
+        contentResolver.registerContentObserver(URI_SETTING_TSP_DEBUG, false, settingsObserver, -1);
+        this.mTspThresholdSetting = Settings.Secure.getString(context.getContentResolver(), "setting_tsp_threshold");
+        Settings.Secure.getInt(context.getContentResolver(), "setting_tsp_debug", 0);
+        DeviceSize deviceSize = new DeviceSize();
+        deviceSize.initWidth = -1;
+        deviceSize.initHeight = -1;
+        deviceSize.width = -1;
+        deviceSize.height = -1;
+        this.mDeviceSize = deviceSize;
+        initDefaultValues();
+        updateCustomValue();
+        int i = deviceSize.initWidth;
+        int i2 = deviceSize.initHeight;
+        TspDebug tspDebug = new TspDebug();
+        tspDebug.mInitDisplayWidth = i;
+        tspDebug.mInitDisplayHeight = i2;
+        this.mTspDebug = tspDebug;
+        this.mTspDebug.mEnabled = Settings.Secure.getInt(this.mContext.getContentResolver(), "setting_tsp_debug", 0) == 1;
+        Log.addLogString("tspstatemanager", "init");
+        writeTspCommandToSysfsInner(3, "0,0,0,0", false);
+        ((SemCustomDumpManager) context.getSystemService("semcustomdump")).setDumpState("tspstatemanager", (String) null);
+    }
 
-        public void setInitDisplaySize(int i, int i2) {
-            this.mInitDisplayWidth = i;
-            this.mInitDisplayHeight = i2;
+    public final void initDefaultValues() {
+        TspGripCommand tspGripCommand = this.mDeviceDefaultTspCommand;
+        DeviceSize deviceSize = this.mDeviceSize;
+        tspGripCommand.parse(deviceSize, null, false);
+        this.m3rdPartyTspCommand.parse(deviceSize, null, false);
+        this.m3rdPartyTspCommandForIme.parse(deviceSize, null, false);
+        if (CoreRune.FW_USE_SMALLER_GRIPZONE_ON_GAME) {
+            this.m3rdPartyGameTspCommand.parse(deviceSize, null, false);
         }
+    }
 
-        public void setEnabled(boolean z) {
-            this.mEnabled = z;
+    public final void setOrientation(boolean z, boolean z2) {
+        if (this.mIsPortrait != z || z2) {
+            this.mIsPortrait = z;
+            synchronized (this.mDeadzoneHoleMap) {
+                this.mDeadzoneHoleMap.clear();
+            }
+            if (!this.mH.hasCallbacks(this.clearDeadzoneHole)) {
+                this.mH.postDelayed(this.clearDeadzoneHole, 150L);
+            }
+            if (!this.mIsPortrait) {
+                if (this.mReserveLandCmd == null) {
+                    Slog.e("TspStateManager", "setOrientation mReserveLandCmd is null.");
+                    return;
+                }
+                Log.addLogString("tspstatemanager", "setOrientation TSP_COMMAND_TYPE_LAND : " + this.mReserveLandCmd);
+                writeTspCommandToSysfsInner(2, this.mReserveLandCmd, false);
+                this.mLastLandCmd = this.mReserveLandCmd;
+                return;
+            }
+            String str = this.mReservePortCmd;
+            if (str == null) {
+                Slog.e("TspStateManager", "setOrientation mReservePortCmd is null.");
+                return;
+            }
+            if (str.equals(this.mLastPortCmd)) {
+                Log.addLogString("tspstatemanager", "setOrientation TSP_COMMAND_TYPE_SAME");
+                writeTspCommandToSysfsInner(4, "2,0", false);
+                return;
+            }
+            Log.addLogString("tspstatemanager", "setOrientation TSP_COMMAND_TYPE_PORT : " + this.mReservePortCmd);
+            writeTspCommandToSysfsInner(1, this.mReservePortCmd, false);
+            this.mLastPortCmd = this.mReservePortCmd;
         }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:13:0x004d  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void updateCustomValue() {
+        /*
+            r7 = this;
+            java.lang.String r0 = r7.mTspThresholdSetting
+            boolean r1 = android.text.TextUtils.isEmpty(r0)
+            if (r1 == 0) goto L15
+            android.content.Context r0 = r7.mContext
+            android.content.res.Resources r0 = r0.getResources()
+            r1 = 17040327(0x10403c7, float:2.424728E-38)
+            java.lang.String r0 = r0.getString(r1)
+        L15:
+            java.lang.String r1 = "updateCustomValue customSetting="
+            java.lang.String r2 = "TspStateManager"
+            com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0.m(r1, r0, r2)
+            r1 = 0
+            r7.mIsEnabledCustomSetting = r1
+            boolean r2 = android.text.TextUtils.isEmpty(r0)
+            if (r2 == 0) goto L27
+            return
+        L27:
+            boolean r2 = android.text.TextUtils.isEmpty(r0)
+            java.lang.String r3 = ";"
+            r4 = 0
+            if (r2 == 0) goto L32
+        L30:
+            r2 = r4
+            goto L3c
+        L32:
+            java.lang.String[] r2 = r0.split(r3)
+            int r5 = r2.length
+            if (r5 > 0) goto L3a
+            goto L30
+        L3a:
+            r2 = r2[r1]
+        L3c:
+            com.android.server.wm.TspGripCommand r5 = r7.mCustomTspCommand
+            com.android.server.wm.TspStateController$DeviceSize r6 = r7.mDeviceSize
+            boolean r2 = r5.parse(r6, r2, r1)
+            r7.mIsEnabledCustomSetting = r2
+            boolean r2 = android.text.TextUtils.isEmpty(r0)
+            if (r2 == 0) goto L4d
+            goto L58
+        L4d:
+            java.lang.String[] r0 = r0.split(r3)
+            int r2 = r0.length
+            r3 = 1
+            if (r2 > r3) goto L56
+            goto L58
+        L56:
+            r4 = r0[r3]
+        L58:
+            com.android.server.wm.TspGripCommand r0 = r7.m3rdPartyTspCommand
+            r0.parse(r6, r4, r1)
+            com.android.server.wm.TspGripCommand r7 = r7.m3rdPartyTspCommandForIme
+            r7.parse(r6, r4, r1)
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TspStateController.updateCustomValue():void");
+    }
+
+    public final void updateTspCommand(TspGripCommand tspGripCommand) {
+        if (this.mIsEnabledCustomSetting) {
+            tspGripCommand.set(this.mCustomTspCommand);
+        }
+        StringBuilder sb = new StringBuilder("1,");
+        sb.append(tspGripCommand.mPortEdgeZone);
+        sb.append(',');
+        sb.append(tspGripCommand.mPortX1);
+        sb.append(',');
+        sb.append(tspGripCommand.mPortX2);
+        sb.append(',');
+        sb.append(tspGripCommand.mPortY1);
+        if (CoreRune.FW_TSP_DEADZONE_V3) {
+            sb.append(',');
+            sb.append(tspGripCommand.mPortX3);
+            sb.append(',');
+            sb.append(tspGripCommand.mPortY2);
+        }
+        String sb2 = sb.toString();
+        if (!sb2.equals(this.mLastPortCmd) && this.mIsPortrait) {
+            writeTspCommandToSysfsInner(1, sb2, false);
+            this.mLastPortCmd = sb2;
+        }
+        this.mReservePortCmd = sb2;
+        String str = "2,1," + tspGripCommand.mLandEdgeZone + ',' + tspGripCommand.mLandX1 + ',' + tspGripCommand.mLandTopRejectWidth + ',' + tspGripCommand.mLandBottomRejectWidth + ',' + tspGripCommand.mLandTopGripWidth + ',' + tspGripCommand.mLandBottomGripWidth;
+        if (!str.equals(this.mLastLandCmd) && !this.mIsPortrait) {
+            writeTspCommandToSysfsInner(2, str, false);
+            this.mLastLandCmd = str;
+        }
+        this.mReserveLandCmd = str;
+    }
+
+    public final void updateWindowPolicy(WindowState windowState) {
+        this.mLastFocusedWindow = windowState;
+        H h = this.mH;
+        if (h.hasMessages(1)) {
+            h.removeMessages(1);
+        }
+        if (h.hasMessages(2)) {
+            h.removeMessages(2);
+        }
+        h.sendMessageDelayed(Message.obtain(h, 1, windowState), 500L);
+    }
+
+    public final void writeDeadzoneHoleCmd(int i, int i2, int i3) {
+        String str = "0," + i + ',' + i2 + ',' + i3;
+        if (str.equals(this.mLastDeadzoneHole)) {
+            return;
+        }
+        this.mLastDeadzoneHole = str;
+        Log.addLogString("tspstatemanager", "setDeadzoneHole");
+        writeTspCommandToSysfsInner(3, this.mLastDeadzoneHole, false);
+    }
+
+    public final void writeTspCommandToSysfsInner(final int i, final String str, final boolean z) {
+        new Thread(new Runnable() { // from class: com.android.server.wm.TspStateController$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                TspStateController tspStateController = TspStateController.this;
+                boolean z2 = z;
+                int i2 = i;
+                String str2 = str;
+                if (tspStateController.mSemInputDeviceManager == null) {
+                    Slog.d("TspStateManager", "mSemInputDeviceManager is null");
+                    return;
+                }
+                if (tspStateController.mAwake || z2) {
+                    if (i2 == 5) {
+                        if (CoreRune.IS_TABLET_DEVICE && "1".equals(str2)) {
+                            Configuration configuration = tspStateController.mContext.getResources().getConfiguration();
+                            if (configuration.hardKeyboardHidden == 1 && configuration.keyboard == 2) {
+                                Slog.d("TspStateManager", "physical keyboard being exposed. ignore it.");
+                                return;
+                            }
+                        }
+                        Log.addLogString("tspstatemanager", "[" + i2 + "]" + str2);
+                        tspStateController.mSemInputDeviceManager.setSipMode(Integer.parseInt(str2));
+                    } else if (i2 != 6) {
+                        if (tspStateController.mFocusedWindow != null) {
+                            StringBuilder m = DirEncryptService$$ExternalSyntheticOutline0.m(i2, "[", "]window : ", str2, ": ");
+                            m.append(tspStateController.mFocusedWindow);
+                            Log.addLogString("tspstatemanager", m.toString());
+                            tspStateController.mFocusedWindow = null;
+                        } else {
+                            Log.addLogString("tspstatemanager", "[" + i2 + "]" + str2);
+                        }
+                        tspStateController.mSemInputDeviceManager.setGripData(str2);
+                    } else {
+                        Log.addLogString("tspstatemanager", "[" + i2 + "]" + str2);
+                        tspStateController.mSemInputDeviceManager.setNoteMode(Integer.parseInt(str2));
+                    }
+                    Slog.d("TspStateManager", "wrote command: cmd=" + str2 + ", type=" + i2);
+                    if (i2 != 5) {
+                        Context context = tspStateController.mContext;
+                        TspStateController.TspDebug tspDebug = tspStateController.mTspDebug;
+                        if (i2 == 1) {
+                            tspDebug.mPortCommand = str2;
+                            tspDebug.mLastCommand = str2;
+                        } else if (i2 == 2) {
+                            tspDebug.mLandCommand = str2;
+                            tspDebug.mLastCommand = str2;
+                        } else if (i2 == 3) {
+                            tspDebug.mHoleCommand = str2;
+                        } else if (i2 == 6) {
+                            tspDebug.mLastNoteMode = str2;
+                        }
+                        StringBuilder updateDebugString = tspDebug.updateDebugString();
+                        if (tspDebug.mEnabled) {
+                            Settings.Secure.putString(context.getContentResolver(), "setting_last_grip_cmd", updateDebugString.toString());
+                            Settings.Secure.putString(context.getContentResolver(), "setting_last_note_mode", tspDebug.mLastNoteMode);
+                        }
+                    }
+                }
+            }
+        }, "tspStateManager").start();
     }
 }

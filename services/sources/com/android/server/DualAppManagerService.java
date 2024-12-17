@@ -9,16 +9,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.UserInfo;
 import android.database.Cursor;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IInstalld;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.SystemProperties;
@@ -26,63 +25,74 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.samsung.android.app.ISemDualAppManager;
 import com.samsung.android.app.SemDualAppManager;
+import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class DualAppManagerService extends ISemDualAppManager.Stub {
+public final class DualAppManagerService extends ISemDualAppManager.Stub {
     public static int inOpsCallback;
     public static Context mContext;
-    public OpChangeListener mOpChangeListener = new OpChangeListener();
     public static final String[] DEFAULT_PACKAGES_NOT_FORWARDING = {"com.google.android.gms", "com.google.android.gsf", "com.google.android.gsf.login", "com.android.chrome", "com.google.android.webview", "com.android.nfc", "com.google.android.permissioncontroller", "com.android.permissioncontroller", "com.samsung.android.permissioncontroller", "com.google.android.overlay.modules.permissioncontroller", "com.google.android.overlay.modules.permissioncontroller.forframework", "com.google.android.overlay.modules.modulemetadata.forframework"};
-    public static final String[] DUALAPP_DEFAULT_PACKAGES = {"com.android.settings", "com.android.providers.settings", "android", "com.android.keychain", "com.google.android.webview", "com.sec.android.provider.badge", "com.bst.floatingmsgproxy", "com.bst.airmessage", "com.android.server.telecom", "com.android.intentresolver", "com.facebook.appmanager", "com.google.android.apps.restore"};
-    public static HashMap mInstalledWhitelistedPkgMap = new HashMap();
+    public static final String[] DUALAPP_DEFAULT_PACKAGES = {"android", "android.auto_generated_rro_product__", "com.sec.android.provider.badge", "com.android.chrome", "com.android.credentialmanager", "com.android.providers.downloads", "com.facebook.appmanager", "com.google.android.overlay.gmsconfig.geotz", "com.google.android.overlay.modules.modulemetadata.forframework", "com.google.android.overlay.modules.permissioncontroller", "com.google.android.overlay.modules.permissioncontroller.forframework", "com.google.android.packageinstaller", "com.google.android.gms", "com.google.android.permissioncontroller", "com.samsung.android.permissioncontroller", "com.google.android.apps.restore", "com.google.android.gsf", "com.android.intentresolver", "com.android.keychain", "com.android.nfc", "com.samsung.android.packageinstaller", "com.android.phone", KnoxCustomManagerService.SETTING_PKG_NAME, "com.android.providers.settings", "com.android.server.telecom", "com.google.android.webview"};
+    public static final HashMap mInstalledWhitelistedPkgMap = new HashMap();
     public static HashMap mWhitelistedPkgMap = new HashMap();
-    public static List mDaWeeklyUsageCount = new ArrayList();
-    public static List mDaMonthlyUsageCount = new ArrayList();
+    public static final List mDaWeeklyUsageCount = new ArrayList();
+    public static final List mDaMonthlyUsageCount = new ArrayList();
     public static int thisWeek = -1;
-    public static String DUAL_APP_NOTIFICATION_URI = null;
     public static DualAppManagerService sDAMSInstance = null;
     public static InternalHandler mHandler = null;
     public static String lastResumedActivity = null;
     public static boolean isNotNullInputContextNotified = false;
     public static boolean isNullInputContextNotified = false;
 
-    public final void addOpChangeListener(String str) {
-    }
-
-    /* loaded from: classes.dex */
-    public class InternalHandler extends Handler {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class InternalHandler extends Handler {
         public InternalHandler() {
         }
 
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             Log.d("DualAppManagerService", "handleMessage() START " + message);
             try {
                 int i = message.what;
-                if (i == 1) {
+                if (i != 1) {
+                    DualAppManagerService dualAppManagerService = DualAppManagerService.this;
+                    if (i == 2) {
+                        dualAppManagerService.getClass();
+                        DualAppManagerService.updateWhitelistPackages();
+                        DualAppManagerService.updateInstalledWhitelistPackages();
+                    } else if (i == 3) {
+                        dualAppManagerService.getClass();
+                        DualAppManagerService.updateDAUsage();
+                    } else if (i == 4) {
+                        String str = (String) message.obj;
+                        Uri parse = Uri.parse("content://com.samsung.android.bbc.bbcagent/updateForegroundActivity");
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("component", str);
+                        DualAppManagerService.mContext.getContentResolver().update(parse, contentValues, null, null);
+                    } else if (i == 5) {
+                        String str2 = (String) message.obj;
+                        int i2 = message.arg1;
+                        Uri parse2 = Uri.parse("content://com.samsung.android.bbc.bbcagent/updateInputContext");
+                        ContentValues contentValues2 = new ContentValues();
+                        contentValues2.put("newInputContextNotNull", Integer.valueOf(i2));
+                        contentValues2.put("component", str2);
+                        DualAppManagerService.mContext.getContentResolver().update(parse2, contentValues2, null, null);
+                    }
+                } else {
                     Intent intent = new Intent();
                     intent.setClassName("com.samsung.android.da.daagent", "com.samsung.android.da.daagent.service.SwitchLauncherService");
                     intent.putExtra("defaultLauncher", (String) message.obj);
-                    DualAppManagerService.mContext.startServiceAsUser(intent, UserHandle.SEM_OWNER);
-                } else if (i == 2) {
-                    DualAppManagerService.this.updateWhitelistPackages();
-                    DualAppManagerService.this.updateInstalledWhitelistPackages();
-                } else if (i == 3) {
-                    DualAppManagerService.this.updateDAUsage();
-                } else if (i == 4) {
-                    DualAppManagerService.updateWedgeAboutActivity((String) message.obj);
-                } else if (i == 5) {
-                    DualAppManagerService.updateWedgeAboutInputContext((String) message.obj, message.arg1);
+                    DualAppManagerService.mContext.startServiceAsUser(intent, UserHandle.SYSTEM);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -91,32 +101,9 @@ public class DualAppManagerService extends ISemDualAppManager.Stub {
         }
     }
 
-    public static void sendInternalMsg(int i, int i2, int i3, Object obj) {
-        sendInternalMsg(i, i2, i3, obj, 0L);
-    }
-
-    public static void sendInternalMsg(int i, int i2, int i3, Object obj, long j) {
-        Log.d("DualAppManagerService", "sendInternalMsg() " + i + "/" + i2 + "/" + i3);
-        InternalHandler internalHandler = mHandler;
-        if (internalHandler == null) {
-            Log.d("DualAppManagerService", "sendInternalMsg() failed, handler is null");
-        } else if (j > 0) {
-            internalHandler.sendMessageDelayed(internalHandler.obtainMessage(i, i2, i3, obj), j);
-        } else {
-            internalHandler.sendMessage(internalHandler.obtainMessage(i, i2, i3, obj));
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class OpChangeListener extends AppOpsManager.OnOpChangedInternalListener {
-        public OpChangeListener() {
-        }
-
-        public void onOpChanged(String str, String str2) {
-            Log.d("DualAppManagerService", "onOpChanged() " + str + "/" + str2);
-        }
-
-        public void onOpChanged(int i, String str) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class OpChangeListener extends AppOpsManager.OnOpChangedInternalListener {
+        public final void onOpChanged(int i, String str) {
             AppOpsManager appOpsManager;
             Integer num;
             if (i == 24) {
@@ -135,268 +122,51 @@ public class DualAppManagerService extends ISemDualAppManager.Stub {
                 DualAppManagerService.inOpsCallback = 0;
                 throw th;
             }
-            if (num != null) {
-                appOpsManager.setMode(i, num.intValue(), str, appOpsManager.checkOpNoThrow(i, UserHandle.getAppId(num.intValue()), str));
-                ActivityManagerNative.getDefault().killUid(UserHandle.getAppId(num.intValue()), UserHandle.getUserId(num.intValue()), "Permission related app op changed");
+            if (num == null) {
                 DualAppManagerService.inOpsCallback = 0;
                 return;
             }
+            appOpsManager.setMode(i, num.intValue(), str, appOpsManager.checkOpNoThrow(i, UserHandle.getAppId(num.intValue()), str));
+            ActivityManagerNative.getDefault().killUid(UserHandle.getAppId(num.intValue()), UserHandle.getUserId(num.intValue()), "Permission related app op changed");
             DualAppManagerService.inOpsCallback = 0;
         }
-    }
 
-    public DualAppManagerService() {
-        mHandler = new InternalHandler();
-    }
-
-    public static DualAppManagerService getInstance(Context context) {
-        if (sDAMSInstance == null) {
-            synchronized (DualAppManagerService.class) {
-                if (sDAMSInstance == null) {
-                    sDAMSInstance = new DualAppManagerService();
-                    mContext = context;
-                }
-            }
-        }
-        return sDAMSInstance;
-    }
-
-    public static void notifyActivityResumedLocked(int i, String str) {
-        if (SystemProperties.getInt("sys.datawedge.prop", 0) == 1) {
-            Log.d("DualAppManagerService", "DW::notifyActivityResumedLocked " + str + " " + i);
-            lastResumedActivity = str;
-            isNullInputContextNotified = false;
-            isNotNullInputContextNotified = false;
-            sendInternalMsg(4, 0, 0, str);
+        public final void onOpChanged(String str, String str2) {
+            Log.d("DualAppManagerService", "onOpChanged() " + str + "/" + str2);
         }
     }
 
-    public static void notifyInputContextChanged(int i, String str, boolean z) {
-        if (SystemProperties.getInt("sys.datawedge.prop", 0) == 1) {
-            if (!z) {
-                if (isNullInputContextNotified) {
-                    return;
-                }
-                sendInternalMsg(5, 0, 0, lastResumedActivity + "|" + i);
-                isNullInputContextNotified = true;
-                return;
-            }
-            if (isNotNullInputContextNotified) {
-                return;
-            }
-            sendInternalMsg(5, 1, 0, lastResumedActivity + "|" + i);
-            isNotNullInputContextNotified = true;
-            isNullInputContextNotified = true;
-        }
-    }
-
-    public static void updateWedgeAboutActivity(String str) {
-        Uri parse = Uri.parse("content://com.samsung.android.bbc.bbcagent/updateForegroundActivity");
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("component", str);
-        mContext.getContentResolver().update(parse, contentValues, null, null);
-    }
-
-    public static void updateWedgeAboutInputContext(String str, int i) {
-        Uri parse = Uri.parse("content://com.samsung.android.bbc.bbcagent/updateInputContext");
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("newInputContextNotNull", Integer.valueOf(i));
-        contentValues.put("component", str);
-        mContext.getContentResolver().update(parse, contentValues, null, null);
-    }
-
-    public static void sendBroadcastCustomIntent(Context context, int i, Intent intent) {
-        String str;
-        boolean z;
-        if ("android.intent.action.PACKAGE_REMOVED".equals(intent.getAction())) {
-            str = "com.samsung.android.da.daagent.PACKAGE_REMOVED";
-            z = true;
+    public static Bundle addWhitelistedPkg(Bundle bundle) {
+        Bundle bundle2 = new Bundle();
+        String string = bundle.getString("pkgName");
+        int i = bundle.getInt("pkgUid");
+        if (string == null) {
+            bundle2.putInt("result_code", 0);
+            bundle2.putString("result_desc", "package name is null");
         } else {
-            str = "com.samsung.android.da.daagent.PACKAGE_ADDED";
-            z = false;
-        }
-        String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
-        if (schemeSpecificPart == null) {
-            Log.d("DualAppManagerService", " can not sendBroadcast intent, becuase pkgName is null");
-            return;
-        }
-        if (i == 0 && SemDualAppManager.getInstance(context).isWhitelistedPackage(schemeSpecificPart)) {
-            Intent intent2 = (Intent) intent.clone();
-            intent2.setAction(str);
-            intent2.setPackage("com.samsung.android.da.daagent");
-            context.sendBroadcastAsUser(intent2, UserHandle.OWNER);
-        }
-        if (z || isFilteredPackage(context, schemeSpecificPart, i)) {
-            Intent intent3 = (Intent) intent.clone();
-            intent3.setAction(str);
-            intent3.setPackage("com.samsung.android.bbc.bbcagent");
-            context.sendBroadcastAsUser(intent3, UserHandle.OWNER);
-        }
-    }
-
-    public static boolean isFilteredPackage(Context context, String str, int i) {
-        Bundle bundle;
-        String[] strArr;
-        PackageManager packageManager = context.getPackageManager();
-        try {
-            PackageInfo packageInfo = packageManager.getPackageInfo(str, IInstalld.FLAG_USE_QUOTA);
-            if (packageInfo != null && (strArr = packageInfo.requestedPermissions) != null) {
-                for (String str2 : strArr) {
-                    if ("com.samsung.android.teelicense".equals(str2)) {
-                        Log.d("DualAppManagerService", "this is DDC app " + str2);
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (!"com.samsung.android.app.smartscan".equals(str)) {
-            return false;
-        }
-        try {
-            PackageInfo packageInfoAsUser = packageManager.getPackageInfoAsUser(str, 128, i);
-            if (packageInfoAsUser != null && (bundle = packageInfoAsUser.applicationInfo.metaData) != null) {
-                if (bundle.getBoolean("com.samsung.android.bbcagent.notify_install", false)) {
-                    return true;
-                }
-            }
-        } catch (Exception e2) {
-            e2.printStackTrace();
-        }
-        return false;
-    }
-
-    public void systemReady() {
-        Log.d("DualAppManagerService", "DualAppManagerService ready");
-        try {
-            if (!writeDualAppProfileId(mContext) && SystemProperties.getInt("persist.sys.dualapp.directory.revision", 0) == 0) {
-                SystemProperties.set("persist.sys.dualapp.directory.revision", "1");
-            }
-        } catch (Exception e) {
-            Log.e("DualAppManagerService", "Failed to write dual app profile id");
-            e.printStackTrace();
-        }
-        Log.d("DualAppManagerService", "systemReady done.");
-    }
-
-    public synchronized Bundle updateDualAppData(String str, int i, Bundle bundle) {
-        Bundle bundle2 = null;
-        if ("com.samsung.android.da.daagent".equals(str) && Binder.getCallingUid() == 1000) {
-            Log.d("DualAppManagerService", "updateDualAppData " + str + "/" + i + "/" + bundle);
-            if (bundle == null) {
-                Log.d("DualAppManagerService", "updateDualAppData. Bundle is null");
-                return null;
-            }
-            String string = bundle.getString(KnoxVpnFirewallHelper.CMD);
-            try {
-                if ("renewInstalledWhitelistedPkgs".equals(string)) {
-                    bundle2 = renewWhitelistedPkg(bundle);
-                } else if ("addInstalledWhitelistedPkg".equals(string)) {
-                    bundle2 = addWhitelistedPkg(bundle);
-                } else if ("removeInstalledWhitelistedPkg".equals(string)) {
-                    bundle2 = removeWhitelistedPkg(bundle);
-                } else if ("removeAllInstalledWhitelistedPkgs".equals(string)) {
-                    bundle2 = removeAllWhitelistedPkgs(bundle);
-                } else if ("printInstalledWhitelistedPkg".equals(string)) {
-                    printInstalledWhitelistedPkg();
-                } else if ("setDualAppNotificationSound".equals(string)) {
-                    bundle2 = setDualAppNotificationSound(bundle);
-                } else if ("updateWhitelistPkgs".equals(string)) {
-                    bundle2 = updateWhitelistPkg(bundle);
-                } else {
-                    Bundle bundle3 = new Bundle();
-                    try {
-                        bundle3.putInt("result_code", 0);
-                        bundle3.putString("result_desc", "not defined command");
-                        bundle2 = bundle3;
-                    } catch (Exception e) {
-                        bundle2 = bundle3;
-                        e = e;
-                        e.printStackTrace();
-                        return bundle2;
-                    }
-                }
-            } catch (Exception e2) {
-                e = e2;
-            }
-            return bundle2;
-        }
-        Log.d("DualAppManagerService", "updateDualAppData is called from unauthorized app");
-        return null;
-    }
-
-    public List getAllInstalledWhitelistedPackages() {
-        try {
-            Set keySet = mInstalledWhitelistedPkgMap.keySet();
-            if (keySet != null) {
-                return new ArrayList(keySet);
-            }
-            return null;
-        } catch (Exception unused) {
-            Log.e("DualAppManagerService", "Exception occured in getAllInstalledWhitelistedPackages. retrun null");
-            return null;
-        }
-    }
-
-    public static boolean isSelfContainedAction(int i, String str) {
-        List allPkgNameByUid;
-        if (str != null && (allPkgNameByUid = getAllPkgNameByUid(i)) != null) {
-            Iterator it = allPkgNameByUid.iterator();
-            while (it.hasNext()) {
-                if (str.startsWith((String) it.next())) {
-                    return true;
+            HashMap hashMap = mInstalledWhitelistedPkgMap;
+            if (hashMap.get(string) != null) {
+                bundle2.putInt("result_code", 1);
+                bundle2.putString("result_desc", "package is already added");
+            } else {
+                try {
+                    hashMap.put(string, Integer.valueOf(i));
+                    bundle2.putInt("result_code", 1);
+                    bundle2.putString("result_desc", "success");
+                } catch (Exception e) {
+                    bundle2.putInt("result_code", 0);
+                    bundle2.putString("result_desc", e.getMessage());
                 }
             }
         }
-        return false;
-    }
-
-    public static final List getAllPkgNameByUid(int i) {
-        ArrayList arrayList = new ArrayList();
-        Integer valueOf = Integer.valueOf(i);
-        try {
-            for (Map.Entry entry : mInstalledWhitelistedPkgMap.entrySet()) {
-                if (valueOf.equals(entry.getValue())) {
-                    arrayList.add((String) entry.getKey());
-                }
-            }
-        } catch (Exception e) {
-            Log.e("DualAppManagerService", "Exception occured in getAllPkgNameByUid. retrun null");
-            e.printStackTrace();
-        }
-        return arrayList;
-    }
-
-    public boolean isInstalledWhitelistedPackage(String str) {
-        try {
-            if (!mInstalledWhitelistedPkgMap.containsKey(str)) {
-                return false;
-            }
-            Log.d("DualAppManagerService", "Found!");
-            return true;
-        } catch (Exception e) {
-            Log.e("DualAppManagerService", "Exception occured in isInstalledWhitelistedPackage. retrun false");
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean isInstalledWhitelistedPackageInternal(String str) {
-        try {
-            return mInstalledWhitelistedPkgMap.containsKey(str);
-        } catch (Exception e) {
-            Log.e("DualAppManagerService", "Exception occured in isInstalledWhitelistedPackageInternal. retrun false");
-            e.printStackTrace();
-            return false;
-        }
+        return bundle2;
     }
 
     public static ActivityInfo changeInfoIfDeletingDualApp(Context context, ActivityInfo activityInfo, Intent intent, int i, String str) {
         if (activityInfo == null) {
             return null;
         }
-        if ("com.samsung.android.da.daagent".equals(str) || "com.android.settings".equals(str) || SemDualAppManager.isSamsungLauncher(str)) {
+        if ("com.samsung.android.da.daagent".equals(str) || KnoxCustomManagerService.SETTING_PKG_NAME.equals(str) || SemDualAppManager.isSamsungLauncher(str)) {
             return activityInfo;
         }
         String schemeSpecificPart = intent.getData() != null ? intent.getData().getSchemeSpecificPart() : null;
@@ -425,112 +195,7 @@ public class DualAppManagerService extends ISemDualAppManager.Stub {
         return activityInfo2;
     }
 
-    public final Bundle renewWhitelistedPkg(Bundle bundle) {
-        Bundle bundle2 = new Bundle();
-        mInstalledWhitelistedPkgMap.clear();
-        mInstalledWhitelistedPkgMap.putAll((HashMap) bundle.getSerializable("allInstalledWhitelistedPkgs"));
-        Iterator it = mInstalledWhitelistedPkgMap.keySet().iterator();
-        while (it.hasNext()) {
-            addOpChangeListener((String) it.next());
-        }
-        bundle2.putInt("result_code", 1);
-        bundle2.putString("result_desc", "success");
-        return bundle2;
-    }
-
-    public final Bundle updateWhitelistPkg(Bundle bundle) {
-        Bundle bundle2 = new Bundle();
-        HashMap hashMap = (HashMap) bundle.getSerializable("packageList");
-        if (hashMap != null) {
-            mWhitelistedPkgMap = hashMap;
-        }
-        bundle2.putInt("result_code", 1);
-        bundle2.putString("result_desc", "success");
-        return bundle2;
-    }
-
-    public final Bundle addWhitelistedPkg(Bundle bundle) {
-        Bundle bundle2 = new Bundle();
-        String string = bundle.getString("pkgName");
-        int i = bundle.getInt("pkgUid");
-        if (string == null) {
-            bundle2.putInt("result_code", 0);
-            bundle2.putString("result_desc", "package name is null");
-        } else if (mInstalledWhitelistedPkgMap.get(string) != null) {
-            bundle2.putInt("result_code", 1);
-            bundle2.putString("result_desc", "package is already added");
-        } else {
-            try {
-                mInstalledWhitelistedPkgMap.put(string, Integer.valueOf(i));
-                bundle2.putInt("result_code", 1);
-                bundle2.putString("result_desc", "success");
-            } catch (Exception e) {
-                bundle2.putInt("result_code", 0);
-                bundle2.putString("result_desc", e.getMessage());
-            }
-            addOpChangeListener(string);
-        }
-        return bundle2;
-    }
-
-    public final Bundle removeWhitelistedPkg(Bundle bundle) {
-        Bundle bundle2 = new Bundle();
-        String string = bundle.getString("pkgName");
-        if (string == null) {
-            bundle2.putInt("result_code", 0);
-            bundle2.putString("result_desc", "package name is null");
-        } else if (mInstalledWhitelistedPkgMap.get(string) == null) {
-            bundle2.putInt("result_code", 1);
-            bundle2.putString("result_desc", "package doesn't exist");
-        } else {
-            try {
-                mInstalledWhitelistedPkgMap.remove(string);
-                bundle2.putInt("result_code", 1);
-                bundle2.putString("result_desc", "success");
-            } catch (Exception e) {
-                bundle2.putInt("result_code", 0);
-                bundle2.putString("result_desc", e.getMessage());
-            }
-        }
-        return bundle2;
-    }
-
-    public final Bundle removeAllWhitelistedPkgs(Bundle bundle) {
-        Bundle bundle2 = new Bundle();
-        mInstalledWhitelistedPkgMap.clear();
-        bundle2.putInt("result_code", 1);
-        bundle2.putString("result_desc", "success");
-        return bundle2;
-    }
-
-    public final void printInstalledWhitelistedPkg() {
-        Log.d("DualAppManagerService", "printInstalledWhitelistedPkg called!");
-        for (String str : mInstalledWhitelistedPkgMap.keySet()) {
-            Log.d("DualAppManagerService", "installed whitelisted dual app [" + str + "/" + String.valueOf(mInstalledWhitelistedPkgMap.get(str)) + "]");
-        }
-    }
-
-    public final Bundle setDualAppNotificationSound(Bundle bundle) {
-        Bundle bundle2 = new Bundle();
-        String string = bundle.getString("sound_uri");
-        Log.d("DualAppManagerService", "setDualAppNotificationSound : " + string);
-        if (string == null) {
-            bundle2.putInt("result_code", 0);
-            bundle2.putString("result_desc", "uri is null");
-        } else {
-            try {
-                DUAL_APP_NOTIFICATION_URI = string;
-                bundle2.putInt("result_code", 1);
-                bundle2.putString("result_desc", "success");
-            } catch (Exception e) {
-                bundle2.putInt("result_code", 0);
-                bundle2.putString("result_desc", e.getMessage());
-            }
-        }
-        return bundle2;
-    }
-
-    public static void changeUriForDualApp(Intent intent, int i) {
+    public static void changeUriForDualApp(int i, Intent intent) {
         Uri uri;
         try {
             Uri uri2 = (Uri) intent.getExtra("output");
@@ -543,69 +208,49 @@ public class DualAppManagerService extends ISemDualAppManager.Stub {
             if (intent.getData() != null && SemDualAppManager.shouldAddUserId(intent.getData(), i)) {
                 intent.setDataAndType(ContentProvider.maybeAddUserId(intent.getData(), i), intent.getType());
             }
-            if ("android.intent.action.SEND_MULTIPLE".equals(intent.getAction())) {
-                ArrayList arrayList = new ArrayList();
-                ArrayList parcelableArrayListExtra = intent.getParcelableArrayListExtra("android.intent.extra.STREAM");
-                if (parcelableArrayListExtra == null || parcelableArrayListExtra.size() <= 0) {
+            if (!"android.intent.action.SEND_MULTIPLE".equals(intent.getAction())) {
+                if (!"android.intent.action.SEND".equals(intent.getAction()) || intent.getExtras() == null || (uri = (Uri) intent.getExtras().getParcelable("android.intent.extra.STREAM")) == null || !SemDualAppManager.shouldAddUserId(uri, i)) {
                     return;
                 }
-                Iterator it = parcelableArrayListExtra.iterator();
-                while (it.hasNext()) {
-                    Uri uri3 = (Uri) it.next();
-                    if (SemDualAppManager.shouldAddUserId(uri3, i)) {
-                        arrayList.add(ContentProvider.maybeAddUserId(uri3, i));
-                    } else {
-                        arrayList.add(uri3);
-                    }
+                intent.putExtra("android.intent.extra.STREAM", ContentProvider.maybeAddUserId(uri, i));
+                return;
+            }
+            ArrayList arrayList = new ArrayList();
+            ArrayList parcelableArrayListExtra = intent.getParcelableArrayListExtra("android.intent.extra.STREAM");
+            if (parcelableArrayListExtra == null || parcelableArrayListExtra.size() <= 0) {
+                return;
+            }
+            Iterator it = parcelableArrayListExtra.iterator();
+            while (it.hasNext()) {
+                Uri uri3 = (Uri) it.next();
+                if (SemDualAppManager.shouldAddUserId(uri3, i)) {
+                    arrayList.add(ContentProvider.maybeAddUserId(uri3, i));
+                } else {
+                    arrayList.add(uri3);
                 }
-                intent.putExtra("android.intent.extra.STREAM", arrayList);
-                return;
             }
-            if (!"android.intent.action.SEND".equals(intent.getAction()) || intent.getExtras() == null || (uri = (Uri) intent.getExtras().getParcelable("android.intent.extra.STREAM")) == null || !SemDualAppManager.shouldAddUserId(uri, i)) {
-                return;
-            }
-            intent.putExtra("android.intent.extra.STREAM", ContentProvider.maybeAddUserId(uri, i));
+            intent.putExtra("android.intent.extra.STREAM", arrayList);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static boolean isDefalutAppPackage(String str) {
-        if (str != null && !"".equalsIgnoreCase(str)) {
-            for (String str2 : DUALAPP_DEFAULT_PACKAGES) {
-                if (str2.equals(str)) {
-                    return true;
+    public static DualAppManagerService getInstance(Context context) {
+        if (sDAMSInstance == null) {
+            synchronized (DualAppManagerService.class) {
+                try {
+                    if (sDAMSInstance == null) {
+                        DualAppManagerService dualAppManagerService = new DualAppManagerService();
+                        new OpChangeListener();
+                        mHandler = dualAppManagerService.new InternalHandler();
+                        sDAMSInstance = dualAppManagerService;
+                        mContext = context;
+                    }
+                } finally {
                 }
             }
         }
-        return false;
-    }
-
-    public static boolean shouldForwardToOwner(String str) {
-        if (str == null || "".equalsIgnoreCase(str)) {
-            return true;
-        }
-        Context context = mContext;
-        if (context != null && SemDualAppManager.getInstance(context).isWhitelistedPackage(str) && (SemDualAppManager.isInstalledWhitelistedPackage(str) || str.equals(mContext.getPackageManager().getNameForUid(Binder.getCallingUid())))) {
-            return false;
-        }
-        for (String str2 : DEFAULT_PACKAGES_NOT_FORWARDING) {
-            if (str2.equals(str)) {
-                return false;
-            }
-        }
-        return ("com.bst.floatingmsgproxy".equals(str) || "com.bst.airmessage".equals(str)) ? false : true;
-    }
-
-    public static boolean mayForwardIntent(Intent intent) {
-        if (intent == null) {
-            return true;
-        }
-        String action = intent.getAction();
-        if ("android.settings.action.MANAGE_OVERLAY_PERMISSION".equals(action) || "android.settings.CHANNEL_NOTIFICATION_SETTINGS".equals(action)) {
-            return false;
-        }
-        return (("android.intent.action.MAIN".equals(action) && intent.hasCategory("android.intent.category.NOTIFICATION_PREFERENCES")) || "android.intent.action.MANAGE_APP_PERMISSIONS".equals(action) || "android.content.pm.action.REQUEST_PERMISSIONS".equals(action) || "android.settings.APPLICATION_DETAILS_SETTINGS".equals(action) || "android.settings.APP_NOTIFICATION_SETTINGS".equals(action)) ? false : true;
+        return sDAMSInstance;
     }
 
     public static boolean hasExternalAppDirPath(Intent intent, String str) {
@@ -615,54 +260,68 @@ public class DualAppManagerService extends ISemDualAppManager.Stub {
         String path4;
         String path5;
         String path6;
-        String str2 = "/storage/emulated/0/Android/data/" + str;
-        if ("android.intent.action.SEND_MULTIPLE".equals(intent.getAction())) {
+        String m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("/storage/emulated/0/Android/data/", str);
+        if (!"android.intent.action.SEND_MULTIPLE".equals(intent.getAction())) {
+            if (!"android.intent.action.SEND".equals(intent.getAction())) {
+                return false;
+            }
             ClipData clipData = intent.getClipData();
             if (clipData != null) {
-                ArrayList<Uri> arrayList = new ArrayList();
+                ArrayList arrayList = new ArrayList();
                 clipData.collectUris(arrayList);
-                for (Uri uri : arrayList) {
-                    if (uri != null && "file".equals(uri.getScheme()) && (path6 = uri.getPath()) != null && path6.startsWith(str2)) {
+                Iterator it = arrayList.iterator();
+                while (it.hasNext()) {
+                    Uri uri = (Uri) it.next();
+                    if (uri != null && "file".equals(uri.getScheme()) && (path3 = uri.getPath()) != null && path3.startsWith(m)) {
                         return true;
                     }
                 }
             }
             Uri data = intent.getData();
-            if (data != null && "file".equals(data.getScheme()) && (path5 = data.getPath()) != null && path5.startsWith(str2)) {
+            if (data != null && "file".equals(data.getScheme()) && (path2 = data.getPath()) != null && path2.startsWith(m)) {
                 return true;
             }
-            ArrayList parcelableArrayListExtra = intent.getParcelableArrayListExtra("android.intent.extra.STREAM");
-            if (parcelableArrayListExtra == null) {
-                return false;
-            }
-            Iterator it = parcelableArrayListExtra.iterator();
-            while (it.hasNext()) {
-                Uri uri2 = (Uri) it.next();
-                if (uri2 != null && "file".equals(uri2.getScheme()) && (path4 = uri2.getPath()) != null && path4.startsWith(str2)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        if (!"android.intent.action.SEND".equals(intent.getAction())) {
-            return false;
+            Uri uri2 = (Uri) intent.getExtras().getParcelable("android.intent.extra.STREAM");
+            return uri2 != null && "file".equals(uri2.getScheme()) && (path = uri2.getPath()) != null && path.startsWith(m);
         }
         ClipData clipData2 = intent.getClipData();
         if (clipData2 != null) {
-            ArrayList<Uri> arrayList2 = new ArrayList();
+            ArrayList arrayList2 = new ArrayList();
             clipData2.collectUris(arrayList2);
-            for (Uri uri3 : arrayList2) {
-                if (uri3 != null && "file".equals(uri3.getScheme()) && (path3 = uri3.getPath()) != null && path3.startsWith(str2)) {
+            Iterator it2 = arrayList2.iterator();
+            while (it2.hasNext()) {
+                Uri uri3 = (Uri) it2.next();
+                if (uri3 != null && "file".equals(uri3.getScheme()) && (path6 = uri3.getPath()) != null && path6.startsWith(m)) {
                     return true;
                 }
             }
         }
         Uri data2 = intent.getData();
-        if (data2 != null && "file".equals(data2.getScheme()) && (path2 = data2.getPath()) != null && path2.startsWith(str2)) {
+        if (data2 != null && "file".equals(data2.getScheme()) && (path5 = data2.getPath()) != null && path5.startsWith(m)) {
             return true;
         }
-        Uri uri4 = (Uri) intent.getExtras().getParcelable("android.intent.extra.STREAM");
-        return uri4 != null && "file".equals(uri4.getScheme()) && (path = uri4.getPath()) != null && path.startsWith(str2);
+        ArrayList parcelableArrayListExtra = intent.getParcelableArrayListExtra("android.intent.extra.STREAM");
+        if (parcelableArrayListExtra == null) {
+            return false;
+        }
+        Iterator it3 = parcelableArrayListExtra.iterator();
+        while (it3.hasNext()) {
+            Uri uri4 = (Uri) it3.next();
+            if (uri4 != null && "file".equals(uri4.getScheme()) && (path4 = uri4.getPath()) != null && path4.startsWith(m)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isInstalledWhitelistedPackageInternal(String str) {
+        try {
+            return mInstalledWhitelistedPkgMap.containsKey(str);
+        } catch (Exception e) {
+            Log.e("DualAppManagerService", "Exception occured in isInstalledWhitelistedPackageInternal. retrun false");
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean mayForwardShare(Intent intent, String str, int i, int i2) {
@@ -698,24 +357,216 @@ public class DualAppManagerService extends ISemDualAppManager.Stub {
         return false;
     }
 
-    public static Intent startDAChooserActivity(Intent intent, int i, int i2, String str) {
-        return startDAChooserActivity(intent, i, i2, str, Binder.getCallingUid());
+    public static void notifyActivityResumedLocked(String str) {
+        if (SystemProperties.getInt("sys.datawedge.prop", 0) == 1) {
+            DualAppManagerService$$ExternalSyntheticOutline0.m("DW::notifyActivityResumedLocked ", str, " 0", "DualAppManagerService");
+            lastResumedActivity = str;
+            isNullInputContextNotified = false;
+            isNotNullInputContextNotified = false;
+            sendInternalMsg(4, 0, str);
+        }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:46:0x02d8 A[Catch: Exception -> 0x0335, TryCatch #0 {Exception -> 0x0335, blocks: (B:10:0x002d, B:12:0x0042, B:16:0x004f, B:19:0x0056, B:21:0x0066, B:25:0x007f, B:27:0x00d2, B:30:0x00dc, B:32:0x00ed, B:34:0x00f3, B:36:0x00f9, B:38:0x00ff, B:40:0x010e, B:43:0x0115, B:46:0x02d8, B:48:0x02df, B:49:0x02e2, B:51:0x02e8, B:52:0x0301, B:54:0x0307, B:55:0x0320, B:57:0x0108, B:58:0x0126, B:61:0x012e, B:63:0x013f, B:65:0x0145, B:67:0x015c, B:69:0x0164, B:71:0x016c, B:72:0x0178, B:74:0x017e, B:76:0x018f, B:78:0x0195, B:80:0x019b, B:82:0x01af, B:84:0x01b5, B:86:0x01bd, B:88:0x01c5, B:90:0x01cd, B:92:0x01d3, B:95:0x01e4, B:97:0x01ea, B:99:0x01f0, B:101:0x01f6, B:103:0x01dc, B:104:0x0206, B:106:0x0213, B:108:0x0220, B:110:0x022d, B:113:0x023b, B:115:0x0241, B:117:0x024e, B:119:0x0256, B:120:0x027f, B:122:0x0285, B:124:0x028b, B:125:0x0085, B:129:0x008f, B:131:0x009d, B:133:0x00ab, B:135:0x00b3, B:137:0x00c1, B:141:0x02a2, B:143:0x02a8, B:146:0x02b9, B:148:0x02bf, B:150:0x02c5, B:151:0x02b1), top: B:9:0x002d }] */
+    public static void printInstalledWhitelistedPkg() {
+        Log.d("DualAppManagerService", "printInstalledWhitelistedPkg called!");
+        for (String str : mInstalledWhitelistedPkgMap.keySet()) {
+            StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("installed whitelisted dual app [", str, "/");
+            m.append(String.valueOf(mInstalledWhitelistedPkgMap.get(str)));
+            m.append("]");
+            Log.d("DualAppManagerService", m.toString());
+        }
+    }
+
+    public static void recordDaUsageCount(int i, Intent intent) {
+        if (!SemDualAppManager.isDualAppId(i) || intent == null) {
+            return;
+        }
+        if (isInstalledWhitelistedPackageInternal(intent.getComponent() != null ? intent.getComponent().getPackageName() : intent.getPackage())) {
+            sendInternalMsg(3, 0, null);
+        }
+    }
+
+    public static Bundle removeAllWhitelistedPkgs() {
+        Bundle bundle = new Bundle();
+        mInstalledWhitelistedPkgMap.clear();
+        bundle.putInt("result_code", 1);
+        bundle.putString("result_desc", "success");
+        return bundle;
+    }
+
+    public static Bundle removeWhitelistedPkg(Bundle bundle) {
+        Bundle bundle2 = new Bundle();
+        String string = bundle.getString("pkgName");
+        if (string == null) {
+            bundle2.putInt("result_code", 0);
+            bundle2.putString("result_desc", "package name is null");
+        } else {
+            HashMap hashMap = mInstalledWhitelistedPkgMap;
+            if (hashMap.get(string) == null) {
+                bundle2.putInt("result_code", 1);
+                bundle2.putString("result_desc", "package doesn't exist");
+            } else {
+                try {
+                    hashMap.remove(string);
+                    bundle2.putInt("result_code", 1);
+                    bundle2.putString("result_desc", "success");
+                } catch (Exception e) {
+                    bundle2.putInt("result_code", 0);
+                    bundle2.putString("result_desc", e.getMessage());
+                }
+            }
+        }
+        return bundle2;
+    }
+
+    public static Bundle renewWhitelistedPkg(Bundle bundle) {
+        Bundle bundle2 = new Bundle();
+        HashMap hashMap = mInstalledWhitelistedPkgMap;
+        hashMap.clear();
+        hashMap.putAll((HashMap) bundle.getSerializable("allInstalledWhitelistedPkgs"));
+        for (String str : hashMap.keySet()) {
+        }
+        bundle2.putInt("result_code", 1);
+        bundle2.putString("result_desc", "success");
+        return bundle2;
+    }
+
+    public static void sendInternalMsg(int i, int i2, Object obj) {
+        Log.d("DualAppManagerService", DualAppManagerService$$ExternalSyntheticOutline0.m(i, i2, "sendInternalMsg() ", "/", "/0"));
+        InternalHandler internalHandler = mHandler;
+        if (internalHandler != null) {
+            internalHandler.sendMessage(internalHandler.obtainMessage(i, i2, 0, obj));
+        } else {
+            Log.d("DualAppManagerService", "sendInternalMsg() failed, handler is null");
+        }
+    }
+
+    public static Bundle setDualAppNotificationSound(Bundle bundle) {
+        Bundle bundle2 = new Bundle();
+        String string = bundle.getString("sound_uri");
+        DualAppManagerService$$ExternalSyntheticOutline0.m("setDualAppNotificationSound : ", string, "DualAppManagerService");
+        if (string == null) {
+            bundle2.putInt("result_code", 0);
+            bundle2.putString("result_desc", "uri is null");
+        } else {
+            try {
+                bundle2.putInt("result_code", 1);
+                bundle2.putString("result_desc", "success");
+            } catch (Exception e) {
+                bundle2.putInt("result_code", 0);
+                bundle2.putString("result_desc", e.getMessage());
+            }
+        }
+        return bundle2;
+    }
+
+    public static boolean shouldForwardToOwner(String str) {
+        if (str == null || "".equalsIgnoreCase(str)) {
+            return true;
+        }
+        Context context = mContext;
+        if (context != null && SemDualAppManager.getInstance(context).isWhitelistedPackage(str) && (SemDualAppManager.isInstalledWhitelistedPackage(str) || str.equals(mContext.getPackageManager().getNameForUid(Binder.getCallingUid())))) {
+            return false;
+        }
+        String[] strArr = DEFAULT_PACKAGES_NOT_FORWARDING;
+        for (int i = 0; i < 12; i++) {
+            if (strArr[i].equals(str)) {
+                return false;
+            }
+        }
+        return ("com.bst.floatingmsgproxy".equals(str) || "com.bst.airmessage".equals(str)) ? false : true;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:46:0x02ef A[Catch: Exception -> 0x005c, TryCatch #0 {Exception -> 0x005c, blocks: (B:10:0x003a, B:12:0x0050, B:16:0x0061, B:19:0x0068, B:21:0x0077, B:25:0x0090, B:27:0x00e5, B:30:0x00f1, B:32:0x0102, B:34:0x0108, B:36:0x010e, B:38:0x0114, B:40:0x0123, B:43:0x012a, B:46:0x02ef, B:48:0x02f6, B:49:0x02f9, B:51:0x02ff, B:52:0x0312, B:54:0x0318, B:55:0x032b, B:57:0x011d, B:58:0x013a, B:61:0x0143, B:63:0x0154, B:65:0x015a, B:67:0x0172, B:69:0x017b, B:71:0x0183, B:72:0x0190, B:74:0x0196, B:76:0x01a7, B:78:0x01ad, B:80:0x01b3, B:82:0x01c6, B:84:0x01cc, B:86:0x01d5, B:88:0x01de, B:90:0x01e7, B:92:0x01ed, B:95:0x01fe, B:97:0x0204, B:99:0x020a, B:101:0x0210, B:103:0x01f6, B:104:0x0221, B:106:0x022e, B:108:0x023b, B:110:0x0248, B:113:0x0256, B:115:0x025c, B:117:0x0269, B:119:0x0272, B:120:0x0296, B:122:0x029c, B:124:0x02a2, B:125:0x0096, B:129:0x00a0, B:131:0x00ae, B:133:0x00bc, B:135:0x00c5, B:137:0x00d3, B:141:0x02b9, B:143:0x02bf, B:146:0x02d0, B:148:0x02d6, B:150:0x02dc, B:151:0x02c8), top: B:9:0x003a }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static android.content.Intent startDAChooserActivity(android.content.Intent r17, int r18, int r19, java.lang.String r20, int r21) {
+    public static android.content.Intent startDAChooserActivity(int r19, int r20, int r21, android.content.Intent r22, java.lang.String r23) {
         /*
-            Method dump skipped, instructions count: 831
+            Method dump skipped, instructions count: 842
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.DualAppManagerService.startDAChooserActivity(android.content.Intent, int, int, java.lang.String, int):android.content.Intent");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.DualAppManagerService.startDAChooserActivity(int, int, int, android.content.Intent, java.lang.String):android.content.Intent");
     }
 
-    public final boolean writeDualAppProfileId(Context context) {
+    public static void systemReady() {
+        Log.d("DualAppManagerService", "DualAppManagerService ready");
+        try {
+            if (!writeDualAppProfileId(mContext) && SystemProperties.getInt("persist.sys.dualapp.directory.revision", 0) == 0) {
+                SystemProperties.set("persist.sys.dualapp.directory.revision", "1");
+            }
+        } catch (Exception e) {
+            Log.e("DualAppManagerService", "Failed to write dual app profile id");
+            e.printStackTrace();
+        }
+        Log.d("DualAppManagerService", "systemReady done.");
+    }
+
+    public static void updateDAUsage() {
+        Calendar calendar = Calendar.getInstance();
+        int i = calendar.get(7);
+        int i2 = calendar.get(3);
+        int i3 = calendar.get(5);
+        if (thisWeek != i2) {
+            ((ArrayList) mDaWeeklyUsageCount).clear();
+            thisWeek = i2;
+        }
+        ArrayList arrayList = (ArrayList) mDaWeeklyUsageCount;
+        if (!arrayList.contains(Integer.valueOf(i))) {
+            arrayList.add(Integer.valueOf(i));
+            try {
+                mContext.getContentResolver().update(Uri.parse("content://com.samsung.android.da.daagent.provider/recordUsage"), new ContentValues(), null, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        ArrayList arrayList2 = (ArrayList) mDaMonthlyUsageCount;
+        if (arrayList2.contains(Integer.valueOf(i3))) {
+            return;
+        }
+        arrayList2.add(Integer.valueOf(i3));
+    }
+
+    public static void updateInstalledWhitelistPackages() {
+        Cursor query = mContext.getContentResolver().query(Uri.parse("content://com.samsung.android.da.daagent.provider/getInstalledApps"), null, null, null, null);
+        mInstalledWhitelistedPkgMap.clear();
+        if (query != null) {
+            while (query.moveToNext()) {
+                try {
+                    Log.d("DualAppManagerService", "updateInstalledWhitelistPackages : " + query.getString(0) + "/" + query.getInt(1));
+                    mInstalledWhitelistedPkgMap.put(query.getString(0), Integer.valueOf(query.getInt(1)));
+                } finally {
+                    query.close();
+                }
+            }
+        }
+    }
+
+    public static void updateWhitelistPackages() {
+        Cursor query = mContext.getContentResolver().query(Uri.parse("content://com.samsung.android.da.daagent.provider/getWhitelistApps"), null, null, null, null);
+        mWhitelistedPkgMap.clear();
+        if (query != null) {
+            while (query.moveToNext()) {
+                Log.d("DualAppManagerService", "updateWhitelistPackages : " + query.getString(0));
+                mWhitelistedPkgMap.put(query.getString(0), 0);
+            }
+            query.close();
+        }
+    }
+
+    public static Bundle updateWhitelistPkg(Bundle bundle) {
+        Bundle bundle2 = new Bundle();
+        HashMap hashMap = (HashMap) bundle.getSerializable("packageList");
+        if (hashMap != null) {
+            mWhitelistedPkgMap = hashMap;
+        }
+        bundle2.putInt("result_code", 1);
+        bundle2.putString("result_desc", "success");
+        return bundle2;
+    }
+
+    public static boolean writeDualAppProfileId(Context context) {
         int i;
         boolean z;
         Iterator it = UserManager.get(context).getUsers().iterator();
@@ -734,103 +585,104 @@ public class DualAppManagerService extends ISemDualAppManager.Stub {
         }
         String str = SystemProperties.get("persist.sys.dualapp.prop");
         if (str != null && str.length() > 0) {
-            Log.d("DualAppManagerService", "dualapp_prop " + str);
+            Log.d("DualAppManagerService", "dualapp_prop ".concat(str));
         } else if (z) {
             SystemProperties.set("persist.sys.dualapp.prop", "0");
         } else {
             SystemProperties.set("persist.sys.dualapp.prop", "1");
         }
-        if (z) {
-            Log.d("DualAppManagerService", "Found DA Profile. Id = " + i);
-            SystemProperties.set("sys.dualapp.profile_id", String.valueOf(i));
-            return true;
+        if (!z) {
+            Log.d("DualAppManagerService", "Can not found DA Profile. Id");
+            SystemProperties.set("sys.dualapp.profile_id", "");
+            return false;
         }
-        Log.d("DualAppManagerService", "Can not found DA Profile. Id");
-        SystemProperties.set("sys.dualapp.profile_id", "");
-        return false;
+        Log.d("DualAppManagerService", "Found DA Profile. Id = " + i);
+        SystemProperties.set("sys.dualapp.profile_id", String.valueOf(i));
+        return true;
     }
 
-    public void updateWhitelistPackages() {
-        Cursor query = mContext.getContentResolver().query(Uri.parse("content://com.samsung.android.da.daagent.provider/getWhitelistApps"), null, null, null, null);
-        mWhitelistedPkgMap.clear();
-        if (query != null) {
-            while (query.moveToNext()) {
-                Log.d("DualAppManagerService", "updateWhitelistPackages : " + query.getString(0));
-                mWhitelistedPkgMap.put(query.getString(0), 0);
+    public final List getAllInstalledWhitelistedPackages() {
+        try {
+            Set keySet = mInstalledWhitelistedPkgMap.keySet();
+            if (keySet != null) {
+                return new ArrayList(keySet);
             }
-            query.close();
+            return null;
+        } catch (Exception unused) {
+            Log.e("DualAppManagerService", "Exception occured in getAllInstalledWhitelistedPackages. retrun null");
+            return null;
         }
     }
 
-    public void updateInstalledWhitelistPackages() {
-        Cursor query = mContext.getContentResolver().query(Uri.parse("content://com.samsung.android.da.daagent.provider/getInstalledApps"), null, null, null, null);
-        mInstalledWhitelistedPkgMap.clear();
-        if (query != null) {
-            while (query.moveToNext()) {
-                try {
-                    Log.d("DualAppManagerService", "updateInstalledWhitelistPackages : " + query.getString(0) + "/" + query.getInt(1));
-                    mInstalledWhitelistedPkgMap.put(query.getString(0), Integer.valueOf(query.getInt(1)));
-                } finally {
-                    query.close();
-                }
-            }
-        }
-    }
-
-    public static void recordDaUsageCount(Context context, Intent intent, int i, int i2, String str) {
-        String str2;
-        if (!SemDualAppManager.isDualAppId(i2) || intent == null) {
-            return;
-        }
-        if (intent.getComponent() != null) {
-            str2 = intent.getComponent().getPackageName();
-        } else {
-            str2 = intent.getPackage();
-        }
-        if (isInstalledWhitelistedPackageInternal(str2)) {
-            sendInternalMsg(3, 0, 0, null);
-        }
-    }
-
-    public void updateDAUsage() {
-        Calendar calendar = Calendar.getInstance();
-        int i = calendar.get(7);
-        int i2 = calendar.get(3);
-        int i3 = calendar.get(5);
-        if (thisWeek != i2) {
-            mDaWeeklyUsageCount.clear();
-            thisWeek = i2;
-        }
-        if (!mDaWeeklyUsageCount.contains(Integer.valueOf(i))) {
-            mDaWeeklyUsageCount.add(Integer.valueOf(i));
-            try {
-                mContext.getContentResolver().update(Uri.parse("content://com.samsung.android.da.daagent.provider/recordUsage"), new ContentValues(), null, null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (mDaMonthlyUsageCount.contains(Integer.valueOf(i3))) {
-            return;
-        }
-        mDaMonthlyUsageCount.add(Integer.valueOf(i3));
-    }
-
-    public String[] getAllWhitelistedPackages() {
+    public final String[] getAllWhitelistedPackages() {
         HashMap hashMap = mWhitelistedPkgMap;
         if (hashMap == null) {
             return null;
         }
-        if (hashMap.isEmpty()) {
-            Log.e("DualAppManagerService", "getAllWhitelistedPackages : empty");
-            return null;
+        if (!hashMap.isEmpty()) {
+            return (String[]) mWhitelistedPkgMap.keySet().toArray(new String[mWhitelistedPkgMap.size()]);
         }
-        return (String[]) mWhitelistedPkgMap.keySet().toArray(new String[mWhitelistedPkgMap.size()]);
+        Log.e("DualAppManagerService", "getAllWhitelistedPackages : empty");
+        return null;
     }
 
-    public static boolean isCrossAccessAllowed(int i, int i2) {
-        if (SemDualAppManager.isDualAppId(i2) && i == 0) {
+    public final boolean isInstalledWhitelistedPackage(String str) {
+        try {
+            if (!mInstalledWhitelistedPkgMap.containsKey(str)) {
+                return false;
+            }
+            Log.d("DualAppManagerService", "Found!");
             return true;
+        } catch (Exception e) {
+            Log.e("DualAppManagerService", "Exception occured in isInstalledWhitelistedPackage. retrun false");
+            e.printStackTrace();
+            return false;
         }
-        return SemDualAppManager.isDualAppId(i) && i2 == 0;
+    }
+
+    public final synchronized Bundle updateDualAppData(String str, int i, Bundle bundle) {
+        Bundle bundle2 = null;
+        if ("com.samsung.android.da.daagent".equals(str) && Binder.getCallingUid() == 1000) {
+            Log.d("DualAppManagerService", "updateDualAppData " + str + "/" + i + "/" + bundle);
+            if (bundle == null) {
+                Log.d("DualAppManagerService", "updateDualAppData. Bundle is null");
+                return null;
+            }
+            String string = bundle.getString("command");
+            try {
+                if ("renewInstalledWhitelistedPkgs".equals(string)) {
+                    bundle2 = renewWhitelistedPkg(bundle);
+                } else if ("addInstalledWhitelistedPkg".equals(string)) {
+                    bundle2 = addWhitelistedPkg(bundle);
+                } else if ("removeInstalledWhitelistedPkg".equals(string)) {
+                    bundle2 = removeWhitelistedPkg(bundle);
+                } else if ("removeAllInstalledWhitelistedPkgs".equals(string)) {
+                    bundle2 = removeAllWhitelistedPkgs();
+                } else if ("printInstalledWhitelistedPkg".equals(string)) {
+                    printInstalledWhitelistedPkg();
+                } else if ("setDualAppNotificationSound".equals(string)) {
+                    bundle2 = setDualAppNotificationSound(bundle);
+                } else if ("updateWhitelistPkgs".equals(string)) {
+                    bundle2 = updateWhitelistPkg(bundle);
+                } else {
+                    Bundle bundle3 = new Bundle();
+                    try {
+                        bundle3.putInt("result_code", 0);
+                        bundle3.putString("result_desc", "not defined command");
+                        bundle2 = bundle3;
+                    } catch (Exception e) {
+                        bundle2 = bundle3;
+                        e = e;
+                        e.printStackTrace();
+                        return bundle2;
+                    }
+                }
+            } catch (Exception e2) {
+                e = e2;
+            }
+            return bundle2;
+        }
+        Log.d("DualAppManagerService", "updateDualAppData is called from unauthorized app");
+        return null;
     }
 }

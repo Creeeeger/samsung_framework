@@ -1,19 +1,36 @@
 package com.android.server.integrity.model;
 
-import android.content.integrity.Rule;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class IntegrityCheckResult {
     public final Effect mEffect;
     public final List mRuleList;
 
-    /* loaded from: classes2.dex */
-    public enum Effect {
-        ALLOW,
-        DENY
+    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Effect {
+        public static final /* synthetic */ Effect[] $VALUES;
+        public static final Effect ALLOW;
+        public static final Effect DENY;
+
+        static {
+            Effect effect = new Effect("ALLOW", 0);
+            ALLOW = effect;
+            Effect effect2 = new Effect("DENY", 1);
+            DENY = effect2;
+            $VALUES = new Effect[]{effect, effect2};
+        }
+
+        public static Effect valueOf(String str) {
+            return (Effect) Enum.valueOf(Effect.class, str);
+        }
+
+        public static Effect[] values() {
+            return (Effect[]) $VALUES.clone();
+        }
     }
 
     public IntegrityCheckResult(Effect effect, List list) {
@@ -21,68 +38,19 @@ public final class IntegrityCheckResult {
         this.mRuleList = list;
     }
 
-    public Effect getEffect() {
-        return this.mEffect;
-    }
-
-    public List getMatchedRules() {
-        return this.mRuleList;
-    }
-
-    public static IntegrityCheckResult allow() {
-        return new IntegrityCheckResult(Effect.ALLOW, Collections.emptyList());
-    }
-
-    public static IntegrityCheckResult allow(List list) {
-        return new IntegrityCheckResult(Effect.ALLOW, list);
-    }
-
-    public static IntegrityCheckResult deny(List list) {
-        return new IntegrityCheckResult(Effect.DENY, list);
-    }
-
-    public int getLoggingResponse() {
-        if (getEffect() == Effect.DENY) {
+    public final int getLoggingResponse() {
+        Effect effect = Effect.DENY;
+        Effect effect2 = this.mEffect;
+        if (effect2 == effect) {
             return 2;
         }
-        Effect effect = getEffect();
-        Effect effect2 = Effect.ALLOW;
-        if (effect == effect2 && getMatchedRules().isEmpty()) {
+        Effect effect3 = Effect.ALLOW;
+        if (effect2 == effect3 && this.mRuleList.isEmpty()) {
             return 1;
         }
-        if (getEffect() != effect2 || getMatchedRules().isEmpty()) {
+        if (effect2 != effect3 || this.mRuleList.isEmpty()) {
             throw new IllegalStateException("IntegrityCheckResult is not valid.");
         }
         return 3;
-    }
-
-    public static /* synthetic */ boolean lambda$isCausedByAppCertRule$0(Rule rule) {
-        return rule.getFormula().isAppCertificateFormula();
-    }
-
-    public boolean isCausedByAppCertRule() {
-        return this.mRuleList.stream().anyMatch(new Predicate() { // from class: com.android.server.integrity.model.IntegrityCheckResult$$ExternalSyntheticLambda1
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$isCausedByAppCertRule$0;
-                lambda$isCausedByAppCertRule$0 = IntegrityCheckResult.lambda$isCausedByAppCertRule$0((Rule) obj);
-                return lambda$isCausedByAppCertRule$0;
-            }
-        });
-    }
-
-    public static /* synthetic */ boolean lambda$isCausedByInstallerRule$1(Rule rule) {
-        return rule.getFormula().isInstallerFormula();
-    }
-
-    public boolean isCausedByInstallerRule() {
-        return this.mRuleList.stream().anyMatch(new Predicate() { // from class: com.android.server.integrity.model.IntegrityCheckResult$$ExternalSyntheticLambda0
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$isCausedByInstallerRule$1;
-                lambda$isCausedByInstallerRule$1 = IntegrityCheckResult.lambda$isCausedByInstallerRule$1((Rule) obj);
-                return lambda$isCausedByInstallerRule$1;
-            }
-        });
     }
 }

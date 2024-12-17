@@ -1,29 +1,24 @@
 package com.android.server.uri;
 
 import android.os.Binder;
-import android.os.IBinder;
 import android.util.ArraySet;
-import android.util.proto.ProtoOutputStream;
-import com.google.android.collect.Sets;
+import com.android.server.uri.UriGrantsManagerService;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes3.dex */
-public class UriPermissionOwner {
-    public Binder externalToken;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class UriPermissionOwner {
+    public ExternalToken externalToken;
     public final Object mOwner;
     public ArraySet mReadPerms;
     public final UriGrantsManagerInternal mService;
     public ArraySet mWritePerms;
 
-    /* loaded from: classes3.dex */
-    public class ExternalToken extends Binder {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ExternalToken extends Binder {
         public ExternalToken() {
-        }
-
-        public UriPermissionOwner getOwner() {
-            return UriPermissionOwner.this;
         }
     }
 
@@ -32,33 +27,26 @@ public class UriPermissionOwner {
         this.mOwner = obj;
     }
 
-    public Binder getExternalToken() {
-        if (this.externalToken == null) {
-            this.externalToken = new ExternalToken();
+    public final void dump(PrintWriter printWriter, String str) {
+        synchronized (this) {
+            try {
+                if (this.mReadPerms != null) {
+                    printWriter.print(str);
+                    printWriter.print("readUriPermissions=");
+                    printWriter.println(this.mReadPerms);
+                }
+                if (this.mWritePerms != null) {
+                    printWriter.print(str);
+                    printWriter.print("writeUriPermissions=");
+                    printWriter.println(this.mWritePerms);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
         }
-        return this.externalToken;
     }
 
-    public static UriPermissionOwner fromExternalToken(IBinder iBinder) {
-        if (iBinder instanceof ExternalToken) {
-            return ((ExternalToken) iBinder).getOwner();
-        }
-        return null;
-    }
-
-    public void removeUriPermissions() {
-        removeUriPermissions(3);
-    }
-
-    public void removeUriPermissions(int i) {
-        removeUriPermission(null, i);
-    }
-
-    public void removeUriPermission(GrantUri grantUri, int i) {
-        removeUriPermission(grantUri, i, null, -1);
-    }
-
-    public void removeUriPermission(GrantUri grantUri, int i, String str, int i2) {
+    public final void removeUriPermission(int i, int i2, GrantUri grantUri, String str) {
         ArraySet arraySet;
         ArrayList arrayList = new ArrayList();
         synchronized (this) {
@@ -83,8 +71,7 @@ public class UriPermissionOwner {
                             this.mReadPerms = null;
                         }
                     }
-                } catch (Throwable th) {
-                    throw th;
+                } finally {
                 }
             }
             if ((i & 2) != 0 && (arraySet = this.mWritePerms) != null) {
@@ -108,84 +95,16 @@ public class UriPermissionOwner {
         }
         int size = arrayList.size();
         for (int i3 = 0; i3 < size; i3++) {
-            this.mService.removeUriPermissionIfNeeded((UriPermission) arrayList.get(i3));
-        }
-    }
-
-    public void addReadPermission(UriPermission uriPermission) {
-        synchronized (this) {
-            if (this.mReadPerms == null) {
-                this.mReadPerms = Sets.newArraySet();
-            }
-            this.mReadPerms.add(uriPermission);
-        }
-    }
-
-    public void addWritePermission(UriPermission uriPermission) {
-        synchronized (this) {
-            if (this.mWritePerms == null) {
-                this.mWritePerms = Sets.newArraySet();
-            }
-            this.mWritePerms.add(uriPermission);
-        }
-    }
-
-    public void removeReadPermission(UriPermission uriPermission) {
-        synchronized (this) {
-            this.mReadPerms.remove(uriPermission);
-            if (this.mReadPerms.isEmpty()) {
-                this.mReadPerms = null;
+            UriGrantsManagerInternal uriGrantsManagerInternal = this.mService;
+            UriPermission uriPermission3 = (UriPermission) arrayList.get(i3);
+            UriGrantsManagerService.LocalService localService = (UriGrantsManagerService.LocalService) uriGrantsManagerInternal;
+            synchronized (UriGrantsManagerService.this.mLock) {
+                UriGrantsManagerService.this.removeUriPermissionIfNeededLocked(uriPermission3);
             }
         }
     }
 
-    public void removeWritePermission(UriPermission uriPermission) {
-        synchronized (this) {
-            this.mWritePerms.remove(uriPermission);
-            if (this.mWritePerms.isEmpty()) {
-                this.mWritePerms = null;
-            }
-        }
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
-        synchronized (this) {
-            if (this.mReadPerms != null) {
-                printWriter.print(str);
-                printWriter.print("readUriPermissions=");
-                printWriter.println(this.mReadPerms);
-            }
-            if (this.mWritePerms != null) {
-                printWriter.print(str);
-                printWriter.print("writeUriPermissions=");
-                printWriter.println(this.mWritePerms);
-            }
-        }
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        protoOutputStream.write(1138166333441L, this.mOwner.toString());
-        synchronized (this) {
-            ArraySet arraySet = this.mReadPerms;
-            if (arraySet != null) {
-                Iterator it = arraySet.iterator();
-                while (it.hasNext()) {
-                    ((UriPermission) it.next()).uri.dumpDebug(protoOutputStream, 2246267895810L);
-                }
-            }
-            ArraySet arraySet2 = this.mWritePerms;
-            if (arraySet2 != null) {
-                Iterator it2 = arraySet2.iterator();
-                while (it2.hasNext()) {
-                    ((UriPermission) it2.next()).uri.dumpDebug(protoOutputStream, 2246267895811L);
-                }
-            }
-        }
-        protoOutputStream.end(start);
-    }
-
-    public String toString() {
+    public final String toString() {
         return this.mOwner.toString();
     }
 }

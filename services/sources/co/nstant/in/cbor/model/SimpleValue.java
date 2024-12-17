@@ -1,9 +1,8 @@
 package co.nstant.in.cbor.model;
 
-import java.util.Objects;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SimpleValue extends Special {
+public final class SimpleValue extends Special {
     public final SimpleValueType simpleValueType;
     public final int value;
     public static final SimpleValue FALSE = new SimpleValue(SimpleValueType.FALSE);
@@ -11,46 +10,48 @@ public class SimpleValue extends Special {
     public static final SimpleValue NULL = new SimpleValue(SimpleValueType.NULL);
     public static final SimpleValue UNDEFINED = new SimpleValue(SimpleValueType.UNDEFINED);
 
+    public SimpleValue(int i) {
+        super(i <= 23 ? SpecialType.SIMPLE_VALUE : SpecialType.SIMPLE_VALUE_NEXT_BYTE);
+        SimpleValueType simpleValueType;
+        this.value = i;
+        switch (i & 31) {
+            case 20:
+                simpleValueType = SimpleValueType.FALSE;
+                break;
+            case 21:
+                simpleValueType = SimpleValueType.TRUE;
+                break;
+            case 22:
+                simpleValueType = SimpleValueType.NULL;
+                break;
+            case 23:
+                simpleValueType = SimpleValueType.UNDEFINED;
+                break;
+            case 24:
+            case 25:
+            case 26:
+            case 27:
+            case 28:
+            case 29:
+            case 30:
+            case 31:
+                simpleValueType = SimpleValueType.RESERVED;
+                break;
+            default:
+                simpleValueType = SimpleValueType.UNALLOCATED;
+                break;
+        }
+        this.simpleValueType = simpleValueType;
+    }
+
     public SimpleValue(SimpleValueType simpleValueType) {
         super(SpecialType.SIMPLE_VALUE);
         this.value = simpleValueType.getValue();
         this.simpleValueType = simpleValueType;
     }
 
-    /* JADX WARN: Illegal instructions before constructor call */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public SimpleValue(int r2) {
-        /*
-            r1 = this;
-            r0 = 23
-            if (r2 > r0) goto L7
-            co.nstant.in.cbor.model.SpecialType r0 = co.nstant.in.cbor.model.SpecialType.SIMPLE_VALUE
-            goto L9
-        L7:
-            co.nstant.in.cbor.model.SpecialType r0 = co.nstant.in.cbor.model.SpecialType.SIMPLE_VALUE_NEXT_BYTE
-        L9:
-            r1.<init>(r0)
-            r1.value = r2
-            co.nstant.in.cbor.model.SimpleValueType r2 = co.nstant.in.cbor.model.SimpleValueType.ofByte(r2)
-            r1.simpleValueType = r2
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: co.nstant.in.cbor.model.SimpleValue.<init>(int):void");
-    }
-
-    public SimpleValueType getSimpleValueType() {
-        return this.simpleValueType;
-    }
-
-    public int getValue() {
-        return this.value;
-    }
-
     @Override // co.nstant.in.cbor.model.Special, co.nstant.in.cbor.model.DataItem
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (obj instanceof SimpleValue) {
             return super.equals(obj) && this.value == ((SimpleValue) obj).value;
         }
@@ -58,12 +59,12 @@ public class SimpleValue extends Special {
     }
 
     @Override // co.nstant.in.cbor.model.Special, co.nstant.in.cbor.model.DataItem
-    public int hashCode() {
-        return Objects.hashCode(Integer.valueOf(this.value)) ^ super.hashCode();
+    public final int hashCode() {
+        return Integer.valueOf(this.value).hashCode() ^ super.hashCode();
     }
 
     @Override // co.nstant.in.cbor.model.Special
-    public String toString() {
+    public final String toString() {
         return this.simpleValueType.toString();
     }
 }

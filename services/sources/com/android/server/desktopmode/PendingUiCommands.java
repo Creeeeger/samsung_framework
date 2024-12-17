@@ -9,49 +9,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-/* loaded from: classes2.dex */
-public class PendingUiCommands {
-    public static final String TAG = "[DMS]" + PendingUiCommands.class.getSimpleName();
-    public List mUiCommands = new ArrayList();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class PendingUiCommands {
+    public List mUiCommands;
 
-    /* loaded from: classes2.dex */
-    public class UiCommand {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UiCommand {
         public int mCommand;
         public Runnable mRunnable;
         public int mType;
         public int mWhere;
-
-        public static boolean isAnyType(int i) {
-            return i == 0 || i == 111;
-        }
-
-        public static boolean isAnyWhere(int i) {
-            return i == -1 || i == 100 || i == 101;
-        }
-
-        public UiCommand(int i, int i2, int i3, Runnable runnable) {
-            this.mCommand = i;
-            this.mType = i2;
-            this.mWhere = i3;
-            this.mRunnable = runnable;
-        }
-
-        public boolean isRemovableWith(UiCommand uiCommand) {
-            int i;
-            int i2;
-            if (this.mCommand == 900 && uiCommand.mCommand == 901 && ((i = this.mType) == (i2 = uiCommand.mType) || ((isSameTypeCategory(i, i2) && isAnyType(uiCommand.mType)) || hasSameNotificationId(this.mType, uiCommand.mType)))) {
-                int i3 = this.mWhere;
-                int i4 = uiCommand.mWhere;
-                if (i3 == i4 || isAnyWhere(i4)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static boolean isSameTypeCategory(int i, int i2) {
-            return Math.abs(i - i2) < 100;
-        }
 
         public static boolean hasSameNotificationId(int i, int i2) {
             if (!DesktopModeUiConstants.isNotificationType(i) || !DesktopModeUiConstants.isNotificationType(i2)) {
@@ -62,42 +30,70 @@ public class PendingUiCommands {
             return notificationId2 == notificationId && notificationId2 != -1;
         }
 
-        public boolean equals(Object obj) {
+        public final boolean equals(Object obj) {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || getClass() != obj.getClass()) {
+            if (obj == null || UiCommand.class != obj.getClass()) {
                 return false;
             }
             UiCommand uiCommand = (UiCommand) obj;
             return this.mCommand == uiCommand.mCommand && this.mType == uiCommand.mType && this.mWhere == uiCommand.mWhere;
         }
 
-        public int hashCode() {
+        public final int hashCode() {
             return Objects.hash(Integer.valueOf(this.mCommand), Integer.valueOf(this.mType), Integer.valueOf(this.mWhere));
         }
 
-        public String toString() {
+        public final String toString() {
             return "UiCommand(" + DesktopModeUiConstants.commandToString(this.mCommand) + ", " + DesktopModeUiConstants.typeToString(this.mType) + ", " + DesktopModeUiConstants.whereToString(this.mWhere) + ')';
         }
     }
 
-    public void queue(int i, final int i2, int i3, Runnable runnable) {
-        final UiCommand uiCommand = new UiCommand(i, i2, i3, runnable);
+    public final void flushCommands() {
+        Iterator it = new ArrayList(this.mUiCommands).iterator();
+        while (it.hasNext()) {
+            UiCommand uiCommand = (UiCommand) it.next();
+            if (DesktopModeFeature.DEBUG) {
+                Log.d("[DMS]PendingUiCommands", "Flushing " + uiCommand);
+            }
+            uiCommand.mRunnable.run();
+        }
+        ((ArrayList) this.mUiCommands).clear();
+    }
+
+    public final void queue(int i, final int i2, int i3, Runnable runnable) {
+        final UiCommand uiCommand = new UiCommand();
+        uiCommand.mCommand = i;
+        uiCommand.mType = i2;
+        uiCommand.mWhere = i3;
+        uiCommand.mRunnable = runnable;
         if (i != 900) {
             if (i == 901) {
                 removeCommandsIf(new Function() { // from class: com.android.server.desktopmode.PendingUiCommands$$ExternalSyntheticLambda1
                     @Override // java.util.function.Function
                     public final Object apply(Object obj) {
-                        Boolean lambda$queue$1;
-                        lambda$queue$1 = PendingUiCommands.lambda$queue$1(PendingUiCommands.UiCommand.this, (PendingUiCommands.UiCommand) obj);
-                        return lambda$queue$1;
+                        boolean z;
+                        int i4;
+                        int i5;
+                        PendingUiCommands.UiCommand uiCommand2 = PendingUiCommands.UiCommand.this;
+                        PendingUiCommands.UiCommand uiCommand3 = (PendingUiCommands.UiCommand) obj;
+                        if (uiCommand3.mCommand == 900 && uiCommand2.mCommand == 901 && ((i4 = uiCommand3.mType) == (i5 = uiCommand2.mType) || ((Math.abs(i4 - i5) < 100 && (i5 == 0 || i5 == 111)) || PendingUiCommands.UiCommand.hasSameNotificationId(i4, i5)))) {
+                            int i6 = uiCommand3.mWhere;
+                            int i7 = uiCommand2.mWhere;
+                            if (i6 == i7 || i7 == -1 || i7 == 100 || i7 == 101) {
+                                z = true;
+                                return Boolean.valueOf(z);
+                            }
+                        }
+                        z = false;
+                        return Boolean.valueOf(z);
                     }
                 });
                 if (!DesktopModeUiConstants.isNotificationType(i2) || runnable == null) {
                     return;
                 }
-                this.mUiCommands.add(uiCommand);
+                ((ArrayList) this.mUiCommands).add(uiCommand);
                 return;
             }
             return;
@@ -106,57 +102,27 @@ public class PendingUiCommands {
             removeCommandsIf(new Function() { // from class: com.android.server.desktopmode.PendingUiCommands$$ExternalSyntheticLambda0
                 @Override // java.util.function.Function
                 public final Object apply(Object obj) {
-                    Boolean lambda$queue$0;
-                    lambda$queue$0 = PendingUiCommands.lambda$queue$0(i2, (PendingUiCommands.UiCommand) obj);
-                    return lambda$queue$0;
+                    return Boolean.valueOf(PendingUiCommands.UiCommand.hasSameNotificationId(i2, ((PendingUiCommands.UiCommand) obj).mType));
                 }
             });
             if (runnable != null) {
-                this.mUiCommands.add(uiCommand);
+                ((ArrayList) this.mUiCommands).add(uiCommand);
                 return;
             }
             return;
         }
-        if (this.mUiCommands.contains(uiCommand) || runnable == null) {
+        if (((ArrayList) this.mUiCommands).contains(uiCommand) || runnable == null) {
             return;
         }
-        this.mUiCommands.add(uiCommand);
-    }
-
-    public static /* synthetic */ Boolean lambda$queue$0(int i, UiCommand uiCommand) {
-        return Boolean.valueOf(UiCommand.hasSameNotificationId(i, uiCommand.mType));
-    }
-
-    public static /* synthetic */ Boolean lambda$queue$1(UiCommand uiCommand, UiCommand uiCommand2) {
-        return Boolean.valueOf(uiCommand2.isRemovableWith(uiCommand));
+        ((ArrayList) this.mUiCommands).add(uiCommand);
     }
 
     public final void removeCommandsIf(Function function) {
-        Iterator it = this.mUiCommands.iterator();
+        Iterator it = ((ArrayList) this.mUiCommands).iterator();
         while (it.hasNext()) {
             if (((Boolean) function.apply((UiCommand) it.next())).booleanValue()) {
                 it.remove();
             }
         }
-    }
-
-    public void flushCommands() {
-        Iterator it = new ArrayList(this.mUiCommands).iterator();
-        while (it.hasNext()) {
-            UiCommand uiCommand = (UiCommand) it.next();
-            if (DesktopModeFeature.DEBUG) {
-                Log.d(TAG, "Flushing " + uiCommand);
-            }
-            uiCommand.mRunnable.run();
-        }
-        clear();
-    }
-
-    public void clear() {
-        this.mUiCommands.clear();
-    }
-
-    public boolean isEmpty() {
-        return this.mUiCommands.isEmpty();
     }
 }

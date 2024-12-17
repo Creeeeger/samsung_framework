@@ -7,31 +7,20 @@ import android.util.proto.ProtoOutputStream;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import com.android.server.policy.WindowManagerPolicy;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
 import com.android.server.wm.SurfaceAnimator;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class NonAppWindowAnimationAdapter implements AnimationAdapter {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class NonAppWindowAnimationAdapter implements AnimationAdapter {
     public SurfaceControl mCapturedLeash;
     public SurfaceAnimator.OnAnimationFinishedCallback mCapturedLeashFinishCallback;
-    public long mDurationHint;
+    public final long mDurationHint;
     public int mLastAnimationType;
-    public long mStatusBarTransitionDelay;
+    public final long mStatusBarTransitionDelay;
     public RemoteAnimationTarget mTarget;
     public final WindowContainer mWindowContainer;
-
-    public static boolean shouldStartNonAppWindowAnimationsForKeyguardExit(int i) {
-        return i == 20 || i == 21;
-    }
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public boolean getShowWallpaper() {
-        return false;
-    }
 
     public NonAppWindowAnimationAdapter(WindowContainer windowContainer, long j, long j2) {
         this.mWindowContainer = windowContainer;
@@ -39,119 +28,73 @@ public class NonAppWindowAnimationAdapter implements AnimationAdapter {
         this.mStatusBarTransitionDelay = j2;
     }
 
-    public static RemoteAnimationTarget[] startNonAppWindowAnimations(WindowManagerService windowManagerService, DisplayContent displayContent, int i, long j, long j2, ArrayList arrayList) {
-        ArrayList arrayList2 = new ArrayList();
-        if (shouldStartNonAppWindowAnimationsForKeyguardExit(i)) {
-            startNonAppWindowAnimationsForKeyguardExit(windowManagerService, j, j2, arrayList2, arrayList);
-        } else if (shouldAttachNavBarToApp(windowManagerService, displayContent, i)) {
-            startNavigationBarWindowAnimation(displayContent, j, j2, arrayList2, arrayList);
-        }
-        return (RemoteAnimationTarget[]) arrayList2.toArray(new RemoteAnimationTarget[arrayList2.size()]);
-    }
-
     public static boolean shouldAttachNavBarToApp(WindowManagerService windowManagerService, DisplayContent displayContent, int i) {
-        return (i == 8 || i == 10 || i == 12) && displayContent.getDisplayPolicy().shouldAttachNavBarToAppDuringTransition() && windowManagerService.getRecentsAnimationController() == null && displayContent.getAsyncRotationController() == null;
+        return (i == 8 || i == 10 || i == 12) && displayContent.mDisplayPolicy.shouldAttachNavBarToAppDuringTransition() && windowManagerService.mRecentsAnimationController == null && displayContent.getAsyncRotationController() == null;
     }
 
-    public static void startNonAppWindowAnimationsForKeyguardExit(final WindowManagerService windowManagerService, final long j, final long j2, final ArrayList arrayList, final ArrayList arrayList2) {
-        WindowManagerPolicy windowManagerPolicy = windowManagerService.mPolicy;
-        windowManagerService.mRoot.forAllWindows(new Consumer() { // from class: com.android.server.wm.NonAppWindowAnimationAdapter$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                NonAppWindowAnimationAdapter.lambda$startNonAppWindowAnimationsForKeyguardExit$0(WindowManagerService.this, j, j2, arrayList2, arrayList, (WindowState) obj);
-            }
-        }, true);
-    }
-
-    public static /* synthetic */ void lambda$startNonAppWindowAnimationsForKeyguardExit$0(WindowManagerService windowManagerService, long j, long j2, ArrayList arrayList, ArrayList arrayList2, WindowState windowState) {
-        if (windowState.mActivityRecord == null && windowState.canBeHiddenByKeyguard() && windowState.wouldBeVisibleIfPolicyIgnored() && !windowState.isVisible() && windowState != windowManagerService.mRoot.getCurrentInputMethodWindow()) {
-            NonAppWindowAnimationAdapter nonAppWindowAnimationAdapter = new NonAppWindowAnimationAdapter(windowState, j, j2);
-            arrayList.add(nonAppWindowAnimationAdapter);
-            windowState.startAnimation(windowState.getPendingTransaction(), nonAppWindowAnimationAdapter, false, 16);
-            arrayList2.add(nonAppWindowAnimationAdapter.createRemoteAnimationTarget());
-        }
-    }
-
-    public static void startNavigationBarWindowAnimation(DisplayContent displayContent, long j, long j2, ArrayList arrayList, ArrayList arrayList2) {
-        WindowState navigationBar = displayContent.getDisplayPolicy().getNavigationBar();
-        NonAppWindowAnimationAdapter nonAppWindowAnimationAdapter = new NonAppWindowAnimationAdapter(navigationBar.mToken, j, j2);
-        arrayList2.add(nonAppWindowAnimationAdapter);
-        WindowToken windowToken = navigationBar.mToken;
-        windowToken.startAnimation(windowToken.getPendingTransaction(), nonAppWindowAnimationAdapter, false, 16);
-        arrayList.add(nonAppWindowAnimationAdapter.createRemoteAnimationTarget());
-    }
-
-    public RemoteAnimationTarget createRemoteAnimationTarget() {
-        RemoteAnimationTarget remoteAnimationTarget = new RemoteAnimationTarget(-1, -1, getLeash(), false, new Rect(), (Rect) null, this.mWindowContainer.getPrefixOrderIndex(), this.mWindowContainer.getLastSurfacePosition(), this.mWindowContainer.getBounds(), (Rect) null, this.mWindowContainer.getWindowConfiguration(), true, (SurfaceControl) null, (Rect) null, (ActivityManager.RunningTaskInfo) null, false, this.mWindowContainer.getWindowType());
+    public final RemoteAnimationTarget createRemoteAnimationTarget() {
+        SurfaceControl surfaceControl = this.mCapturedLeash;
+        Rect rect = new Rect();
+        WindowContainer windowContainer = this.mWindowContainer;
+        RemoteAnimationTarget remoteAnimationTarget = new RemoteAnimationTarget(-1, -1, surfaceControl, false, rect, (Rect) null, windowContainer.getPrefixOrderIndex(), windowContainer.getLastSurfacePosition(), windowContainer.getBounds(), (Rect) null, windowContainer.getWindowConfiguration(), true, (SurfaceControl) null, (Rect) null, (ActivityManager.RunningTaskInfo) null, false, windowContainer.getWindowType());
         this.mTarget = remoteAnimationTarget;
         return remoteAnimationTarget;
     }
 
     @Override // com.android.server.wm.AnimationAdapter
-    public void startAnimation(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback) {
-        if (ProtoLogCache.WM_DEBUG_REMOTE_ANIMATIONS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, 1999594750, 0, "startAnimation", (Object[]) null);
-        }
-        this.mCapturedLeash = surfaceControl;
-        this.mCapturedLeashFinishCallback = onAnimationFinishedCallback;
-        this.mLastAnimationType = i;
-    }
-
-    public SurfaceAnimator.OnAnimationFinishedCallback getLeashFinishedCallback() {
-        return this.mCapturedLeashFinishCallback;
-    }
-
-    public int getLastAnimationType() {
-        return this.mLastAnimationType;
-    }
-
-    public WindowContainer getWindowContainer() {
-        return this.mWindowContainer;
-    }
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public long getDurationHint() {
-        return this.mDurationHint;
-    }
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public long getStatusBarTransitionsStartTime() {
-        return SystemClock.uptimeMillis() + this.mStatusBarTransitionDelay;
-    }
-
-    public SurfaceControl getLeash() {
-        return this.mCapturedLeash;
-    }
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public void onAnimationCancelled(SurfaceControl surfaceControl) {
-        if (ProtoLogCache.WM_DEBUG_REMOTE_ANIMATIONS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, -1153814764, 0, "onAnimationCancelled", (Object[]) null);
-        }
-    }
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public void dump(PrintWriter printWriter, String str) {
+    public final void dump(PrintWriter printWriter, String str) {
         printWriter.print(str);
         printWriter.print("windowContainer=");
         printWriter.println(this.mWindowContainer);
-        if (this.mTarget != null) {
+        if (this.mTarget == null) {
             printWriter.print(str);
-            printWriter.println("Target:");
-            this.mTarget.dump(printWriter, str + "  ");
+            printWriter.println("Target: null");
             return;
         }
         printWriter.print(str);
-        printWriter.println("Target: null");
+        printWriter.println("Target:");
+        this.mTarget.dump(printWriter, str + "  ");
     }
 
     @Override // com.android.server.wm.AnimationAdapter
-    public void dumpDebug(ProtoOutputStream protoOutputStream) {
+    public final void dumpDebug$1(ProtoOutputStream protoOutputStream) {
         long start = protoOutputStream.start(1146756268034L);
         RemoteAnimationTarget remoteAnimationTarget = this.mTarget;
         if (remoteAnimationTarget != null) {
             remoteAnimationTarget.dumpDebug(protoOutputStream, 1146756268033L);
         }
         protoOutputStream.end(start);
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final long getDurationHint() {
+        return this.mDurationHint;
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final boolean getShowWallpaper() {
+        return false;
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final long getStatusBarTransitionsStartTime() {
+        return SystemClock.uptimeMillis() + this.mStatusBarTransitionDelay;
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final void onAnimationCancelled(SurfaceControl surfaceControl) {
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_REMOTE_ANIMATIONS_enabled[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, 705955074330737483L, 0, null, null);
+        }
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final void startAnimation(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback) {
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_REMOTE_ANIMATIONS_enabled[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, 3788905348567806832L, 0, null, null);
+        }
+        this.mCapturedLeash = surfaceControl;
+        this.mCapturedLeashFinishCallback = onAnimationFinishedCallback;
+        this.mLastAnimationType = i;
     }
 }

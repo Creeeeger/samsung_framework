@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.StatusBarManager;
 import android.app.role.RoleManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -15,30 +16,43 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.FactoryTest;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.ResultReceiver;
 import android.os.ShellCallback;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.service.quicksettings.TileService;
+import android.util.ArrayMap;
 import android.util.IndentingPrintWriter;
+import android.view.Display;
 import com.android.internal.util.DumpUtils;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.LocalServices;
 import com.android.server.ServiceThread;
 import com.android.server.SystemService;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
 import com.android.server.am.ActivityManagerService;
 import com.android.server.desktopmode.BlockerManager;
-import com.android.server.desktopmode.DesktopModeService;
+import com.android.server.desktopmode.BlockerManager.DesktopModeBlockerInfo;
+import com.android.server.desktopmode.BootInitBlocker.AnonymousClass1;
+import com.android.server.desktopmode.DockManager;
 import com.android.server.desktopmode.ModeChanger;
+import com.android.server.desktopmode.SemDesktopModeStateNotifier;
+import com.android.server.desktopmode.SemDesktopModeStateNotifier.ListenerInfo;
 import com.android.server.desktopmode.SettingsHelper;
 import com.android.server.desktopmode.StateManager;
 import com.android.server.desktopmode.UiManager;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import com.android.server.wm.ActivityTaskManagerService;
+import com.samsung.android.cover.CoverState;
 import com.samsung.android.desktopmode.DesktopModeFeature;
 import com.samsung.android.desktopmode.DesktopModeManagerInternal;
 import com.samsung.android.desktopmode.DesktopModeUiConstants;
@@ -49,21 +63,24 @@ import com.samsung.android.desktopmode.IDesktopModeListener;
 import com.samsung.android.desktopmode.SemDesktopModeState;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import com.samsung.android.knox.dex.DexManager;
-import com.samsung.android.rune.CoreRune;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
+import com.samsung.android.mcf.McfBleAdapter;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-/* loaded from: classes2.dex */
-public class DesktopModeService extends IDesktopMode.Stub {
-    public static final String TAG = "[DMS]" + DesktopModeService.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DesktopModeService extends IDesktopMode.Stub {
+    public static final /* synthetic */ int $r8$clinit = 0;
     public ActivityManagerService mActivityManagerService;
     public ActivityTaskManagerInternal mActivityTaskManagerInternal;
-    public ActivityTaskManagerService mActivityTaskManagerService;
     public boolean mAllowPogoInitialDialog;
     public BleAdvertiserServiceManager mBleAdvertiserServiceManager;
     public BlockerManager mBlockerManager;
-    public BootInitBlocker mBootInitBlocker;
     public final Context mContext;
     public CoverStateManager mCoverStateManager;
     public int mCurrentUserId;
@@ -73,7 +90,7 @@ public class DesktopModeService extends IDesktopMode.Stub {
     public DualModeChanger mDualModeChanger;
     public EmergencyModeBlocker mEmergencyModeBlocker;
     public boolean mEnteredViaWirelessDex;
-    public final SettingsHelper.OnSettingChangedListener mExternalDisplayModeListener;
+    public final AnonymousClass3 mExternalDisplayModeListener;
     public final Handler mHandler;
     public HardwareManager mHwManager;
     public final Injector mInjector;
@@ -88,15 +105,15 @@ public class DesktopModeService extends IDesktopMode.Stub {
     public ModeChanger mModeChanger;
     public ModeChanger.ModeToModeChangeInfo mModeToModeChangeInfo;
     public MultiResolutionManager mMultiResolutionManager;
-    public final ContentObserver mNewDeXSettingObserver;
+    public final AnonymousClass2 mNewDeXSettingObserver;
     public PackageStateManager mPackageStateManager;
-    public final PreconditionChecker mPreconditionChecker;
+    public final PhonePreconditionChecker mPreconditionChecker;
     public final ContentResolver mResolver;
     public final SemDesktopModeStateNotifier mSemDesktopModeStateNotifier;
     public SettingsHelper mSettingsHelper;
     public boolean mShowModeChangeScreen;
     public StandaloneModeChanger mStandaloneModeChanger;
-    public final StateManager.StateListener mStateListener;
+    public final AnonymousClass1 mStateListener;
     public final IStateManager mStateManager;
     public StatusBarManager mStatusBarManager;
     public TouchpadManager mTouchpadManager;
@@ -104,192 +121,327 @@ public class DesktopModeService extends IDesktopMode.Stub {
     public int mUserRequest;
     public ContentObserver mUserSetupCompleteObserver;
     public WelcomeActivityListener mWelcomeActivityListener;
-    public final SettingsHelper.OnSettingChangedListener mWelcomeCompletedSettingChangedListener;
+    public final AnonymousClass3 mWelcomeCompletedSettingChangedListener;
     public WirelessDexManager mWirelessDexManager;
     public int mWirelessDexSetting;
 
-    /* loaded from: classes2.dex */
-    public interface PreconditionChecker {
-        boolean isAllowed(State state, boolean z, boolean z2);
-
-        boolean isDesktopModeAvailableEx(boolean z, boolean z2);
-
-        boolean updateDesktopMode(State state, boolean z, boolean z2);
-    }
-
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     /* renamed from: com.android.server.desktopmode.DesktopModeService$1, reason: invalid class name */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends StateManager.StateListener {
-        public AnonymousClass1() {
+    public final class AnonymousClass1 extends StateManager.StateListener {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ Object this$0;
+
+        public /* synthetic */ AnonymousClass1(int i, Object obj) {
+            this.$r8$classId = i;
+            this.this$0 = obj;
         }
 
         @Override // com.android.server.desktopmode.StateManager.StateListener
         public void onBootCompleted() {
-            DesktopModeService.this.mHwManager.initialize();
-            DesktopModeService.this.mCoverStateManager.initialize();
-            State state = DesktopModeService.this.mStateManager.getState();
-            if (DesktopModeFeature.SUPPORT_STANDALONE) {
-                DesktopModeService.this.handleHdmiAutoEnter(state.isExternalDisplayConnected());
-                DesktopModeService.this.handlePogoAutoEnter(state.isPogoKeyboardConnected());
-                DesktopModeService.this.mHandler.postDelayed(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$1$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        DesktopModeService.AnonymousClass1.this.lambda$onBootCompleted$0();
+            switch (this.$r8$classId) {
+                case 0:
+                    HardwareManager hardwareManager = ((DesktopModeService) this.this$0).mHwManager;
+                    hardwareManager.getClass();
+                    if (DesktopModeFeature.DEBUG) {
+                        Log.d("[DMS]HardwareManager", "initialize()");
                     }
-                }, 5000L);
-                DesktopModeService.this.setEnterRequestIfStandaloneLastBoot(state);
+                    Display[] displays = hardwareManager.mDisplayManager.getDisplays();
+                    synchronized (hardwareManager.mLock) {
+                        hardwareManager.updateDockStatusLocked();
+                        hardwareManager.initializeExternalDisplayStatusLocked(displays);
+                        hardwareManager.updateInputDeviceStatusLocked();
+                        DesktopModeSettings.setSettings(hardwareManager.mResolver, "dock_usbpd_ids", hardwareManager.mDockState.mType);
+                    }
+                    CoverStateManager coverStateManager = ((DesktopModeService) this.this$0).mCoverStateManager;
+                    synchronized (coverStateManager.mLock) {
+                        coverStateManager.mScreenMirroringDisabled = DesktopModeSettings.getSettingsAsUser(coverStateManager.mContext.getContentResolver(), "mirroring_switch_disabled", false, DesktopModeSettings.sCurrentUserId);
+                        coverStateManager.updateCoverSupportStateLocked();
+                    }
+                    StateManager.InternalState state = ((StateManager) ((DesktopModeService) this.this$0).mStateManager).getState();
+                    if (DesktopModeFeature.SUPPORT_STANDALONE) {
+                        DesktopModeService.m396$$Nest$mhandleHdmiAutoEnter((DesktopModeService) this.this$0, state.mIsExternalDisplayConnected);
+                        DesktopModeService.m397$$Nest$mhandlePogoAutoEnter((DesktopModeService) this.this$0, state.mIsPogoKeyboardConnected);
+                        ((DesktopModeService) this.this$0).mHandler.postDelayed(new DesktopModeService$$ExternalSyntheticLambda2(1, this), 5000L);
+                        DesktopModeService.m401$$Nest$msetEnterRequestIfStandaloneLastBoot((DesktopModeService) this.this$0, state);
+                    }
+                    ((DesktopModeService) this.this$0).scheduleUpdateDesktopMode(true);
+                    DesktopModeService.m400$$Nest$mrequestTileUpdate((DesktopModeService) this.this$0, state.mDesktopModeState);
+                    return;
+                default:
+                    return;
             }
-            DesktopModeService.this.scheduleUpdateDesktopMode(true);
-            DesktopModeService.this.requestTileUpdate(state.getDesktopModeState());
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onBootCompleted$0() {
-            DesktopModeService.this.mAllowPogoInitialDialog = true;
         }
 
         @Override // com.android.server.desktopmode.StateManager.StateListener
         public void onBootInitBlockerRegistered(boolean z) {
-            DesktopModeService.this.mIsBootInitBlockerRegistered = z;
-        }
-
-        @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onExternalDisplayConnectionChanged(State state) {
-            boolean settings = DesktopModeSettings.getSettings(DesktopModeService.this.mResolver, "welcome_completed", false);
-            if (DesktopModeFeature.SUPPORT_STANDALONE) {
-                if (state.isWirelessDexConnected()) {
-                    DesktopModeService.this.handleWirelessDexEnter(settings);
-                } else {
-                    DesktopModeService.this.handleHdmiAutoEnter(state.isHdmiConnected());
-                    DesktopModeService.this.scheduleUpdateDesktopMode(state.isHdmiConnected());
-                }
-                if (state.isHdmiConnected()) {
-                    return;
-                }
-                DesktopModeService.this.mShowModeChangeScreen = false;
-                return;
-            }
-            if (state.isHdmiConnected() && (DesktopModeSettings.getSettings(DesktopModeService.this.mResolver, "hdmi_auto_enter", false) || !settings)) {
-                DesktopModeService.this.setUserRequest(1);
-            }
-            DesktopModeService.this.scheduleUpdateDesktopMode(state.isExternalDisplayConnected());
-        }
-
-        @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onExternalDisplayUpdated(State state) {
-            if (DesktopModeService.isConnectionTypeChanged(state)) {
-                DesktopModeService.this.scheduleUpdateDesktopMode(false, true);
+            switch (this.$r8$classId) {
+                case 0:
+                    ((DesktopModeService) this.this$0).mIsBootInitBlockerRegistered = z;
+                    break;
             }
         }
 
         @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onDockStateChanged(State state) {
-            if (state.getDockState().isDexPad()) {
-                return;
-            }
-            DesktopModeService.this.dismissDialog(3);
-        }
-
-        @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onDockLowChargerPowerChanged(State state) {
-            if (DesktopModeService.isDexPadConnected(state)) {
-                if (state.isDockLowChargerConnected()) {
-                    DesktopModeService.this.showDialog(3, null);
-                } else {
-                    DesktopModeService.this.dismissDialog(3);
-                }
-            }
-        }
-
-        @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onPackageStateChanged(State state) {
-            DesktopModeService.this.scheduleUpdateDesktopMode(state.isPackagesAvailable());
-        }
-
-        @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onLauncherPackageReplaced(boolean z) {
-            State state = DesktopModeService.this.mStateManager.getState();
-            if (z) {
-                DesktopModeService.this.mSettingsHelper.clearSettingsByLauncherDataCleared(state, DesktopModeService.this.mCurrentUserId);
-            }
-            DesktopModeService.this.startHome(state);
-        }
-
-        @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onPogoKeyboardConnectionChanged(State state) {
-            if (DesktopModeFeature.SUPPORT_STANDALONE) {
-                DesktopModeService.this.handlePogoAutoEnter(state.isPogoKeyboardConnected());
+        public void onDesktopModeStateChanged(StateManager.InternalState internalState) {
+            switch (this.$r8$classId) {
+                case 0:
+                    SemDesktopModeState semDesktopModeState = internalState.mDesktopModeState;
+                    boolean z = DesktopModeFeature.SUPPORT_WIRELESS_DEX;
+                    DesktopModeService desktopModeService = (DesktopModeService) this.this$0;
+                    if (z && desktopModeService.mEnteredViaWirelessDex) {
+                        int i = desktopModeService.mWirelessDexSetting;
+                        int i2 = semDesktopModeState.enabled;
+                        if (i != i2) {
+                            desktopModeService.mWirelessDexSetting = i2;
+                            DesktopModeSettings.setSettings(desktopModeService.mResolver, "wireless_dex", i2);
+                        }
+                        if (semDesktopModeState.compareTo(2, 0, 0)) {
+                            desktopModeService.mEnteredViaWirelessDex = false;
+                        }
+                    }
+                    DesktopModeService.m400$$Nest$mrequestTileUpdate(desktopModeService, semDesktopModeState);
+                    break;
             }
         }
 
         @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onDesktopModeStateChanged(State state) {
-            SemDesktopModeState desktopModeState = state.getDesktopModeState();
-            if (DesktopModeFeature.SUPPORT_WIRELESS_DEX && DesktopModeService.this.mEnteredViaWirelessDex) {
-                int i = DesktopModeService.this.mWirelessDexSetting;
-                int i2 = desktopModeState.enabled;
-                if (i != i2) {
-                    DesktopModeService.this.mWirelessDexSetting = i2;
-                    DesktopModeSettings.setSettings(DesktopModeService.this.mResolver, "wireless_dex", desktopModeState.enabled);
-                }
-                if (desktopModeState.compareTo(2, 0, 0)) {
-                    DesktopModeService.this.mEnteredViaWirelessDex = false;
-                }
+        public void onDockLowChargerPowerChanged(StateManager.InternalState internalState) {
+            switch (this.$r8$classId) {
+                case 0:
+                    if (internalState.mDockState.isDexPad()) {
+                        int i = internalState.mDockLowChargerState;
+                        DesktopModeService desktopModeService = (DesktopModeService) this.this$0;
+                        if (i != 1) {
+                            desktopModeService.dismissDialog(3);
+                            break;
+                        } else {
+                            desktopModeService.mUiManager.showDialog(0, 3, null);
+                            break;
+                        }
+                    }
+                    break;
             }
-            DesktopModeService.this.requestTileUpdate(desktopModeState);
         }
 
         @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onForcedInternalScreenStateChanged(State state) {
-            DesktopModeService.this.setUserRequest(state.isForcedInternalScreenModeEnabled() ? 1 : 2);
-            DesktopModeService.this.scheduleUpdateDesktopMode(state.isForcedInternalScreenModeEnabled());
-        }
-
-        @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onStopLoadingScreen(boolean z) {
-            if (DesktopModeService.this.mModeToModeChangeInfo != null) {
-                DesktopModeService.this.setUserRequest(1);
-            } else {
-                DesktopModeService.this.setUserRequest(0);
+        public void onDockStateChanged(StateManager.InternalState internalState) {
+            switch (this.$r8$classId) {
+                case 0:
+                    if (!internalState.mDockState.isDexPad()) {
+                        ((DesktopModeService) this.this$0).dismissDialog(3);
+                        break;
+                    }
+                    break;
             }
         }
 
         @Override // com.android.server.desktopmode.StateManager.StateListener
         public void onDualModeStopLoadingScreen(boolean z) {
-            if (DesktopModeService.this.mModeToModeChangeInfo != null) {
-                DesktopModeService.this.setUserRequest(1);
-            } else {
-                DesktopModeService.this.setUserRequest(0);
+            switch (this.$r8$classId) {
+                case 0:
+                    DesktopModeService desktopModeService = (DesktopModeService) this.this$0;
+                    if (desktopModeService.mModeToModeChangeInfo == null) {
+                        desktopModeService.setUserRequest(0);
+                        break;
+                    } else {
+                        desktopModeService.setUserRequest(1);
+                        break;
+                    }
+            }
+        }
+
+        @Override // com.android.server.desktopmode.StateManager.StateListener
+        public final void onExternalDisplayConnectionChanged(StateManager.InternalState internalState) {
+            switch (this.$r8$classId) {
+                case 0:
+                    DesktopModeService desktopModeService = (DesktopModeService) this.this$0;
+                    boolean settingsAsUser = DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "welcome_completed", false, DesktopModeSettings.sCurrentUserId);
+                    if (!DesktopModeFeature.SUPPORT_STANDALONE) {
+                        if (internalState.isHdmiConnected() && (DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "hdmi_auto_enter", false, DesktopModeSettings.sCurrentUserId) || !settingsAsUser)) {
+                            desktopModeService.setUserRequest(1);
+                        }
+                        desktopModeService.scheduleUpdateDesktopMode(internalState.mIsExternalDisplayConnected);
+                        break;
+                    } else {
+                        if (!internalState.isWirelessDexConnected()) {
+                            DesktopModeService.m396$$Nest$mhandleHdmiAutoEnter(desktopModeService, internalState.isHdmiConnected());
+                            desktopModeService.scheduleUpdateDesktopMode(internalState.isHdmiConnected());
+                        } else if (desktopModeService.mCurrentUserId == 0 && desktopModeService.isSystemReady()) {
+                            if (settingsAsUser) {
+                                desktopModeService.scheduleUpdateDesktopMode(true);
+                            } else {
+                                desktopModeService.startWelcomeActivity();
+                            }
+                        }
+                        if (!internalState.isHdmiConnected()) {
+                            desktopModeService.mShowModeChangeScreen = false;
+                            break;
+                        }
+                    }
+                    break;
+                default:
+                    boolean z = internalState.mIsExternalDisplayConnected;
+                    boolean z2 = internalState.mCoverSupportState == 2;
+                    WelcomeActivityListener welcomeActivityListener = (WelcomeActivityListener) this.this$0;
+                    welcomeActivityListener.showOrDismissOverlay(z, z2);
+                    welcomeActivityListener.setDesktopModeState(10, internalState.mIsExternalDisplayConnected);
+                    break;
+            }
+        }
+
+        @Override // com.android.server.desktopmode.StateManager.StateListener
+        public void onExternalDisplayUpdated(StateManager.InternalState internalState) {
+            switch (this.$r8$classId) {
+                case 0:
+                    DisplayInfo displayInfo = internalState.mConnectedDisplay;
+                    DisplayInfo displayInfo2 = internalState.mPreviousConnectedDisplay;
+                    if (displayInfo != null && displayInfo2 != null && displayInfo.mType != displayInfo2.mType) {
+                        final DesktopModeService desktopModeService = (DesktopModeService) this.this$0;
+                        desktopModeService.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticLambda4
+                            public final /* synthetic */ boolean f$1 = false;
+                            public final /* synthetic */ boolean f$2 = true;
+
+                            @Override // java.lang.Runnable
+                            public final void run() {
+                                DesktopModeService desktopModeService2 = DesktopModeService.this;
+                                desktopModeService2.updateDesktopMode(((StateManager) desktopModeService2.mStateManager).getState(), this.f$1, this.f$2);
+                            }
+                        });
+                        break;
+                    }
+                    break;
+            }
+        }
+
+        @Override // com.android.server.desktopmode.StateManager.StateListener
+        public void onForcedInternalScreenStateChanged(StateManager.InternalState internalState) {
+            switch (this.$r8$classId) {
+                case 0:
+                    int i = internalState.mForcedInternalScreenModeEnabled ? 1 : 2;
+                    DesktopModeService desktopModeService = (DesktopModeService) this.this$0;
+                    desktopModeService.setUserRequest(i);
+                    desktopModeService.scheduleUpdateDesktopMode(internalState.mForcedInternalScreenModeEnabled);
+                    break;
+            }
+        }
+
+        @Override // com.android.server.desktopmode.StateManager.StateListener
+        public void onLauncherPackageReplaced(boolean z) {
+            switch (this.$r8$classId) {
+                case 0:
+                    DesktopModeService desktopModeService = (DesktopModeService) this.this$0;
+                    StateManager.InternalState state = ((StateManager) desktopModeService.mStateManager).getState();
+                    if (z) {
+                        desktopModeService.mSettingsHelper.clearSettingsByLauncherDataCleared(state, desktopModeService.mCurrentUserId);
+                    }
+                    desktopModeService.startHome(state);
+                    break;
+            }
+        }
+
+        @Override // com.android.server.desktopmode.StateManager.StateListener
+        public void onPackageStateChanged(StateManager.InternalState internalState) {
+            switch (this.$r8$classId) {
+                case 0:
+                    ((DesktopModeService) this.this$0).scheduleUpdateDesktopMode(internalState.isPackagesAvailable());
+                    break;
+            }
+        }
+
+        @Override // com.android.server.desktopmode.StateManager.StateListener
+        public void onPogoKeyboardConnectionChanged(StateManager.InternalState internalState) {
+            switch (this.$r8$classId) {
+                case 0:
+                    if (DesktopModeFeature.SUPPORT_STANDALONE) {
+                        DesktopModeService.m397$$Nest$mhandlePogoAutoEnter((DesktopModeService) this.this$0, internalState.mIsPogoKeyboardConnected);
+                        break;
+                    }
+                    break;
             }
         }
 
         @Override // com.android.server.desktopmode.StateManager.StateListener
         public void onScheduleUpdateDesktopMode(boolean z) {
-            DesktopModeService.this.scheduleUpdateDesktopMode(z);
+            switch (this.$r8$classId) {
+                case 0:
+                    ((DesktopModeService) this.this$0).scheduleUpdateDesktopMode(z);
+                    break;
+            }
+        }
+
+        @Override // com.android.server.desktopmode.StateManager.StateListener
+        public void onStopLoadingScreen(boolean z) {
+            switch (this.$r8$classId) {
+                case 0:
+                    DesktopModeService desktopModeService = (DesktopModeService) this.this$0;
+                    if (desktopModeService.mModeToModeChangeInfo == null) {
+                        desktopModeService.setUserRequest(0);
+                        break;
+                    } else {
+                        desktopModeService.setUserRequest(1);
+                        break;
+                    }
+            }
         }
     }
 
-    public final void setEnterRequestIfStandaloneLastBoot(State state) {
-        if (DesktopModeSettings.getSettingsAsUser(this.mResolver, "display_type", 0, this.mCurrentUserId) == 101) {
-            Log.i(TAG, "Request to enter standalone mode, since the standalone mode was enabled on last boot");
-            setUserRequest(1);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.desktopmode.DesktopModeService$2, reason: invalid class name */
+    public final class AnonymousClass2 extends ContentObserver {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ DesktopModeService this$0;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public /* synthetic */ AnonymousClass2(DesktopModeService desktopModeService, int i) {
+            super(null);
+            this.$r8$classId = i;
+            this.this$0 = desktopModeService;
         }
-        DesktopModeSettings.setSettingsAsUser(this.mResolver, "display_type", state.getDesktopModeState().getDisplayType(), this.mCurrentUserId);
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z) {
+            switch (this.$r8$classId) {
+                case 0:
+                    DesktopModeService.m400$$Nest$mrequestTileUpdate(this.this$0, ((StateManager) this.this$0.mStateManager).getState().mDesktopModeState);
+                    break;
+                default:
+                    super.onChange(z);
+                    this.this$0.initializeStates();
+                    this.this$0.mResolver.unregisterContentObserver(this);
+                    this.this$0.mUserSetupCompleteObserver = null;
+                    break;
+            }
+        }
     }
 
-    public final void requestTileUpdate(SemDesktopModeState semDesktopModeState) {
-        boolean z = semDesktopModeState != null && (semDesktopModeState.getEnabled() == 4 || semDesktopModeState.getEnabled() == 3);
-        boolean z2 = Settings.System.getInt(this.mResolver, "new_dex", 0) == 1;
-        if (this.mIsDesktopModeEnablingOrEnabled == z && this.mIsNewDexEnabled == z2) {
-            return;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.desktopmode.DesktopModeService$6, reason: invalid class name */
+    public final class AnonymousClass6 extends UiManager.InternalUiCallback {
+        public final /* synthetic */ String val$firstConnectionKey;
+        public final /* synthetic */ boolean val$startWelcomeActivity;
+
+        public AnonymousClass6(boolean z, String str) {
+            this.val$startWelcomeActivity = z;
+            this.val$firstConnectionKey = str;
         }
-        this.mIsDesktopModeEnablingOrEnabled = z;
-        this.mIsNewDexEnabled = z2;
-        TileService.requestListeningState(this.mContext, new ComponentName("com.sec.android.desktopmode.uiservice", "com.sec.android.desktopmode.uiservice.DesktopModeTile"));
-        TileService.requestListeningState(this.mContext, new ComponentName("com.sec.android.desktopmode.uiservice", "com.sec.android.desktopmode.uiservice.DesktopDisplayDesktopModeTile"));
+
+        @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
+        public final void onClickButtonPositive() {
+            DesktopModeService desktopModeService = DesktopModeService.this;
+            desktopModeService.setUserRequest(1);
+            if (!this.val$startWelcomeActivity) {
+                DesktopModeSettings.setSettings(desktopModeService.mResolver, "welcome_completed", true);
+            }
+            desktopModeService.scheduleUpdateDesktopMode(true);
+        }
+
+        @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
+        public final void onDismiss() {
+            DesktopModeSettings.setSettings(DesktopModeService.this.mResolver, this.val$firstConnectionKey, true);
+        }
     }
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Lifecycle extends SystemService {
         public final Injector mInjector;
         public final DesktopModeService mService;
@@ -302,579 +454,796 @@ public class DesktopModeService extends IDesktopMode.Stub {
         }
 
         @Override // com.android.server.SystemService
-        public void onStart() {
+        public final void onBootPhase(int i) {
+            if (i == 500) {
+                Injector injector = this.mInjector;
+                ActivityManagerService activityManagerService = (ActivityManagerService) injector.get(ActivityManagerService.class);
+                ActivityTaskManagerService activityTaskManagerService = (ActivityTaskManagerService) injector.get(ActivityTaskManagerService.class);
+                ActivityTaskManagerInternal activityTaskManagerInternal = (ActivityTaskManagerInternal) injector.get(ActivityTaskManagerInternal.class);
+                BlockerManager blockerManager = (BlockerManager) injector.get(BlockerManager.class);
+                EmergencyModeBlocker emergencyModeBlocker = (EmergencyModeBlocker) injector.get(EmergencyModeBlocker.class);
+                UiManager uiManager = (UiManager) injector.get(UiManager.class);
+                SettingsHelper settingsHelper = (SettingsHelper) injector.get(SettingsHelper.class);
+                HardwareManager hardwareManager = (HardwareManager) injector.get(HardwareManager.class);
+                TouchpadManager touchpadManager = (TouchpadManager) injector.get(TouchpadManager.class);
+                CoverStateManager coverStateManager = (CoverStateManager) injector.get(CoverStateManager.class);
+                MultiResolutionManager multiResolutionManager = (MultiResolutionManager) injector.get(MultiResolutionManager.class);
+                DockManager dockManager = (DockManager) injector.get(DockManager.class);
+                PackageStateManager packageStateManager = (PackageStateManager) injector.get(PackageStateManager.class);
+                StatusBarManager statusBarManager = (StatusBarManager) injector.get(StatusBarManager.class);
+                BootInitBlocker bootInitBlocker = DesktopModeFeature.SUPPORT_STANDALONE ? (BootInitBlocker) injector.get(BootInitBlocker.class) : null;
+                DisplayPortStateManager displayPortStateManager = (DisplayPortStateManager) injector.get(DisplayPortStateManager.class);
+                boolean z = DesktopModeFeature.SUPPORT_WIRELESS_DEX;
+                this.mService.injectServices(activityManagerService, activityTaskManagerService, activityTaskManagerInternal, blockerManager, emergencyModeBlocker, uiManager, settingsHelper, hardwareManager, touchpadManager, coverStateManager, multiResolutionManager, dockManager, packageStateManager, statusBarManager, bootInitBlocker, displayPortStateManager, (z || DesktopModeFeature.SUPPORT_DEX_ON_PC) ? (WirelessDexManager) injector.get(WirelessDexManager.class) : null, z ? (BleAdvertiserServiceManager) injector.get(BleAdvertiserServiceManager.class) : null, (DualModeChanger) injector.get(DualModeChanger.class), (StandaloneModeChanger) injector.get(StandaloneModeChanger.class), (McfManager) injector.get(McfManager.class), (DexManager) injector.get(DexManager.class));
+            }
+        }
+
+        @Override // com.android.server.SystemService
+        public final void onStart() {
             publishBinderService("desktopmode", this.mService);
         }
 
         @Override // com.android.server.SystemService
-        public void onBootPhase(int i) {
-            DisplayPortStateManager displayPortStateManager;
-            WirelessDexManager wirelessDexManager;
-            WirelessDexManager wirelessDexManager2;
-            BleAdvertiserServiceManager bleAdvertiserServiceManager;
-            if (i == 500) {
-                DesktopModeService desktopModeService = this.mService;
-                ActivityManagerService activityManagerService = (ActivityManagerService) this.mInjector.get(ActivityManagerService.class);
-                ActivityTaskManagerService activityTaskManagerService = (ActivityTaskManagerService) this.mInjector.get(ActivityTaskManagerService.class);
-                ActivityTaskManagerInternal activityTaskManagerInternal = (ActivityTaskManagerInternal) this.mInjector.get(ActivityTaskManagerInternal.class);
-                BlockerManager blockerManager = (BlockerManager) this.mInjector.get(BlockerManager.class);
-                EmergencyModeBlocker emergencyModeBlocker = (EmergencyModeBlocker) this.mInjector.get(EmergencyModeBlocker.class);
-                UiManager uiManager = (UiManager) this.mInjector.get(UiManager.class);
-                SettingsHelper settingsHelper = (SettingsHelper) this.mInjector.get(SettingsHelper.class);
-                HardwareManager hardwareManager = (HardwareManager) this.mInjector.get(HardwareManager.class);
-                TouchpadManager touchpadManager = (TouchpadManager) this.mInjector.get(TouchpadManager.class);
-                CoverStateManager coverStateManager = (CoverStateManager) this.mInjector.get(CoverStateManager.class);
-                MultiResolutionManager multiResolutionManager = (MultiResolutionManager) this.mInjector.get(MultiResolutionManager.class);
-                DockManager dockManager = (DockManager) this.mInjector.get(DockManager.class);
-                PackageStateManager packageStateManager = (PackageStateManager) this.mInjector.get(PackageStateManager.class);
-                StatusBarManager statusBarManager = (StatusBarManager) this.mInjector.get(StatusBarManager.class);
-                BootInitBlocker bootInitBlocker = DesktopModeFeature.SUPPORT_STANDALONE ? (BootInitBlocker) this.mInjector.get(BootInitBlocker.class) : null;
-                DisplayPortStateManager displayPortStateManager2 = (DisplayPortStateManager) this.mInjector.get(DisplayPortStateManager.class);
-                if (DesktopModeFeature.SUPPORT_WIRELESS_DEX || DesktopModeFeature.SUPPORT_DEX_ON_PC) {
-                    displayPortStateManager = displayPortStateManager2;
-                    wirelessDexManager = (WirelessDexManager) this.mInjector.get(WirelessDexManager.class);
-                } else {
-                    displayPortStateManager = displayPortStateManager2;
-                    wirelessDexManager = null;
-                }
-                if (DesktopModeFeature.SUPPORT_WIRELESS_DEX) {
-                    wirelessDexManager2 = wirelessDexManager;
-                    bleAdvertiserServiceManager = (BleAdvertiserServiceManager) this.mInjector.get(BleAdvertiserServiceManager.class);
-                } else {
-                    wirelessDexManager2 = wirelessDexManager;
-                    bleAdvertiserServiceManager = null;
-                }
-                desktopModeService.injectServices(activityManagerService, activityTaskManagerService, activityTaskManagerInternal, blockerManager, emergencyModeBlocker, uiManager, settingsHelper, hardwareManager, touchpadManager, coverStateManager, multiResolutionManager, dockManager, packageStateManager, statusBarManager, bootInitBlocker, displayPortStateManager, wirelessDexManager2, bleAdvertiserServiceManager, (DualModeChanger) this.mInjector.get(DualModeChanger.class), (StandaloneModeChanger) this.mInjector.get(StandaloneModeChanger.class), (McfManager) this.mInjector.get(McfManager.class), (DexManager) this.mInjector.get(DexManager.class));
+        public final void onUserStarting(SystemService.TargetUser targetUser) {
+            int userIdentifier = targetUser.getUserIdentifier();
+            int i = DesktopModeService.$r8$clinit;
+            this.mService.getClass();
+            if (DesktopModeFeature.DEBUG) {
+                DesktopModeService$$ExternalSyntheticOutline0.m(userIdentifier, "onStartUser(), userId=", "[DMS]DesktopModeService");
             }
         }
 
         @Override // com.android.server.SystemService
-        public void onUserStarting(SystemService.TargetUser targetUser) {
-            this.mService.onUserStarting(targetUser.getUserIdentifier());
+        public final void onUserStopped(SystemService.TargetUser targetUser) {
+            int userIdentifier = targetUser.getUserIdentifier();
+            int i = DesktopModeService.$r8$clinit;
+            this.mService.getClass();
+            if (DesktopModeFeature.DEBUG) {
+                DesktopModeService$$ExternalSyntheticOutline0.m(userIdentifier, "onCleanupUser(), userId=", "[DMS]DesktopModeService");
+            }
         }
 
         @Override // com.android.server.SystemService
-        public void onUserUnlocking(SystemService.TargetUser targetUser) {
-            this.mService.onUserUnlocking(targetUser.getUserIdentifier());
+        public final void onUserStopping(SystemService.TargetUser targetUser) {
+            int userIdentifier = targetUser.getUserIdentifier();
+            int i = DesktopModeService.$r8$clinit;
+            this.mService.getClass();
+            if (DesktopModeFeature.DEBUG) {
+                StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(userIdentifier, "onStopUser(), userId=", ", CurrentUser=");
+                m.append(ActivityManager.getCurrentUser());
+                Log.d("[DMS]DesktopModeService", m.toString());
+            }
         }
 
         @Override // com.android.server.SystemService
-        public void onUserSwitching(SystemService.TargetUser targetUser, SystemService.TargetUser targetUser2) {
-            this.mService.onUserSwitching(targetUser2.getUserIdentifier());
+        public final void onUserSwitching(SystemService.TargetUser targetUser, SystemService.TargetUser targetUser2) {
+            int userIdentifier = targetUser2.getUserIdentifier();
+            int i = DesktopModeService.$r8$clinit;
+            DesktopModeService desktopModeService = this.mService;
+            desktopModeService.getClass();
+            if (DesktopModeFeature.DEBUG) {
+                DesktopModeService$$ExternalSyntheticOutline0.m(userIdentifier, "onSwitchUser(), userId=", "[DMS]DesktopModeService");
+            }
+            desktopModeService.onUserChanged(userIdentifier);
         }
 
         @Override // com.android.server.SystemService
-        public void onUserStopping(SystemService.TargetUser targetUser) {
-            this.mService.onUserStopping(targetUser.getUserIdentifier());
-        }
-
-        @Override // com.android.server.SystemService
-        public void onUserStopped(SystemService.TargetUser targetUser) {
-            this.mService.onUserStopped(targetUser.getUserIdentifier());
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class Receiver extends BroadcastReceiver {
-        public Receiver() {
-        }
-
-        public void register() {
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction("android.intent.action.ACTION_SHUTDOWN");
-            intentFilter.addAction("com.samsung.sea.rm.DEMO_RESET_STARTED");
-            intentFilter.addAction("com.samsung.android.desktopmode.action.DEX_RUNNING_NOTIFICATION_PRESSED");
-            intentFilter.addAction("com.sec.android.app.secsetupwizard.FOTA_SUW_COMPLETE");
-            DesktopModeService.this.mContext.registerReceiverAsUser(this, UserHandle.ALL, intentFilter, null, null);
-            DesktopModeService.this.mContext.registerReceiverAsUser(this, UserHandle.ALL, new IntentFilter("com.samsung.android.desktopmode.action.DESKTOP_MODE_UPDATE_REQUEST"), "android.permission.WRITE_SECURE_SETTINGS", null);
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
+        public final void onUserUnlocking(SystemService.TargetUser targetUser) {
+            int userIdentifier = targetUser.getUserIdentifier();
+            int i = DesktopModeService.$r8$clinit;
+            DesktopModeService desktopModeService = this.mService;
+            desktopModeService.getClass();
             if (DesktopModeFeature.DEBUG) {
-                Log.d(DesktopModeService.TAG, "onReceive(), action=" + action);
+                StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(userIdentifier, "onUnlockUser(), userId=", ", CurrentUser=");
+                m.append(ActivityManager.getCurrentUser());
+                Log.d("[DMS]DesktopModeService", m.toString());
             }
-            State state = DesktopModeService.this.mStateManager.getState();
-            if ("com.samsung.android.desktopmode.action.DESKTOP_MODE_UPDATE_REQUEST".equals(action)) {
-                DesktopModeService.this.logDesktopModeChanged(intent);
-                int intExtra = intent.getIntExtra("com.samsung.android.desktopmode.extra.DESKTOP_MODE_SOURCE", -1);
-                int intExtra2 = intent.getIntExtra("com.samsung.android.desktopmode.extra.NEW_DEX_MODE_STATE", -1);
-                if (intExtra2 > -1) {
-                    DesktopModeService.this.updateNewDexMode(intExtra2);
-                    return;
-                }
-                int intExtra3 = intent.getIntExtra("com.samsung.android.desktopmode.extra.DESKTOP_MODE_STATE", -1);
-                if (intExtra3 == 0) {
-                    DesktopModeService.this.mStatusBarManager.collapsePanels();
-                    DesktopModeService.this.scheduleUpdateDesktopMode(true);
-                    return;
-                }
-                if (intExtra3 != 1) {
-                    if (intExtra3 != 2) {
-                        return;
-                    }
-                    DesktopModeService.this.setUserRequest(2);
-                    if (DesktopModeService.this.shouldStayInDesktopMode(state)) {
-                        return;
-                    }
-                    DesktopModeService.this.mStatusBarManager.collapsePanels();
-                    if (DesktopModeFeature.SUPPORT_WIRELESS_DEX && state.isWirelessDexConnected()) {
-                        DesktopModeService.this.minimizeAllTasks(state.getDesktopDisplayId());
-                        DesktopModeService.this.mWirelessDexManager.disconnect();
-                        return;
-                    } else if (state.isDexOnPcConnected()) {
-                        DesktopModeService.this.mStateManager.notifyDisplayDisconnectionRequest(1000);
-                        return;
-                    } else {
-                        DesktopModeService.this.scheduleUpdateDesktopMode(false);
-                        return;
-                    }
-                }
-                DesktopModeService.this.mStatusBarManager.collapsePanels();
-                boolean settings = DesktopModeSettings.getSettings(DesktopModeService.this.mResolver, "welcome_completed", false);
-                boolean isNeededStartConnectivityActivity = DesktopModeService.this.isNeededStartConnectivityActivity(state, intExtra);
-                if (!DesktopModeFeature.SUPPORT_WIRELESS_DEX || (!state.isWirelessDexConnected() && !isNeededStartConnectivityActivity)) {
-                    DesktopModeService.this.setUserRequest(1);
-                    DesktopModeService.this.mIsDexSourceEntry = true;
-                    DesktopModeService.this.scheduleUpdateDesktopMode(true);
-                    return;
-                } else if (isNeededStartConnectivityActivity) {
-                    DesktopModeService.this.startConnectivityActivity();
-                    return;
-                } else {
-                    if (settings) {
-                        return;
-                    }
-                    DesktopModeSettings.setSettings(DesktopModeService.this.mResolver, "welcome_completed", true);
-                    return;
-                }
-            }
-            if ("android.intent.action.ACTION_SHUTDOWN".equals(action)) {
-                if (DesktopModeFeature.DEBUG) {
-                    Log.d(DesktopModeService.TAG, "Shutdown received with UserId: " + getSendingUserId());
-                }
-                if (getSendingUserId() == -1) {
-                    DesktopModeService.this.mIsBootComplete = false;
-                    return;
-                }
-                return;
-            }
-            if ("com.samsung.sea.rm.DEMO_RESET_STARTED".equals(action)) {
-                if (Utils.isRetailMode(DesktopModeService.this.mContext, DesktopModeService.this.mCurrentUserId)) {
-                    DesktopModeService.this.mSettingsHelper.clearSettingsByLauncherDataCleared(state, DesktopModeService.this.mCurrentUserId);
-                    DesktopModeService.this.mSettingsHelper.setDefaultSettingsInRetailMode(state, DesktopModeService.this.mCurrentUserId);
-                    return;
-                }
-                return;
-            }
-            if ("com.samsung.android.desktopmode.action.DEX_RUNNING_NOTIFICATION_PRESSED".equals(action)) {
-                DesktopModeService.this.mStatusBarManager.collapsePanels();
-                DesktopModeService.this.startConnectivityActivity(intent.getIntExtra("CLICK_DISPLAYID", 0));
-            } else if ("com.sec.android.app.secsetupwizard.FOTA_SUW_COMPLETE".equals(action)) {
-                DesktopModeService.this.setEnterRequestIfStandaloneLastBoot(state);
-                DesktopModeService.this.scheduleUpdateDesktopMode(true);
+            desktopModeService.mIsBootComplete = true;
+            if (userIdentifier == ActivityManager.getCurrentUser()) {
+                desktopModeService.onUserChanged(userIdentifier);
             }
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class PhonePreconditionChecker implements PreconditionChecker {
-        public PhonePreconditionChecker() {
-        }
-
-        @Override // com.android.server.desktopmode.DesktopModeService.PreconditionChecker
-        public boolean isAllowed(State state, boolean z, boolean z2) {
-            return DesktopModeService.this.isSystemReady() && DesktopModeService.this.isBlockerRegistered(state, z2) && state.isPackagesAvailable();
-        }
-
-        @Override // com.android.server.desktopmode.DesktopModeService.PreconditionChecker
-        public boolean isDesktopModeAvailableEx(boolean z, boolean z2) {
-            State state = DesktopModeService.this.mStateManager.getState();
-            boolean z3 = false;
-            if ((!z || DesktopModeService.isExternalDisplayConnectedOrForced(state)) && ((!z2 || DesktopModeService.isDesktopDockConnectedOrForced(state)) && DesktopModeSettings.getSettings(DesktopModeService.this.mResolver, "hdmi_auto_enter", false))) {
-                z3 = true;
-            }
-            if (DesktopModeFeature.DEBUG) {
-                Log.d(DesktopModeService.TAG, "isDesktopModeAvailableEx(checkExternalDisplay=" + z + ", checkDesktopDock=" + z2 + ")=" + z3);
-            }
-            return z3;
-        }
-
-        @Override // com.android.server.desktopmode.DesktopModeService.PreconditionChecker
-        public boolean updateDesktopMode(State state, boolean z, boolean z2) {
-            if (DesktopModeFeature.DEBUG) {
-                Log.d(DesktopModeService.TAG, "updateDesktopMode(), enter=" + z + ", isModeChangeLocked=" + state.isModeChangeLocked() + ", mUserRequest=" + DesktopModeService.userRequestToString(DesktopModeService.this.mUserRequest));
-            }
-            if (DesktopModeService.this.isSystemReady() && !state.isModeChangeLocked()) {
-                SemDesktopModeState desktopModeState = state.getDesktopModeState();
-                if (z) {
-                    if ((desktopModeState.compareTo(2, 0, 0) || desktopModeState.compareTo(2, 10, 102)) && DesktopModeService.isExternalDisplayConnectedOrForced(state) && DesktopModeService.this.isAllowedInternal(state, true, true)) {
-                        boolean settings = DesktopModeSettings.getSettings(DesktopModeService.this.mResolver, "hdmi_auto_enter", false);
-                        boolean settings2 = DesktopModeSettings.getSettings(DesktopModeService.this.mResolver, "welcome_completed", false);
-                        boolean settings3 = DesktopModeSettings.getSettings(DesktopModeService.this.mResolver, "welcome_shown", false);
-                        if ((DesktopModeService.this.mUserRequest == 1 && settings2) || state.isDexOnPcConnected() || (DesktopModeFeature.SUPPORT_WIRELESS_DEX && state.isWirelessDexConnected() && settings2)) {
-                            if (DesktopModeFeature.SUPPORT_WIRELESS_DEX && state.isWirelessDexConnected()) {
-                                DesktopModeService.this.mEnteredViaWirelessDex = true;
-                            }
-                            DesktopModeService.this.mDualModeChanger.setDesktopMode(state, true);
-                            return true;
-                        }
-                        if (!settings2 && (state.isDexStationConnectedWithFlipCover() || state.isDexOnPcConnected())) {
-                            DesktopModeSettings.setSettings(DesktopModeService.this.mResolver, "welcome_completed", true);
-                            return true;
-                        }
-                        if (!settings2 && (!settings3 || DesktopModeService.this.mIsDexSourceEntry || settings || (DesktopModeFeature.SUPPORT_WIRELESS_DEX && state.isWirelessDexConnected()))) {
-                            DesktopModeService.this.startWelcomeActivity();
-                            return true;
-                        }
-                        Log.d(DesktopModeService.TAG, "updateDesktopMode(welcomeCompleted=true, userRequest=" + DesktopModeService.userRequestToString(DesktopModeService.this.mUserRequest) + ")");
-                        return false;
-                    }
-                } else {
-                    DesktopModeService.this.mIsDexSourceEntry = false;
-                    if (z2 || DesktopModeService.this.mUserRequest == 2 || !DesktopModeService.isExternalDisplayConnectedOrForced(state) || !DesktopModeService.this.isAllowedInternal(state, true, false)) {
-                        DesktopModeService.this.finishWelcomeActivity();
-                        if (desktopModeState.compareTo(4, 0, 102)) {
-                            DesktopModeService.this.mDualModeChanger.setDesktopMode(state, false);
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class TabletPreconditionChecker implements PreconditionChecker {
-        public TabletPreconditionChecker() {
-        }
-
-        @Override // com.android.server.desktopmode.DesktopModeService.PreconditionChecker
-        public boolean isAllowed(State state, boolean z, boolean z2) {
-            if (!DesktopModeService.this.isSystemReady()) {
-                return false;
-            }
-            if (!state.isExternalDisplayConnected() || !state.isEmergencyModeEnabled()) {
-                return DesktopModeService.this.isBlockerRegistered(state, z2) && state.isPackagesAvailable();
-            }
-            DesktopModeService.this.isBlockerRegistered(state, z2);
-            return false;
-        }
-
-        @Override // com.android.server.desktopmode.DesktopModeService.PreconditionChecker
-        public boolean isDesktopModeAvailableEx(boolean z, boolean z2) {
-            boolean isAllowed = isAllowed(DesktopModeService.this.mStateManager.getState(), false, false);
-            if (DesktopModeFeature.DEBUG) {
-                Log.d(DesktopModeService.TAG, "isDesktopModeAvailable(checkExternalDisplay=" + z + ", checkDesktopDock=" + z2 + ")=" + isAllowed);
-            }
-            return isAllowed;
-        }
-
-        /* JADX WARN: Code restructure failed: missing block: B:13:0x0070, code lost:
-        
-            if (r12.isAllowedInternal(r11, true, r12.isDesktopModeEnablingOrEnabled()) == false) goto L16;
-         */
-        @Override // com.android.server.desktopmode.DesktopModeService.PreconditionChecker
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public boolean updateDesktopMode(com.android.server.desktopmode.State r11, boolean r12, boolean r13) {
-            /*
-                Method dump skipped, instructions count: 505
-                To view this dump change 'Code comments level' option to 'DEBUG'
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.server.desktopmode.DesktopModeService.TabletPreconditionChecker.updateDesktopMode(com.android.server.desktopmode.State, boolean, boolean):boolean");
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class WelcomeActivityListener extends UiManager.InternalUiCallback {
-        public boolean mOverlayShown;
-        public boolean mShown;
-        public boolean mStartPressed;
-        public StateManager.StateListener mStateListener;
-
-        public WelcomeActivityListener() {
-            this.mShown = false;
-            this.mOverlayShown = false;
-            this.mStartPressed = false;
-            this.mStateListener = new StateManager.StateListener() { // from class: com.android.server.desktopmode.DesktopModeService.WelcomeActivityListener.1
-                @Override // com.android.server.desktopmode.StateManager.StateListener
-                public void onExternalDisplayConnectionChanged(State state) {
-                    WelcomeActivityListener.this.showOrDismissOverlay(state.isExternalDisplayConnected(), state.isCoverSupportStatePartial());
-                    WelcomeActivityListener.this.setDesktopModeState(state.isExternalDisplayConnected(), 2, 10);
-                }
-            };
-        }
-
-        public final void showOrDismissOverlay(boolean z, boolean z2) {
-            if (z && !this.mOverlayShown) {
-                if (DesktopModeService.this.mCoverStateManager.isFlipTypeCoverClosed()) {
-                    if (DesktopModeFeature.DEBUG) {
-                        Log.d(DesktopModeService.TAG, "showOrDismissOverlay(), show=true, isCoverSupportStatePartial=" + z2 + ", skip showing external overlay since cover is closed");
-                        return;
-                    }
-                    return;
-                }
-                if (DesktopModeFeature.DEBUG) {
-                    Log.d(DesktopModeService.TAG, "showOrDismissOverlay(), show=true, isCoverSupportStatePartial=" + z2 + ", showing external overlay");
-                }
-                this.mOverlayShown = true;
-                DesktopModeService.this.mUiManager.showOverlay(103, 112);
-                if (DesktopModeFeature.IS_TABLET || !z2) {
-                    return;
-                }
-                long binderClearCallingIdentity = DesktopModeService.this.mInjector.binderClearCallingIdentity();
-                DesktopModeService.this.mCoverStateManager.disableCoverManager(true);
-                DesktopModeService.this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-                return;
-            }
-            if (z || !this.mOverlayShown) {
-                return;
-            }
-            if (DesktopModeFeature.DEBUG) {
-                Log.d(DesktopModeService.TAG, "showOrDismissOverlay(), show=false, isCoverSupportStatePartial=" + z2 + ", dismissing external overlay");
-            }
-            this.mOverlayShown = false;
-            DesktopModeService.this.mUiManager.dismissOverlay(103, 112);
-            if (DesktopModeFeature.IS_TABLET) {
-                return;
-            }
-            long binderClearCallingIdentity2 = DesktopModeService.this.mInjector.binderClearCallingIdentity();
-            DesktopModeService.this.mCoverStateManager.disableCoverManager(false);
-            DesktopModeService.this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity2);
-        }
-
-        @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
-        public void onShow() {
-            DesktopModeService.this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$WelcomeActivityListener$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DesktopModeService.WelcomeActivityListener.this.handleOnShow();
-                }
-            });
-        }
-
-        @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
-        public void onDismiss() {
-            DesktopModeService.this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$WelcomeActivityListener$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DesktopModeService.WelcomeActivityListener.this.handleOnDismiss();
-                }
-            });
-        }
-
-        @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
-        public void onClickButtonPositive() {
-            this.mStartPressed = true;
-            DesktopModeService.this.finishWelcomeActivity();
-            State state = DesktopModeService.this.mStateManager.getState();
-            if (state.isHdmiConnected()) {
-                DesktopModeSettings.setSettings(DesktopModeService.this.mResolver, "hdmi_initial_connection_dialog_shown", true);
-            }
-            if (state.isPogoKeyboardConnected()) {
-                DesktopModeSettings.setSettings(DesktopModeService.this.mResolver, "pogo_initial_connection_dialog_shown", true);
-            }
-        }
-
-        public final void handleOnShow() {
-            this.mShown = true;
-            State state = DesktopModeService.this.mStateManager.getState();
-            showOrDismissOverlay(state.isExternalDisplayConnected(), state.isCoverSupportStatePartial());
-            SemDesktopModeState desktopModeState = state.getDesktopModeState();
-            if (this.mShown && desktopModeState.compareTo(2, 0)) {
-                setDesktopModeState(state.isExternalDisplayConnected(), 2, 10);
-            }
-            DesktopModeService.this.mStateManager.registerListener(this.mStateListener);
-        }
-
-        public final void handleOnDismiss() {
-            this.mShown = false;
-            DesktopModeService.this.mStateManager.unregisterListener(this.mStateListener);
-            showOrDismissOverlay(false, false);
-            State state = DesktopModeService.this.mStateManager.getState();
-            if (!this.mShown && state.getDesktopModeState().compareTo(2, 10)) {
-                setDesktopModeState(state.isExternalDisplayConnected(), 2, 0);
-            }
-            if (DesktopModeFeature.SUPPORT_WIRELESS_DEX && state.isWirelessDexConnected() && !this.mStartPressed) {
-                DesktopModeService.this.mWirelessDexManager.disconnect();
-            }
-            this.mStartPressed = false;
-        }
-
-        public final void setDesktopModeState(boolean z, int i, int i2) {
-            ((!DesktopModeFeature.SUPPORT_STANDALONE || z) ? DesktopModeService.this.mDualModeChanger : DesktopModeService.this.mStandaloneModeChanger).setDesktopModeState(i, i2);
-        }
-    }
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class LocalService extends DesktopModeManagerInternal {
         public LocalService() {
         }
 
-        public void scheduleUpdateDesktopMode(boolean z) {
-            DesktopModeService.this.scheduleUpdateDesktopMode(z);
+        public final int getCurrentUiMode() {
+            return DesktopModeService.this.mStandaloneModeChanger.mCurrentUiMode;
         }
 
-        public SemDesktopModeState getDesktopModeState() {
-            return DesktopModeService.this.getDesktopModeState();
-        }
-
-        public boolean isDesktopModeForPreparing() {
-            return DesktopModeService.this.isDesktopModeForPreparing();
-        }
-
-        public boolean isDesktopModeForPreparing(int i) {
-            return DesktopModeService.this.isDesktopModeForPreparing(i);
-        }
-
-        public boolean isExternalDisplayConnected() {
-            return DesktopModeService.this.isExternalDisplayConnected();
-        }
-
-        public Bundle getDesktopModeKillPolicy() {
+        public final Bundle getDesktopModeKillPolicy() {
             return DesktopModeService.this.getDesktopModeKillPolicy();
         }
 
-        public Bundle sendMessage(Bundle bundle) {
+        public final SemDesktopModeState getDesktopModeState() {
+            return DesktopModeService.this.getDesktopModeState();
+        }
+
+        public final int getDexHDMIAutoEnterState() {
+            return DesktopModeSettings.getSettingsAsUser(DesktopModeService.this.mContext.getContentResolver(), "knox_hdmi_auto_enter_state", 9, DesktopModeSettings.sCurrentUserId);
+        }
+
+        public final int getModeToModeChangeType() {
+            ModeChanger.ModeToModeChangeInfo modeToModeChangeInfo;
+            DesktopModeService desktopModeService = DesktopModeService.this;
+            StateManager.InternalState state = ((StateManager) desktopModeService.mStateManager).getState();
+            if (state.mDesktopModeState.getDisplayType() == 101) {
+                ModeChanger.ModeToModeChangeInfo modeToModeChangeInfo2 = desktopModeService.mStandaloneModeChanger.mModeToModeChangeInfo;
+                if (modeToModeChangeInfo2 != null) {
+                    return modeToModeChangeInfo2.mModeToMode;
+                }
+                return -1;
+            }
+            if (state.mDesktopModeState.getDisplayType() != 102 || (modeToModeChangeInfo = desktopModeService.mDualModeChanger.mModeToModeChangeInfo) == null) {
+                return -1;
+            }
+            return modeToModeChangeInfo.mModeToMode;
+        }
+
+        /* JADX WARN: Removed duplicated region for block: B:12:0x0035  */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final int getTouchpadSupportedFeatures() {
+            /*
+                r3 = this;
+                com.android.server.desktopmode.DesktopModeService r3 = com.android.server.desktopmode.DesktopModeService.this
+                com.android.server.desktopmode.IStateManager r0 = r3.mStateManager
+                com.android.server.desktopmode.StateManager r0 = (com.android.server.desktopmode.StateManager) r0
+                com.android.server.desktopmode.StateManager$InternalState r0 = r0.getState()
+                com.android.server.desktopmode.ModeChanger r1 = r3.mModeChanger
+                boolean r1 = r1 instanceof com.android.server.desktopmode.DualModeChanger
+                if (r1 == 0) goto L30
+                com.android.server.desktopmode.TouchpadManager r1 = r3.mTouchpadManager
+                r1.getClass()
+                boolean r1 = r0.isDexOnPcConnected()
+                r2 = 1
+                r1 = r1 ^ r2
+                if (r1 == 0) goto L30
+                com.android.server.desktopmode.TouchpadManager r3 = r3.mTouchpadManager
+                r3.getClass()
+                boolean r3 = com.samsung.android.desktopmode.DesktopModeFeature.SUPPORT_SPEN
+                if (r3 == 0) goto L31
+                com.android.server.desktopmode.HardwareManager$DockState r3 = r0.mDockState
+                boolean r3 = r3.isDexStation()
+                if (r3 != 0) goto L31
+                r2 = 3
+                goto L31
+            L30:
+                r2 = 0
+            L31:
+                boolean r3 = com.samsung.android.desktopmode.DesktopModeFeature.DEBUG
+                if (r3 == 0) goto L3d
+                java.lang.String r3 = "getTouchpadSupportedFeatures(), supportedFeatures="
+                java.lang.String r0 = "[DMS]DesktopModeService"
+                com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticOutline0.m(r2, r3, r0)
+            L3d:
+                return r2
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.desktopmode.DesktopModeService.LocalService.getTouchpadSupportedFeatures():int");
+        }
+
+        public final boolean isConfigurationChangedFromDeX(Configuration configuration) {
+            DesktopModeService desktopModeService = DesktopModeService.this;
+            boolean z = false;
+            if (configuration == null) {
+                desktopModeService.getClass();
+            } else if (desktopModeService.mStandaloneModeChanger != null) {
+                SemDesktopModeState semDesktopModeState = ((StateManager) desktopModeService.mStateManager).getState().mDesktopModeState;
+                int configurationState = desktopModeService.mStandaloneModeChanger.getConfigurationState(configuration);
+                if (semDesktopModeState.state == 30 && ((configurationState == 1 && semDesktopModeState.enabled == 3) || (configurationState == 0 && semDesktopModeState.enabled == 1))) {
+                    z = true;
+                }
+                Log.i("[DMS]DesktopModeService", "isConfigurationChangedFromDeX()=" + z + ", config=" + configuration + ", desktopModeState=" + semDesktopModeState);
+            }
+            return z;
+        }
+
+        public final boolean isDesktopModeAvailableEx(boolean z, boolean z2) {
+            boolean z3 = false;
+            PhonePreconditionChecker phonePreconditionChecker = DesktopModeService.this.mPreconditionChecker;
+            switch (phonePreconditionChecker.$r8$classId) {
+                case 0:
+                    DesktopModeService desktopModeService = phonePreconditionChecker.this$0;
+                    StateManager.InternalState state = ((StateManager) desktopModeService.mStateManager).getState();
+                    if ((!z || DesktopModeService.isExternalDisplayConnectedOrForced(state)) && ((!z2 || state.mDockState.mDesktopModeSupported || state.isDexOnPcOrWirelessDexConnected()) && DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "hdmi_auto_enter", false, DesktopModeSettings.sCurrentUserId))) {
+                        z3 = true;
+                    }
+                    if (DesktopModeFeature.DEBUG) {
+                        int i = DesktopModeService.$r8$clinit;
+                        StringBuilder m = FullScreenMagnificationGestureHandler$$ExternalSyntheticOutline0.m("isDesktopModeAvailableEx(checkExternalDisplay=", z, ", checkDesktopDock=", z2, ")=");
+                        m.append(z3);
+                        Log.d("[DMS]DesktopModeService", m.toString());
+                    }
+                    return z3;
+                default:
+                    boolean isAllowed = phonePreconditionChecker.isAllowed(((StateManager) phonePreconditionChecker.this$0.mStateManager).getState(), false);
+                    if (!DesktopModeFeature.DEBUG) {
+                        return isAllowed;
+                    }
+                    int i2 = DesktopModeService.$r8$clinit;
+                    StringBuilder m2 = FullScreenMagnificationGestureHandler$$ExternalSyntheticOutline0.m("isDesktopModeAvailable(checkExternalDisplay=", z, ", checkDesktopDock=", z2, ")=");
+                    m2.append(isAllowed);
+                    Log.d("[DMS]DesktopModeService", m2.toString());
+                    return isAllowed;
+            }
+        }
+
+        public final boolean isDesktopModeEnablingOrEnabled() {
+            int i = ((StateManager) DesktopModeService.this.mStateManager).getState().mDesktopModeState.enabled;
+            return i == 3 || i == 4;
+        }
+
+        public final boolean isDesktopModeForPreparing() {
+            return DesktopModeService.isDesktopModeForPreparing(((StateManager) DesktopModeService.this.mStateManager).getState(), -1);
+        }
+
+        public final boolean isDesktopModeForPreparing(int i) {
+            return DesktopModeService.isDesktopModeForPreparing(((StateManager) DesktopModeService.this.mStateManager).getState(), i);
+        }
+
+        public final boolean isExternalDisplayConnected() {
+            return ((StateManager) DesktopModeService.this.mStateManager).getState().mIsExternalDisplayConnected;
+        }
+
+        public final boolean isForcedInternalScreenModeEnabled() {
+            return ((StateManager) DesktopModeService.this.mStateManager).getState().mForcedInternalScreenModeEnabled;
+        }
+
+        public final boolean isLockTaskModeEnabledAndSecured() {
+            ModeChanger modeChanger = DesktopModeService.this.mModeChanger;
+            return modeChanger != null && modeChanger.mIsLockTaskModeEnabledAndSecured;
+        }
+
+        public final boolean isModeChangePending() {
+            return ((StateManager) DesktopModeService.this.mStateManager).getState().mDesktopModeState.state == 30;
+        }
+
+        public final boolean isModeChangePending(int i) {
+            SemDesktopModeState semDesktopModeState = ((StateManager) DesktopModeService.this.mStateManager).getState().mDesktopModeState;
+            return (i == -1 || semDesktopModeState.getDisplayType() == i) && semDesktopModeState.state == 30;
+        }
+
+        public final void onConfigurationChanged(Configuration configuration) {
+            DesktopModeService desktopModeService = DesktopModeService.this;
+            if (configuration == null) {
+                desktopModeService.getClass();
+                return;
+            }
+            final StandaloneModeChanger standaloneModeChanger = desktopModeService.mStandaloneModeChanger;
+            if (standaloneModeChanger != null) {
+                final Configuration configuration2 = new Configuration(configuration);
+                if (DesktopModeFeature.DEBUG) {
+                    Log.v("[DMS]StandaloneModeChanger", "onConfigurationChanged(), config=" + configuration2);
+                }
+                SemDesktopModeState semDesktopModeState = ((StateManager) standaloneModeChanger.mStateManager).getState().mDesktopModeState;
+                if (semDesktopModeState.state == 30 && semDesktopModeState.getDisplayType() == 101) {
+                    standaloneModeChanger.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StandaloneModeChanger$$ExternalSyntheticLambda0
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            StandaloneModeChanger.this.handleOnConfigurationChanged(configuration2);
+                        }
+                    });
+                }
+            }
+        }
+
+        public final void onDesktopDisplayConfigured(final boolean z) {
+            final DualModeChanger dualModeChanger = DesktopModeService.this.mDualModeChanger;
+            dualModeChanger.getClass();
+            if (DesktopModeFeature.DEBUG) {
+                StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m("onDesktopDisplayConfigured(), added=", ", mDesktopDisplayId=", z);
+                m.append(dualModeChanger.mDesktopDisplayId);
+                Log.v("[DMS]DualModeChanger", m.toString());
+            }
+            dualModeChanger.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DualModeChanger$$ExternalSyntheticLambda1
+                @Override // java.lang.Runnable
+                public final void run() {
+                    DualModeChanger dualModeChanger2 = DualModeChanger.this;
+                    boolean z2 = z;
+                    StateManager stateManager = (StateManager) dualModeChanger2.mStateManager;
+                    StateManager.InternalState state = stateManager.getState();
+                    SemDesktopModeState semDesktopModeState = state.mDesktopModeState;
+                    if (semDesktopModeState.state == 30 && semDesktopModeState.getDisplayType() == 102) {
+                        if (!(z2 && semDesktopModeState.enabled == 3) && (z2 || semDesktopModeState.enabled != 1)) {
+                            return;
+                        }
+                        boolean z3 = DesktopModeFeature.DEBUG;
+                        if (z3) {
+                            Log.d("[DMS]DualModeChanger", "handleDesktopDisplayConfigured(), added=" + z2 + ", desktopModeState=" + semDesktopModeState);
+                        }
+                        dualModeChanger2.mDualModeEnabled = z2;
+                        dualModeChanger2.setDesktopModeState(z2 ? 4 : 2, 40);
+                        if (z2) {
+                            dualModeChanger2.startHome(state, dualModeChanger2.mDesktopDisplayId);
+                        } else {
+                            dualModeChanger2.mLoadingScreenAnimationComplete = true;
+                            dualModeChanger2.mWallpaperShown = true;
+                        }
+                        SettingsHelper settingsHelper = dualModeChanger2.mSettingsHelper;
+                        settingsHelper.getClass();
+                        settingsHelper.backupOrRestoreSettings(z2, state, state.mCurrentUserId);
+                        dualModeChanger2.setDesktopModeState(z2 ? 4 : 2, 50);
+                        if (z3) {
+                            DesktopModeService$$ExternalSyntheticOutline0.m("notifyDualOnConfigurationChanged(enter=", ")", "[DMS]StateManager", z2);
+                        }
+                        Iterator it = stateManager.mStateListeners.iterator();
+                        while (it.hasNext()) {
+                            ((StateManager.StateListener) it.next()).getClass();
+                        }
+                        dualModeChanger2.scheduleStopLoadingScreenIfPossible(z2);
+                    }
+                }
+            });
+        }
+
+        public final void onSecuredAppLaunched(int i, String str) {
+            DesktopModeService.this.onSecuredAppLaunched(i, str);
+        }
+
+        public final void scheduleUpdateDesktopMode(boolean z) {
+            DesktopModeService.this.scheduleUpdateDesktopMode(z);
+        }
+
+        public final Bundle sendMessage(Bundle bundle) {
             return DesktopModeService.this.sendMessage(bundle);
         }
 
-        public boolean isDesktopModeEnablingOrEnabled() {
-            return DesktopModeService.this.isDesktopModeEnablingOrEnabled();
-        }
-
-        public boolean isDesktopModeAvailableEx(boolean z, boolean z2) {
-            return DesktopModeService.this.isDesktopModeAvailableEx(z, z2);
-        }
-
-        public boolean isForcedInternalScreenModeEnabled() {
-            return DesktopModeService.this.isForcedInternalScreenModeEnabled();
-        }
-
-        public boolean isModeChangePending() {
-            return DesktopModeService.this.isModeChangePending();
-        }
-
-        public boolean isModeChangePending(int i) {
-            return DesktopModeService.this.isModeChangePending(i);
-        }
-
-        public void onConfigurationChanged(Configuration configuration) {
-            DesktopModeService.this.onConfigurationChanged(configuration);
-        }
-
-        public void onDesktopDisplayConfigured(boolean z) {
-            DesktopModeService.this.onDesktopDisplayConfigured(z);
-        }
-
-        public int getCurrentUiMode() {
-            return DesktopModeService.this.getCurrentUiMode();
-        }
-
-        public boolean isLockTaskModeEnabledAndSecured() {
-            return DesktopModeService.this.isLockTaskModeEnabledAndSecured();
-        }
-
-        public boolean isConfigurationChangedFromDeX(Configuration configuration) {
-            return DesktopModeService.this.isConfigurationChangedFromDeX(configuration);
-        }
-
-        public void startHome() {
-            DesktopModeService.this.startHome();
-        }
-
-        public int setDexHDMIAutoEnterState(int i) {
+        public final int setDexHDMIAutoEnterState(int i) {
             ContentResolver contentResolver = DesktopModeService.this.mContext.getContentResolver();
             try {
                 if (i == 0) {
-                    String settingsOrThrowException = DesktopModeSettings.getSettingsOrThrowException(contentResolver, "hdmi_auto_enter_backup", null);
-                    if (settingsOrThrowException != null) {
-                        DesktopModeSettings.setSettingsOrThrowException(contentResolver, "hdmi_auto_enter", settingsOrThrowException);
-                        DesktopModeSettings.deleteSettings(contentResolver, "hdmi_auto_enter_backup");
+                    String settingsAsUserOrThrowException = DesktopModeSettings.getSettingsAsUserOrThrowException(contentResolver, "hdmi_auto_enter_backup", null, DesktopModeSettings.sCurrentUserId);
+                    if (settingsAsUserOrThrowException != null) {
+                        DesktopModeSettings.setSettingsOrThrowException(contentResolver, "hdmi_auto_enter", settingsAsUserOrThrowException);
+                        DesktopModeSettings.deleteSettingsAsUser(contentResolver, "hdmi_auto_enter_backup", DesktopModeSettings.sCurrentUserId);
                     }
-                    DesktopModeSettings.setSettingsOrThrowException(contentResolver, "knox_hdmi_auto_enter_state", i);
+                    DesktopModeSettings.setSettingsAsUserOrThrowException(contentResolver, "knox_hdmi_auto_enter_state", Integer.toString(i), DesktopModeSettings.sCurrentUserId);
                     return 0;
                 }
                 if (i != 1) {
                     if (i != 2) {
                         return 0;
                     }
-                    DesktopModeSettings.deleteSettings(contentResolver, "hdmi_initial_connection_dialog_shown");
-                    DesktopModeSettings.deleteSettings(contentResolver, "hdmi_auto_enter");
-                    DesktopModeSettings.deleteSettings(contentResolver, "hdmi_auto_enter_backup");
-                    DesktopModeSettings.setSettingsOrThrowException(contentResolver, "knox_hdmi_auto_enter_state", i);
+                    DesktopModeSettings.deleteSettingsAsUser(contentResolver, "hdmi_initial_connection_dialog_shown", DesktopModeSettings.sCurrentUserId);
+                    DesktopModeSettings.deleteSettingsAsUser(contentResolver, "hdmi_auto_enter", DesktopModeSettings.sCurrentUserId);
+                    DesktopModeSettings.deleteSettingsAsUser(contentResolver, "hdmi_auto_enter_backup", DesktopModeSettings.sCurrentUserId);
+                    DesktopModeSettings.setSettingsAsUserOrThrowException(contentResolver, "knox_hdmi_auto_enter_state", Integer.toString(i), DesktopModeSettings.sCurrentUserId);
                     return 0;
                 }
-                if (DesktopModeSettings.getSettingsOrThrowException(contentResolver, "hdmi_auto_enter_backup", null) != null) {
+                if (DesktopModeSettings.getSettingsAsUserOrThrowException(contentResolver, "hdmi_auto_enter_backup", null, DesktopModeSettings.sCurrentUserId) != null) {
                     return 0;
                 }
-                String settingsOrThrowException2 = DesktopModeSettings.getSettingsOrThrowException(contentResolver, "hdmi_auto_enter", null);
-                if (settingsOrThrowException2 == null) {
+                String settingsAsUserOrThrowException2 = DesktopModeSettings.getSettingsAsUserOrThrowException(contentResolver, "hdmi_auto_enter", null, DesktopModeSettings.sCurrentUserId);
+                if (settingsAsUserOrThrowException2 == null) {
                     DesktopModeSettings.setSettingsOrThrowException(contentResolver, "hdmi_auto_enter_backup", "false");
                 } else {
-                    DesktopModeSettings.setSettingsOrThrowException(contentResolver, "hdmi_auto_enter_backup", settingsOrThrowException2);
+                    DesktopModeSettings.setSettingsOrThrowException(contentResolver, "hdmi_auto_enter_backup", settingsAsUserOrThrowException2);
                 }
                 DesktopModeSettings.setSettingsOrThrowException(contentResolver, "hdmi_auto_enter", "true");
-                DesktopModeSettings.setSettingsOrThrowException(contentResolver, "knox_hdmi_auto_enter_state", i);
+                DesktopModeSettings.setSettingsAsUserOrThrowException(contentResolver, "knox_hdmi_auto_enter_state", Integer.toString(i), DesktopModeSettings.sCurrentUserId);
                 return 0;
             } catch (IllegalArgumentException unused) {
-                Log.e(DesktopModeService.TAG, "setDexHDMIAutoEnterState(), Failed to setting(value=" + i + ")");
+                int i2 = DesktopModeService.$r8$clinit;
+                Log.e("[DMS]DesktopModeService", "setDexHDMIAutoEnterState(), Failed to setting(value=" + i + ")");
                 return -1;
             }
         }
 
-        public int getDexHDMIAutoEnterState() {
-            return DesktopModeSettings.getSettings(DesktopModeService.this.mContext.getContentResolver(), "knox_hdmi_auto_enter_state", 9);
-        }
-
-        public int getTouchpadSupportedFeatures() {
-            return DesktopModeService.this.getTouchpadSupportedFeatures();
-        }
-
-        public int getModeToModeChangeType() {
-            return DesktopModeService.this.getModeToModeChangeType();
-        }
-
-        public void onSecuredAppLaunched(int i, String str) {
-            DesktopModeService.this.onSecuredAppLaunched(i, str);
+        public final void startHome() {
+            DesktopModeService desktopModeService = DesktopModeService.this;
+            desktopModeService.startHome(((StateManager) desktopModeService.mStateManager).getState());
         }
     }
 
-    public DesktopModeService(Injector injector, Context context, ServiceThread serviceThread, SemDesktopModeStateNotifier semDesktopModeStateNotifier, IStateManager iStateManager) {
-        PreconditionChecker phonePreconditionChecker;
-        AnonymousClass1 anonymousClass1 = new AnonymousClass1();
-        this.mStateListener = anonymousClass1;
-        byte b = 0;
-        byte b2 = 0;
-        byte b3 = 0;
-        byte b4 = 0;
-        this.mNewDeXSettingObserver = new ContentObserver(null) { // from class: com.android.server.desktopmode.DesktopModeService.2
-            @Override // android.database.ContentObserver
-            public void onChange(boolean z) {
-                DesktopModeService.this.requestTileUpdate(DesktopModeService.this.mStateManager.getState().getDesktopModeState());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PhonePreconditionChecker {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ DesktopModeService this$0;
+
+        public /* synthetic */ PhonePreconditionChecker(DesktopModeService desktopModeService, int i) {
+            this.$r8$classId = i;
+            this.this$0 = desktopModeService;
+        }
+
+        public final boolean isAllowed(StateManager.InternalState internalState, boolean z) {
+            switch (this.$r8$classId) {
+                case 0:
+                    DesktopModeService desktopModeService = this.this$0;
+                    if (!desktopModeService.isSystemReady() || !DesktopModeService.m399$$Nest$misBlockerRegistered(desktopModeService, internalState, z) || !internalState.isPackagesAvailable()) {
+                    }
+                    break;
+                default:
+                    DesktopModeService desktopModeService2 = this.this$0;
+                    if (desktopModeService2.isSystemReady()) {
+                        if (internalState.mIsExternalDisplayConnected && internalState.mEmergencyModeEnabled) {
+                            DesktopModeService.m399$$Nest$misBlockerRegistered(desktopModeService2, internalState, z);
+                            break;
+                        } else if (!DesktopModeService.m399$$Nest$misBlockerRegistered(desktopModeService2, internalState, z) || !internalState.isPackagesAvailable()) {
+                        }
+                    }
+                    break;
             }
-        };
-        this.mWelcomeCompletedSettingChangedListener = new SettingsHelper.OnSettingChangedListener("welcome_completed") { // from class: com.android.server.desktopmode.DesktopModeService.3
+            return false;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Receiver extends BroadcastReceiver {
+        public Receiver() {
+        }
+
+        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+        /* JADX WARN: Code restructure failed: missing block: B:126:0x0247, code lost:
+        
+            if (r6.equals("PAP") == false) goto L100;
+         */
+        /* JADX WARN: Removed duplicated region for block: B:58:0x0148  */
+        /* JADX WARN: Removed duplicated region for block: B:60:0x0155  */
+        @Override // android.content.BroadcastReceiver
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void onReceive(android.content.Context r17, android.content.Intent r18) {
+            /*
+                Method dump skipped, instructions count: 750
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.desktopmode.DesktopModeService.Receiver.onReceive(android.content.Context, android.content.Intent):void");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class WelcomeActivityListener extends UiManager.InternalUiCallback {
+        public boolean mShown = false;
+        public boolean mOverlayShown = false;
+        public boolean mStartPressed = false;
+        public final AnonymousClass1 mStateListener = new AnonymousClass1(1, this);
+
+        public WelcomeActivityListener() {
+        }
+
+        @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
+        public final void onClickButtonPositive() {
+            this.mStartPressed = true;
+            DesktopModeService desktopModeService = DesktopModeService.this;
+            desktopModeService.finishWelcomeActivity();
+            StateManager.InternalState state = ((StateManager) desktopModeService.mStateManager).getState();
+            if (state.isHdmiConnected()) {
+                DesktopModeSettings.setSettings(desktopModeService.mResolver, "hdmi_initial_connection_dialog_shown", true);
+            }
+            if (state.mIsPogoKeyboardConnected) {
+                DesktopModeSettings.setSettings(desktopModeService.mResolver, "pogo_initial_connection_dialog_shown", true);
+            }
+        }
+
+        @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
+        public final void onDismiss() {
+            DesktopModeService.this.mHandler.post(new DesktopModeService$WelcomeActivityListener$$ExternalSyntheticLambda0(this, 1));
+        }
+
+        @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
+        public final void onShow() {
+            DesktopModeService.this.mHandler.post(new DesktopModeService$WelcomeActivityListener$$ExternalSyntheticLambda0(this, 0));
+        }
+
+        public final void setDesktopModeState(int i, boolean z) {
+            boolean z2 = DesktopModeFeature.SUPPORT_STANDALONE;
+            DesktopModeService desktopModeService = DesktopModeService.this;
+            ((!z2 || z) ? desktopModeService.mDualModeChanger : desktopModeService.mStandaloneModeChanger).setDesktopModeState(2, i);
+        }
+
+        public final void showOrDismissOverlay(boolean z, boolean z2) {
+            boolean z3 = false;
+            if (!z || this.mOverlayShown) {
+                if (z || !this.mOverlayShown) {
+                    return;
+                }
+                if (DesktopModeFeature.DEBUG) {
+                    int i = DesktopModeService.$r8$clinit;
+                    DesktopModeService$$ExternalSyntheticOutline0.m("showOrDismissOverlay(), show=false, isCoverSupportStatePartial=", ", dismissing external overlay", "[DMS]DesktopModeService", z2);
+                }
+                this.mOverlayShown = false;
+                DesktopModeService.this.mUiManager.dismissOverlay(103, 112);
+                if (DesktopModeFeature.IS_TABLET) {
+                    return;
+                }
+                DesktopModeService.this.mInjector.getClass();
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                DesktopModeService.this.mCoverStateManager.disableCoverManager(false);
+                DesktopModeService.this.mInjector.getClass();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return;
+            }
+            CoverStateManager coverStateManager = DesktopModeService.this.mCoverStateManager;
+            synchronized (coverStateManager.mLock) {
+                try {
+                    CoverState coverState = coverStateManager.mCoverManager.getCoverState();
+                    if (coverState != null) {
+                        if (coverState.getAttachState() && CoverStateManager.isFlipTypeCover(coverState) && !coverState.getSwitchState()) {
+                            z3 = true;
+                        }
+                    }
+                } finally {
+                }
+            }
+            if (z3) {
+                if (DesktopModeFeature.DEBUG) {
+                    int i2 = DesktopModeService.$r8$clinit;
+                    DesktopModeService$$ExternalSyntheticOutline0.m("showOrDismissOverlay(), show=true, isCoverSupportStatePartial=", ", skip showing external overlay since cover is closed", "[DMS]DesktopModeService", z2);
+                    return;
+                }
+                return;
+            }
+            if (DesktopModeFeature.DEBUG) {
+                int i3 = DesktopModeService.$r8$clinit;
+                DesktopModeService$$ExternalSyntheticOutline0.m("showOrDismissOverlay(), show=true, isCoverSupportStatePartial=", ", showing external overlay", "[DMS]DesktopModeService", z2);
+            }
+            this.mOverlayShown = true;
+            DesktopModeService.this.mUiManager.showOverlay(103, 112, null);
+            if (DesktopModeFeature.IS_TABLET || !z2) {
+                return;
+            }
+            DesktopModeService.this.mInjector.getClass();
+            long clearCallingIdentity2 = Binder.clearCallingIdentity();
+            DesktopModeService.this.mCoverStateManager.disableCoverManager(true);
+            DesktopModeService.this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity2);
+        }
+    }
+
+    /* renamed from: -$$Nest$mhandleHdmiAutoEnter, reason: not valid java name */
+    public static void m396$$Nest$mhandleHdmiAutoEnter(DesktopModeService desktopModeService, boolean z) {
+        if (desktopModeService.mCurrentUserId == 0 && desktopModeService.isSystemReady()) {
+            if (!z) {
+                desktopModeService.dismissDialog(5);
+                desktopModeService.finishWelcomeActivity();
+                return;
+            }
+            String settingsAsUser = DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "hdmi_auto_enter", (String) null, DesktopModeSettings.sCurrentUserId);
+            boolean parseBoolean = Boolean.parseBoolean(settingsAsUser);
+            if (!DesktopModeFeature.SUPPORT_NEW_DEX && settingsAsUser == null && !DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "hdmi_initial_connection_dialog_shown", false, DesktopModeSettings.sCurrentUserId)) {
+                desktopModeService.mUiManager.showDialog(0, 5, desktopModeService.new AnonymousClass6(false, "hdmi_initial_connection_dialog_shown"));
+            } else if (parseBoolean) {
+                desktopModeService.setUserRequest(1);
+                desktopModeService.scheduleUpdateDesktopMode(true);
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$mhandlePogoAutoEnter, reason: not valid java name */
+    public static void m397$$Nest$mhandlePogoAutoEnter(DesktopModeService desktopModeService, boolean z) {
+        if (desktopModeService.mCurrentUserId == 0 && desktopModeService.isSystemReady()) {
+            if (!z) {
+                desktopModeService.dismissDialog(4);
+                desktopModeService.finishWelcomeActivity();
+                return;
+            }
+            String settingsAsUser = DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "pogo_auto_enter", (String) null, DesktopModeSettings.sCurrentUserId);
+            boolean parseBoolean = Boolean.parseBoolean(settingsAsUser);
+            boolean equals = "new".equals(DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "dex_mode", DesktopModeSettings.DEX_MODE_DEFAULT_VALUE, DesktopModeSettings.sCurrentUserId));
+            boolean settingsAsUser2 = DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "welcome_completed", false, DesktopModeSettings.sCurrentUserId);
+            if (!parseBoolean) {
+                if (DesktopModeFeature.SUPPORT_NEW_DEX || settingsAsUser != null || DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "pogo_initial_connection_dialog_shown", false, DesktopModeSettings.sCurrentUserId) || !desktopModeService.mAllowPogoInitialDialog || settingsAsUser2) {
+                    return;
+                }
+                desktopModeService.mUiManager.showDialog(0, 4, desktopModeService.new AnonymousClass6(true, "pogo_initial_connection_dialog_shown"));
+                return;
+            }
+            if (DesktopModeFeature.SUPPORT_NEW_DEX && equals) {
+                desktopModeService.updateNewDexMode(1);
+            } else if (!settingsAsUser2) {
+                desktopModeService.startWelcomeActivity();
+            } else {
+                desktopModeService.setUserRequest(1);
+                desktopModeService.scheduleUpdateDesktopMode(true);
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$misAllowedInternal, reason: not valid java name */
+    public static boolean m398$$Nest$misAllowedInternal(DesktopModeService desktopModeService, StateManager.InternalState internalState, boolean z) {
+        if (desktopModeService.mPreconditionChecker.isAllowed(internalState, z)) {
+            return true;
+        }
+        if (DesktopModeFeature.SUPPORT_WIRELESS_DEX && internalState.isWirelessDexConnected()) {
+            desktopModeService.mWirelessDexManager.disconnect();
+        }
+        return false;
+    }
+
+    /* renamed from: -$$Nest$misBlockerRegistered, reason: not valid java name */
+    public static boolean m399$$Nest$misBlockerRegistered(DesktopModeService desktopModeService, StateManager.InternalState internalState, boolean z) {
+        BlockerManager blockerManager = desktopModeService.mBlockerManager;
+        BlockerManager.DesktopModeBlockerInfo defaultBlockerInfo = blockerManager.getDefaultBlockerInfo(internalState);
+        if (defaultBlockerInfo == null) {
+            synchronized (blockerManager.mBlockers) {
+                try {
+                    Iterator it = ((ArrayMap) blockerManager.mBlockers).values().iterator();
+                    while (true) {
+                        if (!it.hasNext()) {
+                            defaultBlockerInfo = null;
+                            break;
+                        }
+                        BlockerManager.DesktopModeBlockerInfo desktopModeBlockerInfo = (BlockerManager.DesktopModeBlockerInfo) it.next();
+                        if (desktopModeBlockerInfo != null) {
+                            defaultBlockerInfo = desktopModeBlockerInfo;
+                            break;
+                        }
+                    }
+                } finally {
+                }
+            }
+        }
+        boolean z2 = true;
+        if (defaultBlockerInfo != null) {
+            Log.i("[DMS]DesktopModeService", "isAllowed(showToast=" + z + "), blocked by " + defaultBlockerInfo);
+            if (z) {
+                try {
+                    ToastManager.showToast(desktopModeService.mContext, defaultBlockerInfo.blocker.onBlocked(), 1);
+                    Log.SAVED_STATES.add(Log.buildLogString('W', "[DMS]State", "(enter) State=" + internalState + ", blocked by " + defaultBlockerInfo));
+                } catch (RemoteException e) {
+                    Log.e("[DMS]DesktopModeService", "Failed to get blocking message from blocker " + defaultBlockerInfo, e);
+                }
+            }
+            z2 = false;
+            if (!desktopModeService.mIsBootInitBlockerRegistered) {
+                desktopModeService.setUserRequest(0);
+            }
+        }
+        return z2;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:10:0x0023  */
+    /* renamed from: -$$Nest$mrequestTileUpdate, reason: not valid java name */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void m400$$Nest$mrequestTileUpdate(com.android.server.desktopmode.DesktopModeService r4, com.samsung.android.desktopmode.SemDesktopModeState r5) {
+        /*
+            r0 = 0
+            r1 = 1
+            if (r5 == 0) goto L17
+            r4.getClass()
+            int r2 = r5.getEnabled()
+            r3 = 4
+            if (r2 == r3) goto L15
+            int r5 = r5.getEnabled()
+            r2 = 3
+            if (r5 != r2) goto L17
+        L15:
+            r5 = r1
+            goto L18
+        L17:
+            r5 = r0
+        L18:
+            android.content.ContentResolver r2 = r4.mResolver
+            java.lang.String r3 = "new_dex"
+            int r2 = android.provider.Settings.System.getInt(r2, r3, r0)
+            if (r2 != r1) goto L24
+            r0 = r1
+        L24:
+            boolean r1 = r4.mIsDesktopModeEnablingOrEnabled
+            if (r1 != r5) goto L2c
+            boolean r1 = r4.mIsNewDexEnabled
+            if (r1 == r0) goto L4d
+        L2c:
+            r4.mIsDesktopModeEnablingOrEnabled = r5
+            r4.mIsNewDexEnabled = r0
+            android.content.Context r5 = r4.mContext
+            android.content.ComponentName r0 = new android.content.ComponentName
+            java.lang.String r1 = "com.sec.android.desktopmode.uiservice"
+            java.lang.String r2 = "com.sec.android.desktopmode.uiservice.DesktopModeTile"
+            r0.<init>(r1, r2)
+            android.service.quicksettings.TileService.requestListeningState(r5, r0)
+            android.content.Context r4 = r4.mContext
+            android.content.ComponentName r5 = new android.content.ComponentName
+            java.lang.String r0 = "com.sec.android.desktopmode.uiservice.DesktopDisplayDesktopModeTile"
+            r5.<init>(r1, r0)
+            android.service.quicksettings.TileService.requestListeningState(r4, r5)
+        L4d:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.desktopmode.DesktopModeService.m400$$Nest$mrequestTileUpdate(com.android.server.desktopmode.DesktopModeService, com.samsung.android.desktopmode.SemDesktopModeState):void");
+    }
+
+    /* renamed from: -$$Nest$msetEnterRequestIfStandaloneLastBoot, reason: not valid java name */
+    public static void m401$$Nest$msetEnterRequestIfStandaloneLastBoot(DesktopModeService desktopModeService, StateManager.InternalState internalState) {
+        if (DesktopModeSettings.getSettingsAsUser(desktopModeService.mResolver, "display_type", 0, desktopModeService.mCurrentUserId) == 101) {
+            Log.i("[DMS]DesktopModeService", "Request to enter standalone mode, since the standalone mode was enabled on last boot");
+            desktopModeService.setUserRequest(1);
+        }
+        DesktopModeSettings.setSettingsAsUser(desktopModeService.mResolver, "display_type", internalState.mDesktopModeState.getDisplayType(), desktopModeService.mCurrentUserId);
+    }
+
+    /* JADX WARN: Type inference failed for: r1v2, types: [com.android.server.desktopmode.DesktopModeService$3] */
+    /* JADX WARN: Type inference failed for: r1v3, types: [com.android.server.desktopmode.DesktopModeService$3] */
+    public DesktopModeService(Injector injector, Context context, ServiceThread serviceThread, SemDesktopModeStateNotifier semDesktopModeStateNotifier, IStateManager iStateManager) {
+        AnonymousClass1 anonymousClass1 = new AnonymousClass1(0, this);
+        int i = 0;
+        this.mNewDeXSettingObserver = new AnonymousClass2(this, i);
+        this.mWelcomeCompletedSettingChangedListener = new SettingsHelper.OnSettingChangedListener(this, i) { // from class: com.android.server.desktopmode.DesktopModeService.3
+            public final /* synthetic */ int $r8$classId;
+            public final /* synthetic */ DesktopModeService this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            {
+                super("welcome_completed");
+                this.$r8$classId = i;
+                switch (i) {
+                    case 1:
+                        this.this$0 = this;
+                        super("external_display_mode");
+                        break;
+                    default:
+                        this.this$0 = this;
+                        break;
+                }
+            }
+
             @Override // com.android.server.desktopmode.SettingsHelper.OnSettingChangedListener
-            public void onSettingChanged(String str, int i) {
-                if (Boolean.parseBoolean(str)) {
-                    DesktopModeService.this.setUserRequest(1);
-                    DesktopModeService.this.scheduleUpdateDesktopMode(true);
+            public final void onSettingChanged(String str) {
+                switch (this.$r8$classId) {
+                    case 0:
+                        if (Boolean.parseBoolean(str)) {
+                            DesktopModeService desktopModeService = this.this$0;
+                            desktopModeService.setUserRequest(1);
+                            desktopModeService.scheduleUpdateDesktopMode(true);
+                            break;
+                        }
+                        break;
+                    default:
+                        boolean equals = "dual".equals(str);
+                        DesktopModeService desktopModeService2 = this.this$0;
+                        desktopModeService2.mShowModeChangeScreen = ((StateManager) desktopModeService2.mStateManager).getState().isHdmiConnected();
+                        desktopModeService2.scheduleUpdateDesktopMode(equals);
+                        break;
                 }
             }
         };
-        this.mExternalDisplayModeListener = new SettingsHelper.OnSettingChangedListener("external_display_mode") { // from class: com.android.server.desktopmode.DesktopModeService.4
+        this.mExternalDisplayModeListener = new SettingsHelper.OnSettingChangedListener(this, 1) { // from class: com.android.server.desktopmode.DesktopModeService.3
+            public final /* synthetic */ int $r8$classId;
+            public final /* synthetic */ DesktopModeService this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            {
+                super("welcome_completed");
+                this.$r8$classId = i;
+                switch (i) {
+                    case 1:
+                        this.this$0 = this;
+                        super("external_display_mode");
+                        break;
+                    default:
+                        this.this$0 = this;
+                        break;
+                }
+            }
+
             @Override // com.android.server.desktopmode.SettingsHelper.OnSettingChangedListener
-            public void onSettingChanged(String str, int i) {
-                boolean equals = "dual".equals(str);
-                DesktopModeService desktopModeService = DesktopModeService.this;
-                desktopModeService.mShowModeChangeScreen = desktopModeService.mStateManager.getState().isHdmiConnected();
-                DesktopModeService.this.scheduleUpdateDesktopMode(equals);
+            public final void onSettingChanged(String str) {
+                switch (this.$r8$classId) {
+                    case 0:
+                        if (Boolean.parseBoolean(str)) {
+                            DesktopModeService desktopModeService = this.this$0;
+                            desktopModeService.setUserRequest(1);
+                            desktopModeService.scheduleUpdateDesktopMode(true);
+                            break;
+                        }
+                        break;
+                    default:
+                        boolean equals = "dual".equals(str);
+                        DesktopModeService desktopModeService2 = this.this$0;
+                        desktopModeService2.mShowModeChangeScreen = ((StateManager) desktopModeService2.mStateManager).getState().isHdmiConnected();
+                        desktopModeService2.scheduleUpdateDesktopMode(equals);
+                        break;
+                }
             }
         };
         this.mAllowPogoInitialDialog = false;
@@ -893,20 +1262,389 @@ public class DesktopModeService extends IDesktopMode.Stub {
         this.mResolver = context.getContentResolver();
         this.mSemDesktopModeStateNotifier = semDesktopModeStateNotifier;
         this.mStateManager = iStateManager;
-        iStateManager.registerListener(anonymousClass1);
-        if (DesktopModeFeature.SUPPORT_STANDALONE) {
-            phonePreconditionChecker = new TabletPreconditionChecker();
-        } else {
-            phonePreconditionChecker = new PhonePreconditionChecker();
+        ((StateManager) iStateManager).registerListener(anonymousClass1);
+        this.mPreconditionChecker = DesktopModeFeature.SUPPORT_STANDALONE ? new PhonePreconditionChecker(this, 1) : new PhonePreconditionChecker(this, 0);
+        LocalService localService = new LocalService();
+        injector.getClass();
+        LocalServices.addService(DesktopModeManagerInternal.class, localService);
+        Receiver receiver = new Receiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.ACTION_SHUTDOWN");
+        intentFilter.addAction("com.samsung.sea.rm.DEMO_RESET_STARTED");
+        intentFilter.addAction("com.samsung.android.desktopmode.action.DEX_RUNNING_NOTIFICATION_PRESSED");
+        intentFilter.addAction("com.sec.android.app.secsetupwizard.FOTA_SUW_COMPLETE");
+        UserHandle userHandle = UserHandle.ALL;
+        context.registerReceiverAsUser(receiver, userHandle, intentFilter, null, null, 2);
+        context.registerReceiverAsUser(receiver, userHandle, new IntentFilter("com.samsung.android.desktopmode.action.DESKTOP_MODE_UPDATE_REQUEST"), "android.permission.WRITE_SECURE_SETTINGS", null, 2);
+    }
+
+    public static boolean isDesktopModeForPreparing(StateManager.InternalState internalState, int i) {
+        SemDesktopModeState semDesktopModeState = internalState.mDesktopModeState;
+        return (i == -1 || semDesktopModeState.getDisplayType() == i) && (semDesktopModeState.enabled == 4 || semDesktopModeState.compareTo(3, 30) || semDesktopModeState.compareTo(1, 20));
+    }
+
+    public static boolean isExternalDisplayConnectedOrForced(StateManager.InternalState internalState) {
+        return internalState.mIsExternalDisplayConnected || internalState.mForcedInternalScreenModeEnabled;
+    }
+
+    public static String userRequestToString(int i) {
+        return i != 0 ? i != 1 ? i != 2 ? VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Unknown=") : "EXIT_REQUEST" : "ENTER_REQUEST" : "NO_REQUEST";
+    }
+
+    public final void dismissDialog(int... iArr) {
+        for (int i : iArr) {
+            this.mUiManager.dismissDialog(0, i);
         }
-        this.mPreconditionChecker = phonePreconditionChecker;
-        injector.addLocalService(DesktopModeManagerInternal.class, new LocalService());
-        new Receiver().register();
+    }
+
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+        String str;
+        boolean z = true;
+        if (!DumpUtils.checkDumpPermission(this.mContext, "[DMS]DesktopModeService", printWriter)) {
+            return;
+        }
+        if (strArr != null && strArr.length != 0 && !"-a".equals(strArr[0])) {
+            if (DesktopModeFeature.DEBUG) {
+                String str2 = strArr[0];
+                if ("off".equals(str2) || "toggle".equals(str2)) {
+                    this.mHwManager.command(printWriter, str2);
+                    printWriter.println("Please enter below next time:");
+                    BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("  cmd desktopmode "), str2, printWriter);
+                    return;
+                } else {
+                    if (!"settings".equals(str2) && !"resolution".equals(str2) && !"ui".equals(str2)) {
+                        BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, "Unknown argument: ", str2, "; USAGE: [on|off|toggle|dblist]");
+                        return;
+                    }
+                    printWriter.println("Please enter below instead:");
+                    printWriter.println("  cmd desktopmode " + str2);
+                    return;
+                }
+            }
+            return;
+        }
+        IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ");
+        indentingPrintWriter.println("DesktopModeService (dumpsys desktopmode):");
+        indentingPrintWriter.println(Log.buildLogString('V', "[DMS]StateStart", "=========================================================================="));
+        Log.SAVED_STATES.dump(indentingPrintWriter);
+        indentingPrintWriter.println(Log.buildLogString('V', "[DMS]StateEnd", "=========================================================================="));
+        indentingPrintWriter.println(Log.buildLogString('V', "[DMS]SavedLogsStart", "=========================================================================="));
+        Log.SAVED_LOGS.dump(indentingPrintWriter);
+        indentingPrintWriter.println(Log.buildLogString('V', "[DMS]SavedLogsEnd", "=========================================================================="));
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            Bundle call = this.mResolver.call(DesktopModeSettings.getUriAsUser(this.mCurrentUserId), "dumpApp", (String) null, (Bundle) null);
+            if (call != null) {
+                indentingPrintWriter.print(call.getString("dumpApp"));
+            }
+        } catch (IllegalArgumentException e) {
+            Log.e("[DMS]DesktopModeSettings", "Failed to dump", e);
+        }
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        indentingPrintWriter.println();
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.println("mCurrentUserId=" + this.mCurrentUserId);
+        indentingPrintWriter.println("Configuration=" + this.mContext.getResources().getConfiguration());
+        indentingPrintWriter.println("mUserRequest=" + userRequestToString(this.mUserRequest));
+        indentingPrintWriter.println("welcomeCompleted=" + DesktopModeSettings.getSettingsAsUser(this.mResolver, "welcome_completed", false, DesktopModeSettings.sCurrentUserId));
+        indentingPrintWriter.println("DISPLAY_SIZE_FORCED=" + Settings.Global.getString(this.mResolver, "display_size_forced"));
+        indentingPrintWriter.println("DISPLAY_DENSITY_FORCED=" + Settings.Secure.getStringForUser(this.mResolver, "display_density_forced", 0));
+        indentingPrintWriter.println("SCREEN_OFF_TIMEOUT=" + Settings.System.getStringForUser(this.mResolver, "screen_off_timeout", this.mCurrentUserId));
+        indentingPrintWriter.println("SHOW_IME_WITH_HARD_KEYBOARD=" + Settings.Secure.getStringForUser(this.mResolver, "show_ime_with_hard_keyboard", this.mCurrentUserId));
+        indentingPrintWriter.println();
+        StandaloneModeChanger standaloneModeChanger = this.mStandaloneModeChanger;
+        standaloneModeChanger.getClass();
+        indentingPrintWriter.println("Current StandaloneModeChanger state:");
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.println("mCurrentUiMode=" + standaloneModeChanger.mCurrentUiMode);
+        StringBuilder m = DesktopModeService$$ExternalSyntheticOutline0.m(DesktopModeService$$ExternalSyntheticOutline0.m(new StringBuilder("mIsLockTaskModeEnabledAndSecured="), standaloneModeChanger.mIsLockTaskModeEnabledAndSecured, indentingPrintWriter, "mStandaloneModeEnabled="), standaloneModeChanger.mStandaloneModeEnabled, indentingPrintWriter, "mTopTaskId=");
+        m.append(standaloneModeChanger.mTopTaskId);
+        indentingPrintWriter.println(m.toString());
+        if (DesktopModeFeature.FEATURE_STANDALONE_MODE_WALLPAPER) {
+            indentingPrintWriter.println("mWallpaperShown=" + standaloneModeChanger.mWallpaperShown);
+        }
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        DualModeChanger dualModeChanger = this.mDualModeChanger;
+        dualModeChanger.getClass();
+        indentingPrintWriter.println("Current DualModeChanger state:");
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.println("mDesktopDisplayId=" + dualModeChanger.mDesktopDisplayId);
+        StringBuilder m2 = DesktopModeService$$ExternalSyntheticOutline0.m(new StringBuilder("mDualModeEnabled="), dualModeChanger.mDualModeEnabled, indentingPrintWriter, "mModeToModeChangeInfo=");
+        m2.append(dualModeChanger.mModeToModeChangeInfo);
+        indentingPrintWriter.println(m2.toString());
+        indentingPrintWriter.println("mPrevDesktopDisplayId=" + dualModeChanger.mPrevDesktopDisplayId);
+        indentingPrintWriter.println("mTopTaskId=" + dualModeChanger.mTopTaskId);
+        StringBuilder m3 = DesktopModeService$$ExternalSyntheticOutline0.m(new StringBuilder("mTopTaskIdValid="), dualModeChanger.mTopTaskIdValid, indentingPrintWriter, "mTouchpadRequestedByNotification=");
+        m3.append(dualModeChanger.mTouchpadRequestedByNotification);
+        indentingPrintWriter.println(m3.toString());
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        StateManager stateManager = (StateManager) this.mStateManager;
+        synchronized (stateManager.mLock) {
+            indentingPrintWriter.println("Current StateManager state:");
+            indentingPrintWriter.increaseIndent();
+            indentingPrintWriter.println("mState=" + stateManager.mState);
+            indentingPrintWriter.println("mStateListeners=" + stateManager.mStateListeners);
+            indentingPrintWriter.decreaseIndent();
+        }
+        indentingPrintWriter.println();
+        PackageStateManager packageStateManager = this.mPackageStateManager;
+        packageStateManager.getClass();
+        indentingPrintWriter.println("Current PackageStateManager state:");
+        indentingPrintWriter.increaseIndent();
+        synchronized (packageStateManager.mLock) {
+            indentingPrintWriter.println("mPackageState=" + packageStateManager.mPackageState);
+        }
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        SettingsHelper settingsHelper = this.mSettingsHelper;
+        ContentResolver contentResolver = this.mResolver;
+        int i = this.mCurrentUserId;
+        settingsHelper.getClass();
+        indentingPrintWriter.println("Current DesktopModeSettings state:");
+        indentingPrintWriter.increaseIndent();
+        long clearCallingIdentity2 = Binder.clearCallingIdentity();
+        StringBuilder m4 = BatteryService$$ExternalSyntheticOutline0.m(i, "Current user (", ") settings=");
+        m4.append(Utils.bundleToString(DesktopModeSettings.getAllSettingsAsUser(i, contentResolver)));
+        indentingPrintWriter.println(m4.toString());
+        if (i != 0) {
+            indentingPrintWriter.println("System user (0) settings" + Utils.bundleToString(DesktopModeSettings.getAllSettingsAsUser(0, contentResolver)));
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity2);
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        UiManager uiManager = this.mUiManager;
+        uiManager.getClass();
+        indentingPrintWriter.println("Current UiManager state:");
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.println("external overlay=" + DesktopModeUiConstants.typeToString(uiManager.getCurrentOverlayType(103)));
+        indentingPrintWriter.println("internal overlay=" + DesktopModeUiConstants.typeToString(uiManager.getCurrentOverlayType(102)));
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        SemDesktopModeStateNotifier semDesktopModeStateNotifier = this.mSemDesktopModeStateNotifier;
+        semDesktopModeStateNotifier.getClass();
+        indentingPrintWriter.println("Current SemDesktopModeStateNotifier state:");
+        indentingPrintWriter.increaseIndent();
+        synchronized (semDesktopModeStateNotifier.mInnerLock) {
+            try {
+                indentingPrintWriter.println("mListeners (" + ((ArrayMap) semDesktopModeStateNotifier.mListeners).size() + "):");
+                indentingPrintWriter.increaseIndent();
+                Iterator it = ((ArrayMap) semDesktopModeStateNotifier.mListeners).values().iterator();
+                while (it.hasNext()) {
+                    indentingPrintWriter.println((SemDesktopModeStateNotifier.ListenerInfo) it.next());
+                }
+                indentingPrintWriter.decreaseIndent();
+            } finally {
+            }
+        }
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        BlockerManager blockerManager = this.mBlockerManager;
+        blockerManager.getClass();
+        indentingPrintWriter.println("Current BlockerManager state:");
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.println("DefaultBlocker=" + blockerManager.getDefaultBlockerInfo(((StateManager) blockerManager.mStateManager).getState()));
+        synchronized (blockerManager.mBlockers) {
+            try {
+                indentingPrintWriter.println("mBlockers (" + ((ArrayMap) blockerManager.mBlockers).size() + "):");
+                indentingPrintWriter.increaseIndent();
+                Iterator it2 = ((ArrayMap) blockerManager.mBlockers).values().iterator();
+                while (it2.hasNext()) {
+                    indentingPrintWriter.println((BlockerManager.DesktopModeBlockerInfo) it2.next());
+                }
+                indentingPrintWriter.decreaseIndent();
+            } finally {
+            }
+        }
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        this.mHwManager.dump(indentingPrintWriter);
+        indentingPrintWriter.println();
+        TouchpadManager touchpadManager = this.mTouchpadManager;
+        touchpadManager.getClass();
+        indentingPrintWriter.println("Current TouchpadManager state:");
+        indentingPrintWriter.increaseIndent();
+        StringBuilder m5 = DesktopModeService$$ExternalSyntheticOutline0.m(DesktopModeService$$ExternalSyntheticOutline0.m(new StringBuilder("mIsSPenDetached="), touchpadManager.mIsSPenDetached, indentingPrintWriter, "mIsSPenEnabled="), touchpadManager.mIsSPenEnabled, indentingPrintWriter, "mIsTouchpadEnabled=");
+        m5.append(touchpadManager.mIsTouchpadEnabled);
+        indentingPrintWriter.println(m5.toString());
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        this.mCoverStateManager.dump(indentingPrintWriter);
+        indentingPrintWriter.println();
+        ToastManager.dump(indentingPrintWriter);
+        indentingPrintWriter.println();
+        Set set = DesktopModeKillPolicyManager.KEEP_POLICY_PACKAGES;
+        indentingPrintWriter.println("Current DesktopModeKillPolicyManager state:");
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.println("KEEP_POLICY_PACKAGES (" + DesktopModeKillPolicyManager.KEEP_POLICY_PACKAGES.size() + ")");
+        indentingPrintWriter.println("KILL_POLICY_PACKAGES (" + DesktopModeKillPolicyManager.KILL_POLICY_PACKAGES.size() + ")");
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        MultiResolutionManager multiResolutionManager = this.mMultiResolutionManager;
+        multiResolutionManager.getClass();
+        indentingPrintWriter.println("Current MultiResolutionManager state:");
+        indentingPrintWriter.increaseIndent();
+        StringBuilder m6 = DesktopModeService$$ExternalSyntheticOutline0.m(DesktopModeService$$ExternalSyntheticOutline0.m(new StringBuilder("mIsForcedSupportAllResolution="), multiResolutionManager.mIsForcedSupportAllResolution, indentingPrintWriter, "mDisplayRemovedOnEnablingDesktopMode="), multiResolutionManager.mDisplayRemovedOnEnablingDesktopMode, indentingPrintWriter, "mStandaloneModeDisplayMetrics=");
+        m6.append(multiResolutionManager.mStandaloneModeDisplayMetrics);
+        indentingPrintWriter.println(m6.toString());
+        indentingPrintWriter.println("mCustomDisplayMetrics=" + multiResolutionManager.mCustomDisplayMetrics);
+        indentingPrintWriter.println("mUserSettingResolution=" + multiResolutionManager.mUserSettingResolution);
+        indentingPrintWriter.println("mMaxSupportedResolution=" + multiResolutionManager.mMaxSupportedResolution);
+        indentingPrintWriter.println("mSelectedDisplayMetrics=" + multiResolutionManager.mSelectedDisplayMetrics);
+        indentingPrintWriter.println("mLastDualModeMaxSupportedResolution=" + multiResolutionManager.mLastDualModeMaxSupportedResolution);
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
+        DockManager dockManager = this.mDockManager;
+        dockManager.getClass();
+        indentingPrintWriter.println("Current DockManager state:");
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.println("mDockVersion=" + dockManager.mDockVersion);
+        indentingPrintWriter.println("mDockVersionExtra=" + dockManager.mDockVersionExtra);
+        indentingPrintWriter.println("mDockChargerPower=" + dockManager.mDockChargerPower);
+        indentingPrintWriter.println("mDockChargerSupport=" + dockManager.mDockChargerSupport);
+        indentingPrintWriter.println("Last DockManager state:");
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.println("mLastDockVersion=" + dockManager.mLastDockVersion);
+        int i2 = 0;
+        while (true) {
+            DockManager.AnonymousClass3 anonymousClass3 = dockManager.mLastDockControlLibMsgState;
+            if (i2 >= ((ArrayMap) anonymousClass3.this$0).size()) {
+                indentingPrintWriter.decreaseIndent();
+                indentingPrintWriter.decreaseIndent();
+                indentingPrintWriter.println();
+                this.mDisplayPortStateManager.dump(indentingPrintWriter);
+                if (DesktopModeFeature.SUPPORT_WIRELESS_DEX) {
+                    indentingPrintWriter.println();
+                    WirelessDexManager wirelessDexManager = this.mWirelessDexManager;
+                    wirelessDexManager.getClass();
+                    indentingPrintWriter.println("Current WirelessDexManager state:");
+                    indentingPrintWriter.increaseIndent();
+                    indentingPrintWriter.println("mFrequencyValue=" + wirelessDexManager.mFrequencyValue);
+                    StringBuilder m7 = DesktopModeService$$ExternalSyntheticOutline0.m(DesktopModeService$$ExternalSyntheticOutline0.m(new StringBuilder("mIsLowLatencyMode="), wirelessDexManager.mIsLowLatencyMode, indentingPrintWriter, "mIsWirelessDexEntered="), wirelessDexManager.mIsWirelessDexEntered, indentingPrintWriter, "mPointerIconSync=");
+                    m7.append(wirelessDexManager.mPointerIconSync);
+                    indentingPrintWriter.println(m7.toString());
+                    indentingPrintWriter.println("mReducedLatency=" + wirelessDexManager.mReducedLatency);
+                    indentingPrintWriter.println("mTvTizenVersion=" + wirelessDexManager.mTvTizenVersion);
+                    indentingPrintWriter.decreaseIndent();
+                    if (this.mBleAdvertiserServiceManager != null) {
+                        indentingPrintWriter.println();
+                        BleAdvertiserServiceManager bleAdvertiserServiceManager = this.mBleAdvertiserServiceManager;
+                        bleAdvertiserServiceManager.getClass();
+                        indentingPrintWriter.println("Current BleAdvertiserServiceManager state:");
+                        indentingPrintWriter.increaseIndent();
+                        indentingPrintWriter.println("mBound=" + bleAdvertiserServiceManager.mBound);
+                        indentingPrintWriter.decreaseIndent();
+                    }
+                    if (this.mMcfManager != null) {
+                        indentingPrintWriter.println();
+                        McfManager mcfManager = this.mMcfManager;
+                        mcfManager.getClass();
+                        indentingPrintWriter.println("Current McfManager state:");
+                        indentingPrintWriter.increaseIndent();
+                        StringBuilder sb = new StringBuilder("isBleAvailable=");
+                        McfBleAdapter mcfBleAdapter = mcfManager.mMcfBleAdapter;
+                        if (mcfBleAdapter != null) {
+                            z = mcfBleAdapter.isNetworkEnabled(1);
+                        } else {
+                            BluetoothAdapter defaultAdapter = BluetoothAdapter.getDefaultAdapter();
+                            if (defaultAdapter == null || !defaultAdapter.semIsBleEnabled()) {
+                                z = false;
+                            }
+                        }
+                        StringBuilder m8 = DesktopModeService$$ExternalSyntheticOutline0.m(sb, z, indentingPrintWriter, "mBleScannerState=");
+                        m8.append(mcfManager.mBleScannerState);
+                        indentingPrintWriter.println(m8.toString());
+                        indentingPrintWriter.println("mBleStartScanReason=" + McfManager.bleStartScanReasonToString(mcfManager.mBleStartScanReason));
+                        indentingPrintWriter.println("mBleAdvertiserServiceTimeout=" + mcfManager.mBleAdvertiserServiceTimeout);
+                        indentingPrintWriter.println("mWakeLockTimeout=" + mcfManager.mWakeLockTimeout);
+                        indentingPrintWriter.println("mLastBleScanFailedErrorCode=" + mcfManager.mLastBleScanFailedErrorCode);
+                        if (DesktopModeFeature.DEBUG) {
+                            indentingPrintWriter.println("mLastBleScanResult=" + mcfManager.mLastBleScanResult);
+                        }
+                        indentingPrintWriter.decreaseIndent();
+                    }
+                }
+                indentingPrintWriter.decreaseIndent();
+                return;
+            }
+            StringBuilder sb2 = new StringBuilder("mLastDockControlLibMsgState=");
+            StringBuilder sb3 = new StringBuilder();
+            int intValue = ((Integer) ((ArrayMap) anonymousClass3.this$0).keyAt(i2)).intValue();
+            switch (intValue) {
+                case 100:
+                    str = "MSG_TYPE_REQUEST";
+                    break;
+                case 101:
+                    str = "MSG_TYPE_RESPONSE";
+                    break;
+                case 102:
+                    str = "MSG_TYPE_ERROR";
+                    break;
+                case 103:
+                    str = "MSG_TYPE_VERSION";
+                    break;
+                case 104:
+                    str = "MSG_TYPE_EXTRA";
+                    break;
+                default:
+                    str = VibrationParam$1$$ExternalSyntheticOutline0.m(intValue, "Unknown=");
+                    break;
+            }
+            sb3.append(str);
+            sb3.append(", ");
+            sb3.append((String) ((ArrayMap) anonymousClass3.this$0).valueAt(i2));
+            sb2.append(sb3.toString());
+            indentingPrintWriter.println(sb2.toString());
+            i2++;
+        }
+    }
+
+    public final void finishWelcomeActivity() {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]DesktopModeService", "finishWelcomeActivity()");
+        }
+        this.mUiManager.finishActivity(301);
+    }
+
+    public final Bundle getDesktopModeKillPolicy() {
+        Set set = DesktopModeKillPolicyManager.KEEP_POLICY_PACKAGES;
+        Bundle m142m = AccountManagerService$$ExternalSyntheticOutline0.m142m("name", "DeX");
+        m142m.putSerializable("kill_packages", (Serializable) DesktopModeKillPolicyManager.KILL_POLICY_PACKAGES);
+        m142m.putSerializable("keep_packages", (Serializable) DesktopModeKillPolicyManager.KEEP_POLICY_PACKAGES);
+        m142m.putBoolean("skip_sdk_version_check", true);
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS_POLICY]DesktopModeKillPolicyManager", "getDesktopModeKillPolicy(), args=" + m142m);
+        }
+        return m142m;
+    }
+
+    public final SemDesktopModeState getDesktopModeState() {
+        return ((StateManager) this.mStateManager).getState().mDesktopModeState;
+    }
+
+    public final void initializeStates() {
+        if (!isUserSetupComplete()) {
+            if (this.mUserSetupCompleteObserver == null) {
+                this.mUserSetupCompleteObserver = new AnonymousClass2(this, 1);
+            }
+            this.mResolver.registerContentObserver(Settings.Secure.getUriFor("user_setup_complete"), false, this.mUserSetupCompleteObserver, this.mCurrentUserId);
+        } else if (this.mIsBootComplete) {
+            StateManager stateManager = (StateManager) this.mStateManager;
+            stateManager.getClass();
+            if (DesktopModeFeature.DEBUG) {
+                Log.d("[DMS]StateManager", "notifyBootCompleted()");
+            }
+            synchronized (stateManager.mLock) {
+                stateManager.mHandler.post(new StateManager$$ExternalSyntheticLambda2(stateManager));
+            }
+        }
     }
 
     public void injectServices(ActivityManagerService activityManagerService, ActivityTaskManagerService activityTaskManagerService, ActivityTaskManagerInternal activityTaskManagerInternal, BlockerManager blockerManager, EmergencyModeBlocker emergencyModeBlocker, UiManager uiManager, SettingsHelper settingsHelper, HardwareManager hardwareManager, TouchpadManager touchpadManager, CoverStateManager coverStateManager, MultiResolutionManager multiResolutionManager, DockManager dockManager, PackageStateManager packageStateManager, StatusBarManager statusBarManager, BootInitBlocker bootInitBlocker, DisplayPortStateManager displayPortStateManager, WirelessDexManager wirelessDexManager, BleAdvertiserServiceManager bleAdvertiserServiceManager, DualModeChanger dualModeChanger, StandaloneModeChanger standaloneModeChanger, McfManager mcfManager, DexManager dexManager) {
         this.mActivityManagerService = activityManagerService;
-        this.mActivityTaskManagerService = activityTaskManagerService;
         this.mActivityTaskManagerInternal = activityTaskManagerInternal;
         this.mBlockerManager = blockerManager;
         this.mEmergencyModeBlocker = emergencyModeBlocker;
@@ -932,8 +1670,13 @@ public class DesktopModeService extends IDesktopMode.Stub {
         }
         this.mModeChanger = dualModeChanger2;
         if (bootInitBlocker != null) {
-            this.mBootInitBlocker = bootInitBlocker;
-            bootInitBlocker.register();
+            if (DesktopModeFeature.DEBUG) {
+                Log.d("[DMS]BootInitBlocker", "registerBlocker");
+            }
+            bootInitBlocker.mDesktopModeManager.registerBlocker(bootInitBlocker.mBlocker);
+            StateManager stateManager = (StateManager) bootInitBlocker.mStateManager;
+            stateManager.notifyBootInitBlockerRegistered(true);
+            stateManager.registerListener(bootInitBlocker.new AnonymousClass1());
         }
         this.mDisplayPortStateManager = displayPortStateManager;
         this.mWirelessDexManager = wirelessDexManager;
@@ -942,379 +1685,283 @@ public class DesktopModeService extends IDesktopMode.Stub {
         this.mDexManager = dexManager;
     }
 
-    public final void initializeStates() {
-        if (!isUserSetupComplete()) {
-            if (this.mUserSetupCompleteObserver == null) {
-                this.mUserSetupCompleteObserver = new ContentObserver(null) { // from class: com.android.server.desktopmode.DesktopModeService.5
-                    @Override // android.database.ContentObserver
-                    public void onChange(boolean z) {
-                        super.onChange(z);
-                        DesktopModeService.this.initializeStates();
-                        DesktopModeService.this.mResolver.unregisterContentObserver(this);
-                        DesktopModeService.this.mUserSetupCompleteObserver = null;
-                    }
-                };
-            }
-            this.mResolver.registerContentObserver(Settings.Secure.getUriFor("user_setup_complete"), false, this.mUserSetupCompleteObserver, this.mCurrentUserId);
-        } else if (this.mIsBootComplete) {
-            this.mStateManager.notifyBootCompleted();
-        }
+    public final boolean isAllowed() {
+        return this.mPreconditionChecker.isAllowed(((StateManager) this.mStateManager).getState(), false);
     }
 
-    public final void onUserStarting(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "onStartUser(), userId=" + i);
-        }
+    public final boolean isDesktopDockConnected() {
+        return ((StateManager) this.mStateManager).getState().mDockState.isDexStation();
     }
 
-    public final void onUserUnlocking(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "onUnlockUser(), userId=" + i + ", CurrentUser=" + ActivityManager.getCurrentUser());
-        }
-        this.mIsBootComplete = true;
-        if (i == ActivityManager.getCurrentUser()) {
-            onUserChanged(i);
-        }
-    }
-
-    public final void onUserSwitching(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "onSwitchUser(), userId=" + i);
-        }
-        onUserChanged(i);
-    }
-
-    public final void onUserStopping(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "onStopUser(), userId=" + i + ", CurrentUser=" + ActivityManager.getCurrentUser());
-        }
-    }
-
-    public final void onUserStopped(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "onCleanupUser(), userId=" + i);
-        }
-    }
-
-    public void setCurrentUserId(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setCurrentUserId(), userId=" + i);
-        }
-        this.mCurrentUserId = i;
-        this.mStateManager.setCurrentUserId(i);
-    }
-
-    public final void onUserChanged(int i) {
-        if (i == this.mCurrentUserId) {
-            Log.d(TAG, "onUserChanged(), userId and mCurrentUserId are same(" + i + ")");
-            return;
-        }
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "onUserChanged(), userId=" + i);
-        }
-        setCurrentUserId(i);
-        initializeStates();
-    }
-
-    public boolean isDesktopDockConnected() {
-        return this.mStateManager.getState().getDockState().isDexStation();
-    }
-
-    public static boolean isDexPadConnected(State state) {
-        return state.getDockState().isDexPad();
-    }
-
-    public boolean isDeviceConnected() {
-        return isDesktopDockConnectedOrForced(this.mStateManager.getState());
-    }
-
-    public static boolean isDesktopDockConnectedOrForced(State state) {
-        return state.getDockState().isDesktopModeSupported() || state.isDexOnPcOrWirelessDexConnected();
-    }
-
-    public boolean isDesktopMode() {
+    public final boolean isDesktopMode() {
         return this.mContext.getResources().getConfiguration().semDesktopModeEnabled == 1;
     }
 
-    public SemDesktopModeState getDesktopModeState() {
-        return this.mStateManager.getState().getDesktopModeState();
+    public final boolean isDeviceConnected() {
+        StateManager.InternalState state = ((StateManager) this.mStateManager).getState();
+        return state.mDockState.mDesktopModeSupported || state.isDexOnPcOrWirelessDexConnected();
     }
 
-    public final boolean isDesktopModeAvailableEx(boolean z, boolean z2) {
-        return this.mPreconditionChecker.isDesktopModeAvailableEx(z, z2);
-    }
-
-    public boolean isAllowed() {
-        return this.mPreconditionChecker.isAllowed(this.mStateManager.getState(), false, false);
-    }
-
-    public final boolean isAllowedInternal(State state, boolean z, boolean z2) {
-        if (this.mPreconditionChecker.isAllowed(state, z, z2)) {
+    public final boolean isSystemReady() {
+        if (this.mIsBootComplete && isUserSetupComplete() && !FactoryTest.isFactoryBinary() && this.mCurrentUserId != -10000) {
+            PackageManager packageManager = this.mContext.getPackageManager();
+            Intent intent = new Intent("android.intent.action.MAIN");
+            intent.addCategory("android.intent.category.HOME");
+            intent.addCategory("android.intent.category.DEFAULT");
+            Iterator<ResolveInfo> it = packageManager.queryIntentActivities(intent, EndpointMonitorConst.FLAG_TRACING_NETWORK_EVENT_ABNORMAL_PKT).iterator();
+            while (it.hasNext()) {
+                if ("com.sec.android.app.SecSetupWizard".equals(it.next().activityInfo.packageName)) {
+                    Log.i("[DMS]DesktopModeService", "isFotaSuwCompleted()=false");
+                }
+            }
             return true;
         }
-        if (!DesktopModeFeature.SUPPORT_WIRELESS_DEX || !state.isWirelessDexConnected()) {
-            return false;
-        }
-        this.mWirelessDexManager.disconnect();
+        Log.i("[DMS]DesktopModeService", "isSystemReady(), mIsBootComplete=" + this.mIsBootComplete + ", isFactoryBinary=" + FactoryTest.isFactoryBinary() + ", mCurrentUserId=" + this.mCurrentUserId);
         return false;
-    }
-
-    public final boolean isDesktopModeEnablingOrEnabled() {
-        return isDesktopModeEnablingOrEnabled(this.mStateManager.getState(), -1);
-    }
-
-    public static boolean isDesktopModeEnablingOrEnabled(State state, int i) {
-        int i2;
-        SemDesktopModeState desktopModeState = state.getDesktopModeState();
-        return (i == -1 || desktopModeState.getDisplayType() == i) && ((i2 = desktopModeState.enabled) == 3 || i2 == 4);
-    }
-
-    public final boolean isDesktopModeForPreparing() {
-        return isDesktopModeForPreparing(this.mStateManager.getState(), -1);
-    }
-
-    public final boolean isDesktopModeForPreparing(int i) {
-        return isDesktopModeForPreparing(this.mStateManager.getState(), i);
-    }
-
-    public static boolean isDesktopModeForPreparing(State state, int i) {
-        SemDesktopModeState desktopModeState = state.getDesktopModeState();
-        return (i == -1 || desktopModeState.getDisplayType() == i) && (desktopModeState.enabled == 4 || desktopModeState.compareTo(3, 30) || desktopModeState.compareTo(1, 20));
-    }
-
-    public final boolean isForcedInternalScreenModeEnabled() {
-        return this.mStateManager.getState().isForcedInternalScreenModeEnabled();
-    }
-
-    public final boolean isModeChangePending() {
-        return isModeChangePending(this.mStateManager.getState(), -1);
-    }
-
-    public final boolean isModeChangePending(int i) {
-        return isModeChangePending(this.mStateManager.getState(), i);
-    }
-
-    public static boolean isModeChangePending(State state, int i) {
-        SemDesktopModeState desktopModeState = state.getDesktopModeState();
-        return (i == -1 || desktopModeState.getDisplayType() == i) && desktopModeState.state == 30;
-    }
-
-    public boolean isExternalDisplayConnected() {
-        return this.mStateManager.getState().isExternalDisplayConnected();
-    }
-
-    public static boolean isExternalDisplayConnectedOrForced(State state) {
-        return state.isExternalDisplayConnected() || state.isForcedInternalScreenModeEnabled();
-    }
-
-    public static boolean isConnectionTypeChanged(State state) {
-        DisplayInfo connectedDisplay = state.getConnectedDisplay();
-        DisplayInfo previousConnectedDisplay = state.getPreviousConnectedDisplay();
-        return (connectedDisplay == null || previousConnectedDisplay == null || connectedDisplay.getType() == previousConnectedDisplay.getType()) ? false : true;
-    }
-
-    public boolean registerDesktopModeListener(IDesktopModeListener iDesktopModeListener, String str) {
-        return this.mSemDesktopModeStateNotifier.registerDesktopModeListener(iDesktopModeListener, str);
-    }
-
-    public boolean registerBlocker(IDesktopModeBlocker iDesktopModeBlocker, String str) {
-        if (this.mInjector.binderGetCallingUid() != 1000) {
-            throw new SecurityException("Only the system may call registerBlocker()");
-        }
-        return this.mBlockerManager.registerBlocker(iDesktopModeBlocker, str);
-    }
-
-    public boolean unregisterBlocker(IDesktopModeBlocker iDesktopModeBlocker) {
-        if (this.mInjector.binderGetCallingUid() != 1000) {
-            throw new SecurityException("Only the system may call unregisterBlocker()");
-        }
-        return this.mBlockerManager.unregisterBlocker(iDesktopModeBlocker);
-    }
-
-    public boolean unregisterDesktopModeListener(IDesktopModeListener iDesktopModeListener) {
-        return this.mSemDesktopModeStateNotifier.unregisterDesktopModeListener(iDesktopModeListener);
-    }
-
-    public void onConfigurationChanged(Configuration configuration) {
-        StandaloneModeChanger standaloneModeChanger;
-        if (configuration == null || (standaloneModeChanger = this.mStandaloneModeChanger) == null) {
-            return;
-        }
-        standaloneModeChanger.onConfigurationChanged(new Configuration(configuration));
-    }
-
-    public final void onDesktopDisplayConfigured(boolean z) {
-        this.mDualModeChanger.onDesktopDisplayConfigured(z);
-    }
-
-    public final int getCurrentUiMode() {
-        return this.mStandaloneModeChanger.getCurrentUiMode();
-    }
-
-    public final boolean isLockTaskModeEnabledAndSecured() {
-        ModeChanger modeChanger = this.mModeChanger;
-        return modeChanger != null && modeChanger.isLockTaskModeEnabledAndSecured();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$scheduleUpdateDesktopMode$0(boolean z) {
-        updateDesktopMode(this.mStateManager.getState(), z, false);
-    }
-
-    public void scheduleUpdateDesktopMode(final boolean z) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                DesktopModeService.this.lambda$scheduleUpdateDesktopMode$0(z);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$scheduleUpdateDesktopMode$1(boolean z, boolean z2) {
-        updateDesktopMode(this.mStateManager.getState(), z, z2);
-    }
-
-    public void scheduleUpdateDesktopMode(final boolean z, final boolean z2) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticLambda3
-            @Override // java.lang.Runnable
-            public final void run() {
-                DesktopModeService.this.lambda$scheduleUpdateDesktopMode$1(z, z2);
-            }
-        });
-    }
-
-    public final void updateDesktopMode(State state, boolean z, boolean z2) {
-        Log.saveState(state, z, this.mPreconditionChecker.updateDesktopMode(state, z, z2));
-    }
-
-    public final void showInitialConnectionDialog(int i, final String str, final boolean z) {
-        showDialog(i, new UiManager.InternalUiCallback() { // from class: com.android.server.desktopmode.DesktopModeService.6
-            @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
-            public void onClickButtonPositive() {
-                DesktopModeService.this.setUserRequest(1);
-                if (!z) {
-                    DesktopModeSettings.setSettings(DesktopModeService.this.mResolver, "welcome_completed", true);
-                }
-                DesktopModeService.this.scheduleUpdateDesktopMode(true);
-            }
-
-            @Override // com.android.server.desktopmode.UiManager.InternalUiCallback
-            public void onDismiss() {
-                DesktopModeSettings.setSettings(DesktopModeService.this.mResolver, str, true);
-            }
-        });
-    }
-
-    public final void handleHdmiAutoEnter(boolean z) {
-        if (getCurrentUserId() == 0 && isSystemReady()) {
-            if (z) {
-                String settings = DesktopModeSettings.getSettings(this.mResolver, "hdmi_auto_enter", (String) null);
-                boolean parseBoolean = Boolean.parseBoolean(settings);
-                if (!DesktopModeFeature.SUPPORT_NEW_DEX && settings == null && !DesktopModeSettings.getSettings(this.mResolver, "hdmi_initial_connection_dialog_shown", false)) {
-                    showInitialConnectionDialog(5, "hdmi_initial_connection_dialog_shown", false);
-                    return;
-                } else {
-                    if (parseBoolean) {
-                        setUserRequest(1);
-                        scheduleUpdateDesktopMode(true);
-                        return;
-                    }
-                    return;
-                }
-            }
-            dismissDialog(5);
-            finishWelcomeActivity();
-        }
-    }
-
-    public final void handlePogoAutoEnter(boolean z) {
-        if (getCurrentUserId() == 0 && isSystemReady()) {
-            if (z) {
-                String settings = DesktopModeSettings.getSettings(this.mResolver, "pogo_auto_enter", (String) null);
-                boolean parseBoolean = Boolean.parseBoolean(settings);
-                boolean equals = "new".equals(DesktopModeSettings.getSettings(this.mResolver, "dex_mode", DesktopModeSettings.DEX_MODE_DEFAULT_VALUE));
-                boolean settings2 = DesktopModeSettings.getSettings(this.mResolver, "welcome_completed", false);
-                if (parseBoolean) {
-                    if (DesktopModeFeature.SUPPORT_NEW_DEX && equals) {
-                        updateNewDexMode(1);
-                        return;
-                    } else if (settings2) {
-                        setUserRequest(1);
-                        scheduleUpdateDesktopMode(true);
-                        return;
-                    } else {
-                        startWelcomeActivity();
-                        return;
-                    }
-                }
-                if (DesktopModeFeature.SUPPORT_NEW_DEX || settings != null || DesktopModeSettings.getSettings(this.mResolver, "pogo_initial_connection_dialog_shown", false) || !this.mAllowPogoInitialDialog || settings2) {
-                    return;
-                }
-                showInitialConnectionDialog(4, "pogo_initial_connection_dialog_shown", true);
-                return;
-            }
-            dismissDialog(4);
-            finishWelcomeActivity();
-        }
-    }
-
-    public final void handleWirelessDexEnter(boolean z) {
-        if (getCurrentUserId() == 0 && isSystemReady()) {
-            if (!z) {
-                startWelcomeActivity();
-            } else {
-                scheduleUpdateDesktopMode(true);
-            }
-        }
     }
 
     public final boolean isUserSetupComplete() {
         boolean z = Settings.Secure.getIntForUser(this.mResolver, "user_setup_complete", 0, this.mCurrentUserId) != 0;
         if (!z && DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "isUserSetupComplete()=false");
+            Log.d("[DMS]DesktopModeService", "isUserSetupComplete()=false");
         }
         return z;
     }
 
-    public final boolean isFotaSuwCompleted() {
-        PackageManager packageManager = this.mContext.getPackageManager();
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.HOME");
-        intent.addCategory("android.intent.category.DEFAULT");
-        Iterator<ResolveInfo> it = packageManager.queryIntentActivities(intent, 65536).iterator();
-        while (it.hasNext()) {
-            if ("com.sec.android.app.SecSetupWizard".equals(it.next().activityInfo.packageName)) {
-                Log.i(TAG, "isFotaSuwCompleted()=false");
-                return false;
+    public final void onSecuredAppLaunched(final int i, final String str) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.i("[DMS]DesktopModeService", "onSecuredAppLaunched, taskId=" + i + ", packageName= " + str);
+        }
+        if (((StateManager) this.mStateManager).getState().isDexOnPcConnected()) {
+            final DualModeChanger dualModeChanger = this.mDualModeChanger;
+            dualModeChanger.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DualModeChanger$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    DualModeChanger dualModeChanger2 = DualModeChanger.this;
+                    int i2 = i;
+                    String str2 = str;
+                    int i3 = ((StateManager) dualModeChanger2.mStateManager).getState().mDesktopDisplayId;
+                    if (i3 != 0) {
+                        dualModeChanger2.mUiManager.showDialog(i3, 8, null);
+                    }
+                    dualModeChanger2.mContext.sendBroadcastAsUser(new Intent("com.samsung.android.desktopmode.action.SECURED_APP_LAUNCHED").setPackage("com.sec.android.app.dexonpc").putExtra("com.samsung.android.desktopmode.extra.TASK_ID", i2).putExtra("com.samsung.android.desktopmode.extra.PACKAGE_NAME", str2), UserHandle.CURRENT);
+                }
+            });
+        }
+    }
+
+    public final void onSecuredAppLaunched(IBinder iBinder, String str) {
+        onSecuredAppLaunched(this.mActivityManagerService.getTaskForActivity(iBinder, false), str);
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+        if (!DesktopModeFeature.DEBUG) {
+            super.onShellCommand(fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+            return;
+        }
+        this.mInjector.getClass();
+        int callingUid = Binder.getCallingUid();
+        if (callingUid != 2000 && callingUid != 0) {
+            throw new SecurityException("Caller must be shell");
+        }
+        ContentResolver contentResolver = this.mResolver;
+        MultiResolutionManager multiResolutionManager = this.mMultiResolutionManager;
+        UiManager uiManager = this.mUiManager;
+        HardwareManager hardwareManager = this.mHwManager;
+        Shell shell = new Shell();
+        shell.mResolver = contentResolver;
+        shell.mMultiResolutionManager = multiResolutionManager;
+        shell.mUiManager = uiManager;
+        shell.mHwManager = hardwareManager;
+        shell.exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+    }
+
+    public final void onUserChanged(int i) {
+        if (i == this.mCurrentUserId) {
+            Log.d("[DMS]DesktopModeService", "onUserChanged(), userId and mCurrentUserId are same(" + i + ")");
+            return;
+        }
+        boolean z = DesktopModeFeature.DEBUG;
+        if (z) {
+            DesktopModeService$$ExternalSyntheticOutline0.m(i, "onUserChanged(), userId=", "[DMS]DesktopModeService");
+        }
+        if (z) {
+            DesktopModeService$$ExternalSyntheticOutline0.m(i, "setCurrentUserId(), userId=", "[DMS]DesktopModeService");
+        }
+        this.mCurrentUserId = i;
+        StateManager stateManager = (StateManager) this.mStateManager;
+        stateManager.getClass();
+        if (z) {
+            Log.d("[DMS]StateManager", "setCurrentUserId(userId=" + i + ")");
+        }
+        synchronized (stateManager.mLock) {
+            try {
+                if (stateManager.mInternalState.mCurrentUserId != i) {
+                    stateManager.mInternalState.mCurrentUserId = i;
+                    stateManager.mHandler.post(new StateManager$$ExternalSyntheticLambda0(stateManager, stateManager.copyInternalStateLocked(stateManager.mInternalState), 8));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        initializeStates();
+    }
+
+    public final boolean registerBlocker(IDesktopModeBlocker iDesktopModeBlocker, String str) {
+        this.mInjector.getClass();
+        if (Binder.getCallingUid() != 1000) {
+            throw new SecurityException("Only the system may call registerBlocker()");
+        }
+        BlockerManager blockerManager = this.mBlockerManager;
+        synchronized (blockerManager.mBlockers) {
+            try {
+                IBinder asBinder = iDesktopModeBlocker.asBinder();
+                try {
+                    blockerManager.mInjector.getClass();
+                    int callingPid = Binder.getCallingPid();
+                    blockerManager.mInjector.getClass();
+                    BlockerManager.DesktopModeBlockerInfo desktopModeBlockerInfo = blockerManager.new DesktopModeBlockerInfo(iDesktopModeBlocker, str, callingPid, Binder.getCallingUid());
+                    asBinder.linkToDeath(desktopModeBlockerInfo, 0);
+                    ((ArrayMap) blockerManager.mBlockers).put(asBinder, desktopModeBlockerInfo);
+                    ((StateManager) blockerManager.mStateManager).notifyScheduleUpdateDesktopMode(false);
+                } catch (RemoteException unused) {
+                    return false;
+                }
+            } finally {
             }
         }
         return true;
     }
 
-    public final boolean isSystemReady() {
-        if (this.mIsBootComplete && isUserSetupComplete() && !FactoryTest.isFactoryBinary() && this.mCurrentUserId != -10000 && isFotaSuwCompleted()) {
-            return true;
+    public final void registerDesktopLauncher(IDesktopModeLauncher iDesktopModeLauncher) {
+        this.mInjector.getClass();
+        int callingUid = Binder.getCallingUid();
+        if (this.mCurrentUserId != 0) {
+            callingUid = UserHandle.getAppId(callingUid);
         }
-        Log.i(TAG, "isSystemReady(), mIsBootComplete=" + this.mIsBootComplete + ", isFactoryBinary=" + FactoryTest.isFactoryBinary() + ", mCurrentUserId=" + this.mCurrentUserId);
-        return false;
+        if (callingUid != 0 && callingUid != 1000) {
+            Log.d("[DMS]DesktopModeService", "registerDesktopLauncher() is blocked!!");
+            return;
+        }
+        synchronized (this.mLock) {
+            this.mLauncherInterface = iDesktopModeLauncher;
+        }
     }
 
-    public final void showDialog(int i, UiManager.InternalUiCallback internalUiCallback) {
-        this.mUiManager.showDialog(i, internalUiCallback);
+    public final boolean registerDesktopModeListener(IDesktopModeListener iDesktopModeListener, String str) {
+        SemDesktopModeStateNotifier semDesktopModeStateNotifier = this.mSemDesktopModeStateNotifier;
+        synchronized (semDesktopModeStateNotifier.mInnerLock) {
+            try {
+                IBinder asBinder = iDesktopModeListener.asBinder();
+                try {
+                    if (str.length() > 100) {
+                        str = str.substring(0, 100);
+                    }
+                    semDesktopModeStateNotifier.mInjector.getClass();
+                    int callingPid = Binder.getCallingPid();
+                    semDesktopModeStateNotifier.mInjector.getClass();
+                    SemDesktopModeStateNotifier.ListenerInfo listenerInfo = semDesktopModeStateNotifier.new ListenerInfo(iDesktopModeListener, str, callingPid, Binder.getCallingUid());
+                    SemDesktopModeStateNotifier.enforceRegisterLimitLocked(listenerInfo, semDesktopModeStateNotifier.mListeners);
+                    asBinder.linkToDeath(listenerInfo, 0);
+                    ((ArrayMap) semDesktopModeStateNotifier.mListeners).put(asBinder, listenerInfo);
+                } catch (RemoteException e) {
+                    Log.e("[DMS]SemDesktopModeStateNotifier", "Failed to register DesktopModeListener", e);
+                    return false;
+                }
+            } finally {
+            }
+        }
+        return true;
     }
 
-    public final void dismissDialog(int... iArr) {
-        for (int i : iArr) {
-            this.mUiManager.dismissDialog(i);
+    public final void scheduleUpdateDesktopMode(final boolean z) {
+        this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticLambda3
+            @Override // java.lang.Runnable
+            public final void run() {
+                DesktopModeService desktopModeService = DesktopModeService.this;
+                desktopModeService.updateDesktopMode(((StateManager) desktopModeService.mStateManager).getState(), z, false);
+            }
+        });
+    }
+
+    public final Bundle sendMessage(Bundle bundle) {
+        if (this.mContext.checkCallingOrSelfPermission("com.samsung.android.desktopmode.permission.BIND_DESKTOP_MODE_UI_SERVICE") == 0) {
+            if (bundle.getInt("command") == 1000) {
+                final StateManager.InternalState state = ((StateManager) this.mStateManager).getState();
+                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticLambda1
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        DesktopModeService desktopModeService = DesktopModeService.this;
+                        StateManager.InternalState internalState = state;
+                        desktopModeService.getClass();
+                        int i = internalState.mDesktopDisplayId;
+                        if (i != 0) {
+                            DualModeChanger dualModeChanger = desktopModeService.mDualModeChanger;
+                            dualModeChanger.mTopTaskId = dualModeChanger.mActivityTaskManagerInternal.getForegroundTaskId(i);
+                            dualModeChanger.mTopTaskIdValid = true;
+                        }
+                        desktopModeService.mActivityTaskManagerInternal.minimizeAllTasks(i, false);
+                    }
+                });
+                return null;
+            }
+        } else if (this.mContext.checkCallingOrSelfPermission("android.permission.STATUS_BAR_SERVICE") == 0) {
+            synchronized (this.mLock) {
+                try {
+                    IDesktopModeLauncher iDesktopModeLauncher = this.mLauncherInterface;
+                    if (iDesktopModeLauncher != null) {
+                        return iDesktopModeLauncher.sendMessage(bundle);
+                    }
+                    Log.w("[DMS]DesktopModeService", "sendMessage(), mLauncherInterface == null");
+                } catch (RemoteException e) {
+                    Log.e("[DMS]DesktopModeService", "sendMessage(), Failed to communicate with launcher. Starting again...", e);
+                    this.mHandler.post(new DesktopModeService$$ExternalSyntheticLambda2(0, this));
+                } finally {
+                }
+            }
+        }
+        return null;
+    }
+
+    public final void setUserRequest(int i) {
+        this.mUserRequest = i;
+        Log.i("[DMS]DesktopModeService", "userRequest=" + userRequestToString(this.mUserRequest));
+    }
+
+    public final void startConnectivityActivity(int i) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]DesktopModeService", "startConnectivityActivity()");
+        }
+        Intent flags = new Intent().setComponent(new ComponentName("com.sec.android.desktopmode.uiservice", "com.sec.android.desktopmode.uiservice.activity.connectivity.ConnectivityActivity")).setFlags(337641472);
+        Context context = this.mContext;
+        int i2 = this.mCurrentUserId;
+        ActivityOptions makeBasic = ActivityOptions.makeBasic();
+        makeBasic.setLaunchDisplayId(i);
+        context.startActivityAsUser(flags, makeBasic.toBundle(), UserHandle.of(i2));
+    }
+
+    public final void startHome(StateManager.InternalState internalState) {
+        DualModeChanger dualModeChanger;
+        int i;
+        SemDesktopModeState semDesktopModeState = internalState.mDesktopModeState;
+        if (semDesktopModeState.enabled == 4) {
+            if (semDesktopModeState.getDisplayType() == 101) {
+                this.mStandaloneModeChanger.startHome(internalState);
+            } else {
+                if (semDesktopModeState.getDisplayType() != 102 || (i = (dualModeChanger = this.mDualModeChanger).mDesktopDisplayId) == -1) {
+                    return;
+                }
+                dualModeChanger.startHome(internalState, i);
+            }
         }
     }
 
     public final void startWelcomeActivity() {
         if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "startWelcomeActivity()");
+            Log.d("[DMS]DesktopModeService", "startWelcomeActivity()");
         }
-        if (DesktopModeSettings.getSettings(this.mResolver, "skip_welcome_screen", false) || DesktopModeSettings.getSettings(this.mResolver, "welcome_shown", false)) {
+        if (DesktopModeSettings.getSettingsAsUser(this.mResolver, "skip_welcome_screen", false, DesktopModeSettings.sCurrentUserId) || DesktopModeSettings.getSettingsAsUser(this.mResolver, "welcome_shown", false, DesktopModeSettings.sCurrentUserId)) {
             DesktopModeSettings.setSettings(this.mResolver, "welcome_completed", true);
             return;
         }
@@ -1324,233 +1971,92 @@ public class DesktopModeService extends IDesktopMode.Stub {
         this.mUiManager.startActivity(0, 301, this.mWelcomeActivityListener);
     }
 
-    public final void finishWelcomeActivity() {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "finishWelcomeActivity()");
+    public final boolean unregisterBlocker(IDesktopModeBlocker iDesktopModeBlocker) {
+        boolean z;
+        this.mInjector.getClass();
+        if (Binder.getCallingUid() != 1000) {
+            throw new SecurityException("Only the system may call unregisterBlocker()");
         }
-        this.mUiManager.finishActivity(301);
-    }
-
-    public final void logDesktopModeChanged(Intent intent) {
-        int intExtra = intent.getIntExtra("com.samsung.android.desktopmode.extra.DESKTOP_MODE_STATE", -1);
-        int intExtra2 = intent.getIntExtra("com.samsung.android.desktopmode.extra.DESKTOP_MODE_SOURCE", -1);
-        String str = TAG;
-        Log.i(str, "EXTRA_DESKTOP_MODE_SOURCE=" + DesktopModeUiConstants.sourceToString(intExtra2));
-        if (!this.mStateManager.getState().isExternalDisplayConnected() || intExtra2 <= -1) {
-            return;
-        }
-        boolean z = intExtra == 1;
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(str, "logDesktopModeChanged(" + z + ")");
-        }
-        DesktopModeLogger.log(this.mContext, z ? "LMTD" : "LDTM", String.valueOf(intExtra2));
-    }
-
-    public final void setUserRequest(int i) {
-        this.mUserRequest = i;
-        Log.i(TAG, "userRequest=" + userRequestToString(this.mUserRequest));
-    }
-
-    public int getCurrentUserId() {
-        return this.mCurrentUserId;
-    }
-
-    public final boolean isConfigurationChangedFromDeX(Configuration configuration) {
-        boolean z = false;
-        if (configuration != null && this.mStandaloneModeChanger != null) {
-            SemDesktopModeState desktopModeState = this.mStateManager.getState().getDesktopModeState();
-            int configurationState = this.mStandaloneModeChanger.getConfigurationState(configuration);
-            if (desktopModeState.state == 30 && ((configurationState == 1 && desktopModeState.enabled == 3) || (configurationState == 0 && desktopModeState.enabled == 1))) {
-                z = true;
+        BlockerManager blockerManager = this.mBlockerManager;
+        synchronized (blockerManager.mBlockers) {
+            try {
+                BlockerManager.DesktopModeBlockerInfo desktopModeBlockerInfo = (BlockerManager.DesktopModeBlockerInfo) ((ArrayMap) blockerManager.mBlockers).remove(iDesktopModeBlocker.asBinder());
+                z = false;
+                if (desktopModeBlockerInfo != null) {
+                    desktopModeBlockerInfo.blocker.asBinder().unlinkToDeath(desktopModeBlockerInfo, 0);
+                    z = true;
+                    if (((ArrayMap) blockerManager.mBlockers).isEmpty()) {
+                        ((StateManager) blockerManager.mStateManager).notifyScheduleUpdateDesktopMode(true);
+                    }
+                }
+            } finally {
             }
-            Log.i(TAG, "isConfigurationChangedFromDeX()=" + z + ", config=" + configuration + ", desktopModeState=" + desktopModeState);
         }
         return z;
     }
 
-    public final void startHome() {
-        startHome(this.mStateManager.getState());
-    }
-
-    public final void startHome(State state) {
-        SemDesktopModeState desktopModeState = state.getDesktopModeState();
-        if (desktopModeState.enabled == 4) {
-            if (desktopModeState.getDisplayType() == 101) {
-                this.mStandaloneModeChanger.startHome(state);
-            } else if (desktopModeState.getDisplayType() == 102) {
-                this.mDualModeChanger.startHome(state);
-            }
-        }
-    }
-
-    public Bundle getDesktopModeKillPolicy() {
-        return DesktopModeKillPolicyManager.getDesktopModeKillPolicy();
-    }
-
-    public void registerDesktopLauncher(IDesktopModeLauncher iDesktopModeLauncher) {
-        int binderGetCallingUid = this.mInjector.binderGetCallingUid();
-        if (this.mCurrentUserId != 0) {
-            binderGetCallingUid = UserHandle.getAppId(binderGetCallingUid);
-        }
-        if (binderGetCallingUid == 0 || binderGetCallingUid == 1000) {
-            synchronized (this.mLock) {
-                this.mLauncherInterface = iDesktopModeLauncher;
-            }
-            return;
-        }
-        Log.d(TAG, "registerDesktopLauncher() is blocked!!");
-    }
-
-    public Bundle sendMessage(Bundle bundle) {
-        if (this.mContext.checkCallingOrSelfPermission("com.samsung.android.desktopmode.permission.BIND_DESKTOP_MODE_UI_SERVICE") == 0) {
-            if (bundle.getInt(KnoxVpnFirewallHelper.CMD) == 1000) {
-                final State state = this.mStateManager.getState();
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticLambda1
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        DesktopModeService.this.lambda$sendMessage$2(state);
-                    }
-                });
-                return null;
-            }
-        } else if (this.mContext.checkCallingOrSelfPermission("android.permission.STATUS_BAR_SERVICE") == 0) {
-            synchronized (this.mLock) {
-                IDesktopModeLauncher iDesktopModeLauncher = this.mLauncherInterface;
-                if (iDesktopModeLauncher != null) {
-                    try {
-                        return iDesktopModeLauncher.sendMessage(bundle);
-                    } catch (RemoteException e) {
-                        Log.e(TAG, "sendMessage(), Failed to communicate with launcher. Starting again...", e);
-                        this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticLambda2
-                            @Override // java.lang.Runnable
-                            public final void run() {
-                                DesktopModeService.this.lambda$sendMessage$3();
-                            }
-                        });
-                    }
-                } else {
-                    Log.w(TAG, "sendMessage(), mLauncherInterface == null");
-                }
-            }
-        }
-        return null;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$sendMessage$2(State state) {
-        minimizeAllTasks(state.getDesktopDisplayId());
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$sendMessage$3() {
-        startHome(this.mStateManager.getState());
-    }
-
-    public final void minimizeAllTasks(int i) {
-        if (i != 0) {
-            this.mDualModeChanger.saveTopTaskId(i);
-        }
-        this.mActivityTaskManagerInternal.minimizeAllTasks(i, false);
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
-        if (DesktopModeFeature.DEBUG) {
-            int binderGetCallingUid = this.mInjector.binderGetCallingUid();
-            if (binderGetCallingUid != 2000 && binderGetCallingUid != 0) {
-                throw new SecurityException("Caller must be shell");
-            }
-            new Shell(this.mResolver, this.mMultiResolutionManager, this.mUiManager, this.mHwManager).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
-            return;
-        }
-        super.onShellCommand(fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
-    }
-
-    public static void startActivityInDisplayAsUser(Context context, Intent intent, int i, int i2) {
-        ActivityOptions makeBasic = ActivityOptions.makeBasic();
-        makeBasic.setLaunchDisplayId(i);
-        context.startActivityAsUser(intent, makeBasic.toBundle(), UserHandle.of(i2));
-    }
-
-    public final int getTouchpadSupportedFeatures() {
-        int i;
-        State state = this.mStateManager.getState();
-        if ((this.mModeChanger instanceof DualModeChanger) && this.mTouchpadManager.isTouchpadFeatureAvailable(state)) {
-            i = this.mTouchpadManager.isSPenFeatureAvailable(state) ? 3 : 1;
-        } else {
-            i = 0;
-        }
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "getTouchpadSupportedFeatures(), supportedFeatures=" + i);
-        }
-        return i;
-    }
-
-    public final int getModeToModeChangeType() {
-        State state = this.mStateManager.getState();
-        if (state.getDesktopModeState().getDisplayType() == 101) {
-            return this.mStandaloneModeChanger.getModeToModeChangeType();
-        }
-        if (state.getDesktopModeState().getDisplayType() == 102) {
-            return this.mDualModeChanger.getModeToModeChangeType();
-        }
-        return -1;
-    }
-
-    public final boolean isBlockerRegistered(State state, boolean z) {
-        BlockerManager.DesktopModeBlockerInfo blocker = this.mBlockerManager.getBlocker(state);
-        if (blocker == null) {
-            return true;
-        }
-        Log.i(TAG, "isAllowed(showToast=" + z + "), blocked by " + blocker);
-        if (z) {
+    public final boolean unregisterDesktopModeListener(IDesktopModeListener iDesktopModeListener) {
+        SemDesktopModeStateNotifier semDesktopModeStateNotifier = this.mSemDesktopModeStateNotifier;
+        synchronized (semDesktopModeStateNotifier.mInnerLock) {
             try {
-                ToastManager.showToast(this.mContext, blocker.blocker.onBlocked());
-                Log.saveState(state, blocker);
-            } catch (RemoteException e) {
-                Log.e(TAG, "Failed to get blocking message from blocker " + blocker, e);
+                SemDesktopModeStateNotifier.ListenerInfo listenerInfo = (SemDesktopModeStateNotifier.ListenerInfo) ((ArrayMap) semDesktopModeStateNotifier.mListeners).remove(iDesktopModeListener.asBinder());
+                if (listenerInfo == null) {
+                    return false;
+                }
+                listenerInfo.listener.asBinder().unlinkToDeath(listenerInfo, 0);
+                return true;
+            } finally {
             }
         }
-        if (!this.mIsBootInitBlockerRegistered) {
-            setUserRequest(0);
-        }
-        return false;
     }
 
-    public void onSecuredAppLaunched(IBinder iBinder, String str) {
-        onSecuredAppLaunched(this.mActivityManagerService.getTaskForActivity(iBinder, false), str);
-    }
-
-    public final void onSecuredAppLaunched(int i, String str) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.i(TAG, "onSecuredAppLaunched, taskId=" + i + ", packageName= " + str);
-        }
-        if (this.mStateManager.getState().isDexOnPcConnected()) {
-            this.mDualModeChanger.onSecuredAppLaunched(i, str);
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x007b, code lost:
+    
+        if (m398$$Nest$misAllowedInternal(r11, r17, r14 == 3 || r14 == 4) == false) goto L24;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void updateDesktopMode(com.android.server.desktopmode.StateManager.InternalState r17, boolean r18, boolean r19) {
+        /*
+            Method dump skipped, instructions count: 680
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.desktopmode.DesktopModeService.updateDesktopMode(com.android.server.desktopmode.StateManager$InternalState, boolean, boolean):void");
     }
 
     public final void updateNewDexMode(int i) {
         if (!DesktopModeFeature.SUPPORT_NEW_DEX) {
             if (DesktopModeFeature.DEBUG) {
-                Log.d(TAG, "updateNewDexMode Failed : New Dex Feature Not Supported");
+                Log.d("[DMS]DesktopModeService", "updateNewDexMode Failed : New Dex Feature Not Supported");
                 return;
             }
             return;
         }
-        if (this.mStateManager.getState().getCurrentUserId() != 0) {
+        if (((StateManager) this.mStateManager).getState().mCurrentUserId != 0) {
             Context context = this.mContext;
-            ToastManager.showToast(context, context.getString(R.string.lockscreen_glogin_password_hint));
+            ToastManager.showToast(context, context.getString(R.string.httpErrorLookup), 1);
             return;
         }
-        if (this.mEmergencyModeBlocker.shouldBlockDesktopMode()) {
-            Log.d(TAG, "New Dex Blocked, name = " + this.mEmergencyModeBlocker.toString());
-            ToastManager.showToast(this.mContext, this.mEmergencyModeBlocker.onBlocked());
+        EmergencyModeBlocker emergencyModeBlocker = this.mEmergencyModeBlocker;
+        if (emergencyModeBlocker.mEnabledInBroadcast || emergencyModeBlocker.mEmergencyModeEnabledInSettings || emergencyModeBlocker.mMpsmEnabledInSettings || emergencyModeBlocker.mLimitAppsAndHomeScreenEnabledInSettings) {
+            Log.d("[DMS]DesktopModeService", "New Dex Blocked, name = " + this.mEmergencyModeBlocker.toString());
+            ToastManager.showToast(this.mContext, this.mEmergencyModeBlocker.onBlocked(), 1);
             return;
         }
-        if (!KnoxCustomManagerService.LAUNCHER_PACKAGE.equals(this.mStandaloneModeChanger.getDefaultHomePackageName((RoleManager) this.mContext.getSystemService("role")))) {
+        RoleManager roleManager = (RoleManager) this.mContext.getSystemService("role");
+        this.mStandaloneModeChanger.getClass();
+        String str = null;
+        if (roleManager != null) {
+            List roleHoldersAsUser = roleManager.getRoleHoldersAsUser("android.app.role.HOME", Process.myUserHandle());
+            if (!roleHoldersAsUser.isEmpty()) {
+                str = (String) roleHoldersAsUser.get(0);
+            }
+        }
+        if (!KnoxCustomManagerService.LAUNCHER_PACKAGE.equals(str)) {
             Context context2 = this.mContext;
-            ToastManager.showToast(context2, context2.getString(R.string.zen_mode_until));
+            ToastManager.showToast(context2, context2.getString(R.string.scNullCipherIssueNonEncryptedSummary), 1);
         } else if (i == 1) {
             Settings.System.putInt(this.mResolver, "new_dex", 1);
         } else {
@@ -1559,139 +2065,5 @@ public class DesktopModeService extends IDesktopMode.Stub {
             }
             Settings.System.putInt(this.mResolver, "new_dex", 0);
         }
-    }
-
-    public final boolean isNeededStartConnectivityActivity(State state, int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "isNeededStartConnectivityActivity()");
-        }
-        return (DesktopModeFeature.SUPPORT_STANDALONE || i == 3 || i == 5 || isExternalDisplayConnectedOrForced(state) || !state.getDesktopModeState().compareTo(2, 0)) ? false : true;
-    }
-
-    public final void startConnectivityActivity(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "startConnectivityActivity()");
-        }
-        startActivityInDisplayAsUser(this.mContext, new Intent().setComponent(new ComponentName("com.sec.android.desktopmode.uiservice", "com.sec.android.desktopmode.uiservice.activity.connectivity.ConnectivityActivity")).setFlags(337641472), i, this.mCurrentUserId);
-    }
-
-    public final void startConnectivityActivity() {
-        startConnectivityActivity(0);
-    }
-
-    public final boolean shouldStayInDesktopMode(State state) {
-        boolean z = state.isHdmiConnected() && isDesktopModeEnablingOrEnabled(state, 102);
-        if (z && this.mDexManager.getHDMIAutoEnterState() == 1) {
-            Context context = this.mContext;
-            ToastManager.showToast(context, context.getString(R.string.lockscreen_emergency_call));
-            return true;
-        }
-        if (!z || !state.isDexStationConnectedWithFlipCover()) {
-            return false;
-        }
-        Context context2 = this.mContext;
-        ToastManager.showToast(context2, String.format(context2.getString(R.string.lockscreen_glogin_submit_button), this.mContext.getString(R.string.lockscreen_missing_sim_instructions)));
-        return true;
-    }
-
-    public static String userRequestToString(int i) {
-        if (i == 0) {
-            return "NO_REQUEST";
-        }
-        if (i == 1) {
-            return "ENTER_REQUEST";
-        }
-        if (i == 2) {
-            return "EXIT_REQUEST";
-        }
-        return "Unknown=" + i;
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        if (DumpUtils.checkDumpPermission(this.mContext, TAG, printWriter)) {
-            if (strArr == null || strArr.length == 0 || "-a".equals(strArr[0])) {
-                IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ");
-                indentingPrintWriter.println("DesktopModeService (dumpsys desktopmode):");
-                Log.dump(indentingPrintWriter);
-                long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-                DesktopModeSettings.dumpApp(indentingPrintWriter, this.mResolver, this.mCurrentUserId);
-                this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-                indentingPrintWriter.println();
-                indentingPrintWriter.increaseIndent();
-                dumpImpl(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mStandaloneModeChanger.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mDualModeChanger.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mStateManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mPackageStateManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mSettingsHelper.dump(indentingPrintWriter, this.mResolver, this.mCurrentUserId);
-                indentingPrintWriter.println();
-                this.mUiManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mSemDesktopModeStateNotifier.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mBlockerManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mHwManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mTouchpadManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mCoverStateManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                ToastManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                DesktopModeKillPolicyManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mMultiResolutionManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mDockManager.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                this.mDisplayPortStateManager.dump(indentingPrintWriter);
-                if (DesktopModeFeature.SUPPORT_WIRELESS_DEX) {
-                    indentingPrintWriter.println();
-                    this.mWirelessDexManager.dump(indentingPrintWriter);
-                    if (this.mBleAdvertiserServiceManager != null) {
-                        indentingPrintWriter.println();
-                        this.mBleAdvertiserServiceManager.dump(indentingPrintWriter);
-                    }
-                    if (this.mMcfManager != null) {
-                        indentingPrintWriter.println();
-                        this.mMcfManager.dump(indentingPrintWriter);
-                    }
-                }
-                indentingPrintWriter.decreaseIndent();
-                return;
-            }
-            if (DesktopModeFeature.DEBUG) {
-                String str = strArr[0];
-                if ((CoreRune.MD_DEX_EMULATOR && "on".equals(str)) || "off".equals(str) || "toggle".equals(str)) {
-                    this.mHwManager.command(printWriter, str);
-                    printWriter.println("Please enter below next time:");
-                    printWriter.println("  cmd desktopmode " + str);
-                    return;
-                }
-                if ("settings".equals(str) || "resolution".equals(str) || "ui".equals(str)) {
-                    printWriter.println("Please enter below instead:");
-                    printWriter.println("  cmd desktopmode " + str);
-                    return;
-                }
-                printWriter.println("Unknown argument: " + str + "; USAGE: [on|off|toggle|dblist]");
-            }
-        }
-    }
-
-    public final void dumpImpl(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.println("mCurrentUserId=" + this.mCurrentUserId);
-        indentingPrintWriter.println("Configuration=" + this.mContext.getResources().getConfiguration());
-        indentingPrintWriter.println("mUserRequest=" + userRequestToString(this.mUserRequest));
-        indentingPrintWriter.println("welcomeCompleted=" + DesktopModeSettings.getSettings(this.mResolver, "welcome_completed", false));
-        indentingPrintWriter.println("DISPLAY_SIZE_FORCED=" + Settings.Global.getString(this.mResolver, "display_size_forced"));
-        indentingPrintWriter.println("DISPLAY_DENSITY_FORCED=" + Settings.Secure.getStringForUser(this.mResolver, "display_density_forced", 0));
-        indentingPrintWriter.println("SCREEN_OFF_TIMEOUT=" + Settings.System.getStringForUser(this.mResolver, "screen_off_timeout", this.mCurrentUserId));
-        indentingPrintWriter.println("SHOW_IME_WITH_HARD_KEYBOARD=" + Settings.Secure.getStringForUser(this.mResolver, "show_ime_with_hard_keyboard", this.mCurrentUserId));
     }
 }

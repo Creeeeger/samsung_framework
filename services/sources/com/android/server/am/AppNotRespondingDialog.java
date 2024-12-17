@@ -4,6 +4,7 @@ import android.R;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -25,38 +26,62 @@ import com.android.internal.util.FrameworkStatsLog;
 import com.samsung.android.feature.SemGateConfig;
 import com.samsung.android.knox.restriction.IRestrictionPolicy;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AppNotRespondingDialog extends BaseErrorDialog implements View.OnClickListener {
     public final Data mData;
-    public final Handler mHandler;
+    public final AnonymousClass1 mHandler;
     public final ProcessRecord mProc;
     public final ActivityManagerService mService;
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Data {
+        public final ApplicationInfo aInfo;
+        public final boolean aboveSystem;
+        public final boolean isContinuousAnr;
+        public final ProcessRecord proc;
+
+        public Data(ProcessRecord processRecord, ApplicationInfo applicationInfo, boolean z, boolean z2) {
+            this.proc = processRecord;
+            this.aInfo = applicationInfo;
+            this.aboveSystem = z;
+            this.isContinuousAnr = z2;
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.am.AppNotRespondingDialog$1] */
     public AppNotRespondingDialog(ActivityManagerService activityManagerService, Context context, Data data) {
         super(context);
         int i;
-        String string;
         this.mHandler = new Handler() { // from class: com.android.server.am.AppNotRespondingDialog.1
             @Override // android.os.Handler
-            public void handleMessage(Message message) {
+            public final void handleMessage(Message message) {
                 MetricsLogger.action(AppNotRespondingDialog.this.getContext(), FrameworkStatsLog.APP_BACKGROUND_RESTRICTIONS_INFO__EXEMPTION_REASON__REASON_MEDIA_SESSION_CALLBACK, message.what);
                 int i2 = message.what;
+                Intent intent = null;
                 if (i2 == 1) {
-                    AppNotRespondingDialog.this.mService.killAppAtUsersRequest(AppNotRespondingDialog.this.mProc);
+                    AppNotRespondingDialog appNotRespondingDialog = AppNotRespondingDialog.this;
+                    appNotRespondingDialog.mService.killAppAtUsersRequest(appNotRespondingDialog.mProc);
                 } else if (i2 == 2 || i2 == 3) {
                     ActivityManagerService activityManagerService2 = AppNotRespondingDialog.this.mService;
                     ActivityManagerService.boostPriorityForLockedSection();
                     synchronized (activityManagerService2) {
                         try {
-                            ProcessRecord processRecord = AppNotRespondingDialog.this.mProc;
+                            AppNotRespondingDialog appNotRespondingDialog2 = AppNotRespondingDialog.this;
+                            ProcessRecord processRecord = appNotRespondingDialog2.mProc;
                             ProcessErrorStateRecord processErrorStateRecord = processRecord.mErrorState;
-                            r2 = message.what == 3 ? AppNotRespondingDialog.this.mService.mAppErrors.createAppErrorIntentLOSP(processRecord, System.currentTimeMillis(), null) : null;
-                            ActivityManagerGlobalLock activityManagerGlobalLock = AppNotRespondingDialog.this.mService.mProcLock;
+                            if (message.what == 3) {
+                                AppErrors appErrors = appNotRespondingDialog2.mService.mAppErrors;
+                                long currentTimeMillis = System.currentTimeMillis();
+                                appErrors.getClass();
+                                intent = AppErrors.createAppErrorIntentLOSP(processRecord, currentTimeMillis, null);
+                            }
+                            ActivityManagerProcLock activityManagerProcLock = AppNotRespondingDialog.this.mService.mProcLock;
                             ActivityManagerService.boostPriorityForProcLockedSection();
-                            synchronized (activityManagerGlobalLock) {
+                            synchronized (activityManagerProcLock) {
                                 try {
                                     processErrorStateRecord.setNotResponding(false);
-                                    processErrorStateRecord.getDialogController().clearAnrDialogs();
+                                    processErrorStateRecord.mDialogController.clearAnrDialogs();
                                 } catch (Throwable th) {
                                     ActivityManagerService.resetPriorityAfterProcLockedSection();
                                     throw th;
@@ -64,8 +89,10 @@ public final class AppNotRespondingDialog extends BaseErrorDialog implements Vie
                             }
                             ActivityManagerService.resetPriorityAfterProcLockedSection();
                             AppNotRespondingDialog.this.mService.mServices.scheduleServiceTimeoutLocked(processRecord);
-                            if (AppNotRespondingDialog.this.mData.isContinuousAnr) {
-                                AppNotRespondingDialog.this.mService.mInternal.rescheduleAnrDialog(AppNotRespondingDialog.this.mData);
+                            AppNotRespondingDialog appNotRespondingDialog3 = AppNotRespondingDialog.this;
+                            Data data2 = appNotRespondingDialog3.mData;
+                            if (data2.isContinuousAnr) {
+                                appNotRespondingDialog3.mService.mInternal.rescheduleAnrDialog(data2);
                             }
                         } catch (Throwable th2) {
                             ActivityManagerService.resetPriorityAfterLockedSection();
@@ -74,9 +101,9 @@ public final class AppNotRespondingDialog extends BaseErrorDialog implements Vie
                     }
                     ActivityManagerService.resetPriorityAfterLockedSection();
                 }
-                if (r2 != null) {
+                if (intent != null) {
                     try {
-                        AppNotRespondingDialog.this.getContext().startActivity(r2);
+                        AppNotRespondingDialog.this.getContext().startActivity(intent);
                     } catch (ActivityNotFoundException e) {
                         Slog.w("AppNotRespondingDialog", "bug report receiver dissappeared", e);
                     }
@@ -93,28 +120,23 @@ public final class AppNotRespondingDialog extends BaseErrorDialog implements Vie
         ApplicationInfo applicationInfo = data.aInfo;
         CharSequence charSequence = null;
         CharSequence loadLabel = applicationInfo != null ? applicationInfo.loadLabel(context.getPackageManager()) : null;
-        if (processRecord.getPkgList().size() != 1 || (charSequence = context.getPackageManager().getApplicationLabel(processRecord.info)) == null) {
+        if (processRecord.mPkgList.size() != 1 || (charSequence = context.getPackageManager().getApplicationLabel(processRecord.info)) == null) {
             if (loadLabel != null) {
                 charSequence = processRecord.processName;
-                i = R.string.cfTemplateForwardedTime;
+                i = R.string.car_loading_profile;
             } else {
                 loadLabel = processRecord.processName;
-                i = R.string.cfTemplateRegistered;
+                i = R.string.car_mode_disable_notification_title;
             }
         } else if (loadLabel != null) {
-            i = R.string.cfTemplateForwarded;
+            i = R.string.capital_on;
         } else {
             charSequence = processRecord.processName;
-            i = 17039800;
+            i = 17039814;
             loadLabel = charSequence;
         }
         BidiFormatter bidiFormatter = BidiFormatter.getInstance();
-        if (charSequence != null) {
-            string = resources.getString(i, bidiFormatter.unicodeWrap(loadLabel.toString()), bidiFormatter.unicodeWrap(charSequence.toString()));
-        } else {
-            string = resources.getString(i, bidiFormatter.unicodeWrap(loadLabel.toString()));
-        }
-        setTitle(string);
+        setTitle(charSequence != null ? resources.getString(i, bidiFormatter.unicodeWrap(loadLabel.toString()), bidiFormatter.unicodeWrap(charSequence.toString())) : resources.getString(i, bidiFormatter.unicodeWrap(loadLabel.toString())));
         if (data.aboveSystem) {
             getWindow().setType(2010);
         }
@@ -126,36 +148,46 @@ public final class AppNotRespondingDialog extends BaseErrorDialog implements Vie
             setOnShowListener(new DialogInterface.OnShowListener() { // from class: com.android.server.am.AppNotRespondingDialog$$ExternalSyntheticLambda0
                 @Override // android.content.DialogInterface.OnShowListener
                 public final void onShow(DialogInterface dialogInterface) {
-                    AppNotRespondingDialog.this.lambda$new$0(dialogInterface);
+                    ProcessRecord processRecord2 = AppNotRespondingDialog.this.mProc;
+                    String str = processRecord2 == null ? "" : processRecord2.processName;
+                    Button button = ((AppNotRespondingDialog) dialogInterface).getButton(-1);
+                    button.getLocationOnScreen(new int[2]);
+                    Log.i("GATE", "<GATE-M>APP_ANR:" + str + "," + Math.round((button.getWidth() / 2) + r1[0]) + "," + Math.round((button.getHeight() / 2) + r1[1]) + "</GATE-M>");
+                    Log.i("GATE", "<GATE-M>APP_ANR:Storing dumpstate at /data/log/, dumpstate_app_anr</GATE-M>");
+                    button.performClick();
                 }
             });
-            setOnDismissListener(new DialogInterface.OnDismissListener() { // from class: com.android.server.am.AppNotRespondingDialog$$ExternalSyntheticLambda1
-                @Override // android.content.DialogInterface.OnDismissListener
-                public final void onDismiss(DialogInterface dialogInterface) {
-                    Log.i("GATE", "<GATE-M>APP_ANR:ANR dialog has been cleared</GATE-M>");
-                }
-            });
+            setOnDismissListener(new AppNotRespondingDialog$$ExternalSyntheticLambda1());
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(DialogInterface dialogInterface) {
-        ProcessRecord processRecord = this.mProc;
-        String str = processRecord == null ? "" : processRecord.processName;
-        Button button = ((AppNotRespondingDialog) dialogInterface).getButton(-1);
-        button.getLocationOnScreen(new int[2]);
-        Log.i("GATE", "<GATE-M>APP_ANR:" + str + "," + Math.round(r1[0] + (button.getWidth() / 2)) + "," + Math.round(r1[1] + (button.getHeight() / 2)) + "</GATE-M>");
-        Log.i("GATE", "<GATE-M>APP_ANR:Storing dumpstate at /data/log/, dumpstate_app_anr</GATE-M>");
-        button.performClick();
+    @Override // com.android.server.am.BaseErrorDialog
+    public final void closeDialog() {
+        obtainMessage(1).sendToTarget();
+    }
+
+    @Override // android.view.View.OnClickListener
+    public final void onClick(View view) {
+        int id = view.getId();
+        if (id == 16908762) {
+            obtainMessage(1).sendToTarget();
+        } else if (id == 16908764) {
+            obtainMessage(3).sendToTarget();
+        } else {
+            if (id != 16908766) {
+                return;
+            }
+            obtainMessage(2).sendToTarget();
+        }
     }
 
     @Override // android.app.AlertDialog, android.app.Dialog
-    public void onCreate(Bundle bundle) {
+    public final void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        LayoutInflater.from(getContext()).inflate(R.layout.autofill_dataset_picker, (ViewGroup) findViewById(R.id.custom), true);
-        TextView textView = (TextView) findViewById(R.id.appop);
+        LayoutInflater.from(getContext()).inflate(R.layout.app_permission_item_money, (ViewGroup) findViewById(R.id.custom), true);
+        TextView textView = (TextView) findViewById(R.id.aerr_wait);
         textView.setOnClickListener(this);
-        textView.setVisibility(this.mProc.mErrorState.getErrorReportReceiver() != null ? 0 : 8);
+        textView.setVisibility(this.mProc.mErrorState.mErrorReportReceiver != null ? 0 : 8);
         try {
             IRestrictionPolicy asInterface = IRestrictionPolicy.Stub.asInterface(ServiceManager.getService("restriction_policy"));
             if (asInterface != null && !asInterface.isGoogleCrashReportAllowedAsUser(this.mProc.userId)) {
@@ -163,43 +195,8 @@ public final class AppNotRespondingDialog extends BaseErrorDialog implements Vie
             }
         } catch (RemoteException unused) {
         }
-        ((TextView) findViewById(R.id.app_name_text)).setOnClickListener(this);
-        ((TextView) findViewById(R.id.ask_checkbox)).setOnClickListener(this);
-        findViewById(R.id.feedbackSpoken).setVisibility(0);
-    }
-
-    @Override // android.view.View.OnClickListener
-    public void onClick(View view) {
-        int id = view.getId();
-        if (id == 16908761) {
-            this.mHandler.obtainMessage(1).sendToTarget();
-        } else if (id == 16908763) {
-            this.mHandler.obtainMessage(3).sendToTarget();
-        } else {
-            if (id != 16908765) {
-                return;
-            }
-            this.mHandler.obtainMessage(2).sendToTarget();
-        }
-    }
-
-    @Override // com.android.server.am.BaseErrorDialog
-    public void closeDialog() {
-        this.mHandler.obtainMessage(1).sendToTarget();
-    }
-
-    /* loaded from: classes.dex */
-    public class Data {
-        public final ApplicationInfo aInfo;
-        public final boolean aboveSystem;
-        public final boolean isContinuousAnr;
-        public final ProcessRecord proc;
-
-        public Data(ProcessRecord processRecord, ApplicationInfo applicationInfo, boolean z, boolean z2) {
-            this.proc = processRecord;
-            this.aInfo = applicationInfo;
-            this.aboveSystem = z;
-            this.isContinuousAnr = z2;
-        }
+        ((TextView) findViewById(R.id.aerr_report)).setOnClickListener(this);
+        ((TextView) findViewById(R.id.alarm)).setOnClickListener(this);
+        findViewById(R.id.default_activity_button).setVisibility(0);
     }
 }

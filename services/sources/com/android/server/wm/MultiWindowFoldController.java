@@ -7,119 +7,63 @@ import android.os.Message;
 import android.util.Slog;
 import android.view.Display;
 import android.view.DisplayInfo;
-import com.samsung.android.rune.CoreRune;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.ServiceKeeper$$ExternalSyntheticOutline0;
 
-/* loaded from: classes3.dex */
-public class MultiWindowFoldController implements IController {
-    public static final boolean DEBUG = CoreRune.SAFE_DEBUG;
-    public static final String TAG = "MultiWindowFoldController";
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class MultiWindowFoldController implements IController {
     public final ActivityTaskManagerService mAtm;
     public final WindowManagerGlobalLock mGlobalLock;
     public H mH;
     public int mFoldingState = 0;
-    public boolean mIsLidOpened = true;
     public final Rect[] mMainDisplayBounds = {new Rect(), new Rect()};
     public final Rect[] mCoverDisplayBounds = {new Rect(), new Rect()};
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class H extends Handler {
+        public H(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            if (message.what != 1) {
+                return;
+            }
+            WindowManagerGlobalLock windowManagerGlobalLock = MultiWindowFoldController.this.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    MultiWindowFoldController multiWindowFoldController = MultiWindowFoldController.this;
+                    if (multiWindowFoldController.mFoldingState == 1 && multiWindowFoldController.mAtm.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea().isSplitScreenModeActivated()) {
+                        ActivityTaskManagerService activityTaskManagerService = multiWindowFoldController.mAtm;
+                        if (!activityTaskManagerService.mTaskSupervisor.mKeyguardController.isKeyguardShowing(0)) {
+                            Task topMostTask = multiWindowFoldController.mAtm.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea().getTopMostTask();
+                            if ((topMostTask != null ? topMostTask.getWindowingMode() : 0) != 1) {
+                                activityTaskManagerService.mRootWindowContainer.startHomeOnDisplay("MultiWindowFoldController:wakeup", activityTaskManagerService.mAmInternal.getCurrentUserId(), 0, false, false);
+                            }
+                            multiWindowFoldController.setFoldingState(0, "start_home_by_wakeup");
+                        }
+                    }
+                } catch (Throwable th) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
+            }
+            WindowManagerService.resetPriorityAfterLockedSection();
+        }
+    }
 
     public MultiWindowFoldController(ActivityTaskManagerService activityTaskManagerService) {
         this.mAtm = activityTaskManagerService;
         this.mGlobalLock = activityTaskManagerService.mGlobalLock;
     }
 
-    @Override // com.android.server.wm.IController
-    public void initialize() {
-        this.mH = new H(this.mAtm.mH.getLooper());
-    }
-
-    public boolean isLidOpened() {
-        return this.mIsLidOpened;
-    }
-
-    public void initFoldingState(String str) {
-        setFoldingState(0, str);
-    }
-
-    public boolean isHoldingSplitScreen() {
-        return this.mFoldingState == 1;
-    }
-
-    public final void setFoldingState(int i, String str) {
-        if (this.mFoldingState != i) {
-            Slog.d(TAG, "setFoldingState: " + this.mFoldingState + "->" + i + ", reason=" + str);
-            this.mFoldingState = i;
-        }
-    }
-
-    public void onDisplayDeviceTypeChanged(int i) {
-        boolean z = i == 0;
-        Slog.d(TAG, "onDisplayDeviceTypeChanged opened : " + z);
-        if (z) {
-            setFoldingState(0, "displayDevice(" + i + ")");
-            return;
-        }
-        if (isSplitScreenActivated()) {
-            applyFoldingPolicy();
-        }
-    }
-
-    public final void applyFoldingPolicy() {
-        TaskDisplayArea defaultTaskDisplayArea = this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea();
-        if ((defaultTaskDisplayArea.getRootMainStageTask() != null ? defaultTaskDisplayArea.getRootMainStageTask().getTopMostTask() : null) == null) {
-            setFoldingState(0, "reset");
-        } else {
-            setFoldingState(1, "apply_folding_policy");
-        }
-    }
-
-    public void onStartWakeUpInFoldingState() {
-        if (this.mFoldingState == 1 && isSplitScreenActivated() && !this.mAtm.mTaskSupervisor.getKeyguardController().isKeyguardShowing(0)) {
-            if (getTopMostTaskWindowingMode() != 1) {
-                ActivityTaskManagerService activityTaskManagerService = this.mAtm;
-                activityTaskManagerService.mRootWindowContainer.startHomeOnDisplay(activityTaskManagerService.mAmInternal.getCurrentUserId(), "MultiWindowFoldController:wakeup", 0);
-            }
-            setFoldingState(0, "start_home_by_wakeup");
-        }
-    }
-
-    public void onKeyguardGoingAway() {
-        if (this.mIsLidOpened) {
-            return;
-        }
-        if (this.mFoldingState == 1 && isSplitScreenActivated() && getTopMostTaskWindowingMode() != 1) {
-            Task stageRootTask = getStageRootTask();
-            if (stageRootTask != null) {
-                stageRootTask.setReparentLeafTaskIfRelaunch(true);
-            }
-            ActivityTaskManagerService activityTaskManagerService = this.mAtm;
-            activityTaskManagerService.mRootWindowContainer.startHomeOnDisplay(activityTaskManagerService.mAmInternal.getCurrentUserId(), "MultiWindowFoldController:keyguard_going_away", 0);
-        }
-        setFoldingState(0, "keyguard_going_away");
-    }
-
-    public final boolean isSplitScreenActivated() {
-        return this.mAtm.mRootWindowContainer.getDefaultDisplay().getDefaultTaskDisplayArea().isSplitScreenModeActivated();
-    }
-
-    public final Task getStageRootTask() {
-        Task rootMainStageTask = this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea().getRootMainStageTask();
-        if (rootMainStageTask != null) {
-            return rootMainStageTask.getRootTask();
-        }
-        return null;
-    }
-
-    public final int getTopMostTaskWindowingMode() {
-        Task topMostTask = this.mAtm.mRootWindowContainer.getDefaultDisplay().getDefaultTaskDisplayArea().getTopMostTask();
-        if (topMostTask != null) {
-            return topMostTask.getWindowingMode();
-        }
-        return 0;
-    }
-
     public final void initDisplayBounds(boolean z) {
         Display display = this.mAtm.mWindowManager.mDisplayManager.getDisplay(1);
         if (display == null) {
-            Slog.w(TAG, "initDisplayBounds: cannot find display!");
+            Slog.w("MultiWindowFoldController", "initDisplayBounds: cannot find display!");
             return;
         }
         DisplayInfo displayInfo = new DisplayInfo();
@@ -129,21 +73,24 @@ public class MultiWindowFoldController implements IController {
         } else {
             updateMainDisplayBounds(displayInfo.logicalWidth, displayInfo.logicalHeight);
         }
-        Slog.d(TAG, "initDisplayBounds: " + displayInfo + ", isCoverDisplay=" + z);
+        Slog.d("MultiWindowFoldController", "initDisplayBounds: " + displayInfo + ", isCoverDisplay=" + z);
     }
 
-    public void updateMainDisplayBounds(int i, int i2) {
-        boolean z = i <= i2;
-        this.mMainDisplayBounds[0].set(0, 0, z ? i : i2, z ? i2 : i);
-        Rect rect = this.mMainDisplayBounds[1];
-        int i3 = z ? i2 : i;
-        if (!z) {
-            i = i2;
+    @Override // com.android.server.wm.IController
+    public final void initialize() {
+        this.mH = new H(this.mAtm.mH.getLooper());
+    }
+
+    public final void setFoldingState(int i, String str) {
+        if (this.mFoldingState != i) {
+            StringBuilder sb = new StringBuilder("setFoldingState: ");
+            ServiceKeeper$$ExternalSyntheticOutline0.m(this.mFoldingState, i, "->", ", reason=", sb);
+            BootReceiver$$ExternalSyntheticOutline0.m(sb, str, "MultiWindowFoldController");
+            this.mFoldingState = i;
         }
-        rect.set(0, 0, i3, i);
     }
 
-    public void updateCoverDisplayBounds(int i, int i2) {
+    public final void updateCoverDisplayBounds(int i, int i2) {
         boolean z = i <= i2;
         this.mCoverDisplayBounds[0].set(0, 0, z ? i : i2, z ? i2 : i);
         Rect rect = this.mCoverDisplayBounds[1];
@@ -154,54 +101,14 @@ public class MultiWindowFoldController implements IController {
         rect.set(0, 0, i3, i);
     }
 
-    public Rect getMainDisplayBounds(boolean z) {
-        if (this.mMainDisplayBounds[0].isEmpty()) {
-            initDisplayBounds(false);
+    public final void updateMainDisplayBounds(int i, int i2) {
+        boolean z = i <= i2;
+        this.mMainDisplayBounds[0].set(0, 0, z ? i : i2, z ? i2 : i);
+        Rect rect = this.mMainDisplayBounds[1];
+        int i3 = z ? i2 : i;
+        if (!z) {
+            i = i2;
         }
-        Rect[] rectArr = this.mMainDisplayBounds;
-        return z ? rectArr[0] : rectArr[1];
-    }
-
-    public Rect getCoverDisplayBounds(boolean z) {
-        if (this.mCoverDisplayBounds[0].isEmpty()) {
-            initDisplayBounds(true);
-        }
-        Rect[] rectArr = this.mCoverDisplayBounds;
-        return z ? rectArr[0] : rectArr[1];
-    }
-
-    public void scheduleWakeUpInFoldingState(boolean z) {
-        this.mH.sendMessageDelayed(this.mH.obtainMessage(1), z ? 0 : 150);
-    }
-
-    public void removeWakeUpInFoldingState() {
-        if (this.mH.hasMessages(1)) {
-            this.mH.removeMessages(1);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class H extends Handler {
-        public H(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            if (message.what != 1) {
-                return;
-            }
-            WindowManagerGlobalLock windowManagerGlobalLock = MultiWindowFoldController.this.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    MultiWindowFoldController.this.onStartWakeUpInFoldingState();
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            WindowManagerService.resetPriorityAfterLockedSection();
-        }
+        rect.set(0, 0, i3, i);
     }
 }

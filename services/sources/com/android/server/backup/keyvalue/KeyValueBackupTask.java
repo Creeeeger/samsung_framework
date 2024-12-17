@@ -1,50 +1,55 @@
 package com.android.server.backup.keyvalue;
 
 import android.app.IBackupAgent;
-import android.app.backup.BackupDataInput;
-import android.app.backup.BackupDataOutput;
-import android.app.backup.IBackupCallback;
 import android.app.backup.IBackupManagerMonitor;
 import android.app.backup.IBackupObserver;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
+import android.os.Bundle;
 import android.os.ConditionVariable;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.SELinux;
+import android.os.UserHandle;
 import android.os.WorkSource;
+import android.util.EventLog;
 import android.util.Log;
+import android.util.Slog;
+import com.android.internal.infra.AndroidFuture;
 import com.android.internal.util.Preconditions;
-import com.android.server.AppWidgetBackupBridge;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
 import com.android.server.backup.BackupAgentTimeoutParameters;
 import com.android.server.backup.BackupRestoreTask;
 import com.android.server.backup.DataChangedJournal;
 import com.android.server.backup.KeyValueBackupJob;
 import com.android.server.backup.OperationStorage;
+import com.android.server.backup.PackageManagerBackupAgent;
 import com.android.server.backup.UserBackupManagerService;
 import com.android.server.backup.fullbackup.PerformFullTransportBackupTask;
+import com.android.server.backup.internal.LifecycleOperationStorage;
 import com.android.server.backup.internal.OnTaskFinishedListener;
+import com.android.server.backup.remote.FutureBackupCallback;
 import com.android.server.backup.remote.RemoteCall;
 import com.android.server.backup.remote.RemoteCallable;
 import com.android.server.backup.remote.RemoteResult;
 import com.android.server.backup.transport.BackupTransportClient;
 import com.android.server.backup.transport.TransportConnection;
 import com.android.server.backup.transport.TransportNotAvailableException;
+import com.android.server.backup.transport.TransportStatusCallback;
 import com.android.server.backup.utils.BackupEligibilityRules;
-import com.android.server.backup.utils.BackupManagerMonitorUtils;
+import com.android.server.backup.utils.BackupManagerMonitorEventSender;
+import com.android.server.backup.utils.BackupObserverUtils;
+import com.google.android.collect.Sets;
 import java.io.Closeable;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,8 +60,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import libcore.io.IoUtils;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class KeyValueBackupTask implements BackupRestoreTask, Runnable {
+public final class KeyValueBackupTask implements BackupRestoreTask, Runnable {
     public static final String NEW_STATE_FILE_SUFFIX = ".new";
     static final String NO_DATA_END_SENTINEL = "@end@";
     public static final String STAGING_FILE_SUFFIX = ".data";
@@ -95,37 +101,10 @@ public class KeyValueBackupTask implements BackupRestoreTask, Runnable {
     public final int mUserId;
     public final boolean mUserInitiated;
 
-    @Override // com.android.server.backup.BackupRestoreTask
-    public void execute() {
-    }
-
-    public final int getBackupFinishedStatus(boolean z, int i) {
-        if (z) {
-            return -2003;
-        }
-        return (i == -1005 || i == -1002 || i == 0) ? 0 : -1000;
-    }
-
-    public final int getPerformBackupFlags(boolean z, boolean z2) {
-        return (z2 ? 4 : 2) | (z ? 1 : 0);
-    }
-
-    @Override // com.android.server.backup.BackupRestoreTask
-    public void operationComplete(long j) {
-    }
-
-    public static KeyValueBackupTask start(UserBackupManagerService userBackupManagerService, OperationStorage operationStorage, TransportConnection transportConnection, String str, List list, DataChangedJournal dataChangedJournal, IBackupObserver iBackupObserver, IBackupManagerMonitor iBackupManagerMonitor, OnTaskFinishedListener onTaskFinishedListener, List list2, boolean z, boolean z2, BackupEligibilityRules backupEligibilityRules) {
-        KeyValueBackupTask keyValueBackupTask = new KeyValueBackupTask(userBackupManagerService, operationStorage, transportConnection, str, list, dataChangedJournal, new KeyValueBackupReporter(userBackupManagerService, iBackupObserver, iBackupManagerMonitor), onTaskFinishedListener, list2, z, z2, backupEligibilityRules);
-        Thread thread = new Thread(keyValueBackupTask, "key-value-backup-" + THREAD_COUNT.incrementAndGet());
-        thread.start();
-        KeyValueBackupReporter.onNewThread(thread.getName());
-        return keyValueBackupTask;
-    }
-
     public KeyValueBackupTask(UserBackupManagerService userBackupManagerService, OperationStorage operationStorage, TransportConnection transportConnection, String str, List list, DataChangedJournal dataChangedJournal, KeyValueBackupReporter keyValueBackupReporter, OnTaskFinishedListener onTaskFinishedListener, List list2, boolean z, boolean z2, BackupEligibilityRules backupEligibilityRules) {
         this.mBackupManagerService = userBackupManagerService;
         this.mOperationStorage = operationStorage;
-        this.mPackageManager = userBackupManagerService.getPackageManager();
+        this.mPackageManager = userBackupManagerService.mPackageManager;
         this.mTransportConnection = transportConnection;
         this.mOriginalQueue = list;
         this.mQueue = new ArrayList(list);
@@ -135,37 +114,388 @@ public class KeyValueBackupTask implements BackupRestoreTask, Runnable {
         this.mPendingFullBackups = list2;
         this.mUserInitiated = z;
         this.mNonIncremental = z2;
-        BackupAgentTimeoutParameters agentTimeoutParameters = userBackupManagerService.getAgentTimeoutParameters();
-        Objects.requireNonNull(agentTimeoutParameters, "Timeout parameters cannot be null");
-        this.mAgentTimeoutParameters = agentTimeoutParameters;
-        File file = new File(userBackupManagerService.getBaseStateDir(), str);
+        BackupAgentTimeoutParameters backupAgentTimeoutParameters = userBackupManagerService.mAgentTimeoutParameters;
+        Objects.requireNonNull(backupAgentTimeoutParameters, "Timeout parameters cannot be null");
+        this.mAgentTimeoutParameters = backupAgentTimeoutParameters;
+        File file = new File(userBackupManagerService.mBaseStateDir, str);
         this.mStateDirectory = file;
-        this.mDataDirectory = userBackupManagerService.getDataDir();
+        this.mDataDirectory = userBackupManagerService.mDataDir;
         this.mCurrentOpToken = userBackupManagerService.generateRandomIntegerToken();
-        this.mQueueLock = userBackupManagerService.getQueueLock();
+        this.mQueueLock = userBackupManagerService.mQueueLock;
         this.mBlankStateFile = new File(file, "blank_state");
-        this.mUserId = userBackupManagerService.getUserId();
+        this.mUserId = userBackupManagerService.mUserId;
         this.mBackupEligibilityRules = backupEligibilityRules;
     }
 
-    public final void registerTask() {
-        this.mOperationStorage.registerOperation(this.mCurrentOpToken, 0, this, 2);
+    public static void clearStatus(File file, String str) {
+        if (!file.exists() || file.delete()) {
+            return;
+        }
+        NetworkScorerAppManager$$ExternalSyntheticOutline0.m("Unable to remove status file for ", str, "KVBT");
     }
 
-    public final void unregisterTask() {
-        this.mOperationStorage.removeOperation(this.mCurrentOpToken);
+    public static void start(UserBackupManagerService userBackupManagerService, LifecycleOperationStorage lifecycleOperationStorage, TransportConnection transportConnection, String str, List list, DataChangedJournal dataChangedJournal, IBackupObserver iBackupObserver, IBackupManagerMonitor iBackupManagerMonitor, OnTaskFinishedListener onTaskFinishedListener, List list2, boolean z, boolean z2, BackupEligibilityRules backupEligibilityRules) {
+        Thread thread = new Thread(new KeyValueBackupTask(userBackupManagerService, lifecycleOperationStorage, transportConnection, str, list, dataChangedJournal, new KeyValueBackupReporter(userBackupManagerService, iBackupObserver, new BackupManagerMonitorEventSender(iBackupManagerMonitor)), onTaskFinishedListener, list2, z, z2, backupEligibilityRules), "key-value-backup-" + THREAD_COUNT.incrementAndGet());
+        thread.start();
+        BinaryTransparencyService$$ExternalSyntheticOutline0.m("Spinning thread ", thread.getName(), "KeyValueBackupTask");
+    }
+
+    public final void backupPackage(String str) {
+        this.mReporter.getClass();
+        Slog.d("KeyValueBackupTask", "Starting key-value backup of " + str);
+        try {
+            PackageInfo packageInfoAsUser = this.mPackageManager.getPackageInfoAsUser(str, 134217728, this.mUserId);
+            ApplicationInfo applicationInfo = packageInfoAsUser.applicationInfo;
+            if (!this.mBackupEligibilityRules.appIsEligibleForBackup(applicationInfo)) {
+                KeyValueBackupReporter keyValueBackupReporter = this.mReporter;
+                keyValueBackupReporter.getClass();
+                Slog.i("KeyValueBackupTask", "Package " + str + " no longer supports backup, skipping");
+                BackupObserverUtils.sendBackupOnPackageResult(keyValueBackupReporter.mObserver, str, -2001);
+                throw AgentException.permanent();
+            }
+            if (this.mBackupEligibilityRules.appGetsFullBackup(packageInfoAsUser)) {
+                KeyValueBackupReporter keyValueBackupReporter2 = this.mReporter;
+                keyValueBackupReporter2.getClass();
+                Slog.i("KeyValueBackupTask", "Package " + str + " performs full-backup rather than key-value, skipping");
+                BackupObserverUtils.sendBackupOnPackageResult(keyValueBackupReporter2.mObserver, str, -2001);
+                throw AgentException.permanent();
+            }
+            this.mBackupEligibilityRules.getClass();
+            if (BackupEligibilityRules.appIsStopped(applicationInfo)) {
+                BackupObserverUtils.sendBackupOnPackageResult(this.mReporter.mObserver, str, -2001);
+                throw AgentException.permanent();
+            }
+            this.mCurrentPackage = packageInfoAsUser;
+            try {
+                extractAgentData(packageInfoAsUser);
+                new BackupManagerMonitorEventSender(this.mReporter.mBackupManagerMonitorEventSender.mMonitor).monitorAgentLoggingResults(this.mCurrentPackage, this.mAgent);
+                int sendDataToTransport = sendDataToTransport(this.mCurrentPackage);
+                if (sendDataToTransport == -1006) {
+                    cleanUpAgent(2);
+                } else {
+                    if (sendDataToTransport != 0) {
+                        throw new AssertionError();
+                    }
+                    cleanUpAgent(0);
+                }
+            } catch (AgentException | TaskException e) {
+                cleanUpAgent(1);
+                throw e;
+            }
+        } catch (PackageManager.NameNotFoundException e2) {
+            KeyValueBackupReporter keyValueBackupReporter3 = this.mReporter;
+            keyValueBackupReporter3.getClass();
+            Slog.d("KeyValueBackupTask", "Package does not exist, skipping");
+            BackupObserverUtils.sendBackupOnPackageResult(keyValueBackupReporter3.mObserver, str, -2002);
+            throw new AgentException(false, e2);
+        }
+    }
+
+    public final void backupPm() {
+        this.mReporter.getClass();
+        Slog.d("KeyValueBackupTask", "Starting key-value backup of @pm@");
+        PackageInfo packageInfo = new PackageInfo();
+        this.mCurrentPackage = packageInfo;
+        packageInfo.packageName = "@pm@";
+        try {
+            try {
+                extractPmAgentData(packageInfo);
+                int sendDataToTransport = sendDataToTransport(this.mCurrentPackage);
+                if (sendDataToTransport == -1006) {
+                    cleanUpAgent(2);
+                } else {
+                    if (sendDataToTransport != 0) {
+                        throw new AssertionError();
+                    }
+                    cleanUpAgent(0);
+                }
+            } catch (TaskException e) {
+                throw TaskException.stateCompromised(e);
+            }
+        } catch (AgentException | TaskException e2) {
+            this.mReporter.getClass();
+            Slog.e("KeyValueBackupTask", "Error during PM metadata backup", e2);
+            cleanUpAgent(1);
+            if (!(e2 instanceof TaskException)) {
+                throw TaskException.stateCompromised(e2);
+            }
+            throw ((TaskException) e2);
+        }
+    }
+
+    public final IBackupAgent bindAgent(PackageInfo packageInfo) {
+        String str = packageInfo.packageName;
+        try {
+            IBackupAgent bindToAgentSynchronous = this.mBackupManagerService.bindToAgentSynchronous(packageInfo.applicationInfo, 0, this.mBackupEligibilityRules.mBackupDestination);
+            if (bindToAgentSynchronous != null) {
+                return bindToAgentSynchronous;
+            }
+            BackupObserverUtils.sendBackupOnPackageResult(this.mReporter.mObserver, str, -1003);
+            throw new AgentException(true);
+        } catch (SecurityException e) {
+            KeyValueBackupReporter keyValueBackupReporter = this.mReporter;
+            keyValueBackupReporter.getClass();
+            Slog.d("KeyValueBackupTask", "Error in bind/backup", e);
+            BackupObserverUtils.sendBackupOnPackageResult(keyValueBackupReporter.mObserver, str, -1003);
+            throw new AgentException(true, e);
+        }
+    }
+
+    public final void cleanUpAgent(int i) {
+        if (i == 0) {
+            this.mNewStateFile.renameTo(this.mSavedStateFile);
+        } else if (i == 1) {
+            File file = this.mNewStateFile;
+            if (file != null) {
+                file.delete();
+            }
+        } else {
+            if (i != 2) {
+                throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Unknown state transaction "));
+            }
+            this.mSavedStateFile.delete();
+            this.mNewStateFile.delete();
+        }
+        File file2 = this.mBackupDataFile;
+        if (file2 != null) {
+            file2.delete();
+        }
+        this.mBlankStateFile.delete();
+        this.mSavedStateFile = null;
+        this.mBackupDataFile = null;
+        this.mNewStateFile = null;
+        tryCloseFileDescriptor(this.mSavedState, "old state");
+        tryCloseFileDescriptor(this.mBackupData, "backup data");
+        tryCloseFileDescriptor(this.mNewState, "new state");
+        this.mSavedState = null;
+        this.mBackupData = null;
+        this.mNewState = null;
+        ApplicationInfo applicationInfo = this.mCurrentPackage.applicationInfo;
+        if (applicationInfo != null) {
+            UserBackupManagerService userBackupManagerService = this.mBackupManagerService;
+            userBackupManagerService.getClass();
+            try {
+                userBackupManagerService.mActivityManager.unbindBackupAgent(applicationInfo);
+            } catch (RemoteException unused) {
+            }
+        }
+        this.mAgent = null;
+    }
+
+    @Override // com.android.server.backup.BackupRestoreTask
+    public final void execute() {
+    }
+
+    public final void extractAgentData(PackageInfo packageInfo) {
+        this.mBackupManagerService.setWorkSource(new WorkSource(packageInfo.applicationInfo.uid));
+        try {
+            IBackupAgent bindAgent = bindAgent(packageInfo);
+            this.mAgent = bindAgent;
+            extractAgentData(packageInfo, bindAgent);
+        } finally {
+            this.mBackupManagerService.setWorkSource(null);
+        }
+    }
+
+    public final void extractAgentData(PackageInfo packageInfo, final IBackupAgent iBackupAgent) {
+        boolean z;
+        final long backupQuota;
+        final int transportFlags;
+        String str = packageInfo.packageName;
+        this.mReporter.getClass();
+        Slog.d("KeyValueBackupTask", "Invoking agent on " + str);
+        this.mSavedStateFile = new File(this.mStateDirectory, str);
+        this.mBackupDataFile = new File(this.mDataDirectory, ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, STAGING_FILE_SUFFIX));
+        this.mNewStateFile = new File(this.mStateDirectory, ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, NEW_STATE_FILE_SUFFIX));
+        this.mReporter.getClass();
+        try {
+            this.mSavedState = ParcelFileDescriptor.open(this.mNonIncremental ? this.mBlankStateFile : this.mSavedStateFile, 402653184);
+            this.mBackupData = ParcelFileDescriptor.open(this.mBackupDataFile, 1006632960);
+            this.mNewState = ParcelFileDescriptor.open(this.mNewStateFile, 1006632960);
+            if (this.mUserId == 0 && !SELinux.restorecon(this.mBackupDataFile)) {
+                KeyValueBackupReporter keyValueBackupReporter = this.mReporter;
+                File file = this.mBackupDataFile;
+                keyValueBackupReporter.getClass();
+                Slog.e("KeyValueBackupTask", "SELinux restorecon failed on " + file);
+            }
+            BackupTransportClient connectOrThrow = this.mTransportConnection.connectOrThrow("KVBT.extractAgentData()");
+            backupQuota = connectOrThrow.getBackupQuota(str, false);
+            transportFlags = connectOrThrow.getTransportFlags();
+        } catch (Exception e) {
+            e = e;
+            z = false;
+        }
+        try {
+            this.mPendingCall = new RemoteCall(this.mCancelled, new RemoteCallable() { // from class: com.android.server.backup.keyvalue.KeyValueBackupTask$$ExternalSyntheticLambda1
+                @Override // com.android.server.backup.remote.RemoteCallable
+                public final void call(FutureBackupCallback futureBackupCallback) {
+                    IBackupAgent iBackupAgent2 = iBackupAgent;
+                    KeyValueBackupTask keyValueBackupTask = KeyValueBackupTask.this;
+                    iBackupAgent2.doBackup(keyValueBackupTask.mSavedState, keyValueBackupTask.mBackupData, keyValueBackupTask.mNewState, backupQuota, futureBackupCallback, transportFlags);
+                }
+            }, this.mAgentTimeoutParameters.getKvBackupAgentTimeoutMillis());
+            RemoteResult call = this.mPendingCall.call();
+            this.mReporter.getClass();
+            this.mPendingCall = null;
+            if (call == RemoteResult.FAILED_THREAD_INTERRUPTED) {
+                this.mCancelled = true;
+                this.mReporter.onAgentCancelled(packageInfo);
+                throw new TaskException(-1000, false);
+            }
+            if (call == RemoteResult.FAILED_CANCELLED) {
+                this.mReporter.onAgentCancelled(packageInfo);
+                throw new TaskException(-1000, false);
+            }
+            if (call == RemoteResult.FAILED_TIMED_OUT) {
+                KeyValueBackupReporter keyValueBackupReporter2 = this.mReporter;
+                keyValueBackupReporter2.getClass();
+                String str2 = packageInfo.packageName;
+                BootReceiver$$ExternalSyntheticOutline0.m58m("Agent ", str2, " timed out", "KeyValueBackupTask");
+                EventLog.writeEvent(2823, str2);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("android.app.backup.extra.LOG_CANCEL_ALL", false);
+                keyValueBackupReporter2.mBackupManagerMonitorEventSender.monitorEvent(21, packageInfo, 2, bundle);
+                throw new AgentException(true);
+            }
+            Preconditions.checkState(call.mType == 0);
+            Preconditions.checkState(call.mType == 0, "Can't obtain value of failed result");
+            long j = call.mValue;
+            if (j != -1) {
+                Preconditions.checkState(j == 0);
+                return;
+            }
+            KeyValueBackupReporter keyValueBackupReporter3 = this.mReporter;
+            keyValueBackupReporter3.getClass();
+            String str3 = packageInfo.packageName;
+            BackupObserverUtils.sendBackupOnPackageResult(keyValueBackupReporter3.mObserver, str3, -1003);
+            EventLog.writeEvent(2823, str3, "result error");
+            Slog.w("KeyValueBackupTask", "Agent " + str3 + " error in onBackup()");
+            throw new AgentException(true);
+        } catch (Exception e2) {
+            e = e2;
+            z = true;
+            KeyValueBackupReporter keyValueBackupReporter4 = this.mReporter;
+            keyValueBackupReporter4.getClass();
+            if (z) {
+                Slog.e("KeyValueBackupTask", "Error invoking agent on " + str + ": " + e);
+                BackupObserverUtils.sendBackupOnPackageResult(keyValueBackupReporter4.mObserver, str, -1003);
+            } else {
+                Slog.e("KeyValueBackupTask", "Error before invoking agent on " + str + ": " + e);
+            }
+            EventLog.writeEvent(2823, str, e.toString());
+            if (!z) {
+                throw new TaskException(-1000, false);
+            }
+            throw new AgentException(true, e);
+        }
+    }
+
+    public final void extractPmAgentData(PackageInfo packageInfo) {
+        Preconditions.checkArgument(packageInfo.packageName.equals("@pm@"));
+        UserBackupManagerService userBackupManagerService = this.mBackupManagerService;
+        BackupEligibilityRules backupEligibilityRules = this.mBackupEligibilityRules;
+        userBackupManagerService.getClass();
+        PackageManager packageManager = userBackupManagerService.mPackageManager;
+        int i = userBackupManagerService.mUserId;
+        PackageManagerBackupAgent packageManagerBackupAgent = new PackageManagerBackupAgent(packageManager, i, backupEligibilityRules);
+        packageManagerBackupAgent.attach(userBackupManagerService.mContext);
+        packageManagerBackupAgent.onCreate(UserHandle.of(i));
+        IBackupAgent asInterface = IBackupAgent.Stub.asInterface(packageManagerBackupAgent.onBind());
+        this.mAgent = asInterface;
+        extractAgentData(packageInfo, asInterface);
+    }
+
+    public final File getTopLevelSuccessStateDirectory(boolean z) {
+        File file = new File(this.mStateDirectory, "backing-up");
+        if (file.exists() || !z || file.mkdirs()) {
+            return file;
+        }
+        Log.e("KVBT", "Unable to create backing-up state directory");
+        return null;
+    }
+
+    @Override // com.android.server.backup.BackupRestoreTask
+    public final void handleCancel(boolean z) {
+        Preconditions.checkArgument(z, "Can't partially cancel a key-value backup task");
+        markCancel();
+        waitCancel();
+    }
+
+    public final void informTransportOfUnchangedApps(Set set) {
+        File topLevelSuccessStateDirectory = getTopLevelSuccessStateDirectory(false);
+        String[] list = topLevelSuccessStateDirectory == null ? null : topLevelSuccessStateDirectory.list();
+        if (list == null) {
+            return;
+        }
+        int i = this.mUserInitiated ? 9 : 8;
+        try {
+            BackupTransportClient connectOrThrow = this.mTransportConnection.connectOrThrow("KVBT.informTransportOfEmptyBackups()");
+            boolean z = false;
+            for (String str : list) {
+                if (((HashSet) set).contains(str)) {
+                    Log.v("KVBT", "Skipping package which was backed up this time: " + str);
+                } else {
+                    try {
+                        PackageInfo packageInfo = this.mPackageManager.getPackageInfo(str, 0);
+                        if (isEligibleForNoDataCall(packageInfo)) {
+                            sendNoDataChangedTo(connectOrThrow, packageInfo, i);
+                            z = true;
+                        } else {
+                            File topLevelSuccessStateDirectory2 = getTopLevelSuccessStateDirectory(true);
+                            File file = topLevelSuccessStateDirectory2 == null ? null : new File(topLevelSuccessStateDirectory2, str);
+                            if (file != null) {
+                                clearStatus(file, str);
+                            }
+                        }
+                    } catch (PackageManager.NameNotFoundException unused) {
+                        File topLevelSuccessStateDirectory3 = getTopLevelSuccessStateDirectory(true);
+                        File file2 = topLevelSuccessStateDirectory3 == null ? null : new File(topLevelSuccessStateDirectory3, str);
+                        if (file2 != null) {
+                            clearStatus(file2, str);
+                        }
+                    }
+                }
+            }
+            if (z) {
+                PackageInfo packageInfo2 = new PackageInfo();
+                packageInfo2.packageName = NO_DATA_END_SENTINEL;
+                sendNoDataChangedTo(connectOrThrow, packageInfo2, i);
+            }
+        } catch (RemoteException | TransportNotAvailableException e) {
+            Log.e("KVBT", "Could not inform transport of all unchanged apps", e);
+        }
+    }
+
+    public final boolean isEligibleForNoDataCall(PackageInfo packageInfo) {
+        return (this.mBackupEligibilityRules.appGetsFullBackup(packageInfo) ^ true) && this.mBackupEligibilityRules.appIsRunningAndEligibleForBackupWithTransport(this.mTransportConnection, packageInfo.packageName);
+    }
+
+    public void markCancel() {
+        this.mReporter.getClass();
+        this.mCancelled = true;
+        RemoteCall remoteCall = this.mPendingCall;
+        if (remoteCall != null) {
+            remoteCall.mFuture.complete(RemoteResult.FAILED_CANCELLED);
+        }
+    }
+
+    @Override // com.android.server.backup.BackupRestoreTask
+    public final void operationComplete(long j) {
     }
 
     @Override // java.lang.Runnable
-    public void run() {
+    public final void run() {
+        long j;
+        int status;
         Process.setThreadPriority(10);
         int i = 0;
         this.mHasDataToBackup = false;
         HashSet hashSet = new HashSet();
+        long j2 = -1000;
         try {
             startTask();
-            while (!this.mQueue.isEmpty() && !this.mCancelled) {
-                String str = (String) this.mQueue.remove(0);
+            while (!((ArrayList) this.mQueue).isEmpty() && !this.mCancelled) {
+                String str = (String) ((ArrayList) this.mQueue).remove(0);
                 try {
                     if ("@pm@".equals(str)) {
                         backupPm();
@@ -182,303 +512,87 @@ public class KeyValueBackupTask implements BackupRestoreTask, Runnable {
                 }
             }
             informTransportOfUnchangedApps(hashSet);
+            status = 0;
         } catch (TaskException e2) {
             if (e2.isStateCompromised()) {
                 this.mBackupManagerService.resetBackupState(this.mStateDirectory);
             }
-            revertTask();
-            i = e2.getStatus();
-        }
-        finishTask(i);
-    }
-
-    public final void informTransportOfUnchangedApps(Set set) {
-        String[] succeedingPackages = getSucceedingPackages();
-        if (succeedingPackages == null) {
-            return;
-        }
-        int i = this.mUserInitiated ? 9 : 8;
-        try {
-            BackupTransportClient connectOrThrow = this.mTransportConnection.connectOrThrow("KVBT.informTransportOfEmptyBackups()");
-            boolean z = false;
-            for (String str : succeedingPackages) {
-                if (set.contains(str)) {
-                    Log.v("KVBT", "Skipping package which was backed up this time: " + str);
-                } else {
-                    try {
-                        PackageInfo packageInfo = this.mPackageManager.getPackageInfo(str, 0);
-                        if (!isEligibleForNoDataCall(packageInfo)) {
-                            clearStatus(str);
-                        } else {
-                            sendNoDataChangedTo(connectOrThrow, packageInfo, i);
-                            z = true;
-                        }
-                    } catch (PackageManager.NameNotFoundException unused) {
-                        clearStatus(str);
-                    }
-                }
-            }
-            if (z) {
-                PackageInfo packageInfo2 = new PackageInfo();
-                packageInfo2.packageName = NO_DATA_END_SENTINEL;
-                sendNoDataChangedTo(connectOrThrow, packageInfo2, i);
-            }
-        } catch (RemoteException | TransportNotAvailableException e) {
-            Log.e("KVBT", "Could not inform transport of all unchanged apps", e);
-        }
-    }
-
-    public final boolean isEligibleForNoDataCall(PackageInfo packageInfo) {
-        return this.mBackupEligibilityRules.appIsKeyValueOnly(packageInfo) && this.mBackupEligibilityRules.appIsRunningAndEligibleForBackupWithTransport(this.mTransportConnection, packageInfo.packageName);
-    }
-
-    public final void sendNoDataChangedTo(BackupTransportClient backupTransportClient, PackageInfo packageInfo, int i) {
-        try {
-            ParcelFileDescriptor open = ParcelFileDescriptor.open(this.mBlankStateFile, 402653184);
+            this.mReporter.getClass();
             try {
-                int performBackup = backupTransportClient.performBackup(packageInfo, open, i);
-                if (performBackup != -1000 && performBackup != -1001) {
-                    backupTransportClient.finishBackup();
-                    return;
-                }
-                Log.w("KVBT", "Aborting informing transport of unchanged apps, transport errored");
-            } finally {
-                IoUtils.closeQuietly(open);
+                BackupTransportClient connectOrThrow = this.mTransportConnection.connectOrThrow("KVBT.revertTask()");
+                AndroidFuture newFuture = connectOrThrow.mTransportFutures.newFuture();
+                connectOrThrow.mTransportBinder.requestBackupTime(newFuture);
+                Long l = (Long) connectOrThrow.getFutureResult(newFuture);
+                j = l == null ? -1000L : l.longValue();
+            } catch (Exception e3) {
+                this.mReporter.getClass();
+                Slog.w("KeyValueBackupTask", "Unable to contact transport for recommended backoff: " + e3);
+                j = 0L;
             }
-        } catch (FileNotFoundException unused) {
-            Log.e("KVBT", "Unable to find blank state file, aborting unchanged apps signal.");
-        }
-    }
-
-    public final String[] getSucceedingPackages() {
-        File topLevelSuccessStateDirectory = getTopLevelSuccessStateDirectory(false);
-        if (topLevelSuccessStateDirectory == null) {
-            return null;
-        }
-        return topLevelSuccessStateDirectory.list();
-    }
-
-    public final void setSuccessState(String str, boolean z) {
-        File successStateFileFor = getSuccessStateFileFor(str);
-        if (successStateFileFor == null || successStateFileFor.exists() == z) {
-            return;
-        }
-        if (!z) {
-            clearStatus(str, successStateFileFor);
-            return;
-        }
-        try {
-            if (successStateFileFor.createNewFile()) {
-                return;
+            UserBackupManagerService userBackupManagerService = this.mBackupManagerService;
+            KeyValueBackupJob.schedule(userBackupManagerService.mUserId, userBackupManagerService.mContext, j, userBackupManagerService);
+            Iterator it = this.mOriginalQueue.iterator();
+            while (it.hasNext()) {
+                this.mBackupManagerService.dataChangedImpl((String) it.next());
             }
-            Log.w("KVBT", "Unable to permanently record success for " + str);
-        } catch (IOException e) {
-            Log.w("KVBT", "Unable to permanently record success for " + str, e);
+            status = e2.getStatus();
         }
-    }
-
-    public final void clearStatus(String str) {
-        File successStateFileFor = getSuccessStateFileFor(str);
-        if (successStateFileFor == null) {
-            return;
-        }
-        clearStatus(str, successStateFileFor);
-    }
-
-    public final void clearStatus(String str, File file) {
-        if (!file.exists() || file.delete()) {
-            return;
-        }
-        Log.w("KVBT", "Unable to remove status file for " + str);
-    }
-
-    public final File getSuccessStateFileFor(String str) {
-        File topLevelSuccessStateDirectory = getTopLevelSuccessStateDirectory(true);
-        if (topLevelSuccessStateDirectory == null) {
-            return null;
-        }
-        return new File(topLevelSuccessStateDirectory, str);
-    }
-
-    public final File getTopLevelSuccessStateDirectory(boolean z) {
-        File file = new File(this.mStateDirectory, "backing-up");
-        if (file.exists() || !z || file.mkdirs()) {
-            return file;
-        }
-        Log.e("KVBT", "Unable to create backing-up state directory");
-        return null;
-    }
-
-    public final int sendDataToTransport(PackageInfo packageInfo) {
-        try {
-            return sendDataToTransport();
-        } catch (IOException e) {
-            this.mReporter.onAgentDataError(packageInfo.packageName, e);
-            throw TaskException.causedBy(e);
-        }
-    }
-
-    public final void startTask() {
-        if (this.mBackupManagerService.isBackupOperationInProgress()) {
-            this.mReporter.onSkipBackup();
-            throw TaskException.create();
-        }
-        this.mFullBackupTask = createFullBackupTask(this.mPendingFullBackups);
-        registerTask();
-        if (this.mQueue.isEmpty() && this.mPendingFullBackups.isEmpty()) {
-            this.mReporter.onEmptyQueueAtStart();
-            return;
-        }
-        if (this.mQueue.remove("@pm@") || !this.mNonIncremental) {
-            this.mQueue.add(0, "@pm@");
-        } else {
-            this.mReporter.onSkipPm();
-        }
-        this.mReporter.onQueueReady(this.mQueue);
-        File file = new File(this.mStateDirectory, "@pm@");
-        try {
-            BackupTransportClient connectOrThrow = this.mTransportConnection.connectOrThrow("KVBT.startTask()");
-            String name = connectOrThrow.name();
-            if (name.contains("EncryptedLocalTransport")) {
-                this.mNonIncremental = true;
-            }
-            this.mReporter.onTransportReady(name);
-            if (file.length() <= 0) {
-                this.mReporter.onInitializeTransport(name);
-                this.mBackupManagerService.resetBackupState(this.mStateDirectory);
-                int initializeDevice = connectOrThrow.initializeDevice();
-                this.mReporter.onTransportInitialized(initializeDevice);
-                if (initializeDevice == 0) {
-                } else {
-                    throw TaskException.stateCompromised();
-                }
-            }
-        } catch (TaskException e) {
-            throw e;
-        } catch (Exception e2) {
-            this.mReporter.onInitializeTransportError(e2);
-            throw TaskException.stateCompromised();
-        }
-    }
-
-    public final PerformFullTransportBackupTask createFullBackupTask(List list) {
-        return new PerformFullTransportBackupTask(this.mBackupManagerService, this.mOperationStorage, this.mTransportConnection, null, (String[]) list.toArray(new String[list.size()]), false, null, new CountDownLatch(1), this.mReporter.getObserver(), this.mReporter.getMonitor(), this.mTaskFinishedListener, this.mUserInitiated, this.mBackupEligibilityRules);
-    }
-
-    public final void backupPm() {
-        this.mReporter.onStartPackageBackup("@pm@");
-        PackageInfo packageInfo = new PackageInfo();
-        this.mCurrentPackage = packageInfo;
-        packageInfo.packageName = "@pm@";
-        try {
-            try {
-                extractPmAgentData(packageInfo);
-                cleanUpAgentForTransportStatus(sendDataToTransport(this.mCurrentPackage));
-            } catch (TaskException e) {
-                throw TaskException.stateCompromised(e);
-            }
-        } catch (AgentException | TaskException e2) {
-            this.mReporter.onExtractPmAgentDataError(e2);
-            cleanUpAgentForError(e2);
-            if (e2 instanceof TaskException) {
-                throw ((TaskException) e2);
-            }
-            throw TaskException.stateCompromised(e2);
-        }
-    }
-
-    public final void backupPackage(String str) {
-        this.mReporter.onStartPackageBackup(str);
-        PackageInfo packageForBackup = getPackageForBackup(str);
-        this.mCurrentPackage = packageForBackup;
-        try {
-            extractAgentData(packageForBackup);
-            BackupManagerMonitorUtils.monitorAgentLoggingResults(this.mReporter.getMonitor(), this.mCurrentPackage, this.mAgent);
-            cleanUpAgentForTransportStatus(sendDataToTransport(this.mCurrentPackage));
-        } catch (AgentException | TaskException e) {
-            cleanUpAgentForError(e);
-            throw e;
-        }
-    }
-
-    public final PackageInfo getPackageForBackup(String str) {
-        try {
-            PackageInfo packageInfoAsUser = this.mPackageManager.getPackageInfoAsUser(str, 134217728, this.mUserId);
-            ApplicationInfo applicationInfo = packageInfoAsUser.applicationInfo;
-            if (!this.mBackupEligibilityRules.appIsEligibleForBackup(applicationInfo)) {
-                this.mReporter.onPackageNotEligibleForBackup(str);
-                throw AgentException.permanent();
-            }
-            if (this.mBackupEligibilityRules.appGetsFullBackup(packageInfoAsUser)) {
-                this.mReporter.onPackageEligibleForFullBackup(str);
-                throw AgentException.permanent();
-            }
-            if (!this.mBackupEligibilityRules.appIsStopped(applicationInfo)) {
-                return packageInfoAsUser;
-            }
-            this.mReporter.onPackageStopped(str);
-            throw AgentException.permanent();
-        } catch (PackageManager.NameNotFoundException e) {
-            this.mReporter.onAgentUnknown(str);
-            throw AgentException.permanent(e);
-        }
-    }
-
-    public final IBackupAgent bindAgent(PackageInfo packageInfo) {
-        String str = packageInfo.packageName;
-        try {
-            IBackupAgent bindToAgentSynchronous = this.mBackupManagerService.bindToAgentSynchronous(packageInfo.applicationInfo, 0, this.mBackupEligibilityRules.getBackupDestination());
-            if (bindToAgentSynchronous != null) {
-                return bindToAgentSynchronous;
-            }
-            this.mReporter.onAgentError(str);
-            throw AgentException.transitory();
-        } catch (SecurityException e) {
-            this.mReporter.onBindAgentError(str, e);
-            throw AgentException.transitory(e);
-        }
-    }
-
-    public final void finishTask(int i) {
-        Iterator it = this.mQueue.iterator();
-        while (it.hasNext()) {
-            this.mBackupManagerService.dataChangedImpl((String) it.next());
+        Iterator it2 = ((ArrayList) this.mQueue).iterator();
+        while (it2.hasNext()) {
+            this.mBackupManagerService.dataChangedImpl((String) it2.next());
         }
         DataChangedJournal dataChangedJournal = this.mJournal;
-        if (dataChangedJournal != null && !dataChangedJournal.delete()) {
-            this.mReporter.onJournalDeleteFailed(this.mJournal);
+        if (dataChangedJournal != null && !dataChangedJournal.mFile.delete()) {
+            KeyValueBackupReporter keyValueBackupReporter = this.mReporter;
+            DataChangedJournal dataChangedJournal2 = this.mJournal;
+            keyValueBackupReporter.getClass();
+            Slog.e("KeyValueBackupTask", "Unable to remove backup journal file " + dataChangedJournal2);
         }
-        long currentToken = this.mBackupManagerService.getCurrentToken();
-        String str = null;
-        if (this.mHasDataToBackup && i == 0 && currentToken == 0) {
+        long j3 = this.mBackupManagerService.mCurrentToken;
+        String str2 = null;
+        if (this.mHasDataToBackup && status == 0 && j3 == 0) {
             try {
-                BackupTransportClient connectOrThrow = this.mTransportConnection.connectOrThrow("KVBT.finishTask()");
-                str = connectOrThrow.name();
-                this.mBackupManagerService.setCurrentToken(connectOrThrow.getCurrentRestoreSet());
+                BackupTransportClient connectOrThrow2 = this.mTransportConnection.connectOrThrow("KVBT.finishTask()");
+                str2 = connectOrThrow2.name();
+                UserBackupManagerService userBackupManagerService2 = this.mBackupManagerService;
+                AndroidFuture newFuture2 = connectOrThrow2.mTransportFutures.newFuture();
+                connectOrThrow2.mTransportBinder.getCurrentRestoreSet(newFuture2);
+                Long l2 = (Long) connectOrThrow2.getFutureResult(newFuture2);
+                if (l2 != null) {
+                    j2 = l2.longValue();
+                }
+                userBackupManagerService2.mCurrentToken = j2;
                 this.mBackupManagerService.writeRestoreTokens();
-            } catch (Exception e) {
-                this.mReporter.onSetCurrentTokenError(e);
+            } catch (Exception e4) {
+                this.mReporter.getClass();
+                Slog.e("KeyValueBackupTask", "Transport threw reporting restore set: " + e4);
             }
         }
         synchronized (this.mQueueLock) {
-            this.mBackupManagerService.setBackupRunning(false);
-            if (i == -1001) {
-                this.mReporter.onTransportNotInitialized(str);
+            this.mBackupManagerService.mBackupRunning = false;
+            if (status == -1001) {
+                this.mReporter.getClass();
+                EventLog.writeEvent(2826, str2);
                 try {
                     triggerTransportInitializationLocked();
-                } catch (Exception e2) {
-                    this.mReporter.onPendingInitializeTransportError(e2);
-                    i = -1000;
+                } catch (Exception e5) {
+                    this.mReporter.getClass();
+                    Slog.w("KeyValueBackupTask", "Failed to query transport name for pending init: " + e5);
+                    status = -1000;
                 }
             }
         }
-        unregisterTask();
-        this.mReporter.onTaskFinished();
+        ((LifecycleOperationStorage) this.mOperationStorage).removeOperation(this.mCurrentOpToken);
+        this.mReporter.getClass();
+        Slog.i("KeyValueBackupTask", "K/V backup pass finished");
         if (this.mCancelled) {
             this.mCancelAcknowledged.open();
         }
-        if (!this.mCancelled && i == 0 && this.mFullBackupTask != null && !this.mPendingFullBackups.isEmpty()) {
-            this.mReporter.onStartFullBackup(this.mPendingFullBackups);
+        if (!this.mCancelled && status == 0 && this.mFullBackupTask != null && !this.mPendingFullBackups.isEmpty()) {
+            KeyValueBackupReporter keyValueBackupReporter2 = this.mReporter;
+            List list = this.mPendingFullBackups;
+            keyValueBackupReporter2.getClass();
+            Slog.d("KeyValueBackupTask", "Starting full backups for: " + list);
             new Thread(this.mFullBackupTask, "full-transport-requested").start();
             return;
         }
@@ -487,390 +601,176 @@ public class KeyValueBackupTask implements BackupRestoreTask, Runnable {
             performFullTransportBackupTask.unregisterTask();
         }
         this.mTaskFinishedListener.onFinished("KVBT.finishTask()");
-        this.mReporter.onBackupFinished(getBackupFinishedStatus(this.mCancelled, i));
-        this.mBackupManagerService.getWakelock().release();
+        KeyValueBackupReporter keyValueBackupReporter3 = this.mReporter;
+        if (this.mCancelled) {
+            i = -2003;
+        } else if (status != -1005 && status != -1002 && status != 0) {
+            i = -1000;
+        }
+        BackupObserverUtils.sendBackupFinished(keyValueBackupReporter3.mObserver, i);
+        this.mBackupManagerService.mWakelock.release();
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:174:0x0136, code lost:
+    
+        if (java.util.Objects.equals(r2, r13) != false) goto L96;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int sendDataToTransport() {
+        /*
+            Method dump skipped, instructions count: 857
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.backup.keyvalue.KeyValueBackupTask.sendDataToTransport():int");
+    }
+
+    public final int sendDataToTransport(PackageInfo packageInfo) {
+        try {
+            return sendDataToTransport();
+        } catch (IOException e) {
+            KeyValueBackupReporter keyValueBackupReporter = this.mReporter;
+            String str = packageInfo.packageName;
+            keyValueBackupReporter.getClass();
+            Slog.w("KeyValueBackupTask", "Unable to read/write agent data for " + str + ": " + e);
+            int i = TaskException.$r8$clinit;
+            if (e instanceof TaskException) {
+                throw ((TaskException) e);
+            }
+            throw new TaskException(e, false, -1000);
+        }
+    }
+
+    public final void sendNoDataChangedTo(BackupTransportClient backupTransportClient, PackageInfo packageInfo, int i) {
+        try {
+            ParcelFileDescriptor open = ParcelFileDescriptor.open(this.mBlankStateFile, 402653184);
+            try {
+                BackupTransportClient.TransportStatusCallbackPool transportStatusCallbackPool = backupTransportClient.mCallbackPool;
+                TransportStatusCallback acquire = transportStatusCallbackPool.acquire();
+                try {
+                    backupTransportClient.mTransportBinder.performBackup(packageInfo, open, i, acquire);
+                    int operationStatus = acquire.getOperationStatus();
+                    transportStatusCallbackPool.recycle(acquire);
+                    if (operationStatus != -1000 && operationStatus != -1001) {
+                        backupTransportClient.finishBackup();
+                        return;
+                    }
+                    Log.w("KVBT", "Aborting informing transport of unchanged apps, transport errored");
+                } catch (Throwable th) {
+                    transportStatusCallbackPool.recycle(acquire);
+                    throw th;
+                }
+            } finally {
+                IoUtils.closeQuietly(open);
+            }
+        } catch (FileNotFoundException unused) {
+            Log.e("KVBT", "Unable to find blank state file, aborting unchanged apps signal.");
+        }
+    }
+
+    public final void setSuccessState(String str, boolean z) {
+        File topLevelSuccessStateDirectory = getTopLevelSuccessStateDirectory(true);
+        File file = topLevelSuccessStateDirectory == null ? null : new File(topLevelSuccessStateDirectory, str);
+        if (file == null || file.exists() == z) {
+            return;
+        }
+        if (!z) {
+            clearStatus(file, str);
+            return;
+        }
+        try {
+            if (file.createNewFile()) {
+                return;
+            }
+            Log.w("KVBT", "Unable to permanently record success for " + str);
+        } catch (IOException e) {
+            Log.w("KVBT", "Unable to permanently record success for " + str, e);
+        }
+    }
+
+    public final void startTask() {
+        if (this.mBackupManagerService.isBackupOperationInProgress()) {
+            this.mReporter.getClass();
+            Slog.d("KeyValueBackupTask", "Skipping backup since one is already in progress");
+            throw new TaskException(-1000, false);
+        }
+        List list = this.mPendingFullBackups;
+        UserBackupManagerService userBackupManagerService = this.mBackupManagerService;
+        OperationStorage operationStorage = this.mOperationStorage;
+        TransportConnection transportConnection = this.mTransportConnection;
+        String[] strArr = (String[]) list.toArray(new String[list.size()]);
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        KeyValueBackupReporter keyValueBackupReporter = this.mReporter;
+        this.mFullBackupTask = new PerformFullTransportBackupTask(userBackupManagerService, operationStorage, transportConnection, strArr, false, null, countDownLatch, keyValueBackupReporter.mObserver, keyValueBackupReporter.mBackupManagerMonitorEventSender.mMonitor, this.mTaskFinishedListener, this.mUserInitiated, this.mBackupEligibilityRules);
+        OperationStorage operationStorage2 = this.mOperationStorage;
+        int i = this.mCurrentOpToken;
+        LifecycleOperationStorage lifecycleOperationStorage = (LifecycleOperationStorage) operationStorage2;
+        lifecycleOperationStorage.getClass();
+        lifecycleOperationStorage.registerOperationForPackages(i, Sets.newHashSet(), this, 2);
+        if (((ArrayList) this.mQueue).isEmpty() && this.mPendingFullBackups.isEmpty()) {
+            this.mReporter.getClass();
+            Slog.w("KeyValueBackupTask", "Backup begun with an empty queue, nothing to do");
+            return;
+        }
+        if (((ArrayList) this.mQueue).remove("@pm@") || !this.mNonIncremental) {
+            ((ArrayList) this.mQueue).add(0, "@pm@");
+        } else {
+            this.mReporter.getClass();
+            Slog.d("KeyValueBackupTask", "Skipping backup of PM metadata");
+        }
+        KeyValueBackupReporter keyValueBackupReporter2 = this.mReporter;
+        List list2 = this.mQueue;
+        keyValueBackupReporter2.getClass();
+        Slog.i("KeyValueBackupTask", "Beginning backup of " + ((ArrayList) list2).size() + " targets");
+        File file = new File(this.mStateDirectory, "@pm@");
+        try {
+            BackupTransportClient connectOrThrow = this.mTransportConnection.connectOrThrow("KVBT.startTask()");
+            String name = connectOrThrow.name();
+            if (name.contains("EncryptedLocalTransport")) {
+                this.mNonIncremental = true;
+            }
+            this.mReporter.getClass();
+            EventLog.writeEvent(2821, name);
+            if (file.length() <= 0) {
+                this.mReporter.getClass();
+                Slog.i("KeyValueBackupTask", "Initializing transport and resetting backup state");
+                this.mBackupManagerService.resetBackupState(this.mStateDirectory);
+                BackupTransportClient.TransportStatusCallbackPool transportStatusCallbackPool = connectOrThrow.mCallbackPool;
+                TransportStatusCallback acquire = transportStatusCallbackPool.acquire();
+                try {
+                    connectOrThrow.mTransportBinder.initializeDevice(acquire);
+                    int operationStatus = acquire.getOperationStatus();
+                    transportStatusCallbackPool.recycle(acquire);
+                    this.mReporter.getClass();
+                    if (operationStatus == 0) {
+                        EventLog.writeEvent(2827, new Object[0]);
+                    } else {
+                        EventLog.writeEvent(2822, "(initialize)");
+                        Slog.e("KeyValueBackupTask", "Transport error in initializeDevice()");
+                    }
+                    if (operationStatus != 0) {
+                        throw new TaskException(-1000, true);
+                    }
+                } catch (Throwable th) {
+                    transportStatusCallbackPool.recycle(acquire);
+                    throw th;
+                }
+            }
+        } catch (TaskException e) {
+            throw e;
+        } catch (Exception e2) {
+            this.mReporter.getClass();
+            Slog.e("KeyValueBackupTask", "Error during initialization", e2);
+            throw new TaskException(-1000, true);
+        }
     }
 
     public final void triggerTransportInitializationLocked() {
-        this.mBackupManagerService.getPendingInits().add(this.mTransportConnection.connectOrThrow("KVBT.triggerTransportInitializationLocked").name());
-        deletePmStateFile();
-        this.mBackupManagerService.backupNow();
-    }
-
-    public final void deletePmStateFile() {
+        this.mBackupManagerService.mPendingInits.add(this.mTransportConnection.connectOrThrow("KVBT.triggerTransportInitializationLocked").name());
         new File(this.mStateDirectory, "@pm@").delete();
-    }
-
-    public final void extractPmAgentData(PackageInfo packageInfo) {
-        Preconditions.checkArgument(packageInfo.packageName.equals("@pm@"));
-        IBackupAgent asInterface = IBackupAgent.Stub.asInterface(this.mBackupManagerService.makeMetadataAgentWithEligibilityRules(this.mBackupEligibilityRules).onBind());
-        this.mAgent = asInterface;
-        extractAgentData(packageInfo, asInterface);
-    }
-
-    public final void extractAgentData(PackageInfo packageInfo) {
-        this.mBackupManagerService.setWorkSource(new WorkSource(packageInfo.applicationInfo.uid));
-        try {
-            IBackupAgent bindAgent = bindAgent(packageInfo);
-            this.mAgent = bindAgent;
-            extractAgentData(packageInfo, bindAgent);
-        } finally {
-            this.mBackupManagerService.setWorkSource(null);
-        }
-    }
-
-    public final void extractAgentData(PackageInfo packageInfo, final IBackupAgent iBackupAgent) {
-        String str = packageInfo.packageName;
-        this.mReporter.onExtractAgentData(str);
-        this.mSavedStateFile = new File(this.mStateDirectory, str);
-        this.mBackupDataFile = new File(this.mDataDirectory, str + STAGING_FILE_SUFFIX);
-        this.mNewStateFile = new File(this.mStateDirectory, str + NEW_STATE_FILE_SUFFIX);
-        this.mReporter.onAgentFilesReady(this.mBackupDataFile);
-        boolean z = false;
-        try {
-            this.mSavedState = ParcelFileDescriptor.open(this.mNonIncremental ? this.mBlankStateFile : this.mSavedStateFile, 402653184);
-            this.mBackupData = ParcelFileDescriptor.open(this.mBackupDataFile, 1006632960);
-            this.mNewState = ParcelFileDescriptor.open(this.mNewStateFile, 1006632960);
-            if (this.mUserId == 0 && !SELinux.restorecon(this.mBackupDataFile)) {
-                this.mReporter.onRestoreconFailed(this.mBackupDataFile);
-            }
-            BackupTransportClient connectOrThrow = this.mTransportConnection.connectOrThrow("KVBT.extractAgentData()");
-            final long backupQuota = connectOrThrow.getBackupQuota(str, false);
-            final int transportFlags = connectOrThrow.getTransportFlags();
-            z = true;
-            checkAgentResult(packageInfo, remoteCall(new RemoteCallable() { // from class: com.android.server.backup.keyvalue.KeyValueBackupTask$$ExternalSyntheticLambda1
-                @Override // com.android.server.backup.remote.RemoteCallable
-                public final void call(Object obj) {
-                    KeyValueBackupTask.this.lambda$extractAgentData$0(iBackupAgent, backupQuota, transportFlags, (IBackupCallback) obj);
-                }
-            }, this.mAgentTimeoutParameters.getKvBackupAgentTimeoutMillis(), "doBackup()"));
-        } catch (Exception e) {
-            this.mReporter.onCallAgentDoBackupError(str, z, e);
-            if (z) {
-                throw AgentException.transitory(e);
-            }
-            throw TaskException.create();
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$extractAgentData$0(IBackupAgent iBackupAgent, long j, int i, IBackupCallback iBackupCallback) {
-        iBackupAgent.doBackup(this.mSavedState, this.mBackupData, this.mNewState, j, iBackupCallback, i);
-    }
-
-    public final void checkAgentResult(PackageInfo packageInfo, RemoteResult remoteResult) {
-        if (remoteResult == RemoteResult.FAILED_THREAD_INTERRUPTED) {
-            this.mCancelled = true;
-            this.mReporter.onAgentCancelled(packageInfo);
-            throw TaskException.create();
-        }
-        if (remoteResult == RemoteResult.FAILED_CANCELLED) {
-            this.mReporter.onAgentCancelled(packageInfo);
-            throw TaskException.create();
-        }
-        if (remoteResult == RemoteResult.FAILED_TIMED_OUT) {
-            this.mReporter.onAgentTimedOut(packageInfo);
-            throw AgentException.transitory();
-        }
-        Preconditions.checkState(remoteResult.isPresent());
-        long j = remoteResult.get();
-        if (j == -1) {
-            this.mReporter.onAgentResultError(packageInfo);
-            throw AgentException.transitory();
-        }
-        Preconditions.checkState(j == 0);
-    }
-
-    public final void agentFail(IBackupAgent iBackupAgent, String str) {
-        try {
-            iBackupAgent.fail(str);
-        } catch (Exception unused) {
-            this.mReporter.onFailAgentError(this.mCurrentPackage.packageName);
-        }
-    }
-
-    public final String SHA1Checksum(byte[] bArr) {
-        try {
-            byte[] digest = MessageDigest.getInstance("SHA-1").digest(bArr);
-            StringBuilder sb = new StringBuilder(digest.length * 2);
-            for (byte b : digest) {
-                sb.append(Integer.toHexString(b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            this.mReporter.onDigestError(e);
-            return "00";
-        }
-    }
-
-    public final void writeWidgetPayloadIfAppropriate(FileDescriptor fileDescriptor, String str) {
-        String str2;
-        byte[] widgetState = AppWidgetBackupBridge.getWidgetState(str, this.mUserId);
-        File file = new File(this.mStateDirectory, str + "_widget");
-        boolean exists = file.exists();
-        if (exists || widgetState != null) {
-            this.mReporter.onWriteWidgetData(exists, widgetState);
-            if (widgetState != null) {
-                str2 = SHA1Checksum(widgetState);
-                if (exists) {
-                    FileInputStream fileInputStream = new FileInputStream(file);
-                    try {
-                        DataInputStream dataInputStream = new DataInputStream(fileInputStream);
-                        try {
-                            String readUTF = dataInputStream.readUTF();
-                            dataInputStream.close();
-                            fileInputStream.close();
-                            if (Objects.equals(str2, readUTF)) {
-                                return;
-                            }
-                        } finally {
-                        }
-                    } catch (Throwable th) {
-                        try {
-                            fileInputStream.close();
-                        } catch (Throwable th2) {
-                            th.addSuppressed(th2);
-                        }
-                        throw th;
-                    }
-                }
-            } else {
-                str2 = null;
-            }
-            BackupDataOutput backupDataOutput = new BackupDataOutput(fileDescriptor);
-            if (widgetState != null) {
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
-                try {
-                    DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
-                    try {
-                        dataOutputStream.writeUTF(str2);
-                        dataOutputStream.close();
-                        fileOutputStream.close();
-                        backupDataOutput.writeEntityHeader("￭￭widget", widgetState.length);
-                        backupDataOutput.writeEntityData(widgetState, widgetState.length);
-                        return;
-                    } finally {
-                    }
-                } catch (Throwable th3) {
-                    try {
-                        fileOutputStream.close();
-                    } catch (Throwable th4) {
-                        th3.addSuppressed(th4);
-                    }
-                    throw th3;
-                }
-            }
-            backupDataOutput.writeEntityHeader("￭￭widget", -1);
-            file.delete();
-        }
-    }
-
-    public final int sendDataToTransport() {
-        Preconditions.checkState(this.mBackupData != null);
-        checkBackupData(this.mCurrentPackage.applicationInfo, this.mBackupDataFile);
-        String str = this.mCurrentPackage.packageName;
-        writeWidgetPayloadIfAppropriate(this.mBackupData.getFileDescriptor(), str);
-        int transportPerformBackup = transportPerformBackup(this.mCurrentPackage, this.mBackupDataFile, this.mSavedStateFile.length() == 0);
-        handleTransportStatus(transportPerformBackup, str, this.mBackupDataFile.length());
-        return transportPerformBackup;
-    }
-
-    public final int transportPerformBackup(PackageInfo packageInfo, File file, boolean z) {
-        String str = packageInfo.packageName;
-        if (file.length() <= 0) {
-            this.mReporter.onEmptyData(packageInfo);
-            return 0;
-        }
-        this.mHasDataToBackup = true;
-        try {
-            ParcelFileDescriptor open = ParcelFileDescriptor.open(file, 268435456);
-            try {
-                BackupTransportClient connectOrThrow = this.mTransportConnection.connectOrThrow("KVBT.transportPerformBackup()");
-                this.mReporter.onTransportPerformBackup(str);
-                int performBackup = connectOrThrow.performBackup(packageInfo, open, getPerformBackupFlags(this.mUserInitiated, z));
-                if (performBackup == 0) {
-                    performBackup = connectOrThrow.finishBackup();
-                } else if (performBackup == -1001) {
-                    this.mReporter.onTransportNotInitialized(connectOrThrow.name());
-                }
-                if (open != null) {
-                    open.close();
-                }
-                if (!z || performBackup != -1006) {
-                    return performBackup;
-                }
-                this.mReporter.onPackageBackupNonIncrementalAndNonIncrementalRequired(str);
-                throw TaskException.create();
-            } finally {
-            }
-        } catch (Exception e) {
-            this.mReporter.onPackageBackupTransportError(str, e);
-            throw TaskException.causedBy(e);
-        }
-    }
-
-    public final void handleTransportStatus(int i, String str, long j) {
-        if (i == 0) {
-            this.mReporter.onPackageBackupComplete(str, j);
-            return;
-        }
-        if (i == -1006) {
-            this.mReporter.onPackageBackupNonIncrementalRequired(this.mCurrentPackage);
-            this.mQueue.add(0, str);
-        } else {
-            if (i == -1002) {
-                this.mReporter.onPackageBackupRejected(str);
-                throw AgentException.permanent();
-            }
-            if (i == -1005) {
-                this.mReporter.onPackageBackupQuotaExceeded(str);
-                agentDoQuotaExceeded(this.mAgent, str, j);
-                throw AgentException.permanent();
-            }
-            this.mReporter.onPackageBackupTransportFailure(str);
-            throw TaskException.forStatus(i);
-        }
-    }
-
-    public final void agentDoQuotaExceeded(final IBackupAgent iBackupAgent, String str, final long j) {
-        if (iBackupAgent != null) {
-            try {
-                final long backupQuota = this.mTransportConnection.connectOrThrow("KVBT.agentDoQuotaExceeded()").getBackupQuota(str, false);
-                remoteCall(new RemoteCallable() { // from class: com.android.server.backup.keyvalue.KeyValueBackupTask$$ExternalSyntheticLambda0
-                    @Override // com.android.server.backup.remote.RemoteCallable
-                    public final void call(Object obj) {
-                        iBackupAgent.doQuotaExceeded(j, backupQuota, (IBackupCallback) obj);
-                    }
-                }, this.mAgentTimeoutParameters.getQuotaExceededTimeoutMillis(), "doQuotaExceeded()");
-            } catch (Exception e) {
-                this.mReporter.onAgentDoQuotaExceededError(e);
-            }
-        }
-    }
-
-    public final void checkBackupData(ApplicationInfo applicationInfo, File file) {
-        if (applicationInfo == null || (applicationInfo.flags & 1) != 0) {
-            return;
-        }
-        ParcelFileDescriptor open = ParcelFileDescriptor.open(file, 268435456);
-        try {
-            BackupDataInput backupDataInput = new BackupDataInput(open.getFileDescriptor());
-            while (backupDataInput.readNextHeader()) {
-                String key = backupDataInput.getKey();
-                if (key != null && key.charAt(0) >= 65280) {
-                    this.mReporter.onAgentIllegalKey(this.mCurrentPackage, key);
-                    agentFail(this.mAgent, "Illegal backup key: " + key);
-                    throw AgentException.permanent();
-                }
-                backupDataInput.skipEntityData();
-            }
-            open.close();
-        } catch (Throwable th) {
-            if (open != null) {
-                try {
-                    open.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-            }
-            throw th;
-        }
-    }
-
-    @Override // com.android.server.backup.BackupRestoreTask
-    public void handleCancel(boolean z) {
-        Preconditions.checkArgument(z, "Can't partially cancel a key-value backup task");
-        markCancel();
-        waitCancel();
-    }
-
-    public void markCancel() {
-        this.mReporter.onCancel();
-        this.mCancelled = true;
-        RemoteCall remoteCall = this.mPendingCall;
-        if (remoteCall != null) {
-            remoteCall.cancel();
-        }
-    }
-
-    public void waitCancel() {
-        this.mCancelAcknowledged.block();
-    }
-
-    public final void revertTask() {
-        long j;
-        this.mReporter.onRevertTask();
-        try {
-            j = this.mTransportConnection.connectOrThrow("KVBT.revertTask()").requestBackupTime();
-        } catch (Exception e) {
-            this.mReporter.onTransportRequestBackupTimeError(e);
-            j = 0;
-        }
-        KeyValueBackupJob.schedule(this.mBackupManagerService.getUserId(), this.mBackupManagerService.getContext(), j, this.mBackupManagerService);
-        Iterator it = this.mOriginalQueue.iterator();
-        while (it.hasNext()) {
-            this.mBackupManagerService.dataChangedImpl((String) it.next());
-        }
-    }
-
-    public final void cleanUpAgentForError(BackupException backupException) {
-        cleanUpAgent(1);
-    }
-
-    public final void cleanUpAgentForTransportStatus(int i) {
-        if (i == -1006) {
-            cleanUpAgent(2);
-        } else {
-            if (i == 0) {
-                cleanUpAgent(0);
-                return;
-            }
-            throw new AssertionError();
-        }
-    }
-
-    public final void cleanUpAgent(int i) {
-        applyStateTransaction(i);
-        File file = this.mBackupDataFile;
-        if (file != null) {
-            file.delete();
-        }
-        this.mBlankStateFile.delete();
-        this.mSavedStateFile = null;
-        this.mBackupDataFile = null;
-        this.mNewStateFile = null;
-        tryCloseFileDescriptor(this.mSavedState, "old state");
-        tryCloseFileDescriptor(this.mBackupData, "backup data");
-        tryCloseFileDescriptor(this.mNewState, "new state");
-        this.mSavedState = null;
-        this.mBackupData = null;
-        this.mNewState = null;
-        ApplicationInfo applicationInfo = this.mCurrentPackage.applicationInfo;
-        if (applicationInfo != null) {
-            this.mBackupManagerService.unbindAgent(applicationInfo);
-        }
-        this.mAgent = null;
-    }
-
-    public final void applyStateTransaction(int i) {
-        if (i == 0) {
-            this.mNewStateFile.renameTo(this.mSavedStateFile);
-            return;
-        }
-        if (i == 1) {
-            File file = this.mNewStateFile;
-            if (file != null) {
-                file.delete();
-                return;
-            }
-            return;
-        }
-        if (i == 2) {
-            this.mSavedStateFile.delete();
-            this.mNewStateFile.delete();
-        } else {
-            throw new IllegalArgumentException("Unknown state transaction " + i);
-        }
+        this.mBackupManagerService.backupNow();
     }
 
     public final void tryCloseFileDescriptor(Closeable closeable, String str) {
@@ -878,16 +778,13 @@ public class KeyValueBackupTask implements BackupRestoreTask, Runnable {
             try {
                 closeable.close();
             } catch (IOException unused) {
-                this.mReporter.onCloseFileDescriptorError(str);
+                this.mReporter.getClass();
+                Slog.w("KeyValueBackupTask", "Error closing " + str + " file-descriptor");
             }
         }
     }
 
-    public final RemoteResult remoteCall(RemoteCallable remoteCallable, long j, String str) {
-        this.mPendingCall = new RemoteCall(this.mCancelled, remoteCallable, j);
-        RemoteResult call = this.mPendingCall.call();
-        this.mReporter.onRemoteCallReturned(call, str);
-        this.mPendingCall = null;
-        return call;
+    public void waitCancel() {
+        this.mCancelAcknowledged.block();
     }
 }

@@ -13,21 +13,17 @@ import android.content.res.TypedArray;
 import android.os.RemoteException;
 import android.os.ShellCommand;
 import android.os.UserHandle;
-import android.text.TextUtils;
 import android.util.TypedValue;
-import android.util.Xml;
-import com.android.modules.utils.TypedXmlPullParser;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.UiModeManagerService$13$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class OverlayManagerShellCommand extends ShellCommand {
     public static final Map TYPE_MAP = Map.of("color", 28, "string", 3, "drawable", -1);
@@ -39,7 +35,26 @@ public final class OverlayManagerShellCommand extends ShellCommand {
         this.mInterface = iOverlayManager;
     }
 
-    public int onCommand(String str) {
+    public static void printListOverlay(PrintWriter printWriter, OverlayInfo overlayInfo) {
+        int i = overlayInfo.state;
+        String str = i != 2 ? (i == 3 || i == 6) ? "[x]" : "---" : "[ ]";
+        printWriter.println(str + " " + overlayInfo.getOverlayIdentifier());
+    }
+
+    public final void addOverlayValue(FabricatedOverlay.Builder builder, String str, String str2, String str3, String str4) {
+        String lowerCase = str2.toLowerCase(Locale.getDefault());
+        Map map = TYPE_MAP;
+        int intValue = map.containsKey(lowerCase) ? ((Integer) map.get(lowerCase)).intValue() : lowerCase.startsWith("0x") ? Integer.parseUnsignedInt(lowerCase.substring(2), 16) : Integer.parseUnsignedInt(lowerCase);
+        if (intValue == 3) {
+            builder.setResourceValue(str, intValue, str3, str4);
+        } else if (intValue < 0) {
+            builder.setResourceValue(str, openFileForSystem(str3, "r"), str4);
+        } else {
+            builder.setResourceValue(str, intValue, str3.startsWith("0x") ? Integer.parseUnsignedInt(str3.substring(2), 16) : Integer.parseUnsignedInt(str3), str4);
+        }
+    }
+
+    public final int onCommand(String str) {
         char c;
         if (str == null) {
             return handleDefaultCommands(str);
@@ -101,72 +116,86 @@ public final class OverlayManagerShellCommand extends ShellCommand {
                     break;
             }
             switch (c) {
-                case 0:
-                    return runList();
-                case 1:
-                    return runEnableDisable(true);
-                case 2:
-                    return runEnableDisable(false);
-                case 3:
-                    return runEnableExclusive();
-                case 4:
-                    return runSetPriority();
-                case 5:
-                    return runLookup();
-                case 6:
-                    return runFabricate();
-                default:
-                    return handleDefaultCommands(str);
             }
         } catch (RemoteException e) {
-            errPrintWriter.println("Remote exception: " + e);
+            UiModeManagerService$13$$ExternalSyntheticOutline0.m("Remote exception: ", e, errPrintWriter);
             return -1;
         } catch (IllegalArgumentException e2) {
             errPrintWriter.println("Error: " + e2.getMessage());
             return -1;
         }
+        return handleDefaultCommands(str);
     }
 
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.println("Overlay manager (overlay) commands:");
         outPrintWriter.println("  help");
         outPrintWriter.println("    Print this help text.");
         outPrintWriter.println("  dump [--verbose] [--user USER_ID] [[FIELD] PACKAGE[:NAME]]");
-        outPrintWriter.println("    Print debugging information about the overlay manager.");
-        outPrintWriter.println("    With optional parameters PACKAGE and NAME, limit output to the specified");
-        outPrintWriter.println("    overlay or target. With optional parameter FIELD, limit output to");
-        outPrintWriter.println("    the corresponding SettingsItem field. Field names are all lower case");
-        outPrintWriter.println("    and omit the m prefix, i.e. 'userid' for SettingsItem.mUserId.");
-        outPrintWriter.println("  list [--user USER_ID] [PACKAGE[:NAME]]");
-        outPrintWriter.println("    Print information about target and overlay packages.");
-        outPrintWriter.println("    Overlay packages are printed in priority order. With optional");
-        outPrintWriter.println("    parameters PACKAGE and NAME, limit output to the specified overlay or");
-        outPrintWriter.println("    target.");
-        outPrintWriter.println("  enable [--user USER_ID] PACKAGE[:NAME]");
-        outPrintWriter.println("    Enable overlay within or owned by PACKAGE with optional unique NAME.");
-        outPrintWriter.println("  disable [--user USER_ID] PACKAGE[:NAME]");
-        outPrintWriter.println("    Disable overlay within or owned by PACKAGE with optional unique NAME.");
-        outPrintWriter.println("  enable-exclusive [--user USER_ID] [--category] PACKAGE");
-        outPrintWriter.println("    Enable overlay within or owned by PACKAGE and disable all other overlays");
-        outPrintWriter.println("    for its target package. If the --category option is given, only disables");
-        outPrintWriter.println("    other overlays in the same category.");
-        outPrintWriter.println("  set-priority [--user USER_ID] PACKAGE PARENT|lowest|highest");
-        outPrintWriter.println("    Change the priority of the overlay to be just higher than");
-        outPrintWriter.println("    the priority of PARENT If PARENT is the special keyword");
-        outPrintWriter.println("    'lowest', change priority of PACKAGE to the lowest priority.");
-        outPrintWriter.println("    If PARENT is the special keyword 'highest', change priority of");
-        outPrintWriter.println("    PACKAGE to the highest priority.");
-        outPrintWriter.println("  lookup [--user USER_ID] [--verbose] PACKAGE-TO-LOAD PACKAGE:TYPE/NAME");
-        outPrintWriter.println("    Load a package and print the value of a given resource");
-        outPrintWriter.println("    applying the current configuration and enabled overlays.");
-        outPrintWriter.println("    For a more fine-grained alternative, use 'idmap2 lookup'.");
-        outPrintWriter.println("  fabricate [--user USER_ID] [--target-name OVERLAYABLE] --target PACKAGE");
-        outPrintWriter.println("            --name NAME [--file FILE] ");
-        outPrintWriter.println("            PACKAGE:TYPE/NAME ENCODED-TYPE-ID/TYPE-NAME ENCODED-VALUE");
-        outPrintWriter.println("    Create an overlay from a single resource. Caller must be root. Example:");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "    Print debugging information about the overlay manager.", "    With optional parameters PACKAGE and NAME, limit output to the specified", "    overlay or target. With optional parameter FIELD, limit output to", "    the corresponding SettingsItem field. Field names are all lower case");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "    and omit the m prefix, i.e. 'userid' for SettingsItem.mUserId.", "  list [--user USER_ID] [PACKAGE[:NAME]]", "    Print information about target and overlay packages.", "    Overlay packages are printed in priority order. With optional");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "    parameters PACKAGE and NAME, limit output to the specified overlay or", "    target.", "  enable [--user USER_ID] PACKAGE[:NAME]", "    Enable overlay within or owned by PACKAGE with optional unique NAME.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  disable [--user USER_ID] PACKAGE[:NAME]", "    Disable overlay within or owned by PACKAGE with optional unique NAME.", "  enable-exclusive [--user USER_ID] [--category] PACKAGE", "    Enable overlay within or owned by PACKAGE and disable all other overlays");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "    for its target package. If the --category option is given, only disables", "    other overlays in the same category.", "  set-priority [--user USER_ID] PACKAGE PARENT|lowest|highest", "    Change the priority of the overlay to be just higher than");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "    the priority of PARENT If PARENT is the special keyword", "    'lowest', change priority of PACKAGE to the lowest priority.", "    If PARENT is the special keyword 'highest', change priority of", "    PACKAGE to the highest priority.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  lookup [--user USER_ID] [--verbose] PACKAGE-TO-LOAD PACKAGE:TYPE/NAME", "    Load a package and print the value of a given resource", "    applying the current configuration and enabled overlays.", "    For a more fine-grained alternative, use 'idmap2 lookup'.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  fabricate [--user USER_ID] [--target-name OVERLAYABLE] --target PACKAGE", "            --name NAME [--file FILE] ", "            PACKAGE:TYPE/NAME ENCODED-TYPE-ID|TYPE-NAME ENCODED-VALUE", "    Create an overlay from a single resource. Caller must be root. Example:");
         outPrintWriter.println("      fabricate --target android --name LighterGray \\");
         outPrintWriter.println("                android:color/lighter_gray 0x1c 0xffeeeeee");
+    }
+
+    public final int runEnableDisable(boolean z) {
+        PrintWriter errPrintWriter = getErrPrintWriter();
+        int i = 0;
+        while (true) {
+            String nextOption = getNextOption();
+            if (nextOption == null) {
+                this.mInterface.commit(new OverlayManagerTransaction.Builder().setEnabled(OverlayIdentifier.fromString(getNextArgRequired()), z, i).build());
+                return 0;
+            }
+            if (!nextOption.equals("--user")) {
+                errPrintWriter.println("Error: Unknown option: ".concat(nextOption));
+                return 1;
+            }
+            i = UserHandle.parseUserArg(getNextArgRequired());
+        }
+    }
+
+    public final int runEnableExclusive() {
+        PrintWriter errPrintWriter = getErrPrintWriter();
+        boolean z = false;
+        int i = 0;
+        while (true) {
+            String nextOption = getNextOption();
+            if (nextOption == null) {
+                String nextArgRequired = getNextArgRequired();
+                return z ? !this.mInterface.setEnabledExclusiveInCategory(nextArgRequired, i) ? 1 : 0 : !this.mInterface.setEnabledExclusive(nextArgRequired, true, i) ? 1 : 0;
+            }
+            if (nextOption.equals("--category")) {
+                z = true;
+            } else {
+                if (!nextOption.equals("--user")) {
+                    errPrintWriter.println("Error: Unknown option: ".concat(nextOption));
+                    return 1;
+                }
+                i = UserHandle.parseUserArg(getNextArgRequired());
+            }
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:120:0x01de A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:91:0x010c  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int runFabricate() {
+        /*
+            Method dump skipped, instructions count: 596
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.OverlayManagerShellCommand.runFabricate():int");
     }
 
     public final int runList() {
@@ -175,13 +204,7 @@ public final class OverlayManagerShellCommand extends ShellCommand {
         int i = 0;
         while (true) {
             String nextOption = getNextOption();
-            if (nextOption != null) {
-                if (!nextOption.equals("--user")) {
-                    errPrintWriter.println("Error: Unknown option: " + nextOption);
-                    return 1;
-                }
-                i = UserHandle.parseUserArg(getNextArgRequired());
-            } else {
+            if (nextOption == null) {
                 String nextArg = getNextArg();
                 if (nextArg != null) {
                     List overlayInfosForTarget = this.mInterface.getOverlayInfosForTarget(nextArg, i);
@@ -211,195 +234,11 @@ public final class OverlayManagerShellCommand extends ShellCommand {
                 }
                 return 0;
             }
-        }
-    }
-
-    public final void printListOverlay(PrintWriter printWriter, OverlayInfo overlayInfo) {
-        int i = overlayInfo.state;
-        printWriter.println(String.format("%s %s", i != 2 ? (i == 3 || i == 6) ? "[x]" : "---" : "[ ]", overlayInfo.getOverlayIdentifier()));
-    }
-
-    public final int runEnableDisable(boolean z) {
-        PrintWriter errPrintWriter = getErrPrintWriter();
-        int i = 0;
-        while (true) {
-            String nextOption = getNextOption();
-            if (nextOption != null) {
-                if (nextOption.equals("--user")) {
-                    i = UserHandle.parseUserArg(getNextArgRequired());
-                } else {
-                    errPrintWriter.println("Error: Unknown option: " + nextOption);
-                    return 1;
-                }
-            } else {
-                this.mInterface.commit(new OverlayManagerTransaction.Builder().setEnabled(OverlayIdentifier.fromString(getNextArgRequired()), z, i).build());
-                return 0;
+            if (!nextOption.equals("--user")) {
+                errPrintWriter.println("Error: Unknown option: ".concat(nextOption));
+                return 1;
             }
-        }
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x0065, code lost:
-    
-        if (r6.equals("--target-name") == false) goto L11;
-     */
-    /* JADX WARN: Failed to find 'out' block for switch in B:10:0x0023. Please report as an issue. */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final int runFabricate() {
-        /*
-            Method dump skipped, instructions count: 314
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.OverlayManagerShellCommand.runFabricate():int");
-    }
-
-    public final int addOverlayValuesFromXml(FabricatedOverlay.Builder builder, String str, String str2) {
-        int next;
-        PrintWriter errPrintWriter = getErrPrintWriter();
-        File file = new File(str2);
-        if (!file.exists()) {
-            errPrintWriter.println("Error: File does not exist");
-            return 1;
-        }
-        if (!file.canRead()) {
-            errPrintWriter.println("Error: File is unreadable");
-            return 1;
-        }
-        try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            try {
-                TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(fileInputStream);
-                do {
-                    next = resolvePullParser.next();
-                    if (next == 2) {
-                        break;
-                    }
-                } while (next != 1);
-                resolvePullParser.require(2, (String) null, "overlay");
-                while (true) {
-                    int next2 = resolvePullParser.next();
-                    if (next2 == 1) {
-                        fileInputStream.close();
-                        return 0;
-                    }
-                    if (next2 == 2) {
-                        String name = resolvePullParser.getName();
-                        if (!name.equals("item")) {
-                            errPrintWriter.println(TextUtils.formatSimple("Error: Unexpected tag: %s at line %d", new Object[]{name, Integer.valueOf(resolvePullParser.getLineNumber())}));
-                        } else {
-                            if (!resolvePullParser.isEmptyElementTag()) {
-                                errPrintWriter.println("Error: item tag must be empty");
-                                fileInputStream.close();
-                                return 1;
-                            }
-                            String attributeValue = resolvePullParser.getAttributeValue((String) null, "target");
-                            if (TextUtils.isEmpty(attributeValue)) {
-                                errPrintWriter.println("Error: target name missing at line " + resolvePullParser.getLineNumber());
-                                fileInputStream.close();
-                                return 1;
-                            }
-                            int indexOf = attributeValue.indexOf(47);
-                            if (indexOf < 0) {
-                                errPrintWriter.println("Error: target malformed, missing '/' at line " + resolvePullParser.getLineNumber());
-                                fileInputStream.close();
-                                return 1;
-                            }
-                            String substring = attributeValue.substring(0, indexOf);
-                            String attributeValue2 = resolvePullParser.getAttributeValue((String) null, "value");
-                            if (TextUtils.isEmpty(attributeValue2)) {
-                                errPrintWriter.println("Error: value missing at line " + resolvePullParser.getLineNumber());
-                                fileInputStream.close();
-                                return 1;
-                            }
-                            if (addOverlayValue(builder, str + ':' + attributeValue, substring, attributeValue2, resolvePullParser.getAttributeValue((String) null, "config")) != 0) {
-                                fileInputStream.close();
-                                return 1;
-                            }
-                        }
-                    }
-                }
-            } finally {
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 1;
-        } catch (XmlPullParserException e2) {
-            e2.printStackTrace();
-            return 1;
-        }
-    }
-
-    public final int addOverlayValue(FabricatedOverlay.Builder builder, String str, String str2, String str3, String str4) {
-        int parseUnsignedInt;
-        int parseUnsignedInt2;
-        String lowerCase = str2.toLowerCase(Locale.getDefault());
-        Map map = TYPE_MAP;
-        if (map.containsKey(lowerCase)) {
-            parseUnsignedInt = ((Integer) map.get(lowerCase)).intValue();
-        } else if (lowerCase.startsWith("0x")) {
-            parseUnsignedInt = Integer.parseUnsignedInt(lowerCase.substring(2), 16);
-        } else {
-            parseUnsignedInt = Integer.parseUnsignedInt(lowerCase);
-        }
-        if (parseUnsignedInt == 3) {
-            builder.setResourceValue(str, parseUnsignedInt, str3, str4);
-            return 0;
-        }
-        if (parseUnsignedInt < 0) {
-            builder.setResourceValue(str, openFileForSystem(str3, "r"), str4);
-            return 0;
-        }
-        if (str3.startsWith("0x")) {
-            parseUnsignedInt2 = Integer.parseUnsignedInt(str3.substring(2), 16);
-        } else {
-            parseUnsignedInt2 = Integer.parseUnsignedInt(str3);
-        }
-        builder.setResourceValue(str, parseUnsignedInt, parseUnsignedInt2, str4);
-        return 0;
-    }
-
-    public final int runEnableExclusive() {
-        PrintWriter errPrintWriter = getErrPrintWriter();
-        boolean z = false;
-        int i = 0;
-        while (true) {
-            String nextOption = getNextOption();
-            if (nextOption != null) {
-                if (nextOption.equals("--category")) {
-                    z = true;
-                } else if (nextOption.equals("--user")) {
-                    i = UserHandle.parseUserArg(getNextArgRequired());
-                } else {
-                    errPrintWriter.println("Error: Unknown option: " + nextOption);
-                    return 1;
-                }
-            } else {
-                String nextArgRequired = getNextArgRequired();
-                return z ? !this.mInterface.setEnabledExclusiveInCategory(nextArgRequired, i) ? 1 : 0 : !this.mInterface.setEnabledExclusive(nextArgRequired, true, i) ? 1 : 0;
-            }
-        }
-    }
-
-    public final int runSetPriority() {
-        PrintWriter errPrintWriter = getErrPrintWriter();
-        int i = 0;
-        while (true) {
-            String nextOption = getNextOption();
-            if (nextOption != null) {
-                if (nextOption.equals("--user")) {
-                    i = UserHandle.parseUserArg(getNextArgRequired());
-                } else {
-                    errPrintWriter.println("Error: Unknown option: " + nextOption);
-                    return 1;
-                }
-            } else {
-                String nextArgRequired = getNextArgRequired();
-                String nextArgRequired2 = getNextArgRequired();
-                return "highest".equals(nextArgRequired2) ? !this.mInterface.setHighestPriority(nextArgRequired, i) ? 1 : 0 : "lowest".equals(nextArgRequired2) ? !this.mInterface.setLowestPriority(nextArgRequired, i) ? 1 : 0 : !this.mInterface.setPriority(nextArgRequired, nextArgRequired2, i) ? 1 : 0;
-            }
+            i = UserHandle.parseUserArg(getNextArgRequired());
         }
     }
 
@@ -410,17 +249,7 @@ public final class OverlayManagerShellCommand extends ShellCommand {
         boolean z = false;
         while (true) {
             String nextOption = getNextOption();
-            if (nextOption != null) {
-                if (nextOption.equals("--user")) {
-                    i = UserHandle.parseUserArg(getNextArgRequired());
-                } else {
-                    if (!nextOption.equals("--verbose")) {
-                        errPrintWriter.println("Error: Unknown option: " + nextOption);
-                        return 1;
-                    }
-                    z = true;
-                }
-            } else {
+            if (nextOption == null) {
                 String nextArgRequired = getNextArgRequired();
                 String nextArgRequired2 = getNextArgRequired();
                 Matcher matcher = Pattern.compile("(.*?):(.*?)/(.*?)").matcher(nextArgRequired2);
@@ -434,49 +263,82 @@ public final class OverlayManagerShellCommand extends ShellCommand {
                     try {
                         assets.setResourceResolutionLoggingEnabled(true);
                         try {
-                            TypedValue typedValue = new TypedValue();
-                            resourcesForApplication.getValue(nextArgRequired2, typedValue, false);
-                            CharSequence coerceToString = typedValue.coerceToString();
-                            String lastResourceResolution = assets.getLastResourceResolution();
-                            resourcesForApplication.getValue(nextArgRequired2, typedValue, true);
-                            CharSequence coerceToString2 = typedValue.coerceToString();
-                            if (z) {
-                                outPrintWriter.println(lastResourceResolution);
+                            try {
+                                TypedValue typedValue = new TypedValue();
+                                resourcesForApplication.getValue(nextArgRequired2, typedValue, false);
+                                CharSequence coerceToString = typedValue.coerceToString();
+                                String lastResourceResolution = assets.getLastResourceResolution();
+                                resourcesForApplication.getValue(nextArgRequired2, typedValue, true);
+                                CharSequence coerceToString2 = typedValue.coerceToString();
+                                if (z) {
+                                    outPrintWriter.println(lastResourceResolution);
+                                }
+                                if (coerceToString.equals(coerceToString2)) {
+                                    outPrintWriter.println(coerceToString);
+                                } else {
+                                    outPrintWriter.println(((Object) coerceToString) + " -> " + ((Object) coerceToString2));
+                                }
+                                assets.setResourceResolutionLoggingEnabled(false);
+                                return 0;
+                            } catch (Resources.NotFoundException unused) {
+                                int identifier = resourcesForApplication.getIdentifier(matcher.group(3), matcher.group(2), matcher.group(1));
+                                if (identifier == 0) {
+                                    throw new Resources.NotFoundException();
+                                }
+                                TypedArray obtainTypedArray = resourcesForApplication.obtainTypedArray(identifier);
+                                if (z) {
+                                    outPrintWriter.println(assets.getLastResourceResolution());
+                                }
+                                TypedValue typedValue2 = new TypedValue();
+                                for (int i2 = 0; i2 < obtainTypedArray.length(); i2++) {
+                                    obtainTypedArray.getValue(i2, typedValue2);
+                                    outPrintWriter.println(typedValue2.coerceToString());
+                                }
+                                obtainTypedArray.recycle();
+                                assets.setResourceResolutionLoggingEnabled(false);
+                                return 0;
                             }
-                            if (coerceToString.equals(coerceToString2)) {
-                                outPrintWriter.println(coerceToString);
-                            } else {
-                                outPrintWriter.println(((Object) coerceToString) + " -> " + ((Object) coerceToString2));
-                            }
-                            return 0;
-                        } catch (Resources.NotFoundException unused) {
-                            int identifier = resourcesForApplication.getIdentifier(matcher.group(3), matcher.group(2), matcher.group(1));
-                            if (identifier == 0) {
-                                throw new Resources.NotFoundException();
-                            }
-                            TypedArray obtainTypedArray = resourcesForApplication.obtainTypedArray(identifier);
-                            if (z) {
-                                outPrintWriter.println(assets.getLastResourceResolution());
-                            }
-                            TypedValue typedValue2 = new TypedValue();
-                            for (int i2 = 0; i2 < obtainTypedArray.length(); i2++) {
-                                obtainTypedArray.getValue(i2, typedValue2);
-                                outPrintWriter.println(typedValue2.coerceToString());
-                            }
-                            obtainTypedArray.recycle();
-                            return 0;
+                        } catch (Resources.NotFoundException unused2) {
+                            errPrintWriter.println("Error: failed to get the resource " + nextArgRequired2);
+                            assets.setResourceResolutionLoggingEnabled(false);
+                            return 1;
                         }
-                    } catch (Resources.NotFoundException unused2) {
-                        errPrintWriter.println("Error: failed to get the resource " + nextArgRequired2);
-                        return 1;
-                    } finally {
+                    } catch (Throwable th) {
                         assets.setResourceResolutionLoggingEnabled(false);
+                        throw th;
                     }
                 } catch (PackageManager.NameNotFoundException unused3) {
                     errPrintWriter.println(String.format("Error: failed to get resources for package %s for user %d", nextArgRequired, Integer.valueOf(i)));
                     return 1;
                 }
             }
+            if (nextOption.equals("--user")) {
+                i = UserHandle.parseUserArg(getNextArgRequired());
+            } else {
+                if (!nextOption.equals("--verbose")) {
+                    errPrintWriter.println("Error: Unknown option: ".concat(nextOption));
+                    return 1;
+                }
+                z = true;
+            }
+        }
+    }
+
+    public final int runSetPriority() {
+        PrintWriter errPrintWriter = getErrPrintWriter();
+        int i = 0;
+        while (true) {
+            String nextOption = getNextOption();
+            if (nextOption == null) {
+                String nextArgRequired = getNextArgRequired();
+                String nextArgRequired2 = getNextArgRequired();
+                return "highest".equals(nextArgRequired2) ? !this.mInterface.setHighestPriority(nextArgRequired, i) ? 1 : 0 : "lowest".equals(nextArgRequired2) ? !this.mInterface.setLowestPriority(nextArgRequired, i) ? 1 : 0 : !this.mInterface.setPriority(nextArgRequired, nextArgRequired2, i) ? 1 : 0;
+            }
+            if (!nextOption.equals("--user")) {
+                errPrintWriter.println("Error: Unknown option: ".concat(nextOption));
+                return 1;
+            }
+            i = UserHandle.parseUserArg(getNextArgRequired());
         }
     }
 }

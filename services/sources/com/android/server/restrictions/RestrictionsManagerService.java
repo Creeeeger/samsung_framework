@@ -20,84 +20,36 @@ import com.android.server.SystemService;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class RestrictionsManagerService extends SystemService {
     public final RestrictionsManagerImpl mRestrictionsManagerImpl;
 
-    public RestrictionsManagerService(Context context) {
-        super(context);
-        this.mRestrictionsManagerImpl = new RestrictionsManagerImpl(context);
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        publishBinderService("restrictions", this.mRestrictionsManagerImpl);
-    }
-
-    /* loaded from: classes3.dex */
-    public class RestrictionsManagerImpl extends IRestrictionsManager.Stub {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RestrictionsManagerImpl extends IRestrictionsManager.Stub {
         public final Context mContext;
         public final IDevicePolicyManager mDpm;
         public final DevicePolicyManagerInternal mDpmInternal;
         public final IUserManager mUm;
 
-        public RestrictionsManagerImpl(Context context) {
+        public RestrictionsManagerImpl(RestrictionsManagerService restrictionsManagerService, Context context) {
             this.mContext = context;
-            this.mUm = RestrictionsManagerService.this.getBinderService("user");
-            this.mDpm = RestrictionsManagerService.this.getBinderService("device_policy");
-            this.mDpmInternal = (DevicePolicyManagerInternal) RestrictionsManagerService.this.getLocalService(DevicePolicyManagerInternal.class);
+            this.mUm = restrictionsManagerService.getBinderService("user");
+            this.mDpm = restrictionsManagerService.getBinderService("device_policy");
+            this.mDpmInternal = (DevicePolicyManagerInternal) restrictionsManagerService.getLocalService(DevicePolicyManagerInternal.class);
         }
 
-        public Bundle getApplicationRestrictions(String str) {
-            return this.mUm.getApplicationRestrictions(str);
-        }
-
-        public List getApplicationRestrictionsPerAdminForUser(int i, String str) {
-            DevicePolicyManagerInternal devicePolicyManagerInternal = this.mDpmInternal;
-            if (devicePolicyManagerInternal != null) {
-                return devicePolicyManagerInternal.getApplicationRestrictionsPerAdminForUser(str, i);
-            }
-            return new ArrayList();
-        }
-
-        public boolean hasRestrictionsProvider() {
-            int callingUserId = UserHandle.getCallingUserId();
-            if (this.mDpm == null) {
-                return false;
-            }
-            long clearCallingIdentity = Binder.clearCallingIdentity();
+        public static void enforceCallerMatchesPackage(int i, String str, String str2) {
             try {
-                return this.mDpm.getRestrictionsProvider(callingUserId) != null;
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public void requestPermission(String str, String str2, String str3, PersistableBundle persistableBundle) {
-            int callingUid = Binder.getCallingUid();
-            int userId = UserHandle.getUserId(callingUid);
-            if (this.mDpm != null) {
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    ComponentName restrictionsProvider = this.mDpm.getRestrictionsProvider(userId);
-                    if (restrictionsProvider == null) {
-                        throw new IllegalStateException("Cannot request permission without a restrictions provider registered");
-                    }
-                    enforceCallerMatchesPackage(callingUid, str, "Package name does not match caller ");
-                    Intent intent = new Intent("android.content.action.REQUEST_PERMISSION");
-                    intent.setComponent(restrictionsProvider);
-                    intent.putExtra("android.content.extra.PACKAGE_NAME", str);
-                    intent.putExtra("android.content.extra.REQUEST_TYPE", str2);
-                    intent.putExtra("android.content.extra.REQUEST_ID", str3);
-                    intent.putExtra("android.content.extra.REQUEST_BUNDLE", persistableBundle);
-                    this.mContext.sendBroadcastAsUser(intent, new UserHandle(userId));
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                String[] packagesForUid = AppGlobals.getPackageManager().getPackagesForUid(i);
+                if (packagesForUid != null && !ArrayUtils.contains(packagesForUid, str)) {
+                    throw new SecurityException(str2 + i);
                 }
+            } catch (RemoteException unused) {
             }
         }
 
-        public Intent createLocalApprovalIntent() {
+        public final Intent createLocalApprovalIntent() {
             ActivityInfo activityInfo;
             int callingUserId = UserHandle.getCallingUserId();
             if (this.mDpm == null) {
@@ -124,7 +76,29 @@ public final class RestrictionsManagerService extends SystemService {
             }
         }
 
-        public void notifyPermissionResponse(String str, PersistableBundle persistableBundle) {
+        public final Bundle getApplicationRestrictions(String str) {
+            return this.mUm.getApplicationRestrictions(str);
+        }
+
+        public final List getApplicationRestrictionsPerAdminForUser(int i, String str) {
+            DevicePolicyManagerInternal devicePolicyManagerInternal = this.mDpmInternal;
+            return devicePolicyManagerInternal != null ? devicePolicyManagerInternal.getApplicationRestrictionsPerAdminForUser(str, i) : new ArrayList();
+        }
+
+        public final boolean hasRestrictionsProvider() {
+            int callingUserId = UserHandle.getCallingUserId();
+            if (this.mDpm == null) {
+                return false;
+            }
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                return this.mDpm.getRestrictionsProvider(callingUserId) != null;
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+
+        public final void notifyPermissionResponse(String str, PersistableBundle persistableBundle) {
             int callingUid = Binder.getCallingUid();
             int userId = UserHandle.getUserId(callingUid);
             if (this.mDpm != null) {
@@ -145,14 +119,38 @@ public final class RestrictionsManagerService extends SystemService {
             }
         }
 
-        public final void enforceCallerMatchesPackage(int i, String str, String str2) {
-            try {
-                String[] packagesForUid = AppGlobals.getPackageManager().getPackagesForUid(i);
-                if (packagesForUid != null && !ArrayUtils.contains(packagesForUid, str)) {
-                    throw new SecurityException(str2 + i);
+        public final void requestPermission(String str, String str2, String str3, PersistableBundle persistableBundle) {
+            int callingUid = Binder.getCallingUid();
+            int userId = UserHandle.getUserId(callingUid);
+            if (this.mDpm != null) {
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    ComponentName restrictionsProvider = this.mDpm.getRestrictionsProvider(userId);
+                    if (restrictionsProvider == null) {
+                        throw new IllegalStateException("Cannot request permission without a restrictions provider registered");
+                    }
+                    enforceCallerMatchesPackage(callingUid, str, "Package name does not match caller ");
+                    Intent intent = new Intent("android.content.action.REQUEST_PERMISSION");
+                    intent.setComponent(restrictionsProvider);
+                    intent.putExtra("android.content.extra.PACKAGE_NAME", str);
+                    intent.putExtra("android.content.extra.REQUEST_TYPE", str2);
+                    intent.putExtra("android.content.extra.REQUEST_ID", str3);
+                    intent.putExtra("android.content.extra.REQUEST_BUNDLE", persistableBundle);
+                    this.mContext.sendBroadcastAsUser(intent, new UserHandle(userId));
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
-            } catch (RemoteException unused) {
             }
         }
+    }
+
+    public RestrictionsManagerService(Context context) {
+        super(context);
+        this.mRestrictionsManagerImpl = new RestrictionsManagerImpl(this, context);
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        publishBinderService("restrictions", this.mRestrictionsManagerImpl);
     }
 }

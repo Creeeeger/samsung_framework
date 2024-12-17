@@ -4,131 +4,128 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.ColorSpace;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.HardwareBuffer;
 import android.os.SystemClock;
 import android.util.Slog;
 import android.window.TaskSnapshot;
-import com.android.server.display.DisplayPowerController2;
-import com.android.server.wm.BaseAppSnapshotPersister;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.wm.nano.WindowManagerProtos;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-/* loaded from: classes3.dex */
-public class AppSnapshotLoader {
-    public final BaseAppSnapshotPersister.PersistInfoProvider mPersistInfoProvider;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class AppSnapshotLoader {
+    public final BaseAppSnapshotPersister$PersistInfoProvider mPersistInfoProvider;
 
-    public AppSnapshotLoader(BaseAppSnapshotPersister.PersistInfoProvider persistInfoProvider) {
-        this.mPersistInfoProvider = persistInfoProvider;
-    }
-
-    /* loaded from: classes3.dex */
-    public class PreRLegacySnapshotConfig {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PreRLegacySnapshotConfig {
         public final boolean mForceLoadReducedJpeg;
         public final float mScale;
 
-        public PreRLegacySnapshotConfig(float f, boolean z) {
+        public PreRLegacySnapshotConfig(boolean z, float f) {
             this.mScale = f;
             this.mForceLoadReducedJpeg = z;
         }
     }
 
-    public PreRLegacySnapshotConfig getLegacySnapshotConfig(int i, float f, boolean z, boolean z2) {
-        boolean z3 = true;
-        boolean z4 = i == 0;
-        if (!z4) {
-            return null;
-        }
-        if (z4 && Float.compare(f, DisplayPowerController2.RATE_FROM_DOZE_TO_ON) == 0) {
-            if (!ActivityManager.isLowRamDeviceStatic() || z) {
-                f = z2 ? 0.5f : 1.0f;
-                z3 = false;
-            } else {
-                f = 0.6f;
-            }
-        } else if (!z4) {
-            z3 = false;
-            f = 0.0f;
-        } else if (!ActivityManager.isLowRamDeviceStatic()) {
-            if (z2) {
-                f *= 0.5f;
-            }
-            z3 = false;
-        }
-        return new PreRLegacySnapshotConfig(f, z3);
+    public AppSnapshotLoader(BaseAppSnapshotPersister$PersistInfoProvider baseAppSnapshotPersister$PersistInfoProvider) {
+        this.mPersistInfoProvider = baseAppSnapshotPersister$PersistInfoProvider;
     }
 
-    public TaskSnapshot loadTask(int i, int i2, boolean z) {
+    public final TaskSnapshot loadTask(int i, int i2, boolean z) {
         String str;
+        boolean z2;
+        PreRLegacySnapshotConfig preRLegacySnapshotConfig;
         Point point;
-        File protoFile = this.mPersistInfoProvider.getProtoFile(i, i2);
+        BaseAppSnapshotPersister$PersistInfoProvider baseAppSnapshotPersister$PersistInfoProvider = this.mPersistInfoProvider;
+        File protoFile = baseAppSnapshotPersister$PersistInfoProvider.getProtoFile(i, i2);
         if (!protoFile.exists()) {
             return null;
         }
         try {
             WindowManagerProtos.TaskSnapshotProto parseFrom = WindowManagerProtos.TaskSnapshotProto.parseFrom(Files.readAllBytes(protoFile.toPath()));
-            File highResolutionBitmapFile = this.mPersistInfoProvider.getHighResolutionBitmapFile(i, i2);
-            PreRLegacySnapshotConfig legacySnapshotConfig = getLegacySnapshotConfig(parseFrom.taskWidth, parseFrom.legacyScale, highResolutionBitmapFile.exists(), z);
-            boolean z2 = legacySnapshotConfig != null && legacySnapshotConfig.mForceLoadReducedJpeg;
-            if (z || z2) {
-                highResolutionBitmapFile = this.mPersistInfoProvider.getLowResolutionBitmapFile(i, i2);
+            File highResolutionBitmapFile = baseAppSnapshotPersister$PersistInfoProvider.getHighResolutionBitmapFile(i, i2);
+            int i3 = parseFrom.taskWidth;
+            float f = parseFrom.legacyScale;
+            boolean exists = highResolutionBitmapFile.exists();
+            boolean z3 = true;
+            boolean z4 = i3 == 0;
+            if (z4) {
+                if (z4 && Float.compare(f, FullScreenMagnificationGestureHandler.MAX_SCALE) == 0) {
+                    if (!ActivityManager.isLowRamDeviceStatic() || exists) {
+                        f = z ? 0.5f : 1.0f;
+                        z2 = false;
+                    } else {
+                        f = 0.6f;
+                        z2 = true;
+                    }
+                } else if (!z4) {
+                    z2 = false;
+                    f = 0.0f;
+                } else if (ActivityManager.isLowRamDeviceStatic()) {
+                    z2 = true;
+                } else {
+                    if (z) {
+                        f *= 0.5f;
+                    }
+                    z2 = false;
+                }
+                preRLegacySnapshotConfig = new PreRLegacySnapshotConfig(z2, f);
+            } else {
+                preRLegacySnapshotConfig = null;
+            }
+            if (preRLegacySnapshotConfig == null || !preRLegacySnapshotConfig.mForceLoadReducedJpeg) {
+                z3 = false;
+            }
+            if (z || z3) {
+                highResolutionBitmapFile = baseAppSnapshotPersister$PersistInfoProvider.getLowResolutionBitmapFile(i, i2);
             }
             if (!highResolutionBitmapFile.exists()) {
                 return null;
             }
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = (!this.mPersistInfoProvider.use16BitFormat() || parseFrom.isTranslucent) ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
+            options.inPreferredConfig = (!baseAppSnapshotPersister$PersistInfoProvider.mUse16BitFormat || parseFrom.isTranslucent) ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565;
             Bitmap decodeFile = BitmapFactory.decodeFile(highResolutionBitmapFile.getPath(), options);
             if (decodeFile == null) {
-                Slog.w(StartingSurfaceController.TAG, "Failed to load bitmap: " + highResolutionBitmapFile.getPath());
+                Slog.w("WindowManager", "Failed to load bitmap: " + highResolutionBitmapFile.getPath());
                 return null;
             }
             Bitmap copy = decodeFile.copy(Bitmap.Config.HARDWARE, false);
             decodeFile.recycle();
             if (copy == null) {
-                Slog.w(StartingSurfaceController.TAG, "Failed to create hardware bitmap: " + highResolutionBitmapFile.getPath());
+                Slog.w("WindowManager", "Failed to create hardware bitmap: " + highResolutionBitmapFile.getPath());
                 return null;
             }
             HardwareBuffer hardwareBuffer = copy.getHardwareBuffer();
             if (hardwareBuffer == null) {
-                Slog.w(StartingSurfaceController.TAG, "Failed to retrieve gralloc buffer for bitmap: " + highResolutionBitmapFile.getPath());
+                Slog.w("WindowManager", "Failed to retrieve gralloc buffer for bitmap: " + highResolutionBitmapFile.getPath());
                 return null;
             }
             ComponentName unflattenFromString = ComponentName.unflattenFromString(parseFrom.topActivityComponent);
-            if (legacySnapshotConfig != null) {
-                point = new Point((int) (copy.getWidth() / legacySnapshotConfig.mScale), (int) (copy.getHeight() / legacySnapshotConfig.mScale));
+            if (preRLegacySnapshotConfig != null) {
+                float f2 = preRLegacySnapshotConfig.mScale;
+                point = new Point((int) (copy.getWidth() / f2), (int) (copy.getHeight() / f2));
             } else {
                 point = new Point(parseFrom.taskWidth, parseFrom.taskHeight);
             }
-            long j = parseFrom.id;
-            long elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos();
-            ColorSpace colorSpace = copy.getColorSpace();
-            int i3 = parseFrom.orientation;
-            int i4 = parseFrom.rotation;
             try {
-                Rect rect = new Rect(parseFrom.insetLeft, parseFrom.insetTop, parseFrom.insetRight, parseFrom.insetBottom);
-                Rect rect2 = new Rect(parseFrom.letterboxInsetLeft, parseFrom.letterboxInsetTop, parseFrom.letterboxInsetRight, parseFrom.letterboxInsetBottom);
-                boolean z3 = parseFrom.isRealSnapshot;
-                int i5 = parseFrom.windowingMode;
-                int i6 = parseFrom.appearance;
-                boolean z4 = parseFrom.isTranslucent;
-                Rect rect3 = new Rect(parseFrom.cutoutInsetLeft, parseFrom.cutoutInsetTop, parseFrom.cutoutInsetRight, parseFrom.cutoutInsetBottom);
-                str = StartingSurfaceController.TAG;
-                try {
-                    return new TaskSnapshot(j, elapsedRealtimeNanos, unflattenFromString, hardwareBuffer, colorSpace, i3, i4, point, rect, rect2, z, z3, i5, i6, z4, false, rect3);
-                } catch (IOException unused) {
-                    Slog.w(str, "Unable to load task snapshot data for Id=" + i);
-                    return null;
-                }
+                str = "WindowManager";
+            } catch (IOException unused) {
+                str = "WindowManager";
+            }
+            try {
+                return new TaskSnapshot(parseFrom.id, SystemClock.elapsedRealtimeNanos(), unflattenFromString, hardwareBuffer, copy.getColorSpace(), parseFrom.orientation, parseFrom.rotation, point, new Rect(parseFrom.insetLeft, parseFrom.insetTop, parseFrom.insetRight, parseFrom.insetBottom), new Rect(parseFrom.letterboxInsetLeft, parseFrom.letterboxInsetTop, parseFrom.letterboxInsetRight, parseFrom.letterboxInsetBottom), z, parseFrom.isRealSnapshot, parseFrom.windowingMode, parseFrom.appearance, parseFrom.isTranslucent, false, new Rect(parseFrom.cutoutInsetLeft, parseFrom.cutoutInsetTop, parseFrom.cutoutInsetRight, parseFrom.cutoutInsetBottom));
             } catch (IOException unused2) {
-                str = StartingSurfaceController.TAG;
+                DeviceIdleController$$ExternalSyntheticOutline0.m(i, "Unable to load task snapshot data for Id=", str);
+                return null;
             }
         } catch (IOException unused3) {
-            str = StartingSurfaceController.TAG;
+            str = "WindowManager";
         }
     }
 }

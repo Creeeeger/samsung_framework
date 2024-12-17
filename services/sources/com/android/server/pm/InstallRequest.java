@@ -1,39 +1,41 @@
 package com.android.server.pm;
 
 import android.apex.ApexInfo;
-import android.content.pm.IPackageInstallObserver2;
-import android.content.pm.SharedLibraryInfo;
-import android.content.pm.SigningDetails;
-import android.net.Uri;
+import android.content.pm.ArchivedPackageParcel;
+import android.content.pm.parsing.PackageLite;
+import android.content.pm.verify.domain.DomainSet;
 import android.os.Build;
-import android.os.IInstalld;
 import android.os.UserHandle;
-import android.util.ArrayMap;
 import android.util.ExceptionUtils;
 import android.util.Slog;
+import android.util.SparseArray;
+import com.android.internal.pm.parsing.pkg.ParsedPackage;
 import com.android.server.art.model.DexoptResult;
-import com.android.server.pm.parsing.pkg.ParsedPackage;
+import com.android.server.pm.PackageMetrics;
 import com.android.server.pm.pkg.AndroidPackage;
-import com.android.server.pm.pkg.PackageStateInternal;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedHashSet;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class InstallRequest {
     public ApexInfo mApexInfo;
     public String mApexModuleName;
     public int mAppId;
+    public ArchivedPackageParcel mArchivedPackage;
     public boolean mClearCodeCache;
-    public int mDexoptStatus;
     public PackageSetting mDisabledPs;
-    public AndroidPackage mExistingPackage;
+    public int[] mFirstTimeBroadcastInstantUserIds;
+    public int[] mFirstTimeBroadcastUserIds;
     public PackageFreezer mFreezer;
+    public final boolean mHasAppMetadataFileFromInstaller;
     public final InstallArgs mInstallArgs;
+    public final int mInstallerUidForInstallExisting;
     public int mInternalErrorCode;
-    public boolean mIsInstallForUsers;
-    public boolean mIsInstallInherit;
+    public final boolean mIsInstallForUsers;
+    public final boolean mIsInstallInherit;
     public ArrayList mLibraryConsumers;
     public String mName;
     public boolean mNeedToMove;
@@ -42,51 +44,65 @@ public final class InstallRequest {
     public String mOrigPermission;
     public int[] mOrigUsers;
     public PackageSetting mOriginalPs;
+    public final PackageLite mPackageLite;
     public final PackageMetrics mPackageMetrics;
     public int mParseFlags;
     public ParsedPackage mParsedPackage;
     public AndroidPackage mPkg;
     public Runnable mPostInstallRunnable;
+    public final DomainSet mPreVerifiedDomains;
     public PackageRemovedInfo mRemovedInfo;
     public boolean mReplace;
     public final int mRequireUserAction;
+    public SparseArray mResponsibleInstallerTitles;
     public int mReturnCode;
     public String mReturnMsg;
     public int mScanFlags;
     public ScanResult mScanResult;
     public final int mSessionId;
+    public boolean mSpqrProfileGenerated;
     public boolean mSystem;
+    public int[] mUpdateBroadcastInstantUserIds;
+    public int[] mUpdateBroadcastUserIds;
     public final int mUserId;
+    public final ArrayList mWarnings;
 
-    public InstallRequest(InstallingSession installingSession) {
+    public InstallRequest(int i, AndroidPackage androidPackage, int[] iArr, InstallPackageHelper$$ExternalSyntheticLambda1 installPackageHelper$$ExternalSyntheticLambda1, int i2, int i3, boolean z) {
         this.mAppId = -1;
         this.mNeedToMove = false;
-        this.mUserId = installingSession.getUser().getIdentifier();
-        this.mInstallArgs = new InstallArgs(installingSession.mOriginInfo, installingSession.mMoveInfo, installingSession.mObserver, installingSession.mInstallFlags, installingSession.mInstallSource, installingSession.mVolumeUuid, installingSession.getUser(), null, installingSession.mPackageAbiOverride, installingSession.mPermissionStates, installingSession.mAllowlistedRestrictedPermissions, installingSession.mAutoRevokePermissionsMode, installingSession.mTraceMethod, installingSession.mTraceCookie, installingSession.mSigningDetails, installingSession.mInstallReason, installingSession.mInstallScenario, installingSession.mForceQueryableOverride, installingSession.mDataLoaderType, installingSession.mPackageSource, installingSession.mApplicationEnabledSettingPersistent);
-        this.mPackageMetrics = new PackageMetrics(this);
-        this.mIsInstallInherit = installingSession.mIsInherit;
-        this.mSessionId = installingSession.mSessionId;
-        this.mRequireUserAction = installingSession.mRequireUserAction;
-    }
-
-    public InstallRequest(int i, int i2, AndroidPackage androidPackage, int[] iArr, Runnable runnable) {
-        this.mAppId = -1;
-        this.mNeedToMove = false;
+        int[] iArr2 = PackageManagerService.EMPTY_INT_ARRAY;
+        this.mFirstTimeBroadcastUserIds = iArr2;
+        this.mFirstTimeBroadcastInstantUserIds = iArr2;
+        this.mUpdateBroadcastUserIds = iArr2;
+        this.mUpdateBroadcastInstantUserIds = iArr2;
+        this.mWarnings = new ArrayList();
+        this.mInstallerUidForInstallExisting = -1;
         this.mUserId = i;
         this.mInstallArgs = null;
-        this.mReturnCode = i2;
+        this.mReturnCode = 1;
         this.mPkg = androidPackage;
         this.mNewUsers = iArr;
-        this.mPostInstallRunnable = runnable;
+        this.mPostInstallRunnable = installPackageHelper$$ExternalSyntheticLambda1;
         this.mPackageMetrics = new PackageMetrics(this);
         this.mIsInstallForUsers = true;
         this.mSessionId = -1;
         this.mRequireUserAction = 0;
+        this.mAppId = i2;
+        this.mInstallerUidForInstallExisting = i3;
+        this.mSystem = z;
+        this.mHasAppMetadataFileFromInstaller = false;
     }
 
-    public InstallRequest(ParsedPackage parsedPackage, int i, int i2, UserHandle userHandle, ScanResult scanResult) {
+    public InstallRequest(ParsedPackage parsedPackage, int i, int i2, UserHandle userHandle, ScanResult scanResult, PackageSetting packageSetting) {
         this.mAppId = -1;
         this.mNeedToMove = false;
+        int[] iArr = PackageManagerService.EMPTY_INT_ARRAY;
+        this.mFirstTimeBroadcastUserIds = iArr;
+        this.mFirstTimeBroadcastInstantUserIds = iArr;
+        this.mUpdateBroadcastUserIds = iArr;
+        this.mUpdateBroadcastInstantUserIds = iArr;
+        this.mWarnings = new ArrayList();
+        this.mInstallerUidForInstallExisting = -1;
         if (userHandle != null) {
             this.mUserId = userHandle.getIdentifier();
         } else {
@@ -94,463 +110,39 @@ public final class InstallRequest {
         }
         this.mInstallArgs = null;
         this.mParsedPackage = parsedPackage;
+        this.mArchivedPackage = null;
         this.mParseFlags = i;
         this.mScanFlags = i2;
         this.mScanResult = scanResult;
         this.mPackageMetrics = null;
         this.mSessionId = -1;
         this.mRequireUserAction = 0;
-    }
-
-    public String getName() {
-        return this.mName;
-    }
-
-    public String getReturnMsg() {
-        return this.mReturnMsg;
-    }
-
-    public OriginInfo getOriginInfo() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return installArgs.mOriginInfo;
-    }
-
-    public PackageRemovedInfo getRemovedInfo() {
-        return this.mRemovedInfo;
-    }
-
-    public String getOrigPackage() {
-        return this.mOrigPackage;
-    }
-
-    public String getOrigPermission() {
-        return this.mOrigPermission;
-    }
-
-    public File getCodeFile() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return installArgs.mCodeFile;
-    }
-
-    public String getCodePath() {
-        File file;
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null || (file = installArgs.mCodeFile) == null) {
-            return null;
-        }
-        return file.getAbsolutePath();
-    }
-
-    public String getAbiOverride() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return installArgs.mAbiOverride;
-    }
-
-    public int getReturnCode() {
-        return this.mReturnCode;
-    }
-
-    public int getInternalErrorCode() {
-        return this.mInternalErrorCode;
-    }
-
-    public IPackageInstallObserver2 getObserver() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return installArgs.mObserver;
-    }
-
-    public boolean isInstallMove() {
-        InstallArgs installArgs = this.mInstallArgs;
-        return (installArgs == null || installArgs.mMoveInfo == null) ? false : true;
-    }
-
-    public String getMoveToUuid() {
-        MoveInfo moveInfo;
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null || (moveInfo = installArgs.mMoveInfo) == null) {
-            return null;
-        }
-        return moveInfo.mToUuid;
-    }
-
-    public String getMovePackageName() {
-        MoveInfo moveInfo;
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null || (moveInfo = installArgs.mMoveInfo) == null) {
-            return null;
-        }
-        return moveInfo.mPackageName;
-    }
-
-    public String getMoveFromCodePath() {
-        MoveInfo moveInfo;
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null || (moveInfo = installArgs.mMoveInfo) == null) {
-            return null;
-        }
-        return moveInfo.mFromCodePath;
-    }
-
-    public File getOldCodeFile() {
-        InstallArgs installArgs;
-        PackageRemovedInfo packageRemovedInfo = this.mRemovedInfo;
-        if (packageRemovedInfo == null || (installArgs = packageRemovedInfo.mArgs) == null) {
-            return null;
-        }
-        return installArgs.mCodeFile;
-    }
-
-    public String[] getOldInstructionSet() {
-        InstallArgs installArgs;
-        PackageRemovedInfo packageRemovedInfo = this.mRemovedInfo;
-        if (packageRemovedInfo == null || (installArgs = packageRemovedInfo.mArgs) == null) {
-            return null;
-        }
-        return installArgs.mInstructionSets;
-    }
-
-    public UserHandle getUser() {
-        return new UserHandle(this.mUserId);
-    }
-
-    public int getUserId() {
-        return this.mUserId;
-    }
-
-    public int getInstallFlags() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return 0;
-        }
-        return installArgs.mInstallFlags;
-    }
-
-    public int getInstallReason() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return 0;
-        }
-        return installArgs.mInstallReason;
-    }
-
-    public String getVolumeUuid() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return installArgs.mVolumeUuid;
-    }
-
-    public AndroidPackage getPkg() {
-        return this.mPkg;
-    }
-
-    public String getTraceMethod() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return installArgs.mTraceMethod;
-    }
-
-    public int getTraceCookie() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return 0;
-        }
-        return installArgs.mTraceCookie;
-    }
-
-    public boolean isUpdate() {
-        PackageRemovedInfo packageRemovedInfo = this.mRemovedInfo;
-        return (packageRemovedInfo == null || packageRemovedInfo.mRemovedPackage == null) ? false : true;
-    }
-
-    public boolean isInstallExistingForUser() {
-        return this.mInstallArgs == null;
-    }
-
-    public InstallSource getInstallSource() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return installArgs.mInstallSource;
-    }
-
-    public String getInstallerPackageName() {
-        InstallSource installSource;
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null || (installSource = installArgs.mInstallSource) == null) {
-            return null;
-        }
-        return installSource.mInstallerPackageName;
-    }
-
-    public int getInstallerPackageUid() {
-        InstallSource installSource;
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null || (installSource = installArgs.mInstallSource) == null) {
-            return -1;
-        }
-        return installSource.mInstallerPackageUid;
-    }
-
-    public int getDataLoaderType() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return 0;
-        }
-        return installArgs.mDataLoaderType;
-    }
-
-    public int getSignatureSchemeVersion() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return 0;
-        }
-        return installArgs.mSigningDetails.getSignatureSchemeVersion();
-    }
-
-    public SigningDetails getSigningDetails() {
-        InstallArgs installArgs = this.mInstallArgs;
-        return installArgs == null ? SigningDetails.UNKNOWN : installArgs.mSigningDetails;
-    }
-
-    public Uri getOriginUri() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return Uri.fromFile(installArgs.mOriginInfo.mResolvedFile);
-    }
-
-    public ApexInfo getApexInfo() {
-        return this.mApexInfo;
-    }
-
-    public String getApexModuleName() {
-        return this.mApexModuleName;
-    }
-
-    public boolean isRollback() {
-        InstallArgs installArgs = this.mInstallArgs;
-        return installArgs != null && installArgs.mInstallReason == 5;
-    }
-
-    public int[] getNewUsers() {
-        return this.mNewUsers;
-    }
-
-    public int[] getOriginUsers() {
-        return this.mOrigUsers;
-    }
-
-    public int getAppId() {
-        return this.mAppId;
-    }
-
-    public ArrayMap getPermissionStates() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return installArgs.mPermissionStates;
-    }
-
-    public ArrayList getLibraryConsumers() {
-        return this.mLibraryConsumers;
-    }
-
-    public AndroidPackage getExistingPackage() {
-        return this.mExistingPackage;
-    }
-
-    public List getAllowlistedRestrictedPermissions() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return null;
-        }
-        return installArgs.mAllowlistedRestrictedPermissions;
-    }
-
-    public int getAutoRevokePermissionsMode() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return 3;
-        }
-        return installArgs.mAutoRevokePermissionsMode;
-    }
-
-    public int getPackageSource() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return 0;
-        }
-        return installArgs.mPackageSource;
-    }
-
-    public int getInstallScenario() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return 0;
-        }
-        return installArgs.mInstallScenario;
-    }
-
-    public ParsedPackage getParsedPackage() {
-        return this.mParsedPackage;
-    }
-
-    public int getParseFlags() {
-        return this.mParseFlags;
-    }
-
-    public int getScanFlags() {
-        return this.mScanFlags;
-    }
-
-    public String getExistingPackageName() {
-        AndroidPackage androidPackage = this.mExistingPackage;
-        if (androidPackage != null) {
-            return androidPackage.getPackageName();
-        }
-        return null;
-    }
-
-    public AndroidPackage getScanRequestOldPackage() {
-        assertScanResultExists();
-        return this.mScanResult.mRequest.mOldPkg;
-    }
-
-    public boolean isClearCodeCache() {
-        return this.mClearCodeCache;
-    }
-
-    public boolean isInstallReplace() {
-        return this.mReplace;
-    }
-
-    public boolean isInstallSystem() {
-        return this.mSystem;
-    }
-
-    public boolean isInstallInherit() {
-        return this.mIsInstallInherit;
-    }
-
-    public boolean isInstallForUsers() {
-        return this.mIsInstallForUsers;
-    }
-
-    public boolean isInstallFromAdb() {
-        InstallArgs installArgs = this.mInstallArgs;
-        return (installArgs == null || (installArgs.mInstallFlags & 32) == 0) ? false : true;
-    }
-
-    public PackageSetting getOriginalPackageSetting() {
-        return this.mOriginalPs;
-    }
-
-    public PackageSetting getDisabledPackageSetting() {
-        return this.mDisabledPs;
-    }
-
-    public PackageSetting getScanRequestOldPackageSetting() {
-        assertScanResultExists();
-        return this.mScanResult.mRequest.mOldPkgSetting;
-    }
-
-    public PackageSetting getScanRequestOriginalPackageSetting() {
-        assertScanResultExists();
-        return this.mScanResult.mRequest.mOriginalPkgSetting;
-    }
-
-    public PackageSetting getScanRequestPackageSetting() {
-        assertScanResultExists();
-        return this.mScanResult.mRequest.mPkgSetting;
-    }
-
-    public String getRealPackageName() {
-        assertScanResultExists();
-        return this.mScanResult.mRequest.mRealPkgName;
-    }
-
-    public List getChangedAbiCodePath() {
-        assertScanResultExists();
-        return this.mScanResult.mChangedAbiCodePath;
-    }
-
-    public boolean isApplicationEnabledSettingPersistent() {
-        InstallArgs installArgs = this.mInstallArgs;
-        if (installArgs == null) {
-            return false;
-        }
-        return installArgs.mApplicationEnabledSettingPersistent;
-    }
-
-    public boolean isForceQueryableOverride() {
-        InstallArgs installArgs = this.mInstallArgs;
-        return installArgs != null && installArgs.mForceQueryableOverride;
-    }
-
-    public SharedLibraryInfo getSdkSharedLibraryInfo() {
-        assertScanResultExists();
-        return this.mScanResult.mSdkSharedLibraryInfo;
-    }
-
-    public SharedLibraryInfo getStaticSharedLibraryInfo() {
-        assertScanResultExists();
-        return this.mScanResult.mStaticSharedLibraryInfo;
-    }
-
-    public List getDynamicSharedLibraryInfos() {
-        assertScanResultExists();
-        return this.mScanResult.mDynamicSharedLibraryInfos;
-    }
-
-    public PackageSetting getScannedPackageSetting() {
-        assertScanResultExists();
-        return this.mScanResult.mPkgSetting;
-    }
-
-    public PackageSetting getRealPackageSetting() {
-        PackageSetting scanRequestPackageSetting = isExistingSettingCopied() ? getScanRequestPackageSetting() : getScannedPackageSetting();
-        return scanRequestPackageSetting == null ? getScannedPackageSetting() : scanRequestPackageSetting;
-    }
-
-    public boolean isExistingSettingCopied() {
-        assertScanResultExists();
-        return this.mScanResult.mExistingSettingCopied;
-    }
-
-    public boolean needsNewAppId() {
-        assertScanResultExists();
-        return this.mScanResult.mPreviousAppId != -1;
-    }
-
-    public int getPreviousAppId() {
-        assertScanResultExists();
-        return this.mScanResult.mPreviousAppId;
-    }
-
-    public boolean isInstantInstall() {
-        return (this.mScanFlags & IInstalld.FLAG_FORCE) != 0;
-    }
-
-    public void assertScanResultExists() {
+        this.mDisabledPs = packageSetting;
+        this.mHasAppMetadataFileFromInstaller = false;
+    }
+
+    public InstallRequest(InstallingSession installingSession) {
+        this.mAppId = -1;
+        this.mNeedToMove = false;
+        int[] iArr = PackageManagerService.EMPTY_INT_ARRAY;
+        this.mFirstTimeBroadcastUserIds = iArr;
+        this.mFirstTimeBroadcastInstantUserIds = iArr;
+        this.mUpdateBroadcastUserIds = iArr;
+        this.mUpdateBroadcastInstantUserIds = iArr;
+        this.mWarnings = new ArrayList();
+        this.mInstallerUidForInstallExisting = -1;
+        this.mUserId = installingSession.mUser.getIdentifier();
+        this.mInstallArgs = new InstallArgs(installingSession.mOriginInfo, installingSession.mMoveInfo, installingSession.mObserver, installingSession.mInstallFlags, installingSession.mDevelopmentInstallFlags, installingSession.mInstallSource, installingSession.mVolumeUuid, installingSession.mPackageAbiOverride, installingSession.mPermissionStates, installingSession.mAllowlistedRestrictedPermissions, installingSession.mAutoRevokePermissionsMode, installingSession.mTraceMethod, installingSession.mTraceCookie, installingSession.mSigningDetails, installingSession.mInstallReason, installingSession.mInstallScenario, installingSession.mForceQueryableOverride, installingSession.mDataLoaderType, installingSession.mPackageSource, installingSession.mApplicationEnabledSettingPersistent, installingSession.mDexoptCompilerFilter);
+        this.mPackageLite = installingSession.mPackageLite;
+        this.mPackageMetrics = new PackageMetrics(this);
+        this.mIsInstallInherit = installingSession.mIsInherit;
+        this.mSessionId = installingSession.mSessionId;
+        this.mRequireUserAction = installingSession.mRequireUserAction;
+        this.mPreVerifiedDomains = installingSession.mPreVerifiedDomains;
+        this.mHasAppMetadataFileFromInstaller = installingSession.mHasAppMetadataFile;
+    }
+
+    public final void assertScanResultExists() {
         if (this.mScanResult == null) {
             if (Build.IS_USERDEBUG || Build.IS_ENG) {
                 throw new IllegalStateException("ScanResult cannot be null.");
@@ -559,243 +151,176 @@ public final class InstallRequest {
         }
     }
 
-    public int getSessionId() {
-        return this.mSessionId;
-    }
-
-    public int getRequireUserAction() {
-        return this.mRequireUserAction;
-    }
-
-    public void closeFreezer() {
+    public final void closeFreezer() {
         PackageFreezer packageFreezer = this.mFreezer;
         if (packageFreezer != null) {
             packageFreezer.close();
         }
     }
 
-    public void runPostInstallRunnable() {
-        Runnable runnable = this.mPostInstallRunnable;
-        if (runnable != null) {
-            runnable.run();
+    public final File getCodeFile() {
+        InstallArgs installArgs = this.mInstallArgs;
+        if (installArgs == null) {
+            return null;
         }
+        return installArgs.mCodeFile;
     }
 
-    public void setCodeFile(File file) {
+    public final String getCodePath() {
+        File file;
+        InstallArgs installArgs = this.mInstallArgs;
+        if (installArgs == null || (file = installArgs.mCodeFile) == null) {
+            return null;
+        }
+        return file.getAbsolutePath();
+    }
+
+    public final int getDataLoaderType() {
+        InstallArgs installArgs = this.mInstallArgs;
+        if (installArgs == null) {
+            return 0;
+        }
+        return installArgs.mDataLoaderType;
+    }
+
+    public final int getInstallFlags() {
+        InstallArgs installArgs = this.mInstallArgs;
+        if (installArgs == null) {
+            return 0;
+        }
+        return installArgs.mInstallFlags;
+    }
+
+    public final int getInstallReason() {
+        InstallArgs installArgs = this.mInstallArgs;
+        if (installArgs == null) {
+            return 0;
+        }
+        return installArgs.mInstallReason;
+    }
+
+    public final InstallSource getInstallSource() {
+        InstallArgs installArgs = this.mInstallArgs;
+        if (installArgs == null) {
+            return null;
+        }
+        return installArgs.mInstallSource;
+    }
+
+    public final String getInstallerPackageName() {
+        InstallSource installSource;
+        InstallArgs installArgs = this.mInstallArgs;
+        if (installArgs == null || (installSource = installArgs.mInstallSource) == null) {
+            return null;
+        }
+        return installSource.mInstallerPackageName;
+    }
+
+    public final PackageSetting getScannedPackageSetting() {
+        assertScanResultExists();
+        return this.mScanResult.mPkgSetting;
+    }
+
+    public final UserHandle getUser() {
+        return new UserHandle(this.mUserId);
+    }
+
+    public final int getUserId() {
+        return this.mUserId;
+    }
+
+    public final String getVolumeUuid() {
+        InstallArgs installArgs = this.mInstallArgs;
+        if (installArgs == null) {
+            return null;
+        }
+        return installArgs.mVolumeUuid;
+    }
+
+    public final boolean isInstallMove() {
+        InstallArgs installArgs = this.mInstallArgs;
+        return (installArgs == null || installArgs.mMoveInfo == null) ? false : true;
+    }
+
+    public final void onDexoptFinished(DexoptResult dexoptResult) {
+        InstallArgs installArgs = this.mInstallArgs;
+        if (installArgs != null && (installArgs.mInstallFlags & 32) != 0) {
+            LinkedHashSet linkedHashSet = new LinkedHashSet();
+            Iterator it = dexoptResult.getPackageDexoptResults().iterator();
+            while (it.hasNext()) {
+                Iterator it2 = ((DexoptResult.PackageDexoptResult) it.next()).getDexContainerFileDexoptResults().iterator();
+                while (it2.hasNext()) {
+                    linkedHashSet.addAll(((DexoptResult.DexContainerFileDexoptResult) it2.next()).getExternalProfileErrors());
+                }
+            }
+            if (!linkedHashSet.isEmpty()) {
+                this.mWarnings.add("Error occurred during dexopt when processing external profiles:\n  " + String.join("\n  ", linkedHashSet));
+            }
+        }
+        PackageMetrics packageMetrics = this.mPackageMetrics;
+        if (packageMetrics == null || dexoptResult.getFinalStatus() != 20) {
+            return;
+        }
+        Iterator it3 = dexoptResult.getPackageDexoptResults().iterator();
+        long j = 0;
+        while (it3.hasNext()) {
+            Iterator it4 = ((DexoptResult.PackageDexoptResult) it3.next()).getDexContainerFileDexoptResults().iterator();
+            while (it4.hasNext()) {
+                j += ((DexoptResult.DexContainerFileDexoptResult) it4.next()).getDex2oatWallTimeMillis();
+            }
+        }
+        packageMetrics.mInstallSteps.put(5, new PackageMetrics.InstallStep(j));
+    }
+
+    public final void setCodeFile(File file) {
         InstallArgs installArgs = this.mInstallArgs;
         if (installArgs != null) {
             installArgs.mCodeFile = file;
         }
     }
 
-    public void setError(int i, String str) {
-        setReturnCode(i);
-        setReturnMessage(str);
+    public final void setError(int i, String str) {
+        this.mReturnCode = i;
+        this.mReturnMsg = str;
         Slog.w("PackageManager", str);
         PackageMetrics packageMetrics = this.mPackageMetrics;
         if (packageMetrics != null) {
-            packageMetrics.onInstallFailed();
+            packageMetrics.reportInstallationStats(false);
         }
     }
 
-    public void setError(PackageManagerException packageManagerException) {
-        setError((String) null, packageManagerException);
-    }
-
-    public void setError(String str, PackageManagerException packageManagerException) {
+    public final void setError(String str, PackageManagerException packageManagerException) {
         this.mInternalErrorCode = packageManagerException.internalErrorCode;
         this.mReturnCode = packageManagerException.error;
-        setReturnMessage(ExceptionUtils.getCompleteMessage(str, packageManagerException));
+        this.mReturnMsg = ExceptionUtils.getCompleteMessage(str, packageManagerException);
         Slog.w("PackageManager", str, packageManagerException);
         PackageMetrics packageMetrics = this.mPackageMetrics;
         if (packageMetrics != null) {
-            packageMetrics.onInstallFailed();
+            packageMetrics.reportInstallationStats(false);
         }
     }
 
-    public void setReturnCode(int i) {
-        this.mReturnCode = i;
-    }
-
-    public void setReturnMessage(String str) {
-        this.mReturnMsg = str;
-    }
-
-    public void setApexInfo(ApexInfo apexInfo) {
-        this.mApexInfo = apexInfo;
-    }
-
-    public void setApexModuleName(String str) {
-        this.mApexModuleName = str;
-    }
-
-    public void setPkg(AndroidPackage androidPackage) {
-        this.mPkg = androidPackage;
-    }
-
-    public void setAppId(int i) {
-        this.mAppId = i;
-    }
-
-    public void setNewUsers(int[] iArr) {
-        this.mNewUsers = iArr;
-    }
-
-    public void setOriginPackage(String str) {
-        this.mOrigPackage = str;
-    }
-
-    public void setOriginPermission(String str) {
-        this.mOrigPermission = str;
-    }
-
-    public void setName(String str) {
-        this.mName = str;
-    }
-
-    public void setOriginUsers(int[] iArr) {
+    public final void setOriginUsers(int[] iArr) {
         this.mOrigUsers = iArr;
     }
 
-    public void setFreezer(PackageFreezer packageFreezer) {
-        this.mFreezer = packageFreezer;
-    }
-
-    public void setRemovedInfo(PackageRemovedInfo packageRemovedInfo) {
-        this.mRemovedInfo = packageRemovedInfo;
-    }
-
-    public void setLibraryConsumers(ArrayList arrayList) {
-        this.mLibraryConsumers = arrayList;
-    }
-
-    public void setPrepareResult(boolean z, int i, int i2, AndroidPackage androidPackage, ParsedPackage parsedPackage, boolean z2, boolean z3, PackageSetting packageSetting, PackageSetting packageSetting2) {
+    public final void setPrepareResult(boolean z, int i, int i2, PackageSetting packageSetting, ParsedPackage parsedPackage, ArchivedPackageParcel archivedPackageParcel, boolean z2, boolean z3, PackageSetting packageSetting2, PackageSetting packageSetting3) {
         this.mReplace = z;
         this.mScanFlags = i;
         this.mParseFlags = i2;
-        this.mExistingPackage = androidPackage;
         this.mParsedPackage = parsedPackage;
+        this.mArchivedPackage = archivedPackageParcel;
         this.mClearCodeCache = z2;
         this.mSystem = z3;
-        this.mOriginalPs = packageSetting;
-        this.mDisabledPs = packageSetting2;
+        this.mOriginalPs = packageSetting2;
+        this.mDisabledPs = packageSetting3;
     }
 
-    public void setScanResult(ScanResult scanResult) {
-        this.mScanResult = scanResult;
+    public final void setRemovedInfo(PackageRemovedInfo packageRemovedInfo) {
+        this.mRemovedInfo = packageRemovedInfo;
     }
 
-    public void setScannedPackageSettingAppId(int i) {
-        assertScanResultExists();
-        this.mScanResult.mPkgSetting.setAppId(i);
-    }
-
-    public void setScannedPackageSettingFirstInstallTimeFromReplaced(PackageStateInternal packageStateInternal, int[] iArr) {
-        assertScanResultExists();
-        this.mScanResult.mPkgSetting.setFirstInstallTimeFromReplaced(packageStateInternal, iArr);
-    }
-
-    public void setScannedPackageSettingLastUpdateTime(long j) {
-        assertScanResultExists();
-        this.mScanResult.mPkgSetting.setLastUpdateTime(j);
-    }
-
-    public void setRemovedAppId(int i) {
-        PackageRemovedInfo packageRemovedInfo = this.mRemovedInfo;
-        if (packageRemovedInfo != null) {
-            packageRemovedInfo.mRemovedAppId = i;
-        }
-    }
-
-    public void onPrepareStarted() {
-        PackageMetrics packageMetrics = this.mPackageMetrics;
-        if (packageMetrics != null) {
-            packageMetrics.onStepStarted(1);
-        }
-    }
-
-    public void onPrepareFinished() {
-        PackageMetrics packageMetrics = this.mPackageMetrics;
-        if (packageMetrics != null) {
-            packageMetrics.onStepFinished(1);
-        }
-    }
-
-    public void onScanStarted() {
-        PackageMetrics packageMetrics = this.mPackageMetrics;
-        if (packageMetrics != null) {
-            packageMetrics.onStepStarted(2);
-        }
-    }
-
-    public void onScanFinished() {
-        PackageMetrics packageMetrics = this.mPackageMetrics;
-        if (packageMetrics != null) {
-            packageMetrics.onStepFinished(2);
-        }
-    }
-
-    public void onReconcileStarted() {
-        PackageMetrics packageMetrics = this.mPackageMetrics;
-        if (packageMetrics != null) {
-            packageMetrics.onStepStarted(3);
-        }
-    }
-
-    public void onReconcileFinished() {
-        PackageMetrics packageMetrics = this.mPackageMetrics;
-        if (packageMetrics != null) {
-            packageMetrics.onStepFinished(3);
-        }
-    }
-
-    public void onCommitStarted() {
-        PackageMetrics packageMetrics = this.mPackageMetrics;
-        if (packageMetrics != null) {
-            packageMetrics.onStepStarted(4);
-        }
-    }
-
-    public void onCommitFinished() {
-        PackageMetrics packageMetrics = this.mPackageMetrics;
-        if (packageMetrics != null) {
-            packageMetrics.onStepFinished(4);
-        }
-    }
-
-    public void onDexoptFinished(DexoptResult dexoptResult) {
-        if (this.mPackageMetrics == null) {
-            return;
-        }
-        int finalStatus = dexoptResult.getFinalStatus();
-        this.mDexoptStatus = finalStatus;
-        if (finalStatus != 20) {
-            return;
-        }
-        Iterator it = dexoptResult.getPackageDexoptResults().iterator();
-        long j = 0;
-        while (it.hasNext()) {
-            Iterator it2 = ((DexoptResult.PackageDexoptResult) it.next()).getDexContainerFileDexoptResults().iterator();
-            while (it2.hasNext()) {
-                j += ((DexoptResult.DexContainerFileDexoptResult) it2.next()).getDex2oatWallTimeMillis();
-            }
-        }
-        this.mPackageMetrics.onStepFinished(5, j);
-    }
-
-    public void onInstallCompleted() {
-        PackageMetrics packageMetrics;
-        if (getReturnCode() != 1 || (packageMetrics = this.mPackageMetrics) == null) {
-            return;
-        }
-        packageMetrics.onInstallSucceed();
-    }
-
-    public boolean getNeedToMove() {
-        return this.mNeedToMove;
-    }
-
-    public void setNeedToMove(boolean z) {
-        this.mNeedToMove = z;
+    public final void setReturnCode(int i) {
+        this.mReturnCode = i;
     }
 }

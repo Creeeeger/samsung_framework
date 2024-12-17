@@ -1,5 +1,6 @@
 package com.android.server.hdmi;
 
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.hardware.hdmi.IHdmiControlCallback;
 import android.os.Handler;
 import android.os.Looper;
@@ -7,13 +8,16 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.util.Pair;
 import android.util.Slog;
+import com.android.server.HeapdumpWatcher$$ExternalSyntheticOutline0;
 import com.android.server.hdmi.HdmiControlService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class HdmiCecFeatureAction {
     public ActionTimer mActionTimer;
     public final List mCallbacks;
@@ -22,18 +26,29 @@ public abstract class HdmiCecFeatureAction {
     public final HdmiCecLocalDevice mSource;
     public int mState;
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface ActionTimer {
-        void clearTimerMessage();
-
-        void sendTimerMessage(int i, long j);
     }
 
-    public abstract void handleTimerEvent(int i);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ActionTimerHandler extends Handler implements ActionTimer {
+        public ActionTimerHandler(Looper looper) {
+            super(looper);
+        }
 
-    public abstract boolean processCommand(HdmiCecMessage hdmiCecMessage);
+        public final void clearTimerMessage() {
+            removeMessages(100);
+        }
 
-    public abstract boolean start();
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            if (message.what != 100) {
+                HeapdumpWatcher$$ExternalSyntheticOutline0.m(new StringBuilder("Unsupported message:"), message.what, "HdmiCecFeatureAction");
+            } else {
+                HdmiCecFeatureAction.this.handleTimerEvent(message.arg1);
+            }
+        }
+    }
 
     public HdmiCecFeatureAction(HdmiCecLocalDevice hdmiCecLocalDevice) {
         this(hdmiCecLocalDevice, new ArrayList());
@@ -48,105 +63,32 @@ public abstract class HdmiCecFeatureAction {
         this.mCallbacks = new ArrayList();
         Iterator it = list.iterator();
         while (it.hasNext()) {
-            addCallback((IHdmiControlCallback) it.next());
+            ((ArrayList) this.mCallbacks).add((IHdmiControlCallback) it.next());
         }
         this.mSource = hdmiCecLocalDevice;
-        HdmiControlService service = hdmiCecLocalDevice.getService();
-        this.mService = service;
-        this.mActionTimer = createActionTimer(service.getServiceLooper());
+        HdmiControlService hdmiControlService = hdmiCecLocalDevice.mService;
+        this.mService = hdmiControlService;
+        this.mActionTimer = new ActionTimerHandler(hdmiControlService.mHandler.getLooper());
     }
 
-    public void setActionTimer(ActionTimer actionTimer) {
-        this.mActionTimer = actionTimer;
-    }
-
-    /* loaded from: classes2.dex */
-    public class ActionTimerHandler extends Handler implements ActionTimer {
-        public ActionTimerHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecFeatureAction.ActionTimer
-        public void sendTimerMessage(int i, long j) {
-            sendMessageDelayed(obtainMessage(100, i, 0), j);
-        }
-
-        @Override // com.android.server.hdmi.HdmiCecFeatureAction.ActionTimer
-        public void clearTimerMessage() {
-            removeMessages(100);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            if (message.what == 100) {
-                HdmiCecFeatureAction.this.handleTimerEvent(message.arg1);
-                return;
-            }
-            Slog.w("HdmiCecFeatureAction", "Unsupported message:" + message.what);
-        }
-    }
-
-    public final ActionTimer createActionTimer(Looper looper) {
-        return new ActionTimerHandler(looper);
-    }
-
-    public void addTimer(int i, int i2) {
-        this.mActionTimer.sendTimerMessage(i, i2);
-    }
-
-    public boolean started() {
-        return this.mState != 0;
-    }
-
-    public final void sendCommand(HdmiCecMessage hdmiCecMessage) {
-        this.mService.sendCecCommand(hdmiCecMessage);
-    }
-
-    public final void sendCommand(HdmiCecMessage hdmiCecMessage, HdmiControlService.SendMessageCallback sendMessageCallback) {
-        this.mService.sendCecCommand(hdmiCecMessage, sendMessageCallback);
-    }
-
-    public final void addAndStartAction(HdmiCecFeatureAction hdmiCecFeatureAction) {
-        this.mSource.addAndStartAction(hdmiCecFeatureAction);
-    }
-
-    public final List getActions(Class cls) {
-        return this.mSource.getActions(cls);
-    }
-
-    public final HdmiCecMessageCache getCecMessageCache() {
-        return this.mSource.getCecMessageCache();
-    }
-
-    public final void removeAction(HdmiCecFeatureAction hdmiCecFeatureAction) {
-        this.mSource.removeAction(hdmiCecFeatureAction);
-    }
-
-    public final void removeAction(Class cls) {
-        this.mSource.removeActionExcept(cls, null);
-    }
-
-    public final void removeActionExcept(Class cls, HdmiCecFeatureAction hdmiCecFeatureAction) {
-        this.mSource.removeActionExcept(cls, hdmiCecFeatureAction);
-    }
-
-    public final void pollDevices(HdmiControlService.DevicePollingCallback devicePollingCallback, int i, int i2) {
-        this.mService.pollDevices(devicePollingCallback, getSourceAddress(), i, i2);
+    public final void addTimer(int i, int i2) {
+        ActionTimerHandler actionTimerHandler = (ActionTimerHandler) this.mActionTimer;
+        actionTimerHandler.sendMessageDelayed(actionTimerHandler.obtainMessage(100, i, 0), i2);
     }
 
     public void clear() {
         this.mState = 0;
-        this.mActionTimer.clearTimerMessage();
+        ((ActionTimerHandler) this.mActionTimer).clearTimerMessage();
     }
 
-    public void finish() {
-        finish(true);
-    }
-
-    public void finish(boolean z) {
+    public final void finish(boolean z) {
         clear();
         if (z) {
-            removeAction(this);
+            HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+            hdmiCecLocalDevice.assertRunOnServiceThread();
+            finish(false);
+            hdmiCecLocalDevice.mActions.remove(this);
+            hdmiCecLocalDevice.checkIfPendingActionsCleared();
         }
         ArrayList arrayList = this.mOnFinishedCallbacks;
         if (arrayList != null) {
@@ -161,57 +103,11 @@ public abstract class HdmiCecFeatureAction {
         }
     }
 
-    public final HdmiCecLocalDevice localDevice() {
-        return this.mSource;
-    }
-
-    public final HdmiCecLocalDevicePlayback playback() {
-        return (HdmiCecLocalDevicePlayback) this.mSource;
-    }
-
-    public final HdmiCecLocalDeviceSource source() {
-        return (HdmiCecLocalDeviceSource) this.mSource;
-    }
-
-    public final HdmiCecLocalDeviceTv tv() {
-        return (HdmiCecLocalDeviceTv) this.mSource;
-    }
-
-    public final HdmiCecLocalDeviceAudioSystem audioSystem() {
-        return (HdmiCecLocalDeviceAudioSystem) this.mSource;
-    }
-
-    public final int getSourceAddress() {
-        return this.mSource.getDeviceInfo().getLogicalAddress();
-    }
-
-    public final int getSourcePath() {
-        return this.mSource.getDeviceInfo().getPhysicalAddress();
-    }
-
-    public final void sendUserControlPressedAndReleased(int i, int i2) {
-        this.mSource.sendUserControlPressedAndReleased(i, i2);
-    }
-
-    public final void addOnFinishedCallback(HdmiCecFeatureAction hdmiCecFeatureAction, Runnable runnable) {
-        if (this.mOnFinishedCallbacks == null) {
-            this.mOnFinishedCallbacks = new ArrayList();
-        }
-        this.mOnFinishedCallbacks.add(Pair.create(hdmiCecFeatureAction, runnable));
-    }
-
-    public void finishWithCallback(int i) {
-        invokeCallback(i);
-        finish();
-    }
-
-    public void addCallback(IHdmiControlCallback iHdmiControlCallback) {
-        this.mCallbacks.add(iHdmiControlCallback);
-    }
-
-    public final void invokeCallback(int i) {
+    public final void finishWithCallback(int i) {
         try {
-            for (IHdmiControlCallback iHdmiControlCallback : this.mCallbacks) {
+            Iterator it = ((ArrayList) this.mCallbacks).iterator();
+            while (it.hasNext()) {
+                IHdmiControlCallback iHdmiControlCallback = (IHdmiControlCallback) it.next();
                 if (iHdmiControlCallback != null) {
                     iHdmiControlCallback.onComplete(i);
                 }
@@ -219,5 +115,68 @@ public abstract class HdmiCecFeatureAction {
         } catch (RemoteException e) {
             Slog.e("HdmiCecFeatureAction", "Callback failed:" + e);
         }
+        finish(true);
     }
+
+    public final int getSourceAddress() {
+        return this.mSource.getDeviceInfo().getLogicalAddress();
+    }
+
+    public abstract void handleTimerEvent(int i);
+
+    public final void pollDevices(final HdmiControlService.DevicePollingCallback devicePollingCallback, int i, final long j) {
+        final int sourceAddress = getSourceAddress();
+        HdmiControlService hdmiControlService = this.mService;
+        hdmiControlService.assertRunOnServiceThread();
+        final HdmiCecController hdmiCecController = hdmiControlService.mCecController;
+        int i2 = i & 3;
+        if (i2 == 0) {
+            throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Invalid poll strategy:"));
+        }
+        int i3 = 196608 & i;
+        if (i3 == 0) {
+            throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Invalid iteration strategy:"));
+        }
+        hdmiCecController.assertRunOnServiceThread();
+        Predicate predicate = i2 != 2 ? hdmiCecController.mRemoteDeviceAddressPredicate : hdmiCecController.mSystemAudioAddressPredicate;
+        final ArrayList arrayList = new ArrayList();
+        if (i3 != 65536) {
+            for (int i4 = 14; i4 >= 0; i4--) {
+                if (predicate.test(Integer.valueOf(i4))) {
+                    arrayList.add(Integer.valueOf(i4));
+                }
+            }
+        } else {
+            for (int i5 = 0; i5 <= 14; i5++) {
+                if (predicate.test(Integer.valueOf(i5))) {
+                    arrayList.add(Integer.valueOf(i5));
+                }
+            }
+        }
+        final ArrayList arrayList2 = new ArrayList();
+        hdmiCecController.mControlHandler.postDelayed(new Runnable() { // from class: com.android.server.hdmi.HdmiCecController$$ExternalSyntheticLambda0
+            public final /* synthetic */ int f$3 = 1;
+
+            @Override // java.lang.Runnable
+            public final void run() {
+                HdmiCecController.this.runDevicePolling(sourceAddress, arrayList, this.f$3, devicePollingCallback, arrayList2, j, false);
+            }
+        }, hdmiCecController.mPollDevicesDelay);
+    }
+
+    public abstract boolean processCommand(HdmiCecMessage hdmiCecMessage);
+
+    public final void sendCommand(HdmiCecMessage hdmiCecMessage) {
+        this.mService.sendCecCommand(hdmiCecMessage, null);
+    }
+
+    public final void sendCommand(HdmiCecMessage hdmiCecMessage, HdmiControlService.SendMessageCallback sendMessageCallback) {
+        this.mService.sendCecCommand(hdmiCecMessage, sendMessageCallback);
+    }
+
+    public void setActionTimer(ActionTimer actionTimer) {
+        this.mActionTimer = actionTimer;
+    }
+
+    public abstract void start();
 }

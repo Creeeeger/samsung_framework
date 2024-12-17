@@ -10,114 +10,98 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.UserHandle;
 import android.util.Log;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class UpdateReceiver extends BroadcastReceiver {
     public Context mContext;
-    public Handler mHandler = new Handler(Looper.getMainLooper()) { // from class: com.android.server.spay.UpdateReceiver.2
+    public final AnonymousClass2 mHandler = new Handler(Looper.getMainLooper()) { // from class: com.android.server.spay.UpdateReceiver.2
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
+            UpdateReceiver updateReceiver;
             Log.d("UpdateReceiver", "Handler : " + message.what);
             Bundle data = message.getData();
             String string = data.getString("action");
             if (string != null) {
-                char c = 65535;
-                switch (string.hashCode()) {
-                    case -810471698:
-                        if (string.equals("android.intent.action.PACKAGE_REPLACED")) {
-                            c = 0;
-                            break;
-                        }
-                        break;
-                    case 798292259:
-                        if (string.equals("android.intent.action.BOOT_COMPLETED")) {
-                            c = 1;
-                            break;
-                        }
-                        break;
-                    case 1544582882:
-                        if (string.equals("android.intent.action.PACKAGE_ADDED")) {
-                            c = 2;
-                            break;
-                        }
-                        break;
-                }
-                switch (c) {
-                    case 0:
-                    case 2:
-                        Log.d("UpdateReceiver", "action : " + string + ", " + data.getString("getdata_of_intent"));
-                        if (UpdateReceiver.this.mContext == null || data.getString("getdata_of_intent") == null) {
-                            return;
-                        }
-                        if (data.getString("getdata_of_intent").contains("com.samsung.android.spay")) {
-                            Log.d("UpdateReceiver", string + " received : triggering PF Install");
-                            UpdateReceiver updateReceiver = UpdateReceiver.this;
-                            updateReceiver.triggerPFInstall(updateReceiver.mContext);
-                            Utils.backgroundWhitelist(UpdateReceiver.this.mContext, "com.samsung.android.spay");
-                            return;
-                        }
-                        if (data.getString("getdata_of_intent").contains("com.samsung.android.spaymini")) {
-                            Utils.backgroundWhitelist(UpdateReceiver.this.mContext, "com.samsung.android.spaymini");
-                            return;
-                        } else if (data.getString("getdata_of_intent").contains("com.samsung.android.samsungpay.gear")) {
-                            Utils.backgroundWhitelist(UpdateReceiver.this.mContext, "com.samsung.android.samsungpay.gear");
-                            return;
-                        } else {
-                            if (data.getString("getdata_of_intent").contains("com.samsung.android.rajaampat")) {
-                                Utils.backgroundWhitelist(UpdateReceiver.this.mContext, "com.samsung.android.rajaampat");
-                                return;
+                updateReceiver = UpdateReceiver.this;
+                switch (string) {
+                    case "android.intent.action.PACKAGE_REPLACED":
+                    case "android.intent.action.PACKAGE_ADDED":
+                        StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("action : ", string, ", ");
+                        m.append(data.getString("getdata_of_intent"));
+                        Log.d("UpdateReceiver", m.toString());
+                        if (updateReceiver.mContext != null && data.getString("getdata_of_intent") != null) {
+                            if (!data.getString("getdata_of_intent").contains("com.samsung.android.spay")) {
+                                if (!data.getString("getdata_of_intent").contains("com.samsung.android.spaymini")) {
+                                    if (!data.getString("getdata_of_intent").contains("com.samsung.android.samsungpay.gear")) {
+                                        if (data.getString("getdata_of_intent").contains("com.samsung.android.rajaampat")) {
+                                            Utils.backgroundWhitelist(updateReceiver.mContext, "com.samsung.android.rajaampat", false);
+                                            break;
+                                        }
+                                    } else {
+                                        Utils.backgroundWhitelist(updateReceiver.mContext, "com.samsung.android.samsungpay.gear", false);
+                                        break;
+                                    }
+                                } else {
+                                    Utils.backgroundWhitelist(updateReceiver.mContext, "com.samsung.android.spaymini", false);
+                                    break;
+                                }
+                            } else {
+                                Log.d("UpdateReceiver", string.concat(" received : triggering PF Install"));
+                                UpdateReceiver.triggerPFInstall(updateReceiver.mContext);
+                                Utils.backgroundWhitelist(updateReceiver.mContext, "com.samsung.android.spay", false);
+                                break;
                             }
-                            return;
                         }
-                    case 1:
+                        break;
+                    case "android.intent.action.BOOT_COMPLETED":
                         Log.d("UpdateReceiver", "ACTION_BOOT_COMPLETED received : triggering PF Install");
-                        if (UpdateReceiver.this.mContext != null) {
-                            UpdateReceiver updateReceiver2 = UpdateReceiver.this;
-                            updateReceiver2.triggerPFInstall(updateReceiver2.mContext);
-                            Utils.backgroundWhitelist(UpdateReceiver.this.mContext, "com.samsung.android.spay");
-                            Utils.backgroundWhitelist(UpdateReceiver.this.mContext, "com.samsung.android.spayfw");
-                            Utils.backgroundWhitelist(UpdateReceiver.this.mContext, "com.samsung.android.spaymini");
-                            Utils.backgroundWhitelist(UpdateReceiver.this.mContext, "com.samsung.android.samsungpay.gear");
-                            Utils.backgroundWhitelist(UpdateReceiver.this.mContext, "com.samsung.android.rajaampat");
-                            return;
+                        Context context = updateReceiver.mContext;
+                        if (context != null) {
+                            UpdateReceiver.triggerPFInstall(context);
+                            Utils.backgroundWhitelist(updateReceiver.mContext, "com.samsung.android.spay", false);
+                            Utils.backgroundWhitelist(updateReceiver.mContext, "com.samsung.android.spayfw", false);
+                            Utils.backgroundWhitelist(updateReceiver.mContext, "com.samsung.android.spaymini", false);
+                            Utils.backgroundWhitelist(updateReceiver.mContext, "com.samsung.android.samsungpay.gear", false);
+                            Utils.backgroundWhitelist(updateReceiver.mContext, "com.samsung.android.rajaampat", false);
+                            break;
                         }
-                        return;
-                    default:
-                        return;
+                        break;
                 }
             }
         }
     };
 
+    public static void triggerPFInstall(Context context) {
+        Intent intent = new Intent();
+        intent.setAction("com.samsung.android.spay.action.PFINSTALL");
+        intent.addFlags(32);
+        intent.setComponent(new ComponentName("com.samsung.android.spay", "com.samsung.android.spay.common.us.LocalPFBroadcastReceiver"));
+        context.sendBroadcastAsUser(intent, UserHandle.CURRENT, "com.samsung.android.spay.permission.INSTALL_PF");
+    }
+
     @Override // android.content.BroadcastReceiver
-    public void onReceive(Context context, final Intent intent) {
+    public final void onReceive(Context context, final Intent intent) {
         this.mContext = context;
         if (intent != null) {
             final String action = intent.getAction();
             Log.d("UpdateReceiver:", "Action: " + action);
             new Thread() { // from class: com.android.server.spay.UpdateReceiver.1
                 @Override // java.lang.Thread, java.lang.Runnable
-                public void run() {
+                public final void run() {
                     try {
                         Message message = new Message();
                         Bundle bundle = new Bundle();
                         bundle.putString("action", action);
                         bundle.putString("getdata_of_intent", intent.getDataString());
                         message.setData(bundle);
-                        UpdateReceiver.this.mHandler.sendMessage(message);
+                        sendMessage(message);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }.start();
         }
-    }
-
-    public void triggerPFInstall(Context context) {
-        Intent intent = new Intent();
-        intent.setAction("com.samsung.android.spay.action.PFINSTALL");
-        intent.addFlags(32);
-        intent.setComponent(new ComponentName("com.samsung.android.spay", "com.samsung.android.spay.common.us.LocalPFBroadcastReceiver"));
-        context.sendBroadcastAsUser(intent, UserHandle.CURRENT, "com.samsung.android.spay.permission.INSTALL_PF");
     }
 }

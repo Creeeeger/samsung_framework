@@ -1,39 +1,18 @@
 package com.android.server.ibs;
 
 import android.util.LocalLog;
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 
-/* loaded from: classes2.dex */
-public class IntelligentBatterySaverLogger {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class IntelligentBatterySaverLogger {
     public static IntelligentBatterySaverLogger sInstance;
-    public boolean mIsUsed = false;
-    public LocalLog mIBSLog = new LocalLog(3000);
+    public LocalLog mIBSLog;
+    public boolean mIsUsed;
 
-    public static synchronized IntelligentBatterySaverLogger getInstance() {
-        IntelligentBatterySaverLogger intelligentBatterySaverLogger;
-        synchronized (IntelligentBatterySaverLogger.class) {
-            if (sInstance == null) {
-                sInstance = new IntelligentBatterySaverLogger();
-            }
-            intelligentBatterySaverLogger = sInstance;
-        }
-        return intelligentBatterySaverLogger;
-    }
-
-    public void add(String str) {
+    public final void add(String str) {
         if (!this.mIsUsed) {
             this.mIsUsed = true;
         }
         this.mIBSLog.log(str);
-    }
-
-    public void dumpIBSHistoryLog(PrintWriter printWriter, String[] strArr) {
-        if (this.mIsUsed) {
-            printWriter.println();
-            printWriter.println("IntelligentBatterySaverLogger history Log:");
-            this.mIBSLog.dump((FileDescriptor) null, printWriter, (String[]) null);
-            printWriter.println();
-        }
     }
 }

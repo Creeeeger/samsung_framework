@@ -5,6 +5,7 @@ import android.net.LinkProperties;
 import android.net.networkstack.aidl.ip.ReachabilityLossInfoParcelable;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class IpClientCallbacks {
     public void installPacketFilter(byte[] bArr) {
@@ -37,6 +38,10 @@ public class IpClientCallbacks {
     public void onQuit() {
     }
 
+    public void onReachabilityFailure(ReachabilityLossInfoParcelable reachabilityLossInfoParcelable) {
+        onReachabilityLost(reachabilityLossInfoParcelable.message);
+    }
+
     public void onReachabilityLost(String str) {
     }
 
@@ -50,9 +55,5 @@ public class IpClientCallbacks {
     }
 
     public void startReadPacketFilter() {
-    }
-
-    public void onReachabilityFailure(ReachabilityLossInfoParcelable reachabilityLossInfoParcelable) {
-        onReachabilityLost(reachabilityLossInfoParcelable.message);
     }
 }

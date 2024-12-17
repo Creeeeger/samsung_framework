@@ -9,7 +9,9 @@ import android.util.Slog;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.util.SparseLongArray;
+import com.android.server.content.SyncManager;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class SyncJobService extends JobService {
     public static SyncJobService sInstance;
@@ -19,34 +21,50 @@ public class SyncJobService extends JobService {
     public static final SparseLongArray sJobStartUptimes = new SparseLongArray();
     public static final SyncLogger sLogger = SyncLogger.getInstance();
 
-    public final void updateInstance() {
-        synchronized (SyncJobService.class) {
-            sInstance = this;
-        }
-    }
-
-    public static SyncJobService getInstance() {
+    public static void callJobFinished(int i, String str) {
         SyncJobService syncJobService;
-        synchronized (sLock) {
-            if (sInstance == null) {
-                Slog.wtf("SyncManager", "sInstance == null");
+        Object obj = sLock;
+        synchronized (obj) {
+            try {
+                if (sInstance == null) {
+                    Slog.wtf("SyncManager", "sInstance == null");
+                }
+                syncJobService = sInstance;
+            } finally {
             }
-            syncJobService = sInstance;
         }
-        return syncJobService;
+        if (syncJobService != null) {
+            synchronized (obj) {
+                try {
+                    SparseArray sparseArray = sJobParamsMap;
+                    JobParameters jobParameters = (JobParameters) sparseArray.get(i);
+                    SyncLogger syncLogger = sLogger;
+                    syncLogger.log("callJobFinished()", " jobid=", Integer.valueOf(i), " needsReschedule=", Boolean.FALSE, " ", syncLogger.jobParametersToString(jobParameters), " why=", str);
+                    if (jobParameters != null) {
+                        syncJobService.jobFinished(jobParameters, false);
+                        sparseArray.remove(i);
+                    } else {
+                        Slog.e("SyncManager", "Job params not found for " + String.valueOf(i));
+                    }
+                } finally {
+                }
+            }
+        }
     }
 
-    public static boolean isReady() {
-        boolean z;
-        synchronized (sLock) {
-            z = sInstance != null;
+    public static String jobParametersToString(JobParameters jobParameters) {
+        if (jobParameters == null) {
+            return "job:null";
         }
-        return z;
+        return "job:#" + jobParameters.getJobId() + ":sr=[" + jobParameters.getInternalStopReasonCode() + "/" + jobParameters.getDebugStopReason() + "]:" + SyncOperation.maybeCreateFromJobExtras(jobParameters.getExtras());
     }
 
     @Override // android.app.job.JobService
-    public boolean onStartJob(JobParameters jobParameters) {
-        updateInstance();
+    public final boolean onStartJob(JobParameters jobParameters) {
+        SyncManager.SyncHandler syncHandler;
+        synchronized (SyncJobService.class) {
+            sInstance = this;
+        }
         SyncLogger syncLogger = sLogger;
         syncLogger.purgeOldLogs();
         SyncOperation maybeCreateFromJobExtras = SyncOperation.maybeCreateFromJobExtras(jobParameters.getExtras());
@@ -73,12 +91,16 @@ public class SyncJobService extends JobService {
             Slog.v("SyncManager", "Got start job message " + maybeCreateFromJobExtras.target);
         }
         obtain.obj = maybeCreateFromJobExtras;
-        SyncManager.sendMessage(obtain);
+        SyncManager syncManager = SyncManager.getInstance();
+        if (syncManager != null && (syncHandler = syncManager.mSyncHandler) != null) {
+            syncHandler.sendMessage(obtain);
+        }
         return true;
     }
 
     @Override // android.app.job.JobService
-    public boolean onStopJob(JobParameters jobParameters) {
+    public final boolean onStopJob(JobParameters jobParameters) {
+        SyncManager.SyncHandler syncHandler;
         if (Log.isLoggable("SyncManager", 2)) {
             Slog.v("SyncManager", "onStopJob called " + jobParameters.getJobId() + ", reason: " + jobParameters.getInternalStopReasonCode());
         }
@@ -91,63 +113,32 @@ public class SyncJobService extends JobService {
         SyncLogger syncLogger = sLogger;
         syncLogger.log("onStopJob() ", syncLogger.jobParametersToString(jobParameters), " readyToSync=", Boolean.valueOf(readyToSync));
         synchronized (sLock) {
-            int jobId = jobParameters.getJobId();
-            sJobParamsMap.remove(jobId);
-            SparseLongArray sparseLongArray = sJobStartUptimes;
-            long j = sparseLongArray.get(jobId);
-            long uptimeMillis = SystemClock.uptimeMillis();
-            if (uptimeMillis - j > 60000 && readyToSync && !sStartedSyncs.get(jobId)) {
-                wtf("Job " + jobId + " didn't start:  startUptime=" + j + " nowUptime=" + uptimeMillis + " params=" + jobParametersToString(jobParameters));
+            try {
+                int jobId = jobParameters.getJobId();
+                sJobParamsMap.remove(jobId);
+                SparseLongArray sparseLongArray = sJobStartUptimes;
+                long j = sparseLongArray.get(jobId);
+                long uptimeMillis = SystemClock.uptimeMillis();
+                if (uptimeMillis - j > 60000 && readyToSync && !sStartedSyncs.get(jobId)) {
+                    String str = "Job " + jobId + " didn't start:  startUptime=" + j + " nowUptime=" + uptimeMillis + " params=" + jobParametersToString(jobParameters);
+                    syncLogger.log(str);
+                    Slog.wtf("SyncManager", str);
+                }
+                sStartedSyncs.delete(jobId);
+                sparseLongArray.delete(jobId);
+            } catch (Throwable th) {
+                throw th;
             }
-            sStartedSyncs.delete(jobId);
-            sparseLongArray.delete(jobId);
         }
         Message obtain = Message.obtain();
         obtain.what = 11;
         obtain.obj = maybeCreateFromJobExtras;
         obtain.arg1 = jobParameters.getInternalStopReasonCode() != 0 ? 1 : 0;
         obtain.arg2 = jobParameters.getInternalStopReasonCode() != 3 ? 0 : 1;
-        SyncManager.sendMessage(obtain);
+        SyncManager syncManager = SyncManager.getInstance();
+        if (syncManager != null && (syncHandler = syncManager.mSyncHandler) != null) {
+            syncHandler.sendMessage(obtain);
+        }
         return false;
-    }
-
-    public static void callJobFinished(int i, boolean z, String str) {
-        SyncJobService syncJobService = getInstance();
-        if (syncJobService != null) {
-            syncJobService.callJobFinishedInner(i, z, str);
-        }
-    }
-
-    public void callJobFinishedInner(int i, boolean z, String str) {
-        synchronized (sLock) {
-            SparseArray sparseArray = sJobParamsMap;
-            JobParameters jobParameters = (JobParameters) sparseArray.get(i);
-            SyncLogger syncLogger = sLogger;
-            syncLogger.log("callJobFinished()", " jobid=", Integer.valueOf(i), " needsReschedule=", Boolean.valueOf(z), " ", syncLogger.jobParametersToString(jobParameters), " why=", str);
-            if (jobParameters != null) {
-                jobFinished(jobParameters, z);
-                sparseArray.remove(i);
-            } else {
-                Slog.e("SyncManager", "Job params not found for " + String.valueOf(i));
-            }
-        }
-    }
-
-    public static void markSyncStarted(int i) {
-        synchronized (sLock) {
-            sStartedSyncs.put(i, true);
-        }
-    }
-
-    public static String jobParametersToString(JobParameters jobParameters) {
-        if (jobParameters == null) {
-            return "job:null";
-        }
-        return "job:#" + jobParameters.getJobId() + ":sr=[" + jobParameters.getInternalStopReasonCode() + "/" + jobParameters.getDebugStopReason() + "]:" + SyncOperation.maybeCreateFromJobExtras(jobParameters.getExtras());
-    }
-
-    public static void wtf(String str) {
-        sLogger.log(str);
-        Slog.wtf("SyncManager", str);
     }
 }

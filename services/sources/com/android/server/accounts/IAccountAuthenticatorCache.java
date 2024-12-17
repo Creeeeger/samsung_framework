@@ -1,28 +1,9 @@
 package com.android.server.accounts;
 
-import android.accounts.AuthenticatorDescription;
-import android.content.pm.RegisteredServicesCache;
-import android.content.pm.RegisteredServicesCacheListener;
-import android.os.Handler;
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 import java.util.Collection;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IAccountAuthenticatorCache {
-    void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr, int i);
-
     Collection getAllServices(int i);
-
-    boolean getBindInstantServiceAllowed(int i);
-
-    RegisteredServicesCache.ServiceInfo getServiceInfo(AuthenticatorDescription authenticatorDescription, int i);
-
-    void invalidateCache(int i);
-
-    void setBindInstantServiceAllowed(int i, boolean z);
-
-    void setListener(RegisteredServicesCacheListener registeredServicesCacheListener, Handler handler);
-
-    void updateServices(int i);
 }

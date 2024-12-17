@@ -1,10 +1,6 @@
 package com.android.server.display.mode;
 
-import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.hardware.display.DisplayManagerGlobal;
 import android.hardware.display.DisplayManagerInternal;
@@ -16,53 +12,168 @@ import android.util.Slog;
 import android.view.DisplayAddress;
 import android.view.DisplayInfo;
 import android.view.SurfaceControl;
-import com.android.internal.display.BrightnessSynchronizer;
-import com.android.server.LocalServices;
-import com.android.server.display.mode.DisplayModeDirector;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.display.DisplayManagerService;
 import com.android.server.display.mode.RefreshRateModeManager;
+import com.samsung.android.hardware.display.RefreshRateConfig;
 import com.samsung.android.rune.CoreRune;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
-/* loaded from: classes2.dex */
-public class RefreshRateModeManager {
-    public static HashMap mControllerByToken = new HashMap();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RefreshRateModeManager {
+    public static final HashMap mControllerByToken = new HashMap();
     public Context mContext;
+    public AnonymousClass1 mDisplayStateListener;
+    public AtomicReference mDisplayToken;
     public Handler mHandler;
     public Object mLock;
-    public final ModeSettingsObserver mModeSettingsObserver;
-    public AtomicReference mDisplayToken = new AtomicReference();
-    public DisplayManagerInternal.DisplayStateListener mDisplayStateListener = new AnonymousClass1();
+    public ModeSettingsObserver mModeSettingsObserver;
 
-    public RefreshRateModeManager(Context context, DisplayModeDirector displayModeDirector, Object obj, Handler handler, VotesStorage votesStorage) {
-        this.mContext = context;
-        this.mHandler = handler;
-        this.mLock = obj;
-        RefreshRateController.init(context, displayModeDirector, handler, votesStorage, new RefreshRateTokenController(obj));
-        this.mModeSettingsObserver = new ModeSettingsObserver(context, handler);
-        addControllerByDisplayToken(null);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.display.mode.RefreshRateModeManager$1, reason: invalid class name */
+    public final class AnonymousClass1 implements DisplayManagerInternal.DisplayStateListener {
+        public AnonymousClass1() {
+        }
+
+        public final void onFinish(int i, int i2, int i3) {
+            if (i3 == 1 || i3 == 2) {
+                final boolean z = i == 2;
+                RefreshRateModeManager.this.getController().getClass();
+                Boolean bool = (Boolean) RefreshRateController.mIsDisplayPowerModeOnByDisplayType.get(i3);
+                if (bool == null || z != bool.booleanValue()) {
+                    Slog.d("RefreshRateModeManager", "DisplayStateListener#onFinish, isPowerModeOn=" + z + ", displayType=" + i3);
+                    RefreshRateModeManager.this.getController().getClass();
+                    RefreshRateController.mIsDisplayPowerModeOnByDisplayType.put(i3, Boolean.valueOf(z));
+                    RefreshRateModeManager.this.mHandler.post(new Runnable() { // from class: com.android.server.display.mode.RefreshRateModeManager$1$$ExternalSyntheticLambda0
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            RefreshRateModeManager.AnonymousClass1 anonymousClass1 = RefreshRateModeManager.AnonymousClass1.this;
+                            boolean z2 = z;
+                            synchronized (RefreshRateModeManager.this.mLock) {
+                                RefreshRateController controller = RefreshRateModeManager.this.getController();
+                                if (z2) {
+                                    controller.onBrightnessChangedLocked();
+                                } else {
+                                    controller.onDisplayStateOffLocked();
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        }
     }
 
-    public RefreshRateController getController() {
-        return getController((IBinder) this.mDisplayToken.get());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ModeSettingsObserver extends ContentObserver {
+        public final Context mContext;
+        public final Uri mRefreshRateModeSetting;
+        public final Uri mSubRefreshRateModeSetting;
+
+        public ModeSettingsObserver(Context context, DisplayManagerService.DisplayManagerHandler displayManagerHandler) {
+            super(displayManagerHandler);
+            this.mRefreshRateModeSetting = Settings.Secure.getUriFor("refresh_rate_mode");
+            this.mSubRefreshRateModeSetting = Settings.Secure.getUriFor("refresh_rate_mode_cover");
+            this.mContext = context;
+        }
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z, Uri uri, int i) {
+            synchronized (RefreshRateModeManager.this.mLock) {
+                try {
+                    if (!this.mRefreshRateModeSetting.equals(uri)) {
+                        if (CoreRune.FW_VRR_FOR_SUB_DISPLAY && this.mSubRefreshRateModeSetting.equals(uri)) {
+                        }
+                    }
+                    RefreshRateModeManager.this.getController().updateRefreshRateModeLocked(false);
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
     }
 
-    public RefreshRateController getController(IBinder iBinder) {
+    public static void addControllerByDisplayToken(IBinder iBinder) {
+        HashMap hashMap = mControllerByToken;
+        synchronized (hashMap) {
+            try {
+                if (!hashMap.containsKey(iBinder)) {
+                    hashMap.put(iBinder, RefreshRateController.makeController(iBinder));
+                    Slog.d("RefreshRateModeManager", "display - " + iBinder + " registered");
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void dumpLocked(final PrintWriter printWriter) {
+        printWriter.println("  RefreshRateModeManager");
+        printWriter.println("    mRefreshRateModeByDisplayToken");
+        mControllerByToken.forEach(new BiConsumer() { // from class: com.android.server.display.mode.RefreshRateModeManager$$ExternalSyntheticLambda1
+            @Override // java.util.function.BiConsumer
+            public final void accept(Object obj, Object obj2) {
+                PrintWriter printWriter2 = printWriter;
+                RefreshRateController refreshRateController = (RefreshRateController) obj2;
+                refreshRateController.getClass();
+                printWriter2.println("      DisplayToken: " + refreshRateController.mDisplayToken);
+                boolean z = CoreRune.FW_VRR_FOR_SUB_DISPLAY;
+                boolean z2 = refreshRateController.mIsSubScreen;
+                if (z) {
+                    BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("        PrimaryDisplay: "), !z2, printWriter2);
+                }
+                printWriter2.println("        ControllerType: ".concat(refreshRateController.getControllerType()));
+                printWriter2.println("        RefreshRateMode: " + Settings.Secure.refreshRateModeToString(refreshRateController.mRefreshRateMode.get()));
+                printWriter2.println("        ReportedRefreshRateMode: " + Settings.Secure.refreshRateModeToString(refreshRateController.mReportedRefreshRateMode.get()));
+                if (refreshRateController.mDisplayToken != null) {
+                    RefreshRateConfig.dump(printWriter2, "        ", z2);
+                }
+            }
+        });
+        boolean z = CoreRune.FW_VRR_SYSTEM_HISTORY;
+        if (z) {
+            printWriter.println();
+            getController().getClass();
+            printWriter.println("DisplayModeDirector History");
+            RefreshRateController.mDisplayModeDirectorHistory.dump(printWriter);
+            printWriter.println("RefreshRateToken History");
+            RefreshRateTokenController refreshRateTokenController = RefreshRateController.mRefreshRateTokenController;
+            synchronized (refreshRateTokenController.mLock) {
+                try {
+                    printWriter.println("  RefreshRateTokens:" + refreshRateTokenController.mRefreshRateTokens);
+                    if (z) {
+                        refreshRateTokenController.mRefreshRateTokenHistory.dump(printWriter);
+                    }
+                } finally {
+                }
+            }
+        }
+    }
+
+    public final RefreshRateController getController() {
         RefreshRateController refreshRateController;
-        synchronized (mControllerByToken) {
-            refreshRateController = (RefreshRateController) mControllerByToken.get(iBinder);
+        IBinder iBinder = (IBinder) this.mDisplayToken.get();
+        HashMap hashMap = mControllerByToken;
+        synchronized (hashMap) {
+            refreshRateController = (RefreshRateController) hashMap.get(iBinder);
         }
         return refreshRateController;
     }
 
-    public void setPrimaryDisplayToken() {
-        getController().setPrimaryDisplayToken(SurfaceControl.getDisplayToken(DisplayAddress.fromPhysicalDisplayId(DisplayManagerGlobal.getInstance().getPrimaryPhysicalDisplayId())));
+    public final void onLightSensorChanged(float f) {
+        getController().getClass();
+        if (RefreshRateController.getAmbientLuxZone(((Float) RefreshRateController.mAmbientLux.getAndSet(Float.valueOf(f))).floatValue()) != RefreshRateController.getAmbientLuxZone(f) || f <= -1.0f) {
+            this.mHandler.post(new RefreshRateModeManager$$ExternalSyntheticLambda0(this, 0));
+        }
     }
 
-    public void updateDefaultDisplayToken() {
+    public final void updateDefaultDisplayToken() {
         DisplayAddress displayAddress;
+        RefreshRateController refreshRateController;
         DisplayInfo displayInfo = DisplayManagerGlobal.getInstance().getDisplayInfo(0);
         if (displayInfo == null || (displayAddress = displayInfo.address) == null) {
             return;
@@ -74,207 +185,16 @@ public class RefreshRateModeManager {
         Slog.d("RefreshRateModeManager", "updateDefaultDisplayToken: " + this.mDisplayToken + ", isChanged: " + z);
         if (CoreRune.FW_VRR_FOR_SUB_DISPLAY && z) {
             synchronized (this.mLock) {
-                getController(iBinder).updateDefaultDisplayOrOffDisplayLocked();
+                HashMap hashMap = mControllerByToken;
+                synchronized (hashMap) {
+                    refreshRateController = (RefreshRateController) hashMap.get(iBinder);
+                }
+                refreshRateController.updateDefaultDisplayOrOffDisplayLocked();
                 getController().updateRefreshRateModeLocked(z);
-                onBrightnessChangedLocked();
-                getController().updateRefreshRateMaxLimitTokenLocked();
+                getController().onBrightnessChangedLocked();
+                getController().getClass();
+                RefreshRateController.updateRefreshRateMaxLimitTokenLocked();
             }
         }
-    }
-
-    public void addControllerByDisplayToken(IBinder iBinder) {
-        synchronized (mControllerByToken) {
-            if (!mControllerByToken.containsKey(iBinder)) {
-                mControllerByToken.put(iBinder, RefreshRateController.makeController(iBinder));
-                Slog.d("RefreshRateModeManager", "display - " + iBinder + " registered");
-            }
-        }
-    }
-
-    public int getRefreshRateMode() {
-        int refreshRateModeLocked;
-        synchronized (this.mLock) {
-            refreshRateModeLocked = getController().getRefreshRateModeLocked();
-        }
-        return refreshRateModeLocked;
-    }
-
-    public void onLightSensorChanged(float f) {
-        if (!getController().compareAndSetAmbientLuxZone(f) || f <= -1.0f) {
-            this.mHandler.post(new Runnable() { // from class: com.android.server.display.mode.RefreshRateModeManager$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RefreshRateModeManager.this.lambda$onLightSensorChanged$0();
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onLightSensorChanged$0() {
-        synchronized (this.mLock) {
-            onBrightnessChangedLocked();
-        }
-    }
-
-    /* renamed from: com.android.server.display.mode.RefreshRateModeManager$1, reason: invalid class name */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements DisplayManagerInternal.DisplayStateListener {
-        public AnonymousClass1() {
-        }
-
-        public void onFinish(int i, int i2, int i3) {
-            if (i3 == 1 || i3 == 2) {
-                final boolean z = i == 2;
-                Boolean powerModeOnByDisplayType = RefreshRateModeManager.this.getController().getPowerModeOnByDisplayType(i3);
-                if (powerModeOnByDisplayType == null || z != powerModeOnByDisplayType.booleanValue()) {
-                    Slog.d("RefreshRateModeManager", "DisplayStateListener#onFinish, isPowerModeOn=" + z + ", displayType=" + i3);
-                    RefreshRateModeManager.this.getController().setPowerModeOnByDisplayType(i3, z);
-                    RefreshRateModeManager.this.mHandler.post(new Runnable() { // from class: com.android.server.display.mode.RefreshRateModeManager$1$$ExternalSyntheticLambda0
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            RefreshRateModeManager.AnonymousClass1.this.lambda$onFinish$0(z);
-                        }
-                    });
-                }
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onFinish$0(boolean z) {
-            synchronized (RefreshRateModeManager.this.mLock) {
-                RefreshRateModeManager.this.getController().onDisplayStateChangeLocked(z);
-            }
-        }
-    }
-
-    public final void registerBrightnessAndStateListener() {
-        Slog.d("RefreshRateModeManager", "registerBrightnessAndStateListener");
-        DisplayManagerInternal displayManagerInternal = (DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class);
-        displayManagerInternal.registerDisplayBrightnessListener(new DisplayManagerInternal.DisplayBrightnessListener() { // from class: com.android.server.display.mode.RefreshRateModeManager$$ExternalSyntheticLambda1
-            public final void onChanged(float f) {
-                RefreshRateModeManager.this.lambda$registerBrightnessAndStateListener$2(f);
-            }
-        });
-        getController().compareAndSetBrightnessZone(BrightnessSynchronizer.brightnessFloatToInt(displayManagerInternal.getCurrentScreenBrightness()));
-        displayManagerInternal.registerDisplayStateListener(this.mDisplayStateListener);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$registerBrightnessAndStateListener$2(float f) {
-        if (getController().compareAndSetBrightnessZone(BrightnessSynchronizer.brightnessFloatToInt(f))) {
-            return;
-        }
-        this.mHandler.post(new Runnable() { // from class: com.android.server.display.mode.RefreshRateModeManager$$ExternalSyntheticLambda3
-            @Override // java.lang.Runnable
-            public final void run() {
-                RefreshRateModeManager.this.lambda$registerBrightnessAndStateListener$1();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$registerBrightnessAndStateListener$1() {
-        synchronized (this.mLock) {
-            onBrightnessChangedLocked();
-        }
-    }
-
-    public final void registerWirelessChargeReceiver() {
-        Slog.d("RefreshRateModeManager", "registerWirelessChargeReceiver");
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
-        this.mContext.registerReceiver(new BroadcastReceiver() { // from class: com.android.server.display.mode.RefreshRateModeManager.2
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                if ("android.intent.action.BATTERY_CHANGED".equals(intent.getAction())) {
-                    boolean z = intent.getIntExtra("plugged", 0) == 4;
-                    synchronized (RefreshRateModeManager.this.mLock) {
-                        if (!RefreshRateModeManager.this.getController().compareAndSetIsWirelessCharging(z)) {
-                            RefreshRateModeManager.this.onBrightnessChangedLocked();
-                        }
-                    }
-                }
-            }
-        }, intentFilter);
-    }
-
-    public void observe() {
-        this.mModeSettingsObserver.observe();
-        if (CoreRune.FW_VRR_SEAMLESS) {
-            registerBrightnessAndStateListener();
-        }
-        if (CoreRune.FW_VRR_REFRESH_RATE_MODE) {
-            registerWirelessChargeReceiver();
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class ModeSettingsObserver extends ContentObserver {
-        public final Context mContext;
-        public final Uri mRefreshRateModeSetting;
-        public final Uri mSubRefreshRateModeSetting;
-
-        public ModeSettingsObserver(Context context, Handler handler) {
-            super(handler);
-            this.mRefreshRateModeSetting = Settings.Secure.getUriFor("refresh_rate_mode");
-            this.mSubRefreshRateModeSetting = Settings.Secure.getUriFor("refresh_rate_mode_cover");
-            this.mContext = context;
-        }
-
-        public void observe() {
-            ContentResolver contentResolver = this.mContext.getContentResolver();
-            contentResolver.registerContentObserver(this.mRefreshRateModeSetting, false, this, -1);
-            if (CoreRune.FW_VRR_FOR_SUB_DISPLAY) {
-                contentResolver.registerContentObserver(this.mSubRefreshRateModeSetting, false, this, -1);
-            }
-            synchronized (RefreshRateModeManager.this.mLock) {
-                RefreshRateModeManager.this.getController().updateRefreshRateModeLocked(false);
-            }
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z, Uri uri, int i) {
-            synchronized (RefreshRateModeManager.this.mLock) {
-                if (this.mRefreshRateModeSetting.equals(uri) || (CoreRune.FW_VRR_FOR_SUB_DISPLAY && this.mSubRefreshRateModeSetting.equals(uri))) {
-                    RefreshRateModeManager.this.getController().updateRefreshRateModeLocked(false);
-                }
-            }
-        }
-    }
-
-    public void onBrightnessChangedLocked() {
-        getController().onBrightnessChangedLocked(false);
-    }
-
-    public boolean logCurrentState(int i, DisplayModeDirector.DesiredDisplayModeSpecs desiredDisplayModeSpecs) {
-        boolean logCurrentStateLocked;
-        if (i != 0) {
-            return false;
-        }
-        synchronized (this.mLock) {
-            logCurrentStateLocked = getController().logCurrentStateLocked(desiredDisplayModeSpecs);
-        }
-        return logCurrentStateLocked;
-    }
-
-    public void dumpLocked(final PrintWriter printWriter) {
-        printWriter.println("  RefreshRateModeManager");
-        printWriter.println("    mRefreshRateModeByDisplayToken");
-        mControllerByToken.forEach(new BiConsumer() { // from class: com.android.server.display.mode.RefreshRateModeManager$$ExternalSyntheticLambda2
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                RefreshRateModeManager.lambda$dumpLocked$3(printWriter, (IBinder) obj, (RefreshRateController) obj2);
-            }
-        });
-        if (CoreRune.FW_VRR_SYSTEM_HISTORY) {
-            printWriter.println();
-            getController().dumpHistory(printWriter);
-        }
-    }
-
-    public static /* synthetic */ void lambda$dumpLocked$3(PrintWriter printWriter, IBinder iBinder, RefreshRateController refreshRateController) {
-        printWriter.println("      DisplayToken: " + iBinder);
-        refreshRateController.dumpLocked(printWriter, "        ");
     }
 }

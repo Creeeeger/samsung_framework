@@ -5,25 +5,19 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class UcmSignHelperEcdsa extends UcmSignHelper {
+public final class UcmSignHelperEcdsa extends UcmSignHelper {
     public static final Set algorithmSet = new HashSet(Arrays.asList("nonewithecdsa", "sha1withecdsa", "sha224withecdsa", "sha256withecdsa", "sha384withecdsa", "sha512withecdsa"));
 
     @Override // com.samsung.ucm.ucmservice.keystore.UcmSignHelper
-    public String getProcessAlgorithm() {
+    public final String getProcessAlgorithm() {
         return "NONEwithECDSA";
     }
 
-    public UcmSignHelperEcdsa(String str) {
-        super(str);
-    }
-
-    public static boolean isSupportedAlgorithm(String str) {
-        return algorithmSet.contains(str.toLowerCase());
-    }
-
     @Override // com.samsung.ucm.ucmservice.keystore.UcmSignHelper
-    public byte[] processInput(byte[] bArr) {
-        return this.algorithm.equalsIgnoreCase("nonewithecdsa") ? bArr : MessageDigest.getInstance(getMdAlgorithm(this.algorithm)).digest(bArr);
+    public final byte[] processInput(byte[] bArr) {
+        String str = this.algorithm;
+        return str.equalsIgnoreCase("nonewithecdsa") ? bArr : MessageDigest.getInstance(UcmSignHelper.getMdAlgorithm(str)).digest(bArr);
     }
 }

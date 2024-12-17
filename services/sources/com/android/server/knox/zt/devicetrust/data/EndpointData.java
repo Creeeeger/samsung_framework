@@ -1,29 +1,20 @@
 package com.android.server.knox.zt.devicetrust.data;
 
 import android.os.Bundle;
+import com.android.server.knox.zt.devicetrust.data.Utils;
 import java.util.Map;
 import java.util.StringJoiner;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class EndpointData {
     public static final boolean USE_ACTUAL_TIME = true;
     public long actualEventTime;
     public final int event;
     public final long eventTime;
     public EndpointExtras extras;
-
-    public abstract int getPid();
-
-    public abstract int getUid();
-
-    public abstract Bundle toBundle();
-
-    public abstract String toJson();
-
-    public abstract String toLine();
-
-    public abstract Map toMap();
 
     public EndpointData(int i, long j) {
         this.event = i;
@@ -41,30 +32,15 @@ public abstract class EndpointData {
         return this.event;
     }
 
+    public abstract int getPid();
+
     public long getTime() {
         return this.actualEventTime;
     }
 
-    public EndpointData updateExtras(int i) {
-        if (i == 0) {
-            return this;
-        }
-        if (this.extras == null) {
-            this.extras = new EndpointExtras();
-        }
-        if ((i & 1) != 0) {
-            this.extras.processName = Utils.getInstance().getProcessNameForPid(getPid());
-        }
-        if ((i & 2) != 0) {
-            this.extras.packageName = Utils.getInstance().getPackageNameForUid(getUid());
-        }
-        if ((i & 4) != 0) {
-            this.extras.label = Utils.getInstance().getSecurityContextForPid(getPid());
-        }
-        return this;
-    }
+    public abstract int getUid();
 
-    public String readExtras(boolean z) {
+    public final String readExtras(boolean z) {
         if (this.extras == null) {
             return "";
         }
@@ -81,7 +57,7 @@ public abstract class EndpointData {
         return stringJoiner.toString();
     }
 
-    public void readExtras(Bundle bundle) {
+    public final void readExtras(Bundle bundle) {
         EndpointExtras endpointExtras;
         if (bundle == null || (endpointExtras = this.extras) == null) {
             return;
@@ -100,7 +76,7 @@ public abstract class EndpointData {
         }
     }
 
-    public void readExtras(JSONObject jSONObject) {
+    public final void readExtras(JSONObject jSONObject) throws JSONException {
         EndpointExtras endpointExtras;
         if (jSONObject == null || (endpointExtras = this.extras) == null) {
             return;
@@ -117,5 +93,32 @@ public abstract class EndpointData {
         if (str3 != null) {
             jSONObject.put("procName", str3);
         }
+    }
+
+    public abstract Bundle toBundle();
+
+    public abstract String toJson();
+
+    public abstract String toLine();
+
+    public abstract Map toMap();
+
+    public final EndpointData updateExtras(int i) {
+        if (i == 0) {
+            return this;
+        }
+        if (this.extras == null) {
+            this.extras = new EndpointExtras();
+        }
+        if ((i & 1) != 0) {
+            this.extras.processName = Utils.InstanceHolder.INSTANCE.getProcessNameForPid(getPid());
+        }
+        if ((i & 2) != 0) {
+            this.extras.packageName = Utils.InstanceHolder.INSTANCE.getPackageNameForUid(getUid());
+        }
+        if ((i & 4) != 0) {
+            this.extras.label = Utils.InstanceHolder.INSTANCE.getSecurityContextForPid(getPid());
+        }
+        return this;
     }
 }

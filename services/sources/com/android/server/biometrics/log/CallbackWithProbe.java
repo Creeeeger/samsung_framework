@@ -3,29 +3,26 @@ package com.android.server.biometrics.log;
 import com.android.server.biometrics.sensors.BaseClientMonitor;
 import com.android.server.biometrics.sensors.ClientMonitorCallback;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class CallbackWithProbe implements ClientMonitorCallback {
-    public final Probe mProbe;
+public final class CallbackWithProbe implements ClientMonitorCallback {
+    public final ALSProbe mProbe;
     public final boolean mStartWithClient;
 
-    public CallbackWithProbe(Probe probe, boolean z) {
-        this.mProbe = probe;
+    public CallbackWithProbe(ALSProbe aLSProbe, boolean z) {
+        this.mProbe = aLSProbe;
         this.mStartWithClient = z;
     }
 
     @Override // com.android.server.biometrics.sensors.ClientMonitorCallback
-    public void onClientStarted(BaseClientMonitor baseClientMonitor) {
-        if (this.mStartWithClient) {
-            this.mProbe.enable();
-        }
-    }
-
-    @Override // com.android.server.biometrics.sensors.ClientMonitorCallback
-    public void onClientFinished(BaseClientMonitor baseClientMonitor, boolean z) {
+    public final void onClientFinished(BaseClientMonitor baseClientMonitor, boolean z) {
         this.mProbe.destroy();
     }
 
-    public Probe getProbe() {
-        return this.mProbe;
+    @Override // com.android.server.biometrics.sensors.ClientMonitorCallback
+    public final void onClientStarted(BaseClientMonitor baseClientMonitor) {
+        if (this.mStartWithClient) {
+            this.mProbe.enable();
+        }
     }
 }

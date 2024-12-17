@@ -4,30 +4,20 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.pm.UserInfo;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.os.Binder;
-import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
-import com.android.server.enterprise.restriction.RestrictionPolicyCache;
 import com.android.server.enterprise.storage.EdmStorageProvider;
-import com.android.server.enterprise.storage.EdmStorageProviderBase;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
-public class RestrictionPolicyCache {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RestrictionPolicyCache {
     public static final Map MASK_AND_COLUMN_NAME = new HashMap() { // from class: com.android.server.enterprise.restriction.RestrictionPolicyCache.1
         {
             put(1L, "allowAudioRecording");
@@ -100,10 +90,65 @@ public class RestrictionPolicyCache {
     public final EdmStorageProvider mEdmStorageProvider;
     public final PackageManager mPackageManager;
     public UserManager mUserManager;
-    public ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();
-    public HashMap mCameraDisabledAdmin = new HashMap();
-    public ApplyingAdmins mApplyingAdmins = new ApplyingAdmins();
+    public final ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();
+    public final HashMap mCameraDisabledAdmin = new HashMap();
+    public final ApplyingAdmins mApplyingAdmins = new ApplyingAdmins();
     public final HashMap mCache = new HashMap();
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ApplyingAdmins {
+        public final Map admins = new HashMap();
+        public final Map adminInfoMap = new HashMap();
+
+        public ApplyingAdmins() {
+        }
+
+        public final String dump(int i, long j) {
+            if (!((HashMap) this.admins).containsKey(Integer.valueOf(i))) {
+                return "";
+            }
+            if (!((Map) ((HashMap) this.admins).get(Integer.valueOf(i))).containsKey(Long.valueOf(j))) {
+                return "";
+            }
+            return ((Set) ((Map) ((HashMap) this.admins).get(Integer.valueOf(i))).get(Long.valueOf(j))).toString();
+        }
+
+        public final void loadAdminInfo(int i, String str) {
+            if (((HashMap) this.adminInfoMap).containsKey(Integer.valueOf(i)) || str == null || str.isEmpty()) {
+                return;
+            }
+            ((HashMap) this.adminInfoMap).put(Integer.valueOf(i), str);
+        }
+
+        public final void put(int i, Long l, Integer num) {
+            Set set;
+            if (((Map) ((HashMap) this.admins).get(Integer.valueOf(i))).containsKey(l)) {
+                set = (Set) ((Map) ((HashMap) this.admins).get(Integer.valueOf(i))).get(l);
+            } else {
+                HashSet hashSet = new HashSet();
+                ((Map) ((HashMap) this.admins).get(Integer.valueOf(i))).put(l, hashSet);
+                set = hashSet;
+            }
+            set.add(num);
+        }
+
+        public final void update(int i, int i2, boolean z, long j) {
+            if (z) {
+                put(i, Long.valueOf(j), Integer.valueOf(i2));
+                return;
+            }
+            Integer valueOf = Integer.valueOf(i2);
+            if (!((Map) ((HashMap) this.admins).get(Integer.valueOf(i))).containsKey(Long.valueOf(j))) {
+                Log.d("RestrictionPolicy", "No need to update admin cache for mask : " + ((String) ((HashMap) RestrictionPolicyCache.MASK_AND_COLUMN_NAME).get(Long.valueOf(j))) + "(" + valueOf + ")");
+                return;
+            }
+            Set set = (Set) ((Map) ((HashMap) this.admins).get(Integer.valueOf(i))).get(Long.valueOf(j));
+            set.remove(valueOf);
+            if (set.isEmpty()) {
+                ((Map) ((HashMap) this.admins).get(Integer.valueOf(i))).remove(Long.valueOf(j));
+            }
+        }
+    }
 
     public RestrictionPolicyCache(Context context, EdmStorageProvider edmStorageProvider) {
         this.mContext = context;
@@ -111,136 +156,54 @@ public class RestrictionPolicyCache {
         this.mPackageManager = context.getPackageManager();
     }
 
+    public final boolean extract(int i, long j, boolean z) {
+        Long cachedPolicies = getCachedPolicies(i);
+        return cachedPolicies != null ? (cachedPolicies.longValue() & j) == j : z;
+    }
+
+    public final Long getCachedPolicies(int i) {
+        this.mLock.readLock().lock();
+        try {
+            return (Long) this.mCache.get(Integer.valueOf(i));
+        } finally {
+            this.mLock.readLock().unlock();
+        }
+    }
+
     public final void init(int i) {
         this.mLock.writeLock().lock();
         try {
             this.mCache.put(Integer.valueOf(i), 6917529011461554159L);
-            this.mApplyingAdmins.init(i);
+            ApplyingAdmins applyingAdmins = this.mApplyingAdmins;
+            ((HashMap) applyingAdmins.admins).put(Integer.valueOf(i), new HashMap());
+            ((HashMap) applyingAdmins.adminInfoMap).entrySet().removeIf(new RestrictionPolicyCache$ApplyingAdmins$$ExternalSyntheticLambda0(i, 0));
             this.mCameraDisabledAdmin.put(Integer.valueOf(i), 0L);
         } finally {
             this.mLock.writeLock().unlock();
         }
     }
 
-    public void clearCache(int i) {
-        this.mLock.writeLock().lock();
-        try {
-            this.mCache.remove(Integer.valueOf(i));
-            this.mApplyingAdmins.remove(i);
-            this.mCameraDisabledAdmin.remove(Integer.valueOf(i));
-        } finally {
-            this.mLock.writeLock().unlock();
-        }
+    /* JADX WARN: Removed duplicated region for block: B:38:0x0148 A[Catch: all -> 0x00b8, SQLException -> 0x00bb, TryCatch #0 {SQLException -> 0x00bb, blocks: (B:18:0x007f, B:19:0x0082, B:21:0x0088, B:23:0x0096, B:25:0x00ab, B:26:0x00c2, B:27:0x00cf, B:30:0x00d7, B:32:0x0106, B:34:0x0114, B:36:0x0144, B:38:0x0148, B:40:0x0159, B:45:0x016b, B:47:0x017c, B:52:0x0125, B:54:0x0133, B:57:0x0187, B:59:0x018f, B:61:0x0197, B:66:0x01c6, B:67:0x01cb, B:68:0x01d8, B:70:0x01ae, B:73:0x01bb, B:76:0x01c2, B:79:0x00be), top: B:17:0x007f, outer: #1 }] */
+    /* JADX WARN: Removed duplicated region for block: B:45:0x016b A[Catch: all -> 0x00b8, SQLException -> 0x00bb, TryCatch #0 {SQLException -> 0x00bb, blocks: (B:18:0x007f, B:19:0x0082, B:21:0x0088, B:23:0x0096, B:25:0x00ab, B:26:0x00c2, B:27:0x00cf, B:30:0x00d7, B:32:0x0106, B:34:0x0114, B:36:0x0144, B:38:0x0148, B:40:0x0159, B:45:0x016b, B:47:0x017c, B:52:0x0125, B:54:0x0133, B:57:0x0187, B:59:0x018f, B:61:0x0197, B:66:0x01c6, B:67:0x01cb, B:68:0x01d8, B:70:0x01ae, B:73:0x01bb, B:76:0x01c2, B:79:0x00be), top: B:17:0x007f, outer: #1 }] */
+    /* JADX WARN: Removed duplicated region for block: B:50:0x0183 A[SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void load(int r22) {
+        /*
+            Method dump skipped, instructions count: 532
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.restriction.RestrictionPolicyCache.load(int):void");
     }
 
-    public void load(int i) {
-        ContentValues contentValues;
-        String str;
-        long j;
-        Long l;
-        Long valueOf;
-        if (i == -1) {
-            Iterator it = getUserManager().getUsers().iterator();
-            while (it.hasNext()) {
-                init(((UserInfo) it.next()).getUserHandle().getIdentifier());
-            }
-        } else {
-            init(i);
-        }
-        if (i == -1) {
-            contentValues = null;
-        } else {
-            contentValues = new ContentValues();
-            contentValues.put(EdmStorageProviderBase.getAdminLUIDWhereIn(0, i), "#SelectClause#");
-        }
-        Collection values = MASK_AND_COLUMN_NAME.values();
-        String[] strArr = (String[]) values.toArray(new String[values.size() + 1]);
-        String str2 = "adminUid";
-        strArr[strArr.length - 1] = "adminUid";
-        Cursor cursor = this.mEdmStorageProvider.getCursor("RESTRICTION", strArr, contentValues, null);
-        if (cursor != null) {
-            this.mLock.writeLock().lock();
-            try {
-                try {
-                    cursor.moveToFirst();
-                    while (!cursor.isAfterLast()) {
-                        long j2 = cursor.getLong(cursor.getColumnIndex(str2));
-                        int i2 = (int) j2;
-                        if (j2 == i2) {
-                            int userId = UserHandle.getUserId(i2);
-                            if (this.mCache.get(Integer.valueOf(userId)) != null) {
-                                j = (Long) this.mCache.get(Integer.valueOf(userId));
-                            } else {
-                                j = 6917529011461554159L;
-                            }
-                            Long l2 = j;
-                            for (Map.Entry entry : MASK_AND_COLUMN_NAME.entrySet()) {
-                                int i3 = cursor.getInt(cursor.getColumnIndex((String) entry.getValue()));
-                                Long l3 = (Long) entry.getKey();
-                                String str3 = str2;
-                                updateCameraDisabledAdmin(i3, userId, l3, j2);
-                                if (i3 == 1) {
-                                    l = l3;
-                                    if (isDefaultValueZero(l)) {
-                                        valueOf = Long.valueOf(l2.longValue() | l.longValue());
-                                        l2 = valueOf;
-                                        this.mApplyingAdmins.load(i2, userId, l, i3);
-                                        str2 = str3;
-                                    }
-                                } else {
-                                    l = l3;
-                                }
-                                if (i3 == 0 && isDefaultValueOne(l)) {
-                                    valueOf = Long.valueOf(l2.longValue() & (~l.longValue()));
-                                    l2 = valueOf;
-                                }
-                                this.mApplyingAdmins.load(i2, userId, l, i3);
-                                str2 = str3;
-                            }
-                            str = str2;
-                            if (!this.mApplyingAdmins.isAdminInfoPresent(i2)) {
-                                this.mApplyingAdmins.loadAdminInfo(i2, getPackageNameForUid(i2));
-                            }
-                            this.mCache.put(Integer.valueOf(userId), l2);
-                        } else {
-                            str = str2;
-                        }
-                        cursor.moveToNext();
-                        str2 = str;
-                    }
-                } catch (SQLException e) {
-                    Log.e("RestrictionPolicy", "Exception occurred accessing Enterprise db " + e.getMessage());
-                }
-            } finally {
-                this.mLock.writeLock().unlock();
-                cursor.close();
-            }
-        }
-    }
-
-    public final boolean isDefaultValueOne(Long l) {
-        return getDefaultMaskedValue(l) == l.longValue();
-    }
-
-    public final boolean isDefaultValueZero(Long l) {
-        return getDefaultMaskedValue(l) != l.longValue();
-    }
-
-    public final long getDefaultMaskedValue(Long l) {
-        return l.longValue() & 6917529011461554159L;
-    }
-
-    public final UserManager getUserManager() {
-        if (this.mUserManager == null) {
-            this.mUserManager = (UserManager) this.mContext.getSystemService("user");
-        }
-        return this.mUserManager;
-    }
-
-    public void update(String str, long j, boolean z, int i, Integer num, Boolean bool) {
+    public final void update(String str, long j, boolean z, int i, Integer num, Boolean bool) {
         boolean z2;
-        Long valueOf;
-        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "RESTRICTION", str, i).iterator();
+        String string;
+        ApplyingAdmins applyingAdmins = this.mApplyingAdmins;
+        EdmStorageProvider edmStorageProvider = this.mEdmStorageProvider;
+        Iterator it = edmStorageProvider.getBooleanListAsUser(i, "RESTRICTION", str).iterator();
         while (true) {
             if (!it.hasNext()) {
                 z2 = z;
@@ -253,75 +216,59 @@ public class RestrictionPolicyCache {
             }
         }
         Long cachedPolicies = getCachedPolicies(i);
-        if (cachedPolicies == null && getUserManager().getUserInfo(i) != null) {
-            init(i);
-            cachedPolicies = getCachedPolicies(i);
+        if (cachedPolicies == null) {
+            if (this.mUserManager == null) {
+                this.mUserManager = (UserManager) this.mContext.getSystemService("user");
+            }
+            if (this.mUserManager.getUserInfo(i) != null) {
+                init(i);
+                cachedPolicies = getCachedPolicies(i);
+            }
         }
         this.mLock.writeLock().lock();
         if (cachedPolicies != null) {
             try {
-                if (z2) {
-                    valueOf = Long.valueOf(cachedPolicies.longValue() | j);
-                } else {
-                    valueOf = Long.valueOf(cachedPolicies.longValue() & (~j));
-                }
-                this.mCache.put(Integer.valueOf(i), valueOf);
+                this.mCache.put(Integer.valueOf(i), z2 ? Long.valueOf(cachedPolicies.longValue() | j) : Long.valueOf(cachedPolicies.longValue() & (~j)));
                 if (bool != null && num != null) {
-                    this.mApplyingAdmins.update(bool.booleanValue() != z, i, j, num.intValue());
-                    if (!this.mApplyingAdmins.isAdminInfoPresent(num.intValue())) {
-                        this.mApplyingAdmins.loadAdminInfo(num.intValue(), getPackageNameForUid(num.intValue()));
+                    this.mApplyingAdmins.update(i, num.intValue(), bool.booleanValue() != z, j);
+                    Map map = applyingAdmins.adminInfoMap;
+                    if (!((map == null || ((HashMap) map).isEmpty()) ? false : ((HashMap) applyingAdmins.adminInfoMap).containsKey(num))) {
+                        int intValue = num.intValue();
+                        int intValue2 = num.intValue();
+                        String str2 = null;
+                        if (intValue2 != 1000 && (string = edmStorageProvider.getString(intValue2, 0, "ADMIN_INFO", "adminName")) != null) {
+                            ComponentName unflattenFromString = ComponentName.unflattenFromString(string);
+                            str2 = unflattenFromString == null ? string : unflattenFromString.getPackageName();
+                        }
+                        applyingAdmins.loadAdminInfo(intValue, str2);
                     }
                 }
-            } finally {
+            } catch (Throwable th) {
                 this.mLock.writeLock().unlock();
+                throw th;
             }
         }
+        this.mLock.writeLock().unlock();
     }
 
-    public final Long getCachedPolicies(int i) {
-        this.mLock.readLock().lock();
-        try {
-            return (Long) this.mCache.get(Integer.valueOf(i));
-        } finally {
-            this.mLock.readLock().unlock();
+    public final void updateCameraDisabledAdmin(int i) {
+        this.mCameraDisabledAdmin.put(Integer.valueOf(i), 0L);
+        ArrayList arrayList = (ArrayList) this.mEdmStorageProvider.getValuesListAsUser(0, i, "RESTRICTION", new String[]{"cameraEnabled", "adminUid"});
+        if (arrayList.isEmpty()) {
+            return;
         }
-    }
-
-    public String dump() {
-        StringBuilder sb = new StringBuilder();
-        this.mLock.readLock().lock();
-        try {
-            sb.append("[Admin Info : ");
-            sb.append(this.mApplyingAdmins.getAdminInfo());
-            sb.append("]");
-            sb.append(System.lineSeparator());
-            Iterator it = this.mCache.keySet().iterator();
-            while (it.hasNext()) {
-                int intValue = ((Integer) it.next()).intValue();
-                sb.append("[Restrictions applied for user : ");
-                sb.append(intValue);
-                sb.append("]");
-                sb.append(System.lineSeparator());
-                long longValue = getCachedPolicies(intValue).longValue();
-                for (Map.Entry entry : MASK_AND_COLUMN_NAME.entrySet()) {
-                    long longValue2 = ((Long) entry.getKey()).longValue();
-                    sb.append("   ");
-                    sb.append((String) entry.getValue());
-                    sb.append(": ");
-                    long j = longValue & longValue2;
-                    sb.append(j == longValue2);
-                    if (j != getDefaultMaskedValue(Long.valueOf(longValue2))) {
-                        sb.append("(Enforced) ");
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            ContentValues contentValues = (ContentValues) it.next();
+            if (contentValues != null && contentValues.size() > 0) {
+                if (!(contentValues.getAsBoolean("cameraEnabled") == null ? true : contentValues.getAsBoolean("cameraEnabled").booleanValue())) {
+                    if (((Long) this.mCameraDisabledAdmin.get(Integer.valueOf(i))).longValue() == 0) {
+                        this.mCameraDisabledAdmin.put(Integer.valueOf(i), contentValues.getAsLong("adminUid"));
+                    } else if (((Long) this.mCameraDisabledAdmin.get(Integer.valueOf(i))).longValue() > 0) {
+                        this.mCameraDisabledAdmin.put(Integer.valueOf(i), -1L);
                     }
-                    sb.append(this.mApplyingAdmins.dump(intValue, longValue2));
-                    sb.append(System.lineSeparator());
                 }
             }
-            this.mLock.readLock().unlock();
-            return sb.toString();
-        } catch (Throwable th) {
-            this.mLock.readLock().unlock();
-            throw th;
         }
     }
 
@@ -334,183 +281,6 @@ public class RestrictionPolicyCache {
             this.mCameraDisabledAdmin.put(Integer.valueOf(i2), Long.valueOf(j));
         } else if (((Long) this.mCameraDisabledAdmin.get(Integer.valueOf(i2))).longValue() > 0) {
             this.mCameraDisabledAdmin.put(Integer.valueOf(i2), -1L);
-        }
-    }
-
-    public void updateCameraDisabledAdmin(String str, long j, boolean z, int i) {
-        this.mCameraDisabledAdmin.put(Integer.valueOf(i), 0L);
-        List<ContentValues> valuesListAsUser = this.mEdmStorageProvider.getValuesListAsUser("RESTRICTION", new String[]{str, "adminUid"}, i);
-        if (valuesListAsUser == null || valuesListAsUser.isEmpty()) {
-            return;
-        }
-        for (ContentValues contentValues : valuesListAsUser) {
-            if (contentValues != null && contentValues.size() > 0) {
-                if ((contentValues.getAsBoolean(str) == null ? z : contentValues.getAsBoolean(str).booleanValue()) != z) {
-                    if (((Long) this.mCameraDisabledAdmin.get(Integer.valueOf(i))).longValue() == 0) {
-                        this.mCameraDisabledAdmin.put(Integer.valueOf(i), contentValues.getAsLong("adminUid"));
-                    } else if (((Long) this.mCameraDisabledAdmin.get(Integer.valueOf(i))).longValue() > 0) {
-                        this.mCameraDisabledAdmin.put(Integer.valueOf(i), -1L);
-                    }
-                }
-            }
-        }
-    }
-
-    public Long getCameraDisabledAdmin(int i) {
-        return (Long) this.mCameraDisabledAdmin.get(Integer.valueOf(i));
-    }
-
-    public boolean extract(long j, boolean z, int i) {
-        Long cachedPolicies = getCachedPolicies(i);
-        return cachedPolicies != null ? (cachedPolicies.longValue() & j) == j : z;
-    }
-
-    public List getAdminAppLabelListAsUserForMask(long j, int i) {
-        ArrayList arrayList = new ArrayList();
-        if (this.mApplyingAdmins.admins.get(Integer.valueOf(i)) == null) {
-            Log.d("RestrictionPolicy", "no admin data present for userId " + i);
-            return Collections.emptyList();
-        }
-        for (Integer num : (Set) ((Map) this.mApplyingAdmins.admins.get(Integer.valueOf(i))).getOrDefault(Long.valueOf(j), null)) {
-            String str = (String) this.mApplyingAdmins.adminInfoMap.get(num);
-            if (str != null) {
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    try {
-                        String charSequence = this.mPackageManager.getApplicationLabel(this.mPackageManager.getApplicationInfoAsUser(str, 0, UserHandle.getUserId(num.intValue()))).toString();
-                        if (charSequence != null && !charSequence.isEmpty()) {
-                            arrayList.add(charSequence);
-                        }
-                    } catch (PackageManager.NameNotFoundException unused) {
-                        Log.e("RestrictionPolicy", String.format("Package(%s) name not found for user %d", str, Integer.valueOf(i)));
-                    } catch (Exception unused2) {
-                        Log.e("RestrictionPolicy", String.format("Admin(%s) app label not found for user %d", str, Integer.valueOf(i)));
-                    }
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public final String getPackageNameForUid(int i) {
-        String string;
-        if (i == 1000 || (string = this.mEdmStorageProvider.getString(i, "ADMIN_INFO", "adminName")) == null) {
-            return null;
-        }
-        ComponentName unflattenFromString = ComponentName.unflattenFromString(string);
-        return unflattenFromString == null ? string : unflattenFromString.getPackageName();
-    }
-
-    /* loaded from: classes2.dex */
-    public class ApplyingAdmins {
-        public Map adminInfoMap;
-        public Map admins;
-
-        public ApplyingAdmins() {
-            this.admins = new HashMap();
-            this.adminInfoMap = new HashMap();
-        }
-
-        public void init(final int i) {
-            this.admins.put(Integer.valueOf(i), new HashMap());
-            this.adminInfoMap.entrySet().removeIf(new Predicate() { // from class: com.android.server.enterprise.restriction.RestrictionPolicyCache$ApplyingAdmins$$ExternalSyntheticLambda1
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$init$0;
-                    lambda$init$0 = RestrictionPolicyCache.ApplyingAdmins.lambda$init$0(i, (Map.Entry) obj);
-                    return lambda$init$0;
-                }
-            });
-        }
-
-        public static /* synthetic */ boolean lambda$init$0(int i, Map.Entry entry) {
-            return ((Integer) entry.getKey()).intValue() / 100000 == i;
-        }
-
-        public void remove(final int i) {
-            this.admins.remove(Integer.valueOf(i));
-            this.adminInfoMap.entrySet().removeIf(new Predicate() { // from class: com.android.server.enterprise.restriction.RestrictionPolicyCache$ApplyingAdmins$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$remove$1;
-                    lambda$remove$1 = RestrictionPolicyCache.ApplyingAdmins.lambda$remove$1(i, (Map.Entry) obj);
-                    return lambda$remove$1;
-                }
-            });
-        }
-
-        public static /* synthetic */ boolean lambda$remove$1(int i, Map.Entry entry) {
-            return ((Integer) entry.getKey()).intValue() / 100000 == i;
-        }
-
-        public void load(int i, int i2, Long l, int i3) {
-            if (i3 == 1 && RestrictionPolicyCache.this.isDefaultValueZero(l)) {
-                put(i2, l, Integer.valueOf(i));
-            } else if (i3 == 0 && RestrictionPolicyCache.this.isDefaultValueOne(l)) {
-                put(i2, l, Integer.valueOf(i));
-            }
-        }
-
-        public void update(boolean z, int i, long j, int i2) {
-            if (z) {
-                put(i, Long.valueOf(j), Integer.valueOf(i2));
-            } else {
-                remove(i, j, Integer.valueOf(i2));
-            }
-        }
-
-        public void loadAdminInfo(int i, String str) {
-            if (this.adminInfoMap.containsKey(Integer.valueOf(i)) || str == null || str.isEmpty()) {
-                return;
-            }
-            this.adminInfoMap.put(Integer.valueOf(i), str);
-        }
-
-        public boolean isAdminInfoPresent(int i) {
-            Map map = this.adminInfoMap;
-            if (map == null || map.isEmpty()) {
-                return false;
-            }
-            return this.adminInfoMap.containsKey(Integer.valueOf(i));
-        }
-
-        public final void put(int i, Long l, Integer num) {
-            Set set;
-            if (((Map) this.admins.get(Integer.valueOf(i))).containsKey(l)) {
-                set = (Set) ((Map) this.admins.get(Integer.valueOf(i))).get(l);
-            } else {
-                HashSet hashSet = new HashSet();
-                ((Map) this.admins.get(Integer.valueOf(i))).put(l, hashSet);
-                set = hashSet;
-            }
-            set.add(num);
-        }
-
-        public final void remove(int i, long j, Integer num) {
-            if (!((Map) this.admins.get(Integer.valueOf(i))).containsKey(Long.valueOf(j))) {
-                Log.d("RestrictionPolicy", "No need to update admin cache for mask : " + ((String) RestrictionPolicyCache.MASK_AND_COLUMN_NAME.get(Long.valueOf(j))) + "(" + num + ")");
-                return;
-            }
-            Set set = (Set) ((Map) this.admins.get(Integer.valueOf(i))).get(Long.valueOf(j));
-            set.remove(num);
-            if (set.isEmpty()) {
-                ((Map) this.admins.get(Integer.valueOf(i))).remove(Long.valueOf(j));
-            }
-        }
-
-        public String dump(int i, long j) {
-            return (this.admins.containsKey(Integer.valueOf(i)) && ((Map) this.admins.get(Integer.valueOf(i))).containsKey(Long.valueOf(j))) ? ((Set) ((Map) this.admins.get(Integer.valueOf(i))).get(Long.valueOf(j))).toString() : "";
-        }
-
-        public String getAdminInfo() {
-            StringBuilder sb = new StringBuilder();
-            Map map = this.adminInfoMap;
-            if (map != null && !map.isEmpty()) {
-                sb.append(this.adminInfoMap.toString());
-            }
-            return sb.toString();
         }
     }
 }

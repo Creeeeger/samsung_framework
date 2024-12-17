@@ -1,67 +1,79 @@
 package com.android.server.policy.keyguard;
 
 import android.R;
-import android.app.ActivityTaskManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.os.UserHandle;
 import android.service.dreams.DreamManagerInternal;
+import android.util.EventLog;
 import android.util.Log;
 import android.util.Slog;
-import android.util.proto.ProtoOutputStream;
-import android.view.WindowManagerPolicyConstants;
-import com.android.internal.policy.IKeyguardDismissCallback;
 import com.android.internal.policy.IKeyguardDrawnCallback;
 import com.android.internal.policy.IKeyguardExitCallback;
 import com.android.internal.policy.IKeyguardService;
 import com.android.server.LocalServices;
 import com.android.server.UiThread;
+import com.android.server.policy.PhoneWindowManager;
 import com.android.server.policy.WindowManagerPolicy;
-import com.android.server.policy.keyguard.KeyguardServiceDelegate;
-import com.android.server.policy.keyguard.KeyguardStateMonitor;
-import com.android.server.wm.EventLogTags;
 import com.samsung.android.knox.PersonaManagerInternal;
 import com.samsung.android.rune.CoreRune;
-import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
-public class KeyguardServiceDelegate {
-    public final KeyguardStateMonitor.StateCallback mCallback;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class KeyguardServiceDelegate {
+    public final PhoneWindowManager.AnonymousClass1 mCallback;
     public final Context mContext;
-    public DrawnListener mDrawnListenerWhenConnect;
+    public PhoneWindowManager.AnonymousClass1 mDrawnListenerWhenConnect;
+    public final AnonymousClass1 mDreamManagerStateListener;
+    public final Handler mHandler;
+    public final AnonymousClass2 mKeyguardConnection;
     public KeyguardServiceWrapper mKeyguardService;
+    public final KeyguardState mKeyguardState;
     public PersonaManagerInternal mPersonaManagerInternal;
-    public final KeyguardState mKeyguardState = new KeyguardState();
-    public final DreamManagerInternal.DreamManagerStateListener mDreamManagerStateListener = new DreamManagerInternal.DreamManagerStateListener() { // from class: com.android.server.policy.keyguard.KeyguardServiceDelegate.1
-        public void onDreamingStarted() {
-            KeyguardServiceDelegate.this.onDreamingStarted();
-        }
 
-        public void onDreamingStopped() {
-            KeyguardServiceDelegate.this.onDreamingStopped();
-        }
-    };
-    public final ServiceConnection mKeyguardConnection = new AnonymousClass2();
-    public final Handler mHandler = UiThread.getHandler();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class KeyguardExitDelegate extends IKeyguardExitCallback.Stub {
+        public WindowManagerPolicy.OnKeyguardExitResult mOnKeyguardExitResult;
 
-    /* loaded from: classes3.dex */
-    public interface DrawnListener {
-        void onDrawn();
+        public final void onKeyguardExitResult(boolean z) {
+            Log.v("KeyguardServiceDelegate", "**** onKeyguardExitResult(" + z + ") CALLED ****");
+            WindowManagerPolicy.OnKeyguardExitResult onKeyguardExitResult = this.mOnKeyguardExitResult;
+            if (onKeyguardExitResult != null) {
+                onKeyguardExitResult.onKeyguardExitResult(z);
+            }
+        }
     }
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class KeyguardShowDelegate extends IKeyguardDrawnCallback.Stub {
+        public final PhoneWindowManager.AnonymousClass1 mDrawnListener;
+
+        public KeyguardShowDelegate(PhoneWindowManager.AnonymousClass1 anonymousClass1) {
+            this.mDrawnListener = anonymousClass1;
+        }
+
+        public final void onDrawn() {
+            Log.v("KeyguardServiceDelegate", "!@BOOT: **** SHOWN CALLED ****");
+            PhoneWindowManager.AnonymousClass1 anonymousClass1 = this.mDrawnListener;
+            if (anonymousClass1 != null) {
+                if (PhoneWindowManager.DEBUG_WAKEUP) {
+                    Slog.d("WindowManager", "mKeyguardDelegate.ShowListener.onDrawn.");
+                }
+                ((PhoneWindowManager) anonymousClass1.this$0).mHandler.sendEmptyMessage(5);
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class KeyguardState {
         public boolean bootAnimFinished;
         public boolean bootCompleted;
-        public boolean coverOccluded;
-        public int currentUser = 0;
+        public int currentUser;
         public boolean deviceHasKeyguard;
         public boolean dexOccluded;
         public boolean dreaming;
@@ -74,66 +86,139 @@ public class KeyguardServiceDelegate {
         public boolean secure;
         public boolean showing;
         public boolean systemIsReady;
-
-        public KeyguardState() {
-            reset();
-        }
-
-        public final void reset() {
-            this.showing = true;
-            this.occluded = false;
-            this.secure = true;
-            this.deviceHasKeyguard = true;
-            this.enabled = true;
-            this.bootAnimFinished = false;
-        }
     }
 
-    /* loaded from: classes3.dex */
-    public final class KeyguardShowDelegate extends IKeyguardDrawnCallback.Stub {
-        public DrawnListener mDrawnListener;
-
-        public KeyguardShowDelegate(DrawnListener drawnListener) {
-            this.mDrawnListener = drawnListener;
-        }
-
-        public void onDrawn() {
-            Log.v("KeyguardServiceDelegate", "!@BOOT: **** SHOWN CALLED ****");
-            DrawnListener drawnListener = this.mDrawnListener;
-            if (drawnListener != null) {
-                drawnListener.onDrawn();
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.policy.keyguard.KeyguardServiceDelegate$1] */
+    /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.policy.keyguard.KeyguardServiceDelegate$2] */
+    public KeyguardServiceDelegate(Context context, PhoneWindowManager.AnonymousClass1 anonymousClass1) {
+        KeyguardState keyguardState = new KeyguardState();
+        keyguardState.currentUser = 0;
+        keyguardState.showing = true;
+        keyguardState.occluded = false;
+        keyguardState.secure = true;
+        keyguardState.deviceHasKeyguard = true;
+        keyguardState.enabled = true;
+        keyguardState.bootAnimFinished = false;
+        this.mKeyguardState = keyguardState;
+        this.mDreamManagerStateListener = new DreamManagerInternal.DreamManagerStateListener() { // from class: com.android.server.policy.keyguard.KeyguardServiceDelegate.1
+            public final void onDreamingStarted() {
+                KeyguardServiceDelegate keyguardServiceDelegate = KeyguardServiceDelegate.this;
+                KeyguardServiceWrapper keyguardServiceWrapper = keyguardServiceDelegate.mKeyguardService;
+                if (keyguardServiceWrapper != null) {
+                    keyguardServiceWrapper.onDreamingStarted();
+                }
+                keyguardServiceDelegate.mKeyguardState.dreaming = true;
             }
-        }
-    }
 
-    /* loaded from: classes3.dex */
-    public final class KeyguardExitDelegate extends IKeyguardExitCallback.Stub {
-        public WindowManagerPolicy.OnKeyguardExitResult mOnKeyguardExitResult;
-
-        public KeyguardExitDelegate(WindowManagerPolicy.OnKeyguardExitResult onKeyguardExitResult) {
-            this.mOnKeyguardExitResult = onKeyguardExitResult;
-        }
-
-        public void onKeyguardExitResult(boolean z) {
-            Log.v("KeyguardServiceDelegate", "**** onKeyguardExitResult(" + z + ") CALLED ****");
-            WindowManagerPolicy.OnKeyguardExitResult onKeyguardExitResult = this.mOnKeyguardExitResult;
-            if (onKeyguardExitResult != null) {
-                onKeyguardExitResult.onKeyguardExitResult(z);
+            public final void onDreamingStopped() {
+                KeyguardServiceDelegate keyguardServiceDelegate = KeyguardServiceDelegate.this;
+                KeyguardServiceWrapper keyguardServiceWrapper = keyguardServiceDelegate.mKeyguardService;
+                if (keyguardServiceWrapper != null) {
+                    keyguardServiceWrapper.onDreamingStopped();
+                }
+                keyguardServiceDelegate.mKeyguardState.dreaming = false;
             }
-        }
-    }
+        };
+        this.mKeyguardConnection = new ServiceConnection() { // from class: com.android.server.policy.keyguard.KeyguardServiceDelegate.2
+            @Override // android.content.ServiceConnection
+            public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                Log.v("KeyguardServiceDelegate", "!@BOOT: *** Keyguard connected (yay!)");
+                KeyguardServiceDelegate keyguardServiceDelegate = KeyguardServiceDelegate.this;
+                Context context2 = keyguardServiceDelegate.mContext;
+                IKeyguardService asInterface = IKeyguardService.Stub.asInterface(iBinder);
+                PhoneWindowManager.AnonymousClass1 anonymousClass12 = KeyguardServiceDelegate.this.mCallback;
+                KeyguardServiceWrapper keyguardServiceWrapper = new KeyguardServiceWrapper();
+                keyguardServiceWrapper.mService = asInterface;
+                Slog.v("KeyguardServiceWrapper", "*** Started to create KeyguardServiceWrapper.");
+                KeyguardStateMonitor keyguardStateMonitor = new KeyguardStateMonitor(context2, asInterface, anonymousClass12);
+                keyguardServiceWrapper.mKeyguardStateMonitor = keyguardStateMonitor;
+                Slog.v("KeyguardServiceWrapper", "*** Finished to create KeyguardServiceWrapper, mKeyguardStateMonitor=" + keyguardStateMonitor);
+                keyguardServiceDelegate.mKeyguardService = keyguardServiceWrapper;
+                Log.v("KeyguardServiceDelegate", "!@BOOT: *** Created keyguardService=" + KeyguardServiceDelegate.this.mKeyguardService);
+                KeyguardServiceDelegate keyguardServiceDelegate2 = KeyguardServiceDelegate.this;
+                if (keyguardServiceDelegate2.mKeyguardState.systemIsReady) {
+                    keyguardServiceDelegate2.mKeyguardService.onSystemReady();
+                    KeyguardServiceDelegate keyguardServiceDelegate3 = KeyguardServiceDelegate.this;
+                    int i = keyguardServiceDelegate3.mKeyguardState.currentUser;
+                    if (i != -10000) {
+                        keyguardServiceDelegate3.mKeyguardService.setCurrentUser(i);
+                    }
+                    KeyguardServiceDelegate keyguardServiceDelegate4 = KeyguardServiceDelegate.this;
+                    int i2 = keyguardServiceDelegate4.mKeyguardState.interactiveState;
+                    if (i2 == 2 || i2 == 1) {
+                        keyguardServiceDelegate4.mKeyguardService.onStartedWakingUp(0, false);
+                    }
+                    KeyguardServiceDelegate keyguardServiceDelegate5 = KeyguardServiceDelegate.this;
+                    if (keyguardServiceDelegate5.mKeyguardState.interactiveState == 2) {
+                        keyguardServiceDelegate5.mKeyguardService.onFinishedWakingUp();
+                    }
+                    KeyguardServiceDelegate keyguardServiceDelegate6 = KeyguardServiceDelegate.this;
+                    int i3 = keyguardServiceDelegate6.mKeyguardState.screenState;
+                    if (i3 == 2 || i3 == 1) {
+                        keyguardServiceDelegate6.mKeyguardService.onScreenTurningOn(new KeyguardShowDelegate(KeyguardServiceDelegate.this.mDrawnListenerWhenConnect));
+                    }
+                    KeyguardServiceDelegate keyguardServiceDelegate7 = KeyguardServiceDelegate.this;
+                    if (keyguardServiceDelegate7.mKeyguardState.screenState == 2) {
+                        keyguardServiceDelegate7.mKeyguardService.onScreenTurnedOn();
+                    }
+                    KeyguardServiceDelegate.this.mDrawnListenerWhenConnect = null;
+                }
+                KeyguardServiceDelegate keyguardServiceDelegate8 = KeyguardServiceDelegate.this;
+                if (keyguardServiceDelegate8.mKeyguardState.bootCompleted) {
+                    keyguardServiceDelegate8.mKeyguardService.onBootCompleted();
+                }
+                if (KeyguardServiceDelegate.this.mKeyguardState.occluded) {
+                    KeyguardServiceDelegate keyguardServiceDelegate9 = KeyguardServiceDelegate.this;
+                    keyguardServiceDelegate9.mKeyguardService.setOccluded(keyguardServiceDelegate9.mKeyguardState.occluded, false);
+                }
+                KeyguardServiceDelegate keyguardServiceDelegate10 = KeyguardServiceDelegate.this;
+                boolean z = keyguardServiceDelegate10.mKeyguardState.enabled;
+                if (!z) {
+                    keyguardServiceDelegate10.mKeyguardService.setKeyguardEnabled(z);
+                }
+                KeyguardServiceDelegate keyguardServiceDelegate11 = KeyguardServiceDelegate.this;
+                if (keyguardServiceDelegate11.mKeyguardState.dreaming) {
+                    keyguardServiceDelegate11.mKeyguardService.onDreamingStarted();
+                }
+                KeyguardServiceDelegate keyguardServiceDelegate12 = KeyguardServiceDelegate.this;
+                if (keyguardServiceDelegate12.mKeyguardState.bootAnimFinished) {
+                    keyguardServiceDelegate12.mKeyguardService.onFinishedBootAnim();
+                }
+                KeyguardServiceDelegate keyguardServiceDelegate13 = KeyguardServiceDelegate.this;
+                boolean z2 = keyguardServiceDelegate13.mKeyguardState.dexOccluded;
+                if (z2) {
+                    keyguardServiceDelegate13.mKeyguardService.setDexOccluded(z2);
+                }
+            }
 
-    public KeyguardServiceDelegate(Context context, KeyguardStateMonitor.StateCallback stateCallback) {
+            @Override // android.content.ServiceConnection
+            public final void onServiceDisconnected(ComponentName componentName) {
+                Log.v("KeyguardServiceDelegate", "*** Keyguard disconnected (boo!)");
+                KeyguardServiceDelegate keyguardServiceDelegate = KeyguardServiceDelegate.this;
+                keyguardServiceDelegate.mKeyguardService = null;
+                KeyguardState keyguardState2 = keyguardServiceDelegate.mKeyguardState;
+                keyguardState2.showing = true;
+                keyguardState2.occluded = false;
+                keyguardState2.secure = true;
+                keyguardState2.deviceHasKeyguard = true;
+                keyguardState2.enabled = true;
+                keyguardState2.bootAnimFinished = false;
+                KeyguardServiceDelegate.this.mHandler.post(new KeyguardServiceDelegate$2$$ExternalSyntheticLambda0());
+            }
+        };
         this.mContext = context;
-        this.mCallback = stateCallback;
+        this.mHandler = UiThread.getHandler();
+        this.mCallback = anonymousClass1;
     }
 
-    public void bindService(Context context) {
+    public final void bindService(Context context) {
         Intent intent = new Intent();
-        ComponentName unflattenFromString = ComponentName.unflattenFromString(context.getApplicationContext().getResources().getString(R.string.fingerprint_error_timeout));
+        ComponentName unflattenFromString = ComponentName.unflattenFromString(context.getApplicationContext().getResources().getString(R.string.emailTypeOther));
         intent.addFlags(256);
         intent.setComponent(unflattenFromString);
-        if (!context.bindServiceAsUser(intent, this.mKeyguardConnection, 1, this.mHandler, UserHandle.SYSTEM)) {
+        if (context.bindServiceAsUser(intent, this.mKeyguardConnection, 1, this.mHandler, UserHandle.SYSTEM)) {
+            Log.v("KeyguardServiceDelegate", "!@BOOT: *** Keyguard started");
+        } else {
             Log.v("KeyguardServiceDelegate", "!@BOOT: *** Keyguard: can't bind to " + unflattenFromString);
             KeyguardState keyguardState = this.mKeyguardState;
             keyguardState.showing = false;
@@ -141,8 +226,6 @@ public class KeyguardServiceDelegate {
             synchronized (keyguardState) {
                 this.mKeyguardState.deviceHasKeyguard = false;
             }
-        } else {
-            Log.v("KeyguardServiceDelegate", "!@BOOT: *** Keyguard started");
         }
         DreamManagerInternal dreamManagerInternal = (DreamManagerInternal) LocalServices.getService(DreamManagerInternal.class);
         if (CoreRune.SYSUI_GRADLE_BUILD) {
@@ -151,424 +234,44 @@ public class KeyguardServiceDelegate {
         dreamManagerInternal.registerDreamManagerStateListener(this.mDreamManagerStateListener);
     }
 
-    /* renamed from: com.android.server.policy.keyguard.KeyguardServiceDelegate$2, reason: invalid class name */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 implements ServiceConnection {
-        public AnonymousClass2() {
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            Log.v("KeyguardServiceDelegate", "!@BOOT: *** Keyguard connected (yay!)");
-            KeyguardServiceDelegate keyguardServiceDelegate = KeyguardServiceDelegate.this;
-            keyguardServiceDelegate.mKeyguardService = new KeyguardServiceWrapper(keyguardServiceDelegate.mContext, IKeyguardService.Stub.asInterface(iBinder), KeyguardServiceDelegate.this.mCallback);
-            Log.v("KeyguardServiceDelegate", "!@BOOT: *** Created keyguardService=" + KeyguardServiceDelegate.this.mKeyguardService);
-            if (KeyguardServiceDelegate.this.mKeyguardState.systemIsReady) {
-                KeyguardServiceDelegate.this.mKeyguardService.onSystemReady();
-                if (KeyguardServiceDelegate.this.mKeyguardState.currentUser != -10000) {
-                    KeyguardServiceDelegate keyguardServiceDelegate2 = KeyguardServiceDelegate.this;
-                    keyguardServiceDelegate2.mKeyguardService.setCurrentUser(keyguardServiceDelegate2.mKeyguardState.currentUser);
-                }
-                if (KeyguardServiceDelegate.this.mKeyguardState.interactiveState == 2 || KeyguardServiceDelegate.this.mKeyguardState.interactiveState == 1) {
-                    KeyguardServiceDelegate.this.mKeyguardService.onStartedWakingUp(0, false);
-                }
-                if (KeyguardServiceDelegate.this.mKeyguardState.interactiveState == 2) {
-                    KeyguardServiceDelegate.this.mKeyguardService.onFinishedWakingUp();
-                }
-                if (KeyguardServiceDelegate.this.mKeyguardState.screenState == 2 || KeyguardServiceDelegate.this.mKeyguardState.screenState == 1) {
-                    KeyguardServiceWrapper keyguardServiceWrapper = KeyguardServiceDelegate.this.mKeyguardService;
-                    KeyguardServiceDelegate keyguardServiceDelegate3 = KeyguardServiceDelegate.this;
-                    keyguardServiceWrapper.onScreenTurningOn(new KeyguardShowDelegate(keyguardServiceDelegate3.mDrawnListenerWhenConnect));
-                }
-                if (KeyguardServiceDelegate.this.mKeyguardState.screenState == 2) {
-                    KeyguardServiceDelegate.this.mKeyguardService.onScreenTurnedOn();
-                }
-                if (KeyguardServiceDelegate.this.mKeyguardState.interactiveState == 3 || KeyguardServiceDelegate.this.mKeyguardState.interactiveState == 0) {
-                    KeyguardServiceDelegate.this.mKeyguardService.onStartedGoingToSleep(0);
-                }
-                if (KeyguardServiceDelegate.this.mKeyguardState.interactiveState == 0) {
-                    KeyguardServiceDelegate.this.mKeyguardService.onFinishedGoingToSleep(0, false);
-                }
-                if (KeyguardServiceDelegate.this.mKeyguardState.screenState == 0 || KeyguardServiceDelegate.this.mKeyguardState.screenState == 3) {
-                    KeyguardServiceDelegate.this.mKeyguardService.onScreenTurningOff();
-                }
-                if (KeyguardServiceDelegate.this.mKeyguardState.screenState == 0) {
-                    KeyguardServiceDelegate.this.mKeyguardService.onScreenTurnedOff();
-                }
-                KeyguardServiceDelegate.this.mDrawnListenerWhenConnect = null;
-            }
-            if (KeyguardServiceDelegate.this.mKeyguardState.bootCompleted) {
-                KeyguardServiceDelegate.this.mKeyguardService.onBootCompleted();
-            }
-            if (KeyguardServiceDelegate.this.mKeyguardState.occluded) {
-                KeyguardServiceDelegate keyguardServiceDelegate4 = KeyguardServiceDelegate.this;
-                keyguardServiceDelegate4.mKeyguardService.setOccluded(keyguardServiceDelegate4.mKeyguardState.occluded, false);
-            }
-            if (!KeyguardServiceDelegate.this.mKeyguardState.enabled) {
-                KeyguardServiceDelegate keyguardServiceDelegate5 = KeyguardServiceDelegate.this;
-                keyguardServiceDelegate5.mKeyguardService.setKeyguardEnabled(keyguardServiceDelegate5.mKeyguardState.enabled);
-            }
-            if (KeyguardServiceDelegate.this.mKeyguardState.dreaming) {
-                KeyguardServiceDelegate.this.mKeyguardService.onDreamingStarted();
-            }
-            if (KeyguardServiceDelegate.this.mKeyguardState.bootAnimFinished) {
-                KeyguardServiceDelegate.this.mKeyguardService.onFinishedBootAnim();
-            }
-            if (KeyguardServiceDelegate.this.mKeyguardState.dexOccluded) {
-                KeyguardServiceDelegate keyguardServiceDelegate6 = KeyguardServiceDelegate.this;
-                keyguardServiceDelegate6.mKeyguardService.setDexOccluded(keyguardServiceDelegate6.mKeyguardState.dexOccluded);
-            }
-            if (KeyguardServiceDelegate.this.mKeyguardState.coverOccluded) {
-                KeyguardServiceDelegate keyguardServiceDelegate7 = KeyguardServiceDelegate.this;
-                keyguardServiceDelegate7.mKeyguardService.setCoverOccluded(keyguardServiceDelegate7.mKeyguardState.coverOccluded);
-            }
-        }
-
-        @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName componentName) {
-            Log.v("KeyguardServiceDelegate", "*** Keyguard disconnected (boo!)");
-            KeyguardServiceDelegate keyguardServiceDelegate = KeyguardServiceDelegate.this;
-            keyguardServiceDelegate.mKeyguardService = null;
-            keyguardServiceDelegate.mKeyguardState.reset();
-            KeyguardServiceDelegate.this.mHandler.post(new Runnable() { // from class: com.android.server.policy.keyguard.KeyguardServiceDelegate$2$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    KeyguardServiceDelegate.AnonymousClass2.lambda$onServiceDisconnected$0();
-                }
-            });
-        }
-
-        public static /* synthetic */ void lambda$onServiceDisconnected$0() {
-            try {
-                ActivityTaskManager.getService().setLockScreenShown(true, false);
-            } catch (RemoteException unused) {
-            }
-        }
-    }
-
-    public boolean isShowing() {
+    public final boolean isShowing() {
         KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
         if (keyguardServiceWrapper != null) {
-            this.mKeyguardState.showing = keyguardServiceWrapper.isShowing();
+            this.mKeyguardState.showing = keyguardServiceWrapper.mKeyguardStateMonitor.mIsShowing;
         }
         return this.mKeyguardState.showing;
     }
 
-    public boolean isTrusted() {
+    public final boolean isSimLocked() {
         KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            return keyguardServiceWrapper.isTrusted();
+        if (keyguardServiceWrapper == null) {
+            return false;
         }
+        KeyguardStateMonitor keyguardStateMonitor = keyguardServiceWrapper.mKeyguardStateMonitor;
+        if (keyguardStateMonitor != null) {
+            return keyguardStateMonitor.mSimSecure;
+        }
+        Slog.w("KeyguardServiceWrapper", "mKeyguardStateMonitor is null caller=" + Debug.getCallers(5));
         return false;
     }
 
-    public boolean hasKeyguard() {
-        return this.mKeyguardState.deviceHasKeyguard;
-    }
-
-    public boolean isInputRestricted() {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            this.mKeyguardState.inputRestricted = keyguardServiceWrapper.isInputRestricted();
-        }
-        return this.mKeyguardState.inputRestricted;
-    }
-
-    public void verifyUnlock(WindowManagerPolicy.OnKeyguardExitResult onKeyguardExitResult) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.verifyUnlock(new KeyguardExitDelegate(onKeyguardExitResult));
-        }
-    }
-
-    public void setOccluded(boolean z, boolean z2) {
-        if (this.mKeyguardService != null && z2) {
-            Log.v("KeyguardServiceDelegate", "setOccluded(" + z + ")");
-            EventLogTags.writeWmSetKeyguardOccluded(z ? 1 : 0, 0, 0, "setOccluded");
-            this.mKeyguardService.setOccluded(z, false);
-        }
-        this.mKeyguardState.occluded = z;
-    }
-
-    public boolean isOccluded() {
-        return this.mKeyguardState.occluded;
-    }
-
-    public void dismiss(IKeyguardDismissCallback iKeyguardDismissCallback, CharSequence charSequence) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.dismiss(iKeyguardDismissCallback, charSequence);
-        }
-    }
-
-    public boolean isSecure(int i) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            this.mKeyguardState.secure = keyguardServiceWrapper.isSecure(i);
-        }
-        return this.mKeyguardState.secure;
-    }
-
-    public void onDreamingStarted() {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.onDreamingStarted();
-        }
-        this.mKeyguardState.dreaming = true;
-    }
-
-    public void onDreamingStopped() {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.onDreamingStopped();
-        }
-        this.mKeyguardState.dreaming = false;
-    }
-
-    public void onStartedWakingUp(int i, boolean z) {
+    public final void onScreenTurningOn(PhoneWindowManager.AnonymousClass1 anonymousClass1) {
         if (this.mKeyguardService != null) {
-            Log.v("KeyguardServiceDelegate", "onStartedWakingUp()");
-            this.mKeyguardService.onStartedWakingUp(i, z);
-        }
-        this.mKeyguardState.interactiveState = 1;
-    }
-
-    public void onFinishedWakingUp() {
-        if (this.mKeyguardService != null) {
-            Log.v("KeyguardServiceDelegate", "onFinishedWakingUp()");
-            this.mKeyguardService.onFinishedWakingUp();
-        }
-        this.mKeyguardState.interactiveState = 2;
-    }
-
-    public void onScreenTurningOff() {
-        if (this.mKeyguardService != null) {
-            Log.v("KeyguardServiceDelegate", "onScreenTurningOff()");
-            this.mKeyguardService.onScreenTurningOff();
-        }
-        this.mKeyguardState.screenState = 3;
-    }
-
-    public void onScreenTurnedOff() {
-        if (this.mKeyguardService != null) {
-            Log.v("KeyguardServiceDelegate", "onScreenTurnedOff()");
-            this.mKeyguardService.onScreenTurnedOff();
-        }
-        this.mKeyguardState.screenState = 0;
-    }
-
-    public void onScreenTurningOn(DrawnListener drawnListener) {
-        if (this.mKeyguardService != null) {
-            Log.v("KeyguardServiceDelegate", "onScreenTurnedOn(showListener = " + drawnListener + ")");
-            this.mKeyguardService.onScreenTurningOn(new KeyguardShowDelegate(drawnListener));
+            Log.v("KeyguardServiceDelegate", "onScreenTurnedOn(showListener = " + anonymousClass1 + ")");
+            this.mKeyguardService.onScreenTurningOn(new KeyguardShowDelegate(anonymousClass1));
         } else {
             Slog.w("KeyguardServiceDelegate", "onScreenTurningOn(): no keyguard service!");
-            this.mDrawnListenerWhenConnect = drawnListener;
+            this.mDrawnListenerWhenConnect = anonymousClass1;
         }
         this.mKeyguardState.screenState = 1;
     }
 
-    public void onScreenTurnedOn() {
+    public final void setOccluded(boolean z) {
         if (this.mKeyguardService != null) {
-            Log.v("KeyguardServiceDelegate", "onScreenTurnedOn()");
-            this.mKeyguardService.onScreenTurnedOn();
+            Log.v("KeyguardServiceDelegate", "setOccluded(" + z + ")");
+            EventLog.writeEvent(31008, Integer.valueOf(z ? 1 : 0), 0, 0, "setOccluded");
+            this.mKeyguardService.setOccluded(z, false);
         }
-        this.mKeyguardState.screenState = 2;
-    }
-
-    public void onStartedGoingToSleep(int i) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.onStartedGoingToSleep(i);
-        }
-        this.mKeyguardState.offReason = WindowManagerPolicyConstants.translateSleepReasonToOffReason(i);
-        this.mKeyguardState.interactiveState = 3;
-    }
-
-    public void onFinishedGoingToSleep(int i, boolean z) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.onFinishedGoingToSleep(i, z);
-        }
-        this.mKeyguardState.interactiveState = 0;
-    }
-
-    public void setKeyguardEnabled(boolean z) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.setKeyguardEnabled(z);
-        }
-        this.mKeyguardState.enabled = z;
-    }
-
-    public void onSystemReady() {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.onSystemReady();
-        } else {
-            this.mKeyguardState.systemIsReady = true;
-        }
-    }
-
-    public void doKeyguardTimeout(Bundle bundle) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.doKeyguardTimeout(bundle);
-        }
-        if (getPersonaManagerInternal() != null) {
-            getPersonaManagerInternal().doKeyguardTimeout();
-        }
-    }
-
-    public void setCurrentUser(int i) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.setCurrentUser(i);
-        }
-        this.mKeyguardState.currentUser = i;
-    }
-
-    public void setSwitchingUser(boolean z) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.setSwitchingUser(z);
-        }
-    }
-
-    public void startKeyguardExitAnimation(long j) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.startKeyguardExitAnimation(j, 0L);
-        }
-    }
-
-    public void onBootCompleted() {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.onBootCompleted();
-        }
-        this.mKeyguardState.bootCompleted = true;
-    }
-
-    public void onShortPowerPressedGoHome() {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.onShortPowerPressedGoHome();
-        }
-    }
-
-    public void dismissKeyguardToLaunch(Intent intent) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.dismissKeyguardToLaunch(intent);
-        }
-    }
-
-    public void onSystemKeyPressed(int i) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.onSystemKeyPressed(i);
-        }
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        protoOutputStream.write(1133871366145L, this.mKeyguardState.showing);
-        protoOutputStream.write(1133871366146L, this.mKeyguardState.occluded);
-        protoOutputStream.write(1133871366147L, this.mKeyguardState.secure);
-        protoOutputStream.write(1159641169924L, this.mKeyguardState.screenState);
-        protoOutputStream.write(1159641169925L, this.mKeyguardState.interactiveState);
-        protoOutputStream.end(start);
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        printWriter.println(str + "KeyguardServiceDelegate");
-        String str2 = str + "  ";
-        printWriter.println(str2 + "showing=" + this.mKeyguardState.showing);
-        printWriter.println(str2 + "inputRestricted=" + this.mKeyguardState.inputRestricted);
-        printWriter.println(str2 + "occluded=" + this.mKeyguardState.occluded);
-        printWriter.println(str2 + "secure=" + this.mKeyguardState.secure);
-        printWriter.println(str2 + "dreaming=" + this.mKeyguardState.dreaming);
-        printWriter.println(str2 + "systemIsReady=" + this.mKeyguardState.systemIsReady);
-        printWriter.println(str2 + "deviceHasKeyguard=" + this.mKeyguardState.deviceHasKeyguard);
-        printWriter.println(str2 + "enabled=" + this.mKeyguardState.enabled);
-        printWriter.println(str2 + "offReason=" + WindowManagerPolicyConstants.offReasonToString(this.mKeyguardState.offReason));
-        printWriter.println(str2 + "currentUser=" + this.mKeyguardState.currentUser);
-        printWriter.println(str2 + "bootCompleted=" + this.mKeyguardState.bootCompleted);
-        printWriter.println(str2 + "screenState=" + screenStateToString(this.mKeyguardState.screenState));
-        printWriter.println(str2 + "interactiveState=" + interactiveStateToString(this.mKeyguardState.interactiveState));
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.dump(str2, printWriter);
-        }
-    }
-
-    public static String screenStateToString(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? Integer.toString(i) : "SCREEN_STATE_TURNING_OFF" : "SCREEN_STATE_ON" : "SCREEN_STATE_TURNING_ON" : "SCREEN_STATE_OFF";
-    }
-
-    public static String interactiveStateToString(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? Integer.toString(i) : "INTERACTIVE_STATE_GOING_TO_SLEEP" : "INTERACTIVE_STATE_AWAKE" : "INTERACTIVE_STATE_WAKING" : "INTERACTIVE_STATE_SLEEP";
-    }
-
-    public final PersonaManagerInternal getPersonaManagerInternal() {
-        if (this.mPersonaManagerInternal == null) {
-            this.mPersonaManagerInternal = (PersonaManagerInternal) LocalServices.getService(PersonaManagerInternal.class);
-        }
-        return this.mPersonaManagerInternal;
-    }
-
-    public void setPendingIntentAfterUnlock(PendingIntent pendingIntent, Intent intent) {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.setPendingIntentAfterUnlock(pendingIntent, intent);
-        }
-    }
-
-    public boolean isSimLocked() {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper == null || !keyguardServiceWrapper.isKeyguardStateMonitorValid()) {
-            return false;
-        }
-        return this.mKeyguardService.isSimLocked();
-    }
-
-    public boolean isScreenTurnedOn() {
-        return this.mKeyguardState.screenState == 2;
-    }
-
-    public void startFingerprintAuthentication() {
-        if (this.mKeyguardService != null) {
-            Log.v("KeyguardServiceDelegate", "Start Fingerprint Authentication");
-            this.mKeyguardService.startFingerprintAuthentication();
-        }
-    }
-
-    public void finishedBootAnim() {
-        KeyguardServiceWrapper keyguardServiceWrapper = this.mKeyguardService;
-        if (keyguardServiceWrapper != null) {
-            keyguardServiceWrapper.onFinishedBootAnim();
-        } else {
-            this.mKeyguardState.bootAnimFinished = true;
-        }
-    }
-
-    public void startedEarlyWakingUp(int i) {
-        if (this.mKeyguardService != null) {
-            Log.v("KeyguardServiceDelegate", "startedEarlyWakingUp reason=" + i);
-            this.mKeyguardService.startedEarlyWakingUp(i);
-        }
-    }
-
-    public void setOccluded(boolean z, boolean z2, int i) {
-        if (i == 2) {
-            if (this.mKeyguardService != null && z2) {
-                Log.v("KeyguardServiceDelegate", "setOccluded(" + z + ") , dex displayId=" + i);
-                this.mKeyguardService.setDexOccluded(z);
-            }
-            this.mKeyguardState.dexOccluded = z;
-            return;
-        }
-        setOccluded(z, z2);
+        this.mKeyguardState.occluded = z;
     }
 }

@@ -6,13 +6,14 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IOnSameL3NetworkResponseListener extends IInterface {
     public static final String DESCRIPTOR = "android$net$ipmemorystore$IOnSameL3NetworkResponseListener".replace('$', '.');
     public static final String HASH = "d5ea5eb3ddbdaa9a986ce6ba70b0804ca3e39b0c";
     public static final int VERSION = 10;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class Default implements IOnSameL3NetworkResponseListener {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -30,102 +31,54 @@ public interface IOnSameL3NetworkResponseListener extends IInterface {
         }
 
         @Override // android.net.ipmemorystore.IOnSameL3NetworkResponseListener
-        public void onSameL3NetworkResponse(StatusParcelable statusParcelable, SameL3NetworkResponseParcelable sameL3NetworkResponseParcelable) {
+        public void onSameL3NetworkResponse(StatusParcelable statusParcelable, SameL3NetworkResponseParcelable sameL3NetworkResponseParcelable) throws RemoteException {
         }
     }
 
-    String getInterfaceHash();
-
-    int getInterfaceVersion();
-
-    void onSameL3NetworkResponse(StatusParcelable statusParcelable, SameL3NetworkResponseParcelable sameL3NetworkResponseParcelable);
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements IOnSameL3NetworkResponseListener {
         static final int TRANSACTION_getInterfaceHash = 16777214;
         static final int TRANSACTION_getInterfaceVersion = 16777215;
         static final int TRANSACTION_onSameL3NetworkResponse = 1;
 
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
-        }
-
-        public Stub() {
-            attachInterface(this, IOnSameL3NetworkResponseListener.DESCRIPTOR);
-        }
-
-        public static IOnSameL3NetworkResponseListener asInterface(IBinder iBinder) {
-            if (iBinder == null) {
-                return null;
-            }
-            IInterface queryLocalInterface = iBinder.queryLocalInterface(IOnSameL3NetworkResponseListener.DESCRIPTOR);
-            if (queryLocalInterface != null && (queryLocalInterface instanceof IOnSameL3NetworkResponseListener)) {
-                return (IOnSameL3NetworkResponseListener) queryLocalInterface;
-            }
-            return new Proxy(iBinder);
-        }
-
-        @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
-            String str = IOnSameL3NetworkResponseListener.DESCRIPTOR;
-            if (i >= 1 && i <= TRANSACTION_getInterfaceVersion) {
-                parcel.enforceInterface(str);
-            }
-            switch (i) {
-                case TRANSACTION_getInterfaceHash /* 16777214 */:
-                    parcel2.writeNoException();
-                    parcel2.writeString(getInterfaceHash());
-                    return true;
-                case TRANSACTION_getInterfaceVersion /* 16777215 */:
-                    parcel2.writeNoException();
-                    parcel2.writeInt(getInterfaceVersion());
-                    return true;
-                case 1598968902:
-                    parcel2.writeString(str);
-                    return true;
-                default:
-                    if (i == 1) {
-                        onSameL3NetworkResponse((StatusParcelable) parcel.readTypedObject(StatusParcelable.CREATOR), (SameL3NetworkResponseParcelable) parcel.readTypedObject(SameL3NetworkResponseParcelable.CREATOR));
-                        return true;
-                    }
-                    return super.onTransact(i, parcel, parcel2, i2);
-            }
-        }
-
-        /* loaded from: classes.dex */
-        public class Proxy implements IOnSameL3NetworkResponseListener {
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements IOnSameL3NetworkResponseListener {
+            public String mCachedHash;
+            public int mCachedVersion;
             public IBinder mRemote;
-            public int mCachedVersion = -1;
-            public String mCachedHash = "-1";
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
 
             @Override // android.os.IInterface
-            public IBinder asBinder() {
+            public final IBinder asBinder() {
                 return this.mRemote;
             }
 
             @Override // android.net.ipmemorystore.IOnSameL3NetworkResponseListener
-            public void onSameL3NetworkResponse(StatusParcelable statusParcelable, SameL3NetworkResponseParcelable sameL3NetworkResponseParcelable) {
-                Parcel obtain = Parcel.obtain();
+            public final synchronized String getInterfaceHash() {
                 try {
-                    obtain.writeInterfaceToken(IOnSameL3NetworkResponseListener.DESCRIPTOR);
-                    obtain.writeTypedObject(statusParcelable, 0);
-                    obtain.writeTypedObject(sameL3NetworkResponseParcelable, 0);
-                    if (this.mRemote.transact(1, obtain, null, 1)) {
-                    } else {
-                        throw new RemoteException("Method onSameL3NetworkResponse is unimplemented.");
+                    if ("-1".equals(this.mCachedHash)) {
+                        Parcel obtain = Parcel.obtain();
+                        Parcel obtain2 = Parcel.obtain();
+                        try {
+                            obtain.writeInterfaceToken(IOnSameL3NetworkResponseListener.DESCRIPTOR);
+                            this.mRemote.transact(Stub.TRANSACTION_getInterfaceHash, obtain, obtain2, 0);
+                            obtain2.readException();
+                            this.mCachedHash = obtain2.readString();
+                            obtain2.recycle();
+                            obtain.recycle();
+                        } catch (Throwable th) {
+                            obtain2.recycle();
+                            obtain.recycle();
+                            throw th;
+                        }
                     }
-                } finally {
-                    obtain.recycle();
+                } catch (Throwable th2) {
+                    throw th2;
                 }
+                return this.mCachedHash;
             }
 
             @Override // android.net.ipmemorystore.IOnSameL3NetworkResponseListener
-            public int getInterfaceVersion() {
+            public final int getInterfaceVersion() {
                 if (this.mCachedVersion == -1) {
                     Parcel obtain = Parcel.obtain();
                     Parcel obtain2 = Parcel.obtain();
@@ -143,25 +96,77 @@ public interface IOnSameL3NetworkResponseListener extends IInterface {
             }
 
             @Override // android.net.ipmemorystore.IOnSameL3NetworkResponseListener
-            public synchronized String getInterfaceHash() {
-                if ("-1".equals(this.mCachedHash)) {
-                    Parcel obtain = Parcel.obtain();
-                    Parcel obtain2 = Parcel.obtain();
-                    try {
-                        obtain.writeInterfaceToken(IOnSameL3NetworkResponseListener.DESCRIPTOR);
-                        this.mRemote.transact(Stub.TRANSACTION_getInterfaceHash, obtain, obtain2, 0);
-                        obtain2.readException();
-                        this.mCachedHash = obtain2.readString();
-                        obtain2.recycle();
-                        obtain.recycle();
-                    } catch (Throwable th) {
-                        obtain2.recycle();
-                        obtain.recycle();
-                        throw th;
+            public final void onSameL3NetworkResponse(StatusParcelable statusParcelable, SameL3NetworkResponseParcelable sameL3NetworkResponseParcelable) {
+                Parcel obtain = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(IOnSameL3NetworkResponseListener.DESCRIPTOR);
+                    obtain.writeTypedObject(statusParcelable, 0);
+                    obtain.writeTypedObject(sameL3NetworkResponseParcelable, 0);
+                    if (this.mRemote.transact(1, obtain, null, 1)) {
+                    } else {
+                        throw new RemoteException("Method onSameL3NetworkResponse is unimplemented.");
                     }
+                } finally {
+                    obtain.recycle();
                 }
-                return this.mCachedHash;
             }
         }
+
+        public Stub() {
+            attachInterface(this, IOnSameL3NetworkResponseListener.DESCRIPTOR);
+        }
+
+        public static IOnSameL3NetworkResponseListener asInterface(IBinder iBinder) {
+            if (iBinder == null) {
+                return null;
+            }
+            IInterface queryLocalInterface = iBinder.queryLocalInterface(IOnSameL3NetworkResponseListener.DESCRIPTOR);
+            if (queryLocalInterface != null && (queryLocalInterface instanceof IOnSameL3NetworkResponseListener)) {
+                return (IOnSameL3NetworkResponseListener) queryLocalInterface;
+            }
+            Proxy proxy = new Proxy();
+            proxy.mCachedVersion = -1;
+            proxy.mCachedHash = "-1";
+            proxy.mRemote = iBinder;
+            return proxy;
+        }
+
+        @Override // android.os.IInterface
+        public IBinder asBinder() {
+            return this;
+        }
+
+        @Override // android.os.Binder
+        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
+            String str = IOnSameL3NetworkResponseListener.DESCRIPTOR;
+            if (i >= 1 && i <= TRANSACTION_getInterfaceVersion) {
+                parcel.enforceInterface(str);
+            }
+            if (i == 1598968902) {
+                parcel2.writeString(str);
+                return true;
+            }
+            if (i == TRANSACTION_getInterfaceVersion) {
+                parcel2.writeNoException();
+                parcel2.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (i == TRANSACTION_getInterfaceHash) {
+                parcel2.writeNoException();
+                parcel2.writeString(getInterfaceHash());
+                return true;
+            }
+            if (i != 1) {
+                return super.onTransact(i, parcel, parcel2, i2);
+            }
+            onSameL3NetworkResponse((StatusParcelable) parcel.readTypedObject(StatusParcelable.CREATOR), (SameL3NetworkResponseParcelable) parcel.readTypedObject(SameL3NetworkResponseParcelable.CREATOR));
+            return true;
+        }
     }
+
+    String getInterfaceHash() throws RemoteException;
+
+    int getInterfaceVersion() throws RemoteException;
+
+    void onSameL3NetworkResponse(StatusParcelable statusParcelable, SameL3NetworkResponseParcelable sameL3NetworkResponseParcelable) throws RemoteException;
 }

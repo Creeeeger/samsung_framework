@@ -16,10 +16,11 @@ import android.view.InputWindowHandle;
 import android.view.MagnificationSpec;
 import android.view.WindowInfo;
 import android.window.WindowInfosListener;
-import com.android.internal.util.DumpUtils;
-import com.android.server.wm.AccessibilityWindowsPopulator;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.Flags;
 import com.android.server.wm.utils.RegionUtils;
-import java.io.PrintWriter;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,12 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class AccessibilityWindowsPopulator extends WindowInfosListener {
-    public static final String TAG = AccessibilityWindowsPopulator.class.getSimpleName();
     public static final float[] sTempFloats = new float[9];
     public final AccessibilityController mAccessibilityController;
-    public final Handler mHandler;
+    public final MyHandler mHandler;
     public final WindowManagerService mService;
     public final SparseArray mInputWindowHandlesOnDisplays = new SparseArray();
     public final SparseArray mMagnificationSpecInverseMatrix = new SparseArray();
@@ -49,7 +50,97 @@ public final class AccessibilityWindowsPopulator extends WindowInfosListener {
     public final float[] mTempFloat2 = new float[9];
     public final float[] mTempFloat3 = new float[9];
 
-    public static /* synthetic */ void lambda$dump$1(int i, int i2) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AccessibilityWindow {
+        public int mDisplayId;
+        public boolean mIgnoreDuetoRecentsAnimation;
+        public int mInputConfig;
+        public boolean mIsFocused;
+        public boolean mIsPIPMenu;
+        public int mPrivateFlags;
+        public boolean mShouldMagnify;
+        public int mType;
+        public IBinder mWindow;
+        public WindowInfo mWindowInfo;
+        public final Region mTouchableRegionInScreen = new Region();
+        public final Region mTouchableRegionInWindow = new Region();
+        public Rect mSystemBarInsetFrame = null;
+
+        public final boolean isTouchable() {
+            return (this.mInputConfig & 8) == 0;
+        }
+
+        public final String toString() {
+            IBinder iBinder = this.mWindow;
+            StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("A11yWindow=[", iBinder != null ? iBinder.toString() : "(no window token)", ", displayId=");
+            m.append(this.mDisplayId);
+            m.append(", inputConfig=0x");
+            BatteryService$$ExternalSyntheticOutline0.m(this.mInputConfig, m, ", type=");
+            m.append(this.mType);
+            m.append(", privateFlag=0x");
+            BatteryService$$ExternalSyntheticOutline0.m(this.mPrivateFlags, m, ", focused=");
+            m.append(this.mIsFocused);
+            m.append(", shouldMagnify=");
+            m.append(this.mShouldMagnify);
+            m.append(", ignoreDuetoRecentsAnimation=");
+            m.append(this.mIgnoreDuetoRecentsAnimation);
+            m.append(", isTrustedOverlay=");
+            m.append((this.mInputConfig & 256) != 0);
+            m.append(", regionInScreen=");
+            m.append(this.mTouchableRegionInScreen);
+            m.append(", touchableRegion=");
+            m.append(this.mTouchableRegionInWindow);
+            m.append(", isPIPMenu=");
+            m.append(this.mIsPIPMenu);
+            m.append(", windowInfo=");
+            m.append(this.mWindowInfo);
+            m.append("]");
+            return m.toString();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MyHandler extends Handler {
+        public MyHandler(Looper looper) {
+            super(looper, null, false);
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            int i = message.what;
+            AccessibilityWindowsPopulator accessibilityWindowsPopulator = AccessibilityWindowsPopulator.this;
+            if (i == 1) {
+                accessibilityWindowsPopulator.notifyWindowsChanged((List) message.obj);
+                return;
+            }
+            if (i == 2) {
+                AccessibilityWindowsPopulator.m1048$$Nest$mforceUpdateWindows(accessibilityWindowsPopulator);
+            } else {
+                if (i != 3) {
+                    return;
+                }
+                float[] fArr = AccessibilityWindowsPopulator.sTempFloats;
+                Slog.w("AccessibilityWindowsPopulator", "Windows change within in 2 frames continuously over 500 ms and notify windows changed immediately");
+                accessibilityWindowsPopulator.mHandler.removeMessages(2);
+                AccessibilityWindowsPopulator.m1048$$Nest$mforceUpdateWindows(accessibilityWindowsPopulator);
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$mforceUpdateWindows, reason: not valid java name */
+    public static void m1048$$Nest$mforceUpdateWindows(AccessibilityWindowsPopulator accessibilityWindowsPopulator) {
+        accessibilityWindowsPopulator.getClass();
+        ArrayList arrayList = new ArrayList();
+        synchronized (accessibilityWindowsPopulator.mLock) {
+            for (int i = 0; i < accessibilityWindowsPopulator.mInputWindowHandlesOnDisplays.size(); i++) {
+                try {
+                    arrayList.add(Integer.valueOf(accessibilityWindowsPopulator.mInputWindowHandlesOnDisplays.keyAt(i)));
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+        accessibilityWindowsPopulator.notifyWindowsChanged(arrayList);
     }
 
     public AccessibilityWindowsPopulator(WindowManagerService windowManagerService, AccessibilityController accessibilityController) {
@@ -58,136 +149,96 @@ public final class AccessibilityWindowsPopulator extends WindowInfosListener {
         this.mHandler = new MyHandler(windowManagerService.mH.getLooper());
     }
 
-    public void populateVisibleWindowsOnScreenLocked(int i, List list) {
-        Matrix matrix = new Matrix();
+    public static void generateInverseMatrix(MagnificationSpec magnificationSpec, Matrix matrix) {
+        matrix.reset();
         Matrix matrix2 = new Matrix();
-        synchronized (this.mLock) {
-            List list2 = (List) this.mInputWindowHandlesOnDisplays.get(i);
-            if (list2 == null) {
-                list.clear();
-                return;
-            }
-            matrix.set((Matrix) this.mMagnificationSpecInverseMatrix.get(i));
-            WindowInfosListener.DisplayInfo displayInfo = (WindowInfosListener.DisplayInfo) this.mDisplayInfos.get(i);
-            if (displayInfo != null) {
-                matrix2.set(displayInfo.mTransform);
-            } else {
-                Slog.w(TAG, "The displayInfo of this displayId (" + i + ") called back from the surface fligner is null");
-            }
-            ShellRoot shellRoot = (ShellRoot) this.mService.mRoot.getDisplayContent(i).mShellRoots.get(1);
-            IBinder accessibilityWindowToken = shellRoot != null ? shellRoot.getAccessibilityWindowToken() : null;
-            Iterator it = list2.iterator();
-            while (it.hasNext()) {
-                list.add(AccessibilityWindow.initializeData(this.mService, (InputWindowHandle) it.next(), matrix, accessibilityWindowToken, matrix2));
-            }
+        matrix2.reset();
+        float f = magnificationSpec.scale;
+        matrix2.postScale(f, f);
+        matrix2.postTranslate(magnificationSpec.offsetX, magnificationSpec.offsetY);
+        if (matrix2.invert(matrix)) {
+            return;
+        }
+        Slog.e("AccessibilityWindowsPopulator", "Can't inverse the magnification spec matrix with the magnification spec = " + magnificationSpec);
+        matrix.reset();
+    }
+
+    public final void notifyWindowsChanged(List list) {
+        this.mHandler.removeMessages(3);
+        for (int i = 0; i < list.size(); i++) {
+            this.mAccessibilityController.performComputeChangedWindowsNot(((Integer) list.get(i)).intValue(), false);
         }
     }
 
-    public void onWindowInfosChanged(final InputWindowHandle[] inputWindowHandleArr, final WindowInfosListener.DisplayInfo[] displayInfoArr) {
+    public final void onWindowInfosChanged(final InputWindowHandle[] inputWindowHandleArr, final WindowInfosListener.DisplayInfo[] displayInfoArr) {
+        Flags.removeOnWindowInfosChangedHandler();
         this.mHandler.post(new Runnable() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
-                AccessibilityWindowsPopulator.this.lambda$onWindowInfosChanged$0(inputWindowHandleArr, displayInfoArr);
+                AccessibilityWindowsPopulator.this.onWindowInfosChangedInternal(inputWindowHandleArr, displayInfoArr);
             }
         });
     }
 
-    /* renamed from: onWindowInfosChangedInternal */
-    public final void lambda$onWindowInfosChanged$0(InputWindowHandle[] inputWindowHandleArr, WindowInfosListener.DisplayInfo[] displayInfoArr) {
+    public final void onWindowInfosChangedInternal(InputWindowHandle[] inputWindowHandleArr, WindowInfosListener.DisplayInfo[] displayInfoArr) {
+        HashMap hashMap;
         ArrayList arrayList = new ArrayList();
         for (InputWindowHandle inputWindowHandle : inputWindowHandleArr) {
             int i = inputWindowHandle.inputConfig;
             boolean z = (i & 2) == 0;
-            boolean z2 = (i & 65536) == 0;
+            boolean z2 = (i & EndpointMonitorConst.FLAG_TRACING_NETWORK_EVENT_ABNORMAL_PKT) == 0;
             boolean z3 = !inputWindowHandle.touchableRegion.isEmpty();
-            boolean z4 = (inputWindowHandle.frameBottom == inputWindowHandle.frameTop || inputWindowHandle.frameLeft == inputWindowHandle.frameRight) ? false : true;
-            if (z && z2 && z3 && z4) {
+            boolean isEmpty = true ^ inputWindowHandle.frame.isEmpty();
+            if (z && z2 && z3 && isEmpty) {
                 arrayList.add(inputWindowHandle);
             }
         }
-        HashMap windowsTransformMatrix = getWindowsTransformMatrix(arrayList);
-        synchronized (this.mLock) {
-            this.mWindowsTransformMatrixMap.clear();
-            this.mWindowsTransformMatrixMap.putAll(windowsTransformMatrix);
-            this.mVisibleWindows.clear();
-            this.mVisibleWindows.addAll(arrayList);
-            this.mDisplayInfos.clear();
-            for (WindowInfosListener.DisplayInfo displayInfo : displayInfoArr) {
-                this.mDisplayInfos.put(displayInfo.mDisplayId, displayInfo);
-            }
-            if (this.mWindowsNotificationEnabled) {
-                if (!this.mHandler.hasMessages(3)) {
-                    this.mHandler.sendEmptyMessageDelayed(3, 450L);
-                }
-                populateVisibleWindowHandlesAndNotifyWindowsChangeIfNeeded();
-            }
-        }
-    }
-
-    public final HashMap getWindowsTransformMatrix(List list) {
-        HashMap hashMap;
         WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
             try {
                 hashMap = new HashMap();
-                Iterator it = list.iterator();
+                Iterator it = arrayList.iterator();
                 while (it.hasNext()) {
-                    IWindow window = ((InputWindowHandle) it.next()).getWindow();
-                    WindowState windowState = window != null ? (WindowState) this.mService.mWindowMap.get(window.asBinder()) : null;
+                    IBinder windowToken = ((InputWindowHandle) it.next()).getWindowToken();
+                    WindowState windowState = windowToken != null ? (WindowState) this.mService.mWindowMap.get(windowToken) : null;
                     if (windowState != null && windowState.shouldMagnify()) {
                         Matrix matrix = new Matrix();
                         windowState.getTransformationMatrix(sTempFloats, matrix);
-                        hashMap.put(window.asBinder(), matrix);
+                        hashMap.put(windowToken, matrix);
                     }
                 }
-            } catch (Throwable th) {
+            } finally {
                 WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
             }
         }
         WindowManagerService.resetPriorityAfterLockedSection();
-        return hashMap;
-    }
-
-    public void setWindowsNotification(boolean z) {
         synchronized (this.mLock) {
-            if (this.mWindowsNotificationEnabled == z) {
-                return;
-            }
-            this.mWindowsNotificationEnabled = z;
-            if (z) {
-                Pair register = register();
-                lambda$onWindowInfosChanged$0((InputWindowHandle[]) register.first, (WindowInfosListener.DisplayInfo[]) register.second);
-            } else {
-                unregister();
-                releaseResources();
-            }
-        }
-    }
-
-    public void setMagnificationSpec(int i, MagnificationSpec magnificationSpec) {
-        synchronized (this.mLock) {
-            MagnificationSpec magnificationSpec2 = (MagnificationSpec) this.mCurrentMagnificationSpec.get(i);
-            if (magnificationSpec2 == null) {
-                MagnificationSpec magnificationSpec3 = new MagnificationSpec();
-                magnificationSpec3.setTo(magnificationSpec);
-                this.mCurrentMagnificationSpec.put(i, magnificationSpec3);
-            } else {
-                MagnificationSpec magnificationSpec4 = (MagnificationSpec) this.mPreviousMagnificationSpec.get(i);
-                if (magnificationSpec4 == null) {
-                    magnificationSpec4 = new MagnificationSpec();
-                    this.mPreviousMagnificationSpec.put(i, magnificationSpec4);
+            try {
+                ((HashMap) this.mWindowsTransformMatrixMap).clear();
+                ((HashMap) this.mWindowsTransformMatrixMap).putAll(hashMap);
+                ((ArrayList) this.mVisibleWindows).clear();
+                ((ArrayList) this.mVisibleWindows).addAll(arrayList);
+                this.mDisplayInfos.clear();
+                for (WindowInfosListener.DisplayInfo displayInfo : displayInfoArr) {
+                    this.mDisplayInfos.put(displayInfo.mDisplayId, displayInfo);
                 }
-                magnificationSpec4.setTo(magnificationSpec2);
-                magnificationSpec2.setTo(magnificationSpec);
+                if (this.mWindowsNotificationEnabled) {
+                    if (!this.mHandler.hasMessages(3)) {
+                        this.mHandler.sendEmptyMessageDelayed(3, 450L);
+                    }
+                    populateVisibleWindowHandlesAndNotifyWindowsChangeIfNeeded();
+                }
+            } finally {
             }
         }
     }
 
     public final void populateVisibleWindowHandlesAndNotifyWindowsChangeIfNeeded() {
         SparseArray sparseArray = new SparseArray();
-        for (InputWindowHandle inputWindowHandle : this.mVisibleWindows) {
+        Iterator it = ((ArrayList) this.mVisibleWindows).iterator();
+        while (it.hasNext()) {
+            InputWindowHandle inputWindowHandle = (InputWindowHandle) it.next();
             List list = (List) sparseArray.get(inputWindowHandle.displayId);
             if (list == null) {
                 list = new ArrayList();
@@ -195,58 +246,10 @@ public final class AccessibilityWindowsPopulator extends WindowInfosListener {
             }
             list.add(inputWindowHandle);
         }
-        findMagnificationSpecInverseMatrixIfNeeded(sparseArray);
-        ArrayList arrayList = new ArrayList();
-        getDisplaysForWindowsChanged(arrayList, sparseArray, this.mInputWindowHandlesOnDisplays);
-        this.mInputWindowHandlesOnDisplays.clear();
-        for (int i = 0; i < sparseArray.size(); i++) {
-            int keyAt = sparseArray.keyAt(i);
-            this.mInputWindowHandlesOnDisplays.put(keyAt, (List) sparseArray.get(keyAt));
-        }
-        if (!arrayList.isEmpty()) {
-            if (this.mHandler.hasMessages(1)) {
-                return;
-            }
-            this.mHandler.obtainMessage(1, arrayList).sendToTarget();
-        } else {
-            this.mHandler.removeMessages(2);
-            this.mHandler.sendEmptyMessageDelayed(2, 35L);
-        }
-    }
-
-    public static void getDisplaysForWindowsChanged(List list, SparseArray sparseArray, SparseArray sparseArray2) {
-        for (int i = 0; i < sparseArray.size(); i++) {
-            int keyAt = sparseArray.keyAt(i);
-            if (hasWindowsChanged((List) sparseArray.get(keyAt), (List) sparseArray2.get(keyAt))) {
-                list.add(Integer.valueOf(keyAt));
-            }
-        }
-    }
-
-    public static boolean hasWindowsChanged(List list, List list2) {
-        if (list2 == null || list2.size() != list.size()) {
-            return true;
-        }
-        int size = list.size();
-        for (int i = 0; i < size; i++) {
-            IWindow window = ((InputWindowHandle) list.get(i)).getWindow();
-            IWindow window2 = ((InputWindowHandle) list2.get(i)).getWindow();
-            boolean z = window != null;
-            boolean z2 = window2 != null;
-            if (z != z2) {
-                return true;
-            }
-            if (z && z2 && !window.asBinder().equals(window2.asBinder())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final void findMagnificationSpecInverseMatrixIfNeeded(SparseArray sparseArray) {
-        for (int i = 0; i < sparseArray.size(); i++) {
-            int keyAt = sparseArray.keyAt(i);
-            List list = (List) sparseArray.get(keyAt);
+        int i = 0;
+        for (int i2 = 0; i2 < sparseArray.size(); i2++) {
+            int keyAt = sparseArray.keyAt(i2);
+            List list2 = (List) sparseArray.get(keyAt);
             MagnificationSpec magnificationSpec = (MagnificationSpec) this.mCurrentMagnificationSpec.get(keyAt);
             if (magnificationSpec != null) {
                 MagnificationSpec magnificationSpec2 = new MagnificationSpec();
@@ -259,336 +262,285 @@ public final class AccessibilityWindowsPopulator extends WindowInfosListener {
                 } else {
                     MagnificationSpec magnificationSpec4 = new MagnificationSpec();
                     magnificationSpec4.setTo(magnificationSpec3);
-                    generateInverseMatrixBasedOnProperMagnificationSpecForDisplay(list, magnificationSpec2, magnificationSpec4);
+                    int size = list2.size() - 1;
+                    while (true) {
+                        if (size >= 0) {
+                            Matrix matrix2 = this.mTempMatrix2;
+                            InputWindowHandle inputWindowHandle2 = (InputWindowHandle) list2.get(size);
+                            IBinder windowToken = inputWindowHandle2.getWindowToken();
+                            Matrix matrix3 = windowToken != null ? (Matrix) ((HashMap) this.mWindowsTransformMatrixMap).get(windowToken) : null;
+                            if (matrix3 == null) {
+                                size--;
+                            } else {
+                                matrix2.set(matrix3);
+                                float[] fArr = this.mTempFloat1;
+                                Matrix matrix4 = this.mTempMatrix1;
+                                matrix4.reset();
+                                float f = magnificationSpec2.scale;
+                                matrix4.postScale(f, f);
+                                matrix4.postTranslate(magnificationSpec2.offsetX, magnificationSpec2.offsetY);
+                                Matrix matrix5 = new Matrix(inputWindowHandle2.transform);
+                                matrix5.preConcat(matrix4);
+                                matrix5.preConcat(matrix2);
+                                matrix5.getValues(fArr);
+                                float[] fArr2 = this.mTempFloat2;
+                                Matrix matrix6 = this.mTempMatrix1;
+                                matrix6.reset();
+                                float f2 = magnificationSpec4.scale;
+                                matrix6.postScale(f2, f2);
+                                matrix6.postTranslate(magnificationSpec4.offsetX, magnificationSpec4.offsetY);
+                                Matrix matrix7 = new Matrix(inputWindowHandle2.transform);
+                                matrix7.preConcat(matrix6);
+                                matrix7.preConcat(matrix2);
+                                matrix7.getValues(fArr2);
+                                Matrix matrix8 = new Matrix();
+                                float[] fArr3 = this.mTempFloat3;
+                                Matrix.IDENTITY_MATRIX.getValues(fArr3);
+                                float abs = Math.abs(fArr3[0] - fArr[0]);
+                                float abs2 = Math.abs(fArr3[0] - fArr2[0]);
+                                float abs3 = Math.abs(fArr3[2] - fArr[2]);
+                                float abs4 = Math.abs(fArr3[2] - fArr2[2]);
+                                float abs5 = abs3 + Math.abs(fArr3[5] - fArr[5]);
+                                float abs6 = abs4 + Math.abs(fArr3[5] - fArr2[5]);
+                                if (Float.compare(abs2, abs) > 0 || (Float.compare(abs2, abs) == 0 && Float.compare(abs6, abs5) > 0)) {
+                                    generateInverseMatrix(magnificationSpec2, matrix8);
+                                    this.mPreviousMagnificationSpec.remove(inputWindowHandle2.displayId);
+                                    if (magnificationSpec2.isNop()) {
+                                        this.mCurrentMagnificationSpec.remove(inputWindowHandle2.displayId);
+                                        this.mMagnificationSpecInverseMatrix.remove(inputWindowHandle2.displayId);
+                                    }
+                                } else {
+                                    generateInverseMatrix(magnificationSpec4, matrix8);
+                                }
+                                this.mMagnificationSpecInverseMatrix.put(inputWindowHandle2.displayId, matrix8);
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-
-    public final void generateInverseMatrixBasedOnProperMagnificationSpecForDisplay(List list, MagnificationSpec magnificationSpec, MagnificationSpec magnificationSpec2) {
-        for (int size = list.size() - 1; size >= 0; size--) {
-            Matrix matrix = this.mTempMatrix2;
-            InputWindowHandle inputWindowHandle = (InputWindowHandle) list.get(size);
-            if (getWindowTransformMatrix(inputWindowHandle.getWindow() != null ? inputWindowHandle.getWindow().asBinder() : null, matrix)) {
-                generateMagnificationSpecInverseMatrix(inputWindowHandle, magnificationSpec, magnificationSpec2, matrix);
-                return;
-            }
-        }
-    }
-
-    public final boolean getWindowTransformMatrix(IBinder iBinder, Matrix matrix) {
-        Matrix matrix2 = iBinder != null ? (Matrix) this.mWindowsTransformMatrixMap.get(iBinder) : null;
-        if (matrix2 == null) {
-            return false;
-        }
-        matrix.set(matrix2);
-        return true;
-    }
-
-    public final void generateMagnificationSpecInverseMatrix(InputWindowHandle inputWindowHandle, MagnificationSpec magnificationSpec, MagnificationSpec magnificationSpec2, Matrix matrix) {
-        float[] fArr = this.mTempFloat1;
-        computeIdentityMatrix(inputWindowHandle, magnificationSpec, matrix, fArr);
-        float[] fArr2 = this.mTempFloat2;
-        computeIdentityMatrix(inputWindowHandle, magnificationSpec2, matrix, fArr2);
-        Matrix matrix2 = new Matrix();
-        if (selectProperMagnificationSpecByComparingIdentityDegree(fArr, fArr2)) {
-            generateInverseMatrix(magnificationSpec, matrix2);
-            this.mPreviousMagnificationSpec.remove(inputWindowHandle.displayId);
-            if (magnificationSpec.isNop()) {
-                this.mCurrentMagnificationSpec.remove(inputWindowHandle.displayId);
-                this.mMagnificationSpecInverseMatrix.remove(inputWindowHandle.displayId);
-                return;
-            }
-        } else {
-            generateInverseMatrix(magnificationSpec2, matrix2);
-        }
-        this.mMagnificationSpecInverseMatrix.put(inputWindowHandle.displayId, matrix2);
-    }
-
-    public final void computeIdentityMatrix(InputWindowHandle inputWindowHandle, MagnificationSpec magnificationSpec, Matrix matrix, float[] fArr) {
-        Matrix matrix2 = this.mTempMatrix1;
-        transformMagnificationSpecToMatrix(magnificationSpec, matrix2);
-        Matrix matrix3 = new Matrix(inputWindowHandle.transform);
-        matrix3.preConcat(matrix2);
-        matrix3.preConcat(matrix);
-        matrix3.getValues(fArr);
-    }
-
-    public final boolean selectProperMagnificationSpecByComparingIdentityDegree(float[] fArr, float[] fArr2) {
-        float[] fArr3 = this.mTempFloat3;
-        Matrix.IDENTITY_MATRIX.getValues(fArr3);
-        float abs = Math.abs(fArr3[0] - fArr[0]);
-        float abs2 = Math.abs(fArr3[0] - fArr2[0]);
-        float abs3 = Math.abs(fArr3[2] - fArr[2]);
-        return Float.compare(abs2, abs) > 0 || (Float.compare(abs2, abs) == 0 && Float.compare(Math.abs(fArr3[2] - fArr2[2]) + Math.abs(fArr3[5] - fArr2[5]), abs3 + Math.abs(fArr3[5] - fArr[5])) > 0);
-    }
-
-    public static void generateInverseMatrix(MagnificationSpec magnificationSpec, Matrix matrix) {
-        matrix.reset();
-        Matrix matrix2 = new Matrix();
-        transformMagnificationSpecToMatrix(magnificationSpec, matrix2);
-        if (matrix2.invert(matrix)) {
-            return;
-        }
-        Slog.e(TAG, "Can't inverse the magnification spec matrix with the magnification spec = " + magnificationSpec);
-        matrix.reset();
-    }
-
-    public static void transformMagnificationSpecToMatrix(MagnificationSpec magnificationSpec, Matrix matrix) {
-        matrix.reset();
-        float f = magnificationSpec.scale;
-        matrix.postScale(f, f);
-        matrix.postTranslate(magnificationSpec.offsetX, magnificationSpec.offsetY);
-    }
-
-    public final void notifyWindowsChanged(List list) {
-        this.mHandler.removeMessages(3);
-        for (int i = 0; i < list.size(); i++) {
-            this.mAccessibilityController.performComputeChangedWindowsNot(((Integer) list.get(i)).intValue(), false);
-        }
-    }
-
-    public final void forceUpdateWindows() {
         ArrayList arrayList = new ArrayList();
-        synchronized (this.mLock) {
-            for (int i = 0; i < this.mInputWindowHandlesOnDisplays.size(); i++) {
-                arrayList.add(Integer.valueOf(this.mInputWindowHandlesOnDisplays.keyAt(i)));
+        SparseArray sparseArray2 = this.mInputWindowHandlesOnDisplays;
+        int i3 = 0;
+        while (i3 < sparseArray.size()) {
+            int keyAt2 = sparseArray.keyAt(i3);
+            List list3 = (List) sparseArray.get(keyAt2);
+            List list4 = (List) sparseArray2.get(keyAt2);
+            if (list4 != null && list4.size() == list3.size()) {
+                int size2 = list3.size();
+                int i4 = i;
+                while (i4 < size2) {
+                    IBinder windowToken2 = ((InputWindowHandle) list3.get(i4)).getWindowToken();
+                    IBinder windowToken3 = ((InputWindowHandle) list4.get(i4)).getWindowToken();
+                    int i5 = windowToken2 != null ? 1 : i;
+                    if (windowToken3 != null) {
+                        i = 1;
+                    }
+                    if (i5 == i && (i5 == 0 || i == 0 || windowToken2.equals(windowToken3))) {
+                        i4++;
+                        i = 0;
+                    }
+                }
+                i3++;
+                i = 0;
             }
+            arrayList.add(Integer.valueOf(keyAt2));
+            i3++;
+            i = 0;
         }
-        notifyWindowsChanged(arrayList);
-    }
-
-    public void dump(final PrintWriter printWriter, final String str) {
-        printWriter.print(str);
-        printWriter.println("AccessibilityWindowsPopulator");
-        String str2 = str + "  ";
-        printWriter.print(str2);
-        printWriter.print("mWindowsNotificationEnabled: ");
-        printWriter.println(this.mWindowsNotificationEnabled);
-        if (this.mVisibleWindows.isEmpty()) {
-            printWriter.print(str2);
-            printWriter.println("No visible windows");
+        this.mInputWindowHandlesOnDisplays.clear();
+        for (int i6 = 0; i6 < sparseArray.size(); i6++) {
+            int keyAt3 = sparseArray.keyAt(i6);
+            this.mInputWindowHandlesOnDisplays.put(keyAt3, (List) sparseArray.get(keyAt3));
+        }
+        if (arrayList.isEmpty()) {
+            this.mHandler.removeMessages(2);
+            this.mHandler.sendEmptyMessageDelayed(2, 35L);
         } else {
-            printWriter.print(str2);
-            printWriter.print(this.mVisibleWindows.size());
-            printWriter.print(" visible windows: ");
-            printWriter.println(this.mVisibleWindows);
+            if (this.mHandler.hasMessages(1)) {
+                return;
+            }
+            this.mHandler.obtainMessage(1, arrayList).sendToTarget();
         }
-        DumpUtils.KeyDumper keyDumper = new DumpUtils.KeyDumper() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$$ExternalSyntheticLambda1
-            public final void dump(int i, int i2) {
-                AccessibilityWindowsPopulator.lambda$dump$1(i, i2);
-            }
-        };
-        DumpUtils.KeyDumper keyDumper2 = new DumpUtils.KeyDumper() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$$ExternalSyntheticLambda2
-            public final void dump(int i, int i2) {
-                AccessibilityWindowsPopulator.lambda$dump$2(printWriter, str, i, i2);
-            }
-        };
-        DumpUtils.ValueDumper valueDumper = new DumpUtils.ValueDumper() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$$ExternalSyntheticLambda3
-            public final void dump(Object obj) {
-                printWriter.print((MagnificationSpec) obj);
-            }
-        };
-        DumpUtils.dumpSparseArray(printWriter, str2, this.mDisplayInfos, "display info", keyDumper, new DumpUtils.ValueDumper() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$$ExternalSyntheticLambda4
-            public final void dump(Object obj) {
-                printWriter.print((WindowInfosListener.DisplayInfo) obj);
-            }
-        });
-        DumpUtils.dumpSparseArray(printWriter, str2, this.mInputWindowHandlesOnDisplays, "window handles on display", keyDumper2, new DumpUtils.ValueDumper() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$$ExternalSyntheticLambda5
-            public final void dump(Object obj) {
-                printWriter.print((List) obj);
-            }
-        });
-        DumpUtils.dumpSparseArray(printWriter, str2, this.mMagnificationSpecInverseMatrix, "magnification spec matrix", keyDumper, new DumpUtils.ValueDumper() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$$ExternalSyntheticLambda6
-            public final void dump(Object obj) {
-                ((Matrix) obj).dump(printWriter);
-            }
-        });
-        DumpUtils.dumpSparseArray(printWriter, str2, this.mCurrentMagnificationSpec, "current magnification spec", keyDumper, valueDumper);
-        DumpUtils.dumpSparseArray(printWriter, str2, this.mPreviousMagnificationSpec, "previous magnification spec", keyDumper, valueDumper);
     }
 
-    public static /* synthetic */ void lambda$dump$2(PrintWriter printWriter, String str, int i, int i2) {
-        printWriter.printf("%sDisplay #%d: ", str, Integer.valueOf(i2));
+    public final void populateVisibleWindowsOnScreenLocked(int i, List list) {
+        WindowInfo obtain;
+        InsetsSourceProvider controllableInsetProvider;
+        Task task;
+        IWindow iWindow;
+        final Matrix matrix = new Matrix();
+        final Matrix matrix2 = new Matrix();
+        synchronized (this.mLock) {
+            try {
+                List<InputWindowHandle> list2 = (List) this.mInputWindowHandlesOnDisplays.get(i);
+                if (list2 == null) {
+                    ((ArrayList) list).clear();
+                    return;
+                }
+                matrix.set((Matrix) this.mMagnificationSpecInverseMatrix.get(i));
+                WindowInfosListener.DisplayInfo displayInfo = (WindowInfosListener.DisplayInfo) this.mDisplayInfos.get(i);
+                if (displayInfo != null) {
+                    matrix2.set(displayInfo.mTransform);
+                } else {
+                    Slog.w("AccessibilityWindowsPopulator", "The displayInfo of this displayId (" + i + ") called back from the surface fligner is null");
+                }
+                ShellRoot shellRoot = (ShellRoot) this.mService.mRoot.getDisplayContent(i).mShellRoots.get(1);
+                IBinder asBinder = (shellRoot == null || (iWindow = shellRoot.mAccessibilityWindow) == null) ? null : iWindow.asBinder();
+                for (InputWindowHandle inputWindowHandle : list2) {
+                    WindowManagerService windowManagerService = this.mService;
+                    IBinder windowToken = inputWindowHandle.getWindowToken();
+                    WindowState windowState = windowToken != null ? (WindowState) windowManagerService.mWindowMap.get(windowToken) : null;
+                    AccessibilityWindow accessibilityWindow = new AccessibilityWindow();
+                    accessibilityWindow.mWindow = windowToken;
+                    accessibilityWindow.mDisplayId = inputWindowHandle.displayId;
+                    accessibilityWindow.mInputConfig = inputWindowHandle.inputConfig;
+                    accessibilityWindow.mType = inputWindowHandle.layoutParamsType;
+                    accessibilityWindow.mIsPIPMenu = windowToken != null && windowToken.equals(asBinder);
+                    accessibilityWindow.mPrivateFlags = windowState != null ? windowState.mAttrs.privateFlags : 0;
+                    accessibilityWindow.mIsFocused = windowState != null && windowState.isFocused();
+                    accessibilityWindow.mShouldMagnify = windowState == null || windowState.shouldMagnify();
+                    RecentsAnimationController recentsAnimationController = windowManagerService.mRecentsAnimationController;
+                    accessibilityWindow.mIgnoreDuetoRecentsAnimation = (windowState == null || recentsAnimationController == null || (task = windowState.getTask()) == null || !recentsAnimationController.isAnimatingTask(task) || recentsAnimationController.isTargetApp(windowState.mActivityRecord)) ? false : true;
+                    Rect rect = new Rect(inputWindowHandle.frame);
+                    boolean z = accessibilityWindow.mShouldMagnify;
+                    Region region = inputWindowHandle.touchableRegion;
+                    final Region region2 = accessibilityWindow.mTouchableRegionInWindow;
+                    Region region3 = new Region();
+                    region3.set(region);
+                    region3.op(rect, Region.Op.INTERSECT);
+                    if ((!z || matrix.isIdentity()) && matrix2.isIdentity()) {
+                        region2.set(region3);
+                    } else {
+                        RegionUtils.forEachRect(region3, new Consumer() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$AccessibilityWindow$$ExternalSyntheticLambda0
+                            @Override // java.util.function.Consumer
+                            public final void accept(Object obj) {
+                                Matrix matrix3 = matrix2;
+                                Matrix matrix4 = matrix;
+                                Region region4 = region2;
+                                RectF rectF = new RectF((Rect) obj);
+                                matrix3.mapRect(rectF);
+                                matrix4.mapRect(rectF);
+                                region4.union(new Rect((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom));
+                            }
+                        });
+                    }
+                    boolean z2 = accessibilityWindow.mShouldMagnify;
+                    Region region4 = inputWindowHandle.touchableRegion;
+                    final Region region5 = accessibilityWindow.mTouchableRegionInScreen;
+                    if ((!z2 || matrix.isIdentity()) && matrix2.isIdentity()) {
+                        region5.set(region4);
+                    } else {
+                        RegionUtils.forEachRect(region4, new Consumer() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$AccessibilityWindow$$ExternalSyntheticLambda0
+                            @Override // java.util.function.Consumer
+                            public final void accept(Object obj) {
+                                Matrix matrix3 = matrix2;
+                                Matrix matrix4 = matrix;
+                                Region region42 = region5;
+                                RectF rectF = new RectF((Rect) obj);
+                                matrix3.mapRect(rectF);
+                                matrix4.mapRect(rectF);
+                                region42.union(new Rect((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom));
+                            }
+                        });
+                    }
+                    if (windowState != null) {
+                        obtain = WindowInfo.obtain();
+                        obtain.displayId = windowState.getDisplayId();
+                        obtain.type = windowState.mAttrs.type;
+                        obtain.layer = 0;
+                        obtain.token = windowState.mClient.asBinder();
+                        ActivityRecord activityRecord = windowState.mActivityRecord;
+                        if (activityRecord != null) {
+                            obtain.activityToken = activityRecord.token;
+                        }
+                        obtain.accessibilityIdOfAnchor = windowState.mAttrs.accessibilityIdOfAnchor;
+                        obtain.focused = windowState.isFocused();
+                        Task task2 = windowState.getTask();
+                        obtain.inPictureInPicture = task2 != null && task2.inPinnedWindowingMode();
+                        obtain.taskId = task2 == null ? -1 : task2.mTaskId;
+                        obtain.hasFlagWatchOutsideTouch = (windowState.mAttrs.flags & 262144) != 0;
+                        if (windowState.mIsChildWindow) {
+                            obtain.parentToken = windowState.getParentWindow().mClient.asBinder();
+                        }
+                        int size = windowState.mChildren.size();
+                        if (size > 0) {
+                            if (obtain.childTokens == null) {
+                                obtain.childTokens = new ArrayList(size);
+                            }
+                            for (int i2 = 0; i2 < size; i2++) {
+                                obtain.childTokens.add(((WindowState) windowState.mChildren.get(i2)).mClient.asBinder());
+                            }
+                        }
+                    } else {
+                        obtain = WindowInfo.obtain();
+                        obtain.displayId = accessibilityWindow.mDisplayId;
+                        obtain.type = accessibilityWindow.mType;
+                        obtain.token = accessibilityWindow.mWindow;
+                        obtain.hasFlagWatchOutsideTouch = (accessibilityWindow.mInputConfig & 512) != 0;
+                        obtain.inPictureInPicture = accessibilityWindow.mIsPIPMenu;
+                    }
+                    accessibilityWindow.mWindowInfo = obtain;
+                    Matrix matrix3 = new Matrix();
+                    inputWindowHandle.transform.invert(matrix3);
+                    matrix3.postConcat(matrix2);
+                    matrix3.getValues(accessibilityWindow.mWindowInfo.mTransformMatrix);
+                    Matrix matrix4 = new Matrix();
+                    if (accessibilityWindow.mShouldMagnify && !matrix.isIdentity()) {
+                        if (matrix.invert(matrix4)) {
+                            float[] fArr = sTempFloats;
+                            matrix4.getValues(fArr);
+                            MagnificationSpec magnificationSpec = accessibilityWindow.mWindowInfo.mMagnificationSpec;
+                            magnificationSpec.scale = fArr[0];
+                            magnificationSpec.offsetX = fArr[2];
+                            magnificationSpec.offsetY = fArr[5];
+                        } else {
+                            Slog.w("AccessibilityWindowsPopulator", "can't find spec");
+                        }
+                    }
+                    Flags.computeWindowChangesOnA11yV2();
+                    if (windowState != null) {
+                        if ((accessibilityWindow.mType == 2019 ? accessibilityWindow.mTouchableRegionInScreen.isEmpty() : false) && (controllableInsetProvider = windowState.getControllableInsetProvider()) != null) {
+                            accessibilityWindow.mSystemBarInsetFrame = controllableInsetProvider.mSource.getFrame();
+                        }
+                    }
+                    ((ArrayList) list).add(accessibilityWindow);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
     public final void releaseResources() {
         this.mInputWindowHandlesOnDisplays.clear();
         this.mMagnificationSpecInverseMatrix.clear();
-        this.mVisibleWindows.clear();
+        ((ArrayList) this.mVisibleWindows).clear();
         this.mDisplayInfos.clear();
         this.mCurrentMagnificationSpec.clear();
         this.mPreviousMagnificationSpec.clear();
-        this.mWindowsTransformMatrixMap.clear();
+        ((HashMap) this.mWindowsTransformMatrixMap).clear();
         this.mWindowsNotificationEnabled = false;
         this.mHandler.removeCallbacksAndMessages(null);
     }
 
-    /* loaded from: classes3.dex */
-    public class MyHandler extends Handler {
-        public MyHandler(Looper looper) {
-            super(looper, null, false);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            int i = message.what;
-            if (i == 1) {
-                AccessibilityWindowsPopulator.this.notifyWindowsChanged((List) message.obj);
-            } else if (i == 2) {
-                AccessibilityWindowsPopulator.this.forceUpdateWindows();
-            } else {
-                if (i != 3) {
+    public final void setWindowsNotification(boolean z) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mWindowsNotificationEnabled == z) {
                     return;
                 }
-                Slog.w(AccessibilityWindowsPopulator.TAG, "Windows change within in 2 frames continuously over 500 ms and notify windows changed immediately");
-                AccessibilityWindowsPopulator.this.mHandler.removeMessages(2);
-                AccessibilityWindowsPopulator.this.forceUpdateWindows();
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class AccessibilityWindow {
-        public int mDisplayId;
-        public boolean mIgnoreDuetoRecentsAnimation;
-        public int mInputConfig;
-        public boolean mIsFocused;
-        public boolean mIsPIPMenu;
-        public int mPrivateFlags;
-        public boolean mShouldMagnify;
-        public final Region mTouchableRegionInScreen = new Region();
-        public final Region mTouchableRegionInWindow = new Region();
-        public int mType;
-        public IWindow mWindow;
-        public WindowInfo mWindowInfo;
-
-        public static AccessibilityWindow initializeData(WindowManagerService windowManagerService, InputWindowHandle inputWindowHandle, Matrix matrix, IBinder iBinder, Matrix matrix2) {
-            IWindow window = inputWindowHandle.getWindow();
-            WindowState windowState = window != null ? (WindowState) windowManagerService.mWindowMap.get(window.asBinder()) : null;
-            AccessibilityWindow accessibilityWindow = new AccessibilityWindow();
-            accessibilityWindow.mWindow = window;
-            accessibilityWindow.mDisplayId = inputWindowHandle.displayId;
-            accessibilityWindow.mInputConfig = inputWindowHandle.inputConfig;
-            accessibilityWindow.mType = inputWindowHandle.layoutParamsType;
-            accessibilityWindow.mIsPIPMenu = window != null && window.asBinder().equals(iBinder);
-            accessibilityWindow.mPrivateFlags = windowState != null ? windowState.mAttrs.privateFlags : 0;
-            accessibilityWindow.mIsFocused = windowState != null && windowState.isFocused();
-            accessibilityWindow.mShouldMagnify = windowState == null || windowState.shouldMagnify();
-            RecentsAnimationController recentsAnimationController = windowManagerService.getRecentsAnimationController();
-            accessibilityWindow.mIgnoreDuetoRecentsAnimation = (windowState == null || recentsAnimationController == null || !recentsAnimationController.shouldIgnoreForAccessibility(windowState)) ? false : true;
-            getTouchableRegionInWindow(accessibilityWindow.mShouldMagnify, inputWindowHandle.touchableRegion, accessibilityWindow.mTouchableRegionInWindow, new Rect(inputWindowHandle.frameLeft, inputWindowHandle.frameTop, inputWindowHandle.frameRight, inputWindowHandle.frameBottom), matrix, matrix2);
-            getUnMagnifiedTouchableRegion(accessibilityWindow.mShouldMagnify, inputWindowHandle.touchableRegion, accessibilityWindow.mTouchableRegionInScreen, matrix, matrix2);
-            accessibilityWindow.mWindowInfo = windowState != null ? windowState.getWindowInfo() : getWindowInfoForWindowlessWindows(accessibilityWindow);
-            Matrix matrix3 = new Matrix();
-            inputWindowHandle.transform.invert(matrix3);
-            matrix3.postConcat(matrix2);
-            matrix3.getValues(accessibilityWindow.mWindowInfo.mTransformMatrix);
-            Matrix matrix4 = new Matrix();
-            if (accessibilityWindow.shouldMagnify() && matrix != null && !matrix.isIdentity()) {
-                if (matrix.invert(matrix4)) {
-                    matrix4.getValues(AccessibilityWindowsPopulator.sTempFloats);
-                    MagnificationSpec magnificationSpec = accessibilityWindow.mWindowInfo.mMagnificationSpec;
-                    magnificationSpec.scale = AccessibilityWindowsPopulator.sTempFloats[0];
-                    magnificationSpec.offsetX = AccessibilityWindowsPopulator.sTempFloats[2];
-                    magnificationSpec.offsetY = AccessibilityWindowsPopulator.sTempFloats[5];
+                this.mWindowsNotificationEnabled = z;
+                if (z) {
+                    Pair register = register();
+                    onWindowInfosChangedInternal((InputWindowHandle[]) register.first, (WindowInfosListener.DisplayInfo[]) register.second);
                 } else {
-                    Slog.w(AccessibilityWindowsPopulator.TAG, "can't find spec");
+                    unregister();
+                    releaseResources();
                 }
+            } catch (Throwable th) {
+                throw th;
             }
-            return accessibilityWindow;
-        }
-
-        public void getTouchableRegionInScreen(Region region) {
-            region.set(this.mTouchableRegionInScreen);
-        }
-
-        public void getTouchableRegionInWindow(Region region) {
-            region.set(this.mTouchableRegionInWindow);
-        }
-
-        public int getType() {
-            return this.mType;
-        }
-
-        public WindowInfo getWindowInfo() {
-            return this.mWindowInfo;
-        }
-
-        public boolean shouldMagnify() {
-            return this.mShouldMagnify;
-        }
-
-        public boolean isFocused() {
-            return this.mIsFocused;
-        }
-
-        public boolean ignoreRecentsAnimationForAccessibility() {
-            return this.mIgnoreDuetoRecentsAnimation;
-        }
-
-        public boolean isTrustedOverlay() {
-            return (this.mInputConfig & 256) != 0;
-        }
-
-        public boolean isTouchable() {
-            return (this.mInputConfig & 8) == 0;
-        }
-
-        public boolean isUntouchableNavigationBar() {
-            if (this.mType != 2019) {
-                return false;
-            }
-            return this.mTouchableRegionInScreen.isEmpty();
-        }
-
-        public boolean isPIPMenu() {
-            return this.mIsPIPMenu;
-        }
-
-        public static void getTouchableRegionInWindow(boolean z, Region region, Region region2, Rect rect, Matrix matrix, Matrix matrix2) {
-            Region region3 = new Region();
-            region3.set(region);
-            region3.op(rect, Region.Op.INTERSECT);
-            getUnMagnifiedTouchableRegion(z, region3, region2, matrix, matrix2);
-        }
-
-        public static void getUnMagnifiedTouchableRegion(boolean z, Region region, final Region region2, final Matrix matrix, final Matrix matrix2) {
-            if ((!z || matrix.isIdentity()) && matrix2.isIdentity()) {
-                region2.set(region);
-            } else {
-                RegionUtils.forEachRect(region, new Consumer() { // from class: com.android.server.wm.AccessibilityWindowsPopulator$AccessibilityWindow$$ExternalSyntheticLambda0
-                    @Override // java.util.function.Consumer
-                    public final void accept(Object obj) {
-                        AccessibilityWindowsPopulator.AccessibilityWindow.lambda$getUnMagnifiedTouchableRegion$0(matrix2, matrix, region2, (Rect) obj);
-                    }
-                });
-            }
-        }
-
-        public static /* synthetic */ void lambda$getUnMagnifiedTouchableRegion$0(Matrix matrix, Matrix matrix2, Region region, Rect rect) {
-            RectF rectF = new RectF(rect);
-            matrix.mapRect(rectF);
-            matrix2.mapRect(rectF);
-            Rect rect2 = new Rect();
-            rectF.round(rect2);
-            region.union(rect2);
-        }
-
-        public static WindowInfo getWindowInfoForWindowlessWindows(AccessibilityWindow accessibilityWindow) {
-            WindowInfo obtain = WindowInfo.obtain();
-            obtain.displayId = accessibilityWindow.mDisplayId;
-            obtain.type = accessibilityWindow.mType;
-            IWindow iWindow = accessibilityWindow.mWindow;
-            obtain.token = iWindow != null ? iWindow.asBinder() : null;
-            obtain.hasFlagWatchOutsideTouch = (accessibilityWindow.mInputConfig & 512) != 0;
-            obtain.inPictureInPicture = accessibilityWindow.mIsPIPMenu;
-            return obtain;
-        }
-
-        public String toString() {
-            IWindow iWindow = this.mWindow;
-            return "A11yWindow=[" + (iWindow != null ? iWindow.asBinder().toString() : "(no window token)") + ", displayId=" + this.mDisplayId + ", inputConfig=0x" + Integer.toHexString(this.mInputConfig) + ", type=" + this.mType + ", privateFlag=0x" + Integer.toHexString(this.mPrivateFlags) + ", focused=" + this.mIsFocused + ", shouldMagnify=" + this.mShouldMagnify + ", ignoreDuetoRecentsAnimation=" + this.mIgnoreDuetoRecentsAnimation + ", isTrustedOverlay=" + isTrustedOverlay() + ", regionInScreen=" + this.mTouchableRegionInScreen + ", touchableRegion=" + this.mTouchableRegionInWindow + ", isPIPMenu=" + this.mIsPIPMenu + ", windowInfo=" + this.mWindowInfo + "]";
         }
     }
 }

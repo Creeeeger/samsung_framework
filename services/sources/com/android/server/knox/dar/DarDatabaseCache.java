@@ -1,161 +1,88 @@
 package com.android.server.knox.dar;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountsDb$CeDatabaseHelper$$ExternalSyntheticOutline0;
+import com.android.server.enterprise.container.KnoxMUMContainerPolicy$$ExternalSyntheticOutline0;
 import com.android.server.knox.dar.sdp.SDPLog;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
-public class DarDatabaseCache {
-    public final HashMap mCache = new LinkedHashMap(10, 0.75f, true) { // from class: com.android.server.knox.dar.DarDatabaseCache.1
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DarDatabaseCache {
+    public final HashMap mCache = new LinkedHashMap() { // from class: com.android.server.knox.dar.DarDatabaseCache.1
         private static final long serialVersionUID = 6754995611664672888L;
 
         @Override // java.util.LinkedHashMap
-        public boolean removeEldestEntry(Map.Entry entry) {
+        public final boolean removeEldestEntry(Map.Entry entry) {
             return size() >= 30;
         }
     };
     public final DatabaseHelper mDatabaseHelper;
 
-    public static void LogD(String str) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DatabaseHelper extends SQLiteOpenHelper {
+        @Override // android.database.sqlite.SQLiteOpenHelper
+        public final void onCreate(SQLiteDatabase sQLiteDatabase) {
+            Log.i("DarDatabaseCache", "DB created! : " + sQLiteDatabase.getPath());
+            sQLiteDatabase.execSQL("CREATE TABLE dar_info (_id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,user INTEGER,value TEXT);");
+        }
+
+        @Override // android.database.sqlite.SQLiteOpenHelper
+        public final void onUpgrade(SQLiteDatabase sQLiteDatabase, int i, int i2) {
+            AccountsDb$CeDatabaseHelper$$ExternalSyntheticOutline0.m(i, i2, "DB upgraded! : ", " to ", "DarDatabaseCache");
+        }
     }
 
     public DarDatabaseCache(Context context) {
-        this.mDatabaseHelper = new DatabaseHelper(context);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, "dar.db", null, 1);
+        databaseHelper.setWriteAheadLoggingEnabled(true);
+        this.mDatabaseHelper = databaseHelper;
     }
 
-    public void putInt(int i, String str, int i2) {
-        putInternal(i, str, String.valueOf(i2));
+    public static String makeTag(int i, String str) {
+        return i + "_" + str;
     }
 
-    public void putLong(int i, String str, long j) {
-        putInternal(i, str, String.valueOf(j));
+    public static void reportError(Exception exc, String str) {
+        SDPLog.d("DarDatabaseCache", "Error occurred in ".concat(str));
+        SDPLog.e(exc, null, null);
     }
 
-    public void putString(int i, String str, String str2) {
-        putInternal(i, str, str2);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:12:0x0066  */
-    /* JADX WARN: Removed duplicated region for block: B:16:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void putInternal(int r10, java.lang.String r11, java.lang.String r12) {
-        /*
-            r9 = this;
-            java.lang.String r0 = "dar_info"
-            if (r11 == 0) goto L73
-            if (r12 != 0) goto L7
-            goto L73
-        L7:
-            android.content.ContentValues r1 = new android.content.ContentValues
-            r1.<init>()
-            java.lang.String r2 = "name"
-            r1.put(r2, r11)
-            java.lang.String r2 = "user"
-            java.lang.Integer r3 = java.lang.Integer.valueOf(r10)
-            r1.put(r2, r3)
-            java.lang.String r2 = "value"
-            r1.put(r2, r12)
-            r2 = 0
-            r3 = 0
-            com.android.server.knox.dar.DarDatabaseCache$DatabaseHelper r4 = r9.mDatabaseHelper     // Catch: java.lang.Throwable -> L53 java.lang.Exception -> L55
-            android.database.sqlite.SQLiteDatabase r4 = r4.getWritableDatabase()     // Catch: java.lang.Throwable -> L53 java.lang.Exception -> L55
-            r4.beginTransaction()     // Catch: java.lang.Throwable -> L4d java.lang.Exception -> L50
-            java.lang.String r5 = "name=? AND user=?"
-            r6 = 2
-            java.lang.String[] r6 = new java.lang.String[r6]     // Catch: java.lang.Throwable -> L4d java.lang.Exception -> L50
-            r6[r3] = r11     // Catch: java.lang.Throwable -> L4d java.lang.Exception -> L50
-            java.lang.String r7 = java.lang.Integer.toString(r10)     // Catch: java.lang.Throwable -> L4d java.lang.Exception -> L50
-            r8 = 1
-            r6[r8] = r7     // Catch: java.lang.Throwable -> L4d java.lang.Exception -> L50
-            r4.delete(r0, r5, r6)     // Catch: java.lang.Throwable -> L4d java.lang.Exception -> L50
-            r4.insert(r0, r2, r1)     // Catch: java.lang.Throwable -> L4d java.lang.Exception -> L50
-            r4.setTransactionSuccessful()     // Catch: java.lang.Throwable -> L4d java.lang.Exception -> L50
-            r4.endTransaction()
-            r4.close()
-            r3 = r8
-            goto L64
-        L4d:
-            r9 = move-exception
-            r2 = r4
-            goto L6a
-        L50:
-            r0 = move-exception
-            r2 = r4
-            goto L56
-        L53:
-            r9 = move-exception
-            goto L6a
-        L55:
-            r0 = move-exception
-        L56:
-            java.lang.String r1 = "put"
-            reportError(r1, r0)     // Catch: java.lang.Throwable -> L53
-            if (r2 == 0) goto L64
-            r2.endTransaction()
-            r2.close()
-        L64:
-            if (r3 == 0) goto L69
-            r9.cache(r10, r11, r12)
-        L69:
-            return
-        L6a:
-            if (r2 == 0) goto L72
-            r2.endTransaction()
-            r2.close()
-        L72:
-            throw r9
-        L73:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.knox.dar.DarDatabaseCache.putInternal(int, java.lang.String, java.lang.String):void");
-    }
-
-    public int getInt(int i, String str, int i2) {
-        try {
-            String internal = getInternal(i, str);
-            return internal != null ? Integer.parseInt(internal) : i2;
-        } catch (NumberFormatException unused) {
-            return i2;
-        }
-    }
-
-    public long getLong(int i, String str, long j) {
-        try {
-            String internal = getInternal(i, str);
-            return internal != null ? Long.parseLong(internal) : j;
-        } catch (NumberFormatException unused) {
-            return j;
-        }
-    }
-
-    public String getString(int i, String str, String str2) {
-        String internal = getInternal(i, str);
-        return internal != null ? internal : str2;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x004e, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0067, code lost:
     
-        if (r1 == false) goto L23;
+        if (r1 == false) goto L41;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:18:0x0050, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0069, code lost:
     
-        cache(r13, r14, r0);
+        r13 = makeTag(r13, r14);
+        r14 = r12.mCache;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x0053, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x006f, code lost:
+    
+        monitor-enter(r14);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0070, code lost:
+    
+        r12.mCache.put(r13, r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0075, code lost:
+    
+        monitor-exit(r14);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x007a, code lost:
     
         return r0;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:26:0x004b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x0064, code lost:
     
-        if (r2 == null) goto L21;
+        if (r3 == null) goto L32;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
@@ -164,152 +91,146 @@ public class DarDatabaseCache {
     public final java.lang.String getInternal(int r13, java.lang.String r14) {
         /*
             r12 = this;
-            java.lang.String r0 = r12.hitOrNull(r13, r14)
-            if (r0 == 0) goto L7
+            java.lang.String r0 = makeTag(r13, r14)
+            java.util.HashMap r1 = r12.mCache
+            monitor-enter(r1)
+            java.util.HashMap r2 = r12.mCache     // Catch: java.lang.Throwable -> L1a
+            boolean r2 = r2.containsKey(r0)     // Catch: java.lang.Throwable -> L1a
+            r3 = 0
+            if (r2 == 0) goto L1c
+            java.util.HashMap r2 = r12.mCache     // Catch: java.lang.Throwable -> L1a
+            java.lang.Object r0 = r2.get(r0)     // Catch: java.lang.Throwable -> L1a
+            java.lang.String r0 = (java.lang.String) r0     // Catch: java.lang.Throwable -> L1a
+            monitor-exit(r1)     // Catch: java.lang.Throwable -> L1a
+            goto L1e
+        L1a:
+            r12 = move-exception
+            goto L81
+        L1c:
+            monitor-exit(r1)     // Catch: java.lang.Throwable -> L1a
+            r0 = r3
+        L1e:
+            if (r0 == 0) goto L21
             return r0
-        L7:
+        L21:
             r1 = 0
-            r2 = 0
-            com.android.server.knox.dar.DarDatabaseCache$DatabaseHelper r3 = r12.mDatabaseHelper     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
-            android.database.sqlite.SQLiteDatabase r4 = r3.getReadableDatabase()     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
+            com.android.server.knox.dar.DarDatabaseCache$DatabaseHelper r2 = r12.mDatabaseHelper     // Catch: java.lang.Throwable -> L54 java.lang.Exception -> L56
+            android.database.sqlite.SQLiteDatabase r4 = r2.getReadableDatabase()     // Catch: java.lang.Throwable -> L54 java.lang.Exception -> L56
             java.lang.String r5 = "dar_info"
-            r3 = 1
-            java.lang.String[] r6 = new java.lang.String[r3]     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
-            java.lang.String r7 = "value"
-            r6[r1] = r7     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
+            java.lang.String r2 = "value"
+            java.lang.String[] r6 = new java.lang.String[]{r2}     // Catch: java.lang.Throwable -> L54 java.lang.Exception -> L56
             java.lang.String r7 = "name=? AND user=?"
-            r8 = 2
-            java.lang.String[] r8 = new java.lang.String[r8]     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
-            r8[r1] = r14     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
-            java.lang.String r9 = java.lang.Integer.toString(r13)     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
-            r8[r3] = r9     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
+            java.lang.String r2 = java.lang.Integer.toString(r13)     // Catch: java.lang.Throwable -> L54 java.lang.Exception -> L56
+            java.lang.String[] r8 = new java.lang.String[]{r14, r2}     // Catch: java.lang.Throwable -> L54 java.lang.Exception -> L56
+            r11 = 0
             r9 = 0
             r10 = 0
-            r11 = 0
-            android.database.Cursor r2 = r4.query(r5, r6, r7, r8, r9, r10, r11)     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
-            if (r2 == 0) goto L3d
-            boolean r4 = r2.moveToFirst()     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
-            if (r4 == 0) goto L3d
-            java.lang.String r0 = r2.getString(r1)     // Catch: java.lang.Throwable -> L43 java.lang.Exception -> L45
-            if (r0 == 0) goto L3d
-            r1 = r3
-        L3d:
-            if (r2 == 0) goto L4e
-        L3f:
-            r2.close()
-            goto L4e
-        L43:
-            r12 = move-exception
-            goto L54
-        L45:
-            r3 = move-exception
-            java.lang.String r4 = "get"
-            reportError(r4, r3)     // Catch: java.lang.Throwable -> L43
-            if (r2 == 0) goto L4e
-            goto L3f
-        L4e:
-            if (r1 == 0) goto L53
-            r12.cache(r13, r14, r0)
-        L53:
-            return r0
+            android.database.Cursor r3 = r4.query(r5, r6, r7, r8, r9, r10, r11)     // Catch: java.lang.Throwable -> L54 java.lang.Exception -> L56
+            if (r3 == 0) goto L58
+            boolean r2 = r3.moveToFirst()     // Catch: java.lang.Throwable -> L54 java.lang.Exception -> L56
+            if (r2 == 0) goto L58
+            java.lang.String r0 = r3.getString(r1)     // Catch: java.lang.Throwable -> L54 java.lang.Exception -> L56
+            if (r0 == 0) goto L58
+            r1 = 1
+            goto L58
         L54:
-            if (r2 == 0) goto L59
-            r2.close()
-        L59:
+            r12 = move-exception
+            goto L7b
+        L56:
+            r2 = move-exception
+            goto L5e
+        L58:
+            if (r3 == 0) goto L67
+        L5a:
+            r3.close()
+            goto L67
+        L5e:
+            java.lang.String r4 = "get"
+            reportError(r2, r4)     // Catch: java.lang.Throwable -> L54
+            if (r3 == 0) goto L67
+            goto L5a
+        L67:
+            if (r1 == 0) goto L7a
+            java.lang.String r13 = makeTag(r13, r14)
+            java.util.HashMap r14 = r12.mCache
+            monitor-enter(r14)
+            java.util.HashMap r12 = r12.mCache     // Catch: java.lang.Throwable -> L77
+            r12.put(r13, r0)     // Catch: java.lang.Throwable -> L77
+            monitor-exit(r14)     // Catch: java.lang.Throwable -> L77
+            goto L7a
+        L77:
+            r12 = move-exception
+            monitor-exit(r14)     // Catch: java.lang.Throwable -> L77
+            throw r12
+        L7a:
+            return r0
+        L7b:
+            if (r3 == 0) goto L80
+            r3.close()
+        L80:
+            throw r12
+        L81:
+            monitor-exit(r1)     // Catch: java.lang.Throwable -> L1a
             throw r12
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.knox.dar.DarDatabaseCache.getInternal(int, java.lang.String):java.lang.String");
     }
 
-    public void delete(int i, String str) {
-        boolean z = false;
+    public final long getLong(int i) {
+        try {
+            String internal = getInternal(i, "vl.rst.token.handle");
+            if (internal != null) {
+                return Long.parseLong(internal);
+            }
+            return 0L;
+        } catch (NumberFormatException unused) {
+            return 0L;
+        }
+    }
+
+    public final void putInternal(int i, String str, String str2) {
+        if (str2 == null) {
+            return;
+        }
+        ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("name", str);
+        KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(i, m, "user", "value", str2);
         SQLiteDatabase sQLiteDatabase = null;
         try {
             try {
-                sQLiteDatabase = this.mDatabaseHelper.getWritableDatabase();
-                sQLiteDatabase.beginTransaction();
-                sQLiteDatabase.delete("dar_info", "name=? AND user=?", new String[]{str, Integer.toString(i)});
-                sQLiteDatabase.setTransactionSuccessful();
-                sQLiteDatabase.endTransaction();
-                sQLiteDatabase.close();
-                z = true;
-            } catch (Exception e) {
-                reportError("del", e);
-                if (sQLiteDatabase != null) {
-                    sQLiteDatabase.endTransaction();
-                    sQLiteDatabase.close();
+                SQLiteDatabase writableDatabase = this.mDatabaseHelper.getWritableDatabase();
+                try {
+                    writableDatabase.beginTransaction();
+                    writableDatabase.delete("dar_info", "name=? AND user=?", new String[]{str, Integer.toString(i)});
+                    writableDatabase.insert("dar_info", null, m);
+                    writableDatabase.setTransactionSuccessful();
+                    writableDatabase.endTransaction();
+                    writableDatabase.close();
+                    String makeTag = makeTag(i, str);
+                    synchronized (this.mCache) {
+                        this.mCache.put(makeTag, str2);
+                    }
+                } catch (Exception e) {
+                    e = e;
+                    sQLiteDatabase = writableDatabase;
+                    reportError(e, "put");
+                    if (sQLiteDatabase != null) {
+                        sQLiteDatabase.endTransaction();
+                        sQLiteDatabase.close();
+                    }
+                } catch (Throwable th) {
+                    th = th;
+                    sQLiteDatabase = writableDatabase;
+                    if (sQLiteDatabase != null) {
+                        sQLiteDatabase.endTransaction();
+                        sQLiteDatabase.close();
+                    }
+                    throw th;
                 }
+            } catch (Exception e2) {
+                e = e2;
             }
-            if (z) {
-                decache(i, str);
-            }
-        } catch (Throwable th) {
-            if (sQLiteDatabase != null) {
-                sQLiteDatabase.endTransaction();
-                sQLiteDatabase.close();
-            }
-            throw th;
-        }
-    }
-
-    public final String hitOrNull(int i, String str) {
-        String makeTag = makeTag(i, str);
-        synchronized (this.mCache) {
-            if (!this.mCache.containsKey(makeTag)) {
-                return null;
-            }
-            LogD("hit - [ Tag : " + makeTag + " ]");
-            return (String) this.mCache.get(makeTag);
-        }
-    }
-
-    public final void cache(int i, String str, String str2) {
-        String makeTag = makeTag(i, str);
-        synchronized (this.mCache) {
-            LogD("cache - [ Tag : " + makeTag + ", Val : " + str2 + " ]");
-            this.mCache.put(makeTag, str2);
-        }
-    }
-
-    public final void decache(int i, String str) {
-        String makeTag = makeTag(i, str);
-        synchronized (this.mCache) {
-            if (this.mCache.containsKey(makeTag)) {
-                LogD("decache - [ Tag : " + makeTag + " ]");
-                this.mCache.remove(makeTag);
-            }
-        }
-    }
-
-    public static String makeTag(int i, String str) {
-        return i + "_" + str;
-    }
-
-    public static void reportError(String str, Exception exc) {
-        SDPLog.d("DarDatabaseCache", "Error occurred in " + str);
-        SDPLog.e(exc);
-    }
-
-    public static void LogI(String str) {
-        Log.i("DarDatabaseCache", str);
-    }
-
-    /* loaded from: classes2.dex */
-    public class DatabaseHelper extends SQLiteOpenHelper {
-        public DatabaseHelper(Context context) {
-            super(context, "dar.db", (SQLiteDatabase.CursorFactory) null, 1);
-            setWriteAheadLoggingEnabled(true);
-        }
-
-        @Override // android.database.sqlite.SQLiteOpenHelper
-        public void onCreate(SQLiteDatabase sQLiteDatabase) {
-            DarDatabaseCache.LogI("DB created! : " + sQLiteDatabase.getPath());
-            sQLiteDatabase.execSQL("CREATE TABLE dar_info (_id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,user INTEGER,value TEXT);");
-        }
-
-        @Override // android.database.sqlite.SQLiteOpenHelper
-        public void onUpgrade(SQLiteDatabase sQLiteDatabase, int i, int i2) {
-            DarDatabaseCache.LogI("DB upgraded! : " + i + " to " + i2);
+        } catch (Throwable th2) {
+            th = th2;
         }
     }
 }

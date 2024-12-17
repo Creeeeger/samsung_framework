@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.util.Slog;
 import com.samsung.android.displayquality.SemDisplayQualityAP;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class SemDisplayQualityAP {
     protected static final int SCREEN_MODE_ADAPTIVE = 4;
@@ -34,106 +35,23 @@ public abstract class SemDisplayQualityAP {
     protected static final String SCREEN_MODE_SETTING = "screen_mode_setting";
     protected static final Uri SCREEN_MODE_SETTING_URI = Settings.System.getUriFor(SCREEN_MODE_SETTING);
 
-    public void enhanceOutdoorVisibilityByLux(int i) {
-    }
-
-    public abstract void handleAutoBrightnessModeOff();
-
-    public abstract void handleAutoBrightnessModeOn();
-
-    public abstract void handleScreenModeChanged(int i);
-
-    public abstract void handleScreenOff();
-
-    public abstract void handleScreenOffAsync();
-
-    public abstract void handleScreenOn();
-
-    public abstract void handleScreenOnAsync();
-
-    public void setAdaptiveSync(boolean z) {
-    }
-
-    public SemDisplayQualityAP(Context context) {
-        String str = Build.TYPE;
-        this.DEBUG = "eng".equals(str) || "userdebug".equals(str);
-        this.mIsBrightnessModeAuto = false;
-        this.mBrightnessModeLock = new Object();
-        this.mUseScreenStatusAsyncHandle = false;
-        this.mContext = context;
-        this.mContentResolver = context.getContentResolver();
-        this.mSettingsObserver = new SettingsObserver(new Handler());
-        if (this.DEBUG) {
-            Slog.d(TAG, TAG);
-        }
-    }
-
-    public boolean isBrightnessModeAuto(ContentResolver contentResolver) {
-        return Settings.System.getIntForUser(contentResolver, SCREEN_BRIGHTNESS_MODE, 0, -2) == 1;
-    }
-
-    public int getScreenModeSetting() {
-        return Settings.System.getInt(this.mContext.getContentResolver(), SCREEN_MODE_SETTING, 4);
-    }
-
-    public void startSettingObserver(Uri uri) {
-        if (this.mContext == null) {
-            Slog.d(TAG, "mContext is null");
-        } else {
-            this.mSettingsObserver.observeByUri(uri);
-        }
-    }
-
-    public void startScreenStatusReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        if (this.mContext == null) {
-            Slog.d(TAG, "mContext is null");
-            return;
-        }
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        this.mContext.registerReceiver(new ScreenStatusReceiver(), intentFilter);
-    }
-
-    /* loaded from: classes2.dex */
-    final class SettingsObserver extends ContentObserver {
-        public SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z, Uri uri) {
-            if (SemDisplayQualityAP.SCREEN_BRIGHTNESS_MODE_URI.equals(uri)) {
-                synchronized (SemDisplayQualityAP.this.mBrightnessModeLock) {
-                    SemDisplayQualityAP semDisplayQualityAP = SemDisplayQualityAP.this;
-                    semDisplayQualityAP.mIsBrightnessModeAuto = semDisplayQualityAP.isBrightnessModeAuto(semDisplayQualityAP.mContentResolver);
-                    SemDisplayQualityAP semDisplayQualityAP2 = SemDisplayQualityAP.this;
-                    if (semDisplayQualityAP2.mIsBrightnessModeAuto) {
-                        semDisplayQualityAP2.handleAutoBrightnessModeOn();
-                    } else {
-                        semDisplayQualityAP2.handleAutoBrightnessModeOff();
-                    }
-                }
-                return;
-            }
-            if (SemDisplayQualityAP.SCREEN_MODE_SETTING_URI.equals(uri)) {
-                SemDisplayQualityAP.this.handleScreenModeChanged(SemDisplayQualityAP.this.getScreenModeSetting());
-            }
-        }
-
-        public void observeByName(String str) {
-            SemDisplayQualityAP.this.mContentResolver.registerContentObserver(Settings.System.getUriFor(str), false, this, -1);
-        }
-
-        public void observeByUri(Uri uri) {
-            SemDisplayQualityAP.this.mContentResolver.registerContentObserver(uri, false, this, -1);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes2.dex */
-    public final class ScreenStatusReceiver extends BroadcastReceiver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class ScreenStatusReceiver extends BroadcastReceiver {
         private ScreenStatusReceiver() {
+        }
+
+        public /* synthetic */ ScreenStatusReceiver(SemDisplayQualityAP semDisplayQualityAP, int i) {
+            this();
+        }
+
+        /* JADX INFO: Access modifiers changed from: private */
+        public /* synthetic */ void lambda$onReceive$0(String str, BroadcastReceiver.PendingResult pendingResult) {
+            if ("android.intent.action.SCREEN_ON".equals(str)) {
+                SemDisplayQualityAP.this.handleScreenOnAsync();
+            } else if ("android.intent.action.SCREEN_OFF".equals(str)) {
+                SemDisplayQualityAP.this.handleScreenOffAsync();
+            }
+            pendingResult.finish();
         }
 
         @Override // android.content.BroadcastReceiver
@@ -154,15 +72,105 @@ public abstract class SemDisplayQualityAP {
                 }).start();
             }
         }
+    }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onReceive$0(String str, BroadcastReceiver.PendingResult pendingResult) {
-            if ("android.intent.action.SCREEN_ON".equals(str)) {
-                SemDisplayQualityAP.this.handleScreenOnAsync();
-            } else if ("android.intent.action.SCREEN_OFF".equals(str)) {
-                SemDisplayQualityAP.this.handleScreenOffAsync();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class SettingsObserver extends ContentObserver {
+        public SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        public void observeByName(String str) {
+            SemDisplayQualityAP.this.mContentResolver.registerContentObserver(Settings.System.getUriFor(str), false, this, -1);
+        }
+
+        public void observeByUri(Uri uri) {
+            SemDisplayQualityAP.this.mContentResolver.registerContentObserver(uri, false, this, -1);
+        }
+
+        @Override // android.database.ContentObserver
+        public void onChange(boolean z, Uri uri) {
+            if (!SemDisplayQualityAP.SCREEN_BRIGHTNESS_MODE_URI.equals(uri)) {
+                if (SemDisplayQualityAP.SCREEN_MODE_SETTING_URI.equals(uri)) {
+                    SemDisplayQualityAP.this.handleScreenModeChanged(SemDisplayQualityAP.this.getScreenModeSetting());
+                    return;
+                }
+                return;
             }
-            pendingResult.finish();
+            synchronized (SemDisplayQualityAP.this.mBrightnessModeLock) {
+                try {
+                    SemDisplayQualityAP semDisplayQualityAP = SemDisplayQualityAP.this;
+                    semDisplayQualityAP.mIsBrightnessModeAuto = semDisplayQualityAP.isBrightnessModeAuto(semDisplayQualityAP.mContentResolver);
+                    SemDisplayQualityAP semDisplayQualityAP2 = SemDisplayQualityAP.this;
+                    if (semDisplayQualityAP2.mIsBrightnessModeAuto) {
+                        semDisplayQualityAP2.handleAutoBrightnessModeOn();
+                    } else {
+                        semDisplayQualityAP2.handleAutoBrightnessModeOff();
+                    }
+                } finally {
+                }
+            }
+        }
+    }
+
+    public SemDisplayQualityAP(Context context) {
+        String str = Build.TYPE;
+        this.DEBUG = "eng".equals(str) || "userdebug".equals(str);
+        this.mIsBrightnessModeAuto = false;
+        this.mBrightnessModeLock = new Object();
+        this.mUseScreenStatusAsyncHandle = false;
+        this.mContext = context;
+        this.mContentResolver = context.getContentResolver();
+        this.mSettingsObserver = new SettingsObserver(new Handler());
+        if (this.DEBUG) {
+            Slog.d(TAG, TAG);
+        }
+    }
+
+    public void enhanceOutdoorVisibilityByLux(int i) {
+    }
+
+    public int getScreenModeSetting() {
+        return Settings.System.getInt(this.mContext.getContentResolver(), SCREEN_MODE_SETTING, 4);
+    }
+
+    public abstract void handleAutoBrightnessModeOff();
+
+    public abstract void handleAutoBrightnessModeOn();
+
+    public abstract void handleScreenModeChanged(int i);
+
+    public abstract void handleScreenOff();
+
+    public abstract void handleScreenOffAsync();
+
+    public abstract void handleScreenOn();
+
+    public abstract void handleScreenOnAsync();
+
+    public boolean isBrightnessModeAuto(ContentResolver contentResolver) {
+        return Settings.System.getIntForUser(contentResolver, SCREEN_BRIGHTNESS_MODE, 0, -2) == 1;
+    }
+
+    public void setAdaptiveSync(boolean z) {
+    }
+
+    public void startScreenStatusReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        if (this.mContext == null) {
+            Slog.d(TAG, "mContext is null");
+            return;
+        }
+        intentFilter.addAction("android.intent.action.SCREEN_ON");
+        intentFilter.addAction("android.intent.action.SCREEN_OFF");
+        this.mContext.registerReceiver(new ScreenStatusReceiver(this, 0), intentFilter);
+    }
+
+    public void startSettingObserver(Uri uri) {
+        if (this.mContext == null) {
+            Slog.d(TAG, "mContext is null");
+        } else {
+            this.mSettingsObserver.observeByUri(uri);
         }
     }
 }

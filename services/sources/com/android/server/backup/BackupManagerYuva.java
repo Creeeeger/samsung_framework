@@ -3,39 +3,57 @@ package com.android.server.backup;
 import android.app.backup.IMemorySaverBackupRestoreObserver;
 import android.os.RemoteException;
 import android.util.Slog;
-import com.samsung.android.feature.SemCscFeature;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class BackupManagerYuva {
+public final class BackupManagerYuva {
     public static BackupManagerYuva backupManagerYuva;
-    public static final String valueCscYuva = SemCscFeature.getInstance().getString("CscFeature_Common_ConfigYuva");
-    public boolean isMemorySaverBackupFail = false;
-    public boolean isMemorySaverRestoreFail = false;
-    public boolean isSupported = false;
-    public IMemorySaverBackupRestoreObserver mMemorySaverObserver = null;
-    public String mBackupPackageName = null;
-    public String mRestorePackageName = null;
+    public boolean isMemorySaverBackupFail;
+    public boolean isMemorySaverRestoreFail;
+    public String mBackupPackageName;
+    public IMemorySaverBackupRestoreObserver mMemorySaverObserver;
+    public String mRestorePackageName;
 
     public static BackupManagerYuva getInstanceBackupYuva() {
         if (backupManagerYuva == null) {
-            backupManagerYuva = new BackupManagerYuva();
+            BackupManagerYuva backupManagerYuva2 = new BackupManagerYuva();
+            backupManagerYuva2.isMemorySaverBackupFail = false;
+            backupManagerYuva2.isMemorySaverRestoreFail = false;
+            backupManagerYuva2.mMemorySaverObserver = null;
+            backupManagerYuva2.mBackupPackageName = null;
+            backupManagerYuva2.mRestorePackageName = null;
+            backupManagerYuva = backupManagerYuva2;
         }
         return backupManagerYuva;
     }
 
-    public void setMemorySaverObserver(IMemorySaverBackupRestoreObserver iMemorySaverBackupRestoreObserver) {
-        this.mMemorySaverObserver = iMemorySaverBackupRestoreObserver;
-        resetBackupRestoreState();
+    public final void sendEndBackupCallback() {
+        if (this.mMemorySaverObserver != null) {
+            try {
+                Slog.d("BackupManagerYuva", "full backup Completed " + this.mBackupPackageName);
+                this.mMemorySaverObserver.onBackupCompleted(this.mBackupPackageName, this.isMemorySaverBackupFail ^ true);
+                this.mBackupPackageName = null;
+            } catch (RemoteException unused) {
+                Slog.w("BackupManagerYuva", "full backup observer went away: EndBackup");
+                this.mMemorySaverObserver = null;
+            }
+        }
     }
 
-    public void resetBackupRestoreState() {
-        this.isMemorySaverRestoreFail = false;
-        this.isMemorySaverBackupFail = false;
-        this.mBackupPackageName = null;
-        this.mRestorePackageName = null;
+    public final void sendEndRestoreCallback() {
+        if (this.mMemorySaverObserver != null) {
+            try {
+                Slog.d("BackupManagerYuva", "restore completed " + this.mRestorePackageName);
+                this.mMemorySaverObserver.onRestoreCompleted(this.mRestorePackageName, this.isMemorySaverRestoreFail ^ true);
+                this.mRestorePackageName = null;
+            } catch (RemoteException unused) {
+                Slog.w("BackupManagerYuva", "full restore observer went away: endRestore");
+                this.mMemorySaverObserver = null;
+            }
+        }
     }
 
-    public void sendStartBackupCallback(String str) {
+    public final void sendStartBackupCallback(String str) {
         this.mBackupPackageName = str;
         if (this.mMemorySaverObserver != null) {
             try {
@@ -46,52 +64,5 @@ public class BackupManagerYuva {
                 this.mMemorySaverObserver = null;
             }
         }
-    }
-
-    public void sendEndBackupCallback() {
-        if (this.mMemorySaverObserver != null) {
-            try {
-                Slog.d("BackupManagerYuva", "full backup Completed " + this.mBackupPackageName);
-                this.mMemorySaverObserver.onBackupCompleted(this.mBackupPackageName, !this.isMemorySaverBackupFail);
-                this.mBackupPackageName = null;
-            } catch (RemoteException unused) {
-                Slog.w("BackupManagerYuva", "full backup observer went away: EndBackup");
-                this.mMemorySaverObserver = null;
-            }
-        }
-    }
-
-    public void sendStartRestoreCallback(String str) {
-        this.mRestorePackageName = str;
-        if (this.mMemorySaverObserver != null) {
-            try {
-                Slog.d("BackupManagerYuva", "restore started " + this.mRestorePackageName);
-                this.mMemorySaverObserver.onRestoreStart(this.mRestorePackageName);
-            } catch (RemoteException unused) {
-                Slog.w("BackupManagerYuva", "full restore observer went away: startRestore");
-                this.mMemorySaverObserver = null;
-            }
-        }
-    }
-
-    public void sendEndRestoreCallback() {
-        if (this.mMemorySaverObserver != null) {
-            try {
-                Slog.d("BackupManagerYuva", "restore completed " + this.mRestorePackageName);
-                this.mMemorySaverObserver.onRestoreCompleted(this.mRestorePackageName, !this.isMemorySaverRestoreFail);
-                this.mRestorePackageName = null;
-            } catch (RemoteException unused) {
-                Slog.w("BackupManagerYuva", "full restore observer went away: endRestore");
-                this.mMemorySaverObserver = null;
-            }
-        }
-    }
-
-    public void setMemorySaverBackupFail() {
-        this.isMemorySaverBackupFail = true;
-    }
-
-    public void setMemorySaverRestoreFail() {
-        this.isMemorySaverRestoreFail = true;
     }
 }

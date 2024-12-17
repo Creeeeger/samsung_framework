@@ -3,8 +3,9 @@ package com.samsung.accessory.manager.authentication.cover;
 import android.content.Context;
 import android.content.Intent;
 
-/* loaded from: classes.dex */
-public class CoverBroadcaster {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class CoverBroadcaster {
     public final Context mContext;
     public int mRealCoverType = 2;
 
@@ -12,15 +13,7 @@ public class CoverBroadcaster {
         this.mContext = context;
     }
 
-    public void setRealCoverType(int i) {
-        this.mRealCoverType = i;
-    }
-
-    public int getRealCoverType() {
-        return this.mRealCoverType;
-    }
-
-    public void broadcastCoverAttachStatus(boolean z) {
+    public final void broadcastCoverAttachStatus(boolean z) {
         if (!z) {
             this.mRealCoverType = 2;
         }

@@ -2,27 +2,10 @@ package com.samsung.security.securekeyblob;
 
 import java.security.cert.X509Certificate;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class SecureKeyResult {
+public final class SecureKeyResult {
     public X509Certificate[] mCertificates;
     public byte[] mServiceID;
     public byte[] mServiceKey;
-
-    public SecureKeyResult(byte[] bArr, X509Certificate[] x509CertificateArr, byte[] bArr2) {
-        this.mServiceKey = bArr;
-        this.mCertificates = x509CertificateArr;
-        this.mServiceID = bArr2;
-    }
-
-    public byte[] getServiceKey() {
-        return this.mServiceKey;
-    }
-
-    public X509Certificate[] getCertificates() {
-        return this.mCertificates;
-    }
-
-    public byte[] getServiceID() {
-        return this.mServiceID;
-    }
 }

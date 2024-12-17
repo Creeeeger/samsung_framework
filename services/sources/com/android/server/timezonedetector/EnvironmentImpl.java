@@ -3,14 +3,16 @@ package com.android.server.timezonedetector;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.SystemProperties;
-import com.android.server.AlarmManagerInternal;
-import com.android.server.LocalServices;
+import android.util.LocalLog;
 import com.android.server.SystemTimeZone;
+import com.android.server.alarm.AlarmManagerService;
+import com.android.server.timedetector.TimeDetectorStrategyImpl$$ExternalSyntheticLambda0;
 import com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl;
 import java.io.PrintWriter;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class EnvironmentImpl implements TimeZoneDetectorStrategyImpl.Environment {
     public final Handler mHandler;
 
@@ -20,37 +22,42 @@ public final class EnvironmentImpl implements TimeZoneDetectorStrategyImpl.Envir
     }
 
     @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl.Environment
-    public String getDeviceTimeZone() {
-        return SystemProperties.get("persist.sys.timezone");
+    public final void addDebugLogEntry(String str) {
+        SystemTimeZone.sTimeZoneDebugLog.log(str);
     }
 
     @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl.Environment
-    public int getDeviceTimeZoneConfidence() {
-        return SystemTimeZone.getTimeZoneConfidence();
+    public final void dumpDebugLog(PrintWriter printWriter) {
+        SystemTimeZone.sTimeZoneDebugLog.dump(printWriter);
     }
 
     @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl.Environment
-    public void setDeviceTimeZoneAndConfidence(String str, int i, String str2) {
-        ((AlarmManagerInternal) LocalServices.getService(AlarmManagerInternal.class)).setTimeZone(str, i, str2);
-    }
-
-    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl.Environment
-    public long elapsedRealtimeMillis() {
+    public final long elapsedRealtimeMillis() {
         return SystemClock.elapsedRealtime();
     }
 
     @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl.Environment
-    public void addDebugLogEntry(String str) {
-        SystemTimeZone.addDebugLogEntry(str);
+    public final String getDeviceTimeZone() {
+        return SystemProperties.get("persist.sys.timezone");
     }
 
     @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl.Environment
-    public void dumpDebugLog(PrintWriter printWriter) {
-        SystemTimeZone.dump(printWriter);
+    public final int getDeviceTimeZoneConfidence() {
+        LocalLog localLog = SystemTimeZone.sTimeZoneDebugLog;
+        int i = SystemProperties.getInt("persist.sys.timezone_confidence", 0);
+        if (i < 0 || i > 100) {
+            return 0;
+        }
+        return i;
     }
 
     @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl.Environment
-    public void runAsync(Runnable runnable) {
-        this.mHandler.post(runnable);
+    public final void runAsync(TimeDetectorStrategyImpl$$ExternalSyntheticLambda0 timeDetectorStrategyImpl$$ExternalSyntheticLambda0) {
+        this.mHandler.post(timeDetectorStrategyImpl$$ExternalSyntheticLambda0);
+    }
+
+    @Override // com.android.server.timezonedetector.TimeZoneDetectorStrategyImpl.Environment
+    public final void setDeviceTimeZoneAndConfidence(int i, String str, String str2) {
+        AlarmManagerService.this.setTimeZoneImpl(i, str, str2);
     }
 }

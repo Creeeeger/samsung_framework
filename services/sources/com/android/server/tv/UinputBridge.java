@@ -1,14 +1,45 @@
 package com.android.server.tv;
 
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.IBinder;
 import dalvik.system.CloseGuard;
 import java.io.IOException;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class UinputBridge {
     public final CloseGuard mCloseGuard;
     public long mPtr;
     public IBinder mToken;
+
+    public UinputBridge(IBinder iBinder, long j) {
+        CloseGuard closeGuard = CloseGuard.get();
+        this.mCloseGuard = closeGuard;
+        this.mPtr = j;
+        this.mToken = iBinder;
+        closeGuard.open("close");
+    }
+
+    public UinputBridge(IBinder iBinder, String str, int i, int i2, int i3) {
+        CloseGuard closeGuard = CloseGuard.get();
+        this.mCloseGuard = closeGuard;
+        if (i < 1 || i2 < 1) {
+            throw new IllegalArgumentException("Touchpad must be at least 1x1.");
+        }
+        if (i3 < 1 || i3 > 32) {
+            throw new IllegalArgumentException("Touchpad must support between 1 and 32 pointers.");
+        }
+        if (iBinder == null) {
+            throw new IllegalArgumentException("Token cannot be null");
+        }
+        long nativeOpen = nativeOpen(str, iBinder.toString(), i, i2, i3);
+        this.mPtr = nativeOpen;
+        if (nativeOpen == 0) {
+            throw new IOException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Could not open uinput device ", str));
+        }
+        this.mToken = iBinder;
+        closeGuard.open("close");
+    }
 
     private static native void nativeClear(long j);
 
@@ -30,47 +61,34 @@ public final class UinputBridge {
 
     private static native void nativeSendPointerUp(long j, int i);
 
-    public UinputBridge(IBinder iBinder, String str, int i, int i2, int i3) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
-        if (i < 1 || i2 < 1) {
-            throw new IllegalArgumentException("Touchpad must be at least 1x1.");
-        }
-        if (i3 < 1 || i3 > 32) {
-            throw new IllegalArgumentException("Touchpad must support between 1 and 32 pointers.");
-        }
-        if (iBinder == null) {
-            throw new IllegalArgumentException("Token cannot be null");
-        }
-        long nativeOpen = nativeOpen(str, iBinder.toString(), i, i2, i3);
-        this.mPtr = nativeOpen;
-        if (nativeOpen == 0) {
-            throw new IOException("Could not open uinput device " + str);
-        }
-        this.mToken = iBinder;
-        closeGuard.open("close");
-    }
-
-    public UinputBridge(IBinder iBinder, long j) {
-        CloseGuard closeGuard = CloseGuard.get();
-        this.mCloseGuard = closeGuard;
-        this.mPtr = j;
-        this.mToken = iBinder;
-        closeGuard.open("close");
-    }
-
     public static UinputBridge openGamepad(IBinder iBinder, String str) {
         if (iBinder == null) {
             throw new IllegalArgumentException("Token cannot be null");
         }
         long nativeGamepadOpen = nativeGamepadOpen(str, iBinder.toString());
-        if (nativeGamepadOpen == 0) {
-            throw new IOException("Could not open uinput device " + str);
+        if (nativeGamepadOpen != 0) {
+            return new UinputBridge(iBinder, nativeGamepadOpen);
         }
-        return new UinputBridge(iBinder, nativeGamepadOpen);
+        throw new IOException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Could not open uinput device ", str));
     }
 
-    public void finalize() {
+    public final void clear(IBinder iBinder) {
+        if (this.mToken.equals(iBinder)) {
+            nativeClear(this.mPtr);
+        }
+    }
+
+    public final void close(IBinder iBinder) {
+        if (!this.mToken.equals(iBinder) || this.mPtr == 0) {
+            return;
+        }
+        clear(iBinder);
+        nativeClose(this.mPtr);
+        this.mPtr = 0L;
+        this.mCloseGuard.close();
+    }
+
+    public final void finalize() {
         try {
             this.mCloseGuard.warnIfOpen();
             close(this.mToken);
@@ -80,65 +98,45 @@ public final class UinputBridge {
         }
     }
 
-    public void close(IBinder iBinder) {
-        if (!isTokenValid(iBinder) || this.mPtr == 0) {
-            return;
-        }
-        clear(iBinder);
-        nativeClose(this.mPtr);
-        this.mPtr = 0L;
-        this.mCloseGuard.close();
-    }
-
-    public boolean isTokenValid(IBinder iBinder) {
-        return this.mToken.equals(iBinder);
-    }
-
-    public void sendKeyDown(IBinder iBinder, int i) {
-        if (isTokenValid(iBinder)) {
-            nativeSendKey(this.mPtr, i, true);
-        }
-    }
-
-    public void sendKeyUp(IBinder iBinder, int i) {
-        if (isTokenValid(iBinder)) {
-            nativeSendKey(this.mPtr, i, false);
-        }
-    }
-
-    public void sendPointerDown(IBinder iBinder, int i, int i2, int i3) {
-        if (isTokenValid(iBinder)) {
-            nativeSendPointerDown(this.mPtr, i, i2, i3);
-        }
-    }
-
-    public void sendPointerUp(IBinder iBinder, int i) {
-        if (isTokenValid(iBinder)) {
-            nativeSendPointerUp(this.mPtr, i);
-        }
-    }
-
-    public void sendPointerSync(IBinder iBinder) {
-        if (isTokenValid(iBinder)) {
-            nativeSendPointerSync(this.mPtr);
-        }
-    }
-
-    public void sendGamepadKey(IBinder iBinder, int i, boolean z) {
-        if (isTokenValid(iBinder)) {
-            nativeSendGamepadKey(this.mPtr, i, z);
-        }
-    }
-
-    public void sendGamepadAxisValue(IBinder iBinder, int i, float f) {
-        if (isTokenValid(iBinder)) {
+    public final void sendGamepadAxisValue(IBinder iBinder, int i, float f) {
+        if (this.mToken.equals(iBinder)) {
             nativeSendGamepadAxisValue(this.mPtr, i, f);
         }
     }
 
-    public void clear(IBinder iBinder) {
-        if (isTokenValid(iBinder)) {
-            nativeClear(this.mPtr);
+    public final void sendGamepadKey(int i, boolean z, IBinder iBinder) {
+        if (this.mToken.equals(iBinder)) {
+            nativeSendGamepadKey(this.mPtr, i, z);
+        }
+    }
+
+    public final void sendKeyDown(IBinder iBinder, int i) {
+        if (this.mToken.equals(iBinder)) {
+            nativeSendKey(this.mPtr, i, true);
+        }
+    }
+
+    public final void sendKeyUp(IBinder iBinder, int i) {
+        if (this.mToken.equals(iBinder)) {
+            nativeSendKey(this.mPtr, i, false);
+        }
+    }
+
+    public final void sendPointerDown(IBinder iBinder, int i, int i2, int i3) {
+        if (this.mToken.equals(iBinder)) {
+            nativeSendPointerDown(this.mPtr, i, i2, i3);
+        }
+    }
+
+    public final void sendPointerSync(IBinder iBinder) {
+        if (this.mToken.equals(iBinder)) {
+            nativeSendPointerSync(this.mPtr);
+        }
+    }
+
+    public final void sendPointerUp(IBinder iBinder, int i) {
+        if (this.mToken.equals(iBinder)) {
+            nativeSendPointerUp(this.mPtr, i);
         }
     }
 }

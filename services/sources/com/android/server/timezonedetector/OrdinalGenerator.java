@@ -1,21 +1,19 @@
 package com.android.server.timezonedetector;
 
 import android.util.ArraySet;
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
-/* loaded from: classes3.dex */
-public class OrdinalGenerator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class OrdinalGenerator {
     public final Function mCanonicalizationFunction;
     public final ArraySet mKnownIds = new ArraySet();
 
-    public OrdinalGenerator(Function function) {
-        Objects.requireNonNull(function);
-        this.mCanonicalizationFunction = function;
+    public OrdinalGenerator(TimeZoneCanonicalizer timeZoneCanonicalizer) {
+        this.mCanonicalizationFunction = timeZoneCanonicalizer;
     }
 
-    public int ordinal(Object obj) {
+    public final int ordinal(Object obj) {
         Object apply = this.mCanonicalizationFunction.apply(obj);
         int indexOf = this.mKnownIds.indexOf(apply);
         if (indexOf >= 0) {
@@ -24,14 +22,5 @@ public class OrdinalGenerator {
         int size = this.mKnownIds.size();
         this.mKnownIds.add(apply);
         return size;
-    }
-
-    public int[] ordinals(List list) {
-        int size = list.size();
-        int[] iArr = new int[size];
-        for (int i = 0; i < size; i++) {
-            iArr[i] = ordinal(list.get(i));
-        }
-        return iArr;
     }
 }

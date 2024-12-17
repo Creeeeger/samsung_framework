@@ -3,215 +3,362 @@ package com.android.server.pm.resolution;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ProviderInfo;
+import com.android.internal.pm.pkg.component.ParsedActivity;
+import com.android.internal.pm.pkg.component.ParsedProvider;
+import com.android.internal.pm.pkg.component.ParsedService;
 import com.android.server.pm.Computer;
 import com.android.server.pm.DumpState;
+import com.android.server.pm.PackageManagerService;
 import com.android.server.pm.PackageManagerTracedLock;
 import com.android.server.pm.UserManagerService;
-import com.android.server.pm.pkg.component.ParsedActivity;
-import com.android.server.pm.pkg.component.ParsedProvider;
-import com.android.server.pm.pkg.component.ParsedService;
 import java.io.PrintWriter;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class ComponentResolverLocked extends ComponentResolverBase {
     public final PackageManagerTracedLock mLock;
 
     public ComponentResolverLocked(UserManagerService userManagerService) {
         super(userManagerService);
-        this.mLock = new PackageManagerTracedLock();
+        this.mLock = new PackageManagerTracedLock(null);
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public boolean componentExists(ComponentName componentName) {
+    public final boolean componentExists(ComponentName componentName) {
         boolean componentExists;
-        synchronized (this.mLock) {
-            componentExists = super.componentExists(componentName);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                componentExists = super.componentExists(componentName);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return componentExists;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public ParsedActivity getActivity(ComponentName componentName) {
+    public final void dumpActivityResolvers(DumpState dumpState, PrintWriter printWriter, String str) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                super.dumpActivityResolvers(dumpState, printWriter, str);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
+    public final void dumpContentProviders(Computer computer, PrintWriter printWriter, DumpState dumpState, String str) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                super.dumpContentProviders(computer, printWriter, dumpState, str);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
+    public final void dumpProviderResolvers(DumpState dumpState, PrintWriter printWriter, String str) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                super.dumpProviderResolvers(dumpState, printWriter, str);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
+    public final void dumpReceiverResolvers(DumpState dumpState, PrintWriter printWriter, String str) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                super.dumpReceiverResolvers(dumpState, printWriter, str);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
+    public final void dumpServicePermissions(PrintWriter printWriter, DumpState dumpState) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                super.dumpServicePermissions(printWriter, dumpState);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
+    public final void dumpServiceResolvers(DumpState dumpState, PrintWriter printWriter, String str) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                super.dumpServiceResolvers(dumpState, printWriter, str);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
+    public final ParsedActivity getActivity(ComponentName componentName) {
         ParsedActivity activity;
-        synchronized (this.mLock) {
-            activity = super.getActivity(componentName);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                activity = super.getActivity(componentName);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return activity;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public ParsedProvider getProvider(ComponentName componentName) {
+    public final ParsedProvider getProvider(ComponentName componentName) {
         ParsedProvider provider;
-        synchronized (this.mLock) {
-            provider = super.getProvider(componentName);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                provider = super.getProvider(componentName);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return provider;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public ParsedActivity getReceiver(ComponentName componentName) {
+    public final ParsedActivity getReceiver(ComponentName componentName) {
         ParsedActivity receiver;
-        synchronized (this.mLock) {
-            receiver = super.getReceiver(componentName);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                receiver = super.getReceiver(componentName);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return receiver;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public ParsedService getService(ComponentName componentName) {
+    public final ParsedService getService(ComponentName componentName) {
         ParsedService service;
-        synchronized (this.mLock) {
-            service = super.getService(componentName);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                service = super.getService(componentName);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return service;
     }
 
-    @Override // com.android.server.pm.resolution.ComponentResolverBase
-    public boolean isActivityDefined(ComponentName componentName) {
-        boolean isActivityDefined;
-        synchronized (this.mLock) {
-            isActivityDefined = super.isActivityDefined(componentName);
+    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
+    public final List queryActivities(Computer computer, Intent intent, String str, long j, int i) {
+        List queryIntent;
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryIntent = this.mActivities.queryIntent(computer, intent, str, j, i);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
-        return isActivityDefined;
+        return queryIntent;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public List queryActivities(Computer computer, Intent intent, String str, long j, int i) {
-        List queryActivities;
-        synchronized (this.mLock) {
-            queryActivities = super.queryActivities(computer, intent, str, j, i);
+    public final List queryActivities(Computer computer, Intent intent, String str, long j, List list, int i) {
+        List queryIntentForPackage;
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryIntentForPackage = this.mActivities.queryIntentForPackage(computer, intent, str, j, list, i);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
-        return queryActivities;
+        return queryIntentForPackage;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public List queryActivities(Computer computer, Intent intent, String str, long j, List list, int i) {
-        List queryActivities;
-        synchronized (this.mLock) {
-            queryActivities = super.queryActivities(computer, intent, str, j, list, i);
-        }
-        return queryActivities;
-    }
-
-    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public ProviderInfo queryProvider(Computer computer, String str, long j, int i) {
+    public final ProviderInfo queryProvider(Computer computer, String str, long j, int i) {
         ProviderInfo queryProvider;
-        synchronized (this.mLock) {
-            queryProvider = super.queryProvider(computer, str, j, i);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryProvider = super.queryProvider(computer, str, j, i);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return queryProvider;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public List queryProviders(Computer computer, Intent intent, String str, long j, int i) {
+    public final List queryProviders(Computer computer, Intent intent, String str, long j, int i) {
         List queryProviders;
-        synchronized (this.mLock) {
-            queryProviders = super.queryProviders(computer, intent, str, j, i);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryProviders = super.queryProviders(computer, intent, str, j, i);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return queryProviders;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public List queryProviders(Computer computer, Intent intent, String str, long j, List list, int i) {
+    public final List queryProviders(Computer computer, Intent intent, String str, long j, List list, int i) {
         List queryProviders;
-        synchronized (this.mLock) {
-            queryProviders = super.queryProviders(computer, intent, str, j, list, i);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryProviders = super.queryProviders(computer, intent, str, j, list, i);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return queryProviders;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public List queryProviders(Computer computer, String str, String str2, int i, long j, int i2) {
+    public final List queryProviders(Computer computer, String str, String str2, int i, long j, int i2) {
         List queryProviders;
-        synchronized (this.mLock) {
-            queryProviders = super.queryProviders(computer, str, str2, i, j, i2);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryProviders = super.queryProviders(computer, str, str2, i, j, i2);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return queryProviders;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public List queryReceivers(Computer computer, Intent intent, String str, long j, int i) {
-        List queryReceivers;
-        synchronized (this.mLock) {
-            queryReceivers = super.queryReceivers(computer, intent, str, j, i);
+    public final List queryReceivers(Computer computer, Intent intent, String str, long j, int i) {
+        List queryIntent;
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryIntent = this.mReceivers.queryIntent(computer, intent, str, j, i);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
-        return queryReceivers;
+        return queryIntent;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public List queryReceivers(Computer computer, Intent intent, String str, long j, List list, int i) {
-        List queryReceivers;
-        synchronized (this.mLock) {
-            queryReceivers = super.queryReceivers(computer, intent, str, j, list, i);
+    public final List queryReceivers(Computer computer, Intent intent, String str, long j, List list, int i) {
+        List queryIntentForPackage;
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryIntentForPackage = this.mReceivers.queryIntentForPackage(computer, intent, str, j, list, i);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
-        return queryReceivers;
+        return queryIntentForPackage;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public List queryServices(Computer computer, Intent intent, String str, long j, int i) {
+    public final List queryServices(Computer computer, Intent intent, String str, long j, int i) {
         List queryServices;
-        synchronized (this.mLock) {
-            queryServices = super.queryServices(computer, intent, str, j, i);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryServices = super.queryServices(computer, intent, str, j, i);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return queryServices;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public List queryServices(Computer computer, Intent intent, String str, long j, List list, int i) {
+    public final List queryServices(Computer computer, Intent intent, String str, long j, List list, int i) {
         List queryServices;
-        synchronized (this.mLock) {
-            queryServices = super.queryServices(computer, intent, str, j, list, i);
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                queryServices = super.queryServices(computer, intent, str, j, list, i);
+            } catch (Throwable th) {
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
         return queryServices;
     }
 
     @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public void querySyncProviders(Computer computer, List list, List list2, boolean z, int i) {
-        synchronized (this.mLock) {
-            super.querySyncProviders(computer, list, list2, z, i);
-        }
-    }
-
-    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public void dumpActivityResolvers(PrintWriter printWriter, DumpState dumpState, String str) {
-        synchronized (this.mLock) {
-            super.dumpActivityResolvers(printWriter, dumpState, str);
-        }
-    }
-
-    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public void dumpProviderResolvers(PrintWriter printWriter, DumpState dumpState, String str) {
-        synchronized (this.mLock) {
-            super.dumpProviderResolvers(printWriter, dumpState, str);
-        }
-    }
-
-    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public void dumpReceiverResolvers(PrintWriter printWriter, DumpState dumpState, String str) {
-        synchronized (this.mLock) {
-            super.dumpReceiverResolvers(printWriter, dumpState, str);
-        }
-    }
-
-    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public void dumpServiceResolvers(PrintWriter printWriter, DumpState dumpState, String str) {
-        synchronized (this.mLock) {
-            super.dumpServiceResolvers(printWriter, dumpState, str);
-        }
-    }
-
-    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public void dumpContentProviders(Computer computer, PrintWriter printWriter, DumpState dumpState, String str) {
-        synchronized (this.mLock) {
-            super.dumpContentProviders(computer, printWriter, dumpState, str);
-        }
-    }
-
-    @Override // com.android.server.pm.resolution.ComponentResolverBase, com.android.server.pm.resolution.ComponentResolverApi
-    public void dumpServicePermissions(PrintWriter printWriter, DumpState dumpState) {
-        synchronized (this.mLock) {
-            super.dumpServicePermissions(printWriter, dumpState);
+    public final void querySyncProviders(Computer computer, List list, List list2, boolean z, int i) {
+        PackageManagerTracedLock packageManagerTracedLock = this.mLock;
+        boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+        synchronized (packageManagerTracedLock) {
+            try {
+                super.querySyncProviders(computer, list, list2, z, i);
+            } catch (Throwable th) {
+                boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+                throw th;
+            }
         }
     }
 }

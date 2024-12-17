@@ -4,8 +4,9 @@ import com.android.modules.utils.BasicShellCommandHandler;
 import java.io.PrintWriter;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AdbShellCommand extends BasicShellCommandHandler {
+public final class AdbShellCommand extends BasicShellCommandHandler {
     public final AdbService mService;
 
     public AdbShellCommand(AdbService adbService) {
@@ -13,7 +14,7 @@ public class AdbShellCommand extends BasicShellCommandHandler {
         this.mService = adbService;
     }
 
-    public int onCommand(String str) {
+    public final int onCommand(String str) {
         if (str == null) {
             return handleDefaultCommands((String) null);
         }
@@ -22,14 +23,14 @@ public class AdbShellCommand extends BasicShellCommandHandler {
             outPrintWriter.println(Boolean.toString(this.mService.isAdbWifiQrSupported()));
             return 0;
         }
-        if (str.equals("is-wifi-supported")) {
-            outPrintWriter.println(Boolean.toString(this.mService.isAdbWifiSupported()));
-            return 0;
+        if (!str.equals("is-wifi-supported")) {
+            return handleDefaultCommands(str);
         }
-        return handleDefaultCommands(str);
+        outPrintWriter.println(Boolean.toString(this.mService.isAdbWifiSupported()));
+        return 0;
     }
 
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.println("Adb service commands:");
         outPrintWriter.println("  help or -h");

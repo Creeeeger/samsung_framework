@@ -8,12 +8,13 @@ import android.util.SparseArray;
 import com.android.internal.util.dump.DualDumpOutputStream;
 import java.util.List;
 
-/* loaded from: classes3.dex */
-public class UsbSettingsManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class UsbSettingsManager {
     public final Context mContext;
-    public UsbHandlerManager mUsbHandlerManager;
+    public final UsbHandlerManager mUsbHandlerManager;
     public final UsbService mUsbService;
-    public UserManager mUserManager;
+    public final UserManager mUserManager;
     public final SparseArray mSettingsByUser = new SparseArray();
     public final SparseArray mSettingsByProfileGroup = new SparseArray();
 
@@ -24,67 +25,64 @@ public class UsbSettingsManager {
         this.mUsbHandlerManager = new UsbHandlerManager(context);
     }
 
-    public UsbUserSettingsManager getSettingsForUser(int i) {
-        UsbUserSettingsManager usbUserSettingsManager;
+    public final void dump(DualDumpOutputStream dualDumpOutputStream) {
+        int i;
+        long start = dualDumpOutputStream.start("settings_manager", 1146756268037L);
         synchronized (this.mSettingsByUser) {
-            usbUserSettingsManager = (UsbUserSettingsManager) this.mSettingsByUser.get(i);
-            if (usbUserSettingsManager == null) {
-                usbUserSettingsManager = new UsbUserSettingsManager(this.mContext, UserHandle.of(i));
-                this.mSettingsByUser.put(i, usbUserSettingsManager);
+            try {
+                List users = this.mUserManager.getUsers();
+                int size = users.size();
+                for (int i2 = 0; i2 < size; i2++) {
+                    getSettingsForUser(((UserInfo) users.get(i2)).id).dump(dualDumpOutputStream);
+                }
+            } finally {
             }
         }
-        return usbUserSettingsManager;
+        synchronized (this.mSettingsByProfileGroup) {
+            try {
+                int size2 = this.mSettingsByProfileGroup.size();
+                for (i = 0; i < size2; i++) {
+                    ((UsbProfileGroupSettingsManager) this.mSettingsByProfileGroup.valueAt(i)).dump(dualDumpOutputStream);
+                }
+            } finally {
+            }
+        }
+        dualDumpOutputStream.end(start);
     }
 
-    public UsbProfileGroupSettingsManager getSettingsForProfileGroup(UserHandle userHandle) {
+    public final UsbProfileGroupSettingsManager getSettingsForProfileGroup(UserHandle userHandle) {
         UsbProfileGroupSettingsManager usbProfileGroupSettingsManager;
         UserInfo profileParent = this.mUserManager.getProfileParent(userHandle.getIdentifier());
         if (profileParent != null) {
             userHandle = profileParent.getUserHandle();
         }
         synchronized (this.mSettingsByProfileGroup) {
-            usbProfileGroupSettingsManager = (UsbProfileGroupSettingsManager) this.mSettingsByProfileGroup.get(userHandle.getIdentifier());
-            if (usbProfileGroupSettingsManager == null) {
-                usbProfileGroupSettingsManager = new UsbProfileGroupSettingsManager(this.mContext, userHandle, this, this.mUsbHandlerManager);
-                this.mSettingsByProfileGroup.put(userHandle.getIdentifier(), usbProfileGroupSettingsManager);
+            try {
+                usbProfileGroupSettingsManager = (UsbProfileGroupSettingsManager) this.mSettingsByProfileGroup.get(userHandle.getIdentifier());
+                if (usbProfileGroupSettingsManager == null) {
+                    usbProfileGroupSettingsManager = new UsbProfileGroupSettingsManager(this.mContext, userHandle, this, this.mUsbHandlerManager);
+                    this.mSettingsByProfileGroup.put(userHandle.getIdentifier(), usbProfileGroupSettingsManager);
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
         return usbProfileGroupSettingsManager;
     }
 
-    public void remove(UserHandle userHandle) {
+    public final UsbUserSettingsManager getSettingsForUser(int i) {
+        UsbUserSettingsManager usbUserSettingsManager;
         synchronized (this.mSettingsByUser) {
-            this.mSettingsByUser.remove(userHandle.getIdentifier());
-        }
-        synchronized (this.mSettingsByProfileGroup) {
-            if (this.mSettingsByProfileGroup.indexOfKey(userHandle.getIdentifier()) >= 0) {
-                ((UsbProfileGroupSettingsManager) this.mSettingsByProfileGroup.get(userHandle.getIdentifier())).unregisterReceivers();
-                this.mSettingsByProfileGroup.remove(userHandle.getIdentifier());
-            } else {
-                int size = this.mSettingsByProfileGroup.size();
-                for (int i = 0; i < size; i++) {
-                    ((UsbProfileGroupSettingsManager) this.mSettingsByProfileGroup.valueAt(i)).removeUser(userHandle);
+            try {
+                usbUserSettingsManager = (UsbUserSettingsManager) this.mSettingsByUser.get(i);
+                if (usbUserSettingsManager == null) {
+                    usbUserSettingsManager = new UsbUserSettingsManager(this.mContext, UserHandle.of(i));
+                    this.mSettingsByUser.put(i, usbUserSettingsManager);
                 }
+            } catch (Throwable th) {
+                throw th;
             }
         }
-    }
-
-    public void dump(DualDumpOutputStream dualDumpOutputStream, String str, long j) {
-        int i;
-        long start = dualDumpOutputStream.start(str, j);
-        synchronized (this.mSettingsByUser) {
-            List users = this.mUserManager.getUsers();
-            int size = users.size();
-            for (int i2 = 0; i2 < size; i2++) {
-                getSettingsForUser(((UserInfo) users.get(i2)).id).dump(dualDumpOutputStream, "user_settings", 2246267895809L);
-            }
-        }
-        synchronized (this.mSettingsByProfileGroup) {
-            int size2 = this.mSettingsByProfileGroup.size();
-            for (i = 0; i < size2; i++) {
-                ((UsbProfileGroupSettingsManager) this.mSettingsByProfileGroup.valueAt(i)).dump(dualDumpOutputStream, "profile_group_settings", 2246267895810L);
-            }
-        }
-        dualDumpOutputStream.end(start);
+        return usbUserSettingsManager;
     }
 }

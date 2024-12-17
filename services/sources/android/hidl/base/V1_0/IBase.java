@@ -1,5 +1,6 @@
 package android.hidl.base.V1_0;
 
+import android.hardware.authsecret.V1_0.IAuthSecret$Proxy$$ExternalSyntheticOutline0;
 import android.os.HidlSupport;
 import android.os.HwBinder;
 import android.os.HwBlob;
@@ -14,79 +15,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IBase extends IHwInterface {
     public static final String kInterfaceName = "android.hidl.base@1.0::IBase";
 
-    IHwBinder asBinder();
-
-    void debug(NativeHandle nativeHandle, ArrayList arrayList);
-
-    DebugInfo getDebugInfo();
-
-    ArrayList getHashChain();
-
-    ArrayList interfaceChain();
-
-    String interfaceDescriptor();
-
-    boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j);
-
-    void notifySyspropsChanged();
-
-    void ping();
-
-    void setHALInstrumentation();
-
-    boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient);
-
-    static IBase asInterface(IHwBinder iHwBinder) {
-        if (iHwBinder == null) {
-            return null;
-        }
-        IHwInterface queryLocalInterface = iHwBinder.queryLocalInterface(kInterfaceName);
-        if (queryLocalInterface != null && (queryLocalInterface instanceof IBase)) {
-            return (IBase) queryLocalInterface;
-        }
-        Proxy proxy = new Proxy(iHwBinder);
-        try {
-            Iterator it = proxy.interfaceChain().iterator();
-            while (it.hasNext()) {
-                if (((String) it.next()).equals(kInterfaceName)) {
-                    return proxy;
-                }
-            }
-        } catch (RemoteException unused) {
-        }
-        return null;
-    }
-
-    static IBase castFrom(IHwInterface iHwInterface) {
-        if (iHwInterface == null) {
-            return null;
-        }
-        return asInterface(iHwInterface.asBinder());
-    }
-
-    static IBase getService(String str, boolean z) {
-        return asInterface(HwBinder.getService(kInterfaceName, str, z));
-    }
-
-    static IBase getService(boolean z) {
-        return getService("default", z);
-    }
-
-    @Deprecated
-    static IBase getService(String str) {
-        return asInterface(HwBinder.getService(kInterfaceName, str));
-    }
-
-    @Deprecated
-    static IBase getService() {
-        return getService("default");
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Proxy implements IBase {
         private IHwBinder mRemote;
 
@@ -100,11 +34,16 @@ public interface IBase extends IHwInterface {
             return this.mRemote;
         }
 
-        public String toString() {
+        @Override // android.hidl.base.V1_0.IBase
+        public void debug(NativeHandle nativeHandle, ArrayList arrayList) throws RemoteException {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName, nativeHandle, arrayList);
+            HwParcel hwParcel = new HwParcel();
             try {
-                return interfaceDescriptor() + "@Proxy";
-            } catch (RemoteException unused) {
-                return "[class or subclass of android.hidl.base@1.0::IBase]@Proxy";
+                this.mRemote.transact(256131655, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
             }
         }
 
@@ -112,69 +51,34 @@ public interface IBase extends IHwInterface {
             return HidlSupport.interfacesEqual(this, obj);
         }
 
-        public final int hashCode() {
-            return asBinder().hashCode();
-        }
-
         @Override // android.hidl.base.V1_0.IBase
-        public ArrayList interfaceChain() {
+        public DebugInfo getDebugInfo() throws RemoteException {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256067662, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readStringVector();
+                this.mRemote.transact(257049926, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                DebugInfo debugInfo = new DebugInfo();
+                debugInfo.readFromParcel(hwParcel);
+                return debugInfo;
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+        public ArrayList getHashChain() throws RemoteException {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            hwParcel.writeNativeHandle(nativeHandle);
-            hwParcel.writeStringVector(arrayList);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256131655, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public String interfaceDescriptor() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256136003, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readString();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public ArrayList getHashChain() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256398152, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(256398152, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
                 ArrayList arrayList = new ArrayList();
-                HwBlob readBuffer = hwParcel2.readBuffer(16L);
+                HwBlob readBuffer = hwParcel.readBuffer(16L);
                 int int32 = readBuffer.getInt32(8L);
-                HwBlob readEmbeddedBuffer = hwParcel2.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
+                HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
                 arrayList.clear();
                 for (int i = 0; i < int32; i++) {
                     byte[] bArr = new byte[32];
@@ -183,79 +87,99 @@ public interface IBase extends IHwInterface {
                 }
                 return arrayList;
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
+        public final int hashCode() {
+            return asBinder().hashCode();
+        }
+
         @Override // android.hidl.base.V1_0.IBase
-        public void setHALInstrumentation() {
+        public ArrayList interfaceChain() throws RemoteException {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256462420, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(256067662, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readStringVector();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
+        public String interfaceDescriptor() throws RemoteException {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256136003, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readString();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) throws RemoteException {
             return this.mRemote.linkToDeath(deathRecipient, j);
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public void ping() {
+        public void notifySyspropsChanged() throws RemoteException {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256921159, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(257120595, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public DebugInfo getDebugInfo() {
+        public void ping() throws RemoteException {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(257049926, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                DebugInfo debugInfo = new DebugInfo();
-                debugInfo.readFromParcel(hwParcel2);
-                return debugInfo;
+                this.mRemote.transact(256921159, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public void notifySyspropsChanged() {
+        public void setHALInstrumentation() throws RemoteException {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(257120595, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(256462420, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
+            }
+        }
+
+        public String toString() {
+            try {
+                return interfaceDescriptor() + "@Proxy";
+            } catch (RemoteException unused) {
+                return "[class or subclass of android.hidl.base@1.0::IBase]@Proxy";
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
+        public boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) throws RemoteException {
             return this.mRemote.unlinkToDeath(deathRecipient);
         }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends HwBinder implements IBase {
         @Override // android.hidl.base.V1_0.IBase
         public IHwBinder asBinder() {
@@ -264,6 +188,25 @@ public interface IBase extends IHwInterface {
 
         @Override // android.hidl.base.V1_0.IBase
         public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final DebugInfo getDebugInfo() {
+            DebugInfo debugInfo = new DebugInfo();
+            debugInfo.pid = HidlSupport.getPidIfSharable();
+            debugInfo.ptr = 0L;
+            debugInfo.arch = 0;
+            return debugInfo;
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final ArrayList getHashChain() {
+            return new ArrayList(Collections.singletonList(new byte[]{-20, Byte.MAX_VALUE, -41, -98, -48, 45, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, 36, -13, -51, 105, 87, 19, -109, 36, -72, 59, 24, -54, 76}));
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final ArrayList interfaceChain() {
+            return new ArrayList(Arrays.asList(IBase.kInterfaceName));
         }
 
         @Override // android.hidl.base.V1_0.IBase
@@ -277,58 +220,11 @@ public interface IBase extends IHwInterface {
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public final void ping() {
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final void setHALInstrumentation() {
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
-            return true;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final ArrayList interfaceChain() {
-            return new ArrayList(Arrays.asList(IBase.kInterfaceName));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final ArrayList getHashChain() {
-            return new ArrayList(Collections.singletonList(new byte[]{-20, Byte.MAX_VALUE, -41, -98, -48, 45, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, 36, -13, -51, 105, 87, 19, -109, 36, -72, 59, 24, -54, 76}));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final DebugInfo getDebugInfo() {
-            DebugInfo debugInfo = new DebugInfo();
-            debugInfo.pid = HidlSupport.getPidIfSharable();
-            debugInfo.ptr = 0L;
-            debugInfo.arch = 0;
-            return debugInfo;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
         public final void notifySyspropsChanged() {
             HwBinder.enableInstrumentation();
         }
 
-        public IHwInterface queryLocalInterface(String str) {
-            if (IBase.kInterfaceName.equals(str)) {
-                return this;
-            }
-            return null;
-        }
-
-        public void registerAsService(String str) {
-            registerService(str);
-        }
-
-        public String toString() {
-            return interfaceDescriptor() + "@Stub";
-        }
-
-        public void onTransact(int i, HwParcel hwParcel, HwParcel hwParcel2, int i2) {
+        public void onTransact(int i, HwParcel hwParcel, HwParcel hwParcel2, int i2) throws RemoteException {
             switch (i) {
                 case 256067662:
                     hwParcel.enforceInterface(IBase.kInterfaceName);
@@ -396,5 +292,101 @@ public interface IBase extends IHwInterface {
                     return;
             }
         }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void ping() {
+        }
+
+        public IHwInterface queryLocalInterface(String str) {
+            if (IBase.kInterfaceName.equals(str)) {
+                return this;
+            }
+            return null;
+        }
+
+        public void registerAsService(String str) throws RemoteException {
+            registerService(str);
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void setHALInstrumentation() {
+        }
+
+        public String toString() {
+            return interfaceDescriptor() + "@Stub";
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
+            return true;
+        }
     }
+
+    static IBase asInterface(IHwBinder iHwBinder) {
+        if (iHwBinder == null) {
+            return null;
+        }
+        IHwInterface queryLocalInterface = iHwBinder.queryLocalInterface(kInterfaceName);
+        if (queryLocalInterface != null && (queryLocalInterface instanceof IBase)) {
+            return (IBase) queryLocalInterface;
+        }
+        Proxy proxy = new Proxy(iHwBinder);
+        try {
+            Iterator it = proxy.interfaceChain().iterator();
+            while (it.hasNext()) {
+                if (((String) it.next()).equals(kInterfaceName)) {
+                    return proxy;
+                }
+            }
+        } catch (RemoteException unused) {
+        }
+        return null;
+    }
+
+    static IBase castFrom(IHwInterface iHwInterface) {
+        if (iHwInterface == null) {
+            return null;
+        }
+        return asInterface(iHwInterface.asBinder());
+    }
+
+    @Deprecated
+    static IBase getService() throws RemoteException {
+        return getService("default");
+    }
+
+    @Deprecated
+    static IBase getService(String str) throws RemoteException {
+        return asInterface(HwBinder.getService(kInterfaceName, str));
+    }
+
+    static IBase getService(String str, boolean z) throws RemoteException {
+        return asInterface(HwBinder.getService(kInterfaceName, str, z));
+    }
+
+    static IBase getService(boolean z) throws RemoteException {
+        return getService("default", z);
+    }
+
+    IHwBinder asBinder();
+
+    void debug(NativeHandle nativeHandle, ArrayList arrayList) throws RemoteException;
+
+    DebugInfo getDebugInfo() throws RemoteException;
+
+    ArrayList getHashChain() throws RemoteException;
+
+    ArrayList interfaceChain() throws RemoteException;
+
+    String interfaceDescriptor() throws RemoteException;
+
+    boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) throws RemoteException;
+
+    void notifySyspropsChanged() throws RemoteException;
+
+    void ping() throws RemoteException;
+
+    void setHALInstrumentation() throws RemoteException;
+
+    boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) throws RemoteException;
 }

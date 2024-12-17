@@ -5,90 +5,34 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import com.android.server.accessibility.gestures.GestureMatcher;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class MultiTap extends GestureMatcher {
     public float mBaseX;
     public float mBaseY;
     public int mCurrentTaps;
-    public int mDoubleTapSlop;
-    public int mDoubleTapTimeout;
-    public int mTapTimeout;
+    public final int mDoubleTapSlop;
     public final int mTargetTaps;
-    public int mTouchSlop;
+    public final int mTouchSlop;
 
     public MultiTap(Context context, int i, int i2, GestureMatcher.StateChangeListener stateChangeListener) {
         super(i2, new Handler(context.getMainLooper()), stateChangeListener);
         this.mTargetTaps = i;
         this.mDoubleTapSlop = ViewConfiguration.get(context).getScaledDoubleTapSlop();
         this.mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop() * 2;
-        this.mTapTimeout = ViewConfiguration.getTapTimeout();
-        this.mDoubleTapTimeout = ViewConfiguration.getDoubleTapTimeout();
+        ViewConfiguration.getTapTimeout();
+        ViewConfiguration.getDoubleTapTimeout();
         clear();
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void clear() {
+    public final void clear() {
         this.mCurrentTaps = 0;
         this.mBaseX = Float.NaN;
         this.mBaseY = Float.NaN;
         super.clear();
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        cancelAfterTapTimeout(motionEvent, motionEvent2, i);
-        if (Float.isNaN(this.mBaseX) && Float.isNaN(this.mBaseY)) {
-            this.mBaseX = motionEvent.getX();
-            this.mBaseY = motionEvent.getY();
-        }
-        if (!isInsideSlop(motionEvent2, this.mDoubleTapSlop)) {
-            cancelGesture(motionEvent, motionEvent2, i);
-        }
-        this.mBaseX = motionEvent.getX();
-        this.mBaseY = motionEvent.getY();
-        if (this.mCurrentTaps + 1 == this.mTargetTaps) {
-            startGesture(motionEvent, motionEvent2, i);
-        }
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        cancelAfterDoubleTapTimeout(motionEvent, motionEvent2, i);
-        if (!isInsideSlop(motionEvent2, this.mTouchSlop)) {
-            cancelGesture(motionEvent, motionEvent2, i);
-        }
-        if (getState() == 1 || getState() == 0) {
-            int i2 = this.mCurrentTaps + 1;
-            this.mCurrentTaps = i2;
-            if (i2 == this.mTargetTaps) {
-                completeGesture(motionEvent, motionEvent2, i);
-                return;
-            } else {
-                cancelAfterDoubleTapTimeout(motionEvent, motionEvent2, i);
-                return;
-            }
-        }
-        cancelGesture(motionEvent, motionEvent2, i);
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onMove(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (isInsideSlop(motionEvent2, this.mTouchSlop)) {
-            return;
-        }
-        cancelGesture(motionEvent, motionEvent2, i);
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onPointerDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        cancelGesture(motionEvent, motionEvent2, i);
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onPointerUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        cancelGesture(motionEvent, motionEvent2, i);
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
@@ -100,17 +44,74 @@ public class MultiTap extends GestureMatcher {
         if (i == 3) {
             return "Triple Tap";
         }
-        return Integer.toString(this.mTargetTaps) + " Taps";
+        return Integer.toString(i) + " Taps";
     }
 
-    public final boolean isInsideSlop(MotionEvent motionEvent, int i) {
+    public final boolean isInsideSlop(int i, MotionEvent motionEvent) {
         float x = this.mBaseX - motionEvent.getX();
         float y = this.mBaseY - motionEvent.getY();
-        return (x == DisplayPowerController2.RATE_FROM_DOZE_TO_ON && y == DisplayPowerController2.RATE_FROM_DOZE_TO_ON) || Math.hypot((double) x, (double) y) <= ((double) i);
+        return (x == FullScreenMagnificationGestureHandler.MAX_SCALE && y == FullScreenMagnificationGestureHandler.MAX_SCALE) || Math.hypot((double) x, (double) y) <= ((double) i);
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public String toString() {
+    public void onDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        long tapTimeout = ViewConfiguration.getTapTimeout();
+        this.mDelayedTransition.cancel();
+        this.mDelayedTransition.post(3, tapTimeout, motionEvent, motionEvent2, i);
+        if (Float.isNaN(this.mBaseX) && Float.isNaN(this.mBaseY)) {
+            this.mBaseX = motionEvent.getX();
+            this.mBaseY = motionEvent.getY();
+        }
+        if (!isInsideSlop(this.mDoubleTapSlop, motionEvent2)) {
+            setState(3, motionEvent, motionEvent2, i);
+        }
+        this.mBaseX = motionEvent.getX();
+        this.mBaseY = motionEvent.getY();
+        if (this.mCurrentTaps + 1 == this.mTargetTaps) {
+            setState(1, motionEvent, motionEvent2, i);
+        }
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public final void onMove(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        if (isInsideSlop(this.mTouchSlop, motionEvent2)) {
+            return;
+        }
+        setState(3, motionEvent, motionEvent2, i);
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public final void onPointerDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        setState(3, motionEvent, motionEvent2, i);
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public final void onPointerUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        setState(3, motionEvent, motionEvent2, i);
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public void onUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        cancelAfterDoubleTapTimeout(motionEvent, motionEvent2, i);
+        if (!isInsideSlop(this.mTouchSlop, motionEvent2)) {
+            setState(3, motionEvent, motionEvent2, i);
+        }
+        int i2 = this.mState;
+        if (i2 != 1 && i2 != 0) {
+            setState(3, motionEvent, motionEvent2, i);
+            return;
+        }
+        int i3 = this.mCurrentTaps + 1;
+        this.mCurrentTaps = i3;
+        if (i3 == this.mTargetTaps) {
+            setState(2, motionEvent, motionEvent2, i);
+        } else {
+            cancelAfterDoubleTapTimeout(motionEvent, motionEvent2, i);
+        }
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public final String toString() {
         return super.toString() + ", Taps:" + this.mCurrentTaps + ", mBaseX: " + Float.toString(this.mBaseX) + ", mBaseY: " + Float.toString(this.mBaseY);
     }
 }

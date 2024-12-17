@@ -2,10 +2,11 @@ package com.android.server.stats.pull.netstats;
 
 import android.net.NetworkStats;
 import java.util.Arrays;
-import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class NetworkStatsExt {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class NetworkStatsExt {
+    public final boolean isTypeProxy;
     public final int oemManaged;
     public final int ratType;
     public final boolean slicedByFgbg;
@@ -16,10 +17,10 @@ public class NetworkStatsExt {
     public final int[] transports;
 
     public NetworkStatsExt(NetworkStats networkStats, int[] iArr, boolean z) {
-        this(networkStats, iArr, z, false, false, 0, null, -1);
+        this(networkStats, iArr, z, false, false, 0, null, -1, false);
     }
 
-    public NetworkStatsExt(NetworkStats networkStats, int[] iArr, boolean z, boolean z2, boolean z3, int i, SubInfo subInfo, int i2) {
+    public NetworkStatsExt(NetworkStats networkStats, int[] iArr, boolean z, boolean z2, boolean z3, int i, SubInfo subInfo, int i2, boolean z4) {
         this.stats = networkStats;
         int[] copyOf = Arrays.copyOf(iArr, iArr.length);
         this.transports = copyOf;
@@ -30,9 +31,6 @@ public class NetworkStatsExt {
         this.ratType = i;
         this.subInfo = subInfo;
         this.oemManaged = i2;
-    }
-
-    public boolean hasSameSlicing(NetworkStatsExt networkStatsExt) {
-        return Arrays.equals(this.transports, networkStatsExt.transports) && this.slicedByFgbg == networkStatsExt.slicedByFgbg && this.slicedByTag == networkStatsExt.slicedByTag && this.slicedByMetered == networkStatsExt.slicedByMetered && this.ratType == networkStatsExt.ratType && Objects.equals(this.subInfo, networkStatsExt.subInfo) && this.oemManaged == networkStatsExt.oemManaged;
+        this.isTypeProxy = z4;
     }
 }

@@ -2,113 +2,70 @@ package com.android.server.usb;
 
 import android.media.AudioDeviceAttributes;
 import android.media.IAudioService;
-import android.os.IInstalld;
 import android.os.RemoteException;
 import android.util.sysfwutil.Slog;
-import com.android.internal.util.dump.DualDumpOutputStream;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 import com.android.server.audio.AudioService;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
 import java.util.Arrays;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class UsbAlsaDevice {
-    public static final String[] DIRECTION_STR = {KnoxVpnFirewallHelper.INPUT_CHAIN, KnoxVpnFirewallHelper.OUTPUT_CHAIN};
+    public static final String[] DIRECTION_STR = {"INPUT", "OUTPUT"};
     public final String mAlsaCardDeviceString;
-    public IAudioService mAudioService;
+    public final IAudioService mAudioService;
     public final int mCardNum;
     public final String mDeviceAddress;
-    public final int mDeviceNum;
+    public final int[] mDeviceType;
     public final boolean[] mHasDevice;
     public final boolean mIsDock;
     public final boolean[] mIsHeadset;
     public UsbAlsaJackDetector mJackDetector;
-    public final int[] mDeviceType = new int[2];
-    public boolean[] mIsSelected = new boolean[2];
-    public int[] mState = new int[2];
+    public final boolean[] mIsSelected = new boolean[2];
+    public final int[] mState = new int[2];
     public String mDeviceName = "";
-    public String mDeviceDescription = "";
     public boolean mHasJackDetect = true;
 
-    public UsbAlsaDevice(IAudioService iAudioService, int i, int i2, String str, boolean z, boolean z2, boolean z3, boolean z4, boolean z5) {
-        this.mHasDevice = r1;
-        this.mIsHeadset = r2;
+    public UsbAlsaDevice(IAudioService iAudioService, int i, String str, boolean z, boolean z2, boolean z3, boolean z4, boolean z5) {
+        boolean[] zArr = {z2, z};
+        this.mHasDevice = zArr;
+        this.mIsHeadset = new boolean[]{z3, z4};
+        int[] iArr = new int[2];
+        this.mDeviceType = iArr;
         this.mAudioService = iAudioService;
         this.mCardNum = i;
-        this.mDeviceNum = i2;
         this.mDeviceAddress = str;
-        boolean[] zArr = {z2, z};
-        boolean[] zArr2 = {z3, z4};
         this.mIsDock = z5;
-        initDeviceType();
+        iArr[0] = zArr[0] ? z3 ? -2113929216 : -2147479552 : 0;
+        iArr[1] = zArr[1] ? z5 ? 4096 : z4 ? 67108864 : EndpointMonitorConst.FLAG_TRACING_PROCESS_PERMISSIONS_MODIFICATION : 0;
         this.mAlsaCardDeviceString = getAlsaCardDeviceString();
     }
 
-    public int getCardNum() {
-        return this.mCardNum;
-    }
-
-    public String getDeviceAddress() {
-        return this.mDeviceAddress;
-    }
-
-    public String getAlsaCardDeviceString() {
-        int i;
-        int i2 = this.mCardNum;
-        if (i2 < 0 || (i = this.mDeviceNum) < 0) {
-            Slog.e("UsbAlsaDevice", "Invalid alsa card or device alsaCard: " + this.mCardNum + " alsaDevice: " + this.mDeviceNum);
-            return null;
+    public final boolean equals(Object obj) {
+        if (!(obj instanceof UsbAlsaDevice)) {
+            return false;
         }
-        return AudioService.makeAlsaAddressString(i2, i);
+        UsbAlsaDevice usbAlsaDevice = (UsbAlsaDevice) obj;
+        return this.mCardNum == usbAlsaDevice.mCardNum && Arrays.equals(this.mHasDevice, usbAlsaDevice.mHasDevice) && Arrays.equals(this.mIsHeadset, usbAlsaDevice.mIsHeadset) && this.mIsDock == usbAlsaDevice.mIsDock;
     }
 
-    public final synchronized boolean isInputJackConnected() {
-        UsbAlsaJackDetector usbAlsaJackDetector = this.mJackDetector;
-        if (usbAlsaJackDetector == null) {
-            return true;
+    public final String getAlsaCardDeviceString() {
+        int i = this.mCardNum;
+        if (i >= 0) {
+            int i2 = AudioService.BECOMING_NOISY_DELAY_MS;
+            return BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "card=", ";device=0");
         }
-        return usbAlsaJackDetector.isInputJackConnected();
+        Slog.e("UsbAlsaDevice", "Invalid alsa card or device alsaCard: " + i + " alsaDevice: 0");
+        return null;
     }
 
-    public final synchronized boolean isOutputJackConnected() {
-        UsbAlsaJackDetector usbAlsaJackDetector = this.mJackDetector;
-        if (usbAlsaJackDetector == null) {
-            return true;
-        }
-        return usbAlsaJackDetector.isOutputJackConnected();
-    }
-
-    public final synchronized void startJackDetect() {
-        if (this.mJackDetector != null) {
-            return;
-        }
-        if (this.mHasJackDetect) {
-            UsbAlsaJackDetector startJackDetect = UsbAlsaJackDetector.startJackDetect(this);
-            this.mJackDetector = startJackDetect;
-            if (startJackDetect == null) {
-                this.mHasJackDetect = false;
-            }
-        }
-    }
-
-    public final synchronized void stopJackDetect() {
-        UsbAlsaJackDetector usbAlsaJackDetector = this.mJackDetector;
-        if (usbAlsaJackDetector != null) {
-            usbAlsaJackDetector.pleaseStop();
-        }
-        this.mJackDetector = null;
-    }
-
-    public synchronized void start() {
-        startOutput();
-        startInput();
-    }
-
-    public synchronized void startInput() {
-        startDevice(0);
-    }
-
-    public synchronized void startOutput() {
-        startDevice(1);
+    public final int hashCode() {
+        int i = (this.mCardNum + 31) * 961;
+        boolean[] zArr = this.mHasDevice;
+        int i2 = (((i + (!zArr[1] ? 1 : 0)) * 31) + (!zArr[0] ? 1 : 0)) * 31;
+        boolean[] zArr2 = this.mIsHeadset;
+        return ((((i2 + (!zArr2[0] ? 1 : 0)) * 31) + (!zArr2[1] ? 1 : 0)) * 31) + (!this.mIsDock ? 1 : 0);
     }
 
     public final void startDevice(int i) {
@@ -118,97 +75,82 @@ public final class UsbAlsaDevice {
         }
         zArr[i] = true;
         this.mState[i] = 0;
-        startJackDetect();
+        synchronized (this) {
+            if (this.mJackDetector == null) {
+                if (this.mHasJackDetect) {
+                    UsbAlsaJackDetector startJackDetect = UsbAlsaJackDetector.startJackDetect(this);
+                    this.mJackDetector = startJackDetect;
+                    if (startJackDetect == null) {
+                        this.mHasJackDetect = false;
+                    }
+                }
+            }
+        }
         updateWiredDeviceConnectionState(i, true);
     }
 
-    public synchronized void stop() {
-        stopOutput();
-        stopInput();
-    }
-
-    public synchronized void stopInput() {
+    public final synchronized void stopInput() {
         boolean[] zArr = this.mIsSelected;
         if (zArr[0]) {
             if (!zArr[1]) {
-                stopJackDetect();
+                synchronized (this) {
+                    try {
+                        UsbAlsaJackDetector usbAlsaJackDetector = this.mJackDetector;
+                        if (usbAlsaJackDetector != null) {
+                            usbAlsaJackDetector.pleaseStop();
+                        }
+                        this.mJackDetector = null;
+                    } finally {
+                    }
+                }
             }
-            updateInputWiredDeviceConnectionState(false);
-            this.mIsSelected[0] = false;
+            synchronized (this) {
+                updateWiredDeviceConnectionState(0, false);
+                this.mIsSelected[0] = false;
+            }
         }
     }
 
-    public synchronized void stopOutput() {
+    public final synchronized void stopOutput() {
         boolean[] zArr = this.mIsSelected;
         if (zArr[1]) {
             if (!zArr[0]) {
-                stopJackDetect();
+                synchronized (this) {
+                    try {
+                        UsbAlsaJackDetector usbAlsaJackDetector = this.mJackDetector;
+                        if (usbAlsaJackDetector != null) {
+                            usbAlsaJackDetector.pleaseStop();
+                        }
+                        this.mJackDetector = null;
+                    } finally {
+                    }
+                }
             }
-            updateOutputWiredDeviceConnectionState(false);
-            this.mIsSelected[1] = false;
-        }
-    }
-
-    public final void initDeviceType() {
-        int i;
-        int[] iArr = this.mDeviceType;
-        boolean[] zArr = this.mHasDevice;
-        int i2 = 0;
-        if (zArr[0]) {
-            i = this.mIsHeadset[0] ? -2113929216 : -2147479552;
-        } else {
-            i = 0;
-        }
-        iArr[0] = i;
-        if (zArr[1]) {
-            if (this.mIsDock) {
-                i2 = IInstalld.FLAG_USE_QUOTA;
-            } else {
-                i2 = this.mIsHeadset[1] ? 67108864 : 16384;
+            synchronized (this) {
+                updateWiredDeviceConnectionState(1, false);
+                this.mIsSelected[1] = false;
             }
         }
-        iArr[1] = i2;
     }
 
-    public int getOutputDeviceType() {
-        return this.mDeviceType[1];
+    public final synchronized String toString() {
+        return "UsbAlsaDevice: [card: " + this.mCardNum + ", device: 0, name: " + this.mDeviceName + ", hasOutput: " + this.mHasDevice[1] + ", hasInput: " + this.mHasDevice[0] + "]";
     }
 
-    public int getInputDeviceType() {
-        return this.mDeviceType[0];
+    /* JADX WARN: Removed duplicated region for block: B:28:0x00c6  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean updateWiredDeviceConnectionState(int r7, boolean r8) {
+        /*
+            Method dump skipped, instructions count: 249
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.usb.UsbAlsaDevice.updateWiredDeviceConnectionState(int, boolean):boolean");
     }
 
-    public final boolean updateWiredDeviceConnectionState(int i, boolean z) {
-        if (!this.mIsSelected[i]) {
-            Slog.e("UsbAlsaDevice", "Updating wired device connection state on unselected device");
-            return false;
-        }
-        if (this.mDeviceType[i] == 0) {
-            Slog.d("UsbAlsaDevice", "Unable to set device connection state as " + DIRECTION_STR[i] + " device type is none");
-            return false;
-        }
-        if (this.mAlsaCardDeviceString == null) {
-            Slog.w("UsbAlsaDevice", "Failed to update " + DIRECTION_STR[i] + " device connection state failed as alsa card device string is null");
-            return false;
-        }
-        Slog.d("UsbAlsaDevice", "pre-call device:0x" + Integer.toHexString(this.mDeviceType[i]) + " addr:" + this.mAlsaCardDeviceString + " name:" + this.mDeviceName);
-        boolean isInputJackConnected = i == 0 ? isInputJackConnected() : isOutputJackConnected();
-        Slog.i("UsbAlsaDevice", DIRECTION_STR[i] + " JACK connected: " + isInputJackConnected);
-        int i2 = (z && isInputJackConnected) ? 1 : 0;
-        int[] iArr = this.mState;
-        if (i2 != iArr[i]) {
-            iArr[i] = i2;
-            try {
-                this.mAudioService.setWiredDeviceConnectionState(new AudioDeviceAttributes(this.mDeviceType[i], this.mAlsaCardDeviceString, this.mDeviceName), i2, "UsbAlsaDevice");
-            } catch (RemoteException unused) {
-                Slog.e("UsbAlsaDevice", "RemoteException in setWiredDeviceConnectionState for " + DIRECTION_STR[i]);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public synchronized void updateWiredDeviceConnectionStateByBundle(boolean z) {
+    public final synchronized void updateWiredDeviceConnectionStateByBundle(boolean z) {
         Slog.d("UsbAlsaDevice", "updateWiredDeviceConnectionStateByBundle()");
         String alsaCardDeviceString = getAlsaCardDeviceString();
         if (alsaCardDeviceString == null) {
@@ -227,53 +169,5 @@ public final class UsbAlsaDevice {
         } catch (RemoteException unused) {
             Slog.e("UsbAlsaDevice", "RemoteException in updateWiredDeviceConnectionStateByBundle");
         }
-    }
-
-    public synchronized boolean updateInputWiredDeviceConnectionState(boolean z) {
-        return updateWiredDeviceConnectionState(0, z);
-    }
-
-    public synchronized boolean updateOutputWiredDeviceConnectionState(boolean z) {
-        return updateWiredDeviceConnectionState(1, z);
-    }
-
-    public synchronized String toString() {
-        return "UsbAlsaDevice: [card: " + this.mCardNum + ", device: " + this.mDeviceNum + ", name: " + this.mDeviceName + ", hasOutput: " + this.mHasDevice[1] + ", hasInput: " + this.mHasDevice[0] + "]";
-    }
-
-    public synchronized void dump(DualDumpOutputStream dualDumpOutputStream, String str, long j) {
-        long start = dualDumpOutputStream.start(str, j);
-        dualDumpOutputStream.write("card", 1120986464257L, this.mCardNum);
-        dualDumpOutputStream.write("device", 1120986464258L, this.mDeviceNum);
-        dualDumpOutputStream.write("name", 1138166333443L, this.mDeviceName);
-        dualDumpOutputStream.write("has_output", 1133871366148L, this.mHasDevice[1]);
-        dualDumpOutputStream.write("has_input", 1133871366149L, this.mHasDevice[0]);
-        dualDumpOutputStream.write("address", 1138166333446L, this.mDeviceAddress);
-        dualDumpOutputStream.end(start);
-    }
-
-    public synchronized String toShortString() {
-        return "[card:" + this.mCardNum + " device:" + this.mDeviceNum + " " + this.mDeviceName + "]";
-    }
-
-    public synchronized void setDeviceNameAndDescription(String str, String str2) {
-        this.mDeviceName = str;
-        this.mDeviceDescription = str2;
-    }
-
-    public boolean equals(Object obj) {
-        if (!(obj instanceof UsbAlsaDevice)) {
-            return false;
-        }
-        UsbAlsaDevice usbAlsaDevice = (UsbAlsaDevice) obj;
-        return this.mCardNum == usbAlsaDevice.mCardNum && this.mDeviceNum == usbAlsaDevice.mDeviceNum && Arrays.equals(this.mHasDevice, usbAlsaDevice.mHasDevice) && Arrays.equals(this.mIsHeadset, usbAlsaDevice.mIsHeadset) && this.mIsDock == usbAlsaDevice.mIsDock;
-    }
-
-    public int hashCode() {
-        int i = (((this.mCardNum + 31) * 31) + this.mDeviceNum) * 31;
-        boolean[] zArr = this.mHasDevice;
-        int i2 = (((i + (!zArr[1] ? 1 : 0)) * 31) + (!zArr[0] ? 1 : 0)) * 31;
-        boolean[] zArr2 = this.mIsHeadset;
-        return ((((i2 + (!zArr2[0] ? 1 : 0)) * 31) + (!zArr2[1] ? 1 : 0)) * 31) + (!this.mIsDock ? 1 : 0);
     }
 }

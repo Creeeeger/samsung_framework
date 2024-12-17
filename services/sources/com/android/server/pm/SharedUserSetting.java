@@ -1,15 +1,14 @@
 package com.android.server.pm;
 
-import android.content.pm.SigningDetails;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.util.ArrayMap;
-import android.util.ArraySet;
-import android.util.proto.ProtoOutputStream;
-import com.android.server.pm.parsing.pkg.AndroidPackageInternal;
-import com.android.server.pm.permission.LegacyPermissionState;
-import com.android.server.pm.pkg.SharedUserApi;
-import com.android.server.pm.pkg.component.ComponentMutateUtils;
-import com.android.server.pm.pkg.component.ParsedProcess;
-import com.android.server.pm.pkg.component.ParsedProcessImpl;
+import com.android.internal.pm.parsing.pkg.AndroidPackageInternal;
+import com.android.internal.pm.pkg.component.ComponentMutateUtils;
+import com.android.internal.pm.pkg.component.ParsedProcess;
+import com.android.internal.pm.pkg.component.ParsedProcessImpl;
+import com.android.server.pm.pkg.AndroidPackage;
+import com.android.server.pm.pkg.PackageStateInternal;
+import com.android.server.pm.pkg.PackageStateUnserialized;
 import com.android.server.utils.SnapshotCache;
 import com.android.server.utils.Watchable;
 import com.android.server.utils.WatchedArraySet;
@@ -20,12 +19,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes3.dex */
-public final class SharedUserSetting extends SettingBase implements SharedUserApi {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SharedUserSetting extends SettingBase {
     public int mAppId;
     public final WatchedArraySet mDisabledPackages;
     public final SnapshotCache mDisabledPackagesSnapshot;
-    public final Watcher mObserver;
+    public final AnonymousClass1 mObserver;
     public final WatchedArraySet mPackages;
     public final SnapshotCache mPackagesSnapshot;
     public final SnapshotCache mSnapshot;
@@ -34,24 +34,24 @@ public final class SharedUserSetting extends SettingBase implements SharedUserAp
     public int seInfoTargetSdkVersion;
     public final PackageSignatures signatures;
     public Boolean signaturesChanged;
-    public int uidFlags;
-    public int uidPrivateFlags;
+    public final int uidFlags;
+    public final int uidPrivateFlags;
 
-    public final SnapshotCache makeCache() {
-        return new SnapshotCache(this, this) { // from class: com.android.server.pm.SharedUserSetting.2
-            @Override // com.android.server.utils.SnapshotCache
-            public SharedUserSetting createSnapshot() {
-                return new SharedUserSetting();
-            }
-        };
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.pm.SharedUserSetting$2, reason: invalid class name */
+    public final class AnonymousClass2 extends SnapshotCache {
+        @Override // com.android.server.utils.SnapshotCache
+        public final Object createSnapshot() {
+            return new SharedUserSetting((SharedUserSetting) this.mSource);
+        }
     }
 
-    public SharedUserSetting(String str, int i, int i2) {
+    public SharedUserSetting(int i, int i2, String str) {
         super(i, i2);
-        this.mObserver = new Watcher() { // from class: com.android.server.pm.SharedUserSetting.1
+        Watcher watcher = new Watcher() { // from class: com.android.server.pm.SharedUserSetting.1
             @Override // com.android.server.utils.Watcher
-            public void onChange(Watchable watchable) {
-                SharedUserSetting.this.onChanged();
+            public final void onChange(Watchable watchable) {
+                SharedUserSetting.this.onChanged$2();
             }
         };
         this.signatures = new PackageSignatures();
@@ -61,21 +61,22 @@ public final class SharedUserSetting extends SettingBase implements SharedUserAp
         this.seInfoTargetSdkVersion = 10000;
         WatchedArraySet watchedArraySet = new WatchedArraySet();
         this.mPackages = watchedArraySet;
-        this.mPackagesSnapshot = new SnapshotCache.Auto(watchedArraySet, watchedArraySet, "SharedUserSetting.packages");
+        this.mPackagesSnapshot = new SnapshotCache.Auto(watchedArraySet, watchedArraySet, "SharedUserSetting.packages", 0);
         WatchedArraySet watchedArraySet2 = new WatchedArraySet();
         this.mDisabledPackages = watchedArraySet2;
-        this.mDisabledPackagesSnapshot = new SnapshotCache.Auto(watchedArraySet2, watchedArraySet2, "SharedUserSetting.mDisabledPackages");
+        this.mDisabledPackagesSnapshot = new SnapshotCache.Auto(watchedArraySet2, watchedArraySet2, "SharedUserSetting.mDisabledPackages", 0);
         this.processes = new ArrayMap();
-        registerObservers();
-        this.mSnapshot = makeCache();
+        watchedArraySet.registerObserver(watcher);
+        watchedArraySet2.registerObserver(watcher);
+        this.mSnapshot = new AnonymousClass2(this, this, null);
     }
 
     public SharedUserSetting(SharedUserSetting sharedUserSetting) {
         super(sharedUserSetting);
-        this.mObserver = new Watcher() { // from class: com.android.server.pm.SharedUserSetting.1
+        new Watcher() { // from class: com.android.server.pm.SharedUserSetting.1
             @Override // com.android.server.utils.Watcher
-            public void onChange(Watchable watchable) {
-                SharedUserSetting.this.onChanged();
+            public final void onChange(Watchable watchable) {
+                SharedUserSetting.this.onChanged$2();
             }
         };
         PackageSignatures packageSignatures = new PackageSignatures();
@@ -85,37 +86,34 @@ public final class SharedUserSetting extends SettingBase implements SharedUserAp
         this.uidFlags = sharedUserSetting.uidFlags;
         this.uidPrivateFlags = sharedUserSetting.uidPrivateFlags;
         this.mPackages = (WatchedArraySet) sharedUserSetting.mPackagesSnapshot.snapshot();
-        this.mPackagesSnapshot = new SnapshotCache.Sealed();
+        this.mPackagesSnapshot = new SnapshotCache.Auto();
         this.mDisabledPackages = (WatchedArraySet) sharedUserSetting.mDisabledPackagesSnapshot.snapshot();
-        this.mDisabledPackagesSnapshot = new SnapshotCache.Sealed();
+        this.mDisabledPackagesSnapshot = new SnapshotCache.Auto();
         packageSignatures.mSigningDetails = sharedUserSetting.signatures.mSigningDetails;
         this.signaturesChanged = sharedUserSetting.signaturesChanged;
         this.processes = new ArrayMap(sharedUserSetting.processes);
-        this.mSnapshot = new SnapshotCache.Sealed();
+        this.mSnapshot = new SnapshotCache.Auto();
     }
 
-    public final void registerObservers() {
-        this.mPackages.registerObserver(this.mObserver);
-        this.mDisabledPackages.registerObserver(this.mObserver);
+    public final void addPackage(PackageSetting packageSetting) {
+        AndroidPackageInternal androidPackageInternal;
+        WatchedArraySet watchedArraySet = this.mPackages;
+        if (watchedArraySet.mStorage.size() == 0 && (androidPackageInternal = packageSetting.pkg) != null) {
+            this.seInfoTargetSdkVersion = androidPackageInternal.getTargetSdkVersion();
+        }
+        if (watchedArraySet.add(packageSetting)) {
+            this.mPkgFlags |= packageSetting.mPkgFlags;
+            onChanged$2();
+            setPrivateFlags(this.mPkgPrivateFlags | packageSetting.mPkgPrivateFlags);
+            onChanged$2();
+        }
+        AndroidPackageInternal androidPackageInternal2 = packageSetting.pkg;
+        if (androidPackageInternal2 != null) {
+            addProcesses(androidPackageInternal2.getProcesses());
+        }
     }
 
-    @Override // com.android.server.utils.Snappable
-    public SharedUserSetting snapshot() {
-        return (SharedUserSetting) this.mSnapshot.snapshot();
-    }
-
-    public String toString() {
-        return "SharedUserSetting{" + Integer.toHexString(System.identityHashCode(this)) + " " + this.name + "/" + this.mAppId + "}";
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        protoOutputStream.write(1120986464257L, this.mAppId);
-        protoOutputStream.write(1138166333442L, this.name);
-        protoOutputStream.end(start);
-    }
-
-    public void addProcesses(Map map) {
+    public final void addProcesses(Map map) {
         if (map != null) {
             Iterator it = map.keySet().iterator();
             while (it.hasNext()) {
@@ -127,148 +125,115 @@ public final class SharedUserSetting extends SettingBase implements SharedUserAp
                     ComponentMutateUtils.addStateFrom(parsedProcess2, parsedProcess);
                 }
             }
-            onChanged();
+            onChanged$2();
         }
     }
 
-    public boolean removePackage(PackageSetting packageSetting) {
-        if (!this.mPackages.remove(packageSetting)) {
-            return false;
-        }
-        if ((getFlags() & packageSetting.getFlags()) != 0) {
-            int i = this.uidFlags;
-            for (int i2 = 0; i2 < this.mPackages.size(); i2++) {
-                i |= ((PackageSetting) this.mPackages.valueAt(i2)).getFlags();
-            }
-            setFlags(i);
-        }
-        if ((packageSetting.getPrivateFlags() & getPrivateFlags()) != 0) {
-            int i3 = this.uidPrivateFlags;
-            for (int i4 = 0; i4 < this.mPackages.size(); i4++) {
-                i3 |= ((PackageSetting) this.mPackages.valueAt(i4)).getPrivateFlags();
-            }
-            setPrivateFlags(i3);
-        }
-        updateProcesses();
-        onChanged();
-        return true;
-    }
-
-    public void addPackage(PackageSetting packageSetting) {
-        if (this.mPackages.size() == 0 && packageSetting.getPkg() != null) {
-            this.seInfoTargetSdkVersion = packageSetting.getPkg().getTargetSdkVersion();
-        }
-        if (this.mPackages.add(packageSetting)) {
-            setFlags(getFlags() | packageSetting.getFlags());
-            setPrivateFlags(getPrivateFlags() | packageSetting.getPrivateFlags());
-            onChanged();
-        }
-        if (packageSetting.getPkg() != null) {
-            addProcesses(packageSetting.getPkg().getProcesses());
-        }
-    }
-
-    @Override // com.android.server.pm.pkg.SharedUserApi
-    public List getPackages() {
+    public final void fixSeInfoLocked() {
+        AndroidPackageInternal androidPackageInternal;
         WatchedArraySet watchedArraySet = this.mPackages;
-        if (watchedArraySet == null || watchedArraySet.size() == 0) {
+        if (watchedArraySet == null || watchedArraySet.mStorage.size() == 0) {
+            return;
+        }
+        for (int i = 0; i < watchedArraySet.mStorage.size(); i++) {
+            PackageSetting packageSetting = (PackageSetting) watchedArraySet.mStorage.valueAt(i);
+            if (packageSetting != null && (androidPackageInternal = packageSetting.pkg) != null && androidPackageInternal.getTargetSdkVersion() < this.seInfoTargetSdkVersion) {
+                this.seInfoTargetSdkVersion = packageSetting.pkg.getTargetSdkVersion();
+                onChanged$2();
+            }
+        }
+        for (int i2 = 0; i2 < watchedArraySet.mStorage.size(); i2++) {
+            PackageSetting packageSetting2 = (PackageSetting) watchedArraySet.mStorage.valueAt(i2);
+            if (packageSetting2 != null && packageSetting2.pkg != null) {
+                String seInfo = SELinuxMMAC.getSeInfo((PackageStateInternal) packageSetting2, (AndroidPackage) packageSetting2.pkg, isPrivileged() | packageSetting2.isPrivileged(), this.seInfoTargetSdkVersion);
+                PackageStateUnserialized packageStateUnserialized = packageSetting2.pkgState;
+                packageStateUnserialized.overrideSeInfo = seInfo;
+                packageStateUnserialized.mPackageSetting.onChanged$2();
+                onChanged$2();
+            }
+        }
+    }
+
+    public final List getPackages() {
+        AndroidPackageInternal androidPackageInternal;
+        WatchedArraySet watchedArraySet = this.mPackages;
+        if (watchedArraySet == null || watchedArraySet.mStorage.size() == 0) {
             return Collections.emptyList();
         }
-        ArrayList arrayList = new ArrayList(this.mPackages.size());
-        for (int i = 0; i < this.mPackages.size(); i++) {
-            PackageSetting packageSetting = (PackageSetting) this.mPackages.valueAt(i);
-            if (packageSetting != null && packageSetting.getPkg() != null) {
-                arrayList.add(packageSetting.getPkg());
+        ArrayList arrayList = new ArrayList(watchedArraySet.mStorage.size());
+        for (int i = 0; i < watchedArraySet.mStorage.size(); i++) {
+            PackageSetting packageSetting = (PackageSetting) watchedArraySet.mStorage.valueAt(i);
+            if (packageSetting != null && (androidPackageInternal = packageSetting.pkg) != null) {
+                arrayList.add(androidPackageInternal);
             }
         }
         return arrayList;
     }
 
-    @Override // com.android.server.pm.pkg.SharedUserApi
-    public boolean isPrivileged() {
-        return (getPrivateFlags() & 8) != 0;
+    public final boolean isPrivileged() {
+        return (this.mPkgPrivateFlags & 8) != 0;
     }
 
-    public boolean isSingleUser() {
-        if (this.mPackages.size() != 1 || this.mDisabledPackages.size() > 1) {
+    public final boolean isSingleUser() {
+        if (this.mPackages.mStorage.size() != 1) {
             return false;
         }
-        if (this.mDisabledPackages.size() != 1) {
+        WatchedArraySet watchedArraySet = this.mDisabledPackages;
+        if (watchedArraySet.mStorage.size() > 1) {
+            return false;
+        }
+        if (watchedArraySet.mStorage.size() != 1) {
             return true;
         }
-        AndroidPackageInternal pkg = ((PackageSetting) this.mDisabledPackages.valueAt(0)).getPkg();
-        return pkg != null && pkg.isLeavingSharedUser();
+        AndroidPackageInternal androidPackageInternal = ((PackageSetting) watchedArraySet.mStorage.valueAt(0)).pkg;
+        return androidPackageInternal != null && androidPackageInternal.isLeavingSharedUser();
     }
 
-    public void fixSeInfoLocked() {
+    public final void removePackage(PackageSetting packageSetting) {
         WatchedArraySet watchedArraySet = this.mPackages;
-        if (watchedArraySet == null || watchedArraySet.size() == 0) {
-            return;
-        }
-        for (int i = 0; i < this.mPackages.size(); i++) {
-            PackageSetting packageSetting = (PackageSetting) this.mPackages.valueAt(i);
-            if (packageSetting != null && packageSetting.getPkg() != null && packageSetting.getPkg().getTargetSdkVersion() < this.seInfoTargetSdkVersion) {
-                this.seInfoTargetSdkVersion = packageSetting.getPkg().getTargetSdkVersion();
-                onChanged();
+        if (watchedArraySet.remove(packageSetting)) {
+            if ((this.mPkgFlags & packageSetting.mPkgFlags) != 0) {
+                int i = this.uidFlags;
+                for (int i2 = 0; i2 < watchedArraySet.mStorage.size(); i2++) {
+                    i |= ((PackageSetting) watchedArraySet.mStorage.valueAt(i2)).mPkgFlags;
+                }
+                this.mPkgFlags = i;
+                onChanged$2();
             }
-        }
-        for (int i2 = 0; i2 < this.mPackages.size(); i2++) {
-            PackageSetting packageSetting2 = (PackageSetting) this.mPackages.valueAt(i2);
-            if (packageSetting2 != null && packageSetting2.getPkg() != null) {
-                packageSetting2.getPkgState().setOverrideSeInfo(SELinuxMMAC.getSeInfo(packageSetting2.getPkg(), isPrivileged() | packageSetting2.isPrivileged(), this.seInfoTargetSdkVersion));
-                onChanged();
+            if ((packageSetting.mPkgPrivateFlags & this.mPkgPrivateFlags) != 0) {
+                int i3 = this.uidPrivateFlags;
+                for (int i4 = 0; i4 < watchedArraySet.mStorage.size(); i4++) {
+                    i3 |= ((PackageSetting) watchedArraySet.mStorage.valueAt(i4)).mPkgPrivateFlags;
+                }
+                setPrivateFlags(i3);
             }
+            updateProcesses();
+            onChanged$2();
         }
     }
 
-    public void updateProcesses() {
+    @Override // com.android.server.utils.Snappable
+    public final Object snapshot() {
+        return (SharedUserSetting) this.mSnapshot.snapshot();
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("SharedUserSetting{");
+        sb.append(Integer.toHexString(System.identityHashCode(this)));
+        sb.append(" ");
+        sb.append(this.name);
+        sb.append("/");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.mAppId, sb, "}");
+    }
+
+    public final void updateProcesses() {
         this.processes.clear();
-        for (int size = this.mPackages.size() - 1; size >= 0; size--) {
-            AndroidPackageInternal pkg = ((PackageSetting) this.mPackages.valueAt(size)).getPkg();
-            if (pkg != null) {
-                addProcesses(pkg.getProcesses());
+        WatchedArraySet watchedArraySet = this.mPackages;
+        for (int size = watchedArraySet.mStorage.size() - 1; size >= 0; size--) {
+            AndroidPackageInternal androidPackageInternal = ((PackageSetting) watchedArraySet.mStorage.valueAt(size)).pkg;
+            if (androidPackageInternal != null) {
+                addProcesses(androidPackageInternal.getProcesses());
             }
         }
-    }
-
-    @Override // com.android.server.pm.pkg.SharedUserApi
-    public String getName() {
-        return this.name;
-    }
-
-    public int getAppId() {
-        return this.mAppId;
-    }
-
-    @Override // com.android.server.pm.pkg.SharedUserApi
-    public int getSeInfoTargetSdkVersion() {
-        return this.seInfoTargetSdkVersion;
-    }
-
-    public WatchedArraySet getPackageSettings() {
-        return this.mPackages;
-    }
-
-    public WatchedArraySet getDisabledPackageSettings() {
-        return this.mDisabledPackages;
-    }
-
-    @Override // com.android.server.pm.pkg.SharedUserApi
-    public ArraySet getPackageStates() {
-        return this.mPackages.untrackedStorage();
-    }
-
-    public ArraySet getDisabledPackageStates() {
-        return this.mDisabledPackages.untrackedStorage();
-    }
-
-    @Override // com.android.server.pm.pkg.SharedUserApi
-    public SigningDetails getSigningDetails() {
-        return this.signatures.mSigningDetails;
-    }
-
-    @Override // com.android.server.pm.pkg.SharedUserApi
-    public LegacyPermissionState getSharedUserLegacyPermissionState() {
-        return super.getLegacyPermissionState();
     }
 }

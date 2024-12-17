@@ -1,10 +1,12 @@
 package com.android.server.notification;
 
 import android.app.NotificationManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Slog;
@@ -13,17 +15,10 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class ReviewNotificationPermissionsReceiver extends BroadcastReceiver {
+public final class ReviewNotificationPermissionsReceiver extends BroadcastReceiver {
     public static final boolean DEBUG = Log.isLoggable("ReviewNotifPermissions", 3);
-
-    public static IntentFilter getFilter() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("REVIEW_NOTIF_ACTION_REMIND");
-        intentFilter.addAction("REVIEW_NOTIF_ACTION_DISMISS");
-        intentFilter.addAction("REVIEW_NOTIF_ACTION_CANCELED");
-        return intentFilter;
-    }
 
     public void cancelNotification(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NotificationManager.class);
@@ -34,15 +29,8 @@ public class ReviewNotificationPermissionsReceiver extends BroadcastReceiver {
         }
     }
 
-    public void rescheduleNotification(Context context) {
-        ReviewNotificationPermissionsJobService.scheduleJob(context, 604800000L);
-        if (DEBUG) {
-            Slog.d("ReviewNotifPermissions", "Scheduled review permissions notification for on or after: " + LocalDateTime.now(ZoneId.systemDefault()).plus(604800000L, (TemporalUnit) ChronoUnit.MILLIS));
-        }
-    }
-
     @Override // android.content.BroadcastReceiver
-    public void onReceive(Context context, Intent intent) {
+    public final void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (action.equals("REVIEW_NOTIF_ACTION_REMIND")) {
             rescheduleNotification(context);
@@ -59,6 +47,14 @@ public class ReviewNotificationPermissionsReceiver extends BroadcastReceiver {
             } else if (i == 3) {
                 Settings.Global.putInt(context.getContentResolver(), "review_permissions_notification_state", 1);
             }
+        }
+    }
+
+    public void rescheduleNotification(Context context) {
+        int i = ReviewNotificationPermissionsJobService.JOB_ID;
+        ((JobScheduler) context.getSystemService(JobScheduler.class)).schedule(new JobInfo.Builder(225373531, new ComponentName(context, (Class<?>) ReviewNotificationPermissionsJobService.class)).setPersisted(true).setMinimumLatency(604800000L).build());
+        if (DEBUG) {
+            Slog.d("ReviewNotifPermissions", "Scheduled review permissions notification for on or after: " + LocalDateTime.now(ZoneId.systemDefault()).plus(604800000L, (TemporalUnit) ChronoUnit.MILLIS));
         }
     }
 }

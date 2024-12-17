@@ -1,37 +1,36 @@
 package com.android.server.permission.access;
 
-import android.util.SparseArray;
+import com.android.server.permission.access.immutable.Immutable;
+import com.android.server.permission.access.immutable.MutableIntReferenceMap;
+import com.android.server.permission.access.immutable.MutableReference;
 
-/* compiled from: AccessState.kt */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public final class AccessState {
-    public final SystemState systemState;
-    public final SparseArray userStates;
+public abstract class AccessState implements Immutable {
+    public final MutableReference externalStateReference;
+    public final MutableReference systemStateReference;
+    public final MutableReference userStatesReference;
 
-    public AccessState(SystemState systemState, SparseArray sparseArray) {
-        this.systemState = systemState;
-        this.userStates = sparseArray;
+    public AccessState(MutableReference mutableReference, MutableReference mutableReference2, MutableReference mutableReference3) {
+        this.externalStateReference = mutableReference;
+        this.systemStateReference = mutableReference2;
+        this.userStatesReference = mutableReference3;
     }
 
-    public final SystemState getSystemState() {
-        return this.systemState;
+    public final MutableExternalState getExternalState() {
+        return (MutableExternalState) this.externalStateReference.immutable;
     }
 
-    public final SparseArray getUserStates() {
-        return this.userStates;
+    public final MutableSystemState getSystemState() {
+        return (MutableSystemState) this.systemStateReference.immutable;
     }
 
-    public AccessState() {
-        this(new SystemState(), new SparseArray());
+    public final MutableIntReferenceMap getUserStates() {
+        return (MutableIntReferenceMap) this.userStatesReference.immutable;
     }
 
-    public final AccessState copy() {
-        SystemState copy = this.systemState.copy();
-        SparseArray clone = this.userStates.clone();
-        int size = clone.size();
-        for (int i = 0; i < size; i++) {
-            clone.setValueAt(i, ((UserState) clone.valueAt(i)).copy());
-        }
-        return new AccessState(copy, clone);
+    @Override // com.android.server.permission.access.immutable.Immutable
+    public final MutableAccessState toMutable() {
+        return new MutableAccessState(this.externalStateReference.toImmutable(), this.systemStateReference.toImmutable(), this.userStatesReference.toImmutable());
     }
 }

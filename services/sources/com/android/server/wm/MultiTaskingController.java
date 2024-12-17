@@ -1,15 +1,13 @@
 package com.android.server.wm;
 
 import android.R;
-import android.app.ActivityManager;
-import android.app.ActivityOptions;
 import android.app.PendingIntent;
+import android.app.WindowConfiguration;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -20,35 +18,32 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Rect;
-import android.graphics.Region;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.IInstalld;
 import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
-import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Slog;
 import android.view.InsetsSource;
 import android.view.InsetsState;
-import android.view.WindowInsets;
-import android.window.WindowContainerTransaction;
-import com.android.internal.policy.DockedDividerUtils;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.HeapdumpWatcher$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.am.ActivityManagerService;
 import com.android.server.desktopmode.DesktopModeSettings;
 import com.android.server.inputmethod.InputMethodManagerInternal;
-import com.android.server.statusbar.StatusBarManagerInternal;
-import com.android.server.uri.NeededUriGrants;
-import com.android.server.wm.ActivityStarter;
+import com.android.server.wm.ActivityRecord;
 import com.android.server.wm.DexController;
 import com.android.server.wm.DisplayPolicy;
+import com.android.server.wm.WindowContainer;
 import com.samsung.android.core.CoreSaLogger;
 import com.samsung.android.multiwindow.IRemoteAppTransitionListener;
 import com.samsung.android.multiwindow.MultiWindowCoreState;
@@ -67,713 +62,48 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class MultiTaskingController implements IController {
-    public static final boolean ALLOW_OVERRIDE_DESKTOP_LAUNCHER = SystemProperties.getBoolean("debug.mt.allow_override_activity_config_desktop_launcher", true);
-    public static final String TAG = "MultiTaskingController";
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class MultiTaskingController implements IController {
     public final ActivityEmbeddedPackageRepository mActivityEmbeddedPackageRepository;
     public final ActivityTaskManagerService mAtm;
     public boolean mDeferFocusChanging;
+    public final AnonymousClass1 mDemoResetStartedReceiver;
     public H mH;
     public boolean mIsFullToSplitEnabled;
     public boolean mIsGestureTypeSideAndBottom;
     public boolean mIsMinimalBatteryUse;
     public boolean mIsNavigationModeGesture;
     public int mLastRotation;
-    public Runnable mMoveToBackTaskWithIme;
+    public final AnonymousClass1 mMinimizeAllReceiver;
+    public MultiTaskingController$$ExternalSyntheticLambda4 mMoveToBackTaskWithIme;
     public SettingsObserver mSettingsObserver;
     public int mSwipeGestureThreshold;
     public ActivityRecord mTmpPipCandidate;
     public WindowManagerService mWm;
     public int mSystemUIUid = -1;
-    public final Rect mTmpRect = new Rect();
-    public Task mAffordanceTargetTask = null;
-    public int mPendingMoveToTaskId = -1;
-    public Configuration mLastConfig = new Configuration();
+    public final Configuration mLastConfig = new Configuration();
     public int mSplitFeasibleMode = 2;
     public boolean mIsDisplaySizeOverride = false;
-    public final Queue mFocusableTaskIds = new LinkedList();
     public final RemoteCallbackList mRemoteAppTransitionListeners = new RemoteCallbackList();
-    public final AppTransitionConsumer mNotifyStartRecentsAnimation = new AppTransitionConsumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda0
-        @Override // com.android.server.wm.MultiTaskingController.AppTransitionConsumer
-        public final void accept(IRemoteAppTransitionListener iRemoteAppTransitionListener, Message message) {
-            MultiTaskingController.lambda$new$0(iRemoteAppTransitionListener, message);
-        }
-    };
-    public final AppTransitionConsumer mNotifyFinishRecentsAnimation = new AppTransitionConsumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda1
-        @Override // com.android.server.wm.MultiTaskingController.AppTransitionConsumer
-        public final void accept(IRemoteAppTransitionListener iRemoteAppTransitionListener, Message message) {
-            MultiTaskingController.lambda$new$1(iRemoteAppTransitionListener, message);
-        }
-    };
-    public final AppTransitionConsumer mNotifyStartHomeAnimation = new AppTransitionConsumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda2
-        @Override // com.android.server.wm.MultiTaskingController.AppTransitionConsumer
-        public final void accept(IRemoteAppTransitionListener iRemoteAppTransitionListener, Message message) {
-            MultiTaskingController.lambda$new$2(iRemoteAppTransitionListener, message);
-        }
-    };
-    public final AppTransitionConsumer mNotifyWallpaperVisibilityChanged = new AppTransitionConsumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda3
-        @Override // com.android.server.wm.MultiTaskingController.AppTransitionConsumer
-        public final void accept(IRemoteAppTransitionListener iRemoteAppTransitionListener, Message message) {
-            MultiTaskingController.lambda$new$3(iRemoteAppTransitionListener, message);
-        }
-    };
+    public final MultiTaskingController$$ExternalSyntheticLambda5 mNotifyStartRecentsAnimation = new MultiTaskingController$$ExternalSyntheticLambda5(0);
+    public final MultiTaskingController$$ExternalSyntheticLambda5 mNotifyFinishRecentsAnimation = new MultiTaskingController$$ExternalSyntheticLambda5(1);
+    public final MultiTaskingController$$ExternalSyntheticLambda5 mNotifyStartHomeAnimation = new MultiTaskingController$$ExternalSyntheticLambda5(2);
+    public final MultiTaskingController$$ExternalSyntheticLambda5 mNotifyWallpaperVisibilityChanged = new MultiTaskingController$$ExternalSyntheticLambda5(3);
     public boolean mDeferEnsureConfig = false;
-    public final BroadcastReceiver mMinimizeAllReceiver = new BroadcastReceiver() { // from class: com.android.server.wm.MultiTaskingController.1
-        public AnonymousClass1() {
-        }
+    public final Rect mTmpRect = new Rect();
+    public Task mAffordanceTargetTask = null;
+    public final Queue mFocusableTaskIds = new LinkedList();
 
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Bundle extras = intent.getExtras();
-            int i = extras != null ? extras.getInt("displayId", 0) : 0;
-            if ("com.samsung.android.multiwindow.MINIMIZE_ALL".equals(action) || "com.samsung.android.multiwindow.MINIMIZE_ALL_BY_SYSTEM".equals(action)) {
-                WindowManagerGlobalLock windowManagerGlobalLock = MultiTaskingController.this.mAtm.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        MultiTaskingController.this.minimizeAllTasksLocked(i, true);
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-        }
-    };
-    public final BroadcastReceiver mDemoResetStartedReceiver = new BroadcastReceiver() { // from class: com.android.server.wm.MultiTaskingController.2
-        public AnonymousClass2() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if ("com.samsung.sea.rm.DEMO_RESET_STARTED".equals(action)) {
-                if (SmartPopupViewUtil.isShopDemo(MultiTaskingController.this.mAtm.mContext)) {
-                    Slog.d(MultiTaskingController.TAG, "demo reset");
-                    if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-                        SmartPopupViewUtil.resetPackageListStr(MultiTaskingController.this.mAtm.mContext);
-                    }
-                    MultiWindowManager.getInstance().setCornerGestureEnabledWithSettings(false);
-                    return;
-                }
-                return;
-            }
-            if ("com.samsung.intent.action.SETTINGS_SOFT_RESET".equals(action)) {
-                Slog.d(MultiTaskingController.TAG, "settings reset");
-                SmartPopupViewUtil.resetPackageListStr(MultiTaskingController.this.mAtm.mContext);
-            }
-        }
-    };
-
-    /* loaded from: classes3.dex */
-    public interface AppTransitionConsumer {
-        void accept(IRemoteAppTransitionListener iRemoteAppTransitionListener, Message message);
-    }
-
-    public final boolean isVerticalDivision(int i, int i2) {
-        if ((i & 8) != 0 && (i2 & 32) != 0) {
-            return true;
-        }
-        if ((i2 & 8) == 0 || (i & 32) == 0) {
-            return i == 0 && i2 == 0;
-        }
-        return true;
-    }
-
-    public void removeMoveToBackTaskWithIme(int i) {
-    }
-
-    public static /* synthetic */ void lambda$new$0(IRemoteAppTransitionListener iRemoteAppTransitionListener, Message message) {
-        iRemoteAppTransitionListener.onStartRecentsAnimation(message.arg1 != 0);
-    }
-
-    public static /* synthetic */ void lambda$new$1(IRemoteAppTransitionListener iRemoteAppTransitionListener, Message message) {
-        iRemoteAppTransitionListener.onFinishRecentsAnimation(message.arg1 != 0);
-    }
-
-    public static /* synthetic */ void lambda$new$2(IRemoteAppTransitionListener iRemoteAppTransitionListener, Message message) {
-        iRemoteAppTransitionListener.onStartHomeAnimation(message.arg1 != 0);
-    }
-
-    public static /* synthetic */ void lambda$new$3(IRemoteAppTransitionListener iRemoteAppTransitionListener, Message message) {
-        iRemoteAppTransitionListener.onWallpaperVisibilityChanged(message.arg1 != 0, message.arg2 != 0);
-    }
-
-    /* renamed from: com.android.server.wm.MultiTaskingController$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends BroadcastReceiver {
-        public AnonymousClass1() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Bundle extras = intent.getExtras();
-            int i = extras != null ? extras.getInt("displayId", 0) : 0;
-            if ("com.samsung.android.multiwindow.MINIMIZE_ALL".equals(action) || "com.samsung.android.multiwindow.MINIMIZE_ALL_BY_SYSTEM".equals(action)) {
-                WindowManagerGlobalLock windowManagerGlobalLock = MultiTaskingController.this.mAtm.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        MultiTaskingController.this.minimizeAllTasksLocked(i, true);
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-        }
-    }
-
-    public MultiTaskingController(ActivityTaskManagerService activityTaskManagerService) {
-        this.mAtm = activityTaskManagerService;
-        this.mActivityEmbeddedPackageRepository = new ActivityEmbeddedPackageRepository(activityTaskManagerService);
-    }
-
-    @Override // com.android.server.wm.IController
-    public void initialize() {
-        this.mH = new H(this.mAtm.mH.getLooper());
-        this.mSettingsObserver = new SettingsObserver(this.mH);
-    }
-
-    @Override // com.android.server.wm.IController
-    public void setWindowManager(WindowManagerService windowManagerService) {
-        this.mWm = windowManagerService;
-    }
-
-    public void performDisplayOverrideConfigUpdate(int i, int i2, float f, float f2, Rect rect, Rect rect2) {
-        Slog.i(TAG, "onConfigurationChangedLocked: display#" + i2 + ", configChanges=0x" + Integer.toHexString(i) + ", scaleW=" + f + ", scaleH=" + f2 + ", prevScreenBounds=" + rect + ", nextScreenBounds=" + rect2);
-        this.mAtm.mDexController.performDisplayOverrideConfigUpdate(i, i2);
-        this.mAtm.mFreeformController.performDisplayOverrideConfigUpdate(i, i2, f, f2, rect, rect2);
-        this.mAtm.mDexController.updateDexModeIfNeededLocked("configurationChanged");
-        if (i2 == 0) {
-            updateSystemGestureThreshold();
-        }
-    }
-
-    public void finishBooting() {
-        if (CoreRune.MW_EMBED_ACTIVITY_PACKAGE_ENABLED) {
-            this.mActivityEmbeddedPackageRepository.registerActivityEmbeddedPackageReceiver();
-            this.mActivityEmbeddedPackageRepository.loadActivityEmbeddedPackages();
-        }
-        registerMinimizeAllReceiver();
-        boolean z = CoreRune.MW_FREEFORM_SMART_POPUP_VIEW;
-        registerDemoResetReceiver();
-        updateSystemGestureThreshold();
-    }
-
-    /* renamed from: com.android.server.wm.MultiTaskingController$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 extends BroadcastReceiver {
-        public AnonymousClass2() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if ("com.samsung.sea.rm.DEMO_RESET_STARTED".equals(action)) {
-                if (SmartPopupViewUtil.isShopDemo(MultiTaskingController.this.mAtm.mContext)) {
-                    Slog.d(MultiTaskingController.TAG, "demo reset");
-                    if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-                        SmartPopupViewUtil.resetPackageListStr(MultiTaskingController.this.mAtm.mContext);
-                    }
-                    MultiWindowManager.getInstance().setCornerGestureEnabledWithSettings(false);
-                    return;
-                }
-                return;
-            }
-            if ("com.samsung.intent.action.SETTINGS_SOFT_RESET".equals(action)) {
-                Slog.d(MultiTaskingController.TAG, "settings reset");
-                SmartPopupViewUtil.resetPackageListStr(MultiTaskingController.this.mAtm.mContext);
-            }
-        }
-    }
-
-    public final void registerDemoResetReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.samsung.sea.rm.DEMO_RESET_STARTED");
-        intentFilter.addAction("com.samsung.intent.action.SETTINGS_SOFT_RESET");
-        this.mAtm.mContext.registerReceiver(this.mDemoResetStartedReceiver, intentFilter, "android.permission.MANAGE_ACTIVITY_STACKS", this.mH);
-    }
-
-    public void readAllSettings() {
-        this.mSettingsObserver.readSettings(null, true);
-    }
-
-    public void enableScreenAfterBoot() {
-        this.mAtm.mDexController.setGlobalFontScale(Settings.System.getFloatForUser(this.mAtm.mContext.getContentResolver(), "font_scale", 1.0f, this.mAtm.getCurrentUserId()));
-    }
-
-    public boolean interceptStartActivityLocked(Task task, ActivityRecord activityRecord, ActivityRecord activityRecord2, int i, int i2, int i3, ActivityOptions activityOptions, NeededUriGrants neededUriGrants, Task task2, boolean z, ActivityStarter.Request request) {
-        boolean intercept = this.mAtm.mDexController.intercept(task, activityRecord, activityRecord2, i, i2, i3, activityOptions, neededUriGrants, z ? task2 : null);
-        return (intercept || task == null) ? intercept : this.mAtm.mRemoteAppController.interceptStartActivityLocked(activityRecord, task, activityRecord2, activityOptions, i3, neededUriGrants, "reusedTask", request);
-    }
-
-    public boolean interceptStartActivityFromRecentsLocked(Task task, ActivityOptions activityOptions, int i, int i2) {
-        int launchDisplayId = activityOptions != null ? activityOptions.getLaunchDisplayId() : -1;
-        boolean interceptStartActivityFromRecentsLocked = this.mAtm.mDexController.interceptStartActivityFromRecentsLocked(task, activityOptions) | false;
-        return !interceptStartActivityFromRecentsLocked ? interceptStartActivityFromRecentsLocked | this.mAtm.mRemoteAppController.interceptStartActivityFromRecentsLocked(task, activityOptions, launchDisplayId, "fromRecents") : interceptStartActivityFromRecentsLocked;
-    }
-
-    public boolean interceptNewTaskIfNeededLocked(ActivityRecord activityRecord, ActivityRecord activityRecord2, ActivityOptions activityOptions, int i, NeededUriGrants neededUriGrants, ActivityStarter.Request request) {
-        return this.mAtm.mRemoteAppController.interceptStartActivityLocked(activityRecord, null, activityRecord2, activityOptions, i, neededUriGrants, "newTask", request) | false;
-    }
-
-    public void retrieveSettings() {
-        this.mSettingsObserver.initSettings();
-    }
-
-    /* loaded from: classes3.dex */
-    public class SettingsObserver extends ContentObserver {
-        public Uri mDexDeveloperModeUri;
-        public Uri mDexFontScaleUri;
-        public Uri mDexForceImmersiveModeEnabledUri;
-        public Uri mDexForceImmersiveModeSettingUri;
-        public Uri mDexModeSettingUri;
-        public final Uri mDexOnPC;
-        public Uri mDexRestartDialogDoNotShowAgainUri;
-        public Uri mDexStandaloneRotationUri;
-        public Uri mDexStarShowingDelayTimeUri;
-        public Uri mDexTouchPadUsingUri;
-        public Uri mEdgeUri;
-        public Uri mFreeformCaptionTypeUri;
-        public Uri mMinimalBatteryUseUri;
-        public final Uri mNavigationBarGestureWhileHiddenUri;
-        public final Uri mNavigationBarGesturesDetailTypeUri;
-        public Uri mNewDexCaptionTypeUri;
-        public Uri mNewDexUri;
-        public Uri mNotificationBubbleUri;
-        public Uri mSmartPopupViewPackageListUri;
-        public Uri mSplitGestureUri;
-        public Uri mSwipeForPopUpViewCornerAreaUri;
-        public final ArrayList mUriList;
-
-        public SettingsObserver(Handler handler) {
-            super(handler);
-            this.mDexOnPC = Settings.System.getUriFor("dexonpc_connection_state");
-            this.mUriList = new ArrayList();
-            this.mDexRestartDialogDoNotShowAgainUri = Settings.System.getUriFor("display_chooser_do_not_show_again");
-            this.mDexDeveloperModeUri = DesktopModeSettings.getUriFor("launch_policy_developer_enabled");
-            this.mNavigationBarGestureWhileHiddenUri = Settings.Global.getUriFor("navigation_bar_gesture_while_hidden");
-            this.mNavigationBarGesturesDetailTypeUri = Settings.Global.getUriFor("navigation_bar_gesture_detail_type");
-            this.mDexStandaloneRotationUri = DesktopModeSettings.getUriFor("standalone_mode_rotate_app");
-            this.mDexFontScaleUri = DesktopModeSettings.getUriFor("font_scale");
-            this.mDexTouchPadUsingUri = DesktopModeSettings.getUriFor("touchpad_enabled");
-            this.mSplitGestureUri = Settings.Global.getUriFor("open_in_split_screen_view");
-            this.mEdgeUri = Settings.Secure.getUriFor("edge_enable");
-            this.mDexForceImmersiveModeSettingUri = DesktopModeSettings.getUriFor("taskbar_hide_bar");
-            this.mDexForceImmersiveModeEnabledUri = DesktopModeSettings.getUriFor("taskbar_hide_bar_enabled");
-            if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-                this.mSmartPopupViewPackageListUri = Settings.Secure.getUriFor("floating_noti_package_list");
-                this.mNotificationBubbleUri = Settings.Secure.getUriFor("notification_bubbles");
-            }
-            this.mSwipeForPopUpViewCornerAreaUri = Settings.Global.getUriFor("freeform_corner_gesture_level");
-            if (CoreRune.MW_SHELL_FREEFORM_CAPTION_TYPE) {
-                this.mFreeformCaptionTypeUri = Settings.Global.getUriFor("freeform_caption_type");
-            }
-            if (CoreRune.MW_CAPTION_SHELL_NEW_DEX_CAPTION_TYPE) {
-                this.mNewDexCaptionTypeUri = Settings.Global.getUriFor("freeform_caption_type_new_dex");
-            }
-            this.mDexStarShowingDelayTimeUri = DesktopModeSettings.getUriFor("mouse_immersive_time_control");
-            if (CoreRune.MT_NEW_DEX_DISPLAY_MANAGEMENT) {
-                this.mDexModeSettingUri = DesktopModeSettings.getUriFor("dex_mode");
-                this.mNewDexUri = Settings.System.getUriFor("new_dex");
-            }
-            this.mMinimalBatteryUseUri = Settings.System.getUriFor("minimal_battery_use");
-        }
-
-        public final void initSettings() {
-            ContentResolver contentResolver = MultiTaskingController.this.mAtm.mContext.getContentResolver();
-            this.mUriList.add(this.mDexRestartDialogDoNotShowAgainUri);
-            this.mUriList.add(this.mDexDeveloperModeUri);
-            this.mUriList.add(this.mDexFontScaleUri);
-            this.mUriList.add(this.mNavigationBarGestureWhileHiddenUri);
-            this.mUriList.add(this.mNavigationBarGesturesDetailTypeUri);
-            this.mUriList.add(this.mSplitGestureUri);
-            this.mUriList.add(this.mDexStandaloneRotationUri);
-            this.mUriList.add(this.mDexTouchPadUsingUri);
-            this.mUriList.add(this.mEdgeUri);
-            this.mUriList.add(this.mDexForceImmersiveModeSettingUri);
-            this.mUriList.add(this.mDexForceImmersiveModeEnabledUri);
-            if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-                this.mUriList.add(this.mSmartPopupViewPackageListUri);
-                this.mUriList.add(this.mNotificationBubbleUri);
-            }
-            this.mUriList.add(this.mSwipeForPopUpViewCornerAreaUri);
-            if (CoreRune.MW_SHELL_FREEFORM_CAPTION_TYPE) {
-                this.mUriList.add(this.mFreeformCaptionTypeUri);
-            }
-            if (CoreRune.MW_CAPTION_SHELL_NEW_DEX_CAPTION_TYPE) {
-                this.mUriList.add(this.mNewDexCaptionTypeUri);
-            }
-            this.mUriList.add(this.mDexStarShowingDelayTimeUri);
-            if (CoreRune.MT_NEW_DEX_DISPLAY_MANAGEMENT) {
-                this.mUriList.add(this.mDexModeSettingUri);
-                this.mUriList.add(this.mNewDexUri);
-            }
-            this.mUriList.add(this.mMinimalBatteryUseUri);
-            Iterator it = this.mUriList.iterator();
-            while (it.hasNext()) {
-                contentResolver.registerContentObserver((Uri) it.next(), false, this, -1);
-            }
-            readSettings(null, true);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z, Uri uri) {
-            if (uri == null) {
-                Slog.w(MultiTaskingController.TAG, "SettingsObserver_onChange: uri is null");
-            } else {
-                readSettings(uri, false);
-            }
-        }
-
-        public void readSettings(Uri uri, boolean z) {
-            String str;
-            ContentResolver contentResolver = MultiTaskingController.this.mAtm.mContext.getContentResolver();
-            boolean z2 = true;
-            if (z || this.mDexRestartDialogDoNotShowAgainUri.equals(uri)) {
-                boolean z3 = Settings.System.getInt(MultiTaskingController.this.mAtm.mContext.getContentResolver(), "display_chooser_do_not_show_again", 0) != 0;
-                MultiTaskingController.this.mAtm.mDexController.setDoNotShowAgainChecked(z3);
-                String str2 = MultiTaskingController.TAG;
-                StringBuilder sb = new StringBuilder();
-                sb.append("SettingsObserver_readSettings: do_not_show=");
-                sb.append(z3);
-                if (CoreRune.MD_DEBUG_LOG) {
-                    str = ", Callers=" + Debug.getCallers(2);
-                } else {
-                    str = "";
-                }
-                sb.append(str);
-                Slog.d(str2, sb.toString());
-            }
-            if (z || this.mDexDeveloperModeUri.equals(uri)) {
-                MultiTaskingController.this.mAtm.mDexController.updateDexDeveloperMode(DesktopModeSettings.getSettings(contentResolver, "launch_policy_developer_enabled", false));
-            }
-            if (z || this.mDexFontScaleUri.equals(uri)) {
-                float settings = DesktopModeSettings.getSettings(contentResolver, "font_scale", 1.0f);
-                MultiTaskingController.this.mAtm.mDexController.updateDexFontScaleIfNeeded(settings);
-                Slog.d(MultiTaskingController.TAG, "SettingsObserver_readSettings: dex_font_scale=" + settings);
-            }
-            if (z || this.mNavigationBarGestureWhileHiddenUri.equals(uri)) {
-                MultiTaskingController.this.mIsNavigationModeGesture = Settings.Global.getInt(contentResolver, "navigation_bar_gesture_while_hidden", 0) == 1;
-            }
-            if (z || this.mNavigationBarGesturesDetailTypeUri.equals(uri)) {
-                MultiTaskingController.this.mIsGestureTypeSideAndBottom = Settings.Global.getInt(contentResolver, "navigation_bar_gesture_detail_type", 1) == 1;
-            }
-            if (z || this.mSplitGestureUri.equals(uri)) {
-                MultiTaskingController multiTaskingController = MultiTaskingController.this;
-                multiTaskingController.mIsFullToSplitEnabled = Settings.Global.getInt(multiTaskingController.mAtm.mContext.getContentResolver(), "open_in_split_screen_view", 0) == 1;
-            }
-            if (z || this.mDexStandaloneRotationUri.equals(uri)) {
-                MultiTaskingController.this.mAtm.mDexController.updateDexStandaloneRotationEnabled(DesktopModeSettings.getSettings(contentResolver, "standalone_mode_rotate_app", false));
-            }
-            if (z || this.mDexTouchPadUsingUri.equals(uri)) {
-                boolean settings2 = DesktopModeSettings.getSettings(contentResolver, "touchpad_enabled", false);
-                WindowManagerGlobalLock windowManagerGlobalLock = MultiTaskingController.this.mAtm.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        MultiTaskingController.this.mAtm.mDexController.setDexTouchPadEnabledLocked(settings2);
-                    } finally {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-            if (z || this.mEdgeUri.equals(uri)) {
-                boolean z4 = Settings.Secure.getIntForUser(contentResolver, "edge_enable", 0, -2) == 1;
-                WindowManagerGlobalLock windowManagerGlobalLock2 = MultiTaskingController.this.mAtm.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock2) {
-                    try {
-                        DisplayContent defaultDisplay = MultiTaskingController.this.mAtm.mRootWindowContainer.getDefaultDisplay();
-                        if (defaultDisplay != null) {
-                            defaultDisplay.getDisplayPolicy().updateEdgeSettings(z4);
-                        }
-                    } finally {
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-            if (z || this.mDexForceImmersiveModeSettingUri.equals(uri)) {
-                MultiTaskingController.this.mAtm.mDexController.updateForceImmersiveModeSetting(DesktopModeSettings.getSettings(MultiTaskingController.this.mAtm.mContext.getContentResolver(), "taskbar_hide_bar", false));
-            }
-            if (z || this.mDexForceImmersiveModeEnabledUri.equals(uri)) {
-                MultiTaskingController.this.mAtm.mDexController.updateForceImmersiveModeState(DesktopModeSettings.getSettings(MultiTaskingController.this.mAtm.mContext.getContentResolver(), "taskbar_hide_bar_enabled", false));
-            }
-            if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW && MultiTaskingController.this.mAtm.isBooted() && (z || this.mSmartPopupViewPackageListUri.equals(uri) || this.mNotificationBubbleUri.equals(uri))) {
-                MultiTaskingController.this.mAtm.mFreeformController.scheduleUnbindSmartPopupViewService("setting_changed");
-                MultiTaskingController.this.mAtm.mFreeformController.scheduleBindSmartPopupViewService("setting_changed");
-            }
-            if (z || this.mSwipeForPopUpViewCornerAreaUri.equals(uri)) {
-                MultiTaskingController.this.setCornerGestureCustomValue(MultiWindowEdgeDetector.getCornerGestureCustomValue(Settings.Global.getInt(contentResolver, "freeform_corner_gesture_level", 2)));
-            }
-            if (CoreRune.MW_SHELL_FREEFORM_CAPTION_TYPE && (z || this.mFreeformCaptionTypeUri.equals(uri))) {
-                MultiTaskingController.this.mAtm.mFreeformController.updateFreeformHeaderType(Settings.Global.getInt(MultiTaskingController.this.mAtm.mContext.getContentResolver(), "freeform_caption_type", 0));
-            }
-            if (CoreRune.MW_CAPTION_SHELL_NEW_DEX_CAPTION_TYPE && (z || this.mNewDexCaptionTypeUri.equals(uri))) {
-                MultiTaskingController.this.mAtm.mFreeformController.updateNewDexHeaderType(1);
-            }
-            if (z || this.mDexStarShowingDelayTimeUri.equals(uri)) {
-                MultiTaskingController.this.mAtm.mDexController.updateDexStarShowingDelayTime(DesktopModeSettings.getSettings(MultiTaskingController.this.mAtm.mContext.getContentResolver(), "mouse_immersive_time_control", -1));
-            }
-            if (CoreRune.MT_NEW_DEX_DISPLAY_MANAGEMENT) {
-                if (z || this.mDexModeSettingUri.equals(uri)) {
-                    MultiTaskingController.this.mAtm.mNewDexController.updateDesktopModeSettings(DesktopModeSettings.getSettingsAsUser(MultiTaskingController.this.mAtm.mContext.getContentResolver(), "dex_mode", DesktopModeSettings.DEX_MODE_DEFAULT_VALUE, 0).equals("new"));
-                }
-                if (z || this.mNewDexUri.equals(uri)) {
-                    MultiTaskingController.this.mAtm.mNewDexController.updateNewDexMode(Settings.System.getIntForUser(MultiTaskingController.this.mAtm.mContext.getContentResolver(), "new_dex", 0, 0));
-                }
-            }
-            if (z || this.mMinimalBatteryUseUri.equals(uri)) {
-                int i = Settings.System.getInt(contentResolver, "minimal_battery_use", 0);
-                WindowManagerGlobalLock windowManagerGlobalLock3 = MultiTaskingController.this.mAtm.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock3) {
-                    try {
-                        MultiTaskingController multiTaskingController2 = MultiTaskingController.this;
-                        if (i != 1) {
-                            z2 = false;
-                        }
-                        multiTaskingController2.mIsMinimalBatteryUse = z2;
-                    } finally {
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-        }
-
-        public String toString() {
-            return "SettingsObserver{mUriList=" + this.mUriList + "}";
-        }
-    }
-
-    public void notifySecureWindowAdded(WindowState windowState) {
-        Task task = windowState.getTask();
-        DisplayContent displayContent = windowState.getDisplayContent();
-        if (task == null || displayContent == null || !displayContent.isRemoteAppDisplay()) {
-            return;
-        }
-        this.mH.sendMessage(this.mH.obtainMessage(1, task.mTaskId, 1, windowState.getOwningPackage()));
-    }
-
-    public void notifySecureWindowRemoved(WindowState windowState) {
-        Task task = windowState.getTask();
-        DisplayContent displayContent = windowState.getDisplayContent();
-        if (task == null || displayContent == null || !displayContent.isRemoteAppDisplay()) {
-            return;
-        }
-        this.mH.sendMessage(this.mH.obtainMessage(1, task.mTaskId, 0, windowState.getOwningPackage()));
-    }
-
-    public boolean minimizeTaskLocked(Task task, boolean z) {
-        return minimizeTaskLocked(task, z, -1, -1);
-    }
-
-    public boolean minimizeTaskLocked(final Task task, final boolean z, int i, int i2) {
-        if (task == null) {
-            Slog.w(TAG, "minimizeTaskLocked: fail, task is null");
-            return false;
-        }
-        if (!task.canMinimize()) {
-            String str = TAG;
-            Slog.w(str, "minimizeTaskLocked: fail, task can't minimize. t=" + task);
-            if (task.isAnimating() && task.getWindowingMode() == 5) {
-                Slog.w(str, "minimizeTaskLocked: cancelAnimation, t=" + task);
-                task.cancelAnimation();
-            }
-            return false;
-        }
-        DisplayContent displayContent = task.getDisplayContent();
-        if (displayContent != null && !displayContent.isDesktopModeEnabled() && displayContent.isInputMethodTargetTaskAndShowing(task) && displayContent.getInsetsStateController().getImeSourceProvider().isImeShowing()) {
-            InputMethodManagerInternal.get().hideCurrentInputMethod(43);
-            this.mPendingMoveToTaskId = task.mTaskId;
-            Runnable runnable = new Runnable() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda9
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MultiTaskingController.this.lambda$minimizeTaskLocked$4(task, z);
-                }
-            };
-            this.mMoveToBackTaskWithIme = runnable;
-            this.mH.postDelayed(runnable, 400L);
-            return true;
-        }
-        return task.moveTaskToBack(task, null, true, z, i, i2);
-    }
-
-    public /* synthetic */ void lambda$minimizeTaskLocked$4(Task task, boolean z) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                task.moveTaskToBack(task, null, true, z);
-                this.mPendingMoveToTaskId = -1;
-                if (CoreRune.SAFE_DEBUG) {
-                    Slog.i(TAG, "minimizeTaskLocked: minimizeDelayTask=" + task);
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public void minimizeAllTasksLocked(int i, boolean z) {
-        minimizeAllTasksLocked(i, z, -1);
-    }
-
-    public void minimizeAllTasksLocked(int i, boolean z, int i2) {
-        ActivityRecord activityRecord;
-        DisplayContent displayContent = this.mAtm.mRootWindowContainer.getDisplayContent(i);
-        if (displayContent == null) {
-            return;
-        }
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.i(TAG, "minimizeAllFreeformTasks: displayId=" + i);
-        }
-        if (displayContent.isDexMode() && this.mAtm.mDexController.handleDexMinimizeToggleLocked(displayContent)) {
-            return;
-        }
-        if (MultiWindowCoreState.MW_MULTISTAR_BLOCKED_MINIMIZED_FREEFORM_ENABLED && !displayContent.isDexMode()) {
-            Slog.i(TAG, "Blocked minimized freeform by multistar");
-            return;
-        }
-        if (!CoreRune.MW_MULTI_SPLIT_FREEFORM_FOLDING_POLICY) {
-            i2 = -1;
-        }
-        boolean z2 = i == 0 && !displayContent.isDesktopModeEnabled();
-        try {
-            this.mAtm.deferWindowLayout();
-            if (z2) {
-                this.mAtm.mFreeformController.deferMinimizeStateChangedCallbacks();
-            }
-            final ArrayList arrayList = new ArrayList();
-            displayContent.getDefaultTaskDisplayArea().forAllRootTasks(new Consumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda11
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    MultiTaskingController.this.lambda$minimizeAllTasksLocked$5(arrayList, (Task) obj);
-                }
-            }, true);
-            Iterator it = arrayList.iterator();
-            while (it.hasNext()) {
-                Task task = (Task) it.next();
-                if (minimizeTaskLocked(task, z)) {
-                    if (displayContent.isDexMode()) {
-                        this.mAtm.mDexController.addToggleTaskLocked(task);
-                    }
-                    if (CoreRune.MW_MULTI_SPLIT_FREEFORM_FOLDING_POLICY && i == 0 && i2 != -1) {
-                        task.setLastMinimizedDisplayType(i2);
-                    }
-                }
-            }
-            if (CoreRune.MT_NEW_DEX_PIP && (activityRecord = this.mTmpPipCandidate) != null) {
-                this.mTmpPipCandidate = null;
-                if (this.mAtm.mActivityClientController.requestPictureInPictureMode(activityRecord)) {
-                    Slog.d(TAG, "minimizeAllTasksLocked: entered pip, r=" + activityRecord);
-                } else {
-                    activityRecord.supportsEnterPipOnTaskSwitch = false;
-                    Slog.d(TAG, "minimizeAllTasksLocked: failed to enter pip, r=" + activityRecord);
-                }
-            }
-        } finally {
-            if (z2) {
-                this.mAtm.mFreeformController.continueMinimizeStateChangedCallbacks();
-            }
-            this.mAtm.continueWindowLayout();
-        }
-    }
-
-    public /* synthetic */ void lambda$minimizeAllTasksLocked$5(ArrayList arrayList, Task task) {
-        ActivityRecord topNonFinishingActivity = task.getTopNonFinishingActivity();
-        if (CoreRune.MT_NEW_DEX_PIP && this.mTmpPipCandidate == null && topNonFinishingActivity != null) {
-            boolean z = topNonFinishingActivity.supportsEnterPipOnTaskSwitch;
-            topNonFinishingActivity.supportsEnterPipOnTaskSwitch = true;
-            if (canEnterPipWhileMinimizingAllTasks(task, topNonFinishingActivity)) {
-                this.mTmpPipCandidate = topNonFinishingActivity;
-                Slog.d(TAG, "minimizeAllTasksLocked: found pipCandidate, r=" + topNonFinishingActivity);
-                return;
-            }
-            topNonFinishingActivity.supportsEnterPipOnTaskSwitch = z;
-        }
-        if (task.canMinimize()) {
-            arrayList.add(task);
-        }
-    }
-
-    public static boolean canEnterPipWhileMinimizingAllTasks(Task task, ActivityRecord activityRecord) {
-        DisplayContent displayContent = task.getDisplayContent();
-        if (displayContent != null && displayContent.isNewDexMode() && displayContent.getDefaultTaskDisplayArea().getRootPinnedTask() == null) {
-            return (task.inFullscreenWindowingMode() || (CoreRune.MT_NEW_DEX_PIP_ON_FREEFORM && task.inFreeformWindowingMode())) && task.isVisible() && activityRecord.checkEnterPictureInPictureState("new_dex", true) && activityRecord.pictureInPictureArgs.isAutoEnterEnabled();
-        }
-        return false;
-    }
-
-    public void notifyFocusedDisplayChangedLocked(final int i) {
-        this.mH.post(new Runnable() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda17
-            @Override // java.lang.Runnable
-            public final void run() {
-                MultiTaskingController.lambda$notifyFocusedDisplayChangedLocked$6(i);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$notifyFocusedDisplayChangedLocked$6(int i) {
-        StatusBarManagerInternal statusBarManagerInternal = (StatusBarManagerInternal) LocalServices.getService(StatusBarManagerInternal.class);
-        if (statusBarManagerInternal != null) {
-            statusBarManagerInternal.onFocusedDisplayChanged(i);
-        }
-    }
-
-    public void startUser(final int i, boolean z, boolean z2) {
-        this.mH.post(new Runnable() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda13
-            @Override // java.lang.Runnable
-            public final void run() {
-                MultiTaskingController.this.lambda$startUser$7(i);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$startUser$7(int i) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
-                    this.mAtm.mFreeformController.scheduleUnbindMinimizeContainerService("startUser");
-                    if (Settings.Secure.getIntForUser(this.mAtm.mContext.getContentResolver(), "notification_bubbles", 0, i) == 2) {
-                        this.mAtm.mFreeformController.scheduleBindSmartPopupViewService("startUser");
-                    } else {
-                        this.mAtm.mFreeformController.scheduleUnbindSmartPopupViewService("startUser");
-                    }
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public boolean isFullToSplitEnabled() {
-        return this.mIsFullToSplitEnabled;
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class H extends Handler {
         public H(Looper looper) {
             super(looper);
         }
 
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             int i = message.what;
             if (i == 0) {
                 int i2 = message.arg1;
@@ -783,7 +113,7 @@ public class MultiTaskingController implements IController {
                 WindowManagerService.boostPriorityForLockedSection();
                 synchronized (windowManagerGlobalLock) {
                     try {
-                        MultiTaskingController.this.mAtm.mFreeformController.setFreeformWindowingModeByCornerGestureLocked(i2, i3, rect);
+                        MultiTaskingController.this.mAtm.mFreeformController.setFreeformWindowingModeByCornerGestureLocked(i2, rect, i3);
                     } catch (Throwable th) {
                         WindowManagerService.resetPriorityAfterLockedSection();
                         throw th;
@@ -799,7 +129,7 @@ public class MultiTaskingController implements IController {
             if (i == 1) {
                 RemoteAppModeManagerInternal remoteAppModeManagerInternal = (RemoteAppModeManagerInternal) LocalServices.getService(RemoteAppModeManagerInternal.class);
                 if (remoteAppModeManagerInternal == null) {
-                    Slog.w(MultiTaskingController.TAG, "handleMessage: can't find localService, what=" + message.what);
+                    HeapdumpWatcher$$ExternalSyntheticOutline0.m(new StringBuilder("handleMessage: can't find localService, what="), message.what, "MultiTaskingController");
                     return;
                 }
                 int i4 = message.arg1;
@@ -815,94 +145,344 @@ public class MultiTaskingController implements IController {
             }
             if (i == 3) {
                 MultiTaskingController multiTaskingController = MultiTaskingController.this;
-                multiTaskingController.forAllRemoteAppTransitionListeners(multiTaskingController.mNotifyStartRecentsAnimation, message);
+                MultiTaskingController.m1065$$Nest$mforAllRemoteAppTransitionListeners(multiTaskingController, multiTaskingController.mNotifyStartRecentsAnimation, message);
                 return;
             }
             if (i == 4) {
                 MultiTaskingController multiTaskingController2 = MultiTaskingController.this;
-                multiTaskingController2.forAllRemoteAppTransitionListeners(multiTaskingController2.mNotifyFinishRecentsAnimation, message);
+                MultiTaskingController.m1065$$Nest$mforAllRemoteAppTransitionListeners(multiTaskingController2, multiTaskingController2.mNotifyFinishRecentsAnimation, message);
             } else if (i == 5) {
                 MultiTaskingController multiTaskingController3 = MultiTaskingController.this;
-                multiTaskingController3.forAllRemoteAppTransitionListeners(multiTaskingController3.mNotifyStartHomeAnimation, message);
+                MultiTaskingController.m1065$$Nest$mforAllRemoteAppTransitionListeners(multiTaskingController3, multiTaskingController3.mNotifyStartHomeAnimation, message);
             } else {
                 if (i != 6) {
                     return;
                 }
                 MultiTaskingController multiTaskingController4 = MultiTaskingController.this;
-                multiTaskingController4.forAllRemoteAppTransitionListeners(multiTaskingController4.mNotifyWallpaperVisibilityChanged, message);
+                MultiTaskingController.m1065$$Nest$mforAllRemoteAppTransitionListeners(multiTaskingController4, multiTaskingController4.mNotifyWallpaperVisibilityChanged, message);
             }
         }
     }
 
-    public int getDexMode() {
-        int dexModeLocked;
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                dexModeLocked = this.mAtm.mDexController.getDexModeLocked();
-            } catch (Throwable th) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SettingsObserver extends ContentObserver {
+        public final Uri mDexFontScaleUri;
+        public final Uri mDexForceImmersiveModeEnabledUri;
+        public final Uri mDexForceImmersiveModeSettingUri;
+        public final Uri mDexStandaloneRotationUri;
+        public final Uri mDexStarShowingDelayTimeUri;
+        public final Uri mDexTouchPadUsingUri;
+        public final Uri mEdgeUri;
+        public final Uri mFreeformCaptionTypeUri;
+        public final Uri mMinimalBatteryUseUri;
+        public final Uri mNavigationBarGestureWhileHiddenUri;
+        public final Uri mNavigationBarGesturesDetailTypeUri;
+        public final Uri mNotificationBubbleUri;
+        public final Uri mSmartPopupViewPackageListUri;
+        public final Uri mSplitGestureUri;
+        public final Uri mSwipeForPopUpViewCornerAreaUri;
+        public final ArrayList mUriList;
+
+        public SettingsObserver(Handler handler) {
+            super(handler);
+            this.mUriList = new ArrayList();
+            this.mNavigationBarGestureWhileHiddenUri = Settings.Global.getUriFor("navigation_bar_gesture_while_hidden");
+            this.mNavigationBarGesturesDetailTypeUri = Settings.Global.getUriFor("navigation_bar_gesture_detail_type");
+            Uri uri = DesktopModeSettings.CONTENT_URI;
+            this.mDexStandaloneRotationUri = Uri.withAppendedPath(uri, "standalone_mode_rotate_app");
+            if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
+                this.mSmartPopupViewPackageListUri = Settings.Secure.getUriFor("floating_noti_package_list");
+                this.mNotificationBubbleUri = Settings.Secure.getUriFor("notification_bubbles");
+            }
+            this.mSwipeForPopUpViewCornerAreaUri = Settings.Global.getUriFor("freeform_corner_gesture_level");
+            this.mMinimalBatteryUseUri = Settings.System.getUriFor("minimal_battery_use");
+            if (CoreRune.MW_SHELL_FREEFORM_CAPTION_TYPE) {
+                this.mFreeformCaptionTypeUri = Settings.Global.getUriFor("freeform_caption_type");
+            }
+            this.mSplitGestureUri = Settings.Global.getUriFor("open_in_split_screen_view");
+            this.mEdgeUri = Settings.Secure.getUriFor("edge_enable");
+            this.mDexForceImmersiveModeSettingUri = Uri.withAppendedPath(uri, "taskbar_hide_bar");
+            this.mDexForceImmersiveModeEnabledUri = Uri.withAppendedPath(uri, "taskbar_hide_bar_enabled");
+            this.mDexTouchPadUsingUri = Uri.withAppendedPath(uri, "touchpad_enabled");
+            this.mDexFontScaleUri = Uri.withAppendedPath(uri, "font_scale");
+            this.mDexStarShowingDelayTimeUri = Uri.withAppendedPath(uri, "mouse_immersive_time_control");
+        }
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z, Uri uri) {
+            if (uri == null) {
+                Slog.w("MultiTaskingController", "SettingsObserver_onChange: uri is null");
+            } else {
+                readSettings(false, uri);
+            }
+        }
+
+        public final void readSettings(boolean z, Uri uri) {
+            ContentResolver contentResolver = MultiTaskingController.this.mAtm.mContext.getContentResolver();
+            if (z || this.mNavigationBarGestureWhileHiddenUri.equals(uri)) {
+                MultiTaskingController.this.mIsNavigationModeGesture = Settings.Global.getInt(contentResolver, "navigation_bar_gesture_while_hidden", 0) == 1;
+            }
+            if (z || this.mNavigationBarGesturesDetailTypeUri.equals(uri)) {
+                MultiTaskingController.this.mIsGestureTypeSideAndBottom = Settings.Global.getInt(contentResolver, "navigation_bar_gesture_detail_type", 1) == 1;
+            }
+            if (z || this.mDexStandaloneRotationUri.equals(uri)) {
+                final boolean settingsAsUser = DesktopModeSettings.getSettingsAsUser(contentResolver, "standalone_mode_rotate_app", false, DesktopModeSettings.sCurrentUserId);
+                final DexController dexController = MultiTaskingController.this.mAtm.mDexController;
+                dexController.mAtm.mH.post(new Runnable() { // from class: com.android.server.wm.DexController$$ExternalSyntheticLambda12
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        DexController dexController2 = DexController.this;
+                        boolean z2 = settingsAsUser;
+                        WindowManagerGlobalLock windowManagerGlobalLock = dexController2.mAtm.mGlobalLock;
+                        WindowManagerService.boostPriorityForLockedSection();
+                        synchronized (windowManagerGlobalLock) {
+                            try {
+                                dexController2.mDexStandaloneRotationEnabled = z2;
+                            } catch (Throwable th) {
+                                WindowManagerService.resetPriorityAfterLockedSection();
+                                throw th;
+                            }
+                        }
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                    }
+                });
+            }
+            if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW && MultiTaskingController.this.mAtm.mAmInternal.isBooted() && (z || this.mSmartPopupViewPackageListUri.equals(uri) || this.mNotificationBubbleUri.equals(uri))) {
+                FreeformController freeformController = MultiTaskingController.this.mAtm.mFreeformController;
+                Message obtainMessage = freeformController.mH.obtainMessage(104);
+                obtainMessage.obj = "setting_changed";
+                freeformController.mH.sendMessage(obtainMessage);
+                FreeformController freeformController2 = MultiTaskingController.this.mAtm.mFreeformController;
+                Message obtainMessage2 = freeformController2.mH.obtainMessage(103);
+                obtainMessage2.obj = "setting_changed";
+                freeformController2.mH.sendMessage(obtainMessage2);
+            }
+            if (z || this.mSwipeForPopUpViewCornerAreaUri.equals(uri)) {
+                MultiTaskingController multiTaskingController = MultiTaskingController.this;
+                int cornerGestureCustomValue = MultiWindowEdgeDetector.getCornerGestureCustomValue(Settings.Global.getInt(contentResolver, "freeform_corner_gesture_level", 2));
+                WindowManagerGlobalLock windowManagerGlobalLock = multiTaskingController.mAtm.mGlobalLock;
+                WindowManagerService.boostPriorityForLockedSection();
+                synchronized (windowManagerGlobalLock) {
+                    try {
+                        Iterator it = multiTaskingController.mAtm.mExt.getStartedUserIdsLocked().iterator();
+                        while (it.hasNext()) {
+                            multiTaskingController.mAtm.mExt.mCoreStateController.setVolatileState("corner_gesture_custom_value", Integer.valueOf(cornerGestureCustomValue), ((Integer) it.next()).intValue(), true, true, null);
+                            MultiWindowEdgeDetector.updateCustomBoundsIfNeeded();
+                        }
+                    } catch (Throwable th) {
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                        throw th;
+                    }
+                }
                 WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
             }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-        return dexModeLocked;
-    }
-
-    public void showCanNotSwitchUserToast() {
-        this.mAtm.mDexController.showCanNotSwitchUserToast();
-    }
-
-    public boolean isDeferredTaskFocusChange() {
-        return this.mDeferFocusChanging;
-    }
-
-    public boolean shouldIgnoreTaskFocusChange(InputTarget inputTarget, int i, int i2, int i3) {
-        boolean z;
-        boolean z2;
-        if (!this.mIsNavigationModeGesture && !isInImmersiveSplitScreenMode()) {
-            return false;
-        }
-        WindowState windowState = inputTarget.getWindowState();
-        DisplayContent displayContent = windowState != null ? windowState.getDisplayContent() : null;
-        if (displayContent == null || !displayContent.isDefaultDisplay || displayContent.isDexMode()) {
-            z = false;
-            z2 = false;
-        } else {
-            z = isMultiWindowActivated(displayContent);
-            z2 = isInImmersiveSplitScreenMode() && windowState.inSplitScreenWindowingMode();
-        }
-        if (!z && !z2) {
-            this.mDeferFocusChanging = false;
-            return i != 0;
-        }
-        if (i != 0) {
-            if (i != 1) {
-                if (i != 3) {
-                    return false;
+            if (z || this.mMinimalBatteryUseUri.equals(uri)) {
+                int i = Settings.System.getInt(contentResolver, "minimal_battery_use", 0);
+                WindowManagerGlobalLock windowManagerGlobalLock2 = MultiTaskingController.this.mAtm.mGlobalLock;
+                WindowManagerService.boostPriorityForLockedSection();
+                synchronized (windowManagerGlobalLock2) {
+                    try {
+                        MultiTaskingController.this.mIsMinimalBatteryUse = i == 1;
+                    } finally {
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                    }
                 }
-                this.mDeferFocusChanging = false;
-            } else if (this.mDeferFocusChanging) {
-                this.mDeferFocusChanging = false;
-                if (!z2 || !isShowingTransientBars(displayContent)) {
-                    return false;
+                WindowManagerService.resetPriorityAfterLockedSection();
+            }
+            if (CoreRune.MW_SHELL_FREEFORM_CAPTION_TYPE && (z || this.mFreeformCaptionTypeUri.equals(uri))) {
+                MultiTaskingController.this.mAtm.mFreeformController.updateFreeformCaptionType(Settings.Global.getInt(contentResolver, "freeform_caption_type", 0));
+            }
+            if (z || this.mSplitGestureUri.equals(uri)) {
+                MultiTaskingController.this.mIsFullToSplitEnabled = Settings.Global.getInt(contentResolver, "open_in_split_screen_view", 0) == 1;
+            }
+            if (z || this.mEdgeUri.equals(uri)) {
+                boolean z2 = Settings.Secure.getIntForUser(contentResolver, "edge_enable", 0, -2) == 1;
+                WindowManagerGlobalLock windowManagerGlobalLock3 = MultiTaskingController.this.mAtm.mGlobalLock;
+                WindowManagerService.boostPriorityForLockedSection();
+                synchronized (windowManagerGlobalLock3) {
+                    try {
+                        DisplayContent displayContent = MultiTaskingController.this.mAtm.mRootWindowContainer.mDefaultDisplay;
+                        if (displayContent != null) {
+                            displayContent.mDisplayPolicy.mEdgeEnabled = z2;
+                        }
+                    } finally {
+                    }
                 }
+                WindowManagerService.resetPriorityAfterLockedSection();
             }
-        } else {
-            if (!isInSwipeGestureArea(displayContent, i2, i3) && !isInImmersiveSplitModeArea(windowState, i2, i3) && !isInThreeButtonsGestureArea(displayContent, i2, i3)) {
-                return false;
+            if (z || this.mDexForceImmersiveModeSettingUri.equals(uri)) {
+                ActivityTaskManagerService activityTaskManagerService = MultiTaskingController.this.mAtm;
+                activityTaskManagerService.mDexController.updateForceImmersiveModeSetting(DesktopModeSettings.getSettingsAsUser(activityTaskManagerService.mContext.getContentResolver(), "taskbar_hide_bar", false, DesktopModeSettings.sCurrentUserId));
             }
-            this.mDeferFocusChanging = true;
+            if (z || this.mDexForceImmersiveModeEnabledUri.equals(uri)) {
+                ActivityTaskManagerService activityTaskManagerService2 = MultiTaskingController.this.mAtm;
+                activityTaskManagerService2.mDexController.updateForceImmersiveModeState(DesktopModeSettings.getSettingsAsUser(activityTaskManagerService2.mContext.getContentResolver(), "taskbar_hide_bar_enabled", false, DesktopModeSettings.sCurrentUserId));
+            }
+            if (z || this.mDexTouchPadUsingUri.equals(uri)) {
+                boolean settingsAsUser2 = DesktopModeSettings.getSettingsAsUser(contentResolver, "touchpad_enabled", false, DesktopModeSettings.sCurrentUserId);
+                WindowManagerGlobalLock windowManagerGlobalLock4 = MultiTaskingController.this.mAtm.mGlobalLock;
+                WindowManagerService.boostPriorityForLockedSection();
+                synchronized (windowManagerGlobalLock4) {
+                    try {
+                        DexController dexController2 = MultiTaskingController.this.mAtm.mDexController;
+                        if (dexController2.mDexTouchPadEnabled != settingsAsUser2) {
+                            dexController2.mDexTouchPadEnabled = settingsAsUser2;
+                            Slog.i("DexController", "setDexTouchPadEnabledLocked: enabled=" + dexController2.mDexTouchPadEnabled);
+                        }
+                    } finally {
+                    }
+                }
+                WindowManagerService.resetPriorityAfterLockedSection();
+            }
+            if (z || this.mDexFontScaleUri.equals(uri)) {
+                float parseFloat = Float.parseFloat(DesktopModeSettings.getSettingsAsUser(contentResolver, "font_scale", Float.toString(1.0f), DesktopModeSettings.sCurrentUserId));
+                MultiTaskingController.this.mAtm.mDexController.updateDexFontScaleIfNeeded(parseFloat);
+                Slog.d("MultiTaskingController", "SettingsObserver_readSettings: dex_font_scale=" + parseFloat);
+            }
+            if (z || this.mDexStarShowingDelayTimeUri.equals(uri)) {
+                ActivityTaskManagerService activityTaskManagerService3 = MultiTaskingController.this.mAtm;
+                activityTaskManagerService3.mDexController.updateDexStarShowingDelayTime(DesktopModeSettings.getSettingsAsUser(activityTaskManagerService3.mContext.getContentResolver(), "mouse_immersive_time_control", -1, DesktopModeSettings.sCurrentUserId));
+            }
         }
-        return true;
+
+        public final String toString() {
+            return "SettingsObserver{mUriList=" + this.mUriList + "}";
+        }
     }
 
-    public final boolean isInSystemBarArea(DisplayContent displayContent, int i, int i2, int i3) {
-        InsetsState rawInsetsState = displayContent.getInsetsStateController().getRawInsetsState();
-        int sourceSize = rawInsetsState.sourceSize();
+    /* renamed from: -$$Nest$mforAllRemoteAppTransitionListeners, reason: not valid java name */
+    public static void m1065$$Nest$mforAllRemoteAppTransitionListeners(MultiTaskingController multiTaskingController, MultiTaskingController$$ExternalSyntheticLambda5 multiTaskingController$$ExternalSyntheticLambda5, Message message) {
+        synchronized (multiTaskingController.mRemoteAppTransitionListeners) {
+            for (int beginBroadcast = multiTaskingController.mRemoteAppTransitionListeners.beginBroadcast() - 1; beginBroadcast >= 0; beginBroadcast--) {
+                try {
+                    multiTaskingController$$ExternalSyntheticLambda5.accept((IRemoteAppTransitionListener) multiTaskingController.mRemoteAppTransitionListeners.getBroadcastItem(beginBroadcast), message);
+                } catch (RemoteException unused) {
+                }
+            }
+            multiTaskingController.mRemoteAppTransitionListeners.finishBroadcast();
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v7, types: [com.android.server.wm.MultiTaskingController$1] */
+    /* JADX WARN: Type inference failed for: r0v8, types: [com.android.server.wm.MultiTaskingController$1] */
+    public MultiTaskingController(ActivityTaskManagerService activityTaskManagerService) {
+        final int i = 0;
+        this.mMinimizeAllReceiver = new BroadcastReceiver(this) { // from class: com.android.server.wm.MultiTaskingController.1
+            public final /* synthetic */ MultiTaskingController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context, Intent intent) {
+                switch (i) {
+                    case 0:
+                        String action = intent.getAction();
+                        Bundle extras = intent.getExtras();
+                        int i2 = extras != null ? extras.getInt("displayId", 0) : 0;
+                        if ("com.samsung.android.multiwindow.MINIMIZE_ALL".equals(action) || "com.samsung.android.multiwindow.MINIMIZE_ALL_BY_SYSTEM".equals(action)) {
+                            WindowManagerGlobalLock windowManagerGlobalLock = this.this$0.mAtm.mGlobalLock;
+                            WindowManagerService.boostPriorityForLockedSection();
+                            synchronized (windowManagerGlobalLock) {
+                                try {
+                                    this.this$0.minimizeAllTasksLocked(i2, true);
+                                } catch (Throwable th) {
+                                    WindowManagerService.resetPriorityAfterLockedSection();
+                                    throw th;
+                                }
+                            }
+                            WindowManagerService.resetPriorityAfterLockedSection();
+                            return;
+                        }
+                        return;
+                    default:
+                        String action2 = intent.getAction();
+                        if (!"com.samsung.sea.rm.DEMO_RESET_STARTED".equals(action2)) {
+                            if ("com.samsung.intent.action.SETTINGS_SOFT_RESET".equals(action2)) {
+                                Slog.d("MultiTaskingController", "settings reset");
+                                SmartPopupViewUtil.resetPackageListStr(this.this$0.mAtm.mContext);
+                                return;
+                            }
+                            return;
+                        }
+                        if (SmartPopupViewUtil.isShopDemo(this.this$0.mAtm.mContext)) {
+                            Slog.d("MultiTaskingController", "demo reset");
+                            if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
+                                SmartPopupViewUtil.resetPackageListStr(this.this$0.mAtm.mContext);
+                            }
+                            MultiWindowManager.getInstance().setCornerGestureEnabledWithSettings(false);
+                            return;
+                        }
+                        return;
+                }
+            }
+        };
+        final int i2 = 1;
+        this.mDemoResetStartedReceiver = new BroadcastReceiver(this) { // from class: com.android.server.wm.MultiTaskingController.1
+            public final /* synthetic */ MultiTaskingController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context, Intent intent) {
+                switch (i2) {
+                    case 0:
+                        String action = intent.getAction();
+                        Bundle extras = intent.getExtras();
+                        int i22 = extras != null ? extras.getInt("displayId", 0) : 0;
+                        if ("com.samsung.android.multiwindow.MINIMIZE_ALL".equals(action) || "com.samsung.android.multiwindow.MINIMIZE_ALL_BY_SYSTEM".equals(action)) {
+                            WindowManagerGlobalLock windowManagerGlobalLock = this.this$0.mAtm.mGlobalLock;
+                            WindowManagerService.boostPriorityForLockedSection();
+                            synchronized (windowManagerGlobalLock) {
+                                try {
+                                    this.this$0.minimizeAllTasksLocked(i22, true);
+                                } catch (Throwable th) {
+                                    WindowManagerService.resetPriorityAfterLockedSection();
+                                    throw th;
+                                }
+                            }
+                            WindowManagerService.resetPriorityAfterLockedSection();
+                            return;
+                        }
+                        return;
+                    default:
+                        String action2 = intent.getAction();
+                        if (!"com.samsung.sea.rm.DEMO_RESET_STARTED".equals(action2)) {
+                            if ("com.samsung.intent.action.SETTINGS_SOFT_RESET".equals(action2)) {
+                                Slog.d("MultiTaskingController", "settings reset");
+                                SmartPopupViewUtil.resetPackageListStr(this.this$0.mAtm.mContext);
+                                return;
+                            }
+                            return;
+                        }
+                        if (SmartPopupViewUtil.isShopDemo(this.this$0.mAtm.mContext)) {
+                            Slog.d("MultiTaskingController", "demo reset");
+                            if (CoreRune.MW_FREEFORM_SMART_POPUP_VIEW) {
+                                SmartPopupViewUtil.resetPackageListStr(this.this$0.mAtm.mContext);
+                            }
+                            MultiWindowManager.getInstance().setCornerGestureEnabledWithSettings(false);
+                            return;
+                        }
+                        return;
+                }
+            }
+        };
+        this.mAtm = activityTaskManagerService;
+        this.mActivityEmbeddedPackageRepository = new ActivityEmbeddedPackageRepository(activityTaskManagerService);
+    }
+
+    public static boolean isInImmersiveSplitScreenMode() {
+        return MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED || MultiWindowCoreState.MW_NAVISTAR_SPLIT_IMMERSIVE_MODE_ENABLED;
+    }
+
+    public static boolean isInSystemBarArea(int i, int i2, int i3, DisplayContent displayContent) {
+        InsetsState insetsState = displayContent.mInsetsStateController.mState;
+        int sourceSize = insetsState.sourceSize();
         for (int i4 = 0; i4 < sourceSize; i4++) {
-            InsetsSource sourceAt = rawInsetsState.sourceAt(i4);
+            InsetsSource sourceAt = insetsState.sourceAt(i4);
             if (sourceAt.getType() == i && !sourceAt.getFrame().isEmpty()) {
                 return sourceAt.getFrame().contains(i2, i3);
             }
@@ -910,381 +490,191 @@ public class MultiTaskingController implements IController {
         return false;
     }
 
-    public final boolean isInSwipeGestureArea(DisplayContent displayContent, int i, int i2) {
-        boolean z = false;
-        if (!this.mIsGestureTypeSideAndBottom) {
-            return false;
-        }
-        Region obtain = Region.obtain();
-        displayContent.calculateSystemGestureExclusion(obtain, null);
-        if ((obtain.isEmpty() || !obtain.contains(i, i2)) && (isInSystemBarArea(displayContent, WindowInsets.Type.navigationBars(), i, i2) || displayContent.isInSidesGestureArea(i, i2))) {
-            z = true;
-        }
-        obtain.recycle();
-        return z;
-    }
-
-    public final boolean isInThreeButtonsGestureArea(DisplayContent displayContent, int i, int i2) {
-        WindowState window = displayContent.getWindow(new Predicate() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda20
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$isInThreeButtonsGestureArea$8;
-                lambda$isInThreeButtonsGestureArea$8 = MultiTaskingController.lambda$isInThreeButtonsGestureArea$8((WindowState) obj);
-                return lambda$isInThreeButtonsGestureArea$8;
-            }
-        });
-        if (window == null || window.mRemoved) {
-            return false;
-        }
-        return window.getWindowFrames().mFrame.contains(i, i2);
-    }
-
-    public static /* synthetic */ boolean lambda$isInThreeButtonsGestureArea$8(WindowState windowState) {
-        return windowState.mAttrs.type == 2274;
-    }
-
-    public final boolean isInImmersiveSplitModeArea(WindowState windowState, int i, int i2) {
-        DisplayContent displayContent = windowState.getDisplayContent();
-        if (!isInImmersiveSplitScreenMode() || !displayContent.getDefaultTaskDisplayArea().isSplitScreenModeActivated() || !windowState.inSplitScreenWindowingMode()) {
-            return false;
-        }
-        if (!isInSystemBarArea(displayContent, WindowInsets.Type.navigationBars(), i, i2) && !isInSystemBarArea(displayContent, WindowInsets.Type.statusBars(), i, i2)) {
-            this.mTmpRect.set(displayContent.getBounds());
-            int i3 = this.mSwipeGestureThreshold;
-            if (i >= i3 && i <= this.mTmpRect.right - i3) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public final boolean isMultiWindowActivated(DisplayContent displayContent) {
-        if (displayContent == null) {
-            return false;
-        }
-        TaskDisplayArea defaultTaskDisplayArea = displayContent.getDefaultTaskDisplayArea();
-        if (defaultTaskDisplayArea.isSplitScreenModeActivated()) {
-            return true;
-        }
-        Task topRootTaskInWindowingMode = defaultTaskDisplayArea.getTopRootTaskInWindowingMode(5);
-        return topRootTaskInWindowingMode != null && topRootTaskInWindowingMode.isVisible();
-    }
-
-    public boolean isInImmersiveSplitScreenMode() {
-        return MultiWindowCoreState.MW_SPLIT_IMMERSIVE_MODE_ENABLED || MultiWindowCoreState.MW_NAVISTAR_SPLIT_IMMERSIVE_MODE_ENABLED;
-    }
-
-    public final boolean isShowingTransientBars(DisplayContent displayContent) {
-        InsetsPolicy insetsPolicy = displayContent.getInsetsPolicy();
-        if (insetsPolicy.isTransient(WindowInsets.Type.statusBars()) || insetsPolicy.isTransient(WindowInsets.Type.navigationBars())) {
-            return true;
-        }
-        return this.mIsGestureTypeSideAndBottom && insetsPolicy.isTransient(WindowInsets.Type.systemGestures());
-    }
-
-    public final void updateSystemGestureThreshold() {
-        this.mSwipeGestureThreshold = this.mWm.getDefaultDisplayContentLocked().getDisplayPolicy().getCurrentUserResources().getDimensionPixelSize(17106189);
-    }
-
-    public void registerRemoteAppTransitionListener(IRemoteAppTransitionListener iRemoteAppTransitionListener) {
-        synchronized (this.mRemoteAppTransitionListeners) {
-            this.mRemoteAppTransitionListeners.register(iRemoteAppTransitionListener);
-        }
-    }
-
-    public void unregisterRemoteAppTransitionListener(IRemoteAppTransitionListener iRemoteAppTransitionListener) {
-        synchronized (this.mRemoteAppTransitionListeners) {
-            this.mRemoteAppTransitionListeners.unregister(iRemoteAppTransitionListener);
-        }
-    }
-
-    public void notifyStartRecentsAnimation(boolean z) {
-        this.mH.removeMessages(3);
-        this.mH.obtainMessage(3, z ? 1 : 0, 0).sendToTarget();
-    }
-
-    public void notifyFinishRecentsAnimation(boolean z) {
-        this.mH.removeMessages(4);
-        this.mH.obtainMessage(4, z ? 1 : 0, 0).sendToTarget();
-    }
-
-    public void notifyWallpaperVisibilityChanged(DisplayContent displayContent) {
-        if (displayContent.getDefaultTaskDisplayArea() == null) {
+    public static void printAllTasksLocked(PrintWriter printWriter, String str, WindowContainer windowContainer, int i) {
+        Task asTask = windowContainer.asTask();
+        if (asTask == null) {
             return;
         }
-        this.mH.removeMessages(6);
-        boolean isWallpaperVisible = displayContent.mWallpaperController.isWallpaperVisible();
-        final boolean[] zArr = {false};
-        displayContent.getDefaultTaskDisplayArea().forAllRootTasks(new Predicate() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda18
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$notifyWallpaperVisibilityChanged$9;
-                lambda$notifyWallpaperVisibilityChanged$9 = MultiTaskingController.lambda$notifyWallpaperVisibilityChanged$9(zArr, (Task) obj);
-                return lambda$notifyWallpaperVisibilityChanged$9;
-            }
-        });
-        this.mH.obtainMessage(6, isWallpaperVisible ? 1 : 0, zArr[0] ? 1 : 0).sendToTarget();
-    }
-
-    public static /* synthetic */ boolean lambda$notifyWallpaperVisibilityChanged$9(boolean[] zArr, Task task) {
-        if (!task.isActivityTypeHomeOrRecents()) {
-            return false;
-        }
-        zArr[0] = task.isVisibleRequested();
-        return true;
-    }
-
-    public final void forAllRemoteAppTransitionListeners(AppTransitionConsumer appTransitionConsumer, Message message) {
-        synchronized (this.mRemoteAppTransitionListeners) {
-            for (int beginBroadcast = this.mRemoteAppTransitionListeners.beginBroadcast() - 1; beginBroadcast >= 0; beginBroadcast--) {
-                try {
-                    appTransitionConsumer.accept((IRemoteAppTransitionListener) this.mRemoteAppTransitionListeners.getBroadcastItem(beginBroadcast), message);
-                } catch (RemoteException unused) {
-                }
-            }
-            this.mRemoteAppTransitionListeners.finishBroadcast();
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(str);
+        m.append(asTask.isRootTask() ? "Root #" : "Leaf #");
+        m.append(i);
+        m.append(" ");
+        m.append(asTask);
+        printWriter.println(m.toString());
+        for (int size = asTask.mChildren.size() - 1; size >= 0; size--) {
+            printAllTasksLocked(printWriter, ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "  "), (WindowContainer) asTask.mChildren.get(size), size);
         }
     }
 
-    public int getSystemUiUid() {
-        if (this.mSystemUIUid == -1) {
-            this.mSystemUIUid = this.mAtm.getPackageManagerInternalLocked().getPackageUid("com.android.systemui", 1048576L, 0);
-        }
-        return this.mSystemUIUid;
-    }
-
-    public boolean getEmbedActivityPackageEnabled(String str, int i) {
-        return this.mAtm.mExt.mActivityEmbeddedController.getEnabled(str, i) != 2;
-    }
-
-    public void setEmbedActivityPackageEnabled(String str, boolean z, int i) {
-        int i2 = z ? 1 : 2;
-        if (this.mAtm.mExt.mActivityEmbeddedController.getEnabled(str, i) == i2) {
-            return;
-        }
-        this.mAtm.mExt.mActivityEmbeddedController.setEnabled(str, i2, i);
-        removeEmbedActivityTaskIfNeeded(str, i);
-    }
-
-    public void updateEmbedActivityPackageEnabled(String str, int i, int i2, boolean z) {
-        if (this.mAtm.mExt.mActivityEmbeddedController.getEnabled(str, i2) == 0 || z) {
-            this.mAtm.mExt.mActivityEmbeddedController.setEnabled(str, i, i2);
-        }
-    }
-
-    public List getSupportEmbedActivityPackages() {
-        if (!CoreRune.MW_EMBED_ACTIVITY_PACKAGE_ENABLED) {
-            return List.of();
-        }
-        return this.mActivityEmbeddedPackageRepository.getActivityEmbeddedPackages();
-    }
-
-    public void dumpActivityEmbeddedPackageRepository(PrintWriter printWriter) {
-        this.mActivityEmbeddedPackageRepository.dump(printWriter);
-    }
-
-    public void removeEmbedActivityTaskIfNeeded(final String str, final int i) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                final ArrayList arrayList = new ArrayList();
-                this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea().forAllLeafTasks(new Consumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda7
-                    @Override // java.util.function.Consumer
-                    public final void accept(Object obj) {
-                        MultiTaskingController.this.lambda$removeEmbedActivityTaskIfNeeded$11(i, str, arrayList, (Task) obj);
-                    }
-                }, true);
-                if (arrayList.isEmpty()) {
-                    removeEmbedActivityProcessIfNeeded(str, i);
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    return;
-                }
-                Iterator it = arrayList.iterator();
-                while (it.hasNext()) {
-                    Task task = (Task) it.next();
-                    if (task.isVisible()) {
-                        task.mIsWaitingRemoveEmbedActivityTask = true;
-                        task.getRootTask().moveTaskToBack(task);
-                    } else {
-                        removeEmbedActivityTaskAndProcessIfNeeded(task);
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
+    public static void printTaskDisplayAreaLocked(PrintWriter printWriter, String str, WindowContainer windowContainer) {
+        for (int childCount = windowContainer.getChildCount() - 1; childCount >= 0; childCount--) {
+            StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, "TaskDisplayArea: ");
+            m.append(windowContainer.getName());
+            printWriter.print(m.toString());
+            WindowContainer childAt = windowContainer.getChildAt(childCount);
+            if (childAt.asTaskDisplayArea() != null) {
+                printTaskDisplayAreaLocked(printWriter, str + "  ", windowContainer);
+            } else {
+                printAllTasksLocked(printWriter, str + "  ", childAt, childCount);
             }
         }
     }
 
-    public /* synthetic */ void lambda$removeEmbedActivityTaskIfNeeded$11(int i, String str, ArrayList arrayList, Task task) {
-        ComponentName componentName;
-        if (this.mAtm.mExt.mActivityEmbeddedController.findTargetUserId(task.mUserId) == i && (componentName = task.realActivity) != null && componentName.getPackageName().equals(str)) {
-            arrayList.add(task);
+    @Override // com.android.server.wm.IController
+    public final void dumpLocked(PrintWriter printWriter) {
+        printWriter.println("[MultiTaskingController]");
+        if (CoreRune.MW_RESUMED_AFFORDANCE_SHELL_TRANSITION && this.mAffordanceTargetTask != null) {
+            printWriter.println("  mAffordanceTargetTask=" + this.mAffordanceTargetTask);
         }
-    }
-
-    public void removeWaitingEmbedActivityTaskIfNeeded(ActivityRecord activityRecord) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                Task rootTask = activityRecord.getRootTask();
-                if (rootTask != null && rootTask.mIsWaitingRemoveEmbedActivityTask) {
-                    removeEmbedActivityTaskAndProcessIfNeeded(rootTask);
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    return;
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
+        if (CoreRune.MW_MULTI_SPLIT_ENSURE_APP_SIZE) {
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("  mSplitFeasibleMode="), this.mSplitFeasibleMode, printWriter, "  mIsDisplaySizeOverride="), this.mIsDisplaySizeOverride, printWriter);
+        }
+        printWriter.println("  (CONFIGURATION CONTAINERS)");
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        activityTaskManagerService.mRootWindowContainer.dumpConfigurationLocked(printWriter, "  ", 0);
+        printWriter.println();
+        printWriter.println("  (TASK ORDER INFO)");
+        int childCount = activityTaskManagerService.mRootWindowContainer.getChildCount();
+        while (true) {
+            childCount--;
+            if (childCount < 0) {
+                break;
+            }
+            DisplayContent displayContent = (DisplayContent) activityTaskManagerService.mRootWindowContainer.getChildAt(childCount);
+            printWriter.println("    DisplayContent #" + displayContent.mDisplayId);
+            displayContent.forAllTaskDisplayAreas(new MultiTaskingController$$ExternalSyntheticLambda10(this, printWriter));
+        }
+        printWriter.println();
+        printWriter.println("  (FOCUS INFO)");
+        RootWindowContainer rootWindowContainer = activityTaskManagerService.mRootWindowContainer;
+        printWriter.println("    TopDisplayFocusedTask=" + rootWindowContainer.getTopDisplayFocusedRootTask());
+        printWriter.println("    TopResumedActivity=" + rootWindowContainer.getTopResumedActivity());
+        printWriter.println();
+        for (int childCount2 = rootWindowContainer.getChildCount() + (-1); childCount2 >= 0; childCount2 += -1) {
+            DisplayContent displayContent2 = (DisplayContent) rootWindowContainer.getChildAt(childCount2);
+            StringBuilder m = BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("    DisplayContent #"), displayContent2.mDisplayId, printWriter, "      FocusedTask=");
+            m.append(displayContent2.getFocusedRootTask());
+            printWriter.println(m.toString());
+            printWriter.println("      Preferred TopFocusableTask=" + displayContent2.getDefaultTaskDisplayArea().mPreferredTopFocusableRootTask);
+            printWriter.println("      mFocusedApp=" + displayContent2.mFocusedApp);
+            printWriter.println("      mCurrentFocus=" + displayContent2.mCurrentFocus);
+            printWriter.println("      mInputMethodWindow=" + displayContent2.mInputMethodWindow);
+            printWriter.println("      mImeLayeringTarget=" + displayContent2.getImeTarget(0));
+            printWriter.println("      mImeInputTarget=" + displayContent2.mImeInputTarget);
+            printWriter.println("      mImeControlTarget=" + displayContent2.getImeTarget(2));
+            printWriter.println("      " + displayContent2.mInsetsStateController.getImeSourceProvider().mSource);
+        }
+        if (!rootWindowContainer.mTopFocusedAppByProcess.isEmpty()) {
+            printWriter.println();
+            printWriter.println("    mTopFocusedAppByProcess");
+            for (Map.Entry entry : rootWindowContainer.mTopFocusedAppByProcess.entrySet()) {
+                printWriter.println("      [" + entry.getKey() + "] r=" + entry.getValue());
             }
         }
-    }
-
-    public void removeEmbedActivityTaskAndProcessIfNeeded(final Task task) {
-        final WindowProcessController rootProcess = task.getRootProcess();
-        if (rootProcess != null) {
-            if (rootProcess.getPid() == ActivityManagerService.MY_PID) {
-                if (CoreRune.SAFE_DEBUG) {
-                    Slog.w(TAG, "Do not kill system process, app=" + rootProcess + " callers=" + Debug.getCallers(3));
-                    return;
-                }
-                return;
+        printWriter.println();
+        TransitionController transitionController = activityTaskManagerService.mWindowOrganizerController.mTransitionController;
+        if (transitionController != null) {
+            printWriter.println("  (TRANSITION INFO)");
+            if (transitionController.mCollectingTransition != null) {
+                printWriter.println("    mCollectingTransition=" + transitionController.mCollectingTransition);
             }
-            this.mH.post(new Runnable() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda5
-                @Override // java.lang.Runnable
-                public final void run() {
-                    MultiTaskingController.this.lambda$removeEmbedActivityTaskAndProcessIfNeeded$12(task, rootProcess);
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ void lambda$removeEmbedActivityTaskAndProcessIfNeeded$12(Task task, WindowProcessController windowProcessController) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                this.mAtm.mTaskSupervisor.removeTask(task, false, false, "embedded-package-changed");
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
+            if (!transitionController.mWaitingTransitions.isEmpty()) {
+                printWriter.println("    mWaitingTransitions=" + transitionController.mWaitingTransitions);
+            }
+            if (transitionController.mFinishingTransition != null) {
+                printWriter.println("    mFinishingTransition=" + transitionController.mFinishingTransition);
             }
         }
-        WindowManagerService.resetPriorityAfterLockedSection();
-        this.mAtm.mAmInternal.killProcess(windowProcessController.mName, windowProcessController.mUid, "embedded-package-changed");
-    }
-
-    public void removeEmbedActivityProcessIfNeeded(String str, int i) {
-        try {
-            PackageInfo packageInfoAsUser = this.mAtm.mContext.getPackageManager().getPackageInfoAsUser(str, 0, i);
-            if (packageInfoAsUser != null) {
-                ActivityTaskManagerService activityTaskManagerService = this.mAtm;
-                ApplicationInfo applicationInfo = packageInfoAsUser.applicationInfo;
-                final WindowProcessController processController = activityTaskManagerService.getProcessController(applicationInfo.processName, applicationInfo.uid);
-                if (processController != null) {
-                    if (processController.getPid() == ActivityManagerService.MY_PID) {
-                        if (CoreRune.SAFE_DEBUG) {
-                            Slog.w(TAG, "Do not kill system process, app=" + processController + " callers=" + Debug.getCallers(3));
-                            return;
-                        }
-                        return;
-                    }
-                    this.mH.post(new Runnable() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda14
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            MultiTaskingController.this.lambda$removeEmbedActivityProcessIfNeeded$13(processController);
-                        }
-                    });
-                }
-            }
-        } catch (PackageManager.NameNotFoundException unused) {
-        }
-    }
-
-    public /* synthetic */ void lambda$removeEmbedActivityProcessIfNeeded$13(WindowProcessController windowProcessController) {
-        this.mAtm.mAmInternal.killProcess(windowProcessController.mName, windowProcessController.mUid, "embedded-package-changed");
-    }
-
-    public boolean exitMultiWindow(IBinder iBinder) {
-        return exitMultiWindow(iBinder, true, false);
+        printWriter.println();
     }
 
     /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Removed duplicated region for block: B:18:0x0052 A[Catch: all -> 0x0114, TryCatch #0 {all -> 0x0114, blocks: (B:4:0x0008, B:6:0x000f, B:8:0x0015, B:13:0x0044, B:16:0x004c, B:18:0x0052, B:19:0x0054, B:21:0x005e, B:24:0x006a, B:26:0x0074, B:27:0x0081, B:29:0x008f, B:30:0x00ed, B:33:0x00f4, B:39:0x00b3, B:41:0x00bd, B:43:0x00c3, B:44:0x00cb, B:45:0x00f9, B:46:0x010f, B:49:0x001e, B:51:0x0022, B:53:0x002d), top: B:3:0x0008 }] */
-    /* JADX WARN: Removed duplicated region for block: B:32:0x00f3  */
-    /* JADX WARN: Removed duplicated region for block: B:39:0x00b3 A[Catch: all -> 0x0114, TryCatch #0 {all -> 0x0114, blocks: (B:4:0x0008, B:6:0x000f, B:8:0x0015, B:13:0x0044, B:16:0x004c, B:18:0x0052, B:19:0x0054, B:21:0x005e, B:24:0x006a, B:26:0x0074, B:27:0x0081, B:29:0x008f, B:30:0x00ed, B:33:0x00f4, B:39:0x00b3, B:41:0x00bd, B:43:0x00c3, B:44:0x00cb, B:45:0x00f9, B:46:0x010f, B:49:0x001e, B:51:0x0022, B:53:0x002d), top: B:3:0x0008 }] */
-    /* JADX WARN: Removed duplicated region for block: B:40:0x00bb  */
+    public final boolean exitMultiWindow(IBinder iBinder) {
+        boolean z;
+        Task task;
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                ActivityRecord activityRecord = null;
+                if (iBinder instanceof ActivityRecord.Token) {
+                    ActivityRecord isInRootTaskLocked = ActivityRecord.isInRootTaskLocked(iBinder);
+                    z = false;
+                    activityRecord = isInRootTaskLocked;
+                    task = isInRootTaskLocked != null ? isInRootTaskLocked.task : null;
+                } else if ((iBinder instanceof WindowContainer.RemoteToken) && (((WindowContainer) ((WindowContainer.RemoteToken) iBinder).mWeakRef.get()) instanceof Task)) {
+                    task = ((WindowContainer) ((WindowContainer.RemoteToken) iBinder).mWeakRef.get()).asTask();
+                    activityRecord = task != null ? task.topRunningActivity(false) : null;
+                    z = true;
+                } else {
+                    z = false;
+                    task = null;
+                }
+                if (activityRecord != null && task != null && task.getDisplayArea() != null) {
+                    int windowingMode = task.getWindowingMode();
+                    IBinder iBinder2 = iBinder;
+                    if (z) {
+                        iBinder2 = activityRecord.token;
+                    }
+                    if (WindowConfiguration.isSplitScreenWindowingMode(task.getWindowConfiguration()) && task.getDisplayArea().isSplitScreenModeActivated()) {
+                        TaskOrganizerInfo taskOrganizerInfo = new TaskOrganizerInfo();
+                        taskOrganizerInfo.setExitSplitScreenTopTaskId(task.mTaskId);
+                        taskOrganizerInfo.setExitSplitScreenStageType(task.getWindowConfiguration().getStageType());
+                        this.mAtm.mTaskOrganizerController.onSplitLayoutChangeRequested(taskOrganizerInfo.toBundle());
+                    } else if (5 == windowingMode) {
+                        this.mAtm.mActivityClientController.toggleFreeformWindowingMode(iBinder2);
+                    } else if (1 != windowingMode) {
+                        Slog.w("MultiTaskingController", "exitMultiWindow: invalid windowing mode to request mode=" + activityRecord.getWindowingMode() + ", r=" + activityRecord);
+                    } else if (task.isDexMode()) {
+                        this.mAtm.mActivityClientController.toggleFreeformWindowingMode(iBinder2);
+                    }
+                    boolean z2 = activityRecord.getWindowingMode() == 1;
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    return z2;
+                }
+                Slog.w("MultiTaskingController", "exitMultiWindow: cannot find task, token=" + iBinder);
+                WindowManagerService.resetPriorityAfterLockedSection();
+                return false;
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+    }
+
+    public final boolean getEmbedActivityPackageEnabled(String str, int i) {
+        return this.mAtm.mExt.mActivityEmbeddedController.getEnabled(i, str) != 2;
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x00a0, code lost:
+    
+        if (r8 == 32) goto L52;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x00c9, code lost:
+    
+        if (r3 > r13) goto L52;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:11:0x0053  */
+    /* JADX WARN: Removed duplicated region for block: B:14:0x005d  */
+    /* JADX WARN: Removed duplicated region for block: B:22:0x0079  */
+    /* JADX WARN: Removed duplicated region for block: B:47:0x00b4  */
+    /* JADX WARN: Removed duplicated region for block: B:52:0x0062  */
+    /* JADX WARN: Removed duplicated region for block: B:53:0x0058  */
+    /* JADX WARN: Removed duplicated region for block: B:54:0x0044  */
+    /* JADX WARN: Removed duplicated region for block: B:8:0x0042  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public boolean exitMultiWindow(android.os.IBinder r8, boolean r9, boolean r10) {
+    public final int getMultiSplitFlags() {
         /*
-            Method dump skipped, instructions count: 282
+            Method dump skipped, instructions count: 217
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.MultiTaskingController.exitMultiWindow(android.os.IBinder, boolean, boolean):boolean");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.MultiTaskingController.getMultiSplitFlags():int");
     }
 
-    public int getMultiWindowModeStates(int i) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                DisplayContent displayContent = this.mAtm.mRootWindowContainer.getDisplayContent(i);
-                if (displayContent == null) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    return 0;
-                }
-                int i2 = displayContent.getDefaultTaskDisplayArea().isSplitScreenModeActivated() ? 2 : 0;
-                final int[] iArr = new int[1];
-                displayContent.forAllRootTasks(new Consumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda12
-                    @Override // java.util.function.Consumer
-                    public final void accept(Object obj) {
-                        MultiTaskingController.lambda$getMultiWindowModeStates$14(iArr, (Task) obj);
-                    }
-                });
-                int i3 = iArr[0] | i2;
-                WindowManagerService.resetPriorityAfterLockedSection();
-                return i3;
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-    }
-
-    public static /* synthetic */ void lambda$getMultiWindowModeStates$14(int[] iArr, Task task) {
-        if (task.topRunningActivityLocked() != null) {
-            int windowingMode = task.getWindowingMode();
-            if (windowingMode != 2) {
-                if (windowingMode == 5 && !task.isUnderHomeRootTask()) {
-                    iArr[0] = iArr[0] | 1;
-                    return;
-                }
-                return;
-            }
-            iArr[0] = iArr[0] | 4;
-        }
-    }
-
-    public void deferEnsureConfig() {
-        this.mDeferEnsureConfig = true;
-    }
-
-    public void continueEnsureConfig() {
-        this.mDeferEnsureConfig = false;
-    }
-
-    public boolean isEnsureConfigDeferred() {
-        return this.mDeferEnsureConfig;
-    }
-
-    public ParceledListSlice getTaskInfoFromPackageName(final String str) {
+    public final ParceledListSlice getTaskInfoFromPackageName(String str) {
         ParceledListSlice parceledListSlice;
         if (str == null) {
             return null;
@@ -1293,15 +683,10 @@ public class MultiTaskingController implements IController {
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
             try {
-                final ArrayList arrayList = new ArrayList();
-                final ArrayList arrayList2 = new ArrayList();
+                ArrayList arrayList = new ArrayList();
+                ArrayList arrayList2 = new ArrayList();
                 for (int childCount = this.mAtm.mRootWindowContainer.getChildCount() - 1; childCount >= 0; childCount--) {
-                    ((DisplayContent) this.mAtm.mRootWindowContainer.getChildAt(childCount)).forAllActivities(new Consumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda8
-                        @Override // java.util.function.Consumer
-                        public final void accept(Object obj) {
-                            MultiTaskingController.lambda$getTaskInfoFromPackageName$15(str, arrayList2, arrayList, (ActivityRecord) obj);
-                        }
-                    });
+                    ((DisplayContent) this.mAtm.mRootWindowContainer.getChildAt(childCount)).forAllActivities(new MultiTaskingController$$ExternalSyntheticLambda10(str, arrayList2, arrayList));
                 }
                 parceledListSlice = new ParceledListSlice(arrayList);
             } catch (Throwable th) {
@@ -1313,19 +698,255 @@ public class MultiTaskingController implements IController {
         return parceledListSlice;
     }
 
-    public static /* synthetic */ void lambda$getTaskInfoFromPackageName$15(String str, ArrayList arrayList, ArrayList arrayList2, ActivityRecord activityRecord) {
-        String str2 = activityRecord.packageName;
-        if (str2 == null || !str2.equals(str) || arrayList.contains(Integer.valueOf(activityRecord.getTask().mTaskId))) {
-            return;
+    public final boolean handleAltTabKeyIfNeededLocked() {
+        Task topMostTask;
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        TaskDisplayArea defaultTaskDisplayArea = activityTaskManagerService.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea();
+        ActivityRecord focusedActivity = defaultTaskDisplayArea.getFocusedActivity();
+        if (focusedActivity == null || !focusedActivity.inSplitScreenWindowingMode() || !defaultTaskDisplayArea.isSplitScreenModeActivated()) {
+            ((LinkedList) this.mFocusableTaskIds).clear();
+            return false;
         }
-        ActivityManager.RecentTaskInfo recentTaskInfo = new ActivityManager.RecentTaskInfo();
-        activityRecord.getTask().fillTaskInfo(recentTaskInfo);
-        arrayList2.add(recentTaskInfo);
-        arrayList.add(Integer.valueOf(recentTaskInfo.taskId));
-        Slog.d(TAG, "getTaskIdFromPackageName, recentTaskInfo=" + recentTaskInfo);
+        if (this.mFocusableTaskIds.isEmpty()) {
+            int stageType = focusedActivity.getStageType();
+            Task rootTask = defaultTaskDisplayArea.getRootTask(new TaskDisplayArea$$ExternalSyntheticLambda7(2));
+            if (rootTask != null) {
+                for (int childCount = rootTask.getChildCount() - 1; childCount >= 0; childCount--) {
+                    WindowContainer childAt = rootTask.getChildAt(childCount);
+                    if (childAt.asTask() != null && childAt.inSplitScreenWindowingMode()) {
+                        Task asTask = childAt.asTask();
+                        if (asTask.getStageType() != stageType && asTask.isVisible() && (topMostTask = asTask.getTopMostTask()) != null) {
+                            ((LinkedList) this.mFocusableTaskIds).add(Integer.valueOf(topMostTask.mTaskId));
+                        }
+                    }
+                }
+            }
+            if (this.mFocusableTaskIds.isEmpty()) {
+                return false;
+            }
+            ((LinkedList) this.mFocusableTaskIds).add(-1);
+            Slog.d("MultiTaskingController", "collectFocusableSplitScreenTasksLocked:" + this.mFocusableTaskIds);
+        }
+        int intValue = ((Integer) ((LinkedList) this.mFocusableTaskIds).poll()).intValue();
+        if (intValue == -1) {
+            return false;
+        }
+        activityTaskManagerService.setFocusedTask(intValue);
+        return true;
     }
 
-    public boolean removeFocusedTask(int i) {
+    @Override // com.android.server.wm.IController
+    public final void initialize() {
+        this.mH = new H(this.mAtm.mH.getLooper());
+        this.mSettingsObserver = new SettingsObserver(this.mH);
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:35:0x00d8  */
+    /* JADX WARN: Removed duplicated region for block: B:52:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean interceptStartActivityFromRecentsLocked(com.android.server.wm.Task r22, android.app.ActivityOptions r23) {
+        /*
+            Method dump skipped, instructions count: 367
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.MultiTaskingController.interceptStartActivityFromRecentsLocked(com.android.server.wm.Task, android.app.ActivityOptions):boolean");
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:10:0x0140 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:15:? A[ADDED_TO_REGION, RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:16:0x003a  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean interceptStartActivityLocked(com.android.server.wm.Task r18, com.android.server.wm.ActivityRecord r19, com.android.server.wm.ActivityRecord r20, int r21, int r22, android.app.ActivityOptions r23, com.android.server.uri.NeededUriGrants r24, com.android.server.wm.Task r25, com.android.server.wm.ActivityStarter.Request r26) {
+        /*
+            Method dump skipped, instructions count: 347
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.MultiTaskingController.interceptStartActivityLocked(com.android.server.wm.Task, com.android.server.wm.ActivityRecord, com.android.server.wm.ActivityRecord, int, int, android.app.ActivityOptions, com.android.server.uri.NeededUriGrants, com.android.server.wm.Task, com.android.server.wm.ActivityStarter$Request):boolean");
+    }
+
+    public final boolean isVisibleTaskByTaskIdInDexDisplay(int i) {
+        Task anyTaskForId;
+        int i2;
+        String str;
+        if (i != -1) {
+            ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+            if (activityTaskManagerService.mDexController.getDexModeLocked() == 2 && (anyTaskForId = activityTaskManagerService.mRootWindowContainer.anyTaskForId(i, 1, null, false)) != null && anyTaskForId.getDisplayId() == 2) {
+                ActivityRecord rootActivity = anyTaskForId.getRootActivity(true, false);
+                if (rootActivity == null) {
+                    WindowProcessController windowProcessController = anyTaskForId.mRootProcess;
+                    if (windowProcessController == null) {
+                        return false;
+                    }
+                    String str2 = windowProcessController.mName;
+                    i2 = windowProcessController.mUid;
+                    str = str2;
+                } else {
+                    if (anyTaskForId.isVisible()) {
+                        return true;
+                    }
+                    str = rootActivity.processName;
+                    i2 = rootActivity.getUid();
+                }
+                if (!activityTaskManagerService.mDexController.getTaskLocked(i2, 0, str, true).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public final boolean isVisibleTaskInDexDisplay(PendingIntent pendingIntent) {
+        ActivityInfo activityInfo;
+        if (pendingIntent != null) {
+            ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+            if (activityTaskManagerService.mDexController.getDexModeLocked() == 2) {
+                List queryIntentComponents = pendingIntent.queryIntentComponents(0);
+                if (!queryIntentComponents.isEmpty() && (activityInfo = ((ResolveInfo) queryIntentComponents.get(0)).activityInfo) != null) {
+                    ApplicationInfo applicationInfo = activityInfo.applicationInfo;
+                    if (!activityTaskManagerService.mDexController.getTaskLocked(applicationInfo.uid, 0, applicationInfo.processName, true).isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public final void minimizeAllTasksLocked(int i, boolean z) {
+        ActivityRecord activityRecord;
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        DisplayContent displayContent = activityTaskManagerService.mRootWindowContainer.getDisplayContent(i);
+        if (displayContent == null) {
+            return;
+        }
+        if (displayContent.isDexMode()) {
+            DexController dexController = activityTaskManagerService.mDexController;
+            if (!((ArrayList) dexController.mMinimizedToggleTasks).isEmpty()) {
+                dexController.restoreToggleTasksToFrontLocked(displayContent.mDisplayId);
+                return;
+            }
+        }
+        if (MultiWindowCoreState.MW_MULTISTAR_BLOCKED_MINIMIZED_FREEFORM_ENABLED && !displayContent.isDexMode()) {
+            Slog.i("MultiTaskingController", "Blocked minimized freeform by multistar");
+            return;
+        }
+        boolean z2 = CoreRune.MW_MULTI_SPLIT_FREEFORM_FOLDING_POLICY;
+        boolean z3 = i == 0 && !displayContent.isDexMode();
+        try {
+            activityTaskManagerService.deferWindowLayout();
+            if (z3) {
+                activityTaskManagerService.mFreeformController.mDeferMinimizeCallback = true;
+            }
+            ArrayList arrayList = new ArrayList();
+            displayContent.getDefaultTaskDisplayArea().forAllRootTasks((Consumer) new MultiTaskingController$$ExternalSyntheticLambda2(this, arrayList, 1), true);
+            Iterator it = arrayList.iterator();
+            while (it.hasNext()) {
+                Task task = (Task) it.next();
+                if (minimizeTaskLocked(-1, -1, task, z)) {
+                    if (displayContent.isDexMode()) {
+                        DexController dexController2 = activityTaskManagerService.mDexController;
+                        if (!((ArrayList) dexController2.mMinimizedToggleTasks).contains(task)) {
+                            ((ArrayList) dexController2.mMinimizedToggleTasks).add(task);
+                        }
+                    }
+                    boolean z4 = CoreRune.MW_MULTI_SPLIT_FREEFORM_FOLDING_POLICY;
+                }
+            }
+            if (CoreRune.MT_NEW_DEX_PIP && (activityRecord = this.mTmpPipCandidate) != null) {
+                this.mTmpPipCandidate = null;
+                if (activityTaskManagerService.mActivityClientController.requestPictureInPictureMode(activityRecord)) {
+                    Slog.d("MultiTaskingController", "minimizeAllTasksLocked: entered pip, r=" + activityRecord);
+                } else {
+                    activityRecord.supportsEnterPipOnTaskSwitch = false;
+                    Slog.d("MultiTaskingController", "minimizeAllTasksLocked: failed to enter pip, r=" + activityRecord);
+                }
+            }
+            if (z3) {
+                activityTaskManagerService.mFreeformController.continueMinimizeStateChangedCallbacks();
+            }
+            activityTaskManagerService.continueWindowLayout();
+        } catch (Throwable th) {
+            if (z3) {
+                activityTaskManagerService.mFreeformController.continueMinimizeStateChangedCallbacks();
+            }
+            activityTaskManagerService.continueWindowLayout();
+            throw th;
+        }
+    }
+
+    public final boolean minimizeTaskLocked(int i, int i2, final Task task, final boolean z) {
+        WindowState windowState;
+        InputTarget inputTarget;
+        if (task == null) {
+            Slog.w("MultiTaskingController", "minimizeTaskLocked: fail, task is null");
+            return false;
+        }
+        if (!task.canMinimize()) {
+            Slog.w("MultiTaskingController", "minimizeTaskLocked: fail, task can't minimize. t=" + task);
+            if (task.isAnimating() && task.getWindowingMode() == 5) {
+                Slog.w("MultiTaskingController", "minimizeTaskLocked: cancelAnimation, t=" + task);
+                task.cancelAnimation();
+            }
+            return false;
+        }
+        DisplayContent displayContent = task.getDisplayContent();
+        if (displayContent == null || displayContent.isDesktopModeEnabled() || (windowState = displayContent.mInputMethodWindow) == null || !windowState.isVisible() || (inputTarget = displayContent.mImeInputTarget) == null || inputTarget.getWindowState() == null || displayContent.mImeInputTarget.getWindowState().getTask() != task || !displayContent.mInsetsStateController.getImeSourceProvider().mImeShowing || !displayContent.mInsetsStateController.getImeSourceProvider().mImeShowing) {
+            return task.moveTaskToBack(task, null, true, z, i, i2);
+        }
+        InputMethodManagerInternal.get().hideAllInputMethods(61);
+        this.mH.postDelayed(new Runnable() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda4
+            @Override // java.lang.Runnable
+            public final void run() {
+                MultiTaskingController multiTaskingController = MultiTaskingController.this;
+                Task task2 = task;
+                boolean z2 = z;
+                WindowManagerGlobalLock windowManagerGlobalLock = multiTaskingController.mAtm.mGlobalLock;
+                WindowManagerService.boostPriorityForLockedSection();
+                synchronized (windowManagerGlobalLock) {
+                    try {
+                        task2.moveTaskToBack(task2, null, true, z2, -1, -1);
+                    } catch (Throwable th) {
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                        throw th;
+                    }
+                }
+                WindowManagerService.resetPriorityAfterLockedSection();
+            }
+        }, 400L);
+        return true;
+    }
+
+    public final void removeEmbedActivityProcessIfNeeded(int i, String str) {
+        try {
+            PackageInfo packageInfoAsUser = this.mAtm.mContext.getPackageManager().getPackageInfoAsUser(str, 0, i);
+            if (packageInfoAsUser != null) {
+                ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+                ApplicationInfo applicationInfo = packageInfoAsUser.applicationInfo;
+                final WindowProcessController processController = activityTaskManagerService.getProcessController(applicationInfo.uid, applicationInfo.processName);
+                if (processController == null || processController.mPid == ActivityManagerService.MY_PID) {
+                    return;
+                }
+                this.mH.post(new Runnable() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda15
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        MultiTaskingController multiTaskingController = MultiTaskingController.this;
+                        WindowProcessController windowProcessController = processController;
+                        multiTaskingController.mAtm.mAmInternal.killProcess(windowProcessController.mName, windowProcessController.mUid, "embedded-package-changed");
+                    }
+                });
+            }
+        } catch (PackageManager.NameNotFoundException unused) {
+        }
+    }
+
+    public final boolean removeFocusedTask(int i) {
+        int i2 = 0;
         if (i == -1) {
             return false;
         }
@@ -1338,13 +959,8 @@ public class MultiTaskingController implements IController {
                     WindowManagerService.resetPriorityAfterLockedSection();
                     return false;
                 }
-                final boolean[] zArr = {false};
-                displayContent.forAllTaskDisplayAreas(new Consumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda6
-                    @Override // java.util.function.Consumer
-                    public final void accept(Object obj) {
-                        MultiTaskingController.this.lambda$removeFocusedTask$16(zArr, (TaskDisplayArea) obj);
-                    }
-                });
+                boolean[] zArr = {false};
+                displayContent.forAllTaskDisplayAreas(new MultiTaskingController$$ExternalSyntheticLambda2(this, zArr, i2));
                 boolean z = zArr[0];
                 WindowManagerService.resetPriorityAfterLockedSection();
                 return z;
@@ -1355,354 +971,192 @@ public class MultiTaskingController implements IController {
         }
     }
 
-    public /* synthetic */ void lambda$removeFocusedTask$16(boolean[] zArr, TaskDisplayArea taskDisplayArea) {
-        ActivityRecord focusedActivity = taskDisplayArea.getFocusedActivity();
-        if (focusedActivity == null || focusedActivity.getTask() == null) {
+    public final void setEmbedActivityPackageEnabled(final String str, boolean z, final int i) {
+        int i2 = z ? 1 : 2;
+        if (this.mAtm.mExt.mActivityEmbeddedController.getEnabled(i, str) == i2) {
             return;
         }
-        if (focusedActivity.isActivityTypeHomeOrRecents()) {
-            Task rootTask = taskDisplayArea.getRootTask(5, 1);
-            if (rootTask == null || rootTask.getTopMostTask() == null) {
-                return;
-            }
-            Slog.d(TAG, "removeFocusedTask, topMostFreeformTask=" + rootTask.getTopMostTask());
-            this.mAtm.removeTask(rootTask.getTopMostTask().mTaskId);
-            zArr[0] = true;
-            return;
-        }
-        Slog.d(TAG, "removeFocusedTask, focusedTask=" + focusedActivity.getTask());
-        this.mAtm.removeTask(focusedActivity.getTask().mTaskId);
-        zArr[0] = true;
-    }
-
-    public void registerMinimizeAllReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.samsung.android.multiwindow.MINIMIZE_ALL");
-        intentFilter.addAction("com.samsung.android.multiwindow.MINIMIZE_ALL_BY_SYSTEM");
-        this.mAtm.mContext.registerReceiver(this.mMinimizeAllReceiver, intentFilter, "android.permission.MANAGE_ACTIVITY_STACKS", this.mH);
-    }
-
-    public int getMultiSplitFlags() {
-        int i;
-        TaskDisplayArea defaultTaskDisplayArea = this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea();
-        Task task = defaultTaskDisplayArea.getTask(new Predicate() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda10
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getMultiSplitFlags$17;
-                lambda$getMultiSplitFlags$17 = MultiTaskingController.lambda$getMultiSplitFlags$17((Task) obj);
-                return lambda$getMultiSplitFlags$17;
-            }
-        });
-        int i2 = 0;
-        if (task != null) {
-            int i3 = 2;
-            if (!this.mAtm.mKeyguardController.isKeyguardLocked(0)) {
-                if (task.isActivityTypeHome() || task.isActivityTypeRecents()) {
-                    i3 = 4;
-                } else if (task.supportsMultiWindowInDisplayArea(defaultTaskDisplayArea)) {
-                    i3 = 1;
+        ActivityEmbeddedController activityEmbeddedController = this.mAtm.mExt.mActivityEmbeddedController;
+        activityEmbeddedController.mUserChange.putValue(str, activityEmbeddedController.findTargetUserId(i), Integer.valueOf(i2));
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                final ArrayList arrayList = new ArrayList();
+                this.mAtm.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea().forAllLeafTasks(new Consumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda12
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        ComponentName componentName;
+                        MultiTaskingController multiTaskingController = MultiTaskingController.this;
+                        int i3 = i;
+                        String str2 = str;
+                        ArrayList arrayList2 = arrayList;
+                        Task task = (Task) obj;
+                        if (multiTaskingController.mAtm.mExt.mActivityEmbeddedController.findTargetUserId(task.mUserId) == i3 && (componentName = task.realActivity) != null && componentName.getPackageName().equals(str2)) {
+                            arrayList2.add(task);
+                        }
+                    }
+                }, true);
+                if (arrayList.isEmpty()) {
+                    removeEmbedActivityProcessIfNeeded(i, str);
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    return;
                 }
-            }
-            if (defaultTaskDisplayArea.isMultiSplitActive()) {
-                i = i3 | 32;
-            } else {
-                i = defaultTaskDisplayArea.isSplitScreenModeActivated() ? i3 | 16 : i3 | 8;
-            }
-            i2 = i | getCurrentMultiSplitSide(defaultTaskDisplayArea);
-        }
-        return ((i2 & 1) == 0 && (i2 & 4) == 0) ? i2 : i2 | IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES;
-    }
-
-    public static /* synthetic */ boolean lambda$getMultiSplitFlags$17(Task task) {
-        return (task.inFullscreenWindowingMode() || task.inSplitScreenWindowingMode()) && task.topRunningActivity() != null;
-    }
-
-    public final int getCurrentMultiSplitSide(TaskDisplayArea taskDisplayArea) {
-        boolean z = false;
-        int stagePosition = taskDisplayArea.getRootMainStageTask() != null ? taskDisplayArea.getRootMainStageTask().getStagePosition() : 0;
-        int stagePosition2 = taskDisplayArea.getRootSideStageTask() != null ? taskDisplayArea.getRootSideStageTask().getStagePosition() : 0;
-        int stagePosition3 = (!CoreRune.MW_MULTI_SPLIT || taskDisplayArea.getRootCellStageTask() == null) ? 0 : taskDisplayArea.getRootCellStageTask().getStagePosition();
-        if (CoreRune.MW_MULTI_SPLIT && !this.mAtm.mWindowManager.isFolded()) {
-            z = true;
-        }
-        if (z) {
-            if (isVerticalDivision(stagePosition, stagePosition2)) {
-                if ((stagePosition3 & 8) != 0) {
-                    return 128;
+                Iterator it = arrayList.iterator();
+                while (it.hasNext()) {
+                    Task task = (Task) it.next();
+                    if (task.isVisible()) {
+                        task.mIsWaitingRemoveEmbedActivityTask = true;
+                        task.getRootTask().moveTaskToBack(task, null);
+                    } else {
+                        WindowProcessController windowProcessController = task.mRootProcess;
+                        if (windowProcessController != null && windowProcessController.mPid != ActivityManagerService.MY_PID) {
+                            this.mH.post(new MultiTaskingController$$ExternalSyntheticLambda14(this, task, windowProcessController));
+                        }
+                    }
                 }
-                return ((stagePosition3 & 32) == 0 && stagePosition2 == 32) ? 128 : 512;
+                WindowManagerService.resetPriorityAfterLockedSection();
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
             }
-            if ((stagePosition3 & 16) != 0) {
-                return 256;
-            }
-            return ((stagePosition3 & 64) == 0 && stagePosition2 == 64) ? 256 : 1024;
-        }
-        DisplayContent defaultDisplay = this.mAtm.mRootWindowContainer.getDefaultDisplay();
-        DisplayPolicy displayPolicy = defaultDisplay.getDisplayPolicy();
-        int i = defaultDisplay.getDisplayInfo().logicalWidth;
-        int i2 = defaultDisplay.getDisplayInfo().logicalHeight;
-        int navBarPosition = displayPolicy.getNavBarPosition();
-        if (navBarPosition == 1) {
-            return 512;
-        }
-        if (navBarPosition == 2) {
-            return 128;
-        }
-        if (navBarPosition != 4) {
-            return 64;
-        }
-        return i > i2 ? 128 : 256;
-    }
-
-    public void updateFreeformStashState(WindowContainer windowContainer, WindowContainerTransaction.Change change) {
-        Task asTask = windowContainer.asTask();
-        if (asTask == null) {
-            Slog.w(TAG, "updateFocusForFreeformStash: failed, we support Task only now!, wc=" + windowContainer);
-            return;
-        }
-        if (!asTask.isLeafTask()) {
-            asTask = asTask.getTask(new Predicate() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda15
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$updateFreeformStashState$18;
-                    lambda$updateFreeformStashState$18 = MultiTaskingController.lambda$updateFreeformStashState$18((Task) obj);
-                    return lambda$updateFreeformStashState$18;
-                }
-            });
-        }
-        if (asTask == null || !asTask.inFreeformWindowingMode()) {
-            String str = TAG;
-            StringBuilder sb = new StringBuilder();
-            sb.append("updateFocusForFreeformStash: failed, tid #");
-            sb.append(asTask != null ? Integer.valueOf(asTask.mTaskId) : "null");
-            Slog.w(str, sb.toString());
-            return;
-        }
-        if (change.hasChangeFreeformStashScale()) {
-            asTask.setFreeformStashed(change.getChangeFreeformStashScale());
-        }
-        if (change.hasChangeFreeformStashMode() && !asTask.isMinimized()) {
-            int changeFreeformStashMode = change.getChangeFreeformStashMode();
-            asTask.setFreeformStashMode(changeFreeformStashMode);
-            if (changeFreeformStashMode == 2) {
-                asTask.adjustFocusToNextFocusableTask("setStashScaled");
-            } else {
-                asTask.setFreeformStashed(1.0f);
-                this.mAtm.setFocusedTask(asTask.mTaskId);
-                this.mAtm.mTaskSupervisor.updateTopResumedActivityIfNeeded("stash-update");
-            }
-        }
-        if (change.isForceTaskInfoChangeRequested()) {
-            Slog.d(TAG, "updateFreeformStashState: force taskInfoChanged , t #" + asTask.mTaskId);
-            asTask.dispatchTaskInfoChangedIfNeeded(true);
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$updateFreeformStashState$18(Task task) {
-        return task.isVisible() && task.isLeafTask();
-    }
-
-    public boolean needAffordanceAnimation(Task task, ActivityOptions activityOptions) {
-        if (task == null || activityOptions == null || !activityOptions.isResumedAffordanceAnimationRequested() || task.isFreeformStashed()) {
-            return false;
-        }
-        if (!task.inSplitScreenWindowingMode()) {
-            return task.inFreeformWindowingMode();
-        }
-        Task createdByOrganizerTask = task.getCreatedByOrganizerTask();
-        return (createdByOrganizerTask == null || createdByOrganizerTask.getTopMostTask() == null || !createdByOrganizerTask.getTopMostTask().equals(task)) ? false : true;
-    }
-
-    public boolean isAffordanceTargetTask(Task task) {
-        Task task2 = this.mAffordanceTargetTask;
-        return task2 != null && task2 == task;
-    }
-
-    public void setAffordanceTargetTask(Task task) {
-        if (this.mAffordanceTargetTask != task) {
-            this.mAffordanceTargetTask = task;
-            Slog.d(TAG, "setAffordanceTargetTask: " + task);
         }
     }
 
     @Override // com.android.server.wm.IController
-    public void dumpLocked(PrintWriter printWriter, String str) {
-        printWriter.println("[MultiTaskingController]");
-        if (this.mAffordanceTargetTask != null) {
-            printWriter.println(str + "mAffordanceTargetTask=" + this.mAffordanceTargetTask);
-        }
-        if (CoreRune.MW_MULTI_SPLIT_ENSURE_APP_SIZE) {
-            printWriter.println(str + "mSplitFeasibleMode=" + this.mSplitFeasibleMode);
-            printWriter.println(str + "mIsDisplaySizeOverride=" + this.mIsDisplaySizeOverride);
-        }
-        dumpConfigurationContainersLocked(printWriter, str);
-        dumpTaskOrderLocked(printWriter, str);
-        dumpFocusStateLocked(printWriter, str);
-        dumpTransitionLocked(printWriter, str);
-        printWriter.println();
+    public final void setWindowManager(WindowManagerService windowManagerService) {
+        this.mWm = windowManagerService;
     }
 
-    public final void dumpConfigurationContainersLocked(PrintWriter printWriter, String str) {
-        printWriter.println(str + "(CONFIGURATION CONTAINERS)");
-        this.mAtm.mRootWindowContainer.dumpConfigurationLocked(printWriter, str, 0);
-        printWriter.println();
-    }
-
-    public final void dumpTaskOrderLocked(final PrintWriter printWriter, final String str) {
-        printWriter.println(str + "(TASK ORDER INFO)");
-        for (int childCount = this.mAtm.mRootWindowContainer.getChildCount() + (-1); childCount >= 0; childCount += -1) {
-            DisplayContent displayContent = (DisplayContent) this.mAtm.mRootWindowContainer.getChildAt(childCount);
-            printWriter.println(str + "  DisplayContent #" + displayContent.mDisplayId);
-            displayContent.forAllTaskDisplayAreas(new Consumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda19
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    MultiTaskingController.this.lambda$dumpTaskOrderLocked$19(printWriter, str, (TaskDisplayArea) obj);
+    public final boolean shouldDeferEnterSplit(List list, List list2) {
+        String str;
+        int uid;
+        ActivityInfo activityInfo;
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        if (activityTaskManagerService.mDexController.getDexModeLocked() != 2) {
+            return false;
+        }
+        ArrayList arrayList = new ArrayList();
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            List queryIntentComponents = ((PendingIntent) it.next()).queryIntentComponents(0);
+            if (!queryIntentComponents.isEmpty() && (activityInfo = ((ResolveInfo) queryIntentComponents.get(0)).activityInfo) != null) {
+                ApplicationInfo applicationInfo = activityInfo.applicationInfo;
+                ArrayList taskLocked = activityTaskManagerService.mDexController.getTaskLocked(applicationInfo.uid, 0, applicationInfo.processName, true);
+                if (!taskLocked.isEmpty()) {
+                    Iterator it2 = taskLocked.iterator();
+                    while (it2.hasNext()) {
+                        arrayList.add(((DexController.FindTaskResult) it2.next()).mTask);
+                    }
                 }
-            });
-        }
-        printWriter.println();
-    }
-
-    public /* synthetic */ void lambda$dumpTaskOrderLocked$19(PrintWriter printWriter, String str, TaskDisplayArea taskDisplayArea) {
-        printTaskDisplayAreaLocked(printWriter, str + "  ", taskDisplayArea);
-    }
-
-    public final void printTaskDisplayAreaLocked(PrintWriter printWriter, String str, WindowContainer windowContainer) {
-        for (int childCount = windowContainer.getChildCount() - 1; childCount >= 0; childCount--) {
-            printWriter.print(str + "TaskDisplayArea: " + windowContainer.getName());
-            WindowContainer childAt = windowContainer.getChildAt(childCount);
-            if (childAt.asTaskDisplayArea() != null) {
-                printTaskDisplayAreaLocked(printWriter, str + "  ", windowContainer);
-            } else {
-                printAllTasksLocked(printWriter, str + "  ", childAt, childCount);
             }
         }
-    }
-
-    public final void printAllTasksLocked(PrintWriter printWriter, String str, WindowContainer windowContainer, int i) {
-        Task asTask = windowContainer.asTask();
-        if (asTask == null) {
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append(str);
-        sb.append(asTask.isRootTask() ? "Root #" : "Leaf #");
-        sb.append(i);
-        sb.append(" ");
-        sb.append(asTask);
-        printWriter.println(sb.toString());
-        for (int size = asTask.mChildren.size() - 1; size >= 0; size += -1) {
-            printAllTasksLocked(printWriter, str + "  ", (WindowContainer) asTask.mChildren.get(size), size);
-        }
-    }
-
-    public final void dumpFocusStateLocked(PrintWriter printWriter, String str) {
-        printWriter.println(str + "(FOCUS INFO)");
-        RootWindowContainer rootWindowContainer = this.mAtm.mRootWindowContainer;
-        printWriter.println(str + "  TopDisplayFocusedTask=" + rootWindowContainer.getTopDisplayFocusedRootTask());
-        printWriter.println(str + "  TopResumedActivity=" + rootWindowContainer.getTopResumedActivity());
-        printWriter.println();
-        for (int childCount = rootWindowContainer.getChildCount() + (-1); childCount >= 0; childCount += -1) {
-            DisplayContent displayContent = (DisplayContent) rootWindowContainer.getChildAt(childCount);
-            printWriter.println(str + "  DisplayContent #" + displayContent.mDisplayId);
-            printWriter.println(str + "    FocusedTask=" + displayContent.getFocusedRootTask());
-            printWriter.println(str + "    Preferred TopFocusableTask=" + displayContent.getDefaultTaskDisplayArea().mPreferredTopFocusableRootTask);
-            printWriter.println(str + "    mFocusedApp=" + displayContent.mFocusedApp);
-            printWriter.println(str + "    mCurrentFocus=" + displayContent.mCurrentFocus);
-            printWriter.println(str + "    mInputMethodWindow=" + displayContent.mInputMethodWindow);
-            printWriter.println(str + "    mImeLayeringTarget=" + displayContent.getImeTarget(0));
-            printWriter.println(str + "    mImeInputTarget=" + displayContent.getImeInputTarget());
-            printWriter.println(str + "    mImeControlTarget=" + displayContent.getImeTarget(2));
-            printWriter.println(str + "    " + displayContent.getInsetsStateController().getImeSourceProvider().getSource());
-        }
-        if (!rootWindowContainer.mTopFocusedAppByProcess.isEmpty()) {
-            printWriter.println();
-            printWriter.println(str + "  mTopFocusedAppByProcess");
-            for (Map.Entry entry : rootWindowContainer.mTopFocusedAppByProcess.entrySet()) {
-                printWriter.println(str + "    [" + entry.getKey() + "] r=" + entry.getValue());
+        Iterator it3 = list2.iterator();
+        while (it3.hasNext()) {
+            Task anyTaskForId = activityTaskManagerService.mRootWindowContainer.anyTaskForId(((Integer) it3.next()).intValue(), 1, null, false);
+            if (anyTaskForId != null && anyTaskForId.getDisplayId() == 2) {
+                if (!anyTaskForId.isVisible() || anyTaskForId.topRunningActivity(false) == null) {
+                    ActivityRecord rootActivity = anyTaskForId.getRootActivity(true, false);
+                    if (rootActivity != null) {
+                        str = rootActivity.processName;
+                        uid = rootActivity.getUid();
+                    } else {
+                        WindowProcessController windowProcessController = anyTaskForId.mRootProcess;
+                        if (windowProcessController != null) {
+                            String str2 = windowProcessController.mName;
+                            uid = windowProcessController.mUid;
+                            str = str2;
+                        }
+                    }
+                    ArrayList taskLocked2 = activityTaskManagerService.mDexController.getTaskLocked(uid, 0, str, true);
+                    if (!taskLocked2.isEmpty()) {
+                        Iterator it4 = taskLocked2.iterator();
+                        while (it4.hasNext()) {
+                            arrayList.add(((DexController.FindTaskResult) it4.next()).mTask);
+                        }
+                    }
+                } else {
+                    arrayList.add(anyTaskForId);
+                }
             }
         }
-        printWriter.println();
+        Iterator it5 = arrayList.iterator();
+        while (it5.hasNext()) {
+            minimizeTaskLocked(-1, -1, (Task) it5.next(), true);
+        }
+        return !arrayList.isEmpty();
     }
 
-    public final void dumpTransitionLocked(PrintWriter printWriter, String str) {
-        TransitionController transitionController = this.mAtm.getTransitionController();
-        if (transitionController == null) {
-            return;
-        }
-        printWriter.println(str + "(TRANSITION INFO)");
-        if (transitionController.getCollectingTransition() != null) {
-            printWriter.println(str + "  mCollectingTransition=" + transitionController.getCollectingTransition());
-        }
-        if (!transitionController.mWaitingTransitions.isEmpty()) {
-            printWriter.println(str + "  mWaitingTransitions=" + transitionController.mWaitingTransitions);
-        }
-        if (transitionController.mFinishingTransition != null) {
-            printWriter.println(str + "  mFinishingTransition=" + transitionController.mFinishingTransition);
-        }
-    }
-
-    public void handleMultiSplitAppMinSize(DisplayContent displayContent) {
-        int updateFrom = this.mLastConfig.updateFrom(this.mAtm.getConfiguration());
-        int i = displayContent.getDisplayInfo().rotation;
+    public final void startAssistantActivityToSplitLocked(Intent intent, float f) {
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        ResolveInfo resolveActivity = activityTaskManagerService.mContext.getPackageManager().resolveActivity(intent, 1024);
         boolean z = true;
-        boolean z2 = this.mLastRotation != i;
-        if ((updateFrom & 5120) == 0 && !z2) {
-            z = false;
-        }
-        if (z) {
-            ensureMultiSplitAppMinSize(displayContent.getDefaultTaskDisplayArea());
-        }
-        if (z2) {
-            this.mLastRotation = i;
-        }
-    }
-
-    public void ensureMultiSplitAppMinSize(TaskDisplayArea taskDisplayArea) {
-        ActivityRecord topMostActivity;
-        updateMultiSplitAppMinimumSizeLocked();
-        if ((CoreRune.MW_MULTI_SPLIT_FOLDING_POLICY && this.mAtm.mWindowManager.isFolded() && taskDisplayArea.isSplitScreenModeActivated()) || supportMultiSplitAppMinimumSizeLocked() || !taskDisplayArea.isMultiSplitActive()) {
-            return;
-        }
-        Task focusedRootTask = taskDisplayArea.getFocusedRootTask();
-        if (focusedRootTask != null) {
-            ActivityRecord topMostActivity2 = focusedRootTask.getTopMostActivity();
-            if (topMostActivity2 == null || !topMostActivity2.inSplitScreenWindowingMode()) {
-                return;
+        if (resolveActivity == null || resolveActivity.activityInfo == null) {
+            Slog.d("MultiTaskingController", "confirmSplitScreenMode : ri is null, li=" + intent);
+        } else {
+            if (activityTaskManagerService.mDexController.getDexModeLocked() == 2) {
+                try {
+                    activityTaskManagerService.mContext.getPackageManager().getApplicationInfo(resolveActivity.activityInfo.packageName, 128);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
-            exitMultiWindow(topMostActivity2.token);
-            return;
+            if (MultiWindowUtils.isAiKeyTrampolineActivity(resolveActivity.activityInfo.packageName)) {
+                intent.setAiKeyAppLaunch(true);
+            }
         }
-        Task topRootTaskInStageType = taskDisplayArea.getTopRootTaskInStageType(2);
-        if (topRootTaskInStageType == null || (topMostActivity = topRootTaskInStageType.getTopMostActivity()) == null) {
-            return;
+        Task task = activityTaskManagerService.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea().getTask(new MultiTaskingController$$ExternalSyntheticLambda0(0));
+        DisplayContent displayContent = activityTaskManagerService.mRootWindowContainer.getDisplayContent(0);
+        DisplayRotation displayRotation = displayContent != null ? displayContent.mDisplayRotation : null;
+        if (displayRotation != null) {
+            int i = displayRotation.mLastSensorRotation;
+            int i2 = displayRotation.mUserRotationMode;
+            ActivityRecord activityRecord = task != null ? task.topRunningActivity(false) : null;
+            if (i == 1 && i2 == 0 && activityRecord != null && ActivityInfo.isFixedOrientationPortrait(activityRecord.info.screenOrientation) && !CoreRune.MT_APP_COMPAT_ORIENTATION_POLICY) {
+                Slog.d("MultiTaskingController", "deferSplitRotationIfNeeded: trigger");
+                TaskOrganizerInfo taskOrganizerInfo = new TaskOrganizerInfo();
+                taskOrganizerInfo.setAssistantActivityToSplit(intent, f, z);
+                activityTaskManagerService.mTaskOrganizerController.onSplitLayoutChangeRequested(taskOrganizerInfo.toBundle());
+            }
         }
-        exitMultiWindow(topMostActivity.token);
+        z = false;
+        TaskOrganizerInfo taskOrganizerInfo2 = new TaskOrganizerInfo();
+        taskOrganizerInfo2.setAssistantActivityToSplit(intent, f, z);
+        activityTaskManagerService.mTaskOrganizerController.onSplitLayoutChangeRequested(taskOrganizerInfo2.toBundle());
     }
 
-    public void updateMultiSplitAppMinimumSizeLocked() {
+    public final void updateEmbedActivityPackageEnabled(int i, int i2, String str, boolean z) {
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        if (activityTaskManagerService.mExt.mActivityEmbeddedController.getEnabled(i2, str) == 0 || z) {
+            ActivityEmbeddedController activityEmbeddedController = activityTaskManagerService.mExt.mActivityEmbeddedController;
+            activityEmbeddedController.mUserChange.putValue(str, activityEmbeddedController.findTargetUserId(i2), Integer.valueOf(i));
+        }
+    }
+
+    public final void updateMultiSplitAppMinimumSizeLocked() {
         if (CoreRune.MW_MULTI_SPLIT_ENSURE_APP_SIZE) {
             int i = this.mSplitFeasibleMode;
             this.mSplitFeasibleMode = 2;
-            DisplayContent defaultDisplay = this.mAtm.mRootWindowContainer.getDefaultDisplay();
-            if (defaultDisplay == null) {
+            ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+            DisplayContent displayContent = activityTaskManagerService.mRootWindowContainer.mDefaultDisplay;
+            if (displayContent == null) {
                 return;
             }
-            DisplayPolicy displayPolicy = defaultDisplay.getDisplayPolicy();
+            DisplayPolicy displayPolicy = displayContent.mDisplayPolicy;
             Resources currentUserResources = displayPolicy.getCurrentUserResources();
-            int dividerSize = DockedDividerUtils.getDividerSize(currentUserResources, DockedDividerUtils.getDividerInsets(currentUserResources));
-            int minimalSize = getMinimalSize(currentUserResources);
+            int dimensionPixelSize = currentUserResources.getDimensionPixelSize(R.dimen.harmful_app_padding_top) - (currentUserResources.getDimensionPixelSize(R.dimen.harmful_app_name_padding_top) * 2);
+            int dimensionPixelSize2 = currentUserResources.getConfiguration().densityDpi >= ((MultiWindowUtils.isTablet() || (CoreRune.MW_MULTI_SPLIT_FOR_COVER_DISPLAY && (currentUserResources.getConfiguration().semDisplayDeviceType == 5))) ? FrameworkStatsLog.VBMETA_DIGEST_REPORTED : FrameworkStatsLog.SYSTEM_SERVER_PRE_WATCHDOG_OCCURRED) ? currentUserResources.getDimensionPixelSize(R.dimen.floating_toolbar_vertical_margin) : currentUserResources.getDimensionPixelSize(R.dimen.progress_bar_size_small);
             int i2 = 0;
             while (true) {
                 if (i2 >= 4) {
                     break;
                 }
-                if (i2 != 2 || defaultDisplay.getDisplayRotation().isAllowAllRotations()) {
+                if (i2 != 2 || displayContent.mDisplayRotation.mAllowAllRotations == 1) {
                     boolean z = i2 == 1 || i2 == 3;
-                    DisplayPolicy.DecorInsets.Info decorInsetsInfo = displayPolicy.getDecorInsetsInfo(i2, z ? defaultDisplay.mBaseDisplayHeight : defaultDisplay.mBaseDisplayWidth, z ? defaultDisplay.mBaseDisplayWidth : defaultDisplay.mBaseDisplayHeight);
+                    DisplayPolicy.DecorInsets.Info decorInsetsInfo = displayPolicy.getDecorInsetsInfo(i2, z ? displayContent.mBaseDisplayHeight : displayContent.mBaseDisplayWidth, z ? displayContent.mBaseDisplayWidth : displayContent.mBaseDisplayHeight);
                     int width = decorInsetsInfo.mConfigFrame.width();
                     int height = decorInsetsInfo.mConfigFrame.height();
-                    int i3 = (minimalSize * 2) + dividerSize;
+                    int i3 = (dimensionPixelSize2 * 2) + dimensionPixelSize;
                     boolean z2 = width < i3;
                     boolean z3 = height < i3;
                     if (z2 && z3) {
@@ -1715,269 +1169,18 @@ public class MultiTaskingController implements IController {
                 }
                 i2++;
             }
-            boolean z4 = defaultDisplay.mIsSizeForced || defaultDisplay.mIsDensityForced;
+            boolean z4 = displayContent.mIsSizeForced || displayContent.mIsDensityForced;
             if (z4 || this.mIsDisplaySizeOverride) {
                 TaskOrganizerInfo taskOrganizerInfo = new TaskOrganizerInfo();
-                if (!z4) {
-                    taskOrganizerInfo.setSplitFeasibleMode(2);
-                } else {
+                if (z4) {
                     taskOrganizerInfo.setSplitFeasibleMode(this.mSplitFeasibleMode);
+                } else {
+                    taskOrganizerInfo.setSplitFeasibleMode(2);
                 }
-                this.mAtm.mTaskOrganizerController.onSplitLayoutChangeRequested(taskOrganizerInfo.toBundle());
-                Slog.d(TAG, "split feasible change, prev=" + i + ", cur=" + this.mSplitFeasibleMode + ", override=" + z4);
+                activityTaskManagerService.mTaskOrganizerController.onSplitLayoutChangeRequested(taskOrganizerInfo.toBundle());
+                Slog.d("MultiTaskingController", "split feasible change, prev=" + i + ", cur=" + this.mSplitFeasibleMode + ", override=" + z4);
             }
             this.mIsDisplaySizeOverride = z4;
         }
-    }
-
-    public boolean supportMultiSplitAppMinimumSizeLocked() {
-        return this.mSplitFeasibleMode == 2;
-    }
-
-    public final int getMinimalSize(Resources resources) {
-        if (resources.getConfiguration().densityDpi >= ((MultiWindowUtils.isTablet() || (CoreRune.MW_MULTI_SPLIT_FOR_COVER_DISPLAY && (resources.getConfiguration().semDisplayDeviceType == 5))) ? FrameworkStatsLog.VBMETA_DIGEST_REPORTED : FrameworkStatsLog.SYSTEM_SERVER_PRE_WATCHDOG_OCCURRED)) {
-            return resources.getDimensionPixelSize(R.dimen.highlight_alpha_material_dark);
-        }
-        return resources.getDimensionPixelSize(R.dimen.subtitle_outline_width);
-    }
-
-    public void setCornerGestureCustomValue(int i) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                Iterator it = this.mAtm.mExt.getStartedUserIdsLocked().iterator();
-                while (it.hasNext()) {
-                    this.mAtm.mExt.getCoreStateController().setVolatileState("corner_gesture_custom_value", Integer.valueOf(i), ((Integer) it.next()).intValue(), true, true, null);
-                    MultiWindowEdgeDetector.updateCustomBoundsIfNeeded();
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public boolean isVisibleTaskInDexDisplay(PendingIntent pendingIntent) {
-        ActivityInfo activityInfo;
-        if (pendingIntent != null && this.mAtm.mDexController.getDexModeLocked() == 2) {
-            List queryIntentComponents = pendingIntent.queryIntentComponents(0);
-            if (!queryIntentComponents.isEmpty() && (activityInfo = ((ResolveInfo) queryIntentComponents.get(0)).activityInfo) != null) {
-                ApplicationInfo applicationInfo = activityInfo.applicationInfo;
-                if (!this.mAtm.mDexController.getTaskLocked(applicationInfo.processName, applicationInfo.uid, true, 0).isEmpty()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean isVisibleTaskByTaskIdInDexDisplay(int i) {
-        Task anyTaskForId;
-        int i2;
-        String str;
-        if (i != -1 && this.mAtm.mDexController.getDexModeLocked() == 2 && (anyTaskForId = this.mAtm.mRootWindowContainer.anyTaskForId(i, 1)) != null && anyTaskForId.getDisplayId() == 2) {
-            ActivityRecord rootActivity = anyTaskForId.getRootActivity();
-            if (rootActivity != null) {
-                if (anyTaskForId.isVisible()) {
-                    return true;
-                }
-                str = rootActivity.processName;
-                i2 = rootActivity.getUid();
-            } else {
-                WindowProcessController rootProcess = anyTaskForId.getRootProcess();
-                if (rootProcess == null) {
-                    return false;
-                }
-                String str2 = rootProcess.mName;
-                i2 = rootProcess.mUid;
-                str = str2;
-            }
-            if (!this.mAtm.mDexController.getTaskLocked(str, i2, true, 0).isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean shouldDeferEnterSplit(List list, List list2) {
-        String str;
-        int uid;
-        WindowProcessController rootProcess;
-        ActivityInfo activityInfo;
-        if (this.mAtm.mDexController.getDexModeLocked() != 2) {
-            return false;
-        }
-        ArrayList arrayList = new ArrayList();
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            List queryIntentComponents = ((PendingIntent) it.next()).queryIntentComponents(0);
-            if (!queryIntentComponents.isEmpty() && (activityInfo = ((ResolveInfo) queryIntentComponents.get(0)).activityInfo) != null) {
-                ApplicationInfo applicationInfo = activityInfo.applicationInfo;
-                ArrayList taskLocked = this.mAtm.mDexController.getTaskLocked(applicationInfo.processName, applicationInfo.uid, true, 0);
-                if (!taskLocked.isEmpty()) {
-                    Iterator it2 = taskLocked.iterator();
-                    while (it2.hasNext()) {
-                        arrayList.add(((DexController.FindTaskResult) it2.next()).mTask);
-                    }
-                }
-            }
-        }
-        Iterator it3 = list2.iterator();
-        while (it3.hasNext()) {
-            Task anyTaskForId = this.mAtm.mRootWindowContainer.anyTaskForId(((Integer) it3.next()).intValue(), 1);
-            if (anyTaskForId != null && anyTaskForId.getDisplayId() == 2) {
-                if (anyTaskForId.isVisible() && anyTaskForId.topRunningActivity() != null) {
-                    arrayList.add(anyTaskForId);
-                } else {
-                    ActivityRecord rootActivity = anyTaskForId.getRootActivity();
-                    if (rootActivity != null) {
-                        str = rootActivity.processName;
-                        uid = rootActivity.getUid();
-                    } else {
-                        WindowProcessController rootProcess2 = anyTaskForId.getRootProcess();
-                        if (rootProcess2 != null) {
-                            str = rootProcess2.mName;
-                            uid = rootProcess2.mUid;
-                        }
-                    }
-                    ArrayList taskLocked2 = this.mAtm.mDexController.getTaskLocked(str, uid, true, 0);
-                    if (!taskLocked2.isEmpty()) {
-                        Iterator it4 = taskLocked2.iterator();
-                        while (it4.hasNext()) {
-                            arrayList.add(((DexController.FindTaskResult) it4.next()).mTask);
-                        }
-                    }
-                    if (this.mAtm.mDexController.shouldRestartProcess(str) && (rootProcess = anyTaskForId.getRootProcess()) != null) {
-                        this.mAtm.mDexController.killProcessIfNeeded(rootProcess, 0, true);
-                        arrayList.add(anyTaskForId);
-                    }
-                }
-            }
-        }
-        Iterator it5 = arrayList.iterator();
-        while (it5.hasNext()) {
-            minimizeTaskLocked((Task) it5.next(), true);
-        }
-        return !arrayList.isEmpty();
-    }
-
-    public boolean handleAltTabKeyIfNeededLocked() {
-        int intValue;
-        TaskDisplayArea defaultTaskDisplayArea = this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea();
-        ActivityRecord focusedActivity = defaultTaskDisplayArea.getFocusedActivity();
-        if (focusedActivity == null || !focusedActivity.inSplitScreenWindowingMode() || !defaultTaskDisplayArea.isSplitScreenModeActivated()) {
-            this.mFocusableTaskIds.clear();
-            return false;
-        }
-        if ((this.mFocusableTaskIds.isEmpty() && !collectFocusableSplitScreenTasksLocked(defaultTaskDisplayArea, focusedActivity.getStageType())) || (intValue = ((Integer) this.mFocusableTaskIds.poll()).intValue()) == -1) {
-            return false;
-        }
-        this.mAtm.setFocusedTask(intValue);
-        return true;
-    }
-
-    public final boolean collectFocusableSplitScreenTasksLocked(TaskDisplayArea taskDisplayArea, final int i) {
-        taskDisplayArea.forAllRootStageTasks(new Consumer() { // from class: com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda16
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                MultiTaskingController.this.lambda$collectFocusableSplitScreenTasksLocked$20(i, (Task) obj);
-            }
-        });
-        if (this.mFocusableTaskIds.isEmpty()) {
-            return false;
-        }
-        this.mFocusableTaskIds.add(-1);
-        Slog.d(TAG, "collectFocusableSplitScreenTasksLocked:" + this.mFocusableTaskIds);
-        return true;
-    }
-
-    public /* synthetic */ void lambda$collectFocusableSplitScreenTasksLocked$20(int i, Task task) {
-        Task topMostTask;
-        if (task.getStageType() == i || !task.isVisible() || (topMostTask = task.getTopMostTask()) == null) {
-            return;
-        }
-        this.mFocusableTaskIds.add(Integer.valueOf(topMostTask.mTaskId));
-    }
-
-    public void releaseAltTabKeyConsumerLocked() {
-        if (this.mFocusableTaskIds.isEmpty()) {
-            return;
-        }
-        Slog.d(TAG, "releaseAltTabKeyStateLocked:" + this.mFocusableTaskIds);
-        this.mFocusableTaskIds.clear();
-    }
-
-    public boolean shouldNotSupportWallpaper() {
-        return this.mIsMinimalBatteryUse;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x003a, code lost:
-    
-        if (r2.supportsMultiWindow() == false) goto L31;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:6:0x0025, code lost:
-    
-        if (r6.isMultiSplitVisible() != false) goto L31;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:8:0x003d, code lost:
-    
-        return 3;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int getMultiWindowModeForAssistantHotKeyLocked() {
-        /*
-            r6 = this;
-            com.android.server.wm.ActivityTaskManagerService r6 = r6.mAtm
-            com.android.server.wm.RootWindowContainer r6 = r6.mRootWindowContainer
-            com.android.server.wm.TaskDisplayArea r6 = r6.getDefaultTaskDisplayArea()
-            boolean r0 = com.samsung.android.multiwindow.MultiWindowCoreState.MW_ENABLED
-            r1 = 1
-            r0 = r0 ^ r1
-            com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda4 r2 = new com.android.server.wm.MultiTaskingController$$ExternalSyntheticLambda4
-            r2.<init>()
-            com.android.server.wm.Task r2 = r6.getTask(r2)
-            boolean r3 = r6.isSplitScreenModeActivated()
-            r4 = 3
-            r5 = 2
-            if (r3 == 0) goto L2b
-            boolean r0 = com.samsung.android.rune.CoreRune.MW_MULTI_SPLIT_TASK_ORGANIZER
-            if (r0 == 0) goto L29
-            boolean r6 = r6.isMultiSplitVisible()
-            if (r6 == 0) goto L29
-        L27:
-            r1 = r4
-            goto L3d
-        L29:
-            r1 = r5
-            goto L3d
-        L2b:
-            if (r2 == 0) goto L3d
-            boolean r6 = r2.isActivityTypeHomeOrRecents()
-            if (r6 != 0) goto L3d
-            if (r0 == 0) goto L36
-            goto L3d
-        L36:
-            boolean r6 = r2.supportsMultiWindow()
-            if (r6 != 0) goto L29
-            goto L27
-        L3d:
-            return r1
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.MultiTaskingController.getMultiWindowModeForAssistantHotKeyLocked():int");
-    }
-
-    public static /* synthetic */ boolean lambda$getMultiWindowModeForAssistantHotKeyLocked$21(Task task) {
-        return task.inFullscreenWindowingMode() && task.isVisible();
-    }
-
-    public void startAssistantActivityToSplitLocked(Intent intent, float f) {
-        TaskOrganizerInfo taskOrganizerInfo = new TaskOrganizerInfo();
-        taskOrganizerInfo.setAssistantActivityToSplit(intent, f);
-        this.mAtm.mTaskOrganizerController.onSplitLayoutChangeRequested(taskOrganizerInfo.toBundle());
     }
 }

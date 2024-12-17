@@ -1,11 +1,11 @@
 package com.android.server.wm;
 
-import android.view.WindowManager;
 import com.samsung.android.cover.CoverState;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class WmCoverState extends CoverState {
-    public static boolean sIsEnabled = false;
+    public static boolean sIsEnabled;
     public static WmCoverState sWmCoverState;
 
     public static WmCoverState getInstance() {
@@ -15,55 +15,29 @@ public final class WmCoverState extends CoverState {
         return null;
     }
 
-    public static void enable() {
-        sIsEnabled = true;
-        if (sWmCoverState == null) {
-            sWmCoverState = new WmCoverState();
+    public final int getWindowLayerFromTypeLw(int i) {
+        if (i != 2099 && i != 2411) {
+            return -1;
         }
-    }
-
-    public static boolean isEnabled() {
-        return sIsEnabled;
-    }
-
-    public boolean isCoverClosed() {
-        return !((CoverState) this).switchState;
-    }
-
-    public boolean isCoverAppSupported() {
-        switch (((CoverState) this).type) {
-            case 15:
-            case 16:
-            case 17:
-                return true;
-            default:
-                return false;
+        int i2 = ((CoverState) this).type;
+        if (i2 == 15 || i2 == 16 || i2 == 17) {
+            return (i == 2099 || (((CoverState) this).switchState ^ true)) ? 26 : -1;
         }
+        return -1;
     }
 
-    public boolean isViewCoverClosed() {
-        if (!isCoverClosed()) {
-            return false;
-        }
-        switch (((CoverState) this).type) {
-            case 15:
-            case 16:
-            case 17:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    public boolean isFlipTypeCoverClosed() {
-        if (!isCoverClosed()) {
+    public final boolean isFlipTypeCoverClosed() {
+        if (!(!((CoverState) this).switchState)) {
             return false;
         }
         int i = ((CoverState) this).type;
         return i == 0 || i == 7 || i == 14;
     }
 
-    public boolean isClearTypeCover() {
+    public final boolean isViewCoverClosed() {
+        if (!(!((CoverState) this).switchState)) {
+            return false;
+        }
         switch (((CoverState) this).type) {
             case 15:
             case 16:
@@ -72,37 +46,5 @@ public final class WmCoverState extends CoverState {
             default:
                 return false;
         }
-    }
-
-    public boolean isClearTypeCoverClosed() {
-        return isCoverClosed() && isClearTypeCover();
-    }
-
-    public boolean shouldHideStatusBarForCover() {
-        return isClearTypeCover();
-    }
-
-    public boolean updateCoverState(CoverState coverState) {
-        if (coverState.type == 2 && coverState.switchState == ((CoverState) this).switchState) {
-            return false;
-        }
-        copyFrom(coverState);
-        return true;
-    }
-
-    public int getWindowLayerFromTypeLw(int i) {
-        if (i != 2099 && i != 2411) {
-            return -1;
-        }
-        int i2 = ((CoverState) this).type;
-        if (i2 == 15 || i2 == 16 || i2 == 17) {
-            return (i == 2099 || isCoverClosed()) ? 26 : -1;
-        }
-        return -1;
-    }
-
-    public boolean windowAttrsHasShowWallpaperOrShowWhenLocked(WindowManager.LayoutParams layoutParams) {
-        int i = layoutParams.flags;
-        return ((1048576 & i) == 0 && (i & 524288) == 0) ? false : true;
     }
 }

@@ -1,24 +1,23 @@
 package android.hardware.health.V2_0;
 
 import android.os.HidlSupport;
-import android.os.HwBlob;
-import android.os.HwParcel;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class DiskStats {
-    public long reads = 0;
-    public long readMerges = 0;
-    public long readSectors = 0;
-    public long readTicks = 0;
-    public long writes = 0;
-    public long writeMerges = 0;
-    public long writeSectors = 0;
-    public long writeTicks = 0;
-    public long ioInFlight = 0;
-    public long ioTicks = 0;
-    public long ioInQueue = 0;
-    public StorageAttribute attr = new StorageAttribute();
+    public StorageAttribute attr;
+    public long ioInFlight;
+    public long ioInQueue;
+    public long ioTicks;
+    public long readMerges;
+    public long readSectors;
+    public long readTicks;
+    public long reads;
+    public long writeMerges;
+    public long writeSectors;
+    public long writeTicks;
+    public long writes;
 
     public final boolean equals(Object obj) {
         if (this == obj) {
@@ -37,35 +36,5 @@ public final class DiskStats {
 
     public final String toString() {
         return "{.reads = " + this.reads + ", .readMerges = " + this.readMerges + ", .readSectors = " + this.readSectors + ", .readTicks = " + this.readTicks + ", .writes = " + this.writes + ", .writeMerges = " + this.writeMerges + ", .writeSectors = " + this.writeSectors + ", .writeTicks = " + this.writeTicks + ", .ioInFlight = " + this.ioInFlight + ", .ioTicks = " + this.ioTicks + ", .ioInQueue = " + this.ioInQueue + ", .attr = " + this.attr + "}";
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.reads = hwBlob.getInt64(0 + j);
-        this.readMerges = hwBlob.getInt64(8 + j);
-        this.readSectors = hwBlob.getInt64(16 + j);
-        this.readTicks = hwBlob.getInt64(24 + j);
-        this.writes = hwBlob.getInt64(32 + j);
-        this.writeMerges = hwBlob.getInt64(40 + j);
-        this.writeSectors = hwBlob.getInt64(48 + j);
-        this.writeTicks = hwBlob.getInt64(56 + j);
-        this.ioInFlight = hwBlob.getInt64(64 + j);
-        this.ioTicks = hwBlob.getInt64(72 + j);
-        this.ioInQueue = hwBlob.getInt64(80 + j);
-        this.attr.readEmbeddedFromParcel(hwParcel, hwBlob, j + 88);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putInt64(0 + j, this.reads);
-        hwBlob.putInt64(8 + j, this.readMerges);
-        hwBlob.putInt64(16 + j, this.readSectors);
-        hwBlob.putInt64(24 + j, this.readTicks);
-        hwBlob.putInt64(32 + j, this.writes);
-        hwBlob.putInt64(40 + j, this.writeMerges);
-        hwBlob.putInt64(48 + j, this.writeSectors);
-        hwBlob.putInt64(56 + j, this.writeTicks);
-        hwBlob.putInt64(64 + j, this.ioInFlight);
-        hwBlob.putInt64(72 + j, this.ioTicks);
-        hwBlob.putInt64(80 + j, this.ioInQueue);
-        this.attr.writeEmbeddedToBlob(hwBlob, j + 88);
     }
 }

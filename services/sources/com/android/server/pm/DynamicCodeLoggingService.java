@@ -6,25 +6,11 @@ import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManagerInternal;
-import android.os.Process;
-import android.util.EventLog;
-import android.util.Log;
-import com.android.server.LocalManagerRegistry;
-import com.android.server.LocalServices;
-import com.android.server.art.DexUseManagerLocal;
-import com.android.server.art.model.DexContainerFileUseInfo;
-import com.android.server.pm.PackageManagerLocal;
-import com.android.server.pm.dex.DynamicCodeLogger;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import libcore.util.HexEncoding;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class DynamicCodeLoggingService extends JobService {
     public static final String TAG = DynamicCodeLoggingService.class.getName();
     public static final long IDLE_LOGGING_PERIOD_MILLIS = TimeUnit.DAYS.toMillis(1);
@@ -33,9 +19,61 @@ public class DynamicCodeLoggingService extends JobService {
     public volatile boolean mIdleLoggingStopRequested = false;
     public volatile boolean mAuditWatchingStopRequested = false;
 
-    /* renamed from: -$$Nest$smgetDynamicCodeLogger, reason: not valid java name */
-    public static /* bridge */ /* synthetic */ DynamicCodeLogger m9337$$Nest$smgetDynamicCodeLogger() {
-        return getDynamicCodeLogger();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class IdleLoggingThread extends Thread {
+        public final /* synthetic */ int $r8$classId;
+        public final JobParameters mParams;
+        public final /* synthetic */ DynamicCodeLoggingService this$0;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public IdleLoggingThread(DynamicCodeLoggingService dynamicCodeLoggingService, JobParameters jobParameters, int i) {
+            super("DynamicCodeLoggingService_IdleLoggingJob");
+            this.$r8$classId = i;
+            switch (i) {
+                case 1:
+                    this.this$0 = dynamicCodeLoggingService;
+                    super("DynamicCodeLoggingService_AuditWatchingJob");
+                    this.mParams = jobParameters;
+                    break;
+                default:
+                    this.this$0 = dynamicCodeLoggingService;
+                    this.mParams = jobParameters;
+                    break;
+            }
+        }
+
+        /* JADX WARN: Can't wrap try/catch for region: R(16:124|125|(1:127)(2:191|(1:193)(3:194|165|166))|128|129|(1:131)(6:170|171|172|173|174|175)|132|(1:134)(1:169)|135|(1:168)(1:139)|140|(6:143|(1:145)(5:153|154|155|156|157)|146|(3:148|149|150)(1:152)|151|141)|163|164|165|166) */
+        /* JADX WARN: Code restructure failed: missing block: B:189:0x0284, code lost:
+        
+            r0 = e;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:190:0x0285, code lost:
+        
+            r21 = r8;
+            r5 = "DynamicCodeLogger";
+            r8 = r11;
+            r1 = r12;
+            r6 = r13;
+            r2 = r14;
+         */
+        /* JADX WARN: Removed duplicated region for block: B:134:0x02a9  */
+        /* JADX WARN: Removed duplicated region for block: B:143:0x02f8  */
+        /* JADX WARN: Removed duplicated region for block: B:148:0x031b A[SYNTHETIC] */
+        /* JADX WARN: Removed duplicated region for block: B:152:0x02f2 A[SYNTHETIC] */
+        /* JADX WARN: Removed duplicated region for block: B:169:0x02ac  */
+        /* JADX WARN: Removed duplicated region for block: B:205:0x0205  */
+        @Override // java.lang.Thread, java.lang.Runnable
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void run() {
+            /*
+                Method dump skipped, instructions count: 892
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.DynamicCodeLoggingService.IdleLoggingThread.run():void");
+        }
     }
 
     public static void schedule(Context context) {
@@ -46,23 +84,23 @@ public class DynamicCodeLoggingService extends JobService {
     }
 
     @Override // android.app.job.JobService
-    public boolean onStartJob(JobParameters jobParameters) {
+    public final boolean onStartJob(JobParameters jobParameters) {
         int jobId = jobParameters.getJobId();
         if (jobId == 2030028) {
             this.mIdleLoggingStopRequested = false;
-            new IdleLoggingThread(jobParameters).start();
+            new IdleLoggingThread(this, jobParameters, 0).start();
             return true;
         }
         if (jobId != 203142925) {
             return false;
         }
         this.mAuditWatchingStopRequested = false;
-        new AuditWatchingThread(jobParameters).start();
+        new IdleLoggingThread(this, jobParameters, 1).start();
         return true;
     }
 
     @Override // android.app.job.JobService
-    public boolean onStopJob(JobParameters jobParameters) {
+    public final boolean onStopJob(JobParameters jobParameters) {
         int jobId = jobParameters.getJobId();
         if (jobId == 2030028) {
             this.mIdleLoggingStopRequested = true;
@@ -73,126 +111,5 @@ public class DynamicCodeLoggingService extends JobService {
         }
         this.mAuditWatchingStopRequested = true;
         return true;
-    }
-
-    public static DynamicCodeLogger getDynamicCodeLogger() {
-        return ((PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class)).getDynamicCodeLogger();
-    }
-
-    public static void syncDataFromArtService(DynamicCodeLogger dynamicCodeLogger) {
-        DexUseManagerLocal dexUseManagerLocal = DexOptHelper.getDexUseManagerLocal();
-        if (dexUseManagerLocal == null) {
-            return;
-        }
-        PackageManagerLocal packageManagerLocal = (PackageManagerLocal) LocalManagerRegistry.getManager(PackageManagerLocal.class);
-        Objects.requireNonNull(packageManagerLocal);
-        PackageManagerLocal.UnfilteredSnapshot withUnfilteredSnapshot = packageManagerLocal.withUnfilteredSnapshot();
-        try {
-            for (String str : withUnfilteredSnapshot.getPackageStates().keySet()) {
-                for (DexContainerFileUseInfo dexContainerFileUseInfo : dexUseManagerLocal.getSecondaryDexContainerFileUseInfo(str)) {
-                    Iterator it = dexContainerFileUseInfo.getLoadingPackages().iterator();
-                    while (it.hasNext()) {
-                        dynamicCodeLogger.recordDex(dexContainerFileUseInfo.getUserHandle().getIdentifier(), dexContainerFileUseInfo.getDexContainerFile(), str, (String) it.next());
-                    }
-                }
-            }
-            withUnfilteredSnapshot.close();
-        } catch (Throwable th) {
-            if (withUnfilteredSnapshot != null) {
-                try {
-                    withUnfilteredSnapshot.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-            }
-            throw th;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class IdleLoggingThread extends Thread {
-        public final JobParameters mParams;
-
-        public IdleLoggingThread(JobParameters jobParameters) {
-            super("DynamicCodeLoggingService_IdleLoggingJob");
-            this.mParams = jobParameters;
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            DynamicCodeLogger m9337$$Nest$smgetDynamicCodeLogger = DynamicCodeLoggingService.m9337$$Nest$smgetDynamicCodeLogger();
-            DynamicCodeLoggingService.syncDataFromArtService(m9337$$Nest$smgetDynamicCodeLogger);
-            for (String str : m9337$$Nest$smgetDynamicCodeLogger.getAllPackagesWithDynamicCodeLoading()) {
-                if (DynamicCodeLoggingService.this.mIdleLoggingStopRequested) {
-                    Log.w(DynamicCodeLoggingService.TAG, "Stopping IdleLoggingJob run at scheduler request");
-                    return;
-                }
-                m9337$$Nest$smgetDynamicCodeLogger.logDynamicCodeLoading(str);
-            }
-            DynamicCodeLoggingService.this.jobFinished(this.mParams, false);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class AuditWatchingThread extends Thread {
-        public final JobParameters mParams;
-
-        public AuditWatchingThread(JobParameters jobParameters) {
-            super("DynamicCodeLoggingService_AuditWatchingJob");
-            this.mParams = jobParameters;
-        }
-
-        @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            if (processAuditEvents()) {
-                DynamicCodeLoggingService.this.jobFinished(this.mParams, false);
-            }
-        }
-
-        public final boolean processAuditEvents() {
-            try {
-                int tagCode = EventLog.getTagCode("auditd");
-                int[] iArr = {tagCode};
-                if (tagCode == -1) {
-                    return true;
-                }
-                DynamicCodeLogger m9337$$Nest$smgetDynamicCodeLogger = DynamicCodeLoggingService.m9337$$Nest$smgetDynamicCodeLogger();
-                ArrayList arrayList = new ArrayList();
-                EventLog.readEvents(iArr, arrayList);
-                Matcher matcher = DynamicCodeLoggingService.EXECUTE_NATIVE_AUDIT_PATTERN.matcher("");
-                for (int i = 0; i < arrayList.size(); i++) {
-                    if (DynamicCodeLoggingService.this.mAuditWatchingStopRequested) {
-                        Log.w(DynamicCodeLoggingService.TAG, "Stopping AuditWatchingJob run at scheduler request");
-                        return false;
-                    }
-                    EventLog.Event event = (EventLog.Event) arrayList.get(i);
-                    int uid = event.getUid();
-                    if (Process.isApplicationUid(uid)) {
-                        Object data = event.getData();
-                        if (data instanceof String) {
-                            String str = (String) data;
-                            if (str.startsWith("type=1400 ")) {
-                                matcher.reset(str);
-                                if (matcher.matches()) {
-                                    String group = matcher.group(1);
-                                    if (group == null) {
-                                        group = DynamicCodeLoggingService.unhex(matcher.group(2));
-                                    }
-                                    m9337$$Nest$smgetDynamicCodeLogger.recordNative(uid, group);
-                                }
-                            }
-                        }
-                    }
-                }
-                return true;
-            } catch (Exception e) {
-                Log.e(DynamicCodeLoggingService.TAG, "AuditWatchingJob failed", e);
-                return true;
-            }
-        }
-    }
-
-    public static String unhex(String str) {
-        return (str == null || str.length() == 0) ? "" : new String(HexEncoding.decode(str, false));
     }
 }

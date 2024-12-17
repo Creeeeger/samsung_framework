@@ -1,9 +1,7 @@
 package com.android.server.voiceinteraction;
 
-import android.content.Context;
 import android.media.AudioFormat;
-import android.media.permission.Identity;
-import android.os.IBinder;
+import android.os.Binder;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.service.voice.HotwordDetectedResult;
@@ -11,51 +9,38 @@ import android.service.voice.HotwordDetectionServiceFailure;
 import android.service.voice.HotwordRejectedResult;
 import android.service.voice.IDspHotwordDetectionCallback;
 import android.service.voice.IMicrophoneHotwordDetectionVoiceInteractionCallback;
-import android.service.voice.ISandboxedDetectionService;
 import android.util.Slog;
-import com.android.internal.app.IHotwordRecognitionStatusCallback;
-import com.android.internal.infra.ServiceConnector;
-import com.android.server.voiceinteraction.HotwordDetectionConnection;
-import com.android.server.voiceinteraction.VoiceInteractionManagerServiceImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.ScheduledExecutorService;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class SoftwareTrustedHotwordDetectorSession extends DetectorSession {
     public boolean mPerformingSoftwareHotwordDetection;
     public IMicrophoneHotwordDetectionVoiceInteractionCallback mSoftwareCallback;
 
-    public SoftwareTrustedHotwordDetectorSession(HotwordDetectionConnection.ServiceConnection serviceConnection, Object obj, Context context, IBinder iBinder, IHotwordRecognitionStatusCallback iHotwordRecognitionStatusCallback, int i, Identity identity, ScheduledExecutorService scheduledExecutorService, boolean z, VoiceInteractionManagerServiceImpl.DetectorRemoteExceptionListener detectorRemoteExceptionListener) {
-        super(serviceConnection, obj, context, iBinder, iHotwordRecognitionStatusCallback, i, identity, scheduledExecutorService, z, detectorRemoteExceptionListener);
-    }
-
-    public void startListeningFromMicLocked(AudioFormat audioFormat, IMicrophoneHotwordDetectionVoiceInteractionCallback iMicrophoneHotwordDetectionVoiceInteractionCallback) {
-        this.mSoftwareCallback = iMicrophoneHotwordDetectionVoiceInteractionCallback;
-        if (this.mPerformingSoftwareHotwordDetection) {
-            Slog.i("SoftwareTrustedHotwordDetectorSession", "Hotword validation is already in progress, ignoring.");
-        } else {
-            this.mPerformingSoftwareHotwordDetection = true;
-            startListeningFromMicLocked();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.voiceinteraction.SoftwareTrustedHotwordDetectorSession$1, reason: invalid class name */
+    public final class AnonymousClass1 extends IDspHotwordDetectionCallback.Stub {
+        public AnonymousClass1() {
         }
-    }
 
-    public final void startListeningFromMicLocked() {
-        final IDspHotwordDetectionCallback.Stub stub = new IDspHotwordDetectionCallback.Stub() { // from class: com.android.server.voiceinteraction.SoftwareTrustedHotwordDetectorSession.1
-            public void onDetected(HotwordDetectedResult hotwordDetectedResult) {
-                synchronized (SoftwareTrustedHotwordDetectorSession.this.mLock) {
+        public final void onDetected(HotwordDetectedResult hotwordDetectedResult) {
+            synchronized (SoftwareTrustedHotwordDetectorSession.this.mLock) {
+                try {
                     HotwordMetricsLogger.writeKeyphraseTriggerEvent(2, 5, SoftwareTrustedHotwordDetectorSession.this.mVoiceInteractionServiceUid);
-                    if (!SoftwareTrustedHotwordDetectorSession.this.mPerformingSoftwareHotwordDetection) {
+                    SoftwareTrustedHotwordDetectorSession softwareTrustedHotwordDetectorSession = SoftwareTrustedHotwordDetectorSession.this;
+                    if (!softwareTrustedHotwordDetectorSession.mPerformingSoftwareHotwordDetection) {
                         Slog.i("SoftwareTrustedHotwordDetectorSession", "Hotword detection has already completed");
                         HotwordMetricsLogger.writeKeyphraseTriggerEvent(2, 7, SoftwareTrustedHotwordDetectorSession.this.mVoiceInteractionServiceUid);
                         return;
                     }
-                    SoftwareTrustedHotwordDetectorSession.this.mPerformingSoftwareHotwordDetection = false;
+                    softwareTrustedHotwordDetectorSession.mPerformingSoftwareHotwordDetection = false;
                     try {
-                        SoftwareTrustedHotwordDetectorSession.this.enforcePermissionsForDataDelivery();
+                        Binder.withCleanCallingIdentity(new DetectorSession$$ExternalSyntheticLambda6(softwareTrustedHotwordDetectorSession));
                         SoftwareTrustedHotwordDetectorSession.this.saveProximityValueToBundle(hotwordDetectedResult);
                         try {
-                            HotwordDetectedResult startCopyingAudioStreams = SoftwareTrustedHotwordDetectorSession.this.mHotwordAudioStreamCopier.startCopyingAudioStreams(hotwordDetectedResult);
+                            HotwordDetectedResult startCopyingAudioStreams = SoftwareTrustedHotwordDetectorSession.this.mHotwordAudioStreamCopier.startCopyingAudioStreams(hotwordDetectedResult, true);
                             try {
                                 SoftwareTrustedHotwordDetectorSession.this.mSoftwareCallback.onDetected(startCopyingAudioStreams, (AudioFormat) null, (ParcelFileDescriptor) null);
                                 Slog.i("SoftwareTrustedHotwordDetectorSession", "Egressed " + HotwordDetectedResult.getUsageSize(startCopyingAudioStreams) + " bits from hotword trusted process");
@@ -88,55 +73,43 @@ public final class SoftwareTrustedHotwordDetectorSession extends DetectorSession
                             throw e5;
                         }
                     }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
-
-            public void onRejected(HotwordRejectedResult hotwordRejectedResult) {
-                HotwordMetricsLogger.writeKeyphraseTriggerEvent(2, 6, SoftwareTrustedHotwordDetectorSession.this.mVoiceInteractionServiceUid);
-            }
-        };
-        this.mRemoteDetectionService.run(new ServiceConnector.VoidJob() { // from class: com.android.server.voiceinteraction.SoftwareTrustedHotwordDetectorSession$$ExternalSyntheticLambda1
-            public final void runNoResult(Object obj) {
-                ((ISandboxedDetectionService) obj).detectFromMicrophoneSource(null, 1, null, null, stub);
-            }
-        });
-        HotwordMetricsLogger.writeDetectorEvent(2, 9, this.mVoiceInteractionServiceUid);
-    }
-
-    public void stopListeningFromMicLocked() {
-        if (!this.mPerformingSoftwareHotwordDetection) {
-            Slog.i("SoftwareTrustedHotwordDetectorSession", "Hotword detection is not running");
-            return;
         }
-        this.mPerformingSoftwareHotwordDetection = false;
-        this.mRemoteDetectionService.run(new SoftwareTrustedHotwordDetectorSession$$ExternalSyntheticLambda0());
-        closeExternalAudioStreamLocked("stopping requested");
+
+        public final void onRejected(HotwordRejectedResult hotwordRejectedResult) {
+            HotwordMetricsLogger.writeKeyphraseTriggerEvent(2, 6, SoftwareTrustedHotwordDetectorSession.this.mVoiceInteractionServiceUid);
+        }
     }
 
     @Override // com.android.server.voiceinteraction.DetectorSession
-    public void informRestartProcessLocked() {
+    public final void dumpLocked(PrintWriter printWriter) {
+        super.dumpLocked(printWriter);
+        printWriter.print("    ");
+        printWriter.print("mPerformingSoftwareHotwordDetection=");
+        printWriter.println(this.mPerformingSoftwareHotwordDetection);
+    }
+
+    @Override // com.android.server.voiceinteraction.DetectorSession
+    public final void informRestartProcessLocked() {
+        int i = this.mVoiceInteractionServiceUid;
         Slog.v("SoftwareTrustedHotwordDetectorSession", "informRestartProcessLocked");
         this.mUpdateStateAfterStartFinished.set(false);
         try {
             this.mCallback.onProcessRestarted();
         } catch (RemoteException e) {
             Slog.w("SoftwareTrustedHotwordDetectorSession", "Failed to communicate #onProcessRestarted", e);
-            HotwordMetricsLogger.writeDetectorEvent(2, 18, this.mVoiceInteractionServiceUid);
+            HotwordMetricsLogger.writeDetectorEvent(2, 18, i);
             notifyOnDetectorRemoteException();
         }
         if (this.mPerformingSoftwareHotwordDetection) {
             Slog.i("SoftwareTrustedHotwordDetectorSession", "Process restarted: calling startRecognition() again");
-            startListeningFromMicLocked();
+            this.mRemoteDetectionService.run(new SoftwareTrustedHotwordDetectorSession$$ExternalSyntheticLambda1(new AnonymousClass1()));
+            HotwordMetricsLogger.writeDetectorEvent(2, 9, i);
         }
         this.mPerformingExternalSourceHotwordDetection = false;
         closeExternalAudioStreamLocked("process restarted");
-    }
-
-    @Override // com.android.server.voiceinteraction.DetectorSession
-    public void dumpLocked(String str, PrintWriter printWriter) {
-        super.dumpLocked(str, printWriter);
-        printWriter.print(str);
-        printWriter.print("mPerformingSoftwareHotwordDetection=");
-        printWriter.println(this.mPerformingSoftwareHotwordDetection);
     }
 }

@@ -3,9 +3,11 @@ package com.att.iqi.lib.metrics.rp;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.att.iqi.lib.Metric;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class RP12 extends Metric {
     private int m_dwByteCount;
     private int m_dwDuration;
@@ -37,22 +39,6 @@ public class RP12 extends Metric {
         reset();
     }
 
-    public void reset() {
-        this.m_dwSsrc = 0;
-        this.m_dwDuration = 0;
-        this.m_dwPktCount = 0;
-        this.m_dwPktLoss = 0;
-        this.m_dwByteCount = 0;
-        this.m_wDstPort = (short) 0;
-        this.m_wMeanJitter = (short) 0;
-        this.m_wMaxJitter = (short) 0;
-        this.m_wMaxDelta = (short) 0;
-        this.m_wCumAvgPktSize = (short) 0;
-        this.m_ucMediaType = (byte) 0;
-        this.m_ucIpVersion = (byte) 0;
-        this.m_strIpSrcAddr = null;
-    }
-
     public RP12(Parcel parcel) {
         super(parcel);
         if (parcel.readInt() >= 1) {
@@ -77,125 +63,76 @@ public class RP12 extends Metric {
         }
     }
 
-    public RP12 setSsrc(int i) {
-        this.m_dwSsrc = i;
-        return this;
-    }
-
-    public int getSsrc() {
-        return this.m_dwSsrc;
-    }
-
-    public RP12 setDuration(int i) {
-        this.m_dwDuration = i;
-        return this;
-    }
-
-    public int getDuration() {
-        return this.m_dwDuration;
-    }
-
-    public RP12 setPktCount(int i) {
-        this.m_dwPktCount = i;
-        return this;
-    }
-
-    public int getPktCount() {
-        return this.m_dwPktCount;
-    }
-
-    public RP12 setPktLoss(int i) {
-        this.m_dwPktLoss = i;
-        return this;
-    }
-
-    public int getPktLoss() {
-        return this.m_dwPktLoss;
-    }
-
-    public RP12 setByteCount(int i) {
-        this.m_dwByteCount = i;
-        return this;
-    }
-
     public int getByteCount() {
         return this.m_dwByteCount;
-    }
-
-    public RP12 setDstPort(short s) {
-        this.m_wDstPort = s;
-        return this;
-    }
-
-    public short getDstPort() {
-        return this.m_wDstPort;
-    }
-
-    public RP12 setMeanJitter(short s) {
-        this.m_wMeanJitter = s;
-        return this;
-    }
-
-    public short getMeanJitter() {
-        return this.m_wMeanJitter;
-    }
-
-    public RP12 setMaxJitter(short s) {
-        this.m_wMaxJitter = s;
-        return this;
-    }
-
-    public short getMaxJitter() {
-        return this.m_wMaxJitter;
-    }
-
-    public RP12 setMaxDelta(short s) {
-        this.m_wMaxDelta = s;
-        return this;
-    }
-
-    public short getMaxDelta() {
-        return this.m_wMaxDelta;
-    }
-
-    public RP12 setCumAvgPktSize(short s) {
-        this.m_wCumAvgPktSize = s;
-        return this;
     }
 
     public short getCumAvgPktSize() {
         return this.m_wCumAvgPktSize;
     }
 
-    public RP12 setMediaType(byte b) {
-        this.m_ucMediaType = b;
-        return this;
+    public short getDstPort() {
+        return this.m_wDstPort;
     }
 
-    public byte getMediaType() {
-        return this.m_ucMediaType;
-    }
-
-    public RP12 setIpVersion(byte b) {
-        this.m_ucIpVersion = b;
-        return this;
-    }
-
-    public byte getIpVersion() {
-        return this.m_ucIpVersion;
-    }
-
-    public RP12 setIpSrcAddr(byte[] bArr) {
-        this.m_strIpSrcAddr = bArr;
-        return this;
+    public int getDuration() {
+        return this.m_dwDuration;
     }
 
     public byte[] getIpSrcAddr() {
         return this.m_strIpSrcAddr;
     }
 
+    public byte getIpVersion() {
+        return this.m_ucIpVersion;
+    }
+
+    public short getMaxDelta() {
+        return this.m_wMaxDelta;
+    }
+
+    public short getMaxJitter() {
+        return this.m_wMaxJitter;
+    }
+
+    public short getMeanJitter() {
+        return this.m_wMeanJitter;
+    }
+
+    public byte getMediaType() {
+        return this.m_ucMediaType;
+    }
+
+    public int getPktCount() {
+        return this.m_dwPktCount;
+    }
+
+    public int getPktLoss() {
+        return this.m_dwPktLoss;
+    }
+
+    public int getSsrc() {
+        return this.m_dwSsrc;
+    }
+
+    public void reset() {
+        this.m_dwSsrc = 0;
+        this.m_dwDuration = 0;
+        this.m_dwPktCount = 0;
+        this.m_dwPktLoss = 0;
+        this.m_dwByteCount = 0;
+        this.m_wDstPort = (short) 0;
+        this.m_wMeanJitter = (short) 0;
+        this.m_wMaxJitter = (short) 0;
+        this.m_wMaxDelta = (short) 0;
+        this.m_wCumAvgPktSize = (short) 0;
+        this.m_ucMediaType = (byte) 0;
+        this.m_ucIpVersion = (byte) 0;
+        this.m_strIpSrcAddr = null;
+    }
+
     @Override // com.att.iqi.lib.Metric
-    public int serialize(ByteBuffer byteBuffer) {
+    public int serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
         byteBuffer.putInt(this.m_dwSsrc);
         byteBuffer.putInt(this.m_dwDuration);
         byteBuffer.putInt(this.m_dwPktCount);
@@ -215,6 +152,71 @@ public class RP12 extends Metric {
         return byteBuffer.position();
     }
 
+    public RP12 setByteCount(int i) {
+        this.m_dwByteCount = i;
+        return this;
+    }
+
+    public RP12 setCumAvgPktSize(short s) {
+        this.m_wCumAvgPktSize = s;
+        return this;
+    }
+
+    public RP12 setDstPort(short s) {
+        this.m_wDstPort = s;
+        return this;
+    }
+
+    public RP12 setDuration(int i) {
+        this.m_dwDuration = i;
+        return this;
+    }
+
+    public RP12 setIpSrcAddr(byte[] bArr) {
+        this.m_strIpSrcAddr = bArr;
+        return this;
+    }
+
+    public RP12 setIpVersion(byte b) {
+        this.m_ucIpVersion = b;
+        return this;
+    }
+
+    public RP12 setMaxDelta(short s) {
+        this.m_wMaxDelta = s;
+        return this;
+    }
+
+    public RP12 setMaxJitter(short s) {
+        this.m_wMaxJitter = s;
+        return this;
+    }
+
+    public RP12 setMeanJitter(short s) {
+        this.m_wMeanJitter = s;
+        return this;
+    }
+
+    public RP12 setMediaType(byte b) {
+        this.m_ucMediaType = b;
+        return this;
+    }
+
+    public RP12 setPktCount(int i) {
+        this.m_dwPktCount = i;
+        return this;
+    }
+
+    public RP12 setPktLoss(int i) {
+        this.m_dwPktLoss = i;
+        return this;
+    }
+
+    public RP12 setSsrc(int i) {
+        this.m_dwSsrc = i;
+        return this;
+    }
+
     @Override // com.att.iqi.lib.Metric, android.os.Parcelable
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
@@ -232,11 +234,11 @@ public class RP12 extends Metric {
         parcel.writeByte(this.m_ucIpVersion);
         byte[] bArr = this.m_strIpSrcAddr;
         int length = bArr != null ? bArr.length : 0;
-        if (length > 0) {
+        if (length <= 0) {
+            parcel.writeInt(0);
+        } else {
             parcel.writeInt(length);
             parcel.writeByteArray(this.m_strIpSrcAddr);
-        } else {
-            parcel.writeInt(0);
         }
     }
 }

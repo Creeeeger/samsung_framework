@@ -1,24 +1,14 @@
 package android.net;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
 import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class ResolverParamsParcel implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.net.ResolverParamsParcel.1
-        @Override // android.os.Parcelable.Creator
-        public ResolverParamsParcel createFromParcel(Parcel parcel) {
-            ResolverParamsParcel resolverParamsParcel = new ResolverParamsParcel();
-            resolverParamsParcel.readFromParcel(parcel);
-            return resolverParamsParcel;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public ResolverParamsParcel[] newArray(int i) {
-            return new ResolverParamsParcel[i];
-        }
-    };
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public String[] domains;
     public ResolverOptionsParcel resolverOptions;
     public String[] servers;
@@ -36,30 +26,32 @@ public class ResolverParamsParcel implements Parcelable {
     public int tlsConnectTimeoutMs = 0;
     public int[] transportTypes = new int[0];
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.net.ResolverParamsParcel$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            ResolverParamsParcel resolverParamsParcel = new ResolverParamsParcel();
+            resolverParamsParcel.readFromParcel(parcel);
+            return resolverParamsParcel;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new ResolverParamsParcel[i];
+        }
+    }
+
+    private int describeContents(Object obj) {
+        if (obj != null && (obj instanceof Parcelable)) {
+            return ((Parcelable) obj).describeContents();
+        }
+        return 0;
+    }
+
     @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeInt(this.netId);
-        parcel.writeInt(this.sampleValiditySeconds);
-        parcel.writeInt(this.successThreshold);
-        parcel.writeInt(this.minSamples);
-        parcel.writeInt(this.maxSamples);
-        parcel.writeInt(this.baseTimeoutMsec);
-        parcel.writeInt(this.retryCount);
-        parcel.writeStringArray(this.servers);
-        parcel.writeStringArray(this.domains);
-        parcel.writeString(this.tlsName);
-        parcel.writeStringArray(this.tlsServers);
-        parcel.writeStringArray(this.tlsFingerprints);
-        parcel.writeString(this.caCertificate);
-        parcel.writeInt(this.tlsConnectTimeoutMs);
-        parcel.writeTypedObject(this.resolverOptions, i);
-        parcel.writeIntArray(this.transportTypes);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
+    public int describeContents() {
+        return describeContents(this.resolverOptions);
     }
 
     public final void readFromParcel(Parcel parcel) {
@@ -166,14 +158,27 @@ public class ResolverParamsParcel implements Parcelable {
     }
 
     @Override // android.os.Parcelable
-    public int describeContents() {
-        return describeContents(this.resolverOptions) | 0;
-    }
-
-    private int describeContents(Object obj) {
-        if (obj != null && (obj instanceof Parcelable)) {
-            return ((Parcelable) obj).describeContents();
-        }
-        return 0;
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeInt(this.netId);
+        parcel.writeInt(this.sampleValiditySeconds);
+        parcel.writeInt(this.successThreshold);
+        parcel.writeInt(this.minSamples);
+        parcel.writeInt(this.maxSamples);
+        parcel.writeInt(this.baseTimeoutMsec);
+        parcel.writeInt(this.retryCount);
+        parcel.writeStringArray(this.servers);
+        parcel.writeStringArray(this.domains);
+        parcel.writeString(this.tlsName);
+        parcel.writeStringArray(this.tlsServers);
+        parcel.writeStringArray(this.tlsFingerprints);
+        parcel.writeString(this.caCertificate);
+        parcel.writeInt(this.tlsConnectTimeoutMs);
+        parcel.writeTypedObject(this.resolverOptions, i);
+        parcel.writeIntArray(this.transportTypes);
+        int dataPosition2 = parcel.dataPosition();
+        parcel.setDataPosition(dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(dataPosition2, dataPosition, parcel, dataPosition2);
     }
 }

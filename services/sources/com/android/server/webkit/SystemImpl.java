@@ -5,43 +5,36 @@ import android.app.ActivityManager;
 import android.app.AppGlobals;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.UserInfo;
 import android.content.res.XmlResourceParser;
-import android.os.Build;
 import android.os.RemoteException;
+import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.util.AndroidRuntimeException;
 import android.util.Log;
-import android.webkit.UserPackage;
-import android.webkit.WebViewFactory;
+import android.util.Slog;
 import android.webkit.WebViewProviderInfo;
-import android.webkit.WebViewZygote;
 import com.android.internal.util.XmlUtils;
+import com.android.server.LocalServices;
+import com.android.server.PinnerService;
+import com.android.server.flags.Flags;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
-public class SystemImpl implements SystemInterface {
-    public static final String TAG = "SystemImpl";
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SystemImpl {
     public final WebViewProviderInfo[] mWebViewProviderPackages;
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class LazyHolder {
         public static final SystemImpl INSTANCE = new SystemImpl();
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public boolean isMultiProcessDefaultEnabled() {
-        return true;
-    }
-
-    public static SystemImpl getInstance() {
-        return LazyHolder.INSTANCE;
     }
 
     public SystemImpl() {
@@ -50,7 +43,7 @@ public class SystemImpl implements SystemInterface {
         XmlResourceParser xmlResourceParser = null;
         try {
             try {
-                xml = AppGlobals.getInitialApplication().getResources().getXml(R.xml.kg_password_kbd_numeric);
+                xml = AppGlobals.getInitialApplication().getResources().getXml(R.xml.irq_device_map);
             } catch (IOException | XmlPullParserException e) {
                 e = e;
             }
@@ -62,38 +55,37 @@ public class SystemImpl implements SystemInterface {
                     while (true) {
                         XmlUtils.nextElement(xml);
                         String name = xml.getName();
-                        if (name != null) {
-                            if (name.equals("webviewprovider")) {
-                                String attributeValue = xml.getAttributeValue(null, "packageName");
-                                if (attributeValue == null) {
-                                    throw new AndroidRuntimeException("WebView provider in framework resources missing package name");
-                                }
-                                String attributeValue2 = xml.getAttributeValue(null, "description");
-                                if (attributeValue2 == null) {
-                                    throw new AndroidRuntimeException("WebView provider in framework resources missing description");
-                                }
-                                WebViewProviderInfo webViewProviderInfo = new WebViewProviderInfo(attributeValue, attributeValue2, "true".equals(xml.getAttributeValue(null, "availableByDefault")), "true".equals(xml.getAttributeValue(null, "isFallback")), readSignatures(xml));
-                                if (webViewProviderInfo.isFallback) {
-                                    i2++;
-                                    if (!webViewProviderInfo.availableByDefault) {
-                                        throw new AndroidRuntimeException("Each WebView fallback package must be available by default.");
-                                    }
-                                    if (i2 > 1) {
-                                        throw new AndroidRuntimeException("There can be at most one WebView fallback package.");
-                                    }
-                                }
-                                i = webViewProviderInfo.availableByDefault ? i + 1 : i;
-                                arrayList.add(webViewProviderInfo);
-                            } else {
-                                Log.e(TAG, "Found an element that is not a WebView provider");
-                            }
-                        } else {
+                        if (name == null) {
                             xml.close();
                             if (i == 0) {
                                 throw new AndroidRuntimeException("There must be at least one WebView package that is available by default");
                             }
                             this.mWebViewProviderPackages = (WebViewProviderInfo[]) arrayList.toArray(new WebViewProviderInfo[arrayList.size()]);
                             return;
+                        }
+                        if (name.equals("webviewprovider")) {
+                            String attributeValue = xml.getAttributeValue(null, "packageName");
+                            if (attributeValue == null) {
+                                throw new AndroidRuntimeException("WebView provider in framework resources missing package name");
+                            }
+                            String attributeValue2 = xml.getAttributeValue(null, "description");
+                            if (attributeValue2 == null) {
+                                throw new AndroidRuntimeException("WebView provider in framework resources missing description");
+                            }
+                            WebViewProviderInfo webViewProviderInfo = new WebViewProviderInfo(attributeValue, attributeValue2, "true".equals(xml.getAttributeValue(null, "availableByDefault")), "true".equals(xml.getAttributeValue(null, "isFallback")), readSignatures(xml));
+                            if (webViewProviderInfo.isFallback) {
+                                i2++;
+                                if (!webViewProviderInfo.availableByDefault) {
+                                    throw new AndroidRuntimeException("Each WebView fallback package must be available by default.");
+                                }
+                                if (i2 > 1) {
+                                    throw new AndroidRuntimeException("There can be at most one WebView fallback package.");
+                                }
+                            }
+                            i = webViewProviderInfo.availableByDefault ? i + 1 : i;
+                            arrayList.add(webViewProviderInfo);
+                        } else {
+                            Log.e("SystemImpl", "Found an element that is not a WebView provider");
                         }
                     }
                 } catch (Throwable th) {
@@ -114,16 +106,6 @@ public class SystemImpl implements SystemInterface {
         }
     }
 
-    @Override // com.android.server.webkit.SystemInterface
-    public WebViewProviderInfo[] getWebViewPackages() {
-        return this.mWebViewProviderPackages;
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public long getFactoryPackageVersion(String str) {
-        return AppGlobals.getInitialApplication().getPackageManager().getPackageInfo(str, 2097152).getLongVersionCode();
-    }
-
     public static String[] readSignatures(XmlResourceParser xmlResourceParser) {
         ArrayList arrayList = new ArrayList();
         int depth = xmlResourceParser.getDepth();
@@ -131,96 +113,112 @@ public class SystemImpl implements SystemInterface {
             if (xmlResourceParser.getName().equals("signature")) {
                 arrayList.add(xmlResourceParser.nextText());
             } else {
-                Log.e(TAG, "Found an element in a webview provider that is not a signature");
+                Log.e("SystemImpl", "Found an element in a webview provider that is not a signature");
             }
         }
         return (String[]) arrayList.toArray(new String[arrayList.size()]);
     }
 
-    @Override // com.android.server.webkit.SystemInterface
-    public int onWebViewProviderChanged(PackageInfo packageInfo) {
-        return WebViewFactory.onWebViewProviderChanged(packageInfo);
+    public final void enablePackageForAllUsers(Context context, String str) {
+        Iterator it = ((UserManager) context.getSystemService("user")).getUsers().iterator();
+        while (it.hasNext()) {
+            int i = ((UserInfo) it.next()).id;
+            try {
+                AppGlobals.getPackageManager().setApplicationEnabledSetting(str, 0, 0, i, (String) null);
+            } catch (RemoteException | IllegalArgumentException e) {
+                Log.w("SystemImpl", "Tried to enable " + str + " for user " + i + ": " + e);
+            }
+        }
     }
 
-    @Override // com.android.server.webkit.SystemInterface
-    public String getUserChosenWebViewProvider(Context context) {
-        return Settings.Global.getString(context.getContentResolver(), "webview_provider");
+    public final PackageInfo getPackageInfoForProvider(WebViewProviderInfo webViewProviderInfo) {
+        return AppGlobals.getInitialApplication().getPackageManager().getPackageInfo(webViewProviderInfo.packageName, 272630976);
     }
 
-    @Override // com.android.server.webkit.SystemInterface
-    public void updateUserSetting(Context context, String str) {
+    public final void killPackageDependents(String str) {
+        try {
+            ActivityManager.getService().killPackageDependents(str, -1);
+        } catch (RemoteException e) {
+            Slog.wtf("SystemImpl", "failed to call killPackageDependents for " + str, e);
+        }
+    }
+
+    public final void pinWebviewIfRequired(ApplicationInfo applicationInfo) {
+        int i;
+        PinnerService.PinnedFile pinnedFile;
+        int i2;
+        PinnerService pinnerService = (PinnerService) LocalServices.getService(PinnerService.class);
+        pinnerService.getClass();
+        if (Flags.pinWebview()) {
+            i = SystemProperties.getInt("pinner.pin_webview_size", -1);
+            if (i == -1) {
+                i = pinnerService.mConfiguredWebviewPinBytes;
+            }
+        } else {
+            i = 0;
+        }
+        if (i <= 0) {
+            return;
+        }
+        Iterator it = pinnerService.getAllPinsForGroup("webview").iterator();
+        while (it.hasNext()) {
+            pinnerService.unpinFile(((PinnerService.PinnedFile) it.next()).fileName);
+        }
+        ArrayList arrayList = new ArrayList();
+        boolean z = applicationInfo.metaData.getBoolean("PIN_SHARED_LIBS_FIRST", true);
+        String[] strArr = applicationInfo.sharedLibraryFiles;
+        if (strArr != null) {
+            for (String str : strArr) {
+                arrayList.add(str);
+            }
+        }
+        arrayList.add(applicationInfo.sourceDir);
+        if (!z) {
+            Collections.reverse(arrayList);
+        }
+        Iterator it2 = arrayList.iterator();
+        while (it2.hasNext()) {
+            String str2 = (String) it2.next();
+            if (i <= 0) {
+                return;
+            }
+            synchronized (pinnerService) {
+                pinnedFile = (PinnerService.PinnedFile) pinnerService.mPinnedFiles.get(str2);
+            }
+            if (pinnedFile != null) {
+                if (pinnedFile.bytesPinned != i) {
+                    pinnerService.unpinFile(str2);
+                }
+                i2 = 0;
+                i -= i2;
+            }
+            boolean endsWith = str2.endsWith(".apk");
+            pinnerService.mInjector.getClass();
+            PinnerService.PinnedFile pinFileInternal = PinnerService.pinFileInternal(i, str2, endsWith);
+            if (pinFileInternal == null) {
+                Slog.e("PinnerService", "Failed to pin file = ".concat(str2));
+                i2 = 0;
+                i -= i2;
+            } else {
+                pinFileInternal.groupName = "webview";
+                i2 = pinFileInternal.bytesPinned;
+                int i3 = i - i2;
+                synchronized (pinnerService) {
+                    pinnerService.mPinnedFiles.put(pinFileInternal.fileName, pinFileInternal);
+                }
+                if (i3 > 0) {
+                    pinnerService.pinOptimizedDexDependencies(pinFileInternal, i3, applicationInfo);
+                }
+                i -= i2;
+            }
+        }
+    }
+
+    public final void updateUserSetting(Context context, String str) {
         ContentResolver contentResolver = context.getContentResolver();
         if (str == null) {
             str = "";
         }
         Settings.Global.putString(contentResolver, "webview_provider", str);
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public void killPackageDependents(String str) {
-        try {
-            ActivityManager.getService().killPackageDependents(str, -1);
-        } catch (RemoteException unused) {
-        }
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public void enablePackageForAllUsers(Context context, String str, boolean z) {
-        Iterator it = ((UserManager) context.getSystemService("user")).getUsers().iterator();
-        while (it.hasNext()) {
-            enablePackageForUser(str, z, ((UserInfo) it.next()).id);
-        }
-    }
-
-    public final void enablePackageForUser(String str, boolean z, int i) {
-        try {
-            AppGlobals.getPackageManager().setApplicationEnabledSetting(str, z ? 0 : 3, 0, i, (String) null);
-        } catch (RemoteException | IllegalArgumentException e) {
-            String str2 = TAG;
-            StringBuilder sb = new StringBuilder();
-            sb.append("Tried to ");
-            sb.append(z ? "enable " : "disable ");
-            sb.append(str);
-            sb.append(" for user ");
-            sb.append(i);
-            sb.append(": ");
-            sb.append(e);
-            Log.w(str2, sb.toString());
-        }
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public boolean systemIsDebuggable() {
-        return Build.IS_DEBUGGABLE;
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public PackageInfo getPackageInfoForProvider(WebViewProviderInfo webViewProviderInfo) {
-        return AppGlobals.getInitialApplication().getPackageManager().getPackageInfo(webViewProviderInfo.packageName, 272630976);
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public List getPackageInfoForProviderAllUsers(Context context, WebViewProviderInfo webViewProviderInfo) {
-        return UserPackage.getPackageInfosAllUsers(context, webViewProviderInfo.packageName, 272630976);
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public int getMultiProcessSetting(Context context) {
-        return Settings.Global.getInt(context.getContentResolver(), "webview_multiprocess", 0);
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public void setMultiProcessSetting(Context context, int i) {
-        Settings.Global.putInt(context.getContentResolver(), "webview_multiprocess", i);
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public void notifyZygote(boolean z) {
-        WebViewZygote.setMultiprocessEnabled(z);
-    }
-
-    @Override // com.android.server.webkit.SystemInterface
-    public void ensureZygoteStarted() {
-        WebViewZygote.getProcess();
     }
 }

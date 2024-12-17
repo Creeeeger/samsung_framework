@@ -1,22 +1,21 @@
 package com.android.server.usb.descriptors;
 
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class UsbMSMidiOutputJack extends UsbACInterface {
-    public UsbMSMidiOutputJack(int i, byte b, byte b2, int i2) {
-        super(i, b, b2, i2);
-    }
-
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
-        byteStream.advance(this.mLength - byteStream.getReadCount());
-        return this.mLength;
+    public final int parseRawDescriptors(ByteStream byteStream) {
+        int i = byteStream.mReadCount;
+        int i2 = this.mLength;
+        byteStream.advance(i2 - i);
+        return i2;
     }
 
     @Override // com.android.server.usb.descriptors.UsbACInterface, com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        reportCanvas.writeHeader(3, "MS Midi Output Jack: " + ReportCanvas.getHexString(getType()) + " SubType: " + ReportCanvas.getHexString(getSubclass()) + " Length: " + getLength());
+    public final void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        textReportCanvas.writeHeader("MS Midi Output Jack: " + TextReportCanvas.getHexString(this.mType) + " SubType: " + TextReportCanvas.getHexString(this.mSubclass) + " Length: " + this.mLength);
     }
 }

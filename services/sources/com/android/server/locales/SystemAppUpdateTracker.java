@@ -1,12 +1,6 @@
 package com.android.server.locales;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.os.Environment;
-import android.os.LocaleList;
-import android.os.RemoteException;
-import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.AtomicFile;
 import android.util.Slog;
@@ -14,56 +8,32 @@ import android.util.Xml;
 import com.android.internal.util.XmlUtils;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
-import libcore.io.IoUtils;
-import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes2.dex */
-public class SystemAppUpdateTracker {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class SystemAppUpdateTracker {
     public final Context mContext;
-    public final Object mFileLock;
     public final LocaleManagerService mLocaleManagerService;
-    public final Set mUpdatedApps;
     public final AtomicFile mUpdatedAppsFile;
-
-    public SystemAppUpdateTracker(LocaleManagerService localeManagerService) {
-        this(localeManagerService.mContext, localeManagerService, new AtomicFile(new File(Environment.getDataSystemDirectory(), "locale_manager_service_updated_system_apps.xml")));
-    }
+    public final Object mFileLock = new Object();
+    public final Set mUpdatedApps = new HashSet();
 
     public SystemAppUpdateTracker(Context context, LocaleManagerService localeManagerService, AtomicFile atomicFile) {
-        this.mFileLock = new Object();
-        this.mUpdatedApps = new HashSet();
         this.mContext = context;
         this.mLocaleManagerService = localeManagerService;
         this.mUpdatedAppsFile = atomicFile;
     }
 
-    public void init() {
-        loadUpdatedSystemApps();
-    }
-
-    public final void loadUpdatedSystemApps() {
-        if (this.mUpdatedAppsFile.getBaseFile().exists()) {
-            FileInputStream fileInputStream = null;
-            try {
-                try {
-                    fileInputStream = this.mUpdatedAppsFile.openRead();
-                    readFromXml(fileInputStream);
-                } catch (IOException | XmlPullParserException e) {
-                    Slog.e("SystemAppUpdateTracker", "loadUpdatedSystemApps: Could not parse storage file ", e);
-                }
-            } finally {
-                IoUtils.closeQuietly(fileInputStream);
-            }
-        }
+    public Set getUpdatedApps() {
+        return this.mUpdatedApps;
     }
 
     public final void readFromXml(InputStream inputStream) {
@@ -75,50 +45,24 @@ public class SystemAppUpdateTracker {
             if (newFastPullParser.getName().equals("package")) {
                 String attributeValue = newFastPullParser.getAttributeValue((String) null, "name");
                 if (!TextUtils.isEmpty(attributeValue)) {
-                    this.mUpdatedApps.add(attributeValue);
+                    ((HashSet) this.mUpdatedApps).add(attributeValue);
                 }
             }
-        }
-    }
-
-    public void onPackageUpdateFinished(String str, int i) {
-        try {
-            if (this.mUpdatedApps.contains(str) || !isUpdatedSystemApp(str)) {
-                return;
-            }
-            int userId = UserHandle.getUserId(i);
-            if (this.mLocaleManagerService.getInstallingPackageName(str, userId) == null) {
-                return;
-            }
-            try {
-                LocaleList applicationLocales = this.mLocaleManagerService.getApplicationLocales(str, userId);
-                if (!applicationLocales.isEmpty()) {
-                    this.mLocaleManagerService.notifyInstallerOfAppWhoseLocaleChanged(str, userId, applicationLocales);
-                }
-            } catch (RemoteException unused) {
-            }
-            updateBroadcastedAppsList(str);
-        } catch (Exception e) {
-            Slog.e("SystemAppUpdateTracker", "Exception in onPackageUpdateFinished.", e);
         }
     }
 
     public final void updateBroadcastedAppsList(String str) {
         synchronized (this.mFileLock) {
-            this.mUpdatedApps.add(str);
-            writeUpdatedAppsFileLocked();
-        }
-    }
-
-    public final void writeUpdatedAppsFileLocked() {
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = this.mUpdatedAppsFile.startWrite();
-            writeToXmlLocked(fileOutputStream);
-            this.mUpdatedAppsFile.finishWrite(fileOutputStream);
-        } catch (IOException e) {
-            this.mUpdatedAppsFile.failWrite(fileOutputStream);
-            Slog.e("SystemAppUpdateTracker", "Failed to persist the updated apps list", e);
+            ((HashSet) this.mUpdatedApps).add(str);
+            FileOutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = this.mUpdatedAppsFile.startWrite();
+                writeToXmlLocked(fileOutputStream);
+                this.mUpdatedAppsFile.finishWrite(fileOutputStream);
+            } catch (IOException e) {
+                this.mUpdatedAppsFile.failWrite(fileOutputStream);
+                Slog.e("SystemAppUpdateTracker", "Failed to persist the updated apps list", e);
+            }
         }
     }
 
@@ -127,26 +71,14 @@ public class SystemAppUpdateTracker {
         newFastSerializer.setOutput(outputStream, StandardCharsets.UTF_8.name());
         newFastSerializer.startDocument((String) null, Boolean.TRUE);
         newFastSerializer.startTag((String) null, "system_apps");
-        for (String str : this.mUpdatedApps) {
+        Iterator it = ((HashSet) this.mUpdatedApps).iterator();
+        while (it.hasNext()) {
+            String str = (String) it.next();
             newFastSerializer.startTag((String) null, "package");
             newFastSerializer.attribute((String) null, "name", str);
             newFastSerializer.endTag((String) null, "package");
         }
         newFastSerializer.endTag((String) null, "system_apps");
         newFastSerializer.endDocument();
-    }
-
-    public final boolean isUpdatedSystemApp(String str) {
-        ApplicationInfo applicationInfo;
-        try {
-            applicationInfo = this.mContext.getPackageManager().getApplicationInfo(str, PackageManager.ApplicationInfoFlags.of(1048576L));
-        } catch (PackageManager.NameNotFoundException unused) {
-            applicationInfo = null;
-        }
-        return (applicationInfo == null || (applicationInfo.flags & 128) == 0) ? false : true;
-    }
-
-    public Set getUpdatedApps() {
-        return this.mUpdatedApps;
     }
 }

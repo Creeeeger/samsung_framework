@@ -8,9 +8,12 @@ import android.system.ErrnoException;
 import android.system.Os;
 import android.system.OsConstants;
 import android.util.Slog;
+import com.android.internal.pm.parsing.IPackageCacher;
+import com.android.internal.pm.parsing.PackageParser2;
+import com.android.internal.pm.parsing.pkg.PackageImpl;
+import com.android.internal.pm.parsing.pkg.ParsedPackage;
+import com.android.internal.pm.pkg.parsing.ParsingPackageUtils;
 import com.android.server.pm.ApexManager;
-import com.android.server.pm.parsing.pkg.PackageImpl;
-import com.android.server.pm.parsing.pkg.ParsedPackage;
 import com.samsung.android.server.pm.install.PackageCacherUtils;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,46 +22,35 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import libcore.io.IoUtils;
 
-/* loaded from: classes3.dex */
-public class PackageCacher {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PackageCacher implements IPackageCacher {
     public static final AtomicInteger sCachedPackageReadCount = new AtomicInteger();
-    public File mCacheDir;
+    public final File mCacheDir;
+    public final PackageParser2.Callback mCallback;
 
-    public PackageCacher(File file) {
+    public PackageCacher(File file, PackageParser2.Callback callback) {
         this.mCacheDir = file;
-    }
-
-    public final String getCacheKey(File file, int i) {
-        return file.getName() + '-' + i + '-' + file.getAbsolutePath().hashCode();
-    }
-
-    public ParsedPackage fromCacheEntry(byte[] bArr) {
-        return fromCacheEntryStatic(bArr);
+        this.mCallback = callback;
     }
 
     public static ParsedPackage fromCacheEntryStatic(byte[] bArr) {
+        return fromCacheEntryStatic(bArr, null);
+    }
+
+    public static ParsedPackage fromCacheEntryStatic(byte[] bArr, ParsingPackageUtils.Callback callback) {
         Parcel obtain = Parcel.obtain();
         obtain.unmarshall(bArr, 0, bArr.length);
         obtain.setDataPosition(0);
         new PackageParserCacheHelper.ReadHelper(obtain).startAndInstall();
-        PackageImpl packageImpl = new PackageImpl(obtain);
+        PackageImpl packageImpl = new PackageImpl(obtain, callback);
         obtain.recycle();
         sCachedPackageReadCount.incrementAndGet();
         return packageImpl;
     }
 
-    public byte[] toCacheEntry(ParsedPackage parsedPackage) {
-        return toCacheEntryStatic(parsedPackage);
-    }
-
-    public static byte[] toCacheEntryStatic(ParsedPackage parsedPackage) {
-        Parcel obtain = Parcel.obtain();
-        PackageParserCacheHelper.WriteHelper writeHelper = new PackageParserCacheHelper.WriteHelper(obtain);
-        ((PackageImpl) parsedPackage).writeToParcel(obtain, 0);
-        writeHelper.finishAndUninstall();
-        byte[] marshall = obtain.marshall();
-        obtain.recycle();
-        return marshall;
+    public static String getCacheKey(File file, int i) {
+        return file.getName() + '-' + i + '-' + file.getAbsolutePath().hashCode();
     }
 
     public static boolean isCacheUpToDate(File file, File file2) {
@@ -80,25 +72,17 @@ public class PackageCacher {
         }
     }
 
-    public ParsedPackage getCachedResult(File file, int i) {
-        File file2 = new File(this.mCacheDir, getCacheKey(file, i));
-        try {
-            if (!isCacheUpToDate(file, file2)) {
-                return null;
-            }
-            ParsedPackage fromCacheEntry = fromCacheEntry(IoUtils.readFileAsByteArray(file2.getAbsolutePath()));
-            if (file.getAbsolutePath().equals(fromCacheEntry.getPath())) {
-                return fromCacheEntry;
-            }
-            return null;
-        } catch (Throwable th) {
-            Slog.w("PackageCacher", "Error reading package cache: ", th);
-            file2.delete();
-            return null;
-        }
+    public static byte[] toCacheEntryStatic(ParsedPackage parsedPackage) {
+        Parcel obtain = Parcel.obtain();
+        PackageParserCacheHelper.WriteHelper writeHelper = new PackageParserCacheHelper.WriteHelper(obtain);
+        ((PackageImpl) parsedPackage).writeToParcel(obtain, 0);
+        writeHelper.finishAndUninstall();
+        byte[] marshall = obtain.marshall();
+        obtain.recycle();
+        return marshall;
     }
 
-    public void cacheResult(File file, int i, ParsedPackage parsedPackage) {
+    public final void cacheResult(File file, int i, ParsedPackage parsedPackage) {
         FileOutputStream fileOutputStream;
         try {
             File file2 = new File(this.mCacheDir, getCacheKey(file, i));
@@ -132,14 +116,12 @@ public class PackageCacher {
         }
     }
 
-    public void cleanCachedResult(File file) {
+    public final void cleanCachedResult(File file) {
         final String name = file.getName();
         for (File file2 : FileUtils.listFilesOrEmpty(this.mCacheDir, new FilenameFilter() { // from class: com.android.server.pm.parsing.PackageCacher$$ExternalSyntheticLambda0
             @Override // java.io.FilenameFilter
             public final boolean accept(File file3, String str) {
-                boolean lambda$cleanCachedResult$0;
-                lambda$cleanCachedResult$0 = PackageCacher.lambda$cleanCachedResult$0(name, file3, str);
-                return lambda$cleanCachedResult$0;
+                return str.startsWith(name);
             }
         })) {
             if (!file2.delete()) {
@@ -148,7 +130,29 @@ public class PackageCacher {
         }
     }
 
-    public static /* synthetic */ boolean lambda$cleanCachedResult$0(String str, File file, String str2) {
-        return str2.startsWith(str);
+    public ParsedPackage fromCacheEntry(byte[] bArr) {
+        return fromCacheEntryStatic(bArr, this.mCallback);
+    }
+
+    public final ParsedPackage getCachedResult(File file, int i) {
+        File file2 = new File(this.mCacheDir, getCacheKey(file, i));
+        try {
+            if (!isCacheUpToDate(file, file2)) {
+                return null;
+            }
+            ParsedPackage fromCacheEntry = fromCacheEntry(IoUtils.readFileAsByteArray(file2.getAbsolutePath()));
+            if (file.getAbsolutePath().equals(fromCacheEntry.getPath())) {
+                return fromCacheEntry;
+            }
+            return null;
+        } catch (Throwable th) {
+            Slog.w("PackageCacher", "Error reading package cache: ", th);
+            file2.delete();
+            return null;
+        }
+    }
+
+    public byte[] toCacheEntry(ParsedPackage parsedPackage) {
+        return toCacheEntryStatic(parsedPackage);
     }
 }

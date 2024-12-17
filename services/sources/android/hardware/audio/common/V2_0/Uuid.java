@@ -2,10 +2,10 @@ package android.hardware.audio.common.V2_0;
 
 import android.os.HidlSupport;
 import android.os.HwBlob;
-import android.os.HwParcel;
 import java.util.Arrays;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class Uuid {
     public int timeLow = 0;
@@ -26,23 +26,15 @@ public final class Uuid {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.timeLow))), Integer.valueOf(HidlSupport.deepHashCode(Short.valueOf(this.timeMid))), Integer.valueOf(HidlSupport.deepHashCode(Short.valueOf(this.versionAndTimeHigh))), Integer.valueOf(HidlSupport.deepHashCode(Short.valueOf(this.variantAndClockSeqHigh))), Integer.valueOf(HidlSupport.deepHashCode(this.node)));
+        return Objects.hash(AudioConfig$$ExternalSyntheticOutline0.m(this.timeLow), Integer.valueOf(HidlSupport.deepHashCode(Short.valueOf(this.timeMid))), Integer.valueOf(HidlSupport.deepHashCode(Short.valueOf(this.versionAndTimeHigh))), Integer.valueOf(HidlSupport.deepHashCode(Short.valueOf(this.variantAndClockSeqHigh))), Integer.valueOf(HidlSupport.deepHashCode(this.node)));
     }
 
     public final String toString() {
         return "{.timeLow = " + this.timeLow + ", .timeMid = " + ((int) this.timeMid) + ", .versionAndTimeHigh = " + ((int) this.versionAndTimeHigh) + ", .variantAndClockSeqHigh = " + ((int) this.variantAndClockSeqHigh) + ", .node = " + Arrays.toString(this.node) + "}";
     }
 
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.timeLow = hwBlob.getInt32(0 + j);
-        this.timeMid = hwBlob.getInt16(4 + j);
-        this.versionAndTimeHigh = hwBlob.getInt16(6 + j);
-        this.variantAndClockSeqHigh = hwBlob.getInt16(8 + j);
-        hwBlob.copyToInt8Array(j + 10, this.node, 6);
-    }
-
     public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putInt32(0 + j, this.timeLow);
+        hwBlob.putInt32(j, this.timeLow);
         hwBlob.putInt16(4 + j, this.timeMid);
         hwBlob.putInt16(6 + j, this.versionAndTimeHigh);
         hwBlob.putInt16(8 + j, this.variantAndClockSeqHigh);

@@ -1,20 +1,24 @@
 package com.android.server.wm;
 
-import android.os.Debug;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.os.SystemClock;
 import android.util.Slog;
 import android.util.proto.ProtoOutputStream;
 import android.view.SurfaceControl;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import com.android.server.display.DisplayPowerController2;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
+import com.android.internal.protolog.common.LogLevel;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.wm.SurfaceAnimator;
 import com.android.server.wm.SurfaceFreezer;
 import com.samsung.android.rune.CoreRune;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class SurfaceAnimator {
     final Animatable mAnimatable;
     public AnimationAdapter mAnimation;
@@ -29,7 +33,7 @@ public class SurfaceAnimator {
     final OnAnimationFinishedCallback mStaticAnimationFinishedCallback;
     public OnAnimationFinishedCallback mSurfaceAnimationFinishedCallback;
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface Animatable {
         void commitPendingTransaction();
 
@@ -63,246 +67,123 @@ public class SurfaceAnimator {
         }
     }
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface OnAnimationFinishedCallback {
         void onAnimationFinished(int i, AnimationAdapter animationAdapter);
     }
 
-    public SurfaceAnimator(Animatable animatable, OnAnimationFinishedCallback onAnimationFinishedCallback, WindowManagerService windowManagerService) {
+    public SurfaceAnimator(Animatable animatable, final OnAnimationFinishedCallback onAnimationFinishedCallback, WindowManagerService windowManagerService) {
         this.mAnimatable = animatable;
         this.mService = windowManagerService;
         this.mStaticAnimationFinishedCallback = onAnimationFinishedCallback;
-        this.mInnerAnimationFinishedCallback = getFinishedCallback(onAnimationFinishedCallback);
-    }
-
-    public final OnAnimationFinishedCallback getFinishedCallback(final OnAnimationFinishedCallback onAnimationFinishedCallback) {
-        return new OnAnimationFinishedCallback() { // from class: com.android.server.wm.SurfaceAnimator$$ExternalSyntheticLambda0
+        this.mInnerAnimationFinishedCallback = new OnAnimationFinishedCallback() { // from class: com.android.server.wm.SurfaceAnimator$$ExternalSyntheticLambda0
             @Override // com.android.server.wm.SurfaceAnimator.OnAnimationFinishedCallback
-            public final void onAnimationFinished(int i, AnimationAdapter animationAdapter) {
-                SurfaceAnimator.this.lambda$getFinishedCallback$1(onAnimationFinishedCallback, i, animationAdapter);
+            public final void onAnimationFinished(final int i, final AnimationAdapter animationAdapter) {
+                final SurfaceAnimator surfaceAnimator = SurfaceAnimator.this;
+                final SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback2 = onAnimationFinishedCallback;
+                WindowManagerGlobalLock windowManagerGlobalLock = surfaceAnimator.mService.mGlobalLock;
+                WindowManagerService.boostPriorityForLockedSection();
+                synchronized (windowManagerGlobalLock) {
+                    try {
+                        SurfaceAnimator surfaceAnimator2 = (SurfaceAnimator) surfaceAnimator.mService.mAnimationTransferMap.remove(animationAdapter);
+                        if (surfaceAnimator2 != null) {
+                            surfaceAnimator2.mInnerAnimationFinishedCallback.onAnimationFinished(i, animationAdapter);
+                            WindowManagerService.resetPriorityAfterLockedSection();
+                        } else {
+                            if (animationAdapter != surfaceAnimator.mAnimation) {
+                                WindowManagerService.resetPriorityAfterLockedSection();
+                                return;
+                            }
+                            Runnable runnable = new Runnable() { // from class: com.android.server.wm.SurfaceAnimator$$ExternalSyntheticLambda1
+                                @Override // java.lang.Runnable
+                                public final void run() {
+                                    SurfaceAnimator surfaceAnimator3 = SurfaceAnimator.this;
+                                    AnimationAdapter animationAdapter2 = animationAdapter;
+                                    SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback3 = onAnimationFinishedCallback2;
+                                    int i2 = i;
+                                    if (animationAdapter2 != surfaceAnimator3.mAnimation) {
+                                        return;
+                                    }
+                                    SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback4 = surfaceAnimator3.mSurfaceAnimationFinishedCallback;
+                                    surfaceAnimator3.reset(surfaceAnimator3.mAnimatable.getSyncTransaction(), true);
+                                    if (onAnimationFinishedCallback3 != null) {
+                                        onAnimationFinishedCallback3.onAnimationFinished(i2, animationAdapter2);
+                                    }
+                                    if (onAnimationFinishedCallback4 != null) {
+                                        onAnimationFinishedCallback4.onAnimationFinished(i2, animationAdapter2);
+                                    }
+                                }
+                            };
+                            if (!surfaceAnimator.mAnimatable.shouldDeferAnimationFinish(runnable) && !animationAdapter.shouldDeferAnimationFinish()) {
+                                runnable.run();
+                            }
+                            surfaceAnimator.mAnimationFinished = true;
+                            WindowManagerService.resetPriorityAfterLockedSection();
+                        }
+                    } catch (Throwable th) {
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                        throw th;
+                    }
+                }
             }
         };
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$getFinishedCallback$1(final OnAnimationFinishedCallback onAnimationFinishedCallback, final int i, final AnimationAdapter animationAdapter) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                SurfaceAnimator surfaceAnimator = (SurfaceAnimator) this.mService.mAnimationTransferMap.remove(animationAdapter);
-                if (surfaceAnimator != null) {
-                    surfaceAnimator.mInnerAnimationFinishedCallback.onAnimationFinished(i, animationAdapter);
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                } else {
-                    if (animationAdapter != this.mAnimation) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        return;
-                    }
-                    Runnable runnable = new Runnable() { // from class: com.android.server.wm.SurfaceAnimator$$ExternalSyntheticLambda1
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            SurfaceAnimator.this.lambda$getFinishedCallback$0(animationAdapter, onAnimationFinishedCallback, i);
-                        }
-                    };
-                    if (!this.mAnimatable.shouldDeferAnimationFinish(runnable) && !animationAdapter.shouldDeferAnimationFinish(runnable)) {
-                        runnable.run();
-                    }
-                    this.mAnimationFinished = true;
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
+    public static String animationTypeToString(int i) {
+        return i != 0 ? i != 1 ? i != 2 ? i != 4 ? i != 8 ? i != 16 ? i != 32 ? i != 64 ? i != 128 ? i != 256 ? (i == 512 && CoreRune.FW_REMOTE_WALLPAPER_ANIM) ? "remote_wallpaper" : VibrationParam$1$$ExternalSyntheticOutline0.m(i, "unknown type:") : "predict_back" : "starting_reveal" : "token_transform" : "insets_animation" : "window_animation" : "recents_animation" : "dimmer" : "screen_rotation" : "app_transition" : "none";
+    }
+
+    public static SurfaceControl createAnimationLeash(Animatable animatable, SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, int i2, int i3, int i4, int i5, boolean z) {
+        Slog.i("WindowManager", "Reparenting to leash, surface=" + surfaceControl + ", leashParent=" + animatable.getAnimationLeashParent() + "");
+        SurfaceControl.Builder callsite = animatable.makeAnimationLeash().setParent(animatable.getAnimationLeashParent()).setName(surfaceControl + " - animation-leash of " + animationTypeToString(i)).setHidden(z).setEffectLayer().setCallsite("SurfaceAnimator.createAnimationLeash");
+        long uptimeMillis = SystemClock.uptimeMillis();
+        SurfaceControl build = callsite.build();
+        Slog.d("WindowManager", "makeSurface duration=" + (SystemClock.uptimeMillis() - uptimeMillis) + " leash=" + build);
+        transaction.setWindowCrop(build, i2, i3);
+        transaction.setPosition(build, (float) i4, (float) i5);
+        transaction.show(build);
+        transaction.setAlpha(build, z ? FullScreenMagnificationGestureHandler.MAX_SCALE : 1.0f);
+        transaction.reparent(surfaceControl, build);
+        return build;
+    }
+
+    public static boolean removeLeash(SurfaceControl.Transaction transaction, Animatable animatable, SurfaceControl surfaceControl, boolean z) {
+        SurfaceControl surfaceControl2 = animatable.getSurfaceControl();
+        SurfaceControl parentSurfaceControl = animatable.getParentSurfaceControl();
+        SurfaceControl animationLeash = animatable.getAnimationLeash();
+        boolean z2 = false;
+        boolean z3 = surfaceControl2 != null && (animationLeash == null || animationLeash.equals(surfaceControl));
+        if (z3) {
+            Slog.i("WindowManager", "Reparenting to original parent: " + parentSurfaceControl + ", destroy=" + z + ", surface=" + surfaceControl2 + "");
+            if (surfaceControl2.isValid() && parentSurfaceControl != null && parentSurfaceControl.isValid()) {
+                transaction.reparent(surfaceControl2, parentSurfaceControl);
+                z2 = true;
             }
         }
+        if (z) {
+            transaction.remove(surfaceControl);
+            z2 = true;
+        }
+        if (!z3) {
+            return z2;
+        }
+        animatable.onAnimationLeashLost(transaction);
+        return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$getFinishedCallback$0(AnimationAdapter animationAdapter, OnAnimationFinishedCallback onAnimationFinishedCallback, int i) {
-        if (animationAdapter != this.mAnimation) {
-            return;
-        }
-        OnAnimationFinishedCallback onAnimationFinishedCallback2 = this.mSurfaceAnimationFinishedCallback;
-        reset(this.mAnimatable.getSyncTransaction(), true);
-        if (onAnimationFinishedCallback != null) {
-            onAnimationFinishedCallback.onAnimationFinished(i, animationAdapter);
-        }
-        if (onAnimationFinishedCallback2 != null) {
-            onAnimationFinishedCallback2.onAnimationFinished(i, animationAdapter);
-        }
-    }
-
-    public void startAnimation(SurfaceControl.Transaction transaction, AnimationAdapter animationAdapter, boolean z, int i, OnAnimationFinishedCallback onAnimationFinishedCallback, Runnable runnable, AnimationAdapter animationAdapter2, SurfaceFreezer surfaceFreezer) {
-        cancelAnimation(transaction, true, true);
-        this.mAnimation = animationAdapter;
-        this.mAnimationType = i;
-        this.mSurfaceAnimationFinishedCallback = onAnimationFinishedCallback;
-        this.mAnimationCancelledCallback = runnable;
-        SurfaceControl surfaceControl = this.mAnimatable.getSurfaceControl();
-        if (surfaceControl == null) {
-            Slog.w(StartingSurfaceController.TAG, "Unable to start animation, surface is null or no children.");
-            cancelAnimation();
-            return;
-        }
-        SurfaceControl takeLeashForAnimation = surfaceFreezer != null ? surfaceFreezer.takeLeashForAnimation() : null;
-        this.mLeash = takeLeashForAnimation;
-        if (takeLeashForAnimation == null) {
-            Animatable animatable = this.mAnimatable;
-            SurfaceControl createAnimationLeash = createAnimationLeash(animatable, surfaceControl, transaction, i, animatable.getSurfaceWidth(), this.mAnimatable.getSurfaceHeight(), 0, 0, z, this.mService.mTransactionFactory);
-            this.mLeash = createAnimationLeash;
-            this.mAnimatable.onAnimationLeashCreated(transaction, createAnimationLeash);
-        }
-        this.mAnimatable.onLeashAnimationStarting(transaction, this.mLeash);
-        if (this.mAnimationStartDelayed) {
-            if (ProtoLogCache.WM_DEBUG_ANIM_enabled) {
-                ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ANIM, 215077284, 0, (String) null, new Object[]{String.valueOf(this.mAnimatable)});
-                return;
-            }
-            return;
-        }
-        this.mAnimation.startAnimation(this.mLeash, transaction, i, this.mInnerAnimationFinishedCallback);
-        if (ProtoLogImpl.isEnabled(ProtoLogGroup.WM_DEBUG_ANIM)) {
-            StringWriter stringWriter = new StringWriter();
-            this.mAnimation.dump(new PrintWriter(stringWriter), "");
-            if (ProtoLogCache.WM_DEBUG_ANIM_enabled) {
-                ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_ANIM, -1969928125, 0, (String) null, new Object[]{String.valueOf(this.mAnimatable), String.valueOf(stringWriter)});
-            }
-        }
-        if (animationAdapter2 != null) {
-            SurfaceFreezer.Snapshot takeSnapshotForAnimation = surfaceFreezer.takeSnapshotForAnimation();
-            this.mSnapshot = takeSnapshotForAnimation;
-            if (takeSnapshotForAnimation == null) {
-                Slog.e(StartingSurfaceController.TAG, "No snapshot target to start animation on for " + this.mAnimatable);
-                return;
-            }
-            takeSnapshotForAnimation.startAnimation(transaction, animationAdapter2, i);
-        }
-    }
-
-    public void startAnimation(SurfaceControl.Transaction transaction, AnimationAdapter animationAdapter, boolean z, int i) {
-        startAnimation(transaction, animationAdapter, z, i, null, null, null, null);
-    }
-
-    public void startDelayingAnimationStart() {
-        if (isAnimating()) {
-            return;
-        }
-        this.mAnimationStartDelayed = true;
-    }
-
-    public void endDelayingAnimationStart() {
-        AnimationAdapter animationAdapter;
-        boolean z = this.mAnimationStartDelayed;
-        this.mAnimationStartDelayed = false;
-        if (!z || (animationAdapter = this.mAnimation) == null) {
-            return;
-        }
-        animationAdapter.startAnimation(this.mLeash, this.mAnimatable.getSyncTransaction(), this.mAnimationType, this.mInnerAnimationFinishedCallback);
-        this.mAnimatable.commitPendingTransaction();
-    }
-
-    public boolean isAnimating() {
-        return this.mAnimation != null;
-    }
-
-    public int getAnimationType() {
-        return this.mAnimationType;
-    }
-
-    public AnimationAdapter getAnimation() {
-        return this.mAnimation;
-    }
-
-    public void cancelAnimation() {
+    public final void cancelAnimation() {
         cancelAnimation(this.mAnimatable.getSyncTransaction(), false, true);
         this.mAnimatable.commitPendingTransaction();
     }
 
-    public void setLayer(SurfaceControl.Transaction transaction, int i) {
-        SurfaceControl surfaceControl = this.mLeash;
-        if (surfaceControl == null) {
-            surfaceControl = this.mAnimatable.getSurfaceControl();
-        }
-        transaction.setLayer(surfaceControl, i);
-    }
-
-    public void setRelativeLayer(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, int i) {
-        SurfaceControl surfaceControl2 = this.mLeash;
-        if (surfaceControl2 == null) {
-            surfaceControl2 = this.mAnimatable.getSurfaceControl();
-        }
-        transaction.setRelativeLayer(surfaceControl2, surfaceControl, i);
-    }
-
-    public boolean hasLeash() {
-        return this.mLeash != null;
-    }
-
-    public void transferAnimation(SurfaceAnimator surfaceAnimator) {
-        String str;
-        if (surfaceAnimator.mLeash == null) {
-            return;
-        }
-        SurfaceControl surfaceControl = this.mAnimatable.getSurfaceControl();
-        SurfaceControl animationLeashParent = this.mAnimatable.getAnimationLeashParent();
-        if (surfaceControl == null || animationLeashParent == null) {
-            Slog.w(StartingSurfaceController.TAG, "Unable to transfer animation, surface or parent is null");
-            cancelAnimation();
-            return;
-        }
-        if (surfaceAnimator.mAnimationFinished) {
-            Slog.w(StartingSurfaceController.TAG, "Unable to transfer animation, because " + surfaceAnimator + " animation is finished");
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("transferAnimation, surface=");
-        sb.append(surfaceControl);
-        sb.append(", parent=");
-        sb.append(animationLeashParent);
-        if (CoreRune.SAFE_DEBUG) {
-            str = ", caller=" + Debug.getCallers(4);
-        } else {
-            str = "";
-        }
-        sb.append(str);
-        Slog.i(StartingSurfaceController.TAG, sb.toString());
-        endDelayingAnimationStart();
-        SurfaceControl.Transaction syncTransaction = this.mAnimatable.getSyncTransaction();
-        cancelAnimation(syncTransaction, true, true);
-        this.mLeash = surfaceAnimator.mLeash;
-        this.mAnimation = surfaceAnimator.mAnimation;
-        this.mAnimationType = surfaceAnimator.mAnimationType;
-        this.mSurfaceAnimationFinishedCallback = surfaceAnimator.mSurfaceAnimationFinishedCallback;
-        this.mAnimationCancelledCallback = surfaceAnimator.mAnimationCancelledCallback;
-        surfaceAnimator.cancelAnimation(syncTransaction, false, false);
-        syncTransaction.reparent(surfaceControl, this.mLeash);
-        syncTransaction.reparent(this.mLeash, animationLeashParent);
-        this.mAnimatable.onAnimationLeashCreated(syncTransaction, this.mLeash);
-        this.mService.mAnimationTransferMap.put(this.mAnimation, this);
-    }
-
-    public boolean isAnimationStartDelayed() {
-        return this.mAnimationStartDelayed;
-    }
-
-    public void cancelAnimation(SurfaceControl.Transaction transaction, boolean z, boolean z2) {
-        String str;
+    public final void cancelAnimation(SurfaceControl.Transaction transaction, boolean z, boolean z2) {
         if (this.mLeash != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Cancelling animation restarting=");
-            sb.append(z);
-            sb.append(", leash=");
-            sb.append(this.mLeash);
-            if (CoreRune.SAFE_DEBUG) {
-                str = ", caller=" + Debug.getCallers(3);
-            } else {
-                str = "";
-            }
-            sb.append(str);
-            Slog.i(StartingSurfaceController.TAG, sb.toString());
-        } else if (ProtoLogCache.WM_DEBUG_ANIM_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ANIM, 397862437, 3, (String) null, new Object[]{Boolean.valueOf(z), String.valueOf(this.mAnimatable)});
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m("Cancelling animation restarting=", ", leash=", z);
+            m.append(this.mLeash);
+            m.append("");
+            Slog.i("WindowManager", m.toString());
+        } else if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ANIM_enabled[2]) {
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_ANIM, -5370506662233296228L, 3, null, Boolean.valueOf(z), String.valueOf(this.mAnimatable));
         }
         SurfaceControl surfaceControl = this.mLeash;
         AnimationAdapter animationAdapter = this.mAnimation;
@@ -343,8 +224,42 @@ public class SurfaceAnimator {
         this.mAnimationStartDelayed = false;
     }
 
+    public final void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
+        long start = protoOutputStream.start(j);
+        AnimationAdapter animationAdapter = this.mAnimation;
+        if (animationAdapter != null) {
+            animationAdapter.dumpDebug(protoOutputStream);
+        }
+        SurfaceControl surfaceControl = this.mLeash;
+        if (surfaceControl != null) {
+            surfaceControl.dumpDebug(protoOutputStream, 1146756268033L);
+        }
+        protoOutputStream.write(1133871366146L, this.mAnimationStartDelayed);
+        protoOutputStream.end(start);
+    }
+
+    public final void endDelayingAnimationStart() {
+        AnimationAdapter animationAdapter;
+        boolean z = this.mAnimationStartDelayed;
+        this.mAnimationStartDelayed = false;
+        if (!z || (animationAdapter = this.mAnimation) == null) {
+            return;
+        }
+        animationAdapter.startAnimation(this.mLeash, this.mAnimatable.getSyncTransaction(), this.mAnimationType, this.mInnerAnimationFinishedCallback);
+        this.mAnimatable.commitPendingTransaction();
+    }
+
+    public final boolean hasLeash() {
+        return this.mLeash != null;
+    }
+
+    public final boolean isAnimating() {
+        return this.mAnimation != null;
+    }
+
     public final void reset(SurfaceControl.Transaction transaction, boolean z) {
-        this.mService.mAnimationTransferMap.remove(this.mAnimation);
+        WindowManagerService windowManagerService = this.mService;
+        windowManagerService.mAnimationTransferMap.remove(this.mAnimation);
         this.mAnimation = null;
         this.mSurfaceAnimationFinishedCallback = null;
         this.mAnimationType = 0;
@@ -361,137 +276,78 @@ public class SurfaceAnimator {
         boolean removeLeash = removeLeash(transaction, this.mAnimatable, surfaceControl, z);
         this.mAnimationFinished = false;
         if (removeLeash) {
-            this.mService.scheduleAnimationLocked();
+            windowManagerService.scheduleAnimationLocked();
         }
     }
 
-    public static boolean removeLeash(SurfaceControl.Transaction transaction, Animatable animatable, SurfaceControl surfaceControl, boolean z) {
-        String str;
-        SurfaceControl surfaceControl2 = animatable.getSurfaceControl();
-        SurfaceControl parentSurfaceControl = animatable.getParentSurfaceControl();
-        SurfaceControl animationLeash = animatable.getAnimationLeash();
-        boolean z2 = false;
-        boolean z3 = surfaceControl2 != null && (animationLeash == null || animationLeash.equals(surfaceControl));
-        if (z3) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Reparenting to original parent: ");
-            sb.append(parentSurfaceControl);
-            sb.append(", destroy=");
-            sb.append(z);
-            sb.append(", surface=");
-            sb.append(surfaceControl2);
-            if (CoreRune.SAFE_DEBUG) {
-                str = ", caller=" + Debug.getCallers(3);
-            } else {
-                str = "";
-            }
-            sb.append(str);
-            Slog.i(StartingSurfaceController.TAG, sb.toString());
-            if (surfaceControl2.isValid() && parentSurfaceControl != null && parentSurfaceControl.isValid()) {
-                transaction.reparent(surfaceControl2, parentSurfaceControl);
-                z2 = true;
-            }
+    public final void startAnimation(SurfaceControl.Transaction transaction, AnimationAdapter animationAdapter, boolean z, int i, OnAnimationFinishedCallback onAnimationFinishedCallback, Runnable runnable, AnimationAdapter animationAdapter2, SurfaceFreezer surfaceFreezer) {
+        SurfaceControl surfaceControl;
+        SurfaceFreezer.Snapshot snapshot;
+        cancelAnimation(transaction, true, true);
+        this.mAnimation = animationAdapter;
+        this.mAnimationType = i;
+        this.mSurfaceAnimationFinishedCallback = onAnimationFinishedCallback;
+        this.mAnimationCancelledCallback = runnable;
+        SurfaceControl surfaceControl2 = this.mAnimatable.getSurfaceControl();
+        if (surfaceControl2 == null) {
+            Slog.w("WindowManager", "Unable to start animation, surface is null or no children.");
+            cancelAnimation();
+            return;
         }
-        if (z) {
-            transaction.remove(surfaceControl);
-            z2 = true;
-        }
-        if (!z3) {
-            return z2;
-        }
-        animatable.onAnimationLeashLost(transaction);
-        return true;
-    }
-
-    public static SurfaceControl createAnimationLeash(Animatable animatable, SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, int i2, int i3, int i4, int i5, boolean z, Supplier supplier) {
-        String str;
-        StringBuilder sb = new StringBuilder();
-        sb.append("Reparenting to leash, surface=");
-        sb.append(surfaceControl);
-        sb.append(", leashParent=");
-        sb.append(animatable.getAnimationLeashParent());
-        if (CoreRune.SAFE_DEBUG) {
-            str = ", caller=" + Debug.getCallers(3);
+        if (surfaceFreezer != null) {
+            surfaceControl = surfaceFreezer.mLeash;
+            surfaceFreezer.mLeash = null;
         } else {
-            str = "";
+            surfaceControl = null;
         }
-        sb.append(str);
-        Slog.i(StartingSurfaceController.TAG, sb.toString());
-        SurfaceControl.Builder callsite = animatable.makeAnimationLeash().setParent(animatable.getAnimationLeashParent()).setName(surfaceControl + " - animation-leash of " + animationTypeToString(i)).setHidden(z).setEffectLayer().setCallsite("SurfaceAnimator.createAnimationLeash");
-        long uptimeMillis = SystemClock.uptimeMillis();
-        SurfaceControl build = callsite.build();
-        Slog.d(StartingSurfaceController.TAG, "makeSurface duration=" + (SystemClock.uptimeMillis() - uptimeMillis) + " leash=" + build);
-        transaction.setWindowCrop(build, i2, i3);
-        transaction.setPosition(build, (float) i4, (float) i5);
-        transaction.show(build);
-        transaction.setAlpha(build, z ? DisplayPowerController2.RATE_FROM_DOZE_TO_ON : 1.0f);
-        transaction.reparent(surfaceControl, build);
-        return build;
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        AnimationAdapter animationAdapter = this.mAnimation;
-        if (animationAdapter != null) {
-            animationAdapter.dumpDebug(protoOutputStream, 1146756268035L);
+        this.mLeash = surfaceControl;
+        if (surfaceControl == null) {
+            Animatable animatable = this.mAnimatable;
+            int surfaceWidth = animatable.getSurfaceWidth();
+            int surfaceHeight = this.mAnimatable.getSurfaceHeight();
+            Supplier supplier = this.mService.mTransactionFactory;
+            snapshot = null;
+            SurfaceControl createAnimationLeash = createAnimationLeash(animatable, surfaceControl2, transaction, i, surfaceWidth, surfaceHeight, 0, 0, z);
+            this.mLeash = createAnimationLeash;
+            this.mAnimatable.onAnimationLeashCreated(transaction, createAnimationLeash);
+        } else {
+            snapshot = null;
         }
-        SurfaceControl surfaceControl = this.mLeash;
-        if (surfaceControl != null) {
-            surfaceControl.dumpDebug(protoOutputStream, 1146756268033L);
+        this.mAnimatable.onLeashAnimationStarting(transaction, this.mLeash);
+        boolean z2 = this.mAnimationStartDelayed;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_ANIM_enabled;
+        if (z2) {
+            if (zArr[2]) {
+                ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_ANIM, -820649637734629482L, 0, null, String.valueOf(this.mAnimatable));
+                return;
+            }
+            return;
         }
-        protoOutputStream.write(1133871366146L, this.mAnimationStartDelayed);
-        protoOutputStream.end(start);
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
-        printWriter.print(str);
-        printWriter.print("mLeash=");
-        printWriter.print(this.mLeash);
-        printWriter.print(" mAnimationType=" + animationTypeToString(this.mAnimationType));
-        printWriter.println(this.mAnimationStartDelayed ? " mAnimationStartDelayed=true" : "");
-        printWriter.print(str);
-        printWriter.print("Animation: ");
-        printWriter.println(this.mAnimation);
-        AnimationAdapter animationAdapter = this.mAnimation;
-        if (animationAdapter != null) {
-            animationAdapter.dump(printWriter, str + "  ");
+        this.mAnimation.startAnimation(this.mLeash, transaction, i, this.mInnerAnimationFinishedCallback);
+        ProtoLogGroup protoLogGroup = ProtoLogGroup.WM_DEBUG_ANIM;
+        if (ProtoLogImpl_54989576.isEnabled(protoLogGroup, LogLevel.DEBUG)) {
+            StringWriter stringWriter = new StringWriter();
+            this.mAnimation.dump(new PrintWriter(stringWriter), "");
+            if (zArr[0]) {
+                ProtoLogImpl_54989576.d(protoLogGroup, 1371702561758591499L, 0, null, String.valueOf(this.mAnimatable), String.valueOf(stringWriter));
+            }
         }
-    }
-
-    public static String animationTypeToString(int i) {
-        if (i == 0) {
-            return "none";
+        if (animationAdapter2 != null) {
+            SurfaceFreezer.Snapshot snapshot2 = surfaceFreezer.mSnapshot;
+            surfaceFreezer.mSnapshot = snapshot;
+            this.mSnapshot = snapshot2;
+            if (snapshot2 == null) {
+                Slog.e("WindowManager", "No snapshot target to start animation on for " + this.mAnimatable);
+                return;
+            }
+            snapshot2.cancelAnimation(transaction, true);
+            snapshot2.mAnimation = animationAdapter2;
+            SurfaceControl surfaceControl3 = snapshot2.mSurfaceControl;
+            if (surfaceControl3 == null) {
+                snapshot2.cancelAnimation(transaction, false);
+            } else {
+                animationAdapter2.startAnimation(surfaceControl3, transaction, i, new SurfaceFreezer$Snapshot$$ExternalSyntheticLambda0());
+            }
         }
-        if (i == 1) {
-            return "app_transition";
-        }
-        if (i == 2) {
-            return "screen_rotation";
-        }
-        if (i == 4) {
-            return "dimmer";
-        }
-        if (i == 8) {
-            return "recents_animation";
-        }
-        if (i == 16) {
-            return "window_animation";
-        }
-        if (i == 32) {
-            return "insets_animation";
-        }
-        if (i == 64) {
-            return "token_transform";
-        }
-        if (i == 128) {
-            return "starting_reveal";
-        }
-        if (i == 256) {
-            return "predict_back";
-        }
-        if (i == 512 && CoreRune.FW_REMOTE_WALLPAPER_ANIM) {
-            return "remote_wallpaper";
-        }
-        return "unknown type:" + i;
     }
 }

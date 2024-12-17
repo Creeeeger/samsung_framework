@@ -5,8 +5,9 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 
-/* loaded from: classes2.dex */
-public class HandlerExecutor implements Executor {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class HandlerExecutor implements Executor {
     public final Handler mHandler;
 
     public HandlerExecutor(Handler handler) {
@@ -15,7 +16,7 @@ public class HandlerExecutor implements Executor {
     }
 
     @Override // java.util.concurrent.Executor
-    public void execute(Runnable runnable) {
+    public final void execute(Runnable runnable) {
         if (this.mHandler.post(runnable)) {
             return;
         }

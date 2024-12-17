@@ -1,10 +1,15 @@
 package com.android.server.usb;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class UsbAlsaJackDetector implements Runnable {
     public static final String TAG = "UsbAlsaJackDetector";
     public UsbAlsaDevice mAlsaDevice;
     public boolean mStopJackDetect = false;
+
+    public UsbAlsaJackDetector(UsbAlsaDevice usbAlsaDevice) {
+        this.mAlsaDevice = usbAlsaDevice;
+    }
 
     private static native boolean nativeHasJackDetect(int i);
 
@@ -14,12 +19,8 @@ public final class UsbAlsaJackDetector implements Runnable {
 
     private native boolean nativeOutputJackConnected(int i);
 
-    public UsbAlsaJackDetector(UsbAlsaDevice usbAlsaDevice) {
-        this.mAlsaDevice = usbAlsaDevice;
-    }
-
     public static UsbAlsaJackDetector startJackDetect(UsbAlsaDevice usbAlsaDevice) {
-        if (!nativeHasJackDetect(usbAlsaDevice.getCardNum())) {
+        if (!nativeHasJackDetect(usbAlsaDevice.mCardNum)) {
             return null;
         }
         UsbAlsaJackDetector usbAlsaJackDetector = new UsbAlsaJackDetector(usbAlsaDevice);
@@ -27,33 +28,43 @@ public final class UsbAlsaJackDetector implements Runnable {
         return usbAlsaJackDetector;
     }
 
-    public boolean isInputJackConnected() {
-        return nativeInputJackConnected(this.mAlsaDevice.getCardNum());
+    public final boolean isInputJackConnected() {
+        return nativeInputJackConnected(this.mAlsaDevice.mCardNum);
     }
 
-    public boolean isOutputJackConnected() {
-        return nativeOutputJackConnected(this.mAlsaDevice.getCardNum());
+    public final boolean isOutputJackConnected() {
+        return nativeOutputJackConnected(this.mAlsaDevice.mCardNum);
     }
 
-    public void pleaseStop() {
+    public final boolean jackDetectCallback() {
+        synchronized (this) {
+            try {
+                if (this.mStopJackDetect) {
+                    return false;
+                }
+                UsbAlsaDevice usbAlsaDevice = this.mAlsaDevice;
+                synchronized (usbAlsaDevice) {
+                    usbAlsaDevice.updateWiredDeviceConnectionState(1, true);
+                }
+                UsbAlsaDevice usbAlsaDevice2 = this.mAlsaDevice;
+                synchronized (usbAlsaDevice2) {
+                    usbAlsaDevice2.updateWiredDeviceConnectionState(0, true);
+                }
+                return true;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void pleaseStop() {
         synchronized (this) {
             this.mStopJackDetect = true;
         }
     }
 
-    public boolean jackDetectCallback() {
-        synchronized (this) {
-            if (this.mStopJackDetect) {
-                return false;
-            }
-            this.mAlsaDevice.updateOutputWiredDeviceConnectionState(true);
-            this.mAlsaDevice.updateInputWiredDeviceConnectionState(true);
-            return true;
-        }
-    }
-
     @Override // java.lang.Runnable
-    public void run() {
-        nativeJackDetect(this.mAlsaDevice.getCardNum());
+    public final void run() {
+        nativeJackDetect(this.mAlsaDevice.mCardNum);
     }
 }

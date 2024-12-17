@@ -1,54 +1,95 @@
 package com.android.server.job;
 
+import android.util.ArraySet;
 import android.util.Pools;
 import android.util.SparseArray;
-import com.android.server.job.PendingJobQueue;
 import com.android.server.job.controllers.JobStatus;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.PriorityQueue;
 
-/* loaded from: classes2.dex */
-public class PendingJobQueue {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class PendingJobQueue {
     public final Pools.Pool mAppJobQueuePool = new Pools.SimplePool(8);
     public final SparseArray mCurrentQueues = new SparseArray();
-    public final PriorityQueue mOrderedQueues = new PriorityQueue(new Comparator() { // from class: com.android.server.job.PendingJobQueue$$ExternalSyntheticLambda0
-        @Override // java.util.Comparator
-        public final int compare(Object obj, Object obj2) {
-            int lambda$new$0;
-            lambda$new$0 = PendingJobQueue.lambda$new$0((PendingJobQueue.AppJobQueue) obj, (PendingJobQueue.AppJobQueue) obj2);
-            return lambda$new$0;
-        }
-    });
+    public final PriorityQueue mOrderedQueues = new PriorityQueue(new PendingJobQueue$$ExternalSyntheticLambda0(0));
     public int mSize = 0;
     public boolean mOptimizeIteration = true;
     public int mPullCount = 0;
     public boolean mNeedToResetIterators = false;
 
-    public static /* synthetic */ int lambda$new$0(AppJobQueue appJobQueue, AppJobQueue appJobQueue2) {
-        long peekNextTimestamp = appJobQueue.peekNextTimestamp();
-        long peekNextTimestamp2 = appJobQueue2.peekNextTimestamp();
-        if (peekNextTimestamp == -1) {
-            return peekNextTimestamp2 == -1 ? 0 : 1;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AppJobQueue {
+        public static final PendingJobQueue$$ExternalSyntheticLambda0 sJobComparator = new PendingJobQueue$$ExternalSyntheticLambda0(1);
+        public static final Pools.Pool mAdjustedJobStatusPool = new Pools.SimplePool(16);
+        public final List mJobs = new ArrayList();
+        public int mCurIndex = 0;
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class AdjustedJobStatus {
+            public long adjustedEnqueueTime;
+            public JobStatus job;
         }
-        if (peekNextTimestamp2 == -1) {
+
+        public final int indexOf(JobStatus jobStatus) {
+            int size = ((ArrayList) this.mJobs).size();
+            for (int i = 0; i < size; i++) {
+                if (((AdjustedJobStatus) ((ArrayList) this.mJobs).get(i)).job == jobStatus) {
+                    return i;
+                }
+            }
             return -1;
         }
-        int peekNextOverrideState = appJobQueue.peekNextOverrideState();
-        int peekNextOverrideState2 = appJobQueue2.peekNextOverrideState();
-        if (peekNextOverrideState != peekNextOverrideState2) {
-            return Integer.compare(peekNextOverrideState2, peekNextOverrideState);
+
+        public final int peekNextOverrideState() {
+            if (this.mCurIndex >= ((ArrayList) this.mJobs).size()) {
+                return -1;
+            }
+            return ((AdjustedJobStatus) ((ArrayList) this.mJobs).get(this.mCurIndex)).job.overrideState;
         }
-        return Long.compare(peekNextTimestamp, peekNextTimestamp2);
+
+        public final long peekNextTimestamp() {
+            if (this.mCurIndex >= ((ArrayList) this.mJobs).size()) {
+                return -1L;
+            }
+            return ((AdjustedJobStatus) ((ArrayList) this.mJobs).get(this.mCurIndex)).adjustedEnqueueTime;
+        }
     }
 
-    public void add(JobStatus jobStatus) {
-        AppJobQueue appJobQueue = getAppJobQueue(jobStatus.getSourceUid(), true);
+    public final void add(JobStatus jobStatus) {
+        AppJobQueue appJobQueue = getAppJobQueue(jobStatus.sourceUid, true);
         long peekNextTimestamp = appJobQueue.peekNextTimestamp();
-        appJobQueue.add(jobStatus);
+        AppJobQueue.AdjustedJobStatus adjustedJobStatus = (AppJobQueue.AdjustedJobStatus) AppJobQueue.mAdjustedJobStatusPool.acquire();
+        if (adjustedJobStatus == null) {
+            adjustedJobStatus = new AppJobQueue.AdjustedJobStatus();
+        }
+        adjustedJobStatus.adjustedEnqueueTime = jobStatus.enqueueTime;
+        adjustedJobStatus.job = jobStatus;
+        int binarySearch = Collections.binarySearch(appJobQueue.mJobs, adjustedJobStatus, AppJobQueue.sJobComparator);
+        if (binarySearch < 0) {
+            binarySearch = ~binarySearch;
+        }
+        ((ArrayList) appJobQueue.mJobs).add(binarySearch, adjustedJobStatus);
+        if (binarySearch < appJobQueue.mCurIndex) {
+            appJobQueue.mCurIndex = binarySearch;
+        }
+        if (binarySearch > 0) {
+            adjustedJobStatus.adjustedEnqueueTime = Math.max(((AppJobQueue.AdjustedJobStatus) ((ArrayList) appJobQueue.mJobs).get(binarySearch - 1)).adjustedEnqueueTime, adjustedJobStatus.adjustedEnqueueTime);
+        }
+        int size = ((ArrayList) appJobQueue.mJobs).size();
+        if (binarySearch < size - 1) {
+            while (binarySearch < size) {
+                AppJobQueue.AdjustedJobStatus adjustedJobStatus2 = (AppJobQueue.AdjustedJobStatus) ((ArrayList) appJobQueue.mJobs).get(binarySearch);
+                long j = adjustedJobStatus.adjustedEnqueueTime;
+                if (j < adjustedJobStatus2.adjustedEnqueueTime) {
+                    break;
+                }
+                adjustedJobStatus2.adjustedEnqueueTime = j;
+                binarySearch++;
+            }
+        }
         this.mSize++;
         if (peekNextTimestamp != appJobQueue.peekNextTimestamp()) {
             this.mOrderedQueues.remove(appJobQueue);
@@ -56,41 +97,53 @@ public class PendingJobQueue {
         }
     }
 
-    public void addAll(List list) {
+    public final void addAll(ArraySet arraySet) {
         SparseArray sparseArray = new SparseArray();
-        for (int size = list.size() - 1; size >= 0; size--) {
-            JobStatus jobStatus = (JobStatus) list.get(size);
-            List list2 = (List) sparseArray.get(jobStatus.getSourceUid());
-            if (list2 == null) {
-                list2 = new ArrayList();
-                sparseArray.put(jobStatus.getSourceUid(), list2);
+        for (int size = arraySet.size() - 1; size >= 0; size--) {
+            JobStatus jobStatus = (JobStatus) arraySet.valueAt(size);
+            List list = (List) sparseArray.get(jobStatus.sourceUid);
+            if (list == null) {
+                list = new ArrayList();
+                sparseArray.put(jobStatus.sourceUid, list);
             }
-            list2.add(jobStatus);
+            list.add(jobStatus);
         }
         for (int size2 = sparseArray.size() - 1; size2 >= 0; size2--) {
-            getAppJobQueue(sparseArray.keyAt(size2), true).addAll((List) sparseArray.valueAt(size2));
+            AppJobQueue appJobQueue = getAppJobQueue(sparseArray.keyAt(size2), true);
+            List list2 = (List) sparseArray.valueAt(size2);
+            appJobQueue.getClass();
+            int i = Integer.MAX_VALUE;
+            for (int size3 = list2.size() - 1; size3 >= 0; size3--) {
+                JobStatus jobStatus2 = (JobStatus) list2.get(size3);
+                AppJobQueue.AdjustedJobStatus adjustedJobStatus = (AppJobQueue.AdjustedJobStatus) AppJobQueue.mAdjustedJobStatusPool.acquire();
+                if (adjustedJobStatus == null) {
+                    adjustedJobStatus = new AppJobQueue.AdjustedJobStatus();
+                }
+                adjustedJobStatus.adjustedEnqueueTime = jobStatus2.enqueueTime;
+                adjustedJobStatus.job = jobStatus2;
+                int binarySearch = Collections.binarySearch(appJobQueue.mJobs, adjustedJobStatus, AppJobQueue.sJobComparator);
+                if (binarySearch < 0) {
+                    binarySearch = ~binarySearch;
+                }
+                ((ArrayList) appJobQueue.mJobs).add(binarySearch, adjustedJobStatus);
+                if (binarySearch < appJobQueue.mCurIndex) {
+                    appJobQueue.mCurIndex = binarySearch;
+                }
+                i = Math.min(i, binarySearch);
+            }
+            int size4 = ((ArrayList) appJobQueue.mJobs).size();
+            for (int max = Math.max(i, 1); max < size4; max++) {
+                AppJobQueue.AdjustedJobStatus adjustedJobStatus2 = (AppJobQueue.AdjustedJobStatus) ((ArrayList) appJobQueue.mJobs).get(max);
+                adjustedJobStatus2.adjustedEnqueueTime = Math.max(adjustedJobStatus2.adjustedEnqueueTime, ((AppJobQueue.AdjustedJobStatus) ((ArrayList) appJobQueue.mJobs).get(max - 1)).adjustedEnqueueTime);
+            }
         }
-        this.mSize += list.size();
+        this.mSize = arraySet.size() + this.mSize;
         this.mOrderedQueues.clear();
     }
 
-    public void clear() {
-        this.mSize = 0;
-        for (int size = this.mCurrentQueues.size() - 1; size >= 0; size--) {
-            AppJobQueue appJobQueue = (AppJobQueue) this.mCurrentQueues.valueAt(size);
-            appJobQueue.clear();
-            this.mAppJobQueuePool.release(appJobQueue);
-        }
-        this.mCurrentQueues.clear();
-        this.mOrderedQueues.clear();
-    }
-
-    public boolean contains(JobStatus jobStatus) {
-        AppJobQueue appJobQueue = (AppJobQueue) this.mCurrentQueues.get(jobStatus.getSourceUid());
-        if (appJobQueue == null) {
-            return false;
-        }
-        return appJobQueue.contains(jobStatus);
+    public final boolean contains(JobStatus jobStatus) {
+        AppJobQueue appJobQueue = (AppJobQueue) this.mCurrentQueues.get(jobStatus.sourceUid);
+        return appJobQueue != null && appJobQueue.indexOf(jobStatus) >= 0;
     }
 
     public final AppJobQueue getAppJobQueue(int i, boolean z) {
@@ -107,12 +160,12 @@ public class PendingJobQueue {
         return appJobQueue3;
     }
 
-    public JobStatus next() {
+    public final JobStatus next() {
         if (this.mNeedToResetIterators) {
             this.mOrderedQueues.clear();
             for (int size = this.mCurrentQueues.size() - 1; size >= 0; size--) {
                 AppJobQueue appJobQueue = (AppJobQueue) this.mCurrentQueues.valueAt(size);
-                appJobQueue.resetIterator(0L);
+                appJobQueue.mCurIndex = 0;
                 this.mOrderedQueues.offer(appJobQueue);
             }
             this.mNeedToResetIterators = false;
@@ -131,10 +184,15 @@ public class PendingJobQueue {
         int min = this.mOptimizeIteration ? Math.min(3, ((size3 - 1) >>> 2) + 1) : 1;
         AppJobQueue appJobQueue2 = (AppJobQueue) this.mOrderedQueues.peek();
         if (appJobQueue2 != null) {
-            jobStatus = appJobQueue2.next();
-            int i = this.mPullCount + 1;
-            this.mPullCount = i;
-            if (i >= min || ((jobStatus != null && appJobQueue2.peekNextOverrideState() != jobStatus.overrideState) || appJobQueue2.peekNextTimestamp() == -1)) {
+            if (appJobQueue2.mCurIndex < ((ArrayList) appJobQueue2.mJobs).size()) {
+                List list = appJobQueue2.mJobs;
+                int i = appJobQueue2.mCurIndex;
+                appJobQueue2.mCurIndex = i + 1;
+                jobStatus = ((AppJobQueue.AdjustedJobStatus) ((ArrayList) list).get(i)).job;
+            }
+            int i2 = this.mPullCount + 1;
+            this.mPullCount = i2;
+            if (i2 >= min || ((jobStatus != null && appJobQueue2.peekNextOverrideState() != jobStatus.overrideState) || appJobQueue2.peekNextTimestamp() == -1)) {
                 this.mOrderedQueues.poll();
                 if (appJobQueue2.peekNextTimestamp() != -1) {
                     this.mOrderedQueues.offer(appJobQueue2);
@@ -145,20 +203,30 @@ public class PendingJobQueue {
         return jobStatus;
     }
 
-    public boolean remove(JobStatus jobStatus) {
-        AppJobQueue appJobQueue = getAppJobQueue(jobStatus.getSourceUid(), false);
+    public final boolean remove(JobStatus jobStatus) {
+        AppJobQueue appJobQueue = getAppJobQueue(jobStatus.sourceUid, false);
         if (appJobQueue == null) {
             return false;
         }
         long peekNextTimestamp = appJobQueue.peekNextTimestamp();
-        if (!appJobQueue.remove(jobStatus)) {
+        int indexOf = appJobQueue.indexOf(jobStatus);
+        if (indexOf < 0) {
             return false;
         }
+        AppJobQueue.AdjustedJobStatus adjustedJobStatus = (AppJobQueue.AdjustedJobStatus) ((ArrayList) appJobQueue.mJobs).remove(indexOf);
+        adjustedJobStatus.adjustedEnqueueTime = 0L;
+        adjustedJobStatus.job = null;
+        AppJobQueue.mAdjustedJobStatusPool.release(adjustedJobStatus);
+        int i = appJobQueue.mCurIndex;
+        if (indexOf < i) {
+            appJobQueue.mCurIndex = i - 1;
+        }
         this.mSize--;
-        if (appJobQueue.size() == 0) {
-            this.mCurrentQueues.remove(jobStatus.getSourceUid());
+        if (((ArrayList) appJobQueue.mJobs).size() == 0) {
+            this.mCurrentQueues.remove(jobStatus.sourceUid);
             this.mOrderedQueues.remove(appJobQueue);
-            appJobQueue.clear();
+            ((ArrayList) appJobQueue.mJobs).clear();
+            appJobQueue.mCurIndex = 0;
             this.mAppJobQueuePool.release(appJobQueue);
         } else if (peekNextTimestamp != appJobQueue.peekNextTimestamp()) {
             this.mOrderedQueues.remove(appJobQueue);
@@ -167,224 +235,7 @@ public class PendingJobQueue {
         return true;
     }
 
-    public void resetIterator() {
-        this.mNeedToResetIterators = true;
-    }
-
     public void setOptimizeIteration(boolean z) {
         this.mOptimizeIteration = z;
-    }
-
-    public int size() {
-        return this.mSize;
-    }
-
-    /* loaded from: classes2.dex */
-    public final class AppJobQueue {
-        public int mCurIndex;
-        public final List mJobs;
-        public static final Comparator sJobComparator = new Comparator() { // from class: com.android.server.job.PendingJobQueue$AppJobQueue$$ExternalSyntheticLambda0
-            @Override // java.util.Comparator
-            public final int compare(Object obj, Object obj2) {
-                int lambda$static$0;
-                lambda$static$0 = PendingJobQueue.AppJobQueue.lambda$static$0((PendingJobQueue.AppJobQueue.AdjustedJobStatus) obj, (PendingJobQueue.AppJobQueue.AdjustedJobStatus) obj2);
-                return lambda$static$0;
-            }
-        };
-        public static final Pools.Pool mAdjustedJobStatusPool = new Pools.SimplePool(16);
-
-        public AppJobQueue() {
-            this.mJobs = new ArrayList();
-            this.mCurIndex = 0;
-        }
-
-        /* loaded from: classes2.dex */
-        public class AdjustedJobStatus {
-            public long adjustedEnqueueTime;
-            public JobStatus job;
-
-            public AdjustedJobStatus() {
-            }
-
-            public void clear() {
-                this.adjustedEnqueueTime = 0L;
-                this.job = null;
-            }
-        }
-
-        public static /* synthetic */ int lambda$static$0(AdjustedJobStatus adjustedJobStatus, AdjustedJobStatus adjustedJobStatus2) {
-            JobStatus jobStatus;
-            JobStatus jobStatus2;
-            int effectivePriority;
-            int effectivePriority2;
-            if (adjustedJobStatus == adjustedJobStatus2 || (jobStatus = adjustedJobStatus.job) == (jobStatus2 = adjustedJobStatus2.job)) {
-                return 0;
-            }
-            int i = jobStatus.overrideState;
-            int i2 = jobStatus2.overrideState;
-            if (i != i2) {
-                return Integer.compare(i2, i);
-            }
-            boolean isUserInitiated = jobStatus.getJob().isUserInitiated();
-            if (isUserInitiated != jobStatus2.getJob().isUserInitiated()) {
-                return isUserInitiated ? -1 : 1;
-            }
-            boolean isRequestedExpeditedJob = jobStatus.isRequestedExpeditedJob();
-            if (isRequestedExpeditedJob != jobStatus2.isRequestedExpeditedJob()) {
-                return isRequestedExpeditedJob ? -1 : 1;
-            }
-            if (Objects.equals(jobStatus.getNamespace(), jobStatus2.getNamespace()) && (effectivePriority = jobStatus.getEffectivePriority()) != (effectivePriority2 = jobStatus2.getEffectivePriority())) {
-                return Integer.compare(effectivePriority2, effectivePriority);
-            }
-            int i3 = jobStatus.lastEvaluatedBias;
-            int i4 = jobStatus2.lastEvaluatedBias;
-            if (i3 != i4) {
-                return Integer.compare(i4, i3);
-            }
-            return Long.compare(jobStatus.enqueueTime, jobStatus2.enqueueTime);
-        }
-
-        public void add(JobStatus jobStatus) {
-            AdjustedJobStatus adjustedJobStatus = (AdjustedJobStatus) mAdjustedJobStatusPool.acquire();
-            if (adjustedJobStatus == null) {
-                adjustedJobStatus = new AdjustedJobStatus();
-            }
-            adjustedJobStatus.adjustedEnqueueTime = jobStatus.enqueueTime;
-            adjustedJobStatus.job = jobStatus;
-            int binarySearch = Collections.binarySearch(this.mJobs, adjustedJobStatus, sJobComparator);
-            if (binarySearch < 0) {
-                binarySearch = ~binarySearch;
-            }
-            this.mJobs.add(binarySearch, adjustedJobStatus);
-            if (binarySearch < this.mCurIndex) {
-                this.mCurIndex = binarySearch;
-            }
-            if (binarySearch > 0) {
-                adjustedJobStatus.adjustedEnqueueTime = Math.max(((AdjustedJobStatus) this.mJobs.get(binarySearch - 1)).adjustedEnqueueTime, adjustedJobStatus.adjustedEnqueueTime);
-            }
-            int size = this.mJobs.size();
-            if (binarySearch < size - 1) {
-                while (binarySearch < size) {
-                    AdjustedJobStatus adjustedJobStatus2 = (AdjustedJobStatus) this.mJobs.get(binarySearch);
-                    long j = adjustedJobStatus.adjustedEnqueueTime;
-                    if (j < adjustedJobStatus2.adjustedEnqueueTime) {
-                        return;
-                    }
-                    adjustedJobStatus2.adjustedEnqueueTime = j;
-                    binarySearch++;
-                }
-            }
-        }
-
-        public void addAll(List list) {
-            int i = Integer.MAX_VALUE;
-            for (int size = list.size() - 1; size >= 0; size--) {
-                JobStatus jobStatus = (JobStatus) list.get(size);
-                AdjustedJobStatus adjustedJobStatus = (AdjustedJobStatus) mAdjustedJobStatusPool.acquire();
-                if (adjustedJobStatus == null) {
-                    adjustedJobStatus = new AdjustedJobStatus();
-                }
-                adjustedJobStatus.adjustedEnqueueTime = jobStatus.enqueueTime;
-                adjustedJobStatus.job = jobStatus;
-                int binarySearch = Collections.binarySearch(this.mJobs, adjustedJobStatus, sJobComparator);
-                if (binarySearch < 0) {
-                    binarySearch = ~binarySearch;
-                }
-                this.mJobs.add(binarySearch, adjustedJobStatus);
-                if (binarySearch < this.mCurIndex) {
-                    this.mCurIndex = binarySearch;
-                }
-                i = Math.min(i, binarySearch);
-            }
-            int size2 = this.mJobs.size();
-            for (int max = Math.max(i, 1); max < size2; max++) {
-                AdjustedJobStatus adjustedJobStatus2 = (AdjustedJobStatus) this.mJobs.get(max);
-                adjustedJobStatus2.adjustedEnqueueTime = Math.max(adjustedJobStatus2.adjustedEnqueueTime, ((AdjustedJobStatus) this.mJobs.get(max - 1)).adjustedEnqueueTime);
-            }
-        }
-
-        public void clear() {
-            this.mJobs.clear();
-            this.mCurIndex = 0;
-        }
-
-        public boolean contains(JobStatus jobStatus) {
-            return indexOf(jobStatus) >= 0;
-        }
-
-        public final int indexOf(JobStatus jobStatus) {
-            int size = this.mJobs.size();
-            for (int i = 0; i < size; i++) {
-                if (((AdjustedJobStatus) this.mJobs.get(i)).job == jobStatus) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        public JobStatus next() {
-            if (this.mCurIndex >= this.mJobs.size()) {
-                return null;
-            }
-            List list = this.mJobs;
-            int i = this.mCurIndex;
-            this.mCurIndex = i + 1;
-            return ((AdjustedJobStatus) list.get(i)).job;
-        }
-
-        public int peekNextOverrideState() {
-            if (this.mCurIndex >= this.mJobs.size()) {
-                return -1;
-            }
-            return ((AdjustedJobStatus) this.mJobs.get(this.mCurIndex)).job.overrideState;
-        }
-
-        public long peekNextTimestamp() {
-            if (this.mCurIndex >= this.mJobs.size()) {
-                return -1L;
-            }
-            return ((AdjustedJobStatus) this.mJobs.get(this.mCurIndex)).adjustedEnqueueTime;
-        }
-
-        public boolean remove(JobStatus jobStatus) {
-            int indexOf = indexOf(jobStatus);
-            if (indexOf < 0) {
-                return false;
-            }
-            AdjustedJobStatus adjustedJobStatus = (AdjustedJobStatus) this.mJobs.remove(indexOf);
-            adjustedJobStatus.clear();
-            mAdjustedJobStatusPool.release(adjustedJobStatus);
-            int i = this.mCurIndex;
-            if (indexOf < i) {
-                this.mCurIndex = i - 1;
-            }
-            return true;
-        }
-
-        public void resetIterator(long j) {
-            int i = 0;
-            if (j == 0 || this.mJobs.size() == 0) {
-                this.mCurIndex = 0;
-                return;
-            }
-            int size = this.mJobs.size() - 1;
-            while (i < size) {
-                int i2 = (i + size) >>> 1;
-                long j2 = ((AdjustedJobStatus) this.mJobs.get(i2)).adjustedEnqueueTime;
-                if (j2 < j) {
-                    i = i2 + 1;
-                } else {
-                    if (j2 > j) {
-                        i2--;
-                    }
-                    size = i2;
-                }
-            }
-            this.mCurIndex = size;
-        }
-
-        public int size() {
-            return this.mJobs.size();
-        }
     }
 }

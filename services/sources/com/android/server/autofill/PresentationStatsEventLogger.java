@@ -1,390 +1,219 @@
 package com.android.server.autofill;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.provider.Settings;
-import android.service.autofill.Dataset;
-import android.text.TextUtils;
+import android.util.ArraySet;
 import android.util.Slog;
-import android.view.autofill.AutofillId;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.autofill.PresentationStatsEventLogger;
-import java.util.List;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
 import java.util.Optional;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class PresentationStatsEventLogger {
+    public final int mCallingAppUid;
     public Optional mEventInternal = Optional.empty();
     public final int mSessionId;
+    public final long mSessionStartTimestamp;
 
-    /* loaded from: classes.dex */
-    public class CountContainer {
-        public int mAvailableCount = 0;
-        public int mAvailablePccCount = 0;
-        public int mAvailablePccOnlyCount = 0;
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class PresentationStatsEventInternal {
+        public ArraySet mAlreadyFilledAutofillIds;
+        public int mAuthenticationResult;
+        public int mAuthenticationType;
+        public ArraySet mAutofillIdsAttemptedAutofill;
+        public int mAutofillServiceUid;
+        public int mAutofilledTimestampMs;
         public int mAvailableCount;
-        public int mCountFilteredUserTyping;
-        public int mCountNotShownImePresentationNotDrawn;
-        public int mCountNotShownImeUserNotSeen;
+        public int mAvailablePccCount;
+        public int mAvailablePccOnlyCount;
         public int mCountShown;
+        public int mDetectionPreference;
+        public boolean mDialogDismissed;
+        public int mDisplayPresentationType;
+        public int mFieldClassificationRequestId;
+        public int mFieldFirstLength;
+        public int mFieldLastLength;
+        public int mFieldModifiedFirstTimestampMs;
+        public int mFieldModifiedLastTimestampMs;
         public int mFillRequestSentTimestampMs;
         public int mFillResponseReceivedTimestampMs;
+        public int mFocusedId;
+        public int mFocusedVirtualAutofillId;
+        public int mInlineSuggestionHostUid;
+        public boolean mIsCredentialRequest;
         public boolean mIsDatasetAvailable;
         public boolean mIsRequestTriggered;
+        public boolean mNegativeCtaButtonClicked;
+        public int mNoPresentationReason;
+        public boolean mPositiveCtaButtonClicked;
         public int mRequestId;
+        public int mSelectedDatasetId;
+        public int mSelectedDatasetPickedReason;
+        public int mSelectionTimestamp;
+        public int mSuggestionPresentedLastTimestampMs;
         public int mSuggestionPresentedTimestampMs;
         public int mSuggestionSentTimestampMs;
-        public int mNoPresentationReason = 0;
-        public int mDisplayPresentationType = 0;
-        public int mAutofillServiceUid = -1;
-        public int mInlineSuggestionHostUid = -1;
-        public int mSelectedDatasetId = -1;
-        public boolean mDialogDismissed = false;
-        public boolean mNegativeCtaButtonClicked = false;
-        public boolean mPositiveCtaButtonClicked = false;
-        public int mAuthenticationType = 0;
-        public int mAuthenticationResult = 0;
-        public int mLatencyAuthenticationUiDisplayMillis = -1;
-        public int mLatencyDatasetDisplayMillis = -1;
-        public int mAvailablePccCount = -1;
-        public int mAvailablePccOnlyCount = -1;
-        public int mSelectedDatasetPickedReason = 0;
-        public int mDetectionPreference = 0;
+        public int mViewFillFailureCount;
+        public int mViewFillSuccessCount;
+        public int mViewFillableTotalCount;
+        public int mViewFilledButUnexpectedCount;
+        public boolean mWebviewRequestedCredential;
+        public boolean shouldResetShownCount;
     }
 
-    public static int getDisplayPresentationType(int i) {
-        int i2 = 1;
-        if (i != 1) {
-            i2 = 2;
-            if (i != 2) {
-                i2 = 3;
-                if (i != 3) {
-                    return 0;
-                }
-            }
-        }
-        return i2;
-    }
-
-    public static int getNoPresentationEventReason(int i) {
-        if (i == 1) {
-            return 4;
-        }
-        if (i != 2) {
-            return i != 4 ? 0 : 3;
-        }
-        return 6;
-    }
-
-    public final int convertDatasetPickReason(int i) {
-        if (i == 0 || i == 1 || i == 2 || i == 3 || i == 4 || i == 5) {
-            return i;
-        }
-        return 0;
-    }
-
-    public PresentationStatsEventLogger(int i) {
+    public PresentationStatsEventLogger(int i, int i2, long j) {
         this.mSessionId = i;
+        this.mCallingAppUid = i2;
+        this.mSessionStartTimestamp = j;
     }
 
-    public static PresentationStatsEventLogger forSessionId(int i) {
-        return new PresentationStatsEventLogger(i);
-    }
-
-    public void startNewEvent() {
-        if (this.mEventInternal.isPresent()) {
-            Slog.e("PresentationStatsEventLogger", "Failed to start new event because already have active event.");
-        } else {
-            this.mEventInternal = Optional.of(new PresentationStatsEventInternal());
-        }
-    }
-
-    public void maybeSetRequestId(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda16
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mRequestId = i;
-            }
-        });
-    }
-
-    public void maybeSetNoPresentationEventReason(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                PresentationStatsEventLogger.lambda$maybeSetNoPresentationEventReason$1(i, (PresentationStatsEventLogger.PresentationStatsEventInternal) obj);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$maybeSetNoPresentationEventReason$1(int i, PresentationStatsEventInternal presentationStatsEventInternal) {
-        if (presentationStatsEventInternal.mCountShown == 0) {
-            presentationStatsEventInternal.mNoPresentationReason = i;
-        }
-    }
-
-    public void maybeSetNoPresentationEventReasonIfNoReasonExists(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda11
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                PresentationStatsEventLogger.lambda$maybeSetNoPresentationEventReasonIfNoReasonExists$2(i, (PresentationStatsEventLogger.PresentationStatsEventInternal) obj);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$maybeSetNoPresentationEventReasonIfNoReasonExists$2(int i, PresentationStatsEventInternal presentationStatsEventInternal) {
-        if (presentationStatsEventInternal.mCountShown == 0 && presentationStatsEventInternal.mNoPresentationReason == 0) {
-            presentationStatsEventInternal.mNoPresentationReason = i;
-        }
-    }
-
-    public void maybeSetAvailableCount(final List list, final AutofillId autofillId) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda2
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                PresentationStatsEventLogger.lambda$maybeSetAvailableCount$3(list, autofillId, (PresentationStatsEventLogger.PresentationStatsEventInternal) obj);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$maybeSetAvailableCount$3(List list, AutofillId autofillId, PresentationStatsEventInternal presentationStatsEventInternal) {
-        CountContainer datasetCountForAutofillId = getDatasetCountForAutofillId(list, autofillId);
-        int i = datasetCountForAutofillId.mAvailableCount;
-        presentationStatsEventInternal.mAvailableCount = i;
-        presentationStatsEventInternal.mAvailablePccCount = datasetCountForAutofillId.mAvailablePccCount;
-        presentationStatsEventInternal.mAvailablePccOnlyCount = datasetCountForAutofillId.mAvailablePccOnlyCount;
-        presentationStatsEventInternal.mIsDatasetAvailable = i > 0;
-    }
-
-    public void maybeSetCountShown(final List list, final AutofillId autofillId) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda14
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                PresentationStatsEventLogger.lambda$maybeSetCountShown$4(list, autofillId, (PresentationStatsEventLogger.PresentationStatsEventInternal) obj);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$maybeSetCountShown$4(List list, AutofillId autofillId, PresentationStatsEventInternal presentationStatsEventInternal) {
-        int i = getDatasetCountForAutofillId(list, autofillId).mAvailableCount;
-        presentationStatsEventInternal.mCountShown = i;
-        if (i > 0) {
-            presentationStatsEventInternal.mNoPresentationReason = 1;
-        }
-    }
-
-    public static CountContainer getDatasetCountForAutofillId(List list, AutofillId autofillId) {
-        CountContainer countContainer = new CountContainer();
-        if (list != null) {
-            for (int i = 0; i < list.size(); i++) {
-                Dataset dataset = (Dataset) list.get(i);
-                if (dataset != null && dataset.getFieldIds() != null && dataset.getFieldIds().contains(autofillId)) {
-                    countContainer.mAvailableCount++;
-                    if (dataset.getEligibleReason() == 4) {
-                        countContainer.mAvailablePccOnlyCount++;
-                        countContainer.mAvailablePccCount++;
-                    } else if (dataset.getEligibleReason() == 5) {
-                        countContainer.mAvailablePccCount++;
-                    }
-                }
-            }
-        }
-        return countContainer;
-    }
-
-    public void maybeSetDisplayPresentationType(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda10
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                PresentationStatsEventLogger.lambda$maybeSetDisplayPresentationType$8(i, (PresentationStatsEventLogger.PresentationStatsEventInternal) obj);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$maybeSetDisplayPresentationType$8(int i, PresentationStatsEventInternal presentationStatsEventInternal) {
-        presentationStatsEventInternal.mDisplayPresentationType = getDisplayPresentationType(i);
-    }
-
-    public void maybeSetFillRequestSentTimestampMs(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda7
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mFillRequestSentTimestampMs = i;
-            }
-        });
-    }
-
-    public void maybeSetFillResponseReceivedTimestampMs(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda17
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mFillResponseReceivedTimestampMs = i;
-            }
-        });
-    }
-
-    public void maybeSetSuggestionSentTimestampMs(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda13
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mSuggestionSentTimestampMs = i;
-            }
-        });
-    }
-
-    public void maybeSetSuggestionPresentedTimestampMs(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda4
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mSuggestionPresentedTimestampMs = i;
-            }
-        });
-    }
-
-    public void maybeSetSelectedDatasetId(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mSelectedDatasetId = i;
-            }
-        });
-    }
-
-    public void maybeSetDialogDismissed(final boolean z) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda20
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mDialogDismissed = z;
-            }
-        });
-    }
-
-    public void maybeSetNegativeCtaButtonClicked(final boolean z) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda18
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mNegativeCtaButtonClicked = z;
-            }
-        });
-    }
-
-    public void maybeSetPositiveCtaButtonClicked(final boolean z) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda19
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mPositiveCtaButtonClicked = z;
-            }
-        });
-    }
-
-    public void maybeSetInlinePresentationAndSuggestionHostUid(final Context context, final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda9
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                PresentationStatsEventLogger.lambda$maybeSetInlinePresentationAndSuggestionHostUid$17(context, i, (PresentationStatsEventLogger.PresentationStatsEventInternal) obj);
-            }
-        });
-    }
-
-    public static /* synthetic */ void lambda$maybeSetInlinePresentationAndSuggestionHostUid$17(Context context, int i, PresentationStatsEventInternal presentationStatsEventInternal) {
-        presentationStatsEventInternal.mDisplayPresentationType = 2;
-        String stringForUser = Settings.Secure.getStringForUser(context.getContentResolver(), "default_input_method", i);
-        if (TextUtils.isEmpty(stringForUser)) {
-            Slog.w("PresentationStatsEventLogger", "No default IME found");
-            return;
-        }
-        ComponentName unflattenFromString = ComponentName.unflattenFromString(stringForUser);
-        if (unflattenFromString == null) {
-            Slog.w("PresentationStatsEventLogger", "No default IME found");
-            return;
-        }
-        String packageName = unflattenFromString.getPackageName();
-        try {
-            presentationStatsEventInternal.mInlineSuggestionHostUid = context.getPackageManager().getApplicationInfoAsUser(packageName, PackageManager.ApplicationInfoFlags.of(0L), i).uid;
-        } catch (PackageManager.NameNotFoundException unused) {
-            Slog.w("PresentationStatsEventLogger", "Couldn't find packageName: " + packageName);
-        }
-    }
-
-    public void maybeSetAutofillServiceUid(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda5
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mAutofillServiceUid = i;
-            }
-        });
-    }
-
-    public void maybeSetIsNewRequest(final boolean z) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda6
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mIsRequestTriggered = z;
-            }
-        });
-    }
-
-    public void maybeSetAuthenticationType(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda12
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mAuthenticationType = i;
-            }
-        });
-    }
-
-    public void maybeSetAuthenticationResult(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda15
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mAuthenticationResult = i;
-            }
-        });
-    }
-
-    public void maybeSetSelectedDatasetPickReason(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda8
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                PresentationStatsEventLogger.this.lambda$maybeSetSelectedDatasetPickReason$26(i, (PresentationStatsEventLogger.PresentationStatsEventInternal) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$maybeSetSelectedDatasetPickReason$26(int i, PresentationStatsEventInternal presentationStatsEventInternal) {
-        presentationStatsEventInternal.mSelectedDatasetPickedReason = convertDatasetPickReason(i);
-    }
-
-    public void maybeSetDetectionPreference(final int i) {
-        this.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.PresentationStatsEventLogger$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((PresentationStatsEventLogger.PresentationStatsEventInternal) obj).mDetectionPreference = i;
-            }
-        });
-    }
-
-    public void logAndEndEvent() {
+    public final void logAndEndEvent() {
         if (!this.mEventInternal.isPresent()) {
             Slog.w("PresentationStatsEventLogger", "Shouldn't be logging AutofillPresentationEventReported again for same event");
             return;
         }
         PresentationStatsEventInternal presentationStatsEventInternal = (PresentationStatsEventInternal) this.mEventInternal.get();
         if (Helper.sVerbose) {
-            Slog.v("PresentationStatsEventLogger", "Log AutofillPresentationEventReported: requestId=" + presentationStatsEventInternal.mRequestId + " sessionId=" + this.mSessionId + " mNoPresentationEventReason=" + presentationStatsEventInternal.mNoPresentationReason + " mAvailableCount=" + presentationStatsEventInternal.mAvailableCount + " mCountShown=" + presentationStatsEventInternal.mCountShown + " mCountFilteredUserTyping=" + presentationStatsEventInternal.mCountFilteredUserTyping + " mCountNotShownImePresentationNotDrawn=" + presentationStatsEventInternal.mCountNotShownImePresentationNotDrawn + " mCountNotShownImeUserNotSeen=" + presentationStatsEventInternal.mCountNotShownImeUserNotSeen + " mDisplayPresentationType=" + presentationStatsEventInternal.mDisplayPresentationType + " mAutofillServiceUid=" + presentationStatsEventInternal.mAutofillServiceUid + " mInlineSuggestionHostUid=" + presentationStatsEventInternal.mInlineSuggestionHostUid + " mIsRequestTriggered=" + presentationStatsEventInternal.mIsRequestTriggered + " mFillRequestSentTimestampMs=" + presentationStatsEventInternal.mFillRequestSentTimestampMs + " mFillResponseReceivedTimestampMs=" + presentationStatsEventInternal.mFillResponseReceivedTimestampMs + " mSuggestionSentTimestampMs=" + presentationStatsEventInternal.mSuggestionSentTimestampMs + " mSuggestionPresentedTimestampMs=" + presentationStatsEventInternal.mSuggestionPresentedTimestampMs + " mSelectedDatasetId=" + presentationStatsEventInternal.mSelectedDatasetId + " mDialogDismissed=" + presentationStatsEventInternal.mDialogDismissed + " mNegativeCtaButtonClicked=" + presentationStatsEventInternal.mNegativeCtaButtonClicked + " mPositiveCtaButtonClicked=" + presentationStatsEventInternal.mPositiveCtaButtonClicked + " mAuthenticationType=" + presentationStatsEventInternal.mAuthenticationType + " mAuthenticationResult=" + presentationStatsEventInternal.mAuthenticationResult + " mLatencyAuthenticationUiDisplayMillis=" + presentationStatsEventInternal.mLatencyAuthenticationUiDisplayMillis + " mLatencyDatasetDisplayMillis=" + presentationStatsEventInternal.mLatencyDatasetDisplayMillis + " mAvailablePccCount=" + presentationStatsEventInternal.mAvailablePccCount + " mAvailablePccOnlyCount=" + presentationStatsEventInternal.mAvailablePccOnlyCount + " mSelectedDatasetPickedReason=" + presentationStatsEventInternal.mSelectedDatasetPickedReason + " mDetectionPreference=" + presentationStatsEventInternal.mDetectionPreference);
+            StringBuilder sb = new StringBuilder("Log AutofillPresentationEventReported: requestId=");
+            sb.append(presentationStatsEventInternal.mRequestId);
+            sb.append(" sessionId=");
+            sb.append(this.mSessionId);
+            sb.append(" mNoPresentationEventReason=");
+            sb.append(presentationStatsEventInternal.mNoPresentationReason);
+            sb.append(" mAvailableCount=");
+            sb.append(presentationStatsEventInternal.mAvailableCount);
+            sb.append(" mCountShown=");
+            sb.append(presentationStatsEventInternal.mCountShown);
+            sb.append(" mCountFilteredUserTyping=0 mCountNotShownImePresentationNotDrawn=0 mCountNotShownImeUserNotSeen=0 mDisplayPresentationType=");
+            sb.append(presentationStatsEventInternal.mDisplayPresentationType);
+            sb.append(" mAutofillServiceUid=");
+            sb.append(presentationStatsEventInternal.mAutofillServiceUid);
+            sb.append(" mInlineSuggestionHostUid=");
+            sb.append(presentationStatsEventInternal.mInlineSuggestionHostUid);
+            sb.append(" mIsRequestTriggered=");
+            sb.append(presentationStatsEventInternal.mIsRequestTriggered);
+            sb.append(" mFillRequestSentTimestampMs=");
+            sb.append(presentationStatsEventInternal.mFillRequestSentTimestampMs);
+            sb.append(" mFillResponseReceivedTimestampMs=");
+            sb.append(presentationStatsEventInternal.mFillResponseReceivedTimestampMs);
+            sb.append(" mSuggestionSentTimestampMs=");
+            sb.append(presentationStatsEventInternal.mSuggestionSentTimestampMs);
+            sb.append(" mSuggestionPresentedTimestampMs=");
+            sb.append(presentationStatsEventInternal.mSuggestionPresentedTimestampMs);
+            sb.append(" mSelectedDatasetId=");
+            sb.append(presentationStatsEventInternal.mSelectedDatasetId);
+            sb.append(" mDialogDismissed=");
+            sb.append(presentationStatsEventInternal.mDialogDismissed);
+            sb.append(" mNegativeCtaButtonClicked=");
+            sb.append(presentationStatsEventInternal.mNegativeCtaButtonClicked);
+            sb.append(" mPositiveCtaButtonClicked=");
+            sb.append(presentationStatsEventInternal.mPositiveCtaButtonClicked);
+            sb.append(" mAuthenticationType=");
+            sb.append(presentationStatsEventInternal.mAuthenticationType);
+            sb.append(" mAuthenticationResult=");
+            sb.append(presentationStatsEventInternal.mAuthenticationResult);
+            sb.append(" mLatencyAuthenticationUiDisplayMillis=-1 mLatencyDatasetDisplayMillis=-1 mAvailablePccCount=");
+            sb.append(presentationStatsEventInternal.mAvailablePccCount);
+            sb.append(" mAvailablePccOnlyCount=");
+            sb.append(presentationStatsEventInternal.mAvailablePccOnlyCount);
+            sb.append(" mSelectedDatasetPickedReason=");
+            sb.append(presentationStatsEventInternal.mSelectedDatasetPickedReason);
+            sb.append(" mDetectionPreference=");
+            sb.append(presentationStatsEventInternal.mDetectionPreference);
+            sb.append(" mFieldClassificationRequestId=");
+            sb.append(presentationStatsEventInternal.mFieldClassificationRequestId);
+            sb.append(" mAppPackageUid=");
+            sb.append(this.mCallingAppUid);
+            sb.append(" mIsCredentialRequest=");
+            sb.append(presentationStatsEventInternal.mIsCredentialRequest);
+            sb.append(" mWebviewRequestedCredential=");
+            sb.append(presentationStatsEventInternal.mWebviewRequestedCredential);
+            sb.append(" mViewFillableTotalCount=");
+            sb.append(presentationStatsEventInternal.mViewFillableTotalCount);
+            sb.append(" mViewFillFailureCount=");
+            sb.append(presentationStatsEventInternal.mViewFillFailureCount);
+            sb.append(" mFocusedId=");
+            sb.append(presentationStatsEventInternal.mFocusedId);
+            sb.append(" mViewFillSuccessCount=");
+            sb.append(presentationStatsEventInternal.mViewFillSuccessCount);
+            sb.append(" mViewFilledButUnexpectedCount=");
+            sb.append(presentationStatsEventInternal.mViewFilledButUnexpectedCount);
+            sb.append(" event.mSelectionTimestamp=");
+            sb.append(presentationStatsEventInternal.mSelectionTimestamp);
+            sb.append(" event.mAutofilledTimestampMs=");
+            sb.append(presentationStatsEventInternal.mAutofilledTimestampMs);
+            sb.append(" event.mFieldModifiedFirstTimestampMs=");
+            sb.append(presentationStatsEventInternal.mFieldModifiedFirstTimestampMs);
+            sb.append(" event.mFieldModifiedLastTimestampMs=");
+            sb.append(presentationStatsEventInternal.mFieldModifiedLastTimestampMs);
+            sb.append(" event.mSuggestionPresentedLastTimestampMs=");
+            sb.append(presentationStatsEventInternal.mSuggestionPresentedLastTimestampMs);
+            sb.append(" event.mFocusedVirtualAutofillId=");
+            sb.append(presentationStatsEventInternal.mFocusedVirtualAutofillId);
+            sb.append(" event.mFieldFirstLength=");
+            sb.append(presentationStatsEventInternal.mFieldFirstLength);
+            sb.append(" event.mFieldLastLength=");
+            GmsAlarmManager$$ExternalSyntheticOutline0.m(sb, presentationStatsEventInternal.mFieldLastLength, "PresentationStatsEventLogger");
         }
         if (!presentationStatsEventInternal.mIsDatasetAvailable) {
             this.mEventInternal = Optional.empty();
-        } else {
-            FrameworkStatsLog.write(FrameworkStatsLog.AUTOFILL_PRESENTATION_EVENT_REPORTED, presentationStatsEventInternal.mRequestId, this.mSessionId, presentationStatsEventInternal.mNoPresentationReason, presentationStatsEventInternal.mAvailableCount, presentationStatsEventInternal.mCountShown, presentationStatsEventInternal.mCountFilteredUserTyping, presentationStatsEventInternal.mCountNotShownImePresentationNotDrawn, presentationStatsEventInternal.mCountNotShownImeUserNotSeen, presentationStatsEventInternal.mDisplayPresentationType, presentationStatsEventInternal.mAutofillServiceUid, presentationStatsEventInternal.mInlineSuggestionHostUid, presentationStatsEventInternal.mIsRequestTriggered, presentationStatsEventInternal.mFillRequestSentTimestampMs, presentationStatsEventInternal.mFillResponseReceivedTimestampMs, presentationStatsEventInternal.mSuggestionSentTimestampMs, presentationStatsEventInternal.mSuggestionPresentedTimestampMs, presentationStatsEventInternal.mSelectedDatasetId, presentationStatsEventInternal.mDialogDismissed, presentationStatsEventInternal.mNegativeCtaButtonClicked, presentationStatsEventInternal.mPositiveCtaButtonClicked, presentationStatsEventInternal.mAuthenticationType, presentationStatsEventInternal.mAuthenticationResult, presentationStatsEventInternal.mLatencyAuthenticationUiDisplayMillis, presentationStatsEventInternal.mLatencyDatasetDisplayMillis, presentationStatsEventInternal.mAvailablePccCount, presentationStatsEventInternal.mAvailablePccOnlyCount, presentationStatsEventInternal.mSelectedDatasetPickedReason, presentationStatsEventInternal.mDetectionPreference);
-            this.mEventInternal = Optional.empty();
+            return;
         }
+        long j = -1;
+        FrameworkStatsLog.write(FrameworkStatsLog.AUTOFILL_PRESENTATION_EVENT_REPORTED, presentationStatsEventInternal.mRequestId, this.mSessionId, presentationStatsEventInternal.mNoPresentationReason, presentationStatsEventInternal.mAvailableCount, presentationStatsEventInternal.mCountShown, 0, 0, 0, presentationStatsEventInternal.mDisplayPresentationType, presentationStatsEventInternal.mAutofillServiceUid, presentationStatsEventInternal.mInlineSuggestionHostUid, presentationStatsEventInternal.mIsRequestTriggered, presentationStatsEventInternal.mFillRequestSentTimestampMs, presentationStatsEventInternal.mFillResponseReceivedTimestampMs, presentationStatsEventInternal.mSuggestionSentTimestampMs, presentationStatsEventInternal.mSuggestionPresentedTimestampMs, presentationStatsEventInternal.mSelectedDatasetId, presentationStatsEventInternal.mDialogDismissed, presentationStatsEventInternal.mNegativeCtaButtonClicked, presentationStatsEventInternal.mPositiveCtaButtonClicked, presentationStatsEventInternal.mAuthenticationType, presentationStatsEventInternal.mAuthenticationResult, j, j, presentationStatsEventInternal.mAvailablePccCount, presentationStatsEventInternal.mAvailablePccOnlyCount, presentationStatsEventInternal.mSelectedDatasetPickedReason, presentationStatsEventInternal.mDetectionPreference, presentationStatsEventInternal.mFieldClassificationRequestId, this.mCallingAppUid, presentationStatsEventInternal.mIsCredentialRequest, presentationStatsEventInternal.mWebviewRequestedCredential, presentationStatsEventInternal.mViewFillableTotalCount, presentationStatsEventInternal.mViewFillFailureCount, presentationStatsEventInternal.mFocusedId, presentationStatsEventInternal.mViewFillSuccessCount, presentationStatsEventInternal.mViewFilledButUnexpectedCount, presentationStatsEventInternal.mSelectionTimestamp, presentationStatsEventInternal.mAutofilledTimestampMs, presentationStatsEventInternal.mFieldModifiedFirstTimestampMs, presentationStatsEventInternal.mFieldModifiedLastTimestampMs, presentationStatsEventInternal.mSuggestionPresentedLastTimestampMs, presentationStatsEventInternal.mFocusedVirtualAutofillId, presentationStatsEventInternal.mFieldFirstLength, presentationStatsEventInternal.mFieldLastLength);
+        this.mEventInternal = Optional.empty();
+    }
+
+    public final void maybeSetAuthenticationResult(int i) {
+        this.mEventInternal.ifPresent(new PresentationStatsEventLogger$$ExternalSyntheticLambda1(i, 4));
+    }
+
+    public final void maybeSetNoPresentationEventReason(int i) {
+        this.mEventInternal.ifPresent(new PresentationStatsEventLogger$$ExternalSyntheticLambda1(i, 14));
+    }
+
+    public final void startNewEvent() {
+        if (this.mEventInternal.isPresent()) {
+            Slog.e("PresentationStatsEventLogger", "Failed to start new event because already have active event.");
+            return;
+        }
+        PresentationStatsEventInternal presentationStatsEventInternal = new PresentationStatsEventInternal();
+        presentationStatsEventInternal.mNoPresentationReason = 0;
+        presentationStatsEventInternal.mCountShown = 0;
+        presentationStatsEventInternal.mDisplayPresentationType = 0;
+        presentationStatsEventInternal.mAutofillServiceUid = -1;
+        presentationStatsEventInternal.mInlineSuggestionHostUid = -1;
+        presentationStatsEventInternal.mFillRequestSentTimestampMs = -1;
+        presentationStatsEventInternal.mFillResponseReceivedTimestampMs = -1;
+        presentationStatsEventInternal.mSuggestionSentTimestampMs = -1;
+        presentationStatsEventInternal.mSuggestionPresentedTimestampMs = -1;
+        presentationStatsEventInternal.mSelectedDatasetId = -1;
+        presentationStatsEventInternal.mDialogDismissed = false;
+        presentationStatsEventInternal.mNegativeCtaButtonClicked = false;
+        presentationStatsEventInternal.mPositiveCtaButtonClicked = false;
+        presentationStatsEventInternal.mAuthenticationType = 0;
+        presentationStatsEventInternal.mAuthenticationResult = 0;
+        presentationStatsEventInternal.mAvailablePccCount = -1;
+        presentationStatsEventInternal.mAvailablePccOnlyCount = -1;
+        presentationStatsEventInternal.mSelectedDatasetPickedReason = 0;
+        presentationStatsEventInternal.mDetectionPreference = 0;
+        presentationStatsEventInternal.mFieldClassificationRequestId = -1;
+        presentationStatsEventInternal.mIsCredentialRequest = false;
+        presentationStatsEventInternal.mWebviewRequestedCredential = false;
+        presentationStatsEventInternal.mViewFillableTotalCount = -1;
+        presentationStatsEventInternal.mViewFillFailureCount = -1;
+        presentationStatsEventInternal.mFocusedId = -1;
+        presentationStatsEventInternal.mSelectionTimestamp = -1;
+        presentationStatsEventInternal.mAutofilledTimestampMs = -1;
+        presentationStatsEventInternal.mFieldModifiedFirstTimestampMs = -1;
+        presentationStatsEventInternal.mFieldModifiedLastTimestampMs = -1;
+        presentationStatsEventInternal.mSuggestionPresentedLastTimestampMs = -1;
+        presentationStatsEventInternal.mFocusedVirtualAutofillId = -1;
+        presentationStatsEventInternal.mFieldFirstLength = -1;
+        presentationStatsEventInternal.mFieldLastLength = -1;
+        presentationStatsEventInternal.mViewFillSuccessCount = 0;
+        presentationStatsEventInternal.mViewFilledButUnexpectedCount = 0;
+        presentationStatsEventInternal.mAlreadyFilledAutofillIds = new ArraySet();
+        presentationStatsEventInternal.shouldResetShownCount = false;
+        this.mEventInternal = Optional.of(presentationStatsEventInternal);
     }
 }

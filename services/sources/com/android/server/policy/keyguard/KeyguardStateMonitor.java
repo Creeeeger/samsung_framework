@@ -7,11 +7,12 @@ import android.util.Slog;
 import com.android.internal.policy.IKeyguardService;
 import com.android.internal.policy.IKeyguardStateCallback;
 import com.android.internal.widget.LockPatternUtils;
-import java.io.PrintWriter;
+import com.android.server.policy.PhoneWindowManager;
 
-/* loaded from: classes3.dex */
-public class KeyguardStateMonitor extends IKeyguardStateCallback.Stub {
-    public final StateCallback mCallback;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class KeyguardStateMonitor extends IKeyguardStateCallback.Stub {
+    public final PhoneWindowManager.AnonymousClass1 mCallback;
     public final LockPatternUtils mLockPatternUtils;
     public volatile boolean mIsShowing = true;
     public volatile boolean mSimSecure = true;
@@ -19,16 +20,9 @@ public class KeyguardStateMonitor extends IKeyguardStateCallback.Stub {
     public volatile boolean mTrusted = false;
     public int mCurrentUserId = ActivityManager.getCurrentUser();
 
-    /* loaded from: classes3.dex */
-    public interface StateCallback {
-        void onShowingChanged();
-
-        void onTrustedChanged();
-    }
-
-    public KeyguardStateMonitor(Context context, IKeyguardService iKeyguardService, StateCallback stateCallback) {
+    public KeyguardStateMonitor(Context context, IKeyguardService iKeyguardService, PhoneWindowManager.AnonymousClass1 anonymousClass1) {
         this.mLockPatternUtils = new LockPatternUtils(context);
-        this.mCallback = stateCallback;
+        this.mCallback = anonymousClass1;
         try {
             iKeyguardService.addStateMonitorCallback(this);
         } catch (RemoteException e) {
@@ -36,27 +30,11 @@ public class KeyguardStateMonitor extends IKeyguardStateCallback.Stub {
         }
     }
 
-    public boolean isShowing() {
-        return this.mIsShowing;
+    public final void onInputRestrictedStateChanged(boolean z) {
+        this.mInputRestricted = z;
     }
 
-    public boolean isSecure(int i) {
-        return this.mLockPatternUtils.isSecure(i) || this.mSimSecure;
-    }
-
-    public boolean isInputRestricted() {
-        return this.mInputRestricted;
-    }
-
-    public boolean isTrusted() {
-        return this.mTrusted;
-    }
-
-    public int getCurrentUser() {
-        return this.mCurrentUserId;
-    }
-
-    public void onShowingStateChanged(boolean z, int i) {
+    public final void onShowingStateChanged(boolean z, int i) {
         if (i != this.mCurrentUserId) {
             return;
         }
@@ -64,34 +42,12 @@ public class KeyguardStateMonitor extends IKeyguardStateCallback.Stub {
         this.mCallback.onShowingChanged();
     }
 
-    public void onSimSecureStateChanged(boolean z) {
+    public final void onSimSecureStateChanged(boolean z) {
         this.mSimSecure = z;
     }
 
-    public synchronized void setCurrentUser(int i) {
-        this.mCurrentUserId = i;
-    }
-
-    public void onInputRestrictedStateChanged(boolean z) {
-        this.mInputRestricted = z;
-    }
-
-    public void onTrustedChanged(boolean z) {
+    public final void onTrustedChanged(boolean z) {
         this.mTrusted = z;
         this.mCallback.onTrustedChanged();
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        printWriter.println(str + "KeyguardStateMonitor");
-        String str2 = str + "  ";
-        printWriter.println(str2 + "mIsShowing=" + this.mIsShowing);
-        printWriter.println(str2 + "mSimSecure=" + this.mSimSecure);
-        printWriter.println(str2 + "mInputRestricted=" + this.mInputRestricted);
-        printWriter.println(str2 + "mTrusted=" + this.mTrusted);
-        printWriter.println(str2 + "mCurrentUserId=" + this.mCurrentUserId);
-    }
-
-    public boolean isSimLocked() {
-        return this.mSimSecure;
     }
 }

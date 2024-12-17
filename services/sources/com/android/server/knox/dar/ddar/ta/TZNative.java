@@ -2,7 +2,8 @@ package com.android.server.knox.dar.ddar.ta;
 
 import com.android.server.knox.dar.ddar.DDLog;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 class TZNative {
     public long mDDARTZNativePtr_;
     public boolean mIsLoaded;
@@ -15,23 +16,7 @@ class TZNative {
 
     private native boolean nativeDDARProcessTACommand(TACommandRequest tACommandRequest, TACommandResponse tACommandResponse);
 
-    public native long nativeDDARCreateTLCommunicationContext(int i, int i2, int i3, int i4, int i5, int i6, String str, String str2, String str3);
-
-    public native void nativeDDARDestroyTLCommunicationContext();
-
-    public TZNative(int i, String str, String str2, String str3, int i2, int i3) {
-        DDLog.d("DualDAR:TZNative", "TZNative constructor: taId = " + i, new Object[0]);
-        this.mTAId = i;
-        this.mDDARTZNativePtr_ = 0L;
-        this.mSendBufSize = i2;
-        this.mRecvBufSize = i3;
-        this.mTATechnology = str;
-        this.mRootName = str2;
-        this.mProcessName = str3;
-        this.mIsLoaded = false;
-    }
-
-    public boolean loadTA(int i, long j, long j2) {
+    public final boolean loadTA(int i, long j, long j2) {
         if (this.mDDARTZNativePtr_ != 0) {
             DDLog.e("DualDAR:TZNative", "TZNative::loadTA called for TA that is already loaded. Call Ignored", new Object[0]);
             return true;
@@ -53,20 +38,11 @@ class TZNative {
         return true;
     }
 
-    public void unloadTA() {
-        synchronized (TZNative.class) {
-            if (this.mDDARTZNativePtr_ != 0 && this.mIsLoaded) {
-                this.mIsLoaded = false;
-                nativeDDARDestroyTLCommunicationContext();
-                this.mDDARTZNativePtr_ = 0L;
-                DDLog.d("DualDAR:TZNative", "TZNative::unloadTA called", new Object[0]);
-                return;
-            }
-            DDLog.e("DualDAR:TZNative", "TZNative::unloadTA called for TA that is not loaded. Call Ignored: ta loaded: " + this.mIsLoaded, new Object[0]);
-        }
-    }
+    public native long nativeDDARCreateTLCommunicationContext(int i, int i2, int i3, int i4, int i5, int i6, String str, String str2, String str3);
 
-    public TACommandResponse processTACommand(TACommandRequest tACommandRequest) {
+    public native void nativeDDARDestroyTLCommunicationContext();
+
+    public final TACommandResponse processTACommand(TACommandRequest tACommandRequest) {
         DDLog.d("DualDAR:TZNative", "TZNative::processTACommand: request = " + tACommandRequest + "; mDDARTZNativePtr_ = " + this.mDDARTZNativePtr_, new Object[0]);
         TACommandResponse tACommandResponse = new TACommandResponse();
         if (nativeDDARProcessTACommand(tACommandRequest, tACommandResponse)) {

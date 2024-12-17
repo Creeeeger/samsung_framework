@@ -5,14 +5,10 @@ import android.os.BatteryUsageStats;
 import android.os.BatteryUsageStatsQuery;
 import com.android.internal.os.PowerProfile;
 
-/* loaded from: classes3.dex */
-public class AmbientDisplayPowerCalculator extends PowerCalculator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class AmbientDisplayPowerCalculator extends PowerCalculator {
     public final UsageBasedPowerEstimator[] mPowerEstimators;
-
-    @Override // com.android.server.power.stats.PowerCalculator
-    public boolean isPowerComponentSupported(int i) {
-        return i == 15;
-    }
 
     public AmbientDisplayPowerCalculator(PowerProfile powerProfile) {
         int numDisplays = powerProfile.getNumDisplays();
@@ -23,30 +19,30 @@ public class AmbientDisplayPowerCalculator extends PowerCalculator {
     }
 
     @Override // com.android.server.power.stats.PowerCalculator
-    public void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
+    public final void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
+        double d;
         long screenDozeEnergyConsumptionUC = batteryStats.getScreenDozeEnergyConsumptionUC();
         int powerModel = PowerCalculator.getPowerModel(screenDozeEnergyConsumptionUC, batteryUsageStatsQuery);
-        long calculateDuration = calculateDuration(batteryStats, j, 0);
-        builder.getAggregateBatteryConsumerBuilder(0).setUsageDurationMillis(15, calculateDuration).setConsumedPower(15, calculateTotalPower(powerModel, batteryStats, j, screenDozeEnergyConsumptionUC), powerModel);
-    }
-
-    public final long calculateDuration(BatteryStats batteryStats, long j, int i) {
-        return batteryStats.getScreenDozeTime(j, i) / 1000;
-    }
-
-    public final double calculateTotalPower(int i, BatteryStats batteryStats, long j, long j2) {
-        if (i == 2) {
-            return PowerCalculator.uCtoMah(j2);
+        long j3 = 1000;
+        long screenDozeTime = batteryStats.getScreenDozeTime(j, 0) / 1000;
+        if (powerModel != 2) {
+            UsageBasedPowerEstimator[] usageBasedPowerEstimatorArr = this.mPowerEstimators;
+            int length = usageBasedPowerEstimatorArr.length;
+            d = 0.0d;
+            int i = 0;
+            while (i < length) {
+                d += usageBasedPowerEstimatorArr[i].mAveragePowerMahPerMs * (batteryStats.getDisplayScreenDozeTime(i, j) / j3);
+                i++;
+                j3 = 1000;
+            }
+        } else {
+            d = screenDozeEnergyConsumptionUC * 2.777777777777778E-7d;
         }
-        return calculateEstimatedPower(batteryStats, j);
+        builder.getAggregateBatteryConsumerBuilder(0).setUsageDurationMillis(15, screenDozeTime).setConsumedPower(15, d, powerModel);
     }
 
-    public final double calculateEstimatedPower(BatteryStats batteryStats, long j) {
-        int length = this.mPowerEstimators.length;
-        double d = 0.0d;
-        for (int i = 0; i < length; i++) {
-            d += this.mPowerEstimators[i].calculatePower(batteryStats.getDisplayScreenDozeTime(i, j) / 1000);
-        }
-        return d;
+    @Override // com.android.server.power.stats.PowerCalculator
+    public final boolean isPowerComponentSupported(int i) {
+        return i == 15;
     }
 }

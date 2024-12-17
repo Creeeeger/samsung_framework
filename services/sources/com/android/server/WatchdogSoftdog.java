@@ -1,86 +1,61 @@
 package com.android.server;
 
 import android.os.FileUtils;
-import android.os.SystemProperties;
 import android.util.Slog;
+import com.samsung.android.rune.CoreRune;
 import java.io.File;
 import java.io.IOException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class WatchdogSoftdog {
     public static WatchdogSoftdog sInstance;
-    public int mSoftdogTimeout = 100;
-    public boolean mSoftdogDisabled = true;
+    public boolean mSoftdogDisabled;
+    public int mSoftdogTimeout;
 
-    private native void native_sdogClose();
+    public native void native_sdogClose();
 
-    private native void native_sdogKick();
+    public native void native_sdogKick();
 
-    private native int native_sdogOpen();
+    public native int native_sdogOpen();
 
-    private native void native_sdogSetTimeout(int i);
+    public native void native_sdogSetTimeout(int i);
 
-    public boolean isSoftDogDisabled() {
-        return this.mSoftdogDisabled;
-    }
-
-    public static WatchdogSoftdog getInstance() {
-        if (sInstance == null) {
-            sInstance = new WatchdogSoftdog();
-        }
-        return sInstance;
-    }
-
-    public void softdogInitialize() {
-        if ("off".equals(SystemProperties.get("persist.vendor.softdog"))) {
-            Slog.i("Watchdog:WatchdogSoftdog", "!@persist.vendor.softdog is off, so do not turn on softdog");
-        } else if (native_sdogOpen() >= 0) {
-            this.mSoftdogDisabled = false;
-            native_sdogSetTimeout(100);
-        }
-    }
-
-    public void softdogKick(int i) {
+    public final void softdogKick(int i) {
         if (this.mSoftdogDisabled) {
             return;
         }
         if (i == 1000) {
-            Slog.w("Watchdog:WatchdogSoftdog", "!@ softdog timeout is changed to " + i);
+            DeviceIdleController$$ExternalSyntheticOutline0.m(i, "!@ softdog timeout is changed to ", "Watchdog:WatchdogSoftdog");
             this.mSoftdogTimeout = i;
             native_sdogSetTimeout(i);
             return;
         }
-        if (Watchdog.DEBUG_LEVEL_LOW) {
+        if (CoreRune.IS_DEBUG_LEVEL_LOW) {
             native_sdogKick();
             return;
         }
+        int i2 = 0;
         try {
             String readTextFile = FileUtils.readTextFile(new File("/sys/class/power_supply/battery/temp"), 1024, null);
-            int parseInt = readTextFile != null ? Integer.parseInt(readTextFile.trim()) : 0;
-            if (parseInt > 600 && this.mSoftdogTimeout == 100) {
-                native_sdogSetTimeout(1000);
-                this.mSoftdogTimeout = 1000;
-                Slog.w("Watchdog:WatchdogSoftdog", "!@ set softdog timeout to 1000 by high temperature");
-            } else {
-                if (parseInt < 550 && this.mSoftdogTimeout == 1000) {
-                    native_sdogSetTimeout(100);
-                    this.mSoftdogTimeout = 100;
-                    Slog.w("Watchdog:WatchdogSoftdog", "!@ set softdog timeout to 100");
-                    return;
-                }
-                native_sdogKick();
+            if (readTextFile != null) {
+                i2 = Integer.parseInt(readTextFile.trim());
             }
         } catch (IOException e) {
             Slog.w("Watchdog:WatchdogSoftdog", "FileUtils", e);
-            native_sdogKick();
         }
-    }
-
-    public void softdogTerminate() {
-        if (this.mSoftdogDisabled) {
-            return;
+        if (i2 > 600 && this.mSoftdogTimeout == 100) {
+            native_sdogSetTimeout(1000);
+            this.mSoftdogTimeout = 1000;
+            Slog.w("Watchdog:WatchdogSoftdog", "!@ set softdog timeout to 1000 by high temperature");
+        } else {
+            if (i2 >= 550 || this.mSoftdogTimeout != 1000) {
+                native_sdogKick();
+                return;
+            }
+            native_sdogSetTimeout(100);
+            this.mSoftdogTimeout = 100;
+            Slog.w("Watchdog:WatchdogSoftdog", "!@ set softdog timeout to 100");
         }
-        native_sdogClose();
-        this.mSoftdogDisabled = true;
     }
 }

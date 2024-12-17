@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.util.Slog;
 import com.samsung.android.localeoverlaymanager.OverlayChangeObserver;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class OverlayChangeObserverImpl extends OverlayChangeObserver {
     public final ActivityManagerService mAm;
@@ -22,12 +23,16 @@ public final class OverlayChangeObserverImpl extends OverlayChangeObserver {
     }
 
     @Override // com.samsung.android.localeoverlaymanager.OverlayChangeObserver
-    public void onChangeCompleted(boolean z, int i) {
+    public final void onChangeCompleted(int i) {
         synchronized (this.overlayLock) {
-            Slog.d("ActivityManager", "onLocaleOverlaysInstalled. token= " + i + " callback done = " + this.callbackCompleted);
-            if (!this.callbackCompleted) {
-                this.callbackCompleted = true;
-                this.mAm.overlaysInstallComplete(this.mConfiguration, this.mCallingPackage, this.mCallingAttributionTag, this.mUserId, this.mCallingPid, this.mTimeoutRunnable);
+            try {
+                Slog.d("ActivityManager", "onLocaleOverlaysInstalled. token= " + i + " callback done = " + this.callbackCompleted);
+                if (!this.callbackCompleted) {
+                    this.callbackCompleted = true;
+                    this.mAm.overlaysInstallComplete(this.mConfiguration, this.mCallingPackage, this.mCallingAttributionTag, this.mCallingPid, this.mTimeoutRunnable);
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }

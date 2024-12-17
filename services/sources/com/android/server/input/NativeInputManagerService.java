@@ -12,239 +12,17 @@ import android.view.PointerIcon;
 import android.view.VerifiedInputEvent;
 import java.util.List;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public interface NativeInputManagerService {
-    void addKeyRemapping(int i, int i2, int i3);
 
-    boolean canDispatchToDisplay(int i, int i2);
-
-    void cancelCurrentTouch();
-
-    void cancelVibrate(int i, int i2);
-
-    void changeKeyboardLayoutAssociation();
-
-    void changeTypeAssociation();
-
-    void changeUniqueIdAssociation();
-
-    InputChannel createInputChannel(String str, int i);
-
-    InputChannel createInputMonitor(int i, String str, int i2, int i3);
-
-    void disableInputDevice(int i);
-
-    void disableSensor(int i, int i2);
-
-    void displayRemoved(int i);
-
-    String dump();
-
-    void enableFlowPointer(boolean z);
-
-    void enableInputDevice(int i);
-
-    boolean enableSensor(int i, int i2, int i3, int i4);
-
-    void enableWirelessKeyboardShare(boolean z);
-
-    boolean flushSensor(int i, int i2);
-
-    void forceFadeIcon(int i);
-
-    void forceHideCursor(boolean z);
-
-    int getBatteryCapacity(int i);
-
-    String getBatteryDevicePath(int i);
-
-    int getBatteryStatus(int i);
-
-    String getBluetoothAddress(int i);
-
-    int getGlobalMetaState(int i);
-
-    int getInboundQueueLength();
-
-    int getKeyCodeForKeyLocation(int i, int i2);
-
-    int getKeyCodeState(int i, int i2, int i3);
-
-    int getLightColor(int i, int i2);
-
-    int getLightPlayerId(int i, int i2);
-
-    List getLights(int i);
-
-    long getMotionIdleTimeMillis(boolean z);
-
-    float[] getMouseCursorPosition();
-
-    int getScanCodeState(int i, int i2, int i3);
-
-    InputSensorInfo[] getSensorList(int i);
-
-    int getSwitchState(int i, int i2, int i3);
-
-    int[] getVibratorIds(int i);
-
-    boolean hasKeys(int i, int i2, int[] iArr, boolean[] zArr);
-
-    int injectInputEvent(InputEvent inputEvent, boolean z, int i, int i2, int i3, int i4, int i5, int i6);
-
-    boolean isInputDeviceEnabled(int i);
-
-    boolean isUidTouched(int i);
-
-    boolean isVibrating(int i);
-
-    void monitor();
-
-    void notifyKeyGestureTimeoutsChanged();
-
-    void notifyPortAssociationsChanged();
-
-    void pilferPointers(IBinder iBinder);
-
-    void reloadCalibration();
-
-    void reloadDeviceAliases();
-
-    void reloadKeyboardLayouts();
-
-    void reloadPointerIcons();
-
-    void removeInputChannel(IBinder iBinder);
-
-    void requestPointerCapture(IBinder iBinder, boolean z);
-
-    void setBackButtonBehavior(int i);
-
-    void setCoverTestModeType(int i);
-
-    void setCoverVerify(int i);
-
-    void setCursorPosition(int i, int i2, int i3);
-
-    void setCustomPointerIcon(PointerIcon pointerIcon);
-
-    void setDexMode(boolean z, int i, int i2);
-
-    void setDisplayDpi(float f, float f2);
-
-    void setDisplayEligibilityForPointerCapture(int i, boolean z);
-
-    void setDisplayFolded(boolean z);
-
-    void setDisplayViewports(DisplayViewport[] displayViewportArr);
-
-    void setEnableTapToClick(boolean z);
-
-    void setFlowPointerDirection(int i);
-
-    void setFocusedApplication(int i, InputApplicationHandle inputApplicationHandle);
-
-    void setFocusedDisplay(int i);
-
-    void setFoldingState(int i);
-
-    void setForwardButtonBehavior(int i);
-
-    void setHoverIcon(PointerIcon pointerIcon, int i);
-
-    boolean setInTouchMode(boolean z, int i, int i2, boolean z2, int i3);
-
-    void setInputDispatchMode(boolean z, boolean z2);
-
-    void setInputFilterEnabled(boolean z);
-
-    void setInputMetaData(int i, int i2);
-
-    void setInteractive(boolean z);
-
-    void setInteractiveForInternalDisplay(boolean z);
-
-    void setLightColor(int i, int i2, int i3);
-
-    void setLightPlayerId(int i, int i2, int i3);
-
-    void setMaximumObscuringOpacityForTouch(float f);
-
-    void setMotionClassifierEnabled(boolean z);
-
-    void setMultiControlOutOfFocus(boolean z);
-
-    void setPenHovering(boolean z);
-
-    void setPenModeOnDex(int i);
-
-    void setPointerAcceleration(float f);
-
-    void setPointerDisplayId(int i);
-
-    void setPointerIconType(int i);
-
-    void setPointerSpeed(int i);
-
-    void setPrimaryMouseButtonLocation(int i);
-
-    void setReverseSwipeGesture(boolean z);
-
-    void setScrollSpeed(int i);
-
-    void setSecondaryButtonBehavior(int i);
-
-    void setShowHovering(boolean z);
-
-    void setShowTouches(boolean z);
-
-    void setStylusButtonMotionEventsEnabled(boolean z);
-
-    void setStylusPointerIconEnabled(boolean z);
-
-    void setSystemUiLightsOut(boolean z);
-
-    void setSystemUiLightsOutForDisplay(boolean z, int i);
-
-    void setTalkBack(boolean z);
-
-    void setTertiaryButtonBehavior(int i);
-
-    void setTouchpadNaturalScrollingEnabled(boolean z);
-
-    void setTouchpadPointerSpeed(int i);
-
-    void setTouchpadRightClickZoneEnabled(boolean z);
-
-    void setTouchpadTapToClickEnabled(boolean z);
-
-    void setTspFeatures(int i);
-
-    void setUseMouseAcceleration(boolean z);
-
-    void showAllTouches(boolean z);
-
-    void start();
-
-    void sysfsNodeChanged(String str);
-
-    void toggleCapsLock(int i);
-
-    boolean transferTouch(IBinder iBinder, int i);
-
-    boolean transferTouchFocus(IBinder iBinder, IBinder iBinder2, boolean z);
-
-    void updateInputMetaState(int i, boolean z);
-
-    VerifiedInputEvent verifyInputEvent(InputEvent inputEvent);
-
-    void vibrate(int i, long[] jArr, int[] iArr, int i2, int i3);
-
-    void vibrateCombined(int i, long[] jArr, SparseArray sparseArray, int i2, int i3);
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class NativeImpl implements NativeInputManagerService {
         public final long mPtr;
+
+        public NativeImpl(InputManagerService inputManagerService, MessageQueue messageQueue) {
+            this.mPtr = init(inputManagerService, messageQueue);
+        }
 
         private native long init(InputManagerService inputManagerService, MessageQueue messageQueue);
 
@@ -333,6 +111,9 @@ public interface NativeInputManagerService {
         public native int getKeyCodeState(int i, int i2, int i3);
 
         @Override // com.android.server.input.NativeInputManagerService
+        public native int getLastUsedInputDeviceId();
+
+        @Override // com.android.server.input.NativeInputManagerService
         public native int getLightColor(int i, int i2);
 
         @Override // com.android.server.input.NativeInputManagerService
@@ -345,7 +126,10 @@ public interface NativeInputManagerService {
         public native long getMotionIdleTimeMillis(boolean z);
 
         @Override // com.android.server.input.NativeInputManagerService
-        public native float[] getMouseCursorPosition();
+        public native float[] getMouseCursorPosition(int i);
+
+        @Override // com.android.server.input.NativeInputManagerService
+        public native int getMousePointerSpeed();
 
         @Override // com.android.server.input.NativeInputManagerService
         public native int getScanCodeState(int i, int i2, int i3);
@@ -366,9 +150,6 @@ public interface NativeInputManagerService {
         public native int injectInputEvent(InputEvent inputEvent, boolean z, int i, int i2, int i3, int i4, int i5, int i6);
 
         @Override // com.android.server.input.NativeInputManagerService
-        public native boolean isInputDeviceEnabled(int i);
-
-        @Override // com.android.server.input.NativeInputManagerService
         public native boolean isUidTouched(int i);
 
         @Override // com.android.server.input.NativeInputManagerService
@@ -376,9 +157,6 @@ public interface NativeInputManagerService {
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void monitor();
-
-        @Override // com.android.server.input.NativeInputManagerService
-        public native void notifyKeyGestureTimeoutsChanged();
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void notifyPortAssociationsChanged();
@@ -405,6 +183,15 @@ public interface NativeInputManagerService {
         public native void requestPointerCapture(IBinder iBinder, boolean z);
 
         @Override // com.android.server.input.NativeInputManagerService
+        public native void setAccessibilityBounceKeysThreshold(int i);
+
+        @Override // com.android.server.input.NativeInputManagerService
+        public native void setAccessibilitySlowKeysThreshold(int i);
+
+        @Override // com.android.server.input.NativeInputManagerService
+        public native void setAccessibilityStickyKeysEnabled(boolean z);
+
+        @Override // com.android.server.input.NativeInputManagerService
         public native void setBackButtonBehavior(int i);
 
         @Override // com.android.server.input.NativeInputManagerService
@@ -415,9 +202,6 @@ public interface NativeInputManagerService {
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void setCursorPosition(int i, int i2, int i3);
-
-        @Override // com.android.server.input.NativeInputManagerService
-        public native void setCustomPointerIcon(PointerIcon pointerIcon);
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void setDexMode(boolean z, int i, int i2);
@@ -452,7 +236,6 @@ public interface NativeInputManagerService {
         @Override // com.android.server.input.NativeInputManagerService
         public native void setForwardButtonBehavior(int i);
 
-        @Override // com.android.server.input.NativeInputManagerService
         public native void setHoverIcon(PointerIcon pointerIcon, int i);
 
         @Override // com.android.server.input.NativeInputManagerService
@@ -468,10 +251,16 @@ public interface NativeInputManagerService {
         public native void setInputMetaData(int i, int i2);
 
         @Override // com.android.server.input.NativeInputManagerService
+        public native void setInputMethodConnectionIsActive(boolean z);
+
+        @Override // com.android.server.input.NativeInputManagerService
         public native void setInteractive(boolean z);
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void setInteractiveForInternalDisplay(boolean z);
+
+        @Override // com.android.server.input.NativeInputManagerService
+        public native void setKeyRepeatConfiguration(int i, int i2);
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void setLightColor(int i, int i2, int i3);
@@ -483,7 +272,13 @@ public interface NativeInputManagerService {
         public native void setMaximumObscuringOpacityForTouch(float f);
 
         @Override // com.android.server.input.NativeInputManagerService
+        public native void setMinTimeBetweenUserActivityPokes(long j);
+
+        @Override // com.android.server.input.NativeInputManagerService
         public native void setMotionClassifierEnabled(boolean z);
+
+        @Override // com.android.server.input.NativeInputManagerService
+        public native void setMousePointerAccelerationEnabled(int i, boolean z);
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void setMultiControlOutOfFocus(boolean z);
@@ -495,13 +290,13 @@ public interface NativeInputManagerService {
         public native void setPenModeOnDex(int i);
 
         @Override // com.android.server.input.NativeInputManagerService
-        public native void setPointerAcceleration(float f);
-
-        @Override // com.android.server.input.NativeInputManagerService
         public native void setPointerDisplayId(int i);
 
         @Override // com.android.server.input.NativeInputManagerService
-        public native void setPointerIconType(int i);
+        public native boolean setPointerIcon(PointerIcon pointerIcon, int i, int i2, int i3, IBinder iBinder);
+
+        @Override // com.android.server.input.NativeInputManagerService
+        public native void setPointerIconVisibility(int i, boolean z);
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void setPointerSpeed(int i);
@@ -552,6 +347,9 @@ public interface NativeInputManagerService {
         public native void setTouchpadRightClickZoneEnabled(boolean z);
 
         @Override // com.android.server.input.NativeInputManagerService
+        public native void setTouchpadTapDraggingEnabled(boolean z);
+
+        @Override // com.android.server.input.NativeInputManagerService
         public native void setTouchpadTapToClickEnabled(boolean z);
 
         @Override // com.android.server.input.NativeInputManagerService
@@ -573,10 +371,11 @@ public interface NativeInputManagerService {
         public native void toggleCapsLock(int i);
 
         @Override // com.android.server.input.NativeInputManagerService
+        @Deprecated
         public native boolean transferTouch(IBinder iBinder, int i);
 
         @Override // com.android.server.input.NativeInputManagerService
-        public native boolean transferTouchFocus(IBinder iBinder, IBinder iBinder2, boolean z);
+        public native boolean transferTouchGesture(IBinder iBinder, IBinder iBinder2, boolean z);
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void updateInputMetaState(int i, boolean z);
@@ -589,9 +388,245 @@ public interface NativeInputManagerService {
 
         @Override // com.android.server.input.NativeInputManagerService
         public native void vibrateCombined(int i, long[] jArr, SparseArray sparseArray, int i2, int i3);
-
-        public NativeImpl(InputManagerService inputManagerService, MessageQueue messageQueue) {
-            this.mPtr = init(inputManagerService, messageQueue);
-        }
     }
+
+    void addKeyRemapping(int i, int i2, int i3);
+
+    boolean canDispatchToDisplay(int i, int i2);
+
+    void cancelCurrentTouch();
+
+    void cancelVibrate(int i, int i2);
+
+    void changeKeyboardLayoutAssociation();
+
+    void changeTypeAssociation();
+
+    void changeUniqueIdAssociation();
+
+    InputChannel createInputChannel(String str, int i);
+
+    InputChannel createInputMonitor(int i, String str, int i2, int i3);
+
+    void disableInputDevice(int i);
+
+    void disableSensor(int i, int i2);
+
+    void displayRemoved(int i);
+
+    String dump();
+
+    void enableFlowPointer(boolean z);
+
+    void enableInputDevice(int i);
+
+    boolean enableSensor(int i, int i2, int i3, int i4);
+
+    void enableWirelessKeyboardShare(boolean z);
+
+    boolean flushSensor(int i, int i2);
+
+    void forceFadeIcon(int i);
+
+    void forceHideCursor(boolean z);
+
+    int getBatteryCapacity(int i);
+
+    String getBatteryDevicePath(int i);
+
+    int getBatteryStatus(int i);
+
+    String getBluetoothAddress(int i);
+
+    int getGlobalMetaState(int i);
+
+    int getInboundQueueLength();
+
+    int getKeyCodeForKeyLocation(int i, int i2);
+
+    int getKeyCodeState(int i, int i2, int i3);
+
+    int getLastUsedInputDeviceId();
+
+    int getLightColor(int i, int i2);
+
+    int getLightPlayerId(int i, int i2);
+
+    List getLights(int i);
+
+    long getMotionIdleTimeMillis(boolean z);
+
+    float[] getMouseCursorPosition(int i);
+
+    int getMousePointerSpeed();
+
+    int getScanCodeState(int i, int i2, int i3);
+
+    InputSensorInfo[] getSensorList(int i);
+
+    int getSwitchState(int i, int i2, int i3);
+
+    int[] getVibratorIds(int i);
+
+    boolean hasKeys(int i, int i2, int[] iArr, boolean[] zArr);
+
+    int injectInputEvent(InputEvent inputEvent, boolean z, int i, int i2, int i3, int i4, int i5, int i6);
+
+    boolean isUidTouched(int i);
+
+    boolean isVibrating(int i);
+
+    void monitor();
+
+    void notifyPortAssociationsChanged();
+
+    void pilferPointers(IBinder iBinder);
+
+    void reloadCalibration();
+
+    void reloadDeviceAliases();
+
+    void reloadKeyboardLayouts();
+
+    void reloadPointerIcons();
+
+    void removeInputChannel(IBinder iBinder);
+
+    void requestPointerCapture(IBinder iBinder, boolean z);
+
+    void setAccessibilityBounceKeysThreshold(int i);
+
+    void setAccessibilitySlowKeysThreshold(int i);
+
+    void setAccessibilityStickyKeysEnabled(boolean z);
+
+    void setBackButtonBehavior(int i);
+
+    void setCoverTestModeType(int i);
+
+    void setCoverVerify(int i);
+
+    void setCursorPosition(int i, int i2, int i3);
+
+    void setDexMode(boolean z, int i, int i2);
+
+    void setDisplayDpi(float f, float f2);
+
+    void setDisplayEligibilityForPointerCapture(int i, boolean z);
+
+    void setDisplayFolded(boolean z);
+
+    void setDisplayViewports(DisplayViewport[] displayViewportArr);
+
+    void setEnableTapToClick(boolean z);
+
+    void setFlowPointerDirection(int i);
+
+    void setFocusedApplication(int i, InputApplicationHandle inputApplicationHandle);
+
+    void setFocusedDisplay(int i);
+
+    void setFoldingState(int i);
+
+    void setForwardButtonBehavior(int i);
+
+    boolean setInTouchMode(boolean z, int i, int i2, boolean z2, int i3);
+
+    void setInputDispatchMode(boolean z, boolean z2);
+
+    void setInputFilterEnabled(boolean z);
+
+    void setInputMetaData(int i, int i2);
+
+    void setInputMethodConnectionIsActive(boolean z);
+
+    void setInteractive(boolean z);
+
+    void setInteractiveForInternalDisplay(boolean z);
+
+    void setKeyRepeatConfiguration(int i, int i2);
+
+    void setLightColor(int i, int i2, int i3);
+
+    void setLightPlayerId(int i, int i2, int i3);
+
+    void setMaximumObscuringOpacityForTouch(float f);
+
+    void setMinTimeBetweenUserActivityPokes(long j);
+
+    void setMotionClassifierEnabled(boolean z);
+
+    void setMousePointerAccelerationEnabled(int i, boolean z);
+
+    void setMultiControlOutOfFocus(boolean z);
+
+    void setPenHovering(boolean z);
+
+    void setPenModeOnDex(int i);
+
+    void setPointerDisplayId(int i);
+
+    boolean setPointerIcon(PointerIcon pointerIcon, int i, int i2, int i3, IBinder iBinder);
+
+    void setPointerIconVisibility(int i, boolean z);
+
+    void setPointerSpeed(int i);
+
+    void setPrimaryMouseButtonLocation(int i);
+
+    void setReverseSwipeGesture(boolean z);
+
+    void setScrollSpeed(int i);
+
+    void setSecondaryButtonBehavior(int i);
+
+    void setShowHovering(boolean z);
+
+    void setShowTouches(boolean z);
+
+    void setStylusButtonMotionEventsEnabled(boolean z);
+
+    void setStylusPointerIconEnabled(boolean z);
+
+    void setSystemUiLightsOut(boolean z);
+
+    void setSystemUiLightsOutForDisplay(boolean z, int i);
+
+    void setTalkBack(boolean z);
+
+    void setTertiaryButtonBehavior(int i);
+
+    void setTouchpadNaturalScrollingEnabled(boolean z);
+
+    void setTouchpadPointerSpeed(int i);
+
+    void setTouchpadRightClickZoneEnabled(boolean z);
+
+    void setTouchpadTapDraggingEnabled(boolean z);
+
+    void setTouchpadTapToClickEnabled(boolean z);
+
+    void setTspFeatures(int i);
+
+    void setUseMouseAcceleration(boolean z);
+
+    void showAllTouches(boolean z);
+
+    void start();
+
+    void sysfsNodeChanged(String str);
+
+    void toggleCapsLock(int i);
+
+    boolean transferTouch(IBinder iBinder, int i);
+
+    boolean transferTouchGesture(IBinder iBinder, IBinder iBinder2, boolean z);
+
+    void updateInputMetaState(int i, boolean z);
+
+    VerifiedInputEvent verifyInputEvent(InputEvent inputEvent);
+
+    void vibrate(int i, long[] jArr, int[] iArr, int i2, int i3);
+
+    void vibrateCombined(int i, long[] jArr, SparseArray sparseArray, int i2, int i3);
 }

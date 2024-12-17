@@ -1,132 +1,49 @@
 package android.hardware.usb.V1_2;
 
+import android.hardware.authsecret.V1_0.IAuthSecret$Proxy$$ExternalSyntheticOutline0;
+import android.hardware.usb.V1_0.IUsbCallback;
 import android.hardware.usb.V1_0.PortRole;
 import android.hidl.base.V1_0.DebugInfo;
 import android.hidl.base.V1_0.IBase;
 import android.os.HidlSupport;
-import android.os.HwBinder;
 import android.os.HwBlob;
 import android.os.HwParcel;
 import android.os.IHwBinder;
 import android.os.IHwInterface;
 import android.os.NativeHandle;
 import android.os.RemoteException;
+import com.android.server.usb.hal.port.UsbPortHidl;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IUsb extends android.hardware.usb.V1_1.IUsb {
-    void enableContaminantPresenceDetection(String str, boolean z);
 
-    void enableContaminantPresenceProtection(String str, boolean z);
-
-    @Override // android.hardware.usb.V1_1.IUsb, android.hardware.usb.V1_0.IUsb, android.hidl.base.V1_0.IBase
-    ArrayList interfaceChain();
-
-    static IUsb asInterface(IHwBinder iHwBinder) {
-        if (iHwBinder == null) {
-            return null;
-        }
-        IHwInterface queryLocalInterface = iHwBinder.queryLocalInterface("android.hardware.usb@1.2::IUsb");
-        if (queryLocalInterface != null && (queryLocalInterface instanceof IUsb)) {
-            return (IUsb) queryLocalInterface;
-        }
-        Proxy proxy = new Proxy(iHwBinder);
-        try {
-            Iterator it = proxy.interfaceChain().iterator();
-            while (it.hasNext()) {
-                if (((String) it.next()).equals("android.hardware.usb@1.2::IUsb")) {
-                    return proxy;
-                }
-            }
-        } catch (RemoteException unused) {
-        }
-        return null;
-    }
-
-    static IUsb castFrom(IHwInterface iHwInterface) {
-        if (iHwInterface == null) {
-            return null;
-        }
-        return asInterface(iHwInterface.asBinder());
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Proxy implements IUsb {
         public IHwBinder mRemote;
 
-        public Proxy(IHwBinder iHwBinder) {
-            Objects.requireNonNull(iHwBinder);
-            this.mRemote = iHwBinder;
-        }
-
         @Override // android.hidl.base.V1_0.IBase
-        public IHwBinder asBinder() {
+        public final IHwBinder asBinder() {
             return this.mRemote;
         }
 
-        public String toString() {
-            try {
-                return interfaceDescriptor() + "@Proxy";
-            } catch (RemoteException unused) {
-                return "[class or subclass of android.hardware.usb@1.2::IUsb]@Proxy";
-            }
-        }
-
-        public final boolean equals(Object obj) {
-            return HidlSupport.interfacesEqual(this, obj);
-        }
-
-        public final int hashCode() {
-            return asBinder().hashCode();
-        }
-
-        @Override // android.hardware.usb.V1_0.IUsb
-        public void switchRole(String str, PortRole portRole) {
+        @Override // android.hidl.base.V1_0.IBase
+        public final void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName, nativeHandle, arrayList);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.usb@1.0::IUsb");
-            hwParcel.writeString(str);
-            portRole.writeToParcel(hwParcel);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(1, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(256131655, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
             } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.usb.V1_0.IUsb
-        public void setCallback(android.hardware.usb.V1_0.IUsbCallback iUsbCallback) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.usb@1.0::IUsb");
-            hwParcel.writeStrongBinder(iUsbCallback == null ? null : iUsbCallback.asBinder());
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(2, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.usb.V1_0.IUsb
-        public void queryPortStatus() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.usb@1.0::IUsb");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(3, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.usb.V1_2.IUsb
-        public void enableContaminantPresenceDetection(String str, boolean z) {
+        public final void enableContaminantPresenceDetection(String str, boolean z) {
             HwParcel hwParcel = new HwParcel();
             hwParcel.writeInterfaceToken("android.hardware.usb@1.2::IUsb");
             hwParcel.writeString(str);
@@ -140,65 +57,38 @@ public interface IUsb extends android.hardware.usb.V1_1.IUsb {
             }
         }
 
-        @Override // android.hardware.usb.V1_2.IUsb, android.hardware.usb.V1_1.IUsb, android.hardware.usb.V1_0.IUsb, android.hidl.base.V1_0.IBase
-        public ArrayList interfaceChain() {
+        public final boolean equals(Object obj) {
+            return HidlSupport.interfacesEqual(this, obj);
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final DebugInfo getDebugInfo() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256067662, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readStringVector();
+                this.mRemote.transact(257049926, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                DebugInfo debugInfo = new DebugInfo();
+                debugInfo.readFromParcel(hwParcel);
+                return debugInfo;
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+        public final ArrayList getHashChain() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            hwParcel.writeNativeHandle(nativeHandle);
-            hwParcel.writeStringVector(arrayList);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256131655, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public String interfaceDescriptor() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256136003, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readString();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public ArrayList getHashChain() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256398152, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(256398152, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
                 ArrayList arrayList = new ArrayList();
-                HwBlob readBuffer = hwParcel2.readBuffer(16L);
+                HwBlob readBuffer = hwParcel.readBuffer(16L);
                 int int32 = readBuffer.getInt32(8L);
-                HwBlob readEmbeddedBuffer = hwParcel2.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
+                HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
                 arrayList.clear();
                 for (int i = 0; i < int32; i++) {
                     byte[] bArr = new byte[32];
@@ -207,242 +97,161 @@ public interface IUsb extends android.hardware.usb.V1_1.IUsb {
                 }
                 return arrayList;
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
+        public final int hashCode() {
+            return this.mRemote.hashCode();
+        }
+
         @Override // android.hidl.base.V1_0.IBase
-        public void setHALInstrumentation() {
+        public final ArrayList interfaceChain() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256462420, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
+                this.mRemote.transact(256067662, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readStringVector();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
-        }
-
-        @Override // android.hardware.usb.V1_0.IUsb, android.hidl.base.V1_0.IBase
-        public boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
-            return this.mRemote.linkToDeath(deathRecipient, j);
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void ping() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256921159, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public DebugInfo getDebugInfo() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(257049926, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                DebugInfo debugInfo = new DebugInfo();
-                debugInfo.readFromParcel(hwParcel2);
-                return debugInfo;
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void notifySyspropsChanged() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(257120595, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
-            return this.mRemote.unlinkToDeath(deathRecipient);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public abstract class Stub extends HwBinder implements IUsb {
-        @Override // android.hidl.base.V1_0.IBase
-        public IHwBinder asBinder() {
-            return this;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
         }
 
         @Override // android.hidl.base.V1_0.IBase
         public final String interfaceDescriptor() {
-            return "android.hardware.usb@1.2::IUsb";
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256136003, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readString();
+            } finally {
+                hwParcel.release();
+            }
         }
 
-        @Override // android.hardware.usb.V1_0.IUsb, android.hidl.base.V1_0.IBase
+        @Override // android.hidl.base.V1_0.IBase
         public final boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
-            return true;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final void ping() {
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final void setHALInstrumentation() {
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
-            return true;
-        }
-
-        @Override // android.hardware.usb.V1_2.IUsb, android.hardware.usb.V1_1.IUsb, android.hardware.usb.V1_0.IUsb, android.hidl.base.V1_0.IBase
-        public final ArrayList interfaceChain() {
-            return new ArrayList(Arrays.asList("android.hardware.usb@1.2::IUsb", "android.hardware.usb@1.1::IUsb", "android.hardware.usb@1.0::IUsb", IBase.kInterfaceName));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final ArrayList getHashChain() {
-            return new ArrayList(Arrays.asList(new byte[]{97, -68, 48, 46, 124, -105, 76, 89, -78, 88, -104, -59, -123, -58, -23, 104, 94, -118, -127, 2, 27, 27, -19, 62, -19, -11, 34, 65, -104, -14, 120, 90}, new byte[]{-82, -68, -39, -1, 45, -96, 92, -99, 76, 67, -103, 22, -12, 13, -3, 33, -101, -89, 98, -103, 25, 0, 124, -71, -127, -21, -15, 80, 6, 75, 79, -126}, new byte[]{78, -11, 116, -103, 39, 63, 56, -67, -67, -48, -63, 94, 86, -18, 122, 75, -59, -15, -118, 86, 68, 9, 33, 112, -91, 49, -33, 53, 65, -39, -32, 21}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, -48, 45, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, 36, -13, -51, 105, 87, 19, -109, 36, -72, 59, 24, -54, 76}));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final DebugInfo getDebugInfo() {
-            DebugInfo debugInfo = new DebugInfo();
-            debugInfo.pid = HidlSupport.getPidIfSharable();
-            debugInfo.ptr = 0L;
-            debugInfo.arch = 0;
-            return debugInfo;
+            return this.mRemote.linkToDeath(deathRecipient, j);
         }
 
         @Override // android.hidl.base.V1_0.IBase
         public final void notifySyspropsChanged() {
-            HwBinder.enableInstrumentation();
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(257120595, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
+            }
         }
 
-        public IHwInterface queryLocalInterface(String str) {
-            if ("android.hardware.usb@1.2::IUsb".equals(str)) {
-                return this;
+        @Override // android.hidl.base.V1_0.IBase
+        public final void ping() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256921159, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
             }
-            return null;
         }
 
-        public String toString() {
-            return interfaceDescriptor() + "@Stub";
+        @Override // android.hardware.usb.V1_0.IUsb
+        public final void queryPortStatus() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.usb@1.0::IUsb");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(3, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
+            }
         }
 
-        public void onTransact(int i, HwParcel hwParcel, HwParcel hwParcel2, int i2) {
-            if (i == 1) {
-                hwParcel.enforceInterface("android.hardware.usb@1.0::IUsb");
-                String readString = hwParcel.readString();
-                PortRole portRole = new PortRole();
-                portRole.readFromParcel(hwParcel);
-                switchRole(readString, portRole);
-                return;
+        @Override // android.hardware.usb.V1_0.IUsb
+        public final void setCallback(IUsbCallback iUsbCallback) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.usb@1.0::IUsb");
+            m.writeStrongBinder(iUsbCallback == null ? null : (UsbPortHidl.HALCallback) iUsbCallback);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(2, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
             }
-            if (i == 2) {
-                hwParcel.enforceInterface("android.hardware.usb@1.0::IUsb");
-                setCallback(android.hardware.usb.V1_0.IUsbCallback.asInterface(hwParcel.readStrongBinder()));
-                return;
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void setHALInstrumentation() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256462420, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
             }
-            if (i == 3) {
-                hwParcel.enforceInterface("android.hardware.usb@1.0::IUsb");
-                queryPortStatus();
-                return;
+        }
+
+        @Override // android.hardware.usb.V1_0.IUsb
+        public final void switchRole(String str, PortRole portRole) {
+            HwParcel hwParcel = new HwParcel();
+            hwParcel.writeInterfaceToken("android.hardware.usb@1.0::IUsb");
+            hwParcel.writeString(str);
+            portRole.writeToParcel(hwParcel);
+            HwParcel hwParcel2 = new HwParcel();
+            try {
+                this.mRemote.transact(1, hwParcel, hwParcel2, 1);
+                hwParcel.releaseTemporaryStorage();
+            } finally {
+                hwParcel2.release();
             }
-            if (i == 4) {
-                hwParcel.enforceInterface("android.hardware.usb@1.2::IUsb");
-                enableContaminantPresenceDetection(hwParcel.readString(), hwParcel.readBool());
-                return;
+        }
+
+        public final String toString() {
+            try {
+                return interfaceDescriptor() + "@Proxy";
+            } catch (RemoteException unused) {
+                return "[class or subclass of android.hardware.usb@1.2::IUsb]@Proxy";
             }
-            if (i == 5) {
-                hwParcel.enforceInterface("android.hardware.usb@1.2::IUsb");
-                enableContaminantPresenceProtection(hwParcel.readString(), hwParcel.readBool());
-                return;
-            }
-            switch (i) {
-                case 256067662:
-                    hwParcel.enforceInterface(IBase.kInterfaceName);
-                    ArrayList interfaceChain = interfaceChain();
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeStringVector(interfaceChain);
-                    hwParcel2.send();
-                    return;
-                case 256131655:
-                    hwParcel.enforceInterface(IBase.kInterfaceName);
-                    debug(hwParcel.readNativeHandle(), hwParcel.readStringVector());
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.send();
-                    return;
-                case 256136003:
-                    hwParcel.enforceInterface(IBase.kInterfaceName);
-                    String interfaceDescriptor = interfaceDescriptor();
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeString(interfaceDescriptor);
-                    hwParcel2.send();
-                    return;
-                case 256398152:
-                    hwParcel.enforceInterface(IBase.kInterfaceName);
-                    ArrayList hashChain = getHashChain();
-                    hwParcel2.writeStatus(0);
-                    HwBlob hwBlob = new HwBlob(16);
-                    int size = hashChain.size();
-                    hwBlob.putInt32(8L, size);
-                    hwBlob.putBool(12L, false);
-                    HwBlob hwBlob2 = new HwBlob(size * 32);
-                    for (int i3 = 0; i3 < size; i3++) {
-                        long j = i3 * 32;
-                        byte[] bArr = (byte[]) hashChain.get(i3);
-                        if (bArr == null || bArr.length != 32) {
-                            throw new IllegalArgumentException("Array element is not of the expected length");
-                        }
-                        hwBlob2.putInt8Array(j, bArr);
-                    }
-                    hwBlob.putBlob(0L, hwBlob2);
-                    hwParcel2.writeBuffer(hwBlob);
-                    hwParcel2.send();
-                    return;
-                case 256462420:
-                    hwParcel.enforceInterface(IBase.kInterfaceName);
-                    setHALInstrumentation();
-                    return;
-                case 256921159:
-                    hwParcel.enforceInterface(IBase.kInterfaceName);
-                    ping();
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.send();
-                    return;
-                case 257049926:
-                    hwParcel.enforceInterface(IBase.kInterfaceName);
-                    DebugInfo debugInfo = getDebugInfo();
-                    hwParcel2.writeStatus(0);
-                    debugInfo.writeToParcel(hwParcel2);
-                    hwParcel2.send();
-                    return;
-                case 257120595:
-                    hwParcel.enforceInterface(IBase.kInterfaceName);
-                    notifySyspropsChanged();
-                    return;
-                default:
-                    return;
-            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
+            return this.mRemote.unlinkToDeath(deathRecipient);
         }
     }
+
+    static IUsb castFrom(IHwInterface iHwInterface) {
+        IHwBinder asBinder;
+        if (iHwInterface == null || (asBinder = iHwInterface.asBinder()) == null) {
+            return null;
+        }
+        IHwInterface queryLocalInterface = asBinder.queryLocalInterface("android.hardware.usb@1.2::IUsb");
+        if (queryLocalInterface != null && (queryLocalInterface instanceof IUsb)) {
+            return (IUsb) queryLocalInterface;
+        }
+        Proxy proxy = new Proxy();
+        proxy.mRemote = asBinder;
+        try {
+            Iterator it = proxy.interfaceChain().iterator();
+            while (it.hasNext()) {
+                if (((String) it.next()).equals("android.hardware.usb@1.2::IUsb")) {
+                    return proxy;
+                }
+            }
+            return null;
+        } catch (RemoteException unused) {
+            return null;
+        }
+    }
+
+    void enableContaminantPresenceDetection(String str, boolean z);
 }

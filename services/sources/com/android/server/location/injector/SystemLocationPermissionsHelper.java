@@ -1,60 +1,75 @@
 package com.android.server.location.injector;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.location.LocationConstants;
 import android.location.util.identity.CallerIdentity;
 import android.os.Binder;
-import com.android.server.location.LocationServiceThread;
+import com.android.internal.util.Preconditions;
+import com.android.server.location.LocationPermissions;
 import com.android.server.location.nsflp.NSPermissionHelper;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
-/* loaded from: classes2.dex */
-public class SystemLocationPermissionsHelper extends LocationPermissionsHelper {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class SystemLocationPermissionsHelper {
+    public final SystemAppOpsHelper mAppOps;
     public final Context mContext;
     public boolean mInited;
+    public NSPermissionHelper mNSPermissionHelper;
+    public Consumer mSLocationConsumer;
+    public final HashSet mFreezedUids = new HashSet();
+    public final Map mPauseReasonByCaller = new ConcurrentHashMap();
+    public final CopyOnWriteArrayList mListeners = new CopyOnWriteArrayList();
 
-    public SystemLocationPermissionsHelper(Context context, AppOpsHelper appOpsHelper) {
-        super(appOpsHelper);
+    public SystemLocationPermissionsHelper(Context context, SystemAppOpsHelper systemAppOpsHelper) {
+        this.mAppOps = systemAppOpsHelper;
+        systemAppOpsHelper.mListeners.add(new LocationPermissionsHelper$$ExternalSyntheticLambda0(this));
         this.mContext = context;
     }
 
-    public void onSystemReady() {
-        if (this.mInited) {
-            return;
+    public final boolean hasLocationPermissions(int i, CallerIdentity callerIdentity) {
+        String str;
+        if (i == 0) {
+            ((ConcurrentHashMap) this.mPauseReasonByCaller).put(Integer.valueOf(callerIdentity.getUid()), LocationConstants.PAUSED_BY.PERMISSION_NONE);
+            return false;
         }
-        this.mContext.getPackageManager().addOnPermissionsChangeListener(new PackageManager.OnPermissionsChangedListener() { // from class: com.android.server.location.injector.SystemLocationPermissionsHelper$$ExternalSyntheticLambda0
-            public final void onPermissionsChanged(int i) {
-                SystemLocationPermissionsHelper.this.lambda$onSystemReady$1(i);
+        if (i == 1) {
+            str = "android.permission.ACCESS_COARSE_LOCATION";
+        } else {
+            if (i != 2) {
+                throw new IllegalArgumentException();
             }
-        });
-        this.mInited = true;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onSystemReady$1(final int i) {
-        LocationServiceThread.getHandler().post(new Runnable() { // from class: com.android.server.location.injector.SystemLocationPermissionsHelper$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                SystemLocationPermissionsHelper.this.lambda$onSystemReady$0(i);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onSystemReady$0(int i) {
-        NSPermissionHelper nSPermissionHelper = this.mNSPermissionHelper;
-        if (nSPermissionHelper != null) {
-            nSPermissionHelper.sendPermissionsChange(i);
+            str = "android.permission.ACCESS_FINE_LOCATION";
         }
-        notifyLocationPermissionsChanged(i);
-    }
-
-    @Override // com.android.server.location.injector.LocationPermissionsHelper
-    public boolean hasPermission(String str, CallerIdentity callerIdentity) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            return this.mContext.checkPermission(str, callerIdentity.getPid(), callerIdentity.getUid()) == 0;
+            if (!(this.mContext.checkPermission(str, callerIdentity.getPid(), callerIdentity.getUid()) == 0)) {
+                ((ConcurrentHashMap) this.mPauseReasonByCaller).put(Integer.valueOf(callerIdentity.getUid()), LocationConstants.PAUSED_BY.PERMISSION_CHECK);
+                return false;
+            }
+            if (this.mFreezedUids.contains(Integer.valueOf(callerIdentity.getUid()))) {
+                ((ConcurrentHashMap) this.mPauseReasonByCaller).put(Integer.valueOf(callerIdentity.getUid()), LocationConstants.PAUSED_BY.FREEZE);
+                return false;
+            }
+            int asAppOp = LocationPermissions.asAppOp(i);
+            SystemAppOpsHelper systemAppOpsHelper = this.mAppOps;
+            Preconditions.checkState(systemAppOpsHelper.mAppOps != null);
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                boolean z = systemAppOpsHelper.mAppOps.checkOpNoThrow(asAppOp, callerIdentity.getUid(), callerIdentity.getPackageName()) == 0;
+                if (z) {
+                    ((ConcurrentHashMap) this.mPauseReasonByCaller).remove(Integer.valueOf(callerIdentity.getUid()));
+                } else {
+                    ((ConcurrentHashMap) this.mPauseReasonByCaller).put(Integer.valueOf(callerIdentity.getUid()), LocationConstants.PAUSED_BY.APP_OPS);
+                }
+                return z;
+            } finally {
+            }
         } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 }

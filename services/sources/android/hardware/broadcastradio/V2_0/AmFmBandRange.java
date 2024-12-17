@@ -1,16 +1,15 @@
 package android.hardware.broadcastradio.V2_0;
 
-import android.os.HidlSupport;
-import android.os.HwBlob;
-import android.os.HwParcel;
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AmFmBandRange {
-    public int lowerBound = 0;
-    public int upperBound = 0;
-    public int spacing = 0;
-    public int scanSpacing = 0;
+    public int lowerBound;
+    public int scanSpacing;
+    public int spacing;
+    public int upperBound;
 
     public final boolean equals(Object obj) {
         if (this == obj) {
@@ -24,24 +23,17 @@ public final class AmFmBandRange {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.lowerBound))), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.upperBound))), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.spacing))), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.scanSpacing))));
+        return Objects.hash(AudioConfig$$ExternalSyntheticOutline0.m(this.lowerBound), AudioConfig$$ExternalSyntheticOutline0.m(this.upperBound), AudioConfig$$ExternalSyntheticOutline0.m(this.spacing), AudioConfig$$ExternalSyntheticOutline0.m(this.scanSpacing));
     }
 
     public final String toString() {
-        return "{.lowerBound = " + this.lowerBound + ", .upperBound = " + this.upperBound + ", .spacing = " + this.spacing + ", .scanSpacing = " + this.scanSpacing + "}";
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.lowerBound = hwBlob.getInt32(0 + j);
-        this.upperBound = hwBlob.getInt32(4 + j);
-        this.spacing = hwBlob.getInt32(8 + j);
-        this.scanSpacing = hwBlob.getInt32(j + 12);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putInt32(0 + j, this.lowerBound);
-        hwBlob.putInt32(4 + j, this.upperBound);
-        hwBlob.putInt32(8 + j, this.spacing);
-        hwBlob.putInt32(j + 12, this.scanSpacing);
+        StringBuilder sb = new StringBuilder("{.lowerBound = ");
+        sb.append(this.lowerBound);
+        sb.append(", .upperBound = ");
+        sb.append(this.upperBound);
+        sb.append(", .spacing = ");
+        sb.append(this.spacing);
+        sb.append(", .scanSpacing = ");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.scanSpacing, sb, "}");
     }
 }

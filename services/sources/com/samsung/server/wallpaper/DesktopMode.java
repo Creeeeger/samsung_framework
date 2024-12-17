@@ -1,12 +1,11 @@
 package com.samsung.server.wallpaper;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.UserHandle;
 import com.android.server.LocalServices;
+import com.android.server.wallpaper.WallpaperData;
 import com.android.server.wallpaper.WallpaperManagerService;
 import com.samsung.android.desktopmode.DesktopModeManagerInternal;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
@@ -14,93 +13,36 @@ import com.samsung.android.desktopmode.SemDesktopModeState;
 import com.samsung.android.wallpaper.Rune;
 import java.io.File;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class DesktopMode {
+public final class DesktopMode {
     public final WallpaperManagerService.SemCallback mCallback;
     public final Context mContext;
-    public SemDesktopModeManager mDesktopModeManager;
     public final SemWallpaperManagerService mService;
     public final Handler mHandler = new Handler(Looper.getMainLooper());
     public final Object mDesktopModeLock = new Object();
     public boolean mIsDesktopMode = false;
     public boolean mWallpaperBindingFallbackExecuted = false;
     public int mDesktopMode = 0;
-    public int mWallpaperBindingFallbackCount = 0;
 
     public DesktopMode(Context context, WallpaperManagerService.SemCallback semCallback, SemWallpaperManagerService semWallpaperManagerService) {
         Log.d("DesktopMode", "DesktopMode");
         this.mContext = context;
         this.mCallback = semCallback;
         this.mService = semWallpaperManagerService;
-        initDesktopMode();
-    }
-
-    public void increaseWallpaperBindingFallbackCount() {
-        this.mWallpaperBindingFallbackCount++;
-    }
-
-    public void setWallpaperBindingFallbackExecuted(boolean z) {
-        this.mWallpaperBindingFallbackExecuted = z;
-    }
-
-    public boolean getWallpaperBindingFallbackExecuted() {
-        return this.mWallpaperBindingFallbackExecuted;
-    }
-
-    /* renamed from: com.samsung.server.wallpaper.DesktopMode$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements SemDesktopModeManager.DesktopModeListener {
-        public AnonymousClass1() {
-        }
-
-        public void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) {
-            Log.i("DesktopMode", "Wallpaper onDesktopModeChanged : " + semDesktopModeState);
-            if (!Rune.DESKTOP_STANDALONE_MODE_WALLPAPER && semDesktopModeState.getDisplayType() == 101) {
-                boolean z = semDesktopModeState.getEnabled() == 3;
-                boolean z2 = semDesktopModeState.getEnabled() == 1;
-                synchronized (DesktopMode.this.mDesktopModeLock) {
-                    try {
-                        if (z) {
-                            DesktopMode.this.mDesktopMode = 101;
-                        } else if (z2) {
-                            DesktopMode.this.mDesktopMode = 0;
-                        }
-                    } finally {
-                    }
-                }
-            }
-            if (semDesktopModeState.getEnabled() == 4 && semDesktopModeState.getState() == 50) {
-                DesktopMode.this.mIsDesktopMode = true;
-            } else if (semDesktopModeState.getEnabled() != 2 || semDesktopModeState.getState() != 50) {
-                return;
-            } else {
-                DesktopMode.this.mIsDesktopMode = false;
-            }
-            if (!Rune.DESKTOP_STANDALONE_MODE_WALLPAPER && semDesktopModeState.getDisplayType() == 101) {
-                Log.i("DesktopMode", "Do not switch dex wallpaper if standalone mode : " + semDesktopModeState);
-                return;
-            }
-            DesktopMode.this.mCallback.updateDesktopModeState(DesktopMode.this.mIsDesktopMode);
-        }
-    }
-
-    public final void initDesktopMode() {
-        SemDesktopModeManager semDesktopModeManager = (SemDesktopModeManager) this.mContext.getSystemService("desktopmode");
-        this.mDesktopModeManager = semDesktopModeManager;
-        semDesktopModeManager.registerListener(new SemDesktopModeManager.DesktopModeListener() { // from class: com.samsung.server.wallpaper.DesktopMode.1
-            public AnonymousClass1() {
-            }
-
-            public void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) {
+        ((SemDesktopModeManager) context.getSystemService("desktopmode")).registerListener(new SemDesktopModeManager.DesktopModeListener() { // from class: com.samsung.server.wallpaper.DesktopMode.1
+            public final void onDesktopModeStateChanged(SemDesktopModeState semDesktopModeState) {
+                WallpaperData wallpaperData;
                 Log.i("DesktopMode", "Wallpaper onDesktopModeChanged : " + semDesktopModeState);
-                if (!Rune.DESKTOP_STANDALONE_MODE_WALLPAPER && semDesktopModeState.getDisplayType() == 101) {
-                    boolean z = semDesktopModeState.getEnabled() == 3;
-                    boolean z2 = semDesktopModeState.getEnabled() == 1;
+                boolean z = Rune.DESKTOP_STANDALONE_MODE_WALLPAPER;
+                if (!z && semDesktopModeState.getDisplayType() == 101) {
+                    boolean z2 = semDesktopModeState.getEnabled() == 3;
+                    boolean z3 = semDesktopModeState.getEnabled() == 1;
                     synchronized (DesktopMode.this.mDesktopModeLock) {
                         try {
-                            if (z) {
+                            if (z2) {
                                 DesktopMode.this.mDesktopMode = 101;
-                            } else if (z2) {
+                            } else if (z3) {
                                 DesktopMode.this.mDesktopMode = 0;
                             }
                         } finally {
@@ -114,48 +56,82 @@ public class DesktopMode {
                 } else {
                     DesktopMode.this.mIsDesktopMode = false;
                 }
-                if (!Rune.DESKTOP_STANDALONE_MODE_WALLPAPER && semDesktopModeState.getDisplayType() == 101) {
+                if (!z && semDesktopModeState.getDisplayType() == 101) {
                     Log.i("DesktopMode", "Do not switch dex wallpaper if standalone mode : " + semDesktopModeState);
                     return;
                 }
-                DesktopMode.this.mCallback.updateDesktopModeState(DesktopMode.this.mIsDesktopMode);
+                DesktopMode desktopMode = DesktopMode.this;
+                WallpaperManagerService.SemCallback semCallback2 = desktopMode.mCallback;
+                boolean z4 = desktopMode.mIsDesktopMode;
+                boolean isDesktopDualMode = WallpaperManagerService.this.mSemService.mDesktopMode.isDesktopDualMode();
+                synchronized (WallpaperManagerService.this.mLock) {
+                    if (!z4) {
+                        try {
+                            Log.addLogString("WallpaperManagerService", "DesktopMode disabled");
+                            WallpaperManagerService wallpaperManagerService = WallpaperManagerService.this;
+                            WallpaperManagerService.this.detachWallpaperLocked(wallpaperManagerService.getWallpaperSafeLocked(wallpaperManagerService.mCurrentUserId, 9));
+                        } finally {
+                        }
+                    }
+                }
+                DesktopMode desktopMode2 = WallpaperManagerService.this.mSemService.mDesktopMode;
+                desktopMode2.getClass();
+                Log.d("DesktopMode", "onRefreshWallpaperByUiMode() isDesktopMode = " + z4);
+                synchronized (desktopMode2.mDesktopModeLock) {
+                    try {
+                        desktopMode2.mIsDesktopMode = z4;
+                        if (z4) {
+                            SemDesktopModeState desktopModeState = ((DesktopModeManagerInternal) LocalServices.getService(DesktopModeManagerInternal.class)).getDesktopModeState();
+                            if (desktopModeState != null) {
+                                desktopMode2.mDesktopMode = desktopModeState.getDisplayType();
+                            }
+                        } else if (desktopMode2.isDesktopDualMode()) {
+                            desktopMode2.mDesktopMode = 0;
+                            Log.d("DesktopMode", "No need to refresh phone wallpaper when Dual dex is disabled");
+                        } else {
+                            desktopMode2.mDesktopMode = 0;
+                        }
+                        Log.d("DesktopMode", "mDesktopMode = " + desktopMode2.mDesktopMode);
+                        if (desktopMode2.isDesktopMode() && desktopMode2.isDesktopDualMode()) {
+                            Log.d("DesktopMode", "No need to refresh phone wallpaper when Dual dex is enabled");
+                        } else {
+                            WallpaperManagerService.SemCallback semCallback3 = desktopMode2.mCallback;
+                            int i = desktopMode2.mService.mCurrentUserId;
+                            boolean z5 = desktopMode2.mIsDesktopMode;
+                            semCallback3.getClass();
+                            int i2 = z5 ? 9 : 5;
+                            synchronized (WallpaperManagerService.this.mLock) {
+                                try {
+                                    wallpaperData = WallpaperManagerService.this.mWallpaperMap.get(i, i2);
+                                    if (wallpaperData == null) {
+                                        Log.d("WallpaperManagerService", "no current wallpaper -- first switching DeX?");
+                                        wallpaperData = WallpaperManagerService.this.getWallpaperSafeLocked(i, i2);
+                                    }
+                                    WallpaperManagerService.this.mSemService.mDesktopMode.getClass();
+                                    boolean exists = new File(Environment.getUserSystemDirectory(i), "wallpaper_desktop_orig").exists();
+                                    Log.d("DesktopMode", "isDesktopWallpaperFileExist " + exists);
+                                    if (exists || !z5) {
+                                        WallpaperManagerService.this.switchWallpaper(wallpaperData, null);
+                                        semCallback3.notifySemWallpaperColors(i2);
+                                    }
+                                } finally {
+                                }
+                            }
+                            WallpaperManagerService.this.notifyLockWallpaperChanged(wallpaperData.mSemWallpaperData.mWpType, i2, null);
+                        }
+                    } finally {
+                    }
+                }
+                if ((!isDesktopDualMode || z4) && !(WallpaperManagerService.this.mSemService.mDesktopMode.isDesktopDualMode() && z4)) {
+                    WallpaperManagerService.this.mSemService.handleWallpaperBindingTimeout(true);
+                } else {
+                    Log.i("WallpaperManagerService", "Wallpaper ignore wallpaper refresh in default display when desktop dual mode is enabled/disabled");
+                }
             }
         });
     }
 
-    public boolean isDesktopMode() {
-        boolean z;
-        synchronized (this.mDesktopModeLock) {
-            z = this.mIsDesktopMode;
-        }
-        return z;
-    }
-
-    public int getDesktopMode() {
-        int i;
-        synchronized (this.mDesktopModeLock) {
-            i = this.mDesktopMode;
-        }
-        return i;
-    }
-
-    public boolean isDesktopModeEnabled(int i) {
-        boolean z;
-        synchronized (this.mDesktopModeLock) {
-            z = this.mIsDesktopMode && (this.mDesktopMode == 101 || (i & 8) == 8);
-        }
-        return z;
-    }
-
-    public boolean isDesktopSingleMode() {
-        boolean z;
-        synchronized (this.mDesktopModeLock) {
-            z = this.mDesktopMode == 101;
-        }
-        return z;
-    }
-
-    public boolean isDesktopDualMode() {
+    public final boolean isDesktopDualMode() {
         boolean z;
         synchronized (this.mDesktopModeLock) {
             z = this.mDesktopMode == 102;
@@ -163,73 +139,30 @@ public class DesktopMode {
         return z;
     }
 
-    public void onRefreshWallpaperByUiMode(boolean z) {
-        Log.d("DesktopMode", "onRefreshWallpaperByUiMode() isDesktopMode = " + z);
+    public final boolean isDesktopMode() {
+        boolean z;
         synchronized (this.mDesktopModeLock) {
-            this.mIsDesktopMode = z;
-            if (z) {
-                SemDesktopModeState desktopModeState = ((DesktopModeManagerInternal) LocalServices.getService(DesktopModeManagerInternal.class)).getDesktopModeState();
-                if (desktopModeState != null) {
-                    this.mDesktopMode = desktopModeState.getDisplayType();
-                }
-            } else {
-                if (isDesktopDualMode()) {
-                    this.mDesktopMode = 0;
-                    Log.d("DesktopMode", "No need to refresh phone wallpaper when Dual dex is disabled");
-                    return;
-                }
-                this.mDesktopMode = 0;
-            }
-            Log.d("DesktopMode", "mDesktopMode = " + this.mDesktopMode);
-            if (isDesktopMode() && isDesktopDualMode()) {
-                Log.d("DesktopMode", "No need to refresh phone wallpaper when Dual dex is enabled");
-            } else {
-                this.mCallback.switchDexWallpaper(this.mService.getCurrentUserId(), this.mIsDesktopMode);
+            z = this.mIsDesktopMode;
+        }
+        return z;
+    }
+
+    public final boolean isDesktopModeEnabled(int i) {
+        boolean z;
+        synchronized (this.mDesktopModeLock) {
+            try {
+                z = this.mIsDesktopMode && (this.mDesktopMode == 101 || (i & 8) == 8);
+            } finally {
             }
         }
+        return z;
     }
 
-    /* renamed from: com.samsung.server.wallpaper.DesktopMode$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 implements Runnable {
-        public final /* synthetic */ int val$which;
-
-        public AnonymousClass2(int i) {
-            r2 = i;
+    public final boolean isDesktopSingleMode() {
+        boolean z;
+        synchronized (this.mDesktopModeLock) {
+            z = this.mDesktopMode == 101;
         }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            Intent intent = new Intent("com.samsung.android.intent.action.WALLPAPER_ENGINE_SHOWN");
-            intent.putExtra("which", r2);
-            DesktopMode.this.mContext.sendBroadcastAsUser(intent, new UserHandle(DesktopMode.this.mService.getCurrentUserId()));
-        }
-    }
-
-    public void sendWallpaperEngineShownIntent(int i) {
-        this.mHandler.postDelayed(new Runnable() { // from class: com.samsung.server.wallpaper.DesktopMode.2
-            public final /* synthetic */ int val$which;
-
-            public AnonymousClass2(int i2) {
-                r2 = i2;
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                Intent intent = new Intent("com.samsung.android.intent.action.WALLPAPER_ENGINE_SHOWN");
-                intent.putExtra("which", r2);
-                DesktopMode.this.mContext.sendBroadcastAsUser(intent, new UserHandle(DesktopMode.this.mService.getCurrentUserId()));
-            }
-        }, 1500L);
-    }
-
-    public boolean isDesktopWallpaperFileExist(int i) {
-        boolean exists = new File(getWallpaperDir(i), "wallpaper_desktop_orig").exists();
-        Log.d("DesktopMode", "isDesktopWallpaperFileExist " + exists);
-        return exists;
-    }
-
-    public final File getWallpaperDir(int i) {
-        return Environment.getUserSystemDirectory(i);
+        return z;
     }
 }

@@ -1,19 +1,14 @@
 package com.android.server.timezonedetector.location;
 
-import com.android.server.LocalServices;
-import com.android.server.timezonedetector.LocationAlgorithmEvent;
-import com.android.server.timezonedetector.TimeZoneDetectorInternal;
-import com.android.server.timezonedetector.location.LocationTimeZoneProviderController;
+import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class LocationTimeZoneProviderControllerCallbackImpl extends LocationTimeZoneProviderController.Callback {
-    public LocationTimeZoneProviderControllerCallbackImpl(ThreadingDomain threadingDomain) {
-        super(threadingDomain);
-    }
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class LocationTimeZoneProviderControllerCallbackImpl {
+    public final HandlerThreadingDomain mThreadingDomain;
 
-    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProviderController.Callback
-    public void sendEvent(LocationAlgorithmEvent locationAlgorithmEvent) {
-        this.mThreadingDomain.assertCurrentThread();
-        ((TimeZoneDetectorInternal) LocalServices.getService(TimeZoneDetectorInternal.class)).handleLocationAlgorithmEvent(locationAlgorithmEvent);
+    public LocationTimeZoneProviderControllerCallbackImpl(HandlerThreadingDomain handlerThreadingDomain) {
+        Objects.requireNonNull(handlerThreadingDomain);
+        this.mThreadingDomain = handlerThreadingDomain;
     }
 }

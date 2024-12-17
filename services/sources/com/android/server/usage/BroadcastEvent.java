@@ -1,48 +1,26 @@
 package com.android.server.usage;
 
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 import android.util.LongArrayQueue;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class BroadcastEvent {
-    public long mIdForResponseEvent;
-    public int mSourceUid;
-    public String mTargetPackage;
-    public int mTargetUserId;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class BroadcastEvent {
+    public final long mIdForResponseEvent;
+    public final int mSourceUid;
+    public final String mTargetPackage;
+    public final int mTargetUserId;
     public final LongArrayQueue mTimestampsMs = new LongArrayQueue();
 
-    public BroadcastEvent(int i, String str, int i2, long j) {
+    public BroadcastEvent(int i, int i2, long j, String str) {
         this.mSourceUid = i;
         this.mTargetPackage = str;
         this.mTargetUserId = i2;
         this.mIdForResponseEvent = j;
     }
 
-    public int getSourceUid() {
-        return this.mSourceUid;
-    }
-
-    public String getTargetPackage() {
-        return this.mTargetPackage;
-    }
-
-    public int getTargetUserId() {
-        return this.mTargetUserId;
-    }
-
-    public long getIdForResponseEvent() {
-        return this.mIdForResponseEvent;
-    }
-
-    public LongArrayQueue getTimestampsMs() {
-        return this.mTimestampsMs;
-    }
-
-    public void addTimestampMs(long j) {
-        this.mTimestampsMs.addLast(j);
-    }
-
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -53,11 +31,18 @@ public class BroadcastEvent {
         return this.mSourceUid == broadcastEvent.mSourceUid && this.mIdForResponseEvent == broadcastEvent.mIdForResponseEvent && this.mTargetUserId == broadcastEvent.mTargetUserId && this.mTargetPackage.equals(broadcastEvent.mTargetPackage);
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(Integer.valueOf(this.mSourceUid), this.mTargetPackage, Integer.valueOf(this.mTargetUserId), Long.valueOf(this.mIdForResponseEvent));
     }
 
-    public String toString() {
-        return "BroadcastEvent {srcUid=" + this.mSourceUid + ",tgtPkg=" + this.mTargetPackage + ",tgtUser=" + this.mTargetUserId + ",id=" + this.mIdForResponseEvent + "}";
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("BroadcastEvent {srcUid=");
+        sb.append(this.mSourceUid);
+        sb.append(",tgtPkg=");
+        sb.append(this.mTargetPackage);
+        sb.append(",tgtUser=");
+        sb.append(this.mTargetUserId);
+        sb.append(",id=");
+        return AudioConfig$$ExternalSyntheticOutline0.m(sb, this.mIdForResponseEvent, "}");
     }
 }

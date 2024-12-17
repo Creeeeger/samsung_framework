@@ -1,12 +1,8 @@
 package com.android.server;
 
-import android.os.Build;
-import android.os.Environment;
-import android.os.SystemProperties;
 import android.util.LocalLog;
-import android.util.Slog;
-import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class SystemClockTime {
     public static final LocalLog sTimeDebugLog = new LocalLog(30, false);
@@ -17,48 +13,11 @@ public abstract class SystemClockTime {
 
     private static native int setTime(long j, long j2);
 
-    public static void initializeIfRequired() {
-        long max = Long.max(SystemProperties.getLong("ro.build.date.utc", -1L) * 1000, Long.max(Environment.getRootDirectory().lastModified(), Build.TIME));
-        long currentTimeMillis = getCurrentTimeMillis();
-        if (currentTimeMillis < max) {
-            String str = "Current time only " + currentTimeMillis + ", advancing to build time " + max;
-            Slog.i("SystemClockTime", str);
-            setTimeAndConfidence(max, 0, str);
-        }
-    }
-
-    public static void setTimeAndConfidence(long j, int i, String str) {
+    public static void setTimeAndConfidence(int i, String str, long j) {
         synchronized (SystemClockTime.class) {
             setTime(sNativeData, j);
             sTimeConfidence = i;
             sTimeDebugLog.log(str);
         }
-    }
-
-    public static void setConfidence(int i, String str) {
-        synchronized (SystemClockTime.class) {
-            sTimeConfidence = i;
-            sTimeDebugLog.log(str);
-        }
-    }
-
-    public static long getCurrentTimeMillis() {
-        return System.currentTimeMillis();
-    }
-
-    public static int getTimeConfidence() {
-        int i;
-        synchronized (SystemClockTime.class) {
-            i = sTimeConfidence;
-        }
-        return i;
-    }
-
-    public static void addDebugLogEntry(String str) {
-        sTimeDebugLog.log(str);
-    }
-
-    public static void dump(PrintWriter printWriter) {
-        sTimeDebugLog.dump(printWriter);
     }
 }

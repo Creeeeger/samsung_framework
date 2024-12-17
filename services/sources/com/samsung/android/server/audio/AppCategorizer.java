@@ -1,44 +1,34 @@
 package com.samsung.android.server.audio;
 
-import java.util.ArrayList;
+import android.content.ContentValues;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 import java.util.Hashtable;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class AppCategorizer {
+public final class AppCategorizer {
     public final Hashtable appList;
-    public AudioSettingsHelper mSettingsHelper;
+    public final AudioSettingsHelper mSettingsHelper;
 
     public AppCategorizer(AudioSettingsHelper audioSettingsHelper) {
         Hashtable hashtable = new Hashtable();
         this.appList = hashtable;
         this.mSettingsHelper = audioSettingsHelper;
         synchronized (hashtable) {
-            hashtable.putAll(this.mSettingsHelper.getPackageList());
+            hashtable.putAll(audioSettingsHelper.getPackageList());
         }
     }
 
-    public void putPackage(int i, String str) {
-        if (checkExist(str)) {
+    public final void putPackage(int i, String str) {
+        if (this.appList.containsValue(str)) {
             return;
         }
         this.appList.put(Integer.valueOf(i), str);
-        this.mSettingsHelper.putPackage(i, str);
-    }
-
-    public void removePackage(int i) {
-        synchronized (this.appList) {
-            this.appList.remove(Integer.valueOf(i));
-            this.mSettingsHelper.removePackage(i);
-        }
-    }
-
-    public String[] getSelectedPackages() {
-        ArrayList arrayList = new ArrayList();
-        arrayList.addAll(this.appList.values());
-        return (String[]) arrayList.toArray(new String[arrayList.size()]);
-    }
-
-    public boolean checkExist(String str) {
-        return this.appList.containsValue(str);
+        AudioSettingsHelper audioSettingsHelper = this.mSettingsHelper;
+        audioSettingsHelper.getClass();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("_uid", Integer.valueOf(i));
+        contentValues.put("_package", str);
+        audioSettingsHelper.set(contentValues, "selectedpkg", BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "_uid='", "'"));
     }
 }

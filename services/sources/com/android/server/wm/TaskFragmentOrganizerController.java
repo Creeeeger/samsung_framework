@@ -1,7 +1,9 @@
 package com.android.server.wm;
 
+import android.app.IApplicationThread;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -13,14 +15,21 @@ import android.util.SparseArray;
 import android.view.RemoteAnimationDefinition;
 import android.window.ITaskFragmentOrganizer;
 import android.window.ITaskFragmentOrganizerController;
+import android.window.RemoteTransition;
 import android.window.TaskFragmentInfo;
 import android.window.TaskFragmentOrganizer;
 import android.window.TaskFragmentParentInfo;
 import android.window.TaskFragmentTransaction;
 import android.window.WindowContainerTransaction;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.wm.Task;
 import com.android.server.wm.TaskFragmentOrganizerController;
+import com.android.server.wm.Transition;
+import com.android.window.flags.Flags;
 import com.samsung.android.rune.CoreRune;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,8 +39,9 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class TaskFragmentOrganizerController extends ITaskFragmentOrganizerController.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class TaskFragmentOrganizerController extends ITaskFragmentOrganizerController.Stub {
     public final ActivityTaskManagerService mAtmService;
     public final WindowManagerGlobalLock mGlobalLock;
     public final WindowOrganizerController mWindowOrganizerController;
@@ -39,16 +49,38 @@ public class TaskFragmentOrganizerController extends ITaskFragmentOrganizerContr
     public final ArrayMap mPendingTaskFragmentEvents = new ArrayMap();
     public final ArraySet mTmpTaskSet = new ArraySet();
 
-    public TaskFragmentOrganizerController(ActivityTaskManagerService activityTaskManagerService, WindowOrganizerController windowOrganizerController) {
-        Objects.requireNonNull(activityTaskManagerService);
-        this.mAtmService = activityTaskManagerService;
-        this.mGlobalLock = activityTaskManagerService.mGlobalLock;
-        Objects.requireNonNull(windowOrganizerController);
-        this.mWindowOrganizerController = windowOrganizerController;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PendingTaskFragmentEvent {
+        public final ActivityRecord mActivity;
+        public long mDeferTime;
+        public final IBinder mErrorCallbackToken;
+        public final int mEventType;
+        public final Throwable mException;
+        public final int mOpType;
+        public final ActivityRecord mOtherActivity;
+        public final Task mTask;
+        public final TaskFragment mTaskFragment;
+        public final ITaskFragmentOrganizer mTaskFragmentOrg;
+        public final IBinder mTaskFragmentToken;
+
+        public PendingTaskFragmentEvent(int i, ITaskFragmentOrganizer iTaskFragmentOrganizer, TaskFragment taskFragment, IBinder iBinder, IBinder iBinder2, Throwable th, ActivityRecord activityRecord, ActivityRecord activityRecord2, Task task, int i2) {
+            this.mEventType = i;
+            this.mTaskFragmentOrg = iTaskFragmentOrganizer;
+            this.mTaskFragment = taskFragment;
+            this.mTaskFragmentToken = iBinder;
+            this.mErrorCallbackToken = iBinder2;
+            this.mException = th;
+            this.mActivity = activityRecord;
+            this.mOtherActivity = activityRecord2;
+            this.mTask = task;
+            this.mOpType = i2;
+        }
     }
 
-    /* loaded from: classes3.dex */
-    public class TaskFragmentOrganizerState implements IBinder.DeathRecipient {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TaskFragmentOrganizerState implements IBinder.DeathRecipient {
+        public final IApplicationThread mAppThread;
+        public final boolean mIsSystemOrganizer;
         public final ITaskFragmentOrganizer mOrganizer;
         public final int mOrganizerPid;
         public final int mOrganizerUid;
@@ -59,11 +91,18 @@ public class TaskFragmentOrganizerController extends ITaskFragmentOrganizerContr
         public final SparseArray mLastSentTaskFragmentParentInfos = new SparseArray();
         public final Map mTemporaryActivityTokens = new WeakHashMap();
         public final ArrayMap mDeferredTransitions = new ArrayMap();
+        public final ArrayMap mInFlightTransactions = new ArrayMap();
 
-        public TaskFragmentOrganizerState(ITaskFragmentOrganizer iTaskFragmentOrganizer, int i, int i2) {
+        public TaskFragmentOrganizerState(ITaskFragmentOrganizer iTaskFragmentOrganizer, int i, int i2, boolean z) {
+            if (Flags.bundleClientTransactionFlag()) {
+                this.mAppThread = TaskFragmentOrganizerController.this.getAppThread(i, i2);
+            } else {
+                this.mAppThread = null;
+            }
             this.mOrganizer = iTaskFragmentOrganizer;
             this.mOrganizerPid = i;
             this.mOrganizerUid = i2;
+            this.mIsSystemOrganizer = z;
             try {
                 iTaskFragmentOrganizer.asBinder().linkToDeath(this, 0);
             } catch (RemoteException unused) {
@@ -72,12 +111,12 @@ public class TaskFragmentOrganizerController extends ITaskFragmentOrganizerContr
         }
 
         @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
+        public final void binderDied() {
             WindowManagerGlobalLock windowManagerGlobalLock = TaskFragmentOrganizerController.this.mGlobalLock;
             WindowManagerService.boostPriorityForLockedSection();
             synchronized (windowManagerGlobalLock) {
                 try {
-                    TaskFragmentOrganizerController.this.removeOrganizer(this.mOrganizer);
+                    TaskFragmentOrganizerController.this.removeOrganizer(this.mOrganizer, "client died");
                 } catch (Throwable th) {
                     WindowManagerService.resetPriorityAfterLockedSection();
                     throw th;
@@ -86,243 +125,457 @@ public class TaskFragmentOrganizerController extends ITaskFragmentOrganizerContr
             WindowManagerService.resetPriorityAfterLockedSection();
         }
 
-        public boolean addTaskFragment(TaskFragment taskFragment) {
-            if (taskFragment.mTaskFragmentAppearedSent || this.mOrganizedTaskFragments.contains(taskFragment)) {
-                return false;
-            }
-            this.mOrganizedTaskFragments.add(taskFragment);
-            return true;
-        }
-
-        public void removeTaskFragment(TaskFragment taskFragment) {
-            this.mOrganizedTaskFragments.remove(taskFragment);
-        }
-
-        public void dispose() {
-            for (int size = this.mOrganizedTaskFragments.size() - 1; size >= 0; size--) {
-                ((TaskFragment) this.mOrganizedTaskFragments.get(size)).onTaskFragmentOrganizerRemoved();
-            }
-            TaskFragmentOrganizerController.this.mAtmService.deferWindowLayout();
-            while (!this.mOrganizedTaskFragments.isEmpty()) {
-                try {
-                    TaskFragment taskFragment = (TaskFragment) this.mOrganizedTaskFragments.remove(0);
-                    taskFragment.removeImmediately();
-                    if (taskFragment.isEmbedded()) {
-                        TaskFragmentOrganizerController.this.mAtmService.mDexController.embeddedDisposed(taskFragment);
-                    }
-                } catch (Throwable th) {
-                    TaskFragmentOrganizerController.this.mAtmService.continueWindowLayout();
-                    throw th;
-                }
-            }
-            TaskFragmentOrganizerController.this.mAtmService.continueWindowLayout();
-            for (int size2 = this.mDeferredTransitions.size() - 1; size2 >= 0; size2--) {
-                onTransactionFinished((IBinder) this.mDeferredTransitions.keyAt(size2));
-            }
-            this.mOrganizer.asBinder().unlinkToDeath(this, 0);
-        }
-
-        public TaskFragmentTransaction.Change prepareTaskFragmentAppeared(TaskFragment taskFragment) {
-            if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 1284122013, 0, (String) null, new Object[]{String.valueOf(taskFragment.getName())});
-            }
-            TaskFragmentInfo taskFragmentInfo = taskFragment.getTaskFragmentInfo();
-            int i = taskFragment.getTask().mTaskId;
-            taskFragment.mTaskFragmentAppearedSent = true;
-            this.mLastSentTaskFragmentInfos.put(taskFragment, taskFragmentInfo);
-            this.mTaskFragmentTaskIds.put(taskFragment, Integer.valueOf(i));
-            return new TaskFragmentTransaction.Change(1).setTaskFragmentToken(taskFragment.getFragmentToken()).setTaskFragmentInfo(taskFragmentInfo).setTaskId(i);
-        }
-
-        public TaskFragmentTransaction.Change prepareTaskFragmentVanished(TaskFragment taskFragment) {
-            int i;
-            if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -542756093, 0, (String) null, new Object[]{String.valueOf(taskFragment.getName())});
-            }
-            taskFragment.mTaskFragmentAppearedSent = false;
-            this.mLastSentTaskFragmentInfos.remove(taskFragment);
-            if (this.mTaskFragmentTaskIds.containsKey(taskFragment)) {
-                i = ((Integer) this.mTaskFragmentTaskIds.remove(taskFragment)).intValue();
-                if (!this.mTaskFragmentTaskIds.containsValue(Integer.valueOf(i))) {
-                    this.mLastSentTaskFragmentParentInfos.remove(i);
-                }
-            } else {
-                i = -1;
-            }
-            return new TaskFragmentTransaction.Change(3).setTaskFragmentToken(taskFragment.getFragmentToken()).setTaskFragmentInfo(taskFragment.getTaskFragmentInfo()).setTaskId(i);
-        }
-
-        public TaskFragmentTransaction.Change prepareTaskFragmentInfoChanged(TaskFragment taskFragment) {
-            TaskFragmentInfo taskFragmentInfo = taskFragment.getTaskFragmentInfo();
-            TaskFragmentInfo taskFragmentInfo2 = (TaskFragmentInfo) this.mLastSentTaskFragmentInfos.get(taskFragment);
-            if (taskFragmentInfo.equalsForTaskFragmentOrganizer(taskFragmentInfo2) && WindowOrganizerController.configurationsAreEqualForOrganizer(taskFragmentInfo.getConfiguration(), taskFragmentInfo2.getConfiguration())) {
-                return null;
-            }
-            if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 1022095595, 0, (String) null, new Object[]{String.valueOf(taskFragment.getName())});
-            }
-            this.mLastSentTaskFragmentInfos.put(taskFragment, taskFragmentInfo);
-            return new TaskFragmentTransaction.Change(2).setTaskFragmentToken(taskFragment.getFragmentToken()).setTaskFragmentInfo(taskFragmentInfo).setTaskId(taskFragment.getTask().mTaskId);
-        }
-
-        public TaskFragmentTransaction.Change prepareTaskFragmentParentInfoChanged(Task task) {
-            int i = task.mTaskId;
-            TaskFragmentParentInfo taskFragmentParentInfo = task.getTaskFragmentParentInfo();
-            TaskFragmentParentInfo taskFragmentParentInfo2 = (TaskFragmentParentInfo) this.mLastSentTaskFragmentParentInfos.get(i);
-            Configuration configuration = taskFragmentParentInfo2 != null ? taskFragmentParentInfo2.getConfiguration() : null;
-            if (taskFragmentParentInfo.equalsForTaskFragmentOrganizer(taskFragmentParentInfo2) && WindowOrganizerController.configurationsAreEqualForOrganizer(taskFragmentParentInfo.getConfiguration(), configuration)) {
-                return null;
-            }
-            if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -706481945, 4, (String) null, new Object[]{String.valueOf(task.getName()), Long.valueOf(i)});
-            }
-            this.mLastSentTaskFragmentParentInfos.put(i, new TaskFragmentParentInfo(taskFragmentParentInfo));
-            return new TaskFragmentTransaction.Change(4).setTaskId(i).setTaskFragmentParentInfo(taskFragmentParentInfo);
-        }
-
-        public TaskFragmentTransaction.Change prepareTaskFragmentError(IBinder iBinder, TaskFragment taskFragment, int i, Throwable th) {
-            if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 743418423, 0, (String) null, new Object[]{String.valueOf(th.toString())});
-            }
-            return new TaskFragmentTransaction.Change(5).setErrorCallbackToken(iBinder).setErrorBundle(TaskFragmentOrganizer.putErrorInfoInBundle(th, taskFragment != null ? taskFragment.getTaskFragmentInfo() : null, i));
-        }
-
-        public TaskFragmentTransaction.Change prepareActivityReparentedToTask(ActivityRecord activityRecord) {
-            IBinder iBinder;
-            if (activityRecord.finishing) {
-                Slog.d("TaskFragmentOrganizerController", "Reparent activity=" + activityRecord.token + " is finishing");
-                return null;
-            }
-            Task task = activityRecord.getTask();
-            if (task != null) {
-                int i = task.effectiveUid;
-                int i2 = this.mOrganizerUid;
-                if (i == i2) {
-                    if (task.isAllowedToEmbedActivity(activityRecord, i2) != 0 || !task.isAllowedToEmbedActivityInTrustedMode(activityRecord, this.mOrganizerUid)) {
-                        Slog.d("TaskFragmentOrganizerController", "Reparent activity=" + activityRecord.token + " is not allowed to be embedded in trusted mode.");
-                        return null;
-                    }
-                    if (activityRecord.getPid() == this.mOrganizerPid) {
-                        iBinder = activityRecord.token;
-                    } else {
-                        final Binder binder = new Binder("TemporaryActivityToken");
-                        this.mTemporaryActivityTokens.put(binder, activityRecord);
-                        TaskFragmentOrganizerController.this.mAtmService.mWindowManager.mH.postDelayed(new Runnable() { // from class: com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState$$ExternalSyntheticLambda0
-                            @Override // java.lang.Runnable
-                            public final void run() {
-                                TaskFragmentOrganizerController.TaskFragmentOrganizerState.this.lambda$prepareActivityReparentedToTask$0(binder);
-                            }
-                        }, 5000L);
-                        iBinder = binder;
-                    }
-                    if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 873160948, 4, (String) null, new Object[]{String.valueOf(activityRecord.token), Long.valueOf(task.mTaskId)});
-                    }
-                    return new TaskFragmentTransaction.Change(6).setTaskId(task.mTaskId).setActivityIntent(TaskFragmentOrganizerController.trimIntent(activityRecord.intent)).setActivityToken(iBinder);
-                }
-            }
-            Slog.d("TaskFragmentOrganizerController", "Reparent activity=" + activityRecord.token + " is not in a task belong to the organizer app.");
-            return null;
-        }
-
-        public /* synthetic */ void lambda$prepareActivityReparentedToTask$0(IBinder iBinder) {
-            WindowManagerGlobalLock windowManagerGlobalLock = TaskFragmentOrganizerController.this.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    this.mTemporaryActivityTokens.remove(iBinder);
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            WindowManagerService.resetPriorityAfterLockedSection();
-        }
-
-        public void dispatchTransaction(TaskFragmentTransaction taskFragmentTransaction) {
-            boolean z;
-            Task anyTaskForId;
+        public final void dispatchTransaction(TaskFragmentTransaction taskFragmentTransaction) {
             if (taskFragmentTransaction.isEmpty()) {
                 return;
             }
             try {
-                this.mOrganizer.onTransactionReady(taskFragmentTransaction);
-                if (CoreRune.MW_EMBED_ACTIVITY) {
-                    Iterator it = taskFragmentTransaction.getChanges().iterator();
-                    while (true) {
-                        z = false;
-                        if (!it.hasNext()) {
-                            break;
-                        }
-                        TaskFragmentTransaction.Change change = (TaskFragmentTransaction.Change) it.next();
-                        if (change.getType() == 4 && change.getTaskId() != -1 && (anyTaskForId = TaskFragmentOrganizerController.this.mAtmService.mRootWindowContainer.anyTaskForId(change.getTaskId(), 0)) != null && !anyTaskForId.isVisible() && anyTaskForId.isVisibleRequested() && anyTaskForId.mSharedStartingData != null) {
-                            z = true;
-                            break;
-                        }
-                    }
-                    if (z) {
-                        return;
-                    }
-                    onTransactionStarted(taskFragmentTransaction.getTransactionToken());
-                    return;
+                if (Flags.bundleClientTransactionFlag()) {
+                    this.mAppThread.scheduleTaskFragmentTransaction(this.mOrganizer, taskFragmentTransaction);
+                } else {
+                    this.mOrganizer.onTransactionReady(taskFragmentTransaction);
                 }
-                onTransactionStarted(taskFragmentTransaction.getTransactionToken());
+                if (TaskFragmentOrganizerController.this.mWindowOrganizerController.mTransitionController.isCollecting()) {
+                    int i = -1;
+                    if (CoreRune.MW_EMBED_ACTIVITY) {
+                        for (TaskFragmentTransaction.Change change : taskFragmentTransaction.getChanges()) {
+                            if (change.getTaskId() != -1) {
+                                Task anyTaskForId = TaskFragmentOrganizerController.this.mAtmService.mRootWindowContainer.anyTaskForId(change.getTaskId(), 0, null, false);
+                                if (anyTaskForId == null) {
+                                    return;
+                                }
+                                if (change.getType() == 4 && !anyTaskForId.isVisible() && anyTaskForId.isVisibleRequested() && anyTaskForId.mSharedStartingData != null) {
+                                    return;
+                                }
+                                if (change.getType() == 2 && TaskFragmentOrganizerController.this.mWindowOrganizerController.mTransitionController.getCollectingTransitionType() == 1 && !TaskFragmentOrganizerController.this.mWindowOrganizerController.mTransitionController.isCollecting(anyTaskForId) && !anyTaskForId.isVisible() && !anyTaskForId.isVisibleRequested()) {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    int collectingTransitionId = TaskFragmentOrganizerController.this.mWindowOrganizerController.mTransitionController.getCollectingTransitionId();
+                    if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_TRANSITIONS_enabled[1]) {
+                        ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_TRANSITIONS, 7048981249808281819L, 1, null, Long.valueOf(collectingTransitionId), String.valueOf(taskFragmentTransaction.getTransactionToken()));
+                    }
+                    if (CoreRune.MW_EMBED_ACTIVITY_DEBUG_LOG) {
+                        Iterator it = taskFragmentTransaction.getChanges().iterator();
+                        while (true) {
+                            if (!it.hasNext()) {
+                                break;
+                            }
+                            TaskFragmentTransaction.Change change2 = (TaskFragmentTransaction.Change) it.next();
+                            if (change2.getTaskId() != -1) {
+                                i = change2.getTaskId();
+                                break;
+                            }
+                        }
+                        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(collectingTransitionId, "Defer transition id=", " for TaskFragmentTransaction=");
+                        m.append(taskFragmentTransaction.getTransactionToken());
+                        m.append(", taskId=");
+                        m.append(i);
+                        Slog.d("TaskFragmentOrganizerController", m.toString());
+                    }
+                    this.mDeferredTransitions.put(taskFragmentTransaction.getTransactionToken(), Integer.valueOf(collectingTransitionId));
+                    TaskFragmentOrganizerController.this.mWindowOrganizerController.mTransitionController.deferTransitionReady();
+                    Transition.ReadyCondition readyCondition = new Transition.ReadyCondition("task-fragment transaction", taskFragmentTransaction);
+                    TaskFragmentOrganizerController.this.mWindowOrganizerController.mTransitionController.waitFor(readyCondition);
+                    this.mInFlightTransactions.put(taskFragmentTransaction.getTransactionToken(), readyCondition);
+                }
             } catch (RemoteException e) {
                 Slog.d("TaskFragmentOrganizerController", "Exception sending TaskFragmentTransaction", e);
             }
         }
 
-        public void onTransactionStarted(IBinder iBinder) {
-            if (TaskFragmentOrganizerController.this.mWindowOrganizerController.getTransitionController().isCollecting()) {
-                int collectingTransitionId = TaskFragmentOrganizerController.this.mWindowOrganizerController.getTransitionController().getCollectingTransitionId();
-                if (ProtoLogCache.WM_DEBUG_WINDOW_TRANSITIONS_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_TRANSITIONS, 1046228706, 1, (String) null, new Object[]{Long.valueOf(collectingTransitionId), String.valueOf(iBinder)});
-                }
-                this.mDeferredTransitions.put(iBinder, Integer.valueOf(collectingTransitionId));
-                TaskFragmentOrganizerController.this.mWindowOrganizerController.getTransitionController().deferTransitionReady();
-            }
-        }
-
-        public void onTransactionFinished(IBinder iBinder) {
+        public final void onTransactionFinished(IBinder iBinder) {
             if (this.mDeferredTransitions.containsKey(iBinder)) {
                 int intValue = ((Integer) this.mDeferredTransitions.remove(iBinder)).intValue();
-                if (!TaskFragmentOrganizerController.this.mWindowOrganizerController.getTransitionController().isCollecting() || TaskFragmentOrganizerController.this.mWindowOrganizerController.getTransitionController().getCollectingTransitionId() != intValue) {
-                    if (ProtoLogCache.WM_DEBUG_WINDOW_TRANSITIONS_enabled) {
-                        ProtoLogImpl.w(ProtoLogGroup.WM_DEBUG_WINDOW_TRANSITIONS, 851368695, 1, (String) null, new Object[]{Long.valueOf(intValue), String.valueOf(iBinder)});
-                        return;
+                boolean isCollecting = TaskFragmentOrganizerController.this.mWindowOrganizerController.mTransitionController.isCollecting();
+                boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_TRANSITIONS_enabled;
+                if (isCollecting && TaskFragmentOrganizerController.this.mWindowOrganizerController.mTransitionController.getCollectingTransitionId() == intValue) {
+                    if (zArr[1]) {
+                        ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_TRANSITIONS, 7421521217481553621L, 1, null, Long.valueOf(intValue), String.valueOf(iBinder));
                     }
+                    if (CoreRune.MW_EMBED_ACTIVITY_DEBUG_LOG) {
+                        Slog.d("TaskFragmentOrganizerController", "Continue transition id=" + intValue + " for TaskFragmentTransaction=" + iBinder);
+                    }
+                    TaskFragmentOrganizerController.this.mWindowOrganizerController.mTransitionController.continueTransitionReady();
                     return;
                 }
-                if (ProtoLogCache.WM_DEBUG_WINDOW_TRANSITIONS_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_TRANSITIONS, 1075460705, 1, (String) null, new Object[]{Long.valueOf(intValue), String.valueOf(iBinder)});
+                if (zArr[3]) {
+                    ProtoLogImpl_54989576.w(ProtoLogGroup.WM_DEBUG_WINDOW_TRANSITIONS, -1315509853595025526L, 1, null, Long.valueOf(intValue), String.valueOf(iBinder));
                 }
-                TaskFragmentOrganizerController.this.mWindowOrganizerController.getTransitionController().continueTransitionReady();
+                if (CoreRune.MW_EMBED_ACTIVITY_DEBUG_LOG) {
+                    Slog.d("TaskFragmentOrganizerController", "Deferred transition id=" + intValue + " has been continued before the TaskFragmentTransaction=" + iBinder);
+                }
             }
         }
     }
 
-    public ActivityRecord getReparentActivityFromTemporaryToken(ITaskFragmentOrganizer iTaskFragmentOrganizer, IBinder iBinder) {
-        TaskFragmentOrganizerState taskFragmentOrganizerState;
-        if (iTaskFragmentOrganizer == null || iBinder == null || (taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(iTaskFragmentOrganizer.asBinder())) == null) {
-            return null;
-        }
-        return (ActivityRecord) taskFragmentOrganizerState.mTemporaryActivityTokens.remove(iBinder);
+    public TaskFragmentOrganizerController(ActivityTaskManagerService activityTaskManagerService, WindowOrganizerController windowOrganizerController) {
+        Objects.requireNonNull(activityTaskManagerService);
+        this.mAtmService = activityTaskManagerService;
+        this.mGlobalLock = activityTaskManagerService.mGlobalLock;
+        Objects.requireNonNull(windowOrganizerController);
+        this.mWindowOrganizerController = windowOrganizerController;
     }
 
-    public void registerOrganizer(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
+    public final void addPendingEvent(PendingTaskFragmentEvent pendingTaskFragmentEvent) {
+        ((List) this.mPendingTaskFragmentEvents.get(pendingTaskFragmentEvent.mTaskFragmentOrg.asBinder())).add(pendingTaskFragmentEvent);
+    }
+
+    public final void applyTransaction(WindowContainerTransaction windowContainerTransaction, int i, boolean z, RemoteTransition remoteTransition) {
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                if (!isValidTransaction(windowContainerTransaction)) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                } else {
+                    this.mWindowOrganizerController.applyTaskFragmentTransactionLocked(windowContainerTransaction, i, z, remoteTransition);
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                }
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+    }
+
+    public final void dispatchPendingInfoChangedEvent(TaskFragment taskFragment) {
+        PendingTaskFragmentEvent pendingTaskFragmentEvent = getPendingTaskFragmentEvent(taskFragment, 2);
+        if (pendingTaskFragmentEvent == null) {
+            return;
+        }
+        ITaskFragmentOrganizer iTaskFragmentOrganizer = taskFragment.mTaskFragmentOrganizer;
+        TaskFragmentOrganizerState validateAndGetState = validateAndGetState(iTaskFragmentOrganizer);
+        TaskFragmentTransaction taskFragmentTransaction = new TaskFragmentTransaction();
+        Task task = taskFragment.getTask();
+        Objects.requireNonNull(task);
+        taskFragmentTransaction.addChange(prepareChange(new PendingTaskFragmentEvent(3, iTaskFragmentOrganizer, null, null, null, null, null, null, task, 0)));
+        taskFragmentTransaction.addChange(prepareChange(pendingTaskFragmentEvent));
+        validateAndGetState.dispatchTransaction(taskFragmentTransaction);
+        ((List) this.mPendingTaskFragmentEvents.get(iTaskFragmentOrganizer.asBinder())).remove(pendingTaskFragmentEvent);
+    }
+
+    public IApplicationThread getAppThread(int i, int i2) {
+        WindowProcessController process = this.mAtmService.mProcessMap.getProcess(i);
+        IApplicationThread iApplicationThread = (process == null || process.mUid != i2) ? null : process.mThread;
+        if (iApplicationThread != null) {
+            return iApplicationThread;
+        }
+        throw new IllegalArgumentException(ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "Cannot find process for pid=", " uid="));
+    }
+
+    public final PendingTaskFragmentEvent getPendingTaskFragmentEvent(TaskFragment taskFragment, int i) {
+        List list = (List) this.mPendingTaskFragmentEvents.get(taskFragment.mTaskFragmentOrganizer.asBinder());
+        for (int size = list.size() - 1; size >= 0; size--) {
+            PendingTaskFragmentEvent pendingTaskFragmentEvent = (PendingTaskFragmentEvent) list.get(size);
+            if (taskFragment == pendingTaskFragmentEvent.mTaskFragment && i == pendingTaskFragmentEvent.mEventType) {
+                return pendingTaskFragmentEvent;
+            }
+        }
+        return null;
+    }
+
+    public final boolean isActivityEmbedded(IBinder iBinder) {
+        boolean z;
+        TaskFragment organizedTaskFragment;
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                ActivityRecord forTokenLocked = ActivityRecord.forTokenLocked(iBinder);
+                z = false;
+                if (forTokenLocked != null && (organizedTaskFragment = forTokenLocked.getOrganizedTaskFragment()) != null && organizedTaskFragment.isEmbeddedWithBoundsOverride()) {
+                    z = true;
+                }
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
+        return z;
+    }
+
+    public final boolean isSupportActivityEmbedded(String str) {
+        boolean embedActivityPackageEnabled;
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                embedActivityPackageEnabled = this.mAtmService.mMultiTaskingController.getEmbedActivityPackageEnabled(str, UserHandle.getCallingUserId());
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
+        return embedActivityPackageEnabled;
+    }
+
+    public final boolean isSystemOrganizer(IBinder iBinder) {
+        TaskFragmentOrganizerState taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(iBinder);
+        return taskFragmentOrganizerState != null && taskFragmentOrganizerState.mIsSystemOrganizer;
+    }
+
+    public final boolean isValidTransaction(WindowContainerTransaction windowContainerTransaction) {
+        if (windowContainerTransaction.isEmpty()) {
+            return false;
+        }
+        ITaskFragmentOrganizer taskFragmentOrganizer = windowContainerTransaction.getTaskFragmentOrganizer();
+        if (windowContainerTransaction.getTaskFragmentOrganizer() != null && this.mTaskFragmentOrganizerState.containsKey(taskFragmentOrganizer.asBinder())) {
+            return true;
+        }
+        Slog.e("TaskFragmentOrganizerController", "Caller organizer=" + taskFragmentOrganizer + " is no longer registered");
+        return false;
+    }
+
+    public final void onActivityReparentedToTask(final ActivityRecord activityRecord) {
+        Task task = activityRecord.task;
+        ITaskFragmentOrganizer iTaskFragmentOrganizer = activityRecord.mLastTaskFragmentOrganizerBeforePip;
+        if (iTaskFragmentOrganizer == null) {
+            final TaskFragment[] taskFragmentArr = new TaskFragment[1];
+            task.forAllLeafTaskFragments(new Predicate() { // from class: com.android.server.wm.TaskFragmentOrganizerController$$ExternalSyntheticLambda0
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    TaskFragment[] taskFragmentArr2 = taskFragmentArr;
+                    TaskFragment taskFragment = (TaskFragment) obj;
+                    if (!taskFragment.isOrganizedTaskFragment()) {
+                        return false;
+                    }
+                    taskFragmentArr2[0] = taskFragment;
+                    return true;
+                }
+            });
+            TaskFragment taskFragment = taskFragmentArr[0];
+            if (taskFragment == null) {
+                return;
+            } else {
+                iTaskFragmentOrganizer = taskFragment.mTaskFragmentOrganizer;
+            }
+        }
+        ITaskFragmentOrganizer iTaskFragmentOrganizer2 = iTaskFragmentOrganizer;
+        if (!this.mTaskFragmentOrganizerState.containsKey(iTaskFragmentOrganizer2.asBinder())) {
+            Slog.w("TaskFragmentOrganizerController", "The last TaskFragmentOrganizer no longer exists");
+            return;
+        }
+        final IBinder iBinder = activityRecord.mLastEmbeddedParentTfTokenBeforePip;
+        ActivityRecord activity = task.getActivity(new Predicate() { // from class: com.android.server.wm.TaskFragmentOrganizerController$$ExternalSyntheticLambda1
+            @Override // java.util.function.Predicate
+            public final boolean test(Object obj) {
+                ActivityRecord activityRecord2 = (ActivityRecord) obj;
+                return (activityRecord2 == ActivityRecord.this || activityRecord2.finishing || activityRecord2.getTaskFragment().mFragmentToken == iBinder) ? false : true;
+            }
+        });
+        addPendingEvent(new PendingTaskFragmentEvent(5, iTaskFragmentOrganizer2, null, iBinder, null, null, activityRecord, (activity == null || (activity.isEmbedded() && !activity.getTaskFragment().fillsParent())) ? null : activity, null, 0));
+    }
+
+    public final void onTransactionHandled(IBinder iBinder, WindowContainerTransaction windowContainerTransaction, int i, boolean z) {
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                if (isValidTransaction(windowContainerTransaction)) {
+                    applyTransaction(windowContainerTransaction, i, z, null);
+                }
+                ITaskFragmentOrganizer taskFragmentOrganizer = windowContainerTransaction.getTaskFragmentOrganizer();
+                TaskFragmentOrganizerState taskFragmentOrganizerState = taskFragmentOrganizer != null ? (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(taskFragmentOrganizer.asBinder()) : null;
+                if (taskFragmentOrganizerState != null) {
+                    taskFragmentOrganizerState.onTransactionFinished(iBinder);
+                    Transition.ReadyCondition readyCondition = (Transition.ReadyCondition) taskFragmentOrganizerState.mInFlightTransactions.remove(iBinder);
+                    if (readyCondition != null) {
+                        readyCondition.meet();
+                    }
+                }
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
+    }
+
+    public final TaskFragmentTransaction.Change prepareChange(PendingTaskFragmentEvent pendingTaskFragmentEvent) {
+        int i;
+        boolean z;
+        final IBinder binder;
+        ActivityRecord activityRecord;
+        final TaskFragmentOrganizerState taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(pendingTaskFragmentEvent.mTaskFragmentOrg.asBinder());
+        if (taskFragmentOrganizerState == null) {
+            return null;
+        }
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_ORGANIZER_enabled;
+        int i2 = pendingTaskFragmentEvent.mEventType;
+        TaskFragment taskFragment = pendingTaskFragmentEvent.mTaskFragment;
+        if (i2 == 0) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -2808577027789344626L, 0, null, String.valueOf(taskFragment.getName()));
+            }
+            TaskFragmentInfo taskFragmentInfo = taskFragment.getTaskFragmentInfo();
+            int i3 = taskFragment.getTask().mTaskId;
+            taskFragment.mTaskFragmentAppearedSent = true;
+            ((WeakHashMap) taskFragmentOrganizerState.mLastSentTaskFragmentInfos).put(taskFragment, taskFragmentInfo);
+            ((WeakHashMap) taskFragmentOrganizerState.mTaskFragmentTaskIds).put(taskFragment, Integer.valueOf(i3));
+            TaskFragmentTransaction.Change taskId = new TaskFragmentTransaction.Change(1).setTaskFragmentToken(taskFragment.mFragmentToken).setTaskFragmentInfo(taskFragmentInfo).setTaskId(i3);
+            if (taskFragmentOrganizerState.mIsSystemOrganizer) {
+                taskId.setTaskFragmentSurfaceControl(taskFragment.mSurfaceControl);
+            }
+            return taskId;
+        }
+        if (i2 == 1) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -3582112419663037270L, 0, null, String.valueOf(taskFragment.getName()));
+            }
+            taskFragment.mTaskFragmentAppearedSent = false;
+            ((WeakHashMap) taskFragmentOrganizerState.mLastSentTaskFragmentInfos).remove(taskFragment);
+            if (((WeakHashMap) taskFragmentOrganizerState.mTaskFragmentTaskIds).containsKey(taskFragment)) {
+                Integer num = (Integer) ((WeakHashMap) taskFragmentOrganizerState.mTaskFragmentTaskIds).remove(taskFragment);
+                i = num.intValue();
+                if (!((WeakHashMap) taskFragmentOrganizerState.mTaskFragmentTaskIds).containsValue(num)) {
+                    taskFragmentOrganizerState.mLastSentTaskFragmentParentInfos.remove(i);
+                }
+            } else {
+                i = -1;
+            }
+            return new TaskFragmentTransaction.Change(3).setTaskFragmentToken(taskFragment.mFragmentToken).setTaskFragmentInfo(taskFragment.getTaskFragmentInfo()).setTaskId(i);
+        }
+        if (i2 == 2) {
+            TaskFragmentInfo taskFragmentInfo2 = taskFragment.getTaskFragmentInfo();
+            TaskFragmentInfo taskFragmentInfo3 = (TaskFragmentInfo) ((WeakHashMap) taskFragmentOrganizerState.mLastSentTaskFragmentInfos).get(taskFragment);
+            if (taskFragmentInfo2.equalsForTaskFragmentOrganizer(taskFragmentInfo3) && WindowOrganizerController.configurationsAreEqualForOrganizer(taskFragmentInfo2.getConfiguration(), taskFragmentInfo3.getConfiguration())) {
+                return null;
+            }
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 3294593748816836746L, 0, null, String.valueOf(taskFragment.getName()));
+            }
+            ((WeakHashMap) taskFragmentOrganizerState.mLastSentTaskFragmentInfos).put(taskFragment, taskFragmentInfo2);
+            return new TaskFragmentTransaction.Change(2).setTaskFragmentToken(taskFragment.mFragmentToken).setTaskFragmentInfo(taskFragmentInfo2).setTaskId(taskFragment.getTask().mTaskId);
+        }
+        if (i2 == 3) {
+            Task task = pendingTaskFragmentEvent.mTask;
+            int i4 = task.mTaskId;
+            Configuration configuration = task.getConfiguration();
+            int displayId = task.getDisplayId();
+            boolean shouldBeVisible = task.shouldBeVisible(null);
+            int childCount = task.getChildCount() - 1;
+            while (true) {
+                if (childCount >= 0) {
+                    ActivityRecord asActivityRecord = task.getChildAt(childCount).asActivityRecord();
+                    if (asActivityRecord != null && !asActivityRecord.finishing) {
+                        z = true;
+                        break;
+                    }
+                    childCount--;
+                } else {
+                    z = false;
+                    break;
+                }
+            }
+            Task.DecorSurfaceContainer decorSurfaceContainer = task.mDecorSurfaceContainer;
+            TaskFragmentParentInfo taskFragmentParentInfo = new TaskFragmentParentInfo(configuration, displayId, shouldBeVisible, z, decorSurfaceContainer != null ? decorSurfaceContainer.mDecorSurface : null);
+            TaskFragmentParentInfo taskFragmentParentInfo2 = (TaskFragmentParentInfo) taskFragmentOrganizerState.mLastSentTaskFragmentParentInfos.get(i4);
+            Configuration configuration2 = taskFragmentParentInfo2 != null ? taskFragmentParentInfo2.getConfiguration() : null;
+            if (taskFragmentParentInfo.equalsForTaskFragmentOrganizer(taskFragmentParentInfo2) && WindowOrganizerController.configurationsAreEqualForOrganizer(taskFragmentParentInfo.getConfiguration(), configuration2)) {
+                return null;
+            }
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 5007230330523630579L, 4, null, String.valueOf(task.getName()), Long.valueOf(i4));
+            }
+            taskFragmentOrganizerState.mLastSentTaskFragmentParentInfos.put(i4, new TaskFragmentParentInfo(taskFragmentParentInfo));
+            return new TaskFragmentTransaction.Change(4).setTaskId(i4).setTaskFragmentParentInfo(taskFragmentParentInfo);
+        }
+        if (i2 == 4) {
+            IBinder iBinder = pendingTaskFragmentEvent.mErrorCallbackToken;
+            Throwable th = pendingTaskFragmentEvent.mException;
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 6475066005515810081L, 0, null, String.valueOf(th.toString()));
+            }
+            return new TaskFragmentTransaction.Change(5).setErrorCallbackToken(iBinder).setErrorBundle(TaskFragmentOrganizer.putErrorInfoInBundle(th, taskFragment != null ? taskFragment.getTaskFragmentInfo() : null, pendingTaskFragmentEvent.mOpType));
+        }
+        if (i2 != 5) {
+            throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i2, "Unknown TaskFragmentEvent="));
+        }
+        IBinder iBinder2 = pendingTaskFragmentEvent.mTaskFragmentToken;
+        ActivityRecord activityRecord2 = pendingTaskFragmentEvent.mActivity;
+        if (activityRecord2.finishing) {
+            Slog.d("TaskFragmentOrganizerController", "Reparent activity=" + activityRecord2.token + " is finishing");
+        } else {
+            Task task2 = activityRecord2.task;
+            if (task2 != null) {
+                int i5 = task2.effectiveUid;
+                int i6 = taskFragmentOrganizerState.mOrganizerUid;
+                if (i5 == i6) {
+                    if (task2.isAllowedToEmbedActivity(i6, activityRecord2) != 0) {
+                        Slog.d("TaskFragmentOrganizerController", "Reparent activity=" + activityRecord2.token + " is not allowed to be embedded.");
+                    } else {
+                        if (!task2.isAllowedToEmbedActivityInTrustedMode(taskFragmentOrganizerState.mOrganizerUid, activityRecord2)) {
+                            if (!(Flags.untrustedEmbeddingStateSharing() ? activityRecord2.mAllowUntrustedEmbeddingStateSharing : false)) {
+                                Slog.d("TaskFragmentOrganizerController", "Reparent activity=" + activityRecord2.token + " is not allowed to be shared with untrusted host.");
+                            }
+                        }
+                        if (activityRecord2.getPid() == taskFragmentOrganizerState.mOrganizerPid) {
+                            binder = activityRecord2.token;
+                        } else {
+                            binder = new Binder("TemporaryActivityToken");
+                            ((WeakHashMap) taskFragmentOrganizerState.mTemporaryActivityTokens).put(binder, activityRecord2);
+                            TaskFragmentOrganizerController.this.mAtmService.mWindowManager.mH.postDelayed(new Runnable() { // from class: com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState$$ExternalSyntheticLambda1
+                                @Override // java.lang.Runnable
+                                public final void run() {
+                                    TaskFragmentOrganizerController.TaskFragmentOrganizerState taskFragmentOrganizerState2 = TaskFragmentOrganizerController.TaskFragmentOrganizerState.this;
+                                    IBinder iBinder3 = binder;
+                                    WindowManagerGlobalLock windowManagerGlobalLock = TaskFragmentOrganizerController.this.mGlobalLock;
+                                    WindowManagerService.boostPriorityForLockedSection();
+                                    synchronized (windowManagerGlobalLock) {
+                                        try {
+                                            ((WeakHashMap) taskFragmentOrganizerState2.mTemporaryActivityTokens).remove(iBinder3);
+                                        } catch (Throwable th2) {
+                                            WindowManagerService.resetPriorityAfterLockedSection();
+                                            throw th2;
+                                        }
+                                    }
+                                    WindowManagerService.resetPriorityAfterLockedSection();
+                                }
+                            }, 5000L);
+                        }
+                        if (zArr[1]) {
+                            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -7893265697482064583L, 4, null, String.valueOf(activityRecord2.token), Long.valueOf(task2.mTaskId));
+                        }
+                        TaskFragmentTransaction.Change taskId2 = new TaskFragmentTransaction.Change(6).setTaskId(task2.mTaskId);
+                        Intent intent = activityRecord2.intent;
+                        r0 = taskId2.setActivityIntent(new Intent().setComponent(intent.getComponent()).setPackage(intent.getPackage()).setAction(intent.getAction())).setActivityToken(binder);
+                        if (iBinder2 != null) {
+                            r0.setTaskFragmentToken(iBinder2);
+                        }
+                        if (Flags.fixPipRestoreToOverlay() && (activityRecord = pendingTaskFragmentEvent.mOtherActivity) != null && activityRecord.getPid() == taskFragmentOrganizerState.mOrganizerPid) {
+                            r0.setOtherActivityToken(activityRecord.token);
+                        }
+                    }
+                }
+            }
+            Slog.d("TaskFragmentOrganizerController", "Reparent activity=" + activityRecord2.token + " is not in a task belong to the organizer app.");
+        }
+        return r0;
+    }
+
+    public final void registerOrganizer(ITaskFragmentOrganizer iTaskFragmentOrganizer, boolean z) {
+        boolean z2 = Flags.taskFragmentSystemOrganizerFlag() && z;
+        if (z2) {
+            ActivityTaskManagerService.enforceTaskPermission("registerSystemOrganizer()");
+        }
         int callingPid = Binder.getCallingPid();
         int callingUid = Binder.getCallingUid();
         WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
             try {
-                if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 1653025361, 20, (String) null, new Object[]{String.valueOf(iTaskFragmentOrganizer.asBinder()), Long.valueOf(callingUid), Long.valueOf(callingPid)});
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_ORGANIZER_enabled[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 3509684748201636981L, 20, null, String.valueOf(iTaskFragmentOrganizer.asBinder()), Long.valueOf(callingUid), Long.valueOf(callingPid));
                 }
-                if (isOrganizerRegistered(iTaskFragmentOrganizer)) {
+                if (this.mTaskFragmentOrganizerState.containsKey(iTaskFragmentOrganizer.asBinder())) {
                     throw new IllegalStateException("Replacing existing organizer currently unsupported");
                 }
-                this.mTaskFragmentOrganizerState.put(iTaskFragmentOrganizer.asBinder(), new TaskFragmentOrganizerState(iTaskFragmentOrganizer, callingPid, callingUid));
+                this.mTaskFragmentOrganizerState.put(iTaskFragmentOrganizer.asBinder(), new TaskFragmentOrganizerState(iTaskFragmentOrganizer, callingPid, callingUid, z2));
                 this.mPendingTaskFragmentEvents.put(iTaskFragmentOrganizer.asBinder(), new ArrayList());
             } catch (Throwable th) {
                 WindowManagerService.resetPriorityAfterLockedSection();
@@ -332,39 +585,15 @@ public class TaskFragmentOrganizerController extends ITaskFragmentOrganizerContr
         WindowManagerService.resetPriorityAfterLockedSection();
     }
 
-    public void unregisterOrganizer(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
-        int callingPid = Binder.getCallingPid();
-        long callingUid = Binder.getCallingUid();
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -1311436264, 20, (String) null, new Object[]{String.valueOf(iTaskFragmentOrganizer.asBinder()), Long.valueOf(callingUid), Long.valueOf(callingPid)});
-                    }
-                    removeOrganizer(iTaskFragmentOrganizer);
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            WindowManagerService.resetPriorityAfterLockedSection();
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void registerRemoteAnimations(ITaskFragmentOrganizer iTaskFragmentOrganizer, RemoteAnimationDefinition remoteAnimationDefinition) {
+    public final void registerRemoteAnimations(ITaskFragmentOrganizer iTaskFragmentOrganizer, RemoteAnimationDefinition remoteAnimationDefinition) {
         int callingPid = Binder.getCallingPid();
         int callingUid = Binder.getCallingUid();
         WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
             try {
-                if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 1210037962, 20, (String) null, new Object[]{String.valueOf(iTaskFragmentOrganizer.asBinder()), Long.valueOf(callingUid), Long.valueOf(callingPid)});
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_ORGANIZER_enabled[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 1327792561585467865L, 20, null, String.valueOf(iTaskFragmentOrganizer.asBinder()), Long.valueOf(callingUid), Long.valueOf(callingPid));
                 }
                 TaskFragmentOrganizerState taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(iTaskFragmentOrganizer.asBinder());
                 if (taskFragmentOrganizerState == null) {
@@ -383,15 +612,89 @@ public class TaskFragmentOrganizerController extends ITaskFragmentOrganizerContr
         WindowManagerService.resetPriorityAfterLockedSection();
     }
 
-    public void unregisterRemoteAnimations(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
+    public final void removeOrganizer(ITaskFragmentOrganizer iTaskFragmentOrganizer, String str) {
+        TaskFragmentOrganizerState taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(iTaskFragmentOrganizer.asBinder());
+        if (taskFragmentOrganizerState == null) {
+            Slog.w("TaskFragmentOrganizerController", "The organizer has already been removed.");
+            return;
+        }
+        this.mPendingTaskFragmentEvents.remove(iTaskFragmentOrganizer.asBinder());
+        boolean z = false;
+        for (int size = taskFragmentOrganizerState.mOrganizedTaskFragments.size() - 1; size >= 0; size--) {
+            TaskFragment taskFragment = (TaskFragment) taskFragmentOrganizerState.mOrganizedTaskFragments.get(size);
+            if (taskFragment.isVisibleRequested()) {
+                z = true;
+            }
+            taskFragment.mTaskFragmentOrganizer = null;
+        }
+        TransitionController transitionController = TaskFragmentOrganizerController.this.mAtmService.mWindowOrganizerController.mTransitionController;
+        if (z && transitionController.isShellTransitionsEnabled() && !transitionController.isCollecting()) {
+            Task task = ((TaskFragment) taskFragmentOrganizerState.mOrganizedTaskFragments.get(0)).getTask();
+            boolean z2 = (task == null || task.getActivity(new TaskFragmentOrganizerController$TaskFragmentOrganizerState$$ExternalSyntheticLambda0()) == null) ? false : true;
+            Transition createTransition = transitionController.createTransition(2, 0);
+            if (z2) {
+                task = null;
+            }
+            transitionController.requestStartTransition(createTransition, task, null, null);
+        }
+        TaskFragmentOrganizerController.this.mAtmService.deferWindowLayout();
+        while (!taskFragmentOrganizerState.mOrganizedTaskFragments.isEmpty()) {
+            try {
+                ((TaskFragment) taskFragmentOrganizerState.mOrganizedTaskFragments.remove(0)).removeImmediately();
+            } catch (Throwable th) {
+                TaskFragmentOrganizerController.this.mAtmService.continueWindowLayout();
+                throw th;
+            }
+        }
+        TaskFragmentOrganizerController.this.mAtmService.continueWindowLayout();
+        for (int size2 = taskFragmentOrganizerState.mDeferredTransitions.size() - 1; size2 >= 0; size2--) {
+            taskFragmentOrganizerState.onTransactionFinished((IBinder) taskFragmentOrganizerState.mDeferredTransitions.keyAt(size2));
+        }
+        for (int size3 = taskFragmentOrganizerState.mInFlightTransactions.size() - 1; size3 >= 0; size3--) {
+            Transition.ReadyCondition readyCondition = (Transition.ReadyCondition) taskFragmentOrganizerState.mInFlightTransactions.valueAt(size3);
+            String m = XmlUtils$$ExternalSyntheticOutline0.m("disposed(", str, ")");
+            if (!readyCondition.mMet) {
+                readyCondition.mAlternate = m;
+                readyCondition.meet();
+            }
+        }
+        taskFragmentOrganizerState.mOrganizer.asBinder().unlinkToDeath(taskFragmentOrganizerState, 0);
+        this.mTaskFragmentOrganizerState.remove(iTaskFragmentOrganizer.asBinder());
+    }
+
+    public final void unregisterOrganizer(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
+        int callingPid = Binder.getCallingPid();
+        long callingUid = Binder.getCallingUid();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_ORGANIZER_enabled[1]) {
+                        ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -6777461169027010201L, 20, null, String.valueOf(iTaskFragmentOrganizer.asBinder()), Long.valueOf(callingUid), Long.valueOf(callingPid));
+                    }
+                    removeOrganizer(iTaskFragmentOrganizer, "unregistered");
+                } catch (Throwable th) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
+            }
+            WindowManagerService.resetPriorityAfterLockedSection();
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final void unregisterRemoteAnimations(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
         int callingPid = Binder.getCallingPid();
         long callingUid = Binder.getCallingUid();
         WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
             try {
-                if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -70719599, 20, (String) null, new Object[]{String.valueOf(iTaskFragmentOrganizer.asBinder()), Long.valueOf(callingUid), Long.valueOf(callingPid)});
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_ORGANIZER_enabled[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -2524361347368208519L, 20, null, String.valueOf(iTaskFragmentOrganizer.asBinder()), Long.valueOf(callingUid), Long.valueOf(callingPid));
                 }
                 TaskFragmentOrganizerState taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(iTaskFragmentOrganizer.asBinder());
                 if (taskFragmentOrganizerState == null) {
@@ -408,497 +711,11 @@ public class TaskFragmentOrganizerController extends ITaskFragmentOrganizerContr
         }
     }
 
-    public void onTransactionHandled(IBinder iBinder, WindowContainerTransaction windowContainerTransaction, int i, boolean z) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                if (isValidTransaction(windowContainerTransaction)) {
-                    applyTransaction(windowContainerTransaction, i, z);
-                }
-                ITaskFragmentOrganizer taskFragmentOrganizer = windowContainerTransaction.getTaskFragmentOrganizer();
-                TaskFragmentOrganizerState taskFragmentOrganizerState = taskFragmentOrganizer != null ? (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(taskFragmentOrganizer.asBinder()) : null;
-                if (taskFragmentOrganizerState != null) {
-                    taskFragmentOrganizerState.onTransactionFinished(iBinder);
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public void applyTransaction(WindowContainerTransaction windowContainerTransaction, int i, boolean z) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                if (!isValidTransaction(windowContainerTransaction)) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                } else {
-                    this.mWindowOrganizerController.applyTaskFragmentTransactionLocked(windowContainerTransaction, i, z);
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-    }
-
-    public RemoteAnimationDefinition getRemoteAnimationDefinition(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                TaskFragmentOrganizerState taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(iTaskFragmentOrganizer.asBinder());
-                if (taskFragmentOrganizerState == null) {
-                    Slog.e("TaskFragmentOrganizerController", "TaskFragmentOrganizer has been unregistered or died when trying to play animation on its organized windows.");
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    return null;
-                }
-                RemoteAnimationDefinition remoteAnimationDefinition = taskFragmentOrganizerState.mRemoteAnimationDefinition;
-                WindowManagerService.resetPriorityAfterLockedSection();
-                return remoteAnimationDefinition;
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-    }
-
-    public int getTaskFragmentOrganizerUid(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
-        return validateAndGetState(iTaskFragmentOrganizer).mOrganizerUid;
-    }
-
-    public void onTaskFragmentAppeared(ITaskFragmentOrganizer iTaskFragmentOrganizer, TaskFragment taskFragment) {
-        if (taskFragment.mTaskFragmentVanishedSent) {
-            return;
-        }
-        if (taskFragment.getTask() == null) {
-            Slog.w("TaskFragmentOrganizerController", "onTaskFragmentAppeared failed because it is not attached tf=" + taskFragment);
-            return;
-        }
-        if (validateAndGetState(iTaskFragmentOrganizer).addTaskFragment(taskFragment) && getPendingTaskFragmentEvent(taskFragment, 0) == null) {
-            addPendingEvent(new PendingTaskFragmentEvent.Builder(0, iTaskFragmentOrganizer).setTaskFragment(taskFragment).build());
-        }
-    }
-
-    public void onTaskFragmentInfoChanged(ITaskFragmentOrganizer iTaskFragmentOrganizer, TaskFragment taskFragment) {
-        if (taskFragment.mTaskFragmentVanishedSent) {
-            return;
-        }
-        validateAndGetState(iTaskFragmentOrganizer);
-        if (taskFragment.mTaskFragmentAppearedSent) {
-            PendingTaskFragmentEvent lastPendingLifecycleEvent = getLastPendingLifecycleEvent(taskFragment);
-            if (lastPendingLifecycleEvent == null) {
-                lastPendingLifecycleEvent = new PendingTaskFragmentEvent.Builder(2, iTaskFragmentOrganizer).setTaskFragment(taskFragment).build();
-            } else {
-                removePendingEvent(lastPendingLifecycleEvent);
-                lastPendingLifecycleEvent.mDeferTime = 0L;
-            }
-            addPendingEvent(lastPendingLifecycleEvent);
-        }
-    }
-
-    public void onTaskFragmentVanished(ITaskFragmentOrganizer iTaskFragmentOrganizer, TaskFragment taskFragment) {
-        if (taskFragment.mTaskFragmentVanishedSent) {
-            return;
-        }
-        taskFragment.mTaskFragmentVanishedSent = true;
-        TaskFragmentOrganizerState validateAndGetState = validateAndGetState(iTaskFragmentOrganizer);
-        List list = (List) this.mPendingTaskFragmentEvents.get(iTaskFragmentOrganizer.asBinder());
-        for (int size = list.size() - 1; size >= 0; size--) {
-            if (taskFragment == ((PendingTaskFragmentEvent) list.get(size)).mTaskFragment) {
-                list.remove(size);
-            }
-        }
-        addPendingEvent(new PendingTaskFragmentEvent.Builder(1, iTaskFragmentOrganizer).setTaskFragment(taskFragment).build());
-        validateAndGetState.removeTaskFragment(taskFragment);
-        this.mAtmService.mWindowManager.mWindowPlacerLocked.requestTraversal();
-    }
-
-    public void onTaskFragmentError(ITaskFragmentOrganizer iTaskFragmentOrganizer, IBinder iBinder, TaskFragment taskFragment, int i, Throwable th) {
-        if (taskFragment == null || !taskFragment.mTaskFragmentVanishedSent) {
-            validateAndGetState(iTaskFragmentOrganizer);
-            Slog.w("TaskFragmentOrganizerController", "onTaskFragmentError ", th);
-            addPendingEvent(new PendingTaskFragmentEvent.Builder(4, iTaskFragmentOrganizer).setErrorCallbackToken(iBinder).setTaskFragment(taskFragment).setException(th).setOpType(i).build());
-            this.mAtmService.mWindowManager.mWindowPlacerLocked.requestTraversal();
-        }
-    }
-
-    public void onActivityReparentedToTask(ActivityRecord activityRecord) {
-        ITaskFragmentOrganizer iTaskFragmentOrganizer = activityRecord.mLastTaskFragmentOrganizerBeforePip;
-        if (iTaskFragmentOrganizer == null) {
-            final TaskFragment[] taskFragmentArr = new TaskFragment[1];
-            activityRecord.getTask().forAllLeafTaskFragments(new Predicate() { // from class: com.android.server.wm.TaskFragmentOrganizerController$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$onActivityReparentedToTask$0;
-                    lambda$onActivityReparentedToTask$0 = TaskFragmentOrganizerController.lambda$onActivityReparentedToTask$0(taskFragmentArr, (TaskFragment) obj);
-                    return lambda$onActivityReparentedToTask$0;
-                }
-            });
-            TaskFragment taskFragment = taskFragmentArr[0];
-            if (taskFragment == null) {
-                return;
-            } else {
-                iTaskFragmentOrganizer = taskFragment.getTaskFragmentOrganizer();
-            }
-        }
-        if (!isOrganizerRegistered(iTaskFragmentOrganizer)) {
-            Slog.w("TaskFragmentOrganizerController", "The last TaskFragmentOrganizer no longer exists");
-        } else {
-            addPendingEvent(new PendingTaskFragmentEvent.Builder(5, iTaskFragmentOrganizer).setActivity(activityRecord).build());
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$onActivityReparentedToTask$0(TaskFragment[] taskFragmentArr, TaskFragment taskFragment) {
-        if (!taskFragment.isOrganizedTaskFragment()) {
-            return false;
-        }
-        taskFragmentArr[0] = taskFragment;
-        return true;
-    }
-
-    public void onTaskFragmentParentInfoChanged(ITaskFragmentOrganizer iTaskFragmentOrganizer, Task task) {
-        validateAndGetState(iTaskFragmentOrganizer);
-        if (getLastPendingParentInfoChangedEvent(iTaskFragmentOrganizer, task) == null) {
-            addPendingEvent(new PendingTaskFragmentEvent.Builder(3, iTaskFragmentOrganizer).setTask(task).build());
-        }
-    }
-
-    public final PendingTaskFragmentEvent getLastPendingParentInfoChangedEvent(ITaskFragmentOrganizer iTaskFragmentOrganizer, Task task) {
-        List list = (List) this.mPendingTaskFragmentEvents.get(iTaskFragmentOrganizer.asBinder());
-        for (int size = list.size() - 1; size >= 0; size--) {
-            PendingTaskFragmentEvent pendingTaskFragmentEvent = (PendingTaskFragmentEvent) list.get(size);
-            if (task == pendingTaskFragmentEvent.mTask && pendingTaskFragmentEvent.mEventType == 3) {
-                return pendingTaskFragmentEvent;
-            }
-        }
-        return null;
-    }
-
-    public final void addPendingEvent(PendingTaskFragmentEvent pendingTaskFragmentEvent) {
-        ((List) this.mPendingTaskFragmentEvents.get(pendingTaskFragmentEvent.mTaskFragmentOrg.asBinder())).add(pendingTaskFragmentEvent);
-    }
-
-    public final void removePendingEvent(PendingTaskFragmentEvent pendingTaskFragmentEvent) {
-        ((List) this.mPendingTaskFragmentEvents.get(pendingTaskFragmentEvent.mTaskFragmentOrg.asBinder())).remove(pendingTaskFragmentEvent);
-    }
-
-    public final boolean isOrganizerRegistered(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
-        return this.mTaskFragmentOrganizerState.containsKey(iTaskFragmentOrganizer.asBinder());
-    }
-
-    public final void removeOrganizer(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
-        TaskFragmentOrganizerState taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(iTaskFragmentOrganizer.asBinder());
-        if (taskFragmentOrganizerState == null) {
-            Slog.w("TaskFragmentOrganizerController", "The organizer has already been removed.");
-            return;
-        }
-        this.mPendingTaskFragmentEvents.remove(iTaskFragmentOrganizer.asBinder());
-        taskFragmentOrganizerState.dispose();
-        this.mTaskFragmentOrganizerState.remove(iTaskFragmentOrganizer.asBinder());
-    }
-
     public final TaskFragmentOrganizerState validateAndGetState(ITaskFragmentOrganizer iTaskFragmentOrganizer) {
         TaskFragmentOrganizerState taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(iTaskFragmentOrganizer.asBinder());
         if (taskFragmentOrganizerState != null) {
             return taskFragmentOrganizerState;
         }
         throw new IllegalArgumentException("TaskFragmentOrganizer has not been registered. Organizer=" + iTaskFragmentOrganizer);
-    }
-
-    public boolean isValidTransaction(WindowContainerTransaction windowContainerTransaction) {
-        if (windowContainerTransaction.isEmpty()) {
-            return false;
-        }
-        ITaskFragmentOrganizer taskFragmentOrganizer = windowContainerTransaction.getTaskFragmentOrganizer();
-        if (windowContainerTransaction.getTaskFragmentOrganizer() != null && isOrganizerRegistered(taskFragmentOrganizer)) {
-            return true;
-        }
-        Slog.e("TaskFragmentOrganizerController", "Caller organizer=" + taskFragmentOrganizer + " is no longer registered");
-        return false;
-    }
-
-    /* loaded from: classes3.dex */
-    public class PendingTaskFragmentEvent {
-        public final ActivityRecord mActivity;
-        public long mDeferTime;
-        public final IBinder mErrorCallbackToken;
-        public final int mEventType;
-        public final Throwable mException;
-        public int mOpType;
-        public final Task mTask;
-        public final TaskFragment mTaskFragment;
-        public final ITaskFragmentOrganizer mTaskFragmentOrg;
-
-        public /* synthetic */ PendingTaskFragmentEvent(int i, ITaskFragmentOrganizer iTaskFragmentOrganizer, TaskFragment taskFragment, IBinder iBinder, Throwable th, ActivityRecord activityRecord, Task task, int i2, PendingTaskFragmentEventIA pendingTaskFragmentEventIA) {
-            this(i, iTaskFragmentOrganizer, taskFragment, iBinder, th, activityRecord, task, i2);
-        }
-
-        public PendingTaskFragmentEvent(int i, ITaskFragmentOrganizer iTaskFragmentOrganizer, TaskFragment taskFragment, IBinder iBinder, Throwable th, ActivityRecord activityRecord, Task task, int i2) {
-            this.mEventType = i;
-            this.mTaskFragmentOrg = iTaskFragmentOrganizer;
-            this.mTaskFragment = taskFragment;
-            this.mErrorCallbackToken = iBinder;
-            this.mException = th;
-            this.mActivity = activityRecord;
-            this.mTask = task;
-            this.mOpType = i2;
-        }
-
-        public boolean isLifecycleEvent() {
-            int i = this.mEventType;
-            return i == 0 || i == 1 || i == 2 || i == 3;
-        }
-
-        /* loaded from: classes3.dex */
-        public class Builder {
-            public ActivityRecord mActivity;
-            public IBinder mErrorCallbackToken;
-            public final int mEventType;
-            public Throwable mException;
-            public int mOpType;
-            public Task mTask;
-            public TaskFragment mTaskFragment;
-            public final ITaskFragmentOrganizer mTaskFragmentOrg;
-
-            public Builder(int i, ITaskFragmentOrganizer iTaskFragmentOrganizer) {
-                this.mEventType = i;
-                Objects.requireNonNull(iTaskFragmentOrganizer);
-                this.mTaskFragmentOrg = iTaskFragmentOrganizer;
-            }
-
-            public Builder setTaskFragment(TaskFragment taskFragment) {
-                this.mTaskFragment = taskFragment;
-                return this;
-            }
-
-            public Builder setErrorCallbackToken(IBinder iBinder) {
-                this.mErrorCallbackToken = iBinder;
-                return this;
-            }
-
-            public Builder setException(Throwable th) {
-                Objects.requireNonNull(th);
-                this.mException = th;
-                return this;
-            }
-
-            public Builder setActivity(ActivityRecord activityRecord) {
-                Objects.requireNonNull(activityRecord);
-                this.mActivity = activityRecord;
-                return this;
-            }
-
-            public Builder setTask(Task task) {
-                Objects.requireNonNull(task);
-                this.mTask = task;
-                return this;
-            }
-
-            public Builder setOpType(int i) {
-                this.mOpType = i;
-                return this;
-            }
-
-            public PendingTaskFragmentEvent build() {
-                return new PendingTaskFragmentEvent(this.mEventType, this.mTaskFragmentOrg, this.mTaskFragment, this.mErrorCallbackToken, this.mException, this.mActivity, this.mTask, this.mOpType);
-            }
-        }
-    }
-
-    public final PendingTaskFragmentEvent getLastPendingLifecycleEvent(TaskFragment taskFragment) {
-        List list = (List) this.mPendingTaskFragmentEvents.get(taskFragment.getTaskFragmentOrganizer().asBinder());
-        for (int size = list.size() - 1; size >= 0; size--) {
-            PendingTaskFragmentEvent pendingTaskFragmentEvent = (PendingTaskFragmentEvent) list.get(size);
-            if (taskFragment == pendingTaskFragmentEvent.mTaskFragment && pendingTaskFragmentEvent.isLifecycleEvent()) {
-                return pendingTaskFragmentEvent;
-            }
-        }
-        return null;
-    }
-
-    public final PendingTaskFragmentEvent getPendingTaskFragmentEvent(TaskFragment taskFragment, int i) {
-        List list = (List) this.mPendingTaskFragmentEvents.get(taskFragment.getTaskFragmentOrganizer().asBinder());
-        for (int size = list.size() - 1; size >= 0; size--) {
-            PendingTaskFragmentEvent pendingTaskFragmentEvent = (PendingTaskFragmentEvent) list.get(size);
-            if (taskFragment == pendingTaskFragmentEvent.mTaskFragment && i == pendingTaskFragmentEvent.mEventType) {
-                return pendingTaskFragmentEvent;
-            }
-        }
-        return null;
-    }
-
-    public void dispatchPendingEvents() {
-        if (this.mAtmService.mWindowManager.mWindowPlacerLocked.isLayoutDeferred() || this.mPendingTaskFragmentEvents.isEmpty()) {
-            return;
-        }
-        int size = this.mPendingTaskFragmentEvents.size();
-        for (int i = 0; i < size; i++) {
-            dispatchPendingEvents((TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(this.mPendingTaskFragmentEvents.keyAt(i)), (List) this.mPendingTaskFragmentEvents.valueAt(i));
-        }
-    }
-
-    public final void dispatchPendingEvents(TaskFragmentOrganizerState taskFragmentOrganizerState, List list) {
-        if (list.isEmpty() || shouldDeferPendingEvents(taskFragmentOrganizerState, list)) {
-            return;
-        }
-        this.mTmpTaskSet.clear();
-        int size = list.size();
-        TaskFragmentTransaction taskFragmentTransaction = new TaskFragmentTransaction();
-        for (int i = 0; i < size; i++) {
-            PendingTaskFragmentEvent pendingTaskFragmentEvent = (PendingTaskFragmentEvent) list.get(i);
-            if (pendingTaskFragmentEvent.mEventType == 0 || pendingTaskFragmentEvent.mEventType == 2) {
-                Task task = pendingTaskFragmentEvent.mTaskFragment.getTask();
-                if (this.mTmpTaskSet.add(task)) {
-                    taskFragmentTransaction.addChange(prepareChange(new PendingTaskFragmentEvent.Builder(3, taskFragmentOrganizerState.mOrganizer).setTask(task).build()));
-                }
-            }
-            taskFragmentTransaction.addChange(prepareChange(pendingTaskFragmentEvent));
-        }
-        this.mTmpTaskSet.clear();
-        taskFragmentOrganizerState.dispatchTransaction(taskFragmentTransaction);
-        list.clear();
-    }
-
-    public final boolean shouldDeferPendingEvents(TaskFragmentOrganizerState taskFragmentOrganizerState, List list) {
-        Task task;
-        ArrayList arrayList = new ArrayList();
-        ArrayList arrayList2 = new ArrayList();
-        int size = list.size();
-        for (int i = 0; i < size; i++) {
-            PendingTaskFragmentEvent pendingTaskFragmentEvent = (PendingTaskFragmentEvent) list.get(i);
-            if (pendingTaskFragmentEvent.mEventType != 3 && pendingTaskFragmentEvent.mEventType != 2 && pendingTaskFragmentEvent.mEventType != 0) {
-                return false;
-            }
-            if (pendingTaskFragmentEvent.mEventType == 3) {
-                task = pendingTaskFragmentEvent.mTask;
-            } else {
-                task = pendingTaskFragmentEvent.mTaskFragment.getTask();
-            }
-            if ((task.lastActiveTime > pendingTaskFragmentEvent.mDeferTime && isTaskVisible(task, arrayList, arrayList2)) || shouldSendEventWhenTaskInvisible(task, taskFragmentOrganizerState, pendingTaskFragmentEvent)) {
-                return false;
-            }
-            pendingTaskFragmentEvent.mDeferTime = task.lastActiveTime;
-        }
-        return true;
-    }
-
-    public static boolean isTaskVisible(Task task, ArrayList arrayList, ArrayList arrayList2) {
-        if (arrayList.contains(task)) {
-            return true;
-        }
-        if (arrayList2.contains(task)) {
-            return false;
-        }
-        if (task.shouldBeVisible(null)) {
-            arrayList.add(task);
-            return true;
-        }
-        arrayList2.add(task);
-        return false;
-    }
-
-    public final boolean shouldSendEventWhenTaskInvisible(Task task, TaskFragmentOrganizerState taskFragmentOrganizerState, PendingTaskFragmentEvent pendingTaskFragmentEvent) {
-        TaskFragmentParentInfo taskFragmentParentInfo = (TaskFragmentParentInfo) taskFragmentOrganizerState.mLastSentTaskFragmentParentInfos.get(task.mTaskId);
-        if (taskFragmentParentInfo == null || taskFragmentParentInfo.isVisible()) {
-            return true;
-        }
-        if (pendingTaskFragmentEvent.mEventType != 2) {
-            return false;
-        }
-        TaskFragmentInfo taskFragmentInfo = (TaskFragmentInfo) taskFragmentOrganizerState.mLastSentTaskFragmentInfos.get(pendingTaskFragmentEvent.mTaskFragment);
-        return taskFragmentInfo == null || taskFragmentInfo.isEmpty() != (pendingTaskFragmentEvent.mTaskFragment.getNonFinishingActivityCount() == 0);
-    }
-
-    public void dispatchPendingInfoChangedEvent(TaskFragment taskFragment) {
-        PendingTaskFragmentEvent pendingTaskFragmentEvent = getPendingTaskFragmentEvent(taskFragment, 2);
-        if (pendingTaskFragmentEvent == null) {
-            return;
-        }
-        ITaskFragmentOrganizer taskFragmentOrganizer = taskFragment.getTaskFragmentOrganizer();
-        TaskFragmentOrganizerState validateAndGetState = validateAndGetState(taskFragmentOrganizer);
-        TaskFragmentTransaction taskFragmentTransaction = new TaskFragmentTransaction();
-        taskFragmentTransaction.addChange(prepareChange(new PendingTaskFragmentEvent.Builder(3, taskFragmentOrganizer).setTask(taskFragment.getTask()).build()));
-        taskFragmentTransaction.addChange(prepareChange(pendingTaskFragmentEvent));
-        validateAndGetState.dispatchTransaction(taskFragmentTransaction);
-        ((List) this.mPendingTaskFragmentEvents.get(taskFragmentOrganizer.asBinder())).remove(pendingTaskFragmentEvent);
-    }
-
-    public final TaskFragmentTransaction.Change prepareChange(PendingTaskFragmentEvent pendingTaskFragmentEvent) {
-        ITaskFragmentOrganizer iTaskFragmentOrganizer = pendingTaskFragmentEvent.mTaskFragmentOrg;
-        TaskFragment taskFragment = pendingTaskFragmentEvent.mTaskFragment;
-        TaskFragmentOrganizerState taskFragmentOrganizerState = (TaskFragmentOrganizerState) this.mTaskFragmentOrganizerState.get(iTaskFragmentOrganizer.asBinder());
-        if (taskFragmentOrganizerState == null) {
-            return null;
-        }
-        int i = pendingTaskFragmentEvent.mEventType;
-        if (i == 0) {
-            return taskFragmentOrganizerState.prepareTaskFragmentAppeared(taskFragment);
-        }
-        if (i == 1) {
-            return taskFragmentOrganizerState.prepareTaskFragmentVanished(taskFragment);
-        }
-        if (i == 2) {
-            return taskFragmentOrganizerState.prepareTaskFragmentInfoChanged(taskFragment);
-        }
-        if (i == 3) {
-            return taskFragmentOrganizerState.prepareTaskFragmentParentInfoChanged(pendingTaskFragmentEvent.mTask);
-        }
-        if (i == 4) {
-            return taskFragmentOrganizerState.prepareTaskFragmentError(pendingTaskFragmentEvent.mErrorCallbackToken, taskFragment, pendingTaskFragmentEvent.mOpType, pendingTaskFragmentEvent.mException);
-        }
-        if (i == 5) {
-            return taskFragmentOrganizerState.prepareActivityReparentedToTask(pendingTaskFragmentEvent.mActivity);
-        }
-        throw new IllegalArgumentException("Unknown TaskFragmentEvent=" + pendingTaskFragmentEvent.mEventType);
-    }
-
-    public boolean isActivityEmbedded(IBinder iBinder) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                ActivityRecord forTokenLocked = ActivityRecord.forTokenLocked(iBinder);
-                boolean z = false;
-                if (forTokenLocked == null) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    return false;
-                }
-                TaskFragment organizedTaskFragment = forTokenLocked.getOrganizedTaskFragment();
-                if (organizedTaskFragment != null && organizedTaskFragment.isEmbeddedWithBoundsOverride()) {
-                    z = true;
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-                return z;
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-    }
-
-    public boolean isSupportActivityEmbedded(String str) {
-        boolean embedActivityPackageEnabled;
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                embedActivityPackageEnabled = this.mAtmService.mMultiTaskingController.getEmbedActivityPackageEnabled(str, UserHandle.getCallingUserId());
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-        return embedActivityPackageEnabled;
-    }
-
-    public static Intent trimIntent(Intent intent) {
-        return new Intent().setComponent(intent.getComponent()).setPackage(intent.getPackage()).setAction(intent.getAction());
     }
 }

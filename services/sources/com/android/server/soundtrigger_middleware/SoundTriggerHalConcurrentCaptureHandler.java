@@ -10,7 +10,6 @@ import android.media.soundtrigger_middleware.RecognitionEventSys;
 import android.os.IBinder;
 import com.android.server.soundtrigger_middleware.ICaptureStateNotifier;
 import com.android.server.soundtrigger_middleware.ISoundTriggerHal;
-import com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -20,11 +19,12 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-/* loaded from: classes3.dex */
-public class SoundTriggerHalConcurrentCaptureHandler implements ISoundTriggerHal, ICaptureStateNotifier.Listener {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SoundTriggerHalConcurrentCaptureHandler implements ISoundTriggerHal, ICaptureStateNotifier.Listener {
     public boolean mCaptureState;
     public final ISoundTriggerHal mDelegate;
-    public ISoundTriggerHal.GlobalCallback mGlobalCallback;
+    public SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0 mGlobalCallback;
     public final ICaptureStateNotifier mNotifier;
     public final Object mStartStopLock = new Object();
     public final Map mLoadedModels = new ConcurrentHashMap();
@@ -32,249 +32,50 @@ public class SoundTriggerHalConcurrentCaptureHandler implements ISoundTriggerHal
     public final Map mDeathRecipientMap = new ConcurrentHashMap();
     public final CallbackThread mCallbackThread = new CallbackThread();
 
-    /* loaded from: classes3.dex */
-    public class LoadedModel {
-        public final ISoundTriggerHal.ModelCallback callback;
-        public final int type;
-
-        public LoadedModel(int i, ISoundTriggerHal.ModelCallback modelCallback) {
-            this.type = i;
-            this.callback = modelCallback;
-        }
-    }
-
-    public SoundTriggerHalConcurrentCaptureHandler(ISoundTriggerHal iSoundTriggerHal, ICaptureStateNotifier iCaptureStateNotifier) {
-        this.mDelegate = iSoundTriggerHal;
-        this.mNotifier = iCaptureStateNotifier;
-        this.mCaptureState = iCaptureStateNotifier.registerListener(this);
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void startRecognition(int i, int i2, int i3, RecognitionConfig recognitionConfig) {
-        synchronized (this.mStartStopLock) {
-            synchronized (this.mActiveModels) {
-                if (this.mCaptureState) {
-                    throw new RecoverableException(1);
-                }
-                this.mDelegate.startRecognition(i, i2, i3, recognitionConfig);
-                this.mActiveModels.add(Integer.valueOf(i));
-            }
-        }
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void stopRecognition(int i) {
-        boolean remove;
-        synchronized (this.mStartStopLock) {
-            synchronized (this.mActiveModels) {
-                remove = this.mActiveModels.remove(Integer.valueOf(i));
-            }
-            if (remove) {
-                this.mDelegate.stopRecognition(i);
-            }
-        }
-        this.mCallbackThread.flush();
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ICaptureStateNotifier.Listener
-    public void onCaptureStateChange(boolean z) {
-        synchronized (this.mStartStopLock) {
-            if (z) {
-                abortAllActiveModels();
-            } else {
-                ISoundTriggerHal.GlobalCallback globalCallback = this.mGlobalCallback;
-                if (globalCallback != null) {
-                    globalCallback.onResourcesAvailable();
-                }
-            }
-            this.mCaptureState = z;
-        }
-    }
-
-    public final void abortAllActiveModels() {
-        final int intValue;
-        while (true) {
-            synchronized (this.mActiveModels) {
-                Iterator it = this.mActiveModels.iterator();
-                if (!it.hasNext()) {
-                    return;
-                }
-                intValue = ((Integer) it.next()).intValue();
-                this.mActiveModels.remove(Integer.valueOf(intValue));
-            }
-            this.mDelegate.stopRecognition(intValue);
-            final LoadedModel loadedModel = (LoadedModel) this.mLoadedModels.get(Integer.valueOf(intValue));
-            this.mCallbackThread.push(new Runnable() { // from class: com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    SoundTriggerHalConcurrentCaptureHandler.notifyAbort(intValue, loadedModel);
-                }
-            });
-        }
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public int loadSoundModel(SoundModel soundModel, ISoundTriggerHal.ModelCallback modelCallback) {
-        int loadSoundModel = this.mDelegate.loadSoundModel(soundModel, new CallbackWrapper(modelCallback));
-        this.mLoadedModels.put(Integer.valueOf(loadSoundModel), new LoadedModel(1, modelCallback));
-        return loadSoundModel;
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public int loadPhraseSoundModel(PhraseSoundModel phraseSoundModel, ISoundTriggerHal.ModelCallback modelCallback) {
-        int loadPhraseSoundModel = this.mDelegate.loadPhraseSoundModel(phraseSoundModel, new CallbackWrapper(modelCallback));
-        this.mLoadedModels.put(Integer.valueOf(loadPhraseSoundModel), new LoadedModel(0, modelCallback));
-        return loadPhraseSoundModel;
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void unloadSoundModel(int i) {
-        this.mLoadedModels.remove(Integer.valueOf(i));
-        this.mDelegate.unloadSoundModel(i);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$registerCallback$1(final ISoundTriggerHal.GlobalCallback globalCallback) {
-        CallbackThread callbackThread = this.mCallbackThread;
-        Objects.requireNonNull(globalCallback);
-        callbackThread.push(new Runnable() { // from class: com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda3
-            @Override // java.lang.Runnable
-            public final void run() {
-                ISoundTriggerHal.GlobalCallback.this.onResourcesAvailable();
-            }
-        });
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void registerCallback(final ISoundTriggerHal.GlobalCallback globalCallback) {
-        ISoundTriggerHal.GlobalCallback globalCallback2 = new ISoundTriggerHal.GlobalCallback() { // from class: com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda1
-            @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal.GlobalCallback
-            public final void onResourcesAvailable() {
-                SoundTriggerHalConcurrentCaptureHandler.this.lambda$registerCallback$1(globalCallback);
-            }
-        };
-        this.mGlobalCallback = globalCallback2;
-        this.mDelegate.registerCallback(globalCallback2);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$linkToDeath$2(final IBinder.DeathRecipient deathRecipient) {
-        CallbackThread callbackThread = this.mCallbackThread;
-        Objects.requireNonNull(deathRecipient);
-        callbackThread.push(new Runnable() { // from class: com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda4
-            @Override // java.lang.Runnable
-            public final void run() {
-                deathRecipient.binderDied();
-            }
-        });
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void linkToDeath(final IBinder.DeathRecipient deathRecipient) {
-        IBinder.DeathRecipient deathRecipient2 = new IBinder.DeathRecipient() { // from class: com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0
-            @Override // android.os.IBinder.DeathRecipient
-            public final void binderDied() {
-                SoundTriggerHalConcurrentCaptureHandler.this.lambda$linkToDeath$2(deathRecipient);
-            }
-        };
-        this.mDelegate.linkToDeath(deathRecipient2);
-        this.mDeathRecipientMap.put(deathRecipient, deathRecipient2);
-    }
-
-    /* loaded from: classes3.dex */
-    public class CallbackWrapper implements ISoundTriggerHal.ModelCallback {
-        public final ISoundTriggerHal.ModelCallback mDelegateCallback;
-
-        public CallbackWrapper(ISoundTriggerHal.ModelCallback modelCallback) {
-            this.mDelegateCallback = modelCallback;
-        }
-
-        @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal.ModelCallback
-        public void recognitionCallback(final int i, final RecognitionEventSys recognitionEventSys) {
-            synchronized (SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels) {
-                if (SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels.contains(Integer.valueOf(i))) {
-                    if (!recognitionEventSys.recognitionEvent.recognitionStillActive) {
-                        SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels.remove(Integer.valueOf(i));
-                    }
-                    SoundTriggerHalConcurrentCaptureHandler.this.mCallbackThread.push(new Runnable() { // from class: com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler$CallbackWrapper$$ExternalSyntheticLambda2
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            SoundTriggerHalConcurrentCaptureHandler.CallbackWrapper.this.lambda$recognitionCallback$0(i, recognitionEventSys);
-                        }
-                    });
-                }
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$recognitionCallback$0(int i, RecognitionEventSys recognitionEventSys) {
-            this.mDelegateCallback.recognitionCallback(i, recognitionEventSys);
-        }
-
-        @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal.ModelCallback
-        public void phraseRecognitionCallback(final int i, final PhraseRecognitionEventSys phraseRecognitionEventSys) {
-            synchronized (SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels) {
-                if (SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels.contains(Integer.valueOf(i))) {
-                    if (!phraseRecognitionEventSys.phraseRecognitionEvent.common.recognitionStillActive) {
-                        SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels.remove(Integer.valueOf(i));
-                    }
-                    SoundTriggerHalConcurrentCaptureHandler.this.mCallbackThread.push(new Runnable() { // from class: com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler$CallbackWrapper$$ExternalSyntheticLambda1
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            SoundTriggerHalConcurrentCaptureHandler.CallbackWrapper.this.lambda$phraseRecognitionCallback$1(i, phraseRecognitionEventSys);
-                        }
-                    });
-                }
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$phraseRecognitionCallback$1(int i, PhraseRecognitionEventSys phraseRecognitionEventSys) {
-            this.mDelegateCallback.phraseRecognitionCallback(i, phraseRecognitionEventSys);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$modelUnloaded$2(int i) {
-            this.mDelegateCallback.modelUnloaded(i);
-        }
-
-        @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal.ModelCallback
-        public void modelUnloaded(final int i) {
-            SoundTriggerHalConcurrentCaptureHandler.this.mCallbackThread.push(new Runnable() { // from class: com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler$CallbackWrapper$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    SoundTriggerHalConcurrentCaptureHandler.CallbackWrapper.this.lambda$modelUnloaded$2(i);
-                }
-            });
-        }
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void clientAttached(IBinder iBinder) {
-        this.mDelegate.clientAttached(iBinder);
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void clientDetached(IBinder iBinder) {
-        this.mDelegate.clientDetached(iBinder);
-    }
-
-    /* loaded from: classes3.dex */
-    public class CallbackThread implements Runnable {
-        public final Thread mThread;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CallbackThread implements Runnable {
         public final Queue mList = new LinkedList();
         public int mPushCount = 0;
         public int mProcessedCount = 0;
         public boolean mQuitting = false;
 
         public CallbackThread() {
-            Thread thread = new Thread(this, "STHAL Concurrent Capture Handler Callback");
-            this.mThread = thread;
-            thread.start();
+            new Thread(this, "STHAL Concurrent Capture Handler Callback").start();
+        }
+
+        public final Runnable pop() {
+            synchronized (this.mList) {
+                while (this.mList.isEmpty() && !this.mQuitting) {
+                    try {
+                        this.mList.wait();
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+                if (this.mList.isEmpty() && this.mQuitting) {
+                    return null;
+                }
+                return (Runnable) ((LinkedList) this.mList).remove();
+            }
+        }
+
+        public final void push(Runnable runnable) {
+            synchronized (this.mList) {
+                try {
+                    if (this.mQuitting) {
+                        return;
+                    }
+                    ((LinkedList) this.mList).add(runnable);
+                    this.mPushCount++;
+                    this.mList.notifyAll();
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
         }
 
         @Override // java.lang.Runnable
-        public void run() {
+        public final void run() {
             while (true) {
                 try {
                     Runnable pop = pop();
@@ -291,97 +92,228 @@ public class SoundTriggerHalConcurrentCaptureHandler implements ISoundTriggerHal
                 }
             }
         }
+    }
 
-        public boolean push(Runnable runnable) {
-            synchronized (this.mList) {
-                if (this.mQuitting) {
-                    return false;
-                }
-                this.mList.add(runnable);
-                this.mPushCount++;
-                this.mList.notifyAll();
-                return true;
-            }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CallbackWrapper implements ISoundTriggerHal.ModelCallback {
+        public final ISoundTriggerHal.ModelCallback mDelegateCallback;
+
+        public CallbackWrapper(ISoundTriggerHal.ModelCallback modelCallback) {
+            this.mDelegateCallback = modelCallback;
         }
 
-        public void flush() {
-            try {
-                synchronized (this.mList) {
-                    int i = this.mPushCount;
-                    while (this.mProcessedCount < i) {
-                        this.mList.wait();
+        @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal.ModelCallback
+        public final void modelUnloaded(int i) {
+            SoundTriggerHalConcurrentCaptureHandler.this.mCallbackThread.push(new SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda1(this, i));
+        }
+
+        @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal.ModelCallback
+        public final void phraseRecognitionCallback(int i, PhraseRecognitionEventSys phraseRecognitionEventSys) {
+            synchronized (SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels) {
+                try {
+                    if (((HashSet) SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels).contains(Integer.valueOf(i))) {
+                        if (!phraseRecognitionEventSys.phraseRecognitionEvent.common.recognitionStillActive) {
+                            ((HashSet) SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels).remove(Integer.valueOf(i));
+                        }
+                        SoundTriggerHalConcurrentCaptureHandler.this.mCallbackThread.push(new SoundTriggerHalConcurrentCaptureHandler$CallbackWrapper$$ExternalSyntheticLambda0(this, i, phraseRecognitionEventSys));
                     }
+                } catch (Throwable th) {
+                    throw th;
                 }
-            } catch (InterruptedException unused) {
             }
         }
 
-        public void quit() {
-            synchronized (this.mList) {
-                this.mQuitting = true;
-                this.mList.notifyAll();
-            }
-        }
-
-        public final Runnable pop() {
-            synchronized (this.mList) {
-                while (this.mList.isEmpty() && !this.mQuitting) {
-                    this.mList.wait();
+        @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal.ModelCallback
+        public final void recognitionCallback(int i, RecognitionEventSys recognitionEventSys) {
+            synchronized (SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels) {
+                try {
+                    if (((HashSet) SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels).contains(Integer.valueOf(i))) {
+                        if (!recognitionEventSys.recognitionEvent.recognitionStillActive) {
+                            ((HashSet) SoundTriggerHalConcurrentCaptureHandler.this.mActiveModels).remove(Integer.valueOf(i));
+                        }
+                        SoundTriggerHalConcurrentCaptureHandler.this.mCallbackThread.push(new SoundTriggerHalConcurrentCaptureHandler$CallbackWrapper$$ExternalSyntheticLambda0(this, i, recognitionEventSys));
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
-                if (this.mList.isEmpty() && this.mQuitting) {
-                    return null;
-                }
-                return (Runnable) this.mList.remove();
             }
         }
     }
 
-    public static void notifyAbort(int i, LoadedModel loadedModel) {
-        int i2 = loadedModel.type;
-        if (i2 == 0) {
-            loadedModel.callback.phraseRecognitionCallback(i, AidlUtil.newAbortPhraseEvent());
-        } else {
-            if (i2 != 1) {
-                return;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LoadedModel {
+        public final ISoundTriggerHal.ModelCallback callback;
+        public final int type;
+
+        public LoadedModel(int i, ISoundTriggerHal.ModelCallback modelCallback) {
+            this.type = i;
+            this.callback = modelCallback;
+        }
+    }
+
+    public SoundTriggerHalConcurrentCaptureHandler(SoundTriggerHalMaxModelLimiter soundTriggerHalMaxModelLimiter, ICaptureStateNotifier iCaptureStateNotifier) {
+        this.mDelegate = soundTriggerHalMaxModelLimiter;
+        this.mNotifier = iCaptureStateNotifier;
+        this.mCaptureState = ((ExternalCaptureStateTracker) iCaptureStateNotifier).registerListener(this);
+    }
+
+    public final void abortAllActiveModels() {
+        Integer num;
+        int intValue;
+        while (true) {
+            synchronized (this.mActiveModels) {
+                try {
+                    Iterator it = ((HashSet) this.mActiveModels).iterator();
+                    if (!it.hasNext()) {
+                        return;
+                    }
+                    num = (Integer) it.next();
+                    intValue = num.intValue();
+                    ((HashSet) this.mActiveModels).remove(num);
+                } catch (Throwable th) {
+                    throw th;
+                }
             }
-            loadedModel.callback.recognitionCallback(i, AidlUtil.newAbortEvent());
+            this.mDelegate.stopRecognition(intValue);
+            this.mCallbackThread.push(new SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda1(intValue, (LoadedModel) ((ConcurrentHashMap) this.mLoadedModels).get(num)));
         }
     }
 
     @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void detach() {
+    public final void clientAttached(IBinder iBinder) {
+        this.mDelegate.clientAttached(iBinder);
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final void clientDetached(IBinder iBinder) {
+        this.mDelegate.clientDetached(iBinder);
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final void detach() {
         this.mDelegate.detach();
         this.mNotifier.unregisterListener(this);
-        this.mCallbackThread.quit();
+        CallbackThread callbackThread = this.mCallbackThread;
+        synchronized (callbackThread.mList) {
+            callbackThread.mQuitting = true;
+            callbackThread.mList.notifyAll();
+        }
     }
 
     @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void reboot() {
-        this.mDelegate.reboot();
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public Properties getProperties() {
-        return this.mDelegate.getProperties();
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void forceRecognitionEvent(int i) {
+    public final void forceRecognitionEvent(int i) {
         this.mDelegate.forceRecognitionEvent(i);
     }
 
     @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public int getModelParameter(int i, int i2) {
+    public final int getModelParameter(int i, int i2) {
         return this.mDelegate.getModelParameter(i, i2);
     }
 
     @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public void setModelParameter(int i, int i2, int i3) {
+    public final Properties getProperties() {
+        return this.mDelegate.getProperties();
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final void linkToDeath(final IBinder.DeathRecipient deathRecipient) {
+        IBinder.DeathRecipient deathRecipient2 = new IBinder.DeathRecipient() { // from class: com.android.server.soundtrigger_middleware.SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda2
+            @Override // android.os.IBinder.DeathRecipient
+            public final void binderDied() {
+                SoundTriggerHalConcurrentCaptureHandler soundTriggerHalConcurrentCaptureHandler = SoundTriggerHalConcurrentCaptureHandler.this;
+                IBinder.DeathRecipient deathRecipient3 = deathRecipient;
+                soundTriggerHalConcurrentCaptureHandler.getClass();
+                Objects.requireNonNull(deathRecipient3);
+                soundTriggerHalConcurrentCaptureHandler.mCallbackThread.push(new SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda3(1, deathRecipient3));
+            }
+        };
+        this.mDelegate.linkToDeath(deathRecipient2);
+        ((ConcurrentHashMap) this.mDeathRecipientMap).put(deathRecipient, deathRecipient2);
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final int loadPhraseSoundModel(PhraseSoundModel phraseSoundModel, ISoundTriggerHal.ModelCallback modelCallback) {
+        int loadPhraseSoundModel = this.mDelegate.loadPhraseSoundModel(phraseSoundModel, new CallbackWrapper(modelCallback));
+        ((ConcurrentHashMap) this.mLoadedModels).put(Integer.valueOf(loadPhraseSoundModel), new LoadedModel(0, modelCallback));
+        return loadPhraseSoundModel;
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final int loadSoundModel(SoundModel soundModel, ISoundTriggerHal.ModelCallback modelCallback) {
+        int loadSoundModel = this.mDelegate.loadSoundModel(soundModel, new CallbackWrapper(modelCallback));
+        ((ConcurrentHashMap) this.mLoadedModels).put(Integer.valueOf(loadSoundModel), new LoadedModel(1, modelCallback));
+        return loadSoundModel;
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final ModelParameterRange queryParameter(int i, int i2) {
+        return this.mDelegate.queryParameter(i, i2);
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final void reboot() {
+        this.mDelegate.reboot();
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final void registerCallback(ISoundTriggerHal.GlobalCallback globalCallback) {
+        SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0 soundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0 = new SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0(this, globalCallback);
+        this.mGlobalCallback = soundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0;
+        this.mDelegate.registerCallback(soundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0);
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final void setModelParameter(int i, int i2, int i3) {
         this.mDelegate.setModelParameter(i, i2, i3);
     }
 
     @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
-    public ModelParameterRange queryParameter(int i, int i2) {
-        return this.mDelegate.queryParameter(i, i2);
+    public final void startRecognition(int i, int i2, int i3, RecognitionConfig recognitionConfig) {
+        synchronized (this.mStartStopLock) {
+            synchronized (this.mActiveModels) {
+                if (this.mCaptureState) {
+                    throw new RecoverableException(1);
+                }
+                this.mDelegate.startRecognition(i, i2, i3, recognitionConfig);
+                ((HashSet) this.mActiveModels).add(Integer.valueOf(i));
+            }
+        }
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final void stopRecognition(int i) {
+        boolean remove;
+        synchronized (this.mStartStopLock) {
+            try {
+                synchronized (this.mActiveModels) {
+                    remove = ((HashSet) this.mActiveModels).remove(Integer.valueOf(i));
+                }
+                if (remove) {
+                    this.mDelegate.stopRecognition(i);
+                }
+            } finally {
+            }
+        }
+        CallbackThread callbackThread = this.mCallbackThread;
+        callbackThread.getClass();
+        try {
+            synchronized (callbackThread.mList) {
+                try {
+                    int i2 = callbackThread.mPushCount;
+                    while (callbackThread.mProcessedCount < i2) {
+                        callbackThread.mList.wait();
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        } catch (InterruptedException unused) {
+        }
+    }
+
+    @Override // com.android.server.soundtrigger_middleware.ISoundTriggerHal
+    public final void unloadSoundModel(int i) {
+        ((ConcurrentHashMap) this.mLoadedModels).remove(Integer.valueOf(i));
+        this.mDelegate.unloadSoundModel(i);
     }
 }

@@ -1,15 +1,40 @@
 package android.hardware.broadcastradio.V2_0;
 
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 import android.os.HidlSupport;
 import android.os.HwBlob;
 import android.os.HwParcel;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class DabTableEntry {
-    public String label = new String();
-    public int frequency = 0;
+    public int frequency;
+    public String label;
+
+    public static final ArrayList readVectorFromParcel(HwParcel hwParcel) {
+        ArrayList arrayList = new ArrayList();
+        HwBlob readBuffer = hwParcel.readBuffer(16L);
+        int int32 = readBuffer.getInt32(8L);
+        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 24, readBuffer.handle(), 0L, true);
+        arrayList.clear();
+        int i = 0;
+        int i2 = 0;
+        while (i2 < int32) {
+            DabTableEntry dabTableEntry = new DabTableEntry();
+            dabTableEntry.label = new String();
+            dabTableEntry.frequency = i;
+            long j = i2 * 24;
+            dabTableEntry.label = readEmbeddedBuffer.getString(j);
+            hwParcel.readEmbeddedBuffer(r3.getBytes().length + 1, readEmbeddedBuffer.handle(), j, false);
+            dabTableEntry.frequency = readEmbeddedBuffer.getInt32(j + 16);
+            arrayList.add(dabTableEntry);
+            i2++;
+            i = 0;
+        }
+        return arrayList;
+    }
 
     public final boolean equals(Object obj) {
         if (this == obj) {
@@ -23,49 +48,13 @@ public final class DabTableEntry {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.label)), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.frequency))));
+        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.label)), AudioConfig$$ExternalSyntheticOutline0.m(this.frequency));
     }
 
     public final String toString() {
-        return "{.label = " + this.label + ", .frequency = " + this.frequency + "}";
-    }
-
-    public static final ArrayList readVectorFromParcel(HwParcel hwParcel) {
-        ArrayList arrayList = new ArrayList();
-        HwBlob readBuffer = hwParcel.readBuffer(16L);
-        int int32 = readBuffer.getInt32(8L);
-        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 24, readBuffer.handle(), 0L, true);
-        arrayList.clear();
-        for (int i = 0; i < int32; i++) {
-            DabTableEntry dabTableEntry = new DabTableEntry();
-            dabTableEntry.readEmbeddedFromParcel(hwParcel, readEmbeddedBuffer, i * 24);
-            arrayList.add(dabTableEntry);
-        }
-        return arrayList;
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        long j2 = j + 0;
-        this.label = hwBlob.getString(j2);
-        hwParcel.readEmbeddedBuffer(r6.getBytes().length + 1, hwBlob.handle(), j2 + 0, false);
-        this.frequency = hwBlob.getInt32(j + 16);
-    }
-
-    public static final void writeVectorToParcel(HwParcel hwParcel, ArrayList arrayList) {
-        HwBlob hwBlob = new HwBlob(16);
-        int size = arrayList.size();
-        hwBlob.putInt32(8L, size);
-        hwBlob.putBool(12L, false);
-        HwBlob hwBlob2 = new HwBlob(size * 24);
-        for (int i = 0; i < size; i++) {
-            ((DabTableEntry) arrayList.get(i)).writeEmbeddedToBlob(hwBlob2, i * 24);
-        }
-        hwBlob.putBlob(0L, hwBlob2);
-        hwParcel.writeBuffer(hwBlob);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putString(0 + j, this.label);
-        hwBlob.putInt32(j + 16, this.frequency);
+        StringBuilder sb = new StringBuilder("{.label = ");
+        sb.append(this.label);
+        sb.append(", .frequency = ");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.frequency, sb, "}");
     }
 }

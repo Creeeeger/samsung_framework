@@ -1,11 +1,10 @@
 package com.android.server.wm;
 
 import android.util.ArraySet;
-import java.io.PrintWriter;
-import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class ActivityServiceConnectionsHolder {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ActivityServiceConnectionsHolder {
     public final ActivityRecord mActivity;
     public ArraySet mConnections;
     public volatile boolean mIsDisconnecting;
@@ -14,77 +13,7 @@ public class ActivityServiceConnectionsHolder {
         this.mActivity = activityRecord;
     }
 
-    public void addConnection(Object obj) {
-        synchronized (this.mActivity) {
-            if (this.mIsDisconnecting) {
-                return;
-            }
-            if (this.mConnections == null) {
-                this.mConnections = new ArraySet();
-            }
-            this.mConnections.add(obj);
-        }
-    }
-
-    public void removeConnection(Object obj) {
-        synchronized (this.mActivity) {
-            ArraySet arraySet = this.mConnections;
-            if (arraySet == null) {
-                return;
-            }
-            arraySet.remove(obj);
-        }
-    }
-
-    public boolean isActivityVisible() {
-        return this.mActivity.mVisibleForServiceConnection;
-    }
-
-    public int getActivityPid() {
-        WindowProcessController windowProcessController = this.mActivity.app;
-        if (windowProcessController != null) {
-            return windowProcessController.getPid();
-        }
-        return -1;
-    }
-
-    public void forEachConnection(Consumer consumer) {
-        synchronized (this.mActivity) {
-            ArraySet arraySet = this.mConnections;
-            if (arraySet != null && !arraySet.isEmpty()) {
-                ArraySet arraySet2 = new ArraySet(this.mConnections);
-                for (int size = arraySet2.size() - 1; size >= 0; size--) {
-                    consumer.accept(arraySet2.valueAt(size));
-                }
-            }
-        }
-    }
-
-    public void disconnectActivityFromServices() {
-        ArraySet arraySet = this.mConnections;
-        if (arraySet == null || arraySet.isEmpty() || this.mIsDisconnecting) {
-            return;
-        }
-        this.mIsDisconnecting = true;
-        this.mActivity.mAtmService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityServiceConnectionsHolder$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                ActivityServiceConnectionsHolder.this.lambda$disconnectActivityFromServices$0();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$disconnectActivityFromServices$0() {
-        this.mActivity.mAtmService.mAmInternal.disconnectActivityFromServices(this);
-        this.mIsDisconnecting = false;
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
-        printWriter.println(str + "activity=" + this.mActivity);
-    }
-
-    public String toString() {
+    public final String toString() {
         return String.valueOf(this.mConnections);
     }
 }

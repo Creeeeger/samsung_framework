@@ -1,67 +1,57 @@
 package com.android.server.location.gnss;
 
-import android.location.GnssNavigationMessage;
 import android.location.IGnssNavigationMessageListener;
 import android.location.LocationConstants;
 import android.location.util.identity.CallerIdentity;
-import android.os.IBinder;
 import android.os.IInterface;
 import android.util.Log;
-import com.android.internal.listeners.ListenerExecutor;
+import com.android.server.location.LocationManagerService;
 import com.android.server.location.gnss.GnssListenerMultiplexer;
 import com.android.server.location.gnss.hal.GnssNative;
-import com.android.server.location.injector.AppOpsHelper;
 import com.android.server.location.injector.Injector;
-import com.android.server.location.listeners.ListenerRegistration;
+import com.android.server.location.injector.SystemAppOpsHelper;
 import java.util.Collection;
-import java.util.function.Function;
 
-/* loaded from: classes2.dex */
-public class GnssNavigationMessageProvider extends GnssListenerMultiplexer implements GnssNative.BaseCallbacks, GnssNative.NavigationMessageCallbacks {
-    public final AppOpsHelper mAppOpsHelper;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class GnssNavigationMessageProvider extends GnssListenerMultiplexer implements GnssNative.BaseCallbacks, GnssNative.NavigationMessageCallbacks {
+    public final SystemAppOpsHelper mAppOpsHelper;
     public final GnssNative mGnssNative;
 
-    /* loaded from: classes2.dex */
-    public class GnssNavigationMessageListenerRegistration extends GnssListenerMultiplexer.GnssListenerRegistration {
-        public GnssNavigationMessageListenerRegistration(CallerIdentity callerIdentity, IGnssNavigationMessageListener iGnssNavigationMessageListener) {
-            super(null, callerIdentity, iGnssNavigationMessageListener);
-        }
-
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class GnssNavigationMessageListenerRegistration extends GnssListenerMultiplexer.GnssListenerRegistration {
         @Override // com.android.server.location.gnss.GnssListenerMultiplexer.GnssListenerRegistration, com.android.server.location.listeners.BinderListenerRegistration, com.android.server.location.listeners.RemovableListenerRegistration
-        public void onRegister() {
+        public final void onRegister() {
             super.onRegister();
-            executeOperation(new ListenerExecutor.ListenerOperation() { // from class: com.android.server.location.gnss.GnssNavigationMessageProvider$GnssNavigationMessageListenerRegistration$$ExternalSyntheticLambda0
-                public final void operate(Object obj) {
-                    ((IGnssNavigationMessageListener) obj).onStatusChanged(1);
-                }
-            });
+            executeOperation(new GnssNavigationMessageProvider$GnssNavigationMessageListenerRegistration$$ExternalSyntheticLambda0());
         }
     }
 
     public GnssNavigationMessageProvider(Injector injector, GnssNative gnssNative) {
         super(injector);
-        this.mAppOpsHelper = injector.getAppOpsHelper();
+        this.mAppOpsHelper = ((LocationManagerService.SystemInjector) injector).mAppOpsHelper;
         this.mGnssNative = gnssNative;
         gnssNative.addBaseCallbacks(this);
         gnssNative.addNavigationMessageCallbacks(this);
     }
 
     @Override // com.android.server.location.gnss.GnssListenerMultiplexer
-    public boolean isSupported() {
-        return this.mGnssNative.isNavigationMessageCollectionSupported();
-    }
-
-    public void addListener(CallerIdentity callerIdentity, IGnssNavigationMessageListener iGnssNavigationMessageListener) {
-        super.addListener(callerIdentity, (IInterface) iGnssNavigationMessageListener);
+    public final GnssListenerMultiplexer.GnssListenerRegistration createRegistration(Object obj, CallerIdentity callerIdentity, IInterface iInterface) {
+        return new GnssNavigationMessageListenerRegistration(callerIdentity, (IGnssNavigationMessageListener) iInterface, this, null);
     }
 
     @Override // com.android.server.location.gnss.GnssListenerMultiplexer
-    public GnssListenerMultiplexer.GnssListenerRegistration createRegistration(Void r1, CallerIdentity callerIdentity, IGnssNavigationMessageListener iGnssNavigationMessageListener) {
-        return new GnssNavigationMessageListenerRegistration(callerIdentity, iGnssNavigationMessageListener);
+    public final LocationConstants.LISTENER_TYPE getListenerType() {
+        return LocationConstants.LISTENER_TYPE.GNSS_NAVIGATION_MESSAGE;
+    }
+
+    @Override // com.android.server.location.gnss.GnssListenerMultiplexer
+    public final boolean isSupported() {
+        return this.mGnssNative.isNavigationMessageCollectionSupported();
     }
 
     @Override // com.android.server.location.listeners.ListenerMultiplexer
-    public boolean registerWithService(Void r1, Collection collection) {
+    public final boolean registerWithService(Collection collection, Object obj) {
         if (this.mGnssNative.startNavigationMessageCollection()) {
             Log.d("GnssManager", "starting gnss navigation messages");
             return true;
@@ -71,57 +61,11 @@ public class GnssNavigationMessageProvider extends GnssListenerMultiplexer imple
     }
 
     @Override // com.android.server.location.listeners.ListenerMultiplexer
-    public void unregisterWithService() {
+    public final void unregisterWithService() {
         if (this.mGnssNative.stopNavigationMessageCollection()) {
             Log.d("GnssManager", "stopping gnss navigation messages");
         } else {
             Log.e("GnssManager", "error stopping gnss navigation messages");
         }
-    }
-
-    @Override // com.android.server.location.gnss.hal.GnssNative.BaseCallbacks
-    public void onHalRestarted() {
-        resetService();
-    }
-
-    @Override // com.android.server.location.gnss.hal.GnssNative.NavigationMessageCallbacks
-    public void onReportNavigationMessage(final GnssNavigationMessage gnssNavigationMessage) {
-        deliverToListeners(new Function() { // from class: com.android.server.location.gnss.GnssNavigationMessageProvider$$ExternalSyntheticLambda0
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                ListenerExecutor.ListenerOperation lambda$onReportNavigationMessage$1;
-                lambda$onReportNavigationMessage$1 = GnssNavigationMessageProvider.this.lambda$onReportNavigationMessage$1(gnssNavigationMessage, (GnssListenerMultiplexer.GnssListenerRegistration) obj);
-                return lambda$onReportNavigationMessage$1;
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ ListenerExecutor.ListenerOperation lambda$onReportNavigationMessage$1(final GnssNavigationMessage gnssNavigationMessage, GnssListenerMultiplexer.GnssListenerRegistration gnssListenerRegistration) {
-        if (this.mAppOpsHelper.noteOpNoThrow(1, gnssListenerRegistration.getIdentity())) {
-            return new ListenerExecutor.ListenerOperation() { // from class: com.android.server.location.gnss.GnssNavigationMessageProvider$$ExternalSyntheticLambda1
-                public final void operate(Object obj) {
-                    ((IGnssNavigationMessageListener) obj).onGnssNavigationMessageReceived(gnssNavigationMessage);
-                }
-            };
-        }
-        return null;
-    }
-
-    @Override // com.android.server.location.listeners.ListenerMultiplexer
-    public void onRegistrationAdded(IBinder iBinder, GnssListenerMultiplexer.GnssListenerRegistration gnssListenerRegistration) {
-        super.onRegistrationAdded((Object) iBinder, (ListenerRegistration) gnssListenerRegistration);
-        addGnssDataListener(iBinder, gnssListenerRegistration);
-    }
-
-    @Override // com.android.server.location.listeners.ListenerMultiplexer
-    public void onRegistrationRemoved(IBinder iBinder, GnssListenerMultiplexer.GnssListenerRegistration gnssListenerRegistration) {
-        super.onRegistrationRemoved((Object) iBinder, (ListenerRegistration) gnssListenerRegistration);
-        removeGnssDataListener(iBinder, gnssListenerRegistration);
-    }
-
-    @Override // com.android.server.location.gnss.GnssListenerMultiplexer
-    public LocationConstants.LISTENER_TYPE getListenerType() {
-        return LocationConstants.LISTENER_TYPE.GNSS_NAVIGATION_MESSAGE;
     }
 }

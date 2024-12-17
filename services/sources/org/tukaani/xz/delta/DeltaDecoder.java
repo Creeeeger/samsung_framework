@@ -1,25 +1,16 @@
 package org.tukaani.xz.delta;
 
-import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class DeltaDecoder extends DeltaCoder {
-    public DeltaDecoder(int i) {
-        super(i);
-    }
+public final class DeltaDecoder {
+    public final int distance;
+    public final byte[] history = new byte[256];
+    public int pos = 0;
 
-    public void decode(byte[] bArr, int i, int i2) {
-        int i3 = i2 + i;
-        while (i < i3) {
-            byte b = bArr[i];
-            byte[] bArr2 = this.history;
-            int i4 = this.distance;
-            int i5 = this.pos;
-            byte b2 = (byte) (b + bArr2[(i4 + i5) & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT]);
-            bArr[i] = b2;
-            this.pos = i5 - 1;
-            bArr2[i5 & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT] = b2;
-            i++;
+    public DeltaDecoder(int i) {
+        if (i < 1 || i > 256) {
+            throw new IllegalArgumentException();
         }
+        this.distance = i;
     }
 }

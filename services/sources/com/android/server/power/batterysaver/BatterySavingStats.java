@@ -2,17 +2,18 @@ package com.android.server.power.batterysaver;
 
 import android.os.BatteryManagerInternal;
 import android.os.SystemClock;
+import android.util.EventLog;
 import android.util.IndentingPrintWriter;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.TimeUtils;
-import com.android.server.EventLogTags;
 import com.android.server.LocalServices;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/* loaded from: classes3.dex */
-public class BatterySavingStats {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class BatterySavingStats {
     public final Object mLock;
     public int mCurrentState = -1;
     final SparseArray mStats = new SparseArray();
@@ -24,43 +25,8 @@ public class BatterySavingStats {
     public long mLastAdaptiveBatterySaverDisabledTime = 0;
     public BatteryManagerInternal mBatteryManagerInternal = (BatteryManagerInternal) LocalServices.getService(BatteryManagerInternal.class);
 
-    /* loaded from: classes3.dex */
-    public interface BatterySaverState {
-        static int fromIndex(int i) {
-            return (i >> 0) & 3;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public interface DozeState {
-        static int fromIndex(int i) {
-            return (i >> 3) & 3;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public interface InteractiveState {
-        static int fromIndex(int i) {
-            return (i >> 2) & 1;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public interface PlugState {
-        static int fromIndex(int i) {
-            return (i >> 5) & 1;
-        }
-    }
-
-    public static int statesToIndex(int i, int i2, int i3, int i4) {
-        return (i & 3) | ((i2 & 1) << 2) | ((i3 & 3) << 3) | ((i4 & 1) << 5);
-    }
-
-    /* loaded from: classes3.dex */
-    public class Stat {
-        public int endBatteryLevel;
-        public int endBatteryPercent;
-        public long endTime;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Stat {
         public int startBatteryLevel;
         public int startBatteryPercent;
         public long startTime;
@@ -68,11 +34,7 @@ public class BatterySavingStats {
         public int totalBatteryDrainPercent;
         public long totalTimeMillis;
 
-        public long totalMinutes() {
-            return this.totalTimeMillis / 60000;
-        }
-
-        public double drainPerHour() {
+        public final double drainPerHour() {
             long j = this.totalTimeMillis;
             if (j == 0) {
                 return 0.0d;
@@ -80,16 +42,18 @@ public class BatterySavingStats {
             return this.totalBatteryDrain / (j / 3600000.0d);
         }
 
-        public double drainPercentPerHour() {
-            long j = this.totalTimeMillis;
-            if (j == 0) {
-                return 0.0d;
-            }
-            return this.totalBatteryDrainPercent / (j / 3600000.0d);
-        }
-
         public String toStringForTest() {
-            return "{" + totalMinutes() + "m," + this.totalBatteryDrain + "," + String.format("%.2f", Double.valueOf(drainPerHour())) + "uA/H," + String.format("%.2f", Double.valueOf(drainPercentPerHour())) + "%}";
+            StringBuilder sb = new StringBuilder("{");
+            sb.append(this.totalTimeMillis / 60000);
+            sb.append("m,");
+            sb.append(this.totalBatteryDrain);
+            sb.append(",");
+            sb.append(String.format("%.2f", Double.valueOf(drainPerHour())));
+            sb.append("uA/H,");
+            long j = this.totalTimeMillis;
+            sb.append(String.format("%.2f", Double.valueOf(j == 0 ? 0.0d : this.totalBatteryDrainPercent / (j / 3600000.0d))));
+            sb.append("%}");
+            return sb.toString();
         }
     }
 
@@ -97,7 +61,111 @@ public class BatterySavingStats {
         this.mLock = obj;
     }
 
-    public final BatteryManagerInternal getBatteryManagerInternal() {
+    public static String stateToString(int i) {
+        if (i == -1) {
+            return "NotInitialized";
+        }
+        return "BS=" + (i & 3) + ",I=" + ((i >> 2) & 1) + ",D=" + ((i >> 3) & 3) + ",P=" + ((i >> 5) & 1);
+    }
+
+    public static int statesToIndex(int i, int i2, int i3, int i4) {
+        return (i & 3) | ((i2 & 1) << 2) | ((i3 & 3) << 3) | ((i4 & 1) << 5);
+    }
+
+    public final void dump(IndentingPrintWriter indentingPrintWriter) {
+        indentingPrintWriter.println("Battery saving stats:");
+        indentingPrintWriter.increaseIndent();
+        synchronized (this.mLock) {
+            try {
+                long currentTimeMillis = System.currentTimeMillis();
+                long injectCurrentTime = injectCurrentTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                indentingPrintWriter.print("Battery Saver is currently: ");
+                int i = this.mCurrentState & 3;
+                if (i == 0) {
+                    indentingPrintWriter.println("OFF");
+                } else if (i == 1) {
+                    indentingPrintWriter.println("ON");
+                } else if (i == 2) {
+                    indentingPrintWriter.println("ADAPTIVE");
+                }
+                indentingPrintWriter.increaseIndent();
+                if (this.mLastBatterySaverEnabledTime > 0) {
+                    indentingPrintWriter.print("Last ON time: ");
+                    indentingPrintWriter.print(simpleDateFormat.format(new Date((currentTimeMillis - injectCurrentTime) + this.mLastBatterySaverEnabledTime)));
+                    indentingPrintWriter.print(" ");
+                    TimeUtils.formatDuration(this.mLastBatterySaverEnabledTime, injectCurrentTime, indentingPrintWriter);
+                    indentingPrintWriter.println();
+                }
+                if (this.mLastBatterySaverDisabledTime > 0) {
+                    indentingPrintWriter.print("Last OFF time: ");
+                    indentingPrintWriter.print(simpleDateFormat.format(new Date((currentTimeMillis - injectCurrentTime) + this.mLastBatterySaverDisabledTime)));
+                    indentingPrintWriter.print(" ");
+                    TimeUtils.formatDuration(this.mLastBatterySaverDisabledTime, injectCurrentTime, indentingPrintWriter);
+                    indentingPrintWriter.println();
+                }
+                indentingPrintWriter.print("Times full enabled: ");
+                indentingPrintWriter.println(this.mBatterySaverEnabledCount);
+                if (this.mLastAdaptiveBatterySaverEnabledTime > 0) {
+                    indentingPrintWriter.print("Last ADAPTIVE ON time: ");
+                    indentingPrintWriter.print(simpleDateFormat.format(new Date((currentTimeMillis - injectCurrentTime) + this.mLastAdaptiveBatterySaverEnabledTime)));
+                    indentingPrintWriter.print(" ");
+                    TimeUtils.formatDuration(this.mLastAdaptiveBatterySaverEnabledTime, injectCurrentTime, indentingPrintWriter);
+                    indentingPrintWriter.println();
+                }
+                if (this.mLastAdaptiveBatterySaverDisabledTime > 0) {
+                    indentingPrintWriter.print("Last ADAPTIVE OFF time: ");
+                    indentingPrintWriter.print(simpleDateFormat.format(new Date((currentTimeMillis - injectCurrentTime) + this.mLastAdaptiveBatterySaverDisabledTime)));
+                    indentingPrintWriter.print(" ");
+                    TimeUtils.formatDuration(this.mLastAdaptiveBatterySaverDisabledTime, injectCurrentTime, indentingPrintWriter);
+                    indentingPrintWriter.println();
+                }
+                indentingPrintWriter.print("Times adaptive enabled: ");
+                indentingPrintWriter.println(this.mAdaptiveBatterySaverEnabledCount);
+                indentingPrintWriter.decreaseIndent();
+                indentingPrintWriter.println();
+                indentingPrintWriter.println("Drain stats:");
+                indentingPrintWriter.println("                   Battery saver OFF                          ON");
+                dumpLineLocked(indentingPrintWriter, 0, "NonIntr", 0, "NonDoze");
+                dumpLineLocked(indentingPrintWriter, 1, "   Intr", 0, "       ");
+                dumpLineLocked(indentingPrintWriter, 0, "NonIntr", 2, "Deep   ");
+                dumpLineLocked(indentingPrintWriter, 1, "   Intr", 2, "       ");
+                dumpLineLocked(indentingPrintWriter, 0, "NonIntr", 1, "Light  ");
+                dumpLineLocked(indentingPrintWriter, 1, "   Intr", 1, "       ");
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        indentingPrintWriter.decreaseIndent();
+    }
+
+    public final void dumpLineLocked(IndentingPrintWriter indentingPrintWriter, int i, String str, int i2, String str2) {
+        indentingPrintWriter.print(str2);
+        indentingPrintWriter.print(" ");
+        indentingPrintWriter.print(str);
+        indentingPrintWriter.print(": ");
+        Stat stat = getStat(statesToIndex(0, i, i2, 0));
+        Stat stat2 = getStat(statesToIndex(1, i, i2, 0));
+        indentingPrintWriter.println(String.format("%6dm %6dmAh(%3d%%) %8.1fmAh/h     %6dm %6dmAh(%3d%%) %8.1fmAh/h", Long.valueOf(stat.totalTimeMillis / 60000), Integer.valueOf(stat.totalBatteryDrain / 1000), Integer.valueOf(stat.totalBatteryDrainPercent), Double.valueOf(stat.drainPerHour() / 1000.0d), Long.valueOf(stat2.totalTimeMillis / 60000), Integer.valueOf(stat2.totalBatteryDrain / 1000), Integer.valueOf(stat2.totalBatteryDrainPercent), Double.valueOf(stat2.drainPerHour() / 1000.0d)));
+    }
+
+    public Stat getStat(int i) {
+        Stat stat;
+        synchronized (this.mLock) {
+            try {
+                stat = (Stat) this.mStats.get(i);
+                if (stat == null) {
+                    stat = new Stat();
+                    this.mStats.put(i, stat);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return stat;
+    }
+
+    public int injectBatteryLevel() {
         if (this.mBatteryManagerInternal == null) {
             BatteryManagerInternal batteryManagerInternal = (BatteryManagerInternal) LocalServices.getService(BatteryManagerInternal.class);
             this.mBatteryManagerInternal = batteryManagerInternal;
@@ -105,56 +173,30 @@ public class BatterySavingStats {
                 Slog.wtf("BatterySavingStats", "BatteryManagerInternal not initialized");
             }
         }
-        return this.mBatteryManagerInternal;
-    }
-
-    public static String stateToString(int i) {
-        if (i == -1) {
-            return "NotInitialized";
+        BatteryManagerInternal batteryManagerInternal2 = this.mBatteryManagerInternal;
+        if (batteryManagerInternal2 == null) {
+            return 0;
         }
-        return "BS=" + BatterySaverState.fromIndex(i) + ",I=" + InteractiveState.fromIndex(i) + ",D=" + DozeState.fromIndex(i) + ",P=" + PlugState.fromIndex(i);
+        return batteryManagerInternal2.getBatteryChargeCounter();
     }
 
-    public Stat getStat(int i) {
-        Stat stat;
-        synchronized (this.mLock) {
-            stat = (Stat) this.mStats.get(i);
-            if (stat == null) {
-                stat = new Stat();
-                this.mStats.put(i, stat);
+    public int injectBatteryPercent() {
+        if (this.mBatteryManagerInternal == null) {
+            BatteryManagerInternal batteryManagerInternal = (BatteryManagerInternal) LocalServices.getService(BatteryManagerInternal.class);
+            this.mBatteryManagerInternal = batteryManagerInternal;
+            if (batteryManagerInternal == null) {
+                Slog.wtf("BatterySavingStats", "BatteryManagerInternal not initialized");
             }
         }
-        return stat;
-    }
-
-    public final Stat getStat(int i, int i2, int i3, int i4) {
-        return getStat(statesToIndex(i, i2, i3, i4));
+        BatteryManagerInternal batteryManagerInternal2 = this.mBatteryManagerInternal;
+        if (batteryManagerInternal2 == null) {
+            return 0;
+        }
+        return batteryManagerInternal2.getBatteryLevel();
     }
 
     public long injectCurrentTime() {
         return SystemClock.elapsedRealtime();
-    }
-
-    public int injectBatteryLevel() {
-        BatteryManagerInternal batteryManagerInternal = getBatteryManagerInternal();
-        if (batteryManagerInternal == null) {
-            return 0;
-        }
-        return batteryManagerInternal.getBatteryChargeCounter();
-    }
-
-    public int injectBatteryPercent() {
-        BatteryManagerInternal batteryManagerInternal = getBatteryManagerInternal();
-        if (batteryManagerInternal == null) {
-            return 0;
-        }
-        return batteryManagerInternal.getBatteryLevel();
-    }
-
-    public void transitionState(int i, int i2, int i3, int i4) {
-        synchronized (this.mLock) {
-            transitionStateLocked(statesToIndex(i, i2, i3, i4));
-        }
     }
 
     public final void transitionStateLocked(int i) {
@@ -165,133 +207,51 @@ public class BatterySavingStats {
         int injectBatteryLevel = injectBatteryLevel();
         int injectBatteryPercent = injectBatteryPercent();
         int i2 = this.mCurrentState;
-        int fromIndex = i2 < 0 ? 0 : BatterySaverState.fromIndex(i2);
-        int fromIndex2 = i >= 0 ? BatterySaverState.fromIndex(i) : 0;
-        if (fromIndex != fromIndex2) {
-            if (fromIndex2 != 0) {
-                if (fromIndex2 == 1) {
+        int i3 = i2 < 0 ? 0 : i2 & 3;
+        int i4 = i >= 0 ? i & 3 : 0;
+        if (i3 != i4) {
+            if (i4 != 0) {
+                if (i4 == 1) {
                     this.mBatterySaverEnabledCount++;
                     this.mLastBatterySaverEnabledTime = injectCurrentTime;
-                    if (fromIndex == 2) {
+                    if (i3 == 2) {
                         this.mLastAdaptiveBatterySaverDisabledTime = injectCurrentTime;
                     }
-                } else if (fromIndex2 == 2) {
+                } else if (i4 == 2) {
                     this.mAdaptiveBatterySaverEnabledCount++;
                     this.mLastAdaptiveBatterySaverEnabledTime = injectCurrentTime;
-                    if (fromIndex == 1) {
+                    if (i3 == 1) {
                         this.mLastBatterySaverDisabledTime = injectCurrentTime;
                     }
                 }
-            } else if (fromIndex == 1) {
+            } else if (i3 == 1) {
                 this.mLastBatterySaverDisabledTime = injectCurrentTime;
             } else {
                 this.mLastAdaptiveBatterySaverDisabledTime = injectCurrentTime;
             }
         }
-        endLastStateLocked(injectCurrentTime, injectBatteryLevel, injectBatteryPercent);
-        startNewStateLocked(i, injectCurrentTime, injectBatteryLevel, injectBatteryPercent);
-    }
-
-    public final void endLastStateLocked(long j, int i, int i2) {
-        int i3 = this.mCurrentState;
-        if (i3 < 0) {
-            return;
+        if (i2 >= 0) {
+            Stat stat = getStat(i2);
+            stat.getClass();
+            long j = injectCurrentTime - stat.startTime;
+            int i5 = stat.startBatteryLevel - injectBatteryLevel;
+            int i6 = stat.startBatteryPercent - injectBatteryPercent;
+            long j2 = stat.totalTimeMillis + j;
+            stat.totalTimeMillis = j2;
+            int i7 = stat.totalBatteryDrain + i5;
+            stat.totalBatteryDrain = i7;
+            int i8 = stat.totalBatteryDrainPercent + i6;
+            stat.totalBatteryDrainPercent = i8;
+            int i9 = this.mCurrentState;
+            EventLog.writeEvent(27390, Integer.valueOf(i9 & 3), Integer.valueOf((i9 >> 2) & 1), Integer.valueOf((i9 >> 3) & 3), Long.valueOf(j), Integer.valueOf(i5), Integer.valueOf(i6), Long.valueOf(j2), Integer.valueOf(i7), Integer.valueOf(i8));
         }
-        Stat stat = getStat(i3);
-        stat.endBatteryLevel = i;
-        stat.endBatteryPercent = i2;
-        stat.endTime = j;
-        long j2 = j - stat.startTime;
-        int i4 = stat.startBatteryLevel - i;
-        int i5 = stat.startBatteryPercent - i2;
-        stat.totalTimeMillis += j2;
-        stat.totalBatteryDrain += i4;
-        stat.totalBatteryDrainPercent += i5;
-        EventLogTags.writeBatterySavingStats(BatterySaverState.fromIndex(this.mCurrentState), InteractiveState.fromIndex(this.mCurrentState), DozeState.fromIndex(this.mCurrentState), j2, i4, i5, stat.totalTimeMillis, stat.totalBatteryDrain, stat.totalBatteryDrainPercent);
-    }
-
-    public final void startNewStateLocked(int i, long j, int i2, int i3) {
         this.mCurrentState = i;
         if (i < 0) {
             return;
         }
-        Stat stat = getStat(i);
-        stat.startBatteryLevel = i2;
-        stat.startBatteryPercent = i3;
-        stat.startTime = j;
-        stat.endTime = 0L;
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.println("Battery saving stats:");
-        indentingPrintWriter.increaseIndent();
-        synchronized (this.mLock) {
-            long currentTimeMillis = System.currentTimeMillis();
-            long injectCurrentTime = injectCurrentTime();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-            indentingPrintWriter.print("Battery Saver is currently: ");
-            int fromIndex = BatterySaverState.fromIndex(this.mCurrentState);
-            if (fromIndex == 0) {
-                indentingPrintWriter.println("OFF");
-            } else if (fromIndex == 1) {
-                indentingPrintWriter.println("ON");
-            } else if (fromIndex == 2) {
-                indentingPrintWriter.println("ADAPTIVE");
-            }
-            indentingPrintWriter.increaseIndent();
-            if (this.mLastBatterySaverEnabledTime > 0) {
-                indentingPrintWriter.print("Last ON time: ");
-                indentingPrintWriter.print(simpleDateFormat.format(new Date((currentTimeMillis - injectCurrentTime) + this.mLastBatterySaverEnabledTime)));
-                indentingPrintWriter.print(" ");
-                TimeUtils.formatDuration(this.mLastBatterySaverEnabledTime, injectCurrentTime, indentingPrintWriter);
-                indentingPrintWriter.println();
-            }
-            if (this.mLastBatterySaverDisabledTime > 0) {
-                indentingPrintWriter.print("Last OFF time: ");
-                indentingPrintWriter.print(simpleDateFormat.format(new Date((currentTimeMillis - injectCurrentTime) + this.mLastBatterySaverDisabledTime)));
-                indentingPrintWriter.print(" ");
-                TimeUtils.formatDuration(this.mLastBatterySaverDisabledTime, injectCurrentTime, indentingPrintWriter);
-                indentingPrintWriter.println();
-            }
-            indentingPrintWriter.print("Times full enabled: ");
-            indentingPrintWriter.println(this.mBatterySaverEnabledCount);
-            if (this.mLastAdaptiveBatterySaverEnabledTime > 0) {
-                indentingPrintWriter.print("Last ADAPTIVE ON time: ");
-                indentingPrintWriter.print(simpleDateFormat.format(new Date((currentTimeMillis - injectCurrentTime) + this.mLastAdaptiveBatterySaverEnabledTime)));
-                indentingPrintWriter.print(" ");
-                TimeUtils.formatDuration(this.mLastAdaptiveBatterySaverEnabledTime, injectCurrentTime, indentingPrintWriter);
-                indentingPrintWriter.println();
-            }
-            if (this.mLastAdaptiveBatterySaverDisabledTime > 0) {
-                indentingPrintWriter.print("Last ADAPTIVE OFF time: ");
-                indentingPrintWriter.print(simpleDateFormat.format(new Date((currentTimeMillis - injectCurrentTime) + this.mLastAdaptiveBatterySaverDisabledTime)));
-                indentingPrintWriter.print(" ");
-                TimeUtils.formatDuration(this.mLastAdaptiveBatterySaverDisabledTime, injectCurrentTime, indentingPrintWriter);
-                indentingPrintWriter.println();
-            }
-            indentingPrintWriter.print("Times adaptive enabled: ");
-            indentingPrintWriter.println(this.mAdaptiveBatterySaverEnabledCount);
-            indentingPrintWriter.decreaseIndent();
-            indentingPrintWriter.println();
-            indentingPrintWriter.println("Drain stats:");
-            indentingPrintWriter.println("                   Battery saver OFF                          ON");
-            dumpLineLocked(indentingPrintWriter, 0, "NonIntr", 0, "NonDoze");
-            dumpLineLocked(indentingPrintWriter, 1, "   Intr", 0, "       ");
-            dumpLineLocked(indentingPrintWriter, 0, "NonIntr", 2, "Deep   ");
-            dumpLineLocked(indentingPrintWriter, 1, "   Intr", 2, "       ");
-            dumpLineLocked(indentingPrintWriter, 0, "NonIntr", 1, "Light  ");
-            dumpLineLocked(indentingPrintWriter, 1, "   Intr", 1, "       ");
-        }
-        indentingPrintWriter.decreaseIndent();
-    }
-
-    public final void dumpLineLocked(IndentingPrintWriter indentingPrintWriter, int i, String str, int i2, String str2) {
-        indentingPrintWriter.print(str2);
-        indentingPrintWriter.print(" ");
-        indentingPrintWriter.print(str);
-        indentingPrintWriter.print(": ");
-        Stat stat = getStat(0, i, i2, 0);
-        Stat stat2 = getStat(1, i, i2, 0);
-        indentingPrintWriter.println(String.format("%6dm %6dmAh(%3d%%) %8.1fmAh/h     %6dm %6dmAh(%3d%%) %8.1fmAh/h", Long.valueOf(stat.totalMinutes()), Integer.valueOf(stat.totalBatteryDrain / 1000), Integer.valueOf(stat.totalBatteryDrainPercent), Double.valueOf(stat.drainPerHour() / 1000.0d), Long.valueOf(stat2.totalMinutes()), Integer.valueOf(stat2.totalBatteryDrain / 1000), Integer.valueOf(stat2.totalBatteryDrainPercent), Double.valueOf(stat2.drainPerHour() / 1000.0d)));
+        Stat stat2 = getStat(i);
+        stat2.startBatteryLevel = injectBatteryLevel;
+        stat2.startBatteryPercent = injectBatteryPercent;
+        stat2.startTime = injectCurrentTime;
     }
 }

@@ -2,14 +2,46 @@ package com.android.server.utils;
 
 import java.util.ArrayList;
 
-/* loaded from: classes3.dex */
-public class WatchedArrayList extends WatchableImpl implements Snappable {
-    public final Watcher mObserver;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WatchedArrayList extends WatchableImpl implements Snappable {
     public final ArrayList mStorage;
-    public volatile boolean mWatching;
+    public volatile boolean mWatching = false;
+    public final AnonymousClass1 mObserver = new Watcher() { // from class: com.android.server.utils.WatchedArrayList.1
+        @Override // com.android.server.utils.Watcher
+        public final void onChange(Watchable watchable) {
+            WatchedArrayList.this.dispatchChange(watchable);
+        }
+    };
 
-    public final void onChanged() {
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.utils.WatchedArrayList$1] */
+    public WatchedArrayList(int i) {
+        this.mStorage = new ArrayList(i);
+    }
+
+    public final void clear() {
+        if (this.mWatching) {
+            int size = this.mStorage.size();
+            for (int i = 0; i < size; i++) {
+                Object obj = this.mStorage.get(i);
+                if (this.mWatching && (obj instanceof Watchable)) {
+                    ((Watchable) obj).unregisterObserver(this.mObserver);
+                }
+            }
+        }
+        this.mStorage.clear();
         dispatchChange(this);
+    }
+
+    public final boolean equals(Object obj) {
+        if (obj instanceof WatchedArrayList) {
+            return this.mStorage.equals(((WatchedArrayList) obj).mStorage);
+        }
+        return false;
+    }
+
+    public final int hashCode() {
+        return this.mStorage.hashCode();
     }
 
     public final void registerChild(Object obj) {
@@ -18,22 +50,10 @@ public class WatchedArrayList extends WatchableImpl implements Snappable {
         }
     }
 
-    public final void unregisterChild(Object obj) {
-        if (this.mWatching && (obj instanceof Watchable)) {
-            ((Watchable) obj).unregisterObserver(this.mObserver);
-        }
-    }
-
-    public final void unregisterChildIf(Object obj) {
-        if (this.mWatching && (obj instanceof Watchable) && !this.mStorage.contains(obj)) {
-            ((Watchable) obj).unregisterObserver(this.mObserver);
-        }
-    }
-
     @Override // com.android.server.utils.WatchableImpl, com.android.server.utils.Watchable
-    public void registerObserver(Watcher watcher) {
+    public final void registerObserver(Watcher watcher) {
         super.registerObserver(watcher);
-        if (registeredObserverCount() == 1) {
+        if (this.mObservers.size() == 1) {
             this.mWatching = true;
             int size = this.mStorage.size();
             for (int i = 0; i < size; i++) {
@@ -42,100 +62,44 @@ public class WatchedArrayList extends WatchableImpl implements Snappable {
         }
     }
 
-    @Override // com.android.server.utils.WatchableImpl, com.android.server.utils.Watchable
-    public void unregisterObserver(Watcher watcher) {
-        super.unregisterObserver(watcher);
-        if (registeredObserverCount() == 0) {
-            int size = this.mStorage.size();
-            for (int i = 0; i < size; i++) {
-                unregisterChild(this.mStorage.get(i));
-            }
-            this.mWatching = false;
-        }
-    }
-
-    public WatchedArrayList() {
-        this(0);
-    }
-
-    public WatchedArrayList(int i) {
-        this.mWatching = false;
-        this.mObserver = new Watcher() { // from class: com.android.server.utils.WatchedArrayList.1
-            @Override // com.android.server.utils.Watcher
-            public void onChange(Watchable watchable) {
-                WatchedArrayList.this.dispatchChange(watchable);
-            }
-        };
-        this.mStorage = new ArrayList(i);
-    }
-
-    public ArrayList untrackedStorage() {
-        return this.mStorage;
-    }
-
-    public boolean add(Object obj) {
-        boolean add = this.mStorage.add(obj);
-        registerChild(obj);
-        onChanged();
-        return add;
-    }
-
-    public void clear() {
-        if (this.mWatching) {
-            int size = this.mStorage.size();
-            for (int i = 0; i < size; i++) {
-                unregisterChild(this.mStorage.get(i));
-            }
-        }
-        this.mStorage.clear();
-        onChanged();
-    }
-
-    public Object get(int i) {
-        return this.mStorage.get(i);
-    }
-
-    public Object set(int i, Object obj) {
+    public final void set(int i, Object obj) {
         Object obj2 = this.mStorage.set(i, obj);
         if (obj != obj2) {
-            unregisterChildIf(obj2);
+            if (this.mWatching && (obj2 instanceof Watchable) && !this.mStorage.contains(obj2)) {
+                ((Watchable) obj2).unregisterObserver(this.mObserver);
+            }
             registerChild(obj);
-            onChanged();
+            dispatchChange(this);
         }
-        return obj2;
-    }
-
-    public int size() {
-        return this.mStorage.size();
-    }
-
-    public boolean equals(Object obj) {
-        if (obj instanceof WatchedArrayList) {
-            return this.mStorage.equals(((WatchedArrayList) obj).mStorage);
-        }
-        return false;
-    }
-
-    public int hashCode() {
-        return this.mStorage.hashCode();
     }
 
     @Override // com.android.server.utils.Snappable
-    public WatchedArrayList snapshot() {
-        WatchedArrayList watchedArrayList = new WatchedArrayList(size());
-        snapshot(watchedArrayList, this);
+    public final Object snapshot() {
+        WatchedArrayList watchedArrayList = new WatchedArrayList(this.mStorage.size());
+        if (watchedArrayList.mStorage.size() != 0) {
+            throw new IllegalArgumentException("snapshot destination is not empty");
+        }
+        int size = this.mStorage.size();
+        watchedArrayList.mStorage.ensureCapacity(size);
+        for (int i = 0; i < size; i++) {
+            watchedArrayList.mStorage.add(Snapshots.maybeSnapshot(this.mStorage.get(i)));
+        }
+        watchedArrayList.seal();
         return watchedArrayList;
     }
 
-    public static void snapshot(WatchedArrayList watchedArrayList, WatchedArrayList watchedArrayList2) {
-        if (watchedArrayList.size() != 0) {
-            throw new IllegalArgumentException("snapshot destination is not empty");
+    @Override // com.android.server.utils.WatchableImpl, com.android.server.utils.Watchable
+    public final void unregisterObserver(Watcher watcher) {
+        super.unregisterObserver(watcher);
+        if (this.mObservers.size() == 0) {
+            int size = this.mStorage.size();
+            for (int i = 0; i < size; i++) {
+                Object obj = this.mStorage.get(i);
+                if (this.mWatching && (obj instanceof Watchable)) {
+                    ((Watchable) obj).unregisterObserver(this.mObserver);
+                }
+            }
+            this.mWatching = false;
         }
-        int size = watchedArrayList2.size();
-        watchedArrayList.mStorage.ensureCapacity(size);
-        for (int i = 0; i < size; i++) {
-            watchedArrayList.mStorage.add(Snapshots.maybeSnapshot(watchedArrayList2.get(i)));
-        }
-        watchedArrayList.seal();
     }
 }

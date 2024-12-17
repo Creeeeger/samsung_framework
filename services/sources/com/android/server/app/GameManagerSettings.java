@@ -12,119 +12,127 @@ import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
 import com.android.server.app.GameManagerService;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class GameManagerSettings {
+public final class GameManagerSettings {
     final AtomicFile mSettingsFile;
-    public final File mSystemDir;
     public final ArrayMap mGameModes = new ArrayMap();
     public final ArrayMap mConfigOverrides = new ArrayMap();
 
     public GameManagerSettings(File file) {
         File file2 = new File(file, "system");
-        this.mSystemDir = file2;
         file2.mkdirs();
         FileUtils.setPermissions(file2.toString(), 509, -1, -1);
         this.mSettingsFile = new AtomicFile(new File(file2, "game-manager-service.xml"));
     }
 
-    public int getGameModeLocked(String str) {
-        int intValue;
-        if (!this.mGameModes.containsKey(str) || (intValue = ((Integer) this.mGameModes.get(str)).intValue()) == 0) {
-            return 1;
-        }
-        return intValue;
-    }
-
-    public void setGameModeLocked(String str, int i) {
-        this.mGameModes.put(str, Integer.valueOf(i));
-    }
-
-    public void removeGame(String str) {
-        this.mGameModes.remove(str);
-        this.mConfigOverrides.remove(str);
-    }
-
-    public GameManagerService.GamePackageConfiguration getConfigOverride(String str) {
-        return (GameManagerService.GamePackageConfiguration) this.mConfigOverrides.get(str);
-    }
-
-    public void setConfigOverride(String str, GameManagerService.GamePackageConfiguration gamePackageConfiguration) {
-        this.mConfigOverrides.put(str, gamePackageConfiguration);
-    }
-
-    public void removeConfigOverride(String str) {
-        this.mConfigOverrides.remove(str);
-    }
-
-    public void writePersistentDataLocked() {
-        FileOutputStream fileOutputStream = null;
-        try {
-            FileOutputStream startWrite = this.mSettingsFile.startWrite();
-            try {
-                TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
-                resolveSerializer.startDocument((String) null, Boolean.TRUE);
-                resolveSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-                resolveSerializer.startTag((String) null, "packages");
-                ArraySet arraySet = new ArraySet(this.mGameModes.keySet());
-                arraySet.addAll(this.mConfigOverrides.keySet());
-                Iterator it = arraySet.iterator();
-                while (it.hasNext()) {
-                    String str = (String) it.next();
-                    resolveSerializer.startTag((String) null, "package");
-                    resolveSerializer.attribute((String) null, "name", str);
-                    if (this.mGameModes.containsKey(str)) {
-                        resolveSerializer.attributeInt((String) null, "gameMode", ((Integer) this.mGameModes.get(str)).intValue());
-                    }
-                    writeGameModeConfigTags(resolveSerializer, (GameManagerService.GamePackageConfiguration) this.mConfigOverrides.get(str));
-                    resolveSerializer.endTag((String) null, "package");
-                }
-                resolveSerializer.endTag((String) null, "packages");
-                resolveSerializer.endDocument();
-                this.mSettingsFile.finishWrite(startWrite);
-                FileUtils.setPermissions(this.mSettingsFile.toString(), FrameworkStatsLog.HOTWORD_DETECTION_SERVICE_RESTARTED, -1, -1);
-            } catch (IOException e) {
-                e = e;
-                fileOutputStream = startWrite;
-                this.mSettingsFile.failWrite(fileOutputStream);
-                Slog.wtf("GameManagerService_GameManagerSettings", "Unable to write game manager service settings, current changes will be lost at reboot", e);
-            }
-        } catch (IOException e2) {
-            e = e2;
-        }
-    }
-
-    public final void writeGameModeConfigTags(TypedXmlSerializer typedXmlSerializer, GameManagerService.GamePackageConfiguration gamePackageConfiguration) {
+    public static void writeGameModeConfigTags(TypedXmlSerializer typedXmlSerializer, GameManagerService.GamePackageConfiguration gamePackageConfiguration) {
+        boolean z;
+        String str;
+        int i;
         if (gamePackageConfiguration == null) {
             return;
         }
-        for (int i : gamePackageConfiguration.getAvailableGameModes()) {
-            GameManagerService.GamePackageConfiguration.GameModeConfiguration gameModeConfiguration = gamePackageConfiguration.getGameModeConfiguration(i);
+        for (int i2 : gamePackageConfiguration.getAvailableGameModes()) {
+            GameManagerService.GamePackageConfiguration.GameModeConfiguration gameModeConfiguration = gamePackageConfiguration.getGameModeConfiguration(i2);
             if (gameModeConfiguration != null) {
                 typedXmlSerializer.startTag((String) null, "gameModeConfig");
-                typedXmlSerializer.attributeInt((String) null, "gameMode", i);
-                typedXmlSerializer.attributeBoolean((String) null, "useAngle", gameModeConfiguration.getUseAngle());
-                typedXmlSerializer.attribute((String) null, "fps", gameModeConfiguration.getFpsStr());
+                typedXmlSerializer.attributeInt((String) null, "gameMode", i2);
+                synchronized (gameModeConfiguration) {
+                    z = gameModeConfiguration.mUseAngle;
+                }
+                typedXmlSerializer.attributeBoolean((String) null, "useAngle", z);
+                synchronized (gameModeConfiguration) {
+                    str = gameModeConfiguration.mFps;
+                }
+                typedXmlSerializer.attribute((String) null, "fps", str);
                 typedXmlSerializer.attributeFloat((String) null, "scaling", gameModeConfiguration.getScaling());
-                typedXmlSerializer.attributeInt((String) null, "loadingBoost", gameModeConfiguration.getLoadingBoostDuration());
+                synchronized (gameModeConfiguration) {
+                    i = gameModeConfiguration.mLoadingBoostDuration;
+                }
+                typedXmlSerializer.attributeInt((String) null, "loadingBoost", i);
                 typedXmlSerializer.endTag((String) null, "gameModeConfig");
             }
         }
     }
 
-    public boolean readPersistentDataLocked() {
+    /* JADX WARN: Can't wrap try/catch for region: R(10:38|39|41|42|(2:43|44)|72|56|57|58|a6) */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x012a, code lost:
+    
+        r10 = r3.mModeConfigLock;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x012c, code lost:
+    
+        monitor-enter(r10);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x012d, code lost:
+    
+        r1 = !r3.mModeConfigs.isEmpty();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x0134, code lost:
+    
+        monitor-exit(r10);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0135, code lost:
+    
+        if (r1 == false) goto L125;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0137, code lost:
+    
+        r9.mConfigOverrides.put(r0, r3);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x013c, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:?, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:93:0x00ae, code lost:
+    
+        r5 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:94:0x00af, code lost:
+    
+        r6 = r10.getAttributeValue((java.lang.String) null, "useAngle");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:95:0x00b6, code lost:
+    
+        if (r6 != null) goto L56;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:96:0x00b8, code lost:
+    
+        android.util.Slog.wtf("GameManagerService_GameManagerSettings", "Invalid useAngle value in config tag: ".concat(r6), r5);
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void readPackage(com.android.modules.utils.TypedXmlPullParser r10) {
+        /*
+            Method dump skipped, instructions count: 320
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.app.GameManagerSettings.readPackage(com.android.modules.utils.TypedXmlPullParser):void");
+    }
+
+    public final void readPersistentDataLocked() {
         int next;
         this.mGameModes.clear();
         if (!this.mSettingsFile.exists()) {
             Slog.v("GameManagerService_GameManagerSettings", "Settings file doesn't exist, skip reading");
-            return false;
+            return;
         }
         try {
-            TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(this.mSettingsFile.openRead());
+            FileInputStream openRead = this.mSettingsFile.openRead();
+            TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(openRead);
             do {
                 next = resolvePullParser.next();
                 if (next == 2) {
@@ -133,7 +141,7 @@ public class GameManagerSettings {
             } while (next != 1);
             if (next != 2) {
                 Slog.wtf("GameManagerService_GameManagerSettings", "No start tag found in game manager settings");
-                return false;
+                return;
             }
             int depth = resolvePullParser.getDepth();
             while (true) {
@@ -151,81 +159,47 @@ public class GameManagerSettings {
                     }
                 }
             }
-            return true;
+            openRead.close();
         } catch (IOException | XmlPullParserException e) {
             Slog.wtf("GameManagerService_GameManagerSettings", "Error reading game manager settings", e);
-            return false;
         }
     }
 
-    public final void readPackage(TypedXmlPullParser typedXmlPullParser) {
-        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
-        if (attributeValue == null) {
-            Slog.wtf("GameManagerService_GameManagerSettings", "No package name found in package tag");
-            XmlUtils.skipCurrentTag(typedXmlPullParser);
-            return;
+    public final void writePersistentDataLocked() {
+        FileOutputStream startWrite;
+        FileOutputStream fileOutputStream = null;
+        try {
+            startWrite = this.mSettingsFile.startWrite();
+        } catch (IOException e) {
+            e = e;
         }
         try {
-            this.mGameModes.put(attributeValue, Integer.valueOf(typedXmlPullParser.getAttributeInt((String) null, "gameMode")));
-        } catch (XmlPullParserException unused) {
-            Slog.v("GameManagerService_GameManagerSettings", "No game mode selected by user for package" + attributeValue);
-        }
-        int depth = typedXmlPullParser.getDepth();
-        GameManagerService.GamePackageConfiguration gamePackageConfiguration = new GameManagerService.GamePackageConfiguration(attributeValue);
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1 || (next == 3 && typedXmlPullParser.getDepth() <= depth)) {
-                break;
-            }
-            if (next != 3 && next != 4) {
-                String name = typedXmlPullParser.getName();
-                if (next == 2 && "gameModeConfig".equals(name)) {
-                    readGameModeConfig(typedXmlPullParser, gamePackageConfiguration);
-                } else {
-                    XmlUtils.skipCurrentTag(typedXmlPullParser);
-                    Slog.w("GameManagerService_GameManagerSettings", "Unknown element under package tag: " + name + " with type: " + next);
+            TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
+            resolveSerializer.startDocument((String) null, Boolean.TRUE);
+            resolveSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+            resolveSerializer.startTag((String) null, "packages");
+            ArraySet arraySet = new ArraySet(this.mGameModes.keySet());
+            arraySet.addAll(this.mConfigOverrides.keySet());
+            Iterator it = arraySet.iterator();
+            while (it.hasNext()) {
+                String str = (String) it.next();
+                resolveSerializer.startTag((String) null, "package");
+                resolveSerializer.attribute((String) null, "name", str);
+                if (this.mGameModes.containsKey(str)) {
+                    resolveSerializer.attributeInt((String) null, "gameMode", ((Integer) this.mGameModes.get(str)).intValue());
                 }
+                writeGameModeConfigTags(resolveSerializer, (GameManagerService.GamePackageConfiguration) this.mConfigOverrides.get(str));
+                resolveSerializer.endTag((String) null, "package");
             }
-        }
-        if (gamePackageConfiguration.hasActiveGameModeConfig()) {
-            this.mConfigOverrides.put(attributeValue, gamePackageConfiguration);
-        }
-    }
-
-    public final void readGameModeConfig(TypedXmlPullParser typedXmlPullParser, GameManagerService.GamePackageConfiguration gamePackageConfiguration) {
-        try {
-            GameManagerService.GamePackageConfiguration.GameModeConfiguration orAddDefaultGameModeConfiguration = gamePackageConfiguration.getOrAddDefaultGameModeConfiguration(typedXmlPullParser.getAttributeInt((String) null, "gameMode"));
-            try {
-                orAddDefaultGameModeConfiguration.setScaling(typedXmlPullParser.getAttributeFloat((String) null, "scaling"));
-            } catch (XmlPullParserException e) {
-                String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "scaling");
-                if (attributeValue != null) {
-                    Slog.wtf("GameManagerService_GameManagerSettings", "Invalid scaling value in config tag: " + attributeValue, e);
-                }
-            }
-            String attributeValue2 = typedXmlPullParser.getAttributeValue((String) null, "fps");
-            if (attributeValue2 == null) {
-                attributeValue2 = "";
-            }
-            orAddDefaultGameModeConfiguration.setFpsStr(attributeValue2);
-            try {
-                orAddDefaultGameModeConfiguration.setUseAngle(typedXmlPullParser.getAttributeBoolean((String) null, "useAngle"));
-            } catch (XmlPullParserException e2) {
-                String attributeValue3 = typedXmlPullParser.getAttributeValue((String) null, "useAngle");
-                if (attributeValue3 != null) {
-                    Slog.wtf("GameManagerService_GameManagerSettings", "Invalid useAngle value in config tag: " + attributeValue3, e2);
-                }
-            }
-            try {
-                orAddDefaultGameModeConfiguration.setLoadingBoostDuration(typedXmlPullParser.getAttributeInt((String) null, "loadingBoost"));
-            } catch (XmlPullParserException e3) {
-                String attributeValue4 = typedXmlPullParser.getAttributeValue((String) null, "loadingBoost");
-                if (attributeValue4 != null) {
-                    Slog.wtf("GameManagerService_GameManagerSettings", "Invalid loading boost in config tag: " + attributeValue4, e3);
-                }
-            }
-        } catch (XmlPullParserException e4) {
-            Slog.wtf("GameManagerService_GameManagerSettings", "Invalid game mode value in config tag: " + typedXmlPullParser.getAttributeValue((String) null, "gameMode"), e4);
+            resolveSerializer.endTag((String) null, "packages");
+            resolveSerializer.endDocument();
+            this.mSettingsFile.finishWrite(startWrite);
+            FileUtils.setPermissions(this.mSettingsFile.toString(), FrameworkStatsLog.HOTWORD_DETECTION_SERVICE_RESTARTED, -1, -1);
+        } catch (IOException e2) {
+            e = e2;
+            fileOutputStream = startWrite;
+            this.mSettingsFile.failWrite(fileOutputStream);
+            Slog.wtf("GameManagerService_GameManagerSettings", "Unable to write game manager service settings, current changes will be lost at reboot", e);
         }
     }
 }

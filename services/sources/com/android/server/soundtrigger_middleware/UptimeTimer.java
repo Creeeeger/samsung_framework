@@ -3,36 +3,14 @@ package com.android.server.soundtrigger_middleware;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-/* loaded from: classes3.dex */
-public class UptimeTimer {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class UptimeTimer {
     public final Handler mHandler;
     public final HandlerThread mHandlerThread;
 
-    /* loaded from: classes3.dex */
-    public interface Task {
-        void cancel();
-    }
-
-    public UptimeTimer(String str) {
-        HandlerThread handlerThread = new HandlerThread(str);
-        this.mHandlerThread = handlerThread;
-        handlerThread.start();
-        this.mHandler = new Handler(handlerThread.getLooper());
-    }
-
-    public Task createTask(Runnable runnable, long j) {
-        Object obj = new Object();
-        TaskImpl taskImpl = new TaskImpl(this.mHandler, obj);
-        this.mHandler.postDelayed(runnable, obj, j);
-        return taskImpl;
-    }
-
-    public void quit() {
-        this.mHandlerThread.quitSafely();
-    }
-
-    /* loaded from: classes3.dex */
-    public class TaskImpl implements Task {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TaskImpl {
         public final Handler mHandler;
         public final Object mToken;
 
@@ -40,10 +18,12 @@ public class UptimeTimer {
             this.mHandler = handler;
             this.mToken = obj;
         }
+    }
 
-        @Override // com.android.server.soundtrigger_middleware.UptimeTimer.Task
-        public void cancel() {
-            this.mHandler.removeCallbacksAndMessages(this.mToken);
-        }
+    public UptimeTimer() {
+        HandlerThread handlerThread = new HandlerThread("SoundTriggerHalWatchdog");
+        this.mHandlerThread = handlerThread;
+        handlerThread.start();
+        this.mHandler = new Handler(handlerThread.getLooper());
     }
 }

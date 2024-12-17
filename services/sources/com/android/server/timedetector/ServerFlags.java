@@ -4,9 +4,7 @@ import android.content.Context;
 import android.provider.DeviceConfig;
 import android.util.ArrayMap;
 import com.android.server.timezonedetector.StateChangeListener;
-import java.time.DateTimeException;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,7 +13,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ServerFlags {
     public static ServerFlags sInstance;
     public final ArrayMap mListeners = new ArrayMap();
@@ -26,102 +25,62 @@ public final class ServerFlags {
     public ServerFlags(Context context) {
         DeviceConfig.addOnPropertiesChangedListener("system_time", context.getMainExecutor(), new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.timedetector.ServerFlags$$ExternalSyntheticLambda0
             public final void onPropertiesChanged(DeviceConfig.Properties properties) {
-                ServerFlags.this.handlePropertiesChanged(properties);
+                ArrayList arrayList;
+                ServerFlags serverFlags = ServerFlags.this;
+                synchronized (serverFlags.mListeners) {
+                    try {
+                        arrayList = new ArrayList(serverFlags.mListeners.size());
+                        for (Map.Entry entry : serverFlags.mListeners.entrySet()) {
+                            HashSet hashSet = (HashSet) entry.getValue();
+                            Iterator it = properties.getKeyset().iterator();
+                            while (true) {
+                                if (it.hasNext()) {
+                                    if (hashSet.contains((String) it.next())) {
+                                        arrayList.add((StateChangeListener) entry.getKey());
+                                        break;
+                                    }
+                                } else {
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+                Iterator it2 = arrayList.iterator();
+                while (it2.hasNext()) {
+                    ((StateChangeListener) it2.next()).onChange();
+                }
             }
         });
+    }
+
+    public static Duration getDurationFromMillis(String str, Duration duration) {
+        long j = DeviceConfig.getLong("system_time", str, -1L);
+        return j < 0 ? duration : Duration.ofMillis(j);
     }
 
     public static ServerFlags getInstance(Context context) {
         ServerFlags serverFlags;
         synchronized (SLOCK) {
-            if (sInstance == null) {
-                sInstance = new ServerFlags(context);
+            try {
+                if (sInstance == null) {
+                    sInstance = new ServerFlags(context);
+                }
+                serverFlags = sInstance;
+            } catch (Throwable th) {
+                throw th;
             }
-            serverFlags = sInstance;
         }
         return serverFlags;
     }
 
-    public final void handlePropertiesChanged(DeviceConfig.Properties properties) {
-        ArrayList arrayList;
-        synchronized (this.mListeners) {
-            arrayList = new ArrayList(this.mListeners.size());
-            for (Map.Entry entry : this.mListeners.entrySet()) {
-                if (containsAny((HashSet) entry.getValue(), properties.getKeyset())) {
-                    arrayList.add((StateChangeListener) entry.getKey());
-                }
-            }
-        }
-        Iterator it = arrayList.iterator();
-        while (it.hasNext()) {
-            ((StateChangeListener) it.next()).onChange();
-        }
-    }
-
-    public static boolean containsAny(Set set, Iterable iterable) {
-        Iterator it = iterable.iterator();
-        while (it.hasNext()) {
-            if (set.contains((String) it.next())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void addListener(StateChangeListener stateChangeListener, Set set) {
-        Objects.requireNonNull(stateChangeListener);
+    public final void addListener(StateChangeListener stateChangeListener, Set set) {
         Objects.requireNonNull(set);
         HashSet hashSet = new HashSet(set);
         synchronized (this.mListeners) {
             this.mListeners.put(stateChangeListener, hashSet);
         }
-    }
-
-    public Optional getOptionalString(String str) {
-        return Optional.ofNullable(DeviceConfig.getProperty("system_time", str));
-    }
-
-    public Optional getOptionalStringArray(String str) {
-        Optional optionalString = getOptionalString(str);
-        if (!optionalString.isPresent()) {
-            return Optional.empty();
-        }
-        String str2 = (String) optionalString.get();
-        if ("_[]_".equals(str2)) {
-            return Optional.of(new String[0]);
-        }
-        return Optional.of(str2.split(","));
-    }
-
-    public Optional getOptionalInstant(String str) {
-        String property = DeviceConfig.getProperty("system_time", str);
-        if (property == null) {
-            return Optional.empty();
-        }
-        try {
-            return Optional.of(Instant.ofEpochMilli(Long.parseLong(property)));
-        } catch (NumberFormatException | DateTimeException unused) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional getOptionalBoolean(String str) {
-        return parseOptionalBoolean(DeviceConfig.getProperty("system_time", str));
-    }
-
-    public static Optional parseOptionalBoolean(String str) {
-        if (str == null) {
-            return Optional.empty();
-        }
-        return Boolean.parseBoolean(str) ? OPTIONAL_TRUE : OPTIONAL_FALSE;
-    }
-
-    public boolean getBoolean(String str, boolean z) {
-        return DeviceConfig.getBoolean("system_time", str, z);
-    }
-
-    public Duration getDurationFromMillis(String str, Duration duration) {
-        long j = DeviceConfig.getLong("system_time", str, -1L);
-        return j < 0 ? duration : Duration.ofMillis(j);
     }
 }

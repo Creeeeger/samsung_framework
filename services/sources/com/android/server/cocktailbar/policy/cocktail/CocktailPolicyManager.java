@@ -1,207 +1,131 @@
 package com.android.server.cocktailbar.policy.cocktail;
 
-import android.content.Context;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
-import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.cocktailbar.CocktailBarManagerServiceContainer;
+import com.android.server.cocktailbar.CocktailBarManagerServiceImpl;
 import com.android.server.cocktailbar.mode.CocktailBarModeManager;
-import com.android.server.cocktailbar.policy.cocktail.CocktailPolicy;
 import com.android.server.cocktailbar.settings.CocktailBarSettings;
-import com.android.server.cocktailbar.utils.CocktailBarConfig;
 import com.samsung.android.cocktailbar.Cocktail;
-import com.samsung.android.cocktailbar.CocktailProviderInfo;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class CocktailPolicyManager implements CocktailPolicy.OnCocktailPolicyListener {
-    public static final String TAG = "CocktailPolicyManager";
+public final class CocktailPolicyManager {
+    public ArrayList mCocktailPolicys;
     public OnCocktailBarPolicyListener mListener;
-    public ArrayList mCocktailPolicys = new ArrayList();
-    public SparseArray mUpdatableCocktailMap = new SparseArray();
+    public SparseArray mUpdatableCocktailMap;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface OnCocktailBarPolicyListener {
-        void onRemoveCocktail(int i, int i2);
-
-        void onUpdateCocktail(int i, int i2);
     }
 
-    public CocktailPolicyManager(Context context, OnCocktailBarPolicyListener onCocktailBarPolicyListener) {
-        this.mListener = onCocktailBarPolicyListener;
-        int categoryIds = CocktailProviderInfo.getCategoryIds(CocktailBarConfig.getInstance(context).getCategoryFilter());
-        if (categoryIds == 0 || (65536 & categoryIds) != 0) {
-            setupCocktailPolicy(new CocktailContextualPolicy(this));
-        }
-        if ((categoryIds & 512) != 0) {
-            setupCocktailPolicy(new CocktailWhisperPolicy(context, this));
-        }
-        if (categoryIds == 0 || (categoryIds & FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__CROSS_PROFILE_SETTINGS_PAGE_ADMIN_RESTRICTED) != 0) {
-            setupCocktailPolicy(new CocktailNativePolicy(this));
-        }
-        setupCocktailPolicy(new CocktailNormalPolicy(this));
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UpadatableCocktailInfo {
+        public SparseBooleanArray mCocktailList;
     }
 
-    public final void setupCocktailPolicy(CocktailPolicy cocktailPolicy) {
-        this.mCocktailPolicys.add(cocktailPolicy);
-    }
-
-    public void establishPolicy(Cocktail cocktail, int i, int i2) {
-        if (cocktail == null) {
-            Slog.e(TAG, "establishPolicy: cocktail is null");
-            return;
-        }
-        CocktailPolicy findCocktailPolicy = findCocktailPolicy(i);
-        if (findCocktailPolicy != null) {
-            findCocktailPolicy.establishPolicy(cocktail, i2);
-        }
-    }
-
-    public void changeResumePackage(String str, int i) {
-        CocktailPolicy findCocktailPolicy = findCocktailPolicy(i);
-        if (findCocktailPolicy != null) {
-            findCocktailPolicy.changeResumePackage(str);
-        }
-    }
-
-    public void enableUpdatableCocktail(int i, int i2) {
-        UpadatableCocktailInfo upadatableCocktailInfo = (UpadatableCocktailInfo) this.mUpdatableCocktailMap.get(i2);
-        if (upadatableCocktailInfo == null) {
-            upadatableCocktailInfo = new UpadatableCocktailInfo(i2);
-            this.mUpdatableCocktailMap.put(i2, upadatableCocktailInfo);
-        }
-        upadatableCocktailInfo.enableUpdate(i);
-    }
-
-    public void disableUpdatableCocktail(int i, int i2) {
-        UpadatableCocktailInfo upadatableCocktailInfo = (UpadatableCocktailInfo) this.mUpdatableCocktailMap.get(i2);
-        if (upadatableCocktailInfo != null) {
-            upadatableCocktailInfo.disableUpdate(i);
-        }
-    }
-
-    public boolean isUpdatedCocktail(int i, int i2) {
-        UpadatableCocktailInfo upadatableCocktailInfo = (UpadatableCocktailInfo) this.mUpdatableCocktailMap.get(i2);
-        if (upadatableCocktailInfo != null) {
-            return upadatableCocktailInfo.isUpdatedCocktail(i);
-        }
-        return false;
-    }
-
-    public boolean canSendUpdateIntent(Cocktail cocktail, CocktailBarSettings cocktailBarSettings) {
-        return cocktailBarSettings.isEnabledCocktail(cocktail.getCocktailId());
-    }
-
-    public boolean canUpdateCocktail(Cocktail cocktail, CocktailBarSettings cocktailBarSettings, int i, CocktailBarModeManager cocktailBarModeManager) {
-        if (cocktail == null) {
-            Slog.e(TAG, "canUpdateCocktail: cocktail is null");
-            return false;
-        }
-        CocktailPolicy findMatchedPolicy = findMatchedPolicy(cocktail);
+    public final boolean canUpdateCocktail(Cocktail cocktail, CocktailBarSettings cocktailBarSettings, int i, CocktailBarModeManager cocktailBarModeManager) {
+        AbsCocktailPolicy findMatchedPolicy = findMatchedPolicy(cocktail);
         if (findMatchedPolicy != null) {
             return findMatchedPolicy.isAcceptUpdateCocktail(cocktail, cocktailBarSettings, cocktailBarModeManager, i, isUpdatedCocktail(cocktail.getCocktailId(), i));
         }
         return false;
     }
 
-    public boolean canShowCocktail(Cocktail cocktail, CocktailBarSettings cocktailBarSettings, int i, CocktailBarModeManager cocktailBarModeManager) {
-        if (cocktail == null) {
-            Slog.e(TAG, "canShowCocktail: cocktail is null");
-            return false;
+    public final void disableUpdatableCocktail(int i, int i2) {
+        UpadatableCocktailInfo upadatableCocktailInfo = (UpadatableCocktailInfo) this.mUpdatableCocktailMap.get(i2);
+        if (upadatableCocktailInfo != null) {
+            upadatableCocktailInfo.mCocktailList.delete(i);
         }
-        CocktailPolicy findMatchedPolicy = findMatchedPolicy(cocktail);
-        if (findMatchedPolicy != null) {
-            return findMatchedPolicy.isAcceptShowCocktail(cocktail, cocktailBarSettings, i, isUpdatedCocktail(cocktail.getCocktailId(), i));
-        }
-        return false;
     }
 
-    public boolean canCloseCocktail(Cocktail cocktail, CocktailBarSettings cocktailBarSettings, int i, CocktailBarModeManager cocktailBarModeManager) {
-        if (cocktail == null) {
-            Slog.e(TAG, "canCloseCocktail: cocktail is null");
-            return false;
+    public final void enableUpdatableCocktail(int i, int i2) {
+        UpadatableCocktailInfo upadatableCocktailInfo = (UpadatableCocktailInfo) this.mUpdatableCocktailMap.get(i2);
+        if (upadatableCocktailInfo == null) {
+            upadatableCocktailInfo = new UpadatableCocktailInfo();
+            upadatableCocktailInfo.mCocktailList = new SparseBooleanArray();
+            this.mUpdatableCocktailMap.put(i2, upadatableCocktailInfo);
         }
-        CocktailPolicy findMatchedPolicy = findMatchedPolicy(cocktail);
-        if (findMatchedPolicy != null) {
-            return findMatchedPolicy.isAcceptCloseCocktail(cocktail, cocktailBarSettings, i, isUpdatedCocktail(cocktail.getCocktailId(), i));
-        }
-        return false;
+        upadatableCocktailInfo.mCocktailList.put(i, true);
     }
 
-    public final CocktailPolicy findMatchedPolicy(Cocktail cocktail) {
+    public final void establishPolicy(Cocktail cocktail, int i) {
+        AbsCocktailPolicy findCocktailPolicy = findCocktailPolicy();
+        if (findCocktailPolicy != null) {
+            findCocktailPolicy.establishPolicy(cocktail, i);
+        }
+    }
+
+    public final AbsCocktailPolicy findCocktailPolicy() {
         Iterator it = this.mCocktailPolicys.iterator();
         while (it.hasNext()) {
-            CocktailPolicy cocktailPolicy = (CocktailPolicy) it.next();
-            if (cocktailPolicy.isMatchedPolicy(cocktail)) {
-                Slog.i(TAG, "findMatchedPolicy: find policy = " + cocktailPolicy.getCocktailType());
-                return cocktailPolicy;
+            AbsCocktailPolicy absCocktailPolicy = (AbsCocktailPolicy) it.next();
+            if (absCocktailPolicy.getCocktailType() == 6) {
+                Slog.i("CocktailPolicyManager", "findPolicy: find policy = 6");
+                return absCocktailPolicy;
             }
         }
         return null;
     }
 
-    public final CocktailPolicy findCocktailPolicy(int i) {
+    public final AbsCocktailPolicy findMatchedPolicy(Cocktail cocktail) {
         Iterator it = this.mCocktailPolicys.iterator();
         while (it.hasNext()) {
-            CocktailPolicy cocktailPolicy = (CocktailPolicy) it.next();
-            if (cocktailPolicy.getCocktailType() == i) {
-                Slog.i(TAG, "findPolicy: find policy = " + i);
-                return cocktailPolicy;
+            AbsCocktailPolicy absCocktailPolicy = (AbsCocktailPolicy) it.next();
+            if (absCocktailPolicy.isMatchedPolicy(cocktail)) {
+                Slog.i("CocktailPolicyManager", "findMatchedPolicy: find policy = " + absCocktailPolicy.getCocktailType());
+                return absCocktailPolicy;
             }
         }
         return null;
     }
 
-    @Override // com.android.server.cocktailbar.policy.cocktail.CocktailPolicy.OnCocktailPolicyListener
-    public void onEanbleUpdatableCocktail(int i, int i2) {
-        enableUpdatableCocktail(i, i2);
+    public final boolean isUpdatedCocktail(int i, int i2) {
+        UpadatableCocktailInfo upadatableCocktailInfo = (UpadatableCocktailInfo) this.mUpdatableCocktailMap.get(i2);
+        if (upadatableCocktailInfo != null) {
+            return upadatableCocktailInfo.mCocktailList.get(i);
+        }
+        return false;
     }
 
-    @Override // com.android.server.cocktailbar.policy.cocktail.CocktailPolicy.OnCocktailPolicyListener
-    public void onDisableUpdatableCocktail(int i, int i2) {
-        disableUpdatableCocktail(i, i2);
-    }
-
-    @Override // com.android.server.cocktailbar.policy.cocktail.CocktailPolicy.OnCocktailPolicyListener
-    public void onUpdateCocktail(int i) {
+    public final void onRemoveUpdatableCocktail(int i) {
         int i2 = i >> 16;
         UpadatableCocktailInfo upadatableCocktailInfo = (UpadatableCocktailInfo) this.mUpdatableCocktailMap.get(i2);
-        if (upadatableCocktailInfo == null || upadatableCocktailInfo.isUpdatedCocktail(i)) {
+        if (upadatableCocktailInfo == null || !upadatableCocktailInfo.mCocktailList.get(i)) {
             return;
         }
-        this.mListener.onUpdateCocktail(i, i2);
+        CocktailBarManagerServiceContainer cocktailBarManagerServiceContainer = (CocktailBarManagerServiceContainer) this.mListener;
+        if (!cocktailBarManagerServiceContainer.enforceCocktailBarService() || CocktailBarManagerServiceContainer.isNotEdgeRunnableId(i2)) {
+            return;
+        }
+        CocktailBarManagerServiceImpl implForUser = cocktailBarManagerServiceContainer.getImplForUser(i2);
+        synchronized (implForUser.mCocktailArr) {
+            implForUser.removeCocktailLocked(i);
+        }
     }
 
-    @Override // com.android.server.cocktailbar.policy.cocktail.CocktailPolicy.OnCocktailPolicyListener
-    public void onRemoveUpdatableCocktail(int i) {
+    public final void onUpdateCocktail(int i) {
         int i2 = i >> 16;
         UpadatableCocktailInfo upadatableCocktailInfo = (UpadatableCocktailInfo) this.mUpdatableCocktailMap.get(i2);
-        if (upadatableCocktailInfo == null || !upadatableCocktailInfo.isUpdatedCocktail(i)) {
+        if (upadatableCocktailInfo == null || upadatableCocktailInfo.mCocktailList.get(i)) {
             return;
         }
-        this.mListener.onRemoveCocktail(i, i2);
-    }
-
-    /* loaded from: classes.dex */
-    public class UpadatableCocktailInfo {
-        public SparseBooleanArray mCocktailList = new SparseBooleanArray();
-        public final int mUserId;
-
-        public UpadatableCocktailInfo(int i) {
-            this.mUserId = i;
+        CocktailBarManagerServiceContainer cocktailBarManagerServiceContainer = (CocktailBarManagerServiceContainer) this.mListener;
+        if (!cocktailBarManagerServiceContainer.enforceCocktailBarService() || CocktailBarManagerServiceContainer.isNotEdgeRunnableId(i2)) {
+            return;
         }
-
-        public void enableUpdate(int i) {
-            this.mCocktailList.put(i, true);
-        }
-
-        public void disableUpdate(int i) {
-            this.mCocktailList.delete(i);
-        }
-
-        public boolean isUpdatedCocktail(int i) {
-            return this.mCocktailList.get(i);
+        CocktailBarManagerServiceImpl implForUser = cocktailBarManagerServiceContainer.getImplForUser(i2);
+        synchronized (implForUser.mCocktailArr) {
+            try {
+                Cocktail cocktail = (Cocktail) implForUser.mCocktailArr.get(i);
+                if (cocktail != null) {
+                    implForUser.sendEnableAndUpdateBroadcastLocked(cocktail);
+                }
+            } finally {
+            }
         }
     }
 }

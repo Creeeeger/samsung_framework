@@ -13,89 +13,28 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ZramWriteback extends JobService {
     public static final ComponentName sZramWriteback = new ComponentName("android", ZramWriteback.class.getName());
-    public static int sZramDeviceId = 0;
 
-    @Override // android.app.job.JobService
-    public boolean onStopJob(JobParameters jobParameters) {
-        return false;
-    }
-
-    public final void markPagesAsIdle() {
-        String format = String.format("/sys/block/zram%d/idle", Integer.valueOf(sZramDeviceId));
-        try {
-            FileUtils.stringToFile(new File(format), "all");
-        } catch (IOException unused) {
-            Slog.e("ZramWriteback", "Failed to write to " + format);
-        }
-    }
-
-    public final void flushIdlePages() {
-        String format = String.format("/sys/block/zram%d/writeback", Integer.valueOf(sZramDeviceId));
-        try {
-            FileUtils.stringToFile(new File(format), "idle");
-        } catch (IOException unused) {
-            Slog.e("ZramWriteback", "Failed to write to " + format);
-        }
-    }
-
-    public final int getWrittenPageCount() {
-        String format = String.format("/sys/block/zram%d/bd_stat", Integer.valueOf(sZramDeviceId));
+    public static int getWrittenPageCount() {
+        String format = String.format("/sys/block/zram%d/bd_stat", 0);
         try {
             return Integer.parseInt(FileUtils.readTextFile(new File(format), 128, "").trim().split("\\s+")[2], 10);
         } catch (IOException unused) {
-            Slog.e("ZramWriteback", "Failed to read writeback stats from " + format);
+            Slog.e("ZramWriteback", "Failed to read writeback stats from ".concat(format));
             return -1;
         }
     }
 
-    public final void markAndFlushPages() {
-        int writtenPageCount = getWrittenPageCount();
-        flushIdlePages();
-        markPagesAsIdle();
-        if (writtenPageCount != -1) {
-            Slog.i("ZramWriteback", "Total pages written to disk is " + (getWrittenPageCount() - writtenPageCount));
-        }
-    }
-
-    public static boolean isWritebackEnabled() {
+    public static void markPagesAsIdle() {
+        String format = String.format("/sys/block/zram%d/idle", 0);
         try {
+            FileUtils.stringToFile(new File(format), "all");
         } catch (IOException unused) {
-            Slog.w("ZramWriteback", "Writeback is not enabled on zram");
+            Slog.e("ZramWriteback", "Failed to write to ".concat(format));
         }
-        if (!"none".equals(FileUtils.readTextFile(new File(String.format("/sys/block/zram%d/backing_dev", Integer.valueOf(sZramDeviceId))), 128, "").trim())) {
-            return true;
-        }
-        Slog.w("ZramWriteback", "Writeback device is not set");
-        return false;
-    }
-
-    public static void schedNextWriteback(Context context) {
-        ((JobScheduler) context.getSystemService("jobscheduler")).schedule(new JobInfo.Builder(812, sZramWriteback).setMinimumLatency(TimeUnit.HOURS.toMillis(SystemProperties.getInt("ro.zram.periodic_wb_delay_hours", 24))).setRequiresDeviceIdle(!SystemProperties.getBoolean("zram.force_writeback", false)).build());
-    }
-
-    @Override // android.app.job.JobService
-    public boolean onStartJob(final JobParameters jobParameters) {
-        if (!isWritebackEnabled()) {
-            jobFinished(jobParameters, false);
-            return false;
-        }
-        if (jobParameters.getJobId() == 811) {
-            markPagesAsIdle();
-            jobFinished(jobParameters, false);
-            return false;
-        }
-        new Thread("ZramWriteback_WritebackIdlePages") { // from class: com.android.server.ZramWriteback.1
-            @Override // java.lang.Thread, java.lang.Runnable
-            public void run() {
-                ZramWriteback.this.markAndFlushPages();
-                ZramWriteback.schedNextWriteback(ZramWriteback.this);
-                ZramWriteback.this.jobFinished(jobParameters, false);
-            }
-        }.start();
-        return true;
     }
 
     public static void scheduleZramWriteback(Context context) {
@@ -106,8 +45,57 @@ public final class ZramWriteback extends JobService {
         ComponentName componentName = sZramWriteback;
         JobInfo.Builder builder = new JobInfo.Builder(811, componentName);
         TimeUnit timeUnit = TimeUnit.MINUTES;
-        long j = i;
-        jobScheduler.schedule(builder.setMinimumLatency(timeUnit.toMillis(j)).setOverrideDeadline(timeUnit.toMillis(j)).build());
+        jobScheduler.schedule(builder.setMinimumLatency(timeUnit.toMillis(i)).build());
         jobScheduler.schedule(new JobInfo.Builder(812, componentName).setMinimumLatency(timeUnit.toMillis(i2)).setRequiresDeviceIdle(!z).build());
+    }
+
+    @Override // android.app.job.JobService
+    public final boolean onStartJob(final JobParameters jobParameters) {
+        try {
+        } catch (IOException unused) {
+            Slog.w("ZramWriteback", "Writeback is not enabled on zram");
+        }
+        if ("none".equals(FileUtils.readTextFile(new File(String.format("/sys/block/zram%d/backing_dev", 0)), 128, "").trim())) {
+            Slog.w("ZramWriteback", "Writeback device is not set");
+            jobFinished(jobParameters, false);
+            return false;
+        }
+        if (jobParameters.getJobId() != 811) {
+            new Thread() { // from class: com.android.server.ZramWriteback.1
+                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+                {
+                    super("ZramWriteback_WritebackIdlePages");
+                }
+
+                @Override // java.lang.Thread, java.lang.Runnable
+                public final void run() {
+                    ZramWriteback zramWriteback = ZramWriteback.this;
+                    ComponentName componentName = ZramWriteback.sZramWriteback;
+                    zramWriteback.getClass();
+                    int writtenPageCount = ZramWriteback.getWrittenPageCount();
+                    String format = String.format("/sys/block/zram%d/writeback", 0);
+                    try {
+                        FileUtils.stringToFile(new File(format), "idle");
+                    } catch (IOException unused2) {
+                        Slog.e("ZramWriteback", "Failed to write to ".concat(format));
+                    }
+                    ZramWriteback.markPagesAsIdle();
+                    if (writtenPageCount != -1) {
+                        Slog.i("ZramWriteback", "Total pages written to disk is " + (ZramWriteback.getWrittenPageCount() - writtenPageCount));
+                    }
+                    ((JobScheduler) ZramWriteback.this.getSystemService("jobscheduler")).schedule(new JobInfo.Builder(812, ZramWriteback.sZramWriteback).setMinimumLatency(TimeUnit.HOURS.toMillis(SystemProperties.getInt("ro.zram.periodic_wb_delay_hours", 24))).setRequiresDeviceIdle(!SystemProperties.getBoolean("zram.force_writeback", false)).build());
+                    ZramWriteback.this.jobFinished(jobParameters, false);
+                }
+            }.start();
+            return true;
+        }
+        markPagesAsIdle();
+        jobFinished(jobParameters, false);
+        return false;
+    }
+
+    @Override // android.app.job.JobService
+    public final boolean onStopJob(JobParameters jobParameters) {
+        return false;
     }
 }

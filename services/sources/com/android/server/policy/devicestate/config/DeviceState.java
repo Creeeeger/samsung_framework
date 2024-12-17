@@ -1,75 +1,12 @@
 package com.android.server.policy.devicestate.config;
 
 import java.math.BigInteger;
-import javax.xml.datatype.DatatypeConfigurationException;
-import org.xmlpull.v1.XmlPullParser;
 
-/* loaded from: classes3.dex */
-public class DeviceState {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DeviceState {
     public Conditions conditions;
-    public Flags flags;
     public BigInteger identifier;
     public String name;
-
-    public BigInteger getIdentifier() {
-        return this.identifier;
-    }
-
-    public void setIdentifier(BigInteger bigInteger) {
-        this.identifier = bigInteger;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String str) {
-        this.name = str;
-    }
-
-    public Flags getFlags() {
-        return this.flags;
-    }
-
-    public void setFlags(Flags flags) {
-        this.flags = flags;
-    }
-
-    public Conditions getConditions() {
-        return this.conditions;
-    }
-
-    public void setConditions(Conditions conditions) {
-        this.conditions = conditions;
-    }
-
-    public static DeviceState read(XmlPullParser xmlPullParser) {
-        int next;
-        DeviceState deviceState = new DeviceState();
-        xmlPullParser.getDepth();
-        while (true) {
-            next = xmlPullParser.next();
-            if (next == 1 || next == 3) {
-                break;
-            }
-            if (xmlPullParser.getEventType() == 2) {
-                String name = xmlPullParser.getName();
-                if (name.equals("identifier")) {
-                    deviceState.setIdentifier(new BigInteger(XmlParser.readText(xmlPullParser)));
-                } else if (name.equals("name")) {
-                    deviceState.setName(XmlParser.readText(xmlPullParser));
-                } else if (name.equals("flags")) {
-                    deviceState.setFlags(Flags.read(xmlPullParser));
-                } else if (name.equals("conditions")) {
-                    deviceState.setConditions(Conditions.read(xmlPullParser));
-                } else {
-                    XmlParser.skip(xmlPullParser);
-                }
-            }
-        }
-        if (next == 3) {
-            return deviceState;
-        }
-        throw new DatatypeConfigurationException("DeviceState is not closed");
-    }
+    public Properties properties;
 }

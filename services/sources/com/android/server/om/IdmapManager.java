@@ -1,25 +1,24 @@
 package com.android.server.om;
 
 import android.content.om.OverlayInfo;
-import android.content.om.OverlayableInfo;
-import android.os.FabricatedOverlayInfo;
-import android.os.FabricatedOverlayInternal;
+import android.os.IIdmap2;
+import android.os.RemoteException;
 import android.os.SystemProperties;
-import android.text.TextUtils;
 import android.util.Slog;
-import com.android.server.pm.pkg.AndroidPackage;
-import com.android.server.pm.pkg.AndroidPackageSplit;
-import com.android.server.pm.pkg.PackageState;
-import java.io.File;
-import java.io.IOException;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.om.IdmapDaemon;
+import com.android.server.om.OverlayManagerService;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class IdmapManager {
     public static final boolean VENDOR_IS_Q_OR_LATER;
     public final String mConfigSignaturePackage;
     public final IdmapDaemon mIdmapDaemon;
-    public final PackageManagerHelper mPackageManager;
+    public final OverlayManagerService.PackageManagerHelperImpl mPackageManager;
 
     static {
         boolean z = true;
@@ -32,104 +31,200 @@ public final class IdmapManager {
         VENDOR_IS_Q_OR_LATER = z;
     }
 
-    public IdmapManager(IdmapDaemon idmapDaemon, PackageManagerHelper packageManagerHelper) {
-        this.mPackageManager = packageManagerHelper;
+    public IdmapManager(IdmapDaemon idmapDaemon, OverlayManagerService.PackageManagerHelperImpl packageManagerHelperImpl) {
+        this.mPackageManager = packageManagerHelperImpl;
         this.mIdmapDaemon = idmapDaemon;
-        this.mConfigSignaturePackage = packageManagerHelper.getConfigSignaturePackage();
+        String[] knownPackageNames = packageManagerHelperImpl.mPackageManagerInternal.getKnownPackageNames(13, 0);
+        this.mConfigSignaturePackage = knownPackageNames.length == 0 ? null : knownPackageNames[0];
     }
 
-    public int createIdmap(AndroidPackage androidPackage, PackageState packageState, AndroidPackage androidPackage2, String str, String str2, int i) {
-        Slog.d("OverlayManager", "create idmap for " + androidPackage.getPackageName() + " and " + androidPackage2.getPackageName());
-        String path = ((AndroidPackageSplit) androidPackage.getSplits().get(0)).getPath();
-        checkForResourceMapping(androidPackage, path);
-        try {
-            int calculateFulfilledPolicies = calculateFulfilledPolicies(androidPackage, packageState, androidPackage2, i);
-            boolean enforceOverlayable = enforceOverlayable(packageState, androidPackage2);
-            if (this.mIdmapDaemon.verifyIdmap(path, str, str2, calculateFulfilledPolicies, enforceOverlayable, i)) {
-                return 1;
+    /* JADX WARN: Removed duplicated region for block: B:30:0x006b  */
+    /* JADX WARN: Removed duplicated region for block: B:39:0x007f  */
+    /* JADX WARN: Removed duplicated region for block: B:42:0x0082  */
+    /* JADX WARN: Removed duplicated region for block: B:8:0x001f  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int calculateFulfilledPolicies(com.android.server.pm.pkg.AndroidPackage r5, com.android.server.pm.pkg.PackageState r6, com.android.server.pm.pkg.AndroidPackage r7, int r8) {
+        /*
+            r4 = this;
+            java.lang.String r0 = r5.getPackageName()
+            java.lang.String r1 = r7.getPackageName()
+            com.android.server.om.OverlayManagerService$PackageManagerHelperImpl r2 = r4.mPackageManager
+            r2.getClass()
+            android.content.pm.IPackageManager r3 = r2.mPackageManager     // Catch: android.os.RemoteException -> L18
+            int r0 = r3.checkSignatures(r0, r1, r8)     // Catch: android.os.RemoteException -> L18
+            if (r0 != 0) goto L18
+            r0 = 17
+            goto L19
+        L18:
+            r0 = 1
+        L19:
+            java.lang.String r1 = r7.getOverlayTargetOverlayableName()
+            if (r1 == 0) goto L63
+            com.android.server.SystemConfig r3 = com.android.server.SystemConfig.getInstance()
+            java.util.Map r3 = r3.mNamedActors
+            if (r3 == 0) goto L28
+            goto L2c
+        L28:
+            java.util.Map r3 = java.util.Collections.emptyMap()
+        L2c:
+            boolean r3 = r3.isEmpty()
+            if (r3 != 0) goto L63
+            java.lang.String r5 = r5.getPackageName()     // Catch: java.lang.Throwable -> L63
+            android.content.om.OverlayableInfo r5 = r2.getOverlayableForTarget(r8, r5, r1)     // Catch: java.lang.Throwable -> L63
+            if (r5 == 0) goto L63
+            java.lang.String r5 = r5.actor     // Catch: java.lang.Throwable -> L63
+            if (r5 == 0) goto L63
+            com.android.server.SystemConfig r1 = com.android.server.SystemConfig.getInstance()     // Catch: java.lang.Throwable -> L63
+            java.util.Map r1 = r1.mNamedActors     // Catch: java.lang.Throwable -> L63
+            if (r1 == 0) goto L49
+            goto L4d
+        L49:
+            java.util.Map r1 = java.util.Collections.emptyMap()     // Catch: java.lang.Throwable -> L63
+        L4d:
+            android.util.Pair r5 = com.android.server.om.OverlayActorEnforcer.getPackageNameForActor(r5, r1)     // Catch: java.lang.Throwable -> L63
+            java.lang.Object r5 = r5.first     // Catch: java.lang.Throwable -> L63
+            java.lang.String r5 = (java.lang.String) r5     // Catch: java.lang.Throwable -> L63
+            java.lang.String r1 = r7.getPackageName()     // Catch: java.lang.Throwable -> L63
+            android.content.pm.IPackageManager r3 = r2.mPackageManager     // Catch: java.lang.Throwable -> L63
+            int r5 = r3.checkSignatures(r5, r1, r8)     // Catch: java.lang.Throwable -> L63
+            if (r5 != 0) goto L63
+            r0 = r0 | 128(0x80, float:1.794E-43)
+        L63:
+            java.lang.String r4 = r4.mConfigSignaturePackage
+            boolean r5 = android.text.TextUtils.isEmpty(r4)
+            if (r5 != 0) goto L79
+            java.lang.String r5 = r7.getPackageName()
+            android.content.pm.IPackageManager r7 = r2.mPackageManager     // Catch: android.os.RemoteException -> L79
+            int r4 = r7.checkSignatures(r4, r5, r8)     // Catch: android.os.RemoteException -> L79
+            if (r4 != 0) goto L79
+            r0 = r0 | 256(0x100, float:3.59E-43)
+        L79:
+            boolean r4 = r6.isVendor()
+            if (r4 == 0) goto L82
+            r4 = r0 | 4
+            return r4
+        L82:
+            boolean r4 = r6.isProduct()
+            if (r4 == 0) goto L8b
+            r4 = r0 | 8
+            return r4
+        L8b:
+            boolean r4 = r6.isOdm()
+            if (r4 == 0) goto L94
+            r4 = r0 | 32
+            return r4
+        L94:
+            boolean r4 = r6.isOem()
+            if (r4 == 0) goto L9d
+            r4 = r0 | 64
+            return r4
+        L9d:
+            boolean r4 = r6.isSystem()
+            if (r4 != 0) goto Lab
+            boolean r4 = r6.isSystemExt()
+            if (r4 == 0) goto Laa
+            goto Lab
+        Laa:
+            return r0
+        Lab:
+            r4 = r0 | 2
+            return r4
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.IdmapManager.calculateFulfilledPolicies(com.android.server.pm.pkg.AndroidPackage, com.android.server.pm.pkg.PackageState, com.android.server.pm.pkg.AndroidPackage, int):int");
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r0v9, types: [java.util.List] */
+    public final List getFabricatedOverlayInfos() {
+        ArrayList arrayList;
+        int i;
+        IIdmap2 iIdmap2;
+        IdmapDaemon idmapDaemon = this.mIdmapDaemon;
+        synchronized (idmapDaemon) {
+            arrayList = new ArrayList();
+            IdmapDaemon.Connection connection = null;
+            try {
+                connection = idmapDaemon.connect();
+                IIdmap2 iIdmap22 = connection.mIdmap2;
+                if (iIdmap22 == null) {
+                    Slog.w("OverlayManager", "idmap2d service is not ready for getFabricatedOverlayInfos()");
+                    ?? emptyList = Collections.emptyList();
+                    connection.close();
+                    arrayList = emptyList;
+                } else {
+                    i = iIdmap22.acquireFabricatedOverlayIterator();
+                    while (true) {
+                        try {
+                            try {
+                                List nextFabricatedOverlayInfos = iIdmap22.nextFabricatedOverlayInfos(i);
+                                if (nextFabricatedOverlayInfos.isEmpty()) {
+                                    try {
+                                        break;
+                                    } catch (RemoteException unused) {
+                                    }
+                                } else {
+                                    arrayList.addAll(nextFabricatedOverlayInfos);
+                                }
+                            } catch (Throwable th) {
+                                th = th;
+                                try {
+                                    iIdmap2 = connection.mIdmap2;
+                                    if (iIdmap2 != null && i != -1) {
+                                        iIdmap2.releaseFabricatedOverlayIterator(i);
+                                    }
+                                } catch (RemoteException unused2) {
+                                }
+                                connection.close();
+                                throw th;
+                            }
+                        } catch (Exception e) {
+                            e = e;
+                            Slog.wtf("OverlayManager", "failed to get all fabricated overlays", e);
+                            try {
+                                IIdmap2 iIdmap23 = connection.mIdmap2;
+                                if (iIdmap23 != null && i != -1) {
+                                    iIdmap23.releaseFabricatedOverlayIterator(i);
+                                }
+                            } catch (RemoteException unused3) {
+                            }
+                            connection.close();
+                            return arrayList;
+                        }
+                    }
+                    IIdmap2 iIdmap24 = connection.mIdmap2;
+                    if (iIdmap24 != null && i != -1) {
+                        iIdmap24.releaseFabricatedOverlayIterator(i);
+                    }
+                    connection.close();
+                    arrayList = arrayList;
+                }
+            } catch (Exception e2) {
+                e = e2;
+                i = -1;
+            } catch (Throwable th2) {
+                th = th2;
+                i = -1;
+                iIdmap2 = connection.mIdmap2;
+                if (iIdmap2 != null) {
+                    iIdmap2.releaseFabricatedOverlayIterator(i);
+                }
+                connection.close();
+                throw th;
             }
-            return this.mIdmapDaemon.createIdmap(path, str, str2, calculateFulfilledPolicies, enforceOverlayable, i) != null ? 3 : 0;
-        } catch (Exception e) {
-            Slog.w("OverlayManager", "failed to generate idmap for " + path + " and " + str, e);
-            return 0;
         }
+        return arrayList;
     }
 
-    public boolean removeIdmap(OverlayInfo overlayInfo, int i) {
-        Slog.d("OverlayManager", "remove idmap for " + overlayInfo.baseCodePath);
+    public final boolean removeIdmap(OverlayInfo overlayInfo, int i) {
+        BootReceiver$$ExternalSyntheticOutline0.m(new StringBuilder("remove idmap for "), overlayInfo.baseCodePath, "OverlayManager");
         try {
-            return this.mIdmapDaemon.removeIdmap(overlayInfo.baseCodePath, i);
+            return this.mIdmapDaemon.removeIdmap(i, overlayInfo.baseCodePath);
         } catch (Exception e) {
             Slog.w("OverlayManager", "failed to remove idmap for " + overlayInfo.baseCodePath, e);
             return false;
         }
-    }
-
-    public boolean idmapExists(OverlayInfo overlayInfo) {
-        return this.mIdmapDaemon.idmapExists(overlayInfo.baseCodePath, overlayInfo.userId);
-    }
-
-    public List getFabricatedOverlayInfos() {
-        return this.mIdmapDaemon.getFabricatedOverlayInfos();
-    }
-
-    public FabricatedOverlayInfo createFabricatedOverlay(FabricatedOverlayInternal fabricatedOverlayInternal) {
-        return this.mIdmapDaemon.createFabricatedOverlay(fabricatedOverlayInternal);
-    }
-
-    public boolean deleteFabricatedOverlay(String str) {
-        return this.mIdmapDaemon.deleteFabricatedOverlay(str);
-    }
-
-    public String dumpIdmap(String str) {
-        return this.mIdmapDaemon.dumpIdmap(str);
-    }
-
-    public final boolean enforceOverlayable(PackageState packageState, AndroidPackage androidPackage) {
-        if (androidPackage.getTargetSdkVersion() >= 29) {
-            return true;
-        }
-        if (packageState.isVendor()) {
-            return VENDOR_IS_Q_OR_LATER;
-        }
-        return (packageState.isSystem() || androidPackage.isSignedWithPlatformKey()) ? false : true;
-    }
-
-    public final int calculateFulfilledPolicies(AndroidPackage androidPackage, PackageState packageState, AndroidPackage androidPackage2, int i) {
-        int i2 = this.mPackageManager.signaturesMatching(androidPackage.getPackageName(), androidPackage2.getPackageName(), i) ? 17 : 1;
-        if (matchesActorSignature(androidPackage, androidPackage2, i)) {
-            i2 |= 128;
-        }
-        if (!TextUtils.isEmpty(this.mConfigSignaturePackage) && this.mPackageManager.signaturesMatching(this.mConfigSignaturePackage, androidPackage2.getPackageName(), i)) {
-            i2 |= 256;
-        }
-        return packageState.isVendor() ? i2 | 4 : packageState.isProduct() ? i2 | 8 : packageState.isOdm() ? i2 | 32 : packageState.isOem() ? i2 | 64 : (packageState.isSystem() || packageState.isSystemExt()) ? i2 | 2 : i2;
-    }
-
-    public final boolean matchesActorSignature(AndroidPackage androidPackage, AndroidPackage androidPackage2, int i) {
-        String str;
-        String overlayTargetOverlayableName = androidPackage2.getOverlayTargetOverlayableName();
-        if (overlayTargetOverlayableName == null) {
-            return false;
-        }
-        try {
-            OverlayableInfo overlayableForTarget = this.mPackageManager.getOverlayableForTarget(androidPackage.getPackageName(), overlayTargetOverlayableName, i);
-            if (overlayableForTarget == null || (str = overlayableForTarget.actor) == null) {
-                return false;
-            }
-            return this.mPackageManager.signaturesMatching((String) OverlayActorEnforcer.getPackageNameForActor(str, this.mPackageManager.getNamedActors()).first, androidPackage2.getPackageName(), i);
-        } catch (IOException unused) {
-            return false;
-        }
-    }
-
-    public final void checkForResourceMapping(AndroidPackage androidPackage, String str) {
-        if (androidPackage == null || androidPackage.getMetaData() == null || !androidPackage.getMetaData().containsKey("resource-map")) {
-            return;
-        }
-        if (new File("/data/overlays/remaps/" + str.replace("/", ".") + ".map").exists()) {
-            return;
-        }
-        ResourceMapParser.parseResourceMap(androidPackage);
     }
 }

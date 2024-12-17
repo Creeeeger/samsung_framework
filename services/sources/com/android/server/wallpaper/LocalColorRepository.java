@@ -10,14 +10,14 @@ import android.util.ArraySet;
 import android.util.SparseArray;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class LocalColorRepository {
-    public ArrayMap mLocalColorAreas = new ArrayMap();
-    public RemoteCallbackList mCallbacks = new RemoteCallbackList();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class LocalColorRepository {
+    public RemoteCallbackList mCallbacks;
+    public ArrayMap mLocalColorAreas;
 
-    public void addAreas(final ILocalWallpaperColorConsumer iLocalWallpaperColorConsumer, List list, int i) {
+    public final void addAreas(final ILocalWallpaperColorConsumer iLocalWallpaperColorConsumer, List list, int i) {
         ArraySet arraySet;
         IBinder asBinder = iLocalWallpaperColorConsumer.asBinder();
         SparseArray sparseArray = (SparseArray) this.mLocalColorAreas.get(asBinder);
@@ -26,7 +26,7 @@ public class LocalColorRepository {
                 iLocalWallpaperColorConsumer.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: com.android.server.wallpaper.LocalColorRepository$$ExternalSyntheticLambda0
                     @Override // android.os.IBinder.DeathRecipient
                     public final void binderDied() {
-                        LocalColorRepository.this.lambda$addAreas$0(iLocalWallpaperColorConsumer);
+                        LocalColorRepository.this.mLocalColorAreas.remove(iLocalWallpaperColorConsumer.asBinder());
                     }
                 }, 0);
             } catch (RemoteException e) {
@@ -48,12 +48,11 @@ public class LocalColorRepository {
         this.mCallbacks.register(iLocalWallpaperColorConsumer);
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$addAreas$0(ILocalWallpaperColorConsumer iLocalWallpaperColorConsumer) {
-        this.mLocalColorAreas.remove(iLocalWallpaperColorConsumer.asBinder());
+    public boolean isCallbackAvailable(ILocalWallpaperColorConsumer iLocalWallpaperColorConsumer) {
+        return this.mLocalColorAreas.get(iLocalWallpaperColorConsumer.asBinder()) != null;
     }
 
-    public List removeAreas(ILocalWallpaperColorConsumer iLocalWallpaperColorConsumer, List list, int i) {
+    public final List removeAreas(ILocalWallpaperColorConsumer iLocalWallpaperColorConsumer, List list, int i) {
         IBinder asBinder = iLocalWallpaperColorConsumer.asBinder();
         SparseArray sparseArray = (SparseArray) this.mLocalColorAreas.get(asBinder);
         if (sparseArray != null) {
@@ -84,42 +83,5 @@ public class LocalColorRepository {
             }
         }
         return new ArrayList(arraySet2);
-    }
-
-    public List getAreasByDisplayId(int i) {
-        ArraySet arraySet;
-        ArrayList arrayList = new ArrayList();
-        for (int i2 = 0; i2 < this.mLocalColorAreas.size(); i2++) {
-            SparseArray sparseArray = (SparseArray) this.mLocalColorAreas.valueAt(i2);
-            if (sparseArray != null && (arraySet = (ArraySet) sparseArray.get(i)) != null) {
-                for (int i3 = 0; i3 < arraySet.size(); i3++) {
-                    arrayList.add((RectF) arraySet.valueAt(i3));
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public void forEachCallback(final Consumer consumer, final RectF rectF, final int i) {
-        this.mCallbacks.broadcast(new Consumer() { // from class: com.android.server.wallpaper.LocalColorRepository$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                LocalColorRepository.this.lambda$forEachCallback$1(i, rectF, consumer, (ILocalWallpaperColorConsumer) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$forEachCallback$1(int i, RectF rectF, Consumer consumer, ILocalWallpaperColorConsumer iLocalWallpaperColorConsumer) {
-        ArraySet arraySet;
-        SparseArray sparseArray = (SparseArray) this.mLocalColorAreas.get(iLocalWallpaperColorConsumer.asBinder());
-        if (sparseArray == null || (arraySet = (ArraySet) sparseArray.get(i)) == null || !arraySet.contains(rectF)) {
-            return;
-        }
-        consumer.accept(iLocalWallpaperColorConsumer);
-    }
-
-    public boolean isCallbackAvailable(ILocalWallpaperColorConsumer iLocalWallpaperColorConsumer) {
-        return this.mLocalColorAreas.get(iLocalWallpaperColorConsumer.asBinder()) != null;
     }
 }

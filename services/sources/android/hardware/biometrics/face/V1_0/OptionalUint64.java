@@ -1,10 +1,12 @@
 package android.hardware.biometrics.face.V1_0;
 
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 import android.os.HidlSupport;
 import android.os.HwBlob;
 import android.os.HwParcel;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class OptionalUint64 {
     public int status = 0;
@@ -22,30 +24,26 @@ public final class OptionalUint64 {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.status))), Integer.valueOf(HidlSupport.deepHashCode(Long.valueOf(this.value))));
-    }
-
-    public final String toString() {
-        return "{.status = " + Status.toString(this.status) + ", .value = " + this.value + "}";
+        return Objects.hash(AudioConfig$$ExternalSyntheticOutline0.m(this.status), Integer.valueOf(HidlSupport.deepHashCode(Long.valueOf(this.value))));
     }
 
     public final void readFromParcel(HwParcel hwParcel) {
-        readEmbeddedFromParcel(hwParcel, hwParcel.readBuffer(16L), 0L);
+        HwBlob readBuffer = hwParcel.readBuffer(16L);
+        this.status = readBuffer.getInt32(0L);
+        this.value = readBuffer.getInt64(8L);
     }
 
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.status = hwBlob.getInt32(0 + j);
-        this.value = hwBlob.getInt64(j + 8);
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("{.status = ");
+        sb.append(Status.toString(this.status));
+        sb.append(", .value = ");
+        return AudioConfig$$ExternalSyntheticOutline0.m(sb, this.value, "}");
     }
 
     public final void writeToParcel(HwParcel hwParcel) {
         HwBlob hwBlob = new HwBlob(16);
-        writeEmbeddedToBlob(hwBlob, 0L);
+        hwBlob.putInt32(0L, this.status);
+        hwBlob.putInt64(8L, this.value);
         hwParcel.writeBuffer(hwBlob);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putInt32(0 + j, this.status);
-        hwBlob.putInt64(j + 8, this.value);
     }
 }

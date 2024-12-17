@@ -1,24 +1,14 @@
 package android.hardware.health;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
 import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class HealthInfo implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.hardware.health.HealthInfo.1
-        @Override // android.os.Parcelable.Creator
-        public HealthInfo createFromParcel(Parcel parcel) {
-            HealthInfo healthInfo = new HealthInfo();
-            healthInfo.readFromParcel(parcel);
-            return healthInfo;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public HealthInfo[] newArray(int i) {
-            return new HealthInfo[i];
-        }
-    };
+public final class HealthInfo implements Parcelable {
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public int batteryCapacityLevel;
     public int batteryHealth;
     public BatteryHealthData batteryHealthData;
@@ -46,112 +36,77 @@ public class HealthInfo implements Parcelable {
     public long batteryChargeTimeToFullNowSeconds = 0;
     public int batteryFullChargeDesignCapacityUah = 0;
 
-    public final int getStability() {
-        return 1;
-    }
-
-    @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeBoolean(this.chargerAcOnline);
-        parcel.writeBoolean(this.chargerUsbOnline);
-        parcel.writeBoolean(this.chargerWirelessOnline);
-        parcel.writeBoolean(this.chargerDockOnline);
-        parcel.writeInt(this.maxChargingCurrentMicroamps);
-        parcel.writeInt(this.maxChargingVoltageMicrovolts);
-        parcel.writeInt(this.batteryStatus);
-        parcel.writeInt(this.batteryHealth);
-        parcel.writeBoolean(this.batteryPresent);
-        parcel.writeInt(this.batteryLevel);
-        parcel.writeInt(this.batteryVoltageMillivolts);
-        parcel.writeInt(this.batteryTemperatureTenthsCelsius);
-        parcel.writeInt(this.batteryCurrentMicroamps);
-        parcel.writeInt(this.batteryCycleCount);
-        parcel.writeInt(this.batteryFullChargeUah);
-        parcel.writeInt(this.batteryChargeCounterUah);
-        parcel.writeString(this.batteryTechnology);
-        parcel.writeInt(this.batteryCurrentAverageMicroamps);
-        parcel.writeTypedArray(this.diskStats, i);
-        parcel.writeTypedArray(this.storageInfos, i);
-        parcel.writeInt(this.batteryCapacityLevel);
-        parcel.writeLong(this.batteryChargeTimeToFullNowSeconds);
-        parcel.writeInt(this.batteryFullChargeDesignCapacityUah);
-        parcel.writeInt(this.chargingState);
-        parcel.writeInt(this.chargingPolicy);
-        parcel.writeTypedObject(this.batteryHealthData, i);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
-    }
-
-    public final void readFromParcel(Parcel parcel) {
-        int dataPosition = parcel.dataPosition();
-        int readInt = parcel.readInt();
-        try {
-            if (readInt < 4) {
-                throw new BadParcelableException("Parcelable too small");
-            }
-            if (parcel.dataPosition() - dataPosition < readInt) {
-                this.chargerAcOnline = parcel.readBoolean();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.hardware.health.HealthInfo$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            HealthInfo healthInfo = new HealthInfo();
+            int dataPosition = parcel.dataPosition();
+            int readInt = parcel.readInt();
+            try {
+                if (readInt < 4) {
+                    throw new BadParcelableException("Parcelable too small");
+                }
                 if (parcel.dataPosition() - dataPosition < readInt) {
-                    this.chargerUsbOnline = parcel.readBoolean();
+                    healthInfo.chargerAcOnline = parcel.readBoolean();
                     if (parcel.dataPosition() - dataPosition < readInt) {
-                        this.chargerWirelessOnline = parcel.readBoolean();
+                        healthInfo.chargerUsbOnline = parcel.readBoolean();
                         if (parcel.dataPosition() - dataPosition < readInt) {
-                            this.chargerDockOnline = parcel.readBoolean();
+                            healthInfo.chargerWirelessOnline = parcel.readBoolean();
                             if (parcel.dataPosition() - dataPosition < readInt) {
-                                this.maxChargingCurrentMicroamps = parcel.readInt();
+                                healthInfo.chargerDockOnline = parcel.readBoolean();
                                 if (parcel.dataPosition() - dataPosition < readInt) {
-                                    this.maxChargingVoltageMicrovolts = parcel.readInt();
+                                    healthInfo.maxChargingCurrentMicroamps = parcel.readInt();
                                     if (parcel.dataPosition() - dataPosition < readInt) {
-                                        this.batteryStatus = parcel.readInt();
+                                        healthInfo.maxChargingVoltageMicrovolts = parcel.readInt();
                                         if (parcel.dataPosition() - dataPosition < readInt) {
-                                            this.batteryHealth = parcel.readInt();
+                                            healthInfo.batteryStatus = parcel.readInt();
                                             if (parcel.dataPosition() - dataPosition < readInt) {
-                                                this.batteryPresent = parcel.readBoolean();
+                                                healthInfo.batteryHealth = parcel.readInt();
                                                 if (parcel.dataPosition() - dataPosition < readInt) {
-                                                    this.batteryLevel = parcel.readInt();
+                                                    healthInfo.batteryPresent = parcel.readBoolean();
                                                     if (parcel.dataPosition() - dataPosition < readInt) {
-                                                        this.batteryVoltageMillivolts = parcel.readInt();
+                                                        healthInfo.batteryLevel = parcel.readInt();
                                                         if (parcel.dataPosition() - dataPosition < readInt) {
-                                                            this.batteryTemperatureTenthsCelsius = parcel.readInt();
+                                                            healthInfo.batteryVoltageMillivolts = parcel.readInt();
                                                             if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                this.batteryCurrentMicroamps = parcel.readInt();
+                                                                healthInfo.batteryTemperatureTenthsCelsius = parcel.readInt();
                                                                 if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                    this.batteryCycleCount = parcel.readInt();
+                                                                    healthInfo.batteryCurrentMicroamps = parcel.readInt();
                                                                     if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                        this.batteryFullChargeUah = parcel.readInt();
+                                                                        healthInfo.batteryCycleCount = parcel.readInt();
                                                                         if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                            this.batteryChargeCounterUah = parcel.readInt();
+                                                                            healthInfo.batteryFullChargeUah = parcel.readInt();
                                                                             if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                this.batteryTechnology = parcel.readString();
+                                                                                healthInfo.batteryChargeCounterUah = parcel.readInt();
                                                                                 if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                    this.batteryCurrentAverageMicroamps = parcel.readInt();
+                                                                                    healthInfo.batteryTechnology = parcel.readString();
                                                                                     if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                        this.diskStats = (DiskStats[]) parcel.createTypedArray(DiskStats.CREATOR);
+                                                                                        healthInfo.batteryCurrentAverageMicroamps = parcel.readInt();
                                                                                         if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                            this.storageInfos = (StorageInfo[]) parcel.createTypedArray(StorageInfo.CREATOR);
+                                                                                            healthInfo.diskStats = (DiskStats[]) parcel.createTypedArray(DiskStats.CREATOR);
                                                                                             if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                                this.batteryCapacityLevel = parcel.readInt();
+                                                                                                healthInfo.storageInfos = (StorageInfo[]) parcel.createTypedArray(StorageInfo.CREATOR);
                                                                                                 if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                                    this.batteryChargeTimeToFullNowSeconds = parcel.readLong();
+                                                                                                    healthInfo.batteryCapacityLevel = parcel.readInt();
                                                                                                     if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                                        this.batteryFullChargeDesignCapacityUah = parcel.readInt();
+                                                                                                        healthInfo.batteryChargeTimeToFullNowSeconds = parcel.readLong();
                                                                                                         if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                                            this.chargingState = parcel.readInt();
+                                                                                                            healthInfo.batteryFullChargeDesignCapacityUah = parcel.readInt();
                                                                                                             if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                                                this.chargingPolicy = parcel.readInt();
+                                                                                                                healthInfo.chargingState = parcel.readInt();
                                                                                                                 if (parcel.dataPosition() - dataPosition < readInt) {
-                                                                                                                    this.batteryHealthData = (BatteryHealthData) parcel.readTypedObject(BatteryHealthData.CREATOR);
-                                                                                                                    if (dataPosition > Integer.MAX_VALUE - readInt) {
+                                                                                                                    healthInfo.chargingPolicy = parcel.readInt();
+                                                                                                                    if (parcel.dataPosition() - dataPosition < readInt) {
+                                                                                                                        healthInfo.batteryHealthData = (BatteryHealthData) parcel.readTypedObject(BatteryHealthData.CREATOR);
+                                                                                                                        if (dataPosition > Integer.MAX_VALUE - readInt) {
+                                                                                                                            throw new BadParcelableException("Overflow in the size of parcelable");
+                                                                                                                        }
+                                                                                                                    } else if (dataPosition > Integer.MAX_VALUE - readInt) {
                                                                                                                         throw new BadParcelableException("Overflow in the size of parcelable");
                                                                                                                     }
-                                                                                                                    parcel.setDataPosition(dataPosition + readInt);
-                                                                                                                    return;
-                                                                                                                }
-                                                                                                                if (dataPosition > Integer.MAX_VALUE - readInt) {
+                                                                                                                } else if (dataPosition > Integer.MAX_VALUE - readInt) {
                                                                                                                     throw new BadParcelableException("Overflow in the size of parcelable");
                                                                                                                 }
                                                                                                             } else if (dataPosition > Integer.MAX_VALUE - readInt) {
@@ -226,38 +181,81 @@ public class HealthInfo implements Parcelable {
                 } else if (dataPosition > Integer.MAX_VALUE - readInt) {
                     throw new BadParcelableException("Overflow in the size of parcelable");
                 }
-            } else if (dataPosition > Integer.MAX_VALUE - readInt) {
-                throw new BadParcelableException("Overflow in the size of parcelable");
+                parcel.setDataPosition(dataPosition + readInt);
+                return healthInfo;
+            } catch (Throwable th) {
+                if (dataPosition > Integer.MAX_VALUE - readInt) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                parcel.setDataPosition(dataPosition + readInt);
+                throw th;
             }
-            parcel.setDataPosition(dataPosition + readInt);
-        } catch (Throwable th) {
-            if (dataPosition > Integer.MAX_VALUE - readInt) {
-                throw new BadParcelableException("Overflow in the size of parcelable");
-            }
-            parcel.setDataPosition(dataPosition + readInt);
-            throw th;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new HealthInfo[i];
         }
     }
 
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return describeContents(this.batteryHealthData) | describeContents(this.diskStats) | 0 | describeContents(this.storageInfos);
-    }
-
-    public final int describeContents(Object obj) {
+    public static int describeContents(Object obj) {
         if (obj == null) {
             return 0;
         }
-        if (obj instanceof Object[]) {
-            int i = 0;
-            for (Object obj2 : (Object[]) obj) {
-                i |= describeContents(obj2);
+        if (!(obj instanceof Object[])) {
+            if (obj instanceof Parcelable) {
+                return ((Parcelable) obj).describeContents();
             }
-            return i;
+            return 0;
         }
-        if (obj instanceof Parcelable) {
-            return ((Parcelable) obj).describeContents();
+        int i = 0;
+        for (Object obj2 : (Object[]) obj) {
+            i |= describeContents(obj2);
         }
-        return 0;
+        return i;
+    }
+
+    @Override // android.os.Parcelable
+    public final int describeContents() {
+        return describeContents(this.batteryHealthData) | describeContents(this.diskStats) | describeContents(this.storageInfos);
+    }
+
+    public final int getStability() {
+        return 1;
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeBoolean(this.chargerAcOnline);
+        parcel.writeBoolean(this.chargerUsbOnline);
+        parcel.writeBoolean(this.chargerWirelessOnline);
+        parcel.writeBoolean(this.chargerDockOnline);
+        parcel.writeInt(this.maxChargingCurrentMicroamps);
+        parcel.writeInt(this.maxChargingVoltageMicrovolts);
+        parcel.writeInt(this.batteryStatus);
+        parcel.writeInt(this.batteryHealth);
+        parcel.writeBoolean(this.batteryPresent);
+        parcel.writeInt(this.batteryLevel);
+        parcel.writeInt(this.batteryVoltageMillivolts);
+        parcel.writeInt(this.batteryTemperatureTenthsCelsius);
+        parcel.writeInt(this.batteryCurrentMicroamps);
+        parcel.writeInt(this.batteryCycleCount);
+        parcel.writeInt(this.batteryFullChargeUah);
+        parcel.writeInt(this.batteryChargeCounterUah);
+        parcel.writeString(this.batteryTechnology);
+        parcel.writeInt(this.batteryCurrentAverageMicroamps);
+        parcel.writeTypedArray(this.diskStats, i);
+        parcel.writeTypedArray(this.storageInfos, i);
+        parcel.writeInt(this.batteryCapacityLevel);
+        parcel.writeLong(this.batteryChargeTimeToFullNowSeconds);
+        parcel.writeInt(this.batteryFullChargeDesignCapacityUah);
+        parcel.writeInt(this.chargingState);
+        parcel.writeInt(this.chargingPolicy);
+        parcel.writeTypedObject(this.batteryHealthData, i);
+        int dataPosition2 = parcel.dataPosition();
+        parcel.setDataPosition(dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(dataPosition2, dataPosition, parcel, dataPosition2);
     }
 }

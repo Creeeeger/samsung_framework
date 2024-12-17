@@ -1,8 +1,7 @@
 package com.android.server.policy;
 
-import android.R;
-import android.app.ActivityTaskManager;
 import android.app.KeyguardManager;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,25 +10,32 @@ import android.net.INetd;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.FactoryTest;
-import android.os.Handler;
-import android.os.RemoteException;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Slog;
+import android.util.SparseArray;
 import android.view.KeyEvent;
-import com.samsung.android.rune.CoreRune;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0;
+import com.android.server.devicepolicy.PersonalAppsSuspensionHelper$$ExternalSyntheticOutline0;
+import com.android.server.policy.SingleKeyGestureDetector;
+import com.samsung.android.rune.InputRune;
 import com.samsung.android.view.SemWindowManager;
-import java.io.PrintWriter;
-import java.util.List;
 
-/* loaded from: classes3.dex */
-public class KeyCustomizationManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class KeyCustomizationManager {
     public long defaultLongPressTimeout;
     public final Context mContext;
     public final KeyCustomizationInfoManager mKeyCustomizationInfoManager;
     public final PhoneWindowManagerExt mPolicyExt;
-    public Handler mHandler = new Handler();
     public boolean mIsKeyLongPressed = false;
     public boolean mIsKeyLongConsumed = false;
     public boolean mIsXCoverKeyOnLockScreen = false;
@@ -37,7 +43,17 @@ public class KeyCustomizationManager {
     public KeyguardManager mKeyguardManager = null;
     public boolean mIsCalledOpenDictationXCoverTop = false;
 
-    public final String getEventId(int i, int i2) {
+    public KeyCustomizationManager(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
+        this.mContext = context;
+        this.mPolicyExt = phoneWindowManagerExt;
+        this.mKeyCustomizationInfoManager = new KeyCustomizationInfoManager(context);
+    }
+
+    public static String actionToString(int i) {
+        return i != 1 ? i != 2 ? i != 3 ? i != 4 ? Integer.toString(i) : "ACTION_BLOCK_KEY_EVENT" : "ACTION_START_SERVICE" : "ACTION_SEND_BROADCAST" : "ACTION_START_ACTIVITY";
+    }
+
+    public static String getEventId(int i, int i2) {
         if (i2 == 1015) {
             if ((i & 3) != 0) {
                 return "HWB1101";
@@ -57,1240 +73,6 @@ public class KeyCustomizationManager {
             return "HWB1112";
         }
         return null;
-    }
-
-    public final String getKeyAction(int i) {
-        if ((i & 3) != 0) {
-            return "press";
-        }
-        if ((i & 4) != 0) {
-            return "long";
-        }
-        if ((i & 8) != 0) {
-            return "double";
-        }
-        if ((i & 16) != 0) {
-            return "triple";
-        }
-        if ((i & 32) != 0) {
-            return "quadruple";
-        }
-        if ((i & 64) != 0) {
-            return "quintuple";
-        }
-        return null;
-    }
-
-    public final boolean isAllowHandleDispatching(int i) {
-        return i == 4 || i == 79 || i == 1015 || i == 1079 || i == 24 || i == 25;
-    }
-
-    public boolean isHigherIdThanDefault(int i) {
-        return i != -1 && i < 1000;
-    }
-
-    public final boolean isKnoxId(int i) {
-        return i == 10 || i == 30 || i == 50;
-    }
-
-    public final boolean isXCoverOrTopKey(int i) {
-        return i == 1015 || i == 1079;
-    }
-
-    public final boolean shouldLaunchLongOrShortPressAction(int i, int i2) {
-        if (i == -1 || i == 4) {
-            i = i2;
-        }
-        return i == 0 || i == 1 || i == 2 || i == 3;
-    }
-
-    public KeyCustomizationManager(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
-        this.mContext = context;
-        this.mPolicyExt = phoneWindowManagerExt;
-        this.mKeyCustomizationInfoManager = new KeyCustomizationInfoManager(context);
-    }
-
-    public void init() {
-        this.mKeyCustomizationInfoManager.init(0, false);
-        for (int i : KeyCustomizationConstants.ALL_KEYCODE_TYPE) {
-            initPowerBehaviorAndSingleKeyGestureDetectorRule(i);
-        }
-        this.defaultLongPressTimeout = this.mContext.getResources().getInteger(R.integer.config_safe_media_volume_usb_mB);
-    }
-
-    public final void initPowerBehaviorAndSingleKeyGestureDetectorRule(int i) {
-        if (i != 26) {
-            this.mPolicyExt.updateSingleKeyGestureRule(i);
-        }
-        long j = 0;
-        for (int i2 : KeyCustomizationConstants.NEEDED_UPDATE_BEHAVIOR_MULTI_PRESS_TYPE) {
-            if (i == 26) {
-                updatePowerBehavior(i2);
-            }
-            if ((i2 & 4) != 0) {
-                updateLongPressTimeoutIfNeeded(i2, i, true);
-            } else {
-                long lastMultiPressTimeout = getLastMultiPressTimeout(i2, i);
-                if (j < lastMultiPressTimeout) {
-                    j = lastMultiPressTimeout;
-                }
-            }
-        }
-        if (j != 0) {
-            this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.setMultiPressTimeout(i, j);
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:120:0x012f  */
-    /* JADX WARN: Removed duplicated region for block: B:34:0x0102  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void checkValidInputKeyCustomizationInfo(com.samsung.android.view.SemWindowManager.KeyCustomizationInfo r13) {
-        /*
-            Method dump skipped, instructions count: 680
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.policy.KeyCustomizationManager.checkValidInputKeyCustomizationInfo(com.samsung.android.view.SemWindowManager$KeyCustomizationInfo):void");
-    }
-
-    public void putKeyCustomizationInfo(SemWindowManager.KeyCustomizationInfo keyCustomizationInfo) {
-        int i = keyCustomizationInfo.press;
-        int i2 = keyCustomizationInfo.keyCode;
-        int i3 = keyCustomizationInfo.action;
-        if (i >= 8 && i3 == 4 && !this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.hasRule(i2)) {
-            if (KeyCustomizationConstants.isSafeDebugInput()) {
-                Slog.d("KeyCustomizationManager", "No need to block double press behavior. Because there is no added Rule.");
-                return;
-            }
-            return;
-        }
-        checkValidInputKeyCustomizationInfo(keyCustomizationInfo);
-        String str = keyCustomizationInfo.ownerPackage;
-        if (KeyCustomizationConstants.isSafeDebugInput()) {
-            Slog.d("KeyCustomizationManager", "putKeyCustomizationInfo keyCode=" + i2 + " id=" + idToString(keyCustomizationInfo.id) + " ownerPackage=" + str + " Caller=" + Debug.getCallers(5));
-        }
-        this.mKeyCustomizationInfoManager.put(keyCustomizationInfo);
-        if (i2 == 26) {
-            updatePowerBehavior(i);
-        } else if (i3 == 4 && i >= 8) {
-            this.mPolicyExt.updateSingleKeyGestureRule(i2);
-        } else {
-            if ((i & 3) != 0) {
-                return;
-            }
-            if ((i & 4) != 0 && keyCustomizationInfo.longPressTimeout == 0) {
-                return;
-            } else {
-                this.mPolicyExt.addSingleKeyGestureRule(i2);
-            }
-        }
-        updateLongPressTimeoutIfNeeded(i, i2);
-        updateMultiPressTimeoutIfNeeded(i, i2, keyCustomizationInfo.multiPressTimeout, false);
-    }
-
-    public void removeKeyCustomizationInfoByPackage(String str, int i, int i2) {
-        if (KeyCustomizationConstants.isSafeDebugInput()) {
-            Slog.d("KeyCustomizationManager", "removeKeyCustomizationInfoByPackage ownerPackage=" + str + " keyCode=" + i2 + " " + pressToString(i));
-        }
-        removeKeyCustomizationInfo(2003, str, i, i2);
-    }
-
-    public void removeKeyCustomizationInfo(int i, int i2, int i3) {
-        removeKeyCustomizationInfo(i, null, i2, i3);
-    }
-
-    public void removeKeyCustomizationInfo(int i, String str, int i2, int i3) {
-        if (KeyCustomizationConstants.isSafeDebugInput()) {
-            Slog.d("KeyCustomizationManager", "removeKeyCustomizationInfo " + idToString(i) + " keyCode=" + i3 + " " + pressToString(i2) + " Callers=" + Debug.getCallers(5));
-        }
-        if (this.mKeyCustomizationInfoManager.isEmptyKeyCustomizationInfo(i, i2, i3)) {
-            Slog.d("KeyCustomizationManager", "Requested info has been removed. " + idToString(i) + " keyCode=" + i3 + " " + pressToString(i2));
-            return;
-        }
-        long multiPressTimeout = getMultiPressTimeout(i, i2, i3);
-        if (this.mKeyCustomizationInfoManager.remove(i, str, i2, i3)) {
-            if (i3 == 26) {
-                updatePowerBehavior(i2);
-            } else {
-                this.mPolicyExt.updateSingleKeyGestureRule(i3);
-            }
-            if ((i2 & 4) != 0) {
-                this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.initLongPressTimeout(i3);
-            }
-            long multiPressTimeout2 = this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.getMultiPressTimeout(i3);
-            if (multiPressTimeout <= 0 || multiPressTimeout2 != multiPressTimeout) {
-                return;
-            }
-            updateMultiPressTimeoutIfNeeded(i2, i3, getMaximumMultiPressTimeout(i3), true);
-        }
-    }
-
-    public boolean hasOwnerPackage(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return false;
-        }
-        return this.mKeyCustomizationInfoManager.hasOwnerPackage(str);
-    }
-
-    public void clearKeyCustomizationInfoByPackage(String str) {
-        if (KeyCustomizationConstants.isSafeDebugInput()) {
-            Slog.d("KeyCustomizationManager", "clearKeyCustomizationInfoByPackage packageName=" + str);
-        }
-        if (TextUtils.isEmpty(str)) {
-            return;
-        }
-        if (!this.mKeyCustomizationInfoManager.clearByPackage(str)) {
-            Slog.d("KeyCustomizationManager", "clearKeyCustomizationInfoByPackage, Requested info is empty. packageName=" + str);
-            return;
-        }
-        for (int i : KeyCustomizationConstants.ALL_KEYCODE_TYPE) {
-            if (i == 26) {
-                for (int i2 : KeyCustomizationConstants.EXTERNAL_SUPPORTED_BEHAVIOR_PRESS_TYPE) {
-                    updatePowerBehavior(i2);
-                }
-            } else {
-                this.mPolicyExt.updateSingleKeyGestureRule(i);
-            }
-        }
-    }
-
-    public void clearKeyCustomizationInfoByKeyCode(int i, int i2) {
-        if (KeyCustomizationConstants.isSafeDebugInput()) {
-            Slog.d("KeyCustomizationManager", "clearKeyCustomizationInfoByKeyCode, " + idToString(i) + " keyCode=" + i2);
-        }
-        if (!this.mKeyCustomizationInfoManager.clearByKeyCode(i, i2)) {
-            Slog.d("KeyCustomizationManager", "clearKeyCustomizationInfoByKeyCode, Requested info is empty. " + idToString(i) + " keyCode=" + i2);
-            return;
-        }
-        if (i2 == 26) {
-            for (int i3 : KeyCustomizationConstants.NEEDED_UPDATE_BEHAVIOR_MULTI_PRESS_TYPE) {
-                if ((!CoreRune.FW_TRIPLE_PRESS_POWER_LAUNCH_PANIC_CALL || (i3 & 16) == 0) && (i3 & 64) == 0) {
-                    updatePowerBehavior(i3);
-                }
-            }
-        } else {
-            this.mPolicyExt.updateSingleKeyGestureRule(i2);
-        }
-        this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.initLongPressTimeout(i2);
-        this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.initMultiPressTimeout(i2);
-    }
-
-    public void clearKeyCustomizationInfoByAction(int i, int i2, int i3) {
-        if (KeyCustomizationConstants.isSafeDebugInput()) {
-            Slog.d("KeyCustomizationManager", "clearKeyCustomizationInfoByAction, " + idToString(i) + " keyCode=" + i2 + " " + actionToString(i3));
-        }
-        if (!this.mKeyCustomizationInfoManager.clearByAction(i, i2, i3)) {
-            Slog.d("KeyCustomizationManager", "clearKeyCustomizationInfoByAction, Requested info is empty. " + idToString(i) + " keyCode=" + i2 + " " + actionToString(i3));
-            return;
-        }
-        initPowerBehaviorAndSingleKeyGestureDetectorRule(i2);
-    }
-
-    public final void updatePowerBehavior(int i) {
-        if ((i & 4) != 0) {
-            this.mPolicyExt.updateLongPressPowerBehavior();
-            return;
-        }
-        if ((i & 8) != 0) {
-            this.mPolicyExt.updateDoublePressPowerBehavior();
-        } else if ((i & 16) != 0) {
-            this.mPolicyExt.updateTriplePressPowerBehavior();
-        } else if ((i & 32) != 0) {
-            this.mPolicyExt.updateQuadruplePressPowerBehavior();
-        }
-    }
-
-    public SemWindowManager.KeyCustomizationInfo getKeyCustomizationInfo(int i, int i2, int i3) {
-        return this.mKeyCustomizationInfoManager.get(i, i2, i3);
-    }
-
-    public SemWindowManager.KeyCustomizationInfo getKeyCustomizationInfoByPackage(String str, int i, int i2) {
-        return this.mKeyCustomizationInfoManager.get(2003, str, i, i2);
-    }
-
-    public SemWindowManager.KeyCustomizationInfo getLastKeyCustomizationInfo(int i, int i2) {
-        return this.mKeyCustomizationInfoManager.getLast(i, i2);
-    }
-
-    public long getMultiPressTimeout(int i, int i2, int i3) {
-        SemWindowManager.KeyCustomizationInfo keyCustomizationInfo = this.mKeyCustomizationInfoManager.get(i, i2, i3);
-        if (keyCustomizationInfo == null) {
-            return 0L;
-        }
-        return keyCustomizationInfo.multiPressTimeout;
-    }
-
-    public int getLastAction(int i, int i2) {
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo = getLastKeyCustomizationInfo(i, i2);
-        if (lastKeyCustomizationInfo == null) {
-            return -1;
-        }
-        return lastKeyCustomizationInfo.action;
-    }
-
-    public int getLastId(int i, int i2) {
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo = getLastKeyCustomizationInfo(i, i2);
-        if (lastKeyCustomizationInfo == null) {
-            return -1;
-        }
-        return lastKeyCustomizationInfo.id;
-    }
-
-    public ComponentName getLastComponentName(int i, int i2) {
-        Intent intent;
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo = getLastKeyCustomizationInfo(i, i2);
-        if (lastKeyCustomizationInfo == null || (intent = lastKeyCustomizationInfo.intent) == null) {
-            return null;
-        }
-        return intent.getComponent();
-    }
-
-    public Intent getLastIntentClone(int i, int i2) {
-        Intent intent;
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo = getLastKeyCustomizationInfo(i, i2);
-        if (lastKeyCustomizationInfo == null || (intent = lastKeyCustomizationInfo.intent) == null) {
-            return null;
-        }
-        return (Intent) intent.clone();
-    }
-
-    public long getLastLongPressTimeout(int i, int i2) {
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo = getLastKeyCustomizationInfo(i, i2);
-        if (lastKeyCustomizationInfo == null) {
-            return 0L;
-        }
-        return lastKeyCustomizationInfo.longPressTimeout;
-    }
-
-    public long getLastMultiPressTimeout(int i, int i2) {
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo = getLastKeyCustomizationInfo(i, i2);
-        if (lastKeyCustomizationInfo == null) {
-            return 0L;
-        }
-        return lastKeyCustomizationInfo.multiPressTimeout;
-    }
-
-    public boolean hasLastInfo(int i, int i2) {
-        return getLastKeyCustomizationInfo(i, i2) != null;
-    }
-
-    public final void updateLongPressTimeoutIfNeeded(int i, int i2) {
-        updateLongPressTimeoutIfNeeded(i, i2, false);
-    }
-
-    public final void updateLongPressTimeoutIfNeeded(int i, int i2, boolean z) {
-        if ((i & 4) == 0) {
-            return;
-        }
-        long lastLongPressTimeout = getLastLongPressTimeout(i, i2);
-        if (z && lastLongPressTimeout == 0) {
-            return;
-        }
-        this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.setLongPressTimeout(i2, lastLongPressTimeout);
-    }
-
-    public final void updateMultiPressTimeoutIfNeeded(int i, int i2, long j, boolean z) {
-        if ((i & 3) == 0 && (i & 4) == 0) {
-            if (j != 0 || z) {
-                long multiPressTimeout = this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.getMultiPressTimeout(i2);
-                if (z || multiPressTimeout == 0 || j >= multiPressTimeout) {
-                    this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.setMultiPressTimeout(i2, j);
-                }
-            }
-        }
-    }
-
-    public final long getMaximumMultiPressTimeout(int i) {
-        long j = 0;
-        for (int i2 : KeyCustomizationConstants.NEEDED_UPDATE_BEHAVIOR_MULTI_PRESS_TYPE) {
-            if ((i2 & 4) == 0) {
-                long lastMultiPressTimeout = getLastMultiPressTimeout(i2, i);
-                if (j < lastMultiPressTimeout) {
-                    j = lastMultiPressTimeout;
-                }
-            }
-        }
-        return j;
-    }
-
-    public int sendBroadcast(KeyEvent keyEvent, int i) {
-        return sendBroadcast(null, keyEvent, i, false);
-    }
-
-    public int sendBroadcast(KeyEvent keyEvent, int i, boolean z) {
-        return sendBroadcast(null, keyEvent, i, z);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:24:0x0088  */
-    /* JADX WARN: Removed duplicated region for block: B:26:0x00a9  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int sendBroadcast(com.samsung.android.view.SemWindowManager.KeyCustomizationInfo r17, android.view.KeyEvent r18, int r19, boolean r20) {
-        /*
-            Method dump skipped, instructions count: 210
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.policy.KeyCustomizationManager.sendBroadcast(com.samsung.android.view.SemWindowManager$KeyCustomizationInfo, android.view.KeyEvent, int, boolean):int");
-    }
-
-    public final void sendBroadcastAsUser(Intent intent, int i) {
-        Log.i("KeyCustomizationManager", "sendBroadcastAsUser intent=" + intent + " userId=" + i);
-        this.mContext.sendBroadcastAsUser(intent, new UserHandle(i));
-    }
-
-    public void startActivity(int i, int i2) {
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo = getLastKeyCustomizationInfo(i, i2);
-        if (lastKeyCustomizationInfo == null) {
-            return;
-        }
-        startActivity(lastKeyCustomizationInfo);
-    }
-
-    public void startActivity(SemWindowManager.KeyCustomizationInfo keyCustomizationInfo) {
-        Intent intent = keyCustomizationInfo.intent;
-        Intent fillInIntent = this.mPolicyExt.getFillInIntent();
-        if (intent == null) {
-            Log.e("KeyCustomizationManager", "Can not startActivity. intent is null.");
-            return;
-        }
-        int i = keyCustomizationInfo.userId;
-        Log.i("KeyCustomizationManager", "startActivity. userId=" + i + " Callers=" + Debug.getCallers(3));
-        if (this.mPolicyExt.mPolicy.isKeyguardShowing()) {
-            this.mPolicyExt.setPendingIntentAfterUnlock(this.mPolicyExt.getPendingIntentActivityAsUser(intent, new UserHandle(i)), fillInIntent);
-        } else if (this.mPolicyExt.showCoverToast(fillInIntent, intent)) {
-            this.mPolicyExt.setPendingIntentAfterUnlock(this.mPolicyExt.getPendingIntentActivityAsUser(intent, new UserHandle(i)), fillInIntent);
-        } else {
-            this.mContext.startActivityAsUser(intent, new UserHandle(i));
-        }
-    }
-
-    public void startService(int i, int i2, KeyEvent keyEvent) {
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo = getLastKeyCustomizationInfo(i, i2);
-        if (lastKeyCustomizationInfo == null) {
-            return;
-        }
-        startService(lastKeyCustomizationInfo, i, i2, keyEvent);
-    }
-
-    public void startService(SemWindowManager.KeyCustomizationInfo keyCustomizationInfo, int i, int i2, KeyEvent keyEvent) {
-        Intent intent = keyCustomizationInfo.intent;
-        int i3 = keyCustomizationInfo.id;
-        if (intent == null) {
-            Log.e("KeyCustomizationManager", "Can not startService. intent is null.");
-            return;
-        }
-        String packageName = intent.getComponent() != null ? intent.getComponent().getPackageName() : null;
-        if (CoreRune.FW_B2B_DEDICATED_APP && i3 == 951 && "com.att.firstnet.grey".equals(packageName) && keyEvent != null) {
-            intent.putExtra("android.intent.extra.KEY_EVENT", KeyEvent.obtain(keyEvent));
-        } else {
-            intent.putExtra("extraKeyCode", i2);
-            intent.putExtra("extraKeyAction", getKeyAction(i));
-        }
-        if (intent.getAction() == null) {
-            intent.setAction("android.intent.action.MAIN");
-            Log.i("KeyCustomizationManager", "startService add action main");
-        }
-        int i4 = keyCustomizationInfo.userId;
-        Log.i("KeyCustomizationManager", "startService. userId=" + i4 + " ownerPackage=" + keyCustomizationInfo.ownerPackage + " Callers=" + Debug.getCallers(3));
-        if (i3 == 2003) {
-            this.mContext.startForegroundServiceAsUser(intent, new UserHandle(i4));
-        } else {
-            this.mContext.startServiceAsUser(intent, new UserHandle(i4));
-        }
-    }
-
-    public void launchPressSendBroadcast(KeyEvent keyEvent, int i, boolean z) {
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo = getLastKeyCustomizationInfo(3, i);
-        if (lastKeyCustomizationInfo == null) {
-            return;
-        }
-        Log.d("KeyCustomizationManager", "launchPressSendBroadcast, keyCode=" + i + " isKeyLongPressed=" + z);
-        sendBroadcast(lastKeyCustomizationInfo, keyEvent, 3, z);
-    }
-
-    public boolean launchPressAction(KeyEvent keyEvent) {
-        int keyCode = keyEvent.getKeyCode();
-        int lastAction = getLastAction(3, keyCode);
-        if (lastAction == -1) {
-            return false;
-        }
-        return launchPressAction(lastAction, keyEvent, keyCode, false);
-    }
-
-    public final boolean launchPressAction(int i, KeyEvent keyEvent, int i2, boolean z) {
-        if (hasHigherIdWithAllPress(3, i2)) {
-            return false;
-        }
-        if (i == 1) {
-            startActivity(3, i2);
-        } else if (i == 3) {
-            startService(3, i2, keyEvent);
-        } else {
-            if (!z) {
-                return false;
-            }
-            this.mPolicyExt.injectionKeyEvent(i2, 268435456, -1);
-        }
-        Log.d("KeyCustomizationManager", "launchPressAction, keyCode=" + i2 + " " + actionToString(i) + " forceDispatching=" + z);
-        return true;
-    }
-
-    public boolean launchLongPressAction(KeyEvent keyEvent) {
-        int keyCode = keyEvent.getKeyCode();
-        int lastAction = getLastAction(4, keyCode);
-        if (lastAction == -1) {
-            return false;
-        }
-        return launchLongPressAction(lastAction, keyEvent, keyCode);
-    }
-
-    public boolean launchLongPressAction(int i, KeyEvent keyEvent, int i2) {
-        if (hasHigherIdWithAllPress(4, i2)) {
-            return false;
-        }
-        Log.d("KeyCustomizationManager", "launchLongPressAction, keyCode=" + i2 + " " + actionToString(i));
-        if (i == 1) {
-            startActivity(4, i2);
-        } else if (i != 2) {
-            if (i == 3) {
-                startService(4, i2, keyEvent);
-            } else if (i == 4) {
-                Log.d("KeyCustomizationManager", "launchLongPressAction was blocked by KeyCustomizationPolicy.");
-            } else {
-                if (CoreRune.SAFE_DEBUG) {
-                    Slog.d("KeyCustomizationManager", "launchLongPressAction. " + actionToString(i) + " was wrong.");
-                }
-                return false;
-            }
-        } else if (sendBroadcast(keyEvent, 4) == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    public void launchMultiPressAction(KeyEvent keyEvent, int i) {
-        int keyCode;
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo;
-        int i2;
-        if (keyEvent == null) {
-            Log.e("KeyCustomizationManager", "launchMultiPressAction, event is null, Callers=" + Debug.getCallers(5));
-            return;
-        }
-        int i3 = i == 2 ? 8 : i == 3 ? 16 : i == 4 ? 32 : i == 5 ? 64 : 0;
-        if (i3 == 0 || (lastKeyCustomizationInfo = getLastKeyCustomizationInfo(i3, (keyCode = keyEvent.getKeyCode()))) == null || (i2 = lastKeyCustomizationInfo.action) == 4 || hasHigherIdWithAllPress(i3, keyCode)) {
-            return;
-        }
-        Log.d("KeyCustomizationManager", "launchMultiPressAction, count=" + i + " keyCode=" + keyCode);
-        if (i2 == 1) {
-            startActivity(lastKeyCustomizationInfo);
-            return;
-        }
-        if (i2 == 2) {
-            sendBroadcast(keyEvent, i3);
-            return;
-        }
-        if (i2 == 3) {
-            startService(lastKeyCustomizationInfo, i3, keyCode, keyEvent);
-            return;
-        }
-        Log.e("KeyCustomizationManager", "launchMultiPressAction, count=" + i + " " + actionToString(i2) + " was wrong.");
-    }
-
-    public int dispatchKeyCustomizationKeyEvent(KeyEvent keyEvent) {
-        return dispatchKeyCustomizationKeyEvent(keyEvent, false);
-    }
-
-    public int dispatchKeyCustomizationKeyEvent(KeyEvent keyEvent, boolean z) {
-        int keyCode = keyEvent.getKeyCode();
-        int repeatCount = keyEvent.getRepeatCount();
-        boolean isLongPress = keyEvent.isLongPress();
-        boolean z2 = keyEvent.getAction() == 0;
-        int lastAction = getLastAction(3, keyCode);
-        int lastAction2 = getLastAction(4, keyCode);
-        boolean z3 = z ? lastAction2 != -1 : z;
-        if (KeyCustomizationConstants.isDebugInput()) {
-            Slog.d("KeyCustomizationManager", "dispatchKeyEvent: keyCode=" + keyCode + " down=" + z2 + " repeatCount=" + repeatCount + " isLongPress=" + isLongPress + " pressAction=" + actionToString(lastAction) + " longPressAction=" + actionToString(lastAction2) + " forceDispatching=" + z3);
-        }
-        if (!shouldLaunchLongOrShortPressAction(lastAction2, lastAction)) {
-            if (KeyCustomizationConstants.isDebugInput()) {
-                Slog.d("KeyCustomizationManager", "dispatchKeyEvent - default, there is no action, NEEDED_NEXT_STEP");
-            }
-            return 2;
-        }
-        if (z2) {
-            if (repeatCount == 0) {
-                this.mIsKeyLongPressed = false;
-                this.mIsKeyLongConsumed = false;
-                if (CoreRune.FW_B2B_DEDICATED_APP && startMCPTTServiceIfNeeded(keyCode, keyEvent)) {
-                    if (KeyCustomizationConstants.isDebugInput()) {
-                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:down - launch MCPTT, NO_NEED_NEXT_STEP");
-                    }
-                    return 1;
-                }
-                if (CoreRune.FW_XCOVER_AND_TOP_KEY) {
-                    prepareVoiceToTextMessage(keyCode, keyEvent);
-                }
-                if (lastAction == 2 && sendBroadcast(keyEvent, 3) == -1) {
-                    if (KeyCustomizationConstants.isDebugInput()) {
-                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:down - sendBroadcast, NO_NEED_NEXT_STEP");
-                    }
-                    return 1;
-                }
-            }
-            if (isLongPress) {
-                this.mIsKeyLongPressed = true;
-                if (CoreRune.FW_ACTIVE_OR_XCOVER_KEY && hasXCoverTopKeyAndId(4, keyCode)) {
-                    if (launchXCoverLongActionIfNeeded(keyCode, false)) {
-                        if (KeyCustomizationConstants.isDebugInput()) {
-                            Slog.d("KeyCustomizationManager", "dispatchKeyEvent:longPress - XCoverTopKey Action, NO_NEED_NEXT_STEP");
-                        }
-                        this.mIsKeyLongConsumed = true;
-                        return 1;
-                    }
-                    if (KeyCustomizationConstants.isDebugInput()) {
-                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:longPress - XCoverTopKey Action, NEEDED_NEXT_STEP");
-                    }
-                    return 2;
-                }
-                if (launchLongPressAction(lastAction2, keyEvent, keyCode)) {
-                    if (KeyCustomizationConstants.isDebugInput()) {
-                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:longPress - launch Action, NO_NEED_NEXT_STEP");
-                    }
-                    this.mIsKeyLongConsumed = true;
-                    return 1;
-                }
-                if (KeyCustomizationConstants.isDebugInput()) {
-                    Slog.d("KeyCustomizationManager", "dispatchKeyEvent:longPress, NEEDED_ONLY_LONG_PRESS_STEP");
-                }
-                return 3;
-            }
-            if (CoreRune.FW_ACTIVE_OR_XCOVER_KEY && hasXCoverTopKeyAndId(keyCode)) {
-                if (KeyCustomizationConstants.isDebugInput()) {
-                    Slog.d("KeyCustomizationManager", "dispatchKeyEvent:down - XCoverTopKey Action, NEEDED_NEXT_STEP");
-                }
-                return 2;
-            }
-        } else {
-            if (CoreRune.FW_XCOVER_AND_TOP_KEY) {
-                prepareVoiceToTextMessage(keyCode, keyEvent);
-            }
-            if (lastAction == 2 && sendBroadcast(keyEvent, 3, this.mIsKeyLongPressed) == -1) {
-                if (KeyCustomizationConstants.isDebugInput()) {
-                    Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - sendBroadcast, NO_NEED_NEXT_STEP");
-                }
-                return 1;
-            }
-            if (CoreRune.FW_ACTIVE_OR_XCOVER_KEY) {
-                if (!this.mIsKeyLongPressed) {
-                    if (hasXCoverTopKeyAndId(3, keyCode)) {
-                        if (launchXCoverPressActionIfNeeded(keyCode, false)) {
-                            if (KeyCustomizationConstants.isDebugInput()) {
-                                Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - XCoverTopKey Action, NO_NEED_NEXT_STEP");
-                            }
-                            return 1;
-                        }
-                        if (KeyCustomizationConstants.isDebugInput()) {
-                            Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - XCoverTopKey Action, NEEDED_NEXT_STEP");
-                        }
-                        return 2;
-                    }
-                } else if (!this.mIsKeyLongConsumed && hasXCoverTopKeyAndId(keyCode)) {
-                    if (KeyCustomizationConstants.isDebugInput()) {
-                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - XCoverTopKey Action, No longPress consumed, NEEDED_NEXT_STEP");
-                    }
-                    return 2;
-                }
-            }
-            if (!this.mIsKeyLongPressed) {
-                launchPressAction(lastAction, keyEvent, keyCode, z3);
-            } else {
-                if (CoreRune.FW_B2B_DEDICATED_APP && startMCPTTServiceIfNeeded(keyCode, keyEvent)) {
-                    if (KeyCustomizationConstants.isDebugInput()) {
-                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - launch MCPTT, NO_NEED_NEXT_STEP");
-                    }
-                    return 1;
-                }
-                if (this.mIsKeyLongConsumed) {
-                    if (KeyCustomizationConstants.isDebugInput()) {
-                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - longPress, NO_NEED_NEXT_STEP");
-                    }
-                    return 1;
-                }
-            }
-        }
-        if (lastAction == 1 || lastAction == 3 || z3) {
-            if (KeyCustomizationConstants.isDebugInput()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("dispatchKeyEvent:");
-                sb.append(z2 ? INetd.IF_STATE_DOWN : INetd.IF_STATE_UP);
-                sb.append(" - forceDispatching or press action, NO_NEED_NEXT_STEP");
-                Slog.d("KeyCustomizationManager", sb.toString());
-            }
-            return 1;
-        }
-        if (KeyCustomizationConstants.isDebugInput()) {
-            Slog.d("KeyCustomizationManager", "dispatchKeyEvent - default, NEEDED_NEXT_STEP");
-        }
-        return 2;
-    }
-
-    public final boolean hasXCoverTopKeyAndId(int i) {
-        if (isXCoverOrTopKey(i)) {
-            return hasXCoverTopIdWithXCoverTopPress(i);
-        }
-        return false;
-    }
-
-    public final boolean hasXCoverTopKeyAndId(int i, int i2) {
-        if (isXCoverOrTopKey(i2)) {
-            return hasXCoverTopId(i, i2);
-        }
-        return false;
-    }
-
-    public boolean canDispatchXCoverTopKeyEvent(int i) {
-        if (this.mPolicyExt.mPolicy.mPowerManager.isInteractive()) {
-            return true;
-        }
-        if (hasHigherIdThanDefaultWithXCoverTopPress(i)) {
-            Log.d("KeyCustomizationManager", "Allow XCover or Top key event dispatching even though screen is turned off by knox policy.");
-            return true;
-        }
-        if (!hasXCoverTopIdWithXCoverTopPress(i)) {
-            return true;
-        }
-        Log.d("KeyCustomizationManager", "After screen is turned off, disallow XCover or Top key event dispatching, because single or long press has a ID_SETTING_UI_XCOVER_TOP.");
-        return false;
-    }
-
-    public boolean hasHigherIdThanDefaultWithXCoverTopPress(int i) {
-        for (int i2 : KeyCustomizationConstants.SUPPORT_PRESS_TYPE_XCOVER_TOP) {
-            if (isHigherIdThanDefault(getLastId(i2, i))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean hasXCoverTopIdWithXCoverTopPress(int i) {
-        for (int i2 : KeyCustomizationConstants.SUPPORT_PRESS_TYPE_XCOVER_TOP) {
-            if (hasXCoverTopId(i2, i)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean hasXCoverTopId(int i, int i2) {
-        return getLastId(i, i2) == 1103;
-    }
-
-    public final boolean shouldDispatchEventForCameraShutter(boolean z) {
-        return this.mPolicyExt.isCameraRunning() && !z;
-    }
-
-    public final boolean isOnLockScreen(int i) {
-        return i == 1079 ? this.mIsTopKeyOnLockScreen : this.mIsXCoverKeyOnLockScreen;
-    }
-
-    public boolean launchXCoverLongActionIfNeeded(int i, boolean z) {
-        if (FactoryTest.isAutomaticTestMode(this.mContext)) {
-            Slog.d("KeyCustomizationManager", "Block handling XCoverKey because of Automatic Test Mode");
-            return false;
-        }
-        if (hasHigherIdWithOppositePress(3, i)) {
-            Log.d("KeyCustomizationManager", "Can not launch long press action by knox policy");
-            return true;
-        }
-        ComponentName lastComponentName = getLastComponentName(4, i);
-        if (lastComponentName == null) {
-            return false;
-        }
-        if (shouldDispatchEventForCameraShutter(z)) {
-            Slog.d("KeyCustomizationManager", "Can not launch dedicated long action. Camera is running.");
-            return false;
-        }
-        String flattenToString = lastComponentName.flattenToString();
-        if (launchXCoverTopDedicatedLongAction(flattenToString, i) || launchXCoverTopDedicatedAction(flattenToString, 4, i)) {
-            return true;
-        }
-        return launchXCoverDefaultAction(flattenToString, 4, i, z);
-    }
-
-    public boolean launchXCoverPressActionIfNeeded(int i, boolean z) {
-        if (FactoryTest.isAutomaticTestMode(this.mContext)) {
-            Slog.d("KeyCustomizationManager", "Block handling XCoverKey because of Automatic Test Mode");
-            return false;
-        }
-        if (hasHigherIdWithOppositePress(4, i)) {
-            Log.d("KeyCustomizationManager", "Can not launch press action by knox policy");
-            return true;
-        }
-        ComponentName lastComponentName = getLastComponentName(3, i);
-        if (lastComponentName == null) {
-            return false;
-        }
-        return launchXCoverActionIfNeeded(3, i, lastComponentName.flattenToString(), z);
-    }
-
-    public final boolean launchXCoverActionIfNeeded(int i, int i2, String str, boolean z) {
-        if (shouldDispatchEventForCameraShutter(z)) {
-            Slog.d("KeyCustomizationManager", "Can not launch dedicated action. Camera is running.");
-            return false;
-        }
-        if (launchXCoverTopDedicatedAction(str, i, i2)) {
-            return true;
-        }
-        return launchXCoverDefaultAction(str, i, i2, z);
-    }
-
-    public final boolean launchXCoverDefaultAction(String str, int i, int i2, boolean z) {
-        if ("torch/torch".equals(str) && this.mPolicyExt.handleTorchForXCoverKey(isOnLockScreen(i2), i2)) {
-            String eventId = getEventId(i, i2);
-            if (CoreRune.FW_SA_LOGGING && !TextUtils.isEmpty(eventId)) {
-                this.mPolicyExt.sendCoreSaLoggingDimension(eventId, "Torch");
-            }
-            return true;
-        }
-        if (!z) {
-            return false;
-        }
-        if ("com.sec.android.app.camera/com.sec.android.app.camera.Camera".equals(str)) {
-            launchCamera();
-            return true;
-        }
-        if (TextUtils.isEmpty(str)) {
-            return false;
-        }
-        startActivity(i, i2);
-        return true;
-    }
-
-    public final void launchCamera() {
-        ComponentName unflattenFromString = ComponentName.unflattenFromString("com.sec.android.app.camera/com.sec.android.app.camera.Camera");
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.LAUNCHER");
-        intent.putExtra("isSecure", getKeyguardManager().isKeyguardSecure());
-        intent.putExtra("isQuickLaunchMode", true);
-        intent.setComponent(unflattenFromString);
-        intent.setFlags(268435456);
-        if (getKeyguardManager().semIsKeyguardShowingAndNotOccluded()) {
-            intent.addFlags(603979776);
-            try {
-                ActivityTaskManager.getService().requestWaitingForOccluding(0);
-            } catch (RemoteException e) {
-                Log.d("KeyCustomizationManager", "failed requestWaitingForOccluding, " + e);
-            }
-        } else {
-            intent.addFlags(2097152);
-        }
-        try {
-            this.mContext.startActivity(intent);
-        } catch (ActivityNotFoundException e2) {
-            Slog.w("KeyCustomizationManager", "No activity to launch Camera, ", e2);
-        }
-    }
-
-    public final KeyguardManager getKeyguardManager() {
-        if (this.mKeyguardManager == null) {
-            this.mKeyguardManager = (KeyguardManager) this.mContext.getSystemService("keyguard");
-        }
-        return this.mKeyguardManager;
-    }
-
-    public void prepareVoiceToTextMessage(int i, KeyEvent keyEvent) {
-        ComponentName lastComponentName;
-        if (isXCoverOrTopKey(i) && (lastComponentName = getLastComponentName(4, i)) != null && "quickMessageSender/quickMessageSender".equals(lastComponentName.flattenToString())) {
-            if (keyEvent.getAction() == 0) {
-                this.mIsCalledOpenDictationXCoverTop = false;
-            } else if (this.mIsCalledOpenDictationXCoverTop) {
-                this.mIsCalledOpenDictationXCoverTop = false;
-                this.mPolicyExt.closeDictation(i);
-            }
-        }
-    }
-
-    public final boolean launchXCoverTopDedicatedAction(String str, int i, int i2) {
-        String str2;
-        boolean z = true;
-        if ("home/home".equals(str)) {
-            this.mHandler.post(new Runnable() { // from class: com.android.server.policy.KeyCustomizationManager$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    KeyCustomizationManager.this.lambda$launchXCoverTopDedicatedAction$0();
-                }
-            });
-            str2 = "Home";
-        } else if ("back/back".equals(str)) {
-            this.mPolicyExt.injectionKeyEvent(4, 0, -1);
-            str2 = "Back";
-        } else {
-            str2 = null;
-            z = false;
-        }
-        String eventId = getEventId(i, i2);
-        if (CoreRune.FW_SA_LOGGING && !TextUtils.isEmpty(eventId) && !TextUtils.isEmpty(str2)) {
-            this.mPolicyExt.sendCoreSaLoggingDimension(eventId, str2);
-        }
-        return z;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$launchXCoverTopDedicatedAction$0() {
-        this.mPolicyExt.mPolicy.handleShortPressOnHome(0);
-    }
-
-    public final boolean launchXCoverTopDedicatedLongAction(String str, int i) {
-        if (!"quickMessageSender/quickMessageSender".equals(str)) {
-            return false;
-        }
-        PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
-        if (phoneWindowManagerExt.mIsSamsungKeyboard) {
-            this.mIsCalledOpenDictationXCoverTop = true;
-            phoneWindowManagerExt.openDictation(i);
-        } else {
-            Context context = this.mContext;
-            phoneWindowManagerExt.showToast(context, context.getResources().getString(17043220));
-        }
-        String eventId = getEventId(4, i);
-        if (CoreRune.FW_SA_LOGGING && !TextUtils.isEmpty(eventId)) {
-            this.mPolicyExt.sendCoreSaLoggingDimension(eventId, "Voice to text message");
-        }
-        return true;
-    }
-
-    public final void updateKeyInfoExtra(Intent intent, KeyEvent keyEvent) {
-        if (CoreRune.FW_KODIAK_DEDICATED_PTT_APP && isKodiakDedicatedPttApp(intent.getPackage())) {
-            intent.putExtra("android.intent.extra.KEY_EVENT", KeyEvent.obtain(keyEvent));
-            return;
-        }
-        boolean z = keyEvent.getAction() == 0;
-        intent.putExtra("com.samsung.android.knox.intent.extra.KEY_CODE", keyEvent.getKeyCode());
-        intent.putExtra("com.samsung.android.knox.intent.extra.KEY_REPORT_TYPE", z ? 1 : 2);
-    }
-
-    public final boolean startMCPTTServiceIfNeeded(int i, KeyEvent keyEvent) {
-        SemWindowManager.KeyCustomizationInfo lastKeyCustomizationInfo;
-        Intent intent;
-        if (!isXCoverOrTopKey(i) || (lastKeyCustomizationInfo = getLastKeyCustomizationInfo(3, i)) == null || (intent = lastKeyCustomizationInfo.intent) == null || intent.getComponent() == null || !"com.att.firstnet.grey".equals(intent.getComponent().getPackageName())) {
-            return false;
-        }
-        startService(lastKeyCustomizationInfo, 3, i, keyEvent);
-        return true;
-    }
-
-    public final boolean isKodiakDedicatedPttApp(String str) {
-        str.hashCode();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1849030318:
-                if (str.equals("com.bell.ptt")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case -1036550907:
-                if (str.equals("com.sprint.sdcplus")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 1304193381:
-                if (str.equals("com.att.eptt")) {
-                    c = 2;
-                    break;
-                }
-                break;
-            case 2030292931:
-                if (str.equals("com.verizon.pushtotalkplus")) {
-                    c = 3;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    public boolean hasB2BDedicatedPower() {
-        return getLastId(3, 26) == 951;
-    }
-
-    public boolean hasSideKeyDoublePressId() {
-        return getLastId(8, 26) == 1104;
-    }
-
-    public boolean hasDoubleCameraId(int i) {
-        return getLastId(8, i) == 2001;
-    }
-
-    public boolean hasDoublePowerTvModeId() {
-        return getLastId(8, 26) == 2002;
-    }
-
-    public void putHotKey(int i, ComponentName componentName) {
-        if (componentName == null) {
-            Log.d("KeyCustomizationManager", "componentName is empty. Can not set hot key info.");
-        } else {
-            this.mKeyCustomizationInfoManager.putHotKey(i, componentName);
-        }
-    }
-
-    public void removeHotKey(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return;
-        }
-        this.mKeyCustomizationInfoManager.removeHotKey(str);
-    }
-
-    public ComponentName getHotKeyComponentName(int i) {
-        return this.mKeyCustomizationInfoManager.getHotKeyComponentName(i);
-    }
-
-    public void onUserSwitch(int i) {
-        if (i == this.mKeyCustomizationInfoManager.getUserId()) {
-            return;
-        }
-        this.mKeyCustomizationInfoManager.onUserSwitch(i);
-        for (int i2 : KeyCustomizationConstants.ALL_KEYCODE_TYPE) {
-            initPowerBehaviorAndSingleKeyGestureDetectorRule(i2);
-        }
-    }
-
-    public void onUserRemove(int i) {
-        this.mKeyCustomizationInfoManager.onUserRemove(i);
-    }
-
-    public List getBackupKeyCustomizationInfoList() {
-        return this.mKeyCustomizationInfoManager.getBackupKeyCustomizationInfoList();
-    }
-
-    public void restoreKeyCustomizationInfo(List list) {
-        Slog.d("KeyCustomizationManager", "restoreKeyCustomizationInfo, size=" + list.size());
-        this.mKeyCustomizationInfoManager.restoreKeyCustomizationInfo(list);
-    }
-
-    public boolean hasHigherIdWithAllPress(int i, int i2) {
-        SemWindowManager.KeyCustomizationInfo last;
-        int i3;
-        int lastId = getLastId(i, i2);
-        if (lastId >= 1000 || lastId == -1) {
-            return false;
-        }
-        int i4 = 2003;
-        for (int i5 : KeyCustomizationConstants.SUPPORT_PRESS_TYPE_ALL) {
-            if (i5 != i && (last = this.mKeyCustomizationInfoManager.getLast(i5, i2)) != null && i4 > (i3 = last.id)) {
-                i4 = i3;
-            }
-        }
-        return i4 < lastId;
-    }
-
-    public final boolean hasHigherIdWithOppositePress(int i, int i2) {
-        if (this.mPolicyExt.mPolicy.mPowerManager.isInteractive()) {
-            return false;
-        }
-        int lastId = getLastId(i, i2);
-        if (!isHigherIdThanDefault(lastId)) {
-            return false;
-        }
-        Log.d("KeyCustomizationManager", "hasHigherIdInOppositePress, press=" + i + " keyCode=" + i2 + " id=" + lastId);
-        return true;
-    }
-
-    public final Intent getDefaultIntentForKnoxId(int i, KeyEvent keyEvent, boolean z, boolean z2, boolean z3) {
-        if (!isKnoxId(i)) {
-            return null;
-        }
-        int keyCode = keyEvent.getKeyCode();
-        boolean z4 = false;
-        int i2 = 1;
-        boolean z5 = keyEvent.getAction() == 0;
-        int repeatCount = keyEvent.getRepeatCount();
-        if (z5 && repeatCount == 0) {
-            z4 = true;
-        }
-        Intent intent = new Intent("com.samsung.android.knox.intent.action.HARD_KEY_REPORT");
-        intent.setFlags(16777216);
-        intent.putExtra("com.samsung.android.knox.intent.extra.KEY_CODE", keyCode);
-        if (z) {
-            i2 = 4;
-        } else if (z2) {
-            i2 = 8;
-        } else if (!z4) {
-            if (z5) {
-                i2 = -1;
-            } else {
-                if (z3) {
-                    intent.putExtra("com.samsung.android.knox.intent.extra.EXTRA_REPORT_TYPE_NEW_LONG_UP", true);
-                }
-                i2 = 2;
-            }
-        }
-        intent.putExtra("com.samsung.android.knox.intent.extra.KEY_REPORT_TYPE_NEW", i2);
-        return intent;
-    }
-
-    public final boolean migrationForKnoxPolicy(Intent intent, KeyEvent keyEvent, boolean z, boolean z2) {
-        boolean z3;
-        boolean z4;
-        int keyCode = keyEvent.getKeyCode();
-        boolean z5 = keyEvent.getAction() == 0;
-        boolean z6 = z5 && keyEvent.getRepeatCount() == 0;
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            z3 = extras.getBoolean("getHardKeyReportState");
-            z4 = extras.getBoolean("getHardKeyIntentState");
-        } else {
-            z3 = false;
-            z4 = false;
-        }
-        if (shouldSkipActionForKnoxPolicy(keyCode, z5, z6, extras, z3, z4)) {
-            return true;
-        }
-        intent.putExtra("com.samsung.android.knox.intent.extra.KEY_CODE", keyCode);
-        if (z3) {
-            updateHardKeyReport(intent, extras, z5, z6);
-        } else if (z4) {
-            updateHardKeyIntent(intent, keyCode, z5, z6, z);
-        } else {
-            updateIntentForKnoxPolicy(intent, z5, z6, z, z2);
-        }
-        return false;
-    }
-
-    public final boolean shouldSkipActionForKnoxPolicy(int i, boolean z, boolean z2, Bundle bundle, boolean z3, boolean z4) {
-        if (!z3) {
-            return (!z4 || i == 26 || z) ? false : true;
-        }
-        boolean isReportedKey = isReportedKey(false, bundle);
-        boolean isReportedKey2 = isReportedKey(true, bundle);
-        if (isReportedKey && isReportedKey2) {
-            return !z2 && z;
-        }
-        if (isReportedKey && z2) {
-            return true;
-        }
-        return isReportedKey2 && !z;
-    }
-
-    public final void updateHardKeyReport(Intent intent, Bundle bundle, boolean z, boolean z2) {
-        boolean isReportedKey = isReportedKey(false, bundle);
-        int i = 1;
-        boolean isReportedKey2 = isReportedKey(true, bundle);
-        if (isReportedKey && isReportedKey2) {
-            if (!z2) {
-                if (z) {
-                    return;
-                } else {
-                    i = 2;
-                }
-            }
-            intent.putExtra("com.samsung.android.knox.intent.extra.KEY_REPORT_TYPE", i);
-            return;
-        }
-        if (isReportedKey) {
-            if (z) {
-                return;
-            }
-            intent.putExtra("com.samsung.android.knox.intent.extra.KEY_REPORT_TYPE", 2);
-        } else if (isReportedKey2 && z2) {
-            intent.putExtra("com.samsung.android.knox.intent.extra.KEY_REPORT_TYPE", 1);
-        }
-    }
-
-    public final void updateHardKeyIntent(Intent intent, int i, boolean z, boolean z2, boolean z3) {
-        if (i != 26) {
-            return;
-        }
-        if (z3) {
-            intent.putExtra("com.samsung.android.knox.intent.extra.KEY_REPORT_TYPE", 1);
-        } else if (!z) {
-            intent.putExtra("com.samsung.android.knox.intent.extra.KEY_REPORT_TYPE", 2);
-        } else if (z2) {
-            intent.removeExtra("com.samsung.android.knox.intent.extra.KEY_REPORT_TYPE");
-        }
-    }
-
-    public final void updateIntentForKnoxPolicy(Intent intent, boolean z, boolean z2, boolean z3, boolean z4) {
-        int i;
-        if (z3) {
-            i = 4;
-        } else if (z4) {
-            i = 8;
-        } else if (z2) {
-            i = 1;
-        } else if (z) {
-            return;
-        } else {
-            i = 2;
-        }
-        intent.putExtra("com.samsung.android.knox.intent.extra.KEY_REPORT_TYPE_NEW", i);
-    }
-
-    public final boolean isReportedKey(boolean z, Bundle bundle) {
-        if (bundle == null) {
-            return false;
-        }
-        return bundle.getBoolean(z ? "reportStateOnKeyedDown" : "reportStateOnKeyedUp");
-    }
-
-    public final boolean isBlockedKey(boolean z, Bundle bundle) {
-        if (bundle == null) {
-            return false;
-        }
-        return bundle.getBoolean(z ? "blockedStateOnKeyedDown" : "blockedStateOnKeyedUp");
-    }
-
-    public final boolean isBlockedDispatchingByKnoxPolicy(int i, boolean z, int i2, Intent intent, int i3) {
-        if (!isKnoxId(i)) {
-            return false;
-        }
-        if (1015 != i3 && 1079 != i3 && 79 != i3) {
-            return false;
-        }
-        if (!z && isReportedKey(false, intent.getExtras()) && isBlockedKey(false, intent.getExtras())) {
-            return true;
-        }
-        return z && i2 == 0 && isReportedKey(true, intent.getExtras()) && isBlockedKey(true, intent.getExtras());
-    }
-
-    public final boolean isForceBlockDispatchingLongByKnoxPolicy(int i, int i2, int i3) {
-        if (!isKnoxId(i) || (i2 & 4) == 0) {
-            return false;
-        }
-        if (i3 != 187 && i3 != 3) {
-            return false;
-        }
-        Log.i("KeyCustomizationManager", "Long press of key(" + i3 + ") action should be blocked by knox policy");
-        return true;
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        printWriter.println();
-        printWriter.print(str);
-        printWriter.print("KeyCustomization info state: ");
-        this.mKeyCustomizationInfoManager.dump(str, printWriter);
-        printWriter.println();
-    }
-
-    public static String pressToString(int i) {
-        return (i & 3) != 0 ? "KEY_PRESS_SINGLE" : (i & 4) != 0 ? "KEY_PRESS_LONG" : (i & 8) != 0 ? "KEY_PRESS_DOUBLE" : (i & 16) != 0 ? "KEY_PRESS_TRIPLE" : (i & 32) != 0 ? "KEY_PRESS_QUADRUPLE" : (i & 64) != 0 ? "KEY_PRESS_QUINTUPLE" : Integer.toString(i);
-    }
-
-    public static String actionToString(int i) {
-        return i != 1 ? i != 2 ? i != 3 ? i != 4 ? Integer.toString(i) : "ACTION_BLOCK_KEY_EVENT" : "ACTION_START_SERVICE" : "ACTION_SEND_BROADCAST" : "ACTION_START_ACTIVITY";
     }
 
     public static String idToString(int i) {
@@ -1333,6 +115,850 @@ public class KeyCustomizationManager {
                 return "ID_GENERAL_APPLICATION";
             default:
                 return Integer.toString(i);
+        }
+    }
+
+    public static boolean isKnoxId(int i) {
+        return i == 10 || i == 30 || i == 50;
+    }
+
+    public static boolean isReportedKey(boolean z, Bundle bundle) {
+        if (bundle == null) {
+            return false;
+        }
+        return bundle.getBoolean(z ? "reportStateOnKeyedDown" : "reportStateOnKeyedUp");
+    }
+
+    public static boolean isXCoverOrTopKey(int i) {
+        return i == 1015 || i == 1079;
+    }
+
+    public static String pressToString(int i) {
+        return (i & 3) != 0 ? "KEY_PRESS_SINGLE" : (i & 4) != 0 ? "KEY_PRESS_LONG" : (i & 8) != 0 ? "KEY_PRESS_DOUBLE" : (i & 16) != 0 ? "KEY_PRESS_TRIPLE" : (i & 32) != 0 ? "KEY_PRESS_QUADRUPLE" : (i & 64) != 0 ? "KEY_PRESS_QUINTUPLE" : Integer.toString(i);
+    }
+
+    public final boolean canDispatchXCoverTopKeyEvent(int i) {
+        if (this.mPolicyExt.mPolicy.mPowerManager.isInteractive()) {
+            return true;
+        }
+        for (int i2 : KeyCustomizationConstants.SUPPORT_PRESS_TYPE_XCOVER_TOP) {
+            int lastId = getLastId(i2, i);
+            if (lastId != -1 && lastId < 1000) {
+                Log.d("KeyCustomizationManager", "Allow XCover or Top key event dispatching even though screen is turned off by knox policy.");
+                return true;
+            }
+        }
+        for (int i3 : KeyCustomizationConstants.SUPPORT_PRESS_TYPE_XCOVER_TOP) {
+            if (hasXCoverTopId(i3, i)) {
+                Log.d("KeyCustomizationManager", "After screen is turned off, disallow XCover or Top key event dispatching, because single or long press has a ID_SETTING_UI_XCOVER_TOP.");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public final int dispatchKeyCustomizationKeyEvent(KeyEvent keyEvent, boolean z) {
+        boolean z2;
+        boolean z3;
+        int keyCode = keyEvent.getKeyCode();
+        int repeatCount = keyEvent.getRepeatCount();
+        boolean isLongPress = keyEvent.isLongPress();
+        boolean z4 = keyEvent.getAction() == 0;
+        int lastAction = getLastAction(3, keyCode);
+        int lastAction2 = getLastAction(4, keyCode);
+        boolean z5 = z ? lastAction2 != -1 : z;
+        String str = KeyCustomizationConstants.VOLD_DECRYPT;
+        boolean z6 = PhoneWindowManager.DEBUG_INPUT;
+        if (z6) {
+            StringBuilder sb = new StringBuilder("dispatchKeyEvent: keyCode=");
+            sb.append(keyCode);
+            sb.append(" down=");
+            sb.append(z4);
+            sb.append(" repeatCount=");
+            sb.append(repeatCount);
+            sb.append(" isLongPress=");
+            sb.append(isLongPress);
+            sb.append(" pressAction=");
+            sb.append(actionToString(lastAction));
+            sb.append(" longPressAction=");
+            sb.append(actionToString(lastAction2));
+            sb.append(" forceDispatching=");
+            AnyMotionDetector$$ExternalSyntheticOutline0.m("KeyCustomizationManager", sb, z5);
+        }
+        int i = (lastAction2 == -1 || lastAction2 == 4) ? lastAction : lastAction2;
+        if (i != 0 && i != 1 && i != 2 && i != 3) {
+            if (z6) {
+                Slog.d("KeyCustomizationManager", "dispatchKeyEvent - default, there is no action, NEEDED_NEXT_STEP");
+            }
+            return 2;
+        }
+        if (z4) {
+            if (repeatCount == 0) {
+                this.mIsKeyLongPressed = false;
+                this.mIsKeyLongConsumed = false;
+                if (InputRune.PWM_B2B_DEDICATED_APP && startMCPTTServiceIfNeeded(keyEvent, keyCode)) {
+                    if (z6) {
+                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:down - launch MCPTT, NO_NEED_NEXT_STEP");
+                    }
+                    return 1;
+                }
+                if (InputRune.PWM_XCOVER_AND_TOP_KEY) {
+                    prepareVoiceToTextMessage(keyEvent, keyCode);
+                }
+                if (lastAction == 2 && sendBroadcast(null, keyEvent, 3, false) == -1) {
+                    if (z6) {
+                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:down - sendBroadcast, NO_NEED_NEXT_STEP");
+                    }
+                    return 1;
+                }
+            }
+            if (isLongPress) {
+                this.mIsKeyLongPressed = true;
+                if (InputRune.PWM_ACTIVE_OR_XCOVER_KEY) {
+                    if (!isXCoverOrTopKey(keyCode) ? false : hasXCoverTopId(4, keyCode)) {
+                        if (!launchXCoverLongActionIfNeeded(keyEvent, false)) {
+                            if (z6) {
+                                Slog.d("KeyCustomizationManager", "dispatchKeyEvent:longPress - XCoverTopKey Action, NEEDED_NEXT_STEP");
+                            }
+                            return 2;
+                        }
+                        if (z6) {
+                            Slog.d("KeyCustomizationManager", "dispatchKeyEvent:longPress - XCoverTopKey Action, NO_NEED_NEXT_STEP");
+                        }
+                        this.mIsKeyLongConsumed = true;
+                        return 1;
+                    }
+                }
+                if (launchLongPressAction(lastAction2, keyEvent, keyCode)) {
+                    if (z6) {
+                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:longPress - launch Action, NO_NEED_NEXT_STEP");
+                    }
+                    this.mIsKeyLongConsumed = true;
+                    return 1;
+                }
+                if (!z6) {
+                    return 3;
+                }
+                Slog.d("KeyCustomizationManager", "dispatchKeyEvent:longPress, NEEDED_ONLY_LONG_PRESS_STEP");
+                return 3;
+            }
+            if (InputRune.PWM_ACTIVE_OR_XCOVER_KEY) {
+                if (isXCoverOrTopKey(keyCode)) {
+                    for (int i2 : KeyCustomizationConstants.SUPPORT_PRESS_TYPE_XCOVER_TOP) {
+                        if (hasXCoverTopId(i2, keyCode)) {
+                            z3 = true;
+                            break;
+                        }
+                    }
+                }
+                z3 = false;
+                if (z3) {
+                    if (z6) {
+                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:down - XCoverTopKey Action, NEEDED_NEXT_STEP");
+                    }
+                    return 2;
+                }
+            }
+        } else {
+            if (InputRune.PWM_XCOVER_AND_TOP_KEY) {
+                prepareVoiceToTextMessage(keyEvent, keyCode);
+            }
+            if (lastAction == 2 && sendBroadcast(null, keyEvent, 3, this.mIsKeyLongPressed) == -1) {
+                if (z6) {
+                    Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - sendBroadcast, NO_NEED_NEXT_STEP");
+                }
+                return 1;
+            }
+            if (InputRune.PWM_ACTIVE_OR_XCOVER_KEY) {
+                if (!this.mIsKeyLongPressed) {
+                    if (!isXCoverOrTopKey(keyCode) ? false : hasXCoverTopId(3, keyCode)) {
+                        if (launchXCoverPressActionIfNeeded(keyEvent, false)) {
+                            if (z6) {
+                                Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - XCoverTopKey Action, NO_NEED_NEXT_STEP");
+                            }
+                            return 1;
+                        }
+                        if (z6) {
+                            Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - XCoverTopKey Action, NEEDED_NEXT_STEP");
+                        }
+                        return 2;
+                    }
+                } else if (!this.mIsKeyLongConsumed) {
+                    if (isXCoverOrTopKey(keyCode)) {
+                        for (int i3 : KeyCustomizationConstants.SUPPORT_PRESS_TYPE_XCOVER_TOP) {
+                            if (hasXCoverTopId(i3, keyCode)) {
+                                z2 = true;
+                                break;
+                            }
+                        }
+                    }
+                    z2 = false;
+                    if (z2) {
+                        if (z6) {
+                            Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - XCoverTopKey Action, No longPress consumed, NEEDED_NEXT_STEP");
+                        }
+                        return 2;
+                    }
+                }
+            }
+            if (!this.mIsKeyLongPressed) {
+                launchPressAction(lastAction, keyEvent, keyCode, z5);
+            } else {
+                if (InputRune.PWM_B2B_DEDICATED_APP && startMCPTTServiceIfNeeded(keyEvent, keyCode)) {
+                    if (z6) {
+                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - launch MCPTT, NO_NEED_NEXT_STEP");
+                    }
+                    return 1;
+                }
+                if (this.mIsKeyLongConsumed) {
+                    if (z6) {
+                        Slog.d("KeyCustomizationManager", "dispatchKeyEvent:up - longPress, NO_NEED_NEXT_STEP");
+                    }
+                    return 1;
+                }
+            }
+        }
+        if (lastAction == 1 || lastAction == 3 || z5) {
+            if (z6) {
+                DeviceIdleController$$ExternalSyntheticOutline0.m(new StringBuilder("dispatchKeyEvent:"), z4 ? INetd.IF_STATE_DOWN : INetd.IF_STATE_UP, " - forceDispatching or press action, NO_NEED_NEXT_STEP", "KeyCustomizationManager");
+            }
+            return 1;
+        }
+        if (z6) {
+            Slog.d("KeyCustomizationManager", "dispatchKeyEvent - default, NEEDED_NEXT_STEP");
+        }
+        return 2;
+    }
+
+    public final int getLastAction(int i, int i2) {
+        SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(i, i2);
+        if (last == null) {
+            return -1;
+        }
+        return last.action;
+    }
+
+    public final int getLastId(int i, int i2) {
+        SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(i, i2);
+        if (last == null) {
+            return -1;
+        }
+        return last.id;
+    }
+
+    public final boolean hasHigherIdWithAllPress(int i, int i2) {
+        SemWindowManager.KeyCustomizationInfo last;
+        int i3;
+        int lastId = getLastId(i, i2);
+        if (lastId >= 1000 || lastId == -1) {
+            return false;
+        }
+        int i4 = 2003;
+        for (int i5 : KeyCustomizationConstants.SUPPORT_PRESS_TYPE_ALL) {
+            if (i5 != i && (last = this.mKeyCustomizationInfoManager.getLast(i5, i2)) != null && i4 > (i3 = last.id)) {
+                i4 = i3;
+            }
+        }
+        return i4 < lastId;
+    }
+
+    public final boolean hasHigherIdWithOppositePress(int i, int i2) {
+        int lastId;
+        if (this.mPolicyExt.mPolicy.mPowerManager.isInteractive() || (lastId = getLastId(i, i2)) == -1 || lastId >= 1000) {
+            return false;
+        }
+        GestureWakeup$$ExternalSyntheticOutline0.m(ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "hasHigherIdInOppositePress, press=", " keyCode=", " id="), lastId, "KeyCustomizationManager");
+        return true;
+    }
+
+    public final boolean hasLastInfo(int i, int i2) {
+        return this.mKeyCustomizationInfoManager.getLast(i, i2) != null;
+    }
+
+    public final boolean hasXCoverTopId(int i, int i2) {
+        return getLastId(i, i2) == 1103;
+    }
+
+    public final void initPowerBehaviorAndSingleKeyGestureDetectorRule(int i) {
+        SingleKeyGestureDetector.SingleKeyRule singleKeyRule;
+        PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+        if (i != 26) {
+            phoneWindowManagerExt.updateSingleKeyGestureRule(i);
+        }
+        long j = 0;
+        for (int i2 : KeyCustomizationConstants.NEEDED_UPDATE_BEHAVIOR_MULTI_PRESS_TYPE) {
+            if (i == 26) {
+                updatePowerBehavior(i2);
+            }
+            if ((i2 & 4) != 0) {
+                updateLongPressTimeoutIfNeeded(i2, i, true);
+            } else {
+                SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(i2, i);
+                long j2 = last == null ? 0L : last.multiPressTimeout;
+                if (j < j2) {
+                    j = j2;
+                }
+            }
+        }
+        if (j == 0 || (singleKeyRule = (SingleKeyGestureDetector.SingleKeyRule) phoneWindowManagerExt.mPolicy.mSingleKeyGestureDetector.mCustomRules.get(i)) == null) {
+            return;
+        }
+        long j3 = singleKeyRule.extensionMultiPressTimeout;
+        if (j3 == 0) {
+            j3 = SingleKeyGestureDetector.sDefaultMultiPressTimeout;
+        }
+        if (j == j3) {
+            return;
+        }
+        singleKeyRule.extensionMultiPressTimeout = j != SingleKeyGestureDetector.sDefaultMultiPressTimeout ? j : 0L;
+    }
+
+    public final boolean launchLongPressAction(int i, KeyEvent keyEvent, int i2) {
+        if (hasHigherIdWithAllPress(4, i2)) {
+            return false;
+        }
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i2, "launchLongPressAction, keyCode=", " ");
+        m.append(actionToString(i));
+        Log.d("KeyCustomizationManager", m.toString());
+        KeyCustomizationInfoManager keyCustomizationInfoManager = this.mKeyCustomizationInfoManager;
+        if (i == 1) {
+            SemWindowManager.KeyCustomizationInfo last = keyCustomizationInfoManager.getLast(4, i2);
+            if (last != null) {
+                startActivity(last);
+            }
+        } else if (i != 2) {
+            if (i == 3) {
+                SemWindowManager.KeyCustomizationInfo last2 = keyCustomizationInfoManager.getLast(4, i2);
+                if (last2 != null) {
+                    startService(last2, 4, i2, keyEvent);
+                }
+            } else {
+                if (i != 4) {
+                    return false;
+                }
+                Log.d("KeyCustomizationManager", "launchLongPressAction was blocked by KeyCustomizationPolicy.");
+            }
+        } else if (sendBroadcast(null, keyEvent, 4, false) == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public final boolean launchLongPressAction(KeyEvent keyEvent) {
+        int keyCode = keyEvent.getKeyCode();
+        int lastAction = getLastAction(4, keyCode);
+        if (lastAction == -1) {
+            return false;
+        }
+        return launchLongPressAction(lastAction, keyEvent, keyCode);
+    }
+
+    public final void launchMultiPressAction(KeyEvent keyEvent, int i) {
+        int keyCode;
+        SemWindowManager.KeyCustomizationInfo last;
+        int i2;
+        if (keyEvent == null) {
+            Log.e("KeyCustomizationManager", "launchMultiPressAction, event is null, Callers=" + Debug.getCallers(5));
+            return;
+        }
+        int i3 = i == 2 ? 8 : i == 3 ? 16 : i == 4 ? 32 : i == 5 ? 64 : 0;
+        if (i3 == 0 || (last = this.mKeyCustomizationInfoManager.getLast(i3, (keyCode = keyEvent.getKeyCode()))) == null || (i2 = last.action) == 4 || hasHigherIdWithAllPress(i3, keyCode)) {
+            return;
+        }
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m(i, keyCode, "launchMultiPressAction, count=", " keyCode=", "KeyCustomizationManager");
+        if (i2 == 1) {
+            startActivity(last);
+            return;
+        }
+        if (i2 == 2) {
+            sendBroadcast(null, keyEvent, i3, false);
+            return;
+        }
+        if (i2 == 3) {
+            startService(last, i3, keyCode, keyEvent);
+            return;
+        }
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "launchMultiPressAction, count=", " ");
+        m.append(actionToString(i2));
+        m.append(" was wrong.");
+        Log.e("KeyCustomizationManager", m.toString());
+    }
+
+    public final boolean launchPressAction(int i, KeyEvent keyEvent, int i2, boolean z) {
+        if (hasHigherIdWithAllPress(3, i2)) {
+            return false;
+        }
+        KeyCustomizationInfoManager keyCustomizationInfoManager = this.mKeyCustomizationInfoManager;
+        if (i == 1) {
+            SemWindowManager.KeyCustomizationInfo last = keyCustomizationInfoManager.getLast(3, i2);
+            if (last != null) {
+                startActivity(last);
+            }
+        } else if (i == 3) {
+            SemWindowManager.KeyCustomizationInfo last2 = keyCustomizationInfoManager.getLast(3, i2);
+            if (last2 != null) {
+                startService(last2, 3, i2, keyEvent);
+            }
+        } else {
+            if (!z) {
+                return false;
+            }
+            this.mPolicyExt.injectionKeyEvent(i2, 268435456, -1);
+        }
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i2, "launchPressAction, keyCode=", " ");
+        m.append(actionToString(i));
+        m.append(" forceDispatching=");
+        m.append(z);
+        Log.d("KeyCustomizationManager", m.toString());
+        return true;
+    }
+
+    public final void launchPressSendBroadcast(KeyEvent keyEvent, int i, boolean z) {
+        SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(3, i);
+        if (last == null) {
+            return;
+        }
+        Log.d("KeyCustomizationManager", "launchPressSendBroadcast, keyCode=" + i + " isKeyLongPressed=" + z);
+        sendBroadcast(last, keyEvent, 3, z);
+    }
+
+    public final boolean launchXCoverDefaultAction(String str, int i, KeyEvent keyEvent, boolean z) {
+        if ("torch/torch".equals(str)) {
+            boolean z2 = keyEvent.getKeyCode() == 1079 ? this.mIsTopKeyOnLockScreen : this.mIsXCoverKeyOnLockScreen;
+            int keyCode = keyEvent.getKeyCode();
+            PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+            if (!phoneWindowManagerExt.mPolicy.keyguardOn() || z2) {
+                phoneWindowManagerExt.onFlashlightKeyPressed(keyCode);
+                if (InputRune.PWM_KEY_SA_LOGGING) {
+                    PhoneWindowManagerExt.sendCoreSaLoggingDimension(getEventId(i, keyEvent.getKeyCode()), "Torch");
+                }
+                return true;
+            }
+        }
+        if (!z) {
+            return false;
+        }
+        if (!"com.sec.android.app.camera/com.sec.android.app.camera.Camera".equals(str)) {
+            if (TextUtils.isEmpty(str)) {
+                return false;
+            }
+            SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(i, keyEvent.getKeyCode());
+            if (last != null) {
+                startActivity(last);
+            }
+            return true;
+        }
+        ComponentName unflattenFromString = ComponentName.unflattenFromString("com.sec.android.app.camera/com.sec.android.app.camera.Camera");
+        Intent m = PersonalAppsSuspensionHelper$$ExternalSyntheticOutline0.m("android.intent.action.MAIN", "android.intent.category.LAUNCHER");
+        if (this.mKeyguardManager == null) {
+            this.mKeyguardManager = (KeyguardManager) this.mContext.getSystemService("keyguard");
+        }
+        m.putExtra("isSecure", this.mKeyguardManager.isKeyguardSecure());
+        m.putExtra("isQuickLaunchMode", true);
+        m.setComponent(unflattenFromString);
+        m.setFlags(268435456);
+        if (this.mKeyguardManager == null) {
+            this.mKeyguardManager = (KeyguardManager) this.mContext.getSystemService("keyguard");
+        }
+        if (this.mKeyguardManager.semIsKeyguardShowingAndNotOccluded()) {
+            m.addFlags(603979776);
+        } else {
+            m.addFlags(2097152);
+        }
+        try {
+            this.mContext.startActivity(m);
+        } catch (ActivityNotFoundException e) {
+            Slog.w("KeyCustomizationManager", "No activity to launch Camera, ", e);
+        }
+        return true;
+    }
+
+    public final boolean launchXCoverLongActionIfNeeded(KeyEvent keyEvent, boolean z) {
+        Intent intent;
+        if (FactoryTest.isAutomaticTestMode(this.mContext)) {
+            Slog.d("KeyCustomizationManager", "Block handling XCoverKey because of Automatic Test Mode");
+            return false;
+        }
+        if (hasHigherIdWithOppositePress(3, keyEvent.getKeyCode())) {
+            Log.d("KeyCustomizationManager", "Can not launch long press action by knox policy");
+            return true;
+        }
+        SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(4, keyEvent.getKeyCode());
+        ComponentName component = (last == null || (intent = last.intent) == null) ? null : intent.getComponent();
+        if (component == null) {
+            return false;
+        }
+        PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+        phoneWindowManagerExt.getClass();
+        if (PhoneWindowManagerExt.isCameraRunning() && !z) {
+            Slog.d("KeyCustomizationManager", "Can not launch dedicated long action. Camera is running.");
+            return false;
+        }
+        String flattenToString = component.flattenToString();
+        if (!"quickMessageSender/quickMessageSender".equals(flattenToString)) {
+            if (launchXCoverTopDedicatedAction(flattenToString, 4, keyEvent)) {
+                return true;
+            }
+            return launchXCoverDefaultAction(flattenToString, 4, keyEvent, z);
+        }
+        if (phoneWindowManagerExt.mIsSamsungKeyboard) {
+            this.mIsCalledOpenDictationXCoverTop = true;
+            phoneWindowManagerExt.callDictation(keyEvent.getKeyCode(), "open_dictation");
+        } else {
+            Context context = this.mContext;
+            phoneWindowManagerExt.showToast(context, context.getResources().getString(17043443));
+        }
+        if (InputRune.PWM_KEY_SA_LOGGING) {
+            PhoneWindowManagerExt.sendCoreSaLoggingDimension(getEventId(4, keyEvent.getKeyCode()), "Voice to text message");
+        }
+        return true;
+    }
+
+    public final boolean launchXCoverPressActionIfNeeded(KeyEvent keyEvent, boolean z) {
+        Intent intent;
+        if (FactoryTest.isAutomaticTestMode(this.mContext)) {
+            Slog.d("KeyCustomizationManager", "Block handling XCoverKey because of Automatic Test Mode");
+            return false;
+        }
+        if (hasHigherIdWithOppositePress(4, keyEvent.getKeyCode())) {
+            Log.d("KeyCustomizationManager", "Can not launch press action by knox policy");
+            return true;
+        }
+        SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(3, keyEvent.getKeyCode());
+        ComponentName component = (last == null || (intent = last.intent) == null) ? null : intent.getComponent();
+        if (component == null) {
+            return false;
+        }
+        String flattenToString = component.flattenToString();
+        this.mPolicyExt.getClass();
+        if (PhoneWindowManagerExt.isCameraRunning() && !z) {
+            Slog.d("KeyCustomizationManager", "Can not launch dedicated action. Camera is running.");
+            return false;
+        }
+        if (launchXCoverTopDedicatedAction(flattenToString, 3, keyEvent)) {
+            return true;
+        }
+        return launchXCoverDefaultAction(flattenToString, 3, keyEvent, z);
+    }
+
+    public final boolean launchXCoverTopDedicatedAction(String str, int i, KeyEvent keyEvent) {
+        String str2;
+        boolean equals = "home/home".equals(str);
+        boolean z = true;
+        PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+        if (equals) {
+            phoneWindowManagerExt.mPolicy.postShortPressOnHome(keyEvent);
+            str2 = "Home";
+        } else if ("back/back".equals(str)) {
+            phoneWindowManagerExt.injectionKeyEvent(4, 0, -1);
+            str2 = "Back";
+        } else {
+            str2 = null;
+            z = false;
+        }
+        if (InputRune.PWM_KEY_SA_LOGGING) {
+            String eventId = getEventId(i, keyEvent.getKeyCode());
+            phoneWindowManagerExt.getClass();
+            PhoneWindowManagerExt.sendCoreSaLoggingDimension(eventId, str2);
+        }
+        return z;
+    }
+
+    public final void prepareVoiceToTextMessage(KeyEvent keyEvent, int i) {
+        Intent intent;
+        if (isXCoverOrTopKey(i)) {
+            SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(4, i);
+            ComponentName component = (last == null || (intent = last.intent) == null) ? null : intent.getComponent();
+            if (component == null || !"quickMessageSender/quickMessageSender".equals(component.flattenToString())) {
+                return;
+            }
+            if (keyEvent.getAction() == 0) {
+                this.mIsCalledOpenDictationXCoverTop = false;
+            } else if (this.mIsCalledOpenDictationXCoverTop) {
+                this.mIsCalledOpenDictationXCoverTop = false;
+                if (InputRune.PWM_SUPPORT_DICTATION_SAMSUNG_KEYBOARD) {
+                    this.mPolicyExt.callDictation(i, "close_dictation");
+                }
+            }
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:143:0x0131  */
+    /* JADX WARN: Removed duplicated region for block: B:41:0x0107  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void putKeyCustomizationInfo(com.samsung.android.view.SemWindowManager.KeyCustomizationInfo r19) {
+        /*
+            Method dump skipped, instructions count: 716
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.policy.KeyCustomizationManager.putKeyCustomizationInfo(com.samsung.android.view.SemWindowManager$KeyCustomizationInfo):void");
+    }
+
+    public final void removeKeyCustomizationInfo(int i, int i2, int i3, String str) {
+        long j;
+        SingleKeyGestureDetector.SingleKeyRule singleKeyRule;
+        String str2 = KeyCustomizationConstants.VOLD_DECRYPT;
+        KeyCustomizationInfoManager keyCustomizationInfoManager = this.mKeyCustomizationInfoManager;
+        synchronized (keyCustomizationInfoManager.mLock) {
+            SparseArray infoMapLocked = keyCustomizationInfoManager.getInfoMapLocked(i2);
+            if (infoMapLocked.get(i3) != null && ((SparseArray) infoMapLocked.get(i3)).get(i) != null) {
+                SemWindowManager.KeyCustomizationInfo keyCustomizationInfo = this.mKeyCustomizationInfoManager.get(i, i2, i3, null);
+                long j2 = keyCustomizationInfo == null ? 0L : keyCustomizationInfo.multiPressTimeout;
+                if (this.mKeyCustomizationInfoManager.remove(i, i2, str, i3, false)) {
+                    if (i3 == 26) {
+                        updatePowerBehavior(i2);
+                    } else {
+                        this.mPolicyExt.updateSingleKeyGestureRule(i3);
+                    }
+                    if ((i2 & 4) != 0 && (singleKeyRule = (SingleKeyGestureDetector.SingleKeyRule) this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.mCustomRules.get(i3)) != null) {
+                        singleKeyRule.getLongPressTimeoutMs();
+                    }
+                    SingleKeyGestureDetector.SingleKeyRule singleKeyRule2 = (SingleKeyGestureDetector.SingleKeyRule) this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.mCustomRules.get(i3);
+                    if (singleKeyRule2 == null) {
+                        j = 0;
+                    } else {
+                        j = singleKeyRule2.extensionMultiPressTimeout;
+                        if (j == 0) {
+                            j = SingleKeyGestureDetector.sDefaultMultiPressTimeout;
+                        }
+                    }
+                    if (j2 <= 0 || j != j2) {
+                        return;
+                    }
+                    long j3 = 0;
+                    for (int i4 : KeyCustomizationConstants.NEEDED_UPDATE_BEHAVIOR_MULTI_PRESS_TYPE) {
+                        if ((i4 & 4) == 0) {
+                            SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(i4, i3);
+                            long j4 = last == null ? 0L : last.multiPressTimeout;
+                            if (j3 < j4) {
+                                j3 = j4;
+                            }
+                        }
+                    }
+                    updateMultiPressTimeoutIfNeeded(i2, i3, true, j3);
+                    return;
+                }
+                return;
+            }
+            Slog.d("KeyCustomizationManager", "Requested info has been removed. " + idToString(i) + " keyCode=" + i3 + " " + pressToString(i2));
+        }
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:156:0x0199, code lost:
+    
+        r1 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:205:0x0197, code lost:
+    
+        if (r18 == false) goto L129;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:162:0x01a1  */
+    /* JADX WARN: Removed duplicated region for block: B:178:0x01cf  */
+    /* JADX WARN: Removed duplicated region for block: B:25:0x0209  */
+    /* JADX WARN: Removed duplicated region for block: B:27:0x0221  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int sendBroadcast(com.samsung.android.view.SemWindowManager.KeyCustomizationInfo r24, android.view.KeyEvent r25, int r26, boolean r27) {
+        /*
+            Method dump skipped, instructions count: 774
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.policy.KeyCustomizationManager.sendBroadcast(com.samsung.android.view.SemWindowManager$KeyCustomizationInfo, android.view.KeyEvent, int, boolean):int");
+    }
+
+    public final void startActivity(SemWindowManager.KeyCustomizationInfo keyCustomizationInfo) {
+        Intent intent = keyCustomizationInfo.intent;
+        PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+        phoneWindowManagerExt.getClass();
+        Intent fillInIntent = PhoneWindowManagerExt.getFillInIntent();
+        if (intent == null) {
+            Log.e("KeyCustomizationManager", "Can not startActivity. intent is null.");
+            return;
+        }
+        int i = keyCustomizationInfo.userId;
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "startActivity. userId=", " Callers=");
+        m.append(Debug.getCallers(3));
+        Log.i("KeyCustomizationManager", m.toString());
+        if (!phoneWindowManagerExt.mPolicy.isKeyguardShowing()) {
+            this.mContext.startActivityAsUser(intent, new UserHandle(i));
+        } else {
+            phoneWindowManagerExt.setPendingIntentAfterUnlock(PendingIntent.getActivityAsUser(phoneWindowManagerExt.mContext, 0, intent, 201326592, null, new UserHandle(i)), fillInIntent);
+        }
+    }
+
+    public final boolean startMCPTTServiceIfNeeded(KeyEvent keyEvent, int i) {
+        SemWindowManager.KeyCustomizationInfo last;
+        Intent intent;
+        if (!isXCoverOrTopKey(i) || (last = this.mKeyCustomizationInfoManager.getLast(3, i)) == null || (intent = last.intent) == null || intent.getComponent() == null || !"com.att.firstnet.grey".equals(intent.getComponent().getPackageName())) {
+            return false;
+        }
+        startService(last, 3, i, keyEvent);
+        return true;
+    }
+
+    public final void startService(SemWindowManager.KeyCustomizationInfo keyCustomizationInfo, int i, int i2, KeyEvent keyEvent) {
+        Intent intent = keyCustomizationInfo.intent;
+        int i3 = keyCustomizationInfo.id;
+        if (intent == null) {
+            Log.e("KeyCustomizationManager", "Can not startService. intent is null.");
+            return;
+        }
+        String str = null;
+        String packageName = intent.getComponent() != null ? intent.getComponent().getPackageName() : null;
+        if (InputRune.PWM_B2B_DEDICATED_APP && i3 == 951 && "com.att.firstnet.grey".equals(packageName) && keyEvent != null) {
+            intent.putExtra("android.intent.extra.KEY_EVENT", KeyEvent.obtain(keyEvent));
+        } else {
+            intent.putExtra("extraKeyCode", i2);
+            if ((i & 3) != 0) {
+                str = "press";
+            } else if ((i & 4) != 0) {
+                str = "long";
+            } else if ((i & 8) != 0) {
+                str = "double";
+            } else if ((i & 16) != 0) {
+                str = "triple";
+            } else if ((i & 32) != 0) {
+                str = "quadruple";
+            } else if ((i & 64) != 0) {
+                str = "quintuple";
+            }
+            intent.putExtra("extraKeyAction", str);
+        }
+        if (intent.getAction() == null) {
+            intent.setAction("android.intent.action.MAIN");
+            Log.i("KeyCustomizationManager", "startService add action main");
+        }
+        int i4 = keyCustomizationInfo.userId;
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i4, "startService. userId=", " ownerPackage=");
+        m.append(keyCustomizationInfo.ownerPackage);
+        m.append(" Callers=");
+        m.append(Debug.getCallers(3));
+        Log.i("KeyCustomizationManager", m.toString());
+        if (i3 == 2003) {
+            this.mContext.startForegroundServiceAsUser(intent, new UserHandle(i4));
+        } else {
+            this.mContext.startServiceAsUser(intent, new UserHandle(i4));
+        }
+    }
+
+    public final void updateLongPressTimeoutIfNeeded(int i, int i2, boolean z) {
+        SingleKeyGestureDetector.SingleKeyRule singleKeyRule;
+        if ((i & 4) == 0) {
+            return;
+        }
+        SemWindowManager.KeyCustomizationInfo last = this.mKeyCustomizationInfoManager.getLast(i, i2);
+        long j = last == null ? 0L : last.longPressTimeout;
+        if ((z && j == 0) || (singleKeyRule = (SingleKeyGestureDetector.SingleKeyRule) this.mPolicyExt.mPolicy.mSingleKeyGestureDetector.mCustomRules.get(i2)) == null) {
+            return;
+        }
+        singleKeyRule.getLongPressTimeoutMs();
+    }
+
+    public final void updateMultiPressTimeoutIfNeeded(int i, int i2, boolean z, long j) {
+        long j2;
+        SingleKeyGestureDetector.SingleKeyRule singleKeyRule;
+        if ((i & 3) == 0 && (i & 4) == 0) {
+            if (j != 0 || z) {
+                PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+                SingleKeyGestureDetector.SingleKeyRule singleKeyRule2 = (SingleKeyGestureDetector.SingleKeyRule) phoneWindowManagerExt.mPolicy.mSingleKeyGestureDetector.mCustomRules.get(i2);
+                if (singleKeyRule2 == null) {
+                    j2 = 0;
+                } else {
+                    j2 = singleKeyRule2.extensionMultiPressTimeout;
+                    if (j2 == 0) {
+                        j2 = SingleKeyGestureDetector.sDefaultMultiPressTimeout;
+                    }
+                }
+                if ((z || j2 == 0 || j >= j2) && (singleKeyRule = (SingleKeyGestureDetector.SingleKeyRule) phoneWindowManagerExt.mPolicy.mSingleKeyGestureDetector.mCustomRules.get(i2)) != null) {
+                    long j3 = singleKeyRule.extensionMultiPressTimeout;
+                    if (j3 == 0) {
+                        j3 = SingleKeyGestureDetector.sDefaultMultiPressTimeout;
+                    }
+                    if (j == j3) {
+                        return;
+                    }
+                    if (j == SingleKeyGestureDetector.sDefaultMultiPressTimeout) {
+                        j = 0;
+                    }
+                    singleKeyRule.extensionMultiPressTimeout = j;
+                }
+            }
+        }
+    }
+
+    public final void updatePowerBehavior(int i) {
+        int i2 = i & 4;
+        PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+        if (i2 == 0) {
+            if ((i & 8) != 0) {
+                phoneWindowManagerExt.updateDoublePressPowerBehavior();
+                return;
+            }
+            if ((i & 16) == 0) {
+                if ((i & 32) != 0) {
+                    int lastAction = phoneWindowManagerExt.mKeyCustomizationPolicy.getLastAction(32, 26);
+                    if (lastAction == 1 || lastAction == 3 || lastAction == 2) {
+                        phoneWindowManagerExt.mQuadruplePressOnPowerBehavior = 106;
+                        return;
+                    }
+                    return;
+                }
+                return;
+            }
+            phoneWindowManagerExt.getClass();
+            boolean z = InputRune.PWM_SIDE_KEY_TRIPLE_PRESS_PANIC_CALL;
+            PhoneWindowManager phoneWindowManager = phoneWindowManagerExt.mPolicy;
+            if (z) {
+                phoneWindowManager.mTriplePressOnPowerBehavior = 102;
+                return;
+            }
+            int lastAction2 = phoneWindowManagerExt.mKeyCustomizationPolicy.getLastAction(16, 26);
+            if (lastAction2 == 1 || lastAction2 == 3 || lastAction2 == 2) {
+                phoneWindowManager.mTriplePressOnPowerBehavior = 106;
+                return;
+            }
+            return;
+        }
+        KeyCustomizationManager keyCustomizationManager = phoneWindowManagerExt.mKeyCustomizationPolicy;
+        SemWindowManager.KeyCustomizationInfo last = keyCustomizationManager.mKeyCustomizationInfoManager.getLast(4, 26);
+        if (last == null) {
+            if (keyCustomizationManager.getLastId(3, 26) == 951) {
+                Slog.d("PhoneWindowManagerExt", "updated long press power behavior by b2b dedicated app");
+                Settings.Global.putInt(phoneWindowManagerExt.mContext.getContentResolver(), "power_button_long_press", 0);
+                return;
+            } else {
+                Slog.d("PhoneWindowManagerExt", "Side key long press info was wrong.");
+                Settings.Global.putInt(phoneWindowManagerExt.mContext.getContentResolver(), "power_button_long_press", 1);
+                return;
+            }
+        }
+        Intent intent = last.intent;
+        if (intent == null) {
+            Slog.d("PhoneWindowManagerExt", "Side key long press intent info was wrong.");
+            Settings.Global.putInt(phoneWindowManagerExt.mContext.getContentResolver(), "power_button_long_press", 102);
+            return;
+        }
+        ComponentName component = intent.getComponent();
+        String flattenToString = component != null ? component.flattenToString() : null;
+        BinaryTransparencyService$$ExternalSyntheticOutline0.m("updateLongPressPowerBehavior componentName:", flattenToString, "PhoneWindowManagerExt");
+        if (InputRune.PWM_SIDE_KEY_DIGITAL_ASSISTANT && "aiAgentApp/aiAgentApp".equals(flattenToString)) {
+            Slog.d("PhoneWindowManagerExt", "updated long press power behavior as digital assistant");
+            Settings.Global.putInt(phoneWindowManagerExt.mContext.getContentResolver(), "power_button_long_press", 103);
+        } else if ("wakeBixby/wakeBixby".equals(flattenToString)) {
+            Slog.d("PhoneWindowManagerExt", "updated long press power behavior as wake bixby");
+            Settings.Global.putInt(phoneWindowManagerExt.mContext.getContentResolver(), "power_button_long_press", 101);
+        } else if ("globalAction/globalAction".equals(flattenToString)) {
+            Slog.d("PhoneWindowManagerExt", "updated long press power behavior as global action");
+            Settings.Global.putInt(phoneWindowManagerExt.mContext.getContentResolver(), "power_button_long_press", 1);
+        } else {
+            Slog.d("PhoneWindowManagerExt", "updated long press power behavior as keyCustomizationInfo");
+            Settings.Global.putInt(phoneWindowManagerExt.mContext.getContentResolver(), "power_button_long_press", 102);
         }
     }
 }

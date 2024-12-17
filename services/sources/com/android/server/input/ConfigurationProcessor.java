@@ -6,30 +6,13 @@ import android.util.Xml;
 import com.android.internal.util.XmlUtils;
 import com.android.modules.utils.TypedXmlPullParser;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class ConfigurationProcessor {
-    public static List processExcludedDeviceNames(InputStream inputStream) {
-        ArrayList arrayList = new ArrayList();
-        TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(inputStream);
-        XmlUtils.beginDocument(resolvePullParser, "devices");
-        while (true) {
-            XmlUtils.nextElement(resolvePullParser);
-            if (!"device".equals(resolvePullParser.getName())) {
-                return arrayList;
-            }
-            String attributeValue = resolvePullParser.getAttributeValue((String) null, "name");
-            if (attributeValue != null) {
-                arrayList.add(attributeValue);
-            }
-        }
-    }
-
-    public static Map processInputPortAssociations(InputStream inputStream) {
+    public static Map processInputPortAssociations(InputStream inputStream) throws Exception {
         HashMap hashMap = new HashMap();
         TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(inputStream);
         XmlUtils.beginDocument(resolvePullParser, "ports");

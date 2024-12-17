@@ -5,19 +5,21 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.util.Pools;
-import android.util.Slog;
 import android.view.InputEventConsistencyVerifier;
 import android.view.KeyEvent;
+import com.android.server.HeapdumpWatcher$$ExternalSyntheticOutline0;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class KeyEventDispatcher implements Handler.Callback {
+public final class KeyEventDispatcher implements Handler.Callback {
     public final Handler mHandlerToSendKeyEventsToInputFilter;
-    public Handler mKeyEventTimeoutHandler;
+    public final Handler mKeyEventTimeoutHandler;
     public final Object mLock;
     public final int mMessageTypeForSendKeyEvent;
     public final Pools.Pool mPendingEventPool = new Pools.SimplePool(10);
@@ -25,52 +27,82 @@ public class KeyEventDispatcher implements Handler.Callback {
     public final PowerManager mPowerManager;
     public final InputEventConsistencyVerifier mSentEventsVerifier;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface KeyEventFilter {
         boolean onKeyEvent(KeyEvent keyEvent, int i);
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class PendingKeyEvent {
         public KeyEvent event;
         public boolean handled;
         public int policyFlags;
         public int referenceCount;
-
-        public PendingKeyEvent() {
-        }
     }
 
-    public KeyEventDispatcher(Handler handler, int i, Object obj, PowerManager powerManager) {
+    public KeyEventDispatcher(Handler handler, Object obj, PowerManager powerManager) {
         if (InputEventConsistencyVerifier.isInstrumentationEnabled()) {
-            this.mSentEventsVerifier = new InputEventConsistencyVerifier(this, 0, KeyEventDispatcher.class.getSimpleName());
+            this.mSentEventsVerifier = new InputEventConsistencyVerifier(this, 0, "KeyEventDispatcher");
         } else {
             this.mSentEventsVerifier = null;
         }
         this.mHandlerToSendKeyEventsToInputFilter = handler;
-        this.mMessageTypeForSendKeyEvent = i;
+        this.mMessageTypeForSendKeyEvent = 8;
         this.mKeyEventTimeoutHandler = new Handler(handler.getLooper(), this);
         this.mLock = obj;
         this.mPowerManager = powerManager;
     }
 
-    public boolean notifyKeyEventLocked(KeyEvent keyEvent, int i, List list) {
+    @Override // android.os.Handler.Callback
+    public final boolean handleMessage(Message message) {
+        if (message.what != 1) {
+            HeapdumpWatcher$$ExternalSyntheticOutline0.m(new StringBuilder("Unknown message: "), message.what, "KeyEventDispatcher");
+            return false;
+        }
+        Log.i("KeyEventDispatcher", "KeyEventDispatcher handleMessage cannot receive setOnKeyEventResult");
+        PendingKeyEvent pendingKeyEvent = (PendingKeyEvent) message.obj;
+        synchronized (this.mLock) {
+            try {
+                Iterator it = ((ArrayMap) this.mPendingEventsMap).values().iterator();
+                while (it.hasNext() && (!((ArrayList) it.next()).remove(pendingKeyEvent) || !removeReferenceToPendingEventLocked(pendingKeyEvent))) {
+                }
+            } finally {
+            }
+        }
+        return true;
+    }
+
+    public final boolean notifyKeyEventLocked(KeyEvent keyEvent, int i, List list) {
+        Log.i("KeyEventDispatcher", "KeyEventDispatcher notifyKeyEventLocked");
         KeyEvent obtain = KeyEvent.obtain(keyEvent);
         PendingKeyEvent pendingKeyEvent = null;
-        for (int i2 = 0; i2 < list.size(); i2++) {
-            KeyEventFilter keyEventFilter = (KeyEventFilter) list.get(i2);
+        int i2 = 0;
+        while (true) {
+            ArrayList arrayList = (ArrayList) list;
+            if (i2 >= arrayList.size()) {
+                break;
+            }
+            KeyEventFilter keyEventFilter = (KeyEventFilter) arrayList.get(i2);
             if (keyEventFilter.onKeyEvent(obtain, obtain.getSequenceNumber())) {
                 if (pendingKeyEvent == null) {
-                    pendingKeyEvent = obtainPendingEventLocked(obtain, i);
+                    pendingKeyEvent = (PendingKeyEvent) this.mPendingEventPool.acquire();
+                    if (pendingKeyEvent == null) {
+                        pendingKeyEvent = new PendingKeyEvent();
+                    }
+                    pendingKeyEvent.event = obtain;
+                    pendingKeyEvent.policyFlags = i;
+                    pendingKeyEvent.referenceCount = 0;
+                    pendingKeyEvent.handled = false;
                 }
-                ArrayList arrayList = (ArrayList) this.mPendingEventsMap.get(keyEventFilter);
-                if (arrayList == null) {
-                    arrayList = new ArrayList();
-                    this.mPendingEventsMap.put(keyEventFilter, arrayList);
+                ArrayList arrayList2 = (ArrayList) ((ArrayMap) this.mPendingEventsMap).get(keyEventFilter);
+                if (arrayList2 == null) {
+                    arrayList2 = new ArrayList();
+                    ((ArrayMap) this.mPendingEventsMap).put(keyEventFilter, arrayList2);
                 }
-                arrayList.add(pendingKeyEvent);
+                arrayList2.add(pendingKeyEvent);
                 pendingKeyEvent.referenceCount++;
             }
+            i2++;
         }
         if (pendingKeyEvent == null) {
             obtain.recycle();
@@ -80,76 +112,6 @@ public class KeyEventDispatcher implements Handler.Callback {
         return true;
     }
 
-    public void setOnKeyEventResult(KeyEventFilter keyEventFilter, boolean z, int i) {
-        synchronized (this.mLock) {
-            PendingKeyEvent removeEventFromListLocked = removeEventFromListLocked((List) this.mPendingEventsMap.get(keyEventFilter), i);
-            if (removeEventFromListLocked != null) {
-                if (z && !removeEventFromListLocked.handled) {
-                    removeEventFromListLocked.handled = z;
-                    long clearCallingIdentity = Binder.clearCallingIdentity();
-                    try {
-                        this.mPowerManager.userActivity(removeEventFromListLocked.event.getEventTime(), 3, 0);
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                    } catch (Throwable th) {
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                        throw th;
-                    }
-                }
-                removeReferenceToPendingEventLocked(removeEventFromListLocked);
-            }
-        }
-    }
-
-    public void flush(KeyEventFilter keyEventFilter) {
-        synchronized (this.mLock) {
-            List list = (List) this.mPendingEventsMap.get(keyEventFilter);
-            if (list != null) {
-                for (int i = 0; i < list.size(); i++) {
-                    removeReferenceToPendingEventLocked((PendingKeyEvent) list.get(i));
-                }
-                this.mPendingEventsMap.remove(keyEventFilter);
-            }
-        }
-    }
-
-    @Override // android.os.Handler.Callback
-    public boolean handleMessage(Message message) {
-        if (message.what != 1) {
-            Slog.w("KeyEventDispatcher", "Unknown message: " + message.what);
-            return false;
-        }
-        PendingKeyEvent pendingKeyEvent = (PendingKeyEvent) message.obj;
-        synchronized (this.mLock) {
-            Iterator it = this.mPendingEventsMap.values().iterator();
-            while (it.hasNext() && (!((ArrayList) it.next()).remove(pendingKeyEvent) || !removeReferenceToPendingEventLocked(pendingKeyEvent))) {
-            }
-        }
-        return true;
-    }
-
-    public final PendingKeyEvent obtainPendingEventLocked(KeyEvent keyEvent, int i) {
-        PendingKeyEvent pendingKeyEvent = (PendingKeyEvent) this.mPendingEventPool.acquire();
-        if (pendingKeyEvent == null) {
-            pendingKeyEvent = new PendingKeyEvent();
-        }
-        pendingKeyEvent.event = keyEvent;
-        pendingKeyEvent.policyFlags = i;
-        pendingKeyEvent.referenceCount = 0;
-        pendingKeyEvent.handled = false;
-        return pendingKeyEvent;
-    }
-
-    public static PendingKeyEvent removeEventFromListLocked(List list, int i) {
-        for (int i2 = 0; i2 < list.size(); i2++) {
-            PendingKeyEvent pendingKeyEvent = (PendingKeyEvent) list.get(i2);
-            if (pendingKeyEvent.event.getSequenceNumber() == i) {
-                list.remove(pendingKeyEvent);
-                return pendingKeyEvent;
-            }
-        }
-        return null;
-    }
-
     public final boolean removeReferenceToPendingEventLocked(PendingKeyEvent pendingKeyEvent) {
         int i = pendingKeyEvent.referenceCount - 1;
         pendingKeyEvent.referenceCount = i;
@@ -157,16 +119,55 @@ public class KeyEventDispatcher implements Handler.Callback {
             return false;
         }
         this.mKeyEventTimeoutHandler.removeMessages(1, pendingKeyEvent);
-        if (!pendingKeyEvent.handled) {
+        if (pendingKeyEvent.handled) {
+            pendingKeyEvent.event.recycle();
+        } else {
             InputEventConsistencyVerifier inputEventConsistencyVerifier = this.mSentEventsVerifier;
             if (inputEventConsistencyVerifier != null) {
                 inputEventConsistencyVerifier.onKeyEvent(pendingKeyEvent.event, 0);
             }
             this.mHandlerToSendKeyEventsToInputFilter.obtainMessage(this.mMessageTypeForSendKeyEvent, pendingKeyEvent.policyFlags | 1073741824, 0, pendingKeyEvent.event).sendToTarget();
-        } else {
-            pendingKeyEvent.event.recycle();
         }
         this.mPendingEventPool.release(pendingKeyEvent);
         return true;
+    }
+
+    public final void setOnKeyEventResult(KeyEventFilter keyEventFilter, boolean z, int i) {
+        PendingKeyEvent pendingKeyEvent;
+        Log.i("KeyEventDispatcher", "KeyEventDispatcher setOnKeyEventResult");
+        synchronized (this.mLock) {
+            try {
+                List list = (List) ((ArrayMap) this.mPendingEventsMap).get(keyEventFilter);
+                int i2 = 0;
+                while (true) {
+                    if (i2 >= list.size()) {
+                        pendingKeyEvent = null;
+                        break;
+                    }
+                    pendingKeyEvent = (PendingKeyEvent) list.get(i2);
+                    if (pendingKeyEvent.event.getSequenceNumber() == i) {
+                        list.remove(pendingKeyEvent);
+                        break;
+                    }
+                    i2++;
+                }
+                if (pendingKeyEvent != null) {
+                    if (z && !pendingKeyEvent.handled) {
+                        pendingKeyEvent.handled = z;
+                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                        try {
+                            this.mPowerManager.userActivity(pendingKeyEvent.event.getEventTime(), 3, 0);
+                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                        } catch (Throwable th) {
+                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                            throw th;
+                        }
+                    }
+                    removeReferenceToPendingEventLocked(pendingKeyEvent);
+                }
+            } catch (Throwable th2) {
+                throw th2;
+            }
+        }
     }
 }

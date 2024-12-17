@@ -2,21 +2,12 @@ package com.android.server.biometrics.sensors.fingerprint;
 
 import android.util.Pair;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SemFpResetLockoutDispatcher implements SemFpResetLockoutListener {
+public final class SemFpResetLockoutDispatcher {
     public final Pair mProviderPair;
 
     public SemFpResetLockoutDispatcher(Pair pair) {
         this.mProviderPair = pair;
-    }
-
-    public void start() {
-        ((ServiceProvider) this.mProviderPair.second).semAddResetLockoutListener(this);
-    }
-
-    @Override // com.android.server.biometrics.sensors.fingerprint.SemFpResetLockoutListener
-    public void onResetLockout(int i, int i2) {
-        Pair pair = this.mProviderPair;
-        ((ServiceProvider) pair.second).semRequest(((Integer) pair.first).intValue(), 42, 0, null, null);
     }
 }

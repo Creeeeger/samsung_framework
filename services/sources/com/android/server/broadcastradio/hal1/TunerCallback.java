@@ -6,15 +6,15 @@ import android.hardware.radio.ProgramSelector;
 import android.hardware.radio.RadioManager;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Slog;
+import com.android.server.utils.Slogf;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-/* JADX INFO: Access modifiers changed from: package-private */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TunerCallback implements ITunerCallback {
+class TunerCallback implements ITunerCallback {
     public static final String TAG = "BcRadio1Srv.TunerCallback";
     public final ITunerCallback mClientCallback;
     public final long mNativeContext;
@@ -22,9 +22,15 @@ public class TunerCallback implements ITunerCallback {
     public final AtomicReference mProgramListFilter = new AtomicReference();
     public boolean mInitialConfigurationDone = false;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface RunnableThrowingRemoteException {
         void run();
+    }
+
+    public TunerCallback(Tuner tuner, ITunerCallback iTunerCallback, int i) {
+        this.mTuner = tuner;
+        this.mClientCallback = iTunerCallback;
+        this.mNativeContext = nativeInit(tuner, i);
     }
 
     private native void nativeDetach(long j);
@@ -33,18 +39,11 @@ public class TunerCallback implements ITunerCallback {
 
     private native long nativeInit(Tuner tuner, int i);
 
-    public TunerCallback(Tuner tuner, ITunerCallback iTunerCallback, int i) {
-        this.mTuner = tuner;
-        this.mClientCallback = iTunerCallback;
-        this.mNativeContext = nativeInit(tuner, i);
+    public final IBinder asBinder() {
+        throw new RuntimeException("Not a binder");
     }
 
-    public void finalize() {
-        nativeFinalize(this.mNativeContext);
-        super.finalize();
-    }
-
-    public void detach() {
+    public final void detach() {
         nativeDetach(this.mNativeContext);
     }
 
@@ -52,8 +51,13 @@ public class TunerCallback implements ITunerCallback {
         try {
             runnableThrowingRemoteException.run();
         } catch (RemoteException e) {
-            Slog.e(TAG, "client died", e);
+            Slogf.e(TAG, "client died", e);
         }
+    }
+
+    public final void finalize() throws Throwable {
+        nativeFinalize(this.mNativeContext);
+        super.finalize();
     }
 
     public final void handleHwFailure() {
@@ -61,29 +65,85 @@ public class TunerCallback implements ITunerCallback {
         this.mTuner.close();
     }
 
-    public void startProgramListUpdates(ProgramList.Filter filter) {
-        if (filter == null) {
-            filter = new ProgramList.Filter();
-        }
-        this.mProgramListFilter.set(filter);
-        sendProgramListUpdate();
-    }
-
-    public void stopProgramListUpdates() {
-        this.mProgramListFilter.set(null);
-    }
-
-    public boolean isInitialConfigurationDone() {
+    public final boolean isInitialConfigurationDone() {
         return this.mInitialConfigurationDone;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onError$0(int i) {
+    public final /* synthetic */ void lambda$onAntennaState$5(boolean z) throws RemoteException {
+        this.mClientCallback.onAntennaState(z);
+    }
+
+    public final /* synthetic */ void lambda$onBackgroundScanAvailabilityChange$6(boolean z) throws RemoteException {
+        this.mClientCallback.onBackgroundScanAvailabilityChange(z);
+    }
+
+    public final /* synthetic */ void lambda$onBackgroundScanComplete$7() throws RemoteException {
+        this.mClientCallback.onBackgroundScanComplete();
+    }
+
+    public final /* synthetic */ void lambda$onConfigurationChanged$1(RadioManager.BandConfig bandConfig) throws RemoteException {
+        this.mClientCallback.onConfigurationChanged(bandConfig);
+    }
+
+    public final /* synthetic */ void lambda$onCurrentProgramInfoChanged$2(RadioManager.ProgramInfo programInfo) throws RemoteException {
+        this.mClientCallback.onCurrentProgramInfoChanged(programInfo);
+    }
+
+    public final /* synthetic */ void lambda$onEmergencyAnnouncement$4(boolean z) throws RemoteException {
+        this.mClientCallback.onEmergencyAnnouncement(z);
+    }
+
+    public final /* synthetic */ void lambda$onError$0(int i) throws RemoteException {
         this.mClientCallback.onError(i);
     }
 
-    public void onError(final int i) {
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda3
+    public final /* synthetic */ void lambda$onProgramListChanged$8() throws RemoteException {
+        this.mClientCallback.onProgramListChanged();
+    }
+
+    public final /* synthetic */ void lambda$onProgramListUpdated$10(ProgramList.Chunk chunk) throws RemoteException {
+        this.mClientCallback.onProgramListUpdated(chunk);
+    }
+
+    public final /* synthetic */ void lambda$onTrafficAnnouncement$3(boolean z) throws RemoteException {
+        this.mClientCallback.onTrafficAnnouncement(z);
+    }
+
+    public final /* synthetic */ void lambda$sendProgramListUpdate$9(ProgramList.Chunk chunk) throws RemoteException {
+        this.mClientCallback.onProgramListUpdated(chunk);
+    }
+
+    public final void onAntennaState(boolean z) {
+        dispatch(new TunerCallback$$ExternalSyntheticLambda1(this, z, 2));
+    }
+
+    public final void onBackgroundScanAvailabilityChange(boolean z) {
+        dispatch(new TunerCallback$$ExternalSyntheticLambda1(this, z, 0));
+    }
+
+    public final void onBackgroundScanComplete() {
+        dispatch(new TunerCallback$$ExternalSyntheticLambda2(this, 1));
+    }
+
+    public final void onConfigFlagUpdated(int i, boolean z) {
+        Slogf.w(TAG, "Not applicable for HAL 1.x");
+    }
+
+    public final void onConfigurationChanged(RadioManager.BandConfig bandConfig) {
+        this.mInitialConfigurationDone = true;
+        dispatch(new TunerCallback$$ExternalSyntheticLambda5(this, bandConfig));
+    }
+
+    public final void onCurrentProgramInfoChanged(RadioManager.ProgramInfo programInfo) {
+        dispatch(new TunerCallback$$ExternalSyntheticLambda5(this, programInfo));
+    }
+
+    public final void onEmergencyAnnouncement(boolean z) {
+        dispatch(new TunerCallback$$ExternalSyntheticLambda1(this, z, 1));
+    }
+
+    public final void onError(final int i) {
+        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda9
             @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
             public final void run() {
                 TunerCallback.this.lambda$onError$0(i);
@@ -91,122 +151,25 @@ public class TunerCallback implements ITunerCallback {
         });
     }
 
-    public void onTuneFailed(int i, ProgramSelector programSelector) {
-        Slog.e(TAG, "Not applicable for HAL 1.x");
+    public final void onParametersUpdated(Map map) {
+        Slogf.w(TAG, "Not applicable for HAL 1.x");
     }
 
-    public void onConfigurationChanged(final RadioManager.BandConfig bandConfig) {
-        this.mInitialConfigurationDone = true;
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda1
-            @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-            public final void run() {
-                TunerCallback.this.lambda$onConfigurationChanged$1(bandConfig);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onConfigurationChanged$1(RadioManager.BandConfig bandConfig) {
-        this.mClientCallback.onConfigurationChanged(bandConfig);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onCurrentProgramInfoChanged$2(RadioManager.ProgramInfo programInfo) {
-        this.mClientCallback.onCurrentProgramInfoChanged(programInfo);
-    }
-
-    public void onCurrentProgramInfoChanged(final RadioManager.ProgramInfo programInfo) {
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda2
-            @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-            public final void run() {
-                TunerCallback.this.lambda$onCurrentProgramInfoChanged$2(programInfo);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onTrafficAnnouncement$3(boolean z) {
-        this.mClientCallback.onTrafficAnnouncement(z);
-    }
-
-    public void onTrafficAnnouncement(final boolean z) {
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda9
-            @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-            public final void run() {
-                TunerCallback.this.lambda$onTrafficAnnouncement$3(z);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onEmergencyAnnouncement$4(boolean z) {
-        this.mClientCallback.onEmergencyAnnouncement(z);
-    }
-
-    public void onEmergencyAnnouncement(final boolean z) {
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda10
-            @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-            public final void run() {
-                TunerCallback.this.lambda$onEmergencyAnnouncement$4(z);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onAntennaState$5(boolean z) {
-        this.mClientCallback.onAntennaState(z);
-    }
-
-    public void onAntennaState(final boolean z) {
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda6
-            @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-            public final void run() {
-                TunerCallback.this.lambda$onAntennaState$5(z);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onBackgroundScanAvailabilityChange$6(boolean z) {
-        this.mClientCallback.onBackgroundScanAvailabilityChange(z);
-    }
-
-    public void onBackgroundScanAvailabilityChange(final boolean z) {
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda8
-            @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-            public final void run() {
-                TunerCallback.this.lambda$onBackgroundScanAvailabilityChange$6(z);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onBackgroundScanComplete$7() {
-        this.mClientCallback.onBackgroundScanComplete();
-    }
-
-    public void onBackgroundScanComplete() {
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda4
-            @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-            public final void run() {
-                TunerCallback.this.lambda$onBackgroundScanComplete$7();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onProgramListChanged$8() {
-        this.mClientCallback.onProgramListChanged();
-    }
-
-    public void onProgramListChanged() {
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda5
-            @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-            public final void run() {
-                TunerCallback.this.lambda$onProgramListChanged$8();
-            }
-        });
+    public final void onProgramListChanged() {
+        dispatch(new TunerCallback$$ExternalSyntheticLambda2(this, 0));
         sendProgramListUpdate();
+    }
+
+    public final void onProgramListUpdated(ProgramList.Chunk chunk) {
+        dispatch(new TunerCallback$$ExternalSyntheticLambda0(this, chunk, 1));
+    }
+
+    public final void onTrafficAnnouncement(boolean z) {
+        dispatch(new TunerCallback$$ExternalSyntheticLambda1(this, z, 3));
+    }
+
+    public final void onTuneFailed(int i, ProgramSelector programSelector) {
+        Slogf.e(TAG, "Not applicable for HAL 1.x");
     }
 
     public final void sendProgramListUpdate() {
@@ -215,46 +178,21 @@ public class TunerCallback implements ITunerCallback {
             return;
         }
         try {
-            final ProgramList.Chunk chunk = new ProgramList.Chunk(true, true, (Set) this.mTuner.getProgramList(filter.getVendorFilter()).stream().collect(Collectors.toSet()), (Set) null);
-            dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda0
-                @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-                public final void run() {
-                    TunerCallback.this.lambda$sendProgramListUpdate$9(chunk);
-                }
-            });
+            dispatch(new TunerCallback$$ExternalSyntheticLambda0(this, new ProgramList.Chunk(true, true, (Set) this.mTuner.getProgramList(filter.getVendorFilter()).stream().collect(Collectors.toSet()), (Set) null), 0));
         } catch (IllegalStateException unused) {
-            Slog.d(TAG, "Program list not ready yet");
+            Slogf.d(TAG, "Program list not ready yet");
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$sendProgramListUpdate$9(ProgramList.Chunk chunk) {
-        this.mClientCallback.onProgramListUpdated(chunk);
+    public final void startProgramListUpdates(ProgramList.Filter filter) {
+        if (filter == null) {
+            filter = new ProgramList.Filter();
+        }
+        this.mProgramListFilter.set(filter);
+        sendProgramListUpdate();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onProgramListUpdated$10(ProgramList.Chunk chunk) {
-        this.mClientCallback.onProgramListUpdated(chunk);
-    }
-
-    public void onProgramListUpdated(final ProgramList.Chunk chunk) {
-        dispatch(new RunnableThrowingRemoteException() { // from class: com.android.server.broadcastradio.hal1.TunerCallback$$ExternalSyntheticLambda7
-            @Override // com.android.server.broadcastradio.hal1.TunerCallback.RunnableThrowingRemoteException
-            public final void run() {
-                TunerCallback.this.lambda$onProgramListUpdated$10(chunk);
-            }
-        });
-    }
-
-    public void onConfigFlagUpdated(int i, boolean z) {
-        Slog.w(TAG, "Not applicable for HAL 1.x");
-    }
-
-    public void onParametersUpdated(Map map) {
-        Slog.w(TAG, "Not applicable for HAL 1.x");
-    }
-
-    public IBinder asBinder() {
-        throw new RuntimeException("Not a binder");
+    public final void stopProgramListUpdates() {
+        this.mProgramListFilter.set(null);
     }
 }

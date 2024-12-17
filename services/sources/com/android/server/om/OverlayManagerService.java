@@ -6,9 +6,7 @@ import android.app.ActivityManager;
 import android.app.ActivityManagerInternal;
 import android.app.AppGlobals;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.IIntentReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.om.IOverlayManager;
@@ -18,6 +16,8 @@ import android.content.om.OverlayInfo;
 import android.content.om.OverlayInfoExt;
 import android.content.om.OverlayManagerTransaction;
 import android.content.om.OverlayableInfo;
+import android.content.om.wallpapertheme.ThemeUtil;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -26,60 +26,70 @@ import android.content.pm.UserInfo;
 import android.content.pm.UserPackage;
 import android.content.pm.overlay.OverlayPaths;
 import android.content.res.ApkAssets;
-import android.database.ContentObserver;
+import android.hardware.soundtrigger.V2_3.OptionalModelParameterRange$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.FabricatedOverlayInternal;
-import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.IBinder;
+import android.os.Looper;
 import android.os.RemoteException;
 import android.os.ResultReceiver;
+import android.os.ServiceManager;
 import android.os.ShellCallback;
+import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
-import android.util.AtomicFile;
 import android.util.EventLog;
+import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
 import android.util.SparseArray;
+import com.android.internal.content.PackageMonitor;
 import com.android.internal.content.om.OverlayConfig;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.CollectionUtils;
-import com.android.internal.util.FunctionalUtils;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
+import com.android.server.AppStateTrackerImpl$MyHandler$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptService$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
 import com.android.server.FgThread;
+import com.android.server.HermesService$3$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
-import com.android.server.SystemConfig;
 import com.android.server.SystemService;
-import com.android.server.UiModeManagerInternal;
-import com.android.server.display.DisplayPowerController2;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
-import com.android.server.om.OverlayManagerService;
+import com.android.server.UiModeManagerService;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.ProxyManager$$ExternalSyntheticOutline0;
+import com.android.server.om.OverlayActorEnforcer;
 import com.android.server.om.OverlayManagerServiceImpl;
-import com.android.server.om.wallpapertheme.ISemWallpaperThemeManager;
+import com.android.server.om.OverlayManagerSettings;
 import com.android.server.om.wallpapertheme.SemWallpaperThemeManager;
 import com.android.server.om.wallpapertheme.SemWallpaperThemeManagerWrapper;
+import com.android.server.pm.Computer;
+import com.android.server.pm.PackageManagerService;
+import com.android.server.pm.PackageManagerService$$ExternalSyntheticLambda40;
+import com.android.server.pm.UserManagerInternal;
 import com.android.server.pm.UserManagerService;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.AndroidPackageSplit;
 import com.android.server.pm.pkg.PackageState;
 import com.android.server.pm.pkg.PackageStateInternal;
-import com.samsung.android.knox.custom.LauncherConfigurationInternal;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import com.samsung.android.localeoverlaymanager.LocaleOverlayManagerWrapper;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -92,878 +102,197 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import libcore.util.EmptyArray;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class OverlayManagerService extends SystemService {
     public final OverlayActorEnforcer mActorEnforcer;
     public final OverlayManagerServiceImpl mImpl;
     public final Object mLock;
-    public IOverlayManagerExt mOverlayManagerServiceExt;
+    public final OverlayManagerServiceExt mOverlayManagerServiceExt;
     public final PackageManagerHelperImpl mPackageManager;
-    public final IBinder mService;
+    public final OverlayManagerPackageMonitor mPackageMonitor;
+    public int mPrevStartedUserId;
+    public final AnonymousClass1 mService;
     public final OverlayManagerSettings mSettings;
-    public final AtomicFile mSettingsFile;
+    public final ResilientAtomicFile mSettingsFile;
     public final UserManagerService mUserManager;
-    public BroadcastReceiver mUserUnlockerReceiver;
-    public ISemWallpaperThemeManager mWallpaperThemeManager;
+    public final SemWallpaperThemeManagerWrapper mWallpaperThemeManager;
 
-    @Override // com.android.server.SystemService
-    public void onStart() {
-    }
-
-    public OverlayManagerService(Context context) {
-        super(context);
-        this.mLock = new Object();
-        this.mOverlayManagerServiceExt = null;
-        this.mUserUnlockerReceiver = new BroadcastReceiver() { // from class: com.android.server.om.OverlayManagerService.1
-            public AnonymousClass1() {
-            }
-
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                HandlerThread handlerThread = new HandlerThread("OverlayManager");
-                handlerThread.start();
-                context2.getContentResolver().registerContentObserver(Settings.Secure.getUriFor("contrast_level"), false, new ContentObserver(handlerThread.getThreadHandler()) { // from class: com.android.server.om.OverlayManagerService.1.1
-                    public C00221(Handler handler) {
-                        super(handler);
-                    }
-
-                    @Override // android.database.ContentObserver
-                    public void onChange(boolean z) {
-                        if (Settings.Secure.getFloatForUser(OverlayManagerService.this.getContext().getContentResolver(), "contrast_level", DisplayPowerController2.RATE_FROM_DOZE_TO_ON, -2) == -1.0f) {
-                            long clearCallingIdentity = Binder.clearCallingIdentity();
-                            try {
-                                synchronized (OverlayManagerService.this.mLock) {
-                                    OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                                    overlayManagerService.updateTargetPackagesLocked(overlayManagerService.unregisterColorThemeGG(false), true);
-                                }
-                            } finally {
-                                Binder.restoreCallingIdentity(clearCallingIdentity);
-                            }
-                        }
-                    }
-                });
-            }
-
-            /* renamed from: com.android.server.om.OverlayManagerService$1$1 */
-            /* loaded from: classes2.dex */
-            public class C00221 extends ContentObserver {
-                public C00221(Handler handler) {
-                    super(handler);
-                }
-
-                @Override // android.database.ContentObserver
-                public void onChange(boolean z) {
-                    if (Settings.Secure.getFloatForUser(OverlayManagerService.this.getContext().getContentResolver(), "contrast_level", DisplayPowerController2.RATE_FROM_DOZE_TO_ON, -2) == -1.0f) {
-                        long clearCallingIdentity = Binder.clearCallingIdentity();
-                        try {
-                            synchronized (OverlayManagerService.this.mLock) {
-                                OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                                overlayManagerService.updateTargetPackagesLocked(overlayManagerService.unregisterColorThemeGG(false), true);
-                            }
-                        } finally {
-                            Binder.restoreCallingIdentity(clearCallingIdentity);
-                        }
-                    }
-                }
-            }
-        };
-        IOverlayManager.Stub anonymousClass2 = new AnonymousClass2();
-        this.mService = anonymousClass2;
-        try {
-            Trace.traceBegin(67108864L, "OMS#OverlayManagerService");
-            this.mSettingsFile = new AtomicFile(new File(Environment.getDataSystemDirectory(), "overlays.xml"), "overlays");
-            PackageManagerHelperImpl packageManagerHelperImpl = new PackageManagerHelperImpl(context);
-            this.mPackageManager = packageManagerHelperImpl;
-            this.mUserManager = UserManagerService.getInstance();
-            IdmapManager idmapManager = new IdmapManager(IdmapDaemon.getInstance(), packageManagerHelperImpl);
-            OverlayManagerSettings overlayManagerSettings = new OverlayManagerSettings();
-            this.mSettings = overlayManagerSettings;
-            OverlayManagerServiceImpl overlayManagerServiceImpl = new OverlayManagerServiceImpl(packageManagerHelperImpl, idmapManager, overlayManagerSettings, OverlayConfig.getSystemInstance(), getDefaultOverlayPackages());
-            this.mImpl = overlayManagerServiceImpl;
-            this.mActorEnforcer = new OverlayActorEnforcer(packageManagerHelperImpl);
-            HandlerThread handlerThread = new HandlerThread("OverlayManager");
-            handlerThread.start();
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
-            intentFilter.addAction("android.intent.action.PACKAGE_CHANGED");
-            intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
-            intentFilter.addDataScheme("package");
-            getContext().registerReceiverAsUser(new PackageReceiver(), UserHandle.ALL, intentFilter, null, handlerThread.getThreadHandler());
-            IntentFilter intentFilter2 = new IntentFilter();
-            intentFilter2.addAction("android.intent.action.USER_ADDED");
-            intentFilter2.addAction("android.intent.action.USER_REMOVED");
-            getContext().registerReceiverAsUser(new UserReceiver(), UserHandle.ALL, intentFilter2, null, null);
-            IntentFilter intentFilter3 = new IntentFilter();
-            intentFilter3.addAction("android.intent.action.USER_UNLOCKED");
-            getContext().registerReceiverAsUser(this.mUserUnlockerReceiver, UserHandle.SYSTEM, intentFilter3, null, null);
-            restoreSettings();
-            OverlayManagerServiceExt overlayManagerServiceExt = new OverlayManagerServiceExt(context, packageManagerHelperImpl, overlayManagerSettings, idmapManager, new PackageUpdateHelper());
-            this.mOverlayManagerServiceExt = overlayManagerServiceExt;
-            overlayManagerServiceImpl.setOverlayManagerExt(overlayManagerServiceExt);
-            this.mWallpaperThemeManager = SemWallpaperThemeManagerWrapper.getInstance(context, new OverlayManagerSettingsHelper(overlayManagerSettings));
-            final String emptyIfNull = TextUtils.emptyIfNull(getContext().getString(R.string.CLIRDefaultOffNextCallOn));
-            overlayManagerSettings.removeIf(new Predicate() { // from class: com.android.server.om.OverlayManagerService$$ExternalSyntheticLambda2
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$new$0;
-                    lambda$new$0 = OverlayManagerService.lambda$new$0(emptyIfNull, (OverlayInfo) obj);
-                    return lambda$new$0;
-                }
-            });
-            initIfNeeded();
-            onStartUser(0, true);
-            publishBinderService("overlay", anonymousClass2);
-            publishLocalService(OverlayManagerService.class, this);
-            if (!this.mWallpaperThemeManager.isColoThemeApplied()) {
-                unregisterUnusedPaletteOverlays();
-            }
-            this.mWallpaperThemeManager.initWallpaperTheme();
-        } finally {
-            Trace.traceEnd(67108864L);
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$new$0(String str, OverlayInfo overlayInfo) {
-        return overlayInfo.isFabricated && str.equals(overlayInfo.packageName);
-    }
-
-    public final void initIfNeeded() {
-        List aliveUsers = ((UserManager) getContext().getSystemService(UserManager.class)).getAliveUsers();
-        synchronized (this.mLock) {
-            int size = aliveUsers.size();
-            for (int i = 0; i < size; i++) {
-                UserInfo userInfo = (UserInfo) aliveUsers.get(i);
-                if (!userInfo.supportsSwitchTo() && userInfo.id != 0) {
-                    updatePackageManagerLocked(this.mImpl.updateOverlaysForUser(((UserInfo) aliveUsers.get(i)).id));
-                }
-            }
-        }
-    }
-
-    @Override // com.android.server.SystemService
-    public void onUserStarting(SystemService.TargetUser targetUser) {
-        onStartUser(targetUser.getUserIdentifier());
-    }
-
-    public final void onStartUser(int i) {
-        onStartUser(i, false);
-    }
-
-    public final void onStartUser(int i, boolean z) {
-        try {
-            Trace.traceBegin(67108864L, "OMS#onStartUser " + i);
-            this.mImpl.createLocaleOverlayPreferenceDir(i);
-            if (!z) {
-                try {
-                    LocaleOverlayManagerWrapper.getInstance(getContext()).checkSanityOfOverlays(i);
-                } catch (Exception e) {
-                    Slog.e("OverlayManager", "onStartUser - Error in starting localeoverlaymanager: " + e);
-                }
-            }
-            synchronized (this.mLock) {
-                Slog.e("OMS_DEBUG", "[onStartUser] newUserId : " + i);
-                IOverlayManagerExt iOverlayManagerExt = this.mOverlayManagerServiceExt;
-                if (iOverlayManagerExt != null) {
-                    iOverlayManagerExt.setIsInitonBoot(z);
-                }
-                updateTargetPackagesLocked(this.mImpl.updateOverlaysForUser(i));
-                IOverlayManagerExt iOverlayManagerExt2 = this.mOverlayManagerServiceExt;
-                if (iOverlayManagerExt2 != null) {
-                    iOverlayManagerExt2.setIsInitonBoot(false);
-                }
-            }
-        } finally {
-            Trace.traceEnd(67108864L);
-        }
-    }
-
-    @Override // com.android.server.SystemService
-    public void onUserSwitching(SystemService.TargetUser targetUser, SystemService.TargetUser targetUser2) {
-        UiModeManagerInternal uiModeManagerInternal = (UiModeManagerInternal) LocalServices.getService(UiModeManagerInternal.class);
-        if (uiModeManagerInternal != null) {
-            uiModeManagerInternal.onEarlySwitchUser(targetUser2.getUserIdentifier());
-        }
-    }
-
-    public static String[] getDefaultOverlayPackages() {
-        String str = SystemProperties.get("ro.boot.vendor.overlay.theme");
-        if (TextUtils.isEmpty(str)) {
-            return EmptyArray.STRING;
-        }
-        ArraySet arraySet = new ArraySet();
-        for (String str2 : str.split(KnoxVpnFirewallHelper.DELIMITER)) {
-            if (!TextUtils.isEmpty(str2)) {
-                arraySet.add(str2);
-            }
-        }
-        return (String[]) arraySet.toArray(new String[arraySet.size()]);
-    }
-
-    /* loaded from: classes2.dex */
-    public final class PackageReceiver extends BroadcastReceiver {
-        public /* synthetic */ PackageReceiver(OverlayManagerService overlayManagerService, PackageReceiverIA packageReceiverIA) {
-            this();
-        }
-
-        public PackageReceiver() {
-        }
-
-        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        /* JADX WARN: Code restructure failed: missing block: B:40:0x0074, code lost:
-        
-            if (r9.equals("android.intent.action.PACKAGE_CHANGED") == false) goto L62;
-         */
-        @Override // android.content.BroadcastReceiver
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public void onReceive(android.content.Context r9, android.content.Intent r10) {
-            /*
-                r8 = this;
-                java.lang.String r9 = r10.getAction()
-                java.lang.String r0 = "OverlayManager"
-                if (r9 != 0) goto Le
-                java.lang.String r8 = "Cannot handle package broadcast with null action"
-                android.util.Slog.e(r0, r8)
-                return
-            Le:
-                android.net.Uri r1 = r10.getData()
-                if (r1 != 0) goto L1a
-                java.lang.String r8 = "Cannot handle package broadcast with null data"
-                android.util.Slog.e(r0, r8)
-                return
-            L1a:
-                java.lang.String r0 = r1.getSchemeSpecificPart()
-                java.lang.String r1 = "android.intent.extra.REPLACING"
-                r2 = 0
-                boolean r1 = r10.getBooleanExtra(r1, r2)
-                java.lang.String r3 = "android.intent.extra.SYSTEM_UPDATE_UNINSTALL"
-                boolean r3 = r10.getBooleanExtra(r3, r2)
-                java.lang.String r4 = "android.intent.extra.HIDDEN"
-                boolean r4 = r10.getBooleanExtra(r4, r2)
-                java.lang.String r5 = "android.intent.extra.UID"
-                r6 = -10000(0xffffffffffffd8f0, float:NaN)
-                int r5 = r10.getIntExtra(r5, r6)
-                if (r5 != r6) goto L46
-                com.android.server.om.OverlayManagerService r5 = com.android.server.om.OverlayManagerService.this
-                com.android.server.pm.UserManagerService r5 = com.android.server.om.OverlayManagerService.m9119$$Nest$fgetmUserManager(r5)
-                int[] r5 = r5.getUserIds()
-                goto L4e
-            L46:
-                int r5 = android.os.UserHandle.getUserId(r5)
-                int[] r5 = new int[]{r5}
-            L4e:
-                int r6 = r9.hashCode()
-                r7 = -1
-                switch(r6) {
-                    case 172491798: goto L6e;
-                    case 525384130: goto L63;
-                    case 1544582882: goto L58;
-                    default: goto L56;
-                }
-            L56:
-                r2 = r7
-                goto L77
-            L58:
-                java.lang.String r2 = "android.intent.action.PACKAGE_ADDED"
-                boolean r9 = r9.equals(r2)
-                if (r9 != 0) goto L61
-                goto L56
-            L61:
-                r2 = 2
-                goto L77
-            L63:
-                java.lang.String r2 = "android.intent.action.PACKAGE_REMOVED"
-                boolean r9 = r9.equals(r2)
-                if (r9 != 0) goto L6c
-                goto L56
-            L6c:
-                r2 = 1
-                goto L77
-            L6e:
-                java.lang.String r6 = "android.intent.action.PACKAGE_CHANGED"
-                boolean r9 = r9.equals(r6)
-                if (r9 != 0) goto L77
-                goto L56
-            L77:
-                switch(r2) {
-                    case 0: goto L98;
-                    case 1: goto L8e;
-                    case 2: goto L7b;
-                    default: goto L7a;
-                }
-            L7a:
-                goto La9
-            L7b:
-                if (r1 == 0) goto L81
-                r8.onPackageReplaced(r0, r5)
-                goto L84
-            L81:
-                r8.onPackageAdded(r0, r5)
-            L84:
-                com.android.server.om.OverlayManagerService r8 = com.android.server.om.OverlayManagerService.this
-                com.android.server.om.wallpapertheme.ISemWallpaperThemeManager r8 = com.android.server.om.OverlayManagerService.m9120$$Nest$fgetmWallpaperThemeManager(r8)
-                r8.onPackageAdded(r0)
-                goto La9
-            L8e:
-                if (r1 == 0) goto L94
-                r8.onPackageReplacing(r0, r3, r5)
-                goto La9
-            L94:
-                r8.onPackageRemoved(r0, r5, r4)
-                goto La9
-            L98:
-                java.lang.String r9 = "android.intent.extra.REASON"
-                java.lang.String r9 = r10.getStringExtra(r9)
-                java.lang.String r10 = "android.intent.action.OVERLAY_CHANGED"
-                boolean r9 = r10.equals(r9)
-                if (r9 != 0) goto La9
-                r8.onPackageChanged(r0, r5)
-            La9:
-                return
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.OverlayManagerService.PackageReceiver.onReceive(android.content.Context, android.content.Intent):void");
-        }
-
-        public final void onPackageAdded(String str, int[] iArr) {
-            try {
-                Trace.traceBegin(67108864L, "OMS#onPackageAdded " + str);
-                for (int i : iArr) {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        if (OverlayManagerService.this.mPackageManager.onPackageAdded(str, i) != null && !OverlayManagerService.this.mPackageManager.isInstantApp(str, i)) {
-                            try {
-                                OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                                overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.onPackageAdded(str, i));
-                            } catch (OverlayManagerServiceImpl.OperationFailedException e) {
-                                Slog.e("OverlayManager", "onPackageAdded internal error", e);
-                            }
-                        }
-                    }
-                }
-            } finally {
-                Trace.traceEnd(67108864L);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.om.OverlayManagerService$1, reason: invalid class name */
+    public final class AnonymousClass1 extends IOverlayManager.Stub {
+        public static void $r8$lambda$brKP91vTER4zoSOxWJ1OnJjU4jQ(OverlayManagerService overlayManagerService, UserPackage userPackage) {
+            overlayManagerService.getClass();
+            if (userPackage != null) {
+                overlayManagerService.updateTargetPackagesLocked(Set.of(userPackage), false);
             }
         }
 
-        public final void onPackageChanged(String str, int[] iArr) {
-            try {
-                Trace.traceBegin(67108864L, "OMS#onPackageChanged " + str);
-                for (int i : iArr) {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        if (OverlayManagerService.this.mPackageManager.onPackageUpdated(str, i) != null && !OverlayManagerService.this.mPackageManager.isInstantApp(str, i)) {
-                            try {
-                                OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                                overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.onPackageChanged(str, i));
-                            } catch (OverlayManagerServiceImpl.OperationFailedException e) {
-                                Slog.e("OverlayManager", "onPackageChanged internal error", e);
-                            }
-                        }
-                    }
-                }
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public final void onPackageReplacing(String str, boolean z, int[] iArr) {
-            boolean z2;
-            try {
-                Trace.traceBegin(67108864L, "OMS#onPackageReplacing " + str);
-                int length = iArr.length;
-                for (int i = 0; i < length; i++) {
-                    int i2 = iArr[i];
-                    synchronized (OverlayManagerService.this.mLock) {
-                        if (OverlayManagerService.this.mPackageManager.onPackageUpdated(str, i2) != null && !OverlayManagerService.this.mPackageManager.isInstantApp(str, i2)) {
-                            try {
-                                OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                                overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.onPackageReplacing(str, z, i2));
-                                if (z) {
-                                    try {
-                                        OverlayPaths enabledOverlayPaths = OverlayManagerService.this.mImpl.getEnabledOverlayPaths("android", i2, false);
-                                        for (String str2 : enabledOverlayPaths.getOverlayPaths()) {
-                                            if (str2 != null && (str2.startsWith("/data/overlays/currentstyle") || str2.startsWith("/data/resource-cache/android-SemWT"))) {
-                                                z2 = false;
-                                                break;
-                                            }
-                                        }
-                                        z2 = true;
-                                        if (z2) {
-                                            PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
-                                            ArrayMap arrayMap = new ArrayMap(1);
-                                            arrayMap.put(str, enabledOverlayPaths);
-                                            packageManagerInternal.setEnabledOverlayPackages(i2, arrayMap, new HashSet(), new HashSet());
-                                            Slog.d("OverlayManager", "OM_BUG_FIX_LOST_OVERLAY_WHEN_UPDATE_UNINSTALL : " + str);
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            } catch (OverlayManagerServiceImpl.OperationFailedException e2) {
-                                Slog.e("OverlayManager", "onPackageReplacing internal error", e2);
-                            }
-                        }
-                    }
-                }
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public final void onPackageReplaced(String str, int[] iArr) {
-            try {
-                Trace.traceBegin(67108864L, "OMS#onPackageReplaced " + str);
-                for (int i : iArr) {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        if (OverlayManagerService.this.mPackageManager.onPackageUpdated(str, i) != null && !OverlayManagerService.this.mPackageManager.isInstantApp(str, i)) {
-                            try {
-                                OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                                overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.onPackageReplaced(str, i));
-                            } catch (OverlayManagerServiceImpl.OperationFailedException e) {
-                                Slog.e("OverlayManager", "onPackageReplaced internal error", e);
-                            }
-                        }
-                    }
-                }
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public final void onPackageRemoved(String str, int[] iArr, boolean z) {
-            try {
-                Trace.traceBegin(67108864L, "OMS#onPackageRemoved " + str);
-                for (int i : iArr) {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        OverlayManagerService.this.mPackageManager.onPackageRemoved(str, i);
-                        OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                        overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.onPackageRemoved(str, i, z));
-                    }
-                }
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class UserReceiver extends BroadcastReceiver {
-        public /* synthetic */ UserReceiver(OverlayManagerService overlayManagerService, UserReceiverIA userReceiverIA) {
-            this();
-        }
-
-        public UserReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -10000);
-            String action = intent.getAction();
-            action.hashCode();
-            if (action.equals("android.intent.action.USER_REMOVED")) {
-                if (intExtra != -10000) {
-                    try {
-                        Trace.traceBegin(67108864L, "OMS ACTION_USER_REMOVED");
-                        synchronized (OverlayManagerService.this.mLock) {
-                            OverlayManagerService.this.mImpl.onUserRemoved(intExtra);
-                            OverlayManagerService.this.mPackageManager.forgetAllPackageInfos(intExtra);
-                        }
-                        return;
-                    } finally {
-                    }
-                }
-                return;
-            }
-            if (action.equals("android.intent.action.USER_ADDED") && intExtra != -10000) {
-                try {
-                    Trace.traceBegin(67108864L, "OMS ACTION_USER_ADDED");
-                    synchronized (OverlayManagerService.this.mLock) {
-                        Slog.e("OMS_DEBUG", "[ACTION_USER_ADDED] userId : " + intExtra);
-                        OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                        overlayManagerService.updatePackageManagerLocked(overlayManagerService.mImpl.updateOverlaysForUser(intExtra));
-                        if (OverlayManagerService.this.mOverlayManagerServiceExt != null) {
-                            OverlayManagerService.this.mOverlayManagerServiceExt.handleUserSwitch(intExtra);
-                        }
-                        OverlayManagerService.this.mWallpaperThemeManager.onUserAdded(intExtra);
-                    }
-                } finally {
-                }
-            }
-        }
-    }
-
-    /* renamed from: com.android.server.om.OverlayManagerService$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends BroadcastReceiver {
         public AnonymousClass1() {
         }
 
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context2, Intent intent) {
-            HandlerThread handlerThread = new HandlerThread("OverlayManager");
-            handlerThread.start();
-            context2.getContentResolver().registerContentObserver(Settings.Secure.getUriFor("contrast_level"), false, new ContentObserver(handlerThread.getThreadHandler()) { // from class: com.android.server.om.OverlayManagerService.1.1
-                public C00221(Handler handler) {
-                    super(handler);
-                }
-
-                @Override // android.database.ContentObserver
-                public void onChange(boolean z) {
-                    if (Settings.Secure.getFloatForUser(OverlayManagerService.this.getContext().getContentResolver(), "contrast_level", DisplayPowerController2.RATE_FROM_DOZE_TO_ON, -2) == -1.0f) {
-                        long clearCallingIdentity = Binder.clearCallingIdentity();
-                        try {
-                            synchronized (OverlayManagerService.this.mLock) {
-                                OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                                overlayManagerService.updateTargetPackagesLocked(overlayManagerService.unregisterColorThemeGG(false), true);
-                            }
-                        } finally {
-                            Binder.restoreCallingIdentity(clearCallingIdentity);
-                        }
+        public static String checkUserOrTrialPackageJson(String str) {
+            File file = new File("/data/overlays/jsonfiles/userjson");
+            if (file.exists() && file.list() != null) {
+                for (String str2 : file.list()) {
+                    if (str2.startsWith(str)) {
+                        return file.getPath() + "/" + str2;
                     }
                 }
-            });
+            }
+            File file2 = new File("/data/overlays/jsonfiles/trialjson");
+            if (!file2.exists() || file2.list() == null) {
+                return null;
+            }
+            for (String str3 : file2.list()) {
+                if (str3.startsWith(str)) {
+                    return file2.getPath() + "/" + str3;
+                }
+            }
+            return null;
         }
 
-        /* renamed from: com.android.server.om.OverlayManagerService$1$1 */
-        /* loaded from: classes2.dex */
-        public class C00221 extends ContentObserver {
-            public C00221(Handler handler) {
-                super(handler);
-            }
+        public static int handleIncomingUser(int i, String str) {
+            return ActivityManager.handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), i, false, true, str, null);
+        }
 
-            @Override // android.database.ContentObserver
-            public void onChange(boolean z) {
-                if (Settings.Secure.getFloatForUser(OverlayManagerService.this.getContext().getContentResolver(), "contrast_level", DisplayPowerController2.RATE_FROM_DOZE_TO_ON, -2) == -1.0f) {
-                    long clearCallingIdentity = Binder.clearCallingIdentity();
+        public static void printJsonInfo(PrintWriter printWriter, String str) {
+            printWriter.println("current theme Json: ".concat(str));
+            FileInputStream fileInputStream = new FileInputStream(str);
+            try {
+                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                     try {
-                        synchronized (OverlayManagerService.this.mLock) {
-                            OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                            overlayManagerService.updateTargetPackagesLocked(overlayManagerService.unregisterColorThemeGG(false), true);
+                        StringBuilder sb = new StringBuilder();
+                        while (true) {
+                            String readLine = bufferedReader.readLine();
+                            if (readLine == null) {
+                                bufferedReader.close();
+                                inputStreamReader.close();
+                                fileInputStream.close();
+                                printWriter.println(new JSONObject(sb.toString()).toString(3) + "\n");
+                                return;
+                            }
+                            sb.append(readLine);
                         }
                     } finally {
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
                     }
-                }
-            }
-        }
-    }
-
-    @SystemApi
-    public void updatePackageCache(String str, int i) {
-        Slog.i("OverlayManager", "updatePackageCache() called with: packageName = [" + str + "], userId = [" + i + "]");
-        if (str != null) {
-            synchronized (this.mLock) {
-                this.mPackageManager.addPackageUser(str, i);
-            }
-        }
-    }
-
-    public Map getAllOverlays(int i) {
-        try {
-            return this.mService.getAllOverlays(i);
-        } catch (RemoteException unused) {
-            return null;
-        }
-    }
-
-    public List getOverlayInfosForTarget(String str, int i) {
-        try {
-            return this.mService.getOverlayInfosForTarget(str, i);
-        } catch (RemoteException unused) {
-            return null;
-        }
-    }
-
-    public String getTargetPath(String str) {
-        synchronized (this.mLock) {
-            IOverlayManagerExt iOverlayManagerExt = this.mOverlayManagerServiceExt;
-            if (iOverlayManagerExt == null) {
-                return null;
-            }
-            return iOverlayManagerExt.getTargetPath(str);
-        }
-    }
-
-    /* renamed from: com.android.server.om.OverlayManagerService$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends IOverlayManager.Stub {
-        public AnonymousClass2() {
-        }
-
-        public Map getAllOverlays(int i) {
-            Map overlaysForUser;
-            try {
-                Trace.traceBegin(67108864L, "OMS#getAllOverlays " + i);
-                int handleIncomingUser = handleIncomingUser(i, "getAllOverlays");
-                synchronized (OverlayManagerService.this.mLock) {
-                    overlaysForUser = OverlayManagerService.this.mImpl.getOverlaysForUser(handleIncomingUser);
-                }
-                return overlaysForUser;
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public List getOverlayInfosForTarget(String str, int i) {
-            List overlayInfosForTarget;
-            if (str == null) {
-                return Collections.emptyList();
-            }
-            try {
-                Trace.traceBegin(67108864L, "OMS#getOverlayInfosForTarget " + str);
-                int handleIncomingUser = handleIncomingUser(i, "getOverlayInfosForTarget");
-                synchronized (OverlayManagerService.this.mLock) {
-                    overlayInfosForTarget = OverlayManagerService.this.mImpl.getOverlayInfosForTarget(str, handleIncomingUser);
-                }
-                return overlayInfosForTarget;
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public OverlayInfo getOverlayInfo(String str, int i) {
-            return getOverlayInfoByIdentifier(new OverlayIdentifier(str), i);
-        }
-
-        public OverlayInfo getOverlayInfoByIdentifier(OverlayIdentifier overlayIdentifier, int i) {
-            OverlayInfo overlayInfo;
-            if (overlayIdentifier == null || overlayIdentifier.getPackageName() == null) {
-                return null;
-            }
-            try {
-                Trace.traceBegin(67108864L, "OMS#getOverlayInfo " + overlayIdentifier);
-                int handleIncomingUser = handleIncomingUser(i, "getOverlayInfo");
-                synchronized (OverlayManagerService.this.mLock) {
-                    overlayInfo = OverlayManagerService.this.mImpl.getOverlayInfo(overlayIdentifier, handleIncomingUser);
-                }
-                return overlayInfo;
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public boolean setEnabled(String str, boolean z, int i) {
-            if (str == null) {
-                return false;
-            }
-            try {
-                Trace.traceBegin(67108864L, "OMS#setEnabled " + str + " " + z);
-                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
-                int handleIncomingUser = handleIncomingUser(i, "setEnabled");
-                enforceActor(overlayIdentifier, "setEnabled", handleIncomingUser);
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        try {
-                            OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                            overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.setEnabled(overlayIdentifier, z, handleIncomingUser));
-                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
-                            return false;
-                        }
-                    }
-                    Trace.traceEnd(67108864L);
-                    return true;
                 } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public boolean setEnabledExclusive(String str, boolean z, int i) {
-            if (str == null || !z) {
-                return false;
-            }
-            try {
-                Trace.traceBegin(67108864L, "OMS#setEnabledExclusive " + str + " " + z);
-                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
-                int handleIncomingUser = handleIncomingUser(i, "setEnabledExclusive");
-                enforceActor(overlayIdentifier, "setEnabledExclusive", handleIncomingUser);
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        try {
-                            OverlayManagerService.this.mImpl.setEnabledExclusive(overlayIdentifier, false, handleIncomingUser).ifPresent(new OverlayManagerService$2$$ExternalSyntheticLambda0(OverlayManagerService.this));
-                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
-                            Trace.traceEnd(67108864L);
-                            return false;
-                        }
-                    }
-                    Trace.traceEnd(67108864L);
-                    return true;
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
             } catch (Throwable th) {
-                Trace.traceEnd(67108864L);
+                try {
+                    fileInputStream.close();
+                } catch (Throwable th2) {
+                    th.addSuppressed(th2);
+                }
                 throw th;
             }
         }
 
-        public boolean setEnabledExclusiveInCategory(String str, int i) {
-            if (str == null) {
-                return false;
+        public final void addOverlays(List list, ISamsungOverlayCallback iSamsungOverlayCallback, int i) {
+            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
+            synchronized (OverlayManagerService.this.mLock) {
+                OverlayManagerServiceExt overlayManagerServiceExt = OverlayManagerService.this.mOverlayManagerServiceExt;
+                if (overlayManagerServiceExt != null) {
+                    overlayManagerServiceExt.notifySystemServices(i, (List) ((Stream) OverlayManagerServiceExt.getSafeStream(list).parallel()).map(new OverlayManagerServiceExt$$ExternalSyntheticLambda0(overlayManagerServiceExt, i, iSamsungOverlayCallback, 0)).collect(Collectors.toList()), list);
+                }
             }
+        }
+
+        public final void applyThemeParkWallpaperColor(Uri uri) {
+            SemWallpaperThemeManagerWrapper semWallpaperThemeManagerWrapper = OverlayManagerService.this.mWallpaperThemeManager;
+            semWallpaperThemeManagerWrapper.initTemplateMetadataIfNeeded();
+            SemWallpaperThemeManager semWallpaperThemeManager = semWallpaperThemeManagerWrapper.mWallpaperThemeManager;
+            semWallpaperThemeManager.mTemplateManager.loadTemplateFromUri(semWallpaperThemeManager.mContext, uri);
             try {
-                Trace.traceBegin(67108864L, "OMS#setEnabledExclusiveInCategory " + str);
-                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
-                int handleIncomingUser = handleIncomingUser(i, "setEnabledExclusiveInCategory");
-                enforceActor(overlayIdentifier, "setEnabledExclusiveInCategory", handleIncomingUser);
-                long clearCallingIdentity = Binder.clearCallingIdentity();
+                InputStream openInputStream = SemWallpaperThemeManagerWrapper.mContext.getContentResolver().openInputStream(uri);
                 try {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        try {
-                            OverlayManagerService.this.mImpl.setEnabledExclusive(overlayIdentifier, true, handleIncomingUser).ifPresent(new OverlayManagerService$2$$ExternalSyntheticLambda0(OverlayManagerService.this));
-                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
-                            return false;
+                    ArrayList arrayList = new ArrayList();
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    byte[] bArr = new byte[1024];
+                    while (true) {
+                        int read = openInputStream.read(bArr);
+                        if (read == -1) {
+                            break;
+                        } else {
+                            byteArrayOutputStream.write(bArr, 0, read);
                         }
                     }
-                    return true;
+                    JSONArray jSONArray = new JSONObject(byteArrayOutputStream.toString("UTF-8")).getJSONArray("wallpaperColors");
+                    for (int i = 0; i < jSONArray.length(); i++) {
+                        arrayList.add(Integer.valueOf(jSONArray.optInt(i)));
+                    }
+                    semWallpaperThemeManagerWrapper.applyWallpaperColor(arrayList, arrayList, false, true);
+                    semWallpaperThemeManagerWrapper.mIsThemeParkApplied = true;
+                    openInputStream.close();
                 } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
-            } finally {
-                Trace.traceEnd(67108864L);
+            } catch (Exception e) {
+                Log.e("SWT_WTM_Wrapper", "Failed at applyThemeParkWallpaperColor, e = ", e);
             }
         }
 
-        public boolean setPriority(String str, String str2, int i) {
-            if (str == null || str2 == null) {
-                return false;
-            }
-            try {
-                Trace.traceBegin(67108864L, "OMS#setPriority " + str + " " + str2);
-                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
-                OverlayIdentifier overlayIdentifier2 = new OverlayIdentifier(str2);
-                int handleIncomingUser = handleIncomingUser(i, "setPriority");
-                enforceActor(overlayIdentifier, "setPriority", handleIncomingUser);
-                long clearCallingIdentity = Binder.clearCallingIdentity();
+        public final void applyWallpaperColor(List list, List list2, boolean z) {
+            OverlayManagerService.this.mWallpaperThemeManager.applyWallpaperColor(list, list2, z, false);
+        }
+
+        public final void applyWallpaperColors(List list, int i, int i2) {
+            SemWallpaperThemeManagerWrapper semWallpaperThemeManagerWrapper = OverlayManagerService.this.mWallpaperThemeManager;
+            semWallpaperThemeManagerWrapper.getClass();
+            Log.i("SWT_WTM_Wrapper", "(Deprecated) invoked applyWallpaperColors, colors=" + list);
+            semWallpaperThemeManagerWrapper.applyWallpaperColor(list, list, false, false);
+        }
+
+        public final boolean changeOverlayState(String str, int i, boolean z) {
+            AndroidPackage androidPackage = null;
+            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
+            synchronized (OverlayManagerService.this.mLock) {
                 try {
-                    synchronized (OverlayManagerService.this.mLock) {
+                    OverlayManagerServiceExt overlayManagerServiceExt = OverlayManagerService.this.mOverlayManagerServiceExt;
+                    boolean z2 = false;
+                    if (overlayManagerServiceExt == null) {
+                        return false;
+                    }
+                    OverlayManagerSettings overlayManagerSettings = overlayManagerServiceExt.mSettings;
+                    if (str != null) {
                         try {
-                            OverlayManagerService.this.mImpl.setPriority(overlayIdentifier, overlayIdentifier2, handleIncomingUser).ifPresent(new OverlayManagerService$2$$ExternalSyntheticLambda0(OverlayManagerService.this));
-                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
-                            return false;
+                            OverlayInfo overlayInfo = overlayManagerSettings.getOverlayInfo(new OverlayIdentifier(str), i);
+                            OverlayInfoExt initFromInfo = OverlayInfoExt.initFromInfo(overlayInfo);
+                            if (initFromInfo != null && initFromInfo.info != null) {
+                                try {
+                                    overlayManagerSettings.setEnabled(i, initFromInfo.getOverlayIdentifier(), z);
+                                    PackageState packageStateForUser = overlayManagerServiceExt.mPackageManager.packageManagerHelper.getPackageStateForUser(i, overlayInfo.getTargetPackageName());
+                                    if (packageStateForUser != null) {
+                                        androidPackage = packageStateForUser.getAndroidPackage();
+                                    }
+                                    int handleStateUpdate = overlayManagerServiceExt.handleStateUpdate(androidPackage, overlayInfo, 0, i);
+                                    if (handleStateUpdate == 1 || handleStateUpdate == 2) {
+                                        z2 = true;
+                                    }
+                                } catch (OverlayManagerSettings.BadKeyException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } catch (OverlayManagerSettings.BadKeyException e2) {
+                            e2.printStackTrace();
                         }
                     }
-                    Trace.traceEnd(67108864L);
-                    return true;
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                    return z2;
+                } catch (Throwable th) {
+                    throw th;
                 }
-            } finally {
-                Trace.traceEnd(67108864L);
             }
         }
 
-        public boolean setHighestPriority(String str, int i) {
-            if (str == null) {
-                return false;
-            }
-            try {
-                Trace.traceBegin(67108864L, "OMS#setHighestPriority " + str);
-                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
-                int handleIncomingUser = handleIncomingUser(i, "setHighestPriority");
-                enforceActor(overlayIdentifier, "setHighestPriority", handleIncomingUser);
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        try {
-                            OverlayManagerService overlayManagerService = OverlayManagerService.this;
-                            overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.setHighestPriority(overlayIdentifier, handleIncomingUser));
-                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
-                            return false;
-                        }
-                    }
-                    Trace.traceEnd(67108864L);
-                    return true;
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public boolean setLowestPriority(String str, int i) {
-            if (str == null) {
-                return false;
-            }
-            try {
-                Trace.traceBegin(67108864L, "OMS#setLowestPriority " + str);
-                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
-                int handleIncomingUser = handleIncomingUser(i, "setLowestPriority");
-                enforceActor(overlayIdentifier, "setLowestPriority", handleIncomingUser);
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        try {
-                            OverlayManagerService.this.mImpl.setLowestPriority(overlayIdentifier, handleIncomingUser).ifPresent(new OverlayManagerService$2$$ExternalSyntheticLambda0(OverlayManagerService.this));
-                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
-                            return false;
-                        }
-                    }
-                    Trace.traceEnd(67108864L);
-                    return true;
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public String[] getDefaultOverlayPackages() {
-            String[] defaultOverlayPackages;
-            try {
-                Trace.traceBegin(67108864L, "OMS#getDefaultOverlayPackages");
-                OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("android.permission.MODIFY_THEME_OVERLAY", null);
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    synchronized (OverlayManagerService.this.mLock) {
-                        defaultOverlayPackages = OverlayManagerService.this.mImpl.getDefaultOverlayPackages();
-                    }
-                    return defaultOverlayPackages;
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            } finally {
-                Trace.traceEnd(67108864L);
-            }
-        }
-
-        public void invalidateCachesForOverlay(String str, int i) {
-            if (str == null) {
-                return;
-            }
-            OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
-            int handleIncomingUser = handleIncomingUser(i, "invalidateCachesForOverlay");
-            enforceActor(overlayIdentifier, "invalidateCachesForOverlay", handleIncomingUser);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                synchronized (OverlayManagerService.this.mLock) {
-                    try {
-                        OverlayManagerService.this.mImpl.removeIdmapForOverlay(overlayIdentifier, handleIncomingUser);
-                    } catch (OverlayManagerServiceImpl.OperationFailedException e) {
-                        Slog.w("OverlayManager", "invalidate caches for overlay '" + overlayIdentifier + "' failed", e);
-                    }
-                }
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public void commit(OverlayManagerTransaction overlayManagerTransaction) {
+        public final void commit(OverlayManagerTransaction overlayManagerTransaction) {
             try {
                 Trace.traceBegin(67108864L, "OMS#commit " + overlayManagerTransaction);
                 try {
@@ -985,19 +314,197 @@ public final class OverlayManagerService extends SystemService {
             }
         }
 
+        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+        /* JADX WARN: Code restructure failed: missing block: B:73:0x00f4, code lost:
+        
+            if (r5.equals("priority") == false) goto L38;
+         */
+        /* JADX WARN: Removed duplicated region for block: B:101:0x0294 A[Catch: Exception -> 0x02bf, TRY_ENTER, TryCatch #1 {Exception -> 0x02bf, blocks: (B:101:0x0294, B:103:0x02bb, B:107:0x02c1), top: B:99:0x0292 }] */
+        /* JADX WARN: Removed duplicated region for block: B:107:0x02c1 A[Catch: Exception -> 0x02bf, TRY_LEAVE, TryCatch #1 {Exception -> 0x02bf, blocks: (B:101:0x0294, B:103:0x02bb, B:107:0x02c1), top: B:99:0x0292 }] */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void dump(java.io.FileDescriptor r11, java.io.PrintWriter r12, java.lang.String[] r13) {
+            /*
+                Method dump skipped, instructions count: 808
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.OverlayManagerService.AnonymousClass1.dump(java.io.FileDescriptor, java.io.PrintWriter, java.lang.String[]):void");
+        }
+
+        public final void dumpFilesInDir(File file, PrintWriter printWriter) {
+            File[] listFiles;
+            ApplicationInfo applicationInfo;
+            if (!file.exists() || (listFiles = file.listFiles()) == null) {
+                return;
+            }
+            for (File file2 : listFiles) {
+                PackageInfo packageArchiveInfo = OverlayManagerService.this.getContext().getPackageManager().getPackageArchiveInfo(file2.getPath(), PackageManager.PackageInfoFlags.of(4096L));
+                if (packageArchiveInfo != null && (applicationInfo = packageArchiveInfo.applicationInfo) != null) {
+                    String charSequence = applicationInfo.loadLabel(OverlayManagerService.this.getContext().getPackageManager()).toString();
+                    if (charSequence != null) {
+                        printWriter.println(OptionalModelParameterRange$$ExternalSyntheticOutline0.m(new StringBuilder("   "), packageArchiveInfo.packageName, "(", charSequence, ")"));
+                    } else {
+                        ProxyManager$$ExternalSyntheticOutline0.m(printWriter, packageArchiveInfo.packageName, "()", new StringBuilder("   "));
+                    }
+                }
+            }
+        }
+
+        public final void enforceActor(int i, OverlayIdentifier overlayIdentifier, String str) {
+            OverlayInfo overlayInfo;
+            OverlayManagerServiceImpl overlayManagerServiceImpl = OverlayManagerService.this.mImpl;
+            overlayManagerServiceImpl.getClass();
+            try {
+                overlayInfo = overlayManagerServiceImpl.mSettings.getOverlayInfo(overlayIdentifier, i);
+            } catch (OverlayManagerSettings.BadKeyException unused) {
+                overlayInfo = null;
+            }
+            if (overlayInfo == null) {
+                throw new IllegalArgumentException("Unable to retrieve overlay information for " + overlayIdentifier);
+            }
+            int callingUid = Binder.getCallingUid();
+            OverlayActorEnforcer.ActorState isAllowedActor = OverlayManagerService.this.mActorEnforcer.isAllowedActor(str, overlayInfo, callingUid, i);
+            if (isAllowedActor == OverlayActorEnforcer.ActorState.ALLOWED) {
+                return;
+            }
+            String str2 = overlayInfo.targetOverlayableName;
+            StringBuilder m = DirEncryptService$$ExternalSyntheticOutline0.m(callingUid, "UID", " is not allowed to call ", str, " for ");
+            m.append(TextUtils.isEmpty(str2) ? "" : ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str2, " in "));
+            m.append(overlayInfo.targetPackageName);
+            m.append(" for user ");
+            m.append(i);
+            String sb = m.toString();
+            Slog.w("OverlayManager", sb + " because " + isAllowedActor);
+            throw new SecurityException(sb);
+        }
+
+        /* JADX WARN: Removed duplicated region for block: B:20:0x0059 A[Catch: all -> 0x006e, TryCatch #1 {all -> 0x006e, blocks: (B:6:0x001a, B:8:0x002a, B:10:0x0034, B:12:0x0040, B:14:0x0044, B:16:0x004c, B:20:0x0059, B:22:0x0067, B:25:0x0070, B:26:0x0073, B:27:0x0077, B:29:0x007d, B:31:0x008c, B:34:0x0095, B:35:0x0098, B:40:0x009b, B:41:0x009e, B:33:0x0090), top: B:5:0x001a, inners: #0 }] */
+        /* JADX WARN: Removed duplicated region for block: B:29:0x007d A[Catch: all -> 0x006e, LOOP:0: B:27:0x0077->B:29:0x007d, LOOP_END, TryCatch #1 {all -> 0x006e, blocks: (B:6:0x001a, B:8:0x002a, B:10:0x0034, B:12:0x0040, B:14:0x0044, B:16:0x004c, B:20:0x0059, B:22:0x0067, B:25:0x0070, B:26:0x0073, B:27:0x0077, B:29:0x007d, B:31:0x008c, B:34:0x0095, B:35:0x0098, B:40:0x009b, B:41:0x009e, B:33:0x0090), top: B:5:0x001a, inners: #0 }] */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void executeAllRequests(android.content.om.OverlayManagerTransaction r9) {
+            /*
+                r8 = this;
+                java.lang.String r0 = "OverlayManager"
+                java.lang.StringBuilder r1 = new java.lang.StringBuilder
+                java.lang.String r2 = "commit "
+                r1.<init>(r2)
+                r1.append(r9)
+                java.lang.String r1 = r1.toString()
+                android.util.Slog.d(r0, r1)
+                if (r9 == 0) goto La1
+                com.android.server.om.OverlayManagerService r0 = com.android.server.om.OverlayManagerService.this
+                java.lang.Object r0 = r0.mLock
+                monitor-enter(r0)
+                com.android.server.om.OverlayManagerService r1 = com.android.server.om.OverlayManagerService.this     // Catch: java.lang.Throwable -> L6e
+                com.android.server.om.wallpapertheme.SemWallpaperThemeManagerWrapper r1 = r1.mWallpaperThemeManager     // Catch: java.lang.Throwable -> L6e
+                r1.getClass()     // Catch: java.lang.Throwable -> L6e
+                java.util.Iterator r1 = r9.getRequests()     // Catch: java.lang.Throwable -> L6e
+                r2 = 0
+                r3 = 1
+                r4 = 0
+                if (r1 == 0) goto L56
+                java.util.Iterator r1 = r9.getRequests()     // Catch: java.lang.Throwable -> L6e
+                boolean r1 = r1.hasNext()     // Catch: java.lang.Throwable -> L6e
+                if (r1 == 0) goto L56
+                java.util.Iterator r1 = r9.getRequests()     // Catch: java.lang.Throwable -> L6e
+                java.lang.Object r1 = r1.next()     // Catch: java.lang.Throwable -> L6e
+                android.content.om.OverlayManagerTransaction$Request r1 = (android.content.om.OverlayManagerTransaction.Request) r1     // Catch: java.lang.Throwable -> L6e
+                if (r1 == 0) goto L49
+                android.content.om.OverlayIdentifier r1 = r1.overlay     // Catch: java.lang.Throwable -> L6e
+                if (r1 == 0) goto L49
+                java.lang.String r1 = r1.getOverlayName()     // Catch: java.lang.Throwable -> L6e
+                goto L4a
+            L49:
+                r1 = r4
+            L4a:
+                if (r1 == 0) goto L56
+                java.lang.String r5 = "SemWT_"
+                boolean r1 = r1.startsWith(r5)     // Catch: java.lang.Throwable -> L6e
+                if (r1 == 0) goto L56
+                r1 = r3
+                goto L57
+            L56:
+                r1 = r2
+            L57:
+                if (r1 == 0) goto L73
+                java.util.Iterator r5 = r9.getRequests()     // Catch: java.lang.Throwable -> L6e
+                java.lang.Object r5 = r5.next()     // Catch: java.lang.Throwable -> L6e
+                android.content.om.OverlayManagerTransaction$Request r5 = (android.content.om.OverlayManagerTransaction.Request) r5     // Catch: java.lang.Throwable -> L6e
+                com.android.server.om.OverlayManagerService r6 = com.android.server.om.OverlayManagerService.this     // Catch: java.lang.Throwable -> L6e
+                if (r5 == 0) goto L70
+                int r5 = r5.type     // Catch: java.lang.Throwable -> L6e
+                r7 = 2
+                if (r5 != r7) goto L70
+                r2 = r3
+                goto L70
+            L6e:
+                r8 = move-exception
+                goto L9f
+            L70:
+                com.android.server.om.OverlayManagerService.m738$$Nest$munregisterColorThemeGG(r6, r2)     // Catch: java.lang.Throwable -> L6e
+            L73:
+                java.util.Iterator r9 = r9.getRequests()     // Catch: java.lang.Throwable -> L6e
+            L77:
+                boolean r2 = r9.hasNext()     // Catch: java.lang.Throwable -> L6e
+                if (r2 == 0) goto L8c
+                java.lang.Object r2 = r9.next()     // Catch: java.lang.Throwable -> L6e
+                android.content.om.OverlayManagerTransaction$Request r2 = (android.content.om.OverlayManagerTransaction.Request) r2     // Catch: java.lang.Throwable -> L6e
+                java.util.Set r2 = r8.executeRequest(r2, r1)     // Catch: java.lang.Throwable -> L6e
+                java.util.Set r4 = com.android.internal.util.CollectionUtils.addAll(r4, r2)     // Catch: java.lang.Throwable -> L6e
+                goto L77
+            L8c:
+                long r2 = android.os.Binder.clearCallingIdentity()     // Catch: java.lang.Throwable -> L6e
+                com.android.server.om.OverlayManagerService r8 = com.android.server.om.OverlayManagerService.this     // Catch: java.lang.Throwable -> L9a
+                r8.updateTargetPackagesLocked(r4, r1)     // Catch: java.lang.Throwable -> L9a
+                android.os.Binder.restoreCallingIdentity(r2)     // Catch: java.lang.Throwable -> L6e
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L6e
+                return
+            L9a:
+                r8 = move-exception
+                android.os.Binder.restoreCallingIdentity(r2)     // Catch: java.lang.Throwable -> L6e
+                throw r8     // Catch: java.lang.Throwable -> L6e
+            L9f:
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L6e
+                throw r8
+            La1:
+                java.lang.IllegalArgumentException r8 = new java.lang.IllegalArgumentException
+                java.lang.String r9 = "null transaction"
+                r8.<init>(r9)
+                throw r8
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.OverlayManagerService.AnonymousClass1.executeAllRequests(android.content.om.OverlayManagerTransaction):void");
+        }
+
         public final Set executeRequest(OverlayManagerTransaction.Request request, boolean z) {
             int i;
+            String[] strArr;
+            OverlayInfo overlayInfo;
             Objects.requireNonNull(request, "Transaction contains a null request");
             Objects.requireNonNull(request.overlay, "Transaction overlay identifier must be non-null");
             int callingUid = Binder.getCallingUid();
             int i2 = request.type;
             if (i2 != 2 && i2 != 3) {
                 i = handleIncomingUser(request.userId, request.typeToString());
-                if (z && OverlayManagerService.this.mImpl.getOverlayInfo(request.overlay, i) == null) {
-                    SemWallpaperThemeManager.saveSWTLog("SWT_OverlayManager", "OverlayInfo is not founded, skip request " + request);
-                    return Set.of();
+                if (z) {
+                    OverlayManagerServiceImpl overlayManagerServiceImpl = OverlayManagerService.this.mImpl;
+                    OverlayIdentifier overlayIdentifier = request.overlay;
+                    overlayManagerServiceImpl.getClass();
+                    try {
+                        overlayInfo = overlayManagerServiceImpl.mSettings.getOverlayInfo(overlayIdentifier, i);
+                    } catch (OverlayManagerSettings.BadKeyException unused) {
+                        overlayInfo = null;
+                    }
+                    if (overlayInfo == null) {
+                        ThemeUtil.saveSWTLog("SWT_OverlayManager", "OverlayInfo is not founded, skip request " + request);
+                        return Set.of();
+                    }
                 }
-                enforceActor(request.overlay, request.typeToString(), i);
+                enforceActor(i, request.overlay, request.typeToString());
             } else {
                 if (request.userId != -1) {
                     throw new IllegalArgumentException(request.typeToString() + " unsupported for user " + request.userId);
@@ -1007,8 +514,17 @@ public final class OverlayManagerService extends SystemService {
                     throw new IllegalArgumentException("Non-root shell cannot fabricate overlays");
                 }
                 String packageName = request.overlay.getPackageName();
-                if (callingUid != 0 && !ArrayUtils.contains(OverlayManagerService.this.mPackageManager.getPackagesForUid(callingUid), packageName)) {
-                    throw new IllegalArgumentException("UID " + callingUid + " does own packagename " + packageName);
+                if (callingUid != 0) {
+                    PackageManagerHelperImpl packageManagerHelperImpl = OverlayManagerService.this.mPackageManager;
+                    packageManagerHelperImpl.getClass();
+                    try {
+                        strArr = packageManagerHelperImpl.mPackageManager.getPackagesForUid(callingUid);
+                    } catch (RemoteException unused2) {
+                        strArr = null;
+                    }
+                    if (!ArrayUtils.contains(strArr, packageName)) {
+                        throw new IllegalArgumentException(AccessibilityManagerService$$ExternalSyntheticOutline0.m(callingUid, "UID ", " does own packagename ", packageName));
+                    }
                 }
                 i = -1;
             }
@@ -1016,10 +532,10 @@ public final class OverlayManagerService extends SystemService {
             try {
                 int i3 = request.type;
                 if (i3 == 0) {
-                    return CollectionUtils.emptyIfNull(CollectionUtils.addAll(CollectionUtils.addAll((Set) null, OverlayManagerService.this.mImpl.setEnabled(request.overlay, true, i)), OverlayManagerService.this.mImpl.setHighestPriority(request.overlay, i)));
+                    return CollectionUtils.emptyIfNull(CollectionUtils.addAll(CollectionUtils.addAll((Set) null, OverlayManagerService.this.mImpl.setEnabled(i, request.overlay, true)), OverlayManagerService.this.mImpl.setHighestPriority(request.overlay, i)));
                 }
                 if (i3 == 1) {
-                    return OverlayManagerService.this.mImpl.setEnabled(request.overlay, false, i);
+                    return OverlayManagerService.this.mImpl.setEnabled(i, request.overlay, false);
                 }
                 if (i3 == 2) {
                     FabricatedOverlayInternal fabricatedOverlayInternal = (FabricatedOverlayInternal) request.extras.getParcelable("fabricated_overlay", FabricatedOverlayInternal.class);
@@ -1035,425 +551,528 @@ public final class OverlayManagerService extends SystemService {
             }
         }
 
-        public final void executeAllRequests(OverlayManagerTransaction overlayManagerTransaction) {
-            Set set;
-            Slog.d("OverlayManager", "commit " + overlayManagerTransaction);
-            if (overlayManagerTransaction == null) {
-                throw new IllegalArgumentException("null transaction");
+        public final Map getAllOverlays(int i) {
+            ArrayMap overlaysForUser;
+            try {
+                Trace.traceBegin(67108864L, "OMS#getAllOverlays " + i);
+                int handleIncomingUser = handleIncomingUser(i, "getAllOverlays");
+                synchronized (OverlayManagerService.this.mLock) {
+                    overlaysForUser = OverlayManagerService.this.mImpl.mSettings.getOverlaysForUser(handleIncomingUser);
+                }
+                return overlaysForUser;
+            } finally {
+                Trace.traceEnd(67108864L);
             }
+        }
+
+        public final OverlayInfoExt[] getAllOverlaysInCategory(int i, int i2) {
+            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
             synchronized (OverlayManagerService.this.mLock) {
-                boolean isRequestForColorTheme = OverlayManagerService.this.mWallpaperThemeManager.isRequestForColorTheme(overlayManagerTransaction);
-                Set set2 = null;
-                if (isRequestForColorTheme) {
-                    OverlayManagerTransaction.Request request = (OverlayManagerTransaction.Request) overlayManagerTransaction.getRequests().next();
-                    set = OverlayManagerService.this.unregisterColorThemeGG(request != null && request.type == 2);
-                    if (request != null && request.type == 1) {
-                        OverlayManagerService.this.disableDynamicContrast();
+                try {
+                    OverlayManagerServiceExt overlayManagerServiceExt = OverlayManagerService.this.mOverlayManagerServiceExt;
+                    if (overlayManagerServiceExt == null) {
+                        return new OverlayInfoExt[0];
                     }
-                } else {
-                    set = null;
+                    return overlayManagerServiceExt.getAllOverlaysInCategory(i, i2);
+                } catch (Throwable th) {
+                    throw th;
                 }
-                Iterator requests = overlayManagerTransaction.getRequests();
-                while (requests.hasNext()) {
-                    set2 = CollectionUtils.addAll(set2, executeRequest((OverlayManagerTransaction.Request) requests.next(), isRequestForColorTheme));
-                }
-                Set addAll = CollectionUtils.addAll(set2, CollectionUtils.emptyIfNull(set));
+            }
+        }
+
+        public final String[] getDefaultOverlayPackages() {
+            String[] strArr;
+            try {
+                Trace.traceBegin(67108864L, "OMS#getDefaultOverlayPackages");
+                OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("android.permission.MODIFY_THEME_OVERLAY", null);
                 long clearCallingIdentity = Binder.clearCallingIdentity();
                 try {
-                    OverlayManagerService.this.updateTargetPackagesLocked(addAll, isRequestForColorTheme);
+                    synchronized (OverlayManagerService.this.mLock) {
+                        strArr = OverlayManagerService.this.mImpl.mDefaultOverlays;
+                    }
+                    return strArr;
                 } finally {
                     Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
+            } finally {
+                Trace.traceEnd(67108864L);
             }
+        }
+
+        public final boolean getLastPalette(List list, List list2) {
+            OverlayManagerService.this.mWallpaperThemeManager.mWallpaperThemeManager.getClass();
+            List readLastPalette = SemWallpaperThemeManager.readLastPalette();
+            if (((ArrayList) readLastPalette).isEmpty()) {
+                return false;
+            }
+            return SemWallpaperThemeManager.splitPalette(readLastPalette, list, list2);
+        }
+
+        public final OverlayInfoExt getOverlayForPath(String str, int i) {
+            OverlayInfoExt overlayInfoExt = null;
+            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
+            synchronized (OverlayManagerService.this.mLock) {
+                try {
+                    OverlayManagerServiceExt overlayManagerServiceExt = OverlayManagerService.this.mOverlayManagerServiceExt;
+                    if (overlayManagerServiceExt == null) {
+                        return null;
+                    }
+                    Iterator it = overlayManagerServiceExt.mSettings.getOverlaysForUser(i).values().iterator();
+                    loop0: while (true) {
+                        if (!it.hasNext()) {
+                            break;
+                        }
+                        for (OverlayInfo overlayInfo : (List) it.next()) {
+                            if (overlayInfo.baseCodePath.equals(str)) {
+                                overlayInfoExt = OverlayInfoExt.initFromInfo(overlayInfo);
+                                break loop0;
+                            }
+                        }
+                    }
+                    return overlayInfoExt;
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final OverlayInfo getOverlayInfo(String str, int i) {
+            return getOverlayInfoByIdentifier(new OverlayIdentifier(str), i);
+        }
+
+        public final OverlayInfo getOverlayInfoByIdentifier(OverlayIdentifier overlayIdentifier, int i) {
+            OverlayInfo overlayInfo = null;
+            if (overlayIdentifier == null || overlayIdentifier.getPackageName() == null) {
+                return null;
+            }
+            try {
+                Trace.traceBegin(67108864L, "OMS#getOverlayInfo " + overlayIdentifier);
+                int handleIncomingUser = handleIncomingUser(i, "getOverlayInfo");
+                synchronized (OverlayManagerService.this.mLock) {
+                    OverlayManagerServiceImpl overlayManagerServiceImpl = OverlayManagerService.this.mImpl;
+                    overlayManagerServiceImpl.getClass();
+                    try {
+                        overlayInfo = overlayManagerServiceImpl.mSettings.getOverlayInfo(overlayIdentifier, handleIncomingUser);
+                    } catch (OverlayManagerSettings.BadKeyException unused) {
+                    }
+                }
+                return overlayInfo;
+            } finally {
+                Trace.traceEnd(67108864L);
+            }
+        }
+
+        public final List getOverlayInfosForTarget(String str, int i) {
+            List overlaysForTarget;
+            if (str == null) {
+                return Collections.emptyList();
+            }
+            try {
+                Trace.traceBegin(67108864L, "OMS#getOverlayInfosForTarget ".concat(str));
+                int handleIncomingUser = handleIncomingUser(i, "getOverlayInfosForTarget");
+                synchronized (OverlayManagerService.this.mLock) {
+                    overlaysForTarget = OverlayManagerService.this.mImpl.mSettings.getOverlaysForTarget(handleIncomingUser, str);
+                }
+                return overlaysForTarget;
+            } finally {
+                Trace.traceEnd(67108864L);
+            }
+        }
+
+        public final OverlayInfoExt[] getOverlaysForTarget(String str, int i, int i2) {
+            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
+            synchronized (OverlayManagerService.this.mLock) {
+                try {
+                    OverlayManagerServiceExt overlayManagerServiceExt = OverlayManagerService.this.mOverlayManagerServiceExt;
+                    if (overlayManagerServiceExt == null) {
+                        return new OverlayInfoExt[0];
+                    }
+                    List<OverlayInfo> overlaysForTarget = overlayManagerServiceExt.mSettings.getOverlaysForTarget(i2, str);
+                    ArrayList arrayList = new ArrayList();
+                    for (OverlayInfo overlayInfo : overlaysForTarget) {
+                        if (OverlayInfoExt.isOverlayInfoExtOfCategory(overlayInfo, i)) {
+                            arrayList.add(OverlayInfoExt.initFromInfo(overlayInfo));
+                        }
+                    }
+                    return (OverlayInfoExt[]) arrayList.toArray(new OverlayInfoExt[0]);
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final String getPartitionOrder() {
+            return OverlayManagerService.this.mImpl.mOverlayConfig.getPartitionOrder();
+        }
+
+        public final List getThemeParkOverlayNames(String str) {
+            return (List) OverlayManagerService.this.mSettings.getOverlaysForUser(handleIncomingUser(0, "getAllOverlays")).values().stream().flatMap(new OverlayManagerService$1$$ExternalSyntheticLambda1(0)).map(new OverlayManagerService$1$$ExternalSyntheticLambda1(1)).filter(new OverlayManagerService$$ExternalSyntheticLambda4(str, 1)).collect(Collectors.toList());
+        }
+
+        public final List getWallpaperColors() {
+            return OverlayManagerService.this.mWallpaperThemeManager.mWallpaperThemeManager.mPalette.getPaletteSS();
+        }
+
+        public final void invalidateCachesForOverlay(String str, int i) {
+            if (str == null) {
+                return;
+            }
+            OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
+            int handleIncomingUser = handleIncomingUser(i, "invalidateCachesForOverlay");
+            enforceActor(handleIncomingUser, overlayIdentifier, "invalidateCachesForOverlay");
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                synchronized (OverlayManagerService.this.mLock) {
+                    try {
+                        OverlayManagerService.this.mImpl.removeIdmapForOverlay(overlayIdentifier, handleIncomingUser);
+                    } catch (OverlayManagerServiceImpl.OperationFailedException e) {
+                        Slog.w("OverlayManager", "invalidate caches for overlay '" + overlayIdentifier + "' failed", e);
+                    }
+                }
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+
+        public final boolean isDefaultPartitionOrder() {
+            return OverlayManagerService.this.mImpl.mOverlayConfig.isDefaultPartitionOrder();
         }
 
         /* JADX WARN: Multi-variable type inference failed */
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
             new OverlayManagerShellCommand(OverlayManagerService.this.getContext(), this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
         }
 
-        public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-            String str;
-            DumpState dumpState = new DumpState();
-            char c = 65535;
-            dumpState.setUserId(-1);
-            int i = 0;
-            while (i < strArr.length && (str = strArr[i]) != null && str.length() > 0 && str.charAt(0) == '-') {
-                i++;
-                if (!"-a".equals(str)) {
-                    if ("-h".equals(str)) {
-                        printWriter.println("dump [-h] [--verbose] [--user USER_ID] [[FIELD] PACKAGE]");
-                        printWriter.println("  Print debugging information about the overlay manager.");
-                        printWriter.println("  With optional parameter PACKAGE, limit output to the specified");
-                        printWriter.println("  package. With optional parameter FIELD, limit output to");
-                        printWriter.println("  the value of that SettingsItem field. Field names are");
-                        printWriter.println("  case insensitive and out.println the m prefix can be omitted,");
-                        printWriter.println("  so the following are equivalent: mState, mstate, State, state.");
-                        return;
-                    }
-                    if ("--user".equals(str)) {
-                        if (i >= strArr.length) {
-                            printWriter.println("Error: user missing argument");
-                            return;
-                        }
-                        try {
-                            dumpState.setUserId(Integer.parseInt(strArr[i]));
-                            i++;
-                        } catch (NumberFormatException unused) {
-                            printWriter.println("Error: user argument is not a number: " + strArr[i]);
-                            return;
-                        }
-                    } else if ("--verbose".equals(str)) {
-                        dumpState.setVerbose(true);
-                    } else {
-                        printWriter.println("Unknown argument: " + str + "; use -h for help");
-                    }
-                }
-            }
-            if (i < strArr.length) {
-                String str2 = strArr[i];
-                i++;
-                str2.hashCode();
-                switch (str2.hashCode()) {
-                    case -1750736508:
-                        if (str2.equals("targetoverlayablename")) {
-                            c = 0;
-                            break;
-                        }
-                        break;
-                    case -1248283232:
-                        if (str2.equals("targetpackagename")) {
-                            c = 1;
-                            break;
-                        }
-                        break;
-                    case -1165461084:
-                        if (str2.equals("priority")) {
-                            c = 2;
-                            break;
-                        }
-                        break;
-                    case -836029914:
-                        if (str2.equals("userid")) {
-                            c = 3;
-                            break;
-                        }
-                        break;
-                    case -831052100:
-                        if (str2.equals("ismutable")) {
-                            c = 4;
-                            break;
-                        }
-                        break;
-                    case 50511102:
-                        if (str2.equals("category")) {
-                            c = 5;
-                            break;
-                        }
-                        break;
-                    case 109757585:
-                        if (str2.equals(LauncherConfigurationInternal.KEY_STATE_BOOLEAN)) {
-                            c = 6;
-                            break;
-                        }
-                        break;
-                    case 440941271:
-                        if (str2.equals("isenabled")) {
-                            c = 7;
-                            break;
-                        }
-                        break;
-                    case 909712337:
-                        if (str2.equals("packagename")) {
-                            c = '\b';
-                            break;
-                        }
-                        break;
-                    case 1693907299:
-                        if (str2.equals("basecodepath")) {
-                            c = '\t';
-                            break;
-                        }
-                        break;
-                }
-                switch (c) {
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                    case 7:
-                    case '\b':
-                    case '\t':
-                        dumpState.setField(str2);
-                        break;
-                    default:
-                        dumpState.setOverlyIdentifier(str2);
-                        break;
-                }
-            }
-            if (dumpState.getPackageName() == null && i < strArr.length) {
-                dumpState.setOverlyIdentifier(strArr[i]);
-            }
-            enforceDumpPermission("dump");
-            synchronized (OverlayManagerService.this.mLock) {
-                OverlayManagerService.this.mImpl.dump(printWriter, dumpState);
-                if (dumpState.getPackageName() == null) {
-                    OverlayManagerService.this.mPackageManager.dump(printWriter, dumpState);
-                }
-            }
-            OverlayManagerService.this.mWallpaperThemeManager.dump(printWriter);
-            ContentResolver contentResolver = OverlayManagerService.this.getContext().getContentResolver();
-            printWriter.println("ThemeFramework Information:");
-            String string = Settings.System.getString(contentResolver, "current_sec_active_themepackage");
-            String string2 = Settings.System.getString(contentResolver, "current_sec_appicon_theme_package");
-            String string3 = Settings.System.getString(contentResolver, "wallpapertheme_state");
-            String string4 = Settings.System.getString(contentResolver, "wallpapertheme_color_isgray");
-            String string5 = Settings.System.getString(contentResolver, "wallpapertheme_color");
-            int i2 = Settings.Global.getInt(contentResolver, "colortheme_app_icon", 0);
-            printWriter.println("current_theme_package : " + string);
-            printWriter.println("current_app_icon_package : " + string2);
-            printWriter.println("wallpapertheme_state : " + string3);
-            printWriter.println("wallpapertheme_color_isgray : " + string4);
-            printWriter.println("wallpapertheme_color : " + string5);
-            printWriter.println("colortheme_app_icon : " + i2);
-            try {
-                if (string != null) {
-                    printWriter.println("available theme content at /data/overlays/main_packages : ");
-                    dumpFilesInDir(new File("/data/overlays/main_packages"), printWriter);
-                    String checkUserOrTrialPackageJson = checkUserOrTrialPackageJson("/data/overlays/jsonfiles", string, printWriter);
-                    if (checkUserOrTrialPackageJson != null) {
-                        printJsonInfo(checkUserOrTrialPackageJson, printWriter);
-                    }
-                } else {
-                    printWriter.println("available theme content at /data/overlays/main_packages : " + ((Object) null));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        public final void dumpFilesInDir(File file, PrintWriter printWriter) {
-            File[] listFiles;
-            if (!file.exists() || (listFiles = file.listFiles()) == null) {
-                return;
-            }
-            for (File file2 : listFiles) {
-                PackageInfo packageArchiveInfo = OverlayManagerService.this.getContext().getPackageManager().getPackageArchiveInfo(file2.getPath(), PackageManager.PackageInfoFlags.of(4096L));
-                String charSequence = packageArchiveInfo.applicationInfo.loadLabel(OverlayManagerService.this.getContext().getPackageManager()).toString();
-                if (charSequence != null) {
-                    printWriter.println("   " + packageArchiveInfo.packageName + "(" + charSequence + ")");
-                } else {
-                    printWriter.println("   " + packageArchiveInfo.packageName + "()");
-                }
-            }
-        }
-
-        public final String checkUserOrTrialPackageJson(String str, String str2, PrintWriter printWriter) {
-            File file = new File(str + "/userjson");
-            if (file.exists() && file.list() != null) {
-                for (String str3 : file.list()) {
-                    if (str3.startsWith(str2)) {
-                        return file.getPath() + "/" + str3;
-                    }
-                }
-            }
-            File file2 = new File(str + "/trialjson");
-            if (!file2.exists() || file2.list() == null) {
+        public final List readLastPalette() {
+            OverlayManagerService.this.mWallpaperThemeManager.mWallpaperThemeManager.getClass();
+            ArrayList arrayList = (ArrayList) SemWallpaperThemeManager.readLastPalette();
+            if (arrayList.isEmpty()) {
                 return null;
             }
-            for (String str4 : file2.list()) {
-                if (str4.startsWith(str2)) {
-                    return file2.getPath() + "/" + str4;
-                }
-            }
-            return null;
+            return arrayList.subList(0, 65);
         }
 
-        public final void printJsonInfo(String str, PrintWriter printWriter) {
-            printWriter.println("current theme Json: " + str);
-            FileInputStream fileInputStream = new FileInputStream(str);
-            try {
-                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+        public final void removeOverlays(List list, ISamsungOverlayCallback iSamsungOverlayCallback, int i) {
+            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
+            synchronized (OverlayManagerService.this.mLock) {
+                OverlayManagerServiceExt overlayManagerServiceExt = OverlayManagerService.this.mOverlayManagerServiceExt;
+                if (overlayManagerServiceExt != null) {
+                    overlayManagerServiceExt.notifySystemServices(i, overlayManagerServiceExt.removeOverlaysInternal(list, iSamsungOverlayCallback, i), list);
+                }
+            }
+        }
+
+        public final void replaceOverlays(List list, List list2, ISamsungOverlayCallback iSamsungOverlayCallback, int i) {
+            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
+            synchronized (OverlayManagerService.this.mLock) {
                 try {
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    try {
-                        StringBuilder sb = new StringBuilder();
-                        while (true) {
-                            String readLine = bufferedReader.readLine();
-                            if (readLine != null) {
-                                sb.append(readLine);
-                            } else {
-                                bufferedReader.close();
-                                inputStreamReader.close();
-                                fileInputStream.close();
-                                printWriter.println(new JSONObject(sb.toString()).toString(3) + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                                return;
-                            }
-                        }
-                    } finally {
+                    OverlayManagerServiceExt overlayManagerServiceExt = OverlayManagerService.this.mOverlayManagerServiceExt;
+                    if (overlayManagerServiceExt != null) {
+                        overlayManagerServiceExt.replaceOverlays(list, list2, iSamsungOverlayCallback, i);
                     }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final boolean setEnabled(String str, boolean z, int i) {
+            if (str == null) {
+                return false;
+            }
+            try {
+                Trace.traceBegin(67108864L, "OMS#setEnabled " + str + " " + z);
+                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
+                int handleIncomingUser = handleIncomingUser(i, "setEnabled");
+                enforceActor(handleIncomingUser, overlayIdentifier, "setEnabled");
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (OverlayManagerService.this.mLock) {
+                        try {
+                            OverlayManagerService overlayManagerService = OverlayManagerService.this;
+                            overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.setEnabled(handleIncomingUser, overlayIdentifier, z), false);
+                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
+                            return false;
+                        }
+                    }
+                    Trace.traceEnd(67108864L);
+                    return true;
                 } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            } finally {
+                Trace.traceEnd(67108864L);
+            }
+        }
+
+        public final boolean setEnabledExclusive(String str, boolean z, int i) {
+            if (str == null || !z) {
+                return false;
+            }
+            try {
+                Trace.traceBegin(67108864L, "OMS#setEnabledExclusive " + str + " " + z);
+                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
+                int handleIncomingUser = handleIncomingUser(i, "setEnabledExclusive");
+                enforceActor(handleIncomingUser, overlayIdentifier, "setEnabledExclusive");
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (OverlayManagerService.this.mLock) {
+                        try {
+                            OverlayManagerService.this.mImpl.setEnabledExclusive(handleIncomingUser, overlayIdentifier, false).ifPresent(new OverlayManagerService$1$$ExternalSyntheticLambda0(OverlayManagerService.this));
+                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
+                            Trace.traceEnd(67108864L);
+                            return false;
+                        }
+                    }
+                    Trace.traceEnd(67108864L);
+                    return true;
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
             } catch (Throwable th) {
-                try {
-                    fileInputStream.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
+                Trace.traceEnd(67108864L);
                 throw th;
             }
         }
 
-        public final int handleIncomingUser(int i, String str) {
-            return ActivityManager.handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), i, false, true, str, null);
-        }
-
-        public final void enforceDumpPermission(String str) {
-            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("android.permission.DUMP", str);
-        }
-
-        public final void enforceActor(OverlayIdentifier overlayIdentifier, String str, int i) {
-            OverlayInfo overlayInfo = OverlayManagerService.this.mImpl.getOverlayInfo(overlayIdentifier, i);
-            if (overlayInfo == null) {
-                throw new IllegalArgumentException("Unable to retrieve overlay information for " + overlayIdentifier);
+        public final boolean setEnabledExclusiveInCategory(String str, int i) {
+            if (str == null) {
+                return false;
             }
-            OverlayManagerService.this.mActorEnforcer.enforceActor(overlayInfo, str, Binder.getCallingUid(), i);
-        }
-
-        public void replaceOverlays(List list, List list2, ISamsungOverlayCallback iSamsungOverlayCallback, int i) {
-            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
-            synchronized (OverlayManagerService.this.mLock) {
-                if (OverlayManagerService.this.mOverlayManagerServiceExt != null) {
-                    OverlayManagerService.this.mOverlayManagerServiceExt.replaceOverlays(list, list2, iSamsungOverlayCallback, i);
+            try {
+                Trace.traceBegin(67108864L, "OMS#setEnabledExclusiveInCategory ".concat(str));
+                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
+                int handleIncomingUser = handleIncomingUser(i, "setEnabledExclusiveInCategory");
+                enforceActor(handleIncomingUser, overlayIdentifier, "setEnabledExclusiveInCategory");
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (OverlayManagerService.this.mLock) {
+                        try {
+                            OverlayManagerService.this.mImpl.setEnabledExclusive(handleIncomingUser, overlayIdentifier, true).ifPresent(new OverlayManagerService$1$$ExternalSyntheticLambda0(OverlayManagerService.this));
+                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
+                            Trace.traceEnd(67108864L);
+                            return false;
+                        }
+                    }
+                    Trace.traceEnd(67108864L);
+                    return true;
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
-            }
-        }
-
-        public void addOverlays(List list, ISamsungOverlayCallback iSamsungOverlayCallback, int i) {
-            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
-            synchronized (OverlayManagerService.this.mLock) {
-                if (OverlayManagerService.this.mOverlayManagerServiceExt != null) {
-                    OverlayManagerService.this.mOverlayManagerServiceExt.addOverlays(list, iSamsungOverlayCallback, i);
-                }
+            } catch (Throwable th) {
+                Trace.traceEnd(67108864L);
+                throw th;
             }
         }
 
-        public void removeOverlays(List list, ISamsungOverlayCallback iSamsungOverlayCallback, int i) {
-            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
-            synchronized (OverlayManagerService.this.mLock) {
-                if (OverlayManagerService.this.mOverlayManagerServiceExt != null) {
-                    OverlayManagerService.this.mOverlayManagerServiceExt.removeOverlays(list, iSamsungOverlayCallback, i);
+        public final boolean setHighestPriority(String str, int i) {
+            if (str == null) {
+                return false;
+            }
+            try {
+                Trace.traceBegin(67108864L, "OMS#setHighestPriority ".concat(str));
+                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
+                int handleIncomingUser = handleIncomingUser(i, "setHighestPriority");
+                enforceActor(handleIncomingUser, overlayIdentifier, "setHighestPriority");
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (OverlayManagerService.this.mLock) {
+                        try {
+                            OverlayManagerService overlayManagerService = OverlayManagerService.this;
+                            overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.setHighestPriority(overlayIdentifier, handleIncomingUser), false);
+                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
+                            return false;
+                        }
+                    }
+                    Trace.traceEnd(67108864L);
+                    return true;
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
+            } finally {
+                Trace.traceEnd(67108864L);
             }
         }
 
-        public boolean changeOverlayState(String str, int i, boolean z) {
-            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
-            synchronized (OverlayManagerService.this.mLock) {
-                if (OverlayManagerService.this.mOverlayManagerServiceExt == null) {
-                    return false;
+        public final boolean setLowestPriority(String str, int i) {
+            if (str == null) {
+                return false;
+            }
+            try {
+                Trace.traceBegin(67108864L, "OMS#setLowestPriority ".concat(str));
+                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
+                int handleIncomingUser = handleIncomingUser(i, "setLowestPriority");
+                enforceActor(handleIncomingUser, overlayIdentifier, "setLowestPriority");
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (OverlayManagerService.this.mLock) {
+                        try {
+                            OverlayManagerService.this.mImpl.setLowestPriority(overlayIdentifier, handleIncomingUser).ifPresent(new OverlayManagerService$1$$ExternalSyntheticLambda0(OverlayManagerService.this));
+                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
+                            Trace.traceEnd(67108864L);
+                            return false;
+                        }
+                    }
+                    Trace.traceEnd(67108864L);
+                    return true;
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
-                return OverlayManagerService.this.mOverlayManagerServiceExt.changeOverlayState(str, i, z);
+            } catch (Throwable th) {
+                Trace.traceEnd(67108864L);
+                throw th;
             }
         }
 
-        public OverlayInfoExt[] getAllOverlaysInCategory(int i, int i2) {
-            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
-            synchronized (OverlayManagerService.this.mLock) {
-                if (OverlayManagerService.this.mOverlayManagerServiceExt == null) {
-                    return new OverlayInfoExt[0];
-                }
-                return OverlayManagerService.this.mOverlayManagerServiceExt.getAllOverlaysInCategory(i, i2);
+        public final boolean setPriority(String str, String str2, int i) {
+            if (str == null || str2 == null) {
+                return false;
             }
-        }
-
-        public OverlayInfoExt getOverlayForPath(String str, int i) {
-            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
-            synchronized (OverlayManagerService.this.mLock) {
-                if (OverlayManagerService.this.mOverlayManagerServiceExt == null) {
-                    return null;
+            try {
+                Trace.traceBegin(67108864L, "OMS#setPriority " + str + " " + str2);
+                OverlayIdentifier overlayIdentifier = new OverlayIdentifier(str);
+                OverlayIdentifier overlayIdentifier2 = new OverlayIdentifier(str2);
+                int handleIncomingUser = handleIncomingUser(i, "setPriority");
+                enforceActor(handleIncomingUser, overlayIdentifier, "setPriority");
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    synchronized (OverlayManagerService.this.mLock) {
+                        try {
+                            OverlayManagerService.this.mImpl.setPriority(overlayIdentifier, overlayIdentifier2, handleIncomingUser).ifPresent(new OverlayManagerService$1$$ExternalSyntheticLambda0(OverlayManagerService.this));
+                        } catch (OverlayManagerServiceImpl.OperationFailedException unused) {
+                            Trace.traceEnd(67108864L);
+                            return false;
+                        }
+                    }
+                    Trace.traceEnd(67108864L);
+                    return true;
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
                 }
-                return OverlayManagerService.this.mOverlayManagerServiceExt.getOverlayForPath(str, i);
+            } catch (Throwable th) {
+                Trace.traceEnd(67108864L);
+                throw th;
             }
-        }
-
-        public OverlayInfoExt[] getOverlaysForTarget(String str, int i, int i2) {
-            OverlayManagerService.this.getContext().enforceCallingOrSelfPermission("com.samsung.android.permission.MODIFY_THEME", null);
-            synchronized (OverlayManagerService.this.mLock) {
-                if (OverlayManagerService.this.mOverlayManagerServiceExt == null) {
-                    return new OverlayInfoExt[0];
-                }
-                return OverlayManagerService.this.mOverlayManagerServiceExt.getOverlaysForTarget(str, i, i2);
-            }
-        }
-
-        public void applyWallpaperColors(List list, int i, int i2) {
-            OverlayManagerService.this.mWallpaperThemeManager.applyWallpaperColors(list, i, i2);
-        }
-
-        public void applyWallpaperColor(List list, List list2, boolean z) {
-            OverlayManagerService.this.mWallpaperThemeManager.applyWallpaperColor(list, list2, z);
-        }
-
-        public List getWallpaperColors() {
-            return OverlayManagerService.this.mWallpaperThemeManager.getWallpaperColors();
-        }
-
-        public List readLastPalette() {
-            return OverlayManagerService.this.mWallpaperThemeManager.readLastPalette();
-        }
-
-        public boolean getLastPalette(List list, List list2) {
-            return OverlayManagerService.this.mWallpaperThemeManager.getLastPalette(list, list2);
-        }
-
-        public void applyThemeParkWallpaperColor(Uri uri) {
-            OverlayManagerService.this.mWallpaperThemeManager.applyThemeParkWallpaperColor(uri);
-        }
-
-        public List getThemeParkOverlayNames(final String str) {
-            return (List) OverlayManagerService.this.mSettings.getOverlaysForUser(handleIncomingUser(0, "getAllOverlays")).values().stream().flatMap(new OverlayManagerService$2$$ExternalSyntheticLambda1()).map(new Function() { // from class: com.android.server.om.OverlayManagerService$2$$ExternalSyntheticLambda2
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    return ((OverlayInfo) obj).getOverlayName();
-                }
-            }).filter(new Predicate() { // from class: com.android.server.om.OverlayManagerService$2$$ExternalSyntheticLambda3
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$getThemeParkOverlayNames$0;
-                    lambda$getThemeParkOverlayNames$0 = OverlayManagerService.AnonymousClass2.lambda$getThemeParkOverlayNames$0(str, (String) obj);
-                    return lambda$getThemeParkOverlayNames$0;
-                }
-            }).collect(Collectors.toList());
-        }
-
-        public static /* synthetic */ boolean lambda$getThemeParkOverlayNames$0(String str, String str2) {
-            return str2 != null && str2.startsWith(str);
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class PackageManagerHelperImpl implements PackageManagerHelper {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class OverlayManagerPackageMonitor extends PackageMonitor {
+        public OverlayManagerPackageMonitor() {
+        }
+
+        public final void onPackageAppearedWithExtras(String str, Bundle bundle) {
+            OverlayManagerService overlayManagerService = OverlayManagerService.this;
+            int changingUserId = getChangingUserId();
+            overlayManagerService.getClass();
+            if (bundle.getBoolean("android.intent.extra.REPLACING", false)) {
+                try {
+                    Trace.traceBegin(67108864L, "OMS#onPackageReplaced " + str);
+                    synchronized (overlayManagerService.mLock) {
+                        if (overlayManagerService.mPackageManager.addPackageUser(changingUserId, str) != null && !overlayManagerService.mPackageManager.mPackageManagerInternal.isInstantApp(str, changingUserId)) {
+                            try {
+                                overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.reconcileSettingsForPackage(changingUserId, 0, str), false);
+                            } catch (OverlayManagerServiceImpl.OperationFailedException e) {
+                                Slog.e("OverlayManager", "onPackageReplaced internal error", e);
+                            }
+                        }
+                    }
+                } finally {
+                }
+            } else {
+                try {
+                    Trace.traceBegin(67108864L, "OMS#onPackageAdded " + str);
+                    synchronized (overlayManagerService.mLock) {
+                        if (overlayManagerService.mPackageManager.addPackageUser(changingUserId, str) != null && !overlayManagerService.mPackageManager.mPackageManagerInternal.isInstantApp(str, changingUserId)) {
+                            try {
+                                OverlayManagerServiceImpl overlayManagerServiceImpl = overlayManagerService.mImpl;
+                                overlayManagerServiceImpl.getClass();
+                                ArraySet arraySet = new ArraySet();
+                                arraySet.add(UserPackage.of(changingUserId, str));
+                                arraySet.addAll(overlayManagerServiceImpl.reconcileSettingsForPackage(changingUserId, 0, str));
+                                overlayManagerService.updateTargetPackagesLocked(arraySet, false);
+                            } catch (OverlayManagerServiceImpl.OperationFailedException e2) {
+                                Slog.e("OverlayManager", "onPackageAdded internal error", e2);
+                            }
+                        }
+                    }
+                } finally {
+                }
+            }
+            SemWallpaperThemeManagerWrapper semWallpaperThemeManagerWrapper = overlayManagerService.mWallpaperThemeManager;
+            SemWallpaperThemeManager semWallpaperThemeManager = semWallpaperThemeManagerWrapper.mWallpaperThemeManager;
+            int colorThemeState = semWallpaperThemeManagerWrapper.getColorThemeState();
+            if (colorThemeState != -1) {
+                try {
+                    semWallpaperThemeManagerWrapper.initTemplateMetadataIfNeeded();
+                    semWallpaperThemeManager.updateTemplateMetadataFromPkg(SemWallpaperThemeManagerWrapper.mContext.getPackageManager().getPackageInfo(str, PackageManager.PackageInfoFlags.of(8832L)));
+                    OverlayManagerTransaction.Builder builder = new OverlayManagerTransaction.Builder();
+                    semWallpaperThemeManager.updateThemeOverlay(builder, str, colorThemeState);
+                    IOverlayManager.Stub.asInterface(ServiceManager.getService("overlay")).commit(builder.build());
+                } catch (Exception e3) {
+                    DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e3, "FAILED at commit for packageAdded, e=", "SWT_WTM_Wrapper");
+                }
+            }
+        }
+
+        public final void onPackageChangedWithExtras(String str, Bundle bundle) {
+            OverlayManagerService overlayManagerService = OverlayManagerService.this;
+            int changingUserId = getChangingUserId();
+            overlayManagerService.getClass();
+            if ("android.intent.action.OVERLAY_CHANGED".equals(bundle.getString("android.intent.extra.REASON"))) {
+                return;
+            }
+            try {
+                Trace.traceBegin(67108864L, "OMS#onPackageChanged " + str);
+                synchronized (overlayManagerService.mLock) {
+                    if (overlayManagerService.mPackageManager.addPackageUser(changingUserId, str) != null && !overlayManagerService.mPackageManager.mPackageManagerInternal.isInstantApp(str, changingUserId)) {
+                        try {
+                            overlayManagerService.updateTargetPackagesLocked(overlayManagerService.mImpl.reconcileSettingsForPackage(changingUserId, 8, str), false);
+                        } catch (OverlayManagerServiceImpl.OperationFailedException e) {
+                            Slog.e("OverlayManager", "onPackageChanged internal error", e);
+                        }
+                    }
+                }
+            } finally {
+                Trace.traceEnd(67108864L);
+            }
+        }
+
+        /* JADX WARN: Code restructure failed: missing block: B:36:0x008d, code lost:
+        
+            r1 = (android.content.pm.PackageManagerInternal) com.android.server.LocalServices.getService(android.content.pm.PackageManagerInternal.class);
+            r2 = new android.util.ArrayMap(1);
+            r2.put(r9, r0);
+            r1.setEnabledOverlayPackages(r8, r2, new java.util.HashSet(), new java.util.HashSet());
+            android.util.Slog.d("OverlayManager", "OM_BUG_FIX_LOST_OVERLAY_WHEN_UPDATE_UNINSTALL : " + r9);
+         */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void onPackageDisappearedWithExtras(java.lang.String r9, android.os.Bundle r10) {
+            /*
+                Method dump skipped, instructions count: 376
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.OverlayManagerService.OverlayManagerPackageMonitor.onPackageDisappearedWithExtras(java.lang.String, android.os.Bundle):void");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackageManagerHelperImpl {
         public final Context mContext;
         public final ArrayMap mCache = new ArrayMap();
-        public final Set mInitializedUsers = new ArraySet();
+        public final ArraySet mInitializedUsers = new ArraySet();
         public final IPackageManager mPackageManager = AppGlobals.getPackageManager();
         public final PackageManagerInternal mPackageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
 
-        /* loaded from: classes2.dex */
-        public class PackageStateUsers {
-            public final Set mInstalledUsers;
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class PackageStateUsers {
+            public final Set mInstalledUsers = new ArraySet();
             public PackageState mPackageState;
 
-            public /* synthetic */ PackageStateUsers(PackageState packageState, PackageStateUsersIA packageStateUsersIA) {
-                this(packageState);
-            }
-
             public PackageStateUsers(PackageState packageState) {
-                this.mInstalledUsers = new ArraySet();
                 this.mPackageState = packageState;
             }
         }
@@ -1462,177 +1081,44 @@ public final class OverlayManagerService extends SystemService {
             this.mContext = context;
         }
 
-        @Override // com.android.server.om.PackageManagerHelper
-        public ArrayMap initializeForUser(final int i) {
-            ArrayMap arrayMap;
-            synchronized (this.mCache) {
-                if (!this.mInitializedUsers.contains(Integer.valueOf(i))) {
-                    this.mInitializedUsers.add(Integer.valueOf(i));
-                    this.mPackageManagerInternal.forEachPackageState(new Consumer() { // from class: com.android.server.om.OverlayManagerService$PackageManagerHelperImpl$$ExternalSyntheticLambda0
-                        @Override // java.util.function.Consumer
-                        public final void accept(Object obj) {
-                            OverlayManagerService.PackageManagerHelperImpl.this.lambda$initializeForUser$0(i, (PackageStateInternal) obj);
-                        }
-                    });
-                }
-                arrayMap = new ArrayMap();
-                int size = this.mCache.size();
-                for (int i2 = 0; i2 < size; i2++) {
-                    PackageStateUsers packageStateUsers = (PackageStateUsers) this.mCache.valueAt(i2);
-                    if (packageStateUsers.mInstalledUsers.contains(Integer.valueOf(i))) {
-                        arrayMap.put((String) this.mCache.keyAt(i2), packageStateUsers.mPackageState);
-                    }
-                }
-            }
-            return arrayMap;
-        }
-
-        public /* synthetic */ void lambda$initializeForUser$0(int i, PackageStateInternal packageStateInternal) {
-            if (packageStateInternal.getPkg() == null || !packageStateInternal.getUserStateOrDefault(i).isInstalled()) {
-                return;
-            }
-            addPackageUser(packageStateInternal, i);
-        }
-
-        @Override // com.android.server.om.PackageManagerHelper
-        public PackageState getPackageStateForUser(String str, int i) {
-            synchronized (this.mCache) {
-                PackageStateUsers packageStateUsers = (PackageStateUsers) this.mCache.get(str);
-                if (packageStateUsers != null && packageStateUsers.mInstalledUsers.contains(Integer.valueOf(i))) {
-                    return packageStateUsers.mPackageState;
-                }
-                try {
-                    if (!this.mPackageManager.isPackageAvailable(str, i)) {
-                        return null;
-                    }
-                    return addPackageUser(str, i);
-                } catch (RemoteException e) {
-                    Slog.w("OverlayManager", "Failed to check availability of package '" + str + "' for user " + i, e);
-                    return null;
-                }
-            }
-        }
-
-        public final PackageState addPackageUser(String str, int i) {
+        public final PackageState addPackageUser(int i, String str) {
             PackageStateInternal packageStateInternal = this.mPackageManagerInternal.getPackageStateInternal(str);
-            if (packageStateInternal == null) {
-                Slog.w("OverlayManager", "Android package for '" + str + "' could not be found; continuing as if package was never added", new Throwable());
-                return null;
+            if (packageStateInternal != null) {
+                return addPackageUser(packageStateInternal, i);
             }
-            return addPackageUser(packageStateInternal, i);
+            Slog.w("OverlayManager", XmlUtils$$ExternalSyntheticOutline0.m("Android package for '", str, "' could not be found; continuing as if package was never added"), new Throwable());
+            return null;
         }
 
         public final PackageState addPackageUser(PackageState packageState, int i) {
             PackageState packageState2;
             synchronized (this.mCache) {
-                PackageStateUsers packageStateUsers = (PackageStateUsers) this.mCache.get(packageState.getPackageName());
-                if (packageStateUsers == null) {
-                    packageStateUsers = new PackageStateUsers(packageState);
-                    this.mCache.put(packageState.getPackageName(), packageStateUsers);
-                } else {
-                    packageStateUsers.mPackageState = packageState;
+                try {
+                    PackageStateUsers packageStateUsers = (PackageStateUsers) this.mCache.get(packageState.getPackageName());
+                    if (packageStateUsers == null) {
+                        packageStateUsers = new PackageStateUsers(packageState);
+                        this.mCache.put(packageState.getPackageName(), packageStateUsers);
+                    } else {
+                        packageStateUsers.mPackageState = packageState;
+                    }
+                    ((ArraySet) packageStateUsers.mInstalledUsers).add(Integer.valueOf(i));
+                    packageState2 = packageStateUsers.mPackageState;
+                } catch (Throwable th) {
+                    throw th;
                 }
-                packageStateUsers.mInstalledUsers.add(Integer.valueOf(i));
-                packageState2 = packageStateUsers.mPackageState;
             }
             return packageState2;
         }
 
-        public final void removePackageUser(String str, int i) {
-            synchronized (this.mCache) {
-                PackageStateUsers packageStateUsers = (PackageStateUsers) this.mCache.get(str);
-                if (packageStateUsers == null) {
-                    return;
-                }
-                removePackageUser(packageStateUsers, i);
-            }
-        }
-
-        public final void removePackageUser(PackageStateUsers packageStateUsers, int i) {
-            synchronized (this.mCache) {
-                packageStateUsers.mInstalledUsers.remove(Integer.valueOf(i));
-                if (packageStateUsers.mInstalledUsers.isEmpty()) {
-                    this.mCache.remove(packageStateUsers.mPackageState.getPackageName());
-                }
-            }
-        }
-
-        public PackageState onPackageAdded(String str, int i) {
-            return addPackageUser(str, i);
-        }
-
-        public PackageState onPackageUpdated(String str, int i) {
-            return addPackageUser(str, i);
-        }
-
-        public void onPackageRemoved(String str, int i) {
-            removePackageUser(str, i);
-        }
-
-        public boolean isInstantApp(String str, int i) {
-            return this.mPackageManagerInternal.isInstantApp(str, i);
-        }
-
-        @Override // com.android.server.om.PackageManagerHelper
-        public Map getNamedActors() {
-            return SystemConfig.getInstance().getNamedActors();
-        }
-
-        @Override // com.android.server.om.PackageManagerHelper
-        public boolean signaturesMatching(String str, String str2, int i) {
-            try {
-                return this.mPackageManager.checkSignatures(str, str2, i) == 0;
-            } catch (RemoteException unused) {
-                return false;
-            }
-        }
-
-        @Override // com.android.server.om.PackageManagerHelper
-        public String getConfigSignaturePackage() {
-            String[] knownPackageNames = this.mPackageManagerInternal.getKnownPackageNames(13, 0);
-            if (knownPackageNames.length == 0) {
-                return null;
-            }
-            return knownPackageNames[0];
-        }
-
-        @Override // com.android.server.om.PackageManagerHelper
-        public OverlayableInfo getOverlayableForTarget(String str, String str2, int i) {
-            PackageState packageStateForUser = getPackageStateForUser(str, i);
+        public final boolean doesTargetDefineOverlayable(int i, String str) {
+            PackageState packageStateForUser = getPackageStateForUser(i, str);
             ApkAssets apkAssets = null;
             AndroidPackage androidPackage = packageStateForUser == null ? null : packageStateForUser.getAndroidPackage();
             if (androidPackage == null) {
                 throw new IOException("Unable to get target package");
             }
             try {
-                apkAssets = ApkAssets.loadFromPath(((AndroidPackageSplit) androidPackage.getSplits().get(0)).getPath());
-                OverlayableInfo overlayableInfo = apkAssets.getOverlayableInfo(str2);
-                try {
-                    apkAssets.close();
-                } catch (Throwable unused) {
-                }
-                return overlayableInfo;
-            } catch (Throwable th) {
-                if (apkAssets != null) {
-                    try {
-                        apkAssets.close();
-                    } catch (Throwable unused2) {
-                    }
-                }
-                throw th;
-            }
-        }
-
-        @Override // com.android.server.om.PackageManagerHelper
-        public boolean doesTargetDefineOverlayable(String str, int i) {
-            PackageState packageStateForUser = getPackageStateForUser(str, i);
-            ApkAssets apkAssets = null;
-            AndroidPackage androidPackage = packageStateForUser == null ? null : packageStateForUser.getAndroidPackage();
-            if (androidPackage == null) {
-                throw new IOException("Unable to get target package");
-            }
-            try {
-                apkAssets = ApkAssets.loadFromPath(((AndroidPackageSplit) androidPackage.getSplits().get(0)).getPath());
+                apkAssets = ApkAssets.loadFromPath(((AndroidPackageSplit) androidPackage.getSplits().get(0)).getPath(), 32);
                 boolean definesOverlayable = apkAssets.definesOverlayable();
                 try {
                     apkAssets.close();
@@ -1650,152 +1136,515 @@ public final class OverlayManagerService extends SystemService {
             }
         }
 
-        @Override // com.android.server.om.PackageManagerHelper
-        public void enforcePermission(String str, String str2) {
-            this.mContext.enforceCallingOrSelfPermission(str, str2);
-        }
-
-        public void forgetAllPackageInfos(int i) {
+        public final void dump(PrintWriter printWriter, DumpState dumpState) {
             synchronized (this.mCache) {
-                for (int size = this.mCache.size() - 1; size >= 0; size--) {
-                    removePackageUser((PackageStateUsers) this.mCache.valueAt(size), i);
-                }
-            }
-        }
-
-        @Override // com.android.server.om.PackageManagerHelper
-        public String[] getPackagesForUid(int i) {
-            try {
-                return this.mPackageManager.getPackagesForUid(i);
-            } catch (RemoteException unused) {
-                return null;
-            }
-        }
-
-        public void dump(PrintWriter printWriter, DumpState dumpState) {
-            synchronized (this.mCache) {
-                printWriter.println("AndroidPackage cache");
-                if (!dumpState.isVerbose()) {
-                    printWriter.println("    " + this.mCache.size() + " package(s)");
-                    return;
-                }
-                if (this.mCache.size() == 0) {
-                    printWriter.println("    <empty>");
-                    return;
-                }
-                int size = this.mCache.size();
-                for (int i = 0; i < size; i++) {
-                    String str = (String) this.mCache.keyAt(i);
-                    PackageStateUsers packageStateUsers = (PackageStateUsers) this.mCache.valueAt(i);
-                    printWriter.print("    " + str + ": " + packageStateUsers.mPackageState + " users=");
-                    printWriter.println(TextUtils.join(", ", packageStateUsers.mInstalledUsers));
-                }
-            }
-        }
-    }
-
-    public final void updateTargetPackagesLocked(UserPackage userPackage) {
-        if (userPackage != null) {
-            updateTargetPackagesLocked(Set.of(userPackage));
-        }
-    }
-
-    public final void updateTargetPackagesLocked(Set set) {
-        updateTargetPackagesLocked(set, false);
-    }
-
-    public final void updateTargetPackagesLocked(Set set, final boolean z) {
-        if (CollectionUtils.isEmpty(set)) {
-            return;
-        }
-        persistSettingsLocked();
-        SparseArray groupTargetsByUserId = groupTargetsByUserId(set);
-        int size = groupTargetsByUserId.size();
-        for (int i = 0; i < size; i++) {
-            final ArraySet arraySet = (ArraySet) groupTargetsByUserId.valueAt(i);
-            final int keyAt = groupTargetsByUserId.keyAt(i);
-            final List updatePackageManagerLocked = updatePackageManagerLocked(arraySet, keyAt);
-            if (!updatePackageManagerLocked.isEmpty()) {
-                FgThread.getHandler().post(new Runnable() { // from class: com.android.server.om.OverlayManagerService$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        OverlayManagerService.this.lambda$updateTargetPackagesLocked$1(updatePackageManagerLocked, keyAt, z, arraySet);
+                try {
+                    printWriter.println("AndroidPackage cache");
+                    if (!dumpState.mVerbose) {
+                        printWriter.println("    " + this.mCache.size() + " package(s)");
+                        return;
                     }
-                });
+                    if (this.mCache.size() == 0) {
+                        printWriter.println("    <empty>");
+                        return;
+                    }
+                    int size = this.mCache.size();
+                    for (int i = 0; i < size; i++) {
+                        String str = (String) this.mCache.keyAt(i);
+                        PackageStateUsers packageStateUsers = (PackageStateUsers) this.mCache.valueAt(i);
+                        printWriter.print("    " + str + ": " + packageStateUsers.mPackageState + " users=");
+                        printWriter.println(TextUtils.join(", ", packageStateUsers.mInstalledUsers));
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final OverlayableInfo getOverlayableForTarget(int i, String str, String str2) {
+            PackageState packageStateForUser = getPackageStateForUser(i, str);
+            ApkAssets apkAssets = null;
+            AndroidPackage androidPackage = packageStateForUser == null ? null : packageStateForUser.getAndroidPackage();
+            if (androidPackage == null) {
+                throw new IOException("Unable to get target package");
+            }
+            try {
+                apkAssets = ApkAssets.loadFromPath(((AndroidPackageSplit) androidPackage.getSplits().get(0)).getPath(), 32);
+                OverlayableInfo overlayableInfo = apkAssets.getOverlayableInfo(str2);
+                try {
+                    apkAssets.close();
+                } catch (Throwable unused) {
+                }
+                return overlayableInfo;
+            } catch (Throwable th) {
+                if (apkAssets != null) {
+                    try {
+                        apkAssets.close();
+                    } catch (Throwable unused2) {
+                    }
+                }
+                throw th;
+            }
+        }
+
+        public final PackageState getPackageStateForUser(int i, String str) {
+            synchronized (this.mCache) {
+                PackageStateUsers packageStateUsers = (PackageStateUsers) this.mCache.get(str);
+                if (packageStateUsers != null) {
+                    if (((ArraySet) packageStateUsers.mInstalledUsers).contains(Integer.valueOf(i))) {
+                        return packageStateUsers.mPackageState;
+                    }
+                }
+                try {
+                    if (!this.mPackageManager.isPackageAvailable(str, i)) {
+                        return null;
+                    }
+                    return addPackageUser(i, str);
+                } catch (RemoteException e) {
+                    Slog.w("OverlayManager", "Failed to check availability of package '" + str + "' for user " + i, e);
+                    return null;
+                }
+            }
+        }
+
+        public final void removePackageUser(PackageStateUsers packageStateUsers, int i) {
+            synchronized (this.mCache) {
+                try {
+                    ((ArraySet) packageStateUsers.mInstalledUsers).remove(Integer.valueOf(i));
+                    if (((ArraySet) packageStateUsers.mInstalledUsers).isEmpty()) {
+                        this.mCache.remove(packageStateUsers.mPackageState.getPackageName());
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
             }
         }
     }
 
-    public /* synthetic */ void lambda$updateTargetPackagesLocked$1(List list, int i, boolean z, ArraySet arraySet) {
-        updateActivityManager(list, i);
-        if (z) {
-            Slog.i("SWT_OverlayManager", "overlay changed broadcast to system for color theme");
-            broadcastActionOverlayChanged(new ArraySet(Arrays.asList("android")), i);
-        } else {
-            broadcastActionOverlayChanged(arraySet, i);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackageUpdateHelper {
+        public PackageUpdateHelper() {
         }
     }
 
-    public static SparseArray groupTargetsByUserId(Set set) {
-        final SparseArray sparseArray = new SparseArray();
-        CollectionUtils.forEach(set, new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.om.OverlayManagerService$$ExternalSyntheticLambda4
-            public final void acceptOrThrow(Object obj) {
-                OverlayManagerService.lambda$groupTargetsByUserId$2(sparseArray, (UserPackage) obj);
-            }
-        });
-        return sparseArray;
-    }
-
-    public static /* synthetic */ void lambda$groupTargetsByUserId$2(SparseArray sparseArray, UserPackage userPackage) {
-        ArraySet arraySet = (ArraySet) sparseArray.get(userPackage.userId);
-        if (arraySet == null) {
-            arraySet = new ArraySet();
-            sparseArray.put(userPackage.userId, arraySet);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UserLifecycleListener implements UserManagerInternal.UserLifecycleListener {
+        public UserLifecycleListener() {
         }
-        arraySet.add(userPackage.packageName);
+
+        @Override // com.android.server.pm.UserManagerInternal.UserLifecycleListener
+        public final void onUserCreated(UserInfo userInfo, Object obj) {
+            if (userInfo == null || !userInfo.isMain()) {
+                return;
+            }
+            int i = userInfo.id;
+            try {
+                Slog.i("OverlayManager", "Updating overlays for onUserCreated " + i);
+                Trace.traceBegin(67108864L, "OMS#onUserCreated " + i);
+                synchronized (OverlayManagerService.this.mLock) {
+                    OverlayManagerService overlayManagerService = OverlayManagerService.this;
+                    overlayManagerService.updatePackageManagerLocked(overlayManagerService.mImpl.updateOverlaysForUser(i));
+                }
+            } finally {
+                Trace.traceEnd(67108864L);
+            }
+        }
     }
 
-    public static void broadcastActionOverlayChanged(Set set, final int i) {
-        final ActivityManagerInternal activityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
-        CollectionUtils.forEach(set, new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.om.OverlayManagerService$$ExternalSyntheticLambda1
-            public final void acceptOrThrow(Object obj) {
-                OverlayManagerService.lambda$broadcastActionOverlayChanged$3(i, activityManagerInternal, (String) obj);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UserReceiver extends BroadcastReceiver {
+        public UserReceiver() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -10000);
+            String action = intent.getAction();
+            action.getClass();
+            if (action.equals("android.intent.action.USER_REMOVED")) {
+                if (intExtra != -10000) {
+                    try {
+                        Trace.traceBegin(67108864L, "OMS ACTION_USER_REMOVED");
+                        synchronized (OverlayManagerService.this.mLock) {
+                            OverlayManagerServiceImpl overlayManagerServiceImpl = OverlayManagerService.this.mImpl;
+                            overlayManagerServiceImpl.getClass();
+                            Slog.d("OverlayManager", "onUserRemoved userId=" + intExtra);
+                            overlayManagerServiceImpl.mSettings.removeUser(intExtra);
+                            PackageManagerHelperImpl packageManagerHelperImpl = OverlayManagerService.this.mPackageManager;
+                            synchronized (packageManagerHelperImpl.mCache) {
+                                try {
+                                    for (int size = packageManagerHelperImpl.mCache.size() - 1; size >= 0; size--) {
+                                        packageManagerHelperImpl.removePackageUser((PackageManagerHelperImpl.PackageStateUsers) packageManagerHelperImpl.mCache.valueAt(size), intExtra);
+                                    }
+                                } finally {
+                                }
+                            }
+                        }
+                        return;
+                    } finally {
+                    }
+                }
+                return;
             }
-        });
+            if (action.equals("android.intent.action.USER_ADDED")) {
+                UserInfo userInfo = ((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).getUserInfo(intExtra);
+                if (intExtra != -10000) {
+                    if (userInfo == null || !userInfo.isMain()) {
+                        try {
+                            Slog.i("OverlayManager", "Updating overlays for added user " + intExtra);
+                            Trace.traceBegin(67108864L, "OMS ACTION_USER_ADDED");
+                            synchronized (OverlayManagerService.this.mLock) {
+                                try {
+                                    Slog.e("OMS_DEBUG", "[ACTION_USER_ADDED] userId : " + intExtra);
+                                    OverlayManagerService overlayManagerService = OverlayManagerService.this;
+                                    overlayManagerService.updatePackageManagerLocked(overlayManagerService.mImpl.updateOverlaysForUser(intExtra));
+                                    OverlayManagerServiceExt overlayManagerServiceExt = OverlayManagerService.this.mOverlayManagerServiceExt;
+                                    if (overlayManagerServiceExt != null) {
+                                        overlayManagerServiceExt.handleUserSwitch(intExtra);
+                                    }
+                                    OverlayManagerService.this.mWallpaperThemeManager.mWallpaperThemeManager.syncWallpaperThemeStateForUser(intExtra);
+                                } catch (Throwable th) {
+                                    throw th;
+                                }
+                            }
+                        } finally {
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    public static /* synthetic */ void lambda$broadcastActionOverlayChanged$3(int i, ActivityManagerInternal activityManagerInternal, String str) {
-        Intent intent = new Intent("android.intent.action.OVERLAY_CHANGED", Uri.fromParts("package", str, null));
-        intent.setFlags(67108864);
-        intent.putExtra("android.intent.extra.PACKAGE_NAME", str);
-        intent.putExtra("android.intent.extra.USER_ID", i);
-        activityManagerInternal.broadcastIntent(intent, (IIntentReceiver) null, (String[]) null, false, i, (int[]) null, new BiFunction() { // from class: com.android.server.om.OverlayManagerService$$ExternalSyntheticLambda3
-            @Override // java.util.function.BiFunction
-            public final Object apply(Object obj, Object obj2) {
-                Bundle filterReceiverAccess;
-                filterReceiverAccess = OverlayManagerService.filterReceiverAccess(((Integer) obj).intValue(), (Bundle) obj2);
-                return filterReceiverAccess;
+    /* renamed from: -$$Nest$munregisterColorThemeGG, reason: not valid java name */
+    public static void m738$$Nest$munregisterColorThemeGG(OverlayManagerService overlayManagerService, boolean z) {
+        synchronized (overlayManagerService.mLock) {
+            try {
+                Iterator it = ((ArraySet) overlayManagerService.mSettings.getAllIdentifiersAndBaseCodePaths()).iterator();
+                while (it.hasNext()) {
+                    Pair pair = (Pair) it.next();
+                    String overlayName = ((OverlayIdentifier) pair.first).getOverlayName();
+                    if (Constants.SYSTEMUI_PACKAGE_NAME.equals(((OverlayIdentifier) pair.first).getPackageName())) {
+                        if (!overlayName.contains("neutral")) {
+                            if (!overlayName.contains("accent")) {
+                                if (!z && overlayName.contains("dynamic")) {
+                                }
+                            }
+                        }
+                        overlayManagerService.mImpl.unregisterFabricatedOverlay((OverlayIdentifier) pair.first);
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
             }
-        }, (Bundle) null);
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r10v0, types: [android.content.om.IOverlayManager$Stub, android.os.IBinder, com.android.server.om.OverlayManagerService$1] */
+    public OverlayManagerService(Context context) {
+        super(context);
+        this.mLock = new Object();
+        OverlayManagerPackageMonitor overlayManagerPackageMonitor = new OverlayManagerPackageMonitor();
+        this.mPrevStartedUserId = -1;
+        this.mOverlayManagerServiceExt = null;
+        ?? anonymousClass1 = new AnonymousClass1();
+        this.mService = anonymousClass1;
+        try {
+            Trace.traceBegin(67108864L, "OMS#OverlayManagerService");
+            this.mSettingsFile = new ResilientAtomicFile(new File("/data/system/", "overlays.xml"), new File("/data/system/", "overlays-backup.xml"), new File("/data/system/", "overlays.xml.reservecopy"), this);
+            PackageManagerHelperImpl packageManagerHelperImpl = new PackageManagerHelperImpl(context);
+            this.mPackageManager = packageManagerHelperImpl;
+            this.mUserManager = UserManagerService.getInstance();
+            if (IdmapDaemon.sInstance == null) {
+                IdmapDaemon.sInstance = new IdmapDaemon();
+            }
+            IdmapManager idmapManager = new IdmapManager(IdmapDaemon.sInstance, packageManagerHelperImpl);
+            OverlayManagerSettings overlayManagerSettings = new OverlayManagerSettings();
+            this.mSettings = overlayManagerSettings;
+            OverlayManagerServiceImpl overlayManagerServiceImpl = new OverlayManagerServiceImpl(packageManagerHelperImpl, idmapManager, overlayManagerSettings, OverlayConfig.getSystemInstance(), getDefaultOverlayPackages());
+            this.mImpl = overlayManagerServiceImpl;
+            this.mActorEnforcer = new OverlayActorEnforcer(packageManagerHelperImpl);
+            HandlerThread handlerThread = new HandlerThread("OverlayManager");
+            handlerThread.start();
+            Looper looper = handlerThread.getLooper();
+            UserHandle userHandle = UserHandle.ALL;
+            overlayManagerPackageMonitor.register(context, looper, userHandle, true);
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction("android.intent.action.USER_ADDED");
+            intentFilter.addAction("android.intent.action.USER_REMOVED");
+            getContext().registerReceiverAsUser(new UserReceiver(), userHandle, intentFilter, null, null);
+            ((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).addUserLifecycleListener(new UserLifecycleListener());
+            restoreSettings();
+            OverlayManagerServiceExt overlayManagerServiceExt = new OverlayManagerServiceExt(context, packageManagerHelperImpl, overlayManagerSettings, idmapManager, new PackageUpdateHelper());
+            this.mOverlayManagerServiceExt = overlayManagerServiceExt;
+            overlayManagerServiceImpl.mOverlayManagerExt = overlayManagerServiceExt;
+            SemWallpaperThemeManagerWrapper semWallpaperThemeManagerWrapper = SemWallpaperThemeManagerWrapper.getInstance(context, new OverlayManagerSettingsHelper(overlayManagerSettings));
+            this.mWallpaperThemeManager = semWallpaperThemeManagerWrapper;
+            OverlayManagerTransaction initWallpaperTheme = semWallpaperThemeManagerWrapper.initWallpaperTheme();
+            overlayManagerSettings.removeIf(new OverlayManagerService$$ExternalSyntheticLambda4(TextUtils.emptyIfNull(getContext().getString(R.string.config_systemShell)), 0));
+            initIfNeeded();
+            onStartUser(0, true);
+            publishBinderService("overlay", anonymousClass1);
+            publishLocalService(OverlayManagerService.class, this);
+            if (semWallpaperThemeManagerWrapper.getColorThemeState() != 1) {
+                unregisterUnusedPaletteOverlays();
+            }
+            if (initWallpaperTheme != null) {
+                long uptimeMillis = SystemClock.uptimeMillis();
+                try {
+                    anonymousClass1.commit(initWallpaperTheme);
+                } catch (Exception e) {
+                    Slog.e("SWT_OverlayManager", "failed initWallpaperTheme, wallpaper theming will not working, ex = " + e);
+                }
+                Slog.d("SWT_OverlayManager", "Committed restored color theme : " + (SystemClock.uptimeMillis() - uptimeMillis) + "ms");
+            }
+        } finally {
+            Trace.traceEnd(67108864L);
+        }
     }
 
     @SystemApi
     public static void broadcastActionOverlayChangedPublic(Set set, int i) {
-        broadcastActionOverlayChanged(set, i);
+        CollectionUtils.forEach(set, new OverlayManagerService$$ExternalSyntheticLambda1(i, (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)));
     }
 
-    public static Bundle filterReceiverAccess(int i, Bundle bundle) {
-        if (((PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class)).filterAppAccess(bundle.getString("android.intent.extra.PACKAGE_NAME"), i, bundle.getInt("android.intent.extra.USER_ID"), false)) {
+    public static String[] getDefaultOverlayPackages() {
+        String str = SystemProperties.get("ro.boot.vendor.overlay.theme");
+        if (TextUtils.isEmpty(str)) {
+            return EmptyArray.STRING;
+        }
+        ArraySet arraySet = new ArraySet();
+        for (String str2 : str.split(";")) {
+            if (!TextUtils.isEmpty(str2)) {
+                arraySet.add(str2);
+            }
+        }
+        return (String[]) arraySet.toArray(new String[0]);
+    }
+
+    @SystemApi
+    public Map getAllOverlays(int i) {
+        try {
+            return this.mService.getAllOverlays(i);
+        } catch (RemoteException unused) {
             return null;
         }
-        return bundle;
     }
 
-    public final void updateActivityManager(List list, int i) {
+    @SystemApi
+    public List getOverlayInfosForTarget(String str, int i) {
         try {
-            ActivityManager.getService().scheduleApplicationInfoChanged(list, i);
-        } catch (RemoteException e) {
-            Slog.e("OverlayManager", "updateActivityManager remote exception", e);
+            return this.mService.getOverlayInfosForTarget(str, i);
+        } catch (RemoteException unused) {
+            return null;
+        }
+    }
+
+    @SystemApi
+    public String getTargetPath(String str) {
+        synchronized (this.mLock) {
+            try {
+                OverlayManagerServiceExt overlayManagerServiceExt = this.mOverlayManagerServiceExt;
+                if (overlayManagerServiceExt == null) {
+                    return null;
+                }
+                return overlayManagerServiceExt.getTargetPath(str);
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void initIfNeeded() {
+        List aliveUsers = ((UserManager) getContext().getSystemService(UserManager.class)).getAliveUsers();
+        synchronized (this.mLock) {
+            try {
+                int size = aliveUsers.size();
+                for (int i = 0; i < size; i++) {
+                    UserInfo userInfo = (UserInfo) aliveUsers.get(i);
+                    if (!userInfo.supportsSwitchTo() && userInfo.id != 0) {
+                        updatePackageManagerLocked(this.mImpl.updateOverlaysForUser(((UserInfo) aliveUsers.get(i)).id));
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+    }
+
+    public final void onStartUser(int i, boolean z) {
+        if (i == this.mPrevStartedUserId) {
+            return;
+        }
+        HermesService$3$$ExternalSyntheticOutline0.m(i, "Updating overlays for starting user ", "OverlayManager");
+        try {
+            Trace.traceBegin(67108864L, "OMS#onStartUser " + i);
+            this.mImpl.getClass();
+            OverlayManagerServiceImpl.createLocaleOverlayPreferenceDir(i);
+            if (!z) {
+                try {
+                    LocaleOverlayManagerWrapper.getInstance(getContext()).checkSanityOfOverlays(i);
+                } catch (Exception e) {
+                    Slog.e("OverlayManager", "onStartUser - Error in starting localeoverlaymanager: " + e);
+                }
+            }
+            synchronized (this.mLock) {
+                Slog.e("OMS_DEBUG", "[onStartUser] newUserId : " + i);
+                OverlayManagerServiceExt overlayManagerServiceExt = this.mOverlayManagerServiceExt;
+                if (overlayManagerServiceExt != null) {
+                    overlayManagerServiceExt.mIsInitOnBoot = z;
+                }
+                updateTargetPackagesLocked(this.mImpl.updateOverlaysForUser(i), false);
+                OverlayManagerServiceExt overlayManagerServiceExt2 = this.mOverlayManagerServiceExt;
+                if (overlayManagerServiceExt2 != null) {
+                    overlayManagerServiceExt2.mIsInitOnBoot = false;
+                }
+            }
+            Trace.traceEnd(67108864L);
+            this.mPrevStartedUserId = i;
+        } catch (Throwable th) {
+            Trace.traceEnd(67108864L);
+            throw th;
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onUserStarting(SystemService.TargetUser targetUser) {
+        onStartUser(targetUser.getUserIdentifier(), false);
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onUserSwitching(SystemService.TargetUser targetUser, SystemService.TargetUser targetUser2) {
+        UiModeManagerService.LocalService localService = (UiModeManagerService.LocalService) LocalServices.getService(UiModeManagerService.LocalService.class);
+        if (localService != null) {
+            int userIdentifier = targetUser2.getUserIdentifier();
+            UiModeManagerService.this.getContext().getContentResolver().unregisterContentObserver(UiModeManagerService.this.mSetupWizardObserver);
+            UiModeManagerService.this.verifySetupWizardCompleted();
+            synchronized (UiModeManagerService.this.mLock) {
+                try {
+                    UiModeManagerService uiModeManagerService = UiModeManagerService.this;
+                    uiModeManagerService.updateNightModeFromSettingsLocked(uiModeManagerService.getContext(), UiModeManagerService.this.getContext().getResources(), userIdentifier);
+                    UiModeManagerService.this.resetNightModeOverrideLocked();
+                    Set set = UiModeManagerService.SUPPORTED_NIGHT_MODE_CUSTOM_TYPES;
+                    UiModeManagerService.LogWrapper.i("onEarlySwitchUser : " + UiModeManagerService.this.mNightMode + " userID : " + userIdentifier);
+                    UiModeManagerService.this.updateLocked(0, 0);
+                    UiModeManagerService uiModeManagerService2 = UiModeManagerService.this;
+                    uiModeManagerService2.mAlarmManager.cancel(uiModeManagerService2.mCustomTimeListener);
+                    UiModeManagerService uiModeManagerService3 = UiModeManagerService.this;
+                    if (uiModeManagerService3.mNightMode.mNightModeValue == 3) {
+                        if (!uiModeManagerService3.mIsNightModeRegistered) {
+                            IntentFilter intentFilter = new IntentFilter("android.intent.action.TIME_SET");
+                            intentFilter.addAction("android.intent.action.TIMEZONE_CHANGED");
+                            uiModeManagerService3.getContext().registerReceiver(uiModeManagerService3.mOnTimeChangedHandler, intentFilter);
+                            UiModeManagerService.this.mIsNightModeRegistered = true;
+                        }
+                    } else if (uiModeManagerService3.mIsNightModeRegistered) {
+                        try {
+                            uiModeManagerService3.getContext().unregisterReceiver(uiModeManagerService3.mOnTimeChangedHandler);
+                        } catch (IllegalArgumentException unused) {
+                        }
+                        UiModeManagerService.this.mIsNightModeRegistered = false;
+                    }
+                } finally {
+                }
+            }
+        }
+    }
+
+    public final void persistSettingsLocked() {
+        Slog.d("OverlayManager", "Writing overlay settings");
+        try {
+            FileOutputStream startWrite = this.mSettingsFile.startWrite();
+            OverlayManagerSettings overlayManagerSettings = this.mSettings;
+            synchronized (overlayManagerSettings.mItemsLock) {
+                OverlayManagerSettings.Serializer.persist(overlayManagerSettings.mItems, startWrite);
+            }
+            this.mSettingsFile.finishWrite(startWrite);
+        } catch (IOException | XmlPullParserException e) {
+            ResilientAtomicFile resilientAtomicFile = this.mSettingsFile;
+            if (resilientAtomicFile.mMainOutStream != null) {
+                throw new IllegalStateException("Invalid incoming stream.");
+            }
+            resilientAtomicFile.close();
+            if (resilientAtomicFile.mFile.exists() && !resilientAtomicFile.mFile.delete()) {
+                Slog.i("ResilientAtomicFile", "Failed to clean up mangled file: " + resilientAtomicFile.mFile);
+            }
+            Slog.e("OverlayManager", "failed to persist overlay state", e);
+        }
+    }
+
+    public final void restoreSettings() {
+        FileInputStream openRead;
+        try {
+            Trace.traceBegin(67108864L, "OMS#restoreSettings");
+            synchronized (this.mLock) {
+                ResilientAtomicFile resilientAtomicFile = this.mSettingsFile;
+                if (!resilientAtomicFile.mFile.exists() && !resilientAtomicFile.mTemporaryBackup.exists() && !resilientAtomicFile.mReserveCopy.exists()) {
+                    return;
+                }
+                try {
+                    openRead = this.mSettingsFile.openRead();
+                } catch (Exception e) {
+                    Slog.e("OverlayManager", "failed to restore overlay state", e);
+                    ResilientAtomicFile resilientAtomicFile2 = this.mSettingsFile;
+                    if (resilientAtomicFile2.mFile.exists() || resilientAtomicFile2.mTemporaryBackup.exists() || resilientAtomicFile2.mReserveCopy.exists()) {
+                        this.mSettingsFile.failRead(null, e);
+                    }
+                    restoreSettings();
+                }
+                if (openRead == null) {
+                    Slog.e("OverlayManager", "settings file recovery failure");
+                    return;
+                }
+                OverlayManagerSettings overlayManagerSettings = this.mSettings;
+                synchronized (overlayManagerSettings.mItemsLock) {
+                    OverlayManagerSettings.Serializer.restore(overlayManagerSettings.mItems, openRead);
+                }
+                ArrayList arrayList = (ArrayList) this.mUserManager.getUsers(true, true, true);
+                int[] iArr = new int[arrayList.size()];
+                for (int i = 0; i < arrayList.size(); i++) {
+                    iArr[i] = ((UserInfo) arrayList.get(i)).getUserHandle().getIdentifier();
+                }
+                Arrays.sort(iArr);
+                for (int i2 : this.mSettings.getUsers()) {
+                    if (Arrays.binarySearch(iArr, i2) < 0) {
+                        this.mSettings.removeUser(i2);
+                    }
+                }
+            }
+        } finally {
+            Trace.traceEnd(67108864L);
+        }
+    }
+
+    public final void unregisterUnusedPaletteOverlays() {
+        synchronized (this.mLock) {
+            try {
+                Iterator it = ((ArraySet) this.mSettings.getAllIdentifiersAndBaseCodePaths()).iterator();
+                while (it.hasNext()) {
+                    Pair pair = (Pair) it.next();
+                    String overlayName = ((OverlayIdentifier) pair.first).getOverlayName();
+                    if (overlayName != null && overlayName.startsWith("SemWT_")) {
+                        this.mImpl.unregisterFabricatedOverlay((OverlayIdentifier) pair.first);
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    @SystemApi
+    public void updatePackageCache(String str, int i) {
+        Slog.i("OverlayManager", AppStateTrackerImpl$MyHandler$$ExternalSyntheticOutline0.m(i, "updatePackageCache() called with: packageName = [", str, "], userId = [", "]"));
+        if (str != null) {
+            synchronized (this.mLock) {
+                this.mPackageManager.addPackageUser(i, str);
+            }
         }
     }
 
@@ -1804,36 +1653,49 @@ public final class OverlayManagerService extends SystemService {
             return new SparseArray();
         }
         SparseArray sparseArray = new SparseArray();
-        SparseArray groupTargetsByUserId = groupTargetsByUserId(set);
-        int size = groupTargetsByUserId.size();
+        SparseArray sparseArray2 = new SparseArray();
+        CollectionUtils.forEach(set, new OverlayManagerService$$ExternalSyntheticLambda2(sparseArray2));
+        int size = sparseArray2.size();
         for (int i = 0; i < size; i++) {
-            int keyAt = groupTargetsByUserId.keyAt(i);
-            sparseArray.put(keyAt, updatePackageManagerLocked((Collection) groupTargetsByUserId.valueAt(i), keyAt));
+            int keyAt = sparseArray2.keyAt(i);
+            sparseArray.put(keyAt, updatePackageManagerLocked(keyAt, (Collection) sparseArray2.valueAt(i), false));
         }
         return sparseArray;
     }
 
-    public final List updatePackageManagerLocked(Collection collection, int i) {
-        return updatePackageManagerLocked(collection, i, false);
-    }
-
-    public final List updatePackageManagerLocked(Collection collection, int i, boolean z) {
+    public final List updatePackageManagerLocked(int i, Collection collection, boolean z) {
+        OverlayPaths overlayPaths;
         try {
             Trace.traceBegin(67108864L, "OMS#updatePackageManagerLocked " + collection);
             Slog.d("OverlayManager", "Update package manager about changed overlays");
             PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
             if (collection.contains("android") && !z) {
-                collection = packageManagerInternal.getTargetPackageNames(i);
+                PackageManagerService.PackageManagerInternalImpl packageManagerInternalImpl = (PackageManagerService.PackageManagerInternalImpl) packageManagerInternal;
+                packageManagerInternalImpl.getClass();
+                ArrayList arrayList = new ArrayList();
+                Computer snapshotComputer = packageManagerInternalImpl.mService.snapshotComputer();
+                PackageManagerService$$ExternalSyntheticLambda40 packageManagerService$$ExternalSyntheticLambda40 = new PackageManagerService$$ExternalSyntheticLambda40(1, arrayList);
+                PackageManagerService.this.getClass();
+                PackageManagerService.forEachPackageState(snapshotComputer, packageManagerService$$ExternalSyntheticLambda40);
+                collection = arrayList;
             }
             ArrayMap arrayMap = new ArrayMap(collection.size());
             synchronized (this.mLock) {
-                OverlayPaths enabledOverlayPaths = this.mImpl.getEnabledOverlayPaths("android", i, false);
-                for (String str : collection) {
-                    OverlayPaths.Builder builder = new OverlayPaths.Builder();
-                    OverlayPaths filterByPolicy = !"android".equals(str) ? OverlayPolicyManager.filterByPolicy(this.mImpl.getEnabledOverlayPaths(str, i, true), str, i) : null;
-                    builder.addAll(OverlayPolicyManager.filterByPolicy(enabledOverlayPaths, filterByPolicy, str, i));
-                    builder.addAll(filterByPolicy);
-                    arrayMap.put(str, builder.build());
+                try {
+                    OverlayPaths enabledOverlayPaths = this.mImpl.getEnabledOverlayPaths(i, "android", false);
+                    for (String str : collection) {
+                        OverlayPaths.Builder builder = new OverlayPaths.Builder();
+                        if ("android".equals(str)) {
+                            overlayPaths = null;
+                        } else {
+                            OverlayPaths enabledOverlayPaths2 = this.mImpl.getEnabledOverlayPaths(i, str, true);
+                            overlayPaths = OverlayPolicyManager.filterByPolicy(enabledOverlayPaths2, enabledOverlayPaths2, str, i);
+                        }
+                        builder.addAll(OverlayPolicyManager.filterByPolicy(enabledOverlayPaths, overlayPaths, str, i));
+                        builder.addAll(overlayPaths);
+                        arrayMap.put(str, builder.build());
+                    }
+                } finally {
                 }
             }
             Set hashSet = new HashSet();
@@ -1845,134 +1707,51 @@ public final class OverlayManagerService extends SystemService {
                     Slog.e("OverlayManager", TextUtils.formatSimple("Failed to change enabled overlays for %s user %d", new Object[]{str2, Integer.valueOf(i)}));
                 }
             }
-            return new ArrayList(hashSet);
-        } finally {
+            ArrayList arrayList2 = new ArrayList(hashSet);
             Trace.traceEnd(67108864L);
-        }
-    }
-
-    public final void persistSettingsLocked() {
-        Slog.d("OverlayManager", "Writing overlay settings");
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = this.mSettingsFile.startWrite();
-            this.mSettings.persist(fileOutputStream);
-            this.mSettingsFile.finishWrite(fileOutputStream);
-        } catch (IOException | XmlPullParserException e) {
-            this.mSettingsFile.failWrite(fileOutputStream);
-            Slog.e("OverlayManager", "failed to persist overlay state", e);
-        }
-    }
-
-    public final void restoreSettings() {
-        FileInputStream openRead;
-        try {
-            Trace.traceBegin(67108864L, "OMS#restoreSettings");
-            synchronized (this.mLock) {
-                if (this.mSettingsFile.getBaseFile().exists()) {
-                    try {
-                        openRead = this.mSettingsFile.openRead();
-                    } catch (IOException | XmlPullParserException e) {
-                        Slog.e("OverlayManager", "failed to restore overlay state", e);
-                    }
-                    try {
-                        this.mSettings.restore(openRead);
-                        List users = this.mUserManager.getUsers(true);
-                        int[] iArr = new int[users.size()];
-                        for (int i = 0; i < users.size(); i++) {
-                            iArr[i] = ((UserInfo) users.get(i)).getUserHandle().getIdentifier();
-                        }
-                        Arrays.sort(iArr);
-                        for (int i2 : this.mSettings.getUsers()) {
-                            if (Arrays.binarySearch(iArr, i2) < 0) {
-                                this.mSettings.removeUser(i2);
-                            }
-                        }
-                        if (openRead != null) {
-                            openRead.close();
-                        }
-                    } catch (Throwable th) {
-                        if (openRead != null) {
-                            try {
-                                openRead.close();
-                            } catch (Throwable th2) {
-                                th.addSuppressed(th2);
-                            }
-                        }
-                        throw th;
-                    }
-                }
-            }
-        } finally {
+            return arrayList2;
+        } catch (Throwable th) {
             Trace.traceEnd(67108864L);
+            throw th;
         }
     }
 
-    public final void disableDynamicContrast() {
-        try {
-            ContentResolver contentResolver = getContext().getContentResolver();
-            for (int i : this.mUserManager.getUserIds()) {
-                Settings.Secure.putFloatForUser(contentResolver, "contrast_level", -1.0f, i);
-                Settings.Secure.putStringForUser(contentResolver, "theme_customization_overlay_packages", "", i);
-            }
-        } catch (Exception e) {
-            Slog.i("OverlayManager", "disableDynamicContrast posted delay, due: " + e);
-            FgThread.getHandler().postDelayed(new Runnable() { // from class: com.android.server.om.OverlayManagerService$$ExternalSyntheticLambda5
-                @Override // java.lang.Runnable
-                public final void run() {
-                    OverlayManagerService.this.lambda$disableDynamicContrast$4();
-                }
-            }, 1000L);
+    public final void updateTargetPackagesLocked(Set set, final boolean z) {
+        if (CollectionUtils.isEmpty(set)) {
+            return;
         }
-    }
-
-    public /* synthetic */ void lambda$disableDynamicContrast$4() {
-        disableDynamicContrast();
-        Slog.i("OverlayManager", "disableDynamicContrast done");
-    }
-
-    public final Set unregisterColorThemeGG(boolean z) {
-        Set set;
-        synchronized (this.mLock) {
-            set = null;
-            for (Pair pair : this.mSettings.getAllIdentifiersAndBaseCodePaths()) {
-                String overlayName = ((OverlayIdentifier) pair.first).getOverlayName();
-                if ("com.android.systemui".equals(((OverlayIdentifier) pair.first).getPackageName()) && (overlayName.contains("neutral") || overlayName.contains("accent") || (!z && overlayName.contains("dynamic")))) {
-                    set = CollectionUtils.addAll(set, this.mImpl.unregisterFabricatedOverlay((OverlayIdentifier) pair.first));
-                }
+        persistSettingsLocked();
+        SparseArray sparseArray = new SparseArray();
+        CollectionUtils.forEach(set, new OverlayManagerService$$ExternalSyntheticLambda2(sparseArray));
+        int size = sparseArray.size();
+        for (int i = 0; i < size; i++) {
+            final ArraySet arraySet = (ArraySet) sparseArray.valueAt(i);
+            final int keyAt = sparseArray.keyAt(i);
+            final List updatePackageManagerLocked = updatePackageManagerLocked(keyAt, arraySet, false);
+            if (!((ArrayList) updatePackageManagerLocked).isEmpty()) {
+                FgThread.getHandler().post(new Runnable() { // from class: com.android.server.om.OverlayManagerService$$ExternalSyntheticLambda0
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        OverlayManagerService overlayManagerService = OverlayManagerService.this;
+                        List list = updatePackageManagerLocked;
+                        int i2 = keyAt;
+                        boolean z2 = z;
+                        ArraySet arraySet2 = arraySet;
+                        overlayManagerService.getClass();
+                        try {
+                            ActivityManager.getService().scheduleApplicationInfoChanged(list, i2);
+                        } catch (RemoteException e) {
+                            Slog.e("OverlayManager", "updateActivityManager remote exception", e);
+                        }
+                        if (!z2) {
+                            CollectionUtils.forEach(arraySet2, new OverlayManagerService$$ExternalSyntheticLambda1(i2, (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)));
+                        } else {
+                            Slog.i("SWT_OverlayManager", "overlay changed broadcast to system for color theme");
+                            CollectionUtils.forEach(new ArraySet(Arrays.asList("android")), new OverlayManagerService$$ExternalSyntheticLambda1(i2, (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)));
+                        }
+                    }
+                });
             }
-        }
-        return set;
-    }
-
-    public final void unregisterUnusedPaletteOverlays() {
-        synchronized (this.mLock) {
-            for (Pair pair : this.mSettings.getAllIdentifiersAndBaseCodePaths()) {
-                String overlayName = ((OverlayIdentifier) pair.first).getOverlayName();
-                if (overlayName != null && overlayName.startsWith("SemWT_")) {
-                    this.mImpl.unregisterFabricatedOverlay((OverlayIdentifier) pair.first);
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class PackageUpdateHelper {
-        public PackageUpdateHelper() {
-        }
-
-        public void persistSettings() {
-            synchronized (OverlayManagerService.this.mLock) {
-                OverlayManagerService.this.persistSettingsLocked();
-            }
-        }
-
-        public List updatePackageManager(Collection collection, int i, boolean z) {
-            List updatePackageManagerLocked;
-            synchronized (OverlayManagerService.this.mLock) {
-                updatePackageManagerLocked = OverlayManagerService.this.updatePackageManagerLocked(collection, i, z);
-            }
-            return updatePackageManagerLocked;
         }
     }
 }

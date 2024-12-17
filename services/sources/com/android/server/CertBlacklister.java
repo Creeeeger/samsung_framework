@@ -3,6 +3,7 @@ package com.android.server;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Binder;
 import android.os.FileUtils;
 import android.provider.Settings;
@@ -12,53 +13,37 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import libcore.io.IoUtils;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class CertBlacklister extends Binder {
-    public static final String BLACKLIST_ROOT;
+public final class CertBlacklister extends Binder {
     public static final String PUBKEY_PATH;
     public static final String SERIAL_PATH;
 
-    static {
-        String str = System.getenv("ANDROID_DATA") + "/misc/keychain/";
-        BLACKLIST_ROOT = str;
-        PUBKEY_PATH = str + "pubkey_blacklist.txt";
-        SERIAL_PATH = str + "serial_blacklist.txt";
-    }
-
-    /* loaded from: classes.dex */
-    public class BlacklistObserver extends ContentObserver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BlacklistObserver extends ContentObserver {
         public final ContentResolver mContentResolver;
         public final String mKey;
-        public final String mName;
         public final String mPath;
         public final File mTmpDir;
 
-        public BlacklistObserver(String str, String str2, String str3, ContentResolver contentResolver) {
+        public BlacklistObserver(ContentResolver contentResolver, String str, String str2) {
             super(null);
             this.mKey = str;
-            this.mName = str2;
-            this.mPath = str3;
-            this.mTmpDir = new File(str3).getParentFile();
+            this.mPath = str2;
+            this.mTmpDir = new File(str2).getParentFile();
             this.mContentResolver = contentResolver;
         }
 
         @Override // android.database.ContentObserver
-        public void onChange(boolean z) {
+        public final void onChange(boolean z) {
             super.onChange(z);
-            writeBlacklist();
-        }
-
-        public String getValue() {
-            return Settings.Secure.getString(this.mContentResolver, this.mKey);
-        }
-
-        public final void writeBlacklist() {
-            new Thread("BlacklistUpdater") { // from class: com.android.server.CertBlacklister.BlacklistObserver.1
+            new Thread() { // from class: com.android.server.CertBlacklister.BlacklistObserver.1
                 @Override // java.lang.Thread, java.lang.Runnable
-                public void run() {
+                public final void run() {
                     synchronized (BlacklistObserver.this.mTmpDir) {
-                        String value = BlacklistObserver.this.getValue();
-                        if (value != null) {
+                        BlacklistObserver blacklistObserver = BlacklistObserver.this;
+                        String string = Settings.Secure.getString(blacklistObserver.mContentResolver, blacklistObserver.mKey);
+                        if (string != null) {
                             Slog.i("CertBlacklister", "Certificate blacklist changed, updating...");
                             FileOutputStream fileOutputStream = null;
                             try {
@@ -67,7 +52,7 @@ public class CertBlacklister extends Binder {
                                     createTempFile.setReadable(true, false);
                                     FileOutputStream fileOutputStream2 = new FileOutputStream(createTempFile);
                                     try {
-                                        fileOutputStream2.write(value.getBytes());
+                                        fileOutputStream2.write(string.getBytes());
                                         FileUtils.sync(fileOutputStream2);
                                         createTempFile.renameTo(new File(BlacklistObserver.this.mPath));
                                         Slog.i("CertBlacklister", "Certificate blacklist updated");
@@ -96,20 +81,15 @@ public class CertBlacklister extends Binder {
         }
     }
 
+    static {
+        String str = System.getenv("ANDROID_DATA") + "/misc/keychain/";
+        PUBKEY_PATH = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "pubkey_blacklist.txt");
+        SERIAL_PATH = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "serial_blacklist.txt");
+    }
+
     public CertBlacklister(Context context) {
-        registerObservers(context.getContentResolver());
-    }
-
-    public final BlacklistObserver buildPubkeyObserver(ContentResolver contentResolver) {
-        return new BlacklistObserver("pubkey_blacklist", "pubkey", PUBKEY_PATH, contentResolver);
-    }
-
-    public final BlacklistObserver buildSerialObserver(ContentResolver contentResolver) {
-        return new BlacklistObserver("serial_blacklist", "serial", SERIAL_PATH, contentResolver);
-    }
-
-    public final void registerObservers(ContentResolver contentResolver) {
-        contentResolver.registerContentObserver(Settings.Secure.getUriFor("pubkey_blacklist"), true, buildPubkeyObserver(contentResolver));
-        contentResolver.registerContentObserver(Settings.Secure.getUriFor("serial_blacklist"), true, buildSerialObserver(contentResolver));
+        ContentResolver contentResolver = context.getContentResolver();
+        contentResolver.registerContentObserver(Settings.Secure.getUriFor("pubkey_blacklist"), true, new BlacklistObserver(contentResolver, "pubkey_blacklist", PUBKEY_PATH));
+        contentResolver.registerContentObserver(Settings.Secure.getUriFor("serial_blacklist"), true, new BlacklistObserver(contentResolver, "serial_blacklist", SERIAL_PATH));
     }
 }

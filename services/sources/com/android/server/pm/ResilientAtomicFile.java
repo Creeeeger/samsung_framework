@@ -1,9 +1,11 @@
 package com.android.server.pm;
 
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import android.os.FileUtils;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.util.Slog;
+import com.android.server.ProfileService$1$$ExternalSyntheticOutline0;
 import com.android.server.security.FileIntegrity;
 import com.samsung.android.os.ReliableWrite;
 import java.io.Closeable;
@@ -13,7 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import libcore.io.IoUtils;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ResilientAtomicFile implements Closeable {
     public final String mDebugName;
     public final File mFile;
@@ -28,15 +31,9 @@ public final class ResilientAtomicFile implements Closeable {
     public File mCurrentFile = null;
     public FileInputStream mCurrentInStream = null;
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface ReadEventLogger {
         void logEvent(int i, String str);
-    }
-
-    public final void finalizeOutStream(FileOutputStream fileOutputStream) {
-        fileOutputStream.flush();
-        FileUtils.sync(fileOutputStream);
-        FileUtils.setPermissions(fileOutputStream.getFD(), this.mFileMode, -1, -1);
     }
 
     public ResilientAtomicFile(File file, File file2, File file3, int i, String str, ReadEventLogger readEventLogger) {
@@ -48,48 +45,61 @@ public final class ResilientAtomicFile implements Closeable {
         this.mReadEventLogger = readEventLogger;
     }
 
-    public File getBaseFile() {
-        return this.mFile;
+    @Override // java.io.Closeable, java.lang.AutoCloseable
+    public final void close() {
+        IoUtils.closeQuietly(this.mMainOutStream);
+        IoUtils.closeQuietly(this.mMainInStream);
+        IoUtils.closeQuietly(this.mReserveOutStream);
+        IoUtils.closeQuietly(this.mReserveInStream);
+        IoUtils.closeQuietly(this.mCurrentInStream);
+        this.mMainOutStream = null;
+        this.mMainInStream = null;
+        this.mReserveOutStream = null;
+        this.mReserveInStream = null;
+        this.mCurrentInStream = null;
+        this.mCurrentFile = null;
     }
 
-    public FileOutputStream startWrite() {
-        if (this.mMainOutStream != null) {
-            throw new IllegalStateException("Duplicate startWrite call?");
+    public final void failRead(FileInputStream fileInputStream, Exception exc) {
+        if (this.mCurrentInStream != fileInputStream) {
+            throw new IllegalStateException("Invalid incoming stream.");
         }
-        new File(this.mFile.getParent()).mkdirs();
-        if (this.mFile.exists()) {
-            if (!this.mTemporaryBackup.exists()) {
-                if (!this.mFile.renameTo(this.mTemporaryBackup)) {
-                    throw new IOException("Unable to backup " + this.mDebugName + " file, current changes will be lost at reboot");
-                }
-            } else {
-                this.mFile.delete();
-                Slog.w("ResilientAtomicFile", "Preserving older " + this.mDebugName + " backup");
-            }
+        this.mCurrentInStream = null;
+        IoUtils.closeQuietly(fileInputStream);
+        ReadEventLogger readEventLogger = this.mReadEventLogger;
+        if (readEventLogger != null) {
+            readEventLogger.logEvent(6, "!@Error reading " + this.mDebugName + ", removing " + this.mCurrentFile + '\n' + Log.getStackTraceString(exc));
         }
-        this.mReserveCopy.delete();
-        this.mMainOutStream = new FileOutputStream(this.mFile);
-        this.mMainInStream = new FileInputStream(this.mFile);
-        this.mReserveOutStream = new FileOutputStream(this.mReserveCopy);
-        this.mReserveInStream = new FileInputStream(this.mReserveCopy);
-        ReliableWrite.setReliableWrite(this.mMainOutStream);
-        ReliableWrite.setReliableWrite(this.mReserveOutStream);
-        return this.mMainOutStream;
+        if (this.mCurrentFile.delete()) {
+            this.mCurrentFile = null;
+        } else {
+            throw new IllegalStateException("Failed to remove " + this.mCurrentFile);
+        }
     }
 
-    public void finishWrite(FileOutputStream fileOutputStream) {
+    public final void failWrite(FileOutputStream fileOutputStream) {
+        if (this.mMainOutStream != fileOutputStream) {
+            throw new IllegalStateException("Invalid incoming stream.");
+        }
+        close();
+        if (!this.mFile.exists() || this.mFile.delete()) {
+            return;
+        }
+        Slog.i("ResilientAtomicFile", "Failed to clean up mangled file: " + this.mFile);
+    }
+
+    public final void finishWrite(FileOutputStream fileOutputStream) {
         ParcelFileDescriptor dup;
-        ParcelFileDescriptor dup2;
         FileOutputStream fileOutputStream2 = this.mMainOutStream;
         if (fileOutputStream2 != fileOutputStream) {
             throw new IllegalStateException("Invalid incoming stream.");
         }
         try {
             this.mMainOutStream = null;
-            finalizeOutStream(fileOutputStream2);
-            if (fileOutputStream2 != null) {
-                fileOutputStream2.close();
-            }
+            fileOutputStream2.flush();
+            FileUtils.sync(fileOutputStream2);
+            FileUtils.setPermissions(fileOutputStream2.getFD(), this.mFileMode, -1, -1);
+            fileOutputStream2.close();
             this.mTemporaryBackup.delete();
             try {
                 FileInputStream fileInputStream = this.mMainInStream;
@@ -102,43 +112,43 @@ public final class ResilientAtomicFile implements Closeable {
                         try {
                             this.mReserveOutStream = null;
                             FileUtils.copy(fileInputStream, fileOutputStream3);
-                            finalizeOutStream(fileOutputStream3);
-                            if (fileOutputStream3 != null) {
-                                fileOutputStream3.close();
-                            }
+                            fileOutputStream3.flush();
+                            FileUtils.sync(fileOutputStream3);
+                            FileUtils.setPermissions(fileOutputStream3.getFD(), this.mFileMode, -1, -1);
+                            fileOutputStream3.close();
                             try {
                                 dup = ParcelFileDescriptor.dup(fileInputStream.getFD());
-                                try {
-                                    dup2 = ParcelFileDescriptor.dup(fileInputStream2.getFD());
-                                } catch (Throwable th) {
-                                    if (dup != null) {
-                                        try {
-                                            dup.close();
-                                        } catch (Throwable th2) {
-                                            th.addSuppressed(th2);
-                                        }
-                                    }
-                                    throw th;
-                                }
                             } catch (IOException e) {
                                 Slog.e("ResilientAtomicFile", "Failed to verity-protect " + this.mDebugName, e);
                             }
                             try {
-                                FileIntegrity.setUpFsVerity(dup);
-                                FileIntegrity.setUpFsVerity(dup2);
-                                if (dup2 != null) {
-                                    dup2.close();
+                                ParcelFileDescriptor dup2 = ParcelFileDescriptor.dup(fileInputStream2.getFD());
+                                try {
+                                    FileIntegrity.setUpFsVerity(dup);
+                                    FileIntegrity.setUpFsVerity(dup2);
+                                    if (dup2 != null) {
+                                        dup2.close();
+                                    }
+                                    if (dup != null) {
+                                        dup.close();
+                                    }
+                                    if (fileInputStream2 != null) {
+                                        fileInputStream2.close();
+                                    }
+                                    if (fileInputStream != null) {
+                                        fileInputStream.close();
+                                    }
+                                } finally {
                                 }
+                            } catch (Throwable th) {
                                 if (dup != null) {
-                                    dup.close();
+                                    try {
+                                        dup.close();
+                                    } catch (Throwable th2) {
+                                        th.addSuppressed(th2);
+                                    }
                                 }
-                                if (fileInputStream2 != null) {
-                                    fileInputStream2.close();
-                                }
-                                if (fileInputStream != null) {
-                                    fileInputStream.close();
-                                }
-                            } finally {
+                                throw th;
                             }
                         } finally {
                         }
@@ -161,18 +171,7 @@ public final class ResilientAtomicFile implements Closeable {
         }
     }
 
-    public void failWrite(FileOutputStream fileOutputStream) {
-        if (this.mMainOutStream != fileOutputStream) {
-            throw new IllegalStateException("Invalid incoming stream.");
-        }
-        close();
-        if (!this.mFile.exists() || this.mFile.delete()) {
-            return;
-        }
-        Slog.i("ResilientAtomicFile", "Failed to clean up mangled file: " + this.mFile);
-    }
-
-    public FileInputStream openRead() {
+    public final FileInputStream openRead() {
         ReadEventLogger readEventLogger;
         if (this.mTemporaryBackup.exists()) {
             try {
@@ -211,48 +210,35 @@ public final class ResilientAtomicFile implements Closeable {
         return this.mCurrentInStream;
     }
 
-    public void failRead(FileInputStream fileInputStream, Exception exc) {
-        if (this.mCurrentInStream != fileInputStream) {
-            throw new IllegalStateException("Invalid incoming stream.");
+    public final FileOutputStream startWrite() {
+        if (this.mMainOutStream != null) {
+            throw new IllegalStateException("Duplicate startWrite call?");
         }
-        this.mCurrentInStream = null;
-        IoUtils.closeQuietly(fileInputStream);
-        ReadEventLogger readEventLogger = this.mReadEventLogger;
-        if (readEventLogger != null) {
-            readEventLogger.logEvent(6, "!@Error reading " + this.mDebugName + ", removing " + this.mCurrentFile + '\n' + Log.getStackTraceString(exc));
+        new File(this.mFile.getParent()).mkdirs();
+        if (this.mFile.exists()) {
+            if (this.mTemporaryBackup.exists()) {
+                this.mFile.delete();
+                ProfileService$1$$ExternalSyntheticOutline0.m(new StringBuilder("Preserving older "), this.mDebugName, " backup", "ResilientAtomicFile");
+            } else if (!this.mFile.renameTo(this.mTemporaryBackup)) {
+                throw new IOException(AudioOffloadInfo$$ExternalSyntheticOutline0.m(new StringBuilder("Unable to backup "), this.mDebugName, " file, current changes will be lost at reboot"));
+            }
         }
-        if (!this.mCurrentFile.delete()) {
-            throw new IllegalStateException("Failed to remove " + this.mCurrentFile);
-        }
-        this.mCurrentFile = null;
-    }
-
-    public void delete() {
-        this.mFile.delete();
-        this.mTemporaryBackup.delete();
         this.mReserveCopy.delete();
+        try {
+            this.mMainOutStream = new FileOutputStream(this.mFile);
+            this.mMainInStream = new FileInputStream(this.mFile);
+            this.mReserveOutStream = new FileOutputStream(this.mReserveCopy);
+            this.mReserveInStream = new FileInputStream(this.mReserveCopy);
+            ReliableWrite.setReliableWrite(this.mMainOutStream);
+            ReliableWrite.setReliableWrite(this.mReserveOutStream);
+            return this.mMainOutStream;
+        } catch (IOException e) {
+            close();
+            throw e;
+        }
     }
 
-    @Override // java.io.Closeable, java.lang.AutoCloseable
-    public void close() {
-        IoUtils.closeQuietly(this.mMainOutStream);
-        IoUtils.closeQuietly(this.mMainInStream);
-        IoUtils.closeQuietly(this.mReserveOutStream);
-        IoUtils.closeQuietly(this.mReserveInStream);
-        IoUtils.closeQuietly(this.mCurrentInStream);
-        this.mMainOutStream = null;
-        this.mMainInStream = null;
-        this.mReserveOutStream = null;
-        this.mReserveInStream = null;
-        this.mCurrentInStream = null;
-        this.mCurrentFile = null;
-    }
-
-    public boolean existsReadableFile() {
-        return this.mFile.exists() || this.mTemporaryBackup.exists() || this.mReserveCopy.exists();
-    }
-
-    public String toString() {
+    public final String toString() {
         return this.mFile.getPath();
     }
 }

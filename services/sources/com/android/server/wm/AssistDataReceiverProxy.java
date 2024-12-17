@@ -8,24 +8,28 @@ import android.os.RemoteException;
 import android.util.Log;
 import com.android.server.am.AssistDataRequester;
 
-/* loaded from: classes3.dex */
-public class AssistDataReceiverProxy implements AssistDataRequester.AssistDataRequesterCallbacks, IBinder.DeathRecipient {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class AssistDataReceiverProxy implements AssistDataRequester.AssistDataRequesterCallbacks, IBinder.DeathRecipient {
     public String mCallerPackage;
     public IAssistDataReceiver mReceiver;
 
+    @Override // android.os.IBinder.DeathRecipient
+    public final void binderDied() {
+        IAssistDataReceiver iAssistDataReceiver = this.mReceiver;
+        if (iAssistDataReceiver != null) {
+            iAssistDataReceiver.asBinder().unlinkToDeath(this, 0);
+        }
+        this.mReceiver = null;
+    }
+
     @Override // com.android.server.am.AssistDataRequester.AssistDataRequesterCallbacks
-    public boolean canHandleReceivedAssistDataLocked() {
+    public final boolean canHandleReceivedAssistDataLocked() {
         return true;
     }
 
-    public AssistDataReceiverProxy(IAssistDataReceiver iAssistDataReceiver, String str) {
-        this.mReceiver = iAssistDataReceiver;
-        this.mCallerPackage = str;
-        linkToDeath();
-    }
-
     @Override // com.android.server.am.AssistDataRequester.AssistDataRequesterCallbacks
-    public void onAssistDataReceivedLocked(Bundle bundle, int i, int i2) {
+    public final void onAssistDataReceivedLocked(int i, int i2, Bundle bundle) {
         IAssistDataReceiver iAssistDataReceiver = this.mReceiver;
         if (iAssistDataReceiver != null) {
             try {
@@ -37,7 +41,16 @@ public class AssistDataReceiverProxy implements AssistDataRequester.AssistDataRe
     }
 
     @Override // com.android.server.am.AssistDataRequester.AssistDataRequesterCallbacks
-    public void onAssistScreenshotReceivedLocked(Bitmap bitmap) {
+    public final void onAssistRequestCompleted() {
+        IAssistDataReceiver iAssistDataReceiver = this.mReceiver;
+        if (iAssistDataReceiver != null) {
+            iAssistDataReceiver.asBinder().unlinkToDeath(this, 0);
+        }
+        this.mReceiver = null;
+    }
+
+    @Override // com.android.server.am.AssistDataRequester.AssistDataRequesterCallbacks
+    public final void onAssistScreenshotReceivedLocked(Bitmap bitmap) {
         IAssistDataReceiver iAssistDataReceiver = this.mReceiver;
         if (iAssistDataReceiver != null) {
             try {
@@ -46,31 +59,5 @@ public class AssistDataReceiverProxy implements AssistDataRequester.AssistDataRe
                 Log.w("ActivityTaskManager", "Failed to proxy assist screenshot to receiver in package=" + this.mCallerPackage, e);
             }
         }
-    }
-
-    @Override // com.android.server.am.AssistDataRequester.AssistDataRequesterCallbacks
-    public void onAssistRequestCompleted() {
-        unlinkToDeath();
-    }
-
-    @Override // android.os.IBinder.DeathRecipient
-    public void binderDied() {
-        unlinkToDeath();
-    }
-
-    public final void linkToDeath() {
-        try {
-            this.mReceiver.asBinder().linkToDeath(this, 0);
-        } catch (RemoteException e) {
-            Log.w("ActivityTaskManager", "Could not link to client death", e);
-        }
-    }
-
-    public final void unlinkToDeath() {
-        IAssistDataReceiver iAssistDataReceiver = this.mReceiver;
-        if (iAssistDataReceiver != null) {
-            iAssistDataReceiver.asBinder().unlinkToDeath(this, 0);
-        }
-        this.mReceiver = null;
     }
 }

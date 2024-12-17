@@ -2,9 +2,11 @@ package com.android.server.desktopmode;
 
 import android.os.Handler;
 import android.util.ArrayMap;
-import android.util.IndentingPrintWriter;
+import android.view.Display;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.ServiceThread;
 import com.android.server.desktopmode.HardwareManager;
+import com.android.server.desktopmode.StateManager;
 import com.samsung.android.cover.CoverState;
 import com.samsung.android.desktopmode.DesktopModeFeature;
 import com.samsung.android.desktopmode.SemDesktopModeState;
@@ -12,876 +14,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/* loaded from: classes2.dex */
-public class StateManager implements IStateManager {
-    public static final String TAG = "[DMS]" + StateManager.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class StateManager implements IStateManager {
     public final Handler mHandler;
     public volatile InternalState mInternalState;
-    public volatile State mState;
+    public volatile InternalState mState;
     public final Object mLock = new Object();
-    public CopyOnWriteArrayList mStateListeners = new CopyOnWriteArrayList();
+    public final CopyOnWriteArrayList mStateListeners = new CopyOnWriteArrayList();
 
-    /* loaded from: classes2.dex */
-    public abstract class StateListener {
-        public void onBootCompleted() {
-        }
-
-        public void onBootInitBlockerRegistered(boolean z) {
-        }
-
-        public void onConfigurationChanged(boolean z) {
-        }
-
-        public void onCoverSupportStateChanged(State state) {
-        }
-
-        public void onDesktopDisplayIdChanged(State state) {
-        }
-
-        public void onDesktopModeStateChanged(State state) {
-        }
-
-        public void onDisplayDisconnectionRequested(int i) {
-        }
-
-        public void onDockLowChargerPowerChanged(State state) {
-        }
-
-        public void onDockStateChanged(State state) {
-        }
-
-        public void onDualModeConfigurationChanged(boolean z) {
-        }
-
-        public void onDualModeSetDesktopMode(State state, boolean z) {
-        }
-
-        public void onDualModeSetDesktopModeInternal(boolean z) {
-        }
-
-        public void onDualModeStartLoadingScreen(boolean z) {
-        }
-
-        public void onDualModeStopLoadingScreen(boolean z) {
-        }
-
-        public void onEmergencyModeChanged(State state) {
-        }
-
-        public void onExternalDisplayConnectionChanged(State state) {
-        }
-
-        public void onExternalDisplayUpdated(State state) {
-        }
-
-        public void onForcedInternalScreenStateChanged(State state) {
-        }
-
-        public void onLauncherPackageReplaced(boolean z) {
-        }
-
-        public void onMouseConnectionChanged(State state) {
-        }
-
-        public void onNavBarGestureEnabled(State state) {
-        }
-
-        public void onPackageStateChanged(State state) {
-        }
-
-        public void onPogoKeyboardConnectionChanged(State state) {
-        }
-
-        public void onScheduleUpdateDesktopMode(boolean z) {
-        }
-
-        public void onSetDesktopMode(State state, boolean z) {
-        }
-
-        public void onSetDesktopModeInternal(boolean z) {
-        }
-
-        public void onSpenEnabled(State state) {
-        }
-
-        public void onStartLoadingScreen(boolean z) {
-        }
-
-        public void onStopLoadingScreen(boolean z) {
-        }
-
-        public void onTouchpadAvailabilityChanged(State state) {
-        }
-
-        public void onTouchpadEnabled(State state) {
-        }
-
-        public void onUserChanged(State state) {
-        }
-
-        public void onWiredChargingChanged(State state) {
-        }
-    }
-
-    public StateManager(ServiceThread serviceThread) {
-        InternalState internalState = new InternalState();
-        this.mInternalState = internalState;
-        this.mState = internalState;
-        this.mHandler = new Handler(serviceThread.getLooper());
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public State getState() {
-        State state;
-        synchronized (this.mLock) {
-            state = this.mState;
-        }
-        return state;
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setExternalDisplayConnected(boolean z, DisplayInfo displayInfo) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setExternalDisplayConnected(connected=" + z + ", display=" + displayInfo + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mIsExternalDisplayConnected != z) {
-                this.mInternalState.mIsExternalDisplayConnected = z;
-                this.mInternalState.mConnectedDisplay = displayInfo;
-                if (!z) {
-                    this.mInternalState.mDisplayResolutionUnsupported = false;
-                }
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda15
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setExternalDisplayConnected$0(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setExternalDisplayConnected$0(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onExternalDisplayConnectionChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setExternalDisplayUpdated(DisplayInfo displayInfo) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setExternalDisplayUpdated(display=" + displayInfo + ")");
-        }
-        synchronized (this.mLock) {
-            if ((this.mInternalState.mConnectedDisplay == null ? -1 : this.mInternalState.mConnectedDisplay.getDisplayId()) != displayInfo.getDisplayId()) {
-                this.mInternalState.mPreviousConnectedDisplay = this.mInternalState.mConnectedDisplay;
-                this.mInternalState.mConnectedDisplay = displayInfo;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda14
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setExternalDisplayUpdated$1(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setExternalDisplayUpdated$1(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onExternalDisplayUpdated(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setDesktopDisplayId(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setDesktopDisplayId(displayId=" + i + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mDesktopDisplayId != i) {
-                this.mInternalState.mDesktopDisplayId = i;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda17
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setDesktopDisplayId$2(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setDesktopDisplayId$2(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDesktopDisplayIdChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setMouseConnected(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setMouseConnected(connected=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mIsMouseConnected != z) {
-                this.mInternalState.mIsMouseConnected = z;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda2
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setMouseConnected$3(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setMouseConnected$3(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onMouseConnectionChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setPogoKeyboardConnected(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setPogoKeyboardConnected(state=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mIsPogoKeyboardConnected != z) {
-                this.mInternalState.mIsPogoKeyboardConnected = z;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda4
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setPogoKeyboardConnected$4(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setPogoKeyboardConnected$4(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onPogoKeyboardConnectionChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setWiredCharging(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setWiredCharging(isWiredCharging=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mIsWiredCharging != z) {
-                this.mInternalState.mIsWiredCharging = z;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda10
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setWiredCharging$5(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setWiredCharging$5(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onWiredChargingChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setDockState(HardwareManager.DockState dockState) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setDockState(dockState=" + dockState + ")");
-        }
-        synchronized (this.mLock) {
-            this.mInternalState.mPreviousDockState = this.mInternalState.mDockState;
-            this.mInternalState.mDockState = dockState;
-            final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-            this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda8
-                @Override // java.lang.Runnable
-                public final void run() {
-                    StateManager.this.lambda$setDockState$6(copyInternalStateLocked);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setDockState$6(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDockStateChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setForcedInternalScreenModeEnabled(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setForcedInternalScreenModeEnabled(enabled=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mForcedInternalScreenModeEnabled != z) {
-                this.mInternalState.mForcedInternalScreenModeEnabled = z;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda7
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setForcedInternalScreenModeEnabled$7(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setForcedInternalScreenModeEnabled$7(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onForcedInternalScreenStateChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setDockLowChargerState(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setDockLowChargerState(dockLowChargerState=" + i + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mDockLowChargerState != i) {
-                this.mInternalState.mDockLowChargerState = i;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda9
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setDockLowChargerState$8(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setDockLowChargerState$8(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDockLowChargerPowerChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setCoverState(CoverState coverState, int i) {
-        boolean z;
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setCoverState(coverState=" + coverState + ", coverSupportState=" + i + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mCoverSupportState != i) {
-                this.mInternalState.mCoverSupportState = i;
-                z = true;
-            } else {
-                z = false;
-            }
-            this.mInternalState.mCoverState = coverState;
-            final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-            if (z) {
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda18
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setCoverState$9(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setCoverState$9(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onCoverSupportStateChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setCurrentUserId(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setCurrentUserId(userId=" + i + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mCurrentUserId != i) {
-                this.mInternalState.mCurrentUserId = i;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda6
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setCurrentUserId$10(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setCurrentUserId$10(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onUserChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setPackageState(Map map) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setPackageState(packageState=" + map + ")");
-        }
-        synchronized (this.mLock) {
-            this.mInternalState.mPackageState = map;
-            final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-            this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    StateManager.this.lambda$setPackageState$11(copyInternalStateLocked);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setPackageState$11(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onPackageStateChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setEmergencyModeEnabled(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setEmergencyModeEnabled(enabled=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mEmergencyModeEnabled != z) {
-                this.mInternalState.mEmergencyModeEnabled = z;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda11
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setEmergencyModeEnabled$12(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setEmergencyModeEnabled$12(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onEmergencyModeChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setDesktopModeState(SemDesktopModeState semDesktopModeState) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setDesktopModeState(state=" + semDesktopModeState + ")");
-        }
-        synchronized (this.mLock) {
-            this.mInternalState.mDesktopModeState = semDesktopModeState;
-            final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-            this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda12
-                @Override // java.lang.Runnable
-                public final void run() {
-                    StateManager.this.lambda$setDesktopModeState$13(copyInternalStateLocked);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setDesktopModeState$13(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDesktopModeStateChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setModeChangeLocked(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setModeChangeLocked(locked=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mModeChangeLocked != z) {
-                this.mInternalState.mModeChangeLocked = z;
-                copyInternalStateLocked(this.mInternalState);
-            }
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setTouchpadAvailable(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setTouchpadAvailable(available=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mTouchpadAvailable != z) {
-                this.mInternalState.mTouchpadAvailable = z;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda19
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setTouchpadAvailable$14(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setTouchpadAvailable$14(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onTouchpadAvailabilityChanged(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setTouchpadEnabled(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setTouchpadEnabled(enabled=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mTouchpadEnabled != z) {
-                this.mInternalState.mTouchpadEnabled = z;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda13
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setTouchpadEnabled$15(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setTouchpadEnabled$15(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onTouchpadEnabled(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setSpenEnabled(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setSpenEnabled(enabled=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mSpenEnabled != z) {
-                this.mInternalState.mSpenEnabled = z;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda3
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setSpenEnabled$16(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setSpenEnabled$16(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onSpenEnabled(state);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setDisplayResolutionUnsupported(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setDisplayResolutionUnsupported(unsupported=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mDisplayResolutionUnsupported != z) {
-                this.mInternalState.mDisplayResolutionUnsupported = z;
-                copyInternalStateLocked(this.mInternalState);
-            }
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void setNavBarGestureEnabled(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "setNavBarGestureEnabled(enabled=" + z + ")");
-        }
-        synchronized (this.mLock) {
-            if (this.mInternalState.mIsNavBarGestureEnabled != z) {
-                this.mInternalState.mIsNavBarGestureEnabled = z;
-                final State copyInternalStateLocked = copyInternalStateLocked(this.mInternalState);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda16
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StateManager.this.lambda$setNavBarGestureEnabled$17(copyInternalStateLocked);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setNavBarGestureEnabled$17(State state) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onNavBarGestureEnabled(state);
-        }
-    }
-
-    public final State copyInternalStateLocked(InternalState internalState) {
-        internalState.mSeq++;
-        InternalState internalState2 = new InternalState(internalState);
-        this.mState = internalState2;
-        if (DesktopModeFeature.DEBUG) {
-            Log.v(TAG, internalState.toString());
-        }
-        return internalState2;
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyBootCompleted() {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyBootCompleted()");
-        }
-        this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                StateManager.this.lambda$notifyBootCompleted$18();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$notifyBootCompleted$18() {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onBootCompleted();
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyBootInitBlockerRegistered(final boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyBootInitBlockerRegistered()");
-        }
-        this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda5
-            @Override // java.lang.Runnable
-            public final void run() {
-                StateManager.this.lambda$notifyBootInitBlockerRegistered$19(z);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$notifyBootInitBlockerRegistered$19(boolean z) {
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onBootInitBlockerRegistered(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyLauncherPackageReplaced(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyLauncherPackageReplaced(dataCleared=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onLauncherPackageReplaced(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifySetDesktopMode(State state, boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifySetDesktopMode(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onSetDesktopMode(state, z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyStartLoadingScreen(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyStartLoadingScreen(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onStartLoadingScreen(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifySetDesktopModeInternal(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifySetDesktopModeInternal(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onSetDesktopModeInternal(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyOnConfigurationChanged(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyOnConfigurationChanged(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onConfigurationChanged(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyStopLoadingScreen(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyStopLoadingScreen(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onStopLoadingScreen(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyDualModeSetDesktopMode(State state, boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyDualSetDesktopMode(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDualModeSetDesktopMode(state, z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyDualModeStartLoadingScreen(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyDualStartLoadingScreen(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDualModeStartLoadingScreen(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyDualModeSetDesktopModeInternal(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyDualModeSetDesktopModeInternal(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDualModeSetDesktopModeInternal(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyDualModeOnConfigurationChanged(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyDualOnConfigurationChanged(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDualModeConfigurationChanged(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyDualModeStopLoadingScreen(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyDualStopLoadingScreen(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDualModeStopLoadingScreen(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyScheduleUpdateDesktopMode(boolean z) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyScheduleUpdateDesktopMode(enter=" + z + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onScheduleUpdateDesktopMode(z);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void notifyDisplayDisconnectionRequest(int i) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "notifyDisplayDisconnectionRequest(displayType=" + i + ")");
-        }
-        Iterator it = this.mStateListeners.iterator();
-        while (it.hasNext()) {
-            ((StateListener) it.next()).onDisplayDisconnectionRequested(i);
-        }
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void registerListener(StateListener stateListener) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "registerListener(StateListener=" + stateListener + ")");
-        }
-        this.mStateListeners.addIfAbsent(stateListener);
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void unregisterListener(StateListener stateListener) {
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "unregisterListener(StateListener=" + stateListener + ")");
-        }
-        this.mStateListeners.remove(stateListener);
-    }
-
-    @Override // com.android.server.desktopmode.IStateManager
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-        synchronized (this.mLock) {
-            indentingPrintWriter.println("Current " + StateManager.class.getSimpleName() + " state:");
-            indentingPrintWriter.increaseIndent();
-            indentingPrintWriter.println("mState=" + this.mState);
-            indentingPrintWriter.println("mStateListeners=" + this.mStateListeners);
-            indentingPrintWriter.decreaseIndent();
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class InternalState implements State {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class InternalState {
         public DisplayInfo mConnectedDisplay;
         public CoverState mCoverState;
         public int mCoverSupportState;
@@ -907,124 +50,27 @@ public class StateManager implements IStateManager {
         public boolean mTouchpadAvailable;
         public boolean mTouchpadEnabled;
 
-        public InternalState() {
-            this.mSeq = 0;
-            this.mForcedInternalScreenModeEnabled = false;
-            this.mIsExternalDisplayConnected = false;
-            this.mIsMouseConnected = false;
-            this.mIsPogoKeyboardConnected = false;
-            this.mIsWiredCharging = false;
-            this.mEmergencyModeEnabled = false;
-            this.mModeChangeLocked = false;
-            this.mTouchpadAvailable = false;
-            this.mTouchpadEnabled = false;
-            this.mSpenEnabled = false;
-            this.mDisplayResolutionUnsupported = false;
-            this.mIsNavBarGestureEnabled = false;
-            this.mDesktopDisplayId = -1;
-            this.mCoverSupportState = 1;
-            this.mCurrentUserId = -10000;
-            this.mDockLowChargerState = -1;
-            HardwareManager.DockState dockState = new HardwareManager.DockState();
-            this.mDockState = dockState;
-            this.mPreviousDockState = dockState;
-            this.mCoverState = new CoverState();
-            this.mPackageState = new ArrayMap();
-            this.mDesktopModeState = new SemDesktopModeState();
+        public final boolean isDexOnPcConnected() {
+            DisplayInfo displayInfo = this.mConnectedDisplay;
+            return displayInfo != null && displayInfo.mType == 1000;
         }
 
-        public InternalState(InternalState internalState) {
-            this.mSeq = 0;
-            this.mForcedInternalScreenModeEnabled = false;
-            this.mIsExternalDisplayConnected = false;
-            this.mIsMouseConnected = false;
-            this.mIsPogoKeyboardConnected = false;
-            this.mIsWiredCharging = false;
-            this.mEmergencyModeEnabled = false;
-            this.mModeChangeLocked = false;
-            this.mTouchpadAvailable = false;
-            this.mTouchpadEnabled = false;
-            this.mSpenEnabled = false;
-            this.mDisplayResolutionUnsupported = false;
-            this.mIsNavBarGestureEnabled = false;
-            this.mDesktopDisplayId = -1;
-            this.mCoverSupportState = 1;
-            this.mCurrentUserId = -10000;
-            this.mDockLowChargerState = -1;
-            HardwareManager.DockState dockState = new HardwareManager.DockState();
-            this.mDockState = dockState;
-            this.mPreviousDockState = dockState;
-            this.mCoverState = new CoverState();
-            this.mPackageState = new ArrayMap();
-            this.mDesktopModeState = new SemDesktopModeState();
-            this.mSeq = internalState.mSeq;
-            this.mForcedInternalScreenModeEnabled = internalState.mForcedInternalScreenModeEnabled;
-            this.mIsExternalDisplayConnected = internalState.mIsExternalDisplayConnected;
-            this.mIsMouseConnected = internalState.mIsMouseConnected;
-            this.mIsPogoKeyboardConnected = internalState.mIsPogoKeyboardConnected;
-            this.mIsWiredCharging = internalState.mIsWiredCharging;
-            this.mDockLowChargerState = internalState.mDockLowChargerState;
-            this.mEmergencyModeEnabled = internalState.mEmergencyModeEnabled;
-            this.mModeChangeLocked = internalState.mModeChangeLocked;
-            this.mTouchpadAvailable = internalState.mTouchpadAvailable;
-            this.mTouchpadEnabled = internalState.mTouchpadEnabled;
-            this.mSpenEnabled = internalState.mSpenEnabled;
-            this.mDisplayResolutionUnsupported = internalState.mDisplayResolutionUnsupported;
-            this.mIsNavBarGestureEnabled = internalState.mIsNavBarGestureEnabled;
-            this.mDesktopDisplayId = internalState.mDesktopDisplayId;
-            this.mCoverSupportState = internalState.mCoverSupportState;
-            this.mCurrentUserId = internalState.mCurrentUserId;
-            this.mConnectedDisplay = internalState.mConnectedDisplay;
-            this.mPreviousConnectedDisplay = internalState.mPreviousConnectedDisplay;
-            this.mDockState = internalState.mDockState;
-            this.mPreviousDockState = internalState.mPreviousDockState;
-            this.mCoverState = internalState.mCoverState;
-            this.mPackageState = internalState.mPackageState;
-            this.mDesktopModeState = internalState.mDesktopModeState;
+        public final boolean isDexOnPcOrWirelessDexConnected() {
+            int i;
+            DisplayInfo displayInfo = this.mConnectedDisplay;
+            return displayInfo != null && ((i = displayInfo.mType) == 1000 || i == 1001);
         }
 
-        @Override // com.android.server.desktopmode.State
-        public boolean isForcedInternalScreenModeEnabled() {
-            return this.mForcedInternalScreenModeEnabled;
+        public final boolean isDexStationConnectedWithFlipCover() {
+            return this.mCoverSupportState == 2 && this.mDockState.isDexStation();
         }
 
-        @Override // com.android.server.desktopmode.State
-        public boolean isExternalDisplayConnected() {
-            return this.mIsExternalDisplayConnected;
+        public final boolean isHdmiConnected() {
+            DisplayInfo displayInfo = this.mConnectedDisplay;
+            return displayInfo != null && displayInfo.mType == 2;
         }
 
-        @Override // com.android.server.desktopmode.State
-        public boolean isMouseConnected() {
-            return this.mIsMouseConnected;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isPogoKeyboardConnected() {
-            return this.mIsPogoKeyboardConnected;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isWiredCharging() {
-            return this.mIsWiredCharging;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isDockLowChargerConnected() {
-            return this.mDockLowChargerState == 1;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isCoverSupportStatePartial() {
-            return this.mCoverSupportState == 2;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isEmergencyModeEnabled() {
-            return this.mEmergencyModeEnabled;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isPackagesAvailable() {
+        public final boolean isPackagesAvailable() {
             if (this.mPackageState.isEmpty()) {
                 return false;
             }
@@ -1037,195 +83,481 @@ public class StateManager implements IStateManager {
             return true;
         }
 
-        @Override // com.android.server.desktopmode.State
-        public boolean isModeChangeLocked() {
-            return this.mModeChangeLocked;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isTouchpadAvailable() {
-            return this.mTouchpadAvailable;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isTouchpadEnabled() {
-            return this.mTouchpadEnabled;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isSpenEnabled() {
-            return this.mSpenEnabled;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isDexStationConnectedWithFlipCover() {
-            return isCoverSupportStatePartial() && this.mDockState.isDexStation();
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isDexOnPcConnected() {
+        public final boolean isWirelessDexConnected() {
             DisplayInfo displayInfo = this.mConnectedDisplay;
-            return displayInfo != null && displayInfo.getType() == 1000;
+            return displayInfo != null && displayInfo.mType == 1001;
         }
 
-        @Override // com.android.server.desktopmode.State
-        public boolean isWirelessDexConnected() {
-            DisplayInfo displayInfo = this.mConnectedDisplay;
-            return displayInfo != null && displayInfo.getType() == 1001;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isDexOnPcOrWirelessDexConnected() {
-            DisplayInfo displayInfo = this.mConnectedDisplay;
-            return displayInfo != null && (displayInfo.getType() == 1000 || this.mConnectedDisplay.getType() == 1001);
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isHdmiConnected() {
-            DisplayInfo displayInfo = this.mConnectedDisplay;
-            return displayInfo != null && displayInfo.getType() == 2;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isDisplayResolutionUnsupported() {
-            return this.mDisplayResolutionUnsupported;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public boolean isNavBarGestureEnabled() {
-            return this.mIsNavBarGestureEnabled;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public int getDesktopDisplayId() {
-            return this.mDesktopDisplayId;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public int getCurrentUserId() {
-            return this.mCurrentUserId;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public DisplayInfo getConnectedDisplay() {
-            return this.mConnectedDisplay;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public DisplayInfo getPreviousConnectedDisplay() {
-            return this.mPreviousConnectedDisplay;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public HardwareManager.DockState getDockState() {
-            return this.mDockState;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public HardwareManager.DockState getPreviousDockState() {
-            return this.mPreviousDockState;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public CoverState getCoverState() {
-            return this.mCoverState;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public Map getPackageState() {
-            return this.mPackageState;
-        }
-
-        @Override // com.android.server.desktopmode.State
-        public SemDesktopModeState getDesktopModeState() {
-            return this.mDesktopModeState;
-        }
-
-        public String toString() {
-            StringBuilder sb = new StringBuilder(128);
-            sb.append("State{s");
-            sb.append(this.mSeq);
-            sb.append(" user");
-            sb.append(this.mCurrentUserId);
+        public final String toString() {
+            StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(128, "State{s");
+            m.append(this.mSeq);
+            m.append(" user");
+            m.append(this.mCurrentUserId);
             if (this.mConnectedDisplay != null) {
-                sb.append(' ');
-                sb.append(this.mConnectedDisplay);
+                m.append(' ');
+                m.append(this.mConnectedDisplay);
             }
             if (this.mPreviousConnectedDisplay != null) {
-                sb.append(" prev/");
-                sb.append(DisplayInfo.typeToString(this.mPreviousConnectedDisplay.getType()));
+                m.append(" prev/");
+                int i = this.mPreviousConnectedDisplay.mType;
+                m.append(i != 1000 ? i != 1001 ? Display.typeToString(i) : "WIRELESS_DEX" : "DEX_ON_PC");
             }
             if (this.mIsPogoKeyboardConnected) {
-                sb.append(" pogoKeyboard");
+                m.append(" pogoKeyboard");
             }
             if (this.mIsMouseConnected) {
-                sb.append(" mouse");
+                m.append(" mouse");
             }
             if (this.mCoverState.attached) {
-                sb.append(" cover.t");
-                sb.append(this.mCoverState.getType());
-                sb.append(".ft");
-                sb.append(this.mCoverState.getFriendsType());
-                sb.append('/');
+                m.append(" cover.t");
+                m.append(this.mCoverState.getType());
+                m.append(".ft");
+                m.append(this.mCoverState.getFriendsType());
+                m.append('/');
                 if (this.mCoverState.switchState) {
-                    sb.append("open");
+                    m.append("open");
                 } else {
-                    sb.append("close");
+                    m.append("close");
                 }
             }
             if (this.mCoverSupportState != 1) {
-                sb.append(' ');
-                sb.append(CoverStateManager.coverSupportStateToString(this.mCoverSupportState));
+                m.append(' ');
+                m.append(CoverStateManager.coverSupportStateToString(this.mCoverSupportState));
             }
             if (!this.mDesktopModeState.compareTo(2, 0)) {
-                sb.append(' ');
-                sb.append(this.mDesktopModeState);
+                m.append(' ');
+                m.append(this.mDesktopModeState);
             }
             if (!this.mDockState.isUndocked()) {
-                sb.append(' ');
-                sb.append(HardwareManager.DockState.dockTypeToString(this.mDockState.getType()));
+                m.append(' ');
+                m.append(HardwareManager.DockState.dockTypeToString(this.mDockState.mType));
             }
             if (!this.mPreviousDockState.isUndocked()) {
-                sb.append(" prev/");
-                sb.append(HardwareManager.DockState.dockTypeToString(this.mPreviousDockState.getType()));
+                m.append(" prev/");
+                m.append(HardwareManager.DockState.dockTypeToString(this.mPreviousDockState.mType));
             }
             if (this.mDesktopDisplayId != -1) {
-                sb.append(" desktopDisplay.");
-                sb.append(this.mDesktopDisplayId);
+                m.append(" desktopDisplay.");
+                m.append(this.mDesktopDisplayId);
             }
             if (this.mForcedInternalScreenModeEnabled) {
-                sb.append(" forcedInternalScreenMode");
+                m.append(" forcedInternalScreenMode");
             }
             if (this.mDockLowChargerState == 1) {
-                sb.append(" dockLowCharger");
+                m.append(" dockLowCharger");
             }
             if (this.mModeChangeLocked) {
-                sb.append(" modeChangeLocked");
+                m.append(" modeChangeLocked");
             }
             if (this.mIsWiredCharging) {
-                sb.append(" wiredCharging");
+                m.append(" wiredCharging");
             }
             if (!isPackagesAvailable()) {
-                sb.append(" package=");
-                sb.append(this.mPackageState);
+                m.append(" package=");
+                m.append(this.mPackageState);
             }
             if (this.mTouchpadAvailable) {
-                sb.append(" touchpadAvailable");
+                m.append(" touchpadAvailable");
             }
             if (this.mTouchpadEnabled) {
-                sb.append(" touchpadEnabled");
+                m.append(" touchpadEnabled");
             }
             if (this.mDisplayResolutionUnsupported) {
-                sb.append(" displayResolutionUnsupported");
+                m.append(" displayResolutionUnsupported");
             }
             if (this.mSpenEnabled) {
-                sb.append(" spenEnabled");
+                m.append(" spenEnabled");
             }
             if (this.mIsNavBarGestureEnabled) {
-                sb.append(" navBarGestureEnabled");
+                m.append(" navBarGestureEnabled");
             }
-            sb.append('}');
-            return sb.toString();
+            m.append('}');
+            return m.toString();
         }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public abstract class StateListener {
+        public void onBootCompleted() {
+        }
+
+        public void onBootInitBlockerRegistered(boolean z) {
+        }
+
+        public void onDesktopModeStateChanged(InternalState internalState) {
+        }
+
+        public void onDisplayDisconnectionRequested(int i) {
+        }
+
+        public void onDockLowChargerPowerChanged(InternalState internalState) {
+        }
+
+        public void onDockStateChanged(InternalState internalState) {
+        }
+
+        public void onDualModeSetDesktopMode(boolean z) {
+        }
+
+        public void onDualModeSetDesktopModeInternal(boolean z) {
+        }
+
+        public void onDualModeStartLoadingScreen(boolean z) {
+        }
+
+        public void onDualModeStopLoadingScreen(boolean z) {
+        }
+
+        public void onEmergencyModeChanged() {
+        }
+
+        public void onExternalDisplayConnectionChanged(InternalState internalState) {
+        }
+
+        public void onExternalDisplayUpdated(InternalState internalState) {
+        }
+
+        public void onForcedInternalScreenStateChanged(InternalState internalState) {
+        }
+
+        public void onLauncherPackageReplaced(boolean z) {
+        }
+
+        public void onNavBarGestureEnabled(InternalState internalState) {
+        }
+
+        public void onPackageStateChanged(InternalState internalState) {
+        }
+
+        public void onPogoKeyboardConnectionChanged(InternalState internalState) {
+        }
+
+        public void onScheduleUpdateDesktopMode(boolean z) {
+        }
+
+        public void onSetDesktopMode(boolean z) {
+        }
+
+        public void onSetDesktopModeInternal(boolean z) {
+        }
+
+        public void onSpenEnabled(InternalState internalState) {
+        }
+
+        public void onStartLoadingScreen(boolean z) {
+        }
+
+        public void onStopLoadingScreen(boolean z) {
+        }
+
+        public void onTouchpadAvailabilityChanged(InternalState internalState) {
+        }
+
+        public void onTouchpadEnabled(InternalState internalState) {
+        }
+
+        public void onUserChanged(InternalState internalState) {
+        }
+    }
+
+    public StateManager(ServiceThread serviceThread) {
+        InternalState internalState = new InternalState();
+        internalState.mSeq = 0;
+        internalState.mForcedInternalScreenModeEnabled = false;
+        internalState.mIsExternalDisplayConnected = false;
+        internalState.mIsMouseConnected = false;
+        internalState.mIsPogoKeyboardConnected = false;
+        internalState.mIsWiredCharging = false;
+        internalState.mEmergencyModeEnabled = false;
+        internalState.mModeChangeLocked = false;
+        internalState.mTouchpadAvailable = false;
+        internalState.mTouchpadEnabled = false;
+        internalState.mSpenEnabled = false;
+        internalState.mDisplayResolutionUnsupported = false;
+        internalState.mIsNavBarGestureEnabled = false;
+        internalState.mDesktopDisplayId = -1;
+        internalState.mCoverSupportState = 1;
+        internalState.mCurrentUserId = -10000;
+        internalState.mDockLowChargerState = -1;
+        HardwareManager.DockState dockState = new HardwareManager.DockState();
+        internalState.mDockState = dockState;
+        internalState.mPreviousDockState = dockState;
+        internalState.mCoverState = new CoverState();
+        internalState.mPackageState = new ArrayMap();
+        internalState.mDesktopModeState = new SemDesktopModeState();
+        this.mInternalState = internalState;
+        this.mState = internalState;
+        this.mHandler = new Handler(serviceThread.getLooper());
+    }
+
+    public final InternalState copyInternalStateLocked(InternalState internalState) {
+        internalState.mSeq++;
+        InternalState internalState2 = new InternalState();
+        internalState2.mSeq = 0;
+        internalState2.mForcedInternalScreenModeEnabled = false;
+        internalState2.mIsExternalDisplayConnected = false;
+        internalState2.mIsMouseConnected = false;
+        internalState2.mIsPogoKeyboardConnected = false;
+        internalState2.mIsWiredCharging = false;
+        internalState2.mEmergencyModeEnabled = false;
+        internalState2.mModeChangeLocked = false;
+        internalState2.mTouchpadAvailable = false;
+        internalState2.mTouchpadEnabled = false;
+        internalState2.mSpenEnabled = false;
+        internalState2.mDisplayResolutionUnsupported = false;
+        internalState2.mIsNavBarGestureEnabled = false;
+        internalState2.mDesktopDisplayId = -1;
+        internalState2.mCoverSupportState = 1;
+        internalState2.mCurrentUserId = -10000;
+        internalState2.mDockLowChargerState = -1;
+        HardwareManager.DockState dockState = new HardwareManager.DockState();
+        internalState2.mDockState = dockState;
+        internalState2.mPreviousDockState = dockState;
+        internalState2.mCoverState = new CoverState();
+        internalState2.mPackageState = new ArrayMap();
+        internalState2.mDesktopModeState = new SemDesktopModeState();
+        internalState2.mSeq = internalState.mSeq;
+        internalState2.mForcedInternalScreenModeEnabled = internalState.mForcedInternalScreenModeEnabled;
+        internalState2.mIsExternalDisplayConnected = internalState.mIsExternalDisplayConnected;
+        internalState2.mIsMouseConnected = internalState.mIsMouseConnected;
+        internalState2.mIsPogoKeyboardConnected = internalState.mIsPogoKeyboardConnected;
+        internalState2.mIsWiredCharging = internalState.mIsWiredCharging;
+        internalState2.mDockLowChargerState = internalState.mDockLowChargerState;
+        internalState2.mEmergencyModeEnabled = internalState.mEmergencyModeEnabled;
+        internalState2.mModeChangeLocked = internalState.mModeChangeLocked;
+        internalState2.mTouchpadAvailable = internalState.mTouchpadAvailable;
+        internalState2.mTouchpadEnabled = internalState.mTouchpadEnabled;
+        internalState2.mSpenEnabled = internalState.mSpenEnabled;
+        internalState2.mDisplayResolutionUnsupported = internalState.mDisplayResolutionUnsupported;
+        internalState2.mIsNavBarGestureEnabled = internalState.mIsNavBarGestureEnabled;
+        internalState2.mDesktopDisplayId = internalState.mDesktopDisplayId;
+        internalState2.mCoverSupportState = internalState.mCoverSupportState;
+        internalState2.mCurrentUserId = internalState.mCurrentUserId;
+        internalState2.mConnectedDisplay = internalState.mConnectedDisplay;
+        internalState2.mPreviousConnectedDisplay = internalState.mPreviousConnectedDisplay;
+        internalState2.mDockState = internalState.mDockState;
+        internalState2.mPreviousDockState = internalState.mPreviousDockState;
+        internalState2.mCoverState = internalState.mCoverState;
+        internalState2.mPackageState = internalState.mPackageState;
+        internalState2.mDesktopModeState = internalState.mDesktopModeState;
+        this.mState = internalState2;
+        if (DesktopModeFeature.DEBUG) {
+            Log.v("[DMS]StateManager", internalState.toString());
+        }
+        return internalState2;
+    }
+
+    public final InternalState getState() {
+        InternalState internalState;
+        synchronized (this.mLock) {
+            internalState = this.mState;
+        }
+        return internalState;
+    }
+
+    public final void notifyBootInitBlockerRegistered(final boolean z) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]StateManager", "notifyBootInitBlockerRegistered()");
+        }
+        synchronized (this.mLock) {
+            this.mHandler.post(new Runnable() { // from class: com.android.server.desktopmode.StateManager$$ExternalSyntheticLambda4
+                @Override // java.lang.Runnable
+                public final void run() {
+                    StateManager stateManager = StateManager.this;
+                    boolean z2 = z;
+                    Iterator it = stateManager.mStateListeners.iterator();
+                    while (it.hasNext()) {
+                        ((StateManager.StateListener) it.next()).onBootInitBlockerRegistered(z2);
+                    }
+                }
+            });
+        }
+    }
+
+    public final void notifyDisplayDisconnectionRequest(int i) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]StateManager", "notifyDisplayDisconnectionRequest(displayType=" + i + ")");
+        }
+        Iterator it = this.mStateListeners.iterator();
+        while (it.hasNext()) {
+            ((StateListener) it.next()).onDisplayDisconnectionRequested(i);
+        }
+    }
+
+    public final void notifyLauncherPackageReplaced(boolean z) {
+        if (DesktopModeFeature.DEBUG) {
+            DesktopModeService$$ExternalSyntheticOutline0.m("notifyLauncherPackageReplaced(dataCleared=", ")", "[DMS]StateManager", z);
+        }
+        Iterator it = this.mStateListeners.iterator();
+        while (it.hasNext()) {
+            ((StateListener) it.next()).onLauncherPackageReplaced(z);
+        }
+    }
+
+    public final void notifyScheduleUpdateDesktopMode(boolean z) {
+        if (DesktopModeFeature.DEBUG) {
+            DesktopModeService$$ExternalSyntheticOutline0.m("notifyScheduleUpdateDesktopMode(enter=", ")", "[DMS]StateManager", z);
+        }
+        Iterator it = this.mStateListeners.iterator();
+        while (it.hasNext()) {
+            ((StateListener) it.next()).onScheduleUpdateDesktopMode(z);
+        }
+    }
+
+    public final void registerListener(StateListener stateListener) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]StateManager", "registerListener(StateListener=" + stateListener + ")");
+        }
+        this.mStateListeners.addIfAbsent(stateListener);
+    }
+
+    public final void setDesktopModeState(SemDesktopModeState semDesktopModeState) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]StateManager", "setDesktopModeState(state=" + semDesktopModeState + ")");
+        }
+        synchronized (this.mLock) {
+            this.mInternalState.mDesktopModeState = semDesktopModeState;
+            this.mHandler.post(new StateManager$$ExternalSyntheticLambda0(this, copyInternalStateLocked(this.mInternalState), 11));
+        }
+    }
+
+    public final void setDockLowChargerState(int i) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]StateManager", "setDockLowChargerState(dockLowChargerState=" + i + ")");
+        }
+        synchronized (this.mLock) {
+            try {
+                if (this.mInternalState.mDockLowChargerState != i) {
+                    this.mInternalState.mDockLowChargerState = i;
+                    this.mHandler.post(new StateManager$$ExternalSyntheticLambda0(this, copyInternalStateLocked(this.mInternalState), 13));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setEmergencyModeEnabled(boolean z) {
+        if (DesktopModeFeature.DEBUG) {
+            DesktopModeService$$ExternalSyntheticOutline0.m("setEmergencyModeEnabled(enabled=", ")", "[DMS]StateManager", z);
+        }
+        synchronized (this.mLock) {
+            try {
+                if (this.mInternalState.mEmergencyModeEnabled != z) {
+                    this.mInternalState.mEmergencyModeEnabled = z;
+                    this.mHandler.post(new StateManager$$ExternalSyntheticLambda0(this, copyInternalStateLocked(this.mInternalState), 12));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setExternalDisplayConnected(boolean z, DisplayInfo displayInfo) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]StateManager", "setExternalDisplayConnected(connected=" + z + ", display=" + displayInfo + ")");
+        }
+        synchronized (this.mLock) {
+            try {
+                if (this.mInternalState.mIsExternalDisplayConnected != z) {
+                    this.mInternalState.mIsExternalDisplayConnected = z;
+                    this.mInternalState.mConnectedDisplay = displayInfo;
+                    if (!z) {
+                        this.mInternalState.mDisplayResolutionUnsupported = false;
+                    }
+                    this.mHandler.post(new StateManager$$ExternalSyntheticLambda0(this, copyInternalStateLocked(this.mInternalState), 2));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setExternalDisplayUpdated(DisplayInfo displayInfo) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]StateManager", "setExternalDisplayUpdated(display=" + displayInfo + ")");
+        }
+        synchronized (this.mLock) {
+            try {
+                if ((this.mInternalState.mConnectedDisplay == null ? -1 : this.mInternalState.mConnectedDisplay.mDisplayId) != displayInfo.mDisplayId) {
+                    this.mInternalState.mPreviousConnectedDisplay = this.mInternalState.mConnectedDisplay;
+                    this.mInternalState.mConnectedDisplay = displayInfo;
+                    this.mHandler.post(new StateManager$$ExternalSyntheticLambda0(this, copyInternalStateLocked(this.mInternalState), 5));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setModeChangeLocked(boolean z) {
+        if (DesktopModeFeature.DEBUG) {
+            DesktopModeService$$ExternalSyntheticOutline0.m("setModeChangeLocked(locked=", ")", "[DMS]StateManager", z);
+        }
+        synchronized (this.mLock) {
+            try {
+                if (this.mInternalState.mModeChangeLocked != z) {
+                    this.mInternalState.mModeChangeLocked = z;
+                    copyInternalStateLocked(this.mInternalState);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setNavBarGestureEnabled(boolean z) {
+        if (DesktopModeFeature.DEBUG) {
+            DesktopModeService$$ExternalSyntheticOutline0.m("setNavBarGestureEnabled(enabled=", ")", "[DMS]StateManager", z);
+        }
+        synchronized (this.mLock) {
+            try {
+                if (this.mInternalState.mIsNavBarGestureEnabled != z) {
+                    this.mInternalState.mIsNavBarGestureEnabled = z;
+                    this.mHandler.post(new StateManager$$ExternalSyntheticLambda0(this, copyInternalStateLocked(this.mInternalState), 1));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setTouchpadEnabled(boolean z) {
+        if (DesktopModeFeature.DEBUG) {
+            DesktopModeService$$ExternalSyntheticOutline0.m("setTouchpadEnabled(enabled=", ")", "[DMS]StateManager", z);
+        }
+        synchronized (this.mLock) {
+            try {
+                if (this.mInternalState.mTouchpadEnabled != z) {
+                    this.mInternalState.mTouchpadEnabled = z;
+                    this.mHandler.post(new StateManager$$ExternalSyntheticLambda0(this, copyInternalStateLocked(this.mInternalState), 6));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setWiredCharging(boolean z) {
+        if (DesktopModeFeature.DEBUG) {
+            DesktopModeService$$ExternalSyntheticOutline0.m("setWiredCharging(isWiredCharging=", ")", "[DMS]StateManager", z);
+        }
+        synchronized (this.mLock) {
+            try {
+                if (this.mInternalState.mIsWiredCharging != z) {
+                    this.mInternalState.mIsWiredCharging = z;
+                    this.mHandler.post(new StateManager$$ExternalSyntheticLambda2(this, copyInternalStateLocked(this.mInternalState), 4));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void unregisterListener(StateListener stateListener) {
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]StateManager", "unregisterListener(StateListener=" + stateListener + ")");
+        }
+        this.mStateListeners.remove(stateListener);
     }
 }

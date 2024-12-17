@@ -6,108 +6,37 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes3.dex */
-public class MultiRateLimiter {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class MultiRateLimiter {
     public static final CountQuotaTracker[] EMPTY_TRACKER_ARRAY = new CountQuotaTracker[0];
-    public final Object mLock;
+    public final Object mLock = new Object();
     public final CountQuotaTracker[] mQuotaTrackers;
 
-    public MultiRateLimiter(List list) {
-        this.mLock = new Object();
-        this.mQuotaTrackers = (CountQuotaTracker[]) list.toArray(EMPTY_TRACKER_ARRAY);
-    }
-
-    public void noteEvent(int i, String str, String str2) {
-        synchronized (this.mLock) {
-            noteEventLocked(i, str, str2);
-        }
-    }
-
-    public boolean isWithinQuota(int i, String str, String str2) {
-        boolean isWithinQuotaLocked;
-        synchronized (this.mLock) {
-            isWithinQuotaLocked = isWithinQuotaLocked(i, str, str2);
-        }
-        return isWithinQuotaLocked;
-    }
-
-    public void clear(int i, String str) {
-        synchronized (this.mLock) {
-            clearLocked(i, str);
-        }
-    }
-
-    public final void noteEventLocked(int i, String str, String str2) {
-        for (CountQuotaTracker countQuotaTracker : this.mQuotaTrackers) {
-            countQuotaTracker.noteEvent(i, str, str2);
-        }
-    }
-
-    public final boolean isWithinQuotaLocked(int i, String str, String str2) {
-        for (CountQuotaTracker countQuotaTracker : this.mQuotaTrackers) {
-            if (!countQuotaTracker.isWithinQuota(i, str, str2)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public final void clearLocked(int i, String str) {
-        for (CountQuotaTracker countQuotaTracker : this.mQuotaTrackers) {
-            countQuotaTracker.onAppRemovedLocked(i, str);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class Builder {
-        public final Categorizer mCategorizer;
-        public final Category mCategory;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Builder {
         public final Context mContext;
         public final QuotaTracker.Injector mInjector;
-        public final List mQuotaTrackers;
+        public final List mQuotaTrackers = new ArrayList();
+        public final Categorizer$$ExternalSyntheticLambda0 mCategorizer = Categorizer.SINGLE_CATEGORIZER;
+        public final Category mCategory = Category.SINGLE_CATEGORY;
 
         public Builder(Context context, QuotaTracker.Injector injector) {
-            this.mQuotaTrackers = new ArrayList();
             this.mContext = context;
             this.mInjector = injector;
-            this.mCategorizer = Categorizer.SINGLE_CATEGORIZER;
-            this.mCategory = Category.SINGLE_CATEGORY;
         }
 
-        public Builder(Context context) {
-            this(context, null);
-        }
-
-        public Builder addRateLimit(int i, Duration duration) {
-            CountQuotaTracker countQuotaTracker;
-            if (this.mInjector != null) {
-                countQuotaTracker = new CountQuotaTracker(this.mContext, this.mCategorizer, this.mInjector);
-            } else {
-                countQuotaTracker = new CountQuotaTracker(this.mContext, this.mCategorizer);
-            }
+        public final void addRateLimit(int i, Duration duration) {
+            Categorizer$$ExternalSyntheticLambda0 categorizer$$ExternalSyntheticLambda0 = this.mCategorizer;
+            QuotaTracker.Injector injector = this.mInjector;
+            CountQuotaTracker countQuotaTracker = injector != null ? new CountQuotaTracker(this.mContext, categorizer$$ExternalSyntheticLambda0, injector) : new CountQuotaTracker(this.mContext, categorizer$$ExternalSyntheticLambda0);
             countQuotaTracker.setCountLimit(this.mCategory, i, duration.toMillis());
-            this.mQuotaTrackers.add(countQuotaTracker);
-            return this;
-        }
-
-        public Builder addRateLimit(RateLimit rateLimit) {
-            return addRateLimit(rateLimit.mLimit, rateLimit.mWindowSize);
-        }
-
-        public Builder addRateLimits(RateLimit[] rateLimitArr) {
-            for (RateLimit rateLimit : rateLimitArr) {
-                addRateLimit(rateLimit);
-            }
-            return this;
-        }
-
-        public MultiRateLimiter build() {
-            return new MultiRateLimiter(this.mQuotaTrackers);
+            ((ArrayList) this.mQuotaTrackers).add(countQuotaTracker);
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class RateLimit {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RateLimit {
         public final int mLimit;
         public final Duration mWindowSize;
 
@@ -115,9 +44,46 @@ public class MultiRateLimiter {
             this.mLimit = i;
             this.mWindowSize = duration;
         }
+    }
 
-        public static RateLimit create(int i, Duration duration) {
-            return new RateLimit(i, duration);
+    public MultiRateLimiter(List list) {
+        this.mQuotaTrackers = (CountQuotaTracker[]) list.toArray(EMPTY_TRACKER_ARRAY);
+    }
+
+    public final void clear(int i, String str) {
+        synchronized (this.mLock) {
+            for (CountQuotaTracker countQuotaTracker : this.mQuotaTrackers) {
+                countQuotaTracker.onAppRemovedLocked(i, str);
+            }
+        }
+    }
+
+    public final boolean isWithinQuota(int i, String str, String str2) {
+        boolean z;
+        synchronized (this.mLock) {
+            CountQuotaTracker[] countQuotaTrackerArr = this.mQuotaTrackers;
+            int length = countQuotaTrackerArr.length;
+            z = false;
+            int i2 = 0;
+            while (true) {
+                if (i2 >= length) {
+                    z = true;
+                    break;
+                }
+                if (!countQuotaTrackerArr[i2].isWithinQuota(i, str, str2)) {
+                    break;
+                }
+                i2++;
+            }
+        }
+        return z;
+    }
+
+    public final void noteEvent(int i, String str, String str2) {
+        synchronized (this.mLock) {
+            for (CountQuotaTracker countQuotaTracker : this.mQuotaTrackers) {
+                countQuotaTracker.noteEvent(i, str, str2);
+            }
         }
     }
 }

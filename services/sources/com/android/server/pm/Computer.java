@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.ComponentInfo;
 import android.content.pm.InstallSourceInfo;
 import android.content.pm.InstrumentationInfo;
 import android.content.pm.KeySet;
@@ -25,7 +24,6 @@ import android.util.proto.ProtoOutputStream;
 import com.android.server.pm.PackageManagerService;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageStateInternal;
-import com.android.server.pm.pkg.SharedUserApi;
 import com.android.server.pm.resolution.ComponentResolverApi;
 import com.android.server.pm.snapshot.PackageDataSnapshot;
 import com.android.server.utils.WatchedArrayMap;
@@ -34,13 +32,14 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface Computer extends PackageDataSnapshot {
     boolean activitySupportsIntentAsUser(ComponentName componentName, ComponentName componentName2, Intent intent, String str, int i);
 
     List applyPostResolutionFilter(List list, String str, boolean z, int i, boolean z2, int i2, Intent intent);
 
-    boolean canAccessComponent(int i, ComponentName componentName, int i2);
+    boolean canAccessComponent(int i, int i2, ComponentName componentName);
 
     boolean canForwardTo(Intent intent, String str, int i, int i2);
 
@@ -48,7 +47,7 @@ public interface Computer extends PackageDataSnapshot {
 
     boolean canQueryPackage(int i, String str);
 
-    boolean canRequestPackageInstalls(String str, int i, int i2, boolean z);
+    boolean canRequestPackageInstalls(int i, int i2, String str, boolean z);
 
     boolean canViewInstantApps(int i, int i2);
 
@@ -70,7 +69,7 @@ public interface Computer extends PackageDataSnapshot {
 
     void dump(int i, FileDescriptor fileDescriptor, PrintWriter printWriter, DumpState dumpState);
 
-    void dumpKeySet(PrintWriter printWriter, String str, DumpState dumpState);
+    void dumpKeySet(DumpState dumpState, PrintWriter printWriter, String str);
 
     void dumpPackages(PrintWriter printWriter, String str, ArraySet arraySet, DumpState dumpState, boolean z);
 
@@ -84,15 +83,15 @@ public interface Computer extends PackageDataSnapshot {
 
     void dumpSharedUsersProto(ProtoOutputStream protoOutputStream);
 
-    void enforceCrossUserOrProfilePermission(int i, int i2, boolean z, boolean z2, String str);
+    void enforceCrossUserOrProfilePermission(int i, int i2, String str);
 
-    void enforceCrossUserPermission(int i, int i2, boolean z, boolean z2, String str);
+    void enforceCrossUserPermission(String str, int i, int i2, boolean z, boolean z2);
 
     boolean filterAppAccess(int i, int i2);
 
-    boolean filterAppAccess(AndroidPackage androidPackage, int i, int i2);
+    boolean filterAppAccess(int i, int i2, String str, boolean z);
 
-    boolean filterAppAccess(String str, int i, int i2, boolean z);
+    boolean filterAppAccess(AndroidPackage androidPackage, int i, int i2);
 
     String[] filterOnlySystemPackages(String... strArr);
 
@@ -104,7 +103,7 @@ public interface Computer extends PackageDataSnapshot {
 
     ActivityInfo getActivityInfo(ComponentName componentName, long j, int i);
 
-    ActivityInfo getActivityInfoInternal(ComponentName componentName, long j, int i, int i2);
+    ActivityInfo getActivityInfoInternal(int i, int i2, long j, ComponentName componentName);
 
     String[] getAllAvailablePackageNames();
 
@@ -120,15 +119,15 @@ public interface Computer extends PackageDataSnapshot {
 
     ApplicationInfo getApplicationInfo(String str, long j, int i);
 
-    ApplicationInfo getApplicationInfoInternal(String str, long j, int i, int i2);
+    ApplicationInfo getApplicationInfoInternal(int i, int i2, long j, String str);
 
     boolean getBlockUninstall(int i, String str);
 
     boolean getBlockUninstallForUser(String str, int i);
 
-    int getComponentEnabledSetting(ComponentName componentName, int i, int i2);
+    int getComponentEnabledSetting(int i, int i2, ComponentName componentName);
 
-    int getComponentEnabledSettingInternal(ComponentName componentName, int i, int i2);
+    int getComponentEnabledSettingInternal(int i, int i2, ComponentName componentName);
 
     ComponentResolverApi getComponentResolver();
 
@@ -138,7 +137,7 @@ public interface Computer extends PackageDataSnapshot {
 
     ComponentName getDefaultHomeActivity(int i);
 
-    PackageStateInternal getDisabledSystemPackage(String str);
+    PackageSetting getDisabledSystemPackage(String str);
 
     ArrayMap getDisabledSystemPackageStates();
 
@@ -150,7 +149,7 @@ public interface Computer extends PackageDataSnapshot {
 
     CharSequence getHarmfulAppWarning(String str, int i);
 
-    ComponentName getHomeActivitiesAsUser(List list, int i);
+    ComponentName getHomeActivitiesAsUser(int i, List list);
 
     Intent getHomeIntent();
 
@@ -158,11 +157,11 @@ public interface Computer extends PackageDataSnapshot {
 
     InstallSourceInfo getInstallSourceInfo(String str, int i);
 
-    List getInstalledApplications(long j, int i, int i2);
+    List getInstalledApplications(int i, int i2, boolean z, long j);
 
     ParceledListSlice getInstalledPackages(long j, int i);
 
-    String getInstallerPackageName(String str, int i);
+    String getInstallerPackageName(int i, String str);
 
     ComponentName getInstantAppInstallerComponent();
 
@@ -190,25 +189,25 @@ public interface Computer extends PackageDataSnapshot {
 
     PackageInfo getPackageInfo(String str, long j, int i);
 
-    PackageInfo getPackageInfoInternal(String str, long j, long j2, int i, int i2);
+    PackageInfo getPackageInfoInternal(int i, int i2, String str, long j, long j2);
 
     Pair getPackageOrSharedUser(int i);
 
-    int getPackageStartability(boolean z, String str, int i, int i2);
+    int getPackageStartability(int i, int i2, String str, boolean z);
 
-    PackageStateInternal getPackageStateFiltered(String str, int i, int i2);
+    PackageSetting getPackageStateFiltered(int i, int i2, String str);
 
-    PackageStateInternal getPackageStateForInstalledAndFiltered(String str, int i, int i2);
+    PackageSetting getPackageStateForInstalledAndFiltered(int i, int i2, String str);
 
-    PackageStateInternal getPackageStateInternal(String str);
+    PackageSetting getPackageStateInternal(int i, String str);
 
-    PackageStateInternal getPackageStateInternal(String str, int i);
+    PackageSetting getPackageStateInternal(String str);
 
     ArrayMap getPackageStates();
 
     int getPackageUid(String str, long j, int i);
 
-    int getPackageUidInternal(String str, long j, int i, int i2);
+    int getPackageUidInternal(int i, int i2, long j, String str);
 
     List getPackagesForAppId(int i);
 
@@ -216,9 +215,9 @@ public interface Computer extends PackageDataSnapshot {
 
     ParceledListSlice getPackagesHoldingPermissions(String[] strArr, long j, int i);
 
-    List getPackagesUsingSharedLibrary(SharedLibraryInfo sharedLibraryInfo, long j, int i, int i2);
+    Pair getPackagesUsingSharedLibrary(SharedLibraryInfo sharedLibraryInfo, long j, int i, int i2);
 
-    List getPersistentApplications(boolean z, int i);
+    List getPersistentApplications(int i, boolean z);
 
     PreferredIntentResolver getPreferredActivities(int i);
 
@@ -238,13 +237,15 @@ public interface Computer extends PackageDataSnapshot {
 
     WatchedArrayMap getSharedLibraries();
 
-    SharedLibraryInfo getSharedLibraryInfo(String str, long j);
+    SharedLibraryInfo getSharedLibraryInfo(long j, String str);
 
-    SharedUserApi getSharedUser(int i);
+    SharedUserSetting getSharedUser(int i);
 
     ArraySet getSharedUserPackages(int i);
 
-    String[] getSharedUserPackagesForPackage(String str, int i);
+    String[] getSharedUserPackagesForPackage(int i, String str);
+
+    ArrayMap getSharedUsers();
 
     SigningDetails getSigningDetails(int i);
 
@@ -252,11 +253,9 @@ public interface Computer extends PackageDataSnapshot {
 
     KeySet getSigningKeySet(String str);
 
-    String[] getSystemSharedLibraryNames();
+    ArrayMap getSystemSharedLibraryNamesAndPaths();
 
     int getTargetSdkVersion(String str);
-
-    List getTopPriorityPackages(long j, int i);
 
     int getUidForSharedUser(String str);
 
@@ -272,7 +271,7 @@ public interface Computer extends PackageDataSnapshot {
 
     int getVersion();
 
-    int[] getVisibilityAllowList(String str, int i);
+    int[] getVisibilityAllowList(int i, String str);
 
     SparseArray getVisibilityAllowLists(String str, int[] iArr);
 
@@ -288,29 +287,31 @@ public interface Computer extends PackageDataSnapshot {
 
     boolean isCallerInstallerOfRecord(AndroidPackage androidPackage, int i);
 
-    boolean isCallerSameApp(String str, int i);
+    boolean isCallerSameApp(int i, String str);
 
-    boolean isCallerSameApp(String str, int i, boolean z);
+    boolean isCallerSameApp(int i, String str, boolean z);
 
-    boolean isComponentEffectivelyEnabled(ComponentInfo componentInfo, UserHandle userHandle);
+    boolean isImplicitImageCaptureIntentAndNotSetByDpc(Intent intent, String str, long j, int i);
 
-    boolean isImplicitImageCaptureIntentAndNotSetByDpc(Intent intent, int i, String str, long j);
-
-    boolean isInstallDisabledForPackage(String str, int i, int i2);
+    boolean isInstallDisabledForPackage(int i, int i2, String str);
 
     boolean isInstantApp(String str, int i);
 
-    boolean isInstantAppInternal(String str, int i, int i2);
+    boolean isInstantAppInternal(int i, int i2, String str);
 
     boolean isPackageAvailable(String str, int i);
+
+    boolean isPackageQuarantinedForUser(String str, int i);
 
     boolean isPackageSignedByKeySet(String str, KeySet keySet);
 
     boolean isPackageSignedByKeySetExactly(String str, KeySet keySet);
 
+    boolean isPackageStoppedForUser(String str, int i);
+
     boolean isPackageSuspendedForUser(String str, int i);
 
-    boolean isSuspendingAnyPackages(String str, int i);
+    boolean isSuspendingAnyPackages(int i, int i2);
 
     boolean isUidPrivileged(int i);
 
@@ -322,21 +323,21 @@ public interface Computer extends PackageDataSnapshot {
 
     List queryIntentActivitiesInternal(Intent intent, String str, long j, int i, int i2);
 
-    List queryIntentActivitiesInternal(Intent intent, String str, long j, long j2, int i, int i2, boolean z, boolean z2);
+    List queryIntentActivitiesInternal(Intent intent, String str, long j, int i, int i2, int i3, boolean z, boolean z2);
 
-    List queryIntentServicesInternal(Intent intent, String str, long j, int i, int i2, boolean z);
+    List queryIntentServicesInternal(Intent intent, String str, long j, int i, int i2, int i3, boolean z);
 
-    void querySyncProviders(boolean z, List list, List list2);
+    void querySyncProviders(List list, List list2, boolean z);
 
-    ProviderInfo resolveContentProvider(String str, long j, int i, int i2);
+    ProviderInfo resolveContentProvider(int i, int i2, long j, String str);
 
-    String resolveInternalPackageName(String str, long j);
+    String resolveInternalPackageName(long j, String str);
 
     boolean shouldFilterApplication(PackageStateInternal packageStateInternal, int i, int i2);
 
     boolean shouldFilterApplicationIncludingUninstalled(PackageStateInternal packageStateInternal, int i, int i2);
 
-    long updateFlagsForResolve(long j, int i, int i2, boolean z, boolean z2);
+    long updateFlagsForResolve(int i, int i2, long j, boolean z, boolean z2);
 
-    Computer use();
+    ComputerEngine use();
 }

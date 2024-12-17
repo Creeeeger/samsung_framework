@@ -1,39 +1,44 @@
 package com.android.server.devicepolicy;
 
 import android.app.admin.PolicyValue;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class MostRestrictive extends ResolutionMechanism {
-    public List mMostToLeastRestrictive;
+    public final List mMostToLeastRestrictive;
 
     public MostRestrictive(List list) {
         this.mMostToLeastRestrictive = list;
     }
 
     @Override // com.android.server.devicepolicy.ResolutionMechanism
-    /* renamed from: resolve */
-    public PolicyValue mo5120resolve(LinkedHashMap linkedHashMap) {
-        if (linkedHashMap.isEmpty()) {
-            return null;
-        }
-        for (PolicyValue policyValue : this.mMostToLeastRestrictive) {
-            if (linkedHashMap.containsValue(policyValue)) {
-                return policyValue;
-            }
-        }
-        return (PolicyValue) ((Map.Entry) linkedHashMap.entrySet().stream().findFirst().get()).getValue();
-    }
-
-    @Override // com.android.server.devicepolicy.ResolutionMechanism
-    /* renamed from: getParcelableResolutionMechanism, reason: merged with bridge method [inline-methods] */
-    public android.app.admin.MostRestrictive mo5119getParcelableResolutionMechanism() {
+    public final android.app.admin.ResolutionMechanism getParcelableResolutionMechanism() {
         return new android.app.admin.MostRestrictive(this.mMostToLeastRestrictive);
     }
 
-    public String toString() {
+    @Override // com.android.server.devicepolicy.ResolutionMechanism
+    public final PolicyValue resolve(LinkedHashMap linkedHashMap) {
+        return resolve(new ArrayList(linkedHashMap.values()));
+    }
+
+    @Override // com.android.server.devicepolicy.ResolutionMechanism
+    public final PolicyValue resolve(List list) {
+        ArrayList arrayList = (ArrayList) list;
+        if (arrayList.isEmpty()) {
+            return null;
+        }
+        for (PolicyValue policyValue : this.mMostToLeastRestrictive) {
+            if (arrayList.contains(policyValue)) {
+                return policyValue;
+            }
+        }
+        return (PolicyValue) arrayList.get(0);
+    }
+
+    public final String toString() {
         return "MostRestrictive { mMostToLeastRestrictive= " + this.mMostToLeastRestrictive + " }";
     }
 }

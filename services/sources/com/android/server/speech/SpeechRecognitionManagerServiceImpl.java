@@ -3,6 +3,7 @@ package com.android.server.speech;
 import android.app.AppGlobals;
 import android.content.AttributionSource;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -12,222 +13,74 @@ import android.os.IBinder;
 import android.os.Process;
 import android.os.RemoteException;
 import android.permission.PermissionManager;
+import android.provider.Settings;
 import android.speech.IModelDownloadListener;
 import android.speech.IRecognitionListener;
 import android.speech.IRecognitionService;
 import android.speech.IRecognitionServiceManagerCallback;
 import android.speech.IRecognitionSupportCallback;
+import android.util.Log;
 import android.util.Slog;
+import android.util.SparseIntArray;
+import com.android.modules.expresslog.Counter;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.ambientcontext.AmbientContextManagerPerUserService$$ExternalSyntheticOutline0;
+import com.android.server.infra.AbstractMasterSystemService;
 import com.android.server.infra.AbstractPerUserSystemService;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class SpeechRecognitionManagerServiceImpl extends AbstractPerUserSystemService {
-    public static final String TAG = "SpeechRecognitionManagerServiceImpl";
     public final Object mLock;
     public final Map mRemoteServicesByUid;
+    public final SparseIntArray mSessionCountByUid;
 
     public SpeechRecognitionManagerServiceImpl(SpeechRecognitionManagerService speechRecognitionManagerService, Object obj, int i) {
         super(speechRecognitionManagerService, obj, i);
         this.mLock = new Object();
         this.mRemoteServicesByUid = new HashMap();
+        this.mSessionCountByUid = new SparseIntArray();
     }
 
-    @Override // com.android.server.infra.AbstractPerUserSystemService
-    public ServiceInfo newServiceInfoLocked(ComponentName componentName) {
+    public static void tryRespondWithError(IRecognitionServiceManagerCallback iRecognitionServiceManagerCallback, int i) {
         try {
-            return AppGlobals.getPackageManager().getServiceInfo(componentName, 128L, this.mUserId);
+            iRecognitionServiceManagerCallback.onError(i);
         } catch (RemoteException unused) {
-            throw new PackageManager.NameNotFoundException("Could not get service for " + componentName);
+            Slog.w("SpeechRecognitionManagerServiceImpl", "Failed to respond with error");
         }
     }
 
-    @Override // com.android.server.infra.AbstractPerUserSystemService
-    public boolean updateLocked(boolean z) {
-        return super.updateLocked(z);
-    }
-
-    public void createSessionLocked(ComponentName componentName, final IBinder iBinder, boolean z, final IRecognitionServiceManagerCallback iRecognitionServiceManagerCallback) {
-        if (((SpeechRecognitionManagerService) this.mMaster).debug) {
-            Slog.i(TAG, String.format("#createSessionLocked, component=%s, onDevice=%s", componentName, Boolean.valueOf(z)));
-        }
-        if (z) {
-            componentName = getOnDeviceComponentNameLocked();
-        }
-        if (!z && Process.isIsolated(Binder.getCallingUid())) {
-            Slog.w(TAG, "Isolated process can only start on device speech recognizer.");
-            tryRespondWithError(iRecognitionServiceManagerCallback, 5);
-            return;
-        }
-        if (componentName == null) {
-            if (((SpeechRecognitionManagerService) this.mMaster).debug) {
-                Slog.i(TAG, "Service component is undefined, responding with error.");
-            }
-            tryRespondWithError(iRecognitionServiceManagerCallback, 5);
-            return;
-        }
-        final int callingUid = Binder.getCallingUid();
-        final RemoteSpeechRecognitionService createService = createService(callingUid, componentName);
-        if (createService == null) {
-            tryRespondWithError(iRecognitionServiceManagerCallback, 10);
-            return;
-        }
-        final IBinder.DeathRecipient deathRecipient = new IBinder.DeathRecipient() { // from class: com.android.server.speech.SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda0
-            @Override // android.os.IBinder.DeathRecipient
-            public final void binderDied() {
-                SpeechRecognitionManagerServiceImpl.this.lambda$createSessionLocked$0(iBinder, callingUid, createService);
-            }
-        };
-        try {
-            iBinder.linkToDeath(deathRecipient, 0);
-            createService.connect().thenAccept(new Consumer() { // from class: com.android.server.speech.SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda1
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    SpeechRecognitionManagerServiceImpl.this.lambda$createSessionLocked$1(iRecognitionServiceManagerCallback, createService, iBinder, callingUid, deathRecipient, (IRecognitionService) obj);
-                }
-            });
-        } catch (RemoteException unused) {
-            handleClientDeath(iBinder, callingUid, createService, true);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$createSessionLocked$0(IBinder iBinder, int i, RemoteSpeechRecognitionService remoteSpeechRecognitionService) {
-        handleClientDeath(iBinder, i, remoteSpeechRecognitionService, true);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$createSessionLocked$1(IRecognitionServiceManagerCallback iRecognitionServiceManagerCallback, final RemoteSpeechRecognitionService remoteSpeechRecognitionService, final IBinder iBinder, final int i, final IBinder.DeathRecipient deathRecipient, IRecognitionService iRecognitionService) {
-        if (iRecognitionService != null) {
-            try {
-                iRecognitionServiceManagerCallback.onSuccess(new IRecognitionService.Stub() { // from class: com.android.server.speech.SpeechRecognitionManagerServiceImpl.1
-                    public void startListening(Intent intent, IRecognitionListener iRecognitionListener, AttributionSource attributionSource) {
-                        attributionSource.enforceCallingUid();
-                        if (!attributionSource.isTrusted(((SpeechRecognitionManagerService) SpeechRecognitionManagerServiceImpl.this.mMaster).getContext())) {
-                            attributionSource = ((PermissionManager) ((SpeechRecognitionManagerService) SpeechRecognitionManagerServiceImpl.this.mMaster).getContext().getSystemService(PermissionManager.class)).registerAttributionSource(attributionSource);
-                        }
-                        remoteSpeechRecognitionService.startListening(intent, iRecognitionListener, attributionSource);
-                        remoteSpeechRecognitionService.associateClientWithActiveListener(iBinder, iRecognitionListener);
-                    }
-
-                    public void stopListening(IRecognitionListener iRecognitionListener) {
-                        remoteSpeechRecognitionService.stopListening(iRecognitionListener);
-                    }
-
-                    public void cancel(IRecognitionListener iRecognitionListener, boolean z) {
-                        remoteSpeechRecognitionService.cancel(iRecognitionListener, z);
-                        if (z) {
-                            SpeechRecognitionManagerServiceImpl.this.handleClientDeath(iBinder, i, remoteSpeechRecognitionService, false);
-                            iBinder.unlinkToDeath(deathRecipient, 0);
-                        }
-                    }
-
-                    public void checkRecognitionSupport(Intent intent, AttributionSource attributionSource, IRecognitionSupportCallback iRecognitionSupportCallback) {
-                        remoteSpeechRecognitionService.checkRecognitionSupport(intent, attributionSource, iRecognitionSupportCallback);
-                    }
-
-                    public void triggerModelDownload(Intent intent, AttributionSource attributionSource, IModelDownloadListener iModelDownloadListener) {
-                        remoteSpeechRecognitionService.triggerModelDownload(intent, attributionSource, iModelDownloadListener);
-                    }
-                });
-                return;
-            } catch (RemoteException e) {
-                Slog.e(TAG, "Error creating a speech recognition session", e);
-                tryRespondWithError(iRecognitionServiceManagerCallback, 5);
-                return;
+    public final boolean checkPrivilege(ComponentName componentName) {
+        boolean z;
+        AbstractMasterSystemService abstractMasterSystemService = this.mMaster;
+        ContentResolver contentResolver = abstractMasterSystemService.getContext().getContentResolver();
+        int i = this.mUserId;
+        String stringForUser = Settings.Secure.getStringForUser(contentResolver, "voice_recognition_service", i);
+        ComponentName unflattenFromString = stringForUser == null ? null : ComponentName.unflattenFromString(stringForUser);
+        ComponentName onDeviceComponentNameLocked = getOnDeviceComponentNameLocked();
+        PackageManager packageManager = abstractMasterSystemService.getContext().getPackageManager();
+        if (packageManager != null) {
+            if ((packageManager.getApplicationInfoAsUser(componentName.getPackageName(), 1048576, i).flags & 1) != 0) {
+                z = true;
+                return !componentName.equals(unflattenFromString) ? true : true;
             }
         }
-        tryRespondWithError(iRecognitionServiceManagerCallback, 5);
-    }
-
-    public final void handleClientDeath(IBinder iBinder, int i, RemoteSpeechRecognitionService remoteSpeechRecognitionService, boolean z) {
-        if (z) {
-            remoteSpeechRecognitionService.shutdown(iBinder);
-        }
-        synchronized (this.mLock) {
-            if (!remoteSpeechRecognitionService.hasActiveSessions()) {
-                removeService(i, remoteSpeechRecognitionService);
-            }
-        }
-    }
-
-    public final ComponentName getOnDeviceComponentNameLocked() {
-        String componentNameLocked = getComponentNameLocked();
-        if (((SpeechRecognitionManagerService) this.mMaster).debug) {
-            Slog.i(TAG, "Resolved component name: " + componentNameLocked);
-        }
-        if (componentNameLocked == null) {
-            if (!((SpeechRecognitionManagerService) this.mMaster).verbose) {
-                return null;
-            }
-            Slog.v(TAG, "ensureRemoteServiceLocked(): no service component name.");
-            return null;
-        }
-        return ComponentName.unflattenFromString(componentNameLocked);
-    }
-
-    public final RemoteSpeechRecognitionService createService(int i, final ComponentName componentName) {
-        synchronized (this.mLock) {
-            Set set = (Set) this.mRemoteServicesByUid.get(Integer.valueOf(i));
-            if (set != null && set.size() >= 10) {
-                return null;
-            }
-            if (set != null) {
-                Optional findFirst = set.stream().filter(new Predicate() { // from class: com.android.server.speech.SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda2
-                    @Override // java.util.function.Predicate
-                    public final boolean test(Object obj) {
-                        boolean lambda$createService$2;
-                        lambda$createService$2 = SpeechRecognitionManagerServiceImpl.lambda$createService$2(componentName, (RemoteSpeechRecognitionService) obj);
-                        return lambda$createService$2;
-                    }
-                }).findFirst();
-                if (findFirst.isPresent()) {
-                    if (((SpeechRecognitionManagerService) this.mMaster).debug) {
-                        Slog.i(TAG, "Reused existing connection to " + componentName);
-                    }
-                    return (RemoteSpeechRecognitionService) findFirst.get();
-                }
-            }
-            if (componentName != null && !componentMapsToRecognitionService(componentName)) {
-                return null;
-            }
-            RemoteSpeechRecognitionService remoteSpeechRecognitionService = new RemoteSpeechRecognitionService(getContext(), componentName, getUserId(), i);
-            ((Set) this.mRemoteServicesByUid.computeIfAbsent(Integer.valueOf(i), new Function() { // from class: com.android.server.speech.SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda3
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    Set lambda$createService$3;
-                    lambda$createService$3 = SpeechRecognitionManagerServiceImpl.lambda$createService$3((Integer) obj);
-                    return lambda$createService$3;
-                }
-            })).add(remoteSpeechRecognitionService);
-            if (((SpeechRecognitionManagerService) this.mMaster).debug) {
-                Slog.i(TAG, "Creating a new connection to " + componentName);
-            }
-            return remoteSpeechRecognitionService;
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$createService$2(ComponentName componentName, RemoteSpeechRecognitionService remoteSpeechRecognitionService) {
-        return remoteSpeechRecognitionService.getServiceComponentName().equals(componentName);
-    }
-
-    public static /* synthetic */ Set lambda$createService$3(Integer num) {
-        return new HashSet();
+        z = false;
+        return !componentName.equals(unflattenFromString) ? true : true;
     }
 
     public final boolean componentMapsToRecognitionService(ComponentName componentName) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            List queryIntentServicesAsUser = getContext().getPackageManager().queryIntentServicesAsUser(new Intent("android.speech.RecognitionService"), 0, getUserId());
+            List queryIntentServicesAsUser = this.mMaster.getContext().getPackageManager().queryIntentServicesAsUser(new Intent("android.speech.RecognitionService"), 0, this.mUserId);
             if (queryIntentServicesAsUser == null) {
                 return false;
             }
@@ -238,27 +91,202 @@ public final class SpeechRecognitionManagerServiceImpl extends AbstractPerUserSy
                     return true;
                 }
             }
-            Slog.w(TAG, "serviceComponent is not RecognitionService: " + componentName);
+            Slog.w("SpeechRecognitionManagerServiceImpl", "serviceComponent is not RecognitionService: " + componentName);
             return false;
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public final void removeService(int i, RemoteSpeechRecognitionService remoteSpeechRecognitionService) {
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r7v1, types: [android.os.IBinder$DeathRecipient, com.android.server.speech.SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda0] */
+    public final void createSessionLocked(final ComponentName componentName, final IBinder iBinder, boolean z, final IRecognitionServiceManagerCallback iRecognitionServiceManagerCallback) {
+        final RemoteSpeechRecognitionService remoteSpeechRecognitionService;
+        if (((SpeechRecognitionManagerService) this.mMaster).debug) {
+            Slog.i("SpeechRecognitionManagerServiceImpl", "#createSessionLocked, component=" + componentName + ", onDevice=" + z);
+        }
+        if (z) {
+            componentName = getOnDeviceComponentNameLocked();
+        }
+        if (!z && Process.isIsolated(Binder.getCallingUid())) {
+            Slog.w("SpeechRecognitionManagerServiceImpl", "Isolated process can only start on device speech recognizer.");
+            tryRespondWithError(iRecognitionServiceManagerCallback, 5);
+            return;
+        }
+        if (componentName == null) {
+            if (((SpeechRecognitionManagerService) this.mMaster).debug) {
+                Slog.i("SpeechRecognitionManagerServiceImpl", "Service component is undefined, responding with error.");
+            }
+            tryRespondWithError(iRecognitionServiceManagerCallback, 5);
+            return;
+        }
+        final int callingUid = Binder.getCallingUid();
         synchronized (this.mLock) {
-            Set set = (Set) this.mRemoteServicesByUid.get(Integer.valueOf(i));
-            if (set != null) {
-                set.remove(remoteSpeechRecognitionService);
+            try {
+                Set set = (Set) ((HashMap) this.mRemoteServicesByUid).get(Integer.valueOf(callingUid));
+                remoteSpeechRecognitionService = null;
+                if (set == null || set.size() < 10) {
+                    if (this.mSessionCountByUid.get(callingUid, 0) == 10) {
+                        Slog.w("SpeechRecognitionManagerServiceImpl", "Number of sessions exceeded for uid: " + callingUid);
+                        Counter.logIncrementWithUid("speech_recognition.value_exceed_session_count", callingUid);
+                    }
+                    if (set != null) {
+                        Optional findFirst = set.stream().filter(new Predicate() { // from class: com.android.server.speech.SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda2
+                            @Override // java.util.function.Predicate
+                            public final boolean test(Object obj) {
+                                return ((RemoteSpeechRecognitionService) obj).getServiceComponentName().equals(componentName);
+                            }
+                        }).findFirst();
+                        if (findFirst.isPresent()) {
+                            if (((SpeechRecognitionManagerService) this.mMaster).debug) {
+                                Slog.i("SpeechRecognitionManagerServiceImpl", "Reused existing connection to " + componentName);
+                            }
+                            incrementSessionCountForUidLocked(callingUid);
+                            remoteSpeechRecognitionService = (RemoteSpeechRecognitionService) findFirst.get();
+                        }
+                    }
+                    if (componentMapsToRecognitionService(componentName)) {
+                        RemoteSpeechRecognitionService remoteSpeechRecognitionService2 = new RemoteSpeechRecognitionService(this.mUserId, callingUid, componentName, this.mMaster.getContext(), checkPrivilege(componentName));
+                        ((Set) ((HashMap) this.mRemoteServicesByUid).computeIfAbsent(Integer.valueOf(callingUid), new SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda3())).add(remoteSpeechRecognitionService2);
+                        if (((SpeechRecognitionManagerService) this.mMaster).debug) {
+                            Slog.i("SpeechRecognitionManagerServiceImpl", "Creating a new connection to " + componentName);
+                        }
+                        incrementSessionCountForUidLocked(callingUid);
+                        remoteSpeechRecognitionService = remoteSpeechRecognitionService2;
+                    }
+                } else {
+                    Slog.w("SpeechRecognitionManagerServiceImpl", "Number of remote services exceeded for uid: " + callingUid);
+                    Counter.logIncrementWithUid("speech_recognition.value_exceed_service_connections_count", callingUid);
+                }
+            } finally {
+            }
+        }
+        if (remoteSpeechRecognitionService == null) {
+            tryRespondWithError(iRecognitionServiceManagerCallback, 10);
+            return;
+        }
+        final ?? r7 = new IBinder.DeathRecipient() { // from class: com.android.server.speech.SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda0
+            @Override // android.os.IBinder.DeathRecipient
+            public final void binderDied() {
+                SpeechRecognitionManagerServiceImpl.this.handleClientDeath(iBinder, callingUid, remoteSpeechRecognitionService, true);
+            }
+        };
+        try {
+            iBinder.linkToDeath(r7, 0);
+            remoteSpeechRecognitionService.connect().thenAccept(new Consumer() { // from class: com.android.server.speech.SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda1
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    final SpeechRecognitionManagerServiceImpl speechRecognitionManagerServiceImpl = SpeechRecognitionManagerServiceImpl.this;
+                    IRecognitionServiceManagerCallback iRecognitionServiceManagerCallback2 = iRecognitionServiceManagerCallback;
+                    final RemoteSpeechRecognitionService remoteSpeechRecognitionService3 = remoteSpeechRecognitionService;
+                    final IBinder iBinder2 = iBinder;
+                    final int i = callingUid;
+                    IBinder.DeathRecipient deathRecipient = r7;
+                    IRecognitionService iRecognitionService = (IRecognitionService) obj;
+                    speechRecognitionManagerServiceImpl.getClass();
+                    if (iRecognitionService == null) {
+                        SpeechRecognitionManagerServiceImpl.tryRespondWithError(iRecognitionServiceManagerCallback2, 5);
+                        return;
+                    }
+                    try {
+                        final SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda0 speechRecognitionManagerServiceImpl$$ExternalSyntheticLambda0 = (SpeechRecognitionManagerServiceImpl$$ExternalSyntheticLambda0) deathRecipient;
+                        iRecognitionServiceManagerCallback2.onSuccess(new IRecognitionService.Stub() { // from class: com.android.server.speech.SpeechRecognitionManagerServiceImpl.1
+                            public final void cancel(IRecognitionListener iRecognitionListener, boolean z2) {
+                                remoteSpeechRecognitionService3.cancel(iRecognitionListener, z2);
+                                if (z2) {
+                                    SpeechRecognitionManagerServiceImpl.this.handleClientDeath(iBinder2, i, remoteSpeechRecognitionService3, false);
+                                    iBinder2.unlinkToDeath(speechRecognitionManagerServiceImpl$$ExternalSyntheticLambda0, 0);
+                                }
+                            }
+
+                            public final void checkRecognitionSupport(Intent intent, AttributionSource attributionSource, IRecognitionSupportCallback iRecognitionSupportCallback) {
+                                remoteSpeechRecognitionService3.checkRecognitionSupport(intent, attributionSource, iRecognitionSupportCallback);
+                            }
+
+                            public final void startListening(Intent intent, IRecognitionListener iRecognitionListener, AttributionSource attributionSource) {
+                                attributionSource.enforceCallingUid();
+                                if (!attributionSource.isTrusted(((SpeechRecognitionManagerService) SpeechRecognitionManagerServiceImpl.this.mMaster).getContext())) {
+                                    attributionSource = ((PermissionManager) ((SpeechRecognitionManagerService) SpeechRecognitionManagerServiceImpl.this.mMaster).getContext().getSystemService(PermissionManager.class)).registerAttributionSource(attributionSource);
+                                }
+                                remoteSpeechRecognitionService3.startListening(intent, iRecognitionListener, attributionSource);
+                                remoteSpeechRecognitionService3.associateClientWithActiveListener(iBinder2, iRecognitionListener);
+                            }
+
+                            public final void stopListening(IRecognitionListener iRecognitionListener) {
+                                remoteSpeechRecognitionService3.stopListening(iRecognitionListener);
+                            }
+
+                            public final void triggerModelDownload(Intent intent, AttributionSource attributionSource, IModelDownloadListener iModelDownloadListener) {
+                                remoteSpeechRecognitionService3.triggerModelDownload(intent, attributionSource, iModelDownloadListener);
+                            }
+                        });
+                    } catch (RemoteException e) {
+                        Slog.e("SpeechRecognitionManagerServiceImpl", "Error creating a speech recognition session", e);
+                        SpeechRecognitionManagerServiceImpl.tryRespondWithError(iRecognitionServiceManagerCallback2, 5);
+                    }
+                }
+            });
+        } catch (RemoteException unused) {
+            handleClientDeath(iBinder, callingUid, remoteSpeechRecognitionService, true);
+        }
+    }
+
+    public final ComponentName getOnDeviceComponentNameLocked() {
+        String componentNameLocked = getComponentNameLocked();
+        AbstractMasterSystemService abstractMasterSystemService = this.mMaster;
+        if (((SpeechRecognitionManagerService) abstractMasterSystemService).debug) {
+            Slog.i("SpeechRecognitionManagerServiceImpl", "Resolved component name: " + componentNameLocked);
+        }
+        if (componentNameLocked != null) {
+            return ComponentName.unflattenFromString(componentNameLocked);
+        }
+        if (!((SpeechRecognitionManagerService) abstractMasterSystemService).verbose) {
+            return null;
+        }
+        Slog.v("SpeechRecognitionManagerServiceImpl", "ensureRemoteServiceLocked(): no service component name.");
+        return null;
+    }
+
+    public final void handleClientDeath(IBinder iBinder, int i, RemoteSpeechRecognitionService remoteSpeechRecognitionService, boolean z) {
+        if (z) {
+            remoteSpeechRecognitionService.shutdown(iBinder);
+        }
+        synchronized (this.mLock) {
+            int i2 = this.mSessionCountByUid.get(i, 1) - 1;
+            if (i2 > 0) {
+                this.mSessionCountByUid.put(i, i2);
+            } else {
+                this.mSessionCountByUid.delete(i);
+            }
+            if (!remoteSpeechRecognitionService.hasActiveSessions()) {
+                synchronized (this.mLock) {
+                    try {
+                        Set set = (Set) ((HashMap) this.mRemoteServicesByUid).get(Integer.valueOf(i));
+                        if (set != null) {
+                            set.remove(remoteSpeechRecognitionService);
+                        }
+                    } finally {
+                    }
+                }
             }
         }
     }
 
-    public static void tryRespondWithError(IRecognitionServiceManagerCallback iRecognitionServiceManagerCallback, int i) {
+    public final void incrementSessionCountForUidLocked(int i) {
+        SparseIntArray sparseIntArray = this.mSessionCountByUid;
+        sparseIntArray.put(i, sparseIntArray.get(i, 0) + 1);
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "Client ", " has opened ");
+        m.append(this.mSessionCountByUid.get(i, 0));
+        m.append(" sessions");
+        Log.i("SpeechRecognitionManagerServiceImpl", m.toString());
+    }
+
+    @Override // com.android.server.infra.AbstractPerUserSystemService
+    public final ServiceInfo newServiceInfoLocked(ComponentName componentName) {
         try {
-            iRecognitionServiceManagerCallback.onError(i);
+            return AppGlobals.getPackageManager().getServiceInfo(componentName, 128L, this.mUserId);
         } catch (RemoteException unused) {
-            Slog.w(TAG, "Failed to respond with error");
+            throw new PackageManager.NameNotFoundException(AmbientContextManagerPerUserService$$ExternalSyntheticOutline0.m(componentName, "Could not get service for "));
         }
     }
 }

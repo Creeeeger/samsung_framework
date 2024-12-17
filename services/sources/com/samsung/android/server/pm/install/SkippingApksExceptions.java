@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,29 +15,13 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class SkippingApksExceptions {
+public final class SkippingApksExceptions {
     public final List mAdditionalSkippingApkList = new ArrayList();
 
     public SkippingApksExceptions() {
-        parseSkippingApkList(Environment.getRootDirectory() + "/etc/skipping_apk_exceptions.xml");
-    }
-
-    public boolean hasAdditionalSkippingApkList() {
-        return !this.mAdditionalSkippingApkList.isEmpty();
-    }
-
-    public List getAdditionalSkippingApkList() {
-        Log.d("SkippingApksExceptions", "getAdditionalSkippingApkList: " + this.mAdditionalSkippingApkList.toString());
-        return this.mAdditionalSkippingApkList;
-    }
-
-    public static String getProductName() {
-        return Build.PRODUCT;
-    }
-
-    public final void parseSkippingApkList(String str) {
-        File file = new File(str);
+        File file = new File(Environment.getRootDirectory() + "/etc/skipping_apk_exceptions.xml");
         if (!file.exists()) {
             Log.d("SkippingApksExceptions", "No skipping apk exception file exists.");
             return;
@@ -68,12 +53,12 @@ public class SkippingApksExceptions {
     public final void parseSkippingApkExceptions(XmlPullParser xmlPullParser) {
         xmlPullParser.next();
         int depth = xmlPullParser.getDepth();
-        String productName = getProductName();
-        if (productName == null || productName.length() < 3) {
+        String str = Build.PRODUCT;
+        if (str == null || str.length() < 3) {
             return;
         }
-        String substring = productName.substring(productName.length() - 3, productName.length());
-        Log.d("SkippingApksExceptions", "deviceCarrierName = " + substring);
+        String substring = str.substring(str.length() - 3, str.length());
+        DualAppManagerService$$ExternalSyntheticOutline0.m("deviceCarrierName = ", substring, "SkippingApksExceptions");
         while (true) {
             int next = xmlPullParser.next();
             if (next == 1) {
@@ -84,19 +69,19 @@ public class SkippingApksExceptions {
             }
             if (next != 3 && next != 4) {
                 String name = xmlPullParser.getName();
-                name.hashCode();
+                name.getClass();
                 if (name.equals("exception")) {
                     String attributeValue = xmlPullParser.getAttributeValue(null, "name");
                     if (!TextUtils.isEmpty(attributeValue)) {
                         String attributeValue2 = xmlPullParser.getAttributeValue(null, "product");
                         if (TextUtils.isEmpty(attributeValue2)) {
-                            this.mAdditionalSkippingApkList.add(attributeValue);
+                            ((ArrayList) this.mAdditionalSkippingApkList).add(attributeValue);
                         } else if (attributeValue2.length() < 3 || !attributeValue2.contains(substring)) {
-                            this.mAdditionalSkippingApkList.add(attributeValue);
+                            ((ArrayList) this.mAdditionalSkippingApkList).add(attributeValue);
                         }
                     }
                 } else {
-                    Log.d("SkippingApksExceptions", "Invalid element name: " + name);
+                    Log.d("SkippingApksExceptions", "Invalid element name: ".concat(name));
                 }
             }
         }

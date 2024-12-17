@@ -1,8 +1,7 @@
 package com.android.server.job.controllers;
 
-import android.app.ActivityManager;
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 import android.net.ConnectivityManager;
-import android.net.INetworkPolicyListener;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkPolicyManager;
@@ -10,7 +9,9 @@ import android.net.NetworkRequest;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.SystemClock;
 import android.os.UserHandle;
+import android.provider.DeviceConfig;
 import android.telephony.CellSignalStrength;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyCallback;
@@ -23,50 +24,63 @@ import android.util.Pools;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
+import android.util.SparseIntArray;
 import android.util.TimeUtils;
 import android.util.proto.ProtoOutputStream;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import com.android.server.AppSchedulingModuleThread;
+import com.android.server.HermesService$3$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.accessibility.ProxyManager$$ExternalSyntheticOutline0;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
+import com.android.server.job.Flags;
 import com.android.server.job.JobSchedulerService;
-import com.android.server.net.NetworkPolicyManagerInternal;
+import com.android.server.job.JobSchedulerService$$ExternalSyntheticLambda5;
+import com.android.server.job.JobSchedulerService$Constants$$ExternalSyntheticOutline0;
+import com.android.server.job.JobServiceContext;
+import com.android.server.job.controllers.ConnectivityController;
+import com.android.server.net.NetworkPolicyManagerService;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class ConnectivityController extends RestrictingController implements ConnectivityManager.OnNetworkActiveListener {
     public static final boolean DEBUG;
+    static final int TRANSPORT_AFFINITY_AVOID = 2;
+    static final int TRANSPORT_AFFINITY_PREFER = 1;
+    static final int TRANSPORT_AFFINITY_UNDEFINED = 0;
+    static final SparseIntArray sNetworkTransportAffinities;
     public final ArrayMap mAvailableNetworks;
     public final SparseBooleanArray mBackgroundMeteredAllowed;
+    public final CcConfig mCcConfig;
     public final ConnectivityManager mConnManager;
     public final SparseArray mCurrentDefaultNetworkCallbacks;
+    public final AnonymousClass2 mDefaultNetworkCallback;
     public final Pools.Pool mDefaultNetworkCallbackPool;
     public final FlexibilityController mFlexibilityController;
-    public final Handler mHandler;
+    public final CcHandler mHandler;
     public long mLastAllJobUpdateTimeElapsed;
     public long mLastCallbackAdjustmentTimeElapsed;
-    public final INetworkPolicyListener mNetPolicyListener;
+    public final AnonymousClass4 mNetPolicyListener;
     public final NetworkPolicyManager mNetPolicyManager;
-    public final NetworkPolicyManagerInternal mNetPolicyManagerInternal;
-    public final ConnectivityManager.NetworkCallback mNetworkCallback;
+    public final NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl mNetPolicyManagerInternal;
+    public final AnonymousClass2 mNetworkCallback;
     public final SparseArray mRequestedWhitelistJobs;
     public final SparseArray mSignalStrengths;
     public final List mSortedStats;
+    public Network mSystemDefaultNetwork;
     public final SparseArray mTrackedJobs;
     public final SparseArray mUidStats;
-    public final Comparator mUidStatsComparator;
+    public final AnonymousClass1 mUidStatsComparator;
 
-    static {
-        DEBUG = JobSchedulerService.DEBUG || Log.isLoggable("JobScheduler.Connectivity", 3);
-    }
-
-    /* renamed from: com.android.server.job.controllers.ConnectivityController$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 implements Comparator {
-        public final int prioritizeExistenceOver(int i, int i2, int i3) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.job.controllers.ConnectivityController$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Comparator {
+        public static int prioritizeExistenceOver(int i, int i2, int i3) {
             if (i2 > i && i3 > i) {
                 return 0;
             }
@@ -76,11 +90,10 @@ public final class ConnectivityController extends RestrictingController implemen
             return 0;
         }
 
-        public AnonymousClass1() {
-        }
-
         @Override // java.util.Comparator
-        public int compare(UidStats uidStats, UidStats uidStats2) {
+        public final int compare(Object obj, Object obj2) {
+            UidStats uidStats = (UidStats) obj;
+            UidStats uidStats2 = (UidStats) obj2;
             int prioritizeExistenceOver = prioritizeExistenceOver(0, uidStats.runningJobs.size(), uidStats2.runningJobs.size());
             if (prioritizeExistenceOver != 0) {
                 return prioritizeExistenceOver;
@@ -111,743 +124,278 @@ public final class ConnectivityController extends RestrictingController implemen
             }
             long j = uidStats.earliestUIJEnqueueTime;
             long j2 = uidStats2.earliestUIJEnqueueTime;
-            if (j < j2) {
-                return -1;
-            }
-            if (j > j2) {
-                return 1;
-            }
-            long j3 = uidStats.earliestEJEnqueueTime;
-            long j4 = uidStats2.earliestEJEnqueueTime;
-            if (j3 < j4) {
-                return -1;
-            }
-            if (j3 > j4) {
-                return 1;
-            }
-            int i = uidStats.baseBias;
-            int i2 = uidStats2.baseBias;
-            if (i != i2) {
-                return i2 - i;
-            }
-            long j5 = uidStats.earliestEnqueueTime;
-            long j6 = uidStats2.earliestEnqueueTime;
-            if (j5 < j6) {
-                return -1;
-            }
-            return j5 > j6 ? 1 : 0;
-        }
-    }
-
-    public ConnectivityController(JobSchedulerService jobSchedulerService, FlexibilityController flexibilityController) {
-        super(jobSchedulerService);
-        this.mTrackedJobs = new SparseArray();
-        this.mRequestedWhitelistJobs = new SparseArray();
-        this.mAvailableNetworks = new ArrayMap();
-        this.mCurrentDefaultNetworkCallbacks = new SparseArray();
-        this.mUidStatsComparator = new Comparator() { // from class: com.android.server.job.controllers.ConnectivityController.1
-            public final int prioritizeExistenceOver(int i, int i2, int i3) {
-                if (i2 > i && i3 > i) {
-                    return 0;
-                }
-                if (i2 > i || i3 > i) {
-                    return i2 > i ? -1 : 1;
-                }
-                return 0;
-            }
-
-            public AnonymousClass1() {
-            }
-
-            @Override // java.util.Comparator
-            public int compare(UidStats uidStats, UidStats uidStats2) {
-                int prioritizeExistenceOver = prioritizeExistenceOver(0, uidStats.runningJobs.size(), uidStats2.runningJobs.size());
-                if (prioritizeExistenceOver != 0) {
-                    return prioritizeExistenceOver;
-                }
-                int prioritizeExistenceOver2 = prioritizeExistenceOver(0, uidStats.numReadyWithConnectivity, uidStats2.numReadyWithConnectivity);
-                if (prioritizeExistenceOver2 != 0) {
-                    return prioritizeExistenceOver2;
-                }
-                int prioritizeExistenceOver3 = prioritizeExistenceOver(0, uidStats.numRequestedNetworkAvailable, uidStats2.numRequestedNetworkAvailable);
-                if (prioritizeExistenceOver3 != 0) {
-                    return prioritizeExistenceOver3;
-                }
-                int prioritizeExistenceOver4 = prioritizeExistenceOver(39, uidStats.baseBias, uidStats2.baseBias);
-                if (prioritizeExistenceOver4 != 0) {
-                    return prioritizeExistenceOver4;
-                }
-                int prioritizeExistenceOver5 = prioritizeExistenceOver(0, uidStats.numUIJs, uidStats2.numUIJs);
-                if (prioritizeExistenceOver5 != 0) {
-                    return prioritizeExistenceOver5;
-                }
-                int prioritizeExistenceOver6 = prioritizeExistenceOver(0, uidStats.numEJs, uidStats2.numEJs);
-                if (prioritizeExistenceOver6 != 0) {
-                    return prioritizeExistenceOver6;
-                }
-                int prioritizeExistenceOver7 = prioritizeExistenceOver(34, uidStats.baseBias, uidStats2.baseBias);
-                if (prioritizeExistenceOver7 != 0) {
-                    return prioritizeExistenceOver7;
-                }
-                long j = uidStats.earliestUIJEnqueueTime;
-                long j2 = uidStats2.earliestUIJEnqueueTime;
-                if (j < j2) {
-                    return -1;
-                }
-                if (j > j2) {
-                    return 1;
-                }
-                long j3 = uidStats.earliestEJEnqueueTime;
-                long j4 = uidStats2.earliestEJEnqueueTime;
-                if (j3 < j4) {
-                    return -1;
-                }
-                if (j3 > j4) {
-                    return 1;
-                }
-                int i = uidStats.baseBias;
-                int i2 = uidStats2.baseBias;
-                if (i != i2) {
-                    return i2 - i;
-                }
-                long j5 = uidStats.earliestEnqueueTime;
-                long j6 = uidStats2.earliestEnqueueTime;
-                if (j5 < j6) {
-                    return -1;
-                }
-                return j5 > j6 ? 1 : 0;
-            }
-        };
-        this.mUidStats = new SparseArray();
-        this.mDefaultNetworkCallbackPool = new Pools.SimplePool(125);
-        this.mSortedStats = new ArrayList();
-        this.mBackgroundMeteredAllowed = new SparseBooleanArray();
-        this.mSignalStrengths = new SparseArray();
-        AnonymousClass2 anonymousClass2 = new ConnectivityManager.NetworkCallback() { // from class: com.android.server.job.controllers.ConnectivityController.2
-            public AnonymousClass2() {
-            }
-
-            @Override // android.net.ConnectivityManager.NetworkCallback
-            public void onAvailable(Network network) {
-                if (ConnectivityController.DEBUG) {
-                    Slog.v("JobScheduler.Connectivity", "onAvailable: " + network);
-                }
-            }
-
-            @Override // android.net.ConnectivityManager.NetworkCallback
-            public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
-                if (ConnectivityController.DEBUG) {
-                    Slog.v("JobScheduler.Connectivity", "onCapabilitiesChanged: " + network);
-                }
-                synchronized (ConnectivityController.this.mLock) {
-                    NetworkCapabilities networkCapabilities2 = (NetworkCapabilities) ConnectivityController.this.mAvailableNetworks.put(network, networkCapabilities);
-                    if (networkCapabilities2 != null) {
-                        maybeUnregisterSignalStrengthCallbackLocked(networkCapabilities2);
-                    }
-                    maybeRegisterSignalStrengthCallbackLocked(networkCapabilities);
-                    ConnectivityController.this.updateTrackedJobsLocked(-1, network);
-                    ConnectivityController.this.postAdjustCallbacks();
-                }
-            }
-
-            @Override // android.net.ConnectivityManager.NetworkCallback
-            public void onLost(Network network) {
-                if (ConnectivityController.DEBUG) {
-                    Slog.v("JobScheduler.Connectivity", "onLost: " + network);
-                }
-                synchronized (ConnectivityController.this.mLock) {
-                    NetworkCapabilities networkCapabilities = (NetworkCapabilities) ConnectivityController.this.mAvailableNetworks.remove(network);
-                    if (networkCapabilities != null) {
-                        maybeUnregisterSignalStrengthCallbackLocked(networkCapabilities);
-                    }
-                    for (int i = 0; i < ConnectivityController.this.mCurrentDefaultNetworkCallbacks.size(); i++) {
-                        UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) ConnectivityController.this.mCurrentDefaultNetworkCallbacks.valueAt(i);
-                        if (Objects.equals(uidDefaultNetworkCallback.mDefaultNetwork, network)) {
-                            uidDefaultNetworkCallback.mDefaultNetwork = null;
-                        }
-                    }
-                    ConnectivityController.this.updateTrackedJobsLocked(-1, network);
-                    ConnectivityController.this.postAdjustCallbacks();
-                }
-            }
-
-            public final void maybeRegisterSignalStrengthCallbackLocked(NetworkCapabilities networkCapabilities) {
-                if (networkCapabilities.hasTransport(0)) {
-                    TelephonyManager telephonyManager = (TelephonyManager) ConnectivityController.this.mContext.getSystemService(TelephonyManager.class);
-                    Iterator it = networkCapabilities.getSubscriptionIds().iterator();
-                    while (it.hasNext()) {
-                        int intValue = ((Integer) it.next()).intValue();
-                        if (ConnectivityController.this.mSignalStrengths.indexOfKey(intValue) < 0) {
-                            TelephonyManager createForSubscriptionId = telephonyManager.createForSubscriptionId(intValue);
-                            CellSignalStrengthCallback cellSignalStrengthCallback = new CellSignalStrengthCallback();
-                            createForSubscriptionId.registerTelephonyCallback(AppSchedulingModuleThread.getExecutor(), cellSignalStrengthCallback);
-                            ConnectivityController.this.mSignalStrengths.put(intValue, cellSignalStrengthCallback);
-                            SignalStrength signalStrength = createForSubscriptionId.getSignalStrength();
-                            if (signalStrength != null) {
-                                cellSignalStrengthCallback.signalStrength = signalStrength.getLevel();
+            if (j >= j2) {
+                if (j <= j2) {
+                    long j3 = uidStats.earliestEJEnqueueTime;
+                    long j4 = uidStats2.earliestEJEnqueueTime;
+                    if (j3 >= j4) {
+                        if (j3 <= j4) {
+                            int i = uidStats.baseBias;
+                            int i2 = uidStats2.baseBias;
+                            if (i != i2) {
+                                return i2 - i;
+                            }
+                            long j5 = uidStats.earliestEnqueueTime;
+                            long j6 = uidStats2.earliestEnqueueTime;
+                            if (j5 >= j6) {
+                                return j5 > j6 ? 1 : 0;
                             }
                         }
                     }
                 }
+                return 1;
             }
+            return -1;
+        }
+    }
 
-            public final void maybeUnregisterSignalStrengthCallbackLocked(NetworkCapabilities networkCapabilities) {
-                if (networkCapabilities.hasTransport(0)) {
-                    ArraySet arraySet = new ArraySet();
-                    int size = ConnectivityController.this.mAvailableNetworks.size();
-                    for (int i = 0; i < size; i++) {
-                        NetworkCapabilities networkCapabilities2 = (NetworkCapabilities) ConnectivityController.this.mAvailableNetworks.valueAt(i);
-                        if (networkCapabilities2.hasTransport(0)) {
-                            arraySet.addAll(networkCapabilities2.getSubscriptionIds());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CachedNetworkMetadata {
+        public long capabilitiesFirstAcquiredTimeElapsed;
+        public long defaultNetworkActivationLastCheckTimeElapsed;
+        public long defaultNetworkActivationLastConfirmedTimeElapsed;
+        public NetworkCapabilities networkCapabilities;
+        public boolean satisfiesTransportAffinities;
+
+        public final String toString() {
+            StringBuilder sb = new StringBuilder("CNM{");
+            sb.append(this.networkCapabilities.toString());
+            sb.append(", satisfiesTransportAffinities=");
+            sb.append(this.satisfiesTransportAffinities);
+            sb.append(", capabilitiesFirstAcquiredTimeElapsed=");
+            sb.append(this.capabilitiesFirstAcquiredTimeElapsed);
+            sb.append(", defaultNetworkActivationLastCheckTimeElapsed=");
+            sb.append(this.defaultNetworkActivationLastCheckTimeElapsed);
+            sb.append(", defaultNetworkActivationLastConfirmedTimeElapsed=");
+            return AudioConfig$$ExternalSyntheticOutline0.m(sb, this.defaultNetworkActivationLastConfirmedTimeElapsed, "}");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class CcConfig {
+        static final String KEY_AVOID_UNDEFINED_TRANSPORT_AFFINITY = "conn_avoid_undefined_transport_affinity";
+        public boolean AVOID_UNDEFINED_TRANSPORT_AFFINITY;
+        public long NETWORK_ACTIVATION_EXPIRATION_MS;
+        public long NETWORK_ACTIVATION_MAX_WAIT_TIME_MS;
+        public boolean mFlexIsEnabled;
+        public boolean mShouldReprocessNetworkCapabilities;
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CcHandler extends Handler {
+        public CcHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            synchronized (ConnectivityController.this.mLock) {
+                try {
+                    int i = message.what;
+                    if (i == 0) {
+                        synchronized (ConnectivityController.this.mLock) {
+                            ConnectivityController.m624$$Nest$mmaybeAdjustRegisteredCallbacksLocked(ConnectivityController.this);
+                        }
+                    } else if (i == 1) {
+                        synchronized (ConnectivityController.this.mLock) {
+                            ConnectivityController.this.updateAllTrackedJobsLocked(message.arg1 == 1);
+                        }
+                    } else if (i == 2) {
+                        removeMessages(2);
+                        synchronized (ConnectivityController.this.mLock) {
+                            ConnectivityController.this.mBackgroundMeteredAllowed.clear();
+                            ConnectivityController.this.updateTrackedJobsLocked((Network) null, -1);
+                        }
+                    } else if (i == 3) {
+                        int i2 = message.arg1;
+                        boolean z = message.arg2 != 3;
+                        synchronized (ConnectivityController.this.mLock) {
+                            try {
+                                if (ConnectivityController.this.mBackgroundMeteredAllowed.get(i2) != z) {
+                                    ConnectivityController.this.mBackgroundMeteredAllowed.put(i2, z);
+                                    ConnectivityController.this.updateTrackedJobsLocked((Network) null, i2);
+                                }
+                            } finally {
+                            }
+                        }
+                    } else if (i == 4) {
+                        removeMessages(4);
+                        synchronized (ConnectivityController.this.mLock) {
+                            try {
+                                ConnectivityController connectivityController = ConnectivityController.this;
+                                Network network = connectivityController.mSystemDefaultNetwork;
+                                if (network != null) {
+                                    if (connectivityController.isNetworkInStateForJobRunLocked(network)) {
+                                        ArrayMap arrayMap = new ArrayMap();
+                                        for (int size = ConnectivityController.this.mTrackedJobs.size() - 1; size >= 0; size--) {
+                                            ArraySet arraySet = (ArraySet) ConnectivityController.this.mTrackedJobs.valueAt(size);
+                                            for (int size2 = arraySet.size() - 1; size2 >= 0; size2--) {
+                                                JobStatus jobStatus = (JobStatus) arraySet.valueAt(size2);
+                                                if (!ConnectivityController.this.mSystemDefaultNetwork.equals(jobStatus.network)) {
+                                                    CachedNetworkMetadata networkMetadata = ConnectivityController.this.getNetworkMetadata(jobStatus.network);
+                                                    NetworkCapabilities networkCapabilities = networkMetadata == null ? null : networkMetadata.networkCapabilities;
+                                                    if (networkCapabilities != null && networkCapabilities.hasTransport(4)) {
+                                                        if (!arrayMap.containsKey(jobStatus.network)) {
+                                                            List underlyingNetworks = networkCapabilities.getUnderlyingNetworks();
+                                                            boolean z2 = underlyingNetworks != null && underlyingNetworks.contains(ConnectivityController.this.mSystemDefaultNetwork);
+                                                            arrayMap.put(jobStatus.network, Boolean.valueOf(z2));
+                                                            if (!z2) {
+                                                            }
+                                                        } else if (!((Boolean) arrayMap.get(jobStatus.network)).booleanValue()) {
+                                                        }
+                                                    }
+                                                    arrayMap.put(jobStatus.network, Boolean.FALSE);
+                                                }
+                                                if (jobStatus.isReady(jobStatus.mSatisfiedConstraintsOfInterest)) {
+                                                    if (ConnectivityController.DEBUG) {
+                                                        Slog.d("JobScheduler.Connectivity", "Potentially running " + jobStatus + " due to network activity");
+                                                    }
+                                                    ConnectivityController.this.mStateChangedListener.onRunJobNow(jobStatus);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } finally {
+                            }
                         }
                     }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CellSignalStrengthCallback extends TelephonyCallback implements TelephonyCallback.SignalStrengthsListener {
+        public int signalStrength = 4;
+
+        public CellSignalStrengthCallback() {
+        }
+
+        @Override // android.telephony.TelephonyCallback.SignalStrengthsListener
+        public final void onSignalStrengthsChanged(SignalStrength signalStrength) {
+            synchronized (ConnectivityController.this.mLock) {
+                try {
+                    int level = signalStrength.getLevel();
                     if (ConnectivityController.DEBUG) {
-                        Slog.d("JobScheduler.Connectivity", "Active subscription IDs: " + arraySet);
-                    }
-                    TelephonyManager telephonyManager = (TelephonyManager) ConnectivityController.this.mContext.getSystemService(TelephonyManager.class);
-                    Iterator it = networkCapabilities.getSubscriptionIds().iterator();
-                    while (it.hasNext()) {
-                        int intValue = ((Integer) it.next()).intValue();
-                        if (!arraySet.contains(Integer.valueOf(intValue))) {
-                            TelephonyManager createForSubscriptionId = telephonyManager.createForSubscriptionId(intValue);
-                            CellSignalStrengthCallback cellSignalStrengthCallback = (CellSignalStrengthCallback) ConnectivityController.this.mSignalStrengths.removeReturnOld(intValue);
-                            if (cellSignalStrengthCallback != null) {
-                                createForSubscriptionId.unregisterTelephonyCallback(cellSignalStrengthCallback);
-                            } else {
-                                Slog.wtf("JobScheduler.Connectivity", "Callback for sub " + intValue + " didn't exist?!?!");
-                            }
+                        Slog.d("JobScheduler.Connectivity", "Signal strength changing from " + this.signalStrength + " to " + level);
+                        for (CellSignalStrength cellSignalStrength : signalStrength.getCellSignalStrengths()) {
+                            Slog.d("JobScheduler.Connectivity", "CSS: " + cellSignalStrength.getLevel() + " " + cellSignalStrength);
                         }
                     }
+                    if (this.signalStrength == level) {
+                        return;
+                    }
+                    this.signalStrength = level;
+                    ConnectivityController.this.mHandler.obtainMessage(1, 1, 0).sendToTarget();
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
-        };
-        this.mNetworkCallback = anonymousClass2;
-        AnonymousClass3 anonymousClass3 = new NetworkPolicyManager.Listener() { // from class: com.android.server.job.controllers.ConnectivityController.3
-            public AnonymousClass3() {
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UidDefaultNetworkCallback extends ConnectivityManager.NetworkCallback {
+        public static final /* synthetic */ int $r8$clinit = 0;
+        public int mBlockedReasons;
+        public Network mDefaultNetwork;
+        public int mUid;
+
+        public UidDefaultNetworkCallback() {
+        }
+
+        @Override // android.net.ConnectivityManager.NetworkCallback
+        public final void onAvailable(Network network) {
+            if (ConnectivityController.DEBUG) {
+                Slog.v("JobScheduler.Connectivity", "default-onAvailable(" + this.mUid + "): " + network);
             }
+        }
 
-            public void onRestrictBackgroundChanged(boolean z) {
-                if (ConnectivityController.DEBUG) {
-                    Slog.v("JobScheduler.Connectivity", "onRestrictBackgroundChanged: " + z);
-                }
-                ConnectivityController.this.mHandler.obtainMessage(2).sendToTarget();
+        public final void onBlockedStatusChanged(Network network, int i) {
+            if (ConnectivityController.DEBUG) {
+                StringBuilder sb = new StringBuilder("default-onBlockedStatusChanged(");
+                sb.append(this.mUid);
+                sb.append("): ");
+                sb.append(network);
+                sb.append(" -> ");
+                GmsAlarmManager$$ExternalSyntheticOutline0.m(sb, i, "JobScheduler.Connectivity");
             }
-
-            public void onUidPoliciesChanged(int i, int i2) {
-                if (ConnectivityController.DEBUG) {
-                    Slog.v("JobScheduler.Connectivity", "onUidPoliciesChanged: " + i);
-                }
-                ConnectivityController.this.mHandler.obtainMessage(3, i, ConnectivityController.this.mNetPolicyManager.getRestrictBackgroundStatus(i)).sendToTarget();
-            }
-        };
-        this.mNetPolicyListener = anonymousClass3;
-        this.mHandler = new CcHandler(AppSchedulingModuleThread.get().getLooper());
-        ConnectivityManager connectivityManager = (ConnectivityManager) this.mContext.getSystemService(ConnectivityManager.class);
-        this.mConnManager = connectivityManager;
-        NetworkPolicyManager networkPolicyManager = (NetworkPolicyManager) this.mContext.getSystemService(NetworkPolicyManager.class);
-        this.mNetPolicyManager = networkPolicyManager;
-        this.mNetPolicyManagerInternal = (NetworkPolicyManagerInternal) LocalServices.getService(NetworkPolicyManagerInternal.class);
-        this.mFlexibilityController = flexibilityController;
-        connectivityManager.registerNetworkCallback(new NetworkRequest.Builder().clearCapabilities().build(), anonymousClass2);
-        networkPolicyManager.registerListener(anonymousClass3);
-    }
-
-    @Override // com.android.server.job.controllers.StateController
-    public void maybeStartTrackingJobLocked(JobStatus jobStatus, JobStatus jobStatus2) {
-        if (jobStatus.hasConnectivityConstraint()) {
-            UidStats uidStats = getUidStats(jobStatus.getSourceUid(), jobStatus.getSourcePackageName(), false);
-            if (wouldBeReadyWithConstraintLocked(jobStatus, 268435456)) {
-                uidStats.numReadyWithConnectivity++;
-            }
-            ArraySet arraySet = (ArraySet) this.mTrackedJobs.get(jobStatus.getSourceUid());
-            if (arraySet == null) {
-                arraySet = new ArraySet();
-                this.mTrackedJobs.put(jobStatus.getSourceUid(), arraySet);
-            }
-            arraySet.add(jobStatus);
-            jobStatus.setTrackingController(2);
-            updateConstraintsSatisfied(jobStatus);
-        }
-    }
-
-    @Override // com.android.server.job.controllers.StateController
-    public void prepareForExecutionLocked(JobStatus jobStatus) {
-        if (jobStatus.hasConnectivityConstraint()) {
-            getUidStats(jobStatus.getSourceUid(), jobStatus.getSourcePackageName(), true).runningJobs.add(jobStatus);
-        }
-    }
-
-    @Override // com.android.server.job.controllers.StateController
-    public void unprepareFromExecutionLocked(JobStatus jobStatus) {
-        if (jobStatus.hasConnectivityConstraint()) {
-            getUidStats(jobStatus.getSourceUid(), jobStatus.getSourcePackageName(), true).runningJobs.remove(jobStatus);
-            postAdjustCallbacks();
-        }
-    }
-
-    @Override // com.android.server.job.controllers.StateController
-    public void maybeStopTrackingJobLocked(JobStatus jobStatus, JobStatus jobStatus2) {
-        if (jobStatus.clearTrackingController(2)) {
-            ArraySet arraySet = (ArraySet) this.mTrackedJobs.get(jobStatus.getSourceUid());
-            if (arraySet != null) {
-                arraySet.remove(jobStatus);
-            }
-            UidStats uidStats = getUidStats(jobStatus.getSourceUid(), jobStatus.getSourcePackageName(), true);
-            uidStats.numReadyWithConnectivity--;
-            uidStats.runningJobs.remove(jobStatus);
-            maybeRevokeStandbyExceptionLocked(jobStatus);
-            postAdjustCallbacks();
-        }
-    }
-
-    @Override // com.android.server.job.controllers.RestrictingController
-    public void startTrackingRestrictedJobLocked(JobStatus jobStatus) {
-        if (jobStatus.hasConnectivityConstraint()) {
-            updateConstraintsSatisfied(jobStatus);
-        }
-    }
-
-    @Override // com.android.server.job.controllers.RestrictingController
-    public void stopTrackingRestrictedJobLocked(JobStatus jobStatus) {
-        if (jobStatus.hasConnectivityConstraint()) {
-            updateConstraintsSatisfied(jobStatus);
-        }
-    }
-
-    public final UidStats getUidStats(int i, String str, boolean z) {
-        UidStats uidStats = (UidStats) this.mUidStats.get(i);
-        if (uidStats != null) {
-            return uidStats;
-        }
-        if (z) {
-            Slog.wtfStack("JobScheduler.Connectivity", "UidStats was null after job for " + str + " was registered");
-        }
-        UidStats uidStats2 = new UidStats(i);
-        this.mUidStats.append(i, uidStats2);
-        return uidStats2;
-    }
-
-    public boolean isNetworkAvailable(JobStatus jobStatus) {
-        synchronized (this.mLock) {
-            for (int i = 0; i < this.mAvailableNetworks.size(); i++) {
-                Network network = (Network) this.mAvailableNetworks.keyAt(i);
-                NetworkCapabilities networkCapabilities = (NetworkCapabilities) this.mAvailableNetworks.valueAt(i);
-                boolean isSatisfied = isSatisfied(jobStatus, network, networkCapabilities, this.mConstants);
-                if (DEBUG) {
-                    Slog.v("JobScheduler.Connectivity", "isNetworkAvailable(" + jobStatus + ") with network " + network + " and capabilities " + networkCapabilities + ". Satisfied=" + isSatisfied);
-                }
-                if (isSatisfied) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    public void requestStandbyExceptionLocked(JobStatus jobStatus) {
-        int sourceUid = jobStatus.getSourceUid();
-        boolean isStandbyExceptionRequestedLocked = isStandbyExceptionRequestedLocked(sourceUid);
-        ArraySet arraySet = (ArraySet) this.mRequestedWhitelistJobs.get(sourceUid);
-        if (arraySet == null) {
-            arraySet = new ArraySet();
-            this.mRequestedWhitelistJobs.put(sourceUid, arraySet);
-        }
-        if (!arraySet.add(jobStatus) || isStandbyExceptionRequestedLocked) {
-            if (DEBUG) {
-                Slog.i("JobScheduler.Connectivity", "requestStandbyExceptionLocked found exception already requested.");
-            }
-        } else {
-            if (DEBUG) {
-                Slog.i("JobScheduler.Connectivity", "Requesting standby exception for UID: " + sourceUid);
-            }
-            this.mNetPolicyManagerInternal.setAppIdleWhitelist(sourceUid, true);
-        }
-    }
-
-    public boolean isStandbyExceptionRequestedLocked(int i) {
-        ArraySet arraySet = (ArraySet) this.mRequestedWhitelistJobs.get(i);
-        return arraySet != null && arraySet.size() > 0;
-    }
-
-    @Override // com.android.server.job.controllers.StateController
-    public void evaluateStateLocked(JobStatus jobStatus) {
-        if (jobStatus.hasConnectivityConstraint()) {
-            UidStats uidStats = getUidStats(jobStatus.getSourceUid(), jobStatus.getSourcePackageName(), true);
-            if (jobStatus.shouldTreatAsExpeditedJob() || jobStatus.shouldTreatAsUserInitiatedJob()) {
-                if (!jobStatus.isConstraintSatisfied(268435456)) {
-                    updateConstraintsSatisfied(jobStatus);
-                }
-            } else if (((jobStatus.isRequestedExpeditedJob() && !jobStatus.shouldTreatAsExpeditedJob()) || (jobStatus.getJob().isUserInitiated() && !jobStatus.shouldTreatAsUserInitiatedJob())) && jobStatus.isConstraintSatisfied(268435456)) {
-                updateConstraintsSatisfied(jobStatus);
-            }
-            if (wouldBeReadyWithConstraintLocked(jobStatus, 268435456) && isNetworkAvailable(jobStatus)) {
-                if (DEBUG) {
-                    Slog.i("JobScheduler.Connectivity", "evaluateStateLocked finds job " + jobStatus + " would be ready.");
-                }
-                uidStats.numReadyWithConnectivity++;
-                requestStandbyExceptionLocked(jobStatus);
+            if (this.mUid == -10000) {
                 return;
             }
-            if (DEBUG) {
-                Slog.i("JobScheduler.Connectivity", "evaluateStateLocked finds job " + jobStatus + " would not be ready.");
+            synchronized (ConnectivityController.this.mLock) {
+                this.mDefaultNetwork = network;
+                this.mBlockedReasons = i;
+                ConnectivityController.this.updateTrackedJobsLocked(network, this.mUid);
             }
-            maybeRevokeStandbyExceptionLocked(jobStatus);
         }
-    }
 
-    @Override // com.android.server.job.controllers.StateController
-    public void reevaluateStateLocked(int i) {
-        ArraySet arraySet = (ArraySet) this.mTrackedJobs.get(i);
-        if (arraySet == null) {
-            return;
-        }
-        for (int size = arraySet.size() - 1; size >= 0; size--) {
-            evaluateStateLocked((JobStatus) arraySet.valueAt(size));
-        }
-    }
-
-    public void maybeRevokeStandbyExceptionLocked(JobStatus jobStatus) {
-        int sourceUid = jobStatus.getSourceUid();
-        if (isStandbyExceptionRequestedLocked(sourceUid)) {
-            ArraySet arraySet = (ArraySet) this.mRequestedWhitelistJobs.get(sourceUid);
-            if (arraySet == null) {
-                Slog.wtf("JobScheduler.Connectivity", "maybeRevokeStandbyExceptionLocked found null jobs array even though a standby exception has been requested.");
+        @Override // android.net.ConnectivityManager.NetworkCallback
+        public final void onLost(Network network) {
+            if (ConnectivityController.DEBUG) {
+                Slog.v("JobScheduler.Connectivity", "default-onLost(" + this.mUid + "): " + network);
+            }
+            if (this.mUid == -10000) {
                 return;
             }
-            if (!arraySet.remove(jobStatus) || arraySet.size() > 0) {
-                if (DEBUG) {
-                    Slog.i("JobScheduler.Connectivity", "maybeRevokeStandbyExceptionLocked not revoking because there are still " + arraySet.size() + " jobs left.");
-                    return;
+            synchronized (ConnectivityController.this.mLock) {
+                try {
+                    if (Objects.equals(this.mDefaultNetwork, network)) {
+                        this.mDefaultNetwork = null;
+                        ConnectivityController.this.updateTrackedJobsLocked(network, this.mUid);
+                        ConnectivityController.this.mHandler.sendEmptyMessageDelayed(0, 1000L);
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
-                return;
-            }
-            revokeStandbyExceptionLocked(sourceUid);
-        }
-    }
-
-    public final void revokeStandbyExceptionLocked(int i) {
-        if (DEBUG) {
-            Slog.i("JobScheduler.Connectivity", "Revoking standby exception for UID: " + i);
-        }
-        this.mNetPolicyManagerInternal.setAppIdleWhitelist(i, false);
-        this.mRequestedWhitelistJobs.remove(i);
-    }
-
-    @Override // com.android.server.job.controllers.StateController
-    public void onAppRemovedLocked(String str, int i) {
-        if (this.mService.getPackagesForUidLocked(i) == null) {
-            this.mTrackedJobs.delete(i);
-            this.mBackgroundMeteredAllowed.delete(i);
-            UidStats uidStats = (UidStats) this.mUidStats.removeReturnOld(i);
-            unregisterDefaultNetworkCallbackLocked(i, JobSchedulerService.sElapsedRealtimeClock.millis());
-            this.mSortedStats.remove(uidStats);
-            registerPendingUidCallbacksLocked();
-        }
-    }
-
-    @Override // com.android.server.job.controllers.StateController
-    public void onUserRemovedLocked(int i) {
-        long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
-        for (int size = this.mUidStats.size() - 1; size >= 0; size--) {
-            UidStats uidStats = (UidStats) this.mUidStats.valueAt(size);
-            if (UserHandle.getUserId(uidStats.uid) == i) {
-                unregisterDefaultNetworkCallbackLocked(uidStats.uid, millis);
-                this.mSortedStats.remove(uidStats);
-                this.mUidStats.removeAt(size);
             }
         }
-        for (int size2 = this.mBackgroundMeteredAllowed.size() - 1; size2 >= 0; size2--) {
-            if (UserHandle.getUserId(this.mBackgroundMeteredAllowed.keyAt(size2)) == i) {
-                this.mBackgroundMeteredAllowed.removeAt(size2);
-            }
-        }
-        postAdjustCallbacks();
     }
 
-    @Override // com.android.server.job.controllers.StateController
-    public void onUidBiasChangedLocked(int i, int i2, int i3) {
-        UidStats uidStats = (UidStats) this.mUidStats.get(i);
-        if (uidStats == null || uidStats.baseBias == i3) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UidStats {
+        public int baseBias;
+        public long earliestEJEnqueueTime;
+        public long earliestEnqueueTime;
+        public long earliestUIJEnqueueTime;
+        public long lastUpdatedElapsed;
+        public int numEJs;
+        public int numReadyWithConnectivity;
+        public int numRegular;
+        public int numRequestedNetworkAvailable;
+        public int numUIJs;
+        public final ArraySet runningJobs = new ArraySet();
+        public final int uid;
+
+        public UidStats(int i) {
+            this.uid = i;
+        }
+    }
+
+    /* renamed from: -$$Nest$mmaybeAdjustRegisteredCallbacksLocked, reason: not valid java name */
+    public static void m624$$Nest$mmaybeAdjustRegisteredCallbacksLocked(ConnectivityController connectivityController) {
+        connectivityController.mHandler.removeMessages(0);
+        if (connectivityController.mUidStats.size() == connectivityController.mCurrentDefaultNetworkCallbacks.size()) {
             return;
         }
-        uidStats.baseBias = i3;
-        postAdjustCallbacks();
-    }
-
-    @Override // com.android.server.job.controllers.StateController
-    public void onBatteryStateChangedLocked() {
-        this.mHandler.sendEmptyMessage(1);
-    }
-
-    public final boolean isUsable(NetworkCapabilities networkCapabilities) {
-        return networkCapabilities != null && networkCapabilities.hasCapability(21);
-    }
-
-    public final boolean isInsane(JobStatus jobStatus, Network network, NetworkCapabilities networkCapabilities, JobSchedulerService.Constants constants) {
-        long maxJobExecutionTimeMs = this.mService.getMaxJobExecutionTimeMs(jobStatus);
-        long minimumNetworkChunkBytes = jobStatus.getMinimumNetworkChunkBytes();
-        if (minimumNetworkChunkBytes != -1) {
-            long linkDownstreamBandwidthKbps = networkCapabilities.getLinkDownstreamBandwidthKbps();
-            if (linkDownstreamBandwidthKbps > 0) {
-                long calculateTransferTimeMs = calculateTransferTimeMs(minimumNetworkChunkBytes, linkDownstreamBandwidthKbps);
-                if (calculateTransferTimeMs > maxJobExecutionTimeMs) {
-                    Slog.w("JobScheduler.Connectivity", "Minimum chunk " + minimumNetworkChunkBytes + " bytes over " + linkDownstreamBandwidthKbps + " kbps network would take " + calculateTransferTimeMs + "ms and job has " + maxJobExecutionTimeMs + "ms to run; that's insane!");
-                    return true;
-                }
-            }
-            long linkUpstreamBandwidthKbps = networkCapabilities.getLinkUpstreamBandwidthKbps();
-            if (linkUpstreamBandwidthKbps <= 0) {
-                return false;
-            }
-            long calculateTransferTimeMs2 = calculateTransferTimeMs(minimumNetworkChunkBytes, linkUpstreamBandwidthKbps);
-            if (calculateTransferTimeMs2 <= maxJobExecutionTimeMs) {
-                return false;
-            }
-            Slog.w("JobScheduler.Connectivity", "Minimum chunk " + minimumNetworkChunkBytes + " bytes over " + linkUpstreamBandwidthKbps + " kbps network would take " + calculateTransferTimeMs2 + "ms and job has " + maxJobExecutionTimeMs + "ms to run; that's insane!");
-            return true;
-        }
-        if (networkCapabilities.hasCapability(11) && this.mService.isBatteryCharging()) {
-            return false;
-        }
-        long estimatedNetworkDownloadBytes = jobStatus.getEstimatedNetworkDownloadBytes();
-        if (estimatedNetworkDownloadBytes != -1) {
-            long linkDownstreamBandwidthKbps2 = networkCapabilities.getLinkDownstreamBandwidthKbps();
-            if (linkDownstreamBandwidthKbps2 > 0) {
-                long calculateTransferTimeMs3 = calculateTransferTimeMs(estimatedNetworkDownloadBytes, linkDownstreamBandwidthKbps2);
-                if (calculateTransferTimeMs3 > maxJobExecutionTimeMs) {
-                    Slog.w("JobScheduler.Connectivity", "Estimated " + estimatedNetworkDownloadBytes + " download bytes over " + linkDownstreamBandwidthKbps2 + " kbps network would take " + calculateTransferTimeMs3 + "ms and job has " + maxJobExecutionTimeMs + "ms to run; that's insane!");
-                    return true;
-                }
-            }
-        }
-        long estimatedNetworkUploadBytes = jobStatus.getEstimatedNetworkUploadBytes();
-        if (estimatedNetworkUploadBytes == -1) {
-            return false;
-        }
-        long linkUpstreamBandwidthKbps2 = networkCapabilities.getLinkUpstreamBandwidthKbps();
-        if (linkUpstreamBandwidthKbps2 <= 0) {
-            return false;
-        }
-        long calculateTransferTimeMs4 = calculateTransferTimeMs(estimatedNetworkUploadBytes, linkUpstreamBandwidthKbps2);
-        if (calculateTransferTimeMs4 <= maxJobExecutionTimeMs) {
-            return false;
-        }
-        Slog.w("JobScheduler.Connectivity", "Estimated " + estimatedNetworkUploadBytes + " upload bytes over " + linkUpstreamBandwidthKbps2 + " kbps network would take " + calculateTransferTimeMs4 + "ms and job has " + maxJobExecutionTimeMs + "ms to run; that's insane!");
-        return true;
-    }
-
-    public final boolean isMeteredAllowed(JobStatus jobStatus, NetworkCapabilities networkCapabilities) {
-        if (!networkCapabilities.hasCapability(11) && !networkCapabilities.hasCapability(25)) {
-            int sourceUid = jobStatus.getSourceUid();
-            int uidProcState = this.mService.getUidProcState(sourceUid);
-            int uidCapabilities = this.mService.getUidCapabilities(sourceUid);
-            boolean z = uidProcState != -1 && uidProcState < 6 && NetworkPolicyManager.isProcStateAllowedWhileOnRestrictBackground(uidProcState, uidCapabilities);
-            boolean z2 = DEBUG;
-            if (z2) {
-                Slog.d("JobScheduler.Connectivity", "UID " + sourceUid + " current state allows metered network=" + z + " procState=" + ActivityManager.procStateToString(uidProcState) + " capabilities=" + ActivityManager.getCapabilitiesSummary(uidCapabilities));
-            }
-            if (z) {
-                return true;
-            }
-            if ((jobStatus.getFlags() & 1) != 0) {
-                int defaultProcessNetworkCapabilities = NetworkPolicyManager.getDefaultProcessNetworkCapabilities(4) | uidCapabilities;
-                boolean isProcStateAllowedWhileOnRestrictBackground = NetworkPolicyManager.isProcStateAllowedWhileOnRestrictBackground(4, defaultProcessNetworkCapabilities);
-                if (z2) {
-                    Slog.d("JobScheduler.Connectivity", "UID " + sourceUid + " willBeForeground flag allows metered network=" + isProcStateAllowedWhileOnRestrictBackground + " capabilities=" + ActivityManager.getCapabilitiesSummary(defaultProcessNetworkCapabilities));
-                }
-                if (isProcStateAllowedWhileOnRestrictBackground) {
-                    return true;
-                }
-            }
-            if (jobStatus.shouldTreatAsUserInitiatedJob()) {
-                int defaultProcessNetworkCapabilities2 = uidCapabilities | 32 | NetworkPolicyManager.getDefaultProcessNetworkCapabilities(6);
-                boolean isProcStateAllowedWhileOnRestrictBackground2 = NetworkPolicyManager.isProcStateAllowedWhileOnRestrictBackground(6, defaultProcessNetworkCapabilities2);
-                if (z2) {
-                    Slog.d("JobScheduler.Connectivity", "UID " + sourceUid + " UI job state allows metered network=" + isProcStateAllowedWhileOnRestrictBackground2 + " capabilities=" + defaultProcessNetworkCapabilities2);
-                }
-                if (isProcStateAllowedWhileOnRestrictBackground2) {
-                    return true;
-                }
-            }
-            if (this.mBackgroundMeteredAllowed.indexOfKey(sourceUid) >= 0) {
-                return this.mBackgroundMeteredAllowed.get(sourceUid);
-            }
-            r1 = this.mNetPolicyManager.getRestrictBackgroundStatus(sourceUid) != 3;
-            if (z2) {
-                Slog.d("JobScheduler.Connectivity", "UID " + sourceUid + " allowed in data saver=" + r1);
-            }
-            this.mBackgroundMeteredAllowed.put(sourceUid, r1);
-        }
-        return r1;
-    }
-
-    public long getEstimatedTransferTimeMs(JobStatus jobStatus) {
-        Network network;
-        NetworkCapabilities networkCapabilities;
-        long estimatedNetworkDownloadBytes = jobStatus.getEstimatedNetworkDownloadBytes();
-        long estimatedNetworkUploadBytes = jobStatus.getEstimatedNetworkUploadBytes();
-        if ((estimatedNetworkDownloadBytes == -1 && estimatedNetworkUploadBytes == -1) || (network = jobStatus.network) == null || (networkCapabilities = getNetworkCapabilities(network)) == null) {
-            return -1L;
-        }
-        long calculateTransferTimeMs = calculateTransferTimeMs(estimatedNetworkDownloadBytes, networkCapabilities.getLinkDownstreamBandwidthKbps());
-        long calculateTransferTimeMs2 = calculateTransferTimeMs(estimatedNetworkUploadBytes, networkCapabilities.getLinkUpstreamBandwidthKbps());
-        return calculateTransferTimeMs == -1 ? calculateTransferTimeMs2 : calculateTransferTimeMs2 == -1 ? calculateTransferTimeMs : calculateTransferTimeMs + calculateTransferTimeMs2;
-    }
-
-    public static long calculateTransferTimeMs(long j, long j2) {
-        if (j == -1 || j2 <= 0) {
-            return -1L;
-        }
-        return (j * 1000) / ((j2 * 1000) / 8);
-    }
-
-    public static boolean isCongestionDelayed(JobStatus jobStatus, Network network, NetworkCapabilities networkCapabilities, JobSchedulerService.Constants constants) {
-        return !networkCapabilities.hasCapability(20) && jobStatus.getFractionRunTime() < constants.CONN_CONGESTION_DELAY_FRAC;
-    }
-
-    public final boolean isStrongEnough(JobStatus jobStatus, NetworkCapabilities networkCapabilities, JobSchedulerService.Constants constants) {
-        int effectivePriority = jobStatus.getEffectivePriority();
-        if (effectivePriority >= 400 || !constants.CONN_USE_CELL_SIGNAL_STRENGTH || !networkCapabilities.hasTransport(0) || networkCapabilities.hasTransport(4)) {
-            return true;
-        }
-        Iterator it = networkCapabilities.getSubscriptionIds().iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            int intValue = ((Integer) it.next()).intValue();
-            CellSignalStrengthCallback cellSignalStrengthCallback = (CellSignalStrengthCallback) this.mSignalStrengths.get(intValue);
-            if (cellSignalStrengthCallback != null) {
-                i = Math.max(i, cellSignalStrengthCallback.signalStrength);
-            } else {
-                Slog.wtf("JobScheduler.Connectivity", "Subscription ID " + intValue + " doesn't have a registered callback");
-            }
-        }
-        if (DEBUG) {
-            Slog.d("JobScheduler.Connectivity", "Cell signal strength for job=" + i);
-        }
-        if (i <= 1) {
-            if (effectivePriority > 300) {
-                return true;
-            }
-            if (effectivePriority < 300) {
-                return false;
-            }
-            return (this.mService.isBatteryCharging() && this.mService.isBatteryNotLow()) || jobStatus.getFractionRunTime() > constants.CONN_PREFETCH_RELAX_FRAC;
-        }
-        if (i > 2 || effectivePriority >= 200) {
-            return true;
-        }
-        if (this.mService.isBatteryCharging() && this.mService.isBatteryNotLow()) {
-            return true;
-        }
-        return getUidStats(jobStatus.getSourceUid(), jobStatus.getSourcePackageName(), true).runningJobs.contains(jobStatus);
-    }
-
-    public static NetworkCapabilities.Builder copyCapabilities(NetworkRequest networkRequest) {
-        NetworkCapabilities.Builder builder = new NetworkCapabilities.Builder();
-        for (int i : networkRequest.getTransportTypes()) {
-            builder.addTransportType(i);
-        }
-        for (int i2 : networkRequest.getCapabilities()) {
-            builder.addCapability(i2);
-        }
-        return builder;
-    }
-
-    public static boolean isStrictSatisfied(JobStatus jobStatus, Network network, NetworkCapabilities networkCapabilities, JobSchedulerService.Constants constants) {
-        if (jobStatus.getEffectiveStandbyBucket() == 5 && (!jobStatus.isConstraintSatisfied(16777216) || !jobStatus.isConstraintSatisfied(134217728))) {
-            NetworkCapabilities.Builder copyCapabilities = copyCapabilities(jobStatus.getJob().getRequiredNetwork());
-            copyCapabilities.addCapability(11);
-            return copyCapabilities.build().satisfiedByNetworkCapabilities(networkCapabilities);
-        }
-        return jobStatus.getJob().getRequiredNetwork().canBeSatisfiedBy(networkCapabilities);
-    }
-
-    public final boolean isRelaxedSatisfied(JobStatus jobStatus, Network network, NetworkCapabilities networkCapabilities, JobSchedulerService.Constants constants) {
-        if (!jobStatus.getJob().isPrefetch() || jobStatus.getStandbyBucket() == 5) {
-            return false;
-        }
-        long estimatedNetworkDownloadBytes = jobStatus.getEstimatedNetworkDownloadBytes();
-        if (estimatedNetworkDownloadBytes <= 0) {
-            return false;
-        }
-        NetworkCapabilities.Builder copyCapabilities = copyCapabilities(jobStatus.getJob().getRequiredNetwork());
-        copyCapabilities.removeCapability(11);
-        if (!copyCapabilities.build().satisfiedByNetworkCapabilities(networkCapabilities) || jobStatus.getFractionRunTime() <= constants.CONN_PREFETCH_RELAX_FRAC) {
-            return false;
-        }
-        long subscriptionOpportunisticQuota = this.mNetPolicyManagerInternal.getSubscriptionOpportunisticQuota(network, 1);
-        long estimatedNetworkUploadBytes = jobStatus.getEstimatedNetworkUploadBytes();
-        return subscriptionOpportunisticQuota >= estimatedNetworkDownloadBytes + (estimatedNetworkUploadBytes != -1 ? estimatedNetworkUploadBytes : 0L);
-    }
-
-    public boolean isSatisfied(JobStatus jobStatus, Network network, NetworkCapabilities networkCapabilities, JobSchedulerService.Constants constants) {
-        if (network == null || networkCapabilities == null || !isUsable(networkCapabilities) || isInsane(jobStatus, network, networkCapabilities, constants) || !isMeteredAllowed(jobStatus, networkCapabilities) || isCongestionDelayed(jobStatus, network, networkCapabilities, constants) || !isStrongEnough(jobStatus, networkCapabilities, constants)) {
-            return false;
-        }
-        return isStrictSatisfied(jobStatus, network, networkCapabilities, constants) || isRelaxedSatisfied(jobStatus, network, networkCapabilities, constants);
-    }
-
-    public final void maybeRegisterDefaultNetworkCallbackLocked(JobStatus jobStatus) {
-        if (this.mCurrentDefaultNetworkCallbacks.contains(jobStatus.getSourceUid())) {
+        JobSchedulerService.sElapsedRealtimeClock.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        if (elapsedRealtime - connectivityController.mLastCallbackAdjustmentTimeElapsed < 1000) {
+            connectivityController.mHandler.sendEmptyMessageDelayed(0, 1000L);
             return;
         }
-        UidStats uidStats = getUidStats(jobStatus.getSourceUid(), jobStatus.getSourcePackageName(), true);
-        if (!this.mSortedStats.contains(uidStats)) {
-            this.mSortedStats.add(uidStats);
-        }
-        if (this.mCurrentDefaultNetworkCallbacks.size() >= 125) {
-            postAdjustCallbacks();
-        } else {
-            registerPendingUidCallbacksLocked();
-        }
-    }
-
-    public final void registerPendingUidCallbacksLocked() {
-        int size = this.mCurrentDefaultNetworkCallbacks.size();
-        int size2 = this.mSortedStats.size();
-        if (size2 < size) {
-            Slog.wtf("JobScheduler.Connectivity", "There are more registered callbacks than sorted UIDs: " + size + " vs " + size2);
-        }
-        while (size < size2 && size < 125) {
-            UidStats uidStats = (UidStats) this.mSortedStats.get(size);
-            UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.mDefaultNetworkCallbackPool.acquire();
-            if (uidDefaultNetworkCallback == null) {
-                uidDefaultNetworkCallback = new UidDefaultNetworkCallback();
-            }
-            uidDefaultNetworkCallback.setUid(uidStats.uid);
-            this.mCurrentDefaultNetworkCallbacks.append(uidStats.uid, uidDefaultNetworkCallback);
-            this.mConnManager.registerDefaultNetworkCallbackForUid(uidStats.uid, uidDefaultNetworkCallback, this.mHandler);
-            size++;
-        }
-    }
-
-    public final void postAdjustCallbacks() {
-        postAdjustCallbacks(0L);
-    }
-
-    public final void postAdjustCallbacks(long j) {
-        this.mHandler.sendEmptyMessageDelayed(0, j);
-    }
-
-    public final void maybeAdjustRegisteredCallbacksLocked() {
-        this.mHandler.removeMessages(0);
-        if (this.mUidStats.size() == this.mCurrentDefaultNetworkCallbacks.size()) {
-            return;
-        }
-        long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
-        if (millis - this.mLastCallbackAdjustmentTimeElapsed < 1000) {
-            postAdjustCallbacks(1000L);
-            return;
-        }
-        this.mLastCallbackAdjustmentTimeElapsed = millis;
-        this.mSortedStats.clear();
-        for (int i = 0; i < this.mUidStats.size(); i++) {
-            UidStats uidStats = (UidStats) this.mUidStats.valueAt(i);
-            ArraySet arraySet = (ArraySet) this.mTrackedJobs.get(uidStats.uid);
+        connectivityController.mLastCallbackAdjustmentTimeElapsed = elapsedRealtime;
+        ((ArrayList) connectivityController.mSortedStats).clear();
+        for (int i = 0; i < connectivityController.mUidStats.size(); i++) {
+            UidStats uidStats = (UidStats) connectivityController.mUidStats.valueAt(i);
+            ArraySet arraySet = (ArraySet) connectivityController.mTrackedJobs.get(uidStats.uid);
             if (arraySet == null || arraySet.size() == 0) {
-                unregisterDefaultNetworkCallbackLocked(uidStats.uid, millis);
+                connectivityController.unregisterDefaultNetworkCallbackLocked(uidStats.uid, elapsedRealtime);
             } else {
-                if (uidStats.lastUpdatedElapsed + 30000 < millis) {
+                if (uidStats.lastUpdatedElapsed + 30000 < elapsedRealtime) {
                     uidStats.earliestEnqueueTime = Long.MAX_VALUE;
                     uidStats.earliestEJEnqueueTime = Long.MAX_VALUE;
                     uidStats.earliestUIJEnqueueTime = Long.MAX_VALUE;
@@ -858,9 +406,9 @@ public final class ConnectivityController extends RestrictingController implemen
                     uidStats.numUIJs = 0;
                     for (int i2 = 0; i2 < arraySet.size(); i2++) {
                         JobStatus jobStatus = (JobStatus) arraySet.valueAt(i2);
-                        if (wouldBeReadyWithConstraintLocked(jobStatus, 268435456)) {
+                        if (connectivityController.wouldBeReadyWithConstraintLocked(jobStatus, 268435456)) {
                             uidStats.numReadyWithConnectivity++;
-                            if (isNetworkAvailable(jobStatus)) {
+                            if (connectivityController.isNetworkAvailable(jobStatus)) {
                                 uidStats.numRequestedNetworkAvailable++;
                             }
                             uidStats.earliestEnqueueTime = Math.min(uidStats.earliestEnqueueTime, jobStatus.enqueueTime);
@@ -878,526 +426,503 @@ public final class ConnectivityController extends RestrictingController implemen
                             uidStats.numRegular++;
                         }
                     }
-                    uidStats.lastUpdatedElapsed = millis;
+                    uidStats.lastUpdatedElapsed = elapsedRealtime;
                 }
-                this.mSortedStats.add(uidStats);
+                ((ArrayList) connectivityController.mSortedStats).add(uidStats);
             }
         }
-        this.mSortedStats.sort(this.mUidStatsComparator);
+        ((ArrayList) connectivityController.mSortedStats).sort(connectivityController.mUidStatsComparator);
         ArraySet arraySet2 = new ArraySet();
-        for (int size = this.mSortedStats.size() - 1; size >= 0; size--) {
-            UidStats uidStats2 = (UidStats) this.mSortedStats.get(size);
+        for (int size = ((ArrayList) connectivityController.mSortedStats).size() - 1; size >= 0; size--) {
+            UidStats uidStats2 = (UidStats) ((ArrayList) connectivityController.mSortedStats).get(size);
             if (size >= 125) {
-                if (unregisterDefaultNetworkCallbackLocked(uidStats2.uid, millis)) {
-                    arraySet2.addAll((ArraySet) this.mTrackedJobs.get(uidStats2.uid));
+                if (connectivityController.unregisterDefaultNetworkCallbackLocked(uidStats2.uid, elapsedRealtime)) {
+                    arraySet2.addAll((ArraySet) connectivityController.mTrackedJobs.get(uidStats2.uid));
                 }
-            } else if (((UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.get(uidStats2.uid)) == null) {
-                UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.mDefaultNetworkCallbackPool.acquire();
+            } else if (((UidDefaultNetworkCallback) connectivityController.mCurrentDefaultNetworkCallbacks.get(uidStats2.uid)) == null) {
+                UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) connectivityController.mDefaultNetworkCallbackPool.acquire();
                 if (uidDefaultNetworkCallback == null) {
-                    uidDefaultNetworkCallback = new UidDefaultNetworkCallback();
+                    uidDefaultNetworkCallback = connectivityController.new UidDefaultNetworkCallback();
                 }
-                uidDefaultNetworkCallback.setUid(uidStats2.uid);
-                this.mCurrentDefaultNetworkCallbacks.append(uidStats2.uid, uidDefaultNetworkCallback);
-                this.mConnManager.registerDefaultNetworkCallbackForUid(uidStats2.uid, uidDefaultNetworkCallback, this.mHandler);
+                int i3 = uidStats2.uid;
+                uidDefaultNetworkCallback.mUid = i3;
+                uidDefaultNetworkCallback.mDefaultNetwork = null;
+                connectivityController.mCurrentDefaultNetworkCallbacks.append(i3, uidDefaultNetworkCallback);
+                connectivityController.mConnManager.registerDefaultNetworkCallbackForUid(i3, uidDefaultNetworkCallback, connectivityController.mHandler);
             }
         }
         if (arraySet2.size() > 0) {
-            this.mStateChangedListener.onControllerStateChanged(arraySet2);
+            connectivityController.mStateChangedListener.onControllerStateChanged(arraySet2);
         }
     }
 
-    public final boolean unregisterDefaultNetworkCallbackLocked(int i, long j) {
-        UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.get(i);
-        boolean z = false;
-        if (uidDefaultNetworkCallback == null) {
-            return false;
-        }
-        this.mCurrentDefaultNetworkCallbacks.remove(i);
-        this.mConnManager.unregisterNetworkCallback(uidDefaultNetworkCallback);
-        this.mDefaultNetworkCallbackPool.release(uidDefaultNetworkCallback);
-        uidDefaultNetworkCallback.clear();
-        ArraySet arraySet = (ArraySet) this.mTrackedJobs.get(i);
-        if (arraySet != null) {
-            for (int size = arraySet.size() - 1; size >= 0; size--) {
-                z |= updateConstraintsSatisfied((JobStatus) arraySet.valueAt(size), j, null, null);
-            }
-        }
-        return z;
+    static {
+        DEBUG = JobSchedulerService.DEBUG || Log.isLoggable("JobScheduler.Connectivity", 3);
+        SparseIntArray sparseIntArray = new SparseIntArray();
+        sNetworkTransportAffinities = sparseIntArray;
+        sparseIntArray.put(0, 2);
+        sparseIntArray.put(3, 1);
+        sparseIntArray.put(10, 2);
+        sparseIntArray.put(1, 1);
     }
 
-    public final NetworkCapabilities getNetworkCapabilities(Network network) {
-        NetworkCapabilities networkCapabilities;
-        if (network == null) {
-            return null;
-        }
-        synchronized (this.mLock) {
-            networkCapabilities = (NetworkCapabilities) this.mAvailableNetworks.get(network);
-        }
-        return networkCapabilities;
-    }
+    /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.job.controllers.ConnectivityController$2] */
+    public ConnectivityController(JobSchedulerService jobSchedulerService, FlexibilityController flexibilityController) {
+        super(jobSchedulerService);
+        this.mTrackedJobs = new SparseArray();
+        this.mRequestedWhitelistJobs = new SparseArray();
+        this.mAvailableNetworks = new ArrayMap();
+        this.mCurrentDefaultNetworkCallbacks = new SparseArray();
+        this.mUidStatsComparator = new AnonymousClass1();
+        this.mUidStats = new SparseArray();
+        this.mDefaultNetworkCallbackPool = new Pools.SimplePool(125);
+        this.mSortedStats = new ArrayList();
+        this.mBackgroundMeteredAllowed = new SparseBooleanArray();
+        this.mSignalStrengths = new SparseArray();
+        final int i = 0;
+        ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback(this) { // from class: com.android.server.job.controllers.ConnectivityController.2
+            public final /* synthetic */ ConnectivityController this$0;
 
-    public final Network getNetworkLocked(JobStatus jobStatus) {
-        UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.get(jobStatus.getSourceUid());
-        if (uidDefaultNetworkCallback == null) {
-            return null;
-        }
-        int i = -196616;
-        if (((UidStats) this.mUidStats.get(jobStatus.getSourceUid())).baseBias >= 30 || (jobStatus.getFlags() & 1) != 0) {
-            if (DEBUG) {
-                Slog.d("JobScheduler.Connectivity", "Using FG bypass for " + jobStatus.getSourceUid());
+            {
+                this.this$0 = this;
             }
-        } else if (jobStatus.shouldTreatAsUserInitiatedJob()) {
-            if (DEBUG) {
-                Slog.d("JobScheduler.Connectivity", "Using UI bypass for " + jobStatus.getSourceUid());
-            }
-        } else if (jobStatus.shouldTreatAsExpeditedJob() || jobStatus.startedAsExpeditedJob) {
-            if (DEBUG) {
-                Slog.d("JobScheduler.Connectivity", "Using EJ bypass for " + jobStatus.getSourceUid());
-            }
-            i = -8;
-        } else {
-            if (DEBUG) {
-                Slog.d("JobScheduler.Connectivity", "Using BG bypass for " + jobStatus.getSourceUid());
-            }
-            i = -1;
-        }
-        if ((uidDefaultNetworkCallback.mBlockedReasons & i) == 0) {
-            return uidDefaultNetworkCallback.mDefaultNetwork;
-        }
-        return null;
-    }
 
-    public final boolean updateConstraintsSatisfied(JobStatus jobStatus) {
-        long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
-        if (((UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.get(jobStatus.getSourceUid())) == null) {
-            maybeRegisterDefaultNetworkCallbackLocked(jobStatus);
-            return updateConstraintsSatisfied(jobStatus, millis, null, null);
-        }
-        Network networkLocked = getNetworkLocked(jobStatus);
-        return updateConstraintsSatisfied(jobStatus, millis, networkLocked, getNetworkCapabilities(networkLocked));
-    }
-
-    public final boolean updateConstraintsSatisfied(JobStatus jobStatus, long j, Network network, NetworkCapabilities networkCapabilities) {
-        boolean isSatisfied = isSatisfied(jobStatus, network, networkCapabilities, this.mConstants);
-        boolean z = false;
-        if (!isSatisfied && jobStatus.network != null && this.mService.isCurrentlyRunningLocked(jobStatus)) {
-            Network network2 = jobStatus.network;
-            if (isSatisfied(jobStatus, network2, getNetworkCapabilities(network2), this.mConstants)) {
-                if (DEBUG) {
-                    Slog.i("JobScheduler.Connectivity", "Not reassigning network from " + jobStatus.network + " to " + network + " for running job " + jobStatus);
-                }
-                return false;
-            }
-        }
-        boolean connectivityConstraintSatisfied = jobStatus.setConnectivityConstraintSatisfied(j, isSatisfied);
-        if (isSatisfied && networkCapabilities != null && networkCapabilities.hasCapability(11)) {
-            z = true;
-        }
-        jobStatus.setHasAccessToUnmetered(z);
-        if (jobStatus.getPreferUnmetered()) {
-            jobStatus.setFlexibilityConstraintSatisfied(j, this.mFlexibilityController.isFlexibilitySatisfiedLocked(jobStatus));
-        }
-        if (!connectivityConstraintSatisfied && isSatisfied && jobStatus.network != null && this.mService.isCurrentlyRunningLocked(jobStatus)) {
-            this.mStateChangedListener.onNetworkChanged(jobStatus, network);
-        }
-        jobStatus.network = network;
-        if (DEBUG) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Connectivity ");
-            sb.append(connectivityConstraintSatisfied ? "CHANGED" : "unchanged");
-            sb.append(" for ");
-            sb.append(jobStatus);
-            sb.append(": usable=");
-            sb.append(isUsable(networkCapabilities));
-            sb.append(" satisfied=");
-            sb.append(isSatisfied);
-            Slog.i("JobScheduler.Connectivity", sb.toString());
-        }
-        return connectivityConstraintSatisfied;
-    }
-
-    public final void updateAllTrackedJobsLocked(boolean z) {
-        if (z) {
-            long millis = (this.mLastAllJobUpdateTimeElapsed + this.mConstants.CONN_UPDATE_ALL_JOBS_MIN_INTERVAL_MS) - JobSchedulerService.sElapsedRealtimeClock.millis();
-            if (millis > 0) {
-                this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(1, 1, 0), millis);
-                return;
-            }
-        }
-        this.mHandler.removeMessages(1);
-        updateTrackedJobsLocked(-1, (Network) null);
-        this.mLastAllJobUpdateTimeElapsed = JobSchedulerService.sElapsedRealtimeClock.millis();
-    }
-
-    public final void updateTrackedJobsLocked(int i, Network network) {
-        ArraySet arraySet;
-        if (i == -1) {
-            arraySet = new ArraySet();
-            for (int size = this.mTrackedJobs.size() - 1; size >= 0; size--) {
-                if (updateTrackedJobsLocked((ArraySet) this.mTrackedJobs.valueAt(size), network)) {
-                    arraySet.addAll((ArraySet) this.mTrackedJobs.valueAt(size));
-                }
-            }
-        } else {
-            arraySet = updateTrackedJobsLocked((ArraySet) this.mTrackedJobs.get(i), network) ? (ArraySet) this.mTrackedJobs.get(i) : null;
-        }
-        if (arraySet == null || arraySet.size() <= 0) {
-            return;
-        }
-        this.mStateChangedListener.onControllerStateChanged(arraySet);
-    }
-
-    public final boolean updateTrackedJobsLocked(ArraySet arraySet, Network network) {
-        if (arraySet == null || arraySet.size() == 0 || ((UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.get(((JobStatus) arraySet.valueAt(0)).getSourceUid())) == null) {
-            return false;
-        }
-        long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
-        boolean z = false;
-        for (int size = arraySet.size() - 1; size >= 0; size--) {
-            JobStatus jobStatus = (JobStatus) arraySet.valueAt(size);
-            Network networkLocked = getNetworkLocked(jobStatus);
-            NetworkCapabilities networkCapabilities = getNetworkCapabilities(networkLocked);
-            if ((network == null || network.equals(networkLocked)) || !Objects.equals(jobStatus.network, networkLocked)) {
-                z |= updateConstraintsSatisfied(jobStatus, millis, networkLocked, networkCapabilities);
-            }
-        }
-        return z;
-    }
-
-    @Override // android.net.ConnectivityManager.OnNetworkActiveListener
-    public void onNetworkActive() {
-        synchronized (this.mLock) {
-            for (int size = this.mTrackedJobs.size() - 1; size >= 0; size--) {
-                ArraySet arraySet = (ArraySet) this.mTrackedJobs.valueAt(size);
-                for (int size2 = arraySet.size() - 1; size2 >= 0; size2--) {
-                    JobStatus jobStatus = (JobStatus) arraySet.valueAt(size2);
-                    if (jobStatus.isReady()) {
-                        if (DEBUG) {
-                            Slog.d("JobScheduler.Connectivity", "Running " + jobStatus + " due to network activity.");
-                        }
-                        this.mStateChangedListener.onRunJobNow(jobStatus);
-                    }
-                }
-            }
-        }
-    }
-
-    /* renamed from: com.android.server.job.controllers.ConnectivityController$2 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends ConnectivityManager.NetworkCallback {
-        public AnonymousClass2() {
-        }
-
-        @Override // android.net.ConnectivityManager.NetworkCallback
-        public void onAvailable(Network network) {
-            if (ConnectivityController.DEBUG) {
-                Slog.v("JobScheduler.Connectivity", "onAvailable: " + network);
-            }
-        }
-
-        @Override // android.net.ConnectivityManager.NetworkCallback
-        public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
-            if (ConnectivityController.DEBUG) {
-                Slog.v("JobScheduler.Connectivity", "onCapabilitiesChanged: " + network);
-            }
-            synchronized (ConnectivityController.this.mLock) {
-                NetworkCapabilities networkCapabilities2 = (NetworkCapabilities) ConnectivityController.this.mAvailableNetworks.put(network, networkCapabilities);
-                if (networkCapabilities2 != null) {
-                    maybeUnregisterSignalStrengthCallbackLocked(networkCapabilities2);
-                }
-                maybeRegisterSignalStrengthCallbackLocked(networkCapabilities);
-                ConnectivityController.this.updateTrackedJobsLocked(-1, network);
-                ConnectivityController.this.postAdjustCallbacks();
-            }
-        }
-
-        @Override // android.net.ConnectivityManager.NetworkCallback
-        public void onLost(Network network) {
-            if (ConnectivityController.DEBUG) {
-                Slog.v("JobScheduler.Connectivity", "onLost: " + network);
-            }
-            synchronized (ConnectivityController.this.mLock) {
-                NetworkCapabilities networkCapabilities = (NetworkCapabilities) ConnectivityController.this.mAvailableNetworks.remove(network);
-                if (networkCapabilities != null) {
-                    maybeUnregisterSignalStrengthCallbackLocked(networkCapabilities);
-                }
-                for (int i = 0; i < ConnectivityController.this.mCurrentDefaultNetworkCallbacks.size(); i++) {
-                    UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) ConnectivityController.this.mCurrentDefaultNetworkCallbacks.valueAt(i);
-                    if (Objects.equals(uidDefaultNetworkCallback.mDefaultNetwork, network)) {
-                        uidDefaultNetworkCallback.mDefaultNetwork = null;
-                    }
-                }
-                ConnectivityController.this.updateTrackedJobsLocked(-1, network);
-                ConnectivityController.this.postAdjustCallbacks();
-            }
-        }
-
-        public final void maybeRegisterSignalStrengthCallbackLocked(NetworkCapabilities networkCapabilities) {
-            if (networkCapabilities.hasTransport(0)) {
-                TelephonyManager telephonyManager = (TelephonyManager) ConnectivityController.this.mContext.getSystemService(TelephonyManager.class);
-                Iterator it = networkCapabilities.getSubscriptionIds().iterator();
-                while (it.hasNext()) {
-                    int intValue = ((Integer) it.next()).intValue();
-                    if (ConnectivityController.this.mSignalStrengths.indexOfKey(intValue) < 0) {
-                        TelephonyManager createForSubscriptionId = telephonyManager.createForSubscriptionId(intValue);
-                        CellSignalStrengthCallback cellSignalStrengthCallback = new CellSignalStrengthCallback();
-                        createForSubscriptionId.registerTelephonyCallback(AppSchedulingModuleThread.getExecutor(), cellSignalStrengthCallback);
-                        ConnectivityController.this.mSignalStrengths.put(intValue, cellSignalStrengthCallback);
-                        SignalStrength signalStrength = createForSubscriptionId.getSignalStrength();
-                        if (signalStrength != null) {
-                            cellSignalStrengthCallback.signalStrength = signalStrength.getLevel();
-                        }
-                    }
-                }
-            }
-        }
-
-        public final void maybeUnregisterSignalStrengthCallbackLocked(NetworkCapabilities networkCapabilities) {
-            if (networkCapabilities.hasTransport(0)) {
-                ArraySet arraySet = new ArraySet();
-                int size = ConnectivityController.this.mAvailableNetworks.size();
-                for (int i = 0; i < size; i++) {
-                    NetworkCapabilities networkCapabilities2 = (NetworkCapabilities) ConnectivityController.this.mAvailableNetworks.valueAt(i);
-                    if (networkCapabilities2.hasTransport(0)) {
-                        arraySet.addAll(networkCapabilities2.getSubscriptionIds());
-                    }
-                }
-                if (ConnectivityController.DEBUG) {
-                    Slog.d("JobScheduler.Connectivity", "Active subscription IDs: " + arraySet);
-                }
-                TelephonyManager telephonyManager = (TelephonyManager) ConnectivityController.this.mContext.getSystemService(TelephonyManager.class);
-                Iterator it = networkCapabilities.getSubscriptionIds().iterator();
-                while (it.hasNext()) {
-                    int intValue = ((Integer) it.next()).intValue();
-                    if (!arraySet.contains(Integer.valueOf(intValue))) {
-                        TelephonyManager createForSubscriptionId = telephonyManager.createForSubscriptionId(intValue);
-                        CellSignalStrengthCallback cellSignalStrengthCallback = (CellSignalStrengthCallback) ConnectivityController.this.mSignalStrengths.removeReturnOld(intValue);
-                        if (cellSignalStrengthCallback != null) {
-                            createForSubscriptionId.unregisterTelephonyCallback(cellSignalStrengthCallback);
-                        } else {
-                            Slog.wtf("JobScheduler.Connectivity", "Callback for sub " + intValue + " didn't exist?!?!");
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /* renamed from: com.android.server.job.controllers.ConnectivityController$3 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass3 extends NetworkPolicyManager.Listener {
-        public AnonymousClass3() {
-        }
-
-        public void onRestrictBackgroundChanged(boolean z) {
-            if (ConnectivityController.DEBUG) {
-                Slog.v("JobScheduler.Connectivity", "onRestrictBackgroundChanged: " + z);
-            }
-            ConnectivityController.this.mHandler.obtainMessage(2).sendToTarget();
-        }
-
-        public void onUidPoliciesChanged(int i, int i2) {
-            if (ConnectivityController.DEBUG) {
-                Slog.v("JobScheduler.Connectivity", "onUidPoliciesChanged: " + i);
-            }
-            ConnectivityController.this.mHandler.obtainMessage(3, i, ConnectivityController.this.mNetPolicyManager.getRestrictBackgroundStatus(i)).sendToTarget();
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class CcHandler extends Handler {
-        public CcHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            synchronized (ConnectivityController.this.mLock) {
-                int i = message.what;
-                if (i != 0) {
-                    if (i == 1) {
-                        synchronized (ConnectivityController.this.mLock) {
-                            ConnectivityController.this.updateAllTrackedJobsLocked(message.arg1 == 1);
-                        }
-                    } else if (i == 2) {
-                        removeMessages(2);
-                        synchronized (ConnectivityController.this.mLock) {
-                            ConnectivityController.this.mBackgroundMeteredAllowed.clear();
-                            ConnectivityController.this.updateTrackedJobsLocked(-1, (Network) null);
-                        }
-                    } else if (i == 3) {
-                        int i2 = message.arg1;
-                        boolean z = message.arg2 != 3;
-                        synchronized (ConnectivityController.this.mLock) {
-                            if (ConnectivityController.this.mBackgroundMeteredAllowed.get(i2) != z) {
-                                ConnectivityController.this.mBackgroundMeteredAllowed.put(i2, z);
-                                ConnectivityController.this.updateTrackedJobsLocked(i2, (Network) null);
+            public void maybeRegisterSignalStrengthCallbackLocked(NetworkCapabilities networkCapabilities) {
+                if (networkCapabilities.hasTransport(0)) {
+                    TelephonyManager telephonyManager = (TelephonyManager) this.this$0.mContext.getSystemService(TelephonyManager.class);
+                    Iterator it = networkCapabilities.getSubscriptionIds().iterator();
+                    while (it.hasNext()) {
+                        int intValue = ((Integer) it.next()).intValue();
+                        if (this.this$0.mSignalStrengths.indexOfKey(intValue) < 0) {
+                            TelephonyManager createForSubscriptionId = telephonyManager.createForSubscriptionId(intValue);
+                            CellSignalStrengthCallback cellSignalStrengthCallback = this.this$0.new CellSignalStrengthCallback();
+                            createForSubscriptionId.registerTelephonyCallback(AppSchedulingModuleThread.getExecutor(), cellSignalStrengthCallback);
+                            this.this$0.mSignalStrengths.put(intValue, cellSignalStrengthCallback);
+                            SignalStrength signalStrength = createForSubscriptionId.getSignalStrength();
+                            if (signalStrength != null) {
+                                cellSignalStrengthCallback.signalStrength = signalStrength.getLevel();
                             }
                         }
                     }
-                } else {
-                    synchronized (ConnectivityController.this.mLock) {
-                        ConnectivityController.this.maybeAdjustRegisteredCallbacksLocked();
+                }
+            }
+
+            public void maybeUnregisterSignalStrengthCallbackLocked(NetworkCapabilities networkCapabilities) {
+                NetworkCapabilities networkCapabilities2;
+                if (networkCapabilities.hasTransport(0)) {
+                    ArraySet arraySet = new ArraySet();
+                    int size = this.this$0.mAvailableNetworks.size();
+                    for (int i2 = 0; i2 < size; i2++) {
+                        CachedNetworkMetadata cachedNetworkMetadata = (CachedNetworkMetadata) this.this$0.mAvailableNetworks.valueAt(i2);
+                        if (cachedNetworkMetadata != null && (networkCapabilities2 = cachedNetworkMetadata.networkCapabilities) != null && networkCapabilities2.hasTransport(0)) {
+                            arraySet.addAll(cachedNetworkMetadata.networkCapabilities.getSubscriptionIds());
+                        }
+                    }
+                    if (ConnectivityController.DEBUG) {
+                        Slog.d("JobScheduler.Connectivity", "Active subscription IDs: " + arraySet);
+                    }
+                    TelephonyManager telephonyManager = (TelephonyManager) this.this$0.mContext.getSystemService(TelephonyManager.class);
+                    for (Integer num : networkCapabilities.getSubscriptionIds()) {
+                        int intValue = num.intValue();
+                        if (!arraySet.contains(num)) {
+                            TelephonyManager createForSubscriptionId = telephonyManager.createForSubscriptionId(intValue);
+                            CellSignalStrengthCallback cellSignalStrengthCallback = (CellSignalStrengthCallback) this.this$0.mSignalStrengths.removeReturnOld(intValue);
+                            if (cellSignalStrengthCallback != null) {
+                                createForSubscriptionId.unregisterTelephonyCallback(cellSignalStrengthCallback);
+                            } else {
+                                Slog.wtf("JobScheduler.Connectivity", "Callback for sub " + intValue + " didn't exist?!?!");
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
 
-    /* loaded from: classes2.dex */
-    public class UidDefaultNetworkCallback extends ConnectivityManager.NetworkCallback {
-        public int mBlockedReasons;
-        public Network mDefaultNetwork;
-        public int mUid;
-
-        public /* synthetic */ UidDefaultNetworkCallback(ConnectivityController connectivityController, UidDefaultNetworkCallbackIA uidDefaultNetworkCallbackIA) {
-            this();
-        }
-
-        public UidDefaultNetworkCallback() {
-        }
-
-        public final void setUid(int i) {
-            this.mUid = i;
-            this.mDefaultNetwork = null;
-        }
-
-        public final void clear() {
-            this.mDefaultNetwork = null;
-            this.mUid = -10000;
-        }
-
-        @Override // android.net.ConnectivityManager.NetworkCallback
-        public void onAvailable(Network network) {
-            if (ConnectivityController.DEBUG) {
-                Slog.v("JobScheduler.Connectivity", "default-onAvailable(" + this.mUid + "): " + network);
-            }
-        }
-
-        public void onBlockedStatusChanged(Network network, int i) {
-            if (ConnectivityController.DEBUG) {
-                Slog.v("JobScheduler.Connectivity", "default-onBlockedStatusChanged(" + this.mUid + "): " + network + " -> " + i);
-            }
-            if (this.mUid == -10000) {
-                return;
-            }
-            synchronized (ConnectivityController.this.mLock) {
-                this.mDefaultNetwork = network;
-                this.mBlockedReasons = i;
-                ConnectivityController.this.updateTrackedJobsLocked(this.mUid, network);
-            }
-        }
-
-        @Override // android.net.ConnectivityManager.NetworkCallback
-        public void onLost(Network network) {
-            if (ConnectivityController.DEBUG) {
-                Slog.v("JobScheduler.Connectivity", "default-onLost(" + this.mUid + "): " + network);
-            }
-            if (this.mUid == -10000) {
-                return;
-            }
-            synchronized (ConnectivityController.this.mLock) {
-                if (Objects.equals(this.mDefaultNetwork, network)) {
-                    this.mDefaultNetwork = null;
-                    ConnectivityController.this.updateTrackedJobsLocked(this.mUid, network);
-                    ConnectivityController.this.postAdjustCallbacks(1000L);
-                }
-            }
-        }
-
-        public final void dumpLocked(IndentingPrintWriter indentingPrintWriter) {
-            indentingPrintWriter.print("UID: ");
-            indentingPrintWriter.print(this.mUid);
-            indentingPrintWriter.print("; ");
-            if (this.mDefaultNetwork == null) {
-                indentingPrintWriter.print("No network");
-            } else {
-                indentingPrintWriter.print("Network: ");
-                indentingPrintWriter.print(this.mDefaultNetwork);
-                indentingPrintWriter.print(" (blocked=");
-                indentingPrintWriter.print(NetworkPolicyManager.blockedReasonsToString(this.mBlockedReasons));
-                indentingPrintWriter.print(")");
-            }
-            indentingPrintWriter.println();
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class UidStats {
-        public int baseBias;
-        public long earliestEJEnqueueTime;
-        public long earliestEnqueueTime;
-        public long earliestUIJEnqueueTime;
-        public long lastUpdatedElapsed;
-        public int numEJs;
-        public int numReadyWithConnectivity;
-        public int numRegular;
-        public int numRequestedNetworkAvailable;
-        public int numUIJs;
-        public final ArraySet runningJobs;
-        public final int uid;
-
-        public /* synthetic */ UidStats(int i, UidStatsIA uidStatsIA) {
-            this(i);
-        }
-
-        public UidStats(int i) {
-            this.runningJobs = new ArraySet();
-            this.uid = i;
-        }
-
-        public final void dumpLocked(IndentingPrintWriter indentingPrintWriter, long j) {
-            indentingPrintWriter.print("UidStats{");
-            indentingPrintWriter.print("uid", Integer.valueOf(this.uid));
-            indentingPrintWriter.print("pri", Integer.valueOf(this.baseBias));
-            indentingPrintWriter.print("#run", Integer.valueOf(this.runningJobs.size()));
-            indentingPrintWriter.print("#readyWithConn", Integer.valueOf(this.numReadyWithConnectivity));
-            indentingPrintWriter.print("#netAvail", Integer.valueOf(this.numRequestedNetworkAvailable));
-            indentingPrintWriter.print("#EJs", Integer.valueOf(this.numEJs));
-            indentingPrintWriter.print("#reg", Integer.valueOf(this.numRegular));
-            indentingPrintWriter.print("earliestEnqueue", Long.valueOf(this.earliestEnqueueTime));
-            indentingPrintWriter.print("earliestEJEnqueue", Long.valueOf(this.earliestEJEnqueueTime));
-            indentingPrintWriter.print("earliestUIJEnqueue", Long.valueOf(this.earliestUIJEnqueueTime));
-            indentingPrintWriter.print("updated=");
-            TimeUtils.formatDuration(this.lastUpdatedElapsed - j, indentingPrintWriter);
-            indentingPrintWriter.println("}");
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class CellSignalStrengthCallback extends TelephonyCallback implements TelephonyCallback.SignalStrengthsListener {
-        public int signalStrength;
-
-        public /* synthetic */ CellSignalStrengthCallback(ConnectivityController connectivityController, CellSignalStrengthCallbackIA cellSignalStrengthCallbackIA) {
-            this();
-        }
-
-        public CellSignalStrengthCallback() {
-            this.signalStrength = 4;
-        }
-
-        @Override // android.telephony.TelephonyCallback.SignalStrengthsListener
-        public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-            synchronized (ConnectivityController.this.mLock) {
-                int level = signalStrength.getLevel();
-                if (ConnectivityController.DEBUG) {
-                    Slog.d("JobScheduler.Connectivity", "Signal strength changing from " + this.signalStrength + " to " + level);
-                    for (CellSignalStrength cellSignalStrength : signalStrength.getCellSignalStrengths()) {
-                        Slog.d("JobScheduler.Connectivity", "CSS: " + cellSignalStrength.getLevel() + " " + cellSignalStrength);
-                    }
-                }
-                if (this.signalStrength == level) {
+            public void maybeUpdateFlexConstraintLocked(CachedNetworkMetadata cachedNetworkMetadata) {
+                if (cachedNetworkMetadata != null && cachedNetworkMetadata.satisfiesTransportAffinities) {
+                    FlexibilityController flexibilityController2 = this.this$0.mFlexibilityController;
+                    JobSchedulerService.sElapsedRealtimeClock.getClass();
+                    flexibilityController2.setConstraintSatisfied(268435456, SystemClock.elapsedRealtime(), true);
                     return;
                 }
-                this.signalStrength = level;
-                ConnectivityController.this.mHandler.obtainMessage(1, 1, 0).sendToTarget();
+                for (int size = this.this$0.mAvailableNetworks.size() - 1; size >= 0; size--) {
+                    CachedNetworkMetadata cachedNetworkMetadata2 = (CachedNetworkMetadata) this.this$0.mAvailableNetworks.valueAt(size);
+                    if (cachedNetworkMetadata2 != null && cachedNetworkMetadata2.satisfiesTransportAffinities) {
+                        return;
+                    }
+                }
+                FlexibilityController flexibilityController3 = this.this$0.mFlexibilityController;
+                JobSchedulerService.sElapsedRealtimeClock.getClass();
+                flexibilityController3.setConstraintSatisfied(268435456, SystemClock.elapsedRealtime(), false);
             }
+
+            @Override // android.net.ConnectivityManager.NetworkCallback
+            public final void onAvailable(Network network) {
+                switch (i) {
+                    case 0:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "onAvailable: " + network);
+                            return;
+                        }
+                        return;
+                    default:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "systemDefault-onAvailable: " + network);
+                        }
+                        synchronized (this.this$0.mLock) {
+                            this.this$0.mSystemDefaultNetwork = network;
+                        }
+                        return;
+                }
+            }
+
+            @Override // android.net.ConnectivityManager.NetworkCallback
+            public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                switch (i) {
+                    case 0:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "onCapabilitiesChanged: " + network);
+                        }
+                        synchronized (this.this$0.mLock) {
+                            try {
+                                CachedNetworkMetadata cachedNetworkMetadata = (CachedNetworkMetadata) this.this$0.mAvailableNetworks.get(network);
+                                if (cachedNetworkMetadata == null) {
+                                    cachedNetworkMetadata = new CachedNetworkMetadata();
+                                    JobSchedulerService.sElapsedRealtimeClock.getClass();
+                                    cachedNetworkMetadata.capabilitiesFirstAcquiredTimeElapsed = SystemClock.elapsedRealtime();
+                                    this.this$0.mAvailableNetworks.put(network, cachedNetworkMetadata);
+                                } else {
+                                    NetworkCapabilities networkCapabilities2 = cachedNetworkMetadata.networkCapabilities;
+                                    if (networkCapabilities2 != null) {
+                                        maybeUnregisterSignalStrengthCallbackLocked(networkCapabilities2);
+                                    }
+                                }
+                                cachedNetworkMetadata.networkCapabilities = networkCapabilities;
+                                if (this.this$0.updateTransportAffinitySatisfaction(cachedNetworkMetadata)) {
+                                    maybeUpdateFlexConstraintLocked(cachedNetworkMetadata);
+                                }
+                                maybeRegisterSignalStrengthCallbackLocked(networkCapabilities);
+                                this.this$0.updateTrackedJobsLocked(network, -1);
+                                this.this$0.postAdjustCallbacks();
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        return;
+                    default:
+                        super.onCapabilitiesChanged(network, networkCapabilities);
+                        return;
+                }
+            }
+
+            @Override // android.net.ConnectivityManager.NetworkCallback
+            public final void onLost(Network network) {
+                switch (i) {
+                    case 0:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "onLost: " + network);
+                        }
+                        synchronized (this.this$0.mLock) {
+                            try {
+                                CachedNetworkMetadata cachedNetworkMetadata = (CachedNetworkMetadata) this.this$0.mAvailableNetworks.remove(network);
+                                if (cachedNetworkMetadata != null) {
+                                    NetworkCapabilities networkCapabilities = cachedNetworkMetadata.networkCapabilities;
+                                    if (networkCapabilities != null) {
+                                        maybeUnregisterSignalStrengthCallbackLocked(networkCapabilities);
+                                    }
+                                    if (cachedNetworkMetadata.satisfiesTransportAffinities) {
+                                        maybeUpdateFlexConstraintLocked(null);
+                                    }
+                                }
+                                for (int i2 = 0; i2 < this.this$0.mCurrentDefaultNetworkCallbacks.size(); i2++) {
+                                    UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.this$0.mCurrentDefaultNetworkCallbacks.valueAt(i2);
+                                    if (Objects.equals(uidDefaultNetworkCallback.mDefaultNetwork, network)) {
+                                        uidDefaultNetworkCallback.mDefaultNetwork = null;
+                                    }
+                                }
+                                this.this$0.updateTrackedJobsLocked(network, -1);
+                                this.this$0.postAdjustCallbacks();
+                            } finally {
+                            }
+                        }
+                        return;
+                    default:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "systemDefault-onLost: " + network);
+                        }
+                        synchronized (this.this$0.mLock) {
+                            try {
+                                if (network.equals(this.this$0.mSystemDefaultNetwork)) {
+                                    this.this$0.mSystemDefaultNetwork = null;
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                }
+            }
+        };
+        final int i2 = 1;
+        this.mDefaultNetworkCallback = new ConnectivityManager.NetworkCallback(this) { // from class: com.android.server.job.controllers.ConnectivityController.2
+            public final /* synthetic */ ConnectivityController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            public void maybeRegisterSignalStrengthCallbackLocked(NetworkCapabilities networkCapabilities) {
+                if (networkCapabilities.hasTransport(0)) {
+                    TelephonyManager telephonyManager = (TelephonyManager) this.this$0.mContext.getSystemService(TelephonyManager.class);
+                    Iterator it = networkCapabilities.getSubscriptionIds().iterator();
+                    while (it.hasNext()) {
+                        int intValue = ((Integer) it.next()).intValue();
+                        if (this.this$0.mSignalStrengths.indexOfKey(intValue) < 0) {
+                            TelephonyManager createForSubscriptionId = telephonyManager.createForSubscriptionId(intValue);
+                            CellSignalStrengthCallback cellSignalStrengthCallback = this.this$0.new CellSignalStrengthCallback();
+                            createForSubscriptionId.registerTelephonyCallback(AppSchedulingModuleThread.getExecutor(), cellSignalStrengthCallback);
+                            this.this$0.mSignalStrengths.put(intValue, cellSignalStrengthCallback);
+                            SignalStrength signalStrength = createForSubscriptionId.getSignalStrength();
+                            if (signalStrength != null) {
+                                cellSignalStrengthCallback.signalStrength = signalStrength.getLevel();
+                            }
+                        }
+                    }
+                }
+            }
+
+            public void maybeUnregisterSignalStrengthCallbackLocked(NetworkCapabilities networkCapabilities) {
+                NetworkCapabilities networkCapabilities2;
+                if (networkCapabilities.hasTransport(0)) {
+                    ArraySet arraySet = new ArraySet();
+                    int size = this.this$0.mAvailableNetworks.size();
+                    for (int i22 = 0; i22 < size; i22++) {
+                        CachedNetworkMetadata cachedNetworkMetadata = (CachedNetworkMetadata) this.this$0.mAvailableNetworks.valueAt(i22);
+                        if (cachedNetworkMetadata != null && (networkCapabilities2 = cachedNetworkMetadata.networkCapabilities) != null && networkCapabilities2.hasTransport(0)) {
+                            arraySet.addAll(cachedNetworkMetadata.networkCapabilities.getSubscriptionIds());
+                        }
+                    }
+                    if (ConnectivityController.DEBUG) {
+                        Slog.d("JobScheduler.Connectivity", "Active subscription IDs: " + arraySet);
+                    }
+                    TelephonyManager telephonyManager = (TelephonyManager) this.this$0.mContext.getSystemService(TelephonyManager.class);
+                    for (Integer num : networkCapabilities.getSubscriptionIds()) {
+                        int intValue = num.intValue();
+                        if (!arraySet.contains(num)) {
+                            TelephonyManager createForSubscriptionId = telephonyManager.createForSubscriptionId(intValue);
+                            CellSignalStrengthCallback cellSignalStrengthCallback = (CellSignalStrengthCallback) this.this$0.mSignalStrengths.removeReturnOld(intValue);
+                            if (cellSignalStrengthCallback != null) {
+                                createForSubscriptionId.unregisterTelephonyCallback(cellSignalStrengthCallback);
+                            } else {
+                                Slog.wtf("JobScheduler.Connectivity", "Callback for sub " + intValue + " didn't exist?!?!");
+                            }
+                        }
+                    }
+                }
+            }
+
+            public void maybeUpdateFlexConstraintLocked(CachedNetworkMetadata cachedNetworkMetadata) {
+                if (cachedNetworkMetadata != null && cachedNetworkMetadata.satisfiesTransportAffinities) {
+                    FlexibilityController flexibilityController2 = this.this$0.mFlexibilityController;
+                    JobSchedulerService.sElapsedRealtimeClock.getClass();
+                    flexibilityController2.setConstraintSatisfied(268435456, SystemClock.elapsedRealtime(), true);
+                    return;
+                }
+                for (int size = this.this$0.mAvailableNetworks.size() - 1; size >= 0; size--) {
+                    CachedNetworkMetadata cachedNetworkMetadata2 = (CachedNetworkMetadata) this.this$0.mAvailableNetworks.valueAt(size);
+                    if (cachedNetworkMetadata2 != null && cachedNetworkMetadata2.satisfiesTransportAffinities) {
+                        return;
+                    }
+                }
+                FlexibilityController flexibilityController3 = this.this$0.mFlexibilityController;
+                JobSchedulerService.sElapsedRealtimeClock.getClass();
+                flexibilityController3.setConstraintSatisfied(268435456, SystemClock.elapsedRealtime(), false);
+            }
+
+            @Override // android.net.ConnectivityManager.NetworkCallback
+            public final void onAvailable(Network network) {
+                switch (i2) {
+                    case 0:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "onAvailable: " + network);
+                            return;
+                        }
+                        return;
+                    default:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "systemDefault-onAvailable: " + network);
+                        }
+                        synchronized (this.this$0.mLock) {
+                            this.this$0.mSystemDefaultNetwork = network;
+                        }
+                        return;
+                }
+            }
+
+            @Override // android.net.ConnectivityManager.NetworkCallback
+            public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                switch (i2) {
+                    case 0:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "onCapabilitiesChanged: " + network);
+                        }
+                        synchronized (this.this$0.mLock) {
+                            try {
+                                CachedNetworkMetadata cachedNetworkMetadata = (CachedNetworkMetadata) this.this$0.mAvailableNetworks.get(network);
+                                if (cachedNetworkMetadata == null) {
+                                    cachedNetworkMetadata = new CachedNetworkMetadata();
+                                    JobSchedulerService.sElapsedRealtimeClock.getClass();
+                                    cachedNetworkMetadata.capabilitiesFirstAcquiredTimeElapsed = SystemClock.elapsedRealtime();
+                                    this.this$0.mAvailableNetworks.put(network, cachedNetworkMetadata);
+                                } else {
+                                    NetworkCapabilities networkCapabilities2 = cachedNetworkMetadata.networkCapabilities;
+                                    if (networkCapabilities2 != null) {
+                                        maybeUnregisterSignalStrengthCallbackLocked(networkCapabilities2);
+                                    }
+                                }
+                                cachedNetworkMetadata.networkCapabilities = networkCapabilities;
+                                if (this.this$0.updateTransportAffinitySatisfaction(cachedNetworkMetadata)) {
+                                    maybeUpdateFlexConstraintLocked(cachedNetworkMetadata);
+                                }
+                                maybeRegisterSignalStrengthCallbackLocked(networkCapabilities);
+                                this.this$0.updateTrackedJobsLocked(network, -1);
+                                this.this$0.postAdjustCallbacks();
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        return;
+                    default:
+                        super.onCapabilitiesChanged(network, networkCapabilities);
+                        return;
+                }
+            }
+
+            @Override // android.net.ConnectivityManager.NetworkCallback
+            public final void onLost(Network network) {
+                switch (i2) {
+                    case 0:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "onLost: " + network);
+                        }
+                        synchronized (this.this$0.mLock) {
+                            try {
+                                CachedNetworkMetadata cachedNetworkMetadata = (CachedNetworkMetadata) this.this$0.mAvailableNetworks.remove(network);
+                                if (cachedNetworkMetadata != null) {
+                                    NetworkCapabilities networkCapabilities = cachedNetworkMetadata.networkCapabilities;
+                                    if (networkCapabilities != null) {
+                                        maybeUnregisterSignalStrengthCallbackLocked(networkCapabilities);
+                                    }
+                                    if (cachedNetworkMetadata.satisfiesTransportAffinities) {
+                                        maybeUpdateFlexConstraintLocked(null);
+                                    }
+                                }
+                                for (int i22 = 0; i22 < this.this$0.mCurrentDefaultNetworkCallbacks.size(); i22++) {
+                                    UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.this$0.mCurrentDefaultNetworkCallbacks.valueAt(i22);
+                                    if (Objects.equals(uidDefaultNetworkCallback.mDefaultNetwork, network)) {
+                                        uidDefaultNetworkCallback.mDefaultNetwork = null;
+                                    }
+                                }
+                                this.this$0.updateTrackedJobsLocked(network, -1);
+                                this.this$0.postAdjustCallbacks();
+                            } finally {
+                            }
+                        }
+                        return;
+                    default:
+                        if (ConnectivityController.DEBUG) {
+                            Slog.v("JobScheduler.Connectivity", "systemDefault-onLost: " + network);
+                        }
+                        synchronized (this.this$0.mLock) {
+                            try {
+                                if (network.equals(this.this$0.mSystemDefaultNetwork)) {
+                                    this.this$0.mSystemDefaultNetwork = null;
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                }
+            }
+        };
+        NetworkPolicyManager.Listener listener = new NetworkPolicyManager.Listener() { // from class: com.android.server.job.controllers.ConnectivityController.4
+            public final void onRestrictBackgroundChanged(boolean z) {
+                if (ConnectivityController.DEBUG) {
+                    Slog.v("JobScheduler.Connectivity", "onRestrictBackgroundChanged: " + z);
+                }
+                ConnectivityController.this.mHandler.obtainMessage(2).sendToTarget();
+            }
+
+            public final void onUidPoliciesChanged(int i3, int i4) {
+                if (ConnectivityController.DEBUG) {
+                    ProxyManager$$ExternalSyntheticOutline0.m(i3, "onUidPoliciesChanged: ", "JobScheduler.Connectivity");
+                }
+                ConnectivityController connectivityController = ConnectivityController.this;
+                connectivityController.mHandler.obtainMessage(3, i3, connectivityController.mNetPolicyManager.getRestrictBackgroundStatus(i3)).sendToTarget();
+            }
+        };
+        this.mHandler = new CcHandler(AppSchedulingModuleThread.get().getLooper());
+        CcConfig ccConfig = new CcConfig();
+        ccConfig.mFlexIsEnabled = false;
+        ccConfig.mShouldReprocessNetworkCapabilities = false;
+        ccConfig.AVOID_UNDEFINED_TRANSPORT_AFFINITY = false;
+        ccConfig.NETWORK_ACTIVATION_EXPIRATION_MS = 10000L;
+        ccConfig.NETWORK_ACTIVATION_MAX_WAIT_TIME_MS = 1860000L;
+        this.mCcConfig = ccConfig;
+        ConnectivityManager connectivityManager = (ConnectivityManager) this.mContext.getSystemService(ConnectivityManager.class);
+        this.mConnManager = connectivityManager;
+        NetworkPolicyManager networkPolicyManager = (NetworkPolicyManager) this.mContext.getSystemService(NetworkPolicyManager.class);
+        this.mNetPolicyManager = networkPolicyManager;
+        this.mNetPolicyManagerInternal = (NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl) LocalServices.getService(NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl.class);
+        this.mFlexibilityController = flexibilityController;
+        connectivityManager.registerNetworkCallback(new NetworkRequest.Builder().clearCapabilities().build(), networkCallback);
+        networkPolicyManager.registerListener(listener);
+        if (this.mContext.getPackageManager().hasSystemFeature("android.hardware.type.watch")) {
+            sNetworkTransportAffinities.clear();
         }
+    }
+
+    public static long calculateTransferTimeMs(long j, long j2) {
+        if (j == -1 || j2 <= 0) {
+            return -1L;
+        }
+        return (j * 1000) / ((j2 * 1000) / 8);
+    }
+
+    public static NetworkCapabilities.Builder copyCapabilities(NetworkRequest networkRequest) {
+        NetworkCapabilities.Builder builder = new NetworkCapabilities.Builder();
+        for (int i : networkRequest.getTransportTypes()) {
+            builder.addTransportType(i);
+        }
+        for (int i2 : networkRequest.getCapabilities()) {
+            builder.addCapability(i2);
+        }
+        return builder;
     }
 
     @Override // com.android.server.job.controllers.StateController
-    public void dumpControllerStateLocked(IndentingPrintWriter indentingPrintWriter, Predicate predicate) {
-        long millis = JobSchedulerService.sElapsedRealtimeClock.millis();
+    public final void dumpConstants(IndentingPrintWriter indentingPrintWriter) {
+        CcConfig ccConfig = this.mCcConfig;
+        ccConfig.getClass();
+        indentingPrintWriter.println();
+        indentingPrintWriter.print("ConnectivityController");
+        indentingPrintWriter.println(":");
+        indentingPrintWriter.increaseIndent();
+        indentingPrintWriter.print("conn_avoid_undefined_transport_affinity", Boolean.valueOf(ccConfig.AVOID_UNDEFINED_TRANSPORT_AFFINITY)).println();
+        JobSchedulerService$Constants$$ExternalSyntheticOutline0.m(ccConfig.NETWORK_ACTIVATION_EXPIRATION_MS, indentingPrintWriter, "conn_network_activation_expiration_ms");
+        indentingPrintWriter.print("conn_network_activation_max_wait_time_ms", Long.valueOf(ccConfig.NETWORK_ACTIVATION_MAX_WAIT_TIME_MS)).println();
+        indentingPrintWriter.decreaseIndent();
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void dumpControllerStateLocked(IndentingPrintWriter indentingPrintWriter, JobSchedulerService$$ExternalSyntheticLambda5 jobSchedulerService$$ExternalSyntheticLambda5) {
+        JobSchedulerService.sElapsedRealtimeClock.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        indentingPrintWriter.println("Aconfig flags:");
+        indentingPrintWriter.increaseIndent();
+        Flags.relaxPrefetchConnectivityConstraintOnlyOnCharger();
+        indentingPrintWriter.print("com.android.server.job.relax_prefetch_connectivity_constraint_only_on_charger", Boolean.TRUE);
+        indentingPrintWriter.println();
+        indentingPrintWriter.decreaseIndent();
+        indentingPrintWriter.println();
         if (this.mRequestedWhitelistJobs.size() > 0) {
             indentingPrintWriter.print("Requested standby exceptions:");
             for (int i = 0; i < this.mRequestedWhitelistJobs.size(); i++) {
@@ -1443,30 +968,60 @@ public final class ConnectivityController extends RestrictingController implemen
         indentingPrintWriter.println("Current default network callbacks:");
         indentingPrintWriter.increaseIndent();
         for (int i4 = 0; i4 < this.mCurrentDefaultNetworkCallbacks.size(); i4++) {
-            ((UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.valueAt(i4)).dumpLocked(indentingPrintWriter);
+            UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.valueAt(i4);
+            int i5 = UidDefaultNetworkCallback.$r8$clinit;
+            uidDefaultNetworkCallback.getClass();
+            indentingPrintWriter.print("UID: ");
+            indentingPrintWriter.print(uidDefaultNetworkCallback.mUid);
+            indentingPrintWriter.print("; ");
+            if (uidDefaultNetworkCallback.mDefaultNetwork == null) {
+                indentingPrintWriter.print("No network");
+            } else {
+                indentingPrintWriter.print("Network: ");
+                indentingPrintWriter.print(uidDefaultNetworkCallback.mDefaultNetwork);
+                indentingPrintWriter.print(" (blocked=");
+                indentingPrintWriter.print(NetworkPolicyManager.blockedReasonsToString(uidDefaultNetworkCallback.mBlockedReasons));
+                indentingPrintWriter.print(")");
+            }
+            indentingPrintWriter.println();
         }
         indentingPrintWriter.decreaseIndent();
         indentingPrintWriter.println();
         indentingPrintWriter.println("UID Pecking Order:");
         indentingPrintWriter.increaseIndent();
-        for (int i5 = 0; i5 < this.mSortedStats.size(); i5++) {
-            indentingPrintWriter.print(i5);
+        for (int i6 = 0; i6 < ((ArrayList) this.mSortedStats).size(); i6++) {
+            indentingPrintWriter.print(i6);
             indentingPrintWriter.print(": ");
-            ((UidStats) this.mSortedStats.get(i5)).dumpLocked(indentingPrintWriter, millis);
+            UidStats uidStats = (UidStats) ((ArrayList) this.mSortedStats).get(i6);
+            uidStats.getClass();
+            indentingPrintWriter.print("UidStats{");
+            indentingPrintWriter.print("uid", Integer.valueOf(uidStats.uid));
+            indentingPrintWriter.print("pri", Integer.valueOf(uidStats.baseBias));
+            indentingPrintWriter.print("#run", Integer.valueOf(uidStats.runningJobs.size()));
+            indentingPrintWriter.print("#readyWithConn", Integer.valueOf(uidStats.numReadyWithConnectivity));
+            indentingPrintWriter.print("#netAvail", Integer.valueOf(uidStats.numRequestedNetworkAvailable));
+            indentingPrintWriter.print("#EJs", Integer.valueOf(uidStats.numEJs));
+            indentingPrintWriter.print("#reg", Integer.valueOf(uidStats.numRegular));
+            indentingPrintWriter.print("earliestEnqueue", Long.valueOf(uidStats.earliestEnqueueTime));
+            indentingPrintWriter.print("earliestEJEnqueue", Long.valueOf(uidStats.earliestEJEnqueueTime));
+            indentingPrintWriter.print("earliestUIJEnqueue", Long.valueOf(uidStats.earliestUIJEnqueueTime));
+            indentingPrintWriter.print("updated=");
+            TimeUtils.formatDuration(uidStats.lastUpdatedElapsed - elapsedRealtime, indentingPrintWriter);
+            indentingPrintWriter.println("}");
         }
         indentingPrintWriter.decreaseIndent();
         indentingPrintWriter.println();
-        for (int i6 = 0; i6 < this.mTrackedJobs.size(); i6++) {
-            ArraySet arraySet = (ArraySet) this.mTrackedJobs.valueAt(i6);
-            for (int i7 = 0; i7 < arraySet.size(); i7++) {
-                JobStatus jobStatus = (JobStatus) arraySet.valueAt(i7);
-                if (predicate.test(jobStatus)) {
+        for (int i7 = 0; i7 < this.mTrackedJobs.size(); i7++) {
+            ArraySet arraySet = (ArraySet) this.mTrackedJobs.valueAt(i7);
+            for (int i8 = 0; i8 < arraySet.size(); i8++) {
+                JobStatus jobStatus = (JobStatus) arraySet.valueAt(i8);
+                if (jobSchedulerService$$ExternalSyntheticLambda5.test(jobStatus)) {
                     indentingPrintWriter.print("#");
                     jobStatus.printUniqueId(indentingPrintWriter);
                     indentingPrintWriter.print(" from ");
-                    UserHandle.formatUid(indentingPrintWriter, jobStatus.getSourceUid());
+                    UserHandle.formatUid(indentingPrintWriter, jobStatus.sourceUid);
                     indentingPrintWriter.print(": ");
-                    indentingPrintWriter.print(jobStatus.getJob().getRequiredNetwork());
+                    indentingPrintWriter.print(jobStatus.job.getRequiredNetwork());
                     indentingPrintWriter.println();
                 }
             }
@@ -1474,8 +1029,8 @@ public final class ConnectivityController extends RestrictingController implemen
     }
 
     @Override // com.android.server.job.controllers.StateController
-    public void dumpControllerStateLocked(ProtoOutputStream protoOutputStream, long j, Predicate predicate) {
-        long start = protoOutputStream.start(j);
+    public final void dumpControllerStateLocked(ProtoOutputStream protoOutputStream, JobSchedulerService$$ExternalSyntheticLambda5 jobSchedulerService$$ExternalSyntheticLambda5) {
+        long start = protoOutputStream.start(2246267895812L);
         long start2 = protoOutputStream.start(1146756268035L);
         for (int i = 0; i < this.mRequestedWhitelistJobs.size(); i++) {
             protoOutputStream.write(2220498092035L, this.mRequestedWhitelistJobs.keyAt(i));
@@ -1484,15 +1039,755 @@ public final class ConnectivityController extends RestrictingController implemen
             ArraySet arraySet = (ArraySet) this.mTrackedJobs.valueAt(i2);
             for (int i3 = 0; i3 < arraySet.size(); i3++) {
                 JobStatus jobStatus = (JobStatus) arraySet.valueAt(i3);
-                if (predicate.test(jobStatus)) {
+                if (jobSchedulerService$$ExternalSyntheticLambda5.test(jobStatus)) {
                     long start3 = protoOutputStream.start(2246267895810L);
                     jobStatus.writeToShortProto(protoOutputStream, 1146756268033L);
-                    protoOutputStream.write(1120986464258L, jobStatus.getSourceUid());
+                    protoOutputStream.write(1120986464258L, jobStatus.sourceUid);
                     protoOutputStream.end(start3);
                 }
             }
         }
         protoOutputStream.end(start2);
         protoOutputStream.end(start);
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void evaluateStateLocked(JobStatus jobStatus) {
+        if (jobStatus.hasConnectivityConstraint()) {
+            UidStats uidStats = getUidStats(jobStatus.sourceUid, jobStatus.sourcePackageName, true);
+            if (jobStatus.shouldTreatAsExpeditedJob() || jobStatus.shouldTreatAsUserInitiatedJob()) {
+                if (!jobStatus.isConstraintSatisfied(268435456)) {
+                    updateConstraintsSatisfied(jobStatus);
+                }
+            } else if (((jobStatus.isRequestedExpeditedJob() && !jobStatus.shouldTreatAsExpeditedJob()) || (jobStatus.job.isUserInitiated() && !jobStatus.shouldTreatAsUserInitiatedJob())) && jobStatus.isConstraintSatisfied(268435456)) {
+                updateConstraintsSatisfied(jobStatus);
+            }
+            if (!wouldBeReadyWithConstraintLocked(jobStatus, 268435456) || !isNetworkAvailable(jobStatus)) {
+                if (DEBUG) {
+                    Slog.i("JobScheduler.Connectivity", "evaluateStateLocked finds job " + jobStatus + " would not be ready.");
+                }
+                maybeRevokeStandbyExceptionLocked(jobStatus);
+                return;
+            }
+            if (DEBUG) {
+                Slog.i("JobScheduler.Connectivity", "evaluateStateLocked finds job " + jobStatus + " would be ready.");
+            }
+            uidStats.numReadyWithConnectivity++;
+            requestStandbyExceptionLocked(jobStatus);
+        }
+    }
+
+    public CcConfig getCcConfig() {
+        return this.mCcConfig;
+    }
+
+    public final Network getNetworkLocked(JobStatus jobStatus) {
+        UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.get(jobStatus.sourceUid);
+        if (uidDefaultNetworkCallback == null) {
+            return null;
+        }
+        SparseArray sparseArray = this.mUidStats;
+        int i = jobStatus.sourceUid;
+        int i2 = -196680;
+        if (((UidStats) sparseArray.get(i)).baseBias >= 30 || (jobStatus.job.getFlags() & 1) != 0) {
+            if (DEBUG) {
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "Using FG bypass for ", "JobScheduler.Connectivity");
+            }
+        } else if (jobStatus.shouldTreatAsUserInitiatedJob()) {
+            if (DEBUG) {
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "Using UI bypass for ", "JobScheduler.Connectivity");
+            }
+        } else if (jobStatus.shouldTreatAsExpeditedJob() || jobStatus.startedAsExpeditedJob) {
+            if (DEBUG) {
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "Using EJ bypass for ", "JobScheduler.Connectivity");
+            }
+            i2 = -72;
+        } else {
+            if (DEBUG) {
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "Using BG bypass for ", "JobScheduler.Connectivity");
+            }
+            i2 = -65;
+        }
+        if ((uidDefaultNetworkCallback.mBlockedReasons & i2) == 0) {
+            return uidDefaultNetworkCallback.mDefaultNetwork;
+        }
+        return null;
+    }
+
+    public final CachedNetworkMetadata getNetworkMetadata(Network network) {
+        CachedNetworkMetadata cachedNetworkMetadata;
+        if (network == null) {
+            return null;
+        }
+        synchronized (this.mLock) {
+            cachedNetworkMetadata = (CachedNetworkMetadata) this.mAvailableNetworks.get(network);
+        }
+        return cachedNetworkMetadata;
+    }
+
+    public final UidStats getUidStats(int i, String str, boolean z) {
+        UidStats uidStats = (UidStats) this.mUidStats.get(i);
+        if (uidStats != null) {
+            return uidStats;
+        }
+        if (z) {
+            Slog.wtfStack("JobScheduler.Connectivity", "UidStats was null after job for " + str + " was registered");
+        }
+        UidStats uidStats2 = new UidStats(i);
+        this.mUidStats.append(i, uidStats2);
+        return uidStats2;
+    }
+
+    public final boolean isNetworkAvailable(JobStatus jobStatus) {
+        synchronized (this.mLock) {
+            for (int i = 0; i < this.mAvailableNetworks.size(); i++) {
+                try {
+                    Network network = (Network) this.mAvailableNetworks.keyAt(i);
+                    CachedNetworkMetadata cachedNetworkMetadata = (CachedNetworkMetadata) this.mAvailableNetworks.valueAt(i);
+                    NetworkCapabilities networkCapabilities = cachedNetworkMetadata == null ? null : cachedNetworkMetadata.networkCapabilities;
+                    boolean isSatisfied = isSatisfied(jobStatus, network, networkCapabilities, this.mConstants);
+                    if (DEBUG) {
+                        Slog.v("JobScheduler.Connectivity", "isNetworkAvailable(" + jobStatus + ") with network " + network + " and capabilities " + networkCapabilities + ". Satisfied=" + isSatisfied);
+                    }
+                    if (isSatisfied) {
+                        return true;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            return false;
+        }
+    }
+
+    public boolean isNetworkInStateForJobRunLocked(Network network) {
+        List underlyingNetworks;
+        CachedNetworkMetadata cachedNetworkMetadata = (CachedNetworkMetadata) this.mAvailableNetworks.get(network);
+        if (cachedNetworkMetadata == null) {
+            return false;
+        }
+        JobSchedulerService.sElapsedRealtimeClock.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        long j = cachedNetworkMetadata.defaultNetworkActivationLastConfirmedTimeElapsed;
+        CcConfig ccConfig = this.mCcConfig;
+        if (ccConfig.NETWORK_ACTIVATION_EXPIRATION_MS + j > elapsedRealtime) {
+            return true;
+        }
+        long j2 = cachedNetworkMetadata.capabilitiesFirstAcquiredTimeElapsed;
+        long j3 = elapsedRealtime - ccConfig.NETWORK_ACTIVATION_MAX_WAIT_TIME_MS;
+        boolean z = j2 < j3 && j < j3;
+        Network network2 = this.mSystemDefaultNetwork;
+        if (network2 == null) {
+            return z;
+        }
+        if (network2.equals(network)) {
+            long j4 = cachedNetworkMetadata.defaultNetworkActivationLastCheckTimeElapsed;
+            if (this.mCcConfig.NETWORK_ACTIVATION_EXPIRATION_MS + j4 >= elapsedRealtime) {
+                return false;
+            }
+            if (j4 > cachedNetworkMetadata.defaultNetworkActivationLastConfirmedTimeElapsed) {
+                return z;
+            }
+            cachedNetworkMetadata.defaultNetworkActivationLastCheckTimeElapsed = elapsedRealtime;
+            if (!this.mConnManager.isDefaultNetworkActive()) {
+                return z;
+            }
+            cachedNetworkMetadata.defaultNetworkActivationLastConfirmedTimeElapsed = elapsedRealtime;
+            return true;
+        }
+        NetworkCapabilities networkCapabilities = cachedNetworkMetadata.networkCapabilities;
+        if (networkCapabilities == null || !networkCapabilities.hasTransport(4) || (underlyingNetworks = networkCapabilities.getUnderlyingNetworks()) == null) {
+            return z;
+        }
+        if (!underlyingNetworks.contains(this.mSystemDefaultNetwork)) {
+            for (int size = underlyingNetworks.size() - 1; size >= 0; size--) {
+                if (isNetworkInStateForJobRunLocked((Network) underlyingNetworks.get(size))) {
+                    return true;
+                }
+            }
+            return z;
+        }
+        if (DEBUG) {
+            Slog.i("JobScheduler.Connectivity", "Substituting system default network " + this.mSystemDefaultNetwork + " for VPN " + network);
+        }
+        return isNetworkInStateForJobRunLocked(this.mSystemDefaultNetwork);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:139:0x01bc, code lost:
+    
+        if (r8 != false) goto L63;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:145:0x01ee, code lost:
+    
+        if (r7 != false) goto L63;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:44:0x0235 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:45:0x0237  */
+    /* JADX WARN: Removed duplicated region for block: B:51:0x0252 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:52:0x0254  */
+    /* JADX WARN: Removed duplicated region for block: B:56:0x030b A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:57:0x030d  */
+    /* JADX WARN: Removed duplicated region for block: B:85:0x03a7 A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:86:0x03a8 A[RETURN] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public boolean isSatisfied(com.android.server.job.controllers.JobStatus r19, android.net.Network r20, android.net.NetworkCapabilities r21, com.android.server.job.JobSchedulerService.Constants r22) {
+        /*
+            Method dump skipped, instructions count: 940
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.job.controllers.ConnectivityController.isSatisfied(com.android.server.job.controllers.JobStatus, android.net.Network, android.net.NetworkCapabilities, com.android.server.job.JobSchedulerService$Constants):boolean");
+    }
+
+    public boolean isStandbyExceptionRequestedLocked(int i) {
+        ArraySet arraySet = (ArraySet) this.mRequestedWhitelistJobs.get(i);
+        return arraySet != null && arraySet.size() > 0;
+    }
+
+    public void maybeRevokeStandbyExceptionLocked(JobStatus jobStatus) {
+        int i = jobStatus.sourceUid;
+        if (isStandbyExceptionRequestedLocked(i)) {
+            ArraySet arraySet = (ArraySet) this.mRequestedWhitelistJobs.get(i);
+            if (arraySet == null) {
+                Slog.wtf("JobScheduler.Connectivity", "maybeRevokeStandbyExceptionLocked found null jobs array even though a standby exception has been requested.");
+                return;
+            }
+            if (arraySet.remove(jobStatus) && arraySet.size() <= 0) {
+                if (DEBUG) {
+                    HermesService$3$$ExternalSyntheticOutline0.m(i, "Revoking standby exception for UID: ", "JobScheduler.Connectivity");
+                }
+                NetworkPolicyManagerService.this.setAppIdleWhitelist(i, false);
+                this.mRequestedWhitelistJobs.remove(i);
+                return;
+            }
+            if (DEBUG) {
+                Slog.i("JobScheduler.Connectivity", "maybeRevokeStandbyExceptionLocked not revoking because there are still " + arraySet.size() + " jobs left.");
+            }
+        }
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void maybeStartTrackingJobLocked(JobStatus jobStatus, JobStatus jobStatus2) {
+        if (jobStatus.hasConnectivityConstraint()) {
+            String str = jobStatus.sourcePackageName;
+            int i = jobStatus.sourceUid;
+            UidStats uidStats = getUidStats(i, str, false);
+            if (wouldBeReadyWithConstraintLocked(jobStatus, 268435456)) {
+                uidStats.numReadyWithConnectivity++;
+            }
+            ArraySet arraySet = (ArraySet) this.mTrackedJobs.get(i);
+            if (arraySet == null) {
+                arraySet = new ArraySet();
+                this.mTrackedJobs.put(i, arraySet);
+            }
+            arraySet.add(jobStatus);
+            jobStatus.setTrackingController(2);
+            updateConstraintsSatisfied(jobStatus);
+        }
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void maybeStopTrackingJobLocked(JobStatus jobStatus, JobStatus jobStatus2) {
+        if (jobStatus.clearTrackingController(2)) {
+            SparseArray sparseArray = this.mTrackedJobs;
+            int i = jobStatus.sourceUid;
+            ArraySet arraySet = (ArraySet) sparseArray.get(i);
+            if (arraySet != null) {
+                arraySet.remove(jobStatus);
+            }
+            UidStats uidStats = getUidStats(i, jobStatus.sourcePackageName, true);
+            uidStats.numReadyWithConnectivity--;
+            uidStats.runningJobs.remove(jobStatus);
+            maybeRevokeStandbyExceptionLocked(jobStatus);
+            postAdjustCallbacks();
+        }
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void onAppRemovedLocked(int i, String str) {
+        if (this.mService.getPackagesForUidLocked(i) == null) {
+            this.mTrackedJobs.delete(i);
+            this.mBackgroundMeteredAllowed.delete(i);
+            UidStats uidStats = (UidStats) this.mUidStats.removeReturnOld(i);
+            JobSchedulerService.sElapsedRealtimeClock.getClass();
+            unregisterDefaultNetworkCallbackLocked(i, SystemClock.elapsedRealtime());
+            ((ArrayList) this.mSortedStats).remove(uidStats);
+            registerPendingUidCallbacksLocked();
+        }
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void onBatteryStateChangedLocked() {
+        this.mHandler.sendEmptyMessage(1);
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void onConstantsUpdatedLocked() {
+        boolean z;
+        if (!this.mCcConfig.mShouldReprocessNetworkCapabilities) {
+            FlexibilityController flexibilityController = this.mFlexibilityController;
+            synchronized (flexibilityController.mLock) {
+                z = flexibilityController.mFlexibilityEnabled;
+            }
+            if (z == this.mCcConfig.mFlexIsEnabled) {
+                return;
+            }
+        }
+        AppSchedulingModuleThread.getHandler().post(new Runnable() { // from class: com.android.server.job.controllers.ConnectivityController$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                ConnectivityController connectivityController = ConnectivityController.this;
+                synchronized (connectivityController.mLock) {
+                    boolean z2 = false;
+                    boolean z3 = false;
+                    for (int i = 0; i < connectivityController.mAvailableNetworks.size(); i++) {
+                        try {
+                            ConnectivityController.CachedNetworkMetadata cachedNetworkMetadata = (ConnectivityController.CachedNetworkMetadata) connectivityController.mAvailableNetworks.valueAt(i);
+                            if (cachedNetworkMetadata != null) {
+                                if (connectivityController.updateTransportAffinitySatisfaction(cachedNetworkMetadata)) {
+                                    z2 = true;
+                                }
+                                z3 |= cachedNetworkMetadata.satisfiesTransportAffinities;
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
+                    if (z2) {
+                        FlexibilityController flexibilityController2 = connectivityController.mFlexibilityController;
+                        JobSchedulerService.sElapsedRealtimeClock.getClass();
+                        flexibilityController2.setConstraintSatisfied(268435456, SystemClock.elapsedRealtime(), z3);
+                        connectivityController.updateAllTrackedJobsLocked(false);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override // android.net.ConnectivityManager.OnNetworkActiveListener
+    public final void onNetworkActive() {
+        synchronized (this.mLock) {
+            try {
+                Network network = this.mSystemDefaultNetwork;
+                if (network == null) {
+                    Slog.wtf("JobScheduler.Connectivity", "System default network is unknown but active");
+                    return;
+                }
+                CachedNetworkMetadata cachedNetworkMetadata = (CachedNetworkMetadata) this.mAvailableNetworks.get(network);
+                if (cachedNetworkMetadata == null) {
+                    Slog.wtf("JobScheduler.Connectivity", "System default network capabilities are unknown but active");
+                    return;
+                }
+                JobSchedulerService.sElapsedRealtimeClock.getClass();
+                long elapsedRealtime = SystemClock.elapsedRealtime();
+                cachedNetworkMetadata.defaultNetworkActivationLastCheckTimeElapsed = elapsedRealtime;
+                cachedNetworkMetadata.defaultNetworkActivationLastConfirmedTimeElapsed = elapsedRealtime;
+                this.mHandler.sendEmptyMessage(4);
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void onUidBiasChangedLocked(int i, int i2, int i3) {
+        UidStats uidStats = (UidStats) this.mUidStats.get(i);
+        if (uidStats == null || uidStats.baseBias == i3) {
+            return;
+        }
+        uidStats.baseBias = i3;
+        postAdjustCallbacks();
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void onUserRemovedLocked(int i) {
+        JobSchedulerService.sElapsedRealtimeClock.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        for (int size = this.mUidStats.size() - 1; size >= 0; size--) {
+            UidStats uidStats = (UidStats) this.mUidStats.valueAt(size);
+            if (UserHandle.getUserId(uidStats.uid) == i) {
+                unregisterDefaultNetworkCallbackLocked(uidStats.uid, elapsedRealtime);
+                ((ArrayList) this.mSortedStats).remove(uidStats);
+                this.mUidStats.removeAt(size);
+            }
+        }
+        for (int size2 = this.mBackgroundMeteredAllowed.size() - 1; size2 >= 0; size2--) {
+            if (UserHandle.getUserId(this.mBackgroundMeteredAllowed.keyAt(size2)) == i) {
+                this.mBackgroundMeteredAllowed.removeAt(size2);
+            }
+        }
+        postAdjustCallbacks();
+    }
+
+    public final void postAdjustCallbacks() {
+        this.mHandler.sendEmptyMessageDelayed(0, 0L);
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void prepareForExecutionLocked(JobStatus jobStatus) {
+        if (jobStatus.hasConnectivityConstraint()) {
+            getUidStats(jobStatus.sourceUid, jobStatus.sourcePackageName, true).runningJobs.add(jobStatus);
+        }
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void prepareForUpdatedConstantsLocked() {
+        boolean z;
+        CcConfig ccConfig = this.mCcConfig;
+        ccConfig.mShouldReprocessNetworkCapabilities = false;
+        FlexibilityController flexibilityController = this.mFlexibilityController;
+        synchronized (flexibilityController.mLock) {
+            z = flexibilityController.mFlexibilityEnabled;
+        }
+        ccConfig.mFlexIsEnabled = z;
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void processConstantLocked(DeviceConfig.Properties properties, String str) {
+        CcConfig ccConfig;
+        ccConfig = this.mCcConfig;
+        ccConfig.getClass();
+        switch (str) {
+            case "conn_network_activation_expiration_ms":
+                long j = properties.getLong(str, 10000L);
+                if (ccConfig.NETWORK_ACTIVATION_EXPIRATION_MS != j) {
+                    ccConfig.NETWORK_ACTIVATION_EXPIRATION_MS = j;
+                    break;
+                }
+                break;
+            case "conn_network_activation_max_wait_time_ms":
+                long j2 = properties.getLong(str, 1860000L);
+                if (ccConfig.NETWORK_ACTIVATION_MAX_WAIT_TIME_MS != j2) {
+                    ccConfig.NETWORK_ACTIVATION_MAX_WAIT_TIME_MS = j2;
+                    ccConfig.mShouldReprocessNetworkCapabilities = true;
+                    break;
+                }
+                break;
+            case "conn_avoid_undefined_transport_affinity":
+                boolean z = properties.getBoolean(str, false);
+                if (ccConfig.AVOID_UNDEFINED_TRANSPORT_AFFINITY != z) {
+                    ccConfig.AVOID_UNDEFINED_TRANSPORT_AFFINITY = z;
+                    ccConfig.mShouldReprocessNetworkCapabilities = true;
+                    break;
+                }
+                break;
+        }
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void reevaluateStateLocked(int i) {
+        ArraySet arraySet = (ArraySet) this.mTrackedJobs.get(i);
+        if (arraySet == null) {
+            return;
+        }
+        for (int size = arraySet.size() - 1; size >= 0; size--) {
+            evaluateStateLocked((JobStatus) arraySet.valueAt(size));
+        }
+    }
+
+    public final void registerPendingUidCallbacksLocked() {
+        int size = this.mCurrentDefaultNetworkCallbacks.size();
+        int size2 = ((ArrayList) this.mSortedStats).size();
+        if (size2 < size) {
+            Slog.wtf("JobScheduler.Connectivity", "There are more registered callbacks than sorted UIDs: " + size + " vs " + size2);
+        }
+        while (size < size2 && size < 125) {
+            UidStats uidStats = (UidStats) ((ArrayList) this.mSortedStats).get(size);
+            UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.mDefaultNetworkCallbackPool.acquire();
+            if (uidDefaultNetworkCallback == null) {
+                uidDefaultNetworkCallback = new UidDefaultNetworkCallback();
+            }
+            int i = uidStats.uid;
+            uidDefaultNetworkCallback.mUid = i;
+            uidDefaultNetworkCallback.mDefaultNetwork = null;
+            this.mCurrentDefaultNetworkCallbacks.append(i, uidDefaultNetworkCallback);
+            this.mConnManager.registerDefaultNetworkCallbackForUid(uidStats.uid, uidDefaultNetworkCallback, this.mHandler);
+            size++;
+        }
+    }
+
+    public void requestStandbyExceptionLocked(JobStatus jobStatus) {
+        int i = jobStatus.sourceUid;
+        boolean isStandbyExceptionRequestedLocked = isStandbyExceptionRequestedLocked(i);
+        ArraySet arraySet = (ArraySet) this.mRequestedWhitelistJobs.get(i);
+        if (arraySet == null) {
+            arraySet = new ArraySet();
+            this.mRequestedWhitelistJobs.put(i, arraySet);
+        }
+        if (!arraySet.add(jobStatus) || isStandbyExceptionRequestedLocked) {
+            if (DEBUG) {
+                Slog.i("JobScheduler.Connectivity", "requestStandbyExceptionLocked found exception already requested.");
+            }
+        } else {
+            if (DEBUG) {
+                HermesService$3$$ExternalSyntheticOutline0.m(i, "Requesting standby exception for UID: ", "JobScheduler.Connectivity");
+            }
+            NetworkPolicyManagerService.this.setAppIdleWhitelist(i, true);
+        }
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void startTrackingLocked() {
+        this.mConnManager.registerSystemDefaultNetworkCallback(this.mDefaultNetworkCallback, this.mHandler);
+        this.mConnManager.addDefaultNetworkActiveListener(this);
+    }
+
+    @Override // com.android.server.job.controllers.RestrictingController
+    public final void startTrackingRestrictedJobLocked(JobStatus jobStatus) {
+        if (jobStatus.hasConnectivityConstraint()) {
+            updateConstraintsSatisfied(jobStatus);
+        }
+    }
+
+    @Override // com.android.server.job.controllers.RestrictingController
+    public final void stopTrackingRestrictedJobLocked(JobStatus jobStatus) {
+        if (jobStatus.hasConnectivityConstraint()) {
+            updateConstraintsSatisfied(jobStatus);
+        }
+    }
+
+    @Override // com.android.server.job.controllers.StateController
+    public final void unprepareFromExecutionLocked(JobStatus jobStatus) {
+        if (jobStatus.hasConnectivityConstraint()) {
+            getUidStats(jobStatus.sourceUid, jobStatus.sourcePackageName, true).runningJobs.remove(jobStatus);
+            postAdjustCallbacks();
+        }
+    }
+
+    public final boolean unregisterDefaultNetworkCallbackLocked(int i, long j) {
+        UidDefaultNetworkCallback uidDefaultNetworkCallback = (UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.get(i);
+        boolean z = false;
+        if (uidDefaultNetworkCallback == null) {
+            return false;
+        }
+        this.mCurrentDefaultNetworkCallbacks.remove(i);
+        this.mConnManager.unregisterNetworkCallback(uidDefaultNetworkCallback);
+        this.mDefaultNetworkCallbackPool.release(uidDefaultNetworkCallback);
+        uidDefaultNetworkCallback.mDefaultNetwork = null;
+        uidDefaultNetworkCallback.mUid = -10000;
+        ArraySet arraySet = (ArraySet) this.mTrackedJobs.get(i);
+        if (arraySet != null) {
+            for (int size = arraySet.size() - 1; size >= 0; size--) {
+                z |= updateConstraintsSatisfied((JobStatus) arraySet.valueAt(size), j, null, null);
+            }
+        }
+        return z;
+    }
+
+    public final void updateAllTrackedJobsLocked(boolean z) {
+        if (z) {
+            long j = this.mLastAllJobUpdateTimeElapsed + this.mConstants.CONN_UPDATE_ALL_JOBS_MIN_INTERVAL_MS;
+            JobSchedulerService.sElapsedRealtimeClock.getClass();
+            long elapsedRealtime = j - SystemClock.elapsedRealtime();
+            if (elapsedRealtime > 0) {
+                this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(1, 1, 0), elapsedRealtime);
+                return;
+            }
+        }
+        this.mHandler.removeMessages(1);
+        updateTrackedJobsLocked((Network) null, -1);
+        JobSchedulerService.sElapsedRealtimeClock.getClass();
+        this.mLastAllJobUpdateTimeElapsed = SystemClock.elapsedRealtime();
+    }
+
+    public final void updateConstraintsSatisfied(JobStatus jobStatus) {
+        JobSchedulerService.sElapsedRealtimeClock.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        if (((UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.get(jobStatus.sourceUid)) != null) {
+            Network networkLocked = getNetworkLocked(jobStatus);
+            updateConstraintsSatisfied(jobStatus, elapsedRealtime, networkLocked, getNetworkMetadata(networkLocked));
+            return;
+        }
+        SparseArray sparseArray = this.mCurrentDefaultNetworkCallbacks;
+        int i = jobStatus.sourceUid;
+        if (!sparseArray.contains(i)) {
+            UidStats uidStats = getUidStats(i, jobStatus.sourcePackageName, true);
+            if (!((ArrayList) this.mSortedStats).contains(uidStats)) {
+                ((ArrayList) this.mSortedStats).add(uidStats);
+            }
+            if (this.mCurrentDefaultNetworkCallbacks.size() >= 125) {
+                postAdjustCallbacks();
+            } else {
+                registerPendingUidCallbacksLocked();
+            }
+        }
+        updateConstraintsSatisfied(jobStatus, elapsedRealtime, null, null);
+    }
+
+    public final boolean updateConstraintsSatisfied(JobStatus jobStatus, long j, Network network, CachedNetworkMetadata cachedNetworkMetadata) {
+        NetworkCapabilities networkCapabilities = cachedNetworkMetadata == null ? null : cachedNetworkMetadata.networkCapabilities;
+        boolean isSatisfied = isSatisfied(jobStatus, network, networkCapabilities, this.mConstants);
+        boolean z = false;
+        if (!isSatisfied && jobStatus.network != null && this.mService.isCurrentlyRunningLocked(jobStatus)) {
+            Network network2 = jobStatus.network;
+            CachedNetworkMetadata networkMetadata = getNetworkMetadata(network2);
+            if (isSatisfied(jobStatus, network2, networkMetadata != null ? networkMetadata.networkCapabilities : null, this.mConstants)) {
+                if (DEBUG) {
+                    Slog.i("JobScheduler.Connectivity", "Not reassigning network from " + jobStatus.network + " to " + network + " for running job " + jobStatus);
+                }
+                return false;
+            }
+        }
+        boolean constraintSatisfied = jobStatus.setConstraintSatisfied(268435456, j, isSatisfied);
+        jobStatus.mTransportAffinitiesSatisfied = isSatisfied && cachedNetworkMetadata != null && cachedNetworkMetadata.satisfiesTransportAffinities;
+        if (jobStatus.mCanApplyTransportAffinities) {
+            jobStatus.setConstraintSatisfied(2097152, j, this.mFlexibilityController.isFlexibilitySatisfiedLocked(jobStatus));
+        }
+        if (!constraintSatisfied && isSatisfied && jobStatus.network != null && this.mService.isCurrentlyRunningLocked(jobStatus)) {
+            JobSchedulerService jobSchedulerService = this.mStateChangedListener;
+            synchronized (jobSchedulerService.mLock) {
+                try {
+                    JobServiceContext runningJobServiceContextLocked = jobSchedulerService.mConcurrencyManager.getRunningJobServiceContextLocked(jobStatus);
+                    if (runningJobServiceContextLocked != null) {
+                        runningJobServiceContextLocked.informOfNetworkChangeLocked(network);
+                    }
+                } finally {
+                }
+            }
+        }
+        jobStatus.network = network;
+        if (DEBUG) {
+            StringBuilder sb = new StringBuilder("Connectivity ");
+            sb.append(constraintSatisfied ? "CHANGED" : "unchanged");
+            sb.append(" for ");
+            sb.append(jobStatus);
+            sb.append(": usable=");
+            if (networkCapabilities != null && networkCapabilities.hasCapability(21)) {
+                z = true;
+            }
+            sb.append(z);
+            sb.append(" satisfied=");
+            sb.append(isSatisfied);
+            Slog.i("JobScheduler.Connectivity", sb.toString());
+        }
+        return constraintSatisfied;
+    }
+
+    public final void updateTrackedJobsLocked(Network network, int i) {
+        ArraySet arraySet;
+        if (i == -1) {
+            arraySet = new ArraySet();
+            for (int size = this.mTrackedJobs.size() - 1; size >= 0; size--) {
+                if (updateTrackedJobsLocked((ArraySet) this.mTrackedJobs.valueAt(size), network)) {
+                    arraySet.addAll((ArraySet) this.mTrackedJobs.valueAt(size));
+                }
+            }
+        } else {
+            arraySet = updateTrackedJobsLocked((ArraySet) this.mTrackedJobs.get(i), network) ? (ArraySet) this.mTrackedJobs.get(i) : null;
+        }
+        if (arraySet == null || arraySet.size() <= 0) {
+            return;
+        }
+        this.mStateChangedListener.onControllerStateChanged(arraySet);
+    }
+
+    public final boolean updateTrackedJobsLocked(ArraySet arraySet, Network network) {
+        boolean z = false;
+        if (arraySet != null && arraySet.size() != 0) {
+            if (((UidDefaultNetworkCallback) this.mCurrentDefaultNetworkCallbacks.get(((JobStatus) arraySet.valueAt(0)).sourceUid)) == null) {
+                return false;
+            }
+            JobSchedulerService.sElapsedRealtimeClock.getClass();
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            for (int size = arraySet.size() - 1; size >= 0; size--) {
+                JobStatus jobStatus = (JobStatus) arraySet.valueAt(size);
+                Network networkLocked = getNetworkLocked(jobStatus);
+                if (network == null || network.equals(networkLocked) || !Objects.equals(jobStatus.network, networkLocked)) {
+                    z |= updateConstraintsSatisfied(jobStatus, elapsedRealtime, networkLocked, getNetworkMetadata(networkLocked));
+                }
+            }
+        }
+        return z;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:11:0x0066  */
+    /* JADX WARN: Removed duplicated region for block: B:14:0x0069 A[RETURN] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean updateTransportAffinitySatisfaction(com.android.server.job.controllers.ConnectivityController.CachedNetworkMetadata r11) {
+        /*
+            r10 = this;
+            android.net.NetworkCapabilities r0 = r11.networkCapabilities
+            com.android.server.job.controllers.FlexibilityController r1 = r10.mFlexibilityController
+            java.lang.Object r2 = r1.mLock
+            monitor-enter(r2)
+            boolean r1 = r1.mFlexibilityEnabled     // Catch: java.lang.Throwable -> L6a
+            monitor-exit(r2)     // Catch: java.lang.Throwable -> L6a
+            r2 = 1
+            r3 = 0
+            if (r1 != 0) goto L10
+        Le:
+            r10 = r2
+            goto L62
+        L10:
+            java.lang.String r1 = "JobScheduler.Connectivity"
+            if (r0 != 0) goto L1f
+            java.lang.String r0 = "Network constraint satisfied with null capabilities"
+            android.util.Slog.wtf(r1, r0)
+            com.android.server.job.controllers.ConnectivityController$CcConfig r10 = r10.mCcConfig
+            boolean r10 = r10.AVOID_UNDEFINED_TRANSPORT_AFFINITY
+        L1d:
+            r10 = r10 ^ r2
+            goto L62
+        L1f:
+            android.util.SparseIntArray r4 = com.android.server.job.controllers.ConnectivityController.sNetworkTransportAffinities
+            int r4 = r4.size()
+            if (r4 != 0) goto L2c
+            com.android.server.job.controllers.ConnectivityController$CcConfig r10 = r10.mCcConfig
+            boolean r10 = r10.AVOID_UNDEFINED_TRANSPORT_AFFINITY
+            goto L1d
+        L2c:
+            int[] r0 = r0.getTransportTypes()
+            int r4 = r0.length
+            if (r4 != 0) goto L38
+            com.android.server.job.controllers.ConnectivityController$CcConfig r10 = r10.mCcConfig
+            boolean r10 = r10.AVOID_UNDEFINED_TRANSPORT_AFFINITY
+            goto L1d
+        L38:
+            int r4 = r0.length
+            r5 = r3
+        L3a:
+            if (r5 >= r4) goto Le
+            r6 = r0[r5]
+            android.util.SparseIntArray r7 = com.android.server.job.controllers.ConnectivityController.sNetworkTransportAffinities
+            int r7 = r7.get(r6, r3)
+            boolean r8 = com.android.server.job.controllers.ConnectivityController.DEBUG
+            if (r8 == 0) goto L50
+            java.lang.String r8 = "satisfiesTransportAffinities transport="
+            java.lang.String r9 = " aff="
+            com.android.server.asks.ASKSManagerService$$ExternalSyntheticOutline0.m(r6, r7, r8, r9, r1)
+        L50:
+            if (r7 == 0) goto L58
+            r6 = 2
+            if (r7 == r6) goto L56
+            goto L5f
+        L56:
+            r10 = r3
+            goto L62
+        L58:
+            com.android.server.job.controllers.ConnectivityController$CcConfig r6 = r10.mCcConfig
+            boolean r6 = r6.AVOID_UNDEFINED_TRANSPORT_AFFINITY
+            if (r6 == 0) goto L5f
+            goto L56
+        L5f:
+            int r5 = r5 + 1
+            goto L3a
+        L62:
+            boolean r0 = r11.satisfiesTransportAffinities
+            if (r0 == r10) goto L69
+            r11.satisfiesTransportAffinities = r10
+            return r2
+        L69:
+            return r3
+        L6a:
+            r10 = move-exception
+            monitor-exit(r2)     // Catch: java.lang.Throwable -> L6a
+            throw r10
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.job.controllers.ConnectivityController.updateTransportAffinitySatisfaction(com.android.server.job.controllers.ConnectivityController$CachedNetworkMetadata):boolean");
     }
 }

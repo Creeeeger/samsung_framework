@@ -4,7 +4,8 @@ import android.content.ComponentName;
 import com.android.internal.util.Preconditions;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class OwnerShellData {
     public final ComponentName admin;
     public boolean isAffiliated;
@@ -29,9 +30,8 @@ public final class OwnerShellData {
         }
     }
 
-    public String toString() {
-        StringBuilder sb = new StringBuilder(OwnerShellData.class.getSimpleName());
-        sb.append("[userId=");
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("OwnerShellData[userId=");
         sb.append(this.userId);
         sb.append(",admin=");
         sb.append(this.admin.flattenToShortString());
@@ -44,26 +44,15 @@ public final class OwnerShellData {
         if (this.isManagedProfileOwner) {
             sb.append(",isManagedProfileOwner");
         }
-        if (this.parentUserId != -10000) {
+        int i = this.parentUserId;
+        if (i != -10000) {
             sb.append(",parentUserId=");
-            sb.append(this.parentUserId);
+            sb.append(i);
         }
         if (this.isAffiliated) {
             sb.append(",isAffiliated");
         }
         sb.append(']');
         return sb.toString();
-    }
-
-    public static OwnerShellData forDeviceOwner(int i, ComponentName componentName) {
-        return new OwnerShellData(i, -10000, componentName, true, false, false);
-    }
-
-    public static OwnerShellData forUserProfileOwner(int i, ComponentName componentName) {
-        return new OwnerShellData(i, -10000, componentName, false, true, false);
-    }
-
-    public static OwnerShellData forManagedProfileOwner(int i, int i2, ComponentName componentName) {
-        return new OwnerShellData(i, i2, componentName, false, false, true);
     }
 }

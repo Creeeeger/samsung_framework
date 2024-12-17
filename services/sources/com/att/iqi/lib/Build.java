@@ -1,9 +1,10 @@
 package com.att.iqi.lib;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class Build {
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class VERSION_CODES {
         public static final int AKITA = 1;
         public static final int BEAGLE = 2;
@@ -22,6 +23,6 @@ public final class Build {
     }
 
     public static String getSdkVersion() {
-        return "234053f9 (API level: 14)";
+        return "e546593f (API level: 14)";
     }
 }

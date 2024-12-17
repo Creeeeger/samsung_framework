@@ -1,28 +1,16 @@
 package com.android.server.accessibility.autoaction.actiontype;
 
-import android.R;
 import android.content.Context;
 import android.content.Intent;
 import android.os.UserHandle;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ScreenShot extends CornerActionType {
+public final class ScreenShot extends CornerActionType {
     public Context mContext;
 
-    public static int getStringResId() {
-        return R.string.app_not_found;
-    }
-
-    public ScreenShot(Context context) {
-        this.mContext = context;
-    }
-
-    public static ScreenShot createAction(Context context) {
-        return new ScreenShot(context);
-    }
-
     @Override // com.android.server.accessibility.autoaction.actiontype.CornerActionType
-    public void performCornerAction(int i) {
+    public final void performCornerAction(int i) {
         if (i == 0) {
             this.mContext.sendBroadcast(new Intent("SYSTEM_ACTION_TAKE_SCREENSHOT"));
             return;

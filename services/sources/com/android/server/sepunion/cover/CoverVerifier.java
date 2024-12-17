@@ -6,77 +6,86 @@ import android.graphics.Rect;
 import android.os.SystemProperties;
 import android.view.Display;
 import android.view.WindowManager;
+import com.android.server.ServiceKeeper$$ExternalSyntheticOutline0;
 import com.samsung.android.cover.CoverState;
 import com.samsung.android.sepunion.Log;
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class CoverVerifier {
-    public static final String TAG = "CoverManager_" + CoverVerifier.class.getSimpleName();
     public Context mContext;
-    public int mDefaultCoverColor = 0;
-    public int mDefaultCoverModel = 0;
-    public int mDefaultSViewCoverWidth = 0;
-    public int mDefaultSViewCoverHeight = 0;
-    public int mDefaultMiniSViewCoverWidth = 0;
-    public int mDefaultMiniSViewCoverHeight = 0;
-    public int mDefaultClearCoverWidth = 0;
-    public int mDefaultClearCoverHeight = 0;
-    public boolean mIsCoverVerified = false;
-    public boolean mIsCoverAttached = false;
+    public int mDefaultClearCoverHeight;
+    public int mDefaultClearCoverWidth;
+    public boolean mIsCoverAttached;
+    public boolean mIsCoverVerified;
 
-    public CoverVerifier(Context context) {
-        this.mContext = context;
-        initializeDefaultCoverState();
+    public final void dump(PrintWriter printWriter) {
+        printWriter.println(" Current CoverVerifier state:");
+        printWriter.print("  mIsCoverVerified=");
+        printWriter.print(this.mIsCoverVerified);
+        printWriter.print("  mIsCoverAttached=");
+        printWriter.println(this.mIsCoverAttached);
+        printWriter.print("  mDefaultCoverType=");
+        printWriter.print(getDefaultTypeOfCover());
+        printWriter.print("  mDefaultCoverColor=");
+        printWriter.println(0);
+        printWriter.print("  mDefaultSViewCoverWidth=");
+        printWriter.print(0);
+        printWriter.print("  mDefaultSViewCoverHeight=");
+        printWriter.print(0);
+        printWriter.print("  mDefaultMiniSViewCoverWidth=");
+        printWriter.print(0);
+        printWriter.print("  mDefaultMiniSViewCoverHeight=");
+        printWriter.println(0);
+        printWriter.println("  ");
     }
 
     public final int getDefaultTypeOfCover() {
-        if (Feature.getInstance(this.mContext).isSupportVerifyCover()) {
-            if (Feature.getInstance(this.mContext).isSupportFlipCover() && CoverTestModeUtils.getTestCoverType() == 0) {
+        Feature.getInstance(this.mContext).getClass();
+        if (Feature.sIsDeviceSupportVerifyCover) {
+            Feature.getInstance(this.mContext).getClass();
+            if (Feature.sIsSupportFlipCover) {
+                if ((CoverTestModeUtils.SHIPPED ? -1 : CoverTestModeUtils.sCurrentTestMode) == 0) {
+                    return 0;
+                }
+            }
+            Feature.getInstance(this.mContext).getClass();
+            if (Feature.sIsSupportClearCover) {
+                if ((CoverTestModeUtils.SHIPPED ? -1 : CoverTestModeUtils.sCurrentTestMode) == 8) {
+                    return 8;
+                }
+            }
+            Feature.getInstance(this.mContext).getClass();
+            if (Feature.sIsSupportNeonCover) {
+                if ((CoverTestModeUtils.SHIPPED ? -1 : CoverTestModeUtils.sCurrentTestMode) == 11) {
+                    return 11;
+                }
+            }
+            return 2;
+        }
+        Feature.getInstance(this.mContext).getClass();
+        String str = Feature.sDeviceTypeProperty;
+        if (str == null || !str.contains("tablet")) {
+            Feature.getInstance(this.mContext).getClass();
+            if (Feature.sIsSupportFlipCover) {
                 return 0;
             }
-            if (Feature.getInstance(this.mContext).isSupportClearCover() && CoverTestModeUtils.getTestCoverType() == 8) {
+            Feature.getInstance(this.mContext).getClass();
+            if (Feature.sIsSupportClearCover) {
                 return 8;
             }
-            return (Feature.getInstance(this.mContext).isSupportNeonCover() && CoverTestModeUtils.getTestCoverType() == 11) ? 11 : 2;
-        }
-        if (Feature.getInstance(this.mContext).isTablet()) {
-            if (Feature.getInstance(this.mContext).isSupportFlipCover()) {
-                return 0;
+            Feature.getInstance(this.mContext).getClass();
+            if (Feature.sIsSupportNeonCover) {
+                return 11;
             }
         } else {
-            if (Feature.getInstance(this.mContext).isSupportFlipCover()) {
+            Feature.getInstance(this.mContext).getClass();
+            if (Feature.sIsSupportFlipCover) {
                 return 0;
-            }
-            if (Feature.getInstance(this.mContext).isSupportClearCover()) {
-                return 8;
-            }
-            if (Feature.getInstance(this.mContext).isSupportNeonCover()) {
-                return 11;
             }
         }
         return 2;
-    }
-
-    public final int getSupportSViewCoverWidth(int i) {
-        if (i == 8 || i == 11) {
-            return this.mDefaultClearCoverWidth;
-        }
-        return 0;
-    }
-
-    public final int getSupportSViewCoverHeight(int i) {
-        if (i == 8 || i == 11) {
-            return this.mDefaultClearCoverHeight;
-        }
-        return 0;
-    }
-
-    public void initializeDefaultCoverState() {
-        if (this.mContext.getResources() != null) {
-            getScreenSizeForClearCover();
-        }
     }
 
     public final void getScreenSizeForClearCover() {
@@ -102,163 +111,123 @@ public final class CoverVerifier {
         this.mDefaultClearCoverHeight = point.y;
     }
 
-    public void updateCoverWindowSize(CoverState coverState) {
-        if (coverState == null) {
-            Log.d(TAG, "updateCoverWindowSize(): CoverState is null");
-            return;
+    public final int getSupportSViewCoverHeight(int i) {
+        if (i == 8 || i == 11) {
+            return this.mDefaultClearCoverHeight;
         }
-        int supportSViewCoverHeight = getSupportSViewCoverHeight(coverState.getType());
-        int supportSViewCoverWidth = getSupportSViewCoverWidth(coverState.getType());
-        Log.d(TAG, "updateCoverWindowSize(): old window = " + coverState.heightPixel + "x" + coverState.widthPixel + " new window = " + supportSViewCoverHeight + "x" + supportSViewCoverWidth);
-        coverState.setWindowWidth(supportSViewCoverWidth);
-        coverState.setWindowHeight(supportSViewCoverHeight);
+        return 0;
     }
 
-    public void updateCoverPropertiesLocked(CoverState coverState, CoverState coverState2) {
+    public final int getSupportSViewCoverWidth(int i) {
+        if (i == 8 || i == 11) {
+            return this.mDefaultClearCoverWidth;
+        }
+        return 0;
+    }
+
+    public final void updateCoverPropertiesLocked(CoverState coverState, CoverState coverState2) {
         int defaultTypeOfCover;
         int i;
         int i2;
-        if (!Feature.getInstance(this.mContext).isNfcAuthEnabled()) {
-            if (!CoverTestModeUtils.isTestMode() && this.mIsCoverAttached) {
-                defaultTypeOfCover = CoverManagerUtils.getValueFromSysFS("/sys/devices/w1_bus_master1/w1_master_check_id", getDefaultTypeOfCover());
-                i = CoverManagerUtils.getValueFromSysFS("/sys/devices/w1_bus_master1/w1_master_check_color", this.mDefaultCoverColor);
-                i2 = CoverManagerUtils.getValueFromSysFS("/sys/bus/w1/devices/w1_bus_master1/w1_master_check_model", this.mDefaultCoverModel);
-            } else {
+        Feature.getInstance(this.mContext).getClass();
+        if (!Feature.sIsNfcAuthSystemFeatureEnabled) {
+            if (CoverTestModeUtils.isTestMode() || !this.mIsCoverAttached) {
                 defaultTypeOfCover = getDefaultTypeOfCover();
-                i = this.mDefaultCoverColor;
-                i2 = this.mDefaultCoverModel;
+                i = 0;
+                i2 = 0;
+            } else {
+                int valueFromSysFS = CoverManagerUtils.getValueFromSysFS(getDefaultTypeOfCover(), "/sys/devices/w1_bus_master1/w1_master_check_id");
+                int valueFromSysFS2 = CoverManagerUtils.getValueFromSysFS(0, "/sys/devices/w1_bus_master1/w1_master_check_color");
+                defaultTypeOfCover = valueFromSysFS;
+                i2 = CoverManagerUtils.getValueFromSysFS(0, "/sys/bus/w1/devices/w1_bus_master1/w1_master_check_model");
+                i = valueFromSysFS2;
             }
-            int i3 = defaultTypeOfCover;
-            int i4 = i;
-            int i5 = i2;
-            int supportSViewCoverWidth = getSupportSViewCoverWidth(i3);
-            int supportSViewCoverHeight = getSupportSViewCoverHeight(i3);
-            if (isFactoryMode()) {
+            int supportSViewCoverWidth = getSupportSViewCoverWidth(defaultTypeOfCover);
+            int supportSViewCoverHeight = getSupportSViewCoverHeight(defaultTypeOfCover);
+            if ("factory".equals(SystemProperties.get("ro.factory.factory_binary"))) {
                 return;
             }
-            coverState.updateCoverState(i3, i4, supportSViewCoverWidth, supportSViewCoverHeight, this.mIsCoverAttached, i5);
+            coverState.updateCoverState(defaultTypeOfCover, i, supportSViewCoverWidth, supportSViewCoverHeight, this.mIsCoverAttached, i2);
             return;
         }
-        if (coverState2 == null) {
-            if (CoverTestModeUtils.isTestMode()) {
-                int testCoverType = CoverTestModeUtils.getTestCoverType();
-                int i6 = this.mDefaultCoverColor;
-                int i7 = this.mDefaultCoverModel;
-                int supportSViewCoverWidth2 = getSupportSViewCoverWidth(testCoverType);
-                int supportSViewCoverHeight2 = getSupportSViewCoverHeight(testCoverType);
-                if (!isFactoryMode()) {
-                    coverState.updateCoverState(testCoverType, i6, supportSViewCoverWidth2, supportSViewCoverHeight2, this.mIsCoverAttached, i7);
-                }
-                Rect testVisibleRect = CoverTestModeUtils.getTestVisibleRect();
-                if (!testVisibleRect.isEmpty()) {
-                    coverState.setVisibleRect(testVisibleRect);
-                }
-                Log.d(TAG, "[SmartCover] CoverVerify : sview cover test mode enabled");
+        if (coverState2 != null) {
+            if ("factory".equals(SystemProperties.get("ro.factory.factory_binary"))) {
+                return;
+            }
+            coverState.copyFrom(coverState2);
+            int i3 = coverState.type;
+            if (i3 == 8) {
+                getScreenSizeForClearCover();
+            }
+            if (i3 != 255) {
+                coverState.setWindowWidth(getSupportSViewCoverWidth(i3));
+                coverState.setWindowHeight(getSupportSViewCoverHeight(i3));
                 return;
             }
             return;
         }
-        if (isFactoryMode()) {
-            return;
-        }
-        coverState.copyFrom(coverState2);
-        int i8 = coverState.type;
-        if (i8 == 8) {
-            getScreenSizeForClearCover();
-        }
-        if (i8 != 255) {
-            coverState.setWindowWidth(getSupportSViewCoverWidth(i8));
-            coverState.setWindowHeight(getSupportSViewCoverHeight(i8));
+        if (CoverTestModeUtils.isTestMode()) {
+            int i4 = CoverTestModeUtils.SHIPPED ? -1 : CoverTestModeUtils.sCurrentTestMode;
+            int supportSViewCoverWidth2 = getSupportSViewCoverWidth(i4);
+            int supportSViewCoverHeight2 = getSupportSViewCoverHeight(i4);
+            if (!"factory".equals(SystemProperties.get("ro.factory.factory_binary"))) {
+                coverState.updateCoverState(i4, 0, supportSViewCoverWidth2, supportSViewCoverHeight2, this.mIsCoverAttached, 0);
+            }
+            Rect rect = CoverTestModeUtils.sCurrentTestVisibleRect;
+            if (!rect.isEmpty()) {
+                coverState.setVisibleRect(rect);
+            }
+            Log.d("CoverManager_CoverVerifier", "[SmartCover] CoverVerify : sview cover test mode enabled");
         }
     }
 
-    public boolean updateCoverVerification() {
+    public final boolean updateCoverVerification() {
+        Feature.getInstance(this.mContext).getClass();
         boolean z = true;
-        if (Feature.getInstance(this.mContext).isNfcAuthEnabled()) {
+        if (Feature.sIsNfcAuthSystemFeatureEnabled) {
             if (!this.mIsCoverVerified) {
                 this.mIsCoverVerified = true;
             }
             z = false;
-        } else if (Feature.getInstance(this.mContext).isSupportVerifyCover()) {
-            if (CoverTestModeUtils.isTestMode()) {
+        } else {
+            Feature.getInstance(this.mContext).getClass();
+            if (!Feature.sIsDeviceSupportVerifyCover) {
+                if (!this.mIsCoverVerified) {
+                    this.mIsCoverVerified = true;
+                }
+                z = false;
+            } else if (CoverTestModeUtils.isTestMode()) {
                 if (!this.mIsCoverVerified) {
                     this.mIsCoverVerified = true;
                 }
                 z = false;
             } else {
-                boolean z2 = CoverManagerUtils.getValueFromSysFS("/sys/devices/w1_bus_master1/w1_master_verify_mac", -1) == 0;
+                boolean z2 = CoverManagerUtils.getValueFromSysFS(-1, "/sys/devices/w1_bus_master1/w1_master_verify_mac") == 0;
                 if (this.mIsCoverVerified != z2) {
                     this.mIsCoverVerified = z2;
                 }
                 z = false;
             }
-        } else {
-            if (!this.mIsCoverVerified) {
-                this.mIsCoverVerified = true;
-            }
-            z = false;
         }
         this.mIsCoverAttached = this.mIsCoverVerified;
-        Log.d(TAG, "updateCoverVerification : mIsCoverVerified =" + this.mIsCoverVerified + ", change=" + z);
+        Log.d("CoverManager_CoverVerifier", "updateCoverVerification : mIsCoverVerified =" + this.mIsCoverVerified + ", change=" + z);
         return z;
     }
 
-    public boolean updateCoverAttachState(boolean z) {
-        boolean z2 = true;
-        if (Feature.getInstance(this.mContext).isNfcAuthEnabled()) {
-            if (this.mIsCoverAttached != z) {
-                this.mIsCoverAttached = z;
-            }
-            z2 = false;
-        } else if (Feature.getInstance(this.mContext).isSupportVerifyCover()) {
-            if (CoverTestModeUtils.isTestMode()) {
-                if (!this.mIsCoverAttached) {
-                    this.mIsCoverAttached = true;
-                }
-                z2 = false;
-            } else {
-                if (this.mIsCoverAttached != z) {
-                    this.mIsCoverAttached = z;
-                }
-                z2 = false;
-            }
-        } else {
-            if (!this.mIsCoverAttached) {
-                this.mIsCoverAttached = true;
-            }
-            z2 = false;
+    public final void updateCoverWindowSize(CoverState coverState) {
+        if (coverState == null) {
+            Log.d("CoverManager_CoverVerifier", "updateCoverWindowSize(): CoverState is null");
+            return;
         }
-        this.mIsCoverVerified = this.mIsCoverAttached;
-        Log.d(TAG, "updateCoverAttachState : mIsCoverVerified =" + this.mIsCoverAttached + ", attached=" + z + ", change=" + z2);
-        return z2;
-    }
-
-    public boolean isCoverAttached() {
-        return this.mIsCoverAttached;
-    }
-
-    public static boolean isFactoryMode() {
-        return "factory".equals(SystemProperties.get("ro.factory.factory_binary"));
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        printWriter.println(" Current CoverVerifier state:");
-        printWriter.print("  mIsCoverVerified=");
-        printWriter.print(this.mIsCoverVerified);
-        printWriter.print("  mIsCoverAttached=");
-        printWriter.println(this.mIsCoverAttached);
-        printWriter.print("  mDefaultCoverType=");
-        printWriter.print(getDefaultTypeOfCover());
-        printWriter.print("  mDefaultCoverColor=");
-        printWriter.println(this.mDefaultCoverColor);
-        printWriter.print("  mDefaultSViewCoverWidth=");
-        printWriter.print(this.mDefaultSViewCoverWidth);
-        printWriter.print("  mDefaultSViewCoverHeight=");
-        printWriter.print(this.mDefaultSViewCoverHeight);
-        printWriter.print("  mDefaultMiniSViewCoverWidth=");
-        printWriter.print(this.mDefaultMiniSViewCoverWidth);
-        printWriter.print("  mDefaultMiniSViewCoverHeight=");
-        printWriter.println(this.mDefaultMiniSViewCoverHeight);
-        printWriter.println("  ");
+        int supportSViewCoverHeight = getSupportSViewCoverHeight(coverState.getType());
+        int supportSViewCoverWidth = getSupportSViewCoverWidth(coverState.getType());
+        StringBuilder sb = new StringBuilder("updateCoverWindowSize(): old window = ");
+        sb.append(coverState.heightPixel);
+        sb.append("x");
+        ServiceKeeper$$ExternalSyntheticOutline0.m(coverState.widthPixel, supportSViewCoverHeight, " new window = ", "x", sb);
+        sb.append(supportSViewCoverWidth);
+        Log.d("CoverManager_CoverVerifier", sb.toString());
+        coverState.setWindowWidth(supportSViewCoverWidth);
+        coverState.setWindowHeight(supportSViewCoverHeight);
     }
 }

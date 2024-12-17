@@ -2,86 +2,73 @@ package com.android.server.biometrics;
 
 import android.provider.DeviceConfig;
 import android.util.Slog;
-import com.android.internal.os.BackgroundThread;
-import com.android.internal.util.jobs.XmlUtils;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.asks.ASKSManagerService$$ExternalSyntheticOutline0;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class BiometricStrengthController {
-    public DeviceConfig.OnPropertiesChangedListener mDeviceConfigListener = new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.biometrics.BiometricStrengthController$$ExternalSyntheticLambda0
+public final class BiometricStrengthController {
+    public final BiometricStrengthController$$ExternalSyntheticLambda0 mDeviceConfigListener = new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.biometrics.BiometricStrengthController$$ExternalSyntheticLambda0
         public final void onPropertiesChanged(DeviceConfig.Properties properties) {
-            BiometricStrengthController.this.lambda$new$0(properties);
+            BiometricStrengthController biometricStrengthController = BiometricStrengthController.this;
+            biometricStrengthController.getClass();
+            if (properties.getKeyset().contains("biometric_strengths")) {
+                biometricStrengthController.updateStrengths();
+            }
         }
     };
     public final BiometricService mService;
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(DeviceConfig.Properties properties) {
-        if (properties.getKeyset().contains("biometric_strengths")) {
-            updateStrengths();
-        }
-    }
-
+    /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.biometrics.BiometricStrengthController$$ExternalSyntheticLambda0] */
     public BiometricStrengthController(BiometricService biometricService) {
         this.mService = biometricService;
     }
 
-    public void startListening() {
-        DeviceConfig.addOnPropertiesChangedListener("biometrics", BackgroundThread.getExecutor(), this.mDeviceConfigListener);
-    }
-
-    public void updateStrengths() {
+    public final void updateStrengths() {
         String string = DeviceConfig.getString("biometrics", "biometric_strengths", "null");
-        if ("null".equals(string) || string.isEmpty()) {
-            revertStrengths();
-        } else {
-            updateStrengths(string);
-        }
-    }
-
-    public final void updateStrengths(String str) {
-        Map idToStrengthMap = getIdToStrengthMap(str);
-        if (idToStrengthMap == null) {
+        boolean equals = "null".equals(string);
+        BiometricService biometricService = this.mService;
+        if (equals || string.isEmpty()) {
+            Iterator it = biometricService.mSensors.iterator();
+            while (it.hasNext()) {
+                BiometricSensor biometricSensor = (BiometricSensor) it.next();
+                StringBuilder sb = new StringBuilder("updateStrengths: revert sensorId=");
+                sb.append(biometricSensor.id);
+                sb.append(" to oemStrength=");
+                DeviceIdleController$$ExternalSyntheticOutline0.m(sb, biometricSensor.oemStrength, "BiometricStrengthController");
+                biometricSensor.updateStrength(biometricSensor.oemStrength);
+            }
             return;
         }
-        Iterator it = this.mService.mSensors.iterator();
-        while (it.hasNext()) {
-            BiometricSensor biometricSensor = (BiometricSensor) it.next();
-            int i = biometricSensor.id;
-            if (idToStrengthMap.containsKey(Integer.valueOf(i))) {
-                int intValue = ((Integer) idToStrengthMap.get(Integer.valueOf(i))).intValue();
-                Slog.d("BiometricStrengthController", "updateStrengths: update sensorId=" + i + " to newStrength=" + intValue);
-                biometricSensor.updateStrength(intValue);
-            }
-        }
-    }
-
-    public final void revertStrengths() {
-        Iterator it = this.mService.mSensors.iterator();
-        while (it.hasNext()) {
-            BiometricSensor biometricSensor = (BiometricSensor) it.next();
-            Slog.d("BiometricStrengthController", "updateStrengths: revert sensorId=" + biometricSensor.id + " to oemStrength=" + biometricSensor.oemStrength);
-            biometricSensor.updateStrength(biometricSensor.oemStrength);
-        }
-    }
-
-    public static Map getIdToStrengthMap(String str) {
-        if (str == null || str.isEmpty()) {
+        HashMap hashMap = null;
+        if (string.isEmpty()) {
             Slog.d("BiometricStrengthController", "Flags are null or empty");
-            return null;
-        }
-        HashMap hashMap = new HashMap();
-        try {
-            for (String str2 : str.split(",")) {
-                String[] split = str2.split(XmlUtils.STRING_ARRAY_SEPARATOR);
-                hashMap.put(Integer.valueOf(Integer.parseInt(split[0])), Integer.valueOf(Integer.parseInt(split[1])));
+        } else {
+            HashMap hashMap2 = new HashMap();
+            try {
+                for (String str : string.split(",")) {
+                    String[] split = str.split(":");
+                    hashMap2.put(Integer.valueOf(Integer.parseInt(split[0])), Integer.valueOf(Integer.parseInt(split[1])));
+                }
+                hashMap = hashMap2;
+            } catch (Exception unused) {
+                Slog.e("BiometricStrengthController", "Can't parse flag: ".concat(string));
             }
-            return hashMap;
-        } catch (Exception unused) {
-            Slog.e("BiometricStrengthController", "Can't parse flag: " + str);
-            return null;
+        }
+        if (hashMap == null) {
+            return;
+        }
+        Iterator it2 = biometricService.mSensors.iterator();
+        while (it2.hasNext()) {
+            BiometricSensor biometricSensor2 = (BiometricSensor) it2.next();
+            int i = biometricSensor2.id;
+            if (hashMap.containsKey(Integer.valueOf(i))) {
+                int intValue = ((Integer) hashMap.get(Integer.valueOf(i))).intValue();
+                ASKSManagerService$$ExternalSyntheticOutline0.m(i, intValue, "updateStrengths: update sensorId=", " to newStrength=", "BiometricStrengthController");
+                biometricSensor2.updateStrength(intValue);
+            }
         }
     }
 }

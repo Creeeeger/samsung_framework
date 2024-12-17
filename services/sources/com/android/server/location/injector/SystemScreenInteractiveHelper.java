@@ -1,58 +1,17 @@
 package com.android.server.location.injector;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.UserHandle;
-import com.android.internal.util.Preconditions;
-import com.android.server.FgThread;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-/* loaded from: classes2.dex */
-public class SystemScreenInteractiveHelper extends ScreenInteractiveHelper {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class SystemScreenInteractiveHelper {
     public final Context mContext;
-    public volatile boolean mIsInteractive = true;
     public boolean mReady;
+    public final CopyOnWriteArrayList mListeners = new CopyOnWriteArrayList();
+    public volatile boolean mIsInteractive = true;
 
     public SystemScreenInteractiveHelper(Context context) {
         this.mContext = context;
-    }
-
-    public void onSystemReady() {
-        if (this.mReady) {
-            return;
-        }
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        this.mContext.registerReceiverAsUser(new BroadcastReceiver() { // from class: com.android.server.location.injector.SystemScreenInteractiveHelper.1
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                boolean z;
-                if ("android.intent.action.SCREEN_ON".equals(intent.getAction())) {
-                    z = true;
-                } else if (!"android.intent.action.SCREEN_OFF".equals(intent.getAction())) {
-                    return;
-                } else {
-                    z = false;
-                }
-                SystemScreenInteractiveHelper.this.onScreenInteractiveChanged(z);
-            }
-        }, UserHandle.ALL, intentFilter, null, FgThread.getHandler());
-        this.mReady = true;
-    }
-
-    public void onScreenInteractiveChanged(boolean z) {
-        if (z == this.mIsInteractive) {
-            return;
-        }
-        this.mIsInteractive = z;
-        notifyScreenInteractiveChanged(z);
-    }
-
-    @Override // com.android.server.location.injector.ScreenInteractiveHelper
-    public boolean isInteractive() {
-        Preconditions.checkState(this.mReady);
-        return this.mIsInteractive;
     }
 }

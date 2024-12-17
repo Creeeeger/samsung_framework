@@ -3,11 +3,13 @@ package com.att.iqi.lib.metrics.mm;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.att.iqi.lib.Metric;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class MM07 extends Metric {
     public static final byte IQ_SDP_MEDIA_APPLICATION = 4;
     public static final byte IQ_SDP_MEDIA_AUDIO = 1;
@@ -31,100 +33,7 @@ public class MM07 extends Metric {
         }
     };
 
-    public MM07() {
-        this.mMediaStats = new HashMap();
-        reset();
-    }
-
-    public void reset() {
-        this.mMediaStats.clear();
-    }
-
-    public MM07(Parcel parcel) {
-        super(parcel);
-        this.mMediaStats = new HashMap();
-        if (parcel.readInt() >= 1) {
-            int readInt = parcel.readInt();
-            for (int i = 0; i < readInt; i++) {
-                short readInt2 = (short) parcel.readInt();
-                RtpStats rtpStats = new RtpStats(parcel.readByte(), parcel.readByte());
-                rtpStats.m_dwDuration = parcel.readInt();
-                rtpStats.m_dwPacketsRcvd = parcel.readInt();
-                rtpStats.m_dwPacketsDrop = parcel.readInt();
-                rtpStats.m_dwPacketsLate = parcel.readInt();
-                this.mMediaStats.put(Short.valueOf(readInt2), rtpStats);
-            }
-        }
-    }
-
-    public void setRtpStats(short s, byte b, byte b2, int i, int i2, int i3, int i4) {
-        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
-        if (rtpStats == null) {
-            rtpStats = new RtpStats(b, b2);
-            this.mMediaStats.put(Short.valueOf(s), rtpStats);
-        }
-        rtpStats.set(i, i2, i3, i4);
-    }
-
-    public byte getMediaType(short s) {
-        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
-        if (rtpStats != null) {
-            return rtpStats.m_ucMediaType;
-        }
-        return (byte) 0;
-    }
-
-    public byte getFormat(short s) {
-        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
-        if (rtpStats != null) {
-            return rtpStats.m_ucFormat;
-        }
-        return (byte) 0;
-    }
-
-    public int getDuration(short s) {
-        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
-        if (rtpStats != null) {
-            return rtpStats.m_dwDuration;
-        }
-        return 0;
-    }
-
-    public int getRcvd(short s) {
-        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
-        if (rtpStats != null) {
-            return rtpStats.m_dwPacketsRcvd;
-        }
-        return 0;
-    }
-
-    public int getDrop(short s) {
-        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
-        if (rtpStats != null) {
-            return rtpStats.m_dwPacketsDrop;
-        }
-        return 0;
-    }
-
-    public int getLate(short s) {
-        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
-        if (rtpStats != null) {
-            return rtpStats.m_dwPacketsLate;
-        }
-        return 0;
-    }
-
-    @Override // com.att.iqi.lib.Metric
-    public int serialize(ByteBuffer byteBuffer) {
-        byteBuffer.putShort((short) this.mMediaStats.size());
-        for (Map.Entry entry : this.mMediaStats.entrySet()) {
-            byteBuffer.putShort(((Short) entry.getKey()).shortValue());
-            ((RtpStats) entry.getValue()).serialize(byteBuffer);
-        }
-        return byteBuffer.position();
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     class RtpStats {
         private int m_dwDuration;
         private int m_dwPacketsDrop;
@@ -142,15 +51,12 @@ public class MM07 extends Metric {
             this.m_dwPacketsLate = 0;
         }
 
-        public void set(int i, int i2, int i3, int i4) {
-            this.m_dwDuration = i;
-            this.m_dwPacketsRcvd = i2;
-            this.m_dwPacketsDrop = i3;
-            this.m_dwPacketsLate = i4;
+        public /* synthetic */ RtpStats(byte b, byte b2, int i) {
+            this(b, b2);
         }
 
         /* JADX INFO: Access modifiers changed from: private */
-        public void serialize(ByteBuffer byteBuffer) {
+        public void serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
             byteBuffer.put(this.m_ucMediaType);
             byteBuffer.put(this.m_ucFormat);
             byteBuffer.putInt(this.m_dwDuration);
@@ -158,6 +64,107 @@ public class MM07 extends Metric {
             byteBuffer.putInt(this.m_dwPacketsDrop);
             byteBuffer.putInt(this.m_dwPacketsLate);
         }
+
+        public void set(int i, int i2, int i3, int i4) {
+            this.m_dwDuration = i;
+            this.m_dwPacketsRcvd = i2;
+            this.m_dwPacketsDrop = i3;
+            this.m_dwPacketsLate = i4;
+        }
+    }
+
+    public MM07() {
+        this.mMediaStats = new HashMap();
+        reset();
+    }
+
+    public MM07(Parcel parcel) {
+        super(parcel);
+        this.mMediaStats = new HashMap();
+        if (parcel.readInt() >= 1) {
+            int readInt = parcel.readInt();
+            int i = 0;
+            for (int i2 = 0; i2 < readInt; i2++) {
+                short readInt2 = (short) parcel.readInt();
+                RtpStats rtpStats = new RtpStats(parcel.readByte(), parcel.readByte(), i);
+                rtpStats.m_dwDuration = parcel.readInt();
+                rtpStats.m_dwPacketsRcvd = parcel.readInt();
+                rtpStats.m_dwPacketsDrop = parcel.readInt();
+                rtpStats.m_dwPacketsLate = parcel.readInt();
+                this.mMediaStats.put(Short.valueOf(readInt2), rtpStats);
+            }
+        }
+    }
+
+    public int getDrop(short s) {
+        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
+        if (rtpStats != null) {
+            return rtpStats.m_dwPacketsDrop;
+        }
+        return 0;
+    }
+
+    public int getDuration(short s) {
+        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
+        if (rtpStats != null) {
+            return rtpStats.m_dwDuration;
+        }
+        return 0;
+    }
+
+    public byte getFormat(short s) {
+        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
+        if (rtpStats != null) {
+            return rtpStats.m_ucFormat;
+        }
+        return (byte) 0;
+    }
+
+    public int getLate(short s) {
+        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
+        if (rtpStats != null) {
+            return rtpStats.m_dwPacketsLate;
+        }
+        return 0;
+    }
+
+    public byte getMediaType(short s) {
+        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
+        if (rtpStats != null) {
+            return rtpStats.m_ucMediaType;
+        }
+        return (byte) 0;
+    }
+
+    public int getRcvd(short s) {
+        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
+        if (rtpStats != null) {
+            return rtpStats.m_dwPacketsRcvd;
+        }
+        return 0;
+    }
+
+    public void reset() {
+        this.mMediaStats.clear();
+    }
+
+    @Override // com.att.iqi.lib.Metric
+    public int serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
+        byteBuffer.putShort((short) this.mMediaStats.size());
+        for (Map.Entry entry : this.mMediaStats.entrySet()) {
+            byteBuffer.putShort(((Short) entry.getKey()).shortValue());
+            ((RtpStats) entry.getValue()).serialize(byteBuffer);
+        }
+        return byteBuffer.position();
+    }
+
+    public void setRtpStats(short s, byte b, byte b2, int i, int i2, int i3, int i4) {
+        RtpStats rtpStats = (RtpStats) this.mMediaStats.get(Short.valueOf(s));
+        if (rtpStats == null) {
+            rtpStats = new RtpStats(b, b2, 0);
+            this.mMediaStats.put(Short.valueOf(s), rtpStats);
+        }
+        rtpStats.set(i, i2, i3, i4);
     }
 
     @Override // com.att.iqi.lib.Metric, android.os.Parcelable

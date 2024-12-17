@@ -16,29 +16,13 @@ import android.os.SystemClock;
 import android.os.UserHandle;
 import android.util.Slog;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SensorNotificationService extends SystemService implements SensorEventListener, LocationListener {
-    public Context mContext;
+public final class SensorNotificationService extends SystemService implements SensorEventListener, LocationListener {
+    public final Context mContext;
     public long mLocalGeomagneticFieldUpdateTime;
-    public LocationManager mLocationManager;
     public Sensor mMetaSensor;
     public SensorManager mSensorManager;
-
-    @Override // android.hardware.SensorEventListener
-    public void onAccuracyChanged(Sensor sensor, int i) {
-    }
-
-    @Override // android.location.LocationListener
-    public void onProviderDisabled(String str) {
-    }
-
-    @Override // android.location.LocationListener
-    public void onProviderEnabled(String str) {
-    }
-
-    @Override // android.location.LocationListener
-    public void onStatusChanged(String str, int i, Bundle bundle) {
-    }
 
     public SensorNotificationService(Context context) {
         super(context.createAttributionContext("SensorNotificationService"));
@@ -46,13 +30,13 @@ public class SensorNotificationService extends SystemService implements SensorEv
         this.mContext = getContext();
     }
 
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        LocalServices.addService(SensorNotificationService.class, this);
+    @Override // android.hardware.SensorEventListener
+    public final void onAccuracyChanged(Sensor sensor, int i) {
     }
 
     @Override // com.android.server.SystemService
-    public void onBootPhase(int i) {
+    public final void onBootPhase(int i) {
+        LocationManager locationManager;
         if (i == 600) {
             SensorManager sensorManager = (SensorManager) this.mContext.getSystemService("sensor");
             this.mSensorManager = sensorManager;
@@ -62,34 +46,17 @@ public class SensorNotificationService extends SystemService implements SensorEv
                 this.mSensorManager.registerListener(this, defaultSensor, 0);
             }
         }
-        if (i == 1000) {
-            LocationManager locationManager = (LocationManager) this.mContext.getSystemService("location");
-            this.mLocationManager = locationManager;
-            if (locationManager == null) {
-                return;
-            }
-            locationManager.requestLocationUpdates("passive", 1800000L, 100000.0f, this);
+        if (i != 1000 || (locationManager = (LocationManager) this.mContext.getSystemService("location")) == null) {
+            return;
         }
-    }
-
-    public final void broadcastDynamicSensorChanged() {
-        Intent intent = new Intent("android.intent.action.DYNAMIC_SENSOR_CHANGED");
-        intent.setFlags(1073741824);
-        this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
-    }
-
-    @Override // android.hardware.SensorEventListener
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        if (sensorEvent.sensor == this.mMetaSensor) {
-            broadcastDynamicSensorChanged();
-        }
+        locationManager.requestLocationUpdates("passive", 1800000L, 100000.0f, this);
     }
 
     @Override // android.location.LocationListener
-    public void onLocationChanged(Location location) {
+    public final void onLocationChanged(Location location) {
         if (!(location.getLatitude() == 0.0d && location.getLongitude() == 0.0d) && SystemClock.elapsedRealtime() - this.mLocalGeomagneticFieldUpdateTime >= 600000) {
             long currentTimeMillis = System.currentTimeMillis();
-            if (useMockedLocation() == location.isMock() || currentTimeMillis < 1262358000000L) {
+            if ("false".equals(System.getProperty("sensor.notification.use_mocked", "false")) == location.isMock() || currentTimeMillis < 1262358000000L) {
                 return;
             }
             try {
@@ -104,7 +71,29 @@ public class SensorNotificationService extends SystemService implements SensorEv
         }
     }
 
-    public final boolean useMockedLocation() {
-        return "false".equals(System.getProperty("sensor.notification.use_mocked", "false"));
+    @Override // android.location.LocationListener
+    public final void onProviderDisabled(String str) {
+    }
+
+    @Override // android.location.LocationListener
+    public final void onProviderEnabled(String str) {
+    }
+
+    @Override // android.hardware.SensorEventListener
+    public final void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.sensor == this.mMetaSensor) {
+            Intent intent = new Intent("android.intent.action.DYNAMIC_SENSOR_CHANGED");
+            intent.setFlags(1073741824);
+            this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
+        }
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        LocalServices.addService(SensorNotificationService.class, this);
+    }
+
+    @Override // android.location.LocationListener
+    public final void onStatusChanged(String str, int i, Bundle bundle) {
     }
 }

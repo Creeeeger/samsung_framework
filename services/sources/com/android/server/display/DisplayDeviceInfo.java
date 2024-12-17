@@ -1,7 +1,6 @@
 package com.android.server.display;
 
 import android.hardware.display.DeviceProductInfo;
-import android.os.IInstalld;
 import android.view.Display;
 import android.view.DisplayAddress;
 import android.view.DisplayCutout;
@@ -9,18 +8,20 @@ import android.view.DisplayEventReceiver;
 import android.view.DisplayShape;
 import android.view.RoundedCorners;
 import com.android.internal.display.BrightnessSynchronizer;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
 import com.samsung.android.rune.CoreRune;
 import java.util.Arrays;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class DisplayDeviceInfo {
     public DisplayAddress address;
     public boolean allmSupported;
     public long appVsyncOffsetNanos;
     public float brightnessDefault;
     public float brightnessMaximum;
-    public float brightnessMinimum;
     public int colorMode;
     public int defaultModeId;
     public int densityDpi;
@@ -44,6 +45,7 @@ public final class DisplayDeviceInfo {
     public int width;
     public float xDpi;
     public float yDpi;
+    public int userPreferredModeId = -1;
     public Display.Mode[] supportedModes = Display.Mode.EMPTY_ARRAY;
     public int[] supportedColorModes = {0};
     public int rotation = 0;
@@ -53,39 +55,40 @@ public final class DisplayDeviceInfo {
     public float hdrSdrRatio = Float.NaN;
     public int installOrientation = 0;
 
-    public int hashCode() {
+    public final int diff(DisplayDeviceInfo displayDeviceInfo) {
+        int i = this.state != displayDeviceInfo.state ? 2 : 0;
+        if (this.committedState != displayDeviceInfo.committedState) {
+            i |= 4;
+        }
+        if (this.colorMode != displayDeviceInfo.colorMode) {
+            i |= 8;
+        }
+        if (!BrightnessSynchronizer.floatEquals(this.hdrSdrRatio, displayDeviceInfo.hdrSdrRatio)) {
+            i |= 16;
+        }
+        if (this.rotation != displayDeviceInfo.rotation) {
+            i |= 32;
+        }
+        if (this.renderFrameRate != displayDeviceInfo.renderFrameRate || this.presentationDeadlineNanos != displayDeviceInfo.presentationDeadlineNanos || this.appVsyncOffsetNanos != displayDeviceInfo.appVsyncOffsetNanos) {
+            i |= 64;
+        }
+        if (this.modeId != displayDeviceInfo.modeId) {
+            i |= 128;
+        }
+        return (Objects.equals(this.name, displayDeviceInfo.name) && Objects.equals(this.uniqueId, displayDeviceInfo.uniqueId) && this.width == displayDeviceInfo.width && this.height == displayDeviceInfo.height && this.defaultModeId == displayDeviceInfo.defaultModeId && this.userPreferredModeId == displayDeviceInfo.userPreferredModeId && Arrays.equals(this.supportedModes, displayDeviceInfo.supportedModes) && Arrays.equals(this.supportedColorModes, displayDeviceInfo.supportedColorModes) && Objects.equals(this.hdrCapabilities, displayDeviceInfo.hdrCapabilities) && this.allmSupported == displayDeviceInfo.allmSupported && this.gameContentTypeSupported == displayDeviceInfo.gameContentTypeSupported && this.densityDpi == displayDeviceInfo.densityDpi && this.xDpi == displayDeviceInfo.xDpi && this.yDpi == displayDeviceInfo.yDpi && this.flags == displayDeviceInfo.flags && Objects.equals(this.displayCutout, displayDeviceInfo.displayCutout) && this.touch == displayDeviceInfo.touch && this.type == displayDeviceInfo.type && Objects.equals(this.address, displayDeviceInfo.address) && Objects.equals(this.deviceProductInfo, displayDeviceInfo.deviceProductInfo) && this.ownerUid == displayDeviceInfo.ownerUid && Objects.equals(this.ownerPackageName, displayDeviceInfo.ownerPackageName) && Arrays.equals(this.frameRateOverrides, displayDeviceInfo.frameRateOverrides) && BrightnessSynchronizer.floatEquals(FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE) && BrightnessSynchronizer.floatEquals(this.brightnessMaximum, displayDeviceInfo.brightnessMaximum) && BrightnessSynchronizer.floatEquals(this.brightnessDefault, displayDeviceInfo.brightnessDefault) && Objects.equals(this.roundedCorners, displayDeviceInfo.roundedCorners) && this.installOrientation == displayDeviceInfo.installOrientation && Objects.equals(this.displayShape, displayDeviceInfo.displayShape)) ? i : i | 1;
+    }
+
+    public final boolean equals(Object obj) {
+        DisplayDeviceInfo displayDeviceInfo;
+        return (obj instanceof DisplayDeviceInfo) && (displayDeviceInfo = (DisplayDeviceInfo) obj) != null && diff(displayDeviceInfo) == 0;
+    }
+
+    public final int hashCode() {
         return 0;
     }
 
-    public void setAssumedDensityForExternalDisplay(int i, int i2) {
-        int min = (Math.min(i, i2) * 320) / 1080;
-        this.densityDpi = min;
-        this.xDpi = min;
-        this.yDpi = min;
-    }
-
-    public boolean equals(Object obj) {
-        return (obj instanceof DisplayDeviceInfo) && equals((DisplayDeviceInfo) obj);
-    }
-
-    public boolean equals(DisplayDeviceInfo displayDeviceInfo) {
-        return displayDeviceInfo != null && diff(displayDeviceInfo) == 0;
-    }
-
-    public int diff(DisplayDeviceInfo displayDeviceInfo) {
-        int i = (this.state == displayDeviceInfo.state && this.committedState == displayDeviceInfo.committedState) ? 0 : 1;
-        if (this.colorMode != displayDeviceInfo.colorMode) {
-            i |= 4;
-        }
-        if (!BrightnessSynchronizer.floatEquals(this.hdrSdrRatio, displayDeviceInfo.hdrSdrRatio)) {
-            i |= 8;
-        }
-        return (Objects.equals(this.name, displayDeviceInfo.name) && Objects.equals(this.uniqueId, displayDeviceInfo.uniqueId) && this.width == displayDeviceInfo.width && this.height == displayDeviceInfo.height && this.modeId == displayDeviceInfo.modeId && this.renderFrameRate == displayDeviceInfo.renderFrameRate && this.defaultModeId == displayDeviceInfo.defaultModeId && Arrays.equals(this.supportedModes, displayDeviceInfo.supportedModes) && Arrays.equals(this.supportedColorModes, displayDeviceInfo.supportedColorModes) && Objects.equals(this.hdrCapabilities, displayDeviceInfo.hdrCapabilities) && this.allmSupported == displayDeviceInfo.allmSupported && this.gameContentTypeSupported == displayDeviceInfo.gameContentTypeSupported && this.densityDpi == displayDeviceInfo.densityDpi && this.xDpi == displayDeviceInfo.xDpi && this.yDpi == displayDeviceInfo.yDpi && this.appVsyncOffsetNanos == displayDeviceInfo.appVsyncOffsetNanos && this.presentationDeadlineNanos == displayDeviceInfo.presentationDeadlineNanos && this.flags == displayDeviceInfo.flags && Objects.equals(this.displayCutout, displayDeviceInfo.displayCutout) && this.touch == displayDeviceInfo.touch && this.rotation == displayDeviceInfo.rotation && this.type == displayDeviceInfo.type && Objects.equals(this.address, displayDeviceInfo.address) && Objects.equals(this.deviceProductInfo, displayDeviceInfo.deviceProductInfo) && this.ownerUid == displayDeviceInfo.ownerUid && Objects.equals(this.ownerPackageName, displayDeviceInfo.ownerPackageName) && Arrays.equals(this.frameRateOverrides, displayDeviceInfo.frameRateOverrides) && BrightnessSynchronizer.floatEquals(this.brightnessMinimum, displayDeviceInfo.brightnessMinimum) && BrightnessSynchronizer.floatEquals(this.brightnessMaximum, displayDeviceInfo.brightnessMaximum) && BrightnessSynchronizer.floatEquals(this.brightnessDefault, displayDeviceInfo.brightnessDefault) && Objects.equals(this.roundedCorners, displayDeviceInfo.roundedCorners) && this.installOrientation == displayDeviceInfo.installOrientation && Objects.equals(this.displayShape, displayDeviceInfo.displayShape)) ? i : i | 2;
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("DisplayDeviceInfo{\"");
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("DisplayDeviceInfo{\"");
         sb.append(this.name);
         sb.append("\": uniqueId=\"");
         sb.append(this.uniqueId);
@@ -99,6 +102,8 @@ public final class DisplayDeviceInfo {
         sb.append(this.renderFrameRate);
         sb.append(", defaultModeId ");
         sb.append(this.defaultModeId);
+        sb.append(", userPreferredModeId ");
+        sb.append(this.userPreferredModeId);
         sb.append(", supportedModes ");
         sb.append(Arrays.toString(this.supportedModes));
         sb.append(", colorMode ");
@@ -117,8 +122,7 @@ public final class DisplayDeviceInfo {
         sb.append(this.xDpi);
         sb.append(" x ");
         sb.append(this.yDpi);
-        sb.append(" dpi");
-        sb.append(", appVsyncOff ");
+        sb.append(" dpi, appVsyncOff ");
         sb.append(this.appVsyncOffsetNanos);
         sb.append(", presDeadline ");
         sb.append(this.presentationDeadlineNanos);
@@ -127,7 +131,8 @@ public final class DisplayDeviceInfo {
             sb.append(this.displayCutout);
         }
         sb.append(", touch ");
-        sb.append(touchToString(this.touch));
+        int i = this.touch;
+        sb.append(i != 0 ? i != 1 ? i != 2 ? i != 3 ? Integer.toString(i) : "VIRTUAL" : "EXTERNAL" : "INTERNAL" : "NONE");
         sb.append(", rotation ");
         sb.append(this.rotation);
         sb.append(", type ");
@@ -154,9 +159,7 @@ public final class DisplayDeviceInfo {
             sb.append(frameRateOverride);
             sb.append(" ");
         }
-        sb.append(", brightnessMinimum ");
-        sb.append(this.brightnessMinimum);
-        sb.append(", brightnessMaximum ");
+        sb.append(", brightnessMinimum 0.0, brightnessMaximum ");
         sb.append(this.brightnessMaximum);
         sb.append(", brightnessDefault ");
         sb.append(this.brightnessDefault);
@@ -166,7 +169,99 @@ public final class DisplayDeviceInfo {
             sb.append(", roundedCorners ");
             sb.append(this.roundedCorners);
         }
-        sb.append(flagsToString(this.flags));
+        int i2 = this.flags;
+        StringBuilder sb2 = new StringBuilder();
+        if ((i2 & 1) != 0) {
+            sb2.append(", FLAG_ALLOWED_TO_BE_DEFAULT_DISPLAY");
+        }
+        if ((i2 & 2) != 0) {
+            sb2.append(", FLAG_ROTATES_WITH_CONTENT");
+        }
+        if ((i2 & 4) != 0) {
+            sb2.append(", FLAG_SECURE");
+        }
+        if ((i2 & 8) != 0) {
+            sb2.append(", FLAG_SUPPORTS_PROTECTED_BUFFERS");
+        }
+        if ((i2 & 16) != 0) {
+            sb2.append(", FLAG_PRIVATE");
+        }
+        if ((i2 & 32) != 0) {
+            sb2.append(", FLAG_NEVER_BLANK");
+        }
+        if ((i2 & 64) != 0) {
+            sb2.append(", FLAG_PRESENTATION");
+        }
+        if ((i2 & 128) != 0) {
+            sb2.append(", FLAG_OWN_CONTENT_ONLY");
+        }
+        if ((i2 & 256) != 0) {
+            sb2.append(", FLAG_ROUND");
+        }
+        if ((i2 & 512) != 0) {
+            sb2.append(", FLAG_CAN_SHOW_WITH_INSECURE_KEYGUARD");
+        }
+        if ((i2 & 1024) != 0) {
+            sb2.append(", FLAG_DESTROY_CONTENT_ON_REMOVAL");
+        }
+        if ((i2 & 2048) != 0) {
+            sb2.append(", FLAG_MASK_DISPLAY_CUTOUT");
+        }
+        if ((i2 & 4096) != 0) {
+            sb2.append(", FLAG_SHOULD_SHOW_SYSTEM_DECORATIONS");
+        }
+        if ((i2 & 8192) != 0) {
+            sb2.append(", FLAG_TRUSTED");
+        }
+        if ((i2 & EndpointMonitorConst.FLAG_TRACING_PROCESS_PERMISSIONS_MODIFICATION) != 0) {
+            sb2.append(", FLAG_OWN_DISPLAY_GROUP");
+        }
+        if ((32768 & i2) != 0) {
+            sb2.append(", FLAG_ALWAYS_UNLOCKED");
+        }
+        if ((65536 & i2) != 0) {
+            sb2.append(", FLAG_TOUCH_FEEDBACK_DISABLED");
+        }
+        if ((131072 & i2) != 0) {
+            sb2.append(", FLAG_OWN_FOCUS");
+        }
+        if ((524288 & i2) != 0) {
+            sb2.append(", FLAG_STEAL_TOP_FOCUS_DISABLED");
+        }
+        if ((67108864 & i2) != 0) {
+            sb2.append(", FLAG_WIRELESS_DEX_DISPLAY");
+        }
+        if ((134217728 & i2) != 0) {
+            sb2.append(", FLAG_PC_DEX_DISPLAY");
+        }
+        if ((268435456 & i2) != 0) {
+            sb2.append(", FLAG_WIFI_DISPLAY");
+        }
+        if ((536870912 & i2) != 0) {
+            sb2.append(", FLAG_NO_LOCK_PRESENTATION");
+        }
+        if ((33554432 & i2) != 0) {
+            sb2.append(", FLAG_HIDDEN_SPACE_DISPLAY");
+        }
+        if (CoreRune.SYSFW_APP_SPEG && (1073741824 & i2) != 0) {
+            sb2.append(", FLAG_SPEG_DISPLAY");
+        }
+        if (CoreRune.BAIDU_CARLIFE && (Integer.MIN_VALUE & i2) != 0) {
+            sb2.append(", FLAG_CARLIFE_DISPLAY");
+        }
+        if ((8388608 & i2) != 0) {
+            sb2.append(", FLAG_EXTRA_BUILT_IN_DISPLAY");
+        }
+        if ((4194304 & i2) != 0) {
+            sb2.append(", FLAG_VIEW_COVER_DISPLAY");
+        }
+        if ((1048576 & i2) != 0) {
+            sb2.append(", FLAG_DESKTOP_DISPLAY");
+        }
+        if ((i2 & 2097152) != 0) {
+            sb2.append(", FLAG_REMOTE_APP_DISPLAY");
+        }
+        sb.append(sb2.toString());
         sb.append(", installOrientation ");
         sb.append(this.installOrientation);
         if (this.displayShape != null) {
@@ -174,105 +269,6 @@ public final class DisplayDeviceInfo {
             sb.append(this.displayShape);
         }
         sb.append("}");
-        return sb.toString();
-    }
-
-    public static String touchToString(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? Integer.toString(i) : "VIRTUAL" : "EXTERNAL" : "INTERNAL" : "NONE";
-    }
-
-    public static String flagsToString(int i) {
-        StringBuilder sb = new StringBuilder();
-        if ((i & 1) != 0) {
-            sb.append(", FLAG_ALLOWED_TO_BE_DEFAULT_DISPLAY");
-        }
-        if ((i & 2) != 0) {
-            sb.append(", FLAG_ROTATES_WITH_CONTENT");
-        }
-        if ((i & 4) != 0) {
-            sb.append(", FLAG_SECURE");
-        }
-        if ((i & 8) != 0) {
-            sb.append(", FLAG_SUPPORTS_PROTECTED_BUFFERS");
-        }
-        if ((i & 16) != 0) {
-            sb.append(", FLAG_PRIVATE");
-        }
-        if ((i & 32) != 0) {
-            sb.append(", FLAG_NEVER_BLANK");
-        }
-        if ((i & 64) != 0) {
-            sb.append(", FLAG_PRESENTATION");
-        }
-        if ((i & 128) != 0) {
-            sb.append(", FLAG_OWN_CONTENT_ONLY");
-        }
-        if ((i & 256) != 0) {
-            sb.append(", FLAG_ROUND");
-        }
-        if ((i & 512) != 0) {
-            sb.append(", FLAG_CAN_SHOW_WITH_INSECURE_KEYGUARD");
-        }
-        if ((i & 1024) != 0) {
-            sb.append(", FLAG_DESTROY_CONTENT_ON_REMOVAL");
-        }
-        if ((i & IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES) != 0) {
-            sb.append(", FLAG_MASK_DISPLAY_CUTOUT");
-        }
-        if ((i & IInstalld.FLAG_USE_QUOTA) != 0) {
-            sb.append(", FLAG_SHOULD_SHOW_SYSTEM_DECORATIONS");
-        }
-        if ((i & IInstalld.FLAG_FORCE) != 0) {
-            sb.append(", FLAG_TRUSTED");
-        }
-        if ((i & 16384) != 0) {
-            sb.append(", FLAG_OWN_DISPLAY_GROUP");
-        }
-        if ((32768 & i) != 0) {
-            sb.append(", FLAG_ALWAYS_UNLOCKED");
-        }
-        if ((65536 & i) != 0) {
-            sb.append(", FLAG_TOUCH_FEEDBACK_DISABLED");
-        }
-        if ((131072 & i) != 0) {
-            sb.append(", FLAG_OWN_FOCUS");
-        }
-        if ((524288 & i) != 0) {
-            sb.append(", FLAG_STEAL_TOP_FOCUS_DISABLED");
-        }
-        if ((67108864 & i) != 0) {
-            sb.append(", FLAG_WIRELESS_DEX_DISPLAY");
-        }
-        if ((134217728 & i) != 0) {
-            sb.append(", FLAG_PC_DEX_DISPLAY");
-        }
-        if ((268435456 & i) != 0) {
-            sb.append(", FLAG_WIFI_DISPLAY");
-        }
-        if ((536870912 & i) != 0) {
-            sb.append(", FLAG_NO_LOCK_PRESENTATION");
-        }
-        if ((4194304 & i) != 0) {
-            sb.append(", FLAG_HIDDEN_SPACE_DISPLAY");
-        }
-        if ((1048576 & i) != 0) {
-            sb.append(", FLAG_DESKTOP_DISPLAY");
-        }
-        if ((2097152 & i) != 0) {
-            sb.append(", FLAG_REMOTE_APP_DISPLAY");
-        }
-        if ((8388608 & i) != 0) {
-            sb.append(", FLAG_VIEW_COVER_DISPLAY");
-        }
-        if ((16777216 & i) != 0) {
-            sb.append(", FLAG_EXTRA_BUILT_IN_DISPLAY");
-        }
-        if (CoreRune.SYSFW_APP_SPEG && (1073741824 & i) != 0) {
-            sb.append(", FLAG_SPEG_DISPLAY");
-        }
-        if (CoreRune.BAIDU_CARLIFE && (i & Integer.MIN_VALUE) != 0) {
-            sb.append(", FLAG_CARLIFE_DISPLAY");
-        }
         return sb.toString();
     }
 }

@@ -4,68 +4,69 @@ import com.android.internal.listeners.ListenerExecutor;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
-/* loaded from: classes2.dex */
-public abstract class RemovableListenerRegistration extends ListenerRegistration {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public abstract class RemovableListenerRegistration implements ListenerExecutor {
+    public boolean mActive;
+    public boolean mActiveMotionControl;
+    public final Executor mExecutor;
     public volatile Object mKey;
+    public volatile Object mListener;
     public final AtomicBoolean mRemoved;
 
-    public abstract ListenerMultiplexer getOwner();
-
-    public void onRegister() {
-    }
-
-    public void onRemove(boolean z) {
-    }
-
     public RemovableListenerRegistration(Executor executor, Object obj) {
-        super(executor, obj);
+        Objects.requireNonNull(executor);
+        this.mExecutor = executor;
+        this.mActive = false;
+        Objects.requireNonNull(obj);
+        this.mListener = obj;
         this.mRemoved = new AtomicBoolean(false);
     }
 
-    public final Object getKey() {
-        Object obj = this.mKey;
-        Objects.requireNonNull(obj);
-        return obj;
+    public final boolean equals(Object obj) {
+        return this == obj;
     }
+
+    public final void executeOperation(ListenerExecutor.ListenerOperation listenerOperation) {
+        executeSafely(this.mExecutor, new Supplier() { // from class: com.android.server.location.listeners.ListenerRegistration$$ExternalSyntheticLambda0
+            @Override // java.util.function.Supplier
+            public final Object get() {
+                return RemovableListenerRegistration.this.mListener;
+            }
+        }, listenerOperation, new ListenerExecutor.FailureCallback() { // from class: com.android.server.location.listeners.ListenerRegistration$$ExternalSyntheticLambda1
+            public final void onFailure(ListenerExecutor.ListenerOperation listenerOperation2, Exception exc) {
+                RemovableListenerRegistration.this.onOperationFailure(listenerOperation2, exc);
+            }
+        });
+    }
+
+    public abstract ListenerMultiplexer getOwner();
+
+    public String getTag() {
+        return "ListenerRegistration";
+    }
+
+    public abstract void onActive();
+
+    public void onInactive() {
+    }
+
+    public void onListenerUnregister() {
+    }
+
+    public abstract void onOperationFailure(ListenerExecutor.ListenerOperation listenerOperation, Exception exc);
+
+    public abstract void onRegister();
+
+    public abstract void onUnregister();
 
     public final void remove() {
-        remove(true);
-    }
-
-    public final void remove(boolean z) {
-        final Object obj = this.mKey;
+        Object obj = this.mKey;
         if (obj == null || this.mRemoved.getAndSet(true)) {
             return;
         }
-        onRemove(z);
-        if (z) {
-            getOwner().removeRegistration(obj, this);
-        } else {
-            executeOperation(new ListenerExecutor.ListenerOperation() { // from class: com.android.server.location.listeners.RemovableListenerRegistration$$ExternalSyntheticLambda0
-                public final void operate(Object obj2) {
-                    RemovableListenerRegistration.this.lambda$remove$0(obj, obj2);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$remove$0(Object obj, Object obj2) {
         getOwner().removeRegistration(obj, this);
-    }
-
-    @Override // com.android.server.location.listeners.ListenerRegistration
-    public final void onRegister(Object obj) {
-        super.onRegister(obj);
-        Objects.requireNonNull(obj);
-        this.mKey = obj;
-        onRegister();
-    }
-
-    @Override // com.android.server.location.listeners.ListenerRegistration
-    public void onUnregister() {
-        this.mKey = null;
-        super.onUnregister();
     }
 }

@@ -1,107 +1,48 @@
 package com.samsung.android.displaysolution;
 
-import android.R;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.ContentObserver;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
 import android.os.Message;
-import android.os.SystemProperties;
 import android.util.Slog;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class BigDataLoggingService {
-    public final boolean DEBUG = "eng".equals(Build.TYPE);
-    public final Context mContext;
-    public ScrControlHandler mHandler;
-    public HandlerThread mHandlerThread;
-    public boolean mUseBigDataLoggingServiceConfig;
+public final class BigDataLoggingService {
 
-    public final void receive_boot_completed_intent() {
-    }
-
-    public final void receive_screen_off_intent() {
-    }
-
-    public final void receive_screen_on_intent() {
-    }
-
-    public final void receive_user_present_intent() {
-    }
-
-    public BigDataLoggingService(Context context) {
-        this.mUseBigDataLoggingServiceConfig = false;
-        this.mContext = context;
-        HandlerThread handlerThread = new HandlerThread("BigDataLoggingServiceThread");
-        this.mHandlerThread = handlerThread;
-        handlerThread.start();
-        this.mHandler = new ScrControlHandler(this.mHandlerThread.getLooper());
-        this.mUseBigDataLoggingServiceConfig = context.getResources().getBoolean(R.bool.config_defaultRingtonePickerEnabled);
-        SystemProperties.set("sys.bigdatalogging.bdlon", "false");
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.BOOT_COMPLETED");
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter.addAction("android.intent.action.USER_PRESENT");
-        context.registerReceiver(new ScreenWatchingReceiver(), intentFilter);
-        if (this.mUseBigDataLoggingServiceConfig) {
-            SystemProperties.set("sys.bigdatalogging.bdlon", "true");
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ScrControlHandler extends Handler {
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            int i = message.what;
         }
     }
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class ScreenWatchingReceiver extends BroadcastReceiver {
         public ScreenWatchingReceiver() {
         }
 
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Slog.i("BigDataLoggingService", "action  :  " + action);
             if ("android.intent.action.BOOT_COMPLETED".equals(action)) {
                 Slog.i("BigDataLoggingService", "ACTION_BOOT_COMPLETED");
-                BigDataLoggingService.this.receive_boot_completed_intent();
+                BigDataLoggingService.this.getClass();
                 return;
             }
             if ("android.intent.action.SCREEN_ON".equals(action)) {
                 Slog.i("BigDataLoggingService", "ACTION_SCREEN_ON");
-                BigDataLoggingService.this.receive_screen_on_intent();
+                BigDataLoggingService.this.getClass();
             } else if ("android.intent.action.SCREEN_OFF".equals(action)) {
                 Slog.i("BigDataLoggingService", "ACTION_SCREEN_OFF");
-                BigDataLoggingService.this.receive_screen_off_intent();
+                BigDataLoggingService.this.getClass();
             } else if ("android.intent.action.USER_PRESENT".equals(action)) {
                 Slog.i("BigDataLoggingService", "ACTION_USER_PRESENT");
-                BigDataLoggingService.this.receive_user_present_intent();
+                BigDataLoggingService.this.getClass();
             }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class SettingsObserver extends ContentObserver {
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z, Uri uri) {
-        }
-
-        public SettingsObserver(Handler handler) {
-            super(handler);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class ScrControlHandler extends Handler {
-        public ScrControlHandler(Looper looper) {
-            super(looper, null);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            int i = message.what;
         }
     }
 }

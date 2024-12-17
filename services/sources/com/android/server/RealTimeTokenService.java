@@ -12,93 +12,418 @@ import com.android.server.IRealTimeTokenService;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class RealTimeTokenService extends IRealTimeTokenService.Stub {
     public static Context mContext;
     public long bootingTime;
     public long currentTime;
     public long elapsedTime;
+    public final AnonymousClass2 mBootCompletedReceiver;
+    public final AnonymousClass2 mNetWorkReceiver;
+    public final AnonymousClass2 mTimeChangedReceiver;
     public Timer mTimerObserve;
-    public TimerTask mTimerTask;
-    public final BroadcastReceiver mNetWorkReceiver = new BroadcastReceiver() { // from class: com.android.server.RealTimeTokenService.2
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            Slog.i("RealTimeTokenService", "Broadcast NetWork received:" + intent.getAction());
-            try {
-                if (!RealTimeTokenService.this.isNetworkAvailable(context) && RealTimeTokenService.this.getActiveTokenNumber() > 0) {
-                    Slog.i("RealTimeTokenService", "Start RTTS Time Observer");
-                    RealTimeTokenService.this.getSystemTime();
-                    try {
-                        if (RealTimeTokenService.this.mTimerObserve == null) {
-                            RealTimeTokenService.this.makeTimerTask();
-                            RealTimeTokenService.this.mTimerObserve = new Timer();
-                            RealTimeTokenService.this.mTimerObserve.schedule(RealTimeTokenService.this.mTimerTask, 0L, 21600000L);
+    public AnonymousClass1 mTimerTask;
+
+    /* renamed from: -$$Nest$misNetworkAvailable, reason: not valid java name */
+    public static boolean m78$$Nest$misNetworkAvailable(RealTimeTokenService realTimeTokenService, Context context) {
+        realTimeTokenService.getClass();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService("connectivity");
+        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    static {
+        System.loadLibrary("rtts_jni");
+    }
+
+    public RealTimeTokenService(Context context) {
+        final int i = 0;
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver(this) { // from class: com.android.server.RealTimeTokenService.2
+            public final /* synthetic */ RealTimeTokenService this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            /* JADX WARN: Type inference failed for: r8v13, types: [com.android.server.RealTimeTokenService$1] */
+            /* JADX WARN: Type inference failed for: r8v4, types: [com.android.server.RealTimeTokenService$1] */
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                switch (i) {
+                    case 0:
+                        Slog.i("RealTimeTokenService", "Broadcast NetWork received:" + intent.getAction());
+                        try {
+                            if (RealTimeTokenService.m78$$Nest$misNetworkAvailable(this.this$0, context2) || this.this$0.getActiveTokenNumber() <= 0) {
+                                Slog.i("RealTimeTokenService", "Stop RTTS Time Observer");
+                                try {
+                                    Timer timer = this.this$0.mTimerObserve;
+                                    if (timer != null) {
+                                        timer.cancel();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                this.this$0.mTimerObserve = null;
+                                break;
+                            } else {
+                                Slog.i("RealTimeTokenService", "Start RTTS Time Observer");
+                                RealTimeTokenService realTimeTokenService = this.this$0;
+                                realTimeTokenService.getClass();
+                                realTimeTokenService.currentTime = System.currentTimeMillis();
+                                realTimeTokenService.elapsedTime = SystemClock.elapsedRealtime();
+                                try {
+                                    final RealTimeTokenService realTimeTokenService2 = this.this$0;
+                                    if (realTimeTokenService2.mTimerObserve == null) {
+                                        realTimeTokenService2.mTimerTask = new TimerTask() { // from class: com.android.server.RealTimeTokenService.1
+                                            @Override // java.util.TimerTask, java.lang.Runnable
+                                            public final void run() {
+                                                Slog.i("RealTimeTokenService", "Time up: Check all tokens");
+                                                RealTimeTokenService.this.checkAllTokenExpiry();
+                                            }
+                                        };
+                                        this.this$0.mTimerObserve = new Timer();
+                                        RealTimeTokenService realTimeTokenService3 = this.this$0;
+                                        realTimeTokenService3.mTimerObserve.schedule(realTimeTokenService3.mTimerTask, 0L, 21600000L);
+                                        break;
+                                    }
+                                } catch (Exception e2) {
+                                    e2.printStackTrace();
+                                    return;
+                                }
+                            }
+                        } catch (Exception e3) {
+                            e3.printStackTrace();
                             return;
                         }
-                        return;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return;
-                    }
+                        e3.printStackTrace();
+                        break;
+                    case 1:
+                        intent.getAction();
+                        Slog.i("RealTimeTokenService", "Time has changed");
+                        RealTimeTokenService realTimeTokenService4 = this.this$0;
+                        Context context3 = RealTimeTokenService.mContext;
+                        realTimeTokenService4.getClass();
+                        realTimeTokenService4.currentTime = System.currentTimeMillis();
+                        realTimeTokenService4.elapsedTime = SystemClock.elapsedRealtime();
+                        RealTimeTokenService realTimeTokenService5 = this.this$0;
+                        long j = (realTimeTokenService5.bootingTime + realTimeTokenService5.elapsedTime) / 1000;
+                        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m("setUserTime: ", j, "|");
+                        m.append(this.this$0.bootingTime);
+                        m.append("|");
+                        m.append(this.this$0.elapsedTime);
+                        Slog.i("RealTimeTokenService", m.toString());
+                        int userTime = this.this$0.setUserTime(j);
+                        if (userTime < 0) {
+                            NandswapManager$$ExternalSyntheticOutline0.m(userTime, "setUserTime failed: ", "RealTimeTokenService");
+                            break;
+                        }
+                        break;
+                    default:
+                        Slog.i("RealTimeTokenService", "Boot Completed Receiver");
+                        RealTimeTokenService realTimeTokenService6 = this.this$0;
+                        Context context4 = RealTimeTokenService.mContext;
+                        realTimeTokenService6.getClass();
+                        realTimeTokenService6.currentTime = System.currentTimeMillis();
+                        realTimeTokenService6.elapsedTime = SystemClock.elapsedRealtime();
+                        RealTimeTokenService realTimeTokenService7 = this.this$0;
+                        realTimeTokenService7.bootingTime = realTimeTokenService7.currentTime - realTimeTokenService7.elapsedTime;
+                        realTimeTokenService7.initTokenStorage();
+                        if (!RealTimeTokenService.m78$$Nest$misNetworkAvailable(this.this$0, context2) && this.this$0.getActiveTokenNumber() > 0) {
+                            try {
+                                Timer timer2 = this.this$0.mTimerObserve;
+                                if (timer2 != null) {
+                                    timer2.cancel();
+                                    this.this$0.mTimerObserve = null;
+                                }
+                                final RealTimeTokenService realTimeTokenService8 = this.this$0;
+                                realTimeTokenService8.getClass();
+                                realTimeTokenService8.mTimerTask = new TimerTask() { // from class: com.android.server.RealTimeTokenService.1
+                                    @Override // java.util.TimerTask, java.lang.Runnable
+                                    public final void run() {
+                                        Slog.i("RealTimeTokenService", "Time up: Check all tokens");
+                                        RealTimeTokenService.this.checkAllTokenExpiry();
+                                    }
+                                };
+                                this.this$0.mTimerObserve = new Timer();
+                                RealTimeTokenService realTimeTokenService9 = this.this$0;
+                                realTimeTokenService9.mTimerObserve.schedule(realTimeTokenService9.mTimerTask, 0L, 21600000L);
+                                break;
+                            } catch (Exception e4) {
+                                e4.printStackTrace();
+                            }
+                        }
+                        break;
                 }
-                Slog.i("RealTimeTokenService", "Stop RTTS Time Observer");
-                try {
-                    if (RealTimeTokenService.this.mTimerObserve != null) {
-                        RealTimeTokenService.this.mTimerObserve.cancel();
-                    }
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+            }
+        };
+        final int i2 = 1;
+        BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver(this) { // from class: com.android.server.RealTimeTokenService.2
+            public final /* synthetic */ RealTimeTokenService this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            /* JADX WARN: Type inference failed for: r8v13, types: [com.android.server.RealTimeTokenService$1] */
+            /* JADX WARN: Type inference failed for: r8v4, types: [com.android.server.RealTimeTokenService$1] */
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                switch (i2) {
+                    case 0:
+                        Slog.i("RealTimeTokenService", "Broadcast NetWork received:" + intent.getAction());
+                        try {
+                            if (RealTimeTokenService.m78$$Nest$misNetworkAvailable(this.this$0, context2) || this.this$0.getActiveTokenNumber() <= 0) {
+                                Slog.i("RealTimeTokenService", "Stop RTTS Time Observer");
+                                try {
+                                    Timer timer = this.this$0.mTimerObserve;
+                                    if (timer != null) {
+                                        timer.cancel();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                this.this$0.mTimerObserve = null;
+                                break;
+                            } else {
+                                Slog.i("RealTimeTokenService", "Start RTTS Time Observer");
+                                RealTimeTokenService realTimeTokenService = this.this$0;
+                                realTimeTokenService.getClass();
+                                realTimeTokenService.currentTime = System.currentTimeMillis();
+                                realTimeTokenService.elapsedTime = SystemClock.elapsedRealtime();
+                                try {
+                                    final RealTimeTokenService realTimeTokenService2 = this.this$0;
+                                    if (realTimeTokenService2.mTimerObserve == null) {
+                                        realTimeTokenService2.mTimerTask = new TimerTask() { // from class: com.android.server.RealTimeTokenService.1
+                                            @Override // java.util.TimerTask, java.lang.Runnable
+                                            public final void run() {
+                                                Slog.i("RealTimeTokenService", "Time up: Check all tokens");
+                                                RealTimeTokenService.this.checkAllTokenExpiry();
+                                            }
+                                        };
+                                        this.this$0.mTimerObserve = new Timer();
+                                        RealTimeTokenService realTimeTokenService3 = this.this$0;
+                                        realTimeTokenService3.mTimerObserve.schedule(realTimeTokenService3.mTimerTask, 0L, 21600000L);
+                                        break;
+                                    }
+                                } catch (Exception e2) {
+                                    e2.printStackTrace();
+                                    return;
+                                }
+                            }
+                        } catch (Exception e3) {
+                            e3.printStackTrace();
+                            return;
+                        }
+                        e3.printStackTrace();
+                        break;
+                    case 1:
+                        intent.getAction();
+                        Slog.i("RealTimeTokenService", "Time has changed");
+                        RealTimeTokenService realTimeTokenService4 = this.this$0;
+                        Context context3 = RealTimeTokenService.mContext;
+                        realTimeTokenService4.getClass();
+                        realTimeTokenService4.currentTime = System.currentTimeMillis();
+                        realTimeTokenService4.elapsedTime = SystemClock.elapsedRealtime();
+                        RealTimeTokenService realTimeTokenService5 = this.this$0;
+                        long j = (realTimeTokenService5.bootingTime + realTimeTokenService5.elapsedTime) / 1000;
+                        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m("setUserTime: ", j, "|");
+                        m.append(this.this$0.bootingTime);
+                        m.append("|");
+                        m.append(this.this$0.elapsedTime);
+                        Slog.i("RealTimeTokenService", m.toString());
+                        int userTime = this.this$0.setUserTime(j);
+                        if (userTime < 0) {
+                            NandswapManager$$ExternalSyntheticOutline0.m(userTime, "setUserTime failed: ", "RealTimeTokenService");
+                            break;
+                        }
+                        break;
+                    default:
+                        Slog.i("RealTimeTokenService", "Boot Completed Receiver");
+                        RealTimeTokenService realTimeTokenService6 = this.this$0;
+                        Context context4 = RealTimeTokenService.mContext;
+                        realTimeTokenService6.getClass();
+                        realTimeTokenService6.currentTime = System.currentTimeMillis();
+                        realTimeTokenService6.elapsedTime = SystemClock.elapsedRealtime();
+                        RealTimeTokenService realTimeTokenService7 = this.this$0;
+                        realTimeTokenService7.bootingTime = realTimeTokenService7.currentTime - realTimeTokenService7.elapsedTime;
+                        realTimeTokenService7.initTokenStorage();
+                        if (!RealTimeTokenService.m78$$Nest$misNetworkAvailable(this.this$0, context2) && this.this$0.getActiveTokenNumber() > 0) {
+                            try {
+                                Timer timer2 = this.this$0.mTimerObserve;
+                                if (timer2 != null) {
+                                    timer2.cancel();
+                                    this.this$0.mTimerObserve = null;
+                                }
+                                final RealTimeTokenService realTimeTokenService8 = this.this$0;
+                                realTimeTokenService8.getClass();
+                                realTimeTokenService8.mTimerTask = new TimerTask() { // from class: com.android.server.RealTimeTokenService.1
+                                    @Override // java.util.TimerTask, java.lang.Runnable
+                                    public final void run() {
+                                        Slog.i("RealTimeTokenService", "Time up: Check all tokens");
+                                        RealTimeTokenService.this.checkAllTokenExpiry();
+                                    }
+                                };
+                                this.this$0.mTimerObserve = new Timer();
+                                RealTimeTokenService realTimeTokenService9 = this.this$0;
+                                realTimeTokenService9.mTimerObserve.schedule(realTimeTokenService9.mTimerTask, 0L, 21600000L);
+                                break;
+                            } catch (Exception e4) {
+                                e4.printStackTrace();
+                            }
+                        }
+                        break;
                 }
-                RealTimeTokenService.this.mTimerObserve = null;
-                return;
-            } catch (Exception e3) {
-                e3.printStackTrace();
             }
-            e3.printStackTrace();
-        }
-    };
-    public final BroadcastReceiver mTimeChangedReceiver = new BroadcastReceiver() { // from class: com.android.server.RealTimeTokenService.3
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            intent.getAction();
-            Slog.i("RealTimeTokenService", "Time has changed");
-            RealTimeTokenService.this.getSystemTime();
-            long j = (RealTimeTokenService.this.bootingTime + RealTimeTokenService.this.elapsedTime) / 1000;
-            Slog.i("RealTimeTokenService", "setUserTime: " + j + "|" + RealTimeTokenService.this.bootingTime + "|" + RealTimeTokenService.this.elapsedTime);
-            int userTime = RealTimeTokenService.this.setUserTime(j);
-            if (userTime < 0) {
-                Slog.e("RealTimeTokenService", "setUserTime failed: " + userTime);
+        };
+        final int i3 = 2;
+        BroadcastReceiver broadcastReceiver3 = new BroadcastReceiver(this) { // from class: com.android.server.RealTimeTokenService.2
+            public final /* synthetic */ RealTimeTokenService this$0;
+
+            {
+                this.this$0 = this;
             }
-        }
-    };
-    public final BroadcastReceiver mBootCompletedReceiver = new BroadcastReceiver() { // from class: com.android.server.RealTimeTokenService.4
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            Slog.i("RealTimeTokenService", "Boot Completed Receiver");
-            RealTimeTokenService.this.getSystemTime();
-            RealTimeTokenService realTimeTokenService = RealTimeTokenService.this;
-            realTimeTokenService.bootingTime = realTimeTokenService.currentTime - RealTimeTokenService.this.elapsedTime;
-            RealTimeTokenService.this.initTokenStorage();
-            if (RealTimeTokenService.this.isNetworkAvailable(context) || RealTimeTokenService.this.getActiveTokenNumber() <= 0) {
-                return;
-            }
-            try {
-                if (RealTimeTokenService.this.mTimerObserve != null) {
-                    RealTimeTokenService.this.mTimerObserve.cancel();
-                    RealTimeTokenService.this.mTimerObserve = null;
+
+            /* JADX WARN: Type inference failed for: r8v13, types: [com.android.server.RealTimeTokenService$1] */
+            /* JADX WARN: Type inference failed for: r8v4, types: [com.android.server.RealTimeTokenService$1] */
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                switch (i3) {
+                    case 0:
+                        Slog.i("RealTimeTokenService", "Broadcast NetWork received:" + intent.getAction());
+                        try {
+                            if (RealTimeTokenService.m78$$Nest$misNetworkAvailable(this.this$0, context2) || this.this$0.getActiveTokenNumber() <= 0) {
+                                Slog.i("RealTimeTokenService", "Stop RTTS Time Observer");
+                                try {
+                                    Timer timer = this.this$0.mTimerObserve;
+                                    if (timer != null) {
+                                        timer.cancel();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                this.this$0.mTimerObserve = null;
+                                break;
+                            } else {
+                                Slog.i("RealTimeTokenService", "Start RTTS Time Observer");
+                                RealTimeTokenService realTimeTokenService = this.this$0;
+                                realTimeTokenService.getClass();
+                                realTimeTokenService.currentTime = System.currentTimeMillis();
+                                realTimeTokenService.elapsedTime = SystemClock.elapsedRealtime();
+                                try {
+                                    final RealTimeTokenService realTimeTokenService2 = this.this$0;
+                                    if (realTimeTokenService2.mTimerObserve == null) {
+                                        realTimeTokenService2.mTimerTask = new TimerTask() { // from class: com.android.server.RealTimeTokenService.1
+                                            @Override // java.util.TimerTask, java.lang.Runnable
+                                            public final void run() {
+                                                Slog.i("RealTimeTokenService", "Time up: Check all tokens");
+                                                RealTimeTokenService.this.checkAllTokenExpiry();
+                                            }
+                                        };
+                                        this.this$0.mTimerObserve = new Timer();
+                                        RealTimeTokenService realTimeTokenService3 = this.this$0;
+                                        realTimeTokenService3.mTimerObserve.schedule(realTimeTokenService3.mTimerTask, 0L, 21600000L);
+                                        break;
+                                    }
+                                } catch (Exception e2) {
+                                    e2.printStackTrace();
+                                    return;
+                                }
+                            }
+                        } catch (Exception e3) {
+                            e3.printStackTrace();
+                            return;
+                        }
+                        e3.printStackTrace();
+                        break;
+                    case 1:
+                        intent.getAction();
+                        Slog.i("RealTimeTokenService", "Time has changed");
+                        RealTimeTokenService realTimeTokenService4 = this.this$0;
+                        Context context3 = RealTimeTokenService.mContext;
+                        realTimeTokenService4.getClass();
+                        realTimeTokenService4.currentTime = System.currentTimeMillis();
+                        realTimeTokenService4.elapsedTime = SystemClock.elapsedRealtime();
+                        RealTimeTokenService realTimeTokenService5 = this.this$0;
+                        long j = (realTimeTokenService5.bootingTime + realTimeTokenService5.elapsedTime) / 1000;
+                        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m("setUserTime: ", j, "|");
+                        m.append(this.this$0.bootingTime);
+                        m.append("|");
+                        m.append(this.this$0.elapsedTime);
+                        Slog.i("RealTimeTokenService", m.toString());
+                        int userTime = this.this$0.setUserTime(j);
+                        if (userTime < 0) {
+                            NandswapManager$$ExternalSyntheticOutline0.m(userTime, "setUserTime failed: ", "RealTimeTokenService");
+                            break;
+                        }
+                        break;
+                    default:
+                        Slog.i("RealTimeTokenService", "Boot Completed Receiver");
+                        RealTimeTokenService realTimeTokenService6 = this.this$0;
+                        Context context4 = RealTimeTokenService.mContext;
+                        realTimeTokenService6.getClass();
+                        realTimeTokenService6.currentTime = System.currentTimeMillis();
+                        realTimeTokenService6.elapsedTime = SystemClock.elapsedRealtime();
+                        RealTimeTokenService realTimeTokenService7 = this.this$0;
+                        realTimeTokenService7.bootingTime = realTimeTokenService7.currentTime - realTimeTokenService7.elapsedTime;
+                        realTimeTokenService7.initTokenStorage();
+                        if (!RealTimeTokenService.m78$$Nest$misNetworkAvailable(this.this$0, context2) && this.this$0.getActiveTokenNumber() > 0) {
+                            try {
+                                Timer timer2 = this.this$0.mTimerObserve;
+                                if (timer2 != null) {
+                                    timer2.cancel();
+                                    this.this$0.mTimerObserve = null;
+                                }
+                                final RealTimeTokenService realTimeTokenService8 = this.this$0;
+                                realTimeTokenService8.getClass();
+                                realTimeTokenService8.mTimerTask = new TimerTask() { // from class: com.android.server.RealTimeTokenService.1
+                                    @Override // java.util.TimerTask, java.lang.Runnable
+                                    public final void run() {
+                                        Slog.i("RealTimeTokenService", "Time up: Check all tokens");
+                                        RealTimeTokenService.this.checkAllTokenExpiry();
+                                    }
+                                };
+                                this.this$0.mTimerObserve = new Timer();
+                                RealTimeTokenService realTimeTokenService9 = this.this$0;
+                                realTimeTokenService9.mTimerObserve.schedule(realTimeTokenService9.mTimerTask, 0L, 21600000L);
+                                break;
+                            } catch (Exception e4) {
+                                e4.printStackTrace();
+                            }
+                        }
+                        break;
                 }
-                RealTimeTokenService.this.makeTimerTask();
-                RealTimeTokenService.this.mTimerObserve = new Timer();
-                RealTimeTokenService.this.mTimerObserve.schedule(RealTimeTokenService.this.mTimerTask, 0L, 21600000L);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        };
+        mContext = context;
+        try {
+            Slog.i("RealTimeTokenService", "register for NetWork Broadcasts");
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+            mContext.registerReceiver(broadcastReceiver, intentFilter);
+            Slog.i("RealTimeTokenService", "register for Boot Completed Broadcasts");
+            IntentFilter intentFilter2 = new IntentFilter();
+            intentFilter2.addAction("android.intent.action.BOOT_COMPLETED");
+            mContext.registerReceiver(broadcastReceiver3, intentFilter2);
+            Slog.i("RealTimeTokenService", "register for TimeChange Broadcasts");
+            IntentFilter intentFilter3 = new IntentFilter();
+            intentFilter3.addAction("android.intent.action.TIME_SET");
+            intentFilter3.addAction("android.intent.action.TIMEZONE_CHANGED");
+            intentFilter3.addAction("android.intent.action.DATE_CHANGED");
+            mContext.registerReceiver(broadcastReceiver2, intentFilter3);
+        } catch (Throwable th) {
+            th.printStackTrace();
         }
-    };
+    }
 
     public native int checkAllTokenExpiry();
 
     public native int checkTokenExpiry(long j);
+
+    public final int checkTokenInfoExpiry(long j) {
+        Slog.i("RealTimeTokenService", "IRealTimeTokenService - checkTokenExpiry");
+        return checkTokenExpiry(j);
+    }
 
     public native int getActiveTokenNumber();
 
@@ -106,92 +431,24 @@ public final class RealTimeTokenService extends IRealTimeTokenService.Stub {
 
     public native int registerToken(long j, long j2);
 
-    public native int setUserTime(long j);
-
-    public native int unregisterAllToken();
-
-    public native int unregisterToken(long j);
-
-    static {
-        System.loadLibrary("rtts_jni");
-    }
-
-    public RealTimeTokenService(Context context) {
-        setContext(context);
-        try {
-            registerForNetWorkBroadcasts();
-            registerForBootCompleteds();
-            registerForTimeChangeBroadcasts();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
-    }
-
-    public static void setContext(Context context) {
-        mContext = context;
-    }
-
-    public int registerTokenInfo(long j, long j2) {
+    public final int registerTokenInfo(long j, long j2) {
         Slog.i("RealTimeTokenService", "IRealTimeTokenService - registerToken");
         return registerToken(j, j2);
     }
 
-    public int checkTokenInfoExpiry(long j) {
-        Slog.i("RealTimeTokenService", "IRealTimeTokenService - checkTokenExpiry");
-        return checkTokenExpiry(j);
-    }
+    public native int setUserTime(long j);
 
-    public int unregisterTokenInfo(long j) {
-        Slog.i("RealTimeTokenService", "IRealTimeTokenService - unregisterToken");
-        return unregisterToken(j);
-    }
+    public native int unregisterAllToken();
 
-    public int unregisterAllTokenInfo() {
+    public final int unregisterAllTokenInfo() {
         Slog.i("RealTimeTokenService", "IRealTimeTokenService - unregisterAllToken");
         return unregisterAllToken();
     }
 
-    public final void getSystemTime() {
-        this.currentTime = System.currentTimeMillis();
-        this.elapsedTime = SystemClock.elapsedRealtime();
-    }
+    public native int unregisterToken(long j);
 
-    public void makeTimerTask() {
-        this.mTimerTask = new TimerTask() { // from class: com.android.server.RealTimeTokenService.1
-            @Override // java.util.TimerTask, java.lang.Runnable
-            public void run() {
-                Slog.i("RealTimeTokenService", "Time up: Check all tokens");
-                RealTimeTokenService.this.checkAllTokenExpiry();
-            }
-        };
-    }
-
-    public final boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService("connectivity");
-        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    public final void registerForNetWorkBroadcasts() {
-        Slog.i("RealTimeTokenService", "register for NetWork Broadcasts");
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        mContext.registerReceiver(this.mNetWorkReceiver, intentFilter);
-    }
-
-    public final void registerForBootCompleteds() {
-        Slog.i("RealTimeTokenService", "register for Boot Completed Broadcasts");
-        IntentFilter intentFilter = new IntentFilter("noConnectivity");
-        intentFilter.addAction("android.intent.action.BOOT_COMPLETED");
-        mContext.registerReceiver(this.mBootCompletedReceiver, intentFilter);
-    }
-
-    public final void registerForTimeChangeBroadcasts() {
-        Slog.i("RealTimeTokenService", "register for TimeChange Broadcasts");
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.TIME_SET");
-        intentFilter.addAction("android.intent.action.TIMEZONE_CHANGED");
-        intentFilter.addAction("android.intent.action.DATE_CHANGED");
-        mContext.registerReceiver(this.mTimeChangedReceiver, intentFilter);
+    public final int unregisterTokenInfo(long j) {
+        Slog.i("RealTimeTokenService", "IRealTimeTokenService - unregisterToken");
+        return unregisterToken(j);
     }
 }

@@ -3,38 +3,91 @@ package com.android.server.om;
 import android.content.om.OverlayInfo;
 import android.content.om.OverlayableInfo;
 import android.net.Uri;
+import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Pair;
-import android.util.Slog;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.CollectionUtils;
+import com.android.server.SystemConfig;
+import com.android.server.om.OverlayManagerService;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.PackageState;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class OverlayActorEnforcer {
-    public final PackageManagerHelper mPackageManager;
+public final class OverlayActorEnforcer {
+    public final OverlayManagerService.PackageManagerHelperImpl mPackageManager;
 
-    /* loaded from: classes2.dex */
-    public enum ActorState {
-        TARGET_NOT_FOUND,
-        NO_PACKAGES_FOR_UID,
-        MISSING_TARGET_OVERLAYABLE_NAME,
-        MISSING_LEGACY_PERMISSION,
-        ERROR_READING_OVERLAYABLE,
-        UNABLE_TO_GET_TARGET_OVERLAYABLE,
-        MISSING_OVERLAYABLE,
-        INVALID_OVERLAYABLE_ACTOR_NAME,
-        NO_NAMED_ACTORS,
-        MISSING_NAMESPACE,
-        MISSING_ACTOR_NAME,
-        ACTOR_NOT_FOUND,
-        ACTOR_NOT_PREINSTALLED,
-        INVALID_ACTOR,
-        ALLOWED
+    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ActorState {
+        public static final /* synthetic */ ActorState[] $VALUES;
+        public static final ActorState ACTOR_NOT_FOUND;
+        public static final ActorState ACTOR_NOT_PREINSTALLED;
+        public static final ActorState ALLOWED;
+        public static final ActorState ERROR_READING_OVERLAYABLE;
+        public static final ActorState INVALID_ACTOR;
+        public static final ActorState INVALID_OVERLAYABLE_ACTOR_NAME;
+        public static final ActorState MISSING_ACTOR_NAME;
+        public static final ActorState MISSING_LEGACY_PERMISSION;
+        public static final ActorState MISSING_NAMESPACE;
+        public static final ActorState MISSING_OVERLAYABLE;
+        public static final ActorState MISSING_TARGET_OVERLAYABLE_NAME;
+        public static final ActorState NO_NAMED_ACTORS;
+        public static final ActorState NO_PACKAGES_FOR_UID;
+        public static final ActorState TARGET_NOT_FOUND;
+        public static final ActorState UNABLE_TO_GET_TARGET_OVERLAYABLE;
+
+        static {
+            ActorState actorState = new ActorState("TARGET_NOT_FOUND", 0);
+            TARGET_NOT_FOUND = actorState;
+            ActorState actorState2 = new ActorState("NO_PACKAGES_FOR_UID", 1);
+            NO_PACKAGES_FOR_UID = actorState2;
+            ActorState actorState3 = new ActorState("MISSING_TARGET_OVERLAYABLE_NAME", 2);
+            MISSING_TARGET_OVERLAYABLE_NAME = actorState3;
+            ActorState actorState4 = new ActorState("MISSING_LEGACY_PERMISSION", 3);
+            MISSING_LEGACY_PERMISSION = actorState4;
+            ActorState actorState5 = new ActorState("ERROR_READING_OVERLAYABLE", 4);
+            ERROR_READING_OVERLAYABLE = actorState5;
+            ActorState actorState6 = new ActorState("UNABLE_TO_GET_TARGET_OVERLAYABLE", 5);
+            UNABLE_TO_GET_TARGET_OVERLAYABLE = actorState6;
+            ActorState actorState7 = new ActorState("MISSING_OVERLAYABLE", 6);
+            MISSING_OVERLAYABLE = actorState7;
+            ActorState actorState8 = new ActorState("INVALID_OVERLAYABLE_ACTOR_NAME", 7);
+            INVALID_OVERLAYABLE_ACTOR_NAME = actorState8;
+            ActorState actorState9 = new ActorState("NO_NAMED_ACTORS", 8);
+            NO_NAMED_ACTORS = actorState9;
+            ActorState actorState10 = new ActorState("MISSING_NAMESPACE", 9);
+            MISSING_NAMESPACE = actorState10;
+            ActorState actorState11 = new ActorState("MISSING_ACTOR_NAME", 10);
+            MISSING_ACTOR_NAME = actorState11;
+            ActorState actorState12 = new ActorState("ACTOR_NOT_FOUND", 11);
+            ACTOR_NOT_FOUND = actorState12;
+            ActorState actorState13 = new ActorState("ACTOR_NOT_PREINSTALLED", 12);
+            ACTOR_NOT_PREINSTALLED = actorState13;
+            ActorState actorState14 = new ActorState("INVALID_ACTOR", 13);
+            INVALID_ACTOR = actorState14;
+            ActorState actorState15 = new ActorState("ALLOWED", 14);
+            ALLOWED = actorState15;
+            $VALUES = new ActorState[]{actorState, actorState2, actorState3, actorState4, actorState5, actorState6, actorState7, actorState8, actorState9, actorState10, actorState11, actorState12, actorState13, actorState14, actorState15};
+        }
+
+        public static ActorState valueOf(String str) {
+            return (ActorState) Enum.valueOf(ActorState.class, str);
+        }
+
+        public static ActorState[] values() {
+            return (ActorState[]) $VALUES.clone();
+        }
+    }
+
+    public OverlayActorEnforcer(OverlayManagerService.PackageManagerHelperImpl packageManagerHelperImpl) {
+        this.mPackageManager = packageManagerHelperImpl;
     }
 
     public static Pair getPackageNameForActor(String str, Map map) {
@@ -52,113 +105,80 @@ public class OverlayActorEnforcer {
             return Pair.create(null, ActorState.MISSING_NAMESPACE);
         }
         String str2 = (String) map2.get(pathSegments.get(0));
-        if (TextUtils.isEmpty(str2)) {
-            return Pair.create(null, ActorState.MISSING_ACTOR_NAME);
-        }
-        return Pair.create(str2, ActorState.ALLOWED);
-    }
-
-    public OverlayActorEnforcer(PackageManagerHelper packageManagerHelper) {
-        this.mPackageManager = packageManagerHelper;
-    }
-
-    public void enforceActor(OverlayInfo overlayInfo, String str, int i, int i2) {
-        String str2;
-        ActorState isAllowedActor = isAllowedActor(str, overlayInfo, i, i2);
-        if (isAllowedActor == ActorState.ALLOWED) {
-            return;
-        }
-        String str3 = overlayInfo.targetOverlayableName;
-        StringBuilder sb = new StringBuilder();
-        sb.append("UID");
-        sb.append(i);
-        sb.append(" is not allowed to call ");
-        sb.append(str);
-        sb.append(" for ");
-        if (TextUtils.isEmpty(str3)) {
-            str2 = "";
-        } else {
-            str2 = str3 + " in ";
-        }
-        sb.append(str2);
-        sb.append(overlayInfo.targetPackageName);
-        sb.append(" for user ");
-        sb.append(i2);
-        String sb2 = sb.toString();
-        Slog.w("OverlayManager", sb2 + " because " + isAllowedActor);
-        throw new SecurityException(sb2);
+        return TextUtils.isEmpty(str2) ? Pair.create(null, ActorState.MISSING_ACTOR_NAME) : Pair.create(str2, ActorState.ALLOWED);
     }
 
     public ActorState isAllowedActor(String str, OverlayInfo overlayInfo, int i, int i2) {
+        ActorState actorState = ActorState.ALLOWED;
         if (i == 0 || i == 1000) {
-            return ActorState.ALLOWED;
-        }
-        if (!SemSamsungThemeUtils.isOperationPermitted(i, overlayInfo)) {
-            Slog.e("OverlayManager", "Operation not permitted for " + i + " " + overlayInfo);
-            return ActorState.INVALID_ACTOR;
+            return actorState;
         }
         String str2 = overlayInfo.targetPackageName;
-        PackageState packageStateForUser = this.mPackageManager.getPackageStateForUser(str2, i2);
+        OverlayManagerService.PackageManagerHelperImpl packageManagerHelperImpl = this.mPackageManager;
+        PackageState packageStateForUser = packageManagerHelperImpl.getPackageStateForUser(i2, str2);
+        String[] strArr = null;
         AndroidPackage androidPackage = packageStateForUser == null ? null : packageStateForUser.getAndroidPackage();
         if (androidPackage == null) {
             return ActorState.TARGET_NOT_FOUND;
         }
         if (androidPackage.isDebuggable()) {
-            return ActorState.ALLOWED;
+            return actorState;
         }
-        String[] packagesForUid = this.mPackageManager.getPackagesForUid(i);
-        if (ArrayUtils.isEmpty(packagesForUid)) {
+        try {
+            strArr = packageManagerHelperImpl.mPackageManager.getPackagesForUid(i);
+        } catch (RemoteException unused) {
+        }
+        if (ArrayUtils.isEmpty(strArr)) {
             return ActorState.NO_PACKAGES_FOR_UID;
         }
-        if (ArrayUtils.contains(packagesForUid, str2)) {
-            return ActorState.ALLOWED;
+        if (ArrayUtils.contains(strArr, str2)) {
+            return actorState;
         }
         String str3 = overlayInfo.targetOverlayableName;
-        if (TextUtils.isEmpty(str3)) {
+        boolean isEmpty = TextUtils.isEmpty(str3);
+        ActorState actorState2 = ActorState.MISSING_LEGACY_PERMISSION;
+        if (isEmpty) {
             try {
-                if (this.mPackageManager.doesTargetDefineOverlayable(str2, i2)) {
+                if (packageManagerHelperImpl.doesTargetDefineOverlayable(i2, str2)) {
                     return ActorState.MISSING_TARGET_OVERLAYABLE_NAME;
                 }
                 try {
-                    this.mPackageManager.enforcePermission("android.permission.CHANGE_OVERLAY_PACKAGES", str);
-                    return ActorState.ALLOWED;
-                } catch (SecurityException unused) {
-                    return ActorState.MISSING_LEGACY_PERMISSION;
+                    packageManagerHelperImpl.mContext.enforceCallingOrSelfPermission("android.permission.CHANGE_OVERLAY_PACKAGES", str);
+                    return actorState;
+                } catch (SecurityException unused2) {
+                    return actorState2;
                 }
-            } catch (IOException unused2) {
+            } catch (IOException unused3) {
                 return ActorState.ERROR_READING_OVERLAYABLE;
             }
         }
         try {
-            OverlayableInfo overlayableForTarget = this.mPackageManager.getOverlayableForTarget(str2, str3, i2);
+            OverlayableInfo overlayableForTarget = packageManagerHelperImpl.getOverlayableForTarget(i2, str2, str3);
             if (overlayableForTarget == null) {
                 return ActorState.MISSING_OVERLAYABLE;
             }
             String str4 = overlayableForTarget.actor;
             if (TextUtils.isEmpty(str4)) {
                 try {
-                    this.mPackageManager.enforcePermission("android.permission.CHANGE_OVERLAY_PACKAGES", str);
-                    return ActorState.ALLOWED;
-                } catch (SecurityException unused3) {
-                    return ActorState.MISSING_LEGACY_PERMISSION;
+                    packageManagerHelperImpl.mContext.enforceCallingOrSelfPermission("android.permission.CHANGE_OVERLAY_PACKAGES", str);
+                    return actorState;
+                } catch (SecurityException unused4) {
+                    return actorState2;
                 }
             }
-            Pair packageNameForActor = getPackageNameForActor(str4, this.mPackageManager.getNamedActors());
-            ActorState actorState = (ActorState) packageNameForActor.second;
-            ActorState actorState2 = ActorState.ALLOWED;
-            if (actorState != actorState2) {
-                return actorState;
+            Map map = SystemConfig.getInstance().mNamedActors;
+            if (map == null) {
+                map = Collections.emptyMap();
+            }
+            Pair packageNameForActor = getPackageNameForActor(str4, map);
+            ActorState actorState3 = (ActorState) packageNameForActor.second;
+            if (actorState3 != actorState) {
+                return actorState3;
             }
             String str5 = (String) packageNameForActor.first;
-            PackageState packageStateForUser2 = this.mPackageManager.getPackageStateForUser(str5, i2);
-            if (packageStateForUser2 == null || packageStateForUser2.getAndroidPackage() == null) {
-                return ActorState.ACTOR_NOT_FOUND;
-            }
-            if (packageStateForUser2.isSystem()) {
-                return ArrayUtils.contains(packagesForUid, str5) ? actorState2 : ActorState.INVALID_ACTOR;
-            }
-            return ActorState.ACTOR_NOT_PREINSTALLED;
-        } catch (IOException unused4) {
+            PackageState packageStateForUser2 = packageManagerHelperImpl.getPackageStateForUser(i2, str5);
+            return (packageStateForUser2 == null || packageStateForUser2.getAndroidPackage() == null) ? ActorState.ACTOR_NOT_FOUND : !packageStateForUser2.isSystem() ? ActorState.ACTOR_NOT_PREINSTALLED : ArrayUtils.contains(strArr, str5) ? actorState : ActorState.INVALID_ACTOR;
+        } catch (IOException unused5) {
             return ActorState.UNABLE_TO_GET_TARGET_OVERLAYABLE;
         }
     }

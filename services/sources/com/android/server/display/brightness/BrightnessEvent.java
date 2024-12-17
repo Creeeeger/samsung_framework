@@ -1,17 +1,26 @@
 package com.android.server.display.brightness;
 
 import android.hardware.display.BrightnessInfo;
+import android.hardware.display.DisplayManagerInternal;
 import android.os.SystemClock;
-import android.util.TimeUtils;
-import com.android.server.display.DisplayPowerController2;
+import android.view.Display;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.display.config.DisplayBrightnessMappingConfig;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class BrightnessEvent {
+    public static final SimpleDateFormat FORMAT = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
     public int mAdjustmentFlags;
+    public int mAutoBrightnessMode;
     public boolean mAutomaticBrightnessEnabled;
     public float mBrightness;
     public String mDisplayBrightnessStrategyName;
     public int mDisplayId;
+    public int mDisplayPolicy;
+    public int mDisplayState;
     public int mFlags;
     public float mHbmMax;
     public int mHbmMode;
@@ -28,44 +37,63 @@ public final class BrightnessEvent {
     public long mTime;
     public boolean mWasShortTermModelActive;
 
-    public BrightnessEvent(BrightnessEvent brightnessEvent) {
-        copyFrom(brightnessEvent);
-    }
-
     public BrightnessEvent(int i) {
         this.mDisplayId = i;
         reset();
     }
 
-    public void copyFrom(BrightnessEvent brightnessEvent) {
-        this.mReason.set(brightnessEvent.getReason());
-        this.mDisplayId = brightnessEvent.getDisplayId();
-        this.mPhysicalDisplayId = brightnessEvent.getPhysicalDisplayId();
-        this.mTime = brightnessEvent.getTime();
-        this.mLux = brightnessEvent.getLux();
-        this.mPreThresholdLux = brightnessEvent.getPreThresholdLux();
-        this.mInitialBrightness = brightnessEvent.getInitialBrightness();
-        this.mBrightness = brightnessEvent.getBrightness();
-        this.mRecommendedBrightness = brightnessEvent.getRecommendedBrightness();
-        this.mPreThresholdBrightness = brightnessEvent.getPreThresholdBrightness();
-        this.mHbmMode = brightnessEvent.getHbmMode();
-        this.mHbmMax = brightnessEvent.getHbmMax();
-        this.mRbcStrength = brightnessEvent.getRbcStrength();
-        this.mThermalMax = brightnessEvent.getThermalMax();
-        this.mPowerFactor = brightnessEvent.getPowerFactor();
-        this.mWasShortTermModelActive = brightnessEvent.wasShortTermModelActive();
-        this.mFlags = brightnessEvent.getFlags();
-        this.mAdjustmentFlags = brightnessEvent.getAdjustmentFlags();
-        this.mAutomaticBrightnessEnabled = brightnessEvent.isAutomaticBrightnessEnabled();
-        this.mDisplayBrightnessStrategyName = brightnessEvent.getDisplayBrightnessStrategyName();
+    public BrightnessEvent(BrightnessEvent brightnessEvent) {
+        copyFrom(brightnessEvent);
     }
 
-    public void reset() {
+    public final void copyFrom(BrightnessEvent brightnessEvent) {
+        this.mReason.set(brightnessEvent.mReason);
+        this.mDisplayId = brightnessEvent.mDisplayId;
+        this.mPhysicalDisplayId = brightnessEvent.mPhysicalDisplayId;
+        this.mDisplayState = brightnessEvent.mDisplayState;
+        this.mDisplayPolicy = brightnessEvent.mDisplayPolicy;
+        this.mTime = brightnessEvent.mTime;
+        this.mLux = brightnessEvent.mLux;
+        this.mPreThresholdLux = brightnessEvent.mPreThresholdLux;
+        this.mInitialBrightness = brightnessEvent.mInitialBrightness;
+        this.mBrightness = brightnessEvent.mBrightness;
+        this.mRecommendedBrightness = brightnessEvent.mRecommendedBrightness;
+        this.mPreThresholdBrightness = brightnessEvent.mPreThresholdBrightness;
+        this.mHbmMode = brightnessEvent.mHbmMode;
+        this.mHbmMax = brightnessEvent.mHbmMax;
+        this.mRbcStrength = brightnessEvent.mRbcStrength;
+        this.mThermalMax = brightnessEvent.mThermalMax;
+        this.mPowerFactor = brightnessEvent.mPowerFactor;
+        this.mWasShortTermModelActive = brightnessEvent.mWasShortTermModelActive;
+        this.mFlags = brightnessEvent.mFlags;
+        this.mAdjustmentFlags = brightnessEvent.mAdjustmentFlags;
+        this.mAutomaticBrightnessEnabled = brightnessEvent.mAutomaticBrightnessEnabled;
+        this.mDisplayBrightnessStrategyName = brightnessEvent.mDisplayBrightnessStrategyName;
+        this.mAutoBrightnessMode = brightnessEvent.mAutoBrightnessMode;
+    }
+
+    public final boolean equalsMainData(BrightnessEvent brightnessEvent) {
+        return this.mReason.equals(brightnessEvent.mReason) && this.mDisplayId == brightnessEvent.mDisplayId && this.mPhysicalDisplayId.equals(brightnessEvent.mPhysicalDisplayId) && this.mDisplayState == brightnessEvent.mDisplayState && this.mDisplayPolicy == brightnessEvent.mDisplayPolicy && Float.floatToRawIntBits(this.mLux) == Float.floatToRawIntBits(brightnessEvent.mLux) && Float.floatToRawIntBits(this.mPreThresholdLux) == Float.floatToRawIntBits(brightnessEvent.mPreThresholdLux) && Float.floatToRawIntBits(this.mBrightness) == Float.floatToRawIntBits(brightnessEvent.mBrightness) && Float.floatToRawIntBits(this.mRecommendedBrightness) == Float.floatToRawIntBits(brightnessEvent.mRecommendedBrightness) && Float.floatToRawIntBits(this.mPreThresholdBrightness) == Float.floatToRawIntBits(brightnessEvent.mPreThresholdBrightness) && this.mHbmMode == brightnessEvent.mHbmMode && Float.floatToRawIntBits(this.mHbmMax) == Float.floatToRawIntBits(brightnessEvent.mHbmMax) && this.mRbcStrength == brightnessEvent.mRbcStrength && Float.floatToRawIntBits(this.mThermalMax) == Float.floatToRawIntBits(brightnessEvent.mThermalMax) && Float.floatToRawIntBits(this.mPowerFactor) == Float.floatToRawIntBits(brightnessEvent.mPowerFactor) && this.mWasShortTermModelActive == brightnessEvent.mWasShortTermModelActive && this.mFlags == brightnessEvent.mFlags && this.mAdjustmentFlags == brightnessEvent.mAdjustmentFlags && this.mAutomaticBrightnessEnabled == brightnessEvent.mAutomaticBrightnessEnabled && this.mDisplayBrightnessStrategyName.equals(brightnessEvent.mDisplayBrightnessStrategyName) && this.mAutoBrightnessMode == brightnessEvent.mAutoBrightnessMode;
+    }
+
+    public String flagsToString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append((this.mFlags & 8) != 0 ? "user_set " : "");
+        sb.append((this.mFlags & 1) != 0 ? "rbc " : "");
+        sb.append((this.mFlags & 2) != 0 ? "invalid_lux " : "");
+        sb.append((this.mFlags & 4) != 0 ? "doze_scale " : "");
+        sb.append((this.mFlags & 32) != 0 ? "low_power_mode " : "");
+        return sb.toString();
+    }
+
+    public final void reset() {
         this.mReason = new BrightnessReason();
         this.mTime = SystemClock.uptimeMillis();
         this.mPhysicalDisplayId = "";
-        this.mLux = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        this.mPreThresholdLux = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
+        this.mDisplayState = 0;
+        this.mDisplayPolicy = 0;
+        this.mLux = FullScreenMagnificationGestureHandler.MAX_SCALE;
+        this.mPreThresholdLux = FullScreenMagnificationGestureHandler.MAX_SCALE;
         this.mInitialBrightness = Float.NaN;
         this.mBrightness = Float.NaN;
         this.mRecommendedBrightness = Float.NaN;
@@ -80,17 +108,78 @@ public final class BrightnessEvent {
         this.mAdjustmentFlags = 0;
         this.mAutomaticBrightnessEnabled = true;
         this.mDisplayBrightnessStrategyName = "";
+        this.mAutoBrightnessMode = 0;
     }
 
-    public boolean equalsMainData(BrightnessEvent brightnessEvent) {
-        return this.mReason.equals(brightnessEvent.mReason) && this.mDisplayId == brightnessEvent.mDisplayId && this.mPhysicalDisplayId.equals(brightnessEvent.mPhysicalDisplayId) && Float.floatToRawIntBits(this.mLux) == Float.floatToRawIntBits(brightnessEvent.mLux) && Float.floatToRawIntBits(this.mPreThresholdLux) == Float.floatToRawIntBits(brightnessEvent.mPreThresholdLux) && Float.floatToRawIntBits(this.mBrightness) == Float.floatToRawIntBits(brightnessEvent.mBrightness) && Float.floatToRawIntBits(this.mRecommendedBrightness) == Float.floatToRawIntBits(brightnessEvent.mRecommendedBrightness) && Float.floatToRawIntBits(this.mPreThresholdBrightness) == Float.floatToRawIntBits(brightnessEvent.mPreThresholdBrightness) && this.mHbmMode == brightnessEvent.mHbmMode && Float.floatToRawIntBits(this.mHbmMax) == Float.floatToRawIntBits(brightnessEvent.mHbmMax) && this.mRbcStrength == brightnessEvent.mRbcStrength && Float.floatToRawIntBits(this.mThermalMax) == Float.floatToRawIntBits(brightnessEvent.mThermalMax) && Float.floatToRawIntBits(this.mPowerFactor) == Float.floatToRawIntBits(brightnessEvent.mPowerFactor) && this.mWasShortTermModelActive == brightnessEvent.mWasShortTermModelActive && this.mFlags == brightnessEvent.mFlags && this.mAdjustmentFlags == brightnessEvent.mAdjustmentFlags && this.mAutomaticBrightnessEnabled == brightnessEvent.mAutomaticBrightnessEnabled && this.mDisplayBrightnessStrategyName.equals(brightnessEvent.mDisplayBrightnessStrategyName);
+    public final void setAdjustmentFlags(int i) {
+        this.mAdjustmentFlags = i;
     }
 
-    public String toString(boolean z) {
+    public final void setAutomaticBrightnessEnabled(boolean z) {
+        this.mAutomaticBrightnessEnabled = z;
+    }
+
+    public final void setBrightness(float f) {
+        this.mBrightness = f;
+    }
+
+    public final void setDisplayBrightnessStrategyName(String str) {
+        this.mDisplayBrightnessStrategyName = str;
+    }
+
+    public final void setDisplayPolicy(int i) {
+        this.mDisplayPolicy = i;
+    }
+
+    public final void setDisplayState(int i) {
+        this.mDisplayState = i;
+    }
+
+    public final void setHbmMax(float f) {
+        this.mHbmMax = f;
+    }
+
+    public final void setHbmMode(int i) {
+        this.mHbmMode = i;
+    }
+
+    public final void setInitialBrightness(float f) {
+        this.mInitialBrightness = f;
+    }
+
+    public final void setPhysicalDisplayId(String str) {
+        this.mPhysicalDisplayId = str;
+    }
+
+    public final void setPowerFactor(float f) {
+        this.mPowerFactor = f;
+    }
+
+    public final void setRbcStrength() {
+        this.mRbcStrength = -1;
+    }
+
+    public final void setReason(BrightnessReason brightnessReason) {
+        this.mReason = brightnessReason;
+    }
+
+    public final void setTime(long j) {
+        this.mTime = j;
+    }
+
+    public final void setWasShortTermModelActive(boolean z) {
+        this.mWasShortTermModelActive = z;
+    }
+
+    public final String toString() {
+        return toString(true);
+    }
+
+    public final String toString(boolean z) {
         String str;
         StringBuilder sb = new StringBuilder();
         if (z) {
-            str = TimeUtils.formatForLogging(this.mTime) + " - ";
+            str = FORMAT.format(new Date(this.mTime)) + " - ";
         } else {
             str = "";
         }
@@ -99,6 +188,10 @@ public final class BrightnessEvent {
         sb.append(this.mDisplayId);
         sb.append(", physDisp=");
         sb.append(this.mPhysicalDisplayId);
+        sb.append(", displayState=");
+        sb.append(Display.stateToString(this.mDisplayState));
+        sb.append(", displayPolicy=");
+        sb.append(DisplayManagerInternal.DisplayPowerRequest.policyToString(this.mDisplayPolicy));
         sb.append(", brt=");
         sb.append(this.mBrightness);
         sb.append((this.mFlags & 8) != 0 ? "(user_set)" : "");
@@ -132,186 +225,8 @@ public final class BrightnessEvent {
         sb.append(this.mAutomaticBrightnessEnabled);
         sb.append(", strategy=");
         sb.append(this.mDisplayBrightnessStrategyName);
-        return sb.toString();
-    }
-
-    public String toString() {
-        return toString(true);
-    }
-
-    public BrightnessReason getReason() {
-        return this.mReason;
-    }
-
-    public void setReason(BrightnessReason brightnessReason) {
-        this.mReason = brightnessReason;
-    }
-
-    public long getTime() {
-        return this.mTime;
-    }
-
-    public void setTime(long j) {
-        this.mTime = j;
-    }
-
-    public int getDisplayId() {
-        return this.mDisplayId;
-    }
-
-    public String getPhysicalDisplayId() {
-        return this.mPhysicalDisplayId;
-    }
-
-    public void setPhysicalDisplayId(String str) {
-        this.mPhysicalDisplayId = str;
-    }
-
-    public float getLux() {
-        return this.mLux;
-    }
-
-    public void setLux(float f) {
-        this.mLux = f;
-    }
-
-    public float getPreThresholdLux() {
-        return this.mPreThresholdLux;
-    }
-
-    public void setPreThresholdLux(float f) {
-        this.mPreThresholdLux = f;
-    }
-
-    public float getInitialBrightness() {
-        return this.mInitialBrightness;
-    }
-
-    public void setInitialBrightness(float f) {
-        this.mInitialBrightness = f;
-    }
-
-    public float getBrightness() {
-        return this.mBrightness;
-    }
-
-    public void setBrightness(float f) {
-        this.mBrightness = f;
-    }
-
-    public float getRecommendedBrightness() {
-        return this.mRecommendedBrightness;
-    }
-
-    public void setRecommendedBrightness(float f) {
-        this.mRecommendedBrightness = f;
-    }
-
-    public float getPreThresholdBrightness() {
-        return this.mPreThresholdBrightness;
-    }
-
-    public void setPreThresholdBrightness(float f) {
-        this.mPreThresholdBrightness = f;
-    }
-
-    public int getHbmMode() {
-        return this.mHbmMode;
-    }
-
-    public void setHbmMode(int i) {
-        this.mHbmMode = i;
-    }
-
-    public float getHbmMax() {
-        return this.mHbmMax;
-    }
-
-    public void setHbmMax(float f) {
-        this.mHbmMax = f;
-    }
-
-    public int getRbcStrength() {
-        return this.mRbcStrength;
-    }
-
-    public void setRbcStrength(int i) {
-        this.mRbcStrength = i;
-    }
-
-    public boolean isRbcEnabled() {
-        return (this.mFlags & 1) != 0;
-    }
-
-    public float getThermalMax() {
-        return this.mThermalMax;
-    }
-
-    public void setThermalMax(float f) {
-        this.mThermalMax = f;
-    }
-
-    public float getPowerFactor() {
-        return this.mPowerFactor;
-    }
-
-    public void setPowerFactor(float f) {
-        this.mPowerFactor = f;
-    }
-
-    public boolean isLowPowerModeSet() {
-        return (this.mFlags & 32) != 0;
-    }
-
-    public boolean setWasShortTermModelActive(boolean z) {
-        this.mWasShortTermModelActive = z;
-        return z;
-    }
-
-    public boolean wasShortTermModelActive() {
-        return this.mWasShortTermModelActive;
-    }
-
-    public int getFlags() {
-        return this.mFlags;
-    }
-
-    public void setFlags(int i) {
-        this.mFlags = i;
-    }
-
-    public int getAdjustmentFlags() {
-        return this.mAdjustmentFlags;
-    }
-
-    public void setAdjustmentFlags(int i) {
-        this.mAdjustmentFlags = i;
-    }
-
-    public boolean isAutomaticBrightnessEnabled() {
-        return this.mAutomaticBrightnessEnabled;
-    }
-
-    public void setDisplayBrightnessStrategyName(String str) {
-        this.mDisplayBrightnessStrategyName = str;
-    }
-
-    public String getDisplayBrightnessStrategyName() {
-        return this.mDisplayBrightnessStrategyName;
-    }
-
-    public void setAutomaticBrightnessEnabled(boolean z) {
-        this.mAutomaticBrightnessEnabled = z;
-    }
-
-    public String flagsToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append((this.mFlags & 8) != 0 ? "user_set " : "");
-        sb.append((this.mFlags & 1) != 0 ? "rbc " : "");
-        sb.append((this.mFlags & 2) != 0 ? "invalid_lux " : "");
-        sb.append((this.mFlags & 4) != 0 ? "doze_scale " : "");
-        sb.append((this.mFlags & 16) != 0 ? "idle_curve " : "");
-        sb.append((this.mFlags & 32) != 0 ? "low_power_mode " : "");
+        sb.append(", autoBrightnessMode=");
+        sb.append(DisplayBrightnessMappingConfig.autoBrightnessModeToString(this.mAutoBrightnessMode));
         return sb.toString();
     }
 }

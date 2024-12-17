@@ -4,31 +4,21 @@ import android.content.Context;
 import android.os.UserHandle;
 import com.android.server.am.mars.filter.IFilter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SystemFilter implements IFilter {
+public final class SystemFilter implements IFilter {
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class SystemFilterHolder {
         public static final SystemFilter INSTANCE = new SystemFilter();
     }
 
-    public SystemFilter() {
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void deInit() {
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void deInit() {
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public void init(Context context) {
-    }
-
-    public static SystemFilter getInstance() {
-        return SystemFilterHolder.INSTANCE;
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public int filter(String str, int i, int i2, int i3) {
+    public final int filter(int i, int i2, int i3, String str) {
         if (i != 0) {
             i2 = UserHandle.getAppId(i2);
         }
@@ -36,5 +26,9 @@ public class SystemFilter implements IFilter {
             return 14;
         }
         return (i3 != 17 || i2 < 0 || i2 >= 10000) ? 0 : 14;
+    }
+
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void init(Context context) {
     }
 }

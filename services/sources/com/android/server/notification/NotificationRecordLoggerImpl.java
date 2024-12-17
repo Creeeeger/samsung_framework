@@ -1,39 +1,24 @@
 package com.android.server.notification;
 
-import com.android.internal.logging.InstanceId;
 import com.android.internal.logging.UiEventLogger;
-import com.android.internal.logging.UiEventLoggerImpl;
 import com.android.internal.util.FrameworkStatsLog;
 import com.android.server.notification.NotificationRecordLogger;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class NotificationRecordLoggerImpl implements NotificationRecordLogger {
-    public UiEventLogger mUiEventLogger = new UiEventLoggerImpl();
+public final class NotificationRecordLoggerImpl implements NotificationRecordLogger {
+    public UiEventLogger mUiEventLogger;
 
-    @Override // com.android.server.notification.NotificationRecordLogger
-    public void logNotificationPosted(NotificationRecordLogger.NotificationReported notificationReported) {
-        writeNotificationReportedAtom(notificationReported);
+    public static void writeNotificationReportedAtom(NotificationRecordLogger.NotificationReported notificationReported) {
+        int i = notificationReported.event_id;
+        long j = notificationReported.post_duration_millis;
+        FrameworkStatsLog.write(FrameworkStatsLog.NOTIFICATION_REPORTED, i, notificationReported.uid, notificationReported.package_name, notificationReported.instance_id, notificationReported.notification_id_hash, notificationReported.channel_id_hash, notificationReported.group_id_hash, notificationReported.group_instance_id, notificationReported.is_group_summary, notificationReported.category, notificationReported.style, notificationReported.num_people, notificationReported.position, notificationReported.importance, notificationReported.alerting, notificationReported.importance_source, notificationReported.importance_initial, notificationReported.importance_initial_source, notificationReported.importance_asst, notificationReported.assistant_hash, notificationReported.assistant_ranking_score, notificationReported.is_ongoing, notificationReported.is_foreground_service, notificationReported.timeout_millis, notificationReported.is_non_dismissible, j, notificationReported.fsi_state, notificationReported.is_locked, notificationReported.age_in_minutes);
     }
 
-    @Override // com.android.server.notification.NotificationRecordLogger
-    public void logNotificationAdjusted(NotificationRecord notificationRecord, int i, int i2, InstanceId instanceId) {
-        writeNotificationReportedAtom(new NotificationRecordLogger.NotificationReported(new NotificationRecordLogger.NotificationRecordPair(notificationRecord, null), NotificationRecordLogger.NotificationReportedEvent.NOTIFICATION_ADJUSTED, i, i2, instanceId));
-    }
-
-    public final void writeNotificationReportedAtom(NotificationRecordLogger.NotificationReported notificationReported) {
-        FrameworkStatsLog.write(FrameworkStatsLog.NOTIFICATION_REPORTED, notificationReported.event_id, notificationReported.uid, notificationReported.package_name, notificationReported.instance_id, notificationReported.notification_id_hash, notificationReported.channel_id_hash, notificationReported.group_id_hash, notificationReported.group_instance_id, notificationReported.is_group_summary, notificationReported.category, notificationReported.style, notificationReported.num_people, notificationReported.position, notificationReported.importance, notificationReported.alerting, notificationReported.importance_source, notificationReported.importance_initial, notificationReported.importance_initial_source, notificationReported.importance_asst, notificationReported.assistant_hash, notificationReported.assistant_ranking_score, notificationReported.is_ongoing, notificationReported.is_foreground_service, notificationReported.timeout_millis, notificationReported.is_non_dismissible, notificationReported.post_duration_millis);
-    }
-
-    @Override // com.android.server.notification.NotificationRecordLogger
-    public void log(UiEventLogger.UiEventEnum uiEventEnum, NotificationRecord notificationRecord) {
+    public final void log(UiEventLogger.UiEventEnum uiEventEnum, NotificationRecord notificationRecord) {
         if (notificationRecord == null) {
             return;
         }
-        this.mUiEventLogger.logWithInstanceId(uiEventEnum, notificationRecord.getUid(), notificationRecord.getSbn().getPackageName(), notificationRecord.getSbn().getInstanceId());
-    }
-
-    @Override // com.android.server.notification.NotificationRecordLogger
-    public void log(UiEventLogger.UiEventEnum uiEventEnum) {
-        this.mUiEventLogger.log(uiEventEnum);
+        this.mUiEventLogger.logWithInstanceId(uiEventEnum, notificationRecord.sbn.getUid(), notificationRecord.sbn.getPackageName(), notificationRecord.sbn.getInstanceId());
     }
 }

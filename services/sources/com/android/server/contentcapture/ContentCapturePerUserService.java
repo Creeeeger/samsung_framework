@@ -10,9 +10,12 @@ import android.content.Context;
 import android.content.pm.ActivityPresentationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.service.contentcapture.ActivityEvent;
@@ -20,37 +23,187 @@ import android.service.contentcapture.ContentCaptureService;
 import android.service.contentcapture.ContentCaptureServiceInfo;
 import android.service.contentcapture.FlushMetrics;
 import android.service.contentcapture.IContentCaptureServiceCallback;
-import android.service.contentcapture.IDataShareCallback;
 import android.service.contentcapture.SnapshotData;
 import android.service.voice.VoiceInteractionManagerInternal;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.EventLog;
+import android.util.LocalLog;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
-import android.view.contentcapture.DataRemovalRequest;
-import android.view.contentcapture.DataShareRequest;
+import android.view.contentcapture.ContentCaptureContext;
+import android.view.contentcapture.IContentCaptureOptionsCallback;
 import com.android.internal.infra.AbstractRemoteService;
 import com.android.internal.os.IResultReceiver;
 import com.android.internal.util.CollectionUtils;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.ProxyManager$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
+import com.android.server.contentcapture.ContentCaptureManagerService;
 import com.android.server.infra.AbstractMasterSystemService;
 import com.android.server.infra.AbstractPerUserSystemService;
+import com.android.server.infra.ServiceNameBaseResolver;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ContentCapturePerUserService extends AbstractPerUserSystemService implements AbstractRemoteService.VultureCallback {
-    public static final String TAG = ContentCapturePerUserService.class.getSimpleName();
+    public static final /* synthetic */ int $r8$clinit = 0;
     public final ArrayMap mConditionsByPkg;
     public ContentCaptureServiceInfo mInfo;
     public RemoteContentCaptureService mRemoteService;
     public final ContentCaptureServiceRemoteCallback mRemoteServiceCallback;
     public final SparseArray mSessions;
     public boolean mZombie;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ContentCaptureServiceRemoteCallback extends IContentCaptureServiceCallback.Stub {
+        public ContentCaptureServiceRemoteCallback() {
+        }
+
+        public final void disableSelf() {
+            if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).verbose) {
+                int i = ContentCapturePerUserService.$r8$clinit;
+                Slog.v("ContentCapturePerUserService", "disableSelf()");
+            }
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                Settings.Secure.putStringForUser(ContentCapturePerUserService.this.mMaster.getContext().getContentResolver(), "content_capture_enabled", "0", ContentCapturePerUserService.this.mUserId);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                ContentCaptureMetricsLogger.writeServiceEvent(4, ContentCapturePerUserService.this.getServiceComponentName());
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                throw th;
+            }
+        }
+
+        public final void setContentCaptureConditions(String str, List list) {
+            String str2;
+            if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).verbose) {
+                int i = ContentCapturePerUserService.$r8$clinit;
+                StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("setContentCaptureConditions(", str, "): ");
+                if (list == null) {
+                    str2 = "null";
+                } else {
+                    str2 = list.size() + " conditions";
+                }
+                m.append(str2);
+                Slog.v("ContentCapturePerUserService", m.toString());
+            }
+            synchronized (ContentCapturePerUserService.this.mLock) {
+                try {
+                    if (list == null) {
+                        ContentCapturePerUserService.this.mConditionsByPkg.remove(str);
+                    } else {
+                        ContentCapturePerUserService.this.mConditionsByPkg.put(str, new ArraySet(list));
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void setContentCaptureWhitelist(List list, List list2) {
+            if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).verbose) {
+                int i = ContentCapturePerUserService.$r8$clinit;
+                StringBuilder sb = new StringBuilder("setContentCaptureWhitelist(");
+                sb.append(list == null ? "null_packages" : list.size() + " packages");
+                sb.append(", ");
+                sb.append(list2 == null ? "null_activities" : list2.size() + " activities");
+                sb.append(") for user ");
+                GmsAlarmManager$$ExternalSyntheticOutline0.m(sb, ContentCapturePerUserService.this.mUserId, "ContentCapturePerUserService");
+            }
+            ContentCapturePerUserService contentCapturePerUserService = ContentCapturePerUserService.this;
+            ArraySet whitelistedPackages = ((ContentCaptureManagerService) contentCapturePerUserService.mMaster).mGlobalContentCaptureOptions.getWhitelistedPackages(contentCapturePerUserService.mUserId);
+            EventLog.writeEvent(53202, Integer.valueOf(ContentCapturePerUserService.this.mUserId), Integer.valueOf(CollectionUtils.size(whitelistedPackages)));
+            ContentCapturePerUserService contentCapturePerUserService2 = ContentCapturePerUserService.this;
+            ((ContentCaptureManagerService) contentCapturePerUserService2.mMaster).mGlobalContentCaptureOptions.setWhitelist(contentCapturePerUserService2.mUserId, list, list2);
+            EventLog.writeEvent(53201, Integer.valueOf(ContentCapturePerUserService.this.mUserId), Integer.valueOf(CollectionUtils.size(list)), Integer.valueOf(CollectionUtils.size(list2)));
+            FrameworkStatsLog.write(207, 3, ComponentName.flattenToShortString(ContentCapturePerUserService.this.getServiceComponentName()), (String) null, list != null ? list.size() : 0, list2 != null ? list2.size() : 0);
+            ContentCapturePerUserService contentCapturePerUserService3 = ContentCapturePerUserService.this;
+            ArraySet whitelistedPackages2 = ((ContentCaptureManagerService) contentCapturePerUserService3.mMaster).mGlobalContentCaptureOptions.getWhitelistedPackages(contentCapturePerUserService3.mUserId);
+            EventLog.writeEvent(53202, Integer.valueOf(ContentCapturePerUserService.this.mUserId), Integer.valueOf(CollectionUtils.size(whitelistedPackages2)));
+            if (whitelistedPackages != null && whitelistedPackages2 != null) {
+                whitelistedPackages2.removeAll(whitelistedPackages);
+            }
+            int size = CollectionUtils.size(whitelistedPackages2);
+            EventLog.writeEvent(53203, Integer.valueOf(ContentCapturePerUserService.this.mUserId), Integer.valueOf(size));
+            for (int i2 = 0; i2 < size; i2++) {
+                final String str = (String) whitelistedPackages2.valueAt(i2);
+                ContentCapturePerUserService contentCapturePerUserService4 = ContentCapturePerUserService.this;
+                final ContentCaptureOptions options = ((ContentCaptureManagerService) contentCapturePerUserService4.mMaster).mGlobalContentCaptureOptions.getOptions(contentCapturePerUserService4.mUserId, str);
+                ((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).mCallbacks.broadcast(new BiConsumer() { // from class: com.android.server.contentcapture.ContentCaptureManagerService$$ExternalSyntheticLambda4
+                    @Override // java.util.function.BiConsumer
+                    public final void accept(Object obj, Object obj2) {
+                        String str2 = str;
+                        ContentCaptureOptions contentCaptureOptions = options;
+                        IContentCaptureOptionsCallback iContentCaptureOptionsCallback = (IContentCaptureOptionsCallback) obj;
+                        if (obj2.equals(str2)) {
+                            try {
+                                iContentCaptureOptionsCallback.setContentCaptureOptions(contentCaptureOptions);
+                            } catch (RemoteException e) {
+                                AccountManagerService$$ExternalSyntheticOutline0.m("Unable to send setContentCaptureOptions(): ", e, "ContentCaptureManagerService");
+                            }
+                        }
+                    }
+                });
+            }
+            int size2 = ContentCapturePerUserService.this.mSessions.size();
+            if (size2 <= 0) {
+                return;
+            }
+            SparseBooleanArray sparseBooleanArray = new SparseBooleanArray(size2);
+            for (int i3 = 0; i3 < size2; i3++) {
+                ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) ContentCapturePerUserService.this.mSessions.valueAt(i3);
+                ContentCapturePerUserService contentCapturePerUserService5 = ContentCapturePerUserService.this;
+                if (!((ContentCaptureManagerService) contentCapturePerUserService5.mMaster).mGlobalContentCaptureOptions.isWhitelisted(contentCapturePerUserService5.mUserId, contentCaptureServerSession.appComponentName)) {
+                    int keyAt = ContentCapturePerUserService.this.mSessions.keyAt(i3);
+                    if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).debug) {
+                        int i4 = ContentCapturePerUserService.$r8$clinit;
+                        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(keyAt, "marking session ", " (");
+                        m.append(contentCaptureServerSession.appComponentName);
+                        m.append(") for un-whitelisting");
+                        Slog.d("ContentCapturePerUserService", m.toString());
+                    }
+                    sparseBooleanArray.append(keyAt, true);
+                }
+            }
+            int size3 = sparseBooleanArray.size();
+            if (size3 <= 0) {
+                return;
+            }
+            synchronized (ContentCapturePerUserService.this.mLock) {
+                for (int i5 = 0; i5 < size3; i5++) {
+                    try {
+                        int keyAt2 = sparseBooleanArray.keyAt(i5);
+                        if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).debug) {
+                            int i6 = ContentCapturePerUserService.$r8$clinit;
+                            Slog.d("ContentCapturePerUserService", "un-whitelisting " + keyAt2);
+                        }
+                        ((ContentCaptureServerSession) ContentCapturePerUserService.this.mSessions.get(keyAt2)).setContentCaptureEnabledLocked(false);
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+        }
+
+        public final void writeSessionFlush(int i, ComponentName componentName, FlushMetrics flushMetrics, ContentCaptureOptions contentCaptureOptions, int i2) {
+            FrameworkStatsLog.write(209, i, ComponentName.flattenToShortString(ContentCapturePerUserService.this.getServiceComponentName()), (String) null, flushMetrics.sessionStarted, flushMetrics.sessionFinished, flushMetrics.viewAppearedCount, flushMetrics.viewDisappearedCount, flushMetrics.viewTextChangedCount, contentCaptureOptions.maxBufferSize, contentCaptureOptions.idleFlushingFrequencyMs, contentCaptureOptions.textChangeFlushingFrequencyMs, i2);
+        }
+    }
 
     public ContentCapturePerUserService(ContentCaptureManagerService contentCaptureManagerService, Object obj, boolean z, int i) {
         super(contentCaptureManagerService, obj, i);
@@ -60,230 +213,8 @@ public final class ContentCapturePerUserService extends AbstractPerUserSystemSer
         updateRemoteServiceLocked(z);
     }
 
-    public final void updateRemoteServiceLocked(boolean z) {
-        if (((ContentCaptureManagerService) this.mMaster).verbose) {
-            Slog.v(TAG, "updateRemoteService(disabled=" + z + ")");
-        }
-        if (this.mRemoteService != null) {
-            if (((ContentCaptureManagerService) this.mMaster).debug) {
-                Slog.d(TAG, "updateRemoteService(): destroying old remote service");
-            }
-            this.mRemoteService.destroy();
-            this.mRemoteService = null;
-            resetContentCaptureWhitelistLocked();
-        }
-        ComponentName updateServiceInfoLocked = updateServiceInfoLocked();
-        if (updateServiceInfoLocked == null) {
-            if (((ContentCaptureManagerService) this.mMaster).debug) {
-                Slog.d(TAG, "updateRemoteService(): no service component name");
-            }
-        } else {
-            if (z) {
-                return;
-            }
-            if (((ContentCaptureManagerService) this.mMaster).debug) {
-                Slog.d(TAG, "updateRemoteService(): creating new remote service for " + updateServiceInfoLocked);
-            }
-            Context context = ((ContentCaptureManagerService) this.mMaster).getContext();
-            ContentCaptureServiceRemoteCallback contentCaptureServiceRemoteCallback = this.mRemoteServiceCallback;
-            int i = this.mUserId;
-            boolean isBindInstantServiceAllowed = ((ContentCaptureManagerService) this.mMaster).isBindInstantServiceAllowed();
-            AbstractMasterSystemService abstractMasterSystemService = this.mMaster;
-            this.mRemoteService = new RemoteContentCaptureService(context, "android.service.contentcapture.ContentCaptureService", updateServiceInfoLocked, contentCaptureServiceRemoteCallback, i, this, isBindInstantServiceAllowed, ((ContentCaptureManagerService) abstractMasterSystemService).verbose, ((ContentCaptureManagerService) abstractMasterSystemService).mDevCfgIdleUnbindTimeoutMs);
-        }
-    }
-
-    @Override // com.android.server.infra.AbstractPerUserSystemService
-    public ServiceInfo newServiceInfoLocked(ComponentName componentName) {
-        ContentCaptureServiceInfo contentCaptureServiceInfo = new ContentCaptureServiceInfo(getContext(), componentName, isTemporaryServiceSetLocked(), this.mUserId);
-        this.mInfo = contentCaptureServiceInfo;
-        return contentCaptureServiceInfo.getServiceInfo();
-    }
-
-    @Override // com.android.server.infra.AbstractPerUserSystemService
-    public boolean updateLocked(boolean z) {
-        boolean updateLocked = super.updateLocked(z);
-        if (updateLocked) {
-            for (int i = 0; i < this.mSessions.size(); i++) {
-                ((ContentCaptureServerSession) this.mSessions.valueAt(i)).setContentCaptureEnabledLocked(!z);
-            }
-        }
-        destroyLocked();
-        updateRemoteServiceLocked(z);
-        return updateLocked;
-    }
-
-    public void onServiceDied(RemoteContentCaptureService remoteContentCaptureService) {
-        Slog.w(TAG, "remote service died: " + remoteContentCaptureService);
-        synchronized (this.mLock) {
-            this.mZombie = true;
-            ContentCaptureMetricsLogger.writeServiceEvent(16, getServiceComponentName());
-            EventLog.writeEvent(53200, Integer.valueOf(this.mUserId), 0, 0);
-        }
-    }
-
-    public void onConnected() {
-        synchronized (this.mLock) {
-            if (this.mZombie) {
-                if (this.mRemoteService == null) {
-                    Slog.w(TAG, "Cannot ressurect sessions because remote service is null");
-                } else {
-                    this.mZombie = false;
-                    resurrectSessionsLocked();
-                }
-            }
-        }
-    }
-
-    public final void resurrectSessionsLocked() {
-        int size = this.mSessions.size();
-        if (((ContentCaptureManagerService) this.mMaster).debug) {
-            Slog.d(TAG, "Ressurrecting remote service (" + this.mRemoteService + ") on " + size + " sessions");
-        }
-        for (int i = 0; i < size; i++) {
-            ((ContentCaptureServerSession) this.mSessions.valueAt(i)).resurrectLocked();
-        }
-    }
-
-    public void onPackageUpdatingLocked() {
-        int size = this.mSessions.size();
-        if (((ContentCaptureManagerService) this.mMaster).debug) {
-            Slog.d(TAG, "Pausing " + size + " sessions while package is updating");
-        }
-        for (int i = 0; i < size; i++) {
-            ((ContentCaptureServerSession) this.mSessions.valueAt(i)).pauseLocked();
-        }
-    }
-
-    public void onPackageUpdatedLocked() {
-        updateRemoteServiceLocked(!isEnabledLocked());
-        resurrectSessionsLocked();
-    }
-
-    public void startSessionLocked(IBinder iBinder, IBinder iBinder2, ActivityPresentationInfo activityPresentationInfo, int i, int i2, int i3, IResultReceiver iResultReceiver) {
-        if (activityPresentationInfo == null) {
-            Slog.w(TAG, "basic activity info is null");
-            ContentCaptureService.setClientState(iResultReceiver, 260, (IBinder) null);
-            return;
-        }
-        int i4 = activityPresentationInfo.taskId;
-        int i5 = activityPresentationInfo.displayId;
-        ComponentName componentName = activityPresentationInfo.componentName;
-        boolean z = ((ContentCaptureManagerService) this.mMaster).mGlobalContentCaptureOptions.isWhitelisted(this.mUserId, componentName) || ((ContentCaptureManagerService) this.mMaster).mGlobalContentCaptureOptions.isWhitelisted(this.mUserId, componentName.getPackageName());
-        ComponentName serviceComponentName = getServiceComponentName();
-        boolean isEnabledLocked = isEnabledLocked();
-        if (((ContentCaptureManagerService) this.mMaster).mRequestsHistory != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("id=");
-            sb.append(i);
-            sb.append(" uid=");
-            sb.append(i2);
-            sb.append(" a=");
-            sb.append(ComponentName.flattenToShortString(componentName));
-            sb.append(" t=");
-            sb.append(i4);
-            sb.append(" d=");
-            sb.append(i5);
-            sb.append(" s=");
-            sb.append(ComponentName.flattenToShortString(serviceComponentName));
-            sb.append(" u=");
-            sb.append(this.mUserId);
-            sb.append(" f=");
-            sb.append(i3);
-            sb.append(isEnabledLocked ? "" : " (disabled)");
-            sb.append(" w=");
-            sb.append(z);
-            ((ContentCaptureManagerService) this.mMaster).mRequestsHistory.log(sb.toString());
-        }
-        if (!isEnabledLocked) {
-            ContentCaptureService.setClientState(iResultReceiver, 20, (IBinder) null);
-            ContentCaptureMetricsLogger.writeSessionEvent(i, 3, 20, serviceComponentName, false);
-            return;
-        }
-        if (serviceComponentName == null) {
-            if (((ContentCaptureManagerService) this.mMaster).debug) {
-                Slog.d(TAG, "startSession(" + iBinder + "): hold your horses");
-                return;
-            }
-            return;
-        }
-        if (!z) {
-            if (((ContentCaptureManagerService) this.mMaster).debug) {
-                Slog.d(TAG, "startSession(" + componentName + "): package or component not whitelisted");
-            }
-            ContentCaptureService.setClientState(iResultReceiver, FrameworkStatsLog.ANR_LATENCY_REPORTED, (IBinder) null);
-            ContentCaptureMetricsLogger.writeSessionEvent(i, 3, FrameworkStatsLog.ANR_LATENCY_REPORTED, serviceComponentName, false);
-            return;
-        }
-        ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) this.mSessions.get(i);
-        if (contentCaptureServerSession != null) {
-            Slog.w(TAG, "startSession(id=" + contentCaptureServerSession + ", token=" + iBinder + ": ignoring because it already exists for " + contentCaptureServerSession.mActivityToken);
-            ContentCaptureService.setClientState(iResultReceiver, 12, (IBinder) null);
-            ContentCaptureMetricsLogger.writeSessionEvent(i, 3, 12, serviceComponentName, false);
-            return;
-        }
-        if (this.mRemoteService == null) {
-            updateRemoteServiceLocked(false);
-        }
-        RemoteContentCaptureService remoteContentCaptureService = this.mRemoteService;
-        if (remoteContentCaptureService == null) {
-            Slog.w(TAG, "startSession(id=" + contentCaptureServerSession + ", token=" + iBinder + ": ignoring because service is not set");
-            ContentCaptureService.setClientState(iResultReceiver, 20, (IBinder) null);
-            ContentCaptureMetricsLogger.writeSessionEvent(i, 3, 20, serviceComponentName, false);
-            return;
-        }
-        remoteContentCaptureService.ensureBoundLocked();
-        ContentCaptureServerSession contentCaptureServerSession2 = new ContentCaptureServerSession(this.mLock, iBinder, new ActivityId(i4, iBinder2), this, componentName, iResultReceiver, i4, i5, i, i2, i3);
-        if (((ContentCaptureManagerService) this.mMaster).verbose) {
-            Slog.v(TAG, "startSession(): new session for " + ComponentName.flattenToShortString(componentName) + " and id " + i);
-        }
-        this.mSessions.put(i, contentCaptureServerSession2);
-        contentCaptureServerSession2.notifySessionStartedLocked(iResultReceiver);
-    }
-
-    public void finishSessionLocked(int i) {
-        if (isEnabledLocked()) {
-            ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) this.mSessions.get(i);
-            if (contentCaptureServerSession == null) {
-                if (((ContentCaptureManagerService) this.mMaster).debug) {
-                    Slog.d(TAG, "finishSession(): no session with id" + i);
-                    return;
-                }
-                return;
-            }
-            if (((ContentCaptureManagerService) this.mMaster).verbose) {
-                Slog.v(TAG, "finishSession(): id=" + i);
-            }
-            contentCaptureServerSession.removeSelfLocked(true);
-        }
-    }
-
-    public void removeDataLocked(DataRemovalRequest dataRemovalRequest) {
-        if (isEnabledLocked()) {
-            assertCallerLocked(dataRemovalRequest.getPackageName());
-            this.mRemoteService.onDataRemovalRequest(dataRemovalRequest);
-        }
-    }
-
-    public void onDataSharedLocked(DataShareRequest dataShareRequest, IDataShareCallback.Stub stub) {
-        if (isEnabledLocked()) {
-            assertCallerLocked(dataShareRequest.getPackageName());
-            this.mRemoteService.onDataShareRequest(dataShareRequest, stub);
-        }
-    }
-
-    public ComponentName getServiceSettingsActivityLocked() {
-        String settingsActivity;
-        ContentCaptureServiceInfo contentCaptureServiceInfo = this.mInfo;
-        if (contentCaptureServiceInfo == null || (settingsActivity = contentCaptureServiceInfo.getSettingsActivity()) == null) {
-            return null;
-        }
-        return new ComponentName(this.mInfo.getServiceInfo().packageName, settingsActivity);
-    }
-
     public final void assertCallerLocked(String str) {
-        String str2;
-        PackageManager packageManager = getContext().getPackageManager();
+        PackageManager packageManager = this.mMaster.getContext().getPackageManager();
         int callingUid = Binder.getCallingUid();
         try {
             int packageUidAsUser = packageManager.getPackageUidAsUser(str, UserHandle.getCallingUserId());
@@ -295,258 +226,368 @@ public final class ContentCapturePerUserService extends AbstractPerUserSystemSer
                 return;
             }
             String[] packagesForUid = packageManager.getPackagesForUid(callingUid);
-            if (packagesForUid != null) {
-                str2 = packagesForUid[0];
-            } else {
-                str2 = "uid-" + callingUid;
-            }
-            Slog.w(TAG, "App (package=" + str2 + ", UID=" + callingUid + ") passed package (" + str + ") owned by UID " + packageUidAsUser);
-            throw new SecurityException("Invalid package: " + str);
+            StringBuilder m = StorageManagerService$$ExternalSyntheticOutline0.m(callingUid, "App (package=", packagesForUid != null ? packagesForUid[0] : VibrationParam$1$$ExternalSyntheticOutline0.m(callingUid, "uid-"), ", UID=", ") passed package (");
+            m.append(str);
+            m.append(") owned by UID ");
+            m.append(packageUidAsUser);
+            Slog.w("ContentCapturePerUserService", m.toString());
+            throw new SecurityException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Invalid package: ", str));
         } catch (PackageManager.NameNotFoundException unused) {
-            throw new SecurityException("Could not verify UID for " + str);
+            throw new SecurityException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Could not verify UID for ", str));
         }
     }
 
-    public boolean sendActivityAssistDataLocked(IBinder iBinder, Bundle bundle) {
-        int sessionId = getSessionId(iBinder);
+    public final void destroySessionsLocked() {
+        int size = this.mSessions.size();
+        for (int i = 0; i < size; i++) {
+            ((ContentCaptureServerSession) this.mSessions.valueAt(i)).destroyLocked();
+        }
+        this.mSessions.clear();
+    }
+
+    @Override // com.android.server.infra.AbstractPerUserSystemService
+    public final void dumpLocked(PrintWriter printWriter) {
+        super.dumpLocked(printWriter);
+        printWriter.print("    ");
+        printWriter.print("Service Info: ");
+        if (this.mInfo == null) {
+            printWriter.println("N/A");
+        } else {
+            printWriter.println();
+            this.mInfo.dump("      ", printWriter);
+        }
+        printWriter.print("    ");
+        printWriter.print("Zombie: ");
+        printWriter.println(this.mZombie);
+        if (this.mRemoteService != null) {
+            printWriter.print("    ");
+            printWriter.println("remote service:");
+            this.mRemoteService.dump("      ", printWriter);
+        }
+        if (this.mSessions.size() == 0) {
+            printWriter.print("    ");
+            printWriter.println("no sessions");
+            return;
+        }
+        int size = this.mSessions.size();
+        printWriter.print("    ");
+        printWriter.print("number sessions: ");
+        printWriter.println(size);
+        for (int i = 0; i < size; i++) {
+            printWriter.print("    ");
+            printWriter.print("#");
+            printWriter.println(i);
+            ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) this.mSessions.valueAt(i);
+            contentCaptureServerSession.getClass();
+            printWriter.print("      ");
+            printWriter.print("id: ");
+            printWriter.print(contentCaptureServerSession.mId);
+            printWriter.println();
+            printWriter.print("      ");
+            printWriter.print("uid: ");
+            printWriter.print(contentCaptureServerSession.mUid);
+            printWriter.println();
+            printWriter.print("      ");
+            printWriter.print("context: ");
+            contentCaptureServerSession.mContentCaptureContext.dump(printWriter);
+            printWriter.println();
+            printWriter.print("      ");
+            printWriter.print("activity token: ");
+            printWriter.println(contentCaptureServerSession.mActivityToken);
+            printWriter.print("      ");
+            printWriter.print("app component: ");
+            printWriter.println(contentCaptureServerSession.appComponentName);
+            printWriter.print("      ");
+            printWriter.print("has autofill callback: ");
+            printWriter.println();
+        }
+    }
+
+    public final void finishSessionLocked(int i) {
+        if (isEnabledLocked()) {
+            ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) this.mSessions.get(i);
+            AbstractMasterSystemService abstractMasterSystemService = this.mMaster;
+            if (contentCaptureServerSession == null) {
+                if (((ContentCaptureManagerService) abstractMasterSystemService).debug) {
+                    AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "finishSession(): no session with id", "ContentCapturePerUserService");
+                    return;
+                }
+                return;
+            }
+            if (((ContentCaptureManagerService) abstractMasterSystemService).verbose) {
+                ProxyManager$$ExternalSyntheticOutline0.m(i, "finishSession(): id=", "ContentCapturePerUserService");
+            }
+            int i2 = contentCaptureServerSession.mId;
+            ContentCapturePerUserService contentCapturePerUserService = contentCaptureServerSession.mService;
+            try {
+                contentCaptureServerSession.destroyLocked();
+            } finally {
+                contentCapturePerUserService.mSessions.remove(i2);
+            }
+        }
+    }
+
+    public final void listSessionsLocked(ArrayList arrayList) {
+        int size = this.mSessions.size();
+        for (int i = 0; i < size; i++) {
+            ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) this.mSessions.valueAt(i);
+            arrayList.add(contentCaptureServerSession.mId + ":" + contentCaptureServerSession.mActivityToken);
+        }
+    }
+
+    @Override // com.android.server.infra.AbstractPerUserSystemService
+    public final ServiceInfo newServiceInfoLocked(ComponentName componentName) {
+        AbstractMasterSystemService abstractMasterSystemService = this.mMaster;
+        Context context = abstractMasterSystemService.getContext();
+        ServiceNameBaseResolver serviceNameBaseResolver = abstractMasterSystemService.mServiceNameResolver;
+        int i = this.mUserId;
+        ContentCaptureServiceInfo contentCaptureServiceInfo = new ContentCaptureServiceInfo(context, componentName, serviceNameBaseResolver.isTemporary(i), i);
+        this.mInfo = contentCaptureServiceInfo;
+        return contentCaptureServiceInfo.getServiceInfo();
+    }
+
+    public final void onActivityEventLocked(ActivityId activityId, ComponentName componentName, int i) {
+        RemoteContentCaptureService remoteContentCaptureService = this.mRemoteService;
+        String str = this.mTag;
+        AbstractMasterSystemService abstractMasterSystemService = this.mMaster;
+        if (remoteContentCaptureService == null) {
+            if (((ContentCaptureManagerService) abstractMasterSystemService).debug) {
+                Slog.d(str, "onActivityEvent(): no remote service");
+            }
+        } else if (remoteContentCaptureService.getServiceInterface() == null) {
+            if (((ContentCaptureManagerService) abstractMasterSystemService).debug) {
+                Slog.d(str, "onActivityEvent(): remote service is dead or unbound");
+            }
+        } else {
+            ActivityEvent activityEvent = new ActivityEvent(activityId, componentName, i);
+            if (((ContentCaptureManagerService) abstractMasterSystemService).verbose) {
+                Slog.v(str, "onActivityEvent(): " + activityEvent);
+            }
+            this.mRemoteService.onActivityLifecycleEvent(activityEvent);
+        }
+    }
+
+    public final void onConnected() {
+        synchronized (this.mLock) {
+            try {
+                if (this.mZombie) {
+                    if (this.mRemoteService == null) {
+                        Slog.w("ContentCapturePerUserService", "Cannot ressurect sessions because remote service is null");
+                    } else {
+                        this.mZombie = false;
+                        resurrectSessionsLocked$1();
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void onServiceDied(Object obj) {
+        Slog.w("ContentCapturePerUserService", "remote service died: " + ((RemoteContentCaptureService) obj));
+        synchronized (this.mLock) {
+            this.mZombie = true;
+            ContentCaptureMetricsLogger.writeServiceEvent(16, getServiceComponentName());
+            EventLog.writeEvent(53200, Integer.valueOf(this.mUserId), 0, 0);
+        }
+    }
+
+    public final void resurrectSessionsLocked$1() {
+        int size = this.mSessions.size();
+        if (((ContentCaptureManagerService) this.mMaster).debug) {
+            Slog.d("ContentCapturePerUserService", "Ressurrecting remote service (" + this.mRemoteService + ") on " + size + " sessions");
+        }
+        for (int i = 0; i < size; i++) {
+            ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) this.mSessions.valueAt(i);
+            ContentCapturePerUserService contentCapturePerUserService = contentCaptureServerSession.mService;
+            RemoteContentCaptureService remoteContentCaptureService = contentCapturePerUserService.mRemoteService;
+            if (remoteContentCaptureService == null) {
+                Slog.w("ContentCaptureServerSession", "destroyLocked(: no remote service");
+            } else {
+                if (contentCapturePerUserService.mMaster.verbose) {
+                    Slog.v("ContentCaptureServerSession", "resurrecting " + contentCaptureServerSession.mActivityToken + " on " + remoteContentCaptureService);
+                }
+                remoteContentCaptureService.onSessionStarted(new ContentCaptureContext(contentCaptureServerSession.mContentCaptureContext, 4), contentCaptureServerSession.mId, contentCaptureServerSession.mUid, contentCaptureServerSession.mSessionStateReceiver, 4098);
+            }
+        }
+    }
+
+    public final boolean sendActivityAssistDataLocked(IBinder iBinder, Bundle bundle) {
+        int i;
+        int i2 = 0;
+        while (true) {
+            if (i2 >= this.mSessions.size()) {
+                i = 0;
+                break;
+            }
+            if (((ContentCaptureServerSession) this.mSessions.valueAt(i2)).mActivityToken.equals(iBinder)) {
+                i = this.mSessions.keyAt(i2);
+                break;
+            }
+            i2++;
+        }
         SnapshotData snapshotData = new SnapshotData(bundle.getBundle("data"), (AssistStructure) bundle.getParcelable("structure", AssistStructure.class), (AssistContent) bundle.getParcelable("content", AssistContent.class));
-        if (sessionId != 0) {
-            ((ContentCaptureServerSession) this.mSessions.get(sessionId)).sendActivitySnapshotLocked(snapshotData);
+        if (i == 0) {
+            RemoteContentCaptureService remoteContentCaptureService = this.mRemoteService;
+            if (remoteContentCaptureService == null) {
+                return false;
+            }
+            remoteContentCaptureService.onActivitySnapshotRequest(0, snapshotData);
+            StringBuilder sb = new StringBuilder("Notified activity assist data for activity: ");
+            sb.append(iBinder);
+            BootReceiver$$ExternalSyntheticOutline0.m(sb, " without a session Id", "ContentCapturePerUserService");
             return true;
         }
-        RemoteContentCaptureService remoteContentCaptureService = this.mRemoteService;
-        if (remoteContentCaptureService == null) {
-            return false;
+        ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) this.mSessions.get(i);
+        ContentCapturePerUserService contentCapturePerUserService = contentCaptureServerSession.mService;
+        LocalLog localLog = ((ContentCaptureManagerService) contentCapturePerUserService.mMaster).mRequestsHistory;
+        int i3 = contentCaptureServerSession.mId;
+        if (localLog != null) {
+            localLog.log("snapshot: id=" + i3);
         }
-        remoteContentCaptureService.onActivitySnapshotRequest(0, snapshotData);
-        Slog.d(TAG, "Notified activity assist data for activity: " + iBinder + " without a session Id");
+        RemoteContentCaptureService remoteContentCaptureService2 = contentCapturePerUserService.mRemoteService;
+        if (remoteContentCaptureService2 == null) {
+            Slog.w("ContentCaptureServerSession", "sendActivitySnapshotLocked(): no remote service");
+        } else {
+            remoteContentCaptureService2.onActivitySnapshotRequest(i3, snapshotData);
+        }
         return true;
     }
 
-    public void removeSessionLocked(int i) {
-        this.mSessions.remove(i);
+    public final void startSessionLocked(IBinder iBinder, IBinder iBinder2, ActivityPresentationInfo activityPresentationInfo, int i, int i2, int i3, IResultReceiver iResultReceiver) {
+        if (activityPresentationInfo == null) {
+            Slog.w("ContentCapturePerUserService", "basic activity info is null");
+            ContentCaptureService.setClientState(iResultReceiver, 260, (IBinder) null);
+            return;
+        }
+        int i4 = activityPresentationInfo.taskId;
+        int i5 = activityPresentationInfo.displayId;
+        ComponentName componentName = activityPresentationInfo.componentName;
+        ContentCaptureManagerService contentCaptureManagerService = (ContentCaptureManagerService) this.mMaster;
+        ContentCaptureManagerService.GlobalContentCaptureOptions globalContentCaptureOptions = contentCaptureManagerService.mGlobalContentCaptureOptions;
+        int i6 = this.mUserId;
+        boolean z = globalContentCaptureOptions.isWhitelisted(i6, componentName) || contentCaptureManagerService.mGlobalContentCaptureOptions.isWhitelisted(i6, componentName.getPackageName());
+        ComponentName serviceComponentName = getServiceComponentName();
+        boolean isEnabledLocked = isEnabledLocked();
+        if (contentCaptureManagerService.mRequestsHistory != null) {
+            StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "id=", " uid=", " a=");
+            m.append(ComponentName.flattenToShortString(componentName));
+            m.append(" t=");
+            m.append(i4);
+            m.append(" d=");
+            m.append(i5);
+            m.append(" s=");
+            m.append(ComponentName.flattenToShortString(serviceComponentName));
+            m.append(" u=");
+            m.append(i6);
+            m.append(" f=");
+            m.append(i3);
+            m.append(isEnabledLocked ? "" : " (disabled)");
+            m.append(" w=");
+            m.append(z);
+            contentCaptureManagerService.mRequestsHistory.log(m.toString());
+        }
+        if (!isEnabledLocked) {
+            ContentCaptureService.setClientState(iResultReceiver, 20, (IBinder) null);
+            ContentCaptureMetricsLogger.writeSessionEvent(i, 3, 20, serviceComponentName);
+            return;
+        }
+        if (serviceComponentName == null) {
+            if (contentCaptureManagerService.debug) {
+                Slog.d("ContentCapturePerUserService", "startSession(" + iBinder + "): hold your horses");
+                return;
+            }
+            return;
+        }
+        if (!z) {
+            if (contentCaptureManagerService.debug) {
+                Slog.d("ContentCapturePerUserService", "startSession(" + componentName + "): package or component not whitelisted");
+            }
+            ContentCaptureService.setClientState(iResultReceiver, FrameworkStatsLog.ANR_LATENCY_REPORTED, (IBinder) null);
+            ContentCaptureMetricsLogger.writeSessionEvent(i, 3, FrameworkStatsLog.ANR_LATENCY_REPORTED, serviceComponentName);
+            return;
+        }
+        ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) this.mSessions.get(i);
+        if (contentCaptureServerSession != null) {
+            Slog.w("ContentCapturePerUserService", "startSession(id=" + contentCaptureServerSession + ", token=" + iBinder + ": ignoring because it already exists for " + contentCaptureServerSession.mActivityToken);
+            ContentCaptureService.setClientState(iResultReceiver, 12, (IBinder) null);
+            ContentCaptureMetricsLogger.writeSessionEvent(i, 3, 12, serviceComponentName);
+            return;
+        }
+        if (this.mRemoteService == null) {
+            updateRemoteServiceLocked(false);
+        }
+        RemoteContentCaptureService remoteContentCaptureService = this.mRemoteService;
+        if (remoteContentCaptureService == null) {
+            Slog.w("ContentCapturePerUserService", "startSession(id=" + contentCaptureServerSession + ", token=" + iBinder + ": ignoring because service is not set");
+            ContentCaptureService.setClientState(iResultReceiver, 20, (IBinder) null);
+            ContentCaptureMetricsLogger.writeSessionEvent(i, 3, 20, serviceComponentName);
+            return;
+        }
+        remoteContentCaptureService.ensureBoundLocked();
+        ContentCaptureServerSession contentCaptureServerSession2 = new ContentCaptureServerSession(this.mLock, iBinder, new ActivityId(i4, iBinder2), this, componentName, iResultReceiver, i5, i, i2, i3);
+        if (contentCaptureManagerService.verbose) {
+            Slog.v("ContentCapturePerUserService", "startSession(): new session for " + ComponentName.flattenToShortString(componentName) + " and id " + i);
+        }
+        this.mSessions.put(i, contentCaptureServerSession2);
+        RemoteContentCaptureService remoteContentCaptureService2 = contentCaptureServerSession2.mService.mRemoteService;
+        if (remoteContentCaptureService2 == null) {
+            Slog.w("ContentCaptureServerSession", "notifySessionStartedLocked(): no remote service");
+        } else {
+            remoteContentCaptureService2.onSessionStarted(contentCaptureServerSession2.mContentCaptureContext, contentCaptureServerSession2.mId, contentCaptureServerSession2.mUid, iResultReceiver, 2);
+        }
     }
 
-    public boolean isContentCaptureServiceForUserLocked(int i) {
-        return i == getServiceUidLocked();
-    }
-
-    public void destroyLocked() {
+    @Override // com.android.server.infra.AbstractPerUserSystemService
+    public final boolean updateLocked(boolean z) {
+        boolean updateLocked = super.updateLocked(z);
+        if (updateLocked) {
+            for (int i = 0; i < this.mSessions.size(); i++) {
+                ((ContentCaptureServerSession) this.mSessions.valueAt(i)).setContentCaptureEnabledLocked(!z);
+            }
+        }
         if (((ContentCaptureManagerService) this.mMaster).debug) {
-            Slog.d(TAG, "destroyLocked()");
+            Slog.d("ContentCapturePerUserService", "destroyLocked()");
         }
         RemoteContentCaptureService remoteContentCaptureService = this.mRemoteService;
         if (remoteContentCaptureService != null) {
             remoteContentCaptureService.destroy();
         }
         destroySessionsLocked();
+        updateRemoteServiceLocked(z);
+        return updateLocked;
     }
 
-    public void destroySessionsLocked() {
-        int size = this.mSessions.size();
-        for (int i = 0; i < size; i++) {
-            ((ContentCaptureServerSession) this.mSessions.valueAt(i)).destroyLocked(true);
+    public final void updateRemoteServiceLocked(boolean z) {
+        ContentCaptureManagerService contentCaptureManagerService = (ContentCaptureManagerService) this.mMaster;
+        if (contentCaptureManagerService.verbose) {
+            Slog.v("ContentCapturePerUserService", "updateRemoteService(disabled=" + z + ")");
         }
-        this.mSessions.clear();
-    }
-
-    public void listSessionsLocked(ArrayList arrayList) {
-        int size = this.mSessions.size();
-        for (int i = 0; i < size; i++) {
-            arrayList.add(((ContentCaptureServerSession) this.mSessions.valueAt(i)).toShortString());
-        }
-    }
-
-    public ArraySet getContentCaptureConditionsLocked(String str) {
-        return (ArraySet) this.mConditionsByPkg.get(str);
-    }
-
-    public ArraySet getContentCaptureAllowlist() {
-        ArraySet whitelistedPackages;
-        synchronized (this.mLock) {
-            whitelistedPackages = ((ContentCaptureManagerService) this.mMaster).mGlobalContentCaptureOptions.getWhitelistedPackages(this.mUserId);
-        }
-        return whitelistedPackages;
-    }
-
-    public void onActivityEventLocked(ActivityId activityId, ComponentName componentName, int i) {
-        if (this.mRemoteService == null) {
-            if (((ContentCaptureManagerService) this.mMaster).debug) {
-                Slog.d(this.mTag, "onActivityEvent(): no remote service");
-                return;
-            }
-            return;
-        }
-        ActivityEvent activityEvent = new ActivityEvent(activityId, componentName, i);
-        if (((ContentCaptureManagerService) this.mMaster).verbose) {
-            Slog.v(this.mTag, "onActivityEvent(): " + activityEvent);
-        }
-        this.mRemoteService.onActivityLifecycleEvent(activityEvent);
-    }
-
-    @Override // com.android.server.infra.AbstractPerUserSystemService
-    public void dumpLocked(String str, PrintWriter printWriter) {
-        super.dumpLocked(str, printWriter);
-        String str2 = str + "  ";
-        printWriter.print(str);
-        printWriter.print("Service Info: ");
-        if (this.mInfo == null) {
-            printWriter.println("N/A");
-        } else {
-            printWriter.println();
-            this.mInfo.dump(str2, printWriter);
-        }
-        printWriter.print(str);
-        printWriter.print("Zombie: ");
-        printWriter.println(this.mZombie);
         if (this.mRemoteService != null) {
-            printWriter.print(str);
-            printWriter.println("remote service:");
-            this.mRemoteService.dump(str2, printWriter);
-        }
-        if (this.mSessions.size() == 0) {
-            printWriter.print(str);
-            printWriter.println("no sessions");
-            return;
-        }
-        int size = this.mSessions.size();
-        printWriter.print(str);
-        printWriter.print("number sessions: ");
-        printWriter.println(size);
-        for (int i = 0; i < size; i++) {
-            printWriter.print(str);
-            printWriter.print("#");
-            printWriter.println(i);
-            ((ContentCaptureServerSession) this.mSessions.valueAt(i)).dumpLocked(str2, printWriter);
-            printWriter.println();
-        }
-    }
-
-    public final int getSessionId(IBinder iBinder) {
-        for (int i = 0; i < this.mSessions.size(); i++) {
-            if (((ContentCaptureServerSession) this.mSessions.valueAt(i)).isActivitySession(iBinder)) {
-                return this.mSessions.keyAt(i);
+            if (contentCaptureManagerService.debug) {
+                Slog.d("ContentCapturePerUserService", "updateRemoteService(): destroying old remote service");
             }
-        }
-        return 0;
-    }
-
-    public final void resetContentCaptureWhitelistLocked() {
-        if (((ContentCaptureManagerService) this.mMaster).verbose) {
-            Slog.v(TAG, "resetting content capture whitelist");
-        }
-        ((ContentCaptureManagerService) this.mMaster).mGlobalContentCaptureOptions.resetWhitelist(this.mUserId);
-    }
-
-    /* loaded from: classes.dex */
-    public final class ContentCaptureServiceRemoteCallback extends IContentCaptureServiceCallback.Stub {
-        public ContentCaptureServiceRemoteCallback() {
-        }
-
-        public void setContentCaptureWhitelist(List list, List list2) {
-            if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).verbose) {
-                String str = ContentCapturePerUserService.TAG;
-                StringBuilder sb = new StringBuilder();
-                sb.append("setContentCaptureWhitelist(");
-                sb.append(list == null ? "null_packages" : list.size() + " packages");
-                sb.append(", ");
-                sb.append(list2 == null ? "null_activities" : list2.size() + " activities");
-                sb.append(") for user ");
-                sb.append(ContentCapturePerUserService.this.mUserId);
-                Slog.v(str, sb.toString());
+            this.mRemoteService.destroy();
+            this.mRemoteService = null;
+            if (contentCaptureManagerService.verbose) {
+                Slog.v("ContentCapturePerUserService", "resetting content capture whitelist");
             }
-            ArraySet whitelistedPackages = ((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).mGlobalContentCaptureOptions.getWhitelistedPackages(ContentCapturePerUserService.this.mUserId);
-            EventLog.writeEvent(53202, Integer.valueOf(ContentCapturePerUserService.this.mUserId), Integer.valueOf(CollectionUtils.size(whitelistedPackages)));
-            ((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).mGlobalContentCaptureOptions.setWhitelist(ContentCapturePerUserService.this.mUserId, list, list2);
-            EventLog.writeEvent(53201, Integer.valueOf(ContentCapturePerUserService.this.mUserId), Integer.valueOf(CollectionUtils.size(list)), Integer.valueOf(CollectionUtils.size(list2)));
-            ContentCaptureMetricsLogger.writeSetWhitelistEvent(ContentCapturePerUserService.this.getServiceComponentName(), list, list2);
-            updateContentCaptureOptions(whitelistedPackages);
-            int size = ContentCapturePerUserService.this.mSessions.size();
-            if (size <= 0) {
+            contentCaptureManagerService.mGlobalContentCaptureOptions.resetWhitelist(this.mUserId);
+        }
+        ComponentName updateServiceInfoLocked = updateServiceInfoLocked();
+        if (updateServiceInfoLocked == null) {
+            if (contentCaptureManagerService.debug) {
+                Slog.d("ContentCapturePerUserService", "updateRemoteService(): no service component name");
+            }
+        } else {
+            if (z) {
                 return;
             }
-            SparseBooleanArray sparseBooleanArray = new SparseBooleanArray(size);
-            for (int i = 0; i < size; i++) {
-                ContentCaptureServerSession contentCaptureServerSession = (ContentCaptureServerSession) ContentCapturePerUserService.this.mSessions.valueAt(i);
-                if (!((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).mGlobalContentCaptureOptions.isWhitelisted(ContentCapturePerUserService.this.mUserId, contentCaptureServerSession.appComponentName)) {
-                    int keyAt = ContentCapturePerUserService.this.mSessions.keyAt(i);
-                    if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).debug) {
-                        Slog.d(ContentCapturePerUserService.TAG, "marking session " + keyAt + " (" + contentCaptureServerSession.appComponentName + ") for un-whitelisting");
-                    }
-                    sparseBooleanArray.append(keyAt, true);
-                }
+            if (contentCaptureManagerService.debug) {
+                Slog.d("ContentCapturePerUserService", "updateRemoteService(): creating new remote service for " + updateServiceInfoLocked);
             }
-            int size2 = sparseBooleanArray.size();
-            if (size2 <= 0) {
-                return;
-            }
-            synchronized (ContentCapturePerUserService.this.mLock) {
-                for (int i2 = 0; i2 < size2; i2++) {
-                    int keyAt2 = sparseBooleanArray.keyAt(i2);
-                    if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).debug) {
-                        Slog.d(ContentCapturePerUserService.TAG, "un-whitelisting " + keyAt2);
-                    }
-                    ((ContentCaptureServerSession) ContentCapturePerUserService.this.mSessions.get(keyAt2)).setContentCaptureEnabledLocked(false);
-                }
-            }
-        }
-
-        public void setContentCaptureConditions(String str, List list) {
-            String str2;
-            if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).verbose) {
-                String str3 = ContentCapturePerUserService.TAG;
-                StringBuilder sb = new StringBuilder();
-                sb.append("setContentCaptureConditions(");
-                sb.append(str);
-                sb.append("): ");
-                if (list == null) {
-                    str2 = "null";
-                } else {
-                    str2 = list.size() + " conditions";
-                }
-                sb.append(str2);
-                Slog.v(str3, sb.toString());
-            }
-            synchronized (ContentCapturePerUserService.this.mLock) {
-                if (list == null) {
-                    ContentCapturePerUserService.this.mConditionsByPkg.remove(str);
-                } else {
-                    ContentCapturePerUserService.this.mConditionsByPkg.put(str, new ArraySet(list));
-                }
-            }
-        }
-
-        public void disableSelf() {
-            if (((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).verbose) {
-                Slog.v(ContentCapturePerUserService.TAG, "disableSelf()");
-            }
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                Settings.Secure.putStringForUser(ContentCapturePerUserService.this.getContext().getContentResolver(), "content_capture_enabled", "0", ContentCapturePerUserService.this.mUserId);
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                ContentCaptureMetricsLogger.writeServiceEvent(4, ContentCapturePerUserService.this.getServiceComponentName());
-            } catch (Throwable th) {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                throw th;
-            }
-        }
-
-        public void writeSessionFlush(int i, ComponentName componentName, FlushMetrics flushMetrics, ContentCaptureOptions contentCaptureOptions, int i2) {
-            ContentCaptureMetricsLogger.writeSessionFlush(i, ContentCapturePerUserService.this.getServiceComponentName(), flushMetrics, contentCaptureOptions, i2);
-        }
-
-        public final void updateContentCaptureOptions(ArraySet arraySet) {
-            ArraySet whitelistedPackages = ((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).mGlobalContentCaptureOptions.getWhitelistedPackages(ContentCapturePerUserService.this.mUserId);
-            EventLog.writeEvent(53202, Integer.valueOf(ContentCapturePerUserService.this.mUserId), Integer.valueOf(CollectionUtils.size(whitelistedPackages)));
-            if (arraySet != null && whitelistedPackages != null) {
-                whitelistedPackages.removeAll(arraySet);
-            }
-            int size = CollectionUtils.size(whitelistedPackages);
-            EventLog.writeEvent(53203, Integer.valueOf(ContentCapturePerUserService.this.mUserId), Integer.valueOf(size));
-            for (int i = 0; i < size; i++) {
-                String str = (String) whitelistedPackages.valueAt(i);
-                ((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).updateOptions(str, ((ContentCaptureManagerService) ContentCapturePerUserService.this.mMaster).mGlobalContentCaptureOptions.getOptions(ContentCapturePerUserService.this.mUserId, str));
-            }
+            this.mRemoteService = new RemoteContentCaptureService(contentCaptureManagerService.getContext(), updateServiceInfoLocked, this.mRemoteServiceCallback, this.mUserId, this, contentCaptureManagerService.isBindInstantServiceAllowed(), contentCaptureManagerService.verbose, contentCaptureManagerService.mDevCfgIdleUnbindTimeoutMs);
         }
     }
 }

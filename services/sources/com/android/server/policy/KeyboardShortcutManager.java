@@ -8,19 +8,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
-import android.view.KeyEvent;
-import com.samsung.android.core.CoreSaLogger;
-import com.samsung.android.knox.custom.KnoxCustomManagerService;
-import com.samsung.android.rune.CoreRune;
+import com.android.internal.policy.PhoneWindow;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
 import java.util.HashMap;
 import java.util.List;
 
-/* loaded from: classes3.dex */
-public class KeyboardShortcutManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class KeyboardShortcutManager {
     public static final int[] SHORT_TYPE_LIST = {0, 1, 2, 3, 4};
     public final Context mContext;
     public final PhoneWindowManagerExt mPolicyExt;
@@ -29,7 +28,137 @@ public class KeyboardShortcutManager {
     public boolean mIsTriggeredMeta = false;
     public boolean mIsConsumedMeta = false;
 
-    public String getSaLoggerEventId(int i) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public abstract class Behavior {
+        public final Context mContext;
+        public Intent mIntent;
+        public final PhoneWindowManagerExt mPolicyExt;
+
+        public Behavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
+            this.mContext = context;
+            this.mPolicyExt = phoneWindowManagerExt;
+        }
+
+        public boolean preCondition() {
+            return this.mPolicyExt.externalKeyboardPolicy();
+        }
+
+        public void startTargetApp(int i) {
+            NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "launch keyboard shortcut app, displayId=", "KeyboardShortcutManager");
+            PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+            phoneWindowManagerExt.getClass();
+            PhoneWindowManagerExt.getFillInIntent();
+            ActivityOptions makeBasic = ActivityOptions.makeBasic();
+            makeBasic.setLaunchDisplayId(i);
+            this.mContext.startActivityAsUser(this.mIntent, makeBasic.toBundle(), UserHandle.CURRENT);
+            PhoneWindow.sendCloseSystemWindows(phoneWindowManagerExt.mPolicy.mContext, (String) null);
+            phoneWindowManagerExt.mPolicy.dismissKeyboardShortcutsMenu();
+        }
+
+        public final String toString() {
+            return "Behavior=" + getClass().getSimpleName() + " intent=" + this.mIntent;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DefaultBehavior extends Behavior {
+        public final /* synthetic */ int $r8$classId;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public DefaultBehavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
+            super(context, phoneWindowManagerExt);
+            this.$r8$classId = 3;
+            this.mIntent = BatteryService$$ExternalSyntheticOutline0.m(67108864, "android.settings.SETTINGS");
+        }
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public /* synthetic */ DefaultBehavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt, int i) {
+            super(context, phoneWindowManagerExt);
+            this.$r8$classId = i;
+        }
+
+        @Override // com.android.server.policy.KeyboardShortcutManager.Behavior
+        public boolean preCondition() {
+            switch (this.$r8$classId) {
+                case 2:
+                    if (this.mPolicyExt.mPolicy.keyguardOn()) {
+                        Log.d("KeyboardShortcutManager", "GameBooster is not launched on keyguard");
+                        return true;
+                    }
+                    try {
+                        return true ^ this.mContext.getPackageManager().getApplicationInfo("com.samsung.android.game.gametools", 128).metaData.getString("Feature.External.Action", "").contains("togglemenu");
+                    } catch (PackageManager.NameNotFoundException unused) {
+                        Log.e("KeyboardShortcutManager", "GameBooster not installed");
+                        return false;
+                    }
+                default:
+                    return super.preCondition();
+            }
+        }
+
+        @Override // com.android.server.policy.KeyboardShortcutManager.Behavior
+        public void startTargetApp(int i) {
+            switch (this.$r8$classId) {
+                case 2:
+                    Log.d("KeyboardShortcutManager", "send broadcast game booster toggle menu");
+                    this.mContext.sendBroadcastAsUser(this.mIntent, UserHandle.SYSTEM);
+                    StatusBarManager statusBarManager = (StatusBarManager) this.mContext.getSystemService("statusbar");
+                    if (statusBarManager != null) {
+                        statusBarManager.collapsePanels();
+                    }
+                    this.mPolicyExt.mPolicy.dismissKeyboardShortcutsMenu();
+                    break;
+                default:
+                    super.startTargetApp(i);
+                    break;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SFinderBehavior extends Behavior {
+        public final String[] mDeniedActivities;
+
+        public SFinderBehavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
+            super(context, phoneWindowManagerExt);
+            this.mDeniedActivities = new String[]{"{com.android.phone/com.android.phone.UsimDownload}"};
+            Intent intent = new Intent();
+            intent.setComponent(ComponentName.unflattenFromString("com.sec.android.app.launcher/com.sec.android.app.launcher.search.SearchActivity"));
+            intent.putExtra("callername", 0);
+            this.mIntent = intent;
+        }
+
+        @Override // com.android.server.policy.KeyboardShortcutManager.Behavior
+        public final boolean preCondition() {
+            Intent intent = this.mIntent;
+            if (intent != null) {
+                List semQueryIntentActivitiesAsUser = this.mContext.getPackageManager().semQueryIntentActivitiesAsUser(intent, 0, UserHandle.myUserId());
+                if (semQueryIntentActivitiesAsUser != null && semQueryIntentActivitiesAsUser.size() > 0) {
+                    PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+                    ComponentName componentName = phoneWindowManagerExt.mTopActivity;
+                    if (componentName != null) {
+                        String shortString = componentName.toShortString();
+                        for (String str : this.mDeniedActivities) {
+                            if (str.equals(shortString)) {
+                                Slog.d("KeyboardShortcutManager", "canLaunchAppByExternalKeyboard: It is denied activity");
+                                return true;
+                            }
+                        }
+                    }
+                    return phoneWindowManagerExt.externalKeyboardPolicy();
+                }
+            }
+            Slog.d("KeyboardShortcutManager", "canLaunchAppByExternalKeyboard : SFinder activity is not available");
+            return true;
+        }
+    }
+
+    public KeyboardShortcutManager(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
+        this.mContext = context;
+        this.mPolicyExt = phoneWindowManagerExt;
+    }
+
+    public static String getSaLoggerEventId(int i) {
         if (i == 41) {
             return "PKBD0062";
         }
@@ -74,385 +203,126 @@ public class KeyboardShortcutManager {
         }
     }
 
-    public String getShortcutSettingsValue(int i) {
-        return Settings.System.getStringForUser(this.mContext.getContentResolver(), (String) this.mShortcutMap.get(Integer.valueOf(i)), -2);
-    }
-
-    public KeyboardShortcutManager(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
-        this.mContext = context;
-        this.mPolicyExt = phoneWindowManagerExt;
-    }
-
-    public void init() {
-        Slog.d("KeyboardShortcutManager", "init()");
-        preloadBehavior();
-        preloadSettings();
-    }
-
-    public final void preloadBehavior() {
-        for (int i : SHORT_TYPE_LIST) {
-            this.mPreloadBehaviorMap.put(i, getBehavior(i));
-        }
-    }
-
-    public final void preloadSettings() {
-        this.mShortcutMap.put(29, "app_shortcuts_command_a");
-        this.mShortcutMap.put(30, "app_shortcuts_command_b");
-        this.mShortcutMap.put(31, "app_shortcuts_command_c");
-        this.mShortcutMap.put(32, "app_shortcuts_command_d");
-        this.mShortcutMap.put(33, "app_shortcuts_command_e");
-        this.mShortcutMap.put(34, "app_shortcuts_command_f");
-        this.mShortcutMap.put(36, "app_shortcuts_command_h");
-        this.mShortcutMap.put(37, "app_shortcuts_command_i");
-        this.mShortcutMap.put(38, "app_shortcuts_command_j");
-        this.mShortcutMap.put(39, "app_shortcuts_command_k");
-        this.mShortcutMap.put(41, "app_shortcuts_command_m");
-        this.mShortcutMap.put(44, "app_shortcuts_command_p");
-        this.mShortcutMap.put(46, "app_shortcuts_command_r");
-        this.mShortcutMap.put(47, "app_shortcuts_command_s");
-        this.mShortcutMap.put(54, "app_shortcuts_command_z");
-    }
-
-    public boolean interceptKeyBeforeDispatching(KeyEvent keyEvent, boolean z, int i) {
-        int keyCode = keyEvent.getKeyCode();
-        int i2 = 1;
-        boolean z2 = keyEvent.getAction() == 0;
-        int repeatCount = keyEvent.getRepeatCount();
-        if (!isSupportShortcut(keyCode)) {
-            if (z2 && repeatCount == 0) {
-                reset();
-            }
-            return false;
-        }
-        int modifiers = keyEvent.getModifiers();
-        if (z && KeyEvent.metaStateHasModifiers(modifiers, 65536)) {
-            this.mIsTriggeredMeta = true;
-            Log.d("KeyboardShortcutManager", "interceptKeyTi, triggered");
-        } else if (!this.mIsTriggeredMeta) {
-            return false;
-        }
-        if (repeatCount != 0) {
-            return this.mIsConsumedMeta;
-        }
-        if (!z2) {
-            if (KeyCustomizationConstants.isSafeDebugInput()) {
-                Log.d("KeyboardShortcutManager", "interceptKeyTi, up, triggered=" + this.mIsTriggeredMeta + " consumed=" + this.mIsConsumedMeta);
-            }
-            this.mIsTriggeredMeta = false;
-            if (!this.mIsConsumedMeta) {
-                return false;
-            }
-            this.mIsConsumedMeta = false;
-            return true;
-        }
-        String shortcutSettingsValue = getShortcutSettingsValue(keyCode);
-        if (TextUtils.isEmpty(shortcutSettingsValue)) {
-            if (KeyCustomizationConstants.isSafeDebugInput()) {
-                Log.d("KeyboardShortcutManager", "shortcutSetting(" + keyCode + ") is empty");
-            }
-            return false;
-        }
-        if ("None".equals(shortcutSettingsValue)) {
-            if (KeyCustomizationConstants.isSafeDebugInput()) {
-                Log.d("KeyboardShortcutManager", "shortcutSetting(" + keyCode + ") is none");
-            }
-            return true;
-        }
-        if (!shortcutSettingsValue.contains("android.intent.category.")) {
-            if (shortcutSettingsValue.contains("android.app.role.")) {
-                i2 = 2;
-            } else if ("com.sec.android.app.launcher/com.sec.android.app.launcher.search.SearchActivity".equals(shortcutSettingsValue)) {
-                i2 = 3;
-            } else if ("com.android.settings".equals(shortcutSettingsValue) && keyCode == 37) {
-                i2 = 4;
-            } else {
-                i2 = shortcutSettingsValue.contains(KnoxCustomManagerService.LAUNCHER_PACKAGE) ? 5 : 0;
-            }
-        }
-        return launchCustomizationShortcut(i, i2, shortcutSettingsValue, keyCode);
-    }
-
-    /* loaded from: classes3.dex */
-    public abstract class Behavior {
-        public Context mContext;
-        public Intent mIntent;
-        public PhoneWindowManagerExt mPolicyExt;
-
-        public Behavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
-            this.mContext = context;
-            this.mPolicyExt = phoneWindowManagerExt;
-        }
-
-        public Intent getIntent() {
-            return this.mIntent;
-        }
-
-        public boolean launch(int i) {
-            if (preCondition()) {
-                return false;
-            }
-            startTargetApp(i);
-            return true;
-        }
-
-        public boolean preCondition() {
-            return this.mPolicyExt.externalKeyboardPolicy();
-        }
-
-        public void startTargetApp(int i) {
-            Log.d("KeyboardShortcutManager", "launch keyboard shortcut app, displayId=" + i);
-            Intent fillInIntent = this.mPolicyExt.getFillInIntent();
-            if (this.mPolicyExt.showCoverToast(fillInIntent, this.mIntent)) {
-                PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
-                phoneWindowManagerExt.setPendingIntentAfterUnlock(phoneWindowManagerExt.getPendingIntentActivityAsUser(this.mIntent, UserHandle.CURRENT), fillInIntent);
-                return;
-            }
-            ActivityOptions makeBasic = ActivityOptions.makeBasic();
-            makeBasic.setLaunchDisplayId(i);
-            this.mContext.startActivityAsUser(this.mIntent, makeBasic.toBundle(), UserHandle.CURRENT);
-            this.mPolicyExt.mPolicy.sendCloseSystemWindows();
-            this.mPolicyExt.mPolicy.dismissKeyboardShortcutsMenu();
-        }
-
-        public String toString() {
-            return "Behavior=" + getClass().getSimpleName() + " intent=" + this.mIntent;
-        }
-    }
-
-    public boolean launch(int i, int i2) {
-        return launch(i, i2, null);
-    }
-
-    public boolean launch(int i, String str) {
-        return launch(i, 0, str);
-    }
-
-    public final boolean launch(int i, int i2, String str) {
-        Behavior preloadBehaviorMap = getPreloadBehaviorMap(i2);
-        Log.d("KeyboardShortcutManager", "launch type=" + typeToString(i2) + " componentName=" + str + " " + preloadBehaviorMap);
-        if (getIntent(i2, preloadBehaviorMap.getIntent(), str) == null) {
-            Log.d("KeyboardShortcutManager", "Can not launch app, intent is null");
-            return false;
-        }
-        return preloadBehaviorMap.launch(i);
-    }
-
-    public boolean launchCustomizationShortcut(int i, int i2, String str, int i3) {
-        if (i2 == 1) {
-            Log.v("KeyboardShortcutManager", "launch type=category shortcutSetting=" + str);
-            return false;
-        }
-        if (i2 == 2) {
-            Log.v("KeyboardShortcutManager", "launch type=role shortcutSetting=" + str);
-            return false;
-        }
-        if (i2 == 4) {
-            Log.v("KeyboardShortcutManager", "launch type=settings shortcutSetting=" + str + " keyCode=" + i3);
-            return false;
-        }
-        if (i2 == 5) {
-            Log.v("KeyboardShortcutManager", "launch type=HOME shortcutSetting=" + str + " keyCode=" + i3);
-            this.mPolicyExt.shortPressOnHome(i);
-            return true;
-        }
-        Behavior behavior = getBehavior(i2, str);
-        Log.d("KeyboardShortcutManager", "launch type=" + typeToString(i2) + " shortcutSetting= " + str + " " + behavior);
-        if (!behavior.launch(i)) {
-            return false;
-        }
-        if (CoreRune.FW_KEY_SA_LOGGING) {
-            HashMap hashMap = new HashMap();
-            hashMap.put("det", str);
-            String saLoggerEventId = getSaLoggerEventId(i3);
-            if (!TextUtils.isEmpty(saLoggerEventId)) {
-                CoreSaLogger.logForBasic(saLoggerEventId, hashMap);
-            }
-        }
-        this.mIsConsumedMeta = true;
-        Log.d("KeyboardShortcutManager", "consumed");
-        return true;
-    }
-
-    public final Behavior getPreloadBehaviorMap(int i) {
-        Behavior behavior = (Behavior) this.mPreloadBehaviorMap.get(i);
-        return behavior == null ? getBehavior(i) : behavior;
-    }
-
-    public final Intent getIntent(int i, Intent intent, String str) {
-        if (intent == null) {
-            Log.d("KeyboardShortcutManager", "Intent is null");
-            return null;
-        }
-        if (i != 0) {
-            if (i == 1) {
-                ComponentName topActivity = this.mPolicyExt.getTopActivity();
-                if (topActivity == null) {
-                    Slog.d("KeyboardShortcutManager", "META_F, Unknown top activity!");
-                    return null;
-                }
-                Slog.d("KeyboardShortcutManager", "META_F, top=" + topActivity.toShortString());
-                intent.putExtra("componentname", topActivity.toString());
-            }
-        } else {
-            if (TextUtils.isEmpty(str)) {
-                return null;
-            }
-            intent.setComponent(ComponentName.unflattenFromString(str));
-        }
-        return intent;
-    }
-
-    /* loaded from: classes3.dex */
-    public class DefaultBehavior extends Behavior {
-        public DefaultBehavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
-            super(context, phoneWindowManagerExt);
-            this.mIntent = new Intent("android.intent.action.MAIN");
-        }
-
-        public DefaultBehavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt, String str) {
-            super(context, phoneWindowManagerExt);
-            this.mIntent = this.mContext.getPackageManager().getLaunchIntentForPackage(str);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class SFinderBehavior extends Behavior {
-        public final String[] mDeniedActivities;
-
-        public SFinderBehavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
-            super(context, phoneWindowManagerExt);
-            this.mDeniedActivities = new String[]{"{com.android.phone/com.android.phone.UsimDownload}"};
-            Intent intent = new Intent();
-            intent.setComponent(ComponentName.unflattenFromString("com.sec.android.app.launcher/com.sec.android.app.launcher.search.SearchActivity"));
-            intent.putExtra("callername", 0);
-            this.mIntent = intent;
-        }
-
-        @Override // com.android.server.policy.KeyboardShortcutManager.Behavior
-        public boolean preCondition() {
-            if (!isActivityAvailable(this.mIntent)) {
-                Slog.d("KeyboardShortcutManager", "canLaunchAppByExternalKeyboard : SFinder activity is not available");
-                return true;
-            }
-            if (isDeniedActivity()) {
-                Slog.d("KeyboardShortcutManager", "canLaunchAppByExternalKeyboard: It is denied activity");
-                return true;
-            }
-            return super.preCondition();
-        }
-
-        public boolean isActivityAvailable(Intent intent) {
-            List semQueryIntentActivitiesAsUser;
-            return (intent == null || (semQueryIntentActivitiesAsUser = this.mContext.getPackageManager().semQueryIntentActivitiesAsUser(intent, 0, UserHandle.myUserId())) == null || semQueryIntentActivitiesAsUser.size() <= 0) ? false : true;
-        }
-
-        public boolean isDeniedActivity() {
-            ComponentName topActivity = this.mPolicyExt.getTopActivity();
-            if (topActivity == null) {
-                return false;
-            }
-            String shortString = topActivity.toShortString();
-            for (String str : this.mDeniedActivities) {
-                if (str.equals(shortString)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class SettingsBehavior extends Behavior {
-        public SettingsBehavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
-            super(context, phoneWindowManagerExt);
-            Intent intent = new Intent("android.settings.SETTINGS");
-            intent.addFlags(67108864);
-            this.mIntent = intent;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class A11ySettingsBehavior extends Behavior {
-        public A11ySettingsBehavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
-            super(context, phoneWindowManagerExt);
-            Intent intent = new Intent("com.samsung.accessibility.ACCESSIBILITY_SETTINGS");
-            intent.setFlags(268468224);
-            this.mIntent = intent;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class GameBoosterToggleMenuBehavior extends Behavior {
-        public GameBoosterToggleMenuBehavior(Context context, PhoneWindowManagerExt phoneWindowManagerExt) {
-            super(context, phoneWindowManagerExt);
-            Intent intent = new Intent("com.samsung.android.game.gametools.action.togglemenu");
-            intent.setPackage("com.samsung.android.game.gametools");
-            intent.putExtra("package", "window-g");
-            this.mIntent = intent;
-        }
-
-        @Override // com.android.server.policy.KeyboardShortcutManager.Behavior
-        public boolean preCondition() {
-            if (this.mPolicyExt.mPolicy.isKeyguardLocked()) {
-                Log.d("KeyboardShortcutManager", "GameBooster is not launched on keyguard");
-                return true;
-            }
-            try {
-                return !this.mContext.getPackageManager().getApplicationInfo("com.samsung.android.game.gametools", 128).metaData.getString("Feature.External.Action", "").contains("togglemenu");
-            } catch (PackageManager.NameNotFoundException unused) {
-                Log.e("KeyboardShortcutManager", "GameBooster not installed");
-                return false;
-            }
-        }
-
-        @Override // com.android.server.policy.KeyboardShortcutManager.Behavior
-        public void startTargetApp(int i) {
-            Log.d("KeyboardShortcutManager", "send broadcast game booster toggle menu");
-            this.mContext.sendBroadcastAsUser(this.mIntent, UserHandle.SYSTEM);
-            StatusBarManager statusBarManager = (StatusBarManager) this.mContext.getSystemService("statusbar");
-            if (statusBarManager != null) {
-                statusBarManager.collapsePanels();
-            }
-            this.mPolicyExt.mPolicy.dismissKeyboardShortcutsMenu();
-        }
-    }
-
-    public final boolean isSupportShortcut(int i) {
-        return this.mShortcutMap.get(Integer.valueOf(i)) != null;
-    }
-
-    public final void reset() {
-        this.mIsTriggeredMeta = false;
-        this.mIsConsumedMeta = false;
+    public static String typeToString(int i) {
+        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? i != 4 ? Integer.toString(i) : "META_Z" : "META_U" : "META_G" : "META_F" : "DEFAULT";
     }
 
     public final Behavior getBehavior(int i) {
+        PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
         if (i == 1) {
-            return new SFinderBehavior(this.mContext, this.mPolicyExt);
+            return new SFinderBehavior(this.mContext, phoneWindowManagerExt);
         }
         if (i == 2) {
-            return new GameBoosterToggleMenuBehavior(this.mContext, this.mPolicyExt);
+            DefaultBehavior defaultBehavior = new DefaultBehavior(this.mContext, phoneWindowManagerExt, 2);
+            Intent intent = new Intent("com.samsung.android.game.gametools.action.togglemenu");
+            intent.setPackage("com.samsung.android.game.gametools");
+            intent.putExtra("package", "window-g");
+            defaultBehavior.mIntent = intent;
+            return defaultBehavior;
         }
-        if (i == 3) {
-            return new A11ySettingsBehavior(this.mContext, this.mPolicyExt);
+        if (i != 3) {
+            if (i == 4) {
+                return new DefaultBehavior(this.mContext, phoneWindowManagerExt);
+            }
+            DefaultBehavior defaultBehavior2 = new DefaultBehavior(this.mContext, phoneWindowManagerExt, 0);
+            defaultBehavior2.mIntent = new Intent("android.intent.action.MAIN");
+            return defaultBehavior2;
         }
-        if (i == 4) {
-            return new SettingsBehavior(this.mContext, this.mPolicyExt);
-        }
-        return new DefaultBehavior(this.mContext, this.mPolicyExt);
+        DefaultBehavior defaultBehavior3 = new DefaultBehavior(this.mContext, phoneWindowManagerExt, 1);
+        Intent intent2 = new Intent("com.samsung.accessibility.ACCESSIBILITY_SETTINGS");
+        intent2.setFlags(268468224);
+        defaultBehavior3.mIntent = intent2;
+        return defaultBehavior3;
     }
 
-    public final Behavior getBehavior(int i, String str) {
-        if (i == 3) {
-            return new SFinderBehavior(this.mContext, this.mPolicyExt);
-        }
-        if (str.equals("com.android.settings")) {
-            return new SettingsBehavior(this.mContext, this.mPolicyExt);
-        }
-        return new DefaultBehavior(this.mContext, this.mPolicyExt, str);
+    public final String getShortcutSettingsValue(int i) {
+        return Settings.System.getStringForUser(this.mContext.getContentResolver(), (String) this.mShortcutMap.get(Integer.valueOf(i)), -2);
     }
 
-    public final String typeToString(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? i != 4 ? Integer.toString(i) : "META_Z" : "META_U" : "META_G" : "META_F" : "DEFAULT";
+    /* JADX WARN: Removed duplicated region for block: B:10:0x0083  */
+    /* JADX WARN: Removed duplicated region for block: B:13:0x0089  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean launch(int r6, int r7, java.lang.String r8) {
+        /*
+            r5 = this;
+            android.util.SparseArray r0 = r5.mPreloadBehaviorMap
+            java.lang.Object r0 = r0.get(r7)
+            com.android.server.policy.KeyboardShortcutManager$Behavior r0 = (com.android.server.policy.KeyboardShortcutManager.Behavior) r0
+            if (r0 != 0) goto Le
+            com.android.server.policy.KeyboardShortcutManager$Behavior r0 = r5.getBehavior(r7)
+        Le:
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder
+            java.lang.String r2 = "launch type="
+            r1.<init>(r2)
+            java.lang.String r2 = typeToString(r7)
+            r1.append(r2)
+            java.lang.String r2 = " componentName="
+            r1.append(r2)
+            r1.append(r8)
+            java.lang.String r2 = " "
+            r1.append(r2)
+            r1.append(r0)
+            java.lang.String r1 = r1.toString()
+            java.lang.String r2 = "KeyboardShortcutManager"
+            android.util.Log.d(r2, r1)
+            android.content.Intent r1 = r0.mIntent
+            r3 = 1
+            r4 = 0
+            if (r1 != 0) goto L42
+            java.lang.String r5 = "Intent is null"
+            android.util.Log.d(r2, r5)
+        L40:
+            r1 = r4
+            goto L80
+        L42:
+            if (r7 == 0) goto L72
+            if (r7 == r3) goto L47
+            goto L80
+        L47:
+            com.android.server.policy.PhoneWindowManagerExt r5 = r5.mPolicyExt
+            android.content.ComponentName r5 = r5.mTopActivity
+            if (r5 != 0) goto L53
+            java.lang.String r5 = "META_F, Unknown top activity!"
+            android.util.Slog.d(r2, r5)
+            goto L40
+        L53:
+            java.lang.StringBuilder r7 = new java.lang.StringBuilder
+            java.lang.String r8 = "META_F, top="
+            r7.<init>(r8)
+            java.lang.String r8 = r5.toShortString()
+            r7.append(r8)
+            java.lang.String r7 = r7.toString()
+            android.util.Slog.d(r2, r7)
+            java.lang.String r7 = "componentname"
+            java.lang.String r5 = r5.toString()
+            r1.putExtra(r7, r5)
+            goto L80
+        L72:
+            boolean r5 = android.text.TextUtils.isEmpty(r8)
+            if (r5 == 0) goto L79
+            goto L40
+        L79:
+            android.content.ComponentName r5 = android.content.ComponentName.unflattenFromString(r8)
+            r1.setComponent(r5)
+        L80:
+            r5 = 0
+            if (r1 != 0) goto L89
+            java.lang.String r6 = "Can not launch app, intent is null"
+            android.util.Log.d(r2, r6)
+            return r5
+        L89:
+            boolean r7 = r0.preCondition()
+            if (r7 == 0) goto L91
+            r3 = r5
+            goto L94
+        L91:
+            r0.startTargetApp(r6)
+        L94:
+            return r3
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.policy.KeyboardShortcutManager.launch(int, int, java.lang.String):boolean");
     }
 }

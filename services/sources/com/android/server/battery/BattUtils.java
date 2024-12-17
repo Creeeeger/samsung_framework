@@ -1,7 +1,10 @@
 package com.android.server.battery;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.util.Slog;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -11,94 +14,130 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import org.json.JSONObject;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class BattUtils {
-    public static final String TAG = "[SS]" + BattUtils.class.getSimpleName();
     public static final DateTimeFormatter FORMATTER_yyyyMMdd = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r2v3, types: [java.time.LocalDateTime, java.lang.Object] */
-    public static String getCurrentNetworkDateStr() {
+    public static long getCurrentNetworkTimeMillis() {
+        long j;
         try {
-            long currentNetworkTimeMillis = SystemClock.currentNetworkTimeMillis();
-            ?? localDateTime = Instant.ofEpochMilli(currentNetworkTimeMillis).atZone(ZoneId.systemDefault()).toLocalDateTime();
-            Slog.v(TAG, "[getCurrentNetworkDateStr]networkTimeMillis:" + currentNetworkTimeMillis + " -> dateTime" + ((Object) localDateTime));
-            return localDateTime.format(FORMATTER_yyyyMMdd);
+            j = SystemClock.currentNetworkTimeMillis();
         } catch (Exception e) {
-            Slog.w(TAG, "[getCurrentNetworkDateStr]Exception(cannot get network time)");
+            Slog.w("[SS]BattUtils", "[getCurrentNetworkTimeMillis]Exception(cannot get network time)");
             e.printStackTrace();
-            return "";
+            j = -1;
+        }
+        Slog.d("[SS]BattUtils", "[getCurrentNetworkTimeMillis]networkTimeMillis:" + j);
+        return j;
+    }
+
+    public static String getValueFromJson(String str) {
+        try {
+            String string = new JSONObject(str).getString("HIGH_SWELLING_CNT");
+            Slog.d("[SS]BattUtils", "[getValueFromJson]key:HIGH_SWELLING_CNT ,value:" + string);
+            return string;
+        } catch (Exception e) {
+            Slog.e("[SS]BattUtils", "[getValueFromJson]Exception - jsonData:" + str);
+            e.printStackTrace();
+            return null;
         }
     }
 
-    public static String getCurrentCalenderStr() {
-        Calendar calendar = Calendar.getInstance();
-        return String.format("%04d%02d%02d", Integer.valueOf(calendar.get(1)), Integer.valueOf(calendar.get(2) + 1), Integer.valueOf(calendar.get(5)));
-    }
-
-    public static LocalDate convertDateStringToLocalDate(String str) {
-        LocalDate localDate;
-        try {
-            localDate = LocalDate.parse(str.trim(), FORMATTER_yyyyMMdd);
-        } catch (Exception e) {
-            Slog.w(TAG, "[convertDateStringToLocalDate]Exception");
-            e.printStackTrace();
-            localDate = null;
-        }
-        Slog.v(TAG, "[convertDateStringToLocalDate]dateString:" + str + " -> date" + localDate);
-        return localDate;
-    }
-
-    public static String readNode(String str) {
+    public static boolean isExist(String str) {
         if (str == null) {
-            Slog.e(TAG, "[readNode]path null");
+            Slog.e("[SS]BattUtils", "[isExist]path null");
+            return false;
+        }
+        boolean exists = Files.exists(Paths.get(str, new String[0]), new LinkOption[0]);
+        Slog.d("[SS]BattUtils", "[isExist]path:" + str + " ,result:" + exists);
+        return exists;
+    }
+
+    public static String readNode(String str, boolean z) {
+        BufferedReader bufferedReader;
+        String readLine;
+        if (str == null) {
+            Slog.e("[SS]BattUtils", "[readNode]path null");
             return "";
         }
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(str));
+            bufferedReader = new BufferedReader(new FileReader(str));
             try {
-                String readLine = bufferedReader.readLine();
-                Slog.d(TAG, "[readNode]path:" + str + " ,value:" + readLine);
-                if (readLine == null) {
-                    readLine = "";
+                readLine = bufferedReader.readLine();
+                if (z) {
+                    Slog.d("[SS]BattUtils", "[readNode]path:" + str + " ,value:" + readLine);
                 }
-                bufferedReader.close();
-                return readLine;
             } finally {
             }
         } catch (IOException e) {
-            Slog.e(TAG, "[readNode]Exception - path:" + str);
-            e.printStackTrace();
-            return "";
+            Slog.e("[SS]BattUtils", "[readNode]Exception - path:".concat(str), e);
+        }
+        if (readLine != null) {
+            bufferedReader.close();
+            return readLine;
+        }
+        bufferedReader.close();
+        return "";
+    }
+
+    public static double readNodeAsDouble() {
+        try {
+            return Double.parseDouble(readNode("/efs/FactoryApp/bsoh", true));
+        } catch (NumberFormatException unused) {
+            Slog.e("[SS]BattUtils", "[readNodeAsDouble]NumberFormatException");
+            return -1.0d;
         }
     }
 
     public static int readNodeAsInt(String str) {
         try {
-            return Integer.parseInt(readNode(str));
+            return Integer.parseInt(readNode(str, true));
         } catch (NumberFormatException unused) {
-            Slog.e(TAG, "[readNodeAsInt]NumberFormatException");
+            Slog.e("[SS]BattUtils", "[readNodeAsInt]NumberFormatException");
             return -1;
         }
     }
 
     public static long readNodeAsLong(String str) {
         try {
-            return Long.parseLong(readNode(str));
+            return Long.parseLong(readNode(str, true));
         } catch (NumberFormatException unused) {
-            Slog.e(TAG, "[readNodeAsLong]NumberFormatException");
+            Slog.e("[SS]BattUtils", "[readNodeAsLong]NumberFormatException");
             return -1L;
         }
     }
 
+    public static long readNodeAsLong$1(String str) {
+        try {
+            return Long.parseLong(readNode(str, false));
+        } catch (NumberFormatException unused) {
+            Slog.e("[SS]BattUtils", "[readNodeAsLong]NumberFormatException");
+            return -1L;
+        }
+    }
+
+    public static void saveSharedPreferencesAsLong(Context context, long j) {
+        Slog.d("[SS]BattUtils", "[saveSharedPreferencesAsLong]preferenceName:battery_service_prefs ,key:shutdown_time ,value:" + j);
+        try {
+            SharedPreferences.Editor edit = context.getSharedPreferences("battery_service_prefs", 0).edit();
+            edit.putLong("shutdown_time", j);
+            edit.apply();
+        } catch (Exception e) {
+            Slog.e("[SS]BattUtils", "[saveSharedPreferencesAsLong]Exception");
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeNode(long j, String str) {
+        writeNode(str, String.valueOf(j));
+    }
+
     public static boolean writeNode(String str, String str2) {
-        Slog.d(TAG, "[writeNode]path:" + str + " ,data:" + str2);
+        GmsAlarmManager$$ExternalSyntheticOutline0.m("[writeNode]path:", str, " ,data:", str2, "[SS]BattUtils");
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(str), StandardCharsets.UTF_8);
             try {
@@ -114,23 +153,13 @@ public abstract class BattUtils {
                 throw th;
             }
         } catch (IOException | NullPointerException e) {
-            Slog.e(TAG, "[writeNode]Exception:" + e);
+            Slog.e("[SS]BattUtils", "[writeNode]Exception:" + e);
             e.printStackTrace();
             return false;
         }
     }
 
-    public static boolean writeNode(String str, long j) {
-        return writeNode(str, String.valueOf(j));
-    }
-
-    public static boolean isExist(String str) {
-        if (str == null) {
-            Slog.e(TAG, "[isExist]path null");
-            return false;
-        }
-        boolean exists = Files.exists(Paths.get(str, new String[0]), new LinkOption[0]);
-        Slog.d(TAG, "[isExist]path:" + str + " ,result:" + exists);
-        return exists;
+    public static boolean writeNode(String str, boolean z) {
+        return writeNode(str, z ? "1" : "0");
     }
 }

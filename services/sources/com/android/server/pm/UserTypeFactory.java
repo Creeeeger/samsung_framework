@@ -1,315 +1,248 @@
 package com.android.server.pm;
 
 import android.R;
-import android.content.pm.UserInfo;
 import android.content.pm.UserProperties;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
+import android.net.shared.InitialConfiguration$$ExternalSyntheticOutline0;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IInstalld;
+import android.os.UserManager;
 import android.util.ArrayMap;
 import android.util.Slog;
 import com.android.internal.util.XmlUtils;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.knox.dar.ddar.ta.TACommandRequest;
 import com.android.server.pm.UserTypeDetails;
+import com.samsung.android.server.pm.mm.MaintenanceModeManager;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class UserTypeFactory {
-    public static ArrayMap getUserTypes() {
-        ArrayMap defaultBuilders = getDefaultBuilders();
-        XmlResourceParser xml = Resources.getSystem().getXml(R.xml.global_keys);
-        try {
-            customizeBuilders(defaultBuilders, xml);
-            if (xml != null) {
-                xml.close();
-            }
-            ArrayMap arrayMap = new ArrayMap(defaultBuilders.size());
-            for (int i = 0; i < defaultBuilders.size(); i++) {
-                arrayMap.put((String) defaultBuilders.keyAt(i), ((UserTypeDetails.Builder) defaultBuilders.valueAt(i)).createUserTypeDetails());
-            }
-            return arrayMap;
-        } catch (Throwable th) {
-            if (xml != null) {
-                try {
-                    xml.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-            }
-            throw th;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UserTypeUpgrade {
+        public final String mFromType;
+        public final String mToType;
+        public final int mUpToVersion;
+
+        public UserTypeUpgrade(int i, String str, String str2) {
+            this.mFromType = str;
+            this.mToType = str2;
+            this.mUpToVersion = i;
         }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x00e0, code lost:
+    
+        r6 = 0;
+        setIntAttribute(r9, "max-allowed-per-parent", new com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda0(r3, r6));
+        r6 = 1;
+        setResAttribute(r9, "icon-badge", new com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda0(r3, r6));
+        r6 = 2;
+        setResAttribute(r9, "badge-plain", new com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda0(r3, r6));
+        r6 = 3;
+        setResAttribute(r9, "badge-no-background", new com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda0(r3, r6));
+        r6 = 4;
+        setResAttribute(r9, "status-bar-icon", new com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda0(r3, r6));
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void customizeBuilders(android.util.ArrayMap r8, android.content.res.XmlResourceParser r9) {
+        /*
+            Method dump skipped, instructions count: 577
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.UserTypeFactory.customizeBuilders(android.util.ArrayMap, android.content.res.XmlResourceParser):void");
     }
 
     public static ArrayMap getDefaultBuilders() {
         ArrayMap arrayMap = new ArrayMap();
-        arrayMap.put("android.os.usertype.profile.MANAGED", getDefaultTypeProfileManaged());
-        arrayMap.put("android.os.usertype.full.SYSTEM", getDefaultTypeFullSystem());
-        arrayMap.put("android.os.usertype.full.SECONDARY", getDefaultTypeFullSecondary());
-        arrayMap.put("android.os.usertype.full.GUEST", getDefaultTypeFullGuest());
-        arrayMap.put("android.os.usertype.full.DEMO", getDefaultTypeFullDemo());
-        arrayMap.put("android.os.usertype.full.RESTRICTED", getDefaultTypeFullRestricted());
-        arrayMap.put("android.os.usertype.system.HEADLESS", getDefaultTypeSystemHeadless());
-        arrayMap.put("android.os.usertype.profile.CLONE", getDefaultTypeProfileClone());
+        UserTypeDetails.Builder builder = new UserTypeDetails.Builder();
+        builder.mName = "android.os.usertype.profile.MANAGED";
+        builder.mBaseType = 4096;
+        builder.mDefaultUserInfoPropertyFlags = 32;
+        builder.mMaxAllowedPerParent = 1;
+        builder.mLabels = new int[]{17042500, 17042501, 17042502};
+        builder.mIconBadge = R.drawable.ic_expand_more;
+        builder.mBadgePlain = R.drawable.ic_drag_handle;
+        builder.mBadgeNoBackground = R.drawable.ic_eject_24dp;
+        builder.mStatusBarIcon = 17304492;
+        builder.mBadgeLabels = new int[]{R.string.permlab_deliverCompanionMessages, R.string.permlab_detectScreenCapture, R.string.permlab_disableKeyguard};
+        builder.mBadgeColors = new int[]{R.color.system_brand_b_light, R.color.system_brand_c_light, R.color.system_brand_d_light};
+        builder.mDarkThemeBadgeColors = new int[]{R.color.system_brand_c_dark, R.color.system_brand_d_dark, R.color.system_clock_hour_dark};
+        builder.mAccessibilityString = R.string.app_category_game;
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("no_wallpaper", true);
+        builder.mDefaultRestrictions = bundle;
+        Bundle bundle2 = new Bundle();
+        bundle2.putString("managed_profile_contact_remote_search", "1");
+        bundle2.putString("cross_profile_calendar_enabled", "1");
+        builder.mDefaultSecureSettings = bundle2;
+        DefaultCrossProfileIntentFilter defaultCrossProfileIntentFilter = DefaultCrossProfileIntentFiltersUtils.EMERGENCY_CALL_MIME;
+        ArrayList arrayList = new ArrayList();
+        DefaultCrossProfileIntentFilter defaultCrossProfileIntentFilter2 = DefaultCrossProfileIntentFiltersUtils.HOME;
+        DefaultCrossProfileIntentFilter defaultCrossProfileIntentFilter3 = DefaultCrossProfileIntentFiltersUtils.MOBILE_NETWORK_SETTINGS;
+        DefaultCrossProfileIntentFilter defaultCrossProfileIntentFilter4 = DefaultCrossProfileIntentFiltersUtils.EMERGENCY_CALL_MIME;
+        DefaultCrossProfileIntentFilter defaultCrossProfileIntentFilter5 = DefaultCrossProfileIntentFiltersUtils.EMERGENCY_CALL_DATA;
+        arrayList.addAll(Arrays.asList(defaultCrossProfileIntentFilter4, defaultCrossProfileIntentFilter5, DefaultCrossProfileIntentFiltersUtils.CALL_BUTTON, DefaultCrossProfileIntentFiltersUtils.SET_ALARM, DefaultCrossProfileIntentFiltersUtils.MEDIA_CAPTURE, DefaultCrossProfileIntentFiltersUtils.RECOGNIZE_SPEECH, DefaultCrossProfileIntentFiltersUtils.ACTION_PICK_RAW, DefaultCrossProfileIntentFiltersUtils.ACTION_PICK_DATA, DefaultCrossProfileIntentFiltersUtils.ACTION_PICK_IMAGES, DefaultCrossProfileIntentFiltersUtils.ACTION_PICK_IMAGES_WITH_DATA_TYPES, DefaultCrossProfileIntentFiltersUtils.OPEN_DOCUMENT, DefaultCrossProfileIntentFiltersUtils.GET_CONTENT, DefaultCrossProfileIntentFiltersUtils.USB_DEVICE_ATTACHED, DefaultCrossProfileIntentFiltersUtils.ACTION_SEND, defaultCrossProfileIntentFilter2, defaultCrossProfileIntentFilter3));
+        arrayList.addAll(DefaultCrossProfileIntentFiltersUtils.getDefaultCrossProfileTelephonyIntentFilters(false));
+        builder.mDefaultCrossProfileIntentFilters = arrayList;
+        builder.mDefaultUserProperties = new UserProperties.Builder().setStartWithParent(true).setShowInLauncher(1).setShowInSettings(1).setShowInQuietMode(0).setShowInSharingSurfaces(1).setAuthAlwaysRequiredToDisableQuietMode(false).setCredentialShareableWithParent(true).build();
+        arrayMap.put("android.os.usertype.profile.MANAGED", builder);
+        UserTypeDetails.Builder builder2 = new UserTypeDetails.Builder();
+        builder2.mName = "android.os.usertype.full.SYSTEM";
+        builder2.mBaseType = TACommandRequest.MAX_DATA_TRANSACTION_SIZE;
+        builder2.mDefaultUserInfoPropertyFlags = 16387;
+        builder2.mMaxAllowed = 1;
+        arrayMap.put("android.os.usertype.full.SYSTEM", builder2);
+        UserTypeDetails.Builder builder3 = new UserTypeDetails.Builder();
+        builder3.mName = "android.os.usertype.full.SECONDARY";
+        builder3.mBaseType = 1024;
+        builder3.mMaxAllowed = -1;
+        Bundle bundle3 = new Bundle();
+        bundle3.putBoolean("no_outgoing_calls", true);
+        bundle3.putBoolean("no_sms", true);
+        builder3.mDefaultRestrictions = bundle3;
+        arrayMap.put("android.os.usertype.full.SECONDARY", builder3);
+        int i = Resources.getSystem().getBoolean(R.bool.config_intrusiveNotificationLed) ? 256 : 0;
+        UserTypeDetails.Builder builder4 = new UserTypeDetails.Builder();
+        builder4.mName = "android.os.usertype.full.GUEST";
+        builder4.mBaseType = 1024;
+        builder4.mDefaultUserInfoPropertyFlags = i | 4;
+        builder4.mMaxAllowed = 1;
+        Bundle bundle4 = new Bundle();
+        bundle4.putBoolean("no_outgoing_calls", true);
+        bundle4.putBoolean("no_sms", true);
+        bundle4.putBoolean("no_config_wifi", true);
+        bundle4.putBoolean("no_install_unknown_sources", true);
+        bundle4.putBoolean("no_config_credentials", true);
+        builder4.mDefaultRestrictions = bundle4;
+        arrayMap.put("android.os.usertype.full.GUEST", builder4);
+        UserTypeDetails.Builder builder5 = new UserTypeDetails.Builder();
+        builder5.mName = "android.os.usertype.full.DEMO";
+        builder5.mBaseType = 1024;
+        builder5.mDefaultUserInfoPropertyFlags = 512;
+        builder5.mMaxAllowed = -1;
+        builder5.mDefaultRestrictions = null;
+        arrayMap.put("android.os.usertype.full.DEMO", builder5);
+        UserTypeDetails.Builder builder6 = new UserTypeDetails.Builder();
+        builder6.mName = "android.os.usertype.full.RESTRICTED";
+        builder6.mBaseType = 1024;
+        builder6.mDefaultUserInfoPropertyFlags = 8;
+        builder6.mMaxAllowed = -1;
+        builder6.mDefaultRestrictions = null;
+        arrayMap.put("android.os.usertype.full.RESTRICTED", builder6);
+        UserTypeDetails.Builder builder7 = new UserTypeDetails.Builder();
+        builder7.mName = "android.os.usertype.system.HEADLESS";
+        builder7.mBaseType = 2048;
+        builder7.mDefaultUserInfoPropertyFlags = 3;
+        builder7.mMaxAllowed = 1;
+        arrayMap.put("android.os.usertype.system.HEADLESS", builder7);
+        UserTypeDetails.Builder builder8 = new UserTypeDetails.Builder();
+        builder8.mName = "android.os.usertype.profile.CLONE";
+        builder8.mBaseType = 4096;
+        builder8.mMaxAllowedPerParent = 1;
+        builder8.mLabels = new int[]{17042496};
+        builder8.mStatusBarIcon = 0;
+        builder8.mAccessibilityString = R.string.app_category_accessibility;
+        builder8.mDefaultRestrictions = null;
+        builder8.mDefaultCrossProfileIntentFilters = Arrays.asList(DefaultCrossProfileIntentFiltersUtils.PARENT_TO_CLONE_SEND_ACTION, DefaultCrossProfileIntentFiltersUtils.PARENT_TO_CLONE_WEB_VIEW_ACTION, DefaultCrossProfileIntentFiltersUtils.PARENT_TO_CLONE_PICK_INSERT_ACTION, DefaultCrossProfileIntentFiltersUtils.PARENT_TO_CLONE_DIAL_DATA, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_MEDIA_CAPTURE, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_SEND_ACTION, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_WEB_VIEW_ACTION, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_VIEW_ACTION, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_PICK_INSERT_ACTION, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_DIAL_DATA, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_SMS_MMS, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_PHOTOPICKER_SELECTION, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_ACTION_PICK_IMAGES, DefaultCrossProfileIntentFiltersUtils.CLONE_TO_PARENT_ACTION_PICK_IMAGES_WITH_DATA_TYPES, DefaultCrossProfileIntentFiltersUtils.PARENT_TO_CLONE_NFC_TAG_DISCOVERED, DefaultCrossProfileIntentFiltersUtils.PARENT_TO_CLONE_NFC_TECH_DISCOVERED, DefaultCrossProfileIntentFiltersUtils.PARENT_TO_CLONE_NFC_NDEF_DISCOVERED);
+        builder8.mDefaultSecureSettings = AccountManagerService$$ExternalSyntheticOutline0.m142m("user_setup_complete", "1");
+        builder8.mIconBadge = R.drawable.ic_input_extract_action_search;
+        builder8.mBadgePlain = R.drawable.ic_input_extract_action_search;
+        builder8.mBadgeNoBackground = R.drawable.ab_bottom_solid_inverse_holo;
+        builder8.mBadgeLabels = new int[]{R.string.permlab_deliverCompanionMessages};
+        builder8.mBadgeColors = new int[]{R.color.datepicker_default_selected_text_color_material_dark};
+        builder8.mDarkThemeBadgeColors = new int[]{R.color.datepicker_default_selected_text_color_material_dark};
+        builder8.mDefaultUserProperties = new UserProperties.Builder().setStartWithParent(true).setShowInLauncher(0).setShowInSettings(0).setInheritDevicePolicy(1).setUseParentsContacts(true).setUpdateCrossProfileIntentFiltersOnOTA(true).setCrossProfileIntentFilterAccessControl(10).setCrossProfileIntentResolutionStrategy(1).setShowInQuietMode(2).setShowInSharingSurfaces(0).setMediaSharedWithParent(true).setCredentialShareableWithParent(true).setDeleteAppWithParent(true).setCrossProfileContentSharingStrategy(1).build();
+        arrayMap.put("android.os.usertype.profile.CLONE", builder8);
+        UserTypeDetails.Builder builder9 = new UserTypeDetails.Builder();
+        builder9.mName = "android.os.usertype.profile.COMMUNAL";
+        builder9.mBaseType = 4096;
+        builder9.mMaxAllowed = 1;
+        builder9.mEnabled = UserManager.isCommunalProfileEnabled() ? 1 : 0;
+        builder9.mLabels = new int[]{17042497};
+        builder9.mIconBadge = R.drawable.jog_dial_arrow_short_left_and_right;
+        builder9.mBadgePlain = R.drawable.jog_dial_arrow_long_right_yellow;
+        builder9.mBadgeNoBackground = R.drawable.jog_dial_arrow_short_left;
+        builder9.mStatusBarIcon = R.drawable.jog_dial_arrow_long_right_yellow;
+        builder9.mBadgeLabels = new int[]{R.string.permlab_deliverCompanionMessages, R.string.permlab_detectScreenCapture, R.string.permlab_disableKeyguard};
+        builder9.mBadgeColors = new int[]{R.color.system_brand_b_light, R.color.system_brand_c_light, R.color.system_brand_d_light};
+        builder9.mDarkThemeBadgeColors = new int[]{R.color.system_brand_c_dark, R.color.system_brand_d_dark, R.color.system_clock_hour_dark};
+        Bundle bundle5 = new Bundle();
+        bundle5.putBoolean("no_wallpaper", true);
+        builder9.mDefaultRestrictions = bundle5;
+        builder9.mDefaultSecureSettings = AccountManagerService$$ExternalSyntheticOutline0.m142m("user_setup_complete", "1");
+        builder9.mDefaultUserProperties = new UserProperties.Builder().setStartWithParent(false).setShowInLauncher(1).setShowInSettings(1).setCredentialShareableWithParent(false).setAlwaysVisible(true).build();
+        arrayMap.put("android.os.usertype.profile.COMMUNAL", builder9);
+        UserTypeDetails.Builder builder10 = new UserTypeDetails.Builder();
+        builder10.mName = "android.os.usertype.profile.PRIVATE";
+        builder10.mBaseType = 4096;
+        builder10.mMaxAllowedPerParent = 1;
+        builder10.mEnabled = UserManager.isPrivateProfileEnabled() ? 1 : 0;
+        builder10.mLabels = new int[]{17042498};
+        builder10.mIconBadge = R.drawable.ic_slice_send;
+        builder10.mBadgePlain = R.drawable.ic_sim_card_multi_48px_clr;
+        builder10.mBadgeNoBackground = R.drawable.ic_sim_card_multi_48px_clr;
+        builder10.mStatusBarIcon = 17304493;
+        builder10.mBadgeLabels = new int[]{17042482};
+        builder10.mBadgeColors = new int[]{R.color.black};
+        builder10.mDarkThemeBadgeColors = new int[]{R.color.white};
+        builder10.mAccessibilityString = R.string.app_category_image;
+        builder10.mDefaultRestrictions = getDefaultPrivateProfileRestrictions();
+        builder10.mDefaultCrossProfileIntentFilters = Arrays.asList(DefaultCrossProfileIntentFiltersUtils.DIAL_MIME_PRIVATE_PROFILE, DefaultCrossProfileIntentFiltersUtils.DIAL_DATA_PRIVATE_PROFILE, DefaultCrossProfileIntentFiltersUtils.DIAL_RAW_PRIVATE_PROFILE, DefaultCrossProfileIntentFiltersUtils.CALL_PRIVATE_PROFILE, DefaultCrossProfileIntentFiltersUtils.CALL_BUTTON_PRIVATE_PROFILE, defaultCrossProfileIntentFilter5, defaultCrossProfileIntentFilter4, DefaultCrossProfileIntentFiltersUtils.SMS_MMS_PRIVATE_PROFILE);
+        builder10.mDefaultUserProperties = new UserProperties.Builder().setStartWithParent(true).setCredentialShareableWithParent(true).setAuthAlwaysRequiredToDisableQuietMode(true).setAllowStoppingUserWithDelayedLocking(true).setMediaSharedWithParent(false).setShowInLauncher(1).setShowInSettings(1).setShowInQuietMode(1).setShowInSharingSurfaces(1).setCrossProfileIntentFilterAccessControl(10).setInheritDevicePolicy(1).setCrossProfileContentSharingStrategy(1).setProfileApiVisibility(1).setItemsRestrictedOnHomeScreen(true).setUpdateCrossProfileIntentFiltersOnOTA(true).build();
+        arrayMap.put("android.os.usertype.profile.PRIVATE", builder10);
+        File file = MaintenanceModeManager.LOG_DIR;
+        UserTypeDetails.Builder builder11 = new UserTypeDetails.Builder();
+        builder11.mName = "com.samsung.android.os.usertype.full.MAINTENANCE_MODE";
+        builder11.mBaseType = 1024;
+        builder11.mMaxAllowed = 1;
+        Bundle bundle6 = new Bundle();
+        bundle6.putBoolean("no_outgoing_calls", false);
+        bundle6.putBoolean("no_sms", true);
+        builder11.mDefaultRestrictions = bundle6;
+        arrayMap.put("com.samsung.android.os.usertype.full.MAINTENANCE_MODE", builder11);
         if (Build.IS_DEBUGGABLE) {
-            arrayMap.put("android.os.usertype.profile.TEST", getDefaultTypeProfileTest());
+            Bundle bundle7 = new Bundle();
+            bundle7.putBoolean("no_wallpaper", true);
+            bundle7.putBoolean("no_fun", true);
+            UserTypeDetails.Builder builder12 = new UserTypeDetails.Builder();
+            builder12.mName = "android.os.usertype.profile.TEST";
+            builder12.mBaseType = 4096;
+            builder12.mMaxAllowedPerParent = 2;
+            builder12.mLabels = new int[]{17042499, 17042499, 17042499};
+            builder12.mIconBadge = R.drawable.jog_dial_arrow_short_left_and_right;
+            builder12.mBadgePlain = R.drawable.jog_dial_arrow_long_right_yellow;
+            builder12.mBadgeNoBackground = R.drawable.jog_dial_arrow_short_left;
+            builder12.mStatusBarIcon = R.drawable.jog_dial_arrow_long_right_yellow;
+            builder12.mBadgeLabels = new int[]{R.string.permlab_deliverCompanionMessages, R.string.permlab_detectScreenCapture, R.string.permlab_disableKeyguard};
+            builder12.mBadgeColors = new int[]{R.color.system_brand_b_light, R.color.system_brand_c_light, R.color.system_brand_d_light};
+            builder12.mDarkThemeBadgeColors = new int[]{R.color.system_brand_c_dark, R.color.system_brand_d_dark, R.color.system_clock_hour_dark};
+            builder12.mDefaultRestrictions = bundle7;
+            builder12.mDefaultSecureSettings = AccountManagerService$$ExternalSyntheticOutline0.m142m("user_setup_complete", "1");
+            arrayMap.put("android.os.usertype.profile.TEST", builder12);
         }
         return arrayMap;
     }
 
-    public static UserTypeDetails.Builder getDefaultTypeProfileClone() {
-        return new UserTypeDetails.Builder().setName("android.os.usertype.profile.CLONE").setBaseType(IInstalld.FLAG_USE_QUOTA).setMaxAllowedPerParent(1).setLabel(0).setIconBadge(R.drawable.ic_find_previous_holo_light).setBadgePlain(R.drawable.ic_find_previous_holo_dark).setBadgeNoBackground(R.drawable.ic_find_previous_holo_dark).setBadgeLabels(R.string.display_manager_built_in_display_name).setBadgeColors(R.color.autofill_background_material_light).setDarkThemeBadgeColors(R.color.autofilled_highlight).setIconBadge(R.drawable.ic_lockscreen_emergencycall_pressed).setBadgePlain(R.drawable.ic_lockscreen_emergencycall_pressed).setBadgeNoBackground(R.drawable.$ic_accessibility_magnification__2).setBadgeLabels(R.string.sensor_notification_service).setBadgeColors(R.color.primary_text_secondary_when_activated_material_inverse).setDarkThemeBadgeColors(17171213).setDefaultRestrictions(null).setDefaultCrossProfileIntentFilters(getDefaultCloneCrossProfileIntentFilter()).setDefaultSecureSettings(getDefaultNonManagedProfileSecureSettings()).setDefaultUserProperties(new UserProperties.Builder().setStartWithParent(true).setShowInLauncher(0).setShowInSettings(0).setInheritDevicePolicy(1).setUseParentsContacts(true).setUpdateCrossProfileIntentFiltersOnOTA(true).setCrossProfileIntentFilterAccessControl(10).setCrossProfileIntentResolutionStrategy(1).setMediaSharedWithParent(true).setCredentialShareableWithParent(true).setDeleteAppWithParent(true));
-    }
-
-    public static UserTypeDetails.Builder getDefaultTypeProfileManaged() {
-        return new UserTypeDetails.Builder().setName("android.os.usertype.profile.MANAGED").setBaseType(IInstalld.FLAG_USE_QUOTA).setDefaultUserInfoPropertyFlags(32).setMaxAllowedPerParent(1).setLabel(0).setIconBadge(R.drawable.ic_jog_dial_decline).setBadgePlain(R.drawable.ic_input_extract_action_send).setBadgeNoBackground(R.drawable.ic_jog_dial_answer).setBadgeLabels(R.string.sensor_notification_service, R.string.serial_number, R.string.serviceClassData).setBadgeColors(17171212, 17171214, 17171216).setDarkThemeBadgeColors(17171213, 17171215, 17171217).setDefaultRestrictions(getDefaultManagedProfileRestrictions()).setDefaultSecureSettings(getDefaultManagedProfileSecureSettings()).setDefaultCrossProfileIntentFilters(getDefaultManagedCrossProfileIntentFilter()).setDefaultUserProperties(new UserProperties.Builder().setStartWithParent(true).setShowInLauncher(1).setShowInSettings(1).setCredentialShareableWithParent(true));
-    }
-
-    public static UserTypeDetails.Builder getDefaultTypeProfileTest() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("no_fun", true);
-        return new UserTypeDetails.Builder().setName("android.os.usertype.profile.TEST").setBaseType(IInstalld.FLAG_USE_QUOTA).setMaxAllowedPerParent(2).setLabel(0).setIconBadge(R.drawable.light_header_dither).setBadgePlain(R.drawable.keyboard_popup_panel_trans_background).setBadgeNoBackground(R.drawable.light_header).setBadgeLabels(R.string.sensor_notification_service, R.string.serial_number, R.string.serviceClassData).setBadgeColors(17171212, 17171214, 17171216).setDarkThemeBadgeColors(17171213, 17171215, 17171217).setDefaultRestrictions(bundle).setDefaultSecureSettings(getDefaultNonManagedProfileSecureSettings());
-    }
-
-    public static UserTypeDetails.Builder getDefaultTypeFullSecondary() {
-        return new UserTypeDetails.Builder().setName("android.os.usertype.full.SECONDARY").setBaseType(1024).setMaxAllowed(-1).setDefaultRestrictions(getDefaultSecondaryUserRestrictions());
-    }
-
-    public static UserTypeDetails.Builder getDefaultTypeFullGuest() {
-        return new UserTypeDetails.Builder().setName("android.os.usertype.full.GUEST").setBaseType(1024).setDefaultUserInfoPropertyFlags((Resources.getSystem().getBoolean(17891715) ? 256 : 0) | 4).setMaxAllowed(1).setDefaultRestrictions(getDefaultGuestUserRestrictions());
-    }
-
-    public static UserTypeDetails.Builder getDefaultTypeFullDemo() {
-        return new UserTypeDetails.Builder().setName("android.os.usertype.full.DEMO").setBaseType(1024).setDefaultUserInfoPropertyFlags(512).setMaxAllowed(-1).setDefaultRestrictions(null);
-    }
-
-    public static UserTypeDetails.Builder getDefaultTypeFullRestricted() {
-        return new UserTypeDetails.Builder().setName("android.os.usertype.full.RESTRICTED").setBaseType(1024).setDefaultUserInfoPropertyFlags(8).setMaxAllowed(-1).setDefaultRestrictions(null);
-    }
-
-    public static UserTypeDetails.Builder getDefaultTypeFullSystem() {
-        return new UserTypeDetails.Builder().setName("android.os.usertype.full.SYSTEM").setBaseType(3072).setDefaultUserInfoPropertyFlags(16387).setMaxAllowed(1);
-    }
-
-    public static UserTypeDetails.Builder getDefaultTypeSystemHeadless() {
-        return new UserTypeDetails.Builder().setName("android.os.usertype.system.HEADLESS").setBaseType(IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES).setDefaultUserInfoPropertyFlags(3).setMaxAllowed(1);
-    }
-
-    public static Bundle getDefaultSecondaryUserRestrictions() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("no_outgoing_calls", true);
-        bundle.putBoolean("no_sms", true);
-        return bundle;
-    }
-
-    public static Bundle getDefaultGuestUserRestrictions() {
-        Bundle defaultSecondaryUserRestrictions = getDefaultSecondaryUserRestrictions();
-        defaultSecondaryUserRestrictions.putBoolean("no_config_wifi", true);
-        defaultSecondaryUserRestrictions.putBoolean("no_install_unknown_sources", true);
-        defaultSecondaryUserRestrictions.putBoolean("no_config_credentials", true);
-        return defaultSecondaryUserRestrictions;
-    }
-
-    public static Bundle getDefaultManagedProfileRestrictions() {
+    public static Bundle getDefaultPrivateProfileRestrictions() {
         Bundle bundle = new Bundle();
         bundle.putBoolean("no_wallpaper", true);
+        bundle.putBoolean("no_bluetooth_sharing", true);
         return bundle;
-    }
-
-    public static Bundle getDefaultManagedProfileSecureSettings() {
-        Bundle bundle = new Bundle();
-        bundle.putString("managed_profile_contact_remote_search", "1");
-        bundle.putString("cross_profile_calendar_enabled", "1");
-        return bundle;
-    }
-
-    public static List getDefaultManagedCrossProfileIntentFilter() {
-        return DefaultCrossProfileIntentFiltersUtils.getDefaultManagedProfileFilters();
-    }
-
-    public static List getDefaultCloneCrossProfileIntentFilter() {
-        return DefaultCrossProfileIntentFiltersUtils.getDefaultCloneProfileFilters();
-    }
-
-    public static Bundle getDefaultNonManagedProfileSecureSettings() {
-        Bundle bundle = new Bundle();
-        bundle.putString("user_setup_complete", "1");
-        return bundle;
-    }
-
-    public static void customizeBuilders(ArrayMap arrayMap, XmlResourceParser xmlResourceParser) {
-        boolean z;
-        final UserTypeDetails.Builder builder;
-        try {
-            XmlUtils.beginDocument(xmlResourceParser, "user-types");
-            XmlUtils.nextElement(xmlResourceParser);
-            while (true) {
-                boolean z2 = true;
-                if (xmlResourceParser.getEventType() == 1) {
-                    return;
-                }
-                String name = xmlResourceParser.getName();
-                if ("profile-type".equals(name)) {
-                    z = true;
-                } else if ("full-type".equals(name)) {
-                    z = false;
-                } else {
-                    if ("change-user-type".equals(name)) {
-                        XmlUtils.skipCurrentTag(xmlResourceParser);
-                    } else {
-                        Slog.w("UserTypeFactory", "Skipping unknown element " + name + " in " + xmlResourceParser.getPositionDescription());
-                        XmlUtils.skipCurrentTag(xmlResourceParser);
-                    }
-                    XmlUtils.nextElement(xmlResourceParser);
-                }
-                String attributeValue = xmlResourceParser.getAttributeValue(null, "name");
-                if (attributeValue != null && !attributeValue.equals("")) {
-                    String intern = attributeValue.intern();
-                    if (intern.startsWith("android.")) {
-                        Slog.i("UserTypeFactory", "Customizing user type " + intern);
-                        builder = (UserTypeDetails.Builder) arrayMap.get(intern);
-                        if (builder == null) {
-                            throw new IllegalArgumentException("Illegal custom user type name " + intern + ": Non-AOSP user types cannot start with 'android.'");
-                        }
-                        if ((!z || builder.getBaseType() != 4096) && (z || builder.getBaseType() != 1024)) {
-                            z2 = false;
-                        }
-                        throw new IllegalArgumentException("Wrong base type to customize user type (" + intern + "), which is type " + UserInfo.flagsToString(builder.getBaseType()));
-                    }
-                    if (z) {
-                        Slog.i("UserTypeFactory", "Creating custom user type " + intern);
-                        builder = new UserTypeDetails.Builder();
-                        builder.setName(intern);
-                        builder.setBaseType(IInstalld.FLAG_USE_QUOTA);
-                        arrayMap.put(intern, builder);
-                    } else {
-                        throw new IllegalArgumentException("Creation of non-profile user type (" + intern + ") is not currently supported.");
-                    }
-                    if (z) {
-                        setIntAttribute(xmlResourceParser, "max-allowed-per-parent", new Consumer() { // from class: com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda0
-                            @Override // java.util.function.Consumer
-                            public final void accept(Object obj) {
-                                UserTypeDetails.Builder.this.setMaxAllowedPerParent(((Integer) obj).intValue());
-                            }
-                        });
-                        setResAttribute(xmlResourceParser, "icon-badge", new Consumer() { // from class: com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda1
-                            @Override // java.util.function.Consumer
-                            public final void accept(Object obj) {
-                                UserTypeDetails.Builder.this.setIconBadge(((Integer) obj).intValue());
-                            }
-                        });
-                        setResAttribute(xmlResourceParser, "badge-plain", new Consumer() { // from class: com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda2
-                            @Override // java.util.function.Consumer
-                            public final void accept(Object obj) {
-                                UserTypeDetails.Builder.this.setBadgePlain(((Integer) obj).intValue());
-                            }
-                        });
-                        setResAttribute(xmlResourceParser, "badge-no-background", new Consumer() { // from class: com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda3
-                            @Override // java.util.function.Consumer
-                            public final void accept(Object obj) {
-                                UserTypeDetails.Builder.this.setBadgeNoBackground(((Integer) obj).intValue());
-                            }
-                        });
-                    }
-                    setIntAttribute(xmlResourceParser, "enabled", new Consumer() { // from class: com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda4
-                        @Override // java.util.function.Consumer
-                        public final void accept(Object obj) {
-                            UserTypeDetails.Builder.this.setEnabled(((Integer) obj).intValue());
-                        }
-                    });
-                    setIntAttribute(xmlResourceParser, "max-allowed", new Consumer() { // from class: com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda5
-                        @Override // java.util.function.Consumer
-                        public final void accept(Object obj) {
-                            UserTypeDetails.Builder.this.setMaxAllowed(((Integer) obj).intValue());
-                        }
-                    });
-                    int depth = xmlResourceParser.getDepth();
-                    while (XmlUtils.nextElementWithin(xmlResourceParser, depth)) {
-                        String name2 = xmlResourceParser.getName();
-                        if ("default-restrictions".equals(name2)) {
-                            builder.setDefaultRestrictions(UserRestrictionsUtils.readRestrictions(XmlUtils.makeTyped(xmlResourceParser)));
-                        } else if (z && "badge-labels".equals(name2)) {
-                            setResAttributeArray(xmlResourceParser, new Consumer() { // from class: com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda6
-                                @Override // java.util.function.Consumer
-                                public final void accept(Object obj) {
-                                    UserTypeDetails.Builder.this.setBadgeLabels((int[]) obj);
-                                }
-                            });
-                        } else if (z && "badge-colors".equals(name2)) {
-                            setResAttributeArray(xmlResourceParser, new Consumer() { // from class: com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda7
-                                @Override // java.util.function.Consumer
-                                public final void accept(Object obj) {
-                                    UserTypeDetails.Builder.this.setBadgeColors((int[]) obj);
-                                }
-                            });
-                        } else if (z && "badge-colors-dark".equals(name2)) {
-                            setResAttributeArray(xmlResourceParser, new Consumer() { // from class: com.android.server.pm.UserTypeFactory$$ExternalSyntheticLambda8
-                                @Override // java.util.function.Consumer
-                                public final void accept(Object obj) {
-                                    UserTypeDetails.Builder.this.setDarkThemeBadgeColors((int[]) obj);
-                                }
-                            });
-                        } else if ("user-properties".equals(name2)) {
-                            builder.getDefaultUserProperties().updateFromXml(XmlUtils.makeTyped(xmlResourceParser));
-                        } else {
-                            Slog.w("UserTypeFactory", "Unrecognized tag " + name2 + " in " + xmlResourceParser.getPositionDescription());
-                        }
-                    }
-                    XmlUtils.nextElement(xmlResourceParser);
-                }
-                Slog.w("UserTypeFactory", "Skipping user type with no name in " + xmlResourceParser.getPositionDescription());
-                XmlUtils.skipCurrentTag(xmlResourceParser);
-                XmlUtils.nextElement(xmlResourceParser);
-            }
-        } catch (IOException | XmlPullParserException e) {
-            Slog.w("UserTypeFactory", "Cannot read user type configuration file.", e);
-        }
-    }
-
-    public static void setIntAttribute(XmlResourceParser xmlResourceParser, String str, Consumer consumer) {
-        String attributeValue = xmlResourceParser.getAttributeValue(null, str);
-        if (attributeValue == null) {
-            return;
-        }
-        try {
-            consumer.accept(Integer.valueOf(Integer.parseInt(attributeValue)));
-        } catch (NumberFormatException e) {
-            Slog.e("UserTypeFactory", "Cannot parse value of '" + attributeValue + "' for " + str + " in " + xmlResourceParser.getPositionDescription(), e);
-            throw e;
-        }
-    }
-
-    public static void setResAttribute(XmlResourceParser xmlResourceParser, String str, Consumer consumer) {
-        if (xmlResourceParser.getAttributeValue(null, str) == null) {
-            return;
-        }
-        consumer.accept(Integer.valueOf(xmlResourceParser.getAttributeResourceValue(null, str, 0)));
-    }
-
-    public static void setResAttributeArray(XmlResourceParser xmlResourceParser, Consumer consumer) {
-        ArrayList arrayList = new ArrayList();
-        int depth = xmlResourceParser.getDepth();
-        while (XmlUtils.nextElementWithin(xmlResourceParser, depth)) {
-            String name = xmlResourceParser.getName();
-            if (!"item".equals(name)) {
-                Slog.w("UserTypeFactory", "Skipping unknown child element " + name + " in " + xmlResourceParser.getPositionDescription());
-                XmlUtils.skipCurrentTag(xmlResourceParser);
-            } else {
-                int attributeResourceValue = xmlResourceParser.getAttributeResourceValue(null, "res", -1);
-                if (attributeResourceValue != -1) {
-                    arrayList.add(Integer.valueOf(attributeResourceValue));
-                }
-            }
-        }
-        int[] iArr = new int[arrayList.size()];
-        for (int i = 0; i < arrayList.size(); i++) {
-            iArr[i] = ((Integer) arrayList.get(i)).intValue();
-        }
-        consumer.accept(iArr);
     }
 
     public static int getUserTypeVersion() {
@@ -351,26 +284,6 @@ public abstract class UserTypeFactory {
         }
     }
 
-    public static List getUserTypeUpgrades() {
-        XmlResourceParser xml = Resources.getSystem().getXml(R.xml.global_keys);
-        try {
-            List parseUserUpgrades = parseUserUpgrades(getDefaultBuilders(), xml);
-            if (xml != null) {
-                xml.close();
-            }
-            return parseUserUpgrades;
-        } catch (Throwable th) {
-            if (xml != null) {
-                try {
-                    xml.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-            }
-            throw th;
-        }
-    }
-
     public static List parseUserUpgrades(ArrayMap arrayMap, XmlResourceParser xmlResourceParser) {
         ArrayList arrayList = new ArrayList();
         try {
@@ -380,10 +293,10 @@ public abstract class UserTypeFactory {
                 if ("change-user-type".equals(xmlResourceParser.getName())) {
                     String attributeValue = xmlResourceParser.getAttributeValue(null, "from");
                     String attributeValue2 = xmlResourceParser.getAttributeValue(null, "to");
-                    validateUserTypeIsProfile(attributeValue, arrayMap);
-                    validateUserTypeIsProfile(attributeValue2, arrayMap);
+                    validateUserTypeIsProfile(arrayMap, attributeValue);
+                    validateUserTypeIsProfile(arrayMap, attributeValue2);
                     try {
-                        arrayList.add(new UserTypeUpgrade(attributeValue, attributeValue2, Integer.parseInt(xmlResourceParser.getAttributeValue(null, "whenVersionLeq"))));
+                        arrayList.add(new UserTypeUpgrade(Integer.parseInt(xmlResourceParser.getAttributeValue(null, "whenVersionLeq")), attributeValue, attributeValue2));
                     } catch (NumberFormatException e) {
                         Slog.e("UserTypeFactory", "Cannot parse value of whenVersionLeq in " + xmlResourceParser.getPositionDescription(), e);
                         throw e;
@@ -399,36 +312,56 @@ public abstract class UserTypeFactory {
         return arrayList;
     }
 
-    public static void validateUserTypeIsProfile(String str, ArrayMap arrayMap) {
-        UserTypeDetails.Builder builder = (UserTypeDetails.Builder) arrayMap.get(str);
-        if (builder == null || builder.getBaseType() == 4096) {
+    public static void setIntAttribute(XmlResourceParser xmlResourceParser, String str, Consumer consumer) {
+        String attributeValue = xmlResourceParser.getAttributeValue(null, str);
+        if (attributeValue == null) {
             return;
         }
-        throw new IllegalArgumentException("Illegal upgrade of user type " + str + " : Can only upgrade profiles user types");
+        try {
+            consumer.accept(Integer.valueOf(Integer.parseInt(attributeValue)));
+        } catch (NumberFormatException e) {
+            StringBuilder m = InitialConfiguration$$ExternalSyntheticOutline0.m("Cannot parse value of '", attributeValue, "' for ", str, " in ");
+            m.append(xmlResourceParser.getPositionDescription());
+            Slog.e("UserTypeFactory", m.toString(), e);
+            throw e;
+        }
     }
 
-    /* loaded from: classes3.dex */
-    public class UserTypeUpgrade {
-        public final String mFromType;
-        public final String mToType;
-        public final int mUpToVersion;
-
-        public UserTypeUpgrade(String str, String str2, int i) {
-            this.mFromType = str;
-            this.mToType = str2;
-            this.mUpToVersion = i;
+    public static void setResAttribute(XmlResourceParser xmlResourceParser, String str, Consumer consumer) {
+        if (xmlResourceParser.getAttributeValue(null, str) == null) {
+            return;
         }
+        consumer.accept(Integer.valueOf(xmlResourceParser.getAttributeResourceValue(null, str, 0)));
+    }
 
-        public String getFromType() {
-            return this.mFromType;
+    public static void setResAttributeArray(XmlResourceParser xmlResourceParser, Consumer consumer) {
+        ArrayList arrayList = new ArrayList();
+        int depth = xmlResourceParser.getDepth();
+        while (XmlUtils.nextElementWithin(xmlResourceParser, depth)) {
+            String name = xmlResourceParser.getName();
+            if ("item".equals(name)) {
+                int attributeResourceValue = xmlResourceParser.getAttributeResourceValue(null, "res", -1);
+                if (attributeResourceValue != -1) {
+                    arrayList.add(Integer.valueOf(attributeResourceValue));
+                }
+            } else {
+                StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Skipping unknown child element ", name, " in ");
+                m.append(xmlResourceParser.getPositionDescription());
+                Slog.w("UserTypeFactory", m.toString());
+                XmlUtils.skipCurrentTag(xmlResourceParser);
+            }
         }
-
-        public String getToType() {
-            return this.mToType;
+        int[] iArr = new int[arrayList.size()];
+        for (int i = 0; i < arrayList.size(); i++) {
+            iArr[i] = ((Integer) arrayList.get(i)).intValue();
         }
+        consumer.accept(iArr);
+    }
 
-        public int getUpToVersion() {
-            return this.mUpToVersion;
+    public static void validateUserTypeIsProfile(ArrayMap arrayMap, String str) {
+        UserTypeDetails.Builder builder = (UserTypeDetails.Builder) arrayMap.get(str);
+        if (builder != null && builder.mBaseType != 4096) {
+            throw new IllegalArgumentException(XmlUtils$$ExternalSyntheticOutline0.m("Illegal upgrade of user type ", str, " : Can only upgrade profiles user types"));
         }
     }
 }

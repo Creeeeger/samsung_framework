@@ -7,8 +7,9 @@ import com.android.server.backup.transport.TransportConnection;
 import com.android.server.backup.utils.BackupEligibilityRules;
 import java.util.ArrayList;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class BackupParams {
+public final class BackupParams {
     public String dirName;
     public ArrayList fullPackages;
     public ArrayList kvPackages;
@@ -18,18 +19,4 @@ public class BackupParams {
     public IBackupManagerMonitor monitor;
     public boolean nonIncrementalBackup;
     public IBackupObserver observer;
-    public boolean userInitiated;
-
-    public BackupParams(TransportConnection transportConnection, String str, ArrayList arrayList, ArrayList arrayList2, IBackupObserver iBackupObserver, IBackupManagerMonitor iBackupManagerMonitor, OnTaskFinishedListener onTaskFinishedListener, boolean z, boolean z2, BackupEligibilityRules backupEligibilityRules) {
-        this.mTransportConnection = transportConnection;
-        this.dirName = str;
-        this.kvPackages = arrayList;
-        this.fullPackages = arrayList2;
-        this.observer = iBackupObserver;
-        this.monitor = iBackupManagerMonitor;
-        this.listener = onTaskFinishedListener;
-        this.userInitiated = z;
-        this.nonIncrementalBackup = z2;
-        this.mBackupEligibilityRules = backupEligibilityRules;
-    }
 }

@@ -3,94 +3,65 @@ package com.android.server.wm;
 import android.graphics.Rect;
 import android.view.SurfaceControl;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import java.io.PrintWriter;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
 import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class BlackFrame {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class BlackFrame {
     public final BlackSurface[] mBlackSurfaces;
     public final Rect mInnerRect;
     public final Rect mOuterRect;
     public final Supplier mTransactionFactory;
 
-    /* loaded from: classes3.dex */
-    public class BlackSurface {
-        public final int layer;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BlackSurface {
         public final int left;
         public final SurfaceControl surface;
         public final int top;
 
-        public BlackSurface(SurfaceControl.Transaction transaction, int i, int i2, int i3, int i4, int i5, DisplayContent displayContent, SurfaceControl surfaceControl) {
-            this.left = i2;
-            this.top = i3;
-            this.layer = i;
+        public BlackSurface(SurfaceControl.Transaction transaction, int i, int i2, int i3, int i4, DisplayContent displayContent, SurfaceControl surfaceControl) {
+            this.left = i;
+            this.top = i2;
             SurfaceControl build = displayContent.makeOverlay().setName("BlackSurface").setColorLayer().setParent(surfaceControl).setCallsite("BlackSurface").build();
             this.surface = build;
-            transaction.setWindowCrop(build, i4 - i2, i5 - i3);
+            transaction.setWindowCrop(build, i3 - i, i4 - i2);
             transaction.setAlpha(build, 1.0f);
-            transaction.setLayer(build, i);
-            transaction.setPosition(build, i2, i3);
+            transaction.setLayer(build, 2010000);
+            transaction.setPosition(build, i, i2);
             transaction.show(build);
-            if (ProtoLogCache.WM_SHOW_SURFACE_ALLOC_enabled) {
-                ProtoLogImpl.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, 152914409, 4, (String) null, new Object[]{String.valueOf(build), Long.valueOf(i)});
+            if (ProtoLogImpl_54989576.Cache.WM_SHOW_SURFACE_ALLOC_enabled[2]) {
+                ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, -2963535976860666511L, 4, null, String.valueOf(build), Long.valueOf(2010000));
             }
         }
     }
 
-    public void printTo(String str, PrintWriter printWriter) {
-        printWriter.print(str);
-        printWriter.print("Outer: ");
-        this.mOuterRect.printShortString(printWriter);
-        printWriter.print(" / Inner: ");
-        this.mInnerRect.printShortString(printWriter);
-        printWriter.println();
-        int i = 0;
-        while (true) {
-            BlackSurface[] blackSurfaceArr = this.mBlackSurfaces;
-            if (i >= blackSurfaceArr.length) {
-                return;
-            }
-            BlackSurface blackSurface = blackSurfaceArr[i];
-            printWriter.print(str);
-            printWriter.print("#");
-            printWriter.print(i);
-            printWriter.print(": ");
-            printWriter.print(blackSurface.surface);
-            printWriter.print(" left=");
-            printWriter.print(blackSurface.left);
-            printWriter.print(" top=");
-            printWriter.println(blackSurface.top);
-            i++;
-        }
-    }
-
-    public BlackFrame(Supplier supplier, SurfaceControl.Transaction transaction, Rect rect, Rect rect2, int i, DisplayContent displayContent, boolean z, SurfaceControl surfaceControl) {
+    public BlackFrame(Supplier supplier, SurfaceControl.Transaction transaction, Rect rect, Rect rect2, DisplayContent displayContent, SurfaceControl surfaceControl) {
         BlackSurface[] blackSurfaceArr = new BlackSurface[4];
         this.mBlackSurfaces = blackSurfaceArr;
         this.mTransactionFactory = supplier;
         this.mOuterRect = new Rect(rect);
         this.mInnerRect = new Rect(rect2);
         try {
-            int i2 = rect.top;
-            int i3 = rect2.top;
-            if (i2 < i3) {
-                blackSurfaceArr[0] = new BlackSurface(transaction, i, rect.left, i2, rect2.right, i3, displayContent, surfaceControl);
+            int i = rect.top;
+            int i2 = rect2.top;
+            if (i < i2) {
+                blackSurfaceArr[0] = new BlackSurface(transaction, rect.left, i, rect2.right, i2, displayContent, surfaceControl);
             }
-            int i4 = rect.left;
-            int i5 = rect2.left;
-            if (i4 < i5) {
-                blackSurfaceArr[1] = new BlackSurface(transaction, i, i4, rect2.top, i5, rect.bottom, displayContent, surfaceControl);
+            int i3 = rect.left;
+            int i4 = rect2.left;
+            if (i3 < i4) {
+                blackSurfaceArr[1] = new BlackSurface(transaction, i3, rect2.top, i4, rect.bottom, displayContent, surfaceControl);
             }
-            int i6 = rect.bottom;
-            int i7 = rect2.bottom;
-            if (i6 > i7) {
-                blackSurfaceArr[2] = new BlackSurface(transaction, i, rect2.left, i7, rect.right, i6, displayContent, surfaceControl);
+            int i5 = rect.bottom;
+            int i6 = rect2.bottom;
+            if (i5 > i6) {
+                blackSurfaceArr[2] = new BlackSurface(transaction, rect2.left, i6, rect.right, i5, displayContent, surfaceControl);
             }
-            int i8 = rect.right;
-            int i9 = rect2.right;
-            if (i8 > i9) {
-                blackSurfaceArr[3] = new BlackSurface(transaction, i, i9, rect.top, i8, rect2.bottom, displayContent, surfaceControl);
+            int i7 = rect.right;
+            int i8 = rect2.right;
+            if (i7 > i8) {
+                blackSurfaceArr[3] = new BlackSurface(transaction, i8, rect.top, i7, rect2.bottom, displayContent, surfaceControl);
             }
         } catch (Throwable th) {
             kill();
@@ -98,25 +69,24 @@ public class BlackFrame {
         }
     }
 
-    public void kill() {
+    public final void kill() {
         SurfaceControl.Transaction transaction = (SurfaceControl.Transaction) this.mTransactionFactory.get();
         int i = 0;
         while (true) {
             BlackSurface[] blackSurfaceArr = this.mBlackSurfaces;
-            if (i < blackSurfaceArr.length) {
-                BlackSurface blackSurface = blackSurfaceArr[i];
-                if (blackSurface != null) {
-                    if (ProtoLogCache.WM_SHOW_SURFACE_ALLOC_enabled) {
-                        ProtoLogImpl.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, 51200510, 0, (String) null, new Object[]{String.valueOf(blackSurface.surface)});
-                    }
-                    transaction.remove(this.mBlackSurfaces[i].surface);
-                    this.mBlackSurfaces[i] = null;
-                }
-                i++;
-            } else {
+            if (i >= blackSurfaceArr.length) {
                 transaction.apply();
                 return;
             }
+            BlackSurface blackSurface = blackSurfaceArr[i];
+            if (blackSurface != null) {
+                if (ProtoLogImpl_54989576.Cache.WM_SHOW_SURFACE_ALLOC_enabled[2]) {
+                    ProtoLogImpl_54989576.i(ProtoLogGroup.WM_SHOW_SURFACE_ALLOC, -5633771912572750947L, 0, null, String.valueOf(blackSurface.surface));
+                }
+                transaction.remove(blackSurfaceArr[i].surface);
+                blackSurfaceArr[i] = null;
+            }
+            i++;
         }
     }
 }

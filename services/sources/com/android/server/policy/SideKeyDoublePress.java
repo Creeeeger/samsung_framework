@@ -6,208 +6,187 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Slog;
 import android.view.KeyEvent;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.policy.PhoneWindowManagerExt;
 import com.android.server.wm.WmCoverState;
-import com.samsung.android.rune.CoreRune;
+import com.samsung.android.cover.CoverState;
+import com.samsung.android.rune.InputRune;
+import com.samsung.android.view.SemWindowManager;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class SideKeyDoublePress {
     public static Behavior mBehavior;
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Behavior {
+        public int mAction = 0;
         public PhoneWindowManagerExt mPolicyExt;
         public final String mTargetAppName;
 
-        public int getAction() {
-            return 0;
-        }
-
-        public abstract void startTargetApp(KeyEvent keyEvent, boolean z, boolean z2, Intent intent, Intent intent2);
-
-        public void updateTargetComponent(Intent intent) {
-        }
-
         public Behavior(String str) {
             this.mTargetAppName = str;
-        }
-
-        public String getTargetAppName() {
-            return this.mTargetAppName;
-        }
-
-        public boolean equalTargetAppName(String str) {
-            if (TextUtils.isEmpty(str)) {
-                Slog.d("SideKeyDoublePress", "appName is empty.");
-                return false;
-            }
-            return str.equals(this.mTargetAppName);
-        }
-
-        public Intent getIntent() {
-            return new Intent("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER").addFlags(270532608).setComponent(ComponentName.unflattenFromString(this.mTargetAppName));
-        }
-
-        public void launch(PhoneWindowManagerExt phoneWindowManagerExt, Intent intent, KeyEvent keyEvent, boolean z) {
-            this.mPolicyExt = phoneWindowManagerExt;
-            if (preCondition(intent, z)) {
-                return;
-            }
-            updateTargetComponent(intent);
-            Intent fillInIntent = phoneWindowManagerExt.getFillInIntent();
-            boolean showCoverToast = showCoverToast(fillInIntent, intent);
-            Slog.d("SideKeyDoublePress", "launch, showCoverToast=" + showCoverToast + " " + this);
-            startTargetApp(keyEvent, z, showCoverToast, intent, fillInIntent);
         }
 
         public boolean doublePressLaunchPolicy(boolean z) {
             return this.mPolicyExt.doublePressLaunchPolicy(26);
         }
 
-        public boolean showCoverToast(Intent intent, Intent intent2) {
-            if (!WmCoverState.isEnabled() || !WmCoverState.getInstance().isClearTypeCoverClosed()) {
-                return false;
-            }
-            intent.putExtra("showCoverToast", true);
-            Slog.d("SideKeyDoublePress", "neededShowCoverToast for cover");
-            return true;
+        public int getAction() {
+            return this.mAction;
+        }
+
+        public Intent getIntent() {
+            return new Intent("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER").addFlags(270532608).setComponent(ComponentName.unflattenFromString(this.mTargetAppName));
         }
 
         public boolean preCondition(Intent intent, boolean z) {
             if (doublePressLaunchPolicy(z)) {
                 return true;
             }
-            return this.mPolicyExt.showToastIfNeeded(intent);
+            PhoneWindowManagerExt phoneWindowManagerExt = this.mPolicyExt;
+            phoneWindowManagerExt.getClass();
+            if (TextUtils.isEmpty(null)) {
+                return false;
+            }
+            phoneWindowManagerExt.showToast(phoneWindowManagerExt.mContext, null);
+            return true;
         }
 
-        public String toString() {
-            StringBuilder sb = new StringBuilder(256);
-            sb.append("Behavior=");
-            sb.append(getClass().getSimpleName());
-            sb.append(" keyCode=");
-            sb.append(26);
-            sb.append(" appName=");
-            sb.append(this.mTargetAppName);
-            return sb.toString();
+        public void setAction(int i) {
+            this.mAction = i;
         }
-    }
 
-    public static Behavior typeToBehavior(int i, String str) {
-        if (i == 0) {
-            return getBehavior("com.sec.android.app.camera/com.sec.android.app.camera.Camera");
+        public boolean showCoverToast(Intent intent) {
+            if (!WmCoverState.sIsEnabled) {
+                return false;
+            }
+            WmCoverState wmCoverState = WmCoverState.getInstance();
+            if (!(!((CoverState) wmCoverState).switchState)) {
+                return false;
+            }
+            switch (((CoverState) wmCoverState).type) {
+                case 15:
+                case 16:
+                case 17:
+                    intent.putExtra("showCoverToast", true);
+                    Slog.d("SideKeyDoublePress", "neededShowCoverToast for cover");
+                    return true;
+                default:
+                    return false;
+            }
         }
-        if (i == 2) {
-            return getBehavior(str);
+
+        public abstract void startTargetApp(KeyEvent keyEvent, boolean z, boolean z2, Intent intent, Intent intent2);
+
+        public final String toString() {
+            StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(256, "Behavior=");
+            m.append(getClass().getSimpleName());
+            m.append(" keyCode=26 appName=");
+            m.append(this.mTargetAppName);
+            return m.toString();
         }
-        if (i == 3) {
-            return getBehavior("secureFolder/secureFolder");
+
+        public void updateTargetComponent(Intent intent) {
         }
-        if (i == 4) {
-            return getBehavior("samsungpay://simplepay/sidekey");
-        }
-        Slog.d("SideKeyDoublePress", "type is not properly.");
-        return null;
     }
 
     public static Behavior getBehavior(String str) {
-        Behavior openingTvMode;
+        PhoneWindowManagerExt.OpeningBixby openingBixby;
+        boolean equals;
+        int i = 5;
+        int i2 = 4;
+        int i3 = 3;
+        int i4 = 2;
+        int i5 = 1;
+        int i6 = 0;
+        if (TextUtils.isEmpty(str)) {
+            return null;
+        }
         Behavior behavior = mBehavior;
-        if (behavior != null && behavior.equalTargetAppName(str)) {
-            return mBehavior;
+        if (behavior != null) {
+            behavior.getClass();
+            if (TextUtils.isEmpty(str)) {
+                Slog.d("SideKeyDoublePress", "appName is empty.");
+                equals = false;
+            } else {
+                equals = str.equals(behavior.mTargetAppName);
+            }
+            if (equals) {
+                return mBehavior;
+            }
         }
-        str.hashCode();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1236848504:
-                if (str.equals("com.samsung.tvmode/com.samsung.tvmode.activity.MainActivity")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case -785655453:
-                if (str.equals("samsungpay://simplepay/sidekey")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 5922692:
-                if (str.equals("com.sec.android.app.camera/com.sec.android.app.camera.Camera")) {
-                    c = 2;
-                    break;
-                }
-                break;
-            case 1517559055:
-                if (str.equals("wakeBixby_openApps/wakeBixby_openApps")) {
-                    c = 3;
-                    break;
-                }
-                break;
-            case 1784250409:
-                if (str.equals("torch/torch")) {
-                    c = 4;
-                    break;
-                }
-                break;
-            case 1980045775:
-                if (str.equals("secureFolder/secureFolder")) {
-                    c = 5;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                openingTvMode = CoreRune.FW_DOUBLE_PRESS_POWER_ATT_TV_MODE ? new PhoneWindowManagerExt.OpeningTvMode(str) : null;
-                mBehavior = openingTvMode;
-                return openingTvMode;
-            case 1:
-                PhoneWindowManagerExt.OpeningSamsungPay openingSamsungPay = new PhoneWindowManagerExt.OpeningSamsungPay(str);
-                mBehavior = openingSamsungPay;
-                return openingSamsungPay;
-            case 2:
-                PhoneWindowManagerExt.OpeningQuickLaunchCamera openingQuickLaunchCamera = new PhoneWindowManagerExt.OpeningQuickLaunchCamera(str);
-                mBehavior = openingQuickLaunchCamera;
-                return openingQuickLaunchCamera;
-            case 3:
-                openingTvMode = CoreRune.FW_WAKE_UP_BIXBY_SIDE_KEY ? new PhoneWindowManagerExt.OpeningBixby(str) : null;
-                mBehavior = openingTvMode;
-                return openingTvMode;
-            case 4:
-                openingTvMode = CoreRune.FW_TORCH ? new PhoneWindowManagerExt.OpeningTorch(str) : null;
-                mBehavior = openingTvMode;
-                return openingTvMode;
-            case 5:
-                openingTvMode = CoreRune.FW_SUPPORT_QUICK_SWITCH_PRIVATE_MODE ? new PhoneWindowManagerExt.OpeningSecureFolder(str) : null;
-                mBehavior = openingTvMode;
-                return openingTvMode;
+        str.getClass();
+        switch (str) {
+            case "com.samsung.tvmode/com.samsung.tvmode.activity.MainActivity":
+                openingBixby = InputRune.PWM_POWER_KEY_DOUBLE_PRESS_ATT_TV_MODE ? new PhoneWindowManagerExt.OpeningBixby(str, i5) : null;
+                mBehavior = openingBixby;
+                return openingBixby;
+            case "samsungpay://simplepay/sidekey":
+                PhoneWindowManagerExt.OpeningBixby openingBixby2 = new PhoneWindowManagerExt.OpeningBixby(str, i3);
+                mBehavior = openingBixby2;
+                return openingBixby2;
+            case "com.sec.android.app.camera/com.sec.android.app.camera.Camera":
+                PhoneWindowManagerExt.OpeningBixby openingBixby3 = new PhoneWindowManagerExt.OpeningBixby(str, i4);
+                mBehavior = openingBixby3;
+                return openingBixby3;
+            case "wakeBixby_openApps/wakeBixby_openApps":
+                openingBixby = InputRune.PWM_SIDE_KEY_WAKE_UP_BIXBY ? new PhoneWindowManagerExt.OpeningBixby(str, i6) : null;
+                mBehavior = openingBixby;
+                return openingBixby;
+            case "torch/torch":
+                openingBixby = InputRune.PWM_SIDE_KEY_TORCH ? new PhoneWindowManagerExt.OpeningBixby(str, i) : null;
+                mBehavior = openingBixby;
+                return openingBixby;
+            case "secureFolder/secureFolder":
+                openingBixby = InputRune.PWM_SIDE_KEY_DOUBLE_PRESS_SECURE_FOLDER ? new PhoneWindowManagerExt.OpeningBixby(str, i2) : null;
+                mBehavior = openingBixby;
+                return openingBixby;
             default:
-                if (TextUtils.isEmpty(str)) {
-                    return null;
-                }
                 PhoneWindowManagerExt.OpeningApps openingApps = new PhoneWindowManagerExt.OpeningApps(str);
+                openingApps.mAction = 1;
                 mBehavior = openingApps;
                 return openingApps;
         }
     }
 
     public static void launch(PhoneWindowManagerExt phoneWindowManagerExt, KeyEvent keyEvent, boolean z) {
-        Behavior behavior;
-        Intent lastIntentClone = phoneWindowManagerExt.mKeyCustomizationPolicy.getLastIntentClone(8, 26);
-        if (lastIntentClone == null || (behavior = getBehavior(getTargetAppName(lastIntentClone))) == null) {
+        String uri;
+        Intent fillInIntent;
+        SemWindowManager.KeyCustomizationInfo last = phoneWindowManagerExt.mKeyCustomizationPolicy.mKeyCustomizationInfoManager.getLast(8, 26);
+        if (last == null || last.getIntent() == null) {
             return;
         }
-        behavior.launch(phoneWindowManagerExt, lastIntentClone, keyEvent, z);
-    }
-
-    public static String getTargetAppName(Intent intent) {
+        Intent intent = (Intent) last.getIntent().clone();
         ComponentName component = intent.getComponent();
         if (component != null) {
-            return component.flattenToString();
+            uri = component.flattenToString();
+        } else {
+            Uri data = intent.getData();
+            uri = data != null ? data.toString() : null;
         }
-        Uri data = intent.getData();
-        if (data != null) {
-            return data.toString();
+        Behavior behavior = getBehavior(uri);
+        if (behavior == null) {
+            return;
         }
-        return null;
+        if (behavior instanceof PhoneWindowManagerExt.OpeningApps) {
+            behavior.setAction(last.action);
+        }
+        behavior.mPolicyExt = phoneWindowManagerExt;
+        if (behavior.preCondition(intent, z)) {
+            return;
+        }
+        behavior.updateTargetComponent(intent);
+        if (intent.getExtras() == null || !intent.getExtras().getBoolean("show_on_keyguard", false)) {
+            fillInIntent = PhoneWindowManagerExt.getFillInIntent();
+        } else {
+            fillInIntent = new Intent();
+            fillInIntent.putExtra("ignoreKeyguardState", true);
+            fillInIntent.putExtra("ignoreUnlock", true);
+        }
+        Intent intent2 = fillInIntent;
+        boolean showCoverToast = behavior.showCoverToast(intent2);
+        Slog.d("SideKeyDoublePress", "launch, showCoverToast=" + showCoverToast + " " + behavior);
+        behavior.startTargetApp(keyEvent, z, showCoverToast, intent, intent2);
     }
 }

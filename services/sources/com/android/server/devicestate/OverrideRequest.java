@@ -1,47 +1,24 @@
 package com.android.server.devicestate;
 
+import android.hardware.devicestate.DeviceState;
 import android.os.IBinder;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class OverrideRequest {
-    public String mCallStack = null;
     public final int mFlags;
     public final int mPid;
     public final int mRequestType;
-    public final int mRequestedState;
+    public final DeviceState mRequestedState;
     public final IBinder mToken;
     public final int mUid;
 
-    public OverrideRequest(IBinder iBinder, int i, int i2, int i3, int i4, int i5) {
+    public OverrideRequest(IBinder iBinder, int i, int i2, DeviceState deviceState, int i3, int i4) {
         this.mToken = iBinder;
         this.mPid = i;
         this.mUid = i2;
-        this.mRequestedState = i3;
-        this.mFlags = i4;
-        this.mRequestType = i5;
-    }
-
-    public IBinder getToken() {
-        return this.mToken;
-    }
-
-    public int getPid() {
-        return this.mPid;
-    }
-
-    public int getUid() {
-        return this.mUid;
-    }
-
-    public int getRequestedState() {
-        return this.mRequestedState;
-    }
-
-    public int getFlags() {
-        return this.mFlags;
-    }
-
-    public int getRequestType() {
-        return this.mRequestType;
+        this.mRequestedState = deviceState;
+        this.mFlags = i3;
+        this.mRequestType = i4;
     }
 }

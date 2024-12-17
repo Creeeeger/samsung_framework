@@ -9,39 +9,144 @@ import android.system.suspend.internal.ISuspendControlServiceInternal;
 import android.system.suspend.internal.WakeLockInfo;
 import android.util.Slog;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import com.android.server.power.stats.KernelWakelockStats;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
-/* loaded from: classes3.dex */
-public class KernelWakelockReader {
-    public static final int[] PROC_WAKELOCKS_FORMAT = {5129, 8201, 9, 9, 9, 8201};
-    public static final int[] WAKEUP_SOURCES_FORMAT = {4105, 8457, FrameworkStatsLog.USER_LIFECYCLE_EVENT_OCCURRED, FrameworkStatsLog.USER_LIFECYCLE_EVENT_OCCURRED, FrameworkStatsLog.USER_LIFECYCLE_EVENT_OCCURRED, FrameworkStatsLog.USER_LIFECYCLE_EVENT_OCCURRED, 8457};
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class KernelWakelockReader {
+    public static final int[] PROC_WAKELOCKS_FORMAT = {5129, 8201, 9, 8201, 9, 8201};
+    public static final int[] WAKEUP_SOURCES_FORMAT = {4105, 8457, FrameworkStatsLog.USER_LIFECYCLE_EVENT_OCCURRED, FrameworkStatsLog.USER_LIFECYCLE_EVENT_OCCURRED, FrameworkStatsLog.USER_LIFECYCLE_EVENT_OCCURRED, 8457, 8457};
     public static int sKernelWakelockUpdateVersion;
     public final String[] mProcWakelocksName = new String[3];
-    public final long[] mProcWakelocksData = new long[3];
+    public final long[] mProcWakelocksData = new long[4];
     public ISuspendControlServiceInternal mSuspendControlService = null;
-    public byte[] mKernelWakelockBuffer = new byte[32768];
+    public final byte[] mKernelWakelockBuffer = new byte[32768];
+
+    public final KernelWakelockStats getWakelockStatsFromSystemSuspend(KernelWakelockStats kernelWakelockStats) {
+        if (this.mSuspendControlService == null) {
+            for (int i = 0; i < 5; i++) {
+                try {
+                    ISuspendControlServiceInternal asInterface = ISuspendControlServiceInternal.Stub.asInterface(ServiceManager.getService("suspend_control_internal"));
+                    this.mSuspendControlService = asInterface;
+                    if (asInterface != null) {
+                        this.mSuspendControlService = asInterface;
+                    }
+                } catch (ServiceManager.ServiceNotFoundException e) {
+                    Slog.wtf("KernelWakelockReader", "Required service suspend_control not available", e);
+                    return null;
+                }
+            }
+            throw new ServiceManager.ServiceNotFoundException("suspend_control_internal");
+        }
+        try {
+            updateWakelockStats(this.mSuspendControlService.getWakeLockStats(), kernelWakelockStats);
+            return kernelWakelockStats;
+        } catch (RemoteException e2) {
+            Slog.wtf("KernelWakelockReader", "Failed to obtain wakelock stats from ISuspendControlService", e2);
+            return null;
+        } catch (IllegalArgumentException e3) {
+            Slog.wtf("KernelWakelockReader", "SuspendControlService got IllegalArgumentException", e3);
+            return null;
+        }
+    }
+
+    public KernelWakelockStats parseProcWakelocks(byte[] bArr, int i, boolean z, KernelWakelockStats kernelWakelockStats) {
+        long j;
+        long j2;
+        byte b;
+        int i2 = 0;
+        while (i2 < i && (b = bArr[i2]) != 10 && b != 0) {
+            i2++;
+        }
+        int i3 = i2 + 1;
+        synchronized (this) {
+            int i4 = i3;
+            while (i3 < i) {
+                int i5 = i4;
+                while (i5 < i) {
+                    try {
+                        byte b2 = bArr[i5];
+                        if (b2 == 10 || b2 == 0) {
+                            break;
+                        }
+                        i5++;
+                    } finally {
+                    }
+                }
+                if (i5 <= i - 1) {
+                    String[] strArr = this.mProcWakelocksName;
+                    long[] jArr = this.mProcWakelocksData;
+                    for (int i6 = i4; i6 < i5; i6++) {
+                        if ((bArr[i6] & 128) != 0) {
+                            bArr[i6] = 63;
+                        }
+                    }
+                    boolean parseProcLine = Process.parseProcLine(bArr, i4, i5, z ? WAKEUP_SOURCES_FORMAT : PROC_WAKELOCKS_FORMAT, strArr, jArr, null);
+                    String trim = strArr[0].trim();
+                    int i7 = (int) jArr[1];
+                    if (z) {
+                        j = jArr[2] * 1000;
+                        j2 = jArr[3] * 1000;
+                    } else {
+                        j = (jArr[2] + 500) / 1000;
+                        j2 = (jArr[3] + 500) / 1000;
+                    }
+                    long j3 = j;
+                    if (!parseProcLine || trim.length() <= 0) {
+                        if (!parseProcLine) {
+                            try {
+                                Slog.wtf("KernelWakelockReader", "Failed to parse proc line: " + new String(bArr, i4, i5 - i4));
+                            } catch (Exception unused) {
+                                Slog.wtf("KernelWakelockReader", "Failed to parse proc line!");
+                            }
+                        }
+                    } else if (kernelWakelockStats.containsKey(trim)) {
+                        KernelWakelockStats.Entry entry = (KernelWakelockStats.Entry) kernelWakelockStats.get(trim);
+                        int i8 = entry.version;
+                        int i9 = sKernelWakelockUpdateVersion;
+                        if (i8 == i9) {
+                            entry.count += i7;
+                            entry.totalTimeUs += j2;
+                            entry.activeTimeUs = j3;
+                        } else {
+                            entry.count = i7;
+                            entry.totalTimeUs = j2;
+                            entry.activeTimeUs = j3;
+                            entry.version = i9;
+                        }
+                    } else {
+                        kernelWakelockStats.put(trim, new KernelWakelockStats.Entry(i7, sKernelWakelockUpdateVersion, j2, j3));
+                    }
+                    i4 = i5 + 1;
+                    i3 = i5;
+                }
+            }
+        }
+        return kernelWakelockStats;
+    }
 
     public final KernelWakelockStats readKernelWakelockStats(KernelWakelockStats kernelWakelockStats) {
         FileInputStream fileInputStream;
         boolean z;
         int i;
         KernelWakelockStats removeOldStats;
-        boolean exists = new File("/sys/class/wakeup").exists();
-        Slog.i("KernelWakelockReader", "readKernelWakelockStats(" + exists + ")");
-        if (exists) {
+        if (BatteryService$$ExternalSyntheticOutline0.m45m("/sys/class/wakeup")) {
             synchronized (KernelWakelockReader.class) {
-                updateVersion(kernelWakelockStats);
-                if (getWakelockStatsFromSystemSuspend(kernelWakelockStats) == null) {
-                    Slog.w("KernelWakelockReader", "Failed to get wakelock stats from SystemSuspend");
-                    return null;
+                try {
+                    updateVersion(kernelWakelockStats);
+                    if (getWakelockStatsFromSystemSuspend(kernelWakelockStats) == null) {
+                        Slog.w("KernelWakelockReader", "Failed to get wakelock stats from SystemSuspend");
+                        return null;
+                    }
+                    return removeOldStats(kernelWakelockStats);
+                } finally {
                 }
-                return removeOldStats(kernelWakelockStats);
             }
         }
         int i2 = 0;
@@ -89,12 +194,15 @@ public class KernelWakelockReader {
                     }
                 }
                 synchronized (KernelWakelockReader.class) {
-                    updateVersion(kernelWakelockStats);
-                    if (getWakelockStatsFromSystemSuspend(kernelWakelockStats) == null) {
-                        Slog.w("KernelWakelockReader", "Failed to get Native wakelock stats from SystemSuspend");
+                    try {
+                        updateVersion(kernelWakelockStats);
+                        if (getWakelockStatsFromSystemSuspend(kernelWakelockStats) == null) {
+                            Slog.w("KernelWakelockReader", "Failed to get Native wakelock stats from SystemSuspend");
+                        }
+                        parseProcWakelocks(this.mKernelWakelockBuffer, i, z, kernelWakelockStats);
+                        removeOldStats = removeOldStats(kernelWakelockStats);
+                    } finally {
                     }
-                    parseProcWakelocks(this.mKernelWakelockBuffer, i, z, kernelWakelockStats);
-                    removeOldStats = removeOldStats(kernelWakelockStats);
                 }
                 return removeOldStats;
             } catch (FileNotFoundException unused2) {
@@ -109,130 +217,11 @@ public class KernelWakelockReader {
         }
     }
 
-    public final ISuspendControlServiceInternal waitForSuspendControlService() {
-        for (int i = 0; i < 5; i++) {
-            ISuspendControlServiceInternal asInterface = ISuspendControlServiceInternal.Stub.asInterface(ServiceManager.getService("suspend_control_internal"));
-            this.mSuspendControlService = asInterface;
-            if (asInterface != null) {
-                return asInterface;
-            }
-        }
-        throw new ServiceManager.ServiceNotFoundException("suspend_control_internal");
-    }
-
-    public final KernelWakelockStats getWakelockStatsFromSystemSuspend(KernelWakelockStats kernelWakelockStats) {
-        try {
-            ISuspendControlServiceInternal waitForSuspendControlService = waitForSuspendControlService();
-            this.mSuspendControlService = waitForSuspendControlService;
-            try {
-                updateWakelockStats(waitForSuspendControlService.getWakeLockStats(), kernelWakelockStats);
-                return kernelWakelockStats;
-            } catch (RemoteException e) {
-                Slog.wtf("KernelWakelockReader", "Failed to obtain wakelock stats from ISuspendControlService", e);
-                return null;
-            } catch (IllegalArgumentException e2) {
-                Slog.wtf("KernelWakelockReader", "SuspendControlService got IllegalArgumentException", e2);
-                return null;
-            }
-        } catch (ServiceManager.ServiceNotFoundException e3) {
-            Slog.wtf("KernelWakelockReader", "Required service suspend_control not available", e3);
-            return null;
-        }
-    }
-
-    public KernelWakelockStats updateWakelockStats(WakeLockInfo[] wakeLockInfoArr, KernelWakelockStats kernelWakelockStats) {
-        long j;
-        for (WakeLockInfo wakeLockInfo : wakeLockInfoArr) {
-            if (!kernelWakelockStats.containsKey(wakeLockInfo.name)) {
-                kernelWakelockStats.put(wakeLockInfo.name, new KernelWakelockStats.Entry((int) wakeLockInfo.activeCount, wakeLockInfo.totalTime * 1000, sKernelWakelockUpdateVersion));
-                j = 0;
-            } else {
-                KernelWakelockStats.Entry entry = (KernelWakelockStats.Entry) kernelWakelockStats.get(wakeLockInfo.name);
-                j = entry.mTotalTime;
-                if (!wakeLockInfo.isKernelWakelock && entry.mVersion == sKernelWakelockUpdateVersion) {
-                    entry.mCount += (int) wakeLockInfo.activeCount;
-                    entry.mTotalTime = (wakeLockInfo.totalTime * 1000) + j;
-                } else {
-                    entry.mCount = (int) wakeLockInfo.activeCount;
-                    entry.mTotalTime = wakeLockInfo.totalTime * 1000;
-                    entry.mVersion = sKernelWakelockUpdateVersion;
-                }
-            }
-            if (wakeLockInfo.name.contains("PowerManager") || (wakeLockInfo.totalTime * 1000) - j >= 10800000000L) {
-                Slog.d("KernelWakelockReader", "name=" + wakeLockInfo.name + "\t isActive=" + wakeLockInfo.isActive + "\t lastChange=" + wakeLockInfo.lastChange + "\t activeCount=" + wakeLockInfo.activeCount + "\t activeTime=" + wakeLockInfo.activeTime + "\t totalTime=" + wakeLockInfo.totalTime + "\t version=" + sKernelWakelockUpdateVersion + "\t time_delta=" + ((wakeLockInfo.totalTime * 1000) - j));
-            }
-        }
-        return kernelWakelockStats;
-    }
-
-    public KernelWakelockStats parseProcWakelocks(byte[] bArr, int i, boolean z, KernelWakelockStats kernelWakelockStats) {
-        int[] iArr;
-        long j;
-        byte b;
-        int i2 = 0;
-        while (i2 < i && (b = bArr[i2]) != 10 && b != 0) {
-            i2++;
-        }
-        int i3 = i2 + 1;
-        synchronized (this) {
-            int i4 = i3;
-            while (i3 < i) {
-                int i5 = i4;
-                while (i5 < i) {
-                    byte b2 = bArr[i5];
-                    if (b2 == 10 || b2 == 0) {
-                        break;
-                    }
-                    i5++;
-                }
-                if (i5 > i - 1) {
-                    break;
-                }
-                String[] strArr = this.mProcWakelocksName;
-                long[] jArr = this.mProcWakelocksData;
-                for (int i6 = i4; i6 < i5; i6++) {
-                    if ((bArr[i6] & 128) != 0) {
-                        bArr[i6] = 63;
-                    }
-                }
-                if (z) {
-                    iArr = WAKEUP_SOURCES_FORMAT;
-                } else {
-                    iArr = PROC_WAKELOCKS_FORMAT;
-                }
-                boolean parseProcLine = Process.parseProcLine(bArr, i4, i5, iArr, strArr, jArr, null);
-                String trim = strArr[0].trim();
-                int i7 = (int) jArr[1];
-                if (z) {
-                    j = jArr[2] * 1000;
-                } else {
-                    j = (jArr[2] + 500) / 1000;
-                }
-                if (!parseProcLine || trim.length() <= 0) {
-                    if (!parseProcLine) {
-                        try {
-                            Slog.wtf("KernelWakelockReader", "Failed to parse proc line: " + new String(bArr, i4, i5 - i4));
-                        } catch (Exception unused) {
-                            Slog.wtf("KernelWakelockReader", "Failed to parse proc line!");
-                        }
-                    }
-                } else if (!kernelWakelockStats.containsKey(trim)) {
-                    kernelWakelockStats.put(trim, new KernelWakelockStats.Entry(i7, j, sKernelWakelockUpdateVersion));
-                } else {
-                    KernelWakelockStats.Entry entry = (KernelWakelockStats.Entry) kernelWakelockStats.get(trim);
-                    int i8 = entry.mVersion;
-                    int i9 = sKernelWakelockUpdateVersion;
-                    if (i8 == i9) {
-                        entry.mCount += i7;
-                        entry.mTotalTime += j;
-                    } else {
-                        entry.mCount = i7;
-                        entry.mTotalTime = j;
-                        entry.mVersion = i9;
-                    }
-                }
-                i4 = i5 + 1;
-                i3 = i5;
+    public KernelWakelockStats removeOldStats(KernelWakelockStats kernelWakelockStats) {
+        Iterator it = kernelWakelockStats.values().iterator();
+        while (it.hasNext()) {
+            if (((KernelWakelockStats.Entry) it.next()).version != sKernelWakelockUpdateVersion) {
+                it.remove();
             }
         }
         return kernelWakelockStats;
@@ -245,11 +234,22 @@ public class KernelWakelockReader {
         return kernelWakelockStats;
     }
 
-    public KernelWakelockStats removeOldStats(KernelWakelockStats kernelWakelockStats) {
-        Iterator it = kernelWakelockStats.values().iterator();
-        while (it.hasNext()) {
-            if (((KernelWakelockStats.Entry) it.next()).mVersion != sKernelWakelockUpdateVersion) {
-                it.remove();
+    public KernelWakelockStats updateWakelockStats(WakeLockInfo[] wakeLockInfoArr, KernelWakelockStats kernelWakelockStats) {
+        for (WakeLockInfo wakeLockInfo : wakeLockInfoArr) {
+            if (kernelWakelockStats.containsKey(wakeLockInfo.name)) {
+                KernelWakelockStats.Entry entry = (KernelWakelockStats.Entry) kernelWakelockStats.get(wakeLockInfo.name);
+                if (wakeLockInfo.isKernelWakelock || entry.version != sKernelWakelockUpdateVersion) {
+                    entry.count = (int) wakeLockInfo.activeCount;
+                    entry.totalTimeUs = wakeLockInfo.totalTime * 1000;
+                    entry.activeTimeUs = wakeLockInfo.isActive ? wakeLockInfo.activeTime * 1000 : 0L;
+                    entry.version = sKernelWakelockUpdateVersion;
+                } else {
+                    entry.count += (int) wakeLockInfo.activeCount;
+                    entry.totalTimeUs = (wakeLockInfo.totalTime * 1000) + entry.totalTimeUs;
+                    entry.activeTimeUs += wakeLockInfo.isActive ? wakeLockInfo.activeTime * 1000 : 0L;
+                }
+            } else {
+                kernelWakelockStats.put(wakeLockInfo.name, new KernelWakelockStats.Entry((int) wakeLockInfo.activeCount, sKernelWakelockUpdateVersion, wakeLockInfo.totalTime * 1000, wakeLockInfo.isActive ? wakeLockInfo.activeTime * 1000 : 0L));
             }
         }
         return kernelWakelockStats;

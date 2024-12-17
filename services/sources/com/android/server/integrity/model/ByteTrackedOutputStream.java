@@ -2,8 +2,9 @@ package com.android.server.integrity.model;
 
 import java.io.OutputStream;
 
-/* loaded from: classes2.dex */
-public class ByteTrackedOutputStream extends OutputStream {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ByteTrackedOutputStream extends OutputStream {
     public final OutputStream mOutputStream;
     public int mWrittenBytesCount = 0;
 
@@ -12,23 +13,19 @@ public class ByteTrackedOutputStream extends OutputStream {
     }
 
     @Override // java.io.OutputStream
-    public void write(int i) {
+    public final void write(int i) {
         this.mWrittenBytesCount++;
         this.mOutputStream.write(i);
     }
 
     @Override // java.io.OutputStream
-    public void write(byte[] bArr) {
+    public final void write(byte[] bArr) {
         write(bArr, 0, bArr.length);
     }
 
     @Override // java.io.OutputStream
-    public void write(byte[] bArr, int i, int i2) {
+    public final void write(byte[] bArr, int i, int i2) {
         this.mWrittenBytesCount += i2;
         this.mOutputStream.write(bArr, i, i2);
-    }
-
-    public int getWrittenBytesCount() {
-        return this.mWrittenBytesCount;
     }
 }

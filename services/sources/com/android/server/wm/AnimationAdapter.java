@@ -5,11 +5,18 @@ import android.view.SurfaceControl;
 import com.android.server.wm.SurfaceAnimator;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface AnimationAdapter {
     void dump(PrintWriter printWriter, String str);
 
-    void dumpDebug(ProtoOutputStream protoOutputStream);
+    default void dumpDebug(ProtoOutputStream protoOutputStream) {
+        long start = protoOutputStream.start(1146756268035L);
+        dumpDebug$1(protoOutputStream);
+        protoOutputStream.end(start);
+    }
+
+    void dumpDebug$1(ProtoOutputStream protoOutputStream);
 
     default int getBackgroundColor() {
         return 0;
@@ -27,15 +34,9 @@ public interface AnimationAdapter {
 
     void onAnimationCancelled(SurfaceControl surfaceControl);
 
-    default boolean shouldDeferAnimationFinish(Runnable runnable) {
+    default boolean shouldDeferAnimationFinish() {
         return false;
     }
 
     void startAnimation(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback);
-
-    default void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        dumpDebug(protoOutputStream);
-        protoOutputStream.end(start);
-    }
 }

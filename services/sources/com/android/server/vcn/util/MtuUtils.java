@@ -9,12 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class MtuUtils {
     public static final Map AUTHCRYPT_ALGORITHM_OVERHEAD;
     public static final Map AUTH_ALGORITHM_OVERHEAD;
     public static final Map CRYPT_ALGORITHM_OVERHEAD;
-    public static final String TAG = "MtuUtils";
 
     static {
         ArrayMap arrayMap = new ArrayMap();
@@ -39,7 +39,7 @@ public abstract class MtuUtils {
         AUTHCRYPT_ALGORITHM_OVERHEAD = Collections.unmodifiableMap(arrayMap3);
     }
 
-    public static int getMtu(List list, int i, int i2, boolean z) {
+    public static int getMtu(List list, int i, boolean z, int i2) {
         if (i2 <= 0) {
             return 1280;
         }
@@ -51,30 +51,28 @@ public abstract class MtuUtils {
             ChildSaProposal childSaProposal = (ChildSaProposal) it.next();
             Iterator<Pair<Integer, Integer>> it2 = childSaProposal.getEncryptionAlgorithms().iterator();
             while (it2.hasNext()) {
-                int intValue = ((Integer) it2.next().first).intValue();
+                Integer num = (Integer) it2.next().first;
+                int intValue = num.intValue();
                 Map map = AUTHCRYPT_ALGORITHM_OVERHEAD;
-                if (map.containsKey(Integer.valueOf(intValue))) {
-                    i3 = Math.max(i3, ((Integer) map.get(Integer.valueOf(intValue))).intValue());
+                if (map.containsKey(num)) {
+                    i3 = Math.max(i3, ((Integer) map.get(num)).intValue());
                 } else {
                     Map map2 = CRYPT_ALGORITHM_OVERHEAD;
-                    if (map2.containsKey(Integer.valueOf(intValue))) {
-                        i4 = Math.max(i4, ((Integer) map2.get(Integer.valueOf(intValue))).intValue());
-                    } else {
-                        Slog.wtf(TAG, "Unknown encryption algorithm requested: " + intValue);
+                    if (!map2.containsKey(num)) {
+                        Slog.wtf("MtuUtils", "Unknown encryption algorithm requested: " + intValue);
                         return 1280;
                     }
+                    i4 = Math.max(i4, ((Integer) map2.get(num)).intValue());
                 }
             }
-            Iterator<Integer> it3 = childSaProposal.getIntegrityAlgorithms().iterator();
-            while (it3.hasNext()) {
-                int intValue2 = it3.next().intValue();
+            for (Integer num2 : childSaProposal.getIntegrityAlgorithms()) {
+                int intValue2 = num2.intValue();
                 Map map3 = AUTH_ALGORITHM_OVERHEAD;
-                if (map3.containsKey(Integer.valueOf(intValue2))) {
-                    i5 = Math.max(i5, ((Integer) map3.get(Integer.valueOf(intValue2))).intValue());
-                } else {
-                    Slog.wtf(TAG, "Unknown integrity algorithm requested: " + intValue2);
+                if (!map3.containsKey(num2)) {
+                    Slog.wtf("MtuUtils", "Unknown integrity algorithm requested: " + intValue2);
                     return 1280;
                 }
+                i5 = Math.max(i5, ((Integer) map3.get(num2)).intValue());
             }
         }
         int i6 = z ? 78 : 50;

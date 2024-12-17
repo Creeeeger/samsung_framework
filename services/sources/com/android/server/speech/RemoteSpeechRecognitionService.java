@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.IInterface;
 import android.os.RemoteException;
 import android.speech.IModelDownloadListener;
 import android.speech.IRecognitionListener;
@@ -21,13 +22,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes3.dex */
-public final class RemoteSpeechRecognitionService extends ServiceConnector.Impl {
-    public static final String TAG = RemoteSpeechRecognitionService.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+final class RemoteSpeechRecognitionService extends ServiceConnector.Impl {
+    public static final /* synthetic */ int $r8$clinit = 0;
     private final int mCallingUid;
     private final List mClientListeners;
     private final Map mClients;
@@ -35,17 +35,85 @@ public final class RemoteSpeechRecognitionService extends ServiceConnector.Impl 
     private boolean mConnected;
     private final Object mLock;
 
-    public long getAutoDisconnectTimeoutMs() {
-        return 0L;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ClientState {
+        public DelegatingListener mDelegatingListener;
+        public boolean mRecordingInProgress;
     }
 
-    public RemoteSpeechRecognitionService(Context context, ComponentName componentName, int i, int i2) {
-        super(context, new Intent("android.speech.RecognitionService").setComponent(componentName), 67112961, i, new Function() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda2
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return IRecognitionService.Stub.asInterface((IBinder) obj);
-            }
-        });
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DelegatingListener extends IRecognitionListener.Stub {
+        public final Runnable mOnSessionFailure;
+        public final Runnable mOnSessionSuccess;
+        public final IRecognitionListener mRemoteListener;
+
+        public DelegatingListener(IRecognitionListener iRecognitionListener, RemoteSpeechRecognitionService$$ExternalSyntheticLambda3 remoteSpeechRecognitionService$$ExternalSyntheticLambda3, RemoteSpeechRecognitionService$$ExternalSyntheticLambda3 remoteSpeechRecognitionService$$ExternalSyntheticLambda32) {
+            this.mRemoteListener = iRecognitionListener;
+            this.mOnSessionSuccess = remoteSpeechRecognitionService$$ExternalSyntheticLambda3;
+            this.mOnSessionFailure = remoteSpeechRecognitionService$$ExternalSyntheticLambda32;
+        }
+
+        public final void onBeginningOfSpeech() {
+            this.mRemoteListener.onBeginningOfSpeech();
+        }
+
+        public final void onBufferReceived(byte[] bArr) {
+            this.mRemoteListener.onBufferReceived(bArr);
+        }
+
+        public final void onEndOfSegmentedSession() {
+            this.mOnSessionSuccess.run();
+            this.mRemoteListener.onEndOfSegmentedSession();
+        }
+
+        public final void onEndOfSpeech() {
+            this.mRemoteListener.onEndOfSpeech();
+        }
+
+        public final void onError(int i) {
+            this.mOnSessionFailure.run();
+            this.mRemoteListener.onError(i);
+        }
+
+        public final void onEvent(int i, Bundle bundle) {
+            this.mRemoteListener.onEvent(i, bundle);
+        }
+
+        public final void onLanguageDetection(Bundle bundle) {
+            this.mRemoteListener.onLanguageDetection(bundle);
+        }
+
+        public final void onPartialResults(Bundle bundle) {
+            this.mRemoteListener.onPartialResults(bundle);
+        }
+
+        public final void onReadyForSpeech(Bundle bundle) {
+            this.mRemoteListener.onReadyForSpeech(bundle);
+        }
+
+        public final void onResults(Bundle bundle) {
+            this.mOnSessionSuccess.run();
+            this.mRemoteListener.onResults(bundle);
+        }
+
+        public final void onRmsChanged(float f) {
+            this.mRemoteListener.onRmsChanged(f);
+        }
+
+        public final void onSegmentResults(Bundle bundle) {
+            this.mRemoteListener.onSegmentResults(bundle);
+        }
+    }
+
+    /* renamed from: $r8$lambda$XM077MW2pg9W0-weK1UAA4Npj6A, reason: not valid java name */
+    public static /* synthetic */ void m903$r8$lambda$XM077MW2pg9W0weK1UAA4Npj6A(RemoteSpeechRecognitionService remoteSpeechRecognitionService, ClientState clientState) {
+        synchronized (remoteSpeechRecognitionService.mLock) {
+            clientState.mRecordingInProgress = false;
+        }
+    }
+
+    public RemoteSpeechRecognitionService(int i, int i2, ComponentName componentName, Context context, boolean z) {
+        super(context, new Intent("android.speech.RecognitionService").setComponent(componentName), z ? 67112961 : 1, i, new RemoteSpeechRecognitionService$$ExternalSyntheticLambda8());
         this.mLock = new Object();
         this.mConnected = false;
         this.mClients = new HashMap();
@@ -54,219 +122,81 @@ public final class RemoteSpeechRecognitionService extends ServiceConnector.Impl 
         this.mComponentName = componentName;
     }
 
-    public ComponentName getServiceComponentName() {
-        return this.mComponentName;
-    }
-
-    public void startListening(final Intent intent, final IRecognitionListener iRecognitionListener, final AttributionSource attributionSource) {
-        if (iRecognitionListener == null) {
-            Slog.w(TAG, "#startListening called with no preceding #setListening - ignoring.");
-            return;
-        }
-        if (!this.mConnected) {
-            tryRespondWithError(iRecognitionListener, 11);
-            return;
-        }
-        synchronized (this.mLock) {
-            final ClientState clientState = (ClientState) this.mClients.get(iRecognitionListener.asBinder());
-            if (clientState == null) {
-                if (this.mClients.size() >= 100) {
-                    tryRespondWithError(iRecognitionListener, 8);
-                    Log.i(TAG, "#startListening received when the recognizer's capacity is full - ignoring this call.");
-                    return;
-                } else {
-                    clientState = new ClientState();
-                    clientState.mDelegatingListener = new DelegatingListener(iRecognitionListener, new Runnable() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda5
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            RemoteSpeechRecognitionService.this.lambda$startListening$0(clientState);
-                        }
-                    }, new Runnable() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda6
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            RemoteSpeechRecognitionService.this.lambda$startListening$1(iRecognitionListener);
-                        }
-                    });
-                    this.mClients.put(iRecognitionListener.asBinder(), clientState);
-                }
-            } else {
-                if (clientState.mRecordingInProgress) {
-                    Slog.i(TAG, "#startListening called while listening is in progress for this caller.");
-                    tryRespondWithError(iRecognitionListener, 5);
-                    return;
-                }
-                clientState.mRecordingInProgress = true;
-            }
-            final DelegatingListener delegatingListener = clientState.mDelegatingListener;
-            run(new ServiceConnector.VoidJob() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda7
-                public final void runNoResult(Object obj) {
-                    ((IRecognitionService) obj).startListening(intent, delegatingListener, attributionSource);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$startListening$0(ClientState clientState) {
-        synchronized (this.mLock) {
-            clientState.mRecordingInProgress = false;
-        }
-    }
-
-    public void stopListening(IRecognitionListener iRecognitionListener) {
-        if (!this.mConnected) {
-            tryRespondWithError(iRecognitionListener, 11);
-            return;
-        }
-        synchronized (this.mLock) {
-            ClientState clientState = (ClientState) this.mClients.get(iRecognitionListener.asBinder());
-            if (clientState == null) {
-                Slog.w(TAG, "#stopListening called with no preceding #startListening - ignoring.");
-                tryRespondWithError(iRecognitionListener, 5);
-            } else if (!clientState.mRecordingInProgress) {
-                tryRespondWithError(iRecognitionListener, 5);
-                Slog.i(TAG, "#stopListening called while listening isn't in progress - ignoring.");
-            } else {
-                clientState.mRecordingInProgress = false;
-                final DelegatingListener delegatingListener = clientState.mDelegatingListener;
-                run(new ServiceConnector.VoidJob() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda0
-                    public final void runNoResult(Object obj) {
-                        ((IRecognitionService) obj).stopListening(RemoteSpeechRecognitionService.DelegatingListener.this);
-                    }
-                });
-            }
-        }
-    }
-
-    public void cancel(IRecognitionListener iRecognitionListener, final boolean z) {
-        if (!this.mConnected) {
-            tryRespondWithError(iRecognitionListener, 11);
-        }
-        synchronized (this.mLock) {
-            ClientState clientState = (ClientState) this.mClients.get(iRecognitionListener.asBinder());
-            if (clientState == null) {
-                return;
-            }
-            clientState.mRecordingInProgress = false;
-            final DelegatingListener delegatingListener = clientState.mDelegatingListener;
-            run(new ServiceConnector.VoidJob() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda3
-                public final void runNoResult(Object obj) {
-                    ((IRecognitionService) obj).cancel(delegatingListener, z);
-                }
-            });
-            if (z) {
-                lambda$startListening$1(iRecognitionListener);
-                if (this.mClients.isEmpty()) {
-                    run(new ServiceConnector.VoidJob() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda4
-                        public final void runNoResult(Object obj) {
-                            RemoteSpeechRecognitionService.this.lambda$cancel$5((IRecognitionService) obj);
-                        }
-                    });
-                }
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$cancel$5(IRecognitionService iRecognitionService) {
-        unbind();
-    }
-
-    public void checkRecognitionSupport(final Intent intent, final AttributionSource attributionSource, final IRecognitionSupportCallback iRecognitionSupportCallback) {
-        if (!this.mConnected) {
-            try {
-                iRecognitionSupportCallback.onError(11);
-                return;
-            } catch (RemoteException e) {
-                Slog.w(TAG, "Failed to report the connection broke to the caller.", e);
-                e.printStackTrace();
-                return;
-            }
-        }
-        run(new ServiceConnector.VoidJob() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda8
-            public final void runNoResult(Object obj) {
-                ((IRecognitionService) obj).checkRecognitionSupport(intent, attributionSource, iRecognitionSupportCallback);
-            }
-        });
-    }
-
-    public void triggerModelDownload(final Intent intent, final AttributionSource attributionSource, final IModelDownloadListener iModelDownloadListener) {
-        if (!this.mConnected) {
-            try {
-                iModelDownloadListener.onError(11);
-                return;
-            } catch (RemoteException e) {
-                Slog.w(TAG, "#downloadModel failed due to connection.", e);
-                e.printStackTrace();
-                return;
-            }
-        }
-        run(new ServiceConnector.VoidJob() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda1
-            public final void runNoResult(Object obj) {
-                ((IRecognitionService) obj).triggerModelDownload(intent, attributionSource, iModelDownloadListener);
-            }
-        });
-    }
-
-    public void shutdown(IBinder iBinder) {
-        synchronized (this.mLock) {
-            for (Pair pair : this.mClientListeners) {
-                if (pair.first == iBinder) {
-                    cancel((IRecognitionListener) pair.second, true);
-                }
-            }
-        }
-    }
-
-    public void onServiceConnectionStatusChanged(IRecognitionService iRecognitionService, boolean z) {
-        this.mConnected = z;
-        synchronized (this.mLock) {
-            if (!z) {
-                if (this.mClients.isEmpty()) {
-                    Slog.i(TAG, "Connection to speech recognition service lost, but no #startListening has been invoked yet.");
-                    return;
-                }
-                for (ClientState clientState : (ClientState[]) this.mClients.values().toArray(new ClientState[0])) {
-                    tryRespondWithError(clientState.mDelegatingListener.mRemoteListener, 11);
-                    lambda$startListening$1(clientState.mDelegatingListener.mRemoteListener);
-                }
-            }
-        }
-    }
-
-    /* renamed from: removeClient, reason: merged with bridge method [inline-methods] */
-    public final void lambda$startListening$1(final IRecognitionListener iRecognitionListener) {
-        synchronized (this.mLock) {
-            ClientState clientState = (ClientState) this.mClients.remove(iRecognitionListener.asBinder());
-            if (clientState != null) {
-                clientState.reset();
-            }
-            this.mClientListeners.removeIf(new Predicate() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda9
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$removeClient$8;
-                    lambda$removeClient$8 = RemoteSpeechRecognitionService.lambda$removeClient$8(iRecognitionListener, (Pair) obj);
-                    return lambda$removeClient$8;
-                }
-            });
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$removeClient$8(IRecognitionListener iRecognitionListener, Pair pair) {
-        return pair.second == iRecognitionListener;
-    }
-
     public static void tryRespondWithError(IRecognitionListener iRecognitionListener, int i) {
         if (iRecognitionListener != null) {
             try {
                 iRecognitionListener.onError(i);
             } catch (RemoteException e) {
-                Slog.w(TAG, TextUtils.formatSimple("Failed to respond with an error %d to the client", new Object[]{Integer.valueOf(i)}), e);
+                Slog.w("RemoteSpeechRecognitionService", TextUtils.formatSimple("Failed to respond with an error %d to the client", new Object[]{Integer.valueOf(i)}), e);
             }
         }
     }
 
-    public boolean hasActiveSessions() {
+    public final void associateClientWithActiveListener(IBinder iBinder, IRecognitionListener iRecognitionListener) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mClients.containsKey(iRecognitionListener.asBinder())) {
+                    this.mClientListeners.add(new Pair(iBinder, iRecognitionListener));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void cancel(IRecognitionListener iRecognitionListener, final boolean z) {
+        if (!this.mConnected) {
+            tryRespondWithError(iRecognitionListener, 11);
+        }
+        synchronized (this.mLock) {
+            try {
+                ClientState clientState = (ClientState) this.mClients.get(iRecognitionListener.asBinder());
+                if (clientState != null) {
+                    clientState.mRecordingInProgress = false;
+                    final DelegatingListener delegatingListener = clientState.mDelegatingListener;
+                    run(new ServiceConnector.VoidJob() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda1
+                        public final void runNoResult(Object obj) {
+                            IRecognitionListener iRecognitionListener2 = delegatingListener;
+                            boolean z2 = z;
+                            int i = RemoteSpeechRecognitionService.$r8$clinit;
+                            ((IRecognitionService) obj).cancel(iRecognitionListener2, z2);
+                        }
+                    });
+                }
+                if (z) {
+                    removeClient(iRecognitionListener);
+                    if (this.mClients.isEmpty()) {
+                        run(new RemoteSpeechRecognitionService$$ExternalSyntheticLambda2(0, this));
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void checkRecognitionSupport(Intent intent, AttributionSource attributionSource, IRecognitionSupportCallback iRecognitionSupportCallback) {
+        if (this.mConnected) {
+            run(new RemoteSpeechRecognitionService$$ExternalSyntheticLambda0(intent, attributionSource, iRecognitionSupportCallback));
+            return;
+        }
+        try {
+            iRecognitionSupportCallback.onError(11);
+        } catch (RemoteException e) {
+            Slog.w("RemoteSpeechRecognitionService", "Failed to report the connection broke to the caller.", e);
+            e.printStackTrace();
+        }
+    }
+
+    public final long getAutoDisconnectTimeoutMs() {
+        return 0L;
+    }
+
+    public final ComponentName getServiceComponentName() {
+        return this.mComponentName;
+    }
+
+    public final boolean hasActiveSessions() {
         boolean z;
         synchronized (this.mLock) {
             z = !this.mClients.isEmpty();
@@ -274,95 +204,175 @@ public final class RemoteSpeechRecognitionService extends ServiceConnector.Impl 
         return z;
     }
 
-    public void associateClientWithActiveListener(IBinder iBinder, IRecognitionListener iRecognitionListener) {
+    public final void onServiceConnectionStatusChanged(IInterface iInterface, boolean z) {
+        this.mConnected = z;
         synchronized (this.mLock) {
-            if (this.mClients.containsKey(iRecognitionListener.asBinder())) {
-                this.mClientListeners.add(new Pair(iBinder, iRecognitionListener));
+            if (!z) {
+                try {
+                    if (this.mClients.isEmpty()) {
+                        Slog.i("RemoteSpeechRecognitionService", "Connection to speech recognition service lost, but no #startListening has been invoked yet.");
+                        return;
+                    }
+                    for (ClientState clientState : (ClientState[]) this.mClients.values().toArray(new ClientState[0])) {
+                        tryRespondWithError(clientState.mDelegatingListener.mRemoteListener, 11);
+                        removeClient(clientState.mDelegatingListener.mRemoteListener);
+                    }
+                } finally {
+                }
             }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class DelegatingListener extends IRecognitionListener.Stub {
-        public final Runnable mOnSessionFailure;
-        public final Runnable mOnSessionSuccess;
-        public final IRecognitionListener mRemoteListener;
-
-        public DelegatingListener(IRecognitionListener iRecognitionListener, Runnable runnable, Runnable runnable2) {
-            this.mRemoteListener = iRecognitionListener;
-            this.mOnSessionSuccess = runnable;
-            this.mOnSessionFailure = runnable2;
-        }
-
-        public void onReadyForSpeech(Bundle bundle) {
-            this.mRemoteListener.onReadyForSpeech(bundle);
-        }
-
-        public void onBeginningOfSpeech() {
-            this.mRemoteListener.onBeginningOfSpeech();
-        }
-
-        public void onRmsChanged(float f) {
-            this.mRemoteListener.onRmsChanged(f);
-        }
-
-        public void onBufferReceived(byte[] bArr) {
-            this.mRemoteListener.onBufferReceived(bArr);
-        }
-
-        public void onEndOfSpeech() {
-            this.mRemoteListener.onEndOfSpeech();
-        }
-
-        public void onError(int i) {
-            this.mOnSessionFailure.run();
-            this.mRemoteListener.onError(i);
-        }
-
-        public void onResults(Bundle bundle) {
-            this.mOnSessionSuccess.run();
-            this.mRemoteListener.onResults(bundle);
-        }
-
-        public void onPartialResults(Bundle bundle) {
-            this.mRemoteListener.onPartialResults(bundle);
-        }
-
-        public void onSegmentResults(Bundle bundle) {
-            this.mRemoteListener.onSegmentResults(bundle);
-        }
-
-        public void onEndOfSegmentedSession() {
-            this.mOnSessionSuccess.run();
-            this.mRemoteListener.onEndOfSegmentedSession();
-        }
-
-        public void onLanguageDetection(Bundle bundle) {
-            this.mRemoteListener.onLanguageDetection(bundle);
-        }
-
-        public void onEvent(int i, Bundle bundle) {
-            this.mRemoteListener.onEvent(i, bundle);
+    public final void removeClient(final IRecognitionListener iRecognitionListener) {
+        synchronized (this.mLock) {
+            ClientState clientState = (ClientState) this.mClients.remove(iRecognitionListener.asBinder());
+            if (clientState != null) {
+                clientState.mDelegatingListener = null;
+                clientState.mRecordingInProgress = false;
+            }
+            this.mClientListeners.removeIf(new Predicate() { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda9
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    IRecognitionListener iRecognitionListener2 = iRecognitionListener;
+                    int i = RemoteSpeechRecognitionService.$r8$clinit;
+                    return ((Pair) obj).second == iRecognitionListener2;
+                }
+            });
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class ClientState {
-        public DelegatingListener mDelegatingListener;
-        public boolean mRecordingInProgress;
-
-        public ClientState(DelegatingListener delegatingListener, boolean z) {
-            this.mDelegatingListener = delegatingListener;
-            this.mRecordingInProgress = z;
+    public final void shutdown(IBinder iBinder) {
+        synchronized (this.mLock) {
+            try {
+                for (Pair pair : this.mClientListeners) {
+                    if (pair.first == iBinder) {
+                        cancel((IRecognitionListener) pair.second, true);
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
         }
+    }
 
-        public ClientState() {
-            this(null, true);
+    /* JADX WARN: Type inference failed for: r3v3, types: [com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda3] */
+    /* JADX WARN: Type inference failed for: r4v1, types: [com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda3] */
+    public final void startListening(Intent intent, final IRecognitionListener iRecognitionListener, AttributionSource attributionSource) {
+        if (iRecognitionListener == null) {
+            Slog.w("RemoteSpeechRecognitionService", "#startListening called with no preceding #setListening - ignoring.");
+            return;
         }
+        if (!this.mConnected) {
+            tryRespondWithError(iRecognitionListener, 11);
+            return;
+        }
+        synchronized (this.mLock) {
+            try {
+                final ClientState clientState = (ClientState) this.mClients.get(iRecognitionListener.asBinder());
+                if (clientState == null) {
+                    if (this.mClients.size() >= 100) {
+                        tryRespondWithError(iRecognitionListener, 8);
+                        Log.i("RemoteSpeechRecognitionService", "#startListening received when the recognizer's capacity is full - ignoring this call.");
+                        return;
+                    }
+                    clientState = new ClientState();
+                    clientState.mDelegatingListener = null;
+                    clientState.mRecordingInProgress = true;
+                    final int i = 0;
+                    final int i2 = 1;
+                    clientState.mDelegatingListener = new DelegatingListener(iRecognitionListener, new Runnable(this) { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda3
+                        public final /* synthetic */ RemoteSpeechRecognitionService f$0;
 
-        public void reset() {
-            this.mDelegatingListener = null;
-            this.mRecordingInProgress = false;
+                        {
+                            this.f$0 = this;
+                        }
+
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            switch (i) {
+                                case 0:
+                                    RemoteSpeechRecognitionService.m903$r8$lambda$XM077MW2pg9W0weK1UAA4Npj6A(this.f$0, (RemoteSpeechRecognitionService.ClientState) clientState);
+                                    break;
+                                default:
+                                    RemoteSpeechRecognitionService remoteSpeechRecognitionService = this.f$0;
+                                    IRecognitionListener iRecognitionListener2 = (IRecognitionListener) clientState;
+                                    int i3 = RemoteSpeechRecognitionService.$r8$clinit;
+                                    remoteSpeechRecognitionService.removeClient(iRecognitionListener2);
+                                    break;
+                            }
+                        }
+                    }, new Runnable(this) { // from class: com.android.server.speech.RemoteSpeechRecognitionService$$ExternalSyntheticLambda3
+                        public final /* synthetic */ RemoteSpeechRecognitionService f$0;
+
+                        {
+                            this.f$0 = this;
+                        }
+
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            switch (i2) {
+                                case 0:
+                                    RemoteSpeechRecognitionService.m903$r8$lambda$XM077MW2pg9W0weK1UAA4Npj6A(this.f$0, (RemoteSpeechRecognitionService.ClientState) iRecognitionListener);
+                                    break;
+                                default:
+                                    RemoteSpeechRecognitionService remoteSpeechRecognitionService = this.f$0;
+                                    IRecognitionListener iRecognitionListener2 = (IRecognitionListener) iRecognitionListener;
+                                    int i3 = RemoteSpeechRecognitionService.$r8$clinit;
+                                    remoteSpeechRecognitionService.removeClient(iRecognitionListener2);
+                                    break;
+                            }
+                        }
+                    });
+                    this.mClients.put(iRecognitionListener.asBinder(), clientState);
+                } else {
+                    if (clientState.mRecordingInProgress) {
+                        Slog.i("RemoteSpeechRecognitionService", "#startListening called while listening is in progress for this caller.");
+                        tryRespondWithError(iRecognitionListener, 5);
+                        return;
+                    }
+                    clientState.mRecordingInProgress = true;
+                }
+                run(new RemoteSpeechRecognitionService$$ExternalSyntheticLambda0(intent, clientState.mDelegatingListener, attributionSource));
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void stopListening(IRecognitionListener iRecognitionListener) {
+        if (!this.mConnected) {
+            tryRespondWithError(iRecognitionListener, 11);
+            return;
+        }
+        synchronized (this.mLock) {
+            try {
+                ClientState clientState = (ClientState) this.mClients.get(iRecognitionListener.asBinder());
+                if (clientState == null) {
+                    Slog.w("RemoteSpeechRecognitionService", "#stopListening called with no preceding #startListening - ignoring.");
+                    tryRespondWithError(iRecognitionListener, 5);
+                } else if (clientState.mRecordingInProgress) {
+                    clientState.mRecordingInProgress = false;
+                    run(new RemoteSpeechRecognitionService$$ExternalSyntheticLambda2(1, clientState.mDelegatingListener));
+                } else {
+                    tryRespondWithError(iRecognitionListener, 5);
+                    Slog.i("RemoteSpeechRecognitionService", "#stopListening called while listening isn't in progress - ignoring.");
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void triggerModelDownload(Intent intent, AttributionSource attributionSource, IModelDownloadListener iModelDownloadListener) {
+        if (this.mConnected) {
+            run(new RemoteSpeechRecognitionService$$ExternalSyntheticLambda0(intent, attributionSource, iModelDownloadListener));
+            return;
+        }
+        try {
+            iModelDownloadListener.onError(11);
+        } catch (RemoteException e) {
+            Slog.w("RemoteSpeechRecognitionService", "#downloadModel failed due to connection.", e);
+            e.printStackTrace();
         }
     }
 }

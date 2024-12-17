@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Binder;
 import android.os.Debug;
@@ -16,14 +15,17 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.util.Slog;
 import android.view.IInputFilter;
 import com.android.internal.util.DumpUtils;
 import com.android.internal.util.IndentingPrintWriter;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.ServiceThread;
 import com.android.server.SystemService;
-import com.android.server.input.InputManagerInternal;
+import com.android.server.Watchdog$$ExternalSyntheticOutline0;
+import com.android.server.input.InputManagerService;
 import com.android.server.wm.WindowManagerInternal;
 import com.samsung.android.multicontrol.IInputFilterInstallListener;
 import com.samsung.android.multicontrol.IMultiControlDeathChecker;
@@ -33,32 +35,22 @@ import com.samsung.android.multicontrol.MultiControlManagerInternal;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 
-/* loaded from: classes2.dex */
-public class MultiControlManagerService extends IMultiControlManager.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class MultiControlManagerService extends IMultiControlManager.Stub {
     public static final boolean DEBUG;
-    public static final String TAG = "MultiControl@" + MultiControlManagerService.class.getSimpleName();
     public MultiControlAppDeathChecker mAppDeathChecker;
-    public int mAppProtocolVersion;
     public final Context mContext;
-    public int mCurrentUserId;
-    public final Handler mHandler;
     public IInputFilter mInputFilter;
-    public InputManagerInternal mInputManagerInternal;
-    public boolean mIsBootComplete;
-    public boolean mIsMultiControlEnabled;
-    public boolean mIsTriggerDetectionEnabled;
-    public LocalService mLocalService;
+    public final InputManagerService.LocalService mInputManagerInternal;
     public final ContentResolver mResolver;
-    public final ServiceThread mThread;
     public ContentObserver mUserSetupCompleteObserver;
     public final WindowManagerInternal mWindowManagerService;
-    public MCTriggerManager mcTriggerManager;
+    public final MCTriggerManager mcTriggerManager;
+    public boolean mIsBootComplete = false;
+    public int mCurrentUserId = -10000;
 
-    static {
-        DEBUG = Debug.semIsProductDev() || android.util.Log.isLoggable("RAMS", 3);
-    }
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Lifecycle extends SystemService {
         public MultiControlManagerService mService;
 
@@ -67,71 +59,150 @@ public class MultiControlManagerService extends IMultiControlManager.Stub {
             this.mService = null;
         }
 
-        /* JADX WARN: Multi-variable type inference failed */
-        /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.multicontrol.MultiControlManagerService, android.os.IBinder] */
         @Override // com.android.server.SystemService
-        public void onStart() {
+        public final void onBootPhase(int i) {
+            MultiControlManagerService multiControlManagerService = this.mService;
+            if (multiControlManagerService != null) {
+                boolean z = MultiControlManagerService.DEBUG;
+                multiControlManagerService.getClass();
+                if (MultiControlManagerService.DEBUG) {
+                    BootReceiver$$ExternalSyntheticOutline0.m(i, "onBootPhase(", ")", "MultiControl@MultiControlManagerService");
+                }
+            }
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        /* JADX WARN: Type inference failed for: r0v0, types: [android.os.IBinder, com.android.server.multicontrol.MultiControlManagerService] */
+        @Override // com.android.server.SystemService
+        public final void onStart() {
             ?? multiControlManagerService = new MultiControlManagerService(getContext());
             this.mService = multiControlManagerService;
             publishBinderService("multicontrol", multiControlManagerService);
         }
 
         @Override // com.android.server.SystemService
-        public void onBootPhase(int i) {
+        public final void onUserStarting(SystemService.TargetUser targetUser) {
             MultiControlManagerService multiControlManagerService = this.mService;
-            if (multiControlManagerService != null) {
-                multiControlManagerService.onBootPhase(i);
+            int userIdentifier = targetUser.getUserIdentifier();
+            boolean z = MultiControlManagerService.DEBUG;
+            multiControlManagerService.getClass();
+            if (MultiControlManagerService.DEBUG) {
+                Log.d("onStartUser(), userId=" + userIdentifier);
             }
         }
 
         @Override // com.android.server.SystemService
-        public void onUserStarting(SystemService.TargetUser targetUser) {
-            this.mService.onUserStarting(targetUser.getUserIdentifier());
+        public final void onUserStopped(SystemService.TargetUser targetUser) {
+            MultiControlManagerService multiControlManagerService = this.mService;
+            int userIdentifier = targetUser.getUserIdentifier();
+            boolean z = MultiControlManagerService.DEBUG;
+            multiControlManagerService.getClass();
+            if (MultiControlManagerService.DEBUG) {
+                Log.d("onCleanupUser(), userId=" + userIdentifier);
+            }
         }
 
         @Override // com.android.server.SystemService
-        public void onUserUnlocking(SystemService.TargetUser targetUser) {
-            this.mService.onUserUnlocking(targetUser.getUserIdentifier());
+        public final void onUserStopping(SystemService.TargetUser targetUser) {
+            MultiControlManagerService multiControlManagerService = this.mService;
+            int userIdentifier = targetUser.getUserIdentifier();
+            boolean z = MultiControlManagerService.DEBUG;
+            multiControlManagerService.getClass();
+            if (MultiControlManagerService.DEBUG) {
+                StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(userIdentifier, "onStopUser(), userId=", ", CurrentUser=");
+                m.append(ActivityManager.getCurrentUser());
+                Log.d(m.toString());
+            }
         }
 
         @Override // com.android.server.SystemService
-        public void onUserSwitching(SystemService.TargetUser targetUser, SystemService.TargetUser targetUser2) {
-            this.mService.onUserSwitching(targetUser2.getUserIdentifier());
+        public final void onUserSwitching(SystemService.TargetUser targetUser, SystemService.TargetUser targetUser2) {
+            MultiControlManagerService multiControlManagerService = this.mService;
+            int userIdentifier = targetUser2.getUserIdentifier();
+            if (MultiControlManagerService.DEBUG) {
+                multiControlManagerService.getClass();
+                Log.d("onSwitchUser(), userId=" + userIdentifier);
+            }
+            multiControlManagerService.onUserChanged(userIdentifier);
         }
 
         @Override // com.android.server.SystemService
-        public void onUserStopping(SystemService.TargetUser targetUser) {
-            this.mService.onUserStopping(targetUser.getUserIdentifier());
-        }
-
-        @Override // com.android.server.SystemService
-        public void onUserStopped(SystemService.TargetUser targetUser) {
-            this.mService.onUserStopped(targetUser.getUserIdentifier());
+        public final void onUserUnlocking(SystemService.TargetUser targetUser) {
+            MultiControlManagerService multiControlManagerService = this.mService;
+            int userIdentifier = targetUser.getUserIdentifier();
+            if (MultiControlManagerService.DEBUG) {
+                multiControlManagerService.getClass();
+                Log.d("onUnlockUser(), userId=" + userIdentifier + ", CurrentUser=" + ActivityManager.getCurrentUser());
+            }
+            multiControlManagerService.mIsBootComplete = true;
+            if (userIdentifier == ActivityManager.getCurrentUser()) {
+                multiControlManagerService.onUserChanged(userIdentifier);
+            }
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class Receiver extends BroadcastReceiver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalService extends MultiControlManagerInternal {
+        public LocalService() {
+        }
+
+        public final boolean isMultiControlEnabled() {
+            return MultiControlManagerService.this.mInputFilter != null;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MultiControlAppDeathChecker implements IBinder.DeathRecipient {
+        public final IBinder mBinder;
+
+        public MultiControlAppDeathChecker(IMultiControlDeathChecker iMultiControlDeathChecker) {
+            this.mBinder = iMultiControlDeathChecker.asBinder();
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public final void binderDied() {
+            boolean z = MultiControlManagerService.DEBUG;
+            Log.i("MultiControlAppDeathChecker - binderDied");
+            Log.i("in resetMultiControlValue");
+            MultiControlManagerService.this.forceHideCursor(false);
+            MultiControlManagerService.this.setMultiControlOutOfFocus(false);
+            try {
+                MultiControlManagerService multiControlManagerService = MultiControlManagerService.this;
+                if (multiControlManagerService.mInputFilter != null) {
+                    multiControlManagerService.resetInputFilter();
+                }
+            } catch (Exception unused) {
+            }
+            try {
+                Intent intent = new Intent("com.samsung.android.inputshare.action.ACTION_MULTI_CONTROL_DIED");
+                intent.setPackage("com.samsung.android.inputshare");
+                MultiControlManagerService.this.mContext.sendBroadcast(intent, "com.samsung.android.permission.MULTI_CONTROL_RECEIVER_PERMISSION");
+                boolean z2 = MultiControlManagerService.DEBUG;
+                Log.i("sendBroadcast - ACTION_MULTI_CONTROL_DIED");
+            } catch (Exception e) {
+                boolean z3 = MultiControlManagerService.DEBUG;
+                Log.save('E', "sendBroadcast - ACTION_MULTI_CONTROL_DIED");
+                android.util.Log.e("MultiControl@MultiControlManagerService", "sendBroadcast - ACTION_MULTI_CONTROL_DIED", e);
+            }
+            this.mBinder.unlinkToDeath(this, 0);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Receiver extends BroadcastReceiver {
         public Receiver() {
         }
 
-        public void register() {
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction("android.intent.action.PHONE_STATE");
-            intentFilter.addAction("android.intent.action.ACTION_SHUTDOWN");
-            MultiControlManagerService.this.mContext.registerReceiverAsUser(this, UserHandle.ALL, intentFilter, null, MultiControlManagerService.this.mHandler);
-        }
-
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             boolean z = MultiControlManagerService.DEBUG;
             if (z) {
-                Log.d(MultiControlManagerService.TAG, "onReceive(), action=" + action);
+                Log.d("onReceive(), action=" + action);
             }
             if ("android.intent.action.ACTION_SHUTDOWN".equals(action)) {
                 if (z) {
-                    Log.d(MultiControlManagerService.TAG, "Shutdown received with UserId: " + getSendingUserId());
+                    Log.d("Shutdown received with UserId: " + getSendingUserId());
                 }
                 if (getSendingUserId() == -1) {
                     MultiControlManagerService.this.mIsBootComplete = false;
@@ -140,114 +211,83 @@ public class MultiControlManagerService extends IMultiControlManager.Stub {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class LocalService extends MultiControlManagerInternal {
-        public LocalService() {
-        }
-
-        public boolean isMultiControlEnabled() {
-            return MultiControlManagerService.this.mInputFilter != null;
-        }
+    static {
+        DEBUG = Debug.semIsProductDev() || android.util.Log.isLoggable("RAMS", 3);
     }
 
     public MultiControlManagerService(Context context) {
-        this.mIsBootComplete = false;
-        this.mIsMultiControlEnabled = false;
-        this.mIsTriggerDetectionEnabled = false;
-        this.mCurrentUserId = -10000;
-        this.mAppProtocolVersion = 1;
-        ServiceThread serviceThread = new ServiceThread("multicontrol", -2, false);
-        this.mThread = serviceThread;
-        serviceThread.start();
-        this.mHandler = new Handler(serviceThread.getLooper());
+        ServiceThread m = Watchdog$$ExternalSyntheticOutline0.m(-2, "multicontrol", false);
+        Handler handler = new Handler(m.getLooper());
         this.mWindowManagerService = (WindowManagerInternal) LocalServices.getService(WindowManagerInternal.class);
-        byte b = 0;
-        this.mLocalService = null;
         this.mContext = context;
         context.setTheme(R.style.Theme.DeviceDefault.Light);
         this.mResolver = context.getContentResolver();
-        this.mInputManagerInternal = (InputManagerInternal) LocalServices.getService(InputManagerInternal.class);
-        this.mcTriggerManager = new MCTriggerManager(context, serviceThread.getLooper());
-        new Receiver().register();
-        if (this.mLocalService == null) {
-            LocalService localService = new LocalService();
-            this.mLocalService = localService;
-            LocalServices.addService(MultiControlManagerInternal.class, localService);
-        }
+        this.mInputManagerInternal = (InputManagerService.LocalService) LocalServices.getService(InputManagerService.LocalService.class);
+        this.mcTriggerManager = new MCTriggerManager(context, m.getLooper());
+        context.registerReceiverAsUser(new Receiver(), UserHandle.ALL, DirEncryptServiceHelper$$ExternalSyntheticOutline0.m("android.intent.action.PHONE_STATE", "android.intent.action.ACTION_SHUTDOWN"), null, handler);
+        LocalServices.addService(MultiControlManagerInternal.class, new LocalService());
     }
 
-    public void setTriggerThreshold(int i) {
-        try {
-            Log.i(TAG, "[setTriggerThreshold] in " + i);
-            MCTriggerManager mCTriggerManager = this.mcTriggerManager;
-            if (mCTriggerManager != null) {
-                mCTriggerManager.setTriggerThreshold(i);
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+        if (DumpUtils.checkDumpPermission(this.mContext, "MultiControl@MultiControlManagerService", printWriter)) {
+            if (strArr == null || strArr.length == 0 || "-a".equals(strArr[0])) {
+                PrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ");
+                indentingPrintWriter.println("MultiControlManagerService (dumpsys multicontrol):");
+                indentingPrintWriter.println(Log.buildLogString('V', "MultiControl@StateStart", "=========================================================================="));
+                Log.sSavedStates.dump(indentingPrintWriter);
+                indentingPrintWriter.println(Log.buildLogString('V', "MultiControl@StateEnd", "=========================================================================="));
+                indentingPrintWriter.println(Log.buildLogString('V', "MultiControl@SavedLogsStart", "=========================================================================="));
+                Log.sSavedLogs.dump(indentingPrintWriter);
+                indentingPrintWriter.println(Log.buildLogString('V', "MultiControl@SavedLogsEnd", "=========================================================================="));
+                indentingPrintWriter.println();
+                indentingPrintWriter.increaseIndent();
+                indentingPrintWriter.printPair("mCurrentUserId", Integer.valueOf(this.mCurrentUserId));
+                indentingPrintWriter.println();
+                indentingPrintWriter.printPair("Configuration", this.mContext.getResources().getConfiguration());
+                indentingPrintWriter.println();
+                indentingPrintWriter.printPair("DISPLAY_SIZE_FORCED", Settings.Global.getString(this.mResolver, "display_size_forced"));
+                indentingPrintWriter.println();
+                indentingPrintWriter.printPair("DISPLAY_DENSITY_FORCED", Settings.Secure.getStringForUser(this.mResolver, "display_density_forced", 0));
+                indentingPrintWriter.println();
+                indentingPrintWriter.printPair("SCREEN_OFF_TIMEOUT", Settings.System.getStringForUser(this.mResolver, "screen_off_timeout", this.mCurrentUserId));
+                indentingPrintWriter.println();
+                indentingPrintWriter.printPair("SHOW_IME_WITH_HARD_KEYBOARD", Settings.Secure.getStringForUser(this.mResolver, "show_ime_with_hard_keyboard", this.mCurrentUserId));
+                indentingPrintWriter.println();
+                indentingPrintWriter.println();
+                indentingPrintWriter.decreaseIndent();
             }
-        } catch (Exception e) {
-            Log.e(TAG, "[setTriggerThreshold]", e);
         }
     }
 
-    public void enableTriggerDetection(boolean z) {
-        Log.i(TAG, "[enableTriggerDetection] in " + z);
+    public final void enableTriggerDetection(boolean z) {
+        Log.i("[enableTriggerDetection] in " + z);
         try {
             MCTriggerManager mCTriggerManager = this.mcTriggerManager;
             if (mCTriggerManager != null) {
                 mCTriggerManager.enable(z);
             }
         } catch (Exception e) {
-            Log.e(TAG, "[enableTriggerDetection]", e);
+            Log.save('E', "[enableTriggerDetection]");
+            android.util.Log.e("MultiControl@MultiControlManagerService", "[enableTriggerDetection]", e);
         }
     }
 
-    public void forceHideCursor(boolean z) {
+    public final void forceHideCursor(boolean z) {
         try {
             if (this.mInputManagerInternal != null) {
-                Log.i(TAG, "in forceHideCursor");
-                this.mInputManagerInternal.forceHideCursor(z);
+                Log.i("in forceHideCursor");
+                InputManagerService.this.mNative.forceHideCursor(z);
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            String message = e.getMessage();
+            Log.save('E', message);
+            android.util.Log.e("MultiControl@MultiControlManagerService", message);
         }
     }
 
-    public void setCursorPosition(int i, int i2, int i3) {
-        try {
-            if (this.mInputManagerInternal != null) {
-                Log.i(TAG, "in setCursorPosition [displayId : " + i3 + "]");
-                this.mInputManagerInternal.setCursorPosition(i, i2, i3);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-    public void setInteractive(boolean z) {
-        try {
-            if (this.mInputManagerInternal != null) {
-                Log.i(TAG, "in setInteractive");
-                this.mInputManagerInternal.setInteractive(z);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-    public void setMultiControlOutOfFocus(boolean z) {
-        try {
-            if (this.mInputManagerInternal != null) {
-                Log.i(TAG, "in setMultiControlOutOfFocus " + z);
-                this.mInputManagerInternal.setMultiControlOutOfFocus(z);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-    public final void onBootPhase(int i) {
-        if (DEBUG) {
-            Slog.i(TAG, "onBootPhase(" + i + ")");
-        }
+    public final int getProtocolVersion() {
+        this.mContext.enforceCallingOrSelfPermission("com.sec.android.permission.USE_MULTI_CONTROL_MANAGER", "getProtocolVersion");
+        return 1;
     }
 
     public final void initializeStates() {
@@ -255,9 +295,9 @@ public class MultiControlManagerService extends IMultiControlManager.Stub {
             return;
         }
         if (this.mUserSetupCompleteObserver == null) {
-            this.mUserSetupCompleteObserver = new ContentObserver(null) { // from class: com.android.server.multicontrol.MultiControlManagerService.1
+            this.mUserSetupCompleteObserver = new ContentObserver() { // from class: com.android.server.multicontrol.MultiControlManagerService.1
                 @Override // android.database.ContentObserver
-                public void onChange(boolean z) {
+                public final void onChange(boolean z) {
                     super.onChange(z);
                     MultiControlManagerService.this.initializeStates();
                     MultiControlManagerService.this.mResolver.unregisterContentObserver(this);
@@ -268,107 +308,127 @@ public class MultiControlManagerService extends IMultiControlManager.Stub {
         this.mResolver.registerContentObserver(Settings.Secure.getUriFor("user_setup_complete"), false, this.mUserSetupCompleteObserver, this.mCurrentUserId);
     }
 
-    public final void onUserStarting(int i) {
-        if (DEBUG) {
-            Log.d(TAG, "onStartUser(), userId=" + i);
+    public final boolean isAllowed() {
+        boolean z;
+        this.mContext.enforceCallingOrSelfPermission("com.sec.android.permission.USE_MULTI_CONTROL_MANAGER", "isAllowed");
+        if (!this.mIsBootComplete || !isUserSetupComplete() || FactoryTest.isFactoryBinary() || this.mCurrentUserId == -10000) {
+            Log.i("isSystemReady(), mIsBootComplete=" + this.mIsBootComplete + ", isFactoryBinary=" + FactoryTest.isFactoryBinary() + ", mCurrentUserId=" + this.mCurrentUserId);
+            z = false;
+        } else {
+            z = true;
         }
+        Log.d("isAllowed = " + z);
+        return z;
     }
 
-    public final void onUserUnlocking(int i) {
-        if (DEBUG) {
-            Log.d(TAG, "onUnlockUser(), userId=" + i + ", CurrentUser=" + ActivityManager.getCurrentUser());
+    public final boolean isUserSetupComplete() {
+        boolean z = Settings.Secure.getIntForUser(this.mResolver, "user_setup_complete", 0, this.mCurrentUserId) != 0;
+        if (!z && DEBUG) {
+            Log.d("isUserSetupComplete()=false");
         }
-        this.mIsBootComplete = true;
-        if (i == ActivityManager.getCurrentUser()) {
-            onUserChanged(i);
-        }
-    }
-
-    public final void onUserSwitching(int i) {
-        if (DEBUG) {
-            Log.d(TAG, "onSwitchUser(), userId=" + i);
-        }
-        onUserChanged(i);
-    }
-
-    public final void onUserStopping(int i) {
-        if (DEBUG) {
-            Log.d(TAG, "onStopUser(), userId=" + i + ", CurrentUser=" + ActivityManager.getCurrentUser());
-        }
-    }
-
-    public final void onUserStopped(int i) {
-        if (DEBUG) {
-            Log.d(TAG, "onCleanupUser(), userId=" + i);
-        }
-    }
-
-    public void setCurrentUserId(int i) {
-        if (DEBUG) {
-            Log.d(TAG, "setCurrentUserId(), userId=" + i);
-        }
-        this.mCurrentUserId = i;
+        return z;
     }
 
     public final void onUserChanged(int i) {
         if (i == this.mCurrentUserId) {
             return;
         }
-        if (DEBUG) {
-            Log.d(TAG, "onUserChanged(), userId=" + i);
+        boolean z = DEBUG;
+        if (z) {
+            Log.d("onUserChanged(), userId=" + i);
         }
-        setCurrentUserId(i);
+        if (z) {
+            Log.d("setCurrentUserId(), userId=" + i);
+        }
+        this.mCurrentUserId = i;
         initializeStates();
     }
 
-    public final boolean isUserSetupComplete() {
-        boolean z = Settings.Secure.getIntForUser(this.mResolver, "user_setup_complete", 0, this.mCurrentUserId) != 0;
-        if (!z && DEBUG) {
-            Log.d(TAG, "isUserSetupComplete()=false");
+    public final void resetInputFilter() {
+        this.mWindowManagerService.setInputFilter(null);
+        this.mInputFilter = null;
+    }
+
+    public final void setCursorPosition(int i, int i2, int i3) {
+        try {
+            if (this.mInputManagerInternal != null) {
+                Log.i("in setCursorPosition [displayId : " + i3 + "]");
+                InputManagerService.this.mNative.setCursorPosition(i, i2, i3);
+            }
+        } catch (Exception e) {
+            String message = e.getMessage();
+            Log.save('E', message);
+            android.util.Log.e("MultiControl@MultiControlManagerService", message);
         }
-        return z;
     }
 
-    public final boolean isSystemReady() {
-        if (this.mIsBootComplete && isUserSetupComplete() && !FactoryTest.isFactoryBinary() && this.mCurrentUserId != -10000) {
-            return true;
-        }
-        Log.i(TAG, "isSystemReady(), mIsBootComplete=" + this.mIsBootComplete + ", isFactoryBinary=" + FactoryTest.isFactoryBinary() + ", mCurrentUserId=" + this.mCurrentUserId);
-        return false;
-    }
-
-    public void setProtocolVersion(int i) {
-        this.mContext.enforceCallingOrSelfPermission("com.sec.android.permission.USE_MULTI_CONTROL_MANAGER", "setProtocolVersion");
-        this.mAppProtocolVersion = i;
-    }
-
-    public boolean isAllowed() {
-        this.mContext.enforceCallingOrSelfPermission("com.sec.android.permission.USE_MULTI_CONTROL_MANAGER", "isAllowed");
-        boolean isSystemReady = isSystemReady();
-        Log.d(TAG, "isAllowed = " + isSystemReady);
-        return isSystemReady;
-    }
-
-    public int getProtocolVersion() {
-        this.mContext.enforceCallingOrSelfPermission("com.sec.android.permission.USE_MULTI_CONTROL_MANAGER", "getProtocolVersion");
-        return 1;
-    }
-
-    public void setInputFilter(IInputFilter iInputFilter, IInputFilterInstallListener iInputFilterInstallListener) {
+    public final void setInputFilter(IInputFilter iInputFilter, IInputFilterInstallListener iInputFilterInstallListener) {
         this.mContext.enforceCallingOrSelfPermission("com.sec.android.permission.USE_MULTI_CONTROL_MANAGER", "setInputFilter");
         this.mInputFilter = iInputFilter;
         this.mWindowManagerService.setInputFilter(iInputFilter);
         try {
             iInputFilterInstallListener.onInstalled();
         } catch (RemoteException e) {
-            Log.e(TAG, e.getMessage());
+            String message = e.getMessage();
+            Log.save('E', message);
+            android.util.Log.e("MultiControl@MultiControlManagerService", message);
         }
     }
 
-    public void startDeathChecker(IMultiControlDeathChecker iMultiControlDeathChecker) {
+    public final void setInteractive(boolean z) {
+        try {
+            if (this.mInputManagerInternal != null) {
+                Log.i("in setInteractive");
+                this.mInputManagerInternal.setInteractive(z);
+            }
+        } catch (Exception e) {
+            String message = e.getMessage();
+            Log.save('E', message);
+            android.util.Log.e("MultiControl@MultiControlManagerService", message);
+        }
+    }
+
+    public final void setMultiControlOutOfFocus(boolean z) {
+        try {
+            if (this.mInputManagerInternal != null) {
+                Log.i("in setMultiControlOutOfFocus " + z);
+                InputManagerService.this.mNative.setMultiControlOutOfFocus(z);
+            }
+        } catch (Exception e) {
+            String message = e.getMessage();
+            Log.save('E', message);
+            android.util.Log.e("MultiControl@MultiControlManagerService", message);
+        }
+    }
+
+    public final void setProtocolVersion(int i) {
+        this.mContext.enforceCallingOrSelfPermission("com.sec.android.permission.USE_MULTI_CONTROL_MANAGER", "setProtocolVersion");
+    }
+
+    public final void setTriggerThreshold(int i) {
+        try {
+            Log.i("[setTriggerThreshold] in " + i);
+            MCTriggerManager mCTriggerManager = this.mcTriggerManager;
+            if (mCTriggerManager != null) {
+                mCTriggerManager.setTriggerThreshold(i);
+            }
+        } catch (Exception e) {
+            Log.save('E', "[setTriggerThreshold]");
+            android.util.Log.e("MultiControl@MultiControlManagerService", "[setTriggerThreshold]", e);
+        }
+    }
+
+    public final void startDeathChecker(IMultiControlDeathChecker iMultiControlDeathChecker) {
         this.mContext.enforceCallingOrSelfPermission("com.sec.android.permission.USE_MULTI_CONTROL_MANAGER", "setInputFilter");
-        unlinkListenerToDeath();
-        this.mAppDeathChecker = new MultiControlAppDeathChecker(iMultiControlDeathChecker, Binder.getCallingPid(), Binder.getCallingUid());
+        MultiControlAppDeathChecker multiControlAppDeathChecker = this.mAppDeathChecker;
+        if (multiControlAppDeathChecker != null) {
+            Log.i("MultiControlAppDeathChecker - unlinkToDeath");
+            multiControlAppDeathChecker.mBinder.unlinkToDeath(multiControlAppDeathChecker, 0);
+            this.mAppDeathChecker = null;
+        }
+        Binder.getCallingPid();
+        Binder.getCallingUid();
+        this.mAppDeathChecker = new MultiControlAppDeathChecker(iMultiControlDeathChecker);
         try {
             iMultiControlDeathChecker.asBinder().linkToDeath(this.mAppDeathChecker, 0);
         } catch (RemoteException e) {
@@ -376,97 +436,12 @@ public class MultiControlManagerService extends IMultiControlManager.Stub {
         }
     }
 
-    public void stopDeathChecker() {
-        unlinkListenerToDeath();
-    }
-
-    public void resetInputFilter() {
-        this.mWindowManagerService.setInputFilter(null);
-        this.mInputFilter = null;
-    }
-
-    public final void unlinkListenerToDeath() {
+    public final void stopDeathChecker() {
         MultiControlAppDeathChecker multiControlAppDeathChecker = this.mAppDeathChecker;
         if (multiControlAppDeathChecker != null) {
-            multiControlAppDeathChecker.unlinkToDeath();
+            Log.i("MultiControlAppDeathChecker - unlinkToDeath");
+            multiControlAppDeathChecker.mBinder.unlinkToDeath(multiControlAppDeathChecker, 0);
             this.mAppDeathChecker = null;
-        }
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        if (DumpUtils.checkDumpPermission(this.mContext, TAG, printWriter)) {
-            if (strArr == null || strArr.length == 0 || "-a".equals(strArr[0])) {
-                IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ");
-                indentingPrintWriter.println("MultiControlManagerService (dumpsys multicontrol):");
-                Log.dump(indentingPrintWriter);
-                indentingPrintWriter.println();
-                indentingPrintWriter.increaseIndent();
-                dumpImpl(indentingPrintWriter);
-                indentingPrintWriter.println();
-                indentingPrintWriter.decreaseIndent();
-            }
-        }
-    }
-
-    public final void dumpImpl(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.printPair("mCurrentUserId", Integer.valueOf(this.mCurrentUserId));
-        indentingPrintWriter.println();
-        indentingPrintWriter.printPair("Configuration", this.mContext.getResources().getConfiguration());
-        indentingPrintWriter.println();
-        indentingPrintWriter.printPair("DISPLAY_SIZE_FORCED", Settings.Global.getString(this.mResolver, "display_size_forced"));
-        indentingPrintWriter.println();
-        indentingPrintWriter.printPair("DISPLAY_DENSITY_FORCED", Settings.Secure.getStringForUser(this.mResolver, "display_density_forced", 0));
-        indentingPrintWriter.println();
-        indentingPrintWriter.printPair("SCREEN_OFF_TIMEOUT", Settings.System.getStringForUser(this.mResolver, "screen_off_timeout", this.mCurrentUserId));
-        indentingPrintWriter.println();
-        indentingPrintWriter.printPair("SHOW_IME_WITH_HARD_KEYBOARD", Settings.Secure.getStringForUser(this.mResolver, "show_ime_with_hard_keyboard", this.mCurrentUserId));
-        indentingPrintWriter.println();
-    }
-
-    /* loaded from: classes2.dex */
-    public class MultiControlAppDeathChecker implements IBinder.DeathRecipient {
-        public final IBinder mBinder;
-        public final IMultiControlDeathChecker mListener;
-        public final int mPid;
-        public final int mUid;
-
-        public MultiControlAppDeathChecker(IMultiControlDeathChecker iMultiControlDeathChecker, int i, int i2) {
-            this.mListener = iMultiControlDeathChecker;
-            this.mBinder = iMultiControlDeathChecker.asBinder();
-            this.mPid = i;
-            this.mUid = i2;
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            Log.i(MultiControlManagerService.TAG, "MultiControlAppDeathChecker - binderDied");
-            resetMultiControlValue();
-            this.mBinder.unlinkToDeath(this, 0);
-        }
-
-        public void unlinkToDeath() {
-            Log.i(MultiControlManagerService.TAG, "MultiControlAppDeathChecker - unlinkToDeath");
-            this.mBinder.unlinkToDeath(this, 0);
-        }
-
-        public final void resetMultiControlValue() {
-            Log.i(MultiControlManagerService.TAG, "in resetMultiControlValue");
-            MultiControlManagerService.this.forceHideCursor(false);
-            MultiControlManagerService.this.setMultiControlOutOfFocus(false);
-            try {
-                if (MultiControlManagerService.this.mInputFilter != null) {
-                    MultiControlManagerService.this.resetInputFilter();
-                }
-            } catch (Exception unused) {
-            }
-            try {
-                Intent intent = new Intent("com.samsung.android.inputshare.action.ACTION_MULTI_CONTROL_DIED");
-                intent.setPackage("com.samsung.android.inputshare");
-                MultiControlManagerService.this.mContext.sendBroadcast(intent, "com.samsung.android.permission.MULTI_CONTROL_RECEIVER_PERMISSION");
-                Log.i(MultiControlManagerService.TAG, "sendBroadcast - ACTION_MULTI_CONTROL_DIED");
-            } catch (Exception e) {
-                Log.e(MultiControlManagerService.TAG, "sendBroadcast - ACTION_MULTI_CONTROL_DIED", e);
-            }
         }
     }
 }

@@ -1,785 +1,450 @@
 package com.android.server.wm;
 
 import android.R;
+import android.app.ActivityManager;
+import android.app.WindowConfiguration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.HandlerExecutor;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.os.SystemClock;
-import android.os.SystemProperties;
-import android.util.ArraySet;
-import android.util.MathUtils;
 import android.util.Slog;
 import android.util.proto.ProtoOutputStream;
-import android.view.Display;
-import android.view.DisplayInfo;
+import android.view.IRemoteAnimationFinishedCallback;
+import android.view.IRemoteAnimationRunner;
+import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
-import android.view.WindowManager;
 import android.window.ScreenCapture;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
 import com.android.internal.util.ToBooleanFunction;
-import com.android.internal.util.jobs.XmlUtils;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.am.BroadcastStats$$ExternalSyntheticOutline0;
+import com.android.server.policy.PhoneWindowManager;
+import com.android.server.wallpaper.WallpaperCropper;
+import com.android.server.wm.DisplayAreaPolicyBuilder;
+import com.android.server.wm.MultiTaskingAppCompatConfiguration;
 import com.android.server.wm.SurfaceAnimator;
+import com.android.server.wm.WallpaperController;
 import com.android.server.wm.WindowManagerService;
 import com.samsung.android.rune.CoreRune;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class WallpaperController {
-    public DisplayContent mDisplayContent;
-    public final boolean mIsLockscreenLiveWallpaperEnabled;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WallpaperController {
+    public final WallpaperController$$ExternalSyntheticLambda2 mComputeMaxZoomOutFunction;
+    public final DisplayContent mDisplayContent;
+    public final FindWallpaperTargetResult mFindResults;
+    public final WallpaperController$$ExternalSyntheticLambda1 mFindWallpaperTargetFunction;
+    public volatile boolean mIsWallpaperNotifiedOnDisplaySwitch;
     public long mLastWallpaperTimeoutTime;
-    public final float mMaxWallpaperScale;
-    public WindowManagerService mService;
+    public float mMaxWallpaperScale;
+    public float mMinWallpaperScale;
+    public final HashMap mRemoteWallpaperAnimAreaMap;
+    public final WindowManagerService mService;
     public boolean mShouldOffsetWallpaperCenter;
-    public boolean mShouldUpdateZoom;
     public WindowState mWaitingOnWallpaper;
+    public WallpaperCropper.WallpaperCropUtils mWallpaperCropUtils = null;
     public final ArrayList mWallpaperTokens = new ArrayList();
     public WindowState mWallpaperTarget = null;
     public WindowState mPrevWallpaperTarget = null;
-    public float mLastWallpaperX = -1.0f;
-    public float mLastWallpaperY = -1.0f;
-    public float mLastWallpaperXStep = -1.0f;
-    public float mLastWallpaperYStep = -1.0f;
-    public float mLastWallpaperZoomOut = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    public int mLastWallpaperDisplayOffsetX = Integer.MIN_VALUE;
-    public int mLastWallpaperDisplayOffsetY = Integer.MIN_VALUE;
+    public float mLastWallpaperZoomOut = FullScreenMagnificationGestureHandler.MAX_SCALE;
     public boolean mLastFrozen = false;
     public int mWallpaperDrawState = 0;
     public Point mLargestDisplaySize = null;
-    public final FindWallpaperTargetResult mFindResults = new FindWallpaperTargetResult();
-    public final Consumer mFindWallpapers = new Consumer() { // from class: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda0
-        @Override // java.util.function.Consumer
-        public final void accept(Object obj) {
-            WallpaperController.this.lambda$new$0((WindowState) obj);
-        }
-    };
-    public final ToBooleanFunction mFindWallpaperTargetFunction = new ToBooleanFunction() { // from class: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda1
-        public final boolean apply(Object obj) {
-            boolean lambda$new$1;
-            lambda$new$1 = WallpaperController.this.lambda$new$1((WindowState) obj);
-            return lambda$new$1;
-        }
-    };
-    public Consumer mComputeMaxZoomOutFunction = new Consumer() { // from class: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda2
-        @Override // java.util.function.Consumer
-        public final void accept(Object obj) {
-            WallpaperController.this.lambda$new$2((WindowState) obj);
-        }
-    };
-    public final HashMap mRemoteWallpaperAnimAreaMap = new HashMap();
 
-    public static /* synthetic */ boolean lambda$updateWallpaperWindowsTarget$3(WindowState windowState, WindowState windowState2) {
-        return windowState2 == windowState;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class FindWallpaperTargetResult {
+        public boolean isWallpaperTargetForLetterbox;
+        public boolean mNeedsShowWhenLockedWallpaper;
+        public TopWallpaper mTopWallpaper;
+        public boolean useTopWallpaperAsTarget;
+        public WindowState wallpaperTarget;
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class TopWallpaper {
+            public WindowState mTopHideWhenLockedWallpaper;
+            public WindowState mTopShowWhenLockedWallpaper;
+        }
     }
 
-    public /* synthetic */ void lambda$new$0(WindowState windowState) {
-        if (windowState.mAttrs.type == 2013) {
-            WallpaperWindowToken asWallpaperToken = windowState.mToken.asWallpaperToken();
-            if (CoreRune.FW_FOLD_WALLPAPER_POLICY && asWallpaperToken.isWaitingForChangingFoldedType()) {
-                return;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RemoteWallpaperAnimationAdapter implements AnimationAdapter, IBinder.DeathRecipient {
+        public final int mCallingPid;
+        public final DisplayArea mRemoteWallpaperAnimArea;
+        public final IRemoteAnimationRunner mRunner;
+        public final IBinder mRunnerToken;
+
+        public RemoteWallpaperAnimationAdapter(IBinder iBinder, DisplayArea displayArea, int i, IRemoteAnimationRunner iRemoteAnimationRunner) {
+            this.mRunner = iRemoteAnimationRunner;
+            this.mRunnerToken = iBinder;
+            try {
+                iBinder.linkToDeath(this, 0);
+            } catch (RemoteException unused) {
             }
-            if (asWallpaperToken.canShowWhenLocked() && !this.mFindResults.hasTopShowWhenLockedWallpaper()) {
-                this.mFindResults.setTopShowWhenLockedWallpaper(windowState);
-            } else {
-                if (asWallpaperToken.canShowWhenLocked() || this.mFindResults.hasTopHideWhenLockedWallpaper()) {
+            this.mRemoteWallpaperAnimArea = displayArea;
+            this.mCallingPid = i;
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public final void binderDied() {
+            WindowManagerGlobalLock windowManagerGlobalLock = WallpaperController.this.mService.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    this.mRemoteWallpaperAnimArea.cancelAnimation();
+                } catch (Throwable th) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
+            }
+            WindowManagerService.resetPriorityAfterLockedSection();
+        }
+
+        @Override // com.android.server.wm.AnimationAdapter
+        public final void dump(PrintWriter printWriter, String str) {
+            printWriter.print(str + "RemoteWallpaperAnimAdapter callingPid=");
+            printWriter.print(this.mCallingPid);
+            printWriter.println();
+        }
+
+        @Override // com.android.server.wm.AnimationAdapter
+        public final void dumpDebug$1(ProtoOutputStream protoOutputStream) {
+        }
+
+        @Override // com.android.server.wm.AnimationAdapter
+        public final long getDurationHint() {
+            return 0L;
+        }
+
+        @Override // com.android.server.wm.AnimationAdapter
+        public final boolean getShowWallpaper() {
+            return false;
+        }
+
+        @Override // com.android.server.wm.AnimationAdapter
+        public final long getStatusBarTransitionsStartTime() {
+            return 0L;
+        }
+
+        @Override // com.android.server.wm.AnimationAdapter
+        public final void onAnimationCancelled(SurfaceControl surfaceControl) {
+            try {
+                Slog.d("WindowManager", "mRunner#onAnimationCancelled, leash=" + surfaceControl + ", caller=" + Debug.getCallers(5));
+                this.mRunner.onAnimationCancelled();
+            } catch (RemoteException unused) {
+            }
+        }
+
+        @Override // com.android.server.wm.AnimationAdapter
+        public final void startAnimation(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback) {
+            Slog.d("WindowManager", "startAnimation for remote wallpaper, leash=" + surfaceControl);
+            final RemoteAnimationTarget[] remoteAnimationTargetArr = {new RemoteAnimationTarget(-1, -1, surfaceControl, false, (Rect) null, (Rect) null, -1, new Point(), (Rect) null, (Rect) null, (WindowConfiguration) null, true, (SurfaceControl) null, (Rect) null, (ActivityManager.RunningTaskInfo) null, false)};
+            transaction.show(surfaceControl);
+            transaction.setAlpha(surfaceControl, 1.0f);
+            final String str = "startRemoteWallpaperAnimation_" + this.mRunner.hashCode();
+            transaction.addLowDebugName(str);
+            transaction.addTransactionCommittedListener(new HandlerExecutor(WallpaperController.this.mService.mH), new SurfaceControl.TransactionCommittedListener() { // from class: com.android.server.wm.WallpaperController$RemoteWallpaperAnimationAdapter$$ExternalSyntheticLambda0
+                @Override // android.view.SurfaceControl.TransactionCommittedListener
+                public final void onTransactionCommitted() {
+                    WallpaperController.RemoteWallpaperAnimationAdapter remoteWallpaperAnimationAdapter = WallpaperController.RemoteWallpaperAnimationAdapter.this;
+                    RemoteAnimationTarget[] remoteAnimationTargetArr2 = remoteAnimationTargetArr;
+                    String str2 = str;
+                    remoteWallpaperAnimationAdapter.getClass();
+                    try {
+                        Slog.d("WindowManager", "mRunner#onAnimationStart for remote wallpaper=" + Arrays.toString(remoteAnimationTargetArr2) + ", transaction=" + str2);
+                        remoteWallpaperAnimationAdapter.mRunner.onAnimationStart(-1, (RemoteAnimationTarget[]) null, remoteAnimationTargetArr2, (RemoteAnimationTarget[]) null, (IRemoteAnimationFinishedCallback) null);
+                    } catch (RemoteException unused) {
+                    }
+                }
+            });
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.wm.WallpaperController$$ExternalSyntheticLambda1] */
+    /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.wm.WallpaperController$$ExternalSyntheticLambda2] */
+    public WallpaperController(WindowManagerService windowManagerService, DisplayContent displayContent) {
+        FindWallpaperTargetResult findWallpaperTargetResult = new FindWallpaperTargetResult();
+        FindWallpaperTargetResult.TopWallpaper topWallpaper = new FindWallpaperTargetResult.TopWallpaper();
+        topWallpaper.mTopHideWhenLockedWallpaper = null;
+        topWallpaper.mTopShowWhenLockedWallpaper = null;
+        findWallpaperTargetResult.mTopWallpaper = topWallpaper;
+        findWallpaperTargetResult.useTopWallpaperAsTarget = false;
+        findWallpaperTargetResult.wallpaperTarget = null;
+        findWallpaperTargetResult.isWallpaperTargetForLetterbox = false;
+        this.mFindResults = findWallpaperTargetResult;
+        this.mFindWallpaperTargetFunction = new ToBooleanFunction() { // from class: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda1
+            /* JADX WARN: Code restructure failed: missing block: B:115:0x0198, code lost:
+            
+                if (r13.isOnScreen() != false) goto L147;
+             */
+            /* JADX WARN: Code restructure failed: missing block: B:46:0x00ba, code lost:
+            
+                if (r13.inTransition() != false) goto L60;
+             */
+            /* JADX WARN: Code restructure failed: missing block: B:50:0x00cd, code lost:
+            
+                if (r0.mWindowManagerFuncs.isAppTransitionStateIdle() == false) goto L60;
+             */
+            /* JADX WARN: Removed duplicated region for block: B:102:0x016c  */
+            /* JADX WARN: Removed duplicated region for block: B:112:0x018c  */
+            /* JADX WARN: Removed duplicated region for block: B:114:0x0194  */
+            /* JADX WARN: Removed duplicated region for block: B:119:0x018e  */
+            /* JADX WARN: Removed duplicated region for block: B:124:0x01a5  */
+            /* JADX WARN: Removed duplicated region for block: B:133:0x01bf  */
+            /* JADX WARN: Removed duplicated region for block: B:164:? A[RETURN, SYNTHETIC] */
+            /* JADX WARN: Removed duplicated region for block: B:69:0x0103  */
+            /* JADX WARN: Removed duplicated region for block: B:91:0x0144  */
+            /* JADX WARN: Removed duplicated region for block: B:98:0x015d A[ADDED_TO_REGION] */
+            /*
+                Code decompiled incorrectly, please refer to instructions dump.
+                To view partially-correct code enable 'Show inconsistent code' option in preferences
+            */
+            public final boolean apply(java.lang.Object r13) {
+                /*
+                    Method dump skipped, instructions count: 529
+                    To view this dump change 'Code comments level' option to 'DEBUG'
+                */
+                throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda1.apply(java.lang.Object):boolean");
+            }
+        };
+        this.mComputeMaxZoomOutFunction = new Consumer() { // from class: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda2
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                WallpaperController wallpaperController = WallpaperController.this;
+                WindowState windowState = (WindowState) obj;
+                wallpaperController.getClass();
+                if (windowState.mIsWallpaper || Float.compare(windowState.mWallpaperZoomOut, wallpaperController.mLastWallpaperZoomOut) <= 0) {
                     return;
                 }
-                this.mFindResults.setTopHideWhenLockedWallpaper(windowState);
+                wallpaperController.mLastWallpaperZoomOut = windowState.mWallpaperZoomOut;
             }
-        }
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:36:0x008f, code lost:
-    
-        if (r7.getDisplayId() != 2) goto L215;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:38:0x009b, code lost:
-    
-        if (r6.mService.mAtmService.mDexController.getDexModeLocked() != 2) goto L215;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:40:0x00a7, code lost:
-    
-        if (r6.mService.mExt.mPolicyExt.isKeyguardOccluded(2) == false) goto L215;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:41:0x00a9, code lost:
-    
-        r0 = r6.mFindResults;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:42:0x00b1, code lost:
-    
-        if (isFullscreen(r7.mAttrs) == false) goto L197;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x00b3, code lost:
-    
-        r5 = r7.mActivityRecord;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:44:0x00b5, code lost:
-    
-        if (r5 == null) goto L193;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:46:0x00bb, code lost:
-    
-        if (r5.fillsParent() == false) goto L197;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:48:0x00c1, code lost:
-    
-        if (r7.inFreeformWindowingMode() == false) goto L196;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:49:0x00c4, code lost:
-    
-        r5 = false;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:50:0x00c7, code lost:
-    
-        r0.mNeedsShowWhenLockedWallpaper = r5;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x00c6, code lost:
-    
-        r5 = true;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:69:0x00fd  */
-    /* JADX WARN: Removed duplicated region for block: B:76:0x0116 A[ADDED_TO_REGION] */
-    /* JADX WARN: Removed duplicated region for block: B:80:0x0122  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public /* synthetic */ boolean lambda$new$1(com.android.server.wm.WindowState r7) {
-        /*
-            Method dump skipped, instructions count: 392
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.WallpaperController.lambda$new$1(com.android.server.wm.WindowState):boolean");
-    }
-
-    public final boolean shouldIgnoreShowWhenLockedWallpaper(WindowState windowState) {
-        ActivityRecord activityRecord;
-        Transition collectingTransition;
-        if (windowState.isActivityTypeDream()) {
-            return true;
-        }
-        return CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX && (activityRecord = windowState.mActivityRecord) != null && activityRecord.finishing && !activityRecord.fillsParent() && (collectingTransition = windowState.mTransitionController.getCollectingTransition()) != null && (collectingTransition.getFlags() & 14592) == 0;
-    }
-
-    public final boolean isRecentsTransitionTarget(WindowState windowState) {
-        if (windowState.mTransitionController.isShellTransitionsEnabled()) {
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_RAPID_RECENTS_TRANSIT && canBeWallpaperTargetForTransientLaunch(windowState)) {
-                return true;
-            }
-            return windowState.mActivityRecord != null && windowState.mAttrs.type == 1 && this.mDisplayContent.isKeyguardLocked() && windowState.mTransitionController.isTransientHide(windowState.getTask());
-        }
-        RecentsAnimationController recentsAnimationController = this.mService.getRecentsAnimationController();
-        return recentsAnimationController != null && recentsAnimationController.isWallpaperVisible(windowState);
-    }
-
-    public final boolean isBackNavigationTarget(WindowState windowState) {
-        return this.mService.mAtmService.mBackNavigationController.isWallpaperVisible(windowState);
-    }
-
-    public /* synthetic */ void lambda$new$2(WindowState windowState) {
-        if (windowState.mIsWallpaper || Float.compare(windowState.mWallpaperZoomOut, this.mLastWallpaperZoomOut) <= 0) {
-            return;
-        }
-        this.mLastWallpaperZoomOut = windowState.mWallpaperZoomOut;
-    }
-
-    public WallpaperController(WindowManagerService windowManagerService, DisplayContent displayContent) {
+        };
+        this.mRemoteWallpaperAnimAreaMap = new HashMap();
         this.mService = windowManagerService;
         this.mDisplayContent = displayContent;
         Resources resources = windowManagerService.mContext.getResources();
-        this.mMaxWallpaperScale = resources.getFloat(R.dimen.default_app_widget_padding_left);
-        this.mShouldOffsetWallpaperCenter = resources.getBoolean(17891786);
-        this.mIsLockscreenLiveWallpaperEnabled = SystemProperties.getBoolean("persist.wm.debug.lockscreen_live_wallpaper", false);
+        this.mMinWallpaperScale = resources.getFloat(R.dimen.date_picker_day_of_week_height);
+        this.mMaxWallpaperScale = resources.getFloat(R.dimen.date_picker_day_height);
+        this.mShouldOffsetWallpaperCenter = resources.getBoolean(R.bool.config_preferKeepClearForFocus);
     }
 
-    public void resetLargestDisplay(Display display) {
-        if (display == null || display.getType() != 1) {
-            return;
-        }
-        this.mLargestDisplaySize = null;
+    public static void dumpValue(PrintWriter printWriter, String str, float f) {
+        printWriter.print("  ");
+        printWriter.print("  " + str + "=");
+        printWriter.println(f >= FullScreenMagnificationGestureHandler.MAX_SCALE ? Float.valueOf(f) : "NA");
     }
 
-    public void setShouldOffsetWallpaperCenter(boolean z) {
-        this.mShouldOffsetWallpaperCenter = z;
-    }
-
-    public final Point findLargestDisplaySize() {
-        if (!this.mShouldOffsetWallpaperCenter) {
-            return null;
-        }
-        Point point = new Point();
-        List possibleDisplayInfoLocked = this.mService.getPossibleDisplayInfoLocked(0);
-        for (int i = 0; i < possibleDisplayInfoLocked.size(); i++) {
-            DisplayInfo displayInfo = (DisplayInfo) possibleDisplayInfoLocked.get(i);
-            if (displayInfo.type == 1 && Math.max(displayInfo.logicalWidth, displayInfo.logicalHeight) > Math.max(point.x, point.y)) {
-                point.set(displayInfo.logicalWidth, displayInfo.logicalHeight);
-            }
-        }
-        return point;
-    }
-
-    public WindowState getWallpaperTarget() {
-        return this.mWallpaperTarget;
-    }
-
-    public boolean isWallpaperTarget(WindowState windowState) {
-        return windowState == this.mWallpaperTarget;
-    }
-
-    public boolean isBelowWallpaperTarget(WindowState windowState) {
-        WindowState windowState2 = this.mWallpaperTarget;
-        return windowState2 != null && windowState2.mLayer >= windowState.mBaseLayer;
-    }
-
-    public boolean isWallpaperVisible() {
-        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
-            if (((WallpaperWindowToken) this.mWallpaperTokens.get(size)).isVisible()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final boolean shouldWallpaperBeVisible(WindowState windowState) {
-        return (windowState == null && this.mPrevWallpaperTarget == null) ? false : true;
-    }
-
-    public boolean isWallpaperTargetAnimating() {
-        ActivityRecord activityRecord;
-        WindowState windowState = this.mWallpaperTarget;
-        return windowState != null && windowState.isAnimating(3) && ((activityRecord = this.mWallpaperTarget.mActivityRecord) == null || !activityRecord.isWaitingForTransitionStart());
-    }
-
-    public void updateWallpaperVisibility() {
-        boolean shouldWallpaperBeVisible = shouldWallpaperBeVisible(this.mWallpaperTarget);
-        WindowState topWallpaper = this.mFindResults.getTopWallpaper(this.mDisplayContent.isKeyguardLocked());
-        WallpaperWindowToken asWallpaperToken = topWallpaper == null ? null : topWallpaper.mToken.asWallpaperToken();
-        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
-            WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
-            wallpaperWindowToken.setVisibility(shouldWallpaperBeVisible && wallpaperWindowToken == asWallpaperToken);
-        }
-    }
-
-    public void showWallpaperInTransition(boolean z) {
-        updateWallpaperWindowsTarget(this.mFindResults);
-        if (this.mFindResults.hasTopShowWhenLockedWallpaper()) {
-            FindWallpaperTargetResult findWallpaperTargetResult = this.mFindResults;
-            if (findWallpaperTargetResult.wallpaperTarget != null) {
-                FindWallpaperTargetResult.TopWallpaper topWallpaper = findWallpaperTargetResult.mTopWallpaper;
-                WindowState windowState = topWallpaper.mTopHideWhenLockedWallpaper;
-                WindowState windowState2 = topWallpaper.mTopShowWhenLockedWallpaper;
-                if (!findWallpaperTargetResult.hasTopHideWhenLockedWallpaper()) {
-                    windowState2.mToken.asWallpaperToken().updateWallpaperWindows(true);
-                    return;
-                } else {
-                    windowState.mToken.asWallpaperToken().updateWallpaperWindowsInTransition(z);
-                    windowState2.mToken.asWallpaperToken().updateWallpaperWindowsInTransition(!z);
-                    return;
-                }
-            }
-        }
-        Slog.w(StartingSurfaceController.TAG, "There is no wallpaper for the lock screen");
-    }
-
-    public void hideDeferredWallpapersIfNeededLegacy() {
-        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
-            WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
-            if (!wallpaperWindowToken.isVisibleRequested()) {
-                wallpaperWindowToken.commitVisibility(false);
-            }
-        }
-    }
-
-    public void hideWallpapers(WindowState windowState) {
-        WindowState windowState2 = this.mWallpaperTarget;
-        if ((windowState2 == null || (windowState2 == windowState && this.mPrevWallpaperTarget == null)) && !this.mFindResults.useTopWallpaperAsTarget) {
-            for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
-                WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
-                wallpaperWindowToken.setVisibility(false);
-                if (ProtoLogImpl.isEnabled(ProtoLogGroup.WM_DEBUG_WALLPAPER) && wallpaperWindowToken.isVisible() && ProtoLogCache.WM_DEBUG_WALLPAPER_enabled) {
-                    ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_WALLPAPER, 1984843251, 0, (String) null, new Object[]{String.valueOf(wallpaperWindowToken), String.valueOf(windowState), String.valueOf(this.mWallpaperTarget), String.valueOf(this.mPrevWallpaperTarget), String.valueOf(Debug.getCallers(5))});
-                }
-            }
-        }
-    }
-
-    public boolean updateWallpaperOffset(WindowState windowState, boolean z) {
-        boolean z2;
-        boolean z3;
-        Rect parentFrame = windowState.getParentFrame();
-        Rect frame = windowState.getFrame();
-        int width = frame.width() - parentFrame.width();
-        int height = frame.height() - parentFrame.height();
-        if ((windowState.mAttrs.flags & 16384) != 0 && Math.abs(width) > 1 && Math.abs(height) > 1) {
-            Slog.d(StartingSurfaceController.TAG, "Skip wallpaper offset with inconsistent orientation, bounds=" + parentFrame + " frame=" + frame);
-            return false;
-        }
-        float f = windowState.isRtl() ? 1.0f : 0.0f;
-        float f2 = this.mLastWallpaperX;
-        if (f2 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            f = f2;
-        }
-        float f3 = this.mLastWallpaperXStep;
-        if (f3 < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            f3 = -1.0f;
-        }
-        int displayWidthOffset = getDisplayWidthOffset(width, parentFrame, windowState.isRtl());
-        int i = width - displayWidthOffset;
-        int i2 = i > 0 ? -((int) ((i * f) + 0.5f)) : 0;
-        int i3 = this.mLastWallpaperDisplayOffsetX;
-        if (i3 != Integer.MIN_VALUE) {
-            i2 += i3;
-        } else if (!windowState.isRtl()) {
-            i2 -= displayWidthOffset;
-        }
-        if (windowState.mWallpaperX == f && windowState.mWallpaperXStep == f3) {
-            z2 = false;
-        } else {
-            windowState.mWallpaperX = f;
-            windowState.mWallpaperXStep = f3;
-            z2 = true;
-        }
-        float f4 = this.mLastWallpaperY;
-        if (f4 < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            f4 = 0.5f;
-        }
-        float f5 = this.mLastWallpaperYStep;
-        float f6 = f5 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON ? f5 : -1.0f;
-        int i4 = height > 0 ? -((int) ((height * f4) + 0.5f)) : 0;
-        int i5 = this.mLastWallpaperDisplayOffsetY;
-        if (i5 != Integer.MIN_VALUE) {
-            i4 += i5;
-        }
-        int i6 = i4;
-        if (windowState.mWallpaperY != f4 || windowState.mWallpaperYStep != f6) {
-            windowState.mWallpaperY = f4;
-            windowState.mWallpaperYStep = f6;
-            z2 = true;
-        }
-        if (Float.compare(windowState.mWallpaperZoomOut, this.mLastWallpaperZoomOut) != 0) {
-            windowState.mWallpaperZoomOut = this.mLastWallpaperZoomOut;
-            z3 = true;
-        } else {
-            z3 = z2;
-        }
-        boolean wallpaperOffset = windowState.setWallpaperOffset(i2, i6, windowState.mShouldScaleWallpaper ? zoomOutToScale(windowState.mWallpaperZoomOut) : 1.0f);
-        if (wallpaperOffset) {
-            Slog.d(StartingSurfaceController.TAG, "updateWallpaperOffset: x=" + i2 + ", y=" + i6 + ", wFrame=" + frame + ", wBounds=" + parentFrame + ", dOffset=" + displayWidthOffset + ", wpx=" + f + ", wpy=" + f4 + ", zoom=" + windowState.mWallpaperZoomOut + ", win=" + windowState);
-        }
-        if (z3 && (windowState.mAttrs.privateFlags & 4) != 0) {
-            if (z) {
-                try {
-                    this.mWaitingOnWallpaper = windowState;
-                } catch (RemoteException unused) {
-                }
-            }
-            windowState.mClient.dispatchWallpaperOffsets(windowState.mWallpaperX, windowState.mWallpaperY, windowState.mWallpaperXStep, windowState.mWallpaperYStep, windowState.mWallpaperZoomOut, z);
-            if (z && this.mWaitingOnWallpaper != null) {
-                long uptimeMillis = SystemClock.uptimeMillis();
-                if (this.mLastWallpaperTimeoutTime + 10000 < uptimeMillis) {
-                    try {
-                        this.mService.mGlobalLock.wait(150L);
-                    } catch (InterruptedException unused2) {
-                    }
-                    if (150 + uptimeMillis < SystemClock.uptimeMillis()) {
-                        Slog.i(StartingSurfaceController.TAG, "Timeout waiting for wallpaper to offset: " + windowState);
-                        this.mLastWallpaperTimeoutTime = uptimeMillis;
-                    }
-                }
-                this.mWaitingOnWallpaper = null;
-            }
-        }
-        return wallpaperOffset;
-    }
-
-    public final int getDisplayWidthOffset(int i, Rect rect, boolean z) {
-        int width;
-        if (!this.mShouldOffsetWallpaperCenter) {
-            return 0;
-        }
-        if (this.mLargestDisplaySize == null) {
-            this.mLargestDisplaySize = findLargestDisplaySize();
-        }
-        if (this.mLargestDisplaySize == null || this.mLargestDisplaySize.x == (width = rect.width()) || rect.width() >= rect.height()) {
-            return 0;
-        }
-        float height = rect.height();
-        Point point = this.mLargestDisplaySize;
-        int round = Math.round(point.x * (height / point.y));
-        if (z) {
-            return round - ((width + round) / 2);
-        }
-        return Math.min(round - width, i) / 2;
-    }
-
-    public void setWindowWallpaperPosition(WindowState windowState, float f, float f2, float f3, float f4) {
-        if (windowState.mWallpaperX == f && windowState.mWallpaperY == f2) {
-            return;
-        }
-        windowState.mWallpaperX = f;
-        windowState.mWallpaperY = f2;
-        windowState.mWallpaperXStep = f3;
-        windowState.mWallpaperYStep = f4;
-        updateWallpaperOffsetLocked(windowState, true);
-    }
-
-    public void setWallpaperZoomOut(WindowState windowState, float f) {
-        if (Float.compare(windowState.mWallpaperZoomOut, f) != 0) {
-            windowState.mWallpaperZoomOut = f;
-            this.mShouldUpdateZoom = true;
-            updateWallpaperOffsetLocked(windowState, false);
-        }
-    }
-
-    public void setShouldZoomOutWallpaper(WindowState windowState, boolean z) {
-        if (z != windowState.mShouldScaleWallpaper) {
-            windowState.mShouldScaleWallpaper = z;
-            updateWallpaperOffsetLocked(windowState, false);
-        }
-    }
-
-    public void setWindowWallpaperDisplayOffset(WindowState windowState, int i, int i2) {
-        if (windowState.mWallpaperDisplayOffsetX == i && windowState.mWallpaperDisplayOffsetY == i2) {
-            return;
-        }
-        windowState.mWallpaperDisplayOffsetX = i;
-        windowState.mWallpaperDisplayOffsetY = i2;
-        updateWallpaperOffsetLocked(windowState, true);
-    }
-
-    public Bundle sendWindowWallpaperCommand(WindowState windowState, String str, int i, int i2, int i3, Bundle bundle, boolean z) {
-        if (windowState != this.mWallpaperTarget && windowState != this.mPrevWallpaperTarget) {
-            return null;
-        }
-        sendWindowWallpaperCommand(str, i, i2, i3, bundle, z);
-        return null;
-    }
-
-    public final void sendWindowWallpaperCommand(String str, int i, int i2, int i3, Bundle bundle, boolean z) {
-        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
-            ((WallpaperWindowToken) this.mWallpaperTokens.get(size)).sendWindowWallpaperCommand(str, i, i2, i3, bundle, z);
-        }
-    }
-
-    public final void updateWallpaperOffsetLocked(WindowState windowState, boolean z) {
-        WindowState windowState2 = this.mWallpaperTarget;
-        if ((windowState2 == null && windowState.mToken.isVisible() && windowState.mTransitionController.inTransition()) || (windowState2 == null && windowState != null)) {
-            windowState2 = windowState;
-        }
-        if (windowState2 != null) {
-            float f = windowState2.mWallpaperX;
-            if (f >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                this.mLastWallpaperX = f;
-            } else {
-                float f2 = windowState.mWallpaperX;
-                if (f2 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    this.mLastWallpaperX = f2;
-                }
-            }
-            float f3 = windowState2.mWallpaperY;
-            if (f3 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                this.mLastWallpaperY = f3;
-            } else {
-                float f4 = windowState.mWallpaperY;
-                if (f4 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    this.mLastWallpaperY = f4;
-                }
-            }
-            computeLastWallpaperZoomOut();
-            int i = windowState2.mWallpaperDisplayOffsetX;
-            if (i != Integer.MIN_VALUE) {
-                this.mLastWallpaperDisplayOffsetX = i;
-            } else {
-                int i2 = windowState.mWallpaperDisplayOffsetX;
-                if (i2 != Integer.MIN_VALUE) {
-                    this.mLastWallpaperDisplayOffsetX = i2;
-                }
-            }
-            int i3 = windowState2.mWallpaperDisplayOffsetY;
-            if (i3 != Integer.MIN_VALUE) {
-                this.mLastWallpaperDisplayOffsetY = i3;
-            } else {
-                int i4 = windowState.mWallpaperDisplayOffsetY;
-                if (i4 != Integer.MIN_VALUE) {
-                    this.mLastWallpaperDisplayOffsetY = i4;
-                }
-            }
-            float f5 = windowState2.mWallpaperXStep;
-            if (f5 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                this.mLastWallpaperXStep = f5;
-            } else {
-                float f6 = windowState.mWallpaperXStep;
-                if (f6 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    this.mLastWallpaperXStep = f6;
-                }
-            }
-            float f7 = windowState2.mWallpaperYStep;
-            if (f7 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                this.mLastWallpaperYStep = f7;
-            } else {
-                float f8 = windowState.mWallpaperYStep;
-                if (f8 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    this.mLastWallpaperYStep = f8;
-                }
-            }
-        }
-        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
-            ((WallpaperWindowToken) this.mWallpaperTokens.get(size)).updateWallpaperOffset(z);
-        }
-    }
-
-    public void clearLastWallpaperTimeoutTime() {
-        this.mLastWallpaperTimeoutTime = 0L;
-    }
-
-    public void wallpaperCommandComplete(IBinder iBinder) {
-        WindowState windowState = this.mWaitingOnWallpaper;
-        if (windowState == null || windowState.mClient.asBinder() != iBinder) {
-            return;
-        }
-        this.mWaitingOnWallpaper = null;
-        this.mService.mGlobalLock.notifyAll();
-    }
-
-    public void wallpaperOffsetsComplete(IBinder iBinder) {
-        WindowState windowState = this.mWaitingOnWallpaper;
-        if (windowState == null || windowState.mClient.asBinder() != iBinder) {
-            return;
-        }
-        this.mWaitingOnWallpaper = null;
-        this.mService.mGlobalLock.notifyAll();
-    }
-
-    public final void findWallpaperTarget() {
-        this.mFindResults.reset();
-        if (this.mService.mAtmService.mNaturalSwitchingController.isRunning() && (!this.mService.mAtmService.mMultiTaskingController.shouldNotSupportWallpaper())) {
-            this.mFindResults.setUseTopWallpaperAsTarget(true);
-        }
-        this.mDisplayContent.forAllWindows(this.mFindWallpapers, true);
-        this.mDisplayContent.forAllWindows(this.mFindWallpaperTargetFunction, true);
-        FindWallpaperTargetResult findWallpaperTargetResult = this.mFindResults;
-        if (findWallpaperTargetResult.mNeedsShowWhenLockedWallpaper) {
-            findWallpaperTargetResult.setUseTopWallpaperAsTarget(true);
-        }
-        FindWallpaperTargetResult findWallpaperTargetResult2 = this.mFindResults;
-        if (findWallpaperTargetResult2.wallpaperTarget == null && findWallpaperTargetResult2.useTopWallpaperAsTarget) {
-            findWallpaperTargetResult2.setWallpaperTarget(findWallpaperTargetResult2.getTopWallpaper(this.mDisplayContent.isKeyguardLocked()));
-        }
-    }
-
-    public List getAllTopWallpapers() {
-        ArrayList arrayList = new ArrayList(2);
-        if (this.mFindResults.hasTopShowWhenLockedWallpaper()) {
-            arrayList.add(this.mFindResults.mTopWallpaper.mTopShowWhenLockedWallpaper);
-        }
-        if (this.mFindResults.hasTopHideWhenLockedWallpaper()) {
-            arrayList.add(this.mFindResults.mTopWallpaper.mTopHideWhenLockedWallpaper);
-        }
-        return arrayList;
-    }
-
-    public final boolean isFullscreen(WindowManager.LayoutParams layoutParams) {
-        return layoutParams.x == 0 && layoutParams.y == 0 && layoutParams.width == -1 && layoutParams.height == -1;
-    }
-
-    public final void updateWallpaperWindowsTarget(FindWallpaperTargetResult findWallpaperTargetResult) {
+    public final void adjustWallpaperWindows() {
+        boolean[] zArr;
         WindowState windowState;
-        WindowState windowState2 = findWallpaperTargetResult.wallpaperTarget;
-        if (this.mWallpaperTarget == windowState2 || ((windowState = this.mPrevWallpaperTarget) != null && windowState == windowState2)) {
-            WindowState windowState3 = this.mPrevWallpaperTarget;
-            if (windowState3 == null || windowState3.isAnimatingLw()) {
-                return;
-            }
-            if (ProtoLogCache.WM_DEBUG_WALLPAPER_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, -1478175541, 0, (String) null, (Object[]) null);
-            }
-            this.mPrevWallpaperTarget = null;
-            this.mWallpaperTarget = windowState2;
-            return;
+        MultiTaskingAppCompatConfiguration.BlackLetterboxConfig blackLetterboxConfig;
+        ActivityRecord activityRecord;
+        WindowState windowState2;
+        WindowState windowState3;
+        WindowState windowState4;
+        WindowState windowState5;
+        DisplayContent displayContent = this.mDisplayContent;
+        displayContent.mWallpaperMayChange = false;
+        FindWallpaperTargetResult findWallpaperTargetResult = this.mFindResults;
+        FindWallpaperTargetResult.TopWallpaper topWallpaper = findWallpaperTargetResult.mTopWallpaper;
+        topWallpaper.mTopHideWhenLockedWallpaper = null;
+        topWallpaper.mTopShowWhenLockedWallpaper = null;
+        findWallpaperTargetResult.mNeedsShowWhenLockedWallpaper = false;
+        findWallpaperTargetResult.wallpaperTarget = null;
+        findWallpaperTargetResult.useTopWallpaperAsTarget = false;
+        findWallpaperTargetResult.isWallpaperTargetForLetterbox = false;
+        WindowManagerService windowManagerService = this.mService;
+        ActivityTaskManagerService activityTaskManagerService = windowManagerService.mAtmService;
+        boolean z = activityTaskManagerService.mSupportsFreeformWindowManagement;
+        if (activityTaskManagerService.mNaturalSwitchingController.mNaturalSwitchingRunning && (!activityTaskManagerService.mMultiTaskingController.mIsMinimalBatteryUse)) {
+            findWallpaperTargetResult.useTopWallpaperAsTarget = true;
         }
-        if (ProtoLogCache.WM_DEBUG_WALLPAPER_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, 114070759, 0, (String) null, new Object[]{String.valueOf(windowState2), String.valueOf(this.mWallpaperTarget), String.valueOf(Debug.getCallers(5))});
-        }
-        this.mPrevWallpaperTarget = null;
-        final WindowState windowState4 = this.mWallpaperTarget;
-        this.mWallpaperTarget = windowState2;
-        if (windowState4 == null && windowState2 != null) {
-            updateWallpaperOffsetLocked(windowState2, false);
-        }
-        if (windowState2 == null || windowState4 == null) {
-            return;
-        }
-        boolean isAnimatingLw = windowState4.isAnimatingLw();
-        boolean isAnimatingLw2 = windowState2.isAnimatingLw();
-        if (ProtoLogCache.WM_DEBUG_WALLPAPER_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, -275077723, 0, (String) null, new Object[]{String.valueOf(isAnimatingLw2), String.valueOf(isAnimatingLw)});
-        }
-        if (isAnimatingLw2 && isAnimatingLw && this.mDisplayContent.getWindow(new Predicate() { // from class: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda3
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$updateWallpaperWindowsTarget$3;
-                lambda$updateWallpaperWindowsTarget$3 = WallpaperController.lambda$updateWallpaperWindowsTarget$3(WindowState.this, (WindowState) obj);
-                return lambda$updateWallpaperWindowsTarget$3;
-            }
-        }) != null) {
-            ActivityRecord activityRecord = windowState2.mActivityRecord;
-            boolean z = (activityRecord == null || activityRecord.isVisibleRequested()) ? false : true;
-            ActivityRecord activityRecord2 = windowState4.mActivityRecord;
-            boolean z2 = (activityRecord2 == null || activityRecord2.isVisibleRequested()) ? false : true;
-            if (ProtoLogCache.WM_DEBUG_WALLPAPER_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, -360208282, 204, (String) null, new Object[]{String.valueOf(windowState4), Boolean.valueOf(z2), String.valueOf(windowState2), Boolean.valueOf(z)});
-            }
-            this.mPrevWallpaperTarget = windowState4;
-            if (z && !z2) {
-                if (ProtoLogCache.WM_DEBUG_WALLPAPER_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, 1178653181, 0, (String) null, (Object[]) null);
-                }
-                this.mWallpaperTarget = windowState4;
-            } else if (z == z2 && !this.mDisplayContent.mOpeningApps.contains(windowState2.mActivityRecord) && (this.mDisplayContent.mOpeningApps.contains(windowState4.mActivityRecord) || this.mDisplayContent.mClosingApps.contains(windowState4.mActivityRecord))) {
-                this.mWallpaperTarget = windowState4;
-            }
-            findWallpaperTargetResult.setWallpaperTarget(windowState2);
-        }
-    }
-
-    public final void updateWallpaperTokens(boolean z, boolean z2) {
-        WindowState topWallpaper = this.mFindResults.getTopWallpaper(z2);
-        WallpaperWindowToken asWallpaperToken = topWallpaper == null ? null : topWallpaper.mToken.asWallpaperToken();
-        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
-            WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
-            wallpaperWindowToken.updateWallpaperWindows(z && wallpaperWindowToken == asWallpaperToken);
-        }
-    }
-
-    public void adjustWallpaperWindows() {
-        this.mDisplayContent.mWallpaperMayChange = false;
-        findWallpaperTarget();
-        updateWallpaperWindowsTarget(this.mFindResults);
-        boolean z = this.mWallpaperTarget != null;
-        boolean z2 = (CoreRune.FW_CUSTOM_LETTERBOX_ENHANCED_HIDING_WALLPAPER && CustomLetterboxConfiguration.shouldHideWallpaper(this.mDisplayContent)) ? false : true;
-        if (z && z2) {
-            WindowState windowState = this.mWallpaperTarget;
-            float f = windowState.mWallpaperX;
-            if (f >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                this.mLastWallpaperX = f;
-                this.mLastWallpaperXStep = windowState.mWallpaperXStep;
-            }
-            computeLastWallpaperZoomOut();
-            WindowState windowState2 = this.mWallpaperTarget;
-            float f2 = windowState2.mWallpaperY;
-            if (f2 >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                this.mLastWallpaperY = f2;
-                this.mLastWallpaperYStep = windowState2.mWallpaperYStep;
-            }
-            int i = windowState2.mWallpaperDisplayOffsetX;
-            if (i != Integer.MIN_VALUE) {
-                this.mLastWallpaperDisplayOffsetX = i;
-            }
-            int i2 = windowState2.mWallpaperDisplayOffsetY;
-            if (i2 != Integer.MIN_VALUE) {
-                this.mLastWallpaperDisplayOffsetY = i2;
-            }
-        }
-        if (!this.mDisplayContent.isKeyguardGoingAway() || !this.mIsLockscreenLiveWallpaperEnabled) {
-            updateWallpaperTokens(z && z2, this.mDisplayContent.isKeyguardLocked());
-        }
-        if ((!CoreRune.FW_CUSTOM_LETTERBOX || CustomLetterboxConfiguration.isAllowFreezeWallpaper(this.mFindResults.wallpaperTarget)) && z) {
-            boolean z3 = this.mLastFrozen;
-            boolean z4 = this.mFindResults.isWallpaperTargetForLetterbox;
-            if (z3 != z4) {
-                this.mLastFrozen = z4;
-                sendWindowWallpaperCommand(z4 ? "android.wallpaper.freeze" : "android.wallpaper.unfreeze", 0, 0, 0, null, false);
-            }
-        }
-        if (CoreRune.FW_BLUR_WALLPAPER_LETTERBOX) {
-            BlurWallpaperLetterbox.onAdjustWallpaperWindows(this.mDisplayContent, z && this.mFindResults.isWallpaperTargetForLetterbox);
-        }
-        if (ProtoLogCache.WM_DEBUG_WALLPAPER_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_WALLPAPER, -304728471, 0, (String) null, new Object[]{String.valueOf(this.mWallpaperTarget), String.valueOf(this.mPrevWallpaperTarget)});
-        }
-    }
-
-    public boolean processWallpaperDrawPendingTimeout() {
-        if (this.mWallpaperDrawState != 1) {
-            return false;
-        }
-        this.mWallpaperDrawState = 2;
-        if (this.mService.getRecentsAnimationController() != null) {
-            this.mService.getRecentsAnimationController().startAnimation();
-        }
-        this.mService.mAtmService.mBackNavigationController.startAnimation();
-        return true;
-    }
-
-    public boolean wallpaperTransitionReady() {
-        boolean z;
-        boolean z2 = true;
         int size = this.mWallpaperTokens.size() - 1;
         while (true) {
+            zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_WALLPAPER_enabled;
             if (size < 0) {
-                z = true;
                 break;
             }
-            if (((WallpaperWindowToken) this.mWallpaperTokens.get(size)).hasVisibleNotDrawnWallpaper()) {
-                int i = this.mWallpaperDrawState;
-                z = i == 2;
-                if (i == 0) {
-                    this.mWallpaperDrawState = 1;
-                    this.mService.mH.removeMessages(39, this);
-                    WindowManagerService.H h = this.mService.mH;
-                    h.sendMessageDelayed(h.obtainMessage(39, this), 500L);
+            WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
+            boolean z2 = wallpaperWindowToken.mShowWhenLocked;
+            if (!CoreRune.FW_FOLD_WALLPAPER_POLICY || !displayContent.isDefaultDisplay || wallpaperWindowToken.canShowInCurrentDevice()) {
+                for (int childCount = wallpaperWindowToken.getChildCount() - 1; childCount >= 0; childCount--) {
+                    WindowState windowState6 = (WindowState) wallpaperWindowToken.getChildAt(childCount);
+                    if (windowState6.mIsWallpaper) {
+                        FindWallpaperTargetResult.TopWallpaper topWallpaper2 = findWallpaperTargetResult.mTopWallpaper;
+                        if (z2 && (windowState5 = topWallpaper2.mTopShowWhenLockedWallpaper) == null) {
+                            if (windowState5 != windowState6 && zArr[0]) {
+                                ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_WALLPAPER, 6943105284590482059L, 0, null, String.valueOf(windowState6), String.valueOf(topWallpaper2.mTopShowWhenLockedWallpaper));
+                            }
+                            topWallpaper2.mTopShowWhenLockedWallpaper = windowState6;
+                        } else if (!z2 && (windowState4 = topWallpaper2.mTopHideWhenLockedWallpaper) == null) {
+                            if (windowState4 != windowState6 && zArr[0]) {
+                                ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_WALLPAPER, 4151327328872447804L, 0, null, String.valueOf(windowState6), String.valueOf(topWallpaper2.mTopHideWhenLockedWallpaper));
+                            }
+                            topWallpaper2.mTopHideWhenLockedWallpaper = windowState6;
+                        }
+                    }
                 }
-                z2 = false;
-            } else {
-                size--;
+            }
+            size--;
+        }
+        displayContent.forAllWindows((ToBooleanFunction) this.mFindWallpaperTargetFunction, true);
+        if (findWallpaperTargetResult.mNeedsShowWhenLockedWallpaper) {
+            findWallpaperTargetResult.useTopWallpaperAsTarget = true;
+        }
+        if (findWallpaperTargetResult.wallpaperTarget == null && findWallpaperTargetResult.useTopWallpaperAsTarget) {
+            boolean z3 = displayContent.isKeyguardLocked() || (displayContent.isAodShowing() && !windowManagerService.mAtmService.mDexController.mDexDisplayActivated);
+            FindWallpaperTargetResult.TopWallpaper topWallpaper3 = findWallpaperTargetResult.mTopWallpaper;
+            if (z3 || (windowState3 = topWallpaper3.mTopHideWhenLockedWallpaper) == null) {
+                windowState3 = topWallpaper3.mTopShowWhenLockedWallpaper;
+            }
+            findWallpaperTargetResult.wallpaperTarget = windowState3;
+        }
+        WindowState windowState7 = findWallpaperTargetResult.wallpaperTarget;
+        if (this.mWallpaperTarget == windowState7 || ((windowState2 = this.mPrevWallpaperTarget) != null && windowState2 == windowState7)) {
+            WindowState windowState8 = this.mPrevWallpaperTarget;
+            if (windowState8 != null && !windowState8.isAnimating(3)) {
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, -3477087868568520027L, 0, null, null);
+                }
+                this.mPrevWallpaperTarget = null;
+                this.mWallpaperTarget = windowState7;
+            }
+        } else {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, -3751289048117070874L, 0, null, String.valueOf(windowState7), String.valueOf(this.mWallpaperTarget), String.valueOf(Debug.getCallers(5)));
+            }
+            this.mPrevWallpaperTarget = null;
+            final WindowState windowState9 = this.mWallpaperTarget;
+            this.mWallpaperTarget = windowState7;
+            if (windowState9 == null && windowState7 != null) {
+                updateWallpaperOffsetLocked(windowState7, false);
+            }
+            if (windowState7 != null && windowState9 != null) {
+                boolean isAnimating = windowState9.isAnimating(3);
+                boolean isAnimating2 = windowState7.isAnimating(3);
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, 5625223922466895079L, 0, null, String.valueOf(isAnimating2), String.valueOf(isAnimating));
+                }
+                if (isAnimating2 && isAnimating && displayContent.getWindow(new Predicate() { // from class: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda3
+                    @Override // java.util.function.Predicate
+                    public final boolean test(Object obj) {
+                        return ((WindowState) obj) == WindowState.this;
+                    }
+                }) != null) {
+                    ActivityRecord activityRecord2 = windowState7.mActivityRecord;
+                    boolean z4 = (activityRecord2 == null || activityRecord2.isVisibleRequested()) ? false : true;
+                    ActivityRecord activityRecord3 = windowState9.mActivityRecord;
+                    boolean z5 = (activityRecord3 == null || activityRecord3.isVisibleRequested()) ? false : true;
+                    if (zArr[1]) {
+                        ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, 7634524672408826188L, 204, null, String.valueOf(windowState9), Boolean.valueOf(z5), String.valueOf(windowState7), Boolean.valueOf(z4));
+                    }
+                    this.mPrevWallpaperTarget = windowState9;
+                    if (z4 && !z5) {
+                        if (zArr[1]) {
+                            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, -4345077332231178044L, 0, null, null);
+                        }
+                        this.mWallpaperTarget = windowState9;
+                    } else if (z4 == z5 && !displayContent.mOpeningApps.contains(windowState7.mActivityRecord) && (displayContent.mOpeningApps.contains(windowState9.mActivityRecord) || displayContent.mClosingApps.contains(windowState9.mActivityRecord))) {
+                        this.mWallpaperTarget = windowState9;
+                    }
+                    findWallpaperTargetResult.wallpaperTarget = windowState7;
+                }
             }
         }
-        if (z2) {
-            this.mWallpaperDrawState = 0;
-            this.mService.mH.removeMessages(39, this);
+        WallpaperWindowToken tokenForTarget = getTokenForTarget(this.mWallpaperTarget);
+        boolean z6 = tokenForTarget != null;
+        if (z6) {
+            WindowState windowState10 = this.mWallpaperTarget;
+            float f = windowState10.mWallpaperX;
+            if (f >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                tokenForTarget.mWallpaperX = f;
+                tokenForTarget.mWallpaperXStep = windowState10.mWallpaperXStep;
+            }
+            float f2 = windowState10.mWallpaperY;
+            if (f2 >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                tokenForTarget.mWallpaperY = f2;
+                tokenForTarget.mWallpaperYStep = windowState10.mWallpaperYStep;
+            }
+            int i = windowState10.mWallpaperDisplayOffsetX;
+            if (i != Integer.MIN_VALUE) {
+                tokenForTarget.mWallpaperDisplayOffsetX = i;
+            }
+            int i2 = windowState10.mWallpaperDisplayOffsetY;
+            if (i2 != Integer.MIN_VALUE) {
+                tokenForTarget.mWallpaperDisplayOffsetY = i2;
+            }
         }
-        return z;
-    }
-
-    public void adjustWallpaperWindowsForAppTransitionIfNeeded(ArraySet arraySet) {
-        boolean z = true;
-        if ((this.mDisplayContent.pendingLayoutChanges & 4) == 0) {
-            int size = arraySet.size() - 1;
-            while (true) {
-                if (size < 0) {
-                    z = false;
-                    break;
-                } else if (((ActivityRecord) arraySet.valueAt(size)).windowsCanBeWallpaperTarget()) {
-                    break;
+        boolean z7 = displayContent.isKeyguardLocked() || (displayContent.isAodShowing() && !windowManagerService.mAtmService.mDexController.mDexDisplayActivated);
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, 257349083882992098L, 15, null, Boolean.valueOf(z6), Boolean.valueOf(z7));
+        }
+        FindWallpaperTargetResult.TopWallpaper topWallpaper4 = findWallpaperTargetResult.mTopWallpaper;
+        if (z7 || (windowState = topWallpaper4.mTopHideWhenLockedWallpaper) == null) {
+            windowState = topWallpaper4.mTopShowWhenLockedWallpaper;
+        }
+        WallpaperWindowToken asWallpaperToken = windowState != null ? windowState.mToken.asWallpaperToken() : null;
+        for (int size2 = this.mWallpaperTokens.size() - 1; size2 >= 0; size2--) {
+            WallpaperWindowToken wallpaperWindowToken2 = (WallpaperWindowToken) this.mWallpaperTokens.get(size2);
+            boolean z8 = z6 && wallpaperWindowToken2 == asWallpaperToken;
+            if (wallpaperWindowToken2.mVisibleRequested != z8) {
+                if (zArr[0]) {
+                    ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_WALLPAPER, -7936547457136708587L, 12, null, String.valueOf(wallpaperWindowToken2.token), Boolean.valueOf(z8));
+                }
+                wallpaperWindowToken2.setVisibility(z8);
+            }
+            WindowState windowState11 = wallpaperWindowToken2.mDisplayContent.mWallpaperController.mWallpaperTarget;
+            if (z8 && windowState11 != null) {
+                RecentsAnimationController recentsAnimationController = wallpaperWindowToken2.mWmService.mRecentsAnimationController;
+                if (recentsAnimationController == null || !recentsAnimationController.isAnimatingTask(windowState11.getTask())) {
+                    ActivityRecord activityRecord4 = windowState11.mActivityRecord;
+                    if ((activityRecord4 == null || activityRecord4.isVisibleRequested()) && windowState11.mToken.hasFixedRotationTransform()) {
+                        wallpaperWindowToken2.linkFixedRotationTransform(windowState11.mToken);
+                    } else if (CoreRune.FW_SHELL_TRANSITION_BUG_FIX && !wallpaperWindowToken2.mWmService.mFlags.mRespectNonTopVisibleFixedOrientation && wallpaperWindowToken2.mDisplayContent.isKeyguardGoingAway()) {
+                        if (((PhoneWindowManager) wallpaperWindowToken2.mWmService.mPolicy).isKeyguardHostWindow(windowState11.mAttrs) && (activityRecord = wallpaperWindowToken2.mDisplayContent.mFocusedApp) != null && activityRecord.windowsCanBeWallpaperTarget() && wallpaperWindowToken2.mDisplayContent.isFixedRotationLaunchingApp(activityRecord)) {
+                            wallpaperWindowToken2.linkFixedRotationTransform(activityRecord);
+                        }
+                    }
                 } else {
-                    size--;
+                    ActivityRecord activityRecord5 = recentsAnimationController.mTargetActivityRecord;
+                    if (activityRecord5 != null) {
+                        wallpaperWindowToken2.linkFixedRotationTransform(activityRecord5);
+                    }
                 }
             }
+            if (!wallpaperWindowToken2.mTransitionController.inTransition(wallpaperWindowToken2)) {
+                wallpaperWindowToken2.setVisible$1(z8);
+            }
         }
-        if (z) {
-            adjustWallpaperWindows();
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, 7408402065665963407L, 61, null, Long.valueOf(displayContent.mDisplayId), Boolean.valueOf(z6), Boolean.valueOf(displayContent.isKeyguardLocked() || displayContent.isAodShowing()));
         }
-    }
-
-    public void addWallpaperToken(WallpaperWindowToken wallpaperWindowToken) {
-        this.mWallpaperTokens.add(wallpaperWindowToken);
-    }
-
-    public void removeWallpaperToken(WallpaperWindowToken wallpaperWindowToken) {
-        this.mWallpaperTokens.remove(wallpaperWindowToken);
+        if (z6) {
+            boolean z9 = this.mLastFrozen;
+            boolean z10 = findWallpaperTargetResult.isWallpaperTargetForLetterbox;
+            if (z9 != z10) {
+                this.mLastFrozen = z10;
+                sendWindowWallpaperCommand(z10 ? "android.wallpaper.freeze" : "android.wallpaper.unfreeze", 0, 0, 0, null, false);
+            }
+        }
+        if (CoreRune.MT_APP_COMPAT_CONFIGURATION && (blackLetterboxConfig = displayContent.mMultiTaskingAppCompatConfiguration) != null) {
+            blackLetterboxConfig.onAdjustWallpaperWindows(z6 && findWallpaperTargetResult.isWallpaperTargetForLetterbox);
+        }
+        if (zArr[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_WALLPAPER, -8598497865499265448L, 0, null, String.valueOf(this.mWallpaperTarget), String.valueOf(this.mPrevWallpaperTarget));
+        }
     }
 
     public boolean canScreenshotWallpaper() {
@@ -787,24 +452,250 @@ public class WallpaperController {
     }
 
     public final boolean canScreenshotWallpaper(WindowState windowState) {
-        if (!this.mService.mPolicy.isScreenOn()) {
-            Slog.i(StartingSurfaceController.TAG, "Attempted to take screenshot while display was off.");
+        if (!((PhoneWindowManager) this.mService.mPolicy).mDefaultDisplayPolicy.mScreenOnEarly) {
+            Slog.i("WindowManager", "Attempted to take screenshot while display was off.");
             return false;
         }
         if (windowState != null) {
             return true;
         }
-        Slog.i(StartingSurfaceController.TAG, "No visible wallpaper to screenshot");
+        Slog.i("WindowManager", "No visible wallpaper to screenshot");
         return false;
     }
 
-    public Bitmap screenshotWallpaperLocked() {
-        return screenshotWallpaperLocked(null);
+    public final void dump(PrintWriter printWriter) {
+        printWriter.print("  ");
+        printWriter.print("displayId=");
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mDisplayContent.mDisplayId, printWriter, "  ", "mWallpaperTarget=");
+        printWriter.println(this.mWallpaperTarget);
+        printWriter.print("  ");
+        printWriter.print("mLastWallpaperZoomOut=");
+        printWriter.println(this.mLastWallpaperZoomOut);
+        if (this.mPrevWallpaperTarget != null) {
+            printWriter.print("  ");
+            printWriter.print("mPrevWallpaperTarget=");
+            printWriter.println(this.mPrevWallpaperTarget);
+        }
+        printWriter.print("  ");
+        printWriter.println("mFindResults");
+        printWriter.print("  ");
+        printWriter.print("  mTopHideWhenLockedWallpaper=");
+        FindWallpaperTargetResult findWallpaperTargetResult = this.mFindResults;
+        printWriter.println(findWallpaperTargetResult.mTopWallpaper.mTopHideWhenLockedWallpaper);
+        if (findWallpaperTargetResult.mTopWallpaper.mTopHideWhenLockedWallpaper != null) {
+            printWriter.print("  ");
+            printWriter.print("    mTopHideWhenLockedWallpaper.Token=");
+            printWriter.println(findWallpaperTargetResult.mTopWallpaper.mTopHideWhenLockedWallpaper.mToken);
+        }
+        printWriter.print("  ");
+        printWriter.print("  mTopShowWhenLockedWallpaper=");
+        printWriter.println(findWallpaperTargetResult.mTopWallpaper.mTopShowWhenLockedWallpaper);
+        if (findWallpaperTargetResult.mTopWallpaper.mTopShowWhenLockedWallpaper != null) {
+            printWriter.print("  ");
+            printWriter.print("    mTopShowWhenLockedWallpaper.Token=");
+            printWriter.println(findWallpaperTargetResult.mTopWallpaper.mTopShowWhenLockedWallpaper.mToken);
+        }
+        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
+            WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
+            printWriter.print("  ");
+            printWriter.println("token " + wallpaperWindowToken + ":");
+            printWriter.print("  ");
+            printWriter.print("  canShowWhenLocked=");
+            printWriter.println(wallpaperWindowToken.mShowWhenLocked);
+            if (CoreRune.FW_FOLD_WALLPAPER_POLICY) {
+                printWriter.print("  ");
+                printWriter.print("  isForPrimaryDevice=");
+                printWriter.println(wallpaperWindowToken.isForPrimaryDevice());
+                printWriter.print("  ");
+                printWriter.print("  canShowInCurrentDevice=");
+                printWriter.println(wallpaperWindowToken.canShowInCurrentDevice());
+            }
+            dumpValue(printWriter, "mWallpaperX", wallpaperWindowToken.mWallpaperX);
+            dumpValue(printWriter, "mWallpaperY", wallpaperWindowToken.mWallpaperY);
+            dumpValue(printWriter, "mWallpaperXStep", wallpaperWindowToken.mWallpaperXStep);
+            dumpValue(printWriter, "mWallpaperYStep", wallpaperWindowToken.mWallpaperYStep);
+            dumpValue(printWriter, "mWallpaperDisplayOffsetX", wallpaperWindowToken.mWallpaperDisplayOffsetX);
+            dumpValue(printWriter, "mWallpaperDisplayOffsetY", wallpaperWindowToken.mWallpaperDisplayOffsetY);
+        }
     }
 
-    public Bitmap screenshotWallpaperLocked(Rect rect) {
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0024, code lost:
+    
+        if (r3.mDisplayContent.isAodShowing() == false) goto L16;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x002c, code lost:
+    
+        if (r2.mAtmService.mDexController.mDexDisplayActivated != false) goto L16;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0031, code lost:
+    
+        r4 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0032, code lost:
+    
+        r3 = r3.mFindResults.mTopWallpaper;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0036, code lost:
+    
+        if (r4 != false) goto L23;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x0038, code lost:
+    
+        r4 = r3.mTopHideWhenLockedWallpaper;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x003a, code lost:
+    
+        if (r4 == null) goto L23;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x003f, code lost:
+    
+        if (r4 != null) goto L26;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x0048, code lost:
+    
+        return r4.mToken.asWallpaperToken();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:?, code lost:
+    
+        return null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x003d, code lost:
+    
+        r4 = r3.mTopShowWhenLockedWallpaper;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x002f, code lost:
+    
+        r4 = false;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x001c, code lost:
+    
+        if (r2.isKeyguardLocked() == false) goto L11;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:8:0x0016, code lost:
+    
+        if (((com.android.server.policy.PhoneWindowManager) r2.mPolicy).isKeyguardHostWindow(r4.mAttrs) != false) goto L9;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final com.android.server.wm.WallpaperWindowToken getTokenForTarget(com.android.server.wm.WindowState r4) {
+        /*
+            r3 = this;
+            r0 = 0
+            if (r4 != 0) goto L4
+            return r0
+        L4:
+            boolean r1 = r4.canShowWhenLocked()
+            com.android.server.wm.WindowManagerService r2 = r3.mService
+            if (r1 != 0) goto L18
+            com.android.server.policy.WindowManagerPolicy r1 = r2.mPolicy
+            android.view.WindowManager$LayoutParams r4 = r4.mAttrs
+            com.android.server.policy.PhoneWindowManager r1 = (com.android.server.policy.PhoneWindowManager) r1
+            boolean r4 = r1.isKeyguardHostWindow(r4)
+            if (r4 == 0) goto L1e
+        L18:
+            boolean r4 = r2.isKeyguardLocked()
+            if (r4 != 0) goto L31
+        L1e:
+            com.android.server.wm.DisplayContent r4 = r3.mDisplayContent
+            boolean r4 = r4.isAodShowing()
+            if (r4 == 0) goto L2f
+            com.android.server.wm.ActivityTaskManagerService r4 = r2.mAtmService
+            com.android.server.wm.DexController r4 = r4.mDexController
+            boolean r4 = r4.mDexDisplayActivated
+            if (r4 != 0) goto L2f
+            goto L31
+        L2f:
+            r4 = 0
+            goto L32
+        L31:
+            r4 = 1
+        L32:
+            com.android.server.wm.WallpaperController$FindWallpaperTargetResult r3 = r3.mFindResults
+            com.android.server.wm.WallpaperController$FindWallpaperTargetResult$TopWallpaper r3 = r3.mTopWallpaper
+            if (r4 != 0) goto L3d
+            com.android.server.wm.WindowState r4 = r3.mTopHideWhenLockedWallpaper
+            if (r4 == 0) goto L3d
+            goto L3f
+        L3d:
+            com.android.server.wm.WindowState r4 = r3.mTopShowWhenLockedWallpaper
+        L3f:
+            if (r4 != 0) goto L42
+            goto L48
+        L42:
+            com.android.server.wm.WindowToken r3 = r4.mToken
+            com.android.server.wm.WallpaperWindowToken r0 = r3.asWallpaperToken()
+        L48:
+            return r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.WallpaperController.getTokenForTarget(com.android.server.wm.WindowState):com.android.server.wm.WallpaperWindowToken");
+    }
+
+    public final WindowState getTopVisibleWallpaper() {
+        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
+            WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
+            for (int childCount = wallpaperWindowToken.getChildCount() - 1; childCount >= 0; childCount--) {
+                WindowState windowState = (WindowState) wallpaperWindowToken.getChildAt(childCount);
+                if (windowState.mWinAnimator.getShown() && windowState.mWinAnimator.mLastAlpha > FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                    return windowState;
+                }
+            }
+        }
+        return null;
+    }
+
+    public final void hideWallpapers(WindowState windowState) {
+        WindowState windowState2 = this.mWallpaperTarget;
+        if ((windowState2 == null || (windowState2 == windowState && this.mPrevWallpaperTarget == null)) && !this.mFindResults.useTopWallpaperAsTarget) {
+            for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
+                WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
+                wallpaperWindowToken.setVisibility(false);
+                if (wallpaperWindowToken.mClientVisible && ProtoLogImpl_54989576.Cache.WM_DEBUG_WALLPAPER_enabled[0]) {
+                    ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_WALLPAPER, -5254364639040552989L, 0, null, String.valueOf(wallpaperWindowToken), String.valueOf(windowState), String.valueOf(this.mWallpaperTarget), String.valueOf(this.mPrevWallpaperTarget), String.valueOf(Debug.getCallers(5)));
+                }
+            }
+        }
+    }
+
+    public final boolean isBelowWallpaperTarget(WindowState windowState) {
+        return this.mWallpaperTarget != null && windowState.mBaseLayer <= 0;
+    }
+
+    public final boolean isWallpaperTarget(WindowState windowState) {
+        return windowState == this.mWallpaperTarget;
+    }
+
+    public final boolean isWallpaperVisible() {
+        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
+            if (((WallpaperWindowToken) this.mWallpaperTokens.get(size)).mClientVisible) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final boolean notifyDisplaySwitch(boolean z) {
+        boolean z2 = false;
+        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
+            WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
+            for (int childCount = wallpaperWindowToken.getChildCount() - 1; childCount >= 0; childCount--) {
+                WindowState windowState = (WindowState) wallpaperWindowToken.getChildAt(childCount);
+                if (!z || windowState.mWinAnimator.getShown()) {
+                    try {
+                        windowState.mClient.dispatchWallpaperCommand("android.wallpaper.displayswitch", 0, 0, z ? 1 : 0, (Bundle) null, false);
+                    } catch (RemoteException e) {
+                        AccountManagerService$$ExternalSyntheticOutline0.m("Failed to dispatch COMMAND_DISPLAY_SWITCH ", e, "WindowManager");
+                    }
+                    z2 = true;
+                }
+            }
+        }
+        return z2;
+    }
+
+    public final Bitmap screenshotWallpaperLocked(Rect rect) {
         Rect bounds;
-        ScreenCapture.ScreenshotHardwareBuffer captureLayers;
         WindowState topVisibleWallpaper = getTopVisibleWallpaper();
         if (!canScreenshotWallpaper(topVisibleWallpaper)) {
             return null;
@@ -817,304 +708,203 @@ public class WallpaperController {
             bounds.offsetTo(0, 0);
         }
         WindowToken windowToken = topVisibleWallpaper.mToken;
-        if (windowToken != null && windowToken.mIsPortraitWindowToken) {
-            captureLayers = ScreenCapture.captureLayers(windowToken.getSurfaceControl(), bounds, 1.0f);
-        } else {
-            captureLayers = ScreenCapture.captureLayers(topVisibleWallpaper.getSurfaceControl(), bounds, 1.0f);
+        ScreenCapture.ScreenshotHardwareBuffer captureLayers = (windowToken == null || !windowToken.mIsPortraitWindowToken) ? ScreenCapture.captureLayers(topVisibleWallpaper.mSurfaceControl, bounds, 1.0f) : ScreenCapture.captureLayers(windowToken.mSurfaceControl, bounds, 1.0f);
+        if (captureLayers != null) {
+            return Bitmap.wrapHardwareBuffer(captureLayers.getHardwareBuffer(), captureLayers.getColorSpace());
         }
-        if (captureLayers == null) {
-            Slog.w(StartingSurfaceController.TAG, "Failed to screenshot wallpaper");
-            return null;
-        }
-        return Bitmap.wrapHardwareBuffer(captureLayers.getHardwareBuffer(), captureLayers.getColorSpace());
-    }
-
-    public SurfaceControl mirrorWallpaperSurface() {
-        WindowState topVisibleWallpaper = getTopVisibleWallpaper();
-        if (topVisibleWallpaper != null) {
-            return SurfaceControl.mirrorSurface(topVisibleWallpaper.getSurfaceControl());
-        }
+        Slog.w("WindowManager", "Failed to screenshot wallpaper");
         return null;
     }
 
-    public WindowState getTopVisibleWallpaper() {
+    public final void sendWindowWallpaperCommand(String str, int i, int i2, int i3, Bundle bundle, boolean z) {
         for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
             WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
-            for (int childCount = wallpaperWindowToken.getChildCount() - 1; childCount >= 0; childCount--) {
-                WindowState windowState = (WindowState) wallpaperWindowToken.getChildAt(childCount);
-                if (windowState.mWinAnimator.getShown() && windowState.mWinAnimator.mLastAlpha > DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    return windowState;
+            boolean z2 = z;
+            for (int size2 = wallpaperWindowToken.mChildren.size() - 1; size2 >= 0; size2--) {
+                try {
+                    ((WindowState) wallpaperWindowToken.mChildren.get(size2)).mClient.dispatchWallpaperCommand(str, i, i2, i3, bundle, z2);
+                    z2 = false;
+                } catch (RemoteException unused) {
                 }
             }
         }
-        return null;
     }
 
-    public final void computeLastWallpaperZoomOut() {
-        if (this.mShouldUpdateZoom) {
-            this.mLastWallpaperZoomOut = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-            this.mDisplayContent.forAllWindows(this.mComputeMaxZoomOutFunction, true);
-            this.mShouldUpdateZoom = false;
-        }
+    public void setMaxWallpaperScale(float f) {
+        this.mMaxWallpaperScale = f;
     }
 
-    public final float zoomOutToScale(float f) {
-        return MathUtils.lerp(1.0f, this.mMaxWallpaperScale, 1.0f - f);
+    public void setMinWallpaperScale(float f) {
+        this.mMinWallpaperScale = f;
     }
 
-    public void dump(PrintWriter printWriter, String str) {
-        printWriter.print(str);
-        printWriter.print("displayId=");
-        printWriter.println(this.mDisplayContent.getDisplayId());
-        printWriter.print(str);
-        printWriter.print("mWallpaperTarget=");
-        printWriter.println(this.mWallpaperTarget);
-        if (this.mPrevWallpaperTarget != null) {
-            printWriter.print(str);
-            printWriter.print("mPrevWallpaperTarget=");
-            printWriter.println(this.mPrevWallpaperTarget);
-        }
-        printWriter.print(str);
-        printWriter.print("mLastWallpaperX=");
-        printWriter.print(this.mLastWallpaperX);
-        printWriter.print(" mLastWallpaperY=");
-        printWriter.println(this.mLastWallpaperY);
-        if (this.mLastWallpaperDisplayOffsetX != Integer.MIN_VALUE || this.mLastWallpaperDisplayOffsetY != Integer.MIN_VALUE) {
-            printWriter.print(str);
-            printWriter.print("mLastWallpaperDisplayOffsetX=");
-            printWriter.print(this.mLastWallpaperDisplayOffsetX);
-            printWriter.print(" mLastWallpaperDisplayOffsetY=");
-            printWriter.println(this.mLastWallpaperDisplayOffsetY);
-        }
-        printWriter.print(" mTopHideWhenLockedWallpaper=");
-        printWriter.println(this.mFindResults.mTopWallpaper.mTopHideWhenLockedWallpaper);
-        printWriter.print(" mTopShowWhenLockedWallpaper=");
-        printWriter.println(this.mFindResults.mTopWallpaper.mTopShowWhenLockedWallpaper);
-        for (int size = this.mWallpaperTokens.size() - 1; size >= 0; size--) {
-            WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) this.mWallpaperTokens.get(size);
-            printWriter.print(str);
-            printWriter.println("token " + wallpaperWindowToken + XmlUtils.STRING_ARRAY_SEPARATOR);
-            printWriter.print(str);
-            printWriter.print("  canShowWhenLocked=");
-            printWriter.println(wallpaperWindowToken.canShowWhenLocked());
-            if (CoreRune.FW_FOLD_WALLPAPER_POLICY) {
-                printWriter.print(str);
-                printWriter.print("  isFoldedType=");
-                printWriter.println(wallpaperWindowToken.isFoldedType());
-            }
-        }
+    public void setShouldOffsetWallpaperCenter(boolean z) {
+        this.mShouldOffsetWallpaperCenter = z;
     }
 
-    /* loaded from: classes3.dex */
-    public final class FindWallpaperTargetResult {
-        public boolean isWallpaperTargetForLetterbox;
-        public boolean mNeedsShowWhenLockedWallpaper;
-        public TopWallpaper mTopWallpaper;
-        public boolean useTopWallpaperAsTarget;
-        public WindowState wallpaperTarget;
-
-        public /* synthetic */ FindWallpaperTargetResult(FindWallpaperTargetResultIA findWallpaperTargetResultIA) {
-            this();
-        }
-
-        public FindWallpaperTargetResult() {
-            this.mTopWallpaper = new TopWallpaper();
-            this.useTopWallpaperAsTarget = false;
-            this.wallpaperTarget = null;
-            this.isWallpaperTargetForLetterbox = false;
-        }
-
-        /* loaded from: classes3.dex */
-        public final class TopWallpaper {
-            public WindowState mTopHideWhenLockedWallpaper = null;
-            public WindowState mTopShowWhenLockedWallpaper = null;
-
-            public void reset() {
-                this.mTopHideWhenLockedWallpaper = null;
-                this.mTopShowWhenLockedWallpaper = null;
-            }
-        }
-
-        public void setTopHideWhenLockedWallpaper(WindowState windowState) {
-            this.mTopWallpaper.mTopHideWhenLockedWallpaper = windowState;
-        }
-
-        public void setTopShowWhenLockedWallpaper(WindowState windowState) {
-            this.mTopWallpaper.mTopShowWhenLockedWallpaper = windowState;
-        }
-
-        public boolean hasTopHideWhenLockedWallpaper() {
-            return this.mTopWallpaper.mTopHideWhenLockedWallpaper != null;
-        }
-
-        public boolean hasTopShowWhenLockedWallpaper() {
-            return this.mTopWallpaper.mTopShowWhenLockedWallpaper != null;
-        }
-
-        public WindowState getTopWallpaper(boolean z) {
-            if (!z && hasTopHideWhenLockedWallpaper()) {
-                return this.mTopWallpaper.mTopHideWhenLockedWallpaper;
-            }
-            return this.mTopWallpaper.mTopShowWhenLockedWallpaper;
-        }
-
-        public void setWallpaperTarget(WindowState windowState) {
-            this.wallpaperTarget = windowState;
-        }
-
-        public void setUseTopWallpaperAsTarget(boolean z) {
-            this.useTopWallpaperAsTarget = z;
-        }
-
-        public void setIsWallpaperTargetForLetterbox(boolean z) {
-            this.isWallpaperTargetForLetterbox = z;
-        }
-
-        public void reset() {
-            this.mTopWallpaper.reset();
-            this.mNeedsShowWhenLockedWallpaper = false;
-            this.wallpaperTarget = null;
-            this.useTopWallpaperAsTarget = false;
-            this.isWallpaperTargetForLetterbox = false;
-        }
-    }
-
-    public final boolean isShowWhenLockedFreeform(WindowState windowState) {
-        return windowState.mActivityRecord != null && windowState.inFreeformWindowingMode() && this.mService.mAtmService.mKeyguardController.canShowWhileOccluded(windowState.mActivityRecord.containsDismissKeyguardWindow(), windowState.canShowWhenLocked());
-    }
-
-    public boolean useTopWallpaperAsTarget() {
-        return this.mFindResults.useTopWallpaperAsTarget;
-    }
-
-    public final boolean canBeWallpaperTargetForTransientLaunch(WindowState windowState) {
-        if (windowState.mActivityRecord != null && windowState.mAttrs.type == 1 && windowState.isOnScreen() && !this.mDisplayContent.isKeyguardLocked() && windowState.mTransitionController.shouldWallpaperBeVisible()) {
-            if (windowState.mTransitionController.isTransientLaunch(windowState.mActivityRecord)) {
-                return true;
-            }
-            if (windowState.mTransitionController.isTransientHide(windowState.getTask()) && !this.mDisplayContent.hasTopFixedRotationLaunchingApp()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public SurfaceControl startRemoteWallpaperAnimation(final IBinder iBinder, int i) {
+    public final SurfaceControl startRemoteWallpaperAnimation(final IBinder iBinder, int i, IRemoteAnimationRunner iRemoteAnimationRunner) {
         if (this.mRemoteWallpaperAnimAreaMap.containsKey(iBinder)) {
             return null;
         }
-        List displayAreas = this.mDisplayContent.mDisplayAreaPolicy.getDisplayAreas(10002);
-        DisplayArea displayArea = displayAreas.size() == 1 ? (DisplayArea) displayAreas.get(0) : null;
+        DisplayContent displayContent = this.mDisplayContent;
+        DisplayAreaPolicyBuilder.Result result = (DisplayAreaPolicyBuilder.Result) displayContent.mDisplayAreaPolicy;
+        result.getClass();
+        ArrayList arrayList = new ArrayList();
+        DisplayAreaPolicyBuilder.Result.getDisplayAreas(result.mRoot, arrayList);
+        for (int i2 = 0; i2 < result.mDisplayAreaGroupRoots.size(); i2++) {
+            DisplayAreaPolicyBuilder.Result.getDisplayAreas((RootDisplayArea) result.mDisplayAreaGroupRoots.get(i2), arrayList);
+        }
+        DisplayArea displayArea = arrayList.size() == 1 ? (DisplayArea) arrayList.get(0) : null;
         if (displayArea == null) {
             return null;
         }
         this.mRemoteWallpaperAnimAreaMap.put(iBinder, displayArea);
-        displayArea.startAnimation(this.mDisplayContent.getPendingTransaction(), new RemoteWallpaperAnimationAdapter(iBinder, displayArea, i), false, 512, new SurfaceAnimator.OnAnimationFinishedCallback() { // from class: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda4
+        displayArea.startAnimation(displayContent.getPendingTransaction(), new RemoteWallpaperAnimationAdapter(iBinder, displayArea, i, iRemoteAnimationRunner), false, 512, new SurfaceAnimator.OnAnimationFinishedCallback() { // from class: com.android.server.wm.WallpaperController$$ExternalSyntheticLambda0
             @Override // com.android.server.wm.SurfaceAnimator.OnAnimationFinishedCallback
-            public final void onAnimationFinished(int i2, AnimationAdapter animationAdapter) {
-                WallpaperController.this.lambda$startRemoteWallpaperAnimation$4(iBinder, i2, animationAdapter);
+            public final void onAnimationFinished(int i3, AnimationAdapter animationAdapter) {
+                WallpaperController wallpaperController = WallpaperController.this;
+                IBinder iBinder2 = iBinder;
+                WindowManagerGlobalLock windowManagerGlobalLock = wallpaperController.mService.mGlobalLock;
+                WindowManagerService.boostPriorityForLockedSection();
+                synchronized (windowManagerGlobalLock) {
+                    try {
+                        wallpaperController.mRemoteWallpaperAnimAreaMap.remove(iBinder2);
+                    } catch (Throwable th) {
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                        throw th;
+                    }
+                }
+                WindowManagerService.resetPriorityAfterLockedSection();
             }
         });
         this.mService.scheduleAnimationLocked();
         return displayArea.getAnimationLeash();
     }
 
-    public /* synthetic */ void lambda$startRemoteWallpaperAnimation$4(IBinder iBinder, int i, AnimationAdapter animationAdapter) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                this.mRemoteWallpaperAnimAreaMap.remove(iBinder);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
+    /* JADX WARN: Removed duplicated region for block: B:111:0x02ca  */
+    /* JADX WARN: Removed duplicated region for block: B:132:0x02a4 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:136:0x0277  */
+    /* JADX WARN: Removed duplicated region for block: B:138:0x0235  */
+    /* JADX WARN: Removed duplicated region for block: B:140:0x01f7  */
+    /* JADX WARN: Removed duplicated region for block: B:143:0x01ee  */
+    /* JADX WARN: Removed duplicated region for block: B:63:0x01e8  */
+    /* JADX WARN: Removed duplicated region for block: B:66:0x01f5  */
+    /* JADX WARN: Removed duplicated region for block: B:74:0x0221  */
+    /* JADX WARN: Removed duplicated region for block: B:77:0x0229  */
+    /* JADX WARN: Removed duplicated region for block: B:79:0x022d  */
+    /* JADX WARN: Removed duplicated region for block: B:82:0x023a  */
+    /* JADX WARN: Removed duplicated region for block: B:89:0x025f  */
+    /* JADX WARN: Removed duplicated region for block: B:92:0x0268  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean updateWallpaperOffset(com.android.server.wm.WindowState r29, boolean r30) {
+        /*
+            Method dump skipped, instructions count: 805
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.WallpaperController.updateWallpaperOffset(com.android.server.wm.WindowState, boolean):boolean");
     }
 
-    public boolean finishRemoteWallpaperAnimation(IBinder iBinder) {
-        DisplayArea displayArea;
-        if (!this.mRemoteWallpaperAnimAreaMap.containsKey(iBinder) || (displayArea = (DisplayArea) this.mRemoteWallpaperAnimAreaMap.remove(iBinder)) == null) {
-            return false;
+    public final void updateWallpaperOffsetLocked(WindowState windowState, boolean z) {
+        WindowState windowState2 = this.mWallpaperTarget;
+        if (windowState2 == null && windowState.mToken.isVisible() && windowState.mTransitionController.inTransition()) {
+            windowState2 = windowState;
         }
-        try {
-            RemoteWallpaperAnimationAdapter remoteWallpaperAnimationAdapter = (RemoteWallpaperAnimationAdapter) displayArea.getAnimation();
-            if (remoteWallpaperAnimationAdapter != null) {
-                iBinder.unlinkToDeath(remoteWallpaperAnimationAdapter, 0);
+        WallpaperWindowToken tokenForTarget = getTokenForTarget(windowState2);
+        if (tokenForTarget == null) {
+            return;
+        }
+        float f = windowState2.mWallpaperX;
+        if (f >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            tokenForTarget.mWallpaperX = f;
+        } else {
+            float f2 = windowState.mWallpaperX;
+            if (f2 >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                tokenForTarget.mWallpaperX = f2;
             }
-        } catch (NoSuchElementException unused) {
         }
-        displayArea.cancelAnimation(this.mDisplayContent.getPendingTransaction());
-        return true;
+        float f3 = windowState2.mWallpaperY;
+        if (f3 >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            tokenForTarget.mWallpaperY = f3;
+        } else {
+            float f4 = windowState.mWallpaperY;
+            if (f4 >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                tokenForTarget.mWallpaperY = f4;
+            }
+        }
+        int i = windowState2.mWallpaperDisplayOffsetX;
+        if (i != Integer.MIN_VALUE) {
+            tokenForTarget.mWallpaperDisplayOffsetX = i;
+        } else {
+            int i2 = windowState.mWallpaperDisplayOffsetX;
+            if (i2 != Integer.MIN_VALUE) {
+                tokenForTarget.mWallpaperDisplayOffsetX = i2;
+            }
+        }
+        int i3 = windowState2.mWallpaperDisplayOffsetY;
+        if (i3 != Integer.MIN_VALUE) {
+            tokenForTarget.mWallpaperDisplayOffsetY = i3;
+        } else {
+            int i4 = windowState.mWallpaperDisplayOffsetY;
+            if (i4 != Integer.MIN_VALUE) {
+                tokenForTarget.mWallpaperDisplayOffsetY = i4;
+            }
+        }
+        float f5 = windowState2.mWallpaperXStep;
+        if (f5 >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            tokenForTarget.mWallpaperXStep = f5;
+        } else {
+            float f6 = windowState.mWallpaperXStep;
+            if (f6 >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                tokenForTarget.mWallpaperXStep = f6;
+            }
+        }
+        float f7 = windowState2.mWallpaperYStep;
+        if (f7 >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            tokenForTarget.mWallpaperYStep = f7;
+        } else {
+            float f8 = windowState.mWallpaperYStep;
+            if (f8 >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                tokenForTarget.mWallpaperYStep = f8;
+            }
+        }
+        tokenForTarget.updateWallpaperOffset(z);
     }
 
-    /* loaded from: classes3.dex */
-    public class RemoteWallpaperAnimationAdapter implements AnimationAdapter, IBinder.DeathRecipient {
-        public int mCallingPid;
-        public IBinder mRemoteToken;
-        public DisplayArea mRemoteWallpaperAnimArea;
-
-        @Override // com.android.server.wm.AnimationAdapter
-        public void dumpDebug(ProtoOutputStream protoOutputStream) {
-        }
-
-        @Override // com.android.server.wm.AnimationAdapter
-        public long getDurationHint() {
-            return 0L;
-        }
-
-        @Override // com.android.server.wm.AnimationAdapter
-        public boolean getShowWallpaper() {
-            return false;
-        }
-
-        @Override // com.android.server.wm.AnimationAdapter
-        public long getStatusBarTransitionsStartTime() {
-            return 0L;
-        }
-
-        @Override // com.android.server.wm.AnimationAdapter
-        public void onAnimationCancelled(SurfaceControl surfaceControl) {
-        }
-
-        public RemoteWallpaperAnimationAdapter(IBinder iBinder, DisplayArea displayArea, int i) {
-            this.mRemoteToken = iBinder;
-            try {
-                iBinder.linkToDeath(this, 0);
-            } catch (RemoteException unused) {
+    public final boolean wallpaperTransitionReady() {
+        WindowManagerService windowManagerService;
+        boolean z;
+        boolean z2 = true;
+        int size = this.mWallpaperTokens.size() - 1;
+        while (true) {
+            windowManagerService = this.mService;
+            if (size < 0) {
+                z = true;
+                break;
             }
-            this.mRemoteWallpaperAnimArea = displayArea;
-            this.mCallingPid = i;
-        }
-
-        @Override // com.android.server.wm.AnimationAdapter
-        public void startAnimation(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback) {
-            transaction.show(surfaceControl);
-            transaction.setAlpha(surfaceControl, 1.0f);
-            Slog.d(StartingSurfaceController.TAG, "startAnimation for remote wallpaper, leash=" + surfaceControl);
-        }
-
-        @Override // com.android.server.wm.AnimationAdapter
-        public void dump(PrintWriter printWriter, String str) {
-            printWriter.print(str + "RemoteWallpaperAnimAdapter callingPid=");
-            printWriter.print(this.mCallingPid);
-            printWriter.println();
-        }
-
-        @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            WindowManagerGlobalLock windowManagerGlobalLock = WallpaperController.this.mService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    this.mRemoteWallpaperAnimArea.cancelAnimation(WallpaperController.this.mDisplayContent.getPendingTransaction());
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
+            if (((WallpaperWindowToken) this.mWallpaperTokens.get(size)).hasVisibleNotDrawnWallpaper()) {
+                int i = this.mWallpaperDrawState;
+                z = i == 2;
+                if (i == 0) {
+                    this.mWallpaperDrawState = 1;
+                    windowManagerService.mH.removeMessages(39, this);
+                    WindowManagerService.H h = windowManagerService.mH;
+                    h.sendMessageDelayed(h.obtainMessage(39, this), 500L);
                 }
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WALLPAPER_enabled[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WALLPAPER, -5402010429724738603L, 1, null, Long.valueOf(this.mWallpaperDrawState));
+                }
+                z2 = false;
+            } else {
+                size--;
             }
-            WindowManagerService.resetPriorityAfterLockedSection();
         }
+        if (z2) {
+            this.mWallpaperDrawState = 0;
+            windowManagerService.mH.removeMessages(39, this);
+        }
+        return z;
     }
 }

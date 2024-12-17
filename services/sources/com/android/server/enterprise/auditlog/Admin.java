@@ -3,84 +3,114 @@ package com.android.server.enterprise.auditlog;
 import android.app.admin.IDevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
+import android.os.Bundle;
+import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.util.Log;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.EnterpriseDeviceManagerService;
+import com.android.server.enterprise.EnterpriseService;
 import com.android.server.enterprise.adapter.AdapterRegistry;
 import com.android.server.enterprise.adapter.IPersonaManagerAdapter;
+import com.android.server.enterprise.adapterlayer.PersonaManagerAdapter;
+import com.android.server.enterprise.auditlog.LogWritter;
+import com.android.server.enterprise.auditlog.LogWritter.LooperThread;
 import com.android.server.enterprise.storage.EdmStorageProvider;
 import com.android.server.enterprise.storage.SettingNotFoundException;
 import com.android.server.enterprise.utils.KpuHelper;
 import com.android.server.enterprise.utils.Utils;
+import com.samsung.android.knox.SemPersonaManager;
 import com.samsung.android.knox.log.AuditLogRulesInfo;
-import java.util.ArrayList;
+import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes2.dex */
-public class Admin implements IObserver {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class Admin {
     public ParcelFileDescriptor mAdminOutputFile;
     public AuditLogRulesInfo mAuditLogRulesInfo = new AuditLogRulesInfo();
     public long mBegin;
-    public Context mContext;
+    public final Context mContext;
     public List mDeviceInfo;
     public Filter mDumpFilter;
-    public EdmStorageProvider mEdmStorageProvider;
+    public final EdmStorageProvider mEdmStorageProvider;
     public long mEnd;
     public volatile boolean mIsDumping;
-    public boolean mIsProfileOwnerOfOrganizationOwnedDevice;
-    public boolean mIsPseudoAdminOfOrganizationOwnedDevice;
-    public LogWritter mLogWritter;
-    public boolean mMdmLogging;
-    public String mPackageName;
-    public int mUid;
+    public final boolean mIsProfileOwnerOfOrganizationOwnedDevice;
+    public final boolean mIsPseudoAdminOfOrganizationOwnedDevice;
+    public final LogWritter mLogWritter;
+    public final String mPackageName;
+    public final int mUid;
 
-    public Admin(int i, Context context, String str) {
+    public Admin(Context context, String str, int i) {
         this.mPackageName = null;
         this.mPackageName = str;
-        this.mLogWritter = new LogWritter(i, context, str);
-        this.mEdmStorageProvider = new EdmStorageProvider(context);
-        this.mLogWritter.setObserver(this);
+        LogWritter logWritter = new LogWritter();
+        logWritter.mCircularBuffer = new CircularBuffer(context, str, i);
+        LogWritter.LooperThread looperThread = logWritter.new LooperThread();
+        logWritter.mLooperThread = looperThread;
+        looperThread.start();
+        this.mLogWritter = logWritter;
+        EdmStorageProvider edmStorageProvider = new EdmStorageProvider(context);
+        this.mEdmStorageProvider = edmStorageProvider;
+        logWritter.mObserver = this;
         this.mIsDumping = false;
-        this.mMdmLogging = false;
         this.mDumpFilter = null;
         this.mContext = context;
         this.mBegin = 0L;
         this.mEnd = 0L;
         this.mUid = i;
-        Log.d("Admin", "Admin uid = " + i);
+        NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "Admin uid = ", "Admin");
         try {
-            this.mIsPseudoAdminOfOrganizationOwnedDevice = this.mEdmStorageProvider.checkPseudoAdminForUid(i);
-            Log.d("Admin", "mIsPseudoAdminOfOrganizationOwnedDevice = " + this.mIsPseudoAdminOfOrganizationOwnedDevice);
+            boolean checkPseudoAdminForUid = edmStorageProvider.checkPseudoAdminForUid(i);
+            this.mIsPseudoAdminOfOrganizationOwnedDevice = checkPseudoAdminForUid;
+            Log.d("Admin", "mIsPseudoAdminOfOrganizationOwnedDevice = " + checkPseudoAdminForUid);
         } catch (SettingNotFoundException e) {
             Log.e("Admin", "mEdmStorageProvider.checkPseudoAdminForUid: error " + e.getMessage());
         }
         IDevicePolicyManager asInterface = IDevicePolicyManager.Stub.asInterface(ServiceManager.getService("device_policy"));
         if (asInterface != null) {
             try {
-                this.mIsProfileOwnerOfOrganizationOwnedDevice = asInterface.isProfileOwnerOfOrganizationOwnedDeviceMDM(UserHandle.getUserId(i));
-                Log.d("Admin", "mIsProfileOwnerOfOrganizationOwnedDevice = " + this.mIsProfileOwnerOfOrganizationOwnedDevice);
+                boolean isProfileOwnerOfOrganizationOwnedDeviceMDM = asInterface.isProfileOwnerOfOrganizationOwnedDeviceMDM(UserHandle.getUserId(i));
+                this.mIsProfileOwnerOfOrganizationOwnedDevice = isProfileOwnerOfOrganizationOwnedDeviceMDM;
+                Log.d("Admin", "mIsProfileOwnerOfOrganizationOwnedDevice = " + isProfileOwnerOfOrganizationOwnedDeviceMDM);
             } catch (RemoteException e2) {
-                Log.e("Admin", "Error on calling isProfileOwnerOfOrganizationOwnedDeviceMDM : " + e2.getMessage());
+                ActivityManagerService$$ExternalSyntheticOutline0.m(e2, new StringBuilder("Error on calling isProfileOwnerOfOrganizationOwnedDeviceMDM : "), "Admin");
             }
         }
     }
 
-    public void write(String str) {
-        this.mLogWritter.write(str);
+    public final void deleteAllFiles() {
+        CircularBuffer circularBuffer = this.mLogWritter.mCircularBuffer;
+        if (circularBuffer.mCurrentNode != null) {
+            synchronized (circularBuffer.mLock) {
+                circularBuffer.mCurrentNode.closeFile();
+                circularBuffer.mCurrentNode.delete();
+            }
+        }
+        synchronized (circularBuffer.mDumpList) {
+            try {
+                Iterator it = circularBuffer.mDumpList.iterator();
+                while (it.hasNext()) {
+                    ((PartialFileNode) it.next()).delete();
+                    it.remove();
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        CircularBuffer.deleteDirectory(new File(circularBuffer.mAdminDirectoryPath));
+        CircularBuffer.deleteDirectory(new File(AmFmBandRange$$ExternalSyntheticOutline0.m(circularBuffer.mUid, new StringBuilder("/data/system/"), "_bubble/bubbleFile")));
+        CircularBuffer.deleteDirectory(new File(AmFmBandRange$$ExternalSyntheticOutline0.m(circularBuffer.mUid, new StringBuilder("/data/system/"), "_bubble")));
     }
 
-    public void setDeviceInfo(List list) {
-        this.mDeviceInfo = list;
-    }
-
-    public String getPackageName() {
-        return this.mPackageName;
-    }
-
-    public boolean dump(long j, long j2, ParcelFileDescriptor parcelFileDescriptor) {
+    public final boolean dump(ParcelFileDescriptor parcelFileDescriptor, long j, long j2) {
         if (this.mIsDumping) {
             return false;
         }
@@ -88,102 +118,37 @@ public class Admin implements IObserver {
         this.mBegin = j;
         this.mEnd = j2;
         this.mAdminOutputFile = parcelFileDescriptor;
-        this.mLogWritter.setObserver(this);
-        this.mLogWritter.setIsDumping(true, false);
-        this.mLogWritter.swapFiles("swap");
+        LogWritter logWritter = this.mLogWritter;
+        logWritter.mObserver = this;
+        logWritter.setIsDumping(true, false);
+        LogWritter logWritter2 = this.mLogWritter;
+        logWritter2.getClass();
+        Message message = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putString("swap", "swap");
+        message.setData(bundle);
+        logWritter2.mLooperThread.mHandler.sendMessage(message);
         return this.mIsDumping;
     }
 
-    public void setCriticalLogSize(int i) {
-        this.mLogWritter.setCriticalLogSize(i);
-    }
-
-    public int getCriticalLogSize() {
-        return this.mLogWritter.getCriticalLogSize();
-    }
-
-    public void setMaximumLogSize(int i) {
-        this.mLogWritter.setMaximumLogSize(i);
-    }
-
-    public int getMaximumLogSize() {
-        return this.mLogWritter.getMaximumLogSize();
-    }
-
-    public int getCurrentLogFileSize() {
-        return this.mLogWritter.getCurrentLogFileSize();
-    }
-
-    public void deleteAllFiles() {
-        this.mLogWritter.deleteAllFiles();
-    }
-
-    public void shutdown() {
-        this.mLogWritter.shutdown();
-    }
-
-    public void setMDMLogging(boolean z) {
-        this.mMdmLogging = z;
-    }
-
-    public void setBootCompleted(boolean z) {
-        this.mLogWritter.setBootCompleted(z);
-    }
-
-    public int getUid() {
-        return this.mUid;
-    }
-
-    public void setBufferSize(long j) {
-        this.mLogWritter.setBufferLogSize(j);
-    }
-
-    public void createBubbleDirectory() {
-        this.mLogWritter.createBubbleDirectory();
-    }
-
-    public void createBubbleFile() {
-        this.mLogWritter.createBubbleFile();
-    }
-
-    public boolean isPseudoAdminOfOrganizationOwnedDevice() {
-        return this.mIsPseudoAdminOfOrganizationOwnedDevice;
-    }
-
-    public boolean isProfileOwnerOfOrganizationOwnedDevice() {
-        return this.mIsProfileOwnerOfOrganizationOwnedDevice;
-    }
-
-    @Override // com.android.server.enterprise.auditlog.IObserver
-    public void notifyReadyToDump(boolean z) {
-        ArrayList arrayList;
-        if (!z || (arrayList = (ArrayList) this.mLogWritter.getDumpFilesList()) == null || ((PartialFileNode) arrayList.get(0)).getFile() == null) {
-            return;
-        }
-        Dumper dumper = new Dumper(this.mBegin, this.mEnd, this.mAdminOutputFile, arrayList, this);
-        Filter filter = this.mDumpFilter;
-        if (filter != null) {
-            dumper.setFilter(filter);
-        }
-        dumper.setDeviceInfo(this.mDeviceInfo);
-        dumper.setPackageName(this.mPackageName);
-        dumper.start();
-        this.mLogWritter.setLastTimestamp();
-    }
-
-    @Override // com.android.server.enterprise.auditlog.IObserver
-    public void notifyDumpFinished(boolean z, boolean z2) {
-        EnterpriseDeviceManagerService enterpriseDeviceManagerService;
+    public final void notifyDumpFinished(boolean z, boolean z2) {
         this.mIsDumping = false;
-        this.mLogWritter.setTypeOfDump(z2);
+        this.mLogWritter.mCircularBuffer.mTypeOfDump = z2;
         this.mLogWritter.setIsDumping(false, z);
         int i = this.mUid;
-        if (((IPersonaManagerAdapter) AdapterRegistry.getAdapter(IPersonaManagerAdapter.class)).isLegacyContainer(UserHandle.getUserId(this.mUid))) {
+        IPersonaManagerAdapter iPersonaManagerAdapter = (IPersonaManagerAdapter) AdapterRegistry.mAdapterHandles.get(IPersonaManagerAdapter.class);
+        int userId = UserHandle.getUserId(this.mUid);
+        ((PersonaManagerAdapter) iPersonaManagerAdapter).getClass();
+        if (SemPersonaManager.isSecureFolderId(userId)) {
             i = Utils.getProxyAdminOwnerUid(this.mEdmStorageProvider, this.mUid);
         }
-        int userId = UserHandle.getUserId(i);
-        if (this.mIsPseudoAdminOfOrganizationOwnedDevice && (enterpriseDeviceManagerService = EnterpriseDeviceManagerService.getInstance()) != null) {
-            userId = enterpriseDeviceManagerService.getOrganizationOwnedProfileUserId();
+        int userId2 = UserHandle.getUserId(i);
+        if (this.mIsPseudoAdminOfOrganizationOwnedDevice) {
+            int i2 = EnterpriseDeviceManagerService.$r8$clinit;
+            EnterpriseDeviceManagerService enterpriseDeviceManagerService = (EnterpriseDeviceManagerService) EnterpriseService.sEdmsInstance;
+            if (enterpriseDeviceManagerService != null) {
+                userId2 = enterpriseDeviceManagerService.getOrganizationOwnedProfileUserId();
+            }
         }
         Intent intent = new Intent("com.samsung.android.knox.intent.action.DUMP_LOG_RESULT");
         String str = this.mPackageName;
@@ -197,7 +162,7 @@ public class Admin implements IObserver {
             intent.putExtra("com.samsung.android.knox.intent.extra.AUDIT_RESULT", -2000);
         }
         intent.putExtra("com.samsung.android.knox.intent.extra.ADMIN_UID", this.mUid);
-        this.mContext.sendBroadcastAsUser(intent, new UserHandle(userId), "com.samsung.android.knox.permission.KNOX_AUDIT_LOG");
+        this.mContext.sendBroadcastAsUser(intent, new UserHandle(userId2), "com.samsung.android.knox.permission.KNOX_AUDIT_LOG");
         try {
             String kpuPackageName = KpuHelper.getInstance(this.mContext).getKpuPackageName();
             Intent intent2 = new Intent(intent);
@@ -205,31 +170,25 @@ public class Admin implements IObserver {
             if (this.mPackageName != null) {
                 intent2.setPackage(kpuPackageName);
             }
-            this.mContext.sendBroadcastAsUser(intent2, new UserHandle(userId), "com.samsung.android.knox.permission.KNOX_AUDIT_LOG");
+            this.mContext.sendBroadcastAsUser(intent2, new UserHandle(userId2), "com.samsung.android.knox.permission.KNOX_AUDIT_LOG");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public boolean getDumpState() {
-        return this.mIsDumping;
-    }
-
-    public void setAuditLogRulesInfo(AuditLogRulesInfo auditLogRulesInfo) {
-        this.mAuditLogRulesInfo = auditLogRulesInfo;
-    }
-
-    public AuditLogRulesInfo getAuditLogRulesInfo() {
-        return this.mAuditLogRulesInfo;
-    }
-
-    public boolean setFilter(String str) {
-        if (str != null) {
-            Filter filter = new Filter();
-            this.mDumpFilter = filter;
-            return filter.setFilter(str);
+    public final void setBootCompleted(boolean z) {
+        CircularBuffer circularBuffer = this.mLogWritter.mCircularBuffer;
+        circularBuffer.mIsBootCompleted = z;
+        if (circularBuffer.mIsBootCompleted) {
+            synchronized (circularBuffer.mPendingIntentErrors) {
+                try {
+                    Iterator it = circularBuffer.mPendingIntentErrors.iterator();
+                    while (it.hasNext()) {
+                        InformFailure.getInstance().broadcastFailure((Exception) it.next(), circularBuffer.mPackageName);
+                    }
+                } finally {
+                }
+            }
         }
-        this.mDumpFilter = null;
-        return true;
     }
 }

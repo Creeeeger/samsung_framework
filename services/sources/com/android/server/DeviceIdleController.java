@@ -6,6 +6,7 @@ import android.app.ActivityManagerInternal;
 import android.app.AlarmManager;
 import android.app.BroadcastOptions;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.IIntentReceiver;
 import android.content.Intent;
@@ -14,12 +15,14 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManagerInternal;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.TriggerEvent;
 import android.hardware.TriggerEventListener;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -48,13 +51,17 @@ import android.os.ShellCommand;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
+import android.os.WearModeManagerInternal;
 import android.provider.DeviceConfig;
+import android.provider.Settings;
 import android.telephony.TelephonyCallback;
 import android.telephony.TelephonyManager;
 import android.telephony.emergency.EmergencyNumber;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.AtomicFile;
+import android.util.EventLog;
+import android.util.Log;
 import android.util.MutableLong;
 import android.util.Pair;
 import android.util.Slog;
@@ -69,17 +76,19 @@ import com.android.internal.util.jobs.DumpUtils;
 import com.android.internal.util.jobs.FastXmlSerializer;
 import com.android.modules.expresslog.Counter;
 import com.android.server.AnyMotionDetector;
+import com.android.server.AppStateTrackerImpl;
 import com.android.server.DeviceIdleInternal;
 import com.android.server.PowerAllowlistInternal;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.alarm.AlarmManagerService;
 import com.android.server.am.BatteryStatsService;
-import com.android.server.backup.BackupAgentTimeoutParameters;
 import com.android.server.clipboard.ClipboardService;
-import com.android.server.deviceidle.ConstraintController;
 import com.android.server.deviceidle.DeviceIdleConstraintTracker;
+import com.android.server.deviceidle.Flags;
 import com.android.server.deviceidle.IDeviceIdleConstraint;
 import com.android.server.deviceidle.TvConstraintController;
-import com.android.server.display.DisplayPowerController2;
-import com.android.server.net.NetworkPolicyManagerInternal;
+import com.android.server.net.NetworkPolicyManagerService;
+import com.android.server.utils.UserSettingDeviceConfigMediator$SettingsOverridesIndividualMediator;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import java.io.BufferedReader;
@@ -99,33 +108,22 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlSerializer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class DeviceIdleController extends SystemService implements AnyMotionDetector.DeviceIdleCallback {
+public final class DeviceIdleController extends SystemService implements AnyMotionDetector.DeviceIdleCallback {
+    public static final boolean DEBUG = Log.isLoggable("DeviceIdleController", 3);
     static final int LIGHT_STATE_ACTIVE = 0;
     static final int LIGHT_STATE_IDLE = 4;
     static final int LIGHT_STATE_IDLE_MAINTENANCE = 6;
     static final int LIGHT_STATE_INACTIVE = 1;
     static final int LIGHT_STATE_OVERRIDE = 7;
     static final int LIGHT_STATE_WAITING_FOR_NETWORK = 5;
-    static final float MIN_PRE_IDLE_FACTOR_CHANGE = 0.05f;
-    static final long MIN_STATE_STEP_ALARM_CHANGE = 60000;
     static final int MSG_REPORT_STATIONARY_STATUS = 7;
-    static final int MSG_RESET_PRE_IDLE_TIMEOUT_FACTOR = 12;
-    static final int MSG_UPDATE_PRE_IDLE_TIMEOUT_FACTOR = 11;
-    static final int SET_IDLE_FACTOR_RESULT_IGNORED = 0;
-    static final int SET_IDLE_FACTOR_RESULT_INVALID = 3;
-    static final int SET_IDLE_FACTOR_RESULT_NOT_SUPPORT = 2;
-    static final int SET_IDLE_FACTOR_RESULT_OK = 1;
-    static final int SET_IDLE_FACTOR_RESULT_UNINIT = -1;
     static final int STATE_ACTIVE = 0;
     static final int STATE_IDLE = 5;
     static final int STATE_IDLE_MAINTENANCE = 6;
@@ -136,17 +134,18 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
     static final int STATE_SENSING = 3;
     public int mActiveIdleOpCount;
     public PowerManager.WakeLock mActiveIdleWakeLock;
-    public int mActiveReason;
     public AlarmManager mAlarmManager;
     public boolean mAlarmsActive;
+    public final RingBuffer mAllowlistHistoryInfo;
     public AnyMotionDetector mAnyMotionDetector;
     public final AppStateTrackerImpl mAppStateTracker;
+    public boolean mBatterySaverEnabled;
     public IBatteryStats mBatteryStats;
     public BinderService mBinderService;
     public boolean mCharging;
     public final AtomicFile mConfigFile;
     public Constants mConstants;
-    public ConstraintController mConstraintController;
+    public TvConstraintController mConstraintController;
     public final ArrayMap mConstraints;
     public long mCurLightIdleBudget;
     final AlarmManager.OnAlarmListener mDeepAlarmListener;
@@ -157,26 +156,28 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
     public final String[] mEventReasons;
     public final long[] mEventTimes;
     public boolean mForceIdle;
-    public final LocationListener mGenericLocationListener;
+    public boolean mForceModeManagerOffBodyState;
+    public boolean mForceModeManagerQuickDozeRequest;
+    public String mForceType;
+    public final AnonymousClass6 mGenericLocationListener;
     public PowerManager.WakeLock mGoingIdleWakeLock;
-    public final LocationListener mGpsLocationListener;
+    public final AnonymousClass6 mGpsLocationListener;
     public final MyHandler mHandler;
     public boolean mHasFusedLocation;
     public boolean mHasGps;
     public Intent mIdleIntent;
     public Bundle mIdleIntentOptions;
-    public long mIdleStartTime;
-    public final IIntentReceiver mIdleStartedDoneReceiver;
+    public final AnonymousClass4 mIdleStartedDoneReceiver;
     public long mInactiveTimeout;
     public final Injector mInjector;
-    public final BroadcastReceiver mInteractivityReceiver;
+    public final AnonymousClass1 mInteractivityReceiver;
     public final boolean mIsLocationPrefetchEnabled;
+    public boolean mIsOffBody;
     public boolean mJobsActive;
     public Location mLastGenericLocation;
     public Location mLastGpsLocation;
     public long mLastMotionEventElapsed;
-    public float mLastPreIdleFactor;
-    public final AlarmManager.OnAlarmListener mLightAlarmListener;
+    public final DeviceIdleController$$ExternalSyntheticLambda8 mLightAlarmListener;
     public final BatteryLevel mLightBatteryLevel;
     public boolean mLightEnabled;
     public Intent mLightIdleIntent;
@@ -184,21 +185,24 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
     public int mLightState;
     public ActivityManagerInternal mLocalActivityManager;
     public ActivityTaskManagerInternal mLocalActivityTaskManager;
-    public AlarmManagerInternal mLocalAlarmManager;
+    public AlarmManagerService.LocalService mLocalAlarmManager;
     public BatteryManagerInternal mLocalBatteryManager;
     public PowerManagerInternal mLocalPowerManager;
-    public DeviceIdleInternal mLocalService;
+    public LocalService mLocalService;
     public boolean mLocated;
     public boolean mLocating;
     public LocationRequest mLocationRequest;
     public long mMaintenanceStartTime;
+    final ModeManagerOffBodyStateConsumer mModeManagerOffBodyStateConsumer;
+    final ModeManagerQuickDozeRequestConsumer mModeManagerQuickDozeRequestConsumer;
+    public boolean mModeManagerRequestedQuickDoze;
     final MotionListener mMotionListener;
-    public final AlarmManager.OnAlarmListener mMotionRegistrationAlarmListener;
+    public final DeviceIdleController$$ExternalSyntheticLambda8 mMotionRegistrationAlarmListener;
     public Sensor mMotionSensor;
-    public final AlarmManager.OnAlarmListener mMotionTimeoutAlarmListener;
+    public final DeviceIdleController$$ExternalSyntheticLambda8 mMotionTimeoutAlarmListener;
     public boolean mNetworkConnected;
     public INetworkPolicyManager mNetworkPolicyManager;
-    public NetworkPolicyManagerInternal mNetworkPolicyManagerInternal;
+    public NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl mNetworkPolicyManagerInternal;
     public long mNextAlarmTime;
     public long mNextIdleDelay;
     public long mNextIdlePendingDelay;
@@ -220,21 +224,22 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
     public Bundle mPowerSaveWhitelistChangedOptions;
     public int[] mPowerSaveWhitelistExceptIdleAppIdArray;
     public final SparseBooleanArray mPowerSaveWhitelistExceptIdleAppIds;
+    public final ArraySet mPowerSaveWhitelistPrintErrorApps;
+    public final ArraySet mPowerSaveWhitelistReviewedApps;
     public final SparseBooleanArray mPowerSaveWhitelistSystemAppIds;
     public final SparseBooleanArray mPowerSaveWhitelistSystemAppIdsExceptIdle;
     public int[] mPowerSaveWhitelistUserAppIdArray;
     public final SparseBooleanArray mPowerSaveWhitelistUserAppIds;
     public final ArrayMap mPowerSaveWhitelistUserApps;
     public final ArraySet mPowerSaveWhitelistUserAppsExceptIdle;
-    public float mPreIdleFactor;
     public boolean mQuickDozeActivated;
     public boolean mQuickDozeActivatedWhileIdling;
-    public final BroadcastReceiver mReceiver;
-    public ArrayMap mRemovedFromSystemWhitelistApps;
+    public final AnonymousClass1 mReceiver;
+    public final ArrayMap mRemovedFromSystemWhitelistApps;
     public boolean mScreenLocked;
-    public ActivityTaskManagerInternal.ScreenObserver mScreenObserver;
+    public final AnonymousClass8 mScreenObserver;
     public boolean mScreenOn;
-    public final AlarmManager.OnAlarmListener mSensingTimeoutAlarmListener;
+    public final AnonymousClass2 mSensingTimeoutAlarmListener;
     public SensorManager mSensorManager;
     public int mState;
     public final ArraySet mStationaryListeners;
@@ -242,441 +247,898 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
     public int[] mTempWhitelistAppIdArray;
     public final SparseArray mTempWhitelistAppIdEndTimes;
     public final boolean mUseMotionSensor;
-    public final RingBuffer mUserWhitelistHistoryBuffer;
 
-    public final long getDuration(long j, long j2) {
-        if (j <= 0 || j2 <= 0 || j2 <= j) {
-            return 0L;
-        }
-        return j2 - j;
-    }
-
-    public static String stateToString(int i) {
-        switch (i) {
-            case 0:
-                return "ACTIVE";
-            case 1:
-                return "INACTIVE";
-            case 2:
-                return "IDLE_PENDING";
-            case 3:
-                return "SENSING";
-            case 4:
-                return "LOCATING";
-            case 5:
-                return "IDLE";
-            case 6:
-                return "IDLE_MAINTENANCE";
-            case 7:
-                return "QUICK_DOZE_DELAY";
-            default:
-                return Integer.toString(i);
-        }
-    }
-
-    public static String lightStateToString(int i) {
-        return i != 0 ? i != 1 ? i != 4 ? i != 5 ? i != 6 ? i != 7 ? Integer.toString(i) : "OVERRIDE" : "IDLE_MAINTENANCE" : "WAITING_FOR_NETWORK" : "IDLE" : "INACTIVE" : "ACTIVE";
-    }
-
-    /* loaded from: classes.dex */
-    public class BatteryLevel {
-        public float curr;
-        public long currTime;
-        public float prev;
-        public long prevTime;
-
-        public BatteryLevel(float f, float f2, long j, long j2) {
-            this.prev = f;
-            this.curr = f2;
-            this.prevTime = j;
-            this.currTime = j2;
-        }
-
-        public void reset(float f, long j) {
-            this.prev = f;
-            this.curr = f;
-            this.prevTime = j;
-            this.currTime = j;
-        }
-
-        public void updatePrev() {
-            this.prev = this.curr;
-            this.prevTime = this.currTime;
-        }
-    }
-
-    public final void addEvent(int i, String str) {
-        int[] iArr = this.mEventCmds;
-        if (iArr[0] != i) {
-            System.arraycopy(iArr, 0, iArr, 1, 99);
-            long[] jArr = this.mEventTimes;
-            System.arraycopy(jArr, 0, jArr, 1, 99);
-            String[] strArr = this.mEventReasons;
-            System.arraycopy(strArr, 0, strArr, 1, 99);
-            this.mEventCmds[0] = i;
-            this.mEventTimes[0] = SystemClock.elapsedRealtime();
-            this.mEventReasons[0] = str;
-        }
-    }
-
-    public final String getProcNameByPid(int i) {
-        String str = null;
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(String.format("/proc/%d/cmdline", Integer.valueOf(i)), Charset.defaultCharset()));
-            try {
-                str = bufferedReader.readLine();
-                bufferedReader.close();
-            } finally {
-            }
-        } catch (IOException e) {
-            Slog.e("DeviceIdleController", "IO errors occurred.", e);
-        }
-        return str != null ? str.trim() : "unknown";
-    }
-
-    /* loaded from: classes.dex */
-    public class BinderCaller {
-        public final int pid;
-        public final String procName;
-
-        public BinderCaller(int i) {
-            this.pid = i;
-            this.procName = DeviceIdleController.this.getProcNameByPid(i);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class TargetPkg {
-        public final String pkgName;
-        public final int uid;
-
-        public TargetPkg(int i, String str) {
-            this.uid = i;
-            this.pkgName = str;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class UserWhitelistHistoryInfo {
-        public final BinderCaller caller;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AllowlistHistoryInfo {
+        public final TargetPkg caller;
         public final TargetPkg target;
         public final long time = System.currentTimeMillis();
         public final int type;
 
-        public UserWhitelistHistoryInfo(int i, BinderCaller binderCaller, TargetPkg targetPkg) {
+        public AllowlistHistoryInfo(int i, TargetPkg targetPkg, TargetPkg targetPkg2) {
             this.type = i;
-            this.caller = binderCaller;
-            this.target = targetPkg;
+            this.caller = targetPkg;
+            this.target = targetPkg2;
         }
 
-        public String toString() {
+        public final String toString() {
             Date date = new Date(this.time);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             StringBuilder sb = new StringBuilder();
             sb.append("[" + simpleDateFormat.format(date) + "]");
-            sb.append(this.type < 3 ? "[add   ] " : "[remove] ");
-            sb.append(this.target.pkgName + "(uid " + this.target.uid + ") by ");
+            StringBuilder sb2 = new StringBuilder();
+            TargetPkg targetPkg = this.target;
+            sb2.append(targetPkg.pkgName);
+            sb2.append("(appid=");
+            String m = AmFmBandRange$$ExternalSyntheticOutline0.m(targetPkg.uid, sb2, ") by ");
             int i = this.type;
-            if (i != 0) {
-                if (i == 1) {
-                    sb.append("deviceidle.xml");
-                } else {
-                    if (i != 2) {
-                        if (i != 3) {
-                            if (i != 4) {
-                                if (i == 5) {
-                                    sb.append("package removed");
-                                } else {
-                                    Slog.e("DeviceIdleController", "Unknown type of user whitelist");
-                                }
-                            }
-                        }
+            String str = "null";
+            TargetPkg targetPkg2 = this.caller;
+            switch (i) {
+                case 0:
+                    sb.append("[add    ] " + m);
+                    if (targetPkg2 != null) {
+                        StringBuilder sb3 = new StringBuilder();
+                        sb3.append(targetPkg2.pkgName);
+                        sb3.append("(pid ");
+                        str = AmFmBandRange$$ExternalSyntheticOutline0.m(targetPkg2.uid, sb3, ")");
                     }
-                    sb.append("dumpsys");
-                }
-                return sb.toString();
-            }
-            if (this.caller != null) {
-                sb.append(this.caller.procName + "(pid " + this.caller.pid + ")");
+                    sb.append(str);
+                    break;
+                case 1:
+                    sb.append("[add    ] " + m + "deviceidle.xml");
+                    break;
+                case 2:
+                    sb.append("[add    ] " + m + "dumpsys");
+                    break;
+                case 3:
+                    sb.append("[remove ] " + m);
+                    if (targetPkg2 != null) {
+                        StringBuilder sb4 = new StringBuilder();
+                        sb4.append(targetPkg2.pkgName);
+                        sb4.append("(pid ");
+                        str = AmFmBandRange$$ExternalSyntheticOutline0.m(targetPkg2.uid, sb4, ")");
+                    }
+                    sb.append(str);
+                    break;
+                case 4:
+                    sb.append("[remove ] " + m + "dumpsys");
+                    break;
+                case 5:
+                    sb.append("[remove ] " + m + "package removed");
+                    break;
+                case 6:
+                    sb.append("[restore] " + m);
+                    if (targetPkg2 != null) {
+                        StringBuilder sb5 = new StringBuilder();
+                        sb5.append(targetPkg2.pkgName);
+                        sb5.append("(pid ");
+                        str = AmFmBandRange$$ExternalSyntheticOutline0.m(targetPkg2.uid, sb5, ")");
+                    }
+                    sb.append(str);
+                    break;
+                case 7:
+                    sb.append("[restore] " + m + "dumpsys");
+                    break;
+                case 8:
+                    sb.append("[removes] " + m);
+                    if (targetPkg2 != null) {
+                        StringBuilder sb6 = new StringBuilder();
+                        sb6.append(targetPkg2.pkgName);
+                        sb6.append("(pid ");
+                        str = AmFmBandRange$$ExternalSyntheticOutline0.m(targetPkg2.uid, sb6, ")");
+                    }
+                    sb.append(str);
+                    break;
+                case 9:
+                    sb.append("[removes] " + m + "dumpsys");
+                    break;
+                case 10:
+                    sb.append("[removes] " + m + "deviceidle.xml");
+                    break;
+                default:
+                    Slog.e("DeviceIdleController", "Unknown type of allowlist");
+                    break;
             }
             return sb.toString();
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0() {
-        synchronized (this) {
-            stepLightIdleStateLocked("s:alarm");
-        }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BatteryLevel {
+        public float prev = -1.0f;
+        public float curr = -1.0f;
+        public long prevTime = 0;
+        public long currTime = 0;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$1() {
-        synchronized (this) {
-            if (this.mStationaryListeners.size() > 0) {
-                startMonitoringMotionLocked();
-                scheduleMotionTimeoutAlarmLocked();
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$2() {
-        synchronized (this) {
-            if (!isStationaryLocked()) {
-                Slog.w("DeviceIdleController", "motion timeout went off and device isn't stationary");
-            } else {
-                postStationaryStatusUpdated();
-            }
-        }
-    }
-
-    public final void postStationaryStatus(DeviceIdleInternal.StationaryListener stationaryListener) {
-        this.mHandler.obtainMessage(7, stationaryListener).sendToTarget();
-    }
-
-    public final void postStationaryStatusUpdated() {
-        this.mHandler.sendEmptyMessage(7);
-    }
-
-    public final boolean isStationaryLocked() {
-        long elapsedRealtime = this.mInjector.getElapsedRealtime();
-        MotionListener motionListener = this.mMotionListener;
-        return motionListener.active && elapsedRealtime - Math.max(motionListener.activatedTimeElapsed, this.mLastMotionEventElapsed) >= this.mConstants.MOTION_INACTIVE_TIMEOUT;
-    }
-
-    public void registerStationaryListener(DeviceIdleInternal.StationaryListener stationaryListener) {
-        synchronized (this) {
-            if (this.mStationaryListeners.add(stationaryListener)) {
-                postStationaryStatus(stationaryListener);
-                if (this.mMotionListener.active) {
-                    if (!isStationaryLocked() && this.mStationaryListeners.size() == 1) {
-                        scheduleMotionTimeoutAlarmLocked();
-                    }
-                } else {
-                    startMonitoringMotionLocked();
-                    scheduleMotionTimeoutAlarmLocked();
-                }
-            }
-        }
-    }
-
-    public final void unregisterStationaryListener(DeviceIdleInternal.StationaryListener stationaryListener) {
-        int i;
-        synchronized (this) {
-            if (this.mStationaryListeners.remove(stationaryListener) && this.mStationaryListeners.size() == 0 && ((i = this.mState) == 0 || i == 1 || this.mQuickDozeActivated)) {
-                maybeStopMonitoringMotionLocked();
-            }
-        }
-    }
-
-    public final void registerTempAllowlistChangeListener(PowerAllowlistInternal.TempAllowlistChangeListener tempAllowlistChangeListener) {
-        synchronized (this) {
-            this.mTempAllowlistChangeListeners.add(tempAllowlistChangeListener);
-        }
-    }
-
-    public final void unregisterTempAllowlistChangeListener(PowerAllowlistInternal.TempAllowlistChangeListener tempAllowlistChangeListener) {
-        synchronized (this) {
-            this.mTempAllowlistChangeListeners.remove(tempAllowlistChangeListener);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public final class MotionListener extends TriggerEventListener implements SensorEventListener {
-        public long activatedTimeElapsed;
-        public boolean active = false;
-
-        @Override // android.hardware.SensorEventListener
-        public void onAccuracyChanged(Sensor sensor, int i) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BinderService extends IDeviceIdleController.Stub {
+        public BinderService() {
         }
 
-        public MotionListener() {
+        public final void addPowerSaveTempWhitelistApp(String str, long j, int i, int i2, String str2) {
+            DeviceIdleController.this.addPowerSaveTempAllowlistAppChecked(i, i2, str, str2, j);
         }
 
-        @Override // android.hardware.TriggerEventListener
-        public void onTrigger(TriggerEvent triggerEvent) {
-            synchronized (DeviceIdleController.this) {
-                this.active = false;
-                DeviceIdleController.this.motionLocked();
-            }
-        }
-
-        @Override // android.hardware.SensorEventListener
-        public void onSensorChanged(SensorEvent sensorEvent) {
-            synchronized (DeviceIdleController.this) {
-                DeviceIdleController.this.mSensorManager.unregisterListener(this, DeviceIdleController.this.mMotionSensor);
-                this.active = false;
-                DeviceIdleController.this.motionLocked();
-            }
-        }
-
-        public boolean registerLocked() {
-            boolean registerListener;
-            if (DeviceIdleController.this.mMotionSensor.getReportingMode() == 2) {
-                SensorManager sensorManager = DeviceIdleController.this.mSensorManager;
-                DeviceIdleController deviceIdleController = DeviceIdleController.this;
-                registerListener = sensorManager.requestTriggerSensor(deviceIdleController.mMotionListener, deviceIdleController.mMotionSensor);
-            } else {
-                SensorManager sensorManager2 = DeviceIdleController.this.mSensorManager;
-                DeviceIdleController deviceIdleController2 = DeviceIdleController.this;
-                registerListener = sensorManager2.registerListener(deviceIdleController2.mMotionListener, deviceIdleController2.mMotionSensor, 3);
-            }
-            if (registerListener) {
-                this.active = true;
-                this.activatedTimeElapsed = DeviceIdleController.this.mInjector.getElapsedRealtime();
-            } else {
-                Slog.e("DeviceIdleController", "Unable to register for " + DeviceIdleController.this.mMotionSensor);
-            }
-            return registerListener;
-        }
-
-        public void unregisterLocked() {
-            if (DeviceIdleController.this.mMotionSensor.getReportingMode() == 2) {
-                SensorManager sensorManager = DeviceIdleController.this.mSensorManager;
-                DeviceIdleController deviceIdleController = DeviceIdleController.this;
-                sensorManager.cancelTriggerSensor(deviceIdleController.mMotionListener, deviceIdleController.mMotionSensor);
-            } else {
-                DeviceIdleController.this.mSensorManager.unregisterListener(DeviceIdleController.this.mMotionListener);
-            }
-            this.active = false;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class Constants implements DeviceConfig.OnPropertiesChangedListener {
-        public long IDLE_AFTER_INACTIVE_TIMEOUT;
-        public long INACTIVE_TIMEOUT;
-        public final boolean mSmallBatteryDevice;
-        public long mDefaultFlexTimeShort = 60000;
-        public long mDefaultLightIdleAfterInactiveTimeout = 240000;
-        public long mDefaultLightIdleTimeout = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        public long mDefaultLightIdleTimeoutInitialFlex = 60000;
-        public long mDefaultLightIdleTimeoutMaxFlex = 900000;
-        public float mDefaultLightIdleFactor = 2.0f;
-        public long mDefaultLightMaxIdleTimeout = 900000;
-        public long mDefaultLightIdleMaintenanceMinBudget = 60000;
-        public long mDefaultLightIdleMaintenanceMaxBudget = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        public long mDefaultMinLightMaintenanceTime = 5000;
-        public long mDefaultMinDeepMaintenanceTime = 30000;
-        public long mDefaultInactiveTimeout = 1800000;
-        public long mDefaultSensingTimeout = 240000;
-        public long mDefaultLocatingTimeout = 30000;
-        public float mDefaultLocationAccuracy = 20.0f;
-        public long mDefaultMotionInactiveTimeout = 600000;
-        public long mDefaultMotionInactiveTimeoutFlex = 60000;
-        public long mDefaultIdleAfterInactiveTimeout = 1800000;
-        public long mDefaultIdlePendingTimeout = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        public long mDefaultMaxIdlePendingTimeout = 600000;
-        public float mDefaultIdlePendingFactor = 2.0f;
-        public long mDefaultQuickDozeDelayTimeout = 60000;
-        public long mDefaultIdleTimeout = ClipboardService.DEFAULT_CLIPBOARD_TIMEOUT_MILLIS;
-        public long mDefaultMaxIdleTimeout = 21600000;
-        public float mDefaultIdleFactor = 2.0f;
-        public long mDefaultMinTimeToAlarm = 1800000;
-        public long mDefaultMaxTempAppAllowlistDurationMs = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        public long mDefaultMmsTempAppAllowlistDurationMs = 60000;
-        public long mDefaultSmsTempAppAllowlistDurationMs = 20000;
-        public long mDefaultNotificationAllowlistDurationMs = 30000;
-        public boolean mDefaultWaitForUnlock = true;
-        public float mDefaultPreIdleFactorLong = 1.67f;
-        public float mDefaultPreIdleFactorShort = 0.33f;
-        public boolean mDefaultUseWindowAlarms = true;
-        public long FLEX_TIME_SHORT = 60000;
-        public long LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT = 240000;
-        public long LIGHT_IDLE_TIMEOUT = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        public long LIGHT_IDLE_TIMEOUT_INITIAL_FLEX = 60000;
-        public long LIGHT_IDLE_TIMEOUT_MAX_FLEX = 900000;
-        public float LIGHT_IDLE_FACTOR = 2.0f;
-        public long LIGHT_MAX_IDLE_TIMEOUT = 900000;
-        public long LIGHT_IDLE_MAINTENANCE_MIN_BUDGET = 60000;
-        public long LIGHT_IDLE_MAINTENANCE_MAX_BUDGET = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        public long MIN_LIGHT_MAINTENANCE_TIME = 5000;
-        public long MIN_DEEP_MAINTENANCE_TIME = 30000;
-        public long SENSING_TIMEOUT = 240000;
-        public long LOCATING_TIMEOUT = 30000;
-        public float LOCATION_ACCURACY = 20.0f;
-        public long MOTION_INACTIVE_TIMEOUT = 600000;
-        public long MOTION_INACTIVE_TIMEOUT_FLEX = 60000;
-        public long IDLE_PENDING_TIMEOUT = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        public long MAX_IDLE_PENDING_TIMEOUT = 600000;
-        public float IDLE_PENDING_FACTOR = 2.0f;
-        public long QUICK_DOZE_DELAY_TIMEOUT = 60000;
-        public long IDLE_TIMEOUT = ClipboardService.DEFAULT_CLIPBOARD_TIMEOUT_MILLIS;
-        public long MAX_IDLE_TIMEOUT = 21600000;
-        public float IDLE_FACTOR = 2.0f;
-        public long MIN_TIME_TO_ALARM = 1800000;
-        public long MAX_TEMP_APP_ALLOWLIST_DURATION_MS = BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        public long MMS_TEMP_APP_ALLOWLIST_DURATION_MS = 60000;
-        public long SMS_TEMP_APP_ALLOWLIST_DURATION_MS = 20000;
-        public long NOTIFICATION_ALLOWLIST_DURATION_MS = 30000;
-        public float PRE_IDLE_FACTOR_LONG = 1.67f;
-        public float PRE_IDLE_FACTOR_SHORT = 0.33f;
-        public boolean WAIT_FOR_UNLOCK = true;
-        public boolean USE_WINDOW_ALARMS = true;
-
-        public final long getTimeout(long j, long j2) {
+        public final long addPowerSaveTempWhitelistAppForMms(String str, int i, int i2, String str2) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            long j = deviceIdleController.mConstants.MMS_TEMP_APP_ALLOWLIST_DURATION_MS;
+            deviceIdleController.addPowerSaveTempAllowlistAppChecked(i, i2, str, str2, j);
             return j;
         }
 
-        public Constants() {
-            this.INACTIVE_TIMEOUT = 1800000L;
-            this.IDLE_AFTER_INACTIVE_TIMEOUT = 1800000L;
-            initDefault();
-            boolean isSmallBatteryDevice = ActivityManager.isSmallBatteryDevice();
-            this.mSmallBatteryDevice = isSmallBatteryDevice;
-            if (isSmallBatteryDevice) {
-                this.INACTIVE_TIMEOUT = 900000L;
-                this.IDLE_AFTER_INACTIVE_TIMEOUT = 900000L;
-            }
-            DeviceConfig.addOnPropertiesChangedListener("device_idle", AppSchedulingModuleThread.getExecutor(), this);
-            onPropertiesChanged(DeviceConfig.getProperties("device_idle", new String[0]));
+        public final long addPowerSaveTempWhitelistAppForSms(String str, int i, int i2, String str2) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            long j = deviceIdleController.mConstants.SMS_TEMP_APP_ALLOWLIST_DURATION_MS;
+            deviceIdleController.addPowerSaveTempAllowlistAppChecked(i, i2, str, str2, j);
+            return j;
         }
 
-        public final void initDefault() {
+        public final void addPowerSaveWhitelistApp(String str) {
+            if (DeviceIdleController.DEBUG) {
+                BootReceiver$$ExternalSyntheticOutline0.m58m("addPowerSaveWhitelistApp(name = ", str, ")", "DeviceIdleController");
+            }
+            addPowerSaveWhitelistApps(Collections.singletonList(str));
+        }
+
+        public final int addPowerSaveWhitelistApps(List list) {
+            Slog.i("DeviceIdleController", "addPowerSaveWhitelistApps(name = " + list + ")");
+            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
+            TargetPkg targetPkg = new TargetPkg(DeviceIdleController.this, Binder.getCallingPid());
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                return DeviceIdleController.this.addPowerSaveWhitelistAppsInternal(list, 0, targetPkg);
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+
+        public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            if (DumpUtils.checkDumpPermission(deviceIdleController.getContext(), "DeviceIdleController", printWriter)) {
+                if (strArr != null) {
+                    int i = 0;
+                    int i2 = 0;
+                    while (i < strArr.length) {
+                        String str = strArr[i];
+                        if ("-h".equals(str)) {
+                            DeviceIdleController.dumpHelp(printWriter);
+                            return;
+                        }
+                        if ("-u".equals(str)) {
+                            i++;
+                            if (i < strArr.length) {
+                                i2 = Integer.parseInt(strArr[i]);
+                            }
+                        } else if (!"-a".equals(str)) {
+                            if (str.length() > 0 && str.charAt(0) == '-') {
+                                printWriter.println("Unknown option: ".concat(str));
+                                return;
+                            }
+                            Shell shell = deviceIdleController.new Shell();
+                            shell.userId = i2;
+                            String[] strArr2 = new String[strArr.length - i];
+                            System.arraycopy(strArr, i, strArr2, 0, strArr.length - i);
+                            shell.exec(deviceIdleController.mBinderService, (FileDescriptor) null, fileDescriptor, (FileDescriptor) null, strArr2, (ShellCallback) null, new ResultReceiver(null));
+                            return;
+                        }
+                        i++;
+                    }
+                }
+                synchronized (deviceIdleController) {
+                    try {
+                        deviceIdleController.mConstants.dump(printWriter);
+                        if (deviceIdleController.mEventCmds[0] != 0) {
+                            printWriter.println("  Idling history:");
+                            long elapsedRealtime = SystemClock.elapsedRealtime();
+                            for (int i3 = 99; i3 >= 0; i3--) {
+                                int i4 = deviceIdleController.mEventCmds[i3];
+                                if (i4 != 0) {
+                                    String str2 = i4 != 1 ? i4 != 2 ? i4 != 3 ? i4 != 4 ? i4 != 5 ? "         ??" : " deep-maint" : "  deep-idle" : "light-maint" : " light-idle" : "     normal";
+                                    printWriter.print("    ");
+                                    printWriter.print(str2);
+                                    printWriter.print(": ");
+                                    TimeUtils.formatDuration(deviceIdleController.mEventTimes[i3], elapsedRealtime, printWriter);
+                                    if (deviceIdleController.mEventReasons[i3] != null) {
+                                        printWriter.print(" (");
+                                        printWriter.print(deviceIdleController.mEventReasons[i3]);
+                                        printWriter.print(")");
+                                    }
+                                    printWriter.println();
+                                }
+                            }
+                        }
+                        int size = deviceIdleController.mPowerSaveWhitelistAppsExceptIdle.size();
+                        if (size > 0) {
+                            printWriter.println("  Whitelist (except idle) system apps:");
+                            for (int i5 = 0; i5 < size; i5++) {
+                                printWriter.print("    ");
+                                printWriter.println((String) deviceIdleController.mPowerSaveWhitelistAppsExceptIdle.keyAt(i5));
+                            }
+                        }
+                        int size2 = deviceIdleController.mPowerSaveWhitelistApps.size();
+                        if (size2 > 0) {
+                            printWriter.println("  Whitelist system apps:");
+                            for (int i6 = 0; i6 < size2; i6++) {
+                                printWriter.print("    ");
+                                printWriter.println((String) deviceIdleController.mPowerSaveWhitelistApps.keyAt(i6));
+                            }
+                        }
+                        int size3 = deviceIdleController.mRemovedFromSystemWhitelistApps.size();
+                        if (size3 > 0) {
+                            printWriter.println("  Removed from whitelist system apps:");
+                            for (int i7 = 0; i7 < size3; i7++) {
+                                printWriter.print("    ");
+                                printWriter.println((String) deviceIdleController.mRemovedFromSystemWhitelistApps.keyAt(i7));
+                            }
+                        }
+                        int size4 = deviceIdleController.mPowerSaveWhitelistUserApps.size();
+                        if (size4 > 0) {
+                            printWriter.println("  Whitelist user apps:");
+                            for (int i8 = 0; i8 < size4; i8++) {
+                                printWriter.print("    ");
+                                printWriter.println((String) deviceIdleController.mPowerSaveWhitelistUserApps.keyAt(i8));
+                            }
+                        }
+                        int size5 = deviceIdleController.mPowerSaveWhitelistExceptIdleAppIds.size();
+                        if (size5 > 0) {
+                            printWriter.println("  Whitelist (except idle) all app ids:");
+                            for (int i9 = 0; i9 < size5; i9++) {
+                                printWriter.print("    ");
+                                printWriter.print(deviceIdleController.mPowerSaveWhitelistExceptIdleAppIds.keyAt(i9));
+                                printWriter.println();
+                            }
+                        }
+                        int size6 = deviceIdleController.mPowerSaveWhitelistUserAppIds.size();
+                        if (size6 > 0) {
+                            printWriter.println("  Whitelist user app ids:");
+                            for (int i10 = 0; i10 < size6; i10++) {
+                                printWriter.print("    ");
+                                printWriter.print(deviceIdleController.mPowerSaveWhitelistUserAppIds.keyAt(i10));
+                                printWriter.println();
+                            }
+                        }
+                        int size7 = deviceIdleController.mPowerSaveWhitelistAllAppIds.size();
+                        if (size7 > 0) {
+                            printWriter.println("  Whitelist all app ids:");
+                            for (int i11 = 0; i11 < size7; i11++) {
+                                printWriter.print("    ");
+                                printWriter.print(deviceIdleController.mPowerSaveWhitelistAllAppIds.keyAt(i11));
+                                printWriter.println();
+                            }
+                        }
+                        int size8 = deviceIdleController.mAllowlistHistoryInfo.size();
+                        if (size8 > 0) {
+                            printWriter.println("  Allowlist History:");
+                            printWriter.println("  - history count : " + size8);
+                            AllowlistHistoryInfo[] allowlistHistoryInfoArr = (AllowlistHistoryInfo[]) deviceIdleController.mAllowlistHistoryInfo.toArray();
+                            for (int i12 = 0; i12 < size8; i12++) {
+                                printWriter.print("    ");
+                                printWriter.print(allowlistHistoryInfoArr[i12].toString());
+                                printWriter.println();
+                            }
+                        }
+                        deviceIdleController.dumpTempWhitelistScheduleLocked(printWriter, true);
+                        int[] iArr = deviceIdleController.mTempWhitelistAppIdArray;
+                        int length = iArr != null ? iArr.length : 0;
+                        if (length > 0) {
+                            printWriter.println("  Temp whitelist app ids:");
+                            for (int i13 = 0; i13 < length; i13++) {
+                                printWriter.print("    ");
+                                printWriter.print(deviceIdleController.mTempWhitelistAppIdArray[i13]);
+                                printWriter.println();
+                            }
+                        }
+                        printWriter.println("  Doze Allowlist Gatekeeper: false");
+                        printWriter.print("  mLightEnabled=");
+                        printWriter.print(deviceIdleController.mLightEnabled);
+                        printWriter.print("  mDeepEnabled=");
+                        printWriter.println(deviceIdleController.mDeepEnabled);
+                        printWriter.print("  mForceIdle=");
+                        printWriter.println(deviceIdleController.mForceIdle);
+                        if (deviceIdleController.mForceIdle) {
+                            printWriter.print(" mForceType=");
+                            printWriter.println(deviceIdleController.mForceType);
+                        }
+                        printWriter.print("  mUseMotionSensor=");
+                        printWriter.print(deviceIdleController.mUseMotionSensor);
+                        if (deviceIdleController.mUseMotionSensor) {
+                            printWriter.print(" mMotionSensor=");
+                            printWriter.println(deviceIdleController.mMotionSensor);
+                        } else {
+                            printWriter.println();
+                        }
+                        printWriter.print("  mScreenOn=");
+                        printWriter.println(deviceIdleController.mScreenOn);
+                        printWriter.print("  mScreenLocked=");
+                        printWriter.println(deviceIdleController.mScreenLocked);
+                        printWriter.print("  mNetworkConnected=");
+                        printWriter.println(deviceIdleController.mNetworkConnected);
+                        printWriter.print("  mCharging=");
+                        printWriter.println(deviceIdleController.mCharging);
+                        printWriter.print("  activeEmergencyCall=");
+                        printWriter.println(deviceIdleController.mEmergencyCallListener.mIsEmergencyCallActive);
+                        if (deviceIdleController.mConstraints.size() != 0) {
+                            printWriter.println("  mConstraints={");
+                            for (int i14 = 0; i14 < deviceIdleController.mConstraints.size(); i14++) {
+                                DeviceIdleConstraintTracker deviceIdleConstraintTracker = (DeviceIdleConstraintTracker) deviceIdleController.mConstraints.valueAt(i14);
+                                printWriter.print("    \"");
+                                printWriter.print(deviceIdleConstraintTracker.name);
+                                printWriter.print("\"=");
+                                if (deviceIdleConstraintTracker.minState == deviceIdleController.mState) {
+                                    printWriter.println(deviceIdleConstraintTracker.active);
+                                } else {
+                                    printWriter.print("ignored <mMinState=");
+                                    printWriter.print(DeviceIdleController.stateToString(deviceIdleConstraintTracker.minState));
+                                    printWriter.println(">");
+                                }
+                            }
+                            printWriter.println("  }");
+                        }
+                        if (deviceIdleController.mUseMotionSensor || deviceIdleController.mStationaryListeners.size() > 0) {
+                            printWriter.print("  mMotionActive=");
+                            printWriter.println(deviceIdleController.mMotionListener.active);
+                            printWriter.print("  mNotMoving=");
+                            printWriter.println(deviceIdleController.mNotMoving);
+                            printWriter.print("  mMotionListener.activatedTimeElapsed=");
+                            printWriter.println(deviceIdleController.mMotionListener.activatedTimeElapsed);
+                            printWriter.print("  mLastMotionEventElapsed=");
+                            printWriter.println(deviceIdleController.mLastMotionEventElapsed);
+                            printWriter.print("  ");
+                            printWriter.print(deviceIdleController.mStationaryListeners.size());
+                            printWriter.println(" stationary listeners registered");
+                        }
+                        if (deviceIdleController.mIsLocationPrefetchEnabled) {
+                            printWriter.print("  mLocating=");
+                            printWriter.print(deviceIdleController.mLocating);
+                            printWriter.print(" mHasGps=");
+                            printWriter.print(deviceIdleController.mHasGps);
+                            printWriter.print(" mHasFused=");
+                            printWriter.print(deviceIdleController.mHasFusedLocation);
+                            printWriter.print(" mLocated=");
+                            printWriter.println(deviceIdleController.mLocated);
+                            if (deviceIdleController.mLastGenericLocation != null) {
+                                printWriter.print("  mLastGenericLocation=");
+                                printWriter.println(deviceIdleController.mLastGenericLocation);
+                            }
+                            if (deviceIdleController.mLastGpsLocation != null) {
+                                printWriter.print("  mLastGpsLocation=");
+                                printWriter.println(deviceIdleController.mLastGpsLocation);
+                            }
+                        } else {
+                            printWriter.println("  Location prefetching disabled");
+                        }
+                        printWriter.print("  mState=");
+                        printWriter.print(DeviceIdleController.stateToString(deviceIdleController.mState));
+                        printWriter.print(" mLightState=");
+                        printWriter.println(DeviceIdleController.lightStateToString(deviceIdleController.mLightState));
+                        printWriter.print("  mInactiveTimeout=");
+                        TimeUtils.formatDuration(deviceIdleController.mInactiveTimeout, printWriter);
+                        printWriter.println();
+                        if (deviceIdleController.mActiveIdleOpCount != 0) {
+                            printWriter.print("  mActiveIdleOpCount=");
+                            printWriter.println(deviceIdleController.mActiveIdleOpCount);
+                        }
+                        if (deviceIdleController.mNextAlarmTime != 0) {
+                            printWriter.print("  mNextAlarmTime=");
+                            TimeUtils.formatDuration(deviceIdleController.mNextAlarmTime, SystemClock.elapsedRealtime(), printWriter);
+                            printWriter.println();
+                        }
+                        if (deviceIdleController.mNextIdlePendingDelay != 0) {
+                            printWriter.print("  mNextIdlePendingDelay=");
+                            TimeUtils.formatDuration(deviceIdleController.mNextIdlePendingDelay, printWriter);
+                            printWriter.println();
+                        }
+                        if (deviceIdleController.mNextIdleDelay != 0) {
+                            printWriter.print("  mNextIdleDelay=");
+                            TimeUtils.formatDuration(deviceIdleController.mNextIdleDelay, printWriter);
+                            printWriter.println();
+                        }
+                        if (deviceIdleController.mNextLightIdleDelay != 0) {
+                            printWriter.print("  mNextLightIdleDelay=");
+                            TimeUtils.formatDuration(deviceIdleController.mNextLightIdleDelay, printWriter);
+                            if (deviceIdleController.mConstants.USE_WINDOW_ALARMS) {
+                                printWriter.print(" (flex=");
+                                TimeUtils.formatDuration(deviceIdleController.mNextLightIdleDelayFlex, printWriter);
+                                printWriter.println(")");
+                            } else {
+                                printWriter.println();
+                            }
+                        }
+                        if (deviceIdleController.mNextLightAlarmTime != 0) {
+                            printWriter.print("  mNextLightAlarmTime=");
+                            TimeUtils.formatDuration(deviceIdleController.mNextLightAlarmTime, SystemClock.elapsedRealtime(), printWriter);
+                            printWriter.println();
+                        }
+                        if (deviceIdleController.mCurLightIdleBudget != 0) {
+                            printWriter.print("  mCurLightIdleBudget=");
+                            TimeUtils.formatDuration(deviceIdleController.mCurLightIdleBudget, printWriter);
+                            printWriter.println();
+                        }
+                        if (deviceIdleController.mMaintenanceStartTime != 0) {
+                            printWriter.print("  mMaintenanceStartTime=");
+                            TimeUtils.formatDuration(deviceIdleController.mMaintenanceStartTime, SystemClock.elapsedRealtime(), printWriter);
+                            printWriter.println();
+                        }
+                        if (deviceIdleController.mJobsActive) {
+                            printWriter.print("  mJobsActive=");
+                            printWriter.println(deviceIdleController.mJobsActive);
+                        }
+                        if (deviceIdleController.mAlarmsActive) {
+                            printWriter.print("  mAlarmsActive=");
+                            printWriter.println(deviceIdleController.mAlarmsActive);
+                        }
+                        if (deviceIdleController.mConstants.USE_MODE_MANAGER) {
+                            printWriter.print("  mModeManagerRequestedQuickDoze=");
+                            printWriter.println(deviceIdleController.mModeManagerRequestedQuickDoze);
+                            printWriter.print("  mIsOffBody=");
+                            printWriter.println(deviceIdleController.mIsOffBody);
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+        }
+
+        public final void exitIdle(String str) {
+            exitIdle_enforcePermission();
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                DeviceIdleController deviceIdleController = DeviceIdleController.this;
+                synchronized (deviceIdleController) {
+                    deviceIdleController.becomeActiveLocked(Binder.getCallingUid(), str);
+                }
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+
+        public final int[] getAppIdTempWhitelist() {
+            int[] iArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                iArr = deviceIdleController.mTempWhitelistAppIdArray;
+            }
+            return iArr;
+        }
+
+        public final int[] getAppIdUserWhitelist() {
+            int[] iArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                iArr = deviceIdleController.mPowerSaveWhitelistUserAppIdArray;
+            }
+            return iArr;
+        }
+
+        public final int[] getAppIdWhitelist() {
+            int[] iArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                iArr = deviceIdleController.mPowerSaveWhitelistAllAppIdArray;
+            }
+            return iArr;
+        }
+
+        public final int[] getAppIdWhitelistExceptIdle() {
+            int[] iArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                iArr = deviceIdleController.mPowerSaveWhitelistExceptIdleAppIdArray;
+            }
+            return iArr;
+        }
+
+        public final String[] getFullPowerWhitelist() {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            return (String[]) ArrayUtils.filter(deviceIdleController.getFullPowerWhitelistInternalUnchecked(), new DeviceIdleController$$ExternalSyntheticLambda14(5), new DeviceIdleController$$ExternalSyntheticLambda15(deviceIdleController, Binder.getCallingUid(), UserHandle.getCallingUserId(), 5));
+        }
+
+        public final String[] getFullPowerWhitelistExceptIdle() {
+            String[] strArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            int callingUid = Binder.getCallingUid();
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (deviceIdleController) {
+                try {
+                    strArr = new String[deviceIdleController.mPowerSaveWhitelistAppsExceptIdle.size() + deviceIdleController.mPowerSaveWhitelistUserApps.size()];
+                    int i = 0;
+                    for (int i2 = 0; i2 < deviceIdleController.mPowerSaveWhitelistAppsExceptIdle.size(); i2++) {
+                        strArr[i] = (String) deviceIdleController.mPowerSaveWhitelistAppsExceptIdle.keyAt(i2);
+                        i++;
+                    }
+                    for (int i3 = 0; i3 < deviceIdleController.mPowerSaveWhitelistUserApps.size(); i3++) {
+                        strArr[i] = (String) deviceIdleController.mPowerSaveWhitelistUserApps.keyAt(i3);
+                        i++;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            return (String[]) ArrayUtils.filter(strArr, new DeviceIdleController$$ExternalSyntheticLambda14(1), new DeviceIdleController$$ExternalSyntheticLambda15(deviceIdleController, callingUid, callingUserId, 1));
+        }
+
+        public final String[] getRemovedSystemPowerWhitelistApps() {
+            String[] strArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            int callingUid = Binder.getCallingUid();
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (deviceIdleController) {
+                try {
+                    int size = deviceIdleController.mRemovedFromSystemWhitelistApps.size();
+                    strArr = new String[size];
+                    for (int i = 0; i < size; i++) {
+                        strArr[i] = (String) deviceIdleController.mRemovedFromSystemWhitelistApps.keyAt(i);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            return (String[]) ArrayUtils.filter(strArr, new DeviceIdleController$$ExternalSyntheticLambda14(2), new DeviceIdleController$$ExternalSyntheticLambda15(deviceIdleController, callingUid, callingUserId, 2));
+        }
+
+        public final String[] getSystemPowerWhitelist() {
+            String[] strArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            int callingUid = Binder.getCallingUid();
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (deviceIdleController) {
+                try {
+                    int size = deviceIdleController.mPowerSaveWhitelistApps.size();
+                    strArr = new String[size];
+                    for (int i = 0; i < size; i++) {
+                        strArr[i] = (String) deviceIdleController.mPowerSaveWhitelistApps.keyAt(i);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            return (String[]) ArrayUtils.filter(strArr, new DeviceIdleController$$ExternalSyntheticLambda14(3), new DeviceIdleController$$ExternalSyntheticLambda15(deviceIdleController, callingUid, callingUserId, 3));
+        }
+
+        public final String[] getSystemPowerWhitelistExceptIdle() {
+            String[] strArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            int callingUid = Binder.getCallingUid();
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (deviceIdleController) {
+                try {
+                    int size = deviceIdleController.mPowerSaveWhitelistAppsExceptIdle.size();
+                    strArr = new String[size];
+                    for (int i = 0; i < size; i++) {
+                        strArr[i] = (String) deviceIdleController.mPowerSaveWhitelistAppsExceptIdle.keyAt(i);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            return (String[]) ArrayUtils.filter(strArr, new DeviceIdleController$$ExternalSyntheticLambda14(0), new DeviceIdleController$$ExternalSyntheticLambda15(deviceIdleController, callingUid, callingUserId, 0));
+        }
+
+        public final String[] getUserPowerWhitelist() {
+            String[] strArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            int callingUid = Binder.getCallingUid();
+            int callingUserId = UserHandle.getCallingUserId();
+            synchronized (deviceIdleController) {
+                try {
+                    strArr = new String[deviceIdleController.mPowerSaveWhitelistUserApps.size()];
+                    for (int i = 0; i < deviceIdleController.mPowerSaveWhitelistUserApps.size(); i++) {
+                        strArr[i] = (String) deviceIdleController.mPowerSaveWhitelistUserApps.keyAt(i);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            return (String[]) ArrayUtils.filter(strArr, new DeviceIdleController$$ExternalSyntheticLambda14(4), new DeviceIdleController$$ExternalSyntheticLambda15(deviceIdleController, callingUid, callingUserId, 4));
+        }
+
+        public final boolean isPowerSaveWhitelistApp(String str) {
+            boolean z = true;
+            if (DeviceIdleController.this.mPackageManagerInternal.filterAppAccess(Binder.getCallingUid(), UserHandle.getCallingUserId(), str, true)) {
+                return false;
+            }
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                try {
+                    if (!deviceIdleController.mPowerSaveWhitelistApps.containsKey(str) && !deviceIdleController.mPowerSaveWhitelistUserApps.containsKey(str)) {
+                        z = false;
+                    }
+                } finally {
+                }
+            }
+            return z;
+        }
+
+        public final boolean isPowerSaveWhitelistExceptIdleApp(String str) {
+            boolean z = true;
+            if (DeviceIdleController.this.mPackageManagerInternal.filterAppAccess(Binder.getCallingUid(), UserHandle.getCallingUserId(), str, true)) {
+                return false;
+            }
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                try {
+                    if (!deviceIdleController.mPowerSaveWhitelistAppsExceptIdle.containsKey(str) && !deviceIdleController.mPowerSaveWhitelistUserApps.containsKey(str)) {
+                        z = false;
+                    }
+                } finally {
+                }
+            }
+            return z;
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+            DeviceIdleController.this.new Shell().exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+        }
+
+        public final void removePowerSaveWhitelistApp(String str) {
+            BootReceiver$$ExternalSyntheticOutline0.m58m("removePowerSaveWhitelistApp(name = ", str, ")", "DeviceIdleController");
+            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
+            TargetPkg targetPkg = new TargetPkg(DeviceIdleController.this, Binder.getCallingPid());
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                if (!DeviceIdleController.this.removePowerSaveWhitelistAppInternal(str, 3, targetPkg) && DeviceIdleController.this.mPowerSaveWhitelistAppsExceptIdle.containsKey(str)) {
+                    throw new UnsupportedOperationException("Cannot remove system whitelisted app");
+                }
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+
+        public final void removeSystemPowerWhitelistApp(String str) {
+            if (DeviceIdleController.DEBUG) {
+                DeviceIdleController$$ExternalSyntheticOutline0.m("removeAppFromSystemWhitelist(name = ", str, ")", "DeviceIdleController");
+            }
+            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
+            TargetPkg targetPkg = new TargetPkg(DeviceIdleController.this, Binder.getCallingPid());
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                DeviceIdleController.this.removeSystemPowerWhitelistAppInternal(str, 8, targetPkg);
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+
+        public final void restoreSystemPowerWhitelistApp(String str) {
+            if (DeviceIdleController.DEBUG) {
+                DeviceIdleController$$ExternalSyntheticOutline0.m("restoreAppToSystemWhitelist(name = ", str, ")", "DeviceIdleController");
+            }
+            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
+            TargetPkg targetPkg = new TargetPkg(DeviceIdleController.this, Binder.getCallingPid());
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                DeviceIdleController.this.restoreSystemPowerWhitelistAppInternal(str, 6, targetPkg);
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+
+        public final long whitelistAppTemporarily(String str, int i, int i2, String str2) {
+            long max = Math.max(10000L, DeviceIdleController.this.mConstants.MAX_TEMP_APP_ALLOWLIST_DURATION_MS / 2);
+            DeviceIdleController.this.addPowerSaveTempAllowlistAppChecked(i, i2, str, str2, max);
+            return max;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Constants extends ContentObserver implements DeviceConfig.OnPropertiesChangedListener {
+        public long DNA_REQUEST_VERSION;
+        public long FLEX_TIME_SHORT;
+        public long IDLE_AFTER_INACTIVE_TIMEOUT;
+        public float IDLE_FACTOR;
+        public float IDLE_PENDING_FACTOR;
+        public long IDLE_PENDING_TIMEOUT;
+        public long IDLE_TIMEOUT;
+        public long INACTIVE_TIMEOUT;
+        public long LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT;
+        public float LIGHT_IDLE_FACTOR;
+        public long LIGHT_IDLE_FLEX_LINEAR_INCREASE_FACTOR_MS;
+        public boolean LIGHT_IDLE_INCREASE_LINEARLY;
+        public long LIGHT_IDLE_LINEAR_INCREASE_FACTOR_MS;
+        public long LIGHT_IDLE_MAINTENANCE_MAX_BUDGET;
+        public long LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
+        public long LIGHT_IDLE_TIMEOUT;
+        public long LIGHT_IDLE_TIMEOUT_INITIAL_FLEX;
+        public long LIGHT_IDLE_TIMEOUT_MAX_FLEX;
+        public long LIGHT_MAX_IDLE_TIMEOUT;
+        public long LOCATING_TIMEOUT;
+        public float LOCATION_ACCURACY;
+        public long MAX_IDLE_PENDING_TIMEOUT;
+        public long MAX_IDLE_TIMEOUT;
+        public long MAX_TEMP_APP_ALLOWLIST_DURATION_MS;
+        public long MIN_DEEP_MAINTENANCE_TIME;
+        public long MIN_LIGHT_MAINTENANCE_TIME;
+        public long MIN_TIME_TO_ALARM;
+        public long MMS_TEMP_APP_ALLOWLIST_DURATION_MS;
+        public long MOTION_INACTIVE_TIMEOUT;
+        public long MOTION_INACTIVE_TIMEOUT_FLEX;
+        public long NOTIFICATION_ALLOWLIST_DURATION_MS;
+        public long QUICK_DOZE_DELAY_TIMEOUT;
+        public long SENSING_TIMEOUT;
+        public boolean SKIP_LOCATING;
+        public boolean SKIP_SENSING;
+        public long SMS_TEMP_APP_ALLOWLIST_DURATION_MS;
+        public boolean USE_MODE_MANAGER;
+        public boolean USE_WINDOW_ALARMS;
+        public boolean WAIT_FOR_UNLOCK;
+        public final long mDefaultDnaRequestVersion;
+        public final long mDefaultFlexTimeShort;
+        public final long mDefaultIdleAfterInactiveTimeout;
+        public final float mDefaultIdleFactor;
+        public final float mDefaultIdlePendingFactor;
+        public final long mDefaultIdlePendingTimeout;
+        public final long mDefaultIdleTimeout;
+        public final long mDefaultInactiveTimeout;
+        public final long mDefaultLightIdleAfterInactiveTimeout;
+        public final float mDefaultLightIdleFactor;
+        public final long mDefaultLightIdleFlexLinearIncreaseFactorMs;
+        public final boolean mDefaultLightIdleIncreaseLinearly;
+        public final long mDefaultLightIdleLinearIncreaseFactorMs;
+        public final long mDefaultLightIdleMaintenanceMaxBudget;
+        public final long mDefaultLightIdleMaintenanceMinBudget;
+        public final long mDefaultLightIdleTimeout;
+        public final long mDefaultLightIdleTimeoutInitialFlex;
+        public final long mDefaultLightIdleTimeoutMaxFlex;
+        public final long mDefaultLightMaxIdleTimeout;
+        public final long mDefaultLocatingTimeout;
+        public final float mDefaultLocationAccuracy;
+        public final long mDefaultMaxIdlePendingTimeout;
+        public final long mDefaultMaxIdleTimeout;
+        public final long mDefaultMaxTempAppAllowlistDurationMs;
+        public final long mDefaultMinDeepMaintenanceTime;
+        public final long mDefaultMinLightMaintenanceTime;
+        public final long mDefaultMinTimeToAlarm;
+        public final long mDefaultMmsTempAppAllowlistDurationMs;
+        public final long mDefaultMotionInactiveTimeout;
+        public final long mDefaultMotionInactiveTimeoutFlex;
+        public final long mDefaultNotificationAllowlistDurationMs;
+        public final long mDefaultQuickDozeDelayTimeout;
+        public final long mDefaultSensingTimeout;
+        public final boolean mDefaultSkipLocating;
+        public final boolean mDefaultSkipSensing;
+        public final long mDefaultSmsTempAppAllowlistDurationMs;
+        public final boolean mDefaultUseModeManager;
+        public final boolean mDefaultUseWindowAlarms;
+        public final boolean mDefaultWaitForUnlock;
+        public final ContentResolver mResolver;
+        public final boolean mSmallBatteryDevice;
+        public final UserSettingDeviceConfigMediator$SettingsOverridesIndividualMediator mUserSettingDeviceConfigMediator;
+
+        public Constants(Handler handler, ContentResolver contentResolver) {
+            super(handler);
+            this.mDefaultFlexTimeShort = 60000L;
+            this.mDefaultLightIdleAfterInactiveTimeout = 240000L;
+            this.mDefaultLightIdleTimeout = 300000L;
+            this.mDefaultLightIdleTimeoutInitialFlex = 60000L;
+            this.mDefaultLightIdleTimeoutMaxFlex = 900000L;
+            this.mDefaultLightIdleFactor = 2.0f;
+            this.mDefaultLightIdleLinearIncreaseFactorMs = 300000L;
+            this.mDefaultLightIdleFlexLinearIncreaseFactorMs = 60000L;
+            this.mDefaultLightMaxIdleTimeout = 900000L;
+            this.mDefaultLightIdleMaintenanceMinBudget = 60000L;
+            this.mDefaultLightIdleMaintenanceMaxBudget = 300000L;
+            this.mDefaultMinLightMaintenanceTime = 5000L;
+            this.mDefaultMinDeepMaintenanceTime = 30000L;
+            this.mDefaultInactiveTimeout = 1800000L;
+            this.mDefaultSensingTimeout = 240000L;
+            this.mDefaultLocatingTimeout = 30000L;
+            this.mDefaultLocationAccuracy = 20.0f;
+            this.mDefaultMotionInactiveTimeout = 600000L;
+            this.mDefaultMotionInactiveTimeoutFlex = 60000L;
+            this.mDefaultIdleAfterInactiveTimeout = 1800000L;
+            this.mDefaultIdlePendingTimeout = 300000L;
+            this.mDefaultMaxIdlePendingTimeout = 600000L;
+            this.mDefaultIdlePendingFactor = 2.0f;
+            this.mDefaultQuickDozeDelayTimeout = 60000L;
+            this.mDefaultIdleTimeout = ClipboardService.DEFAULT_CLIPBOARD_TIMEOUT_MILLIS;
+            this.mDefaultMaxIdleTimeout = 21600000L;
+            this.mDefaultIdleFactor = 2.0f;
+            this.mDefaultMinTimeToAlarm = 1800000L;
+            this.mDefaultMaxTempAppAllowlistDurationMs = 300000L;
+            this.mDefaultMmsTempAppAllowlistDurationMs = 60000L;
+            this.mDefaultSmsTempAppAllowlistDurationMs = 20000L;
+            this.mDefaultNotificationAllowlistDurationMs = 30000L;
+            this.mDefaultWaitForUnlock = true;
+            this.mDefaultUseWindowAlarms = true;
+            this.mDefaultUseModeManager = false;
+            this.mDefaultSkipSensing = false;
+            this.mDefaultSkipLocating = false;
+            this.mDefaultDnaRequestVersion = 0L;
+            this.FLEX_TIME_SHORT = 60000L;
+            this.LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT = 240000L;
+            this.LIGHT_IDLE_TIMEOUT = 300000L;
+            this.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX = 60000L;
+            this.LIGHT_IDLE_TIMEOUT_MAX_FLEX = 900000L;
+            this.LIGHT_IDLE_FACTOR = 2.0f;
+            this.LIGHT_IDLE_INCREASE_LINEARLY = this.mDefaultLightIdleIncreaseLinearly;
+            this.LIGHT_IDLE_LINEAR_INCREASE_FACTOR_MS = 300000L;
+            this.LIGHT_IDLE_FLEX_LINEAR_INCREASE_FACTOR_MS = 60000L;
+            this.LIGHT_MAX_IDLE_TIMEOUT = 900000L;
+            this.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET = 60000L;
+            this.LIGHT_IDLE_MAINTENANCE_MAX_BUDGET = 300000L;
+            this.MIN_LIGHT_MAINTENANCE_TIME = 5000L;
+            this.MIN_DEEP_MAINTENANCE_TIME = 30000L;
+            this.INACTIVE_TIMEOUT = 1800000L;
+            this.SENSING_TIMEOUT = 240000L;
+            this.LOCATING_TIMEOUT = 30000L;
+            this.LOCATION_ACCURACY = 20.0f;
+            this.MOTION_INACTIVE_TIMEOUT = 600000L;
+            this.MOTION_INACTIVE_TIMEOUT_FLEX = 60000L;
+            this.IDLE_AFTER_INACTIVE_TIMEOUT = 1800000L;
+            this.IDLE_PENDING_TIMEOUT = 300000L;
+            this.MAX_IDLE_PENDING_TIMEOUT = 600000L;
+            this.IDLE_PENDING_FACTOR = 2.0f;
+            this.QUICK_DOZE_DELAY_TIMEOUT = 60000L;
+            this.IDLE_TIMEOUT = ClipboardService.DEFAULT_CLIPBOARD_TIMEOUT_MILLIS;
+            this.MAX_IDLE_TIMEOUT = 21600000L;
+            this.IDLE_FACTOR = 2.0f;
+            this.MIN_TIME_TO_ALARM = 1800000L;
+            this.MAX_TEMP_APP_ALLOWLIST_DURATION_MS = 300000L;
+            this.MMS_TEMP_APP_ALLOWLIST_DURATION_MS = 60000L;
+            this.SMS_TEMP_APP_ALLOWLIST_DURATION_MS = 20000L;
+            this.NOTIFICATION_ALLOWLIST_DURATION_MS = 30000L;
+            this.WAIT_FOR_UNLOCK = true;
+            this.USE_WINDOW_ALARMS = true;
+            this.USE_MODE_MANAGER = false;
+            this.SKIP_SENSING = false;
+            this.SKIP_LOCATING = false;
+            this.DNA_REQUEST_VERSION = 0L;
+            UserSettingDeviceConfigMediator$SettingsOverridesIndividualMediator userSettingDeviceConfigMediator$SettingsOverridesIndividualMediator = new UserSettingDeviceConfigMediator$SettingsOverridesIndividualMediator();
+            this.mUserSettingDeviceConfigMediator = userSettingDeviceConfigMediator$SettingsOverridesIndividualMediator;
+            this.mResolver = contentResolver;
             Resources resources = DeviceIdleController.this.getContext().getResources();
-            this.mDefaultFlexTimeShort = getTimeout(resources.getInteger(17695058), this.mDefaultFlexTimeShort);
-            this.mDefaultLightIdleAfterInactiveTimeout = getTimeout(resources.getInteger(17695065), this.mDefaultLightIdleAfterInactiveTimeout);
-            this.mDefaultLightIdleTimeout = getTimeout(resources.getInteger(17695071), this.mDefaultLightIdleTimeout);
-            this.mDefaultLightIdleTimeoutInitialFlex = getTimeout(resources.getInteger(17695069), this.mDefaultLightIdleTimeoutInitialFlex);
-            this.mDefaultLightIdleTimeoutMaxFlex = getTimeout(resources.getInteger(17695070), this.mDefaultLightIdleTimeoutMaxFlex);
-            this.mDefaultLightIdleFactor = resources.getFloat(17695066);
-            this.mDefaultLightMaxIdleTimeout = getTimeout(resources.getInteger(17695072), this.mDefaultLightMaxIdleTimeout);
-            this.mDefaultLightIdleMaintenanceMinBudget = getTimeout(resources.getInteger(17695068), this.mDefaultLightIdleMaintenanceMinBudget);
-            this.mDefaultLightIdleMaintenanceMaxBudget = getTimeout(resources.getInteger(17695067), this.mDefaultLightIdleMaintenanceMaxBudget);
-            this.mDefaultMinLightMaintenanceTime = getTimeout(resources.getInteger(17695079), this.mDefaultMinLightMaintenanceTime);
-            this.mDefaultMinDeepMaintenanceTime = getTimeout(resources.getInteger(17695078), this.mDefaultMinDeepMaintenanceTime);
-            this.mDefaultInactiveTimeout = getTimeout(resources.getInteger(17695064), this.mDefaultInactiveTimeout);
-            this.mDefaultSensingTimeout = getTimeout(resources.getInteger(17695088), this.mDefaultSensingTimeout);
-            this.mDefaultLocatingTimeout = getTimeout(resources.getInteger(17695073), this.mDefaultLocatingTimeout);
-            this.mDefaultLocationAccuracy = resources.getFloat(17695074);
-            this.mDefaultMotionInactiveTimeout = getTimeout(resources.getInteger(17695083), this.mDefaultMotionInactiveTimeout);
-            this.mDefaultMotionInactiveTimeoutFlex = getTimeout(resources.getInteger(17695082), this.mDefaultMotionInactiveTimeoutFlex);
-            this.mDefaultIdleAfterInactiveTimeout = getTimeout(resources.getInteger(17695059), this.mDefaultIdleAfterInactiveTimeout);
-            this.mDefaultIdlePendingTimeout = getTimeout(resources.getInteger(17695062), this.mDefaultIdlePendingTimeout);
-            this.mDefaultMaxIdlePendingTimeout = getTimeout(resources.getInteger(17695075), this.mDefaultMaxIdlePendingTimeout);
-            this.mDefaultIdlePendingFactor = resources.getFloat(17695061);
-            this.mDefaultQuickDozeDelayTimeout = getTimeout(resources.getInteger(17695087), this.mDefaultQuickDozeDelayTimeout);
-            this.mDefaultIdleTimeout = getTimeout(resources.getInteger(17695063), this.mDefaultIdleTimeout);
-            this.mDefaultMaxIdleTimeout = getTimeout(resources.getInteger(17695076), this.mDefaultMaxIdleTimeout);
-            this.mDefaultIdleFactor = resources.getFloat(17695060);
-            this.mDefaultMinTimeToAlarm = getTimeout(resources.getInteger(17695080), this.mDefaultMinTimeToAlarm);
-            this.mDefaultMaxTempAppAllowlistDurationMs = resources.getInteger(17695077);
-            this.mDefaultMmsTempAppAllowlistDurationMs = resources.getInteger(17695081);
-            this.mDefaultSmsTempAppAllowlistDurationMs = resources.getInteger(17695089);
-            this.mDefaultNotificationAllowlistDurationMs = resources.getInteger(17695084);
-            this.mDefaultWaitForUnlock = resources.getBoolean(17891934);
-            this.mDefaultPreIdleFactorLong = resources.getFloat(17695085);
-            this.mDefaultPreIdleFactorShort = resources.getFloat(17695086);
-            boolean z = resources.getBoolean(17891933);
-            this.mDefaultUseWindowAlarms = z;
+            this.mDefaultFlexTimeShort = resources.getInteger(R.integer.preference_screen_header_scrollbarStyle);
+            this.mDefaultLightIdleAfterInactiveTimeout = resources.getInteger(17695119);
+            this.mDefaultLightIdleTimeout = resources.getInteger(17695127);
+            this.mDefaultLightIdleTimeoutInitialFlex = resources.getInteger(17695125);
+            this.mDefaultLightIdleTimeoutMaxFlex = resources.getInteger(17695126);
+            this.mDefaultLightIdleFactor = resources.getFloat(17695120);
+            this.mDefaultLightIdleIncreaseLinearly = resources.getBoolean(R.bool.skip_restoring_network_selection);
+            this.mDefaultLightIdleLinearIncreaseFactorMs = resources.getInteger(17695122);
+            this.mDefaultLightIdleFlexLinearIncreaseFactorMs = resources.getInteger(17695121);
+            this.mDefaultLightMaxIdleTimeout = resources.getInteger(17695128);
+            this.mDefaultLightIdleMaintenanceMinBudget = resources.getInteger(17695124);
+            this.mDefaultLightIdleMaintenanceMaxBudget = resources.getInteger(17695123);
+            this.mDefaultMinLightMaintenanceTime = resources.getInteger(17695135);
+            this.mDefaultMinDeepMaintenanceTime = resources.getInteger(17695134);
+            this.mDefaultInactiveTimeout = resources.getInteger(R.integer.timepicker_title_visibility);
+            this.mDefaultSensingTimeout = resources.getInteger(17695142);
+            this.mDefaultLocatingTimeout = resources.getInteger(17695129);
+            this.mDefaultLocationAccuracy = resources.getFloat(17695130);
+            this.mDefaultMotionInactiveTimeout = resources.getInteger(17695139);
+            this.mDefaultMotionInactiveTimeoutFlex = resources.getInteger(17695138);
+            this.mDefaultIdleAfterInactiveTimeout = resources.getInteger(R.integer.preferences_left_pane_weight);
+            this.mDefaultIdlePendingTimeout = resources.getInteger(R.integer.time_picker_mode);
+            this.mDefaultMaxIdlePendingTimeout = resources.getInteger(17695131);
+            this.mDefaultIdlePendingFactor = resources.getFloat(R.integer.thumbnail_width_tv);
+            this.mDefaultQuickDozeDelayTimeout = resources.getInteger(17695141);
+            this.mDefaultIdleTimeout = resources.getInteger(R.integer.time_picker_mode_material);
+            this.mDefaultMaxIdleTimeout = resources.getInteger(17695132);
+            this.mDefaultIdleFactor = resources.getFloat(R.integer.preferences_right_pane_weight);
+            this.mDefaultMinTimeToAlarm = resources.getInteger(17695136);
+            this.mDefaultMaxTempAppAllowlistDurationMs = resources.getInteger(17695133);
+            this.mDefaultMmsTempAppAllowlistDurationMs = resources.getInteger(17695137);
+            this.mDefaultSmsTempAppAllowlistDurationMs = resources.getInteger(17695143);
+            this.mDefaultNotificationAllowlistDurationMs = resources.getInteger(17695140);
+            this.mDefaultWaitForUnlock = resources.getBoolean(17892003);
+            this.mDefaultUseWindowAlarms = resources.getBoolean(17892002);
+            this.mDefaultUseModeManager = resources.getBoolean(17892001);
+            this.mDefaultSkipSensing = resources.getBoolean(R.bool.use_lock_pattern_drawable);
+            this.mDefaultSkipLocating = resources.getBoolean(R.bool.split_action_bar_is_narrow);
+            long integer = resources.getInteger(R.integer.preference_fragment_scrollbarStyle);
+            this.mDefaultDnaRequestVersion = integer;
             this.FLEX_TIME_SHORT = this.mDefaultFlexTimeShort;
             this.LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT = this.mDefaultLightIdleAfterInactiveTimeout;
             this.LIGHT_IDLE_TIMEOUT = this.mDefaultLightIdleTimeout;
             this.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX = this.mDefaultLightIdleTimeoutInitialFlex;
             this.LIGHT_IDLE_TIMEOUT_MAX_FLEX = this.mDefaultLightIdleTimeoutMaxFlex;
             this.LIGHT_IDLE_FACTOR = this.mDefaultLightIdleFactor;
+            this.LIGHT_IDLE_INCREASE_LINEARLY = this.mDefaultLightIdleIncreaseLinearly;
+            this.LIGHT_IDLE_LINEAR_INCREASE_FACTOR_MS = this.mDefaultLightIdleLinearIncreaseFactorMs;
+            this.LIGHT_IDLE_FLEX_LINEAR_INCREASE_FACTOR_MS = this.mDefaultLightIdleFlexLinearIncreaseFactorMs;
             this.LIGHT_MAX_IDLE_TIMEOUT = this.mDefaultLightMaxIdleTimeout;
             this.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET = this.mDefaultLightIdleMaintenanceMinBudget;
             this.LIGHT_IDLE_MAINTENANCE_MAX_BUDGET = this.mDefaultLightIdleMaintenanceMaxBudget;
@@ -702,416 +1164,74 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
             this.SMS_TEMP_APP_ALLOWLIST_DURATION_MS = this.mDefaultSmsTempAppAllowlistDurationMs;
             this.NOTIFICATION_ALLOWLIST_DURATION_MS = this.mDefaultNotificationAllowlistDurationMs;
             this.WAIT_FOR_UNLOCK = this.mDefaultWaitForUnlock;
-            this.PRE_IDLE_FACTOR_LONG = this.mDefaultPreIdleFactorLong;
-            this.PRE_IDLE_FACTOR_SHORT = this.mDefaultPreIdleFactorShort;
-            this.USE_WINDOW_ALARMS = z;
-        }
-
-        public void onPropertiesChanged(DeviceConfig.Properties properties) {
-            char c;
-            synchronized (DeviceIdleController.this) {
-                for (String str : properties.getKeyset()) {
-                    if (str != null) {
-                        switch (str.hashCode()) {
-                            case -1781086459:
-                                if (str.equals("notification_allowlist_duration_ms")) {
-                                    c = 29;
-                                    break;
-                                }
-                                break;
-                            case -1102128050:
-                                if (str.equals("light_idle_maintenance_max_budget")) {
-                                    c = '\b';
-                                    break;
-                                }
-                                break;
-                            case -1067343247:
-                                if (str.equals("light_idle_factor")) {
-                                    c = 5;
-                                    break;
-                                }
-                                break;
-                            case -986742087:
-                                if (str.equals("use_window_alarms")) {
-                                    c = '!';
-                                    break;
-                                }
-                                break;
-                            case -919175870:
-                                if (str.equals("light_max_idle_to")) {
-                                    c = 6;
-                                    break;
-                                }
-                                break;
-                            case -564968069:
-                                if (str.equals("pre_idle_factor_short")) {
-                                    c = ' ';
-                                    break;
-                                }
-                                break;
-                            case -547781361:
-                                if (str.equals("min_light_maintenance_time")) {
-                                    c = '\t';
-                                    break;
-                                }
-                                break;
-                            case -492261706:
-                                if (str.equals("sms_temp_app_allowlist_duration_ms")) {
-                                    c = 28;
-                                    break;
-                                }
-                                break;
-                            case -318123838:
-                                if (str.equals("idle_pending_factor")) {
-                                    c = 20;
-                                    break;
-                                }
-                                break;
-                            case -173192557:
-                                if (str.equals("max_idle_pending_to")) {
-                                    c = 19;
-                                    break;
-                                }
-                                break;
-                            case -80111214:
-                                if (str.equals("min_time_to_alarm")) {
-                                    c = 25;
-                                    break;
-                                }
-                                break;
-                            case 134792310:
-                                if (str.equals("light_idle_to_initial_flex")) {
-                                    c = 3;
-                                    break;
-                                }
-                                break;
-                            case 197367965:
-                                if (str.equals("light_idle_to")) {
-                                    c = 2;
-                                    break;
-                                }
-                                break;
-                            case 361511631:
-                                if (str.equals("inactive_to")) {
-                                    c = 11;
-                                    break;
-                                }
-                                break;
-                            case 370224338:
-                                if (str.equals("motion_inactive_to_flex")) {
-                                    c = 16;
-                                    break;
-                                }
-                                break;
-                            case 415987654:
-                                if (str.equals("motion_inactive_to")) {
-                                    c = 15;
-                                    break;
-                                }
-                                break;
-                            case 551187755:
-                                if (str.equals("locating_to")) {
-                                    c = '\r';
-                                    break;
-                                }
-                                break;
-                            case 866187779:
-                                if (str.equals("light_after_inactive_to")) {
-                                    c = 1;
-                                    break;
-                                }
-                                break;
-                            case 891348287:
-                                if (str.equals("min_deep_maintenance_time")) {
-                                    c = '\n';
-                                    break;
-                                }
-                                break;
-                            case 918455627:
-                                if (str.equals("max_temp_app_allowlist_duration_ms")) {
-                                    c = 26;
-                                    break;
-                                }
-                                break;
-                            case 1001374852:
-                                if (str.equals("wait_for_unlock")) {
-                                    c = 30;
-                                    break;
-                                }
-                                break;
-                            case 1228499357:
-                                if (str.equals("pre_idle_factor_long")) {
-                                    c = 31;
-                                    break;
-                                }
-                                break;
-                            case 1280980182:
-                                if (str.equals("light_max_idle_to_flex")) {
-                                    c = 4;
-                                    break;
-                                }
-                                break;
-                            case 1350761616:
-                                if (str.equals("flex_time_short")) {
-                                    c = 0;
-                                    break;
-                                }
-                                break;
-                            case 1369871264:
-                                if (str.equals("light_idle_maintenance_min_budget")) {
-                                    c = 7;
-                                    break;
-                                }
-                                break;
-                            case 1383403841:
-                                if (str.equals("idle_after_inactive_to")) {
-                                    c = 17;
-                                    break;
-                                }
-                                break;
-                            case 1536604751:
-                                if (str.equals("sensing_to")) {
-                                    c = '\f';
-                                    break;
-                                }
-                                break;
-                            case 1547108378:
-                                if (str.equals("idle_factor")) {
-                                    c = 24;
-                                    break;
-                                }
-                                break;
-                            case 1563458830:
-                                if (str.equals("quick_doze_delay_to")) {
-                                    c = 21;
-                                    break;
-                                }
-                                break;
-                            case 1664365254:
-                                if (str.equals("idle_to")) {
-                                    c = 22;
-                                    break;
-                                }
-                                break;
-                            case 1679398766:
-                                if (str.equals("idle_pending_to")) {
-                                    c = 18;
-                                    break;
-                                }
-                                break;
-                            case 1695275755:
-                                if (str.equals("max_idle_to")) {
-                                    c = 23;
-                                    break;
-                                }
-                                break;
-                            case 1930831427:
-                                if (str.equals("location_accuracy")) {
-                                    c = 14;
-                                    break;
-                                }
-                                break;
-                            case 1944720892:
-                                if (str.equals("mms_temp_app_allowlist_duration_ms")) {
-                                    c = 27;
-                                    break;
-                                }
-                                break;
-                        }
-                        c = 65535;
-                        long j = 900000;
-                        switch (c) {
-                            case 0:
-                                this.FLEX_TIME_SHORT = properties.getLong("flex_time_short", this.mDefaultFlexTimeShort);
-                                break;
-                            case 1:
-                                this.LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT = properties.getLong("light_after_inactive_to", this.mDefaultLightIdleAfterInactiveTimeout);
-                                break;
-                            case 2:
-                                this.LIGHT_IDLE_TIMEOUT = properties.getLong("light_idle_to", this.mDefaultLightIdleTimeout);
-                                break;
-                            case 3:
-                                this.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX = properties.getLong("light_idle_to_initial_flex", this.mDefaultLightIdleTimeoutInitialFlex);
-                                break;
-                            case 4:
-                                this.LIGHT_IDLE_TIMEOUT_MAX_FLEX = properties.getLong("light_max_idle_to_flex", this.mDefaultLightIdleTimeoutMaxFlex);
-                                break;
-                            case 5:
-                                this.LIGHT_IDLE_FACTOR = Math.max(1.0f, properties.getFloat("light_idle_factor", this.mDefaultLightIdleFactor));
-                                break;
-                            case 6:
-                                this.LIGHT_MAX_IDLE_TIMEOUT = properties.getLong("light_max_idle_to", this.mDefaultLightMaxIdleTimeout);
-                                break;
-                            case 7:
-                                this.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET = properties.getLong("light_idle_maintenance_min_budget", this.mDefaultLightIdleMaintenanceMinBudget);
-                                break;
-                            case '\b':
-                                this.LIGHT_IDLE_MAINTENANCE_MAX_BUDGET = properties.getLong("light_idle_maintenance_max_budget", this.mDefaultLightIdleMaintenanceMaxBudget);
-                                break;
-                            case '\t':
-                                this.MIN_LIGHT_MAINTENANCE_TIME = properties.getLong("min_light_maintenance_time", this.mDefaultMinLightMaintenanceTime);
-                                break;
-                            case '\n':
-                                this.MIN_DEEP_MAINTENANCE_TIME = properties.getLong("min_deep_maintenance_time", this.mDefaultMinDeepMaintenanceTime);
-                                break;
-                            case 11:
-                                if (!this.mSmallBatteryDevice) {
-                                    j = this.mDefaultInactiveTimeout;
-                                }
-                                this.INACTIVE_TIMEOUT = properties.getLong("inactive_to", j);
-                                break;
-                            case '\f':
-                                this.SENSING_TIMEOUT = properties.getLong("sensing_to", this.mDefaultSensingTimeout);
-                                break;
-                            case '\r':
-                                this.LOCATING_TIMEOUT = properties.getLong("locating_to", this.mDefaultLocatingTimeout);
-                                break;
-                            case 14:
-                                this.LOCATION_ACCURACY = properties.getFloat("location_accuracy", this.mDefaultLocationAccuracy);
-                                break;
-                            case 15:
-                                this.MOTION_INACTIVE_TIMEOUT = properties.getLong("motion_inactive_to", this.mDefaultMotionInactiveTimeout);
-                                break;
-                            case 16:
-                                this.MOTION_INACTIVE_TIMEOUT_FLEX = properties.getLong("motion_inactive_to_flex", this.mDefaultMotionInactiveTimeoutFlex);
-                                break;
-                            case 17:
-                                if (!this.mSmallBatteryDevice) {
-                                    j = this.mDefaultIdleAfterInactiveTimeout;
-                                }
-                                this.IDLE_AFTER_INACTIVE_TIMEOUT = properties.getLong("idle_after_inactive_to", j);
-                                break;
-                            case 18:
-                                this.IDLE_PENDING_TIMEOUT = properties.getLong("idle_pending_to", this.mDefaultIdlePendingTimeout);
-                                break;
-                            case 19:
-                                this.MAX_IDLE_PENDING_TIMEOUT = properties.getLong("max_idle_pending_to", this.mDefaultMaxIdlePendingTimeout);
-                                break;
-                            case 20:
-                                this.IDLE_PENDING_FACTOR = properties.getFloat("idle_pending_factor", this.mDefaultIdlePendingFactor);
-                                break;
-                            case 21:
-                                this.QUICK_DOZE_DELAY_TIMEOUT = properties.getLong("quick_doze_delay_to", this.mDefaultQuickDozeDelayTimeout);
-                                break;
-                            case 22:
-                                this.IDLE_TIMEOUT = properties.getLong("idle_to", this.mDefaultIdleTimeout);
-                                break;
-                            case 23:
-                                this.MAX_IDLE_TIMEOUT = properties.getLong("max_idle_to", this.mDefaultMaxIdleTimeout);
-                                break;
-                            case 24:
-                                this.IDLE_FACTOR = properties.getFloat("idle_factor", this.mDefaultIdleFactor);
-                                break;
-                            case 25:
-                                this.MIN_TIME_TO_ALARM = properties.getLong("min_time_to_alarm", this.mDefaultMinTimeToAlarm);
-                                break;
-                            case 26:
-                                this.MAX_TEMP_APP_ALLOWLIST_DURATION_MS = properties.getLong("max_temp_app_allowlist_duration_ms", this.mDefaultMaxTempAppAllowlistDurationMs);
-                                break;
-                            case 27:
-                                this.MMS_TEMP_APP_ALLOWLIST_DURATION_MS = properties.getLong("mms_temp_app_allowlist_duration_ms", this.mDefaultMmsTempAppAllowlistDurationMs);
-                                break;
-                            case 28:
-                                this.SMS_TEMP_APP_ALLOWLIST_DURATION_MS = properties.getLong("sms_temp_app_allowlist_duration_ms", this.mDefaultSmsTempAppAllowlistDurationMs);
-                                break;
-                            case 29:
-                                this.NOTIFICATION_ALLOWLIST_DURATION_MS = properties.getLong("notification_allowlist_duration_ms", this.mDefaultNotificationAllowlistDurationMs);
-                                break;
-                            case 30:
-                                this.WAIT_FOR_UNLOCK = properties.getBoolean("wait_for_unlock", this.mDefaultWaitForUnlock);
-                                break;
-                            case 31:
-                                this.PRE_IDLE_FACTOR_LONG = properties.getFloat("pre_idle_factor_long", this.mDefaultPreIdleFactorLong);
-                                break;
-                            case ' ':
-                                this.PRE_IDLE_FACTOR_SHORT = properties.getFloat("pre_idle_factor_short", this.mDefaultPreIdleFactorShort);
-                                break;
-                            case '!':
-                                this.USE_WINDOW_ALARMS = properties.getBoolean("use_window_alarms", this.mDefaultUseWindowAlarms);
-                                break;
-                            default:
-                                Slog.e("DeviceIdleController", "Unknown configuration key: " + str);
-                                break;
-                        }
-                    }
-                }
+            this.USE_WINDOW_ALARMS = this.mDefaultUseWindowAlarms;
+            this.USE_MODE_MANAGER = this.mDefaultUseModeManager;
+            this.SKIP_SENSING = this.mDefaultSkipSensing;
+            this.SKIP_LOCATING = this.mDefaultSkipLocating;
+            this.DNA_REQUEST_VERSION = integer;
+            boolean isSmallBatteryDevice = ActivityManager.isSmallBatteryDevice();
+            this.mSmallBatteryDevice = isSmallBatteryDevice;
+            if (isSmallBatteryDevice) {
+                this.INACTIVE_TIMEOUT = 60000L;
+                this.IDLE_AFTER_INACTIVE_TIMEOUT = 60000L;
             }
+            DeviceConfig.addOnPropertiesChangedListener("device_idle", AppSchedulingModuleThread.getExecutor(), this);
+            contentResolver.registerContentObserver(Settings.Global.getUriFor("device_idle_constants"), false, this);
+            updateSettingsConstantLocked();
+            userSettingDeviceConfigMediator$SettingsOverridesIndividualMediator.mProperties = DeviceConfig.getProperties("device_idle", new String[0]);
+            updateConstantsLocked();
         }
 
-        public void dump(PrintWriter printWriter) {
+        public final void dump(PrintWriter printWriter) {
             printWriter.println("  Settings:");
             printWriter.print("    ");
             printWriter.print("flex_time_short");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.FLEX_TIME_SHORT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("light_after_inactive_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.FLEX_TIME_SHORT, printWriter, "    ", "light_after_inactive_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("light_idle_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT, printWriter, "    ", "light_idle_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.LIGHT_IDLE_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("light_idle_to_initial_flex");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.LIGHT_IDLE_TIMEOUT, printWriter, "    ", "light_idle_to_initial_flex");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("light_max_idle_to_flex");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX, printWriter, "    ", "light_max_idle_to_flex");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.LIGHT_IDLE_TIMEOUT_MAX_FLEX, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("light_idle_factor");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.LIGHT_IDLE_TIMEOUT_MAX_FLEX, printWriter, "    ", "light_idle_factor");
             printWriter.print("=");
             printWriter.print(this.LIGHT_IDLE_FACTOR);
             printWriter.println();
             printWriter.print("    ");
+            printWriter.print("light_idle_increase_linearly");
+            printWriter.print("=");
+            printWriter.print(this.LIGHT_IDLE_INCREASE_LINEARLY);
+            printWriter.println();
+            printWriter.print("    ");
+            printWriter.print("light_idle_linear_increase_factor_ms");
+            printWriter.print("=");
+            printWriter.print(this.LIGHT_IDLE_LINEAR_INCREASE_FACTOR_MS);
+            printWriter.println();
+            printWriter.print("    ");
+            printWriter.print("light_idle_flex_linear_increase_factor_ms");
+            printWriter.print("=");
+            printWriter.print(this.LIGHT_IDLE_FLEX_LINEAR_INCREASE_FACTOR_MS);
+            printWriter.println();
+            printWriter.print("    ");
             printWriter.print("light_max_idle_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.LIGHT_MAX_IDLE_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("light_idle_maintenance_min_budget");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.LIGHT_MAX_IDLE_TIMEOUT, printWriter, "    ", "light_idle_maintenance_min_budget");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("light_idle_maintenance_max_budget");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET, printWriter, "    ", "light_idle_maintenance_max_budget");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.LIGHT_IDLE_MAINTENANCE_MAX_BUDGET, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("min_light_maintenance_time");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.LIGHT_IDLE_MAINTENANCE_MAX_BUDGET, printWriter, "    ", "min_light_maintenance_time");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.MIN_LIGHT_MAINTENANCE_TIME, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("min_deep_maintenance_time");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.MIN_LIGHT_MAINTENANCE_TIME, printWriter, "    ", "min_deep_maintenance_time");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.MIN_DEEP_MAINTENANCE_TIME, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("inactive_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.MIN_DEEP_MAINTENANCE_TIME, printWriter, "    ", "inactive_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.INACTIVE_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("sensing_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.INACTIVE_TIMEOUT, printWriter, "    ", "sensing_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.SENSING_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("locating_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.SENSING_TIMEOUT, printWriter, "    ", "locating_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.LOCATING_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("location_accuracy");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.LOCATING_TIMEOUT, printWriter, "    ", "location_accuracy");
             printWriter.print("=");
             printWriter.print(this.LOCATION_ACCURACY);
             printWriter.print("m");
@@ -1119,97 +1239,1946 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
             printWriter.print("    ");
             printWriter.print("motion_inactive_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.MOTION_INACTIVE_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("motion_inactive_to_flex");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.MOTION_INACTIVE_TIMEOUT, printWriter, "    ", "motion_inactive_to_flex");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.MOTION_INACTIVE_TIMEOUT_FLEX, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("idle_after_inactive_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.MOTION_INACTIVE_TIMEOUT_FLEX, printWriter, "    ", "idle_after_inactive_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.IDLE_AFTER_INACTIVE_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("idle_pending_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.IDLE_AFTER_INACTIVE_TIMEOUT, printWriter, "    ", "idle_pending_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.IDLE_PENDING_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("max_idle_pending_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.IDLE_PENDING_TIMEOUT, printWriter, "    ", "max_idle_pending_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.MAX_IDLE_PENDING_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("idle_pending_factor");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.MAX_IDLE_PENDING_TIMEOUT, printWriter, "    ", "idle_pending_factor");
             printWriter.print("=");
             printWriter.println(this.IDLE_PENDING_FACTOR);
             printWriter.print("    ");
             printWriter.print("quick_doze_delay_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.QUICK_DOZE_DELAY_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("idle_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.QUICK_DOZE_DELAY_TIMEOUT, printWriter, "    ", "idle_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.IDLE_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("max_idle_to");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.IDLE_TIMEOUT, printWriter, "    ", "max_idle_to");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.MAX_IDLE_TIMEOUT, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("idle_factor");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.MAX_IDLE_TIMEOUT, printWriter, "    ", "idle_factor");
             printWriter.print("=");
             printWriter.println(this.IDLE_FACTOR);
             printWriter.print("    ");
             printWriter.print("min_time_to_alarm");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.MIN_TIME_TO_ALARM, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("max_temp_app_allowlist_duration_ms");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.MIN_TIME_TO_ALARM, printWriter, "    ", "max_temp_app_allowlist_duration_ms");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.MAX_TEMP_APP_ALLOWLIST_DURATION_MS, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("mms_temp_app_allowlist_duration_ms");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.MAX_TEMP_APP_ALLOWLIST_DURATION_MS, printWriter, "    ", "mms_temp_app_allowlist_duration_ms");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.MMS_TEMP_APP_ALLOWLIST_DURATION_MS, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("sms_temp_app_allowlist_duration_ms");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.MMS_TEMP_APP_ALLOWLIST_DURATION_MS, printWriter, "    ", "sms_temp_app_allowlist_duration_ms");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.SMS_TEMP_APP_ALLOWLIST_DURATION_MS, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("notification_allowlist_duration_ms");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.SMS_TEMP_APP_ALLOWLIST_DURATION_MS, printWriter, "    ", "notification_allowlist_duration_ms");
             printWriter.print("=");
-            TimeUtils.formatDuration(this.NOTIFICATION_ALLOWLIST_DURATION_MS, printWriter);
-            printWriter.println();
-            printWriter.print("    ");
-            printWriter.print("wait_for_unlock");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(this.NOTIFICATION_ALLOWLIST_DURATION_MS, printWriter, "    ", "wait_for_unlock");
             printWriter.print("=");
-            printWriter.println(this.WAIT_FOR_UNLOCK);
-            printWriter.print("    ");
-            printWriter.print("pre_idle_factor_long");
-            printWriter.print("=");
-            printWriter.println(this.PRE_IDLE_FACTOR_LONG);
-            printWriter.print("    ");
-            printWriter.print("pre_idle_factor_short");
-            printWriter.print("=");
-            printWriter.println(this.PRE_IDLE_FACTOR_SHORT);
-            printWriter.print("    ");
-            printWriter.print("use_window_alarms");
-            printWriter.print("=");
-            printWriter.println(this.USE_WINDOW_ALARMS);
+            DeviceIdleController$$ExternalSyntheticOutline0.m(printWriter, this.WAIT_FOR_UNLOCK, "    ", "use_window_alarms", "=");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(printWriter, this.USE_WINDOW_ALARMS, "    ", "use_mode_manager", "=");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(printWriter, this.USE_MODE_MANAGER, "    ", "skip_sensing", "=");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(printWriter, this.SKIP_SENSING, "    ", "skip_locating", "=");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(printWriter, this.SKIP_LOCATING, "    ", "dna_request_version", "=");
+            printWriter.println(this.DNA_REQUEST_VERSION);
+        }
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z, Uri uri) {
+            synchronized (DeviceIdleController.this) {
+                updateSettingsConstantLocked();
+                updateConstantsLocked();
+            }
+        }
+
+        public final void onPropertiesChanged(DeviceConfig.Properties properties) {
+            synchronized (DeviceIdleController.this) {
+                this.mUserSettingDeviceConfigMediator.mProperties = properties;
+                updateConstantsLocked();
+            }
+        }
+
+        public final void updateConstantsLocked() {
+            if (this.mSmallBatteryDevice) {
+                return;
+            }
+            this.FLEX_TIME_SHORT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultFlexTimeShort, "flex_time_short");
+            this.LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLightIdleAfterInactiveTimeout, "light_after_inactive_to");
+            this.LIGHT_IDLE_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLightIdleTimeout, "light_idle_to");
+            this.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLightIdleTimeoutInitialFlex, "light_idle_to_initial_flex");
+            this.LIGHT_IDLE_TIMEOUT_MAX_FLEX = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLightIdleTimeoutMaxFlex, "light_max_idle_to_flex");
+            this.LIGHT_IDLE_FACTOR = Math.max(1.0f, this.mUserSettingDeviceConfigMediator.getFloat(this.mDefaultLightIdleFactor, "light_idle_factor"));
+            this.LIGHT_IDLE_INCREASE_LINEARLY = this.mUserSettingDeviceConfigMediator.getBoolean("light_idle_increase_linearly", this.mDefaultLightIdleIncreaseLinearly);
+            this.LIGHT_IDLE_LINEAR_INCREASE_FACTOR_MS = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLightIdleLinearIncreaseFactorMs, "light_idle_linear_increase_factor_ms");
+            this.LIGHT_IDLE_FLEX_LINEAR_INCREASE_FACTOR_MS = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLightIdleFlexLinearIncreaseFactorMs, "light_idle_flex_linear_increase_factor_ms");
+            this.LIGHT_MAX_IDLE_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLightMaxIdleTimeout, "light_max_idle_to");
+            this.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLightIdleMaintenanceMinBudget, "light_idle_maintenance_min_budget");
+            this.LIGHT_IDLE_MAINTENANCE_MAX_BUDGET = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLightIdleMaintenanceMaxBudget, "light_idle_maintenance_max_budget");
+            this.MIN_LIGHT_MAINTENANCE_TIME = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultMinLightMaintenanceTime, "min_light_maintenance_time");
+            this.MIN_DEEP_MAINTENANCE_TIME = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultMinDeepMaintenanceTime, "min_deep_maintenance_time");
+            this.INACTIVE_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mSmallBatteryDevice ? 60000L : this.mDefaultInactiveTimeout, "inactive_to");
+            this.SENSING_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultSensingTimeout, "sensing_to");
+            this.LOCATING_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultLocatingTimeout, "locating_to");
+            this.LOCATION_ACCURACY = this.mUserSettingDeviceConfigMediator.getFloat(this.mDefaultLocationAccuracy, "location_accuracy");
+            this.MOTION_INACTIVE_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultMotionInactiveTimeout, "motion_inactive_to");
+            this.MOTION_INACTIVE_TIMEOUT_FLEX = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultMotionInactiveTimeoutFlex, "motion_inactive_to_flex");
+            this.IDLE_AFTER_INACTIVE_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mSmallBatteryDevice ? 60000L : this.mDefaultIdleAfterInactiveTimeout, "idle_after_inactive_to");
+            this.IDLE_PENDING_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultIdlePendingTimeout, "idle_pending_to");
+            this.MAX_IDLE_PENDING_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultMaxIdlePendingTimeout, "max_idle_pending_to");
+            this.IDLE_PENDING_FACTOR = this.mUserSettingDeviceConfigMediator.getFloat(this.mDefaultIdlePendingFactor, "idle_pending_factor");
+            this.QUICK_DOZE_DELAY_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultQuickDozeDelayTimeout, "quick_doze_delay_to");
+            this.IDLE_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultIdleTimeout, "idle_to");
+            this.MAX_IDLE_TIMEOUT = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultMaxIdleTimeout, "max_idle_to");
+            this.IDLE_FACTOR = this.mUserSettingDeviceConfigMediator.getFloat(this.mDefaultIdleFactor, "idle_factor");
+            this.MIN_TIME_TO_ALARM = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultMinTimeToAlarm, "min_time_to_alarm");
+            this.MAX_TEMP_APP_ALLOWLIST_DURATION_MS = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultMaxTempAppAllowlistDurationMs, "max_temp_app_allowlist_duration_ms");
+            this.MMS_TEMP_APP_ALLOWLIST_DURATION_MS = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultMmsTempAppAllowlistDurationMs, "mms_temp_app_allowlist_duration_ms");
+            this.SMS_TEMP_APP_ALLOWLIST_DURATION_MS = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultSmsTempAppAllowlistDurationMs, "sms_temp_app_allowlist_duration_ms");
+            this.NOTIFICATION_ALLOWLIST_DURATION_MS = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultNotificationAllowlistDurationMs, "notification_allowlist_duration_ms");
+            this.WAIT_FOR_UNLOCK = this.mUserSettingDeviceConfigMediator.getBoolean("wait_for_unlock", this.mDefaultWaitForUnlock);
+            this.USE_WINDOW_ALARMS = this.mUserSettingDeviceConfigMediator.getBoolean("use_window_alarms", this.mDefaultUseWindowAlarms);
+            this.USE_MODE_MANAGER = this.mUserSettingDeviceConfigMediator.getBoolean("use_mode_manager", this.mDefaultUseModeManager);
+            this.SKIP_SENSING = this.mUserSettingDeviceConfigMediator.getBoolean("skip_sensing", this.mDefaultSkipSensing);
+            this.SKIP_LOCATING = this.mUserSettingDeviceConfigMediator.getBoolean("skip_locating", this.mDefaultSkipLocating);
+            this.DNA_REQUEST_VERSION = this.mUserSettingDeviceConfigMediator.getLong(this.mDefaultDnaRequestVersion, "dna_request_version");
+        }
+
+        public final void updateSettingsConstantLocked() {
+            try {
+                UserSettingDeviceConfigMediator$SettingsOverridesIndividualMediator userSettingDeviceConfigMediator$SettingsOverridesIndividualMediator = this.mUserSettingDeviceConfigMediator;
+                userSettingDeviceConfigMediator$SettingsOverridesIndividualMediator.mSettingsParser.setString(Settings.Global.getString(this.mResolver, "device_idle_constants"));
+            } catch (IllegalArgumentException e) {
+                Slog.e("DeviceIdleController", "Bad device idle settings", e);
+            }
         }
     }
 
-    @Override // com.android.server.AnyMotionDetector.DeviceIdleCallback
-    public void onAnyMotionResult(int i) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class EmergencyCallListener extends TelephonyCallback implements TelephonyCallback.OutgoingEmergencyCallListener, TelephonyCallback.CallStateListener {
+        public volatile boolean mIsEmergencyCallActive;
+
+        public EmergencyCallListener() {
+        }
+
+        @Override // android.telephony.TelephonyCallback.CallStateListener
+        public final void onCallStateChanged(int i) {
+            if (DeviceIdleController.DEBUG) {
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "onCallStateChanged(): state is ", "DeviceIdleController");
+            }
+            if (i == 0 && this.mIsEmergencyCallActive) {
+                this.mIsEmergencyCallActive = false;
+                synchronized (DeviceIdleController.this) {
+                    DeviceIdleController.this.becomeInactiveIfAppropriateLocked();
+                }
+            }
+        }
+
+        public final void onOutgoingEmergencyCall(EmergencyNumber emergencyNumber, int i) {
+            this.mIsEmergencyCallActive = true;
+            if (DeviceIdleController.DEBUG) {
+                AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "onOutgoingEmergencyCall(): subId = ", "DeviceIdleController");
+            }
+            synchronized (DeviceIdleController.this) {
+                DeviceIdleController.this.getClass();
+                DeviceIdleController.this.becomeActiveLocked(Process.myUid(), "emergency call");
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Injector {
+        public ConnectivityManager mConnectivityManager;
+        public Constants mConstants;
+        public final Context mContext;
+        public LocationManager mLocationManager;
+
+        public Injector(Context context) {
+            this.mContext = context.createAttributionContext("DeviceIdleController");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalPowerAllowlistService implements PowerAllowlistInternal {
+        public LocalPowerAllowlistService() {
+        }
+
+        public final void registerTempAllowlistChangeListener(PowerAllowlistInternal.TempAllowlistChangeListener tempAllowlistChangeListener) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                deviceIdleController.mTempAllowlistChangeListeners.add(tempAllowlistChangeListener);
+            }
+        }
+
+        public final void unregisterTempAllowlistChangeListener(PowerAllowlistInternal.TempAllowlistChangeListener tempAllowlistChangeListener) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                deviceIdleController.mTempAllowlistChangeListeners.remove(tempAllowlistChangeListener);
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalService implements DeviceIdleInternal {
+        public LocalService() {
+        }
+
+        public final void addPowerSaveTempWhitelistApp(int i, String str, long j, int i2, int i3, boolean z, int i4, String str2) {
+            DeviceIdleController.this.addPowerSaveTempAllowlistAppInternal(i, str, j, i2, i3, z, i4, str2);
+        }
+
+        public final void addPowerSaveTempWhitelistApp(int i, String str, long j, int i2, boolean z, int i3, String str2) {
+            DeviceIdleController.this.addPowerSaveTempAllowlistAppInternal(i, str, j, 0, i2, z, i3, str2);
+        }
+
+        public final void addPowerSaveTempWhitelistAppDirect(int i, long j, int i2, boolean z, int i3, String str, int i4) {
+            DeviceIdleController.this.addPowerSaveTempWhitelistAppDirectInternal(i4, j, i, z, i2, str, i3);
+        }
+
+        public final void exitIdle(String str) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                deviceIdleController.becomeActiveLocked(Binder.getCallingUid(), str);
+            }
+        }
+
+        public final String[] getFullPowerWhitelistExceptIdle() {
+            return DeviceIdleController.this.getFullPowerWhitelistInternalUnchecked();
+        }
+
+        public final long getNotificationAllowlistDuration() {
+            return DeviceIdleController.this.mConstants.NOTIFICATION_ALLOWLIST_DURATION_MS;
+        }
+
+        public final int[] getPowerSaveTempWhitelistAppIds() {
+            int[] iArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                iArr = deviceIdleController.mTempWhitelistAppIdArray;
+            }
+            return iArr;
+        }
+
+        public final int[] getPowerSaveWhitelistUserAppIds() {
+            int[] iArr;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                iArr = deviceIdleController.mPowerSaveWhitelistUserAppIdArray;
+            }
+            return iArr;
+        }
+
+        public final int getTempAllowListType(int i, int i2) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            deviceIdleController.getClass();
+            if (i != -1) {
+                return i != 102 ? i2 : deviceIdleController.mLocalActivityManager.getPushMessagingOverQuotaBehavior();
+            }
+            return -1;
+        }
+
+        public final boolean isAppOnWhitelist(int i) {
+            boolean z;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                z = Arrays.binarySearch(deviceIdleController.mPowerSaveWhitelistAllAppIdArray, i) >= 0;
+            }
+            return z;
+        }
+
+        public final void onConstraintStateChanged(IDeviceIdleConstraint iDeviceIdleConstraint, boolean z) {
+            synchronized (DeviceIdleController.this) {
+                DeviceIdleController.this.onConstraintStateChangedLocked(iDeviceIdleConstraint, z);
+            }
+        }
+
+        public final void registerDeviceIdleConstraint(IDeviceIdleConstraint iDeviceIdleConstraint, String str, int i) {
+            int i2;
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            deviceIdleController.getClass();
+            if (i == 0) {
+                i2 = 0;
+            } else {
+                if (i != 1) {
+                    Slog.wtf("DeviceIdleController", "Registering device-idle constraint with invalid type: " + i);
+                    return;
+                }
+                i2 = 3;
+            }
+            synchronized (deviceIdleController) {
+                try {
+                    if (deviceIdleController.mConstraints.containsKey(iDeviceIdleConstraint)) {
+                        Slog.e("DeviceIdleController", "Re-registering device-idle constraint: " + iDeviceIdleConstraint + ".");
+                    } else {
+                        deviceIdleController.mConstraints.put(iDeviceIdleConstraint, new DeviceIdleConstraintTracker(str, i2));
+                        deviceIdleController.updateActiveConstraintsLocked();
+                    }
+                } finally {
+                }
+            }
+        }
+
+        public final void registerStationaryListener(DeviceIdleInternal.StationaryListener stationaryListener) {
+            DeviceIdleController.this.registerStationaryListener(stationaryListener);
+        }
+
+        public final void setAlarmsActive(boolean z) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                try {
+                    deviceIdleController.mAlarmsActive = z;
+                    if (!z) {
+                        deviceIdleController.exitMaintenanceEarlyIfNeededLocked();
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void setJobsActive(boolean z) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                try {
+                    deviceIdleController.mJobsActive = z;
+                    if (!z) {
+                        deviceIdleController.exitMaintenanceEarlyIfNeededLocked();
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void unregisterDeviceIdleConstraint(IDeviceIdleConstraint iDeviceIdleConstraint) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                deviceIdleController.onConstraintStateChangedLocked(iDeviceIdleConstraint, false);
+                deviceIdleController.setConstraintMonitoringLocked(iDeviceIdleConstraint, false);
+                deviceIdleController.mConstraints.remove(iDeviceIdleConstraint);
+            }
+        }
+
+        public final void unregisterStationaryListener(DeviceIdleInternal.StationaryListener stationaryListener) {
+            DeviceIdleController deviceIdleController = DeviceIdleController.this;
+            synchronized (deviceIdleController) {
+                try {
+                    if (deviceIdleController.mStationaryListeners.remove(stationaryListener)) {
+                        if (deviceIdleController.mStationaryListeners.size() == 0) {
+                            int i = deviceIdleController.mState;
+                            if (i != 0) {
+                                if (i != 1) {
+                                    if (deviceIdleController.mQuickDozeActivated) {
+                                    }
+                                }
+                            }
+                            deviceIdleController.maybeStopMonitoringMotionLocked();
+                        }
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class ModeManagerOffBodyStateConsumer implements Consumer {
+        /* renamed from: -$$Nest$monModeManagerOffBodyChangedLocked, reason: not valid java name */
+        public static void m61$$Nest$monModeManagerOffBodyChangedLocked(ModeManagerOffBodyStateConsumer modeManagerOffBodyStateConsumer) {
+            DeviceIdleController.m60$$Nest$mmaybeBecomeActiveOnModeManagerEventsLocked(DeviceIdleController.this);
+        }
+
+        public ModeManagerOffBodyStateConsumer() {
+        }
+
+        @Override // java.util.function.Consumer
+        public final void accept(Object obj) {
+            Boolean bool = (Boolean) obj;
+            Slog.i("DeviceIdleController", "Offbody event from mode manager: " + bool);
+            synchronized (DeviceIdleController.this) {
+                try {
+                    DeviceIdleController deviceIdleController = DeviceIdleController.this;
+                    if (!deviceIdleController.mForceModeManagerOffBodyState && deviceIdleController.mIsOffBody != bool.booleanValue()) {
+                        DeviceIdleController.this.mIsOffBody = bool.booleanValue();
+                        DeviceIdleController.m60$$Nest$mmaybeBecomeActiveOnModeManagerEventsLocked(DeviceIdleController.this);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class ModeManagerQuickDozeRequestConsumer implements Consumer {
+        /* renamed from: -$$Nest$monModeManagerRequestChangedLocked, reason: not valid java name */
+        public static void m62$$Nest$monModeManagerRequestChangedLocked(ModeManagerQuickDozeRequestConsumer modeManagerQuickDozeRequestConsumer) {
+            DeviceIdleController.m60$$Nest$mmaybeBecomeActiveOnModeManagerEventsLocked(DeviceIdleController.this);
+            DeviceIdleController.this.updateQuickDozeFlagLocked();
+        }
+
+        public ModeManagerQuickDozeRequestConsumer() {
+        }
+
+        @Override // java.util.function.Consumer
+        public final void accept(Object obj) {
+            Boolean bool = (Boolean) obj;
+            Slog.i("DeviceIdleController", "Mode manager quick doze request: " + bool);
+            synchronized (DeviceIdleController.this) {
+                try {
+                    DeviceIdleController deviceIdleController = DeviceIdleController.this;
+                    if (!deviceIdleController.mForceModeManagerQuickDozeRequest && deviceIdleController.mModeManagerRequestedQuickDoze != bool.booleanValue()) {
+                        DeviceIdleController.this.mModeManagerRequestedQuickDoze = bool.booleanValue();
+                        DeviceIdleController.m60$$Nest$mmaybeBecomeActiveOnModeManagerEventsLocked(DeviceIdleController.this);
+                        DeviceIdleController.this.updateQuickDozeFlagLocked();
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class MotionListener extends TriggerEventListener implements SensorEventListener {
+        public long activatedTimeElapsed;
+        public boolean active = false;
+
+        public MotionListener() {
+        }
+
+        @Override // android.hardware.SensorEventListener
+        public final void onAccuracyChanged(Sensor sensor, int i) {
+        }
+
+        @Override // android.hardware.SensorEventListener
+        public final void onSensorChanged(SensorEvent sensorEvent) {
+            synchronized (DeviceIdleController.this) {
+                DeviceIdleController deviceIdleController = DeviceIdleController.this;
+                deviceIdleController.mSensorManager.unregisterListener(this, deviceIdleController.mMotionSensor);
+                this.active = false;
+                DeviceIdleController.this.motionLocked();
+            }
+        }
+
+        @Override // android.hardware.TriggerEventListener
+        public final void onTrigger(TriggerEvent triggerEvent) {
+            synchronized (DeviceIdleController.this) {
+                this.active = false;
+                DeviceIdleController.this.motionLocked();
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MyHandler extends Handler {
+        public MyHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            boolean deviceIdleMode;
+            boolean lightDeviceIdleMode;
+            boolean isStationaryLocked;
+            PowerAllowlistInternal.TempAllowlistChangeListener[] tempAllowlistChangeListenerArr;
+            boolean z = DeviceIdleController.DEBUG;
+            if (z) {
+                BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("handleMessage("), message.what, ")", "DeviceIdleController");
+            }
+            int i = 0;
+            DeviceIdleInternal.StationaryListener[] stationaryListenerArr = null;
+            switch (message.what) {
+                case 1:
+                    DeviceIdleController.this.handleWriteConfigFile();
+                    return;
+                case 2:
+                case 3:
+                    EventLog.writeEvent(34003, new Object[0]);
+                    if (message.what == 2) {
+                        deviceIdleMode = DeviceIdleController.this.mLocalPowerManager.setDeviceIdleMode(true);
+                        lightDeviceIdleMode = DeviceIdleController.this.mLocalPowerManager.setLightDeviceIdleMode(false);
+                    } else {
+                        deviceIdleMode = DeviceIdleController.this.mLocalPowerManager.setDeviceIdleMode(false);
+                        lightDeviceIdleMode = DeviceIdleController.this.mLocalPowerManager.setLightDeviceIdleMode(true);
+                    }
+                    try {
+                        DeviceIdleController.this.mNetworkPolicyManager.setDeviceIdleMode(true);
+                        DeviceIdleController.this.mBatteryStats.noteDeviceIdleMode(message.what == 2 ? 2 : 1, (String) null, Process.myUid());
+                    } catch (RemoteException unused) {
+                    }
+                    if (deviceIdleMode) {
+                        Context context = DeviceIdleController.this.getContext();
+                        DeviceIdleController deviceIdleController = DeviceIdleController.this;
+                        context.sendBroadcastAsUser(deviceIdleController.mIdleIntent, UserHandle.ALL, null, deviceIdleController.mIdleIntentOptions);
+                    }
+                    if (lightDeviceIdleMode) {
+                        Context context2 = DeviceIdleController.this.getContext();
+                        DeviceIdleController deviceIdleController2 = DeviceIdleController.this;
+                        context2.sendBroadcastAsUser(deviceIdleController2.mLightIdleIntent, UserHandle.ALL, null, deviceIdleController2.mLightIdleIntentOptions);
+                    }
+                    EventLog.writeEvent(34005, new Object[0]);
+                    DeviceIdleController.this.mGoingIdleWakeLock.release();
+                    return;
+                case 4:
+                    EventLog.writeEvent(34006, "unknown");
+                    boolean deviceIdleMode2 = DeviceIdleController.this.mLocalPowerManager.setDeviceIdleMode(false);
+                    boolean lightDeviceIdleMode2 = DeviceIdleController.this.mLocalPowerManager.setLightDeviceIdleMode(false);
+                    try {
+                        DeviceIdleController.this.mNetworkPolicyManager.setDeviceIdleMode(false);
+                        DeviceIdleController.this.mBatteryStats.noteDeviceIdleMode(0, (String) null, Process.myUid());
+                    } catch (RemoteException unused2) {
+                    }
+                    if (deviceIdleMode2) {
+                        DeviceIdleController deviceIdleController3 = DeviceIdleController.this;
+                        synchronized (deviceIdleController3) {
+                            deviceIdleController3.mActiveIdleOpCount++;
+                        }
+                        DeviceIdleController deviceIdleController4 = DeviceIdleController.this;
+                        deviceIdleController4.mLocalActivityManager.broadcastIntentWithCallback(deviceIdleController4.mIdleIntent, deviceIdleController4.mIdleStartedDoneReceiver, (String[]) null, -1, (int[]) null, (BiFunction) null, deviceIdleController4.mIdleIntentOptions);
+                    }
+                    if (lightDeviceIdleMode2) {
+                        DeviceIdleController deviceIdleController5 = DeviceIdleController.this;
+                        synchronized (deviceIdleController5) {
+                            deviceIdleController5.mActiveIdleOpCount++;
+                        }
+                        DeviceIdleController deviceIdleController6 = DeviceIdleController.this;
+                        deviceIdleController6.mLocalActivityManager.broadcastIntentWithCallback(deviceIdleController6.mLightIdleIntent, deviceIdleController6.mIdleStartedDoneReceiver, (String[]) null, -1, (int[]) null, (BiFunction) null, deviceIdleController6.mLightIdleIntentOptions);
+                    }
+                    DeviceIdleController.this.decActiveIdleOps();
+                    EventLog.writeEvent(34008, new Object[0]);
+                    return;
+                case 5:
+                    String str = (String) message.obj;
+                    int i2 = message.arg1;
+                    EventLog.writeEvent(34006, str != null ? str : "unknown");
+                    boolean deviceIdleMode3 = DeviceIdleController.this.mLocalPowerManager.setDeviceIdleMode(false);
+                    boolean lightDeviceIdleMode3 = DeviceIdleController.this.mLocalPowerManager.setLightDeviceIdleMode(false);
+                    try {
+                        DeviceIdleController.this.mNetworkPolicyManager.setDeviceIdleMode(false);
+                        DeviceIdleController.this.mBatteryStats.noteDeviceIdleMode(0, str, i2);
+                    } catch (RemoteException unused3) {
+                    }
+                    if (deviceIdleMode3) {
+                        Context context3 = DeviceIdleController.this.getContext();
+                        DeviceIdleController deviceIdleController7 = DeviceIdleController.this;
+                        context3.sendBroadcastAsUser(deviceIdleController7.mIdleIntent, UserHandle.ALL, null, deviceIdleController7.mIdleIntentOptions);
+                    }
+                    if (lightDeviceIdleMode3) {
+                        Context context4 = DeviceIdleController.this.getContext();
+                        DeviceIdleController deviceIdleController8 = DeviceIdleController.this;
+                        context4.sendBroadcastAsUser(deviceIdleController8.mLightIdleIntent, UserHandle.ALL, null, deviceIdleController8.mLightIdleIntentOptions);
+                    }
+                    EventLog.writeEvent(34008, new Object[0]);
+                    return;
+                case 6:
+                    int i3 = message.arg1;
+                    DeviceIdleController deviceIdleController9 = DeviceIdleController.this;
+                    deviceIdleController9.getClass();
+                    long elapsedRealtime = SystemClock.elapsedRealtime();
+                    int appId = UserHandle.getAppId(i3);
+                    if (z) {
+                        Slog.d("DeviceIdleController", "checkTempAppWhitelistTimeout: uid=" + i3 + ", timeNow=" + elapsedRealtime);
+                    }
+                    synchronized (deviceIdleController9) {
+                        try {
+                            Pair pair = (Pair) deviceIdleController9.mTempWhitelistAppIdEndTimes.get(appId);
+                            if (pair == null) {
+                                return;
+                            }
+                            if (elapsedRealtime >= ((MutableLong) pair.first).value) {
+                                deviceIdleController9.mTempWhitelistAppIdEndTimes.delete(appId);
+                                deviceIdleController9.onAppRemovedFromTempWhitelistLocked(i3, (String) pair.second);
+                            } else {
+                                if (z) {
+                                    Slog.d("DeviceIdleController", "Time to remove uid " + i3 + ": " + ((MutableLong) pair.first).value);
+                                }
+                                deviceIdleController9.postTempActiveTimeoutMessage(i3, ((MutableLong) pair.first).value - elapsedRealtime);
+                            }
+                            return;
+                        } finally {
+                        }
+                    }
+                case 7:
+                    DeviceIdleInternal.StationaryListener stationaryListener = (DeviceIdleInternal.StationaryListener) message.obj;
+                    synchronized (DeviceIdleController.this) {
+                        try {
+                            isStationaryLocked = DeviceIdleController.this.isStationaryLocked();
+                            Slog.i("DeviceIdleController", "isStationary = " + isStationaryLocked);
+                            if (stationaryListener == null) {
+                                ArraySet arraySet = DeviceIdleController.this.mStationaryListeners;
+                                stationaryListenerArr = (DeviceIdleInternal.StationaryListener[]) arraySet.toArray(new DeviceIdleInternal.StationaryListener[arraySet.size()]);
+                            }
+                        } finally {
+                        }
+                    }
+                    if (stationaryListenerArr != null) {
+                        int length = stationaryListenerArr.length;
+                        while (i < length) {
+                            stationaryListenerArr[i].onDeviceStationaryChanged(isStationaryLocked);
+                            i++;
+                        }
+                    }
+                    if (stationaryListener != null) {
+                        stationaryListener.onDeviceStationaryChanged(isStationaryLocked);
+                        return;
+                    }
+                    return;
+                case 8:
+                    DeviceIdleController.this.decActiveIdleOps();
+                    return;
+                case 9:
+                case 11:
+                case 12:
+                default:
+                    return;
+                case 10:
+                    IDeviceIdleConstraint iDeviceIdleConstraint = (IDeviceIdleConstraint) message.obj;
+                    if (message.arg1 == 1) {
+                        iDeviceIdleConstraint.startMonitoring();
+                        return;
+                    } else {
+                        iDeviceIdleConstraint.stopMonitoring();
+                        return;
+                    }
+                case 13:
+                    int i4 = message.arg1;
+                    int i5 = message.arg2 != 1 ? 0 : 1;
+                    synchronized (DeviceIdleController.this) {
+                        ArraySet arraySet2 = DeviceIdleController.this.mTempAllowlistChangeListeners;
+                        tempAllowlistChangeListenerArr = (PowerAllowlistInternal.TempAllowlistChangeListener[]) arraySet2.toArray(new PowerAllowlistInternal.TempAllowlistChangeListener[arraySet2.size()]);
+                    }
+                    int length2 = tempAllowlistChangeListenerArr.length;
+                    while (i < length2) {
+                        PowerAllowlistInternal.TempAllowlistChangeListener tempAllowlistChangeListener = tempAllowlistChangeListenerArr[i];
+                        if (i5 != 0) {
+                            tempAllowlistChangeListener.onAppAdded(i4);
+                        } else {
+                            tempAllowlistChangeListener.onAppRemoved(i4);
+                        }
+                        i++;
+                    }
+                    return;
+                case 14:
+                    DeviceIdleController.this.mNetworkPolicyManagerInternal.onTempPowerSaveWhitelistChange(message.arg1, message.arg2, (String) message.obj, true);
+                    return;
+                case 15:
+                    DeviceIdleController.this.mNetworkPolicyManagerInternal.onTempPowerSaveWhitelistChange(message.arg1, 0, null, false);
+                    return;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Shell extends ShellCommand {
+        public int userId = 0;
+
+        public Shell() {
+        }
+
+        public final int onCommand(String str) {
+            return DeviceIdleController.this.onShellCommand(this, str);
+        }
+
+        public final void onHelp() {
+            DeviceIdleController.dumpHelp(getOutPrintWriter());
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TargetPkg {
+        public final String pkgName;
+        public final int uid;
+
+        public TargetPkg(int i, String str) {
+            this.uid = i;
+            this.pkgName = str;
+        }
+
+        public TargetPkg(DeviceIdleController deviceIdleController, int i) {
+            this.uid = i;
+            boolean z = DeviceIdleController.DEBUG;
+            deviceIdleController.getClass();
+            String str = null;
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(String.format("/proc/%d/cmdline", Integer.valueOf(i)), Charset.defaultCharset()));
+                try {
+                    str = bufferedReader.readLine();
+                    bufferedReader.close();
+                } finally {
+                }
+            } catch (IOException e) {
+                Slog.e("DeviceIdleController", "IO errors occurred.", e);
+            }
+            this.pkgName = str != null ? str.trim() : "unknown";
+        }
+    }
+
+    /* renamed from: -$$Nest$mmaybeBecomeActiveOnModeManagerEventsLocked, reason: not valid java name */
+    public static void m60$$Nest$mmaybeBecomeActiveOnModeManagerEventsLocked(DeviceIdleController deviceIdleController) {
+        synchronized (deviceIdleController) {
+            try {
+                if (deviceIdleController.mQuickDozeActivated) {
+                    return;
+                }
+                if (!deviceIdleController.mIsOffBody && !deviceIdleController.mForceIdle) {
+                    deviceIdleController.becomeActiveLocked(Process.myUid(), "on_body");
+                }
+            } finally {
+            }
+        }
+    }
+
+    public DeviceIdleController(Context context) {
+        this(context, new Injector(context));
+    }
+
+    /* JADX WARN: Type inference failed for: r0v10, types: [com.android.server.DeviceIdleController$$ExternalSyntheticLambda8] */
+    /* JADX WARN: Type inference failed for: r0v11, types: [com.android.server.DeviceIdleController$$ExternalSyntheticLambda8] */
+    /* JADX WARN: Type inference failed for: r0v12, types: [com.android.server.DeviceIdleController$$ExternalSyntheticLambda8] */
+    /* JADX WARN: Type inference failed for: r0v13, types: [com.android.server.DeviceIdleController$2] */
+    /* JADX WARN: Type inference failed for: r0v15, types: [com.android.server.DeviceIdleController$4] */
+    /* JADX WARN: Type inference failed for: r0v16, types: [com.android.server.DeviceIdleController$1] */
+    /* JADX WARN: Type inference failed for: r0v21, types: [com.android.server.DeviceIdleController$6] */
+    /* JADX WARN: Type inference failed for: r0v22, types: [com.android.server.DeviceIdleController$6] */
+    /* JADX WARN: Type inference failed for: r0v23, types: [com.android.server.DeviceIdleController$8] */
+    /* JADX WARN: Type inference failed for: r0v9, types: [com.android.server.DeviceIdleController$1] */
+    public DeviceIdleController(Context context, Injector injector) {
+        super(context);
+        this.mNumBlockingConstraints = 0;
+        this.mConstraints = new ArrayMap();
+        this.mLightBatteryLevel = new BatteryLevel();
+        this.mDeepBatteryLevel = new BatteryLevel();
+        this.mPowerSaveWhitelistAppsExceptIdle = new ArrayMap();
+        this.mPowerSaveWhitelistUserAppsExceptIdle = new ArraySet();
+        this.mPowerSaveWhitelistApps = new ArrayMap();
+        this.mPowerSaveWhitelistUserApps = new ArrayMap();
+        this.mPowerSaveWhitelistSystemAppIdsExceptIdle = new SparseBooleanArray();
+        this.mPowerSaveWhitelistSystemAppIds = new SparseBooleanArray();
+        this.mPowerSaveWhitelistExceptIdleAppIds = new SparseBooleanArray();
+        this.mPowerSaveWhitelistExceptIdleAppIdArray = new int[0];
+        this.mPowerSaveWhitelistAllAppIds = new SparseBooleanArray();
+        this.mPowerSaveWhitelistAllAppIdArray = new int[0];
+        this.mPowerSaveWhitelistUserAppIds = new SparseBooleanArray();
+        this.mPowerSaveWhitelistUserAppIdArray = new int[0];
+        this.mTempWhitelistAppIdEndTimes = new SparseArray();
+        this.mTempWhitelistAppIdArray = new int[0];
+        this.mRemovedFromSystemWhitelistApps = new ArrayMap();
+        this.mPowerSaveWhitelistReviewedApps = new ArraySet();
+        new ArraySet();
+        this.mPowerSaveWhitelistPrintErrorApps = new ArraySet();
+        this.mStationaryListeners = new ArraySet();
+        this.mTempAllowlistChangeListeners = new ArraySet();
+        this.mEventCmds = new int[100];
+        this.mEventTimes = new long[100];
+        this.mEventReasons = new String[100];
+        this.mAllowlistHistoryInfo = new RingBuffer(AllowlistHistoryInfo.class, 100);
+        final int i = 0;
+        this.mReceiver = new BroadcastReceiver(this) { // from class: com.android.server.DeviceIdleController.1
+            public final /* synthetic */ DeviceIdleController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                Uri data;
+                String schemeSpecificPart;
+                boolean z = true;
+                switch (i) {
+                    case 0:
+                        String action = intent.getAction();
+                        action.getClass();
+                        switch (action) {
+                            case "android.intent.action.BATTERY_CHANGED":
+                                boolean booleanExtra = intent.getBooleanExtra("present", true);
+                                boolean z2 = intent.getIntExtra("plugged", 0) != 0;
+                                synchronized (this.this$0) {
+                                    DeviceIdleController deviceIdleController = this.this$0;
+                                    if (!booleanExtra || !z2) {
+                                        z = false;
+                                    }
+                                    deviceIdleController.updateChargingLocked(z);
+                                }
+                                return;
+                            case "android.net.conn.CONNECTIVITY_CHANGE":
+                                this.this$0.updateConnectivityState(intent);
+                                return;
+                            case "android.intent.action.PACKAGE_REMOVED":
+                                if (intent.getBooleanExtra("android.intent.extra.REPLACING", false) || (data = intent.getData()) == null || (schemeSpecificPart = data.getSchemeSpecificPart()) == null) {
+                                    return;
+                                }
+                                this.this$0.removePowerSaveWhitelistAppInternal(schemeSpecificPart, 5, null);
+                                return;
+                            default:
+                                return;
+                        }
+                    default:
+                        synchronized (this.this$0) {
+                            this.this$0.updateInteractivityLocked();
+                        }
+                        return;
+                }
+            }
+        };
+        this.mLightAlarmListener = new AlarmManager.OnAlarmListener(this) { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda8
+            public final /* synthetic */ DeviceIdleController f$0;
+
+            {
+                this.f$0 = this;
+            }
+
+            @Override // android.app.AlarmManager.OnAlarmListener
+            public final void onAlarm() {
+                switch (i) {
+                    case 0:
+                        DeviceIdleController deviceIdleController = this.f$0;
+                        if (DeviceIdleController.DEBUG) {
+                            deviceIdleController.getClass();
+                            Slog.d("DeviceIdleController", "Light progression alarm fired");
+                        }
+                        synchronized (deviceIdleController) {
+                            deviceIdleController.stepLightIdleStateLocked("s:alarm");
+                        }
+                        return;
+                    case 1:
+                        DeviceIdleController deviceIdleController2 = this.f$0;
+                        synchronized (deviceIdleController2) {
+                            try {
+                                if (deviceIdleController2.isStationaryLocked()) {
+                                    deviceIdleController2.mHandler.sendEmptyMessage(7);
+                                    return;
+                                } else {
+                                    Slog.w("DeviceIdleController", "motion timeout went off and device isn't stationary");
+                                    return;
+                                }
+                            } finally {
+                            }
+                        }
+                    default:
+                        DeviceIdleController deviceIdleController3 = this.f$0;
+                        synchronized (deviceIdleController3) {
+                            try {
+                                if (deviceIdleController3.mStationaryListeners.size() > 0) {
+                                    deviceIdleController3.startMonitoringMotionLocked();
+                                    deviceIdleController3.scheduleMotionTimeoutAlarmLocked();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                }
+            }
+        };
+        final int i2 = 2;
+        this.mMotionRegistrationAlarmListener = new AlarmManager.OnAlarmListener(this) { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda8
+            public final /* synthetic */ DeviceIdleController f$0;
+
+            {
+                this.f$0 = this;
+            }
+
+            @Override // android.app.AlarmManager.OnAlarmListener
+            public final void onAlarm() {
+                switch (i2) {
+                    case 0:
+                        DeviceIdleController deviceIdleController = this.f$0;
+                        if (DeviceIdleController.DEBUG) {
+                            deviceIdleController.getClass();
+                            Slog.d("DeviceIdleController", "Light progression alarm fired");
+                        }
+                        synchronized (deviceIdleController) {
+                            deviceIdleController.stepLightIdleStateLocked("s:alarm");
+                        }
+                        return;
+                    case 1:
+                        DeviceIdleController deviceIdleController2 = this.f$0;
+                        synchronized (deviceIdleController2) {
+                            try {
+                                if (deviceIdleController2.isStationaryLocked()) {
+                                    deviceIdleController2.mHandler.sendEmptyMessage(7);
+                                    return;
+                                } else {
+                                    Slog.w("DeviceIdleController", "motion timeout went off and device isn't stationary");
+                                    return;
+                                }
+                            } finally {
+                            }
+                        }
+                    default:
+                        DeviceIdleController deviceIdleController3 = this.f$0;
+                        synchronized (deviceIdleController3) {
+                            try {
+                                if (deviceIdleController3.mStationaryListeners.size() > 0) {
+                                    deviceIdleController3.startMonitoringMotionLocked();
+                                    deviceIdleController3.scheduleMotionTimeoutAlarmLocked();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                }
+            }
+        };
+        final int i3 = 1;
+        this.mMotionTimeoutAlarmListener = new AlarmManager.OnAlarmListener(this) { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda8
+            public final /* synthetic */ DeviceIdleController f$0;
+
+            {
+                this.f$0 = this;
+            }
+
+            @Override // android.app.AlarmManager.OnAlarmListener
+            public final void onAlarm() {
+                switch (i3) {
+                    case 0:
+                        DeviceIdleController deviceIdleController = this.f$0;
+                        if (DeviceIdleController.DEBUG) {
+                            deviceIdleController.getClass();
+                            Slog.d("DeviceIdleController", "Light progression alarm fired");
+                        }
+                        synchronized (deviceIdleController) {
+                            deviceIdleController.stepLightIdleStateLocked("s:alarm");
+                        }
+                        return;
+                    case 1:
+                        DeviceIdleController deviceIdleController2 = this.f$0;
+                        synchronized (deviceIdleController2) {
+                            try {
+                                if (deviceIdleController2.isStationaryLocked()) {
+                                    deviceIdleController2.mHandler.sendEmptyMessage(7);
+                                    return;
+                                } else {
+                                    Slog.w("DeviceIdleController", "motion timeout went off and device isn't stationary");
+                                    return;
+                                }
+                            } finally {
+                            }
+                        }
+                    default:
+                        DeviceIdleController deviceIdleController3 = this.f$0;
+                        synchronized (deviceIdleController3) {
+                            try {
+                                if (deviceIdleController3.mStationaryListeners.size() > 0) {
+                                    deviceIdleController3.startMonitoringMotionLocked();
+                                    deviceIdleController3.scheduleMotionTimeoutAlarmLocked();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                }
+            }
+        };
+        final int i4 = 0;
+        this.mSensingTimeoutAlarmListener = new AlarmManager.OnAlarmListener(this) { // from class: com.android.server.DeviceIdleController.2
+            public final /* synthetic */ DeviceIdleController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.app.AlarmManager.OnAlarmListener
+            public final void onAlarm() {
+                switch (i4) {
+                    case 0:
+                        synchronized (this.this$0) {
+                            try {
+                                DeviceIdleController deviceIdleController = this.this$0;
+                                if (deviceIdleController.mState == 3) {
+                                    deviceIdleController.becomeInactiveIfAppropriateLocked();
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        return;
+                    default:
+                        synchronized (this.this$0) {
+                            this.this$0.stepIdleStateLocked("s:alarm");
+                        }
+                        return;
+                }
+            }
+        };
+        final int i5 = 1;
+        this.mDeepAlarmListener = new AlarmManager.OnAlarmListener(this) { // from class: com.android.server.DeviceIdleController.2
+            public final /* synthetic */ DeviceIdleController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.app.AlarmManager.OnAlarmListener
+            public final void onAlarm() {
+                switch (i5) {
+                    case 0:
+                        synchronized (this.this$0) {
+                            try {
+                                DeviceIdleController deviceIdleController = this.this$0;
+                                if (deviceIdleController.mState == 3) {
+                                    deviceIdleController.becomeInactiveIfAppropriateLocked();
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
+                        }
+                        return;
+                    default:
+                        synchronized (this.this$0) {
+                            this.this$0.stepIdleStateLocked("s:alarm");
+                        }
+                        return;
+                }
+            }
+        };
+        this.mIdleStartedDoneReceiver = new IIntentReceiver.Stub() { // from class: com.android.server.DeviceIdleController.4
+            public final void performReceive(Intent intent, int i6, String str, Bundle bundle, boolean z, boolean z2, int i7) {
+                if ("android.os.action.DEVICE_IDLE_MODE_CHANGED".equals(intent.getAction())) {
+                    DeviceIdleController deviceIdleController = DeviceIdleController.this;
+                    deviceIdleController.mHandler.sendEmptyMessageDelayed(8, deviceIdleController.mConstants.MIN_DEEP_MAINTENANCE_TIME);
+                } else {
+                    DeviceIdleController deviceIdleController2 = DeviceIdleController.this;
+                    deviceIdleController2.mHandler.sendEmptyMessageDelayed(8, deviceIdleController2.mConstants.MIN_LIGHT_MAINTENANCE_TIME);
+                }
+            }
+        };
+        this.mInteractivityReceiver = new BroadcastReceiver(this) { // from class: com.android.server.DeviceIdleController.1
+            public final /* synthetic */ DeviceIdleController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                Uri data;
+                String schemeSpecificPart;
+                boolean z = true;
+                switch (i5) {
+                    case 0:
+                        String action = intent.getAction();
+                        action.getClass();
+                        switch (action) {
+                            case "android.intent.action.BATTERY_CHANGED":
+                                boolean booleanExtra = intent.getBooleanExtra("present", true);
+                                boolean z2 = intent.getIntExtra("plugged", 0) != 0;
+                                synchronized (this.this$0) {
+                                    DeviceIdleController deviceIdleController = this.this$0;
+                                    if (!booleanExtra || !z2) {
+                                        z = false;
+                                    }
+                                    deviceIdleController.updateChargingLocked(z);
+                                }
+                                return;
+                            case "android.net.conn.CONNECTIVITY_CHANGE":
+                                this.this$0.updateConnectivityState(intent);
+                                return;
+                            case "android.intent.action.PACKAGE_REMOVED":
+                                if (intent.getBooleanExtra("android.intent.extra.REPLACING", false) || (data = intent.getData()) == null || (schemeSpecificPart = data.getSchemeSpecificPart()) == null) {
+                                    return;
+                                }
+                                this.this$0.removePowerSaveWhitelistAppInternal(schemeSpecificPart, 5, null);
+                                return;
+                            default:
+                                return;
+                        }
+                    default:
+                        synchronized (this.this$0) {
+                            this.this$0.updateInteractivityLocked();
+                        }
+                        return;
+                }
+            }
+        };
+        this.mEmergencyCallListener = new EmergencyCallListener();
+        this.mModeManagerQuickDozeRequestConsumer = new ModeManagerQuickDozeRequestConsumer();
+        this.mModeManagerOffBodyStateConsumer = new ModeManagerOffBodyStateConsumer();
+        this.mMotionListener = new MotionListener();
+        final int i6 = 0;
+        this.mGenericLocationListener = new LocationListener(this) { // from class: com.android.server.DeviceIdleController.6
+            public final /* synthetic */ DeviceIdleController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            private final void onProviderDisabled$com$android$server$DeviceIdleController$6(String str) {
+            }
+
+            private final void onProviderDisabled$com$android$server$DeviceIdleController$7(String str) {
+            }
+
+            private final void onProviderEnabled$com$android$server$DeviceIdleController$6(String str) {
+            }
+
+            private final void onProviderEnabled$com$android$server$DeviceIdleController$7(String str) {
+            }
+
+            private final void onStatusChanged$com$android$server$DeviceIdleController$6(int i7, String str, Bundle bundle) {
+            }
+
+            private final void onStatusChanged$com$android$server$DeviceIdleController$7(int i7, String str, Bundle bundle) {
+            }
+
+            @Override // android.location.LocationListener
+            public final void onLocationChanged(Location location) {
+                switch (i6) {
+                    case 0:
+                        synchronized (this.this$0) {
+                            this.this$0.receivedGenericLocationLocked(location);
+                        }
+                        return;
+                    default:
+                        synchronized (this.this$0) {
+                            this.this$0.receivedGpsLocationLocked(location);
+                        }
+                        return;
+                }
+            }
+
+            @Override // android.location.LocationListener
+            public final void onProviderDisabled(String str) {
+                int i7 = i6;
+            }
+
+            @Override // android.location.LocationListener
+            public final void onProviderEnabled(String str) {
+                int i7 = i6;
+            }
+
+            @Override // android.location.LocationListener
+            public final void onStatusChanged(String str, int i7, Bundle bundle) {
+                int i8 = i6;
+            }
+        };
+        final int i7 = 1;
+        this.mGpsLocationListener = new LocationListener(this) { // from class: com.android.server.DeviceIdleController.6
+            public final /* synthetic */ DeviceIdleController this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            private final void onProviderDisabled$com$android$server$DeviceIdleController$6(String str) {
+            }
+
+            private final void onProviderDisabled$com$android$server$DeviceIdleController$7(String str) {
+            }
+
+            private final void onProviderEnabled$com$android$server$DeviceIdleController$6(String str) {
+            }
+
+            private final void onProviderEnabled$com$android$server$DeviceIdleController$7(String str) {
+            }
+
+            private final void onStatusChanged$com$android$server$DeviceIdleController$6(int i72, String str, Bundle bundle) {
+            }
+
+            private final void onStatusChanged$com$android$server$DeviceIdleController$7(int i72, String str, Bundle bundle) {
+            }
+
+            @Override // android.location.LocationListener
+            public final void onLocationChanged(Location location) {
+                switch (i7) {
+                    case 0:
+                        synchronized (this.this$0) {
+                            this.this$0.receivedGenericLocationLocked(location);
+                        }
+                        return;
+                    default:
+                        synchronized (this.this$0) {
+                            this.this$0.receivedGpsLocationLocked(location);
+                        }
+                        return;
+                }
+            }
+
+            @Override // android.location.LocationListener
+            public final void onProviderDisabled(String str) {
+                int i72 = i7;
+            }
+
+            @Override // android.location.LocationListener
+            public final void onProviderEnabled(String str) {
+                int i72 = i7;
+            }
+
+            @Override // android.location.LocationListener
+            public final void onStatusChanged(String str, int i72, Bundle bundle) {
+                int i8 = i7;
+            }
+        };
+        this.mScreenObserver = new ActivityTaskManagerInternal.ScreenObserver() { // from class: com.android.server.DeviceIdleController.8
+            @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
+            public final void onAwakeStateChanged(boolean z) {
+            }
+
+            @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
+            public final void onKeyguardStateChanged(boolean z) {
+                synchronized (DeviceIdleController.this) {
+                    DeviceIdleController.this.keyguardShowingLocked(z);
+                }
+            }
+        };
+        this.mInjector = injector;
+        this.mConfigFile = new AtomicFile(new File(new File(Environment.getDataDirectory(), "system"), "deviceidle.xml"));
+        injector.getClass();
+        this.mHandler = new MyHandler(AppSchedulingModuleThread.getHandler().getLooper());
+        AppStateTrackerImpl appStateTrackerImpl = new AppStateTrackerImpl(context, AppSchedulingModuleThread.get().getLooper());
+        this.mAppStateTracker = appStateTrackerImpl;
+        LocalServices.addService(AppStateTracker.class, appStateTrackerImpl);
+        Flags.removeIdleLocation();
+        this.mIsLocationPrefetchEnabled = injector.mContext.getResources().getBoolean(R.bool.config_auto_attach_data_on_creation);
+        this.mUseMotionSensor = injector.mContext.getResources().getBoolean(R.bool.config_automatic_brightness_available);
+    }
+
+    public static int[] buildAppIdArray(ArrayMap arrayMap, ArrayMap arrayMap2, SparseBooleanArray sparseBooleanArray) {
+        sparseBooleanArray.clear();
+        if (arrayMap != null) {
+            for (int i = 0; i < arrayMap.size(); i++) {
+                sparseBooleanArray.put(((Integer) arrayMap.valueAt(i)).intValue(), true);
+            }
+        }
+        if (arrayMap2 != null) {
+            for (int i2 = 0; i2 < arrayMap2.size(); i2++) {
+                sparseBooleanArray.put(((Integer) arrayMap2.valueAt(i2)).intValue(), true);
+            }
+        }
+        int size = sparseBooleanArray.size();
+        int[] iArr = new int[size];
+        for (int i3 = 0; i3 < size; i3++) {
+            iArr[i3] = sparseBooleanArray.keyAt(i3);
+        }
+        return iArr;
+    }
+
+    public static void dumpHelp(PrintWriter printWriter) {
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "Device idle controller (deviceidle) commands:", "  help", "    Print this help text.", "  step [light|deep]");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "    Immediately step to next state, without waiting for alarm.", "  force-idle [light|deep]", "    Force directly into idle mode, regardless of other device state.", "  force-inactive");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "    Force to be inactive, ready to freely step idle states.", "  unforce", "    Resume normal functioning after force-idle or force-inactive or force-modemanager-quickdoze.", "  get [light|deep|force|screen|charging|network|offbody|forceoffbody]");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "    Retrieve the current given state.", "  disable [light|deep|all]", "    Completely disable device idle mode.", "  enable [light|deep|all]");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "    Re-enable device idle mode after it had previously been disabled.", "  enabled [light|deep|all]", "    Print 1 if device idle mode is currently enabled, else 0.", "  whitelist");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "    Print currently whitelisted apps.", "  whitelist [package ...]", "    Add (prefix with +) or remove (prefix with -) packages.", "  sys-whitelist [package ...|reset]");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "    Prefix the package with '-' to remove it from the system whitelist or '+' to put it back in the system whitelist.", "    Note that only packages that were earlier removed from the system whitelist can be added back.", "    reset will reset the whitelist to the original state", "    Prints the system whitelist if no arguments are specified");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "  except-idle-whitelist [package ...|reset]", "    Prefix the package with '+' to add it to whitelist or '=' to check if it is already whitelisted", "    [reset] will reset the whitelist to it's original state", "    Note that unlike <whitelist> cmd, changes made using this won't be persisted across boots");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "  tempwhitelist", "    Print packages that are temporarily whitelisted.", "  tempwhitelist [-u USER] [-d DURATION] [-r] [package]", "    Temporarily place package in whitelist for DURATION milliseconds.");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "    If no DURATION is specified, 10 seconds is used", "    If [-r] option is used, then the package is removed from temp whitelist and any [-d] is ignored", "  motion", "    Simulate a motion event to bring the device out of deep doze");
+        BatteryService$$ExternalSyntheticOutline0.m(printWriter, "  force-modemanager-quickdoze [true|false]", "    Simulate mode manager request to enable (true) or disable (false) quick doze. Mode manager changes will be ignored until unforce is called.", "  force-modemanager-offbody [true|false]", "    Force mode manager offbody state, this can be used to simulate device being off-body (true) or on-body (false). Mode manager changes will be ignored until unforce is called.");
+    }
+
+    public static String floatToString(float f) {
+        return f >= FullScreenMagnificationGestureHandler.MAX_SCALE ? String.format("%.2f", Float.valueOf(f)) : "invalid";
+    }
+
+    public static float getBatteryLevelDiff(float f, float f2) {
+        if (f < FullScreenMagnificationGestureHandler.MAX_SCALE || f2 < FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            Slog.w("DeviceIdleController", "getBatteryLevelDiff() : curr(" + f2 + ") or prev(" + f + ") is invalid");
+            return -1.0f;
+        }
+        if (f >= f2) {
+            return f - f2;
+        }
+        Slog.w("DeviceIdleController", "getBatteryLevelDiff() : curr(" + f2 + ") is bigger than prev(" + f + ")");
+        return -1.0f;
+    }
+
+    public static long getDuration(long j, long j2) {
+        if (j <= 0 || j2 <= 0 || j2 <= j) {
+            return 0L;
+        }
+        return j2 - j;
+    }
+
+    public static String lightStateToString(int i) {
+        return i != 0 ? i != 1 ? i != 4 ? i != 5 ? i != 6 ? i != 7 ? Integer.toString(i) : "OVERRIDE" : "IDLE_MAINTENANCE" : "WAITING_FOR_NETWORK" : "IDLE" : "INACTIVE" : "ACTIVE";
+    }
+
+    public static String stateToString(int i) {
+        switch (i) {
+            case 0:
+                return "ACTIVE";
+            case 1:
+                return "INACTIVE";
+            case 2:
+                return "IDLE_PENDING";
+            case 3:
+                return "SENSING";
+            case 4:
+                return "LOCATING";
+            case 5:
+                return "IDLE";
+            case 6:
+                return "IDLE_MAINTENANCE";
+            case 7:
+                return "QUICK_DOZE_DELAY";
+            default:
+                return Integer.toString(i);
+        }
+    }
+
+    public final void addEvent(int i, String str) {
+        int[] iArr = this.mEventCmds;
+        if (iArr[0] != i) {
+            System.arraycopy(iArr, 0, iArr, 1, 99);
+            long[] jArr = this.mEventTimes;
+            System.arraycopy(jArr, 0, jArr, 1, 99);
+            String[] strArr = this.mEventReasons;
+            System.arraycopy(strArr, 0, strArr, 1, 99);
+            iArr[0] = i;
+            jArr[0] = SystemClock.elapsedRealtime();
+            strArr[0] = str;
+        }
+    }
+
+    public final void addPowerSaveTempAllowlistAppChecked(int i, int i2, String str, String str2, long j) {
+        int i3;
+        getContext().enforceCallingOrSelfPermission("android.permission.CHANGE_DEVICE_IDLE_TEMP_WHITELIST", "No permission to change device idle whitelist");
+        int callingUid = Binder.getCallingUid();
+        int handleIncomingUser = ActivityManager.getService().handleIncomingUser(Binder.getCallingPid(), callingUid, i, false, false, "addPowerSaveTempWhitelistApp", (String) null);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        if (i2 == -1) {
+            i3 = -1;
+        } else if (i2 != 102) {
+            i3 = 0;
+        } else {
+            try {
+                i3 = this.mLocalActivityManager.getPushMessagingOverQuotaBehavior();
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+        if (i3 != -1) {
+            addPowerSaveTempAllowlistAppInternal(callingUid, str, j, i3, handleIncomingUser, true, i2, str2);
+        }
+    }
+
+    public final void addPowerSaveTempAllowlistAppInternal(int i, String str, long j, int i2, int i3, boolean z, int i4, String str2) {
+        try {
+            addPowerSaveTempWhitelistAppDirectInternal(i, j, getContext().getPackageManager().getPackageUidAsUser(str, i3), z, i2, str2, i4);
+        } catch (PackageManager.NameNotFoundException unused) {
+        }
+    }
+
+    public final void addPowerSaveTempWhitelistAppDirectInternal(int i, long j, int i2, boolean z, int i3, String str, int i4) {
+        boolean z2;
+        boolean z3;
+        int i5;
+        boolean z4;
+        String str2;
+        int i6;
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        int appId = UserHandle.getAppId(i2);
+        synchronized (this) {
+            try {
+                long min = Math.min(j, this.mConstants.MAX_TEMP_APP_ALLOWLIST_DURATION_MS);
+                Pair pair = (Pair) this.mTempWhitelistAppIdEndTimes.get(appId);
+                z2 = false;
+                boolean z5 = pair == null;
+                if (z5) {
+                    pair = new Pair(new MutableLong(0L), str);
+                    appId = appId;
+                    this.mTempWhitelistAppIdEndTimes.put(appId, pair);
+                }
+                ((MutableLong) pair.first).value = elapsedRealtime + min;
+                if (DEBUG) {
+                    Slog.d("DeviceIdleController", "Adding AppId " + appId + " to temp whitelist. New entry: " + z5);
+                }
+                if (z5) {
+                    try {
+                        this.mBatteryStats.noteEvent(32785, str, i2);
+                    } catch (RemoteException unused) {
+                    }
+                    postTempActiveTimeoutMessage(i2, min);
+                    updateTempWhitelistAppIdsLocked(i2, min, i3, true, i4, str, i);
+                    if (z) {
+                        z2 = true;
+                    } else {
+                        this.mHandler.obtainMessage(14, appId, i4, str).sendToTarget();
+                    }
+                    z3 = true;
+                    this.mHandler.obtainMessage(13, i2, 1).sendToTarget();
+                    getContext().sendBroadcastAsUser(this.mPowerSaveTempWhitelistChangedIntent, UserHandle.SYSTEM, null, this.mPowerSaveTempWhilelistChangedOptions);
+                } else {
+                    z3 = true;
+                    ActivityManagerInternal activityManagerInternal = this.mLocalActivityManager;
+                    if (activityManagerInternal != null) {
+                        z4 = true;
+                        i5 = appId;
+                        i6 = i4;
+                        str2 = str;
+                        activityManagerInternal.updateDeviceIdleTempAllowlist((int[]) null, i2, true, min, i3, i4, str, i);
+                    }
+                }
+                z4 = z3;
+                i5 = appId;
+                i6 = i4;
+                str2 = str;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        if (z2) {
+            this.mNetworkPolicyManagerInternal.onTempPowerSaveWhitelistChange(i5, i6, str2, z4);
+        }
+    }
+
+    public final int addPowerSaveWhitelistAppsInternal(List list, int i, TargetPkg targetPkg) {
+        int i2;
+        synchronized (this) {
+            int i3 = 0;
+            i2 = 0;
+            for (int size = list.size() - 1; size >= 0; size--) {
+                String str = (String) list.get(size);
+                if (str != null) {
+                    try {
+                        int appId = UserHandle.getAppId(getContext().getPackageManager().getApplicationInfo(str, 4194304).uid);
+                        if (this.mPowerSaveWhitelistUserApps.put(str, Integer.valueOf(appId)) == null) {
+                            this.mAllowlistHistoryInfo.append(new AllowlistHistoryInfo(i, targetPkg, new TargetPkg(appId, str)));
+                            i3++;
+                            Counter.logIncrement("battery.value_app_added_to_power_allowlist");
+                        }
+                    } catch (PackageManager.NameNotFoundException unused) {
+                        Slog.e("DeviceIdleController", "Tried to add unknown package to power save whitelist: " + str);
+                    }
+                }
+                i2++;
+            }
+            if (i3 > 0) {
+                reportPowerSaveWhitelistChangedLocked();
+                updateWhitelistAppIdsLocked();
+                writeConfigFileLocked();
+            }
+        }
+        return list.size() - i2;
+    }
+
+    public final boolean addPowerSaveWhitelistExceptIdleInternal(String str) {
+        synchronized (this) {
+            try {
+                if (this.mPowerSaveWhitelistAppsExceptIdle.put(str, Integer.valueOf(UserHandle.getAppId(getContext().getPackageManager().getApplicationInfo(str, 4194304).uid))) == null) {
+                    this.mPowerSaveWhitelistUserAppsExceptIdle.add(str);
+                    reportPowerSaveWhitelistChangedLocked();
+                    this.mPowerSaveWhitelistExceptIdleAppIdArray = buildAppIdArray(this.mPowerSaveWhitelistAppsExceptIdle, this.mPowerSaveWhitelistUserApps, this.mPowerSaveWhitelistExceptIdleAppIds);
+                    passWhiteListsToForceAppStandbyTrackerLocked();
+                }
+            } catch (PackageManager.NameNotFoundException unused) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public final void becomeActiveLocked(int i, String str) {
+        becomeActiveLocked(str, i, this.mConstants.INACTIVE_TIMEOUT, true);
+    }
+
+    public final void becomeActiveLocked(String str, int i, long j, boolean z) {
+        if (DEBUG) {
+            Slog.i("DeviceIdleController", "becomeActiveLocked, reason=" + str + ", changeLightIdle=" + z);
+        }
+        if (this.mState == 0 && this.mLightState == 0) {
+            return;
+        }
+        moveToStateLocked(0, str);
+        this.mInactiveTimeout = j;
+        resetIdleManagementLocked();
+        if (this.mLightState != 6) {
+            this.mMaintenanceStartTime = 0L;
+        }
+        if (z) {
+            moveToLightStateLocked(0, str);
+            Constants constants = this.mConstants;
+            this.mNextLightIdleDelay = constants.LIGHT_IDLE_TIMEOUT;
+            this.mMaintenanceStartTime = 0L;
+            this.mNextLightIdleDelayFlex = constants.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX;
+            this.mCurLightIdleBudget = constants.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
+            if (this.mNextLightAlarmTime != 0) {
+                this.mNextLightAlarmTime = 0L;
+                this.mAlarmManager.cancel(this.mLightAlarmListener);
+            }
+            scheduleReportActiveLocked(str, i);
+            addEvent(1, str);
+        }
+        Slog.i("DeviceIdleController", "resetBatteryLevel");
+        float batteryLevelRaw = getBatteryLevelRaw();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        BatteryLevel batteryLevel = this.mLightBatteryLevel;
+        batteryLevel.prev = batteryLevelRaw;
+        batteryLevel.curr = batteryLevelRaw;
+        batteryLevel.prevTime = elapsedRealtime;
+        batteryLevel.currTime = elapsedRealtime;
+        BatteryLevel batteryLevel2 = this.mDeepBatteryLevel;
+        batteryLevel2.prev = batteryLevelRaw;
+        batteryLevel2.curr = batteryLevelRaw;
+        batteryLevel2.prevTime = elapsedRealtime;
+        batteryLevel2.currTime = elapsedRealtime;
+    }
+
+    public final void becomeInactiveIfAppropriateLocked() {
+        String str;
+        boolean z;
+        boolean z2;
+        if (this.mState == 0 && this.mNextAlarmTime != 0) {
+            Slog.wtf("DeviceIdleController", "mState=ACTIVE but mNextAlarmTime=" + this.mNextAlarmTime);
+        }
+        boolean z3 = false;
+        if (this.mState != 5) {
+            AlarmManagerService alarmManagerService = AlarmManagerService.this;
+            synchronized (alarmManagerService.mLock) {
+                z2 = alarmManagerService.mPendingIdleUntil != null;
+            }
+            if (z2) {
+                Slog.wtf("DeviceIdleController", "mState=" + stateToString(this.mState) + " but AlarmManager is idling");
+            }
+        }
+        if (this.mState == 5) {
+            AlarmManagerService alarmManagerService2 = AlarmManagerService.this;
+            synchronized (alarmManagerService2.mLock) {
+                z = alarmManagerService2.mPendingIdleUntil != null;
+            }
+            if (!z) {
+                Slog.wtf("DeviceIdleController", "mState=IDLE but AlarmManager is not idling");
+            }
+        }
+        if (this.mLightState == 0 && this.mNextLightAlarmTime != 0) {
+            Slog.wtf("DeviceIdleController", "mLightState=ACTIVE but mNextLightAlarmTime is " + TimeUtils.formatDuration(this.mNextLightAlarmTime - SystemClock.elapsedRealtime()) + " from now");
+        }
+        if (this.mScreenOn && (!this.mConstants.WAIT_FOR_UNLOCK || !this.mScreenLocked)) {
+            z3 = true;
+        }
+        boolean z4 = this.mEmergencyCallListener.mIsEmergencyCallActive;
+        if (DEBUG) {
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m("becomeInactiveIfAppropriateLocked(): isScreenBlockingInactive=", " (mScreenOn=", z3);
+            m.append(this.mScreenOn);
+            m.append(", WAIT_FOR_UNLOCK=");
+            m.append(this.mConstants.WAIT_FOR_UNLOCK);
+            m.append(", mScreenLocked=");
+            m.append(this.mScreenLocked);
+            m.append(") mCharging=");
+            BatteryService$$ExternalSyntheticOutline0.m(m, this.mCharging, " emergencyCall=", z4, " mForceIdle=");
+            m.append(this.mForceIdle);
+            if (this.mForceIdle) {
+                str = " mForceType=" + this.mForceType;
+            } else {
+                str = "";
+            }
+            BootReceiver$$ExternalSyntheticOutline0.m(m, str, "DeviceIdleController");
+        }
+        boolean z5 = this.mForceIdle;
+        if (z5 || !(this.mCharging || z3 || z4)) {
+            if (z5 && "active".equals(this.mForceType)) {
+                Slog.i("DeviceIdleController", "Don't become Inactive in force-active mode");
+                return;
+            }
+            if (this.mDeepEnabled) {
+                if (this.mQuickDozeActivated) {
+                    int i = this.mState;
+                    if (i == 7 || i == 5 || i == 6) {
+                        return;
+                    }
+                    moveToStateLocked(7, "no activity");
+                    resetIdleManagementLocked();
+                    if (isUpcomingAlarmClock()) {
+                        long nextWakeFromIdleTime = this.mAlarmManager.getNextWakeFromIdleTime();
+                        this.mInjector.getClass();
+                        scheduleAlarmLocked((nextWakeFromIdleTime - SystemClock.elapsedRealtime()) + this.mConstants.QUICK_DOZE_DELAY_TIMEOUT);
+                    } else {
+                        scheduleAlarmLocked(this.mConstants.QUICK_DOZE_DELAY_TIMEOUT);
+                    }
+                } else if (this.mState == 0) {
+                    moveToStateLocked(1, "no activity");
+                    resetIdleManagementLocked();
+                    long j = this.mInactiveTimeout;
+                    if (isUpcomingAlarmClock()) {
+                        long nextWakeFromIdleTime2 = this.mAlarmManager.getNextWakeFromIdleTime();
+                        this.mInjector.getClass();
+                        scheduleAlarmLocked((nextWakeFromIdleTime2 - SystemClock.elapsedRealtime()) + j);
+                    } else {
+                        scheduleAlarmLocked(j);
+                    }
+                }
+            }
+            if (this.mLightState == 0 && this.mLightEnabled) {
+                moveToLightStateLocked(1, "no activity");
+                Constants constants = this.mConstants;
+                this.mNextLightIdleDelay = constants.LIGHT_IDLE_TIMEOUT;
+                this.mMaintenanceStartTime = 0L;
+                this.mNextLightIdleDelayFlex = constants.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX;
+                this.mCurLightIdleBudget = constants.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
+                if (this.mNextLightAlarmTime != 0) {
+                    this.mNextLightAlarmTime = 0L;
+                    this.mAlarmManager.cancel(this.mLightAlarmListener);
+                }
+                scheduleLightAlarmLocked(this.mConstants.LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT, 1000L, true);
+            }
+        }
+    }
+
+    public final void cancelAlarmLocked() {
+        if (this.mNextAlarmTime != 0) {
+            this.mNextAlarmTime = 0L;
+            this.mAlarmManager.cancel(this.mDeepAlarmListener);
+        }
+    }
+
+    public final void cancelLocatingLocked() {
+        if (this.mLocating) {
+            Injector injector = this.mInjector;
+            if (injector.mLocationManager == null) {
+                injector.mLocationManager = (LocationManager) injector.mContext.getSystemService(LocationManager.class);
+            }
+            LocationManager locationManager = injector.mLocationManager;
+            locationManager.removeUpdates(this.mGenericLocationListener);
+            locationManager.removeUpdates(this.mGpsLocationListener);
+            this.mLocating = false;
+        }
+    }
+
+    public final void cancelSensingTimeoutAlarmLocked() {
+        if (this.mNextSensingTimeoutAlarmTime != 0) {
+            this.mNextSensingTimeoutAlarmTime = 0L;
+            this.mAlarmManager.cancel(this.mSensingTimeoutAlarmListener);
+        }
+    }
+
+    public final void decActiveIdleOps() {
+        synchronized (this) {
+            try {
+                int i = this.mActiveIdleOpCount - 1;
+                this.mActiveIdleOpCount = i;
+                if (i <= 0) {
+                    exitMaintenanceEarlyIfNeededLocked();
+                    this.mActiveIdleWakeLock.release();
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void dumpTempWhitelistScheduleLocked(PrintWriter printWriter, boolean z) {
+        String str;
+        int size = this.mTempWhitelistAppIdEndTimes.size();
+        if (size > 0) {
+            if (z) {
+                printWriter.println("  Temp whitelist schedule:");
+                str = "    ";
+            } else {
+                str = "";
+            }
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            for (int i = 0; i < size; i++) {
+                printWriter.print(str);
+                printWriter.print("UID=");
+                printWriter.print(this.mTempWhitelistAppIdEndTimes.keyAt(i));
+                printWriter.print(": ");
+                Pair pair = (Pair) this.mTempWhitelistAppIdEndTimes.valueAt(i);
+                TimeUtils.formatDuration(((MutableLong) pair.first).value, elapsedRealtime, printWriter);
+                printWriter.print(" - ");
+                printWriter.println((String) pair.second);
+            }
+        }
+    }
+
+    public final void exitForceIdleLocked() {
+        if (this.mForceIdle) {
+            this.mForceIdle = false;
+            this.mForceType = "";
+            if (this.mScreenOn || this.mCharging) {
+                becomeActiveLocked(Process.myUid(), "exit-force");
+            }
+        }
+    }
+
+    public final void exitMaintenanceEarlyIfNeededLocked() {
+        if ((this.mState == 6 || this.mLightState == 6) && this.mActiveIdleOpCount <= 0 && !this.mJobsActive && !this.mAlarmsActive) {
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            if (DEBUG) {
+                StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m("Exit: start=");
+                TimeUtils.formatDuration(this.mMaintenanceStartTime, m);
+                m.append(" now=");
+                TimeUtils.formatDuration(elapsedRealtime, m);
+                Slog.d("DeviceIdleController", m.toString());
+            }
+            if (this.mState == 6) {
+                stepIdleStateLocked("s:early");
+            } else {
+                stepLightIdleStateLocked("s:early");
+            }
+        }
+    }
+
+    public final float getBatteryLevelRaw() {
+        BatteryManagerInternal batteryManagerInternal = this.mLocalBatteryManager;
+        if (batteryManagerInternal != null) {
+            int batteryLevelRaw = batteryManagerInternal.getBatteryLevelRaw();
+            if (batteryLevelRaw >= 0 && batteryLevelRaw <= 10000) {
+                return batteryLevelRaw / 100.0f;
+            }
+            DeviceIdleController$$ExternalSyntheticOutline0.m(batteryLevelRaw, "getBatteryLevelRaw() : batteryLevelInt is invalid : ", "DeviceIdleController");
+        } else {
+            Slog.w("DeviceIdleController", "getBatteryLevelRaw() : mLocalBatteryManager is null");
+        }
+        return -1.0f;
+    }
+
+    public final String[] getFullPowerWhitelistInternalUnchecked() {
+        String[] strArr;
+        synchronized (this) {
+            try {
+                strArr = new String[this.mPowerSaveWhitelistApps.size() + this.mPowerSaveWhitelistUserApps.size()];
+                int i = 0;
+                for (int i2 = 0; i2 < this.mPowerSaveWhitelistApps.size(); i2++) {
+                    strArr[i] = (String) this.mPowerSaveWhitelistApps.keyAt(i2);
+                    i++;
+                }
+                for (int i3 = 0; i3 < this.mPowerSaveWhitelistUserApps.size(); i3++) {
+                    strArr[i] = (String) this.mPowerSaveWhitelistUserApps.keyAt(i3);
+                    i++;
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return strArr;
+    }
+
+    public int getLightState() {
+        int i;
+        synchronized (this) {
+            i = this.mLightState;
+        }
+        return i;
+    }
+
+    public long getNextAlarmTime() {
+        long j;
+        synchronized (this) {
+            j = this.mNextAlarmTime;
+        }
+        return j;
+    }
+
+    public long getNextLightAlarmTimeForTesting() {
+        long j;
+        synchronized (this) {
+            j = this.mNextLightAlarmTime;
+        }
+        return j;
+    }
+
+    public final boolean getPowerSaveWhitelistAppInternal(String str) {
+        boolean containsKey;
+        synchronized (this) {
+            containsKey = this.mPowerSaveWhitelistUserApps.containsKey(str);
+        }
+        return containsKey;
+    }
+
+    public final boolean getPowerSaveWhitelistExceptIdleInternal(String str) {
+        boolean containsKey;
+        synchronized (this) {
+            containsKey = this.mPowerSaveWhitelistAppsExceptIdle.containsKey(str);
+        }
+        return containsKey;
+    }
+
+    public int getState() {
+        int i;
+        synchronized (this) {
+            i = this.mState;
+        }
+        return i;
+    }
+
+    public final void handleMotionDetectedLocked(long j, String str) {
+        if (this.mStationaryListeners.size() > 0) {
+            this.mHandler.sendEmptyMessage(7);
+            Slog.i("DeviceIdleController", "cancelMotionTimeoutAlarmLocked()");
+            this.mAlarmManager.cancel(this.mMotionTimeoutAlarmListener);
+            if (DEBUG) {
+                Slog.d("DeviceIdleController", "scheduleMotionRegistrationAlarmLocked");
+            }
+            this.mInjector.getClass();
+            long elapsedRealtime = SystemClock.elapsedRealtime();
+            Constants constants = this.mConstants;
+            long j2 = (constants.MOTION_INACTIVE_TIMEOUT / 2) + elapsedRealtime;
+            if (constants.USE_WINDOW_ALARMS) {
+                this.mAlarmManager.setWindow(2, j2, constants.MOTION_INACTIVE_TIMEOUT_FLEX, "DeviceIdleController.motion_registration", this.mMotionRegistrationAlarmListener, this.mHandler);
+            } else {
+                this.mAlarmManager.set(2, j2, "DeviceIdleController.motion_registration", this.mMotionRegistrationAlarmListener, this.mHandler);
+            }
+        }
+        if (!this.mQuickDozeActivated || this.mQuickDozeActivatedWhileIdling) {
+            maybeStopMonitoringMotionLocked();
+            boolean z = this.mState != 0 || this.mLightState == 7;
+            becomeActiveLocked(str, Process.myUid(), j, this.mLightState == 7);
+            if (z) {
+                becomeInactiveIfAppropriateLocked();
+            }
+        }
+    }
+
+    public final void handleWriteConfigFile() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            synchronized (this) {
+                FastXmlSerializer fastXmlSerializer = new FastXmlSerializer();
+                fastXmlSerializer.setOutput(byteArrayOutputStream, StandardCharsets.UTF_8.name());
+                writeConfigFileLocked(fastXmlSerializer);
+            }
+        } catch (IOException unused) {
+        }
+        synchronized (this.mConfigFile) {
+            FileOutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = this.mConfigFile.startWrite();
+                byteArrayOutputStream.writeTo(fileOutputStream);
+                this.mConfigFile.finishWrite(fileOutputStream);
+            } catch (IOException e) {
+                Slog.w("DeviceIdleController", "Error writing config file", e);
+                this.mConfigFile.failWrite(fileOutputStream);
+            }
+        }
+    }
+
+    public boolean hasMotionSensor() {
+        return this.mUseMotionSensor && this.mMotionSensor != null;
+    }
+
+    public boolean isCharging() {
+        boolean z;
+        synchronized (this) {
+            z = this.mCharging;
+        }
+        return z;
+    }
+
+    public boolean isEmergencyCallActive() {
+        return this.mEmergencyCallListener.mIsEmergencyCallActive;
+    }
+
+    public boolean isKeyguardShowing() {
+        boolean z;
+        synchronized (this) {
+            z = this.mScreenLocked;
+        }
+        return z;
+    }
+
+    public boolean isNetworkConnected() {
+        boolean z;
+        synchronized (this) {
+            z = this.mNetworkConnected;
+        }
+        return z;
+    }
+
+    public boolean isQuickDozeEnabled() {
+        boolean z;
+        synchronized (this) {
+            z = this.mQuickDozeActivated;
+        }
+        return z;
+    }
+
+    public boolean isScreenOn() {
+        boolean z;
+        synchronized (this) {
+            z = this.mScreenOn;
+        }
+        return z;
+    }
+
+    public final boolean isStationaryLocked() {
+        this.mInjector.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        MotionListener motionListener = this.mMotionListener;
+        return motionListener.active && elapsedRealtime - Math.max(motionListener.activatedTimeElapsed, this.mLastMotionEventElapsed) >= this.mConstants.MOTION_INACTIVE_TIMEOUT;
+    }
+
+    public final boolean isUpcomingAlarmClock() {
+        this.mInjector.getClass();
+        return SystemClock.elapsedRealtime() + this.mConstants.MIN_TIME_TO_ALARM >= this.mAlarmManager.getNextWakeFromIdleTime();
+    }
+
+    public void keyguardShowingLocked(boolean z) {
+        if (DEBUG) {
+            Slog.i("DeviceIdleController", "keyguardShowing=" + z);
+        }
+        if (this.mScreenLocked != z) {
+            this.mScreenLocked = z;
+            if (!this.mScreenOn || this.mForceIdle || z) {
+                return;
+            }
+            becomeActiveLocked(Process.myUid(), "unlocked");
+        }
+    }
+
+    public final void maybeStopMonitoringMotionLocked() {
+        if (DEBUG) {
+            Slog.d("DeviceIdleController", "maybeStopMonitoringMotionLocked()");
+        }
+        if (this.mMotionSensor == null || this.mStationaryListeners.size() != 0) {
+            return;
+        }
+        MotionListener motionListener = this.mMotionListener;
+        if (motionListener.active) {
+            if (DeviceIdleController.this.mMotionSensor.getReportingMode() == 2) {
+                DeviceIdleController deviceIdleController = DeviceIdleController.this;
+                deviceIdleController.mSensorManager.cancelTriggerSensor(deviceIdleController.mMotionListener, deviceIdleController.mMotionSensor);
+            } else {
+                DeviceIdleController deviceIdleController2 = DeviceIdleController.this;
+                deviceIdleController2.mSensorManager.unregisterListener(deviceIdleController2.mMotionListener);
+            }
+            motionListener.active = false;
+            Slog.i("DeviceIdleController", "cancelMotionTimeoutAlarmLocked()");
+            this.mAlarmManager.cancel(this.mMotionTimeoutAlarmListener);
+        }
+        Slog.i("DeviceIdleController", "cancelMotionRegistrationAlarmLocked()");
+        this.mAlarmManager.cancel(this.mMotionRegistrationAlarmListener);
+    }
+
+    public final void motionLocked() {
+        if (DEBUG) {
+            Slog.d("DeviceIdleController", "motionLocked()");
+        }
+        this.mInjector.getClass();
+        this.mLastMotionEventElapsed = SystemClock.elapsedRealtime();
+        handleMotionDetectedLocked(this.mConstants.MOTION_INACTIVE_TIMEOUT, "motion");
+    }
+
+    public final void moveToLightStateLocked(int i, String str) {
+        float batteryLevelRaw = getBatteryLevelRaw();
+        BatteryLevel batteryLevel = this.mLightBatteryLevel;
+        batteryLevel.curr = batteryLevelRaw;
+        batteryLevel.currTime = SystemClock.elapsedRealtime();
+        Slog.i("DeviceIdleController", String.format("[LIGHT] %s to %s, reason=%s, battery=%s(%s/%d)", lightStateToString(this.mLightState), lightStateToString(i), str, floatToString(batteryLevel.curr), floatToString(getBatteryLevelDiff(batteryLevel.prev, batteryLevel.curr)), Long.valueOf(getDuration(batteryLevel.prevTime, batteryLevel.currTime))));
+        batteryLevel.prev = batteryLevel.curr;
+        batteryLevel.prevTime = batteryLevel.currTime;
+        this.mLightState = i;
+        EventLog.writeEvent(34009, Integer.valueOf(i), str);
+        Trace.traceCounter(524288L, "DozeLightState", i);
+    }
+
+    public final void moveToStateLocked(int i, String str) {
+        float batteryLevelRaw = getBatteryLevelRaw();
+        BatteryLevel batteryLevel = this.mDeepBatteryLevel;
+        batteryLevel.curr = batteryLevelRaw;
+        batteryLevel.currTime = SystemClock.elapsedRealtime();
+        Slog.i("DeviceIdleController", String.format("[DEEP] %s to %s, reason=%s, battery=%s(%s/%d)", stateToString(this.mState), stateToString(i), str, floatToString(batteryLevel.curr), floatToString(getBatteryLevelDiff(batteryLevel.prev, batteryLevel.curr)), Long.valueOf(getDuration(batteryLevel.prevTime, batteryLevel.currTime))));
+        batteryLevel.prev = batteryLevel.curr;
+        batteryLevel.prevTime = batteryLevel.currTime;
+        this.mState = i;
+        EventLog.writeEvent(34000, Integer.valueOf(i), str);
+        Trace.traceCounter(524288L, "DozeDeepState", i);
+        updateActiveConstraintsLocked();
+    }
+
+    public final void onAnyMotionResult(int i) {
+        if (DEBUG) {
+            DeviceIdleController$$ExternalSyntheticOutline0.m(i, "onAnyMotionResult(", ")", "DeviceIdleController");
+        }
         synchronized (this) {
             if (i != -1) {
                 try {
@@ -1236,945 +3205,152 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class MyHandler extends Handler {
-        public MyHandler(Looper looper) {
-            super(looper);
+    public final void onAppRemovedFromTempWhitelistLocked(int i, String str) {
+        if (DEBUG) {
+            DeviceIdleController$$ExternalSyntheticOutline0.m(i, "Removing uid ", " from temp whitelist", "DeviceIdleController");
+        }
+        int appId = UserHandle.getAppId(i);
+        updateTempWhitelistAppIdsLocked(i, 0L, 0, false, 0, str, -1);
+        MyHandler myHandler = this.mHandler;
+        myHandler.obtainMessage(15, appId, 0).sendToTarget();
+        myHandler.obtainMessage(13, i, 0).sendToTarget();
+        getContext().sendBroadcastAsUser(this.mPowerSaveTempWhitelistChangedIntent, UserHandle.SYSTEM, null, this.mPowerSaveTempWhilelistChangedOptions);
+        try {
+            this.mBatteryStats.noteEvent(16401, str, appId);
+        } catch (RemoteException unused) {
         }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            boolean deviceIdleMode;
-            boolean lightDeviceIdleMode;
-            boolean isStationaryLocked;
-            DeviceIdleInternal.StationaryListener[] stationaryListenerArr;
-            PowerAllowlistInternal.TempAllowlistChangeListener[] tempAllowlistChangeListenerArr;
-            int i = 0;
-            switch (message.what) {
-                case 1:
-                    DeviceIdleController.this.handleWriteConfigFile();
-                    return;
-                case 2:
-                case 3:
-                    EventLogTags.writeDeviceIdleOnStart();
-                    if (message.what == 2) {
-                        deviceIdleMode = DeviceIdleController.this.mLocalPowerManager.setDeviceIdleMode(true);
-                        lightDeviceIdleMode = DeviceIdleController.this.mLocalPowerManager.setLightDeviceIdleMode(false);
-                    } else {
-                        deviceIdleMode = DeviceIdleController.this.mLocalPowerManager.setDeviceIdleMode(false);
-                        lightDeviceIdleMode = DeviceIdleController.this.mLocalPowerManager.setLightDeviceIdleMode(true);
-                    }
-                    try {
-                        DeviceIdleController.this.mNetworkPolicyManager.setDeviceIdleMode(true);
-                        DeviceIdleController.this.mBatteryStats.noteDeviceIdleMode(message.what == 2 ? 2 : 1, (String) null, Process.myUid());
-                    } catch (RemoteException unused) {
-                    }
-                    if (deviceIdleMode) {
-                        DeviceIdleController.this.getContext().sendBroadcastAsUser(DeviceIdleController.this.mIdleIntent, UserHandle.ALL, null, DeviceIdleController.this.mIdleIntentOptions);
-                    }
-                    if (lightDeviceIdleMode) {
-                        DeviceIdleController.this.getContext().sendBroadcastAsUser(DeviceIdleController.this.mLightIdleIntent, UserHandle.ALL, null, DeviceIdleController.this.mLightIdleIntentOptions);
-                    }
-                    EventLogTags.writeDeviceIdleOnComplete();
-                    DeviceIdleController.this.mGoingIdleWakeLock.release();
-                    return;
-                case 4:
-                    EventLogTags.writeDeviceIdleOffStart("unknown");
-                    boolean deviceIdleMode2 = DeviceIdleController.this.mLocalPowerManager.setDeviceIdleMode(false);
-                    boolean lightDeviceIdleMode2 = DeviceIdleController.this.mLocalPowerManager.setLightDeviceIdleMode(false);
-                    try {
-                        DeviceIdleController.this.mNetworkPolicyManager.setDeviceIdleMode(false);
-                        DeviceIdleController.this.mBatteryStats.noteDeviceIdleMode(0, (String) null, Process.myUid());
-                    } catch (RemoteException unused2) {
-                    }
-                    if (deviceIdleMode2) {
-                        DeviceIdleController.this.incActiveIdleOps();
-                        DeviceIdleController.this.mLocalActivityManager.broadcastIntentWithCallback(DeviceIdleController.this.mIdleIntent, DeviceIdleController.this.mIdleStartedDoneReceiver, (String[]) null, -1, (int[]) null, (BiFunction) null, DeviceIdleController.this.mIdleIntentOptions);
-                    }
-                    if (lightDeviceIdleMode2) {
-                        DeviceIdleController.this.incActiveIdleOps();
-                        DeviceIdleController.this.mLocalActivityManager.broadcastIntentWithCallback(DeviceIdleController.this.mLightIdleIntent, DeviceIdleController.this.mIdleStartedDoneReceiver, (String[]) null, -1, (int[]) null, (BiFunction) null, DeviceIdleController.this.mLightIdleIntentOptions);
-                    }
-                    DeviceIdleController.this.decActiveIdleOps();
-                    EventLogTags.writeDeviceIdleOffComplete();
-                    return;
-                case 5:
-                    String str = (String) message.obj;
-                    int i2 = message.arg1;
-                    EventLogTags.writeDeviceIdleOffStart(str != null ? str : "unknown");
-                    boolean deviceIdleMode3 = DeviceIdleController.this.mLocalPowerManager.setDeviceIdleMode(false);
-                    boolean lightDeviceIdleMode3 = DeviceIdleController.this.mLocalPowerManager.setLightDeviceIdleMode(false);
-                    try {
-                        DeviceIdleController.this.mNetworkPolicyManager.setDeviceIdleMode(false);
-                        DeviceIdleController.this.mBatteryStats.noteDeviceIdleMode(0, str, i2);
-                    } catch (RemoteException unused3) {
-                    }
-                    if (deviceIdleMode3) {
-                        DeviceIdleController.this.getContext().sendBroadcastAsUser(DeviceIdleController.this.mIdleIntent, UserHandle.ALL, null, DeviceIdleController.this.mIdleIntentOptions);
-                    }
-                    if (lightDeviceIdleMode3) {
-                        DeviceIdleController.this.getContext().sendBroadcastAsUser(DeviceIdleController.this.mLightIdleIntent, UserHandle.ALL, null, DeviceIdleController.this.mLightIdleIntentOptions);
-                    }
-                    EventLogTags.writeDeviceIdleOffComplete();
-                    return;
-                case 6:
-                    DeviceIdleController.this.checkTempAppWhitelistTimeout(message.arg1);
-                    return;
-                case 7:
-                    DeviceIdleInternal.StationaryListener stationaryListener = (DeviceIdleInternal.StationaryListener) message.obj;
-                    synchronized (DeviceIdleController.this) {
-                        isStationaryLocked = DeviceIdleController.this.isStationaryLocked();
-                        Slog.i("DeviceIdleController", "isStationary = " + isStationaryLocked);
-                        stationaryListenerArr = stationaryListener == null ? (DeviceIdleInternal.StationaryListener[]) DeviceIdleController.this.mStationaryListeners.toArray(new DeviceIdleInternal.StationaryListener[DeviceIdleController.this.mStationaryListeners.size()]) : null;
-                    }
-                    if (stationaryListenerArr != null) {
-                        int length = stationaryListenerArr.length;
-                        while (i < length) {
-                            stationaryListenerArr[i].onDeviceStationaryChanged(isStationaryLocked);
-                            i++;
-                        }
-                    }
-                    if (stationaryListener != null) {
-                        stationaryListener.onDeviceStationaryChanged(isStationaryLocked);
-                        return;
-                    }
-                    return;
-                case 8:
-                    DeviceIdleController.this.decActiveIdleOps();
-                    return;
-                case 9:
-                default:
-                    return;
-                case 10:
-                    IDeviceIdleConstraint iDeviceIdleConstraint = (IDeviceIdleConstraint) message.obj;
-                    if ((message.arg1 != 1 ? 0 : 1) != 0) {
-                        iDeviceIdleConstraint.startMonitoring();
-                        return;
-                    } else {
-                        iDeviceIdleConstraint.stopMonitoring();
-                        return;
-                    }
-                case 11:
-                    DeviceIdleController.this.updatePreIdleFactor();
-                    return;
-                case 12:
-                    DeviceIdleController.this.updatePreIdleFactor();
-                    DeviceIdleController.this.maybeDoImmediateMaintenance("idle factor");
-                    return;
-                case 13:
-                    int i3 = message.arg1;
-                    int i4 = message.arg2 != 1 ? 0 : 1;
-                    synchronized (DeviceIdleController.this) {
-                        tempAllowlistChangeListenerArr = (PowerAllowlistInternal.TempAllowlistChangeListener[]) DeviceIdleController.this.mTempAllowlistChangeListeners.toArray(new PowerAllowlistInternal.TempAllowlistChangeListener[DeviceIdleController.this.mTempAllowlistChangeListeners.size()]);
-                    }
-                    int length2 = tempAllowlistChangeListenerArr.length;
-                    while (i < length2) {
-                        PowerAllowlistInternal.TempAllowlistChangeListener tempAllowlistChangeListener = tempAllowlistChangeListenerArr[i];
-                        if (i4 != 0) {
-                            tempAllowlistChangeListener.onAppAdded(i3);
-                        } else {
-                            tempAllowlistChangeListener.onAppRemoved(i3);
-                        }
-                        i++;
-                    }
-                    return;
-                case 14:
-                    DeviceIdleController.this.mNetworkPolicyManagerInternal.onTempPowerSaveWhitelistChange(message.arg1, true, message.arg2, (String) message.obj);
-                    return;
-                case 15:
-                    DeviceIdleController.this.mNetworkPolicyManagerInternal.onTempPowerSaveWhitelistChange(message.arg1, false, 0, null);
-                    return;
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public final class BinderService extends IDeviceIdleController.Stub {
-        public BinderService() {
-        }
-
-        public void addPowerSaveWhitelistApp(String str) {
-            addPowerSaveWhitelistApps(Collections.singletonList(str));
-        }
-
-        public int addPowerSaveWhitelistApps(List list) {
-            Slog.i("DeviceIdleController", "addPowerSaveWhitelistApps(name = " + list + ")");
-            BinderCaller binderCaller = new BinderCaller(Binder.getCallingPid());
-            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                return DeviceIdleController.this.addPowerSaveWhitelistAppsInternal(list, 0, binderCaller);
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public void removePowerSaveWhitelistApp(String str) {
-            Slog.i("DeviceIdleController", "removePowerSaveWhitelistApp(name = " + str + ")");
-            BinderCaller binderCaller = new BinderCaller(Binder.getCallingPid());
-            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                if (!DeviceIdleController.this.removePowerSaveWhitelistAppInternal(str, 3, binderCaller) && DeviceIdleController.this.mPowerSaveWhitelistAppsExceptIdle.containsKey(str)) {
-                    throw new UnsupportedOperationException("Cannot remove system whitelisted app");
-                }
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public void removeSystemPowerWhitelistApp(String str) {
-            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                DeviceIdleController.this.removeSystemPowerWhitelistAppInternal(str);
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public void restoreSystemPowerWhitelistApp(String str) {
-            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                DeviceIdleController.this.restoreSystemPowerWhitelistAppInternal(str);
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public String[] getRemovedSystemPowerWhitelistApps() {
-            return DeviceIdleController.this.getRemovedSystemPowerWhitelistAppsInternal(Binder.getCallingUid(), UserHandle.getCallingUserId());
-        }
-
-        public String[] getSystemPowerWhitelistExceptIdle() {
-            return DeviceIdleController.this.getSystemPowerWhitelistExceptIdleInternal(Binder.getCallingUid(), UserHandle.getCallingUserId());
-        }
-
-        public String[] getSystemPowerWhitelist() {
-            return DeviceIdleController.this.getSystemPowerWhitelistInternal(Binder.getCallingUid(), UserHandle.getCallingUserId());
-        }
-
-        public String[] getUserPowerWhitelist() {
-            return DeviceIdleController.this.getUserPowerWhitelistInternal(Binder.getCallingUid(), UserHandle.getCallingUserId());
-        }
-
-        public String[] getFullPowerWhitelistExceptIdle() {
-            return DeviceIdleController.this.getFullPowerWhitelistExceptIdleInternal(Binder.getCallingUid(), UserHandle.getCallingUserId());
-        }
-
-        public String[] getFullPowerWhitelist() {
-            return DeviceIdleController.this.getFullPowerWhitelistInternal(Binder.getCallingUid(), UserHandle.getCallingUserId());
-        }
-
-        public int[] getAppIdWhitelistExceptIdle() {
-            return DeviceIdleController.this.getAppIdWhitelistExceptIdleInternal();
-        }
-
-        public int[] getAppIdWhitelist() {
-            return DeviceIdleController.this.getAppIdWhitelistInternal();
-        }
-
-        public int[] getAppIdUserWhitelist() {
-            return DeviceIdleController.this.getAppIdUserWhitelistInternal();
-        }
-
-        public int[] getAppIdTempWhitelist() {
-            return DeviceIdleController.this.getAppIdTempWhitelistInternal();
-        }
-
-        public boolean isPowerSaveWhitelistExceptIdleApp(String str) {
-            if (DeviceIdleController.this.mPackageManagerInternal.filterAppAccess(str, Binder.getCallingUid(), UserHandle.getCallingUserId())) {
-                return false;
-            }
-            return DeviceIdleController.this.isPowerSaveWhitelistExceptIdleAppInternal(str);
-        }
-
-        public boolean isPowerSaveWhitelistApp(String str) {
-            if (DeviceIdleController.this.mPackageManagerInternal.filterAppAccess(str, Binder.getCallingUid(), UserHandle.getCallingUserId())) {
-                return false;
-            }
-            return DeviceIdleController.this.isPowerSaveWhitelistAppInternal(str);
-        }
-
-        public long whitelistAppTemporarily(String str, int i, int i2, String str2) {
-            long max = Math.max(10000L, DeviceIdleController.this.mConstants.MAX_TEMP_APP_ALLOWLIST_DURATION_MS / 2);
-            DeviceIdleController.this.addPowerSaveTempAllowlistAppChecked(str, max, i, i2, str2);
-            return max;
-        }
-
-        public void addPowerSaveTempWhitelistApp(String str, long j, int i, int i2, String str2) {
-            DeviceIdleController.this.addPowerSaveTempAllowlistAppChecked(str, j, i, i2, str2);
-        }
-
-        public long addPowerSaveTempWhitelistAppForMms(String str, int i, int i2, String str2) {
-            long j = DeviceIdleController.this.mConstants.MMS_TEMP_APP_ALLOWLIST_DURATION_MS;
-            DeviceIdleController.this.addPowerSaveTempAllowlistAppChecked(str, j, i, i2, str2);
-            return j;
-        }
-
-        public long addPowerSaveTempWhitelistAppForSms(String str, int i, int i2, String str2) {
-            long j = DeviceIdleController.this.mConstants.SMS_TEMP_APP_ALLOWLIST_DURATION_MS;
-            DeviceIdleController.this.addPowerSaveTempAllowlistAppChecked(str, j, i, i2, str2);
-            return j;
-        }
-
-        public void exitIdle(String str) {
-            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                DeviceIdleController.this.exitIdleInternal(str);
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public int setPreIdleTimeoutMode(int i) {
-            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                return DeviceIdleController.this.setPreIdleTimeoutMode(i);
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public void resetPreIdleTimeoutMode() {
-            DeviceIdleController.this.getContext().enforceCallingOrSelfPermission("android.permission.DEVICE_POWER", null);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                DeviceIdleController.this.resetPreIdleTimeoutMode();
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-            DeviceIdleController.this.dump(fileDescriptor, printWriter, strArr);
-        }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
-            new Shell().exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class LocalService implements DeviceIdleInternal {
-        public LocalService() {
-        }
-
-        public void onConstraintStateChanged(IDeviceIdleConstraint iDeviceIdleConstraint, boolean z) {
-            synchronized (DeviceIdleController.this) {
-                DeviceIdleController.this.onConstraintStateChangedLocked(iDeviceIdleConstraint, z);
-            }
-        }
-
-        public void registerDeviceIdleConstraint(IDeviceIdleConstraint iDeviceIdleConstraint, String str, int i) {
-            DeviceIdleController.this.registerDeviceIdleConstraintInternal(iDeviceIdleConstraint, str, i);
-        }
-
-        public void unregisterDeviceIdleConstraint(IDeviceIdleConstraint iDeviceIdleConstraint) {
-            DeviceIdleController.this.unregisterDeviceIdleConstraintInternal(iDeviceIdleConstraint);
-        }
-
-        public void exitIdle(String str) {
-            DeviceIdleController.this.exitIdleInternal(str);
-        }
-
-        public void addPowerSaveTempWhitelistApp(int i, String str, long j, int i2, boolean z, int i3, String str2) {
-            DeviceIdleController.this.addPowerSaveTempAllowlistAppInternal(i, str, j, 0, i2, z, i3, str2);
-        }
-
-        public void addPowerSaveTempWhitelistApp(int i, String str, long j, int i2, int i3, boolean z, int i4, String str2) {
-            DeviceIdleController.this.addPowerSaveTempAllowlistAppInternal(i, str, j, i2, i3, z, i4, str2);
-        }
-
-        public void addPowerSaveTempWhitelistAppDirect(int i, long j, int i2, boolean z, int i3, String str, int i4) {
-            DeviceIdleController.this.addPowerSaveTempWhitelistAppDirectInternal(i4, i, j, i2, z, i3, str);
-        }
-
-        public long getNotificationAllowlistDuration() {
-            return DeviceIdleController.this.mConstants.NOTIFICATION_ALLOWLIST_DURATION_MS;
-        }
-
-        public void setJobsActive(boolean z) {
-            DeviceIdleController.this.setJobsActive(z);
-        }
-
-        public void setAlarmsActive(boolean z) {
-            DeviceIdleController.this.setAlarmsActive(z);
-        }
-
-        public boolean isAppOnWhitelist(int i) {
-            return DeviceIdleController.this.isAppOnWhitelistInternal(i);
-        }
-
-        public int[] getPowerSaveWhitelistUserAppIds() {
-            return DeviceIdleController.this.getPowerSaveWhitelistUserAppIds();
-        }
-
-        public int[] getPowerSaveTempWhitelistAppIds() {
-            return DeviceIdleController.this.getAppIdTempWhitelistInternal();
-        }
-
-        public void registerStationaryListener(DeviceIdleInternal.StationaryListener stationaryListener) {
-            DeviceIdleController.this.registerStationaryListener(stationaryListener);
-        }
-
-        public void unregisterStationaryListener(DeviceIdleInternal.StationaryListener stationaryListener) {
-            DeviceIdleController.this.unregisterStationaryListener(stationaryListener);
-        }
-
-        public int getTempAllowListType(int i, int i2) {
-            return DeviceIdleController.this.getTempAllowListType(i, i2);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class LocalPowerAllowlistService implements PowerAllowlistInternal {
-        public LocalPowerAllowlistService() {
-        }
-
-        public void registerTempAllowlistChangeListener(PowerAllowlistInternal.TempAllowlistChangeListener tempAllowlistChangeListener) {
-            DeviceIdleController.this.registerTempAllowlistChangeListener(tempAllowlistChangeListener);
-        }
-
-        public void unregisterTempAllowlistChangeListener(PowerAllowlistInternal.TempAllowlistChangeListener tempAllowlistChangeListener) {
-            DeviceIdleController.this.unregisterTempAllowlistChangeListener(tempAllowlistChangeListener);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class EmergencyCallListener extends TelephonyCallback implements TelephonyCallback.OutgoingEmergencyCallListener, TelephonyCallback.CallStateListener {
-        public volatile boolean mIsEmergencyCallActive;
-
-        public EmergencyCallListener() {
-        }
-
-        public void onOutgoingEmergencyCall(EmergencyNumber emergencyNumber, int i) {
-            this.mIsEmergencyCallActive = true;
-            synchronized (DeviceIdleController.this) {
-                DeviceIdleController.this.mActiveReason = 8;
-                DeviceIdleController.this.becomeActiveLocked("emergency call", Process.myUid());
-            }
-        }
-
-        @Override // android.telephony.TelephonyCallback.CallStateListener
-        public void onCallStateChanged(int i) {
-            if (i == 0 && this.mIsEmergencyCallActive) {
-                this.mIsEmergencyCallActive = false;
-                synchronized (DeviceIdleController.this) {
-                    DeviceIdleController.this.becomeInactiveIfAppropriateLocked();
-                }
-            }
-        }
-
-        public boolean isEmergencyCallActive() {
-            return this.mIsEmergencyCallActive;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class Injector {
-        public ConnectivityManager mConnectivityManager;
-        public Constants mConstants;
-        public final Context mContext;
-        public LocationManager mLocationManager;
-
-        public Injector(Context context) {
-            this.mContext = context.createAttributionContext("DeviceIdleController");
-        }
-
-        public AlarmManager getAlarmManager() {
-            return (AlarmManager) this.mContext.getSystemService(AlarmManager.class);
-        }
-
-        public AnyMotionDetector getAnyMotionDetector(Handler handler, SensorManager sensorManager, AnyMotionDetector.DeviceIdleCallback deviceIdleCallback, float f) {
-            return new AnyMotionDetector(getPowerManager(), handler, sensorManager, deviceIdleCallback, f);
-        }
-
-        public AppStateTrackerImpl getAppStateTracker(Context context, Looper looper) {
-            return new AppStateTrackerImpl(context, looper);
-        }
-
-        public ConnectivityManager getConnectivityManager() {
-            if (this.mConnectivityManager == null) {
-                this.mConnectivityManager = (ConnectivityManager) this.mContext.getSystemService(ConnectivityManager.class);
-            }
-            return this.mConnectivityManager;
-        }
-
-        public Constants getConstants(DeviceIdleController deviceIdleController) {
-            if (this.mConstants == null) {
-                Objects.requireNonNull(deviceIdleController);
-                this.mConstants = new Constants();
-            }
-            return this.mConstants;
-        }
-
-        public long getElapsedRealtime() {
-            return SystemClock.elapsedRealtime();
-        }
-
-        public LocationManager getLocationManager() {
-            if (this.mLocationManager == null) {
-                this.mLocationManager = (LocationManager) this.mContext.getSystemService(LocationManager.class);
-            }
-            return this.mLocationManager;
-        }
-
-        public MyHandler getHandler(DeviceIdleController deviceIdleController) {
-            Objects.requireNonNull(deviceIdleController);
-            return new MyHandler(AppSchedulingModuleThread.getHandler().getLooper());
-        }
-
-        public Sensor getMotionSensor() {
-            SensorManager sensorManager = getSensorManager();
-            int integer = this.mContext.getResources().getInteger(R.integer.config_defaultNightDisplayCustomStartTime);
-            Sensor defaultSensor = integer > 0 ? sensorManager.getDefaultSensor(integer, true) : null;
-            if (defaultSensor == null && this.mContext.getResources().getBoolean(R.bool.config_bluetooth_sco_off_call)) {
-                defaultSensor = sensorManager.getDefaultSensor(26, true);
-            }
-            return defaultSensor == null ? sensorManager.getDefaultSensor(17, true) : defaultSensor;
-        }
-
-        public PowerManager getPowerManager() {
-            return (PowerManager) this.mContext.getSystemService(PowerManager.class);
-        }
-
-        public SensorManager getSensorManager() {
-            return (SensorManager) this.mContext.getSystemService(SensorManager.class);
-        }
-
-        public TelephonyManager getTelephonyManager() {
-            return (TelephonyManager) this.mContext.getSystemService(TelephonyManager.class);
-        }
-
-        public ConstraintController getConstraintController(Handler handler, DeviceIdleInternal deviceIdleInternal) {
-            if (this.mContext.getPackageManager().hasSystemFeature("android.software.leanback_only")) {
-                return new TvConstraintController(this.mContext, handler);
-            }
-            return null;
-        }
-
-        public boolean isLocationPrefetchEnabled() {
-            return this.mContext.getResources().getBoolean(R.bool.config_bluetooth_wide_band_speech);
-        }
-
-        public boolean useMotionSensor() {
-            return this.mContext.getResources().getBoolean(R.bool.config_bugReportHandlerEnabled);
-        }
-    }
-
-    public DeviceIdleController(Context context, Injector injector) {
-        super(context);
-        this.mNumBlockingConstraints = 0;
-        this.mConstraints = new ArrayMap();
-        this.mLightBatteryLevel = new BatteryLevel(-1.0f, -1.0f, 0L, 0L);
-        this.mDeepBatteryLevel = new BatteryLevel(-1.0f, -1.0f, 0L, 0L);
-        this.mPowerSaveWhitelistAppsExceptIdle = new ArrayMap();
-        this.mPowerSaveWhitelistUserAppsExceptIdle = new ArraySet();
-        this.mPowerSaveWhitelistApps = new ArrayMap();
-        this.mPowerSaveWhitelistUserApps = new ArrayMap();
-        this.mPowerSaveWhitelistSystemAppIdsExceptIdle = new SparseBooleanArray();
-        this.mPowerSaveWhitelistSystemAppIds = new SparseBooleanArray();
-        this.mPowerSaveWhitelistExceptIdleAppIds = new SparseBooleanArray();
-        this.mPowerSaveWhitelistExceptIdleAppIdArray = new int[0];
-        this.mPowerSaveWhitelistAllAppIds = new SparseBooleanArray();
-        this.mPowerSaveWhitelistAllAppIdArray = new int[0];
-        this.mPowerSaveWhitelistUserAppIds = new SparseBooleanArray();
-        this.mPowerSaveWhitelistUserAppIdArray = new int[0];
-        this.mTempWhitelistAppIdEndTimes = new SparseArray();
-        this.mTempWhitelistAppIdArray = new int[0];
-        this.mRemovedFromSystemWhitelistApps = new ArrayMap();
-        this.mStationaryListeners = new ArraySet();
-        this.mTempAllowlistChangeListeners = new ArraySet();
-        this.mEventCmds = new int[100];
-        this.mEventTimes = new long[100];
-        this.mEventReasons = new String[100];
-        this.mUserWhitelistHistoryBuffer = new RingBuffer(UserWhitelistHistoryInfo.class, 100);
-        this.mReceiver = new BroadcastReceiver() { // from class: com.android.server.DeviceIdleController.1
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                Uri data;
-                String schemeSpecificPart;
-                String action = intent.getAction();
-                action.hashCode();
-                boolean z = true;
-                char c = 65535;
-                switch (action.hashCode()) {
-                    case -1538406691:
-                        if (action.equals("android.intent.action.BATTERY_CHANGED")) {
-                            c = 0;
-                            break;
-                        }
-                        break;
-                    case -1172645946:
-                        if (action.equals("android.net.conn.CONNECTIVITY_CHANGE")) {
-                            c = 1;
-                            break;
-                        }
-                        break;
-                    case 525384130:
-                        if (action.equals("android.intent.action.PACKAGE_REMOVED")) {
-                            c = 2;
-                            break;
-                        }
-                        break;
-                }
-                switch (c) {
-                    case 0:
-                        boolean booleanExtra = intent.getBooleanExtra("present", true);
-                        boolean z2 = intent.getIntExtra("plugged", 0) != 0;
-                        synchronized (DeviceIdleController.this) {
-                            DeviceIdleController deviceIdleController = DeviceIdleController.this;
-                            if (!booleanExtra || !z2) {
-                                z = false;
-                            }
-                            deviceIdleController.updateChargingLocked(z);
-                        }
-                        return;
-                    case 1:
-                        DeviceIdleController.this.updateConnectivityState(intent);
-                        return;
-                    case 2:
-                        if (intent.getBooleanExtra("android.intent.extra.REPLACING", false) || (data = intent.getData()) == null || (schemeSpecificPart = data.getSchemeSpecificPart()) == null) {
-                            return;
-                        }
-                        DeviceIdleController.this.removePowerSaveWhitelistAppInternal(schemeSpecificPart, 5, null);
-                        return;
-                    default:
-                        return;
-                }
-            }
-        };
-        this.mLightAlarmListener = new AlarmManager.OnAlarmListener() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda0
-            @Override // android.app.AlarmManager.OnAlarmListener
-            public final void onAlarm() {
-                DeviceIdleController.this.lambda$new$0();
-            }
-        };
-        this.mMotionRegistrationAlarmListener = new AlarmManager.OnAlarmListener() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda1
-            @Override // android.app.AlarmManager.OnAlarmListener
-            public final void onAlarm() {
-                DeviceIdleController.this.lambda$new$1();
-            }
-        };
-        this.mMotionTimeoutAlarmListener = new AlarmManager.OnAlarmListener() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda2
-            @Override // android.app.AlarmManager.OnAlarmListener
-            public final void onAlarm() {
-                DeviceIdleController.this.lambda$new$2();
-            }
-        };
-        this.mSensingTimeoutAlarmListener = new AlarmManager.OnAlarmListener() { // from class: com.android.server.DeviceIdleController.2
-            @Override // android.app.AlarmManager.OnAlarmListener
-            public void onAlarm() {
-                synchronized (DeviceIdleController.this) {
-                    if (DeviceIdleController.this.mState == 3) {
-                        DeviceIdleController.this.becomeInactiveIfAppropriateLocked();
-                    }
-                }
-            }
-        };
-        this.mDeepAlarmListener = new AlarmManager.OnAlarmListener() { // from class: com.android.server.DeviceIdleController.3
-            @Override // android.app.AlarmManager.OnAlarmListener
-            public void onAlarm() {
-                synchronized (DeviceIdleController.this) {
-                    DeviceIdleController.this.stepIdleStateLocked("s:alarm");
-                }
-            }
-        };
-        this.mIdleStartedDoneReceiver = new IIntentReceiver.Stub() { // from class: com.android.server.DeviceIdleController.4
-            public void performReceive(Intent intent, int i, String str, Bundle bundle, boolean z, boolean z2, int i2) {
-                if ("android.os.action.DEVICE_IDLE_MODE_CHANGED".equals(intent.getAction())) {
-                    DeviceIdleController deviceIdleController = DeviceIdleController.this;
-                    deviceIdleController.mHandler.sendEmptyMessageDelayed(8, deviceIdleController.mConstants.MIN_DEEP_MAINTENANCE_TIME);
-                } else {
-                    DeviceIdleController deviceIdleController2 = DeviceIdleController.this;
-                    deviceIdleController2.mHandler.sendEmptyMessageDelayed(8, deviceIdleController2.mConstants.MIN_LIGHT_MAINTENANCE_TIME);
-                }
-            }
-        };
-        this.mInteractivityReceiver = new BroadcastReceiver() { // from class: com.android.server.DeviceIdleController.5
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                synchronized (DeviceIdleController.this) {
-                    DeviceIdleController.this.updateInteractivityLocked();
-                }
-            }
-        };
-        this.mEmergencyCallListener = new EmergencyCallListener();
-        this.mMotionListener = new MotionListener();
-        this.mGenericLocationListener = new LocationListener() { // from class: com.android.server.DeviceIdleController.6
-            @Override // android.location.LocationListener
-            public void onProviderDisabled(String str) {
-            }
-
-            @Override // android.location.LocationListener
-            public void onProviderEnabled(String str) {
-            }
-
-            @Override // android.location.LocationListener
-            public void onStatusChanged(String str, int i, Bundle bundle) {
-            }
-
-            @Override // android.location.LocationListener
-            public void onLocationChanged(Location location) {
-                synchronized (DeviceIdleController.this) {
-                    DeviceIdleController.this.receivedGenericLocationLocked(location);
-                }
-            }
-        };
-        this.mGpsLocationListener = new LocationListener() { // from class: com.android.server.DeviceIdleController.7
-            @Override // android.location.LocationListener
-            public void onProviderDisabled(String str) {
-            }
-
-            @Override // android.location.LocationListener
-            public void onProviderEnabled(String str) {
-            }
-
-            @Override // android.location.LocationListener
-            public void onStatusChanged(String str, int i, Bundle bundle) {
-            }
-
-            @Override // android.location.LocationListener
-            public void onLocationChanged(Location location) {
-                synchronized (DeviceIdleController.this) {
-                    DeviceIdleController.this.receivedGpsLocationLocked(location);
-                }
-            }
-        };
-        this.mScreenObserver = new ActivityTaskManagerInternal.ScreenObserver() { // from class: com.android.server.DeviceIdleController.8
-            @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
-            public void onAwakeStateChanged(boolean z) {
-            }
-
-            @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
-            public void onKeyguardStateChanged(boolean z) {
-                synchronized (DeviceIdleController.this) {
-                    DeviceIdleController.this.keyguardShowingLocked(z);
-                }
-            }
-        };
-        this.mInjector = injector;
-        this.mConfigFile = new AtomicFile(new File(getSystemDir(), "deviceidle.xml"));
-        this.mHandler = injector.getHandler(this);
-        AppStateTrackerImpl appStateTracker = injector.getAppStateTracker(context, AppSchedulingModuleThread.get().getLooper());
-        this.mAppStateTracker = appStateTracker;
-        LocalServices.addService(AppStateTracker.class, appStateTracker);
-        this.mIsLocationPrefetchEnabled = injector.isLocationPrefetchEnabled();
-        this.mUseMotionSensor = injector.useMotionSensor();
-    }
-
-    public DeviceIdleController(Context context) {
-        this(context, new Injector(context));
-    }
-
-    public boolean isAppOnWhitelistInternal(int i) {
-        boolean z;
-        synchronized (this) {
-            z = Arrays.binarySearch(this.mPowerSaveWhitelistAllAppIdArray, i) >= 0;
-        }
-        return z;
-    }
-
-    public int[] getPowerSaveWhitelistUserAppIds() {
-        int[] iArr;
-        synchronized (this) {
-            iArr = this.mPowerSaveWhitelistUserAppIdArray;
-        }
-        return iArr;
-    }
-
-    public static File getSystemDir() {
-        return new File(Environment.getDataDirectory(), "system");
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r0v10, types: [com.android.server.DeviceIdleController$BinderService, android.os.IBinder] */
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        PackageManager packageManager = getContext().getPackageManager();
-        synchronized (this) {
-            boolean z = getContext().getResources().getBoolean(17891657);
-            this.mDeepEnabled = z;
-            this.mLightEnabled = z;
-            SystemConfig systemConfig = SystemConfig.getInstance();
-            ArraySet allowInPowerSaveExceptIdle = systemConfig.getAllowInPowerSaveExceptIdle();
-            for (int i = 0; i < allowInPowerSaveExceptIdle.size(); i++) {
-                try {
-                    ApplicationInfo applicationInfo = packageManager.getApplicationInfo((String) allowInPowerSaveExceptIdle.valueAt(i), 1048576);
-                    int appId = UserHandle.getAppId(applicationInfo.uid);
-                    this.mPowerSaveWhitelistAppsExceptIdle.put(applicationInfo.packageName, Integer.valueOf(appId));
-                    this.mPowerSaveWhitelistSystemAppIdsExceptIdle.put(appId, true);
-                } catch (PackageManager.NameNotFoundException unused) {
-                }
-            }
-            ArraySet allowInPowerSave = systemConfig.getAllowInPowerSave();
-            for (int i2 = 0; i2 < allowInPowerSave.size(); i2++) {
-                try {
-                    ApplicationInfo applicationInfo2 = packageManager.getApplicationInfo((String) allowInPowerSave.valueAt(i2), 1048576);
-                    int appId2 = UserHandle.getAppId(applicationInfo2.uid);
-                    this.mPowerSaveWhitelistAppsExceptIdle.put(applicationInfo2.packageName, Integer.valueOf(appId2));
-                    this.mPowerSaveWhitelistSystemAppIdsExceptIdle.put(appId2, true);
-                    this.mPowerSaveWhitelistApps.put(applicationInfo2.packageName, Integer.valueOf(appId2));
-                    this.mPowerSaveWhitelistSystemAppIds.put(appId2, true);
-                } catch (PackageManager.NameNotFoundException unused2) {
-                }
-            }
-            this.mConstants = this.mInjector.getConstants(this);
-            readConfigFileLocked();
-            updateWhitelistAppIdsLocked();
-            this.mNetworkConnected = true;
-            this.mScreenOn = true;
-            this.mScreenLocked = false;
-            this.mCharging = true;
-            this.mActiveReason = 0;
-            moveToStateLocked(0, "boot");
-            moveToLightStateLocked(0, "boot");
-            this.mInactiveTimeout = this.mConstants.INACTIVE_TIMEOUT;
-            this.mPreIdleFactor = 1.0f;
-            this.mLastPreIdleFactor = 1.0f;
-        }
-        ?? binderService = new BinderService();
-        this.mBinderService = binderService;
-        publishBinderService("deviceidle", binderService);
-        LocalService localService = new LocalService();
-        this.mLocalService = localService;
-        publishLocalService(DeviceIdleInternal.class, localService);
-        publishLocalService(PowerAllowlistInternal.class, new LocalPowerAllowlistService());
     }
 
     @Override // com.android.server.SystemService
-    public void onBootPhase(int i) {
+    public final void onBootPhase(int i) {
+        WearModeManagerInternal wearModeManagerInternal;
         if (i != 500) {
             if (i == 1000) {
-                resetBatteryLevel();
+                Slog.i("DeviceIdleController", "resetBatteryLevel");
+                float batteryLevelRaw = getBatteryLevelRaw();
+                long elapsedRealtime = SystemClock.elapsedRealtime();
+                BatteryLevel batteryLevel = this.mLightBatteryLevel;
+                batteryLevel.prev = batteryLevelRaw;
+                batteryLevel.curr = batteryLevelRaw;
+                batteryLevel.prevTime = elapsedRealtime;
+                batteryLevel.currTime = elapsedRealtime;
+                BatteryLevel batteryLevel2 = this.mDeepBatteryLevel;
+                batteryLevel2.prev = batteryLevelRaw;
+                batteryLevel2.curr = batteryLevelRaw;
+                batteryLevel2.prevTime = elapsedRealtime;
+                batteryLevel2.currTime = elapsedRealtime;
                 return;
             }
             return;
         }
         synchronized (this) {
-            this.mAlarmManager = this.mInjector.getAlarmManager();
-            this.mLocalAlarmManager = (AlarmManagerInternal) getLocalService(AlarmManagerInternal.class);
-            this.mBatteryStats = BatteryStatsService.getService();
-            this.mLocalBatteryManager = (BatteryManagerInternal) getLocalService(BatteryManagerInternal.class);
-            this.mLocalActivityManager = (ActivityManagerInternal) getLocalService(ActivityManagerInternal.class);
-            this.mLocalActivityTaskManager = (ActivityTaskManagerInternal) getLocalService(ActivityTaskManagerInternal.class);
-            this.mPackageManagerInternal = (PackageManagerInternal) getLocalService(PackageManagerInternal.class);
-            this.mLocalPowerManager = (PowerManagerInternal) getLocalService(PowerManagerInternal.class);
-            PowerManager powerManager = this.mInjector.getPowerManager();
-            this.mPowerManager = powerManager;
-            PowerManager.WakeLock newWakeLock = powerManager.newWakeLock(1, "deviceidle_maint");
-            this.mActiveIdleWakeLock = newWakeLock;
-            newWakeLock.setReferenceCounted(false);
-            PowerManager.WakeLock newWakeLock2 = this.mPowerManager.newWakeLock(1, "deviceidle_going_idle");
-            this.mGoingIdleWakeLock = newWakeLock2;
-            newWakeLock2.setReferenceCounted(true);
-            this.mNetworkPolicyManager = INetworkPolicyManager.Stub.asInterface(ServiceManager.getService("netpolicy"));
-            this.mNetworkPolicyManagerInternal = (NetworkPolicyManagerInternal) getLocalService(NetworkPolicyManagerInternal.class);
-            this.mSensorManager = this.mInjector.getSensorManager();
-            if (this.mUseMotionSensor) {
-                this.mMotionSensor = this.mInjector.getMotionSensor();
-            }
-            if (this.mIsLocationPrefetchEnabled) {
-                this.mLocationRequest = new LocationRequest.Builder(0L).setQuality(100).setMaxUpdates(1).build();
-            }
-            ConstraintController constraintController = this.mInjector.getConstraintController(this.mHandler, (DeviceIdleInternal) getLocalService(LocalService.class));
-            this.mConstraintController = constraintController;
-            if (constraintController != null) {
-                constraintController.start();
-            }
-            this.mAnyMotionDetector = this.mInjector.getAnyMotionDetector(this.mHandler, this.mSensorManager, this, getContext().getResources().getInteger(R.integer.config_defaultNightMode) / 100.0f);
-            this.mAppStateTracker.onSystemServicesReady();
-            Bundle bundle = BroadcastOptions.makeBasic().setDeliveryGroupPolicy(1).setDeferralPolicy(2).toBundle();
-            Intent intent = new Intent("android.os.action.DEVICE_IDLE_MODE_CHANGED");
-            this.mIdleIntent = intent;
-            intent.addFlags(1342177280);
-            Intent intent2 = new Intent("android.os.action.LIGHT_DEVICE_IDLE_MODE_CHANGED");
-            this.mLightIdleIntent = intent2;
-            intent2.addFlags(1342177280);
-            this.mLightIdleIntentOptions = bundle;
-            this.mIdleIntentOptions = bundle;
-            Intent intent3 = new Intent("android.os.action.POWER_SAVE_WHITELIST_CHANGED");
-            this.mPowerSaveWhitelistChangedIntent = intent3;
-            intent3.addFlags(1073741824);
-            Intent intent4 = new Intent("android.os.action.POWER_SAVE_TEMP_WHITELIST_CHANGED");
-            this.mPowerSaveTempWhitelistChangedIntent = intent4;
-            intent4.addFlags(1073741824);
-            this.mPowerSaveWhitelistChangedOptions = bundle;
-            this.mPowerSaveTempWhilelistChangedOptions = bundle;
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
-            getContext().registerReceiver(this.mReceiver, intentFilter);
-            IntentFilter intentFilter2 = new IntentFilter();
-            intentFilter2.addAction("android.intent.action.PACKAGE_REMOVED");
-            intentFilter2.addDataScheme("package");
-            getContext().registerReceiver(this.mReceiver, intentFilter2);
-            IntentFilter intentFilter3 = new IntentFilter();
-            intentFilter3.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-            getContext().registerReceiver(this.mReceiver, intentFilter3);
-            IntentFilter intentFilter4 = new IntentFilter();
-            intentFilter4.addAction("android.intent.action.SCREEN_OFF");
-            intentFilter4.addAction("android.intent.action.SCREEN_ON");
-            getContext().registerReceiver(this.mInteractivityReceiver, intentFilter4);
-            this.mLocalActivityManager.setDeviceIdleAllowlist(this.mPowerSaveWhitelistAllAppIdArray, this.mPowerSaveWhitelistExceptIdleAppIdArray);
-            this.mLocalPowerManager.setDeviceIdleWhitelist(this.mPowerSaveWhitelistAllAppIdArray);
-            this.mLocalPowerManager.registerLowPowerModeObserver(15, new Consumer() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda3
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    DeviceIdleController.this.lambda$onBootPhase$3((PowerSaveState) obj);
+            try {
+                this.mAlarmManager = (AlarmManager) this.mInjector.mContext.getSystemService(AlarmManager.class);
+                this.mLocalAlarmManager = (AlarmManagerService.LocalService) getLocalService(AlarmManagerService.LocalService.class);
+                this.mBatteryStats = BatteryStatsService.getService();
+                this.mLocalBatteryManager = (BatteryManagerInternal) getLocalService(BatteryManagerInternal.class);
+                this.mLocalActivityManager = (ActivityManagerInternal) getLocalService(ActivityManagerInternal.class);
+                this.mLocalActivityTaskManager = (ActivityTaskManagerInternal) getLocalService(ActivityTaskManagerInternal.class);
+                this.mPackageManagerInternal = (PackageManagerInternal) getLocalService(PackageManagerInternal.class);
+                this.mLocalPowerManager = (PowerManagerInternal) getLocalService(PowerManagerInternal.class);
+                PowerManager powerManager = (PowerManager) this.mInjector.mContext.getSystemService(PowerManager.class);
+                this.mPowerManager = powerManager;
+                PowerManager.WakeLock newWakeLock = powerManager.newWakeLock(1, "deviceidle_maint");
+                this.mActiveIdleWakeLock = newWakeLock;
+                newWakeLock.setReferenceCounted(false);
+                PowerManager.WakeLock newWakeLock2 = this.mPowerManager.newWakeLock(1, "deviceidle_going_idle");
+                this.mGoingIdleWakeLock = newWakeLock2;
+                newWakeLock2.setReferenceCounted(true);
+                this.mNetworkPolicyManager = INetworkPolicyManager.Stub.asInterface(ServiceManager.getService("netpolicy"));
+                this.mNetworkPolicyManagerInternal = (NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl) getLocalService(NetworkPolicyManagerService.NetworkPolicyManagerInternalImpl.class);
+                this.mSensorManager = (SensorManager) this.mInjector.mContext.getSystemService(SensorManager.class);
+                if (this.mUseMotionSensor) {
+                    Injector injector = this.mInjector;
+                    SensorManager sensorManager = (SensorManager) injector.mContext.getSystemService(SensorManager.class);
+                    int integer = injector.mContext.getResources().getInteger(R.integer.config_carDockKeepsScreenOn);
+                    Sensor defaultSensor = integer > 0 ? sensorManager.getDefaultSensor(integer, true) : null;
+                    if (defaultSensor == null && injector.mContext.getResources().getBoolean(R.bool.config_autoResetAirplaneMode)) {
+                        defaultSensor = sensorManager.getDefaultSensor(26, true);
+                    }
+                    if (defaultSensor == null) {
+                        defaultSensor = sensorManager.getDefaultSensor(17, true);
+                    }
+                    this.mMotionSensor = defaultSensor;
                 }
-            });
-            updateQuickDozeFlagLocked(this.mLocalPowerManager.getLowPowerState(15).batterySaverEnabled);
-            this.mLocalActivityTaskManager.registerScreenObserver(this.mScreenObserver);
-            this.mInjector.getTelephonyManager().registerTelephonyCallback(AppSchedulingModuleThread.getExecutor(), this.mEmergencyCallListener);
-            passWhiteListsToForceAppStandbyTrackerLocked();
-            updateInteractivityLocked();
+                if (this.mIsLocationPrefetchEnabled) {
+                    this.mLocationRequest = new LocationRequest.Builder(0L).setQuality(100).setMaxUpdates(1).build();
+                }
+                Injector injector2 = this.mInjector;
+                MyHandler myHandler = this.mHandler;
+                TvConstraintController tvConstraintController = injector2.mContext.getPackageManager().hasSystemFeature("android.software.leanback_only") ? new TvConstraintController(injector2.mContext, myHandler) : null;
+                if (tvConstraintController != null) {
+                    tvConstraintController.start();
+                }
+                Injector injector3 = this.mInjector;
+                MyHandler myHandler2 = this.mHandler;
+                SensorManager sensorManager2 = this.mSensorManager;
+                injector3.getClass();
+                this.mAnyMotionDetector = new AnyMotionDetector((PowerManager) injector3.mContext.getSystemService(PowerManager.class), myHandler2, sensorManager2, this, getContext().getResources().getInteger(R.integer.config_carDockRotation) / 100.0f);
+                this.mAppStateTracker.onSystemServicesReady();
+                Bundle bundle = BroadcastOptions.makeBasic().setDeliveryGroupPolicy(1).setDeferralPolicy(2).toBundle();
+                Intent intent = new Intent("android.os.action.DEVICE_IDLE_MODE_CHANGED");
+                this.mIdleIntent = intent;
+                intent.addFlags(1342177280);
+                Intent intent2 = new Intent("android.os.action.LIGHT_DEVICE_IDLE_MODE_CHANGED");
+                this.mLightIdleIntent = intent2;
+                intent2.addFlags(1342177280);
+                this.mLightIdleIntentOptions = bundle;
+                this.mIdleIntentOptions = bundle;
+                Intent intent3 = new Intent("android.os.action.POWER_SAVE_WHITELIST_CHANGED");
+                this.mPowerSaveWhitelistChangedIntent = intent3;
+                intent3.addFlags(1073741824);
+                Intent intent4 = new Intent("android.os.action.POWER_SAVE_TEMP_WHITELIST_CHANGED");
+                this.mPowerSaveTempWhitelistChangedIntent = intent4;
+                intent4.addFlags(1073741824);
+                this.mPowerSaveWhitelistChangedOptions = bundle;
+                this.mPowerSaveTempWhilelistChangedOptions = bundle;
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction("android.intent.action.BATTERY_CHANGED");
+                getContext().registerReceiver(this.mReceiver, intentFilter);
+                IntentFilter intentFilter2 = new IntentFilter();
+                intentFilter2.addAction("android.intent.action.PACKAGE_REMOVED");
+                intentFilter2.addDataScheme("package");
+                getContext().registerReceiver(this.mReceiver, intentFilter2);
+                IntentFilter intentFilter3 = new IntentFilter();
+                intentFilter3.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+                getContext().registerReceiver(this.mReceiver, intentFilter3);
+                IntentFilter intentFilter4 = new IntentFilter();
+                intentFilter4.addAction("android.intent.action.SCREEN_OFF");
+                intentFilter4.addAction("android.intent.action.SCREEN_ON");
+                getContext().registerReceiver(this.mInteractivityReceiver, intentFilter4);
+                this.mLocalActivityManager.setDeviceIdleAllowlist(this.mPowerSaveWhitelistAllAppIdArray, this.mPowerSaveWhitelistExceptIdleAppIdArray);
+                this.mLocalPowerManager.setDeviceIdleWhitelist(this.mPowerSaveWhitelistAllAppIdArray);
+                if (this.mConstants.USE_MODE_MANAGER && (wearModeManagerInternal = (WearModeManagerInternal) LocalServices.getService(WearModeManagerInternal.class)) != null) {
+                    wearModeManagerInternal.addActiveStateChangeListener("quick_doze_request", AppSchedulingModuleThread.getExecutor(), this.mModeManagerQuickDozeRequestConsumer);
+                    wearModeManagerInternal.addActiveStateChangeListener("off_body", AppSchedulingModuleThread.getExecutor(), this.mModeManagerOffBodyStateConsumer);
+                }
+                this.mLocalPowerManager.registerLowPowerModeObserver(15, new Consumer() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda13
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        DeviceIdleController deviceIdleController = DeviceIdleController.this;
+                        PowerSaveState powerSaveState = (PowerSaveState) obj;
+                        synchronized (deviceIdleController) {
+                            deviceIdleController.mBatterySaverEnabled = powerSaveState.batterySaverEnabled;
+                            deviceIdleController.updateQuickDozeFlagLocked();
+                        }
+                    }
+                });
+                this.mBatterySaverEnabled = this.mLocalPowerManager.getLowPowerState(15).batterySaverEnabled;
+                updateQuickDozeFlagLocked();
+                this.mLocalActivityTaskManager.registerScreenObserver(this.mScreenObserver);
+                ((TelephonyManager) this.mInjector.mContext.getSystemService(TelephonyManager.class)).registerTelephonyCallback(AppSchedulingModuleThread.getExecutor(), this.mEmergencyCallListener);
+                passWhiteListsToForceAppStandbyTrackerLocked();
+                updateInteractivityLocked();
+            } catch (Throwable th) {
+                throw th;
+            }
         }
         updateConnectivityState(null);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onBootPhase$3(PowerSaveState powerSaveState) {
-        synchronized (this) {
-            updateQuickDozeFlagLocked(powerSaveState.batterySaverEnabled);
-        }
-    }
-
-    public boolean hasMotionSensor() {
-        return this.mUseMotionSensor && this.mMotionSensor != null;
-    }
-
-    public final void registerDeviceIdleConstraintInternal(IDeviceIdleConstraint iDeviceIdleConstraint, String str, int i) {
-        int i2;
-        if (i == 0) {
-            i2 = 0;
-        } else {
-            if (i != 1) {
-                Slog.wtf("DeviceIdleController", "Registering device-idle constraint with invalid type: " + i);
-                return;
-            }
-            i2 = 3;
-        }
-        synchronized (this) {
-            if (this.mConstraints.containsKey(iDeviceIdleConstraint)) {
-                Slog.e("DeviceIdleController", "Re-registering device-idle constraint: " + iDeviceIdleConstraint + ".");
-                return;
-            }
-            this.mConstraints.put(iDeviceIdleConstraint, new DeviceIdleConstraintTracker(str, i2));
-            updateActiveConstraintsLocked();
-        }
-    }
-
-    public final void unregisterDeviceIdleConstraintInternal(IDeviceIdleConstraint iDeviceIdleConstraint) {
-        synchronized (this) {
-            onConstraintStateChangedLocked(iDeviceIdleConstraint, false);
-            setConstraintMonitoringLocked(iDeviceIdleConstraint, false);
-            this.mConstraints.remove(iDeviceIdleConstraint);
-        }
     }
 
     public final void onConstraintStateChangedLocked(IDeviceIdleConstraint iDeviceIdleConstraint, boolean z) {
@@ -2201,6 +3377,650 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
         }
     }
 
+    /* JADX WARN: Code restructure failed: missing block: B:212:0x038e, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:215:0x039e, code lost:
+    
+        throw r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:308:0x04cb, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:311:0x04d3, code lost:
+    
+        throw r0;
+     */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:227:0x03e8 A[Catch: all -> 0x03d1, Merged into TryCatch #7 {all -> 0x0436, all -> 0x03d1, blocks: (B:221:0x03b2, B:245:0x0430, B:246:0x0433, B:243:0x0439, B:244:0x043c, B:255:0x03bc, B:257:0x03c5, B:227:0x03e8, B:229:0x03f1, B:236:0x0414, B:239:0x0421, B:248:0x03fd, B:250:0x0401, B:223:0x03d5, B:225:0x03d9), top: B:220:0x03b2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:234:0x040e  */
+    /* JADX WARN: Removed duplicated region for block: B:239:0x0421 A[Catch: all -> 0x03d1, Merged into TryCatch #7 {all -> 0x0436, all -> 0x03d1, blocks: (B:221:0x03b2, B:245:0x0430, B:246:0x0433, B:243:0x0439, B:244:0x043c, B:255:0x03bc, B:257:0x03c5, B:227:0x03e8, B:229:0x03f1, B:236:0x0414, B:239:0x0421, B:248:0x03fd, B:250:0x0401, B:223:0x03d5, B:225:0x03d9), top: B:220:0x03b2 }, TRY_LEAVE] */
+    /* JADX WARN: Removed duplicated region for block: B:250:0x0401 A[Catch: all -> 0x03d1, Merged into TryCatch #7 {all -> 0x0436, all -> 0x03d1, blocks: (B:221:0x03b2, B:245:0x0430, B:246:0x0433, B:243:0x0439, B:244:0x043c, B:255:0x03bc, B:257:0x03c5, B:227:0x03e8, B:229:0x03f1, B:236:0x0414, B:239:0x0421, B:248:0x03fd, B:250:0x0401, B:223:0x03d5, B:225:0x03d9), top: B:220:0x03b2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:284:0x04b1 A[Catch: all -> 0x0471, Merged into TryCatch #24 {all -> 0x04cb, all -> 0x0471, blocks: (B:270:0x0452, B:292:0x04c5, B:293:0x04c8, B:290:0x04ce, B:291:0x04d1, B:302:0x045c, B:304:0x0465, B:277:0x0487, B:279:0x0490, B:284:0x04b1, B:286:0x04b6, B:295:0x049d, B:297:0x04a1, B:272:0x0474, B:274:0x0478), top: B:269:0x0452 }] */
+    /* JADX WARN: Removed duplicated region for block: B:286:0x04b6 A[Catch: all -> 0x0471, Merged into TryCatch #24 {all -> 0x04cb, all -> 0x0471, blocks: (B:270:0x0452, B:292:0x04c5, B:293:0x04c8, B:290:0x04ce, B:291:0x04d1, B:302:0x045c, B:304:0x0465, B:277:0x0487, B:279:0x0490, B:284:0x04b1, B:286:0x04b6, B:295:0x049d, B:297:0x04a1, B:272:0x0474, B:274:0x0478), top: B:269:0x0452 }, TRY_LEAVE] */
+    /* JADX WARN: Removed duplicated region for block: B:297:0x04a1 A[Catch: all -> 0x0471, Merged into TryCatch #24 {all -> 0x04cb, all -> 0x0471, blocks: (B:270:0x0452, B:292:0x04c5, B:293:0x04c8, B:290:0x04ce, B:291:0x04d1, B:302:0x045c, B:304:0x0465, B:277:0x0487, B:279:0x0490, B:284:0x04b1, B:286:0x04b6, B:295:0x049d, B:297:0x04a1, B:272:0x0474, B:274:0x0478), top: B:269:0x0452 }] */
+    /* JADX WARN: Removed duplicated region for block: B:299:0x04ad  */
+    /* JADX WARN: Type inference failed for: r12v3 */
+    /* JADX WARN: Type inference failed for: r12v4 */
+    /* JADX WARN: Type inference failed for: r12v5 */
+    /* JADX WARN: Type inference failed for: r4v16 */
+    /* JADX WARN: Type inference failed for: r4v28 */
+    /* JADX WARN: Type inference failed for: r4v32 */
+    /* JADX WARN: Type inference failed for: r4v33 */
+    /* JADX WARN: Type inference failed for: r4v35 */
+    /* JADX WARN: Type inference failed for: r4v36 */
+    /* JADX WARN: Type inference failed for: r4v37 */
+    /* JADX WARN: Type inference failed for: r4v40 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int onShellCommand(com.android.server.DeviceIdleController.Shell r24, java.lang.String r25) {
+        /*
+            Method dump skipped, instructions count: 2772
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.DeviceIdleController.onShellCommand(com.android.server.DeviceIdleController$Shell, java.lang.String):int");
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r0v9, types: [android.os.IBinder, com.android.server.DeviceIdleController$BinderService] */
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        PackageManager packageManager = getContext().getPackageManager();
+        synchronized (this) {
+            boolean z = getContext().getResources().getBoolean(R.bool.config_enableDefaultHdrConversionPassthrough);
+            this.mDeepEnabled = z;
+            this.mLightEnabled = z;
+            SystemConfig systemConfig = SystemConfig.getInstance();
+            ArraySet arraySet = systemConfig.mAllowInPowerSaveExceptIdle;
+            for (int i = 0; i < arraySet.size(); i++) {
+                try {
+                    ApplicationInfo applicationInfo = packageManager.getApplicationInfo((String) arraySet.valueAt(i), 1048576);
+                    int appId = UserHandle.getAppId(applicationInfo.uid);
+                    this.mPowerSaveWhitelistAppsExceptIdle.put(applicationInfo.packageName, Integer.valueOf(appId));
+                    this.mPowerSaveWhitelistSystemAppIdsExceptIdle.put(appId, true);
+                } catch (PackageManager.NameNotFoundException unused) {
+                }
+            }
+            ArraySet arraySet2 = systemConfig.mAllowInPowerSave;
+            for (int i2 = 0; i2 < arraySet2.size(); i2++) {
+                try {
+                    ApplicationInfo applicationInfo2 = packageManager.getApplicationInfo((String) arraySet2.valueAt(i2), 1048576);
+                    int appId2 = UserHandle.getAppId(applicationInfo2.uid);
+                    this.mPowerSaveWhitelistAppsExceptIdle.put(applicationInfo2.packageName, Integer.valueOf(appId2));
+                    this.mPowerSaveWhitelistSystemAppIdsExceptIdle.put(appId2, true);
+                    this.mPowerSaveWhitelistApps.put(applicationInfo2.packageName, Integer.valueOf(appId2));
+                    this.mPowerSaveWhitelistSystemAppIds.put(appId2, true);
+                } catch (PackageManager.NameNotFoundException unused2) {
+                }
+            }
+            Injector injector = this.mInjector;
+            MyHandler myHandler = this.mHandler;
+            ContentResolver contentResolver = getContext().getContentResolver();
+            if (injector.mConstants == null) {
+                injector.mConstants = new Constants(myHandler, contentResolver);
+            }
+            this.mConstants = injector.mConstants;
+            readConfigFileLocked();
+            updateWhitelistAppIdsLocked();
+            this.mNetworkConnected = true;
+            this.mScreenOn = true;
+            this.mScreenLocked = false;
+            this.mCharging = true;
+            moveToStateLocked(0, "boot");
+            moveToLightStateLocked(0, "boot");
+            this.mInactiveTimeout = this.mConstants.INACTIVE_TIMEOUT;
+        }
+        ?? binderService = new BinderService();
+        this.mBinderService = binderService;
+        publishBinderService("deviceidle", binderService);
+        publishLocalService(DeviceIdleInternal.class, new LocalService());
+        publishLocalService(PowerAllowlistInternal.class, new LocalPowerAllowlistService());
+    }
+
+    public final void passWhiteListsToForceAppStandbyTrackerLocked() {
+        AppStateTrackerImpl appStateTrackerImpl = this.mAppStateTracker;
+        int[] iArr = this.mPowerSaveWhitelistExceptIdleAppIdArray;
+        int[] iArr2 = this.mPowerSaveWhitelistUserAppIdArray;
+        int[] iArr3 = this.mTempWhitelistAppIdArray;
+        synchronized (appStateTrackerImpl.mLock) {
+            try {
+                int[] iArr4 = appStateTrackerImpl.mPowerExemptAllAppIds;
+                int[] iArr5 = appStateTrackerImpl.mTempExemptAppIds;
+                appStateTrackerImpl.mPowerExemptAllAppIds = iArr;
+                appStateTrackerImpl.mTempExemptAppIds = iArr3;
+                appStateTrackerImpl.mPowerExemptUserAppIds = iArr2;
+                if (AppStateTrackerImpl.isAnyAppIdUnexempt(iArr4, iArr)) {
+                    AppStateTrackerImpl.MyHandler myHandler = appStateTrackerImpl.mHandler;
+                    myHandler.removeMessages(4);
+                    myHandler.obtainMessage(4).sendToTarget();
+                } else if (!Arrays.equals(iArr4, appStateTrackerImpl.mPowerExemptAllAppIds)) {
+                    AppStateTrackerImpl.MyHandler myHandler2 = appStateTrackerImpl.mHandler;
+                    myHandler2.removeMessages(5);
+                    myHandler2.obtainMessage(5).sendToTarget();
+                }
+                if (!Arrays.equals(iArr5, appStateTrackerImpl.mTempExemptAppIds)) {
+                    AppStateTrackerImpl.MyHandler myHandler3 = appStateTrackerImpl.mHandler;
+                    myHandler3.removeMessages(6);
+                    myHandler3.obtainMessage(6).sendToTarget();
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void postTempActiveTimeoutMessage(int i, long j) {
+        if (DEBUG) {
+            Slog.d("DeviceIdleController", "postTempActiveTimeoutMessage: uid=" + i + ", delay=" + j);
+        }
+        MyHandler myHandler = this.mHandler;
+        myHandler.sendMessageDelayed(myHandler.obtainMessage(6, i, 0), j);
+    }
+
+    public final void readConfigFileLocked() {
+        if (DEBUG) {
+            Slog.d("DeviceIdleController", "Reading config from " + this.mConfigFile.getBaseFile());
+        }
+        this.mPowerSaveWhitelistUserApps.clear();
+        try {
+            FileInputStream openRead = this.mConfigFile.openRead();
+            try {
+                XmlPullParser newPullParser = Xml.newPullParser();
+                newPullParser.setInput(openRead, StandardCharsets.UTF_8.name());
+                readConfigFileLocked(newPullParser);
+            } catch (XmlPullParserException unused) {
+            } catch (Throwable th) {
+                try {
+                    openRead.close();
+                } catch (IOException unused2) {
+                }
+                throw th;
+            }
+            openRead.close();
+        } catch (FileNotFoundException | IOException unused3) {
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0042, code lost:
+    
+        if (r6 != 4) goto L86;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0045, code lost:
+    
+        r6 = r12.getName();
+        r7 = r6.hashCode();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0050, code lost:
+    
+        if (r7 == 3797) goto L45;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0055, code lost:
+    
+        if (r7 == 111376009) goto L42;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x005a, code lost:
+    
+        if (r7 == 1039211927) goto L39;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x007e, code lost:
+    
+        r6 = 65535;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0083, code lost:
+    
+        if (r6 == 0) goto L88;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:36:0x00f5, code lost:
+    
+        r6 = r12.getAttributeValue(null, "n");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x00f9, code lost:
+    
+        if (r6 == null) goto L101;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x00fd, code lost:
+    
+        r6 = r2.getApplicationInfo(r6, 4194304);
+        r7 = r6.packageName;
+        r6 = android.os.UserHandle.getAppId(r6.uid);
+        r11.mPowerSaveWhitelistUserApps.put(r7, java.lang.Integer.valueOf(r6));
+        r11.mAllowlistHistoryInfo.append(new com.android.server.DeviceIdleController.AllowlistHistoryInfo(1, null, new com.android.server.DeviceIdleController.TargetPkg(r6, r7)));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:48:0x0085, code lost:
+    
+        if (r6 == 1) goto L89;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x00c9, code lost:
+    
+        r6 = r12.getAttributeValue(null, "n");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x00d3, code lost:
+    
+        if (r11.mPowerSaveWhitelistApps.containsKey(r6) == false) goto L103;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x00d5, code lost:
+    
+        r11.mRemovedFromSystemWhitelistApps.put(r6, (java.lang.Integer) r11.mPowerSaveWhitelistApps.remove(r6));
+        r11.mAllowlistHistoryInfo.append(new com.android.server.DeviceIdleController.AllowlistHistoryInfo(10, null, new com.android.server.DeviceIdleController.TargetPkg(-1, r6)));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:57:0x0087, code lost:
+    
+        if (r6 == 2) goto L90;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x00a6, code lost:
+    
+        r6 = r12.getAttributeValue(null, "package");
+        r7 = r12.getAttributeValue(null, "reason");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:60:0x00b4, code lost:
+    
+        if (r6 != null) goto L92;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x00bb, code lost:
+    
+        r11.mPowerSaveWhitelistReviewedApps.add(r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:63:0x00c0, code lost:
+    
+        if (r7 != null) goto L105;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:65:0x00c2, code lost:
+    
+        r11.mPowerSaveWhitelistPrintErrorApps.add(r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x00b6, code lost:
+    
+        com.android.internal.util.jobs.XmlUtils.skipCurrentTag(r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:72:0x0089, code lost:
+    
+        android.util.Slog.w("DeviceIdleController", "Unknown element under <config>: " + r12.getName());
+        com.android.internal.util.jobs.XmlUtils.skipCurrentTag(r12);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:75:0x0064, code lost:
+    
+        if (r6.equals("reviewed-in-power-save") == false) goto L48;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x0066, code lost:
+    
+        r6 = 2;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:78:0x006f, code lost:
+    
+        if (r6.equals("un-wl") == false) goto L48;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:79:0x0071, code lost:
+    
+        r6 = 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:81:0x007a, code lost:
+    
+        if (r6.equals("wl") == false) goto L48;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:82:0x007c, code lost:
+    
+        r6 = 0;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void readConfigFileLocked(org.xmlpull.v1.XmlPullParser r12) {
+        /*
+            Method dump skipped, instructions count: 384
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.DeviceIdleController.readConfigFileLocked(org.xmlpull.v1.XmlPullParser):void");
+    }
+
+    public final void receivedGenericLocationLocked(Location location) {
+        if (this.mState != 4) {
+            cancelLocatingLocked();
+            return;
+        }
+        if (DEBUG) {
+            Slog.d("DeviceIdleController", "Generic location: " + location);
+        }
+        this.mLastGenericLocation = new Location(location);
+        if (location.getAccuracy() <= this.mConstants.LOCATION_ACCURACY || !this.mHasGps) {
+            this.mLocated = true;
+            if (this.mNotMoving) {
+                stepIdleStateLocked("s:location");
+            }
+        }
+    }
+
+    public final void receivedGpsLocationLocked(Location location) {
+        if (this.mState != 4) {
+            cancelLocatingLocked();
+            return;
+        }
+        if (DEBUG) {
+            Slog.d("DeviceIdleController", "GPS location: " + location);
+        }
+        this.mLastGpsLocation = new Location(location);
+        if (location.getAccuracy() > this.mConstants.LOCATION_ACCURACY) {
+            return;
+        }
+        this.mLocated = true;
+        if (this.mNotMoving) {
+            stepIdleStateLocked("s:gps");
+        }
+    }
+
+    public void registerStationaryListener(DeviceIdleInternal.StationaryListener stationaryListener) {
+        synchronized (this) {
+            try {
+                if (this.mStationaryListeners.add(stationaryListener)) {
+                    this.mHandler.obtainMessage(7, stationaryListener).sendToTarget();
+                    if (!this.mMotionListener.active) {
+                        startMonitoringMotionLocked();
+                        scheduleMotionTimeoutAlarmLocked();
+                    } else if (!isStationaryLocked() && this.mStationaryListeners.size() == 1) {
+                        scheduleMotionTimeoutAlarmLocked();
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void removePowerSaveTempAllowlistAppChecked(int i, String str) {
+        getContext().enforceCallingOrSelfPermission("android.permission.CHANGE_DEVICE_IDLE_TEMP_WHITELIST", "No permission to change device idle whitelist");
+        int handleIncomingUser = ActivityManager.getService().handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), i, false, false, "removePowerSaveTempWhitelistApp", (String) null);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            removePowerSaveTempWhitelistAppDirectInternal(getContext().getPackageManager().getPackageUidAsUser(str, handleIncomingUser));
+        } catch (PackageManager.NameNotFoundException unused) {
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+    }
+
+    public final void removePowerSaveTempWhitelistAppDirectInternal(int i) {
+        int appId = UserHandle.getAppId(i);
+        synchronized (this) {
+            try {
+                int indexOfKey = this.mTempWhitelistAppIdEndTimes.indexOfKey(appId);
+                if (indexOfKey < 0) {
+                    return;
+                }
+                String str = (String) ((Pair) this.mTempWhitelistAppIdEndTimes.valueAt(indexOfKey)).second;
+                this.mTempWhitelistAppIdEndTimes.removeAt(indexOfKey);
+                onAppRemovedFromTempWhitelistLocked(i, str);
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final boolean removePowerSaveWhitelistAppInternal(String str, int i, TargetPkg targetPkg) {
+        synchronized (this) {
+            int i2 = 0;
+            if (this.mPowerSaveWhitelistUserApps.remove(str) == null) {
+                return false;
+            }
+            try {
+                i2 = UserHandle.getAppId(getContext().getPackageManager().getApplicationInfo(str, 4194304).uid);
+            } catch (PackageManager.NameNotFoundException unused) {
+                Slog.e("DeviceIdleController", "Tried to get uid from package name but failed");
+            }
+            this.mAllowlistHistoryInfo.append(new AllowlistHistoryInfo(i, targetPkg, new TargetPkg(i2, str)));
+            reportPowerSaveWhitelistChangedLocked();
+            updateWhitelistAppIdsLocked();
+            writeConfigFileLocked();
+            Counter.logIncrement("battery.value_app_removed_from_power_allowlist");
+            return true;
+        }
+    }
+
+    public final boolean removeSystemPowerWhitelistAppInternal(String str, int i, TargetPkg targetPkg) {
+        synchronized (this) {
+            try {
+                int i2 = 0;
+                if (!this.mPowerSaveWhitelistApps.containsKey(str)) {
+                    return false;
+                }
+                this.mRemovedFromSystemWhitelistApps.put(str, (Integer) this.mPowerSaveWhitelistApps.remove(str));
+                try {
+                    i2 = UserHandle.getAppId(getContext().getPackageManager().getApplicationInfo(str, 1048576).uid);
+                } catch (PackageManager.NameNotFoundException unused) {
+                    Slog.e("DeviceIdleController", "Tried to get uid from package name but failed");
+                }
+                this.mAllowlistHistoryInfo.append(new AllowlistHistoryInfo(i, targetPkg, new TargetPkg(i2, str)));
+                reportPowerSaveWhitelistChangedLocked();
+                updateWhitelistAppIdsLocked();
+                writeConfigFileLocked();
+                return true;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void reportPowerSaveWhitelistChangedLocked() {
+        getContext().sendBroadcastAsUser(this.mPowerSaveWhitelistChangedIntent, UserHandle.SYSTEM, null, this.mPowerSaveWhitelistChangedOptions);
+    }
+
+    public final void resetIdleManagementLocked() {
+        this.mNextIdlePendingDelay = 0L;
+        this.mNextIdleDelay = 0L;
+        this.mQuickDozeActivatedWhileIdling = false;
+        cancelAlarmLocked();
+        cancelSensingTimeoutAlarmLocked();
+        cancelLocatingLocked();
+        maybeStopMonitoringMotionLocked();
+        this.mAnyMotionDetector.stop();
+        updateActiveConstraintsLocked();
+    }
+
+    public final void resetPowerSaveWhitelistExceptIdleInternal() {
+        synchronized (this) {
+            try {
+                if (this.mPowerSaveWhitelistAppsExceptIdle.removeAll(this.mPowerSaveWhitelistUserAppsExceptIdle)) {
+                    reportPowerSaveWhitelistChangedLocked();
+                    this.mPowerSaveWhitelistExceptIdleAppIdArray = buildAppIdArray(this.mPowerSaveWhitelistAppsExceptIdle, this.mPowerSaveWhitelistUserApps, this.mPowerSaveWhitelistExceptIdleAppIds);
+                    this.mPowerSaveWhitelistUserAppsExceptIdle.clear();
+                    passWhiteListsToForceAppStandbyTrackerLocked();
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void resetSystemPowerWhitelistInternal() {
+        synchronized (this) {
+            this.mPowerSaveWhitelistApps.putAll(this.mRemovedFromSystemWhitelistApps);
+            this.mRemovedFromSystemWhitelistApps.clear();
+            reportPowerSaveWhitelistChangedLocked();
+            updateWhitelistAppIdsLocked();
+            writeConfigFileLocked();
+        }
+    }
+
+    public final boolean restoreSystemPowerWhitelistAppInternal(String str, int i, TargetPkg targetPkg) {
+        synchronized (this) {
+            try {
+                int i2 = 0;
+                if (!this.mRemovedFromSystemWhitelistApps.containsKey(str)) {
+                    return false;
+                }
+                this.mPowerSaveWhitelistApps.put(str, (Integer) this.mRemovedFromSystemWhitelistApps.remove(str));
+                try {
+                    i2 = UserHandle.getAppId(getContext().getPackageManager().getApplicationInfo(str, 1048576).uid);
+                } catch (PackageManager.NameNotFoundException unused) {
+                    Slog.e("DeviceIdleController", "Tried to get uid from package name but failed");
+                }
+                this.mAllowlistHistoryInfo.append(new AllowlistHistoryInfo(i, targetPkg, new TargetPkg(i2, str)));
+                reportPowerSaveWhitelistChangedLocked();
+                updateWhitelistAppIdsLocked();
+                writeConfigFileLocked();
+                return true;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:21:0x0096  */
+    /* JADX WARN: Removed duplicated region for block: B:24:0x00a9  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void scheduleAlarmLocked(long r19) {
+        /*
+            r18 = this;
+            r0 = r18
+            r1 = r19
+            boolean r3 = com.android.server.DeviceIdleController.DEBUG
+            java.lang.String r4 = "scheduleAlarmLocked("
+            java.lang.String r5 = "DeviceIdleController"
+            if (r3 == 0) goto L28
+            java.lang.String r3 = ", "
+            java.lang.StringBuilder r3 = com.android.server.BatteryService$$ExternalSyntheticOutline0.m(r4, r1, r3)
+            int r6 = r0.mState
+            java.lang.String r6 = stateToString(r6)
+            r3.append(r6)
+            java.lang.String r6 = ")"
+            r3.append(r6)
+            java.lang.String r3 = r3.toString()
+            android.util.Slog.d(r5, r3)
+        L28:
+            boolean r3 = r0.mUseMotionSensor
+            r6 = 5
+            if (r3 == 0) goto L3c
+            android.hardware.Sensor r3 = r0.mMotionSensor
+            if (r3 != 0) goto L3c
+            int r3 = r0.mState
+            r7 = 7
+            if (r3 == r7) goto L3c
+            if (r3 == r6) goto L3c
+            r7 = 6
+            if (r3 == r7) goto L3c
+            return
+        L3c:
+            long r7 = android.os.SystemClock.elapsedRealtime()
+            long r11 = r7 + r1
+            r0.mNextAlarmTime = r11
+            int r3 = r0.mState
+            if (r3 != r6) goto L55
+            android.app.AlarmManager r9 = r0.mAlarmManager
+            android.app.AlarmManager$OnAlarmListener r14 = r0.mDeepAlarmListener
+            com.android.server.DeviceIdleController$MyHandler r15 = r0.mHandler
+            r10 = 2
+            java.lang.String r13 = "DeviceIdleController.deep.maintenance"
+            r9.setIdleUntil(r10, r11, r13, r14, r15)
+            goto L8b
+        L55:
+            r6 = 4
+            if (r3 != r6) goto L65
+            android.app.AlarmManager r9 = r0.mAlarmManager
+            android.app.AlarmManager$OnAlarmListener r14 = r0.mDeepAlarmListener
+            com.android.server.DeviceIdleController$MyHandler r15 = r0.mHandler
+            r10 = 2
+            java.lang.String r13 = "DeviceIdleController.deep.idle"
+            r9.setExact(r10, r11, r13, r14, r15)
+            goto L8b
+        L65:
+            com.android.server.DeviceIdleController$Constants r3 = r0.mConstants
+            boolean r6 = r3.USE_WINDOW_ALARMS
+            if (r6 == 0) goto L7f
+            android.app.AlarmManager r9 = r0.mAlarmManager
+            long r13 = r3.FLEX_TIME_SHORT
+            android.app.AlarmManager$OnAlarmListener r3 = r0.mDeepAlarmListener
+            com.android.server.DeviceIdleController$MyHandler r6 = r0.mHandler
+            r10 = 2
+            java.lang.String r15 = "DeviceIdleController.deep.progression"
+            r16 = r3
+            r17 = r6
+            r9.setWindow(r10, r11, r13, r15, r16, r17)
+            r3 = 1
+            goto L8c
+        L7f:
+            android.app.AlarmManager r9 = r0.mAlarmManager
+            android.app.AlarmManager$OnAlarmListener r14 = r0.mDeepAlarmListener
+            com.android.server.DeviceIdleController$MyHandler r15 = r0.mHandler
+            r10 = 2
+            java.lang.String r13 = "DeviceIdleController.deep.progression"
+            r9.set(r10, r11, r13, r14, r15)
+        L8b:
+            r3 = 0
+        L8c:
+            java.lang.StringBuilder r6 = new java.lang.StringBuilder
+            r6.<init>(r4)
+            r6.append(r1)
+            if (r3 == 0) goto La9
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder
+            java.lang.String r2 = "/"
+            r1.<init>(r2)
+            com.android.server.DeviceIdleController$Constants r0 = r0.mConstants
+            long r2 = r0.FLEX_TIME_SHORT
+            r1.append(r2)
+            java.lang.String r0 = r1.toString()
+            goto Lab
+        La9:
+            java.lang.String r0 = ""
+        Lab:
+            java.lang.String r1 = ", wakeup=true)"
+            com.android.server.DeviceIdleController$$ExternalSyntheticOutline0.m(r6, r0, r1, r5)
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.DeviceIdleController.scheduleAlarmLocked(long):void");
+    }
+
+    public final void scheduleLightAlarmLocked(long j, long j2, boolean z) {
+        StringBuilder sb = new StringBuilder("scheduleLightAlarmLocked(");
+        sb.append(j);
+        sb.append(this.mConstants.USE_WINDOW_ALARMS ? DeviceIdleController$$ExternalSyntheticOutline0.m(j2, "/") : "");
+        sb.append(", wakeup=");
+        sb.append(z);
+        sb.append(")");
+        Slog.d("DeviceIdleController", sb.toString());
+        this.mInjector.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime() + j;
+        this.mNextLightAlarmTime = elapsedRealtime;
+        if (this.mConstants.USE_WINDOW_ALARMS) {
+            this.mAlarmManager.setWindow(z ? 2 : 3, elapsedRealtime, j2, "DeviceIdleController.light", this.mLightAlarmListener, this.mHandler);
+        } else {
+            this.mAlarmManager.set(z ? 2 : 3, elapsedRealtime, "DeviceIdleController.light", this.mLightAlarmListener, this.mHandler);
+        }
+    }
+
+    public final void scheduleMotionTimeoutAlarmLocked() {
+        if (DEBUG) {
+            Slog.d("DeviceIdleController", "scheduleMotionAlarmLocked");
+        }
+        this.mInjector.getClass();
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        Constants constants = this.mConstants;
+        long j = elapsedRealtime + constants.MOTION_INACTIVE_TIMEOUT;
+        if (constants.USE_WINDOW_ALARMS) {
+            this.mAlarmManager.setWindow(2, j, constants.MOTION_INACTIVE_TIMEOUT_FLEX, "DeviceIdleController.motion", this.mMotionTimeoutAlarmListener, this.mHandler);
+        } else {
+            this.mAlarmManager.set(2, j, "DeviceIdleController.motion", this.mMotionTimeoutAlarmListener, this.mHandler);
+        }
+    }
+
+    public void scheduleReportActiveLocked(String str, int i) {
+        MyHandler myHandler = this.mHandler;
+        myHandler.sendMessage(myHandler.obtainMessage(5, i, 0, str));
+    }
+
+    public void setActiveIdleOpsForTest(int i) {
+        synchronized (this) {
+            this.mActiveIdleOpCount = i;
+        }
+    }
+
     public final void setConstraintMonitoringLocked(IDeviceIdleConstraint iDeviceIdleConstraint, boolean z) {
         DeviceIdleConstraintTracker deviceIdleConstraintTracker = (DeviceIdleConstraintTracker) this.mConstraints.get(iDeviceIdleConstraint);
         if (deviceIdleConstraintTracker.monitoring != z) {
@@ -2208,6 +4028,174 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
             updateActiveConstraintsLocked();
             this.mHandler.obtainMessage(10, z ? 1 : 0, -1, iDeviceIdleConstraint).sendToTarget();
         }
+    }
+
+    public void setDeepEnabledForTest(boolean z) {
+        synchronized (this) {
+            this.mDeepEnabled = z;
+        }
+    }
+
+    public void setLightEnabledForTest(boolean z) {
+        synchronized (this) {
+            this.mLightEnabled = z;
+        }
+    }
+
+    public void setLightStateForTest(int i) {
+        synchronized (this) {
+            this.mLightBatteryLevel.curr = getBatteryLevelRaw();
+            this.mLightBatteryLevel.currTime = SystemClock.elapsedRealtime();
+            String lightStateToString = lightStateToString(this.mLightState);
+            String lightStateToString2 = lightStateToString(i);
+            String floatToString = floatToString(this.mLightBatteryLevel.curr);
+            BatteryLevel batteryLevel = this.mLightBatteryLevel;
+            String floatToString2 = floatToString(getBatteryLevelDiff(batteryLevel.prev, batteryLevel.curr));
+            BatteryLevel batteryLevel2 = this.mLightBatteryLevel;
+            Slog.i("DeviceIdleController", String.format("[LIGHT] %s to %s, battery=%s(%s/%d)", lightStateToString, lightStateToString2, floatToString, floatToString2, Long.valueOf(getDuration(batteryLevel2.prevTime, batteryLevel2.currTime))));
+            BatteryLevel batteryLevel3 = this.mLightBatteryLevel;
+            batteryLevel3.prev = batteryLevel3.curr;
+            batteryLevel3.prevTime = batteryLevel3.currTime;
+            this.mLightState = i;
+        }
+    }
+
+    public final void startMonitoringMotionLocked() {
+        boolean registerListener;
+        Slog.d("DeviceIdleController", "startMonitoringMotionLocked()");
+        if (this.mMotionSensor != null) {
+            MotionListener motionListener = this.mMotionListener;
+            if (motionListener.active) {
+                return;
+            }
+            if (DeviceIdleController.this.mMotionSensor.getReportingMode() == 2) {
+                DeviceIdleController deviceIdleController = DeviceIdleController.this;
+                registerListener = deviceIdleController.mSensorManager.requestTriggerSensor(deviceIdleController.mMotionListener, deviceIdleController.mMotionSensor);
+            } else {
+                DeviceIdleController deviceIdleController2 = DeviceIdleController.this;
+                registerListener = deviceIdleController2.mSensorManager.registerListener(deviceIdleController2.mMotionListener, deviceIdleController2.mMotionSensor, 3);
+            }
+            if (registerListener) {
+                motionListener.active = true;
+                DeviceIdleController.this.mInjector.getClass();
+                motionListener.activatedTimeElapsed = SystemClock.elapsedRealtime();
+            } else {
+                Slog.e("DeviceIdleController", "Unable to register for " + DeviceIdleController.this.mMotionSensor);
+            }
+        }
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x00a4, code lost:
+    
+        if (r5 == false) goto L35;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:100:0x0271  */
+    /* JADX WARN: Removed duplicated region for block: B:101:0x027b  */
+    /* JADX WARN: Removed duplicated region for block: B:103:0x0285  */
+    /* JADX WARN: Removed duplicated region for block: B:106:0x02ac  */
+    /* JADX WARN: Removed duplicated region for block: B:109:0x02ce  */
+    /* JADX WARN: Removed duplicated region for block: B:112:0x02d5  */
+    /* JADX WARN: Removed duplicated region for block: B:117:0x02fa  */
+    /* JADX WARN: Removed duplicated region for block: B:119:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:34:0x00b9  */
+    /* JADX WARN: Removed duplicated region for block: B:42:0x0110  */
+    /* JADX WARN: Removed duplicated region for block: B:79:0x01f3  */
+    /* JADX WARN: Removed duplicated region for block: B:81:0x01fd  */
+    /* JADX WARN: Removed duplicated region for block: B:98:0x0264  */
+    /* JADX WARN: Removed duplicated region for block: B:99:0x0266  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void stepIdleStateLocked(java.lang.String r21) {
+        /*
+            Method dump skipped, instructions count: 794
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.DeviceIdleController.stepIdleStateLocked(java.lang.String):void");
+    }
+
+    public void stepLightIdleStateLocked(String str) {
+        int i = this.mLightState;
+        if (i == 0 || i == 7) {
+            return;
+        }
+        if (DEBUG) {
+            Slog.d("DeviceIdleController", "stepLightIdleStateLocked: mLightState=" + lightStateToString(this.mLightState));
+        }
+        EventLog.writeEvent(34010, new Object[0]);
+        if (this.mEmergencyCallListener.mIsEmergencyCallActive) {
+            Slog.wtf("DeviceIdleController", "stepLightIdleStateLocked called when emergency call is active");
+            if (this.mLightState != 0) {
+                becomeActiveLocked(Process.myUid(), "emergency");
+                return;
+            }
+            return;
+        }
+        int i2 = this.mLightState;
+        if (i2 == 1) {
+            Constants constants = this.mConstants;
+            this.mCurLightIdleBudget = constants.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
+            this.mNextLightIdleDelay = constants.LIGHT_IDLE_TIMEOUT;
+            this.mNextLightIdleDelayFlex = constants.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX;
+            this.mMaintenanceStartTime = 0L;
+        } else {
+            if (i2 == 4 || i2 == 5) {
+                if (!this.mNetworkConnected && i2 != 5) {
+                    scheduleLightAlarmLocked(this.mNextLightIdleDelay, this.mNextLightIdleDelayFlex / 2, true);
+                    moveToLightStateLocked(5, str);
+                    return;
+                }
+                this.mActiveIdleOpCount = 1;
+                this.mActiveIdleWakeLock.acquire();
+                this.mMaintenanceStartTime = SystemClock.elapsedRealtime();
+                long j = this.mCurLightIdleBudget;
+                Constants constants2 = this.mConstants;
+                long j2 = constants2.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
+                if (j < j2) {
+                    this.mCurLightIdleBudget = j2;
+                } else {
+                    long j3 = constants2.LIGHT_IDLE_MAINTENANCE_MAX_BUDGET;
+                    if (j > j3) {
+                        this.mCurLightIdleBudget = j3;
+                    }
+                }
+                scheduleLightAlarmLocked(this.mCurLightIdleBudget, constants2.FLEX_TIME_SHORT, true);
+                moveToLightStateLocked(6, str);
+                addEvent(3, null);
+                this.mHandler.sendEmptyMessage(4);
+                return;
+            }
+            if (i2 != 6) {
+                return;
+            }
+        }
+        if (this.mMaintenanceStartTime != 0) {
+            long elapsedRealtime = SystemClock.elapsedRealtime() - this.mMaintenanceStartTime;
+            long j4 = this.mConstants.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
+            if (elapsedRealtime < j4) {
+                this.mCurLightIdleBudget = (j4 - elapsedRealtime) + this.mCurLightIdleBudget;
+            } else {
+                this.mCurLightIdleBudget -= elapsedRealtime - j4;
+            }
+        }
+        this.mMaintenanceStartTime = 0L;
+        scheduleLightAlarmLocked(this.mNextLightIdleDelay, this.mNextLightIdleDelayFlex, false);
+        Constants constants3 = this.mConstants;
+        if (constants3.LIGHT_IDLE_INCREASE_LINEARLY) {
+            this.mNextLightIdleDelay = Math.min(constants3.LIGHT_MAX_IDLE_TIMEOUT, this.mNextLightIdleDelay + constants3.LIGHT_IDLE_LINEAR_INCREASE_FACTOR_MS);
+            Constants constants4 = this.mConstants;
+            this.mNextLightIdleDelayFlex = Math.min(constants4.LIGHT_IDLE_TIMEOUT_MAX_FLEX, this.mNextLightIdleDelayFlex + constants4.LIGHT_IDLE_FLEX_LINEAR_INCREASE_FACTOR_MS);
+        } else {
+            this.mNextLightIdleDelay = Math.min(constants3.LIGHT_MAX_IDLE_TIMEOUT, (long) (this.mNextLightIdleDelay * constants3.LIGHT_IDLE_FACTOR));
+            Constants constants5 = this.mConstants;
+            this.mNextLightIdleDelayFlex = Math.min(constants5.LIGHT_IDLE_TIMEOUT_MAX_FLEX, (long) (this.mNextLightIdleDelayFlex * constants5.LIGHT_IDLE_FACTOR));
+        }
+        moveToLightStateLocked(4, str);
+        addEvent(2, null);
+        this.mGoingIdleWakeLock.acquire();
+        this.mHandler.sendEmptyMessage(3);
     }
 
     public final void updateActiveConstraintsLocked() {
@@ -2226,570 +4214,35 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
         }
     }
 
-    public final int addPowerSaveWhitelistAppsInternal(List list, int i, BinderCaller binderCaller) {
-        int i2;
-        synchronized (this) {
-            int i3 = 0;
-            i2 = 0;
-            for (int size = list.size() - 1; size >= 0; size--) {
-                String str = (String) list.get(size);
-                if (str != null) {
-                    try {
-                        int appId = UserHandle.getAppId(getContext().getPackageManager().getApplicationInfo(str, 4194304).uid);
-                        if (this.mPowerSaveWhitelistUserApps.put(str, Integer.valueOf(appId)) == null) {
-                            this.mUserWhitelistHistoryBuffer.append(new UserWhitelistHistoryInfo(i, binderCaller, new TargetPkg(appId, str)));
-                            i3++;
-                            Counter.logIncrement("battery.value_app_added_to_power_allowlist");
-                        }
-                    } catch (PackageManager.NameNotFoundException unused) {
-                        Slog.e("DeviceIdleController", "Tried to add unknown package to power save whitelist: " + str);
-                    }
-                }
-                i2++;
-            }
-            if (i3 > 0) {
-                reportPowerSaveWhitelistChangedLocked();
-                updateWhitelistAppIdsLocked();
-                writeConfigFileLocked();
-            }
+    public final void updateChargingLocked(boolean z) {
+        if (DEBUG) {
+            Slog.i("DeviceIdleController", "updateChargingLocked: charging=" + z);
         }
-        return list.size() - i2;
-    }
-
-    public boolean removePowerSaveWhitelistAppInternal(String str, int i, BinderCaller binderCaller) {
-        synchronized (this) {
-            int i2 = 0;
-            if (this.mPowerSaveWhitelistUserApps.remove(str) == null) {
-                return false;
-            }
-            try {
-                i2 = UserHandle.getAppId(getContext().getPackageManager().getApplicationInfo(str, 4194304).uid);
-            } catch (PackageManager.NameNotFoundException unused) {
-                Slog.e("DeviceIdleController", "Tried to get uid from package name but failed");
-            }
-            this.mUserWhitelistHistoryBuffer.append(new UserWhitelistHistoryInfo(i, binderCaller, new TargetPkg(i2, str)));
-            reportPowerSaveWhitelistChangedLocked();
-            updateWhitelistAppIdsLocked();
-            writeConfigFileLocked();
-            Counter.logIncrement("battery.value_app_removed_from_power_allowlist");
-            return true;
-        }
-    }
-
-    public boolean getPowerSaveWhitelistAppInternal(String str) {
-        boolean containsKey;
-        synchronized (this) {
-            containsKey = this.mPowerSaveWhitelistUserApps.containsKey(str);
-        }
-        return containsKey;
-    }
-
-    public void resetSystemPowerWhitelistInternal() {
-        synchronized (this) {
-            this.mPowerSaveWhitelistApps.putAll(this.mRemovedFromSystemWhitelistApps);
-            this.mRemovedFromSystemWhitelistApps.clear();
-            reportPowerSaveWhitelistChangedLocked();
-            updateWhitelistAppIdsLocked();
-            writeConfigFileLocked();
-        }
-    }
-
-    public boolean restoreSystemPowerWhitelistAppInternal(String str) {
-        synchronized (this) {
-            if (!this.mRemovedFromSystemWhitelistApps.containsKey(str)) {
-                return false;
-            }
-            this.mPowerSaveWhitelistApps.put(str, (Integer) this.mRemovedFromSystemWhitelistApps.remove(str));
-            reportPowerSaveWhitelistChangedLocked();
-            updateWhitelistAppIdsLocked();
-            writeConfigFileLocked();
-            return true;
-        }
-    }
-
-    public boolean removeSystemPowerWhitelistAppInternal(String str) {
-        synchronized (this) {
-            if (!this.mPowerSaveWhitelistApps.containsKey(str)) {
-                return false;
-            }
-            this.mRemovedFromSystemWhitelistApps.put(str, (Integer) this.mPowerSaveWhitelistApps.remove(str));
-            reportPowerSaveWhitelistChangedLocked();
-            updateWhitelistAppIdsLocked();
-            writeConfigFileLocked();
-            return true;
-        }
-    }
-
-    public boolean addPowerSaveWhitelistExceptIdleInternal(String str) {
-        synchronized (this) {
-            try {
-                try {
-                    if (this.mPowerSaveWhitelistAppsExceptIdle.put(str, Integer.valueOf(UserHandle.getAppId(getContext().getPackageManager().getApplicationInfo(str, 4194304).uid))) == null) {
-                        this.mPowerSaveWhitelistUserAppsExceptIdle.add(str);
-                        reportPowerSaveWhitelistChangedLocked();
-                        this.mPowerSaveWhitelistExceptIdleAppIdArray = buildAppIdArray(this.mPowerSaveWhitelistAppsExceptIdle, this.mPowerSaveWhitelistUserApps, this.mPowerSaveWhitelistExceptIdleAppIds);
-                        passWhiteListsToForceAppStandbyTrackerLocked();
-                    }
-                } catch (PackageManager.NameNotFoundException unused) {
-                    return false;
-                }
-            } catch (Throwable th) {
-                throw th;
-            }
-        }
-        return true;
-    }
-
-    public void resetPowerSaveWhitelistExceptIdleInternal() {
-        synchronized (this) {
-            if (this.mPowerSaveWhitelistAppsExceptIdle.removeAll(this.mPowerSaveWhitelistUserAppsExceptIdle)) {
-                reportPowerSaveWhitelistChangedLocked();
-                this.mPowerSaveWhitelistExceptIdleAppIdArray = buildAppIdArray(this.mPowerSaveWhitelistAppsExceptIdle, this.mPowerSaveWhitelistUserApps, this.mPowerSaveWhitelistExceptIdleAppIds);
-                this.mPowerSaveWhitelistUserAppsExceptIdle.clear();
-                passWhiteListsToForceAppStandbyTrackerLocked();
-            }
-        }
-    }
-
-    public boolean getPowerSaveWhitelistExceptIdleInternal(String str) {
-        boolean containsKey;
-        synchronized (this) {
-            containsKey = this.mPowerSaveWhitelistAppsExceptIdle.containsKey(str);
-        }
-        return containsKey;
-    }
-
-    public final String[] getSystemPowerWhitelistExceptIdleInternal(final int i, final int i2) {
-        String[] strArr;
-        synchronized (this) {
-            int size = this.mPowerSaveWhitelistAppsExceptIdle.size();
-            strArr = new String[size];
-            for (int i3 = 0; i3 < size; i3++) {
-                strArr[i3] = (String) this.mPowerSaveWhitelistAppsExceptIdle.keyAt(i3);
-            }
-        }
-        return (String[]) ArrayUtils.filter(strArr, new IntFunction() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda8
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i4) {
-                String[] lambda$getSystemPowerWhitelistExceptIdleInternal$4;
-                lambda$getSystemPowerWhitelistExceptIdleInternal$4 = DeviceIdleController.lambda$getSystemPowerWhitelistExceptIdleInternal$4(i4);
-                return lambda$getSystemPowerWhitelistExceptIdleInternal$4;
-            }
-        }, new Predicate() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda9
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getSystemPowerWhitelistExceptIdleInternal$5;
-                lambda$getSystemPowerWhitelistExceptIdleInternal$5 = DeviceIdleController.this.lambda$getSystemPowerWhitelistExceptIdleInternal$5(i, i2, (String) obj);
-                return lambda$getSystemPowerWhitelistExceptIdleInternal$5;
-            }
-        });
-    }
-
-    public static /* synthetic */ String[] lambda$getSystemPowerWhitelistExceptIdleInternal$4(int i) {
-        return new String[i];
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ boolean lambda$getSystemPowerWhitelistExceptIdleInternal$5(int i, int i2, String str) {
-        return !this.mPackageManagerInternal.filterAppAccess(str, i, i2);
-    }
-
-    public final String[] getSystemPowerWhitelistInternal(final int i, final int i2) {
-        String[] strArr;
-        synchronized (this) {
-            int size = this.mPowerSaveWhitelistApps.size();
-            strArr = new String[size];
-            for (int i3 = 0; i3 < size; i3++) {
-                strArr[i3] = (String) this.mPowerSaveWhitelistApps.keyAt(i3);
-            }
-        }
-        return (String[]) ArrayUtils.filter(strArr, new IntFunction() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda4
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i4) {
-                String[] lambda$getSystemPowerWhitelistInternal$6;
-                lambda$getSystemPowerWhitelistInternal$6 = DeviceIdleController.lambda$getSystemPowerWhitelistInternal$6(i4);
-                return lambda$getSystemPowerWhitelistInternal$6;
-            }
-        }, new Predicate() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda5
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getSystemPowerWhitelistInternal$7;
-                lambda$getSystemPowerWhitelistInternal$7 = DeviceIdleController.this.lambda$getSystemPowerWhitelistInternal$7(i, i2, (String) obj);
-                return lambda$getSystemPowerWhitelistInternal$7;
-            }
-        });
-    }
-
-    public static /* synthetic */ String[] lambda$getSystemPowerWhitelistInternal$6(int i) {
-        return new String[i];
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ boolean lambda$getSystemPowerWhitelistInternal$7(int i, int i2, String str) {
-        return !this.mPackageManagerInternal.filterAppAccess(str, i, i2);
-    }
-
-    public final String[] getRemovedSystemPowerWhitelistAppsInternal(final int i, final int i2) {
-        String[] strArr;
-        synchronized (this) {
-            int size = this.mRemovedFromSystemWhitelistApps.size();
-            strArr = new String[size];
-            for (int i3 = 0; i3 < size; i3++) {
-                strArr[i3] = (String) this.mRemovedFromSystemWhitelistApps.keyAt(i3);
-            }
-        }
-        return (String[]) ArrayUtils.filter(strArr, new IntFunction() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda10
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i4) {
-                String[] lambda$getRemovedSystemPowerWhitelistAppsInternal$8;
-                lambda$getRemovedSystemPowerWhitelistAppsInternal$8 = DeviceIdleController.lambda$getRemovedSystemPowerWhitelistAppsInternal$8(i4);
-                return lambda$getRemovedSystemPowerWhitelistAppsInternal$8;
-            }
-        }, new Predicate() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda11
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getRemovedSystemPowerWhitelistAppsInternal$9;
-                lambda$getRemovedSystemPowerWhitelistAppsInternal$9 = DeviceIdleController.this.lambda$getRemovedSystemPowerWhitelistAppsInternal$9(i, i2, (String) obj);
-                return lambda$getRemovedSystemPowerWhitelistAppsInternal$9;
-            }
-        });
-    }
-
-    public static /* synthetic */ String[] lambda$getRemovedSystemPowerWhitelistAppsInternal$8(int i) {
-        return new String[i];
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ boolean lambda$getRemovedSystemPowerWhitelistAppsInternal$9(int i, int i2, String str) {
-        return !this.mPackageManagerInternal.filterAppAccess(str, i, i2);
-    }
-
-    public final String[] getUserPowerWhitelistInternal(final int i, final int i2) {
-        String[] strArr;
-        synchronized (this) {
-            strArr = new String[this.mPowerSaveWhitelistUserApps.size()];
-            for (int i3 = 0; i3 < this.mPowerSaveWhitelistUserApps.size(); i3++) {
-                strArr[i3] = (String) this.mPowerSaveWhitelistUserApps.keyAt(i3);
-            }
-        }
-        return (String[]) ArrayUtils.filter(strArr, new IntFunction() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda12
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i4) {
-                String[] lambda$getUserPowerWhitelistInternal$10;
-                lambda$getUserPowerWhitelistInternal$10 = DeviceIdleController.lambda$getUserPowerWhitelistInternal$10(i4);
-                return lambda$getUserPowerWhitelistInternal$10;
-            }
-        }, new Predicate() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda13
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getUserPowerWhitelistInternal$11;
-                lambda$getUserPowerWhitelistInternal$11 = DeviceIdleController.this.lambda$getUserPowerWhitelistInternal$11(i, i2, (String) obj);
-                return lambda$getUserPowerWhitelistInternal$11;
-            }
-        });
-    }
-
-    public static /* synthetic */ String[] lambda$getUserPowerWhitelistInternal$10(int i) {
-        return new String[i];
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ boolean lambda$getUserPowerWhitelistInternal$11(int i, int i2, String str) {
-        return !this.mPackageManagerInternal.filterAppAccess(str, i, i2);
-    }
-
-    public final String[] getFullPowerWhitelistExceptIdleInternal(final int i, final int i2) {
-        String[] strArr;
-        synchronized (this) {
-            strArr = new String[this.mPowerSaveWhitelistAppsExceptIdle.size() + this.mPowerSaveWhitelistUserApps.size()];
-            int i3 = 0;
-            for (int i4 = 0; i4 < this.mPowerSaveWhitelistAppsExceptIdle.size(); i4++) {
-                strArr[i3] = (String) this.mPowerSaveWhitelistAppsExceptIdle.keyAt(i4);
-                i3++;
-            }
-            for (int i5 = 0; i5 < this.mPowerSaveWhitelistUserApps.size(); i5++) {
-                strArr[i3] = (String) this.mPowerSaveWhitelistUserApps.keyAt(i5);
-                i3++;
-            }
-        }
-        return (String[]) ArrayUtils.filter(strArr, new IntFunction() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda14
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i6) {
-                String[] lambda$getFullPowerWhitelistExceptIdleInternal$12;
-                lambda$getFullPowerWhitelistExceptIdleInternal$12 = DeviceIdleController.lambda$getFullPowerWhitelistExceptIdleInternal$12(i6);
-                return lambda$getFullPowerWhitelistExceptIdleInternal$12;
-            }
-        }, new Predicate() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda15
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getFullPowerWhitelistExceptIdleInternal$13;
-                lambda$getFullPowerWhitelistExceptIdleInternal$13 = DeviceIdleController.this.lambda$getFullPowerWhitelistExceptIdleInternal$13(i, i2, (String) obj);
-                return lambda$getFullPowerWhitelistExceptIdleInternal$13;
-            }
-        });
-    }
-
-    public static /* synthetic */ String[] lambda$getFullPowerWhitelistExceptIdleInternal$12(int i) {
-        return new String[i];
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ boolean lambda$getFullPowerWhitelistExceptIdleInternal$13(int i, int i2, String str) {
-        return !this.mPackageManagerInternal.filterAppAccess(str, i, i2);
-    }
-
-    public final String[] getFullPowerWhitelistInternal(final int i, final int i2) {
-        String[] strArr;
-        synchronized (this) {
-            strArr = new String[this.mPowerSaveWhitelistApps.size() + this.mPowerSaveWhitelistUserApps.size()];
-            int i3 = 0;
-            for (int i4 = 0; i4 < this.mPowerSaveWhitelistApps.size(); i4++) {
-                strArr[i3] = (String) this.mPowerSaveWhitelistApps.keyAt(i4);
-                i3++;
-            }
-            for (int i5 = 0; i5 < this.mPowerSaveWhitelistUserApps.size(); i5++) {
-                strArr[i3] = (String) this.mPowerSaveWhitelistUserApps.keyAt(i5);
-                i3++;
-            }
-        }
-        return (String[]) ArrayUtils.filter(strArr, new IntFunction() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda6
-            @Override // java.util.function.IntFunction
-            public final Object apply(int i6) {
-                String[] lambda$getFullPowerWhitelistInternal$14;
-                lambda$getFullPowerWhitelistInternal$14 = DeviceIdleController.lambda$getFullPowerWhitelistInternal$14(i6);
-                return lambda$getFullPowerWhitelistInternal$14;
-            }
-        }, new Predicate() { // from class: com.android.server.DeviceIdleController$$ExternalSyntheticLambda7
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getFullPowerWhitelistInternal$15;
-                lambda$getFullPowerWhitelistInternal$15 = DeviceIdleController.this.lambda$getFullPowerWhitelistInternal$15(i, i2, (String) obj);
-                return lambda$getFullPowerWhitelistInternal$15;
-            }
-        });
-    }
-
-    public static /* synthetic */ String[] lambda$getFullPowerWhitelistInternal$14(int i) {
-        return new String[i];
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ boolean lambda$getFullPowerWhitelistInternal$15(int i, int i2, String str) {
-        return !this.mPackageManagerInternal.filterAppAccess(str, i, i2);
-    }
-
-    public boolean isPowerSaveWhitelistExceptIdleAppInternal(String str) {
-        boolean z;
-        synchronized (this) {
-            z = this.mPowerSaveWhitelistAppsExceptIdle.containsKey(str) || this.mPowerSaveWhitelistUserApps.containsKey(str);
-        }
-        return z;
-    }
-
-    public boolean isPowerSaveWhitelistAppInternal(String str) {
-        boolean z;
-        synchronized (this) {
-            z = this.mPowerSaveWhitelistApps.containsKey(str) || this.mPowerSaveWhitelistUserApps.containsKey(str);
-        }
-        return z;
-    }
-
-    public int[] getAppIdWhitelistExceptIdleInternal() {
-        int[] iArr;
-        synchronized (this) {
-            iArr = this.mPowerSaveWhitelistExceptIdleAppIdArray;
-        }
-        return iArr;
-    }
-
-    public int[] getAppIdWhitelistInternal() {
-        int[] iArr;
-        synchronized (this) {
-            iArr = this.mPowerSaveWhitelistAllAppIdArray;
-        }
-        return iArr;
-    }
-
-    public int[] getAppIdUserWhitelistInternal() {
-        int[] iArr;
-        synchronized (this) {
-            iArr = this.mPowerSaveWhitelistUserAppIdArray;
-        }
-        return iArr;
-    }
-
-    public int[] getAppIdTempWhitelistInternal() {
-        int[] iArr;
-        synchronized (this) {
-            iArr = this.mTempWhitelistAppIdArray;
-        }
-        return iArr;
-    }
-
-    public final int getTempAllowListType(int i, int i2) {
-        if (i != -1) {
-            return i != 102 ? i2 : this.mLocalActivityManager.getPushMessagingOverQuotaBehavior();
-        }
-        return -1;
-    }
-
-    public void addPowerSaveTempAllowlistAppChecked(String str, long j, int i, int i2, String str2) {
-        getContext().enforceCallingOrSelfPermission("android.permission.CHANGE_DEVICE_IDLE_TEMP_WHITELIST", "No permission to change device idle whitelist");
-        int callingUid = Binder.getCallingUid();
-        int handleIncomingUser = ActivityManager.getService().handleIncomingUser(Binder.getCallingPid(), callingUid, i, false, false, "addPowerSaveTempWhitelistApp", (String) null);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            int tempAllowListType = getTempAllowListType(i2, 0);
-            if (tempAllowListType != -1) {
-                addPowerSaveTempAllowlistAppInternal(callingUid, str, j, tempAllowListType, handleIncomingUser, true, i2, str2);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void removePowerSaveTempAllowlistAppChecked(String str, int i) {
-        getContext().enforceCallingOrSelfPermission("android.permission.CHANGE_DEVICE_IDLE_TEMP_WHITELIST", "No permission to change device idle whitelist");
-        int handleIncomingUser = ActivityManager.getService().handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), i, false, false, "removePowerSaveTempWhitelistApp", (String) null);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            removePowerSaveTempAllowlistAppInternal(str, handleIncomingUser);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void addPowerSaveTempAllowlistAppInternal(int i, String str, long j, int i2, int i3, boolean z, int i4, String str2) {
-        try {
-            addPowerSaveTempWhitelistAppDirectInternal(i, getContext().getPackageManager().getPackageUidAsUser(str, i3), j, i2, z, i4, str2);
-        } catch (PackageManager.NameNotFoundException unused) {
-        }
-    }
-
-    public void addPowerSaveTempWhitelistAppDirectInternal(int i, int i2, long j, int i3, boolean z, int i4, String str) {
-        boolean z2;
-        boolean z3;
-        int i5;
-        int i6;
-        String str2;
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        int appId = UserHandle.getAppId(i2);
-        synchronized (this) {
-            long min = Math.min(j, this.mConstants.MAX_TEMP_APP_ALLOWLIST_DURATION_MS);
-            Pair pair = (Pair) this.mTempWhitelistAppIdEndTimes.get(appId);
-            z2 = false;
-            boolean z4 = pair == null;
-            if (z4) {
-                pair = new Pair(new MutableLong(0L), str);
-                this.mTempWhitelistAppIdEndTimes.put(appId, pair);
-            }
-            ((MutableLong) pair.first).value = elapsedRealtime + min;
-            if (z4) {
-                try {
-                    this.mBatteryStats.noteEvent(32785, str, i2);
-                } catch (RemoteException unused) {
-                }
-                postTempActiveTimeoutMessage(i2, min);
-                updateTempWhitelistAppIdsLocked(i2, true, min, i3, i4, str, i);
-                if (z) {
-                    z2 = true;
-                } else {
-                    this.mHandler.obtainMessage(14, appId, i4, str).sendToTarget();
-                }
-                reportTempWhitelistChangedLocked(i2, true);
-            } else {
-                ActivityManagerInternal activityManagerInternal = this.mLocalActivityManager;
-                if (activityManagerInternal != null) {
-                    z3 = true;
-                    i6 = appId;
-                    str2 = str;
-                    i5 = i4;
-                    activityManagerInternal.updateDeviceIdleTempAllowlist((int[]) null, i2, true, min, i3, i4, str, i);
-                }
-            }
-            z3 = true;
-            i6 = appId;
-            str2 = str;
-            i5 = i4;
-        }
-        if (z2) {
-            this.mNetworkPolicyManagerInternal.onTempPowerSaveWhitelistChange(i6, z3, i5, str2);
-        }
-    }
-
-    public final void removePowerSaveTempAllowlistAppInternal(String str, int i) {
-        try {
-            removePowerSaveTempWhitelistAppDirectInternal(getContext().getPackageManager().getPackageUidAsUser(str, i));
-        } catch (PackageManager.NameNotFoundException unused) {
-        }
-    }
-
-    public final void removePowerSaveTempWhitelistAppDirectInternal(int i) {
-        int appId = UserHandle.getAppId(i);
-        synchronized (this) {
-            int indexOfKey = this.mTempWhitelistAppIdEndTimes.indexOfKey(appId);
-            if (indexOfKey < 0) {
+        if (!z && this.mCharging) {
+            this.mCharging = false;
+            if (this.mForceIdle) {
                 return;
             }
-            String str = (String) ((Pair) this.mTempWhitelistAppIdEndTimes.valueAt(indexOfKey)).second;
-            this.mTempWhitelistAppIdEndTimes.removeAt(indexOfKey);
-            onAppRemovedFromTempWhitelistLocked(i, str);
+            becomeInactiveIfAppropriateLocked();
+            return;
         }
-    }
-
-    public final void postTempActiveTimeoutMessage(int i, long j) {
-        MyHandler myHandler = this.mHandler;
-        myHandler.sendMessageDelayed(myHandler.obtainMessage(6, i, 0), j);
-    }
-
-    public void checkTempAppWhitelistTimeout(int i) {
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        int appId = UserHandle.getAppId(i);
-        synchronized (this) {
-            Pair pair = (Pair) this.mTempWhitelistAppIdEndTimes.get(appId);
-            if (pair == null) {
+        if (z) {
+            this.mCharging = z;
+            if (this.mForceIdle) {
                 return;
             }
-            Object obj = pair.first;
-            if (elapsedRealtime >= ((MutableLong) obj).value) {
-                this.mTempWhitelistAppIdEndTimes.delete(appId);
-                onAppRemovedFromTempWhitelistLocked(i, (String) pair.second);
-            } else {
-                postTempActiveTimeoutMessage(i, ((MutableLong) obj).value - elapsedRealtime);
-            }
+            becomeActiveLocked(Process.myUid(), "charging");
         }
     }
 
-    public final void onAppRemovedFromTempWhitelistLocked(int i, String str) {
-        int appId = UserHandle.getAppId(i);
-        updateTempWhitelistAppIdsLocked(i, false, 0L, 0, 0, str, -1);
-        this.mHandler.obtainMessage(15, appId, 0).sendToTarget();
-        reportTempWhitelistChangedLocked(i, false);
-        try {
-            this.mBatteryStats.noteEvent(16401, str, appId);
-        } catch (RemoteException unused) {
-        }
-    }
-
-    public void exitIdleInternal(String str) {
-        synchronized (this) {
-            this.mActiveReason = 5;
-            becomeActiveLocked(str, Binder.getCallingUid());
-        }
-    }
-
-    public boolean isNetworkConnected() {
-        boolean z;
-        synchronized (this) {
-            z = this.mNetworkConnected;
-        }
-        return z;
-    }
-
-    public void updateConnectivityState(Intent intent) {
+    public final void updateConnectivityState(Intent intent) {
         ConnectivityManager connectivityManager;
         synchronized (this) {
-            connectivityManager = this.mInjector.getConnectivityManager();
+            Injector injector = this.mInjector;
+            if (injector.mConnectivityManager == null) {
+                injector.mConnectivityManager = (ConnectivityManager) injector.mContext.getSystemService(ConnectivityManager.class);
+            }
+            connectivityManager = injector.mConnectivityManager;
         }
         if (connectivityManager == null) {
             return;
@@ -2797,36 +4250,35 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         synchronized (this) {
             boolean z = false;
-            if (activeNetworkInfo != null) {
-                if (intent == null) {
-                    z = activeNetworkInfo.isConnected();
-                } else {
-                    if (activeNetworkInfo.getType() != intent.getIntExtra("networkType", -1)) {
-                        return;
+            try {
+                if (activeNetworkInfo != null) {
+                    if (intent == null) {
+                        z = activeNetworkInfo.isConnected();
                     } else {
-                        z = !intent.getBooleanExtra("noConnectivity", false);
+                        if (activeNetworkInfo.getType() != intent.getIntExtra("networkType", -1)) {
+                            return;
+                        } else {
+                            z = !intent.getBooleanExtra("noConnectivity", false);
+                        }
                     }
                 }
-            }
-            if (z != this.mNetworkConnected) {
-                this.mNetworkConnected = z;
-                if (z && this.mLightState == 5) {
-                    stepLightIdleStateLocked("network");
+                if (z != this.mNetworkConnected) {
+                    this.mNetworkConnected = z;
+                    if (z && this.mLightState == 5) {
+                        stepLightIdleStateLocked("network");
+                    }
                 }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    public boolean isScreenOn() {
-        boolean z;
-        synchronized (this) {
-            z = this.mScreenOn;
-        }
-        return z;
-    }
-
-    public void updateInteractivityLocked() {
+    public final void updateInteractivityLocked() {
         boolean isInteractive = this.mPowerManager.isInteractive();
+        if (DEBUG) {
+            DeviceIdleController$$ExternalSyntheticOutline0.m("updateInteractivityLocked: screenOn=", "DeviceIdleController", isInteractive);
+        }
         if (!isInteractive && this.mScreenOn) {
             this.mScreenOn = false;
             if (this.mForceIdle) {
@@ -2843,48 +4295,23 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
             if (this.mScreenLocked && this.mConstants.WAIT_FOR_UNLOCK) {
                 return;
             }
-            this.mActiveReason = 2;
-            becomeActiveLocked(KnoxCustomManagerService.SCREEN, Process.myUid());
+            becomeActiveLocked(Process.myUid(), KnoxCustomManagerService.SCREEN);
         }
     }
 
-    public boolean isCharging() {
-        boolean z;
-        synchronized (this) {
-            z = this.mCharging;
+    public final void updateQuickDozeFlagLocked() {
+        if (this.mConstants.USE_MODE_MANAGER) {
+            updateQuickDozeFlagLocked(this.mModeManagerRequestedQuickDoze || this.mBatterySaverEnabled);
+        } else {
+            updateQuickDozeFlagLocked(this.mBatterySaverEnabled);
         }
-        return z;
-    }
-
-    public void updateChargingLocked(boolean z) {
-        if (!z && this.mCharging) {
-            this.mCharging = false;
-            if (this.mForceIdle) {
-                return;
-            }
-            becomeInactiveIfAppropriateLocked();
-            return;
-        }
-        if (z) {
-            this.mCharging = z;
-            if (this.mForceIdle) {
-                return;
-            }
-            this.mActiveReason = 3;
-            becomeActiveLocked("charging", Process.myUid());
-        }
-    }
-
-    public boolean isQuickDozeEnabled() {
-        boolean z;
-        synchronized (this) {
-            z = this.mQuickDozeActivated;
-        }
-        return z;
     }
 
     public void updateQuickDozeFlagLocked(boolean z) {
         int i;
+        if (DEBUG) {
+            Slog.i("DeviceIdleController", "updateQuickDozeFlagLocked: enabled=" + z);
+        }
         this.mQuickDozeActivated = z;
         this.mQuickDozeActivatedWhileIdling = z && ((i = this.mState) == 5 || i == 6);
         if (z) {
@@ -2892,718 +4319,29 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
         }
     }
 
-    public boolean isKeyguardShowing() {
-        boolean z;
-        synchronized (this) {
-            z = this.mScreenLocked;
+    public final void updateTempWhitelistAppIdsLocked(int i, long j, int i2, boolean z, int i3, String str, int i4) {
+        int size = this.mTempWhitelistAppIdEndTimes.size();
+        if (this.mTempWhitelistAppIdArray.length != size) {
+            this.mTempWhitelistAppIdArray = new int[size];
         }
-        return z;
-    }
-
-    public void keyguardShowingLocked(boolean z) {
-        if (this.mScreenLocked != z) {
-            this.mScreenLocked = z;
-            if (!this.mScreenOn || this.mForceIdle || z) {
-                return;
+        for (int i5 = 0; i5 < size; i5++) {
+            this.mTempWhitelistAppIdArray[i5] = this.mTempWhitelistAppIdEndTimes.keyAt(i5);
+        }
+        ActivityManagerInternal activityManagerInternal = this.mLocalActivityManager;
+        boolean z2 = DEBUG;
+        if (activityManagerInternal != null) {
+            if (z2) {
+                Slog.d("DeviceIdleController", "Setting activity manager temp whitelist to " + Arrays.toString(this.mTempWhitelistAppIdArray));
             }
-            this.mActiveReason = 4;
-            becomeActiveLocked("unlocked", Process.myUid());
+            this.mLocalActivityManager.updateDeviceIdleTempAllowlist(this.mTempWhitelistAppIdArray, i, z, j, i2, i3, str, i4);
         }
-    }
-
-    public void scheduleReportActiveLocked(String str, int i) {
-        this.mHandler.sendMessage(this.mHandler.obtainMessage(5, i, 0, str));
-    }
-
-    public void becomeActiveLocked(String str, int i) {
-        becomeActiveLocked(str, i, this.mConstants.INACTIVE_TIMEOUT, true);
-    }
-
-    public final void becomeActiveLocked(String str, int i, long j, boolean z) {
-        if (this.mState == 0 && this.mLightState == 0) {
-            return;
-        }
-        moveToStateLocked(0, str);
-        this.mInactiveTimeout = j;
-        resetIdleManagementLocked();
-        if (this.mLightState != 6) {
-            this.mMaintenanceStartTime = 0L;
-        }
-        if (z) {
-            moveToLightStateLocked(0, str);
-            resetLightIdleManagementLocked();
-            scheduleReportActiveLocked(str, i);
-            addEvent(1, str);
-        }
-        resetBatteryLevel();
-    }
-
-    public void setDeepEnabledForTest(boolean z) {
-        synchronized (this) {
-            this.mDeepEnabled = z;
-        }
-    }
-
-    public void setLightEnabledForTest(boolean z) {
-        synchronized (this) {
-            this.mLightEnabled = z;
-        }
-    }
-
-    public final void verifyAlarmStateLocked() {
-        if (this.mState == 0 && this.mNextAlarmTime != 0) {
-            Slog.wtf("DeviceIdleController", "mState=ACTIVE but mNextAlarmTime=" + this.mNextAlarmTime);
-        }
-        if (this.mState != 5 && this.mLocalAlarmManager.isIdling()) {
-            Slog.wtf("DeviceIdleController", "mState=" + stateToString(this.mState) + " but AlarmManager is idling");
-        }
-        if (this.mState == 5 && !this.mLocalAlarmManager.isIdling()) {
-            Slog.wtf("DeviceIdleController", "mState=IDLE but AlarmManager is not idling");
-        }
-        if (this.mLightState != 0 || this.mNextLightAlarmTime == 0) {
-            return;
-        }
-        Slog.wtf("DeviceIdleController", "mLightState=ACTIVE but mNextLightAlarmTime is " + TimeUtils.formatDuration(this.mNextLightAlarmTime - SystemClock.elapsedRealtime()) + " from now");
-    }
-
-    public void becomeInactiveIfAppropriateLocked() {
-        verifyAlarmStateLocked();
-        boolean z = this.mScreenOn && !(this.mConstants.WAIT_FOR_UNLOCK && this.mScreenLocked);
-        boolean isEmergencyCallActive = this.mEmergencyCallListener.isEmergencyCallActive();
-        if (this.mForceIdle || !(this.mCharging || z || isEmergencyCallActive)) {
-            if (this.mDeepEnabled) {
-                if (this.mQuickDozeActivated) {
-                    int i = this.mState;
-                    if (i == 7 || i == 5 || i == 6) {
-                        return;
-                    }
-                    moveToStateLocked(7, "no activity");
-                    resetIdleManagementLocked();
-                    if (isUpcomingAlarmClock()) {
-                        scheduleAlarmLocked((this.mAlarmManager.getNextWakeFromIdleTime() - this.mInjector.getElapsedRealtime()) + this.mConstants.QUICK_DOZE_DELAY_TIMEOUT);
-                    } else {
-                        scheduleAlarmLocked(this.mConstants.QUICK_DOZE_DELAY_TIMEOUT);
-                    }
-                } else if (this.mState == 0) {
-                    moveToStateLocked(1, "no activity");
-                    resetIdleManagementLocked();
-                    long j = this.mInactiveTimeout;
-                    if (shouldUseIdleTimeoutFactorLocked()) {
-                        j = this.mPreIdleFactor * ((float) j);
-                    }
-                    if (isUpcomingAlarmClock()) {
-                        scheduleAlarmLocked((this.mAlarmManager.getNextWakeFromIdleTime() - this.mInjector.getElapsedRealtime()) + j);
-                    } else {
-                        scheduleAlarmLocked(j);
-                    }
-                }
+        if (this.mLocalPowerManager != null) {
+            if (z2) {
+                Slog.d("DeviceIdleController", "Setting wakelock temp whitelist to " + Arrays.toString(this.mTempWhitelistAppIdArray));
             }
-            if (this.mLightState == 0 && this.mLightEnabled) {
-                moveToLightStateLocked(1, "no activity");
-                resetLightIdleManagementLocked();
-                Constants constants = this.mConstants;
-                scheduleLightAlarmLocked(constants.LIGHT_IDLE_AFTER_INACTIVE_TIMEOUT, constants.FLEX_TIME_SHORT, true);
-            }
+            this.mLocalPowerManager.setDeviceIdleTempWhitelist(this.mTempWhitelistAppIdArray);
         }
-    }
-
-    public final void resetBatteryLevel() {
-        Slog.i("DeviceIdleController", "resetBatteryLevel");
-        float batteryLevelRaw = getBatteryLevelRaw();
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        this.mLightBatteryLevel.reset(batteryLevelRaw, elapsedRealtime);
-        this.mDeepBatteryLevel.reset(batteryLevelRaw, elapsedRealtime);
-    }
-
-    public final void resetIdleManagementLocked() {
-        this.mNextIdlePendingDelay = 0L;
-        this.mNextIdleDelay = 0L;
-        this.mIdleStartTime = 0L;
-        this.mQuickDozeActivatedWhileIdling = false;
-        cancelAlarmLocked();
-        cancelSensingTimeoutAlarmLocked();
-        cancelLocatingLocked();
-        maybeStopMonitoringMotionLocked();
-        this.mAnyMotionDetector.stop();
-        updateActiveConstraintsLocked();
-    }
-
-    public final void resetLightIdleManagementLocked() {
-        Constants constants = this.mConstants;
-        this.mNextLightIdleDelay = constants.LIGHT_IDLE_TIMEOUT;
-        this.mMaintenanceStartTime = 0L;
-        this.mNextLightIdleDelayFlex = constants.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX;
-        this.mCurLightIdleBudget = constants.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
-        cancelLightAlarmLocked();
-    }
-
-    public void exitForceIdleLocked() {
-        if (this.mForceIdle) {
-            this.mForceIdle = false;
-            if (this.mScreenOn || this.mCharging) {
-                this.mActiveReason = 6;
-                becomeActiveLocked("exit-force", Process.myUid());
-            }
-        }
-    }
-
-    public void setLightStateForTest(int i) {
-        synchronized (this) {
-            this.mLightBatteryLevel.curr = getBatteryLevelRaw();
-            this.mLightBatteryLevel.currTime = SystemClock.elapsedRealtime();
-            Slog.i("DeviceIdleController", String.format("[LIGHT] %s to %s, battery=%s(%s/%d)", lightStateToString(this.mLightState), lightStateToString(i), floatToString(this.mLightBatteryLevel.curr), floatToString(getBatteryLevelDiff(this.mLightBatteryLevel.prev, this.mLightBatteryLevel.curr)), Long.valueOf(getDuration(this.mLightBatteryLevel.prevTime, this.mLightBatteryLevel.currTime))));
-            this.mLightBatteryLevel.updatePrev();
-            this.mLightState = i;
-        }
-    }
-
-    public int getLightState() {
-        int i;
-        synchronized (this) {
-            i = this.mLightState;
-        }
-        return i;
-    }
-
-    public void stepLightIdleStateLocked(String str) {
-        int i = this.mLightState;
-        if (i == 0 || i == 7) {
-            return;
-        }
-        EventLogTags.writeDeviceIdleLightStep();
-        if (this.mEmergencyCallListener.isEmergencyCallActive()) {
-            Slog.wtf("DeviceIdleController", "stepLightIdleStateLocked called when emergency call is active");
-            if (this.mLightState != 0) {
-                this.mActiveReason = 8;
-                becomeActiveLocked("emergency", Process.myUid());
-                return;
-            }
-            return;
-        }
-        int i2 = this.mLightState;
-        if (i2 == 1) {
-            Constants constants = this.mConstants;
-            this.mCurLightIdleBudget = constants.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
-            this.mNextLightIdleDelay = constants.LIGHT_IDLE_TIMEOUT;
-            this.mNextLightIdleDelayFlex = constants.LIGHT_IDLE_TIMEOUT_INITIAL_FLEX;
-            this.mMaintenanceStartTime = 0L;
-        } else {
-            if (i2 == 4 || i2 == 5) {
-                if (this.mNetworkConnected || i2 == 5) {
-                    this.mActiveIdleOpCount = 1;
-                    this.mActiveIdleWakeLock.acquire();
-                    this.mMaintenanceStartTime = SystemClock.elapsedRealtime();
-                    long j = this.mCurLightIdleBudget;
-                    Constants constants2 = this.mConstants;
-                    long j2 = constants2.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
-                    if (j < j2) {
-                        this.mCurLightIdleBudget = j2;
-                    } else {
-                        long j3 = constants2.LIGHT_IDLE_MAINTENANCE_MAX_BUDGET;
-                        if (j > j3) {
-                            this.mCurLightIdleBudget = j3;
-                        }
-                    }
-                    scheduleLightAlarmLocked(this.mCurLightIdleBudget, constants2.FLEX_TIME_SHORT, true);
-                    moveToLightStateLocked(6, str);
-                    addEvent(3, null);
-                    this.mHandler.sendEmptyMessage(4);
-                    return;
-                }
-                scheduleLightAlarmLocked(this.mNextLightIdleDelay, this.mNextLightIdleDelayFlex / 2, true);
-                moveToLightStateLocked(5, str);
-                return;
-            }
-            if (i2 != 6) {
-                return;
-            }
-        }
-        if (this.mMaintenanceStartTime != 0) {
-            long elapsedRealtime = SystemClock.elapsedRealtime() - this.mMaintenanceStartTime;
-            long j4 = this.mConstants.LIGHT_IDLE_MAINTENANCE_MIN_BUDGET;
-            if (elapsedRealtime < j4) {
-                this.mCurLightIdleBudget += j4 - elapsedRealtime;
-            } else {
-                this.mCurLightIdleBudget -= elapsedRealtime - j4;
-            }
-        }
-        this.mMaintenanceStartTime = 0L;
-        scheduleLightAlarmLocked(this.mNextLightIdleDelay, this.mNextLightIdleDelayFlex, false);
-        this.mNextLightIdleDelay = Math.min(this.mConstants.LIGHT_MAX_IDLE_TIMEOUT, ((float) this.mNextLightIdleDelay) * r0.LIGHT_IDLE_FACTOR);
-        this.mNextLightIdleDelayFlex = Math.min(this.mConstants.LIGHT_IDLE_TIMEOUT_MAX_FLEX, ((float) this.mNextLightIdleDelayFlex) * r0.LIGHT_IDLE_FACTOR);
-        moveToLightStateLocked(4, str);
-        addEvent(2, null);
-        this.mGoingIdleWakeLock.acquire();
-        this.mHandler.sendEmptyMessage(3);
-    }
-
-    public int getState() {
-        int i;
-        synchronized (this) {
-            i = this.mState;
-        }
-        return i;
-    }
-
-    public final boolean isUpcomingAlarmClock() {
-        return this.mInjector.getElapsedRealtime() + this.mConstants.MIN_TIME_TO_ALARM >= this.mAlarmManager.getNextWakeFromIdleTime();
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    /* JADX WARN: Failed to find 'out' block for switch in B:22:0x0054. Please report as an issue. */
-    /* JADX WARN: Removed duplicated region for block: B:41:0x00d2  */
-    /* JADX WARN: Removed duplicated region for block: B:55:0x0121  */
-    /* JADX WARN: Removed duplicated region for block: B:60:0x0165  */
-    /* JADX WARN: Removed duplicated region for block: B:63:0x016b  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void stepIdleStateLocked(java.lang.String r18) {
-        /*
-            Method dump skipped, instructions count: 428
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.DeviceIdleController.stepIdleStateLocked(java.lang.String):void");
-    }
-
-    public final void moveToLightStateLocked(int i, String str) {
-        this.mLightBatteryLevel.curr = getBatteryLevelRaw();
-        this.mLightBatteryLevel.currTime = SystemClock.elapsedRealtime();
-        Slog.i("DeviceIdleController", String.format("[LIGHT] %s to %s, reason=%s, battery=%s(%s/%d)", lightStateToString(this.mLightState), lightStateToString(i), str, floatToString(this.mLightBatteryLevel.curr), floatToString(getBatteryLevelDiff(this.mLightBatteryLevel.prev, this.mLightBatteryLevel.curr)), Long.valueOf(getDuration(this.mLightBatteryLevel.prevTime, this.mLightBatteryLevel.currTime))));
-        this.mLightBatteryLevel.updatePrev();
-        this.mLightState = i;
-        EventLogTags.writeDeviceIdleLight(i, str);
-        Trace.traceCounter(524288L, "DozeLightState", i);
-    }
-
-    public final void moveToStateLocked(int i, String str) {
-        this.mDeepBatteryLevel.curr = getBatteryLevelRaw();
-        this.mDeepBatteryLevel.currTime = SystemClock.elapsedRealtime();
-        Slog.i("DeviceIdleController", String.format("[DEEP] %s to %s, reason=%s, battery=%s(%s/%d)", stateToString(this.mState), stateToString(i), str, floatToString(this.mDeepBatteryLevel.curr), floatToString(getBatteryLevelDiff(this.mDeepBatteryLevel.prev, this.mDeepBatteryLevel.curr)), Long.valueOf(getDuration(this.mDeepBatteryLevel.prevTime, this.mDeepBatteryLevel.currTime))));
-        this.mDeepBatteryLevel.updatePrev();
-        this.mState = i;
-        EventLogTags.writeDeviceIdle(i, str);
-        Trace.traceCounter(524288L, "DozeDeepState", i);
-        updateActiveConstraintsLocked();
-    }
-
-    public float getBatteryLevelRaw() {
-        BatteryManagerInternal batteryManagerInternal = this.mLocalBatteryManager;
-        if (batteryManagerInternal != null) {
-            int batteryLevelRaw = batteryManagerInternal.getBatteryLevelRaw();
-            if (batteryLevelRaw >= 0 && batteryLevelRaw <= 10000) {
-                return batteryLevelRaw / 100.0f;
-            }
-            Slog.w("DeviceIdleController", "getBatteryLevelRaw() : batteryLevelInt is invalid : " + batteryLevelRaw);
-        } else {
-            Slog.w("DeviceIdleController", "getBatteryLevelRaw() : mLocalBatteryManager is null");
-        }
-        return -1.0f;
-    }
-
-    public final float getBatteryLevelDiff(float f, float f2) {
-        if (f < DisplayPowerController2.RATE_FROM_DOZE_TO_ON || f2 < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            Slog.w("DeviceIdleController", "getBatteryLevelDiff() : curr(" + f2 + ") or prev(" + f + ") is invalid");
-            return -1.0f;
-        }
-        if (f >= f2) {
-            return f - f2;
-        }
-        Slog.w("DeviceIdleController", "getBatteryLevelDiff() : curr(" + f2 + ") is bigger than prev(" + f + ")");
-        return -1.0f;
-    }
-
-    public final String floatToString(float f) {
-        return f >= DisplayPowerController2.RATE_FROM_DOZE_TO_ON ? String.format("%.2f", Float.valueOf(f)) : "invalid";
-    }
-
-    public void incActiveIdleOps() {
-        synchronized (this) {
-            this.mActiveIdleOpCount++;
-        }
-    }
-
-    public void decActiveIdleOps() {
-        synchronized (this) {
-            int i = this.mActiveIdleOpCount - 1;
-            this.mActiveIdleOpCount = i;
-            if (i <= 0) {
-                exitMaintenanceEarlyIfNeededLocked();
-                this.mActiveIdleWakeLock.release();
-            }
-        }
-    }
-
-    public void setActiveIdleOpsForTest(int i) {
-        synchronized (this) {
-            this.mActiveIdleOpCount = i;
-        }
-    }
-
-    public void setJobsActive(boolean z) {
-        synchronized (this) {
-            this.mJobsActive = z;
-            if (!z) {
-                exitMaintenanceEarlyIfNeededLocked();
-            }
-        }
-    }
-
-    public void setAlarmsActive(boolean z) {
-        synchronized (this) {
-            this.mAlarmsActive = z;
-            if (!z) {
-                exitMaintenanceEarlyIfNeededLocked();
-            }
-        }
-    }
-
-    public int setPreIdleTimeoutMode(int i) {
-        return setPreIdleTimeoutFactor(getPreIdleTimeoutByMode(i));
-    }
-
-    public float getPreIdleTimeoutByMode(int i) {
-        if (i == 0) {
-            return 1.0f;
-        }
-        if (i == 1) {
-            return this.mConstants.PRE_IDLE_FACTOR_LONG;
-        }
-        if (i == 2) {
-            return this.mConstants.PRE_IDLE_FACTOR_SHORT;
-        }
-        Slog.w("DeviceIdleController", "Invalid time out factor mode: " + i);
-        return 1.0f;
-    }
-
-    public float getPreIdleTimeoutFactor() {
-        float f;
-        synchronized (this) {
-            f = this.mPreIdleFactor;
-        }
-        return f;
-    }
-
-    public int setPreIdleTimeoutFactor(float f) {
-        synchronized (this) {
-            if (!this.mDeepEnabled) {
-                return 2;
-            }
-            if (f <= MIN_PRE_IDLE_FACTOR_CHANGE) {
-                return 3;
-            }
-            if (Math.abs(f - this.mPreIdleFactor) < MIN_PRE_IDLE_FACTOR_CHANGE) {
-                return 0;
-            }
-            this.mLastPreIdleFactor = this.mPreIdleFactor;
-            this.mPreIdleFactor = f;
-            postUpdatePreIdleFactor();
-            return 1;
-        }
-    }
-
-    public void resetPreIdleTimeoutMode() {
-        synchronized (this) {
-            this.mLastPreIdleFactor = this.mPreIdleFactor;
-            this.mPreIdleFactor = 1.0f;
-        }
-        postResetPreIdleTimeoutFactor();
-    }
-
-    public final void postUpdatePreIdleFactor() {
-        this.mHandler.sendEmptyMessage(11);
-    }
-
-    public final void postResetPreIdleTimeoutFactor() {
-        this.mHandler.sendEmptyMessage(12);
-    }
-
-    public final void updatePreIdleFactor() {
-        synchronized (this) {
-            if (shouldUseIdleTimeoutFactorLocked()) {
-                int i = this.mState;
-                if (i == 1 || i == 2) {
-                    long j = this.mNextAlarmTime;
-                    if (j == 0) {
-                        return;
-                    }
-                    long elapsedRealtime = j - SystemClock.elapsedRealtime();
-                    if (elapsedRealtime < 60000) {
-                        return;
-                    }
-                    long j2 = (((float) elapsedRealtime) / this.mLastPreIdleFactor) * this.mPreIdleFactor;
-                    if (Math.abs(elapsedRealtime - j2) < 60000) {
-                    } else {
-                        scheduleAlarmLocked(j2);
-                    }
-                }
-            }
-        }
-    }
-
-    public final void maybeDoImmediateMaintenance(String str) {
-        synchronized (this) {
-            if (this.mState == 5 && SystemClock.elapsedRealtime() - this.mIdleStartTime > this.mConstants.IDLE_TIMEOUT) {
-                stepIdleStateLocked(str);
-            }
-        }
-    }
-
-    public final boolean shouldUseIdleTimeoutFactorLocked() {
-        return this.mActiveReason != 1;
-    }
-
-    public void setIdleStartTimeForTest(long j) {
-        synchronized (this) {
-            this.mIdleStartTime = j;
-            maybeDoImmediateMaintenance("testing");
-        }
-    }
-
-    public long getNextAlarmTime() {
-        long j;
-        synchronized (this) {
-            j = this.mNextAlarmTime;
-        }
-        return j;
-    }
-
-    public boolean isEmergencyCallActive() {
-        return this.mEmergencyCallListener.isEmergencyCallActive();
-    }
-
-    public boolean isOpsInactiveLocked() {
-        return (this.mActiveIdleOpCount > 0 || this.mJobsActive || this.mAlarmsActive) ? false : true;
-    }
-
-    public void exitMaintenanceEarlyIfNeededLocked() {
-        if ((this.mState == 6 || this.mLightState == 6) && isOpsInactiveLocked()) {
-            SystemClock.elapsedRealtime();
-            if (this.mState == 6) {
-                stepIdleStateLocked("s:early");
-            } else {
-                stepLightIdleStateLocked("s:early");
-            }
-        }
-    }
-
-    public void motionLocked() {
-        this.mLastMotionEventElapsed = this.mInjector.getElapsedRealtime();
-        handleMotionDetectedLocked(this.mConstants.MOTION_INACTIVE_TIMEOUT, "motion");
-    }
-
-    public void handleMotionDetectedLocked(long j, String str) {
-        if (this.mStationaryListeners.size() > 0) {
-            postStationaryStatusUpdated();
-            cancelMotionTimeoutAlarmLocked();
-            scheduleMotionRegistrationAlarmLocked();
-        }
-        if (!this.mQuickDozeActivated || this.mQuickDozeActivatedWhileIdling) {
-            maybeStopMonitoringMotionLocked();
-            boolean z = this.mState != 0 || this.mLightState == 7;
-            becomeActiveLocked(str, Process.myUid(), j, this.mLightState == 7);
-            if (z) {
-                becomeInactiveIfAppropriateLocked();
-            }
-        }
-    }
-
-    public void receivedGenericLocationLocked(Location location) {
-        if (this.mState != 4) {
-            cancelLocatingLocked();
-            return;
-        }
-        this.mLastGenericLocation = new Location(location);
-        if (location.getAccuracy() <= this.mConstants.LOCATION_ACCURACY || !this.mHasGps) {
-            this.mLocated = true;
-            if (this.mNotMoving) {
-                stepIdleStateLocked("s:location");
-            }
-        }
-    }
-
-    public void receivedGpsLocationLocked(Location location) {
-        if (this.mState != 4) {
-            cancelLocatingLocked();
-            return;
-        }
-        this.mLastGpsLocation = new Location(location);
-        if (location.getAccuracy() > this.mConstants.LOCATION_ACCURACY) {
-            return;
-        }
-        this.mLocated = true;
-        if (this.mNotMoving) {
-            stepIdleStateLocked("s:gps");
-        }
-    }
-
-    public void startMonitoringMotionLocked() {
-        if (this.mMotionSensor != null) {
-            MotionListener motionListener = this.mMotionListener;
-            if (motionListener.active) {
-                return;
-            }
-            motionListener.registerLocked();
-        }
-    }
-
-    public final void maybeStopMonitoringMotionLocked() {
-        if (this.mMotionSensor == null || this.mStationaryListeners.size() != 0) {
-            return;
-        }
-        MotionListener motionListener = this.mMotionListener;
-        if (motionListener.active) {
-            motionListener.unregisterLocked();
-            cancelMotionTimeoutAlarmLocked();
-        }
-        cancelMotionRegistrationAlarmLocked();
-    }
-
-    public void cancelAlarmLocked() {
-        if (this.mNextAlarmTime != 0) {
-            this.mNextAlarmTime = 0L;
-            this.mAlarmManager.cancel(this.mDeepAlarmListener);
-        }
-    }
-
-    public final void cancelLightAlarmLocked() {
-        if (this.mNextLightAlarmTime != 0) {
-            this.mNextLightAlarmTime = 0L;
-            this.mAlarmManager.cancel(this.mLightAlarmListener);
-        }
-    }
-
-    public void cancelLocatingLocked() {
-        if (this.mLocating) {
-            LocationManager locationManager = this.mInjector.getLocationManager();
-            locationManager.removeUpdates(this.mGenericLocationListener);
-            locationManager.removeUpdates(this.mGpsLocationListener);
-            this.mLocating = false;
-        }
-    }
-
-    public final void cancelMotionTimeoutAlarmLocked() {
-        this.mAlarmManager.cancel(this.mMotionTimeoutAlarmListener);
-    }
-
-    public final void cancelMotionRegistrationAlarmLocked() {
-        this.mAlarmManager.cancel(this.mMotionRegistrationAlarmListener);
-    }
-
-    public void cancelSensingTimeoutAlarmLocked() {
-        if (this.mNextSensingTimeoutAlarmTime != 0) {
-            this.mNextSensingTimeoutAlarmTime = 0L;
-            this.mAlarmManager.cancel(this.mSensingTimeoutAlarmListener);
-        }
-    }
-
-    public void scheduleAlarmLocked(long j) {
-        int i;
-        if (!this.mUseMotionSensor || this.mMotionSensor != null || (i = this.mState) == 7 || i == 5 || i == 6) {
-            long elapsedRealtime = SystemClock.elapsedRealtime() + j;
-            this.mNextAlarmTime = elapsedRealtime;
-            int i2 = this.mState;
-            if (i2 == 5) {
-                this.mAlarmManager.setIdleUntil(2, elapsedRealtime, "DeviceIdleController.deep.maintenance", this.mDeepAlarmListener, this.mHandler);
-                return;
-            }
-            if (i2 == 4) {
-                this.mAlarmManager.setExact(2, elapsedRealtime, "DeviceIdleController.deep.locating", this.mDeepAlarmListener, this.mHandler);
-                return;
-            }
-            Constants constants = this.mConstants;
-            if (constants.USE_WINDOW_ALARMS) {
-                this.mAlarmManager.setWindow(2, elapsedRealtime, constants.FLEX_TIME_SHORT, "DeviceIdleController.deep.progression", this.mDeepAlarmListener, this.mHandler);
-            } else {
-                this.mAlarmManager.set(2, elapsedRealtime, "DeviceIdleController.deep.progression", this.mDeepAlarmListener, this.mHandler);
-            }
-        }
-    }
-
-    public void scheduleLightAlarmLocked(long j, long j2, boolean z) {
-        String str;
-        StringBuilder sb = new StringBuilder();
-        sb.append("scheduleLightAlarmLocked(");
-        sb.append(j);
-        if (this.mConstants.USE_WINDOW_ALARMS) {
-            str = "/" + j2;
-        } else {
-            str = "";
-        }
-        sb.append(str);
-        sb.append(", wakeup=");
-        sb.append(z);
-        sb.append(")");
-        Slog.d("DeviceIdleController", sb.toString());
-        long elapsedRealtime = j + this.mInjector.getElapsedRealtime();
-        this.mNextLightAlarmTime = elapsedRealtime;
-        if (this.mConstants.USE_WINDOW_ALARMS) {
-            this.mAlarmManager.setWindow(z ? 2 : 3, elapsedRealtime, j2, "DeviceIdleController.light", this.mLightAlarmListener, this.mHandler);
-        } else {
-            this.mAlarmManager.set(z ? 2 : 3, elapsedRealtime, "DeviceIdleController.light", this.mLightAlarmListener, this.mHandler);
-        }
-    }
-
-    public long getNextLightAlarmTimeForTesting() {
-        long j;
-        synchronized (this) {
-            j = this.mNextLightAlarmTime;
-        }
-        return j;
-    }
-
-    public final void scheduleMotionRegistrationAlarmLocked() {
-        long elapsedRealtime = this.mInjector.getElapsedRealtime();
-        Constants constants = this.mConstants;
-        long j = elapsedRealtime + (constants.MOTION_INACTIVE_TIMEOUT / 2);
-        if (constants.USE_WINDOW_ALARMS) {
-            this.mAlarmManager.setWindow(2, j, constants.MOTION_INACTIVE_TIMEOUT_FLEX, "DeviceIdleController.motion_registration", this.mMotionRegistrationAlarmListener, this.mHandler);
-        } else {
-            this.mAlarmManager.set(2, j, "DeviceIdleController.motion_registration", this.mMotionRegistrationAlarmListener, this.mHandler);
-        }
-    }
-
-    public final void scheduleMotionTimeoutAlarmLocked() {
-        long elapsedRealtime = this.mInjector.getElapsedRealtime();
-        Constants constants = this.mConstants;
-        long j = elapsedRealtime + constants.MOTION_INACTIVE_TIMEOUT;
-        if (constants.USE_WINDOW_ALARMS) {
-            this.mAlarmManager.setWindow(2, j, constants.MOTION_INACTIVE_TIMEOUT_FLEX, "DeviceIdleController.motion", this.mMotionTimeoutAlarmListener, this.mHandler);
-        } else {
-            this.mAlarmManager.set(2, j, "DeviceIdleController.motion", this.mMotionTimeoutAlarmListener, this.mHandler);
-        }
-    }
-
-    public void scheduleSensingTimeoutAlarmLocked(long j) {
-        long elapsedRealtime = SystemClock.elapsedRealtime() + j;
-        this.mNextSensingTimeoutAlarmTime = elapsedRealtime;
-        Constants constants = this.mConstants;
-        if (constants.USE_WINDOW_ALARMS) {
-            this.mAlarmManager.setWindow(2, elapsedRealtime, constants.FLEX_TIME_SHORT, "DeviceIdleController.sensing", this.mSensingTimeoutAlarmListener, this.mHandler);
-        } else {
-            this.mAlarmManager.set(2, elapsedRealtime, "DeviceIdleController.sensing", this.mSensingTimeoutAlarmListener, this.mHandler);
-        }
-    }
-
-    public static int[] buildAppIdArray(ArrayMap arrayMap, ArrayMap arrayMap2, SparseBooleanArray sparseBooleanArray) {
-        sparseBooleanArray.clear();
-        if (arrayMap != null) {
-            for (int i = 0; i < arrayMap.size(); i++) {
-                sparseBooleanArray.put(((Integer) arrayMap.valueAt(i)).intValue(), true);
-            }
-        }
-        if (arrayMap2 != null) {
-            for (int i2 = 0; i2 < arrayMap2.size(); i2++) {
-                sparseBooleanArray.put(((Integer) arrayMap2.valueAt(i2)).intValue(), true);
-            }
-        }
-        int size = sparseBooleanArray.size();
-        int[] iArr = new int[size];
-        for (int i3 = 0; i3 < size; i3++) {
-            iArr[i3] = sparseBooleanArray.keyAt(i3);
-        }
-        return iArr;
+        passWhiteListsToForceAppStandbyTrackerLocked();
     }
 
     public final void updateWhitelistAppIdsLocked() {
@@ -3614,513 +4352,36 @@ public class DeviceIdleController extends SystemService implements AnyMotionDete
         if (activityManagerInternal != null) {
             activityManagerInternal.setDeviceIdleAllowlist(this.mPowerSaveWhitelistAllAppIdArray, this.mPowerSaveWhitelistExceptIdleAppIdArray);
         }
-        PowerManagerInternal powerManagerInternal = this.mLocalPowerManager;
-        if (powerManagerInternal != null) {
-            powerManagerInternal.setDeviceIdleWhitelist(this.mPowerSaveWhitelistAllAppIdArray);
+        if (this.mLocalPowerManager != null) {
+            if (DEBUG) {
+                Slog.d("DeviceIdleController", "Setting wakelock whitelist to " + Arrays.toString(this.mPowerSaveWhitelistAllAppIdArray));
+            }
+            this.mLocalPowerManager.setDeviceIdleWhitelist(this.mPowerSaveWhitelistAllAppIdArray);
         }
         passWhiteListsToForceAppStandbyTrackerLocked();
     }
 
-    public final void updateTempWhitelistAppIdsLocked(int i, boolean z, long j, int i2, int i3, String str, int i4) {
-        int size = this.mTempWhitelistAppIdEndTimes.size();
-        if (this.mTempWhitelistAppIdArray.length != size) {
-            this.mTempWhitelistAppIdArray = new int[size];
-        }
-        for (int i5 = 0; i5 < size; i5++) {
-            this.mTempWhitelistAppIdArray[i5] = this.mTempWhitelistAppIdEndTimes.keyAt(i5);
-        }
-        ActivityManagerInternal activityManagerInternal = this.mLocalActivityManager;
-        if (activityManagerInternal != null) {
-            activityManagerInternal.updateDeviceIdleTempAllowlist(this.mTempWhitelistAppIdArray, i, z, j, i2, i3, str, i4);
-        }
-        PowerManagerInternal powerManagerInternal = this.mLocalPowerManager;
-        if (powerManagerInternal != null) {
-            powerManagerInternal.setDeviceIdleTempWhitelist(this.mTempWhitelistAppIdArray);
-        }
-        passWhiteListsToForceAppStandbyTrackerLocked();
+    public final void writeConfigFileLocked() {
+        MyHandler myHandler = this.mHandler;
+        myHandler.removeMessages(1);
+        myHandler.sendEmptyMessageDelayed(1, 5000L);
     }
 
-    public final void reportPowerSaveWhitelistChangedLocked() {
-        getContext().sendBroadcastAsUser(this.mPowerSaveWhitelistChangedIntent, UserHandle.SYSTEM, null, this.mPowerSaveWhitelistChangedOptions);
-    }
-
-    public final void reportTempWhitelistChangedLocked(int i, boolean z) {
-        this.mHandler.obtainMessage(13, i, z ? 1 : 0).sendToTarget();
-        getContext().sendBroadcastAsUser(this.mPowerSaveTempWhitelistChangedIntent, UserHandle.SYSTEM, null, this.mPowerSaveTempWhilelistChangedOptions);
-    }
-
-    public final void passWhiteListsToForceAppStandbyTrackerLocked() {
-        this.mAppStateTracker.setPowerSaveExemptionListAppIds(this.mPowerSaveWhitelistExceptIdleAppIdArray, this.mPowerSaveWhitelistUserAppIdArray, this.mTempWhitelistAppIdArray);
-    }
-
-    public void readConfigFileLocked() {
-        this.mPowerSaveWhitelistUserApps.clear();
-        try {
-            FileInputStream openRead = this.mConfigFile.openRead();
-            try {
-                XmlPullParser newPullParser = Xml.newPullParser();
-                newPullParser.setInput(openRead, StandardCharsets.UTF_8.name());
-                readConfigFileLocked(newPullParser);
-            } catch (XmlPullParserException unused) {
-            } catch (Throwable th) {
-                try {
-                    openRead.close();
-                } catch (IOException unused2) {
-                }
-                throw th;
-            }
-            try {
-                openRead.close();
-            } catch (IOException unused3) {
-            }
-        } catch (FileNotFoundException unused4) {
-            Slog.e("DeviceIdleController", "There is no " + this.mConfigFile.getBaseFile());
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:32:0x0099 A[SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:44:0x0061 A[SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void readConfigFileLocked(org.xmlpull.v1.XmlPullParser r11) {
-        /*
-            Method dump skipped, instructions count: 328
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.DeviceIdleController.readConfigFileLocked(org.xmlpull.v1.XmlPullParser):void");
-    }
-
-    public void writeConfigFileLocked() {
-        this.mHandler.removeMessages(1);
-        this.mHandler.sendEmptyMessageDelayed(1, 5000L);
-    }
-
-    public void handleWriteConfigFile() {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try {
-            synchronized (this) {
-                XmlSerializer fastXmlSerializer = new FastXmlSerializer();
-                fastXmlSerializer.setOutput(byteArrayOutputStream, StandardCharsets.UTF_8.name());
-                writeConfigFileLocked(fastXmlSerializer);
-            }
-        } catch (IOException unused) {
-        }
-        synchronized (this.mConfigFile) {
-            FileOutputStream fileOutputStream = null;
-            try {
-                fileOutputStream = this.mConfigFile.startWrite();
-                byteArrayOutputStream.writeTo(fileOutputStream);
-                this.mConfigFile.finishWrite(fileOutputStream);
-            } catch (IOException e) {
-                Slog.w("DeviceIdleController", "Error writing config file", e);
-                this.mConfigFile.failWrite(fileOutputStream);
-            }
-        }
-    }
-
-    public void writeConfigFileLocked(XmlSerializer xmlSerializer) {
-        xmlSerializer.startDocument(null, Boolean.TRUE);
-        xmlSerializer.startTag(null, "config");
+    public final void writeConfigFileLocked(FastXmlSerializer fastXmlSerializer) {
+        fastXmlSerializer.startDocument(null, Boolean.TRUE);
+        fastXmlSerializer.startTag(null, "config");
         for (int i = 0; i < this.mPowerSaveWhitelistUserApps.size(); i++) {
             String str = (String) this.mPowerSaveWhitelistUserApps.keyAt(i);
-            xmlSerializer.startTag(null, "wl");
-            xmlSerializer.attribute(null, "n", str);
-            xmlSerializer.endTag(null, "wl");
+            fastXmlSerializer.startTag(null, "wl");
+            fastXmlSerializer.attribute(null, "n", str);
+            fastXmlSerializer.endTag(null, "wl");
         }
         for (int i2 = 0; i2 < this.mRemovedFromSystemWhitelistApps.size(); i2++) {
-            xmlSerializer.startTag(null, "un-wl");
-            xmlSerializer.attribute(null, "n", (String) this.mRemovedFromSystemWhitelistApps.keyAt(i2));
-            xmlSerializer.endTag(null, "un-wl");
+            fastXmlSerializer.startTag(null, "un-wl");
+            fastXmlSerializer.attribute(null, "n", (String) this.mRemovedFromSystemWhitelistApps.keyAt(i2));
+            fastXmlSerializer.endTag(null, "un-wl");
         }
-        xmlSerializer.endTag(null, "config");
-        xmlSerializer.endDocument();
-    }
-
-    public static void dumpHelp(PrintWriter printWriter) {
-        printWriter.println("Device idle controller (deviceidle) commands:");
-        printWriter.println("  help");
-        printWriter.println("    Print this help text.");
-        printWriter.println("  step [light|deep]");
-        printWriter.println("    Immediately step to next state, without waiting for alarm.");
-        printWriter.println("  force-idle [light|deep]");
-        printWriter.println("    Force directly into idle mode, regardless of other device state.");
-        printWriter.println("  force-inactive");
-        printWriter.println("    Force to be inactive, ready to freely step idle states.");
-        printWriter.println("  unforce");
-        printWriter.println("    Resume normal functioning after force-idle or force-inactive.");
-        printWriter.println("  get [light|deep|force|screen|charging|network]");
-        printWriter.println("    Retrieve the current given state.");
-        printWriter.println("  disable [light|deep|all]");
-        printWriter.println("    Completely disable device idle mode.");
-        printWriter.println("  enable [light|deep|all]");
-        printWriter.println("    Re-enable device idle mode after it had previously been disabled.");
-        printWriter.println("  enabled [light|deep|all]");
-        printWriter.println("    Print 1 if device idle mode is currently enabled, else 0.");
-        printWriter.println("  whitelist");
-        printWriter.println("    Print currently whitelisted apps.");
-        printWriter.println("  whitelist [package ...]");
-        printWriter.println("    Add (prefix with +) or remove (prefix with -) packages.");
-        printWriter.println("  sys-whitelist [package ...|reset]");
-        printWriter.println("    Prefix the package with '-' to remove it from the system whitelist or '+' to put it back in the system whitelist.");
-        printWriter.println("    Note that only packages that were earlier removed from the system whitelist can be added back.");
-        printWriter.println("    reset will reset the whitelist to the original state");
-        printWriter.println("    Prints the system whitelist if no arguments are specified");
-        printWriter.println("  except-idle-whitelist [package ...|reset]");
-        printWriter.println("    Prefix the package with '+' to add it to whitelist or '=' to check if it is already whitelisted");
-        printWriter.println("    [reset] will reset the whitelist to it's original state");
-        printWriter.println("    Note that unlike <whitelist> cmd, changes made using this won't be persisted across boots");
-        printWriter.println("  tempwhitelist");
-        printWriter.println("    Print packages that are temporarily whitelisted.");
-        printWriter.println("  tempwhitelist [-u USER] [-d DURATION] [-r] [package]");
-        printWriter.println("    Temporarily place package in whitelist for DURATION milliseconds.");
-        printWriter.println("    If no DURATION is specified, 10 seconds is used");
-        printWriter.println("    If [-r] option is used, then the package is removed from temp whitelist and any [-d] is ignored");
-        printWriter.println("  motion");
-        printWriter.println("    Simulate a motion event to bring the device out of deep doze");
-        printWriter.println("  pre-idle-factor [0|1|2]");
-        printWriter.println("    Set a new factor to idle time before step to idle(inactive_to and idle_after_inactive_to)");
-        printWriter.println("  reset-pre-idle-factor");
-        printWriter.println("    Reset factor to idle time to default");
-    }
-
-    /* loaded from: classes.dex */
-    public class Shell extends ShellCommand {
-        public int userId = 0;
-
-        public Shell() {
-        }
-
-        public int onCommand(String str) {
-            return DeviceIdleController.this.onShellCommand(this, str);
-        }
-
-        public void onHelp() {
-            DeviceIdleController.dumpHelp(getOutPrintWriter());
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:208:0x033e A[Catch: all -> 0x039c, TryCatch #28 {all -> 0x039c, blocks: (B:234:0x0319, B:236:0x0321, B:208:0x033e, B:210:0x0347, B:214:0x0360, B:217:0x036d, B:220:0x0382, B:228:0x034f, B:230:0x0353, B:203:0x032c, B:205:0x0330), top: B:233:0x0319, outer: #0 }] */
-    /* JADX WARN: Removed duplicated region for block: B:214:0x0360 A[Catch: all -> 0x039c, TryCatch #28 {all -> 0x039c, blocks: (B:234:0x0319, B:236:0x0321, B:208:0x033e, B:210:0x0347, B:214:0x0360, B:217:0x036d, B:220:0x0382, B:228:0x034f, B:230:0x0353, B:203:0x032c, B:205:0x0330), top: B:233:0x0319, outer: #0 }] */
-    /* JADX WARN: Removed duplicated region for block: B:220:0x0382 A[Catch: all -> 0x039c, TRY_LEAVE, TryCatch #28 {all -> 0x039c, blocks: (B:234:0x0319, B:236:0x0321, B:208:0x033e, B:210:0x0347, B:214:0x0360, B:217:0x036d, B:220:0x0382, B:228:0x034f, B:230:0x0353, B:203:0x032c, B:205:0x0330), top: B:233:0x0319, outer: #0 }] */
-    /* JADX WARN: Removed duplicated region for block: B:230:0x0353 A[Catch: all -> 0x039c, TryCatch #28 {all -> 0x039c, blocks: (B:234:0x0319, B:236:0x0321, B:208:0x033e, B:210:0x0347, B:214:0x0360, B:217:0x036d, B:220:0x0382, B:228:0x034f, B:230:0x0353, B:203:0x032c, B:205:0x0330), top: B:233:0x0319, outer: #0 }] */
-    /* JADX WARN: Removed duplicated region for block: B:231:0x035c  */
-    /* JADX WARN: Removed duplicated region for block: B:256:0x03e7 A[Catch: all -> 0x0428, TryCatch #5 {all -> 0x0428, blocks: (B:278:0x03c2, B:280:0x03ca, B:256:0x03e7, B:258:0x03f0, B:262:0x0409, B:264:0x040e, B:272:0x03f8, B:274:0x03fc, B:251:0x03d5, B:253:0x03d9), top: B:277:0x03c2, outer: #9 }] */
-    /* JADX WARN: Removed duplicated region for block: B:262:0x0409 A[Catch: all -> 0x0428, TryCatch #5 {all -> 0x0428, blocks: (B:278:0x03c2, B:280:0x03ca, B:256:0x03e7, B:258:0x03f0, B:262:0x0409, B:264:0x040e, B:272:0x03f8, B:274:0x03fc, B:251:0x03d5, B:253:0x03d9), top: B:277:0x03c2, outer: #9 }] */
-    /* JADX WARN: Removed duplicated region for block: B:264:0x040e A[Catch: all -> 0x0428, TRY_LEAVE, TryCatch #5 {all -> 0x0428, blocks: (B:278:0x03c2, B:280:0x03ca, B:256:0x03e7, B:258:0x03f0, B:262:0x0409, B:264:0x040e, B:272:0x03f8, B:274:0x03fc, B:251:0x03d5, B:253:0x03d9), top: B:277:0x03c2, outer: #9 }] */
-    /* JADX WARN: Removed duplicated region for block: B:274:0x03fc A[Catch: all -> 0x0428, TryCatch #5 {all -> 0x0428, blocks: (B:278:0x03c2, B:280:0x03ca, B:256:0x03e7, B:258:0x03f0, B:262:0x0409, B:264:0x040e, B:272:0x03f8, B:274:0x03fc, B:251:0x03d5, B:253:0x03d9), top: B:277:0x03c2, outer: #9 }] */
-    /* JADX WARN: Removed duplicated region for block: B:275:0x0405  */
-    /* JADX WARN: Removed duplicated region for block: B:592:0x0921 A[Catch: all -> 0x0946, NumberFormatException -> 0x0949, TRY_LEAVE, TryCatch #15 {all -> 0x0946, blocks: (B:586:0x08e7, B:588:0x08ed, B:590:0x08f7, B:592:0x0921, B:599:0x0910, B:601:0x0918, B:603:0x0949), top: B:585:0x08e7, outer: #6, inners: #13 }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int onShellCommand(com.android.server.DeviceIdleController.Shell r18, java.lang.String r19) {
-        /*
-            Method dump skipped, instructions count: 2508
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.DeviceIdleController.onShellCommand(com.android.server.DeviceIdleController$Shell, java.lang.String):int");
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        if (DumpUtils.checkDumpPermission(getContext(), "DeviceIdleController", printWriter)) {
-            if (strArr != null) {
-                int i = 0;
-                int i2 = 0;
-                while (i < strArr.length) {
-                    String str = strArr[i];
-                    if ("-h".equals(str)) {
-                        dumpHelp(printWriter);
-                        return;
-                    }
-                    if ("-u".equals(str)) {
-                        i++;
-                        if (i < strArr.length) {
-                            i2 = Integer.parseInt(strArr[i]);
-                        }
-                    } else if (!"-a".equals(str)) {
-                        if (str.length() > 0 && str.charAt(0) == '-') {
-                            printWriter.println("Unknown option: " + str);
-                            return;
-                        }
-                        Shell shell = new Shell();
-                        shell.userId = i2;
-                        String[] strArr2 = new String[strArr.length - i];
-                        System.arraycopy(strArr, i, strArr2, 0, strArr.length - i);
-                        shell.exec(this.mBinderService, (FileDescriptor) null, fileDescriptor, (FileDescriptor) null, strArr2, (ShellCallback) null, new ResultReceiver(null));
-                        return;
-                    }
-                    i++;
-                }
-            }
-            synchronized (this) {
-                this.mConstants.dump(printWriter);
-                if (this.mEventCmds[0] != 0) {
-                    printWriter.println("  Idling history:");
-                    long elapsedRealtime = SystemClock.elapsedRealtime();
-                    for (int i3 = 99; i3 >= 0; i3--) {
-                        int i4 = this.mEventCmds[i3];
-                        if (i4 != 0) {
-                            String str2 = i4 != 1 ? i4 != 2 ? i4 != 3 ? i4 != 4 ? i4 != 5 ? "         ??" : " deep-maint" : "  deep-idle" : "light-maint" : " light-idle" : "     normal";
-                            printWriter.print("    ");
-                            printWriter.print(str2);
-                            printWriter.print(": ");
-                            TimeUtils.formatDuration(this.mEventTimes[i3], elapsedRealtime, printWriter);
-                            if (this.mEventReasons[i3] != null) {
-                                printWriter.print(" (");
-                                printWriter.print(this.mEventReasons[i3]);
-                                printWriter.print(")");
-                            }
-                            printWriter.println();
-                        }
-                    }
-                }
-                int size = this.mPowerSaveWhitelistAppsExceptIdle.size();
-                if (size > 0) {
-                    printWriter.println("  Whitelist (except idle) system apps:");
-                    for (int i5 = 0; i5 < size; i5++) {
-                        printWriter.print("    ");
-                        printWriter.println((String) this.mPowerSaveWhitelistAppsExceptIdle.keyAt(i5));
-                    }
-                }
-                int size2 = this.mPowerSaveWhitelistApps.size();
-                if (size2 > 0) {
-                    printWriter.println("  Whitelist system apps:");
-                    for (int i6 = 0; i6 < size2; i6++) {
-                        printWriter.print("    ");
-                        printWriter.println((String) this.mPowerSaveWhitelistApps.keyAt(i6));
-                    }
-                }
-                int size3 = this.mRemovedFromSystemWhitelistApps.size();
-                if (size3 > 0) {
-                    printWriter.println("  Removed from whitelist system apps:");
-                    for (int i7 = 0; i7 < size3; i7++) {
-                        printWriter.print("    ");
-                        printWriter.println((String) this.mRemovedFromSystemWhitelistApps.keyAt(i7));
-                    }
-                }
-                int size4 = this.mPowerSaveWhitelistUserApps.size();
-                if (size4 > 0) {
-                    printWriter.println("  Whitelist user apps:");
-                    for (int i8 = 0; i8 < size4; i8++) {
-                        printWriter.print("    ");
-                        printWriter.println((String) this.mPowerSaveWhitelistUserApps.keyAt(i8));
-                    }
-                }
-                int size5 = this.mPowerSaveWhitelistExceptIdleAppIds.size();
-                if (size5 > 0) {
-                    printWriter.println("  Whitelist (except idle) all app ids:");
-                    for (int i9 = 0; i9 < size5; i9++) {
-                        printWriter.print("    ");
-                        printWriter.print(this.mPowerSaveWhitelistExceptIdleAppIds.keyAt(i9));
-                        printWriter.println();
-                    }
-                }
-                int size6 = this.mPowerSaveWhitelistUserAppIds.size();
-                if (size6 > 0) {
-                    printWriter.println("  Whitelist user app ids:");
-                    for (int i10 = 0; i10 < size6; i10++) {
-                        printWriter.print("    ");
-                        printWriter.print(this.mPowerSaveWhitelistUserAppIds.keyAt(i10));
-                        printWriter.println();
-                    }
-                }
-                int size7 = this.mPowerSaveWhitelistAllAppIds.size();
-                if (size7 > 0) {
-                    printWriter.println("  Whitelist all app ids:");
-                    for (int i11 = 0; i11 < size7; i11++) {
-                        printWriter.print("    ");
-                        printWriter.print(this.mPowerSaveWhitelistAllAppIds.keyAt(i11));
-                        printWriter.println();
-                    }
-                }
-                int size8 = this.mUserWhitelistHistoryBuffer.size();
-                if (size8 > 0) {
-                    printWriter.println("  Whitelist History for User App:");
-                    printWriter.println("  - history count : " + size8);
-                    UserWhitelistHistoryInfo[] userWhitelistHistoryInfoArr = (UserWhitelistHistoryInfo[]) this.mUserWhitelistHistoryBuffer.toArray();
-                    for (int i12 = 0; i12 < size8; i12++) {
-                        printWriter.print("    ");
-                        printWriter.print(userWhitelistHistoryInfoArr[i12].toString());
-                        printWriter.println();
-                    }
-                }
-                dumpTempWhitelistSchedule(printWriter, true);
-                int[] iArr = this.mTempWhitelistAppIdArray;
-                int length = iArr != null ? iArr.length : 0;
-                if (length > 0) {
-                    printWriter.println("  Temp whitelist app ids:");
-                    for (int i13 = 0; i13 < length; i13++) {
-                        printWriter.print("    ");
-                        printWriter.print(this.mTempWhitelistAppIdArray[i13]);
-                        printWriter.println();
-                    }
-                }
-                printWriter.print("  mLightEnabled=");
-                printWriter.print(this.mLightEnabled);
-                printWriter.print("  mDeepEnabled=");
-                printWriter.println(this.mDeepEnabled);
-                printWriter.print("  mForceIdle=");
-                printWriter.println(this.mForceIdle);
-                printWriter.print("  mUseMotionSensor=");
-                printWriter.print(this.mUseMotionSensor);
-                if (this.mUseMotionSensor) {
-                    printWriter.print(" mMotionSensor=");
-                    printWriter.println(this.mMotionSensor);
-                } else {
-                    printWriter.println();
-                }
-                printWriter.print("  mScreenOn=");
-                printWriter.println(this.mScreenOn);
-                printWriter.print("  mScreenLocked=");
-                printWriter.println(this.mScreenLocked);
-                printWriter.print("  mNetworkConnected=");
-                printWriter.println(this.mNetworkConnected);
-                printWriter.print("  mCharging=");
-                printWriter.println(this.mCharging);
-                printWriter.print("  activeEmergencyCall=");
-                printWriter.println(this.mEmergencyCallListener.isEmergencyCallActive());
-                if (this.mConstraints.size() != 0) {
-                    printWriter.println("  mConstraints={");
-                    for (int i14 = 0; i14 < this.mConstraints.size(); i14++) {
-                        DeviceIdleConstraintTracker deviceIdleConstraintTracker = (DeviceIdleConstraintTracker) this.mConstraints.valueAt(i14);
-                        printWriter.print("    \"");
-                        printWriter.print(deviceIdleConstraintTracker.name);
-                        printWriter.print("\"=");
-                        if (deviceIdleConstraintTracker.minState == this.mState) {
-                            printWriter.println(deviceIdleConstraintTracker.active);
-                        } else {
-                            printWriter.print("ignored <mMinState=");
-                            printWriter.print(stateToString(deviceIdleConstraintTracker.minState));
-                            printWriter.println(">");
-                        }
-                    }
-                    printWriter.println("  }");
-                }
-                if (this.mUseMotionSensor || this.mStationaryListeners.size() > 0) {
-                    printWriter.print("  mMotionActive=");
-                    printWriter.println(this.mMotionListener.active);
-                    printWriter.print("  mNotMoving=");
-                    printWriter.println(this.mNotMoving);
-                    printWriter.print("  mMotionListener.activatedTimeElapsed=");
-                    printWriter.println(this.mMotionListener.activatedTimeElapsed);
-                    printWriter.print("  mLastMotionEventElapsed=");
-                    printWriter.println(this.mLastMotionEventElapsed);
-                    printWriter.print("  ");
-                    printWriter.print(this.mStationaryListeners.size());
-                    printWriter.println(" stationary listeners registered");
-                }
-                if (this.mIsLocationPrefetchEnabled) {
-                    printWriter.print("  mLocating=");
-                    printWriter.print(this.mLocating);
-                    printWriter.print(" mHasGps=");
-                    printWriter.print(this.mHasGps);
-                    printWriter.print(" mHasFused=");
-                    printWriter.print(this.mHasFusedLocation);
-                    printWriter.print(" mLocated=");
-                    printWriter.println(this.mLocated);
-                    if (this.mLastGenericLocation != null) {
-                        printWriter.print("  mLastGenericLocation=");
-                        printWriter.println(this.mLastGenericLocation);
-                    }
-                    if (this.mLastGpsLocation != null) {
-                        printWriter.print("  mLastGpsLocation=");
-                        printWriter.println(this.mLastGpsLocation);
-                    }
-                } else {
-                    printWriter.println("  Location prefetching disabled");
-                }
-                printWriter.print("  mState=");
-                printWriter.print(stateToString(this.mState));
-                printWriter.print(" mLightState=");
-                printWriter.println(lightStateToString(this.mLightState));
-                printWriter.print("  mInactiveTimeout=");
-                TimeUtils.formatDuration(this.mInactiveTimeout, printWriter);
-                printWriter.println();
-                if (this.mActiveIdleOpCount != 0) {
-                    printWriter.print("  mActiveIdleOpCount=");
-                    printWriter.println(this.mActiveIdleOpCount);
-                }
-                if (this.mNextAlarmTime != 0) {
-                    printWriter.print("  mNextAlarmTime=");
-                    TimeUtils.formatDuration(this.mNextAlarmTime, SystemClock.elapsedRealtime(), printWriter);
-                    printWriter.println();
-                }
-                if (this.mNextIdlePendingDelay != 0) {
-                    printWriter.print("  mNextIdlePendingDelay=");
-                    TimeUtils.formatDuration(this.mNextIdlePendingDelay, printWriter);
-                    printWriter.println();
-                }
-                if (this.mNextIdleDelay != 0) {
-                    printWriter.print("  mNextIdleDelay=");
-                    TimeUtils.formatDuration(this.mNextIdleDelay, printWriter);
-                    printWriter.println();
-                }
-                if (this.mNextLightIdleDelay != 0) {
-                    printWriter.print("  mNextLightIdleDelay=");
-                    TimeUtils.formatDuration(this.mNextLightIdleDelay, printWriter);
-                    if (this.mConstants.USE_WINDOW_ALARMS) {
-                        printWriter.print(" (flex=");
-                        TimeUtils.formatDuration(this.mNextLightIdleDelayFlex, printWriter);
-                        printWriter.println(")");
-                    } else {
-                        printWriter.println();
-                    }
-                }
-                if (this.mNextLightAlarmTime != 0) {
-                    printWriter.print("  mNextLightAlarmTime=");
-                    TimeUtils.formatDuration(this.mNextLightAlarmTime, SystemClock.elapsedRealtime(), printWriter);
-                    printWriter.println();
-                }
-                if (this.mCurLightIdleBudget != 0) {
-                    printWriter.print("  mCurLightIdleBudget=");
-                    TimeUtils.formatDuration(this.mCurLightIdleBudget, printWriter);
-                    printWriter.println();
-                }
-                if (this.mMaintenanceStartTime != 0) {
-                    printWriter.print("  mMaintenanceStartTime=");
-                    TimeUtils.formatDuration(this.mMaintenanceStartTime, SystemClock.elapsedRealtime(), printWriter);
-                    printWriter.println();
-                }
-                if (this.mJobsActive) {
-                    printWriter.print("  mJobsActive=");
-                    printWriter.println(this.mJobsActive);
-                }
-                if (this.mAlarmsActive) {
-                    printWriter.print("  mAlarmsActive=");
-                    printWriter.println(this.mAlarmsActive);
-                }
-                if (Math.abs(this.mPreIdleFactor - 1.0f) > MIN_PRE_IDLE_FACTOR_CHANGE) {
-                    printWriter.print("  mPreIdleFactor=");
-                    printWriter.println(this.mPreIdleFactor);
-                }
-            }
-        }
-    }
-
-    public void dumpTempWhitelistSchedule(PrintWriter printWriter, boolean z) {
-        String str;
-        int size = this.mTempWhitelistAppIdEndTimes.size();
-        if (size > 0) {
-            if (z) {
-                printWriter.println("  Temp whitelist schedule:");
-                str = "    ";
-            } else {
-                str = "";
-            }
-            long elapsedRealtime = SystemClock.elapsedRealtime();
-            for (int i = 0; i < size; i++) {
-                printWriter.print(str);
-                printWriter.print("UID=");
-                printWriter.print(this.mTempWhitelistAppIdEndTimes.keyAt(i));
-                printWriter.print(": ");
-                Pair pair = (Pair) this.mTempWhitelistAppIdEndTimes.valueAt(i);
-                TimeUtils.formatDuration(((MutableLong) pair.first).value, elapsedRealtime, printWriter);
-                printWriter.print(" - ");
-                printWriter.println((String) pair.second);
-            }
-        }
+        fastXmlSerializer.endTag(null, "config");
+        fastXmlSerializer.endDocument();
     }
 }

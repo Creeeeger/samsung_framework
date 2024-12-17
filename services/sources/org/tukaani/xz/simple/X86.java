@@ -1,87 +1,77 @@
 package org.tukaani.xz.simple;
 
-import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class X86 implements SimpleFilter {
     public static final boolean[] MASK_TO_ALLOWED_STATUS = {true, true, true, false, true, false, false, false};
     public static final int[] MASK_TO_BIT_NUMBER = {0, 1, 2, 2, 3, 3, 3, 3};
-    public final boolean isEncoder;
     public int pos;
-    public int prevMask = 0;
-
-    public static boolean test86MSByte(byte b) {
-        int i = b & 255;
-        return i == 0 || i == 255;
-    }
-
-    public X86(boolean z, int i) {
-        this.isEncoder = z;
-        this.pos = i + 5;
-    }
+    public int prevMask;
 
     @Override // org.tukaani.xz.simple.SimpleFilter
-    public int code(byte[] bArr, int i, int i2) {
+    public final int code(int i, int i2, byte[] bArr) {
         int i3;
-        int i4 = i - 1;
-        int i5 = (i2 + i) - 5;
-        int i6 = i;
+        int i4;
+        int i5 = i - 1;
+        int i6 = (i2 + i) - 5;
+        int i7 = i;
         while (true) {
-            if (i6 > i5) {
+            if (i7 > i6) {
                 break;
             }
-            if ((bArr[i6] & 254) == 232) {
-                int i7 = i6 - i4;
-                if ((i7 & (-4)) != 0) {
+            if ((bArr[i7] & 254) == 232) {
+                int i8 = i7 - i5;
+                int i9 = i8 & (-4);
+                int[] iArr = MASK_TO_BIT_NUMBER;
+                if (i9 != 0) {
                     this.prevMask = 0;
                 } else {
-                    int i8 = (this.prevMask << (i7 - 1)) & 7;
-                    this.prevMask = i8;
-                    if (i8 != 0 && (!MASK_TO_ALLOWED_STATUS[i8] || test86MSByte(bArr[(i6 + 4) - MASK_TO_BIT_NUMBER[i8]]))) {
-                        this.prevMask = (this.prevMask << 1) | 1;
-                        i4 = i6;
+                    int i10 = (this.prevMask << (i8 - 1)) & 7;
+                    this.prevMask = i10;
+                    if (i10 != 0 && (!MASK_TO_ALLOWED_STATUS[i10] || (i3 = bArr[(i7 + 4) - iArr[i10]] & 255) == 0 || i3 == 255)) {
+                        this.prevMask = (i10 << 1) | 1;
+                        i5 = i7;
                     }
                 }
-                int i9 = i6 + 4;
-                if (test86MSByte(bArr[i9])) {
-                    int i10 = i6 + 1;
-                    int i11 = i6 + 2;
-                    int i12 = i6 + 3;
-                    int i13 = (bArr[i10] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) | ((bArr[i11] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) << 8) | ((bArr[i12] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) << 16) | ((bArr[i9] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) << 24);
+                int i11 = i7 + 4;
+                byte b = bArr[i11];
+                int i12 = b & 255;
+                if (i12 == 0 || i12 == 255) {
+                    int i13 = i7 + 1;
+                    int i14 = i7 + 2;
+                    int i15 = i7 + 3;
+                    int i16 = ((b & 255) << 24) | (bArr[i13] & 255) | ((bArr[i14] & 255) << 8) | ((bArr[i15] & 255) << 16);
                     while (true) {
-                        if (this.isEncoder) {
-                            i3 = i13 + ((this.pos + i6) - i);
+                        i4 = i16 - ((this.pos + i7) - i);
+                        int i17 = this.prevMask;
+                        if (i17 != 0) {
+                            int i18 = iArr[i17] * 8;
+                            int i19 = ((byte) (i4 >>> (24 - i18))) & 255;
+                            if (i19 != 0 && i19 != 255) {
+                                break;
+                            }
+                            i16 = i4 ^ ((1 << (32 - i18)) - 1);
                         } else {
-                            i3 = i13 - ((this.pos + i6) - i);
-                        }
-                        int i14 = this.prevMask;
-                        if (i14 == 0) {
                             break;
                         }
-                        int i15 = MASK_TO_BIT_NUMBER[i14] * 8;
-                        if (!test86MSByte((byte) (i3 >>> (24 - i15)))) {
-                            break;
-                        }
-                        i13 = i3 ^ ((1 << (32 - i15)) - 1);
                     }
-                    bArr[i10] = (byte) i3;
-                    bArr[i11] = (byte) (i3 >>> 8);
-                    bArr[i12] = (byte) (i3 >>> 16);
-                    bArr[i9] = (byte) (~(((i3 >>> 24) & 1) - 1));
-                    int i16 = i6;
-                    i6 = i9;
-                    i4 = i16;
+                    bArr[i13] = (byte) i4;
+                    bArr[i14] = (byte) (i4 >>> 8);
+                    bArr[i15] = (byte) (i4 >>> 16);
+                    bArr[i11] = (byte) (~(((i4 >>> 24) & 1) - 1));
+                    i5 = i7;
+                    i7 = i11;
                 } else {
                     this.prevMask = (this.prevMask << 1) | 1;
-                    i4 = i6;
+                    i5 = i7;
                 }
             }
-            i6++;
+            i7++;
         }
-        int i17 = i6 - i4;
-        this.prevMask = (i17 & (-4)) == 0 ? this.prevMask << (i17 - 1) : 0;
-        int i18 = i6 - i;
-        this.pos += i18;
-        return i18;
+        int i20 = i7 - i5;
+        this.prevMask = (i20 & (-4)) == 0 ? this.prevMask << (i20 - 1) : 0;
+        int i21 = i7 - i;
+        this.pos += i21;
+        return i21;
     }
 }

@@ -4,26 +4,11 @@ import java.math.BigInteger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.xmlpull.v1.XmlPullParser;
 
-/* loaded from: classes2.dex */
-public class RefreshRateRange {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RefreshRateRange {
     public BigInteger maximum;
     public BigInteger minimum;
-
-    public final BigInteger getMinimum() {
-        return this.minimum;
-    }
-
-    public final void setMinimum(BigInteger bigInteger) {
-        this.minimum = bigInteger;
-    }
-
-    public final BigInteger getMaximum() {
-        return this.maximum;
-    }
-
-    public final void setMaximum(BigInteger bigInteger) {
-        this.maximum = bigInteger;
-    }
 
     public static RefreshRateRange read(XmlPullParser xmlPullParser) {
         int next;
@@ -37,9 +22,9 @@ public class RefreshRateRange {
             if (xmlPullParser.getEventType() == 2) {
                 String name = xmlPullParser.getName();
                 if (name.equals("minimum")) {
-                    refreshRateRange.setMinimum(new BigInteger(XmlParser.readText(xmlPullParser)));
+                    refreshRateRange.minimum = new BigInteger(XmlParser.readText(xmlPullParser));
                 } else if (name.equals("maximum")) {
-                    refreshRateRange.setMaximum(new BigInteger(XmlParser.readText(xmlPullParser)));
+                    refreshRateRange.maximum = new BigInteger(XmlParser.readText(xmlPullParser));
                 } else {
                     XmlParser.skip(xmlPullParser);
                 }

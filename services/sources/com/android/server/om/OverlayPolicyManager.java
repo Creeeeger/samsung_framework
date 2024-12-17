@@ -5,24 +5,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class OverlayPolicyManager {
-    public static List policies = new ArrayList();
+    public static final List policies = new ArrayList();
     public static final Object mLock = new Object();
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface OverlayPackagePolicy {
-        boolean retainOverlay(String str, OverlayPaths overlayPaths, String str2, int i);
-    }
-
-    public static void registerPolicy(OverlayPackagePolicy overlayPackagePolicy) {
-        synchronized (mLock) {
-            policies.add(overlayPackagePolicy);
-        }
-    }
-
-    public static OverlayPaths filterByPolicy(OverlayPaths overlayPaths, String str, int i) {
-        return filterByPolicy(overlayPaths, overlayPaths, str, i);
+        boolean retainOverlay(String str, OverlayPaths overlayPaths, String str2);
     }
 
     public static OverlayPaths filterByPolicy(OverlayPaths overlayPaths, OverlayPaths overlayPaths2, String str, int i) {
@@ -37,19 +28,19 @@ public abstract class OverlayPolicyManager {
                 break;
             }
             String str2 = (String) it.next();
-            Iterator it2 = policies.iterator();
+            Iterator it2 = ((ArrayList) policies).iterator();
             while (it2.hasNext()) {
-                z &= ((OverlayPackagePolicy) it2.next()).retainOverlay(str2, overlayPaths2, str, i);
+                z &= ((OverlayPackagePolicy) it2.next()).retainOverlay(str2, overlayPaths2, str);
             }
             if (z) {
                 builder.addNonApkPath(str2);
             }
         }
         for (String str3 : overlayPaths.getResourceDirs()) {
-            Iterator it3 = policies.iterator();
+            Iterator it3 = ((ArrayList) policies).iterator();
             boolean z2 = true;
             while (it3.hasNext()) {
-                z2 &= ((OverlayPackagePolicy) it3.next()).retainOverlay(str3, overlayPaths2, str, i);
+                z2 &= ((OverlayPackagePolicy) it3.next()).retainOverlay(str3, overlayPaths2, str);
             }
             if (z2) {
                 builder.addApkPath(str3);

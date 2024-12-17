@@ -1,57 +1,47 @@
 package com.android.server.wm;
 
-import android.R;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
-import android.app.ICompatCameraControlCallback;
+import android.app.AppGlobals;
+import android.app.IApplicationThread;
 import android.app.IScreenCaptureObserver;
-import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
-import android.app.ResultInfo;
-import android.app.TaskInfo;
 import android.app.WindowConfiguration;
-import android.app.admin.DevicePolicyManager;
-import android.app.assist.ActivityId;
 import android.app.servertransaction.ActivityConfigurationChangeItem;
-import android.app.servertransaction.ActivityLifecycleItem;
-import android.app.servertransaction.ActivityRelaunchItem;
-import android.app.servertransaction.ActivityResultItem;
-import android.app.servertransaction.ClientTransaction;
-import android.app.servertransaction.ClientTransactionItem;
 import android.app.servertransaction.DestroyActivityItem;
 import android.app.servertransaction.MoveToDisplayItem;
-import android.app.servertransaction.NewIntentItem;
 import android.app.servertransaction.PauseActivityItem;
-import android.app.servertransaction.ResumeActivityItem;
 import android.app.servertransaction.StartActivityItem;
 import android.app.servertransaction.StopActivityItem;
 import android.app.servertransaction.TopResumedActivityChangeItem;
 import android.app.servertransaction.TransferSplashScreenViewStateItem;
 import android.content.ComponentName;
-import android.content.Context;
+import android.content.ContentProvider;
 import android.content.Intent;
 import android.content.LocusId;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ConstrainDisplayApisConfig;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.graphics.Bitmap;
+import android.graphics.Insets;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.hardware.HardwareBuffer;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.Environment;
 import android.os.IBinder;
-import android.os.IInstalld;
+import android.os.IRemoteCallback;
 import android.os.InputConstants;
-import android.os.LocaleList;
+import android.os.Message;
 import android.os.PersistableBundle;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
@@ -63,11 +53,12 @@ import android.util.ArraySet;
 import android.util.EventLog;
 import android.util.Log;
 import android.util.MergedConfiguration;
-import android.util.Pair;
 import android.util.Slog;
 import android.util.TimeUtils;
 import android.util.proto.ProtoOutputStream;
+import android.view.AppTransitionAnimationSpec;
 import android.view.DisplayInfo;
+import android.view.IAppTransitionAnimationSpecsFuture;
 import android.view.InputApplicationHandle;
 import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationDefinition;
@@ -75,50 +66,71 @@ import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.WindowInsets;
 import android.view.WindowManager;
-import android.view.animation.Animation;
+import android.window.ActivityWindowInfo;
+import android.window.DisplayWindowPolicyController;
 import android.window.ITaskFragmentOrganizer;
+import android.window.ITaskOrganizer;
 import android.window.RemoteTransition;
 import android.window.SizeConfigurationBuckets;
 import android.window.SplashScreenView;
 import android.window.TaskSnapshot;
 import android.window.TransitionInfo;
 import android.window.WindowContainerToken;
+import com.android.internal.R;
 import com.android.internal.app.ResolverActivity;
-import com.android.internal.content.ReferrerIntent;
-import com.android.internal.os.TimeoutRecord;
 import com.android.internal.os.TransferPipe;
 import com.android.internal.policy.AttributeCache;
+import com.android.internal.policy.TransitionAnimation;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import com.android.internal.util.ToBooleanFunction;
-import com.android.internal.util.jobs.XmlUtils;
-import com.android.modules.utils.TypedXmlPullParser;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
+import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
 import com.android.modules.utils.TypedXmlSerializer;
-import com.android.server.LocalServices;
-import com.android.server.UiModeManagerInternal;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
+import com.android.server.VaultKeeperService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.am.AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0;
 import com.android.server.am.AppTimeTracker;
-import com.android.server.am.FreecessController;
+import com.android.server.am.BroadcastStats$$ExternalSyntheticOutline0;
 import com.android.server.am.PendingIntentRecord;
-import com.android.server.appprelauncher.AppPrelaunchManagerService;
-import com.android.server.contentcapture.ContentCaptureManagerInternal;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.am.ProcessList$$ExternalSyntheticOutline0;
+import com.android.server.chimera.AggressivePolicyHandler$$ExternalSyntheticOutline0;
 import com.android.server.display.color.ColorDisplayService;
+import com.android.server.media.MediaRouter2ServiceImpl$UserRecord$$ExternalSyntheticOutline0;
+import com.android.server.uri.GrantUri;
 import com.android.server.uri.NeededUriGrants;
+import com.android.server.uri.UriGrantsManagerService;
 import com.android.server.uri.UriPermissionOwner;
+import com.android.server.wm.ActivityCallerState;
 import com.android.server.wm.ActivityMetricsLogger;
-import com.android.server.wm.ActivityTaskManagerInternal;
+import com.android.server.wm.ActivityRecord;
+import com.android.server.wm.ActivityTaskSupervisor;
+import com.android.server.wm.AppCompatLetterboxPolicy;
+import com.android.server.wm.AppCompatOrientationOverrides;
 import com.android.server.wm.BLASTSyncEngine;
-import com.android.server.wm.DisplayPolicy;
+import com.android.server.wm.DisplayContent;
 import com.android.server.wm.RemoteAnimationController;
-import com.android.server.wm.RootWindowContainer;
+import com.android.server.wm.SizeCompatPolicyManager;
 import com.android.server.wm.StartingSurfaceController;
+import com.android.server.wm.Task;
+import com.android.server.wm.TaskFragment;
+import com.android.server.wm.TaskPersister;
 import com.android.server.wm.TransitionController;
-import com.android.server.wm.WindowManagerService;
 import com.android.server.wm.WindowState;
 import com.android.server.wm.utils.InsetUtils;
-import com.samsung.android.core.CompatSandbox;
+import com.android.server.wm.utils.OptPropFactory;
+import com.android.window.flags.Flags;
+import com.samsung.android.core.SizeCompatInfo;
 import com.samsung.android.feature.SemGateConfig;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
 import com.samsung.android.multiwindow.MultiWindowUtils;
 import com.samsung.android.rune.CoreRune;
 import dalvik.annotation.optimization.NeverCompile;
@@ -131,81 +143,74 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
-public final class ActivityRecord extends WindowToken implements WindowManagerService.AppFreezeListener {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ActivityRecord extends WindowToken {
     public static ConstrainDisplayApisConfig sConstrainDisplayApisConfig;
     public boolean allDrawn;
     public WindowProcessController app;
     public AppTimeTracker appTimeTracker;
     public final Binder assistToken;
     public final boolean componentSpecified;
-    public int configChangeFlags;
-    public long createTime;
-    public boolean deferRelaunchUntilPaused;
+    public final long createTime;
     public boolean delayedResume;
     public boolean finishing;
     public boolean firstWindowDrawn;
-    public boolean forceNewConfig;
-    public boolean frozenBeforeDestroy;
     public boolean hasBeenLaunched;
-    public int icon;
     public boolean idle;
     public boolean immersive;
     public volatile boolean inHistory;
     public final ActivityInfo info;
+    public final IBinder initialCallerInfoAccessToken;
     public final Intent intent;
     public boolean keysPaused;
-    public int labelRes;
     public long lastLaunchTime;
     public long lastVisibleTime;
     public int launchCount;
     public boolean launchFailed;
-    public int launchMode;
+    public final int launchMode;
     public long launchTickTime;
     public final String launchedFromFeatureId;
     public final String launchedFromPackage;
     public final int launchedFromPid;
     public final int launchedFromUid;
-    public int lockTaskLaunchMode;
+    public final int lockTaskLaunchMode;
     public final ComponentName mActivityComponent;
     public final ActivityRecordInputSink mActivityRecordInputSink;
-    public final AddStartingWindow mAddStartingWindow;
-    public boolean mAliasChild;
+    public boolean mActivityRecordInputSinkEnabled;
+    public final boolean mAliasChild;
     public boolean mAllowCrossUidActivitySwitchFromBelow;
+    public final boolean mAllowUntrustedEmbeddingStateSharing;
     public int mAllowedTouchUid;
     public AnimatingActivityRegistry mAnimatingActivityRegistry;
     public final boolean mAppActivityEmbeddingSplitsEnabled;
+    public final AppCompatController mAppCompatController;
     public boolean mAppStopped;
     public final ActivityTaskManagerService mAtmService;
     public boolean mAutoEnteringPip;
-    public boolean mCameraCompatControlClickedByUser;
-    public final boolean mCameraCompatControlEnabled;
-    public int mCameraCompatControlState;
+    public final ActivityCallerState mCallerState;
     public RemoteCallbackList mCaptureCallbacks;
     public boolean mClientVisibilityDeferred;
     public final ColorDisplayService.ColorTransformController mColorTransformController;
-    public ICompatCameraControlCallback mCompatCameraControlCallback;
-    public CompatDisplayInsets mCompatDisplayInsets;
-    public BoundsCompatRecord mCompatRecord;
+    public CompatSandboxPolicy mCompatSandboxPolicy;
     public int mConfigurationSeq;
     public boolean mCurrentLaunchCanTurnScreenOn;
     public CustomAppTransition mCustomCloseTransition;
     public CustomAppTransition mCustomOpenTransition;
     public boolean mDeferHidingClient;
-    public final Runnable mDestroyTimeoutRunnable;
-    public boolean mDisableSnapshot;
-    public boolean mDismissKeyguard;
+    public final AnonymousClass1 mDestroyTimeoutRunnable;
+    public final boolean mDisableSnapshot;
+    public boolean mDismissKeyguardIfInsecure;
     public boolean mEnableRecentsScreenshot;
     public boolean mEnteringAnimation;
-    public Drawable mEnterpriseThumbnailDrawable;
     public boolean mForceSendResultForMediaProjection;
     public boolean mFreezingScreen;
     public boolean mHandleExitSplashScreen;
@@ -215,28 +220,25 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
     public final boolean mHasSceneTransition;
     public boolean mHaveState;
     public boolean mHiddenWhileEnteringPinnedMode;
-    public final Runnable mHiddenWhileEnteringPinnedTimeoutRunnable;
+    public final AnonymousClass1 mHiddenWhileEnteringPinnedTimeoutRunnable;
     public Bundle mIcicle;
     public boolean mIgnoreDevSettingForNonResizable;
-    public boolean mIgnoreDisplayCompatMode;
     public boolean mImeInsetsFrozenUntilStartInput;
-    public boolean mInSizeCompatModeForBounds;
     public boolean mInheritShownWhenLocked;
     public InputApplicationHandle mInputApplicationHandle;
     public long mInputDispatchingTimeoutMillis;
     public boolean mIsActivityReparentToEmbeddedTask;
     public boolean mIsAliasActivity;
-    public boolean mIsAllowedSeamlessRotation;
+    public final boolean mIsAllowedSeamlessRotation;
     public boolean mIsAppLockExceptionActivity;
-    public boolean mIsAspectRatioApplied;
-    public boolean mIsDexCompatEnabled;
     public boolean mIsEligibleForFixedOrientationLetterbox;
+    public boolean mIsEnteringPipFromSplit;
     public boolean mIsExiting;
+    public final boolean mIsFlexPanel;
     public boolean mIsInputDroppedForAnimation;
-    public boolean mIsLateTransientLaunch;
-    public boolean mIsPrelMode;
-    public boolean mKeepScreenWhenFolding;
-    public boolean mKeepSnapshotCache;
+    public final boolean mIsUnhandledDropLaunch;
+    public final boolean mIsUserAlwaysVisible;
+    public final boolean mKeepSnapshotCache;
     public boolean mLastAllDrawn;
     public boolean mLastAllReadyAtSync;
     public AppSaturationInfo mLastAppSaturationInfo;
@@ -245,10 +247,12 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
     public boolean mLastContainsTurnScreenOnWindow;
     public boolean mLastDeferHidingClient;
     public int mLastDropInputMode;
+    public IBinder mLastEmbeddedParentTfTokenBeforePip;
     public boolean mLastImeShown;
     public Intent mLastNewIntent;
     public Task mLastParentBeforePip;
-    public MergedConfiguration mLastReportedConfiguration;
+    public final ActivityWindowInfo mLastReportedActivityWindowInfo;
+    public final MergedConfiguration mLastReportedConfiguration;
     public int mLastReportedDisplayId;
     public boolean mLastReportedMultiWindowMode;
     public boolean mLastReportedPictureInPictureMode;
@@ -259,71 +263,64 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
     public ActivityRecord mLaunchIntoPipHostActivity;
     public WindowContainerToken mLaunchRootTask;
     public final int mLaunchSourceType;
-    public final Runnable mLaunchTickRunnable;
+    public final AnonymousClass1 mLaunchTickRunnable;
     public boolean mLaunchedFromBubble;
     public boolean mLaunchingRequestedFromNotification;
-    public Rect mLetterboxBoundsForFixedOrientationAndAspectRatio;
-    public final LetterboxUiController mLetterboxUiController;
     public LocusId mLocusId;
     public boolean mNeedsLetterboxedAnimation;
-    public boolean mNoTransitionOcclusion;
-    public boolean mNotToBeTopForAppLockException;
+    public final boolean mNotToBeTopForAppLockException;
     public int mNumDrawnWindows;
     public int mNumInterestingWindows;
     public boolean mOccludesParent;
+    public final boolean mOptInOnBackInvoked;
+    public final boolean mOptOutEdgeToEdge;
     public boolean mOverrideTaskTransition;
+    public int mPauseConfigurationDispatchCount;
     public boolean mPauseSchedulePendingForPip;
-    public final Runnable mPauseTimeoutRunnable;
+    public final AnonymousClass1 mPauseTimeoutRunnable;
     public ActivityOptions mPendingOptions;
     public int mPendingRelaunchCount;
     public RemoteAnimationAdapter mPendingRemoteAnimation;
     public RemoteTransition mPendingRemoteTransition;
     public PersistableBundle mPersistentState;
-    public PopOverState mPopOverState;
+    public final PopOverState mPopOverState;
     public ApplicationInfo mProcessAppInfo;
     public int mProcessAppLaunchPolicy;
-    public ActivityRecord mRelativeActivity;
     public int mRelaunchReason;
     public long mRelaunchStartTime;
     public RemoteAnimationDefinition mRemoteAnimationDefinition;
     public boolean mRemovingFromDisplay;
     public boolean mReportedDrawn;
     public final WindowState.UpdateReportedVisibilityResults mReportedVisibilityResults;
-    public boolean mRequestFinishFromSourceActivity;
     public boolean mRequestForceTransition;
     public boolean mRequestFreeformForceHiding;
     public IBinder mRequestedLaunchingTaskFragmentToken;
+    final TaskFragment.ConfigOverrideHint mResolveConfigHint;
     public int mResolvedConfigChangeFlags;
-    public int mRestoreActivityGroupZone;
-    public Rect mReturnSizeCompatBounds;
     public final RootWindowContainer mRootWindowContainer;
-    public int mRotationAnimationHint;
+    public final int mRotationAnimationHint;
     public ActivityServiceConnectionsHolder mServiceConnectionsHolder;
-    public boolean mShareIdentity;
-    public boolean mShouldPrelNotify;
+    public final boolean mShareIdentity;
     public boolean mShouldShowPackageNightModeDialog;
     public final boolean mShowForAllUsers;
     public boolean mShowWhenLocked;
     public SizeCompatAttributes mSizeCompatAttributes;
-    public Rect mSizeCompatBounds;
-    public float mSizeCompatScale;
     public SizeConfigurationBuckets mSizeConfigurations;
-    public ActivityRecord mSourceSplitActivity;
     public boolean mSplashScreenStyleSolidColor;
     public StartingData mStartingData;
     public StartingSurfaceController.StartingSurface mStartingSurface;
     public WindowState mStartingWindow;
     public State mState;
-    public final Runnable mStopTimeoutRunnable;
+    public final AnonymousClass1 mStopTimeoutRunnable;
     public final boolean mStyleFillsParent;
-    public boolean mStyleFloating;
-    public int mTargetSdk;
-    public final List mTargetSplitActivities;
+    public final boolean mStyleFloating;
+    public final int mTargetSdk;
     public boolean mTaskOverlay;
     public final ActivityTaskSupervisor mTaskSupervisor;
+    public final ActivityWindowInfo mTmpActivityWindowInfo;
     public final Rect mTmpBounds;
     public final Configuration mTmpConfig;
-    public final Runnable mTransferSplashScreenTimeoutRunnable;
+    public final AnonymousClass1 mTransferSplashScreenTimeoutRunnable;
     public int mTransferringSplashScreenState;
     public final int mTransientBarShowingDelayMillis;
     public int mTransitionChangeFlags;
@@ -337,14 +334,12 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
     public boolean mWillCloseOrEnterPip;
     public ArrayList newIntents;
     boolean noDisplay;
-    public CharSequence nonLocalizedLabel;
     public boolean nowVisible;
     public final String packageName;
     public long pauseTime;
     public HashSet pendingResults;
     public boolean pendingVoiceInteractionStart;
-    public PictureInPictureParams pictureInPictureArgs;
-    public boolean preserveWindowOnDeferredRelaunch;
+    public final PictureInPictureParams pictureInPictureArgs;
     public final String processName;
     public boolean reportedVisible;
     public final int requestCode;
@@ -363,313 +358,1610 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
     public boolean supportsEnterPipOnTaskSwitch;
     public Task task;
     public final String taskAffinity;
-    public final String taskAffinityWithoutUid;
     public ActivityManager.TaskDescription taskDescription;
-    public int theme;
+    public final int theme;
     public long topResumedStateLossTime;
     public UriPermissionOwner uriPermissions;
     public boolean visibleIgnoringKeyguard;
     public IVoiceInteractionSession voiceSession;
 
-    /* loaded from: classes3.dex */
-    public class CustomAppTransition {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AppSaturationInfo {
+        public float[] mMatrix;
+        public float[] mTranslation;
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CustomAppTransition {
         public int mBackgroundColor;
         public int mEnterAnim;
         public int mExitAnim;
     }
 
-    /* loaded from: classes3.dex */
-    public enum State {
-        INITIALIZING,
-        STARTED,
-        RESUMED,
-        PAUSING,
-        PAUSED,
-        STOPPING,
-        STOPPED,
-        FINISHING,
-        DESTROYING,
-        DESTROYED,
-        RESTARTING_PROCESS
-    }
+    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class State {
+        public static final /* synthetic */ State[] $VALUES;
+        public static final State DESTROYED;
+        public static final State DESTROYING;
+        public static final State FINISHING;
+        public static final State INITIALIZING;
+        public static final State PAUSED;
+        public static final State PAUSING;
+        public static final State RESTARTING_PROCESS;
+        public static final State RESUMED;
+        public static final State STARTED;
+        public static final State STOPPED;
+        public static final State STOPPING;
 
-    public /* synthetic */ ActivityRecord(ActivityTaskManagerService activityTaskManagerService, WindowProcessController windowProcessController, int i, int i2, String str, String str2, Intent intent, String str3, ActivityInfo activityInfo, Configuration configuration, ActivityRecord activityRecord, String str4, int i3, boolean z, boolean z2, ActivityTaskSupervisor activityTaskSupervisor, ActivityOptions activityOptions, ActivityRecord activityRecord2, PersistableBundle persistableBundle, ActivityManager.TaskDescription taskDescription, long j, ActivityRecordIA activityRecordIA) {
-        this(activityTaskManagerService, windowProcessController, i, i2, str, str2, intent, str3, activityInfo, configuration, activityRecord, str4, i3, z, z2, activityTaskSupervisor, activityOptions, activityRecord2, persistableBundle, taskDescription, j);
-    }
-
-    public static int getCenterOffset(int i, int i2) {
-        return (int) (((i - i2) + 1) * 0.5f);
-    }
-
-    public static boolean hasResizeChange(int i) {
-        return (i & 3456) != 0;
-    }
-
-    public static boolean isResizeOnlyChange(int i) {
-        return (i & (-3457)) == 0;
-    }
-
-    public static int reverseConfigurationOrientation(int i) {
-        if (i == 1) {
-            return 2;
+        static {
+            State state = new State("INITIALIZING", 0);
+            INITIALIZING = state;
+            State state2 = new State("STARTED", 1);
+            STARTED = state2;
+            State state3 = new State("RESUMED", 2);
+            RESUMED = state3;
+            State state4 = new State("PAUSING", 3);
+            PAUSING = state4;
+            State state5 = new State("PAUSED", 4);
+            PAUSED = state5;
+            State state6 = new State("STOPPING", 5);
+            STOPPING = state6;
+            State state7 = new State("STOPPED", 6);
+            STOPPED = state7;
+            State state8 = new State("FINISHING", 7);
+            FINISHING = state8;
+            State state9 = new State("DESTROYING", 8);
+            DESTROYING = state9;
+            State state10 = new State("DESTROYED", 9);
+            DESTROYED = state10;
+            State state11 = new State("RESTARTING_PROCESS", 10);
+            RESTARTING_PROCESS = state11;
+            $VALUES = new State[]{state, state2, state3, state4, state5, state6, state7, state8, state9, state10, state11};
         }
-        if (i != 2) {
-            return i;
+
+        public static State valueOf(String str) {
+            return (State) Enum.valueOf(State.class, str);
         }
-        return 1;
+
+        public static State[] values() {
+            return (State[]) $VALUES.clone();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Token extends Binder {
+        public WeakReference mActivityRef;
+
+        public final String toString() {
+            return "Token{" + Integer.toHexString(System.identityHashCode(this)) + " " + this.mActivityRef.get() + "}";
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:207:0x0722, code lost:
+    
+        if (r1.getBoolean("com.samsung.android.disableSnapshot", false) == false) goto L308;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:206:0x071b  */
+    /* JADX WARN: Removed duplicated region for block: B:214:0x072e  */
+    /* JADX WARN: Removed duplicated region for block: B:217:0x0725  */
+    /* JADX WARN: Removed duplicated region for block: B:218:0x06e6 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:50:0x0228  */
+    /* JADX WARN: Type inference failed for: r5v10, types: [com.android.server.wm.ActivityRecord$1] */
+    /* JADX WARN: Type inference failed for: r5v11, types: [com.android.server.wm.ActivityRecord$1] */
+    /* JADX WARN: Type inference failed for: r5v12, types: [com.android.server.wm.ActivityRecord$1] */
+    /* JADX WARN: Type inference failed for: r5v13, types: [com.android.server.wm.ActivityRecord$1] */
+    /* JADX WARN: Type inference failed for: r5v8, types: [com.android.server.wm.ActivityRecord$1] */
+    /* JADX WARN: Type inference failed for: r5v9, types: [com.android.server.wm.ActivityRecord$1] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public ActivityRecord(com.android.server.wm.ActivityTaskManagerService r23, com.android.server.wm.WindowProcessController r24, int r25, int r26, java.lang.String r27, java.lang.String r28, android.content.Intent r29, java.lang.String r30, android.content.pm.ActivityInfo r31, android.content.res.Configuration r32, com.android.server.wm.ActivityRecord r33, java.lang.String r34, int r35, boolean r36, boolean r37, com.android.server.wm.ActivityTaskSupervisor r38, android.app.ActivityOptions r39, com.android.server.wm.ActivityRecord r40, android.os.PersistableBundle r41, android.app.ActivityManager.TaskDescription r42, long r43) {
+        /*
+            Method dump skipped, instructions count: 1861
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.<init>(com.android.server.wm.ActivityTaskManagerService, com.android.server.wm.WindowProcessController, int, int, java.lang.String, java.lang.String, android.content.Intent, java.lang.String, android.content.pm.ActivityInfo, android.content.res.Configuration, com.android.server.wm.ActivityRecord, java.lang.String, int, boolean, boolean, com.android.server.wm.ActivityTaskSupervisor, android.app.ActivityOptions, com.android.server.wm.ActivityRecord, android.os.PersistableBundle, android.app.ActivityManager$TaskDescription, long):void");
+    }
+
+    public static void activityResumedLocked(IBinder iBinder, boolean z) {
+        Integer num;
+        ActivityRecord forTokenLocked = forTokenLocked(iBinder);
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled[2]) {
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_STATES, 1734586111478674085L, 0, null, String.valueOf(forTokenLocked));
+        }
+        if (forTokenLocked == null) {
+            return;
+        }
+        if (forTokenLocked.mHandleExitSplashScreen != z) {
+            forTokenLocked.mHandleExitSplashScreen = z;
+        }
+        forTokenLocked.mIcicle = null;
+        forTokenLocked.mHaveState = false;
+        if (forTokenLocked.findMainWindow(false) == null) {
+            forTokenLocked.mDisplayContent.mUnknownAppVisibilityController.appRemovedOrHidden(forTokenLocked);
+        }
+        forTokenLocked.mDisplayContent.handleActivitySizeCompatModeIfNeeded(forTokenLocked);
+        UnknownAppVisibilityController unknownAppVisibilityController = forTokenLocked.mDisplayContent.mUnknownAppVisibilityController;
+        if (unknownAppVisibilityController.mUnknownApps.isEmpty() || (num = (Integer) unknownAppVisibilityController.mUnknownApps.get(forTokenLocked)) == null || num.intValue() != 1) {
+            return;
+        }
+        WindowState findMainWindow = forTokenLocked.findMainWindow(false);
+        if (findMainWindow == null || findMainWindow.mViewVisibility != 0) {
+            unknownAppVisibilityController.mUnknownApps.put(forTokenLocked, 2);
+            return;
+        }
+        Slog.d("WindowManager", "notifyAppResumedFinished, activity has already visible window, activity=" + forTokenLocked);
+        unknownAppVisibilityController.mUnknownApps.put(forTokenLocked, 3);
+        unknownAppVisibilityController.mDisplayContent.notifyKeyguardFlagsChanged();
+        unknownAppVisibilityController.notifyVisibilitiesUpdated();
+    }
+
+    public static boolean canShowWhenLocked(ActivityRecord activityRecord) {
+        ActivityRecord activityBelow;
+        if (activityRecord == null || activityRecord.getTaskFragment() == null) {
+            return false;
+        }
+        if (!activityRecord.inPinnedWindowingMode() && (activityRecord.mShowWhenLocked || activityRecord.containsShowWhenLockedWindow() || activityRecord.mIsUserAlwaysVisible)) {
+            return true;
+        }
+        if (!activityRecord.mInheritShownWhenLocked || (activityBelow = activityRecord.getTaskFragment().getActivityBelow(activityRecord)) == null || activityBelow.inPinnedWindowingMode()) {
+            return false;
+        }
+        return activityBelow.mShowWhenLocked || activityBelow.containsShowWhenLockedWindow() || activityBelow.mIsUserAlwaysVisible;
+    }
+
+    public static String computeTaskAffinity(int i, String str) {
+        String num = Integer.toString(i);
+        return (str == null || str.startsWith(num)) ? str : AnyMotionDetector$$ExternalSyntheticOutline0.m(num, ":", str);
+    }
+
+    public static void dumpActivity(FileDescriptor fileDescriptor, PrintWriter printWriter, int i, ActivityRecord activityRecord, String str, String str2, boolean z, boolean z2, boolean z3, String str3, boolean z4, Runnable runnable, Task task) {
+        if (str3 == null || str3.equals(activityRecord.packageName)) {
+            boolean z5 = !z2 && (z || !activityRecord.inHistory);
+            if (z4) {
+                printWriter.println("");
+            }
+            if (runnable != null) {
+                runnable.run();
+            }
+            String m$1 = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "  ");
+            String[] strArr = new String[0];
+            Task task2 = activityRecord.task;
+            if (task != task2) {
+                printWriter.print(str);
+                printWriter.print(z5 ? "* " : "  ");
+                printWriter.println(task2);
+                if (z5) {
+                    task2.dump(printWriter, str + "  ");
+                } else if (z && task2.intent != null) {
+                    printWriter.print(str);
+                    printWriter.print("  ");
+                    printWriter.println(task2.intent.toInsecureString());
+                }
+            }
+            printWriter.print(str);
+            printWriter.print(z5 ? "* " : "    ");
+            printWriter.print(str2);
+            printWriter.print(" #");
+            printWriter.print(i);
+            printWriter.print(": ");
+            printWriter.println(activityRecord);
+            if (z5) {
+                activityRecord.dump(printWriter, m$1, true);
+            } else if (z) {
+                printWriter.print(m$1);
+                printWriter.println(activityRecord.intent.toInsecureString());
+                if (activityRecord.app != null) {
+                    printWriter.print(m$1);
+                    printWriter.println(activityRecord.app);
+                }
+            }
+            if (z3 && activityRecord.attachedToProcess()) {
+                printWriter.flush();
+                try {
+                    TransferPipe transferPipe = new TransferPipe();
+                    try {
+                        activityRecord.app.mThread.dumpActivity(transferPipe.getWriteFd(), activityRecord.token, m$1, strArr);
+                        transferPipe.go(fileDescriptor, 2000L);
+                        transferPipe.kill();
+                    } catch (Throwable th) {
+                        transferPipe.kill();
+                        throw th;
+                    }
+                } catch (RemoteException unused) {
+                    printWriter.println(m$1 + "Got a RemoteException while dumping the activity");
+                } catch (IOException e) {
+                    printWriter.println(m$1 + "Failure while dumping the activity: " + e);
+                }
+            }
+        }
+    }
+
+    public static ActivityRecord forToken(IBinder iBinder) {
+        if (iBinder == null) {
+            return null;
+        }
+        try {
+            return (ActivityRecord) ((Token) iBinder).mActivityRef.get();
+        } catch (ClassCastException e) {
+            Slog.w("ActivityTaskManager", "Bad activity token: " + iBinder, e);
+            return null;
+        }
+    }
+
+    public static ActivityRecord forTokenLocked(IBinder iBinder) {
+        ActivityRecord forToken = forToken(iBinder);
+        if (forToken == null || forToken.getRootTask() == null) {
+            return null;
+        }
+        return forToken;
+    }
+
+    public static int getLockTaskLaunchMode(ActivityInfo activityInfo, ActivityOptions activityOptions) {
+        int i = activityInfo.lockTaskLaunchMode;
+        if (!activityInfo.applicationInfo.isPrivilegedApp() && (i == 2 || i == 1)) {
+            i = 0;
+        }
+        if (activityOptions != null && activityOptions.getLockTaskMode() && i == 0) {
+            return 3;
+        }
+        return i;
+    }
+
+    public static boolean isHomeIntent(Intent intent) {
+        return "android.intent.action.MAIN".equals(intent.getAction()) && (intent.hasCategory("android.intent.category.HOME") || intent.hasCategory("android.intent.category.SECONDARY_HOME")) && intent.getCategories().size() == 1 && intent.getData() == null && intent.getType() == null;
+    }
+
+    public static ActivityRecord isInAnyTask(IBinder iBinder) {
+        ActivityRecord forTokenLocked = forTokenLocked(iBinder);
+        if (forTokenLocked == null || !forTokenLocked.isAttached()) {
+            return null;
+        }
+        return forTokenLocked;
+    }
+
+    public static ActivityRecord isInRootTaskLocked(IBinder iBinder) {
+        ActivityRecord forTokenLocked = forTokenLocked(iBinder);
+        if (forTokenLocked == null) {
+            return null;
+        }
+        Task rootTask = forTokenLocked.getRootTask();
+        rootTask.getClass();
+        if (!forTokenLocked.isDescendantOf(rootTask)) {
+            forTokenLocked = null;
+        }
+        return forTokenLocked;
+    }
+
+    public static boolean isMainIntent(Intent intent) {
+        return "android.intent.action.MAIN".equals(intent.getAction()) && intent.hasCategory("android.intent.category.LAUNCHER") && intent.getCategories().size() == 1 && intent.getData() == null && intent.getType() == null;
+    }
+
+    public final void abortAndClearOptionsAnimation() {
+        ActivityOptions activityOptions = this.mPendingOptions;
+        if (activityOptions != null) {
+            activityOptions.abort();
+        }
+        this.mPendingOptions = null;
+        this.mPendingRemoteAnimation = null;
+        this.mPendingRemoteTransition = null;
+    }
+
+    public final void activityPaused(boolean z) {
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled;
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 1256300416726217367L, 12, null, String.valueOf(this.token), Boolean.valueOf(z));
+        }
+        TaskFragment taskFragment = getTaskFragment();
+        if (taskFragment != null) {
+            this.mAtmService.mH.removeCallbacks(this.mPauseTimeoutRunnable);
+            ActivityRecord activityRecord = taskFragment.mPausingActivity;
+            if (activityRecord == this) {
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 6879640870754727133L, 0, null, String.valueOf(this), z ? "(due to timeout)" : " (pause complete)");
+                }
+                this.mAtmService.deferWindowLayout();
+                try {
+                    taskFragment.completePause(true, null);
+                    return;
+                } finally {
+                    this.mAtmService.continueWindowLayout();
+                }
+            }
+            EventLog.writeEvent(30012, Integer.valueOf(this.mUserId), Integer.valueOf(System.identityHashCode(this)), this.shortComponentName, activityRecord != null ? activityRecord.shortComponentName : "(none)");
+            if (isState(State.PAUSING)) {
+                setState(State.PAUSED, "activityPausedLocked");
+                if (this.finishing) {
+                    if (zArr[1]) {
+                        ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 2737811012914917932L, 0, null, String.valueOf(this));
+                    }
+                    completeFinishing("activityPausedLocked", true);
+                }
+            }
+        }
+        this.mDisplayContent.handleActivitySizeCompatModeIfNeeded(this);
+        this.mRootWindowContainer.ensureActivitiesVisible();
+    }
+
+    public final void activityStopped(Bundle bundle, PersistableBundle persistableBundle, CharSequence charSequence) {
+        this.mAtmService.mH.removeCallbacks(this.mStopTimeoutRunnable);
+        State state = this.mState;
+        boolean z = state == State.STOPPING;
+        if (!z && state != State.RESTARTING_PROCESS) {
+            Slog.i("ActivityTaskManager", "Activity reported stop, but no longer stopping: " + this + " " + this.mState);
+            return;
+        }
+        if (persistableBundle != null) {
+            this.mPersistentState = persistableBundle;
+            this.mAtmService.notifyTaskPersisterLocked(this.task, false);
+        }
+        if (bundle != null) {
+            this.mIcicle = bundle;
+            this.mHaveState = true;
+            this.launchCount = 0;
+            this.task.lastDescription = charSequence;
+        }
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled;
+        if (zArr[2]) {
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_STATES, -4913512058893421188L, 0, null, String.valueOf(this), String.valueOf(this.mIcicle));
+        }
+        if (z) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 7613353074402340933L, 0, null, String.valueOf(this));
+            }
+            setState(State.STOPPED, "activityStopped");
+        }
+        this.mAppStopped = true;
+        this.firstWindowDrawn = false;
+        Task task = this.task;
+        if (task.mLastRecentsAnimationTransaction != null) {
+            if (task.mLastRecentsAnimationOverlay != null) {
+                task.getPendingTransaction().remove(task.mLastRecentsAnimationOverlay);
+            }
+            task.mLastRecentsAnimationTransaction = null;
+            task.mLastRecentsAnimationOverlay = null;
+            task.resetSurfaceControlTransforms();
+        }
+        if (this.mClientVisible) {
+            setClientVisible(false);
+        }
+        destroySurfaces(false);
+        removeStartingWindow();
+        if (this.finishing) {
+            abortAndClearOptionsAnimation();
+        } else {
+            ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
+            activityTaskManagerService.getClass();
+            if (this.app != null && activityTaskManagerService.mTopApp != null && this.app != activityTaskManagerService.mTopApp && this.lastVisibleTime > activityTaskManagerService.mPreviousProcessVisibleTime && this.app != activityTaskManagerService.mHomeProcess) {
+                activityTaskManagerService.mPreviousProcess = this.app;
+                activityTaskManagerService.mPreviousProcessVisibleTime = this.lastVisibleTime;
+            }
+        }
+        this.mTaskSupervisor.checkReadyForSleepLocked(true);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:172:0x0108, code lost:
+    
+        if (r8 == false) goto L66;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:175:0x010d, code lost:
+    
+        if (r8 == false) goto L66;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:188:0x00da, code lost:
+    
+        if (isSplitEmbedded() != false) goto L32;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:193:0x00e5, code lost:
+    
+        if (r3 != false) goto L32;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x0080, code lost:
+    
+        if (r17.mDisplayContent.mDisplayRotation.rotationForOrientation(getOverrideOrientation(), r17.mDisplayContent.mDisplayRotation.mRotation) == r4.getRotation()) goto L31;
+     */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:48:0x01b1  */
+    /* JADX WARN: Removed duplicated region for block: B:51:0x01c0  */
+    /* JADX WARN: Removed duplicated region for block: B:53:0x01c4  */
+    /* JADX WARN: Removed duplicated region for block: B:55:0x01c8  */
+    /* JADX WARN: Removed duplicated region for block: B:59:0x01d2  */
+    /* JADX WARN: Removed duplicated region for block: B:61:0x01d6  */
+    /* JADX WARN: Removed duplicated region for block: B:63:0x01db  */
+    /* JADX WARN: Removed duplicated region for block: B:66:0x01e0  */
+    /* JADX WARN: Removed duplicated region for block: B:70:0x01f1  */
+    /* JADX WARN: Removed duplicated region for block: B:73:0x020d  */
+    /* JADX WARN: Removed duplicated region for block: B:96:0x028a  */
+    /* JADX WARN: Type inference failed for: r3v1 */
+    /* JADX WARN: Type inference failed for: r3v14 */
+    /* JADX WARN: Type inference failed for: r3v15 */
+    /* JADX WARN: Type inference failed for: r3v16 */
+    /* JADX WARN: Type inference failed for: r3v17 */
+    /* JADX WARN: Type inference failed for: r3v18 */
+    /* JADX WARN: Type inference failed for: r3v2 */
+    /* JADX WARN: Type inference failed for: r3v29 */
+    /* JADX WARN: Type inference failed for: r3v3 */
+    /* JADX WARN: Type inference failed for: r3v30 */
+    /* JADX WARN: Type inference failed for: r3v4 */
+    /* JADX WARN: Type inference failed for: r3v5 */
+    /* JADX WARN: Type inference failed for: r3v6 */
+    /* JADX WARN: Type inference failed for: r3v7 */
+    /* JADX WARN: Type inference failed for: r3v8 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public boolean addStartingWindow(java.lang.String r18, int r19, com.android.server.wm.ActivityRecord r20, boolean r21, boolean r22, boolean r23, boolean r24, boolean r25, boolean r26, boolean r27) {
+        /*
+            Method dump skipped, instructions count: 736
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.addStartingWindow(java.lang.String, int, com.android.server.wm.ActivityRecord, boolean, boolean, boolean, boolean, boolean, boolean, boolean):boolean");
+    }
+
+    public boolean addToFinishingAndWaitForIdle() {
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 3169053633576517098L, 0, null, String.valueOf(this));
+        }
+        setState(State.FINISHING, "addToFinishingAndWaitForIdle");
+        if (!this.mTaskSupervisor.mFinishingActivities.contains(this)) {
+            this.mTaskSupervisor.mFinishingActivities.add(this);
+        }
+        resumeKeyDispatchingLocked();
+        return this.mRootWindowContainer.resumeFocusedTasksTopActivities(null, null, null, false);
+    }
+
+    public final void addToStopping(String str, boolean z, boolean z2) {
+        if (!this.mTaskSupervisor.mStoppingActivities.contains(this)) {
+            EventLog.writeEvent(30066, Integer.valueOf(this.mUserId), Integer.valueOf(System.identityHashCode(this)), this.shortComponentName, str);
+            this.mTaskSupervisor.mStoppingActivities.add(this);
+        }
+        Task rootTask = getRootTask();
+        boolean z3 = this.mTaskSupervisor.mStoppingActivities.size() > 3 || (isRootOfTask() && rootTask.getChildCount() <= 1);
+        if (!z && !z3) {
+            rootTask.checkReadyForSleep();
+            return;
+        }
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 3981777934616509782L, 15, null, Boolean.valueOf(z3), Boolean.valueOf(!z2));
+        }
+        if (!z2) {
+            this.mTaskSupervisor.scheduleIdle();
+        } else {
+            ActivityTaskSupervisor.ActivityTaskSupervisorHandler activityTaskSupervisorHandler = this.mTaskSupervisor.mHandler;
+            activityTaskSupervisorHandler.sendMessageDelayed(activityTaskSupervisorHandler.obtainMessage(200, this), ActivityTaskSupervisor.IDLE_TIMEOUT);
+        }
+    }
+
+    @Override // com.android.server.wm.WindowToken
+    public final void addWindow(WindowState windowState) {
+        super.addWindow(windowState);
+        if (windowState.mAttrs.type == 1 && windowState.isSecureLocked()) {
+            MultiTaskingController multiTaskingController = this.mAtmService.mMultiTaskingController;
+            multiTaskingController.getClass();
+            Task task = windowState.getTask();
+            DisplayContent displayContent = windowState.getDisplayContent();
+            if (task != null && displayContent != null && displayContent.isRemoteAppDisplay()) {
+                multiTaskingController.mH.sendMessage(multiTaskingController.mH.obtainMessage(1, task.mTaskId, 1, windowState.mAttrs.packageName));
+            }
+        }
+        checkKeyguardFlagsChanged();
     }
 
     @Override // com.android.server.wm.WindowContainer
-    public ActivityRecord asActivityRecord() {
+    public final boolean allowEdgeExtension() {
+        WindowState findMainWindow;
+        if (inMultiWindowMode() || !occludesParent(true)) {
+            return false;
+        }
+        return hasStartingWindow() || !((findMainWindow = findMainWindow(true)) == null || PixelFormat.formatHasAlpha(findMainWindow.mAttrs.format));
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean applyAnimation(WindowManager.LayoutParams layoutParams, int i, boolean z, boolean z2, ArrayList arrayList) {
+        if ((this.mTransitionChangeFlags & 8) != 0) {
+            return false;
+        }
+        this.mRequestForceTransition = false;
+        return super.applyAnimation(layoutParams, i, z, z2, arrayList);
+    }
+
+    @Override // com.android.server.wm.WindowToken
+    public final void applyFixedRotationTransform(DisplayInfo displayInfo, DisplayFrames displayFrames, Configuration configuration) {
+        StringBuilder sb = new StringBuilder("applyFixedRotationTransform, r=");
+        sb.append(this);
+        sb.append(", caller=");
+        ActivityManagerService$$ExternalSyntheticOutline0.m(5, sb, "ActivityTaskManager");
+        super.applyFixedRotationTransform(displayInfo, displayFrames, configuration);
+        ensureActivityConfiguration(false);
+    }
+
+    public final void applyOptionsAnimation$1() {
+        TransitionInfo.AnimationOptions animationOptions;
+        IRemoteCallback iRemoteCallback;
+        IRemoteCallback iRemoteCallback2;
+        Transition transition;
+        TransitionInfo.AnimationOptions makeScaleUpAnimOptions;
+        boolean z;
+        RemoteAnimationAdapter remoteAnimationAdapter = this.mPendingRemoteAnimation;
+        if (remoteAnimationAdapter != null) {
+            this.mDisplayContent.mAppTransition.overridePendingAppTransitionRemote(remoteAnimationAdapter, false, false);
+            TransitionController transitionController = this.mTransitionController;
+            long statusBarTransitionDelay = this.mPendingRemoteAnimation.getStatusBarTransitionDelay();
+            Transition transition2 = transitionController.mCollectingTransition;
+            if (transition2 != null) {
+                transition2.mStatusBarTransitionDelay = statusBarTransitionDelay;
+            }
+        } else {
+            ActivityOptions activityOptions = this.mPendingOptions;
+            if (activityOptions == null) {
+                return;
+            }
+            if (activityOptions.getAnimationType() == 5) {
+                TransitionController transitionController2 = this.mTransitionController;
+                TransitionInfo.AnimationOptions makeSceneTransitionAnimOptions = TransitionInfo.AnimationOptions.makeSceneTransitionAnimOptions();
+                Transition transition3 = transitionController2.mCollectingTransition;
+                if (transition3 == null) {
+                    return;
+                }
+                transition3.setOverrideAnimation(makeSceneTransitionAnimOptions, null, null);
+                return;
+            }
+            ActivityOptions activityOptions2 = this.mPendingOptions;
+            Intent intent = this.intent;
+            int animationType = activityOptions2.getAnimationType();
+            DisplayContent displayContent = getDisplayContent();
+            if (animationType != -1 && animationType != 0) {
+                if (animationType != 1) {
+                    if (animationType != 2) {
+                        if (animationType == 3 || animationType == 4) {
+                            z = animationType == 3;
+                            HardwareBuffer thumbnail = activityOptions2.getThumbnail();
+                            AppTransition appTransition = displayContent.mAppTransition;
+                            int startX = activityOptions2.getStartX();
+                            int startY = activityOptions2.getStartY();
+                            IRemoteCallback animationStartedListener = activityOptions2.getAnimationStartedListener();
+                            if (appTransition.canOverridePendingAppTransition()) {
+                                appTransition.clear(true);
+                                appTransition.mNextAppTransitionType = z ? 3 : 4;
+                                appTransition.mNextAppTransitionScaleUp = z;
+                                appTransition.putDefaultNextAppTransitionCoordinates(startX, startY, 0, 0, thumbnail);
+                                appTransition.postAnimationCallback();
+                                appTransition.mNextAppTransitionCallback = animationStartedListener;
+                            }
+                            TransitionInfo.AnimationOptions makeThumbnailAnimOptions = TransitionInfo.AnimationOptions.makeThumbnailAnimOptions(thumbnail, activityOptions2.getStartX(), activityOptions2.getStartY(), z);
+                            iRemoteCallback2 = activityOptions2.getAnimationStartedListener();
+                            if (intent.getSourceBounds() == null && thumbnail != null) {
+                                intent.setSourceBounds(new Rect(activityOptions2.getStartX(), activityOptions2.getStartY(), thumbnail.getWidth() + activityOptions2.getStartX(), thumbnail.getHeight() + activityOptions2.getStartY()));
+                            }
+                            animationOptions = makeThumbnailAnimOptions;
+                            iRemoteCallback = null;
+                        } else if (animationType == 8 || animationType == 9) {
+                            AppTransitionAnimationSpec[] animSpecs = activityOptions2.getAnimSpecs();
+                            IAppTransitionAnimationSpecsFuture specsFuture = activityOptions2.getSpecsFuture();
+                            if (specsFuture != null) {
+                                displayContent.mAppTransition.overridePendingAppTransitionMultiThumbFuture(specsFuture, activityOptions2.getAnimationStartedListener(), animationType == 8);
+                            } else if (animationType != 9 || animSpecs == null) {
+                                AppTransition appTransition2 = displayContent.mAppTransition;
+                                HardwareBuffer thumbnail2 = activityOptions2.getThumbnail();
+                                int startX2 = activityOptions2.getStartX();
+                                int startY2 = activityOptions2.getStartY();
+                                int width = activityOptions2.getWidth();
+                                int height = activityOptions2.getHeight();
+                                IRemoteCallback animationStartedListener2 = activityOptions2.getAnimationStartedListener();
+                                z = animationType == 8;
+                                if (appTransition2.canOverridePendingAppTransition()) {
+                                    appTransition2.clear(true);
+                                    appTransition2.mNextAppTransitionType = z ? 5 : 6;
+                                    appTransition2.mNextAppTransitionScaleUp = z;
+                                    appTransition2.putDefaultNextAppTransitionCoordinates(startX2, startY2, width, height, thumbnail2);
+                                    appTransition2.postAnimationCallback();
+                                    appTransition2.mNextAppTransitionCallback = animationStartedListener2;
+                                }
+                                if (intent.getSourceBounds() == null) {
+                                    intent.setSourceBounds(new Rect(activityOptions2.getStartX(), activityOptions2.getStartY(), activityOptions2.getWidth() + activityOptions2.getStartX(), activityOptions2.getHeight() + activityOptions2.getStartY()));
+                                }
+                            } else {
+                                displayContent.mAppTransition.overridePendingAppTransitionMultiThumb(animSpecs, activityOptions2.getAnimationStartedListener(), activityOptions2.getAnimationFinishedListener(), false);
+                            }
+                        } else if (animationType == 11) {
+                            AppTransition appTransition3 = displayContent.mAppTransition;
+                            int startX3 = activityOptions2.getStartX();
+                            int startY3 = activityOptions2.getStartY();
+                            int width2 = activityOptions2.getWidth();
+                            int height2 = activityOptions2.getHeight();
+                            if (appTransition3.canOverridePendingAppTransition()) {
+                                appTransition3.clear(true);
+                                appTransition3.mNextAppTransitionType = 8;
+                                appTransition3.putDefaultNextAppTransitionCoordinates(startX3, startY3, width2, height2, null);
+                                appTransition3.postAnimationCallback();
+                            }
+                            makeScaleUpAnimOptions = TransitionInfo.AnimationOptions.makeClipRevealAnimOptions(activityOptions2.getStartX(), activityOptions2.getStartY(), activityOptions2.getWidth(), activityOptions2.getHeight());
+                            if (intent.getSourceBounds() == null) {
+                                intent.setSourceBounds(new Rect(activityOptions2.getStartX(), activityOptions2.getStartY(), activityOptions2.getWidth() + activityOptions2.getStartX(), activityOptions2.getHeight() + activityOptions2.getStartY()));
+                            }
+                        } else if (animationType != 12) {
+                            NandswapManager$$ExternalSyntheticOutline0.m(animationType, "applyOptionsLocked: Unknown animationType=", "WindowManager");
+                        } else {
+                            AppTransition appTransition4 = displayContent.mAppTransition;
+                            if (appTransition4.canOverridePendingAppTransition()) {
+                                appTransition4.clear(true);
+                                appTransition4.mNextAppTransitionType = 9;
+                                appTransition4.postAnimationCallback();
+                            }
+                            animationOptions = TransitionInfo.AnimationOptions.makeCrossProfileAnimOptions();
+                            iRemoteCallback = null;
+                            iRemoteCallback2 = iRemoteCallback;
+                        }
+                    } else {
+                        AppTransition appTransition5 = displayContent.mAppTransition;
+                        int startX4 = activityOptions2.getStartX();
+                        int startY4 = activityOptions2.getStartY();
+                        int width3 = activityOptions2.getWidth();
+                        int height3 = activityOptions2.getHeight();
+                        if (appTransition5.canOverridePendingAppTransition()) {
+                            appTransition5.clear(true);
+                            appTransition5.mNextAppTransitionType = 2;
+                            appTransition5.putDefaultNextAppTransitionCoordinates(startX4, startY4, width3, height3, null);
+                            appTransition5.postAnimationCallback();
+                        }
+                        makeScaleUpAnimOptions = TransitionInfo.AnimationOptions.makeScaleUpAnimOptions(activityOptions2.getStartX(), activityOptions2.getStartY(), activityOptions2.getWidth(), activityOptions2.getHeight());
+                        if (intent.getSourceBounds() == null) {
+                            intent.setSourceBounds(new Rect(activityOptions2.getStartX(), activityOptions2.getStartY(), activityOptions2.getWidth() + activityOptions2.getStartX(), activityOptions2.getHeight() + activityOptions2.getStartY()));
+                        }
+                    }
+                    iRemoteCallback2 = null;
+                    animationOptions = makeScaleUpAnimOptions;
+                    iRemoteCallback = null;
+                } else {
+                    displayContent.mAppTransition.overridePendingAppTransition(activityOptions2.getPackageName(), activityOptions2.getCustomEnterResId(), activityOptions2.getCustomExitResId(), activityOptions2.getCustomBackgroundColor(), activityOptions2.getAnimationStartedListener(), activityOptions2.getAnimationFinishedListener(), activityOptions2.getOverrideTaskTransition());
+                    TransitionInfo.AnimationOptions makeCustomAnimOptions = TransitionInfo.AnimationOptions.makeCustomAnimOptions(activityOptions2.getPackageName(), activityOptions2.getCustomEnterResId(), activityOptions2.getCustomExitResId(), activityOptions2.getCustomBackgroundColor(), activityOptions2.getOverrideTaskTransition());
+                    iRemoteCallback2 = activityOptions2.getAnimationStartedListener();
+                    iRemoteCallback = activityOptions2.getAnimationFinishedListener();
+                    animationOptions = makeCustomAnimOptions;
+                }
+                if (animationOptions != null && (transition = this.mTransitionController.mCollectingTransition) != null) {
+                    transition.setOverrideAnimation(animationOptions, iRemoteCallback2, iRemoteCallback);
+                }
+            }
+            animationOptions = null;
+            iRemoteCallback = null;
+            iRemoteCallback2 = iRemoteCallback;
+            if (animationOptions != null) {
+                transition.setOverrideAnimation(animationOptions, iRemoteCallback2, iRemoteCallback);
+            }
+        }
+        Task task = this.task;
+        if (task != null) {
+            task.forAllActivities(new ActivityRecord$$ExternalSyntheticLambda3(4));
+            return;
+        }
+        this.mPendingOptions = null;
+        this.mPendingRemoteAnimation = null;
+        this.mPendingRemoteTransition = null;
+    }
+
+    public final boolean areBoundsLetterboxed() {
+        return getAppCompatState(true) != 2;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final ActivityRecord asActivityRecord() {
         return this;
     }
 
-    @Override // com.android.server.wm.WindowContainer
-    public boolean canCreateRemoteAnimationTarget() {
-        return true;
+    public final void associateStartingWindowWithTaskIfNeeded() {
+        StartingData startingData;
+        if (this.mStartingWindow == null || (startingData = this.mStartingData) == null || startingData.mAssociatedTask != null) {
+            return;
+        }
+        if (!CoreRune.MW_EMBED_ACTIVITY || isSplitEmbedded()) {
+            StartingData startingData2 = this.mStartingData;
+            Task task = this.task;
+            startingData2.mAssociatedTask = task;
+            task.mSharedStartingData = startingData2;
+            attachStartingSurfaceToAssociatedTask();
+        }
     }
 
-    @Override // com.android.server.wm.WindowContainer
-    public boolean canCustomizeAppTransition() {
-        return true;
+    public final void attachStartingSurfaceToAssociatedTask() {
+        if (this.mSyncState == 0 && isEmbedded()) {
+            this.mTransitionController.collect(this);
+        }
+        WindowContainer.overrideConfigurationPropagation(this.mStartingWindow, this.mStartingData.mAssociatedTask);
+        getSyncTransaction().reparent(this.mStartingWindow.mSurfaceControl, this.mStartingData.mAssociatedTask.mSurfaceControl);
     }
 
-    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer
-    public long getProtoFieldId() {
-        return 1146756268038L;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean hasActivity() {
-        return true;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean onChildVisibleRequestedChanged(WindowContainer windowContainer) {
-        return false;
-    }
-
-    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer
-    public void resetSurfacePositionForAnimationLeash(SurfaceControl.Transaction transaction) {
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean showSurfaceOnCreation() {
-        return false;
-    }
-
-    public final void updateEnterpriseThumbnailDrawable(final Context context) {
-        this.mEnterpriseThumbnailDrawable = ((DevicePolicyManager) context.getSystemService(DevicePolicyManager.class)).getResources().getDrawable("WORK_PROFILE_ICON", "OUTLINE", "PROFILE_SWITCH_ANIMATION", new Supplier() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda30
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                Drawable drawable;
-                drawable = context.getDrawable(R.drawable.ic_input_extract_action_search);
-                return drawable;
+    public final void attachStartingWindow(WindowState windowState) {
+        StartingData startingData = this.mStartingData;
+        windowState.mStartingData = startingData;
+        this.mStartingWindow = windowState;
+        if (startingData != null) {
+            if (startingData.mAssociatedTask != null) {
+                if (!hasFixedRotationTransform()) {
+                    attachStartingSurfaceToAssociatedTask();
+                }
+            } else if (isEmbedded()) {
+                associateStartingWindowWithTaskIfNeeded();
             }
-        });
+            if (this.mTransitionController.isCollecting()) {
+                this.mStartingData.mTransitionId = this.mTransitionController.getCollectingTransitionId();
+            }
+        }
     }
 
-    public WindowState findMaxVisibleAppWindow() {
-        int size = this.mChildren.size();
-        WindowState windowState = null;
-        WindowState windowState2 = null;
-        for (int i = 0; i < size; i++) {
-            WindowState windowState3 = (WindowState) this.mChildren.get(i);
-            int i2 = windowState3.mAttrs.type;
-            if (windowState3.mHasSurface && windowState3.mViewVisibility == 0 && (i2 == 1 || i2 == 2)) {
-                int width = windowState3.getWindowFrames().mFrame.width();
-                int height = windowState3.getWindowFrames().mFrame.height();
-                if (windowState3.mAnimatingExit) {
-                    if (windowState2 == null || (windowState2.getWindowFrames().mFrame.height() <= height && windowState2.getWindowFrames().mFrame.width() <= width)) {
-                        windowState2 = windowState3;
+    public final void attachThumbnailAnimation() {
+        Rect rect;
+        Rect rect2;
+        if (isAnimating(2, 1)) {
+            AppTransition appTransition = getDisplayContent().mAppTransition;
+            AppTransitionAnimationSpec appTransitionAnimationSpec = (AppTransitionAnimationSpec) appTransition.mNextAppTransitionAnimationsSpecs.get(this.task.hashCode());
+            if (appTransitionAnimationSpec == null) {
+                appTransitionAnimationSpec = appTransition.mDefaultNextAppTransitionAnimationSpec;
+            }
+            HardwareBuffer hardwareBuffer = appTransitionAnimationSpec != null ? appTransitionAnimationSpec.buffer : null;
+            if (hardwareBuffer == null) {
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_APP_TRANSITIONS_enabled[0]) {
+                    ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS, -1836789237982086339L, 0, null, String.valueOf(this.task));
+                    return;
+                }
+                return;
+            }
+            clearThumbnail();
+            SurfaceControl.Transaction pendingTransaction = getAnimatingContainer().getPendingTransaction();
+            WindowContainerThumbnail windowContainerThumbnail = new WindowContainerThumbnail(pendingTransaction, getAnimatingContainer(), hardwareBuffer);
+            this.mThumbnail = windowContainerThumbnail;
+            DisplayInfo displayInfo = this.mDisplayContent.mDisplayInfo;
+            WindowState findMainWindow = findMainWindow(true);
+            if (findMainWindow != null) {
+                Rect rect3 = findMainWindow.getInsetsStateWithVisibilityOverride().calculateInsets(findMainWindow.mWindowFrames.mFrame, WindowInsets.Type.systemBars(), false).toRect();
+                Rect rect4 = new Rect(findMainWindow.mWindowFrames.mFrame);
+                rect4.inset(rect3);
+                rect = rect3;
+                rect2 = rect4;
+            } else {
+                rect = null;
+                rect2 = new Rect(0, 0, displayInfo.appWidth, displayInfo.appHeight);
+            }
+            Configuration configuration = this.mDisplayContent.getConfiguration();
+            AppTransition appTransition2 = getDisplayContent().mAppTransition;
+            Task task = this.task;
+            int i = configuration.orientation;
+            AppTransitionAnimationSpec appTransitionAnimationSpec2 = (AppTransitionAnimationSpec) appTransition2.mNextAppTransitionAnimationsSpecs.get(task.hashCode());
+            TransitionAnimation transitionAnimation = appTransition2.mTransitionAnimation;
+            Rect rect5 = appTransitionAnimationSpec2 != null ? appTransitionAnimationSpec2.rect : null;
+            AppTransitionAnimationSpec appTransitionAnimationSpec3 = appTransition2.mDefaultNextAppTransitionAnimationSpec;
+            windowContainerThumbnail.startAnimation(pendingTransaction, transitionAnimation.createThumbnailAspectScaleAnimationLocked(rect2, rect, hardwareBuffer, i, rect5, appTransitionAnimationSpec3 != null ? appTransitionAnimationSpec3.rect : null, appTransition2.mNextAppTransitionScaleUp), null);
+        }
+    }
+
+    public final boolean attachedToProcess() {
+        return hasProcess() && this.app.hasThread();
+    }
+
+    public final boolean canBeTopRunning() {
+        return !this.finishing && showToCurrentUser();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean canCustomizeAppTransition() {
+        return true;
+    }
+
+    public final boolean canForceResizeNonResizable(int i) {
+        int i2;
+        if (i == 2 && this.info.supportsPictureInPicture()) {
+            return false;
+        }
+        Task task = this.task;
+        return ((WindowConfiguration.inMultiWindowMode(i) && (task != null ? task.supportsMultiWindow() || supportsMultiWindowInDisplayArea((TaskDisplayArea) super.getDisplayArea()) : supportsMultiWindowInDisplayArea((TaskDisplayArea) super.getDisplayArea())) && !this.mAtmService.mForceResizableActivities) || (i2 = this.info.resizeMode) == 2 || (1048576 & i2) != 0 || i2 == 1) ? false : true;
+    }
+
+    public boolean canLaunchHomeActivity(int i, ActivityRecord activityRecord) {
+        if (i == 1000 || i == 0) {
+            return true;
+        }
+        RecentTasks recentTasks = this.mTaskSupervisor.mService.mRecentTasks;
+        if (recentTasks == null || !recentTasks.isCallerRecents(i)) {
+            return activityRecord != null && activityRecord.isResolverOrDelegateActivity();
+        }
+        return true;
+    }
+
+    public final boolean canResumeByCompat() {
+        boolean z;
+        TaskFragment taskFragment;
+        ActivityRecord activity;
+        WindowProcessController windowProcessController = this.app;
+        if (windowProcessController == null) {
+            return true;
+        }
+        if (windowProcessController.mInfo.targetSdkVersion >= 29 || windowProcessController.mPreQTopResumedActivity == this) {
+            z = true;
+        } else if (isAttached()) {
+            ActivityRecord activityRecord = windowProcessController.mPreQTopResumedActivity;
+            DisplayContent displayContent = (activityRecord == null || !activityRecord.isAttached()) ? null : windowProcessController.mPreQTopResumedActivity.mDisplayContent;
+            z = (displayContent != null && windowProcessController.mPreQTopResumedActivity.isVisibleRequested() && windowProcessController.mPreQTopResumedActivity.isFocusable()) ? false : true;
+            DisplayContent displayContent2 = this.mDisplayContent;
+            if (!z && displayContent.compareTo((WindowContainer) displayContent2) < 0) {
+                z = true;
+            }
+            if (!z && (activity = displayContent.getActivity(new Predicate() { // from class: com.android.server.wm.WindowProcessController$$ExternalSyntheticLambda11
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    return ((ActivityRecord) obj) == ActivityRecord.this;
+                }
+            }, true, windowProcessController.mPreQTopResumedActivity)) != null && activity != windowProcessController.mPreQTopResumedActivity) {
+                z = true;
+            }
+            if (z) {
+                ActivityRecord activityRecord2 = windowProcessController.mPreQTopResumedActivity;
+                if (activityRecord2 != null && activityRecord2.isState(State.RESUMED) && (taskFragment = windowProcessController.mPreQTopResumedActivity.getTaskFragment()) != null) {
+                    taskFragment.startPausing$1(this, "top-resumed-changed", taskFragment.shouldBeVisible(null), false);
+                }
+                windowProcessController.mPreQTopResumedActivity = this;
+            }
+        } else {
+            z = false;
+        }
+        return z;
+    }
+
+    public final boolean canShowWhenLocked() {
+        TaskFragment taskFragment;
+        TaskFragment taskFragment2 = getTaskFragment();
+        if (taskFragment2 == null || (taskFragment = taskFragment2.mAdjacentTaskFragment) == null || !taskFragment2.mIsEmbedded) {
+            return canShowWhenLocked(this);
+        }
+        return canShowWhenLocked(this) && canShowWhenLocked(taskFragment.getTopNonFinishingActivity(true, true));
+    }
+
+    public final boolean canShowWindows() {
+        return this.mTransitionController.isShellTransitionsEnabled() ? this.mSyncState != 1 : this.allDrawn;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean canStartChangeTransition() {
+        Task task = this.task;
+        return (task == null || task.mDragResizing || !super.canStartChangeTransition()) ? false : true;
+    }
+
+    public final boolean canTurnScreenOn() {
+        if (this.mTurnScreenOn || containsTurnScreenOnWindow()) {
+            return this.mCurrentLaunchCanTurnScreenOn && (!this.mTaskSupervisor.mKeyguardController.isKeyguardShowing(getDisplayId()) || this.mTaskSupervisor.mKeyguardController.checkKeyguardVisibility(this));
+        }
+        return false;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void cancelAnimation() {
+        super.cancelAnimation();
+        clearThumbnail();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void checkAppWindowsReadyToShow() {
+        boolean z = this.allDrawn;
+        if (z == this.mLastAllDrawn) {
+            return;
+        }
+        this.mLastAllDrawn = z;
+        if (z) {
+            if (!this.mFreezingScreen) {
+                setAppLayoutChanges(8);
+                if (getDisplayContent().mOpeningApps.contains(this) || !canShowWindows()) {
+                    return;
+                }
+                forAllWindows((Consumer) new ActivityRecord$$ExternalSyntheticLambda3(0), false);
+                return;
+            }
+            forAllWindows((Consumer) new ActivityRecord$$ExternalSyntheticLambda3(0), false);
+            stopFreezingScreen(false);
+            if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ORIENTATION_enabled[2]) {
+                ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_ORIENTATION, 3235691043029201724L, 20, null, String.valueOf(this), Long.valueOf(this.mNumInterestingWindows), Long.valueOf(this.mNumDrawnWindows));
+            }
+            setAppLayoutChanges(4);
+        }
+    }
+
+    public final boolean checkContentUriPermission(IBinder iBinder, GrantUri grantUri, int i) {
+        ActivityCallerState activityCallerState = this.mCallerState;
+        activityCallerState.getClass();
+        if (!Intent.isAccessUriMode(i)) {
+            throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Mode flags are not access URI mode flags: "));
+        }
+        ActivityCallerState.CallerInfo callerInfo = (ActivityCallerState.CallerInfo) activityCallerState.mCallerTokenInfoMap.getOrDefault(iBinder, null);
+        if (callerInfo == null) {
+            Slog.e("ActivityTaskManager", "Caller not found for checkContentUriPermission of: " + grantUri.uri.toSafeString());
+            return false;
+        }
+        if (callerInfo.mInaccessibleContentUris.contains(grantUri)) {
+            return false;
+        }
+        boolean contains = callerInfo.mReadableContentUris.contains(grantUri);
+        boolean contains2 = callerInfo.mWritableContentUris.contains(grantUri);
+        if (!contains && !contains2) {
+            throw new IllegalArgumentException("The supplied URI wasn't passed at launch in #getData, #EXTRA_STREAM, nor #getClipData: " + grantUri.uri.toSafeString());
+        }
+        if ((i & 1) == 0 || contains) {
+            return (i & 2) == 0 || contains2;
+        }
+        return false;
+    }
+
+    public final boolean checkEnterPictureInPictureAppOpsState() {
+        return this.mAtmService.getAppOpsManager().checkOpNoThrow(67, this.info.applicationInfo.uid, this.packageName) == 0;
+    }
+
+    public final boolean checkEnterPictureInPictureState(String str, boolean z, boolean z2) {
+        if (!supportsPictureInPicture() || !checkEnterPictureInPictureAppOpsState() || this.mAtmService.mVrController.mVrState != 0) {
+            return false;
+        }
+        DisplayContent displayContent = this.mDisplayContent;
+        if (displayContent != null) {
+            DisplayWindowPolicyControllerHelper displayWindowPolicyControllerHelper = displayContent.mDwpcHelper;
+            int uid = getUid();
+            DisplayWindowPolicyController displayWindowPolicyController = displayWindowPolicyControllerHelper.mDisplayWindowPolicyController;
+            if (!(displayWindowPolicyController == null ? true : displayWindowPolicyController.isEnteringPipAllowed(uid))) {
+                Slog.w("ActivityTaskManager", "Display " + this.mDisplayContent.mDisplayId + " doesn't support enter picture-in-picture mode. caller = " + str);
+                return false;
+            }
+        }
+        if (isDexMode()) {
+            return false;
+        }
+        if ((getDisplayContent() != null && getDisplayContent().isMultiTaskingDisplay()) || this.mWmService.mSwitchingUser) {
+            return false;
+        }
+        if (CoreRune.MW_PIP_SHELL_TRANSITION && this.finishing) {
+            Slog.w("ActivityTaskManager", "checkEnterPictureInPictureState: failed, reason=finishing");
+            return false;
+        }
+        boolean z3 = this.mAtmService.mLockTaskController.mLockTaskModeState != 0;
+        TaskDisplayArea taskDisplayArea = (TaskDisplayArea) super.getDisplayArea();
+        boolean z4 = taskDisplayArea != null && taskDisplayArea.hasPinnedTask();
+        boolean z5 = (isKeyguardLocked() || z3) ? false : true;
+        if (z && z4) {
+            return false;
+        }
+        int ordinal = this.mState.ordinal();
+        if (ordinal == 0) {
+            return z2;
+        }
+        if (ordinal != 2) {
+            return (ordinal == 3 || ordinal == 4) ? z5 && !z4 && this.supportsEnterPipOnTaskSwitch : ordinal == 5 && this.supportsEnterPipOnTaskSwitch && z5 && !z4;
+        }
+        if (z3) {
+            return false;
+        }
+        return this.supportsEnterPipOnTaskSwitch || !z;
+    }
+
+    public final void checkKeyguardFlagsChanged() {
+        boolean containsDismissKeyguardWindow = containsDismissKeyguardWindow();
+        boolean containsShowWhenLockedWindow = containsShowWhenLockedWindow();
+        if (containsDismissKeyguardWindow != this.mLastContainsDismissKeyguardWindow || containsShowWhenLockedWindow != this.mLastContainsShowWhenLockedWindow) {
+            this.mDisplayContent.notifyKeyguardFlagsChanged();
+        }
+        this.mLastContainsDismissKeyguardWindow = containsDismissKeyguardWindow;
+        this.mLastContainsShowWhenLockedWindow = containsShowWhenLockedWindow;
+        this.mLastContainsTurnScreenOnWindow = containsTurnScreenOnWindow();
+    }
+
+    public final void cleanUp(boolean z, boolean z2) {
+        HashSet hashSet;
+        int i;
+        ActivityRecord activityRecord;
+        getTaskFragment().cleanUpActivityReferences(this);
+        Task task = this.mLastParentBeforePip;
+        if (task != null) {
+            task.mChildPipActivity = null;
+            this.mLastParentBeforePip = null;
+        }
+        this.mLaunchIntoPipHostActivity = null;
+        this.mLastTaskFragmentOrganizerBeforePip = null;
+        this.mLastEmbeddedParentTfTokenBeforePip = null;
+        Task rootTask = getRootTask();
+        if (rootTask != null && (this == (activityRecord = rootTask.mTranslucentActivityWaiting) || this == rootTask.mPendingConvertFromTranslucentActivity)) {
+            if (activityRecord != null) {
+                if (!activityRecord.finishing) {
+                    activityRecord.setOccludesParent(true, false);
+                }
+                rootTask.mTranslucentActivityWaiting = null;
+            }
+            ActivityRecord activityRecord2 = rootTask.mPendingConvertFromTranslucentActivity;
+            if (activityRecord2 != null) {
+                if (!activityRecord2.finishing) {
+                    activityRecord2.setOccludesParent(true, false);
+                }
+                rootTask.mPendingConvertFromTranslucentActivity = null;
+            }
+            rootTask.mUndrawnActivitiesBelowTopTranslucent.clear();
+            rootTask.mHandler.removeMessages(101);
+        }
+        if (this.mHandleExitSplashScreen && !this.startingMoved && ((i = this.mTransferringSplashScreenState) == 3 || i == 0)) {
+            if (ProtoLogImpl_54989576.Cache.WM_DEBUG_STARTING_WINDOW_enabled[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -1298801500610545721L, 0, "Cleaning splash screen token=%s", String.valueOf(this));
+            }
+            TaskOrganizerController taskOrganizerController = this.mAtmService.mTaskOrganizerController;
+            Task task2 = this.task;
+            StartingSurfaceController.StartingSurface startingSurface = this.mStartingSurface;
+            ITaskOrganizer iTaskOrganizer = startingSurface != null ? startingSurface.mTaskOrganizer : null;
+            taskOrganizerController.getClass();
+            if (task2.getRootTask() != null) {
+                if (iTaskOrganizer == null) {
+                    iTaskOrganizer = taskOrganizerController.getTaskOrganizer();
+                }
+                if (iTaskOrganizer != null) {
+                    try {
+                        iTaskOrganizer.onAppSplashScreenViewRemoved(task2.mTaskId);
+                    } catch (RemoteException e) {
+                        Slog.e("TaskOrganizerController", "Exception sending onAppSplashScreenViewRemoved callback", e);
                     }
-                } else if (windowState == null || (windowState.getWindowFrames().mFrame.height() <= height && windowState.getWindowFrames().mFrame.width() <= width)) {
-                    windowState = windowState3;
                 }
             }
         }
-        return windowState != null ? windowState : windowState2;
-    }
-
-    public /* synthetic */ void lambda$new$2(final float[] fArr, final float[] fArr2) {
-        this.mWmService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda29
-            @Override // java.lang.Runnable
-            public final void run() {
-                ActivityRecord.this.lambda$new$1(fArr, fArr2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$new$1(float[] fArr, float[] fArr2) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mWmService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                if (this.mLastAppSaturationInfo == null) {
-                    this.mLastAppSaturationInfo = new AppSaturationInfo();
+        if (z2) {
+            setState(State.DESTROYED, "cleanUp");
+            detachFromProcess();
+        }
+        ActivityTaskSupervisor activityTaskSupervisor = this.mTaskSupervisor;
+        activityTaskSupervisor.mFinishingActivities.remove(this);
+        activityTaskSupervisor.reportActivityLaunched(false, this, -1L, 0);
+        if (this.finishing && (hashSet = this.pendingResults) != null) {
+            Iterator it = hashSet.iterator();
+            while (it.hasNext()) {
+                PendingIntentRecord pendingIntentRecord = (PendingIntentRecord) ((WeakReference) it.next()).get();
+                if (pendingIntentRecord != null) {
+                    this.mAtmService.mPendingIntentController.cancelIntentSender(pendingIntentRecord, false, 16);
                 }
-                this.mLastAppSaturationInfo.setSaturation(fArr, fArr2);
-                updateColorTransform();
+            }
+            this.pendingResults = null;
+        }
+        if (z) {
+            cleanUpActivityServices();
+        }
+        removeTimeouts();
+        if (this.mPendingRelaunchCount == 0) {
+            return;
+        }
+        this.mPendingRelaunchCount = 0;
+        this.mRelaunchStartTime = 0L;
+        DisplayPolicy displayPolicy = this.mDisplayContent.mDisplayPolicy;
+        if (displayPolicy.mRelaunchingSystemBarColorApps.remove(this) && displayPolicy.mRelaunchingSystemBarColorApps.isEmpty()) {
+            displayPolicy.updateSystemBarAttributes();
+        }
+    }
+
+    public final void cleanUpActivityServices() {
+        synchronized (this) {
+            try {
+                final ActivityServiceConnectionsHolder activityServiceConnectionsHolder = this.mServiceConnectionsHolder;
+                if (activityServiceConnectionsHolder == null) {
+                    return;
+                }
+                ArraySet arraySet = activityServiceConnectionsHolder.mConnections;
+                if (arraySet != null && !arraySet.isEmpty() && !activityServiceConnectionsHolder.mIsDisconnecting) {
+                    activityServiceConnectionsHolder.mIsDisconnecting = true;
+                    activityServiceConnectionsHolder.mActivity.mAtmService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityServiceConnectionsHolder$$ExternalSyntheticLambda0
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            ActivityServiceConnectionsHolder activityServiceConnectionsHolder2 = ActivityServiceConnectionsHolder.this;
+                            activityServiceConnectionsHolder2.mActivity.mAtmService.mAmInternal.disconnectActivityFromServices(activityServiceConnectionsHolder2);
+                            activityServiceConnectionsHolder2.mIsDisconnecting = false;
+                        }
+                    });
+                }
+                this.mServiceConnectionsHolder = null;
             } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
                 throw th;
             }
         }
-        WindowManagerService.resetPriorityAfterLockedSection();
     }
 
-    /* renamed from: com.android.server.wm.ActivityRecord$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 implements Runnable {
-        public AnonymousClass1() {
+    public final void clearAnimatingFlags() {
+        boolean z = false;
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            z |= ((WindowState) this.mChildren.get(size)).clearAnimatingFlags();
         }
+        if (z) {
+            requestUpdateWallpaperIfNeeded();
+        }
+    }
 
-        @Override // java.lang.Runnable
-        public void run() {
-            Slog.w("ActivityTaskManager", "Activity pause timeout for " + ActivityRecord.this);
-            WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    if (!ActivityRecord.this.hasProcess()) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        return;
+    public final void clearThumbnail() {
+        WindowContainerThumbnail windowContainerThumbnail = this.mThumbnail;
+        if (windowContainerThumbnail == null) {
+            return;
+        }
+        windowContainerThumbnail.destroy();
+        this.mThumbnail = null;
+    }
+
+    public final void clearWaitForEnteringPinnedMode(String str) {
+        if (this.mWaitForEnteringPinnedMode) {
+            this.mWaitForEnteringPinnedMode = false;
+            setWindowingMode(0);
+            StringBuilder sb = new StringBuilder("clearWaitForEnteringPinnedMode: r=");
+            sb.append(this);
+            sb.append(", reason=");
+            BootReceiver$$ExternalSyntheticOutline0.m(sb, str, "ActivityTaskManager");
+        }
+        setEnteringPipFromSplit(str, false);
+    }
+
+    public final void commitVisibility(boolean z, boolean z2, boolean z3) {
+        WindowState windowState;
+        this.mVisibleSetFromTransferredStartingWindow = false;
+        if (z == this.mVisible) {
+            return;
+        }
+        int size = this.mChildren.size();
+        boolean isAnimating = WindowManagerService.sEnableShellTransitions ? z : isAnimating(2, 1);
+        for (int i = 0; i < size; i++) {
+            ((WindowState) this.mChildren.get(i)).onAppVisibilityChanged(z, isAnimating);
+        }
+        setVisible(z);
+        setVisibleRequested(z);
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_APP_TRANSITIONS_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS, -477271988506706928L, 1020, null, String.valueOf(this), Boolean.valueOf(this.mVisible), Boolean.valueOf(this.mVisibleRequested), Boolean.valueOf(inTransitionSelfOrParent()), Boolean.valueOf(isAnimating), String.valueOf(Debug.getCallers(5)));
+        }
+        if (z) {
+            WindowState windowState2 = this.mStartingWindow;
+            if (windowState2 != null && !windowState2.isDrawn() && (this.firstWindowDrawn || this.allDrawn)) {
+                this.mStartingWindow.clearPolicyVisibilityFlag(1);
+                this.mStartingWindow.mLegacyPolicyVisibilityAfterAnim = false;
+            }
+            final WindowManagerService windowManagerService = this.mWmService;
+            Objects.requireNonNull(windowManagerService);
+            final int i2 = 0;
+            forAllWindows(new Consumer() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda0
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    int i3 = i2;
+                    Object obj2 = windowManagerService;
+                    switch (i3) {
+                        case 0:
+                            ((WindowManagerService) obj2).makeWindowFreezingScreenIfNeededLocked((WindowState) obj);
+                            break;
+                        default:
+                            ActivityRecord activityRecord = (ActivityRecord) obj2;
+                            activityRecord.getClass();
+                            ((WindowState) obj).mWinAnimator.hide(activityRecord.getPendingTransaction(), "immediately hidden");
+                            break;
                     }
-                    ActivityRecord activityRecord = ActivityRecord.this;
-                    activityRecord.mAtmService.logAppTooSlow(activityRecord.app, activityRecord.pauseTime, "pausing " + ActivityRecord.this);
-                    ActivityRecord.this.activityPaused(true);
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
                 }
+            }, true);
+        } else {
+            stopFreezingScreen(true);
+        }
+        Task task = this.task;
+        for (Task organizedTask = task != null ? task.getOrganizedTask() : null; organizedTask != null; organizedTask = organizedTask.getParent().asTask()) {
+            organizedTask.dispatchTaskInfoChangedIfNeeded(false);
+        }
+        DisplayContent displayContent = getDisplayContent();
+        displayContent.mInputMonitor.mUpdateInputWindowsNeeded = true;
+        if (z2) {
+            this.mWmService.updateFocusedWindowLocked(3, false);
+            this.mWmService.mWindowPlacerLocked.performSurfacePlacement(false);
+        }
+        displayContent.mInputMonitor.updateInputWindowsLw(false);
+        this.mTransitionChangeFlags = 0;
+        boolean isShellTransitionsEnabled = this.mTransitionController.isShellTransitionsEnabled();
+        boolean z4 = !isShellTransitionsEnabled && isAnimating(6, 25);
+        if (!z4 && !isShellTransitionsEnabled) {
+            onAnimationFinished(1, null);
+            if (z) {
+                this.mEnteringAnimation = true;
+                this.mWmService.mActivityManagerAppTransitionNotifier.onAppTransitionFinishedLocked(this.token);
+            }
+        }
+        if (z || isShellTransitionsEnabled || !isAnimating(2, 9)) {
+            setClientVisible(z);
+        }
+        DisplayContent displayContent2 = getDisplayContent();
+        if (!z) {
+            this.mImeInsetsFrozenUntilStartInput = true;
+            if (CoreRune.MW_SHELL_TRANSITION && isShellTransitionsEnabled) {
+                InsetsControlTarget insetsControlTarget = displayContent2.mInsetsStateController.getImeSourceProvider().mControlTarget;
+                DisplayContent.RemoteInsetsControlTarget remoteInsetsControlTarget = displayContent2.mRemoteInsetsControlTarget;
+                if (remoteInsetsControlTarget != null && remoteInsetsControlTarget == insetsControlTarget && (windowState = displayContent2.mImeLayeringTarget) != null && windowState.mActivityRecord == this) {
+                    displayContent2.computeImeTarget(true);
+                }
+            }
+        }
+        if (!displayContent2.mClosingApps.contains(this) && !displayContent2.mOpeningApps.contains(this) && !z3) {
+            ActivitySnapshotController activitySnapshotController = this.mWmService.mSnapshotController.mActivitySnapshotController;
+            if (!activitySnapshotController.shouldDisableSnapshots() && this.task != null && !z) {
+                activitySnapshotController.resetTmpFields();
+                activitySnapshotController.addBelowActivityIfExist(this, activitySnapshotController.mPendingRemoveActivity, false);
+                activitySnapshotController.postProcess();
+            }
+        }
+        if (isShellTransitionsEnabled || this.mVisible || z4 || displayContent2.mAppTransition.isTransitionSet()) {
+            return;
+        }
+        final int i3 = 1;
+        forAllWindows(new Consumer() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda0
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                int i32 = i3;
+                Object obj2 = this;
+                switch (i32) {
+                    case 0:
+                        ((WindowManagerService) obj2).makeWindowFreezingScreenIfNeededLocked((WindowState) obj);
+                        break;
+                    default:
+                        ActivityRecord activityRecord = (ActivityRecord) obj2;
+                        activityRecord.getClass();
+                        ((WindowState) obj).mWinAnimator.hide(activityRecord.getPendingTransaction(), "immediately hidden");
+                        break;
+                }
+            }
+        }, true);
+        scheduleAnimation();
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0052, code lost:
+    
+        if (r8.getDisplayState(getDisplayId()).mTopOccludesActivity == r6) goto L28;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:52:0x00b2  */
+    /* JADX WARN: Removed duplicated region for block: B:61:0x00df  */
+    /* JADX WARN: Removed duplicated region for block: B:63:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:65:0x00d6  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final com.android.server.wm.ActivityRecord completeFinishing(java.lang.String r7, boolean r8) {
+        /*
+            Method dump skipped, instructions count: 265
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.completeFinishing(java.lang.String, boolean):com.android.server.wm.ActivityRecord");
+    }
+
+    public final void completeResumeLocked() {
+        this.idle = false;
+        this.results = null;
+        ArrayList arrayList = this.newIntents;
+        if (arrayList != null && arrayList.size() > 0) {
+            ArrayList arrayList2 = this.newIntents;
+            this.mLastNewIntent = (Intent) arrayList2.get(arrayList2.size() - 1);
+        }
+        this.newIntents = null;
+        this.mTaskSupervisor.updateHomeProcessIfNeeded(this);
+        if (this.nowVisible) {
+            this.mTaskSupervisor.reportActivityLaunched(false, this, -1L, 0);
+        }
+        ActivityTaskSupervisor.ActivityTaskSupervisorHandler activityTaskSupervisorHandler = this.mTaskSupervisor.mHandler;
+        activityTaskSupervisorHandler.sendMessageDelayed(activityTaskSupervisorHandler.obtainMessage(200, this), ActivityTaskSupervisor.IDLE_TIMEOUT);
+        this.mTaskSupervisor.mStoppingActivities.remove(this);
+        if (((TaskDisplayArea) super.getDisplayArea()).allResumedActivitiesComplete()) {
+            this.mAppCompatController.mAppCompatSizeCompatModePolicy.updateAppCompatDisplayInsets();
+            RootWindowContainer rootWindowContainer = this.mRootWindowContainer;
+            for (int childCount = rootWindowContainer.getChildCount() - 1; childCount >= 0; childCount--) {
+                ((DisplayContent) rootWindowContainer.getChildAt(childCount)).mDisplayContent.executeAppTransition();
+            }
+        }
+        resumeKeyDispatchingLocked();
+        Task rootTask = getRootTask();
+        this.mTaskSupervisor.mNoAnimActivities.clear();
+        this.returningOptions = null;
+        if (canTurnScreenOn()) {
+            this.mTaskSupervisor.wakeUp("turnScreenOnFlag::" + this.packageName);
+        } else {
+            rootTask.checkReadyForSleep();
+        }
+        ActivityTaskManagerServiceExt activityTaskManagerServiceExt = this.mAtmService.mExt;
+        activityTaskManagerServiceExt.mKeepAliveActivities.remove(this);
+        if (activityTaskManagerServiceExt.mKeepAliveActivities.size() == 0) {
+            activityTaskManagerServiceExt.mHasActivitiesKeptAlive.compareAndSet(true, false);
+        }
+        if (CoreRune.FW_FLEX_PANEL && this.mIsFlexPanel && inSplitScreenWindowingMode() && this.task.getAdjacentTask() != null) {
+            final Task adjacentTask = this.task.getAdjacentTask();
+            adjacentTask.getClass();
+            this.mAtmService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    this.mAtmService.setFocusedTask(adjacentTask.mTaskId);
+                }
+            });
+        }
+    }
+
+    public final void computeCallerInfo(IBinder iBinder, Intent intent, int i, String str, boolean z) {
+        boolean z2;
+        boolean z3;
+        ActivityCallerState activityCallerState = this.mCallerState;
+        activityCallerState.getClass();
+        ActivityCallerState.CallerInfo callerInfo = new ActivityCallerState.CallerInfo(i, str, z);
+        activityCallerState.mCallerTokenInfoMap.put(iBinder, callerInfo);
+        ArraySet contentUrisFromIntent = ActivityCallerState.getContentUrisFromIntent(intent);
+        for (int size = contentUrisFromIntent.size() - 1; size >= 0; size--) {
+            Uri uri = (Uri) contentUrisFromIntent.valueAt(size);
+            ArraySet arraySet = callerInfo.mReadableContentUris;
+            GrantUri grantUri = new GrantUri(ContentProvider.getUserIdFromUri(uri, UserHandle.getUserId(i)), 1, ContentProvider.getUriWithoutUserId(uri));
+            ActivityTaskManagerService activityTaskManagerService = activityCallerState.mAtmService;
+            if (((UriGrantsManagerService.LocalService) activityTaskManagerService.mUgmInternal).checkUriPermission(grantUri, i, 1, true)) {
+                arraySet.add(grantUri);
+                z2 = true;
+            } else {
+                z2 = false;
+            }
+            ArraySet arraySet2 = callerInfo.mWritableContentUris;
+            GrantUri grantUri2 = new GrantUri(ContentProvider.getUserIdFromUri(uri, UserHandle.getUserId(i)), 2, ContentProvider.getUriWithoutUserId(uri));
+            if (((UriGrantsManagerService.LocalService) activityTaskManagerService.mUgmInternal).checkUriPermission(grantUri2, i, 2, true)) {
+                arraySet2.add(grantUri2);
+                z3 = true;
+            } else {
+                z3 = false;
+            }
+            if (!z2 && !z3) {
+                callerInfo.mInaccessibleContentUris.add(new GrantUri(ContentProvider.getUserIdFromUri(uri, UserHandle.getUserId(i)), 0, ContentProvider.getUriWithoutUserId(uri)));
             }
         }
     }
 
-    /* renamed from: com.android.server.wm.ActivityRecord$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 implements Runnable {
-        public AnonymousClass2() {
-        }
+    public final void computeConfigByResolveHint(Configuration configuration, Configuration configuration2) {
+        this.task.computeConfigResourceOverrides(configuration, configuration2, this.mResolveConfigHint, null);
+        TaskFragment.ConfigOverrideHint configOverrideHint = this.mResolveConfigHint;
+        configOverrideHint.mTmpCompatInsets = null;
+        configOverrideHint.mTmpOverrideDisplayInfo = null;
+    }
 
-        @Override // java.lang.Runnable
-        public void run() {
-            WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    if (ActivityRecord.this.continueLaunchTicking()) {
-                        ActivityRecord activityRecord = ActivityRecord.this;
-                        activityRecord.mAtmService.logAppTooSlow(activityRecord.app, activityRecord.launchTickTime, "launching " + ActivityRecord.this);
-                    }
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
+    public final boolean containsDismissKeyguardWindow() {
+        if (isRelaunching()) {
+            return this.mLastContainsDismissKeyguardWindow;
+        }
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            if ((((WindowState) this.mChildren.get(size)).mAttrs.flags & 4194304) != 0) {
+                return true;
             }
-            WindowManagerService.resetPriorityAfterLockedSection();
+        }
+        return false;
+    }
+
+    public final boolean containsShowWhenLockedWindow() {
+        if (isRelaunching()) {
+            return this.mLastContainsShowWhenLockedWindow;
+        }
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            if ((((WindowState) this.mChildren.get(size)).mAttrs.flags & 524288) != 0 && (this.mChildren.size() <= 1 || ((WindowState) this.mChildren.get(size)).mAttrs.type != 3)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final boolean containsTurnScreenOnWindow() {
+        if (isRelaunching()) {
+            return this.mLastContainsTurnScreenOnWindow;
+        }
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            if ((((WindowState) this.mChildren.get(size)).mAttrs.flags & 2097152) != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final boolean continueLaunchTicking() {
+        Task rootTask;
+        if (this.launchTickTime == 0 || (rootTask = getRootTask()) == null) {
+            return false;
+        }
+        rootTask.forAllActivities(new Task$$ExternalSyntheticLambda6(5));
+        this.mAtmService.mH.postDelayed(this.mLaunchTickRunnable, 500L);
+        return true;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final RemoteAnimationTarget createRemoteAnimationTarget(RemoteAnimationController.RemoteAnimationRecord remoteAnimationRecord) {
+        boolean z = true;
+        WindowState findMainWindow = findMainWindow(true);
+        if (this.task == null || findMainWindow == null) {
+            return null;
+        }
+        Rect rect = findMainWindow.getInsetsStateWithVisibilityOverride().calculateInsets(this.task.getBounds(), WindowInsets.Type.systemBars(), false).toRect();
+        InsetUtils.addInsets(rect, getLetterboxInsets());
+        int i = this.task.mTaskId;
+        int i2 = remoteAnimationRecord.mMode;
+        SurfaceControl surfaceControl = remoteAnimationRecord.mAdapter.mCapturedLeash;
+        boolean z2 = !occludesParent(true);
+        Rect rect2 = new Rect();
+        int prefixOrderIndex = getPrefixOrderIndex();
+        RemoteAnimationController.RemoteAnimationAdapterWrapper remoteAnimationAdapterWrapper = remoteAnimationRecord.mAdapter;
+        Point point = remoteAnimationAdapterWrapper.mPosition;
+        Rect rect3 = remoteAnimationAdapterWrapper.mLocalBounds;
+        Rect rect4 = remoteAnimationAdapterWrapper.mEndBounds;
+        WindowConfiguration windowConfiguration = this.task.getWindowConfiguration();
+        RemoteAnimationController.RemoteAnimationAdapterWrapper remoteAnimationAdapterWrapper2 = remoteAnimationRecord.mThumbnailAdapter;
+        RemoteAnimationTarget remoteAnimationTarget = new RemoteAnimationTarget(i, i2, surfaceControl, z2, rect2, rect, prefixOrderIndex, point, rect3, rect4, windowConfiguration, false, remoteAnimationAdapterWrapper2 != null ? remoteAnimationAdapterWrapper2.mCapturedLeash : null, remoteAnimationRecord.mStartBounds, this.task.getTaskInfo(), checkEnterPictureInPictureAppOpsState());
+        remoteAnimationTarget.setShowBackdrop(remoteAnimationRecord.mShowBackdrop);
+        StartingData startingData = this.mStartingData;
+        remoteAnimationTarget.setWillShowImeOnTarget(startingData != null && startingData.hasImeSurface());
+        RemoteAnimationController remoteAnimationController = RemoteAnimationController.this;
+        int size = remoteAnimationController.mDisplayContent.mChangingContainers.size() - 1;
+        while (true) {
+            if (size < 0) {
+                z = false;
+                break;
+            }
+            if (remoteAnimationRecord.mWindowContainer.isDescendantOf((WindowContainer) remoteAnimationController.mDisplayContent.mChangingContainers.valueAt(size))) {
+                break;
+            }
+            size--;
+        }
+        remoteAnimationTarget.hasAnimatingParent = z;
+        return remoteAnimationTarget;
+    }
+
+    public final boolean destroyIfPossible(String str) {
+        setState(State.FINISHING, "destroyIfPossible");
+        this.mTaskSupervisor.mStoppingActivities.remove(this);
+        Task rootTask = getRootTask();
+        TaskDisplayArea taskDisplayArea = (TaskDisplayArea) super.getDisplayArea();
+        if (CoreRune.SYSFW_APP_SPEG && (taskDisplayArea == null || rootTask == null)) {
+            Slog.w("SPEG", "Impossible to destroy activity: " + this + ", task is null");
+        }
+        ActivityRecord activityRecord = taskDisplayArea.topRunningActivity(false);
+        if (activityRecord == null && rootTask.isFocusedRootTaskOnDisplay() && taskDisplayArea.getOrCreateRootHomeTask(false) != null && getDisplayId() != 4) {
+            addToFinishingAndWaitForIdle();
+            return false;
+        }
+        makeFinishingLocked();
+        boolean destroyImmediately = destroyImmediately("finish-imm:" + str);
+        if (activityRecord == null) {
+            this.mRootWindowContainer.ensureVisibilityAndConfig(null, this.mDisplayContent, true);
+            if (this.mDisplayContent.topRunningActivity(false) == null) {
+                this.mTransitionController.setReady(this.mDisplayContent, true);
+            }
+        }
+        if (destroyImmediately) {
+            this.mRootWindowContainer.resumeFocusedTasksTopActivities();
+        }
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_CONTAINERS_enabled[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_CONTAINERS, -2989211291975863399L, 0, null, String.valueOf(this), String.valueOf(destroyImmediately));
+        }
+        return destroyImmediately;
+    }
+
+    public final boolean destroyImmediately(String str) {
+        boolean z;
+        State state = State.DESTROYING;
+        State state2 = State.DESTROYED;
+        boolean isState = isState(state, state2);
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled;
+        if (isState) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 9050478058743283018L, 0, null, String.valueOf(this), String.valueOf(str));
+            }
+            return false;
+        }
+        EventLog.writeEvent(30018, Integer.valueOf(this.mUserId), Integer.valueOf(System.identityHashCode(this)), Integer.valueOf(this.task.mTaskId), this.shortComponentName, str);
+        cleanUp(false, false);
+        setVisibleRequested(false);
+        if (!hasProcess()) {
+            if (this.finishing) {
+                removeFromHistory(str + " hadNoApp");
+                return true;
+            }
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 3282063745558462269L, 0, null, String.valueOf(this));
+            }
+            setState(state2, "destroyActivityLocked. not finishing and had no app");
+            return false;
+        }
+        this.app.removeActivity(true, this);
+        if (!this.app.mHasActivities) {
+            this.mAtmService.clearHeavyWeightProcessIfEquals(this.app);
+        }
+        try {
+            this.mAtmService.mLifecycleManager.scheduleTransactionItem(this.app.mThread, DestroyActivityItem.obtain(this.token, this.finishing));
+        } catch (Exception unused) {
+            if (this.finishing) {
+                removeFromHistory(str + " exceptionInScheduleDestroy");
+                z = true;
+            }
+        }
+        z = false;
+        boolean z2 = z;
+        this.nowVisible = false;
+        if (!this.finishing || z) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, -1834399855266808961L, 0, null, String.valueOf(this));
+            }
+            setState(state2, "destroyActivityLocked. not finishing or skipping destroy");
+            detachFromProcess();
+        } else {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 5672598223877126839L, 0, null, String.valueOf(this));
+            }
+            setState(state, "destroyActivityLocked. finishing and not skipping destroy");
+            this.mAtmService.mH.postDelayed(this.mDestroyTimeoutRunnable, 10000L);
+        }
+        return z2;
+    }
+
+    public final void destroySurfaces(boolean z) {
+        ArrayList arrayList = new ArrayList(this.mChildren);
+        boolean z2 = false;
+        for (int size = arrayList.size() - 1; size >= 0; size--) {
+            z2 |= ((WindowState) arrayList.get(size)).destroySurface(z, this.mAppStopped);
+        }
+        if (z2) {
+            getDisplayContent().assignWindowLayers(true);
+            updateLetterboxSurfaceIfNeeded(null);
         }
     }
 
-    /* renamed from: com.android.server.wm.ActivityRecord$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 implements Runnable {
-        public AnonymousClass3() {
+    public final void destroyed(String str) {
+        this.mAtmService.mH.removeCallbacks(this.mDestroyTimeoutRunnable);
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_CONTAINERS_enabled[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_CONTAINERS, -8001673213497887656L, 0, null, String.valueOf(this));
         }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    Slog.w("ActivityTaskManager", "Activity destroy timeout for " + ActivityRecord.this);
-                    if (FreecessController.getInstance().getFreecessEnabled()) {
-                        FreecessController.getInstance().protectFreezePackage(ActivityRecord.this.info.applicationInfo.uid, "ActivityDestroyTimeout", 20000L);
-                    }
-                    ActivityRecord.this.destroyed("destroyTimeout");
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
+        if (!isState(State.DESTROYING, State.DESTROYED)) {
+            throw new IllegalStateException("Reported destroyed for activity that is not destroying: r=" + this);
+        }
+        ActivityTaskSupervisor activityTaskSupervisor = this.mTaskSupervisor;
+        Task task = this.task;
+        activityTaskSupervisor.getClass();
+        if (task != null && task.mKillProcessesOnDestroyed) {
+            int[] iArr = new int[1];
+            task.forAllActivities(new ActivityTaskSupervisor$$ExternalSyntheticLambda6(1, iArr));
+            if (iArr[0] <= 1) {
+                activityTaskSupervisor.mHandler.removeMessages(206, task);
+                activityTaskSupervisor.killTaskProcessesIfPossible(task);
             }
-            WindowManagerService.resetPriorityAfterLockedSection();
         }
+        if (isInRootTaskLocked()) {
+            cleanUp(true, false);
+            removeFromHistory(str);
+        }
+        this.mRootWindowContainer.resumeFocusedTasksTopActivities();
     }
 
-    /* renamed from: com.android.server.wm.ActivityRecord$4 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass4 implements Runnable {
-        public AnonymousClass4() {
+    public final void detachFromProcess() {
+        WindowProcessController windowProcessController = this.app;
+        if (windowProcessController != null) {
+            windowProcessController.removeActivity(false, this);
         }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    Slog.w("ActivityTaskManager", "Activity stop timeout for " + ActivityRecord.this);
-                    if (ActivityRecord.this.isInHistory()) {
-                        ActivityRecord.this.activityStopped(null, null, null);
-                    }
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            WindowManagerService.resetPriorityAfterLockedSection();
-        }
+        this.app = null;
+        this.mInputDispatchingTimeoutMillis = InputConstants.DEFAULT_DISPATCHING_TIMEOUT_MILLIS;
     }
 
-    /* renamed from: com.android.server.wm.ActivityRecord$5 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass5 implements Runnable {
-        public AnonymousClass5() {
+    @Override // com.android.server.wm.ConfigurationContainer
+    public final void dispatchConfigurationToChild(ConfigurationContainer configurationContainer, Configuration configuration) {
+        WindowState windowState = (WindowState) configurationContainer;
+        if (isConfigurationDispatchPaused()) {
+            return;
         }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            if (CoreRune.MW_PIP_SHELL_TRANSITION) {
-                WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        Slog.w("ActivityTaskManager", "enter pip timeout for  " + ActivityRecord.this);
-                        ActivityRecord.this.setHiddenWhileEnteringPinnedMode(false, "timeout");
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-        }
+        super.dispatchConfigurationToChild(windowState, configuration);
     }
 
     @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer
     @NeverCompile
-    public void dump(PrintWriter printWriter, String str, boolean z) {
+    public final void dump(PrintWriter printWriter, String str, boolean z) {
+        String str2;
         SizeCompatAttributes sizeCompatAttributes;
-        ApplicationInfo applicationInfo;
         long uptimeMillis = SystemClock.uptimeMillis();
         printWriter.print(str);
         printWriter.print("packageName=");
         printWriter.print(this.packageName);
         printWriter.print(" processName=");
-        printWriter.println(this.processName);
-        printWriter.print(str);
-        printWriter.print("launchedFromUid=");
+        ProcessList$$ExternalSyntheticOutline0.m(printWriter, this.processName, str, "launchedFromUid=");
         printWriter.print(this.launchedFromUid);
         printWriter.print(" launchedFromPackage=");
         printWriter.print(this.launchedFromPackage);
         printWriter.print(" launchedFromFeature=");
         printWriter.print(this.launchedFromFeatureId);
         printWriter.print(" userId=");
-        printWriter.println(this.mUserId);
-        printWriter.print(str);
-        printWriter.print("app=");
+        BroadcastStats$$ExternalSyntheticOutline0.m(this.mUserId, printWriter, str, "app=");
         printWriter.println(this.app);
         printWriter.print(str);
         printWriter.println(this.intent.toInsecureString());
@@ -680,33 +1972,29 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         printWriter.println(this.task);
         printWriter.print(str);
         printWriter.print("taskAffinity=");
-        printWriter.println(this.taskAffinity);
-        printWriter.print(str);
-        printWriter.print("mActivityComponent=");
+        ProcessList$$ExternalSyntheticOutline0.m(printWriter, this.taskAffinity, str, "mActivityComponent=");
         printWriter.println(this.mActivityComponent.flattenToShortString());
-        ActivityInfo activityInfo = this.info;
-        if (activityInfo != null && (applicationInfo = activityInfo.applicationInfo) != null) {
+        ApplicationInfo applicationInfo = this.info.applicationInfo;
+        printWriter.print(str);
+        printWriter.print("baseDir=");
+        printWriter.println(applicationInfo.sourceDir);
+        if (!Objects.equals(applicationInfo.sourceDir, applicationInfo.publicSourceDir)) {
             printWriter.print(str);
-            printWriter.print("baseDir=");
-            printWriter.println(applicationInfo.sourceDir);
-            if (!Objects.equals(applicationInfo.sourceDir, applicationInfo.publicSourceDir)) {
-                printWriter.print(str);
-                printWriter.print("resDir=");
-                printWriter.println(applicationInfo.publicSourceDir);
-            }
+            printWriter.print("resDir=");
+            printWriter.println(applicationInfo.publicSourceDir);
+        }
+        printWriter.print(str);
+        printWriter.print("dataDir=");
+        printWriter.println(applicationInfo.dataDir);
+        if (applicationInfo.splitSourceDirs != null) {
             printWriter.print(str);
-            printWriter.print("dataDir=");
-            printWriter.println(applicationInfo.dataDir);
-            if (applicationInfo.splitSourceDirs != null) {
-                printWriter.print(str);
-                printWriter.print("splitDir=");
-                printWriter.println(Arrays.toString(applicationInfo.splitSourceDirs));
-            }
-            if (applicationInfo.metaData != null) {
-                printWriter.print(str);
-                printWriter.print("appMetaData=");
-                printWriter.println(applicationInfo.metaData);
-            }
+            printWriter.print("splitDir=");
+            printWriter.println(Arrays.toString(applicationInfo.splitSourceDirs));
+        }
+        if (applicationInfo.metaData != null) {
+            printWriter.print(str);
+            printWriter.print("appMetaData=");
+            printWriter.println(applicationInfo.metaData);
         }
         printWriter.print(str);
         printWriter.print("stateNotNeeded=");
@@ -722,26 +2010,33 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         }
         printWriter.print(str);
         printWriter.print("compat=");
-        printWriter.print(this.mAtmService.compatibilityInfoForPackageLocked(this.info.applicationInfo));
-        printWriter.print(" labelRes=0x");
-        printWriter.print(Integer.toHexString(this.labelRes));
-        printWriter.print(" icon=0x");
-        printWriter.print(Integer.toHexString(this.icon));
+        printWriter.print(this.mAtmService.mCompatModePackages.compatibilityInfoForPackageLocked(this.info.applicationInfo));
         printWriter.print(" theme=0x");
         printWriter.println(Integer.toHexString(this.theme));
         printWriter.println(str + "mLastReportedConfigurations:");
         this.mLastReportedConfiguration.dump(printWriter, str + "  ");
+        if (Flags.activityWindowInfoFlag()) {
+            printWriter.print(str);
+            printWriter.print("mLastReportedActivityWindowInfo=");
+            printWriter.println(this.mLastReportedActivityWindowInfo);
+        }
         printWriter.print(str);
         printWriter.print("CurrentConfiguration=");
         printWriter.println(getConfiguration());
         if (!getRequestedOverrideConfiguration().equals(Configuration.EMPTY)) {
-            printWriter.println(str + "RequestedOverrideConfiguration=" + getRequestedOverrideConfiguration());
+            StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, "RequestedOverrideConfiguration=");
+            m.append(getRequestedOverrideConfiguration());
+            printWriter.println(m.toString());
         }
         if (!getResolvedOverrideConfiguration().equals(getRequestedOverrideConfiguration())) {
-            printWriter.println(str + "ResolvedOverrideConfiguration=" + getResolvedOverrideConfiguration());
+            StringBuilder m2 = Preconditions$$ExternalSyntheticOutline0.m(str, "ResolvedOverrideConfiguration=");
+            m2.append(getResolvedOverrideConfiguration());
+            printWriter.println(m2.toString());
         }
         if (!matchParentBounds()) {
-            printWriter.println(str + "bounds=" + getBounds());
+            StringBuilder m3 = Preconditions$$ExternalSyntheticOutline0.m(str, "bounds=");
+            m3.append(getBounds());
+            printWriter.println(m3.toString());
         }
         if (this.resultTo != null || this.resultWho != null) {
             printWriter.print(str);
@@ -828,13 +2123,50 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
             printWriter.print("returningOptions=");
             printWriter.println(this.returningOptions);
         }
+        PopOverState popOverState = this.mPopOverState;
+        if (popOverState.mOptions != null) {
+            StringBuilder m4 = MediaRouter2ServiceImpl$UserRecord$$ExternalSyntheticOutline0.m(Preconditions$$ExternalSyntheticOutline0.m(str, "PopOver="), popOverState.mIsActivated, printWriter, str, " size=land(");
+            m4.append(popOverState.mOptions.mPopOverWidthDp[0]);
+            m4.append(",");
+            m4.append(popOverState.mOptions.mPopOverHeightDp[0]);
+            m4.append(")/port(");
+            m4.append(popOverState.mOptions.mPopOverWidthDp[1]);
+            m4.append(",");
+            m4.append(popOverState.mOptions.mPopOverHeightDp[1]);
+            m4.append(")");
+            printWriter.println(m4.toString());
+            printWriter.println(str + " margin=land(" + popOverState.mOptions.mPopOverAnchorMarginDp[0] + ")/port(" + popOverState.mOptions.mPopOverAnchorMarginDp[1] + ")");
+            StringBuilder sb = new StringBuilder();
+            sb.append(str);
+            sb.append(" position=land(0x");
+            BatteryService$$ExternalSyntheticOutline0.m(popOverState.mOptions.mPopOverAnchorPosition[0], sb, ")/port(0x");
+            sb.append(Integer.toHexString(popOverState.mOptions.mPopOverAnchorPosition[1]));
+            sb.append(")");
+            printWriter.println(sb.toString());
+            if (popOverState.mIsActivated) {
+                StringBuilder m5 = Preconditions$$ExternalSyntheticOutline0.m(str, " inherit=");
+                m5.append(popOverState.mOptions.mPopOverInheritOptions);
+                m5.append(", mLastOccludesParent=");
+                m5.append(popOverState.mLastOccludesParent);
+                m5.append(", isBelowAnotherOpaquePopOver=");
+                ActivityRecord activityRecord = popOverState.mActivityRecord;
+                Rect bounds = activityRecord.getBounds();
+                Task task = activityRecord.task;
+                m5.append((task == null || task.getActivity(new PopOverState$$ExternalSyntheticLambda0(1, bounds), activityRecord, false, false) == null) ? false : true);
+                m5.append(", isAboveAnotherOpaquePopOver=");
+                m5.append(popOverState.isAboveAnotherOpaquePopOver());
+                printWriter.println(m5.toString());
+            }
+        }
         if (this.mPendingRemoteAnimation != null) {
             printWriter.print(str);
             printWriter.print("pendingRemoteAnimationCallingPid=");
             printWriter.println(this.mPendingRemoteAnimation.getCallingPid());
         }
         if (this.mPendingRemoteTransition != null) {
-            printWriter.print(str + " pendingRemoteTransition=" + this.mPendingRemoteTransition.getRemoteTransition());
+            StringBuilder m6 = Preconditions$$ExternalSyntheticOutline0.m(str, " pendingRemoteTransition=");
+            m6.append(this.mPendingRemoteTransition.getRemoteTransition());
+            printWriter.print(m6.toString());
         }
         AppTimeTracker appTimeTracker = this.appTimeTracker;
         if (appTimeTracker != null) {
@@ -878,28 +2210,19 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         printWriter.print(" delayedResume=");
         printWriter.print(this.delayedResume);
         printWriter.print(" finishing=");
-        printWriter.println(this.finishing);
-        printWriter.print(str);
-        printWriter.print("keysPaused=");
+        AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0.m(printWriter, str, "keysPaused=", this.finishing);
         printWriter.print(this.keysPaused);
         printWriter.print(" inHistory=");
         printWriter.print(this.inHistory);
         printWriter.print(" idle=");
-        printWriter.println(this.idle);
-        printWriter.print(str);
-        printWriter.print("occludesParent=");
-        printWriter.print(occludesParent());
+        AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0.m(printWriter, str, "occludesParent=", this.idle);
+        printWriter.print(occludesParent(false));
         printWriter.print(" noDisplay=");
         printWriter.print(this.noDisplay);
         printWriter.print(" immersive=");
         printWriter.print(this.immersive);
         printWriter.print(" launchMode=");
         printWriter.println(this.launchMode);
-        printWriter.print(str);
-        printWriter.print("frozenBeforeDestroy=");
-        printWriter.print(this.frozenBeforeDestroy);
-        printWriter.print(" forceNewConfig=");
-        printWriter.println(this.forceNewConfig);
         printWriter.print(str);
         printWriter.print("mActivityType=");
         printWriter.println(WindowConfiguration.activityTypeToString(getActivityType()));
@@ -917,30 +2240,28 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         }
         printWriter.print(str);
         printWriter.print("mOccludesParent=");
-        printWriter.println(this.mOccludesParent);
-        printWriter.print(str);
-        printWriter.print("mStyleFillsParent=");
-        printWriter.println(this.mStyleFillsParent);
+        AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0.m(printWriter, str, "mStyleFillsParent=", this.mOccludesParent);
+        AppBatteryTracker$AppBatteryPolicy$$ExternalSyntheticOutline0.m(printWriter, str, "mStyleFloating=", this.mStyleFillsParent);
+        printWriter.println(this.mStyleFloating);
         printWriter.print(str);
         printWriter.print("overrideOrientation=");
         printWriter.println(ActivityInfo.screenOrientationToString(getOverrideOrientation()));
         printWriter.print(str);
         printWriter.print("requestedOrientation=");
         printWriter.println(ActivityInfo.screenOrientationToString(super.getOverrideOrientation()));
-        StringBuilder sb = new StringBuilder();
-        sb.append(str);
-        sb.append("mVisibleRequested=");
-        sb.append(this.mVisibleRequested);
-        sb.append(" mVisible=");
-        sb.append(this.mVisible);
-        sb.append(" mClientVisible=");
-        sb.append(isClientVisible());
-        sb.append(this.mDeferHidingClient ? " mDeferHidingClient=" + this.mDeferHidingClient : "");
-        sb.append(" reportedDrawn=");
-        sb.append(this.mReportedDrawn);
-        sb.append(" reportedVisible=");
-        sb.append(this.reportedVisible);
-        printWriter.println(sb.toString());
+        StringBuilder sb2 = new StringBuilder();
+        sb2.append(str);
+        sb2.append("mVisibleRequested=");
+        sb2.append(this.mVisibleRequested);
+        sb2.append(" mVisible=");
+        sb2.append(this.mVisible);
+        sb2.append(" mClientVisible=");
+        sb2.append(this.mClientVisible);
+        sb2.append(this.mDeferHidingClient ? " mDeferHidingClient=" + this.mDeferHidingClient : "");
+        sb2.append(" reportedDrawn=");
+        sb2.append(this.mReportedDrawn);
+        sb2.append(" reportedVisible=");
+        BinaryTransparencyService$$ExternalSyntheticOutline0.m(sb2, this.reportedVisible, printWriter);
         if (this.paused) {
             printWriter.print(str);
             printWriter.print("paused=");
@@ -982,25 +2303,31 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
             printWriter.print(isStartingWindowDisplayed());
             printWriter.print(" startingMoved=");
             printWriter.print(this.startingMoved);
-            printWriter.println(" mVisibleSetFromTransferredStartingWindow=" + this.mVisibleSetFromTransferredStartingWindow);
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder(" mVisibleSetFromTransferredStartingWindow="), this.mVisibleSetFromTransferredStartingWindow, printWriter);
         }
         if (this.mPendingRelaunchCount != 0) {
             printWriter.print(str);
             printWriter.print("mPendingRelaunchCount=");
             printWriter.println(this.mPendingRelaunchCount);
         }
-        if (this.mSizeCompatScale != 1.0f || this.mSizeCompatBounds != null) {
-            printWriter.println(str + "mSizeCompatScale=" + this.mSizeCompatScale + " mSizeCompatBounds=" + this.mSizeCompatBounds);
-        }
         if (this.mRemovingFromDisplay) {
-            printWriter.println(str + "mRemovingFromDisplay=" + this.mRemovingFromDisplay);
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m(Preconditions$$ExternalSyntheticOutline0.m(str, "mRemovingFromDisplay="), this.mRemovingFromDisplay, printWriter);
         }
-        if (CoreRune.MT_SUPPORT_SIZE_COMPAT && (sizeCompatAttributes = this.mSizeCompatAttributes) != null && sizeCompatAttributes.hasBounds()) {
-            this.mSizeCompatAttributes.dump(printWriter, str);
+        if (CoreRune.MT_SIZE_COMPAT_POLICY && (sizeCompatAttributes = this.mSizeCompatAttributes) != null && sizeCompatAttributes.hasBounds()) {
+            SizeCompatAttributes sizeCompatAttributes2 = this.mSizeCompatAttributes;
+            sizeCompatAttributes2.getClass();
+            printWriter.print(str);
+            printWriter.print("SizeCompatAttributes: ");
+            printWriter.print("mScale=" + sizeCompatAttributes2.mScale);
+            printWriter.print(", mBounds=");
+            printWriter.print("(" + sizeCompatAttributes2.mBounds.left + "," + sizeCompatAttributes2.mBounds.top + ")");
+            printWriter.print("(" + sizeCompatAttributes2.mBounds.width() + "x" + sizeCompatAttributes2.mBounds.height() + ")");
+            StringBuilder sb3 = new StringBuilder(", mReason=");
+            sizeCompatAttributes2.mReason.getClass();
+            sb3.append(SizeCompatInfo.sizeCompatModeToString(1));
+            printWriter.print(sb3.toString());
+            printWriter.println();
         }
-        printWriter.print(str);
-        printWriter.print("mIsDexCompatEnabled=");
-        printWriter.println(this.mIsDexCompatEnabled);
         if (this.lastVisibleTime != 0 || this.nowVisible) {
             printWriter.print(str);
             printWriter.print("nowVisible=");
@@ -1015,17 +2342,7 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
             printWriter.println();
         }
         if (this.mDeferHidingClient) {
-            printWriter.println(str + "mDeferHidingClient=" + this.mDeferHidingClient);
-        }
-        if (this.mLastDeferHidingClient) {
-            printWriter.println(str + "mLastDeferHidingClient=" + this.mLastDeferHidingClient);
-        }
-        if (this.deferRelaunchUntilPaused || this.configChangeFlags != 0) {
-            printWriter.print(str);
-            printWriter.print("deferRelaunchUntilPaused=");
-            printWriter.print(this.deferRelaunchUntilPaused);
-            printWriter.print(" configChangeFlags=");
-            printWriter.println(Integer.toHexString(this.configChangeFlags));
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m(Preconditions$$ExternalSyntheticOutline0.m(str, "mDeferHidingClient="), this.mDeferHidingClient, printWriter);
         }
         if (this.mServiceConnectionsHolder != null) {
             printWriter.print(str);
@@ -1033,28 +2350,57 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
             printWriter.println(this.mServiceConnectionsHolder);
         }
         if (this.info != null) {
-            printWriter.println(str + "resizeMode=" + ActivityInfo.resizeModeToString(this.info.resizeMode));
-            printWriter.println(str + "mLastReportedMultiWindowMode=" + this.mLastReportedMultiWindowMode + " mLastReportedPictureInPictureMode=" + this.mLastReportedPictureInPictureMode);
+            StringBuilder m7 = Preconditions$$ExternalSyntheticOutline0.m(str, "resizeMode=");
+            m7.append(ActivityInfo.resizeModeToString(this.info.resizeMode));
+            printWriter.println(m7.toString());
+            StringBuilder sb4 = new StringBuilder();
+            sb4.append(str);
+            sb4.append("mLastReportedMultiWindowMode=");
+            sb4.append(this.mLastReportedMultiWindowMode);
+            sb4.append(" mLastReportedPictureInPictureMode=");
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m(sb4, this.mLastReportedPictureInPictureMode, printWriter);
             if (this.info.supportsPictureInPicture()) {
-                printWriter.println(str + "supportsPictureInPicture=" + this.info.supportsPictureInPicture());
-                printWriter.println(str + "supportsEnterPipOnTaskSwitch: " + this.supportsEnterPipOnTaskSwitch);
-                printWriter.println(str + "supportPictureInPictureAppOps=" + checkEnterPictureInPictureAppOpsState());
+                StringBuilder m8 = Preconditions$$ExternalSyntheticOutline0.m(str, "supportsPictureInPicture=");
+                m8.append(this.info.supportsPictureInPicture());
+                printWriter.println(m8.toString());
+                StringBuilder sb5 = new StringBuilder();
+                sb5.append(str);
+                sb5.append("supportsEnterPipOnTaskSwitch: ");
+                StringBuilder m9 = MediaRouter2ServiceImpl$UserRecord$$ExternalSyntheticOutline0.m(MediaRouter2ServiceImpl$UserRecord$$ExternalSyntheticOutline0.m(sb5, this.supportsEnterPipOnTaskSwitch, printWriter, str, "mPauseSchedulePendingForPip="), this.mPauseSchedulePendingForPip, printWriter, str, "supportPictureInPictureAppOps=");
+                m9.append(checkEnterPictureInPictureAppOpsState());
+                printWriter.println(m9.toString());
             }
-            if (getMaxAspectRatio() != DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                printWriter.println(str + "maxAspectRatio=" + getMaxAspectRatio());
+            if (getMaxAspectRatio() != FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                StringBuilder m10 = Preconditions$$ExternalSyntheticOutline0.m(str, "maxAspectRatio=");
+                m10.append(getMaxAspectRatio());
+                printWriter.println(m10.toString());
             }
             float minAspectRatio = getMinAspectRatio();
-            if (minAspectRatio != DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
+            if (minAspectRatio != FullScreenMagnificationGestureHandler.MAX_SCALE) {
                 printWriter.println(str + "minAspectRatio=" + minAspectRatio);
             }
             if (minAspectRatio != this.info.getManifestMinAspectRatio()) {
-                printWriter.println(str + "manifestMinAspectRatio=" + this.info.getManifestMinAspectRatio());
+                StringBuilder m11 = Preconditions$$ExternalSyntheticOutline0.m(str, "manifestMinAspectRatio=");
+                m11.append(this.info.getManifestMinAspectRatio());
+                printWriter.println(m11.toString());
             }
-            printWriter.println(str + "supportsSizeChanges=" + ActivityInfo.sizeChangesSupportModeToString(supportsSizeChanges()));
+            if (CoreRune.MT_APP_COMPAT_ASPECT_RATIO_POLICY && this.mAppCompatController.mAppCompatAspectRatioPolicy.isUserOrSystemMinAspectRatioApplied()) {
+                float f = this.mAppCompatController.mAppCompatAspectRatioPolicy.mUserOrSystemMinAspectRatio;
+                if (f != FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                    printWriter.println(str + "userOrSystemMinAspectRatio=" + f);
+                }
+            }
+            StringBuilder m12 = Preconditions$$ExternalSyntheticOutline0.m(str, "supportsSizeChanges=");
+            m12.append(ActivityInfo.sizeChangesSupportModeToString(supportsSizeChanges()));
+            printWriter.println(m12.toString());
             if (this.info.configChanges != 0) {
-                printWriter.println(str + "configChanges=0x" + Integer.toHexString(this.info.configChanges));
+                StringBuilder m13 = Preconditions$$ExternalSyntheticOutline0.m(str, "configChanges=0x");
+                m13.append(Integer.toHexString(this.info.configChanges));
+                printWriter.println(m13.toString());
             }
-            printWriter.println(str + "neverSandboxDisplayApis=" + this.info.neverSandboxDisplayApis(sConstrainDisplayApisConfig));
+            StringBuilder m14 = Preconditions$$ExternalSyntheticOutline0.m(str, "neverSandboxDisplayApis=");
+            m14.append(this.info.neverSandboxDisplayApis(sConstrainDisplayApisConfig));
+            printWriter.println(m14.toString());
             printWriter.println(str + "alwaysSandboxDisplayApis=" + this.info.alwaysSandboxDisplayApis(sConstrainDisplayApisConfig));
             if (this.mIgnoreDevSettingForNonResizable) {
                 printWriter.println(str + "mIgnoreDevSettingForNonResizable=true");
@@ -1063,1021 +2409,533 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
                 printWriter.println(str + "mIsAllowedSeamlessRotation=true");
             }
             if (this.info.metaData != null) {
-                printWriter.println(str + "activityMetaData=" + this.info.metaData);
+                StringBuilder m15 = Preconditions$$ExternalSyntheticOutline0.m(str, "activityMetaData=");
+                m15.append(this.info.metaData);
+                printWriter.println(m15.toString());
             }
         }
         if (this.mLastParentBeforePip != null) {
-            printWriter.println(str + "lastParentTaskIdBeforePip=" + this.mLastParentBeforePip.mTaskId);
+            AccessibilityManagerService$$ExternalSyntheticOutline0.m(Preconditions$$ExternalSyntheticOutline0.m(str, "lastParentTaskIdBeforePip="), this.mLastParentBeforePip.mTaskId, printWriter);
         }
         if (this.mLaunchIntoPipHostActivity != null) {
-            printWriter.println(str + "launchIntoPipHostActivity=" + this.mLaunchIntoPipHostActivity);
+            StringBuilder m16 = Preconditions$$ExternalSyntheticOutline0.m(str, "launchIntoPipHostActivity=");
+            m16.append(this.mLaunchIntoPipHostActivity);
+            printWriter.println(m16.toString());
         }
-        this.mLetterboxUiController.dump(printWriter, str);
-        printWriter.println(str + "mCameraCompatControlState=" + TaskInfo.cameraCompatControlStateToString(this.mCameraCompatControlState));
-        printWriter.println(str + "mCameraCompatControlEnabled=" + this.mCameraCompatControlEnabled);
-        if (this.mAtmService.mExt.isKeepAliveActivity(this)) {
-            printWriter.println(str + "keepAlive=true");
+        if (this.mWaitForEnteringPinnedMode) {
+            printWriter.print(str);
+            printWriter.println("mWaitForEnteringPinnedMode=true");
+        }
+        AppCompatController appCompatController = this.mAppCompatController;
+        TransparentPolicy transparentPolicy = appCompatController.mTransparentPolicy;
+        transparentPolicy.getClass();
+        printWriter.println(str + "isTransparentPolicyRunning=" + transparentPolicy.mTransparentPolicyState.isRunning());
+        AppCompatLetterboxPolicy appCompatLetterboxPolicy = appCompatController.mAppCompatLetterboxPolicy;
+        ActivityRecord activityRecord2 = appCompatLetterboxPolicy.mActivityRecord;
+        WindowState findMainWindow = activityRecord2.findMainWindow(true);
+        if (findMainWindow != null) {
+            boolean areAppWindowBoundsLetterboxed = findMainWindow.areAppWindowBoundsLetterboxed();
+            printWriter.println(str + "areBoundsLetterboxed=" + areAppWindowBoundsLetterboxed);
+            printWriter.println(str + "isLetterboxRunning=" + appCompatLetterboxPolicy.mLetterboxPolicyState.isRunning());
+            if (areAppWindowBoundsLetterboxed) {
+                StringBuilder m17 = Preconditions$$ExternalSyntheticOutline0.m(str, "  letterboxReason=");
+                if (activityRecord2.inSizeCompatMode()) {
+                    str2 = "SIZE_COMPAT_MODE";
+                } else {
+                    AppCompatAspectRatioPolicy appCompatAspectRatioPolicy = activityRecord2.mAppCompatController.mAppCompatAspectRatioPolicy;
+                    str2 = appCompatAspectRatioPolicy.isLetterboxedForFixedOrientationAndAspectRatio() ? "FIXED_ORIENTATION" : findMainWindow.isLetterboxedForDisplayCutout() ? "DISPLAY_CUTOUT" : appCompatAspectRatioPolicy.mAppCompatAspectRatioState.mLetterboxBoundsForAspectRatio != null ? "ASPECT_RATIO" : "UNKNOWN_REASON";
+                }
+                BinaryTransparencyService$$ExternalSyntheticOutline0.m(m17, str2, printWriter);
+                ActivityRecord activityRecord3 = activityRecord2.mAppCompatController.mAppCompatReachabilityPolicy.mActivityRecord;
+                AppCompatReachabilityOverrides appCompatReachabilityOverrides = activityRecord3.mAppCompatController.mAppCompatOverrides.mAppCompatReachabilityOverrides;
+                StringBuilder m18 = Preconditions$$ExternalSyntheticOutline0.m(str, "  isVerticalThinLetterboxed=");
+                m18.append(appCompatReachabilityOverrides.isVerticalThinLetterboxed());
+                printWriter.println(m18.toString());
+                printWriter.println(str + "  isHorizontalThinLetterboxed=" + appCompatReachabilityOverrides.isHorizontalThinLetterboxed());
+                printWriter.println(str + "  isHorizontalReachabilityEnabled=" + appCompatReachabilityOverrides.isHorizontalReachabilityEnabled(appCompatReachabilityOverrides.mActivityRecord.getParent().getConfiguration()));
+                printWriter.println(str + "  isVerticalReachabilityEnabled=" + appCompatReachabilityOverrides.isVerticalReachabilityEnabled(appCompatReachabilityOverrides.mActivityRecord.getParent().getConfiguration()));
+                printWriter.println(str + "  letterboxHorizontalPositionMultiplier=" + appCompatReachabilityOverrides.getHorizontalPositionMultiplier(activityRecord3.getParent().getConfiguration()));
+                StringBuilder sb6 = new StringBuilder();
+                sb6.append(str);
+                sb6.append("  letterboxVerticalPositionMultiplier=");
+                Configuration configuration = activityRecord3.getParent().getConfiguration();
+                boolean isDisplayFullScreenAndInPosture = appCompatReachabilityOverrides.mAppCompatDeviceStateQuery.isDisplayFullScreenAndInPosture(true);
+                boolean isVerticalReachabilityEnabled = appCompatReachabilityOverrides.isVerticalReachabilityEnabled(configuration);
+                AppCompatConfiguration appCompatConfiguration = appCompatReachabilityOverrides.mAppCompatConfiguration;
+                AggressivePolicyHandler$$ExternalSyntheticOutline0.m(sb6, isVerticalReachabilityEnabled ? appCompatConfiguration.getVerticalMultiplierForReachability(isDisplayFullScreenAndInPosture) : isDisplayFullScreenAndInPosture ? appCompatConfiguration.mLetterboxTabletopModePositionMultiplier : appCompatConfiguration.mLetterboxVerticalPositionMultiplier, printWriter);
+                AppCompatLetterboxOverrides appCompatLetterboxOverrides = activityRecord2.mAppCompatController.mAppCompatOverrides.mAppCompatLetterboxOverrides;
+                StringBuilder m19 = Preconditions$$ExternalSyntheticOutline0.m(str, "  letterboxBackgroundColor=");
+                m19.append(Integer.toHexString(appCompatLetterboxOverrides.getLetterboxBackgroundColor().toArgb()));
+                printWriter.println(m19.toString());
+                printWriter.println(str + "  letterboxBackgroundType=" + AppCompatConfiguration.letterboxBackgroundTypeToString(appCompatLetterboxOverrides.getLetterboxBackgroundType()));
+                printWriter.println(str + "  letterboxCornerRadius=" + appCompatLetterboxPolicy.mAppCompatRoundedCorners.getRoundedCornersRadius(findMainWindow));
+                if (appCompatLetterboxOverrides.getLetterboxBackgroundType() == 3) {
+                    StringBuilder m20 = Preconditions$$ExternalSyntheticOutline0.m(str, "  isLetterboxWallpaperBlurSupported=");
+                    m20.append(appCompatLetterboxOverrides.isLetterboxWallpaperBlurSupported());
+                    printWriter.println(m20.toString());
+                    printWriter.println(str + "  letterboxBackgroundWallpaperDarkScrimAlpha=" + appCompatLetterboxOverrides.getLetterboxWallpaperDarkScrimAlpha());
+                    printWriter.println(str + "  letterboxBackgroundWallpaperBlurRadius=" + appCompatLetterboxOverrides.getLetterboxWallpaperBlurRadiusPx());
+                }
+                AppCompatConfiguration appCompatConfiguration2 = appCompatLetterboxPolicy.mAppCompatConfiguration;
+                appCompatConfiguration2.getClass();
+                StringBuilder sb7 = new StringBuilder();
+                sb7.append(str);
+                sb7.append("  letterboxPositionForHorizontalReachability=");
+                AppCompatConfigurationPersister appCompatConfigurationPersister = appCompatConfiguration2.mAppCompatConfigurationPersister;
+                sb7.append(AppCompatConfiguration.letterboxHorizontalReachabilityPositionToString(appCompatConfigurationPersister.mLetterboxPositionForHorizontalReachability));
+                printWriter.println(sb7.toString());
+                printWriter.println(str + "  letterboxPositionForVerticalReachability=" + AppCompatConfiguration.letterboxVerticalReachabilityPositionToString(appCompatConfigurationPersister.mLetterboxPositionForVerticalReachability));
+                printWriter.println(str + "  fixedOrientationLetterboxAspectRatio=" + appCompatConfiguration2.mFixedOrientationLetterboxAspectRatio);
+                printWriter.println(str + "  defaultMinAspectRatioForUnresizableApps=" + appCompatConfiguration2.mDefaultMinAspectRatioForUnresizableApps);
+                StringBuilder sb8 = new StringBuilder();
+                sb8.append(str);
+                sb8.append("  isSplitScreenAspectRatioForUnresizableAppsEnabled=");
+                StringBuilder m21 = MediaRouter2ServiceImpl$UserRecord$$ExternalSyntheticOutline0.m(sb8, appCompatConfiguration2.mIsSplitScreenAspectRatioForUnresizableAppsEnabled, printWriter, str, "  isDisplayAspectRatioEnabledForFixedOrientationLetterbox=");
+                m21.append(appCompatConfiguration2.mIsDisplayAspectRatioEnabledForFixedOrientationLetterbox);
+                printWriter.println(m21.toString());
+                if (appCompatLetterboxOverrides.shouldHideLetterboxSurface(findMainWindow)) {
+                    printWriter.println(str + "  shouldHideLetterboxSurface=true");
+                }
+            }
+        }
+        AppCompatSizeCompatModePolicy appCompatSizeCompatModePolicy = appCompatController.mAppCompatSizeCompatModePolicy;
+        if (appCompatSizeCompatModePolicy.mSizeCompatScale != 1.0f || appCompatSizeCompatModePolicy.hasSizeCompatBounds()) {
+            StringBuilder m22 = Preconditions$$ExternalSyntheticOutline0.m(str, "mSizeCompatScale=");
+            m22.append(appCompatSizeCompatModePolicy.mSizeCompatScale);
+            m22.append(" mSizeCompatBounds=");
+            m22.append(appCompatSizeCompatModePolicy.mSizeCompatBounds);
+            printWriter.println(m22.toString());
         }
         if (this.mWaitForEnteringPinnedMode) {
             printWriter.println(str + "mWaitForEnteringPinnedMode=true");
         }
-        this.mCompatRecord.dump(printWriter, str);
-        CompatDisplayInsets compatDisplayInsets = this.mCompatDisplayInsets;
-        if (compatDisplayInsets != null) {
-            compatDisplayInsets.dump(printWriter, str);
-            if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT && this.mLetterboxBoundsForFixedOrientationAndAspectRatio != null) {
-                printWriter.print(str);
-                printWriter.print("mLetterboxBoundsForFixedOrientationAndAspectRatio=");
-                printWriter.print(this.mLetterboxBoundsForFixedOrientationAndAspectRatio);
-                printWriter.println();
+        if (CoreRune.MW_PIP_SHELL_TRANSITION) {
+            if (this.mIsEnteringPipFromSplit) {
+                printWriter.println(str + "mIsEnteringPipFromSplit=true");
+            }
+            if (this.mHiddenWhileEnteringPinnedMode) {
+                printWriter.println(str + "mHiddenWhileEnteringPinnedMode=true");
             }
         }
-        this.mPopOverState.dump(printWriter, str);
-        printWriter.println(str + "mLastSurfaceShowing=" + this.mLastSurfaceShowing);
+        BinaryTransparencyService$$ExternalSyntheticOutline0.m(Preconditions$$ExternalSyntheticOutline0.m(str, "mLastSurfaceShowing="), this.mLastSurfaceShowing, printWriter);
+        if (this.mAtmService.mExt.mKeepAliveActivities.get(this) != null) {
+            printWriter.println(str + "keepAlive=true");
+        }
     }
 
-    public static boolean dumpActivity(FileDescriptor fileDescriptor, PrintWriter printWriter, int i, ActivityRecord activityRecord, String str, String str2, boolean z, boolean z2, boolean z3, String str3, boolean z4, Runnable runnable, Task task) {
-        if (str3 != null && !str3.equals(activityRecord.packageName)) {
-            return false;
-        }
-        boolean z5 = !z2 && (z || !activityRecord.isInHistory());
-        if (z4) {
-            printWriter.println("");
-        }
-        if (runnable != null) {
-            runnable.run();
-        }
-        String str4 = str + "  ";
-        String[] strArr = new String[0];
-        if (task != activityRecord.getTask()) {
-            Task task2 = activityRecord.getTask();
-            printWriter.print(str);
-            printWriter.print(z5 ? "* " : "  ");
-            printWriter.println(task2);
-            if (z5) {
-                task2.dump(printWriter, str + "  ");
-            } else if (z && task2.intent != null) {
-                printWriter.print(str);
-                printWriter.print("  ");
-                printWriter.println(task2.intent.toInsecureString());
-            }
-        }
-        printWriter.print(str);
-        printWriter.print(z5 ? "* " : "    ");
-        printWriter.print(str2);
-        printWriter.print(" #");
-        printWriter.print(i);
-        printWriter.print(": ");
-        printWriter.println(activityRecord);
-        if (z5) {
-            activityRecord.dump(printWriter, str4, true);
-        } else if (z) {
-            printWriter.print(str4);
-            printWriter.println(activityRecord.intent.toInsecureString());
-            if (activityRecord.app != null) {
-                printWriter.print(str4);
-                printWriter.println(activityRecord.app);
-            }
-        }
-        if (z3 && activityRecord.attachedToProcess()) {
-            printWriter.flush();
-            try {
-                TransferPipe transferPipe = new TransferPipe();
-                try {
-                    activityRecord.app.getThread().dumpActivity(transferPipe.getWriteFd(), activityRecord.token, str4, strArr);
-                    transferPipe.go(fileDescriptor, 2000L);
-                    transferPipe.kill();
-                } catch (Throwable th) {
-                    transferPipe.kill();
-                    throw th;
+    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
+    public final void dumpDebug(ProtoOutputStream protoOutputStream, long j, int i) {
+        if (i != 2 || this.mVisible) {
+            long start = protoOutputStream.start(j);
+            protoOutputStream.write(1138166333441L, this.shortComponentName);
+            super.dumpDebug(protoOutputStream, 1146756268034L, i);
+            protoOutputStream.write(1133871366147L, this.mLastSurfaceShowing);
+            protoOutputStream.write(1133871366148L, isWaitingForTransitionStart());
+            protoOutputStream.write(1133871366149L, isAnimating(7, 17));
+            WindowContainerThumbnail windowContainerThumbnail = this.mThumbnail;
+            if (windowContainerThumbnail != null) {
+                long start2 = protoOutputStream.start(1146756268038L);
+                protoOutputStream.write(1120986464257L, windowContainerThumbnail.mWidth);
+                protoOutputStream.write(1120986464258L, windowContainerThumbnail.mHeight);
+                SurfaceAnimator surfaceAnimator = windowContainerThumbnail.mSurfaceAnimator;
+                if (surfaceAnimator.isAnimating()) {
+                    surfaceAnimator.dumpDebug(protoOutputStream, 1146756268035L);
                 }
-            } catch (RemoteException unused) {
-                printWriter.println(str4 + "Got a RemoteException while dumping the activity");
-            } catch (IOException e) {
-                printWriter.println(str4 + "Failure while dumping the activity: " + e);
+                protoOutputStream.end(start2);
             }
+            protoOutputStream.write(1133871366151L, occludesParent(true));
+            protoOutputStream.write(1133871366152L, this.mAppStopped);
+            protoOutputStream.write(1133871366174L, !occludesParent(false));
+            protoOutputStream.write(1133871366168L, this.mVisible);
+            protoOutputStream.write(1133871366153L, this.mVisibleRequested);
+            protoOutputStream.write(1133871366154L, this.mClientVisible);
+            protoOutputStream.write(1133871366155L, this.mDeferHidingClient);
+            protoOutputStream.write(1133871366156L, this.mReportedDrawn);
+            protoOutputStream.write(1133871366157L, this.reportedVisible);
+            protoOutputStream.write(1120986464270L, this.mNumInterestingWindows);
+            protoOutputStream.write(1120986464271L, this.mNumDrawnWindows);
+            protoOutputStream.write(1133871366160L, this.allDrawn);
+            protoOutputStream.write(1133871366161L, this.mLastAllDrawn);
+            WindowState windowState = this.mStartingWindow;
+            if (windowState != null) {
+                windowState.writeIdentifierToProto(protoOutputStream, 1146756268051L);
+            }
+            protoOutputStream.write(1133871366164L, isStartingWindowDisplayed());
+            protoOutputStream.write(1133871366345L, this.startingMoved);
+            protoOutputStream.write(1133871366166L, this.mVisibleSetFromTransferredStartingWindow);
+            protoOutputStream.write(1138166333467L, this.mState.toString());
+            protoOutputStream.write(1133871366172L, isRootOfTask());
+            if (hasProcess()) {
+                protoOutputStream.write(1120986464285L, this.app.mPid);
+            }
+            protoOutputStream.write(1133871366175L, this.pictureInPictureArgs.isAutoEnterEnabled());
+            protoOutputStream.write(1133871366176L, inSizeCompatMode());
+            protoOutputStream.write(1108101562401L, getMinAspectRatio());
+            protoOutputStream.write(1133871366178L, providesMaxBounds());
+            protoOutputStream.write(1133871366179L, this.mEnableRecentsScreenshot);
+            protoOutputStream.write(1120986464292L, this.mLastDropInputMode);
+            protoOutputStream.write(1120986464293L, getOverrideOrientation());
+            protoOutputStream.write(1133871366182L, shouldSendCompatFakeFocus());
+            protoOutputStream.write(1133871366183L, this.mAppCompatController.mAppCompatOverrides.mAppCompatCameraOverrides.shouldForceRotateForCameraCompat());
+            AppCompatCameraOverrides appCompatCameraOverrides = this.mAppCompatController.mAppCompatOverrides.mAppCompatCameraOverrides;
+            boolean isChangeEnabled = appCompatCameraOverrides.mActivityRecord.info.isChangeEnabled(264304459L);
+            OptPropFactory.OptProp optProp = appCompatCameraOverrides.mCameraCompatAllowRefreshOptProp;
+            protoOutputStream.write(1133871366184L, (!optProp.mCondition.getAsBoolean() || optProp.getValue() == 0 || isChangeEnabled) ? false : true);
+            AppCompatCameraOverrides appCompatCameraOverrides2 = this.mAppCompatController.mAppCompatOverrides.mAppCompatCameraOverrides;
+            protoOutputStream.write(1133871366185L, appCompatCameraOverrides2.mCameraCompatEnableRefreshViaPauseOptProp.shouldEnableWithOverrideAndProperty(appCompatCameraOverrides2.mActivityRecord.info.isChangeEnabled(264301586L)));
+            AppCompatAspectRatioOverrides appCompatAspectRatioOverrides = this.mAppCompatController.mAppCompatOverrides.mAppCompatAspectRatioOverrides;
+            protoOutputStream.write(1133871366186L, appCompatAspectRatioOverrides.mAllowMinAspectRatioOverrideOptProp.shouldEnableWithOptInOverrideAndOptOutProperty(appCompatAspectRatioOverrides.mActivityRecord.info.isChangeEnabled(174042980L)));
+            protoOutputStream.write(1133871366187L, this.mAppCompatController.mAppCompatOverrides.mAppCompatOrientationOverrides.shouldIgnoreOrientationRequestLoop());
+            AppCompatResizeOverrides appCompatResizeOverrides = this.mAppCompatController.mAppCompatOverrides.mAppCompatResizeOverrides;
+            protoOutputStream.write(1133871366188L, appCompatResizeOverrides.mAllowForceResizeOverrideOptProp.shouldEnableWithOptInOverrideAndOptOutProperty(appCompatResizeOverrides.mActivityRecord.info.isChangeEnabled(174042936L)));
+            protoOutputStream.write(1133871366189L, this.mAppCompatController.mAppCompatOverrides.mAppCompatAspectRatioOverrides.shouldEnableUserAspectRatioSettings());
+            AppCompatAspectRatioOverrides appCompatAspectRatioOverrides2 = this.mAppCompatController.mAppCompatOverrides.mAppCompatAspectRatioOverrides;
+            protoOutputStream.write(1133871366190L, (appCompatAspectRatioOverrides2.mAllowUserAspectRatioOverrideOptProp.isFalse() || appCompatAspectRatioOverrides2.mAllowUserAspectRatioFullscreenOverrideOptProp.isFalse() || !appCompatAspectRatioOverrides2.mAppCompatConfiguration.isUserAppAspectRatioFullscreenEnabled()) ? false : true);
+            protoOutputStream.end(start);
+        }
+    }
+
+    public final boolean ensureActivityConfiguration(boolean z) {
+        State state;
+        boolean z2 = getRootTask().mConfigWillChange;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_CONFIGURATION_enabled;
+        if (z2) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -8630021188868292872L, 0, null, String.valueOf(this));
+            }
+            return true;
+        }
+        if (this.finishing) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -3976984054291875926L, 0, null, String.valueOf(this));
+            }
+            return true;
+        }
+        if (isState(State.DESTROYED)) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -1036762753077003128L, 0, null, String.valueOf(this));
+            }
+            return true;
+        }
+        if (z || !((state = this.mState) == State.STOPPING || state == State.STOPPED || !shouldBeVisible(false))) {
+            if (isConfigurationDispatchPaused()) {
+                return true;
+            }
+            return updateReportedConfigurationAndSend();
+        }
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -6543078196636665108L, 0, null, String.valueOf(this));
         }
         return true;
     }
 
-    public void setSavedState(Bundle bundle) {
-        this.mIcicle = bundle;
-        this.mHaveState = bundle != null;
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean fillsParent() {
+        return occludesParent(true);
     }
 
-    public Bundle getSavedState() {
-        return this.mIcicle;
-    }
-
-    public boolean hasSavedState() {
-        return this.mHaveState;
-    }
-
-    public PersistableBundle getPersistentSavedState() {
-        return this.mPersistentState;
-    }
-
-    public void updateApplicationInfo(ApplicationInfo applicationInfo) {
-        this.info.applicationInfo = applicationInfo;
-    }
-
-    public void setSizeConfigurations(SizeConfigurationBuckets sizeConfigurationBuckets) {
-        this.mSizeConfigurations = sizeConfigurationBuckets;
-    }
-
-    public final void scheduleActivityMovedToDisplay(int i, Configuration configuration) {
-        if (!attachedToProcess()) {
-            if (ProtoLogCache.WM_DEBUG_SWITCH_enabled) {
-                ProtoLogImpl.w(ProtoLogGroup.WM_DEBUG_SWITCH, -1495062622, 4, (String) null, new Object[]{String.valueOf(this), Long.valueOf(i)});
-            }
-        } else {
-            try {
-                if (ProtoLogCache.WM_DEBUG_SWITCH_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_SWITCH, 374506950, 4, (String) null, new Object[]{String.valueOf(this), Long.valueOf(i), String.valueOf(configuration)});
+    public final WindowState findMainWindow(boolean z) {
+        WindowState windowState = null;
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            WindowState windowState2 = (WindowState) this.mChildren.get(size);
+            int i = windowState2.mAttrs.type;
+            if (i == 1 || (z && i == 3)) {
+                if (!windowState2.mAnimatingExit) {
+                    return windowState2;
                 }
-                this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ClientTransactionItem) MoveToDisplayItem.obtain(i, configuration));
-            } catch (RemoteException unused) {
+                windowState = windowState2;
             }
         }
+        return windowState;
     }
 
-    public final void scheduleConfigurationChanged(Configuration configuration) {
-        if (!attachedToProcess()) {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.w(ProtoLogGroup.WM_DEBUG_CONFIGURATION, 1040675582, 0, (String) null, new Object[]{String.valueOf(this)});
-                return;
+    public final void finishActivityResults(final int i, final Intent intent, final NeededUriGrants neededUriGrants) {
+        ActivityRecord activityRecord = this.resultTo;
+        if (activityRecord != null) {
+            int i2 = activityRecord.mUserId;
+            int i3 = this.mUserId;
+            if (i2 != i3 && intent != null) {
+                intent.prepareToLeaveUser(i3);
             }
-            return;
-        }
-        try {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, 969323241, 0, (String) null, new Object[]{String.valueOf(this), String.valueOf(configuration)});
+            if (this.info.applicationInfo.uid > 0) {
+                ((UriGrantsManagerService.LocalService) this.mAtmService.mUgmInternal).grantUriPermissionUncheckedFromIntent(neededUriGrants, this.resultTo.getUriPermissionsLocked());
             }
-            Slog.d("ActivityTaskManager", "scheduleConfigurationChanged: " + this + " state=" + this.mState + " config=" + configuration + " caller=" + Debug.getCallers(3));
-            this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ClientTransactionItem) ActivityConfigurationChangeItem.obtain(configuration));
-        } catch (RemoteException unused) {
+            final Binder binder = new Binder();
+            if (android.security.Flags.contentUriPermissionApis()) {
+                try {
+                    ActivityRecord activityRecord2 = this.resultTo;
+                    int uid = getUid();
+                    this.mAtmService.getClass();
+                    activityRecord2.computeCallerInfo(binder, intent, uid, AppGlobals.getPackageManager().getNameForUid(getUid()), false);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (this.mForceSendResultForMediaProjection || this.resultTo.isState(State.RESUMED)) {
+                final ActivityRecord activityRecord3 = this.resultTo;
+                this.mAtmService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda6
+                    @Override // java.lang.Runnable
+                    public final void run() {
+                        ActivityRecord activityRecord4 = ActivityRecord.this;
+                        ActivityRecord activityRecord5 = activityRecord3;
+                        int i4 = i;
+                        Intent intent2 = intent;
+                        IBinder iBinder = binder;
+                        NeededUriGrants neededUriGrants2 = neededUriGrants;
+                        WindowManagerGlobalLock windowManagerGlobalLock = activityRecord4.mAtmService.mGlobalLock;
+                        WindowManagerService.boostPriorityForLockedSection();
+                        synchronized (windowManagerGlobalLock) {
+                            try {
+                                activityRecord5.sendResult(activityRecord4.getUid(), activityRecord4.resultWho, activityRecord4.requestCode, i4, intent2, iBinder, neededUriGrants2, activityRecord4.mForceSendResultForMediaProjection);
+                            } catch (Throwable th) {
+                                WindowManagerService.resetPriorityAfterLockedSection();
+                                throw th;
+                            }
+                        }
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                    }
+                });
+            } else {
+                ActivityRecord activityRecord4 = this.resultTo;
+                String str = this.resultWho;
+                int i4 = this.requestCode;
+                activityRecord4.getClass();
+                ActivityResult activityResult = new ActivityResult(this, str, i4, i, intent, binder);
+                if (activityRecord4.results == null) {
+                    activityRecord4.results = new ArrayList();
+                }
+                activityRecord4.results.add(activityResult);
+            }
+            this.resultTo = null;
         }
+        this.results = null;
+        this.pendingResults = null;
+        this.newIntents = null;
+        this.mIcicle = null;
+        this.mHaveState = false;
     }
 
-    public boolean scheduleTopResumedActivityChanged(boolean z) {
-        if (!attachedToProcess()) {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.w(ProtoLogGroup.WM_DEBUG_STATES, -1193946201, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            return false;
-        }
-        if (z) {
-            this.app.addToPendingTop();
-        }
-        try {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -1305966693, 12, (String) null, new Object[]{String.valueOf(this), Boolean.valueOf(z)});
-            }
-            Slog.d("ActivityTaskManager", "scheduleTopResumedActivityChanged, onTop=" + z + ", r=" + this + ", caller=" + Debug.getCallers(6));
-            this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ClientTransactionItem) TopResumedActivityChangeItem.obtain(z));
-            return true;
-        } catch (RemoteException e) {
-            Slog.w("ActivityTaskManager", "Failed to send top-resumed=" + z + " to " + this, e);
-            return false;
-        }
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:109:0x0202  */
+    /* JADX WARN: Removed duplicated region for block: B:156:0x02da A[Catch: all -> 0x00de, TryCatch #0 {all -> 0x00de, blocks: (B:26:0x009c, B:28:0x00cd, B:30:0x00d8, B:31:0x00e1, B:33:0x00e6, B:35:0x00ec, B:36:0x00f2, B:38:0x00fb, B:43:0x0107, B:45:0x0115, B:47:0x011d, B:52:0x012b, B:53:0x0137, B:55:0x013b, B:57:0x0146, B:58:0x0159, B:60:0x015e, B:63:0x0164, B:65:0x016a, B:67:0x0170, B:69:0x0176, B:70:0x017b, B:72:0x017f, B:74:0x0183, B:76:0x0189, B:77:0x018e, B:79:0x0192, B:81:0x0198, B:83:0x01a1, B:85:0x01af, B:89:0x01b8, B:91:0x01be, B:93:0x01ca, B:95:0x01d0, B:97:0x01d6, B:99:0x01dc, B:101:0x01e0, B:104:0x01c7, B:107:0x01fb, B:110:0x0204, B:111:0x021c, B:113:0x022a, B:115:0x0230, B:116:0x024a, B:118:0x0252, B:120:0x025a, B:122:0x0260, B:123:0x0262, B:127:0x0291, B:129:0x029a, B:131:0x02a4, B:134:0x02aa, B:136:0x02b4, B:137:0x02b7, B:139:0x02bb, B:141:0x02bf, B:144:0x02c7, B:147:0x02d2, B:149:0x02d6, B:152:0x026b, B:154:0x026f, B:155:0x0285, B:156:0x02da, B:158:0x02e2, B:160:0x02e6, B:162:0x02ee, B:164:0x02f4, B:165:0x02fa, B:166:0x0306, B:170:0x0314, B:172:0x031c, B:173:0x0321, B:175:0x0328, B:179:0x033a, B:181:0x033e, B:182:0x014a, B:184:0x0152), top: B:25:0x009c }] */
+    /* JADX WARN: Removed duplicated region for block: B:182:0x014a A[Catch: all -> 0x00de, TryCatch #0 {all -> 0x00de, blocks: (B:26:0x009c, B:28:0x00cd, B:30:0x00d8, B:31:0x00e1, B:33:0x00e6, B:35:0x00ec, B:36:0x00f2, B:38:0x00fb, B:43:0x0107, B:45:0x0115, B:47:0x011d, B:52:0x012b, B:53:0x0137, B:55:0x013b, B:57:0x0146, B:58:0x0159, B:60:0x015e, B:63:0x0164, B:65:0x016a, B:67:0x0170, B:69:0x0176, B:70:0x017b, B:72:0x017f, B:74:0x0183, B:76:0x0189, B:77:0x018e, B:79:0x0192, B:81:0x0198, B:83:0x01a1, B:85:0x01af, B:89:0x01b8, B:91:0x01be, B:93:0x01ca, B:95:0x01d0, B:97:0x01d6, B:99:0x01dc, B:101:0x01e0, B:104:0x01c7, B:107:0x01fb, B:110:0x0204, B:111:0x021c, B:113:0x022a, B:115:0x0230, B:116:0x024a, B:118:0x0252, B:120:0x025a, B:122:0x0260, B:123:0x0262, B:127:0x0291, B:129:0x029a, B:131:0x02a4, B:134:0x02aa, B:136:0x02b4, B:137:0x02b7, B:139:0x02bb, B:141:0x02bf, B:144:0x02c7, B:147:0x02d2, B:149:0x02d6, B:152:0x026b, B:154:0x026f, B:155:0x0285, B:156:0x02da, B:158:0x02e2, B:160:0x02e6, B:162:0x02ee, B:164:0x02f4, B:165:0x02fa, B:166:0x0306, B:170:0x0314, B:172:0x031c, B:173:0x0321, B:175:0x0328, B:179:0x033a, B:181:0x033e, B:182:0x014a, B:184:0x0152), top: B:25:0x009c }] */
+    /* JADX WARN: Removed duplicated region for block: B:186:0x0106  */
+    /* JADX WARN: Removed duplicated region for block: B:42:0x0104  */
+    /* JADX WARN: Removed duplicated region for block: B:52:0x012b A[Catch: all -> 0x00de, TryCatch #0 {all -> 0x00de, blocks: (B:26:0x009c, B:28:0x00cd, B:30:0x00d8, B:31:0x00e1, B:33:0x00e6, B:35:0x00ec, B:36:0x00f2, B:38:0x00fb, B:43:0x0107, B:45:0x0115, B:47:0x011d, B:52:0x012b, B:53:0x0137, B:55:0x013b, B:57:0x0146, B:58:0x0159, B:60:0x015e, B:63:0x0164, B:65:0x016a, B:67:0x0170, B:69:0x0176, B:70:0x017b, B:72:0x017f, B:74:0x0183, B:76:0x0189, B:77:0x018e, B:79:0x0192, B:81:0x0198, B:83:0x01a1, B:85:0x01af, B:89:0x01b8, B:91:0x01be, B:93:0x01ca, B:95:0x01d0, B:97:0x01d6, B:99:0x01dc, B:101:0x01e0, B:104:0x01c7, B:107:0x01fb, B:110:0x0204, B:111:0x021c, B:113:0x022a, B:115:0x0230, B:116:0x024a, B:118:0x0252, B:120:0x025a, B:122:0x0260, B:123:0x0262, B:127:0x0291, B:129:0x029a, B:131:0x02a4, B:134:0x02aa, B:136:0x02b4, B:137:0x02b7, B:139:0x02bb, B:141:0x02bf, B:144:0x02c7, B:147:0x02d2, B:149:0x02d6, B:152:0x026b, B:154:0x026f, B:155:0x0285, B:156:0x02da, B:158:0x02e2, B:160:0x02e6, B:162:0x02ee, B:164:0x02f4, B:165:0x02fa, B:166:0x0306, B:170:0x0314, B:172:0x031c, B:173:0x0321, B:175:0x0328, B:179:0x033a, B:181:0x033e, B:182:0x014a, B:184:0x0152), top: B:25:0x009c }] */
+    /* JADX WARN: Removed duplicated region for block: B:55:0x013b A[Catch: all -> 0x00de, TryCatch #0 {all -> 0x00de, blocks: (B:26:0x009c, B:28:0x00cd, B:30:0x00d8, B:31:0x00e1, B:33:0x00e6, B:35:0x00ec, B:36:0x00f2, B:38:0x00fb, B:43:0x0107, B:45:0x0115, B:47:0x011d, B:52:0x012b, B:53:0x0137, B:55:0x013b, B:57:0x0146, B:58:0x0159, B:60:0x015e, B:63:0x0164, B:65:0x016a, B:67:0x0170, B:69:0x0176, B:70:0x017b, B:72:0x017f, B:74:0x0183, B:76:0x0189, B:77:0x018e, B:79:0x0192, B:81:0x0198, B:83:0x01a1, B:85:0x01af, B:89:0x01b8, B:91:0x01be, B:93:0x01ca, B:95:0x01d0, B:97:0x01d6, B:99:0x01dc, B:101:0x01e0, B:104:0x01c7, B:107:0x01fb, B:110:0x0204, B:111:0x021c, B:113:0x022a, B:115:0x0230, B:116:0x024a, B:118:0x0252, B:120:0x025a, B:122:0x0260, B:123:0x0262, B:127:0x0291, B:129:0x029a, B:131:0x02a4, B:134:0x02aa, B:136:0x02b4, B:137:0x02b7, B:139:0x02bb, B:141:0x02bf, B:144:0x02c7, B:147:0x02d2, B:149:0x02d6, B:152:0x026b, B:154:0x026f, B:155:0x0285, B:156:0x02da, B:158:0x02e2, B:160:0x02e6, B:162:0x02ee, B:164:0x02f4, B:165:0x02fa, B:166:0x0306, B:170:0x0314, B:172:0x031c, B:173:0x0321, B:175:0x0328, B:179:0x033a, B:181:0x033e, B:182:0x014a, B:184:0x0152), top: B:25:0x009c }] */
+    /* JADX WARN: Removed duplicated region for block: B:57:0x0146 A[Catch: all -> 0x00de, TryCatch #0 {all -> 0x00de, blocks: (B:26:0x009c, B:28:0x00cd, B:30:0x00d8, B:31:0x00e1, B:33:0x00e6, B:35:0x00ec, B:36:0x00f2, B:38:0x00fb, B:43:0x0107, B:45:0x0115, B:47:0x011d, B:52:0x012b, B:53:0x0137, B:55:0x013b, B:57:0x0146, B:58:0x0159, B:60:0x015e, B:63:0x0164, B:65:0x016a, B:67:0x0170, B:69:0x0176, B:70:0x017b, B:72:0x017f, B:74:0x0183, B:76:0x0189, B:77:0x018e, B:79:0x0192, B:81:0x0198, B:83:0x01a1, B:85:0x01af, B:89:0x01b8, B:91:0x01be, B:93:0x01ca, B:95:0x01d0, B:97:0x01d6, B:99:0x01dc, B:101:0x01e0, B:104:0x01c7, B:107:0x01fb, B:110:0x0204, B:111:0x021c, B:113:0x022a, B:115:0x0230, B:116:0x024a, B:118:0x0252, B:120:0x025a, B:122:0x0260, B:123:0x0262, B:127:0x0291, B:129:0x029a, B:131:0x02a4, B:134:0x02aa, B:136:0x02b4, B:137:0x02b7, B:139:0x02bb, B:141:0x02bf, B:144:0x02c7, B:147:0x02d2, B:149:0x02d6, B:152:0x026b, B:154:0x026f, B:155:0x0285, B:156:0x02da, B:158:0x02e2, B:160:0x02e6, B:162:0x02ee, B:164:0x02f4, B:165:0x02fa, B:166:0x0306, B:170:0x0314, B:172:0x031c, B:173:0x0321, B:175:0x0328, B:179:0x033a, B:181:0x033e, B:182:0x014a, B:184:0x0152), top: B:25:0x009c }] */
+    /* JADX WARN: Removed duplicated region for block: B:60:0x015e A[Catch: all -> 0x00de, TryCatch #0 {all -> 0x00de, blocks: (B:26:0x009c, B:28:0x00cd, B:30:0x00d8, B:31:0x00e1, B:33:0x00e6, B:35:0x00ec, B:36:0x00f2, B:38:0x00fb, B:43:0x0107, B:45:0x0115, B:47:0x011d, B:52:0x012b, B:53:0x0137, B:55:0x013b, B:57:0x0146, B:58:0x0159, B:60:0x015e, B:63:0x0164, B:65:0x016a, B:67:0x0170, B:69:0x0176, B:70:0x017b, B:72:0x017f, B:74:0x0183, B:76:0x0189, B:77:0x018e, B:79:0x0192, B:81:0x0198, B:83:0x01a1, B:85:0x01af, B:89:0x01b8, B:91:0x01be, B:93:0x01ca, B:95:0x01d0, B:97:0x01d6, B:99:0x01dc, B:101:0x01e0, B:104:0x01c7, B:107:0x01fb, B:110:0x0204, B:111:0x021c, B:113:0x022a, B:115:0x0230, B:116:0x024a, B:118:0x0252, B:120:0x025a, B:122:0x0260, B:123:0x0262, B:127:0x0291, B:129:0x029a, B:131:0x02a4, B:134:0x02aa, B:136:0x02b4, B:137:0x02b7, B:139:0x02bb, B:141:0x02bf, B:144:0x02c7, B:147:0x02d2, B:149:0x02d6, B:152:0x026b, B:154:0x026f, B:155:0x0285, B:156:0x02da, B:158:0x02e2, B:160:0x02e6, B:162:0x02ee, B:164:0x02f4, B:165:0x02fa, B:166:0x0306, B:170:0x0314, B:172:0x031c, B:173:0x0321, B:175:0x0328, B:179:0x033a, B:181:0x033e, B:182:0x014a, B:184:0x0152), top: B:25:0x009c }] */
+    /* JADX WARN: Removed duplicated region for block: B:72:0x017f A[Catch: all -> 0x00de, TryCatch #0 {all -> 0x00de, blocks: (B:26:0x009c, B:28:0x00cd, B:30:0x00d8, B:31:0x00e1, B:33:0x00e6, B:35:0x00ec, B:36:0x00f2, B:38:0x00fb, B:43:0x0107, B:45:0x0115, B:47:0x011d, B:52:0x012b, B:53:0x0137, B:55:0x013b, B:57:0x0146, B:58:0x0159, B:60:0x015e, B:63:0x0164, B:65:0x016a, B:67:0x0170, B:69:0x0176, B:70:0x017b, B:72:0x017f, B:74:0x0183, B:76:0x0189, B:77:0x018e, B:79:0x0192, B:81:0x0198, B:83:0x01a1, B:85:0x01af, B:89:0x01b8, B:91:0x01be, B:93:0x01ca, B:95:0x01d0, B:97:0x01d6, B:99:0x01dc, B:101:0x01e0, B:104:0x01c7, B:107:0x01fb, B:110:0x0204, B:111:0x021c, B:113:0x022a, B:115:0x0230, B:116:0x024a, B:118:0x0252, B:120:0x025a, B:122:0x0260, B:123:0x0262, B:127:0x0291, B:129:0x029a, B:131:0x02a4, B:134:0x02aa, B:136:0x02b4, B:137:0x02b7, B:139:0x02bb, B:141:0x02bf, B:144:0x02c7, B:147:0x02d2, B:149:0x02d6, B:152:0x026b, B:154:0x026f, B:155:0x0285, B:156:0x02da, B:158:0x02e2, B:160:0x02e6, B:162:0x02ee, B:164:0x02f4, B:165:0x02fa, B:166:0x0306, B:170:0x0314, B:172:0x031c, B:173:0x0321, B:175:0x0328, B:179:0x033a, B:181:0x033e, B:182:0x014a, B:184:0x0152), top: B:25:0x009c }] */
+    /* JADX WARN: Removed duplicated region for block: B:79:0x0192 A[Catch: all -> 0x00de, TryCatch #0 {all -> 0x00de, blocks: (B:26:0x009c, B:28:0x00cd, B:30:0x00d8, B:31:0x00e1, B:33:0x00e6, B:35:0x00ec, B:36:0x00f2, B:38:0x00fb, B:43:0x0107, B:45:0x0115, B:47:0x011d, B:52:0x012b, B:53:0x0137, B:55:0x013b, B:57:0x0146, B:58:0x0159, B:60:0x015e, B:63:0x0164, B:65:0x016a, B:67:0x0170, B:69:0x0176, B:70:0x017b, B:72:0x017f, B:74:0x0183, B:76:0x0189, B:77:0x018e, B:79:0x0192, B:81:0x0198, B:83:0x01a1, B:85:0x01af, B:89:0x01b8, B:91:0x01be, B:93:0x01ca, B:95:0x01d0, B:97:0x01d6, B:99:0x01dc, B:101:0x01e0, B:104:0x01c7, B:107:0x01fb, B:110:0x0204, B:111:0x021c, B:113:0x022a, B:115:0x0230, B:116:0x024a, B:118:0x0252, B:120:0x025a, B:122:0x0260, B:123:0x0262, B:127:0x0291, B:129:0x029a, B:131:0x02a4, B:134:0x02aa, B:136:0x02b4, B:137:0x02b7, B:139:0x02bb, B:141:0x02bf, B:144:0x02c7, B:147:0x02d2, B:149:0x02d6, B:152:0x026b, B:154:0x026f, B:155:0x0285, B:156:0x02da, B:158:0x02e2, B:160:0x02e6, B:162:0x02ee, B:164:0x02f4, B:165:0x02fa, B:166:0x0306, B:170:0x0314, B:172:0x031c, B:173:0x0321, B:175:0x0328, B:179:0x033a, B:181:0x033e, B:182:0x014a, B:184:0x0152), top: B:25:0x009c }] */
+    /* JADX WARN: Removed duplicated region for block: B:89:0x01b8 A[Catch: all -> 0x00de, TryCatch #0 {all -> 0x00de, blocks: (B:26:0x009c, B:28:0x00cd, B:30:0x00d8, B:31:0x00e1, B:33:0x00e6, B:35:0x00ec, B:36:0x00f2, B:38:0x00fb, B:43:0x0107, B:45:0x0115, B:47:0x011d, B:52:0x012b, B:53:0x0137, B:55:0x013b, B:57:0x0146, B:58:0x0159, B:60:0x015e, B:63:0x0164, B:65:0x016a, B:67:0x0170, B:69:0x0176, B:70:0x017b, B:72:0x017f, B:74:0x0183, B:76:0x0189, B:77:0x018e, B:79:0x0192, B:81:0x0198, B:83:0x01a1, B:85:0x01af, B:89:0x01b8, B:91:0x01be, B:93:0x01ca, B:95:0x01d0, B:97:0x01d6, B:99:0x01dc, B:101:0x01e0, B:104:0x01c7, B:107:0x01fb, B:110:0x0204, B:111:0x021c, B:113:0x022a, B:115:0x0230, B:116:0x024a, B:118:0x0252, B:120:0x025a, B:122:0x0260, B:123:0x0262, B:127:0x0291, B:129:0x029a, B:131:0x02a4, B:134:0x02aa, B:136:0x02b4, B:137:0x02b7, B:139:0x02bb, B:141:0x02bf, B:144:0x02c7, B:147:0x02d2, B:149:0x02d6, B:152:0x026b, B:154:0x026f, B:155:0x0285, B:156:0x02da, B:158:0x02e2, B:160:0x02e6, B:162:0x02ee, B:164:0x02f4, B:165:0x02fa, B:166:0x0306, B:170:0x0314, B:172:0x031c, B:173:0x0321, B:175:0x0328, B:179:0x033a, B:181:0x033e, B:182:0x014a, B:184:0x0152), top: B:25:0x009c }] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int finishIfPossible(int r24, android.content.Intent r25, com.android.server.uri.NeededUriGrants r26, java.lang.String r27, boolean r28) {
+        /*
+            Method dump skipped, instructions count: 857
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.finishIfPossible(int, android.content.Intent, com.android.server.uri.NeededUriGrants, java.lang.String, boolean):int");
     }
 
-    public void updateMultiWindowMode() {
-        boolean inMultiWindowMode;
-        Task task = this.task;
-        if (task == null || task.getRootTask() == null || !attachedToProcess() || (inMultiWindowMode = inMultiWindowMode()) == this.mLastReportedMultiWindowMode) {
-            return;
+    public final int finishIfPossible(String str, boolean z) {
+        return finishIfPossible(0, null, null, str, z);
+    }
+
+    public final void finishRelaunching() {
+        this.mAppCompatController.mAppCompatOverrides.mAppCompatOrientationOverrides.mOrientationOverridesState.mIsRelaunchingAfterRequestedOrientationChanged = false;
+        ActivityMetricsLogger.TransitionInfo activeTransitionInfo = this.mTaskSupervisor.mActivityMetricsLogger.getActiveTransitionInfo(this);
+        if (activeTransitionInfo != null) {
+            activeTransitionInfo.mRelaunched = true;
         }
-        if (!inMultiWindowMode && this.mLastReportedPictureInPictureMode) {
-            updatePictureInPictureMode(null, false);
+        int i = this.mPendingRelaunchCount;
+        if (i > 0) {
+            int i2 = i - 1;
+            this.mPendingRelaunchCount = i2;
+            if (i2 == 0 && !this.mClientVisible) {
+                this.mRelaunchStartTime = 0L;
+                DisplayPolicy displayPolicy = this.mDisplayContent.mDisplayPolicy;
+                if (displayPolicy.mRelaunchingSystemBarColorApps.remove(this) & displayPolicy.mRelaunchingSystemBarColorApps.isEmpty()) {
+                    displayPolicy.updateSystemBarAttributes();
+                }
+            }
         } else {
-            this.mLastReportedMultiWindowMode = inMultiWindowMode;
-            ensureActivityConfiguration(0, true);
+            checkKeyguardFlagsChanged();
         }
-    }
-
-    public void updatePictureInPictureMode(Rect rect, boolean z) {
-        Task task = this.task;
-        if (task == null || task.getRootTask() == null || !attachedToProcess()) {
+        Task rootTask = getRootTask();
+        if (rootTask == null || !rootTask.shouldSleepOrShutDownActivities()) {
             return;
         }
-        boolean z2 = inPinnedWindowingMode() && rect != null;
-        if (z2 != this.mLastReportedPictureInPictureMode || z) {
-            this.mLastReportedPictureInPictureMode = z2;
-            this.mLastReportedMultiWindowMode = z2;
-            ensureActivityConfiguration(0, true, true);
-            if (z2 && findMainWindow() == null) {
-                EventLog.writeEvent(1397638484, "265293293", -1, "");
-                removeImmediately();
-            }
+        rootTask.ensureActivitiesVisible(true, null);
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void finishSync(SurfaceControl.Transaction transaction, BLASTSyncEngine.SyncGroup syncGroup, boolean z) {
+        if (isDifferentSyncGroup(syncGroup)) {
+            return;
         }
+        this.mLastAllReadyAtSync = allSyncFinished();
+        super.finishSync(transaction, syncGroup, z);
     }
 
-    public Task getTask() {
-        return this.task;
+    @Override // com.android.server.wm.WindowContainer
+    public final void forAllActivities(Consumer consumer, boolean z) {
+        consumer.accept(this);
     }
 
-    public TaskFragment getTaskFragment() {
-        WindowContainer parent = getParent();
-        if (parent != null) {
-            return parent.asTaskFragment();
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean forAllActivities(Predicate predicate, boolean z) {
+        return predicate.test(this);
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final ActivityRecord getActivity(Predicate predicate, boolean z, ActivityRecord activityRecord) {
+        if (predicate.test(this)) {
+            return this;
         }
         return null;
     }
 
-    public final boolean shouldStartChangeTransition(TaskFragment taskFragment, TaskFragment taskFragment2) {
-        if (taskFragment == null || taskFragment2 == null || !canStartChangeTransition()) {
-            return false;
+    public final ActivityWindowInfo getActivityWindowInfo() {
+        if (!Flags.activityWindowInfoFlag() || !isAttached()) {
+            return this.mTmpActivityWindowInfo;
         }
-        return (!taskFragment.isOrganizedTaskFragment() || taskFragment.getBounds().equals(taskFragment2.getBounds()) || (CoreRune.MW_EMBED_ACTIVITY && this.mStartingData != null && ((this.mStartingWindow != null && taskFragment.isEmbedded() && this.mStartingWindow.matchParentBounds()) || this.mStartingData.mAssociatedTask != null))) ? false : true;
+        boolean z = false;
+        if (isFixedRotationTransforming()) {
+            Rect bounds = getBounds();
+            this.mTmpActivityWindowInfo.set(false, bounds, bounds);
+        } else {
+            ActivityWindowInfo activityWindowInfo = this.mTmpActivityWindowInfo;
+            TaskFragment organizedTaskFragment = getOrganizedTaskFragment();
+            if (organizedTaskFragment != null && organizedTaskFragment.isEmbeddedWithBoundsOverride()) {
+                z = true;
+            }
+            activityWindowInfo.set(z, this.task.getBounds(), getTaskFragment().getBounds());
+        }
+        return this.mTmpActivityWindowInfo;
     }
 
     @Override // com.android.server.wm.WindowContainer
-    public boolean canStartChangeTransition() {
-        Task task = getTask();
-        return (task == null || task.isDragResizing() || !super.canStartChangeTransition()) ? false : true;
-    }
-
-    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
-    public void onParentChanged(ConfigurationContainer configurationContainer, ConfigurationContainer configurationContainer2) {
-        TaskFragment taskFragment = (TaskFragment) configurationContainer2;
-        TaskFragment taskFragment2 = (TaskFragment) configurationContainer;
-        Task task = taskFragment != null ? taskFragment.getTask() : null;
-        Task task2 = taskFragment2 != null ? taskFragment2.getTask() : null;
-        this.task = task2;
-        this.mPopOverState.applyOptionsInherited();
-        this.mPopOverState.toggle();
-        if (shouldStartChangeTransition(taskFragment2, taskFragment)) {
-            if (this.mTransitionController.isShellTransitionsEnabled()) {
-                initializeChangeTransition(getBounds());
-            } else {
-                taskFragment2.initializeChangeTransition(getBounds(), getSurfaceControl());
-            }
-        }
-        super.onParentChanged(taskFragment2, taskFragment);
-        if (isPersistable()) {
-            if (task != null) {
-                this.mAtmService.notifyTaskPersisterLocked(task, false);
-            }
-            if (task2 != null) {
-                this.mAtmService.notifyTaskPersisterLocked(task2, false);
-            }
-        }
-        if (taskFragment == null && taskFragment2 != null) {
-            this.mVoiceInteraction = task2.voiceSession != null;
-            task2.updateOverrideConfigurationFromLaunchBounds();
-            this.mLastReportedMultiWindowMode = inMultiWindowMode();
-            this.mLastReportedPictureInPictureMode = inPinnedWindowingMode();
-            Bundle bundle = this.info.metaData;
-            this.mRequestFreeformForceHiding = bundle != null && bundle.getBoolean("com.samsung.android.sdk.multiwindow.force_hide_floating_multiwindow", false);
-        }
-        if (this.task == null && getDisplayContent() != null) {
-            getDisplayContent().mClosingApps.remove(this);
-        }
-        Task rootTask = getRootTask();
-        updateAnimatingActivityRegistry();
-        Task task3 = this.task;
-        if (task3 == this.mLastParentBeforePip && task3 != null) {
-            this.mAtmService.mWindowOrganizerController.mTaskFragmentOrganizerController.onActivityReparentedToTask(this);
-            clearLastParentBeforePip();
-            setWindowingMode(0);
-        }
-        if (CoreRune.MW_EMBED_ACTIVITY && isActivityReparentToEmbeddedTask() && this.task != null) {
-            this.mAtmService.mWindowOrganizerController.mTaskFragmentOrganizerController.onActivityReparentedToTask(this);
-            setActivityReparentToEmbeddedTask(false);
-        }
-        updateColorTransform();
-        if (taskFragment != null) {
-            taskFragment.cleanUpActivityReferences(this);
-            this.mRequestedLaunchingTaskFragmentToken = null;
-        }
-        if (taskFragment2 != null) {
-            if (isState(State.RESUMED)) {
-                taskFragment2.setResumedActivity(this, "onParentChanged");
-            }
-            this.mLetterboxUiController.updateInheritedLetterbox();
-        }
-        if (rootTask != null && rootTask.topRunningActivity() == this && this.firstWindowDrawn) {
-            rootTask.setHasBeenVisible(true);
-        }
-        updateUntrustedEmbeddingInputProtection();
+    public Rect getAnimationBounds(int i) {
+        TaskFragment taskFragment = getTaskFragment();
+        return taskFragment != null ? taskFragment.getBounds() : getBounds();
     }
 
     @Override // com.android.server.wm.WindowContainer
-    public void setSurfaceControl(SurfaceControl surfaceControl) {
-        super.setSurfaceControl(surfaceControl);
-        if (surfaceControl != null) {
-            this.mLastDropInputMode = 0;
-            updateUntrustedEmbeddingInputProtection();
-        }
-    }
-
-    public void setDropInputForAnimation(boolean z) {
-        if (this.mIsInputDroppedForAnimation == z) {
+    public final void getAnimationFrames(Rect rect, Rect rect2, Rect rect3, Rect rect4) {
+        WindowState findMainWindow = findMainWindow(true);
+        if (findMainWindow == null) {
             return;
         }
-        this.mIsInputDroppedForAnimation = z;
-        updateUntrustedEmbeddingInputProtection();
+        findMainWindow.getAnimationFrames(rect, rect2, rect3, rect4);
     }
 
-    public final void updateUntrustedEmbeddingInputProtection() {
-        if (getSurfaceControl() == null) {
-            return;
-        }
-        if (this.mIsInputDroppedForAnimation) {
-            setDropInputMode(1);
-        } else if (isEmbeddedInUntrustedMode()) {
-            setDropInputMode(2);
-        } else {
-            setDropInputMode(0);
-        }
+    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.SurfaceAnimator.Animatable
+    public final SurfaceControl getAnimationLeashParent() {
+        return (inPinnedWindowingMode() || inFreeformWindowingMode()) ? getRootTask().mSurfaceControl : getParentSurfaceControl();
     }
 
-    public void setDropInputMode(int i) {
-        if (this.mLastDropInputMode != i) {
-            this.mLastDropInputMode = i;
-            ((SurfaceControl.Transaction) this.mWmService.mTransactionFactory.get()).setDropInputMode(getSurfaceControl(), i).apply();
-        }
+    @Override // com.android.server.wm.WindowContainer
+    public final void getAnimationPosition(Point point) {
+        point.set(0, 0);
     }
 
-    public final boolean isEmbeddedInUntrustedMode() {
-        if (getOrganizedTaskFragment() == null) {
-            return false;
-        }
-        return !r0.isAllowedToEmbedActivityInTrustedMode(this);
+    public final AppCompatDisplayInsets getAppCompatDisplayInsets() {
+        AppCompatSizeCompatModePolicy appCompatSizeCompatModePolicy = this.mAppCompatController.mAppCompatSizeCompatModePolicy;
+        TransparentPolicy transparentPolicy = appCompatSizeCompatModePolicy.mActivityRecord.mAppCompatController.mTransparentPolicy;
+        AppCompatDisplayInsets appCompatDisplayInsets = transparentPolicy.mTransparentPolicyState.isRunning() ? transparentPolicy.mTransparentPolicyState.mInheritedAppCompatDisplayInsets : appCompatSizeCompatModePolicy.mAppCompatDisplayInsets;
+        return appCompatDisplayInsets != null ? appCompatDisplayInsets : appCompatSizeCompatModePolicy.mPreCreatedAppCompatDisplayInsets;
     }
 
-    public void updateAnimatingActivityRegistry() {
-        Task rootTask = getRootTask();
-        AnimatingActivityRegistry animatingActivityRegistry = rootTask != null ? rootTask.getAnimatingActivityRegistry() : null;
-        AnimatingActivityRegistry animatingActivityRegistry2 = this.mAnimatingActivityRegistry;
-        if (animatingActivityRegistry2 != null && animatingActivityRegistry2 != animatingActivityRegistry) {
-            animatingActivityRegistry2.notifyFinished(this);
+    public final int getAppCompatState(boolean z) {
+        if (!z && !this.mVisibleRequested) {
+            return 1;
         }
-        this.mAnimatingActivityRegistry = animatingActivityRegistry;
-    }
-
-    public void setLastParentBeforePip(ActivityRecord activityRecord) {
-        Task task;
-        TaskFragment organizedTaskFragment;
-        if (activityRecord == null) {
-            task = getTask();
-        } else {
-            task = activityRecord.getTask();
+        if (this.mAppCompatController.mTransparentPolicy.mTransparentPolicyState.isRunning()) {
+            return this.mAppCompatController.mTransparentPolicy.mTransparentPolicyState.mInheritedAppCompatState;
         }
-        this.mLastParentBeforePip = task;
-        task.mChildPipActivity = this;
-        this.mLaunchIntoPipHostActivity = activityRecord;
-        if (activityRecord == null) {
-            organizedTaskFragment = getOrganizedTaskFragment();
-        } else {
-            organizedTaskFragment = activityRecord.getOrganizedTaskFragment();
-        }
-        this.mLastTaskFragmentOrganizerBeforePip = organizedTaskFragment != null ? organizedTaskFragment.getTaskFragmentOrganizer() : null;
-    }
-
-    public void clearLastParentBeforePip() {
-        Task task = this.mLastParentBeforePip;
-        if (task != null) {
-            task.mChildPipActivity = null;
-            this.mLastParentBeforePip = null;
-        }
-        this.mLaunchIntoPipHostActivity = null;
-        this.mLastTaskFragmentOrganizerBeforePip = null;
-    }
-
-    public Task getLastParentBeforePip() {
-        return this.mLastParentBeforePip;
-    }
-
-    public final void updateColorTransform() {
-        if (this.mSurfaceControl == null || this.mLastAppSaturationInfo == null) {
-            return;
-        }
-        SurfaceControl.Transaction pendingTransaction = getPendingTransaction();
-        SurfaceControl surfaceControl = this.mSurfaceControl;
-        AppSaturationInfo appSaturationInfo = this.mLastAppSaturationInfo;
-        pendingTransaction.setColorTransform(surfaceControl, appSaturationInfo.mMatrix, appSaturationInfo.mTranslation);
-        this.mWmService.scheduleAnimationLocked();
-    }
-
-    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer
-    public void onDisplayChanged(DisplayContent displayContent) {
-        UiModeManagerInternal uiModeManagerInternal;
-        DisplayContent displayContent2 = this.mDisplayContent;
-        super.onDisplayChanged(displayContent);
-        DisplayContent displayContent3 = this.mDisplayContent;
-        if (displayContent2 == displayContent3) {
-            return;
-        }
-        displayContent3.onRunningActivityChanged();
-        if (displayContent2 == null && displayContent.getDisplayId() == 0 && !this.mLastReportedConfiguration.getGlobalConfiguration().isNightModeActive() && (uiModeManagerInternal = (UiModeManagerInternal) LocalServices.getService(UiModeManagerInternal.class)) != null) {
-            if (uiModeManagerInternal.applyPackageNightModeIfNeeded(this.packageName, this.mUserId) || uiModeManagerInternal.needToShowNightModeDialog(this.packageName, this.mUserId)) {
-                this.mShouldShowPackageNightModeDialog = true;
-            }
-            if (this.mShouldShowPackageNightModeDialog) {
-                uiModeManagerInternal.setNightModeDialogShown(this.packageName, this.mUserId);
-            }
-            if (uiModeManagerInternal.shouldIgnoreDialog()) {
-                this.mShouldShowPackageNightModeDialog = false;
-            }
-        }
-        if (displayContent2 == null) {
-            return;
-        }
-        displayContent2.onRunningActivityChanged();
-        this.mTransitionController.collect(this);
-        if (displayContent2.mOpeningApps.remove(this)) {
-            this.mDisplayContent.mOpeningApps.add(this);
-            this.mDisplayContent.transferAppTransitionFrom(displayContent2);
-            this.mDisplayContent.executeAppTransition();
-        }
-        displayContent2.mClosingApps.remove(this);
-        displayContent2.getDisplayPolicy().removeRelaunchingApp(this);
-        if (displayContent2.mFocusedApp == this) {
-            displayContent2.setFocusedApp(null);
-            if (displayContent.getTopMostActivity() == this) {
-                displayContent.setFocusedApp(this);
-            }
-        }
-        if (displayContent2.mInputMethodSurfaceParentContainer == this) {
-            displayContent2.updateImeControlTarget(true);
-        }
-        this.mLetterboxUiController.onMovedToDisplay(this.mDisplayContent.getDisplayId());
-    }
-
-    public void layoutLetterbox(WindowState windowState) {
-        this.mLetterboxUiController.layoutLetterbox(windowState);
-    }
-
-    public boolean hasWallpaperBackgroundForLetterbox() {
-        return this.mLetterboxUiController.hasWallpaperBackgroundForLetterbox();
-    }
-
-    public void updateLetterboxSurface(WindowState windowState, SurfaceControl.Transaction transaction) {
-        this.mLetterboxUiController.updateLetterboxSurface(windowState, transaction);
-    }
-
-    public void updateLetterboxSurface(WindowState windowState) {
-        this.mLetterboxUiController.updateLetterboxSurface(windowState);
-    }
-
-    public Rect getLetterboxInsets() {
-        return this.mLetterboxUiController.getLetterboxInsets();
-    }
-
-    public void getLetterboxInnerBounds(Rect rect) {
-        this.mLetterboxUiController.getLetterboxInnerBounds(rect);
-    }
-
-    public void updateCameraCompatState(boolean z, boolean z2, ICompatCameraControlCallback iCompatCameraControlCallback) {
-        if (isCameraCompatControlEnabled()) {
-            if (this.mCameraCompatControlClickedByUser && (z || this.mCameraCompatControlState == 3)) {
-                return;
-            }
-            this.mCompatCameraControlCallback = iCompatCameraControlCallback;
-            int i = !z ? 0 : z2 ? 2 : 1;
-            if (setCameraCompatControlState(i)) {
-                this.mTaskSupervisor.getActivityMetricsLogger().logCameraCompatControlAppearedEventReported(i, this.info.applicationInfo.uid);
-                if (i == 0) {
-                    this.mCameraCompatControlClickedByUser = false;
-                    this.mCompatCameraControlCallback = null;
-                }
-                getTask().dispatchTaskInfoChangedIfNeeded(true);
-                getDisplayContent().setLayoutNeeded();
-                this.mWmService.mWindowPlacerLocked.performSurfacePlacement();
-            }
-        }
-    }
-
-    public void updateCameraCompatStateFromUser(int i) {
-        if (isCameraCompatControlEnabled()) {
-            if (i == 0) {
-                Slog.w("ActivityTaskManager", "Unexpected hidden state in updateCameraCompatState");
-                return;
-            }
-            boolean cameraCompatControlState = setCameraCompatControlState(i);
-            this.mCameraCompatControlClickedByUser = true;
-            if (cameraCompatControlState) {
-                this.mTaskSupervisor.getActivityMetricsLogger().logCameraCompatControlClickedEventReported(i, this.info.applicationInfo.uid);
-                if (i == 3) {
-                    this.mCompatCameraControlCallback = null;
-                    return;
-                }
-                ICompatCameraControlCallback iCompatCameraControlCallback = this.mCompatCameraControlCallback;
-                if (iCompatCameraControlCallback == null) {
-                    Slog.w("ActivityTaskManager", "Callback for a camera compat control is null");
-                    return;
-                }
-                try {
-                    if (i == 2) {
-                        iCompatCameraControlCallback.applyCameraCompatTreatment();
-                    } else {
-                        iCompatCameraControlCallback.revertCameraCompatTreatment();
-                    }
-                } catch (RemoteException e) {
-                    Slog.e("ActivityTaskManager", "Unable to apply or revert camera compat treatment", e);
-                }
-            }
-        }
-    }
-
-    public final boolean setCameraCompatControlState(int i) {
-        if (!isCameraCompatControlEnabled() || this.mCameraCompatControlState == i) {
-            return false;
-        }
-        this.mCameraCompatControlState = i;
-        return true;
-    }
-
-    public int getCameraCompatControlState() {
-        return this.mCameraCompatControlState;
-    }
-
-    public boolean isCameraCompatControlEnabled() {
-        return this.mCameraCompatControlEnabled;
-    }
-
-    public boolean isFullyTransparentBarAllowed(Rect rect) {
-        if (isLayoutNeededInUdcCutout()) {
-            rect = this.mDisplayContent.mUdcCutoutPolicy.getIntersectedCutout(rect);
-        }
-        return this.mLetterboxUiController.isFullyTransparentBarAllowed(rect);
-    }
-
-    /* loaded from: classes3.dex */
-    public class Token extends Binder {
-        public WeakReference mActivityRef;
-
-        public String toString() {
-            return "Token{" + Integer.toHexString(System.identityHashCode(this)) + " " + this.mActivityRef.get() + "}";
-        }
-    }
-
-    public static ActivityRecord forToken(IBinder iBinder) {
-        if (iBinder == null) {
-            return null;
-        }
-        try {
-            return (ActivityRecord) ((Token) iBinder).mActivityRef.get();
-        } catch (ClassCastException e) {
-            Slog.w("ActivityTaskManager", "Bad activity token: " + iBinder, e);
-            return null;
-        }
-    }
-
-    public static ActivityRecord forTokenLocked(IBinder iBinder) {
-        ActivityRecord forToken = forToken(iBinder);
-        if (forToken == null || forToken.getRootTask() == null) {
-            return null;
-        }
-        return forToken;
-    }
-
-    public static boolean isResolverActivity(String str) {
-        return ResolverActivity.class.getName().equals(str);
-    }
-
-    public boolean isResolverOrDelegateActivity() {
-        return isResolverActivity(this.mActivityComponent.getClassName()) || Objects.equals(this.mActivityComponent, this.mAtmService.mTaskSupervisor.getSystemChooserActivity());
-    }
-
-    public boolean isResolverOrChildActivity() {
-        if (!"android".equals(this.packageName)) {
-            return false;
-        }
-        try {
-            return ResolverActivity.class.isAssignableFrom(Object.class.getClassLoader().loadClass(this.mActivityComponent.getClassName()));
-        } catch (ClassNotFoundException unused) {
-            return false;
-        }
-    }
-
-    /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-    public ActivityRecord(ActivityTaskManagerService activityTaskManagerService, WindowProcessController windowProcessController, int i, int i2, String str, String str2, Intent intent, String str3, ActivityInfo activityInfo, Configuration configuration, ActivityRecord activityRecord, String str4, int i3, boolean z, boolean z2, ActivityTaskSupervisor activityTaskSupervisor, ActivityOptions activityOptions, ActivityRecord activityRecord2, PersistableBundle persistableBundle, ActivityManager.TaskDescription taskDescription, long j) {
-        super(activityTaskManagerService.mWindowManager, new Token(), 2, true, null, false);
-        boolean z3;
-        boolean z4;
-        Bundle bundle;
-        boolean z5;
-        Bundle bundle2;
-        Bundle bundle3;
-        int i4;
-        String str5;
-        int i5;
-        ActivityOptions activityOptions2 = activityOptions;
-        this.mHandoverLaunchDisplayId = -1;
-        this.createTime = System.currentTimeMillis();
-        this.mHaveState = true;
-        this.pictureInPictureArgs = new PictureInPictureParams.Builder().build();
-        this.mSplashScreenStyleSolidColor = false;
-        this.mPauseSchedulePendingForPip = false;
-        this.mAutoEnteringPip = false;
-        this.mTaskOverlay = false;
-        this.mRelaunchReason = 0;
-        this.mForceSendResultForMediaProjection = false;
-        this.mRemovingFromDisplay = false;
-        this.mIsActivityReparentToEmbeddedTask = false;
-        this.mReportedVisibilityResults = new WindowState.UpdateReportedVisibilityResults();
-        this.mCurrentLaunchCanTurnScreenOn = true;
-        this.mInputDispatchingTimeoutMillis = InputConstants.DEFAULT_DISPATCHING_TIMEOUT_MILLIS;
-        this.mLastTransactionSequence = Long.MIN_VALUE;
-        this.mLastAllReadyAtSync = false;
-        this.mSizeCompatScale = 1.0f;
-        this.mInSizeCompatModeForBounds = false;
-        this.mIsAspectRatioApplied = false;
-        this.mCameraCompatControlState = 0;
-        this.mEnableRecentsScreenshot = true;
-        this.mLastDropInputMode = 0;
-        this.mTransferringSplashScreenState = 0;
-        this.mRotationAnimationHint = -1;
-        this.mIsDexCompatEnabled = false;
-        this.mProcessAppLaunchPolicy = 0;
-        this.mIsAllowedSeamlessRotation = false;
-        this.mSourceSplitActivity = null;
-        this.mTargetSplitActivities = new ArrayList();
-        this.mRequestFinishFromSourceActivity = false;
-        this.mRestoreActivityGroupZone = -1;
-        this.mRelativeActivity = null;
-        this.mKeepScreenWhenFolding = false;
-        ColorDisplayService.ColorTransformController colorTransformController = new ColorDisplayService.ColorTransformController() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda24
-            @Override // com.android.server.display.color.ColorDisplayService.ColorTransformController
-            public final void applyAppSaturation(float[] fArr, float[] fArr2) {
-                ActivityRecord.this.lambda$new$2(fArr, fArr2);
-            }
-        };
-        this.mColorTransformController = colorTransformController;
-        this.mTmpConfig = new Configuration();
-        this.mTmpBounds = new Rect();
-        this.assistToken = new Binder();
-        this.shareableActivityToken = new Binder();
-        this.mPauseTimeoutRunnable = new Runnable() { // from class: com.android.server.wm.ActivityRecord.1
-            public AnonymousClass1() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                Slog.w("ActivityTaskManager", "Activity pause timeout for " + ActivityRecord.this);
-                WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        if (!ActivityRecord.this.hasProcess()) {
-                            WindowManagerService.resetPriorityAfterLockedSection();
-                            return;
-                        }
-                        ActivityRecord activityRecord3 = ActivityRecord.this;
-                        activityRecord3.mAtmService.logAppTooSlow(activityRecord3.app, activityRecord3.pauseTime, "pausing " + ActivityRecord.this);
-                        ActivityRecord.this.activityPaused(true);
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-            }
-        };
-        this.mLaunchTickRunnable = new Runnable() { // from class: com.android.server.wm.ActivityRecord.2
-            public AnonymousClass2() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        if (ActivityRecord.this.continueLaunchTicking()) {
-                            ActivityRecord activityRecord3 = ActivityRecord.this;
-                            activityRecord3.mAtmService.logAppTooSlow(activityRecord3.app, activityRecord3.launchTickTime, "launching " + ActivityRecord.this);
-                        }
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-        };
-        this.mDestroyTimeoutRunnable = new Runnable() { // from class: com.android.server.wm.ActivityRecord.3
-            public AnonymousClass3() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        Slog.w("ActivityTaskManager", "Activity destroy timeout for " + ActivityRecord.this);
-                        if (FreecessController.getInstance().getFreecessEnabled()) {
-                            FreecessController.getInstance().protectFreezePackage(ActivityRecord.this.info.applicationInfo.uid, "ActivityDestroyTimeout", 20000L);
-                        }
-                        ActivityRecord.this.destroyed("destroyTimeout");
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-        };
-        this.mStopTimeoutRunnable = new Runnable() { // from class: com.android.server.wm.ActivityRecord.4
-            public AnonymousClass4() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        Slog.w("ActivityTaskManager", "Activity stop timeout for " + ActivityRecord.this);
-                        if (ActivityRecord.this.isInHistory()) {
-                            ActivityRecord.this.activityStopped(null, null, null);
-                        }
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-        };
-        this.mHiddenWhileEnteringPinnedTimeoutRunnable = new Runnable() { // from class: com.android.server.wm.ActivityRecord.5
-            public AnonymousClass5() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                if (CoreRune.MW_PIP_SHELL_TRANSITION) {
-                    WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-                    WindowManagerService.boostPriorityForLockedSection();
-                    synchronized (windowManagerGlobalLock) {
-                        try {
-                            Slog.w("ActivityTaskManager", "enter pip timeout for  " + ActivityRecord.this);
-                            ActivityRecord.this.setHiddenWhileEnteringPinnedMode(false, "timeout");
-                        } catch (Throwable th) {
-                            WindowManagerService.resetPriorityAfterLockedSection();
-                            throw th;
-                        }
-                    }
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                }
-            }
-        };
-        this.mAddStartingWindow = new AddStartingWindow();
-        this.mTransferSplashScreenTimeoutRunnable = new Runnable() { // from class: com.android.server.wm.ActivityRecord.6
-            public AnonymousClass6() {
-            }
-
-            @Override // java.lang.Runnable
-            public void run() {
-                WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-                WindowManagerService.boostPriorityForLockedSection();
-                synchronized (windowManagerGlobalLock) {
-                    try {
-                        Slog.w("ActivityTaskManager", "Activity transferring splash screen timeout for " + ActivityRecord.this + " state " + ActivityRecord.this.mTransferringSplashScreenState);
-                        if (ActivityRecord.this.isTransferringSplashScreen()) {
-                            ActivityRecord activityRecord3 = ActivityRecord.this;
-                            activityRecord3.mTransferringSplashScreenState = 3;
-                            activityRecord3.removeStartingWindow();
-                        }
-                    } catch (Throwable th) {
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        throw th;
-                    }
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            }
-        };
-        this.mIsPrelMode = false;
-        this.mShouldPrelNotify = false;
-        this.mAtmService = activityTaskManagerService;
-        ((Token) this.token).mActivityRef = new WeakReference(this);
-        this.info = activityInfo;
-        int userId = UserHandle.getUserId(activityInfo.applicationInfo.uid);
-        this.mUserId = userId;
-        String str6 = activityInfo.applicationInfo.packageName;
-        this.packageName = str6;
-        this.intent = intent;
-        this.mCompatRecord = new BoundsCompatRecord(this);
-        this.mPopOverState = new PopOverState(this);
-        String str7 = activityInfo.targetActivity;
-        if (str7 == null || (str7.equals(intent.getComponent().getClassName()) && ((i5 = activityInfo.launchMode) == 0 || i5 == 1))) {
-            this.mActivityComponent = intent.getComponent();
-        } else {
-            this.mActivityComponent = new ComponentName(activityInfo.packageName, activityInfo.targetActivity);
-        }
-        this.mLetterboxUiController = new LetterboxUiController(this.mWmService, this);
-        this.mCameraCompatControlEnabled = this.mWmService.mContext.getResources().getBoolean(17891729);
-        this.mTargetSdk = activityInfo.applicationInfo.targetSdkVersion;
-        this.mShowForAllUsers = (activityInfo.flags & 1024) != 0;
-        setOrientation(activityInfo.screenOrientation);
-        this.mRotationAnimationHint = activityInfo.rotationAnimation;
-        int i6 = activityInfo.flags;
-        this.mShowWhenLocked = (i6 & 8388608) != 0;
-        this.mInheritShownWhenLocked = (activityInfo.privateFlags & 1) != 0;
-        this.mTurnScreenOn = (i6 & 16777216) != 0;
-        int themeResource = activityInfo.getThemeResource();
-        AttributeCache.Entry entry = AttributeCache.instance().get(str6, themeResource == 0 ? activityInfo.applicationInfo.targetSdkVersion < 11 ? R.style.Theme : R.style.Theme.Holo : themeResource, com.android.internal.R.styleable.Window, userId);
-        if (entry != null) {
-            boolean z6 = !ActivityInfo.isTranslucentOrFloating(entry.array) || entry.array.getBoolean(14, false);
-            this.mOccludesParent = z6;
-            this.mStyleFillsParent = z6;
-            if (CoreRune.FW_SUPPORT_OCCLUDES_PARENT_CHANGE_CALLBACK) {
-                this.mStyleFloating = entry.array.getBoolean(4, false);
-            }
-            if (!this.mOccludesParent) {
-                Slog.d("ActivityTaskManager", "ActivityRecord, mOccludesParent of " + this + " is set to false, isTranslucentOrFloating=" + ActivityInfo.isTranslucentOrFloating(entry.array) + " mStyleFloating=" + this.mStyleFloating);
-            }
-            this.noDisplay = entry.array.getBoolean(10, false);
-        } else {
-            this.mOccludesParent = true;
-            this.mStyleFillsParent = true;
-            this.noDisplay = false;
-        }
-        if (activityOptions2 != null) {
-            this.mLaunchTaskBehind = activityOptions.getLaunchTaskBehind();
-            int rotationAnimationHint = activityOptions.getRotationAnimationHint();
-            if (rotationAnimationHint >= 0) {
-                this.mRotationAnimationHint = rotationAnimationHint;
-            }
-            if (activityOptions.getLaunchIntoPipParams() != null) {
-                this.pictureInPictureArgs = activityOptions.getLaunchIntoPipParams();
-                if (activityRecord2 != null) {
-                    adjustPictureInPictureParamsIfNeeded(activityRecord2.getBounds());
-                }
-            }
-            this.mOverrideTaskTransition = activityOptions.getOverrideTaskTransition();
-            this.mDismissKeyguard = activityOptions.getDismissKeyguard();
-            this.mShareIdentity = activityOptions.isShareIdentityEnabled();
-        }
-        ((ColorDisplayService.ColorDisplayServiceInternal) LocalServices.getService(ColorDisplayService.ColorDisplayServiceInternal.class)).attachColorTransformController(str6, userId, new WeakReference(colorTransformController));
-        this.mRootWindowContainer = activityTaskManagerService.mRootWindowContainer;
-        this.launchedFromPid = i;
-        this.launchedFromUid = i2;
-        this.launchedFromPackage = str;
-        this.launchedFromFeatureId = str2;
-        this.mLaunchSourceType = determineLaunchSourceType(i2, windowProcessController);
-        this.shortComponentName = intent.getComponent().flattenToShortString();
-        this.resolvedType = str3;
-        this.componentSpecified = z;
-        this.rootVoiceInteraction = z2;
-        this.mLastReportedConfiguration = new MergedConfiguration(configuration);
-        this.resultTo = activityRecord;
-        this.resultWho = str4;
-        this.requestCode = i3;
-        setState(State.INITIALIZING, "ActivityRecord ctor");
-        this.launchFailed = false;
-        this.delayedResume = false;
-        this.finishing = false;
-        this.deferRelaunchUntilPaused = false;
-        this.keysPaused = false;
-        this.inHistory = false;
-        this.nowVisible = false;
-        super.setClientVisible(true);
-        this.idle = false;
-        this.hasBeenLaunched = false;
-        this.mTaskSupervisor = activityTaskSupervisor;
-        String str8 = activityInfo.taskAffinity;
-        this.taskAffinityWithoutUid = str8;
-        String computeTaskAffinity = computeTaskAffinity(str8, activityInfo.applicationInfo.uid, activityInfo.launchMode, this.mActivityComponent);
-        activityInfo.taskAffinity = computeTaskAffinity;
-        this.taskAffinity = computeTaskAffinity;
-        String num = Integer.toString(activityInfo.applicationInfo.uid);
-        ActivityInfo.WindowLayout windowLayout = activityInfo.windowLayout;
-        if (windowLayout != null && (str5 = windowLayout.windowLayoutAffinity) != null && !str5.startsWith(num)) {
-            activityInfo.windowLayout.windowLayoutAffinity = num + XmlUtils.STRING_ARRAY_SEPARATOR + activityInfo.windowLayout.windowLayoutAffinity;
-        }
-        if (sConstrainDisplayApisConfig == null) {
-            sConstrainDisplayApisConfig = new ConstrainDisplayApisConfig();
-        }
-        this.stateNotNeeded = (activityInfo.flags & 16) != 0;
-        CharSequence charSequence = activityInfo.nonLocalizedLabel;
-        this.nonLocalizedLabel = charSequence;
-        int i7 = activityInfo.labelRes;
-        this.labelRes = i7;
-        if (charSequence == null && i7 == 0) {
-            ApplicationInfo applicationInfo = activityInfo.applicationInfo;
-            this.nonLocalizedLabel = applicationInfo.nonLocalizedLabel;
-            this.labelRes = applicationInfo.labelRes;
-        }
-        this.icon = activityInfo.getIconResource();
-        this.theme = activityInfo.getThemeResource();
-        int i8 = activityInfo.flags;
-        if ((i8 & 1) != 0 && windowProcessController != null && ((i4 = activityInfo.applicationInfo.uid) == 1000 || i4 == windowProcessController.mInfo.uid)) {
-            this.processName = windowProcessController.mName;
-        } else {
-            this.processName = activityInfo.processName;
-        }
-        if ((i8 & 32) != 0) {
-            intent.addFlags(8388608);
-        }
-        this.launchMode = activityInfo.launchMode;
-        Bundle bundle4 = activityInfo.metaData;
-        if (bundle4 != null && bundle4.getBoolean("com.samsung.android.multiwindow.nonresizeable")) {
-            activityInfo.resizeMode = 10;
-        }
-        activityTaskManagerService.mMwSupportPolicyController.lambda$updateAllTasksLocked$0(this);
-        if (activityRecord2 != null && activityRecord2.mIsAliasActivity) {
-            this.mAliasChild = true;
-        }
-        setActivityType(z, i2, intent, activityOptions, activityRecord2);
-        this.immersive = (activityInfo.flags & IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES) != 0;
-        String str9 = activityInfo.requestedVrComponent;
-        this.requestedVrComponent = str9 == null ? null : ComponentName.unflattenFromString(str9);
-        this.lockTaskLaunchMode = getLockTaskLaunchMode(activityInfo, activityOptions2);
-        if (activityOptions2 != null) {
-            setOptions(activityOptions2);
-            this.mHasSceneTransition = activityOptions.getAnimationType() == 5 && activityOptions.getResultReceiver() != null;
-            PendingIntent usageTimeReport = activityOptions.getUsageTimeReport();
-            if (usageTimeReport != null) {
-                this.appTimeTracker = new AppTimeTracker(usageTimeReport);
-            }
-            WindowContainerToken launchTaskDisplayArea = activityOptions.getLaunchTaskDisplayArea();
-            this.mHandoverTaskDisplayArea = launchTaskDisplayArea != null ? (TaskDisplayArea) WindowContainer.fromBinder(launchTaskDisplayArea.asBinder()) : null;
-            this.mHandoverLaunchDisplayId = activityOptions.getLaunchDisplayId();
-            this.mLaunchCookie = activityOptions.getLaunchCookie();
-            this.mLaunchRootTask = activityOptions.getLaunchRootTask();
-            if (CoreRune.FW_CHN_PREMIUM_WATCH && activityOptions.isNoTransitionOcclusion()) {
-                z3 = true;
-                this.mNoTransitionOcclusion = true;
-            } else {
-                z3 = true;
-            }
-        } else {
-            z3 = true;
-            this.mHasSceneTransition = false;
-        }
-        this.mPopOverState.setupOptions(activityOptions2 == null ? ActivityOptions.makeBasic() : activityOptions2, activityRecord2);
-        this.mPopOverState.setLastOccludesParent(this.mOccludesParent);
-        Bundle bundle5 = activityInfo.metaData;
-        if (bundle5 != null) {
-            z4 = false;
-            this.mShowWhenLocked = bundle5.getBoolean("com.samsung.android.activity.showWhenLocked", false) | this.mShowWhenLocked;
-            this.mTurnScreenOn |= activityInfo.metaData.getBoolean("com.samsung.android.activity.turnScreenOn", false);
-            this.mIsAllowedSeamlessRotation = activityInfo.metaData.getBoolean("com.samsung.android.allow_seamless_rotation", false);
-            if (CoreRune.FW_APPLOCK && (bundle3 = activityInfo.applicationInfo.metaData) != null) {
-                this.mNotToBeTopForAppLockException = bundle3.getBoolean("com.samsung.android.applock.not_to_be_top_for_AppLock_exception", false);
-            }
-        } else {
-            z4 = false;
-        }
-        Bundle bundle6 = activityInfo.metaData;
-        this.mKeepSnapshotCache = ((bundle6 == null || !bundle6.getBoolean("com.samsung.android.keep-snapshotcache", z4)) && ((bundle = activityInfo.applicationInfo.metaData) == null || !bundle.getBoolean("com.samsung.android.keep-snapshotcache", z4))) ? false : z3;
-        UdcCutoutPolicy.updateUseLayoutInUdcCutoutIfNeeded(this);
-        this.mPersistentState = persistableBundle;
-        this.taskDescription = taskDescription;
-        this.shouldDockBigOverlays = this.mWmService.mContext.getResources().getBoolean(17891628);
-        if (j > 0) {
-            this.createTime = j;
-        }
-        activityTaskManagerService.mPackageConfigPersister.updateConfigIfNeeded(this, userId, str6);
-        this.mActivityRecordInputSink = new ActivityRecordInputSink(this, activityRecord2);
-        updateEnterpriseThumbnailDrawable(activityTaskManagerService.getUiContext());
-        if (WindowManager.hasWindowExtensionsEnabled()) {
-            if (activityTaskManagerService.mContext.getPackageManager().getProperty("android.window.PROPERTY_ACTIVITY_EMBEDDING_SPLITS_ENABLED", str6).getBoolean()) {
-                z5 = z3;
-                this.mAppActivityEmbeddingSplitsEnabled = z5;
-                ActivityInfo activityInfo2 = this.info;
-                this.mTransientBarShowingDelayMillis = activityInfo2.transientBarShowingDelayMillis;
-                Bundle bundle7 = activityInfo2.metaData;
-                this.mDisableSnapshot = (!(bundle7 == null && bundle7.getBoolean("com.samsung.android.disableSnapshot", false)) && ((bundle2 = this.info.applicationInfo.metaData) == null || !bundle2.getBoolean("com.samsung.android.disableSnapshot", false))) ? false : z3;
-            }
-        }
-        z5 = false;
-        this.mAppActivityEmbeddingSplitsEnabled = z5;
-        ActivityInfo activityInfo22 = this.info;
-        this.mTransientBarShowingDelayMillis = activityInfo22.transientBarShowingDelayMillis;
-        Bundle bundle72 = activityInfo22.metaData;
-        this.mDisableSnapshot = (!(bundle72 == null && bundle72.getBoolean("com.samsung.android.disableSnapshot", false)) && ((bundle2 = this.info.applicationInfo.metaData) == null || !bundle2.getBoolean("com.samsung.android.disableSnapshot", false))) ? false : z3;
-    }
-
-    public static String computeTaskAffinity(String str, int i, int i2, ComponentName componentName) {
-        String num = Integer.toString(i);
-        if (str == null || str.startsWith(num)) {
-            return str;
-        }
-        String str2 = num + XmlUtils.STRING_ARRAY_SEPARATOR + str;
-        if (i2 != 3 || componentName == null) {
-            return str2;
-        }
-        return str2 + XmlUtils.STRING_ARRAY_SEPARATOR + componentName.hashCode();
-    }
-
-    public static int getLockTaskLaunchMode(ActivityInfo activityInfo, ActivityOptions activityOptions) {
-        int i = activityInfo.lockTaskLaunchMode;
-        if (!activityInfo.applicationInfo.isPrivilegedApp() && (i == 2 || i == 1)) {
-            i = 0;
-        }
-        if (activityOptions != null && activityOptions.getLockTaskMode() && i == 0) {
+        AppCompatController appCompatController = this.mAppCompatController;
+        if (appCompatController.mAppCompatSizeCompatModePolicy.mInSizeCompatModeForBounds) {
             return 3;
         }
-        return i;
+        if (appCompatController.mAppCompatAspectRatioPolicy.isLetterboxedForFixedOrientationAndAspectRatio()) {
+            return 4;
+        }
+        return this.mAppCompatController.mAppCompatAspectRatioPolicy.mAppCompatAspectRatioState.mLetterboxBoundsForAspectRatio != null ? 5 : 2;
     }
 
-    public InputApplicationHandle getInputApplicationHandle(boolean z) {
+    @Override // com.android.server.wm.ConfigurationContainer
+    public final Rect getBounds() {
+        SizeCompatAttributes sizeCompatAttributes;
+        final Rect bounds = super.getBounds();
+        if (CoreRune.MT_SIZE_COMPAT_POLICY && (sizeCompatAttributes = this.mSizeCompatAttributes) != null && sizeCompatAttributes.hasBounds()) {
+            return this.mSizeCompatAttributes.getBounds();
+        }
+        AppCompatController appCompatController = this.mAppCompatController;
+        final AppCompatSizeCompatModePolicy appCompatSizeCompatModePolicy = appCompatController.mAppCompatSizeCompatModePolicy;
+        return (Rect) appCompatController.mTransparentPolicy.mTransparentPolicyState.findOpaqueNotFinishingActivityBelow().map(new ActivityRecord$$ExternalSyntheticLambda16()).orElseGet(new Supplier() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda17
+            @Override // java.util.function.Supplier
+            public final Object get() {
+                AppCompatSizeCompatModePolicy appCompatSizeCompatModePolicy2 = AppCompatSizeCompatModePolicy.this;
+                Rect rect = bounds;
+                if (!appCompatSizeCompatModePolicy2.hasSizeCompatBounds()) {
+                    return appCompatSizeCompatModePolicy2.hasSizeCompatBounds() ? appCompatSizeCompatModePolicy2.mSizeCompatBounds : rect;
+                }
+                if (appCompatSizeCompatModePolicy2.mReturnSizeCompatBounds == null) {
+                    appCompatSizeCompatModePolicy2.mReturnSizeCompatBounds = new Rect();
+                }
+                appCompatSizeCompatModePolicy2.mReturnSizeCompatBounds.set(appCompatSizeCompatModePolicy2.mSizeCompatBounds);
+                return appCompatSizeCompatModePolicy2.mReturnSizeCompatBounds;
+            }
+        });
+    }
+
+    @Override // com.android.server.wm.WindowToken
+    public final float getCompatScale() {
+        SizeCompatAttributes sizeCompatAttributes;
+        if (CoreRune.MT_SIZE_COMPAT_POLICY && (sizeCompatAttributes = this.mSizeCompatAttributes) != null && sizeCompatAttributes.hasBounds()) {
+            return this.mSizeCompatAttributes.mScale;
+        }
+        AppCompatSizeCompatModePolicy appCompatSizeCompatModePolicy = this.mAppCompatController.mAppCompatSizeCompatModePolicy;
+        return appCompatSizeCompatModePolicy.hasSizeCompatBounds() ? appCompatSizeCompatModePolicy.mSizeCompatScale : (float) new DoubleSupplier() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda19
+            @Override // java.util.function.DoubleSupplier
+            public final double getAsDouble() {
+                return ActivityRecord.this.mDisplayContent.mCompatibleScreenScale;
+            }
+        }.getAsDouble();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final TaskDisplayArea getDisplayArea() {
+        return (TaskDisplayArea) super.getDisplayArea();
+    }
+
+    public final int getDisplayId() {
+        DisplayContent displayContent;
+        Task task = this.task;
+        if (task == null || (displayContent = task.mDisplayContent) == null) {
+            return -1;
+        }
+        return displayContent.mDisplayId;
+    }
+
+    public final String getFilteredReferrer(String str) {
+        if (CoreRune.SYSFW_APP_SPEG && "com.samsung.speg".equals(str)) {
+            Slog.d("SPEG", "Passing referrer value");
+            return str;
+        }
+        if (str == null) {
+            return null;
+        }
+        if (str.equals(this.packageName) || !this.mWmService.mPmInternal.filterAppAccess(this.info.applicationInfo.uid, this.mUserId, str, true)) {
+            return str;
+        }
+        return null;
+    }
+
+    public final InputApplicationHandle getInputApplicationHandle(boolean z) {
         if (this.mInputApplicationHandle == null) {
             this.mInputApplicationHandle = new InputApplicationHandle(this.token, toString(), this.mInputDispatchingTimeoutMillis);
         } else if (z) {
@@ -2091,305 +2949,575 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         return this.mInputApplicationHandle;
     }
 
-    public void setProcess(WindowProcessController windowProcessController) {
-        this.app = windowProcessController;
-        Task task = this.task;
-        if ((task != null ? task.getRootActivity() : null) == this) {
-            this.task.setRootProcess(windowProcessController);
+    public final Rect getLetterboxInsets() {
+        AppCompatLetterboxPolicy.LetterboxPolicyState letterboxPolicyState = this.mAppCompatController.mAppCompatLetterboxPolicy.mLetterboxPolicyState;
+        if (!letterboxPolicyState.isRunning()) {
+            return new Rect();
         }
-        windowProcessController.addActivityIfNeeded(this);
-        this.mInputDispatchingTimeoutMillis = ActivityTaskManagerService.getInputDispatchingTimeoutMillisLocked(this);
+        Letterbox letterbox = letterboxPolicyState.mLetterbox;
+        letterbox.getClass();
+        return new Rect(Math.max(0, letterbox.mLeft.mLayoutFrameGlobal.width()), Math.max(0, letterbox.mTop.mLayoutFrameGlobal.height()), Math.max(0, letterbox.mRight.mLayoutFrameGlobal.width()), Math.max(0, letterbox.mBottom.mLayoutFrameGlobal.height()));
+    }
+
+    public final float getMaxAspectRatio() {
+        AppCompatAspectRatioPolicy appCompatAspectRatioPolicy = this.mAppCompatController.mAppCompatAspectRatioPolicy;
+        TransparentPolicy transparentPolicy = appCompatAspectRatioPolicy.mTransparentPolicy;
+        return transparentPolicy.mTransparentPolicyState.isRunning() ? transparentPolicy.mTransparentPolicyState.mInheritedMaxAspectRatio : appCompatAspectRatioPolicy.mActivityRecord.info.getMaxAspectRatio();
+    }
+
+    public final float getMinAspectRatio() {
+        return this.mAppCompatController.mAppCompatAspectRatioPolicy.getMinAspectRatio();
+    }
+
+    public final Point getMinDimensions() {
+        ActivityInfo.WindowLayout windowLayout = this.info.windowLayout;
+        if (windowLayout == null) {
+            return null;
+        }
+        return new Point(windowLayout.minWidth, windowLayout.minHeight);
+    }
+
+    public final TaskFragment getOrganizedTaskFragment() {
         TaskFragment taskFragment = getTaskFragment();
         if (taskFragment != null) {
-            taskFragment.sendTaskFragmentInfoChanged();
+            return taskFragment.getOrganizedTaskFragment();
         }
+        return null;
     }
 
-    public boolean hasProcess() {
-        return this.app != null;
+    @Override // com.android.server.wm.WindowContainer
+    public final int getOrientation(int i) {
+        if (this.finishing || shouldIgnoreOrientationRequests() || !(i == 3 || isVisibleRequested())) {
+            return -2;
+        }
+        return getOverrideOrientation();
     }
 
-    public boolean attachedToProcess() {
-        return hasProcess() && this.app.hasThread();
+    @Override // com.android.server.wm.WindowContainer
+    public final int getOverrideOrientation() {
+        DisplayRotationCompatPolicy displayRotationCompatPolicy;
+        AppCompatOrientationPolicy appCompatOrientationPolicy = this.mAppCompatController.mOrientationPolicy;
+        int overrideOrientation = super.getOverrideOrientation();
+        ActivityRecord activityRecord = appCompatOrientationPolicy.mActivityRecord;
+        DisplayContent displayContent = activityRecord.mDisplayContent;
+        boolean z = displayContent != null && displayContent.getIgnoreOrientationRequest();
+        AppCompatOverrides appCompatOverrides = appCompatOrientationPolicy.mAppCompatOverrides;
+        boolean shouldApplyUserFullscreenOverride = appCompatOverrides.mAppCompatAspectRatioOverrides.shouldApplyUserFullscreenOverride();
+        AppCompatCameraOverrides appCompatCameraOverrides = appCompatOverrides.mAppCompatCameraOverrides;
+        if (!shouldApplyUserFullscreenOverride || !z || appCompatCameraOverrides.isCameraActive()) {
+            WindowManagerService windowManagerService = activityRecord.mWmService;
+            if (windowManagerService.mIsIgnoreOrientationRequestDisabled) {
+                overrideOrientation = windowManagerService.mOrientationMapping.get(overrideOrientation, overrideOrientation);
+            }
+            AppCompatAspectRatioOverrides appCompatAspectRatioOverrides = appCompatOverrides.mAppCompatAspectRatioOverrides;
+            boolean shouldApplyUserMinAspectRatioOverride = appCompatAspectRatioOverrides.shouldApplyUserMinAspectRatioOverride();
+            if (!(CoreRune.MT_APP_COMPAT_ORIENTATION_POLICY && displayContent != null && displayContent.mSetIgnoreOrientationRequestOverride) && shouldApplyUserMinAspectRatioOverride && (!ActivityInfo.isFixedOrientation(overrideOrientation) || overrideOrientation == 14)) {
+                Slog.v("ActivityTaskManager", "Requested orientation " + ActivityInfo.screenOrientationToString(overrideOrientation) + " for " + activityRecord + " is overridden to " + ActivityInfo.screenOrientationToString(1) + " by user aspect ratio settings.");
+                return 1;
+            }
+            AppCompatOrientationOverrides appCompatOrientationOverrides = appCompatOverrides.mAppCompatOrientationOverrides;
+            if (!appCompatOrientationOverrides.mAllowOrientationOverrideOptProp.isFalse() && (displayContent == null || !appCompatCameraOverrides.mActivityRecord.info.isChangeEnabled(265456536L) || ((displayRotationCompatPolicy = displayContent.mAppCompatCameraPolicy.mDisplayRotationCompatPolicy) != null && displayRotationCompatPolicy.isTreatmentEnabledForDisplay() && displayRotationCompatPolicy.isCameraActive(true, activityRecord) && activityRecord.mAppCompatController.mAppCompatOverrides.mAppCompatCameraOverrides.shouldForceRotateForCameraCompat()))) {
+                if (appCompatAspectRatioOverrides.isSystemOverrideToFullscreenEnabled() && z && !appCompatCameraOverrides.isCameraActive()) {
+                    Slog.v("ActivityTaskManager", "Requested orientation  " + ActivityInfo.screenOrientationToString(overrideOrientation) + " for " + activityRecord + " is overridden to " + ActivityInfo.screenOrientationToString(2));
+                } else {
+                    AppCompatOrientationOverrides.OrientationOverridesState orientationOverridesState = appCompatOrientationOverrides.mOrientationOverridesState;
+                    boolean z2 = orientationOverridesState.mIsOverrideToReverseLandscapeOrientationEnabled;
+                    boolean z3 = orientationOverridesState.mIsOverrideAnyOrientationEnabled;
+                    if (z2 && (ActivityInfo.isFixedOrientationLandscape(overrideOrientation) || z3)) {
+                        Slog.w("ActivityTaskManager", "Requested orientation  " + ActivityInfo.screenOrientationToString(overrideOrientation) + " for " + activityRecord + " is overridden to " + ActivityInfo.screenOrientationToString(8));
+                        return 8;
+                    }
+                    if (z3 || !ActivityInfo.isFixedOrientation(overrideOrientation)) {
+                        if (orientationOverridesState.mIsOverrideToPortraitOrientationEnabled) {
+                            Slog.w("ActivityTaskManager", "Requested orientation  " + ActivityInfo.screenOrientationToString(overrideOrientation) + " for " + activityRecord + " is overridden to " + ActivityInfo.screenOrientationToString(1));
+                            return 1;
+                        }
+                        if (orientationOverridesState.mIsOverrideToNosensorOrientationEnabled) {
+                            Slog.w("ActivityTaskManager", "Requested orientation  " + ActivityInfo.screenOrientationToString(overrideOrientation) + " for " + activityRecord + " is overridden to " + ActivityInfo.screenOrientationToString(5));
+                            return 5;
+                        }
+                    }
+                }
+            }
+            return overrideOrientation;
+        }
+        Slog.v("ActivityTaskManager", "Requested orientation " + ActivityInfo.screenOrientationToString(overrideOrientation) + " for " + activityRecord + " is overridden to " + ActivityInfo.screenOrientationToString(2) + " by user aspect ratio settings.");
+        return 2;
     }
 
-    public final int evaluateStartingWindowTheme(ActivityRecord activityRecord, String str, int i, int i2) {
-        if (validateStartingWindowTheme(activityRecord, str, i)) {
-            return (i2 == 0 || !validateStartingWindowTheme(activityRecord, str, i2)) ? i : i2;
+    public final int getPid() {
+        WindowProcessController windowProcessController = this.app;
+        if (windowProcessController != null) {
+            return windowProcessController.mPid;
         }
         return 0;
     }
 
-    public final boolean launchedFromSystemSurface() {
-        int i = this.mLaunchSourceType;
-        return i == 1 || i == 2 || i == 3;
+    /* JADX WARN: Removed duplicated region for block: B:19:0x005d  */
+    /* JADX WARN: Removed duplicated region for block: B:21:0x0066  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final android.content.res.Configuration getProcessGlobalConfiguration() {
+        /*
+            Method dump skipped, instructions count: 234
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.getProcessGlobalConfiguration():android.content.res.Configuration");
     }
 
-    public boolean isLaunchSourceType(int i) {
-        return this.mLaunchSourceType == i;
+    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer
+    public final long getProtoFieldId() {
+        return 1146756268038L;
     }
 
-    public final int determineLaunchSourceType(int i, WindowProcessController windowProcessController) {
-        if (i == 1000 || i == 0) {
-            return 1;
+    @Override // com.android.server.wm.WindowContainer
+    public final RemoteAnimationDefinition getRemoteAnimationDefinition() {
+        return this.mRemoteAnimationDefinition;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final int getRequestedConfigurationOrientation(boolean z) {
+        return getRequestedConfigurationOrientation(z, getOverrideOrientation());
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final int getRequestedConfigurationOrientation(boolean z, int i) {
+        ActivityRecord activity;
+        TransparentPolicy transparentPolicy = this.mAppCompatController.mTransparentPolicy;
+        if (!transparentPolicy.mTransparentPolicyState.isRunning() || transparentPolicy.mActivityRecord.getOverrideOrientation() == -1) {
+            Task task = this.task;
+            return (task == null || i != 3 || (activity = task.getActivity(new ActivityRecord$$ExternalSyntheticLambda4(4), this, false, true)) == null) ? super.getRequestedConfigurationOrientation(z, i) : activity.getRequestedConfigurationOrientation(z);
         }
-        if (windowProcessController == null) {
-            return 4;
+        RootDisplayArea rootDisplayArea = getRootDisplayArea();
+        if (!z || rootDisplayArea == null || !rootDisplayArea.isOrientationDifferentFromDisplay()) {
+            return this.mAppCompatController.mTransparentPolicy.mTransparentPolicyState.mInheritedOrientation;
         }
-        if (windowProcessController.isHomeProcess()) {
+        int i2 = this.mAppCompatController.mTransparentPolicy.mTransparentPolicyState.mInheritedOrientation;
+        if (i2 == 1) {
             return 2;
         }
-        return this.mAtmService.getSysUiServiceComponentLocked().getPackageName().equals(windowProcessController.mInfo.packageName) ? 3 : 4;
+        if (i2 != 2) {
+            return i2;
+        }
+        return 1;
     }
 
-    public final boolean validateStartingWindowTheme(ActivityRecord activityRecord, String str, int i) {
-        AttributeCache.Entry entry;
-        if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -1782453012, 1, "Checking theme of starting window: 0x%x", new Object[]{Long.valueOf(i)});
+    public final int getRequestedOrientation() {
+        return super.getOverrideOrientation();
+    }
+
+    public final Task getRootTask() {
+        Task task = this.task;
+        if (task != null) {
+            return task.getRootTask();
         }
-        if (i == 0 || (entry = AttributeCache.instance().get(str, i, com.android.internal.R.styleable.Window, this.mWmService.mCurrentUserId)) == null) {
+        return null;
+    }
+
+    public final Rect getScreenResolvedBounds() {
+        Rect bounds = getResolvedOverrideConfiguration().windowConfiguration.getBounds();
+        AppCompatSizeCompatModePolicy appCompatSizeCompatModePolicy = this.mAppCompatController.mAppCompatSizeCompatModePolicy;
+        return appCompatSizeCompatModePolicy.hasSizeCompatBounds() ? appCompatSizeCompatModePolicy.mSizeCompatBounds : bounds;
+    }
+
+    public final Task getTask() {
+        return this.task;
+    }
+
+    public final TaskFragment getTaskFragment() {
+        WindowContainer parent = getParent();
+        if (parent != null) {
+            return parent.asTaskFragment();
+        }
+        return null;
+    }
+
+    public final int getUid() {
+        return this.info.applicationInfo.uid;
+    }
+
+    public final UriPermissionOwner getUriPermissionsLocked() {
+        if (this.uriPermissions == null) {
+            this.uriPermissions = new UriPermissionOwner(this.mAtmService.mUgmInternal, this);
+        }
+        return this.uriPermissions;
+    }
+
+    public final void handleAlreadyVisible() {
+        try {
+            ActivityOptions activityOptions = this.returningOptions;
+            if (activityOptions == null || activityOptions.getAnimationType() != 5 || this.returningOptions.getSceneTransitionInfo() == null) {
+                return;
+            }
+            this.app.mThread.scheduleOnNewSceneTransitionInfo(this.token, this.returningOptions.getSceneTransitionInfo());
+        } catch (RemoteException unused) {
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean handleCompleteDeferredRemoval() {
+        if (this.mIsExiting) {
+            removeIfPossible();
+        }
+        return super.handleCompleteDeferredRemoval();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean handlesOrientationChangeFromDescendant(int i) {
+        if (shouldIgnoreOrientationRequests()) {
             return false;
         }
-        boolean z = entry.array.getBoolean(5, false);
-        boolean z2 = entry.array.getBoolean(4, false);
-        boolean z3 = entry.array.getBoolean(14, false);
-        boolean z4 = entry.array.getBoolean(12, false);
-        if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -124316973, 0, "Translucent=%s Floating=%s ShowWallpaper=%s Disable=%s", new Object[]{String.valueOf(z), String.valueOf(z2), String.valueOf(z3), String.valueOf(z4)});
-        }
-        if (z || z2) {
-            return false;
-        }
-        if (z3 && getDisplayContent().mWallpaperController.getWallpaperTarget() != null) {
-            return false;
-        }
-        if (!z4 || launchedFromSystemSurface()) {
+        return super.handlesOrientationChangeFromDescendant(i);
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean hasActivity() {
+        return true;
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0032, code lost:
+    
+        r5.mHasDeskResources = java.lang.Boolean.TRUE;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean hasDeskResources() {
+        /*
+            r5 = this;
+            java.lang.Boolean r0 = r5.mHasDeskResources
+            if (r0 == 0) goto L9
+            boolean r5 = r0.booleanValue()
+            return r5
+        L9:
+            java.lang.Boolean r0 = java.lang.Boolean.FALSE
+            r5.mHasDeskResources = r0
+            com.android.server.wm.ActivityTaskManagerService r0 = r5.mAtmService     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            android.content.Context r0 = r0.mContext     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            java.lang.String r1 = r5.packageName     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            int r2 = r5.mUserId     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            android.os.UserHandle r2 = android.os.UserHandle.of(r2)     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            r3 = 0
+            android.content.Context r0 = r0.createPackageContextAsUser(r1, r3, r2)     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            android.content.res.Resources r0 = r0.getResources()     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            android.content.res.Configuration[] r0 = r0.getSizeAndUiModeConfigurations()     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            int r1 = r0.length     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+        L27:
+            if (r3 >= r1) goto L4f
+            r2 = r0[r3]     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            int r2 = r2.uiMode     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            r2 = r2 & 15
+            r4 = 2
+            if (r2 != r4) goto L39
+            java.lang.Boolean r0 = java.lang.Boolean.TRUE     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            r5.mHasDeskResources = r0     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L37
+            goto L4f
+        L37:
+            r0 = move-exception
+            goto L3c
+        L39:
+            int r3 = r3 + 1
+            goto L27
+        L3c:
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder
+            java.lang.String r2 = "Exception thrown during checking for desk resources "
+            r1.<init>(r2)
+            r1.append(r5)
+            java.lang.String r1 = r1.toString()
+            java.lang.String r2 = "ActivityTaskManager"
+            android.util.Slog.w(r2, r1, r0)
+        L4f:
+            java.lang.Boolean r5 = r5.mHasDeskResources
+            boolean r5 = r5.booleanValue()
+            return r5
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.hasDeskResources():boolean");
+    }
+
+    public final boolean hasProcess() {
+        return this.app != null;
+    }
+
+    @Override // com.android.server.wm.WindowToken
+    public final boolean hasSizeCompatBounds() {
+        SizeCompatAttributes sizeCompatAttributes;
+        if (CoreRune.MT_SIZE_COMPAT_POLICY && (sizeCompatAttributes = this.mSizeCompatAttributes) != null && sizeCompatAttributes.hasBounds()) {
             return true;
         }
-        if (activityRecord != null && activityRecord.getActivityType() == 1 && activityRecord.mTransferringSplashScreenState == 0) {
-            if (activityRecord.mStartingData != null) {
-                return true;
-            }
-            if (activityRecord.mStartingWindow != null && activityRecord.mStartingSurface != null) {
+        return this.mAppCompatController.mAppCompatSizeCompatModePolicy.hasSizeCompatBounds();
+    }
+
+    public final boolean hasStartingWindow() {
+        if (this.mStartingData != null) {
+            return true;
+        }
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            if (((WindowState) getChildAt(size)).mAttrs.type == 3) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean addStartingWindow(String str, int i, ActivityRecord activityRecord, boolean z, boolean z2, boolean z3, boolean z4, boolean z5, boolean z6, boolean z7, boolean z8) {
-        StartingData startingData;
-        if (!okToDisplay() || this.mStartingData != null) {
-            return false;
-        }
-        WindowState findMainWindow = findMainWindow();
-        if (findMainWindow != null && (findMainWindow.mWinAnimator.getShown() || findMainWindow.isDrawn())) {
-            return false;
-        }
-        TaskSnapshotController taskSnapshotController = this.mWmService.mTaskSnapshotController;
-        Task task = this.task;
-        TaskSnapshot snapshot = taskSnapshotController.getSnapshot(task.mTaskId, task.mUserId, false, false);
-        int startingWindowType = getStartingWindowType(z, z2, z3, z4, z5, z7, snapshot);
-        if (z8 && startingWindowType == 2) {
-            return false;
-        }
-        if (this.mWmService.mDragDropController.isDragInProgressByRecents() && !this.task.inMultiWindowMode() && isResizeable()) {
-            Slog.d("ActivityTaskManager", "Ignore to create starting window during drag by Recents.");
-            return false;
-        }
-        int makeStartingWindowTypeParameter = StartingSurfaceController.makeStartingWindowTypeParameter(z, z2, z3, z4, z5, z6, startingWindowType == 2 && this.mWmService.mStartingSurfaceController.isExceptionApp(this.packageName, this.mTargetSdk, new Supplier() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda21
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                ApplicationInfo lambda$addStartingWindow$3;
-                lambda$addStartingWindow$3 = ActivityRecord.this.lambda$addStartingWindow$3();
-                return lambda$addStartingWindow$3;
-            }
-        }), z7, startingWindowType, this.packageName, this.mUserId);
-        if (startingWindowType == 1) {
-            if (isActivityTypeHome()) {
-                this.mWmService.mTaskSnapshotController.removeSnapshotCache(this.task.mTaskId);
-                if (snapshot.containsBlurLayers()) {
-                    Slog.w("ActivityTaskManager", "Not add starting window with snapshot contains blur layer");
-                    return false;
-                }
-                if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX) {
-                    Transition collectingTransition = this.mTransitionController.getCollectingTransition();
-                    if (collectingTransition != null && (collectingTransition.getFlags() & 2) == 0) {
-                        return false;
-                    }
-                } else if ((this.mDisplayContent.mAppTransition.getTransitFlags() & 2) == 0) {
-                    return false;
-                }
-            }
-            return createSnapshot(snapshot, makeStartingWindowTypeParameter);
-        }
-        if (i == 0 && this.theme != 0 && (!CoreRune.MW_EMBED_ACTIVITY || !isSplitEmbedded() || activityRecord == null || (startingData = activityRecord.mStartingData) == null || startingData.mAssociatedTask != getTask())) {
-            return false;
-        }
-        if (activityRecord != null && transferStartingWindow(activityRecord)) {
+    public final boolean inSizeCompatMode() {
+        WindowContainer parent;
+        if (this.mAppCompatController.mAppCompatSizeCompatModePolicy.mInSizeCompatModeForBounds) {
             return true;
         }
-        if (startingWindowType != 2) {
+        return (getAppCompatDisplayInsets() == null || !shouldCreateAppCompatDisplayInsets() || isFixedRotationTransforming() || getConfiguration().windowConfiguration.getAppBounds() == null || (parent = getParent()) == null || parent.getConfiguration().densityDpi == getConfiguration().densityDpi) ? false : true;
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0031, code lost:
+    
+        if (r4 != null) goto L14;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void inputDispatchingTimedOut(int r14, com.android.internal.os.TimeoutRecord r15) {
+        /*
+            r13 = this;
+            r0 = 64
+            java.lang.String r2 = "ActivityRecord#inputDispatchingTimedOut()"
+            android.os.Trace.traceBegin(r0, r2)     // Catch: java.lang.Throwable -> L69
+            com.android.internal.os.anr.AnrLatencyTracker r2 = r15.mLatencyTracker     // Catch: java.lang.Throwable -> L69
+            r2.waitingOnGlobalLockStarted()     // Catch: java.lang.Throwable -> L69
+            com.android.server.wm.ActivityTaskManagerService r2 = r13.mAtmService     // Catch: java.lang.Throwable -> L69
+            com.android.server.wm.WindowManagerGlobalLock r2 = r2.mGlobalLock     // Catch: java.lang.Throwable -> L69
+            com.android.server.wm.WindowManagerService.boostPriorityForLockedSection()     // Catch: java.lang.Throwable -> L69
+            monitor-enter(r2)     // Catch: java.lang.Throwable -> L69
+            com.android.internal.os.anr.AnrLatencyTracker r3 = r15.mLatencyTracker     // Catch: java.lang.Throwable -> L47
+            r3.waitingOnGlobalLockEnded()     // Catch: java.lang.Throwable -> L47
+            boolean r3 = r13.mAppStopped     // Catch: java.lang.Throwable -> L47
+            if (r3 == 0) goto L25
+            com.android.server.wm.RootWindowContainer r3 = r13.mRootWindowContainer     // Catch: java.lang.Throwable -> L47
+            com.android.server.wm.Task r3 = r3.getTopDisplayFocusedRootTask()     // Catch: java.lang.Throwable -> L47
+            if (r3 != 0) goto L27
+        L25:
+            r4 = r13
+            goto L33
+        L27:
+            com.android.server.wm.ActivityRecord r4 = r3.getTopResumedActivity()     // Catch: java.lang.Throwable -> L47
+            if (r4 != 0) goto L31
+            com.android.server.wm.ActivityRecord r4 = r3.getTopPausingActivity()     // Catch: java.lang.Throwable -> L47
+        L31:
+            if (r4 == 0) goto L25
+        L33:
+            com.android.server.wm.WindowProcessController r3 = r13.app     // Catch: java.lang.Throwable -> L47
+            boolean r5 = r13.hasProcess()     // Catch: java.lang.Throwable -> L47
+            r6 = 0
+            if (r5 == 0) goto L49
+            com.android.server.wm.WindowProcessController r5 = r13.app     // Catch: java.lang.Throwable -> L47
+            int r5 = r5.mPid     // Catch: java.lang.Throwable -> L47
+            if (r5 == r14) goto L45
+            r5 = -1
+            if (r14 != r5) goto L49
+        L45:
+            r5 = 1
+            goto L4a
+        L47:
+            r13 = move-exception
+            goto L76
+        L49:
+            r5 = r6
+        L4a:
+            monitor-exit(r2)     // Catch: java.lang.Throwable -> L47
+            com.android.server.wm.WindowManagerService.resetPriorityAfterLockedSection()     // Catch: java.lang.Throwable -> L69
+            if (r5 == 0) goto L6b
+            com.android.server.wm.ActivityTaskManagerService r14 = r13.mAtmService     // Catch: java.lang.Throwable -> L69
+            android.app.ActivityManagerInternal r5 = r14.mAmInternal     // Catch: java.lang.Throwable -> L69
+            java.lang.Object r6 = r3.mOwner     // Catch: java.lang.Throwable -> L69
+            java.lang.String r7 = r4.shortComponentName     // Catch: java.lang.Throwable -> L69
+            android.content.pm.ActivityInfo r14 = r4.info     // Catch: java.lang.Throwable -> L69
+            android.content.pm.ApplicationInfo r8 = r14.applicationInfo     // Catch: java.lang.Throwable -> L69
+            java.lang.String r9 = r13.shortComponentName     // Catch: java.lang.Throwable -> L69
+            com.android.server.wm.WindowProcessController r10 = r13.app     // Catch: java.lang.Throwable -> L69
+            r11 = 0
+            r12 = r15
+            r5.inputDispatchingTimedOut(r6, r7, r8, r9, r10, r11, r12)     // Catch: java.lang.Throwable -> L69
+            android.os.Trace.traceEnd(r0)
+            return
+        L69:
+            r13 = move-exception
+            goto L7b
+        L6b:
+            com.android.server.wm.ActivityTaskManagerService r13 = r13.mAtmService     // Catch: java.lang.Throwable -> L69
+            android.app.ActivityManagerInternal r13 = r13.mAmInternal     // Catch: java.lang.Throwable -> L69
+            r13.inputDispatchingTimedOut(r14, r6, r15)     // Catch: java.lang.Throwable -> L69
+            android.os.Trace.traceEnd(r0)
+            return
+        L76:
+            monitor-exit(r2)     // Catch: java.lang.Throwable -> L47
+            com.android.server.wm.WindowManagerService.resetPriorityAfterLockedSection()     // Catch: java.lang.Throwable -> L69
+            throw r13     // Catch: java.lang.Throwable -> L69
+        L7b:
+            android.os.Trace.traceEnd(r0)
+            throw r13
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.inputDispatchingTimedOut(int, com.android.internal.os.TimeoutRecord):void");
+    }
+
+    @Override // com.android.server.wm.ConfigurationContainer
+    public final boolean isAlwaysOnTop() {
+        if (CoreRune.FW_APPLOCK && this.mIsAppLockExceptionActivity && this.mNotToBeTopForAppLockException) {
             return false;
         }
-        if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 2018852077, 0, "Creating SplashScreenStartingData", (Object[]) null);
+        return this.mTaskOverlay || super.isAlwaysOnTop();
+    }
+
+    public final boolean isConfigurationDispatchPaused() {
+        return this.mPauseConfigurationDispatchCount > 0;
+    }
+
+    public final boolean isDestroyable() {
+        return (this.finishing || !hasProcess() || isState(State.RESUMED) || getRootTask() == null || this == getTaskFragment().mPausingActivity || !this.mHaveState || !this.mAppStopped || this.mVisibleRequested) ? false : true;
+    }
+
+    public final boolean isEligibleForLetterboxEducation() {
+        return this.mWmService.mAppCompatConfiguration.mIsEducationEnabled && this.mIsEligibleForFixedOrientationLetterbox && getWindowingMode() == 1 && getRequestedConfigurationOrientation() == 1 && this.mStartingWindow == null;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isEmbedded() {
+        TaskFragment taskFragment = getTaskFragment();
+        return taskFragment != null && taskFragment.mIsEmbedded;
+    }
+
+    @Override // com.android.server.wm.WindowToken
+    public final boolean isFirstChildWindowGreaterThanSecond(WindowState windowState, WindowState windowState2) {
+        int i = windowState.mAttrs.type;
+        int i2 = windowState2.mAttrs.type;
+        if (i == 1 && i2 != 1) {
+            return false;
         }
-        this.mStartingData = new SplashScreenStartingData(this.mWmService, i, makeStartingWindowTypeParameter);
-        scheduleAddStartingWindow();
+        if (i == 1 || i2 != 1) {
+            return (i == 3 && i2 != 3) || i == 3 || i2 != 3;
+        }
         return true;
     }
 
-    public /* synthetic */ ApplicationInfo lambda$addStartingWindow$3() {
-        ActivityInfo resolveActivityInfo = this.intent.resolveActivityInfo(this.mAtmService.mContext.getPackageManager(), 128);
-        if (resolveActivityInfo != null) {
-            return resolveActivityInfo.applicationInfo;
-        }
-        return null;
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isFocusable() {
+        Task task;
+        return super.isFocusable() && ((getWindowConfiguration().canReceiveKeys() && !this.mWaitForEnteringPinnedMode && ((task = this.task) == null || !task.isFreeformStashed())) || (this.info.flags & 262144) != 0);
     }
 
-    public final boolean createSnapshot(TaskSnapshot taskSnapshot, int i) {
-        if (taskSnapshot == null) {
-            return false;
-        }
-        if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -1340540100, 0, "Creating SnapshotStartingData", (Object[]) null);
-        }
-        this.mStartingData = new SnapshotStartingData(this.mWmService, taskSnapshot, i);
-        if (this.task.forAllLeafTaskFragments(new ActivityRecord$$ExternalSyntheticLambda31())) {
-            associateStartingDataWithTask();
-        }
-        scheduleAddStartingWindow();
-        return true;
+    public final boolean isIconStylePreferred(int i) {
+        AttributeCache.Entry entry;
+        return i != 0 && (entry = AttributeCache.instance().get(this.packageName, i, R.styleable.Window, this.mWmService.mCurrentUserId)) != null && entry.array.hasValue(61) && entry.array.getInt(61, 0) == 1;
     }
 
-    public void scheduleAddStartingWindow() {
-        this.mAddStartingWindow.run();
+    public final boolean isInLetterboxAnimation() {
+        return this.mNeedsLetterboxedAnimation && isAnimating();
     }
 
-    /* loaded from: classes3.dex */
-    public class AddStartingWindow implements Runnable {
-        public /* synthetic */ AddStartingWindow(ActivityRecord activityRecord, AddStartingWindowIA addStartingWindowIA) {
-            this();
-        }
-
-        public AddStartingWindow() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            StartingSurfaceController.StartingSurface startingSurface;
-            boolean z;
-            WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mWmService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    ActivityRecord activityRecord = ActivityRecord.this;
-                    StartingData startingData = activityRecord.mStartingData;
-                    if (startingData == null) {
-                        if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 1836214582, 0, "startingData was nulled out before handling mAddStartingWindow: %s", new Object[]{String.valueOf(activityRecord)});
-                        }
-                        return;
-                    }
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    Slog.d("ActivityTaskManager", "Add starting " + ActivityRecord.this + ": typeParam=" + startingData.mTypeParams + " startingData=" + startingData);
-                    try {
-                        startingSurface = startingData.createStartingSurface(ActivityRecord.this);
-                    } catch (Exception e) {
-                        Slog.w("ActivityTaskManager", "Exception when adding starting window", e);
-                        startingSurface = null;
-                    }
-                    if (startingSurface != null) {
-                        WindowManagerGlobalLock windowManagerGlobalLock2 = ActivityRecord.this.mWmService.mGlobalLock;
-                        WindowManagerService.boostPriorityForLockedSection();
-                        synchronized (windowManagerGlobalLock2) {
-                            try {
-                                ActivityRecord activityRecord2 = ActivityRecord.this;
-                                if (activityRecord2.mStartingData == null) {
-                                    if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 1822843721, 0, "Aborted starting %s: startingData=%s", new Object[]{String.valueOf(activityRecord2), String.valueOf(ActivityRecord.this.mStartingData)});
-                                    }
-                                    ActivityRecord activityRecord3 = ActivityRecord.this;
-                                    activityRecord3.mStartingWindow = null;
-                                    activityRecord3.mStartingData = null;
-                                    z = true;
-                                } else {
-                                    activityRecord2.mStartingSurface = startingSurface;
-                                    z = false;
-                                }
-                                if (!z && ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -1292329638, 0, "Added starting %s: startingWindow=%s startingView=%s", new Object[]{String.valueOf(ActivityRecord.this), String.valueOf(ActivityRecord.this.mStartingWindow), String.valueOf(ActivityRecord.this.mStartingSurface)});
-                                }
-                            } finally {
-                            }
-                        }
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        if (z) {
-                            startingSurface.remove(false);
-                            return;
-                        }
-                        return;
-                    }
-                    if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 1254403969, 0, "Surface returned was null: %s", new Object[]{String.valueOf(ActivityRecord.this)});
-                    }
-                } finally {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                }
+    public final boolean isInRootTaskLocked() {
+        Task rootTask = getRootTask();
+        if (rootTask != null) {
+            if (!isDescendantOf(rootTask)) {
+                this = null;
+            }
+            if (this != null) {
+                return true;
             }
         }
+        return false;
     }
 
-    public final int getStartingWindowType(boolean z, boolean z2, boolean z3, boolean z4, boolean z5, boolean z6, TaskSnapshot taskSnapshot) {
+    public final boolean isInterestingToUserLocked() {
+        State state;
+        return this.mVisibleRequested || this.nowVisible || (state = this.mState) == State.PAUSING || state == State.RESUMED;
+    }
+
+    public final boolean isKeyguardLocked() {
+        DisplayContent displayContent = this.mDisplayContent;
+        return displayContent != null ? displayContent.isKeyguardLocked() : this.mRootWindowContainer.mDefaultDisplay.isKeyguardLocked();
+    }
+
+    public final boolean isLaunchAdjacent() {
+        Intent intent = this.intent;
+        return intent != null && (intent.getFlags() & 268439552) == 268439552;
+    }
+
+    public final boolean isPersistable() {
         Intent intent;
-        ActivityRecord activity;
-        if (!z && z2 && z3 && !z5 && (intent = this.task.intent) != null && this.mActivityComponent.equals(intent.getComponent()) && (activity = this.task.getActivity(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda26
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                return ((ActivityRecord) obj).attachedToProcess();
-            }
-        })) != null) {
-            return (activity.isSnapshotCompatible(taskSnapshot) && this.mDisplayContent.getDisplayRotation().rotationForOrientation(getOverrideOrientation(), this.mDisplayContent.getRotation()) == taskSnapshot.getRotation()) ? 1 : 0;
+        int i = this.info.persistableMode;
+        return (i == 0 || i == 2) && ((intent = this.intent) == null || (intent.getFlags() & 8388608) == 0);
+    }
+
+    public final boolean isProcessRunning() {
+        WindowProcessController windowProcessController = this.app;
+        if (windowProcessController == null) {
+            windowProcessController = (WindowProcessController) this.mAtmService.mProcessNames.get(this.processName, this.info.applicationInfo.uid);
         }
-        boolean z7 = isActivityTypeHome() || (CoreRune.FW_CUSTOM_SHELL_TRANSITION_SEPARATE_RECENTS && isActivityTypeRecents());
-        if ((z || !z3 || (z2 && !z5)) && !z7) {
-            if (z3 || z2 || !this.mPopOverState.isActivated()) {
-                return (!CoreRune.MW_EMBED_ACTIVITY || z5 || z3 || z2 || !isSplitEmbedded()) ? 2 : 0;
-            }
-            Slog.v(StartingSurfaceController.TAG, "Skip splash screen for pop-over. newTask=" + z + ", r=" + this);
-            return 0;
+        return windowProcessController != null && windowProcessController.hasThread();
+    }
+
+    public final boolean isRelaunching() {
+        return this.mPendingRelaunchCount > 0;
+    }
+
+    public final boolean isResizeable(boolean z) {
+        int i = this.info.resizeMode;
+        if (i == 10) {
+            return false;
         }
-        if (z2) {
-            if (z4) {
-                if (isSnapshotCompatible(taskSnapshot)) {
-                    return 1;
-                }
-                if (this.mPopOverState.isActivated()) {
-                    return 0;
-                }
-                if (CoreRune.MW_EMBED_ACTIVITY && isSplitEmbedded()) {
-                    return 0;
-                }
-                if (!z7) {
-                    return 2;
-                }
+        return this.mAtmService.mForceResizableActivities || ActivityInfo.isResizeableMode(i) || (this.info.supportsPictureInPicture() && z) || isEmbedded();
+    }
+
+    public final boolean isResolverOrChildActivity() {
+        if (!"android".equals(this.packageName)) {
+            return false;
+        }
+        try {
+            return ResolverActivity.class.isAssignableFrom(Object.class.getClassLoader().loadClass(this.mActivityComponent.getClassName()));
+        } catch (ClassNotFoundException unused) {
+            return false;
+        }
+    }
+
+    public final boolean isResolverOrDelegateActivity() {
+        if (!ResolverActivity.class.getName().equals(this.mActivityComponent.getClassName())) {
+            ComponentName componentName = this.mActivityComponent;
+            ActivityTaskSupervisor activityTaskSupervisor = this.mAtmService.mTaskSupervisor;
+            if (activityTaskSupervisor.mSystemChooserActivity == null) {
+                activityTaskSupervisor.mSystemChooserActivity = ComponentName.unflattenFromString(activityTaskSupervisor.mService.mContext.getResources().getString(android.R.string.crossSimFormat_spn_cross_sim_calling));
             }
-            if (!z6 && !z7 && !this.mDisableSnapshot) {
-                return 2;
+            if (!Objects.equals(componentName, activityTaskSupervisor.mSystemChooserActivity)) {
+                return false;
             }
         }
-        return 0;
+        return true;
+    }
+
+    public final boolean isRootOfTask() {
+        Task task = this.task;
+        return task != null && this == task.getRootActivity(false, true);
     }
 
     public boolean isSnapshotCompatible(TaskSnapshot taskSnapshot) {
-        if (taskSnapshot == null || !taskSnapshot.getTopActivityComponent().equals(this.mActivityComponent) || !isSnapshotSizeCompatible(taskSnapshot)) {
+        if (taskSnapshot == null) {
             return false;
         }
-        if (hasFixedRotationTransform() && taskSnapshot.hasImeSurface()) {
-            Slog.d("ActivityTaskManager", "IME will be hidden by async rotation cause fixed launching.So, snapshot which include ime is not compatible.");
+        int width = this.task.getBounds().width();
+        int height = this.task.getBounds().height();
+        Point taskSize = taskSnapshot.getTaskSize();
+        int i = taskSize.x;
+        if ((width != i || height != taskSize.y) && (width != taskSize.y || height != i)) {
             return false;
         }
+        if (!hasFixedRotationTransform() || !taskSnapshot.hasImeSurface()) {
+            return !this.mDisableSnapshot && taskSnapshot.getTopActivityComponent().equals(this.mActivityComponent) && isSnapshotOrientationCompatible(taskSnapshot);
+        }
+        Slog.d("ActivityTaskManager", "IME will be hidden by async rotation cause fixed launching.So, snapshot which include ime is not compatible.");
+        return false;
+    }
+
+    public final boolean isSnapshotOrientationCompatible(TaskSnapshot taskSnapshot) {
         int rotationForActivityInDifferentOrientation = this.mDisplayContent.rotationForActivityInDifferentOrientation(this);
         int rotation = this.task.getWindowConfiguration().getRotation();
         if (rotationForActivityInDifferentOrientation == -1) {
@@ -2409,122 +3537,12 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         return Math.abs((((float) taskSize.x) / ((float) Math.max(taskSize.y, 1))) - (((float) width) / ((float) Math.max(height, 1)))) <= 0.01f;
     }
 
-    public void setCustomizeSplashScreenExitAnimation(boolean z) {
-        if (this.mHandleExitSplashScreen == z) {
-            return;
-        }
-        this.mHandleExitSplashScreen = z;
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isSplitEmbedded() {
+        return isEmbedded() && !getTaskFragment().matchParentBounds();
     }
 
-    /* renamed from: com.android.server.wm.ActivityRecord$6 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass6 implements Runnable {
-        public AnonymousClass6() {
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            WindowManagerGlobalLock windowManagerGlobalLock = ActivityRecord.this.mAtmService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    Slog.w("ActivityTaskManager", "Activity transferring splash screen timeout for " + ActivityRecord.this + " state " + ActivityRecord.this.mTransferringSplashScreenState);
-                    if (ActivityRecord.this.isTransferringSplashScreen()) {
-                        ActivityRecord activityRecord3 = ActivityRecord.this;
-                        activityRecord3.mTransferringSplashScreenState = 3;
-                        activityRecord3.removeStartingWindow();
-                    }
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            WindowManagerService.resetPriorityAfterLockedSection();
-        }
-    }
-
-    public final void scheduleTransferSplashScreenTimeout() {
-        this.mAtmService.mH.postDelayed(this.mTransferSplashScreenTimeoutRunnable, 2000L);
-    }
-
-    public final void removeTransferSplashScreenTimeout() {
-        this.mAtmService.mH.removeCallbacks(this.mTransferSplashScreenTimeoutRunnable);
-    }
-
-    public final boolean transferSplashScreenIfNeeded() {
-        if (this.finishing || !this.mHandleExitSplashScreen || this.mStartingSurface == null || this.mStartingWindow == null || this.mTransferringSplashScreenState == 3) {
-            return false;
-        }
-        if (isTransferringSplashScreen()) {
-            return true;
-        }
-        requestCopySplashScreen();
-        return isTransferringSplashScreen();
-    }
-
-    public final boolean isTransferringSplashScreen() {
-        int i = this.mTransferringSplashScreenState;
-        return i == 2 || i == 1;
-    }
-
-    public final void requestCopySplashScreen() {
-        this.mTransferringSplashScreenState = 1;
-        if (!this.mAtmService.mTaskOrganizerController.copySplashScreenView(getTask())) {
-            this.mTransferringSplashScreenState = 3;
-            removeStartingWindow();
-        }
-        scheduleTransferSplashScreenTimeout();
-    }
-
-    public void onCopySplashScreenFinish(SplashScreenView.SplashScreenViewParcelable splashScreenViewParcelable) {
-        WindowState windowState;
-        removeTransferSplashScreenTimeout();
-        if (splashScreenViewParcelable == null || this.mTransferringSplashScreenState != 1 || (windowState = this.mStartingWindow) == null || windowState.mRemoved || this.finishing) {
-            if (splashScreenViewParcelable != null) {
-                splashScreenViewParcelable.clearIfNeeded();
-            }
-            this.mTransferringSplashScreenState = 3;
-            removeStartingWindow();
-            return;
-        }
-        SurfaceControl applyStartingWindowAnimation = TaskOrganizerController.applyStartingWindowAnimation(windowState);
-        try {
-            this.mTransferringSplashScreenState = 2;
-            this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ClientTransactionItem) TransferSplashScreenViewStateItem.obtain(splashScreenViewParcelable, applyStartingWindowAnimation));
-            scheduleTransferSplashScreenTimeout();
-        } catch (Exception unused) {
-            Slog.w("ActivityTaskManager", "onCopySplashScreenComplete fail: " + this);
-            this.mStartingWindow.cancelAnimation();
-            splashScreenViewParcelable.clearIfNeeded();
-            this.mTransferringSplashScreenState = 3;
-        }
-    }
-
-    public final void onSplashScreenAttachComplete() {
-        removeTransferSplashScreenTimeout();
-        WindowState windowState = this.mStartingWindow;
-        if (windowState != null) {
-            windowState.cancelAnimation();
-            this.mStartingWindow.hide(false, false);
-        }
-        this.mTransferringSplashScreenState = 3;
-        removeStartingWindowAnimation(false);
-    }
-
-    public void cleanUpSplashScreen() {
-        if (!this.mHandleExitSplashScreen || this.startingMoved) {
-            return;
-        }
-        int i = this.mTransferringSplashScreenState;
-        if (i == 3 || i == 0) {
-            if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -1003678883, 0, "Cleaning splash screen token=%s", new Object[]{String.valueOf(this)});
-            }
-            this.mAtmService.mTaskOrganizerController.onAppSplashScreenViewRemoved(getTask());
-        }
-    }
-
-    public boolean isStartingWindowDisplayed() {
+    public final boolean isStartingWindowDisplayed() {
         StartingData startingData = this.mStartingData;
         if (startingData == null) {
             Task task = this.task;
@@ -2533,907 +3551,197 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         return startingData != null && startingData.mIsDisplayed;
     }
 
-    public void attachStartingWindow(WindowState windowState) {
-        StartingData startingData = this.mStartingData;
-        windowState.mStartingData = startingData;
-        this.mStartingWindow = windowState;
-        if (startingData != null) {
-            if (startingData.mAssociatedTask != null) {
-                attachStartingSurfaceToAssociatedTask();
-            } else if (isEmbedded()) {
-                associateStartingWindowWithTaskIfNeeded();
-            }
-        }
+    public final boolean isState(State state) {
+        return state == this.mState;
     }
 
-    public final void attachStartingSurfaceToAssociatedTask() {
-        WindowContainer.overrideConfigurationPropagation(this.mStartingWindow, this.mStartingData.mAssociatedTask);
-        getSyncTransaction().reparent(this.mStartingWindow.mSurfaceControl, this.mStartingData.mAssociatedTask.mSurfaceControl);
+    public final boolean isState(State state, State state2) {
+        State state3 = this.mState;
+        return state == state3 || state2 == state3;
     }
 
-    public final void associateStartingDataWithTask() {
-        StartingData startingData = this.mStartingData;
-        Task task = this.task;
-        startingData.mAssociatedTask = task;
-        task.mSharedStartingData = startingData;
+    public final boolean isState(State state, State state2, State state3, State state4) {
+        State state5 = this.mState;
+        return state == state5 || state2 == state5 || state3 == state5 || state4 == state5;
     }
 
-    public void associateStartingWindowWithTaskIfNeeded() {
-        StartingData startingData;
-        if (this.mStartingWindow == null || (startingData = this.mStartingData) == null || startingData.mAssociatedTask != null) {
-            return;
-        }
-        if (!CoreRune.MW_EMBED_ACTIVITY || isSplitEmbedded()) {
-            associateStartingDataWithTask();
-            attachStartingSurfaceToAssociatedTask();
-        }
-    }
-
-    public void removeStartingWindow() {
-        boolean isEligibleForLetterboxEducation = isEligibleForLetterboxEducation();
-        if (transferSplashScreenIfNeeded()) {
-            return;
-        }
-        removeStartingWindowAnimation(true);
-        Task task = getTask();
-        if (isEligibleForLetterboxEducation == isEligibleForLetterboxEducation() || task == null) {
-            return;
-        }
-        task.dispatchTaskInfoChangedIfNeeded(true);
+    public final boolean isState$1(State state, State state2, State state3, State state4) {
+        State state5 = State.STARTED;
+        State state6 = this.mState;
+        return state5 == state6 || state == state6 || state2 == state6 || state3 == state6 || state4 == state6;
     }
 
     @Override // com.android.server.wm.WindowContainer
-    public void waitForSyncTransactionCommit(ArraySet arraySet) {
-        super.waitForSyncTransactionCommit(arraySet);
-        StartingData startingData = this.mStartingData;
-        if (startingData != null) {
-            startingData.mWaitForSyncTransactionCommit = true;
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void onSyncTransactionCommitted(SurfaceControl.Transaction transaction) {
-        super.onSyncTransactionCommitted(transaction);
-        StartingData startingData = this.mStartingData;
-        if (startingData == null) {
-            return;
-        }
-        startingData.mWaitForSyncTransactionCommit = false;
-        if (startingData.mRemoveAfterTransaction) {
-            startingData.mRemoveAfterTransaction = false;
-            removeStartingWindowAnimation(startingData.mPrepareRemoveAnimation);
-        }
-    }
-
-    public void removeStartingWindowAnimation(boolean z) {
-        this.mTransferringSplashScreenState = 0;
+    public final boolean isSyncFinished(BLASTSyncEngine.SyncGroup syncGroup) {
+        WindowState window;
         Task task = this.task;
-        if (task != null) {
-            task.mSharedStartingData = null;
-        }
-        WindowState windowState = this.mStartingWindow;
-        if (windowState == null) {
-            if (this.mStartingData != null) {
-                if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -2127842445, 0, "Clearing startingData for token=%s", new Object[]{String.valueOf(this)});
-                }
-                this.mStartingData = null;
-                this.mStartingSurface = null;
-                return;
-            }
-            return;
-        }
-        StartingData startingData = this.mStartingData;
-        if (startingData != null) {
-            if (startingData.mWaitForSyncTransactionCommit || this.mTransitionController.inCollectingTransition(windowState)) {
-                StartingData startingData2 = this.mStartingData;
-                startingData2.mRemoveAfterTransaction = true;
-                startingData2.mPrepareRemoveAnimation = z;
-                return;
-            }
-            boolean z2 = z && this.mStartingData.needRevealAnimation() && this.mStartingWindow.isVisibleByPolicy();
-            if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -1237827119, 48, "Schedule remove starting %s startingWindow=%s animate=%b Callers=%s", new Object[]{String.valueOf(this), String.valueOf(this.mStartingWindow), Boolean.valueOf(z2), String.valueOf(Debug.getCallers(5))});
-            }
-            StartingSurfaceController.StartingSurface startingSurface = this.mStartingSurface;
-            this.mStartingData = null;
-            this.mStartingSurface = null;
-            this.mStartingWindow = null;
-            this.mTransitionChangeFlags &= -9;
-            if (startingSurface == null) {
-                if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 45285419, 0, "startingWindow was set but startingSurface==null, couldn't remove", (Object[]) null);
-                    return;
-                }
-                return;
-            }
-            startingSurface.remove(z2);
-            return;
-        }
-        if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 146871307, 0, "Tried to remove starting window but startingWindow was null: %s", new Object[]{String.valueOf(this)});
-        }
-    }
-
-    public void reparent(TaskFragment taskFragment, int i, String str) {
-        if (getParent() == null) {
-            Slog.w("ActivityTaskManager", "reparent: Attempted to reparent non-existing app token: " + this.token);
-            return;
-        }
-        if (getTaskFragment() == taskFragment) {
-            throw new IllegalArgumentException(str + ": task fragment =" + taskFragment + " is already the parent of r=" + this);
-        }
-        if (ProtoLogCache.WM_DEBUG_ADD_REMOVE_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, 573582981, 20, (String) null, new Object[]{String.valueOf(this), Long.valueOf(this.task.mTaskId), Long.valueOf(i)});
-        }
-        reparent(taskFragment, i);
-    }
-
-    public final boolean isHomeIntent(Intent intent) {
-        return "android.intent.action.MAIN".equals(intent.getAction()) && (intent.hasCategory("android.intent.category.HOME") || intent.hasCategory("android.intent.category.SECONDARY_HOME")) && intent.getCategories().size() == 1 && intent.getData() == null && intent.getType() == null;
-    }
-
-    public static boolean isMainIntent(Intent intent) {
-        return "android.intent.action.MAIN".equals(intent.getAction()) && intent.hasCategory("android.intent.category.LAUNCHER") && intent.getCategories().size() == 1 && intent.getData() == null && intent.getType() == null;
-    }
-
-    public boolean canLaunchHomeActivity(int i, ActivityRecord activityRecord) {
-        if (i == 1000 || i == 0) {
+        if (task != null && task.mSharedStartingData != null && (window = task.getWindow(new Task$$ExternalSyntheticLambda0(6))) != null && window.mSyncState == 2 && this.mDisplayContent.mUnknownAppVisibilityController.mUnknownApps.isEmpty()) {
             return true;
         }
-        RecentTasks recentTasks = this.mTaskSupervisor.mService.getRecentTasks();
-        if (recentTasks == null || !recentTasks.isCallerRecents(i)) {
-            return activityRecord != null && activityRecord.isResolverOrDelegateActivity();
-        }
-        return true;
-    }
-
-    public final boolean canLaunchAssistActivity(String str) {
-        ComponentName componentName = this.mAtmService.mActiveVoiceInteractionServiceComponent;
-        if (componentName != null) {
-            return componentName.getPackageName().equals(str);
-        }
-        return false;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x0067, code lost:
-    
-        if (android.service.dreams.DreamActivity.class.getName() == r2.info.name) goto L70;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void setActivityType(boolean r3, int r4, android.content.Intent r5, android.app.ActivityOptions r6, com.android.server.wm.ActivityRecord r7) {
-        /*
-            r2 = this;
-            r0 = 4
-            r1 = 0
-            if (r3 == 0) goto La
-            boolean r3 = r2.canLaunchHomeActivity(r4, r7)
-            if (r3 == 0) goto L23
-        La:
-            boolean r3 = r2.isHomeIntent(r5)
-            if (r3 == 0) goto L23
-            boolean r3 = r2.isResolverOrDelegateActivity()
-            if (r3 != 0) goto L23
-            android.content.pm.ActivityInfo r3 = r2.info
-            int r4 = r3.resizeMode
-            if (r4 == r0) goto L1f
-            r5 = 1
-            if (r4 != r5) goto L21
-        L1f:
-            r3.resizeMode = r1
-        L21:
-            r0 = 2
-            goto L6b
-        L23:
-            com.android.server.wm.ActivityTaskManagerService r3 = r2.mAtmService
-            com.android.server.wm.RecentTasks r3 = r3.getRecentTasks()
-            android.content.ComponentName r4 = r2.mActivityComponent
-            android.content.pm.ActivityInfo r5 = r2.info
-            android.content.pm.ApplicationInfo r5 = r5.applicationInfo
-            int r5 = r5.uid
-            boolean r3 = r3.isRecentsComponent(r4, r5)
-            if (r3 == 0) goto L39
-            r0 = 3
-            goto L6b
-        L39:
-            if (r6 == 0) goto L4a
-            int r3 = r6.getLaunchActivityType()
-            if (r3 != r0) goto L4a
-            java.lang.String r3 = r2.launchedFromPackage
-            boolean r3 = r2.canLaunchAssistActivity(r3)
-            if (r3 == 0) goto L4a
-            goto L6b
-        L4a:
-            if (r6 == 0) goto L6a
-            int r3 = r6.getLaunchActivityType()
-            r0 = 5
-            if (r3 != r0) goto L6a
-            com.android.server.wm.ActivityTaskManagerService r3 = r2.mAtmService
-            java.lang.String r4 = r2.launchedFromPackage
-            boolean r3 = r3.canLaunchDreamActivity(r4)
-            if (r3 == 0) goto L6a
-            java.lang.Class<android.service.dreams.DreamActivity> r3 = android.service.dreams.DreamActivity.class
-            java.lang.String r3 = r3.getName()
-            android.content.pm.ActivityInfo r4 = r2.info
-            java.lang.String r4 = r4.name
-            if (r3 != r4) goto L6a
-            goto L6b
-        L6a:
-            r0 = r1
-        L6b:
-            r2.setActivityType(r0)
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.setActivityType(boolean, int, android.content.Intent, android.app.ActivityOptions, com.android.server.wm.ActivityRecord):void");
-    }
-
-    public void setTaskToAffiliateWith(Task task) {
-        int i = this.launchMode;
-        if (i == 3 || i == 2) {
-            return;
-        }
-        this.task.setTaskToAffiliateWith(task);
-    }
-
-    public Task getRootTask() {
-        Task task = this.task;
-        if (task != null) {
-            return task.getRootTask();
-        }
-        return null;
-    }
-
-    public int getRootTaskId() {
-        Task task = this.task;
-        if (task != null) {
-            return task.getRootTaskId();
-        }
-        return -1;
-    }
-
-    public Task getOrganizedTask() {
-        Task task = this.task;
-        if (task != null) {
-            return task.getOrganizedTask();
-        }
-        return null;
-    }
-
-    public TaskFragment getOrganizedTaskFragment() {
-        TaskFragment taskFragment = getTaskFragment();
-        if (taskFragment != null) {
-            return taskFragment.getOrganizedTaskFragment();
-        }
-        return null;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isEmbedded() {
-        TaskFragment taskFragment = getTaskFragment();
-        return taskFragment != null && taskFragment.isEmbedded();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public TaskDisplayArea getDisplayArea() {
-        return (TaskDisplayArea) super.getDisplayArea();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean providesOrientation() {
-        return this.mStyleFillsParent;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean fillsParent() {
-        return occludesParent(true);
-    }
-
-    public boolean occludesParent() {
-        return occludesParent(false);
-    }
-
-    public boolean occludesParent(boolean z) {
-        if (!z && this.finishing) {
-            return false;
-        }
-        if (CoreRune.FW_CUSTOM_LETTERBOX && !this.mOccludesParent && CustomLetterboxConfiguration.isCustomLetterboxEnabled(this)) {
-            return false;
-        }
-        return this.mOccludesParent || showWallpaper();
-    }
-
-    public boolean setOccludesParent(boolean z) {
-        return setOccludesParent(z, false);
-    }
-
-    public boolean setOccludesParent(boolean z, boolean z2) {
-        int state = this.mPopOverState.getState();
-        this.mPopOverState.setLastOccludesParent(z);
-        if (this.mPopOverState.isActivated()) {
-            if (this.mPopOverState.getState() != state) {
-                recomputeConfiguration();
-            }
-            return false;
-        }
-        boolean z3 = z != this.mOccludesParent;
-        this.mOccludesParent = z;
-        if (CoreRune.FW_SUPPORT_OCCLUDES_PARENT_CHANGE_CALLBACK && z3) {
-            this.mWmService.mExt.updateOccludeTargetIfNeeded(getDisplayContent(), this);
-        }
-        if (!z2) {
-            setMainWindowOpaque(z);
-        }
-        this.mWmService.mWindowPlacerLocked.requestTraversal();
-        if (z3 && this.task != null && !z) {
-            getRootTask().convertActivityToTranslucent(this);
-        }
-        if (z3 || !z) {
-            this.mRootWindowContainer.ensureActivitiesVisible(null, 0, false);
-        }
-        return z3;
-    }
-
-    public void setMainWindowOpaque(boolean z) {
-        WindowState findMainWindow = findMainWindow();
-        if (findMainWindow == null) {
-            return;
-        }
-        findMainWindow.mWinAnimator.setOpaqueLocked(z & (!PixelFormat.formatHasAlpha(findMainWindow.getAttrs().format)));
-    }
-
-    public void takeFromHistory() {
-        if (this.inHistory) {
-            this.inHistory = false;
-            if (this.task != null && !this.finishing) {
-                this.task = null;
-            }
-            abortAndClearOptionsAnimation();
-        }
-    }
-
-    public boolean isInHistory() {
-        return this.inHistory;
-    }
-
-    public boolean isInRootTaskLocked() {
-        Task rootTask = getRootTask();
-        return (rootTask == null || rootTask.isInTask(this) == null) ? false : true;
-    }
-
-    public boolean isPersistable() {
-        Intent intent;
-        int i = this.info.persistableMode;
-        return (i == 0 || i == 2) && ((intent = this.intent) == null || (intent.getFlags() & 8388608) == 0);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isFocusable() {
-        return super.isFocusable() && (canReceiveKeys() || isAlwaysFocusable());
-    }
-
-    public boolean canReceiveKeys() {
-        Task task;
-        return getWindowConfiguration().canReceiveKeys() && ((task = this.task) == null || (task.getWindowConfiguration().canReceiveKeys() && !this.task.isFreeformStashed()));
-    }
-
-    public boolean isResizeable() {
-        return isResizeable(true);
-    }
-
-    public boolean isResizeable(boolean z) {
-        int i = this.info.resizeMode;
-        if (i == 10) {
-            return false;
-        }
-        return this.mAtmService.mForceResizableActivities || ActivityInfo.isResizeableMode(i) || (this.info.supportsPictureInPicture() && z) || isEmbedded();
-    }
-
-    public boolean isForceNonResizeable() {
-        return this.info.resizeMode == 10;
-    }
-
-    public boolean canForceResizeNonResizable(int i) {
-        boolean supportsMultiWindow;
-        int i2;
-        if (i == 2 && this.info.supportsPictureInPicture()) {
-            return false;
-        }
-        Task task = this.task;
-        if (task != null) {
-            supportsMultiWindow = task.supportsMultiWindow() || supportsMultiWindow();
-        } else {
-            supportsMultiWindow = supportsMultiWindow();
-        }
-        return ((WindowConfiguration.inMultiWindowMode(i) && supportsMultiWindow && !this.mAtmService.mForceResizableActivities) || (i2 = this.info.resizeMode) == 2 || (1048576 & i2) != 0 || i2 == 1) ? false : true;
-    }
-
-    public boolean supportsPictureInPicture() {
-        return this.mAtmService.mSupportsPictureInPicture && isActivityTypeStandardOrUndefined() && this.info.supportsPictureInPicture();
-    }
-
-    public boolean supportsFreeform() {
-        return supportsFreeformInDisplayArea(getDisplayArea());
-    }
-
-    public boolean supportsFreeformInDisplayArea(TaskDisplayArea taskDisplayArea) {
-        return this.mAtmService.mSupportsFreeformWindowManagement && supportsMultiWindowInDisplayArea(taskDisplayArea);
-    }
-
-    public boolean supportsMultiWindow() {
-        return supportsMultiWindowInDisplayArea(getDisplayArea());
-    }
-
-    public boolean supportsMultiWindowInDefaultDisplayArea() {
-        return supportsMultiWindowInDisplayArea(this.mRootWindowContainer.getDefaultTaskDisplayArea());
-    }
-
-    public boolean supportsMultiWindowInDisplayArea(TaskDisplayArea taskDisplayArea) {
-        if (isActivityTypeHome()) {
-            return false;
-        }
-        ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
-        if (activityTaskManagerService.mSupportsMultiWindow && taskDisplayArea != null) {
-            return activityTaskManagerService.mMwSupportPolicyController.supportsMultiWindowInDisplayArea(taskDisplayArea, this.info.resizeMode, isResizeable(), this.mIgnoreDevSettingForNonResizable);
-        }
-        return false;
-    }
-
-    public boolean canBeLaunchedOnDisplay(int i) {
-        return this.mAtmService.mTaskSupervisor.canPlaceEntityOnDisplay(i, this.launchedFromPid, this.launchedFromUid, this.info);
-    }
-
-    public boolean checkEnterPictureInPictureState(String str, boolean z) {
-        return checkEnterPictureInPictureState(str, z, false);
-    }
-
-    public boolean checkEnterPictureInPictureState(String str, boolean z, boolean z2) {
-        if (!supportsPictureInPicture() || !checkEnterPictureInPictureAppOpsState() || this.mAtmService.shouldDisableNonVrUiLocked()) {
+        if (!super.isSyncFinished(syncGroup)) {
             return false;
         }
         DisplayContent displayContent = this.mDisplayContent;
-        if (displayContent != null && !displayContent.mDwpcHelper.isEnteringPipAllowed(getUid())) {
-            Slog.w("ActivityTaskManager", "Display " + this.mDisplayContent.getDisplayId() + " doesn't support enter picture-in-picture mode. caller = " + str);
-            return false;
-        }
-        if (isDexMode()) {
-            return false;
-        }
-        if (!CoreRune.MT_NEW_DEX_PIP && isNewDexMode()) {
-            return false;
-        }
-        if ((getDisplayContent() != null && getDisplayContent().isMultiTaskingDisplay()) || this.mWmService.mSwitchingUser) {
-            return false;
-        }
-        if (CoreRune.MW_PIP_SHELL_TRANSITION && this.finishing) {
-            Slog.w("ActivityTaskManager", "checkEnterPictureInPictureState: failed, reason=finishing");
-            return false;
-        }
-        boolean z3 = this.mAtmService.getLockTaskModeState() != 0;
-        TaskDisplayArea displayArea = getDisplayArea();
-        boolean z4 = displayArea != null && displayArea.hasPinnedTask();
-        boolean z5 = (isKeyguardLocked() || z3) ? false : true;
-        if (z && z4) {
-            return false;
-        }
-        int i = AnonymousClass7.$SwitchMap$com$android$server$wm$ActivityRecord$State[this.mState.ordinal()];
-        if (i == 1) {
-            return z2;
-        }
-        if (i != 2) {
-            return (i == 3 || i == 4) ? z5 && !z4 && this.supportsEnterPipOnTaskSwitch : i == 5 && this.supportsEnterPipOnTaskSwitch && z5 && !z4;
-        }
-        if (z3) {
-            return false;
-        }
-        return this.supportsEnterPipOnTaskSwitch || !z;
-    }
-
-    /* renamed from: com.android.server.wm.ActivityRecord$7 */
-    /* loaded from: classes3.dex */
-    public abstract /* synthetic */ class AnonymousClass7 {
-        public static final /* synthetic */ int[] $SwitchMap$com$android$server$wm$ActivityRecord$State;
-
-        static {
-            int[] iArr = new int[State.values().length];
-            $SwitchMap$com$android$server$wm$ActivityRecord$State = iArr;
-            try {
-                iArr[State.INITIALIZING.ordinal()] = 1;
-            } catch (NoSuchFieldError unused) {
-            }
-            try {
-                $SwitchMap$com$android$server$wm$ActivityRecord$State[State.RESUMED.ordinal()] = 2;
-            } catch (NoSuchFieldError unused2) {
-            }
-            try {
-                $SwitchMap$com$android$server$wm$ActivityRecord$State[State.PAUSING.ordinal()] = 3;
-            } catch (NoSuchFieldError unused3) {
-            }
-            try {
-                $SwitchMap$com$android$server$wm$ActivityRecord$State[State.PAUSED.ordinal()] = 4;
-            } catch (NoSuchFieldError unused4) {
-            }
-            try {
-                $SwitchMap$com$android$server$wm$ActivityRecord$State[State.STOPPING.ordinal()] = 5;
-            } catch (NoSuchFieldError unused5) {
-            }
-            try {
-                $SwitchMap$com$android$server$wm$ActivityRecord$State[State.STARTED.ordinal()] = 6;
-            } catch (NoSuchFieldError unused6) {
-            }
-            try {
-                $SwitchMap$com$android$server$wm$ActivityRecord$State[State.STOPPED.ordinal()] = 7;
-            } catch (NoSuchFieldError unused7) {
-            }
-            try {
-                $SwitchMap$com$android$server$wm$ActivityRecord$State[State.DESTROYED.ordinal()] = 8;
-            } catch (NoSuchFieldError unused8) {
-            }
-            try {
-                $SwitchMap$com$android$server$wm$ActivityRecord$State[State.DESTROYING.ordinal()] = 9;
-            } catch (NoSuchFieldError unused9) {
-            }
-        }
-    }
-
-    public void setWillCloseOrEnterPip(boolean z) {
-        this.mWillCloseOrEnterPip = z;
-    }
-
-    public boolean willCloseOrEnterPip() {
-        return this.mWillCloseOrEnterPip;
-    }
-
-    public boolean checkEnterPictureInPictureAppOpsState() {
-        return this.mAtmService.getAppOpsManager().checkOpNoThrow(67, this.info.applicationInfo.uid, this.packageName) == 0;
-    }
-
-    public final boolean isAlwaysFocusable() {
-        return (this.info.flags & 262144) != 0;
-    }
-
-    public boolean windowsAreFocusable() {
-        return windowsAreFocusable(false);
-    }
-
-    public boolean windowsAreFocusable(boolean z) {
-        if (!z && this.mTargetSdk < 29) {
-            ActivityRecord activityRecord = (ActivityRecord) this.mWmService.mRoot.mTopFocusedAppByProcess.get(Integer.valueOf(getPid()));
-            if (activityRecord != null && activityRecord != this) {
+        if (displayContent != null) {
+            UnknownAppVisibilityController unknownAppVisibilityController = displayContent.mUnknownAppVisibilityController;
+            if (unknownAppVisibilityController.mUnknownApps.isEmpty() ? false : unknownAppVisibilityController.mUnknownApps.containsKey(this)) {
                 return false;
             }
         }
-        return (canReceiveKeys() || isAlwaysFocusable()) && isAttached();
-    }
-
-    public boolean moveFocusableActivityToTop(String str) {
-        if (!isFocusable()) {
-            if (ProtoLogCache.WM_DEBUG_FOCUS_enabled) {
-                ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_FOCUS, 240271590, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            return false;
-        }
-        Task rootTask = getRootTask();
-        if (rootTask == null) {
-            Slog.w("ActivityTaskManager", "moveFocusableActivityToTop: invalid root task: activity=" + this + " task=" + this.task);
-            return false;
-        }
-        DisplayContent displayContent = this.mDisplayContent;
-        ActivityRecord activityRecord = displayContent.mFocusedApp;
-        if (activityRecord != null && activityRecord.task == this.task) {
-            if (this.task == displayContent.getTask(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda10
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$moveFocusableActivityToTop$4;
-                    lambda$moveFocusableActivityToTop$4 = ActivityRecord.lambda$moveFocusableActivityToTop$4((Task) obj);
-                    return lambda$moveFocusableActivityToTop$4;
-                }
-            }, true)) {
-                if (activityRecord == this) {
-                    if (ProtoLogCache.WM_DEBUG_FOCUS_enabled) {
-                        ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_FOCUS, 385237117, 0, (String) null, new Object[]{String.valueOf(this)});
-                    }
-                } else {
-                    if (ProtoLogCache.WM_DEBUG_FOCUS_enabled) {
-                        ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_FOCUS, 1239439010, 0, (String) null, new Object[]{String.valueOf(this)});
-                    }
-                    this.mDisplayContent.setFocusedApp(this);
-                    this.mAtmService.mWindowManager.updateFocusedWindowLocked(0, true);
-                }
-                DisplayContent displayContent2 = getDisplayContent();
-                ActivityRecord activityRecord2 = this.mAtmService.mLastResumedActivity;
-                DisplayContent displayContent3 = activityRecord2 != null ? activityRecord2.getDisplayContent() : null;
-                if (displayContent3 != null && displayContent2 != null && displayContent3 != displayContent2 && (displayContent3.isMultiTaskingDisplay() || displayContent2.isMultiTaskingDisplay())) {
-                    this.mAtmService.setLastResumedActivityUncheckLocked(this, str);
-                }
-                return !isState(State.RESUMED);
-            }
-        }
-        if (ProtoLogCache.WM_DEBUG_FOCUS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_FOCUS, -50336993, 0, (String) null, new Object[]{String.valueOf(this)});
-        }
-        rootTask.moveToFront(str, this.task);
-        if (this.mRootWindowContainer.getTopResumedActivity() == this) {
-            this.mAtmService.setLastResumedActivityUncheckLocked(this, str);
-        }
-        return true;
-    }
-
-    public static /* synthetic */ boolean lambda$moveFocusableActivityToTop$4(Task task) {
-        return task.isLeafTask() && task.isFocusable();
-    }
-
-    public void finishIfSubActivity(ActivityRecord activityRecord, String str, int i) {
-        if (this.resultTo == activityRecord && this.requestCode == i && Objects.equals(this.resultWho, str)) {
-            finishIfPossible("request-sub", false);
-        }
-    }
-
-    public boolean finishIfSameAffinity(ActivityRecord activityRecord) {
-        if (!Objects.equals(activityRecord.taskAffinity, this.taskAffinity)) {
+        if (!isVisibleRequested()) {
             return true;
         }
-        activityRecord.finishIfPossible("request-affinity", true);
+        if (this.mPendingRelaunchCount > 0 || !isAttached()) {
+            return false;
+        }
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            if (((WindowState) this.mChildren.get(size)).isVisibleRequested()) {
+                return true;
+            }
+        }
         return false;
     }
 
-    public final void finishActivityResults(final int i, final Intent intent, final NeededUriGrants neededUriGrants) {
-        ActivityRecord activityRecord = this.resultTo;
-        if (activityRecord != null) {
-            int i2 = activityRecord.mUserId;
-            int i3 = this.mUserId;
-            if (i2 != i3 && intent != null) {
-                intent.prepareToLeaveUser(i3);
-            }
-            if (this.info.applicationInfo.uid > 0) {
-                this.mAtmService.mUgmInternal.grantUriPermissionUncheckedFromIntent(neededUriGrants, this.resultTo.getUriPermissionsLocked());
-            }
-            if (this.mForceSendResultForMediaProjection || this.resultTo.isState(State.RESUMED)) {
-                final ActivityRecord activityRecord2 = this.resultTo;
-                this.mAtmService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda14
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        ActivityRecord.this.lambda$finishActivityResults$5(activityRecord2, i, intent, neededUriGrants);
-                    }
-                });
-            } else {
-                this.resultTo.addResultLocked(this, this.resultWho, this.requestCode, i, intent);
-            }
-            this.resultTo = null;
-        }
-        this.results = null;
-        this.pendingResults = null;
-        this.newIntents = null;
-        setSavedState(null);
+    public final boolean isTopRunningActivity() {
+        return this.mRootWindowContainer.topRunningActivity() == this;
     }
 
-    public /* synthetic */ void lambda$finishActivityResults$5(ActivityRecord activityRecord, int i, Intent intent, NeededUriGrants neededUriGrants) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtmService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
+    public final boolean isUid(int i) {
+        return this.info.applicationInfo.uid == i;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isVisible() {
+        return this.mVisible;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isWaitingForTransitionStart() {
+        DisplayContent displayContent = getDisplayContent();
+        return displayContent != null && displayContent.mAppTransition.isTransitionSet() && (displayContent.mOpeningApps.contains(this) || displayContent.mClosingApps.contains(this) || displayContent.mChangingContainers.contains(this));
+    }
+
+    public final void logAppCompatState() {
+        ActivityMetricsLogger activityMetricsLogger = this.mTaskSupervisor.mActivityMetricsLogger;
+        activityMetricsLogger.getClass();
+        int i = this.info.applicationInfo.uid;
+        int appCompatState = getAppCompatState(false);
+        if (!activityMetricsLogger.mPackageUidToCompatStateInfo.contains(i)) {
+            activityMetricsLogger.mPackageUidToCompatStateInfo.put(i, new ActivityMetricsLogger.PackageCompatStateInfo());
+        }
+        ActivityMetricsLogger.PackageCompatStateInfo packageCompatStateInfo = (ActivityMetricsLogger.PackageCompatStateInfo) activityMetricsLogger.mPackageUidToCompatStateInfo.get(i);
+        int i2 = packageCompatStateInfo.mLastLoggedState;
+        ActivityRecord activityRecord = packageCompatStateInfo.mLastLoggedActivity;
+        boolean z = appCompatState != 1;
+        ArrayList arrayList = packageCompatStateInfo.mVisibleActivities;
+        if (z && !arrayList.contains(this)) {
+            arrayList.add(this);
+        } else if (!z) {
+            arrayList.remove(this);
+            if (arrayList.isEmpty()) {
+                activityMetricsLogger.mPackageUidToCompatStateInfo.remove(i);
+            }
+        }
+        if (appCompatState == i2) {
+            return;
+        }
+        if (z || arrayList.isEmpty()) {
+            if (activityRecord == null || this == activityRecord || i2 == 1 || i2 == 2) {
+                ActivityMetricsLogger.logAppCompatStateInternal(this, appCompatState, packageCompatStateInfo);
+                return;
+            }
+            return;
+        }
+        if (activityRecord == null || this == activityRecord) {
+            ArrayList arrayList2 = packageCompatStateInfo.mVisibleActivities;
+            int i3 = packageCompatStateInfo.mLastLoggedState;
+            ActivityRecord activityRecord2 = null;
+            int i4 = 1;
+            for (int i5 = 0; i5 < arrayList2.size(); i5++) {
+                ActivityRecord activityRecord3 = (ActivityRecord) arrayList2.get(i5);
+                int appCompatState2 = activityRecord3.getAppCompatState(false);
+                if (appCompatState2 == i3) {
+                    packageCompatStateInfo.mLastLoggedActivity = activityRecord3;
+                    return;
+                }
+                if (appCompatState2 == 1) {
+                    DeviceIdleController$$ExternalSyntheticOutline0.m(i, "Visible activity with NOT_VISIBLE App Compat state for package UID: ", "ActivityTaskManager");
+                } else if (i4 == 1 || (i4 == 2 && appCompatState2 != 2)) {
+                    activityRecord2 = activityRecord3;
+                    i4 = appCompatState2;
+                }
+            }
+            if (activityRecord2 == null || i4 == 1) {
+                return;
+            }
+            ActivityMetricsLogger.logAppCompatStateInternal(activityRecord2, i4, packageCompatStateInfo);
+        }
+    }
+
+    public final void logForMultiWindowModeChanged(int i, int i2) {
+        if (CoreRune.MW_SA_LOGGING) {
+            WindowConfiguration windowConfiguration = this.mLastReportedConfiguration.getOverrideConfiguration().windowConfiguration;
+            MultiWindowUtils.logForMultiWindowModeChange(i, windowConfiguration.getWindowingMode(), i2, windowConfiguration.getStageType());
+        }
+    }
+
+    public final void logStartActivity(int i, Task task, String str) {
+        Uri data = this.intent.getData();
+        String safeString = data != null ? data.toSafeString() : null;
+        if (safeString != null && safeString.startsWith("nfc://secure")) {
+            safeString = "nfc://secure:it should not be shown";
+        }
+        EventLog.writeEvent(i, Integer.valueOf(this.mUserId), Integer.valueOf(System.identityHashCode(this)), Integer.valueOf(task.mTaskId), this.shortComponentName, this.intent.getAction(), this.intent.getType(), safeString, Integer.valueOf(this.intent.getFlags()), str);
+    }
+
+    public final boolean makeActiveIfNeeded(ActivityRecord activityRecord) {
+        ActivityOptions.SceneTransitionInfo sceneTransitionInfo = null;
+        if (shouldResumeActivity(activityRecord)) {
+            return getRootTask().resumeTopActivityUncheckedLocked(activityRecord, null, false);
+        }
+        if (shouldPauseActivity(activityRecord)) {
+            setState(State.PAUSING, "makeActiveIfNeeded");
+            EventLog.writeEvent(30013, Integer.valueOf(this.mUserId), Integer.valueOf(System.identityHashCode(this)), this.shortComponentName, "userLeaving=false", "make-active");
             try {
-                activityRecord.sendResult(getUid(), this.resultWho, this.requestCode, i, intent, neededUriGrants, this.mForceSendResultForMediaProjection);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
+                this.mAtmService.mLifecycleManager.scheduleTransactionItem(this.app.mThread, PauseActivityItem.obtain(this.token, this.finishing, false, false, this.mAutoEnteringPip));
+            } catch (Exception e) {
+                Slog.w("ActivityTaskManager", "Exception thrown sending pause: " + this.intent.getComponent(), e);
             }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public int finishIfPossible(String str, boolean z) {
-        return finishIfPossible(0, null, null, str, z);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:135:0x025f A[Catch: all -> 0x02d2, TryCatch #0 {all -> 0x02d2, blocks: (B:24:0x0099, B:26:0x00ba, B:28:0x00c5, B:29:0x00ca, B:31:0x00cf, B:33:0x00d5, B:34:0x00da, B:36:0x00e3, B:39:0x00ec, B:42:0x00f3, B:44:0x00ff, B:46:0x0107, B:51:0x0115, B:53:0x011b, B:55:0x0121, B:56:0x0128, B:58:0x012c, B:59:0x0133, B:61:0x0137, B:64:0x013d, B:66:0x0143, B:68:0x0149, B:70:0x014f, B:71:0x0154, B:73:0x0158, B:75:0x015e, B:77:0x0167, B:79:0x0177, B:83:0x0182, B:85:0x0189, B:88:0x0192, B:89:0x019f, B:91:0x01ac, B:93:0x01b2, B:94:0x01cc, B:96:0x01d3, B:98:0x01db, B:100:0x01e1, B:101:0x01e3, B:105:0x0211, B:107:0x021c, B:108:0x0223, B:110:0x0227, B:113:0x022d, B:115:0x0237, B:116:0x023a, B:118:0x023e, B:120:0x0242, B:123:0x024a, B:126:0x0255, B:128:0x025b, B:131:0x01ee, B:133:0x01f2, B:134:0x0202, B:135:0x025f, B:137:0x0267, B:139:0x026b, B:141:0x0273, B:143:0x0278, B:144:0x027e, B:145:0x0281, B:149:0x028e, B:151:0x0296, B:152:0x029b, B:154:0x02a1, B:158:0x02b2, B:160:0x02b6, B:161:0x02c6, B:163:0x02ca), top: B:23:0x0099 }] */
-    /* JADX WARN: Removed duplicated region for block: B:58:0x012c A[Catch: all -> 0x02d2, TryCatch #0 {all -> 0x02d2, blocks: (B:24:0x0099, B:26:0x00ba, B:28:0x00c5, B:29:0x00ca, B:31:0x00cf, B:33:0x00d5, B:34:0x00da, B:36:0x00e3, B:39:0x00ec, B:42:0x00f3, B:44:0x00ff, B:46:0x0107, B:51:0x0115, B:53:0x011b, B:55:0x0121, B:56:0x0128, B:58:0x012c, B:59:0x0133, B:61:0x0137, B:64:0x013d, B:66:0x0143, B:68:0x0149, B:70:0x014f, B:71:0x0154, B:73:0x0158, B:75:0x015e, B:77:0x0167, B:79:0x0177, B:83:0x0182, B:85:0x0189, B:88:0x0192, B:89:0x019f, B:91:0x01ac, B:93:0x01b2, B:94:0x01cc, B:96:0x01d3, B:98:0x01db, B:100:0x01e1, B:101:0x01e3, B:105:0x0211, B:107:0x021c, B:108:0x0223, B:110:0x0227, B:113:0x022d, B:115:0x0237, B:116:0x023a, B:118:0x023e, B:120:0x0242, B:123:0x024a, B:126:0x0255, B:128:0x025b, B:131:0x01ee, B:133:0x01f2, B:134:0x0202, B:135:0x025f, B:137:0x0267, B:139:0x026b, B:141:0x0273, B:143:0x0278, B:144:0x027e, B:145:0x0281, B:149:0x028e, B:151:0x0296, B:152:0x029b, B:154:0x02a1, B:158:0x02b2, B:160:0x02b6, B:161:0x02c6, B:163:0x02ca), top: B:23:0x0099 }] */
-    /* JADX WARN: Removed duplicated region for block: B:83:0x0182 A[Catch: all -> 0x02d2, TryCatch #0 {all -> 0x02d2, blocks: (B:24:0x0099, B:26:0x00ba, B:28:0x00c5, B:29:0x00ca, B:31:0x00cf, B:33:0x00d5, B:34:0x00da, B:36:0x00e3, B:39:0x00ec, B:42:0x00f3, B:44:0x00ff, B:46:0x0107, B:51:0x0115, B:53:0x011b, B:55:0x0121, B:56:0x0128, B:58:0x012c, B:59:0x0133, B:61:0x0137, B:64:0x013d, B:66:0x0143, B:68:0x0149, B:70:0x014f, B:71:0x0154, B:73:0x0158, B:75:0x015e, B:77:0x0167, B:79:0x0177, B:83:0x0182, B:85:0x0189, B:88:0x0192, B:89:0x019f, B:91:0x01ac, B:93:0x01b2, B:94:0x01cc, B:96:0x01d3, B:98:0x01db, B:100:0x01e1, B:101:0x01e3, B:105:0x0211, B:107:0x021c, B:108:0x0223, B:110:0x0227, B:113:0x022d, B:115:0x0237, B:116:0x023a, B:118:0x023e, B:120:0x0242, B:123:0x024a, B:126:0x0255, B:128:0x025b, B:131:0x01ee, B:133:0x01f2, B:134:0x0202, B:135:0x025f, B:137:0x0267, B:139:0x026b, B:141:0x0273, B:143:0x0278, B:144:0x027e, B:145:0x0281, B:149:0x028e, B:151:0x0296, B:152:0x029b, B:154:0x02a1, B:158:0x02b2, B:160:0x02b6, B:161:0x02c6, B:163:0x02ca), top: B:23:0x0099 }] */
-    /* JADX WARN: Removed duplicated region for block: B:87:0x0190  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public int finishIfPossible(int r18, android.content.Intent r19, com.android.server.uri.NeededUriGrants r20, java.lang.String r21, boolean r22) {
-        /*
-            Method dump skipped, instructions count: 729
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.finishIfPossible(int, android.content.Intent, com.android.server.uri.NeededUriGrants, java.lang.String, boolean):int");
-    }
-
-    public void setForceSendResultForMediaProjection() {
-        this.mForceSendResultForMediaProjection = true;
-    }
-
-    public final void prepareActivityHideTransitionAnimationIfOvarlay() {
-        if (this.mTaskOverlay) {
-            prepareActivityHideTransitionAnimation();
-        }
-    }
-
-    public final void prepareActivityHideTransitionAnimation() {
-        DisplayContent displayContent = this.mDisplayContent;
-        displayContent.prepareAppTransition(2);
-        setVisibility(false);
-        displayContent.executeAppTransition();
-    }
-
-    public ActivityRecord completeFinishing(String str) {
-        return completeFinishing(true, str);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:58:0x00bf  */
-    /* JADX WARN: Removed duplicated region for block: B:79:0x010c  */
-    /* JADX WARN: Removed duplicated region for block: B:81:? A[RETURN, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:83:0x0103  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public com.android.server.wm.ActivityRecord completeFinishing(boolean r8, java.lang.String r9) {
-        /*
-            Method dump skipped, instructions count: 313
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.completeFinishing(boolean, java.lang.String):com.android.server.wm.ActivityRecord");
-    }
-
-    public boolean destroyIfPossible(String str) {
-        setState(State.FINISHING, "destroyIfPossible");
-        this.mTaskSupervisor.mStoppingActivities.remove(this);
-        Task rootTask = getRootTask();
-        TaskDisplayArea displayArea = getDisplayArea();
-        if (CoreRune.SYSFW_APP_SPEG && (displayArea == null || rootTask == null)) {
-            Slog.w("SPEG", "Impossible to destroy activity: " + this + ", task is null");
-        }
-        ActivityRecord activityRecord = displayArea.topRunningActivity();
-        if ((activityRecord == null && rootTask.isFocusedRootTaskOnDisplay() && displayArea.getOrCreateRootHomeTask() != null) && getDisplayId() != 4) {
-            addToFinishingAndWaitForIdle();
-            return false;
-        }
-        makeFinishingLocked();
-        boolean destroyImmediately = destroyImmediately("finish-imm:" + str);
-        if (activityRecord == null) {
-            this.mRootWindowContainer.ensureVisibilityAndConfig(activityRecord, getDisplayId(), false, true);
-        }
-        if (destroyImmediately) {
-            this.mRootWindowContainer.resumeFocusedTasksTopActivities();
-        }
-        if (ProtoLogCache.WM_DEBUG_CONTAINERS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_CONTAINERS, -401282500, 0, (String) null, new Object[]{String.valueOf(this), String.valueOf(destroyImmediately)});
-        }
-        return destroyImmediately;
-    }
-
-    public boolean addToFinishingAndWaitForIdle() {
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 1610646518, 0, (String) null, new Object[]{String.valueOf(this)});
-        }
-        setState(State.FINISHING, "addToFinishingAndWaitForIdle");
-        if (!this.mTaskSupervisor.mFinishingActivities.contains(this)) {
-            this.mTaskSupervisor.mFinishingActivities.add(this);
-        }
-        resumeKeyDispatchingLocked();
-        return this.mRootWindowContainer.resumeFocusedTasksTopActivities();
-    }
-
-    public boolean destroyImmediately(String str) {
-        boolean z;
-        State state = State.DESTROYING;
-        State state2 = State.DESTROYED;
-        if (isState(state, state2)) {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -21399771, 0, (String) null, new Object[]{String.valueOf(this), String.valueOf(str)});
-            }
-            return false;
-        }
-        EventLogTags.writeWmDestroyActivity(this.mUserId, System.identityHashCode(this), this.task.mTaskId, this.shortComponentName, str);
-        cleanUp(false, false);
-        boolean z2 = true;
-        if (hasProcess()) {
-            this.app.removeActivity(this, true);
-            if (!this.app.hasActivities()) {
-                this.mAtmService.clearHeavyWeightProcessIfEquals(this.app);
-            }
+        } else if (this.mVisibleRequested && (isState(State.STOPPED) || isState(State.STOPPING))) {
+            setState(State.STARTED, "makeActiveIfNeeded");
             try {
-                this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ActivityLifecycleItem) DestroyActivityItem.obtain(this.finishing, this.configChangeFlags));
-            } catch (Exception unused) {
-                if (this.finishing) {
-                    removeFromHistory(str + " exceptionInScheduleDestroy");
-                    z = true;
+                ClientLifecycleManager clientLifecycleManager = this.mAtmService.mLifecycleManager;
+                IApplicationThread iApplicationThread = this.app.mThread;
+                IBinder iBinder = this.token;
+                ActivityOptions activityOptions = this.mPendingOptions;
+                if (activityOptions != null) {
+                    this.mPendingOptions = null;
+                    sceneTransitionInfo = activityOptions.getSceneTransitionInfo();
                 }
+                clientLifecycleManager.scheduleTransactionItem(iApplicationThread, StartActivityItem.obtain(iBinder, sceneTransitionInfo));
+            } catch (Exception e2) {
+                Slog.w("ActivityTaskManager", "Exception thrown sending start: " + this.intent.getComponent(), e2);
             }
-            z = false;
-            z2 = false;
-            this.nowVisible = false;
-            if (this.finishing && !z2) {
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -1432963966, 0, (String) null, new Object[]{String.valueOf(this)});
-                }
-                setState(State.DESTROYING, "destroyActivityLocked. finishing and not skipping destroy");
-                this.mAtmService.mH.postDelayed(this.mDestroyTimeoutRunnable, 10000L);
-            } else {
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 726205185, 0, (String) null, new Object[]{String.valueOf(this)});
-                }
-                setState(State.DESTROYED, "destroyActivityLocked. not finishing or skipping destroy");
-                detachFromProcess();
-            }
-            if (CoreRune.SYSFW_APP_PREL && this.mShouldPrelNotify && this.mAtmService.mAps != null) {
-                WindowProcessController windowProcessController = this.app;
-                if (windowProcessController != null) {
-                    windowProcessController.mIsPrelScheduleGroupOverride = false;
-                }
-                this.mShouldPrelNotify = false;
-                Slog.w("PREL", "destroyImmediately " + this + ", reason " + str);
-                this.mAtmService.mAps.setTaskProcessedForPrelaunchedAppAsync(getUid());
-            }
-            z2 = z;
-        } else if (this.finishing) {
-            removeFromHistory(str + " hadNoApp");
-        } else {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -729530161, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            setState(state2, "destroyActivityLocked. not finishing and had no app");
-            z2 = false;
+            this.mTaskSupervisor.mStoppingActivities.remove(this);
         }
-        this.configChangeFlags = 0;
-        return z2;
+        return false;
     }
 
-    public void removeFromHistory(String str) {
-        finishActivityResults(0, null, null);
-        makeFinishingLocked();
-        if (ProtoLogCache.WM_DEBUG_ADD_REMOVE_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, 350168164, 0, (String) null, new Object[]{String.valueOf(this), String.valueOf(str), String.valueOf(Debug.getCallers(5))});
-        }
-        takeFromHistory();
-        removeTimeouts();
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 579298675, 0, (String) null, new Object[]{String.valueOf(this)});
-        }
-        setState(State.DESTROYED, "removeFromHistory");
-        detachFromProcess();
-        resumeKeyDispatchingLocked();
-        this.mDisplayContent.removeAppToken(this.token);
-        cleanUpActivityServices();
-        removeUriPermissionsLocked();
-    }
-
-    public void detachFromProcess() {
-        WindowProcessController windowProcessController = this.app;
-        if (windowProcessController != null) {
-            windowProcessController.removeActivity(this, false);
-        }
-        this.app = null;
-        this.mInputDispatchingTimeoutMillis = InputConstants.DEFAULT_DISPATCHING_TIMEOUT_MILLIS;
-    }
-
-    public void makeFinishingLocked() {
+    public final void makeFinishingLocked() {
         Task task;
         ActivityRecord activity;
         if (this.finishing) {
             return;
         }
         this.finishing = true;
-        if (this.mLaunchCookie != null && this.mState != State.RESUMED && (task = this.task) != null && !task.mInRemoveTask && !task.isClearingToReuseTask() && (activity = this.task.getActivity(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda13
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$makeFinishingLocked$7;
-                lambda$makeFinishingLocked$7 = ActivityRecord.this.lambda$makeFinishingLocked$7((ActivityRecord) obj);
-                return lambda$makeFinishingLocked$7;
-            }
-        }, this, false, false)) != null) {
+        if (this.mLaunchCookie != null && this.mState != State.RESUMED && (task = this.task) != null && !task.mInRemoveTask && !task.mReuseTask && (activity = task.getActivity(new ActivityRecord$$ExternalSyntheticLambda1(3, this), this, false, false)) != null) {
             activity.mLaunchCookie = this.mLaunchCookie;
             this.mLaunchCookie = null;
         }
         TaskFragment taskFragment = getTaskFragment();
         if (taskFragment != null) {
             Task task2 = taskFragment.getTask();
-            if (task2 != null && task2.isClearingToReuseTask() && taskFragment.getTopNonFinishingActivity() == null) {
+            if (task2 != null && task2.mReuseTask && taskFragment.getTopNonFinishingActivity(true, true) == null) {
                 taskFragment.mClearedTaskForReuse = true;
             }
             taskFragment.sendTaskFragmentInfoChanged();
@@ -3447,171 +3755,851 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         }
     }
 
-    public /* synthetic */ boolean lambda$makeFinishingLocked$7(ActivityRecord activityRecord) {
-        return activityRecord.mLaunchCookie == null && !activityRecord.finishing && activityRecord.isUid(getUid());
-    }
-
-    public boolean isFinishing() {
-        return this.finishing;
-    }
-
-    public void destroyed(String str) {
-        removeDestroyTimeout();
-        if (ProtoLogCache.WM_DEBUG_CONTAINERS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_CONTAINERS, -1598452494, 0, (String) null, new Object[]{String.valueOf(this)});
-        }
-        if (!isState(State.DESTROYING, State.DESTROYED)) {
-            throw new IllegalStateException("Reported destroyed for activity that is not destroying: r=" + this);
-        }
-        this.mTaskSupervisor.killTaskProcessesOnDestroyedIfNeeded(this.task);
-        if (isInRootTaskLocked()) {
-            cleanUp(true, false);
-            removeFromHistory(str);
-        }
-        this.mRootWindowContainer.resumeFocusedTasksTopActivities();
-    }
-
-    public void cleanUp(boolean z, boolean z2) {
-        HashSet hashSet;
-        getTaskFragment().cleanUpActivityReferences(this);
-        clearLastParentBeforePip();
-        cleanUpSplashScreen();
-        this.deferRelaunchUntilPaused = false;
-        this.frozenBeforeDestroy = false;
-        if (z2) {
-            setState(State.DESTROYED, "cleanUp");
-            detachFromProcess();
-        }
-        this.mTaskSupervisor.cleanupActivity(this);
-        if (this.finishing && (hashSet = this.pendingResults) != null) {
-            Iterator it = hashSet.iterator();
-            while (it.hasNext()) {
-                PendingIntentRecord pendingIntentRecord = (PendingIntentRecord) ((WeakReference) it.next()).get();
-                if (pendingIntentRecord != null) {
-                    this.mAtmService.mPendingIntentController.cancelIntentSender(pendingIntentRecord, false);
+    public final void makeInvisible() {
+        if (this.mVisibleRequested) {
+            try {
+                boolean checkEnterPictureInPictureState = checkEnterPictureInPictureState("makeInvisible", true, false);
+                setDeferHidingClient(checkEnterPictureInPictureState && !isState(State.STARTED, State.STOPPING, State.STOPPED, State.PAUSED));
+                setVisibility(false);
+                switch (this.mState.ordinal()) {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        addToStopping("makeInvisible", true, checkEnterPictureInPictureState);
+                        break;
+                    case 5:
+                    case 6:
+                        this.supportsEnterPipOnTaskSwitch = false;
+                        break;
                 }
-            }
-            this.pendingResults = null;
-        }
-        if (z) {
-            cleanUpActivityServices();
-        }
-        removeTimeouts();
-        clearRelaunching();
-    }
-
-    public boolean isRelaunching() {
-        return this.mPendingRelaunchCount > 0;
-    }
-
-    public void startRelaunching() {
-        if (this.mPendingRelaunchCount == 0) {
-            this.mRelaunchStartTime = SystemClock.elapsedRealtime();
-            if (this.mVisibleRequested) {
-                this.mDisplayContent.getDisplayPolicy().addRelaunchingApp(this);
+            } catch (Exception e) {
+                Slog.w("ActivityTaskManager", "Exception thrown making hidden: " + this.intent.getComponent(), e);
             }
         }
-        clearAllDrawn();
-        this.mPendingRelaunchCount++;
     }
 
-    public void finishRelaunching() {
-        this.mLetterboxUiController.setRelaunchingAfterRequestedOrientationChanged(false);
-        this.mTaskSupervisor.getActivityMetricsLogger().notifyActivityRelaunched(this);
-        int i = this.mPendingRelaunchCount;
-        if (i > 0) {
-            int i2 = i - 1;
-            this.mPendingRelaunchCount = i2;
-            if (i2 == 0 && !isClientVisible()) {
-                finishOrAbortReplacingWindow();
+    @Override // com.android.server.wm.ConfigurationContainer
+    public final boolean matchParentBounds() {
+        WindowContainer parent;
+        Rect resolvedOverrideBounds = getResolvedOverrideBounds();
+        return resolvedOverrideBounds.isEmpty() || (parent = getParent()) == null || parent.getBounds().equals(resolvedOverrideBounds);
+    }
+
+    public final boolean moveFocusableActivityToTop(String str) {
+        boolean isFocusable = isFocusable();
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_FOCUS_enabled;
+        if (!isFocusable) {
+            if (zArr[0]) {
+                ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_FOCUS, -9024836052864189016L, 0, null, String.valueOf(this));
             }
-        } else {
-            checkKeyguardFlagsChanged();
+            return false;
         }
         Task rootTask = getRootTask();
-        if (rootTask == null || !rootTask.shouldSleepOrShutDownActivities()) {
-            return;
+        if (rootTask == null) {
+            Slog.w("ActivityTaskManager", "moveFocusableActivityToTop: invalid root task: activity=" + this + " task=" + this.task);
+            return false;
         }
-        rootTask.ensureActivitiesVisible(null, 0, false);
-    }
-
-    public void clearRelaunching() {
-        if (this.mPendingRelaunchCount == 0) {
-            return;
-        }
-        this.mPendingRelaunchCount = 0;
-        finishOrAbortReplacingWindow();
-    }
-
-    public void finishOrAbortReplacingWindow() {
-        this.mRelaunchStartTime = 0L;
-        this.mDisplayContent.getDisplayPolicy().removeRelaunchingApp(this);
-    }
-
-    public ActivityServiceConnectionsHolder getOrCreateServiceConnectionsHolder() {
-        ActivityServiceConnectionsHolder activityServiceConnectionsHolder;
-        synchronized (this) {
-            if (this.mServiceConnectionsHolder == null) {
-                this.mServiceConnectionsHolder = new ActivityServiceConnectionsHolder(this);
+        ActivityRecord activityRecord = this.mDisplayContent.mFocusedApp;
+        int i = this.mRootWindowContainer.getTopFocusedDisplayContent() != null ? this.mRootWindowContainer.getTopFocusedDisplayContent().mDisplayId : -1;
+        State state = State.RESUMED;
+        if (activityRecord != null && activityRecord.task == this.task) {
+            DisplayContent displayContent = this.mDisplayContent;
+            if (i == displayContent.mDisplayId) {
+                if (this.task == displayContent.getTask(new ActivityRecord$$ExternalSyntheticLambda4(3), true)) {
+                    if (activityRecord != this) {
+                        if (zArr[0]) {
+                            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_FOCUS, -1058622321669556178L, 0, null, String.valueOf(this));
+                        }
+                        this.mDisplayContent.setFocusedApp(this);
+                        this.mAtmService.mWindowManager.updateFocusedWindowLocked(0, true);
+                    } else if (zArr[0]) {
+                        ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_FOCUS, 134255351804410010L, 0, null, String.valueOf(this));
+                    }
+                    DisplayContent displayContent2 = getDisplayContent();
+                    ActivityRecord activityRecord2 = this.mAtmService.mLastResumedActivity;
+                    DisplayContent displayContent3 = activityRecord2 != null ? activityRecord2.getDisplayContent() : null;
+                    if (displayContent3 != null && displayContent2 != null && displayContent3 != displayContent2 && (displayContent3.isMultiTaskingDisplay() || displayContent2.isMultiTaskingDisplay())) {
+                        this.mAtmService.setLastResumedActivityUncheckLocked(this, str);
+                    }
+                    return !isState(state);
+                }
             }
-            activityServiceConnectionsHolder = this.mServiceConnectionsHolder;
         }
-        return activityServiceConnectionsHolder;
-    }
-
-    public final void cleanUpActivityServices() {
-        synchronized (this) {
-            ActivityServiceConnectionsHolder activityServiceConnectionsHolder = this.mServiceConnectionsHolder;
-            if (activityServiceConnectionsHolder == null) {
-                return;
-            }
-            activityServiceConnectionsHolder.disconnectActivityFromServices();
-            this.mServiceConnectionsHolder = null;
+        if (zArr[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_FOCUS, 731006689098152100L, 0, null, String.valueOf(this));
         }
+        rootTask.moveToFront(str, this.task);
+        if (this.mState == state && this.mRootWindowContainer.getTopResumedActivity() == this) {
+            this.mAtmService.setLastResumedActivityUncheckLocked(this, str);
+        }
+        return true;
     }
 
-    public final void updateVisibleForServiceConnection() {
-        State state;
-        this.mVisibleForServiceConnection = this.mVisibleRequested || (state = this.mState) == State.RESUMED || state == State.PAUSING;
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean needsZBoost() {
+        return this.mNeedsZBoost || super.needsZBoost();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:47:0x0013, code lost:
-    
-        if (r0 != 2) goto L86;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:51:0x0025, code lost:
-    
-        if (r10.launchCount > 2) goto L90;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:59:0x0054, code lost:
-    
-        if (r10.lastLaunchTime > (android.os.SystemClock.uptimeMillis() - 60000)) goto L77;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:65:0x0039, code lost:
-    
-        if (r10.app.skipToFinishActivities() == false) goto L77;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:69:0x001c, code lost:
-    
-        if (r10.finishing != false) goto L86;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:27:0x00eb  */
-    /* JADX WARN: Removed duplicated region for block: B:43:? A[RETURN, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:5:0x0059  */
+    /* JADX WARN: Removed duplicated region for block: B:23:0x0082  */
+    /* JADX WARN: Removed duplicated region for block: B:26:0x009a  */
+    /* JADX WARN: Removed duplicated region for block: B:34:0x009c  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void handleAppDied() {
+    public final void notifyActivityRefresherAboutConfigurationChange(final android.content.res.Configuration r9, final android.content.res.Configuration r10) {
         /*
-            Method dump skipped, instructions count: 272
+            r8 = this;
+            r0 = 0
+            boolean r0 = r8.shouldBeResumed(r0)
+            if (r0 != 0) goto L8
+            return
+        L8:
+            com.android.server.wm.DisplayContent r0 = r8.mDisplayContent
+            com.android.server.wm.AppCompatCameraPolicy r0 = r0.mAppCompatCameraPolicy
+            com.android.server.wm.ActivityRefresher r0 = r0.mActivityRefresher
+            if (r0 == 0) goto Lc9
+            com.android.server.wm.WindowManagerService r1 = r0.mWmService
+            com.android.server.wm.AppCompatConfiguration r2 = r1.mAppCompatConfiguration
+            boolean r2 = r2.mIsCameraCompatTreatmentRefreshEnabled
+            if (r2 == 0) goto Lc9
+            com.android.server.wm.AppCompatController r2 = r8.mAppCompatController
+            com.android.server.wm.AppCompatOverrides r2 = r2.mAppCompatOverrides
+            com.android.server.wm.AppCompatCameraOverrides r2 = r2.mAppCompatCameraOverrides
+            com.android.server.wm.ActivityRecord r3 = r2.mActivityRecord
+            android.content.pm.ActivityInfo r3 = r3.info
+            r4 = 264304459(0xfc0f74b, double:1.30583753E-315)
+            boolean r3 = r3.isChangeEnabled(r4)
+            com.android.server.wm.utils.OptPropFactory$OptProp r2 = r2.mCameraCompatAllowRefreshOptProp
+            java.util.function.BooleanSupplier r4 = r2.mCondition
+            boolean r4 = r4.getAsBoolean()
+            if (r4 != 0) goto L35
+            goto Lc9
+        L35:
+            int r2 = r2.getValue()
+            if (r2 == 0) goto Lc9
+            if (r3 != 0) goto Lc9
+            java.util.ArrayList r2 = r0.mEvaluators
+            java.lang.Object[] r2 = r2.toArray()
+            com.android.server.wm.ActivityRefresher$$ExternalSyntheticLambda1 r3 = new com.android.server.wm.ActivityRefresher$$ExternalSyntheticLambda1
+            r3.<init>()
+            java.lang.Object r9 = com.android.internal.util.ArrayUtils.find(r2, r3)
+            if (r9 == 0) goto Lc9
+            com.android.server.wm.AppCompatConfiguration r9 = r1.mAppCompatConfiguration
+            boolean r9 = r9.mIsCameraCompatRefreshCycleThroughStopEnabled
+            r10 = 1
+            r1 = 0
+            if (r9 == 0) goto L71
+            com.android.server.wm.AppCompatController r9 = r8.mAppCompatController
+            com.android.server.wm.AppCompatOverrides r9 = r9.mAppCompatOverrides
+            com.android.server.wm.AppCompatCameraOverrides r9 = r9.mAppCompatCameraOverrides
+            com.android.server.wm.ActivityRecord r2 = r9.mActivityRecord
+            android.content.pm.ActivityInfo r2 = r2.info
+            r3 = 264301586(0xfc0ec12, double:1.30582334E-315)
+            boolean r2 = r2.isChangeEnabled(r3)
+            com.android.server.wm.utils.OptPropFactory$OptProp r9 = r9.mCameraCompatEnableRefreshViaPauseOptProp
+            boolean r9 = r9.shouldEnableWithOverrideAndProperty(r2)
+            if (r9 != 0) goto L71
+            r9 = r10
+            goto L72
+        L71:
+            r9 = r1
+        L72:
+            com.android.server.wm.AppCompatController r2 = r8.mAppCompatController
+            com.android.server.wm.AppCompatOverrides r2 = r2.mAppCompatOverrides
+            com.android.server.wm.AppCompatCameraOverrides r2 = r2.mAppCompatCameraOverrides
+            com.android.server.wm.AppCompatCameraOverrides$AppCompatCameraOverridesState r2 = r2.mAppCompatCameraOverridesState
+            r2.mIsRefreshRequested = r10
+            boolean[] r2 = com.android.internal.protolog.ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled
+            boolean r10 = r2[r10]
+            if (r10 == 0) goto L96
+            java.lang.String r10 = java.lang.String.valueOf(r8)
+            com.android.internal.protolog.ProtoLogGroup r2 = com.android.internal.protolog.ProtoLogGroup.WM_DEBUG_STATES
+            java.lang.Object[] r7 = new java.lang.Object[]{r10}
+            r6 = 0
+            r3 = 7211222997110112110(0x6413691bf2e03f6e, double:1.200206803860267E174)
+            r5 = 0
+            com.android.internal.protolog.ProtoLogImpl_54989576.v(r2, r3, r5, r6, r7)
+        L96:
+            android.os.IBinder r10 = r8.token
+            if (r9 == 0) goto L9c
+            r9 = 5
+            goto L9d
+        L9c:
+            r9 = 4
+        L9d:
+            android.app.servertransaction.RefreshCallbackItem r9 = android.app.servertransaction.RefreshCallbackItem.obtain(r10, r9)
+            android.os.IBinder r10 = r8.token
+            android.app.servertransaction.ResumeActivityItem r10 = android.app.servertransaction.ResumeActivityItem.obtain(r10, r1, r1)
+            com.android.server.wm.ActivityTaskManagerService r2 = r8.mAtmService     // Catch: android.os.RemoteException -> Lbf
+            com.android.server.wm.ClientLifecycleManager r2 = r2.mLifecycleManager     // Catch: android.os.RemoteException -> Lbf
+            com.android.server.wm.WindowProcessController r3 = r8.app     // Catch: android.os.RemoteException -> Lbf
+            android.app.IApplicationThread r3 = r3.mThread     // Catch: android.os.RemoteException -> Lbf
+            r2.scheduleTransactionAndLifecycleItems(r3, r9, r10, r1)     // Catch: android.os.RemoteException -> Lbf
+            android.os.Handler r9 = r0.mHandler     // Catch: android.os.RemoteException -> Lbf
+            com.android.server.wm.ActivityRefresher$$ExternalSyntheticLambda0 r10 = new com.android.server.wm.ActivityRefresher$$ExternalSyntheticLambda0     // Catch: android.os.RemoteException -> Lbf
+            r10.<init>()     // Catch: android.os.RemoteException -> Lbf
+            r2 = 2000(0x7d0, double:9.88E-321)
+            r9.postDelayed(r10, r2)     // Catch: android.os.RemoteException -> Lbf
+            goto Lc9
+        Lbf:
+            com.android.server.wm.AppCompatController r8 = r8.mAppCompatController
+            com.android.server.wm.AppCompatOverrides r8 = r8.mAppCompatOverrides
+            com.android.server.wm.AppCompatCameraOverrides r8 = r8.mAppCompatCameraOverrides
+            com.android.server.wm.AppCompatCameraOverrides$AppCompatCameraOverridesState r8 = r8.mAppCompatCameraOverridesState
+            r8.mIsRefreshRequested = r1
+        Lc9:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.notifyActivityRefresherAboutConfigurationChange(android.content.res.Configuration, android.content.res.Configuration):void");
+    }
+
+    public final void notifyAppResumed() {
+        if (getParent() == null) {
+            Slog.w("WindowManager", "Attempted to notify resumed of non-existing app token: " + this.token);
+            return;
+        }
+        boolean z = this.mAppStopped;
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ADD_REMOVE_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, 926038819327785799L, 3, null, Boolean.valueOf(z), String.valueOf(this));
+        }
+        this.mAppStopped = false;
+        if (this.mAtmService.mActivityStartController.mInExecution) {
+            this.mCurrentLaunchCanTurnScreenOn = true;
+        }
+        if (z) {
+            return;
+        }
+        destroySurfaces(true);
+    }
+
+    public final void notifyUnknownVisibilityLaunchedForKeyguardTransition() {
+        if (this.noDisplay || !isKeyguardLocked()) {
+            return;
+        }
+        UnknownAppVisibilityController unknownAppVisibilityController = this.mDisplayContent.mUnknownAppVisibilityController;
+        unknownAppVisibilityController.getClass();
+        if (this.mLaunchTaskBehind) {
+            unknownAppVisibilityController.mUnknownApps.put(this, 2);
+        } else {
+            unknownAppVisibilityController.mUnknownApps.put(this, 1);
+        }
+        StringBuilder sb = new StringBuilder("App launched activity=");
+        sb.append(this);
+        sb.append(", state=");
+        DeviceIdleController$$ExternalSyntheticOutline0.m(sb, this.mLaunchTaskBehind ? 2 : 1, "WindowManager");
+    }
+
+    public boolean occludesParent(boolean z) {
+        if (z || !this.finishing) {
+            return this.mOccludesParent || showWallpaper();
+        }
+        return false;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void onAnimationFinished(int i, AnimationAdapter animationAdapter) {
+        WindowState window;
+        super.onAnimationFinished(i, animationAdapter);
+        Trace.traceBegin(32L, "AR#onAnimationFinished");
+        this.mTransit = -1;
+        this.mTransitFlags = 0;
+        setAppLayoutChanges(12);
+        clearThumbnail();
+        setClientVisible(this.mVisible || this.mVisibleRequested);
+        DisplayContent displayContent = getDisplayContent();
+        WindowState windowState = displayContent.mImeLayeringTarget;
+        if (windowState != null && windowState.mActivityRecord == this) {
+            displayContent.computeImeTarget(true);
+        }
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ANIM_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ANIM, -8809523216004991008L, 1020, null, String.valueOf(this), Boolean.valueOf(this.reportedVisible), Boolean.valueOf(okToDisplay()), Boolean.valueOf(okToAnimate()), Boolean.valueOf(isStartingWindowDisplayed()));
+        }
+        WindowContainerThumbnail windowContainerThumbnail = this.mThumbnail;
+        if (windowContainerThumbnail != null) {
+            windowContainerThumbnail.destroy();
+            this.mThumbnail = null;
+        }
+        new ArrayList(this.mChildren).forEach(new ActivityRecord$$ExternalSyntheticLambda3(3));
+        Task task = this.task;
+        if (task != null && this.startingMoved && (window = task.getWindow(new ActivityRecord$$ExternalSyntheticLambda4(2))) != null && window.mAnimatingExit && !window.isSelfAnimating(0, 16)) {
+            window.onExitAnimationDone();
+        }
+        getDisplayContent().mAppTransition.notifyAppTransitionFinishedLocked(this.token);
+        scheduleAnimation();
+        this.mTaskSupervisor.scheduleProcessStoppingAndFinishingActivitiesIfNeeded();
+        Trace.traceEnd(32L);
+    }
+
+    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.SurfaceAnimator.Animatable
+    public final void onAnimationLeashLost(SurfaceControl.Transaction transaction) {
+        super.onAnimationLeashLost(transaction);
+        SurfaceControl surfaceControl = this.mAnimationBoundsLayer;
+        if (surfaceControl != null) {
+            transaction.remove(surfaceControl);
+            this.mAnimationBoundsLayer = null;
+        }
+        this.mNeedsAnimationBoundsLayer = false;
+        if (this.mNeedsLetterboxedAnimation) {
+            this.mNeedsLetterboxedAnimation = false;
+            WindowState findMainWindow = findMainWindow(true);
+            AppCompatLetterboxPolicy appCompatLetterboxPolicy = this.mAppCompatController.mAppCompatLetterboxPolicy;
+            appCompatLetterboxPolicy.mLetterboxPolicyState.updateLetterboxSurfaceIfNeeded(findMainWindow, transaction, getPendingTransaction());
+        }
+        AnimatingActivityRegistry animatingActivityRegistry = this.mAnimatingActivityRegistry;
+        if (animatingActivityRegistry != null) {
+            animatingActivityRegistry.mAnimatingActivities.remove(this);
+            animatingActivityRegistry.mFinishedTokens.remove(this);
+            if (animatingActivityRegistry.mAnimatingActivities.isEmpty()) {
+                animatingActivityRegistry.endDeferringFinished();
+            }
+        }
+    }
+
+    @Override // com.android.server.wm.WindowToken
+    public final void onCancelFixedRotationTransform(int i) {
+        if (this != this.mDisplayContent.getLastOrientationSource()) {
+            return;
+        }
+        int requestedConfigurationOrientation = getRequestedConfigurationOrientation();
+        if (requestedConfigurationOrientation == 0 || requestedConfigurationOrientation == this.mDisplayContent.getConfiguration().orientation) {
+            PinnedTaskController pinnedTaskController = this.mDisplayContent.mPinnedTaskController;
+            pinnedTaskController.mFreezingTaskConfig = false;
+            pinnedTaskController.mDeferOrientationChanging = false;
+            pinnedTaskController.mDestRotatedBounds = null;
+            pinnedTaskController.mPipTransaction = null;
+            startFreezingScreen(i);
+            ensureActivityConfiguration(false);
+            if (this.mTransitionController.isCollecting(this)) {
+                this.task.resetSurfaceControlTransforms();
+            }
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean onChildVisibleRequestedChanged(WindowContainer windowContainer) {
+        return false;
+    }
+
+    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
+    public final void onConfigurationChanged(Configuration configuration) {
+        int rotationForActivityInDifferentOrientation;
+        AppCompatDisplayInsets appCompatDisplayInsets;
+        SizeCompatAttributes sizeCompatAttributes;
+        if (CoreRune.MT_SIZE_COMPAT_POLICY && (sizeCompatAttributes = this.mSizeCompatAttributes) != null) {
+            sizeCompatAttributes.mEnabled = false;
+        }
+        AppCompatSizeCompatModePolicy appCompatSizeCompatModePolicy = this.mAppCompatController.mAppCompatSizeCompatModePolicy;
+        Task task = this.task;
+        appCompatSizeCompatModePolicy.mPreCreatedAppCompatDisplayInsets = null;
+        if (task != null && (appCompatDisplayInsets = appCompatSizeCompatModePolicy.mAppCompatDisplayInsets) != null) {
+            ActivityRecord activityRecord = appCompatSizeCompatModePolicy.mActivityRecord;
+            if (activityRecord.mAtmService.mMultiTaskingAppCompatController.mSizeCompatModePolicy.mAvoidAppCompatDisplayInsets || ((activityRecord.isEmbedded() && !activityRecord.getTaskFragment().getResolvedOverrideBounds().isEmpty()) || (CoreRune.MT_APP_COMPAT_ORIENTATION_POLICY && task.mRespectOrientationRequestOverride != -1 && (!CoreRune.MT_APP_COMPAT_ROTATION_COMPAT_MODE || !appCompatDisplayInsets.mIsRotationCompatMode)))) {
+                appCompatSizeCompatModePolicy.clearSizeCompatMode(true, true);
+            }
+        }
+        if (this.mTransitionController.isShellTransitionsEnabled() && this.mVisible && isVisibleRequested()) {
+            if (getWindowingMode() != (getRequestedOverrideWindowingMode() == 0 ? configuration.windowConfiguration.getWindowingMode() : getRequestedOverrideWindowingMode()) && (!this.mWaitForEnteringPinnedMode || !this.mTransitionController.inFinishingTransition(this))) {
+                this.mTransitionController.collect(this);
+            }
+        }
+        if (getAppCompatDisplayInsets() != null) {
+            Configuration requestedOverrideConfiguration = getRequestedOverrideConfiguration();
+            boolean z = requestedOverrideConfiguration.windowConfiguration.getRotation() != -1;
+            int requestedConfigurationOrientation = getRequestedConfigurationOrientation();
+            if (requestedConfigurationOrientation != 0 && requestedConfigurationOrientation != getConfiguration().orientation && requestedConfigurationOrientation == getParent().getConfiguration().orientation && requestedOverrideConfiguration.windowConfiguration.getRotation() != getParent().getWindowConfiguration().getRotation()) {
+                requestedOverrideConfiguration.windowConfiguration.setRotation(getParent().getWindowConfiguration().getRotation());
+                onRequestedOverrideConfigurationChanged(requestedOverrideConfiguration);
+                return;
+            } else if (z && requestedConfigurationOrientation == 0 && requestedOverrideConfiguration.windowConfiguration.getRotation() != -1) {
+                requestedOverrideConfiguration.windowConfiguration.setRotation(-1);
+                onRequestedOverrideConfigurationChanged(requestedOverrideConfiguration);
+                return;
+            }
+        }
+        boolean inPinnedWindowingMode = inPinnedWindowingMode();
+        DisplayContent displayContent = this.mDisplayContent;
+        int activityType = getActivityType();
+        if (inPinnedWindowingMode && attachedToProcess() && displayContent != null) {
+            try {
+                this.app.mPauseConfigurationDispatchCount++;
+                super.onConfigurationChanged(configuration);
+                if (this.mVisibleRequested && !inMultiWindowMode() && (rotationForActivityInDifferentOrientation = displayContent.rotationForActivityInDifferentOrientation(this)) != -1) {
+                    this.app.resumeConfigurationDispatch();
+                    displayContent.setFixedRotationLaunchingApp(rotationForActivityInDifferentOrientation, this);
+                }
+            } finally {
+                if (this.app.resumeConfigurationDispatch()) {
+                    WindowProcessController windowProcessController = this.app;
+                    windowProcessController.dispatchConfiguration(windowProcessController.getConfiguration());
+                }
+            }
+        } else {
+            super.onConfigurationChanged(configuration);
+        }
+        if (activityType != 0 && activityType != getActivityType()) {
+            String str = "Can't change activity type once set: " + this + " activityType=" + WindowConfiguration.activityTypeToString(getActivityType()) + ", was " + WindowConfiguration.activityTypeToString(activityType);
+            if (Build.IS_DEBUGGABLE) {
+                throw new IllegalStateException(str);
+            }
+            Slog.w("ActivityTaskManager", str);
+        }
+        if (!inPinnedWindowingMode && inPinnedWindowingMode() && this.task != null) {
+            if (CoreRune.MW_PIP_SHELL_TRANSITION) {
+                setEnteringPipFromSplit("pip_entered", false);
+                setHiddenWhileEnteringPinnedMode("pip_entered", false);
+            }
+            this.mWaitForEnteringPinnedMode = false;
+            ActivityTaskSupervisor activityTaskSupervisor = this.mTaskSupervisor;
+            Task task2 = this.task;
+            Rect bounds = task2.getBounds();
+            activityTaskSupervisor.getClass();
+            task2.forAllActivities(new ActivityTaskSupervisor$$ExternalSyntheticLambda1(activityTaskSupervisor, 1));
+            activityTaskSupervisor.mPipModeChangedTargetRootTaskBounds = bounds;
+            ActivityTaskSupervisor.ActivityTaskSupervisorHandler activityTaskSupervisorHandler = activityTaskSupervisor.mHandler;
+            if (!activityTaskSupervisorHandler.hasMessages(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__PLATFORM_ROLE_HOLDER_UPDATE_FAILED)) {
+                activityTaskSupervisorHandler.sendEmptyMessage(FrameworkStatsLog.DEVICE_POLICY_EVENT__EVENT_ID__PLATFORM_ROLE_HOLDER_UPDATE_FAILED);
+            }
+        }
+        if (displayContent == null) {
+            return;
+        }
+        if (this.mVisibleRequested) {
+            displayContent.handleActivitySizeCompatModeIfNeeded(this);
+            return;
+        }
+        if (getAppCompatDisplayInsets() == null || this.visibleIgnoringKeyguard) {
+            return;
+        }
+        WindowProcessController windowProcessController2 = this.app;
+        if ((windowProcessController2 == null || (windowProcessController2.mActivityStateFlags & EndpointMonitorConst.FLAG_TRACING_NETWORK_EVENT_ABNORMAL_PKT) == 0) && this.mAppCompatController.mAppCompatSizeCompatModePolicy.mPreCreatedAppCompatDisplayInsets == null) {
+            int i = displayContent.mCurrentOverrideConfigurationChanges;
+            if (((i & 3456) == 0 || (i & 536872064) == 536872064) && (i & 4096) == 0) {
+                return;
+            }
+            restartProcessIfVisible();
+        }
+    }
+
+    public final void onCopySplashScreenFinish(SplashScreenView.SplashScreenViewParcelable splashScreenViewParcelable) {
+        WindowState windowState;
+        this.mAtmService.mH.removeCallbacks(this.mTransferSplashScreenTimeoutRunnable);
+        SurfaceControl applyStartingWindowAnimation = (splashScreenViewParcelable == null || this.mTransferringSplashScreenState != 1 || (windowState = this.mStartingWindow) == null || windowState.mRemoved || this.finishing) ? null : TaskOrganizerController.applyStartingWindowAnimation(windowState);
+        if (applyStartingWindowAnimation == null) {
+            if (splashScreenViewParcelable != null) {
+                splashScreenViewParcelable.clearIfNeeded();
+            }
+            this.mTransferringSplashScreenState = 3;
+            removeStartingWindow();
+            return;
+        }
+        try {
+            this.mTransferringSplashScreenState = 2;
+            this.mAtmService.mLifecycleManager.scheduleTransactionItem(this.app.mThread, TransferSplashScreenViewStateItem.obtain(this.token, splashScreenViewParcelable, applyStartingWindowAnimation));
+            this.mAtmService.mH.postDelayed(this.mTransferSplashScreenTimeoutRunnable, 2000L);
+        } catch (Exception unused) {
+            Slog.w("ActivityTaskManager", "onCopySplashScreenComplete fail: " + this);
+            this.mStartingWindow.cancelAnimation();
+            splashScreenViewParcelable.clearIfNeeded();
+            this.mTransferringSplashScreenState = 3;
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x0098, code lost:
+    
+        if (r5 != false) goto L45;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:25:0x0054  */
+    /* JADX WARN: Removed duplicated region for block: B:36:0x00b7  */
+    /* JADX WARN: Removed duplicated region for block: B:48:0x00d4  */
+    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void onDisplayChanged(com.android.server.wm.DisplayContent r11) {
+        /*
+            Method dump skipped, instructions count: 360
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.handleAppDied():void");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.onDisplayChanged(com.android.server.wm.DisplayContent):void");
+    }
+
+    @Override // com.android.server.wm.SurfaceAnimator.Animatable
+    public final void onLeashAnimationStarting(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
+        AnimatingActivityRegistry animatingActivityRegistry = this.mAnimatingActivityRegistry;
+        if (animatingActivityRegistry != null) {
+            animatingActivityRegistry.mAnimatingActivities.add(this);
+        }
+        if (this.mNeedsLetterboxedAnimation) {
+            this.mAppCompatController.mAppCompatLetterboxPolicy.mLetterboxPolicyState.updateLetterboxSurfaceIfNeeded(findMainWindow(true), transaction, getPendingTransaction());
+            this.mNeedsAnimationBoundsLayer = true;
+        }
+        if (this.mNeedsAnimationBoundsLayer) {
+            ((WindowContainer) this).mTmpRect.setEmpty();
+            if (getDisplayContent().mAppTransitionController.isTransitWithinTask(this.mTransit, this.task)) {
+                this.task.getBounds(((WindowContainer) this).mTmpRect);
+            } else {
+                Task rootTask = getRootTask();
+                if (rootTask == null) {
+                    return;
+                } else {
+                    rootTask.getBounds(((WindowContainer) this).mTmpRect);
+                }
+            }
+            if (ProtoLogImpl_54989576.Cache.WM_DEBUG_APP_TRANSITIONS_ANIM_enabled[2]) {
+                ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS_ANIM, 5991628884266137609L, 0, null, null);
+            }
+            SurfaceControl.Builder callsite = makeAnimationLeash().setParent(getAnimationLeashParent()).setName(this.mSurfaceControl + " - animation-bounds").setCallsite("ActivityRecord.createAnimationBoundsLayer");
+            if (this.mNeedsLetterboxedAnimation) {
+                callsite.setEffectLayer();
+            }
+            SurfaceControl build = callsite.build();
+            transaction.show(build);
+            this.mAnimationBoundsLayer = build;
+            boolean z = CoreRune.FW_FLEXIBLE_TENT_MODE;
+            transaction.setLayer(surfaceControl, 0);
+            transaction.setLayer(this.mAnimationBoundsLayer, getLastLayer());
+            if (this.mNeedsLetterboxedAnimation) {
+                int roundedCornersRadius = this.mAppCompatController.mAppCompatLetterboxPolicy.mAppCompatRoundedCorners.getRoundedCornersRadius(findMainWindow(true));
+                Rect rect = new Rect();
+                this.mAppCompatController.mAppCompatLetterboxPolicy.mLetterboxPolicyState.getLetterboxInnerBounds(rect);
+                transaction.setCornerRadius(this.mAnimationBoundsLayer, roundedCornersRadius).setCrop(this.mAnimationBoundsLayer, rect);
+            }
+            transaction.reparent(surfaceControl, this.mAnimationBoundsLayer);
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
+    public final void onParentChanged(ConfigurationContainer configurationContainer, ConfigurationContainer configurationContainer2) {
+        WindowState windowState;
+        Task task;
+        Task task2;
+        TaskFragment taskFragment = (TaskFragment) configurationContainer2;
+        TaskFragment taskFragment2 = (TaskFragment) configurationContainer;
+        Task task3 = taskFragment != null ? taskFragment.getTask() : null;
+        Task task4 = taskFragment2 != null ? taskFragment2.getTask() : null;
+        this.task = task4;
+        PopOverState popOverState = this.mPopOverState;
+        ActivityOptions activityOptions = popOverState.mOptionsInherited;
+        if (activityOptions != null && (task2 = popOverState.mActivityRecord.task) != null) {
+            int i = task2.mTaskId;
+            int i2 = popOverState.mOriginTaskIdInherited;
+            if (i == i2) {
+                popOverState.mOptions = activityOptions;
+                popOverState.mOptionsInherited = null;
+                popOverState.mOriginTaskId = i2;
+                popOverState.mOriginTaskIdInherited = -1;
+            }
+        }
+        popOverState.toggle();
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_LAUNCH_POLICY && (task = this.task) != null && this.mIsFlexPanel) {
+            task.autoRemoveRecents = true;
+        }
+        if (taskFragment2 != null && taskFragment != null && canStartChangeTransition()) {
+            boolean z = CoreRune.MW_EMBED_ACTIVITY && this.mStartingData != null && (((windowState = this.mStartingWindow) != null && taskFragment2.mIsEmbedded && windowState.matchParentBounds()) || this.mStartingData.mAssociatedTask != null);
+            boolean z2 = ActivityTaskManagerService.isPip2ExperimentEnabled() && inPinnedWindowingMode();
+            if ((taskFragment2.isOrganizedTaskFragment() || z2) && !taskFragment2.getBounds().equals(taskFragment.getBounds()) && !z) {
+                if (this.mTransitionController.isShellTransitionsEnabled()) {
+                    initializeChangeTransition(getBounds());
+                } else {
+                    taskFragment2.initializeChangeTransition(getBounds(), this.mSurfaceControl);
+                }
+            }
+        }
+        super.onParentChanged(taskFragment2, taskFragment);
+        if (isPersistable()) {
+            if (task3 != null) {
+                this.mAtmService.notifyTaskPersisterLocked(task3, false);
+            }
+            if (task4 != null) {
+                this.mAtmService.notifyTaskPersisterLocked(task4, false);
+            }
+        }
+        if (taskFragment == null && taskFragment2 != null) {
+            this.mVoiceInteraction = task4.voiceSession != null;
+            task4.updateOverrideConfigurationFromLaunchBounds();
+            this.mLastReportedMultiWindowMode = inMultiWindowMode();
+            this.mLastReportedPictureInPictureMode = inPinnedWindowingMode();
+            Bundle bundle = this.info.metaData;
+            this.mRequestFreeformForceHiding = bundle != null && bundle.getBoolean("com.samsung.android.sdk.multiwindow.force_hide_floating_multiwindow", false);
+        }
+        if (this.task == null && getDisplayContent() != null) {
+            getDisplayContent().mClosingApps.remove(this);
+        }
+        Task rootTask = getRootTask();
+        Task rootTask2 = getRootTask();
+        AnimatingActivityRegistry animatingActivityRegistry = rootTask2 != null ? rootTask2.mAnimatingActivityRegistry : null;
+        AnimatingActivityRegistry animatingActivityRegistry2 = this.mAnimatingActivityRegistry;
+        if (animatingActivityRegistry2 != null && animatingActivityRegistry2 != animatingActivityRegistry) {
+            animatingActivityRegistry2.mAnimatingActivities.remove(this);
+            animatingActivityRegistry2.mFinishedTokens.remove(this);
+            if (animatingActivityRegistry2.mAnimatingActivities.isEmpty()) {
+                animatingActivityRegistry2.endDeferringFinished();
+            }
+        }
+        this.mAnimatingActivityRegistry = animatingActivityRegistry;
+        Task task5 = this.task;
+        if (task5 == this.mLastParentBeforePip && task5 != null) {
+            this.mAtmService.mWindowOrganizerController.mTaskFragmentOrganizerController.onActivityReparentedToTask(this);
+            Task task6 = this.mLastParentBeforePip;
+            if (task6 != null) {
+                task6.mChildPipActivity = null;
+                this.mLastParentBeforePip = null;
+            }
+            this.mLaunchIntoPipHostActivity = null;
+            this.mLastTaskFragmentOrganizerBeforePip = null;
+            this.mLastEmbeddedParentTfTokenBeforePip = null;
+            setWindowingMode(0);
+        }
+        if (CoreRune.MW_EMBED_ACTIVITY && this.mIsActivityReparentToEmbeddedTask && this.task != null) {
+            this.mAtmService.mWindowOrganizerController.mTaskFragmentOrganizerController.onActivityReparentedToTask(this);
+            this.mIsActivityReparentToEmbeddedTask = false;
+        }
+        if (this.mSurfaceControl != null && this.mLastAppSaturationInfo != null) {
+            SurfaceControl.Transaction pendingTransaction = getPendingTransaction();
+            SurfaceControl surfaceControl = this.mSurfaceControl;
+            AppSaturationInfo appSaturationInfo = this.mLastAppSaturationInfo;
+            pendingTransaction.setColorTransform(surfaceControl, appSaturationInfo.mMatrix, appSaturationInfo.mTranslation);
+            this.mWmService.scheduleAnimationLocked();
+        }
+        if (taskFragment != null) {
+            taskFragment.cleanUpActivityReferences(this);
+            this.mRequestedLaunchingTaskFragmentToken = null;
+        }
+        if (taskFragment2 != null) {
+            if (isState(State.RESUMED)) {
+                taskFragment2.setResumedActivity(this, "onParentChanged");
+            }
+            this.mAppCompatController.mTransparentPolicy.start();
+        }
+        if (rootTask != null && rootTask.topRunningActivity(false) == this && this.firstWindowDrawn) {
+            rootTask.setHasBeenVisible();
+        }
+        updateUntrustedEmbeddingInputProtection();
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:81:0x0135, code lost:
+    
+        if (r14.mTransitionController.inTransition() != false) goto L40;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void onRemovedFromDisplay() {
+        /*
+            Method dump skipped, instructions count: 562
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.onRemovedFromDisplay():void");
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void onSyncTransactionCommitted(SurfaceControl.Transaction transaction) {
+        super.onSyncTransactionCommitted(transaction);
+        StartingData startingData = this.mStartingData;
+        if (startingData == null) {
+            return;
+        }
+        startingData.mWaitForSyncTransactionCommit = false;
+        int i = startingData.mRemoveAfterTransaction;
+        if (i == 1) {
+            removeStartingWindowAnimation(startingData.mPrepareRemoveAnimation);
+        } else if (i == 2) {
+            removeStartingWindow();
+        }
+    }
+
+    public final boolean onlyDeskInUiModeChanged(Configuration configuration) {
+        int i = getConfiguration().uiMode;
+        boolean z = (i & 15) == 2;
+        int i2 = configuration.uiMode;
+        return (z != ((i2 & 15) == 2)) && !((i & (-16)) != (i2 & (-16)));
+    }
+
+    public final void pauseKeyDispatchingLocked() {
+        if (this.keysPaused) {
+            return;
+        }
+        this.keysPaused = true;
+        if (getDisplayContent() != null) {
+            InputMonitor inputMonitor = getDisplayContent().mInputMonitor;
+            inputMonitor.getClass();
+            if (this.paused) {
+                return;
+            }
+            this.paused = true;
+            inputMonitor.updateInputWindowsLw(true);
+        }
+    }
+
+    public final void postWindowRemoveStartingWindowCleanup(WindowState windowState) {
+        if (this.mStartingWindow == windowState) {
+            this.mStartingWindow = null;
+            this.mStartingData = null;
+            this.mStartingSurface = null;
+        }
+        if (this.mChildren.size() == 0 && this.mVisibleSetFromTransferredStartingWindow) {
+            setVisible(false);
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void prepareSurfaces() {
+        Task.DecorSurfaceContainer decorSurfaceContainer;
+        Task task = this.task;
+        boolean z = (this.mVisible && !(task != null && (decorSurfaceContainer = task.mDecorSurfaceContainer) != null && decorSurfaceContainer.mIsBoosted)) || isAnimating(2, FrameworkStatsLog.USER_LIFECYCLE_EVENT_OCCURRED);
+        if (this.mSurfaceControl != null) {
+            if (z && !this.mLastSurfaceShowing) {
+                getSyncTransaction().show(this.mSurfaceControl);
+            } else if (!z && this.mLastSurfaceShowing) {
+                getSyncTransaction().hide(this.mSurfaceControl);
+            }
+            if (z && this.mSyncState == 0) {
+                this.mActivityRecordInputSink.applyChangesToSurfaceIfChanged(getPendingTransaction());
+            }
+        }
+        WindowContainerThumbnail windowContainerThumbnail = this.mThumbnail;
+        if (windowContainerThumbnail != null) {
+            SurfaceControl.Transaction pendingTransaction = getPendingTransaction();
+            if (z) {
+                pendingTransaction.show(windowContainerThumbnail.mSurfaceControl);
+            } else {
+                pendingTransaction.hide(windowContainerThumbnail.mSurfaceControl);
+            }
+        }
+        this.mLastSurfaceShowing = z;
+        super.prepareSurfaces();
+    }
+
+    @Override // com.android.server.wm.ConfigurationContainer
+    public final boolean providesMaxBounds() {
+        if (getUid() == 1000) {
+            return false;
+        }
+        DisplayContent displayContent = this.mDisplayContent;
+        if ((displayContent != null && !displayContent.mSandboxDisplayApis) || this.info.neverSandboxDisplayApis(sConstrainDisplayApisConfig)) {
+            return false;
+        }
+        if (this.info.alwaysSandboxDisplayApis(sConstrainDisplayApisConfig) || getAppCompatDisplayInsets() != null || shouldCreateAppCompatDisplayInsets()) {
+            return true;
+        }
+        return CoreRune.MT_SIZE_COMPAT_POLICY && this.mResolvedConfigChangeFlags != 0;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean providesOrientation() {
+        return this.mStyleFillsParent || this.mOccludesParent;
+    }
+
+    public final void recomputeConfiguration() {
+        TransparentPolicy transparentPolicy = this.mAppCompatController.mTransparentPolicy;
+        final ActivityRecord$$ExternalSyntheticLambda3 activityRecord$$ExternalSyntheticLambda3 = new ActivityRecord$$ExternalSyntheticLambda3(2);
+        if (((Boolean) transparentPolicy.mTransparentPolicyState.findOpaqueNotFinishingActivityBelow().map(new Function() { // from class: com.android.server.wm.TransparentPolicy$TransparentPolicyState$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                activityRecord$$ExternalSyntheticLambda3.accept((ActivityRecord) obj);
+                return Boolean.TRUE;
+            }
+        }).orElse(Boolean.FALSE)).booleanValue()) {
+            return;
+        }
+        onRequestedOverrideConfigurationChanged(getRequestedOverrideConfiguration());
+    }
+
+    public final void registerCaptureObserver(IScreenCaptureObserver iScreenCaptureObserver) {
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mWmService.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                if (this.mCaptureCallbacks == null) {
+                    this.mCaptureCallbacks = new RemoteCallbackList();
+                }
+                this.mCaptureCallbacks.register(iScreenCaptureObserver);
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void removeChild(WindowContainer windowContainer) {
+        WindowState windowState = (WindowState) windowContainer;
+        if (this.mChildren.contains(windowState)) {
+            if (windowState.mAttrs.type == 1 && windowState.isSecureLocked()) {
+                MultiTaskingController multiTaskingController = this.mAtmService.mMultiTaskingController;
+                multiTaskingController.getClass();
+                Task task = windowState.getTask();
+                DisplayContent displayContent = windowState.getDisplayContent();
+                if (task != null && displayContent != null && displayContent.isRemoteAppDisplay()) {
+                    multiTaskingController.mH.sendMessage(multiTaskingController.mH.obtainMessage(1, task.mTaskId, 0, windowState.mAttrs.packageName));
+                }
+            }
+            super.removeChild(windowState);
+            checkKeyguardFlagsChanged();
+            updateLetterboxSurfaceIfNeeded(windowState);
+        }
+    }
+
+    public final void removeFromHistory(String str) {
+        finishActivityResults(0, null, null);
+        makeFinishingLocked();
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ADD_REMOVE_enabled[2]) {
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, 8836546031252812807L, 0, null, String.valueOf(this), String.valueOf(str), String.valueOf(Debug.getCallers(5)));
+        }
+        if (this.inHistory) {
+            this.inHistory = false;
+            if (this.task != null && !this.finishing) {
+                this.task = null;
+            }
+            abortAndClearOptionsAnimation();
+        }
+        removeTimeouts();
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 8348126473928520781L, 0, null, String.valueOf(this));
+        }
+        setState(State.DESTROYED, "removeFromHistory");
+        detachFromProcess();
+        resumeKeyDispatchingLocked();
+        DisplayContent displayContent = this.mDisplayContent;
+        IBinder iBinder = this.token;
+        WindowToken removeWindowToken = displayContent.removeWindowToken(iBinder, true);
+        if (removeWindowToken == null) {
+            Slog.w("WindowManager", "removeAppToken: Attempted to remove non-existing token: " + iBinder);
+        } else {
+            ActivityRecord asActivityRecord = removeWindowToken.asActivityRecord();
+            if (asActivityRecord == null) {
+                Slog.w("WindowManager", "Attempted to remove non-App token: " + iBinder + " token=" + removeWindowToken);
+            } else {
+                asActivityRecord.onRemovedFromDisplay();
+                if (asActivityRecord == displayContent.mFixedRotationLaunchingApp) {
+                    asActivityRecord.finishFixedRotationTransform(null);
+                    displayContent.setFixedRotationLaunchingAppUnchecked(-1, null);
+                }
+            }
+        }
+        cleanUpActivityServices();
+        UriPermissionOwner uriPermissionOwner = this.uriPermissions;
+        if (uriPermissionOwner != null) {
+            uriPermissionOwner.removeUriPermission(3, -1, null, null);
+            this.uriPermissions = null;
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void removeIfPossible() {
+        this.mIsExiting = false;
+        removeAllWindowsIfPossible();
+        removeImmediately();
     }
 
     @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer
-    public void removeImmediately() {
+    public final void removeImmediately() {
         if (this.mState != State.DESTROYED) {
             Slog.w("ActivityTaskManager", "Force remove immediately " + this + " state=" + this.mState);
             destroyImmediately("removeImmediately");
@@ -3619,325 +4607,13 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         } else {
             onRemovedFromDisplay();
         }
-        this.mActivityRecordInputSink.releaseSurfaceControl();
+        ActivityRecordInputSink activityRecordInputSink = this.mActivityRecordInputSink;
+        SurfaceControl surfaceControl = activityRecordInputSink.mSurfaceControl;
+        if (surfaceControl != null) {
+            surfaceControl.release();
+            activityRecordInputSink.mSurfaceControl = null;
+        }
         super.removeImmediately();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void removeIfPossible() {
-        this.mIsExiting = false;
-        removeAllWindowsIfPossible();
-        removeImmediately();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean handleCompleteDeferredRemoval() {
-        if (this.mIsExiting) {
-            removeIfPossible();
-        }
-        return super.handleCompleteDeferredRemoval();
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:52:0x007f, code lost:
-    
-        if (r10.mTransitionController.inTransition() != false) goto L64;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void onRemovedFromDisplay() {
-        /*
-            Method dump skipped, instructions count: 372
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.onRemovedFromDisplay():void");
-    }
-
-    @Override // com.android.server.wm.WindowToken
-    public boolean isFirstChildWindowGreaterThanSecond(WindowState windowState, WindowState windowState2) {
-        int i = windowState.mAttrs.type;
-        int i2 = windowState2.mAttrs.type;
-        if (i == 1 && i2 != 1) {
-            return false;
-        }
-        if (i == 1 || i2 != 1) {
-            return (i == 3 && i2 != 3) || i == 3 || i2 != 3;
-        }
-        return true;
-    }
-
-    public boolean hasStartingWindow() {
-        if (this.mStartingData != null) {
-            return true;
-        }
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            if (((WindowState) getChildAt(size)).mAttrs.type == 3) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isLastWindow(WindowState windowState) {
-        return this.mChildren.size() == 1 && this.mChildren.get(0) == windowState;
-    }
-
-    @Override // com.android.server.wm.WindowToken
-    public void addWindow(WindowState windowState) {
-        super.addWindow(windowState);
-        if (windowState.mAttrs.type == 1 && windowState.isSecureLocked()) {
-            this.mAtmService.mMultiTaskingController.notifySecureWindowAdded(windowState);
-        }
-        checkKeyguardFlagsChanged();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void removeChild(WindowState windowState) {
-        if (this.mChildren.contains(windowState)) {
-            if (windowState.mAttrs.type == 1 && windowState.isSecureLocked()) {
-                this.mAtmService.mMultiTaskingController.notifySecureWindowRemoved(windowState);
-            }
-            super.removeChild((WindowContainer) windowState);
-            checkKeyguardFlagsChanged();
-            updateLetterboxSurface(windowState);
-        }
-    }
-
-    public void setAppLayoutChanges(int i, String str) {
-        if (this.mChildren.isEmpty()) {
-            return;
-        }
-        DisplayContent displayContent = getDisplayContent();
-        displayContent.pendingLayoutChanges = i | displayContent.pendingLayoutChanges;
-    }
-
-    public final boolean transferStartingWindow(ActivityRecord activityRecord) {
-        if (this.mPopOverState.isActivated() != activityRecord.mPopOverState.isActivated() || this.mCompatRecord.isCompatModeEnabled() != activityRecord.mCompatRecord.isCompatModeEnabled()) {
-            return false;
-        }
-        WindowState windowState = activityRecord.mStartingWindow;
-        if (windowState != null && activityRecord.mStartingSurface != null) {
-            if (windowState.getParent() == null) {
-                return false;
-            }
-            if (activityRecord.mVisible) {
-                if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX && this.mTransitionController.isCollecting()) {
-                    Transition collectingTransition = this.mTransitionController.getCollectingTransition();
-                    if (collectingTransition.isInTransition(this)) {
-                        collectingTransition.addFlag(1024);
-                        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_MERGE) {
-                            collectingTransition.setSkipMergeAnimation();
-                        }
-                    }
-                }
-                this.mDisplayContent.mSkipAppTransitionAnimation = true;
-            }
-            if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -1938204785, 0, "Moving existing starting %s from %s to %s", new Object[]{String.valueOf(windowState), String.valueOf(activityRecord), String.valueOf(this)});
-            }
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                if (activityRecord.hasFixedRotationTransform()) {
-                    this.mDisplayContent.handleTopActivityLaunchingInDifferentOrientation(this, false);
-                    if (!this.mDisplayContent.isFixedRotationLaunchingApp(this)) {
-                        return false;
-                    }
-                }
-                this.mStartingData = activityRecord.mStartingData;
-                this.mStartingSurface = activityRecord.mStartingSurface;
-                this.mStartingWindow = windowState;
-                this.reportedVisible = activityRecord.reportedVisible;
-                activityRecord.mStartingData = null;
-                activityRecord.mStartingSurface = null;
-                activityRecord.mStartingWindow = null;
-                activityRecord.startingMoved = true;
-                windowState.mToken = this;
-                windowState.mActivityRecord = this;
-                if (ProtoLogCache.WM_DEBUG_ADD_REMOVE_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, -1499134947, 0, (String) null, new Object[]{String.valueOf(windowState), String.valueOf(activityRecord)});
-                }
-                this.mTransitionController.collect(windowState);
-                windowState.reparent(this, Integer.MAX_VALUE);
-                windowState.clearFrozenInsetsState();
-                if (activityRecord.allDrawn) {
-                    this.allDrawn = true;
-                }
-                if (activityRecord.firstWindowDrawn) {
-                    this.firstWindowDrawn = true;
-                }
-                if (activityRecord.isVisible()) {
-                    setVisible(true);
-                    setVisibleRequested(true);
-                    this.mVisibleSetFromTransferredStartingWindow = true;
-                }
-                setClientVisible(activityRecord.isClientVisible());
-                if (activityRecord.isAnimating()) {
-                    transferAnimation(activityRecord);
-                    this.mTransitionChangeFlags |= 8;
-                } else if (this.mTransitionController.getTransitionPlayer() != null) {
-                    this.mTransitionChangeFlags |= 8;
-                }
-                activityRecord.postWindowRemoveStartingWindowCleanup();
-                activityRecord.mVisibleSetFromTransferredStartingWindow = false;
-                this.mWmService.updateFocusedWindowLocked(3, true);
-                getDisplayContent().setLayoutNeeded();
-                this.mWmService.mWindowPlacerLocked.performSurfacePlacement();
-                return true;
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-        if (activityRecord.mStartingData == null) {
-            return false;
-        }
-        if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -443173857, 0, "Moving pending starting from %s to %s", new Object[]{String.valueOf(activityRecord), String.valueOf(this)});
-        }
-        this.mStartingData = activityRecord.mStartingData;
-        activityRecord.mStartingData = null;
-        activityRecord.startingMoved = true;
-        scheduleAddStartingWindow();
-        return true;
-    }
-
-    public void transferStartingWindowFromHiddenAboveTokenIfNeeded() {
-        WindowState findMainWindow = findMainWindow(false);
-        if (findMainWindow == null || !findMainWindow.mWinAnimator.getShown()) {
-            this.task.forAllActivities(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda25
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$transferStartingWindowFromHiddenAboveTokenIfNeeded$8;
-                    lambda$transferStartingWindowFromHiddenAboveTokenIfNeeded$8 = ActivityRecord.this.lambda$transferStartingWindowFromHiddenAboveTokenIfNeeded$8((ActivityRecord) obj);
-                    return lambda$transferStartingWindowFromHiddenAboveTokenIfNeeded$8;
-                }
-            });
-        }
-    }
-
-    public /* synthetic */ boolean lambda$transferStartingWindowFromHiddenAboveTokenIfNeeded$8(ActivityRecord activityRecord) {
-        if (activityRecord == this) {
-            return true;
-        }
-        return !activityRecord.isVisibleRequested() && transferStartingWindow(activityRecord);
-    }
-
-    public boolean isKeyguardLocked() {
-        DisplayContent displayContent = this.mDisplayContent;
-        return displayContent != null ? displayContent.isKeyguardLocked() : this.mRootWindowContainer.getDefaultDisplay().isKeyguardLocked();
-    }
-
-    public void checkKeyguardFlagsChanged() {
-        boolean containsDismissKeyguardWindow = containsDismissKeyguardWindow();
-        boolean containsShowWhenLockedWindow = containsShowWhenLockedWindow();
-        if (containsDismissKeyguardWindow != this.mLastContainsDismissKeyguardWindow || containsShowWhenLockedWindow != this.mLastContainsShowWhenLockedWindow) {
-            this.mDisplayContent.notifyKeyguardFlagsChanged();
-        }
-        this.mLastContainsDismissKeyguardWindow = containsDismissKeyguardWindow;
-        this.mLastContainsShowWhenLockedWindow = containsShowWhenLockedWindow;
-        this.mLastContainsTurnScreenOnWindow = containsTurnScreenOnWindow();
-    }
-
-    public boolean containsDismissKeyguardWindow() {
-        if (isRelaunching()) {
-            return this.mLastContainsDismissKeyguardWindow;
-        }
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            if ((((WindowState) this.mChildren.get(size)).mAttrs.flags & 4194304) != 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean containsShowWhenLockedWindow() {
-        if (isRelaunching()) {
-            return this.mLastContainsShowWhenLockedWindow;
-        }
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            if ((((WindowState) this.mChildren.get(size)).mAttrs.flags & 524288) != 0 && (this.mChildren.size() <= 1 || ((WindowState) this.mChildren.get(size)).mAttrs.type != 3)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setShowWhenLocked(boolean z) {
-        this.mShowWhenLocked = z;
-        this.mAtmService.mRootWindowContainer.ensureActivitiesVisible(null, 0, false);
-    }
-
-    public void setInheritShowWhenLocked(boolean z) {
-        this.mInheritShownWhenLocked = z;
-        this.mAtmService.mRootWindowContainer.ensureActivitiesVisible(null, 0, false);
-    }
-
-    public static boolean canShowWhenLocked(ActivityRecord activityRecord) {
-        ActivityRecord activityBelow;
-        if (activityRecord == null || activityRecord.getTaskFragment() == null) {
-            return false;
-        }
-        if (!activityRecord.inPinnedWindowingMode() && (activityRecord.mShowWhenLocked || activityRecord.containsShowWhenLockedWindow())) {
-            return true;
-        }
-        if (!activityRecord.mInheritShownWhenLocked || (activityBelow = activityRecord.getTaskFragment().getActivityBelow(activityRecord)) == null || activityBelow.inPinnedWindowingMode()) {
-            return false;
-        }
-        return activityBelow.mShowWhenLocked || activityBelow.containsShowWhenLockedWindow();
-    }
-
-    public boolean canShowWhenLocked() {
-        TaskFragment taskFragment = getTaskFragment();
-        if (taskFragment == null || taskFragment.getAdjacentTaskFragment() == null || !taskFragment.isEmbedded()) {
-            return canShowWhenLocked(this);
-        }
-        return canShowWhenLocked(this) && canShowWhenLocked(taskFragment.getAdjacentTaskFragment().getTopNonFinishingActivity());
-    }
-
-    public boolean canShowWindows() {
-        return this.mTransitionController.isShellTransitionsEnabled() ? this.mSyncState != 1 : this.allDrawn;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean forAllActivities(Predicate predicate, boolean z) {
-        return predicate.test(this);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void forAllActivities(Consumer consumer, boolean z) {
-        consumer.accept(this);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public ActivityRecord getActivity(Predicate predicate, boolean z, ActivityRecord activityRecord) {
-        if (predicate.test(this)) {
-            return this;
-        }
-        return null;
-    }
-
-    public void logStartActivity(int i, Task task, String str) {
-        Uri data = this.intent.getData();
-        String safeString = data != null ? data.toSafeString() : null;
-        if (safeString != null && safeString.startsWith("nfc://secure")) {
-            safeString = "nfc://secure:it should not be shown";
-        }
-        EventLog.writeEvent(i, Integer.valueOf(this.mUserId), Integer.valueOf(System.identityHashCode(this)), Integer.valueOf(task.mTaskId), this.shortComponentName, this.intent.getAction(), this.intent.getType(), safeString, Integer.valueOf(this.intent.getFlags()), str);
-    }
-
-    public UriPermissionOwner getUriPermissionsLocked() {
-        if (this.uriPermissions == null) {
-            this.uriPermissions = new UriPermissionOwner(this.mAtmService.mUgmInternal, this);
-        }
-        return this.uriPermissions;
-    }
-
-    public void addResultLocked(ActivityRecord activityRecord, String str, int i, int i2, Intent intent) {
-        ActivityResult activityResult = new ActivityResult(activityRecord, str, i, i2, intent);
-        if (this.results == null) {
-            this.results = new ArrayList();
-        }
-        this.results.add(activityResult);
     }
 
     /* JADX WARN: Removed duplicated region for block: B:12:0x002c  */
@@ -3946,7 +4622,7 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void removeResultsLocked(com.android.server.wm.ActivityRecord r4, java.lang.String r5, int r6) {
+    public final void removeResultsLocked(com.android.server.wm.ActivityRecord r4, java.lang.String r5, int r6) {
         /*
             r3 = this;
             java.util.ArrayList r0 = r3.results
@@ -3986,223 +4662,122 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.removeResultsLocked(com.android.server.wm.ActivityRecord, java.lang.String, int):void");
     }
 
-    public void sendResult(int i, String str, int i2, int i3, Intent intent, NeededUriGrants neededUriGrants) {
-        sendResult(i, str, i2, i3, intent, neededUriGrants, false);
-    }
-
-    public void sendResult(int i, String str, int i2, int i3, Intent intent, NeededUriGrants neededUriGrants, boolean z) {
-        if (i > 0) {
-            this.mAtmService.mUgmInternal.grantUriPermissionUncheckedFromIntent(neededUriGrants, getUriPermissionsLocked());
-        }
-        if (isState(State.RESUMED) && attachedToProcess()) {
-            try {
-                ArrayList arrayList = new ArrayList();
-                arrayList.add(new ResultInfo(str, i2, i3, intent));
-                this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ClientTransactionItem) ActivityResultItem.obtain(arrayList));
-                return;
-            } catch (Exception e) {
-                Slog.w("ActivityTaskManager", "Exception thrown sending result to " + this, e);
-            }
-        }
-        if (z && attachedToProcess() && isState(State.STARTED, State.PAUSING, State.PAUSED, State.STOPPING, State.STOPPED)) {
-            ClientTransaction obtain = ClientTransaction.obtain(this.app.getThread(), this.token);
-            obtain.addCallback(ActivityResultItem.obtain(List.of(new ResultInfo(str, i2, i3, intent))));
-            ActivityLifecycleItem lifecycleItemForCurrentStateForResult = getLifecycleItemForCurrentStateForResult();
-            if (lifecycleItemForCurrentStateForResult != null) {
-                obtain.setLifecycleStateRequest(lifecycleItemForCurrentStateForResult);
-            } else {
-                Slog.w("ActivityTaskManager", "Unable to get the lifecycle item for state " + this.mState + " so couldn't immediately send result");
-            }
-            try {
-                this.mAtmService.getLifecycleManager().scheduleTransaction(obtain);
-                return;
-            } catch (RemoteException e2) {
-                Slog.w("ActivityTaskManager", "Exception thrown sending result to " + this, e2);
-                return;
-            }
-        }
-        addResultLocked(null, str, i2, i3, intent);
-    }
-
-    public final ActivityLifecycleItem getLifecycleItemForCurrentStateForResult() {
-        int i = AnonymousClass7.$SwitchMap$com$android$server$wm$ActivityRecord$State[this.mState.ordinal()];
-        if (i == 3 || i == 4) {
-            return PauseActivityItem.obtain();
-        }
-        if (i != 5) {
-            if (i == 6) {
-                return StartActivityItem.obtain((ActivityOptions) null);
-            }
-            if (i != 7) {
-                return null;
-            }
-        }
-        return StopActivityItem.obtain(this.configChangeFlags);
-    }
-
-    public final void addNewIntentLocked(ReferrerIntent referrerIntent) {
-        if (this.newIntents == null) {
-            this.newIntents = new ArrayList();
-        }
-        this.newIntents.add(referrerIntent);
-    }
-
-    public final boolean isSleeping() {
-        Task rootTask = getRootTask();
-        return rootTask != null ? rootTask.shouldSleepActivities() : this.mAtmService.isSleepingLocked();
-    }
-
-    public final void deliverNewIntentLocked(int i, Intent intent, NeededUriGrants neededUriGrants, String str) {
-        this.mAtmService.mUgmInternal.grantUriPermissionUncheckedFromIntent(neededUriGrants, getUriPermissionsLocked());
-        boolean z = true;
-        if (CoreRune.FW_APPLOCK) {
-            try {
-                Intent intent2 = new Intent(intent);
-                if (intent2.getIntExtra("LAUNCH_FROM_NOTIFICATION", -1) == 1 || (intent2.getFlags() & 67108864) != 0) {
-                    setLaunchingRequestFromNotification(true);
-                }
-            } catch (Exception e) {
-                Slog.d("ActivityTaskManager", "Exception while parsing intent but ignorable, was : " + e);
-            }
-        }
-        ReferrerIntent referrerIntent = new ReferrerIntent(intent, getFilteredReferrer(str));
-        boolean z2 = isTopRunningActivity() && isSleeping();
-        State state = this.mState;
-        State state2 = State.RESUMED;
-        if ((state == state2 || state == State.PAUSED || z2) && attachedToProcess()) {
-            try {
-                ArrayList arrayList = new ArrayList(1);
-                arrayList.add(referrerIntent);
-                this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ClientTransactionItem) NewIntentItem.obtain(arrayList, this.mState == state2));
-                z = false;
-            } catch (RemoteException e2) {
-                Slog.w("ActivityTaskManager", "Exception thrown sending new intent to " + this, e2);
-            } catch (NullPointerException e3) {
-                Slog.w("ActivityTaskManager", "Exception thrown sending new intent to " + this, e3);
-            }
-        }
-        if (z) {
-            addNewIntentLocked(referrerIntent);
-        }
-    }
-
-    public void updateOptionsLocked(ActivityOptions activityOptions) {
-        if (activityOptions != null) {
-            ActivityOptions activityOptions2 = this.mPendingOptions;
-            if (activityOptions2 != null) {
-                activityOptions2.abort();
-            }
-            setOptions(activityOptions);
-        }
-    }
-
-    public boolean getLaunchedFromBubble() {
-        return this.mLaunchedFromBubble;
-    }
-
-    public final void setOptions(ActivityOptions activityOptions) {
-        this.mLaunchedFromBubble = activityOptions.getLaunchedFromBubble();
-        this.mPendingOptions = activityOptions;
-        if (activityOptions.getAnimationType() == 13) {
-            this.mPendingRemoteAnimation = activityOptions.getRemoteAnimationAdapter();
-        }
-        this.mPendingRemoteTransition = activityOptions.getRemoteTransition();
-    }
-
-    public void applyOptionsAnimation() {
-        RemoteAnimationAdapter remoteAnimationAdapter = this.mPendingRemoteAnimation;
-        if (remoteAnimationAdapter != null) {
-            this.mDisplayContent.mAppTransition.overridePendingAppTransitionRemote(remoteAnimationAdapter);
-            this.mTransitionController.setStatusBarTransitionDelay(this.mPendingRemoteAnimation.getStatusBarTransitionDelay());
-        } else {
-            ActivityOptions activityOptions = this.mPendingOptions;
-            if (activityOptions == null) {
-                return;
-            }
-            if (activityOptions.getAnimationType() == 5) {
-                this.mTransitionController.setOverrideAnimation(TransitionInfo.AnimationOptions.makeSceneTransitionAnimOptions(), null, null);
-                return;
-            }
-            applyOptionsAnimation(this.mPendingOptions, this.intent);
-        }
-        clearOptionsAnimationForSiblings();
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:22:0x0214  */
-    /* JADX WARN: Removed duplicated region for block: B:25:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void applyOptionsAnimation(android.app.ActivityOptions r18, android.content.Intent r19) {
-        /*
-            Method dump skipped, instructions count: 540
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.applyOptionsAnimation(android.app.ActivityOptions, android.content.Intent):void");
-    }
-
-    public void clearAllDrawn() {
-        this.allDrawn = false;
-        this.mLastAllDrawn = false;
-    }
-
-    public final boolean allDrawnStatesConsidered() {
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            WindowState windowState = (WindowState) this.mChildren.get(size);
-            if (windowState.mightAffectAllDrawn() && !windowState.getDrawnStateEvaluated()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void updateAllDrawn() {
+    public final void removeStartingWindow() {
+        StartingSurfaceController.StartingSurface startingSurface;
         int i;
-        if (this.allDrawn || (i = this.mNumInterestingWindows) <= 0 || !allDrawnStatesConsidered() || this.mNumDrawnWindows < i || isRelaunching()) {
+        StartingData startingData;
+        int i2;
+        boolean isEligibleForLetterboxEducation = isEligibleForLetterboxEducation();
+        if (!this.finishing && this.mHandleExitSplashScreen && (startingSurface = this.mStartingSurface) != null && this.mStartingWindow != null && (i = this.mTransferringSplashScreenState) != 3 && ((startingData = this.mStartingData) == null || !startingData.mResizedFromTransfer)) {
+            if (i == 2 || i == 1) {
+                return;
+            }
+            if (startingData != null && startingData.mWaitForSyncTransactionCommit) {
+                startingData.mRemoveAfterTransaction = 2;
+                return;
+            }
+            this.mTransferringSplashScreenState = 1;
+            if (startingSurface != null) {
+                TaskOrganizerController taskOrganizerController = this.mAtmService.mTaskOrganizerController;
+                Task task = this.task;
+                ITaskOrganizer iTaskOrganizer = startingSurface.mTaskOrganizer;
+                taskOrganizerController.getClass();
+                if (task.getRootTask() != null) {
+                    if (iTaskOrganizer == null) {
+                        iTaskOrganizer = taskOrganizerController.getTaskOrganizer();
+                    }
+                    if (iTaskOrganizer != null) {
+                        try {
+                            iTaskOrganizer.copySplashScreenView(task.mTaskId);
+                        } catch (RemoteException e) {
+                            Slog.e("TaskOrganizerController", "Exception sending copyStartingWindowView callback", e);
+                        }
+                        this.mAtmService.mH.postDelayed(this.mTransferSplashScreenTimeoutRunnable, 2000L);
+                        i2 = this.mTransferringSplashScreenState;
+                        if (i2 != 2 || i2 == 1) {
+                            return;
+                        }
+                    }
+                }
+            }
+            this.mTransferringSplashScreenState = 3;
+            removeStartingWindow();
+            this.mAtmService.mH.postDelayed(this.mTransferSplashScreenTimeoutRunnable, 2000L);
+            i2 = this.mTransferringSplashScreenState;
+            if (i2 != 2) {
+                return;
+            } else {
+                return;
+            }
+        }
+        removeStartingWindowAnimation(true);
+        Task task2 = this.task;
+        if (isEligibleForLetterboxEducation == isEligibleForLetterboxEducation() || task2 == null) {
             return;
         }
-        this.allDrawn = true;
-        if (CoreRune.MW_SHELL_CHANGE_TRANSITION) {
-            this.mAtmService.mChangeTransitController.onActivityAllDrawn(this);
-        }
-        DisplayContent displayContent = this.mDisplayContent;
-        if (displayContent != null) {
-            displayContent.setLayoutNeeded();
-        }
-        this.mWmService.mH.obtainMessage(32, this).sendToTarget();
+        task2.dispatchTaskInfoChangedIfNeeded(true);
     }
 
-    public void abortAndClearOptionsAnimation() {
-        ActivityOptions activityOptions = this.mPendingOptions;
-        if (activityOptions != null) {
-            activityOptions.abort();
+    public final void removeStartingWindowAnimation(boolean z) {
+        Task task;
+        boolean z2 = false;
+        this.mTransferringSplashScreenState = 0;
+        StartingData startingData = this.mStartingData;
+        if (startingData != null && (task = this.task) != null) {
+            task.mSharedStartingData = null;
         }
-        clearOptionsAnimation();
-    }
-
-    public void clearOptionsAnimation() {
-        this.mPendingOptions = null;
-        this.mPendingRemoteAnimation = null;
-        this.mPendingRemoteTransition = null;
-    }
-
-    public void clearOptionsAnimationForSiblings() {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtmService.mGlobalLock;
+        if (this.mStartingWindow == null) {
+            if (startingData != null) {
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_STARTING_WINDOW_enabled[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -1948849214526113495L, 0, "Clearing startingData for token=%s", String.valueOf(this));
+                }
+                this.mStartingData = null;
+                this.mStartingSurface = null;
+                return;
+            }
+            return;
+        }
+        if (startingData == null) {
+            if (ProtoLogImpl_54989576.Cache.WM_DEBUG_STARTING_WINDOW_enabled[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -2178757341169633804L, 0, "Tried to remove starting window but startingWindow was null: %s", String.valueOf(this));
+                return;
+            }
+            return;
+        }
+        if (startingData.mWaitForSyncTransactionCommit || this.mTransitionController.isCollecting(this)) {
+            StartingData startingData2 = this.mStartingData;
+            startingData2.mRemoveAfterTransaction = 1;
+            startingData2.mPrepareRemoveAnimation = z;
+            return;
+        }
+        if (z && this.mStartingData.needRevealAnimation() && this.mStartingWindow.isVisibleByPolicy()) {
+            z2 = true;
+        }
+        if (z2) {
+            this.mStartingWindow.mSkipExitAnimation = true;
+        }
+        boolean hasImeSurface = this.mStartingData.hasImeSurface();
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STARTING_WINDOW_enabled;
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 5545923784327902026L, 48, "Schedule remove starting %s startingWindow=%s animate=%b Callers=%s", String.valueOf(this), String.valueOf(this.mStartingWindow), Boolean.valueOf(z2), String.valueOf(Debug.getCallers(5)));
+        }
+        StartingSurfaceController.StartingSurface startingSurface = this.mStartingSurface;
+        this.mStartingData = null;
+        this.mStartingSurface = null;
+        this.mStartingWindow = null;
+        this.mTransitionChangeFlags &= -9;
+        if (startingSurface == null) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -5150982660941074218L, 0, "startingWindow was set but startingSurface==null, couldn't remove", null);
+                return;
+            }
+            return;
+        }
+        WindowManagerGlobalLock windowManagerGlobalLock = StartingSurfaceController.this.mService.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
             try {
-                Task task = this.task;
-                if (task == null) {
-                    clearOptionsAnimation();
-                } else {
-                    task.forAllActivities(new Consumer() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda20
-                        @Override // java.util.function.Consumer
-                        public final void accept(Object obj) {
-                            ((ActivityRecord) obj).clearOptionsAnimation();
-                        }
-                    });
-                }
+                StartingSurfaceController.this.mService.mAtmService.mTaskOrganizerController.removeStartingWindow(startingSurface.mTask, startingSurface.mTaskOrganizer, z2, hasImeSurface);
             } catch (Throwable th) {
                 WindowManagerService.resetPriorityAfterLockedSection();
                 throw th;
@@ -4211,3540 +4786,225 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         WindowManagerService.resetPriorityAfterLockedSection();
     }
 
-    public ActivityOptions getOptions() {
-        return this.mPendingOptions;
-    }
-
-    public ActivityOptions takeOptions() {
-        ActivityOptions activityOptions = this.mPendingOptions;
-        if (activityOptions == null) {
-            return null;
-        }
-        this.mPendingOptions = null;
-        activityOptions.setRemoteTransition(null);
-        activityOptions.setRemoteAnimationAdapter(null);
-        return activityOptions;
-    }
-
-    public RemoteTransition takeRemoteTransition() {
-        RemoteTransition remoteTransition = this.mPendingRemoteTransition;
-        this.mPendingRemoteTransition = null;
-        if (!CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX || (this.intent.getFlags() & 65536) == 0) {
-            return remoteTransition;
-        }
-        return null;
-    }
-
-    public boolean allowMoveToFront() {
-        ActivityOptions activityOptions = this.mPendingOptions;
-        return activityOptions == null || !activityOptions.getAvoidMoveToFront();
-    }
-
-    public void removeUriPermissionsLocked() {
-        UriPermissionOwner uriPermissionOwner = this.uriPermissions;
-        if (uriPermissionOwner != null) {
-            uriPermissionOwner.removeUriPermissions();
-            this.uriPermissions = null;
-        }
-    }
-
-    public void pauseKeyDispatchingLocked() {
-        if (this.keysPaused) {
-            return;
-        }
-        this.keysPaused = true;
-        if (getDisplayContent() != null) {
-            getDisplayContent().getInputMonitor().pauseDispatchingLw(this);
-        }
-    }
-
-    public void resumeKeyDispatchingLocked() {
-        if (this.keysPaused) {
-            this.keysPaused = false;
-            if (getDisplayContent() != null) {
-                getDisplayContent().getInputMonitor().resumeDispatchingLw(this);
-            }
-        }
-    }
-
-    public final void updateTaskDescription(CharSequence charSequence) {
-        this.task.lastDescription = charSequence;
-    }
-
-    public void setDeferHidingClient(boolean z) {
-        if (this.mDeferHidingClient == z) {
-            return;
-        }
-        this.mDeferHidingClient = z;
-        if (z || this.mVisibleRequested) {
-            return;
-        }
-        setVisibility(false);
-    }
-
-    public boolean canAffectSystemUiFlags() {
-        Task task = this.task;
-        return task != null && task.canAffectSystemUiFlags() && isVisible() && (!CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX || this.mDisplayContent.mTransitionController.isCollecting() || isVisibleRequested()) && !inPinnedWindowingMode();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isVisible() {
-        return this.mVisible;
-    }
-
-    public void setVisible(boolean z) {
-        if (z != this.mVisible) {
-            this.mVisible = z;
-            WindowProcessController windowProcessController = this.app;
-            if (windowProcessController != null) {
-                this.mTaskSupervisor.onProcessActivityStateChanged(windowProcessController, false);
-            }
-            scheduleAnimation();
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean setVisibleRequested(boolean z) {
-        CompatDisplayInsets compatDisplayInsets;
-        WindowState windowState;
-        if (!super.setVisibleRequested(z)) {
-            return false;
-        }
-        setInsetsFrozen(!z);
-        updateVisibleForServiceConnection();
-        WindowProcessController windowProcessController = this.app;
-        if (windowProcessController != null) {
-            this.mTaskSupervisor.onProcessActivityStateChanged(windowProcessController, false);
-        }
-        logAppCompatState();
-        if (!z) {
-            InputTarget imeInputTarget = this.mDisplayContent.getImeInputTarget();
-            this.mLastImeShown = (imeInputTarget == null || imeInputTarget.getWindowState() == null || imeInputTarget.getWindowState().mActivityRecord != this || (windowState = this.mDisplayContent.mInputMethodWindow) == null || !windowState.isVisible()) ? false : true;
-            finishOrAbortReplacingWindow();
-        }
-        if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT && z && (compatDisplayInsets = this.mCompatDisplayInsets) != null && compatDisplayInsets.mWaitingForVisibleRequested) {
-            compatDisplayInsets.mWaitingForVisibleRequested = false;
-        }
-        return true;
-    }
-
-    public void setVisibility(boolean z) {
-        if (getParent() == null) {
-            Slog.w(StartingSurfaceController.TAG, "Attempted to set visibility of non-existing app token: " + this.token);
-            return;
-        }
-        if (z == this.mVisibleRequested && z == this.mVisible && z == isClientVisible() && this.mTransitionController.isShellTransitionsEnabled()) {
-            return;
-        }
-        if (z) {
-            this.mDeferHidingClient = false;
-        }
-        setVisibility(z, this.mDeferHidingClient);
-        this.mAtmService.addWindowLayoutReasons(2);
-        this.mTaskSupervisor.getActivityMetricsLogger().notifyVisibilityChanged(this);
-        this.mTaskSupervisor.mAppVisibilitiesChangedSinceLastPause = true;
-    }
-
-    public final void setVisibility(boolean z, boolean z2) {
-        boolean z3;
-        boolean z4;
-        boolean z5;
-        AppTransition appTransition = getDisplayContent().mAppTransition;
-        if (!z && !this.mVisibleRequested) {
-            if (z2 || !this.mLastDeferHidingClient) {
-                return;
-            }
-            this.mLastDeferHidingClient = z2;
-            if (okToAnimate(true, canTurnScreenOn()) && inTransition()) {
-                return;
-            }
-            setClientVisible(false);
-            return;
-        }
-        if (ProtoLogCache.WM_DEBUG_APP_TRANSITIONS_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS, -374767836, 972, (String) null, new Object[]{String.valueOf(this.token), Boolean.valueOf(z), String.valueOf(appTransition), Boolean.valueOf(isVisible()), Boolean.valueOf(this.mVisibleRequested), String.valueOf(Debug.getCallers(6))});
-        }
-        if (this.mTransitionController.isShellTransitionsEnabled()) {
-            z3 = this.mTransitionController.isCollecting();
-            if (z3) {
-                this.mTransitionController.collect(this);
-                z4 = false;
-            } else {
-                z4 = this.mTransitionController.inFinishingTransition(this);
-                if (!z4) {
-                    if (z) {
-                        if (!this.mDisplayContent.isSleeping() || canShowWhenLocked()) {
-                            this.mTransitionController.onVisibleWithoutCollectingTransition(this, Debug.getCallers(1, 1));
-                        }
-                    } else if (!this.mDisplayContent.isSleeping()) {
-                        Slog.w("ActivityTaskManager", "Set invisible without transition " + this);
-                    }
-                }
-            }
-        } else {
-            z3 = false;
-            z4 = false;
-        }
-        onChildVisibilityRequested(z);
-        DisplayContent displayContent = getDisplayContent();
-        displayContent.mOpeningApps.remove(this);
-        displayContent.mClosingApps.remove(this);
-        this.waitingToShow = false;
-        boolean visibleRequested = setVisibleRequested(z);
-        this.mLastDeferHidingClient = z2;
-        if (!z) {
-            if (this.mDisplayContent.mUnknownAppVisibilityController.isVisibilityUnknown(this)) {
-                Task topRootTaskInWindowingMode = getTaskDisplayArea().getTopRootTaskInWindowingMode(getWindowingMode());
-                ActivityRecord activityRecord = topRootTaskInWindowingMode != null ? topRootTaskInWindowingMode.topRunningActivity() : null;
-                if (activityRecord != null && activityRecord != this) {
-                    z5 = true;
-                    if (!this.finishing || isState(State.STOPPED) || z5) {
-                        displayContent.mUnknownAppVisibilityController.appRemovedOrHidden(this);
-                    }
-                    if (this.startingMoved && !this.firstWindowDrawn && hasChild()) {
-                        setClientVisible(false);
-                    }
-                }
-            }
-            z5 = false;
-            if (!this.finishing) {
-            }
-            displayContent.mUnknownAppVisibilityController.appRemovedOrHidden(this);
-            if (this.startingMoved) {
-                setClientVisible(false);
-            }
-        } else {
-            if (!appTransition.isTransitionSet() && appTransition.isReady()) {
-                displayContent.mOpeningApps.add(this);
-            }
-            this.startingMoved = false;
-            if (!isVisible() || this.mAppStopped) {
-                clearAllDrawn();
-                if (!isVisible()) {
-                    this.waitingToShow = true;
-                    if (!isClientVisible()) {
-                        forAllWindows(new Consumer() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda1
-                            @Override // java.util.function.Consumer
-                            public final void accept(Object obj) {
-                                ActivityRecord.lambda$setVisibility$9((WindowState) obj);
-                            }
-                        }, true);
-                    }
-                }
-            }
-            setClientVisible(true);
-            requestUpdateWallpaperIfNeeded();
-            if (ProtoLogCache.WM_DEBUG_ADD_REMOVE_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, 1224184681, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            this.mAppStopped = false;
-            transferStartingWindowFromHiddenAboveTokenIfNeeded();
-        }
-        if (!z3) {
-            if (z4) {
-                this.mTransitionController.mValidateCommitVis.add(this);
-                return;
-            } else {
-                if (deferCommitVisibilityChange(z)) {
-                    return;
-                }
-                commitVisibility(z, true);
-                updateReportedVisibilityLocked();
-                return;
-            }
-        }
-        if (!z && this.mTransitionController.inPlayingTransition(this)) {
-            this.mTransitionChangeFlags |= 32768;
-        }
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX && !z && visibleRequested) {
-            Slog.d(StartingSurfaceController.TAG, "VisibleRequested updated, r=" + this);
-            this.mWmService.mWindowPlacerLocked.performSurfacePlacement();
-        }
-    }
-
-    public static /* synthetic */ void lambda$setVisibility$9(WindowState windowState) {
-        WindowStateAnimator windowStateAnimator = windowState.mWinAnimator;
-        if (windowStateAnimator.mDrawState == 4) {
-            windowStateAnimator.resetDrawState();
-            windowState.forceReportingResized();
-        }
-    }
-
-    public final boolean deferCommitVisibilityChange(boolean z) {
-        WindowState findFocusedWindow;
-        ActivityRecord activityRecord;
-        if (this.mTransitionController.isShellTransitionsEnabled()) {
-            return false;
-        }
-        if (!this.mDisplayContent.mAppTransition.isTransitionSet() && (isActivityTypeHome() || !isAnimating(2, 8))) {
-            return false;
-        }
-        if (this.mWaitForEnteringPinnedMode && this.mVisible == z) {
-            return false;
-        }
-        if (!okToAnimate(true, canTurnScreenOn() || this.mTaskSupervisor.getKeyguardController().isKeyguardGoingAway(this.mDisplayContent.mDisplayId))) {
-            return false;
-        }
-        if (z) {
-            this.mDisplayContent.mOpeningApps.add(this);
-            this.mEnteringAnimation = true;
-        } else if (this.mVisible) {
-            this.mDisplayContent.mClosingApps.add(this);
-            this.mEnteringAnimation = false;
-        }
-        if ((this.mDisplayContent.mAppTransition.getTransitFlags() & 32) != 0 && (findFocusedWindow = this.mDisplayContent.findFocusedWindow()) != null && (activityRecord = findFocusedWindow.mActivityRecord) != null) {
-            if (ProtoLogCache.WM_DEBUG_APP_TRANSITIONS_enabled) {
-                ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS, 1810019902, 0, (String) null, new Object[]{String.valueOf(activityRecord)});
-            }
-            this.mDisplayContent.mOpeningApps.add(activityRecord);
-        }
-        return true;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean applyAnimation(WindowManager.LayoutParams layoutParams, int i, boolean z, boolean z2, ArrayList arrayList) {
-        if ((this.mTransitionChangeFlags & 8) != 0) {
-            return false;
-        }
-        this.mRequestForceTransition = false;
-        return super.applyAnimation(layoutParams, i, z, z2, arrayList);
-    }
-
-    public void commitVisibility(boolean z, boolean z2, boolean z3) {
-        this.mVisibleSetFromTransferredStartingWindow = false;
-        if (z == isVisible()) {
-            return;
-        }
-        int size = this.mChildren.size();
-        boolean isAnimating = WindowManagerService.sEnableShellTransitions ? z : isAnimating(2, 1);
-        for (int i = 0; i < size; i++) {
-            ((WindowState) this.mChildren.get(i)).onAppVisibilityChanged(z, isAnimating);
-        }
-        setVisible(z);
-        setVisibleRequested(z);
-        if (ProtoLogCache.WM_DEBUG_APP_TRANSITIONS_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS, -636553602, 1020, (String) null, new Object[]{String.valueOf(this), Boolean.valueOf(isVisible()), Boolean.valueOf(this.mVisibleRequested), Boolean.valueOf(isInTransition()), Boolean.valueOf(isAnimating), String.valueOf(Debug.getCallers(5))});
-        }
-        if (!z) {
-            stopFreezingScreen(true, true);
-        } else {
-            WindowState windowState = this.mStartingWindow;
-            if (windowState != null && !windowState.isDrawn() && (this.firstWindowDrawn || this.allDrawn)) {
-                this.mStartingWindow.clearPolicyVisibilityFlag(1);
-                this.mStartingWindow.mLegacyPolicyVisibilityAfterAnim = false;
-            }
-            final WindowManagerService windowManagerService = this.mWmService;
-            Objects.requireNonNull(windowManagerService);
-            forAllWindows(new Consumer() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda22
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    WindowManagerService.this.makeWindowFreezingScreenIfNeededLocked((WindowState) obj);
-                }
-            }, true);
-        }
-        for (Task organizedTask = getOrganizedTask(); organizedTask != null; organizedTask = organizedTask.getParent().asTask()) {
-            organizedTask.dispatchTaskInfoChangedIfNeeded(false);
-        }
-        DisplayContent displayContent = getDisplayContent();
-        displayContent.getInputMonitor().setUpdateInputWindowsNeededLw();
-        if (z2) {
-            this.mWmService.updateFocusedWindowLocked(3, false);
-            this.mWmService.mWindowPlacerLocked.performSurfacePlacement();
-        }
-        displayContent.getInputMonitor().updateInputWindowsLw(false);
-        this.mTransitionChangeFlags = 0;
-        postApplyAnimation(z, z3);
-    }
-
-    public void commitVisibility(boolean z, boolean z2) {
-        commitVisibility(z, z2, false);
-    }
-
-    public void setNeedsLetterboxedAnimation(boolean z) {
-        this.mNeedsLetterboxedAnimation = z;
-    }
-
-    public boolean isNeedsLetterboxedAnimation() {
-        return this.mNeedsLetterboxedAnimation;
-    }
-
-    public boolean isInLetterboxAnimation() {
-        return this.mNeedsLetterboxedAnimation && isAnimating();
-    }
-
-    public final void postApplyAnimation(boolean z, boolean z2) {
-        boolean isShellTransitionsEnabled = this.mTransitionController.isShellTransitionsEnabled();
-        boolean z3 = !isShellTransitionsEnabled && isAnimating(6, 25);
-        if (!z3 && !isShellTransitionsEnabled) {
-            onAnimationFinished(1, null);
-            if (z) {
-                this.mEnteringAnimation = true;
-                this.mWmService.mActivityManagerAppTransitionNotifier.onAppTransitionFinishedLocked(this.token);
-            }
-        }
-        if (z || isShellTransitionsEnabled || !isAnimating(2, 9)) {
-            setClientVisible(z);
-        }
-        DisplayContent displayContent = getDisplayContent();
-        if (!z) {
-            this.mImeInsetsFrozenUntilStartInput = true;
-        }
-        if (!displayContent.mClosingApps.contains(this) && !displayContent.mOpeningApps.contains(this) && !z2) {
-            this.mWmService.mSnapshotController.notifyAppVisibilityChanged(this, z);
-        }
-        if (isShellTransitionsEnabled || isVisible() || z3 || displayContent.mAppTransition.isTransitionSet()) {
-            return;
-        }
-        SurfaceControl.openTransaction();
-        try {
-            forAllWindows(new Consumer() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda28
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ActivityRecord.lambda$postApplyAnimation$10((WindowState) obj);
-                }
-            }, true);
-        } finally {
-            SurfaceControl.closeTransaction();
-        }
-    }
-
-    public static /* synthetic */ void lambda$postApplyAnimation$10(WindowState windowState) {
-        windowState.mWinAnimator.hide(SurfaceControl.getGlobalTransaction(), "immediately hidden");
-    }
-
-    public void commitFinishDrawing(SurfaceControl.Transaction transaction) {
-        boolean z = false;
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            z |= ((WindowState) this.mChildren.get(size)).commitFinishDrawing(transaction);
-        }
-        if (z) {
-            requestUpdateWallpaperIfNeeded();
-        }
-    }
-
-    public boolean shouldApplyAnimation(boolean z) {
-        return isVisible() != z || this.mRequestForceTransition || (!isVisible() && this.mIsExiting);
-    }
-
-    public void setRecentsScreenshotEnabled(boolean z) {
-        this.mEnableRecentsScreenshot = z;
-    }
-
-    public boolean shouldUseAppThemeSnapshot() {
-        return !this.mEnableRecentsScreenshot || forAllWindows(new ToBooleanFunction() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda27
-            public final boolean apply(Object obj) {
-                return ((WindowState) obj).isSecureLocked();
-            }
-        }, true);
-    }
-
-    public void setCurrentLaunchCanTurnScreenOn(boolean z) {
-        this.mCurrentLaunchCanTurnScreenOn = z;
-    }
-
-    public boolean currentLaunchCanTurnScreenOn() {
-        return this.mCurrentLaunchCanTurnScreenOn;
-    }
-
-    public void setState(State state, String str) {
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 1316533291, 0, (String) null, new Object[]{String.valueOf(this), String.valueOf(getState()), String.valueOf(state), String.valueOf(str)});
-        }
-        if (state == this.mState) {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -926231510, 0, (String) null, new Object[]{String.valueOf(state)});
-                return;
-            }
-            return;
-        }
-        this.mState = state;
-        if (getTaskFragment() != null) {
-            getTaskFragment().onActivityStateChanged(this, state, str);
-        }
-        if (state == State.STOPPING && !isSleeping() && getParent() == null) {
-            Slog.w(StartingSurfaceController.TAG, "Attempted to notify stopping on non-existing app token: " + this.token);
-            return;
-        }
-        updateVisibleForServiceConnection();
-        WindowProcessController windowProcessController = this.app;
-        if (windowProcessController != null) {
-            this.mTaskSupervisor.onProcessActivityStateChanged(windowProcessController, false);
-        }
-        int i = AnonymousClass7.$SwitchMap$com$android$server$wm$ActivityRecord$State[state.ordinal()];
-        if (i != 2) {
-            if (i == 4) {
-                this.mAtmService.updateBatteryStats(this, false);
-                this.mAtmService.updateActivityUsageStats(this, 2);
-                return;
-            }
-            switch (i) {
-                case 6:
-                    break;
-                case 7:
-                    this.mAtmService.updateActivityUsageStats(this, 23);
-                    return;
-                case 8:
-                    if (this.app != null && (this.mVisible || this.mVisibleRequested)) {
-                        this.mAtmService.updateBatteryStats(this, false);
-                    }
-                    this.mAtmService.updateActivityUsageStats(this, 24);
-                    break;
-                case 9:
-                    break;
-                default:
-                    return;
-            }
-            WindowProcessController windowProcessController2 = this.app;
-            if (windowProcessController2 == null || windowProcessController2.hasActivities()) {
-                return;
-            }
-            this.app.updateProcessInfo(true, false, true, false);
-            return;
-        }
-        this.mAtmService.updateBatteryStats(this, true);
-        this.mAtmService.updateActivityUsageStats(this, 1);
-        WindowProcessController windowProcessController3 = this.app;
-        if (windowProcessController3 != null) {
-            windowProcessController3.updateProcessInfo(false, true, true, true);
-        }
-        ContentCaptureManagerInternal contentCaptureManagerInternal = (ContentCaptureManagerInternal) LocalServices.getService(ContentCaptureManagerInternal.class);
-        if (contentCaptureManagerInternal != null) {
-            contentCaptureManagerInternal.notifyActivityEvent(this.mUserId, this.mActivityComponent, 10000, new ActivityId(getTask() != null ? getTask().mTaskId : -1, this.shareableActivityToken));
-        }
-    }
-
-    public State getState() {
-        return this.mState;
-    }
-
-    public boolean isState(State state) {
-        return state == this.mState;
-    }
-
-    public boolean isState(State state, State state2) {
-        State state3 = this.mState;
-        return state == state3 || state2 == state3;
-    }
-
-    public boolean isState(State state, State state2, State state3, State state4) {
-        State state5 = this.mState;
-        return state == state5 || state2 == state5 || state3 == state5 || state4 == state5;
-    }
-
-    public boolean isState(State state, State state2, State state3, State state4, State state5) {
-        State state6 = this.mState;
-        return state == state6 || state2 == state6 || state3 == state6 || state4 == state6 || state5 == state6;
-    }
-
-    public void destroySurfaces() {
-        destroySurfaces(false);
-    }
-
-    public final void destroySurfaces(boolean z) {
-        ArrayList arrayList = new ArrayList(this.mChildren);
-        boolean z2 = false;
-        for (int size = arrayList.size() - 1; size >= 0; size--) {
-            z2 |= ((WindowState) arrayList.get(size)).destroySurface(z, this.mAppStopped);
-        }
-        if (z2) {
-            getDisplayContent().assignWindowLayers(true);
-            updateLetterboxSurface(null);
-        }
-    }
-
-    public void notifyAppResumed() {
-        if (getParent() == null) {
-            Slog.w(StartingSurfaceController.TAG, "Attempted to notify resumed of non-existing app token: " + this.token);
-            return;
-        }
-        boolean z = this.mAppStopped;
-        if (ProtoLogCache.WM_DEBUG_ADD_REMOVE_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, 1364498663, 3, (String) null, new Object[]{Boolean.valueOf(z), String.valueOf(this)});
-        }
-        this.mAppStopped = false;
-        if (this.mAtmService.getActivityStartController().isInExecution()) {
-            setCurrentLaunchCanTurnScreenOn(true);
-        }
-        if (z) {
-            return;
-        }
-        destroySurfaces(true);
-    }
-
-    public void notifyUnknownVisibilityLaunchedForKeyguardTransition() {
-        if (this.noDisplay || !isKeyguardLocked()) {
-            return;
-        }
-        this.mDisplayContent.mUnknownAppVisibilityController.notifyLaunched(this);
-    }
-
-    public final boolean shouldBeVisible(boolean z, boolean z2) {
-        updateVisibilityIgnoringKeyguard(z);
-        if (z2) {
-            return this.visibleIgnoringKeyguard;
-        }
-        return shouldBeVisibleUnchecked();
-    }
-
-    public boolean shouldBeVisibleUnchecked() {
-        Task rootTask = getRootTask();
-        if (rootTask == null || !this.visibleIgnoringKeyguard) {
-            return false;
-        }
-        if ((inPinnedWindowingMode() && rootTask.isForceHidden()) || hasOverlayOverUntrustedModeEmbedded()) {
-            return false;
-        }
-        if (this.mDisplayContent.isSleeping()) {
-            int displayId = getDisplayId();
-            if (displayId == 2 && this.mAtmService.mDexController.getDexModeLocked() == 2) {
-                return false;
-            }
-            if (this.mAtmService.mKeyguardController.isWakeAndUnlock(displayId) && getDisplayContent() != null && getDisplayContent().isOnTop()) {
-                return true;
-            }
-            return canTurnScreenOn();
-        }
-        return this.mTaskSupervisor.getKeyguardController().checkKeyguardVisibility(this);
-    }
-
-    public boolean hasOverlayOverUntrustedModeEmbedded() {
-        return (!isEmbeddedInUntrustedMode() || getTask() == null || getTask().getActivity(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda4
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$hasOverlayOverUntrustedModeEmbedded$11;
-                lambda$hasOverlayOverUntrustedModeEmbedded$11 = ActivityRecord.this.lambda$hasOverlayOverUntrustedModeEmbedded$11((ActivityRecord) obj);
-                return lambda$hasOverlayOverUntrustedModeEmbedded$11;
-            }
-        }, this, false, false) == null) ? false : true;
-    }
-
-    public /* synthetic */ boolean lambda$hasOverlayOverUntrustedModeEmbedded$11(ActivityRecord activityRecord) {
-        return (activityRecord.finishing || activityRecord.getUid() == getUid()) ? false : true;
-    }
-
-    public void updateVisibilityIgnoringKeyguard(boolean z) {
-        this.visibleIgnoringKeyguard = (!z || this.mLaunchTaskBehind) && showToCurrentUser();
-    }
-
-    public boolean shouldBeVisible() {
-        Task task = getTask();
-        if (task == null) {
-            return false;
-        }
-        return shouldBeVisible((task.shouldBeVisible(null) && task.getOccludingActivityAbove(this) == null) ? false : true, false);
-    }
-
-    public void makeVisibleIfNeeded(ActivityRecord activityRecord, boolean z) {
-        if ((this.mState == State.RESUMED && this.mVisibleRequested) || this == activityRecord) {
-            return;
-        }
-        Task rootTask = getRootTask();
-        try {
-            if (rootTask.mTranslucentActivityWaiting != null) {
-                updateOptionsLocked(this.returningOptions);
-                rootTask.mUndrawnActivitiesBelowTopTranslucent.add(this);
-            }
-            setVisibility(true);
-            this.app.postPendingUiCleanMsg(true);
-            if (z) {
-                this.mClientVisibilityDeferred = false;
-                makeActiveIfNeeded(activityRecord);
-            } else {
-                this.mClientVisibilityDeferred = true;
-            }
-            this.mTaskSupervisor.mStoppingActivities.remove(this);
-        } catch (Exception e) {
-            Slog.w("ActivityTaskManager", "Exception thrown making visible: " + this.intent.getComponent(), e);
-        }
-        handleAlreadyVisible();
-    }
-
-    public void makeInvisible() {
-        if (this.mVisibleRequested) {
-            try {
-                boolean checkEnterPictureInPictureState = checkEnterPictureInPictureState("makeInvisible", true);
-                setDeferHidingClient(checkEnterPictureInPictureState && !isState(State.STARTED, State.STOPPING, State.STOPPED, State.PAUSED));
-                setVisibility(false);
-                switch (AnonymousClass7.$SwitchMap$com$android$server$wm$ActivityRecord$State[getState().ordinal()]) {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 6:
-                        addToStopping(true, checkEnterPictureInPictureState, "makeInvisible");
-                        return;
-                    case 5:
-                    case 7:
-                        this.supportsEnterPipOnTaskSwitch = false;
-                        return;
-                    default:
-                        return;
-                }
-            } catch (Exception e) {
-                Slog.w("ActivityTaskManager", "Exception thrown making hidden: " + this.intent.getComponent(), e);
-            }
-        }
-    }
-
-    public boolean makeActiveIfNeeded(ActivityRecord activityRecord) {
-        if (shouldResumeActivity(activityRecord)) {
-            return getRootTask().resumeTopActivityUncheckedLocked(activityRecord, null);
-        }
-        if (shouldPauseActivity(activityRecord)) {
-            setState(State.PAUSING, "makeActiveIfNeeded");
-            EventLogTags.writeWmPauseActivity(this.mUserId, System.identityHashCode(this), this.shortComponentName, "userLeaving=false", "make-active");
-            try {
-                this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ActivityLifecycleItem) PauseActivityItem.obtain(this.finishing, false, this.configChangeFlags, false, this.mAutoEnteringPip));
-            } catch (Exception e) {
-                Slog.w("ActivityTaskManager", "Exception thrown sending pause: " + this.intent.getComponent(), e);
-            }
-        } else if (shouldStartActivity()) {
-            setState(State.STARTED, "makeActiveIfNeeded");
-            try {
-                this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ActivityLifecycleItem) StartActivityItem.obtain(takeOptions()));
-            } catch (Exception e2) {
-                Slog.w("ActivityTaskManager", "Exception thrown sending start: " + this.intent.getComponent(), e2);
-            }
-            this.mTaskSupervisor.mStoppingActivities.remove(this);
-        }
-        return false;
-    }
-
-    public boolean shouldPauseActivity(ActivityRecord activityRecord) {
-        return ((getTask() != null && getTask().isFreeformStashed() && shouldMakeActive(activityRecord)) || !shouldMakeActive(activityRecord) || isFocusable() || isState(State.PAUSING, State.PAUSED) || this.results != null) ? false : true;
-    }
-
-    public boolean shouldResumeActivity(ActivityRecord activityRecord) {
-        return shouldBeResumed(activityRecord) && !isState(State.RESUMED);
-    }
-
-    public final boolean shouldBeResumed(ActivityRecord activityRecord) {
-        return (getTask() == null || !getTask().isFreeformStashed()) ? shouldMakeActive(activityRecord) && isFocusable() && getTaskFragment().getVisibility(activityRecord) == 0 && canResumeByCompat() : shouldMakeActive(activityRecord) && getTaskFragment().getVisibility(activityRecord) == 0 && canResumeByCompat();
-    }
-
-    public final boolean shouldStartActivity() {
-        return this.mVisibleRequested && (isState(State.STOPPED) || isState(State.STOPPING));
-    }
-
-    public boolean shouldMakeActive(ActivityRecord activityRecord) {
-        if (!isState(State.STARTED, State.RESUMED, State.PAUSED, State.STOPPED, State.STOPPING) || getRootTask().mTranslucentActivityWaiting != null || this == activityRecord || !this.mTaskSupervisor.readyToResume() || this.mLaunchTaskBehind) {
-            return false;
-        }
-        if (this.task.hasChild(this)) {
-            return getTaskFragment().topRunningActivity() == this;
-        }
-        throw new IllegalStateException("Activity not found in its task");
-    }
-
-    public void handleAlreadyVisible() {
-        stopFreezingScreenLocked(false);
-        try {
-            if (this.returningOptions != null) {
-                this.app.getThread().scheduleOnNewActivityOptions(this.token, this.returningOptions.toBundle());
-            }
-        } catch (RemoteException unused) {
-        }
-    }
-
-    public static void activityResumedLocked(IBinder iBinder, boolean z) {
-        ActivityRecord forTokenLocked = forTokenLocked(iBinder);
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_STATES, 1364126018, 0, (String) null, new Object[]{String.valueOf(forTokenLocked)});
-        }
-        if (forTokenLocked == null) {
-            return;
-        }
-        forTokenLocked.setCustomizeSplashScreenExitAnimation(z);
-        forTokenLocked.setSavedState(null);
-        if (forTokenLocked.findMainWindow(false) == null) {
-            forTokenLocked.mDisplayContent.mUnknownAppVisibilityController.appRemovedOrHidden(forTokenLocked);
-        }
-        forTokenLocked.mDisplayContent.handleActivitySizeCompatModeIfNeeded(forTokenLocked);
-        forTokenLocked.mDisplayContent.mUnknownAppVisibilityController.notifyAppResumedFinished(forTokenLocked);
-    }
-
-    public static void activityRefreshedLocked(IBinder iBinder) {
-        DisplayRotationCompatPolicy displayRotationCompatPolicy;
-        ActivityRecord forTokenLocked = forTokenLocked(iBinder);
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_STATES, -1480918485, 0, (String) null, new Object[]{String.valueOf(forTokenLocked)});
-        }
-        if (forTokenLocked == null || (displayRotationCompatPolicy = forTokenLocked.mDisplayContent.mDisplayRotationCompatPolicy) == null) {
-            return;
-        }
-        displayRotationCompatPolicy.lambda$onActivityConfigurationChanging$0(forTokenLocked);
-    }
-
-    public static void splashScreenAttachedLocked(IBinder iBinder) {
-        ActivityRecord forTokenLocked = forTokenLocked(iBinder);
-        if (forTokenLocked == null) {
-            Slog.w("ActivityTaskManager", "splashScreenTransferredLocked cannot find activity");
-        } else {
-            forTokenLocked.onSplashScreenAttachComplete();
-        }
-    }
-
-    public void completeResumeLocked() {
-        boolean z = this.mVisibleRequested;
-        setVisibility(true);
-        if (!z) {
-            this.mTaskSupervisor.mAppVisibilitiesChangedSinceLastPause = true;
-        }
-        this.idle = false;
-        this.results = null;
-        ArrayList arrayList = this.newIntents;
-        if (arrayList != null && arrayList.size() > 0) {
-            ArrayList arrayList2 = this.newIntents;
-            this.mLastNewIntent = (Intent) arrayList2.get(arrayList2.size() - 1);
-        }
-        this.newIntents = null;
-        if (isActivityTypeHome()) {
-            this.mTaskSupervisor.updateHomeProcess(this.task.getBottomMostActivity().app);
-        }
-        if (this.nowVisible) {
-            this.mTaskSupervisor.stopWaitingForActivityVisible(this);
-        }
-        this.mTaskSupervisor.scheduleIdleTimeout(this);
-        this.mTaskSupervisor.reportResumedActivityLocked(this);
-        resumeKeyDispatchingLocked();
-        Task rootTask = getRootTask();
-        this.mTaskSupervisor.mNoAnimActivities.clear();
-        this.returningOptions = null;
-        if (canTurnScreenOn()) {
-            this.mTaskSupervisor.wakeUp("turnScreenOnFlag::" + this.packageName);
-        } else {
-            rootTask.checkReadyForSleep();
-        }
-        this.mAtmService.mExt.resetActivityKeepAliveLocked(this);
-        if (CoreRune.FW_SUPPORT_OCCLUDES_PARENT_CHANGE_CALLBACK) {
-            WindowManagerServiceExt windowManagerServiceExt = this.mWmService.mExt;
-            DisplayContent displayContent = getDisplayContent();
-            if (!isActivityTypeHomeOrRecents()) {
-                this = null;
-            }
-            windowManagerServiceExt.updateOccludeTargetIfNeeded(displayContent, this);
-        }
-    }
-
-    public void activityPaused(boolean z) {
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 1068803972, 12, (String) null, new Object[]{String.valueOf(this.token), Boolean.valueOf(z)});
-        }
-        TaskFragment taskFragment = getTaskFragment();
-        if (taskFragment != null) {
-            removePauseTimeout();
-            ActivityRecord pausingActivity = taskFragment.getPausingActivity();
-            if (pausingActivity == this) {
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 397382873, 0, (String) null, new Object[]{String.valueOf(this), z ? "(due to timeout)" : " (pause complete)"});
-                }
-                this.mAtmService.deferWindowLayout();
-                try {
-                    taskFragment.completePause(true, null);
-                    return;
-                } finally {
-                    this.mAtmService.continueWindowLayout();
-                }
-            }
-            EventLogTags.writeWmFailedToPause(this.mUserId, System.identityHashCode(this), this.shortComponentName, pausingActivity != null ? pausingActivity.shortComponentName : "(none)");
-            if (isState(State.PAUSING)) {
-                setState(State.PAUSED, "activityPausedLocked");
-                if (this.finishing) {
-                    if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -937498525, 0, (String) null, new Object[]{String.valueOf(this)});
-                    }
-                    completeFinishing("activityPausedLocked");
-                }
-            }
-        }
-        this.mDisplayContent.handleActivitySizeCompatModeIfNeeded(this);
-        this.mRootWindowContainer.ensureActivitiesVisible(null, 0, false);
-    }
-
-    public void schedulePauseTimeout() {
-        this.pauseTime = SystemClock.uptimeMillis();
-        this.mAtmService.mH.postDelayed(this.mPauseTimeoutRunnable, 500L);
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -705939410, 0, (String) null, (Object[]) null);
-        }
-    }
-
-    public final void removePauseTimeout() {
+    public final void removeTimeouts() {
+        this.mTaskSupervisor.mHandler.removeMessages(200, this);
         this.mAtmService.mH.removeCallbacks(this.mPauseTimeoutRunnable);
-    }
-
-    public final void removeDestroyTimeout() {
-        this.mAtmService.mH.removeCallbacks(this.mDestroyTimeoutRunnable);
-    }
-
-    public final void removeStopTimeout() {
         this.mAtmService.mH.removeCallbacks(this.mStopTimeoutRunnable);
-    }
-
-    public void removeTimeouts() {
-        this.mTaskSupervisor.removeIdleTimeoutForActivity(this);
-        removePauseTimeout();
-        removeStopTimeout();
-        removeDestroyTimeout();
-        finishLaunchTickingLocked();
-    }
-
-    public void stopIfPossible() {
-        Task rootTask = getRootTask();
-        if (isNoHistory() && !this.finishing) {
-            if (!rootTask.shouldSleepActivities() && (!CoreRune.SYSFW_APP_PREL || !this.mIsPrelMode)) {
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_STATES, -1136139407, 0, (String) null, new Object[]{String.valueOf(this)});
-                }
-                if (finishIfPossible("stop-no-history", false) != 0) {
-                    resumeKeyDispatchingLocked();
-                    return;
-                }
-            } else if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_STATES, 485170982, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-        }
-        if (attachedToProcess()) {
-            resumeKeyDispatchingLocked();
-            try {
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 189628502, 0, (String) null, new Object[]{String.valueOf(this)});
-                }
-                setState(State.STOPPING, "stopIfPossible");
-                EventLogTags.writeWmStopActivity(this.mUserId, System.identityHashCode(this), this.shortComponentName);
-                this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ActivityLifecycleItem) StopActivityItem.obtain(this.configChangeFlags));
-                this.mAtmService.mH.postDelayed(this.mStopTimeoutRunnable, 11000L);
-            } catch (Exception e) {
-                Slog.w("ActivityTaskManager", "Exception thrown during pause", e);
-                this.mAppStopped = true;
-                if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 306524472, 0, (String) null, new Object[]{String.valueOf(this)});
-                }
-                setState(State.STOPPED, "stopIfPossible");
-                if (this.deferRelaunchUntilPaused) {
-                    destroyImmediately("stop-except");
-                }
-            }
-        }
-    }
-
-    public void activityStopped(Bundle bundle, PersistableBundle persistableBundle, CharSequence charSequence) {
-        AppPrelaunchManagerService appPrelaunchManagerService;
-        if (this.mDeferHidingClient) {
-            Slog.w("ActivityTaskManager", "activityStopped: clear defer client, " + this);
-            setDeferHidingClient(false);
-        }
-        removeStopTimeout();
-        State state = this.mState;
-        boolean z = state == State.STOPPING;
-        if (!z && state != State.RESTARTING_PROCESS) {
-            Slog.i("ActivityTaskManager", "Activity reported stop, but no longer stopping: " + this + " " + this.mState);
-            return;
-        }
-        if (persistableBundle != null) {
-            this.mPersistentState = persistableBundle;
-            this.mAtmService.notifyTaskPersisterLocked(this.task, false);
-        }
-        if (bundle != null) {
-            setSavedState(bundle);
-            this.launchCount = 0;
-            updateTaskDescription(charSequence);
-        }
-        if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_STATES, -172326720, 0, (String) null, new Object[]{String.valueOf(this), String.valueOf(this.mIcicle)});
-        }
-        if (z) {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -1305791032, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            setState(State.STOPPED, "activityStopped");
-        }
-        this.mAppStopped = true;
-        this.firstWindowDrawn = false;
-        Task task = this.task;
-        if (task.mLastRecentsAnimationTransaction != null) {
-            task.clearLastRecentsAnimationTransaction(true);
-        }
-        this.mDisplayContent.mPinnedTaskController.onActivityHidden(this.mActivityComponent);
-        this.mDisplayContent.mUnknownAppVisibilityController.appRemovedOrHidden(this);
-        if (isClientVisible()) {
-            if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_BUG_FIX && isVisible() && !this.mTransitionController.inTransition(this)) {
-                Slog.d("ActivityTaskManager", "activityStopped, make sure activity is invisible, r=" + this);
-                commitVisibility(false, true);
-            } else {
-                setClientVisible(false);
-            }
-        }
-        destroySurfaces();
-        removeStartingWindow();
-        if (this.finishing) {
-            abortAndClearOptionsAnimation();
-        } else if (this.deferRelaunchUntilPaused) {
-            destroyImmediately("stop-config");
-            this.mRootWindowContainer.resumeFocusedTasksTopActivities();
-        } else {
-            this.mAtmService.updatePreviousProcess(this);
-        }
-        this.mTaskSupervisor.checkReadyForSleepLocked(true);
-        if (CoreRune.SYSFW_APP_PREL && this.mShouldPrelNotify && (appPrelaunchManagerService = this.mAtmService.mAps) != null) {
-            WindowProcessController windowProcessController = this.app;
-            if (windowProcessController != null) {
-                windowProcessController.mIsPrelScheduleGroupOverride = false;
-            }
-            this.mShouldPrelNotify = false;
-            appPrelaunchManagerService.setTaskProcessedForPrelaunchedAppAsync(getUid());
-        }
-    }
-
-    public void addToStopping(boolean z, boolean z2, String str) {
-        if (!this.mTaskSupervisor.mStoppingActivities.contains(this)) {
-            EventLogTags.writeWmAddToStopping(this.mUserId, System.identityHashCode(this), this.shortComponentName, str);
-            this.mTaskSupervisor.mStoppingActivities.add(this);
-        }
-        Task rootTask = getRootTask();
-        boolean z3 = true;
-        if (this.mTaskSupervisor.mStoppingActivities.size() <= 3 && (!isRootOfTask() || rootTask.getChildCount() > 1)) {
-            z3 = false;
-        }
-        if (z || z3) {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, 1126328412, 15, (String) null, new Object[]{Boolean.valueOf(z3), Boolean.valueOf(!z2)});
-            }
-            if (!z2) {
-                this.mTaskSupervisor.scheduleIdle();
-                return;
-            } else {
-                this.mTaskSupervisor.scheduleIdleTimeout(this);
-                return;
-            }
-        }
-        rootTask.checkReadyForSleep();
-    }
-
-    public void startLaunchTickingLocked() {
-        if (!Build.IS_USER && this.launchTickTime == 0) {
-            this.launchTickTime = SystemClock.uptimeMillis();
-            continueLaunchTicking();
-        }
-    }
-
-    public final boolean continueLaunchTicking() {
-        Task rootTask;
-        if (this.launchTickTime == 0 || (rootTask = getRootTask()) == null) {
-            return false;
-        }
-        rootTask.removeLaunchTickMessages();
-        this.mAtmService.mH.postDelayed(this.mLaunchTickRunnable, 500L);
-        return true;
-    }
-
-    public void removeLaunchTickRunnable() {
-        this.mAtmService.mH.removeCallbacks(this.mLaunchTickRunnable);
-    }
-
-    public void finishLaunchTickingLocked() {
+        this.mAtmService.mH.removeCallbacks(this.mDestroyTimeoutRunnable);
         this.launchTickTime = 0L;
         Task rootTask = getRootTask();
         if (rootTask == null) {
             return;
         }
-        rootTask.removeLaunchTickMessages();
+        rootTask.forAllActivities(new Task$$ExternalSyntheticLambda6(5));
     }
 
-    public boolean mayFreezeScreenLocked() {
-        return mayFreezeScreenLocked(this.app);
-    }
-
-    public final boolean mayFreezeScreenLocked(WindowProcessController windowProcessController) {
-        return (!hasProcess() || windowProcessController.isCrashing() || windowProcessController.isNotResponding()) ? false : true;
-    }
-
-    public void startFreezingScreenLocked(int i) {
-        startFreezingScreenLocked(this.app, i);
-    }
-
-    public void startFreezingScreenLocked(WindowProcessController windowProcessController, int i) {
-        if (mayFreezeScreenLocked(windowProcessController)) {
-            if (getParent() == null) {
-                Slog.w(StartingSurfaceController.TAG, "Attempted to freeze screen with non-existing app token: " + this.token);
-                return;
-            }
-            if (((-536870913) & i) == 0 && okToDisplay()) {
-                if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 1836306327, 0, (String) null, new Object[]{String.valueOf(this.token)});
-                    return;
-                }
-                return;
-            }
-            startFreezingScreen();
-        }
-    }
-
-    public void startFreezingScreen() {
-        startFreezingScreen(-1);
-    }
-
-    public void startFreezingScreen(int i) {
-        if (this.mTransitionController.isShellTransitionsEnabled()) {
-            return;
-        }
-        if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ORIENTATION, 1746778201, 252, (String) null, new Object[]{String.valueOf(this.token), Boolean.valueOf(isVisible()), Boolean.valueOf(this.mFreezingScreen), Boolean.valueOf(this.mVisibleRequested), String.valueOf(new RuntimeException().fillInStackTrace())});
-        }
-        if (this.mVisibleRequested) {
-            boolean z = i != -1;
-            if (!this.mFreezingScreen) {
-                this.mFreezingScreen = true;
-                this.mWmService.registerAppFreezeListener(this);
-                WindowManagerService windowManagerService = this.mWmService;
-                int i2 = windowManagerService.mAppsFreezingScreen + 1;
-                windowManagerService.mAppsFreezingScreen = i2;
-                if (i2 == 1) {
-                    if (z) {
-                        this.mDisplayContent.getDisplayRotation().cancelSeamlessRotation();
-                    }
-                    this.mWmService.startFreezingDisplay(0, 0, this.mDisplayContent, i);
-                    this.mWmService.mH.removeMessages(17);
-                    this.mWmService.mH.sendEmptyMessageDelayed(17, 2000L);
-                }
-            }
-            if (z) {
-                return;
-            }
-            int size = this.mChildren.size();
-            for (int i3 = 0; i3 < size; i3++) {
-                ((WindowState) this.mChildren.get(i3)).onStartFreezingScreen();
-            }
-        }
-    }
-
-    public boolean isFreezingScreen() {
-        return this.mFreezingScreen;
-    }
-
-    @Override // com.android.server.wm.WindowManagerService.AppFreezeListener
-    public void onAppFreezeTimeout() {
-        Slog.w(StartingSurfaceController.TAG, "Force clearing freeze: " + this);
-        stopFreezingScreen(true, true);
-    }
-
-    public void stopFreezingScreenLocked(boolean z) {
-        if (z || this.frozenBeforeDestroy) {
-            this.frozenBeforeDestroy = false;
-            if (getParent() == null) {
-                return;
-            }
-            if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 466506262, 60, (String) null, new Object[]{String.valueOf(this.token), Boolean.valueOf(isVisible()), Boolean.valueOf(isFreezingScreen())});
-            }
-            stopFreezingScreen(true, z);
-        }
-    }
-
-    public void stopFreezingScreen(boolean z, boolean z2) {
-        if (this.mFreezingScreen) {
-            if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 539077569, 12, (String) null, new Object[]{String.valueOf(this), Boolean.valueOf(z2)});
-            }
-            int size = this.mChildren.size();
-            boolean z3 = false;
-            for (int i = 0; i < size; i++) {
-                z3 |= ((WindowState) this.mChildren.get(i)).onStopFreezingScreen();
-            }
-            if (z2 || z3) {
-                if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -251259736, 0, (String) null, new Object[]{String.valueOf(this)});
-                }
-                this.mFreezingScreen = false;
-                this.mWmService.unregisterAppFreezeListener(this);
-                r8.mAppsFreezingScreen--;
-                this.mWmService.mLastFinishedFreezeSource = this;
-            }
-            if (z) {
-                if (z3) {
-                    this.mWmService.mWindowPlacerLocked.performSurfacePlacement();
-                }
-                this.mWmService.stopFreezingDisplayLocked();
-            }
-        }
-    }
-
-    public void onFirstWindowDrawn(WindowState windowState) {
-        ActivityRecord activityRecord;
-        this.firstWindowDrawn = true;
-        this.mSplashScreenStyleSolidColor = true;
-        if (windowState.mAttrs.type != 1) {
-            updateReportedVisibilityLocked();
-            return;
-        }
-        if (this.mStartingWindow != null) {
-            if (ProtoLogCache.WM_DEBUG_STARTING_WINDOW_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 1677260366, 0, "Finish starting %s: first real window is shown, no animation", new Object[]{String.valueOf(windowState.mToken)});
-            }
-            windowState.cancelAnimation();
-        }
-        Task task = this.task;
-        if (task.mSharedStartingData == null) {
-            task = null;
-        }
-        if (task == null) {
-            removeStartingWindow();
-        } else if (task.getActivity(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda32
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$onFirstWindowDrawn$13;
-                lambda$onFirstWindowDrawn$13 = ActivityRecord.lambda$onFirstWindowDrawn$13((ActivityRecord) obj);
-                return lambda$onFirstWindowDrawn$13;
-            }
-        }) == null && (activityRecord = task.topActivityContainsStartingWindow()) != null) {
-            activityRecord.removeStartingWindow();
-        }
-        updateReportedVisibilityLocked();
-    }
-
-    public static /* synthetic */ boolean lambda$onFirstWindowDrawn$13(ActivityRecord activityRecord) {
-        return activityRecord.isVisibleRequested() && !activityRecord.firstWindowDrawn;
-    }
-
-    public final boolean setTaskHasBeenVisible() {
-        if (this.task.getHasBeenVisible()) {
-            return false;
-        }
-        if (inTransition()) {
-            this.task.setDeferTaskAppear(true);
-        }
-        this.task.setHasBeenVisible(true);
-        return true;
-    }
-
-    public void onStartingWindowDrawn() {
-        boolean z;
-        if (this.task != null) {
-            this.mSplashScreenStyleSolidColor = true;
-            z = !setTaskHasBeenVisible();
+    public final void reparent(TaskFragment taskFragment, int i, String str) {
+        if (getParent() == null) {
+            Slog.w("ActivityTaskManager", "reparent: Attempted to reparent non-existing app token: " + this.token);
         } else {
-            z = false;
-        }
-        if (z || this.mStartingData == null || this.finishing || this.mLaunchedFromBubble || !this.mVisibleRequested || this.mDisplayContent.mAppTransition.isReady() || this.mDisplayContent.mAppTransition.isRunning() || !this.mDisplayContent.isNextTransitionForward()) {
-            return;
-        }
-        this.mStartingData.mIsTransitionForward = true;
-        if (this != this.mDisplayContent.getLastOrientationSource()) {
-            this.mDisplayContent.updateOrientation();
-        }
-        this.mDisplayContent.executeAppTransition();
-    }
-
-    public final void onWindowsDrawn() {
-        ActivityMetricsLogger.TransitionInfoSnapshot notifyWindowsDrawn = this.mTaskSupervisor.getActivityMetricsLogger().notifyWindowsDrawn(this);
-        boolean z = notifyWindowsDrawn != null;
-        int i = z ? notifyWindowsDrawn.windowsDrawnDelayMs : -1;
-        int launchState = z ? notifyWindowsDrawn.getLaunchState() : 0;
-        if (SemGateConfig.isGateEnabled()) {
-            Log.i("GATE", "<GATE-M>APP_FULLY_LOADED_" + this.packageName + "</GATE-M>");
-            if ("com.android.vending/.AssetBrowserActivity".equals(this.shortComponentName) || "com.android.vending/com.google.android.finsky.activities.TosActivity".equals(this.shortComponentName)) {
-                Log.i("GATE", "<GATE-M> MARKET_LAUNCHED </GATE-M>");
-            } else {
-                Log.i("GATE", "<GATE-M> APP_OPENED </GATE-M>");
-            }
-        }
-        if (z || this == getDisplayArea().topRunningActivity()) {
-            this.mTaskSupervisor.reportActivityLaunched(false, this, i, launchState);
-        }
-        finishLaunchTickingLocked();
-        if (this.task != null) {
-            setTaskHasBeenVisible();
-        }
-        this.mLaunchRootTask = null;
-    }
-
-    public void onWindowsVisible() {
-        this.mTaskSupervisor.stopWaitingForActivityVisible(this);
-        if (!this.nowVisible) {
-            this.nowVisible = true;
-            this.lastVisibleTime = SystemClock.uptimeMillis();
-            this.mAtmService.scheduleAppGcsLocked();
-            this.mTaskSupervisor.scheduleProcessStoppingAndFinishingActivitiesIfNeeded();
-            if (this.mImeInsetsFrozenUntilStartInput && getWindow(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda16
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$onWindowsVisible$14;
-                    lambda$onWindowsVisible$14 = ActivityRecord.lambda$onWindowsVisible$14((WindowState) obj);
-                    return lambda$onWindowsVisible$14;
+            if (getTaskFragment() != taskFragment) {
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ADD_REMOVE_enabled[2]) {
+                    ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, 5521236266092347335L, 20, null, String.valueOf(this), Long.valueOf(this.task.mTaskId), Long.valueOf(i));
                 }
-            }) == null) {
-                this.mImeInsetsFrozenUntilStartInput = false;
-            }
-        }
-        ActivityManagerPerformance activityManagerPerformance = this.mAtmService.mAMBooster;
-        if (activityManagerPerformance != null) {
-            activityManagerPerformance.onActivityVisibleLocked(this);
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$onWindowsVisible$14(WindowState windowState) {
-        return WindowManager.LayoutParams.mayUseInputMethod(windowState.mAttrs.flags);
-    }
-
-    public void onWindowsGone() {
-        this.nowVisible = false;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void checkAppWindowsReadyToShow() {
-        boolean z = this.allDrawn;
-        if (z == this.mLastAllDrawn) {
-            return;
-        }
-        this.mLastAllDrawn = z;
-        if (z) {
-            if (this.mFreezingScreen) {
-                showAllWindowsLocked();
-                stopFreezingScreen(false, true);
-                if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                    ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_ORIENTATION, 806891543, 20, (String) null, new Object[]{String.valueOf(this), Long.valueOf(this.mNumInterestingWindows), Long.valueOf(this.mNumDrawnWindows)});
-                }
-                setAppLayoutChanges(4, "checkAppWindowsReadyToShow: freezingScreen");
+                reparent(taskFragment, i);
                 return;
             }
-            setAppLayoutChanges(8, "checkAppWindowsReadyToShow");
-            if (getDisplayContent().mOpeningApps.contains(this) || !canShowWindows()) {
-                return;
-            }
-            showAllWindowsLocked();
+            throw new IllegalArgumentException(str + ": task fragment =" + taskFragment + " is already the parent of r=" + this);
         }
     }
 
-    public void showAllWindowsLocked() {
-        forAllWindows(new Consumer() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((WindowState) obj).performShowLocked();
-            }
-        }, false);
-    }
-
-    public void updateReportedVisibilityLocked() {
-        int size = this.mChildren.size();
-        this.mReportedVisibilityResults.reset();
-        boolean z = false;
-        for (int i = 0; i < size; i++) {
-            ((WindowState) this.mChildren.get(i)).updateReportedVisibility(this.mReportedVisibilityResults);
-        }
-        WindowState.UpdateReportedVisibilityResults updateReportedVisibilityResults = this.mReportedVisibilityResults;
-        int i2 = updateReportedVisibilityResults.numInteresting;
-        int i3 = updateReportedVisibilityResults.numVisible;
-        int i4 = updateReportedVisibilityResults.numDrawn;
-        boolean z2 = updateReportedVisibilityResults.nowGone;
-        boolean z3 = i2 > 0 && i4 >= i2;
-        if (i2 > 0 && i3 >= i2 && isVisible()) {
-            z = true;
-        }
-        if (!z2) {
-            if (!z3) {
-                z3 = this.mReportedDrawn;
-            }
-            if (!z) {
-                z = this.reportedVisible;
-            }
-        }
-        if (z3 != this.mReportedDrawn) {
-            if (z3) {
-                onWindowsDrawn();
-            }
-            this.mReportedDrawn = z3;
-        }
-        if (z != this.reportedVisible) {
-            this.reportedVisible = z;
-            if (z) {
-                onWindowsVisible();
-            } else {
-                onWindowsGone();
-            }
-        }
-    }
-
-    public boolean isReportedDrawn() {
-        return this.mReportedDrawn;
-    }
-
-    @Override // com.android.server.wm.WindowToken
-    public void setClientVisible(boolean z) {
-        if (z || !this.mDeferHidingClient) {
-            super.setClientVisible(z);
-        }
-    }
-
-    public boolean updateDrawnWindowStates(WindowState windowState) {
-        windowState.setDrawnStateEvaluated(true);
-        if (this.allDrawn && !this.mFreezingScreen) {
-            return false;
-        }
-        long j = this.mLastTransactionSequence;
-        int i = this.mWmService.mTransactionSequence;
-        if (j != i) {
-            this.mLastTransactionSequence = i;
-            this.mNumDrawnWindows = 0;
-            this.mNumInterestingWindows = findMainWindow(false) != null ? 1 : 0;
-        }
-        WindowStateAnimator windowStateAnimator = windowState.mWinAnimator;
-        if (!this.allDrawn && windowState.mightAffectAllDrawn()) {
-            if (ProtoLogGroup.WM_DEBUG_ORIENTATION.isLogToLogcat()) {
-                boolean isAnimating = isAnimating(3, 1);
-                Slog.v("ActivityTaskManager", "Eval win " + windowState + ": isDrawn=" + windowState.isDrawn() + ", isAnimationSet=" + isAnimating);
-                if (!windowState.isDrawn()) {
-                    Slog.v("ActivityTaskManager", "Not displayed: s=" + windowStateAnimator.mSurfaceController + " pv=" + windowState.isVisibleByPolicy() + " mDrawState=" + windowStateAnimator.drawStateToString() + " ph=" + windowState.isParentWindowHidden() + " th=" + this.mVisibleRequested + " a=" + isAnimating);
-                }
-            }
-            WindowState windowState2 = this.mStartingWindow;
-            if (windowState != windowState2) {
-                if (windowState2 == null && windowState.mAttrs.type == 3) {
-                    Slog.d("ActivityTaskManager", "updateDrawnWindowStates: this=" + this + " not interested in w=" + windowState);
-                } else if (windowState.isInteresting()) {
-                    if (findMainWindow(false) != windowState) {
-                        this.mNumInterestingWindows++;
-                    }
-                    if (windowState.isDrawn()) {
-                        this.mNumDrawnWindows++;
-                        if (!ProtoLogGroup.WM_DEBUG_ORIENTATION.isLogToLogcat()) {
-                            return true;
-                        }
-                        Slog.v("ActivityTaskManager", "tokenMayBeDrawn: " + this + " w=" + windowState + " numInteresting=" + this.mNumInterestingWindows + " freezingScreen=" + this.mFreezingScreen + " mAppFreezing=" + windowState.mAppFreezing);
-                        return true;
-                    }
-                }
-            } else if (this.mStartingData != null && windowState.isDrawn()) {
-                this.mStartingData.mIsDisplayed = true;
-            }
-        }
-        return false;
-    }
-
-    public boolean inputDispatchingTimedOut(TimeoutRecord timeoutRecord, int i) {
-        ActivityRecord waitingHistoryRecordLocked;
-        WindowProcessController windowProcessController;
-        boolean z;
-        try {
-            Trace.traceBegin(64L, "ActivityRecord#inputDispatchingTimedOut()");
-            timeoutRecord.mLatencyTracker.waitingOnGlobalLockStarted();
-            WindowManagerGlobalLock windowManagerGlobalLock = this.mAtmService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    timeoutRecord.mLatencyTracker.waitingOnGlobalLockEnded();
-                    waitingHistoryRecordLocked = getWaitingHistoryRecordLocked();
-                    windowProcessController = this.app;
-                    z = hasProcess() && (this.app.getPid() == i || i == -1);
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            WindowManagerService.resetPriorityAfterLockedSection();
-            if (z) {
-                return this.mAtmService.mAmInternal.inputDispatchingTimedOut(windowProcessController.mOwner, waitingHistoryRecordLocked.shortComponentName, waitingHistoryRecordLocked.info.applicationInfo, this.shortComponentName, this.app, false, timeoutRecord);
-            }
-            return this.mAtmService.mAmInternal.inputDispatchingTimedOut(i, false, timeoutRecord) <= 0;
-        } finally {
-            Trace.traceEnd(64L);
-        }
-    }
-
-    public final ActivityRecord getWaitingHistoryRecordLocked() {
-        Task topDisplayFocusedRootTask;
-        if (!this.mAppStopped || (topDisplayFocusedRootTask = this.mRootWindowContainer.getTopDisplayFocusedRootTask()) == null) {
-            return this;
-        }
-        ActivityRecord topResumedActivity = topDisplayFocusedRootTask.getTopResumedActivity();
-        if (topResumedActivity == null) {
-            topResumedActivity = topDisplayFocusedRootTask.getTopPausingActivity();
-        }
-        return topResumedActivity != null ? topResumedActivity : this;
-    }
-
-    public boolean canBeTopRunning() {
-        return !this.finishing && showToCurrentUser();
-    }
-
-    public boolean isInterestingToUserLocked() {
-        State state;
-        return this.mVisibleRequested || this.nowVisible || (state = this.mState) == State.PAUSING || state == State.RESUMED;
-    }
-
-    public static int getTaskForActivityLocked(IBinder iBinder, boolean z) {
-        ActivityRecord forTokenLocked = forTokenLocked(iBinder);
-        if (forTokenLocked == null || forTokenLocked.getParent() == null) {
-            return -1;
-        }
-        return getTaskForActivityLocked(forTokenLocked, z);
-    }
-
-    public static int getTaskForActivityLocked(ActivityRecord activityRecord, boolean z) {
-        Task task = activityRecord.task;
-        if (!z || activityRecord.compareTo((WindowContainer) task.getRootActivity(false, true)) <= 0) {
-            return task.mTaskId;
-        }
-        return -1;
-    }
-
-    public static ActivityRecord isInRootTaskLocked(IBinder iBinder) {
-        ActivityRecord forTokenLocked = forTokenLocked(iBinder);
-        if (forTokenLocked != null) {
-            return forTokenLocked.getRootTask().isInTask(forTokenLocked);
-        }
-        return null;
-    }
-
-    public static Task getRootTask(IBinder iBinder) {
-        ActivityRecord isInRootTaskLocked = isInRootTaskLocked(iBinder);
-        if (isInRootTaskLocked != null) {
-            return isInRootTaskLocked.getRootTask();
-        }
-        return null;
-    }
-
-    public static ActivityRecord isInAnyTask(IBinder iBinder) {
-        ActivityRecord forTokenLocked = forTokenLocked(iBinder);
-        if (forTokenLocked == null || !forTokenLocked.isAttached()) {
-            return null;
-        }
-        return forTokenLocked;
-    }
-
-    public int getDisplayId() {
-        DisplayContent displayContent;
-        Task task = this.task;
-        if (task == null || (displayContent = task.mDisplayContent) == null) {
-            return -1;
-        }
-        return displayContent.mDisplayId;
-    }
-
-    public final boolean isDestroyable() {
-        return (this.finishing || !hasProcess() || isState(State.RESUMED) || getRootTask() == null || this == getTaskFragment().getPausingActivity() || !this.mHaveState || !this.mAppStopped || this.mVisibleRequested) ? false : true;
-    }
-
-    public static String createImageFilename(long j, int i) {
-        return String.valueOf(i) + "_activity_icon_" + j + ".png";
-    }
-
-    public void setTaskDescription(ActivityManager.TaskDescription taskDescription) {
-        Bitmap icon;
-        if (taskDescription.getIconFilename() == null && (icon = taskDescription.getIcon()) != null) {
-            String absolutePath = new File(TaskPersister.getUserImagesDir(this.task.mUserId), createImageFilename(this.createTime, this.task.mTaskId)).getAbsolutePath();
-            this.mAtmService.getRecentTasks().saveImage(icon, absolutePath);
-            taskDescription.setIconFilename(absolutePath);
-        }
-        this.taskDescription = taskDescription;
-        getTask().updateTaskDescription();
-    }
-
-    public void setLocusId(LocusId locusId) {
-        if (Objects.equals(locusId, this.mLocusId)) {
-            return;
-        }
-        this.mLocusId = locusId;
-        if (getTask() != null) {
-            getTask().dispatchTaskInfoChangedIfNeeded(false);
-        }
-    }
-
-    public LocusId getLocusId() {
-        return this.mLocusId;
-    }
-
-    public void reportScreenCaptured() {
-        RemoteCallbackList remoteCallbackList = this.mCaptureCallbacks;
-        if (remoteCallbackList != null) {
-            int beginBroadcast = remoteCallbackList.beginBroadcast();
-            for (int i = 0; i < beginBroadcast; i++) {
-                try {
-                    this.mCaptureCallbacks.getBroadcastItem(i).onScreenCaptured();
-                } catch (RemoteException unused) {
-                }
-            }
-            this.mCaptureCallbacks.finishBroadcast();
-        }
-    }
-
-    public void registerCaptureObserver(IScreenCaptureObserver iScreenCaptureObserver) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mWmService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                if (this.mCaptureCallbacks == null) {
-                    this.mCaptureCallbacks = new RemoteCallbackList();
-                }
-                this.mCaptureCallbacks.register(iScreenCaptureObserver);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public void unregisterCaptureObserver(IScreenCaptureObserver iScreenCaptureObserver) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mWmService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                RemoteCallbackList remoteCallbackList = this.mCaptureCallbacks;
-                if (remoteCallbackList != null) {
-                    remoteCallbackList.unregister(iScreenCaptureObserver);
-                }
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public boolean isRegisteredForScreenCaptureCallback() {
-        RemoteCallbackList remoteCallbackList = this.mCaptureCallbacks;
-        return remoteCallbackList != null && remoteCallbackList.getRegisteredCallbackCount() > 0;
-    }
-
-    public void setVoiceSessionLocked(IVoiceInteractionSession iVoiceInteractionSession) {
-        this.voiceSession = iVoiceInteractionSession;
-        this.pendingVoiceInteractionStart = false;
-    }
-
-    public void clearVoiceSessionLocked() {
-        this.voiceSession = null;
-        this.pendingVoiceInteractionStart = false;
-    }
-
-    public void showStartingWindow(boolean z) {
-        showStartingWindow(null, false, z, false, null);
-    }
-
-    public final ActivityRecord searchCandidateLaunchingActivity() {
-        ActivityRecord activityBelow = this.task.getActivityBelow(this);
-        if (activityBelow == null) {
-            activityBelow = this.task.getParent().getActivityBelow(this);
-        }
-        if (activityBelow == null || activityBelow.isActivityTypeHome()) {
-            return null;
-        }
-        WindowProcessController windowProcessController = this.app;
-        if (windowProcessController == null) {
-            windowProcessController = (WindowProcessController) this.mAtmService.mProcessNames.get(this.processName, this.info.applicationInfo.uid);
-        }
-        WindowProcessController windowProcessController2 = activityBelow.app;
-        if (windowProcessController2 == null) {
-            windowProcessController2 = (WindowProcessController) this.mAtmService.mProcessNames.get(activityBelow.processName, activityBelow.info.applicationInfo.uid);
-        }
-        if (windowProcessController2 == windowProcessController || this.mActivityComponent.getPackageName().equals(activityBelow.mActivityComponent.getPackageName())) {
-            return activityBelow;
-        }
-        return null;
-    }
-
-    public final boolean isIconStylePreferred(int i) {
-        AttributeCache.Entry entry;
-        return i != 0 && (entry = AttributeCache.instance().get(this.packageName, i, com.android.internal.R.styleable.Window, this.mWmService.mCurrentUserId)) != null && entry.array.hasValue(61) && entry.array.getInt(61, 0) == 1;
-    }
-
-    public final boolean shouldUseSolidColorSplashScreen(ActivityRecord activityRecord, boolean z, ActivityOptions activityOptions, int i) {
-        int i2;
-        if (activityRecord == null && !z && this.task.getActivityAbove(this) != null) {
-            return true;
-        }
-        if (activityOptions != null) {
-            int splashScreenStyle = activityOptions.getSplashScreenStyle();
-            if (splashScreenStyle == 0) {
-                return true;
-            }
-            if (splashScreenStyle == 1 || isIconStylePreferred(i) || (i2 = this.mLaunchSourceType) == 2 || this.launchedFromUid == 2000) {
-                return false;
-            }
-            if (i2 == 3) {
-                return true;
-            }
-        } else if (isIconStylePreferred(i)) {
-            return false;
-        }
-        if (activityRecord == null) {
-            activityRecord = searchCandidateLaunchingActivity();
-        }
-        if (activityRecord != null && !activityRecord.isActivityTypeHome()) {
-            return activityRecord.mSplashScreenStyleSolidColor;
-        }
-        if (!z) {
-            return true;
-        }
-        int i3 = this.mLaunchSourceType;
-        return (i3 == 1 || i3 == 2 || this.launchedFromUid == 2000) ? false : true;
-    }
-
-    public final int getSplashscreenTheme(ActivityOptions activityOptions) {
-        String splashScreenThemeResName = activityOptions != null ? activityOptions.getSplashScreenThemeResName() : null;
-        if (splashScreenThemeResName == null || splashScreenThemeResName.isEmpty()) {
-            try {
-                splashScreenThemeResName = this.mAtmService.getPackageManager().getSplashScreenTheme(this.packageName, this.mUserId);
-            } catch (RemoteException unused) {
-            }
-        }
-        if (splashScreenThemeResName == null || splashScreenThemeResName.isEmpty()) {
-            return 0;
-        }
-        try {
-            return this.mAtmService.mContext.createPackageContext(this.packageName, 0).getResources().getIdentifier(splashScreenThemeResName, null, null);
-        } catch (PackageManager.NameNotFoundException | Resources.NotFoundException unused2) {
-            return 0;
-        }
-    }
-
-    public void showStartingWindow(ActivityRecord activityRecord, boolean z, boolean z2, boolean z3, ActivityRecord activityRecord2) {
-        showStartingWindow(activityRecord, z, z2, isProcessRunning(), z3, activityRecord2, null);
-    }
-
-    public void showStartingWindow(ActivityRecord activityRecord, boolean z, boolean z2, boolean z3, boolean z4, ActivityRecord activityRecord2, ActivityOptions activityOptions) {
-        showStartingWindow(activityRecord, z, z2, z3, z4, activityRecord2, activityOptions, false);
-    }
-
-    public void showStartingWindow(ActivityRecord activityRecord, boolean z, boolean z2, boolean z3, boolean z4, ActivityRecord activityRecord2, ActivityOptions activityOptions, boolean z5) {
-        if (this.mTaskOverlay) {
-            return;
-        }
-        ActivityOptions activityOptions2 = activityOptions != null ? activityOptions : this.mPendingOptions;
-        if (activityOptions2 == null || activityOptions2.getAnimationType() != 5) {
-            int evaluateStartingWindowTheme = evaluateStartingWindowTheme(activityRecord, this.packageName, this.theme, z4 ? getSplashscreenTheme(activityOptions2) : 0);
-            this.mSplashScreenStyleSolidColor = shouldUseSolidColorSplashScreen(activityRecord2, z4, activityOptions2, evaluateStartingWindowTheme);
-            boolean z6 = this.mState.ordinal() >= State.STARTED.ordinal() && this.mState.ordinal() <= State.STOPPED.ordinal();
-            addStartingWindow(this.packageName, evaluateStartingWindowTheme, activityRecord, z || (!z && !z6 && this.task.getActivity(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda5
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$showStartingWindow$16;
-                    lambda$showStartingWindow$16 = ActivityRecord.this.lambda$showStartingWindow$16((ActivityRecord) obj);
-                    return lambda$showStartingWindow$16;
-                }
-            }) == null), z2, z3, allowTaskSnapshot(), z6, this.mSplashScreenStyleSolidColor, this.allDrawn, z5 && !allowSplashScreenFromRecents());
-        }
-    }
-
-    public /* synthetic */ boolean lambda$showStartingWindow$16(ActivityRecord activityRecord) {
-        return (activityRecord.finishing || activityRecord == this) ? false : true;
-    }
-
-    public final boolean allowSplashScreenFromRecents() {
-        int i;
-        AttributeCache.Entry entry = AttributeCache.instance().get(this.packageName, this.theme, com.android.internal.R.styleable.Window, this.mWmService.mCurrentUserId);
-        if (entry == null) {
-            return false;
-        }
-        try {
-            i = entry.array.getColor(56, 0);
-        } catch (RuntimeException e) {
-            Log.e("ActivityTaskManager", "allowSplashScreenFromRecents, Exception While get Color" + e);
-            i = 0;
-        }
-        if (CoreRune.SAFE_DEBUG) {
-            Slog.d("ActivityTaskManager", "allowSplashScreenFromRecents, splashBackgroundColor=" + i + ", r=" + this);
-        }
-        return i != 0;
-    }
-
-    public void cancelInitializing() {
-        if (this.mStartingData != null) {
-            removeStartingWindowAnimation(false);
-        }
-        if (this.mDisplayContent.mUnknownAppVisibilityController.allResolved()) {
-            return;
-        }
-        this.mDisplayContent.mUnknownAppVisibilityController.appRemovedOrHidden(this);
-    }
-
-    public void postWindowRemoveStartingWindowCleanup() {
-        if (this.mChildren.size() == 0 && this.mVisibleSetFromTransferredStartingWindow) {
-            setVisible(false);
-        }
-    }
-
-    public void requestUpdateWallpaperIfNeeded() {
+    public final void requestUpdateWallpaperIfNeeded() {
         for (int size = this.mChildren.size() - 1; size >= 0; size--) {
             ((WindowState) this.mChildren.get(size)).requestUpdateWallpaperIfNeeded();
         }
     }
 
-    public WindowState getTopFullscreenOpaqueWindow() {
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            WindowState windowState = (WindowState) this.mChildren.get(size);
-            if (windowState != null && windowState.mAttrs.isFullscreen() && !windowState.isFullyTransparent()) {
-                return windowState;
-            }
-        }
-        return null;
-    }
-
-    public WindowState findMainWindow() {
-        return findMainWindow(true);
-    }
-
-    public WindowState findMainWindow(boolean z) {
-        WindowState windowState = null;
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            WindowState windowState2 = (WindowState) this.mChildren.get(size);
-            int i = windowState2.mAttrs.type;
-            if (i == 1 || (z && i == 3)) {
-                if (!windowState2.mAnimatingExit) {
-                    return windowState2;
-                }
-                windowState = windowState2;
-            }
-        }
-        return windowState;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean needsZBoost() {
-        return this.mNeedsZBoost || super.needsZBoost();
-    }
-
-    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.SurfaceAnimator.Animatable
-    public SurfaceControl getAnimationLeashParent() {
-        if (inPinnedWindowingMode() || inFreeformWindowingMode()) {
-            return getRootTask().getSurfaceControl();
-        }
-        return super.getAnimationLeashParent();
-    }
-
-    public boolean shouldAnimate() {
-        Task task = this.task;
-        return task == null || task.shouldAnimate();
-    }
-
-    public final SurfaceControl createAnimationBoundsLayer(SurfaceControl.Transaction transaction) {
-        if (ProtoLogCache.WM_DEBUG_APP_TRANSITIONS_ANIM_enabled) {
-            ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS_ANIM, 1720229827, 0, (String) null, (Object[]) null);
-        }
-        SurfaceControl.Builder callsite = makeAnimationLeash().setParent(getAnimationLeashParent()).setName(getSurfaceControl() + " - animation-bounds").setCallsite("ActivityRecord.createAnimationBoundsLayer");
-        if (this.mNeedsLetterboxedAnimation) {
-            callsite.setEffectLayer();
-        }
-        SurfaceControl build = callsite.build();
-        transaction.show(build);
-        return build;
-    }
-
-    @Override // com.android.server.wm.SurfaceAnimator.Animatable
-    public boolean shouldDeferAnimationFinish(Runnable runnable) {
-        AnimatingActivityRegistry animatingActivityRegistry = this.mAnimatingActivityRegistry;
-        return animatingActivityRegistry != null && animatingActivityRegistry.notifyAboutToFinish(this, runnable);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isWaitingForTransitionStart() {
-        DisplayContent displayContent = getDisplayContent();
-        return displayContent != null && displayContent.mAppTransition.isTransitionSet() && (displayContent.mOpeningApps.contains(this) || displayContent.mClosingApps.contains(this) || displayContent.mChangingContainers.contains(this));
-    }
-
-    public boolean isTransitionForward() {
-        StartingData startingData = this.mStartingData;
-        return (startingData != null && startingData.mIsTransitionForward) || this.mDisplayContent.isNextTransitionForward();
-    }
-
-    @Override // com.android.server.wm.SurfaceAnimator.Animatable
-    public void onLeashAnimationStarting(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
-        AnimatingActivityRegistry animatingActivityRegistry = this.mAnimatingActivityRegistry;
-        if (animatingActivityRegistry != null) {
-            animatingActivityRegistry.notifyStarting(this);
-        }
-        if (this.mNeedsLetterboxedAnimation) {
-            updateLetterboxSurface(findMainWindow(), transaction);
-            this.mNeedsAnimationBoundsLayer = true;
-        }
-        if (this.mNeedsAnimationBoundsLayer) {
-            ((WindowContainer) this).mTmpRect.setEmpty();
-            if (getDisplayContent().mAppTransitionController.isTransitWithinTask(getTransit(), this.task)) {
-                this.task.getBounds(((WindowContainer) this).mTmpRect);
-            } else {
-                Task rootTask = getRootTask();
-                if (rootTask == null) {
-                    return;
-                } else {
-                    rootTask.getBounds(((WindowContainer) this).mTmpRect);
-                }
-            }
-            this.mAnimationBoundsLayer = createAnimationBoundsLayer(transaction);
-            transaction.setLayer(surfaceControl, 0);
-            transaction.setLayer(this.mAnimationBoundsLayer, getLastLayer());
-            if (this.mNeedsLetterboxedAnimation) {
-                int roundedCornersRadius = this.mLetterboxUiController.getRoundedCornersRadius(findMainWindow());
-                Rect rect = new Rect();
-                getLetterboxInnerBounds(rect);
-                transaction.setCornerRadius(this.mAnimationBoundsLayer, roundedCornersRadius).setCrop(this.mAnimationBoundsLayer, rect);
-            }
-            transaction.reparent(surfaceControl, this.mAnimationBoundsLayer);
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void prepareSurfaces() {
-        boolean z = isVisible() || isAnimating(2, 9);
-        if (this.mSurfaceControl != null) {
-            if (z && !this.mLastSurfaceShowing) {
-                getSyncTransaction().show(this.mSurfaceControl);
-            } else if (!z && this.mLastSurfaceShowing) {
-                getSyncTransaction().hide(this.mSurfaceControl);
-            }
-            if (z && this.mSyncState == 0) {
-                this.mActivityRecordInputSink.applyChangesToSurfaceIfChanged(getPendingTransaction());
-            }
-        }
-        WindowContainerThumbnail windowContainerThumbnail = this.mThumbnail;
-        if (windowContainerThumbnail != null) {
-            windowContainerThumbnail.setShowing(getPendingTransaction(), z);
-        }
-        this.mLastSurfaceShowing = z;
-        super.prepareSurfaces();
-    }
-
-    public boolean isSurfaceShowing() {
-        return this.mLastSurfaceShowing;
-    }
-
-    public void attachThumbnailAnimation() {
-        if (isAnimating(2, 1)) {
-            HardwareBuffer appTransitionThumbnailHeader = getDisplayContent().mAppTransition.getAppTransitionThumbnailHeader(this.task);
-            if (appTransitionThumbnailHeader == null) {
-                if (ProtoLogCache.WM_DEBUG_APP_TRANSITIONS_enabled) {
-                    ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS, 1528528509, 0, (String) null, new Object[]{String.valueOf(this.task)});
-                    return;
-                }
-                return;
-            }
-            clearThumbnail();
-            SurfaceControl.Transaction pendingTransaction = getAnimatingContainer().getPendingTransaction();
-            WindowContainerThumbnail windowContainerThumbnail = new WindowContainerThumbnail(pendingTransaction, getAnimatingContainer(), appTransitionThumbnailHeader);
-            this.mThumbnail = windowContainerThumbnail;
-            windowContainerThumbnail.startAnimation(pendingTransaction, loadThumbnailAnimation(appTransitionThumbnailHeader));
-        }
-    }
-
-    public void attachCrossProfileAppsThumbnailAnimation() {
-        Drawable drawable;
-        if (isAnimating(2, 1)) {
-            clearThumbnail();
-            WindowState findMainWindow = findMainWindow();
-            if (findMainWindow == null) {
-                return;
-            }
-            Rect relativeFrame = findMainWindow.getRelativeFrame();
-            if (this.task.mUserId == this.mWmService.mCurrentUserId) {
-                drawable = this.mAtmService.getUiContext().getDrawable(R.drawable.ic_clear_normal);
-            } else {
-                drawable = this.mEnterpriseThumbnailDrawable;
-            }
-            HardwareBuffer createCrossProfileAppsThumbnail = getDisplayContent().mAppTransition.createCrossProfileAppsThumbnail(drawable, relativeFrame);
-            if (createCrossProfileAppsThumbnail == null) {
-                return;
-            }
-            SurfaceControl.Transaction pendingTransaction = getPendingTransaction();
-            this.mThumbnail = new WindowContainerThumbnail(pendingTransaction, getTask(), createCrossProfileAppsThumbnail);
-            this.mThumbnail.startAnimation(pendingTransaction, getDisplayContent().mAppTransition.createCrossProfileAppsThumbnailAnimationLocked(relativeFrame), new Point(relativeFrame.left, relativeFrame.top));
-        }
-    }
-
-    public final Animation loadThumbnailAnimation(HardwareBuffer hardwareBuffer) {
-        Rect rect;
-        Rect rect2;
-        DisplayInfo displayInfo = this.mDisplayContent.getDisplayInfo();
-        WindowState findMainWindow = findMainWindow();
-        if (findMainWindow != null) {
-            Rect rect3 = findMainWindow.getInsetsStateWithVisibilityOverride().calculateInsets(findMainWindow.getFrame(), WindowInsets.Type.systemBars(), false).toRect();
-            Rect rect4 = new Rect(findMainWindow.getFrame());
-            rect4.inset(rect3);
-            rect = rect3;
-            rect2 = rect4;
-        } else {
-            rect = null;
-            rect2 = new Rect(0, 0, displayInfo.appWidth, displayInfo.appHeight);
-        }
-        return getDisplayContent().mAppTransition.createThumbnailAspectScaleAnimationLocked(rect2, rect, hardwareBuffer, this.task, this.mDisplayContent.getConfiguration().orientation);
-    }
-
-    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.SurfaceAnimator.Animatable
-    public void onAnimationLeashLost(SurfaceControl.Transaction transaction) {
-        super.onAnimationLeashLost(transaction);
-        SurfaceControl surfaceControl = this.mAnimationBoundsLayer;
-        if (surfaceControl != null) {
-            transaction.remove(surfaceControl);
-            this.mAnimationBoundsLayer = null;
-        }
-        this.mNeedsAnimationBoundsLayer = false;
-        if (this.mNeedsLetterboxedAnimation) {
-            this.mNeedsLetterboxedAnimation = false;
-            updateLetterboxSurface(findMainWindow(), transaction);
-        }
-        AnimatingActivityRegistry animatingActivityRegistry = this.mAnimatingActivityRegistry;
-        if (animatingActivityRegistry != null) {
-            animatingActivityRegistry.notifyFinished(this);
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void onAnimationFinished(int i, AnimationAdapter animationAdapter) {
-        WindowState window;
-        super.onAnimationFinished(i, animationAdapter);
-        Trace.traceBegin(32L, "AR#onAnimationFinished");
-        this.mTransit = -1;
-        this.mTransitFlags = 0;
-        setAppLayoutChanges(12, "ActivityRecord");
-        clearThumbnail();
-        setClientVisible(isVisible() || this.mVisibleRequested);
-        getDisplayContent().computeImeTargetIfNeeded(this);
-        if (ProtoLogCache.WM_DEBUG_ANIM_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ANIM, 2010476671, 1020, (String) null, new Object[]{String.valueOf(this), Boolean.valueOf(this.reportedVisible), Boolean.valueOf(okToDisplay()), Boolean.valueOf(okToAnimate()), Boolean.valueOf(isStartingWindowDisplayed())});
-        }
-        WindowContainerThumbnail windowContainerThumbnail = this.mThumbnail;
-        if (windowContainerThumbnail != null) {
-            windowContainerThumbnail.destroy();
-            this.mThumbnail = null;
-        }
-        new ArrayList(this.mChildren).forEach(new Consumer() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda8
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((WindowState) obj).onExitAnimationDone();
-            }
-        });
-        Task task = this.task;
-        if (task != null && this.startingMoved && (window = task.getWindow(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda9
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$onAnimationFinished$17;
-                lambda$onAnimationFinished$17 = ActivityRecord.lambda$onAnimationFinished$17((WindowState) obj);
-                return lambda$onAnimationFinished$17;
-            }
-        })) != null && window.mAnimatingExit && !window.isSelfAnimating(0, 16)) {
-            window.onExitAnimationDone();
-        }
-        getDisplayContent().mAppTransition.notifyAppTransitionFinishedLocked(this.token);
-        scheduleAnimation();
-        this.mTaskSupervisor.scheduleProcessStoppingAndFinishingActivitiesIfNeeded();
-        Trace.traceEnd(32L);
-    }
-
-    public static /* synthetic */ boolean lambda$onAnimationFinished$17(WindowState windowState) {
-        return windowState.mAttrs.type == 3;
-    }
-
-    public void clearAnimatingFlags() {
-        boolean z = false;
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            z |= ((WindowState) this.mChildren.get(size)).clearAnimatingFlags();
-        }
-        if (z) {
-            requestUpdateWallpaperIfNeeded();
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void cancelAnimation() {
-        super.cancelAnimation();
-        clearThumbnail();
-    }
-
-    public final void clearThumbnail() {
-        WindowContainerThumbnail windowContainerThumbnail = this.mThumbnail;
-        if (windowContainerThumbnail == null) {
-            return;
-        }
-        windowContainerThumbnail.destroy();
-        this.mThumbnail = null;
-    }
-
-    public int getTransit() {
-        return this.mTransit;
-    }
-
-    public void registerRemoteAnimations(RemoteAnimationDefinition remoteAnimationDefinition) {
-        this.mRemoteAnimationDefinition = remoteAnimationDefinition;
-        if (remoteAnimationDefinition != null) {
-            remoteAnimationDefinition.linkToDeath(new IBinder.DeathRecipient() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda0
-                @Override // android.os.IBinder.DeathRecipient
-                public final void binderDied() {
-                    ActivityRecord.this.unregisterRemoteAnimations();
-                }
-            });
-        }
-    }
-
-    public void unregisterRemoteAnimations() {
-        this.mRemoteAnimationDefinition = null;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public RemoteAnimationDefinition getRemoteAnimationDefinition() {
-        return this.mRemoteAnimationDefinition;
-    }
-
-    @Override // com.android.server.wm.WindowToken
-    public void applyFixedRotationTransform(DisplayInfo displayInfo, DisplayFrames displayFrames, Configuration configuration) {
-        Slog.d("ActivityTaskManager", "applyFixedRotationTransform, r=" + this + ", caller=" + Debug.getCallers(5));
-        super.applyFixedRotationTransform(displayInfo, displayFrames, configuration);
-        ensureActivityConfiguration(0, false);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public int getRequestedConfigurationOrientation(boolean z) {
-        return getRequestedConfigurationOrientation(z, getOverrideOrientation());
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public int getRequestedConfigurationOrientation(boolean z, int i) {
-        ActivityRecord activity;
-        if (this.mLetterboxUiController.hasInheritedOrientation()) {
-            RootDisplayArea rootDisplayArea = getRootDisplayArea();
-            if (z && rootDisplayArea != null && rootDisplayArea.isOrientationDifferentFromDisplay()) {
-                return reverseConfigurationOrientation(this.mLetterboxUiController.getInheritedOrientation());
-            }
-            return this.mLetterboxUiController.getInheritedOrientation();
-        }
-        Task task = this.task;
-        if (task != null && i == 3 && (activity = task.getActivity(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda7
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean canDefineOrientationForActivitiesAbove;
-                canDefineOrientationForActivitiesAbove = ((ActivityRecord) obj).canDefineOrientationForActivitiesAbove();
-                return canDefineOrientationForActivitiesAbove;
-            }
-        }, this, false, true)) != null) {
-            return activity.getRequestedConfigurationOrientation(z);
-        }
-        return super.getRequestedConfigurationOrientation(z, i);
-    }
-
-    public boolean canDefineOrientationForActivitiesAbove() {
-        int overrideOrientation;
-        return (this.finishing || (overrideOrientation = getOverrideOrientation()) == -2 || overrideOrientation == 3) ? false : true;
-    }
-
-    @Override // com.android.server.wm.WindowToken
-    public void onCancelFixedRotationTransform(int i) {
-        if (this != this.mDisplayContent.getLastOrientationSource()) {
-            return;
-        }
-        int requestedConfigurationOrientation = getRequestedConfigurationOrientation();
-        if (requestedConfigurationOrientation == 0 || requestedConfigurationOrientation == this.mDisplayContent.getConfiguration().orientation) {
-            this.mDisplayContent.mPinnedTaskController.onCancelFixedRotationTransform();
-            startFreezingScreen(i);
-            ensureActivityConfiguration(0, false);
-            if (this.mTransitionController.isCollecting(this)) {
-                this.task.resetSurfaceControlTransforms();
-            }
-        }
-    }
-
-    public void setRequestedOrientation(int i) {
-        CompatDisplayInsets compatDisplayInsets;
-        if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 847468954, 1, (String) null, new Object[]{Long.valueOf(i), String.valueOf(this)});
-        }
-        EventLogTags.writeWmRequestedOrientation(i, this.packageName);
-        if (this.mLetterboxUiController.shouldIgnoreRequestedOrientation(i)) {
-            return;
-        }
-        if (getRequestedConfigurationOrientation(false, i) != getRequestedConfigurationOrientation(false) && (!CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT || ((compatDisplayInsets = this.mCompatDisplayInsets) != null && !compatDisplayInsets.mCreatedByRotationCompat))) {
-            clearSizeCompatModeAttributes();
-        }
-        if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -1104347731, 0, (String) null, new Object[]{String.valueOf(ActivityInfo.screenOrientationToString(i)), String.valueOf(this)});
-        }
-        setOrientation(i, this);
-        if (CoreRune.MT_SUPPORT_SIZE_COMPAT) {
-            SizeCompatPolicyManager.get().ensureConfiguration(getTask());
-        }
-        if (this.task.isDexCompatEnabled()) {
-            if (this.mAtmService.mDexCompatController.isOrientationChangedLocked(this.task, this)) {
-                this.mAtmService.mDexCompatController.rotateDexCompatTaskLocked(this);
-            } else if (this.task.isDexCompatUiFullscreen()) {
-                this.mAtmService.mDexCompatController.changeWindowingModeIfNeeded(this.task.getRootTask(), this.task, this);
-            }
-        }
-        if (!getMergedOverrideConfiguration().equals(this.mLastReportedConfiguration.getMergedConfiguration())) {
-            ensureActivityConfiguration(0, false, false, true);
-            if (this.mTransitionController.inPlayingTransition(this)) {
-                this.mTransitionController.mValidateActivityCompat.add(this);
-            }
-        }
-        this.mAtmService.getTaskChangeNotificationController().notifyActivityRequestedOrientationChanged(this.task.mTaskId, i);
-        this.mDisplayContent.getDisplayRotation().onSetRequestedOrientation();
-    }
-
-    public void reportDescendantOrientationChangeIfNeeded() {
-        if (onDescendantOrientationChanged(this)) {
-            this.task.dispatchTaskInfoChangedIfNeeded(true);
-        }
-    }
-
-    public boolean shouldIgnoreOrientationRequests() {
-        return this.mAppActivityEmbeddingSplitsEnabled && ActivityInfo.isFixedOrientationPortrait(getOverrideOrientation()) && !this.task.inMultiWindowMode() && getTask().getConfiguration().smallestScreenWidthDp >= 600;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public int getOrientation(int i) {
-        if (shouldIgnoreOrientationRequests()) {
-            return -2;
-        }
-        if (i == 3) {
-            return getOverrideOrientation();
-        }
-        if (getDisplayContent().mClosingApps.contains(this) || !(isVisibleRequested() || getDisplayContent().mOpeningApps.contains(this))) {
-            return -2;
-        }
-        return getOverrideOrientation();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public int getOverrideOrientation() {
-        return this.mLetterboxUiController.overrideOrientationIfNeeded(super.getOverrideOrientation());
-    }
-
-    public int getRequestedOrientation() {
-        return super.getOverrideOrientation();
-    }
-
-    public void setLastReportedGlobalConfiguration(Configuration configuration) {
-        this.mLastReportedConfiguration.setGlobalConfiguration(configuration);
-    }
-
-    public void setLastReportedConfiguration(MergedConfiguration mergedConfiguration) {
-        setLastReportedConfiguration(mergedConfiguration.getGlobalConfiguration(), mergedConfiguration.getOverrideConfiguration());
-    }
-
-    public final void setLastReportedConfiguration(Configuration configuration, Configuration configuration2) {
-        this.mLastReportedConfiguration.setConfiguration(configuration, configuration2);
-    }
-
-    public MergedConfiguration getLastReportedConfiguration() {
-        return this.mLastReportedConfiguration;
-    }
-
-    public CompatDisplayInsets getCompatDisplayInsets() {
-        if (this.mLetterboxUiController.hasInheritedLetterboxBehavior()) {
-            return this.mLetterboxUiController.getInheritedCompatDisplayInsets();
-        }
-        return this.mCompatDisplayInsets;
-    }
-
-    public boolean hasCompatDisplayInsetsWithoutInheritance() {
-        return this.mCompatDisplayInsets != null;
-    }
-
-    public boolean inSizeCompatMode() {
-        WindowContainer parent;
-        if (this.mInSizeCompatModeForBounds) {
-            return true;
-        }
-        return (getCompatDisplayInsets() == null || !shouldCreateCompatDisplayInsets() || isFixedRotationTransforming() || getConfiguration().windowConfiguration.getAppBounds() == null || (parent = getParent()) == null || parent.getConfiguration().densityDpi == getConfiguration().densityDpi) ? false : true;
-    }
-
-    public boolean shouldCreateCompatDisplayInsets() {
-        return shouldCreateCompatDisplayInsets(false);
-    }
-
-    public boolean shouldCreateCompatDisplayInsets(boolean z) {
-        int supportsSizeChanges;
-        Task task;
-        if ((CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT && z && this.mAtmService.mExt.mOrientationController.shouldCreateCompatDisplayInsets(this)) || (supportsSizeChanges = supportsSizeChanges()) == 1) {
-            return true;
-        }
-        if (supportsSizeChanges == 2 || supportsSizeChanges == 3 || this.mPopOverState.isActivated() || isDexMode() || ((task = this.task) != null && task.isDexMode())) {
-            return false;
-        }
-        DisplayContent displayContent = this.mDisplayContent;
-        if (displayContent != null && displayContent.isRemoteAppDisplay()) {
-            return false;
-        }
-        DisplayContent displayContent2 = this.mDisplayContent;
-        if (displayContent2 != null && displayContent2.isAppCastingDisplay()) {
-            return false;
-        }
-        if (this.task != null && (inMultiWindowMode() || this.task.inMultiWindowMode())) {
-            return false;
-        }
-        if (CoreRune.FW_FIXED_ASPECT_RATIO_MODE && this.mCompatRecord.isFixedAspectRatioModeEnabled()) {
-            return false;
-        }
-        if (CoreRune.FW_ORIENTATION_CONTROL && OrientationController.isEnabled(this.task)) {
-            return false;
-        }
-        if (inMultiWindowMode() || getWindowConfiguration().hasWindowDecorCaption()) {
-            Task task2 = this.task;
-            ActivityRecord rootActivity = task2 != null ? task2.getRootActivity() : null;
-            if (rootActivity != null && rootActivity != this && !rootActivity.shouldCreateCompatDisplayInsets()) {
-                return false;
-            }
-        }
-        return !isResizeable() && (this.info.isFixedOrientation() || hasFixedAspectRatio()) && isActivityTypeStandardOrUndefined();
-    }
-
-    public int supportsSizeChanges() {
-        if (this.mLetterboxUiController.shouldOverrideForceNonResizeApp()) {
-            return 1;
-        }
-        if (this.info.supportsSizeChanges) {
-            return 2;
-        }
-        return this.mLetterboxUiController.shouldOverrideForceResizeApp() ? 3 : 0;
-    }
-
-    @Override // com.android.server.wm.WindowToken
-    public boolean hasSizeCompatBounds() {
-        SizeCompatAttributes sizeCompatAttributes;
-        return (CoreRune.MT_SUPPORT_SIZE_COMPAT && (sizeCompatAttributes = this.mSizeCompatAttributes) != null && sizeCompatAttributes.hasBounds()) || this.mSizeCompatBounds != null;
-    }
-
-    public final void updateCompatDisplayInsets() {
-        BoundsCompatRecord boundsCompatRecord;
-        CompatDisplayInsets compatDisplayInsets;
-        if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT_FOR_FOLD && (compatDisplayInsets = (boundsCompatRecord = this.mCompatRecord).mPendingCompatDisplayInsets) != null) {
-            boundsCompatRecord.mPendingCompatDisplayInsets = null;
-            if (this.mCompatDisplayInsets == null && !this.mAtmService.mWindowManager.isFolded()) {
-                this.mCompatDisplayInsets = compatDisplayInsets;
-                return;
-            }
-        }
-        if (getCompatDisplayInsets() == null && shouldCreateCompatDisplayInsets(CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT)) {
-            Configuration requestedOverrideConfiguration = getRequestedOverrideConfiguration();
-            Configuration configuration = getConfiguration();
-            requestedOverrideConfiguration.colorMode = configuration.colorMode;
-            requestedOverrideConfiguration.densityDpi = configuration.densityDpi;
-            requestedOverrideConfiguration.smallestScreenWidthDp = configuration.smallestScreenWidthDp;
-            if (ActivityInfo.isFixedOrientation(getOverrideOrientation())) {
-                requestedOverrideConfiguration.windowConfiguration.setRotation(configuration.windowConfiguration.getRotation());
-            }
-            this.mCompatDisplayInsets = new CompatDisplayInsets(this.mDisplayContent, this, this.mLetterboxBoundsForFixedOrientationAndAspectRatio);
-            if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT) {
-                BoundsCompatRecord boundsCompatRecord2 = this.mCompatRecord;
-                if (boundsCompatRecord2.mIsTaskOrientationMismatched && boundsCompatRecord2.mCanRotationCompatMode) {
-                    boundsCompatRecord2.setController(boundsCompatRecord2.mCandidateController);
-                }
-            }
-        }
-    }
-
-    public final void clearSizeCompatModeAttributes() {
-        this.mInSizeCompatModeForBounds = false;
-        this.mSizeCompatScale = 1.0f;
-        this.mSizeCompatBounds = null;
-        this.mCompatDisplayInsets = null;
-        this.mLetterboxUiController.clearInheritedCompatDisplayInsets();
-    }
-
-    public void clearSizeCompatMode() {
-        clearSizeCompatMode(false, true);
-    }
-
-    public void clearSizeCompatMode(boolean z, boolean z2) {
-        float f = this.mSizeCompatScale;
-        clearSizeCompatModeAttributes();
-        if (this.mSizeCompatScale != f) {
-            forAllWindows((Consumer) new ActivityRecord$$ExternalSyntheticLambda6(), false);
-        }
-        int activityType = getActivityType();
-        Configuration requestedOverrideConfiguration = getRequestedOverrideConfiguration();
-        if (z2) {
-            requestedOverrideConfiguration.unset();
-            requestedOverrideConfiguration.windowConfiguration.setActivityType(activityType);
-        }
-        if (z) {
-            return;
-        }
-        onRequestedOverrideConfigurationChanged(requestedOverrideConfiguration);
-    }
-
-    @Override // com.android.server.wm.ConfigurationContainer
-    public boolean matchParentBounds() {
-        WindowContainer parent;
-        Rect resolvedOverrideBounds = getResolvedOverrideBounds();
-        return resolvedOverrideBounds.isEmpty() || (parent = getParent()) == null || parent.getBounds().equals(resolvedOverrideBounds);
-    }
-
-    @Override // com.android.server.wm.WindowToken
-    public float getCompatScale() {
-        SizeCompatAttributes sizeCompatAttributes;
-        if (CoreRune.MT_SUPPORT_SIZE_COMPAT && (sizeCompatAttributes = this.mSizeCompatAttributes) != null && sizeCompatAttributes.hasBounds()) {
-            return this.mSizeCompatAttributes.getScale();
-        }
-        return hasSizeCompatBounds() ? this.mSizeCompatScale : super.getCompatScale();
-    }
-
-    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
-    public void resolveOverrideConfiguration(Configuration configuration) {
-        Configuration requestedOverrideConfiguration;
-        int i;
-        Rect rect;
-        float f;
-        SizeCompatPolicy compatPolicy;
-        Task task;
-        Configuration requestedOverrideConfiguration2 = getRequestedOverrideConfiguration();
-        int i2 = requestedOverrideConfiguration2.assetsSeq;
-        int i3 = 0;
-        if (i2 != 0 && configuration.assetsSeq > i2) {
-            requestedOverrideConfiguration2.assetsSeq = 0;
-        }
-        if ((getDisplayId() == 1 || isDexMode()) && attachedToProcess() && !this.app.isActivityConfigOverrideAllowed() && (i = (requestedOverrideConfiguration = this.app.getRequestedOverrideConfiguration()).assetsSeq) != 0) {
-            int i4 = configuration.assetsSeq - i;
-            if (Math.abs(i4) <= 268435456 && i4 < 0) {
-                requestedOverrideConfiguration2.assetsSeq = requestedOverrideConfiguration.assetsSeq;
-            }
-        }
-        super.resolveOverrideConfiguration(configuration);
-        Configuration resolvedOverrideConfiguration = getResolvedOverrideConfiguration();
-        applyLocaleOverrideIfNeeded(resolvedOverrideConfiguration);
-        if (this.mCompatRecord.mCandidateController != null && (task = this.task) != null && task.inMultiWindowMode() != inMultiWindowMode()) {
-            getConfiguration().windowConfiguration.setWindowingMode(configuration.windowConfiguration.getWindowingMode());
-        }
-        if (isFixedRotationTransforming()) {
-            this.mTmpConfig.setTo(configuration);
-            this.mTmpConfig.updateFrom(resolvedOverrideConfiguration);
-            configuration = this.mTmpConfig;
-        }
-        this.mIsAspectRatioApplied = false;
-        this.mIsEligibleForFixedOrientationLetterbox = false;
-        this.mLetterboxBoundsForFixedOrientationAndAspectRatio = null;
-        if (CoreRune.MT_SUPPORT_SIZE_COMPAT) {
-            this.mResolvedConfigChangeFlags = SizeCompatPolicyManager.get().applySizeScaleCompatPolicy(this, configuration, this.mResolvedConfigChangeFlags);
-        }
-        int windowingMode = configuration.windowConfiguration.getWindowingMode();
-        boolean z = windowingMode == 6 || windowingMode == 1 || (!this.mWaitForEnteringPinnedMode && windowingMode == 2 && resolvedOverrideConfiguration.windowConfiguration.getWindowingMode() == 1);
-        if (z) {
-            resolveFixedOrientationConfiguration(configuration);
-        }
-        CompatDisplayInsets compatDisplayInsets = getCompatDisplayInsets();
-        if (!CoreRune.MT_SUPPORT_SIZE_COMPAT || this.mResolvedConfigChangeFlags == 0) {
-            if (compatDisplayInsets != null) {
-                resolveSizeCompatModeConfiguration(configuration, compatDisplayInsets);
-            } else if (inMultiWindowMode() && !z) {
-                resolvedOverrideConfiguration.orientation = 0;
-                if (!matchParentBounds()) {
-                    getTaskFragment().computeConfigResourceOverrides(resolvedOverrideConfiguration, configuration);
-                }
-            } else if (!isLetterboxedForFixedOrientationAndAspectRatio()) {
-                resolveAspectRatioRestriction(configuration);
-            }
-        }
-        if (z || compatDisplayInsets != null || !inMultiWindowMode()) {
-            updateResolvedBoundsPosition(configuration);
-        }
-        DisplayContent displayContent = this.mDisplayContent;
-        boolean z2 = displayContent != null && displayContent.getIgnoreOrientationRequest();
-        if (compatDisplayInsets == null && (this.mLetterboxBoundsForFixedOrientationAndAspectRatio != null || (z2 && this.mIsAspectRatioApplied))) {
-            resolvedOverrideConfiguration.smallestScreenWidthDp = Math.min(resolvedOverrideConfiguration.screenWidthDp, resolvedOverrideConfiguration.screenHeightDp);
-        }
-        if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT) {
-            if (this.mCompatDisplayInsets == null) {
-                BoundsCompatRecord boundsCompatRecord = this.mCompatRecord;
-                if (boundsCompatRecord.mCanRotationCompatMode && boundsCompatRecord.mIsTaskOrientationMismatched) {
-                    updateCompatDisplayInsets();
-                }
-            }
-            CompatDisplayInsets compatDisplayInsets2 = this.mCompatDisplayInsets;
-            if (compatDisplayInsets2 != null && compatDisplayInsets2.mConfigChangeNeeded) {
-                compatDisplayInsets2.mConfigChangeNeeded = false;
-                super.onConfigurationChanged(getParent().getConfiguration());
-                return;
-            }
-        }
-        this.mCompatRecord.resolve(configuration);
-        this.mPopOverState.toggle();
-        resolvedOverrideConfiguration.windowConfiguration.setPopOverState(this.mPopOverState.getState());
-        if (this.mPopOverState.isActivated()) {
-            resolvedOverrideConfiguration.windowConfiguration.setBounds(PopOverBoundsCalculator.getBounds(this));
-            this.task.computeConfigResourceOverrides(resolvedOverrideConfiguration, configuration);
-        }
-        this.mAtmService.mExt.mDisplayCutoutController.adjustAppBoundsIfNeeded(this, configuration);
-        if (CoreRune.MT_SUPPORT_COMPAT_SANDBOX) {
-            if (!CoreRune.MT_SUPPORT_SIZE_COMPAT || (compatPolicy = SizeCompatPolicyManager.get().getCompatPolicy(getTask())) == null) {
-                rect = null;
-                f = -1.0f;
-            } else {
-                i3 = 0 | compatPolicy.getCompatSandboxFlags(this);
-                f = compatPolicy.getCompatSandboxScale(this, i3);
-                rect = compatPolicy.getCompatSandboxBounds(this, i3);
-            }
-            if (i3 == 0 && this.mCompatRecord.isCompatModeEnabled()) {
-                BoundsCompatController controller = this.mCompatRecord.getController();
-                i3 |= 32;
-                if (controller.shouldUseSandboxDisplay(this)) {
-                    i3 |= 2;
-                }
-                if (controller.shouldUseSandboxViewBoundsAndMotionEvent(this)) {
-                    i3 |= 12;
-                    f = this.mSizeCompatScale;
-                    rect = this.mSizeCompatBounds;
-                }
-            }
-            if (i3 == 0 && this.mLastReportedConfiguration.getMergedConfiguration().windowConfiguration.getCompatSandboxFlags() != 0) {
-                rect = CompatSandbox.getEmptyRect();
-                f = 1.0f;
-                i3 = 1;
-            }
-            resolvedOverrideConfiguration.windowConfiguration.setCompatSandboxValues(i3, f, rect);
-        }
-        int i5 = this.mConfigurationSeq + 1;
-        this.mConfigurationSeq = i5;
-        this.mConfigurationSeq = Math.max(i5, 1);
-        getResolvedOverrideConfiguration().seq = this.mConfigurationSeq;
-        if (providesMaxBounds()) {
-            this.mTmpBounds.set(resolvedOverrideConfiguration.windowConfiguration.getBounds());
-            if (this.mTmpBounds.isEmpty()) {
-                this.mTmpBounds.set(configuration.windowConfiguration.getBounds());
-            }
-            resolvedOverrideConfiguration.windowConfiguration.setMaxBounds(this.mTmpBounds);
-        }
-        logAppCompatState();
-    }
-
-    public int getOrientationForReachability() {
-        if (this.mLetterboxUiController.hasInheritedLetterboxBehavior()) {
-            return this.mLetterboxUiController.getInheritedOrientation();
-        }
-        return getRequestedConfigurationOrientation();
-    }
-
-    public boolean areBoundsLetterboxed() {
-        return getAppCompatState(true) != 2;
-    }
-
-    public final void logAppCompatState() {
-        this.mTaskSupervisor.getActivityMetricsLogger().logAppCompatState(this);
-    }
-
-    public int getAppCompatState() {
-        return getAppCompatState(false);
-    }
-
-    public final int getAppCompatState(boolean z) {
-        if (!z && !this.mVisibleRequested) {
-            return 1;
-        }
-        if (this.mLetterboxUiController.hasInheritedLetterboxBehavior()) {
-            return this.mLetterboxUiController.getInheritedAppCompatState();
-        }
-        if (this.mInSizeCompatModeForBounds) {
-            return 3;
-        }
-        if (isLetterboxedForFixedOrientationAndAspectRatio()) {
-            return 4;
-        }
-        return this.mIsAspectRatioApplied ? 5 : 2;
-    }
-
-    public final void updateResolvedBoundsPosition(Configuration configuration) {
-        int i;
-        if (!CoreRune.MT_SUPPORT_SIZE_COMPAT || this.mResolvedConfigChangeFlags == 0) {
-            if (CoreRune.FW_BOUNDS_COMPAT_ALIGNMENT_CONTROL && this.mCompatRecord.isCompatModeEnabled() && this.mCompatRecord.getController().shouldUpdatePosition()) {
-                return;
-            }
-            Configuration resolvedOverrideConfiguration = getResolvedOverrideConfiguration();
-            Rect bounds = resolvedOverrideConfiguration.windowConfiguration.getBounds();
-            if (bounds.isEmpty()) {
-                return;
-            }
-            Rect rect = this.mSizeCompatBounds;
-            if (rect == null) {
-                rect = bounds;
-            }
-            Rect appBounds = configuration.windowConfiguration.getAppBounds();
-            Rect bounds2 = configuration.windowConfiguration.getBounds();
-            float width = rect.width();
-            float width2 = appBounds.width();
-            int i2 = 0;
-            if (bounds2.width() == width || width > width2) {
-                i = 0;
-            } else {
-                i = Math.max(0, (((int) Math.ceil((width2 - width) * this.mLetterboxUiController.getHorizontalPositionMultiplier(configuration))) - rect.left) + appBounds.left);
-            }
-            float height = appBounds.height();
-            float height2 = bounds2.height();
-            float height3 = rect.height();
-            if (height2 != height3 && height3 <= height) {
-                float verticalPositionMultiplier = this.mLetterboxUiController.getVerticalPositionMultiplier(configuration);
-                this.mDisplayContent.getDisplayPolicy().isImmersiveMode();
-                i2 = Math.max(0, (((int) Math.ceil((height - height3) * verticalPositionMultiplier)) - rect.top) + appBounds.top);
-            }
-            Rect rect2 = this.mSizeCompatBounds;
-            if (rect2 != null) {
-                rect2.offset(i, i2);
-                Rect rect3 = this.mSizeCompatBounds;
-                offsetBounds(resolvedOverrideConfiguration, rect3.left - bounds.left, rect3.top - bounds.top);
-            } else {
-                offsetBounds(resolvedOverrideConfiguration, i, i2);
-            }
-            if (resolvedOverrideConfiguration.windowConfiguration.getAppBounds().top == appBounds.top) {
-                resolvedOverrideConfiguration.windowConfiguration.getBounds().top = bounds2.top;
-                Rect rect4 = this.mSizeCompatBounds;
-                if (rect4 != null) {
-                    rect4.top = bounds2.top;
-                }
-            }
-            getTaskFragment().computeConfigResourceOverrides(resolvedOverrideConfiguration, configuration);
-            float f = this.mSizeCompatScale;
-            if (f != 1.0f) {
-                int i3 = bounds.left;
-                int i4 = bounds.top;
-                offsetBounds(resolvedOverrideConfiguration, ((int) ((i3 / f) + 0.5f)) - i3, ((int) ((i4 / f) + 0.5f)) - i4);
-            }
-        }
-    }
-
-    public Rect getScreenResolvedBounds() {
-        Rect bounds = getResolvedOverrideConfiguration().windowConfiguration.getBounds();
-        Rect rect = this.mSizeCompatBounds;
-        return rect != null ? rect : bounds;
-    }
-
-    public void recomputeConfiguration() {
-        if (this.mLetterboxUiController.applyOnOpaqueActivityBelow(new Consumer() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda23
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ((ActivityRecord) obj).recomputeConfiguration();
-            }
-        })) {
-            return;
-        }
-        onRequestedOverrideConfigurationChanged(getRequestedOverrideConfiguration());
-    }
-
-    public boolean isInTransition() {
-        return inTransitionSelfOrParent();
-    }
-
-    public boolean isDisplaySleepingAndSwapping() {
-        for (int size = this.mDisplayContent.mAllSleepTokens.size() - 1; size >= 0; size--) {
-            if (((RootWindowContainer.SleepToken) this.mDisplayContent.mAllSleepTokens.get(size)).isDisplaySwapping()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isLetterboxedForFixedOrientationAndAspectRatio() {
-        if (CoreRune.MT_SUPPORT_SIZE_COMPAT_COORDINATION) {
-            BoundsCompatRecord boundsCompatRecord = this.mCompatRecord;
-            if (boundsCompatRecord.mSupportsIgnoreOrientationRequest && boundsCompatRecord.mIsTaskOrientationMismatched && boundsCompatRecord.isCompatModeEnabled()) {
-                return true;
-            }
-        }
-        return this.mLetterboxBoundsForFixedOrientationAndAspectRatio != null;
-    }
-
-    public boolean isAspectRatioApplied() {
-        return this.mIsAspectRatioApplied;
-    }
-
-    public boolean isEligibleForLetterboxEducation() {
-        return this.mWmService.mLetterboxConfiguration.getIsEducationEnabled() && this.mIsEligibleForFixedOrientationLetterbox && getWindowingMode() == 1 && getRequestedConfigurationOrientation() == 1 && this.mStartingWindow == null;
-    }
-
-    public final boolean orientationRespectedWithInsets(Rect rect, Rect rect2) {
-        int requestedConfigurationOrientation;
-        DisplayInfo displayInfo;
-        rect2.setEmpty();
-        boolean z = true;
-        if (this.mDisplayContent == null || (requestedConfigurationOrientation = getRequestedConfigurationOrientation()) == 0) {
-            return true;
-        }
-        int i = rect.height() >= rect.width() ? 1 : 2;
-        if (isFixedRotationTransforming()) {
-            displayInfo = getFixedRotationTransformDisplayInfo();
-        } else {
-            displayInfo = this.mDisplayContent.getDisplayInfo();
-        }
-        getTask().calculateInsetFrames(this.mTmpBounds, rect2, rect, displayInfo);
-        int i2 = rect2.height() >= rect2.width() ? 1 : 2;
-        if (i != i2 && i2 != requestedConfigurationOrientation) {
-            z = false;
-        }
-        if (z) {
-            rect2.setEmpty();
-        }
-        return z;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean handlesOrientationChangeFromDescendant(int i) {
-        if (shouldIgnoreOrientationRequests()) {
-            return false;
-        }
-        return super.handlesOrientationChangeFromDescendant(i);
-    }
-
-    public final void resolveFixedOrientationConfiguration(Configuration configuration) {
-        TaskFragment organizedTaskFragment;
-        if (!CoreRune.MT_SUPPORT_SIZE_COMPAT || this.mResolvedConfigChangeFlags == 0) {
-            Task task = this.task;
-            if ((task != null && (task.inMultiWindowMode() || inMultiWindowMode())) || this.mPopOverState.isActivated() || isActivityTypeHomeOrRecents()) {
-                return;
-            }
-            Rect bounds = configuration.windowConfiguration.getBounds();
-            Rect rect = new Rect();
-            boolean orientationRespectedWithInsets = orientationRespectedWithInsets(bounds, rect);
-            if (CoreRune.FW_ORIENTATION_CONTROL) {
-                BoundsCompatRecord boundsCompatRecord = this.mCompatRecord;
-                if (boundsCompatRecord.mIsTaskOrientationMismatched) {
-                    if (boundsCompatRecord.isFullScreen()) {
-                        return;
-                    }
-                    if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT && this.mCompatRecord.mCanRotationCompatMode) {
-                        return;
-                    }
-                    organizedTaskFragment = getOrganizedTaskFragment();
-                    if ((organizedTaskFragment != null || organizedTaskFragment.fillsParent()) && !isDexMode()) {
-                        Rect bounds2 = getResolvedOverrideConfiguration().windowConfiguration.getBounds();
-                        int i = configuration.orientation;
-                        int requestedConfigurationOrientation = getRequestedConfigurationOrientation();
-                        boolean z = requestedConfigurationOrientation == 0 && requestedConfigurationOrientation != i;
-                        this.mIsEligibleForFixedOrientationLetterbox = z;
-                        if ((CoreRune.FW_ORIENTATION_CONTROL || !this.mCompatRecord.mIsTaskOrientationMismatched) && !z && (requestedConfigurationOrientation == 0 || orientationRespectedWithInsets)) {
-                            return;
-                        }
-                        CompatDisplayInsets compatDisplayInsets = getCompatDisplayInsets();
-                        if (compatDisplayInsets == null || compatDisplayInsets.mIsInFixedOrientationLetterbox) {
-                            if (orientationRespectedWithInsets) {
-                                rect = configuration.windowConfiguration.getAppBounds();
-                            }
-                            Rect rect2 = new Rect();
-                            Rect rect3 = new Rect();
-                            if (CoreRune.FW_ORIENTATION_CONTROL && this.mCompatRecord.mIsTaskOrientationMismatched) {
-                                rect2.set(bounds);
-                                rect3.set(rect);
-                            } else if (requestedConfigurationOrientation == 2) {
-                                int min = Math.min((rect.top + bounds.width()) - 1, rect.bottom);
-                                rect2.set(bounds.left, rect.top, bounds.right, min);
-                                rect3.set(rect.left, rect.top, rect.right, min);
-                            } else {
-                                int min2 = Math.min(rect.left + bounds.height(), rect.right);
-                                rect2.set(rect.left, bounds.top, min2, bounds.bottom);
-                                rect3.set(rect.left, rect.top, min2, rect.bottom);
-                            }
-                            Rect rect4 = new Rect(bounds2);
-                            bounds2.set(rect2);
-                            float fixedOrientationLetterboxAspectRatio = this.mLetterboxUiController.getFixedOrientationLetterboxAspectRatio(configuration);
-                            if (isDefaultMultiWindowLetterboxAspectRatioDesired(configuration)) {
-                                fixedOrientationLetterboxAspectRatio = 1.01f;
-                            } else if (fixedOrientationLetterboxAspectRatio <= 1.0f) {
-                                fixedOrientationLetterboxAspectRatio = computeAspectRatio(bounds);
-                            }
-                            this.mIsAspectRatioApplied = applyAspectRatio(bounds2, rect3, rect2, fixedOrientationLetterboxAspectRatio);
-                            if (compatDisplayInsets != null) {
-                                compatDisplayInsets.getBoundsByRotation(this.mTmpBounds, configuration.windowConfiguration.getRotation());
-                                if (bounds2.width() != this.mTmpBounds.width() || bounds2.height() != this.mTmpBounds.height()) {
-                                    bounds2.set(rect4);
-                                    return;
-                                }
-                            }
-                            getTaskFragment().computeConfigResourceOverrides(getResolvedOverrideConfiguration(), configuration, compatDisplayInsets);
-                            this.mLetterboxBoundsForFixedOrientationAndAspectRatio = new Rect(bounds2);
-                            return;
-                        }
-                        return;
-                    }
-                    return;
-                }
-            }
-            if (orientationRespectedWithInsets && handlesOrientationChangeFromDescendant(getOverrideOrientation())) {
-                return;
-            }
-            organizedTaskFragment = getOrganizedTaskFragment();
-            if (organizedTaskFragment != null) {
-            }
-            Rect bounds22 = getResolvedOverrideConfiguration().windowConfiguration.getBounds();
-            int i2 = configuration.orientation;
-            int requestedConfigurationOrientation2 = getRequestedConfigurationOrientation();
-            if (requestedConfigurationOrientation2 == 0) {
-            }
-            this.mIsEligibleForFixedOrientationLetterbox = z;
-            if (CoreRune.FW_ORIENTATION_CONTROL) {
-            }
-        }
-    }
-
-    public final boolean isDefaultMultiWindowLetterboxAspectRatioDesired(Configuration configuration) {
-        return (this.mDisplayContent == null || !WindowConfiguration.inMultiWindowMode(configuration.windowConfiguration.getWindowingMode()) || this.mDisplayContent.getIgnoreOrientationRequest()) ? false : true;
+    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer
+    public final void resetSurfacePositionForAnimationLeash(SurfaceControl.Transaction transaction) {
     }
 
     public final void resolveAspectRatioRestriction(Configuration configuration) {
-        Configuration resolvedOverrideConfiguration = getResolvedOverrideConfiguration();
-        Rect appBounds = configuration.windowConfiguration.getAppBounds();
-        Rect bounds = configuration.windowConfiguration.getBounds();
-        Rect bounds2 = resolvedOverrideConfiguration.windowConfiguration.getBounds();
-        this.mTmpBounds.setEmpty();
-        this.mIsAspectRatioApplied = applyAspectRatio(this.mTmpBounds, appBounds, bounds);
-        if (!this.mTmpBounds.isEmpty()) {
-            bounds2.set(this.mTmpBounds);
-        }
-        if (!bounds2.isEmpty() && !bounds2.equals(bounds)) {
-            getTaskFragment().computeConfigResourceOverrides(resolvedOverrideConfiguration, configuration, getFixedRotationTransformDisplayInfo());
-        }
-        if (CoreRune.FW_FIXED_ASPECT_RATIO_MODE && this.mCompatRecord.isFixedAspectRatioModeEnabled()) {
-            this.mAtmService.mExt.mFixedAspectRatioController.computeConfigResourceOverridesIfNeeded(this, resolvedOverrideConfiguration, bounds2, configuration);
+        if (!CoreRune.MT_SIZE_COMPAT_POLICY || this.mResolvedConfigChangeFlags == 0) {
+            Configuration resolvedOverrideConfiguration = getResolvedOverrideConfiguration();
+            Rect rect = this.mResolveConfigHint.mParentAppBoundsOverride;
+            Rect bounds = configuration.windowConfiguration.getBounds();
+            Rect bounds2 = resolvedOverrideConfiguration.windowConfiguration.getBounds();
+            this.mTmpBounds.setEmpty();
+            AppCompatAspectRatioPolicy appCompatAspectRatioPolicy = this.mAppCompatController.mAppCompatAspectRatioPolicy;
+            appCompatAspectRatioPolicy.mAppCompatAspectRatioState.mIsAspectRatioApplied = appCompatAspectRatioPolicy.applyAspectRatio(this.mTmpBounds, rect, bounds, FullScreenMagnificationGestureHandler.MAX_SCALE);
+            if (!this.mTmpBounds.isEmpty()) {
+                bounds2.set(this.mTmpBounds);
+            }
+            if (bounds2.isEmpty() || bounds2.equals(bounds)) {
+                return;
+            }
+            this.mResolveConfigHint.mTmpOverrideDisplayInfo = getFixedRotationTransformDisplayInfo();
+            computeConfigByResolveHint(resolvedOverrideConfiguration, configuration);
+            this.mAppCompatController.mAppCompatAspectRatioPolicy.mAppCompatAspectRatioState.mLetterboxBoundsForAspectRatio = new Rect(bounds2);
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:38:0x00e4  */
-    /* JADX WARN: Removed duplicated region for block: B:41:0x0107  */
-    /* JADX WARN: Removed duplicated region for block: B:44:0x0113  */
-    /* JADX WARN: Removed duplicated region for block: B:47:0x0117  */
+    /* JADX WARN: Code restructure failed: missing block: B:133:0x03ac, code lost:
+    
+        if (r13 == 7) goto L376;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:195:0x04cf, code lost:
+    
+        if (getAppCompatDisplayInsets() != null) goto L376;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:471:0x0986, code lost:
+    
+        if (((java.lang.Math.max(r4, r6) + 0.5f) / java.lang.Math.min(r4, r6)) <= r0) goto L550;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:553:0x059b, code lost:
+    
+        if ((r1 != null ? r1.isTreatmentEnabledForActivity(true, r8) : false) != false) goto L342;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:219:0x05e7  */
+    /* JADX WARN: Removed duplicated region for block: B:222:0x05f9  */
+    /* JADX WARN: Removed duplicated region for block: B:229:0x0651  */
+    /* JADX WARN: Removed duplicated region for block: B:237:0x0673  */
+    /* JADX WARN: Removed duplicated region for block: B:241:0x0680  */
+    /* JADX WARN: Removed duplicated region for block: B:246:0x09b8  */
+    /* JADX WARN: Removed duplicated region for block: B:256:0x09de  */
+    /* JADX WARN: Removed duplicated region for block: B:259:0x09e3  */
+    /* JADX WARN: Removed duplicated region for block: B:265:0x09f6  */
+    /* JADX WARN: Removed duplicated region for block: B:270:0x0a05  */
+    /* JADX WARN: Removed duplicated region for block: B:278:0x0a32  */
+    /* JADX WARN: Removed duplicated region for block: B:281:0x0a46  */
+    /* JADX WARN: Removed duplicated region for block: B:284:0x0a5f  */
+    /* JADX WARN: Removed duplicated region for block: B:300:0x0a98  */
+    /* JADX WARN: Removed duplicated region for block: B:303:0x0aaf  */
+    /* JADX WARN: Removed duplicated region for block: B:309:0x0ac4  */
+    /* JADX WARN: Removed duplicated region for block: B:315:0x0ad9  */
+    /* JADX WARN: Removed duplicated region for block: B:321:0x0af1  */
+    /* JADX WARN: Removed duplicated region for block: B:327:0x0b0e  */
+    /* JADX WARN: Removed duplicated region for block: B:330:0x0b19  */
+    /* JADX WARN: Removed duplicated region for block: B:334:0x0b23  */
+    /* JADX WARN: Removed duplicated region for block: B:338:0x0b36  */
+    /* JADX WARN: Removed duplicated region for block: B:341:0x0b59  */
+    /* JADX WARN: Removed duplicated region for block: B:347:0x0b90  */
+    /* JADX WARN: Removed duplicated region for block: B:351:0x0b92  */
+    /* JADX WARN: Removed duplicated region for block: B:352:0x0a34  */
+    /* JADX WARN: Removed duplicated region for block: B:359:0x068c  */
+    /* JADX WARN: Removed duplicated region for block: B:403:0x076b  */
+    /* JADX WARN: Removed duplicated region for block: B:406:0x0772  */
+    /* JADX WARN: Removed duplicated region for block: B:408:0x0779  */
+    /* JADX WARN: Removed duplicated region for block: B:412:0x078b  */
+    /* JADX WARN: Removed duplicated region for block: B:415:0x0810  */
+    /* JADX WARN: Removed duplicated region for block: B:418:0x083c  */
+    /* JADX WARN: Removed duplicated region for block: B:436:0x08ac  */
+    /* JADX WARN: Removed duplicated region for block: B:443:0x08f0  */
+    /* JADX WARN: Removed duplicated region for block: B:446:0x08ff  */
+    /* JADX WARN: Removed duplicated region for block: B:448:0x0906  */
+    /* JADX WARN: Removed duplicated region for block: B:456:0x0931  */
+    /* JADX WARN: Removed duplicated region for block: B:474:0x0915  */
+    /* JADX WARN: Removed duplicated region for block: B:476:0x0909  */
+    /* JADX WARN: Removed duplicated region for block: B:477:0x0902  */
+    /* JADX WARN: Removed duplicated region for block: B:480:0x08c2  */
+    /* JADX WARN: Removed duplicated region for block: B:482:0x08cb  */
+    /* JADX WARN: Removed duplicated region for block: B:484:0x08d1  */
+    /* JADX WARN: Removed duplicated region for block: B:485:0x08ae  */
+    /* JADX WARN: Removed duplicated region for block: B:488:0x0795  */
+    /* JADX WARN: Removed duplicated region for block: B:513:0x077f  */
+    /* JADX WARN: Removed duplicated region for block: B:514:0x0775  */
+    /* JADX WARN: Removed duplicated region for block: B:515:0x076d  */
+    /* JADX WARN: Removed duplicated region for block: B:527:0x0990  */
+    /* JADX WARN: Removed duplicated region for block: B:538:0x0626  */
+    /* JADX WARN: Removed duplicated region for block: B:539:0x062a  */
+    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final void resolveSizeCompatModeConfiguration(android.content.res.Configuration r18, com.android.server.wm.ActivityRecord.CompatDisplayInsets r19) {
+    public final void resolveOverrideConfiguration(android.content.res.Configuration r28) {
         /*
-            Method dump skipped, instructions count: 414
+            Method dump skipped, instructions count: 2984
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.resolveSizeCompatModeConfiguration(android.content.res.Configuration, com.android.server.wm.ActivityRecord$CompatDisplayInsets):void");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.resolveOverrideConfiguration(android.content.res.Configuration):void");
     }
 
-    public void updateSizeCompatScale(final Rect rect, final Rect rect2) {
-        this.mSizeCompatScale = ((Float) this.mLetterboxUiController.findOpaqueNotFinishingActivityBelow().map(new Function() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda33
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                Float lambda$updateSizeCompatScale$19;
-                lambda$updateSizeCompatScale$19 = ActivityRecord.lambda$updateSizeCompatScale$19((ActivityRecord) obj);
-                return lambda$updateSizeCompatScale$19;
-            }
-        }).orElseGet(new Supplier() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda34
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                Float lambda$updateSizeCompatScale$20;
-                lambda$updateSizeCompatScale$20 = ActivityRecord.lambda$updateSizeCompatScale$20(rect, rect2);
-                return lambda$updateSizeCompatScale$20;
-            }
-        })).floatValue();
-    }
-
-    public static /* synthetic */ Float lambda$updateSizeCompatScale$19(ActivityRecord activityRecord) {
-        return Float.valueOf(activityRecord.mSizeCompatScale);
-    }
-
-    public static /* synthetic */ Float lambda$updateSizeCompatScale$20(Rect rect, Rect rect2) {
-        int width = rect.width();
-        int height = rect.height();
-        int width2 = rect2.width();
-        int height2 = rect2.height();
-        return Float.valueOf((width > width2 || height > height2) ? Math.min(width2 / width, height2 / height) : 1.0f);
-    }
-
-    public final boolean isInSizeCompatModeForBounds(Rect rect, Rect rect2) {
-        if (this.mLetterboxUiController.hasInheritedLetterboxBehavior()) {
-            return false;
-        }
-        int width = rect.width();
-        int height = rect.height();
-        int width2 = rect2.width();
-        int height2 = rect2.height();
-        if (width2 == width && height2 == height) {
-            return false;
-        }
-        if ((width2 <= width || height2 <= height) && width2 >= width && height2 >= height) {
-            float maxAspectRatio = getMaxAspectRatio();
-            if (maxAspectRatio > DisplayPowerController2.RATE_FROM_DOZE_TO_ON && (Math.max(width, height) + 0.5f) / Math.min(width, height) >= maxAspectRatio) {
-                return false;
-            }
-            float minAspectRatio = getMinAspectRatio();
-            if (minAspectRatio > DisplayPowerController2.RATE_FROM_DOZE_TO_ON && (Math.max(width2, height2) + 0.5f) / Math.min(width2, height2) <= minAspectRatio) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static void offsetBounds(Configuration configuration, int i, int i2) {
-        configuration.windowConfiguration.getBounds().offset(i, i2);
-        configuration.windowConfiguration.getAppBounds().offset(i, i2);
-    }
-
-    @Override // com.android.server.wm.ConfigurationContainer
-    public Rect getBounds() {
-        SizeCompatAttributes sizeCompatAttributes;
-        final Rect bounds = super.getBounds();
-        if (CoreRune.MT_SUPPORT_SIZE_COMPAT && (sizeCompatAttributes = this.mSizeCompatAttributes) != null && sizeCompatAttributes.hasBounds()) {
-            return this.mSizeCompatAttributes.getBounds();
-        }
-        return (Rect) this.mLetterboxUiController.findOpaqueNotFinishingActivityBelow().map(new Function() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda11
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return ((ActivityRecord) obj).getBounds();
-            }
-        }).orElseGet(new Supplier() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda12
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                Rect lambda$getBounds$21;
-                lambda$getBounds$21 = ActivityRecord.this.lambda$getBounds$21(bounds);
-                return lambda$getBounds$21;
-            }
-        });
-    }
-
-    public /* synthetic */ Rect lambda$getBounds$21(Rect rect) {
-        if (this.mSizeCompatBounds == null) {
-            return rect;
-        }
-        if (this.mReturnSizeCompatBounds == null) {
-            this.mReturnSizeCompatBounds = new Rect();
-        }
-        this.mReturnSizeCompatBounds.set(this.mSizeCompatBounds);
-        return this.mReturnSizeCompatBounds;
-    }
-
-    @Override // com.android.server.wm.ConfigurationContainer
-    public boolean providesMaxBounds() {
-        if (getUid() == 1000) {
-            return false;
-        }
-        DisplayContent displayContent = this.mDisplayContent;
-        if ((displayContent != null && !displayContent.sandboxDisplayApis()) || this.info.neverSandboxDisplayApis(sConstrainDisplayApisConfig)) {
-            return false;
-        }
-        if (this.info.alwaysSandboxDisplayApis(sConstrainDisplayApisConfig) || getCompatDisplayInsets() != null || shouldCreateCompatDisplayInsets()) {
-            return true;
-        }
-        return CoreRune.MT_SUPPORT_SIZE_COMPAT && this.mResolvedConfigChangeFlags != 0;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public Rect getAnimationBounds(int i) {
-        TaskFragment taskFragment = getTaskFragment();
-        return taskFragment != null ? taskFragment.getBounds() : getBounds();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void getAnimationPosition(Point point) {
-        point.set(0, 0);
-    }
-
-    @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
-    public void onConfigurationChanged(Configuration configuration) {
-        int rotationForActivityInDifferentOrientation;
-        int requestedOverrideWindowingMode;
-        SizeCompatAttributes sizeCompatAttributes;
-        boolean z = false;
-        if (CoreRune.MT_SUPPORT_SIZE_COMPAT && (sizeCompatAttributes = this.mSizeCompatAttributes) != null) {
-            sizeCompatAttributes.setEnabled(false);
-        }
-        resetSizeCompatModeIfNeeded();
-        this.mCompatRecord.prepare();
-        if (this.mTransitionController.isShellTransitionsEnabled() && isVisible() && isVisibleRequested()) {
-            if (getRequestedOverrideWindowingMode() == 0) {
-                requestedOverrideWindowingMode = configuration.windowConfiguration.getWindowingMode();
-            } else {
-                requestedOverrideWindowingMode = getRequestedOverrideWindowingMode();
-            }
-            if (getWindowingMode() != requestedOverrideWindowingMode) {
-                this.mTransitionController.collect(this);
-            }
-        }
-        if (getCompatDisplayInsets() != null) {
-            Configuration requestedOverrideConfiguration = getRequestedOverrideConfiguration();
-            boolean z2 = requestedOverrideConfiguration.windowConfiguration.getRotation() != -1;
-            int requestedConfigurationOrientation = getRequestedConfigurationOrientation();
-            if (requestedConfigurationOrientation != 0 && requestedConfigurationOrientation != getConfiguration().orientation && requestedConfigurationOrientation == getParent().getConfiguration().orientation && requestedOverrideConfiguration.windowConfiguration.getRotation() != getParent().getWindowConfiguration().getRotation()) {
-                requestedOverrideConfiguration.windowConfiguration.setRotation(getParent().getWindowConfiguration().getRotation());
-                onRequestedOverrideConfigurationChanged(requestedOverrideConfiguration);
-                return;
-            } else if (z2 && requestedConfigurationOrientation == 0 && requestedOverrideConfiguration.windowConfiguration.getRotation() != -1) {
-                requestedOverrideConfiguration.windowConfiguration.setRotation(-1);
-                onRequestedOverrideConfigurationChanged(requestedOverrideConfiguration);
-                return;
-            }
-        }
-        boolean inPinnedWindowingMode = inPinnedWindowingMode();
-        DisplayContent displayContent = this.mDisplayContent;
-        int activityType = getActivityType();
-        if (inPinnedWindowingMode && attachedToProcess() && displayContent != null) {
-            try {
-                this.app.pauseConfigurationDispatch();
-                super.onConfigurationChanged(configuration);
-                if (this.mVisibleRequested && !inMultiWindowMode() && (rotationForActivityInDifferentOrientation = displayContent.rotationForActivityInDifferentOrientation(this)) != -1) {
-                    this.app.resumeConfigurationDispatch();
-                    displayContent.setFixedRotationLaunchingApp(this, rotationForActivityInDifferentOrientation);
-                }
-            } finally {
-                if (this.app.resumeConfigurationDispatch()) {
-                    WindowProcessController windowProcessController = this.app;
-                    windowProcessController.dispatchConfiguration(windowProcessController.getConfiguration());
-                }
-            }
-        } else {
-            super.onConfigurationChanged(configuration);
-        }
-        if (activityType != 0 && activityType != getActivityType()) {
-            String str = "Can't change activity type once set: " + this + " activityType=" + WindowConfiguration.activityTypeToString(getActivityType()) + ", was " + WindowConfiguration.activityTypeToString(activityType);
-            if (Build.IS_DEBUGGABLE) {
-                throw new IllegalStateException(str);
-            }
-            Slog.w("ActivityTaskManager", str);
-        }
-        if (getMergedOverrideConfiguration().seq != getResolvedOverrideConfiguration().seq) {
-            onMergedOverrideConfigurationChanged();
-        }
-        if (!inPinnedWindowingMode && inPinnedWindowingMode() && this.task != null) {
-            if (CoreRune.MW_PIP_SHELL_TRANSITION) {
-                setHiddenWhileEnteringPinnedMode(false, "pip_entered");
-            }
-            this.mWaitForEnteringPinnedMode = false;
-            ActivityTaskSupervisor activityTaskSupervisor = this.mTaskSupervisor;
-            Task task = this.task;
-            activityTaskSupervisor.scheduleUpdatePictureInPictureModeIfNeeded(task, task.getBounds());
-        }
-        if (displayContent == null) {
-            return;
-        }
-        if (this.mVisibleRequested) {
-            displayContent.handleActivitySizeCompatModeIfNeeded(this);
-            return;
-        }
-        if (getCompatDisplayInsets() == null || this.visibleIgnoringKeyguard) {
-            return;
-        }
-        WindowProcessController windowProcessController2 = this.app;
-        if (windowProcessController2 == null || !windowProcessController2.hasVisibleActivities()) {
-            if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT && this.mCompatDisplayInsets.mWaitingForVisibleRequested) {
-                return;
-            }
-            int currentOverrideConfigurationChanges = displayContent.getCurrentOverrideConfigurationChanges();
-            if (hasResizeChange(currentOverrideConfigurationChanges) && (currentOverrideConfigurationChanges & 536872064) != 536872064) {
-                z = true;
-            }
-            if (z || (currentOverrideConfigurationChanges & IInstalld.FLAG_USE_QUOTA) != 0) {
-                restartProcessIfVisible();
-            }
-        }
-    }
-
-    public final boolean applyAspectRatio(Rect rect, Rect rect2, Rect rect3) {
-        return applyAspectRatio(rect, rect2, rect3, DisplayPowerController2.RATE_FROM_DOZE_TO_ON);
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:91:0x00f7, code lost:
-    
-        if (r15 == 2) goto L201;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:92:0x00fa, code lost:
-    
-        if (r6 < r7) goto L201;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:95:0x0102  */
-    /* JADX WARN: Removed duplicated region for block: B:96:0x0105  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final boolean applyAspectRatio(android.graphics.Rect r12, android.graphics.Rect r13, android.graphics.Rect r14, float r15) {
-        /*
-            Method dump skipped, instructions count: 324
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.applyAspectRatio(android.graphics.Rect, android.graphics.Rect, android.graphics.Rect, float):boolean");
-    }
-
-    public float getMinAspectRatio() {
-        if (this.mLetterboxUiController.hasInheritedLetterboxBehavior()) {
-            return this.mLetterboxUiController.getInheritedMinAspectRatio();
-        }
-        ActivityInfo activityInfo = this.info;
-        if (activityInfo.applicationInfo == null) {
-            return activityInfo.getMinAspectRatio();
-        }
-        if (!this.mLetterboxUiController.shouldOverrideMinAspectRatio()) {
-            return this.info.getMinAspectRatio();
-        }
-        if (this.info.isChangeEnabled(203647190L) && !ActivityInfo.isFixedOrientationPortrait(getOverrideOrientation())) {
-            return this.info.getMinAspectRatio();
-        }
-        if (this.info.isChangeEnabled(218959984L) && isParentFullscreenPortrait()) {
-            return this.info.getMinAspectRatio();
-        }
-        if (this.info.isChangeEnabled(208648326L)) {
-            return Math.max(this.mLetterboxUiController.getSplitScreenAspectRatio(), this.info.getMinAspectRatio());
-        }
-        if (this.info.isChangeEnabled(180326787L)) {
-            return Math.max(1.7777778f, this.info.getMinAspectRatio());
-        }
-        if (this.info.isChangeEnabled(180326845L)) {
-            return Math.max(1.5f, this.info.getMinAspectRatio());
-        }
-        return this.info.getMinAspectRatio();
-    }
-
-    public final boolean isParentFullscreenPortrait() {
-        WindowContainer parent = getParent();
-        return parent != null && parent.getConfiguration().orientation == 1 && parent.getWindowConfiguration().getWindowingMode() == 1;
-    }
-
-    public float getMaxAspectRatio() {
-        if (this.mLetterboxUiController.hasInheritedLetterboxBehavior()) {
-            return this.mLetterboxUiController.getInheritedMaxAspectRatio();
-        }
-        return this.info.getMaxAspectRatio();
-    }
-
-    public final boolean hasFixedAspectRatio() {
-        return (getMaxAspectRatio() == DisplayPowerController2.RATE_FROM_DOZE_TO_ON && getMinAspectRatio() == DisplayPowerController2.RATE_FROM_DOZE_TO_ON) ? false : true;
-    }
-
-    public static float computeAspectRatio(Rect rect) {
-        return (rect.width() == 0 || rect.height() == 0) ? DisplayPowerController2.RATE_FROM_DOZE_TO_ON : Math.max(r0, r2) / Math.min(r0, r2);
-    }
-
-    public boolean shouldUpdateConfigForDisplayChanged() {
-        this.mAtmService.isPackageEnabledForCoverLauncher(this.packageName, this.mUserId);
-        return this.mLastReportedDisplayId != getDisplayId();
-    }
-
-    public boolean ensureActivityConfiguration(int i, boolean z) {
-        return ensureActivityConfiguration(i, z, false, false);
-    }
-
-    public boolean ensureActivityConfiguration(int i, boolean z, boolean z2) {
-        return ensureActivityConfiguration(i, z, z2, false);
-    }
-
-    public boolean ensureActivityConfiguration(int i, boolean z, boolean z2, boolean z3) {
-        int i2;
-        int i3;
-        CompatDisplayInsets compatDisplayInsets;
-        State state;
-        if (getRootTask().mConfigWillChange) {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -804217032, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            return true;
-        }
-        if (this.finishing) {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -846078709, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            stopFreezingScreenLocked(false);
-            return true;
-        }
-        if (isState(State.DESTROYED)) {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, 1105210816, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            return true;
-        }
-        if (!z2 && ((state = this.mState) == State.STOPPING || state == State.STOPPED || !shouldBeVisible())) {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, 1635062046, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            return true;
-        }
-        if (WindowConfiguration.isSplitScreenWindowingMode(getWindowConfiguration()) && this.mAtmService.mMultiTaskingController.isEnsureConfigDeferred()) {
-            return true;
-        }
-        if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -1791031393, 0, (String) null, new Object[]{String.valueOf(this)});
-        }
-        int displayId = getDisplayId();
-        boolean z4 = this.mLastReportedDisplayId != displayId;
-        if (z4) {
-            this.mLastReportedDisplayId = displayId;
-        }
-        if (this.mVisibleRequested) {
-            updateCompatDisplayInsets();
-            if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT && (compatDisplayInsets = this.mCompatDisplayInsets) != null && compatDisplayInsets.mConfigChangeNeeded) {
-                compatDisplayInsets.mConfigChangeNeeded = false;
-                onConfigurationChanged(getParent().getConfiguration());
-            }
-        }
-        this.mTmpConfig.setTo(this.mLastReportedConfiguration.getMergedConfiguration());
-        if (getConfiguration().equals(this.mTmpConfig) && !this.forceNewConfig && !z4) {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -1115019498, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            return true;
-        }
-        int configurationChanges = getConfigurationChanges(this.mTmpConfig);
-        Configuration processGlobalConfiguration = getProcessGlobalConfiguration();
-        if (isDexMode()) {
-            boolean shouldBeApplyDexCompatConfigurationLocked = this.mAtmService.mDexCompatController.shouldBeApplyDexCompatConfigurationLocked(this, this.mProcessAppInfo, getDisplayId());
-            if (shouldBeApplyDexCompatConfigurationLocked) {
-                Configuration configuration = new Configuration(processGlobalConfiguration);
-                this.mAtmService.mDexCompatController.applyDexCompatConfigurationLocked(this, this.mProcessAppInfo, configuration, "ensureActivityConfig[" + this + "]");
-            }
-            Task task = this.task;
-            if (task != null) {
-                shouldBeApplyDexCompatConfigurationLocked = task.isDexCompatEnabled();
-            }
-            setDexCompatMode(shouldBeApplyDexCompatConfigurationLocked);
-        }
-        Configuration configuration2 = new Configuration(getMergedOverrideConfiguration());
-        if (CoreRune.MW_SA_LOGGING && isVisible() && getTopFullscreenOpaqueWindow() != null) {
-            WindowConfiguration windowConfiguration = this.mLastReportedConfiguration.getOverrideConfiguration().windowConfiguration;
-            i3 = windowConfiguration.getWindowingMode();
-            i2 = windowConfiguration.getStageType();
-        } else {
-            i2 = 0;
-            i3 = 0;
-        }
-        setLastReportedConfiguration(getProcessGlobalConfiguration(), configuration2);
-        if (this.mState == State.INITIALIZING) {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -235225312, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            return true;
-        }
-        if (configurationChanges == 0 && !this.forceNewConfig) {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -743431900, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            if (z4) {
-                scheduleActivityMovedToDisplay(displayId, configuration2);
-            } else {
-                scheduleConfigurationChanged(configuration2);
-                if (CoreRune.MW_SA_LOGGING && i3 != 0) {
-                    logForMultiWindowModeChanged(i3, i2);
-                }
-            }
-            notifyDisplayCompatPolicyAboutConfigurationChange(this.mLastReportedConfiguration.getMergedConfiguration(), this.mTmpConfig);
-            return true;
-        }
-        if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -929676529, 0, (String) null, new Object[]{String.valueOf(this), String.valueOf(Configuration.configurationDiffToString(configurationChanges))});
-        }
-        if (!attachedToProcess()) {
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, 1679569477, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            stopFreezingScreenLocked(false);
-            this.forceNewConfig = false;
-            return true;
-        }
-        if (ProtoLogCache.WM_FORCE_DEBUG_CONFIGURATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_FORCE_DEBUG_CONFIGURATION, -613102676, 0, "Checking to restart %s: changed=0x%s, handles=0x%s, mLastReportedConfiguration=%s", new Object[]{String.valueOf(this.info.name), String.valueOf(Integer.toHexString(configurationChanges)), String.valueOf(Integer.toHexString(this.info.getRealConfigChanged())), String.valueOf(this.mLastReportedConfiguration)});
-        }
-        if (shouldRelaunchLocked(configurationChanges, this.mTmpConfig) || this.forceNewConfig) {
-            this.configChangeFlags |= configurationChanges;
-            startFreezingScreenLocked(i);
-            this.forceNewConfig = false;
-            boolean z5 = z & (isResizeOnlyChange(configurationChanges) && !this.mFreezingScreen);
-            if (hasResizeChange((~this.info.getRealConfigChanged()) & configurationChanges)) {
-                this.mRelaunchReason = this.task.isDragResizing() ? 2 : 1;
-            } else {
-                this.mRelaunchReason = 0;
-            }
-            if (z3) {
-                this.mLetterboxUiController.setRelaunchingAfterRequestedOrientationChanged(true);
-            }
-            if (this.mState == State.PAUSING) {
-                if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -90559682, 0, (String) null, new Object[]{String.valueOf(this)});
-                }
-                this.deferRelaunchUntilPaused = true;
-                this.preserveWindowOnDeferredRelaunch = z5;
-                return true;
-            }
-            if (ProtoLogCache.WM_DEBUG_CONFIGURATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, 736692676, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            if (!this.mVisibleRequested && ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_STATES, -1558137010, 0, (String) null, new Object[]{String.valueOf(this), String.valueOf(Debug.getCallers(4))});
-            }
-            relaunchActivityLocked(z5);
-            if (CoreRune.MW_SA_LOGGING && i3 != 0) {
-                logForMultiWindowModeChanged(i3, i2);
-            }
-            return false;
-        }
-        if (z4) {
-            scheduleActivityMovedToDisplay(displayId, configuration2);
-        } else {
-            scheduleConfigurationChanged(configuration2);
-        }
-        notifyDisplayCompatPolicyAboutConfigurationChange(this.mLastReportedConfiguration.getMergedConfiguration(), this.mTmpConfig);
-        stopFreezingScreenLocked(false);
-        if (CoreRune.MW_SA_LOGGING && i3 != 0) {
-            logForMultiWindowModeChanged(i3, i2);
-        }
-        return true;
-    }
-
-    public final void notifyDisplayCompatPolicyAboutConfigurationChange(Configuration configuration, Configuration configuration2) {
-        if (this.mDisplayContent.mDisplayRotationCompatPolicy == null || !shouldBeResumed(null)) {
-            return;
-        }
-        this.mDisplayContent.mDisplayRotationCompatPolicy.onActivityConfigurationChanging(this, configuration, configuration2);
-    }
-
-    public Configuration getProcessGlobalConfiguration() {
-        WindowProcessController windowProcessController = this.app;
-        return windowProcessController != null ? windowProcessController.getConfiguration() : this.mAtmService.getGlobalConfiguration();
-    }
-
-    public final boolean shouldRelaunchLocked(int i, Configuration configuration) {
-        int realConfigChanged = this.info.getRealConfigChanged();
-        boolean onlyVrUiModeChanged = onlyVrUiModeChanged(i, configuration);
-        if (this.info.applicationInfo.targetSdkVersion < 26 && this.requestedVrComponent != null && onlyVrUiModeChanged) {
-            realConfigChanged |= 512;
-        }
-        if (this.mWmService.mSkipActivityRelaunchWhenDocking && onlyDeskInUiModeChanged(configuration) && !hasDeskResources()) {
-            realConfigChanged |= 512;
-        }
-        if (CoreRune.MT_NEW_DEX_LAUNCH_POLICY) {
-            UiModeManagerInternal uiModeManagerInternal = (UiModeManagerInternal) LocalServices.getService(UiModeManagerInternal.class);
-            if (onlyDeskInUiModeChanged(configuration) && !hasDeskResources() && uiModeManagerInternal != null && uiModeManagerInternal.toggleNewDexMode()) {
-                realConfigChanged |= 512;
-            }
-        }
-        return ((~realConfigChanged) & i) != 0;
-    }
-
-    public final boolean onlyVrUiModeChanged(int i, Configuration configuration) {
-        return i == 512 && isInVrUiMode(getConfiguration()) != isInVrUiMode(configuration);
-    }
-
-    public final boolean onlyDeskInUiModeChanged(Configuration configuration) {
-        Configuration configuration2 = getConfiguration();
-        return (isInDeskUiMode(configuration2) != isInDeskUiMode(configuration)) && !((configuration2.uiMode & (-16)) != (configuration.uiMode & (-16)));
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0031, code lost:
-    
-        r4.mHasDeskResources = java.lang.Boolean.TRUE;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public boolean hasDeskResources() {
-        /*
-            r4 = this;
-            java.lang.Boolean r0 = r4.mHasDeskResources
-            if (r0 == 0) goto L9
-            boolean r4 = r0.booleanValue()
-            return r4
-        L9:
-            java.lang.Boolean r0 = java.lang.Boolean.FALSE
-            r4.mHasDeskResources = r0
-            com.android.server.wm.ActivityTaskManagerService r0 = r4.mAtmService     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            android.content.Context r0 = r0.mContext     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            java.lang.String r1 = r4.packageName     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            int r2 = r4.mUserId     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            android.os.UserHandle r2 = android.os.UserHandle.of(r2)     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            r3 = 0
-            android.content.Context r0 = r0.createPackageContextAsUser(r1, r3, r2)     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            android.content.res.Resources r0 = r0.getResources()     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            android.content.res.Configuration[] r0 = r0.getSizeAndUiModeConfigurations()     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            int r1 = r0.length     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-        L27:
-            if (r3 >= r1) goto L50
-            r2 = r0[r3]     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            boolean r2 = isInDeskUiMode(r2)     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            if (r2 == 0) goto L36
-            java.lang.Boolean r0 = java.lang.Boolean.TRUE     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            r4.mHasDeskResources = r0     // Catch: android.content.pm.PackageManager.NameNotFoundException -> L39
-            goto L50
-        L36:
-            int r3 = r3 + 1
-            goto L27
-        L39:
-            r0 = move-exception
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder
-            r1.<init>()
-            java.lang.String r2 = "Exception thrown during checking for desk resources "
-            r1.append(r2)
-            r1.append(r4)
-            java.lang.String r1 = r1.toString()
-            java.lang.String r2 = "ActivityTaskManager"
-            android.util.Slog.w(r2, r1, r0)
-        L50:
-            java.lang.Boolean r4 = r4.mHasDeskResources
-            boolean r4 = r4.booleanValue()
-            return r4
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.hasDeskResources():boolean");
-    }
-
-    public final int getConfigurationChanges(Configuration configuration) {
-        int filterDiff = SizeConfigurationBuckets.filterDiff(configuration.diff(getConfiguration()), configuration, getConfiguration(), this.mSizeConfigurations);
-        return (536870912 & filterDiff) != 0 ? filterDiff & (-536870913) : filterDiff;
-    }
-
-    public void relaunchActivityLocked(boolean z) {
-        ArrayList arrayList;
-        ArrayList arrayList2;
-        ResumeActivityItem obtain;
-        WindowState windowState;
-        if (this.mAtmService.mSuppressResizeConfigChanges && z) {
-            this.configChangeFlags = 0;
-            return;
-        }
-        if (!z) {
-            InputTarget imeInputTarget = this.mDisplayContent.getImeInputTarget();
-            this.mLastImeShown = (imeInputTarget == null || imeInputTarget.getWindowState() == null || imeInputTarget.getWindowState().mActivityRecord != this || (windowState = this.mDisplayContent.mInputMethodWindow) == null || !windowState.isVisible()) ? false : true;
-        }
-        Task rootTask = getRootTask();
-        if (rootTask != null && rootTask.mTranslucentActivityWaiting == this) {
-            rootTask.checkTranslucentActivityWaiting(null);
-        }
-        boolean shouldBeResumed = shouldBeResumed(null);
-        if (shouldBeResumed) {
-            arrayList = this.results;
-            arrayList2 = this.newIntents;
-        } else {
-            arrayList = null;
-            arrayList2 = null;
-        }
-        if (shouldBeResumed) {
-            EventLogTags.writeWmRelaunchResumeActivity(this.mUserId, System.identityHashCode(this), this.task.mTaskId, this.shortComponentName, Integer.toHexString(this.configChangeFlags));
-        } else {
-            EventLogTags.writeWmRelaunchActivity(this.mUserId, System.identityHashCode(this), this.task.mTaskId, this.shortComponentName, Integer.toHexString(this.configChangeFlags));
-        }
-        startFreezingScreenLocked(0);
-        Configuration configuration = new Configuration(getProcessGlobalConfiguration());
-        new Configuration(getMergedOverrideConfiguration());
-        if (isDexMode()) {
-            this.mAtmService.mDexCompatController.resolveDexCompatConfigurationLocked(this, this.mProcessAppInfo, getDisplayId(), configuration, "relaunchActivity[" + this + "]");
-        }
-        try {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_STATES, -1016578046, 0, (String) null, new Object[]{shouldBeResumed ? "RESUMED" : "PAUSED", String.valueOf(this), String.valueOf(Debug.getCallers(6))});
-            }
-            this.forceNewConfig = false;
-            startRelaunching();
-            ActivityRelaunchItem obtain2 = ActivityRelaunchItem.obtain(arrayList, arrayList2, this.configChangeFlags, new MergedConfiguration(getProcessGlobalConfiguration(), getMergedOverrideConfiguration()), z);
-            if (shouldBeResumed) {
-                obtain = ResumeActivityItem.obtain(isTransitionForward(), shouldSendCompatFakeFocus());
-            } else {
-                obtain = PauseActivityItem.obtain();
-            }
-            ClientTransaction obtain3 = ClientTransaction.obtain(this.app.getThread(), this.token);
-            obtain3.addCallback(obtain2);
-            obtain3.setLifecycleStateRequest(obtain);
-            this.mAtmService.getLifecycleManager().scheduleTransaction(obtain3);
-        } catch (RemoteException e) {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.i(ProtoLogGroup.WM_DEBUG_STATES, -262984451, 0, (String) null, new Object[]{String.valueOf(e)});
-            }
-        }
-        if (shouldBeResumed) {
-            if (ProtoLogCache.WM_DEBUG_STATES_enabled) {
-                ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_STATES, 1270792394, 0, (String) null, new Object[]{String.valueOf(this)});
-            }
-            this.results = null;
-            this.newIntents = null;
-            this.mAtmService.getAppWarningsLocked().onResumeActivity(this);
-        } else {
-            removePauseTimeout();
-            setState(State.PAUSED, "relaunchActivityLocked");
-        }
-        this.mTaskSupervisor.mStoppingActivities.remove(this);
-        this.configChangeFlags = 0;
-        this.deferRelaunchUntilPaused = false;
-        this.preserveWindowOnDeferredRelaunch = false;
-    }
-
-    public void restartProcessIfVisible() {
+    public final void restartProcessIfVisible() {
         if (this.finishing) {
             return;
         }
         Slog.i("ActivityTaskManager", "Request to restart process of " + this);
-        clearSizeCompatMode();
+        this.mAppCompatController.mAppCompatSizeCompatModePolicy.clearSizeCompatMode(false, true);
         if (attachedToProcess()) {
             setState(State.RESTARTING_PROCESS, "restartActivityProcess");
             if (!this.mVisibleRequested || this.mHaveState) {
-                this.mAtmService.mH.post(new Runnable() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda17
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        ActivityRecord.this.lambda$restartProcessIfVisible$22();
-                    }
-                });
+                this.mAtmService.mH.post(new ActivityRecord$$ExternalSyntheticLambda7(0, this));
             } else if (this.mTransitionController.isShellTransitionsEnabled()) {
                 final Transition transition = new Transition(5, 0, this.mTransitionController, this.mWmService.mSyncEngine);
-                this.mTransitionController.startCollectOrQueue(transition, new TransitionController.OnStartCollect() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda18
+                this.mTransitionController.startCollectOrQueue(transition, new TransitionController.OnStartCollect() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda8
                     @Override // com.android.server.wm.TransitionController.OnStartCollect
                     public final void onCollectStarted(boolean z) {
-                        ActivityRecord.this.lambda$restartProcessIfVisible$23(transition, z);
+                        ActivityRecord activityRecord = ActivityRecord.this;
+                        ActivityRecord.State state = activityRecord.mState;
+                        ActivityRecord.State state2 = ActivityRecord.State.RESTARTING_PROCESS;
+                        Transition transition2 = transition;
+                        if (state != state2 || !activityRecord.attachedToProcess()) {
+                            transition2.abort();
+                            return;
+                        }
+                        activityRecord.setVisibleRequested(false);
+                        transition2.collect(activityRecord, false);
+                        activityRecord.mTransitionController.requestStartTransition(transition2, activityRecord.task, null, null);
+                        activityRecord.scheduleStopForRestartProcess();
                     }
                 });
             } else {
-                startFreezingScreen();
+                startFreezingScreen(-1);
                 scheduleStopForRestartProcess();
             }
         }
     }
 
-    public /* synthetic */ void lambda$restartProcessIfVisible$22() {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtmService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                if (hasProcess() && this.app.getReportedProcState() > 6) {
-                    WindowProcessController windowProcessController = this.app;
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    this.mAtmService.mAmInternal.killProcess(windowProcessController.mName, windowProcessController.mUid, "resetConfig");
-                    return;
-                }
-                WindowManagerService.resetPriorityAfterLockedSection();
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-    }
-
-    public /* synthetic */ void lambda$restartProcessIfVisible$23(Transition transition, boolean z) {
-        if (this.mState != State.RESTARTING_PROCESS || !attachedToProcess()) {
-            transition.abort();
-            return;
-        }
-        setVisibleRequested(false);
-        transition.collect(this);
-        this.mTransitionController.requestStartTransition(transition, this.task, null, null);
-        scheduleStopForRestartProcess();
-    }
-
-    public final void scheduleStopForRestartProcess() {
-        try {
-            this.mAtmService.getLifecycleManager().scheduleTransaction(this.app.getThread(), this.token, (ActivityLifecycleItem) StopActivityItem.obtain(0));
-        } catch (RemoteException e) {
-            Slog.w("ActivityTaskManager", "Exception thrown during restart " + this, e);
-        }
-        this.mTaskSupervisor.scheduleRestartTimeout(this);
-    }
-
-    public boolean isProcessRunning() {
-        WindowProcessController windowProcessController = this.app;
-        if (windowProcessController == null) {
-            windowProcessController = (WindowProcessController) this.mAtmService.mProcessNames.get(this.processName, this.info.applicationInfo.uid);
-        }
-        return windowProcessController != null && windowProcessController.hasThread();
-    }
-
-    public final boolean allowTaskSnapshot() {
-        if (this.mDisableSnapshot) {
+    public final boolean resumeConfigurationDispatch() {
+        int i = this.mPauseConfigurationDispatchCount - 1;
+        this.mPauseConfigurationDispatchCount = i;
+        if (i > 0) {
             return false;
         }
-        ArrayList arrayList = this.newIntents;
-        if (arrayList == null) {
-            return true;
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_TRANSITIONS_MIN_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_TRANSITIONS_MIN, 5153784493059555057L, 0, "Resuming configuration dispatch for %s", String.valueOf(this));
         }
-        for (int size = arrayList.size() - 1; size >= 0; size--) {
-            Intent intent = (Intent) this.newIntents.get(size);
-            if (intent != null && !isMainIntent(intent)) {
-                Intent intent2 = this.mLastNewIntent;
-                if (!(intent2 != null ? intent2.filterEquals(intent) : this.intent.filterEquals(intent)) || intent.getExtras() != null) {
-                    return false;
-                }
+        if (this.mPauseConfigurationDispatchCount < 0) {
+            Slog.wtf("ActivityTaskManager", "Trying to resume non-paused configuration dispatch");
+            this.mPauseConfigurationDispatchCount = 0;
+            return false;
+        }
+        if (this.mLastReportedDisplayId == getDisplayId() && getConfiguration().equals(this.mLastReportedConfiguration.getMergedConfiguration())) {
+            return false;
+        }
+        for (int childCount = getChildCount() - 1; childCount >= 0; childCount--) {
+            WindowState windowState = (WindowState) getChildAt(childCount);
+            Configuration configuration = getConfiguration();
+            if (!isConfigurationDispatchPaused()) {
+                super.dispatchConfigurationToChild(windowState, configuration);
             }
         }
+        updateReportedConfigurationAndSend();
         return true;
     }
 
-    public boolean isNoHistory() {
-        return ((this.intent.getFlags() & 1073741824) == 0 && (this.info.flags & 128) == 0) ? false : true;
+    public final void resumeKeyDispatchingLocked() {
+        if (this.keysPaused) {
+            this.keysPaused = false;
+            if (getDisplayContent() != null) {
+                InputMonitor inputMonitor = getDisplayContent().mInputMonitor;
+                inputMonitor.getClass();
+                if (this.paused) {
+                    this.paused = false;
+                    inputMonitor.updateInputWindowsLw(true);
+                }
+            }
+        }
     }
 
-    public void saveToXml(TypedXmlSerializer typedXmlSerializer) {
+    public final void saveToXml(TypedXmlSerializer typedXmlSerializer) {
         typedXmlSerializer.attributeLong((String) null, "id", this.createTime);
         typedXmlSerializer.attributeInt((String) null, "launched_from_uid", this.launchedFromUid);
         String str = this.launchedFromPackage;
@@ -7768,904 +5028,187 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         typedXmlSerializer.startTag((String) null, KnoxCustomManagerService.INTENT);
         this.intent.saveToXml(typedXmlSerializer);
         typedXmlSerializer.endTag((String) null, KnoxCustomManagerService.INTENT);
-        if (!isPersistable() || this.mPersistentState == null) {
+        if (isPersistable() && this.mPersistentState != null) {
+            typedXmlSerializer.startTag((String) null, "persistable_bundle");
+            this.mPersistentState.saveToXml(typedXmlSerializer);
+            typedXmlSerializer.endTag((String) null, "persistable_bundle");
+        }
+        if (android.security.Flags.contentUriPermissionApis()) {
+            ActivityCallerState.CallerInfo callerInfo = (ActivityCallerState.CallerInfo) this.mCallerState.mCallerTokenInfoMap.getOrDefault(this.initialCallerInfoAccessToken, null);
+            if (callerInfo != null) {
+                typedXmlSerializer.startTag((String) null, "initial_caller_info");
+                typedXmlSerializer.attributeInt((String) null, "caller_uid", callerInfo.mUid);
+                String str4 = callerInfo.mPackageName;
+                if (str4 != null) {
+                    typedXmlSerializer.attribute((String) null, "caller_package", str4);
+                }
+                typedXmlSerializer.attributeBoolean((String) null, "caller_is_share_enabled", callerInfo.mIsShareIdentityEnabled);
+                for (int size = callerInfo.mReadableContentUris.size() - 1; size >= 0; size--) {
+                    ActivityCallerState.CallerInfo.saveGrantUriToXml(typedXmlSerializer, (GrantUri) callerInfo.mReadableContentUris.valueAt(size), "readable_content_uri");
+                }
+                for (int size2 = callerInfo.mWritableContentUris.size() - 1; size2 >= 0; size2--) {
+                    ActivityCallerState.CallerInfo.saveGrantUriToXml(typedXmlSerializer, (GrantUri) callerInfo.mWritableContentUris.valueAt(size2), "writable_content_uri");
+                }
+                for (int size3 = callerInfo.mInaccessibleContentUris.size() - 1; size3 >= 0; size3--) {
+                    ActivityCallerState.CallerInfo.saveGrantUriToXml(typedXmlSerializer, (GrantUri) callerInfo.mInaccessibleContentUris.valueAt(size3), "inaccessible_content_uri");
+                }
+                typedXmlSerializer.endTag((String) null, "initial_caller_info");
+            }
+        }
+    }
+
+    public final void scheduleActivityMovedToDisplay(int i, Configuration configuration, ActivityWindowInfo activityWindowInfo) {
+        boolean attachedToProcess = attachedToProcess();
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_SWITCH_enabled;
+        if (!attachedToProcess) {
+            if (zArr[3]) {
+                ProtoLogImpl_54989576.w(ProtoLogGroup.WM_DEBUG_SWITCH, -6509265758887333864L, 4, null, String.valueOf(this), Long.valueOf(i));
+                return;
+            }
             return;
         }
-        typedXmlSerializer.startTag((String) null, "persistable_bundle");
-        this.mPersistentState.saveToXml(typedXmlSerializer);
-        typedXmlSerializer.endTag((String) null, "persistable_bundle");
-    }
-
-    public static ActivityRecord restoreFromXml(TypedXmlPullParser typedXmlPullParser, ActivityTaskSupervisor activityTaskSupervisor) {
-        Intent intent = null;
-        int attributeInt = typedXmlPullParser.getAttributeInt((String) null, "launched_from_uid", 0);
-        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "launched_from_package");
-        String attributeValue2 = typedXmlPullParser.getAttributeValue((String) null, "launched_from_feature");
-        String attributeValue3 = typedXmlPullParser.getAttributeValue((String) null, "resolved_type");
-        boolean attributeBoolean = typedXmlPullParser.getAttributeBoolean((String) null, "component_specified", false);
-        int attributeInt2 = typedXmlPullParser.getAttributeInt((String) null, "user_id", 0);
-        long attributeLong = typedXmlPullParser.getAttributeLong((String) null, "id", -1L);
-        int depth = typedXmlPullParser.getDepth();
-        ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription();
-        taskDescription.restoreFromXml(typedXmlPullParser);
-        PersistableBundle persistableBundle = null;
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1 || (next == 3 && typedXmlPullParser.getDepth() < depth)) {
-                break;
+        try {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_SWITCH, -4183059578873561863L, 4, null, String.valueOf(this), Long.valueOf(i), String.valueOf(configuration));
             }
-            if (next == 2) {
-                String name = typedXmlPullParser.getName();
-                if (KnoxCustomManagerService.INTENT.equals(name)) {
-                    intent = Intent.restoreFromXml(typedXmlPullParser);
-                } else if ("persistable_bundle".equals(name)) {
-                    persistableBundle = PersistableBundle.restoreFromXml(typedXmlPullParser);
-                } else {
-                    Slog.w("ActivityTaskManager", "restoreActivity: unexpected name=" + name);
-                    com.android.internal.util.XmlUtils.skipCurrentTag(typedXmlPullParser);
-                }
+            this.mAtmService.mLifecycleManager.scheduleTransactionItem(this.app.mThread, MoveToDisplayItem.obtain(this.token, i, configuration, activityWindowInfo));
+        } catch (RemoteException unused) {
+        }
+    }
+
+    public final void scheduleAddStartingWindow() {
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STARTING_WINDOW_enabled;
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 5659016061937922595L, 0, "Add starting %s: startingData=%s", String.valueOf(this), String.valueOf(this.mStartingData));
+        }
+        StartingSurfaceController.StartingSurface createStartingSurface = this.mStartingData.createStartingSurface(this);
+        this.mStartingSurface = createStartingSurface;
+        if (createStartingSurface == null) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 1048048288756547220L, 0, "Surface returned was null: %s", String.valueOf(this));
+                return;
             }
+            return;
         }
-        if (intent == null) {
-            throw new XmlPullParserException("restoreActivity error intent=" + intent);
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 7506106334102501360L, 0, "Added starting %s: startingWindow=%s startingView=%s", String.valueOf(this), String.valueOf(this.mStartingWindow), String.valueOf(this.mStartingSurface));
         }
-        ActivityTaskManagerService activityTaskManagerService = activityTaskSupervisor.mService;
-        PersistableBundle persistableBundle2 = persistableBundle;
-        ActivityInfo resolveActivity = activityTaskSupervisor.resolveActivity(intent, attributeValue3, 0, null, attributeInt2, Binder.getCallingUid(), 0);
-        if (resolveActivity == null) {
-            throw new XmlPullParserException("restoreActivity resolver error. Intent=" + intent + " resolvedType=" + attributeValue3);
+    }
+
+    public final void scheduleConfigurationChanged(Configuration configuration, ActivityWindowInfo activityWindowInfo) {
+        boolean attachedToProcess = attachedToProcess();
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_CONFIGURATION_enabled;
+        if (!attachedToProcess) {
+            if (zArr[3]) {
+                ProtoLogImpl_54989576.w(ProtoLogGroup.WM_DEBUG_CONFIGURATION, 7435279034964784633L, 0, null, String.valueOf(this));
+                return;
+            }
+            return;
         }
-        return new Builder(activityTaskManagerService).setLaunchedFromUid(attributeInt).setLaunchedFromPackage(attributeValue).setLaunchedFromFeature(attributeValue2).setIntent(intent).setResolvedType(attributeValue3).setActivityInfo(resolveActivity).setComponentSpecified(attributeBoolean).setPersistentState(persistableBundle2).setTaskDescription(taskDescription).setCreateTime(attributeLong).build();
-    }
-
-    public static boolean isInVrUiMode(Configuration configuration) {
-        return (configuration.uiMode & 15) == 7;
-    }
-
-    public static boolean isInDeskUiMode(Configuration configuration) {
-        return (configuration.uiMode & 15) == 2;
-    }
-
-    public String getProcessName() {
-        return this.info.applicationInfo.processName;
-    }
-
-    public int getUid() {
-        return this.info.applicationInfo.uid;
-    }
-
-    public boolean isUid(int i) {
-        return this.info.applicationInfo.uid == i;
-    }
-
-    public int getPid() {
-        WindowProcessController windowProcessController = this.app;
-        if (windowProcessController != null) {
-            return windowProcessController.getPid();
+        try {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_CONFIGURATION, -7418876140361338495L, 0, null, String.valueOf(this), String.valueOf(configuration));
+            }
+            Slog.d("ActivityTaskManager", "scheduleConfigurationChanged: " + this + " state=" + this.mState + " config=" + configuration + " caller=" + Debug.getCallers(3));
+            this.mAtmService.mLifecycleManager.scheduleTransactionItem(this.app.mThread, ActivityConfigurationChangeItem.obtain(this.token, configuration, activityWindowInfo));
+        } catch (RemoteException unused) {
         }
-        return 0;
     }
 
-    public String getFilteredReferrer(String str) {
-        if (CoreRune.SYSFW_APP_SPEG && "com.samsung.speg".equals(str)) {
-            Slog.d("SPEG", "Passing referrer value");
-            return str;
+    public final void scheduleStopForRestartProcess() {
+        try {
+            this.mAtmService.mLifecycleManager.scheduleTransactionItem(this.app.mThread, StopActivityItem.obtain(this.token));
+        } catch (RemoteException e) {
+            Slog.w("ActivityTaskManager", "Exception thrown during restart " + this, e);
         }
-        if (str == null) {
-            return null;
-        }
-        if (str.equals(this.packageName) || !this.mWmService.mPmInternal.filterAppAccess(str, this.info.applicationInfo.uid, this.mUserId)) {
-            return str;
-        }
-        return null;
+        ActivityTaskSupervisor activityTaskSupervisor = this.mTaskSupervisor;
+        activityTaskSupervisor.mHandler.removeMessages(213, this);
+        ActivityTaskSupervisor.ActivityTaskSupervisorHandler activityTaskSupervisorHandler = activityTaskSupervisor.mHandler;
+        activityTaskSupervisorHandler.sendMessageDelayed(activityTaskSupervisorHandler.obtainMessage(213, this), 2000L);
     }
 
-    public boolean canTurnScreenOn() {
-        if (!getTurnScreenOnFlag()) {
+    public final boolean scheduleTopResumedActivityChanged(boolean z) {
+        boolean attachedToProcess = attachedToProcess();
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled;
+        if (!attachedToProcess) {
+            if (zArr[3]) {
+                ProtoLogImpl_54989576.w(ProtoLogGroup.WM_DEBUG_STATES, -4284934398288119962L, 0, null, String.valueOf(this));
+            }
             return false;
         }
-        Task rootTask = getRootTask();
-        if (!this.mCurrentLaunchCanTurnScreenOn || rootTask == null) {
+        if (z) {
+            this.app.addToPendingTop();
+        }
+        try {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 7244227111034368231L, 12, null, String.valueOf(this), Boolean.valueOf(z));
+            }
+            Slog.d("ActivityTaskManager", "scheduleTopResumedActivityChanged, onTop=" + z + ", r=" + this + ", caller=" + Debug.getCallers(6));
+            this.mAtmService.mLifecycleManager.scheduleTransactionItem(this.app.mThread, TopResumedActivityChangeItem.obtain(this.token, z));
+            return true;
+        } catch (RemoteException e) {
+            Slog.w("ActivityTaskManager", "Failed to send top-resumed=" + z + " to " + this, e);
             return false;
         }
-        return !this.mTaskSupervisor.getKeyguardController().isKeyguardShowing(getDisplayId()) || this.mTaskSupervisor.getKeyguardController().checkKeyguardVisibility(this);
     }
 
-    public void setTurnScreenOn(boolean z) {
-        this.mTurnScreenOn = z;
+    /* JADX WARN: Code restructure failed: missing block: B:6:0x0041, code lost:
+    
+        ((com.android.server.uri.UriGrantsManagerService.LocalService) r17.mAtmService.mUgmInternal).grantUriPermissionUncheckedFromIntent(r24, getUriPermissionsLocked());
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void sendResult(int r18, java.lang.String r19, int r20, int r21, android.content.Intent r22, android.os.IBinder r23, com.android.server.uri.NeededUriGrants r24, boolean r25) {
+        /*
+            Method dump skipped, instructions count: 347
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.sendResult(int, java.lang.String, int, int, android.content.Intent, android.os.IBinder, com.android.server.uri.NeededUriGrants, boolean):void");
     }
 
-    public void setAllowCrossUidActivitySwitchFromBelow(boolean z) {
-        this.mAllowCrossUidActivitySwitchFromBelow = z;
-    }
-
-    public Pair allowCrossUidActivitySwitchFromBelow(int i) {
-        int i2 = this.info.applicationInfo.uid;
-        if (i == i2) {
-            Boolean bool = Boolean.TRUE;
-            return new Pair(bool, bool);
+    public final void setAppLayoutChanges(int i) {
+        if (this.mChildren.isEmpty()) {
+            return;
         }
-        if (this.mAllowCrossUidActivitySwitchFromBelow) {
-            Boolean bool2 = Boolean.TRUE;
-            return new Pair(bool2, bool2);
-        }
-        return new Pair(Boolean.valueOf(!(ActivitySecurityModelFeatureFlags.shouldRestrictActivitySwitch(i2) && ActivitySecurityModelFeatureFlags.shouldRestrictActivitySwitch(i))), Boolean.FALSE);
-    }
-
-    public boolean getTurnScreenOnFlag() {
-        return this.mTurnScreenOn || containsTurnScreenOnWindow();
-    }
-
-    public final boolean containsTurnScreenOnWindow() {
-        if (isRelaunching()) {
-            return this.mLastContainsTurnScreenOnWindow;
-        }
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            if ((((WindowState) this.mChildren.get(size)).mAttrs.flags & 2097152) != 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean canResumeByCompat() {
-        WindowProcessController windowProcessController = this.app;
-        return windowProcessController == null || windowProcessController.updateTopResumingActivityInProcessIfNeeded(this);
-    }
-
-    public boolean isTopRunningActivity() {
-        return this.mRootWindowContainer.topRunningActivity() == this;
-    }
-
-    public boolean isFocusedActivityOnDisplay() {
-        return this.mDisplayContent.forAllTaskDisplayAreas(new Predicate() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda19
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$isFocusedActivityOnDisplay$24;
-                lambda$isFocusedActivityOnDisplay$24 = ActivityRecord.this.lambda$isFocusedActivityOnDisplay$24((TaskDisplayArea) obj);
-                return lambda$isFocusedActivityOnDisplay$24;
-            }
-        });
-    }
-
-    public /* synthetic */ boolean lambda$isFocusedActivityOnDisplay$24(TaskDisplayArea taskDisplayArea) {
-        return taskDisplayArea.getFocusedActivity() == this;
-    }
-
-    public boolean isRootOfTask() {
-        Task task = this.task;
-        return task != null && this == task.getRootActivity(true);
-    }
-
-    public void setTaskOverlay(boolean z) {
-        this.mTaskOverlay = z;
-        setAlwaysOnTop(z);
-    }
-
-    public boolean isTaskOverlay() {
-        return this.mTaskOverlay;
-    }
-
-    @Override // com.android.server.wm.ConfigurationContainer
-    public boolean isAlwaysOnTop() {
-        if (CoreRune.FW_APPLOCK && this.mIsAppLockExceptionActivity && this.mNotToBeTopForAppLockException) {
-            return false;
-        }
-        return this.mTaskOverlay || super.isAlwaysOnTop();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean showToCurrentUser() {
-        return this.mShowForAllUsers || this.mWmService.isUserVisible(this.mUserId);
-    }
-
-    public void setDexCompatMode(boolean z) {
-        if (this.mIsDexCompatEnabled != z) {
-            this.mIsDexCompatEnabled = z;
-            if (DexCompatController.DEBUG_DEX_COMPAT) {
-                Slog.d(StartingSurfaceController.TAG, "[DexCompat] setDexCompatMode: " + z);
-            }
-        }
+        DisplayContent displayContent = getDisplayContent();
+        displayContent.pendingLayoutChanges = i | displayContent.pendingLayoutChanges;
     }
 
     @Override // com.android.server.wm.WindowToken
-    public String toString() {
-        if (this.stringName != null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(this.stringName);
-            sb.append(" t");
-            Task task = this.task;
-            sb.append(task == null ? -1 : task.mTaskId);
-            sb.append(this.finishing ? " f}" : "");
-            sb.append(this.mIsExiting ? " isExiting" : "");
-            sb.append("}");
-            return sb.toString();
-        }
-        StringBuilder sb2 = new StringBuilder(128);
-        sb2.append("ActivityRecord{");
-        sb2.append(Integer.toHexString(System.identityHashCode(this)));
-        sb2.append(" u");
-        sb2.append(this.mUserId);
-        sb2.append(' ');
-        sb2.append(this.intent.getComponent().flattenToShortString());
-        String sb3 = sb2.toString();
-        this.stringName = sb3;
-        return sb3;
-    }
-
-    public void dumpDebug(ProtoOutputStream protoOutputStream, int i) {
-        writeNameToProto(protoOutputStream, 1138166333441L);
-        super.dumpDebug(protoOutputStream, 1146756268034L, i);
-        protoOutputStream.write(1133871366147L, this.mLastSurfaceShowing);
-        protoOutputStream.write(1133871366148L, isWaitingForTransitionStart());
-        protoOutputStream.write(1133871366149L, isAnimating(7, 17));
-        WindowContainerThumbnail windowContainerThumbnail = this.mThumbnail;
-        if (windowContainerThumbnail != null) {
-            windowContainerThumbnail.dumpDebug(protoOutputStream, 1146756268038L);
-        }
-        protoOutputStream.write(1133871366151L, fillsParent());
-        protoOutputStream.write(1133871366152L, this.mAppStopped);
-        protoOutputStream.write(1133871366174L, !occludesParent());
-        protoOutputStream.write(1133871366168L, this.mVisible);
-        protoOutputStream.write(1133871366153L, this.mVisibleRequested);
-        protoOutputStream.write(1133871366154L, isClientVisible());
-        protoOutputStream.write(1133871366155L, this.mDeferHidingClient);
-        protoOutputStream.write(1133871366156L, this.mReportedDrawn);
-        protoOutputStream.write(1133871366157L, this.reportedVisible);
-        protoOutputStream.write(1120986464270L, this.mNumInterestingWindows);
-        protoOutputStream.write(1120986464271L, this.mNumDrawnWindows);
-        protoOutputStream.write(1133871366160L, this.allDrawn);
-        protoOutputStream.write(1133871366161L, this.mLastAllDrawn);
-        WindowState windowState = this.mStartingWindow;
-        if (windowState != null) {
-            windowState.writeIdentifierToProto(protoOutputStream, 1146756268051L);
-        }
-        protoOutputStream.write(1133871366164L, isStartingWindowDisplayed());
-        protoOutputStream.write(1133871366345L, this.startingMoved);
-        protoOutputStream.write(1133871366166L, this.mVisibleSetFromTransferredStartingWindow);
-        protoOutputStream.write(1138166333467L, this.mState.toString());
-        protoOutputStream.write(1133871366172L, isRootOfTask());
-        if (hasProcess()) {
-            protoOutputStream.write(1120986464285L, this.app.getPid());
-        }
-        protoOutputStream.write(1133871366175L, this.pictureInPictureArgs.isAutoEnterEnabled());
-        protoOutputStream.write(1133871366176L, inSizeCompatMode());
-        protoOutputStream.write(1108101562401L, getMinAspectRatio());
-        protoOutputStream.write(1133871366178L, providesMaxBounds());
-        protoOutputStream.write(1133871366179L, this.mEnableRecentsScreenshot);
-        protoOutputStream.write(1120986464292L, this.mLastDropInputMode);
-        protoOutputStream.write(1120986464293L, getOverrideOrientation());
-        protoOutputStream.write(1133871366182L, shouldSendCompatFakeFocus());
-        protoOutputStream.write(1133871366183L, this.mLetterboxUiController.shouldForceRotateForCameraCompat());
-        protoOutputStream.write(1133871366184L, this.mLetterboxUiController.shouldRefreshActivityForCameraCompat());
-        protoOutputStream.write(1133871366185L, this.mLetterboxUiController.shouldRefreshActivityViaPauseForCameraCompat());
-    }
-
-    @Override // com.android.server.wm.WindowToken, com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j, int i) {
-        if (i != 2 || isVisible()) {
-            long start = protoOutputStream.start(j);
-            dumpDebug(protoOutputStream, i);
-            protoOutputStream.end(start);
+    public final void setClientVisible(boolean z) {
+        if (z || !this.mDeferHidingClient) {
+            super.setClientVisible(z);
         }
     }
 
-    public void writeNameToProto(ProtoOutputStream protoOutputStream, long j) {
-        protoOutputStream.write(j, this.shortComponentName);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void writeIdentifierToProto(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        protoOutputStream.write(1120986464257L, System.identityHashCode(this));
-        protoOutputStream.write(1120986464258L, this.mUserId);
-        protoOutputStream.write(1138166333443L, this.intent.getComponent().flattenToShortString());
-        protoOutputStream.end(start);
-    }
-
-    /* loaded from: classes3.dex */
-    public class CompatDisplayInsets {
-        public boolean mCanRotationCompatMode;
-        public boolean mConfigChangeNeeded;
-        public boolean mCreatedByRotationCompat;
-        public boolean mDisplayDeviceTypeChanged;
-        public int mDisplayId;
-        public final int mHeight;
-        public final boolean mIsFloating;
-        public final boolean mIsInFixedOrientationLetterbox;
-        public final int mOriginalRequestedOrientation;
-        public final int mOriginalRotation;
-        public boolean mWaitingForVisibleRequested;
-        public final int mWidth;
-        public final Rect[] mNonDecorInsets = new Rect[4];
-        public final Rect[] mStableInsets = new Rect[4];
-        public final Configuration mOverrideConfig = new Configuration();
-        public int mParentScreenLayout = 0;
-
-        public CompatDisplayInsets(DisplayContent displayContent, ActivityRecord activityRecord, Rect rect) {
-            int rotation;
-            this.mDisplayId = 0;
-            this.mDisplayId = displayContent.mDisplayId;
-            if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT) {
-                BoundsCompatRecord boundsCompatRecord = activityRecord.mCompatRecord;
-                if (boundsCompatRecord.mCanRotationCompatMode) {
-                    this.mCreatedByRotationCompat = true;
-                    this.mCanRotationCompatMode = true;
-                    this.mConfigChangeNeeded = boundsCompatRecord.mIsTaskOrientationMismatched;
-                    this.mWaitingForVisibleRequested = !activityRecord.mVisibleRequested;
-                }
-            }
-            this.mOriginalRotation = displayContent.getRotation();
-            boolean tasksAreFloating = activityRecord.getWindowConfiguration().tasksAreFloating();
-            this.mIsFloating = tasksAreFloating;
-            this.mOriginalRequestedOrientation = activityRecord.getRequestedConfigurationOrientation();
-            if (tasksAreFloating) {
-                Rect bounds = activityRecord.getWindowConfiguration().getBounds();
-                this.mWidth = bounds.width();
-                this.mHeight = bounds.height();
-                Rect rect2 = new Rect();
-                for (int i = 0; i < 4; i++) {
-                    this.mNonDecorInsets[i] = rect2;
-                    this.mStableInsets[i] = rect2;
-                }
-                this.mIsInFixedOrientationLetterbox = false;
-                return;
-            }
-            Task task = activityRecord.getTask();
-            boolean z = rect != null;
-            this.mIsInFixedOrientationLetterbox = z;
-            rect = z ? rect : task != null ? task.getBounds() : displayContent.getBounds();
-            if (task != null) {
-                rotation = task.getConfiguration().windowConfiguration.getRotation();
-            } else {
-                rotation = displayContent.getConfiguration().windowConfiguration.getRotation();
-            }
-            Point rotationZeroDimensions = getRotationZeroDimensions(rect, rotation);
-            this.mWidth = rotationZeroDimensions.x;
-            this.mHeight = rotationZeroDimensions.y;
-            Rect rect3 = rect.equals(displayContent.getBounds()) ? null : new Rect();
-            DisplayPolicy displayPolicy = displayContent.getDisplayPolicy();
-            int i2 = 0;
-            while (i2 < 4) {
-                this.mNonDecorInsets[i2] = new Rect();
-                this.mStableInsets[i2] = new Rect();
-                boolean z2 = i2 == 1 || i2 == 3;
-                int i3 = z2 ? displayContent.mBaseDisplayHeight : displayContent.mBaseDisplayWidth;
-                int i4 = z2 ? displayContent.mBaseDisplayWidth : displayContent.mBaseDisplayHeight;
-                DisplayPolicy.DecorInsets.Info decorInsetsInfo = displayPolicy.getDecorInsetsInfo(i2, i3, i4);
-                this.mNonDecorInsets[i2].set(decorInsetsInfo.mNonDecorInsets);
-                this.mStableInsets[i2].set(decorInsetsInfo.mConfigInsets);
-                if (rect3 != null) {
-                    rect3.set(rect);
-                    displayContent.rotateBounds(rotation, i2, rect3);
-                    updateInsetsForBounds(rect3, i3, i4, this.mNonDecorInsets[i2]);
-                    updateInsetsForBounds(rect3, i3, i4, this.mStableInsets[i2]);
-                }
-                i2++;
-            }
-        }
-
-        public static Point getRotationZeroDimensions(Rect rect, int i) {
-            boolean z = true;
-            if (i != 1 && i != 3) {
-                z = false;
-            }
-            int width = rect.width();
-            int height = rect.height();
-            return z ? new Point(height, width) : new Point(width, height);
-        }
-
-        public static void updateInsetsForBounds(Rect rect, int i, int i2, Rect rect2) {
-            rect2.left = Math.max(0, rect2.left - rect.left);
-            rect2.top = Math.max(0, rect2.top - rect.top);
-            rect2.right = Math.max(0, (rect.right - i) + rect2.right);
-            rect2.bottom = Math.max(0, (rect.bottom - i2) + rect2.bottom);
-        }
-
-        public void getBoundsByRotation(Rect rect, int i) {
-            boolean z = true;
-            if (i != 1 && i != 3) {
-                z = false;
-            }
-            rect.set(0, 0, z ? this.mHeight : this.mWidth, z ? this.mWidth : this.mHeight);
-        }
-
-        public void getFrameByOrientation(Rect rect, int i) {
-            int max = Math.max(this.mWidth, this.mHeight);
-            int min = Math.min(this.mWidth, this.mHeight);
-            boolean z = i == 2;
-            int i2 = z ? max : min;
-            if (z) {
-                max = min;
-            }
-            rect.set(0, 0, i2, max);
-        }
-
-        public void getContainerBounds(Rect rect, Rect rect2, int i, int i2, boolean z, boolean z2) {
-            getFrameByOrientation(rect2, i2);
-            if (this.mIsFloating) {
-                rect.set(rect2);
-                return;
-            }
-            getBoundsByRotation(rect, i);
-            int width = rect.width();
-            int height = rect.height();
-            boolean z3 = (rect2.width() > rect2.height()) != (width > height);
-            if (z3 && z2 && z) {
-                if (i2 == 2) {
-                    float f = width;
-                    rect2.bottom = (int) ((f * f) / height);
-                    rect2.right = width;
-                } else {
-                    rect2.bottom = height;
-                    float f2 = height;
-                    rect2.right = (int) ((f2 * f2) / width);
-                }
-                rect2.offset(ActivityRecord.getCenterOffset(this.mWidth, rect2.width()), 0);
-            }
-            rect.set(rect2);
-            if (z3) {
-                Rect rect3 = this.mNonDecorInsets[i];
-                rect2.offset(rect3.left, rect3.top);
-                rect.offset(rect3.left, rect3.top);
-            } else if (i != -1) {
-                TaskFragment.intersectWithInsetsIfFits(rect, rect2, this.mNonDecorInsets[i]);
-            }
-        }
-
-        public void dump(PrintWriter printWriter, String str) {
-            String str2 = str + "  ";
-            printWriter.print(str);
-            printWriter.print("CompatDisplayInsets:");
-            printWriter.print(" mWidth=" + this.mWidth);
-            printWriter.print(", mHeight=" + this.mHeight);
-            printWriter.print(", mDisplayId=" + this.mDisplayId);
-            if (this.mIsFloating) {
-                printWriter.print(", mIsFloating=true");
-            }
-            if (this.mIsInFixedOrientationLetterbox) {
-                printWriter.print(", mIsInFixedOrientationLetterbox=true");
-            }
-            printWriter.println();
-            if (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT) {
-                if (this.mCreatedByRotationCompat || this.mCanRotationCompatMode || this.mConfigChangeNeeded || this.mWaitingForVisibleRequested) {
-                    printWriter.print(str2);
-                    printWriter.print("mCreatedByRotationCompat=");
-                    printWriter.print(this.mCreatedByRotationCompat);
-                    printWriter.print(", mCanRotationCompatMode=");
-                    printWriter.print(this.mCanRotationCompatMode);
-                    if (this.mConfigChangeNeeded) {
-                        printWriter.print(", mConfigChangeNeeded=true");
-                    }
-                    if (this.mWaitingForVisibleRequested) {
-                        printWriter.print(", mWaitingForVisibleRequested=true");
-                    }
-                    printWriter.println();
-                }
-            }
-        }
-    }
-
-    public final void resetSizeCompatModeIfNeeded() {
-        if (this.mCompatDisplayInsets == null || this.task == null || !shouldResetSizeCompatMode()) {
+    public final void setDeferHidingClient(boolean z) {
+        if (this.mDeferHidingClient == z) {
             return;
         }
-        clearSizeCompatMode(true, true);
-    }
-
-    public final boolean shouldResetSizeCompatMode() {
-        if (BoundsCompatUtils.isSupportsBoundsCompat() && this.mAtmService.mExt.mAvoidCompatDisplayInsets && !this.task.inMultiWindowMode()) {
-            return true;
-        }
-        if (isEmbedded() && !getTaskFragment().getResolvedOverrideBounds().isEmpty()) {
-            return true;
-        }
-        if (CoreRune.FW_ORIENTATION_CONTROL && OrientationController.isEnabled(this.task) && !this.task.inMultiWindowMode()) {
-            return (CoreRune.FW_ORIENTATION_CONTROL_WITH_ROTATION_COMPAT && this.mCompatRecord.mCanRotationCompatMode) ? false : true;
-        }
-        return false;
-    }
-
-    public Rect getSizeCompatBounds() {
-        return this.mSizeCompatBounds;
-    }
-
-    public final void resolveSizeCompatBounds(Rect rect, Rect rect2, Configuration configuration) {
-        boolean canHaveSizeCompatBounds = this.mCompatRecord.getController().canHaveSizeCompatBounds(this);
-        this.mInSizeCompatModeForBounds = canHaveSizeCompatBounds;
-        float f = this.mSizeCompatScale;
-        if (canHaveSizeCompatBounds) {
-            int i = this.mCompatDisplayInsets.mStableInsets[configuration.windowConfiguration.getRotation()].top;
-            int width = rect.width();
-            int height = rect.height();
-            int width2 = rect2.width();
-            int height2 = rect2.height() - i;
-            this.mSizeCompatScale = (width > width2 || height > height2) ? Math.min(width2 / width, height2 / height) : 1.0f;
-        } else {
-            this.mSizeCompatScale = 1.0f;
-        }
-        if (this.mSizeCompatScale != 1.0f) {
-            if (this.mSizeCompatBounds == null) {
-                this.mSizeCompatBounds = new Rect();
-            }
-            this.mSizeCompatBounds.set(rect);
-            this.mSizeCompatBounds.offsetTo(0, 0);
-            this.mSizeCompatBounds.scale(this.mSizeCompatScale);
-        } else {
-            this.mSizeCompatBounds = null;
-        }
-        if (this.mSizeCompatScale != f) {
-            forAllWindows((Consumer) new ActivityRecord$$ExternalSyntheticLambda6(), false);
-        }
-    }
-
-    public boolean isDisplayCompatModeAvailable() {
-        Task task;
-        return (this.mIgnoreDisplayCompatMode || (task = this.task) == null || task.mCompatDisplayInsets == null) ? false : true;
-    }
-
-    public boolean isDisplayCompatModeEnabled() {
-        return isDisplayCompatModeAvailable() && this.task.mCompatDisplayInsets.mDisplayDeviceTypeChanged;
-    }
-
-    /* loaded from: classes3.dex */
-    public class AppSaturationInfo {
-        public float[] mMatrix;
-        public float[] mTranslation;
-
-        public /* synthetic */ AppSaturationInfo(AppSaturationInfoIA appSaturationInfoIA) {
-            this();
-        }
-
-        public AppSaturationInfo() {
-            this.mMatrix = new float[9];
-            this.mTranslation = new float[3];
-        }
-
-        public void setSaturation(float[] fArr, float[] fArr2) {
-            float[] fArr3 = this.mMatrix;
-            System.arraycopy(fArr, 0, fArr3, 0, fArr3.length);
-            float[] fArr4 = this.mTranslation;
-            System.arraycopy(fArr2, 0, fArr4, 0, fArr4.length);
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public RemoteAnimationTarget createRemoteAnimationTarget(RemoteAnimationController.RemoteAnimationRecord remoteAnimationRecord) {
-        WindowState findMainWindow = findMainWindow();
-        if (this.task == null || findMainWindow == null) {
-            return null;
-        }
-        boolean z = false;
-        Rect rect = findMainWindow.getInsetsStateWithVisibilityOverride().calculateInsets(this.task.getBounds(), WindowInsets.Type.systemBars(), false).toRect();
-        InsetUtils.addInsets(rect, getLetterboxInsets());
-        int i = this.task.mTaskId;
-        int mode = remoteAnimationRecord.getMode();
-        SurfaceControl surfaceControl = remoteAnimationRecord.mAdapter.mCapturedLeash;
-        boolean z2 = !fillsParent() || (CoreRune.FW_CUSTOM_LETTERBOX && CustomLetterboxConfiguration.hasWallpaperBackgroundForLetterbox(this) && remoteAnimationRecord.getMode() == 0);
-        Rect rect2 = new Rect();
-        int prefixOrderIndex = getPrefixOrderIndex();
-        RemoteAnimationController.RemoteAnimationAdapterWrapper remoteAnimationAdapterWrapper = remoteAnimationRecord.mAdapter;
-        Point point = remoteAnimationAdapterWrapper.mPosition;
-        Rect rect3 = remoteAnimationAdapterWrapper.mLocalBounds;
-        Rect rect4 = remoteAnimationAdapterWrapper.mEndBounds;
-        WindowConfiguration windowConfiguration = this.task.getWindowConfiguration();
-        RemoteAnimationController.RemoteAnimationAdapterWrapper remoteAnimationAdapterWrapper2 = remoteAnimationRecord.mThumbnailAdapter;
-        RemoteAnimationTarget remoteAnimationTarget = new RemoteAnimationTarget(i, mode, surfaceControl, z2, rect2, rect, prefixOrderIndex, point, rect3, rect4, windowConfiguration, false, remoteAnimationAdapterWrapper2 != null ? remoteAnimationAdapterWrapper2.mCapturedLeash : null, remoteAnimationRecord.mStartBounds, this.task.getTaskInfo(), checkEnterPictureInPictureAppOpsState());
-        remoteAnimationTarget.setShowBackdrop(remoteAnimationRecord.mShowBackdrop);
-        StartingData startingData = this.mStartingData;
-        if (startingData != null && startingData.hasImeSurface()) {
-            z = true;
-        }
-        remoteAnimationTarget.setWillShowImeOnTarget(z);
-        remoteAnimationTarget.hasAnimatingParent = remoteAnimationRecord.hasAnimatingParent();
-        return remoteAnimationTarget;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void getAnimationFrames(Rect rect, Rect rect2, Rect rect3, Rect rect4) {
-        WindowState findMainWindow = findMainWindow();
-        if (findMainWindow == null) {
+        this.mDeferHidingClient = z;
+        if (z || this.mVisibleRequested) {
             return;
         }
-        findMainWindow.getAnimationFrames(rect, rect2, rect3, rect4);
+        setVisibility(false);
     }
 
-    public void setPictureInPictureParams(PictureInPictureParams pictureInPictureParams) {
-        this.pictureInPictureArgs.copyOnlySet(pictureInPictureParams);
-        adjustPictureInPictureParamsIfNeeded(getBounds());
-        getTask().getRootTask().onPictureInPictureParamsChanged();
-    }
-
-    public void setShouldDockBigOverlays(boolean z) {
-        this.shouldDockBigOverlays = z;
-        getTask().getRootTask().onShouldDockBigOverlaysChanged();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isSyncFinished(BLASTSyncEngine.SyncGroup syncGroup) {
-        if (!super.isSyncFinished(syncGroup)) {
-            return false;
-        }
-        DisplayContent displayContent = this.mDisplayContent;
-        if (displayContent != null && displayContent.mUnknownAppVisibilityController.isVisibilityUnknown(this)) {
-            return false;
-        }
-        if (!isVisibleRequested()) {
-            return true;
-        }
-        if (this.mPendingRelaunchCount > 0 || !isAttached()) {
-            return false;
-        }
-        if (CoreRune.MW_SHELL_CHANGE_TRANSITION && this.mAtmService.mChangeTransitController.isSyncDeferredForAllDrawn(this)) {
-            if (CoreRune.SAFE_DEBUG) {
-                Slog.d("ActivityTaskManager", "isSyncFinished: syncDeferredForAllDrawn, r=" + this);
-            }
-            return false;
-        }
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            if (((WindowState) this.mChildren.get(size)).isVisibleRequested() || ignoreCheckSyncFinishWithWindow((WindowState) this.mChildren.get(size))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void finishSync(SurfaceControl.Transaction transaction, BLASTSyncEngine.SyncGroup syncGroup, boolean z) {
-        if (getSyncGroup() == null || syncGroup == getSyncGroup()) {
-            this.mLastAllReadyAtSync = allSyncFinished();
-            super.finishSync(transaction, syncGroup, z);
+    public void setDropInputMode(int i) {
+        if (this.mLastDropInputMode != i) {
+            this.mLastDropInputMode = i;
+            ((SurfaceControl.Transaction) this.mWmService.mTransactionFactory.get()).setDropInputMode(this.mSurfaceControl, i).apply();
         }
     }
 
-    public Point getMinDimensions() {
-        ActivityInfo.WindowLayout windowLayout = this.info.windowLayout;
-        if (windowLayout == null) {
-            return null;
-        }
-        return new Point(windowLayout.minWidth, windowLayout.minHeight);
-    }
-
-    public final void adjustPictureInPictureParamsIfNeeded(Rect rect) {
-        PictureInPictureParams pictureInPictureParams = this.pictureInPictureArgs;
-        if (pictureInPictureParams == null || !pictureInPictureParams.hasSourceBoundsHint()) {
-            return;
-        }
-        if (this.mCompatRecord.isCompatModeEnabled()) {
-            this.pictureInPictureArgs.getSourceRectHint().setEmpty();
-        } else {
-            this.pictureInPictureArgs.getSourceRectHint().offset(rect.left, rect.top);
+    public final void setEnteringPipFromSplit(String str, boolean z) {
+        if (this.mIsEnteringPipFromSplit != z) {
+            this.mIsEnteringPipFromSplit = z;
+            Slog.d("ActivityTaskManager", "setEnteringPipFromSplit: " + z + ", " + str + ", " + this);
         }
     }
 
-    public final void applyLocaleOverrideIfNeeded(Configuration configuration) {
-        ActivityTaskManagerInternal.PackageConfig findPackageConfiguration;
-        LocaleList localeList;
-        ComponentName componentName;
-        Task task;
-        boolean z = false;
-        if (isEmbedded() || ((task = this.task) != null && task.mAlignActivityLocaleWithTask)) {
-            Task task2 = this.task;
-            if (task2 != null && (componentName = task2.realActivity) != null && !componentName.getPackageName().equals(this.packageName)) {
-                z = true;
-            }
-            if (!z || (findPackageConfiguration = this.mAtmService.mPackageConfigPersister.findPackageConfiguration(this.task.realActivity.getPackageName(), this.mUserId)) == null || (localeList = findPackageConfiguration.mLocales) == null || localeList.isEmpty()) {
-                return;
-            }
-            configuration.setLocales(findPackageConfiguration.mLocales);
-        }
-    }
-
-    public boolean shouldSendCompatFakeFocus() {
-        return this.mLetterboxUiController.shouldSendFakeFocus() && inMultiWindowMode() && !inPinnedWindowingMode() && !inFreeformWindowingMode();
-    }
-
-    public boolean canCaptureSnapshot() {
-        if (!isSurfaceShowing() || findMainWindow() == null || this.mPopOverState.isActivated()) {
-            return false;
-        }
-        return forAllWindows(new ToBooleanFunction() { // from class: com.android.server.wm.ActivityRecord$$ExternalSyntheticLambda2
-            public final boolean apply(Object obj) {
-                boolean lambda$canCaptureSnapshot$25;
-                lambda$canCaptureSnapshot$25 = ActivityRecord.lambda$canCaptureSnapshot$25((WindowState) obj);
-                return lambda$canCaptureSnapshot$25;
-            }
-        }, true);
-    }
-
-    public static /* synthetic */ boolean lambda$canCaptureSnapshot$25(WindowState windowState) {
-        WindowStateAnimator windowStateAnimator = windowState.mWinAnimator;
-        return windowStateAnimator != null && windowStateAnimator.getShown() && windowState.mWinAnimator.mLastAlpha > DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    }
-
-    public void overrideCustomTransition(boolean z, int i, int i2, int i3) {
-        CustomAppTransition customAnimation = getCustomAnimation(z);
-        if (customAnimation == null) {
-            customAnimation = new CustomAppTransition();
-            if (z) {
-                this.mCustomOpenTransition = customAnimation;
-            } else {
-                this.mCustomCloseTransition = customAnimation;
-            }
-        }
-        customAnimation.mEnterAnim = i;
-        customAnimation.mExitAnim = i2;
-        customAnimation.mBackgroundColor = i3;
-    }
-
-    public void clearCustomTransition(boolean z) {
-        if (z) {
-            this.mCustomOpenTransition = null;
-        } else {
-            this.mCustomCloseTransition = null;
-        }
-    }
-
-    public CustomAppTransition getCustomAnimation(boolean z) {
-        return z ? this.mCustomOpenTransition : this.mCustomCloseTransition;
-    }
-
-    /* loaded from: classes3.dex */
-    public class Builder {
-        public ActivityInfo mActivityInfo;
-        public final ActivityTaskManagerService mAtmService;
-        public WindowProcessController mCallerApp;
-        public boolean mComponentSpecified;
-        public Configuration mConfiguration;
-        public long mCreateTime;
-        public Intent mIntent;
-        public String mLaunchedFromFeature;
-        public String mLaunchedFromPackage;
-        public int mLaunchedFromPid;
-        public int mLaunchedFromUid;
-        public ActivityOptions mOptions;
-        public PersistableBundle mPersistentState;
-        public int mRequestCode;
-        public String mResolvedType;
-        public ActivityRecord mResultTo;
-        public String mResultWho;
-        public boolean mRootVoiceInteraction;
-        public ActivityRecord mSourceRecord;
-        public ActivityManager.TaskDescription mTaskDescription;
-
-        public Builder(ActivityTaskManagerService activityTaskManagerService) {
-            this.mAtmService = activityTaskManagerService;
-        }
-
-        public Builder setCaller(WindowProcessController windowProcessController) {
-            this.mCallerApp = windowProcessController;
-            return this;
-        }
-
-        public Builder setLaunchedFromPid(int i) {
-            this.mLaunchedFromPid = i;
-            return this;
-        }
-
-        public Builder setLaunchedFromUid(int i) {
-            this.mLaunchedFromUid = i;
-            return this;
-        }
-
-        public Builder setLaunchedFromPackage(String str) {
-            this.mLaunchedFromPackage = str;
-            return this;
-        }
-
-        public Builder setLaunchedFromFeature(String str) {
-            this.mLaunchedFromFeature = str;
-            return this;
-        }
-
-        public Builder setIntent(Intent intent) {
-            this.mIntent = intent;
-            return this;
-        }
-
-        public Builder setResolvedType(String str) {
-            this.mResolvedType = str;
-            return this;
-        }
-
-        public Builder setActivityInfo(ActivityInfo activityInfo) {
-            this.mActivityInfo = activityInfo;
-            return this;
-        }
-
-        public Builder setResultTo(ActivityRecord activityRecord) {
-            this.mResultTo = activityRecord;
-            return this;
-        }
-
-        public Builder setResultWho(String str) {
-            this.mResultWho = str;
-            return this;
-        }
-
-        public Builder setRequestCode(int i) {
-            this.mRequestCode = i;
-            return this;
-        }
-
-        public Builder setComponentSpecified(boolean z) {
-            this.mComponentSpecified = z;
-            return this;
-        }
-
-        public Builder setRootVoiceInteraction(boolean z) {
-            this.mRootVoiceInteraction = z;
-            return this;
-        }
-
-        public Builder setActivityOptions(ActivityOptions activityOptions) {
-            this.mOptions = activityOptions;
-            return this;
-        }
-
-        public Builder setConfiguration(Configuration configuration) {
-            this.mConfiguration = configuration;
-            return this;
-        }
-
-        public Builder setSourceRecord(ActivityRecord activityRecord) {
-            this.mSourceRecord = activityRecord;
-            return this;
-        }
-
-        public final Builder setPersistentState(PersistableBundle persistableBundle) {
-            this.mPersistentState = persistableBundle;
-            return this;
-        }
-
-        public final Builder setTaskDescription(ActivityManager.TaskDescription taskDescription) {
-            this.mTaskDescription = taskDescription;
-            return this;
-        }
-
-        public final Builder setCreateTime(long j) {
-            this.mCreateTime = j;
-            return this;
-        }
-
-        public ActivityRecord build() {
-            if (this.mConfiguration == null) {
-                this.mConfiguration = this.mAtmService.getConfiguration();
-            }
-            ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
-            return new ActivityRecord(activityTaskManagerService, this.mCallerApp, this.mLaunchedFromPid, this.mLaunchedFromUid, this.mLaunchedFromPackage, this.mLaunchedFromFeature, this.mIntent, this.mResolvedType, this.mActivityInfo, this.mConfiguration, this.mResultTo, this.mResultWho, this.mRequestCode, this.mComponentSpecified, this.mRootVoiceInteraction, activityTaskManagerService.mTaskSupervisor, this.mOptions, this.mSourceRecord, this.mPersistentState, this.mTaskDescription, this.mCreateTime);
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean allowEdgeExtension() {
-        if ((getDisplayContent().getDisplayPolicy().mExt.isNavigationGestureMode() && !this.mWmService.mExt.mPolicyExt.isNavGetureHintEnabled()) || this.mCompatRecord.isCompatModeEnabled()) {
-            return false;
-        }
-        if ((CoreRune.MW_SPLIT_SHELL_TRANSITION && inSplitScreenWindowingMode()) || getMergedOverrideConfiguration().dexCompatEnabled == 2 || !occludesParent(true)) {
-            return false;
-        }
-        return hasStartingWindow() || hasOpaqueMainWindow();
-    }
-
-    public final boolean hasOpaqueMainWindow() {
-        WindowState findMainWindow = findMainWindow();
-        return (findMainWindow == null || PixelFormat.formatHasAlpha(findMainWindow.getAttrs().format)) ? false : true;
-    }
-
-    public boolean hasTransientBarShowingDelay() {
-        return this.mTransientBarShowingDelayMillis >= 0;
-    }
-
-    public int getTransientBarShowingDelayMillis() {
-        return this.mTransientBarShowingDelayMillis;
-    }
-
-    public boolean isHiddenWhileEnteringPinnedMode() {
-        return this.mHiddenWhileEnteringPinnedMode;
-    }
-
-    public void setHiddenWhileEnteringPinnedMode(boolean z, String str) {
+    public final void setHiddenWhileEnteringPinnedMode(String str, boolean z) {
         if (this.mHiddenWhileEnteringPinnedMode == z) {
             return;
         }
@@ -8677,78 +5220,1300 @@ public final class ActivityRecord extends WindowToken implements WindowManagerSe
         }
         if (this.mSurfaceControl != null) {
             SurfaceControl.Transaction transaction = (SurfaceControl.Transaction) this.mWmService.mTransactionFactory.get();
-            transaction.setAlpha(this.mSurfaceControl, z ? DisplayPowerController2.RATE_FROM_DOZE_TO_ON : 1.0f);
+            transaction.setAlpha(this.mSurfaceControl, z ? FullScreenMagnificationGestureHandler.MAX_SCALE : 1.0f);
             transaction.apply();
         }
     }
 
-    public void clearWaitForEnteringPinnedMode(String str) {
-        if (this.mWaitForEnteringPinnedMode) {
-            this.mWaitForEnteringPinnedMode = false;
-            setWindowingMode(0);
-            Slog.d("ActivityTaskManager", "clearWaitForEnteringPinnedMode: r=" + this + ", reason=" + str);
+    public final boolean setOccludesParent(boolean z, boolean z2) {
+        WindowState findMainWindow;
+        PopOverState popOverState = this.mPopOverState;
+        char c = 3;
+        char c2 = !popOverState.mIsActivated ? (char) 2 : popOverState.shouldRemoveOutlineEffect() ? (char) 3 : (char) 1;
+        PopOverState popOverState2 = this.mPopOverState;
+        popOverState2.mLastOccludesParent = z;
+        boolean z3 = popOverState2.mIsActivated;
+        if (z3) {
+            if (!z3) {
+                c = 2;
+            } else if (!popOverState2.shouldRemoveOutlineEffect()) {
+                c = 1;
+            }
+            if (c != c2) {
+                recomputeConfiguration();
+            }
+            return false;
         }
+        boolean z4 = z != this.mOccludesParent;
+        this.mOccludesParent = z;
+        if (!z2 && (findMainWindow = findMainWindow(true)) != null) {
+            findMainWindow.mWinAnimator.setOpaqueLocked((!PixelFormat.formatHasAlpha(findMainWindow.mAttrs.format)) & z);
+        }
+        if (z4 && this.task != null) {
+            if (z) {
+                Task rootTask = getRootTask();
+                if (this != rootTask.mPendingConvertFromTranslucentActivity) {
+                    Slog.e("ActivityTaskManager", "convertFromTranslucent expects " + rootTask.mPendingConvertFromTranslucentActivity + " but is " + this);
+                }
+                rootTask.mPendingConvertFromTranslucentActivity = null;
+            } else {
+                Task rootTask2 = getRootTask();
+                rootTask2.mTranslucentActivityWaiting = this;
+                rootTask2.mPendingConvertFromTranslucentActivity = this;
+                rootTask2.mUndrawnActivitiesBelowTopTranslucent.clear();
+                rootTask2.mHandler.sendEmptyMessageDelayed(101, 2000L);
+            }
+        }
+        if (z4 || !z) {
+            this.mRootWindowContainer.ensureActivitiesVisible();
+        }
+        return z4;
     }
 
-    public final boolean isSnapshotSizeCompatible(TaskSnapshot taskSnapshot) {
-        int width = this.task.getBounds().width();
-        int height = this.task.getBounds().height();
-        Point taskSize = taskSnapshot.getTaskSize();
-        int i = taskSize.x;
-        return (width == i && height == taskSize.y) || (width == taskSize.y && height == i);
+    @Override // com.android.server.wm.ConfigurationContainer
+    public final boolean setOverrideGender(Configuration configuration, int i) {
+        return WindowProcessController.applyConfigGenderOverride(configuration, i, this.mAtmService.mGrammaticalManagerInternal, getUid());
     }
 
-    public String getClassName() {
-        ActivityInfo activityInfo = this.info;
-        return activityInfo != null ? activityInfo.name : "";
+    /* JADX WARN: Removed duplicated region for block: B:35:0x0141  */
+    /* JADX WARN: Removed duplicated region for block: B:38:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void setProcess(final com.android.server.wm.WindowProcessController r12) {
+        /*
+            Method dump skipped, instructions count: 325
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.setProcess(com.android.server.wm.WindowProcessController):void");
     }
 
-    public void setActivityReparentToEmbeddedTask(boolean z) {
-        this.mIsActivityReparentToEmbeddedTask = z;
+    public final void setRequestedOrientation(int i) {
+        int i2;
+        AppCompatOrientationPolicy appCompatOrientationPolicy = this.mAppCompatController.mOrientationPolicy;
+        AppCompatOrientationOverrides appCompatOrientationOverrides = appCompatOrientationPolicy.mAppCompatOverrides.mAppCompatOrientationOverrides;
+        boolean shouldEnableWithOverrideAndProperty = appCompatOrientationOverrides.mIgnoreRequestedOrientationOptProp.shouldEnableWithOverrideAndProperty(appCompatOrientationOverrides.mActivityRecord.info.isChangeEnabled(254631730L));
+        ActivityRecord activityRecord = appCompatOrientationPolicy.mActivityRecord;
+        if (shouldEnableWithOverrideAndProperty) {
+            if (appCompatOrientationOverrides.mOrientationOverridesState.mIsRelaunchingAfterRequestedOrientationChanged) {
+                Slog.w("ActivityTaskManager", "Ignoring orientation update to " + ActivityInfo.screenOrientationToString(i) + " due to relaunching after setRequestedOrientation for " + activityRecord);
+                return;
+            }
+            DisplayContent displayContent = activityRecord.mAppCompatController.mActivityRecord.mDisplayContent;
+            AppCompatCameraPolicy appCompatCameraPolicy = displayContent != null ? displayContent.mAppCompatCameraPolicy : null;
+            if (appCompatCameraPolicy != null) {
+                DisplayRotationCompatPolicy displayRotationCompatPolicy = appCompatCameraPolicy.mDisplayRotationCompatPolicy;
+                if (displayRotationCompatPolicy != null ? displayRotationCompatPolicy.isTreatmentEnabledForActivity(true, activityRecord) : false) {
+                    Slog.w("ActivityTaskManager", "Ignoring orientation update to " + ActivityInfo.screenOrientationToString(i) + " due to camera compat treatment for " + activityRecord);
+                    return;
+                }
+            }
+        }
+        if (appCompatOrientationOverrides.shouldIgnoreOrientationRequestLoop()) {
+            Slog.w("ActivityTaskManager", "Ignoring orientation update to " + ActivityInfo.screenOrientationToString(i) + " as orientation request loop was detected for " + activityRecord);
+            return;
+        }
+        int i3 = this.mPendingRelaunchCount;
+        if ((!CoreRune.MT_APP_COMPAT_ROTATION_COMPAT_MODE || getAppCompatDisplayInsets() == null || !getAppCompatDisplayInsets().mIsRotationCompatMode) && getRequestedConfigurationOrientation(false, i) != getRequestedConfigurationOrientation(false)) {
+            this.mAppCompatController.mAppCompatSizeCompatModePolicy.clearSizeCompatModeAttributes();
+        }
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ORIENTATION_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -9178011226407552682L, 0, null, String.valueOf(ActivityInfo.screenOrientationToString(i)), String.valueOf(this));
+        }
+        setOrientation(i, this);
+        if (CoreRune.MT_SIZE_COMPAT_POLICY) {
+            SizeCompatPolicyManager sizeCompatPolicyManager = SizeCompatPolicyManager.LazyHolder.sManager;
+            Task task = this.task;
+            sizeCompatPolicyManager.getClass();
+            SizeCompatPolicyManager.ensureConfiguration(task);
+        }
+        if (this.mAtmService.mDexCompatController.isOrientationChanged(this)) {
+            this.mAtmService.mDexCompatController.rotateDexCompatTaskLocked(this);
+        } else {
+            Task task2 = this.task;
+            if (task2.mDexCompatUiMode == 3) {
+                this.mAtmService.mDexCompatController.changeWindowingModeIfNeeded(task2, this);
+            }
+        }
+        if (!getMergedOverrideConfiguration().equals(this.mLastReportedConfiguration.getMergedConfiguration())) {
+            ensureActivityConfiguration(false);
+            if (this.mPendingRelaunchCount > i3) {
+                this.mAppCompatController.mAppCompatOverrides.mAppCompatOrientationOverrides.mOrientationOverridesState.mIsRelaunchingAfterRequestedOrientationChanged = true;
+            }
+            if (this.mTransitionController.inPlayingTransition(this)) {
+                this.mTransitionController.mValidateActivityCompat.add(this);
+            }
+        }
+        TaskChangeNotificationController taskChangeNotificationController = this.mAtmService.mTaskChangeNotificationController;
+        Message obtainMessage = taskChangeNotificationController.mHandler.obtainMessage(12, this.task.mTaskId, i);
+        taskChangeNotificationController.forAllLocalListeners(taskChangeNotificationController.mNotifyActivityRequestedOrientationChanged, obtainMessage);
+        obtainMessage.sendToTarget();
+        DisplayRotation displayRotation = this.mDisplayContent.mDisplayRotation;
+        if (displayRotation.mCompatPolicyForImmersiveApps == null || (i2 = displayRotation.mRotationChoiceShownToUserForConfirmation) == -1) {
+            return;
+        }
+        displayRotation.mOrientationListener.onProposedRotationChanged(i2);
     }
 
-    public boolean isActivityReparentToEmbeddedTask() {
-        return this.mIsActivityReparentToEmbeddedTask;
-    }
-
-    public boolean isFullscreenEmbedded() {
-        return isEmbedded() && getTaskFragment().matchParentBounds();
+    public final void setState(State state, String str) {
+        State state2;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled;
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, -6873410057142191118L, 0, null, String.valueOf(this), String.valueOf(this.mState), String.valueOf(state), str);
+        }
+        if (state == this.mState) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, 4437231720834282527L, 0, null, String.valueOf(state));
+                return;
+            }
+            return;
+        }
+        this.mState = state;
+        TaskFragment taskFragment = getTaskFragment();
+        State state3 = State.RESUMED;
+        if (taskFragment != null) {
+            TaskFragment taskFragment2 = getTaskFragment();
+            if (this == taskFragment2.mResumedActivity && state != state3) {
+                taskFragment2.setResumedActivity(null, str.concat(" - onActivityStateChanged"));
+            }
+            if (state == state3) {
+                taskFragment2.setResumedActivity(this, str.concat(" - onActivityStateChanged"));
+                taskFragment2.mTaskSupervisor.mRecentTasks.add(this.task);
+            }
+            WindowProcessController organizerProcessIfDifferent = taskFragment2.getOrganizerProcessIfDifferent(this);
+            if (organizerProcessIfDifferent != null) {
+                taskFragment2.mTaskSupervisor.onProcessActivityStateChanged(organizerProcessIfDifferent, false);
+                organizerProcessIfDifferent.updateProcessInfo(false, true, true, false);
+            }
+        }
+        if (state == State.STOPPING) {
+            Task rootTask = getRootTask();
+            if (!(rootTask != null ? rootTask.shouldSleepActivities() : this.mAtmService.mSleeping) && getParent() == null) {
+                Slog.w("WindowManager", "Attempted to notify stopping on non-existing app token: " + this.token);
+                return;
+            }
+        }
+        this.mVisibleForServiceConnection = this.mVisibleRequested || (state2 = this.mState) == state3 || state2 == State.PAUSING;
+        WindowProcessController windowProcessController = this.app;
+        if (windowProcessController != null) {
+            this.mTaskSupervisor.onProcessActivityStateChanged(windowProcessController, false);
+        }
+        int ordinal = state.ordinal();
+        if (ordinal != 1) {
+            if (ordinal != 2) {
+                if (ordinal == 4) {
+                    this.mAtmService.updateBatteryStats(false, this);
+                    this.mAtmService.updateActivityUsageStats(2, this);
+                    return;
+                }
+                if (ordinal == 6) {
+                    this.mAtmService.updateActivityUsageStats(23, this);
+                    DisplayContent displayContent = this.mDisplayContent;
+                    if (displayContent != null) {
+                        displayContent.mUnknownAppVisibilityController.appRemovedOrHidden(this);
+                        return;
+                    }
+                    return;
+                }
+                if (ordinal != 8) {
+                    if (ordinal != 9) {
+                        return;
+                    }
+                    if (this.app != null && (this.mVisible || this.mVisibleRequested)) {
+                        this.mAtmService.updateBatteryStats(false, this);
+                    }
+                    this.mAtmService.updateActivityUsageStats(24, this);
+                }
+                WindowProcessController windowProcessController2 = this.app;
+                if (windowProcessController2 == null || windowProcessController2.mHasActivities) {
+                    return;
+                }
+                this.app.updateProcessInfo(true, false, true, false);
+                return;
+            }
+            this.mAtmService.updateBatteryStats(true, this);
+            this.mAtmService.updateActivityUsageStats(1, this);
+        }
+        WindowProcessController windowProcessController3 = this.app;
+        if (windowProcessController3 != null) {
+            windowProcessController3.updateProcessInfo(false, true, true, true);
+        }
+        this.mAtmService.mH.post(new ActivityRecord$$ExternalSyntheticLambda7(1, this));
     }
 
     @Override // com.android.server.wm.WindowContainer
-    public boolean isSplitEmbedded() {
-        return isEmbedded() && !getTaskFragment().matchParentBounds();
-    }
-
-    public boolean isLaunchAdjacent() {
-        Intent intent = this.intent;
-        return intent != null && (intent.getFlags() & 268439552) == 268439552;
-    }
-
-    public boolean isLaunchRequestedFromNotification() {
-        return this.mLaunchingRequestedFromNotification;
-    }
-
-    public void setLaunchingRequestFromNotification(boolean z) {
-        this.mLaunchingRequestedFromNotification = z;
-    }
-
-    public final void logForMultiWindowModeChanged(int i, int i2) {
-        if (CoreRune.MW_SA_LOGGING) {
-            WindowConfiguration windowConfiguration = this.mLastReportedConfiguration.getOverrideConfiguration().windowConfiguration;
-            MultiWindowUtils.logForMultiWindowModeChange(i, windowConfiguration.getWindowingMode(), i2, windowConfiguration.getStageType());
+    public final void setSurfaceControl(SurfaceControl surfaceControl) {
+        super.setSurfaceControl(surfaceControl);
+        if (surfaceControl != null) {
+            this.mLastDropInputMode = 0;
+            updateUntrustedEmbeddingInputProtection();
         }
     }
 
-    public final boolean ignoreCheckSyncFinishWithWindow(WindowState windowState) {
-        if (windowState == null) {
+    public final void setTaskDescription(ActivityManager.TaskDescription taskDescription) {
+        Bitmap icon;
+        if (taskDescription.getIconFilename() == null && (icon = taskDescription.getIcon()) != null) {
+            String absolutePath = new File(new File(Environment.getDataSystemCeDirectory(this.task.mUserId), "recent_images"), String.valueOf(this.task.mTaskId) + "_activity_icon_" + this.createTime + ".png").getAbsolutePath();
+            TaskPersister taskPersister = this.mAtmService.mRecentTasks.mTaskPersister;
+            taskPersister.getClass();
+            taskPersister.mPersisterQueue.updateLastOrAddItem(new TaskPersister.ImageWriteQueueItem(icon, absolutePath));
+            taskDescription.setIconFilename(absolutePath);
+        }
+        this.taskDescription = taskDescription;
+        this.task.updateTaskDescription$1();
+    }
+
+    public final void setTaskToAffiliateWith(Task task) {
+        int i = this.launchMode;
+        if (i == 3 || i == 2) {
+            return;
+        }
+        Task task2 = this.task;
+        Task task3 = task2.mPrevAffiliate;
+        if (task3 != null) {
+            task3.setNextAffiliate(task2.mNextAffiliate);
+        }
+        Task task4 = task2.mNextAffiliate;
+        if (task4 != null) {
+            task4.setPrevAffiliate(task2.mPrevAffiliate);
+        }
+        task2.setPrevAffiliate(null);
+        task2.setNextAffiliate(null);
+        task2.mAffiliatedTaskId = task.mAffiliatedTaskId;
+        while (true) {
+            Task task5 = task.mNextAffiliate;
+            if (task5 == null) {
+                break;
+            }
+            if (task5.mAffiliatedTaskId != task2.mAffiliatedTaskId) {
+                StringBuilder sb = new StringBuilder("setTaskToAffiliateWith: nextRecents=");
+                sb.append(task5);
+                sb.append(" affilTaskId=");
+                sb.append(task5.mAffiliatedTaskId);
+                sb.append(" should be ");
+                VaultKeeperService$$ExternalSyntheticOutline0.m(sb, task2.mAffiliatedTaskId, "ActivityTaskManager");
+                if (task5.mPrevAffiliate == task) {
+                    task5.setPrevAffiliate(null);
+                }
+                task.setNextAffiliate(null);
+            } else {
+                task = task5;
+            }
+        }
+        task.setNextAffiliate(task2);
+        task2.setPrevAffiliate(task);
+        task2.setNextAffiliate(null);
+    }
+
+    public final void setVisibility(boolean z) {
+        boolean z2;
+        boolean z3;
+        WindowState findFocusedWindow;
+        ActivityRecord activityRecord;
+        if (getParent() == null) {
+            Slog.w("WindowManager", "Attempted to set visibility of non-existing app token: " + this.token);
+            return;
+        }
+        if (z == this.mVisibleRequested && z == this.mVisible && z == this.mClientVisible && this.mTransitionController.isShellTransitionsEnabled()) {
+            return;
+        }
+        if (z) {
+            this.mDeferHidingClient = false;
+        }
+        boolean z4 = this.mDeferHidingClient;
+        AppTransition appTransition = getDisplayContent().mAppTransition;
+        if (z || this.mVisibleRequested) {
+            boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_APP_TRANSITIONS_enabled;
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS, -3452055378690362514L, 972, null, String.valueOf(this.token), Boolean.valueOf(z), String.valueOf(appTransition), Boolean.valueOf(this.mVisible), Boolean.valueOf(this.mVisibleRequested), String.valueOf(Debug.getCallers(6)));
+            }
+            if (this.mTransitionController.isShellTransitionsEnabled()) {
+                z2 = this.mTransitionController.isCollecting();
+                if (z2) {
+                    this.mTransitionController.collect(this);
+                    z3 = false;
+                } else {
+                    z3 = this.mTransitionController.inFinishingTransition(this);
+                    if (!z3) {
+                        if (z) {
+                            if (!this.mDisplayContent.mSleeping || canShowWhenLocked()) {
+                                TransitionController transitionController = this.mTransitionController;
+                                String callers = Debug.getCallers(1, 1);
+                                boolean z5 = !transitionController.mPlayingTransitions.isEmpty();
+                                StringBuilder sb = new StringBuilder("Set visible without transition ");
+                                sb.append(this);
+                                sb.append(" playing=");
+                                sb.append(z5);
+                                sb.append(" caller=");
+                                BinaryTransparencyService$$ExternalSyntheticOutline0.m$1(sb, callers, "TransitionController");
+                                if (z5) {
+                                    transitionController.mStateValidators.add(new TransitionController$$ExternalSyntheticLambda4(1, this));
+                                } else {
+                                    WindowContainer.enforceSurfaceVisible(this);
+                                }
+                            }
+                        } else if (!this.mDisplayContent.mSleeping) {
+                            Slog.w("ActivityTaskManager", "Set invisible without transition " + this);
+                        }
+                    }
+                }
+            } else {
+                z2 = false;
+                z3 = false;
+            }
+            onChildVisibilityRequested(z);
+            DisplayContent displayContent = getDisplayContent();
+            displayContent.mOpeningApps.remove(this);
+            displayContent.mClosingApps.remove(this);
+            setVisibleRequested(z);
+            this.mLastDeferHidingClient = z4;
+            if (z) {
+                if (!appTransition.isTransitionSet() && appTransition.isReady()) {
+                    displayContent.mOpeningApps.add(this);
+                }
+                this.startingMoved = false;
+                boolean z6 = this.mVisible;
+                if (!z6 || this.mAppStopped) {
+                    this.allDrawn = false;
+                    this.mLastAllDrawn = false;
+                    if (!z6 && !this.mClientVisible) {
+                        forAllWindows((Consumer) new ActivityRecord$$ExternalSyntheticLambda3(5), true);
+                    }
+                }
+                super.setClientVisible(true);
+                requestUpdateWallpaperIfNeeded();
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ADD_REMOVE_enabled[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, 1728033820691545386L, 0, null, String.valueOf(this));
+                }
+                this.mAppStopped = false;
+                WindowState findMainWindow = findMainWindow(false);
+                if (findMainWindow == null || !findMainWindow.mWinAnimator.getShown()) {
+                    this.task.forAllActivities(new ActivityRecord$$ExternalSyntheticLambda1(1, this));
+                }
+            } else if (this.startingMoved && !this.firstWindowDrawn && hasChild()) {
+                setClientVisible(false);
+            }
+            if (z2) {
+                if (z) {
+                    this.mTransitionChangeFlags &= -32769;
+                } else if (this.mTransitionController.inPlayingTransition(this)) {
+                    this.mTransitionChangeFlags |= 32768;
+                } else if (this.mTransitionController.inFinishingTransition(this)) {
+                    this.mTransitionChangeFlags |= 294912;
+                }
+            } else if (z3) {
+                this.mTransitionController.mValidateCommitVis.add(this);
+            } else {
+                if (!this.mTransitionController.isShellTransitionsEnabled() && ((this.mDisplayContent.mAppTransition.isTransitionSet() || (!isActivityTypeHome() && isAnimating(2, 8))) && (!this.mWaitForEnteringPinnedMode || this.mVisible != z))) {
+                    if (okToAnimate(true, canTurnScreenOn() || this.mTaskSupervisor.mKeyguardController.isKeyguardGoingAway(this.mDisplayContent.mDisplayId))) {
+                        if (z) {
+                            this.mDisplayContent.mOpeningApps.add(this);
+                            this.mEnteringAnimation = true;
+                        } else if (this.mVisible) {
+                            this.mDisplayContent.mClosingApps.add(this);
+                            this.mEnteringAnimation = false;
+                        }
+                        DisplayContent displayContent2 = this.mDisplayContent;
+                        if ((displayContent2.mAppTransition.mNextAppTransitionFlags & 32) != 0 && (findFocusedWindow = displayContent2.findFocusedWindow()) != null && (activityRecord = findFocusedWindow.mActivityRecord) != null) {
+                            if (zArr[0]) {
+                                ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_APP_TRANSITIONS, 5062176994575790703L, 0, null, String.valueOf(activityRecord));
+                            }
+                            this.mDisplayContent.mOpeningApps.add(activityRecord);
+                        }
+                    }
+                }
+                commitVisibility(z, true, false);
+                updateReportedVisibilityLocked();
+            }
+        } else if (!z4 && this.mLastDeferHidingClient) {
+            this.mLastDeferHidingClient = z4;
+            if (!CoreRune.FW_SHELL_TRANSITION_BUG_FIX || !inTransition() || !okToAnimate(true, canTurnScreenOn())) {
+                setClientVisible(false);
+            }
+        }
+        this.mAtmService.mLayoutReasons |= 2;
+        ActivityMetricsLogger activityMetricsLogger = this.mTaskSupervisor.mActivityMetricsLogger;
+        if (activityMetricsLogger.getActiveTransitionInfo(this) != null && ((!isState(State.RESUMED) || !this.mDisplayContent.mSleeping) && (!isVisibleRequested() || this.finishing))) {
+            activityMetricsLogger.scheduleCheckActivityToBeDrawn(this, 0L);
+        }
+        this.mTaskSupervisor.mAppVisibilitiesChangedSinceLastPause = true;
+    }
+
+    public final void setVisible(boolean z) {
+        if (z != this.mVisible) {
+            this.mVisible = z;
+            WindowProcessController windowProcessController = this.app;
+            if (windowProcessController != null) {
+                this.mTaskSupervisor.onProcessActivityStateChanged(windowProcessController, false);
+            }
+            scheduleAnimation();
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean setVisibleRequested(boolean z) {
+        WindowState windowState;
+        State state;
+        boolean z2 = false;
+        if (!super.setVisibleRequested(z)) {
             return false;
         }
-        return !windowState.showToCurrentUser() || windowState.isHiddenByViewCover();
+        forAllWindows((Consumer) new WindowToken$$ExternalSyntheticLambda1(this, !z), true);
+        this.mVisibleForServiceConnection = this.mVisibleRequested || (state = this.mState) == State.RESUMED || state == State.PAUSING;
+        WindowProcessController windowProcessController = this.app;
+        if (windowProcessController != null) {
+            this.mTaskSupervisor.onProcessActivityStateChanged(windowProcessController, false);
+        }
+        logAppCompatState();
+        if (!z) {
+            InputTarget inputTarget = this.mDisplayContent.mImeInputTarget;
+            if (inputTarget != null && inputTarget.getWindowState() != null && inputTarget.getWindowState().mActivityRecord == this && (windowState = this.mDisplayContent.mInputMethodWindow) != null && windowState.isVisible()) {
+                z2 = true;
+            }
+            this.mLastImeShown = z2;
+            this.mRelaunchStartTime = 0L;
+            DisplayPolicy displayPolicy = this.mDisplayContent.mDisplayPolicy;
+            if (displayPolicy.mRelaunchingSystemBarColorApps.remove(this) & displayPolicy.mRelaunchingSystemBarColorApps.isEmpty()) {
+                displayPolicy.updateSystemBarAttributes();
+            }
+        }
+        return true;
     }
 
-    public boolean hasVisibleEmptySizeMainWindow() {
-        WindowState findMainWindow = findMainWindow();
-        return findMainWindow != null && findMainWindow.isVisible() && findMainWindow.getFrame().isEmpty();
+    public boolean shouldAnimate() {
+        RecentsAnimationController recentsAnimationController;
+        Task task = this.task;
+        return task == null || !(task.isOrganized() || ((recentsAnimationController = task.mWmService.mRecentsAnimationController) != null && recentsAnimationController.isAnimatingTask(task) && recentsAnimationController.mRequestDeferCancelUntilNextTransition));
+    }
+
+    public final boolean shouldBeResumed(ActivityRecord activityRecord) {
+        Task task = this.task;
+        return (task == null || !task.isFreeformStashed()) ? shouldMakeActive(activityRecord) && isFocusable() && getTaskFragment().getVisibility(activityRecord) == 0 && canResumeByCompat() : shouldMakeActive(activityRecord) && getTaskFragment().getVisibility(activityRecord) == 0 && canResumeByCompat();
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x001a, code lost:
+    
+        if ((r0 != r5 ? r0 : null) != null) goto L11;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0024, code lost:
+    
+        if (showToCurrentUser() == false) goto L16;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0026, code lost:
+    
+        r1 = true;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0027, code lost:
+    
+        r5.visibleIgnoringKeyguard = r1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x0029, code lost:
+    
+        if (r6 == false) goto L19;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x0030, code lost:
+    
+        return shouldBeVisibleUnchecked();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:?, code lost:
+    
+        return r1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x001e, code lost:
+    
+        if (r5.mLaunchTaskBehind != false) goto L13;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean shouldBeVisible(boolean r6) {
+        /*
+            r5 = this;
+            com.android.server.wm.Task r0 = r5.task
+            r1 = 0
+            if (r0 != 0) goto L6
+            return r1
+        L6:
+            r2 = 0
+            boolean r3 = r0.shouldBeVisible(r2)
+            if (r3 == 0) goto L1c
+            com.android.server.wm.Task$$ExternalSyntheticLambda19 r3 = new com.android.server.wm.Task$$ExternalSyntheticLambda19
+            r4 = 1
+            r3.<init>(r4, r5)
+            com.android.server.wm.ActivityRecord r0 = r0.getActivity(r3)
+            if (r0 == r5) goto L1a
+            r2 = r0
+        L1a:
+            if (r2 == 0) goto L20
+        L1c:
+            boolean r0 = r5.mLaunchTaskBehind
+            if (r0 == 0) goto L27
+        L20:
+            boolean r0 = r5.showToCurrentUser()
+            if (r0 == 0) goto L27
+            r1 = 1
+        L27:
+            r5.visibleIgnoringKeyguard = r1
+            if (r6 == 0) goto L2c
+            goto L30
+        L2c:
+            boolean r1 = r5.shouldBeVisibleUnchecked()
+        L30:
+            return r1
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.shouldBeVisible(boolean):boolean");
+    }
+
+    public final boolean shouldBeVisibleUnchecked() {
+        Task task;
+        Task rootTask = getRootTask();
+        if (rootTask == null || !this.visibleIgnoringKeyguard) {
+            return false;
+        }
+        if (inPinnedWindowingMode() && rootTask.isForceHidden()) {
+            return false;
+        }
+        if ((getOrganizedTaskFragment() == null ? false : !r0.isAllowedToEmbedActivityInTrustedMode(r0.mTaskFragmentOrganizerUid, this)) && (task = this.task) != null && task.getActivity(new ActivityRecord$$ExternalSyntheticLambda1(4, this), this, false, false) != null) {
+            return false;
+        }
+        if (!this.mDisplayContent.mSleeping) {
+            return this.mTaskSupervisor.mKeyguardController.checkKeyguardVisibility(this);
+        }
+        int displayId = getDisplayId();
+        if (displayId == 2 && this.mAtmService.mDexController.getDexModeLocked() == 2) {
+            return false;
+        }
+        if (this.mAtmService.mKeyguardController.getDisplayState(displayId).mWakeAndUnlock && getDisplayContent() != null && getDisplayContent().isOnTop()) {
+            return true;
+        }
+        return canTurnScreenOn();
+    }
+
+    public final boolean shouldCreateAppCompatDisplayInsets() {
+        Task task;
+        Task task2;
+        AppCompatAspectRatioOverrides appCompatAspectRatioOverrides = this.mAppCompatController.mAppCompatOverrides.mAppCompatAspectRatioOverrides;
+        if (appCompatAspectRatioOverrides.shouldApplyUserFullscreenOverride() || appCompatAspectRatioOverrides.isSystemOverrideToFullscreenEnabled()) {
+            return false;
+        }
+        int supportsSizeChanges = supportsSizeChanges();
+        if (supportsSizeChanges == 1) {
+            return true;
+        }
+        if (supportsSizeChanges == 2 || supportsSizeChanges == 3 || this.mPopOverState.mIsActivated || isDexMode() || ((task = this.task) != null && task.isDexMode())) {
+            return false;
+        }
+        DisplayContent displayContent = this.mDisplayContent;
+        if (displayContent != null && displayContent.isRemoteAppDisplay()) {
+            return false;
+        }
+        DisplayContent displayContent2 = this.mDisplayContent;
+        if ((displayContent2 != null && displayContent2.isAppCastingDisplay()) || !MultiTaskingAppCompatController.inAllowedWindowingMode(this)) {
+            return false;
+        }
+        this.mAtmService.mMultiTaskingAppCompatController.mSizeCompatModePolicy.getClass();
+        char c = (CoreRune.MT_APP_COMPAT_ROTATION_COMPAT_MODE && this.mAtmService.mMultiTaskingAppCompatController.mOrientationPolicy.shouldCreateAppCompatDisplayInsetsForRotationCompat(this)) ? (char) 1 : (!(CoreRune.MT_APP_COMPAT_ASPECT_RATIO_POLICY && this.mAppCompatController.mAppCompatAspectRatioPolicy.isUserOrSystemMinAspectRatioApplied()) && (!CoreRune.MT_APP_COMPAT_ORIENTATION_POLICY || (task2 = this.task) == null || task2.mRespectOrientationRequestOverride == -1)) ? (char) 0 : (char) 3;
+        if (c == 1) {
+            return true;
+        }
+        if (c == 2 || c == 3) {
+            return false;
+        }
+        TaskDisplayArea taskDisplayArea = getTaskDisplayArea();
+        if (inMultiWindowMode() || (taskDisplayArea != null && taskDisplayArea.inFreeformWindowingMode())) {
+            Task task3 = this.task;
+            ActivityRecord rootActivity = task3 != null ? task3.getRootActivity(true, false) : null;
+            if (rootActivity != null && rootActivity != this && !rootActivity.shouldCreateAppCompatDisplayInsets()) {
+                return false;
+            }
+        }
+        return !isResizeable(true) && !(!this.info.isFixedOrientation() && getMaxAspectRatio() == FullScreenMagnificationGestureHandler.MAX_SCALE && getMinAspectRatio() == FullScreenMagnificationGestureHandler.MAX_SCALE) && isActivityTypeStandardOrUndefined();
+    }
+
+    @Override // com.android.server.wm.SurfaceAnimator.Animatable
+    public final boolean shouldDeferAnimationFinish(Runnable runnable) {
+        AnimatingActivityRegistry animatingActivityRegistry = this.mAnimatingActivityRegistry;
+        if (animatingActivityRegistry != null && animatingActivityRegistry.mAnimatingActivities.remove(this)) {
+            if (!animatingActivityRegistry.mAnimatingActivities.isEmpty()) {
+                animatingActivityRegistry.mFinishedTokens.put(this, runnable);
+                return true;
+            }
+            animatingActivityRegistry.endDeferringFinished();
+        }
+        return false;
+    }
+
+    public boolean shouldIgnoreOrientationRequests() {
+        return this.mAppActivityEmbeddingSplitsEnabled && ActivityInfo.isFixedOrientationPortrait(getOverrideOrientation()) && !this.task.inMultiWindowMode() && this.task.getConfiguration().smallestScreenWidthDp >= 600;
+    }
+
+    public boolean shouldMakeActive(ActivityRecord activityRecord) {
+        if (!isState$1(State.RESUMED, State.PAUSED, State.STOPPED, State.STOPPING) || getRootTask().mTranslucentActivityWaiting != null || this == activityRecord || this.mTaskSupervisor.mDeferResumeCount != 0 || this.mLaunchTaskBehind) {
+            return false;
+        }
+        if (this.task.hasChild(this)) {
+            return getTaskFragment().topRunningActivity(false) == this;
+        }
+        throw new IllegalStateException("Activity not found in its task");
+    }
+
+    public boolean shouldPauseActivity(ActivityRecord activityRecord) {
+        Task task = this.task;
+        return ((task != null && task.isFreeformStashed() && shouldMakeActive(activityRecord)) || !shouldMakeActive(activityRecord) || isFocusable() || isState(State.PAUSING, State.PAUSED) || this.results != null) ? false : true;
+    }
+
+    public boolean shouldResumeActivity(ActivityRecord activityRecord) {
+        return shouldBeResumed(activityRecord) && !isState(State.RESUMED);
+    }
+
+    public final boolean shouldSendCompatFakeFocus() {
+        AppCompatFocusOverrides appCompatFocusOverrides = this.mAppCompatController.mAppCompatOverrides.mAppCompatFocusOverrides;
+        ActivityRecord activityRecord = appCompatFocusOverrides.mActivityRecord;
+        return appCompatFocusOverrides.mFakeFocusOptProp.shouldEnableWithOverrideAndProperty(activityRecord.info.isChangeEnabled(263259275L)) && activityRecord.inMultiWindowMode() && !activityRecord.inPinnedWindowingMode() && !activityRecord.inFreeformWindowingMode();
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:132:0x0176, code lost:
+    
+        if (r18 != false) goto L112;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:41:0x00bd  */
+    /* JADX WARN: Removed duplicated region for block: B:59:0x0185  */
+    /* JADX WARN: Removed duplicated region for block: B:63:0x0193 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:69:0x01aa A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:73:0x01b5  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void showStartingWindow(com.android.server.wm.ActivityRecord r14, boolean r15, boolean r16, boolean r17, boolean r18, com.android.server.wm.ActivityRecord r19, android.app.ActivityOptions r20) {
+        /*
+            Method dump skipped, instructions count: 505
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.showStartingWindow(com.android.server.wm.ActivityRecord, boolean, boolean, boolean, boolean, com.android.server.wm.ActivityRecord, android.app.ActivityOptions):void");
+    }
+
+    public final void showStartingWindow(boolean z) {
+        showStartingWindow(this.task.getActivity(new ActivityRecord$$ExternalSyntheticLambda1(0, this)), false, z, isProcessRunning(), false, null, null);
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean showSurfaceOnCreation() {
+        return false;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean showToCurrentUser() {
+        if (!this.mShowForAllUsers) {
+            WindowManagerService windowManagerService = this.mWmService;
+            if (!windowManagerService.mUmInternal.isUserVisible(this.mUserId)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public final void startFreezingScreen(int i) {
+        if (this.mTransitionController.isShellTransitionsEnabled()) {
+            return;
+        }
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ORIENTATION_enabled[2]) {
+            ProtoLogImpl_54989576.i(ProtoLogGroup.WM_DEBUG_ORIENTATION, 3713860954819212080L, 252, null, String.valueOf(this.token), Boolean.valueOf(this.mVisible), Boolean.valueOf(this.mFreezingScreen), Boolean.valueOf(this.mVisibleRequested), String.valueOf(new RuntimeException().fillInStackTrace()));
+        }
+        if (this.mVisibleRequested) {
+            boolean z = i != -1;
+            if (!this.mFreezingScreen) {
+                this.mFreezingScreen = true;
+                WindowManagerService windowManagerService = this.mWmService;
+                if (!windowManagerService.mAppFreezeListeners.contains(this)) {
+                    windowManagerService.mAppFreezeListeners.add(this);
+                }
+                WindowManagerService windowManagerService2 = this.mWmService;
+                int i2 = windowManagerService2.mAppsFreezingScreen + 1;
+                windowManagerService2.mAppsFreezingScreen = i2;
+                if (i2 == 1) {
+                    if (z) {
+                        this.mDisplayContent.mDisplayRotation.cancelSeamlessRotation();
+                    }
+                    this.mWmService.startFreezingDisplay(0, 0, i, this.mDisplayContent);
+                    this.mWmService.mH.removeMessages(17);
+                    this.mWmService.mH.sendEmptyMessageDelayed(17, 2000L);
+                }
+            }
+            if (z) {
+                return;
+            }
+            int size = this.mChildren.size();
+            for (int i3 = 0; i3 < size; i3++) {
+                ((WindowState) this.mChildren.get(i3)).onStartFreezingScreen();
+            }
+        }
+    }
+
+    public void startRelaunching() {
+        if (this.mPendingRelaunchCount == 0) {
+            this.mRelaunchStartTime = SystemClock.elapsedRealtime();
+            if (this.mVisibleRequested) {
+                DisplayPolicy displayPolicy = this.mDisplayContent.mDisplayPolicy;
+                if (displayPolicy.mSystemBarColorApps.contains(this) && !hasStartingWindow()) {
+                    displayPolicy.mRelaunchingSystemBarColorApps.add(this);
+                }
+            }
+        }
+        this.allDrawn = false;
+        this.mLastAllDrawn = false;
+        this.mPendingRelaunchCount++;
+    }
+
+    public final void stopFreezingScreen(boolean z) {
+        if (this.mFreezingScreen) {
+            boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_ORIENTATION_enabled;
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 7696002120820208745L, 12, null, String.valueOf(this), Boolean.TRUE);
+            }
+            int size = this.mChildren.size();
+            boolean z2 = false;
+            for (int i = 0; i < size; i++) {
+                z2 |= ((WindowState) this.mChildren.get(i)).onStopFreezingScreen();
+            }
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, -8387262166329116492L, 0, null, String.valueOf(this));
+            }
+            this.mFreezingScreen = false;
+            this.mWmService.mAppFreezeListeners.remove(this);
+            WindowManagerService windowManagerService = this.mWmService;
+            windowManagerService.mAppsFreezingScreen--;
+            windowManagerService.mLastFinishedFreezeSource = this;
+            if (z) {
+                if (z2) {
+                    windowManagerService.mWindowPlacerLocked.performSurfacePlacement(false);
+                }
+                this.mWmService.stopFreezingDisplayLocked();
+            }
+        }
+    }
+
+    public final void stopIfPossible() {
+        if (this.finishing) {
+            Slog.e("ActivityTaskManager", "Request to stop a finishing activity: " + this);
+            destroyIfPossible("stopIfPossible-finishing");
+            return;
+        }
+        boolean z = ((this.intent.getFlags() & 1073741824) == 0 && (this.info.flags & 128) == 0) ? false : true;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STATES_enabled;
+        if (z) {
+            if (!this.task.shouldSleepActivities()) {
+                if (zArr[0]) {
+                    ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_STATES, 7498807658620137882L, 0, null, String.valueOf(this));
+                }
+                if (finishIfPossible("stop-no-history", false) != 0) {
+                    resumeKeyDispatchingLocked();
+                    return;
+                }
+            } else if (zArr[0]) {
+                ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_STATES, 3207149655622038378L, 0, null, String.valueOf(this));
+            }
+        }
+        if (attachedToProcess()) {
+            resumeKeyDispatchingLocked();
+            try {
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, -2530718588485487045L, 0, null, String.valueOf(this));
+                }
+                setState(State.STOPPING, "stopIfPossible");
+                EventLog.writeEvent(30048, Integer.valueOf(this.mUserId), Integer.valueOf(System.identityHashCode(this)), this.shortComponentName);
+                this.mAtmService.mLifecycleManager.scheduleTransactionItem(this.app.mThread, StopActivityItem.obtain(this.token));
+                this.mAtmService.mH.postDelayed(this.mStopTimeoutRunnable, 11000L);
+            } catch (Exception e) {
+                Slog.w("ActivityTaskManager", "Exception thrown during pause", e);
+                this.mAppStopped = true;
+                if (zArr[1]) {
+                    ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STATES, -8424334454318351870L, 0, null, String.valueOf(this));
+                }
+                setState(State.STOPPED, "stopIfPossible");
+            }
+        }
+    }
+
+    public final boolean supportsFreeform() {
+        return supportsFreeformInDisplayArea((TaskDisplayArea) super.getDisplayArea());
+    }
+
+    public final boolean supportsFreeformInDisplayArea(TaskDisplayArea taskDisplayArea) {
+        return this.mAtmService.mSupportsFreeformWindowManagement && supportsMultiWindowInDisplayArea(taskDisplayArea);
+    }
+
+    public final boolean supportsMultiWindowInDisplayArea(TaskDisplayArea taskDisplayArea) {
+        if (isActivityTypeHome()) {
+            return false;
+        }
+        ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
+        if (activityTaskManagerService.mSupportsMultiWindow && taskDisplayArea != null) {
+            return activityTaskManagerService.mMwSupportPolicyController.supportsMultiWindowInDisplayArea(taskDisplayArea, this.info.resizeMode, isResizeable(true), this.mIgnoreDevSettingForNonResizable);
+        }
+        return false;
+    }
+
+    public final boolean supportsPictureInPicture() {
+        return this.mAtmService.mSupportsPictureInPicture && isActivityTypeStandardOrUndefined() && this.info.supportsPictureInPicture();
+    }
+
+    public final int supportsSizeChanges() {
+        AppCompatResizeOverrides appCompatResizeOverrides = this.mAppCompatController.mAppCompatOverrides.mAppCompatResizeOverrides;
+        if (appCompatResizeOverrides.mAllowForceResizeOverrideOptProp.shouldEnableWithOptInOverrideAndOptOutProperty(appCompatResizeOverrides.mActivityRecord.info.isChangeEnabled(181136395L))) {
+            return 1;
+        }
+        if (this.info.supportsSizeChanges) {
+            return 2;
+        }
+        AppCompatResizeOverrides appCompatResizeOverrides2 = this.mAppCompatController.mAppCompatOverrides.mAppCompatResizeOverrides;
+        return appCompatResizeOverrides2.mAllowForceResizeOverrideOptProp.shouldEnableWithOptInOverrideAndOptOutProperty(appCompatResizeOverrides2.mActivityRecord.info.isChangeEnabled(174042936L)) ? 3 : 0;
+    }
+
+    @Override // com.android.server.wm.WindowToken
+    public final String toString() {
+        if (this.stringName != null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(this.stringName);
+            sb.append(" t");
+            Task task = this.task;
+            sb.append(task == null ? -1 : task.mTaskId);
+            sb.append(this.finishing ? " f}" : "");
+            return AudioOffloadInfo$$ExternalSyntheticOutline0.m(sb, this.mIsExiting ? " isExiting" : "", "}");
+        }
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(128, "ActivityRecord{");
+        m.append(Integer.toHexString(System.identityHashCode(this)));
+        m.append(" u");
+        m.append(this.mUserId);
+        m.append(' ');
+        m.append(this.intent.getComponent().flattenToShortString());
+        String sb2 = m.toString();
+        this.stringName = sb2;
+        return sb2;
+    }
+
+    public final boolean transferStartingWindow(ActivityRecord activityRecord) {
+        if (this.mPopOverState.mIsActivated != activityRecord.mPopOverState.mIsActivated) {
+            return false;
+        }
+        WindowState windowState = activityRecord.mStartingWindow;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STARTING_WINDOW_enabled;
+        if (windowState == null || activityRecord.mStartingSurface == null) {
+            if (activityRecord.mStartingData == null) {
+                return false;
+            }
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 8639603536400037285L, 0, "Moving pending starting from %s to %s", String.valueOf(activityRecord), String.valueOf(this));
+            }
+            this.mStartingData = activityRecord.mStartingData;
+            activityRecord.mStartingData = null;
+            activityRecord.startingMoved = true;
+            scheduleAddStartingWindow();
+            return true;
+        }
+        if (windowState.getParent() == null) {
+            return false;
+        }
+        if (activityRecord.getRequestedConfigurationOrientation() != getRequestedConfigurationOrientation() && (!CoreRune.FW_SHELL_TRANSITION_BUG_FIX || activityRecord.getRequestedConfigurationOrientation() != 0)) {
+            return false;
+        }
+        if (activityRecord.mVisible) {
+            this.mDisplayContent.mSkipAppTransitionAnimation = true;
+        }
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 8361394136152947990L, 0, "Moving existing starting %s from %s to %s", String.valueOf(windowState), String.valueOf(activityRecord), String.valueOf(this));
+        }
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            if (activityRecord.hasFixedRotationTransform()) {
+                this.mDisplayContent.handleTopActivityLaunchingInDifferentOrientation(this, this, false);
+            } else if (!this.mWmService.mFlags.mRespectNonTopVisibleFixedOrientation && this.mDisplayContent.rotationForActivityInDifferentOrientation(this) != -1) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return false;
+            }
+            this.mStartingData = activityRecord.mStartingData;
+            this.mStartingSurface = activityRecord.mStartingSurface;
+            this.mStartingWindow = windowState;
+            this.reportedVisible = activityRecord.reportedVisible;
+            activityRecord.mStartingData = null;
+            activityRecord.mStartingSurface = null;
+            activityRecord.mStartingWindow = null;
+            activityRecord.startingMoved = true;
+            windowState.mToken = this;
+            windowState.mActivityRecord = this;
+            if (ProtoLogImpl_54989576.Cache.WM_DEBUG_ADD_REMOVE_enabled[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ADD_REMOVE, -3450064502566932331L, 0, null, String.valueOf(windowState), String.valueOf(activityRecord));
+            }
+            this.mTransitionController.collect(windowState);
+            windowState.reparent(this, Integer.MAX_VALUE);
+            windowState.mFrozenInsetsState = null;
+            if (activityRecord.allDrawn) {
+                this.allDrawn = true;
+            }
+            if (activityRecord.firstWindowDrawn) {
+                this.firstWindowDrawn = true;
+            }
+            if (activityRecord.mVisible) {
+                setVisible(true);
+                setVisibleRequested(true);
+                this.mVisibleSetFromTransferredStartingWindow = true;
+            }
+            setClientVisible(activityRecord.mClientVisible);
+            if (activityRecord.isAnimating()) {
+                transferAnimation(activityRecord);
+                this.mTransitionChangeFlags |= 8;
+            } else if (this.mTransitionController.getTransitionPlayer() != null) {
+                this.mTransitionChangeFlags |= 8;
+            }
+            activityRecord.postWindowRemoveStartingWindowCleanup(windowState);
+            activityRecord.mVisibleSetFromTransferredStartingWindow = false;
+            this.mWmService.updateFocusedWindowLocked(3, true);
+            getDisplayContent().setLayoutNeeded();
+            this.mWmService.mWindowPlacerLocked.performSurfacePlacement(false);
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return true;
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final void updateLetterboxSurfaceIfNeeded(WindowState windowState) {
+        AppCompatLetterboxPolicy appCompatLetterboxPolicy = this.mAppCompatController.mAppCompatLetterboxPolicy;
+        ActivityRecord activityRecord = appCompatLetterboxPolicy.mActivityRecord;
+        appCompatLetterboxPolicy.mLetterboxPolicyState.updateLetterboxSurfaceIfNeeded(windowState, activityRecord.getSyncTransaction(), activityRecord.getPendingTransaction());
+    }
+
+    public final void updateOptionsLocked(ActivityOptions activityOptions) {
+        if (activityOptions != null) {
+            ActivityOptions activityOptions2 = this.mPendingOptions;
+            if (activityOptions2 != null) {
+                activityOptions2.abort();
+            }
+            this.mLaunchedFromBubble = activityOptions.getLaunchedFromBubble();
+            this.mPendingOptions = activityOptions;
+            if (activityOptions.getAnimationType() == 13) {
+                this.mPendingRemoteAnimation = activityOptions.getRemoteAnimationAdapter();
+            }
+            this.mPendingRemoteTransition = activityOptions.getRemoteTransition();
+        }
+    }
+
+    public final void updatePictureInPictureMode(Rect rect) {
+        Task task = this.task;
+        if (task == null || task.getRootTask() == null || !attachedToProcess()) {
+            return;
+        }
+        boolean z = inPinnedWindowingMode() && rect != null;
+        if (z == this.mLastReportedPictureInPictureMode) {
+            return;
+        }
+        this.mLastReportedPictureInPictureMode = z;
+        this.mLastReportedMultiWindowMode = z;
+        ensureActivityConfiguration(true);
+        if (z && findMainWindow(true) == null && this.task.topRunningActivity(false) == this) {
+            EventLog.writeEvent(1397638484, "265293293", -1, "");
+            removeImmediately();
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:110:0x0243  */
+    /* JADX WARN: Removed duplicated region for block: B:123:0x026f  */
+    /* JADX WARN: Removed duplicated region for block: B:125:0x0274  */
+    /* JADX WARN: Removed duplicated region for block: B:241:0x04dd  */
+    /* JADX WARN: Removed duplicated region for block: B:246:0x0502  */
+    /* JADX WARN: Removed duplicated region for block: B:266:0x0525  */
+    /* JADX WARN: Removed duplicated region for block: B:277:0x0271  */
+    /* JADX WARN: Removed duplicated region for block: B:54:0x0118  */
+    /* JADX WARN: Removed duplicated region for block: B:57:0x0123  */
+    /* JADX WARN: Removed duplicated region for block: B:61:0x013c  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean updateReportedConfigurationAndSend() {
+        /*
+            Method dump skipped, instructions count: 1348
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.ActivityRecord.updateReportedConfigurationAndSend():boolean");
+    }
+
+    public final void updateReportedVisibilityLocked() {
+        int i;
+        WindowContainerToken windowContainerToken;
+        ActivityMetricsLogger.TransitionInfoSnapshot transitionInfoSnapshot;
+        int i2;
+        ActivityMetricsLogger.TransitionInfoSnapshot transitionInfoSnapshot2;
+        int size = this.mChildren.size();
+        WindowState.UpdateReportedVisibilityResults updateReportedVisibilityResults = this.mReportedVisibilityResults;
+        updateReportedVisibilityResults.numInteresting = 0;
+        updateReportedVisibilityResults.numVisible = 0;
+        updateReportedVisibilityResults.numDrawn = 0;
+        updateReportedVisibilityResults.nowGone = true;
+        for (int i3 = 0; i3 < size; i3++) {
+            ((WindowState) this.mChildren.get(i3)).updateReportedVisibility(this.mReportedVisibilityResults);
+        }
+        WindowState.UpdateReportedVisibilityResults updateReportedVisibilityResults2 = this.mReportedVisibilityResults;
+        int i4 = updateReportedVisibilityResults2.numInteresting;
+        int i5 = updateReportedVisibilityResults2.numVisible;
+        int i6 = updateReportedVisibilityResults2.numDrawn;
+        boolean z = updateReportedVisibilityResults2.nowGone;
+        boolean z2 = i4 > 0 && i6 >= i4;
+        boolean z3 = i4 > 0 && i5 >= i4 && this.mVisible;
+        if (!z) {
+            if (!z2) {
+                z2 = this.mReportedDrawn;
+            }
+            if (!z3) {
+                z3 = this.reportedVisible;
+            }
+        }
+        boolean z4 = z3;
+        boolean z5 = z2;
+        if (z5 != this.mReportedDrawn) {
+            if (z5) {
+                final ActivityMetricsLogger activityMetricsLogger = this.mTaskSupervisor.mActivityMetricsLogger;
+                activityMetricsLogger.getClass();
+                final long uptimeNanos = SystemClock.uptimeNanos();
+                final ActivityMetricsLogger.TransitionInfo activeTransitionInfo = activityMetricsLogger.getActiveTransitionInfo(this);
+                if (activeTransitionInfo == null || activeTransitionInfo.mIsDrawn) {
+                    i = -1;
+                    windowContainerToken = null;
+                    transitionInfoSnapshot = null;
+                } else {
+                    activeTransitionInfo.mWindowsDrawnDelayMs = (int) TimeUnit.NANOSECONDS.toMillis(uptimeNanos - activeTransitionInfo.mLaunchingState.mStartUptimeNs);
+                    activeTransitionInfo.mIsDrawn = true;
+                    ActivityMetricsLogger.TransitionInfoSnapshot transitionInfoSnapshot3 = new ActivityMetricsLogger.TransitionInfoSnapshot(activeTransitionInfo, activeTransitionInfo.mLastLaunchedActivity, -1);
+                    if (activeTransitionInfo.mLoggedTransitionStarting || !(this.mDisplayContent.mOpeningApps.contains(this) || this.mTransitionController.isCollecting(this))) {
+                        transitionInfoSnapshot2 = transitionInfoSnapshot3;
+                        activityMetricsLogger.done(false, activeTransitionInfo, "notifyWindowsDrawn", uptimeNanos);
+                    } else {
+                        transitionInfoSnapshot2 = transitionInfoSnapshot3;
+                    }
+                    if (android.app.Flags.appStartInfoTimestamps()) {
+                        i = -1;
+                        windowContainerToken = null;
+                        activityMetricsLogger.mLoggerHandler.post(new Runnable() { // from class: com.android.server.wm.ActivityMetricsLogger$$ExternalSyntheticLambda7
+                            @Override // java.lang.Runnable
+                            public final void run() {
+                                ActivityMetricsLogger activityMetricsLogger2 = ActivityMetricsLogger.this;
+                                long j = uptimeNanos;
+                                ActivityRecord activityRecord = this;
+                                activityMetricsLogger2.mSupervisor.mService.mWindowManager.mAmInternal.addStartInfoTimestamp(4, j, activityRecord.getUid(), activityRecord.getPid(), activeTransitionInfo.mLastLaunchedActivity.mUserId);
+                            }
+                        });
+                    } else {
+                        i = -1;
+                        windowContainerToken = null;
+                    }
+                    transitionInfoSnapshot = transitionInfoSnapshot2;
+                }
+                boolean z6 = transitionInfoSnapshot != null;
+                int i7 = z6 ? transitionInfoSnapshot.windowsDrawnDelayMs : i;
+                if (z6) {
+                    int i8 = transitionInfoSnapshot.type;
+                    i2 = i8 != 7 ? i8 != 8 ? i8 != 9 ? i : transitionInfoSnapshot.relaunched ? 4 : 3 : 2 : 1;
+                } else {
+                    i2 = 0;
+                }
+                if (SemGateConfig.isGateEnabled()) {
+                    Log.i("GATE", "<GATE-M>APP_FULLY_LOADED_" + this.packageName + "</GATE-M>");
+                    if ("com.android.vending/.AssetBrowserActivity".equals(this.shortComponentName) || "com.android.vending/com.google.android.finsky.activities.TosActivity".equals(this.shortComponentName)) {
+                        Log.i("GATE", "<GATE-M> MARKET_LAUNCHED </GATE-M>");
+                    } else {
+                        Log.i("GATE", "<GATE-M> APP_OPENED </GATE-M>");
+                    }
+                }
+                if (z6 || this == ((TaskDisplayArea) super.getDisplayArea()).topRunningActivity(false)) {
+                    this.mTaskSupervisor.reportActivityLaunched(false, this, i7, i2);
+                }
+                this.launchTickTime = 0L;
+                Task rootTask = getRootTask();
+                if (rootTask != null) {
+                    rootTask.forAllActivities(new Task$$ExternalSyntheticLambda6(5));
+                }
+                Task task = this.task;
+                if (task != null && !task.mHasBeenVisible) {
+                    if (inTransition()) {
+                        this.task.setDeferTaskAppear(true);
+                    }
+                    this.task.setHasBeenVisible();
+                }
+                this.mLaunchRootTask = windowContainerToken;
+            }
+            this.mReportedDrawn = z5;
+        }
+        if (z4 != this.reportedVisible) {
+            this.reportedVisible = z4;
+            if (!z4) {
+                this.nowVisible = false;
+                return;
+            }
+            this.mTaskSupervisor.reportActivityLaunched(false, this, -1L, 0);
+            if (!this.nowVisible) {
+                this.nowVisible = true;
+                this.lastVisibleTime = SystemClock.uptimeMillis();
+                ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
+                activityTaskManagerService.mH.post(new ActivityTaskManagerService$$ExternalSyntheticLambda14(1, activityTaskManagerService));
+                this.mTaskSupervisor.scheduleProcessStoppingAndFinishingActivitiesIfNeeded();
+                if (this.mImeInsetsFrozenUntilStartInput && getWindow(new ActivityRecord$$ExternalSyntheticLambda4(0)) == null) {
+                    this.mImeInsetsFrozenUntilStartInput = false;
+                }
+            }
+            ActivityManagerPerformance activityManagerPerformance = this.mAtmService.mAMBooster;
+            if (activityManagerPerformance != null) {
+                activityManagerPerformance.onActivityVisibleLocked(this);
+            }
+        }
+    }
+
+    public final void updateResolvedBoundsPosition(Configuration configuration) {
+        if (!CoreRune.MT_SIZE_COMPAT_POLICY || this.mResolvedConfigChangeFlags == 0) {
+            Configuration resolvedOverrideConfiguration = getResolvedOverrideConfiguration();
+            Rect bounds = resolvedOverrideConfiguration.windowConfiguration.getBounds();
+            if (bounds.isEmpty()) {
+                return;
+            }
+            AppCompatSizeCompatModePolicy appCompatSizeCompatModePolicy = this.mAppCompatController.mAppCompatSizeCompatModePolicy;
+            Rect rect = appCompatSizeCompatModePolicy.hasSizeCompatBounds() ? appCompatSizeCompatModePolicy.mSizeCompatBounds : bounds;
+            Rect rect2 = this.mResolveConfigHint.mParentAppBoundsOverride;
+            Rect bounds2 = configuration.windowConfiguration.getBounds();
+            float width = rect.width();
+            float width2 = rect2.width();
+            if (Flags.immersiveAppRepositioning() && !this.mResolveConfigHint.mUseOverrideInsetsForConfig) {
+                boolean z = this.mWmService.mFlags.mInsetsDecoupledConfiguration;
+            }
+            Insets insets = Insets.NONE;
+            AppCompatReachabilityOverrides appCompatReachabilityOverrides = this.mAppCompatController.mAppCompatOverrides.mAppCompatReachabilityOverrides;
+            int i = 0;
+            int max = (((float) bounds2.width()) == width || width > width2) ? 0 : Math.max(0, (((int) Math.ceil((((int) (width2 + insets.right)) - width) * appCompatReachabilityOverrides.getHorizontalPositionMultiplier(configuration))) - rect.left) + rect2.left);
+            float height = rect2.height();
+            float height2 = bounds2.height();
+            float height3 = rect.height();
+            if (height2 != height3 && height3 <= height) {
+                boolean isDisplayFullScreenAndInPosture = appCompatReachabilityOverrides.mAppCompatDeviceStateQuery.isDisplayFullScreenAndInPosture(true);
+                boolean isVerticalReachabilityEnabled = appCompatReachabilityOverrides.isVerticalReachabilityEnabled(configuration);
+                AppCompatConfiguration appCompatConfiguration = appCompatReachabilityOverrides.mAppCompatConfiguration;
+                i = Math.max(0, (((int) Math.ceil((((int) (height + insets.bottom)) - height3) * (isVerticalReachabilityEnabled ? appCompatConfiguration.getVerticalMultiplierForReachability(isDisplayFullScreenAndInPosture) : isDisplayFullScreenAndInPosture ? appCompatConfiguration.mLetterboxTabletopModePositionMultiplier : appCompatConfiguration.mLetterboxVerticalPositionMultiplier))) - rect.top) + rect2.top);
+                int i2 = this.mAppCompatController.mAppCompatSizeCompatModePolicy.mViewportStableTop;
+                if (i2 > 0 && i2 > i) {
+                    MultiTaskingAppCompatSizeCompatModePolicy multiTaskingAppCompatSizeCompatModePolicy = this.mAtmService.mMultiTaskingAppCompatController.mSizeCompatModePolicy;
+                    AppCompatDisplayInsets appCompatDisplayInsets = getAppCompatDisplayInsets();
+                    multiTaskingAppCompatSizeCompatModePolicy.getClass();
+                    if (appCompatDisplayInsets != null && CoreRune.MT_APP_COMPAT_ROTATION_COMPAT_MODE && appCompatDisplayInsets.mIsRotationCompatMode) {
+                        i = i2;
+                    }
+                }
+            }
+            if (appCompatSizeCompatModePolicy.hasSizeCompatBounds()) {
+                appCompatSizeCompatModePolicy.mSizeCompatBounds.offset(max, i);
+                Rect rect3 = appCompatSizeCompatModePolicy.mSizeCompatBounds;
+                AppCompatUtils.offsetBounds(resolvedOverrideConfiguration, rect3.left - bounds.left, rect3.top - bounds.top);
+            } else {
+                AppCompatUtils.offsetBounds(resolvedOverrideConfiguration, max, i);
+            }
+            if (resolvedOverrideConfiguration.windowConfiguration.getAppBounds().top == rect2.top) {
+                resolvedOverrideConfiguration.windowConfiguration.getBounds().top = bounds2.top;
+                if (appCompatSizeCompatModePolicy.hasSizeCompatBounds()) {
+                    appCompatSizeCompatModePolicy.mSizeCompatBounds.top = bounds2.top;
+                }
+            }
+            computeConfigByResolveHint(resolvedOverrideConfiguration, configuration);
+            float f = appCompatSizeCompatModePolicy.mSizeCompatScale;
+            if (f != 1.0f) {
+                int i3 = bounds.left;
+                int i4 = bounds.top;
+                AppCompatUtils.offsetBounds(resolvedOverrideConfiguration, ((int) ((i3 / f) + 0.5f)) - i3, ((int) ((i4 / f) + 0.5f)) - i4);
+            }
+        }
+    }
+
+    public final void updateUntrustedEmbeddingInputProtection() {
+        if (this.mSurfaceControl == null) {
+            return;
+        }
+        if (this.mIsInputDroppedForAnimation) {
+            setDropInputMode(1);
+            return;
+        }
+        if (getOrganizedTaskFragment() == null ? false : !r0.isAllowedToEmbedActivityInTrustedMode(r0.mTaskFragmentOrganizerUid, this)) {
+            setDropInputMode(2);
+        } else {
+            setDropInputMode(0);
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean updateUseForceLayoutInUdcCutoutIfNeeded() {
+        throw null;
+    }
+
+    public final boolean validateStartingWindowTheme(ActivityRecord activityRecord, String str, int i) {
+        AttributeCache.Entry entry;
+        int i2;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_STARTING_WINDOW_enabled;
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, 338586566486930495L, 1, "Checking theme of starting window: 0x%x", Long.valueOf(i));
+        }
+        if (i == 0 || (entry = AttributeCache.instance().get(str, i, R.styleable.Window, this.mWmService.mCurrentUserId)) == null) {
+            return false;
+        }
+        boolean z = entry.array.getBoolean(5, false);
+        boolean z2 = entry.array.getBoolean(4, false);
+        boolean z3 = entry.array.getBoolean(14, false);
+        boolean z4 = entry.array.getBoolean(12, false);
+        if (zArr[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_STARTING_WINDOW, -2561793317091789573L, 0, "Translucent=%s Floating=%s ShowWallpaper=%s Disable=%s", String.valueOf(z), String.valueOf(z2), String.valueOf(z3), String.valueOf(z4));
+        }
+        if (z || z2) {
+            return false;
+        }
+        if (z3 && getDisplayContent().mWallpaperController.mWallpaperTarget != null) {
+            return false;
+        }
+        if (!z4 || (i2 = this.mLaunchSourceType) == 1 || i2 == 2 || i2 == 3) {
+            return true;
+        }
+        if (activityRecord != null && activityRecord.getActivityType() == 1 && activityRecord.mTransferringSplashScreenState == 0) {
+            if (activityRecord.mStartingData != null) {
+                return true;
+            }
+            if (activityRecord.mStartingWindow != null && activityRecord.mStartingSurface != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void waitForSyncTransactionCommit(ArraySet arraySet) {
+        super.waitForSyncTransactionCommit(arraySet);
+        StartingData startingData = this.mStartingData;
+        if (startingData != null) {
+            startingData.mWaitForSyncTransactionCommit = true;
+        }
+    }
+
+    public final boolean windowsAreFocusable(boolean z) {
+        Task task;
+        if (!z && this.mTargetSdk < 29) {
+            ActivityRecord activityRecord = (ActivityRecord) this.mWmService.mRoot.mTopFocusedAppByProcess.get(Integer.valueOf(getPid()));
+            if (activityRecord != null && activityRecord != this) {
+                return false;
+            }
+        }
+        return ((getWindowConfiguration().canReceiveKeys() && !this.mWaitForEnteringPinnedMode && ((task = this.task) == null || !task.isFreeformStashed())) || (this.info.flags & 262144) != 0) && isAttached();
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void writeIdentifierToProto(ProtoOutputStream protoOutputStream, long j) {
+        long start = protoOutputStream.start(j);
+        protoOutputStream.write(1120986464257L, System.identityHashCode(this));
+        protoOutputStream.write(1120986464258L, this.mUserId);
+        protoOutputStream.write(1138166333443L, this.intent.getComponent().flattenToShortString());
+        protoOutputStream.end(start);
     }
 }

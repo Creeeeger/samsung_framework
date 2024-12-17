@@ -3,20 +3,25 @@ package com.android.server.wm;
 import android.window.TaskSnapshot;
 import com.android.server.wm.SnapshotCache;
 
-/* loaded from: classes3.dex */
-public class ActivitySnapshotCache extends SnapshotCache {
-    public ActivitySnapshotCache(WindowManagerService windowManagerService) {
-        super(windowManagerService, "Activity");
-    }
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ActivitySnapshotCache extends SnapshotCache {
     @Override // com.android.server.wm.SnapshotCache
-    public void putSnapshot(ActivityRecord activityRecord, TaskSnapshot taskSnapshot) {
+    public final void putSnapshot(TaskSnapshot taskSnapshot, ActivityRecord activityRecord) {
         int identityHashCode = System.identityHashCode(activityRecord);
-        SnapshotCache.CacheEntry cacheEntry = (SnapshotCache.CacheEntry) this.mRunningCache.get(Integer.valueOf(identityHashCode));
-        if (cacheEntry != null) {
-            this.mAppIdMap.remove(cacheEntry.topApp);
+        taskSnapshot.addReference(2);
+        synchronized (this.mLock) {
+            try {
+                SnapshotCache.CacheEntry cacheEntry = (SnapshotCache.CacheEntry) this.mRunningCache.get(Integer.valueOf(identityHashCode));
+                if (cacheEntry != null) {
+                    this.mAppIdMap.remove(cacheEntry.topApp);
+                    cacheEntry.snapshot.removeReference(2);
+                }
+                this.mAppIdMap.put(activityRecord, Integer.valueOf(identityHashCode));
+                this.mRunningCache.put(Integer.valueOf(identityHashCode), new SnapshotCache.CacheEntry(taskSnapshot, activityRecord));
+            } catch (Throwable th) {
+                throw th;
+            }
         }
-        this.mAppIdMap.put(activityRecord, Integer.valueOf(identityHashCode));
-        this.mRunningCache.put(Integer.valueOf(identityHashCode), new SnapshotCache.CacheEntry(taskSnapshot, activityRecord));
     }
 }

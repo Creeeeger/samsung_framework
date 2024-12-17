@@ -1,32 +1,23 @@
 package com.android.server.pm;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class ApexSystemServiceInfo implements Comparable {
     public final int mInitOrder;
     public final String mJarPath;
     public final String mName;
 
-    public ApexSystemServiceInfo(String str, String str2, int i) {
+    public ApexSystemServiceInfo(int i, String str, String str2) {
         this.mName = str;
         this.mJarPath = str2;
         this.mInitOrder = i;
     }
 
-    public String getName() {
-        return this.mName;
-    }
-
-    public String getJarPath() {
-        return this.mJarPath;
-    }
-
     @Override // java.lang.Comparable
-    public int compareTo(ApexSystemServiceInfo apexSystemServiceInfo) {
+    public final int compareTo(Object obj) {
+        ApexSystemServiceInfo apexSystemServiceInfo = (ApexSystemServiceInfo) obj;
         int i = this.mInitOrder;
         int i2 = apexSystemServiceInfo.mInitOrder;
-        if (i == i2) {
-            return this.mName.compareTo(apexSystemServiceInfo.mName);
-        }
-        return -Integer.compare(i, i2);
+        return i == i2 ? this.mName.compareTo(apexSystemServiceInfo.mName) : -Integer.compare(i, i2);
     }
 }

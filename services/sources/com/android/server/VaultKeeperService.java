@@ -13,33 +13,74 @@ import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class VaultKeeperService extends IVaultKeeperService.Stub {
-    public Context mContext;
-    public PowerManager.WakeLock mWakeLock;
+    public final Context mContext;
+    public final PowerManager.WakeLock mWakeLock;
     public final ReentrantLock mLock = new ReentrantLock(true);
-    public final Handler mHandler = new Handler() { // from class: com.android.server.VaultKeeperService.1
+    public final AnonymousClass1 mHandler = new Handler() { // from class: com.android.server.VaultKeeperService.1
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             int i = message.what;
-            if (i == 1) {
-                if (VaultKeeperService.this.mHandler.hasMessages(2)) {
-                    VaultKeeperService.this.mHandler.removeMessages(2);
+            VaultKeeperService vaultKeeperService = VaultKeeperService.this;
+            if (i != 1) {
+                if (i == 2 && vaultKeeperService.mWakeLock.isHeld()) {
+                    vaultKeeperService.mWakeLock.release();
+                    Slog.i("VaultKeeperService", "wakelock is released!!");
+                    return;
                 }
-                if (!VaultKeeperService.this.mWakeLock.isHeld()) {
-                    VaultKeeperService.this.mWakeLock.acquire();
-                    Slog.i("VaultKeeperService", "wakelock is acquired!!");
-                }
-                VaultKeeperService.this.mHandler.sendEmptyMessageDelayed(2, 5000L);
                 return;
             }
-            if (i == 2 && VaultKeeperService.this.mWakeLock.isHeld()) {
-                VaultKeeperService.this.mWakeLock.release();
-                Slog.i("VaultKeeperService", "wakelock is released!!");
+            if (vaultKeeperService.mHandler.hasMessages(2)) {
+                vaultKeeperService.mHandler.removeMessages(2);
             }
+            if (!vaultKeeperService.mWakeLock.isHeld()) {
+                vaultKeeperService.mWakeLock.acquire();
+                Slog.i("VaultKeeperService", "wakelock is acquired!!");
+            }
+            vaultKeeperService.mHandler.sendEmptyMessageDelayed(2, 5000L);
         }
     };
-    public int mServiceSupport = nativeGetSystemSolution();
+    public final int mServiceSupport = nativeGetSystemSolution();
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LifeCycle extends SystemService {
+        public VaultKeeperService mVaultKeeperService;
+
+        public LifeCycle(Context context) {
+            super(context);
+        }
+
+        @Override // com.android.server.SystemService
+        public final void onBootPhase(int i) {
+            DeviceIdleController$$ExternalSyntheticOutline0.m("[", i != 100 ? i != 480 ? i != 500 ? i != 520 ? i != 550 ? i != 600 ? i != 1000 ? "Unknown" : "PHASE_BOOT_COMPLETED" : "PHASE_THIRD_PARTY_APPS_CAN_START" : "PHASE_ACTIVITY_MANAGER_READY" : "PHASE_DEVICE_SPECIFIC_SERVICES_READY" : "PHASE_SYSTEM_SERVICES_READY" : "PHASE_LOCK_SETTINGS_READY" : "PHASE_WAIT_FOR_DEFAULT_DISPLAY", "]", "VaultKeeperService$Lifecycle");
+            if (i == 100) {
+                this.mVaultKeeperService.getClass();
+                Slog.i("VaultKeeperService", "System is ready");
+            }
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        /* JADX WARN: Type inference failed for: r0v1, types: [android.os.IBinder, com.android.server.VaultKeeperService] */
+        @Override // com.android.server.SystemService
+        public final void onStart() {
+            Slog.d("VaultKeeperService$Lifecycle", "onStart()");
+            ?? vaultKeeperService = new VaultKeeperService(getContext());
+            this.mVaultKeeperService = vaultKeeperService;
+            publishBinderService("VaultKeeperService", vaultKeeperService);
+        }
+    }
+
+    static {
+        System.loadLibrary("vkjni");
+    }
+
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.VaultKeeperService$1] */
+    public VaultKeeperService(Context context) {
+        this.mContext = context;
+        this.mWakeLock = ((PowerManager) context.getSystemService("power")).newWakeLock(1, "VK_WakeLock");
+    }
 
     private native int nativeCheckDataWritable(String str, String str2);
 
@@ -67,110 +108,206 @@ public final class VaultKeeperService extends IVaultKeeperService.Stub {
 
     private native int nativeWrite(String str, String str2, int i, byte[] bArr, byte[] bArr2, byte[] bArr3);
 
-    /* loaded from: classes.dex */
-    public class LifeCycle extends SystemService {
-        public VaultKeeperService mVaultKeeperService;
-
-        public LifeCycle(Context context) {
-            super(context);
+    public final int checkDataWritable(String str) {
+        Slog.i("VaultKeeperService", "checkDataWritable");
+        if (this.mServiceSupport == 0) {
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
+            return -104;
         }
-
-        /* JADX WARN: Multi-variable type inference failed */
-        /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.VaultKeeperService, android.os.IBinder] */
-        @Override // com.android.server.SystemService
-        public void onStart() {
-            Slog.d("VaultKeeperService$Lifecycle", "onStart()");
-            ?? vaultKeeperService = new VaultKeeperService(getContext());
-            this.mVaultKeeperService = vaultKeeperService;
-            publishBinderService("VaultKeeperService", vaultKeeperService);
+        String packageName = getPackageName(str);
+        if (packageName == null) {
+            return -106;
         }
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
+        try {
+            if (!this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return -105;
+            }
+            try {
+                return nativeCheckDataWritable(packageName, str);
+            } finally {
+                this.mLock.unlock();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return -103;
+        }
+    }
 
-        @Override // com.android.server.SystemService
-        public void onBootPhase(int i) {
-            Slog.d("VaultKeeperService$Lifecycle", "[" + (i != 100 ? i != 480 ? i != 500 ? i != 520 ? i != 550 ? i != 600 ? i != 1000 ? "Unknown" : "PHASE_BOOT_COMPLETED" : "PHASE_THIRD_PARTY_APPS_CAN_START" : "PHASE_ACTIVITY_MANAGER_READY" : "PHASE_DEVICE_SPECIFIC_SERVICES_READY" : "PHASE_SYSTEM_SERVICES_READY" : "PHASE_LOCK_SETTINGS_READY" : "PHASE_WAIT_FOR_DEFAULT_DISPLAY") + "]");
-            if (i == 100) {
-                this.mVaultKeeperService.systemReady();
+    public final int destroy(String str, byte[] bArr, byte[] bArr2, byte[] bArr3) {
+        Slog.i("VaultKeeperService", "destroy");
+        if (this.mServiceSupport == 0) {
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
+            return -104;
+        }
+        String packageName = getPackageName(str);
+        if (packageName == null) {
+            return -106;
+        }
+        if (bArr != null && bArr.length > 32) {
+            VaultKeeperService$$ExternalSyntheticOutline0.m(new StringBuilder("destroy : Invalid hmac length "), bArr.length, "VaultKeeperService");
+            return -102;
+        }
+        if (bArr2 != null && bArr3 != null) {
+            if (bArr2.length == 0) {
+                Slog.e("VaultKeeperService", "destroy : if cert is exist, it should contain value.");
+                return -102;
+            }
+            if (bArr3.length == 0) {
+                Slog.e("VaultKeeperService", "destroy : if signature is exist, it should contain value.");
+                return -102;
             }
         }
+        if (bArr != null && bArr2 != null && bArr3 != null) {
+            Slog.e("VaultKeeperService", "destroy : Invalid arguments(too many arguments)");
+            return -102;
+        }
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
+        try {
+            if (!this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return -105;
+            }
+            try {
+                return nativeDestroy(packageName, str, bArr, bArr2, bArr3);
+            } finally {
+                this.mLock.unlock();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return -103;
+        }
     }
 
-    static {
-        System.loadLibrary("vkjni");
+    public final byte[] encryptMessage(String str, byte[] bArr) {
+        Slog.i("VaultKeeperService", "encryptMessage");
+        if (this.mServiceSupport == 0) {
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
+            return null;
+        }
+        String packageName = getPackageName(str);
+        if (packageName == null) {
+            return null;
+        }
+        if (bArr != null && bArr.length == 0) {
+            Slog.e("VaultKeeperService", "encryptMessage : if msg is exist, it should contain value.");
+            return null;
+        }
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
+        try {
+            if (!this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return null;
+            }
+            try {
+                return nativeEncryptMessage(packageName, str, bArr);
+            } finally {
+                this.mLock.unlock();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public VaultKeeperService(Context context) {
-        this.mContext = context;
-        this.mWakeLock = ((PowerManager) this.mContext.getSystemService("power")).newWakeLock(1, "VK_WakeLock");
-    }
-
-    public void systemReady() {
-        Slog.i("VaultKeeperService", "System is ready");
+    public final int generateHotpCode(String str) {
+        Slog.i("VaultKeeperService", "generateHotpCode");
+        if (this.mServiceSupport == 0) {
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
+            return -104;
+        }
+        String packageName = getPackageName(str);
+        if (packageName == null) {
+            return -106;
+        }
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
+        try {
+            if (!this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return -105;
+            }
+            try {
+                return nativeGenerateHotpCode(packageName, str);
+            } finally {
+                this.mLock.unlock();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return -103;
+        }
     }
 
     public final String getPackageName(String str) {
         String str2 = "system_server";
         Slog.i("VaultKeeperService", "Get service instance by (" + Binder.getCallingPid() + "/" + Binder.getCallingUid() + ")");
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
         try {
             if (!this.mLock.tryLock(1L, TimeUnit.SECONDS)) {
                 Slog.i("VaultKeeperService", "Unable to acquire lock");
                 return null;
             }
             try {
-                if (str == null) {
-                    Slog.e("VaultKeeperService", "Vault name is null");
+                try {
+                    if (str == null) {
+                        Slog.e("VaultKeeperService", "Vault name is null");
+                        return null;
+                    }
+                    if (str.length() == 0) {
+                        Slog.e("VaultKeeperService", "Vault name is wrong");
+                        return null;
+                    }
+                    if (!nativeGetProcessName(Binder.getCallingPid()).equals("system_server") || Binder.getCallingUid() % 100000 != 1000) {
+                        if (Binder.getCallingUid() % 100000 == 2000) {
+                            Slog.e("VaultKeeperService", "Permission denied. Check your UID (" + Binder.getCallingUid() + ")");
+                            return null;
+                        }
+                        if (this.mContext.getPackageManager().checkSignatures(Process.getUidForName("system"), Binder.getCallingUid()) != 0) {
+                            Slog.e("VaultKeeperService", "NOT Allowed : " + Binder.getCallingUid() + " isn't signed with platform key.");
+                            return null;
+                        }
+                        ActivityManager activityManager = (ActivityManager) this.mContext.getSystemService("activity");
+                        if (activityManager == null) {
+                            Slog.e("VaultKeeperService", "ActivityManager is null, something wrong in framework");
+                            return null;
+                        }
+                        if (activityManager.getRunningAppProcesses() == null) {
+                            Slog.e("VaultKeeperService", "getRunningAppProcesses return null List. Cannot check permision");
+                            return null;
+                        }
+                        Iterator<ActivityManager.RunningAppProcessInfo> it = activityManager.getRunningAppProcesses().iterator();
+                        while (true) {
+                            if (!it.hasNext()) {
+                                str2 = null;
+                                break;
+                            }
+                            ActivityManager.RunningAppProcessInfo next = it.next();
+                            if (next.pid == Binder.getCallingPid()) {
+                                str2 = next.processName;
+                                break;
+                            }
+                        }
+                        if (str2 == null) {
+                            Slog.i("VaultKeeperService", "Invalid package name");
+                            return null;
+                        }
+                        if (str2.length() == 0) {
+                            Slog.i("VaultKeeperService", "Invalid package length");
+                            return null;
+                        }
+                    }
+                    Slog.i("VaultKeeperService", "Client info : " + str2);
+                    return str2;
+                } catch (Exception e) {
+                    Slog.e("VaultKeeperService", "Fail to check permission(Exception)");
+                    e.printStackTrace();
                     return null;
                 }
-                if (str.length() == 0) {
-                    Slog.e("VaultKeeperService", "Vault name is wrong");
-                    return null;
-                }
-                if (!nativeGetProcessName(Binder.getCallingPid()).equals("system_server") || Binder.getCallingUid() % 100000 != 1000) {
-                    if (Binder.getCallingUid() % 100000 == 2000) {
-                        Slog.e("VaultKeeperService", "Permission denied. Check your UID (" + Binder.getCallingUid() + ")");
-                        return null;
-                    }
-                    if (this.mContext.getPackageManager().checkSignatures(Process.getUidForName("system"), Binder.getCallingUid()) != 0) {
-                        Slog.e("VaultKeeperService", "NOT Allowed : " + Binder.getCallingUid() + " isn't signed with platform key.");
-                        return null;
-                    }
-                    ActivityManager activityManager = (ActivityManager) this.mContext.getSystemService("activity");
-                    if (activityManager == null) {
-                        Slog.e("VaultKeeperService", "ActivityManager is null, something wrong in framework");
-                        return null;
-                    }
-                    if (activityManager.getRunningAppProcesses() == null) {
-                        Slog.e("VaultKeeperService", "getRunningAppProcesses return null List. Cannot check permision");
-                        return null;
-                    }
-                    Iterator<ActivityManager.RunningAppProcessInfo> it = activityManager.getRunningAppProcesses().iterator();
-                    while (true) {
-                        if (!it.hasNext()) {
-                            str2 = null;
-                            break;
-                        }
-                        ActivityManager.RunningAppProcessInfo next = it.next();
-                        if (next.pid == Binder.getCallingPid()) {
-                            str2 = next.processName;
-                            break;
-                        }
-                    }
-                    if (str2 == null) {
-                        Slog.i("VaultKeeperService", "Invalid package name");
-                        return null;
-                    }
-                    if (str2.length() == 0) {
-                        Slog.i("VaultKeeperService", "Invalid package length");
-                        return null;
-                    }
-                }
-                Slog.i("VaultKeeperService", "Client info : " + str2);
-                return str2;
-            } catch (Exception e) {
-                Slog.e("VaultKeeperService", "Fail to check permission(Exception)");
-                e.printStackTrace();
-                return null;
             } finally {
                 this.mLock.unlock();
             }
@@ -180,39 +317,11 @@ public final class VaultKeeperService extends IVaultKeeperService.Stub {
         }
     }
 
-    public boolean isInitialized(String str) {
-        Slog.i("VaultKeeperService", "isInitialized");
-        if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
-            return false;
-        }
-        String packageName = getPackageName(str);
-        if (packageName == null) {
-            return false;
-        }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
-        try {
-            if (this.mLock.tryLock(1L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeIsInitialized(packageName, str);
-                } finally {
-                    this.mLock.unlock();
-                }
-            }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return false;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public int initialize(String str, byte[] bArr, byte[] bArr2, byte[] bArr3, byte[] bArr4) {
+    public final int initialize(String str, byte[] bArr, byte[] bArr2, byte[] bArr3, byte[] bArr4) {
         byte[] bArr5;
         Slog.i("VaultKeeperService", "initialize");
         if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
             return -104;
         }
         String packageName = getPackageName(str);
@@ -220,7 +329,7 @@ public final class VaultKeeperService extends IVaultKeeperService.Stub {
             return -106;
         }
         if (bArr != null && bArr.length != 32) {
-            Slog.e("VaultKeeperService", "initialize : if key is exist, it should be 32 Bytes. but now(" + bArr.length + ")");
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("initialize : if key is exist, it should be 32 Bytes. but now("), bArr.length, ")", "VaultKeeperService");
             return -102;
         }
         if (bArr2 != null && bArr2.length == 0) {
@@ -247,74 +356,84 @@ public final class VaultKeeperService extends IVaultKeeperService.Stub {
             Slog.e("VaultKeeperService", "initialize : All of input param is empty.");
             return -102;
         }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
         try {
-            if (this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeInitialize(packageName, str, bArr, bArr2, bArr6);
-                } finally {
-                    this.mLock.unlock();
-                }
+            if (!this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return -105;
             }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return -105;
+            try {
+                return nativeInitialize(packageName, str, bArr, bArr2, bArr6);
+            } finally {
+                this.mLock.unlock();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
             return -103;
         }
     }
 
-    public int destroy(String str, byte[] bArr, byte[] bArr2, byte[] bArr3) {
-        Slog.i("VaultKeeperService", "destroy");
+    public final boolean isInitialized(String str) {
+        Slog.i("VaultKeeperService", "isInitialized");
         if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
-            return -104;
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
+            return false;
         }
         String packageName = getPackageName(str);
         if (packageName == null) {
-            return -106;
+            return false;
         }
-        if (bArr != null && bArr.length > 32) {
-            Slog.e("VaultKeeperService", "destroy : Invalid hmac length " + bArr.length);
-            return -102;
-        }
-        if (bArr2 != null && bArr3 != null) {
-            if (bArr2.length == 0) {
-                Slog.e("VaultKeeperService", "destroy : if cert is exist, it should contain value.");
-                return -102;
-            }
-            if (bArr3.length == 0) {
-                Slog.e("VaultKeeperService", "destroy : if signature is exist, it should contain value.");
-                return -102;
-            }
-        }
-        if (bArr != null && bArr2 != null && bArr3 != null) {
-            Slog.e("VaultKeeperService", "destroy : Invalid arguments(too many arguments)");
-            return -102;
-        }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
         try {
-            if (this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeDestroy(packageName, str, bArr, bArr2, bArr3);
-                } finally {
-                    this.mLock.unlock();
-                }
+            if (!this.mLock.tryLock(1L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return false;
             }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return -105;
+            try {
+                return nativeIsInitialized(packageName, str);
+            } finally {
+                this.mLock.unlock();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
-            return -103;
+            return false;
         }
     }
 
-    public byte[] read(String str, int i, int[] iArr) {
+    public final boolean migrationStorage(String str) {
+        Slog.i("VaultKeeperService", "migrationStorage");
+        if (this.mServiceSupport == 0) {
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
+            return false;
+        }
+        String packageName = getPackageName(str);
+        if (packageName == null) {
+            return false;
+        }
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
+        try {
+            if (!this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return false;
+            }
+            try {
+                return nativeMigrationStorage(packageName, str);
+            } finally {
+                this.mLock.unlock();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public final byte[] read(String str, int i, int[] iArr) {
         Slog.i("VaultKeeperService", "read");
         if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
             return null;
         }
         String packageName = getPackageName(str);
@@ -328,28 +447,99 @@ public final class VaultKeeperService extends IVaultKeeperService.Stub {
         if (iArr == null) {
             return null;
         }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
         try {
-            if (this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeRead(packageName, str, i, iArr);
-                } finally {
-                    this.mLock.unlock();
-                }
+            if (!this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return null;
             }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return null;
+            try {
+                return nativeRead(packageName, str, i, iArr);
+            } finally {
+                this.mLock.unlock();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public int write(String str, int i, byte[] bArr, byte[] bArr2, byte[] bArr3) {
+    public final byte[] sensitiveBox(String str, int i, int[] iArr) {
+        Slog.i("VaultKeeperService", "sensitiveBox");
+        if (this.mServiceSupport == 0) {
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
+            return null;
+        }
+        String packageName = getPackageName(str);
+        if (packageName == null) {
+            return null;
+        }
+        if (i < 1 || i > 9) {
+            Slog.e("VaultKeeperService", "sensitiveBox : Invalid type value.");
+            return null;
+        }
+        if (iArr == null) {
+            return null;
+        }
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
+        try {
+            if (!this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return null;
+            }
+            try {
+                return nativeSensitiveBox(packageName, str, i, iArr);
+            } finally {
+                this.mLock.unlock();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public final boolean verifyCertificate(String str, byte[] bArr) {
+        Slog.i("VaultKeeperService", "verifyCertificate");
+        if (this.mServiceSupport == 0) {
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
+            return false;
+        }
+        String packageName = getPackageName(str);
+        if (packageName == null) {
+            return false;
+        }
+        if (bArr == null) {
+            Slog.e("VaultKeeperService", "verifyCertificate : cert is null.");
+            return false;
+        }
+        if (bArr.length == 0) {
+            Slog.e("VaultKeeperService", "verifyCertificate : certificate length is zero");
+            return false;
+        }
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
+        try {
+            if (!this.mLock.tryLock(1L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return false;
+            }
+            try {
+                return nativeVerifyCertificate(packageName, str, bArr);
+            } finally {
+                this.mLock.unlock();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public final int write(String str, int i, byte[] bArr, byte[] bArr2, byte[] bArr3) {
         Slog.i("VaultKeeperService", "write");
         if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
+            NandswapManager$$ExternalSyntheticOutline0.m(new StringBuilder("VaultKeeper not support("), this.mServiceSupport, ")", "VaultKeeperService");
             return -104;
         }
         String packageName = getPackageName(str);
@@ -372,205 +562,18 @@ public final class VaultKeeperService extends IVaultKeeperService.Stub {
             Slog.e("VaultKeeperService", "write : if sig is exist, it should contain value.");
             return -102;
         }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        anonymousClass1.sendMessage(anonymousClass1.obtainMessage(1));
         try {
-            if (this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeWrite(packageName, str, i, bArr, bArr2, bArr3);
-                } finally {
-                    this.mLock.unlock();
-                }
+            if (!this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
+                Slog.i("VaultKeeperService", "Unable to acquire lock");
+                return -105;
             }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return -105;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return -103;
-        }
-    }
-
-    public byte[] sensitiveBox(String str, int i, int[] iArr) {
-        Slog.i("VaultKeeperService", "sensitiveBox");
-        if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
-            return null;
-        }
-        String packageName = getPackageName(str);
-        if (packageName == null) {
-            return null;
-        }
-        if (i < 1 || i > 9) {
-            Slog.e("VaultKeeperService", "sensitiveBox : Invalid type value.");
-            return null;
-        }
-        if (iArr == null) {
-            return null;
-        }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
-        try {
-            if (this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeSensitiveBox(packageName, str, i, iArr);
-                } finally {
-                    this.mLock.unlock();
-                }
+            try {
+                return nativeWrite(packageName, str, i, bArr, bArr2, bArr3);
+            } finally {
+                this.mLock.unlock();
             }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return null;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public byte[] encryptMessage(String str, byte[] bArr) {
-        Slog.i("VaultKeeperService", "encryptMessage");
-        if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
-            return null;
-        }
-        String packageName = getPackageName(str);
-        if (packageName == null) {
-            return null;
-        }
-        if (bArr != null && bArr.length == 0) {
-            Slog.e("VaultKeeperService", "encryptMessage : if msg is exist, it should contain value.");
-            return null;
-        }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
-        try {
-            if (this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeEncryptMessage(packageName, str, bArr);
-                } finally {
-                    this.mLock.unlock();
-                }
-            }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return null;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public boolean migrationStorage(String str) {
-        Slog.i("VaultKeeperService", "migrationStorage");
-        if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
-            return false;
-        }
-        String packageName = getPackageName(str);
-        if (packageName == null) {
-            return false;
-        }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
-        try {
-            if (this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeMigrationStorage(packageName, str);
-                } finally {
-                    this.mLock.unlock();
-                }
-            }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return false;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean verifyCertificate(String str, byte[] bArr) {
-        Slog.i("VaultKeeperService", "verifyCertificate");
-        if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
-            return false;
-        }
-        String packageName = getPackageName(str);
-        if (packageName == null) {
-            return false;
-        }
-        if (bArr == null) {
-            Slog.e("VaultKeeperService", "verifyCertificate : cert is null.");
-            return false;
-        }
-        if (bArr.length == 0) {
-            Slog.e("VaultKeeperService", "verifyCertificate : certificate length is zero");
-            return false;
-        }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
-        try {
-            if (this.mLock.tryLock(1L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeVerifyCertificate(packageName, str, bArr);
-                } finally {
-                    this.mLock.unlock();
-                }
-            }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return false;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public int checkDataWritable(String str) {
-        Slog.i("VaultKeeperService", "checkDataWritable");
-        if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
-            return -104;
-        }
-        String packageName = getPackageName(str);
-        if (packageName == null) {
-            return -106;
-        }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
-        try {
-            if (this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeCheckDataWritable(packageName, str);
-                } finally {
-                    this.mLock.unlock();
-                }
-            }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return -105;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return -103;
-        }
-    }
-
-    public int generateHotpCode(String str) {
-        Slog.i("VaultKeeperService", "generateHotpCode");
-        if (this.mServiceSupport == 0) {
-            Slog.e("VaultKeeperService", "VaultKeeper not support(" + this.mServiceSupport + ")");
-            return -104;
-        }
-        String packageName = getPackageName(str);
-        if (packageName == null) {
-            return -106;
-        }
-        Handler handler = this.mHandler;
-        handler.sendMessage(handler.obtainMessage(1));
-        try {
-            if (this.mLock.tryLock(5L, TimeUnit.SECONDS)) {
-                try {
-                    return nativeGenerateHotpCode(packageName, str);
-                } finally {
-                    this.mLock.unlock();
-                }
-            }
-            Slog.i("VaultKeeperService", "Unable to acquire lock");
-            return -105;
         } catch (InterruptedException e) {
             e.printStackTrace();
             return -103;

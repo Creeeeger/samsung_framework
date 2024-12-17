@@ -1,9 +1,7 @@
 package com.android.server.am;
 
-import android.app.AppGlobals;
-import android.content.pm.IPackageManager;
-import android.os.RemoteException;
 import android.util.Slog;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.pm.DexOptHelper;
 import com.android.server.pm.PackageManagerLocal;
@@ -12,207 +10,107 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class CrashDetectionAndOptimization {
-    public static List dexOptimizedPackages = new ArrayList();
-    public static List crashPackages = new ArrayList();
+    public static final List dexOptimizedPackages = new ArrayList();
+    public static final List crashPackages = new ArrayList();
 
-    /* loaded from: classes.dex */
-    enum CrashType {
-        JAVA_CRASH,
-        NATIVE_CRASH
-    }
-
-    /* loaded from: classes.dex */
-    public class CrashPackage {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CrashPackage {
         public int crashCount;
         public long mTimeStamp;
         public String packageName;
-
-        public CrashPackage() {
-            this.mTimeStamp = -1L;
-            this.crashCount = 0;
-        }
-
-        public void addCrashPackage(String str) {
-            this.mTimeStamp = System.currentTimeMillis();
-            this.packageName = str;
-            this.crashCount = 1;
-        }
-
-        public int incrementCrashCount() {
-            int i = this.crashCount + 1;
-            this.crashCount = i;
-            return i;
-        }
     }
 
-    /* loaded from: classes.dex */
-    public class DexOptimizationThread extends Thread {
-        public final int maxPossibleCount;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DexOptimizationThread extends Thread {
+        public final int maxPossibleCount = 4;
         public final ProcessRecord processRecord;
 
-        public final int getDexoptFlags() {
-            return 1031;
-        }
-
-        public final void printDexOptState(String str) {
-        }
-
-        public DexOptimizationThread(ProcessRecord processRecord, CrashType crashType) {
+        public DexOptimizationThread(ProcessRecord processRecord) {
             this.processRecord = processRecord;
-            this.maxPossibleCount = crashType == CrashType.JAVA_CRASH ? 2 : 4;
+        }
+
+        public static void doForceReDexOpt(CrashPackage crashPackage, String str) {
+            String str2 = crashPackage.packageName;
+            ArrayList arrayList = (ArrayList) CrashDetectionAndOptimization.dexOptimizedPackages;
+            if (arrayList.size() >= 8) {
+                arrayList.remove(0);
+            }
+            arrayList.add(str);
+            try {
+                PackageManagerLocal.FilteredSnapshot withFilteredSnapshot = ((PackageManagerLocal) LocalManagerRegistry.getManager(PackageManagerLocal.class)).withFilteredSnapshot();
+                try {
+                    Slog.i("CRASH_DEXOPT", "Try to re-compile: " + str2);
+                    if (DexOptHelper.getArtManagerLocal().dexoptPackage(withFilteredSnapshot, str2, new DexoptOptions(24, 1031, str2, "speed-profile", null).convertToDexoptParams(0)).getFinalStatus() == 30) {
+                        Slog.i("CRASH_DEXOPT", "dexopt fail: " + str2);
+                    }
+                    if (withFilteredSnapshot != null) {
+                        withFilteredSnapshot.close();
+                    }
+                } finally {
+                }
+            } catch (Exception e) {
+                StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Assume processing was successful and ignore the package: ", str2, " (");
+                m.append(e.getMessage());
+                m.append(")");
+                Slog.i("CRASH_DEXOPT", m.toString());
+            }
+            ((ArrayList) CrashDetectionAndOptimization.crashPackages).remove(crashPackage);
         }
 
         @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            handleCrashPackages();
-        }
-
-        public final void handleCrashPackages() {
-            boolean z;
+        public final void run() {
+            String str;
             if (CrashDetectionAndOptimization.crashPackages == null) {
                 return;
             }
-            synchronized (CrashDetectionAndOptimization.crashPackages) {
-                printDexOptState("Before");
-                String currentProcessName = getCurrentProcessName();
-                CrashDetectionAndOptimization.crashPackages.isEmpty();
-                long currentTimeMillis = System.currentTimeMillis();
-                Iterator it = CrashDetectionAndOptimization.crashPackages.iterator();
-                while (true) {
-                    if (!it.hasNext()) {
-                        z = false;
-                        break;
-                    }
-                    CrashPackage crashPackage = (CrashPackage) it.next();
-                    if (isValidCrashPackage(crashPackage, currentProcessName)) {
-                        if (getTimeGapSeconds(currentTimeMillis, crashPackage.mTimeStamp) >= 240) {
-                            removeCrashPackage(crashPackage);
-                        } else if (crashPackage.incrementCrashCount() >= this.maxPossibleCount && !hasAlreadyDexopted(currentProcessName, CrashDetectionAndOptimization.dexOptimizedPackages)) {
-                            doForceReDexOpt(crashPackage, currentProcessName);
-                        }
-                        z = true;
-                    }
-                }
-                if (!z) {
-                    if (CrashDetectionAndOptimization.crashPackages.size() == 8) {
-                        removeCrashPackage(0);
-                    } else if (CrashDetectionAndOptimization.crashPackages.size() < 8) {
-                        addCrashPackage(currentProcessName);
-                    }
-                }
-                printDexOptState("After");
-            }
-        }
-
-        public final String getCurrentProcessName() {
-            return this.processRecord.info.packageName;
-        }
-
-        public final boolean isValidCrashPackage(CrashPackage crashPackage, String str) {
-            String str2;
-            return (crashPackage == null || (str2 = crashPackage.packageName) == null || !str2.equals(str)) ? false : true;
-        }
-
-        public final long getTimeGapSeconds(long j, long j2) {
-            return (j - j2) / 1000;
-        }
-
-        public final boolean hasAlreadyDexopted(String str, List list) {
-            Iterator it = list.iterator();
+            String str2 = this.processRecord.info.packageName;
+            Iterator it = ((ArrayList) CrashDetectionAndOptimization.dexOptimizedPackages).iterator();
             while (it.hasNext()) {
-                if (((String) it.next()).contains(str)) {
-                    return true;
+                if (((String) it.next()).contains(str2)) {
+                    return;
                 }
             }
-            return false;
-        }
-
-        public final void doForceReDexOpt(CrashPackage crashPackage, String str) {
-            String str2 = crashPackage.packageName;
-            if (DexOptHelper.useArtService() ? dexoptWithArtService(str2) : dexoptWithLegacy(str2)) {
-                addOptimizedPackage(str);
-                removeCrashPackage(crashPackage);
-            }
-        }
-
-        public final void addOptimizedPackage(String str) {
-            if (CrashDetectionAndOptimization.dexOptimizedPackages.size() >= 4) {
-                CrashDetectionAndOptimization.dexOptimizedPackages.remove(0);
-            }
-            CrashDetectionAndOptimization.dexOptimizedPackages.add(str);
-        }
-
-        public final void addCrashPackage(String str) {
-            CrashPackage crashPackage = new CrashPackage();
-            crashPackage.addCrashPackage(str);
-            CrashDetectionAndOptimization.crashPackages.add(crashPackage);
-        }
-
-        public final void removeCrashPackage(CrashPackage crashPackage) {
-            CrashDetectionAndOptimization.crashPackages.remove(crashPackage);
-        }
-
-        public final void removeCrashPackage(int i) {
-            CrashDetectionAndOptimization.crashPackages.remove(i);
-        }
-
-        public final boolean dexoptWithArtService(String str) {
-            PackageManagerLocal.FilteredSnapshot withFilteredSnapshot = ((PackageManagerLocal) LocalManagerRegistry.getManager(PackageManagerLocal.class)).withFilteredSnapshot();
-            try {
-                Slog.i("CRASH_DEXOPT", "Try to re-compile: " + str);
-                if (DexOptHelper.getArtManagerLocal().dexoptPackage(withFilteredSnapshot, str, new DexoptOptions(str, 24, "speed-profile", null, getDexoptFlags()).convertToDexoptParams(0)).getFinalStatus() != 30) {
-                    if (withFilteredSnapshot == null) {
-                        return true;
+            List list = CrashDetectionAndOptimization.crashPackages;
+            synchronized (list) {
+                try {
+                    ((ArrayList) list).isEmpty();
+                    long currentTimeMillis = System.currentTimeMillis();
+                    Iterator it2 = ((ArrayList) list).iterator();
+                    while (true) {
+                        if (it2.hasNext()) {
+                            CrashPackage crashPackage = (CrashPackage) it2.next();
+                            if (crashPackage != null && (str = crashPackage.packageName) != null && str.equals(str2)) {
+                                if ((currentTimeMillis - crashPackage.mTimeStamp) / 1000 >= 240) {
+                                    ((ArrayList) CrashDetectionAndOptimization.crashPackages).remove(crashPackage);
+                                } else {
+                                    int i = crashPackage.crashCount + 1;
+                                    crashPackage.crashCount = i;
+                                    if (i >= this.maxPossibleCount) {
+                                        doForceReDexOpt(crashPackage, str2);
+                                    }
+                                }
+                            }
+                        } else {
+                            List list2 = CrashDetectionAndOptimization.crashPackages;
+                            if (((ArrayList) list2).size() == 8) {
+                                ((ArrayList) list2).remove(0);
+                            } else if (((ArrayList) list2).size() < 8) {
+                                CrashPackage crashPackage2 = new CrashPackage();
+                                crashPackage2.mTimeStamp = -1L;
+                                crashPackage2.crashCount = 0;
+                                crashPackage2.mTimeStamp = System.currentTimeMillis();
+                                crashPackage2.packageName = str2;
+                                crashPackage2.crashCount = 1;
+                                ((ArrayList) list2).add(crashPackage2);
+                            }
+                        }
                     }
-                    withFilteredSnapshot.close();
-                    return true;
+                } finally {
                 }
-                Slog.i("CRASH_DEXOPT", "dexopt fail: " + str);
-                if (withFilteredSnapshot != null) {
-                    withFilteredSnapshot.close();
-                }
-                return false;
-            } catch (Throwable th) {
-                if (withFilteredSnapshot != null) {
-                    try {
-                        withFilteredSnapshot.close();
-                    } catch (Throwable th2) {
-                        th.addSuppressed(th2);
-                    }
-                }
-                throw th;
             }
-        }
-
-        public final boolean dexoptWithLegacy(String str) {
-            IPackageManager packageManager = AppGlobals.getPackageManager();
-            if (packageManager == null) {
-                return false;
-            }
-            try {
-                Slog.i("CRASH_DEXOPT", "Try to re-complie: " + str);
-                if (packageManager.performDexOptMode(str, true, "speed-profile", true, true, (String) null)) {
-                    return true;
-                }
-                Slog.i("CRASH_DEXOPT", "dexopt fail: " + str);
-                return false;
-            } catch (RemoteException unused) {
-                Slog.w("CRASH_DEXOPT", "An error occurred when executing performDexOptMode");
-                return false;
-            }
-        }
-    }
-
-    public void start(ProcessRecord processRecord, String str, String str2) {
-        if (processRecord == null || processRecord.processName == null) {
-            return;
-        }
-        if ("Native crash".equals(str)) {
-            new DexOptimizationThread(processRecord, CrashType.NATIVE_CRASH).start();
-        } else if (str2.contains("java.lang.ClassNotFoundException")) {
-            new DexOptimizationThread(processRecord, CrashType.JAVA_CRASH).start();
         }
     }
 }

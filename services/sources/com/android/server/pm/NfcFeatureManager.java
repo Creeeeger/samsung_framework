@@ -3,75 +3,18 @@ package com.android.server.pm;
 import android.os.SystemProperties;
 import android.util.ArrayMap;
 import android.util.Log;
+import com.android.server.audio.AudioDeviceInventory$$ExternalSyntheticOutline0;
 import com.samsung.android.server.pm.install.SkippingApks;
 import java.util.Arrays;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class NfcFeatureManager {
-    public static boolean supportNfc() {
-        return false;
-    }
-
-    public static void updateFeatureAndPackage(ArrayMap arrayMap, SkippingApks skippingApks, boolean z) {
+    public static void updateFeatureAndPackage(ArrayMap arrayMap, SkippingApks skippingApks) {
         String str = SystemProperties.get("ro.boot.product.hardware.sku", "");
-        if (Arrays.asList("hcesimese", "hceese", "hcesim", "hce", "disabled").contains(str)) {
-            try {
-                if (str.contains("disabled")) {
-                    if (arrayMap != null) {
-                        arrayMap.remove("android.hardware.nfc");
-                        arrayMap.remove("android.hardware.nfc.hce");
-                        arrayMap.remove("android.hardware.nfc.hcef");
-                        arrayMap.remove("android.hardware.nfc.any");
-                        arrayMap.remove("android.hardware.nfc.uicc");
-                        arrayMap.remove("android.hardware.nfc.ese");
-                        arrayMap.remove("android.sofware.nfc.beam");
-                        arrayMap.remove("com.nxp.mifare");
-                    } else {
-                        Log.e("NfcFeatureManager", "cannot remove NFC features");
-                    }
-                    if (skippingApks != null) {
-                        skippingApks.getSkippingApkList();
-                        skippingApks.addSkippingPackage("Nfc.apk");
-                        skippingApks.addSkippingPackage("NfcNci.apk");
-                        skippingApks.addSkippingPackage("NfcFn.apk");
-                        skippingApks.addSkippingPackage("NfcTest.apk");
-                        skippingApks.addSkippingPackage("NfcTag.apk");
-                        skippingApks.addSkippingPackage("Tag.apk");
-                        skippingApks.addSkippingPackage("SamsungNfcTag.apk");
-                        skippingApks.addSkippingPackage("NfcFactoryCard.apk");
-                    } else {
-                        Log.e("NfcFeatureManager", "cannot remove NFC packages");
-                    }
-                    Log.i("NfcFeatureManager", "removed NFC features and packages");
-                    return;
-                }
-                if (!supportSim(str, z)) {
-                    if (arrayMap != null) {
-                        arrayMap.remove("android.hardware.nfc.uicc");
-                        Log.i("NfcFeatureManager", "removed SIM feature");
-                    } else {
-                        Log.e("NfcFeatureManager", "cannot remove SIM feature");
-                    }
-                }
-                if (supportEse(str, z)) {
-                    return;
-                }
-                if (arrayMap != null) {
-                    arrayMap.remove("android.hardware.nfc.ese");
-                    Log.i("NfcFeatureManager", "removed eSE feature");
-                    return;
-                } else {
-                    Log.e("NfcFeatureManager", "cannot remove eSE feature");
-                    return;
-                }
-            } catch (Exception e) {
-                Log.e("NfcFeatureManager", "Unexpected exception: ", e);
-                return;
-            }
-        }
-        if (supportNfc()) {
-            Log.i("NfcFeatureManager", "Non-single binary (sku: " + str + ")");
-            if (!supportSim()) {
+        if (!Arrays.asList("hcesimese", "hceese", "hcesim", "hce", "disabled").contains(str)) {
+            AudioDeviceInventory$$ExternalSyntheticOutline0.m("Non-single binary (sku: ", str, ")", "NfcFeatureManager");
+            if (!SystemProperties.getBoolean("ro.vendor.nfc.support.uicc", false)) {
                 if (arrayMap != null) {
                     arrayMap.remove("android.hardware.nfc.uicc");
                     Log.i("NfcFeatureManager", "removed SIM feature");
@@ -79,31 +22,67 @@ public abstract class NfcFeatureManager {
                     Log.e("NfcFeatureManager", "cannot remove SIM feature");
                 }
             }
-            if (supportEse()) {
+            if (SystemProperties.getBoolean("ro.vendor.nfc.support.ese", false)) {
                 return;
             }
-            if (arrayMap != null) {
+            if (arrayMap == null) {
+                Log.e("NfcFeatureManager", "cannot remove eSE feature");
+                return;
+            } else {
                 arrayMap.remove("android.hardware.nfc.ese");
                 Log.i("NfcFeatureManager", "removed eSE feature");
-            } else {
-                Log.e("NfcFeatureManager", "cannot remove eSE feature");
+                return;
             }
         }
-    }
-
-    public static boolean supportSim(String str, boolean z) {
-        return supportSim() && str.contains("sim");
-    }
-
-    public static boolean supportEse(String str, boolean z) {
-        return supportEse() && str.contains("ese");
-    }
-
-    public static boolean supportSim() {
-        return SystemProperties.getBoolean("ro.vendor.nfc.support.uicc", false);
-    }
-
-    public static boolean supportEse() {
-        return SystemProperties.getBoolean("ro.vendor.nfc.support.ese", false);
+        try {
+            if (!str.contains("disabled")) {
+                if (!SystemProperties.getBoolean("ro.vendor.nfc.support.uicc", false) || !str.contains("sim")) {
+                    if (arrayMap != null) {
+                        arrayMap.remove("android.hardware.nfc.uicc");
+                        Log.i("NfcFeatureManager", "removed SIM feature");
+                    } else {
+                        Log.e("NfcFeatureManager", "cannot remove SIM feature");
+                    }
+                }
+                if (SystemProperties.getBoolean("ro.vendor.nfc.support.ese", false) && str.contains("ese")) {
+                    return;
+                }
+                if (arrayMap == null) {
+                    Log.e("NfcFeatureManager", "cannot remove eSE feature");
+                    return;
+                } else {
+                    arrayMap.remove("android.hardware.nfc.ese");
+                    Log.i("NfcFeatureManager", "removed eSE feature");
+                    return;
+                }
+            }
+            if (arrayMap != null) {
+                arrayMap.remove("android.hardware.nfc");
+                arrayMap.remove("android.hardware.nfc.hce");
+                arrayMap.remove("android.hardware.nfc.hcef");
+                arrayMap.remove("android.hardware.nfc.any");
+                arrayMap.remove("android.hardware.nfc.uicc");
+                arrayMap.remove("android.hardware.nfc.ese");
+                arrayMap.remove("android.sofware.nfc.beam");
+                arrayMap.remove("com.nxp.mifare");
+            } else {
+                Log.e("NfcFeatureManager", "cannot remove NFC features");
+            }
+            if (skippingApks != null) {
+                skippingApks.addSkippingPackage("Nfc.apk");
+                skippingApks.addSkippingPackage("NfcNci.apk");
+                skippingApks.addSkippingPackage("NfcFn.apk");
+                skippingApks.addSkippingPackage("NfcTest.apk");
+                skippingApks.addSkippingPackage("NfcTag.apk");
+                skippingApks.addSkippingPackage("Tag.apk");
+                skippingApks.addSkippingPackage("SamsungNfcTag.apk");
+                skippingApks.addSkippingPackage("NfcFactoryCard.apk");
+            } else {
+                Log.e("NfcFeatureManager", "cannot remove NFC packages");
+            }
+            Log.i("NfcFeatureManager", "removed NFC features and packages");
+        } catch (Exception e) {
+            Log.e("NfcFeatureManager", "Unexpected exception: ", e);
+        }
     }
 }

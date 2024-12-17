@@ -1,370 +1,153 @@
 package com.android.server.wm;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.Slog;
-import com.android.server.display.DisplayPowerController2;
+import android.view.DisplayInfo;
+import com.android.server.wm.DisplayPolicy;
 import com.android.server.wm.LaunchParamsController;
+import com.android.server.wm.SizeCompatPolicyManager;
 import com.samsung.android.core.CompatUtils;
 import com.samsung.android.core.SizeCompatInfo;
-import com.samsung.android.multiwindow.DexSizeCompatResizeGuide;
-import com.samsung.android.multiwindow.FreeformResizeGuide;
-import com.samsung.android.rune.CoreRune;
-import java.io.PrintWriter;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class DexSizeCompatController {
-    public static final boolean SAFE_DEBUG = CoreRune.SAFE_DEBUG;
-    public float mAspectRatioScale;
-    public float mDefaultScale;
-    public final LaunchParamsController.LaunchParams mTmpParams;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DexSizeCompatController {
+    public float mDefaultScale = 0.72f;
+    public float mAspectRatioScale = 0.72f;
+    public final LaunchParamsController.LaunchParams mTmpParams = new LaunchParamsController.LaunchParams();
 
-    /* loaded from: classes3.dex */
-    public abstract class LazyHolder {
-        public static final DexSizeCompatController sInstance = new DexSizeCompatController();
-    }
-
-    public static DexSizeCompatController getInstance() {
-        return LazyHolder.sInstance;
-    }
-
-    public DexSizeCompatController() {
-        this.mDefaultScale = 0.72f;
-        this.mAspectRatioScale = 0.72f;
-        this.mTmpParams = new LaunchParamsController.LaunchParams();
-    }
-
-    public boolean isEnabled(TaskDisplayArea taskDisplayArea) {
-        return taskDisplayArea != null && SizeCompatPolicyManager.get().getActiveMode(taskDisplayArea.getDisplayId()) == 1;
-    }
-
-    public void toggle(final TaskDisplayArea taskDisplayArea, final boolean z) {
-        int displayId = taskDisplayArea.getDisplayId();
-        if (SizeCompatPolicyManager.get().getActiveMode(displayId) == z) {
-            if (SAFE_DEBUG) {
-                Slog.d("SizeCompatPolicy", "The Mode is already changed. enabled=" + z + ", tda=" + taskDisplayArea);
-                return;
-            }
-            return;
-        }
-        SizeCompatPolicyManager.get().setActiveMode(displayId, z ? 1 : 0);
-        taskDisplayArea.forAllTasks(new Consumer() { // from class: com.android.server.wm.DexSizeCompatController$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                DexSizeCompatController.this.lambda$toggle$1(z, taskDisplayArea, (Task) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$toggle$1(boolean z, TaskDisplayArea taskDisplayArea, Task task) {
-        if (!z) {
-            DexSizeCompatPolicy compatPolicy = getCompatPolicy(task);
-            if (compatPolicy != null) {
-                compatPolicy.setEnabled(false);
-                compatPolicy.mTask.setWindowingMode(1);
-                return;
-            }
-            return;
-        }
-        DexSizeCompatPolicy createCompatPolicy = shouldCreateCompatPolicy(task, null, taskDisplayArea) ? createCompatPolicy(task, taskDisplayArea) : null;
-        if (createCompatPolicy == null) {
-            return;
-        }
-        this.mTmpParams.mBounds.setEmpty();
-        task.mTaskSupervisor.getLaunchParamsController().calculate(task, null, null, null, null, null, 3, this.mTmpParams);
-        Configuration requestedOverrideConfiguration = task.getRequestedOverrideConfiguration();
-        if (!this.mTmpParams.mBounds.isEmpty()) {
-            requestedOverrideConfiguration.windowConfiguration.setBounds(this.mTmpParams.mBounds);
-            requestedOverrideConfiguration.windowConfiguration.setWindowingMode(5);
-        } else {
-            Slog.d("SizeCompatPolicy", "toggle: task=" + task + ", tda=" + taskDisplayArea);
-            createCompatPolicy.setFreeformConfiguration(requestedOverrideConfiguration, taskDisplayArea.getBounds(), new BiConsumer() { // from class: com.android.server.wm.DexSizeCompatController$$ExternalSyntheticLambda1
-                @Override // java.util.function.BiConsumer
-                public final void accept(Object obj, Object obj2) {
-                    CompatUtils.adjustBoundsToCenter((Rect) obj, (Rect) obj2);
-                }
-            });
-        }
-        if (SizeCompatMultiTaskingPolicy.DEBUG_CONFIG) {
-            SizeCompatMultiTaskingPolicy.logDebugConfig("toggle", task, requestedOverrideConfiguration.windowConfiguration);
-        }
-    }
-
-    public boolean interceptCalculateIfPossible(ActivityRecord activityRecord, TaskDisplayArea taskDisplayArea, LaunchParamsController.LaunchParams launchParams, Task task, ActivityRecord activityRecord2) {
-        int topOrientationInTask;
-        if (!isEnabled(taskDisplayArea)) {
-            return false;
-        }
-        DexSizeCompatPolicy compatPolicy = getCompatPolicy(task);
-        if (!(compatPolicy != null || shouldCreateCompatPolicy(null, activityRecord, taskDisplayArea))) {
-            Slog.w("SizeCompatPolicy", "interceptCalculateIfPossible: root=" + activityRecord + ", task=" + task + ", tda=" + taskDisplayArea);
-            return false;
-        }
-        if (task == null) {
-            return true;
-        }
-        if (compatPolicy == null && (compatPolicy = createCompatPolicy(task, taskDisplayArea)) == null) {
-            return false;
-        }
-        Rect rect = launchParams.mBounds;
-        Rect bounds = taskDisplayArea.getBounds();
-        int width = bounds.width();
-        int height = bounds.height();
-        if (activityRecord2 != null) {
-            topOrientationInTask = activityRecord2.getRequestedConfigurationOrientation();
-        } else {
-            topOrientationInTask = compatPolicy.getTopOrientationInTask();
-        }
-        boolean z = !rect.isEmpty();
-        if (z) {
-            int width2 = rect.width();
-            int height2 = rect.height();
-            if (compatPolicy.isRotatable(topOrientationInTask)) {
-                topOrientationInTask = CompatUtils.getConfigurationOrientation(width2, height2);
-                compatPolicy.setUserOrientation(topOrientationInTask);
-            }
-            DisplayContent displayContent = task.mDisplayContent;
-            Rect stableBounds = displayContent != null ? compatPolicy.getStableBounds(displayContent) : bounds;
-            if (compatPolicy.isSmallerContainer(stableBounds.width(), stableBounds.height(), width2, height2)) {
-                rect.setEmpty();
-            } else {
-                Rect fullScreenBounds = compatPolicy.getFullScreenBounds(topOrientationInTask);
-                float adjustRoundScale = CompatUtils.adjustRoundScale(CompatUtils.getCompatScale(fullScreenBounds, rect));
-                if (adjustRoundScale < getDefaultScale()) {
-                    float minScale = compatPolicy.getMinScale(topOrientationInTask, stableBounds, fullScreenBounds);
-                    if (adjustRoundScale < minScale) {
-                        adjustRoundScale = minScale;
-                    }
-                }
-                compatPolicy.setUserScaleInternal(adjustRoundScale);
-            }
-        }
-        if (rect.isEmpty()) {
-            rect.set(compatPolicy.getTaskBounds(bounds, topOrientationInTask));
-        }
-        if (rect.isEmpty() || (rect.width() == width && rect.height() == height)) {
-            rect.setEmpty();
-            launchParams.mWindowingMode = 1;
-        } else {
-            if (!z) {
-                CompatUtils.adjustBoundsToCenter(bounds, rect);
-            }
-            launchParams.mWindowingMode = 5;
-        }
-        if (SizeCompatMultiTaskingPolicy.DEBUG_CONFIG) {
-            SizeCompatMultiTaskingPolicy.logDebugConfig("interceptCalculateIfPossible", task, launchParams);
-        }
-        return true;
-    }
-
-    public DexSizeCompatPolicy getCompatPolicy(Task task) {
-        return getCompatPolicy(task, false);
-    }
-
-    public DexSizeCompatPolicy getCompatPolicy(Task task, boolean z) {
-        SizeCompatPolicy compatPolicy = SizeCompatPolicyManager.get().getCompatPolicy(task, z);
-        if (compatPolicy != null) {
-            return compatPolicy.asDexSizeCompatPolicy();
-        }
-        return null;
-    }
-
-    public final boolean shouldCreateCompatPolicy(Task task, ActivityRecord activityRecord, TaskDisplayArea taskDisplayArea) {
-        return SizeCompatPolicyManager.get().shouldCreateCompatPolicy(task, activityRecord, taskDisplayArea, 1);
-    }
-
-    public final DexSizeCompatPolicy createCompatPolicy(Task task, TaskDisplayArea taskDisplayArea) {
-        DisplayContent displayContent = taskDisplayArea.getDisplayContent();
-        if (displayContent == null) {
-            Slog.w("SizeCompatPolicy", "createCompatPolicy: Display is null, task=" + task + ", tda=" + taskDisplayArea);
-            return null;
-        }
-        DexSizeCompatPolicy dexSizeCompatPolicy = new DexSizeCompatPolicy(task, displayContent);
-        SizeCompatPolicyManager.get().setCompatPolicy(task, dexSizeCompatPolicy);
-        return dexSizeCompatPolicy;
-    }
-
-    public boolean isResizableAllowed() {
-        return SizeCompatPolicyManager.get().getLaunchPolicy() == 2;
-    }
-
-    public void setDefaultScale(float f) {
-        this.mDefaultScale = f;
-    }
-
-    public float getDefaultScale() {
-        return this.mDefaultScale;
-    }
-
-    public void setAspectRatioScale(float f) {
-        this.mAspectRatioScale = f;
-    }
-
-    public float getAspectRatioScale() {
-        return this.mAspectRatioScale;
-    }
-
-    public void dump(DisplayContent displayContent, PrintWriter printWriter, String str) {
-        if (isEnabled(displayContent.getDefaultTaskDisplayArea())) {
-            printWriter.println(str + "DEX SIZE COMPAT CONTROLLER");
-            printWriter.print(str + "  ");
-            printWriter.print("DisplayId=" + displayContent.getDisplayId());
-            printWriter.print(", DefaultScale=" + this.mDefaultScale);
-            printWriter.print(", AspectRatioScale=" + this.mAspectRatioScale);
-            if (isResizableAllowed()) {
-                printWriter.print(", ResizableAllowed=true");
-            }
-            printWriter.println();
-            printWriter.println();
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class DexSizeCompatPolicy extends SizeCompatMultiTaskingPolicy implements SizeCompatDragPolicy {
-        public Rect mTmpRect;
-
-        @Override // com.android.server.wm.SizeCompatPolicyCasting
-        public DexSizeCompatPolicy asDexSizeCompatPolicy() {
-            return this;
-        }
-
-        public final float getLeftPositionMultiplier() {
-            return 0.5f;
-        }
-
-        @Override // com.android.server.wm.SizeCompatPolicyCasting
-        public int getMode() {
-            return 1;
-        }
-
-        public boolean isRotatable(int i) {
-            return i == 0;
-        }
-
-        @Override // com.android.server.wm.SizeCompatPolicy
-        public boolean shouldIgnoreMinimalTaskDimensions() {
-            return true;
-        }
-
-        @Override // com.android.server.wm.SizeCompatPolicySupports
-        public boolean supportsIgnoreOrientationRequest() {
-            return true;
-        }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DexSizeCompatPolicy {
+        public boolean mEnabled;
+        public final int mHeight;
+        public int mLastTaskOrientation;
+        public final Rect[] mNonDecorInsets;
+        public final Rect[] mStableInsets;
+        public final Task mTask;
+        public final Rect mTmpContainingBounds;
+        public final Rect mTmpFullScreenBounds;
+        public final Rect mTmpRect;
+        public final Rect mTmpStableBounds;
+        public int mUserOrientation;
+        public float mUserScale;
+        public final int mWidth;
 
         public DexSizeCompatPolicy(Task task, DisplayContent displayContent) {
-            super(task, displayContent.mBaseDisplayWidth, displayContent.mBaseDisplayHeight, displayContent.getDisplayPolicy());
+            int i = displayContent.mBaseDisplayWidth;
+            int i2 = displayContent.mBaseDisplayHeight;
+            DisplayPolicy displayPolicy = displayContent.mDisplayPolicy;
+            this.mEnabled = true;
+            this.mLastTaskOrientation = 0;
+            this.mNonDecorInsets = new Rect[4];
+            this.mStableInsets = new Rect[4];
+            this.mTask = task;
+            this.mWidth = i;
+            this.mHeight = i2;
+            int i3 = 0;
+            while (i3 < 4) {
+                this.mNonDecorInsets[i3] = new Rect();
+                this.mStableInsets[i3] = new Rect();
+                if (displayPolicy != null) {
+                    boolean z = i3 == 1 || i3 == 3;
+                    DisplayPolicy.DecorInsets.Info decorInsetsInfo = displayPolicy.getDecorInsetsInfo(i3, z ? this.mHeight : this.mWidth, z ? this.mWidth : this.mHeight);
+                    this.mNonDecorInsets[i3].set(decorInsetsInfo.mNonDecorInsets);
+                    this.mStableInsets[i3].set(decorInsetsInfo.mConfigInsets);
+                }
+                i3++;
+            }
+            this.mUserOrientation = 0;
+            this.mTmpStableBounds = new Rect();
+            this.mTmpFullScreenBounds = new Rect();
+            this.mTmpContainingBounds = new Rect();
+            setUserScale(LazyHolder.sInstance.mDefaultScale);
             this.mTmpRect = new Rect();
         }
 
-        public float getRotatableScale() {
-            return getDefaultScale();
+        public static boolean isRotatable(int i) {
+            return i == 0;
         }
 
-        @Override // com.android.server.wm.SizeCompatMultiTaskingPolicy
-        public float getDefaultScale() {
-            return DexSizeCompatController.getInstance().getDefaultScale();
-        }
-
-        @Override // com.android.server.wm.SizeCompatMultiTaskingPolicy
-        public float getUserScale() {
-            if (isRotatable(getTopOrientationInTask())) {
-                return getRotatableScale();
-            }
-            return super.getUserScale();
-        }
-
-        @Override // com.android.server.wm.SizeCompatMultiTaskingPolicy
-        public void setUserScale(float f) {
-            if (isRotatable(getTopOrientationInTask())) {
-                f = getRotatableScale();
-            }
-            setUserScaleInternal(f);
-        }
-
-        public final void setUserScaleInternal(float f) {
-            super.setUserScale(f);
-        }
-
-        @Override // com.android.server.wm.SizeCompatMultiTaskingPolicy
-        public boolean shouldUseAspectRatio(int i, int i2, int i3, int i4) {
-            return isRotatable(i) && i4 != CompatUtils.getConfigurationOrientation(i2, i3);
-        }
-
-        @Override // com.android.server.wm.SizeCompatMultiTaskingPolicy
-        public boolean canUpdateTaskOrientation() {
-            return this.mTask.shouldBeVisible(null);
-        }
-
-        @Override // com.android.server.wm.SizeCompatPolicy
-        public int resolveOverrideConfiguration(ActivityRecord activityRecord, Configuration configuration) {
-            int rotation;
-            int compatRotationForOrientation;
-            Configuration resolvedOverrideConfiguration = activityRecord.getResolvedOverrideConfiguration();
-            int requestedConfigurationOrientation = activityRecord.getRequestedConfigurationOrientation();
-            if (CoreRune.MT_SUPPORT_SIZE_COMPAT_COORDINATION && CoreRune.FW_ORIENTATION_CONTROL) {
-                BoundsCompatRecord boundsCompatRecord = activityRecord.mCompatRecord;
-                if (boundsCompatRecord.mSupportsIgnoreOrientationRequest && boundsCompatRecord.mIsTaskOrientationMismatched && boundsCompatRecord.isCompatModeEnabled() && activityRecord.mAtmService.mExt.mOrientationController == activityRecord.mCompatRecord.getController() && activityRecord.mAtmService.mExt.mOrientationController.useBehindOrientation(activityRecord)) {
-                    requestedConfigurationOrientation = activityRecord.mAtmService.mExt.mOrientationController.getPreferredConfigurationOrientation(activityRecord, this.mTask.getConfiguration().orientation);
+        public final void ensureDragBounds(Rect rect) {
+            float f;
+            int i;
+            int topOrientationInTask = getTopOrientationInTask();
+            if (isRotatable(topOrientationInTask)) {
+                f = LazyHolder.sInstance.mDefaultScale;
+                i = CompatUtils.getConfigurationOrientation(rect.width(), rect.height());
+            } else {
+                getFrameByOrientation(topOrientationInTask, this.mTmpFullScreenBounds);
+                Rect rect2 = this.mTmpFullScreenBounds;
+                float adjustRoundScale = CompatUtils.adjustRoundScale(CompatUtils.getCompatScale(rect2, rect));
+                Task task = this.mTask;
+                DisplayContent displayContent = task.mDisplayContent;
+                if (displayContent != null) {
+                    Rect taskBounds = getTaskBounds(displayContent.getBounds(), topOrientationInTask, adjustRoundScale, true);
+                    float compatScale = CompatUtils.getCompatScale(rect2, taskBounds);
+                    if (rect.width() != taskBounds.width() || rect.height() != taskBounds.height()) {
+                        taskBounds.offsetTo(rect.left, rect.top);
+                        rect.set(taskBounds);
+                        Slog.w("SizeCompatPolicy", "ensureDragBounds: userScale=" + compatScale + ", taskScale=" + compatScale);
+                        adjustRoundScale = compatScale;
+                    }
+                } else {
+                    Slog.w("SizeCompatPolicy", "ensureDragBounds: Display is null. mTask=" + task);
                 }
+                f = adjustRoundScale;
+                i = 0;
             }
-            boolean z = requestedConfigurationOrientation != 0;
-            int i = z ? requestedConfigurationOrientation : configuration.orientation;
-            if (z && this.mTask.mDisplayContent != null && (compatRotationForOrientation = this.mTask.mDisplayContent.getDisplayRotation().getCompatRotationForOrientation(requestedConfigurationOrientation, (rotation = configuration.windowConfiguration.getRotation()))) != rotation) {
-                resolvedOverrideConfiguration.windowConfiguration.setRotation(compatRotationForOrientation);
-            }
-            getFrameByOrientation(resolvedOverrideConfiguration.windowConfiguration.getBounds(), i);
-            activityRecord.getTaskFragment().computeConfigResourceOverrides(resolvedOverrideConfiguration, configuration, null, null, this);
-            resolvedOverrideConfiguration.screenLayout = WindowContainer.computeScreenLayout(activityRecord.getConfiguration().screenLayout, resolvedOverrideConfiguration.screenWidthDp, resolvedOverrideConfiguration.screenHeightDp);
-            if (resolvedOverrideConfiguration.screenWidthDp == resolvedOverrideConfiguration.screenHeightDp) {
-                resolvedOverrideConfiguration.orientation = configuration.orientation;
-            }
-            Rect bounds = resolvedOverrideConfiguration.windowConfiguration.getBounds();
-            Rect bounds2 = configuration.windowConfiguration.getBounds();
-            applyCompatScaleIfNeeded(activityRecord, activityRecord.getResolvedOverrideBounds(), (bounds.width() == bounds2.width() && bounds.height() == bounds2.height()) ? 1.0f : CompatUtils.adjustRoundScale(CompatUtils.getCompatScale(bounds, getViewport(configuration))));
-            return 536870912;
+            setUserScale(f);
+            this.mUserOrientation = i;
         }
 
-        @Override // com.android.server.wm.SizeCompatPolicy
-        public int updateResolvedBoundsPosition(ActivityRecord activityRecord, Configuration configuration) {
-            SizeCompatAttributes sizeCompatAttributesOrCreate = getSizeCompatAttributesOrCreate(activityRecord);
-            if (sizeCompatAttributesOrCreate.getBounds() == null) {
-                return 0;
-            }
-            Rect viewport = getViewport(configuration);
-            int max = viewport.left + Math.max(0, (int) Math.ceil((viewport.width() - r1.width()) * getLeftPositionMultiplier()));
-            int max2 = viewport.top + Math.max(0, (int) Math.ceil((viewport.height() - r1.height()) * getTopPositionMultiplier()));
-            Configuration resolvedOverrideConfiguration = activityRecord.getResolvedOverrideConfiguration();
-            resolvedOverrideConfiguration.windowConfiguration.getBounds().offsetTo(max, max2);
-            resolvedOverrideConfiguration.windowConfiguration.getAppBounds().offsetTo(max, max2);
-            sizeCompatAttributesOrCreate.updatePosition(max, max2);
-            return 536870912;
-        }
-
-        public final Rect getViewport(Configuration configuration) {
-            return inFullscreenWindowingMode() ? getStableBounds(this.mTask.mDisplayContent) : configuration.windowConfiguration.getAppBounds();
-        }
-
-        public final float getTopPositionMultiplier() {
-            if (inFullscreenWindowingMode()) {
-                return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-            }
-            return 0.5f;
-        }
-
-        public final boolean inFullscreenWindowingMode() {
+        public final void fillSizeCompatInfoForDrag(SizeCompatInfo sizeCompatInfo) {
             Task task = this.mTask;
-            return task.mDisplayContent != null && task.inFullscreenWindowingMode();
+            DisplayContent displayContent = task.mDisplayContent;
+            if (displayContent == null) {
+                Slog.w("SizeCompatPolicy", "fillSizeCompatInfoForDrag: Display is null. mTask=" + task);
+                return;
+            }
+            Rect bounds = displayContent.getBounds();
+            int width = bounds.width();
+            int height = bounds.height();
+            int configurationOrientation = CompatUtils.getConfigurationOrientation(width, height);
+            int topOrientationInTask = getTopOrientationInTask();
+            boolean isRotatable = isRotatable(topOrientationInTask);
+            sizeCompatInfo.setDragMode(isRotatable ? 2 : 1);
+            sizeCompatInfo.setDisplaySize(width, height);
+            Rect bounds2 = task.getBounds();
+            int configurationOrientation2 = isRotatable ? CompatUtils.getConfigurationOrientation(bounds2.width(), bounds2.height()) : topOrientationInTask;
+            getFrameByOrientation(configurationOrientation2, this.mTmpFullScreenBounds);
+            Rect rect = this.mTmpFullScreenBounds;
+            boolean z = isRotatable && configurationOrientation != configurationOrientation2;
+            int height2 = z ? rect.height() : rect.width();
+            int width2 = z ? rect.width() : rect.height();
+            if (isRotatable) {
+                this.mTmpRect.set(0, 0, height2, width2);
+                CompatUtils.getScaledBounds(this.mTmpRect, LazyHolder.sInstance.mDefaultScale, !z);
+                sizeCompatInfo.setMinSize(this.mTmpRect.width(), this.mTmpRect.height());
+                sizeCompatInfo.setMaxSize(height2, width2);
+                return;
+            }
+            Rect stableBounds = getStableBounds(task.mDisplayContent);
+            float minScale = getMinScale(topOrientationInTask, stableBounds, rect);
+            sizeCompatInfo.setMinSize(CompatUtils.applyScale(height2, minScale), CompatUtils.applyScale(width2, minScale));
+            float adjustFloorScale = (height2 > width || width2 > height) ? CompatUtils.adjustFloorScale(CompatUtils.getCompatScale(rect, stableBounds) - 0.01f) : 1.0f;
+            sizeCompatInfo.setMaxSize(CompatUtils.applyScale(height2, adjustFloorScale), CompatUtils.applyScale(width2, adjustFloorScale));
         }
 
-        @Override // com.android.server.wm.SizeCompatMultiTaskingPolicy
-        public Rect getStableBounds(DisplayContent displayContent) {
-            Rect stableBounds = super.getStableBounds(displayContent);
-            stableBounds.top += this.mTask.getCaptionHeight();
-            return stableBounds;
+        public final void getFrameByOrientation(int i, Rect rect) {
+            int i2 = this.mWidth;
+            int i3 = this.mHeight;
+            int max = Math.max(i2, i3);
+            int min = Math.min(i2, i3);
+            boolean z = i == 2;
+            int i4 = z ? max : min;
+            if (z) {
+                max = min;
+            }
+            rect.set(0, 0, i4, max);
         }
 
         public final float getMinScale(int i, Rect rect, Rect rect2) {
@@ -380,117 +163,140 @@ public class DexSizeCompatController {
             return CompatUtils.adjustCeilScale(CompatUtils.getCompatScale(rect2, this.mTmpRect));
         }
 
-        @Override // com.android.server.wm.SizeCompatPolicyCasting
-        public SizeCompatDragPolicy asSizeCompatDragPolicy() {
-            if (CoreRune.MT_DEX_SIZE_COMPAT_DRAG) {
-                return this;
+        public final Rect getStableBounds(DisplayContent displayContent) {
+            DisplayInfo displayInfo = displayContent.mDisplayInfo;
+            this.mTmpStableBounds.set(displayContent.mDisplayPolicy.getDecorInsetsInfo(displayInfo.rotation, displayInfo.logicalWidth, displayInfo.logicalHeight).mConfigFrame);
+            Rect rect = this.mTmpStableBounds;
+            rect.top = this.mTask.getCaptionHeight() + rect.top;
+            return rect;
+        }
+
+        public final Rect getTaskBounds(Rect rect, int i, float f, boolean z) {
+            int i2;
+            if (f == 1.0f) {
+                this.mTmpContainingBounds.set(rect);
+                return this.mTmpContainingBounds;
             }
-            return null;
-        }
-
-        @Override // com.android.server.wm.SizeCompatDragPolicy
-        public boolean supportsToFreeformByCornerGesture() {
-            return isEnabled() && this.mTask.inFullscreenWindowingMode() && this.mTask.isVisible();
-        }
-
-        @Override // com.android.server.wm.SizeCompatDragPolicy
-        public boolean ensureDragBounds(Rect rect) {
-            float f;
-            int i;
-            int topOrientationInTask = getTopOrientationInTask();
-            if (isRotatable(topOrientationInTask)) {
-                f = getRotatableScale();
-                i = CompatUtils.getConfigurationOrientation(rect.width(), rect.height());
-            } else {
-                Rect fullScreenBounds = getFullScreenBounds(topOrientationInTask);
-                float adjustRoundScale = CompatUtils.adjustRoundScale(CompatUtils.getCompatScale(fullScreenBounds, rect));
-                DisplayContent displayContent = this.mTask.mDisplayContent;
-                if (displayContent != null) {
-                    Rect taskBounds = getTaskBounds(displayContent.getBounds(), topOrientationInTask, adjustRoundScale);
-                    float compatScale = CompatUtils.getCompatScale(fullScreenBounds, taskBounds);
-                    if (rect.width() != taskBounds.width() || rect.height() != taskBounds.height()) {
-                        taskBounds.offsetTo(rect.left, rect.top);
-                        rect.set(taskBounds);
-                        Slog.w("SizeCompatPolicy", "ensureDragBounds: userScale=" + compatScale + ", taskScale=" + compatScale);
-                        adjustRoundScale = compatScale;
-                    }
-                } else {
-                    Slog.w("SizeCompatPolicy", "ensureDragBounds: Display is null. mTask=" + this.mTask);
-                }
-                f = adjustRoundScale;
-                i = 0;
-            }
-            setUserScale(f);
-            setUserOrientation(i);
-            return true;
-        }
-
-        @Override // com.android.server.wm.SizeCompatDragPolicy
-        public void fillSizeCompatInfoForDrag(SizeCompatInfo sizeCompatInfo) {
-            int width;
-            int height;
             DisplayContent displayContent = this.mTask.mDisplayContent;
-            if (displayContent == null) {
-                Slog.w("SizeCompatPolicy", "fillSizeCompatInfoForDrag: Display is null. mTask=" + this.mTask);
-                return;
+            if (displayContent != null) {
+                rect = getStableBounds(displayContent);
             }
-            Rect bounds = displayContent.getBounds();
-            int width2 = bounds.width();
-            int height2 = bounds.height();
-            int configurationOrientation = CompatUtils.getConfigurationOrientation(width2, height2);
-            int topOrientationInTask = getTopOrientationInTask();
-            boolean isRotatable = isRotatable(topOrientationInTask);
-            sizeCompatInfo.setDragMode(isRotatable ? 2 : 1);
-            sizeCompatInfo.setDisplaySize(width2, height2);
-            Rect bounds2 = this.mTask.getBounds();
-            int configurationOrientation2 = isRotatable ? CompatUtils.getConfigurationOrientation(bounds2.width(), bounds2.height()) : topOrientationInTask;
-            Rect fullScreenBounds = getFullScreenBounds(configurationOrientation2);
-            boolean z = isRotatable && configurationOrientation != configurationOrientation2;
-            if (z) {
-                width = fullScreenBounds.height();
+            int width = rect.width();
+            int height = rect.height();
+            if (i != 0) {
+                i2 = i;
             } else {
-                width = fullScreenBounds.width();
-            }
-            if (z) {
-                height = fullScreenBounds.width();
-            } else {
-                height = fullScreenBounds.height();
-            }
-            if (isRotatable) {
-                this.mTmpRect.set(0, 0, width, height);
-                CompatUtils.getScaledBounds(this.mTmpRect, getRotatableScale(), !z);
-                sizeCompatInfo.setMinSize(this.mTmpRect.width(), this.mTmpRect.height());
-                sizeCompatInfo.setMaxSize(width, height);
-                return;
-            }
-            Rect stableBounds = getStableBounds(this.mTask.mDisplayContent);
-            float minScale = getMinScale(topOrientationInTask, stableBounds, fullScreenBounds);
-            sizeCompatInfo.setMinSize(CompatUtils.applyScale(width, minScale), CompatUtils.applyScale(height, minScale));
-            float stableBoundsScale = isSmallerContainer(width2, height2, width, height) ? getStableBoundsScale(fullScreenBounds, stableBounds) : 1.0f;
-            sizeCompatInfo.setMaxSize(CompatUtils.applyScale(width, stableBoundsScale), CompatUtils.applyScale(height, stableBoundsScale));
-        }
-
-        @Override // com.android.server.wm.SizeCompatDragPolicy
-        public void getTargetDragBounds(Rect rect, Rect rect2, SizeCompatInfo sizeCompatInfo, int i) {
-            boolean isDragDexSizeCompatRotatable = SizeCompatInfo.isDragDexSizeCompatRotatable(sizeCompatInfo);
-            float rotatableScale = isDragDexSizeCompatRotatable ? getRotatableScale() : getDefaultScale();
-            this.mTmpRect.set(0, 0, CompatUtils.applyScale(sizeCompatInfo.getMaxWidth(), rotatableScale), CompatUtils.applyScale(sizeCompatInfo.getMaxHeight(), rotatableScale));
-            int i2 = rect2.left;
-            int i3 = rect2.top;
-            if (!isDragDexSizeCompatRotatable) {
-                if (i == 5) {
-                    i2 += rect2.width() - this.mTmpRect.width();
+                i2 = this.mUserOrientation;
+                if (i2 == 0) {
+                    i2 = CompatUtils.getConfigurationOrientation(width, height);
                 }
-                i3 += rect2.height() - this.mTmpRect.height();
-            } else if (i == 9) {
-                i2 += rect2.width() - this.mTmpRect.width();
             }
-            this.mTmpRect.offsetTo(i2, i3);
+            getFrameByOrientation(i2, this.mTmpFullScreenBounds);
+            Rect rect2 = this.mTmpFullScreenBounds;
+            boolean z2 = isRotatable(i) && i2 != CompatUtils.getConfigurationOrientation(width, height);
+            this.mTmpContainingBounds.set(0, 0, z2 ? rect2.height() : rect2.width(), z2 ? rect2.width() : rect2.height());
+            CompatUtils.getScaledBounds(this.mTmpContainingBounds, f, z2);
+            if (z && !z2) {
+                int width2 = this.mTmpContainingBounds.width();
+                int height2 = this.mTmpContainingBounds.height();
+                if (width2 > width || height2 > height) {
+                    float adjustFloorScale = CompatUtils.adjustFloorScale(CompatUtils.getCompatScale(rect2, rect) - 0.01f);
+                    this.mUserScale = adjustFloorScale;
+                    return getTaskBounds(rect, i, adjustFloorScale, false);
+                }
+            }
+            return this.mTmpContainingBounds;
         }
 
-        @Override // com.android.server.wm.SizeCompatDragPolicy
-        public FreeformResizeGuide createCompatResizeGuide() {
-            return new DexSizeCompatResizeGuide((Context) null, (String) null);
+        public final int getTopOrientationInTask() {
+            Task task = this.mTask;
+            if (task.shouldBeVisible(null)) {
+                this.mLastTaskOrientation = task.getRequestedConfigurationOrientationInChildren();
+            }
+            return this.mLastTaskOrientation;
         }
+
+        public final boolean isEnabled() {
+            Task task;
+            int displayId;
+            int intValue;
+            if (this.mEnabled) {
+                SizeCompatPolicyManager sizeCompatPolicyManager = SizeCompatPolicyManager.LazyHolder.sManager;
+                if (sizeCompatPolicyManager.mLaunchPolicy != 0 && (displayId = (task = this.mTask).getDisplayId()) != -1 && (((intValue = ((Integer) sizeCompatPolicyManager.mDisplayIdsForActiveMode.get(displayId, 0)).intValue()) == 0 || intValue == 1) && (task.inFullscreenWindowingMode() || task.inFreeformWindowingMode()))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public final void setFreeformConfiguration(Configuration configuration, Rect rect, BiConsumer biConsumer) {
+            Task task = this.mTask;
+            Rect bounds = task.getBounds();
+            Rect taskBounds = getTaskBounds(rect, getTopOrientationInTask(), isRotatable(getTopOrientationInTask()) ? LazyHolder.sInstance.mDefaultScale : this.mUserScale, true);
+            if (task.inFreeformWindowingMode()) {
+                biConsumer.accept(bounds, taskBounds);
+            } else {
+                CompatUtils.adjustBoundsToCenter(rect, taskBounds);
+            }
+            configuration.windowConfiguration.setBounds(taskBounds);
+            configuration.windowConfiguration.setWindowingMode(5);
+        }
+
+        public final void setUserScale(float f) {
+            if (isRotatable(getTopOrientationInTask())) {
+                f = LazyHolder.sInstance.mDefaultScale;
+            }
+            this.mUserScale = CompatUtils.adjustRoundScale(f);
+        }
+
+        public final boolean supportsSandbox(ActivityRecord activityRecord) {
+            TaskDisplayArea taskDisplayArea;
+            Task task = this.mTask;
+            Rect bounds = task.getBounds();
+            if (bounds.isEmpty()) {
+                return false;
+            }
+            SizeCompatAttributes sizeCompatAttributes = activityRecord.mSizeCompatAttributes;
+            return (sizeCompatAttributes != null && sizeCompatAttributes.hasBounds()) || !task.inFullscreenWindowingMode() || (taskDisplayArea = task.getTaskDisplayArea()) == null || !taskDisplayArea.getBounds().equals(bounds);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public abstract class LazyHolder {
+        public static final DexSizeCompatController sInstance = new DexSizeCompatController();
+    }
+
+    public static DexSizeCompatPolicy createCompatPolicy(Task task, TaskDisplayArea taskDisplayArea) {
+        DisplayContent displayContent = taskDisplayArea.getDisplayContent();
+        if (displayContent != null) {
+            DexSizeCompatPolicy dexSizeCompatPolicy = new DexSizeCompatPolicy(task, displayContent);
+            SizeCompatPolicyManager.LazyHolder.sManager.setCompatPolicy(task, dexSizeCompatPolicy);
+            return dexSizeCompatPolicy;
+        }
+        Slog.w("SizeCompatPolicy", "createCompatPolicy: Display is null, task=" + task + ", tda=" + taskDisplayArea);
+        return null;
+    }
+
+    public static DexSizeCompatPolicy getCompatPolicy(Task task) {
+        SizeCompatPolicyManager.LazyHolder.sManager.getClass();
+        DexSizeCompatPolicy compatPolicy = SizeCompatPolicyManager.getCompatPolicy(task, false);
+        if (compatPolicy != null) {
+            return compatPolicy;
+        }
+        return null;
+    }
+
+    public static boolean shouldCreateCompatPolicy(Task task, ActivityRecord activityRecord, TaskDisplayArea taskDisplayArea) {
+        SizeCompatPolicyManager sizeCompatPolicyManager = SizeCompatPolicyManager.LazyHolder.sManager;
+        if (sizeCompatPolicyManager.mLaunchPolicy == 0 || taskDisplayArea.getDisplayContent() == null) {
+            return false;
+        }
+        if (task != null && task.getRootActivity(true, false) != null) {
+            activityRecord = task.getRootActivity(true, false);
+        }
+        if (activityRecord != null && activityRecord.isActivityTypeStandardOrUndefined() && SizeCompatPolicyManager.getCompatPolicy(task, false) == null) {
+            return sizeCompatPolicyManager.mLaunchPolicy == 2 || !(activityRecord.isResizeable(true) || activityRecord.supportsFreeformInDisplayArea(taskDisplayArea));
+        }
+        return false;
     }
 }

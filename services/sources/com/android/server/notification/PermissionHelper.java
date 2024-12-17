@@ -1,6 +1,5 @@
 package com.android.server.notification;
 
-import android.content.Context;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageInfo;
 import android.content.pm.ParceledListSlice;
@@ -12,63 +11,70 @@ import android.util.Pair;
 import android.util.Slog;
 import com.android.internal.util.ArrayUtils;
 import com.android.server.LocalServices;
-import com.android.server.pm.permission.PermissionManagerServiceInternal;
+import com.android.server.pm.permission.PermissionManagerService;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Objects;
-import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class PermissionHelper {
-    public final Context mContext;
     public final IPackageManager mPackageManager;
     public final IPermissionManager mPermManager;
-    public final PermissionManagerServiceInternal mPmi = (PermissionManagerServiceInternal) LocalServices.getService(PermissionManagerServiceInternal.class);
+    public final PermissionManagerService.PermissionManagerServiceInternalImpl mPmi = (PermissionManagerService.PermissionManagerServiceInternalImpl) LocalServices.getService(PermissionManagerService.PermissionManagerServiceInternalImpl.class);
 
-    public PermissionHelper(Context context, IPackageManager iPackageManager, IPermissionManager iPermissionManager) {
-        this.mContext = context;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackagePermission {
+        public final boolean granted;
+        public final String packageName;
+        public final int userId;
+        public final boolean userModifiedSettings;
+
+        public PackagePermission(String str, boolean z, boolean z2, int i) {
+            this.packageName = str;
+            this.userId = i;
+            this.granted = z;
+            this.userModifiedSettings = z2;
+        }
+
+        public final boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || PackagePermission.class != obj.getClass()) {
+                return false;
+            }
+            PackagePermission packagePermission = (PackagePermission) obj;
+            return this.userId == packagePermission.userId && this.granted == packagePermission.granted && this.userModifiedSettings == packagePermission.userModifiedSettings && Objects.equals(this.packageName, packagePermission.packageName);
+        }
+
+        public final int hashCode() {
+            return Objects.hash(this.packageName, Integer.valueOf(this.userId), Boolean.valueOf(this.granted), Boolean.valueOf(this.userModifiedSettings));
+        }
+
+        public final String toString() {
+            return "PackagePermission{packageName='" + this.packageName + "', userId=" + this.userId + ", granted=" + this.granted + ", userSet=" + this.userModifiedSettings + '}';
+        }
+    }
+
+    public PermissionHelper(IPackageManager iPackageManager, IPermissionManager iPermissionManager) {
         this.mPackageManager = iPackageManager;
         this.mPermManager = iPermissionManager;
     }
 
-    public boolean hasPermission(int i) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return this.mPmi.checkPostNotificationsPermissionGrantedOrLegacyAccess(i) == 0;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public boolean hasRequestedPermission(String str, String str2, int i) {
-        PackageInfo packageInfo;
-        String[] strArr;
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                packageInfo = this.mPackageManager.getPackageInfo(str2, 4096L, i);
-            } catch (RemoteException e) {
-                Slog.d("PermissionHelper", "Could not reach system server", e);
-            }
-            if (packageInfo != null && (strArr = packageInfo.requestedPermissions) != null) {
-                for (String str3 : strArr) {
-                    if (str.equals(str3)) {
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                        return true;
-                    }
-                }
-                return false;
-            }
-            return false;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public Set getAppsRequestingPermission(int i) {
+    public final ArrayMap getNotificationPermissionValues(int i) {
+        ParceledListSlice parceledListSlice;
+        ArrayMap arrayMap = new ArrayMap();
         HashSet hashSet = new HashSet();
-        for (PackageInfo packageInfo : getInstalledPackages(i)) {
+        ParceledListSlice parceledListSlice2 = null;
+        try {
+            parceledListSlice = this.mPackageManager.getInstalledPackages(4096L, i);
+        } catch (RemoteException e) {
+            Slog.d("PermissionHelper", "Could not reach system server", e);
+            parceledListSlice = null;
+        }
+        for (PackageInfo packageInfo : parceledListSlice == null ? Collections.emptyList() : parceledListSlice.getList()) {
             String[] strArr = packageInfo.requestedPermissions;
             if (strArr != null) {
                 int length = strArr.length;
@@ -85,110 +91,63 @@ public final class PermissionHelper {
                 }
             }
         }
-        return hashSet;
-    }
-
-    public final List getInstalledPackages(int i) {
-        ParceledListSlice parceledListSlice;
+        HashSet hashSet2 = new HashSet();
         try {
-            parceledListSlice = this.mPackageManager.getInstalledPackages(4096L, i);
-        } catch (RemoteException e) {
-            Slog.d("PermissionHelper", "Could not reach system server", e);
-            parceledListSlice = null;
+            parceledListSlice2 = this.mPackageManager.getPackagesHoldingPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 0L, i);
+        } catch (RemoteException e2) {
+            Slog.e("PermissionHelper", "Could not reach system server", e2);
         }
-        if (parceledListSlice == null) {
-            return Collections.emptyList();
+        if (parceledListSlice2 != null) {
+            for (PackageInfo packageInfo2 : parceledListSlice2.getList()) {
+                hashSet2.add(new Pair(Integer.valueOf(packageInfo2.applicationInfo.uid), packageInfo2.packageName));
+            }
         }
-        return parceledListSlice.getList();
-    }
-
-    public Set getAppsGrantedPermission(int i) {
-        ParceledListSlice parceledListSlice;
-        HashSet hashSet = new HashSet();
-        try {
-            parceledListSlice = this.mPackageManager.getPackagesHoldingPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 0L, i);
-        } catch (RemoteException e) {
-            Slog.e("PermissionHelper", "Could not reach system server", e);
-            parceledListSlice = null;
-        }
-        if (parceledListSlice == null) {
-            return hashSet;
-        }
-        for (PackageInfo packageInfo : parceledListSlice.getList()) {
-            hashSet.add(new Pair(Integer.valueOf(packageInfo.applicationInfo.uid), packageInfo.packageName));
-        }
-        return hashSet;
-    }
-
-    public ArrayMap getNotificationPermissionValues(int i) {
-        ArrayMap arrayMap = new ArrayMap();
-        Set<Pair> appsRequestingPermission = getAppsRequestingPermission(i);
-        Set appsGrantedPermission = getAppsGrantedPermission(i);
-        for (Pair pair : appsRequestingPermission) {
-            arrayMap.put(pair, new Pair(Boolean.valueOf(appsGrantedPermission.contains(pair)), Boolean.valueOf(isPermissionUserSet((String) pair.second, i))));
+        Iterator it = hashSet.iterator();
+        while (it.hasNext()) {
+            Pair pair = (Pair) it.next();
+            arrayMap.put(pair, new Pair(Boolean.valueOf(hashSet2.contains(pair)), Boolean.valueOf(isPermissionUserSet(i, (String) pair.second))));
         }
         return arrayMap;
     }
 
-    public void setNotificationPermission(String str, int i, boolean z, boolean z2) {
-        setNotificationPermission(str, i, z, z2, false);
-    }
-
-    public void setNotificationPermission(String str, int i, boolean z, boolean z2, boolean z3) {
+    public final boolean hasPermission(int i) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            try {
-            } catch (RemoteException e) {
-                Slog.e("PermissionHelper", "Could not reach system server", e);
-            }
-            if (packageRequestsNotificationPermission(str, i) && !isPermissionFixed(str, i) && (!isPermissionGrantedByDefaultOrRole(str, i) || z2)) {
-                boolean hasPermission = hasPermission(this.mPackageManager.getPackageUid(str, 0L, i));
-                Slog.d("PermissionHelper", "pkg = " + str + ", currentlyGranted = " + hasPermission);
-                Slog.d("PermissionHelper", "reviewRequired = " + z3 + ", grant = " + z);
-                if (!z3) {
-                    if (z && !hasPermission) {
-                        this.mPermManager.grantRuntimePermission(str, "android.permission.POST_NOTIFICATIONS", i);
-                    } else if (!z && hasPermission) {
-                        this.mPermManager.revokeRuntimePermission(str, "android.permission.POST_NOTIFICATIONS", i, "PermissionHelper");
-                    }
-                    if (z2) {
-                        this.mPermManager.updatePermissionFlags(str, "android.permission.POST_NOTIFICATIONS", 1, 1, true, i);
-                    } else {
-                        this.mPermManager.updatePermissionFlags(str, "android.permission.POST_NOTIFICATIONS", 1, 0, true, i);
-                    }
-                    this.mPermManager.updatePermissionFlags(str, "android.permission.POST_NOTIFICATIONS", 64, 0, true, i);
-                } else {
-                    if ("com.sec.android.easyMover".equals(str)) {
-                        return;
-                    }
-                    if (!z && hasPermission) {
-                        this.mPermManager.revokeRuntimePermission(str, "android.permission.POST_NOTIFICATIONS", i, "PermissionHelper");
-                    }
-                    if (z && !hasPermission) {
-                        this.mPermManager.updatePermissionFlags(str, "android.permission.POST_NOTIFICATIONS", 1, 0, true, i);
-                        this.mPermManager.updatePermissionFlags(str, "android.permission.POST_NOTIFICATIONS", 64, 64, true, i);
-                    }
-                }
-                return;
-            }
-            Slog.d("PermissionHelper", "pkg = " + str + ", setNotificationPermission return!!");
+            return this.mPmi.checkPostNotificationsPermissionGrantedOrLegacyAccess(i) == 0;
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public void setNotificationPermission(PackagePermission packagePermission) {
-        String str;
-        if (packagePermission == null || (str = packagePermission.packageName) == null || isPermissionFixed(str, packagePermission.userId)) {
-            return;
-        }
-        setNotificationPermission(packagePermission.packageName, packagePermission.userId, packagePermission.granted, true, true);
-    }
-
-    public boolean isPermissionFixed(String str, int i) {
+    public final boolean hasRequestedPermission(int i, String str) {
+        PackageInfo packageInfo;
+        String[] strArr;
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            int permissionFlags = this.mPermManager.getPermissionFlags(str, "android.permission.POST_NOTIFICATIONS", i);
+            try {
+                packageInfo = this.mPackageManager.getPackageInfo(str, 4096L, i);
+            } catch (RemoteException e) {
+                Slog.d("PermissionHelper", "Could not reach system server", e);
+            }
+            if (packageInfo != null && (strArr = packageInfo.requestedPermissions) != null) {
+                for (String str2 : strArr) {
+                    if ("android.permission.USE_FULL_SCREEN_INTENT".equals(str2)) {
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return false;
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final boolean isPermissionFixed(String str, int i) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            int permissionFlags = this.mPermManager.getPermissionFlags(str, "android.permission.POST_NOTIFICATIONS", "default:0", i);
             return ((permissionFlags & 16) == 0 && (permissionFlags & 4) == 0) ? false : true;
         } catch (RemoteException e) {
             Slog.e("PermissionHelper", "Could not reach system server", e);
@@ -198,10 +157,10 @@ public final class PermissionHelper {
         }
     }
 
-    public boolean isPermissionUserSet(String str, int i) {
+    public final boolean isPermissionGrantedByDefaultOrRole(int i, String str) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            return (this.mPermManager.getPermissionFlags(str, "android.permission.POST_NOTIFICATIONS", i) & 3) != 0;
+            return (this.mPermManager.getPermissionFlags(str, "android.permission.POST_NOTIFICATIONS", "default:0", i) & 32800) != 0;
         } catch (RemoteException e) {
             Slog.e("PermissionHelper", "Could not reach system server", e);
             return false;
@@ -210,10 +169,10 @@ public final class PermissionHelper {
         }
     }
 
-    public boolean isPermissionGrantedByDefaultOrRole(String str, int i) {
+    public final boolean isPermissionUserSet(int i, String str) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            return (this.mPermManager.getPermissionFlags(str, "android.permission.POST_NOTIFICATIONS", i) & 32800) != 0;
+            return (this.mPermManager.getPermissionFlags(str, "android.permission.POST_NOTIFICATIONS", "default:0", i) & 3) != 0;
         } catch (RemoteException e) {
             Slog.e("PermissionHelper", "Could not reach system server", e);
             return false;
@@ -222,7 +181,7 @@ public final class PermissionHelper {
         }
     }
 
-    public final boolean packageRequestsNotificationPermission(String str, int i) {
+    public final boolean packageRequestsNotificationPermission(int i, String str) {
         try {
             PackageInfo packageInfo = this.mPackageManager.getPackageInfo(str, 4096L, i);
             if (packageInfo != null) {
@@ -235,37 +194,47 @@ public final class PermissionHelper {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class PackagePermission {
-        public final boolean granted;
-        public final String packageName;
-        public final int userId;
-        public final boolean userModifiedSettings;
-
-        public PackagePermission(String str, int i, boolean z, boolean z2) {
-            this.packageName = str;
-            this.userId = i;
-            this.granted = z;
-            this.userModifiedSettings = z2;
-        }
-
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
+    public final void setNotificationPermission(String str, boolean z, boolean z2, int i) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+            } catch (RemoteException e) {
+                Slog.e("PermissionHelper", "Could not reach system server", e);
             }
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
+            if (!packageRequestsNotificationPermission(i, str) || isPermissionFixed(str, i)) {
+                Slog.d("PermissionHelper", "pkg = " + str + ", setNotificationPermission return!!");
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return;
             }
-            PackagePermission packagePermission = (PackagePermission) obj;
-            return this.userId == packagePermission.userId && this.granted == packagePermission.granted && this.userModifiedSettings == packagePermission.userModifiedSettings && Objects.equals(this.packageName, packagePermission.packageName);
-        }
-
-        public int hashCode() {
-            return Objects.hash(this.packageName, Integer.valueOf(this.userId), Boolean.valueOf(this.granted), Boolean.valueOf(this.userModifiedSettings));
-        }
-
-        public String toString() {
-            return "PackagePermission{packageName='" + this.packageName + "', userId=" + this.userId + ", granted=" + this.granted + ", userSet=" + this.userModifiedSettings + '}';
+            isPermissionGrantedByDefaultOrRole(i, str);
+            boolean hasPermission = hasPermission(this.mPackageManager.getPackageUid(str, 0L, i));
+            Slog.d("PermissionHelper", "pkg = " + str + ", currentlyGranted = " + hasPermission);
+            Slog.d("PermissionHelper", "reviewRequired = " + z2 + ", grant = " + z);
+            if (!z2) {
+                if (z && !hasPermission) {
+                    this.mPermManager.grantRuntimePermission(str, "android.permission.POST_NOTIFICATIONS", "default:0", i);
+                } else if (!z && hasPermission) {
+                    this.mPermManager.revokeRuntimePermission(str, "android.permission.POST_NOTIFICATIONS", "default:0", i, "PermissionHelper");
+                }
+                this.mPermManager.updatePermissionFlags(str, "android.permission.POST_NOTIFICATIONS", 1, 1, true, "default:0", i);
+                this.mPermManager.updatePermissionFlags(str, "android.permission.POST_NOTIFICATIONS", 64, 0, true, "default:0", i);
+            } else {
+                if ("com.sec.android.easyMover".equals(str)) {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                    return;
+                }
+                if (!z && hasPermission) {
+                    this.mPermManager.revokeRuntimePermission(str, "android.permission.POST_NOTIFICATIONS", "default:0", i, "PermissionHelper");
+                }
+                if (z && !hasPermission) {
+                    this.mPermManager.updatePermissionFlags(str, "android.permission.POST_NOTIFICATIONS", 1, 0, true, "default:0", i);
+                    this.mPermManager.updatePermissionFlags(str, "android.permission.POST_NOTIFICATIONS", 64, 64, true, "default:0", i);
+                }
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
         }
     }
 }

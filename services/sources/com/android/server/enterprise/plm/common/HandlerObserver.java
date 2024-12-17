@@ -1,51 +1,36 @@
 package com.android.server.enterprise.plm.common;
 
 import android.os.Handler;
+import android.os.Message;
 import java.lang.ref.WeakReference;
 
-/* loaded from: classes2.dex */
-public class HandlerObserver {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class HandlerObserver {
     public final WeakReference handler;
     public final int what;
 
-    public HandlerObserver(Handler handler, int i) {
+    public HandlerObserver(int i, Handler handler) {
         this.handler = new WeakReference(handler);
         this.what = i;
     }
 
-    public Handler getHandler() {
+    public final Handler getHandler() {
         return (Handler) this.handler.get();
     }
 
-    public void notifyMessage(Object obj) {
+    public final void notifyMessage(Object obj, Object obj2, Object obj3) {
         Handler handler = getHandler();
         if (handler == null) {
             return;
         }
-        handler.sendMessage(PlmMessage.obtain(handler, this.what, obj, null));
-    }
-
-    public void notifyMessage(Object obj, Object obj2) {
-        Handler handler = getHandler();
-        if (handler == null) {
-            return;
-        }
-        handler.sendMessage(PlmMessage.obtain(handler, this.what, obj, obj2, null));
-    }
-
-    public void notifyMessage(Object obj, Object obj2, Object obj3) {
-        Handler handler = getHandler();
-        if (handler == null) {
-            return;
-        }
-        handler.sendMessage(PlmMessage.obtain(handler, this.what, obj, obj2, obj3, null));
-    }
-
-    public void notifyMessage(Object obj, Object obj2, Object obj3, Object obj4) {
-        Handler handler = getHandler();
-        if (handler == null) {
-            return;
-        }
-        handler.sendMessage(PlmMessage.obtain(handler, this.what, obj, obj2, obj3, obj4, null));
+        PlmMessage plmMessage = new PlmMessage();
+        plmMessage.obj1 = obj;
+        plmMessage.obj2 = obj2;
+        plmMessage.obj3 = obj3;
+        Message obtain = Message.obtain(handler);
+        obtain.what = this.what;
+        obtain.obj = plmMessage;
+        handler.sendMessage(obtain);
     }
 }

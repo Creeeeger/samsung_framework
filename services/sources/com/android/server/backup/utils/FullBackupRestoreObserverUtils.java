@@ -4,17 +4,18 @@ import android.app.backup.IFullBackupRestoreObserver;
 import android.os.RemoteException;
 import android.util.Slog;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class FullBackupRestoreObserverUtils {
-    public static IFullBackupRestoreObserver sendStartRestore(IFullBackupRestoreObserver iFullBackupRestoreObserver) {
+    public static IFullBackupRestoreObserver sendEndRestore(IFullBackupRestoreObserver iFullBackupRestoreObserver) {
         if (iFullBackupRestoreObserver == null) {
             return iFullBackupRestoreObserver;
         }
         try {
-            iFullBackupRestoreObserver.onStartRestore();
+            iFullBackupRestoreObserver.onEndRestore();
             return iFullBackupRestoreObserver;
         } catch (RemoteException unused) {
-            Slog.w("BackupManagerService", "full restore observer went away: startRestore");
+            Slog.w("BackupManagerService", "full restore observer went away: endRestore");
             return null;
         }
     }
@@ -28,19 +29,6 @@ public abstract class FullBackupRestoreObserverUtils {
             return iFullBackupRestoreObserver;
         } catch (RemoteException unused) {
             Slog.w("BackupManagerService", "full restore observer went away: restorePackage");
-            return null;
-        }
-    }
-
-    public static IFullBackupRestoreObserver sendEndRestore(IFullBackupRestoreObserver iFullBackupRestoreObserver) {
-        if (iFullBackupRestoreObserver == null) {
-            return iFullBackupRestoreObserver;
-        }
-        try {
-            iFullBackupRestoreObserver.onEndRestore();
-            return iFullBackupRestoreObserver;
-        } catch (RemoteException unused) {
-            Slog.w("BackupManagerService", "full restore observer went away: endRestore");
             return null;
         }
     }

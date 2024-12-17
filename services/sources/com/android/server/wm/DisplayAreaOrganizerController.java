@@ -11,28 +11,28 @@ import android.window.IDisplayAreaOrganizer;
 import android.window.IDisplayAreaOrganizerController;
 import android.window.WindowContainerToken;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
 import com.android.server.wm.DisplayArea;
 import com.android.server.wm.DisplayAreaOrganizerController;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class DisplayAreaOrganizerController extends IDisplayAreaOrganizerController.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DisplayAreaOrganizerController extends IDisplayAreaOrganizerController.Stub {
     public final WindowManagerGlobalLock mGlobalLock;
     public int mNextTaskDisplayAreaFeatureId = 20002;
     public final HashMap mOrganizersByFeatureIds = new HashMap();
     public final ActivityTaskManagerService mService;
 
-    /* loaded from: classes3.dex */
-    public class DeathRecipient implements IBinder.DeathRecipient {
-        public int mFeature;
-        public IDisplayAreaOrganizer mOrganizer;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DeathRecipient implements IBinder.DeathRecipient {
+        public final int mFeature;
+        public final IDisplayAreaOrganizer mOrganizer;
 
         public DeathRecipient(IDisplayAreaOrganizer iDisplayAreaOrganizer, int i) {
             this.mOrganizer = iDisplayAreaOrganizer;
@@ -40,14 +40,15 @@ public class DisplayAreaOrganizerController extends IDisplayAreaOrganizerControl
         }
 
         @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
+        public final void binderDied() {
             WindowManagerGlobalLock windowManagerGlobalLock = DisplayAreaOrganizerController.this.mGlobalLock;
             WindowManagerService.boostPriorityForLockedSection();
             synchronized (windowManagerGlobalLock) {
                 try {
-                    IDisplayAreaOrganizer organizerByFeature = DisplayAreaOrganizerController.this.getOrganizerByFeature(this.mFeature);
-                    if (organizerByFeature != null) {
-                        IBinder asBinder = organizerByFeature.asBinder();
+                    DisplayAreaOrganizerState displayAreaOrganizerState = (DisplayAreaOrganizerState) DisplayAreaOrganizerController.this.mOrganizersByFeatureIds.get(Integer.valueOf(this.mFeature));
+                    IDisplayAreaOrganizer iDisplayAreaOrganizer = displayAreaOrganizerState != null ? displayAreaOrganizerState.mOrganizer : null;
+                    if (iDisplayAreaOrganizer != null) {
+                        IBinder asBinder = iDisplayAreaOrganizer.asBinder();
                         if (!asBinder.equals(this.mOrganizer.asBinder()) && asBinder.isBinderAlive()) {
                             Slog.d("DisplayAreaOrganizerController", "Dead organizer replaced for feature=" + this.mFeature);
                             WindowManagerService.resetPriorityAfterLockedSection();
@@ -64,14 +65,14 @@ public class DisplayAreaOrganizerController extends IDisplayAreaOrganizerControl
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class DisplayAreaOrganizerState {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DisplayAreaOrganizerState {
         public final DeathRecipient mDeathRecipient;
         public final IDisplayAreaOrganizer mOrganizer;
 
         public DisplayAreaOrganizerState(IDisplayAreaOrganizer iDisplayAreaOrganizer, int i) {
             this.mOrganizer = iDisplayAreaOrganizer;
-            DeathRecipient deathRecipient = new DeathRecipient(iDisplayAreaOrganizer, i);
+            DeathRecipient deathRecipient = DisplayAreaOrganizerController.this.new DeathRecipient(iDisplayAreaOrganizer, i);
             this.mDeathRecipient = deathRecipient;
             try {
                 iDisplayAreaOrganizer.asBinder().linkToDeath(deathRecipient, 0);
@@ -79,27 +80,42 @@ public class DisplayAreaOrganizerController extends IDisplayAreaOrganizerControl
             }
         }
 
-        public void destroy() {
+        public final void destroy() {
             final IBinder asBinder = this.mOrganizer.asBinder();
             DisplayAreaOrganizerController.this.mService.mRootWindowContainer.forAllDisplayAreas(new Consumer() { // from class: com.android.server.wm.DisplayAreaOrganizerController$DisplayAreaOrganizerState$$ExternalSyntheticLambda0
                 @Override // java.util.function.Consumer
                 public final void accept(Object obj) {
-                    DisplayAreaOrganizerController.DisplayAreaOrganizerState.this.lambda$destroy$0(asBinder, (DisplayArea) obj);
+                    DisplayAreaOrganizerController.DisplayAreaOrganizerState displayAreaOrganizerState = DisplayAreaOrganizerController.DisplayAreaOrganizerState.this;
+                    IBinder iBinder = asBinder;
+                    DisplayArea displayArea = (DisplayArea) obj;
+                    displayAreaOrganizerState.getClass();
+                    IDisplayAreaOrganizer iDisplayAreaOrganizer = displayArea.mOrganizer;
+                    if (iDisplayAreaOrganizer == null || !iDisplayAreaOrganizer.asBinder().equals(iBinder)) {
+                        return;
+                    }
+                    if (!displayArea.isTaskDisplayArea() || !displayArea.asTaskDisplayArea().mCreatedByOrganizer) {
+                        displayArea.setOrganizer(null);
+                        return;
+                    }
+                    TaskDisplayArea asTaskDisplayArea = displayArea.asTaskDisplayArea();
+                    DisplayAreaOrganizerController displayAreaOrganizerController = DisplayAreaOrganizerController.this;
+                    displayAreaOrganizerController.getClass();
+                    asTaskDisplayArea.setOrganizer(null);
+                    displayAreaOrganizerController.mService.mRootWindowContainer.mTaskSupervisor.beginDeferResume();
+                    try {
+                        Task remove = asTaskDisplayArea.remove();
+                        displayAreaOrganizerController.mService.mRootWindowContainer.mTaskSupervisor.endDeferResume();
+                        asTaskDisplayArea.removeImmediately();
+                        if (remove != null) {
+                            remove.resumeNextFocusAfterReparent();
+                        }
+                    } catch (Throwable th) {
+                        displayAreaOrganizerController.mService.mRootWindowContainer.mTaskSupervisor.endDeferResume();
+                        throw th;
+                    }
                 }
             });
             asBinder.unlinkToDeath(this.mDeathRecipient, 0);
-        }
-
-        public /* synthetic */ void lambda$destroy$0(IBinder iBinder, DisplayArea displayArea) {
-            IDisplayAreaOrganizer iDisplayAreaOrganizer = displayArea.mOrganizer;
-            if (iDisplayAreaOrganizer == null || !iDisplayAreaOrganizer.asBinder().equals(iBinder)) {
-                return;
-            }
-            if (displayArea.isTaskDisplayArea() && displayArea.asTaskDisplayArea().mCreatedByOrganizer) {
-                DisplayAreaOrganizerController.this.deleteTaskDisplayArea(displayArea.asTaskDisplayArea());
-            } else {
-                displayArea.setOrganizer(null);
-            }
         }
     }
 
@@ -108,80 +124,33 @@ public class DisplayAreaOrganizerController extends IDisplayAreaOrganizerControl
         this.mGlobalLock = activityTaskManagerService.mGlobalLock;
     }
 
-    public final void enforceTaskPermission(String str) {
-        ActivityTaskManagerService.enforceTaskPermission(str);
-    }
-
-    public IDisplayAreaOrganizer getOrganizerByFeature(int i) {
-        DisplayAreaOrganizerState displayAreaOrganizerState = (DisplayAreaOrganizerState) this.mOrganizersByFeatureIds.get(Integer.valueOf(i));
-        if (displayAreaOrganizerState != null) {
-            return displayAreaOrganizerState.mOrganizer;
-        }
-        return null;
-    }
-
-    public ParceledListSlice registerOrganizer(final IDisplayAreaOrganizer iDisplayAreaOrganizer, final int i) {
-        ParceledListSlice parceledListSlice;
-        enforceTaskPermission("registerOrganizer()");
-        long callingUid = Binder.getCallingUid();
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 251812577, 4, (String) null, new Object[]{String.valueOf(iDisplayAreaOrganizer.asBinder()), Long.valueOf(callingUid)});
-                    }
-                    if (this.mOrganizersByFeatureIds.get(Integer.valueOf(i)) != null) {
-                        ((DisplayAreaOrganizerState) this.mOrganizersByFeatureIds.remove(Integer.valueOf(i))).destroy();
-                        Slog.d("DisplayAreaOrganizerController", "Replacing dead organizer for feature=" + i);
-                    }
-                    DisplayAreaOrganizerState displayAreaOrganizerState = new DisplayAreaOrganizerState(iDisplayAreaOrganizer, i);
-                    final ArrayList arrayList = new ArrayList();
-                    this.mService.mRootWindowContainer.forAllDisplays(new Consumer() { // from class: com.android.server.wm.DisplayAreaOrganizerController$$ExternalSyntheticLambda0
-                        @Override // java.util.function.Consumer
-                        public final void accept(Object obj) {
-                            DisplayAreaOrganizerController.this.lambda$registerOrganizer$1(i, arrayList, iDisplayAreaOrganizer, (DisplayContent) obj);
-                        }
-                    });
-                    this.mOrganizersByFeatureIds.put(Integer.valueOf(i), displayAreaOrganizerState);
-                    parceledListSlice = new ParceledListSlice(arrayList);
-                } finally {
+    public static TaskDisplayArea createTaskDisplayArea(final RootDisplayArea rootDisplayArea, String str, int i) {
+        TaskDisplayArea taskDisplayArea = new TaskDisplayArea(rootDisplayArea.mDisplayContent, rootDisplayArea.mWmService, str, i, true);
+        DisplayArea displayArea = (DisplayArea) rootDisplayArea.getItemFromDisplayAreas(new Function() { // from class: com.android.server.wm.DisplayAreaOrganizerController$$ExternalSyntheticLambda4
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                RootDisplayArea rootDisplayArea2;
+                RootDisplayArea rootDisplayArea3 = RootDisplayArea.this;
+                DisplayArea displayArea2 = (DisplayArea) obj;
+                if (displayArea2.mType == DisplayArea.Type.ANY && ((rootDisplayArea2 = displayArea2.getRootDisplayArea()) == rootDisplayArea3 || rootDisplayArea2 == displayArea2)) {
+                    return displayArea2;
                 }
-            }
-            WindowManagerService.resetPriorityAfterLockedSection();
-            return parceledListSlice;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public /* synthetic */ void lambda$registerOrganizer$1(final int i, final List list, final IDisplayAreaOrganizer iDisplayAreaOrganizer, DisplayContent displayContent) {
-        if (!displayContent.isTrusted()) {
-            if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                ProtoLogImpl.w(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 1699269281, 1, (String) null, new Object[]{Long.valueOf(displayContent.getDisplayId())});
-                return;
-            }
-            return;
-        }
-        displayContent.forAllDisplayAreas(new Consumer() { // from class: com.android.server.wm.DisplayAreaOrganizerController$$ExternalSyntheticLambda4
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                DisplayAreaOrganizerController.this.lambda$registerOrganizer$0(i, list, iDisplayAreaOrganizer, (DisplayArea) obj);
+                return null;
             }
         });
-    }
-
-    public /* synthetic */ void lambda$registerOrganizer$0(int i, List list, IDisplayAreaOrganizer iDisplayAreaOrganizer, DisplayArea displayArea) {
-        if (displayArea.mFeatureId != i) {
-            return;
+        if (displayArea != null) {
+            WindowContainer parent = displayArea.getParent();
+            parent.addChild(taskDisplayArea, parent.mChildren.indexOf(displayArea) + 1);
+            return taskDisplayArea;
         }
-        list.add(organizeDisplayArea(iDisplayAreaOrganizer, displayArea, "DisplayAreaOrganizerController.registerOrganizer"));
+        throw new IllegalStateException("Root must either contain TDA or DAG root=" + rootDisplayArea);
     }
 
-    public void unregisterOrganizer(final IDisplayAreaOrganizer iDisplayAreaOrganizer) {
-        enforceTaskPermission("unregisterTaskOrganizer()");
+    public final DisplayAreaAppearedInfo createTaskDisplayArea(IDisplayAreaOrganizer iDisplayAreaOrganizer, int i, final int i2, String str) {
+        TaskDisplayArea taskDisplayArea;
+        TaskDisplayArea taskDisplayArea2;
+        DisplayAreaAppearedInfo displayAreaAppearedInfo;
+        ActivityTaskManagerService.enforceTaskPermission("createTaskDisplayArea()");
         long callingUid = Binder.getCallingUid();
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
@@ -189,114 +158,93 @@ public class DisplayAreaOrganizerController extends IDisplayAreaOrganizerControl
             WindowManagerService.boostPriorityForLockedSection();
             synchronized (windowManagerGlobalLock) {
                 try {
-                    if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 1149424314, 4, (String) null, new Object[]{String.valueOf(iDisplayAreaOrganizer.asBinder()), Long.valueOf(callingUid)});
-                    }
-                    this.mOrganizersByFeatureIds.entrySet().removeIf(new Predicate() { // from class: com.android.server.wm.DisplayAreaOrganizerController$$ExternalSyntheticLambda3
-                        @Override // java.util.function.Predicate
-                        public final boolean test(Object obj) {
-                            boolean lambda$unregisterOrganizer$2;
-                            lambda$unregisterOrganizer$2 = DisplayAreaOrganizerController.lambda$unregisterOrganizer$2(iDisplayAreaOrganizer, (Map.Entry) obj);
-                            return lambda$unregisterOrganizer$2;
-                        }
-                    });
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
-                }
-            }
-            WindowManagerService.resetPriorityAfterLockedSection();
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public static /* synthetic */ boolean lambda$unregisterOrganizer$2(IDisplayAreaOrganizer iDisplayAreaOrganizer, Map.Entry entry) {
-        boolean equals = ((DisplayAreaOrganizerState) entry.getValue()).mOrganizer.asBinder().equals(iDisplayAreaOrganizer.asBinder());
-        if (equals) {
-            ((DisplayAreaOrganizerState) entry.getValue()).destroy();
-        }
-        return equals;
-    }
-
-    public DisplayAreaAppearedInfo createTaskDisplayArea(IDisplayAreaOrganizer iDisplayAreaOrganizer, int i, final int i2, String str) {
-        TaskDisplayArea createTaskDisplayArea;
-        DisplayAreaAppearedInfo organizeDisplayArea;
-        enforceTaskPermission("createTaskDisplayArea()");
-        long callingUid = Binder.getCallingUid();
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -948446688, 1, (String) null, new Object[]{Long.valueOf(callingUid)});
+                    if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_ORGANIZER_enabled[1]) {
+                        ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 5147103403966149923L, 1, null, Long.valueOf(callingUid));
                     }
                     DisplayContent displayContent = this.mService.mRootWindowContainer.getDisplayContent(i);
                     if (displayContent == null) {
                         throw new IllegalArgumentException("createTaskDisplayArea unknown displayId=" + i);
                     }
-                    if (!displayContent.isTrusted()) {
+                    if (!displayContent.mDisplay.isTrusted()) {
                         throw new IllegalArgumentException("createTaskDisplayArea untrusted displayId=" + i);
                     }
+                    final int i3 = 0;
                     RootDisplayArea rootDisplayArea = (RootDisplayArea) displayContent.getItemFromDisplayAreas(new Function() { // from class: com.android.server.wm.DisplayAreaOrganizerController$$ExternalSyntheticLambda1
                         @Override // java.util.function.Function
                         public final Object apply(Object obj) {
-                            RootDisplayArea lambda$createTaskDisplayArea$3;
-                            lambda$createTaskDisplayArea$3 = DisplayAreaOrganizerController.lambda$createTaskDisplayArea$3(i2, (DisplayArea) obj);
-                            return lambda$createTaskDisplayArea$3;
+                            int i4 = i3;
+                            int i5 = i2;
+                            switch (i4) {
+                                case 0:
+                                    DisplayArea displayArea = (DisplayArea) obj;
+                                    if (displayArea.asRootDisplayArea() == null || displayArea.mFeatureId != i5) {
+                                        return null;
+                                    }
+                                    return displayArea.asRootDisplayArea();
+                                default:
+                                    TaskDisplayArea taskDisplayArea3 = (TaskDisplayArea) obj;
+                                    if (taskDisplayArea3.mFeatureId == i5) {
+                                        return taskDisplayArea3;
+                                    }
+                                    return null;
+                            }
                         }
                     });
-                    TaskDisplayArea taskDisplayArea = rootDisplayArea == null ? (TaskDisplayArea) displayContent.getItemFromTaskDisplayAreas(new Function() { // from class: com.android.server.wm.DisplayAreaOrganizerController$$ExternalSyntheticLambda2
-                        @Override // java.util.function.Function
-                        public final Object apply(Object obj) {
-                            TaskDisplayArea lambda$createTaskDisplayArea$4;
-                            lambda$createTaskDisplayArea$4 = DisplayAreaOrganizerController.lambda$createTaskDisplayArea$4(i2, (TaskDisplayArea) obj);
-                            return lambda$createTaskDisplayArea$4;
-                        }
-                    }) : null;
+                    if (rootDisplayArea == null) {
+                        final int i4 = 1;
+                        taskDisplayArea = (TaskDisplayArea) displayContent.getItemFromTaskDisplayAreas(new Function() { // from class: com.android.server.wm.DisplayAreaOrganizerController$$ExternalSyntheticLambda1
+                            @Override // java.util.function.Function
+                            public final Object apply(Object obj) {
+                                int i42 = i4;
+                                int i5 = i2;
+                                switch (i42) {
+                                    case 0:
+                                        DisplayArea displayArea = (DisplayArea) obj;
+                                        if (displayArea.asRootDisplayArea() == null || displayArea.mFeatureId != i5) {
+                                            return null;
+                                        }
+                                        return displayArea.asRootDisplayArea();
+                                    default:
+                                        TaskDisplayArea taskDisplayArea3 = (TaskDisplayArea) obj;
+                                        if (taskDisplayArea3.mFeatureId == i5) {
+                                            return taskDisplayArea3;
+                                        }
+                                        return null;
+                                }
+                            }
+                        });
+                    } else {
+                        taskDisplayArea = null;
+                    }
                     if (rootDisplayArea == null && taskDisplayArea == null) {
                         throw new IllegalArgumentException("Can't find a parent DisplayArea with featureId=" + i2);
                     }
-                    int i3 = this.mNextTaskDisplayAreaFeatureId;
-                    this.mNextTaskDisplayAreaFeatureId = i3 + 1;
-                    DisplayAreaOrganizerState displayAreaOrganizerState = new DisplayAreaOrganizerState(iDisplayAreaOrganizer, i3);
+                    int i5 = this.mNextTaskDisplayAreaFeatureId;
+                    this.mNextTaskDisplayAreaFeatureId = i5 + 1;
+                    DisplayAreaOrganizerState displayAreaOrganizerState = new DisplayAreaOrganizerState(iDisplayAreaOrganizer, i5);
                     if (rootDisplayArea != null) {
-                        createTaskDisplayArea = createTaskDisplayArea(rootDisplayArea, str, i3);
+                        taskDisplayArea2 = createTaskDisplayArea(rootDisplayArea, str, i5);
                     } else {
-                        createTaskDisplayArea = createTaskDisplayArea(taskDisplayArea, str, i3);
+                        taskDisplayArea2 = new TaskDisplayArea(taskDisplayArea.mDisplayContent, taskDisplayArea.mWmService, str, i5, true);
+                        taskDisplayArea.addChild(taskDisplayArea2, Integer.MAX_VALUE);
                     }
-                    organizeDisplayArea = organizeDisplayArea(iDisplayAreaOrganizer, createTaskDisplayArea, "DisplayAreaOrganizerController.createTaskDisplayArea");
-                    this.mOrganizersByFeatureIds.put(Integer.valueOf(i3), displayAreaOrganizerState);
+                    taskDisplayArea2.setOrganizer(iDisplayAreaOrganizer, true);
+                    displayAreaAppearedInfo = new DisplayAreaAppearedInfo(taskDisplayArea2.getDisplayAreaInfo(), new SurfaceControl(taskDisplayArea2.getSurfaceControl(), "DisplayAreaOrganizerController.createTaskDisplayArea"));
+                    this.mOrganizersByFeatureIds.put(Integer.valueOf(i5), displayAreaOrganizerState);
                 } catch (Throwable th) {
                     WindowManagerService.resetPriorityAfterLockedSection();
                     throw th;
                 }
             }
             WindowManagerService.resetPriorityAfterLockedSection();
-            return organizeDisplayArea;
+            return displayAreaAppearedInfo;
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public static /* synthetic */ RootDisplayArea lambda$createTaskDisplayArea$3(int i, DisplayArea displayArea) {
-        if (displayArea.asRootDisplayArea() == null || displayArea.mFeatureId != i) {
-            return null;
-        }
-        return displayArea.asRootDisplayArea();
-    }
-
-    public static /* synthetic */ TaskDisplayArea lambda$createTaskDisplayArea$4(int i, TaskDisplayArea taskDisplayArea) {
-        if (taskDisplayArea.mFeatureId == i) {
-            return taskDisplayArea;
-        }
-        return null;
-    }
-
-    public void deleteTaskDisplayArea(WindowContainerToken windowContainerToken) {
-        enforceTaskPermission("deleteTaskDisplayArea()");
+    public final void deleteTaskDisplayArea(WindowContainerToken windowContainerToken) {
+        ActivityTaskManagerService.enforceTaskPermission("deleteTaskDisplayArea()");
         long callingUid = Binder.getCallingUid();
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
@@ -304,8 +252,8 @@ public class DisplayAreaOrganizerController extends IDisplayAreaOrganizerControl
             WindowManagerService.boostPriorityForLockedSection();
             synchronized (windowManagerGlobalLock) {
                 try {
-                    if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-                        ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -597091183, 1, (String) null, new Object[]{Long.valueOf(callingUid)});
+                    if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_ORGANIZER_enabled[1]) {
+                        ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -1659480097203667175L, 1, null, Long.valueOf(callingUid));
                     }
                     WindowContainer fromBinder = WindowContainer.fromBinder(windowContainerToken.asBinder());
                     if (fromBinder == null || fromBinder.asTaskDisplayArea() == null) {
@@ -327,93 +275,71 @@ public class DisplayAreaOrganizerController extends IDisplayAreaOrganizerControl
         }
     }
 
-    public void onDisplayAreaAppeared(IDisplayAreaOrganizer iDisplayAreaOrganizer, DisplayArea displayArea) {
-        if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -1980468143, 0, (String) null, new Object[]{String.valueOf(displayArea.getName())});
-        }
+    public final ParceledListSlice registerOrganizer(IDisplayAreaOrganizer iDisplayAreaOrganizer, int i) {
+        ParceledListSlice parceledListSlice;
+        ActivityTaskManagerService.enforceTaskPermission("registerOrganizer()");
+        long callingUid = Binder.getCallingUid();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            iDisplayAreaOrganizer.onDisplayAreaAppeared(displayArea.getDisplayAreaInfo(), new SurfaceControl(displayArea.getSurfaceControl(), "DisplayAreaOrganizerController.onDisplayAreaAppeared"));
-        } catch (RemoteException unused) {
-        }
-    }
-
-    public void onDisplayAreaVanished(IDisplayAreaOrganizer iDisplayAreaOrganizer, DisplayArea displayArea) {
-        if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 487621047, 0, (String) null, new Object[]{String.valueOf(displayArea.getName())});
-        }
-        if (!iDisplayAreaOrganizer.asBinder().isBinderAlive()) {
-            Slog.d("DisplayAreaOrganizerController", "Organizer died before sending onDisplayAreaVanished");
-        } else {
-            try {
-                iDisplayAreaOrganizer.onDisplayAreaVanished(displayArea.getDisplayAreaInfo());
-            } catch (RemoteException unused) {
+            WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_ORGANIZER_enabled[1]) {
+                        ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 3968604152682328317L, 4, null, String.valueOf(iDisplayAreaOrganizer.asBinder()), Long.valueOf(callingUid));
+                    }
+                    if (this.mOrganizersByFeatureIds.get(Integer.valueOf(i)) != null) {
+                        ((DisplayAreaOrganizerState) this.mOrganizersByFeatureIds.remove(Integer.valueOf(i))).destroy();
+                        Slog.d("DisplayAreaOrganizerController", "Replacing dead organizer for feature=" + i);
+                    }
+                    DisplayAreaOrganizerState displayAreaOrganizerState = new DisplayAreaOrganizerState(iDisplayAreaOrganizer, i);
+                    ArrayList arrayList = new ArrayList();
+                    this.mService.mRootWindowContainer.forAllDisplays(new DisplayAreaOrganizerController$$ExternalSyntheticLambda5(this, i, arrayList, iDisplayAreaOrganizer, 1));
+                    this.mOrganizersByFeatureIds.put(Integer.valueOf(i), displayAreaOrganizerState);
+                    parceledListSlice = new ParceledListSlice(arrayList);
+                } catch (Throwable th) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
             }
+            WindowManagerService.resetPriorityAfterLockedSection();
+            return parceledListSlice;
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public void onDisplayAreaInfoChanged(IDisplayAreaOrganizer iDisplayAreaOrganizer, DisplayArea displayArea) {
-        if (ProtoLogCache.WM_DEBUG_WINDOW_ORGANIZER_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, 174572959, 0, (String) null, new Object[]{String.valueOf(displayArea.getName())});
-        }
+    public final void unregisterOrganizer(final IDisplayAreaOrganizer iDisplayAreaOrganizer) {
+        ActivityTaskManagerService.enforceTaskPermission("unregisterTaskOrganizer()");
+        long callingUid = Binder.getCallingUid();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            iDisplayAreaOrganizer.onDisplayAreaInfoChanged(displayArea.getDisplayAreaInfo());
-        } catch (RemoteException unused) {
-        }
-    }
-
-    public final DisplayAreaAppearedInfo organizeDisplayArea(IDisplayAreaOrganizer iDisplayAreaOrganizer, DisplayArea displayArea, String str) {
-        displayArea.setOrganizer(iDisplayAreaOrganizer, true);
-        return new DisplayAreaAppearedInfo(displayArea.getDisplayAreaInfo(), new SurfaceControl(displayArea.getSurfaceControl(), str));
-    }
-
-    public final TaskDisplayArea createTaskDisplayArea(final RootDisplayArea rootDisplayArea, String str, int i) {
-        TaskDisplayArea taskDisplayArea = new TaskDisplayArea(rootDisplayArea.mDisplayContent, rootDisplayArea.mWmService, str, i, true);
-        DisplayArea displayArea = (DisplayArea) rootDisplayArea.getItemFromDisplayAreas(new Function() { // from class: com.android.server.wm.DisplayAreaOrganizerController$$ExternalSyntheticLambda5
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                DisplayArea lambda$createTaskDisplayArea$5;
-                lambda$createTaskDisplayArea$5 = DisplayAreaOrganizerController.lambda$createTaskDisplayArea$5(RootDisplayArea.this, (DisplayArea) obj);
-                return lambda$createTaskDisplayArea$5;
+            WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
+            WindowManagerService.boostPriorityForLockedSection();
+            synchronized (windowManagerGlobalLock) {
+                try {
+                    if (ProtoLogImpl_54989576.Cache.WM_DEBUG_WINDOW_ORGANIZER_enabled[1]) {
+                        ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_WINDOW_ORGANIZER, -943497726140336963L, 4, null, String.valueOf(iDisplayAreaOrganizer.asBinder()), Long.valueOf(callingUid));
+                    }
+                    this.mOrganizersByFeatureIds.entrySet().removeIf(new Predicate() { // from class: com.android.server.wm.DisplayAreaOrganizerController$$ExternalSyntheticLambda0
+                        @Override // java.util.function.Predicate
+                        public final boolean test(Object obj) {
+                            Map.Entry entry = (Map.Entry) obj;
+                            boolean equals = ((DisplayAreaOrganizerController.DisplayAreaOrganizerState) entry.getValue()).mOrganizer.asBinder().equals(iDisplayAreaOrganizer.asBinder());
+                            if (equals) {
+                                ((DisplayAreaOrganizerController.DisplayAreaOrganizerState) entry.getValue()).destroy();
+                            }
+                            return equals;
+                        }
+                    });
+                } catch (Throwable th) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                    throw th;
+                }
             }
-        });
-        if (displayArea == null) {
-            throw new IllegalStateException("Root must either contain TDA or DAG root=" + rootDisplayArea);
-        }
-        WindowContainer parent = displayArea.getParent();
-        parent.addChild(taskDisplayArea, parent.mChildren.indexOf(displayArea) + 1);
-        return taskDisplayArea;
-    }
-
-    public static /* synthetic */ DisplayArea lambda$createTaskDisplayArea$5(RootDisplayArea rootDisplayArea, DisplayArea displayArea) {
-        if (displayArea.mType != DisplayArea.Type.ANY) {
-            return null;
-        }
-        RootDisplayArea rootDisplayArea2 = displayArea.getRootDisplayArea();
-        if (rootDisplayArea2 == rootDisplayArea || rootDisplayArea2 == displayArea) {
-            return displayArea;
-        }
-        return null;
-    }
-
-    public final TaskDisplayArea createTaskDisplayArea(TaskDisplayArea taskDisplayArea, String str, int i) {
-        TaskDisplayArea taskDisplayArea2 = new TaskDisplayArea(taskDisplayArea.mDisplayContent, taskDisplayArea.mWmService, str, i, true);
-        taskDisplayArea.addChild(taskDisplayArea2, Integer.MAX_VALUE);
-        return taskDisplayArea2;
-    }
-
-    public final void deleteTaskDisplayArea(TaskDisplayArea taskDisplayArea) {
-        taskDisplayArea.setOrganizer(null);
-        this.mService.mRootWindowContainer.mTaskSupervisor.beginDeferResume();
-        try {
-            Task remove = taskDisplayArea.remove();
-            this.mService.mRootWindowContainer.mTaskSupervisor.endDeferResume();
-            taskDisplayArea.removeImmediately();
-            if (remove != null) {
-                remove.resumeNextFocusAfterReparent();
-            }
-        } catch (Throwable th) {
-            this.mService.mRootWindowContainer.mTaskSupervisor.endDeferResume();
-            throw th;
+            WindowManagerService.resetPriorityAfterLockedSection();
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 }

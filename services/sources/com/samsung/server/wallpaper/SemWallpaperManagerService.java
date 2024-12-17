@@ -1,20 +1,21 @@
 package com.samsung.server.wallpaper;
 
+import android.R;
 import android.app.ActivityManager;
 import android.app.HomeVisibilityListener;
-import android.app.IWallpaperManagerCallback;
 import android.app.SemWallpaperColors;
 import android.app.SemWallpaperResourcesInfo;
+import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
@@ -24,19 +25,27 @@ import android.os.FileObserver;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.RemoteException;
+import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Slog;
 import android.view.Display;
 import android.view.DisplayInfo;
-import android.view.WindowManager;
-import com.android.server.audio.AudioService$$ExternalSyntheticLambda0;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
 import com.android.server.wallpaper.WallpaperData;
 import com.android.server.wallpaper.WallpaperManagerService;
+import com.android.server.wallpaper.WallpaperUtils;
+import com.samsung.android.knox.custom.KnoxCustomManagerService;
+import com.samsung.android.knoxguard.service.utils.Constants;
+import com.samsung.android.server.wallpaper.ThumbnailFileManager;
 import com.samsung.android.wallpaper.Rune;
 import com.samsung.android.wallpaper.utils.WhichChecker;
 import com.samsung.server.wallpaper.SemWallpaperManagerService;
@@ -45,78 +54,247 @@ import com.samsung.server.wallpaper.snapshot.SnapshotHelper;
 import com.samsung.server.wallpaper.snapshot.SnapshotManager;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class SemWallpaperManagerService {
+public final class SemWallpaperManagerService {
     public static final boolean SHIPPED = !Debug.semIsProductDev();
     public static final ArrayList sLogList = new ArrayList();
     public static boolean sSnapshotTestMode = false;
-    public CMFWallpaper mCMFWallpaper;
+    public int mAodVisibilityState;
+    public final CMFWallpaper mCMFWallpaper;
     public final WallpaperManagerService.SemCallback mCallback;
     public final Context mContext;
-    public DefaultWallpaper mDefaultWallpaper;
-    public DesktopMode mDesktopMode;
+    public final DefaultWallpaper mDefaultWallpaper;
+    public final ComponentName mDefaultWallpaperComponent;
+    public int mDensityDpi;
+    public final DesktopMode mDesktopMode;
     public final DisplayManager mDisplayManager;
-    public Knox mKnox;
-    public LegibilityColor mLegibilityColor;
-    public LockWallpaper mLockWallpaper;
-    public OMCWallpaper mOMCWallpaper;
+    public final AnonymousClass4 mHandler;
+    public final AnonymousClass3 mHomeVisibilityListener;
+    public final ComponentName mImageWallpaper;
+    public final Knox mKnox;
+    public final LegibilityColor mLegibilityColor;
+    public final PreloadedLiveWallpaperHelper mLiveWallpaperHelper;
+    public final OMCWallpaper mOMCWallpaper;
+    public int mOrientation;
+    public final SemWallpaperResourcesInfo mResourceInfo;
     public final SnapshotCallback mSnapshotCallback;
+    public final Object mSnapshotDataLock;
     public final SnapshotManager mSnapshotManager;
-    public SubDisplayMode mSubDisplayMode;
-    public VirtualDisplayMode mVirtualDisplayMode;
+    public final SubDisplayMode mSubDisplayMode;
+    public final VirtualDisplayMode mVirtualDisplayMode;
     public int mCurrentUserId = -10000;
     public int mOldUserId = -10000;
-    public int mDensityDpi = -1;
-    public int mOrientation = -1;
-    public final ExecutorService mExecutor = Executors.newFixedThreadPool(2);
-    public final Object mSnapshotDataLock = new Object();
-    public HomeVisibilityListener mHomeVisibilityListener = null;
-    public int mAodVisibilityState = 0;
-    public final Handler mHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService.3
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            if (message.what != 1009) {
-                return;
-            }
-            SemWallpaperManagerService.this.mCallback.handleWallpaperBindingTimeout();
-        }
-    };
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.samsung.server.wallpaper.SemWallpaperManagerService$1, reason: invalid class name */
+    public final class AnonymousClass1 {
+        public AnonymousClass1() {
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.samsung.server.wallpaper.SemWallpaperManagerService$3, reason: invalid class name */
+    public final class AnonymousClass3 extends HomeVisibilityListener {
+        public AnonymousClass3() {
+        }
+
+        public final void onHomeVisibilityChanged(final boolean z) {
+            post(new Runnable() { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService$3$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    ComponentName componentName;
+                    SemWallpaperManagerService.AnonymousClass3 anonymousClass3 = SemWallpaperManagerService.AnonymousClass3.this;
+                    boolean z2 = z;
+                    anonymousClass3.getClass();
+                    Log.i("SemWallpaperManagerService", "isHomeActivityVisible : " + z2);
+                    WallpaperManagerService.SemCallback semCallback = SemWallpaperManagerService.this.mCallback;
+                    synchronized (WallpaperManagerService.this.mLock) {
+                        try {
+                            WallpaperManagerService wallpaperManagerService = WallpaperManagerService.this;
+                            WallpaperData peekWallpaperDataLocked = wallpaperManagerService.peekWallpaperDataLocked(wallpaperManagerService.mCurrentUserId, 1);
+                            if (peekWallpaperDataLocked != null) {
+                                WallpaperManagerService.this.mSemService.mLiveWallpaperHelper.getClass();
+                                boolean z3 = false;
+                                if (peekWallpaperDataLocked.mSemWallpaperData.mWpType == 7 && (componentName = peekWallpaperDataLocked.wallpaperComponent) != null) {
+                                    z3 = PreloadedLiveWallpaperHelper.isStockLiveWallpaperComponent(componentName);
+                                }
+                                Log.d("WallpaperManagerService", "dispatchHomeVisibilityChanged: visible = " + z2 + ", connection = " + peekWallpaperDataLocked.connection + ", systemWallpaper = " + peekWallpaperDataLocked);
+                                if (z2) {
+                                    if (z3) {
+                                        WallpaperManagerService.WallpaperConnection wallpaperConnection = peekWallpaperDataLocked.connection;
+                                        if (wallpaperConnection != null) {
+                                            if (wallpaperConnection.mService == null) {
+                                            }
+                                        }
+                                        Log.addLogString("WallpaperManagerService", "dispatchHomeVisibilityChanged, try to rebind");
+                                        WallpaperManagerService.this.bindWallpaperComponentLocked(peekWallpaperDataLocked.wallpaperComponent, true, true, peekWallpaperDataLocked, null, null);
+                                    }
+                                }
+                            } else {
+                                Log.w("WallpaperManagerService", "dispatchHomeVisibilityChanged : rebind failed.");
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SemWallpaperObserver {
+        public final WallpaperManagerService.SemCallback mCallback;
+        public final File mDesktopWallpaperFile;
+        public final File mDesktopWallpaperLockFile;
+        public final AnonymousClass1 mLockWallpaperFileObserver;
+        public final File mSubDisplayWallpaperFile;
+        public final File mSubDisplayWallpaperLockFile;
+        public final File mVirtualDisplayWallpaperFile;
+        public final File mWallpaperDir;
+        public final File mWallpaperFile;
+        public final AnonymousClass1 mWallpaperFileObserver;
+        public final File mWallpaperLockDir;
+        public final File mWallpaperLockFile;
+
+        /* JADX WARN: Type inference failed for: r0v12, types: [com.samsung.server.wallpaper.SemWallpaperManagerService$SemWallpaperObserver$1] */
+        /* JADX WARN: Type inference failed for: r4v2, types: [com.samsung.server.wallpaper.SemWallpaperManagerService$SemWallpaperObserver$1] */
+        public SemWallpaperObserver(File file, File file2, WallpaperManagerService.SemCallback semCallback) {
+            this.mWallpaperFileObserver = null;
+            this.mLockWallpaperFileObserver = null;
+            Log.d("SemWallpaperManagerService", "SemWallpaperObserver");
+            this.mWallpaperDir = file;
+            this.mWallpaperLockDir = file2;
+            this.mWallpaperFile = new File(file, WallpaperUtils.getFileName(5));
+            this.mWallpaperLockFile = new File(file2, WallpaperUtils.getFileName(6));
+            this.mDesktopWallpaperFile = new File(file, WallpaperUtils.getFileName(9));
+            this.mDesktopWallpaperLockFile = new File(file2, WallpaperUtils.getFileName(10));
+            new File(file, WallpaperUtils.getInfoFileName(8));
+            this.mSubDisplayWallpaperFile = new File(file, WallpaperUtils.getFileName(17));
+            this.mSubDisplayWallpaperLockFile = new File(file2, WallpaperUtils.getFileName(18));
+            new File(file, WallpaperUtils.getInfoFileName(16));
+            this.mVirtualDisplayWallpaperFile = new File(file, WallpaperUtils.getFileName(33));
+            new File(file, WallpaperUtils.getInfoFileName(32));
+            final int i = 0;
+            this.mLockWallpaperFileObserver = new FileObserver(this, file2.getAbsolutePath()) { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService.SemWallpaperObserver.1
+                public final /* synthetic */ SemWallpaperObserver this$0;
+
+                {
+                    this.this$0 = this;
+                }
+
+                @Override // android.os.FileObserver
+                public final void onEvent(int i2, String str) {
+                    switch (i) {
+                        case 0:
+                            if (str != null) {
+                                File file3 = new File(this.this$0.mWallpaperLockDir, str);
+                                if (this.this$0.mWallpaperLockFile.equals(file3) || this.this$0.mDesktopWallpaperLockFile.equals(file3) || this.this$0.mSubDisplayWallpaperLockFile.equals(file3)) {
+                                    this.this$0.mCallback.updateEvent(i2, str, file3, false, true);
+                                    break;
+                                }
+                            }
+                            break;
+                        default:
+                            if (str != null) {
+                                File file4 = new File(this.this$0.mWallpaperDir, str);
+                                this.this$0.mCallback.updateEvent(i2, str, file4, this.this$0.mWallpaperFile.equals(file4) || this.this$0.mDesktopWallpaperFile.equals(file4) || this.this$0.mSubDisplayWallpaperFile.equals(file4) || this.this$0.mVirtualDisplayWallpaperFile.equals(file4), false);
+                                break;
+                            }
+                            break;
+                    }
+                }
+            };
+            final int i2 = 1;
+            this.mWallpaperFileObserver = new FileObserver(this, file.getAbsolutePath()) { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService.SemWallpaperObserver.1
+                public final /* synthetic */ SemWallpaperObserver this$0;
+
+                {
+                    this.this$0 = this;
+                }
+
+                @Override // android.os.FileObserver
+                public final void onEvent(int i22, String str) {
+                    switch (i2) {
+                        case 0:
+                            if (str != null) {
+                                File file3 = new File(this.this$0.mWallpaperLockDir, str);
+                                if (this.this$0.mWallpaperLockFile.equals(file3) || this.this$0.mDesktopWallpaperLockFile.equals(file3) || this.this$0.mSubDisplayWallpaperLockFile.equals(file3)) {
+                                    this.this$0.mCallback.updateEvent(i22, str, file3, false, true);
+                                    break;
+                                }
+                            }
+                            break;
+                        default:
+                            if (str != null) {
+                                File file4 = new File(this.this$0.mWallpaperDir, str);
+                                this.this$0.mCallback.updateEvent(i22, str, file4, this.this$0.mWallpaperFile.equals(file4) || this.this$0.mDesktopWallpaperFile.equals(file4) || this.this$0.mSubDisplayWallpaperFile.equals(file4) || this.this$0.mVirtualDisplayWallpaperFile.equals(file4), false);
+                                break;
+                            }
+                            break;
+                    }
+                }
+            };
+            this.mCallback = semCallback;
+        }
+
+        public final AnonymousClass1 getLockWallpaperFileObserver() {
+            Slog.d("SemWallpaperManagerService", "getLockWallpaperFileObserver: mLockWallpaperFileObserver = " + this.mLockWallpaperFileObserver + ", mWallpaperLockDir.getAbsolutePath() = " + this.mWallpaperLockDir.getAbsolutePath());
+            return this.mLockWallpaperFileObserver;
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r1v2, types: [com.samsung.server.wallpaper.SemWallpaperManagerService$4] */
     public SemWallpaperManagerService(Context context, WallpaperManagerService.SemCallback semCallback, SnapshotCallback snapshotCallback, SemWallpaperResourcesInfo semWallpaperResourcesInfo) {
+        this.mDensityDpi = -1;
+        this.mOrientation = -1;
+        ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(2);
         this.mDefaultWallpaper = null;
         this.mCMFWallpaper = null;
         this.mOMCWallpaper = null;
-        this.mLockWallpaper = null;
         this.mDesktopMode = null;
         this.mSubDisplayMode = null;
         this.mVirtualDisplayMode = null;
         this.mLegibilityColor = null;
         this.mKnox = null;
+        this.mSnapshotDataLock = new Object();
+        this.mHomeVisibilityListener = null;
+        this.mAodVisibilityState = 0;
+        this.mHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService.4
+            @Override // android.os.Handler
+            public final void handleMessage(Message message) {
+                if (message.what != 1009) {
+                    return;
+                }
+                SemWallpaperManagerService.this.mCallback.handleWallpaperBindingTimeout();
+            }
+        };
         Log.d("SemWallpaperManagerService", "SemWallpaperManagerService");
         this.mContext = context;
         this.mCallback = semCallback;
         this.mSnapshotCallback = snapshotCallback;
         this.mSnapshotManager = new SnapshotManager(context, snapshotCallback);
+        this.mResourceInfo = semWallpaperResourcesInfo;
         this.mDefaultWallpaper = new DefaultWallpaper(context, semCallback, this, semWallpaperResourcesInfo);
         this.mCMFWallpaper = new CMFWallpaper(context, this, semWallpaperResourcesInfo);
         this.mOMCWallpaper = new OMCWallpaper(context, semCallback, this);
-        this.mLockWallpaper = new LockWallpaper();
+        Log.d("LockWallpaper", "LockWallpaper");
         this.mDesktopMode = new DesktopMode(context, semCallback, this);
         this.mSubDisplayMode = new SubDisplayMode(semCallback);
         this.mLegibilityColor = new LegibilityColor(context, semCallback, this);
@@ -124,218 +302,147 @@ public class SemWallpaperManagerService {
         DisplayManager displayManager = (DisplayManager) context.getSystemService(DisplayManager.class);
         this.mDisplayManager = displayManager;
         this.mVirtualDisplayMode = new VirtualDisplayMode(displayManager);
+        ComponentName unflattenFromString = ComponentName.unflattenFromString(context.getResources().getString(R.string.network_logging_notification_text));
+        this.mImageWallpaper = unflattenFromString;
+        ComponentName cmfDefaultWallpaperComponent = WallpaperManager.getCmfDefaultWallpaperComponent(context);
+        this.mDefaultWallpaperComponent = cmfDefaultWallpaperComponent != null ? cmfDefaultWallpaperComponent : unflattenFromString;
+        AnonymousClass1 anonymousClass1 = new AnonymousClass1();
+        PreloadedLiveWallpaperHelper preloadedLiveWallpaperHelper = new PreloadedLiveWallpaperHelper();
+        preloadedLiveWallpaperHelper.mContext = context;
+        ProviderRequester providerRequester = new ProviderRequester();
+        providerRequester.mContext = context.getApplicationContext();
+        preloadedLiveWallpaperHelper.mProviderRequester = providerRequester;
+        preloadedLiveWallpaperHelper.mCallback = anonymousClass1;
+        this.mLiveWallpaperHelper = preloadedLiveWallpaperHelper;
         Configuration configuration = context.getResources().getConfiguration();
-        setDensityDpi(configuration.densityDpi);
-        setOrientation(configuration.orientation);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.CONFIGURATION_CHANGED");
-        registerUserActivityReceiver();
-        context.registerReceiver(new BroadcastReceiver() { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService.1
+        this.mDensityDpi = configuration.densityDpi;
+        this.mOrientation = configuration.orientation;
+        IntentFilter m = BatteryService$$ExternalSyntheticOutline0.m("android.intent.action.CONFIGURATION_CHANGED");
+        if (this.mHomeVisibilityListener == null) {
+            this.mHomeVisibilityListener = new AnonymousClass3();
+            ((ActivityManager) context.getSystemService("activity")).addHomeVisibilityListener(newFixedThreadPool, this.mHomeVisibilityListener);
+        }
+        context.registerReceiver(new BroadcastReceiver() { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService.2
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
+            public final void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
                 if ("android.intent.action.CONFIGURATION_CHANGED".equals(action)) {
                     Configuration configuration2 = SemWallpaperManagerService.this.mContext.getResources().getConfiguration();
                     int i = configuration2.densityDpi;
                     int i2 = configuration2.orientation;
-                    Log.d("SemWallpaperManagerService", "onReceive: " + action + ", densityDpi=" + SemWallpaperManagerService.this.getDensityDpi() + ", orientation [old=" + SemWallpaperManagerService.this.getOrientation() + ", new=" + i2 + "]");
-                    if (SemWallpaperManagerService.this.getDensityDpi() != i) {
-                        SemWallpaperManagerService.this.setDensityDpi(i);
-                        SemWallpaperManagerService.this.mCallback.updateDisplayData();
+                    StringBuilder m2 = DumpUtils$$ExternalSyntheticOutline0.m("onReceive: ", action, ", densityDpi=");
+                    m2.append(SemWallpaperManagerService.this.mDensityDpi);
+                    m2.append(", orientation [old=");
+                    Log.d("SemWallpaperManagerService", ActivityManagerService$$ExternalSyntheticOutline0.m(SemWallpaperManagerService.this.mOrientation, i2, ", new=", "]", m2));
+                    SemWallpaperManagerService semWallpaperManagerService = SemWallpaperManagerService.this;
+                    if (semWallpaperManagerService.mDensityDpi != i) {
+                        semWallpaperManagerService.mDensityDpi = i;
+                        semWallpaperManagerService.mCallback.updateDisplayData();
                         if (!Rune.SUPPORT_HOME_CONTROLLER) {
-                            SemWallpaperManagerService.this.mLegibilityColor.extractColor(1);
-                            SemWallpaperManagerService.this.mLegibilityColor.extractColor(2);
+                            SemWallpaperManagerService.this.mLegibilityColor.extractColor(1, false);
+                            SemWallpaperManagerService.this.mLegibilityColor.extractColor(2, false);
                         }
                     }
-                    if (SemWallpaperManagerService.this.getOrientation() != i2) {
-                        SemWallpaperManagerService.this.setOrientation(i2);
-                        if (Rune.SUPPORT_COVER_DISPLAY_WATCHFACE && SemWallpaperManagerService.this.mSubDisplayMode.getLidState() == 0) {
-                            SemWallpaperManagerService.this.mCallback.notifySemWallpaperColors(6);
+                    SemWallpaperManagerService semWallpaperManagerService2 = SemWallpaperManagerService.this;
+                    if (semWallpaperManagerService2.mOrientation != i2) {
+                        semWallpaperManagerService2.mOrientation = i2;
+                        if (Rune.SUPPORT_COVER_DISPLAY_WATCHFACE && semWallpaperManagerService2.mSubDisplayMode.mLidState == 0) {
+                            semWallpaperManagerService2.mCallback.notifySemWallpaperColors(6);
                             SemWallpaperManagerService.this.mCallback.notifySemWallpaperColors(5);
-                        } else {
-                            SemWallpaperManagerService.this.mCallback.notifySemWallpaperColors();
+                            return;
+                        }
+                        WallpaperManagerService.SemCallback semCallback2 = semWallpaperManagerService2.mCallback;
+                        synchronized (WallpaperManagerService.this.mLock) {
+                            try {
+                                Log.d("WallpaperManagerService", "orientation is changed, notifySemColorListeners");
+                                SemWallpaperManagerService semWallpaperManagerService3 = WallpaperManagerService.this.mSemService;
+                                if (semWallpaperManagerService3.mLegibilityColor.mAllowScreenRotateSystem) {
+                                    int folderStateBasedWhich = semWallpaperManagerService3.mSubDisplayMode.getFolderStateBasedWhich(1);
+                                    WallpaperManagerService wallpaperManagerService = WallpaperManagerService.this;
+                                    WallpaperData peekWallpaperDataLocked = wallpaperManagerService.peekWallpaperDataLocked(wallpaperManagerService.getCurrentUserId(), folderStateBasedWhich);
+                                    if (peekWallpaperDataLocked != null) {
+                                        WallpaperManagerService.this.notifySemColorListeners(0, peekWallpaperDataLocked);
+                                    }
+                                }
+                                SemWallpaperManagerService semWallpaperManagerService4 = WallpaperManagerService.this.mSemService;
+                                if (semWallpaperManagerService4.mLegibilityColor.mAllowScreenRotateLock) {
+                                    int folderStateBasedWhich2 = semWallpaperManagerService4.mSubDisplayMode.getFolderStateBasedWhich(2);
+                                    WallpaperManagerService wallpaperManagerService2 = WallpaperManagerService.this;
+                                    WallpaperData peekWallpaperDataLocked2 = wallpaperManagerService2.peekWallpaperDataLocked(wallpaperManagerService2.getCurrentUserId(), folderStateBasedWhich2);
+                                    if (peekWallpaperDataLocked2 != null) {
+                                        WallpaperManagerService.this.notifySemColorListeners(0, peekWallpaperDataLocked2);
+                                    }
+                                }
+                            } finally {
+                            }
                         }
                     }
                 }
             }
-        }, intentFilter);
+        }, m);
     }
 
-    public void setAodVisibilityState(int i) {
-        this.mAodVisibilityState = i;
+    public static Bundle buildCustompackParams(int i, Uri uri) {
+        if (uri == null) {
+            return null;
+        }
+        String m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("/data/overlays/homewallpaper/", uri.getHost() + uri.getPath());
+        boolean isSubDisplay = WhichChecker.isSubDisplay(i);
+        boolean isVirtualDisplay = WhichChecker.isVirtualDisplay(i);
+        boolean isWatchFaceDisplay = WhichChecker.isWatchFaceDisplay(i);
+        if (isVirtualDisplay || isWatchFaceDisplay) {
+            isSubDisplay = true;
+        }
+        int i2 = !isSubDisplay ? 0 : 1;
+        boolean booleanQueryParameter = uri.getBooleanQueryParameter("isMigration", false);
+        boolean booleanQueryParameter2 = uri.getBooleanQueryParameter("isCustom", false);
+        Bundle bundle = new Bundle();
+        String str = booleanQueryParameter2 ? "USER.PACK." : "MULTI.PACK.";
+        bundle.putString("name", i2 != 0 ? str.concat("02") : str.concat(Constants.OTP_BIT_KG_ENABLED));
+        bundle.putString("wallpaper_path", m);
+        bundle.putInt(KnoxCustomManagerService.SCREEN, i2);
+        bundle.putInt("isMigration", booleanQueryParameter ? 1 : 0);
+        return bundle;
     }
 
-    public int getAodVisibilityState() {
-        return this.mAodVisibilityState;
-    }
-
-    /* renamed from: com.samsung.server.wallpaper.SemWallpaperManagerService$2, reason: invalid class name */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass2 extends HomeVisibilityListener {
-        public AnonymousClass2() {
-        }
-
-        public void onHomeVisibilityChanged(final boolean z) {
-            SemWallpaperManagerService.this.mHandler.post(new Runnable() { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService$2$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    SemWallpaperManagerService.AnonymousClass2.this.lambda$onHomeVisibilityChanged$0(z);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onHomeVisibilityChanged$0(boolean z) {
-            Log.i("SemWallpaperManagerService", "isHomeActivityVisible : " + z);
-            SemWallpaperManagerService.this.mCallback.dispatchHomeVisibilityChanged(z);
-        }
-    }
-
-    public final void registerUserActivityReceiver() {
-        if (this.mHomeVisibilityListener == null) {
-            this.mHomeVisibilityListener = new AnonymousClass2();
-            ((ActivityManager) this.mContext.getSystemService("activity")).addHomeVisibilityListener(this.mExecutor, this.mHomeVisibilityListener);
-        }
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        printWriter.println("SemWallpaperManagerService start");
-        printWriter.println("  Orientation:" + getOrientation());
-        printWriter.println(" Legibility Version:" + SemWallpaperColors.getLegibilityVersion());
-        printWriter.println("  allowScreenRotate:" + this.mLegibilityColor.getAllowScreenRotateSystem() + ", " + this.mLegibilityColor.getAllowScreenRotateLock());
-        if (Rune.SUPPORT_SUB_DISPLAY_MODE) {
-            printWriter.println(" Lid state:" + this.mSubDisplayMode.getLidState());
-        }
-        printWriter.println(" ------------ Snapshot History ------------");
-        this.mSnapshotManager.dump(fileDescriptor, printWriter, strArr);
-        String[] logArray = getLogArray();
-        printWriter.println(" --------------LogArray--------------");
-        if (logArray != null) {
-            int length = logArray.length;
-            for (int i = 0; i < length; i++) {
-                printWriter.println("  #" + i + " " + logArray[i]);
+    public static String convertStreamToString(InputStream inputStream) {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        StringBuilder sb = new StringBuilder();
+        Boolean bool = Boolean.TRUE;
+        while (true) {
+            String readLine = bufferedReader.readLine();
+            if (readLine == null) {
+                bufferedReader.close();
+                return sb.toString();
             }
-        } else {
-            printWriter.println("  logArray is null");
+            if (bool.booleanValue()) {
+                sb.append(readLine);
+                bool = Boolean.FALSE;
+            } else {
+                sb.append("\n");
+                sb.append(readLine);
+            }
         }
-        Log.dump("SemWallpaperManagerService", fileDescriptor, printWriter, strArr);
-        printWriter.println("SemWallpaperManagerService end");
     }
 
-    public void setCurrentUserId(int i) {
-        this.mCurrentUserId = i;
-    }
-
-    public int getCurrentUserId() {
-        return this.mCurrentUserId;
-    }
-
-    public DisplayInfo getDisplayInfo() {
-        WindowManager windowManager = (WindowManager) this.mContext.getSystemService("window");
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        Display defaultDisplay = windowManager.getDefaultDisplay();
-        defaultDisplay.getMetrics(displayMetrics);
-        DisplayInfo displayInfo = new DisplayInfo();
-        defaultDisplay.getDisplayInfo(displayInfo);
-        return displayInfo;
-    }
-
-    public void setOldUserId(int i) {
-        this.mOldUserId = i;
-    }
-
-    public int getOldUserId() {
-        return this.mOldUserId;
-    }
-
-    public void setDensityDpi(int i) {
-        this.mDensityDpi = i;
-    }
-
-    public int getDensityDpi() {
-        return this.mDensityDpi;
-    }
-
-    public void setOrientation(int i) {
-        this.mOrientation = i;
-    }
-
-    public int getOrientation() {
-        return this.mOrientation;
-    }
-
-    public static String getFileName(int i, int i2, int i3) {
-        return WhichChecker.isDex(i) ? i2 == 2 ? "wallpaper_desktop_info.xml" : i2 == 1 ? i3 == 1 ? "wallpaper_desktop_lock" : "wallpaper_desktop_lock_orig" : i3 == 1 ? "wallpaper_desktop" : "wallpaper_desktop_orig" : WhichChecker.isSubDisplay(i) ? i2 == 2 ? "wallpaper_subdisplay_info.xml" : i2 == 1 ? i3 == 1 ? "wallpaper_sub_display_lock" : "wallpaper_sub_display_lock_orig" : i3 == 1 ? "wallpaper_sub_display" : "wallpaper_sub_display_orig" : WhichChecker.isVirtualDisplay(i) ? i2 == 2 ? "wallpaper_virtualdisplay_info.xml" : i3 == 1 ? "wallpaper_virtual_display" : "wallpaper_virtual_display_orig" : i2 == 2 ? "wallpaper_info.xml" : i2 == 1 ? i3 == 1 ? "wallpaper_lock" : "wallpaper_lock_orig" : i3 == 1 ? "wallpaper" : "wallpaper_orig";
-    }
-
-    /* loaded from: classes2.dex */
-    public class SemWallpaperObserver {
-        public WallpaperManagerService.SemCallback mCallback;
-        public final File mDesktopWallpaperFile;
-        public final File mDesktopWallpaperInfoFile;
-        public final File mDesktopWallpaperLockFile;
-        public FileObserver mLockWallpaperFileObserver;
-        public final File mSubDisplayWallpaperFile;
-        public final File mSubDisplayWallpaperInfoFile;
-        public final File mSubDisplayWallpaperLockFile;
-        public final File mVirtualDisplayWallpaperFile;
-        public final File mVirtualDisplayWallpaperInfoFile;
-        public final File mWallpaperDir;
-        public final File mWallpaperFile;
-        public FileObserver mWallpaperFileObserver;
-        public final File mWallpaperLockDir;
-        public final File mWallpaperLockFile;
-
-        public SemWallpaperObserver(File file, File file2, WallpaperManagerService.SemCallback semCallback) {
-            this.mWallpaperFileObserver = null;
-            this.mLockWallpaperFileObserver = null;
-            Log.d("SemWallpaperManagerService", "SemWallpaperObserver");
-            this.mWallpaperDir = file;
-            this.mWallpaperFile = new File(file, "wallpaper_orig");
-            this.mWallpaperLockDir = file2;
-            this.mWallpaperLockFile = new File(file2, "wallpaper_lock_orig");
-            this.mDesktopWallpaperFile = new File(file, "wallpaper_desktop_orig");
-            this.mDesktopWallpaperLockFile = new File(file2, "wallpaper_desktop_lock_orig");
-            this.mDesktopWallpaperInfoFile = new File(file, "wallpaper_desktop_info.xml");
-            this.mSubDisplayWallpaperFile = new File(file, "wallpaper_sub_display_orig");
-            this.mSubDisplayWallpaperLockFile = new File(file2, "wallpaper_sub_display_lock_orig");
-            this.mSubDisplayWallpaperInfoFile = new File(file, "wallpaper_subdisplay_info.xml");
-            this.mVirtualDisplayWallpaperFile = new File(file, "wallpaper_virtual_display_orig");
-            this.mVirtualDisplayWallpaperInfoFile = new File(file, "wallpaper_virtualdisplay_info.xml");
-            int i = 1672;
-            this.mLockWallpaperFileObserver = new FileObserver(file2.getAbsolutePath(), i) { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService.SemWallpaperObserver.1
-                @Override // android.os.FileObserver
-                public void onEvent(int i2, String str) {
-                    if (str == null) {
-                        return;
-                    }
-                    File file3 = new File(SemWallpaperObserver.this.mWallpaperLockDir, str);
-                    if (SemWallpaperObserver.this.mWallpaperLockFile.equals(file3) || SemWallpaperObserver.this.mDesktopWallpaperLockFile.equals(file3) || SemWallpaperObserver.this.mSubDisplayWallpaperLockFile.equals(file3)) {
-                        SemWallpaperObserver.this.mCallback.updateEvent(i2, str, file3, false, true);
-                    }
-                }
-            };
-            this.mWallpaperFileObserver = new FileObserver(file.getAbsolutePath(), i) { // from class: com.samsung.server.wallpaper.SemWallpaperManagerService.SemWallpaperObserver.2
-                @Override // android.os.FileObserver
-                public void onEvent(int i2, String str) {
-                    if (str == null) {
-                        return;
-                    }
-                    File file3 = new File(SemWallpaperObserver.this.mWallpaperDir, str);
-                    SemWallpaperObserver.this.mCallback.updateEvent(i2, str, file3, SemWallpaperObserver.this.mWallpaperFile.equals(file3) || SemWallpaperObserver.this.mDesktopWallpaperFile.equals(file3) || SemWallpaperObserver.this.mSubDisplayWallpaperFile.equals(file3) || SemWallpaperObserver.this.mVirtualDisplayWallpaperFile.equals(file3), false);
-                }
-            };
-            this.mCallback = semCallback;
+    public static String getCallStackString() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        int length = stackTrace.length;
+        int i = 2;
+        for (int i2 = 0; i2 < stackTrace.length; i2++) {
+            if (stackTrace[i2].getMethodName().equals("getCallStackString")) {
+                i = i2 + 1;
+            }
         }
-
-        public FileObserver getWallpaperFileObserver() {
-            return this.mWallpaperFileObserver;
+        if (stackTrace.length - i < 3) {
+            length = stackTrace.length - i;
         }
-
-        public FileObserver getLockWallpaperFileObserver() {
-            Slog.d("SemWallpaperManagerService", "getLockWallpaperFileObserver: mLockWallpaperFileObserver = " + this.mLockWallpaperFileObserver + ", mWallpaperLockDir.getAbsolutePath() = " + this.mWallpaperLockDir.getAbsolutePath());
-            return this.mLockWallpaperFileObserver;
+        String str = "";
+        for (int i3 = i; i3 < i + length && i3 < stackTrace.length; i3++) {
+            StackTraceElement stackTraceElement = stackTrace[i3];
+            str = stackTraceElement.getClassName() + "(line " + stackTraceElement.getLineNumber() + ") :" + (i3 == i ? stackTraceElement.getMethodName() : stackTraceElement.getMethodName() + " -> \n" + str);
         }
+        return str.length() > 0 ? XmlUtils$$ExternalSyntheticOutline0.m("(", str, ") ") : "";
     }
 
     public static String getStringFromFile(String str) {
@@ -355,192 +462,250 @@ public class SemWallpaperManagerService {
         }
     }
 
-    public static String convertStreamToString(InputStream inputStream) {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-        StringBuilder sb = new StringBuilder();
-        Boolean bool = Boolean.TRUE;
-        while (true) {
-            String readLine = bufferedReader.readLine();
-            if (readLine != null) {
-                if (bool.booleanValue()) {
-                    sb.append(readLine);
-                    bool = Boolean.FALSE;
-                } else {
-                    sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                    sb.append(readLine);
-                }
-            } else {
-                bufferedReader.close();
-                return sb.toString();
-            }
-        }
-    }
-
-    public static String getCallStackString() {
-        return getCallStackString(-1, true);
-    }
-
-    public static String getCallStackString(int i, boolean z) {
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (i < 0) {
-            i = stackTrace.length;
-        }
-        int i2 = 2;
-        for (int i3 = 0; i3 < stackTrace.length; i3++) {
-            if (stackTrace[i3].getMethodName().equals("getCallStackString")) {
-                i2 = i3 + 1;
-            }
-        }
-        if (stackTrace.length - i2 < 3) {
-            i = stackTrace.length - i2;
-        }
-        String str = "";
-        for (int i4 = i2; i4 < i2 + i && i4 < stackTrace.length; i4++) {
-            StackTraceElement stackTraceElement = stackTrace[i4];
-            if (i4 == i2) {
-                str = stackTraceElement.getMethodName();
-            } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append(stackTraceElement.getMethodName());
-                sb.append(" -> ");
-                sb.append(z ? KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE : "");
-                sb.append(str);
-                str = sb.toString();
-            }
-            if (z) {
-                str = stackTraceElement.getClassName() + "(line " + stackTraceElement.getLineNumber() + ") :" + str;
-            }
-        }
-        if (str.length() <= 0) {
-            return "";
-        }
-        return "(" + str + ") ";
-    }
-
-    public void removeOriginalSavedFile(String str, int i) {
-        if (str.equals("com.android.systemui") || str.equals("com.samsung.android.app.dressroom")) {
+    public static void initializeThumnailFile(int i, int i2, int i3, WallpaperData wallpaperData) {
+        SemWallpaperData semWallpaperData = wallpaperData.mSemWallpaperData;
+        if (semWallpaperData == null) {
+            Log.d("SemWallpaperManagerService", "initializeThumnailFile: SemWallpaperData is null.");
             return;
         }
-        Intent intent = new Intent();
-        intent.setAction("com.samsung.android.intent.action.REQUEST_DELETE_WALLPAPER");
-        intent.setPackage("com.android.systemui");
-        intent.putExtra("WHICH", i);
-        this.mContext.sendBroadcast(intent);
-    }
-
-    public boolean hasLockscreenWallpaper(boolean z) {
-        if (z) {
-            ContentResolver contentResolver = this.mContext.getContentResolver();
-            int i = this.mCurrentUserId;
-            if (i <= 0) {
-                i = 0;
+        boolean isLock = WhichChecker.isLock(i);
+        if (i2 == 8 && semWallpaperData.mVideoFirstFrameFile == null) {
+            if (WhichChecker.isVirtualDisplay(i)) {
+                semWallpaperData.mVideoFirstFrameFile = new File(isLock ? WallpaperUtils.getWallpaperLockDir(i3) : Environment.getUserSystemDirectory(i3), isLock ? "wallpaper_first_virtual" : "wallpaper_first_virtual_home");
+            } else if (WhichChecker.isSubDisplay(i)) {
+                semWallpaperData.mVideoFirstFrameFile = new File(isLock ? WallpaperUtils.getWallpaperLockDir(i3) : Environment.getUserSystemDirectory(i3), isLock ? "wallpaper_first_sub" : "wallpaper_first_sub_home");
+            } else {
+                semWallpaperData.mVideoFirstFrameFile = new File(isLock ? WallpaperUtils.getWallpaperLockDir(i3) : Environment.getUserSystemDirectory(i3), isLock ? "wallpaper_first" : "wallpaper_first_home");
             }
-            return Settings.System.getIntForUser(contentResolver, "lockscreen_wallpaper_sub", 1, i) != 0;
         }
-        ContentResolver contentResolver2 = this.mContext.getContentResolver();
-        int i2 = this.mCurrentUserId;
-        if (i2 <= 0) {
-            i2 = 0;
+        if (i2 == 4 && isLock && semWallpaperData.mAnimatedBackground == null) {
+            if (WhichChecker.isSubDisplay(i)) {
+                semWallpaperData.mAnimatedBackground = new File(WallpaperUtils.getWallpaperLockDir(i3), "wallpaper_animated_background_sub");
+            } else {
+                semWallpaperData.mAnimatedBackground = new File(WallpaperUtils.getWallpaperLockDir(i3), "wallpaper_animated_background");
+            }
         }
-        return Settings.System.getIntForUser(contentResolver2, "lockscreen_wallpaper", 1, i2) != 0;
-    }
-
-    public boolean isSupportingMode(int i) {
-        return WhichChecker.getMode(i) != 16 || Rune.SUPPORT_SUB_DISPLAY_MODE;
-    }
-
-    public Bitmap getPreloadRotatedCroppedBitmap(File file, SemWallpaperData semWallpaperData) {
-        return generateResizedBitmap(file, semWallpaperData, true);
-    }
-
-    public void generateResizedBitmap(File file, SemWallpaperData semWallpaperData) {
-        Bitmap generateResizedBitmap = generateResizedBitmap(file, semWallpaperData, false);
-        if (generateResizedBitmap != null) {
-            semWallpaperData.setCroppedBitmap(generateResizedBitmap);
+        if (i2 == 1 && isLock && semWallpaperData.mMotionBackground == null) {
+            if (WhichChecker.isSubDisplay(i)) {
+                semWallpaperData.mMotionBackground = new File(WallpaperUtils.getWallpaperLockDir(i3), "wallpaper_motion_background_sub");
+            } else {
+                semWallpaperData.mMotionBackground = new File(WallpaperUtils.getWallpaperLockDir(i3), "wallpaper_motion_background");
+            }
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:28:0x012c  */
-    /* JADX WARN: Removed duplicated region for block: B:30:0x0132  */
+    public static boolean isSupportingMode(int i) {
+        int mode = WhichChecker.getMode(i);
+        int type = WhichChecker.getType(i);
+        if (mode != 16) {
+            return true;
+        }
+        if (Rune.SUPPORT_SUB_DISPLAY_MODE) {
+            return (Rune.SUPPORT_COVER_DISPLAY_WATCHFACE && type == 2) ? false : true;
+        }
+        return false;
+    }
+
+    public static void putLog(String str) {
+        Log.d("SemWallpaperManagerService", str);
+        ArrayList arrayList = sLogList;
+        synchronized (arrayList) {
+            try {
+                long currentTimeMillis = System.currentTimeMillis();
+                arrayList.add((SimpleDateFormat.getDateTimeInstance().format(new Date(currentTimeMillis)) + "." + (currentTimeMillis % 1000)) + "\n" + str);
+                if (arrayList.size() > 20) {
+                    arrayList.remove(0);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final Bundle buildParams(int i, int i2, int i3) {
+        WallpaperData onWallpaperDataRequested = this.mCallback.onWallpaperDataRequested(i, i2);
+        if (i3 == 3) {
+            return buildCustompackParams(onWallpaperDataRequested.mWhich, Uri.parse(onWallpaperDataRequested.mSemWallpaperData.mUri));
+        }
+        if (i3 != 1000) {
+            StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "buildParams: userId = ", ", which = ", ", type = ");
+            m.append(i3);
+            Log.d("SemWallpaperManagerService", m.toString());
+            return null;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("flag", true);
+        String str = onWallpaperDataRequested.mSemWallpaperData.mUri;
+        if (!TextUtils.isEmpty(str)) {
+            bundle.putString("type", str.substring(str.lastIndexOf("/") + 1));
+        }
+        bundle.putInt(KnoxCustomManagerService.SCREEN, WhichChecker.isSubDisplay(onWallpaperDataRequested.mWhich) ? 1 : 0);
+        return bundle;
+    }
+
+    public final void connectSnapshotForLiveWallpaper(int i, int i2, ArrayList arrayList) {
+        int correspondingWhich;
+        SnapshotManager.SnapshotData snapshotData;
+        SnapshotManager.SnapshotData snapshotData2;
+        int correspondingWhich2;
+        boolean z = false;
+        if (arrayList.size() > 0 && (correspondingWhich2 = SnapshotHelper.getCorrespondingWhich(i)) > 0) {
+            Log.d("SemWallpaperManagerService", "shouldCheckCorrespondingWhichForLiveWallpaper: Check existance of correspondingWhich [" + correspondingWhich2 + "]");
+            z = arrayList.contains(Integer.valueOf(correspondingWhich2)) ^ true;
+        }
+        if (!z || (correspondingWhich = SnapshotHelper.getCorrespondingWhich(i)) <= 0 || getSnapshotCount(correspondingWhich) <= 0) {
+            return;
+        }
+        int i3 = this.mCurrentUserId;
+        SnapshotManager snapshotManager = this.mSnapshotManager;
+        Iterator it = snapshotManager.getRepositroy(i3).getAll().iterator();
+        while (true) {
+            snapshotData = null;
+            if (!it.hasNext()) {
+                snapshotData2 = null;
+                break;
+            } else {
+                snapshotData2 = (SnapshotManager.SnapshotData) it.next();
+                if (snapshotData2.hasWallpaperData(correspondingWhich)) {
+                    break;
+                }
+            }
+        }
+        if (snapshotData2 == null || snapshotData2.getWallpaperData(correspondingWhich) == null || snapshotData2.hasWallpaperData(i) || !WhichChecker.isSystemAndLock(snapshotData2.getWallpaperData(correspondingWhich).mWhich)) {
+            return;
+        }
+        SnapshotManager.SnapshotRepository repositroy = snapshotManager.getRepositroy(this.mCurrentUserId);
+        LinkedList linkedList = repositroy.mSnapshots;
+        if (linkedList != null && linkedList.size() > 0) {
+            snapshotData = (SnapshotManager.SnapshotData) repositroy.mSnapshots.getFirst();
+        }
+        if (snapshotData2.getConnectedSnapshotForLiveWallpaper(correspondingWhich) == -1) {
+            snapshotData.setConnectedSnapshotForLiveWallpaper(i, snapshotData2.key);
+            snapshotData2.setConnectedSnapshotForLiveWallpaper(correspondingWhich, i2);
+        }
+    }
+
+    public final void deleteThumbnailFile(int i, int i2) {
+        ThumbnailFileManager.getInstance().deleteThumbnailFiles(getModeEnsuredWhich(i), i2);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x004c, code lost:
+    
+        r7 = r9.mSnapshotDataLock;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x004e, code lost:
+    
+        monitor-enter(r7);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x004f, code lost:
+    
+        r9.mSnapshotManager.migrateToPriorSnapshot(r10, r11, r4);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0054, code lost:
+    
+        monitor-exit(r7);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x0055, code lost:
+    
+        r0.put(r3, 1004);
+     */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final android.graphics.Bitmap generateResizedBitmap(java.io.File r13, com.samsung.server.wallpaper.SemWallpaperData r14, boolean r15) {
+    public final java.util.Map doRestoreOrMigrate(int r10, int r11) {
         /*
-            Method dump skipped, instructions count: 646
-            To view this dump change 'Code comments level' option to 'DEBUG'
+            r9 = this;
+            java.util.HashMap r0 = new java.util.HashMap
+            r0.<init>()
+            java.lang.Object r1 = r9.mSnapshotDataLock
+            monitor-enter(r1)
+            com.samsung.server.wallpaper.snapshot.SnapshotManager r2 = r9.mSnapshotManager     // Catch: java.lang.Throwable -> L78
+            com.samsung.server.wallpaper.snapshot.SnapshotManager$SnapshotData r2 = r2.getSnapshot(r10, r11)     // Catch: java.lang.Throwable -> L78
+            monitor-exit(r1)     // Catch: java.lang.Throwable -> L78
+            if (r2 == 0) goto L77
+            java.util.ArrayList r1 = r2.getWhiches()
+            java.util.Iterator r1 = r1.iterator()
+        L19:
+            boolean r3 = r1.hasNext()
+            if (r3 == 0) goto L77
+            java.lang.Object r3 = r1.next()
+            java.lang.Integer r3 = (java.lang.Integer) r3
+            int r4 = r3.intValue()
+            com.samsung.server.wallpaper.snapshot.SnapshotManager r5 = r9.mSnapshotManager
+            com.samsung.server.wallpaper.snapshot.SnapshotManager$SnapshotRepository r5 = r5.getRepositroy(r10)
+            int r6 = r5.getIndex(r11)
+            int r6 = r6 + (-1)
+        L35:
+            if (r6 < 0) goto L65
+            com.samsung.server.wallpaper.snapshot.SnapshotManager$SnapshotData r7 = r5.getByIndex(r6)
+            if (r7 != 0) goto L46
+            java.lang.String r7 = "SnapshotManager"
+            java.lang.String r8 = "shouldRestoreSnapshot: Something wrong!"
+            com.samsung.server.wallpaper.Log.e(r7, r8)
+            goto L62
+        L46:
+            boolean r7 = r7.hasWallpaperData(r4)
+            if (r7 == 0) goto L62
+            java.lang.Object r7 = r9.mSnapshotDataLock
+            monitor-enter(r7)
+            com.samsung.server.wallpaper.snapshot.SnapshotManager r5 = r9.mSnapshotManager     // Catch: java.lang.Throwable -> L5f
+            r5.migrateToPriorSnapshot(r10, r11, r4)     // Catch: java.lang.Throwable -> L5f
+            monitor-exit(r7)     // Catch: java.lang.Throwable -> L5f
+            r4 = 1004(0x3ec, float:1.407E-42)
+            java.lang.Integer r4 = java.lang.Integer.valueOf(r4)
+            r0.put(r3, r4)
+            goto L19
+        L5f:
+            r9 = move-exception
+            monitor-exit(r7)     // Catch: java.lang.Throwable -> L5f
+            throw r9
+        L62:
+            int r6 = r6 + (-1)
+            goto L35
+        L65:
+            r9.deleteThumbnailFile(r4, r10)
+            int r5 = r9.restoreSnapshotInternal(r10, r4, r2)
+            r9.postProcess(r10, r4, r2, r5)
+            java.lang.Integer r4 = java.lang.Integer.valueOf(r5)
+            r0.put(r3, r4)
+            goto L19
+        L77:
+            return r0
+        L78:
+            r9 = move-exception
+            monitor-exit(r1)     // Catch: java.lang.Throwable -> L78
+            throw r9
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.server.wallpaper.SemWallpaperManagerService.generateResizedBitmap(java.io.File, com.samsung.server.wallpaper.SemWallpaperData, boolean):android.graphics.Bitmap");
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.server.wallpaper.SemWallpaperManagerService.doRestoreOrMigrate(int, int):java.util.Map");
     }
 
-    public boolean generateCroppedBitmap(SemWallpaperData semWallpaperData, String str) {
-        Bitmap decodeFile;
-        int i;
-        Uri parse = Uri.parse(semWallpaperData.getUri());
-        if (parse == null) {
-            return false;
-        }
-        File file = new File(parse.getPath());
-        if (!file.exists() || (decodeFile = BitmapFactory.decodeFile(file.getAbsolutePath())) == null) {
-            return false;
-        }
-        int width = decodeFile.getWidth();
-        int height = decodeFile.getHeight();
-        if (width <= 0 || height <= 0) {
-            Log.d("SemWallpaperManagerService", "generateCroppedBitmap: bitmap size must be > 0");
-            return false;
-        }
-        if (!"com.samsung.android.themecenter".equals(str)) {
-            semWallpaperData.setCroppedBitmap(decodeFile);
-            return true;
-        }
-        int displayId = getDisplayId(semWallpaperData);
-        DisplayInfo displayInfo = new DisplayInfo();
-        this.mDisplayManager.getDisplay(displayId).getDisplayInfo(displayInfo);
-        int i2 = displayInfo.logicalWidth;
-        if (i2 == 0 || (i = displayInfo.logicalHeight) == 0) {
-            semWallpaperData.setCroppedBitmap(decodeFile);
-            return true;
-        }
-        Point[] croppedBitmapInfo = getCroppedBitmapInfo(width, height, i2, i);
-        Point point = croppedBitmapInfo[0];
-        int i3 = point.x;
-        int i4 = point.y;
-        Point point2 = croppedBitmapInfo[1];
-        int i5 = point2.x;
-        int i6 = point2.y;
-        if (i5 < 0) {
-            i5 = 0;
-        }
-        int i7 = i6 >= 0 ? i6 : 0;
-        Log.d("SemWallpaperManagerService", "generateCroppedBitmap:\n\tbitmapWidth = " + width + "\n\tbitmapHeight = " + height + "\n\tfinalWidth = " + i3 + "\n\tfinalHeight = " + i4 + "\n\toptimalDx = " + i5 + "\n\toptimalDy = " + i7);
-        if (i3 <= 0 || i4 <= 0) {
-            Log.v("SemWallpaperManagerService", "generateCroppedBitmap: Width or height of newly generated bitmap should be greater than 0.");
-            Log.addLogString("SemWallpaperManagerService", "generateResizedBitmap: Width or height of newly generated bitmap should be greater than 0.");
-            semWallpaperData.setCroppedBitmap(decodeFile);
-            return true;
-        }
-        Bitmap createBitmap = Bitmap.createBitmap(decodeFile, i5, i7, i3, i4);
-        semWallpaperData.setCroppedBitmap(createBitmap);
-        if (!decodeFile.equals(createBitmap)) {
-            decodeFile.recycle();
-        }
-        return true;
+    public final int getCurrentImplicitMode() {
+        return WhichChecker.determineMode(this.mSubDisplayMode.mLidState == 0);
     }
 
-    public int getDisplayId(SemWallpaperData semWallpaperData) {
-        return getDisplayId(semWallpaperData.getWhich());
+    public final ComponentName getDefaultPreloadedLiveWallpaperComponentName(int i) {
+        ComponentName defaultLiveWallpaperComponentName = this.mResourceInfo.getDefaultLiveWallpaperComponentName(i);
+        if (defaultLiveWallpaperComponentName == null) {
+            return defaultLiveWallpaperComponentName;
+        }
+        try {
+            this.mContext.getPackageManager().getPackageInfo(defaultLiveWallpaperComponentName.getPackageName(), 786432);
+            return defaultLiveWallpaperComponentName;
+        } catch (PackageManager.NameNotFoundException unused) {
+            return null;
+        }
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
-    public int getDisplayId(int i) {
+    public final int getDefaultWallpaperType(int i) {
+        return this.mResourceInfo.getDefaultWallpaperType(i, this.mCMFWallpaper.getDeviceColor());
+    }
+
+    public final int getDisplayId(int i) {
+        if (this.mDesktopMode.isDesktopDualMode() && (i & 60) == 8) {
+            return 2;
+        }
         int i2 = 0;
-        if (this.mDesktopMode.isDesktopDualMode()) {
-            if (((i & 60) == 8) != false) {
-                return 2;
-            }
-        }
         if (!Rune.SUPPORT_SUB_DISPLAY_MODE) {
             return 0;
         }
@@ -551,8 +716,8 @@ public class SemWallpaperManagerService {
             DisplayInfo displayInfo = new DisplayInfo();
             for (Display display : this.mDisplayManager.getDisplays("com.samsung.android.hardware.display.category.BUILTIN")) {
                 if (display != null && display.getDisplayInfo(displayInfo)) {
-                    byte b = (displayInfo.flags & 262144) != 0;
-                    if ((isSubDisplay && b != false) || (!isSubDisplay && b == false)) {
+                    boolean z = (displayInfo.flags & 262144) != 0;
+                    if ((isSubDisplay && z) || (!isSubDisplay && !z)) {
                         i2 = displayInfo.displayId;
                         break;
                     }
@@ -565,708 +730,170 @@ public class SemWallpaperManagerService {
         return i2;
     }
 
-    public final Point[] getCroppedBitmapInfo(int i, int i2, int i3, int i4) {
-        int i5;
-        int i6;
-        int i7;
-        Point[] pointArr = new Point[2];
-        Log.d("SemWallpaperManagerService", "getCroppedBitmapInfo: start, optimalWidth = " + i + ", optimalHeight = " + i2 + ", deviceWidth = " + i3 + ", deviceHeight = " + i4);
-        float f = ((float) i4) / ((float) i3);
-        if (i <= 0 || i2 <= 0) {
-            i = 0;
-            i5 = 0;
-            i6 = 0;
-            i7 = 0;
-        } else if (f > i2 / i) {
-            int i8 = (i3 * i2) / i4;
-            i7 = i2;
-            i5 = (int) ((i - i8) * 0.5d);
-            i = i8;
-            i6 = 0;
-        } else {
-            i7 = (i4 * i) / i3;
-            i6 = (int) ((i2 - i7) * 0.5d);
-            i5 = 0;
-        }
-        pointArr[0] = new Point(i, i7);
-        pointArr[1] = new Point(i5, i6);
-        Log.d("SemWallpaperManagerService", "getCroppedBitmapInfo: end width = " + i + ", height = " + i7 + ", dx = " + i5 + " , dy = " + i6);
-        return pointArr;
-    }
-
-    public void handleWallpaperBindingTimeout(boolean z, boolean z2) {
-        if (z) {
-            this.mHandler.removeMessages(1009);
-        }
-        if (z2) {
-            this.mHandler.sendEmptyMessageDelayed(1009, 2000L);
-        }
-    }
-
-    public File initializeThumnailFile(WallpaperData wallpaperData, int i, int i2, int i3) {
-        SemWallpaperData semWallpaperData = wallpaperData.getSemWallpaperData();
-        File file = null;
-        if (semWallpaperData == null) {
-            Log.d("SemWallpaperManagerService", "initializeThumnailFile: SemWallpaperData is null.");
-            return null;
-        }
-        boolean isLock = WhichChecker.isLock(i);
-        if (i2 == 8 && (file = semWallpaperData.getVideoFirstFrameFile()) == null) {
-            if (WhichChecker.isVirtualDisplay(i)) {
-                semWallpaperData.setVideoFirstFrameFile(new File(isLock ? getWallpaperLockDir(i3) : getWallpaperDir(i3), isLock ? "wallpaper_first_virtual" : "wallpaper_first_virtual_home"));
-            } else if (WhichChecker.isSubDisplay(i)) {
-                semWallpaperData.setVideoFirstFrameFile(new File(isLock ? getWallpaperLockDir(i3) : getWallpaperDir(i3), isLock ? "wallpaper_first_sub" : "wallpaper_first_sub_home"));
-            } else {
-                semWallpaperData.setVideoFirstFrameFile(new File(isLock ? getWallpaperLockDir(i3) : getWallpaperDir(i3), isLock ? "wallpaper_first" : "wallpaper_first_home"));
-            }
-            file = semWallpaperData.getVideoFirstFrameFile();
-        }
-        if (i2 == 4 && isLock && (file = semWallpaperData.getAnimatedBackground()) == null) {
-            if (WhichChecker.isSubDisplay(i)) {
-                semWallpaperData.setAnimatedBackground(new File(getWallpaperLockDir(i3), "wallpaper_animated_background_sub"));
-            } else {
-                semWallpaperData.setAnimatedBackground(new File(getWallpaperLockDir(i3), "wallpaper_animated_background"));
-            }
-            file = semWallpaperData.getAnimatedBackground();
-        }
-        if (i2 != 1 || !isLock) {
-            return file;
-        }
-        File motionBackground = semWallpaperData.getMotionBackground();
-        if (motionBackground != null) {
-            return motionBackground;
-        }
-        if (WhichChecker.isSubDisplay(i)) {
-            semWallpaperData.setMotionBackground(new File(getWallpaperLockDir(i3), "wallpaper_motion_background_sub"));
-        } else {
-            semWallpaperData.setMotionBackground(new File(getWallpaperLockDir(i3), "wallpaper_motion_background"));
-        }
-        return semWallpaperData.getMotionBackground();
-    }
-
-    public int getCurrentImplicitMode() {
-        return WhichChecker.determineMode(this.mSubDisplayMode.getLidState() == 0);
-    }
-
-    public int getModeEnsuredWhich(int i) {
+    public final int getModeEnsuredWhich(int i) {
         if (WhichChecker.getMode(i) != 0) {
             return i;
         }
         int currentImplicitMode = getCurrentImplicitMode() | WhichChecker.getType(i);
-        Slog.d("SemWallpaperManagerService", "getModeEnsuredWhich: detected which = " + currentImplicitMode);
+        AnyMotionDetector$$ExternalSyntheticOutline0.m(currentImplicitMode, "getModeEnsuredWhich: detected which = ", "SemWallpaperManagerService");
         return currentImplicitMode;
     }
 
-    public File getThumbnailFile(int i, int i2, int i3) {
-        int modeEnsuredWhich = getModeEnsuredWhich(i);
-        boolean isLock = WhichChecker.isLock(modeEnsuredWhich);
-        String str = i3 == 2 ? "_land" : "";
-        return new File(isLock ? getWallpaperLockDir(i2) : getWallpaperDir(i2), "wallpaper_thumb_" + modeEnsuredWhich + str);
-    }
-
-    public boolean deleteThumbnailFile(int i, int i2) {
-        boolean z = true;
-        if (WhichChecker.isSystemAndLock(i)) {
-            int mode = WhichChecker.getMode(i);
-            return deleteThumbnailFile(mode | 1, i2) | deleteThumbnailFile(mode | 2, i2) | false;
+    public final int getPairingConsideredWallpaperId(int i, int i2) {
+        WallpaperData peekPairingConsideredWallpaperDataLocked;
+        WallpaperManagerService.SemCallback semCallback = this.mCallback;
+        synchronized (WallpaperManagerService.this.mLock) {
+            peekPairingConsideredWallpaperDataLocked = WallpaperManagerService.this.peekPairingConsideredWallpaperDataLocked(i, i2);
         }
-        int modeEnsuredWhich = getModeEnsuredWhich(i);
-        int[] iArr = {1, 2};
-        for (int i3 = 0; i3 < 2; i3++) {
-            int i4 = iArr[i3];
-            File thumbnailFile = getThumbnailFile(modeEnsuredWhich, i2, i4);
-            if (thumbnailFile != null && thumbnailFile.exists()) {
-                boolean delete = thumbnailFile.delete();
-                Log.d("SemWallpaperManagerService", "deleteThumbnailFile: which=" + modeEnsuredWhich + ", orientation=" + i4 + ", success=" + delete);
-                if (!delete) {
-                    z = false;
-                }
-            }
+        if (peekPairingConsideredWallpaperDataLocked == null) {
+            return -1;
         }
-        return z;
+        return peekPairingConsideredWallpaperDataLocked.wallpaperId;
     }
 
-    public static File getWallpaperLockDir(int i) {
-        return new File(Environment.getUserSystemDirectory(i), "wallpaper_lock_images");
-    }
-
-    public static File getWallpaperDir(int i) {
-        return Environment.getUserSystemDirectory(i);
-    }
-
-    public void removeSnapshotByWhich(int i) {
-        ArrayList whiches = SnapshotHelper.getWhiches(i);
-        Log.d("SemWallpaperManagerService", "removeSnapshotByWhich: whiches = " + whiches);
-        HashMap hashMap = new HashMap();
-        synchronized (this.mSnapshotDataLock) {
-            Iterator it = whiches.iterator();
+    public final int getSnapshotCount(int i) {
+        SnapshotManager snapshotManager = this.mSnapshotManager;
+        if (i == -1) {
+            return snapshotManager.getRepositroy(this.mCurrentUserId).size();
+        }
+        SnapshotManager.SnapshotRepository repositroy = snapshotManager.getRepositroy(this.mCurrentUserId);
+        int i2 = 0;
+        if (repositroy.size() > 0) {
+            Iterator it = repositroy.getAll().iterator();
             while (it.hasNext()) {
-                int intValue = ((Integer) it.next()).intValue();
-                this.mSnapshotManager.removeSnapshotByWhich(this.mCurrentUserId, intValue);
-                notifySnapshotStatus(intValue, 4, -1);
-                hashMap.put(Integer.valueOf(intValue), 1);
-            }
-            this.mSnapshotManager.addHistory(this.mCurrentUserId, 3, -1, hashMap);
-        }
-        saveSettingsLockedForSnapshot(this.mCurrentUserId);
-    }
-
-    public void removeSnapshotByKey(int i) {
-        synchronized (this.mSnapshotDataLock) {
-            Map removeSnapshotByKey = this.mSnapshotManager.removeSnapshotByKey(this.mCurrentUserId, i);
-            notifySnapshotStatus(-1, 4, i);
-            this.mSnapshotManager.addHistory(this.mCurrentUserId, 3, i, removeSnapshotByKey);
-        }
-        saveSettingsLockedForSnapshot(this.mCurrentUserId);
-    }
-
-    public void removeSnapshotBySource(String str) {
-        Log.d("SemWallpaperManagerService", "removeSnapshotBySource: source = " + str);
-        if (TextUtils.isEmpty(str)) {
-            return;
-        }
-        synchronized (this.mSnapshotDataLock) {
-            Iterator it = this.mSnapshotManager.getAllSnapshots(this.mCurrentUserId).iterator();
-            while (it.hasNext()) {
-                SnapshotManager.SnapshotData snapshotData = (SnapshotManager.SnapshotData) it.next();
-                if (snapshotData != null && TextUtils.equals(str, snapshotData.getSource())) {
-                    removeSnapshotByKey(snapshotData.getKey());
+                if (((SnapshotManager.SnapshotData) it.next()).hasWallpaperData(i)) {
+                    i2++;
                 }
             }
         }
+        return i2;
     }
 
-    public int makeSnapshot(int i, int i2, Bundle bundle) {
-        boolean z;
-        SnapshotManager.SnapshotData snapshot;
-        HashMap hashMap = new HashMap();
-        ArrayList whiches = SnapshotHelper.getWhiches(i);
-        if (i2 <= 0) {
-            synchronized (this.mSnapshotDataLock) {
-                i2 = this.mSnapshotManager.makeSnapshotKey(this.mCurrentUserId);
-            }
+    public final File getThumbnailFile(int i, int i2, int i3) {
+        ParcelFileDescriptor fetchThumbnailFile;
+        ThumbnailFileManager thumbnailFileManager = ThumbnailFileManager.getInstance();
+        thumbnailFileManager.getClass();
+        File thumbnailFile = ThumbnailFileManager.getThumbnailFile(i, i2, i3);
+        if (thumbnailFile.exists() && thumbnailFile.length() > 0) {
+            return thumbnailFile;
         }
-        int i3 = 0;
-        if (Rune.SUPPORT_PAIRED_DLS_SNAPSHOT) {
-            z = bundle != null ? bundle.getBoolean("is_paired", false) : false;
-            if (!z) {
-                int pairedDlsSnapshotKey = this.mSnapshotManager.getPairedDlsSnapshotKey(this.mCurrentUserId, i2);
-                Log.d("SemWallpaperManagerService", "makeSnapshot: pairedDlsSnapshotKey = " + pairedDlsSnapshotKey);
-                if (pairedDlsSnapshotKey > 0) {
-                    SnapshotManager snapshotManager = this.mSnapshotManager;
-                    int i4 = this.mCurrentUserId;
-                    snapshotManager.addHistory(i4, 5, pairedDlsSnapshotKey, doRestoreOrMigrate(i4, pairedDlsSnapshotKey));
-                    this.mSnapshotManager.removeSnapshotByKey(this.mCurrentUserId, pairedDlsSnapshotKey);
-                }
-            }
-        } else {
-            z = false;
-        }
-        SnapshotManager.SnapshotData snapshot2 = this.mSnapshotManager.getSnapshot(this.mCurrentUserId, i2);
-        if (snapshot2 != null) {
-            ArrayList whiches2 = snapshot2.getWhiches();
-            if (whiches.size() != whiches2.size()) {
-                Log.w("SemWallpaperManagerService", "makeSnapshot: Number of 'which' in key + [" + i2 + "] is not the same as previous on");
-            }
-            Iterator it = whiches.iterator();
-            while (it.hasNext()) {
-                if (!whiches2.contains(Integer.valueOf(((Integer) it.next()).intValue()))) {
-                    Log.w("SemWallpaperManagerService", "makeSnapshot: 'which' values are not matched with previous snapshot. prevWhiches = " + whiches2 + ", whiches = " + whiches);
-                }
-            }
-            Iterator it2 = whiches.iterator();
-            while (it2.hasNext()) {
-                SnapshotManager.SnapshotData lastSnapshotByWhich = this.mSnapshotManager.getLastSnapshotByWhich(this.mCurrentUserId, ((Integer) it2.next()).intValue());
-                if (lastSnapshotByWhich != null && i2 != lastSnapshotByWhich.getKey()) {
-                    SnapshotManager snapshotManager2 = this.mSnapshotManager;
-                    int i5 = this.mCurrentUserId;
-                    snapshotManager2.addHistory(i5, 5, i2, doRestoreOrMigrate(i5, i2));
-                    this.mSnapshotManager.removeSnapshotByKey(this.mCurrentUserId, i2);
-                }
-            }
-        }
-        Iterator it3 = whiches.iterator();
-        while (it3.hasNext()) {
-            int intValue = ((Integer) it3.next()).intValue();
-            WallpaperData m12663clone = this.mSnapshotCallback.requestWallpaperData(this.mCurrentUserId, intValue).m12663clone();
-            if (m12663clone != null) {
-                SemWallpaperData semWallpaperData = m12663clone.getSemWallpaperData();
-                if (semWallpaperData != null) {
-                    semWallpaperData.setCreationTime(SnapshotHelper.getCurrentTime());
-                }
-                Log.d("SemWallpaperManagerService", "makeSnapshot: which = " + intValue + ", key = " + i2 + ", wallpaperData [" + m12663clone + "]");
-                synchronized (this.mSnapshotDataLock) {
-                    int addSnapshot = this.mSnapshotManager.addSnapshot(this.mContext, this.mCurrentUserId, intValue, i2, m12663clone);
-                    hashMap.put(Integer.valueOf(intValue), Integer.valueOf(addSnapshot));
-                    if (addSnapshot > 0) {
-                        connectSnapshotForLiveWallpaper(intValue, whiches, i2);
-                    }
-                }
-            } else {
-                Log.e("SemWallpaperManagerService", "makeSnapshot: wallpaperCopied is null.");
-                hashMap.put(Integer.valueOf(intValue), -5);
-            }
-        }
-        if (Rune.SUPPORT_PAIRED_DLS_SNAPSHOT && (snapshot = this.mSnapshotManager.getSnapshot(this.mCurrentUserId, i2)) != null && bundle != null) {
-            snapshot.setFromPairedService(z);
-        }
-        this.mSnapshotManager.addHistory(this.mCurrentUserId, 1, i2, hashMap);
-        for (Map.Entry entry : hashMap.entrySet()) {
-            int intValue2 = ((Integer) entry.getKey()).intValue();
-            int intValue3 = ((Integer) entry.getValue()).intValue();
-            Log.d("SemWallpaperManagerService", "makeSnapshot: Result <" + intValue2 + ", " + intValue3 + ">");
-            if (intValue3 > 0 || intValue3 == -3) {
-                notifySnapshotStatus(intValue2, 1, i2);
-                i3++;
-            }
-        }
-        saveSettingsLockedForSnapshot(this.mCurrentUserId);
-        if (i3 > 0) {
-            return i2;
-        }
-        return -1;
-    }
-
-    public final void connectSnapshotForLiveWallpaper(int i, ArrayList arrayList, int i2) {
-        int correspondingWhich;
-        SnapshotManager.SnapshotData nearestSnapshot;
-        if (!shouldCheckCorrespondingWhichForLiveWallpaper(i, arrayList) || (correspondingWhich = SnapshotHelper.getCorrespondingWhich(i)) <= 0 || getSnapshotCount(correspondingWhich) <= 0 || (nearestSnapshot = this.mSnapshotManager.getNearestSnapshot(this.mCurrentUserId, correspondingWhich)) == null || nearestSnapshot.hasWallpaperData(i) || nearestSnapshot.getLockscreenVisibility(correspondingWhich) != 0) {
-            return;
-        }
-        SnapshotManager.SnapshotData lastSnapshot = this.mSnapshotManager.getLastSnapshot(this.mCurrentUserId);
-        if (nearestSnapshot.getConnectedSnapshotForLiveWallpaper(correspondingWhich) == -1) {
-            lastSnapshot.setConnectedSnapshotForLiveWallpaper(i, nearestSnapshot.getKey());
-            nearestSnapshot.setConnectedSnapshotForLiveWallpaper(correspondingWhich, i2);
-        }
-    }
-
-    public boolean restoreSnapshot(int i, String str) {
-        int i2;
-        SnapshotManager.SnapshotData lastSnapshot;
-        Log.d("SemWallpaperManagerService", "restoreSnapshot: key = " + i + ", callingPackage = " + str);
-        if (Rune.SUPPORT_PAIRED_DLS_SNAPSHOT) {
-            i2 = this.mSnapshotManager.getPairedDlsSnapshotKey(this.mCurrentUserId, i);
-            Log.d("SemWallpaperManagerService", "restoreSnapshot: pairedDlsSnapshotKey = " + i2);
-        } else {
-            i2 = -1;
-        }
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        if (!canRestore(i)) {
-            notifySnapshotStatus(-1, 2, i);
-            return true;
-        }
-        if (isNeedToNotifySnapshotStatus(i)) {
-            notifySnapshotStatus(-1, 3, i);
-        }
-        synchronized (this.mSnapshotDataLock) {
-            lastSnapshot = this.mSnapshotManager.getLastSnapshot(this.mCurrentUserId);
-        }
-        if (lastSnapshot != null) {
-            if (i == lastSnapshot.getKey()) {
-                SnapshotManager snapshotManager = this.mSnapshotManager;
-                int i3 = this.mCurrentUserId;
-                snapshotManager.addHistory(i3, 2, i, doRestore(i3, i));
-            } else {
-                Log.d("SemWallpaperManagerService", "restoreSnapshot: SnapshotData for key " + i + " is not the latest one.");
-                SnapshotManager snapshotManager2 = this.mSnapshotManager;
-                int i4 = this.mCurrentUserId;
-                snapshotManager2.addHistory(i4, 2, i, doRestoreOrMigrate(i4, i));
-            }
-        } else {
-            Log.d("SemWallpaperManagerService", "restoreSnapshot: No snapshot.");
-            this.mSnapshotManager.addHistory(this.mCurrentUserId, 2, i, "No snapshot");
-        }
-        synchronized (this.mSnapshotDataLock) {
-            this.mSnapshotManager.removeSnapshotByKey(this.mCurrentUserId, i);
-        }
-        saveSettingsLockedForSnapshot(this.mCurrentUserId);
-        Log.d("SemWallpaperManagerService", "restoreSnapshot: Elapsed Time = " + (SystemClock.elapsedRealtime() - elapsedRealtime));
-        if (Rune.SUPPORT_PAIRED_DLS_SNAPSHOT && i2 > 0) {
-            restoreSnapshot(i2, str);
-        }
-        return true;
-    }
-
-    public final boolean shouldCheckCorrespondingWhichForLiveWallpaper(int i, ArrayList arrayList) {
-        int correspondingWhich;
-        if (arrayList == null || arrayList.size() <= 0 || (correspondingWhich = SnapshotHelper.getCorrespondingWhich(i)) <= 0) {
-            return false;
-        }
-        Log.d("SemWallpaperManagerService", "shouldCheckCorrespondingWhichForLiveWallpaper: Check existance of correspondingWhich [" + correspondingWhich + "]");
-        return !arrayList.contains(Integer.valueOf(correspondingWhich));
-    }
-
-    public final boolean canRestore(int i) {
-        if (this.mSnapshotManager.getSnapshotCount(this.mCurrentUserId) <= 0) {
-            Log.e("SemWallpaperManagerService", "canRestore: No snapshot.");
-            this.mSnapshotManager.addHistory(this.mCurrentUserId, 2, i, "No snapshot");
-            return false;
-        }
-        SnapshotManager.SnapshotData snapshot = this.mSnapshotManager.getSnapshot(this.mCurrentUserId, i);
-        if (snapshot != null && snapshot.hasWallpaperData()) {
-            return true;
-        }
-        Log.e("SemWallpaperManagerService", "canRestore: No snapshot for key [" + i + "].");
-        this.mSnapshotManager.addHistory(this.mCurrentUserId, 2, i, "No snapshot");
-        return false;
-    }
-
-    public final boolean isNeedToNotifySnapshotStatus(int i) {
-        SnapshotManager.SnapshotData snapshot;
-        WallpaperData wallpaperData;
-        WallpaperData wallpaperData2;
-        if (Rune.SUPPORT_DLS_SNAPSHOT || (snapshot = this.mSnapshotManager.getSnapshot(this.mCurrentUserId, i)) == null) {
-            return false;
-        }
-        boolean hasWallpaperData = snapshot.hasWallpaperData(6);
-        boolean hasWallpaperData2 = snapshot.hasWallpaperData(18);
-        boolean hasWallpaperData3 = Rune.SUPPORT_COVER_DISPLAY_WATCHFACE ? snapshot.hasWallpaperData(17) : false;
-        boolean hasWallpaperData4 = Rune.VIRTUAL_DISPLAY_WALLPAPER ? snapshot.hasWallpaperData(33) : false;
-        boolean z = hasWallpaperData3 && (wallpaperData2 = snapshot.getWallpaperData(17)) != null && wallpaperData2.getSemWallpaperData().getWpType() == 3;
-        boolean z2 = hasWallpaperData4 && (wallpaperData = snapshot.getWallpaperData(33)) != null && wallpaperData.getSemWallpaperData().getWpType() == 3;
-        Log.d("SemWallpaperManagerService", "isNeedToNotifySnapshotStatus: key = " + i + ", hasMainLock = " + hasWallpaperData + ", hasSubLock = " + hasWallpaperData2 + ", hasCoverHome = " + hasWallpaperData3 + ", hasVirtualHome = " + hasWallpaperData4 + ", hasCoverMultipack = " + z + ", hasVirtualMultipack = " + z2);
-        if (z || z2) {
-            return true;
-        }
-        if (hasWallpaperData && this.mSnapshotManager.getSnapshotCount(this.mCurrentUserId, 6) == 1) {
-            return true;
-        }
-        return hasWallpaperData2 && this.mSnapshotManager.getSnapshotCount(this.mCurrentUserId, 18) == 1;
-    }
-
-    public final Map doRestore(int i, int i2) {
-        SnapshotManager.SnapshotData snapshot;
-        HashMap hashMap = new HashMap();
-        synchronized (this.mSnapshotDataLock) {
-            snapshot = this.mSnapshotManager.getSnapshot(i, i2);
-        }
-        if (snapshot != null) {
-            Log.d("SemWallpaperManagerService", "doRestore: which set = " + snapshot.getWhiches());
-            Iterator it = snapshot.getWhiches().iterator();
-            while (it.hasNext()) {
-                int intValue = ((Integer) it.next()).intValue();
-                int restoreSnapshotInternal = restoreSnapshotInternal(i, intValue, snapshot);
-                postProcess(i, intValue, snapshot, restoreSnapshotInternal);
-                hashMap.put(Integer.valueOf(intValue), Integer.valueOf(restoreSnapshotInternal));
-            }
-        }
-        return hashMap;
-    }
-
-    public final Map doRestoreOrMigrate(int i, int i2) {
-        SnapshotManager.SnapshotData snapshot;
-        HashMap hashMap = new HashMap();
-        synchronized (this.mSnapshotDataLock) {
-            snapshot = this.mSnapshotManager.getSnapshot(i, i2);
-        }
-        if (snapshot != null) {
-            Iterator it = snapshot.getWhiches().iterator();
-            while (it.hasNext()) {
-                int intValue = ((Integer) it.next()).intValue();
-                if (this.mSnapshotManager.shouldRestoreSnapshot(i, i2, intValue)) {
-                    int restoreSnapshotInternal = restoreSnapshotInternal(i, intValue, snapshot);
-                    postProcess(i, intValue, snapshot, restoreSnapshotInternal);
-                    hashMap.put(Integer.valueOf(intValue), Integer.valueOf(restoreSnapshotInternal));
-                } else {
-                    synchronized (this.mSnapshotDataLock) {
-                        this.mSnapshotManager.migrateToPriorSnapshot(i, i2, intValue);
-                    }
-                    hashMap.put(Integer.valueOf(intValue), 1004);
-                }
-            }
-        }
-        return hashMap;
-    }
-
-    public final void postProcess(int i, int i2, SnapshotManager.SnapshotData snapshotData, int i3) {
-        long clearCallingIdentity;
-        SemWallpaperData semWallpaperData;
-        if (i3 == 1001) {
-            WallpaperData wallpaperData = snapshotData.getWallpaperData(i2);
-            int i4 = 0;
-            if (wallpaperData != null && (semWallpaperData = wallpaperData.getSemWallpaperData()) != null) {
-                int wpType = semWallpaperData.getWpType();
-                try {
-                    WallpaperData requestWallpaperData = this.mSnapshotCallback.requestWallpaperData(i, i2);
-                    String wallpaperColorPath = LegibilityColor.getWallpaperColorPath(i, i2, false);
-                    SemWallpaperColors primarySemColors = semWallpaperData.getPrimarySemColors();
-                    if (primarySemColors != null) {
-                        primarySemColors.save(wallpaperColorPath);
-                        requestWallpaperData.getSemWallpaperData().setPrimarySemColors(semWallpaperData.getPrimarySemColors());
-                    }
-                    SemWallpaperColors[] landscapeColors = semWallpaperData.getLandscapeColors();
-                    if (landscapeColors != null && landscapeColors.length > 0) {
-                        landscapeColors[0].save(LegibilityColor.getWallpaperColorPath(i, i2, true));
-                        requestWallpaperData.getSemWallpaperData().setLandscapeColors(landscapeColors);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                i4 = wpType;
-            }
-            this.mSnapshotCallback.requestSaveSettingsLocked(i, i2);
-            migrateSettingsForLiveWallpaper(i, i2, snapshotData);
-            clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                SnapshotHelper.updateSettings(this.mContext, i, snapshotData.getSettingsData(i2));
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                if (!WhichChecker.isLock(i2)) {
-                    if (WhichChecker.isWatchFaceDisplay(i2)) {
-                        this.mSnapshotCallback.requestNotifyCoverWallpaperChanged(i, i2, null);
-                        return;
-                    }
-                    return;
-                } else if (i4 == 3) {
-                    if (Rune.SUPPORT_DLS_SNAPSHOT) {
-                        this.mSnapshotCallback.requestNotifyMultipackApplied(i, i2, null);
-                        return;
-                    }
-                    return;
-                } else {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("trigger", "snapshot");
-                    this.mSnapshotCallback.requestNotifyLockWallpaperChanged(i, i2, bundle);
-                    this.mSnapshotCallback.requestNotifySemWallpaperColors(i2);
-                    return;
-                }
-            } finally {
-            }
-        }
-        clearCallingIdentity = Binder.clearCallingIdentity();
+        int pairingConsideredWallpaperId = getPairingConsideredWallpaperId(i, i2);
+        StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "getThumbnailFile: which=", ", userId=", ", wpId=");
+        m.append(pairingConsideredWallpaperId);
+        Log.i("SemWallpaperManagerService", m.toString());
         try {
-            SnapshotHelper.writeDefaultSettings(this.mContext, i, i2);
-            this.mSnapshotCallback.requestClearWallpaper(i, i2);
+            fetchThumbnailFile = this.mLiveWallpaperHelper.fetchThumbnailFile(i, i2, i3);
+        } catch (IOException e) {
+            Log.e("SemWallpaperManagerService", "getThumbnailFile: e=" + e);
+        }
+        if (fetchThumbnailFile == null) {
+            if (fetchThumbnailFile != null) {
+                fetchThumbnailFile.close();
+            }
+            return null;
+        }
+        try {
+            int pairingConsideredWallpaperId2 = getPairingConsideredWallpaperId(i, i2);
+            if (pairingConsideredWallpaperId2 == pairingConsideredWallpaperId) {
+                if (thumbnailFileManager.writeThumbnailFile(i, i2, i3, fetchThumbnailFile)) {
+                    fetchThumbnailFile.close();
+                    return thumbnailFile;
+                }
+                fetchThumbnailFile.close();
+                return null;
+            }
+            Log.w("SemWallpaperManagerService", "getThumbnailFile: wallpaper changed during fetching the thumbnail. which=" + i + ", wpId=" + pairingConsideredWallpaperId + "->" + pairingConsideredWallpaperId2);
+            fetchThumbnailFile.close();
+            return null;
         } finally {
         }
     }
 
-    public final void migrateSettingsForLiveWallpaper(int i, int i2, SnapshotManager.SnapshotData snapshotData) {
-        int connectedSnapshotForLiveWallpaper;
-        if (snapshotData.getLockscreenVisibility(i2) == 1 || (connectedSnapshotForLiveWallpaper = snapshotData.getConnectedSnapshotForLiveWallpaper(i2)) == -1) {
-            return;
-        }
-        SnapshotManager.SnapshotData snapshot = this.mSnapshotManager.getSnapshot(i, connectedSnapshotForLiveWallpaper);
-        int correspondingWhich = SnapshotHelper.getCorrespondingWhich(i2);
-        if (snapshot == null || !snapshot.hasWallpaperData(correspondingWhich)) {
-            return;
-        }
-        snapshot.setLockscreenVisibility(correspondingWhich, 0);
-        snapshotData.setLockscreenVisibility(i2, 1);
-    }
-
-    public final int restoreSnapshotInternal(int i, int i2, SnapshotManager.SnapshotData snapshotData) {
-        WallpaperData requestWallpaperData = this.mSnapshotCallback.requestWallpaperData(i, i2);
-        if (requestWallpaperData == null) {
-            Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: wallpaper is null.");
-            return 1003;
-        }
-        if (snapshotData == null || snapshotData.getWallpaperData(i2) == null) {
-            Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: snapshot or WallpaperData in snapshot is null.");
-            return 1003;
-        }
+    public final ParcelFileDescriptor getThumbnailFileDescriptor(int i, int i2, int i3) {
         try {
-            WallpaperData m12663clone = snapshotData.getWallpaperData(i2).m12663clone();
-            if (m12663clone == null) {
-                Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: wallpaperToRestore is null.");
-                return 1003;
+            File thumbnailFile = getThumbnailFile(i, i2, i3);
+            if (thumbnailFile != null) {
+                return ParcelFileDescriptor.open(thumbnailFile, 268435456);
             }
-            SemWallpaperData semWallpaperData = requestWallpaperData.getSemWallpaperData();
-            SemWallpaperData semWallpaperData2 = m12663clone.getSemWallpaperData();
-            if (requestWallpaperData.getWallpaperId() == m12663clone.getWallpaperId() && WhichChecker.containsSystem(semWallpaperData.getWhich())) {
-                Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: Same image wallpaper does not need to be restored.");
-                return 1001;
-            }
-            File wallpaperFile = m12663clone.getWallpaperFile();
-            SnapshotHelper.deleteFiles(requestWallpaperData);
-            File targetFile = getTargetFile(i, i2, m12663clone);
-            m12663clone.setWallpaperFile(targetFile);
-            m12663clone.setWallpaperCropFile(new File(WhichChecker.isLock(i2) ? getWallpaperLockDir(i) : getWallpaperDir(i), getFileName(i2, WhichChecker.isLock(i2) ? 1 : 0, 1)));
-            int wpType = semWallpaperData2.getWpType();
-            String lastCallingPackage = semWallpaperData2.getLastCallingPackage();
-            Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: which = " + i2 + ", type = " + wpType + ", backupFile = " + wallpaperFile + ", targetFile = " + targetFile + ", lastCallingPackage = " + lastCallingPackage);
-            semWallpaperData2.setWallpaperHistories(semWallpaperData.getWallpaperHistories());
-            if (!TextUtils.isEmpty(lastCallingPackage)) {
-                if (!lastCallingPackage.contains("[RESTORE]")) {
-                    m12663clone.setCallingPackage("[RESTORE]" + lastCallingPackage);
-                } else {
-                    m12663clone.setCallingPackage(lastCallingPackage);
-                }
-            } else {
-                m12663clone.setCallingPackage("[RESTORE]");
-            }
-            Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: wallpaperToRestore [" + m12663clone + "]");
-            if (wpType != 1) {
-                if (wpType == 1000) {
-                    this.mSnapshotCallback.requestSaveRestoredWallpaperLocked(i, i2, m12663clone);
-                } else if (wpType == 3) {
-                    this.mSnapshotCallback.requestSaveRestoredWallpaperLocked(i, i2, m12663clone);
-                    if (WhichChecker.isWatchFaceDisplay(i2)) {
-                        m12663clone.setImageWallpaperPending(true);
-                        m12663clone.setWhichPending(i2);
-                        if (Rune.SUPPORT_DLS_SNAPSHOT) {
-                            this.mSnapshotCallback.requestWallpaperId(m12663clone);
-                        }
-                        this.mSnapshotCallback.requestBindWallpaper(i, i2, null);
-                    }
-                } else if (wpType != 4) {
-                    if (wpType == 5) {
-                        m12663clone.setImageWallpaperPending(true);
-                        m12663clone.setWhichPending(i2);
-                        this.mSnapshotCallback.requestSaveRestoredWallpaperLocked(i, i2, m12663clone);
-                        this.mSnapshotCallback.requestBindWallpaper(i, i2, null);
-                    } else {
-                        if (wpType != 7) {
-                            if (wpType == 8) {
-                                this.mSnapshotCallback.requestSaveRestoredWallpaperLocked(i, i2, m12663clone);
-                                if (WhichChecker.isSystem(i2)) {
-                                    m12663clone.setImageWallpaperPending(true);
-                                    m12663clone.setWhichPending(i2);
-                                    this.mSnapshotCallback.requestBindWallpaper(i, i2, null);
-                                }
-                                return SnapshotHelper.saveFile(wallpaperFile, targetFile) ? 1001 : -2;
-                            }
-                            if (wallpaperFile != null && wallpaperFile.exists()) {
-                                m12663clone.setImageWallpaperPending(true);
-                                m12663clone.setWhichPending(i2);
-                                this.mSnapshotCallback.requestSaveRestoredWallpaperLocked(i, i2, m12663clone);
-                                return SnapshotHelper.saveFile(wallpaperFile, targetFile) ? 1001 : -2;
-                            }
-                            Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: backupFile is not exist. But return success for default resources");
-                            this.mSnapshotCallback.requestSaveRestoredWallpaperLocked(i, i2, m12663clone);
-                            if (WhichChecker.isSystem(i2)) {
-                                m12663clone.setImageWallpaperPending(true);
-                                m12663clone.setWhichPending(i2);
-                                this.mSnapshotCallback.requestBindWallpaper(i, i2, null);
-                            }
-                            return 1001;
-                        }
-                        if (Rune.SUPPORT_LAYERED_WALLPAPER_SNAPSHOT) {
-                            if (SnapshotHelper.getBackupWallpaperAssetsDir(i, snapshotData.getKey(), i2).exists()) {
-                                Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: Asset files exist.");
-                                SnapshotHelper.renameDirectory(SnapshotHelper.getBackupWallpaperAssetsDir(i, snapshotData.getKey(), i2), AssetFileManager.getBaseAssetDir(i2, i));
-                            }
-                            PreloadedLiveWallpaperHelper.recoverComponentNameIfMissed(m12663clone);
-                        }
-                        int which = m12663clone.getWhich() == 0 ? i2 : m12663clone.getWhich();
-                        this.mSnapshotCallback.requestSaveRestoredWallpaperLocked(i, i2, m12663clone);
-                        this.mSnapshotCallback.requestBindWallpaper(i, which, m12663clone.getWallpaperComponent());
-                    }
-                }
-                return 1001;
-            }
-            this.mSnapshotCallback.requestSaveRestoredWallpaperLocked(i, i2, m12663clone);
-            return 1001;
-        } catch (Exception e) {
-            Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: " + e.getMessage());
-            return 1003;
+            return null;
+        } catch (FileNotFoundException e) {
+            Log.w("SemWallpaperManagerService", "getThumbnailFileDescriptor : e=" + e);
+            return null;
         }
     }
 
-    public void loadSettingsLockedForSnapshot(int i) {
-        synchronized (this.mSnapshotDataLock) {
-            this.mSnapshotManager.loadSettingsLockedForSnapshot(i);
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x0040, code lost:
+    
+        if (r3.mDefaultWallpaperComponent.equals(r3.mImageWallpaper) != false) goto L24;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int getWallpaperTypeByComponentName(android.content.ComponentName r4, com.android.server.wallpaper.WallpaperData r5) {
+        /*
+            r3 = this;
+            java.lang.String r0 = "SemWallpaperManagerService"
+            r1 = 7
+            r2 = 0
+            if (r4 != 0) goto L43
+            android.content.Context r4 = r3.mContext
+            android.content.ComponentName r4 = android.app.WallpaperManager.getDefaultWallpaperComponent(r4)
+            if (r4 != 0) goto L58
+            com.samsung.server.wallpaper.SemWallpaperData r4 = r5.mSemWallpaperData
+            int r4 = r4.mWhich
+            int r5 = r3.getDefaultWallpaperType(r4)
+            if (r5 != r1) goto L38
+            android.content.Context r5 = r3.mContext
+            boolean r5 = android.app.WallpaperManager.isDefaultOperatorWallpaper(r5, r4)
+            if (r5 != 0) goto L38
+            android.content.ComponentName r3 = r3.getDefaultPreloadedLiveWallpaperComponentName(r4)
+            if (r3 == 0) goto L58
+            java.lang.StringBuilder r4 = new java.lang.StringBuilder
+            java.lang.String r5 = "getWallpaperTypeByComponentName: Default live wallpaper = "
+            r4.<init>(r5)
+            r4.append(r3)
+            java.lang.String r3 = r4.toString()
+            android.util.Slog.i(r0, r3)
+            goto L59
+        L38:
+            android.content.ComponentName r4 = r3.mDefaultWallpaperComponent
+            android.content.ComponentName r3 = r3.mImageWallpaper
+            boolean r3 = r4.equals(r3)
+            if (r3 == 0) goto L59
+            goto L58
+        L43:
+            android.content.ComponentName r3 = r3.mImageWallpaper
+            boolean r3 = r3.equals(r4)
+            if (r3 != 0) goto L4c
+            goto L59
+        L4c:
+            boolean r3 = com.samsung.android.wallpaper.Rune.SUPPORT_SUB_DISPLAY_MODE
+            if (r3 == 0) goto L58
+            boolean r3 = com.samsung.android.wallpaper.Rune.SUPPORT_COVER_DISPLAY_WATCHFACE
+            if (r3 == 0) goto L58
+            com.samsung.server.wallpaper.SemWallpaperData r3 = r5.mSemWallpaperData
+            int r3 = r3.mWpType
+        L58:
+            r1 = r2
+        L59:
+            java.lang.StringBuilder r3 = new java.lang.StringBuilder
+            java.lang.String r4 = "getWallpaperTypeByComponentName: wallpaperType = "
+            r3.<init>(r4)
+            r3.append(r1)
+            java.lang.String r3 = r3.toString()
+            com.samsung.server.wallpaper.Log.d(r0, r3)
+            return r1
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.server.wallpaper.SemWallpaperManagerService.getWallpaperTypeByComponentName(android.content.ComponentName, com.android.server.wallpaper.WallpaperData):int");
     }
 
-    public void saveSettingsLockedForSnapshot(int i) {
-        synchronized (this.mSnapshotDataLock) {
-            this.mSnapshotManager.saveSettingsLockedForSnapshot(i);
+    public final void handleWallpaperBindingTimeout(boolean z) {
+        AnonymousClass4 anonymousClass4 = this.mHandler;
+        anonymousClass4.removeMessages(1009);
+        if (z) {
+            anonymousClass4.sendEmptyMessageDelayed(1009, 2000L);
         }
-    }
-
-    public final File getTargetFile(int i, int i2, WallpaperData wallpaperData) {
-        File file;
-        int wpType = wallpaperData.getSemWallpaperData().getWpType();
-        int which = wallpaperData.getSemWallpaperData().getWhich();
-        if (wpType != 1) {
-            if (wpType != 4) {
-                if (wpType == 8) {
-                    if (WhichChecker.isSubDisplay(i2)) {
-                        file = new File(WhichChecker.isLock(i2) ? getWallpaperLockDir(i) : getWallpaperDir(i), WhichChecker.isLock(i2) ? "wallpaper_first_sub" : "wallpaper_first_sub_home");
-                    } else {
-                        file = new File(WhichChecker.isLock(i2) ? getWallpaperLockDir(i) : getWallpaperDir(i), WhichChecker.isLock(i2) ? "wallpaper_first" : "wallpaper_first_home");
-                    }
-                } else if (WhichChecker.isSystem(i2)) {
-                    file = new File(getWallpaperDir(i), getFileName(i2, 0, 0));
-                } else {
-                    file = new File(getWallpaperLockDir(i), getFileName(i2, 1, 0));
-                }
-            } else if (WhichChecker.isSubDisplay(i2)) {
-                file = new File(getWallpaperLockDir(i), "wallpaper_animated_background_sub");
-            } else {
-                file = new File(getWallpaperLockDir(i), "wallpaper_animated_background");
-            }
-        } else if (WhichChecker.isSubDisplay(i2)) {
-            file = new File(getWallpaperLockDir(i), "wallpaper_motion_background_sub");
-        } else {
-            file = new File(getWallpaperLockDir(i), "wallpaper_motion_background");
-        }
-        Log.d("SemWallpaperManagerService", "getTargetFile: which = " + i2 + ", WallpaperDataWhich = " + which + ", wallpaperType = " + wpType + ", targetFile = " + file);
-        return file;
-    }
-
-    public final void notifySnapshotStatus(int i, int i2, int i3) {
-        ArrayList arrayList;
-        if (Rune.SUPPORT_DLS_SNAPSHOT || (arrayList = (ArrayList) this.mSnapshotCallback.requestKeyguardListeners()) == null) {
-            return;
-        }
-        Log.d("SemWallpaperManagerService", "notifySnapshotStatus: which = " + i + ", status = " + i2 + ", key = " + i3);
-        if (i == -1 || WhichChecker.isLock(i) || WhichChecker.isWatchFaceDisplay(i)) {
-            try {
-                Iterator it = arrayList.iterator();
-                while (it.hasNext()) {
-                    IWallpaperManagerCallback iWallpaperManagerCallback = (IWallpaperManagerCallback) it.next();
-                    if (iWallpaperManagerCallback != null) {
-                        iWallpaperManagerCallback.onSemBackupStatusChanged(i, i2, i3);
-                    }
-                }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public int getSnapshotCount(int i) {
-        if (i == -1) {
-            return this.mSnapshotManager.getSnapshotCount(this.mCurrentUserId);
-        }
-        return this.mSnapshotManager.getSnapshotCount(this.mCurrentUserId, i);
-    }
-
-    public boolean setSnapshotSource(int i, String str) {
-        Log.d("SemWallpaperManagerService", "setSnapshotSource: key = " + i + ", source = " + str);
-        synchronized (this.mSnapshotDataLock) {
-            SnapshotManager.SnapshotData snapshot = this.mSnapshotManager.getSnapshot(this.mCurrentUserId, i);
-            if (snapshot == null) {
-                Log.e("SemWallpaperManagerService", "setSnapshotSource: No snapshot for key = " + i);
-                return false;
-            }
-            snapshot.setSource(str);
-            this.mSnapshotManager.saveSettingsLockedForSnapshot(this.mCurrentUserId);
-            return true;
-        }
-    }
-
-    public boolean isValidSnapshot(int i) {
-        Log.d("SemWallpaperManagerService", "isValidSnapshot: key = " + i);
-        SnapshotManager.SnapshotData snapshot = this.mSnapshotManager.getSnapshot(this.mCurrentUserId, i);
-        if (snapshot != null && snapshot.hasWallpaperData()) {
-            return true;
-        }
-        Log.e("SemWallpaperManagerService", "isValidSnapshot: No snapshot for key [" + i + "].");
-        return false;
-    }
-
-    public int[] getSnapshotKeys(String str, int i) {
-        ArrayList arrayList = new ArrayList();
-        Iterator it = this.mSnapshotManager.getAllSnapshots(this.mCurrentUserId).iterator();
-        while (it.hasNext()) {
-            SnapshotManager.SnapshotData snapshotData = (SnapshotManager.SnapshotData) it.next();
-            if (snapshotData != null && TextUtils.equals(str, snapshotData.getSource()) && snapshotData.hasWallpaperData(i)) {
-                arrayList.add(Integer.valueOf(snapshotData.getKey()));
-            }
-        }
-        return Arrays.stream((Integer[]) arrayList.toArray(new Integer[arrayList.size()])).mapToInt(new AudioService$$ExternalSyntheticLambda0()).toArray();
     }
 
     public boolean isSnapshotTestMode() {
@@ -1276,32 +903,805 @@ public class SemWallpaperManagerService {
         return sSnapshotTestMode;
     }
 
+    public final boolean isSystemAndLockPaired(int i, int i2) {
+        return WhichChecker.isSystemAndLock(this.mCallback.onWallpaperDataRequested(i2, WhichChecker.getMode(i) | 1).mWhich);
+    }
+
+    public final void postProcess(int i, int i2, SnapshotManager.SnapshotData snapshotData, int i3) {
+        long clearCallingIdentity;
+        int i4;
+        int i5;
+        WallpaperData peekWallpaperDataLocked;
+        int connectedSnapshotForLiveWallpaper;
+        SemWallpaperData semWallpaperData;
+        if (i3 != 1001) {
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                SnapshotHelper.writeDefaultSettings(this.mContext, i, i2);
+                WallpaperManagerService wallpaperManagerService = (WallpaperManagerService) this.mSnapshotCallback;
+                String lastCallingPackage = wallpaperManagerService.getLastCallingPackage(i2);
+                Log.d("WallpaperManagerService", "requestClearWallpaper: lastCallingPackage = " + lastCallingPackage);
+                wallpaperManagerService.clearWallpaper(lastCallingPackage, i2, i);
+                return;
+            } finally {
+            }
+        }
+        WallpaperData wallpaperData = snapshotData.getWallpaperData(i2);
+        if (wallpaperData == null || (semWallpaperData = wallpaperData.mSemWallpaperData) == null) {
+            i4 = 0;
+        } else {
+            i4 = semWallpaperData.mWpType;
+            try {
+                WallpaperData onWallpaperDataRequested = this.mCallback.onWallpaperDataRequested(i, i2);
+                String wallpaperColorPath = LegibilityColor.getWallpaperColorPath(i, i2, false);
+                SemWallpaperColors semWallpaperColors = semWallpaperData.mPrimarySemColors;
+                if (semWallpaperColors != null) {
+                    semWallpaperColors.save(wallpaperColorPath);
+                    onWallpaperDataRequested.mSemWallpaperData.mPrimarySemColors = semWallpaperData.mPrimarySemColors;
+                }
+                SemWallpaperColors[] semWallpaperColorsArr = semWallpaperData.mLandscapeColors;
+                if (semWallpaperColorsArr != null && semWallpaperColorsArr.length > 0 && semWallpaperColorsArr[0] != null) {
+                    semWallpaperColorsArr[0].save(LegibilityColor.getWallpaperColorPath(i, i2, true));
+                    onWallpaperDataRequested.mSemWallpaperData.mLandscapeColors = semWallpaperColorsArr;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        WallpaperManagerService wallpaperManagerService2 = (WallpaperManagerService) this.mSnapshotCallback;
+        synchronized (wallpaperManagerService2.mLock) {
+            wallpaperManagerService2.saveSettingsLocked(i, WhichChecker.getMode(i2));
+        }
+        SnapshotManager.PerWhichSnapshot perWhichSnapshot = (SnapshotManager.PerWhichSnapshot) ((HashMap) snapshotData.perWhichSnapshots).get(Integer.valueOf(i2));
+        if (perWhichSnapshot != null) {
+            String str = WhichChecker.isSubDisplay(i2) ? "lockscreen_wallpaper_sub" : "lockscreen_wallpaper";
+            i5 = ((Integer) perWhichSnapshot.settings.getOrDefault(str, Integer.valueOf(SnapshotHelper.SettingsData.getDefaultValue(str)))).intValue();
+        } else {
+            i5 = 1;
+        }
+        if (i5 != 1 && (connectedSnapshotForLiveWallpaper = snapshotData.getConnectedSnapshotForLiveWallpaper(i2)) != -1) {
+            SnapshotManager.SnapshotData snapshot = this.mSnapshotManager.getSnapshot(i, connectedSnapshotForLiveWallpaper);
+            int correspondingWhich = SnapshotHelper.getCorrespondingWhich(i2);
+            if (snapshot != null && snapshot.hasWallpaperData(correspondingWhich)) {
+                snapshot.setLockscreenVisibility(correspondingWhich, 0);
+                snapshotData.setLockscreenVisibility(i2, 1);
+            }
+        }
+        clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            Context context = this.mContext;
+            SnapshotManager.PerWhichSnapshot perWhichSnapshot2 = (SnapshotManager.PerWhichSnapshot) ((HashMap) snapshotData.perWhichSnapshots).get(Integer.valueOf(SnapshotHelper.checkWhich(i2)));
+            SnapshotHelper.updateSettings(context, i, perWhichSnapshot2 != null ? perWhichSnapshot2.settings : null, this.mCallback);
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            if (WhichChecker.isLock(i2)) {
+                if (i4 == 3 || i4 == 1000) {
+                    return;
+                }
+                Bundle m142m = AccountManagerService$$ExternalSyntheticOutline0.m142m("trigger", "snapshot");
+                WallpaperManagerService wallpaperManagerService3 = (WallpaperManagerService) this.mSnapshotCallback;
+                wallpaperManagerService3.getClass();
+                int mode = WhichChecker.getMode(i2) | 2;
+                WallpaperData peekWallpaperDataLocked2 = wallpaperManagerService3.peekWallpaperDataLocked(i, mode);
+                if (peekWallpaperDataLocked2 != null) {
+                    wallpaperManagerService3.notifyLockWallpaperChanged(peekWallpaperDataLocked2.mSemWallpaperData.mWpType, mode, m142m);
+                }
+                ((WallpaperManagerService) this.mSnapshotCallback).requestNotifySemWallpaperColors(i2);
+                return;
+            }
+            if (WhichChecker.isWatchFaceDisplay(i2) || WhichChecker.isVirtualDisplay(i2)) {
+                WallpaperManagerService wallpaperManagerService4 = (WallpaperManagerService) this.mSnapshotCallback;
+                wallpaperManagerService4.getClass();
+                Log.e("WallpaperManagerService", "requestNotifyCoverWallpaperChanged: userId = " + i + ", which = " + i2);
+                if (WhichChecker.isWatchFaceDisplay(i2) && (peekWallpaperDataLocked = wallpaperManagerService4.peekWallpaperDataLocked(i, i2)) != null) {
+                    wallpaperManagerService4.notifyCoverWallpaperChanged(peekWallpaperDataLocked.mSemWallpaperData.mWpType, i2);
+                    return;
+                }
+                return;
+            }
+            if (i4 == 7) {
+                ((WallpaperManagerService) this.mSnapshotCallback).requestNotifyWallpaperChanged(i, i2);
+                ((WallpaperManagerService) this.mSnapshotCallback).requestNotifySemWallpaperColors(i2);
+            } else {
+                if (i4 != 0 || wallpaperData == null) {
+                    return;
+                }
+                File wallpaperFile = wallpaperData.getWallpaperFile(i4);
+                if (wallpaperFile == null || !wallpaperFile.exists()) {
+                    Log.d("SemWallpaperManagerService", "postProcess: Restored wallpaper is image type with no file.");
+                    ((WallpaperManagerService) this.mSnapshotCallback).requestNotifyWallpaperChanged(i, i2);
+                    ((WallpaperManagerService) this.mSnapshotCallback).requestNotifySemWallpaperColors(i2);
+                }
+            }
+        } finally {
+        }
+    }
+
+    public final void putDefaultLiveWallpaperProperties(WallpaperData wallpaperData) {
+        int i = wallpaperData.mSemWallpaperData.mWhich;
+        Bundle defaultLiveWallpaperExtras = this.mResourceInfo.getDefaultLiveWallpaperExtras(i);
+        if (defaultLiveWallpaperExtras == null) {
+            Log.w("SemWallpaperManagerService", "putDefaultLiveWallpaperProperties: default extra data is not present. which=" + i);
+            defaultLiveWallpaperExtras = new Bundle();
+        }
+        defaultLiveWallpaperExtras.putBoolean("isPreloaded", true);
+        SemWallpaperData semWallpaperData = wallpaperData.mSemWallpaperData;
+        semWallpaperData.mExternalParams = defaultLiveWallpaperExtras;
+        semWallpaperData.mIsPreloaded = true;
+    }
+
+    public final void removeSnapshotByKey(int i) {
+        synchronized (this.mSnapshotDataLock) {
+            this.mSnapshotManager.addHistory(this.mCurrentUserId, 3, i, this.mSnapshotManager.removeSnapshotByKey(this.mCurrentUserId, i));
+        }
+        saveSettingsLockedForSnapshot(this.mCurrentUserId);
+    }
+
+    public final void removeSnapshotByWhich(int i) {
+        boolean z;
+        int i2;
+        ArrayList whiches = SnapshotHelper.getWhiches(i);
+        Log.d("SemWallpaperManagerService", "removeSnapshotByWhich: whiches = " + whiches);
+        HashMap hashMap = new HashMap();
+        synchronized (this.mSnapshotDataLock) {
+            try {
+                Iterator it = whiches.iterator();
+                z = false;
+                while (it.hasNext()) {
+                    Integer num = (Integer) it.next();
+                    ArrayList removeSnapshotByWhich = this.mSnapshotManager.removeSnapshotByWhich(this.mCurrentUserId, num.intValue());
+                    hashMap.put(num, 1);
+                    if (Rune.SUPPORT_PAIRED_DLS_SNAPSHOT && !z && removeSnapshotByWhich.size() > 0) {
+                        Iterator it2 = removeSnapshotByWhich.iterator();
+                        while (true) {
+                            if (!it2.hasNext()) {
+                                break;
+                            } else if (((SnapshotManager.SnapshotData) it2.next()).isFromPairedService) {
+                                z = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                i2 = -1;
+                this.mSnapshotManager.addHistory(this.mCurrentUserId, 3, -1, hashMap);
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        if (Rune.SUPPORT_PAIRED_DLS_SNAPSHOT && z) {
+            Iterator it3 = this.mSnapshotManager.getRepositroy(this.mCurrentUserId).getAll().iterator();
+            while (true) {
+                if (!it3.hasNext()) {
+                    break;
+                }
+                SnapshotManager.SnapshotData snapshotData = (SnapshotManager.SnapshotData) it3.next();
+                if ("com.samsung.android.dynamiclock".equals(snapshotData.source) && snapshotData.isFromPairedService) {
+                    StringBuilder sb = new StringBuilder("getPairedDlsSnapshotKey: key = ");
+                    i2 = snapshotData.key;
+                    sb.append(i2);
+                    Log.d("SnapshotManager", sb.toString());
+                    break;
+                }
+            }
+            if (i2 > 0) {
+                Log.d("SemWallpaperManagerService", "removeSnapshotByWhich: One of paired snapshot was removed. Restore last paired snapshot.");
+                restoreSnapshot(i2, "android");
+            }
+        }
+        saveSettingsLockedForSnapshot(this.mCurrentUserId);
+    }
+
+    public final Bundle requestWallpaperPrepare(ComponentName componentName, int i, int i2, Bundle bundle) {
+        Bundle invokeProviderCall;
+        String sb;
+        ProviderRequester providerRequester = this.mLiveWallpaperHelper.mProviderRequester;
+        providerRequester.getClass();
+        if (ProviderRequester.isValidComponentName(componentName)) {
+            StringBuilder sb2 = new StringBuilder("requestWallpaperPrepare : ");
+            sb2.append(componentName);
+            sb2.append(", which=");
+            sb2.append(i);
+            sb2.append(", hasExtras=");
+            sb2.append(bundle != null);
+            Log.d("ProviderRequester", sb2.toString());
+            Bundle bundle2 = new Bundle();
+            bundle2.putInt("which", i);
+            bundle2.putInt("user_id", i2);
+            bundle2.putString("wallpaper_service_class_name", componentName.getClassName());
+            bundle2.putBundle("external_params", bundle);
+            invokeProviderCall = providerRequester.invokeProviderCall(i2, componentName.getPackageName(), "prepare_wallpaper", bundle2);
+        } else {
+            Log.e("ProviderRequester", "requestWallpaperPrepare : service component is invalid - " + componentName);
+            invokeProviderCall = null;
+        }
+        if (invokeProviderCall == null) {
+            return null;
+        }
+        Bundle bundle3 = new Bundle();
+        for (String str : invokeProviderCall.keySet()) {
+            Object obj = invokeProviderCall.get(str);
+            if (str == null) {
+                sb = null;
+            } else {
+                String[] split = str.split("[\\W_]+");
+                if (split.length == 1) {
+                    sb = split[0];
+                } else {
+                    StringBuilder sb3 = new StringBuilder();
+                    for (int i3 = 0; i3 < split.length; i3++) {
+                        String str2 = split[i3];
+                        if (!str2.isEmpty()) {
+                            if (i3 == 0) {
+                                sb3.append(str2.toLowerCase());
+                            } else {
+                                sb3.append(Character.toUpperCase(str2.charAt(0)));
+                                sb3.append(str2.substring(1).toLowerCase());
+                            }
+                        }
+                    }
+                    sb = sb3.toString();
+                }
+            }
+            bundle3.putObject(sb, obj);
+        }
+        return bundle3;
+    }
+
+    public final void restoreSnapshot(int i, String str) {
+        int i2;
+        SnapshotManager.SnapshotData snapshotData;
+        SnapshotManager.SnapshotData snapshot;
+        Log.d("SemWallpaperManagerService", "restoreSnapshot: key = " + i + ", callingPackage = " + str);
+        if (Rune.SUPPORT_PAIRED_DLS_SNAPSHOT) {
+            i2 = this.mSnapshotManager.getPairedDlsSnapshotKey(this.mCurrentUserId, i);
+            Log.d("SemWallpaperManagerService", "restoreSnapshot: pairedDlsSnapshotKey = " + i2);
+        } else {
+            i2 = -1;
+        }
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        int i3 = this.mCurrentUserId;
+        SnapshotManager snapshotManager = this.mSnapshotManager;
+        if (snapshotManager.getRepositroy(i3).size() <= 0) {
+            Log.e("SemWallpaperManagerService", "canRestore: No snapshot.");
+            snapshotManager.addHistory(this.mCurrentUserId, i);
+            return;
+        }
+        SnapshotManager.SnapshotData snapshot2 = snapshotManager.getSnapshot(this.mCurrentUserId, i);
+        if (snapshot2 == null || !snapshot2.hasWallpaperData()) {
+            Log.e("SemWallpaperManagerService", "canRestore: No snapshot for key [" + i + "].");
+            snapshotManager.addHistory(this.mCurrentUserId, i);
+            return;
+        }
+        synchronized (this.mSnapshotDataLock) {
+            SnapshotManager.SnapshotRepository repositroy = this.mSnapshotManager.getRepositroy(this.mCurrentUserId);
+            LinkedList linkedList = repositroy.mSnapshots;
+            snapshotData = (linkedList == null || linkedList.size() <= 0) ? null : (SnapshotManager.SnapshotData) repositroy.mSnapshots.getFirst();
+        }
+        if (snapshotData == null) {
+            Log.d("SemWallpaperManagerService", "restoreSnapshot: No snapshot.");
+            this.mSnapshotManager.addHistory(this.mCurrentUserId, i);
+        } else if (i == snapshotData.key) {
+            SnapshotManager snapshotManager2 = this.mSnapshotManager;
+            int i4 = this.mCurrentUserId;
+            HashMap hashMap = new HashMap();
+            synchronized (this.mSnapshotDataLock) {
+                snapshot = this.mSnapshotManager.getSnapshot(i4, i);
+            }
+            if (snapshot != null) {
+                Log.d("SemWallpaperManagerService", "doRestore: which set = " + snapshot.getWhiches());
+                Iterator it = snapshot.getWhiches().iterator();
+                while (it.hasNext()) {
+                    Integer num = (Integer) it.next();
+                    int intValue = num.intValue();
+                    deleteThumbnailFile(intValue, i4);
+                    int restoreSnapshotInternal = restoreSnapshotInternal(i4, intValue, snapshot);
+                    postProcess(i4, intValue, snapshot, restoreSnapshotInternal);
+                    hashMap.put(num, Integer.valueOf(restoreSnapshotInternal));
+                }
+            }
+            snapshotManager2.addHistory(i4, 2, i, hashMap);
+        } else {
+            Log.d("SemWallpaperManagerService", "restoreSnapshot: SnapshotData for key " + i + " is not the latest one.");
+            SnapshotManager snapshotManager3 = this.mSnapshotManager;
+            int i5 = this.mCurrentUserId;
+            snapshotManager3.addHistory(i5, 2, i, doRestoreOrMigrate(i5, i));
+        }
+        synchronized (this.mSnapshotDataLock) {
+            this.mSnapshotManager.removeSnapshotByKey(this.mCurrentUserId, i);
+        }
+        saveSettingsLockedForSnapshot(this.mCurrentUserId);
+        Log.d("SemWallpaperManagerService", "restoreSnapshot: Elapsed Time = " + (SystemClock.elapsedRealtime() - elapsedRealtime));
+        if (!Rune.SUPPORT_PAIRED_DLS_SNAPSHOT || i2 <= 0) {
+            return;
+        }
+        restoreSnapshot(i2, str);
+    }
+
+    public final int restoreSnapshotInternal(int i, int i2, SnapshotManager.SnapshotData snapshotData) {
+        File file;
+        WallpaperManagerService.SemCallback semCallback = this.mCallback;
+        WallpaperData onWallpaperDataRequested = semCallback.onWallpaperDataRequested(i, i2);
+        if (snapshotData.getWallpaperData(i2) == null) {
+            Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: snapshot or WallpaperData in snapshot is null.");
+            return 1003;
+        }
+        try {
+            WallpaperData m1039clone = snapshotData.getWallpaperData(i2).m1039clone();
+            if (m1039clone == null) {
+                Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: wallpaperToRestore is null.");
+                return 1003;
+            }
+            SemWallpaperData semWallpaperData = onWallpaperDataRequested.mSemWallpaperData;
+            SemWallpaperData semWallpaperData2 = m1039clone.mSemWallpaperData;
+            int i3 = m1039clone.wallpaperId;
+            if (onWallpaperDataRequested.wallpaperId == i3 && WhichChecker.containsSystem(semWallpaperData.mWhich)) {
+                Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: Same image wallpaper does not need to be restored. (id = " + m1039clone.wallpaperId + ")");
+                return 1001;
+            }
+            int i4 = semWallpaperData2.mWpType;
+            File wallpaperFile = m1039clone.getWallpaperFile(i4);
+            SnapshotHelper.deleteFile(onWallpaperDataRequested.getWallpaperFile(onWallpaperDataRequested.mSemWallpaperData.mWpType));
+            SnapshotHelper.deleteFile(onWallpaperDataRequested.getCropFile());
+            SemWallpaperData semWallpaperData3 = m1039clone.mSemWallpaperData;
+            int i5 = semWallpaperData3.mWpType;
+            int i6 = semWallpaperData3.mWhich;
+            if (i5 == 1) {
+                file = WhichChecker.isSubDisplay(i2) ? new File(WallpaperUtils.getWallpaperLockDir(i), "wallpaper_motion_background_sub") : new File(WallpaperUtils.getWallpaperLockDir(i), "wallpaper_motion_background");
+            } else if (i5 == 4) {
+                file = WhichChecker.isSubDisplay(i2) ? new File(WallpaperUtils.getWallpaperLockDir(i), "wallpaper_animated_background_sub") : new File(WallpaperUtils.getWallpaperLockDir(i), "wallpaper_animated_background");
+            } else if (i5 != 8) {
+                file = WhichChecker.isSystem(i2) ? new File(Environment.getUserSystemDirectory(i), WallpaperUtils.getFileName(i2)) : new File(WallpaperUtils.getWallpaperLockDir(i), WallpaperUtils.getFileName(i2));
+            } else if (WhichChecker.isSubDisplay(i2)) {
+                file = new File(WhichChecker.isLock(i2) ? WallpaperUtils.getWallpaperLockDir(i) : Environment.getUserSystemDirectory(i), WhichChecker.isLock(i2) ? "wallpaper_first_sub" : "wallpaper_first_sub_home");
+            } else {
+                file = new File(WhichChecker.isLock(i2) ? WallpaperUtils.getWallpaperLockDir(i) : Environment.getUserSystemDirectory(i), WhichChecker.isLock(i2) ? "wallpaper_first" : "wallpaper_first_home");
+            }
+            StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i2, i6, "getTargetFile: which = ", ", WallpaperDataWhich = ", ", wallpaperType = ");
+            m.append(i5);
+            m.append(", targetFile = ");
+            m.append(file);
+            Log.d("SemWallpaperManagerService", m.toString());
+            m1039clone.setWallpaperFile(file);
+            m1039clone.mCropFiles.put(m1039clone.mWhich, new File(WhichChecker.isLock(i2) ? WallpaperUtils.getWallpaperLockDir(i) : Environment.getUserSystemDirectory(i), WallpaperUtils.getCropFileName(i2)));
+            String str = semWallpaperData2.mLastCallingPackage;
+            StringBuilder m2 = ArrayUtils$$ExternalSyntheticOutline0.m(i2, i4, "restoreSnapshotInternal: which = ", ", type = ", ", backupFile = ");
+            m2.append(wallpaperFile);
+            m2.append(", targetFile = ");
+            m2.append(file);
+            m2.append(", restoreWallpaperId = ");
+            m2.append(i3);
+            m2.append(", lastCallingPackage = ");
+            m2.append(str);
+            Log.d("SemWallpaperManagerService", m2.toString());
+            semWallpaperData2.mWallpaperHistory = semWallpaperData.mWallpaperHistory.m1238clone();
+            if (TextUtils.isEmpty(str)) {
+                m1039clone.setCallingPackage("[RESTORE]");
+            } else if (str.contains("[RESTORE]")) {
+                m1039clone.setCallingPackage(str);
+            } else {
+                m1039clone.setCallingPackage("[RESTORE]".concat(str));
+            }
+            Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: wallpaperToRestore [" + m1039clone + "]");
+            boolean z = false;
+            SnapshotCallback snapshotCallback = this.mSnapshotCallback;
+            if (i4 == 0) {
+                if (wallpaperFile != null && wallpaperFile.exists() && i3 >= 0) {
+                    m1039clone.imageWallpaperPending = true;
+                    m1039clone.mWhich = i2;
+                    ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                    return SnapshotHelper.saveFile(wallpaperFile, file) ? 1001 : -2;
+                }
+                if (WhichChecker.isLock(i2)) {
+                    if (snapshotData.hasWallpaperData(SnapshotHelper.getCorrespondingWhich(i2)) && WhichChecker.isSystemAndLock(snapshotData.getWallpaperData(SnapshotHelper.getCorrespondingWhich(i2)).mWhich)) {
+                        z = true;
+                    }
+                    Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: isPartOfSystemAndLock = " + z + ", restoreWallpaperId = " + i3);
+                    if (z || i3 < 0) {
+                        WallpaperData onWallpaperDataRequested2 = semCallback.onWallpaperDataRequested(i, WhichChecker.getMode(i2) | 1);
+                        onWallpaperDataRequested2.mWhich |= 2;
+                        onWallpaperDataRequested2.mSystemWasBoth = true;
+                        semCallback.onWallpaperFlagUpdated(i, i2);
+                        ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                        return 1001;
+                    }
+                }
+                ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                semCallback.onBindWallpaperRequested(i, i2);
+                Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: Preloaded ?");
+                return 1001;
+            }
+            if (i4 != 1) {
+                if (i4 == 3) {
+                    ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                    m1039clone.imageWallpaperPending = true;
+                    m1039clone.mWhich = i2;
+                    if (Rune.SUPPORT_DLS_SNAPSHOT) {
+                        m1039clone.wallpaperId = WallpaperUtils.makeWallpaperIdLocked();
+                    }
+                    semCallback.onBindWallpaperRequested(i, i2);
+                    return 1001;
+                }
+                if (i4 != 4) {
+                    if (i4 == 5) {
+                        m1039clone.imageWallpaperPending = true;
+                        m1039clone.mWhich = i2;
+                        ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                        semCallback.onBindWallpaperRequested(i, i2);
+                        return 1001;
+                    }
+                    if (i4 == 7) {
+                        if (Rune.SUPPORT_LAYERED_WALLPAPER_SNAPSHOT) {
+                            int i7 = snapshotData.key;
+                            if (SnapshotHelper.getBackupWallpaperAssetsDir(i, i7, i2).exists()) {
+                                Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: Asset files exist.");
+                                SnapshotHelper.renameDirectory(SnapshotHelper.getBackupWallpaperAssetsDir(i, i7, i2), AssetFileManager.getBaseAssetDir(i2, i, false));
+                            }
+                            PreloadedLiveWallpaperHelper.recoverComponentNameIfMissed(m1039clone);
+                        }
+                        if (m1039clone.mWhich == 0) {
+                            m1039clone.mWhich = i2;
+                        }
+                        if (WhichChecker.isSystem(i2) && WhichChecker.isSystemAndLock(m1039clone.mWhich)) {
+                            int connectedSnapshotForLiveWallpaper = snapshotData.getConnectedSnapshotForLiveWallpaper(i2);
+                            if (connectedSnapshotForLiveWallpaper == -1) {
+                                m1039clone.mSystemWasBoth = true;
+                            } else {
+                                SnapshotManager.SnapshotData snapshot = this.mSnapshotManager.getSnapshot(i, connectedSnapshotForLiveWallpaper);
+                                int correspondingWhich = SnapshotHelper.getCorrespondingWhich(i2);
+                                if (snapshot == null || !snapshot.hasWallpaperData(correspondingWhich)) {
+                                    m1039clone.mSystemWasBoth = true;
+                                } else {
+                                    m1039clone.mWhich = WhichChecker.getMode(m1039clone.mWhich) | 1;
+                                    snapshot.setConnectedSnapshotForLiveWallpaper(correspondingWhich, -1);
+                                }
+                            }
+                        }
+                        ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                        semCallback.onBindWallpaperRequested(i, m1039clone.mWhich);
+                        return 1001;
+                    }
+                    if (i4 == 8) {
+                        ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                        m1039clone.imageWallpaperPending = true;
+                        m1039clone.mWhich = i2;
+                        semCallback.onBindWallpaperRequested(i, i2);
+                        if (wallpaperFile != null && wallpaperFile.exists()) {
+                            return SnapshotHelper.saveFile(wallpaperFile, file) ? 1001 : -2;
+                        }
+                        Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: backupFile not exist.");
+                        return 1001;
+                    }
+                    if (i4 == 1000) {
+                        ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                        semCallback.onBindWallpaperRequested(i, i2);
+                        return 1001;
+                    }
+                    if (wallpaperFile != null && wallpaperFile.exists()) {
+                        m1039clone.imageWallpaperPending = true;
+                        m1039clone.mWhich = i2;
+                        ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                        return SnapshotHelper.saveFile(wallpaperFile, file) ? 1001 : -2;
+                    }
+                    if (!WhichChecker.isLock(i2)) {
+                        Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: Unhandled snapshot!");
+                        return 1002;
+                    }
+                    Log.d("SemWallpaperManagerService", "restoreSnapshotInternal: Live wallpaper.");
+                    WallpaperData onWallpaperDataRequested3 = semCallback.onWallpaperDataRequested(i, WhichChecker.getMode(i2) | 1);
+                    int i8 = onWallpaperDataRequested3.mWhich | 2;
+                    onWallpaperDataRequested3.mWhich = i8;
+                    onWallpaperDataRequested3.mSystemWasBoth = true;
+                    if (i3 < 0) {
+                        semCallback.onWallpaperFlagUpdated(i, i2);
+                    } else {
+                        semCallback.onBindWallpaperRequested(i, i8);
+                    }
+                    ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+                    return 1001;
+                }
+            }
+            m1039clone.imageWallpaperPending = true;
+            m1039clone.mWhich = i2;
+            ((WallpaperManagerService) snapshotCallback).requestSaveRestoredWallpaperLocked(i, i2, m1039clone);
+            semCallback.onBindWallpaperRequested(i, i2);
+            return 1001;
+        } catch (Exception e) {
+            Log.e("SemWallpaperManagerService", "restoreSnapshotInternal: " + e.getMessage());
+            return 1003;
+        }
+    }
+
+    public final void saveDefaultLiveWallpaperData(WallpaperData wallpaperData) {
+        ComponentName defaultPreloadedLiveWallpaperComponentName = getDefaultPreloadedLiveWallpaperComponentName(wallpaperData.mSemWallpaperData.mWhich);
+        Slog.d("SemWallpaperManagerService", "saveDefaultLiveWallpaperData: componentName = " + defaultPreloadedLiveWallpaperComponentName);
+        if (defaultPreloadedLiveWallpaperComponentName != null) {
+            wallpaperData.wallpaperComponent = defaultPreloadedLiveWallpaperComponentName;
+            wallpaperData.allowBackup = false;
+            putDefaultLiveWallpaperProperties(wallpaperData);
+        }
+    }
+
+    public final void saveDefaultMutipackWallpaperData(WallpaperData wallpaperData) {
+        String str;
+        boolean contains;
+        String str2;
+        String defaultMultipackStyle = this.mResourceInfo.getDefaultMultipackStyle(wallpaperData.mSemWallpaperData.mWhich);
+        if (TextUtils.isEmpty(defaultMultipackStyle) || !defaultMultipackStyle.contains("MULTIPLE")) {
+            Log.d("SemWallpaperManagerService", "getDefaultMultiPackUri: defaultWallpaperStyle is empty or not MULTIPLE!");
+            str = null;
+        } else {
+            int lastIndexOf = defaultMultipackStyle.lastIndexOf("=") + 1;
+            int lastIndexOf2 = defaultMultipackStyle.contains(":") ? defaultMultipackStyle.lastIndexOf(":") : -1;
+            if (lastIndexOf2 == -1) {
+                str2 = defaultMultipackStyle.substring(lastIndexOf);
+                contains = false;
+            } else {
+                String substring = defaultMultipackStyle.substring(lastIndexOf, lastIndexOf2);
+                contains = defaultMultipackStyle.contains("tilt");
+                str2 = substring;
+            }
+            StringBuilder sb = new StringBuilder("multipack://");
+            sb.append(str2);
+            if (contains) {
+                sb.append("?tilt=true");
+            }
+            str = sb.toString();
+        }
+        wallpaperData.allowBackup = false;
+        SemWallpaperData semWallpaperData = wallpaperData.mSemWallpaperData;
+        semWallpaperData.mUri = str;
+        semWallpaperData.mExternalParams = null;
+        semWallpaperData.mIsPreloaded = true;
+        this.mCallback.getClass();
+        wallpaperData.wallpaperId = WallpaperUtils.makeWallpaperIdLocked();
+    }
+
+    public final void saveDefaultVideoWallpaperData(WallpaperData wallpaperData) {
+        String oMCVideoWallpaperFilePath = WallpaperManager.getOMCVideoWallpaperFilePath(null);
+        String defaultVideoWallpaperFileName = this.mResourceInfo.getDefaultVideoWallpaperFileName(wallpaperData.mSemWallpaperData.mWhich);
+        wallpaperData.allowBackup = false;
+        wallpaperData.cropHint.set(new Rect(0, 0, 0, 0));
+        SemWallpaperData semWallpaperData = wallpaperData.mSemWallpaperData;
+        semWallpaperData.mVideoDefaultHasBeenUsed = true;
+        semWallpaperData.mVideoFilePath = oMCVideoWallpaperFilePath;
+        semWallpaperData.mVideoPkgName = "com.samsung.android.wallpaper.res";
+        semWallpaperData.mVideoFileName = defaultVideoWallpaperFileName;
+        semWallpaperData.mIsPreloaded = true;
+        semWallpaperData.mUri = null;
+        semWallpaperData.mExternalParams = null;
+        this.mCallback.getClass();
+        wallpaperData.wallpaperId = WallpaperUtils.makeWallpaperIdLocked();
+    }
+
+    public final void saveSettingsLockedForSnapshot(int i) {
+        synchronized (this.mSnapshotDataLock) {
+            this.mSnapshotManager.saveSettingsLockedForSnapshot(i);
+        }
+    }
+
+    public final void semClearWallpaperLocked(int i, int i2, String str) {
+        WallpaperData wallpaperData;
+        SemWallpaperData semWallpaperData;
+        ComponentName componentName;
+        removeSnapshotByWhich(i);
+        String str2 = str + "(clear)";
+        int mode = WhichChecker.getMode(i);
+        boolean isSystem = WhichChecker.isSystem(i);
+        boolean isLock = WhichChecker.isLock(i);
+        if (WallpaperManager.isDefaultOperatorWallpaper(this.mContext, i, this.mCMFWallpaper.getDeviceColor())) {
+            Log.d("SemWallpaperManagerService", "semClearWallpaperLocked: Default operator wallpaper");
+            WallpaperData onWallpaperDataRequested = this.mCallback.onWallpaperDataRequested(i2, i);
+            onWallpaperDataRequested.mSemWallpaperData.mWpType = -1;
+            onWallpaperDataRequested.cleanUp();
+            onWallpaperDataRequested.mSemWallpaperData.mWhich = i;
+            onWallpaperDataRequested.setCallingPackage(str2);
+            onWallpaperDataRequested.mSemWallpaperData.mIsPreloaded = true;
+            File defaultWallpaperFile = WallpaperManager.getDefaultWallpaperFile(this.mContext, i);
+            if (defaultWallpaperFile != null && defaultWallpaperFile.exists()) {
+                String str3 = "file://" + defaultWallpaperFile.getPath();
+                BinaryTransparencyService$$ExternalSyntheticOutline0.m("setFactoryDefaultWallpaper: uriString = ", str3, "SemWallpaperManagerService");
+                onWallpaperDataRequested.mSemWallpaperData.mUri = str3;
+            }
+            this.mCallback.onSetWallpaperComponent(onWallpaperDataRequested);
+            return;
+        }
+        int i3 = mode | 1;
+        WallpaperData onWallpaperDataRequested2 = this.mCallback.onWallpaperDataRequested(i2, i3);
+        WallpaperData onWallpaperDataRequested3 = this.mCallback.onWallpaperDataRequested(i2, mode | 2);
+        WallpaperData wallpaperData2 = new WallpaperData(i2, i);
+        wallpaperData2.mWhich = i;
+        wallpaperData2.mSemWallpaperData.mWhich = i;
+        int defaultWallpaperType = getDefaultWallpaperType(i);
+        wallpaperData2.mSemWallpaperData.mWpType = defaultWallpaperType;
+        wallpaperData2.setCallingPackage(str2);
+        Log.d("SemWallpaperManagerService", "semClearWallpaperLocked: factoryDefaultType = " + defaultWallpaperType);
+        if (defaultWallpaperType == 3) {
+            saveDefaultMutipackWallpaperData(wallpaperData2);
+            this.mCallback.getClass();
+            return;
+        }
+        if (defaultWallpaperType == 7) {
+            if (isSystem) {
+                saveDefaultLiveWallpaperData(wallpaperData2);
+                this.mCallback.onSetWallpaperComponent(wallpaperData2);
+                return;
+            }
+            return;
+        }
+        if (defaultWallpaperType != 8) {
+            if (isLock && (semWallpaperData = onWallpaperDataRequested2.mSemWallpaperData) != null && (componentName = onWallpaperDataRequested2.wallpaperComponent) != null && semWallpaperData.mWpType == 7 && componentName.equals(getDefaultPreloadedLiveWallpaperComponentName(i3))) {
+                onWallpaperDataRequested3.mSemWallpaperData.mWpType = -1;
+                onWallpaperDataRequested3.cleanUp();
+                onWallpaperDataRequested3.mSemWallpaperData.mWpType = defaultWallpaperType;
+                onWallpaperDataRequested3.setCallingPackage(str2);
+                int i4 = onWallpaperDataRequested2.mWhich | 2;
+                onWallpaperDataRequested2.mWhich = i4;
+                onWallpaperDataRequested2.mSystemWasBoth = true;
+                this.mCallback.onBindWallpaperRequested(i2, i4);
+                this.mCallback.onWallpaperFlagUpdated(i2, i);
+                this.mCallback.onDetachWallpaper(onWallpaperDataRequested3);
+                this.mCallback.onLockWallpaperChanged(i2, i, onWallpaperDataRequested3.mSemWallpaperData.mExternalParams);
+                this.mLegibilityColor.extractColor(onWallpaperDataRequested3.mSemWallpaperData.mWhich, false);
+                this.mLegibilityColor.extractColor(onWallpaperDataRequested3.mSemWallpaperData.mWhich, true);
+                return;
+            }
+            if (isLock) {
+                onWallpaperDataRequested2 = onWallpaperDataRequested3;
+            }
+            onWallpaperDataRequested2.mSemWallpaperData.mWpType = -1;
+            onWallpaperDataRequested2.cleanUp();
+            onWallpaperDataRequested2.mSemWallpaperData.mWpType = defaultWallpaperType;
+            onWallpaperDataRequested2.setCallingPackage(str2);
+            onWallpaperDataRequested2.mSemWallpaperData.mIsPreloaded = true;
+            onWallpaperDataRequested2.mSemWallpaperData.mUri = this.mDefaultWallpaper.getDefaultWallpaperUri(i);
+            this.mCallback.onSetWallpaperComponent(onWallpaperDataRequested2);
+            if (isLock) {
+                this.mCallback.onLockWallpaperChanged(i2, i, onWallpaperDataRequested2.mSemWallpaperData.mExternalParams);
+            }
+            this.mLegibilityColor.extractColor(onWallpaperDataRequested2.mSemWallpaperData.mWhich, false);
+            this.mLegibilityColor.extractColor(onWallpaperDataRequested2.mSemWallpaperData.mWhich, true);
+            return;
+        }
+        saveDefaultVideoWallpaperData(wallpaperData2);
+        WallpaperManagerService.SemCallback semCallback = this.mCallback;
+        semCallback.getClass();
+        int i5 = wallpaperData2.mWhich;
+        int mode2 = WhichChecker.getMode(i5);
+        boolean isLock2 = WhichChecker.isLock(i5);
+        int i6 = wallpaperData2.userId;
+        SemWallpaperData semWallpaperData2 = wallpaperData2.mSemWallpaperData;
+        boolean z = semWallpaperData2.mIsPreloaded;
+        boolean z2 = wallpaperData2.allowBackup;
+        Bundle bundle = semWallpaperData2.mExternalParams;
+        String str4 = semWallpaperData2.mVideoFilePath;
+        String str5 = semWallpaperData2.mVideoPkgName;
+        String str6 = semWallpaperData2.mVideoFileName;
+        String str7 = semWallpaperData2.mLastCallingPackage;
+        StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i6, i5, "onSetVideoWallpaper: userId = ", ", which = ", ", isPreloaded = ");
+        BatteryService$$ExternalSyntheticOutline0.m(m, z, ", allowBackup = ", z2, ", extras = ");
+        m.append(bundle);
+        m.append(", videoFilePath = ");
+        m.append(str4);
+        m.append(", videoPackage = ");
+        DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(m, str5, ", videoFileName = ", str6, ", callingPackage = ");
+        m.append(str7);
+        Log.d("WallpaperManagerService", m.toString());
+        synchronized (WallpaperManagerService.this.mLock) {
+            try {
+                WallpaperManagerService.this.setVideoWallpaperLocked(i5, str4, str5, str6, str7, i6, z, z2, bundle);
+                if (isLock2) {
+                    WallpaperData wallpaperSafeLocked = WallpaperManagerService.this.getWallpaperSafeLocked(i6, mode2 | 1);
+                    wallpaperSafeLocked.mWhich &= -3;
+                    WallpaperManagerService.this.updateEngineFlags(wallpaperSafeLocked);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        if (WhichChecker.isWatchFaceDisplay(i5) || WhichChecker.isVirtualDisplay(i5)) {
+            wallpaperData = wallpaperData2;
+            WallpaperManagerService.this.notifyCoverWallpaperChanged(wallpaperData.mSemWallpaperData.mWpType, i5);
+        } else {
+            wallpaperData = wallpaperData2;
+        }
+        if (isLock2) {
+            WallpaperManagerService.this.notifyLockWallpaperChanged(wallpaperData.mSemWallpaperData.mWpType, i5, null);
+        }
+        WallpaperManagerService.this.mSemService.mLegibilityColor.extractColor(wallpaperData.mSemWallpaperData.mWhich, false);
+    }
+
+    public final void semClearWallpaperLocked(WallpaperData wallpaperData) {
+        Slog.d("SemWallpaperManagerService", "semClearWallpaperLocked: wallpaper = " + wallpaperData);
+        int i = wallpaperData.mWhich;
+        int i2 = wallpaperData.userId;
+        if (!WhichChecker.isSystemAndLock(i)) {
+            semClearWallpaperLocked(i, i2, "android");
+            return;
+        }
+        int mode = WhichChecker.getMode(i);
+        semClearWallpaperLocked(mode | 1, i2, "android");
+        semClearWallpaperLocked(mode | 2, i2, "android");
+    }
+
+    public final void setFactoryDefaultWallpaper(int i, int i2, WallpaperData wallpaperData, WallpaperData wallpaperData2) {
+        SemWallpaperData semWallpaperData;
+        ComponentName componentName;
+        StringBuilder m = ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "setFactoryDefaultWallpaper: userId = ", ", which = ", ", systemWallpaper = ");
+        m.append(wallpaperData);
+        m.append(", lockWallpaper = ");
+        m.append(wallpaperData2);
+        Slog.d("SemWallpaperManagerService", m.toString());
+        if (WhichChecker.getMode(i2) == 0) {
+            Slog.e("SemWallpaperManagerService", "setFactoryDefaultWallpaper: which should contain mode.");
+            if (!SHIPPED) {
+                throw new IllegalArgumentException("setFactoryDefaultWallpaper: which should contain mode.");
+            }
+        }
+        int mode = WhichChecker.getMode(i2);
+        boolean isSystem = WhichChecker.isSystem(i2);
+        boolean isLock = WhichChecker.isLock(i2);
+        boolean isDefaultOperatorWallpaper = WallpaperManager.isDefaultOperatorWallpaper(this.mContext, i2, this.mCMFWallpaper.getDeviceColor());
+        deleteThumbnailFile(i2, i);
+        WallpaperData wallpaperData3 = isLock ? wallpaperData2 : wallpaperData;
+        if (wallpaperData3 == null) {
+            Slog.d("SemWallpaperManagerService", "setFactoryDefaultWallpaper: No WallpaperData to initialize.");
+            return;
+        }
+        wallpaperData3.mSemWallpaperData.mWpType = -1;
+        wallpaperData3.cleanUp();
+        wallpaperData3.setCallingPackage("android");
+        wallpaperData3.mSemWallpaperData.mWhich = i2;
+        if (wallpaperData != null) {
+            wallpaperData3.mSystemWasBoth = WhichChecker.isSystemAndLock(wallpaperData.mWhich);
+        }
+        wallpaperData3.mSemWallpaperData.mIsPreloaded = true;
+        if (isDefaultOperatorWallpaper) {
+            Slog.d("SemWallpaperManagerService", "setFactoryDefaultWallpaper: Default operator wallpaper.");
+            File defaultWallpaperFile = WallpaperManager.getDefaultWallpaperFile(this.mContext, i2);
+            if (defaultWallpaperFile != null && defaultWallpaperFile.exists()) {
+                String str = "file://" + defaultWallpaperFile.getPath();
+                BinaryTransparencyService$$ExternalSyntheticOutline0.m("setFactoryDefaultWallpaper: uriString = ", str, "SemWallpaperManagerService");
+                wallpaperData3.mSemWallpaperData.mUri = str;
+            }
+            wallpaperData3.setCallingPackage("android");
+            return;
+        }
+        int defaultWallpaperType = getDefaultWallpaperType(i2);
+        AnyMotionDetector$$ExternalSyntheticOutline0.m(defaultWallpaperType, "setFactoryDefaultWallpaper: factoryDefaultType = ", "SemWallpaperManagerService");
+        wallpaperData3.mSemWallpaperData.mWpType = defaultWallpaperType;
+        if (defaultWallpaperType == 3) {
+            saveDefaultMutipackWallpaperData(wallpaperData3);
+            return;
+        }
+        if (defaultWallpaperType == 7) {
+            if (!this.mResourceInfo.isDefaultWallpaperPaired(i2, 7)) {
+                saveDefaultLiveWallpaperData(wallpaperData3);
+                return;
+            } else if (isSystem) {
+                saveDefaultLiveWallpaperData(wallpaperData3);
+                return;
+            } else {
+                Slog.w("SemWallpaperManagerService", "setFactoryDefaultWallpaper: unexpected default wallpaper state");
+                return;
+            }
+        }
+        if (defaultWallpaperType == 8) {
+            saveDefaultVideoWallpaperData(wallpaperData3);
+            return;
+        }
+        if (!isLock || wallpaperData == null || (semWallpaperData = wallpaperData.mSemWallpaperData) == null || (componentName = wallpaperData.wallpaperComponent) == null || semWallpaperData.mWpType != 7 || !componentName.equals(getDefaultPreloadedLiveWallpaperComponentName(mode | 1)) || !this.mResourceInfo.isDefaultWallpaperPaired(i2, 7)) {
+            wallpaperData3.mSemWallpaperData.mUri = this.mDefaultWallpaper.getDefaultWallpaperUri(i2);
+            return;
+        }
+        wallpaperData.mWhich |= 2;
+        wallpaperData.mSystemWasBoth = true;
+        this.mCallback.onDetachWallpaper(wallpaperData2);
+    }
+
     public void setSnapshotTestMode(boolean z) {
         if (SHIPPED) {
             return;
         }
         sSnapshotTestMode = z;
-    }
-
-    public static void putLog(String str) {
-        Log.d("SemWallpaperManagerService", str);
-        ArrayList arrayList = sLogList;
-        synchronized (arrayList) {
-            long currentTimeMillis = System.currentTimeMillis();
-            arrayList.add((SimpleDateFormat.getDateTimeInstance().format(new Date(currentTimeMillis)) + "." + (currentTimeMillis % 1000)) + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + str);
-            if (arrayList.size() > 20) {
-                arrayList.remove(0);
-            }
-        }
-    }
-
-    public static String[] getLogArray() {
-        ArrayList arrayList = sLogList;
-        synchronized (arrayList) {
-            if (arrayList.isEmpty()) {
-                return null;
-            }
-            return (String[]) arrayList.toArray(new String[arrayList.size()]);
-        }
     }
 }

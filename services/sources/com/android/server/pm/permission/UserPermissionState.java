@@ -1,32 +1,23 @@
 package com.android.server.pm.permission;
 
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.os.UserHandle;
 import android.util.ArraySet;
 import android.util.SparseArray;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class UserPermissionState {
     public final ArraySet mInstallPermissionsFixed = new ArraySet();
     public final SparseArray mUidStates = new SparseArray();
 
-    public boolean areInstallPermissionsFixed(String str) {
-        return this.mInstallPermissionsFixed.contains(str);
-    }
-
-    public void setInstallPermissionsFixed(String str, boolean z) {
-        if (z) {
-            this.mInstallPermissionsFixed.add(str);
-        } else {
-            this.mInstallPermissionsFixed.remove(str);
+    public static void checkAppId(int i) {
+        if (UserHandle.getUserId(i) != 0) {
+            throw new IllegalArgumentException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Invalid app ID "));
         }
     }
 
-    public UidPermissionState getUidState(int i) {
-        checkAppId(i);
-        return (UidPermissionState) this.mUidStates.get(i);
-    }
-
-    public UidPermissionState getOrCreateUidState(int i) {
+    public final UidPermissionState getOrCreateUidState(int i) {
         checkAppId(i);
         UidPermissionState uidPermissionState = (UidPermissionState) this.mUidStates.get(i);
         if (uidPermissionState != null) {
@@ -37,22 +28,16 @@ public final class UserPermissionState {
         return uidPermissionState2;
     }
 
-    public UidPermissionState createUidStateWithExisting(int i, UidPermissionState uidPermissionState) {
+    public final UidPermissionState getUidState(int i) {
         checkAppId(i);
-        UidPermissionState uidPermissionState2 = new UidPermissionState(uidPermissionState);
-        this.mUidStates.put(i, uidPermissionState2);
-        return uidPermissionState2;
+        return (UidPermissionState) this.mUidStates.get(i);
     }
 
-    public void removeUidState(int i) {
-        checkAppId(i);
-        this.mUidStates.delete(i);
-    }
-
-    public final void checkAppId(int i) {
-        if (UserHandle.getUserId(i) == 0) {
-            return;
+    public final void setInstallPermissionsFixed(String str, boolean z) {
+        if (z) {
+            this.mInstallPermissionsFixed.add(str);
+        } else {
+            this.mInstallPermissionsFixed.remove(str);
         }
-        throw new IllegalArgumentException("Invalid app ID " + i);
     }
 }

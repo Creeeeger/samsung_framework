@@ -1,46 +1,19 @@
 package org.tukaani.xz.rangecoder;
 
-import java.io.DataInputStream;
 import org.tukaani.xz.ArrayCache;
 import org.tukaani.xz.CorruptedInputException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class RangeDecoderFromBuffer extends RangeDecoder {
-    public final byte[] buf;
-    public int pos;
+    public final byte[] buf = new byte[65531];
+    public int pos = 65531;
 
-    public RangeDecoderFromBuffer(int i, ArrayCache arrayCache) {
-        byte[] byteArray = arrayCache.getByteArray(i - 5, false);
-        this.buf = byteArray;
-        this.pos = byteArray.length;
-    }
-
-    public void putArraysToCache(ArrayCache arrayCache) {
-        arrayCache.putArray(this.buf);
-    }
-
-    public void prepareInputBuffer(DataInputStream dataInputStream, int i) {
-        if (i < 5) {
-            throw new CorruptedInputException();
-        }
-        if (dataInputStream.readUnsignedByte() != 0) {
-            throw new CorruptedInputException();
-        }
-        this.code = dataInputStream.readInt();
-        this.range = -1;
-        int i2 = i - 5;
-        byte[] bArr = this.buf;
-        int length = bArr.length - i2;
-        this.pos = length;
-        dataInputStream.readFully(bArr, length, i2);
-    }
-
-    public boolean isFinished() {
-        return this.pos == this.buf.length && this.code == 0;
+    public RangeDecoderFromBuffer(ArrayCache arrayCache) {
     }
 
     @Override // org.tukaani.xz.rangecoder.RangeDecoder
-    public void normalize() {
+    public final void normalize() {
         int i = this.range;
         if (((-16777216) & i) == 0) {
             try {

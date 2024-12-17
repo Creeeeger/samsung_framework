@@ -7,8 +7,9 @@ import com.android.internal.util.Preconditions;
 import java.io.FileDescriptor;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes2.dex */
-public class GnssPowerStats {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class GnssPowerStats {
     public final int mElapsedRealtimeFlags;
     public final long mElapsedRealtimeNanos;
     public final double mElapsedRealtimeUncertaintyNanos;
@@ -31,51 +32,7 @@ public class GnssPowerStats {
         this.mOtherModesEnergyMilliJoule = dArr;
     }
 
-    public boolean hasElapsedRealtimeNanos() {
-        return (this.mElapsedRealtimeFlags & 1) != 0;
-    }
-
-    public boolean hasElapsedRealtimeUncertaintyNanos() {
-        return (this.mElapsedRealtimeFlags & 2) != 0;
-    }
-
-    public long getElapsedRealtimeNanos() {
-        return this.mElapsedRealtimeNanos;
-    }
-
-    public double getElapsedRealtimeUncertaintyNanos() {
-        return this.mElapsedRealtimeUncertaintyNanos;
-    }
-
-    public double getTotalEnergyMilliJoule() {
-        return this.mTotalEnergyMilliJoule;
-    }
-
-    public double getSinglebandTrackingModeEnergyMilliJoule() {
-        return this.mSinglebandTrackingModeEnergyMilliJoule;
-    }
-
-    public double getMultibandTrackingModeEnergyMilliJoule() {
-        return this.mMultibandTrackingModeEnergyMilliJoule;
-    }
-
-    public double getSinglebandAcquisitionModeEnergyMilliJoule() {
-        return this.mSinglebandAcquisitionModeEnergyMilliJoule;
-    }
-
-    public double getMultibandAcquisitionModeEnergyMilliJoule() {
-        return this.mMultibandAcquisitionModeEnergyMilliJoule;
-    }
-
-    public double[] getOtherModesEnergyMilliJoule() {
-        return this.mOtherModesEnergyMilliJoule;
-    }
-
-    public void validate() {
-        Preconditions.checkArgument(hasElapsedRealtimeNanos());
-    }
-
-    public void dump(FileDescriptor fileDescriptor, IndentingPrintWriter indentingPrintWriter, String[] strArr, GnssCapabilities gnssCapabilities) {
+    public final void dump(FileDescriptor fileDescriptor, IndentingPrintWriter indentingPrintWriter, String[] strArr, GnssCapabilities gnssCapabilities) {
         if (hasElapsedRealtimeNanos()) {
             indentingPrintWriter.print("time: ");
             TimeUnit timeUnit = TimeUnit.NANOSECONDS;
@@ -117,5 +74,49 @@ public class GnssPowerStats {
                 indentingPrintWriter.println("mJ");
             }
         }
+    }
+
+    public final long getElapsedRealtimeNanos() {
+        return this.mElapsedRealtimeNanos;
+    }
+
+    public final double getElapsedRealtimeUncertaintyNanos() {
+        return this.mElapsedRealtimeUncertaintyNanos;
+    }
+
+    public final double getMultibandAcquisitionModeEnergyMilliJoule() {
+        return this.mMultibandAcquisitionModeEnergyMilliJoule;
+    }
+
+    public final double getMultibandTrackingModeEnergyMilliJoule() {
+        return this.mMultibandTrackingModeEnergyMilliJoule;
+    }
+
+    public final double[] getOtherModesEnergyMilliJoule() {
+        return this.mOtherModesEnergyMilliJoule;
+    }
+
+    public final double getSinglebandAcquisitionModeEnergyMilliJoule() {
+        return this.mSinglebandAcquisitionModeEnergyMilliJoule;
+    }
+
+    public final double getSinglebandTrackingModeEnergyMilliJoule() {
+        return this.mSinglebandTrackingModeEnergyMilliJoule;
+    }
+
+    public final double getTotalEnergyMilliJoule() {
+        return this.mTotalEnergyMilliJoule;
+    }
+
+    public final boolean hasElapsedRealtimeNanos() {
+        return (this.mElapsedRealtimeFlags & 1) != 0;
+    }
+
+    public final boolean hasElapsedRealtimeUncertaintyNanos() {
+        return (this.mElapsedRealtimeFlags & 2) != 0;
+    }
+
+    public final void validate() {
+        Preconditions.checkArgument(hasElapsedRealtimeNanos());
     }
 }

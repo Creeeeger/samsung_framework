@@ -1,32 +1,28 @@
 package com.android.server.enterprise.utils;
 
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.server.devicepolicy.AbUpdateInstaller$$ExternalSyntheticOutline0;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class NetdHelper {
-    public static final Map allowedCommands = initMap();
-    public static int CMD_INVALID = -1;
-    public static String CMD_DELIMITER = KnoxVpnFirewallHelper.DELIMITER;
-    public static String PARAM_DELIMITER = "\\s+";
-    public static String CMD_PATH = "/system/bin/";
+    public static final String CMD_DELIMITER;
+    public static final int CMD_INVALID;
+    public static final String CMD_PATH;
+    public static final String PARAM_DELIMITER;
+    public static final Map allowedCommands;
 
-    public static Map initMap() {
+    static {
         HashMap hashMap = new HashMap();
-        hashMap.put(0, KnoxVpnFirewallHelper.IP4_RULE_CMD);
-        hashMap.put(1, KnoxVpnFirewallHelper.IP6_RULE_CMD);
-        hashMap.put(2, KnoxVpnFirewallHelper.IP4_ROUTE_CMD);
-        hashMap.put(3, KnoxVpnFirewallHelper.IP6_ROUTE_CMD);
-        return Collections.unmodifiableMap(hashMap);
-    }
-
-    public static String[] splitCmds(String str) {
-        if (str == null || str.isEmpty()) {
-            return null;
-        }
-        return str.trim().split(CMD_DELIMITER);
+        AbUpdateInstaller$$ExternalSyntheticOutline0.m(0, hashMap, "ip rule", 1, "ip -6 rule");
+        AbUpdateInstaller$$ExternalSyntheticOutline0.m(2, hashMap, "ip route", 3, "ip -6 route");
+        allowedCommands = Collections.unmodifiableMap(hashMap);
+        CMD_INVALID = -1;
+        CMD_DELIMITER = ";";
+        PARAM_DELIMITER = "\\s+";
+        CMD_PATH = "/system/bin/";
     }
 
     public static Integer getCmdNumber(String str) {
@@ -42,10 +38,13 @@ public abstract class NetdHelper {
     }
 
     public static String[] getCmdParams(String str) {
-        int intValue;
-        if (str == null || str.isEmpty() || (intValue = getCmdNumber(str).intValue()) == CMD_INVALID) {
+        if (str == null || str.isEmpty()) {
             return null;
         }
-        return str.replace(CMD_PATH, "").replace((CharSequence) allowedCommands.get(Integer.valueOf(intValue)), "").trim().split(PARAM_DELIMITER);
+        Integer cmdNumber = getCmdNumber(str);
+        if (cmdNumber.intValue() == CMD_INVALID) {
+            return null;
+        }
+        return str.replace(CMD_PATH, "").replace((CharSequence) allowedCommands.get(cmdNumber), "").trim().split(PARAM_DELIMITER);
     }
 }

@@ -1,16 +1,15 @@
 package android.hardware.broadcastradio.V2_0;
 
 import android.os.HidlSupport;
-import android.os.HwBlob;
-import android.os.HwParcel;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class Announcement {
-    public ProgramSelector selector = new ProgramSelector();
-    public byte type = 0;
-    public ArrayList vendorInfo = new ArrayList();
+    public ProgramSelector selector;
+    public byte type;
+    public ArrayList vendorInfo;
 
     public final boolean equals(Object obj) {
         if (this == obj) {
@@ -28,34 +27,34 @@ public final class Announcement {
     }
 
     public final String toString() {
-        return "{.selector = " + this.selector + ", .type = " + AnnouncementType.toString(this.type) + ", .vendorInfo = " + this.vendorInfo + "}";
-    }
-
-    public static final ArrayList readVectorFromParcel(HwParcel hwParcel) {
-        ArrayList arrayList = new ArrayList();
-        HwBlob readBuffer = hwParcel.readBuffer(16L);
-        int int32 = readBuffer.getInt32(8L);
-        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 56, readBuffer.handle(), 0L, true);
-        arrayList.clear();
-        for (int i = 0; i < int32; i++) {
-            Announcement announcement = new Announcement();
-            announcement.readEmbeddedFromParcel(hwParcel, readEmbeddedBuffer, i * 56);
-            arrayList.add(announcement);
+        String str;
+        StringBuilder sb = new StringBuilder("{.selector = ");
+        sb.append(this.selector);
+        sb.append(", .type = ");
+        byte b = this.type;
+        if (b == 1) {
+            str = "EMERGENCY";
+        } else if (b == 2) {
+            str = "WARNING";
+        } else if (b == 3) {
+            str = "TRAFFIC";
+        } else if (b == 4) {
+            str = "WEATHER";
+        } else if (b == 5) {
+            str = "NEWS";
+        } else if (b == 6) {
+            str = "EVENT";
+        } else if (b == 7) {
+            str = "SPORT";
+        } else if (b == 8) {
+            str = "MISC";
+        } else {
+            str = "0x" + Integer.toHexString(Byte.toUnsignedInt(b));
         }
-        return arrayList;
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.selector.readEmbeddedFromParcel(hwParcel, hwBlob, j + 0);
-        this.type = hwBlob.getInt8(j + 32);
-        long j2 = j + 40;
-        int int32 = hwBlob.getInt32(8 + j2);
-        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 32, hwBlob.handle(), j2 + 0, true);
-        this.vendorInfo.clear();
-        for (int i = 0; i < int32; i++) {
-            VendorKeyValue vendorKeyValue = new VendorKeyValue();
-            vendorKeyValue.readEmbeddedFromParcel(hwParcel, readEmbeddedBuffer, i * 32);
-            this.vendorInfo.add(vendorKeyValue);
-        }
+        sb.append(str);
+        sb.append(", .vendorInfo = ");
+        sb.append(this.vendorInfo);
+        sb.append("}");
+        return sb.toString();
     }
 }

@@ -4,34 +4,37 @@ import android.text.format.DateFormat;
 import android.util.ArraySet;
 import android.util.Slog;
 import android.util.proto.ProtoInputStream;
-import android.util.proto.ProtoOutputStream;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class Event {
-    public static final Set ALL_EVENT_TYPES;
-    public static final Set CALL_EVENT_TYPES;
-    public static final Set NOTIFICATION_EVENT_TYPES;
+public final class Event {
     public static final Set SHARE_EVENT_TYPES;
-    public static final Set SMS_EVENT_TYPES;
-    public static final String TAG = "Event";
     public final int mDurationSeconds;
     public final long mTimestamp;
     public final int mType;
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Builder {
+        public int mDurationSeconds;
+        public long mTimestamp;
+        public int mType;
+
+        public Builder(long j, int i) {
+            this.mTimestamp = j;
+            this.mType = i;
+        }
+    }
+
     static {
         ArraySet arraySet = new ArraySet();
-        NOTIFICATION_EVENT_TYPES = arraySet;
         ArraySet arraySet2 = new ArraySet();
         SHARE_EVENT_TYPES = arraySet2;
         ArraySet arraySet3 = new ArraySet();
-        SMS_EVENT_TYPES = arraySet3;
         ArraySet arraySet4 = new ArraySet();
-        CALL_EVENT_TYPES = arraySet4;
         ArraySet arraySet5 = new ArraySet();
-        ALL_EVENT_TYPES = arraySet5;
         arraySet.add(2);
         arraySet.add(3);
         arraySet2.add(4);
@@ -63,38 +66,24 @@ public class Event {
         this.mDurationSeconds = builder.mDurationSeconds;
     }
 
-    public long getTimestamp() {
-        return this.mTimestamp;
-    }
-
-    public int getType() {
-        return this.mType;
-    }
-
-    public void writeToProto(ProtoOutputStream protoOutputStream) {
-        protoOutputStream.write(1120986464257L, this.mType);
-        protoOutputStream.write(1112396529666L, this.mTimestamp);
-        protoOutputStream.write(1120986464259L, this.mDurationSeconds);
-    }
-
     public static Event readFromProto(ProtoInputStream protoInputStream) {
         Builder builder = new Builder();
         while (protoInputStream.nextField() != -1) {
             int fieldNumber = protoInputStream.getFieldNumber();
             if (fieldNumber == 1) {
-                builder.setType(protoInputStream.readInt(1120986464257L));
+                builder.mType = protoInputStream.readInt(1120986464257L);
             } else if (fieldNumber == 2) {
-                builder.setTimestamp(protoInputStream.readLong(1112396529666L));
-            } else if (fieldNumber == 3) {
-                builder.setDurationSeconds(protoInputStream.readInt(1120986464259L));
+                builder.mTimestamp = protoInputStream.readLong(1112396529666L);
+            } else if (fieldNumber != 3) {
+                Slog.w("Event", "Could not read undefined field: " + protoInputStream.getFieldNumber());
             } else {
-                Slog.w(TAG, "Could not read undefined field: " + protoInputStream.getFieldNumber());
+                builder.mDurationSeconds = protoInputStream.readInt(1120986464259L);
             }
         }
-        return builder.build();
+        return new Event(builder);
     }
 
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -105,56 +94,21 @@ public class Event {
         return this.mTimestamp == event.mTimestamp && this.mType == event.mType && this.mDurationSeconds == event.mDurationSeconds;
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(Long.valueOf(this.mTimestamp), Integer.valueOf(this.mType), Integer.valueOf(this.mDurationSeconds));
     }
 
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Event {");
-        sb.append("timestamp=");
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("Event {timestamp=");
         sb.append(DateFormat.format("yyyy-MM-dd HH:mm:ss", this.mTimestamp));
         sb.append(", type=");
         sb.append(this.mType);
-        if (this.mDurationSeconds > 0) {
+        int i = this.mDurationSeconds;
+        if (i > 0) {
             sb.append(", durationSeconds=");
-            sb.append(this.mDurationSeconds);
+            sb.append(i);
         }
         sb.append("}");
         return sb.toString();
-    }
-
-    /* loaded from: classes2.dex */
-    public class Builder {
-        public int mDurationSeconds;
-        public long mTimestamp;
-        public int mType;
-
-        public Builder() {
-        }
-
-        public Builder(long j, int i) {
-            this.mTimestamp = j;
-            this.mType = i;
-        }
-
-        public Builder setDurationSeconds(int i) {
-            this.mDurationSeconds = i;
-            return this;
-        }
-
-        public final Builder setTimestamp(long j) {
-            this.mTimestamp = j;
-            return this;
-        }
-
-        public final Builder setType(int i) {
-            this.mType = i;
-            return this;
-        }
-
-        public Event build() {
-            return new Event(this);
-        }
     }
 }

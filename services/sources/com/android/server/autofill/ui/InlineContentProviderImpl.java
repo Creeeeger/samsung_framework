@@ -7,9 +7,9 @@ import com.android.internal.view.inline.IInlineContentProvider;
 import com.android.server.FgThread;
 import com.android.server.autofill.Helper;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class InlineContentProviderImpl extends IInlineContentProvider.Stub {
-    public static final String TAG = InlineContentProviderImpl.class.getSimpleName();
     public final Handler mHandler = FgThread.getHandler();
     public boolean mProvideContentCalled = false;
     public RemoteInlineSuggestionUi mRemoteInlineSuggestionUi;
@@ -20,73 +20,41 @@ public final class InlineContentProviderImpl extends IInlineContentProvider.Stub
         this.mRemoteInlineSuggestionUi = remoteInlineSuggestionUi;
     }
 
-    public InlineContentProviderImpl copy() {
-        return new InlineContentProviderImpl(this.mRemoteInlineSuggestionViewConnector, this.mRemoteInlineSuggestionUi);
+    public final void onSurfacePackageReleased() {
+        this.mHandler.post(new InlineContentProviderImpl$$ExternalSyntheticLambda0(this, 1));
     }
 
-    public void provideContent(final int i, final int i2, final IInlineContentCallback iInlineContentCallback) {
+    public final void provideContent(final int i, final int i2, final IInlineContentCallback iInlineContentCallback) {
         this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.InlineContentProviderImpl$$ExternalSyntheticLambda2
             @Override // java.lang.Runnable
             public final void run() {
-                InlineContentProviderImpl.this.lambda$provideContent$0(i, i2, iInlineContentCallback);
+                InlineContentProviderImpl inlineContentProviderImpl = InlineContentProviderImpl.this;
+                int i3 = i;
+                int i4 = i2;
+                IInlineContentCallback iInlineContentCallback2 = iInlineContentCallback;
+                if (Helper.sVerbose) {
+                    inlineContentProviderImpl.getClass();
+                    Slog.v("InlineContentProviderImpl", "handleProvideContent");
+                }
+                if (inlineContentProviderImpl.mProvideContentCalled) {
+                    return;
+                }
+                inlineContentProviderImpl.mProvideContentCalled = true;
+                RemoteInlineSuggestionUi remoteInlineSuggestionUi = inlineContentProviderImpl.mRemoteInlineSuggestionUi;
+                if (remoteInlineSuggestionUi == null || remoteInlineSuggestionUi.mWidth != i3 || remoteInlineSuggestionUi.mHeight != i4) {
+                    inlineContentProviderImpl.mRemoteInlineSuggestionUi = new RemoteInlineSuggestionUi(inlineContentProviderImpl.mRemoteInlineSuggestionViewConnector, i3, i4, inlineContentProviderImpl.mHandler);
+                }
+                RemoteInlineSuggestionUi remoteInlineSuggestionUi2 = inlineContentProviderImpl.mRemoteInlineSuggestionUi;
+                remoteInlineSuggestionUi2.getClass();
+                remoteInlineSuggestionUi2.mHandler.post(new RemoteInlineSuggestionUi$$ExternalSyntheticLambda1(0, remoteInlineSuggestionUi2, iInlineContentCallback2));
+                RemoteInlineSuggestionUi remoteInlineSuggestionUi3 = inlineContentProviderImpl.mRemoteInlineSuggestionUi;
+                remoteInlineSuggestionUi3.getClass();
+                remoteInlineSuggestionUi3.mHandler.post(new RemoteInlineSuggestionUi$$ExternalSyntheticLambda0(remoteInlineSuggestionUi3, 0));
             }
         });
     }
 
-    public void requestSurfacePackage() {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.InlineContentProviderImpl$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                InlineContentProviderImpl.this.handleGetSurfacePackage();
-            }
-        });
-    }
-
-    public void onSurfacePackageReleased() {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.InlineContentProviderImpl$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                InlineContentProviderImpl.this.handleOnSurfacePackageReleased();
-            }
-        });
-    }
-
-    /* renamed from: handleProvideContent, reason: merged with bridge method [inline-methods] */
-    public final void lambda$provideContent$0(int i, int i2, IInlineContentCallback iInlineContentCallback) {
-        if (Helper.sVerbose) {
-            Slog.v(TAG, "handleProvideContent");
-        }
-        if (this.mProvideContentCalled) {
-            return;
-        }
-        this.mProvideContentCalled = true;
-        RemoteInlineSuggestionUi remoteInlineSuggestionUi = this.mRemoteInlineSuggestionUi;
-        if (remoteInlineSuggestionUi == null || !remoteInlineSuggestionUi.match(i, i2)) {
-            this.mRemoteInlineSuggestionUi = new RemoteInlineSuggestionUi(this.mRemoteInlineSuggestionViewConnector, i, i2, this.mHandler);
-        }
-        this.mRemoteInlineSuggestionUi.setInlineContentCallback(iInlineContentCallback);
-        this.mRemoteInlineSuggestionUi.requestSurfacePackage();
-    }
-
-    public final void handleGetSurfacePackage() {
-        RemoteInlineSuggestionUi remoteInlineSuggestionUi;
-        if (Helper.sVerbose) {
-            Slog.v(TAG, "handleGetSurfacePackage");
-        }
-        if (!this.mProvideContentCalled || (remoteInlineSuggestionUi = this.mRemoteInlineSuggestionUi) == null) {
-            return;
-        }
-        remoteInlineSuggestionUi.requestSurfacePackage();
-    }
-
-    public final void handleOnSurfacePackageReleased() {
-        RemoteInlineSuggestionUi remoteInlineSuggestionUi;
-        if (Helper.sVerbose) {
-            Slog.v(TAG, "handleOnSurfacePackageReleased");
-        }
-        if (!this.mProvideContentCalled || (remoteInlineSuggestionUi = this.mRemoteInlineSuggestionUi) == null) {
-            return;
-        }
-        remoteInlineSuggestionUi.surfacePackageReleased();
+    public final void requestSurfacePackage() {
+        this.mHandler.post(new InlineContentProviderImpl$$ExternalSyntheticLambda0(this, 0));
     }
 }

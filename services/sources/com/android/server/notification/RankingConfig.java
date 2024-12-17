@@ -1,23 +1,6 @@
 package com.android.server.notification;
 
-import android.app.NotificationChannel;
-import android.os.UserHandle;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public interface RankingConfig {
-    boolean badgingEnabled(UserHandle userHandle);
-
-    boolean bubblesEnabled(UserHandle userHandle);
-
-    boolean canShowBadge(String str, int i);
-
-    boolean canShowNotificationsOnLockscreen(int i);
-
-    boolean canShowPrivateNotificationsOnLockScreen(int i);
-
-    int getBubblePreference(String str, int i);
-
-    NotificationChannel getConversationNotificationChannel(String str, int i, String str2, String str3, boolean z, boolean z2);
-
-    boolean isMediaNotificationFilteringEnabled();
 }

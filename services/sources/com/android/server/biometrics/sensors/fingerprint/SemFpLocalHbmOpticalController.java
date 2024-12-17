@@ -1,59 +1,139 @@
 package com.android.server.biometrics.sensors.fingerprint;
 
+import android.hardware.biometrics.fingerprint.PointerContext;
+import android.hardware.display.DisplayManagerInternal;
 import android.os.Handler;
-import android.os.PowerManagerInternal;
+import android.util.Pair;
+import android.util.Slog;
 import com.android.server.LocalServices;
-import com.android.server.biometrics.SemBiometricFeature;
+import com.android.server.biometrics.SemBioLoggingManager;
+import com.android.server.biometrics.SemBioLoggingManager$$ExternalSyntheticLambda1;
+import com.android.server.biometrics.SemBiometricDisplayStateMonitor;
 import com.android.server.biometrics.Utils;
-import com.android.server.biometrics.sensors.fingerprint.SemBiometricDisplayMonitor;
+import com.android.server.biometrics.sensors.AuthenticationClient;
+import com.android.server.biometrics.sensors.BaseClientMonitor;
+import com.android.server.biometrics.sensors.SemBioSysFsProvider;
+import com.android.server.biometrics.sensors.fingerprint.aidl.FingerprintProvider;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.function.IntConsumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SemFpLocalHbmOpticalController implements SemBiometricDisplayMonitor.Callback {
-    public SemBiometricDisplayStateMonitor mDisplayStateMonitor;
-    public final Handler mHandler;
-    public Runnable mLocalHbmModeChangeAfterScreenOn;
+public final class SemFpLocalHbmOpticalController implements SemBiometricDisplayStateMonitor.DisplayStateCallback {
+    static final String LOCAL_HBM_PATH_OF_IN_HOUSE = "/sys/class/lcd/panel/local_hbm";
+    static final String LOCAL_HBM_PATH_OF_JDM = "/sys/class/display/display_ctrl/lhbm_mode_set";
+    public final SemBiometricDisplayStateMonitor mDisplayStateMonitor;
+    public SemFpLocalHbmOpticalController$$ExternalSyntheticLambda1 mLocalHbmModeChangeAfterScreenOn;
+    public final SemBioSysFsProvider mSysFsProvider;
+    public SemFpLocalHbmOpticalController$$ExternalSyntheticLambda2 mTouchDownDeliverAfterLhbmOn;
+    public final boolean mUseInHouseSolution;
+    public int mStartPhysicalDisplayState = 2;
     public LocalHbmStatus mCurrentLocalHbmStatus = LocalHbmStatus.LOCAL_HBM_MODE_OFF;
-    public PowerManagerInternal mPowerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
 
-    public SemFpLocalHbmOpticalController(Handler handler, SemBiometricDisplayStateMonitor semBiometricDisplayStateMonitor) {
-        this.mHandler = handler;
-        this.mDisplayStateMonitor = semBiometricDisplayStateMonitor;
-        semBiometricDisplayStateMonitor.registerCallback(this);
-        this.mDisplayStateMonitor.mRunnableLocalHbmOff = new Runnable() { // from class: com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                SemFpLocalHbmOpticalController.this.lambda$new$0();
-            }
-        };
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$1, reason: invalid class name */
+    public final class AnonymousClass1 implements SemBioSysFsProvider {
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0() {
-        handleLocalHbm(0, true);
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    enum LocalHbmStatus {
+        LOCAL_HBM_MODE_OFF("0"),
+        LOCAL_HBM_MODE_ON_SOURCE_OFF("1"),
+        LOCAL_HBM_MODE_ON_SOURCE_ON("2");
 
-    public void handleLocalHbm(final int i, boolean z) {
-        Runnable runnable = new Runnable() { // from class: com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                SemFpLocalHbmOpticalController.this.lambda$handleLocalHbm$2(i);
-            }
-        };
-        if (z) {
-            runnable.run();
-        } else {
-            this.mHandler.post(runnable);
+        private final String value;
+
+        LocalHbmStatus(String str) {
+            this.value = str;
+        }
+
+        public final String getString() {
+            return this.value;
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$handleLocalHbm$2(final int i) {
-        synchronized (this) {
+    public SemFpLocalHbmOpticalController(Handler handler, SemBiometricDisplayStateMonitor semBiometricDisplayStateMonitor, SemBioSysFsProvider semBioSysFsProvider, boolean z) {
+        this.mSysFsProvider = semBioSysFsProvider;
+        this.mUseInHouseSolution = z;
+        this.mDisplayStateMonitor = semBiometricDisplayStateMonitor;
+        semBiometricDisplayStateMonitor.registerStateCallback(this);
+        IntConsumer intConsumer = new IntConsumer() { // from class: com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$$ExternalSyntheticLambda0
+            @Override // java.util.function.IntConsumer
+            public final void accept(int i) {
+                SemFpLocalHbmOpticalController semFpLocalHbmOpticalController = SemFpLocalHbmOpticalController.this;
+                semFpLocalHbmOpticalController.mStartPhysicalDisplayState = i;
+                if (i != 2) {
+                    semFpLocalHbmOpticalController.handleLocalHbm(0);
+                }
+            }
+        };
+        if (semBiometricDisplayStateMonitor.mBlockingTasksWhenStartPhysicalState.contains(intConsumer)) {
+            return;
+        }
+        semBiometricDisplayStateMonitor.mBlockingTasksWhenStartPhysicalState.add(intConsumer);
+    }
+
+    public final void changeToNextState(LocalHbmStatus localHbmStatus) {
+        LocalHbmStatus localHbmStatus2 = LocalHbmStatus.LOCAL_HBM_MODE_OFF;
+        LocalHbmStatus localHbmStatus3 = LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_OFF;
+        LocalHbmStatus localHbmStatus4 = LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_ON;
+        boolean z = this.mUseInHouseSolution;
+        if (!z) {
+            localHbmStatus = localHbmStatus == localHbmStatus4 ? localHbmStatus3 : localHbmStatus2;
+        }
+        int ordinal = this.mCurrentLocalHbmStatus.ordinal();
+        if (ordinal != 0) {
+            if (ordinal != 1) {
+                if (ordinal != 2) {
+                    return;
+                }
+                if (localHbmStatus == localHbmStatus3) {
+                    writeLocalHbmStatus(localHbmStatus3);
+                } else {
+                    if (localHbmStatus != localHbmStatus2) {
+                        return;
+                    }
+                    writeLocalHbmStatus(localHbmStatus3);
+                    writeLocalHbmStatus(localHbmStatus2);
+                }
+            } else if (localHbmStatus == localHbmStatus2) {
+                writeLocalHbmStatus(localHbmStatus2);
+            } else if (localHbmStatus != localHbmStatus4) {
+                return;
+            } else {
+                writeLocalHbmStatus(localHbmStatus4);
+            }
+        } else if (localHbmStatus == localHbmStatus3) {
+            writeLocalHbmStatus(localHbmStatus3);
+        } else {
+            if (localHbmStatus != localHbmStatus4) {
+                return;
+            }
+            writeLocalHbmStatus(localHbmStatus3);
+            writeLocalHbmStatus(localHbmStatus4);
+        }
+        Slog.i("FingerprintService.SemFpLhbmOpticalController", "LocalHbmStatus change from : " + this.mCurrentLocalHbmStatus + " to : " + localHbmStatus);
+        this.mCurrentLocalHbmStatus = localHbmStatus;
+        if (z) {
+            if (localHbmStatus != localHbmStatus4) {
+                return;
+            }
+        } else if (localHbmStatus != localHbmStatus3) {
+            return;
+        }
+        SemFpLocalHbmOpticalController$$ExternalSyntheticLambda2 semFpLocalHbmOpticalController$$ExternalSyntheticLambda2 = this.mTouchDownDeliverAfterLhbmOn;
+        if (semFpLocalHbmOpticalController$$ExternalSyntheticLambda2 != null) {
+            semFpLocalHbmOpticalController$$ExternalSyntheticLambda2.run();
+            this.mTouchDownDeliverAfterLhbmOn = null;
+        }
+    }
+
+    public final synchronized void handleLocalHbm(int i) {
+        try {
             if (i == 0) {
                 changeToNextState(LocalHbmStatus.LOCAL_HBM_MODE_OFF);
-            } else if (!this.mDisplayStateMonitor.isChangingPhysicalState() && this.mDisplayStateMonitor.getPhysicalDisplayState() == 2) {
+            } else if (this.mStartPhysicalDisplayState == 2 && this.mDisplayStateMonitor.mPhysicalDisplayState == 2) {
                 if (i == 1) {
                     changeToNextState(LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_OFF);
                 } else if (i == 2) {
@@ -61,188 +141,71 @@ public class SemFpLocalHbmOpticalController implements SemBiometricDisplayMonito
                 }
                 this.mLocalHbmModeChangeAfterScreenOn = null;
             } else {
-                this.mLocalHbmModeChangeAfterScreenOn = new Runnable() { // from class: com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$$ExternalSyntheticLambda2
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        SemFpLocalHbmOpticalController.this.lambda$handleLocalHbm$1(i);
-                    }
-                };
+                this.mLocalHbmModeChangeAfterScreenOn = new SemFpLocalHbmOpticalController$$ExternalSyntheticLambda1(this, i);
+            }
+        } catch (Throwable th) {
+            throw th;
+        }
+    }
+
+    public final void handleTouchEventInLhbm(Pair pair, int i, long j) {
+        DisplayManagerInternal displayManagerInternal;
+        int i2 = 0;
+        boolean z = this.mUseInHouseSolution;
+        if (i == 2) {
+            this.mTouchDownDeliverAfterLhbmOn = null;
+            if (!z ? this.mCurrentLocalHbmStatus != LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_OFF : this.mCurrentLocalHbmStatus != LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_ON) {
+                this.mTouchDownDeliverAfterLhbmOn = new SemFpLocalHbmOpticalController$$ExternalSyntheticLambda2(this, pair, i, j);
+                return;
+            }
+        }
+        byte[] bArr = {(byte) i};
+        if (z) {
+            ServiceProvider serviceProvider = (ServiceProvider) pair.second;
+            int intValue = ((Integer) pair.first).intValue();
+            boolean z2 = i == 2;
+            if (z && (displayManagerInternal = (DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)) != null) {
+                i2 = displayManagerInternal.setFreezeBrightnessMode(z2);
+            }
+            ((FingerprintProvider) serviceProvider).semRequest(intValue, 43, i2, bArr, null);
+        } else {
+            ((FingerprintProvider) ((ServiceProvider) pair.second)).semRequest(((Integer) pair.first).intValue(), 22, i, null, null);
+        }
+        BaseClientMonitor semGetCurrentClient = ((FingerprintProvider) ((ServiceProvider) pair.second)).semGetCurrentClient();
+        long j2 = semGetCurrentClient == null ? 0L : semGetCurrentClient.mRequestId;
+        if (i != 2) {
+            if (i == 1) {
+                ((FingerprintProvider) ((ServiceProvider) pair.second)).onPointerUp(j2, ((Integer) pair.first).intValue(), new PointerContext());
+            }
+        } else {
+            ((FingerprintProvider) ((ServiceProvider) pair.second)).onPointerDown(j2, ((Integer) pair.first).intValue(), new PointerContext());
+            if (semGetCurrentClient instanceof AuthenticationClient) {
+                SemBioLoggingManager semBioLoggingManager = SemBioLoggingManager.get();
+                semBioLoggingManager.getFpHandler().post(new SemBioLoggingManager$$ExternalSyntheticLambda1(semBioLoggingManager, (int) j2, (int) (j >> 16), (int) (j & 65535)));
             }
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$handleLocalHbm$1(int i) {
-        handleLocalHbm(i, false);
-    }
-
-    @Override // com.android.server.biometrics.sensors.fingerprint.SemBiometricDisplayMonitor.Callback
-    public void onFinishDisplayState(int i, int i2, int i3) {
-        Runnable runnable;
-        if (SemBiometricFeature.FP_FEATURE_SUPPORT_LOCAL_HBM && i2 == 2 && (runnable = this.mLocalHbmModeChangeAfterScreenOn) != null) {
-            runnable.run();
+    @Override // com.android.server.biometrics.SemBiometricDisplayStateMonitor.DisplayStateCallback
+    public final void onFinishDisplayState(int i, int i2, int i3) {
+        SemFpLocalHbmOpticalController$$ExternalSyntheticLambda1 semFpLocalHbmOpticalController$$ExternalSyntheticLambda1;
+        if (this.mUseInHouseSolution && i2 == 2 && (semFpLocalHbmOpticalController$$ExternalSyntheticLambda1 = this.mLocalHbmModeChangeAfterScreenOn) != null) {
+            semFpLocalHbmOpticalController$$ExternalSyntheticLambda1.run();
             this.mLocalHbmModeChangeAfterScreenOn = null;
         }
     }
 
-    public final void freezingBrightness(boolean z) {
-        PowerManagerInternal powerManagerInternal;
-        if (!SemBiometricFeature.FP_FEATURE_SUPPORT_LOCAL_HBM || (powerManagerInternal = this.mPowerManagerInternal) == null) {
-            return;
-        }
-        powerManagerInternal.setFreezeBrightnessMode(z);
-    }
-
-    public final boolean writeLocalHbmStatus(LocalHbmStatus localHbmStatus) {
-        if (SemBiometricFeature.FP_FEATURE_SUPPORT_LOCAL_HBM) {
-            if (localHbmStatus == LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_ON) {
-                freezingBrightness(true);
-            } else if (localHbmStatus == LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_OFF) {
-                freezingBrightness(false);
-            }
-            return Utils.writeFile(new File("/sys/class/lcd/panel/local_hbm"), localHbmStatus.getString().getBytes(StandardCharsets.UTF_8));
-        }
-        if (SemBiometricFeature.FP_FEATURE_SUPPORT_JDM_LOCAL_HBM) {
-            return Utils.writeFile(new File("/sys/class/display/display_ctrl/lhbm_mode_set"), localHbmStatus.getString().getBytes(StandardCharsets.UTF_8));
-        }
-        return false;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0039, code lost:
-    
-        if (writeLocalHbmStatus(r3) != false) goto L42;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x0065, code lost:
-    
-        if (writeLocalHbmStatus(r3) != false) goto L42;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void changeToNextState(com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus r5) {
-        /*
-            r4 = this;
-            boolean r0 = com.android.server.biometrics.SemBiometricFeature.FP_FEATURE_SUPPORT_JDM_LOCAL_HBM
-            if (r0 == 0) goto Ld
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r0 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_ON
-            if (r5 != r0) goto Lb
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r5 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_OFF
-            goto Ld
-        Lb:
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r5 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus.LOCAL_HBM_MODE_OFF
-        Ld:
-            int[] r0 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.AnonymousClass1.$SwitchMap$com$android$server$biometrics$sensors$fingerprint$SemFpLocalHbmOpticalController$LocalHbmStatus
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r1 = r4.mCurrentLocalHbmStatus
-            int r1 = r1.ordinal()
-            r0 = r0[r1]
-            r1 = 1
-            r2 = 0
-            if (r0 == r1) goto L4e
-            r3 = 2
-            if (r0 == r3) goto L3c
-            r3 = 3
-            if (r0 == r3) goto L22
-            goto L6a
-        L22:
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r0 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_OFF
-            if (r5 != r0) goto L2b
-            boolean r2 = r4.writeLocalHbmStatus(r0)
-            goto L6a
-        L2b:
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r3 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus.LOCAL_HBM_MODE_OFF
-            if (r5 != r3) goto L6a
-            boolean r0 = r4.writeLocalHbmStatus(r0)
-            if (r0 == 0) goto L68
-            boolean r0 = r4.writeLocalHbmStatus(r3)
-            if (r0 == 0) goto L68
-            goto L69
-        L3c:
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r0 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus.LOCAL_HBM_MODE_OFF
-            if (r5 != r0) goto L45
-            boolean r2 = r4.writeLocalHbmStatus(r0)
-            goto L6a
-        L45:
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r0 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_ON
-            if (r5 != r0) goto L6a
-            boolean r2 = r4.writeLocalHbmStatus(r0)
-            goto L6a
-        L4e:
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r0 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_OFF
-            if (r5 != r0) goto L57
-            boolean r2 = r4.writeLocalHbmStatus(r0)
-            goto L6a
-        L57:
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r3 = com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_ON
-            if (r5 != r3) goto L6a
-            boolean r0 = r4.writeLocalHbmStatus(r0)
-            if (r0 == 0) goto L68
-            boolean r0 = r4.writeLocalHbmStatus(r3)
-            if (r0 == 0) goto L68
-            goto L69
-        L68:
-            r1 = r2
-        L69:
-            r2 = r1
-        L6a:
-            if (r2 == 0) goto L8e
-            java.lang.StringBuilder r0 = new java.lang.StringBuilder
-            r0.<init>()
-            java.lang.String r1 = "LocalHbmStatus change from : "
-            r0.append(r1)
-            com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus r1 = r4.mCurrentLocalHbmStatus
-            r0.append(r1)
-            java.lang.String r1 = ", to : "
-            r0.append(r1)
-            r0.append(r5)
-            java.lang.String r0 = r0.toString()
-            java.lang.String r1 = "FingerprintService.SemFpLhbmOpticalController"
-            android.util.Slog.i(r1, r0)
-            r4.mCurrentLocalHbmStatus = r5
-        L8e:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController.changeToNextState(com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$LocalHbmStatus):void");
-    }
-
-    /* renamed from: com.android.server.biometrics.sensors.fingerprint.SemFpLocalHbmOpticalController$1, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public abstract /* synthetic */ class AnonymousClass1 {
-        public static final /* synthetic */ int[] $SwitchMap$com$android$server$biometrics$sensors$fingerprint$SemFpLocalHbmOpticalController$LocalHbmStatus;
-
-        static {
-            int[] iArr = new int[LocalHbmStatus.values().length];
-            $SwitchMap$com$android$server$biometrics$sensors$fingerprint$SemFpLocalHbmOpticalController$LocalHbmStatus = iArr;
-            try {
-                iArr[LocalHbmStatus.LOCAL_HBM_MODE_OFF.ordinal()] = 1;
-            } catch (NoSuchFieldError unused) {
-            }
-            try {
-                $SwitchMap$com$android$server$biometrics$sensors$fingerprint$SemFpLocalHbmOpticalController$LocalHbmStatus[LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_OFF.ordinal()] = 2;
-            } catch (NoSuchFieldError unused2) {
-            }
-            try {
-                $SwitchMap$com$android$server$biometrics$sensors$fingerprint$SemFpLocalHbmOpticalController$LocalHbmStatus[LocalHbmStatus.LOCAL_HBM_MODE_ON_SOURCE_ON.ordinal()] = 3;
-            } catch (NoSuchFieldError unused3) {
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public enum LocalHbmStatus {
-        LOCAL_HBM_MODE_OFF("0"),
-        LOCAL_HBM_MODE_ON_SOURCE_OFF("1"),
-        LOCAL_HBM_MODE_ON_SOURCE_ON("2");
-
-        private String value;
-
-        LocalHbmStatus(String str) {
-            this.value = str;
-        }
-
-        public String getString() {
-            return this.value;
+    public final void writeLocalHbmStatus(LocalHbmStatus localHbmStatus) {
+        boolean z = this.mUseInHouseSolution;
+        SemBioSysFsProvider semBioSysFsProvider = this.mSysFsProvider;
+        if (z) {
+            String string = localHbmStatus.getString();
+            semBioSysFsProvider.getClass();
+            Utils.writeFile(new File(LOCAL_HBM_PATH_OF_IN_HOUSE), string.getBytes(StandardCharsets.UTF_8));
+        } else {
+            String string2 = localHbmStatus.getString();
+            semBioSysFsProvider.getClass();
+            Utils.writeFile(new File(LOCAL_HBM_PATH_OF_JDM), string2.getBytes(StandardCharsets.UTF_8));
         }
     }
 }

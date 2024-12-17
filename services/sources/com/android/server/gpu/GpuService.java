@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemProperties;
@@ -24,13 +25,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public class GpuService extends SystemService {
     public ContentResolver mContentResolver;
     public final Context mContext;
     public UpdatableDriverProto.Denylists mDenylists;
     public final String mDevDriverPackageName;
-    public DeviceConfigListener mDeviceConfigListener;
     public final Object mDeviceConfigLock;
     public final boolean mHasDevDriver;
     public final boolean mHasProdDriver;
@@ -38,12 +39,87 @@ public class GpuService extends SystemService {
     public final PackageManager mPackageManager;
     public final String mProdDriverPackageName;
     public long mProdDriverVersionCode;
-    public SettingsObserver mSettingsObserver;
 
-    private static native void nSetUpdatableDriverPath(String str);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DeviceConfigListener implements DeviceConfig.OnPropertiesChangedListener {
+        public DeviceConfigListener() {
+            DeviceConfig.addOnPropertiesChangedListener("game_driver", GpuService.this.mContext.getMainExecutor(), this);
+        }
 
-    @Override // com.android.server.SystemService
-    public void onStart() {
+        public final void onPropertiesChanged(DeviceConfig.Properties properties) {
+            synchronized (GpuService.this.mDeviceConfigLock) {
+                try {
+                    if (properties.getKeyset().contains("updatable_driver_production_denylists")) {
+                        GpuService.this.parseDenylists(properties.getString("updatable_driver_production_denylists", ""));
+                        GpuService.this.setDenylist();
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackageReceiver extends BroadcastReceiver {
+        public PackageReceiver() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
+            boolean equals = schemeSpecificPart.equals(GpuService.this.mProdDriverPackageName);
+            boolean equals2 = schemeSpecificPart.equals(GpuService.this.mDevDriverPackageName);
+            if (equals || equals2) {
+                String action = intent.getAction();
+                action.getClass();
+                switch (action) {
+                    case "android.intent.action.PACKAGE_CHANGED":
+                    case "android.intent.action.PACKAGE_REMOVED":
+                    case "android.intent.action.PACKAGE_ADDED":
+                        if (!equals) {
+                            if (equals2) {
+                                GpuService.this.fetchPrereleaseDriverPackageProperties();
+                                break;
+                            }
+                        } else {
+                            GpuService.this.fetchProductionDriverPackageProperties();
+                            GpuService.this.setDenylist();
+                            break;
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SettingsObserver extends ContentObserver {
+        public final Uri mProdDriverDenylistsUri;
+
+        public SettingsObserver() {
+            super(new Handler());
+            Uri uriFor = Settings.Global.getUriFor("updatable_driver_production_denylists");
+            this.mProdDriverDenylistsUri = uriFor;
+            GpuService.this.mContentResolver.registerContentObserver(uriFor, false, this, -1);
+        }
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z, Uri uri) {
+            if (uri != null && this.mProdDriverDenylistsUri.equals(uri)) {
+                GpuService gpuService = GpuService.this;
+                gpuService.getClass();
+                String property = DeviceConfig.getProperty("game_driver", "updatable_driver_production_denylists");
+                if (property == null) {
+                    property = Settings.Global.getString(gpuService.mContentResolver, "updatable_driver_production_denylists");
+                }
+                if (property == null) {
+                    property = "";
+                }
+                gpuService.parseDenylists(property);
+                GpuService.this.setDenylist();
+            }
+        }
     }
 
     public GpuService(Context context) {
@@ -71,152 +147,72 @@ public class GpuService extends SystemService {
         }
     }
 
+    private static native void nSetUpdatableDriverPath(String str);
+
+    public final void fetchPrereleaseDriverPackageProperties() {
+        try {
+            ApplicationInfo applicationInfo = this.mPackageManager.getApplicationInfo(this.mDevDriverPackageName, 1048576);
+            if (applicationInfo.targetSdkVersion < 26) {
+                return;
+            }
+            if (applicationInfo.primaryCpuAbi == null) {
+                nSetUpdatableDriverPath("");
+            } else {
+                nSetUpdatableDriverPath(AudioOffloadInfo$$ExternalSyntheticOutline0.m(new StringBuilder(), applicationInfo.sourceDir, "!/lib/"));
+            }
+        } catch (PackageManager.NameNotFoundException unused) {
+        }
+    }
+
+    public final void fetchProductionDriverPackageProperties() {
+        String str = this.mProdDriverPackageName;
+        try {
+            ApplicationInfo applicationInfo = this.mPackageManager.getApplicationInfo(str, 1048576);
+            if (applicationInfo.targetSdkVersion < 26) {
+                return;
+            }
+            Settings.Global.putString(this.mContentResolver, "updatable_driver_production_allowlist", "");
+            this.mProdDriverVersionCode = applicationInfo.longVersionCode;
+            Context createPackageContext = this.mContext.createPackageContext(str, 4);
+            Context context = this.mContext;
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(createPackageContext.getAssets().open("allowlist.txt")));
+            ArrayList arrayList = new ArrayList();
+            while (true) {
+                String readLine = bufferedReader.readLine();
+                if (readLine == null) {
+                    Settings.Global.putString(context.getContentResolver(), "updatable_driver_production_allowlist", String.join(",", arrayList));
+                    return;
+                }
+                arrayList.add(readLine);
+            }
+        } catch (PackageManager.NameNotFoundException | IOException unused) {
+        }
+    }
+
     @Override // com.android.server.SystemService
-    public void onBootPhase(int i) {
+    public final void onBootPhase(int i) {
         if (i == 1000) {
             this.mContentResolver = this.mContext.getContentResolver();
             if (this.mHasProdDriver || this.mHasDevDriver) {
-                this.mSettingsObserver = new SettingsObserver();
-                this.mDeviceConfigListener = new DeviceConfigListener();
+                new SettingsObserver();
+                new DeviceConfigListener();
                 fetchProductionDriverPackageProperties();
-                processDenylists();
+                String property = DeviceConfig.getProperty("game_driver", "updatable_driver_production_denylists");
+                if (property == null) {
+                    property = Settings.Global.getString(this.mContentResolver, "updatable_driver_production_denylists");
+                }
+                if (property == null) {
+                    property = "";
+                }
+                parseDenylists(property);
                 setDenylist();
                 fetchPrereleaseDriverPackageProperties();
             }
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class SettingsObserver extends ContentObserver {
-        public final Uri mProdDriverDenylistsUri;
-
-        public SettingsObserver() {
-            super(new Handler());
-            Uri uriFor = Settings.Global.getUriFor("updatable_driver_production_denylists");
-            this.mProdDriverDenylistsUri = uriFor;
-            GpuService.this.mContentResolver.registerContentObserver(uriFor, false, this, -1);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z, Uri uri) {
-            if (uri != null && this.mProdDriverDenylistsUri.equals(uri)) {
-                GpuService.this.processDenylists();
-                GpuService.this.setDenylist();
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class DeviceConfigListener implements DeviceConfig.OnPropertiesChangedListener {
-        public DeviceConfigListener() {
-            DeviceConfig.addOnPropertiesChangedListener("game_driver", GpuService.this.mContext.getMainExecutor(), this);
-        }
-
-        public void onPropertiesChanged(DeviceConfig.Properties properties) {
-            synchronized (GpuService.this.mDeviceConfigLock) {
-                if (properties.getKeyset().contains("updatable_driver_production_denylists")) {
-                    GpuService.this.parseDenylists(properties.getString("updatable_driver_production_denylists", ""));
-                    GpuService.this.setDenylist();
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public final class PackageReceiver extends BroadcastReceiver {
-        public PackageReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
-            boolean equals = schemeSpecificPart.equals(GpuService.this.mProdDriverPackageName);
-            boolean equals2 = schemeSpecificPart.equals(GpuService.this.mDevDriverPackageName);
-            if (equals || equals2) {
-                String action = intent.getAction();
-                action.hashCode();
-                char c = 65535;
-                switch (action.hashCode()) {
-                    case 172491798:
-                        if (action.equals("android.intent.action.PACKAGE_CHANGED")) {
-                            c = 0;
-                            break;
-                        }
-                        break;
-                    case 525384130:
-                        if (action.equals("android.intent.action.PACKAGE_REMOVED")) {
-                            c = 1;
-                            break;
-                        }
-                        break;
-                    case 1544582882:
-                        if (action.equals("android.intent.action.PACKAGE_ADDED")) {
-                            c = 2;
-                            break;
-                        }
-                        break;
-                }
-                switch (c) {
-                    case 0:
-                    case 1:
-                    case 2:
-                        if (equals) {
-                            GpuService.this.fetchProductionDriverPackageProperties();
-                            GpuService.this.setDenylist();
-                            return;
-                        } else {
-                            if (equals2) {
-                                GpuService.this.fetchPrereleaseDriverPackageProperties();
-                                return;
-                            }
-                            return;
-                        }
-                    default:
-                        return;
-                }
-            }
-        }
-    }
-
-    public static void assetToSettingsGlobal(Context context, Context context2, String str, String str2, CharSequence charSequence) {
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context2.getAssets().open(str)));
-            ArrayList arrayList = new ArrayList();
-            while (true) {
-                String readLine = bufferedReader.readLine();
-                if (readLine != null) {
-                    arrayList.add(readLine);
-                } else {
-                    Settings.Global.putString(context.getContentResolver(), str2, String.join(charSequence, arrayList));
-                    return;
-                }
-            }
-        } catch (IOException unused) {
-        }
-    }
-
-    public final void fetchProductionDriverPackageProperties() {
-        try {
-            ApplicationInfo applicationInfo = this.mPackageManager.getApplicationInfo(this.mProdDriverPackageName, 1048576);
-            if (applicationInfo.targetSdkVersion < 26) {
-                return;
-            }
-            Settings.Global.putString(this.mContentResolver, "updatable_driver_production_allowlist", "");
-            this.mProdDriverVersionCode = applicationInfo.longVersionCode;
-            assetToSettingsGlobal(this.mContext, this.mContext.createPackageContext(this.mProdDriverPackageName, 4), "allowlist.txt", "updatable_driver_production_allowlist", ",");
-        } catch (PackageManager.NameNotFoundException unused) {
-        }
-    }
-
-    public final void processDenylists() {
-        String property = DeviceConfig.getProperty("game_driver", "updatable_driver_production_denylists");
-        if (property == null) {
-            property = Settings.Global.getString(this.mContentResolver, "updatable_driver_production_denylists");
-        }
-        if (property == null) {
-            property = "";
-        }
-        parseDenylists(property);
+    @Override // com.android.server.SystemService
+    public final void onStart() {
     }
 
     public final void parseDenylists(String str) {
@@ -232,35 +228,20 @@ public class GpuService extends SystemService {
     public final void setDenylist() {
         Settings.Global.putString(this.mContentResolver, "updatable_driver_production_denylist", "");
         synchronized (this.mLock) {
-            UpdatableDriverProto.Denylists denylists = this.mDenylists;
-            if (denylists == null) {
-                return;
-            }
-            for (UpdatableDriverProto.Denylist denylist : denylists.getDenylistsList()) {
-                if (denylist.getVersionCode() == this.mProdDriverVersionCode) {
-                    Settings.Global.putString(this.mContentResolver, "updatable_driver_production_denylist", String.join(",", denylist.getPackageNamesList()));
+            try {
+                UpdatableDriverProto.Denylists denylists = this.mDenylists;
+                if (denylists == null) {
                     return;
                 }
+                for (UpdatableDriverProto.Denylist denylist : denylists.getDenylistsList()) {
+                    if (denylist.getVersionCode() == this.mProdDriverVersionCode) {
+                        Settings.Global.putString(this.mContentResolver, "updatable_driver_production_denylist", String.join(",", denylist.getPackageNamesList()));
+                        return;
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
-    }
-
-    public final void fetchPrereleaseDriverPackageProperties() {
-        try {
-            ApplicationInfo applicationInfo = this.mPackageManager.getApplicationInfo(this.mDevDriverPackageName, 1048576);
-            if (applicationInfo.targetSdkVersion < 26) {
-                return;
-            }
-            setUpdatableDriverPath(applicationInfo);
-        } catch (PackageManager.NameNotFoundException unused) {
-        }
-    }
-
-    public final void setUpdatableDriverPath(ApplicationInfo applicationInfo) {
-        if (applicationInfo.primaryCpuAbi == null) {
-            nSetUpdatableDriverPath("");
-            return;
-        }
-        nSetUpdatableDriverPath(applicationInfo.sourceDir + "!/lib/");
     }
 }

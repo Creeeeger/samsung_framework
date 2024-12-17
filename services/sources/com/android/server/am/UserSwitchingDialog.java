@@ -12,9 +12,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.graphics.drawable.Animatable2;
-import android.graphics.drawable.AnimatedVectorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemProperties;
@@ -32,46 +29,70 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.android.internal.util.ObjectUtils;
 import com.android.internal.util.UserIcons;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.wm.WindowManagerService;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class UserSwitchingDialog extends Dialog {
-    public final Context mContext;
+public final class UserSwitchingDialog extends Dialog {
     public final boolean mDisableAnimations;
     public final Handler mHandler;
     public final boolean mNeedToFreezeScreen;
-    public final UserInfo mNewUser;
-    public final UserInfo mOldUser;
-    public final String mSwitchingFromSystemUserMessage;
-    public final String mSwitchingToSystemUserMessage;
     public final int mTraceCookie;
     public final WindowManagerService mWindowManager;
 
     public UserSwitchingDialog(Context context, UserInfo userInfo, UserInfo userInfo2, String str, String str2, WindowManagerService windowManagerService) {
         super(context, R.style.Theme.Material.NoActionBar.Fullscreen);
+        String string;
         this.mHandler = new Handler(Looper.myLooper());
-        this.mContext = context;
-        this.mOldUser = userInfo;
-        this.mNewUser = userInfo2;
-        this.mSwitchingFromSystemUserMessage = str;
-        this.mSwitchingToSystemUserMessage = str2;
-        boolean z = false;
-        boolean z2 = SystemProperties.getBoolean("debug.usercontroller.disable_user_switching_dialog_animations", false);
-        this.mDisableAnimations = z2;
+        boolean z = SystemProperties.getBoolean("debug.usercontroller.disable_user_switching_dialog_animations", false);
+        this.mDisableAnimations = z;
         this.mWindowManager = windowManagerService;
-        if (!z2 && !isUserSetupComplete(userInfo2)) {
-            z = true;
+        this.mNeedToFreezeScreen = (z || Settings.Secure.getIntForUser(context.getContentResolver(), "user_setup_complete", 0, userInfo2.id) == 1) ? false : true;
+        this.mTraceCookie = (userInfo.id * 21473) + userInfo2.id;
+        setCancelable(false);
+        setContentView(17367516);
+        TextView textView = (TextView) findViewById(R.id.message);
+        if (textView != null) {
+            Resources resources = getContext().getResources();
+            if (UserManager.isDeviceInDemoMode(context)) {
+                string = resources.getString(userInfo.isDemo() ? R.string.gnss_service : R.string.gnss_time_update_service);
+            } else {
+                str = userInfo.id != 0 ? userInfo2.id == 0 ? str2 : null : str;
+                string = str != null ? str : resources.getString(17042776, userInfo2.name);
+            }
+            textView.setAccessibilityPaneTitle(string);
+            textView.setText(string);
         }
-        this.mNeedToFreezeScreen = z;
-        this.mTraceCookie = (userInfo.id * 21474) + userInfo2.id;
-        inflateContent();
-        configureWindow();
-    }
-
-    public final void configureWindow() {
+        ImageView imageView = (ImageView) findViewById(R.id.icon);
+        if (imageView != null) {
+            Bitmap decodeFile = BitmapFactory.decodeFile(userInfo2.iconPath);
+            int i = userInfo2.id;
+            Resources resources2 = getContext().getResources();
+            Bitmap bitmap = (Bitmap) ObjectUtils.getOrElse(decodeFile, UserIcons.convertToBitmapAtUserIconSize(resources2, UserIcons.getDefaultUserIcon(resources2, i, false)));
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            Bitmap createBitmap = Bitmap.createBitmap(width, height, bitmap.getConfig());
+            Paint paint = new Paint(1);
+            Shader.TileMode tileMode = Shader.TileMode.CLAMP;
+            paint.setShader(new BitmapShader(bitmap, tileMode, tileMode));
+            float f = width;
+            float f2 = height;
+            new Canvas(createBitmap).drawRoundRect(new RectF(FullScreenMagnificationGestureHandler.MAX_SCALE, FullScreenMagnificationGestureHandler.MAX_SCALE, f, f2), f / 2.0f, f2 / 2.0f, paint);
+            imageView.setImageBitmap(createBitmap);
+        }
+        ImageView imageView2 = (ImageView) findViewById(R.id.sensitive);
+        if (imageView2 != null) {
+            if (z) {
+                imageView2.setVisibility(8);
+            } else {
+                TypedValue typedValue = new TypedValue();
+                getContext().getTheme().resolveAttribute(R.^attr-private.colorAccentPrimary, typedValue, true);
+                imageView2.setColorFilter(typedValue.data);
+            }
+        }
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.privateFlags = 272;
@@ -82,212 +103,60 @@ public class UserSwitchingDialog extends Dialog {
         window.setDecorFitsSystemWindows(false);
     }
 
-    public void inflateContent() {
-        setCancelable(false);
-        setContentView(17367508);
-        TextView textView = (TextView) findViewById(R.id.message);
-        if (textView != null) {
-            String textMessage = getTextMessage();
-            textView.setAccessibilityPaneTitle(textMessage);
-            textView.setText(textMessage);
-        }
-        ImageView imageView = (ImageView) findViewById(R.id.icon);
-        if (imageView != null) {
-            imageView.setImageBitmap(getUserIconRounded());
-        }
-        ImageView imageView2 = (ImageView) findViewById(R.id.textCapWords);
-        if (imageView2 != null) {
-            if (this.mDisableAnimations) {
-                imageView2.setVisibility(8);
-                return;
-            }
-            TypedValue typedValue = new TypedValue();
-            getContext().getTheme().resolveAttribute(R.^attr-private.colorProgressBackgroundNormal, typedValue, true);
-            imageView2.setColorFilter(typedValue.data);
-        }
+    public final void asyncTraceBegin(int i, String str) {
+        Slog.d("UserSwitchingDialog", "asyncTraceBegin-".concat(str));
+        Trace.asyncTraceBegin(64L, "UserSwitchingDialog".concat(str), this.mTraceCookie + i);
     }
 
-    public final Bitmap getUserIconRounded() {
-        Bitmap bitmap = (Bitmap) ObjectUtils.getOrElse(BitmapFactory.decodeFile(this.mNewUser.iconPath), defaultUserIcon(this.mNewUser.id));
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        Bitmap createBitmap = Bitmap.createBitmap(width, height, bitmap.getConfig());
-        Paint paint = new Paint(1);
-        Shader.TileMode tileMode = Shader.TileMode.CLAMP;
-        paint.setShader(new BitmapShader(bitmap, tileMode, tileMode));
-        float f = width;
-        float f2 = height;
-        new Canvas(createBitmap).drawRoundRect(new RectF(DisplayPowerController2.RATE_FROM_DOZE_TO_ON, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, f, f2), f / 2.0f, f2 / 2.0f, paint);
-        return createBitmap;
-    }
-
-    public final Bitmap defaultUserIcon(int i) {
-        Resources resources = getContext().getResources();
-        return UserIcons.convertToBitmapAtUserIconSize(resources, UserIcons.getDefaultUserIcon(resources, i, false));
-    }
-
-    public final String getTextMessage() {
-        String str;
-        Resources resources = getContext().getResources();
-        if (UserManager.isDeviceInDemoMode(this.mContext)) {
-            return resources.getString(this.mOldUser.isDemo() ? R.string.language_picker_section_all : R.string.language_picker_section_suggested);
-        }
-        if (this.mOldUser.id == 0) {
-            str = this.mSwitchingFromSystemUserMessage;
-        } else {
-            str = this.mNewUser.id == 0 ? this.mSwitchingToSystemUserMessage : null;
-        }
-        return str != null ? str : resources.getString(17042577, this.mNewUser.name);
-    }
-
-    public final boolean isUserSetupComplete(UserInfo userInfo) {
-        return Settings.Secure.getIntForUser(this.mContext.getContentResolver(), "user_setup_complete", 0, userInfo.id) == 1;
-    }
-
-    @Override // android.app.Dialog
-    public void show() {
-        asyncTraceBegin("dialog", 0);
-        super.show();
+    public final void asyncTraceEnd(int i, String str) {
+        Trace.asyncTraceEnd(64L, "UserSwitchingDialog".concat(str), this.mTraceCookie + i);
+        Slog.d("UserSwitchingDialog", "asyncTraceEnd-".concat(str));
     }
 
     @Override // android.app.Dialog, android.content.DialogInterface
-    public void dismiss() {
+    public final void dismiss() {
         super.dismiss();
-        stopFreezingScreen();
-        asyncTraceEnd("dialog", 0);
+        if (this.mNeedToFreezeScreen) {
+            Slog.d("UserSwitchingDialog", "traceBegin-".concat("stopFreezingScreen"));
+            Trace.traceBegin(64L, "stopFreezingScreen");
+            this.mWindowManager.stopFreezingScreen();
+            Trace.traceEnd(64L);
+            Slog.d("UserSwitchingDialog", "traceEnd-".concat("stopFreezingScreen"));
+        }
+        asyncTraceEnd(0, "dialog");
     }
 
-    public void show(final Runnable runnable) {
-        Slog.d("UserSwitchingDialog", "show called");
-        show();
-        startShowAnimation(new Runnable() { // from class: com.android.server.am.UserSwitchingDialog$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserSwitchingDialog.this.lambda$show$0(runnable);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$show$0(Runnable runnable) {
-        startFreezingScreen();
-        runnable.run();
-    }
-
-    public void dismiss(final Runnable runnable) {
+    public final void dismiss(Runnable runnable) {
         Slog.d("UserSwitchingDialog", "dismiss called");
         if (runnable == null) {
             dismiss();
-        } else {
-            startDismissAnimation(new Runnable() { // from class: com.android.server.am.UserSwitchingDialog$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    UserSwitchingDialog.this.lambda$dismiss$1(runnable);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$dismiss$1(Runnable runnable) {
-        dismiss();
-        runnable.run();
-    }
-
-    public final void startFreezingScreen() {
-        if (this.mNeedToFreezeScreen) {
-            traceBegin("startFreezingScreen");
-            this.mWindowManager.startFreezingScreen(0, 0);
-            traceEnd("startFreezingScreen");
-        }
-    }
-
-    public final void stopFreezingScreen() {
-        if (this.mNeedToFreezeScreen) {
-            traceBegin("stopFreezingScreen");
-            this.mWindowManager.stopFreezingScreen();
-            traceEnd("stopFreezingScreen");
-        }
-    }
-
-    public final void startShowAnimation(final Runnable runnable) {
-        if (this.mDisableAnimations) {
-            runnable.run();
-        } else {
-            asyncTraceBegin("showAnimation", 1);
-            startDialogAnimation(KnoxCustomManagerService.SHOW, new AlphaAnimation(DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 1.0f), new Runnable() { // from class: com.android.server.am.UserSwitchingDialog$$ExternalSyntheticLambda3
-                @Override // java.lang.Runnable
-                public final void run() {
-                    UserSwitchingDialog.this.lambda$startShowAnimation$3(runnable);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$startShowAnimation$3(final Runnable runnable) {
-        asyncTraceEnd("showAnimation", 1);
-        asyncTraceBegin("spinnerAnimation", 2);
-        startProgressAnimation(new Runnable() { // from class: com.android.server.am.UserSwitchingDialog$$ExternalSyntheticLambda4
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserSwitchingDialog.this.lambda$startShowAnimation$2(runnable);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$startShowAnimation$2(Runnable runnable) {
-        asyncTraceEnd("spinnerAnimation", 2);
-        runnable.run();
-    }
-
-    public final void startDismissAnimation(final Runnable runnable) {
-        if (this.mDisableAnimations || this.mNeedToFreezeScreen) {
-            runnable.run();
-        } else {
-            asyncTraceBegin("dismissAnimation", 3);
-            startDialogAnimation("dismiss", new AlphaAnimation(1.0f, DisplayPowerController2.RATE_FROM_DOZE_TO_ON), new Runnable() { // from class: com.android.server.am.UserSwitchingDialog$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    UserSwitchingDialog.this.lambda$startDismissAnimation$4(runnable);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$startDismissAnimation$4(Runnable runnable) {
-        asyncTraceEnd("dismissAnimation", 3);
-        runnable.run();
-    }
-
-    public final void startProgressAnimation(Runnable runnable) {
-        AnimatedVectorDrawable spinnerAVD = getSpinnerAVD();
-        if (this.mDisableAnimations || spinnerAVD == null) {
-            runnable.run();
             return;
         }
-        final Runnable animationWithTimeout = animationWithTimeout("spinner", runnable);
-        spinnerAVD.registerAnimationCallback(new Animatable2.AnimationCallback() { // from class: com.android.server.am.UserSwitchingDialog.1
-            @Override // android.graphics.drawable.Animatable2.AnimationCallback
-            public void onAnimationEnd(Drawable drawable) {
-                animationWithTimeout.run();
-            }
-        });
-        spinnerAVD.start();
+        UserSwitchingDialog$$ExternalSyntheticLambda0 userSwitchingDialog$$ExternalSyntheticLambda0 = new UserSwitchingDialog$$ExternalSyntheticLambda0(this, runnable);
+        if (this.mDisableAnimations || this.mNeedToFreezeScreen) {
+            userSwitchingDialog$$ExternalSyntheticLambda0.run();
+        } else {
+            asyncTraceBegin(3, "dismissAnimation");
+            startDialogAnimation("dismiss", new AlphaAnimation(1.0f, FullScreenMagnificationGestureHandler.MAX_SCALE), new UserSwitchingDialog$$ExternalSyntheticLambda0(this, userSwitchingDialog$$ExternalSyntheticLambda0));
+        }
     }
 
-    public final AnimatedVectorDrawable getSpinnerAVD() {
-        ImageView imageView = (ImageView) findViewById(R.id.textCapWords);
-        if (imageView == null) {
-            return null;
+    @Override // android.app.Dialog
+    public final void show() {
+        asyncTraceBegin(0, "dialog");
+        super.show();
+    }
+
+    public final void show(UserController$$ExternalSyntheticLambda3 userController$$ExternalSyntheticLambda3) {
+        Slog.d("UserSwitchingDialog", "show called");
+        show();
+        UserSwitchingDialog$$ExternalSyntheticLambda0 userSwitchingDialog$$ExternalSyntheticLambda0 = new UserSwitchingDialog$$ExternalSyntheticLambda0(this, userController$$ExternalSyntheticLambda3);
+        if (this.mDisableAnimations) {
+            userSwitchingDialog$$ExternalSyntheticLambda0.run();
+        } else {
+            asyncTraceBegin(1, "showAnimation");
+            startDialogAnimation(KnoxCustomManagerService.SHOW, new AlphaAnimation(FullScreenMagnificationGestureHandler.MAX_SCALE, 1.0f), new UserSwitchingDialog$$ExternalSyntheticLambda0(this, userSwitchingDialog$$ExternalSyntheticLambda0, 2));
         }
-        Drawable drawable = imageView.getDrawable();
-        if (drawable instanceof AnimatedVectorDrawable) {
-            return (AnimatedVectorDrawable) drawable;
-        }
-        return null;
     }
 
     public final void startDialogAnimation(String str, Animation animation, Runnable runnable) {
@@ -296,72 +165,23 @@ public class UserSwitchingDialog extends Dialog {
             runnable.run();
             return;
         }
-        final Runnable animationWithTimeout = animationWithTimeout(str, runnable);
+        final UserSwitchingDialog$$ExternalSyntheticLambda4 userSwitchingDialog$$ExternalSyntheticLambda4 = new UserSwitchingDialog$$ExternalSyntheticLambda4(this, new AtomicBoolean(true), runnable);
+        this.mHandler.postDelayed(new UserSwitchingDialog$$ExternalSyntheticLambda0(str, userSwitchingDialog$$ExternalSyntheticLambda4), 1000L);
         animation.setDuration(300L);
         animation.setAnimationListener(new Animation.AnimationListener() { // from class: com.android.server.am.UserSwitchingDialog.2
             @Override // android.view.animation.Animation.AnimationListener
-            public void onAnimationRepeat(Animation animation2) {
+            public final void onAnimationEnd(Animation animation2) {
+                userSwitchingDialog$$ExternalSyntheticLambda4.run();
             }
 
             @Override // android.view.animation.Animation.AnimationListener
-            public void onAnimationStart(Animation animation2) {
+            public final void onAnimationRepeat(Animation animation2) {
             }
 
             @Override // android.view.animation.Animation.AnimationListener
-            public void onAnimationEnd(Animation animation2) {
-                animationWithTimeout.run();
+            public final void onAnimationStart(Animation animation2) {
             }
         });
         findViewById.startAnimation(animation);
-    }
-
-    public final Runnable animationWithTimeout(final String str, final Runnable runnable) {
-        final AtomicBoolean atomicBoolean = new AtomicBoolean(true);
-        final Runnable runnable2 = new Runnable() { // from class: com.android.server.am.UserSwitchingDialog$$ExternalSyntheticLambda5
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserSwitchingDialog.this.lambda$animationWithTimeout$5(atomicBoolean, runnable);
-            }
-        };
-        this.mHandler.postDelayed(new Runnable() { // from class: com.android.server.am.UserSwitchingDialog$$ExternalSyntheticLambda6
-            @Override // java.lang.Runnable
-            public final void run() {
-                UserSwitchingDialog.lambda$animationWithTimeout$6(str, runnable2);
-            }
-        }, 1000L);
-        return runnable2;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$animationWithTimeout$5(AtomicBoolean atomicBoolean, Runnable runnable) {
-        if (atomicBoolean.getAndSet(false)) {
-            this.mHandler.removeCallbacksAndMessages(null);
-            runnable.run();
-        }
-    }
-
-    public static /* synthetic */ void lambda$animationWithTimeout$6(String str, Runnable runnable) {
-        Slog.w("UserSwitchingDialog", str + " animation not completed in 1000 ms");
-        runnable.run();
-    }
-
-    public final void asyncTraceBegin(String str, int i) {
-        Slog.d("UserSwitchingDialog", "asyncTraceBegin-" + str);
-        Trace.asyncTraceBegin(64L, "UserSwitchingDialog" + str, this.mTraceCookie + i);
-    }
-
-    public final void asyncTraceEnd(String str, int i) {
-        Trace.asyncTraceEnd(64L, "UserSwitchingDialog" + str, this.mTraceCookie + i);
-        Slog.d("UserSwitchingDialog", "asyncTraceEnd-" + str);
-    }
-
-    public final void traceBegin(String str) {
-        Slog.d("UserSwitchingDialog", "traceBegin-" + str);
-        Trace.traceBegin(64L, str);
-    }
-
-    public final void traceEnd(String str) {
-        Trace.traceEnd(64L);
-        Slog.d("UserSwitchingDialog", "traceEnd-" + str);
     }
 }

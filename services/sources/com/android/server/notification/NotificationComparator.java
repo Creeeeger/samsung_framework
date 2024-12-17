@@ -1,190 +1,145 @@
 package com.android.server.notification;
 
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.telecom.TelecomManager;
 import android.util.Slog;
-import com.android.internal.config.sysui.SystemUiSystemPropertiesFlags;
 import com.android.internal.os.BackgroundThread;
 import com.android.internal.util.NotificationMessagingUtil;
-import com.android.server.display.DisplayPowerController2;
 import com.android.server.notification.NotificationComparator;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import java.util.Comparator;
-import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class NotificationComparator implements Comparator {
+public final class NotificationComparator implements Comparator {
     public final Context mContext;
     public String mDefaultPhoneApp;
     public final NotificationMessagingUtil mMessagingUtil;
-    public final BroadcastReceiver mPhoneAppBroadcastReceiver;
-    public final boolean mSortByInterruptiveness;
+    public final AnonymousClass1 mPhoneAppBroadcastReceiver;
     public final Object mStateLock;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.notification.NotificationComparator$1, reason: invalid class name */
+    public final class AnonymousClass1 extends BroadcastReceiver {
+        public AnonymousClass1() {
+        }
+
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, final Intent intent) {
+            BackgroundThread.getExecutor().execute(new Runnable() { // from class: com.android.server.notification.NotificationComparator$1$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    NotificationComparator.AnonymousClass1 anonymousClass1 = NotificationComparator.AnonymousClass1.this;
+                    Intent intent2 = intent;
+                    synchronized (NotificationComparator.this.mStateLock) {
+                        NotificationComparator.this.mDefaultPhoneApp = intent2.getStringExtra("android.telecom.extra.CHANGE_DEFAULT_DIALER_PACKAGE_NAME");
+                        Slog.d("NotificationComparator", "DefaultPhonApp Changed : " + NotificationComparator.this.mDefaultPhoneApp);
+                    }
+                }
+            });
+        }
+    }
 
     public NotificationComparator(Context context) {
         Object obj = new Object();
         this.mStateLock = obj;
         AnonymousClass1 anonymousClass1 = new AnonymousClass1();
-        this.mPhoneAppBroadcastReceiver = anonymousClass1;
         this.mContext = context;
         context.registerReceiver(anonymousClass1, new IntentFilter("android.telecom.action.DEFAULT_DIALER_CHANGED"));
         this.mMessagingUtil = new NotificationMessagingUtil(context, obj);
-        this.mSortByInterruptiveness = !SystemUiSystemPropertiesFlags.getResolver().isEnabled(SystemUiSystemPropertiesFlags.NotificationFlags.NO_SORT_BY_INTERRUPTIVENESS);
     }
 
+    public static boolean isSystemMax(NotificationRecord notificationRecord) {
+        if (notificationRecord.mImportance < 4) {
+            return false;
+        }
+        String packageName = notificationRecord.sbn.getPackageName();
+        return "android".equals(packageName) || Constants.SYSTEMUI_PACKAGE_NAME.equals(packageName);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x00a2, code lost:
+    
+        if (r3 != 0) goto L46;
+     */
     @Override // java.util.Comparator
-    public int compare(NotificationRecord notificationRecord, NotificationRecord notificationRecord2) {
-        int compare;
-        boolean isInterruptive;
-        boolean isInterruptive2;
-        int importance = notificationRecord.getImportance();
-        int importance2 = notificationRecord2.getImportance();
-        boolean z = importance >= 3;
-        boolean z2 = importance2 >= 3;
-        if (z != z2) {
-            compare = Boolean.compare(z, z2);
-        } else if (notificationRecord.getRankingScore() != notificationRecord2.getRankingScore()) {
-            compare = Float.compare(notificationRecord.getRankingScore(), notificationRecord2.getRankingScore());
-        } else {
-            boolean isImportantColorized = isImportantColorized(notificationRecord);
-            boolean isImportantColorized2 = isImportantColorized(notificationRecord2);
-            if (isImportantColorized != isImportantColorized2) {
-                compare = Boolean.compare(isImportantColorized, isImportantColorized2);
-            } else {
-                boolean isImportantOngoing = isImportantOngoing(notificationRecord);
-                boolean isImportantOngoing2 = isImportantOngoing(notificationRecord2);
-                if (isImportantOngoing != isImportantOngoing2) {
-                    compare = Boolean.compare(isImportantOngoing, isImportantOngoing2);
-                } else {
-                    boolean isImportantMessaging = isImportantMessaging(notificationRecord);
-                    boolean isImportantMessaging2 = isImportantMessaging(notificationRecord2);
-                    if (isImportantMessaging != isImportantMessaging2) {
-                        compare = Boolean.compare(isImportantMessaging, isImportantMessaging2);
-                    } else {
-                        boolean isImportantPeople = isImportantPeople(notificationRecord);
-                        boolean isImportantPeople2 = isImportantPeople(notificationRecord2);
-                        int compare2 = Float.compare(notificationRecord.getContactAffinity(), notificationRecord2.getContactAffinity());
-                        if (isImportantPeople && isImportantPeople2) {
-                            if (compare2 != 0) {
-                                return compare2 * (-1);
-                            }
-                        } else if (isImportantPeople != isImportantPeople2) {
-                            compare = Boolean.compare(isImportantPeople, isImportantPeople2);
-                        }
-                        boolean isSystemMax = isSystemMax(notificationRecord);
-                        boolean isSystemMax2 = isSystemMax(notificationRecord2);
-                        if (isSystemMax != isSystemMax2) {
-                            compare = Boolean.compare(isSystemMax, isSystemMax2);
-                        } else if (importance != importance2) {
-                            compare = Integer.compare(importance, importance2);
-                        } else {
-                            if (compare2 != 0) {
-                                return compare2 * (-1);
-                            }
-                            int packagePriority = notificationRecord.getPackagePriority();
-                            int packagePriority2 = notificationRecord2.getPackagePriority();
-                            if (packagePriority != packagePriority2) {
-                                compare = Integer.compare(packagePriority, packagePriority2);
-                            } else {
-                                int i = notificationRecord.getSbn().getNotification().priority;
-                                int i2 = notificationRecord2.getSbn().getNotification().priority;
-                                if (i != i2) {
-                                    compare = Integer.compare(i, i2);
-                                } else if (this.mSortByInterruptiveness && (isInterruptive = notificationRecord.isInterruptive()) != (isInterruptive2 = notificationRecord2.isInterruptive())) {
-                                    compare = Boolean.compare(isInterruptive, isInterruptive2);
-                                } else {
-                                    compare = Long.compare(notificationRecord.getRankingTimeMs(), notificationRecord2.getRankingTimeMs());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return compare * (-1);
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int compare(java.lang.Object r9, java.lang.Object r10) {
+        /*
+            Method dump skipped, instructions count: 249
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.notification.NotificationComparator.compare(java.lang.Object, java.lang.Object):int");
     }
 
-    public final boolean isImportantColorized(NotificationRecord notificationRecord) {
-        if (notificationRecord.getImportance() < 2) {
-            return false;
-        }
-        return notificationRecord.getNotification().isColorized();
-    }
-
-    public final boolean isImportantOngoing(NotificationRecord notificationRecord) {
-        if (notificationRecord.getImportance() < 2) {
-            return false;
-        }
-        if (isCallStyle(notificationRecord)) {
-            return true;
-        }
-        if (notificationRecord.getNotification().isFgsOrUij()) {
-            return isCallCategory(notificationRecord) || isMediaNotification(notificationRecord);
-        }
-        return false;
-    }
-
-    public boolean isImportantPeople(NotificationRecord notificationRecord) {
-        return notificationRecord.getImportance() >= 2 && notificationRecord.getContactAffinity() > DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    }
-
-    public boolean isImportantMessaging(NotificationRecord notificationRecord) {
-        return this.mMessagingUtil.isImportantMessaging(notificationRecord.getSbn(), notificationRecord.getImportance());
-    }
-
-    public boolean isSystemMax(NotificationRecord notificationRecord) {
-        if (notificationRecord.getImportance() < 4) {
-            return false;
-        }
-        String packageName = notificationRecord.getSbn().getPackageName();
-        return "android".equals(packageName) || "com.android.systemui".equals(packageName);
-    }
-
-    public final boolean isMediaNotification(NotificationRecord notificationRecord) {
-        return notificationRecord.getNotification().isMediaNotification();
-    }
-
-    public final boolean isCallCategory(NotificationRecord notificationRecord) {
-        return notificationRecord.isCategory("call") && isDefaultPhoneApp(notificationRecord.getSbn().getPackageName());
-    }
-
-    public final boolean isCallStyle(NotificationRecord notificationRecord) {
-        return notificationRecord.getNotification().isStyle(Notification.CallStyle.class);
-    }
-
-    public final boolean isDefaultPhoneApp(String str) {
-        if (this.mDefaultPhoneApp == null) {
-            TelecomManager telecomManager = (TelecomManager) this.mContext.getSystemService("telecom");
-            this.mDefaultPhoneApp = telecomManager != null ? telecomManager.getDefaultDialerPackage() : null;
-        }
-        return Objects.equals(str, this.mDefaultPhoneApp);
-    }
-
-    /* renamed from: com.android.server.notification.NotificationComparator$1, reason: invalid class name */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends BroadcastReceiver {
-        public AnonymousClass1() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, final Intent intent) {
-            BackgroundThread.getExecutor().execute(new Runnable() { // from class: com.android.server.notification.NotificationComparator$1$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    NotificationComparator.AnonymousClass1.this.lambda$onReceive$0(intent);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onReceive$0(Intent intent) {
-            synchronized (NotificationComparator.this.mStateLock) {
-                NotificationComparator.this.mDefaultPhoneApp = intent.getStringExtra("android.telecom.extra.CHANGE_DEFAULT_DIALER_PACKAGE_NAME");
-                Slog.d("NotificationComparator", "DefaultPhonApp Changed : " + NotificationComparator.this.mDefaultPhoneApp);
-            }
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0051, code lost:
+    
+        if (java.util.Objects.equals(r0, r5.mDefaultPhoneApp) != false) goto L25;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean isImportantOngoing(com.android.server.notification.NotificationRecord r6) {
+        /*
+            r5 = this;
+            int r0 = r6.mImportance
+            r1 = 2
+            r2 = 0
+            if (r0 >= r1) goto L7
+            return r2
+        L7:
+            android.service.notification.StatusBarNotification r0 = r6.sbn
+            android.app.Notification r0 = r0.getNotification()
+            java.lang.Class<android.app.Notification$CallStyle> r1 = android.app.Notification.CallStyle.class
+            boolean r0 = r0.isStyle(r1)
+            r1 = 1
+            if (r0 == 0) goto L17
+            return r1
+        L17:
+            android.service.notification.StatusBarNotification r0 = r6.sbn
+            android.app.Notification r0 = r0.getNotification()
+            boolean r0 = r0.isFgsOrUij()
+            if (r0 != 0) goto L24
+            return r2
+        L24:
+            java.lang.String r0 = "call"
+            boolean r0 = r6.isCategory(r0)
+            if (r0 == 0) goto L54
+            android.service.notification.StatusBarNotification r0 = r6.sbn
+            java.lang.String r0 = r0.getPackageName()
+            java.lang.String r3 = r5.mDefaultPhoneApp
+            if (r3 != 0) goto L4b
+            android.content.Context r3 = r5.mContext
+            java.lang.String r4 = "telecom"
+            java.lang.Object r3 = r3.getSystemService(r4)
+            android.telecom.TelecomManager r3 = (android.telecom.TelecomManager) r3
+            if (r3 == 0) goto L48
+            java.lang.String r3 = r3.getDefaultDialerPackage()
+            goto L49
+        L48:
+            r3 = 0
+        L49:
+            r5.mDefaultPhoneApp = r3
+        L4b:
+            java.lang.String r5 = r5.mDefaultPhoneApp
+            boolean r5 = java.util.Objects.equals(r0, r5)
+            if (r5 == 0) goto L54
+            goto L60
+        L54:
+            android.service.notification.StatusBarNotification r5 = r6.sbn
+            android.app.Notification r5 = r5.getNotification()
+            boolean r5 = r5.isMediaNotification()
+            if (r5 == 0) goto L61
+        L60:
+            r2 = r1
+        L61:
+            return r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.notification.NotificationComparator.isImportantOngoing(com.android.server.notification.NotificationRecord):boolean");
     }
 }

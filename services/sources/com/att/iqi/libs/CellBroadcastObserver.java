@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.telephony.SmsCbMessage;
 import android.text.TextUtils;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.att.iqi.lib.IQIManager;
 import com.att.iqi.lib.metrics.ea.EA12;
 import com.att.iqi.lib.metrics.ea.EA13;
@@ -17,7 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class CellBroadcastObserver extends ContentObserver {
     private static final String CELLBROADCASTS_APP_AUTHORITY = "cellbroadcasts-app";
     private static final String CELLBROADCASTS_AUTHORITY = "cellbroadcasts";
@@ -35,79 +37,16 @@ public class CellBroadcastObserver extends ContentObserver {
         this.mIQIManager = IQIManager.getInstance();
     }
 
-    public final void register() {
-        this.mContext.getContentResolver().registerContentObserver(CELLBROADCASTS_DISPLAYED_CONTENT_URI, true, this);
-        this.mContext.getContentResolver().registerContentObserver(CELLBROADCASTS_APP_CONTENT_URI, true, this);
-        if (LogUtil.canLog()) {
-            LogUtil.logd("CB observers registered");
-        }
-    }
-
-    public final void unregister() {
-        this.mContext.getContentResolver().unregisterContentObserver(this);
-        if (LogUtil.canLog()) {
-            LogUtil.logd("CB observers unregistered");
-        }
-    }
-
-    @Override // android.database.ContentObserver
-    public void onChange(boolean z, Uri uri) {
-        if (uri == null) {
-            if (LogUtil.canLog()) {
-                LogUtil.logd("Received null uri!");
-                return;
-            }
-            return;
-        }
-        if (LogUtil.canLog()) {
-            LogUtil.logd("CellBroadcasterObserver received update: " + uri);
-        }
-        String host = uri.getHost();
-        if (TextUtils.equals(host, CELLBROADCASTS_AUTHORITY)) {
-            List<String> pathSegments = uri.getPathSegments();
-            if (LogUtil.canLog()) {
-                Iterator<String> it = pathSegments.iterator();
-                while (it.hasNext()) {
-                    LogUtil.logd("URI segment: " + it.next());
-                }
-            }
-            if (pathSegments.size() >= 1) {
-                String lastPathSegment = uri.getLastPathSegment();
-                try {
-                    int parseInt = Integer.parseInt(lastPathSegment);
-                    if (LogUtil.canLog()) {
-                        LogUtil.logd("Record ID " + parseInt);
-                    }
-                    reportNewMessageReceivedAndDisplayed(lastPathSegment);
-                    return;
-                } catch (Exception e) {
-                    if (LogUtil.canLog()) {
-                        LogUtil.logd("The last segment is not an integer!", e);
-                        return;
-                    }
-                    return;
-                }
-            }
-            return;
-        }
-        if (TextUtils.equals(host, CELLBROADCASTS_APP_AUTHORITY)) {
-            checkAndMaybeReportReadMessages();
-        } else if (LogUtil.canLog()) {
-            LogUtil.logd("Received callback on unknown URI: " + uri);
-        }
-    }
-
     private String buildQuerySelection(Set set) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("read=1 AND date IN (");
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m("read=1 AND date IN (");
         Iterator it = set.iterator();
         while (it.hasNext()) {
-            sb.append((Long) it.next());
-            sb.append(",");
+            m.append((Long) it.next());
+            m.append(",");
         }
-        sb.deleteCharAt(sb.length() - 1);
-        sb.append(")");
-        return sb.toString();
+        m.deleteCharAt(m.length() - 1);
+        m.append(")");
+        return m.toString();
     }
 
     private void checkAndMaybeReportReadMessages() {
@@ -121,18 +60,14 @@ public class CellBroadcastObserver extends ContentObserver {
                             int i = query.getInt(query.getColumnIndex("serial_number"));
                             this.mIQIManager.submitMetric(new EA14(query.getInt(query.getColumnIndex("service_category")), i));
                             this.pendingReadList.remove(Long.valueOf(j));
-                            if (LogUtil.canLog()) {
-                                LogUtil.logd("CB with serial #: " + i + " read");
-                            }
+                            LogUtil.logd("CB with serial #: " + i + " read");
                         }
                     } finally {
                     }
                 }
                 query.close();
             } catch (Exception e) {
-                if (LogUtil.canLog()) {
-                    LogUtil.logd("Error while querying " + CELLBROADCASTS_APP_CONTENT_URI, e);
-                }
+                LogUtil.logd("Error while querying " + CELLBROADCASTS_APP_CONTENT_URI, e);
             }
         }
     }
@@ -143,9 +78,7 @@ public class CellBroadcastObserver extends ContentObserver {
             while (query.moveToNext()) {
                 try {
                     SmsCbMessage createFromCursor = SmsCbMessage.createFromCursor(query);
-                    if (LogUtil.canLog()) {
-                        LogUtil.logd("New CB Message [ID: " + str + "] was displayed: " + createFromCursor);
-                    }
+                    LogUtil.logd("New CB Message [ID: " + str + "] was displayed: " + createFromCursor);
                     EA12 ea12 = new EA12((Parcelable) createFromCursor);
                     EA13 ea13 = new EA13(createFromCursor.getServiceCategory(), createFromCursor.getSerialNumber());
                     this.mIQIManager.submitMetric(ea12);
@@ -156,9 +89,50 @@ public class CellBroadcastObserver extends ContentObserver {
             }
             query.close();
         } catch (Exception e) {
-            if (LogUtil.canLog()) {
-                LogUtil.logd("Error while querying " + CELLBROADCASTS_CONTENT_URI, e);
+            LogUtil.loge("Error while querying " + CELLBROADCASTS_CONTENT_URI, e);
+        }
+    }
+
+    @Override // android.database.ContentObserver
+    public void onChange(boolean z, Uri uri) {
+        if (uri == null) {
+            LogUtil.logd("Received null uri!");
+            return;
+        }
+        LogUtil.logd("CellBroadcasterObserver received update: " + uri);
+        String host = uri.getHost();
+        if (!TextUtils.equals(host, CELLBROADCASTS_AUTHORITY)) {
+            if (TextUtils.equals(host, CELLBROADCASTS_APP_AUTHORITY)) {
+                checkAndMaybeReportReadMessages();
+                return;
+            }
+            LogUtil.logd("Received callback on unknown URI: " + uri);
+            return;
+        }
+        List<String> pathSegments = uri.getPathSegments();
+        Iterator<String> it = pathSegments.iterator();
+        while (it.hasNext()) {
+            LogUtil.logd("URI segment: " + it.next());
+        }
+        if (pathSegments.size() >= 1) {
+            String lastPathSegment = uri.getLastPathSegment();
+            try {
+                LogUtil.logd("Record ID " + Integer.parseInt(lastPathSegment));
+                reportNewMessageReceivedAndDisplayed(lastPathSegment);
+            } catch (Exception e) {
+                LogUtil.loge("The last segment is not an integer!", e);
             }
         }
+    }
+
+    public final void register() {
+        this.mContext.getContentResolver().registerContentObserver(CELLBROADCASTS_DISPLAYED_CONTENT_URI, true, this);
+        this.mContext.getContentResolver().registerContentObserver(CELLBROADCASTS_APP_CONTENT_URI, true, this);
+        LogUtil.logd("CB observers registered");
+    }
+
+    public final void unregister() {
+        this.mContext.getContentResolver().unregisterContentObserver(this);
+        LogUtil.logd("CB observers unregistered");
     }
 }

@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.UserHandle;
@@ -25,140 +26,25 @@ import android.view.accessibility.AccessibilityManager;
 import com.android.internal.accessibility.util.AccessibilityStatsLogUtils;
 import com.android.internal.notification.SystemNotificationChannels;
 import com.android.internal.util.ImageUtils;
-import com.android.internal.util.function.pooled.PooledLambda;
-import com.android.server.accessibility.PolicyWarningUIController;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class PolicyWarningUIController {
-    protected static final String ACTION_A11Y_SETTINGS;
-    protected static final String ACTION_DISMISS_NOTIFICATION;
-    protected static final String ACTION_SEND_NOTIFICATION;
+public final class PolicyWarningUIController {
     public final AlarmManager mAlarmManager;
     public final Context mContext;
     public final ArraySet mEnabledA11yServices = new ArraySet();
     public final Handler mMainHandler;
     public final NotificationController mNotificationController;
+    protected static final String ACTION_SEND_NOTIFICATION = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1("PolicyWarningUIController", ".ACTION_SEND_NOTIFICATION");
+    protected static final String ACTION_A11Y_SETTINGS = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1("PolicyWarningUIController", ".ACTION_A11Y_SETTINGS");
+    protected static final String ACTION_DISMISS_NOTIFICATION = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1("PolicyWarningUIController", ".ACTION_DISMISS_NOTIFICATION");
 
-    static {
-        String simpleName = PolicyWarningUIController.class.getSimpleName();
-        ACTION_SEND_NOTIFICATION = simpleName + ".ACTION_SEND_NOTIFICATION";
-        ACTION_A11Y_SETTINGS = simpleName + ".ACTION_A11Y_SETTINGS";
-        ACTION_DISMISS_NOTIFICATION = simpleName + ".ACTION_DISMISS_NOTIFICATION";
-    }
-
-    public PolicyWarningUIController(Handler handler, Context context, NotificationController notificationController) {
-        this.mMainHandler = handler;
-        this.mContext = context;
-        this.mNotificationController = notificationController;
-        this.mAlarmManager = (AlarmManager) context.getSystemService(AlarmManager.class);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_SEND_NOTIFICATION);
-        intentFilter.addAction(ACTION_A11Y_SETTINGS);
-        intentFilter.addAction(ACTION_DISMISS_NOTIFICATION);
-        context.registerReceiver(notificationController, intentFilter, "android.permission.MANAGE_ACCESSIBILITY", handler, 2);
-    }
-
-    public void onSwitchUser(int i, Set set) {
-        this.mMainHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.server.accessibility.PolicyWarningUIController$$ExternalSyntheticLambda0
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                PolicyWarningUIController.this.onSwitchUserInternal(((Integer) obj).intValue(), (Set) obj2);
-            }
-        }, Integer.valueOf(i), set));
-    }
-
-    public final void onSwitchUserInternal(int i, Set set) {
-        this.mEnabledA11yServices.clear();
-        this.mEnabledA11yServices.addAll(set);
-        this.mNotificationController.onSwitchUser(i);
-    }
-
-    public void onEnabledServicesChanged(int i, Set set) {
-        this.mMainHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.server.accessibility.PolicyWarningUIController$$ExternalSyntheticLambda4
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                PolicyWarningUIController.this.onEnabledServicesChangedInternal(((Integer) obj).intValue(), (Set) obj2);
-            }
-        }, Integer.valueOf(i), set));
-    }
-
-    public void onEnabledServicesChangedInternal(int i, Set set) {
-        ArraySet arraySet = new ArraySet(this.mEnabledA11yServices);
-        arraySet.removeAll(set);
-        this.mEnabledA11yServices.clear();
-        this.mEnabledA11yServices.addAll(set);
-        Handler handler = this.mMainHandler;
-        final NotificationController notificationController = this.mNotificationController;
-        Objects.requireNonNull(notificationController);
-        handler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.server.accessibility.PolicyWarningUIController$$ExternalSyntheticLambda5
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                PolicyWarningUIController.NotificationController.this.onServicesDisabled(((Integer) obj).intValue(), (ArraySet) obj2);
-            }
-        }, Integer.valueOf(i), arraySet));
-    }
-
-    public void onNonA11yCategoryServiceBound(int i, ComponentName componentName) {
-        this.mMainHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.server.accessibility.PolicyWarningUIController$$ExternalSyntheticLambda2
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                PolicyWarningUIController.this.setAlarm(((Integer) obj).intValue(), (ComponentName) obj2);
-            }
-        }, Integer.valueOf(i), componentName));
-    }
-
-    public void onNonA11yCategoryServiceUnbound(int i, ComponentName componentName) {
-        this.mMainHandler.sendMessage(PooledLambda.obtainMessage(new BiConsumer() { // from class: com.android.server.accessibility.PolicyWarningUIController$$ExternalSyntheticLambda1
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                PolicyWarningUIController.this.cancelAlarm(((Integer) obj).intValue(), (ComponentName) obj2);
-            }
-        }, Integer.valueOf(i), componentName));
-    }
-
-    public final void setAlarm(int i, ComponentName componentName) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(10, 24);
-        this.mAlarmManager.set(0, calendar.getTimeInMillis(), createPendingIntent(this.mContext, i, ACTION_SEND_NOTIFICATION, componentName));
-    }
-
-    public final void cancelAlarm(int i, ComponentName componentName) {
-        this.mAlarmManager.cancel(createPendingIntent(this.mContext, i, ACTION_SEND_NOTIFICATION, componentName));
-    }
-
-    public static PendingIntent createPendingIntent(Context context, int i, String str, ComponentName componentName) {
-        return PendingIntent.getBroadcast(context, 0, createIntent(context, i, str, componentName), 67108864);
-    }
-
-    public static Intent createIntent(Context context, int i, String str, ComponentName componentName) {
-        Intent intent = new Intent(str);
-        intent.setPackage(context.getPackageName()).setIdentifier(componentName.flattenToShortString()).putExtra("android.intent.extra.COMPONENT_NAME", componentName).putExtra("android.intent.extra.USER_ID", i).putExtra("android.intent.extra.TIME", SystemClock.elapsedRealtime());
-        return intent;
-    }
-
-    public void enableSendingNonA11yToolNotification(boolean z) {
-        this.mMainHandler.sendMessage(PooledLambda.obtainMessage(new Consumer() { // from class: com.android.server.accessibility.PolicyWarningUIController$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                PolicyWarningUIController.this.enableSendingNonA11yToolNotificationInternal(((Boolean) obj).booleanValue());
-            }
-        }, Boolean.valueOf(z)));
-    }
-
-    public final void enableSendingNonA11yToolNotificationInternal(boolean z) {
-        this.mNotificationController.setSendingNotification(z);
-    }
-
-    /* loaded from: classes.dex */
-    public class NotificationController extends BroadcastReceiver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class NotificationController extends BroadcastReceiver {
         public final Context mContext;
         public int mCurrentUserId;
         public final NotificationManager mNotificationManager;
@@ -171,8 +57,12 @@ public class PolicyWarningUIController {
             this.mNotificationManager = (NotificationManager) context.getSystemService(NotificationManager.class);
         }
 
+        public List getEnabledServiceInfos() {
+            return AccessibilityManager.getInstance(this.mContext).getEnabledAccessibilityServiceList(-1);
+        }
+
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             ComponentName componentName = (ComponentName) intent.getParcelableExtra("android.intent.extra.COMPONENT_NAME", ComponentName.class);
             if (TextUtils.isEmpty(action) || componentName == null) {
@@ -181,109 +71,58 @@ public class PolicyWarningUIController {
             long longExtra = intent.getLongExtra("android.intent.extra.TIME", 0L);
             long elapsedRealtime = longExtra > 0 ? SystemClock.elapsedRealtime() - longExtra : 0L;
             int intExtra = intent.getIntExtra("android.intent.extra.USER_ID", 0);
-            if (PolicyWarningUIController.ACTION_SEND_NOTIFICATION.equals(action)) {
-                if (trySendNotification(intExtra, componentName)) {
-                    AccessibilityStatsLogUtils.logNonA11yToolServiceWarningReported(componentName.getPackageName(), AccessibilityStatsLogUtils.ACCESSIBILITY_PRIVACY_WARNING_STATUS_SHOWN, elapsedRealtime);
-                }
-            } else {
-                if (PolicyWarningUIController.ACTION_A11Y_SETTINGS.equals(action)) {
-                    if (tryLaunchSettings(intExtra, componentName)) {
-                        AccessibilityStatsLogUtils.logNonA11yToolServiceWarningReported(componentName.getPackageName(), AccessibilityStatsLogUtils.ACCESSIBILITY_PRIVACY_WARNING_STATUS_CLICKED, elapsedRealtime);
+            if (!PolicyWarningUIController.ACTION_SEND_NOTIFICATION.equals(action)) {
+                if (!PolicyWarningUIController.ACTION_A11Y_SETTINGS.equals(action)) {
+                    if (PolicyWarningUIController.ACTION_DISMISS_NOTIFICATION.equals(action)) {
+                        ((ArrayList) this.mSentA11yServiceNotification).remove(componentName);
+                        if (intExtra == this.mCurrentUserId && this.mNotifiedA11yServices.add(componentName)) {
+                            writeNotifiedServiceList(intExtra, this.mNotifiedA11yServices);
+                            return;
+                        }
+                        return;
                     }
-                    this.mNotificationManager.cancel(componentName.flattenToShortString(), 1005);
-                    this.mSentA11yServiceNotification.remove(componentName);
-                    onNotificationCanceled(intExtra, componentName);
                     return;
                 }
-                if (PolicyWarningUIController.ACTION_DISMISS_NOTIFICATION.equals(action)) {
-                    this.mSentA11yServiceNotification.remove(componentName);
-                    onNotificationCanceled(intExtra, componentName);
+                if (intExtra == this.mCurrentUserId) {
+                    Intent m = BatteryService$$ExternalSyntheticOutline0.m(268468224, "android.settings.ACCESSIBILITY_DETAILS_SETTINGS");
+                    m.putExtra("android.intent.extra.COMPONENT_NAME", componentName.flattenToShortString());
+                    m.putExtra("start_time_to_log_a11y_tool", SystemClock.elapsedRealtime());
+                    this.mContext.startActivityAsUser(m, ActivityOptions.makeBasic().setLaunchDisplayId(this.mContext.getDisplayId()).toBundle(), UserHandle.of(intExtra));
+                    ((StatusBarManager) this.mContext.getSystemService(StatusBarManager.class)).collapsePanels();
+                    AccessibilityStatsLogUtils.logNonA11yToolServiceWarningReported(componentName.getPackageName(), AccessibilityStatsLogUtils.ACCESSIBILITY_PRIVACY_WARNING_STATUS_CLICKED, elapsedRealtime);
+                }
+                this.mNotificationManager.cancel(componentName.flattenToShortString(), 1005);
+                ((ArrayList) this.mSentA11yServiceNotification).remove(componentName);
+                if (intExtra == this.mCurrentUserId && this.mNotifiedA11yServices.add(componentName)) {
+                    writeNotifiedServiceList(intExtra, this.mNotifiedA11yServices);
+                    return;
+                }
+                return;
+            }
+            if (intExtra == this.mCurrentUserId && this.mSendNotification) {
+                List enabledServiceInfos = getEnabledServiceInfos();
+                for (int i = 0; i < enabledServiceInfos.size(); i++) {
+                    AccessibilityServiceInfo accessibilityServiceInfo = (AccessibilityServiceInfo) enabledServiceInfos.get(i);
+                    if (componentName.flattenToShortString().equals(accessibilityServiceInfo.getComponentName().flattenToShortString())) {
+                        if (accessibilityServiceInfo.isAccessibilityTool() || this.mNotifiedA11yServices.contains(componentName)) {
+                            return;
+                        }
+                        CharSequence loadLabel = accessibilityServiceInfo.getResolveInfo().serviceInfo.loadLabel(this.mContext.getPackageManager());
+                        Drawable loadIcon = accessibilityServiceInfo.getResolveInfo().loadIcon(this.mContext.getPackageManager());
+                        int dimensionPixelSize = this.mContext.getResources().getDimensionPixelSize(R.dimen.app_icon_size);
+                        Bitmap buildScaledBitmap = ImageUtils.buildScaledBitmap(loadIcon, dimensionPixelSize, dimensionPixelSize);
+                        Notification.Builder builder = new Notification.Builder(this.mContext, SystemNotificationChannels.ACCESSIBILITY_SECURITY_POLICY);
+                        builder.setSmallIcon(R.drawable.ic_battery).setSmallIcon(R.drawable.scrubber_progress_horizontal_holo_dark).setColor(this.mContext.getResources().getColor(R.color.accessibility_magnification_thumbnail_container_stroke_color)).setCategory("recommendation").setContentTitle(this.mContext.getString(17043442)).setContentText(this.mContext.getString(17043441, loadLabel)).setStyle(new Notification.BigTextStyle().bigText(this.mContext.getString(17043441, loadLabel))).setTicker(this.mContext.getString(17043442)).setOnlyAlertOnce(true).setDeleteIntent(PolicyWarningUIController.createPendingIntent(this.mContext, intExtra, PolicyWarningUIController.ACTION_DISMISS_NOTIFICATION, componentName)).setContentIntent(PolicyWarningUIController.createPendingIntent(this.mContext, intExtra, PolicyWarningUIController.ACTION_A11Y_SETTINGS, componentName));
+                        if (buildScaledBitmap != null) {
+                            builder.setLargeIcon(buildScaledBitmap);
+                        }
+                        this.mNotificationManager.notify(componentName.flattenToShortString(), 1005, builder.build());
+                        ((ArrayList) this.mSentA11yServiceNotification).add(componentName);
+                        AccessibilityStatsLogUtils.logNonA11yToolServiceWarningReported(componentName.getPackageName(), AccessibilityStatsLogUtils.ACCESSIBILITY_PRIVACY_WARNING_STATUS_SHOWN, elapsedRealtime);
+                        return;
+                    }
                 }
             }
-        }
-
-        public void onSwitchUser(int i) {
-            cancelSentNotifications();
-            this.mNotifiedA11yServices.clear();
-            this.mCurrentUserId = i;
-            this.mNotifiedA11yServices.addAll(readNotifiedServiceList(i));
-        }
-
-        public void onServicesDisabled(int i, ArraySet arraySet) {
-            if (this.mNotifiedA11yServices.removeAll(arraySet)) {
-                writeNotifiedServiceList(i, this.mNotifiedA11yServices);
-            }
-        }
-
-        public final boolean trySendNotification(int i, ComponentName componentName) {
-            if (i != this.mCurrentUserId || !this.mSendNotification) {
-                return false;
-            }
-            List enabledServiceInfos = getEnabledServiceInfos();
-            int i2 = 0;
-            while (true) {
-                if (i2 >= enabledServiceInfos.size()) {
-                    break;
-                }
-                AccessibilityServiceInfo accessibilityServiceInfo = (AccessibilityServiceInfo) enabledServiceInfos.get(i2);
-                if (!componentName.flattenToShortString().equals(accessibilityServiceInfo.getComponentName().flattenToShortString())) {
-                    i2++;
-                } else if (!accessibilityServiceInfo.isAccessibilityTool() && !this.mNotifiedA11yServices.contains(componentName)) {
-                    CharSequence loadLabel = accessibilityServiceInfo.getResolveInfo().serviceInfo.loadLabel(this.mContext.getPackageManager());
-                    Drawable loadIcon = accessibilityServiceInfo.getResolveInfo().loadIcon(this.mContext.getPackageManager());
-                    int dimensionPixelSize = this.mContext.getResources().getDimensionPixelSize(R.dimen.app_icon_size);
-                    sendNotification(i, componentName, loadLabel, ImageUtils.buildScaledBitmap(loadIcon, dimensionPixelSize, dimensionPixelSize));
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public final boolean tryLaunchSettings(int i, ComponentName componentName) {
-            if (i != this.mCurrentUserId) {
-                return false;
-            }
-            Intent intent = new Intent("android.settings.ACCESSIBILITY_DETAILS_SETTINGS");
-            intent.addFlags(268468224);
-            intent.putExtra("android.intent.extra.COMPONENT_NAME", componentName.flattenToShortString());
-            intent.putExtra("start_time_to_log_a11y_tool", SystemClock.elapsedRealtime());
-            this.mContext.startActivityAsUser(intent, ActivityOptions.makeBasic().setLaunchDisplayId(this.mContext.getDisplayId()).toBundle(), UserHandle.of(i));
-            ((StatusBarManager) this.mContext.getSystemService(StatusBarManager.class)).collapsePanels();
-            return true;
-        }
-
-        public void onNotificationCanceled(int i, ComponentName componentName) {
-            if (i == this.mCurrentUserId && this.mNotifiedA11yServices.add(componentName)) {
-                writeNotifiedServiceList(i, this.mNotifiedA11yServices);
-            }
-        }
-
-        public final void sendNotification(int i, ComponentName componentName, CharSequence charSequence, Bitmap bitmap) {
-            Notification.Builder builder = new Notification.Builder(this.mContext, SystemNotificationChannels.ACCESSIBILITY_SECURITY_POLICY);
-            builder.setSmallIcon(R.drawable.ic_check_circle_24px).setSmallIcon(R.drawable.spinner_white_76).setColor(this.mContext.getResources().getColor(R.color.car_purple_500)).setCategory("recommendation").setContentTitle(this.mContext.getString(17043219)).setContentText(this.mContext.getString(17043218, charSequence)).setStyle(new Notification.BigTextStyle().bigText(this.mContext.getString(17043218, charSequence))).setTicker(this.mContext.getString(17043219)).setOnlyAlertOnce(true).setDeleteIntent(PolicyWarningUIController.createPendingIntent(this.mContext, i, PolicyWarningUIController.ACTION_DISMISS_NOTIFICATION, componentName)).setContentIntent(PolicyWarningUIController.createPendingIntent(this.mContext, i, PolicyWarningUIController.ACTION_A11Y_SETTINGS, componentName));
-            if (bitmap != null) {
-                builder.setLargeIcon(bitmap);
-            }
-            this.mNotificationManager.notify(componentName.flattenToShortString(), 1005, builder.build());
-            this.mSentA11yServiceNotification.add(componentName);
-        }
-
-        public final ArraySet readNotifiedServiceList(int i) {
-            String stringForUser = Settings.Secure.getStringForUser(this.mContext.getContentResolver(), "notified_non_accessibility_category_services", i);
-            if (TextUtils.isEmpty(stringForUser)) {
-                return new ArraySet();
-            }
-            TextUtils.SimpleStringSplitter simpleStringSplitter = new TextUtils.SimpleStringSplitter(':');
-            simpleStringSplitter.setString(stringForUser);
-            ArraySet arraySet = new ArraySet();
-            Iterator it = simpleStringSplitter.iterator();
-            while (it.hasNext()) {
-                ComponentName unflattenFromString = ComponentName.unflattenFromString((String) it.next());
-                if (unflattenFromString != null) {
-                    arraySet.add(unflattenFromString);
-                }
-            }
-            return arraySet;
         }
 
         public final void writeNotifiedServiceList(int i, ArraySet arraySet) {
@@ -296,28 +135,23 @@ public class PolicyWarningUIController {
             }
             Settings.Secure.putStringForUser(this.mContext.getContentResolver(), "notified_non_accessibility_category_services", sb.toString(), i);
         }
+    }
 
-        public List getEnabledServiceInfos() {
-            return AccessibilityManager.getInstance(this.mContext).getEnabledAccessibilityServiceList(-1);
-        }
+    public PolicyWarningUIController(AccessibilityManagerService.MainHandler mainHandler, Context context, NotificationController notificationController) {
+        this.mMainHandler = mainHandler;
+        this.mContext = context;
+        this.mNotificationController = notificationController;
+        this.mAlarmManager = (AlarmManager) context.getSystemService(AlarmManager.class);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_SEND_NOTIFICATION);
+        intentFilter.addAction(ACTION_A11Y_SETTINGS);
+        intentFilter.addAction(ACTION_DISMISS_NOTIFICATION);
+        context.registerReceiver(notificationController, intentFilter, "android.permission.MANAGE_ACCESSIBILITY", mainHandler, 2);
+    }
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$cancelSentNotifications$0(ComponentName componentName) {
-            this.mNotificationManager.cancel(componentName.flattenToShortString(), 1005);
-        }
-
-        public final void cancelSentNotifications() {
-            this.mSentA11yServiceNotification.forEach(new Consumer() { // from class: com.android.server.accessibility.PolicyWarningUIController$NotificationController$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    PolicyWarningUIController.NotificationController.this.lambda$cancelSentNotifications$0((ComponentName) obj);
-                }
-            });
-            this.mSentA11yServiceNotification.clear();
-        }
-
-        public void setSendingNotification(boolean z) {
-            this.mSendNotification = z;
-        }
+    public static PendingIntent createPendingIntent(Context context, int i, String str, ComponentName componentName) {
+        Intent intent = new Intent(str);
+        intent.setPackage(context.getPackageName()).setIdentifier(componentName.flattenToShortString()).putExtra("android.intent.extra.COMPONENT_NAME", componentName).putExtra("android.intent.extra.USER_ID", i).putExtra("android.intent.extra.TIME", SystemClock.elapsedRealtime());
+        return PendingIntent.getBroadcast(context, 0, intent, 67108864);
     }
 }

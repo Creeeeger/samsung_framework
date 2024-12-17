@@ -5,40 +5,32 @@ import android.os.BatteryUsageStats;
 import android.os.BatteryUsageStatsQuery;
 import android.os.UidBatteryConsumer;
 import android.util.SparseArray;
+import com.android.internal.os.CpuScalingPolicies;
 import com.android.internal.os.PowerProfile;
 
-/* loaded from: classes3.dex */
-public class SystemServicePowerCalculator extends PowerCalculator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SystemServicePowerCalculator extends PowerCalculator {
     public final CpuPowerCalculator mCpuPowerCalculator;
     public final UsageBasedPowerEstimator[] mPowerEstimators;
 
-    @Override // com.android.server.power.stats.PowerCalculator
-    public boolean isPowerComponentSupported(int i) {
-        return i == 7;
-    }
-
-    public SystemServicePowerCalculator(PowerProfile powerProfile) {
-        this.mCpuPowerCalculator = new CpuPowerCalculator(powerProfile);
-        int numCpuClusters = powerProfile.getNumCpuClusters();
+    public SystemServicePowerCalculator(CpuScalingPolicies cpuScalingPolicies, PowerProfile powerProfile) {
+        this.mCpuPowerCalculator = new CpuPowerCalculator(cpuScalingPolicies, powerProfile);
+        this.mPowerEstimators = new UsageBasedPowerEstimator[cpuScalingPolicies.getScalingStepCount()];
         int i = 0;
-        for (int i2 = 0; i2 < numCpuClusters; i2++) {
-            i += powerProfile.getNumSpeedStepsInCpuCluster(i2);
-        }
-        this.mPowerEstimators = new UsageBasedPowerEstimator[i];
-        int i3 = 0;
-        for (int i4 = 0; i4 < numCpuClusters; i4++) {
-            int numSpeedStepsInCpuCluster = powerProfile.getNumSpeedStepsInCpuCluster(i4);
-            int i5 = 0;
-            while (i5 < numSpeedStepsInCpuCluster) {
-                this.mPowerEstimators[i3] = new UsageBasedPowerEstimator(powerProfile.getAveragePowerForCpuCore(i4, i5));
-                i5++;
+        for (int i2 : cpuScalingPolicies.getPolicies()) {
+            int length = cpuScalingPolicies.getFrequencies(i2).length;
+            int i3 = 0;
+            while (i3 < length) {
+                this.mPowerEstimators[i] = new UsageBasedPowerEstimator(powerProfile.getAveragePowerForCpuScalingStep(i2, i3));
                 i3++;
+                i++;
             }
         }
     }
 
     @Override // com.android.server.power.stats.PowerCalculator
-    public void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
+    public final void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
         double calculatePowerUsingPowerProfile;
         BatteryStats.Uid uid = (BatteryStats.Uid) batteryStats.getUidStats().get(1000);
         if (uid == null) {
@@ -47,7 +39,14 @@ public class SystemServicePowerCalculator extends PowerCalculator {
         long cpuEnergyConsumptionUC = uid.getCpuEnergyConsumptionUC();
         int powerModel = PowerCalculator.getPowerModel(cpuEnergyConsumptionUC, batteryUsageStatsQuery);
         if (powerModel == 2) {
-            calculatePowerUsingPowerProfile = calculatePowerUsingEnergyConsumption(batteryStats, uid, cpuEnergyConsumptionUC);
+            double calculatePowerUsingPowerProfile2 = calculatePowerUsingPowerProfile(batteryStats);
+            CpuPowerCalculator cpuPowerCalculator = this.mCpuPowerCalculator;
+            cpuPowerCalculator.getClass();
+            double calculateUidModeledPowerMah = cpuPowerCalculator.calculateUidModeledPowerMah(uid, uid.getCpuActiveTime(), uid.getCpuClusterTimes(), uid.getCpuFreqTimes(0));
+            calculatePowerUsingPowerProfile = 0.0d;
+            if (calculateUidModeledPowerMah > 0.0d) {
+                calculatePowerUsingPowerProfile = ((cpuEnergyConsumptionUC * 2.777777777777778E-7d) * calculatePowerUsingPowerProfile2) / calculateUidModeledPowerMah;
+            }
         } else {
             calculatePowerUsingPowerProfile = calculatePowerUsingPowerProfile(batteryStats);
         }
@@ -67,25 +66,22 @@ public class SystemServicePowerCalculator extends PowerCalculator {
         builder.getAggregateBatteryConsumerBuilder(1).setConsumedPower(7, calculatePowerUsingPowerProfile);
     }
 
-    public final double calculatePowerUsingEnergyConsumption(BatteryStats batteryStats, BatteryStats.Uid uid, long j) {
-        double calculatePowerUsingPowerProfile = calculatePowerUsingPowerProfile(batteryStats);
-        double calculateUidModeledPowerMah = this.mCpuPowerCalculator.calculateUidModeledPowerMah(uid, 0);
-        if (calculateUidModeledPowerMah > 0.0d) {
-            return (PowerCalculator.uCtoMah(j) * calculatePowerUsingPowerProfile) / calculateUidModeledPowerMah;
-        }
-        return 0.0d;
-    }
-
     public final double calculatePowerUsingPowerProfile(BatteryStats batteryStats) {
         long[] systemServiceTimeAtCpuSpeeds = batteryStats.getSystemServiceTimeAtCpuSpeeds();
         double d = 0.0d;
         if (systemServiceTimeAtCpuSpeeds == null) {
             return 0.0d;
         }
-        int min = Math.min(this.mPowerEstimators.length, systemServiceTimeAtCpuSpeeds.length);
+        UsageBasedPowerEstimator[] usageBasedPowerEstimatorArr = this.mPowerEstimators;
+        int min = Math.min(usageBasedPowerEstimatorArr.length, systemServiceTimeAtCpuSpeeds.length);
         for (int i = 0; i < min; i++) {
-            d += this.mPowerEstimators[i].calculatePower(systemServiceTimeAtCpuSpeeds[i] / 1000);
+            d += usageBasedPowerEstimatorArr[i].mAveragePowerMahPerMs * (systemServiceTimeAtCpuSpeeds[i] / 1000);
         }
         return d;
+    }
+
+    @Override // com.android.server.power.stats.PowerCalculator
+    public final boolean isPowerComponentSupported(int i) {
+        return i == 7;
     }
 }

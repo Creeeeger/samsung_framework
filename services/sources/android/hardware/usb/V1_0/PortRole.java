@@ -1,10 +1,13 @@
 package android.hardware.usb.V1_0;
 
-import android.os.HidlSupport;
+import android.hardware.audio.common.V2_0.AudioChannelMask$$ExternalSyntheticOutline0;
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.os.HwBlob;
 import android.os.HwParcel;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class PortRole {
     public int type = 0;
@@ -22,30 +25,21 @@ public final class PortRole {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.type))), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.role))));
+        return Objects.hash(AudioConfig$$ExternalSyntheticOutline0.m(this.type), AudioConfig$$ExternalSyntheticOutline0.m(this.role));
     }
 
     public final String toString() {
-        return "{.type = " + PortRoleType.toString(this.type) + ", .role = " + this.role + "}";
-    }
-
-    public final void readFromParcel(HwParcel hwParcel) {
-        readEmbeddedFromParcel(hwParcel, hwParcel.readBuffer(8L), 0L);
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.type = hwBlob.getInt32(0 + j);
-        this.role = hwBlob.getInt32(j + 4);
+        StringBuilder sb = new StringBuilder("{.type = ");
+        int i = this.type;
+        sb.append(i == 0 ? "DATA_ROLE" : i == 1 ? "POWER_ROLE" : i == 2 ? "MODE" : AudioChannelMask$$ExternalSyntheticOutline0.m(new StringBuilder("0x"), i));
+        sb.append(", .role = ");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.role, sb, "}");
     }
 
     public final void writeToParcel(HwParcel hwParcel) {
         HwBlob hwBlob = new HwBlob(8);
-        writeEmbeddedToBlob(hwBlob, 0L);
+        hwBlob.putInt32(0L, this.type);
+        hwBlob.putInt32(4L, this.role);
         hwParcel.writeBuffer(hwBlob);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        hwBlob.putInt32(0 + j, this.type);
-        hwBlob.putInt32(j + 4, this.role);
     }
 }

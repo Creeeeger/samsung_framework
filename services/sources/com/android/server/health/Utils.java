@@ -3,9 +3,15 @@ package com.android.server.health;
 import android.hardware.health.HealthInfo;
 import vendor.samsung.hardware.health.SehHealthInfo;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class Utils {
-    public static void copyV1Battery(HealthInfo healthInfo, HealthInfo healthInfo2) {
+    public static void copySehV1Battery(SehHealthInfo sehHealthInfo, SehHealthInfo sehHealthInfo2) {
+        if (sehHealthInfo.aospHealthInfo == null) {
+            sehHealthInfo.aospHealthInfo = new HealthInfo();
+        }
+        HealthInfo healthInfo = sehHealthInfo.aospHealthInfo;
+        HealthInfo healthInfo2 = sehHealthInfo2.aospHealthInfo;
         healthInfo.chargerAcOnline = healthInfo2.chargerAcOnline;
         healthInfo.chargerUsbOnline = healthInfo2.chargerUsbOnline;
         healthInfo.chargerWirelessOnline = healthInfo2.chargerWirelessOnline;
@@ -26,13 +32,6 @@ public abstract class Utils {
         healthInfo.batteryCapacityLevel = healthInfo2.batteryCapacityLevel;
         healthInfo.batteryChargeTimeToFullNowSeconds = healthInfo2.batteryChargeTimeToFullNowSeconds;
         healthInfo.batteryFullChargeDesignCapacityUah = healthInfo2.batteryFullChargeDesignCapacityUah;
-    }
-
-    public static void copySehV1Battery(SehHealthInfo sehHealthInfo, SehHealthInfo sehHealthInfo2) {
-        if (sehHealthInfo.aospHealthInfo == null) {
-            sehHealthInfo.aospHealthInfo = new HealthInfo();
-        }
-        copyV1Battery(sehHealthInfo.aospHealthInfo, sehHealthInfo2.aospHealthInfo);
         sehHealthInfo.batteryCurrentNow = sehHealthInfo2.batteryCurrentNow;
         sehHealthInfo.batteryOnline = sehHealthInfo2.batteryOnline;
         sehHealthInfo.batteryChargeType = sehHealthInfo2.batteryChargeType;

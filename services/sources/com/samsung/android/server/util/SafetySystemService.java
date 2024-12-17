@@ -2,98 +2,31 @@ package com.samsung.android.server.util;
 
 import android.content.Context;
 import android.util.Slog;
-import com.android.server.wm.ActivityTaskManagerService;
-import java.util.HashSet;
-import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class SafetySystemService {
 
-    /* loaded from: classes2.dex */
-    public interface Callback {
-        void onSystemReady(ActivityTaskManagerService activityTaskManagerService);
-    }
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class LazyHolder {
         public static final Manager sSingleton = new Manager();
     }
 
-    public static void onSystemReady(ActivityTaskManagerService activityTaskManagerService, Context context) {
-        LazyHolder.sSingleton.onSystemReady(activityTaskManagerService, context);
-    }
-
-    public static void registerForSystemReady(Callback callback) {
-        LazyHolder.sSingleton.registerCallback(callback);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Manager {
+        public Context mSystemContext;
     }
 
     public static Object getSystemService(Class cls) {
-        return LazyHolder.sSingleton.getSystemService(cls);
-    }
-
-    public static Context getSystemContext() {
-        return LazyHolder.sSingleton.mSystemContext;
-    }
-
-    public static void warning(String str, String str2) {
-        if (str2 == null) {
-            Slog.w(str, "Should be called after system ready.");
-            return;
+        Context context;
+        Manager manager = LazyHolder.sSingleton;
+        synchronized (manager) {
+            context = manager.mSystemContext;
         }
-        Slog.w(str, str2 + " should be called after system ready.");
-    }
-
-    /* loaded from: classes2.dex */
-    public class Manager {
-        public ActivityTaskManagerService mAtmService;
-        public HashSet mCallbacks;
-        public Context mSystemContext;
-        public boolean mSystemReady;
-
-        public Manager() {
+        if (context != null) {
+            return context.getSystemService(cls);
         }
-
-        public /* synthetic */ Manager(ManagerIA managerIA) {
-            this();
-        }
-
-        public void onSystemReady(ActivityTaskManagerService activityTaskManagerService, Context context) {
-            this.mAtmService = activityTaskManagerService;
-            this.mSystemContext = context;
-            synchronized (this) {
-                this.mSystemReady = true;
-            }
-            HashSet hashSet = this.mCallbacks;
-            if (hashSet != null) {
-                Iterator it = hashSet.iterator();
-                while (it.hasNext()) {
-                    ((Callback) it.next()).onSystemReady(this.mAtmService);
-                }
-                this.mCallbacks = null;
-            }
-        }
-
-        public void registerCallback(Callback callback) {
-            synchronized (this) {
-                if (!this.mSystemReady) {
-                    if (this.mCallbacks == null) {
-                        this.mCallbacks = new HashSet();
-                    }
-                    this.mCallbacks.add(callback);
-                    return;
-                }
-                callback.onSystemReady(this.mAtmService);
-            }
-        }
-
-        public Object getSystemService(Class cls) {
-            synchronized (this) {
-                if (!this.mSystemReady) {
-                    SafetySystemService.warning("SafetySystemService", cls.getSimpleName() + " service");
-                    return null;
-                }
-                return this.mSystemContext.getSystemService(cls);
-            }
-        }
+        Slog.w("SafetySystemService", cls.getSimpleName().concat(" should be called after system ready."));
+        return null;
     }
 }

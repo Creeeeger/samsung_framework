@@ -1,11 +1,12 @@
 package vendor.samsung.hardware.biometrics.face.V3_0;
 
+import android.hardware.authsecret.V1_0.IAuthSecret$Proxy$$ExternalSyntheticOutline0;
 import android.hardware.biometrics.face.V1_0.IBiometricsFaceClientCallback;
 import android.hardware.biometrics.face.V1_0.OptionalBool;
 import android.hardware.biometrics.face.V1_0.OptionalUint64;
+import android.hardware.broadcastradio.V2_0.ITunerSession$Proxy$$ExternalSyntheticOutline0;
 import android.hidl.base.V1_0.DebugInfo;
 import android.hidl.base.V1_0.IBase;
-import android.os.HidlMemory;
 import android.os.HidlSupport;
 import android.os.HwBinder;
 import android.os.HwBlob;
@@ -19,88 +20,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Objects;
-import java.util.function.Function;
 import vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace;
-import vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace;
+import vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFaceClientCallback;
+import vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFaceClientCallback;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace {
-    @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace, android.hidl.base.V1_0.IBase
-    ArrayList interfaceChain();
 
-    int sehAuthenticateForIssuance(long j, int i, ArrayList arrayList, boolean z, boolean z2);
-
-    OptionalUint64 sehSetCallbackEx(ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback);
-
-    static ISehBiometricsFace asInterface(IHwBinder iHwBinder) {
-        if (iHwBinder == null) {
-            return null;
-        }
-        IHwInterface queryLocalInterface = iHwBinder.queryLocalInterface("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace");
-        if (queryLocalInterface != null && (queryLocalInterface instanceof ISehBiometricsFace)) {
-            return (ISehBiometricsFace) queryLocalInterface;
-        }
-        Proxy proxy = new Proxy(iHwBinder);
-        try {
-            Iterator it = proxy.interfaceChain().iterator();
-            while (it.hasNext()) {
-                if (((String) it.next()).equals("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace")) {
-                    return proxy;
-                }
-            }
-        } catch (RemoteException unused) {
-        }
-        return null;
-    }
-
-    static ISehBiometricsFace getService(String str) {
-        return asInterface(HwBinder.getService("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace", str));
-    }
-
-    static ISehBiometricsFace getService() {
-        return getService("default");
-    }
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Proxy implements ISehBiometricsFace {
         public IHwBinder mRemote;
 
-        public Proxy(IHwBinder iHwBinder) {
-            Objects.requireNonNull(iHwBinder);
-            this.mRemote = iHwBinder;
-        }
-
-        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace, android.hidl.base.V1_0.IBase
-        public IHwBinder asBinder() {
+        @Override // android.hidl.base.V1_0.IBase
+        public final IHwBinder asBinder() {
             return this.mRemote;
         }
 
-        public String toString() {
-            try {
-                return interfaceDescriptor() + "@Proxy";
-            } catch (RemoteException unused) {
-                return "[class or subclass of vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace]@Proxy";
-            }
-        }
-
-        public final boolean equals(Object obj) {
-            return HidlSupport.interfacesEqual(this, obj);
-        }
-
-        public final int hashCode() {
-            return asBinder().hashCode();
-        }
-
         @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public int setActiveUser(int i, String str) {
+        public final int authenticate(long j) {
             HwParcel hwParcel = new HwParcel();
             hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
-            hwParcel.writeInt32(i);
-            hwParcel.writeString(str);
+            hwParcel.writeInt64(j);
             HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(2, hwParcel, hwParcel2, 0);
+                this.mRemote.transact(12, hwParcel, hwParcel2, 0);
                 hwParcel2.verifySuccess();
                 hwParcel.releaseTemporaryStorage();
                 return hwParcel2.readInt32();
@@ -110,25 +54,34 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
         }
 
         @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public OptionalUint64 generateChallenge(int i) {
+        public final int cancel() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.face@1.0::IBiometricsFace");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
-            hwParcel.writeInt32(i);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(3, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                OptionalUint64 optionalUint64 = new OptionalUint64();
-                optionalUint64.readFromParcel(hwParcel2);
-                return optionalUint64;
+                this.mRemote.transact(9, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName, nativeHandle, arrayList);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256131655, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public int enroll(ArrayList arrayList, int i, ArrayList arrayList2) {
+        public final int enroll(ArrayList arrayList, int i, ArrayList arrayList2) {
             HwParcel hwParcel = new HwParcel();
             hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
             hwParcel.writeInt8Vector(arrayList);
@@ -146,41 +99,73 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
         }
 
         @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public int revokeChallenge() {
+        public final int enumerate() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.face@1.0::IBiometricsFace");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(5, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
+                this.mRemote.transact(10, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
+            }
+        }
+
+        public final boolean equals(Object obj) {
+            return HidlSupport.interfacesEqual(this, obj);
+        }
+
+        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
+        public final OptionalUint64 generateChallenge(int i) {
+            HwParcel m = ITunerSession$Proxy$$ExternalSyntheticOutline0.m(i, "android.hardware.biometrics.face@1.0::IBiometricsFace");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(3, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                OptionalUint64 optionalUint64 = new OptionalUint64();
+                optionalUint64.readFromParcel(hwParcel);
+                return optionalUint64;
+            } finally {
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public int setFeature(int i, boolean z, ArrayList arrayList, int i2) {
+        public final OptionalUint64 getAuthenticatorId() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.face@1.0::IBiometricsFace");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
-            hwParcel.writeInt32(i);
-            hwParcel.writeBool(z);
-            hwParcel.writeInt8Vector(arrayList);
-            hwParcel.writeInt32(i2);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(6, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
+                this.mRemote.transact(8, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                OptionalUint64 optionalUint64 = new OptionalUint64();
+                optionalUint64.readFromParcel(hwParcel);
+                return optionalUint64;
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final DebugInfo getDebugInfo() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(257049926, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                DebugInfo debugInfo = new DebugInfo();
+                debugInfo.readFromParcel(hwParcel);
+                return debugInfo;
+            } finally {
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public OptionalBool getFeature(int i, int i2) {
+        public final OptionalBool getFeature(int i, int i2) {
             HwParcel hwParcel = new HwParcel();
             hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
             hwParcel.writeInt32(i);
@@ -191,37 +176,123 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
                 hwParcel2.verifySuccess();
                 hwParcel.releaseTemporaryStorage();
                 OptionalBool optionalBool = new OptionalBool();
-                optionalBool.readFromParcel(hwParcel2);
+                HwBlob readBuffer = hwParcel2.readBuffer(8L);
+                optionalBool.status = readBuffer.getInt32(0L);
+                optionalBool.value = readBuffer.getBool(4L);
                 return optionalBool;
             } finally {
                 hwParcel2.release();
             }
         }
 
-        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public OptionalUint64 getAuthenticatorId() {
+        @Override // android.hidl.base.V1_0.IBase
+        public final ArrayList getHashChain() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(8, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                OptionalUint64 optionalUint64 = new OptionalUint64();
-                optionalUint64.readFromParcel(hwParcel2);
-                return optionalUint64;
+                this.mRemote.transact(256398152, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                ArrayList arrayList = new ArrayList();
+                HwBlob readBuffer = hwParcel.readBuffer(16L);
+                int int32 = readBuffer.getInt32(8L);
+                HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
+                arrayList.clear();
+                for (int i = 0; i < int32; i++) {
+                    byte[] bArr = new byte[32];
+                    readEmbeddedBuffer.copyToInt8Array(i * 32, bArr, 32);
+                    arrayList.add(bArr);
+                }
+                return arrayList;
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
+            }
+        }
+
+        public final int hashCode() {
+            return this.mRemote.hashCode();
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final ArrayList interfaceChain() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256067662, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readStringVector();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final String interfaceDescriptor() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256136003, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readString();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
+            return this.mRemote.linkToDeath(deathRecipient, j);
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void notifySyspropsChanged() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(257120595, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void ping() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(256921159, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+            } finally {
+                hwParcel.release();
             }
         }
 
         @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public int cancel() {
+        public final int remove(int i) {
+            HwParcel m = ITunerSession$Proxy$$ExternalSyntheticOutline0.m(i, "android.hardware.biometrics.face@1.0::IBiometricsFace");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(11, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
+        public final int resetLockout(ArrayList arrayList) {
             HwParcel hwParcel = new HwParcel();
             hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
+            hwParcel.writeInt8Vector(arrayList);
             HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(9, hwParcel, hwParcel2, 0);
+                this.mRemote.transact(14, hwParcel, hwParcel2, 0);
                 hwParcel2.verifySuccess();
                 hwParcel.releaseTemporaryStorage();
                 return hwParcel2.readInt32();
@@ -231,72 +302,21 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
         }
 
         @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public int enumerate() {
+        public final int revokeChallenge() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("android.hardware.biometrics.face@1.0::IBiometricsFace");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(10, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
+                this.mRemote.transact(5, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
             } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public int remove(int i) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
-            hwParcel.writeInt32(i);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(11, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
-        public int authenticate(long j) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
-            hwParcel.writeInt64(j);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(12, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
+                hwParcel.release();
             }
         }
 
         @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public OptionalUint64 sehSetCallback(vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            hwParcel.writeStrongBinder(iSehBiometricsFaceClientCallback == null ? null : iSehBiometricsFaceClientCallback.asBinder());
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(15, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                OptionalUint64 optionalUint64 = new OptionalUint64();
-                optionalUint64.readFromParcel(hwParcel2);
-                return optionalUint64;
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public int sehAuthenticate(long j, int i, ArrayList arrayList) {
+        public final int sehAuthenticate(int i, long j, ArrayList arrayList) {
             HwParcel hwParcel = new HwParcel();
             hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
             hwParcel.writeInt64(j);
@@ -313,164 +333,8 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
             }
         }
 
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public int sehOpenTaSession() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(17, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public int sehCloseTaSession() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(18, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public boolean sehIsTaSessionClosed() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(19, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readBool();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public int sehPauseEnrollment() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(20, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public int sehResumeEnrollment() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(21, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public String sehGetTaInfo() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(22, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readString();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public int sehSetRotation(int i) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            hwParcel.writeInt32(i);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(24, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public void sehGetSecurityLevel(ISehBiometricsFace.sehGetSecurityLevelCallback sehgetsecuritylevelcallback) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(30, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                sehgetsecuritylevelcallback.onValues(hwParcel2.readInt32(), hwParcel2.readInt32());
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
-        public int sehSetFaceTag(int i, ArrayList arrayList) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-            hwParcel.writeInt32(i);
-            hwParcel.writeInt8Vector(arrayList);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(34, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readInt32();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
         @Override // vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace
-        public OptionalUint64 sehSetCallbackEx(ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback) {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace");
-            hwParcel.writeStrongBinder(iSehBiometricsFaceClientCallback == null ? null : iSehBiometricsFaceClientCallback.asBinder());
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(35, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                OptionalUint64 optionalUint64 = new OptionalUint64();
-                optionalUint64.readFromParcel(hwParcel2);
-                return optionalUint64;
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace
-        public int sehAuthenticateForIssuance(long j, int i, ArrayList arrayList, boolean z, boolean z2) {
+        public final int sehAuthenticateForIssuance(int i, long j, ArrayList arrayList, boolean z, boolean z2) {
             HwParcel hwParcel = new HwParcel();
             hwParcel.writeInterfaceToken("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace");
             hwParcel.writeInt64(j);
@@ -489,154 +353,228 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
             }
         }
 
-        @Override // vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace, vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace, android.hidl.base.V1_0.IBase
-        public ArrayList interfaceChain() {
+        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
+        public final int sehCloseTaSession() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
+            try {
+                this.mRemote.transact(18, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
+        public final void sehGetSecurityLevel(ISehBiometricsFace.sehGetSecurityLevelCallback sehgetsecuritylevelcallback) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(30, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                sehgetsecuritylevelcallback.onValues(hwParcel.readInt32(), hwParcel.readInt32());
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
+        public final String sehGetTaInfo() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(22, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readString();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
+        public final boolean sehIsTaSessionClosed() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(19, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readBool();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
+        public final int sehOpenTaSession() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(17, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
+        public final int sehPauseEnrollment() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(20, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
+        public final int sehResumeEnrollment() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(21, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                return hwParcel.readInt32();
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
+        public final OptionalUint64 sehSetCallback(vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
+            m.writeStrongBinder(iSehBiometricsFaceClientCallback == null ? null : iSehBiometricsFaceClientCallback.asBinder());
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(15, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                OptionalUint64 optionalUint64 = new OptionalUint64();
+                optionalUint64.readFromParcel(hwParcel);
+                return optionalUint64;
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace
+        public final OptionalUint64 sehSetCallbackEx(ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback) {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace");
+            m.writeStrongBinder(iSehBiometricsFaceClientCallback == null ? null : iSehBiometricsFaceClientCallback.asBinder());
+            HwParcel hwParcel = new HwParcel();
+            try {
+                this.mRemote.transact(35, m, hwParcel, 0);
+                hwParcel.verifySuccess();
+                m.releaseTemporaryStorage();
+                OptionalUint64 optionalUint64 = new OptionalUint64();
+                optionalUint64.readFromParcel(hwParcel);
+                return optionalUint64;
+            } finally {
+                hwParcel.release();
+            }
+        }
+
+        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
+        public final int setActiveUser(int i, String str) {
+            HwParcel hwParcel = new HwParcel();
+            hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
+            hwParcel.writeInt32(i);
+            hwParcel.writeString(str);
             HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256067662, hwParcel, hwParcel2, 0);
+                this.mRemote.transact(2, hwParcel, hwParcel2, 0);
                 hwParcel2.verifySuccess();
                 hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readStringVector();
+                return hwParcel2.readInt32();
             } finally {
                 hwParcel2.release();
             }
         }
 
-        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace, android.hidl.base.V1_0.IBase
-        public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace
+        public final int setFeature(int i, boolean z, ArrayList arrayList, int i2) {
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            hwParcel.writeNativeHandle(nativeHandle);
-            hwParcel.writeStringVector(arrayList);
+            hwParcel.writeInterfaceToken("android.hardware.biometrics.face@1.0::IBiometricsFace");
+            hwParcel.writeInt32(i);
+            hwParcel.writeBool(z);
+            hwParcel.writeInt8Vector(arrayList);
+            hwParcel.writeInt32(i2);
             HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256131655, hwParcel, hwParcel2, 0);
+                this.mRemote.transact(6, hwParcel, hwParcel2, 0);
                 hwParcel2.verifySuccess();
                 hwParcel.releaseTemporaryStorage();
+                return hwParcel2.readInt32();
             } finally {
                 hwParcel2.release();
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public String interfaceDescriptor() {
+        public final void setHALInstrumentation() {
+            HwParcel m = IAuthSecret$Proxy$$ExternalSyntheticOutline0.m(IBase.kInterfaceName);
             HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
             try {
-                this.mRemote.transact(256136003, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                return hwParcel2.readString();
+                this.mRemote.transact(256462420, m, hwParcel, 1);
+                m.releaseTemporaryStorage();
             } finally {
-                hwParcel2.release();
+                hwParcel.release();
+            }
+        }
+
+        public final String toString() {
+            try {
+                return interfaceDescriptor() + "@Proxy";
+            } catch (RemoteException unused) {
+                return "[class or subclass of vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace]@Proxy";
             }
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public ArrayList getHashChain() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256398152, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                ArrayList arrayList = new ArrayList();
-                HwBlob readBuffer = hwParcel2.readBuffer(16L);
-                int int32 = readBuffer.getInt32(8L);
-                HwBlob readEmbeddedBuffer = hwParcel2.readEmbeddedBuffer(int32 * 32, readBuffer.handle(), 0L, true);
-                arrayList.clear();
-                for (int i = 0; i < int32; i++) {
-                    byte[] bArr = new byte[32];
-                    readEmbeddedBuffer.copyToInt8Array(i * 32, bArr, 32);
-                    arrayList.add(bArr);
-                }
-                return arrayList;
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void setHALInstrumentation() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256462420, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public boolean linkToDeath(IHwBinder.DeathRecipient deathRecipient, long j) {
-            return this.mRemote.linkToDeath(deathRecipient, j);
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void ping() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(256921159, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public DebugInfo getDebugInfo() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(257049926, hwParcel, hwParcel2, 0);
-                hwParcel2.verifySuccess();
-                hwParcel.releaseTemporaryStorage();
-                DebugInfo debugInfo = new DebugInfo();
-                debugInfo.readFromParcel(hwParcel2);
-                return debugInfo;
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public void notifySyspropsChanged() {
-            HwParcel hwParcel = new HwParcel();
-            hwParcel.writeInterfaceToken(IBase.kInterfaceName);
-            HwParcel hwParcel2 = new HwParcel();
-            try {
-                this.mRemote.transact(257120595, hwParcel, hwParcel2, 1);
-                hwParcel.releaseTemporaryStorage();
-            } finally {
-                hwParcel2.release();
-            }
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
+        public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
             return this.mRemote.unlinkToDeath(deathRecipient);
         }
     }
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends HwBinder implements ISehBiometricsFace {
-        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace, android.hidl.base.V1_0.IBase
-        public IHwBinder asBinder() {
+        @Override // android.hidl.base.V1_0.IBase
+        public final IHwBinder asBinder() {
             return this;
         }
 
-        @Override // android.hardware.biometrics.face.V1_0.IBiometricsFace, android.hidl.base.V1_0.IBase
-        public void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+        @Override // android.hidl.base.V1_0.IBase
+        public final void debug(NativeHandle nativeHandle, ArrayList arrayList) {
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final DebugInfo getDebugInfo() {
+            DebugInfo debugInfo = new DebugInfo();
+            debugInfo.pid = HidlSupport.getPidIfSharable();
+            debugInfo.ptr = 0L;
+            debugInfo.arch = 0;
+            return debugInfo;
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final ArrayList getHashChain() {
+            return new ArrayList(Arrays.asList(new byte[]{-61, 46, 84, -8, -19, 22, 109, -87, -4, -19, -1, -41, -82, -42, 38, 51, -17, HwConstants.IQ_CONFIG_POS_NETWORK_ENABLED, 8, 5, 55, 7, -44, 93, -110, 60, 115, -82, 109, 77, -87, -127}, new byte[]{8, 28, 96, -68, -101, -9, -80, 95, 53, -43, 71, -117, -62, 107, -63, 109, -95, Byte.MIN_VALUE, -3, -33, 119, -121, 64, 54, 118, 12, 79, 108, -14, 126, -22, 68}, new byte[]{-31, -113, -13, 24, -13, -4, 67, -37, 55, -11, 84, 105, 109, -60, -27, 81, -85, -71, -79, 25, -67, -27, 57, 80, -9, 62, 40, -50, 51, -87, 122, 64}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, -48, 45, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, 36, -13, -51, 105, 87, 19, -109, 36, -72, 59, 24, -54, 76}));
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final ArrayList interfaceChain() {
+            return new ArrayList(Arrays.asList("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace", "vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace", "android.hardware.biometrics.face@1.0::IBiometricsFace", IBase.kInterfaceName));
         }
 
         @Override // android.hidl.base.V1_0.IBase
@@ -650,66 +588,45 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
         }
 
         @Override // android.hidl.base.V1_0.IBase
-        public final void ping() {
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final void setHALInstrumentation() {
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
-            return true;
-        }
-
-        @Override // vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace, vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace, android.hidl.base.V1_0.IBase
-        public final ArrayList interfaceChain() {
-            return new ArrayList(Arrays.asList("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace", "vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace", "android.hardware.biometrics.face@1.0::IBiometricsFace", IBase.kInterfaceName));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final ArrayList getHashChain() {
-            return new ArrayList(Arrays.asList(new byte[]{-61, 46, 84, -8, -19, 22, 109, -87, -4, -19, -1, -41, -82, -42, 38, 51, -17, HwConstants.IQ_CONFIG_POS_NETWORK_ENABLED, 8, 5, 55, 7, -44, 93, -110, 60, 115, -82, 109, 77, -87, -127}, new byte[]{8, 28, 96, -68, -101, -9, -80, 95, 53, -43, 71, -117, -62, 107, -63, 109, -95, Byte.MIN_VALUE, -3, -33, 119, -121, 64, 54, 118, 12, 79, 108, -14, 126, -22, 68}, new byte[]{-31, -113, -13, 24, -13, -4, 67, -37, 55, -11, 84, 105, 109, -60, -27, 81, -85, -71, -79, 25, -67, -27, 57, 80, -9, 62, 40, -50, 51, -87, 122, 64}, new byte[]{-20, Byte.MAX_VALUE, -41, -98, -48, 45, -6, -123, -68, 73, -108, 38, -83, -82, 62, -66, 35, -17, 5, 36, -13, -51, 105, 87, 19, -109, 36, -72, 59, 24, -54, 76}));
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
-        public final DebugInfo getDebugInfo() {
-            DebugInfo debugInfo = new DebugInfo();
-            debugInfo.pid = HidlSupport.getPidIfSharable();
-            debugInfo.ptr = 0L;
-            debugInfo.arch = 0;
-            return debugInfo;
-        }
-
-        @Override // android.hidl.base.V1_0.IBase
         public final void notifySyspropsChanged() {
             HwBinder.enableInstrumentation();
         }
 
-        public IHwInterface queryLocalInterface(String str) {
-            if ("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace".equals(str)) {
-                return this;
-            }
-            return null;
-        }
-
-        public String toString() {
-            return interfaceDescriptor() + "@Stub";
-        }
-
-        public static /* synthetic */ HidlMemory lambda$onTransact$0(HwParcel hwParcel) {
-            try {
-                return hwParcel.readHidlMemory().dup();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public void onTransact(int i, HwParcel hwParcel, final HwParcel hwParcel2, int i2) {
+        public final void onTransact(int i, HwParcel hwParcel, final HwParcel hwParcel2, int i2) {
+            IBiometricsFaceClientCallback iBiometricsFaceClientCallback = null;
+            r2 = null;
+            r2 = null;
+            ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback = null;
+            r2 = null;
+            r2 = null;
+            vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback2 = null;
+            iBiometricsFaceClientCallback = null;
+            iBiometricsFaceClientCallback = null;
             switch (i) {
                 case 1:
                     hwParcel.enforceInterface("android.hardware.biometrics.face@1.0::IBiometricsFace");
-                    OptionalUint64 callback = setCallback(IBiometricsFaceClientCallback.asInterface(hwParcel.readStrongBinder()));
+                    IHwBinder readStrongBinder = hwParcel.readStrongBinder();
+                    if (readStrongBinder != null) {
+                        IHwInterface queryLocalInterface = readStrongBinder.queryLocalInterface("android.hardware.biometrics.face@1.0::IBiometricsFaceClientCallback");
+                        if (queryLocalInterface == null || !(queryLocalInterface instanceof IBiometricsFaceClientCallback)) {
+                            IBiometricsFaceClientCallback.Proxy proxy = new IBiometricsFaceClientCallback.Proxy();
+                            proxy.mRemote = readStrongBinder;
+                            try {
+                                Iterator it = proxy.interfaceChain().iterator();
+                                while (true) {
+                                    if (it.hasNext()) {
+                                        if (((String) it.next()).equals("android.hardware.biometrics.face@1.0::IBiometricsFaceClientCallback")) {
+                                            iBiometricsFaceClientCallback = proxy;
+                                        }
+                                    }
+                                }
+                            } catch (RemoteException unused) {
+                            }
+                        } else {
+                            iBiometricsFaceClientCallback = (IBiometricsFaceClientCallback) queryLocalInterface;
+                        }
+                    }
+                    OptionalUint64 callback = setCallback(iBiometricsFaceClientCallback);
                     hwParcel2.writeStatus(0);
                     callback.writeToParcel(hwParcel2);
                     hwParcel2.send();
@@ -753,7 +670,10 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
                     hwParcel.enforceInterface("android.hardware.biometrics.face@1.0::IBiometricsFace");
                     OptionalBool feature2 = getFeature(hwParcel.readInt32(), hwParcel.readInt32());
                     hwParcel2.writeStatus(0);
-                    feature2.writeToParcel(hwParcel2);
+                    HwBlob hwBlob = new HwBlob(8);
+                    hwBlob.putInt32(0L, feature2.status);
+                    hwBlob.putBool(4L, feature2.value);
+                    hwParcel2.writeBuffer(hwBlob);
                     hwParcel2.send();
                     return;
                 case 8:
@@ -793,9 +713,9 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
                     return;
                 case 13:
                     hwParcel.enforceInterface("android.hardware.biometrics.face@1.0::IBiometricsFace");
-                    int userActivity = userActivity();
+                    userActivity();
                     hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(userActivity);
+                    hwParcel2.writeInt32(0);
                     hwParcel2.send();
                     return;
                 case 14:
@@ -807,14 +727,35 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
                     return;
                 case 15:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    OptionalUint64 sehSetCallback = sehSetCallback(vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFaceClientCallback.asInterface(hwParcel.readStrongBinder()));
+                    IHwBinder readStrongBinder2 = hwParcel.readStrongBinder();
+                    if (readStrongBinder2 != null) {
+                        IHwInterface queryLocalInterface2 = readStrongBinder2.queryLocalInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFaceClientCallback");
+                        if (queryLocalInterface2 == null || !(queryLocalInterface2 instanceof vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFaceClientCallback)) {
+                            ISehBiometricsFaceClientCallback.Proxy proxy2 = new ISehBiometricsFaceClientCallback.Proxy();
+                            proxy2.mRemote = readStrongBinder2;
+                            try {
+                                Iterator it2 = proxy2.interfaceChain().iterator();
+                                while (true) {
+                                    if (it2.hasNext()) {
+                                        if (((String) it2.next()).equals("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFaceClientCallback")) {
+                                            iSehBiometricsFaceClientCallback2 = proxy2;
+                                        }
+                                    }
+                                }
+                            } catch (RemoteException unused2) {
+                            }
+                        } else {
+                            iSehBiometricsFaceClientCallback2 = (vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFaceClientCallback) queryLocalInterface2;
+                        }
+                    }
+                    OptionalUint64 sehSetCallback = sehSetCallback(iSehBiometricsFaceClientCallback2);
                     hwParcel2.writeStatus(0);
                     sehSetCallback.writeToParcel(hwParcel2);
                     hwParcel2.send();
                     return;
                 case 16:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    int sehAuthenticate = sehAuthenticate(hwParcel.readInt64(), hwParcel.readInt32(), hwParcel.readInt8Vector());
+                    int sehAuthenticate = sehAuthenticate(hwParcel.readInt32(), hwParcel.readInt64(), hwParcel.readInt8Vector());
                     hwParcel2.writeStatus(0);
                     hwParcel2.writeInt32(sehAuthenticate);
                     hwParcel2.send();
@@ -870,58 +811,54 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
                     return;
                 case 24:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    int sehSetRotation = sehSetRotation(hwParcel.readInt32());
+                    hwParcel.readInt32();
                     hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(sehSetRotation);
+                    hwParcel2.writeInt32(0);
                     hwParcel2.send();
                     return;
                 case 25:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    int sehPrepareTaInstallation = sehPrepareTaInstallation();
                     hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(sehPrepareTaInstallation);
+                    hwParcel2.writeInt32(0);
                     hwParcel2.send();
                     return;
                 case 26:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    int sehInstallTaDataChunk = sehInstallTaDataChunk((HidlMemory) new Function() { // from class: vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace$Stub$$ExternalSyntheticLambda0
-                        @Override // java.util.function.Function
-                        public final Object apply(Object obj) {
-                            HidlMemory lambda$onTransact$0;
-                            lambda$onTransact$0 = ISehBiometricsFace.Stub.lambda$onTransact$0((HwParcel) obj);
-                            return lambda$onTransact$0;
-                        }
-                    }.apply(hwParcel));
-                    hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(sehInstallTaDataChunk);
-                    hwParcel2.send();
-                    return;
+                    try {
+                        hwParcel.readHidlMemory().dup();
+                        hwParcel2.writeStatus(0);
+                        hwParcel2.writeInt32(0);
+                        hwParcel2.send();
+                        return;
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 case 27:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    int sehFinishTaInstallation = sehFinishTaInstallation(hwParcel.readInt8Vector());
+                    hwParcel.readInt8Vector();
                     hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(sehFinishTaInstallation);
+                    hwParcel2.writeInt32(0);
                     hwParcel2.send();
                     return;
                 case 28:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    int sehConfigurePreview = sehConfigurePreview(hwParcel.readInt32(), hwParcel.readInt8Vector());
+                    hwParcel.readInt32();
+                    hwParcel.readInt8Vector();
                     hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(sehConfigurePreview);
+                    hwParcel2.writeInt32(0);
                     hwParcel2.send();
                     return;
                 case 29:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    int sehGetServicePid = sehGetServicePid();
                     hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(sehGetServicePid);
+                    hwParcel2.writeInt32(0);
                     hwParcel2.send();
                     return;
                 case 30:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
                     sehGetSecurityLevel(new ISehBiometricsFace.sehGetSecurityLevelCallback() { // from class: vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace.Stub.1
                         @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace.sehGetSecurityLevelCallback
-                        public void onValues(int i3, int i4) {
+                        public final void onValues(int i3, int i4) {
                             hwParcel2.writeStatus(0);
                             hwParcel2.writeInt32(i3);
                             hwParcel2.writeInt32(i4);
@@ -931,38 +868,57 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
                     return;
                 case 31:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    int sehSetSecurityLevel = sehSetSecurityLevel(hwParcel.readInt32());
+                    hwParcel.readInt32();
                     hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(sehSetSecurityLevel);
+                    hwParcel2.writeInt32(0);
                     hwParcel2.send();
                     return;
                 case 32:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    sehGetFaceTagList(new ISehBiometricsFace.sehGetFaceTagListCallback() { // from class: vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace.Stub.2
-                    });
                     return;
                 case 33:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    sehGetFaceTag(hwParcel.readInt32(), new ISehBiometricsFace.sehGetFaceTagCallback() { // from class: vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace.Stub.3
-                    });
+                    hwParcel.readInt32();
                     return;
                 case 34:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@2.0::ISehBiometricsFace");
-                    int sehSetFaceTag = sehSetFaceTag(hwParcel.readInt32(), hwParcel.readInt8Vector());
+                    hwParcel.readInt32();
+                    hwParcel.readInt8Vector();
                     hwParcel2.writeStatus(0);
-                    hwParcel2.writeInt32(sehSetFaceTag);
+                    hwParcel2.writeInt32(0);
                     hwParcel2.send();
                     return;
                 case 35:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace");
-                    OptionalUint64 sehSetCallbackEx = sehSetCallbackEx(ISehBiometricsFaceClientCallback.asInterface(hwParcel.readStrongBinder()));
+                    IHwBinder readStrongBinder3 = hwParcel.readStrongBinder();
+                    if (readStrongBinder3 != null) {
+                        IHwInterface queryLocalInterface3 = readStrongBinder3.queryLocalInterface("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFaceClientCallback");
+                        if (queryLocalInterface3 == null || !(queryLocalInterface3 instanceof ISehBiometricsFaceClientCallback)) {
+                            ISehBiometricsFaceClientCallback.Proxy proxy3 = new ISehBiometricsFaceClientCallback.Proxy();
+                            proxy3.mRemote = readStrongBinder3;
+                            try {
+                                Iterator it3 = proxy3.interfaceChain().iterator();
+                                while (true) {
+                                    if (it3.hasNext()) {
+                                        if (((String) it3.next()).equals("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFaceClientCallback")) {
+                                            iSehBiometricsFaceClientCallback = proxy3;
+                                        }
+                                    }
+                                }
+                            } catch (RemoteException unused3) {
+                            }
+                        } else {
+                            iSehBiometricsFaceClientCallback = (ISehBiometricsFaceClientCallback) queryLocalInterface3;
+                        }
+                    }
+                    OptionalUint64 sehSetCallbackEx = sehSetCallbackEx(iSehBiometricsFaceClientCallback);
                     hwParcel2.writeStatus(0);
                     sehSetCallbackEx.writeToParcel(hwParcel2);
                     hwParcel2.send();
                     return;
                 case 36:
                     hwParcel.enforceInterface("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace");
-                    int sehAuthenticateForIssuance = sehAuthenticateForIssuance(hwParcel.readInt64(), hwParcel.readInt32(), hwParcel.readInt8Vector(), hwParcel.readBool(), hwParcel.readBool());
+                    int sehAuthenticateForIssuance = sehAuthenticateForIssuance(hwParcel.readInt32(), hwParcel.readInt64(), hwParcel.readInt8Vector(), hwParcel.readBool(), hwParcel.readBool());
                     hwParcel2.writeStatus(0);
                     hwParcel2.writeInt32(sehAuthenticateForIssuance);
                     hwParcel2.send();
@@ -978,45 +934,43 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
                             return;
                         case 256131655:
                             hwParcel.enforceInterface(IBase.kInterfaceName);
-                            debug(hwParcel.readNativeHandle(), hwParcel.readStringVector());
+                            hwParcel.readNativeHandle();
+                            hwParcel.readStringVector();
                             hwParcel2.writeStatus(0);
                             hwParcel2.send();
                             return;
                         case 256136003:
                             hwParcel.enforceInterface(IBase.kInterfaceName);
-                            String interfaceDescriptor = interfaceDescriptor();
                             hwParcel2.writeStatus(0);
-                            hwParcel2.writeString(interfaceDescriptor);
+                            hwParcel2.writeString("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace");
                             hwParcel2.send();
                             return;
                         case 256398152:
                             hwParcel.enforceInterface(IBase.kInterfaceName);
                             ArrayList hashChain = getHashChain();
                             hwParcel2.writeStatus(0);
-                            HwBlob hwBlob = new HwBlob(16);
+                            HwBlob hwBlob2 = new HwBlob(16);
                             int size = hashChain.size();
-                            hwBlob.putInt32(8L, size);
-                            hwBlob.putBool(12L, false);
-                            HwBlob hwBlob2 = new HwBlob(size * 32);
+                            hwBlob2.putInt32(8L, size);
+                            hwBlob2.putBool(12L, false);
+                            HwBlob hwBlob3 = new HwBlob(size * 32);
                             for (int i3 = 0; i3 < size; i3++) {
                                 long j = i3 * 32;
                                 byte[] bArr = (byte[]) hashChain.get(i3);
                                 if (bArr == null || bArr.length != 32) {
                                     throw new IllegalArgumentException("Array element is not of the expected length");
                                 }
-                                hwBlob2.putInt8Array(j, bArr);
+                                hwBlob3.putInt8Array(j, bArr);
                             }
-                            hwBlob.putBlob(0L, hwBlob2);
-                            hwParcel2.writeBuffer(hwBlob);
+                            hwBlob2.putBlob(0L, hwBlob3);
+                            hwParcel2.writeBuffer(hwBlob2);
                             hwParcel2.send();
                             return;
                         case 256462420:
                             hwParcel.enforceInterface(IBase.kInterfaceName);
-                            setHALInstrumentation();
                             return;
                         case 256921159:
                             hwParcel.enforceInterface(IBase.kInterfaceName);
-                            ping();
                             hwParcel2.writeStatus(0);
                             hwParcel2.send();
                             return;
@@ -1029,12 +983,74 @@ public interface ISehBiometricsFace extends vendor.samsung.hardware.biometrics.f
                             return;
                         case 257120595:
                             hwParcel.enforceInterface(IBase.kInterfaceName);
-                            notifySyspropsChanged();
+                            HwBinder.enableInstrumentation();
                             return;
                         default:
                             return;
                     }
             }
         }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void ping() {
+        }
+
+        public final IHwInterface queryLocalInterface(String str) {
+            if ("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace".equals(str)) {
+                return this;
+            }
+            return null;
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFace
+        public OptionalUint64 sehSetCallback(vendor.samsung.hardware.biometrics.face.V2_0.ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback) {
+            return setCallback(iSehBiometricsFaceClientCallback);
+        }
+
+        @Override // vendor.samsung.hardware.biometrics.face.V3_0.ISehBiometricsFace
+        public OptionalUint64 sehSetCallbackEx(ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback) {
+            return setCallback(iSehBiometricsFaceClientCallback);
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final void setHALInstrumentation() {
+        }
+
+        public final String toString() {
+            return "vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace@Stub";
+        }
+
+        @Override // android.hidl.base.V1_0.IBase
+        public final boolean unlinkToDeath(IHwBinder.DeathRecipient deathRecipient) {
+            return true;
+        }
     }
+
+    static ISehBiometricsFace getService() {
+        IHwBinder service = HwBinder.getService("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace", "default");
+        if (service == null) {
+            return null;
+        }
+        IHwInterface queryLocalInterface = service.queryLocalInterface("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace");
+        if (queryLocalInterface != null && (queryLocalInterface instanceof ISehBiometricsFace)) {
+            return (ISehBiometricsFace) queryLocalInterface;
+        }
+        Proxy proxy = new Proxy();
+        proxy.mRemote = service;
+        try {
+            Iterator it = proxy.interfaceChain().iterator();
+            while (it.hasNext()) {
+                if (((String) it.next()).equals("vendor.samsung.hardware.biometrics.face@3.0::ISehBiometricsFace")) {
+                    return proxy;
+                }
+            }
+            return null;
+        } catch (RemoteException unused) {
+            return null;
+        }
+    }
+
+    int sehAuthenticateForIssuance(int i, long j, ArrayList arrayList, boolean z, boolean z2);
+
+    OptionalUint64 sehSetCallbackEx(ISehBiometricsFaceClientCallback iSehBiometricsFaceClientCallback);
 }

@@ -1,5 +1,6 @@
 package com.android.server.pm;
 
+import android.R;
 import android.app.ActivityManager;
 import android.app.ActivityManagerInternal;
 import android.app.ActivityManagerNative;
@@ -13,20 +14,20 @@ import android.app.UserSwitchObserver;
 import android.app.admin.DevicePolicyManager;
 import android.app.admin.IDevicePolicyManager;
 import android.app.trust.ITrustManager;
+import android.app.trust.TrustManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.IPackageDeleteObserver;
 import android.content.pm.IPackageManager;
 import android.content.pm.ISystemPersonaObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.content.pm.UserInfo;
@@ -35,7 +36,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import android.net.Uri;
+import android.net.shared.InitialConfiguration$$ExternalSyntheticOutline0;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.ContainerStateReceiver;
@@ -50,8 +53,10 @@ import android.os.Parcelable;
 import android.os.PersistableBundle;
 import android.os.PowerManager;
 import android.os.PowerManagerInternal;
+import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -63,29 +68,67 @@ import android.util.AtomicFile;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseBooleanArray;
+import android.widget.Toast;
 import com.android.internal.util.DumpUtils;
 import com.android.internal.util.FastXmlSerializer;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.LockSettingsInternal;
+import com.android.server.AppStateTrackerImpl$MyHandler$$ExternalSyntheticOutline0;
+import com.android.server.ContainerServiceInfo;
+import com.android.server.ContainerServiceWrapper;
+import com.android.server.DirEncryptService$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
+import com.android.server.ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.server.NetworkScoreService$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
+import com.android.server.RCPManagerService$$ExternalSyntheticOutline0;
+import com.android.server.VcnManagementService$$ExternalSyntheticOutline0;
+import com.android.server.VpnManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler$$ExternalSyntheticOutline0;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.am.FreecessController$$ExternalSyntheticOutline0;
+import com.android.server.audio.AudioService$$ExternalSyntheticOutline0;
+import com.android.server.devicepolicy.PersonalAppsSuspensionHelper$$ExternalSyntheticOutline0;
+import com.android.server.enterprise.container.KnoxMUMContainerPolicy;
+import com.android.server.enterprise.container.KnoxMUMContainerPolicy$$ExternalSyntheticOutline0;
+import com.android.server.enterprise.storage.EdmStorageProvider;
+import com.android.server.enterprise.ucm.UCMStorageHelper;
+import com.android.server.knox.BasicContainerAnalytics;
 import com.android.server.knox.ContainerDependencyWrapper;
 import com.android.server.knox.IKnoxAnalyticsContainerImpl;
 import com.android.server.knox.KnoxAnalyticsContainer;
 import com.android.server.knox.KnoxForesightService;
 import com.android.server.knox.PersonaPolicyManagerService;
 import com.android.server.knox.SeamLessSwitchHandler;
+import com.android.server.knox.SeparatedAppsAnalytics;
+import com.android.server.pm.PackageManagerService;
+import com.android.server.wm.ActivityTaskManagerService;
+import com.samsung.android.feature.SemCscFeature;
 import com.samsung.android.knox.ContainerProxy;
+import com.samsung.android.knox.ContextInfo;
 import com.samsung.android.knox.EnterpriseDeviceManager;
 import com.samsung.android.knox.EnterpriseKnoxManager;
 import com.samsung.android.knox.IBasicCommand;
+import com.samsung.android.knox.IContainerService;
 import com.samsung.android.knox.ISemPersonaManager;
 import com.samsung.android.knox.PersonaManagerInternal;
 import com.samsung.android.knox.SemPersonaManager;
+import com.samsung.android.knox.analytics.KnoxAnalytics;
+import com.samsung.android.knox.analytics.KnoxAnalyticsData;
 import com.samsung.android.knox.analytics.activation.DevicePolicyListener;
+import com.samsung.android.knox.analytics.util.KnoxAnalyticsDataConverter;
 import com.samsung.android.knox.container.IKnoxContainerManager;
 import com.samsung.android.knox.container.KnoxContainerManager;
-import com.samsung.android.knox.container.RCPPolicy;
+import com.samsung.android.knox.custom.KnoxCustomManagerService;
+import com.samsung.android.knox.dar.ddar.DualDarManager;
+import com.samsung.android.knox.devicesecurity.IPasswordPolicy;
+import com.samsung.android.knox.devicesecurity.PasswordPolicy;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -105,39 +148,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class PersonaManagerService extends ISemPersonaManager.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PersonaManagerService extends ISemPersonaManager.Stub {
+    public static final boolean DEVICE_SUPPORT_KNOX;
     public static PersonaManagerService sInstance;
-    public final String APP_SEPARATION_ACTION_STATUS;
-    public final String APP_SEPARATION_ACTION_TYPE;
-    public final String APP_SEPARATION_ACTION_TYPE_ACTIVATE;
-    public final String APP_SEPARATION_ACTION_TYPE_DEACTIVATE;
-    public final String APP_SEPARATION_DEFAULT_NAME;
-    public final String APP_SEPARATION_MIGRATION_COMPLETED;
-    public final String APP_SEPARATION_WL_RETURN_EXTRA;
-    public final String INTENT_APP_SEPARATION_ACTION_RETURN;
-    public final String INTENT_APP_SEPARATION_ALLOWEDLIST_RETURN;
-    public final int KA_DELAY_TIME;
-    public final String KEY_USER_REMOVED;
-    public String LOG_FS_TAG;
-    public final String MDM_ENTERPRISE_APP_SEPARATION_PERMISSION;
-    public final int UNKNOWN_USER_ID;
-    public ContentObserver analyticsObserver;
+    public static ArrayList workTabSupportLauncherUids;
+    public final String LOG_FS_TAG;
+    public final AnonymousClass7 analyticsObserver;
     ContainerDependencyWrapper containerDependencyWrapper;
-    public HashSet containerNames;
+    public final HashSet containerNames;
     public EnterpriseDeviceManager edm;
-    public HandlerThread handlerThread;
-    public boolean isFotaUpgradeVersionChanged;
+    public ApplicationPackageManager mAPM;
     public ActivityManagerInternal mActivityManagerInternal;
-    public BroadcastReceiver mAnalyticsReceiver;
-    public final File mBaseUserPath;
+    public final AnonymousClass2 mAnalyticsReceiver;
+    public BroadcastHelper mBroadcastHelper;
     public final Context mContext;
-    public List mCorePackageUid;
-    public Object mDeviceEmergencyModeLock;
-    public boolean mDeviceInteractive;
+    public final List mCorePackageUid;
     public final SparseBooleanArray mDeviceLockedForUser;
     public DevicePolicyManager mDevicePolicyManager;
-    public BroadcastReceiver mFingerPrintReceiver;
+    public final AnonymousClass2 mFingerPrintReceiver;
     public String mFirmwareVersion;
     public final Object mFocusLauncherLock;
     public final Object mFocusLock;
@@ -145,14 +175,13 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
     public int mFocusedUserId;
     public Set mImeSet;
     public final Injector mInjector;
-    public boolean mIsFOTAUpgrade;
     public boolean mKALockscreenTimeoutAdminFlag;
     public KeyguardManager mKeyguardManager;
     public final KnoxAnalyticsContainer mKnoxAnalyticsContainer;
     public PersonaLegacyStateMonitor mLegacyStateMonitor;
     public final LocalService mLocalService;
     public LockPatternUtils mLockPatternUtils;
-    public BroadcastReceiver mPackageReceiver;
+    public final AnonymousClass2 mPackageReceiver;
     public final File mPersonaCacheFile;
     public final Object mPersonaCacheLock;
     public final HashMap mPersonaCacheMap;
@@ -163,543 +192,632 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
     public final PackageManagerService mPm;
     public PowerManagerInternal mPowerManagerInternal;
     public SeamLessSwitchHandler mSeamLessSwitchHandler;
-    public int mSecureFolderId;
-    public BroadcastReceiver mSetupWizardCompleteReceiver;
+    public final int mSecureFolderId;
+    public final AnonymousClass2 mSetupWizardCompleteReceiver;
     public ITrustManager mTrustManager;
     public final SparseBooleanArray mUserHasBeenShutdownBefore;
     public final File mUserListFile;
     public UserManager mUserManager;
     public UserManagerInternal mUserManagerInternal;
-    public BroadcastReceiver mUserReceiver;
-    public UserSwitchObserver mUserSwitchObserver;
+    public final AnonymousClass2 mUserReceiver;
+    public final AnonymousClass1 mUserSwitchObserver;
     public final File mUsersDir;
     public IntentFilter packageFilter;
     public SemPersonaManager personaManager;
     public List requiredApps;
-    public boolean xmlnotParsedforFOTA;
     public static final boolean DEBUG = "eng".equals(SystemProperties.get("ro.build.type"));
-    public static final String USER_INFO_DIR = "system" + File.separator + "users";
-    public static List containerCriticalApps = new ArrayList(Arrays.asList("com.samsung.knox.securefolder", "com.samsung.android.knox.containercore", "com.sec.knox.bluetooth", "com.samsung.knox.appsupdateagent", "com.android.bbc.fileprovider"));
+    public static final String USER_INFO_DIR = AudioOffloadInfo$$ExternalSyntheticOutline0.m(new StringBuilder("system"), File.separator, "users");
+    public static final List containerCriticalApps = new ArrayList(Arrays.asList("com.samsung.knox.securefolder", "com.samsung.android.knox.containercore", "com.sec.knox.bluetooth", "com.samsung.knox.appsupdateagent", "com.android.bbc.fileprovider"));
     static Bundle mSeparationConfiginCache = null;
     public static List mAppsListOnlyPresentInSeparatedApps = null;
     public static String mDeviceOwnerPackage = "";
-    public static HashMap cachedTime = new HashMap();
-    public static final boolean DEVICE_SUPPORT_KNOX = isKnoxSupported();
-    public static ArrayList workTabSupportLauncherUids = new ArrayList();
+    public static final HashMap cachedTime = new HashMap();
 
-    public final boolean isDpmEnforced(int i) {
-        return i > 0 && i < Integer.MAX_VALUE;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.pm.PersonaManagerService$2, reason: invalid class name */
+    public final class AnonymousClass2 extends BroadcastReceiver {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ PersonaManagerService this$0;
 
-    public final boolean isTimeOutComputable(int i) {
-        return i > 0;
-    }
-
-    public static boolean isKnoxSupported() {
-        Bundle knoxInfo = SemPersonaManager.getKnoxInfo();
-        String string = knoxInfo != null ? knoxInfo.getString("version") : null;
-        return (string == null || string.isEmpty() || "v00".equals(string)) ? false : true;
-    }
-
-    public final int checkCallerPermissionFor(String str) {
-        return ContainerDependencyWrapper.checkCallerPermissionFor(this.mContext, "PersonaManagerService", str);
-    }
-
-    public static PersonaManagerService getInstance() {
-        PersonaManagerService personaManagerService;
-        synchronized (PersonaManagerService.class) {
-            personaManagerService = sInstance;
+        public /* synthetic */ AnonymousClass2(PersonaManagerService personaManagerService, int i) {
+            this.$r8$classId = i;
+            this.this$0 = personaManagerService;
         }
-        return personaManagerService;
-    }
 
-    public PersonaManagerService(Context context, PackageManagerService packageManagerService, Object obj) {
-        this(context, packageManagerService, obj, Environment.getDataDirectory(), new File(Environment.getDataDirectory(), "user"));
-    }
-
-    public PersonaManagerService(Context context, PackageManagerService packageManagerService, Object obj, File file, File file2) {
-        this(new Injector(context, packageManagerService, obj, file, file2, null, null, null, null, null, null, null, null, null, false));
-    }
-
-    public PersonaManagerService(Injector injector) {
-        File file;
-        this.INTENT_APP_SEPARATION_ALLOWEDLIST_RETURN = "com.samsung.android.knox.intent.action.SEPARATION_ALLOWEDLIST_RETURN";
-        this.INTENT_APP_SEPARATION_ACTION_RETURN = "com.samsung.android.knox.intent.action.SEPARATION_ACTION_RETURN";
-        this.APP_SEPARATION_WL_RETURN_EXTRA = "SeparationWhiteListReturn";
-        this.APP_SEPARATION_ACTION_TYPE = "type";
-        this.APP_SEPARATION_ACTION_TYPE_DEACTIVATE = "deactivate";
-        this.APP_SEPARATION_ACTION_TYPE_ACTIVATE = "activate";
-        this.APP_SEPARATION_ACTION_STATUS = "status";
-        this.MDM_ENTERPRISE_APP_SEPARATION_PERMISSION = "com.samsung.android.knox.permission.KNOX_APP_SEPARATION";
-        this.APP_SEPARATION_DEFAULT_NAME = "Separated Apps";
-        this.APP_SEPARATION_MIGRATION_COMPLETED = "persist.sys.knox.appseparation_migration";
-        Object obj = new Object();
-        this.mPersonaDbLock = obj;
-        this.mFocusLock = new Object();
-        this.mFocusLauncherLock = new Object();
-        this.mPersonaCacheLock = new Object();
-        this.UNKNOWN_USER_ID = -1;
-        this.mPersonaCacheMap = new HashMap();
-        this.mFirmwareVersion = null;
-        this.KA_DELAY_TIME = 60000;
-        this.handlerThread = null;
-        this.mFocusedLauncherId = 0;
-        this.mFocusedUserId = 0;
-        this.mDeviceEmergencyModeLock = new Object();
-        this.mIsFOTAUpgrade = false;
-        this.isFotaUpgradeVersionChanged = false;
-        this.xmlnotParsedforFOTA = true;
-        this.mSecureFolderId = -1;
-        this.mKALockscreenTimeoutAdminFlag = false;
-        this.mCorePackageUid = new ArrayList();
-        this.mUserHasBeenShutdownBefore = new SparseBooleanArray();
-        this.personaManager = null;
-        this.packageFilter = null;
-        this.requiredApps = null;
-        this.mDeviceLockedForUser = new SparseBooleanArray();
-        this.mUserSwitchObserver = new UserSwitchObserver() { // from class: com.android.server.pm.PersonaManagerService.2
-            public void onLockedBootComplete(int i) {
-                Log.i("PersonaManagerService", "onLockedBootComplete: " + i);
-                SemPersonaManager.sendContainerEvent(PersonaManagerService.this.mContext, i, 1);
-                if (PersonaManagerService.this.mKeyguardManager.isDeviceSecure(i) && PersonaManagerService.this.mKeyguardManager.isDeviceLocked(i)) {
-                    return;
-                }
-                Log.i("PersonaManagerService", "container is already unlocked");
-                SemPersonaManager.sendContainerEvent(PersonaManagerService.this.mContext, i, 5);
-                synchronized (PersonaManagerService.this.mDeviceLockedForUser) {
-                    PersonaManagerService.this.mDeviceLockedForUser.put(i, false);
-                }
-            }
-
-            public void onForegroundProfileSwitch(int i) {
-                Log.i("PersonaManagerService", "onForegroundProfileSwitch: " + i);
-                PersonaManagerService.this.mPersonaHandler.removeMessages(80);
-                PersonaManagerService.this.mPersonaHandler.sendMessage(PersonaManagerService.this.mPersonaHandler.obtainMessage(80, i, 0));
-            }
-        };
-        this.containerNames = new HashSet();
-        this.mUserReceiver = new BroadcastReceiver() { // from class: com.android.server.pm.PersonaManagerService.3
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, final Intent intent) {
-                String action = intent.getAction();
-                int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-                Log.i("PersonaManagerService", "UserReceiver.onReceive() {action:" + action + " userHandle:" + intExtra + "}");
-                int i = 0;
-                if (DevicePolicyListener.ACTION_PROFILE_OWNER_ADDED.equals(action)) {
-                    PersonaManagerService.this.mKALockscreenTimeoutAdminFlag = false;
-                    final UserHandle userHandle = (UserHandle) intent.getExtra("android.intent.extra.USER");
-                    if (PersonaManagerService.this.mLocalService.isKnoxId(userHandle.getIdentifier())) {
-                        SemPersonaManager.sendContainerEvent(context, userHandle.getIdentifier(), 18);
-                    }
-                    UserInfo userInfo = PersonaManagerService.this.getUserManager().getUserInfo(userHandle.getIdentifier());
-                    try {
-                        PersonaManagerService.this.mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor("caller_id_to_show_" + userInfo.name), false, PersonaManagerService.this.analyticsObserver, -1);
-                        PersonaManagerService.this.containerNames.add(userInfo.name);
-                        PersonaManagerService.this.mKnoxAnalyticsContainer.knoxAnalyticsContainer(userHandle.getIdentifier(), "DUAL_DAR_USER_ADDED");
-                    } catch (Exception e) {
-                        Log.d("PersonaManagerService", "DUAL_DAR_USER_ADDED KA failed : " + e);
-                    }
-                    PersonaManagerService.this.mPersonaHandler.postDelayed(new Runnable() { // from class: com.android.server.pm.PersonaManagerService.3.1
-                        @Override // java.lang.Runnable
-                        public void run() {
-                            PersonaManagerService.this.mKnoxAnalyticsContainer.onWorkProfileAdded(userHandle.getIdentifier(), intent.getStringExtra(DevicePolicyListener.EXTRA_DO_PO_PACKAGE_NAME));
+        /* JADX WARN: Multi-variable type inference failed */
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, final Intent intent) {
+            String str;
+            String schemeSpecificPart;
+            String str2;
+            r1 = null;
+            String str3 = null;
+            int i = 0;
+            switch (this.$r8$classId) {
+                case 0:
+                    String action = intent.getAction();
+                    int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                    Log.i("PersonaManagerService", AppStateTrackerImpl$MyHandler$$ExternalSyntheticOutline0.m(intExtra, "UserReceiver.onReceive() {action:", action, " userHandle:", "}"));
+                    if (DevicePolicyListener.ACTION_PROFILE_OWNER_ADDED.equals(action)) {
+                        this.this$0.mKALockscreenTimeoutAdminFlag = false;
+                        final UserHandle userHandle = (UserHandle) intent.getExtra("android.intent.extra.USER");
+                        LocalService localService = this.this$0.mLocalService;
+                        int identifier = userHandle.getIdentifier();
+                        localService.getClass();
+                        if (SemPersonaManager.isKnoxId(identifier)) {
+                            SemPersonaManager.sendContainerEvent(context, userHandle.getIdentifier(), 18);
                         }
-                    }, 60000L);
-                    if (userHandle.getIdentifier() < 95) {
-                        PersonaManagerService.this.registerPackageReceiver();
-                    }
-                    if (PersonaManagerService.this.getAppSeparationId() == userInfo.id) {
-                        Log.d("PersonaManagerService", "App Separation user added. Notify to KSP");
-                        Intent intent2 = new Intent();
-                        intent2.setAction("com.samsung.android.knox.intent.action.SEPARATION_ACTION_RETURN");
-                        intent2.putExtra("type", "activate");
-                        intent2.putExtra("status", true);
-                        PersonaManagerService.this.notifyStatusToKspAgent(intent2);
-                        PersonaManagerService.this.processAppSeparationCreation();
-                    }
-                    PersonaManagerService personaManagerService = PersonaManagerService.this;
-                    personaManagerService.edm = EnterpriseDeviceManager.getInstance(personaManagerService.mContext);
-                    try {
-                        EnterpriseKnoxManager.getInstance().getKnoxContainerManager(PersonaManagerService.this.mContext, ContainerDependencyWrapper.getContextInfo(ContainerDependencyWrapper.getOwnerUidFromEdm(PersonaManagerService.this.mContext, userHandle.getIdentifier()), userHandle.getIdentifier())).getContainerConfigurationPolicy().enableNFC(true, (Bundle) null);
-                    } catch (Exception e2) {
-                        e2.printStackTrace();
-                    }
-                    try {
-                        PersonaManagerService.this.enableMyFilesLauncherActivity(userHandle.getIdentifier());
-                    } catch (Exception e3) {
-                        e3.printStackTrace();
-                    }
-                    if (SemPersonaManager.isSecureFolderId(userInfo.id)) {
-                        Log.i("PersonaManagerService", "set secure folder available state true");
-                        SystemProperties.set("persist.sys.knox.secure_folder_state_available", "true");
+                        UserInfo userInfo = this.this$0.getUserManager().getUserInfo(userHandle.getIdentifier());
+                        try {
+                            this.this$0.mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor("caller_id_to_show_" + userInfo.name), false, this.this$0.analyticsObserver, -1);
+                            this.this$0.containerNames.add(userInfo.name);
+                            this.this$0.mKnoxAnalyticsContainer.knoxAnalyticsContainer(userHandle.getIdentifier());
+                        } catch (Exception e) {
+                            Log.d("PersonaManagerService", "DUAL_DAR_USER_ADDED KA failed : " + e);
+                        }
+                        this.this$0.mPersonaHandler.postDelayed(new Runnable() { // from class: com.android.server.pm.PersonaManagerService.2.1
+                            @Override // java.lang.Runnable
+                            public final void run() {
+                                KnoxAnalyticsContainer knoxAnalyticsContainer = AnonymousClass2.this.this$0.mKnoxAnalyticsContainer;
+                                int identifier2 = userHandle.getIdentifier();
+                                String stringExtra = intent.getStringExtra(DevicePolicyListener.EXTRA_DO_PO_PACKAGE_NAME);
+                                knoxAnalyticsContainer.getClass();
+                                if (SemPersonaManager.isDualAppId(identifier2)) {
+                                    return;
+                                }
+                                BasicContainerAnalytics basicContainerAnalytics = knoxAnalyticsContainer.basicContainerAnalytics;
+                                try {
+                                    if (basicContainerAnalytics.ifKnoxAnalyticsContainer.isLoggingAllowedForUser(identifier2)) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt("cTp", basicContainerAnalytics.getContainerType(identifier2));
+                                        if (stringExtra == null) {
+                                            stringExtra = ((DevicePolicyManager) basicContainerAnalytics.context.getSystemService("device_policy")).getProfileOwnerAsUser(new UserHandle(identifier2)).getPackageName();
+                                        }
+                                        bundle.putString("pN", stringExtra);
+                                        bundle.putString("pV", IKnoxAnalyticsContainerImpl.getPackageInfo(identifier2, stringExtra).versionName);
+                                        basicContainerAnalytics.logEvent(bundle, "WORK_PROFILE_CREATED");
+                                    }
+                                } catch (Exception e2) {
+                                    Log.d("BasicContainerAnalytics", "WORK_PROFILE_CREATED KA failed : " + e2);
+                                }
+                            }
+                        }, 60000L);
+                        if (userHandle.getIdentifier() < 95) {
+                            this.this$0.registerPackageReceiver();
+                        }
+                        if (this.this$0.getAppSeparationId() == userInfo.id) {
+                            Log.d("PersonaManagerService", "App Separation user added. Notify to KSP");
+                            Intent intent2 = new Intent();
+                            intent2.setAction("com.samsung.android.knox.intent.action.SEPARATION_ACTION_RETURN");
+                            intent2.putExtra("type", "activate");
+                            intent2.putExtra(Constants.JSON_CLIENT_DATA_STATUS, true);
+                            this.this$0.notifyStatusToKspAgent(intent2);
+                            this.this$0.processAppSeparationCreation();
+                        }
+                        try {
+                            Context context2 = this.this$0.mContext;
+                            int identifier2 = userHandle.getIdentifier();
+                            if (ContainerDependencyWrapper.mEdmStorageProvider == null) {
+                                ContainerDependencyWrapper.mEdmStorageProvider = new EdmStorageProvider(context2);
+                            }
+                            EnterpriseKnoxManager.getInstance().getKnoxContainerManager(this.this$0.mContext, new ContextInfo(ContainerDependencyWrapper.mEdmStorageProvider.getMUMContainerOwnerUid(identifier2), userHandle.getIdentifier())).getContainerConfigurationPolicy().enableNFC(true, (Bundle) null);
+                        } catch (Exception e2) {
+                            e2.printStackTrace();
+                        }
+                        try {
+                            PersonaManagerService.m763$$Nest$menableMyFilesLauncherActivity(this.this$0, userHandle.getIdentifier());
+                        } catch (Exception e3) {
+                            e3.printStackTrace();
+                        }
+                        if (SemPersonaManager.isSecureFolderId(userInfo.id)) {
+                            Log.i("PersonaManagerService", "set secure folder available state true");
+                            SystemProperties.set("persist.sys.knox.secure_folder_state_available", "true");
+                        }
+                        Log.i("PersonaManagerService", "ACTION_MANAGED_PROFILE_ADDED :: SystemProperties.set persist.sys.knox.provisioning_in_progress 0");
+                        SystemProperties.set("persist.sys.knox.provisioning_in_progress", "0");
                         return;
                     }
-                    return;
-                }
-                if (DevicePolicyListener.ACTION_PROFILE_OWNER_REMOVED.equals(action)) {
-                    Parcelable userInfo2 = PersonaManagerService.this.getUserManager().getUserInfo(intExtra);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(ContainerStateReceiver.EXTRA_USER_INFO, userInfo2);
-                    SemPersonaManager.sendContainerEvent(context, intExtra, 10, bundle);
-                    synchronized (PersonaManagerService.this.mDeviceLockedForUser) {
-                        PersonaManagerService.this.mDeviceLockedForUser.delete(intExtra);
-                    }
-                    synchronized (PersonaManagerService.this.mUserHasBeenShutdownBefore) {
-                        PersonaManagerService.this.mUserHasBeenShutdownBefore.delete(intExtra);
-                    }
-                    UserInfo userInfo3 = PersonaManagerService.this.mUserManager.getUserInfo(intExtra);
-                    PersonaManagerService.this.mKnoxAnalyticsContainer.onWorkProfileRemoved(userInfo3.id);
-                    PersonaManagerService.this.mKALockscreenTimeoutAdminFlag = false;
-                    if (SemPersonaManager.isSecureFolderId(userInfo3.id)) {
-                        Log.i("PersonaManagerService", "set secure folder available state false");
-                        SystemProperties.set("persist.sys.knox.secure_folder_state_available", "false");
-                        return;
-                    }
-                    return;
-                }
-                if ("android.intent.action.USER_PRESENT".equals(action)) {
-                    List knoxIds = PersonaManagerService.this.getPersonaManager().getKnoxIds(true);
-                    while (i < knoxIds.size()) {
-                        int intValue = ((Integer) knoxIds.get(i)).intValue();
-                        if (PersonaManagerService.this.mLocalService.isKnoxId(intValue) && !SemPersonaManager.isSecureFolderId(intValue) && !PersonaManagerService.this.mLockPatternUtils.isSeparateProfileChallengeEnabled(intValue)) {
-                            SemPersonaManager.sendContainerEvent(PersonaManagerService.this.mContext, intValue, 5);
+                    if (DevicePolicyListener.ACTION_PROFILE_OWNER_REMOVED.equals(action)) {
+                        Parcelable userInfo2 = this.this$0.getUserManager().getUserInfo(intExtra);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(ContainerStateReceiver.EXTRA_USER_INFO, userInfo2);
+                        SemPersonaManager.sendContainerEvent(context, intExtra, 10, bundle);
+                        synchronized (this.this$0.mDeviceLockedForUser) {
+                            this.this$0.mDeviceLockedForUser.delete(intExtra);
                         }
-                        i++;
-                    }
-                    PersonaManagerService.this.checkForesightUpdate();
-                    return;
-                }
-                if ("android.intent.action.SCREEN_OFF".equals(action)) {
-                    List knoxIds2 = PersonaManagerService.this.getPersonaManager().getKnoxIds(true);
-                    while (i < knoxIds2.size()) {
-                        int intValue2 = ((Integer) knoxIds2.get(i)).intValue();
-                        if (PersonaManagerService.this.mLocalService.isKnoxId(intValue2) && !SemPersonaManager.isSecureFolderId(intValue2) && !PersonaManagerService.this.mLockPatternUtils.isSeparateProfileChallengeEnabled(intValue2)) {
-                            SemPersonaManager.sendContainerEvent(PersonaManagerService.this.mContext, intValue2, 19);
+                        synchronized (this.this$0.mUserHasBeenShutdownBefore) {
+                            this.this$0.mUserHasBeenShutdownBefore.delete(intExtra);
                         }
-                        i++;
-                    }
-                    return;
-                }
-                if ("android.intent.action.USER_UNLOCKED".equals(action)) {
-                    SemPersonaManager.sendContainerEvent(PersonaManagerService.this.mContext, intExtra, 5);
-                    synchronized (PersonaManagerService.this.mDeviceLockedForUser) {
-                        PersonaManagerService.this.mDeviceLockedForUser.put(intExtra, false);
-                    }
-                    return;
-                }
-                if ("android.intent.action.USER_STOPPED".equals(action)) {
-                    SemPersonaManager.sendContainerEvent(context, intExtra, 2);
-                    synchronized (PersonaManagerService.this.mUserHasBeenShutdownBefore) {
-                        PersonaManagerService.this.mUserHasBeenShutdownBefore.put(intExtra, true);
-                    }
-                    return;
-                }
-                if (DevicePolicyListener.ACTION_DEVICE_OWNER_CHANGED.equals(action)) {
-                    if (SemPersonaManager.isDoEnabled(0)) {
-                        PersonaManagerService.this.registerPackageReceiver();
-                        SemPersonaManager.sendContainerEvent(context, 0, 13);
-                    }
-                    PersonaManagerService.this.mPersonaHandler.postDelayed(new Runnable() { // from class: com.android.server.pm.PersonaManagerService.3.2
-                        @Override // java.lang.Runnable
-                        public void run() {
-                            PersonaManagerService.this.mKnoxAnalyticsContainer.onDeviceOwnerChanged(intent.getStringExtra(DevicePolicyListener.EXTRA_DO_PO_PACKAGE_NAME));
+                        UserInfo userInfo3 = this.this$0.mUserManager.getUserInfo(intExtra);
+                        KnoxAnalyticsContainer knoxAnalyticsContainer = this.this$0.mKnoxAnalyticsContainer;
+                        int i2 = userInfo3.id;
+                        knoxAnalyticsContainer.ifKnoxAnalyticsContainer.getClass();
+                        if (!SemPersonaManager.isSecureFolderId(i2)) {
+                            BasicContainerAnalytics basicContainerAnalytics = knoxAnalyticsContainer.basicContainerAnalytics;
+                            if (basicContainerAnalytics.ifKnoxAnalyticsContainer.isLoggingAllowedForUser(i2)) {
+                                Bundle bundle2 = new Bundle();
+                                bundle2.putInt("cTp", basicContainerAnalytics.getContainerType(i2));
+                                basicContainerAnalytics.logEvent(bundle2, "WORK_PROFILE_REMOVED");
+                            }
                         }
-                    }, 60000L);
-                    return;
-                }
-                if ("android.intent.action.MANAGED_PROFILE_AVAILABLE".equals(action)) {
-                    if (SemPersonaManager.isSecureFolderId(intExtra)) {
-                        Log.i("PersonaManagerService", "set secure folder available state true");
-                        SystemProperties.set("persist.sys.knox.secure_folder_state_available", "true");
-                        return;
-                    }
-                    return;
-                }
-                if ("android.intent.action.MANAGED_PROFILE_UNAVAILABLE".equals(action) && SemPersonaManager.isSecureFolderId(intExtra)) {
-                    Log.i("PersonaManagerService", "set secure folder available state false");
-                    SystemProperties.set("persist.sys.knox.secure_folder_state_available", "false");
-                }
-            }
-        };
-        this.mSetupWizardCompleteReceiver = new BroadcastReceiver() { // from class: com.android.server.pm.PersonaManagerService.4
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                Log.i("PersonaManagerService", "SetupWizardCompleteReceiver, action: " + intent.getAction());
-                PersonaManagerService.this.revokeSUWAgreements(context);
-            }
-        };
-        this.mFingerPrintReceiver = new BroadcastReceiver() { // from class: com.android.server.pm.PersonaManagerService.5
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                Log.i("PersonaManagerService", "FingerPrint data changed, action: " + intent.getAction());
-                Bundle bundle = new Bundle();
-                bundle.putInt("android.intent.extra.user_handle", PersonaManagerService.this.mFocusedUserId);
-                ContainerProxy.sendEvent("knox.container.proxy.EVENT_FINGERPRINT_CHANGE", bundle);
-            }
-        };
-        this.mPackageReceiver = new BroadcastReceiver() { // from class: com.android.server.pm.PersonaManagerService.6
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                String schemeSpecificPart;
-                if ("android.intent.action.PACKAGE_ADDED".equals(intent.getAction())) {
-                    PersonaManagerService.this.mAnalyticsReceiver.onReceive(context, intent);
-                }
-                if ("android.intent.action.PACKAGE_REMOVED".equals(intent.getAction())) {
-                    PersonaManagerService.this.mAnalyticsReceiver.onReceive(context, intent);
-                }
-                if ("android.intent.action.PACKAGE_CHANGED".equals(intent.getAction()) && (schemeSpecificPart = intent.getData().getSchemeSpecificPart()) != null && "com.samsung.android.knox.containercore".equals(schemeSpecificPart)) {
-                    PackageManager packageManager = PersonaManagerService.this.mContext.getPackageManager();
-                    if (packageManager == null) {
-                        return;
-                    }
-                    if (packageManager.getApplicationEnabledSetting(schemeSpecificPart) == 3) {
-                        Log.e("PersonaManagerService", "enable container critical app !");
-                        packageManager.setApplicationEnabledSetting(schemeSpecificPart, 1, 0);
-                    }
-                }
-                if ("android.intent.action.PACKAGE_ADDED".equals(intent.getAction()) || "android.intent.action.PACKAGE_CHANGED".equals(intent.getAction())) {
-                    try {
-                        String schemeSpecificPart2 = intent.getData().getSchemeSpecificPart();
-                        int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -10000);
-                        if (ContainerDependencyWrapper.isDisallowedAppForKnox(schemeSpecificPart2, intExtra)) {
-                            PersonaManagerService.this.deletePkg(intExtra, schemeSpecificPart2);
-                        }
-                        if (SemPersonaManager.isKnoxId(intExtra) && PersonaManagerService.this.isPackageInstalledAsUser(intExtra, schemeSpecificPart2) && PersonaManagerService.this.isStubApp(schemeSpecificPart2, intExtra)) {
-                            Log.d("PersonaManagerService", "Delete stub app. " + schemeSpecificPart2 + " / " + intExtra);
-                            PersonaManagerService.this.deletePkg(intExtra, schemeSpecificPart2);
+                        this.this$0.mKALockscreenTimeoutAdminFlag = false;
+                        if (SemPersonaManager.isSecureFolderId(userInfo3.id)) {
+                            Log.i("PersonaManagerService", "set secure folder available state false");
+                            SystemProperties.set("persist.sys.knox.secure_folder_state_available", "false");
                             return;
                         }
                         return;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return;
                     }
-                }
-                try {
-                    String schemeSpecificPart3 = intent.getData().getSchemeSpecificPart();
-                    if (intent.getIntExtra("android.intent.extra.user_handle", -10000) == 0) {
-                        List knoxIds = PersonaManagerService.this.getPersonaManager().getKnoxIds(true);
-                        for (int i = 0; i < knoxIds.size(); i++) {
+                    if ("android.intent.action.USER_PRESENT".equals(action)) {
+                        List knoxIds = this.this$0.getPersonaManager().getKnoxIds(true);
+                        while (i < knoxIds.size()) {
                             int intValue = ((Integer) knoxIds.get(i)).intValue();
-                            if (ContainerDependencyWrapper.isRequiredAppForKnox(schemeSpecificPart3, intValue)) {
-                                PersonaManagerService.this.installExistingPackageForPersona(intValue, schemeSpecificPart3);
+                            this.this$0.mLocalService.getClass();
+                            if (SemPersonaManager.isKnoxId(intValue) && !SemPersonaManager.isSecureFolderId(intValue) && !this.this$0.mLockPatternUtils.isSeparateProfileChallengeEnabled(intValue)) {
+                                SemPersonaManager.sendContainerEvent(this.this$0.mContext, intValue, 5);
                             }
+                            i++;
+                        }
+                        PersonaManagerService personaManagerService = this.this$0;
+                        personaManagerService.getClass();
+                        String str4 = SystemProperties.get("persist.sys.knox.foresight.version");
+                        if (str4 == null || str4.equals("")) {
+                            return;
+                        }
+                        try {
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
+                            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(personaManagerService.mContext);
+                            String string = defaultSharedPreferences.getString("knox_foresight_regulary_check", "");
+                            String format = simpleDateFormat.format(new Date());
+                            if (!string.equals("") && format.equals(string)) {
+                                Log.d(personaManagerService.LOG_FS_TAG, "!isVersionCheckNeeded");
+                                personaManagerService = personaManagerService;
+                                return;
+                            }
+                            Log.d(personaManagerService.LOG_FS_TAG, "isVersionCheckNeeded");
+                            SharedPreferences.Editor edit = defaultSharedPreferences.edit();
+                            edit.putString("knox_foresight_regulary_check", format);
+                            edit.apply();
+                            Intent intent3 = new Intent("com.samsung.android.knox.containercore.action.FORESIGHT_COMMAND");
+                            intent3.setClassName("com.samsung.android.knox.containercore", "com.samsung.android.knox.containercore.KnoxForesightCommandReceiver");
+                            intent3.putExtra("check", "check");
+                            intent3.addFlags(268435456);
+                            Context context3 = personaManagerService.mContext;
+                            context3.sendBroadcastAsUser(intent3, UserHandle.ALL);
+                            personaManagerService = context3;
+                            return;
+                        } catch (Exception e4) {
+                            e4.printStackTrace();
+                            Log.d(personaManagerService.LOG_FS_TAG, "!isVersionCheckNeeded exception.");
+                            return;
                         }
                     }
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
+                    if ("android.intent.action.SCREEN_OFF".equals(action)) {
+                        List knoxIds2 = this.this$0.getPersonaManager().getKnoxIds(true);
+                        while (i < knoxIds2.size()) {
+                            int intValue2 = ((Integer) knoxIds2.get(i)).intValue();
+                            this.this$0.mLocalService.getClass();
+                            if (SemPersonaManager.isKnoxId(intValue2) && !SemPersonaManager.isSecureFolderId(intValue2) && !this.this$0.mLockPatternUtils.isSeparateProfileChallengeEnabled(intValue2)) {
+                                SemPersonaManager.sendContainerEvent(this.this$0.mContext, intValue2, 19);
+                            }
+                            i++;
+                        }
+                        return;
+                    }
+                    if ("android.intent.action.USER_UNLOCKED".equals(action)) {
+                        SemPersonaManager.sendContainerEvent(this.this$0.mContext, intExtra, 5);
+                        synchronized (this.this$0.mDeviceLockedForUser) {
+                            this.this$0.mDeviceLockedForUser.put(intExtra, false);
+                        }
+                        return;
+                    }
+                    if ("android.intent.action.USER_STOPPED".equals(action)) {
+                        SemPersonaManager.sendContainerEvent(context, intExtra, 2);
+                        synchronized (this.this$0.mUserHasBeenShutdownBefore) {
+                            this.this$0.mUserHasBeenShutdownBefore.put(intExtra, true);
+                        }
+                        return;
+                    }
+                    if (DevicePolicyListener.ACTION_DEVICE_OWNER_CHANGED.equals(action)) {
+                        if (SemPersonaManager.isDoEnabled(0)) {
+                            this.this$0.registerPackageReceiver();
+                            SemPersonaManager.sendContainerEvent(context, 0, 13);
+                        }
+                        this.this$0.mPersonaHandler.postDelayed(new Runnable() { // from class: com.android.server.pm.PersonaManagerService.2.2
+                            @Override // java.lang.Runnable
+                            public final void run() {
+                                KnoxAnalyticsContainer knoxAnalyticsContainer2 = AnonymousClass2.this.this$0.mKnoxAnalyticsContainer;
+                                String stringExtra = intent.getStringExtra(DevicePolicyListener.EXTRA_DO_PO_PACKAGE_NAME);
+                                BasicContainerAnalytics basicContainerAnalytics2 = knoxAnalyticsContainer2.basicContainerAnalytics;
+                                basicContainerAnalytics2.ifKnoxAnalyticsContainer.getClass();
+                                if (!SemPersonaManager.isDoEnabled(0)) {
+                                    Bundle bundle3 = new Bundle();
+                                    bundle3.putInt("cTp", basicContainerAnalytics2.getContainerType(0));
+                                    basicContainerAnalytics2.logEvent(bundle3, "WORK_PROFILE_REMOVED");
+                                } else {
+                                    Bundle bundle4 = new Bundle();
+                                    bundle4.putInt("cTp", basicContainerAnalytics2.getContainerType(0));
+                                    bundle4.putString("pN", stringExtra);
+                                    basicContainerAnalytics2.logEvent(bundle4, "WORK_PROFILE_CREATED");
+                                }
+                            }
+                        }, 60000L);
+                        Log.i("PersonaManagerService", "ACTION_DEVICE_OWNER_CHANGED :: SystemProperties.set persist.sys.knox.provisioning_in_progress 0");
+                        SystemProperties.set("persist.sys.knox.provisioning_in_progress", "0");
+                        return;
+                    }
+                    if ("android.intent.action.MANAGED_PROFILE_AVAILABLE".equals(action)) {
+                        if (SemPersonaManager.isSecureFolderId(intExtra)) {
+                            Log.i("PersonaManagerService", "set secure folder available state true");
+                            SystemProperties.set("persist.sys.knox.secure_folder_state_available", "true");
+                            return;
+                        }
+                        return;
+                    }
+                    if ("android.intent.action.MANAGED_PROFILE_UNAVAILABLE".equals(action)) {
+                        if (SemPersonaManager.isSecureFolderId(intExtra)) {
+                            Log.i("PersonaManagerService", "set secure folder available state false");
+                            SystemProperties.set("persist.sys.knox.secure_folder_state_available", "false");
+                            return;
+                        } else {
+                            if (SemPersonaManager.isKnoxId(intExtra)) {
+                                Log.i("PersonaManagerService", "managed profile unavailable state");
+                                ActivityTaskManagerService activityTaskManagerService = (ActivityTaskManagerService) ServiceManager.getService("activity_task");
+                                if (activityTaskManagerService != null) {
+                                    activityTaskManagerService.mExt.removeTaskByCmpName();
+                                    return;
+                                }
+                                return;
+                            }
+                            return;
+                        }
+                    }
+                    return;
+                case 1:
+                    Log.i("PersonaManagerService", "SetupWizardCompleteReceiver, action:   " + intent.getAction());
+                    PersonaManagerService personaManagerService2 = this.this$0;
+                    UserManager userManager = personaManagerService2.getUserManager();
+                    Context context4 = personaManagerService2.mContext;
+                    ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+                    List<UserInfo> users = userManager.getUsers(true);
+                    if (users != null) {
+                        for (UserInfo userInfo4 : users) {
+                            if ((userInfo4 != null && userInfo4.isManagedProfile() && !userInfo4.isSecureFolder()) || SemPersonaManager.isDoEnabled(0)) {
+                                int i3 = Settings.System.getInt(context4.getContentResolver(), "samsung_errorlog_agree", 0);
+                                int i4 = Settings.System.getInt(context4.getContentResolver(), "marketing_info_agree", 0);
+                                Log.e("ContainerDependencyWrapper", "1. errorLogAgree = " + i3);
+                                Log.e("ContainerDependencyWrapper", "1. marketingInfoAgree = " + i4);
+                                if (i3 == 0 && i4 == 0) {
+                                    return;
+                                }
+                                if (i3 != 0 && i4 != 0) {
+                                    Settings.System.putInt(context4.getContentResolver(), "samsung_errorlog_agree", 0);
+                                    Settings.System.putInt(context4.getContentResolver(), "marketing_info_agree", 0);
+                                    Log.e("ContainerDependencyWrapper", "2. errorLogAgree = " + Settings.System.getInt(context4.getContentResolver(), "samsung_errorlog_agree", 0));
+                                    Log.e("ContainerDependencyWrapper", "2. marketingInfoAgree = " + Settings.System.getInt(context4.getContentResolver(), "marketing_info_agree", 0));
+                                    str = ContainerDependencyWrapper.isTablet() ? context4.getString(17042623) + "\n - " + context4.getString(R.string.imProtocolGoogleTalk) + "\n - " + context4.getString(R.string.permlab_enableCarMode) : context4.getString(17042622) + "\n - " + context4.getString(R.string.imProtocolGoogleTalk) + "\n - " + context4.getString(R.string.permlab_enableCarMode);
+                                } else if (i3 == 0 || i4 != 0) {
+                                    Settings.System.putInt(context4.getContentResolver(), "marketing_info_agree", 0);
+                                    Log.e("ContainerDependencyWrapper", "4. errorLogAgree = " + Settings.System.getInt(context4.getContentResolver(), "samsung_errorlog_agree", 0));
+                                    Log.e("ContainerDependencyWrapper", "4. marketingInfoAgree = " + Settings.System.getInt(context4.getContentResolver(), "marketing_info_agree", 0));
+                                    str = ContainerDependencyWrapper.isTablet() ? context4.getString(17042621) + "\n - " + context4.getString(R.string.permlab_enableCarMode) : context4.getString(17042620) + "\n - " + context4.getString(R.string.permlab_enableCarMode);
+                                } else {
+                                    Settings.System.putInt(context4.getContentResolver(), "samsung_errorlog_agree", 0);
+                                    Log.e("ContainerDependencyWrapper", "3. errorLogAgree = " + Settings.System.getInt(context4.getContentResolver(), "samsung_errorlog_agree", 0));
+                                    Log.e("ContainerDependencyWrapper", "3. marketingInfoAgree = " + Settings.System.getInt(context4.getContentResolver(), "marketing_info_agree", 0));
+                                    str = ContainerDependencyWrapper.isTablet() ? context4.getString(17042621) + "\n - " + context4.getString(R.string.imProtocolGoogleTalk) : context4.getString(17042620) + "\n - " + context4.getString(R.string.imProtocolGoogleTalk);
+                                }
+                                Toast.makeText(context4, str, 0).show();
+                            }
+                        }
+                        return;
+                    }
+                    return;
+                case 2:
+                    Log.i("PersonaManagerService", "FingerPrint data changed, action: " + intent.getAction());
+                    Bundle bundle3 = new Bundle();
+                    bundle3.putInt("android.intent.extra.user_handle", this.this$0.mFocusedUserId);
+                    ContainerProxy.sendEvent("knox.container.proxy.EVENT_FINGERPRINT_CHANGE", bundle3);
+                    return;
+                case 3:
+                    if ("android.intent.action.PACKAGE_ADDED".equals(intent.getAction())) {
+                        this.this$0.mAnalyticsReceiver.onReceive(context, intent);
+                    }
+                    if ("android.intent.action.PACKAGE_REMOVED".equals(intent.getAction())) {
+                        this.this$0.mAnalyticsReceiver.onReceive(context, intent);
+                    }
+                    if ("android.intent.action.PACKAGE_CHANGED".equals(intent.getAction()) && (schemeSpecificPart = intent.getData().getSchemeSpecificPart()) != null && "com.samsung.android.knox.containercore".equals(schemeSpecificPart)) {
+                        PackageManager packageManager = this.this$0.mContext.getPackageManager();
+                        if (packageManager == null) {
+                            return;
+                        }
+                        if (packageManager.getApplicationEnabledSetting(schemeSpecificPart) == 3) {
+                            Log.e("PersonaManagerService", "enable container critical app !");
+                            packageManager.setApplicationEnabledSetting(schemeSpecificPart, 1, 0);
+                        }
+                    }
+                    if (!"android.intent.action.PACKAGE_ADDED".equals(intent.getAction()) && !"android.intent.action.PACKAGE_CHANGED".equals(intent.getAction())) {
+                        try {
+                            String schemeSpecificPart2 = intent.getData().getSchemeSpecificPart();
+                            if (intent.getIntExtra("android.intent.extra.user_handle", -10000) == 0) {
+                                List knoxIds3 = this.this$0.getPersonaManager().getKnoxIds(true);
+                                while (i < knoxIds3.size()) {
+                                    int intValue3 = ((Integer) knoxIds3.get(i)).intValue();
+                                    if (ContainerDependencyWrapper.isRequiredAppForKnox(intValue3, schemeSpecificPart2)) {
+                                        this.this$0.installExistingPackageForPersona(intValue3, schemeSpecificPart2);
+                                    }
+                                    i++;
+                                }
+                                return;
+                            }
+                            return;
+                        } catch (Exception e5) {
+                            e5.printStackTrace();
+                            return;
+                        }
+                    }
+                    try {
+                        String schemeSpecificPart3 = intent.getData().getSchemeSpecificPart();
+                        int intExtra2 = intent.getIntExtra("android.intent.extra.user_handle", -10000);
+                        if (ContainerDependencyWrapper.isDisallowedAppForKnox(intExtra2, schemeSpecificPart3)) {
+                            this.this$0.deletePkg(intExtra2, schemeSpecificPart3);
+                        }
+                        if (SemPersonaManager.isKnoxId(intExtra2) && this.this$0.isPackageInstalledAsUser(intExtra2, schemeSpecificPart3)) {
+                            PersonaManagerService personaManagerService3 = this.this$0;
+                            personaManagerService3.getClass();
+                            try {
+                                List list = personaManagerService3.requiredApps;
+                                if (list == null || !list.contains(schemeSpecificPart3)) {
+                                    return;
+                                }
+                                if (((ArraySet) personaManagerService3.getLaunchableApps(intExtra2)).contains(schemeSpecificPart3)) {
+                                    Log.d("PersonaManagerService", "Delete stub app. " + schemeSpecificPart3 + " / " + intExtra2);
+                                    this.this$0.deletePkg(intExtra2, schemeSpecificPart3);
+                                    return;
+                                }
+                                return;
+                            } catch (Exception e6) {
+                                e6.printStackTrace();
+                                return;
+                            }
+                        }
+                        return;
+                    } catch (Exception e7) {
+                        e7.printStackTrace();
+                        return;
+                    }
+                case 4:
+                    KnoxAnalyticsContainer knoxAnalyticsContainer2 = this.this$0.mKnoxAnalyticsContainer;
+                    knoxAnalyticsContainer2.getClass();
+                    int intExtra3 = intent.getIntExtra("android.intent.extra.user_handle", -10000);
+                    boolean equals = "com.samsung.android.knox.profilepolicy.intent.action.update".equals(intent.getAction());
+                    BasicContainerAnalytics basicContainerAnalytics2 = knoxAnalyticsContainer2.basicContainerAnalytics;
+                    if (equals) {
+                        int intExtra4 = intent.getIntExtra(KnoxCustomManagerService.CONTAINER_ID_ZERO, 0);
+                        String stringExtra = intent.getStringExtra("restrictionName");
+                        int intExtra5 = intent.getIntExtra("restrictionAllowed", 0);
+                        if (basicContainerAnalytics2.ifKnoxAnalyticsContainer.isLoggingAllowedForUser(intExtra4)) {
+                            int containerType = basicContainerAnalytics2.getContainerType(intExtra4);
+                            try {
+                                str2 = ((DevicePolicyManager) basicContainerAnalytics2.context.getSystemService("device_policy")).getProfileOwnerAsUser(new UserHandle(intExtra4)).getPackageName();
+                            } catch (Exception e8) {
+                                e8.printStackTrace();
+                                str2 = null;
+                            }
+                            Bundle m = FreecessController$$ExternalSyntheticOutline0.m(intExtra5, "rN", stringExtra, "bV");
+                            m.putInt("cTp", containerType);
+                            m.putString("pN", str2);
+                            basicContainerAnalytics2.logEvent(m, "PROFILE_POLICY_RESTRICTION");
+                        }
+                    }
+                    IKnoxAnalyticsContainerImpl iKnoxAnalyticsContainerImpl = knoxAnalyticsContainer2.ifKnoxAnalyticsContainer;
+                    iKnoxAnalyticsContainerImpl.getClass();
+                    boolean isAppSeparationUserId = IKnoxAnalyticsContainerImpl.isAppSeparationUserId(intExtra3);
+                    if (!"android.intent.action.PACKAGE_ADDED".equals(intent.getAction()) && !"android.intent.action.PACKAGE_REMOVED".equals(intent.getAction())) {
+                        if ("android.intent.action.MANAGED_PROFILE_AVAILABLE".equals(intent.getAction())) {
+                            if (basicContainerAnalytics2.ifKnoxAnalyticsContainer.isLoggingAllowedForUser(intExtra3)) {
+                                Bundle bundle4 = new Bundle();
+                                bundle4.putInt("cTp", basicContainerAnalytics2.getContainerType(intExtra3));
+                                basicContainerAnalytics2.logEvent(bundle4, "WORK_MODE_ON");
+                                return;
+                            }
+                            return;
+                        }
+                        if ("android.intent.action.MANAGED_PROFILE_UNAVAILABLE".equals(intent.getAction())) {
+                            if (basicContainerAnalytics2.ifKnoxAnalyticsContainer.isLoggingAllowedForUser(intExtra3)) {
+                                Bundle bundle5 = new Bundle();
+                                bundle5.putInt("cTp", basicContainerAnalytics2.getContainerType(intExtra3));
+                                basicContainerAnalytics2.logEvent(bundle5, "WORK_MODE_OFF");
+                                return;
+                            }
+                            return;
+                        }
+                        if ("android.intent.action.ACTION_SHUTDOWN".equals(intent.getAction()) || "android.intent.action.SCREEN_OFF".equals(intent.getAction())) {
+                            if (iKnoxAnalyticsContainerImpl.isLoggingAllowedForUser(knoxAnalyticsContainer2.mPostActiveUserId)) {
+                                knoxAnalyticsContainer2.checkTimeAndSendAnalytics(knoxAnalyticsContainer2.mPostActiveUserId, knoxAnalyticsContainer2.mPostActivePackage, SystemClock.elapsedRealtime() - knoxAnalyticsContainer2.mPostActiveTime);
+                            }
+                            knoxAnalyticsContainer2.mPostActiveUserId = 0;
+                            knoxAnalyticsContainer2.mPostActivePackage = "";
+                            knoxAnalyticsContainer2.mPostActiveTime = SystemClock.elapsedRealtime();
+                            return;
+                        }
+                        if (!"samsung.knox.intent.action.rcp.MOVEMENT".equals(intent.getAction())) {
+                            if ("samsung.knox.intent.action.CHANGE_LOCK_TYPE".equals(intent.getAction())) {
+                                KnoxAnalyticsContainer.AnalyticsHandler analyticsHandler = knoxAnalyticsContainer2.analyticsHandler;
+                                analyticsHandler.sendMessage(analyticsHandler.obtainMessage(2, intExtra3, 0));
+                                return;
+                            }
+                            return;
+                        }
+                        boolean booleanExtra = intent.getBooleanExtra("move_to_knox", false);
+                        if (basicContainerAnalytics2.ifKnoxAnalyticsContainer.isLoggingAllowedForUser(intExtra3)) {
+                            Bundle bundle6 = new Bundle();
+                            bundle6.putInt("cTp", basicContainerAnalytics2.getContainerType(intExtra3));
+                            bundle6.putInt("move", booleanExtra ? 1 : 0);
+                            basicContainerAnalytics2.logEvent(bundle6, "MOVE_TO_KNOX_FILE");
+                            return;
+                        }
+                        return;
+                    }
+                    if (intent.getData() == null) {
+                        return;
+                    }
+                    String schemeSpecificPart4 = intent.getData().getSchemeSpecificPart();
+                    if (SemPersonaManager.isDarDualEncryptionEnabled(intExtra3)) {
+                        KnoxAnalyticsData knoxAnalyticsData = new KnoxAnalyticsData("KNOX_DUALDAR", 1, "DUALDAR_PACKAGE_ADDED");
+                        boolean equals2 = "android.intent.action.PACKAGE_ADDED".equals(intent.getAction());
+                        knoxAnalyticsData.setProperty("pN", schemeSpecificPart4);
+                        knoxAnalyticsData.setProperty("add", equals2 ? 1 : 0);
+                        Log.d("PersonaManagerService:DualDARAnalytics", "On Pkg Add, Data values : packageName = " + schemeSpecificPart4 + ", add = " + (equals2 ? 1 : 0));
+                        StringBuilder sb = new StringBuilder("Payload / ");
+                        sb.append(knoxAnalyticsData.toString());
+                        Log.d("PersonaManagerService:DualDARAnalytics", sb.toString());
+                        KnoxAnalytics.log(knoxAnalyticsData);
+                        return;
+                    }
+                    if (iKnoxAnalyticsContainerImpl.isLoggingAllowedForUser(intExtra3)) {
+                        if (isAppSeparationUserId) {
+                            boolean equals3 = "android.intent.action.PACKAGE_ADDED".equals(intent.getAction());
+                            SeparatedAppsAnalytics separatedAppsAnalytics = knoxAnalyticsContainer2.separatedAppsAnalytics;
+                            IKnoxAnalyticsContainerImpl iKnoxAnalyticsContainerImpl2 = separatedAppsAnalytics.ifKnoxAnalyticsContainer;
+                            try {
+                                Iterator it = ((ArraySet) iKnoxAnalyticsContainerImpl2.getVisibleApps(intExtra3)).iterator();
+                                int i5 = 0;
+                                while (it.hasNext()) {
+                                    PackageInfo packageInfo = IKnoxAnalyticsContainerImpl.getPackageInfo(intExtra3, (String) it.next());
+                                    iKnoxAnalyticsContainerImpl2.personaManagerService.getClass();
+                                    if (!PersonaManagerService.isAppSeparationIndepdentApp(packageInfo)) {
+                                        i5++;
+                                    }
+                                }
+                                Bundle appSeparationConfig = KnoxContainerManager.getAppSeparationConfig();
+                                ArrayList<String> stringArrayList = appSeparationConfig != null ? appSeparationConfig.getStringArrayList("APP_SEPARATION_APP_LIST") : null;
+                                Bundle bundle7 = new Bundle();
+                                bundle7.putString(KnoxAnalyticsDataConverter.EVENT, "PACKAGE_INFO");
+                                bundle7.putString("pN", schemeSpecificPart4);
+                                bundle7.putInt("add", equals3 ? 1 : 0);
+                                bundle7.putInt("noIP", i5);
+                                if (stringArrayList != null) {
+                                    i = stringArrayList.size();
+                                }
+                                bundle7.putInt("noWP", i);
+                                separatedAppsAnalytics.logEvent(bundle7, "PACKAGE_INFO");
+                                return;
+                            } catch (Exception e9) {
+                                e9.printStackTrace();
+                                return;
+                            }
+                        }
+                        boolean equals4 = "android.intent.action.PACKAGE_ADDED".equals(intent.getAction());
+                        IKnoxAnalyticsContainerImpl iKnoxAnalyticsContainerImpl3 = basicContainerAnalytics2.ifKnoxAnalyticsContainer;
+                        if (!iKnoxAnalyticsContainerImpl3.isLoggingAllowedForUser(intExtra3) || SemPersonaManager.isSystemApp(basicContainerAnalytics2.context, schemeSpecificPart4)) {
+                            return;
+                        }
+                        try {
+                            try {
+                                str3 = ActivityThread.getPackageManager().getInstallerPackageName(schemeSpecificPart4);
+                            } catch (IllegalArgumentException e10) {
+                                e10.printStackTrace();
+                            }
+                        } catch (RemoteException e11) {
+                            e11.printStackTrace();
+                        }
+                        Bundle bundle8 = new Bundle();
+                        if (str3 != null && !str3.isEmpty()) {
+                            bundle8.putString("instN", str3);
+                        }
+                        if (equals4) {
+                            List queryIntentServicesAsUser = iKnoxAnalyticsContainerImpl3.mContext.getPackageManager().queryIntentServicesAsUser(new Intent("android.view.InputMethod"), 8422016, intExtra3);
+                            int i6 = 0;
+                            while (true) {
+                                if (i6 < queryIntentServicesAsUser.size()) {
+                                    ServiceInfo serviceInfo = ((ResolveInfo) queryIntentServicesAsUser.get(i6)).serviceInfo;
+                                    if ("android.permission.BIND_INPUT_METHOD".equals(serviceInfo.permission) && serviceInfo.packageName.equals(schemeSpecificPart4)) {
+                                        i = 1;
+                                    } else {
+                                        i6++;
+                                    }
+                                }
+                            }
+                        }
+                        bundle8.putInt("cTp", basicContainerAnalytics2.getContainerType(intExtra3));
+                        bundle8.putString("pN", schemeSpecificPart4);
+                        bundle8.putInt("add", equals4 ? 1 : 0);
+                        bundle8.putInt("ime", i);
+                        basicContainerAnalytics2.logEvent(bundle8, "PACKAGE_CHANGED");
+                        return;
+                    }
+                    return;
+                default:
+                    if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+                        Log.d("PersonaManagerService", "ACTION_BOOT_COMPLETED");
+                        this.this$0.mPersonaHandler.sendMessage(this.this$0.mPersonaHandler.obtainMessage(13));
+                        return;
+                    }
+                    return;
             }
-        };
-        this.mAnalyticsReceiver = new BroadcastReceiver() { // from class: com.android.server.pm.PersonaManagerService.7
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                PersonaManagerService.this.mKnoxAnalyticsContainer.onBroadcastIntentReceived(context, intent);
-            }
-        };
-        this.mTrustManager = null;
-        this.analyticsObserver = new ContentObserver(new Handler()) { // from class: com.android.server.pm.PersonaManagerService.8
-            @Override // android.database.ContentObserver
-            public void onChange(boolean z, Uri uri, int i) {
-                if ((i != 0 || SemPersonaManager.isDoEnabled(i)) && !SemPersonaManager.isSecureFolderId(i)) {
-                    PersonaManagerService.this.mKnoxAnalyticsContainer.requestSendSnapshotLog(i);
-                }
-            }
-        };
-        this.KEY_USER_REMOVED = "USER-REMOVED";
-        this.LOG_FS_TAG = "PersonaManagerService:KnoxForesight";
-        Context context = injector.getContext();
-        this.mContext = context;
-        this.mInjector = injector;
-        PackageManagerService packageManagerService = injector.getPackageManagerService();
-        this.mPm = packageManagerService;
-        sInstance = this;
-        this.mKnoxAnalyticsContainer = new KnoxAnalyticsContainer(context, new IKnoxAnalyticsContainerImpl(context, packageManagerService, this));
-        this.containerDependencyWrapper = injector.getContainerDependencyWrapper();
-        synchronized (obj) {
-            file = new File(injector.getDataDir(), USER_INFO_DIR);
-            this.mUsersDir = file;
-            this.mBaseUserPath = injector.getBaseUserPath();
-            File file2 = new File(file, "userwithpersonalist.xml");
-            this.mUserListFile = file2;
-            if (!file2.exists()) {
-                Slog.d("PersonaManagerService", "No need to create user persona list file from Knox 3.0");
-            }
-            Log.i("PersonaManagerService", "<init> adding PersonaPolicyManagerService");
-            this.mPersonaPolicyManagerService = injector.getPersonaPolicyManagerService();
-            HandlerThread handlerThread = new HandlerThread("PersonaManagerService", 10);
-            this.handlerThread = handlerThread;
-            handlerThread.start();
-            this.mPersonaHandler = new PersonaHandler(this.handlerThread.getLooper());
-        }
-        File file3 = new File(file, "persona_cache.xml");
-        this.mPersonaCacheFile = file3;
-        if (!file3.exists()) {
-            try {
-                if (file3.createNewFile()) {
-                    Slog.d("PersonaManagerService", "PMS cache file created ");
-                } else {
-                    Slog.e("PersonaManagerService", "Error Creating PMS cache file!!!! ");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        synchronized (this.mPersonaCacheLock) {
-            readPersonaCacheLocked();
-        }
-        LocalService localService = new LocalService();
-        this.mLocalService = localService;
-        if (!this.mInjector.isTestingMode()) {
-            LocalServices.addService(PersonaManagerInternal.class, localService);
-        } else {
-            this.mDevicePolicyManager = this.mInjector.getDevicePolicyManager();
-            this.mCorePackageUid = this.mInjector.getCorePackageUid();
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class Injector {
-        public final ActivityManager mActivityManager;
-        public final File mBaseUserPath;
-        public final ContainerDependencyWrapper mContainerDependencyWrapper;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Injector {
         public final Context mContext;
-        public final ArrayList mCorePackageUid;
         public final File mDataDir;
-        public final DevicePolicyManager mDevicePolicyManager;
-        public final boolean mIsTestingMode;
         public final Object mObject;
-        public final PackageManager mPackageManager;
-        public final PersonaManagerInternal mPersonaManagerInternal;
-        public final PersonaPolicyManagerService mPersonaPolicyManagerService;
         public final PackageManagerService mPm;
-        public final UserManager mUserManager;
 
-        public Injector(Context context, PackageManagerService packageManagerService, Object obj, File file, File file2, ContainerDependencyWrapper containerDependencyWrapper, PersonaManagerInternal personaManagerInternal, DevicePolicyManager devicePolicyManager, ArrayList arrayList, ActivityManager activityManager, PackageManager packageManager, UserManager userManager, PersonaPolicyManagerService personaPolicyManagerService, IPackageManager iPackageManager, boolean z) {
+        public Injector(Context context, PackageManagerService packageManagerService, PackageManagerTracedLock packageManagerTracedLock, File file, File file2) {
             this.mContext = context;
             this.mPm = packageManagerService;
-            this.mObject = obj;
             this.mDataDir = file;
-            this.mBaseUserPath = file2;
-            this.mPersonaManagerInternal = personaManagerInternal;
-            this.mDevicePolicyManager = devicePolicyManager;
-            this.mIsTestingMode = z;
-            this.mCorePackageUid = arrayList;
-            this.mActivityManager = activityManager;
-            this.mPackageManager = packageManager;
-            this.mUserManager = userManager;
-            this.mContainerDependencyWrapper = containerDependencyWrapper;
-            this.mPersonaPolicyManagerService = personaPolicyManagerService;
         }
 
-        public long binderClearCallingIdentity() {
-            return Binder.clearCallingIdentity();
-        }
-
-        public void binderRestoreCallingIdentity(long j) {
-            Binder.restoreCallingIdentity(j);
-        }
-
-        public Context getContext() {
-            return this.mContext;
-        }
-
-        public PackageManagerService getPackageManagerService() {
-            return this.mPm;
-        }
-
-        public File getDataDir() {
-            return this.mDataDir;
-        }
-
-        public File getBaseUserPath() {
-            return this.mBaseUserPath;
-        }
-
-        public ContainerDependencyWrapper getContainerDependencyWrapper() {
-            return ContainerDependencyWrapper.getInstance(this.mContext);
-        }
-
-        public PersonaManagerInternal getPersonaManagerInternal() {
-            return this.mPersonaManagerInternal;
-        }
-
-        public DevicePolicyManager getDevicePolicyManager() {
-            return this.mDevicePolicyManager;
-        }
-
-        public ArrayList getCorePackageUid() {
-            return this.mCorePackageUid;
-        }
-
-        public final ApplicationPackageManager getApplicationPackageManager() {
-            return this.mContext.getPackageManager();
-        }
-
-        public ActivityManager getActivityManager() {
-            return (ActivityManager) this.mContext.getSystemService("activity");
-        }
-
-        public PackageManager getPackageManager() {
-            return this.mContext.getPackageManager();
-        }
-
-        public UserManager getUserManager() {
-            return (UserManager) this.mContext.getSystemService("user");
-        }
-
-        public PersonaPolicyManagerService getPersonaPolicyManagerService() {
-            return PersonaPolicyManagerService.getInstance(this.mContext);
-        }
-
-        public IPackageManager getIPackageManager() {
-            return ActivityThread.getPackageManager();
-        }
-
-        public boolean isTestingMode() {
-            return this.mIsTestingMode;
+        public final PersonaPolicyManagerService getPersonaPolicyManagerService() {
+            Context context = this.mContext;
+            if (PersonaPolicyManagerService.mPersonaPolicyManagerService == null) {
+                synchronized (PersonaPolicyManagerService.class) {
+                    try {
+                        if (PersonaPolicyManagerService.mPersonaPolicyManagerService == null) {
+                            PersonaPolicyManagerService.mPersonaPolicyManagerService = new PersonaPolicyManagerService(context);
+                        }
+                    } finally {
+                    }
+                }
+            }
+            return PersonaPolicyManagerService.mPersonaPolicyManagerService;
         }
     }
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class LocalService extends PersonaManagerInternal {
         public LocalService() {
         }
 
-        public boolean isKnoxId(int i) {
-            return SemPersonaManager.isKnoxId(i);
-        }
-
-        public boolean shouldConfirmCredentials(int i) {
-            UserInfo userInfo = PersonaManagerService.this.getUserManager().getUserInfo(i);
-            if (!userInfo.isEnabled()) {
-                return false;
-            }
-            boolean needSetupCredential = userInfo.needSetupCredential();
-            boolean isPwdChangeRequested = ContainerDependencyWrapper.isPwdChangeRequested(i);
-            boolean isBiometricsEnabledAfterFota = PersonaManagerService.this.isBiometricsEnabledAfterFota(i);
-            if (needSetupCredential || isPwdChangeRequested || isBiometricsEnabledAfterFota) {
-                Log.d("PersonaManagerService", "needSetupCredential : " + needSetupCredential + ", isPwdChangeRequested : " + isPwdChangeRequested + ", isBiometricsEnabledAfterFota : " + isBiometricsEnabledAfterFota);
-                return true;
-            }
-            if (PersonaManagerService.this.mLockPatternUtils.isSeparateProfileChallengeEnabled(userInfo.id)) {
-                boolean isDeviceLocked = PersonaManagerService.this.mKeyguardManager.isDeviceLocked(userInfo.id);
-                boolean isDeviceSecure = PersonaManagerService.this.mKeyguardManager.isDeviceSecure(userInfo.id);
-                Log.e("PersonaManagerService", "DeviceLocked : " + isDeviceLocked + ", DeviceSecure : " + isDeviceSecure);
-                return isDeviceLocked && isDeviceSecure;
-            }
-            if (PersonaManagerService.this.getActivityManagerInternal().isUserRunning(i, 2)) {
-                return true;
-            }
-            return PersonaManagerService.this.isOneLockOngoing();
-        }
-
-        public void doKeyguardTimeout() {
+        public final void doKeyguardTimeout() {
             Log.d("PersonaManagerService", "doKeyguardTimeout");
             PersonaManagerService.this.mPersonaHandler.sendMessage(PersonaManagerService.this.mPersonaHandler.obtainMessage(10, 0, 0));
         }
 
-        public void onDeviceLockedChanged(int i) {
+        public final ComponentName getAdminComponentNameFromEdm(int i) {
+            PersonaManagerService personaManagerService = PersonaManagerService.this;
+            ContainerDependencyWrapper containerDependencyWrapper = personaManagerService.containerDependencyWrapper;
+            Context context = personaManagerService.mContext;
+            ContainerDependencyWrapper containerDependencyWrapper2 = ContainerDependencyWrapper.sInstance;
+            EdmStorageProvider edmStorageProvider = new EdmStorageProvider(context);
+            return edmStorageProvider.getComponentNameForUid(edmStorageProvider.getMUMContainerOwnerUid(i));
+        }
+
+        public final String getECName(int i) {
+            ContainerDependencyWrapper containerDependencyWrapper = PersonaManagerService.this.containerDependencyWrapper;
+            ContainerDependencyWrapper containerDependencyWrapper2 = ContainerDependencyWrapper.sInstance;
+            return null;
+        }
+
+        public final boolean isKnoxId(int i) {
+            return SemPersonaManager.isKnoxId(i);
+        }
+
+        public final void onDeviceLockedChanged(int i) {
             boolean z;
             PersonaManagerService.this.checkCallerPermissionFor("onDeviceLockedChanged");
             if (!PersonaManagerService.DEVICE_SUPPORT_KNOX) {
@@ -725,1011 +843,240 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
             }
         }
 
-        public ComponentName getAdminComponentNameFromEdm(int i) {
-            PersonaManagerService personaManagerService = PersonaManagerService.this;
-            ContainerDependencyWrapper containerDependencyWrapper = personaManagerService.containerDependencyWrapper;
-            return ContainerDependencyWrapper.getAdminComponentNameFromEdm(personaManagerService.mContext, i);
-        }
-
-        public String getECName(int i) {
-            ContainerDependencyWrapper containerDependencyWrapper = PersonaManagerService.this.containerDependencyWrapper;
-            return ContainerDependencyWrapper.getECName(i);
-        }
-    }
-
-    public final SemPersonaManager getPersonaManager() {
-        if (this.personaManager == null) {
-            this.personaManager = (SemPersonaManager) this.mContext.getSystemService("persona");
-        }
-        return this.personaManager;
-    }
-
-    public final UserManager getUserManager() {
-        if (this.mUserManager == null) {
-            this.mUserManager = (UserManager) this.mContext.getSystemService("user");
-        }
-        return this.mUserManager;
-    }
-
-    public boolean isFOTAUpgrade() {
-        return this.mIsFOTAUpgrade;
-    }
-
-    public List getProfiles(int i, boolean z) {
-        boolean z2 = false;
-        try {
-            if (getIPackageManager().checkUidSignatures(1000, Binder.getCallingUid()) == 0) {
-                z2 = true;
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            ArrayList arrayList = new ArrayList();
-            for (UserInfo userInfo : ((UserManager) this.mContext.getSystemService("user")).getProfiles(i)) {
-                UserInfo userInfo2 = new UserInfo(userInfo);
-                if (!userInfo.isDualAppProfile() && (z || userInfo.id != i)) {
-                    if (!z2) {
-                        userInfo2.name = null;
-                        userInfo2.iconPath = null;
-                    }
-                    arrayList.add(userInfo2);
-                }
-            }
-            return arrayList;
-        } finally {
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        }
-    }
-
-    public boolean registerSystemPersonaObserver(ISystemPersonaObserver iSystemPersonaObserver) {
-        checkCallerPermissionFor("registerSystemPersonaObserver");
-        PersonaLegacyStateMonitor personaLegacyStateMonitor = this.mLegacyStateMonitor;
-        if (personaLegacyStateMonitor != null) {
-            return personaLegacyStateMonitor.register(iSystemPersonaObserver);
-        }
-        return false;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:52:0x00a0, code lost:
-    
-        if (r2 == 0) goto L57;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:53:0x0095, code lost:
-    
-        r2.close();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:57:0x0093, code lost:
-    
-        if (r2 == 0) goto L57;
-     */
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r2v1 */
-    /* JADX WARN: Type inference failed for: r2v10 */
-    /* JADX WARN: Type inference failed for: r2v12, types: [int] */
-    /* JADX WARN: Type inference failed for: r2v19 */
-    /* JADX WARN: Type inference failed for: r2v2 */
-    /* JADX WARN: Type inference failed for: r2v20 */
-    /* JADX WARN: Type inference failed for: r2v3, types: [java.io.FileInputStream] */
-    /* JADX WARN: Type inference failed for: r2v4 */
-    /* JADX WARN: Type inference failed for: r2v6 */
-    /* JADX WARN: Type inference failed for: r2v7 */
-    /* JADX WARN: Type inference failed for: r2v8 */
-    /* JADX WARN: Type inference failed for: r2v9 */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void readPersonaCacheLocked() {
-        /*
-            r10 = this;
-            java.lang.String r0 = "readPersonaCacheLocked is called..."
-            java.lang.String r1 = "PersonaManagerService"
-            android.util.Log.d(r1, r0)
-            android.util.AtomicFile r0 = new android.util.AtomicFile
-            java.io.File r2 = r10.mPersonaCacheFile
-            r0.<init>(r2)
-            r2 = 0
-            java.io.FileInputStream r3 = r0.openRead()     // Catch: java.lang.Throwable -> L8a org.xmlpull.v1.XmlPullParserException -> L8c java.io.IOException -> L99
-            org.xmlpull.v1.XmlPullParser r4 = android.util.Xml.newPullParser()     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            r4.setInput(r3, r2)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-        L1b:
-            int r2 = r4.next()     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            r5 = 1
-            r6 = 2
-            if (r2 == r6) goto L26
-            if (r2 == r5) goto L26
-            goto L1b
-        L26:
-            if (r2 == r6) goto L36
-            r10.atomicFileProcessDamagedFile(r0)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            java.lang.String r2 = "Unable to read persona cache"
-            android.util.Slog.e(r1, r2)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            if (r3 == 0) goto L35
-            r3.close()     // Catch: java.io.IOException -> L35
-        L35:
-            return
-        L36:
-            int r2 = r4.next()     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            if (r2 == r5) goto L7b
-            if (r2 != r6) goto L36
-            java.lang.String r2 = r4.getName()     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            if (r2 == 0) goto L36
-            java.lang.String r2 = r4.getName()     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            java.lang.String r7 = "cache"
-            boolean r2 = r2.equals(r7)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            if (r2 == 0) goto L36
-            r2 = 0
-            java.lang.String r7 = r4.getAttributeName(r2)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            java.lang.String r2 = r4.getAttributeValue(r2)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            java.util.HashMap r8 = r10.mPersonaCacheMap     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            r8.put(r7, r2)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            java.lang.StringBuilder r8 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            r8.<init>()     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            java.lang.String r9 = "PersonaCache entry - "
-            r8.append(r9)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            r8.append(r7)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            java.lang.String r7 = " - "
-            r8.append(r7)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            r8.append(r2)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            java.lang.String r2 = r8.toString()     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            android.util.Log.d(r1, r2)     // Catch: java.lang.Throwable -> L81 org.xmlpull.v1.XmlPullParserException -> L84 java.io.IOException -> L87
-            goto L36
-        L7b:
-            if (r3 == 0) goto La3
-            r3.close()     // Catch: java.io.IOException -> La3
-            goto La3
-        L81:
-            r10 = move-exception
-            r2 = r3
-            goto La4
-        L84:
-            r1 = move-exception
-            r2 = r3
-            goto L8d
-        L87:
-            r1 = move-exception
-            r2 = r3
-            goto L9a
-        L8a:
-            r10 = move-exception
-            goto La4
-        L8c:
-            r1 = move-exception
-        L8d:
-            r10.atomicFileProcessDamagedFile(r0)     // Catch: java.lang.Throwable -> L8a
-            r1.printStackTrace()     // Catch: java.lang.Throwable -> L8a
-            if (r2 == 0) goto La3
-        L95:
-            r2.close()     // Catch: java.io.IOException -> La3
-            goto La3
-        L99:
-            r1 = move-exception
-        L9a:
-            r10.atomicFileProcessDamagedFile(r0)     // Catch: java.lang.Throwable -> L8a
-            r1.printStackTrace()     // Catch: java.lang.Throwable -> L8a
-            if (r2 == 0) goto La3
-            goto L95
-        La3:
-            return
-        La4:
-            if (r2 == 0) goto La9
-            r2.close()     // Catch: java.io.IOException -> La9
-        La9:
-            throw r10
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.readPersonaCacheLocked():void");
-    }
-
-    public void onNewUserCreated(UserInfo userInfo) {
-        Log.i("PersonaManagerService", "onNewUserCreated: " + userInfo.id);
-        if (userInfo.isManagedProfile()) {
-            if (SemPersonaManager.isKnoxId(userInfo.id) && isMigrationStateSet(userInfo.id) == 0) {
-                Settings.System.putIntForUser(this.mContext.getContentResolver(), "rcp_profile_migration_completed", 1, userInfo.id);
-            }
-            ((KnoxMUMContainerPolicyInternal) LocalServices.getService(KnoxMUMContainerPolicyInternal.class)).onNewUserCreated(userInfo.id);
-        }
-    }
-
-    public final void writePersonaCacheLocked() {
-        Log.i("PersonaManagerService", "writeUsersWithPersona() is called...");
-        AtomicFile atomicFile = new AtomicFile(this.mPersonaCacheFile);
-        FileOutputStream fileOutputStream = null;
-        try {
-            FileOutputStream startWrite = atomicFile.startWrite();
-            try {
-                BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(startWrite);
-                FastXmlSerializer fastXmlSerializer = new FastXmlSerializer();
-                fastXmlSerializer.setOutput(bufferedOutputStream, "utf-8");
-                fastXmlSerializer.startDocument(null, Boolean.TRUE);
-                fastXmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-                fastXmlSerializer.startTag(null, "personacache");
-                for (Map.Entry entry : this.mPersonaCacheMap.entrySet()) {
-                    String str = (String) entry.getKey();
-                    String str2 = (String) entry.getValue();
-                    if (!str.startsWith("volatile.")) {
-                        fastXmlSerializer.startTag(null, "cache");
-                        fastXmlSerializer.attribute(null, str, str2);
-                        fastXmlSerializer.endTag(null, "cache");
-                    }
-                }
-                fastXmlSerializer.endTag(null, "personacache");
-                fastXmlSerializer.endDocument();
-                atomicFile.finishWrite(startWrite);
-            } catch (Exception unused) {
-                fileOutputStream = startWrite;
-                atomicFile.failWrite(fileOutputStream);
-                Slog.e("PersonaManagerService", "writePersonaCacheLocked() Error writing persona cache list");
-            }
-        } catch (Exception unused2) {
-        }
-    }
-
-    public final int installExistingPackageForPersona(int i, String str) {
-        if (!ContainerDependencyWrapper.isPackageInstalled(this.mPm, str)) {
-            return -1;
-        }
-        Log.d("PersonaManagerService", "packageAlreadyInstalled is true");
-        Log.d("PersonaManagerService", " installExistingPackageForPersona " + str + " for  " + i);
-        int installExistingPackageForPersona = ContainerDependencyWrapper.installExistingPackageForPersona(this.mPm, i, str);
-        if (installExistingPackageForPersona == 1) {
-            return 0;
-        }
-        Log.e("PersonaManagerService", " Failure to install package " + str + " package manager result code is " + installExistingPackageForPersona);
-        return -1;
-    }
-
-    public final boolean isSecureFolderSupported() {
-        if (!ContainerDependencyWrapper.isSecureFolderPkgAvailable()) {
-            return false;
-        }
-        PackageManager packageManager = this.mContext.getPackageManager();
-        if (packageManager == null) {
-            Log.e("PersonaManagerService", "isSecureFolderSupported | package manager is null");
-            return false;
-        }
-        boolean z = Integer.parseInt(ContainerDependencyWrapper.getSecProductFeature_SEC_PRODUCT_FEATURE_KNOX_CONFIG_SECURE_FOLDER_VERSION()) == 2;
-        Log.d("PersonaManagerService", "isSecureFolderSupported | secure folder config supported  : " + z);
-        if (z) {
-            try {
-                int applicationEnabledSetting = packageManager.getApplicationEnabledSetting("com.samsung.knox.securefolder");
-                if (applicationEnabledSetting == 2 || applicationEnabledSetting == 3) {
-                    Log.e("PersonaManagerService", "isSecureFolderSupported | secure folder is disabled or disabled_user : " + applicationEnabledSetting);
-                    return false;
-                }
-            } catch (Exception e) {
-                Log.d("PersonaManagerService", "isSecureFolderSupported | not found package");
-                e.printStackTrace();
+        public final boolean shouldConfirmCredentials(int i) {
+            UserInfo userInfo = PersonaManagerService.this.getUserManager().getUserInfo(i);
+            if (!userInfo.isEnabled()) {
                 return false;
             }
+            boolean needSetupCredential = userInfo.needSetupCredential();
+            boolean isPwdChangeRequested = ContainerDependencyWrapper.isPwdChangeRequested(i);
+            boolean z = Settings.System.getIntForUser(PersonaManagerService.this.mContext.getContentResolver(), "dedicated_biometrics", 0, i) > 0;
+            if (needSetupCredential || isPwdChangeRequested || z) {
+                RCPManagerService$$ExternalSyntheticOutline0.m("PersonaManagerService", FullScreenMagnificationGestureHandler$$ExternalSyntheticOutline0.m("needSetupCredential : ", needSetupCredential, ", isPwdChangeRequested : ", isPwdChangeRequested, ", isBiometricsEnabledAfterFota : "), z);
+                return true;
+            }
+            if (!PersonaManagerService.this.mLockPatternUtils.isSeparateProfileChallengeEnabled(userInfo.id)) {
+                PersonaManagerService personaManagerService = PersonaManagerService.this;
+                if (personaManagerService.mActivityManagerInternal == null) {
+                    personaManagerService.mActivityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
+                }
+                return personaManagerService.mActivityManagerInternal.isUserRunning(i, 2) || Settings.System.getIntForUser(PersonaManagerService.this.mContext.getContentResolver(), "enable_one_lock_ongoing", 0, 0) > 0;
+            }
+            boolean isDeviceLocked = PersonaManagerService.this.mKeyguardManager.isDeviceLocked(userInfo.id);
+            boolean isDeviceSecure = PersonaManagerService.this.mKeyguardManager.isDeviceSecure(userInfo.id);
+            Log.e("PersonaManagerService", "DeviceLocked : " + isDeviceLocked + ", DeviceSecure : " + isDeviceSecure);
+            return isDeviceLocked && isDeviceSecure;
         }
-        return z;
     }
 
-    /* loaded from: classes3.dex */
-    public class PackageDeleteObs extends IPackageDeleteObserver.Stub {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackageDeleteObs extends IPackageDeleteObserver.Stub {
+        public final /* synthetic */ int $r8$classId;
         public boolean finished;
         public boolean result;
 
-        public PackageDeleteObs() {
+        public /* synthetic */ PackageDeleteObs(int i) {
+            this.$r8$classId = i;
         }
 
-        public void packageDeleted(String str, int i) {
-            synchronized (this) {
-                boolean z = true;
-                this.finished = true;
-                if (i != 1) {
-                    z = false;
-                }
-                this.result = z;
-                Log.i("PersonaManagerService", "PackageDeleteObs::packageDeleted response for package -" + str + " is " + i);
-                notifyAll();
-            }
-        }
-    }
-
-    public final boolean deletePkg(int i, String str) {
-        if (!isPackageInstalledAsUser(i, str)) {
-            Log.e("PersonaManagerService", "Ignore deletePkg request for personaId -" + i + " and pkg-" + str);
-            return true;
-        }
-        Log.e("PersonaManagerService", "deletePkg request for personaId -" + i + " and pkg-" + str);
-        PackageDeleteObs packageDeleteObs = new PackageDeleteObs();
-        try {
-            ContainerDependencyWrapper.deletePackageAsUserAndPersona(this.mPm, str, packageDeleteObs, i, 4);
-            synchronized (packageDeleteObs) {
-                while (!packageDeleteObs.finished) {
-                    try {
-                        Log.i("PersonaManagerService", "Waiting in while loop" + packageDeleteObs.finished);
-                        packageDeleteObs.wait();
-                    } catch (InterruptedException e) {
-                        Log.w("PersonaManagerService", "deletePkg: InterruptedException = " + e);
+        public final void packageDeleted(String str, int i) {
+            switch (this.$r8$classId) {
+                case 0:
+                    synchronized (this) {
+                        boolean z = true;
+                        this.finished = true;
+                        if (i != 1) {
+                            z = false;
+                        }
+                        this.result = z;
+                        Log.i("PersonaManagerService", "PackageDeleteObs::packageDeleted response for package -" + str + " is " + i);
+                        notifyAll();
                     }
-                }
-            }
-        } catch (Exception e2) {
-            Log.e("PersonaManagerService", "deletePkg exception -" + e2);
-        }
-        return packageDeleteObs.result;
-    }
-
-    public void systemReady() {
-        checkCallerPermissionFor("systemReady");
-        Log.i("PersonaManagerService", "systemReady");
-        this.mDevicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService("device_policy");
-        this.mDeviceInteractive = ((PowerManager) this.mContext.getSystemService("power")).isInteractive();
-        this.mPersonaServiceProxy = new PersonaServiceProxy(this.mContext);
-        if (isQuickSwitchToSecureFolderSupported()) {
-            Log.d("PersonaManagerService", "Quick Switch is supported");
-            this.mSeamLessSwitchHandler = new SeamLessSwitchHandler(this.mContext, this.mPm, this);
-        }
-        this.mKeyguardManager = (KeyguardManager) this.mContext.getSystemService("keyguard");
-        this.mLockPatternUtils = new LockPatternUtils(this.mContext);
-        mSeparationConfiginCache = getAppSeparationConfig();
-        cachedTime.put("separatedapps", Long.valueOf(System.currentTimeMillis()));
-        this.mPersonaHandler.sendMessage(this.mPersonaHandler.obtainMessage(15));
-        this.mContext.registerReceiver(new BootReceiver(), new IntentFilter("android.intent.action.BOOT_COMPLETED"));
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(DevicePolicyListener.ACTION_PROFILE_OWNER_ADDED);
-        intentFilter.addAction(DevicePolicyListener.ACTION_PROFILE_OWNER_REMOVED);
-        intentFilter.addAction("android.intent.action.MANAGED_PROFILE_AVAILABLE");
-        intentFilter.addAction("android.intent.action.MANAGED_PROFILE_UNAVAILABLE");
-        intentFilter.addAction("android.intent.action.USER_STOPPED");
-        intentFilter.addAction("android.intent.action.USER_UNLOCKED");
-        intentFilter.addAction("android.intent.action.USER_PRESENT");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter.addAction(DevicePolicyListener.ACTION_DEVICE_OWNER_CHANGED);
-        this.mContext.registerReceiver(this.mUserReceiver, intentFilter);
-        try {
-            ActivityManagerNative.getDefault().registerUserSwitchObserver(this.mUserSwitchObserver, "PersonaManagerService");
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("com.sec.android.app.secsetupwizard.SETUPWIZARD_COMPLETE");
-        intentFilter2.addAction("com.sec.android.app.setupwizard.SETUPWIZARD_COMPLETE");
-        this.mContext.registerReceiver(this.mSetupWizardCompleteReceiver, intentFilter2);
-        IntentFilter intentFilter3 = new IntentFilter();
-        intentFilter3.addAction("com.samsung.android.intent.action.FINGERPRINT_ADDED");
-        intentFilter3.addAction("com.samsung.android.intent.action.FINGERPRINT_PASSWORD_UPDATED");
-        intentFilter3.addAction("com.samsung.android.intent.action.FINGERPRINT_REMOVED");
-        intentFilter3.addAction("com.samsung.android.intent.action.FINGERPRINT_RESET");
-        this.mContext.registerReceiverAsUser(this.mFingerPrintReceiver, UserHandle.ALL, intentFilter3, null, null);
-        List profiles = getProfiles(0, false);
-        boolean z = false;
-        for (int i = 0; i < profiles.size(); i++) {
-            UserInfo userInfo = (UserInfo) profiles.get(i);
-            if (this.mLocalService.isKnoxId(userInfo.id) && !SemPersonaManager.isSecureFolderId(userInfo.id)) {
-                z = true;
-            }
-        }
-        if (SemPersonaManager.isDoEnabled(0) || z) {
-            registerPackageReceiver();
-        }
-        IntentFilter intentFilter4 = new IntentFilter();
-        intentFilter4.addAction("android.intent.action.MANAGED_PROFILE_AVAILABLE");
-        intentFilter4.addAction("android.intent.action.MANAGED_PROFILE_UNAVAILABLE");
-        intentFilter4.addAction("android.intent.action.ACTION_SHUTDOWN");
-        intentFilter4.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter4.addAction("android.intent.action.USER_INFO_CHANGED");
-        intentFilter4.addAction("samsung.knox.intent.action.RCP_POLICY_CHANGED");
-        intentFilter4.addAction("samsung.knox.intent.action.rcp.MOVEMENT");
-        intentFilter4.addAction("samsung.knox.intent.action.CHANGE_LOCK_TYPE");
-        intentFilter4.addAction("com.samsung.android.knox.profilepolicy.intent.action.update");
-        this.mContext.registerReceiverAsUser(this.mAnalyticsReceiver, UserHandle.ALL, intentFilter4, null, null);
-        registerContentObserver();
-        clearHomeCrossProfileFilter("com.samsung.android.knox.containercore");
-        if (this.mDevicePolicyManager.getDeviceOwnerComponentOnAnyUser() != null && getUserManager().getUserInfo(0).isSuperLocked()) {
-            Log.e("PersonaManagerService", "Device is super locked - start lock screen");
-        }
-        try {
-            this.mCorePackageUid.add(Integer.valueOf(this.mContext.getPackageManager().getPackageUidAsUser("com.samsung.knox.securefolder", 0)));
-        } catch (PackageManager.NameNotFoundException unused) {
-            Log.e("PersonaManagerService", "Cannot get UID for securefolder");
-        }
-        try {
-            this.mCorePackageUid.add(Integer.valueOf(this.mContext.getPackageManager().getPackageUidAsUser("com.samsung.android.knox.containercore", 0)));
-        } catch (PackageManager.NameNotFoundException unused2) {
-            Log.e("PersonaManagerService", "Cannot get UID for KnoxCore package");
-        }
-        try {
-            this.mCorePackageUid.add(Integer.valueOf(this.mContext.getPackageManager().getPackageUidAsUser("com.samsung.android.appseparation", 0)));
-        } catch (PackageManager.NameNotFoundException unused3) {
-            Log.e("PersonaManagerService", "Cannot get UID for App separation");
-        }
-    }
-
-    public boolean isContainerCorePackageUID(int i) {
-        return this.mCorePackageUid.contains(Integer.valueOf(i));
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x002b, code lost:
-    
-        if ("com.samsung.knox.securefolder".equals(r5) != false) goto L6;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public boolean isContainerService(int r5) {
-        /*
-            r4 = this;
-            com.android.server.pm.PersonaManagerService$Injector r0 = r4.mInjector
-            long r0 = r0.binderClearCallingIdentity()
-            com.android.server.pm.PersonaManagerService$Injector r2 = r4.mInjector     // Catch: java.lang.Throwable -> L2e java.lang.Exception -> L30
-            android.app.ActivityManager r2 = r2.getActivityManager()     // Catch: java.lang.Throwable -> L2e java.lang.Exception -> L30
-            java.lang.String r5 = r2.getPackageFromAppProcesses(r5)     // Catch: java.lang.Throwable -> L2e java.lang.Exception -> L30
-            android.content.ComponentName r2 = com.samsung.android.knox.SemPersonaManager.getKnoxAdminReceiver()     // Catch: java.lang.Throwable -> L2e java.lang.Exception -> L30
-            java.lang.String r2 = r2.getPackageName()     // Catch: java.lang.Throwable -> L2e java.lang.Exception -> L30
-            boolean r2 = r2.equals(r5)     // Catch: java.lang.Throwable -> L2e java.lang.Exception -> L30
-            r3 = 1
-            if (r2 == 0) goto L25
-        L1f:
-            com.android.server.pm.PersonaManagerService$Injector r4 = r4.mInjector
-            r4.binderRestoreCallingIdentity(r0)
-            return r3
-        L25:
-            java.lang.String r2 = "com.samsung.knox.securefolder"
-            boolean r5 = r2.equals(r5)     // Catch: java.lang.Throwable -> L2e java.lang.Exception -> L30
-            if (r5 == 0) goto L34
-            goto L1f
-        L2e:
-            r5 = move-exception
-            goto L3b
-        L30:
-            r5 = move-exception
-            r5.printStackTrace()     // Catch: java.lang.Throwable -> L2e
-        L34:
-            com.android.server.pm.PersonaManagerService$Injector r4 = r4.mInjector
-            r4.binderRestoreCallingIdentity(r0)
-            r4 = 0
-            return r4
-        L3b:
-            com.android.server.pm.PersonaManagerService$Injector r4 = r4.mInjector
-            r4.binderRestoreCallingIdentity(r0)
-            throw r5
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.isContainerService(int):boolean");
-    }
-
-    public final void registerPackageReceiver() {
-        if (this.packageFilter == null) {
-            IntentFilter intentFilter = new IntentFilter();
-            this.packageFilter = intentFilter;
-            intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
-            this.packageFilter.addAction("android.intent.action.PACKAGE_REMOVED");
-            this.packageFilter.addAction("android.intent.action.PACKAGE_CHANGED");
-            this.packageFilter.addDataScheme("package");
-            this.mContext.registerReceiverAsUser(this.mPackageReceiver, UserHandle.ALL, this.packageFilter, null, null);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class BootReceiver extends BroadcastReceiver {
-        public BootReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-                Log.d("PersonaManagerService", "ACTION_BOOT_COMPLETED");
-                PersonaManagerService.this.mPersonaHandler.sendMessage(PersonaManagerService.this.mPersonaHandler.obtainMessage(13));
+                    return;
+                default:
+                    synchronized (this) {
+                        boolean z2 = true;
+                        this.finished = true;
+                        if (i != 1) {
+                            z2 = false;
+                        }
+                        this.result = z2;
+                        Log.i("PersonaManagerService", "packageDeleted response for package -" + str + " is " + i);
+                        notifyAll();
+                    }
+                    return;
             }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class PersonaHandler extends Handler {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PersonaHandler extends Handler {
         public PersonaHandler(Looper looper) {
             super(looper);
             PersonaManagerService.this.checkCallerPermissionFor("PersonaHandler");
         }
 
+        /* JADX WARN: Can't wrap try/catch for region: R(14:269|(6:271|(1:273)|274|(2:276|(1:278)(0))|281|(6:329|330|331|(1:335)|337|(4:339|340|(3:342|(2:344|(1:348))|351)(1:352)|349))(2:285|(6:289|290|291|(4:294|(3:296|297|298)(1:300)|299|292)|301|(1:303)(6:304|(2:306|(1:308)(1:309))(5:318|(1:320)(1:325)|321|(1:323)|324)|310|311|(1:317)|315))))|358|(1:360)|274|(0)|281|(1:283)|329|330|331|(2:333|335)|337|(0)) */
+        /* JADX WARN: Code restructure failed: missing block: B:279:0x070a, code lost:
+        
+            if (r0.isKeyguardLocked() == false) goto L235;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:356:0x0826, code lost:
+        
+            r0 = move-exception;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:357:0x0827, code lost:
+        
+            r0.printStackTrace();
+         */
+        /* JADX WARN: Removed duplicated region for block: B:276:0x0702 A[Catch: Exception -> 0x06ed, TryCatch #2 {Exception -> 0x06ed, blocks: (B:242:0x0685, B:244:0x068d, B:247:0x0697, B:250:0x06a6, B:266:0x06d3, B:269:0x06dc, B:271:0x06e4, B:274:0x06fc, B:276:0x0702, B:278:0x0706, B:358:0x06ef, B:363:0x06d0, B:253:0x06b0, B:254:0x06ba, B:256:0x06c0, B:259:0x06c8), top: B:241:0x0685, inners: #1 }] */
+        /* JADX WARN: Removed duplicated region for block: B:339:0x0830 A[EXC_TOP_SPLITTER, SYNTHETIC] */
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            int i;
-            PersonaManagerService.this.checkCallerPermissionFor("PersonaHandler");
-            int i2 = message.what;
-            if (i2 == 10) {
-                PersonaManagerService.this.sendMessageAndLockTimeout(-1, message.arg1);
-                return;
-            }
-            if (i2 == 30) {
-                int i3 = message.arg1;
-                String str = (String) message.obj;
-                Log.d("PersonaManagerServiceHandler", " MSG_REMOVE_USER : " + i3);
-                PersonaManagerService.this.logUserRemoval(i3, str);
-                return;
-            }
-            if (i2 == 60) {
-                message.getData();
-                return;
-            }
-            if (i2 == 80) {
-                int i4 = message.arg1;
-                synchronized (new Object()) {
-                    Log.i("PersonaManagerService", "setForegroundUser(newProfileId:" + i4 + ")");
-                    SemPersonaManager.sendContainerEvent(PersonaManagerService.this.mContext, i4, 3);
-                }
-                return;
-            }
-            if (i2 == 90) {
-                if (PersonaManagerService.this.mSeamLessSwitchHandler != null) {
-                    PersonaManagerService.this.mSeamLessSwitchHandler.launchSeamLessForSF();
-                    PersonaManagerService.this.mSeamLessSwitchHandler.insertSALog("2040", SeamLessSwitchHandler.packageExtraForSALog);
-                    return;
-                }
-                return;
-            }
-            if (i2 == 110) {
-                PersonaManagerService.this.mKnoxAnalyticsContainer.logDpmsKA((Bundle) message.obj);
-                return;
-            }
-            if (i2 != 200) {
-                switch (i2) {
-                    case 13:
-                        Log.d("PersonaManagerServiceHandler", " MSG_BOOT_COMPLETE_RECEIVED : soft start personas ");
-                        KnoxForesightService.getInstance(PersonaManagerService.this.mContext);
-                        try {
-                            if (SemPersonaManager.isDoEnabled(0) && PersonaManagerService.this.getIPackageManager().getApplicationEnabledSetting("com.felicanetworks.mfm", 0) == 2) {
-                                Log.d("PersonaManagerServiceHandler", " MSG_BOOT_COMPLETE_RECEIVED : DO is enabled. recorver disabled app.");
-                                PersonaManagerService.this.getIPackageManager().setApplicationEnabledSetting("com.felicanetworks.mfm", 0, 0, 0, (String) null);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        PersonaManagerService.this.handleFotaResetSecureFolderAdmin();
-                        if (PersonaManagerService.this.containerNames.size() > 0) {
-                            Iterator it = PersonaManagerService.this.getPersonaManager().getKnoxIds(true).iterator();
-                            while (it.hasNext()) {
-                                PersonaManagerService.this.setDpmScreenTimeoutFlag(((Integer) it.next()).intValue());
-                            }
-                        }
-                        List profiles = PersonaManagerService.this.getProfiles(0, false);
-                        for (int i5 = 0; i5 < profiles.size(); i5++) {
-                            UserInfo userInfo = (UserInfo) profiles.get(i5);
-                            try {
-                                i = PersonaManagerService.this.getIPackageManager().getComponentEnabledSetting(new ComponentName("com.samsung.android.appseparation", "com.samsung.android.appseparation.view.launcher.LauncherActivity"), 0);
-                            } catch (RemoteException e2) {
-                                e2.printStackTrace();
-                                i = 0;
-                            }
-                            if (userInfo.isUserTypeAppSeparation() && i != 1) {
-                                PersonaManagerService.this.enforceAppSeparationDeletion();
-                            }
-                            try {
-                                if (userInfo.isManagedProfile()) {
-                                    PersonaManagerService.this.enableMyFilesLauncherActivity(userInfo.id);
-                                }
-                            } catch (Exception e3) {
-                                e3.printStackTrace();
-                            }
-                        }
-                        return;
-                    case 14:
-                        PersonaManagerService.this.sendMessageAndLockTimeout(-1, message.arg1);
-                        return;
-                    case 15:
-                        Log.d("PersonaManagerService", "MSG_BOOT_LOAD_PERSONA_SYSTEMREADY is called...");
-                        PersonaManagerService personaManagerService = PersonaManagerService.this;
-                        personaManagerService.mLegacyStateMonitor = new PersonaLegacyStateMonitor(personaManagerService.mContext);
-                        if (PersonaManagerService.this.getDeviceFirmwareVersion() != null && !PersonaManagerService.this.getDeviceFirmwareVersion().equals(PersonaManagerService.this.mPersonaCacheMap.get("fwversion"))) {
-                            PersonaManagerService.this.handleFOTAInstallToPackages();
-                            PersonaManagerService.this.removeDisallowedSFpackages();
-                            PersonaManagerService.this.migrateKnoxLockTimeoutValueIfNeeded();
-                            PersonaManagerService.this.migrateKnoxFingerprintPlusValueIfNeeded();
-                            PersonaManagerService.this.migrateRCPSyncToProfilePolicyIfNeeded();
-                            PersonaManagerService.this.migrateAppSeparationIfNeeded();
-                        }
-                        PersonaManagerService personaManagerService2 = PersonaManagerService.this;
-                        personaManagerService2.requiredApps = personaManagerService2.getRequiredApps();
-                        PersonaManagerService.workTabSupportLauncherUids = PersonaManagerService.this.getWorkTabSupportLauncherUids();
-                        PersonaManagerService.this.recoverContainerInfo();
-                        if (PersonaManagerService.this.mUserListFile != null && PersonaManagerService.this.mUserListFile.exists()) {
-                            Log.i("PersonaManagerService:FOTA", "user list file delete status - " + PersonaManagerService.this.mUserListFile.delete());
-                        }
-                        File file = new File(PersonaManagerService.this.mUsersDir, "userwithpersonalist.xml.crt");
-                        if (file.exists()) {
-                            Log.i("PersonaManagerService:FOTA", "user list backup file delete status - " + file.delete());
-                        }
-                        synchronized (PersonaManagerService.this.mPersonaCacheMap) {
-                            String str2 = (String) PersonaManagerService.this.mPersonaCacheMap.get("fwversion");
-                            String deviceFirmwareVersion = PersonaManagerService.this.getDeviceFirmwareVersion();
-                            if (str2 == null || (deviceFirmwareVersion != null && !deviceFirmwareVersion.equals(str2))) {
-                                Log.d("PersonaManagerService", "Storing fw version - " + deviceFirmwareVersion + ", fota version - 10");
-                                PersonaManagerService.this.mPersonaCacheMap.put("fwversion", PersonaManagerService.this.getDeviceFirmwareVersion());
-                                PersonaManagerService.this.mPersonaCacheMap.put("fotaversion", "10");
-                                PersonaManagerService.this.writePersonaCacheLocked();
-                            }
-                        }
-                        PersonaManagerService.this.setPackageSettingInstalled("com.sec.knox.bluetooth", false, 0);
-                        PersonaManagerService.this.setPackageSettingInstalled("com.samsung.android.bbc.fileprovider", false, 0);
-                        return;
-                    default:
-                        switch (i2) {
-                            case 70:
-                                PersonaManagerService.this.mKnoxAnalyticsContainer.logEventAccountChanged(message.arg1, (String) message.obj, message.arg2);
-                                return;
-                            case 71:
-                                Log.d("PersonaManagerService", "MSG_KNOX_APP_SEPARATION_LIST_UPDATE ");
-                                PersonaManagerService.this.enforceAppSeparationAllowListUpdateInternal();
-                                return;
-                            case 72:
-                                Log.d("PersonaManagerService", "MSG_KNOX_APP_SEPARATION_DELETION ");
-                                PersonaManagerService.this.enforceAppSeparationDeletionInternal();
-                                return;
-                            case 73:
-                                Log.d("PersonaManagerService", "MSG_KNOX_APP_SEPARATION_INSTALLATION - " + PersonaManagerService.this.processAppSeparationInstallationInternal((String) message.obj));
-                                return;
-                            case 74:
-                                Log.d("PersonaManagerService", "MSG_KNOX_APP_SEPARATION_ACTIVATION");
-                                String str3 = (String) message.obj;
-                                PersonaManagerService personaManagerService3 = PersonaManagerService.this;
-                                personaManagerService3.mImeSet = personaManagerService3.getIMEPackages();
-                                ArrayList<String> arrayList = new ArrayList<>(PersonaManagerService.this.mImeSet);
-                                arrayList.add(str3);
-                                Iterator<String> it2 = arrayList.iterator();
-                                while (it2.hasNext()) {
-                                    Log.d("PersonaManagerService", "MSG_KNOX_APP_SEPARATION_ACTIVATION: packageName = " + it2.next());
-                                }
-                                Intent intent = new Intent("com.samsung.android.knox.action.PROVISION_KNOX_PROFILE");
-                                intent.addFlags(268435456);
-                                intent.setClassName("com.samsung.android.appseparation", "com.samsung.android.appseparation.receiver.ProvisionReceiver");
-                                intent.putStringArrayListExtra("packageNames", arrayList);
-                                PersonaManagerService.this.mContext.sendBroadcastAsUser(intent, UserHandle.SYSTEM);
-                                Bundle appSeparationConfig = PersonaManagerService.this.getAppSeparationConfig();
-                                if (appSeparationConfig == null) {
-                                    Log.d("PersonaManagerService", "handleMessage - MSG_KNOX_APP_SEPARATION_ACTIVATION : no app separation data found in db");
-                                    return;
-                                } else {
-                                    PersonaManagerService.this.mKnoxAnalyticsContainer.logEventActivationForAppSep(arrayList, appSeparationConfig.getStringArrayList("APP_SEPARATION_APP_LIST"));
-                                    return;
-                                }
-                            case 75:
-                                Log.d("PersonaManagerService", "MSG_KNOX_APP_SEPARATION_CLEAN_UP ");
-                                PersonaManagerService.this.enforceSeparatedAppsRemoveInternal();
-                                return;
-                            case 76:
-                                Log.d("PersonaManagerService", "MSG_KNOX_APP_SEPARATION_COEXISTENCE_LIST_UPDATE ");
-                                PersonaManagerService.this.enforceAppSeparationCoexistenceAllowListUpdateInternal();
-                                return;
-                            default:
-                                Log.e("PersonaManagerService", "msg : ignore unknown message");
-                                return;
-                        }
-                }
-            }
-            Log.d("PersonaManagerServiceHandler", "MSG_POST_NOTI_FOR_PWD_CHANGE_DO ");
-            ContainerDependencyWrapper.handlePwdChangeNotificationForDeviceOwner(PersonaManagerService.this.mContext, message.arg1);
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void handleMessage(android.os.Message r18) {
+            /*
+                Method dump skipped, instructions count: 2364
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.PersonaHandler.handleMessage(android.os.Message):void");
         }
     }
 
-    public final void migrateRCPSyncToProfilePolicyIfNeeded() {
-        Log.d("PersonaManagerService:FOTA", "migrateRCPSyncToProfilePolicyIfNeeded ");
-        Iterator it = getProfiles(0, false).iterator();
-        while (it.hasNext()) {
-            int i = ((UserInfo) it.next()).id;
-            if (!SemPersonaManager.isSecureFolderId(i) && SemPersonaManager.isKnoxId(i) && isDeviceSupportedForFotaMigrationTask() && isMigrationStateSet(i) == 0) {
-                Log.d("PersonaManagerService:FOTA", "migrateRCPSyncToProfilePolicyIfNeeded: true");
-                migrateRCPSyncToProfilePolicy(i);
-            }
-        }
-    }
-
-    public final void migrateAppSeparationIfNeeded() {
-        PersonaHandler personaHandler;
-        Log.d("PersonaManagerService:FOTA", "migrationAppSeparationIfNeeded ");
-        if (getAppSeparationConfig() == null || getAppSeparationConfig() == null || isMigrationStateForAppSeparationSet() || !isDeviceSupportedForFotaMigrationTask() || (personaHandler = this.mPersonaHandler) == null) {
-            return;
-        }
-        personaHandler.postDelayed(new Runnable() { // from class: com.android.server.pm.PersonaManagerService.1
-            @Override // java.lang.Runnable
-            public void run() {
-                PersonaManagerService.this.appSeparationFotaMigrationTask();
-            }
-        }, 30000L);
-        try {
-            if (this.edm == null) {
-                this.edm = EnterpriseDeviceManager.getInstance(this.mContext);
-            }
-            this.edm.getProfilePolicy().setRestriction("restriction_property_screencapture_save_to_owner", false);
-        } catch (Exception unused) {
-            Log.d("PersonaManagerService:FOTA", "error in setting Policy RESTRICTION_PROPERTY_SCREENCAPTURE_SAVE_TO_OWNER");
-        }
-    }
-
-    public final boolean isMigrationStateForAppSeparationSet() {
-        return SystemProperties.getBoolean("persist.sys.knox.appseparation_migration", false);
-    }
-
-    public final boolean isDeviceSupportedForFotaMigrationTask() {
-        return SystemProperties.getInt("ro.product.first_api_level", 0) < 34;
-    }
-
-    public final int isMigrationStateSet(int i) {
-        return Settings.System.getIntForUser(this.mContext.getContentResolver(), "rcp_profile_migration_completed", 0, i);
-    }
-
-    public final void migrateRCPSyncToProfilePolicy(int i) {
+    /* renamed from: -$$Nest$menableMyFilesLauncherActivity, reason: not valid java name */
+    public static void m763$$Nest$menableMyFilesLauncherActivity(PersonaManagerService personaManagerService, int i) {
+        personaManagerService.getClass();
+        Log.d("PersonaManagerService", "enableMyFilesLauncherActivity");
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("visible_app_icon", true);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             try {
-                try {
-                    RCPPolicy rCPPolicy = EnterpriseKnoxManager.getInstance().getKnoxContainerManager(this.mContext, i).getRCPPolicy();
-                    if (this.edm == null) {
-                        this.edm = EnterpriseDeviceManager.getInstance(this.mContext);
-                    }
-                    if (rCPPolicy.isMoveFilesToContainerAllowed()) {
-                        this.edm.getProfilePolicy().setRestriction("restriction_property_move_files_to_profile", true);
-                    }
-                    if (rCPPolicy.isMoveFilesToOwnerAllowed()) {
-                        this.edm.getProfilePolicy().setRestriction("restriction_property_move_files_to_owner", true);
-                    }
-                } catch (NullPointerException unused) {
-                    Log.d("PersonaManagerService:FOTA", "migrateRCPSyncToProfilePolicy : NullPointerException occurred");
-                }
-            } catch (SecurityException unused2) {
-                Log.d("PersonaManagerService:FOTA", "migrateRCPSyncToProfilePolicy : SecurityException occurred");
-            }
-        } finally {
-            Settings.System.putIntForUser(this.mContext.getContentResolver(), "rcp_profile_migration_completed", 1, i);
-        }
-    }
-
-    public void appSeparationFotaMigrationTask() {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            try {
-                Log.d("PersonaManagerService:FOTA", "appSeparationFotaMigrationTask");
-                Bundle appSeparationConfig = getAppSeparationConfig();
-                boolean z = appSeparationConfig.getBoolean("APP_SEPARATION_OUTSIDE", false);
-                ArrayList<String> arrayList = new ArrayList();
-                HashSet hashSet = new HashSet(appSeparationConfig.getStringArrayList("APP_SEPARATION_APP_LIST"));
-                this.mImeSet = getIMEPackages();
-                for (PackageInfo packageInfo : this.mContext.getPackageManager().getInstalledPackagesAsUser(64, 0)) {
-                    if (!isAppSeparationIndepdentApp(packageInfo)) {
-                        Log.d("PersonaManagerService:FOTA", "appSeparationFotaMigrationTask packageName " + packageInfo.packageName);
-                        if ((!hashSet.contains(packageInfo.packageName) && z) || (hashSet.contains(packageInfo.packageName) && !z)) {
-                            arrayList.add(packageInfo.packageName);
-                        }
-                    }
-                }
-                for (String str : arrayList) {
-                    if (!isKeyboardApp(str)) {
-                        Log.d("PersonaManagerService:FOTA", "Enable Package: " + str);
-                        enableAppInOwner(str);
-                        Log.d("PersonaManagerService:FOTA", "Suspend Package:" + str);
-                        suspendAppsInOwner(str, true);
-                    }
-                }
+                personaManagerService.mContext.createContextAsUser(UserHandle.of(i), 0).getContentResolver().call("myfiles", "SET_APP_ICON_STATUS", "", bundle);
             } catch (Exception e) {
-                Log.d("PersonaManagerService:FOTA", "Error in FotaMigration for AppSeparation");
                 e.printStackTrace();
             }
         } finally {
-            SystemProperties.set("persist.sys.knox.appseparation_migration", "true");
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
+            Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public void enableAppInOwner(String str) {
-        Log.d("PersonaManagerService", "enableAppInOwner is called" + str);
-        try {
-            PackageInfo packageInfo = getIPackageManager().getPackageInfo(str, 527, 0);
-            Log.d("PersonaManagerService", "enableAppInOwner Logic Started..." + packageInfo);
-            if (packageInfo == null) {
-                return;
+    /* JADX WARN: Can't wrap try/catch for region: R(3:(3:118|119|(7:120|121|(4:123|124|125|(7:173|174|175|176|177|178|142)(8:127|128|(1:130)(1:172)|(1:138)|143|(8:146|(4:151|152|153|154)|155|(3:159|(2:161|162)(2:163|(2:165|166))|154)|152|153|154|144)|167|168))(2:189|190)|139|140|141|142))|115|116) */
+    /* JADX WARN: Code restructure failed: missing block: B:231:0x049b, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:232:0x049c, code lost:
+    
+        r22 = r9;
+        r18 = r15;
+        r2 = r9;
+        r15 = "app_uninstalled";
+        r12 = "com.samsung.android.knox.action.APP_SEPARATION_ACTION";
+        r24 = r24;
+        r34 = "com.samsung.android.appseparation";
+        r9 = "com.samsung.android.knox.intent.action.SEPARATION_ALLOWEDLIST_RETURN";
+        r11 = "SeparationWhiteListReturn";
+        r3 = "enforceAppSeparationAllowListUpdateInternal after update packageName - ";
+        r16 = r18;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:233:0x0479, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:234:0x047a, code lost:
+    
+        r22 = r9;
+        r2 = r9;
+        r12 = "com.samsung.android.knox.action.APP_SEPARATION_ACTION";
+        r24 = r24;
+        r9 = "com.samsung.android.knox.intent.action.SEPARATION_ALLOWEDLIST_RETURN";
+        r11 = "SeparationWhiteListReturn";
+        r3 = "enforceAppSeparationAllowListUpdateInternal after update packageName - ";
+        r16 = r0;
+        r4 = "app_uninstalled";
+        r15 = r15;
+        r0 = r22;
+        r35 = "com.samsung.android.appseparation";
+     */
+    /* JADX WARN: Removed duplicated region for block: B:33:0x05cb  */
+    /* JADX WARN: Removed duplicated region for block: B:42:0x05f4  */
+    /* JADX WARN: Removed duplicated region for block: B:57:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:61:0x05ed  */
+    /* JADX WARN: Removed duplicated region for block: B:67:0x067a  */
+    /* JADX WARN: Removed duplicated region for block: B:76:0x06a7  */
+    /* JADX WARN: Removed duplicated region for block: B:88:0x0714  */
+    /* JADX WARN: Removed duplicated region for block: B:90:? A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:94:0x069e  */
+    /* renamed from: -$$Nest$menforceAppSeparationAllowListUpdateInternal, reason: not valid java name */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void m764$$Nest$menforceAppSeparationAllowListUpdateInternal(com.android.server.pm.PersonaManagerService r38) {
+        /*
+            Method dump skipped, instructions count: 1816
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.m764$$Nest$menforceAppSeparationAllowListUpdateInternal(com.android.server.pm.PersonaManagerService):void");
+    }
+
+    /* renamed from: -$$Nest$mgetDeviceFirmwareVersion, reason: not valid java name */
+    public static String m765$$Nest$mgetDeviceFirmwareVersion(PersonaManagerService personaManagerService) {
+        String str = personaManagerService.mFirmwareVersion;
+        if (str == null) {
+            str = SystemProperties.get("ro.build.PDA", "Unknown");
+            Log.i("PersonaManagerService", "1. pdaVersion = " + str);
+            Log.d("PersonaManagerService", "trimHiddenVersion(" + str + ")");
+            if (str.indexOf(95) != -1) {
+                str = str.substring(0, str.indexOf(95));
             }
-            HashSet hashSet = new HashSet();
-            ArrayList arrayList = new ArrayList();
-            ActivityInfo[] activityInfoArr = packageInfo.activities;
-            if (activityInfoArr != null) {
-                for (ActivityInfo activityInfo : activityInfoArr) {
-                    if (!hashSet.contains(activityInfo.name)) {
-                        hashSet.add(activityInfo.name);
-                        arrayList.add(new PackageManager.ComponentEnabledSetting(new ComponentName(str, activityInfo.name), 0, 1));
-                    }
-                }
-            }
-            ServiceInfo[] serviceInfoArr = packageInfo.services;
-            if (serviceInfoArr != null) {
-                for (ServiceInfo serviceInfo : serviceInfoArr) {
-                    if (!hashSet.contains(serviceInfo.name)) {
-                        hashSet.add(serviceInfo.name);
-                        arrayList.add(new PackageManager.ComponentEnabledSetting(new ComponentName(str, serviceInfo.name), 0, 1));
-                    }
-                }
-            }
-            ProviderInfo[] providerInfoArr = packageInfo.providers;
-            if (providerInfoArr != null) {
-                for (ProviderInfo providerInfo : providerInfoArr) {
-                    if (!hashSet.contains(providerInfo.name)) {
-                        hashSet.add(providerInfo.name);
-                        arrayList.add(new PackageManager.ComponentEnabledSetting(new ComponentName(str, providerInfo.name), 0, 1));
-                    }
-                }
-            }
-            ActivityInfo[] activityInfoArr2 = packageInfo.receivers;
-            if (activityInfoArr2 != null) {
-                for (ActivityInfo activityInfo2 : activityInfoArr2) {
-                    if (!hashSet.contains(activityInfo2.name)) {
-                        hashSet.add(activityInfo2.name);
-                        arrayList.add(new PackageManager.ComponentEnabledSetting(new ComponentName(str, activityInfo2.name), 0, 1));
-                    }
-                }
-            }
-            Log.d("PersonaManagerService", "printing enablepackageList");
-            Iterator it = hashSet.iterator();
-            while (it.hasNext()) {
-                Log.d("PersonaManagerService", "Components:" + ((String) it.next()));
-            }
-            getIPackageManager().setComponentEnabledSettings(arrayList, 0, "persona");
-            Log.d("PersonaManagerService", "enableAppInOwner Logic Ended...");
-        } catch (Exception e) {
-            Log.e("PersonaManagerService", "enableAppInOwner exception" + e);
+            ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m("2. pdaVersion = ", str, "PersonaManagerService");
+            personaManagerService.mFirmwareVersion = str;
         }
+        return str;
     }
 
-    public final void sendMessageAndLockTimeout(int i, int i2) {
-        int screenOffTimeoutLocked;
-        for (UserInfo userInfo : getUserManager().getUsers()) {
-            if (userInfo.isManagedProfile() && this.mKeyguardManager.isDeviceSecure(userInfo.id) && !this.mKeyguardManager.isDeviceLocked(userInfo.id) && this.mKeyguardManager.isDeviceSecure(userInfo.id) && !this.mKeyguardManager.isDeviceLocked(userInfo.id) && ((screenOffTimeoutLocked = getScreenOffTimeoutLocked(userInfo.id)) == 0 || screenOffTimeoutLocked == -2)) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("android.intent.extra.user_handle", userInfo.id);
-                long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-                ContainerProxy.sendEvent("knox.container.proxy.EVENT_LOCK_TIMEOUT", bundle);
-                this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-            }
-        }
-    }
-
-    public final void recoverContainerInfo() {
-        try {
-            String str = SystemProperties.get("persist.sys.knox.userinfo");
-            if (getProfiles(0, false).size() > 0) {
-                if (str == null || "".equals(str)) {
-                    Log.d("PersonaManagerService", "UserInfo currupted, set again");
-                    UserManagerService userManagerService = this.mPm.mUserManager;
-                    if (userManagerService != null) {
-                        ContainerDependencyWrapper.setContainerInfo(userManagerService);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final String getDeviceFirmwareVersion() {
-        String str = this.mFirmwareVersion;
-        if (str != null) {
-            return str;
-        }
-        String str2 = SystemProperties.get("ro.build.PDA", "Unknown");
-        Log.i("PersonaManagerService", "1. pdaVersion = " + str2);
-        String trimHiddenVersion = trimHiddenVersion(str2);
-        Log.i("PersonaManagerService", "2. pdaVersion = " + trimHiddenVersion);
-        this.mFirmwareVersion = trimHiddenVersion;
-        return trimHiddenVersion;
-    }
-
-    public final String trimHiddenVersion(String str) {
-        Log.d("PersonaManagerService", "trimHiddenVersion(" + str + ")");
-        return str.indexOf(95) != -1 ? str.substring(0, str.indexOf(95)) : str;
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        if (DumpUtils.checkDumpPermission(this.mContext, "PersonaManagerService", printWriter)) {
-            String lastUserRemovalLog = getLastUserRemovalLog();
-            printWriter.println("Last removed user:");
-            printWriter.println(lastUserRemovalLog);
-            printWriter.println("");
-            printAllApprovedInstallers(printWriter);
-            printWriter.println("");
-            Bundle separationConfigfromCache = getSeparationConfigfromCache();
-            int appSeparationId = getAppSeparationId();
-            printWriter.println("App Separation:");
-            printWriter.print("    STATE : ");
-            if (appSeparationId == 0) {
-                if (separationConfigfromCache == null) {
-                    printWriter.println("NONE");
-                    return;
-                }
-                printWriter.println("ACTIVATED");
-            } else {
-                printWriter.println("ENABLED");
-            }
-            if (separationConfigfromCache != null) {
-                StringBuilder sb = new StringBuilder();
-                StringBuilder sb2 = new StringBuilder();
-                boolean z = separationConfigfromCache.getBoolean("APP_SEPARATION_OUTSIDE", false);
-                ArrayList<String> stringArrayList = separationConfigfromCache.getStringArrayList("APP_SEPARATION_APP_LIST");
-                ArrayList<String> stringArrayList2 = separationConfigfromCache.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST");
-                if (stringArrayList != null) {
-                    for (int i = 0; i < stringArrayList.size(); i++) {
-                        sb.append("        ");
-                        sb.append(i + " -> " + stringArrayList.get(i) + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                    }
-                }
-                if (stringArrayList2 != null) {
-                    for (int i2 = 0; i2 < stringArrayList2.size(); i2++) {
-                        sb2.append("        ");
-                        sb2.append(i2 + " -> " + stringArrayList2.get(i2) + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                    }
-                }
-                printWriter.println("    Outside Option : " + z);
-                printWriter.println("    AllowList Packages: ");
-                printWriter.println(sb.toString());
-                printWriter.println("    CoexistenceList Packages: ");
-                printWriter.println(sb2.toString());
-            }
-        }
-    }
-
-    public void addAppPackageNameToAllowList(int i, List list) {
-        try {
-            if (getIPackageManager().checkUidSignatures(1000, Binder.getCallingUid()) != 0) {
-                Log.d("PersonaManagerService", "addAppPackageNameToAllowList failed.");
-                return;
-            }
-            long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-            try {
-                ContainerDependencyWrapper.addAppPackageNameToAllowList(this.mContext, i, list);
-            } finally {
-                this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final Set getLaunchableApps(int i) {
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.LAUNCHER");
-        List queryIntentActivitiesAsUser = this.mContext.getPackageManager().queryIntentActivitiesAsUser(intent, 795136, i);
-        ArraySet arraySet = new ArraySet();
+    /* renamed from: -$$Nest$mgetWorkTabSupportLauncherUids, reason: not valid java name */
+    public static ArrayList m766$$Nest$mgetWorkTabSupportLauncherUids(PersonaManagerService personaManagerService) {
+        personaManagerService.getClass();
+        ArrayList arrayList = new ArrayList();
+        String[] strArr = {"com.nttdocomo.android.dhome", "com.nttdocomo.android.homezozo"};
+        List queryIntentActivitiesAsUser = personaManagerService.mContext.getPackageManager().queryIntentActivitiesAsUser(PersonalAppsSuspensionHelper$$ExternalSyntheticOutline0.m("android.intent.action.MAIN", "android.intent.category.HOME"), 786432, 0);
+        ArrayList arrayList2 = new ArrayList();
         Iterator it = queryIntentActivitiesAsUser.iterator();
         while (it.hasNext()) {
-            arraySet.add(((ResolveInfo) it.next()).activityInfo.packageName);
+            arrayList2.add(((ResolveInfo) it.next()).activityInfo.packageName);
         }
-        return arraySet;
-    }
-
-    public final List getRequiredApps() {
-        List installedPackagesAsUser = this.mContext.getPackageManager().getInstalledPackagesAsUser(1048576, 0);
-        ArrayList arrayList = new ArrayList();
-        if (installedPackagesAsUser != null && !installedPackagesAsUser.isEmpty()) {
-            Iterator it = installedPackagesAsUser.iterator();
-            while (it.hasNext()) {
-                arrayList.add(((PackageInfo) it.next()).packageName);
-            }
-        }
-        arrayList.removeAll(getLaunchableApps(0));
-        arrayList.removeAll(new ArraySet(Arrays.asList(this.mContext.getResources().getStringArray(17236466))));
-        return arrayList;
-    }
-
-    public final List getSystemApps() {
-        List installedPackagesAsUser = this.mContext.getPackageManager().getInstalledPackagesAsUser(1048576, 0);
-        ArrayList arrayList = new ArrayList();
-        if (installedPackagesAsUser != null && !installedPackagesAsUser.isEmpty()) {
-            Iterator it = installedPackagesAsUser.iterator();
-            while (it.hasNext()) {
-                arrayList.add(((PackageInfo) it.next()).packageName);
+        Iterator it2 = arrayList2.iterator();
+        while (it2.hasNext()) {
+            String str = (String) it2.next();
+            if (Arrays.asList(strArr).contains(str)) {
+                try {
+                    PackageInfo packageInfo = personaManagerService.getIPackageManager().getPackageInfo(str, 64L, 0);
+                    if (packageInfo != null) {
+                        arrayList.add(Integer.valueOf(packageInfo.applicationInfo.uid));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         return arrayList;
     }
 
-    public final void handleFOTAInstallToPackages() {
-        for (UserInfo userInfo : UserManager.get(this.mContext).getProfiles(0)) {
+    /* renamed from: -$$Nest$mhandleFOTAInstallToPackages, reason: not valid java name */
+    public static void m767$$Nest$mhandleFOTAInstallToPackages(PersonaManagerService personaManagerService) {
+        for (UserInfo userInfo : UserManager.get(personaManagerService.mContext).getProfiles(0)) {
             if (userInfo.isManagedProfile()) {
                 try {
-                    List requiredApps = getRequiredApps();
-                    if (requiredApps != null && !requiredApps.isEmpty()) {
-                        Iterator it = requiredApps.iterator();
+                    ArrayList arrayList = (ArrayList) personaManagerService.getRequiredApps();
+                    if (!arrayList.isEmpty()) {
+                        Iterator it = arrayList.iterator();
                         while (it.hasNext()) {
-                            installExistingPackageForPersona(userInfo.id, (String) it.next());
+                            personaManagerService.installExistingPackageForPersona(userInfo.id, (String) it.next());
                         }
                     }
                 } catch (Exception e) {
@@ -1737,13 +1084,18 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
                 }
             }
             try {
-                if (this.mLocalService.isKnoxId(userInfo.id)) {
-                    for (String str : getSystemApps()) {
-                        boolean z = getIPackageManager().getPackageInfo(str, 64L, userInfo.id) != null;
-                        if (z && ContainerDependencyWrapper.isDisallowedAppForKnox(str, userInfo.id)) {
-                            deletePkg(userInfo.id, str);
-                        } else if (!z && ContainerDependencyWrapper.isRequiredAppForKnox(str, userInfo.id)) {
-                            installExistingPackageForPersona(userInfo.id, str);
+                LocalService localService = personaManagerService.mLocalService;
+                int i = userInfo.id;
+                localService.getClass();
+                if (SemPersonaManager.isKnoxId(i)) {
+                    Iterator it2 = ((ArrayList) personaManagerService.getSystemApps()).iterator();
+                    while (it2.hasNext()) {
+                        String str = (String) it2.next();
+                        boolean z = personaManagerService.getIPackageManager().getPackageInfo(str, 64L, userInfo.id) != null;
+                        if (z && ContainerDependencyWrapper.isDisallowedAppForKnox(userInfo.id, str)) {
+                            personaManagerService.deletePkg(userInfo.id, str);
+                        } else if (!z && ContainerDependencyWrapper.isRequiredAppForKnox(userInfo.id, str)) {
+                            personaManagerService.installExistingPackageForPersona(userInfo.id, str);
                         }
                     }
                 }
@@ -1753,316 +1105,296 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         }
     }
 
-    public static void deactivateSecureFolderAdmin(Context context, ComponentName componentName) {
-        ContainerDependencyWrapper.deactivateSecureFolderAdmin(context, componentName);
-    }
-
-    public static void resetSecureFolderAdmin(Context context) {
-        ComponentName componentName = new ComponentName("com.samsung.knox.securefolder", "com.samsung.knox.securefolder.containeragent.detector.KnoxDeviceAdminReceiver");
-        if (ContainerDependencyWrapper.isSecureFolderAdminActive(context, componentName)) {
-            Log.d("PersonaManagerService:FOTA", "resetSecureFolderAdmin called");
-            deactivateSecureFolderAdmin(context, componentName);
+    /* renamed from: -$$Nest$mmigrateKnoxFingerprintPlusValueIfNeeded, reason: not valid java name */
+    public static void m768$$Nest$mmigrateKnoxFingerprintPlusValueIfNeeded(PersonaManagerService personaManagerService) {
+        Iterator it = ((ArrayList) personaManagerService.getProfiles(0, true)).iterator();
+        while (it.hasNext()) {
+            int i = ((UserInfo) it.next()).id;
+            if (i != 0 || SemPersonaManager.isDoEnabled(i)) {
+                if (!SemPersonaManager.isSecureFolderId(i)) {
+                    try {
+                        Settings.System.getIntForUser(personaManagerService.mContext.getContentResolver(), "knox_finger_print_plus", i);
+                        try {
+                            Settings.Secure.getIntForUser(personaManagerService.mContext.getContentResolver(), "knox_finger_print_plus", i);
+                        } catch (Settings.SettingNotFoundException unused) {
+                            NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "Migrate fingerprint plus settings value. knoxId = ", "PersonaManagerService:FOTA");
+                            try {
+                                Settings.Secure.putIntForUser(personaManagerService.mContext.getContentResolver(), "knox_finger_print_plus", Settings.System.getIntForUser(personaManagerService.mContext.getContentResolver(), "knox_finger_print_plus", 0, i), i);
+                            } catch (Exception e) {
+                                Log.d("PersonaManagerService:FOTA", "Migration failed! knoxId = " + i);
+                                e.printStackTrace();
+                            }
+                        }
+                    } catch (Settings.SettingNotFoundException unused2) {
+                    }
+                }
+            }
         }
     }
 
-    public final void handleFotaResetSecureFolderAdmin() {
-        Log.i("PersonaManagerService:FOTA", "handleFotaResetSecureFolderAdmin()");
+    /* renamed from: -$$Nest$mrecoverContainerInfo, reason: not valid java name */
+    public static void m769$$Nest$mrecoverContainerInfo(PersonaManagerService personaManagerService) {
+        personaManagerService.getClass();
         try {
-            resetSecureFolderAdmin(this.mContext);
+            String str = SystemProperties.get("persist.sys.knox.userinfo");
+            if (((ArrayList) personaManagerService.getProfiles(0, false)).size() > 0) {
+                if (str != null && !"".equals(str)) {
+                    return;
+                }
+                Log.d("PersonaManagerService", "UserInfo currupted, set again");
+                UserManagerService userManagerService = personaManagerService.mPm.mUserManager;
+                if (userManagerService != null) {
+                    ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+                    userManagerService.setContainerInfo();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public final void removeDisallowedSFpackages() {
+    /* renamed from: -$$Nest$mremoveDisallowedSFpackages, reason: not valid java name */
+    public static void m770$$Nest$mremoveDisallowedSFpackages(PersonaManagerService personaManagerService) {
+        personaManagerService.getClass();
         Log.i("PersonaManagerService:FOTA", "removeDisallowedSFpackages() called.");
-        UserManager userManager = getUserManager();
+        UserManager userManager = personaManagerService.getUserManager();
         if (userManager == null) {
             Log.d("PersonaManagerService:FOTA", "removeDisallowedSFpackages() - user manager is null");
             return;
         }
         for (UserInfo userInfo : userManager.getProfiles(0)) {
             if (userInfo.isEnabled() && userInfo.isSecureFolder()) {
-                removeDisallowedSecureFolderPackages(userInfo);
-            }
-        }
-    }
-
-    public final void removeDisallowedSecureFolderPackages(UserInfo userInfo) {
-        try {
-            Log.i("PersonaManagerService:FOTA", "removeDisallowedSecureFolderPackages() user=" + userInfo);
-            ArraySet<String> arraySet = new ArraySet(Arrays.asList(this.mContext.getResources().getStringArray(17236466)));
-            ArraySet arraySet2 = new ArraySet(getSecureFolderPolicy("AllowPackage", userInfo.id));
-            arraySet2.addAll((Collection) new ArraySet(getSecureFolderPolicy("DefaultPackage", userInfo.id)));
-            arraySet.removeAll((Collection<?>) arraySet2);
-            for (String str : arraySet) {
-                if (DEBUG) {
-                    Log.d("PersonaManagerService:FOTA", "dsallowedPackage: " + str);
-                }
-                deletePkg(userInfo.id, str);
-            }
-        } catch (Exception e) {
-            Log.e("PersonaManagerService:FOTA", "exception occurred in removeDisallowedSecureFolderPackages()! " + e.getMessage());
-        }
-    }
-
-    public final void migrateKnoxLockTimeoutValueIfNeeded() {
-        Iterator it = getProfiles(0, false).iterator();
-        while (it.hasNext()) {
-            int i = ((UserInfo) it.next()).id;
-            if (!SemPersonaManager.isSecureFolderId(i) && isMigrationNeededForKnoxLockTimeout(i)) {
-                migrateKnoxLockTimeout(i);
-            }
-        }
-    }
-
-    public final boolean isMigrationNeededForKnoxLockTimeout(int i) {
-        return isScreenOffTimeoutSystemValueExist(i) && !isScreenOffTimeoutSecureValueExist(i);
-    }
-
-    public final boolean isScreenOffTimeoutSystemValueExist(int i) {
-        try {
-            Settings.System.getIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", i);
-            return true;
-        } catch (Settings.SettingNotFoundException unused) {
-            return false;
-        }
-    }
-
-    public final boolean isScreenOffTimeoutSecureValueExist(int i) {
-        try {
-            Settings.Secure.getIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", i);
-            return true;
-        } catch (Settings.SettingNotFoundException unused) {
-            return false;
-        }
-    }
-
-    public final void migrateKnoxLockTimeout(int i) {
-        Log.d("PersonaManagerService:FOTA", "Migrate screen timeout settings value. knoxId = " + i);
-        try {
-            Settings.Secure.putIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", Settings.System.getIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", 0, i), i);
-        } catch (Exception e) {
-            Log.d("PersonaManagerService:FOTA", "Migration failed! knoxId = " + i);
-            e.printStackTrace();
-        }
-    }
-
-    public final void migrateKnoxFingerprintPlusValueIfNeeded() {
-        Iterator it = getProfiles(0, true).iterator();
-        while (it.hasNext()) {
-            int i = ((UserInfo) it.next()).id;
-            if (i != 0 || SemPersonaManager.isDoEnabled(i)) {
-                if (!SemPersonaManager.isSecureFolderId(i) && isMigrationNeededForKnoxFingerprintPlus(i)) {
-                    migrateKnoxFingerprintPlus(i);
+                try {
+                    Log.i("PersonaManagerService:FOTA", "removeDisallowedSecureFolderPackages() user=" + userInfo);
+                    ArraySet arraySet = new ArraySet(Arrays.asList(personaManagerService.mContext.getResources().getStringArray(17236481)));
+                    ArraySet arraySet2 = new ArraySet(personaManagerService.getSecureFolderPolicy("AllowPackage", userInfo.id));
+                    arraySet2.addAll((Collection) new ArraySet(personaManagerService.getSecureFolderPolicy("DefaultPackage", userInfo.id)));
+                    arraySet.removeAll((Collection<?>) arraySet2);
+                    Iterator it = arraySet.iterator();
+                    while (it.hasNext()) {
+                        String str = (String) it.next();
+                        if (DEBUG) {
+                            Log.d("PersonaManagerService:FOTA", "dsallowedPackage: " + str);
+                        }
+                        if (personaManagerService.mPm.isPackageDeviceAdmin(userInfo.id, str)) {
+                            Log.w("PersonaManagerService:FOTA", "Not removing package " + str + ": has active device admin");
+                        } else {
+                            personaManagerService.deletePkg(userInfo.id, str);
+                        }
+                    }
+                } catch (Exception e) {
+                    RCPManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("exception occurred in removeDisallowedSecureFolderPackages()! "), "PersonaManagerService:FOTA");
                 }
             }
         }
     }
 
-    public final boolean isMigrationNeededForKnoxFingerprintPlus(int i) {
-        return isFingerprintPlusSystemValueExist(i) && !isFingerprintPlusSecureValueExist(i);
-    }
-
-    public final boolean isFingerprintPlusSystemValueExist(int i) {
-        try {
-            Settings.System.getIntForUser(this.mContext.getContentResolver(), "knox_finger_print_plus", i);
-            return true;
-        } catch (Settings.SettingNotFoundException unused) {
-            return false;
+    /* renamed from: -$$Nest$msendMessageAndLockTimeout, reason: not valid java name */
+    public static void m771$$Nest$msendMessageAndLockTimeout(PersonaManagerService personaManagerService) {
+        int screenOffTimeoutLocked;
+        for (UserInfo userInfo : personaManagerService.getUserManager().getUsers()) {
+            if (userInfo.isManagedProfile() && personaManagerService.mKeyguardManager.isDeviceSecure(userInfo.id) && !personaManagerService.mKeyguardManager.isDeviceLocked(userInfo.id) && personaManagerService.mKeyguardManager.isDeviceSecure(userInfo.id) && !personaManagerService.mKeyguardManager.isDeviceLocked(userInfo.id) && ((screenOffTimeoutLocked = personaManagerService.getScreenOffTimeoutLocked(userInfo.id)) == 0 || screenOffTimeoutLocked == -2)) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("android.intent.extra.user_handle", userInfo.id);
+                personaManagerService.mInjector.getClass();
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                ContainerProxy.sendEvent("knox.container.proxy.EVENT_LOCK_TIMEOUT", bundle);
+                personaManagerService.mInjector.getClass();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
         }
     }
 
-    public final boolean isFingerprintPlusSecureValueExist(int i) {
-        try {
-            Settings.Secure.getIntForUser(this.mContext.getContentResolver(), "knox_finger_print_plus", i);
-            return true;
-        } catch (Settings.SettingNotFoundException unused) {
-            return false;
+    /* renamed from: -$$Nest$msetDpmScreenTimeoutFlag, reason: not valid java name */
+    public static void m772$$Nest$msetDpmScreenTimeoutFlag(PersonaManagerService personaManagerService, int i) {
+        DevicePolicyManager devicePolicyManager;
+        ComponentName adminComponentName = personaManagerService.getAdminComponentName(i);
+        long maximumTimeToLock = (adminComponentName == null || (devicePolicyManager = personaManagerService.mDevicePolicyManager) == null) ? 0L : devicePolicyManager.getMaximumTimeToLock(adminComponentName, i);
+        int i2 = maximumTimeToLock > 2147483647L ? Integer.MAX_VALUE : (int) maximumTimeToLock;
+        boolean z = i2 > 0 && i2 < Integer.MAX_VALUE;
+        long intForUser = SemPersonaManager.isSecureFolderId(i) ? Settings.System.getIntForUser(personaManagerService.mContext.getContentResolver(), "knox_screen_off_timeout", -1, i) : Settings.Secure.getIntForUser(personaManagerService.mContext.getContentResolver(), "knox_screen_off_timeout", -1, i);
+        if (!z || intForUser <= i2) {
+            return;
         }
+        personaManagerService.mKALockscreenTimeoutAdminFlag = true;
+        Log.d("PersonaManagerService:KnoxAnalytics", "setting mKALockscreenTimeoutAdminFlag true (at boot)");
     }
 
-    public final void migrateKnoxFingerprintPlus(int i) {
-        Log.d("PersonaManagerService:FOTA", "Migrate fingerprint plus settings value. knoxId = " + i);
+    static {
+        Bundle knoxInfo = SemPersonaManager.getKnoxInfo();
+        String string = knoxInfo != null ? knoxInfo.getString("version") : null;
+        DEVICE_SUPPORT_KNOX = (string == null || string.isEmpty() || "v00".equals(string)) ? false : true;
+        workTabSupportLauncherUids = new ArrayList();
+    }
+
+    public PersonaManagerService(Context context, PackageManagerService packageManagerService, PackageManagerTracedLock packageManagerTracedLock) {
+        this(new Injector(context, packageManagerService, packageManagerTracedLock, Environment.getDataDirectory(), new File(Environment.getDataDirectory(), "user")));
+    }
+
+    /* JADX WARN: Type inference failed for: r1v5, types: [com.android.server.pm.PersonaManagerService$7] */
+    /* JADX WARN: Type inference failed for: r2v4, types: [com.android.server.pm.PersonaManagerService$1] */
+    public PersonaManagerService(Injector injector) {
+        File file;
+        Object obj = new Object();
+        this.mFocusLock = new Object();
+        this.mFocusLauncherLock = new Object();
+        this.mPersonaCacheLock = new Object();
+        this.mPersonaCacheMap = new HashMap();
+        this.mFirmwareVersion = null;
+        this.mFocusedLauncherId = 0;
+        this.mFocusedUserId = 0;
+        this.mSecureFolderId = -1;
+        this.mKALockscreenTimeoutAdminFlag = false;
+        this.mCorePackageUid = new ArrayList();
+        this.mUserHasBeenShutdownBefore = new SparseBooleanArray();
+        this.personaManager = null;
+        this.packageFilter = null;
+        this.requiredApps = null;
+        this.mDeviceLockedForUser = new SparseBooleanArray();
+        this.mUserSwitchObserver = new UserSwitchObserver() { // from class: com.android.server.pm.PersonaManagerService.1
+            public final void onForegroundProfileSwitch(int i) {
+                DirEncryptService$$ExternalSyntheticOutline0.m(i, "onForegroundProfileSwitch: ", "PersonaManagerService");
+                PersonaManagerService.this.mPersonaHandler.removeMessages(80);
+                PersonaHandler personaHandler = PersonaManagerService.this.mPersonaHandler;
+                personaHandler.sendMessage(personaHandler.obtainMessage(80, i, 0));
+            }
+
+            public final void onLockedBootComplete(int i) {
+                DirEncryptService$$ExternalSyntheticOutline0.m(i, "onLockedBootComplete: ", "PersonaManagerService");
+                SemPersonaManager.sendContainerEvent(PersonaManagerService.this.mContext, i, 1);
+                if (PersonaManagerService.this.mKeyguardManager.isDeviceSecure(i) && PersonaManagerService.this.mKeyguardManager.isDeviceLocked(i)) {
+                    return;
+                }
+                Log.i("PersonaManagerService", "container is already unlocked");
+                SemPersonaManager.sendContainerEvent(PersonaManagerService.this.mContext, i, 5);
+                synchronized (PersonaManagerService.this.mDeviceLockedForUser) {
+                    PersonaManagerService.this.mDeviceLockedForUser.put(i, false);
+                }
+            }
+        };
+        this.containerNames = new HashSet();
+        this.mUserReceiver = new AnonymousClass2(this, 0);
+        this.mSetupWizardCompleteReceiver = new AnonymousClass2(this, 1);
+        this.mFingerPrintReceiver = new AnonymousClass2(this, 2);
+        this.mPackageReceiver = new AnonymousClass2(this, 3);
+        this.mAnalyticsReceiver = new AnonymousClass2(this, 4);
+        this.mTrustManager = null;
+        this.analyticsObserver = new ContentObserver(new Handler()) { // from class: com.android.server.pm.PersonaManagerService.7
+            @Override // android.database.ContentObserver
+            public final void onChange(boolean z, Uri uri, int i) {
+                if ((i != 0 || SemPersonaManager.isDoEnabled(i)) && !SemPersonaManager.isSecureFolderId(i)) {
+                    KnoxAnalyticsContainer.AnalyticsHandler analyticsHandler = PersonaManagerService.this.mKnoxAnalyticsContainer.analyticsHandler;
+                    analyticsHandler.sendMessage(analyticsHandler.obtainMessage(2, i, 0));
+                }
+            }
+        };
+        this.LOG_FS_TAG = "PersonaManagerService:KnoxForesight";
+        Context context = injector.mContext;
+        this.mContext = context;
+        this.mInjector = injector;
+        this.mPm = injector.mPm;
+        sInstance = this;
+        this.mKnoxAnalyticsContainer = new KnoxAnalyticsContainer(context, new IKnoxAnalyticsContainerImpl(context, this));
+        Context context2 = injector.mContext;
+        if (ContainerDependencyWrapper.sInstance == null) {
+            ContainerDependencyWrapper containerDependencyWrapper = new ContainerDependencyWrapper();
+            ContainerDependencyWrapper.context = context2;
+            ContainerDependencyWrapper.sInstance = containerDependencyWrapper;
+        }
+        this.containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        synchronized (obj) {
+            try {
+                file = new File(injector.mDataDir, USER_INFO_DIR);
+                this.mUsersDir = file;
+                File file2 = new File(file, "userwithpersonalist.xml");
+                this.mUserListFile = file2;
+                if (!file2.exists()) {
+                    Slog.d("PersonaManagerService", "No need to create user persona list file from Knox 3.0");
+                }
+                Log.i("PersonaManagerService", "<init> adding PersonaPolicyManagerService");
+                this.mPersonaPolicyManagerService = injector.getPersonaPolicyManagerService();
+                HandlerThread handlerThread = new HandlerThread("PersonaManagerService", 10);
+                handlerThread.start();
+                this.mPersonaHandler = new PersonaHandler(handlerThread.getLooper());
+            } finally {
+            }
+        }
+        File file3 = new File(file, "persona_cache.xml");
+        this.mPersonaCacheFile = file3;
+        if (!file3.exists()) {
+            try {
+                if (file3.createNewFile()) {
+                    Slog.d("PersonaManagerService", "PMS cache file created ");
+                } else {
+                    Slog.e("PersonaManagerService", "Error Creating PMS cache file!!!! ");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        synchronized (this.mPersonaCacheLock) {
+            readPersonaCacheLocked();
+        }
+        LocalService localService = new LocalService();
+        this.mLocalService = localService;
+        this.mInjector.getClass();
+        LocalServices.addService(PersonaManagerInternal.class, localService);
+    }
+
+    public static void atomicFileProcessDamagedFile(AtomicFile atomicFile) {
+        if (atomicFile.getBaseFile().exists()) {
+            if (!atomicFile.getBaseFile().renameTo(new File(atomicFile.getBaseFile().getPath() + ".crt"))) {
+                Log.e("PersonaManagerService", "Failed to rename file: " + atomicFile.getBaseFile().getPath());
+            }
+        }
+        if (atomicFile.getBaseFile().delete()) {
+            return;
+        }
+        Log.e("PersonaManagerService", "Failed to delete the file");
+    }
+
+    public static boolean checkNullParameter(Object... objArr) {
+        int i = 1;
+        for (Object obj : objArr) {
+            if (obj == null) {
+                NetworkScoreService$$ExternalSyntheticOutline0.m(i, "Parameter(", ") is null.", "PersonaManagerService");
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
+    public static void clearStorageForUser(int i) {
         try {
-            Settings.Secure.putIntForUser(this.mContext.getContentResolver(), "knox_finger_print_plus", Settings.System.getIntForUser(this.mContext.getContentResolver(), "knox_finger_print_plus", 0, i), i);
+            Log.d("PersonaManagerService", "clearStorageForUser " + i);
+            LockSettingsInternal lockSettingsInternal = (LockSettingsInternal) LocalServices.getService(LockSettingsInternal.class);
+            ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+            lockSettingsInternal.clearStorageForUser(i);
         } catch (Exception e) {
-            Log.d("PersonaManagerService:FOTA", "Migration failed! knoxId = " + i);
+            Log.d("PersonaManagerService", "clearStorageForUser err.");
             e.printStackTrace();
         }
     }
 
-    public void setFocusedLauncherId(int i) {
-        checkCallerPermissionFor("setFocusedLauncherId");
-        synchronized (this.mFocusLauncherLock) {
-            this.mFocusedLauncherId = i;
-            Log.d("PersonaManagerService", "setFocusedUser: Focus changed - current uesr id is " + this.mFocusedLauncherId);
-        }
-    }
-
-    public int getFocusedLauncherId() {
-        int i;
-        synchronized (this.mFocusLauncherLock) {
-            i = this.mFocusedLauncherId;
-        }
-        return i;
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:12:0x003a A[Catch: all -> 0x001d, TRY_LEAVE, TryCatch #1 {all -> 0x001d, blocks: (B:17:0x0010, B:10:0x0032, B:12:0x003a, B:15:0x004a, B:20:0x0020), top: B:16:0x0010, inners: #0 }] */
-    /* JADX WARN: Removed duplicated region for block: B:15:0x004a A[Catch: all -> 0x001d, TRY_ENTER, TRY_LEAVE, TryCatch #1 {all -> 0x001d, blocks: (B:17:0x0010, B:10:0x0032, B:12:0x003a, B:15:0x004a, B:20:0x0020), top: B:16:0x0010, inners: #0 }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public android.content.ComponentName getAdminComponentName(int r6) {
-        /*
-            r5 = this;
-            com.android.server.pm.PersonaManagerService$Injector r0 = r5.mInjector
-            long r0 = r0.binderClearCallingIdentity()
-            boolean r2 = com.samsung.android.knox.SemPersonaManager.isKnoxId(r6)
-            boolean r3 = com.android.server.knox.ContainerDependencyWrapper.isDualDarDO(r6)
-            if (r2 != 0) goto L23
-            android.os.UserManager r4 = r5.getUserManager()     // Catch: java.lang.Throwable -> L1d java.lang.Exception -> L1f
-            android.content.pm.UserInfo r4 = r4.getUserInfo(r6)     // Catch: java.lang.Throwable -> L1d java.lang.Exception -> L1f
-            boolean r4 = r4.isManagedProfile()     // Catch: java.lang.Throwable -> L1d java.lang.Exception -> L1f
-            goto L24
-        L1d:
-            r6 = move-exception
-            goto L51
-        L1f:
-            r4 = move-exception
-            r4.printStackTrace()     // Catch: java.lang.Throwable -> L1d
-        L23:
-            r4 = r2
-        L24:
-            if (r2 != 0) goto L32
-            if (r4 != 0) goto L32
-            if (r3 == 0) goto L2b
-            goto L32
-        L2b:
-            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
-            r5.binderRestoreCallingIdentity(r0)
-            r5 = 0
-            return r5
-        L32:
-            com.android.server.pm.PersonaManagerService$Injector r2 = r5.mInjector     // Catch: java.lang.Throwable -> L1d
-            boolean r2 = r2.isTestingMode()     // Catch: java.lang.Throwable -> L1d
-            if (r2 == 0) goto L4a
-            com.android.server.pm.PersonaManagerService$Injector r2 = r5.mInjector     // Catch: java.lang.Throwable -> L1d
-            com.samsung.android.knox.PersonaManagerInternal r2 = r2.getPersonaManagerInternal()     // Catch: java.lang.Throwable -> L1d
-            android.content.ComponentName r6 = r2.getAdminComponentNameFromEdm(r6)     // Catch: java.lang.Throwable -> L1d
-        L44:
-            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
-            r5.binderRestoreCallingIdentity(r0)
-            return r6
-        L4a:
-            com.android.server.pm.PersonaManagerService$LocalService r2 = r5.mLocalService     // Catch: java.lang.Throwable -> L1d
-            android.content.ComponentName r6 = r2.getAdminComponentNameFromEdm(r6)     // Catch: java.lang.Throwable -> L1d
-            goto L44
-        L51:
-            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
-            r5.binderRestoreCallingIdentity(r0)
-            throw r6
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getAdminComponentName(int):android.content.ComponentName");
-    }
-
-    public static List getContainerCriticalApps() {
-        return containerCriticalApps;
-    }
-
-    public boolean isFotaUpgradeVersionChanged() {
-        return this.isFotaUpgradeVersionChanged;
-    }
-
-    public int getSecureFolderId() {
-        return this.mSecureFolderId;
-    }
-
-    public String getContainerName(int i) {
-        String containerNamePerTypes;
-        if (i == -1) {
-            return "Work profile";
-        }
-        if (i == 0) {
-            return null;
-        }
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        if (isSecureFolderIds(i)) {
-            containerNamePerTypes = getSecureFolderName();
-        } else {
-            containerNamePerTypes = getContainerNamePerTypes(this.mInjector.getUserManager(), i);
-        }
-        this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        return containerNamePerTypes;
-    }
-
-    public final boolean isSecureFolderIds(int i) {
-        return i == -1000 || SemPersonaManager.isSecureFolderId(i);
-    }
-
-    public final String getContainerNamePerTypes(UserManager userManager, int i) {
-        String workProfileName;
-        UserInfo userInfo = userManager.getUserInfo(i);
-        if (userInfo == null) {
-            return null;
-        }
-        if (getAppSeparationName(userInfo) != null) {
-            workProfileName = getAppSeparationName(userInfo);
-        } else if (getECName(i) != null) {
-            workProfileName = getECName(i);
-        } else if (getProfileName(i) != null) {
-            workProfileName = getProfileName(i);
-        } else {
-            workProfileName = getWorkProfileName(this.mContext, i);
-        }
-        if (workProfileName == null) {
-            workProfileName = userInfo.name;
-        }
-        Log.d("PersonaManagerService", "getContainerName return value for container id:" + i + " : " + workProfileName);
-        return workProfileName;
-    }
-
-    public final String getAppSeparationName(UserInfo userInfo) {
-        if (userInfo.isUserTypeAppSeparation()) {
-            return TextUtils.isEmpty(userInfo.name) ? "Separated Apps" : userInfo.name;
-        }
-        return null;
-    }
-
-    public final String getWorkProfileName(final Context context, int i) {
-        return this.mDevicePolicyManager.getResources().getString("Core.RESOLVER_WORK_TAB", new Supplier() { // from class: com.android.server.pm.PersonaManagerService$$ExternalSyntheticLambda0
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                String string;
-                string = context.getString(17043411);
-                return string;
-            }
-        });
-    }
-
-    public String getWorkspaceName(UserInfo userInfo, boolean z) {
-        if (userInfo != null) {
-            Log.d("PersonaManagerService", "getWorkspaceName return value for container id:" + userInfo.id + " : Work Profile");
-        }
-        return "Work Profile";
-    }
-
-    public boolean isPossibleAddAppsToContainer(String str, int i) {
-        IPackageManager packageManager = AppGlobals.getPackageManager();
+    public static boolean deletePackageAsUser(int i, String str) {
+        Log.d("PersonaManagerService", "deletePackageAsUser request for userid -" + i + " and pkg-" + str);
+        PackageDeleteObs packageDeleteObs = new PackageDeleteObs(1);
         try {
-            Intent intent = new Intent("android.intent.action.MAIN");
-            intent.addCategory("android.intent.category.LAUNCHER");
-            intent.setPackage(str);
-            List list = packageManager.queryIntentActivities(intent, (String) null, 0L, i).getList();
-            if (list != null) {
-                return list.size() == 0;
+            IPackageManager.Stub.asInterface(ServiceManager.getService("package")).deletePackageAsUser(str, -1, packageDeleteObs, i, 268435456);
+            synchronized (packageDeleteObs) {
+                while (!packageDeleteObs.finished) {
+                    try {
+                        Log.i("PersonaManagerService", "Waiting in while loop -" + packageDeleteObs.finished);
+                        packageDeleteObs.wait();
+                    } catch (InterruptedException unused) {
+                    }
+                }
             }
-            return true;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return true;
+        } catch (Exception e) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "deletePackage exception -", "PersonaManagerService");
         }
+        return packageDeleteObs.result;
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -2084,94 +1416,249 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         return createBitmap;
     }
 
-    public int getContainerOrder(int i) {
-        int i2;
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        UserInfo userInfo = this.mInjector.getUserManager().getUserInfo(i);
-        if (userInfo != null) {
-            i2 = "KNOX".compareTo(userInfo.name) == 0 ? 1 : 2;
-        } else {
-            i2 = 0;
-        }
-        this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        return i2;
-    }
-
-    public final void registerContentObserver() {
-        Log.d("PersonaManagerService", "registerContentObserver - 0");
-        this.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor("knox_screen_off_timeout"), false, this.analyticsObserver, -1);
-    }
-
-    public final void atomicFileProcessDamagedFile(AtomicFile atomicFile) {
-        if (atomicFile.getBaseFile().exists()) {
-            atomicFile.getBaseFile().renameTo(new File(atomicFile.getBaseFile().getPath() + ".crt"));
-        }
-        atomicFile.getBaseFile().delete();
-    }
-
-    public boolean startActivityThroughPersona(Intent intent) {
-        checkCallerPermissionFor("startActivityThroughPersona");
-        Log.d("PersonaManagerService", "startActivityThroughPersona Intent =" + intent);
-        Context context = this.mContext;
-        if (context != null && intent != null) {
+    public static String getDeviceOwnerPackage() {
+        IDevicePolicyManager asInterface = IDevicePolicyManager.Stub.asInterface(ServiceManager.getService("device_policy"));
+        String str = null;
+        if (asInterface != null) {
             try {
-                context.startActivity(intent);
-                return true;
-            } catch (ActivityNotFoundException e) {
+                ComponentName deviceOwnerComponent = asInterface.getDeviceOwnerComponent(false);
+                if (deviceOwnerComponent != null) {
+                    str = deviceOwnerComponent.getPackageName();
+                }
+            } catch (Exception e) {
+                DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "getDeviceOwnerPackage exception -", "PersonaManagerService");
+            }
+        }
+        if (DEBUG) {
+            DualAppManagerService$$ExternalSyntheticOutline0.m("getDeviceOwnerPackage packageName -", str, "PersonaManagerService");
+        }
+        return str;
+    }
+
+    public static String getProfileOwnerPackage(int i) {
+        IDevicePolicyManager asInterface = IDevicePolicyManager.Stub.asInterface(ServiceManager.getService("device_policy"));
+        String str = null;
+        if (asInterface != null) {
+            try {
+                ComponentName profileOwnerAsUser = asInterface.getProfileOwnerAsUser(i);
+                if (profileOwnerAsUser != null) {
+                    str = profileOwnerAsUser.getPackageName();
+                }
+            } catch (Exception e) {
+                DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "getProfileOwnerPackage exception -", "PersonaManagerService");
+            }
+        }
+        DualAppManagerService$$ExternalSyntheticOutline0.m("getProfileOwnerPackage packageName -", str, "PersonaManagerService");
+        return str;
+    }
+
+    public static boolean isAppSeparationIndepdentApp(PackageInfo packageInfo) {
+        if (packageInfo == null) {
+            return false;
+        }
+        if ((packageInfo.applicationInfo.flags & 129) != 0) {
+            return true;
+        }
+        String str = packageInfo.packageName;
+        String deviceOwnerPackage = getDeviceOwnerPackage();
+        if (deviceOwnerPackage != null && deviceOwnerPackage.equals(str)) {
+            Log.d("PersonaManagerService", "isAppSeparationIndepdentApp ignoring DO packageName - ".concat(deviceOwnerPackage));
+            return true;
+        }
+        if (!str.startsWith("com.samsung.android.knox.kpu")) {
+            return false;
+        }
+        Log.d("PersonaManagerService", "isAppSeparationIndepdentApp ignoring KSP packageName - ".concat(str));
+        return true;
+    }
+
+    public static void onNewUserCreated(UserInfo userInfo) {
+        Log.i("PersonaManagerService", "onNewUserCreated: " + userInfo.id);
+        if (userInfo.isManagedProfile()) {
+            KnoxMUMContainerPolicy.LocalService localService = (KnoxMUMContainerPolicy.LocalService) LocalServices.getService(KnoxMUMContainerPolicy.LocalService.class);
+            int i = userInfo.id;
+            KnoxMUMContainerPolicy knoxMUMContainerPolicy = KnoxMUMContainerPolicy.this;
+            knoxMUMContainerPolicy.getClass();
+            StringBuilder sb = new StringBuilder("onNewUserCreated: ");
+            sb.append(i);
+            sb.append(" provisioning state:");
+            KnoxMUMContainerPolicy.ProvisioningState provisioningState = knoxMUMContainerPolicy.mCurrentProvisioningState;
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(sb, provisioningState == null ? "null" : provisioningState.toString(), "KnoxMUMContainerPolicy");
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:17:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:5:0x002b  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void resetSecureFolderAdmin() {
+        /*
+            android.content.ComponentName r0 = new android.content.ComponentName
+            java.lang.String r1 = "com.samsung.knox.securefolder"
+            java.lang.String r2 = "com.samsung.knox.securefolder.containeragent.detector.KnoxDeviceAdminReceiver"
+            r0.<init>(r1, r2)
+            com.android.server.knox.ContainerDependencyWrapper r2 = com.android.server.knox.ContainerDependencyWrapper.sInstance
+            java.lang.String r2 = "enterprise_policy"
+            android.os.IBinder r3 = android.os.ServiceManager.getService(r2)
+            com.samsung.android.knox.IEnterpriseDeviceManager r3 = com.samsung.android.knox.IEnterpriseDeviceManager.Stub.asInterface(r3)
+            if (r3 == 0) goto L28
+            android.os.IBinder r3 = android.os.ServiceManager.getService(r2)     // Catch: android.os.RemoteException -> L24
+            com.samsung.android.knox.IEnterpriseDeviceManager r3 = com.samsung.android.knox.IEnterpriseDeviceManager.Stub.asInterface(r3)     // Catch: android.os.RemoteException -> L24
+            boolean r3 = r3.isAdminActive(r0)     // Catch: android.os.RemoteException -> L24
+            goto L29
+        L24:
+            r3 = move-exception
+            r3.printStackTrace()
+        L28:
+            r3 = 0
+        L29:
+            if (r3 == 0) goto L4e
+            java.lang.String r3 = "PersonaManagerService:FOTA"
+            java.lang.String r4 = "resetSecureFolderAdmin called"
+            android.util.Log.d(r3, r4)
+            android.os.IBinder r2 = android.os.ServiceManager.getService(r2)     // Catch: java.lang.Exception -> L4a
+            com.samsung.android.knox.IEnterpriseDeviceManager r2 = com.samsung.android.knox.IEnterpriseDeviceManager.Stub.asInterface(r2)     // Catch: java.lang.Exception -> L4a
+            if (r2 == 0) goto L4e
+            com.samsung.android.knox.ContextInfo r3 = new com.samsung.android.knox.ContextInfo     // Catch: java.lang.Exception -> L4a
+            r3.<init>()     // Catch: java.lang.Exception -> L4a
+            r4 = 1
+            r2.setAdminRemovable(r3, r4, r1)     // Catch: java.lang.Exception -> L4a
+            r2.removeActiveAdmin(r0)     // Catch: java.lang.Exception -> L4a
+            goto L4e
+        L4a:
+            r0 = move-exception
+            r0.printStackTrace()
+        L4e:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.resetSecureFolderAdmin():void");
+    }
+
+    public final void CMFALock(int i) {
+        ITrustManager iTrustManager;
+        checkCallerPermissionFor("CMFALock");
+        this.mLocalService.getClass();
+        if (SemPersonaManager.isKnoxId(i)) {
+            NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i, "CMFALock userId = ", "PersonaManagerService");
+            try {
+                synchronized (this) {
+                    try {
+                        if (this.mTrustManager == null) {
+                            this.mTrustManager = ITrustManager.Stub.asInterface(ServiceManager.getService("trust"));
+                        }
+                        iTrustManager = this.mTrustManager;
+                    } finally {
+                    }
+                }
+                iTrustManager.setDeviceLockedForUser(i, true);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return false;
     }
 
-    public boolean broadcastIntentThroughPersona(Intent intent, int i) {
+    public final void CMFAUnLock(int i) {
+        checkCallerPermissionFor("CMFAUnLock");
+        Log.d("PersonaManagerService", "CMFAUnLock not support yet.");
+    }
+
+    public final void addAppPackageNameToAllowList(int i, List list) {
+        try {
+            if (getIPackageManager().checkUidSignatures(1000, Binder.getCallingUid()) != 0) {
+                Log.d("PersonaManagerService", "addAppPackageNameToAllowList failed.");
+                return;
+            }
+            this.mInjector.getClass();
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                ContainerDependencyWrapper.addAppPackageNameToAllowList(i, this.mContext, list);
+            } finally {
+                this.mInjector.getClass();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public final boolean appliedPasswordPolicy(int i) {
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        UserInfo userInfo = ((UserManager) this.mInjector.mContext.getSystemService("user")).getUserInfo(i);
+        if (!checkNullParameter(userInfo) && userInfo.isEnabled()) {
+            r4 = userInfo.needSetupCredential() || ContainerDependencyWrapper.isPwdChangeRequested(i) || Settings.System.getIntForUser(this.mContext.getContentResolver(), "enable_one_lock_ongoing", 0, 0) > 0;
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+        return r4;
+    }
+
+    public final boolean bindCoreServiceAsUser(ComponentName componentName, IApplicationThread iApplicationThread, IBinder iBinder, Intent intent, IServiceConnection iServiceConnection, int i, int i2) {
+        try {
+            if (getIPackageManager().checkUidSignatures(1000, Binder.getCallingUid()) != 0) {
+                Log.d("PersonaManagerService", "bindCoreServiceAsUser() failed to bind.");
+                return false;
+            }
+            String knoxCorePackageName = SemPersonaManager.getKnoxCorePackageName();
+            this.mInjector.getClass();
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                if (createCrossUserServiceIntent(intent, knoxCorePackageName, i2) == null) {
+                    return false;
+                }
+                return ActivityManager.getService().bindService(iApplicationThread, iBinder, intent, intent.resolveTypeIfNeeded(this.mContext.getContentResolver()), iServiceConnection, (long) i, this.mContext.getOpPackageName(), i2) != 0;
+            } catch (RemoteException unused) {
+                return false;
+            } finally {
+                this.mInjector.getClass();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public final boolean broadcastIntentThroughPersona(Intent intent, int i) {
         checkCallerPermissionFor("broadcastIntentThroughPersona");
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             Log.d("PersonaManagerService", "broadcastIntentThroughPersona Intent =" + intent);
             Context context = this.mContext;
             if (context != null && intent != null) {
                 context.sendBroadcastAsUser(intent, new UserHandle(i));
-                this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
+                this.mInjector.getClass();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
                 return true;
             }
             Log.d("PersonaManagerService", "broadcastIntentThroughPersona is canceled by mContext = " + this.mContext + " or intent = " + intent);
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
             return false;
         } catch (Throwable th) {
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
             throw th;
         }
     }
 
-    public void postActiveUserChange(int i, ComponentName componentName, boolean z, int i2, int i3, boolean z2, boolean z3, boolean z4) {
-        this.mKnoxAnalyticsContainer.postActiveUserChange(i, componentName, z3);
+    public final void checkCallerPermissionFor(String str) {
+        ContainerDependencyWrapper.checkCallerPermissionFor(this.mContext, "PersonaManagerService", str);
     }
 
-    public boolean appliedPasswordPolicy(int i) {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        UserInfo userInfo = this.mInjector.getUserManager().getUserInfo(i);
-        if (!checkNullParameter(userInfo) && userInfo.isEnabled()) {
-            r4 = userInfo.needSetupCredential() || ContainerDependencyWrapper.isPwdChangeRequested(i) || isOneLockOngoing();
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
+    public final boolean clearAttributes(int i, int i2) {
+        checkCallerPermissionFor("clearAttributes");
+        if (getUserManager().getUserInfo(i) == null) {
+            ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m(i, "user not found ", "PersonaManagerService");
+            return false;
         }
-        return r4;
-    }
-
-    public final boolean isBiometricsEnabledAfterFota(int i) {
-        return Settings.System.getIntForUser(this.mContext.getContentResolver(), "dedicated_biometrics", 0, i) > 0;
-    }
-
-    public final boolean isOneLockOngoing() {
-        return Settings.System.getIntForUser(this.mContext.getContentResolver(), "enable_one_lock_ongoing", 0, 0) > 0;
-    }
-
-    public boolean isKnoxWindowExist(int i, int i2, int i3) {
-        return ContainerDependencyWrapper.isKnoxWindowExist(i, i2, i3);
-    }
-
-    public void hideMultiWindows(int i) {
-        ContainerDependencyWrapper.notifyWorkTaskStackChanged();
+        if (this.mUserManagerInternal == null) {
+            this.mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
+        }
+        return this.mUserManagerInternal.clearAttributes(i, i2);
     }
 
     public final Intent createCrossUserServiceIntent(Intent intent, String str, int i) {
@@ -2182,7 +1669,7 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
             return null;
         }
         if (!str.equals(serviceInfo.packageName)) {
-            throw new SecurityException("Only allow to bind service in " + str);
+            throw new SecurityException("Only allow to bind service in ".concat(str));
         }
         ServiceInfo serviceInfo2 = resolveService.serviceInfo;
         if (serviceInfo2.exported && !"android.permission.BIND_DEVICE_ADMIN".equals(serviceInfo2.permission)) {
@@ -2192,824 +1679,492 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         return intent;
     }
 
-    public boolean bindCoreServiceAsUser(ComponentName componentName, IApplicationThread iApplicationThread, IBinder iBinder, Intent intent, IServiceConnection iServiceConnection, int i, int i2) {
-        boolean z = false;
+    public final boolean deletePkg(int i, String str) {
+        if (!isPackageInstalledAsUser(i, str)) {
+            Log.e("PersonaManagerService", "Ignore deletePkg request for personaId -" + i + " and pkg-" + str);
+            return true;
+        }
+        Log.e("PersonaManagerService", "deletePkg request for personaId -" + i + " and pkg-" + str);
+        PackageDeleteObs packageDeleteObs = new PackageDeleteObs(0);
         try {
-            if (getIPackageManager().checkUidSignatures(1000, Binder.getCallingUid()) != 0) {
-                Log.d("PersonaManagerService", "bindCoreServiceAsUser() failed to bind.");
-                return false;
-            }
-            String knoxCorePackageName = SemPersonaManager.getKnoxCorePackageName();
-            long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-            try {
-                if (createCrossUserServiceIntent(intent, knoxCorePackageName, i2) != null) {
-                    if (ActivityManager.getService().bindService(iApplicationThread, iBinder, intent, intent.resolveTypeIfNeeded(this.mContext.getContentResolver()), iServiceConnection, i, this.mContext.getOpPackageName(), i2) != 0) {
-                        z = true;
+            ContainerDependencyWrapper.deletePackageAsUserAndPersona(this.mPm, str, packageDeleteObs, i);
+            synchronized (packageDeleteObs) {
+                while (!packageDeleteObs.finished) {
+                    try {
+                        Log.i("PersonaManagerService", "Waiting in while loop" + packageDeleteObs.finished);
+                        packageDeleteObs.wait();
+                    } catch (InterruptedException e) {
+                        Log.w("PersonaManagerService", "deletePkg: InterruptedException = " + e);
                     }
                 }
-                return z;
-            } catch (RemoteException unused) {
-                return false;
-            } finally {
-                this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
             }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return false;
+        } catch (Exception e2) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e2, "deletePkg exception -", "PersonaManagerService");
         }
+        return packageDeleteObs.result;
     }
 
-    public int getFotaVersion() {
-        int parseInt;
-        Log.d("PersonaManagerService", "getFotaVersion is called...");
-        synchronized (this.mPersonaCacheLock) {
-            String str = (String) this.mPersonaCacheMap.get("fotaversion");
-            parseInt = (str == null || str.length() <= 0) ? -1 : Integer.parseInt(str);
-        }
-        Log.d("PersonaManagerService", "version - " + parseInt);
-        return parseInt;
-    }
-
-    public String getPersonaCacheValue(String str) {
-        String str2;
-        checkCallerPermissionFor("getPersonaCacheValue");
-        Log.d("PersonaManagerService", "getPersonaCacheValue is called for key " + str);
-        if (str == null || str.length() <= 0 || !this.mPersonaCacheMap.containsKey(str)) {
-            return null;
-        }
-        synchronized (this.mPersonaCacheLock) {
-            str2 = (String) this.mPersonaCacheMap.get(str);
-        }
-        return str2;
-    }
-
-    public boolean updatePersonaCache(String str, String str2) {
-        checkCallerPermissionFor("updatePersonaCache");
-        boolean z = false;
-        if (str != null && str.length() > 0) {
-            synchronized (this.mPersonaCacheLock) {
-                if (!"fwversion".equals(str) && !"fotaversion".equals(str)) {
-                    if (this.mPersonaCacheMap.containsKey(str) && str2 == null) {
-                        Log.d("PersonaManagerService", "Remove cache entry request");
-                        this.mPersonaCacheMap.remove(str);
-                        z = true;
-                    }
-                    if (!this.mPersonaCacheMap.containsKey(str) && str2 != null) {
-                        Log.d("PersonaManagerService", "Add cache entry request");
-                        this.mPersonaCacheMap.put(str, str2);
-                        z = true;
-                    }
-                    if (this.mPersonaCacheMap.containsKey(str) && str2 != null) {
-                        Log.d("PersonaManagerService", "update cache entry request");
-                        this.mPersonaCacheMap.remove(str);
-                        this.mPersonaCacheMap.put(str, str2);
-                        z = true;
-                    }
-                    if (z) {
-                        writePersonaCacheLocked();
-                    }
-                }
-                return false;
-            }
-        }
-        Log.d("PersonaManagerService", "updatePersonaCache status - " + z);
-        return z;
-    }
-
-    public Bundle getSeparationConfigfromCache() {
-        return mSeparationConfiginCache;
-    }
-
-    public boolean setPackageSettingInstalled(String str, boolean z, int i) {
-        checkCallerPermissionFor("setPackageSettingInstalled");
-        return ContainerDependencyWrapper.setPackageSettingInstalled(this.mPm, str, z, i);
-    }
-
-    public void refreshLockTimer(int i) {
-        checkCallerPermissionFor("refreshLockTimer");
-        Log.d("PersonaManagerService", "RefreshLockTimer for user : " + i);
-        ContainerDependencyWrapper.setMaximumScreenOffTimeoutFromKnox(getPowerManagerInternal(), i, (long) getScreenOffTimeoutLocked(i));
-    }
-
-    public boolean isExternalStorageEnabled(int i) {
-        return ContainerDependencyWrapper.isExternalStorageEnabled(i);
-    }
-
-    public void revokeSUWAgreements(Context context) {
-        ContainerDependencyWrapper.revokeSUWAgreements(getUserManager(), this.mContext);
-    }
-
-    public final void setDpmScreenTimeoutFlag(int i) {
-        int intForUser;
-        DevicePolicyManager devicePolicyManager;
-        ComponentName adminComponentName = getAdminComponentName(i);
-        long maximumTimeToLock = (adminComponentName == null || (devicePolicyManager = this.mDevicePolicyManager) == null) ? 0L : devicePolicyManager.getMaximumTimeToLock(adminComponentName, i);
-        int i2 = maximumTimeToLock > 2147483647L ? Integer.MAX_VALUE : (int) maximumTimeToLock;
-        boolean z = i2 > 0 && i2 < Integer.MAX_VALUE;
-        if (SemPersonaManager.isSecureFolderId(i)) {
-            intForUser = Settings.System.getIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", -1, i);
-        } else {
-            intForUser = Settings.Secure.getIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", -1, i);
-        }
-        long j = intForUser;
-        if (!z || j <= i2) {
-            return;
-        }
-        this.mKALockscreenTimeoutAdminFlag = true;
-        Log.d("PersonaManagerService:KnoxAnalytics", "setting mKALockscreenTimeoutAdminFlag true (at boot)");
-    }
-
-    public void notifyPersona(long j, int i) {
-        int intForUser;
-        if (SemPersonaManager.isSecureFolderId(i)) {
-            intForUser = Settings.System.getIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", -1, i);
-        } else {
-            intForUser = Settings.Secure.getIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", -1, i);
-        }
-        long j2 = intForUser;
-        boolean z = j > 0;
-        if ((!z || j2 <= j) && ((!z || j2 > 0) && ((!z || j2 <= 0 || j2 > j || !this.mKALockscreenTimeoutAdminFlag) && (z || !this.mKALockscreenTimeoutAdminFlag)))) {
-            return;
-        }
-        this.mKnoxAnalyticsContainer.requestSendSnapshotLog(i);
-        if (z && j2 > j) {
-            this.mKALockscreenTimeoutAdminFlag = true;
-        } else {
-            this.mKALockscreenTimeoutAdminFlag = false;
-        }
-    }
-
-    public void knoxAnalyticsAccountsChanged(int i, String str, boolean z) {
-        PersonaHandler personaHandler = this.mPersonaHandler;
-        if (personaHandler == null) {
-            return;
-        }
-        Message obtainMessage = personaHandler.obtainMessage(70);
-        obtainMessage.arg1 = i;
-        obtainMessage.arg2 = z ? 1 : 0;
-        obtainMessage.obj = str;
-        this.mPersonaHandler.sendMessage(obtainMessage);
-    }
-
-    public Bundle sendProxyMessage(String str, String str2, Bundle bundle) {
-        checkCallerPermissionFor("sendProxyMessage");
-        StringBuilder sb = new StringBuilder();
-        sb.append("sendProxyMessage() name:");
-        sb.append(str2);
-        sb.append(" bundle:");
-        sb.append(bundle == null ? "null" : bundle.toString());
-        Log.e("PersonaManagerService", sb.toString());
-        return this.mPersonaServiceProxy.sendProxyMessage(str, str2, bundle);
-    }
-
-    public final UserManagerInternal getUserManagerInternal() {
-        if (this.mUserManagerInternal == null) {
-            this.mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
-        }
-        return this.mUserManagerInternal;
-    }
-
-    public final PowerManagerInternal getPowerManagerInternal() {
-        if (this.mPowerManagerInternal == null) {
-            this.mPowerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
-        }
-        return this.mPowerManagerInternal;
-    }
-
-    public final ActivityManagerInternal getActivityManagerInternal() {
-        if (this.mActivityManagerInternal == null) {
-            this.mActivityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
-        }
-        return this.mActivityManagerInternal;
-    }
-
-    public boolean setAttributes(int i, int i2) {
-        checkCallerPermissionFor("setAttributes");
-        if (getUserManager().getUserInfo(i) == null) {
-            Log.e("PersonaManagerService", "user not found " + i);
-            return false;
-        }
-        return ContainerDependencyWrapper.setAttributes(getUserManagerInternal(), i, i2);
-    }
-
-    public int getAttributes(int i) {
-        checkCallerPermissionFor("getAttributes");
-        return ContainerDependencyWrapper.getAttributes(getUserManagerInternal(), i);
-    }
-
-    public boolean clearAttributes(int i, int i2) {
-        checkCallerPermissionFor("clearAttributes");
-        if (getUserManager().getUserInfo(i) == null) {
-            Log.e("PersonaManagerService", "user not found " + i);
-            return false;
-        }
-        return ContainerDependencyWrapper.clearAttributes(getUserManagerInternal(), i, i2);
-    }
-
-    public String getCustomResource(int i, String str) {
-        return ContainerDependencyWrapper.getCustomResource(i, str);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:5:0x0023 A[Catch: all -> 0x001e, TRY_LEAVE, TryCatch #0 {all -> 0x001e, blocks: (B:16:0x000a, B:18:0x0012, B:5:0x0023, B:9:0x002d, B:14:0x003f), top: B:15:0x000a }] */
-    /* JADX WARN: Removed duplicated region for block: B:9:0x002d A[Catch: all -> 0x001e, TRY_ENTER, TRY_LEAVE, TryCatch #0 {all -> 0x001e, blocks: (B:16:0x000a, B:18:0x0012, B:5:0x0023, B:9:0x002d, B:14:0x003f), top: B:15:0x000a }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public byte[] getKnoxIcon(java.lang.String r6, java.lang.String r7, int r8) {
-        /*
-            r5 = this;
-            com.android.server.pm.PersonaManagerService$Injector r0 = r5.mInjector
-            long r0 = r0.binderClearCallingIdentity()
-            r2 = 2
-            r3 = 1
-            if (r7 == 0) goto L20
-            java.lang.String r4 = "com.android.internal.app.ForwardIntentToManagedProfile"
-            boolean r4 = r7.contains(r4)     // Catch: java.lang.Throwable -> L1e
-            if (r4 == 0) goto L20
-            java.lang.String r4 = "com.android.internal.app.ForwardIntentToManagedProfile4"
-            boolean r4 = r4.equals(r7)     // Catch: java.lang.Throwable -> L1e
-            if (r4 == 0) goto L1c
-            r4 = r2
-            goto L21
-        L1c:
-            r4 = r3
-            goto L21
-        L1e:
-            r6 = move-exception
-            goto L44
-        L20:
-            r4 = -1
-        L21:
-            if (r4 != r3) goto L2d
-            byte[] r6 = r5.getKnoxSwitcherIcon(r6, r7, r8)     // Catch: java.lang.Throwable -> L1e
-        L27:
-            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
-            r5.binderRestoreCallingIdentity(r0)
-            return r6
-        L2d:
-            java.lang.String r7 = "com.samsung.knox.securefolder"
-            boolean r6 = r7.equals(r6)     // Catch: java.lang.Throwable -> L1e
-            if (r6 != 0) goto L3f
-            if (r4 != r2) goto L38
-            goto L3f
-        L38:
-            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
-            r5.binderRestoreCallingIdentity(r0)
-            r5 = 0
-            return r5
-        L3f:
-            byte[] r6 = r5.getSecureFolderIcon()     // Catch: java.lang.Throwable -> L1e
-            goto L27
-        L44:
-            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
-            r5.binderRestoreCallingIdentity(r0)
-            throw r6
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getKnoxIcon(java.lang.String, java.lang.String, int):byte[]");
-    }
-
-    public final byte[] getKnoxSwitcherIcon(String str, String str2, int i) {
-        UserInfo userInfo;
-        byte[] bArr;
-        UserManager userManager = UserManager.get(this.mContext);
-        if (i != 0 && i != -10000) {
-            userInfo = userManager.getUserInfo(i);
-            bArr = SemPersonaManager.getCustomResource(i, "custom-container-icon");
-            if (bArr == null && userInfo != null) {
-                Settings.System.getIntForUser(this.mContext.getContentResolver(), "knox_icon_upgraded", 0, userInfo.id);
-            }
-        } else {
-            Iterator it = userManager.getUsers().iterator();
-            while (true) {
-                if (!it.hasNext()) {
-                    userInfo = null;
-                    bArr = null;
-                    break;
-                }
-                userInfo = (UserInfo) it.next();
-                if ((userInfo.flags & 0) == 0) {
-                    bArr = SemPersonaManager.getCustomResource(userInfo.id, "custom-container-icon");
-                    break;
-                }
-            }
-        }
-        return (userInfo == null || !userInfo.isQuietModeEnabled() || bArr == null) ? bArr : ContainerDependencyWrapper.convertToGreyIcon(bArr);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:11:0x003f A[Catch: Exception -> 0x0050, TRY_LEAVE, TryCatch #0 {Exception -> 0x0050, blocks: (B:2:0x0000, B:5:0x0012, B:8:0x0019, B:9:0x0039, B:11:0x003f, B:16:0x0024), top: B:1:0x0000 }] */
-    /* JADX WARN: Removed duplicated region for block: B:15:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final byte[] getSecureFolderIcon() {
-        /*
-            r3 = this;
-            android.content.Context r0 = r3.mContext     // Catch: java.lang.Exception -> L50
-            android.content.ContentResolver r0 = r0.getContentResolver()     // Catch: java.lang.Exception -> L50
-            java.lang.String r1 = "secure_folder_image_name"
-            r2 = 0
-            java.lang.String r0 = android.provider.Settings.Secure.getStringForUser(r0, r1, r2)     // Catch: java.lang.Exception -> L50
-            java.lang.String r1 = "com.samsung.knox.securefolder"
-            if (r0 == 0) goto L24
-            boolean r0 = r0.isEmpty()     // Catch: java.lang.Exception -> L50
-            if (r0 == 0) goto L19
-            goto L24
-        L19:
-            android.content.Context r3 = r3.mContext     // Catch: java.lang.Exception -> L50
-            android.content.pm.PackageManager r3 = r3.getPackageManager()     // Catch: java.lang.Exception -> L50
-            android.graphics.drawable.Drawable r3 = r3.getApplicationIcon(r1)     // Catch: java.lang.Exception -> L50
-            goto L39
-        L24:
-            android.app.ActivityThread r3 = android.app.ActivityThread.currentActivityThread()     // Catch: java.lang.Exception -> L50
-            android.app.ContextImpl r3 = r3.getSystemUiContext()     // Catch: java.lang.Exception -> L50
-            r3.getPackageManager()     // Catch: java.lang.Exception -> L50
-            android.content.pm.PackageManager r3 = r3.getPackageManager()     // Catch: java.lang.Exception -> L50
-            r0 = 32
-            android.graphics.drawable.Drawable r3 = r3.semGetApplicationIconForIconTray(r1, r0)     // Catch: java.lang.Exception -> L50
-        L39:
-            android.graphics.Bitmap r3 = drawableToBitmap(r3)     // Catch: java.lang.Exception -> L50
-            if (r3 == 0) goto L6b
-            java.io.ByteArrayOutputStream r0 = new java.io.ByteArrayOutputStream     // Catch: java.lang.Exception -> L50
-            r0.<init>()     // Catch: java.lang.Exception -> L50
-            android.graphics.Bitmap$CompressFormat r1 = android.graphics.Bitmap.CompressFormat.PNG     // Catch: java.lang.Exception -> L50
-            r2 = 100
-            r3.compress(r1, r2, r0)     // Catch: java.lang.Exception -> L50
-            byte[] r3 = r0.toByteArray()     // Catch: java.lang.Exception -> L50
-            return r3
-        L50:
-            r3 = move-exception
-            java.lang.StringBuilder r0 = new java.lang.StringBuilder
-            r0.<init>()
-            java.lang.String r1 = "Exception in getSecureFolderIcon : "
-            r0.append(r1)
-            java.lang.String r3 = r3.getMessage()
-            r0.append(r3)
-            java.lang.String r3 = r0.toString()
-            java.lang.String r0 = "PersonaManagerService"
-            android.util.Log.e(r0, r3)
-        L6b:
-            r3 = 0
-            return r3
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getSecureFolderIcon():byte[]");
-    }
-
-    public boolean getPersonaUserHasBeenShutdownBefore(int i) {
-        boolean z;
-        synchronized (this.mUserHasBeenShutdownBefore) {
-            z = this.mUserHasBeenShutdownBefore.get(i, false);
-        }
-        return z;
-    }
-
-    public final synchronized ITrustManager getTrustManager() {
-        if (this.mTrustManager == null) {
-            this.mTrustManager = ITrustManager.Stub.asInterface(ServiceManager.getService("trust"));
-        }
-        return this.mTrustManager;
-    }
-
-    public String getECName(int i) {
-        if (this.mInjector.isTestingMode()) {
-            return this.mInjector.getPersonaManagerInternal().getECName(i);
-        }
-        return this.mLocalService.getECName(i);
-    }
-
-    public String getProfileName(int i) {
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
         String str;
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            str = this.mInjector.getPersonaPolicyManagerService().getCustomNamePersona(i);
-        } catch (Exception unused) {
-            Log.e("PersonaManagerService:FOTA", "getProfileName unable to getCustomName");
-            str = null;
-        }
-        this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        Log.d("PersonaManagerService", "getProfileName return value for container id:" + i + " : " + str);
-        return str;
-    }
-
-    public String getPersonalModeName(int i) {
-        String str;
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            str = this.mPersonaPolicyManagerService.getCustomNamePersonalMode(i);
-        } catch (Exception unused) {
-            Log.e("PersonaManagerService:FOTA", "getPersonalModeName unable to getCustomName");
-            str = null;
-        }
-        if (DEBUG) {
-            Log.d("PersonaManagerService:FOTA", "getPersonalModeName name - " + str);
-        }
-        this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        return str;
-    }
-
-    public boolean setProfileName(int i, String str) {
-        try {
-            this.mPersonaPolicyManagerService.setCustomNamePersona(i, str);
-            return false;
-        } catch (Exception unused) {
-            Log.e("PersonaManagerService:FOTA", "setProfileName unable to setProfileName");
-            return false;
-        }
-    }
-
-    public boolean setPersonalModeName(int i, String str) {
-        try {
-            this.mPersonaPolicyManagerService.setCustomNamePersonalMode(i, str);
-        } catch (Exception unused) {
-            Log.e("PersonaManagerService:FOTA", "setPersonalModeName unable to set PersonalModeName");
-        }
-        if (DEBUG) {
-            Log.d("PersonaManagerService:FOTA", "setPersonalModeName name - " + str + " false");
-        }
-        return false;
-    }
-
-    public final boolean clearHomeCrossProfileFilter(String str) {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
+        if (DumpUtils.checkDumpPermission(this.mContext, "PersonaManagerService", printWriter)) {
             try {
-                AppGlobals.getPackageManager().clearCrossProfileIntentFilters(0, str);
-                this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-                return true;
-            } catch (RemoteException e) {
-                Log.e("PersonaManagerService:FOTA", "clearCrossProfileIntentFilters Exception: " + e);
-                this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-                return false;
+                synchronized (this.mPersonaCacheMap) {
+                    str = (String) this.mPersonaCacheMap.get("USER-REMOVED");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                str = "NA";
             }
-        } catch (Throwable th) {
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-            throw th;
-        }
-    }
-
-    public void sendRequestKeyStatus(int i) {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            Intent intent = new Intent("com.sec.knox.containeragent.klms.licensekey.check");
-            intent.putExtra("container_id", i);
-            intent.setPackage("com.samsung.klmsagent");
-            this.mContext.sendBroadcast(intent);
-        } finally {
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        }
-    }
-
-    public final String getAppNameByPID(int i) {
-        List<ActivityManager.RunningAppProcessInfo> runningAppProcesses = ((ActivityManager) this.mContext.getSystemService("activity")).getRunningAppProcesses();
-        if (runningAppProcesses == null || runningAppProcesses.isEmpty()) {
-            return "";
-        }
-        for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : runningAppProcesses) {
-            if (runningAppProcessInfo.pid == i) {
-                return runningAppProcessInfo.processName;
-            }
-        }
-        return "";
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Removed duplicated region for block: B:62:0x0272  */
-    /* JADX WARN: Removed duplicated region for block: B:64:0x0278 A[SYNTHETIC] */
-    /* renamed from: getMoveToKnoxMenuList, reason: merged with bridge method [inline-methods] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public java.util.ArrayList m9610getMoveToKnoxMenuList(int r24) {
-        /*
-            Method dump skipped, instructions count: 761
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.m9610getMoveToKnoxMenuList(int):java.util.ArrayList");
-    }
-
-    public int getFocusedUser() {
-        int i;
-        KeyguardManager keyguardManager = this.mKeyguardManager;
-        if (keyguardManager != null && keyguardManager.isKeyguardLocked()) {
-            long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-            int i2 = this.mFocusedUserId;
+            printWriter.println("Last removed user:");
+            printWriter.println(str);
+            printWriter.println("");
+            long clearCallingIdentity = Binder.clearCallingIdentity();
             try {
                 try {
-                    i2 = ActivityManager.getCurrentUser();
+                    Iterator it = getPersonaManager().getKnoxIds(true).iterator();
+                    while (it.hasNext()) {
+                        int intValue = ((Integer) it.next()).intValue();
+                        printWriter.println("approved installers user : #" + intValue);
+                        Context context = this.mContext;
+                        if (ContainerDependencyWrapper.mEdmStorageProvider == null) {
+                            ContainerDependencyWrapper.mEdmStorageProvider = new EdmStorageProvider(context);
+                        }
+                        Iterator it2 = IKnoxContainerManager.Stub.asInterface(ServiceManager.getService("mum_container_policy")).getPackagesFromInstallWhiteList(new ContextInfo(ContainerDependencyWrapper.mEdmStorageProvider.getMUMContainerOwnerUid(intValue), intValue)).iterator();
+                        while (it2.hasNext()) {
+                            printWriter.println(" - " + ((String) it2.next()));
+                        }
+                    }
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+                printWriter.println("");
+                Bundle separationConfigfromCache = getSeparationConfigfromCache();
+                int appSeparationId = getAppSeparationId();
+                printWriter.println("App Separation:");
+                printWriter.print("    STATE : ");
+                if (appSeparationId != 0) {
+                    printWriter.println("ENABLED");
+                } else {
+                    if (separationConfigfromCache == null) {
+                        printWriter.println("NONE");
+                        return;
+                    }
+                    printWriter.println("ACTIVATED");
+                }
+                if (separationConfigfromCache != null) {
+                    StringBuilder sb = new StringBuilder();
+                    StringBuilder sb2 = new StringBuilder();
+                    boolean z = separationConfigfromCache.getBoolean("APP_SEPARATION_OUTSIDE", false);
+                    ArrayList<String> stringArrayList = separationConfigfromCache.getStringArrayList("APP_SEPARATION_APP_LIST");
+                    ArrayList<String> stringArrayList2 = separationConfigfromCache.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST");
+                    if (stringArrayList != null) {
+                        for (int i = 0; i < stringArrayList.size(); i++) {
+                            sb.append("        ");
+                            sb.append(i + " -> " + stringArrayList.get(i) + "\n");
+                        }
+                    }
+                    if (stringArrayList2 != null) {
+                        for (int i2 = 0; i2 < stringArrayList2.size(); i2++) {
+                            sb2.append("        ");
+                            sb2.append(i2 + " -> " + stringArrayList2.get(i2) + "\n");
+                        }
+                    }
+                    printWriter.println("    Outside Option : " + z);
+                    printWriter.println("    AllowList Packages: ");
+                    printWriter.println(sb.toString());
+                    printWriter.println("    CoexistenceList Packages: ");
+                    printWriter.println(sb2.toString());
+                }
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:114:0x0a26  */
+    /* JADX WARN: Removed duplicated region for block: B:116:? A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:120:0x0990  */
+    /* JADX WARN: Removed duplicated region for block: B:33:0x085a  */
+    /* JADX WARN: Removed duplicated region for block: B:48:0x089d  */
+    /* JADX WARN: Removed duplicated region for block: B:69:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:73:0x0896  */
+    /* JADX WARN: Removed duplicated region for block: B:81:0x0954  */
+    /* JADX WARN: Removed duplicated region for block: B:96:0x0997  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void enforceAppSeparationCoexistenceAllowListUpdateInternal() {
+        /*
+            Method dump skipped, instructions count: 2602
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.enforceAppSeparationCoexistenceAllowListUpdateInternal():void");
+    }
+
+    public final boolean enforceSeparatedAppsRemoveInternal() {
+        Bundle separationConfigfromCache = getSeparationConfigfromCache();
+        if (separationConfigfromCache == null) {
+            Log.d("PersonaManagerService", "enforceSeparatedAppsRemoveInternal return immediately if App Separation has not been set");
+            return false;
+        }
+        boolean z = separationConfigfromCache.getBoolean("APP_SEPARATION_OUTSIDE", false);
+        ArrayList arrayList = new ArrayList();
+        HashSet hashSet = separationConfigfromCache.getStringArrayList("APP_SEPARATION_APP_LIST") != null ? new HashSet(separationConfigfromCache.getStringArrayList("APP_SEPARATION_APP_LIST")) : new HashSet();
+        HashSet hashSet2 = separationConfigfromCache.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST") != null ? new HashSet(separationConfigfromCache.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST")) : new HashSet();
+        HashSet hashSet3 = new HashSet();
+        this.mImeSet = hashSet3;
+        getIMEPackagesAsUser(0, hashSet3);
+        for (PackageInfo packageInfo : this.mContext.getPackageManager().getInstalledPackagesAsUser(64, 0)) {
+            if (!isAppSeparationIndepdentApp(packageInfo)) {
+                VpnManagerService$$ExternalSyntheticOutline0.m(new StringBuilder("enforceSeparatedAppsRemoveInternal remove packageName "), packageInfo.packageName, "PersonaManagerService");
+                if ((!hashSet.contains(packageInfo.packageName) && z) || (hashSet.contains(packageInfo.packageName) && !z)) {
+                    arrayList.add(packageInfo.packageName);
+                }
+            }
+        }
+        Iterator it = arrayList.iterator();
+        boolean z2 = true;
+        while (it.hasNext()) {
+            String str = (String) it.next();
+            if (!isKeyboardApp(str) && !hashSet2.contains(str) && isPackageInstalledAsUser(0, str)) {
+                Log.d("PersonaManagerService", "enforceSeparatedAppsRemoveInternal remove use 0 packageName ? - " + str);
+                if (!deletePackageAsUser(0, str)) {
+                    suspendAppsInOwner(str, true);
+                    z2 = false;
+                }
+            }
+        }
+        try {
+            Intent intent = new Intent();
+            intent.setAction("com.samsung.android.knox.action.APP_SEPARATION_ACTION");
+            intent.putExtra("removed", true);
+            intent.setClassName("com.samsung.android.appseparation", "com.samsung.android.appseparation.receiver.ProfileStateChangedReceiver");
+            this.mContext.sendBroadcastAsUser(intent, UserHandle.SYSTEM);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return z2;
+    }
+
+    public final ComponentName getAdminComponentName(int i) {
+        boolean isManagedProfile;
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean isKnoxId = SemPersonaManager.isKnoxId(i);
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        boolean isOnDeviceOwner = DualDarManager.isOnDeviceOwner(i);
+        try {
+            if (!isKnoxId) {
+                try {
+                    isManagedProfile = getUserManager().getUserInfo(i).isManagedProfile();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return i2;
-            } finally {
-                this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
+                if (!isKnoxId || isManagedProfile || isOnDeviceOwner) {
+                    this.mInjector.getClass();
+                    return this.mLocalService.getAdminComponentNameFromEdm(i);
+                }
+                this.mInjector.getClass();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return null;
+            }
+            isManagedProfile = isKnoxId;
+            if (isKnoxId) {
+            }
+            this.mInjector.getClass();
+            return this.mLocalService.getAdminComponentNameFromEdm(i);
+        } finally {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0031, code lost:
+    
+        r2 = r3.id;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int getAppSeparationId() {
+        /*
+            r5 = this;
+            com.android.server.pm.PersonaManagerService$Injector r0 = r5.mInjector
+            r0.getClass()
+            long r0 = android.os.Binder.clearCallingIdentity()
+            com.android.server.pm.PersonaManagerService$Injector r2 = r5.mInjector     // Catch: java.lang.Throwable -> L34
+            android.content.Context r2 = r2.mContext     // Catch: java.lang.Throwable -> L34
+            java.lang.String r3 = "user"
+            java.lang.Object r2 = r2.getSystemService(r3)     // Catch: java.lang.Throwable -> L34
+            android.os.UserManager r2 = (android.os.UserManager) r2     // Catch: java.lang.Throwable -> L34
+            r3 = 1
+            java.util.List r2 = r2.getUsers(r3)     // Catch: java.lang.Throwable -> L34
+            java.util.Iterator r2 = r2.iterator()     // Catch: java.lang.Throwable -> L34
+        L1f:
+            boolean r3 = r2.hasNext()     // Catch: java.lang.Throwable -> L34
+            if (r3 == 0) goto L36
+            java.lang.Object r3 = r2.next()     // Catch: java.lang.Throwable -> L34
+            android.content.pm.UserInfo r3 = (android.content.pm.UserInfo) r3     // Catch: java.lang.Throwable -> L34
+            boolean r4 = r3.isUserTypeAppSeparation()     // Catch: java.lang.Throwable -> L34
+            if (r4 == 0) goto L1f
+            int r2 = r3.id     // Catch: java.lang.Throwable -> L34
+            goto L37
+        L34:
+            r2 = move-exception
+            goto L40
+        L36:
+            r2 = 0
+        L37:
+            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
+            r5.getClass()
+            android.os.Binder.restoreCallingIdentity(r0)
+            return r2
+        L40:
+            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
+            r5.getClass()
+            android.os.Binder.restoreCallingIdentity(r0)
+            throw r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getAppSeparationId():int");
+    }
+
+    public final int getAttributes(int i) {
+        checkCallerPermissionFor("getAttributes");
+        if (this.mUserManagerInternal == null) {
+            this.mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
+        }
+        return this.mUserManagerInternal.getAttributes(i);
+    }
+
+    public final String getContainerName(int i) {
+        if (i == -1) {
+            return "Work profile";
+        }
+        String str = null;
+        if (i == 0) {
+            return null;
+        }
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        if (i == -1000 || SemPersonaManager.isSecureFolderId(i)) {
+            str = getSecureFolderName();
+        } else {
+            UserInfo userInfo = ((UserManager) this.mInjector.mContext.getSystemService("user")).getUserInfo(i);
+            if (userInfo != null) {
+                if ((userInfo.isUserTypeAppSeparation() ? TextUtils.isEmpty(userInfo.name) ? "Separated Apps" : userInfo.name : null) == null) {
+                    getECName(i);
+                    if (getProfileName(i) != null) {
+                        str = getProfileName(i);
+                    } else {
+                        final Context context = this.mContext;
+                        str = this.mDevicePolicyManager.getResources().getString("Core.RESOLVER_WORK_TAB", new Supplier() { // from class: com.android.server.pm.PersonaManagerService$$ExternalSyntheticLambda0
+                            @Override // java.util.function.Supplier
+                            public final Object get() {
+                                return context.getString(17043637);
+                            }
+                        });
+                    }
+                } else if (userInfo.isUserTypeAppSeparation()) {
+                    str = TextUtils.isEmpty(userInfo.name) ? "Separated Apps" : userInfo.name;
+                }
+                if (str == null) {
+                    str = userInfo.name;
+                }
+                Log.d("PersonaManagerService", "getContainerName return value for container id:" + i + " : " + str);
             }
         }
-        synchronized (this.mFocusLock) {
-            i = this.mFocusedUserId;
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return str;
+    }
+
+    public final int getContainerOrder(int i) {
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        UserInfo userInfo = ((UserManager) this.mInjector.mContext.getSystemService("user")).getUserInfo(i);
+        int i2 = userInfo != null ? "KNOX".compareTo(userInfo.name) == 0 ? 1 : 2 : 0;
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return i2;
+    }
+
+    public final String getCustomResource(int i, String str) {
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        return KnoxContainerManager.getCustomResource(i, str);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:23:0x0047, code lost:
+    
+        if (android.app.AppGlobals.getPackageManager().checkSignatures("android", r2, android.os.UserHandle.getUserId(r0)) == 0) goto L14;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final android.os.Bundle getDualDARProfile() {
+        /*
+            r8 = this;
+            android.content.Context r8 = r8.mContext
+            com.android.server.knox.ContainerDependencyWrapper r0 = com.android.server.knox.ContainerDependencyWrapper.sInstance
+            java.lang.String r0 = "getDualDARProfile()"
+            java.lang.String r1 = "DualDARStorageHelper"
+            android.util.Log.d(r1, r0)
+            int r0 = android.os.Binder.getCallingUid()
+            r2 = 1000(0x3e8, float:1.401E-42)
+            r3 = 0
+            if (r0 != r2) goto L1a
+            java.lang.String r0 = "called by system : return true"
+            android.util.Log.d(r1, r0)
+            goto L49
+        L1a:
+            r2 = 5250(0x1482, float:7.357E-42)
+            if (r0 != r2) goto L24
+            java.lang.String r0 = "called by KnoxCore : return true"
+            android.util.Log.d(r1, r0)
+            goto L49
+        L24:
+            android.content.pm.PackageManager r2 = r8.getPackageManager()
+            java.lang.String r2 = r2.getNameForUid(r0)
+            if (r2 != 0) goto L30
+            goto Ld3
+        L30:
+            java.lang.String r4 = "isCallerValidPlatformApp "
+            java.lang.String r4 = r4.concat(r2)
+            android.util.Log.d(r1, r4)
+            int r0 = android.os.UserHandle.getUserId(r0)
+            android.content.pm.IPackageManager r4 = android.app.AppGlobals.getPackageManager()
+            java.lang.String r5 = "android"
+            int r0 = r4.checkSignatures(r5, r2, r0)     // Catch: java.lang.Exception -> Lcf
+            if (r0 != 0) goto Ld3
+        L49:
+            java.lang.String r0 = "configValue"
+            java.lang.String r2 = "clientAppPackageName"
+            java.lang.String r4 = "clientAppSignature"
+            java.lang.String r5 = "clientAppLocation"
+            java.lang.String[] r6 = new java.lang.String[]{r0, r2, r4, r5}
+            com.android.server.enterprise.storage.EdmStorageProvider r7 = new com.android.server.enterprise.storage.EdmStorageProvider
+            r7.<init>(r8)
+            java.lang.String r8 = "DUAL_DAR_CONFIG"
+            java.util.List r8 = r7.getValues(r8, r6, r3)
+            java.util.ArrayList r8 = (java.util.ArrayList) r8
+            int r6 = r8.size()
+            if (r6 != 0) goto L69
+            goto Ld8
+        L69:
+            r3 = 0
+            java.lang.Object r8 = r8.get(r3)
+            android.content.ContentValues r8 = (android.content.ContentValues) r8
+            java.lang.Integer r0 = r8.getAsInteger(r0)
+            if (r0 == 0) goto L7e
+            int r0 = r0.intValue()
+            r6 = 1
+            if (r0 != r6) goto L7e
+            r3 = r6
+        L7e:
+            java.lang.String r0 = r8.getAsString(r2)
+            java.lang.String r2 = r8.getAsString(r4)
+            java.lang.String r8 = r8.getAsString(r5)
+            java.lang.StringBuilder r4 = new java.lang.StringBuilder
+            java.lang.String r5 = "getDualDARProfile() - isEnableDualDAR "
+            r4.<init>(r5)
+            r4.append(r3)
+            java.lang.String r5 = "package Name "
+            r4.append(r5)
+            r4.append(r0)
+            java.lang.String r5 = " signature "
+            r4.append(r5)
+            r4.append(r2)
+            java.lang.String r5 = " packageLocation "
+            r4.append(r5)
+            r4.append(r8)
+            java.lang.String r4 = r4.toString()
+            android.util.Log.d(r1, r4)
+            android.os.Bundle r1 = new android.os.Bundle
+            r1.<init>()
+            java.lang.String r4 = "dualdar-config"
+            r1.putBoolean(r4, r3)
+            java.lang.String r3 = "dualdar-config-client-package"
+            r1.putString(r3, r0)
+            java.lang.String r0 = "dualdar-config-client-signature"
+            r1.putString(r0, r2)
+            java.lang.String r0 = "dualdar-config-client-location"
+            r1.putString(r0, r8)
+            r3 = r1
+            goto Ld8
+        Lcf:
+            r8 = move-exception
+            r8.printStackTrace()
+        Ld3:
+            java.lang.String r8 = "Error ! caller not a valid platform app"
+            android.util.Log.e(r1, r8)
+        Ld8:
+            return r3
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getDualDARProfile():android.os.Bundle");
+    }
+
+    public final String getECName(int i) {
+        this.mInjector.getClass();
+        this.mLocalService.getECName(i);
+        return null;
+    }
+
+    public final int getFocusedLauncherId() {
+        int i;
+        synchronized (this.mFocusLauncherLock) {
+            i = this.mFocusedLauncherId;
         }
         return i;
     }
 
-    public void setFocusedUser(int i) {
-        synchronized (this.mFocusLock) {
-            if (DEBUG) {
-                Log.d("PersonaManagerService", "Current focused persona service handled id set to : " + this.mFocusedUserId);
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r4v3, types: [com.android.server.pm.PersonaManagerService$Injector] */
+    /* JADX WARN: Type inference failed for: r4v7, types: [com.android.server.pm.PersonaManagerService$Injector] */
+    public final int getFocusedUser() {
+        int i;
+        KeyguardManager keyguardManager = this.mKeyguardManager;
+        if (keyguardManager == null || !keyguardManager.isKeyguardLocked()) {
+            synchronized (this.mFocusLock) {
+                i = this.mFocusedUserId;
             }
-            this.mFocusedUserId = i;
+            return i;
         }
-    }
-
-    public int getScreenOffTimeoutLocked(int i) {
-        int timeoutFromDeviceSettings = getTimeoutFromDeviceSettings(i);
-        int dpmLimitTimeout = getDpmLimitTimeout(i, getAdminComponentName(i));
-        if (isDpmEnforced(dpmLimitTimeout)) {
-            timeoutFromDeviceSettings = timeoutFromDeviceSettings > 0 ? Math.min(dpmLimitTimeout, timeoutFromDeviceSettings) : dpmLimitTimeout;
-        } else if (!isTimeOutComputable(timeoutFromDeviceSettings)) {
-            return timeoutFromDeviceSettings;
-        }
-        if (isTimeOutComputable(timeoutFromDeviceSettings)) {
-            timeoutFromDeviceSettings = Math.max(timeoutFromDeviceSettings, 5000);
-        }
-        Log.d("PersonaManagerService", "getScreenOffTimeoutLocked final: " + timeoutFromDeviceSettings);
-        return timeoutFromDeviceSettings;
-    }
-
-    public final int getDpmLimitTimeout(int i, ComponentName componentName) {
-        long maximumTimeToLock = componentName != null ? this.mDevicePolicyManager.getMaximumTimeToLock(componentName, i) : 0L;
-        if (maximumTimeToLock > 2147483647L) {
-            return Integer.MAX_VALUE;
-        }
-        return (int) maximumTimeToLock;
-    }
-
-    public final int getTimeoutFromDeviceSettings(int i) {
-        if (SemPersonaManager.isSecureFolderId(i)) {
-            return Settings.System.getIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", -1, i);
-        }
-        return Settings.Secure.getIntForUser(this.mContext.getContentResolver(), "knox_screen_off_timeout", -1, i);
-    }
-
-    public boolean isKnoxProfileActivePasswordSufficientForParent(int i) {
-        checkCallerPermissionFor("isKnoxProfileActivePasswordSufficientForParent");
-        return ContainerDependencyWrapper.isKnoxProfileActivePasswordSufficientForParent(getUserManager(), i);
-    }
-
-    public boolean isPasswordSufficientAfterKnoxProfileUnification(int i) {
-        checkCallerPermissionFor("isPasswordSufficientAfterKnoxProfileUnification");
-        return ContainerDependencyWrapper.isPasswordSufficientAfterKnoxProfileUnification(i);
-    }
-
-    public Bundle getDualDARProfile() {
-        return ContainerDependencyWrapper.getDualDARProfile(this.mContext);
-    }
-
-    public int setDualDARProfile(Bundle bundle) {
-        return ContainerDependencyWrapper.setDualDARProfile(this.mContext, bundle);
-    }
-
-    public void unsetTwoFactorValueIfNeeded(int i) {
-        ContainerDependencyWrapper.unsetTwoFactorValueIfNeeded(this.mContext, this.mLockPatternUtils, i);
-    }
-
-    public void updateProfileActivityTimeFromKnox(int i, long j) {
-        checkCallerPermissionFor("updateProfileActivityTimeFromKnox");
-        ContainerDependencyWrapper.updateProfileActivityTimeFromKnox(getPowerManagerInternal(), i, j);
-    }
-
-    public String getRCPDataPolicy(String str, String str2) {
-        return this.mPersonaPolicyManagerService.getRCPDataPolicy(str, str2);
-    }
-
-    public String getRCPDataPolicyForUser(int i, String str, String str2) {
-        return this.mPersonaPolicyManagerService.getRCPDataPolicyForUser(i, str, str2);
-    }
-
-    public boolean setRCPDataPolicy(String str, String str2, String str3) {
-        return this.mPersonaPolicyManagerService.setRCPDataPolicy(str, str2, str3);
-    }
-
-    public List getSecureFolderPolicy(String str, int i) {
-        return this.mPersonaPolicyManagerService.getSecureFolderPolicy(str, i);
-    }
-
-    public boolean setSecureFolderPolicy(String str, List list, int i) {
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        int i2 = this.mFocusedUserId;
         try {
-            if (getIPackageManager().checkUidSignatures(1000, Binder.getCallingUid()) != 0) {
-                Log.d("PersonaManagerService", "setSecureFolderPolicy failed.");
-                return false;
-            }
-            return this.mPersonaPolicyManagerService.setSecureFolderPolicy(str, list, i);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean isShareClipboardDataToOwnerAllowed(int i) {
-        if (getUserManager().getUserInfo(i).isUserTypeAppSeparation()) {
-            return false;
-        }
-        try {
-            KnoxContainerManager knoxContainerManager = EnterpriseKnoxManager.getInstance().getKnoxContainerManager(this.mContext, i);
-            if (knoxContainerManager != null) {
-                return knoxContainerManager.getRCPPolicy().isShareClipboardDataToOwnerAllowed();
-            }
-            return false;
-        } catch (NullPointerException unused) {
-            Log.d("PersonaManagerService", "allowShareClipboardDataToOwner : NullPointerException occurred");
-            return false;
-        } catch (SecurityException unused2) {
-            Log.d("PersonaManagerService", "allowShareClipboardDataToOwner : SecurityException occurred");
-            return false;
-        }
-    }
-
-    public boolean isMoveFilesToContainerAllowed(int i) {
-        try {
-            if (this.edm == null) {
-                this.edm = EnterpriseDeviceManager.getInstance(this.mContext);
-            }
-            return this.edm.getProfilePolicy().getRestriction("restriction_property_move_files_to_profile");
-        } catch (NullPointerException unused) {
-            Log.d("PersonaManagerService", "isMoveFilesToContainerAllowed : NullPointerException occurred");
-            return false;
-        } catch (SecurityException unused2) {
-            Log.d("PersonaManagerService", "isMoveFilesToContainerAllowed : SecurityException occurred");
-            return false;
-        }
-    }
-
-    public boolean isMoveFilesToOwnerAllowed(int i) {
-        try {
-            if (this.edm == null) {
-                this.edm = EnterpriseDeviceManager.getInstance(this.mContext);
-            }
-            return this.edm.getProfilePolicy().getRestriction("restriction_property_move_files_to_owner");
-        } catch (NullPointerException unused) {
-            Log.d("PersonaManagerService", "isMoveFilesToOwnerAllowed : NullPointerException occurred");
-            return false;
-        } catch (SecurityException unused2) {
-            Log.d("PersonaManagerService", "isMoveFilesToOwnerAllowed : SecurityException occurred");
-            return false;
-        }
-    }
-
-    public void logDpmsKA(Bundle bundle) {
-        try {
-            Message obtainMessage = this.mPersonaHandler.obtainMessage(110);
-            bundle.putInt("userId", UserHandle.getUserId(Binder.getCallingUid()));
-            obtainMessage.obj = bundle;
-            this.mPersonaHandler.sendMessage(obtainMessage);
-        } catch (Exception e) {
-            Log.e("PersonaManagerService", "logDpmsKA exception -" + e);
-        }
-    }
-
-    public boolean isShareClipboardDataToContainerAllowed(int i) {
-        if (getUserManager().getUserInfo(i).isUserTypeAppSeparation()) {
-            return false;
-        }
-        try {
-            Log.d("PersonaManagerService", "inside isShareClipboardDataToContainerAllowed method");
-            KnoxContainerManager knoxContainerManager = EnterpriseKnoxManager.getInstance().getKnoxContainerManager(this.mContext, i);
-            Log.d("PersonaManagerService", "container mgr object is " + knoxContainerManager);
-            boolean isShareClipboardDataToContainerAllowed = knoxContainerManager != null ? knoxContainerManager.getRCPPolicy().isShareClipboardDataToContainerAllowed() : false;
-            Log.d("PersonaManagerService", "inside isshareclipbd data to cnt allowed" + isShareClipboardDataToContainerAllowed);
-            return isShareClipboardDataToContainerAllowed;
-        } catch (NullPointerException e) {
-            Log.d("PersonaManagerService", "isShareClipboardDataToContainer : NullPointerException occurred " + e);
-            return false;
-        } catch (SecurityException e2) {
-            Log.d("PersonaManagerService", "isShareClipboardDataToContainer : SecurityException occurred " + e2);
-            return false;
-        }
-    }
-
-    public void CMFALock(int i) {
-        checkCallerPermissionFor("CMFALock");
-        if (this.mLocalService.isKnoxId(i)) {
-            Log.d("PersonaManagerService", "CMFALock userId = " + i);
             try {
-                getTrustManager().setDeviceLockedForUser(i, true);
+                i2 = ActivityManager.getCurrentUser();
+                this = this.mInjector;
             } catch (Exception e) {
                 e.printStackTrace();
+                this = this.mInjector;
             }
-            ContainerDependencyWrapper containerDependencyWrapper = this.containerDependencyWrapper;
-            if (containerDependencyWrapper != null) {
-                containerDependencyWrapper.callOnCMFALocked(i);
-            }
+            this.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return i2;
+        } catch (Throwable th) {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
         }
     }
 
-    public void CMFAUnLock(int i) {
-        checkCallerPermissionFor("CMFAUnLock");
-        Log.d("PersonaManagerService", "CMFAUnLock not support yet.");
-    }
-
-    public void setAppSeparationDefaultPolicy(int i) {
-        setOwnership(i);
-        applyDefaultPolicyForAppSeparation(i);
-    }
-
-    public final void setOwnership(int i) {
-        ContainerDependencyWrapper.setOwnership(this.mContext, i);
-    }
-
-    public final void applyDefaultPolicyForAppSeparation(int i) {
-        ContainerDependencyWrapper.applyDefaultPolicyForAppSeparation(this.mContext, i);
-    }
-
-    public Bundle getAppSeparationConfig() {
-        return ContainerDependencyWrapper.getAppSeparationConfig();
-    }
-
-    /* loaded from: classes3.dex */
-    public class PackageDeleteObserver extends IPackageDeleteObserver.Stub {
-        public boolean finished;
-        public boolean result;
-
-        public PackageDeleteObserver() {
-        }
-
-        public void packageDeleted(String str, int i) {
-            synchronized (this) {
-                boolean z = true;
-                this.finished = true;
-                if (i != 1) {
-                    z = false;
-                }
-                this.result = z;
-                Log.i("PersonaManagerService", "packageDeleted response for package -" + str + " is " + i);
-                notifyAll();
-            }
-        }
-    }
-
-    public final boolean deletePackageAsUser(int i, String str, int i2) {
-        Log.d("PersonaManagerService", "deletePackageAsUser request for userid -" + i + " and pkg-" + str);
-        PackageDeleteObserver packageDeleteObserver = new PackageDeleteObserver();
-        try {
-            IPackageManager.Stub.asInterface(ServiceManager.getService("package")).deletePackageAsUser(str, -1, packageDeleteObserver, i, i2);
-            synchronized (packageDeleteObserver) {
-                while (!packageDeleteObserver.finished) {
-                    try {
-                        Log.i("PersonaManagerService", "Waiting in while loop -" + packageDeleteObserver.finished);
-                        packageDeleteObserver.wait();
-                    } catch (InterruptedException unused) {
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e("PersonaManagerService", "deletePackage exception -" + e);
-        }
-        return packageDeleteObserver.result;
-    }
-
-    public final String getDeviceOwnerPackage() {
-        IDevicePolicyManager asInterface = IDevicePolicyManager.Stub.asInterface(ServiceManager.getService("device_policy"));
-        String str = null;
-        if (asInterface != null) {
+    public final int getFotaVersion() {
+        int parseInt;
+        Log.d("PersonaManagerService", "getFotaVersion is called...");
+        synchronized (this.mPersonaCacheLock) {
             try {
-                ComponentName deviceOwnerComponent = asInterface.getDeviceOwnerComponent(false);
-                if (deviceOwnerComponent != null) {
-                    str = deviceOwnerComponent.getPackageName();
-                }
-            } catch (Exception e) {
-                Log.e("PersonaManagerService", "getDeviceOwnerPackage exception -" + e);
+                String str = (String) this.mPersonaCacheMap.get("fotaversion");
+                parseInt = (str == null || str.length() <= 0) ? -1 : Integer.parseInt(str);
+            } catch (Throwable th) {
+                throw th;
             }
         }
-        if (DEBUG) {
-            Log.d("PersonaManagerService", "getDeviceOwnerPackage packageName -" + str);
-        }
-        return str;
-    }
-
-    public final String getProfileOwnerPackage(int i) {
-        IDevicePolicyManager asInterface = IDevicePolicyManager.Stub.asInterface(ServiceManager.getService("device_policy"));
-        String str = null;
-        if (asInterface != null) {
-            try {
-                ComponentName profileOwnerAsUser = asInterface.getProfileOwnerAsUser(i);
-                if (profileOwnerAsUser != null) {
-                    str = profileOwnerAsUser.getPackageName();
-                }
-            } catch (Exception e) {
-                Log.e("PersonaManagerService", "getProfileOwnerPackage exception -" + e);
-            }
-        }
-        Log.d("PersonaManagerService", "getProfileOwnerPackage packageName -" + str);
-        return str;
-    }
-
-    public final boolean isPackageInstalledAsUser(int i, String str) {
-        try {
-            return getIPackageManager().getPackageInfo(str, 64L, i) != null;
-        } catch (Exception e) {
-            Log.e("PersonaManagerService", "isPackageInstalledAsUser exception -" + e);
-            return false;
-        }
+        NetworkScorerAppManager$$ExternalSyntheticOutline0.m(parseInt, "version - ", "PersonaManagerService");
+        return parseInt;
     }
 
     public final Set getIMEPackages() {
@@ -3029,7 +2184,7 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
             ServiceInfo serviceInfo = ((ResolveInfo) queryIntentServicesAsUser.get(i2)).serviceInfo;
             if ("android.permission.BIND_INPUT_METHOD".equals(serviceInfo.permission)) {
                 if (DEBUG) {
-                    Log.d("PersonaManagerService", "getIMEPackages IME PackageName = " + serviceInfo.packageName);
+                    VpnManagerService$$ExternalSyntheticOutline0.m(new StringBuilder("getIMEPackages IME PackageName = "), serviceInfo.packageName, "PersonaManagerService");
                 }
                 try {
                     packageInfo = getIPackageManager().getPackageInfo(serviceInfo.packageName, 64L, i);
@@ -3039,115 +2194,533 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
                 }
                 if (packageInfo != null && !isAppSeparationIndepdentApp(packageInfo)) {
                     if (DEBUG) {
-                        Log.d("PersonaManagerService", "getIMEPackages third party IME PackageName = " + serviceInfo.packageName);
+                        VpnManagerService$$ExternalSyntheticOutline0.m(new StringBuilder("getIMEPackages third party IME PackageName = "), serviceInfo.packageName, "PersonaManagerService");
                     }
-                    set.add(serviceInfo.packageName);
+                    ((HashSet) set).add(serviceInfo.packageName);
                 }
             }
         }
     }
 
-    public final boolean isInputMethodApp(String str) {
-        if (isInputMethodAppAsUser(str, 0)) {
-            Log.d("PersonaManagerService", "isInputMethodApp IME package name in DO = " + str);
-            return true;
-        }
-        int appSeparationId = getAppSeparationId();
-        if (appSeparationId == 0 || !isInputMethodAppAsUser(str, appSeparationId)) {
-            return false;
-        }
-        Log.d("PersonaManagerService", "isInputMethodApp IME package name in App Separation = " + str);
-        return true;
+    public final IPackageManager getIPackageManager() {
+        this.mInjector.getClass();
+        return ActivityThread.getPackageManager();
     }
 
-    public final boolean isInputMethodAppAsUser(String str, int i) {
-        ServiceInfo[] serviceInfoArr;
+    public final IBasicCommand getKnoxForesightService() {
+        return KnoxForesightService.getInstance(this.mContext);
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:5:0x0026 A[Catch: all -> 0x0021, TRY_LEAVE, TryCatch #0 {all -> 0x0021, blocks: (B:18:0x000d, B:20:0x0015, B:5:0x0026, B:9:0x0033, B:14:0x0048), top: B:17:0x000d }] */
+    /* JADX WARN: Removed duplicated region for block: B:9:0x0033 A[Catch: all -> 0x0021, TRY_ENTER, TRY_LEAVE, TryCatch #0 {all -> 0x0021, blocks: (B:18:0x000d, B:20:0x0015, B:5:0x0026, B:9:0x0033, B:14:0x0048), top: B:17:0x000d }] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final byte[] getKnoxIcon(java.lang.String r6, java.lang.String r7, int r8) {
+        /*
+            r5 = this;
+            com.android.server.pm.PersonaManagerService$Injector r0 = r5.mInjector
+            r0.getClass()
+            long r0 = android.os.Binder.clearCallingIdentity()
+            r2 = 1
+            r3 = 2
+            if (r7 == 0) goto L23
+            java.lang.String r4 = "com.android.internal.app.ForwardIntentToManagedProfile"
+            boolean r4 = r7.contains(r4)     // Catch: java.lang.Throwable -> L21
+            if (r4 == 0) goto L23
+            java.lang.String r4 = "com.android.internal.app.ForwardIntentToManagedProfile4"
+            boolean r7 = r4.equals(r7)     // Catch: java.lang.Throwable -> L21
+            if (r7 == 0) goto L1f
+            r7 = r3
+            goto L24
+        L1f:
+            r7 = r2
+            goto L24
+        L21:
+            r6 = move-exception
+            goto L55
+        L23:
+            r7 = -1
+        L24:
+            if (r7 != r2) goto L33
+            byte[] r6 = r5.getKnoxSwitcherIcon(r8)     // Catch: java.lang.Throwable -> L21
+            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
+            r5.getClass()
+            android.os.Binder.restoreCallingIdentity(r0)
+            return r6
+        L33:
+            java.lang.String r8 = "com.samsung.knox.securefolder"
+            boolean r6 = r8.equals(r6)     // Catch: java.lang.Throwable -> L21
+            if (r6 != 0) goto L48
+            if (r7 != r3) goto L3e
+            goto L48
+        L3e:
+            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
+            r5.getClass()
+            android.os.Binder.restoreCallingIdentity(r0)
+            r5 = 0
+            return r5
+        L48:
+            byte[] r6 = r5.getSecureFolderIcon()     // Catch: java.lang.Throwable -> L21
+            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
+            r5.getClass()
+            android.os.Binder.restoreCallingIdentity(r0)
+            return r6
+        L55:
+            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
+            r5.getClass()
+            android.os.Binder.restoreCallingIdentity(r0)
+            throw r6
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getKnoxIcon(java.lang.String, java.lang.String, int):byte[]");
+    }
+
+    public final byte[] getKnoxSwitcherIcon(int i) {
+        UserInfo userInfo;
+        byte[] bArr;
+        UserManager userManager = UserManager.get(this.mContext);
+        if (i == 0 || i == -10000) {
+            Iterator it = userManager.getUsers().iterator();
+            if (it.hasNext()) {
+                userInfo = (UserInfo) it.next();
+                int i2 = userInfo.flags;
+                bArr = SemPersonaManager.getCustomResource(userInfo.id, "custom-container-icon");
+            } else {
+                userInfo = null;
+                bArr = null;
+            }
+        } else {
+            userInfo = userManager.getUserInfo(i);
+            bArr = SemPersonaManager.getCustomResource(i, "custom-container-icon");
+            if (bArr == null && userInfo != null) {
+                Settings.System.getIntForUser(this.mContext.getContentResolver(), "knox_icon_upgraded", 0, userInfo.id);
+            }
+        }
+        if (userInfo != null && bArr != null && userInfo.isQuietModeEnabled()) {
+            ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        }
+        return bArr;
+    }
+
+    public final Set getLaunchableApps(int i) {
+        List queryIntentActivitiesAsUser = this.mContext.getPackageManager().queryIntentActivitiesAsUser(PersonalAppsSuspensionHelper$$ExternalSyntheticOutline0.m("android.intent.action.MAIN", "android.intent.category.LAUNCHER"), 795136, i);
+        ArraySet arraySet = new ArraySet();
+        Iterator it = queryIntentActivitiesAsUser.iterator();
+        while (it.hasNext()) {
+            arraySet.add(((ResolveInfo) it.next()).activityInfo.packageName);
+        }
+        return arraySet;
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:46:0x0155  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final java.util.List getMoveToKnoxMenuList(int r24) {
+        /*
+            Method dump skipped, instructions count: 846
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getMoveToKnoxMenuList(int):java.util.List");
+    }
+
+    public final String getPersonaCacheValue(String str) {
+        String str2;
+        checkCallerPermissionFor("getPersonaCacheValue");
+        Log.d("PersonaManagerService", "getPersonaCacheValue is called for key " + str);
+        if (str == null || str.length() <= 0 || !this.mPersonaCacheMap.containsKey(str)) {
+            return null;
+        }
+        synchronized (this.mPersonaCacheLock) {
+            str2 = (String) this.mPersonaCacheMap.get(str);
+        }
+        return str2;
+    }
+
+    public final SemPersonaManager getPersonaManager() {
+        if (this.personaManager == null) {
+            this.personaManager = (SemPersonaManager) this.mContext.getSystemService("persona");
+        }
+        return this.personaManager;
+    }
+
+    public final boolean getPersonaUserHasBeenShutdownBefore(int i) {
+        boolean z;
+        synchronized (this.mUserHasBeenShutdownBefore) {
+            z = this.mUserHasBeenShutdownBefore.get(i, false);
+        }
+        return z;
+    }
+
+    public final String getPersonalModeName(int i) {
+        String str;
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            PackageInfo packageInfo = getIPackageManager().getPackageInfo(str, 4L, i);
-            if (packageInfo == null || (serviceInfoArr = packageInfo.services) == null || serviceInfoArr == null) {
-                return false;
+            PersonaPolicyManagerService personaPolicyManagerService = this.mPersonaPolicyManagerService;
+            synchronized (personaPolicyManagerService) {
+                str = personaPolicyManagerService.getPersonaData(0).mPersonalModeLabel;
             }
-            for (ServiceInfo serviceInfo : serviceInfoArr) {
-                String str2 = serviceInfo.permission;
-                if (str2 != null && str2.equals("android.permission.BIND_INPUT_METHOD")) {
-                    Log.d("PersonaManagerService", "isAppSeparationApp IME package name = " + str);
-                    return true;
+        } catch (Exception unused) {
+            Log.e("PersonaManagerService:FOTA", "getPersonalModeName unable to getCustomName");
+            str = null;
+        }
+        if (DEBUG) {
+            DualAppManagerService$$ExternalSyntheticOutline0.m("getPersonalModeName name - ", str, "PersonaManagerService:FOTA");
+        }
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return str;
+    }
+
+    public final String getProfileName(int i) {
+        String str;
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            PersonaPolicyManagerService personaPolicyManagerService = this.mInjector.getPersonaPolicyManagerService();
+            synchronized (personaPolicyManagerService) {
+                str = personaPolicyManagerService.getPersonaData(i).mCustomPersonaName;
+            }
+        } catch (Exception unused) {
+            Log.e("PersonaManagerService:FOTA", "getProfileName unable to getCustomName");
+            str = null;
+        }
+        this.mInjector.getClass();
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        StringBuilder sb = new StringBuilder("getProfileName return value for container id:");
+        sb.append(i);
+        RCPManagerService$$ExternalSyntheticOutline0.m(sb, " : ", str, "PersonaManagerService");
+        return str;
+    }
+
+    public final List getProfiles(int i, boolean z) {
+        boolean z2 = false;
+        try {
+            if (getIPackageManager().checkUidSignatures(1000, Binder.getCallingUid()) == 0) {
+                z2 = true;
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            ArrayList arrayList = new ArrayList();
+            for (UserInfo userInfo : ((UserManager) this.mContext.getSystemService("user")).getProfiles(i)) {
+                UserInfo userInfo2 = new UserInfo(userInfo);
+                if (!userInfo.isDualAppProfile()) {
+                    if (!z && userInfo.id == i) {
+                    }
+                    if (!z2) {
+                        userInfo2.name = null;
+                        userInfo2.iconPath = null;
+                    }
+                    arrayList.add(userInfo2);
                 }
             }
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return arrayList;
+        } catch (Throwable th) {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
         }
     }
 
-    public void enforceAppSeparationAllowListUpdate() {
-        updateAppsListOnlyPresentInSeparatedApps();
-        this.mPersonaHandler.sendMessage(this.mPersonaHandler.obtainMessage(71));
-        Log.d("PersonaManagerService", "enforceAppSeparationAllowListUpdate");
+    public final String getRCPDataPolicy(String str, String str2) {
+        this.mPersonaPolicyManagerService.getClass();
+        ContainerDependencyWrapper.checkCallerPermissionFor(PersonaPolicyManagerService.sContext, "PersonaPolicyManagerService", "getRCPDataPolicy");
+        int userId = UserHandle.getUserId(Binder.getCallingUid());
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            return PersonaPolicyManagerService.getDataSyncPolicy(userId, str, str2);
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
     }
 
-    public void enforceAppSeparationCoexistenceAllowListUpdate() {
-        updateAppsListOnlyPresentInSeparatedApps();
-        this.mPersonaHandler.sendMessage(this.mPersonaHandler.obtainMessage(76));
-        Log.d("PersonaManagerService", "enforceAppSeparationCoexistenceAllowListUpdate");
+    public final String getRCPDataPolicyForUser(int i, String str, String str2) {
+        int i2;
+        PersonaPolicyManagerService personaPolicyManagerService = this.mPersonaPolicyManagerService;
+        personaPolicyManagerService.getClass();
+        ContainerDependencyWrapper.checkCallerPermissionFor(PersonaPolicyManagerService.sContext, "PersonaPolicyManagerService", "getRCPDataPolicyForUser");
+        int callingUid = Binder.getCallingUid();
+        if (Binder.getCallingUid() != 1000) {
+            try {
+                i2 = personaPolicyManagerService.mContext.getPackageManager().getPackageUid(Constants.SYSTEMUI_PACKAGE_NAME, 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.e("PersonaPolicyManagerService", "Unable to resolve SystemUI's UID.", e);
+                i2 = -1;
+            }
+            if (UserHandle.getAppId(callingUid) != i2) {
+                throw new SecurityException("Only system can call this API. Are you Process.SYSTEM_UID!!");
+            }
+        }
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            return PersonaPolicyManagerService.getDataSyncPolicy(i, str, str2);
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
     }
 
-    public void enforceAppSeparationDeletion() {
-        this.mPersonaHandler.sendMessage(this.mPersonaHandler.obtainMessage(72));
-        Log.d("PersonaManagerService", "enforceAppSeparationDeletion");
+    public final List getRequiredApps() {
+        List installedPackagesAsUser = this.mContext.getPackageManager().getInstalledPackagesAsUser(1048576, 0);
+        ArrayList arrayList = new ArrayList();
+        if (installedPackagesAsUser != null && !installedPackagesAsUser.isEmpty()) {
+            Iterator it = installedPackagesAsUser.iterator();
+            while (it.hasNext()) {
+                arrayList.add(((PackageInfo) it.next()).packageName);
+            }
+        }
+        arrayList.removeAll(getLaunchableApps(0));
+        arrayList.removeAll(new ArraySet(Arrays.asList(this.mContext.getResources().getStringArray(17236481))));
+        return arrayList;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x0027, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:20:0x0047, code lost:
     
-        r2 = r3.id;
+        if (r0 > 0) goto L20;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public int getAppSeparationId() {
+    public final int getScreenOffTimeoutLocked(int r4) {
         /*
-            r5 = this;
-            com.android.server.pm.PersonaManagerService$Injector r0 = r5.mInjector
-            long r0 = r0.binderClearCallingIdentity()
-            com.android.server.pm.PersonaManagerService$Injector r2 = r5.mInjector     // Catch: java.lang.Throwable -> L31
-            android.os.UserManager r2 = r2.getUserManager()     // Catch: java.lang.Throwable -> L31
-            r3 = 1
-            java.util.List r2 = r2.getUsers(r3)     // Catch: java.lang.Throwable -> L31
-            java.util.Iterator r2 = r2.iterator()     // Catch: java.lang.Throwable -> L31
-        L15:
-            boolean r3 = r2.hasNext()     // Catch: java.lang.Throwable -> L31
-            if (r3 == 0) goto L2a
-            java.lang.Object r3 = r2.next()     // Catch: java.lang.Throwable -> L31
-            android.content.pm.UserInfo r3 = (android.content.pm.UserInfo) r3     // Catch: java.lang.Throwable -> L31
-            boolean r4 = r3.isUserTypeAppSeparation()     // Catch: java.lang.Throwable -> L31
-            if (r4 == 0) goto L15
-            int r2 = r3.id     // Catch: java.lang.Throwable -> L31
-            goto L2b
-        L2a:
-            r2 = 0
+            r3 = this;
+            boolean r0 = com.samsung.android.knox.SemPersonaManager.isSecureFolderId(r4)
+            r1 = -1
+            java.lang.String r2 = "knox_screen_off_timeout"
+            if (r0 == 0) goto L14
+            android.content.Context r0 = r3.mContext
+            android.content.ContentResolver r0 = r0.getContentResolver()
+            int r0 = android.provider.Settings.System.getIntForUser(r0, r2, r1, r4)
+            goto L1e
+        L14:
+            android.content.Context r0 = r3.mContext
+            android.content.ContentResolver r0 = r0.getContentResolver()
+            int r0 = android.provider.Settings.Secure.getIntForUser(r0, r2, r1, r4)
+        L1e:
+            android.content.ComponentName r1 = r3.getAdminComponentName(r4)
+            if (r1 == 0) goto L2b
+            android.app.admin.DevicePolicyManager r3 = r3.mDevicePolicyManager
+            long r3 = r3.getMaximumTimeToLock(r1, r4)
+            goto L2d
         L2b:
-            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
-            r5.binderRestoreCallingIdentity(r0)
-            return r2
-        L31:
-            r2 = move-exception
-            com.android.server.pm.PersonaManagerService$Injector r5 = r5.mInjector
-            r5.binderRestoreCallingIdentity(r0)
-            throw r2
+            r3 = 0
+        L2d:
+            r1 = 2147483647(0x7fffffff, double:1.060997895E-314)
+            int r1 = (r3 > r1 ? 1 : (r3 == r1 ? 0 : -1))
+            r2 = 2147483647(0x7fffffff, float:NaN)
+            if (r1 <= 0) goto L39
+            r3 = r2
+            goto L3a
+        L39:
+            int r3 = (int) r3
+        L3a:
+            if (r3 <= 0) goto L47
+            if (r3 >= r2) goto L47
+            if (r0 <= 0) goto L45
+            int r0 = java.lang.Math.min(r3, r0)
+            goto L49
+        L45:
+            r0 = r3
+            goto L49
+        L47:
+            if (r0 <= 0) goto L58
+        L49:
+            if (r0 <= 0) goto L51
+            r3 = 5000(0x1388, float:7.006E-42)
+            int r0 = java.lang.Math.max(r0, r3)
+        L51:
+            java.lang.String r3 = "getScreenOffTimeoutLocked final: "
+            java.lang.String r4 = "PersonaManagerService"
+            com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0.m(r0, r3, r4)
+        L58:
+            return r0
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getAppSeparationId():int");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getScreenOffTimeoutLocked(int):int");
     }
 
-    public boolean isInSeparatedAppsOnly(String str) {
+    /* JADX WARN: Removed duplicated region for block: B:11:0x0041 A[Catch: Exception -> 0x0024, TRY_LEAVE, TryCatch #0 {Exception -> 0x0024, blocks: (B:2:0x0000, B:5:0x0012, B:8:0x0019, B:9:0x003b, B:11:0x0041, B:16:0x0026), top: B:1:0x0000 }] */
+    /* JADX WARN: Removed duplicated region for block: B:15:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final byte[] getSecureFolderIcon() {
+        /*
+            r3 = this;
+            android.content.Context r0 = r3.mContext     // Catch: java.lang.Exception -> L24
+            android.content.ContentResolver r0 = r0.getContentResolver()     // Catch: java.lang.Exception -> L24
+            java.lang.String r1 = "secure_folder_image_name"
+            r2 = 0
+            java.lang.String r0 = android.provider.Settings.Secure.getStringForUser(r0, r1, r2)     // Catch: java.lang.Exception -> L24
+            java.lang.String r1 = "com.samsung.knox.securefolder"
+            if (r0 == 0) goto L26
+            boolean r0 = r0.isEmpty()     // Catch: java.lang.Exception -> L24
+            if (r0 == 0) goto L19
+            goto L26
+        L19:
+            android.content.Context r3 = r3.mContext     // Catch: java.lang.Exception -> L24
+            android.content.pm.PackageManager r3 = r3.getPackageManager()     // Catch: java.lang.Exception -> L24
+            android.graphics.drawable.Drawable r3 = r3.getApplicationIcon(r1)     // Catch: java.lang.Exception -> L24
+            goto L3b
+        L24:
+            r3 = move-exception
+            goto L52
+        L26:
+            android.app.ActivityThread r3 = android.app.ActivityThread.currentActivityThread()     // Catch: java.lang.Exception -> L24
+            android.app.ContextImpl r3 = r3.getSystemUiContext()     // Catch: java.lang.Exception -> L24
+            r3.getPackageManager()     // Catch: java.lang.Exception -> L24
+            android.content.pm.PackageManager r3 = r3.getPackageManager()     // Catch: java.lang.Exception -> L24
+            r0 = 32
+            android.graphics.drawable.Drawable r3 = r3.semGetApplicationIconForIconTray(r1, r0)     // Catch: java.lang.Exception -> L24
+        L3b:
+            android.graphics.Bitmap r3 = drawableToBitmap(r3)     // Catch: java.lang.Exception -> L24
+            if (r3 == 0) goto L5e
+            java.io.ByteArrayOutputStream r0 = new java.io.ByteArrayOutputStream     // Catch: java.lang.Exception -> L24
+            r0.<init>()     // Catch: java.lang.Exception -> L24
+            android.graphics.Bitmap$CompressFormat r1 = android.graphics.Bitmap.CompressFormat.PNG     // Catch: java.lang.Exception -> L24
+            r2 = 100
+            r3.compress(r1, r2, r0)     // Catch: java.lang.Exception -> L24
+            byte[] r3 = r0.toByteArray()     // Catch: java.lang.Exception -> L24
+            return r3
+        L52:
+            java.lang.StringBuilder r0 = new java.lang.StringBuilder
+            java.lang.String r1 = "Exception in getSecureFolderIcon : "
+            r0.<init>(r1)
+            java.lang.String r1 = "PersonaManagerService"
+            com.android.server.RCPManagerService$$ExternalSyntheticOutline0.m(r3, r0, r1)
+        L5e:
+            r3 = 0
+            return r3
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.getSecureFolderIcon():byte[]");
+    }
+
+    public final int getSecureFolderId() {
+        return this.mSecureFolderId;
+    }
+
+    public final String getSecureFolderName() {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                PackageManager packageManager = this.mInjector.mContext.getPackageManager();
+                return (String) packageManager.getPackageInfo("com.samsung.knox.securefolder", 0).applicationInfo.loadUnsafeLabel(packageManager);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return "Secure Folder";
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final List getSecureFolderPolicy(String str, int i) {
+        List list;
+        PersonaPolicyManagerService personaPolicyManagerService = this.mPersonaPolicyManagerService;
+        synchronized (personaPolicyManagerService) {
+            list = (List) personaPolicyManagerService.getPersonaData(i).mSecureFolderPolicies.get(str);
+        }
+        return list;
+    }
+
+    public final List getSeparatedAppsList() {
+        HashMap hashMap = cachedTime;
+        if (!hashMap.containsKey("separatedapps")) {
+            hashMap.put("separatedapps", Long.valueOf(System.currentTimeMillis()));
+            updateAppsListOnlyPresentInSeparatedApps();
+            return mAppsListOnlyPresentInSeparatedApps;
+        }
+        if (System.currentTimeMillis() - ((Long) hashMap.get("separatedapps")).longValue() <= 10000) {
+            updateAppsListOnlyPresentInSeparatedApps();
+            return mAppsListOnlyPresentInSeparatedApps;
+        }
         if (mAppsListOnlyPresentInSeparatedApps == null) {
             updateAppsListOnlyPresentInSeparatedApps();
         }
-        return mAppsListOnlyPresentInSeparatedApps.contains(str);
+        return mAppsListOnlyPresentInSeparatedApps;
     }
 
-    public List getUpdatedListWithAppSeparation(List list) {
+    public final Bundle getSeparationConfigfromCache() {
+        Log.d("PersonaManagerService", "getSeparationConfigfromCache is called");
+        return mSeparationConfiginCache;
+    }
+
+    public final PackageInfo getSeparationPackageInfo(int i, String str) {
+        PackageInfo packageInfo;
+        try {
+            packageInfo = getIPackageManager().getPackageInfo(str, 64L, 0);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            packageInfo = null;
+        }
+        if (packageInfo != null) {
+            return packageInfo;
+        }
+        try {
+            packageInfo = getIPackageManager().getPackageInfo(str, 64L, i);
+        } catch (RemoteException e2) {
+            e2.printStackTrace();
+        }
+        if (packageInfo == null) {
+            return null;
+        }
+        return packageInfo;
+    }
+
+    public final List getSystemApps() {
+        List installedPackagesAsUser = this.mContext.getPackageManager().getInstalledPackagesAsUser(1048576, 0);
+        ArrayList arrayList = new ArrayList();
+        if (installedPackagesAsUser != null && !installedPackagesAsUser.isEmpty()) {
+            Iterator it = installedPackagesAsUser.iterator();
+            while (it.hasNext()) {
+                arrayList.add(((PackageInfo) it.next()).packageName);
+            }
+        }
+        return arrayList;
+    }
+
+    public final Bundle getUCMProfile() {
+        Context context = this.mContext;
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        Log.d("UCMStorageHelper", "getUCMProfile()");
+        if (!UCMStorageHelper.isCallerValidPlatformApp(context)) {
+            Log.e("UCMStorageHelper", "Error ! caller not a valid platform app");
+            return null;
+        }
+        ArrayList arrayList = (ArrayList) new EdmStorageProvider(context).getValues("UCM_CONFIG", new String[]{"configValue", "clientAppPackageName", "clientAppSignature", "clientAppLocation"}, null);
+        if (arrayList.size() == 0) {
+            return null;
+        }
+        boolean z = false;
+        ContentValues contentValues = (ContentValues) arrayList.get(0);
+        Integer asInteger = contentValues.getAsInteger("configValue");
+        if (asInteger != null && asInteger.intValue() == 1) {
+            z = true;
+        }
+        String asString = contentValues.getAsString("clientAppPackageName");
+        String asString2 = contentValues.getAsString("clientAppSignature");
+        String asString3 = contentValues.getAsString("clientAppLocation");
+        Log.d("UCMStorageHelper", "getUCMProfile() - isEnableUCM " + z + ", package Name " + asString + ", signature " + asString2 + ", packageLocation " + asString3);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("ucm-config", z);
+        bundle.putString("ucm-config-client-package", asString);
+        bundle.putString("ucm-config-client-signature", asString2);
+        bundle.putString("ucm-config-client-location", asString3);
+        return bundle;
+    }
+
+    public final List getUpdatedListWithAppSeparation(List list) {
         HashSet hashSet = new HashSet(getSeparatedAppsList());
         ArrayList arrayList = new ArrayList();
         Iterator it = list.iterator();
@@ -3158,181 +2731,6 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
             }
         }
         return arrayList;
-    }
-
-    public final void updateAppsListOnlyPresentInSeparatedApps() {
-        mAppsListOnlyPresentInSeparatedApps = getAppsListOnlyPresentInSeparatedApps();
-    }
-
-    public List getSeparatedAppsList() {
-        if (!cachedTime.containsKey("separatedapps")) {
-            cachedTime.put("separatedapps", Long.valueOf(System.currentTimeMillis()));
-            updateAppsListOnlyPresentInSeparatedApps();
-            return mAppsListOnlyPresentInSeparatedApps;
-        }
-        if (System.currentTimeMillis() - ((Long) cachedTime.get("separatedapps")).longValue() > 10000) {
-            if (mAppsListOnlyPresentInSeparatedApps == null) {
-                updateAppsListOnlyPresentInSeparatedApps();
-            }
-            return mAppsListOnlyPresentInSeparatedApps;
-        }
-        updateAppsListOnlyPresentInSeparatedApps();
-        return mAppsListOnlyPresentInSeparatedApps;
-    }
-
-    public List getAppsListOnlyPresentInSeparatedApps() {
-        ArrayList arrayList = new ArrayList();
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            try {
-                Bundle appSeparationConfig = getAppSeparationConfig();
-                if (appSeparationConfig != null) {
-                    if (mDeviceOwnerPackage.equals("")) {
-                        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService("device_policy");
-                        mDeviceOwnerPackage = devicePolicyManager != null ? devicePolicyManager.getDeviceOwner() : "";
-                    }
-                    boolean z = appSeparationConfig.getBoolean("APP_SEPARATION_OUTSIDE", false);
-                    HashSet hashSet = new HashSet(appSeparationConfig.getStringArrayList("APP_SEPARATION_APP_LIST"));
-                    HashSet hashSet2 = new HashSet(appSeparationConfig.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST"));
-                    HashSet hashSet3 = new HashSet(getSystemApps());
-                    this.mImeSet = getIMEPackages();
-                    Iterator it = this.mContext.getPackageManager().getInstalledPackagesAsUser(0, 0).iterator();
-                    while (it.hasNext()) {
-                        String str = ((PackageInfo) it.next()).packageName;
-                        if (!hashSet2.contains(str) && !hashSet3.contains(str) && !isKeyboardApp(str) && z != hashSet.contains(str) && !mDeviceOwnerPackage.equals(str) && !isKpuPackage(str)) {
-                            arrayList.add(str);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                Log.e("PersonaManagerService", "Exception in getSeparatedAppsList");
-                e.printStackTrace();
-            }
-            return arrayList;
-        } finally {
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        }
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    public boolean isAppSeparationPresent() {
-        Bundle bundle;
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            try {
-                bundle = getAppSeparationConfig();
-            } catch (Exception unused) {
-                Log.d("PersonaManagerService", "Exception in isAppSeparationPresent()");
-                Injector injector = this.mInjector;
-                injector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-                bundle = null;
-                this = injector;
-            }
-            return bundle != null;
-        } finally {
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        }
-    }
-
-    public final void suspendAppsInOwner(String str, boolean z) {
-        Log.d("PersonaManagerService", "suspendAppInOwner is called" + str + ", suspend - " + z);
-        if (isInputMethodApp(str)) {
-            Log.d("PersonaManagerService", "suspendAppInOwner()" + str + ", do not suspend keyboard app- ");
-            return;
-        }
-        Bundle appSeparationConfig = getAppSeparationConfig();
-        if (appSeparationConfig == null) {
-            Log.d("PersonaManagerService", "No appseparation present");
-            return;
-        }
-        if (new HashSet(getAppSeparationCoexistenceList(appSeparationConfig)).contains(str) && z) {
-            Log.i("PersonaManagerService", "Package is allowed for both users do not suspend: " + str);
-            return;
-        }
-        try {
-            this.mInjector.getApplicationPackageManager().setPackagesSuspended(new String[]{str}, z, (PersistableBundle) null, (PersistableBundle) null, "");
-            Log.d("PersonaManagerService", (z ? "Suspend Package:" : "Unsuspend Package:") + str);
-            Bundle bundle = new Bundle();
-            bundle.putStringArray("android.intent.extra.changed_component_name_list", new String[]{str});
-            this.mPm.sendPackageBroadcast("android.intent.action.PACKAGE_CHANGED", str, bundle, 0, null, null, null, null, null, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final boolean enforceSeparatedAppsRemoveInternal() {
-        Bundle separationConfigfromCache = getSeparationConfigfromCache();
-        if (separationConfigfromCache == null) {
-            Log.d("PersonaManagerService", "enforceSeparatedAppsRemoveInternal return immediately if App Separation has not been set");
-            return false;
-        }
-        boolean z = separationConfigfromCache.getBoolean("APP_SEPARATION_OUTSIDE", false);
-        ArrayList<String> arrayList = new ArrayList();
-        HashSet hashSet = new HashSet(separationConfigfromCache.getStringArrayList("APP_SEPARATION_APP_LIST"));
-        HashSet hashSet2 = new HashSet(separationConfigfromCache.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST"));
-        HashSet hashSet3 = new HashSet();
-        this.mImeSet = hashSet3;
-        getIMEPackagesAsUser(0, hashSet3);
-        for (PackageInfo packageInfo : this.mContext.getPackageManager().getInstalledPackagesAsUser(64, 0)) {
-            if (!isAppSeparationIndepdentApp(packageInfo)) {
-                Log.d("PersonaManagerService", "enforceSeparatedAppsRemoveInternal remove packageName " + packageInfo.packageName);
-                if ((!hashSet.contains(packageInfo.packageName) && z) || (hashSet.contains(packageInfo.packageName) && !z)) {
-                    arrayList.add(packageInfo.packageName);
-                }
-            }
-        }
-        boolean z2 = true;
-        for (String str : arrayList) {
-            if (!isKeyboardApp(str) && !hashSet2.contains(str) && isPackageInstalledAsUser(0, str)) {
-                Log.d("PersonaManagerService", "enforceSeparatedAppsRemoveInternal remove use 0 packageName ? - " + str);
-                if (!deletePackageAsUser(0, str, 268435456)) {
-                    suspendAppsInOwner(str, true);
-                    z2 = false;
-                }
-            }
-        }
-        try {
-            Intent intent = new Intent();
-            intent.setAction("com.samsung.android.knox.action.APP_SEPARATION_ACTION");
-            intent.putExtra("removed", true);
-            intent.setClassName("com.samsung.android.appseparation", "com.samsung.android.appseparation.receiver.ProfileStateChangedReceiver");
-            this.mContext.sendBroadcastAsUser(intent, UserHandle.SYSTEM);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return z2;
-    }
-
-    public final void enforceAppSeparationDeletionInternal() {
-        try {
-            Intent intent = new Intent();
-            intent.setAction("com.samsung.android.knox.action.APP_SEPARATION_ACTION");
-            intent.putExtra("removestart", true);
-            intent.setClassName("com.samsung.android.appseparation", "com.samsung.android.appseparation.receiver.ProfileStateChangedReceiver");
-            this.mContext.sendBroadcastAsUser(intent, UserHandle.SYSTEM);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Iterator it = getUserManager().getUsers(true).iterator();
-        while (true) {
-            if (!it.hasNext()) {
-                break;
-            }
-            UserInfo userInfo = (UserInfo) it.next();
-            if (userInfo.isUserTypeAppSeparation()) {
-                getUserManager().removeUser(userInfo.id);
-                boolean enforceSeparatedAppsRemoveInternal = enforceSeparatedAppsRemoveInternal();
-                Intent intent2 = new Intent();
-                intent2.setAction("com.samsung.android.knox.intent.action.SEPARATION_ACTION_RETURN");
-                intent2.putExtra("type", "deactivate");
-                intent2.putExtra("status", enforceSeparatedAppsRemoveInternal);
-                notifyStatusToKspAgent(intent2);
-                break;
-            }
-        }
-        this.mKnoxAnalyticsContainer.logEventDeactivationForAppSep();
-        mSeparationConfiginCache = getAppSeparationConfig();
-        this.mImeSet = null;
     }
 
     public final List getUpdatedPackageInfo(Bundle bundle, HashSet hashSet, HashSet hashSet2) {
@@ -3349,7 +2747,7 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
             }
             String str = (String) it.next();
             if (!hashSet2.contains(str)) {
-                Log.d("PersonaManagerService", "getUpdatedPackageInfo Installing prev package1 - " + str);
+                DualAppManagerService$$ExternalSyntheticOutline0.m("getUpdatedPackageInfo Installing prev package1 - ", str, "PersonaManagerService");
                 try {
                     packageInfo2 = getIPackageManager().getPackageInfo(str, 64L, 0);
                 } catch (RemoteException e) {
@@ -3364,7 +2762,7 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         while (it2.hasNext()) {
             String str2 = (String) it2.next();
             if (!hashSet.contains(str2)) {
-                Log.d("PersonaManagerService", "getUpdatedPackageInfo Installing prev package2 - " + str2);
+                DualAppManagerService$$ExternalSyntheticOutline0.m("getUpdatedPackageInfo Installing prev package2 - ", str2, "PersonaManagerService");
                 try {
                     packageInfo = getIPackageManager().getPackageInfo(str2, 64L, 0);
                 } catch (RemoteException e2) {
@@ -3379,6 +2777,510 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         return arrayList;
     }
 
+    public final UserManager getUserManager() {
+        if (this.mUserManager == null) {
+            this.mUserManager = (UserManager) this.mContext.getSystemService("user");
+        }
+        return this.mUserManager;
+    }
+
+    public final String getWorkspaceName(UserInfo userInfo, boolean z) {
+        if (userInfo == null) {
+            return "Work Profile";
+        }
+        AudioService$$ExternalSyntheticOutline0.m(new StringBuilder("getWorkspaceName return value for container id:"), userInfo.id, " : Work Profile", "PersonaManagerService");
+        return "Work Profile";
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x0065, code lost:
+    
+        if (hasPermission(getProfileOwnerPackage(r0), r10, r0) != false) goto L28;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean hasLicensePermission(int r9, java.lang.String r10) {
+        /*
+            r8 = this;
+            int r0 = android.os.UserHandle.getUserId(r9)
+            android.content.Context r1 = r8.mContext
+            android.content.pm.PackageManager r1 = r1.getPackageManager()
+            java.lang.String[] r9 = r1.getPackagesForUid(r9)
+            int r1 = r9.length
+            r2 = 0
+            r3 = r2
+        L11:
+            r4 = 1
+            if (r3 >= r1) goto L28
+            r5 = r9[r3]
+            java.lang.String r6 = r8.LOG_FS_TAG
+            java.lang.String r7 = "hasLicensePermission : packageName = "
+            com.android.server.DualAppManagerService$$ExternalSyntheticOutline0.m(r7, r5, r6)
+            boolean r5 = r8.hasPermission(r5, r10, r0)
+            if (r5 == 0) goto L25
+            r9 = r4
+            goto L29
+        L25:
+            int r3 = r3 + 1
+            goto L11
+        L28:
+            r9 = r2
+        L29:
+            long r5 = android.os.Binder.clearCallingIdentity()
+            boolean r1 = com.samsung.android.knox.SemPersonaManager.isDoEnabled(r0)     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            if (r1 == 0) goto L4a
+            java.lang.String r1 = r8.LOG_FS_TAG     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            java.lang.String r3 = "hasLicensePermission : DO"
+            android.util.Log.d(r1, r3)     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            java.lang.String r1 = getDeviceOwnerPackage()     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            boolean r1 = r8.hasPermission(r1, r10, r2)     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            if (r1 == 0) goto L4a
+            r9 = r4
+            goto L4a
+        L46:
+            r8 = move-exception
+            goto L7c
+        L48:
+            r10 = move-exception
+            goto L6d
+        L4a:
+            boolean r1 = com.samsung.android.knox.SemPersonaManager.isKnoxId(r0)     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            if (r1 == 0) goto L68
+            boolean r1 = com.samsung.android.knox.SemPersonaManager.isSecureFolderId(r0)     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            if (r1 != 0) goto L68
+            java.lang.String r1 = r8.LOG_FS_TAG     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            java.lang.String r2 = "hasLicensePermission : PO"
+            android.util.Log.d(r1, r2)     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            java.lang.String r1 = getProfileOwnerPackage(r0)     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            boolean r10 = r8.hasPermission(r1, r10, r0)     // Catch: java.lang.Throwable -> L46 java.lang.Exception -> L48
+            if (r10 == 0) goto L68
+            goto L69
+        L68:
+            r4 = r9
+        L69:
+            android.os.Binder.restoreCallingIdentity(r5)
+            goto L74
+        L6d:
+            r10.printStackTrace()     // Catch: java.lang.Throwable -> L46
+            android.os.Binder.restoreCallingIdentity(r5)
+            r4 = r9
+        L74:
+            java.lang.String r8 = r8.LOG_FS_TAG
+            java.lang.String r9 = "hasLicensePermission : "
+            com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0.m(r9, r8, r4)
+            return r4
+        L7c:
+            android.os.Binder.restoreCallingIdentity(r5)
+            throw r8
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.hasLicensePermission(int, java.lang.String):boolean");
+    }
+
+    public final boolean hasPermission(String str, String str2, int i) {
+        PackageManagerService packageManagerService;
+        GestureWakeup$$ExternalSyntheticOutline0.m(InitialConfiguration$$ExternalSyntheticOutline0.m("hasPermission packageName ", str, " permission ", str2, " userId "), i, this.LOG_FS_TAG);
+        return (str == null || (packageManagerService = this.mPm) == null || packageManagerService.checkPermission(str2, str, i) != 0) ? false : true;
+    }
+
+    public final void hideMultiWindows(int i) {
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        ((ActivityTaskManagerService) ServiceManager.getService("activity_task")).mPersonaActivityHelper.mService.mTaskChangeNotificationController.notifyTaskStackChanged();
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:29:0x014c  */
+    /* JADX WARN: Removed duplicated region for block: B:32:0x0168 A[RETURN] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int installExistingPackageForPersona(int r14, java.lang.String r15) {
+        /*
+            Method dump skipped, instructions count: 373
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.installExistingPackageForPersona(int, java.lang.String):int");
+    }
+
+    public final int installPackageForAppSeparation(int i, PackageInfo packageInfo) {
+        boolean isPackageInstalledAsUser = isPackageInstalledAsUser(0, packageInfo.packageName);
+        boolean isPackageInstalledAsUser2 = isPackageInstalledAsUser(i, packageInfo.packageName);
+        int i2 = 1;
+        if (isPackageInstalledAsUser && isPackageInstalledAsUser2) {
+            RCPManagerService$$ExternalSyntheticOutline0.m(new StringBuilder("processAppSeparationInstallationInternal Installing package "), packageInfo.packageName, " exist in both mode.", "PersonaManagerService");
+            suspendAppsInOwner(packageInfo.packageName, true);
+            return 1;
+        }
+        try {
+            if (isPackageInstalledAsUser) {
+                suspendAppsInOwner(packageInfo.packageName, true);
+                i2 = getIPackageManager().installExistingPackageAsUser(packageInfo.packageName, i, 4194304, 0, (List) null);
+                Log.d("PersonaManagerService", "processAppSeparationInstallationInternal Installing package " + packageInfo.packageName + " in user 0 out return -" + i2);
+            } else {
+                int installExistingPackageAsUser = getIPackageManager().installExistingPackageAsUser(packageInfo.packageName, 0, 4194304, 0, (List) null);
+                try {
+                    Log.d("PersonaManagerService", "processAppSeparationInstallationInternal Installing package " + packageInfo.packageName + " in user 0 out return -" + installExistingPackageAsUser);
+                    suspendAppsInOwner(packageInfo.packageName, true);
+                    i2 = installExistingPackageAsUser;
+                } catch (RemoteException e) {
+                    e = e;
+                    i2 = installExistingPackageAsUser;
+                    e.printStackTrace();
+                    return i2;
+                }
+            }
+        } catch (RemoteException e2) {
+            e = e2;
+        }
+        return i2;
+    }
+
+    public final boolean isAppSeparationApp(String str) {
+        Bundle separationConfigfromCache = getSeparationConfigfromCache();
+        if (checkNullParameter(separationConfigfromCache, str)) {
+            Log.d("PersonaManagerService", "isAppSeparationApp null");
+            return false;
+        }
+        if (isInputMethodApp(str)) {
+            DualAppManagerService$$ExternalSyntheticOutline0.m("isAppSeparationApp IME package name after isInputMethodApp = ", str, "PersonaManagerService");
+            return true;
+        }
+        PackageInfo separationPackageInfo = getSeparationPackageInfo(getAppSeparationId(), str);
+        if (checkNullParameter(separationPackageInfo) || isAppSeparationIndepdentApp(separationPackageInfo)) {
+            if (DEBUG) {
+                Log.d("PersonaManagerService", "isAppSeparationApp Return false due to null or IndependentApp");
+            }
+            return false;
+        }
+        boolean z = separationConfigfromCache.getBoolean("APP_SEPARATION_OUTSIDE", false);
+        ArrayList<String> stringArrayList = separationConfigfromCache.getStringArrayList("APP_SEPARATION_APP_LIST");
+        ArrayList<String> stringArrayList2 = separationConfigfromCache.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST");
+        if (stringArrayList2 == null || !stringArrayList2.contains(str)) {
+            return (stringArrayList == null || !stringArrayList.contains(str)) ? z : !z;
+        }
+        return true;
+    }
+
+    public final boolean isAppSeparationPresent() {
+        Bundle bundle;
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+                bundle = KnoxContainerManager.getAppSeparationConfig();
+            } catch (Exception unused) {
+                Log.d("PersonaManagerService", "Exception in isAppSeparationPresent()");
+                this.mInjector.getClass();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                bundle = null;
+            }
+            return bundle != null;
+        } finally {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final boolean isContainerCorePackageUID(int i) {
+        return ((ArrayList) this.mCorePackageUid).contains(Integer.valueOf(i));
+    }
+
+    public final boolean isContainerService(int i) {
+        Injector injector;
+        String packageFromAppProcesses;
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                packageFromAppProcesses = ((ActivityManager) this.mInjector.mContext.getSystemService("activity")).getPackageFromAppProcesses(i);
+            } catch (Exception e) {
+                e.printStackTrace();
+                injector = this.mInjector;
+            }
+            if (SemPersonaManager.getKnoxAdminReceiver().getPackageName().equals(packageFromAppProcesses)) {
+                return true;
+            }
+            if ("com.samsung.knox.securefolder".equals(packageFromAppProcesses)) {
+                return true;
+            }
+            injector = this.mInjector;
+            injector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return false;
+        } finally {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final boolean isExternalStorageEnabled(int i) {
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        IKnoxContainerManager asInterface = IKnoxContainerManager.Stub.asInterface(ServiceManager.getService("mum_container_policy"));
+        if (asInterface == null) {
+            Log.e("ContainerDependencyWrapper", "ContainerPolicy Service is not yet ready!!!");
+            return false;
+        }
+        try {
+            return asInterface.isExternalStorageEnabled(new ContextInfo(Binder.getCallingUid(), i));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public final boolean isFOTAUpgrade() {
+        return false;
+    }
+
+    public final boolean isFotaUpgradeVersionChanged() {
+        return false;
+    }
+
+    public final boolean isInSeparatedAppsOnly(String str) {
+        if (mAppsListOnlyPresentInSeparatedApps == null) {
+            updateAppsListOnlyPresentInSeparatedApps();
+        }
+        return ((ArrayList) mAppsListOnlyPresentInSeparatedApps).contains(str);
+    }
+
+    public final boolean isInputMethodApp(String str) {
+        if (isInputMethodAppAsUser(0, str)) {
+            DualAppManagerService$$ExternalSyntheticOutline0.m("isInputMethodApp IME package name in DO = ", str, "PersonaManagerService");
+            return true;
+        }
+        int appSeparationId = getAppSeparationId();
+        if (appSeparationId == 0 || !isInputMethodAppAsUser(appSeparationId, str)) {
+            return false;
+        }
+        DualAppManagerService$$ExternalSyntheticOutline0.m("isInputMethodApp IME package name in App Separation = ", str, "PersonaManagerService");
+        return true;
+    }
+
+    public final boolean isInputMethodAppAsUser(int i, String str) {
+        ServiceInfo[] serviceInfoArr;
+        try {
+            PackageInfo packageInfo = getIPackageManager().getPackageInfo(str, 4L, i);
+            if (packageInfo != null && (serviceInfoArr = packageInfo.services) != null) {
+                for (ServiceInfo serviceInfo : serviceInfoArr) {
+                    String str2 = serviceInfo.permission;
+                    if (str2 != null && str2.equals("android.permission.BIND_INPUT_METHOD")) {
+                        Log.d("PersonaManagerService", "isAppSeparationApp IME package name = " + str);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public final boolean isKeyboardApp(String str) {
+        Set set = this.mImeSet;
+        return set != null && set.contains(str);
+    }
+
+    public final boolean isKnoxProfileActivePasswordSufficientForParent(int i) {
+        UserInfo profileParent;
+        IPasswordPolicy asInterface;
+        checkCallerPermissionFor("isKnoxProfileActivePasswordSufficientForParent");
+        UserManager userManager = getUserManager();
+        UserInfo userInfo = userManager.getUserInfo(i);
+        if (userInfo == null || !userInfo.isManagedProfile() || !userInfo.isPremiumContainer() || (profileParent = userManager.getProfileParent(i)) == null || profileParent.id != 0 || (asInterface = IPasswordPolicy.Stub.asInterface(ServiceManager.getService("password_policy"))) == null) {
+            return true;
+        }
+        ContextInfo contextInfo = new ContextInfo();
+        if (ContainerDependencyWrapper.DEBUG) {
+            try {
+                Log.d("ContainerDependencyWrapper", "isKnoxProfileActivePasswordSufficientForParent getForbiddenStrings = " + asInterface.getForbiddenStrings(contextInfo, true) + " getMaximumCharacterOccurences = " + asInterface.getMaximumCharacterOccurences(contextInfo) + " getMaximumCharacterSequenceLength = " + asInterface.getMaximumCharacterSequenceLength(contextInfo) + " getMaximumNumericSequenceLength = " + asInterface.getMaximumNumericSequenceLength(contextInfo) + " getMinimumCharacterChangeLength = " + asInterface.getMinimumCharacterChangeLength(contextInfo) + " getRequiredPwdPatternRestrictions = " + asInterface.getRequiredPwdPatternRestrictions(contextInfo, true) + " isMultifactorAuthenticationEnabled = " + asInterface.isMultifactorAuthenticationEnabled(contextInfo) + " getPasswordHistoryLength = " + asInterface.getPasswordHistoryLength(contextInfo, (ComponentName) null));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            if (asInterface.getForbiddenStrings(contextInfo, true) == null && asInterface.getMaximumCharacterOccurences(contextInfo) == 0 && asInterface.getMaximumCharacterSequenceLength(contextInfo) == 0 && asInterface.getMaximumNumericSequenceLength(contextInfo) == 0 && asInterface.getMinimumCharacterChangeLength(contextInfo) == 0 && asInterface.getRequiredPwdPatternRestrictions(contextInfo, true) == null && !asInterface.isMultifactorAuthenticationEnabled(contextInfo) && asInterface.getPasswordHistoryLength(contextInfo, (ComponentName) null) == 0) {
+                return true;
+            }
+            Log.d("ContainerDependencyWrapper", "Not sufficient for knox profile active password for parent");
+            return false;
+        } catch (RemoteException e2) {
+            e2.printStackTrace();
+            return true;
+        }
+    }
+
+    public final boolean isKnoxWindowExist(int i, int i2, int i3) {
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        return ((ActivityTaskManagerService) ServiceManager.getService("activity_task")).mPersonaActivityHelper.isKnoxWindowVisibleLocked(i, i3);
+    }
+
+    public final boolean isMoveFilesToContainerAllowed(int i) {
+        try {
+            if (this.edm == null) {
+                this.edm = EnterpriseDeviceManager.getInstance(this.mContext);
+            }
+            return this.edm.getProfilePolicy().getRestriction("restriction_property_move_files_to_profile");
+        } catch (NullPointerException unused) {
+            Log.d("PersonaManagerService", "isMoveFilesToContainerAllowed : NullPointerException occurred");
+            return false;
+        } catch (SecurityException unused2) {
+            Log.d("PersonaManagerService", "isMoveFilesToContainerAllowed : SecurityException occurred");
+            return false;
+        }
+    }
+
+    public final boolean isMoveFilesToOwnerAllowed(int i) {
+        try {
+            if (this.edm == null) {
+                this.edm = EnterpriseDeviceManager.getInstance(this.mContext);
+            }
+            return this.edm.getProfilePolicy().getRestriction("restriction_property_move_files_to_owner");
+        } catch (NullPointerException unused) {
+            Log.d("PersonaManagerService", "isMoveFilesToOwnerAllowed : NullPointerException occurred");
+            return false;
+        } catch (SecurityException unused2) {
+            Log.d("PersonaManagerService", "isMoveFilesToOwnerAllowed : SecurityException occurred");
+            return false;
+        }
+    }
+
+    public final boolean isPackageInstalledAsUser(int i, String str) {
+        try {
+            return getIPackageManager().getPackageInfo(str, 64L, i) != null;
+        } catch (Exception e) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "isPackageInstalledAsUser exception -", "PersonaManagerService");
+            return false;
+        }
+    }
+
+    public final boolean isPasswordSufficientAfterKnoxProfileUnification(int i) {
+        checkCallerPermissionFor("isPasswordSufficientAfterKnoxProfileUnification");
+        if (ContainerDependencyWrapper.mUserManager == null) {
+            ContainerDependencyWrapper.mUserManager = (UserManager) ContainerDependencyWrapper.context.getSystemService("user");
+        }
+        UserInfo userInfo = ContainerDependencyWrapper.mUserManager.getUserInfo(i);
+        if (userInfo == null || !userInfo.isManagedProfile() || !userInfo.isPremiumContainer()) {
+            return true;
+        }
+        if (ContainerDependencyWrapper.mUserManager == null) {
+            ContainerDependencyWrapper.mUserManager = (UserManager) ContainerDependencyWrapper.context.getSystemService("user");
+        }
+        UserInfo profileParent = ContainerDependencyWrapper.mUserManager.getProfileParent(i);
+        if (profileParent == null || profileParent.id != 0) {
+            return true;
+        }
+        try {
+            Context context = ContainerDependencyWrapper.context;
+            if (ContainerDependencyWrapper.mEdmStorageProvider == null) {
+                ContainerDependencyWrapper.mEdmStorageProvider = new EdmStorageProvider(context);
+            }
+            PasswordPolicy passwordPolicy = EnterpriseKnoxManager.getInstance().getKnoxContainerManager(ContainerDependencyWrapper.context, new ContextInfo(ContainerDependencyWrapper.mEdmStorageProvider.getMUMContainerOwnerUid(i), i)).getPasswordPolicy();
+            if (ContainerDependencyWrapper.DEBUG) {
+                Log.d("ContainerDependencyWrapper", "isPasswordSufficientAfterKnoxProfileUnification getForbiddenStrings = " + passwordPolicy.getForbiddenStrings(true) + " getMaximumCharacterOccurences = " + passwordPolicy.getMaximumCharacterOccurences() + " getMaximumCharacterSequenceLength = " + passwordPolicy.getMaximumCharacterSequenceLength() + " getMaximumNumericSequenceLength = " + passwordPolicy.getMaximumNumericSequenceLength() + " getMinimumCharacterChangeLength = " + passwordPolicy.getMinimumCharacterChangeLength() + " getRequiredPwdPatternRestrictions = " + passwordPolicy.getRequiredPwdPatternRestrictions(true) + " isMultifactorAuthenticationEnabled = " + passwordPolicy.isMultifactorAuthenticationEnabled());
+            }
+            if (passwordPolicy.getForbiddenStrings(true) == null && passwordPolicy.getMaximumCharacterOccurences() == 0 && passwordPolicy.getMaximumCharacterSequenceLength() == 0 && passwordPolicy.getMaximumNumericSequenceLength() == 0 && passwordPolicy.getMinimumCharacterChangeLength() == 0 && passwordPolicy.getRequiredPwdPatternRestrictions(true) == null && !passwordPolicy.isMultifactorAuthenticationEnabled()) {
+                return true;
+            }
+            Log.d("ContainerDependencyWrapper", "Not sufficient for current parent password");
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+    public final boolean isPossibleAddAppsToContainer(String str, int i) {
+        IPackageManager packageManager = AppGlobals.getPackageManager();
+        try {
+            Intent intent = new Intent("android.intent.action.MAIN");
+            intent.addCategory("android.intent.category.LAUNCHER");
+            intent.setPackage(str);
+            List list = packageManager.queryIntentActivities(intent, (String) null, 0L, i).getList();
+            if (list != null) {
+                return list.size() == 0;
+            }
+            return true;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+    public final boolean isShareClipboardDataToContainerAllowed(int i) {
+        if (getUserManager().getUserInfo(i).isUserTypeAppSeparation()) {
+            return false;
+        }
+        try {
+            Log.d("PersonaManagerService", "inside isShareClipboardDataToContainerAllowed method");
+            KnoxContainerManager knoxContainerManager = EnterpriseKnoxManager.getInstance().getKnoxContainerManager(this.mContext, i);
+            Log.d("PersonaManagerService", "container mgr object is " + knoxContainerManager);
+            boolean isShareClipboardDataToContainerAllowed = knoxContainerManager != null ? knoxContainerManager.getRCPPolicy().isShareClipboardDataToContainerAllowed() : false;
+            Log.d("PersonaManagerService", "inside isshareclipbd data to cnt allowed" + isShareClipboardDataToContainerAllowed);
+            return isShareClipboardDataToContainerAllowed;
+        } catch (NullPointerException e) {
+            Log.d("PersonaManagerService", "isShareClipboardDataToContainer : NullPointerException occurred " + e);
+            return false;
+        } catch (SecurityException e2) {
+            Log.d("PersonaManagerService", "isShareClipboardDataToContainer : SecurityException occurred " + e2);
+            return false;
+        }
+    }
+
+    public final boolean isShareClipboardDataToOwnerAllowed(int i) {
+        if (getUserManager().getUserInfo(i).isUserTypeAppSeparation()) {
+            return false;
+        }
+        try {
+            KnoxContainerManager knoxContainerManager = EnterpriseKnoxManager.getInstance().getKnoxContainerManager(this.mContext, i);
+            if (knoxContainerManager != null) {
+                return knoxContainerManager.getRCPPolicy().isShareClipboardDataToOwnerAllowed();
+            }
+            return false;
+        } catch (NullPointerException unused) {
+            Log.d("PersonaManagerService", "allowShareClipboardDataToOwner : NullPointerException occurred");
+            return false;
+        } catch (SecurityException unused2) {
+            Log.d("PersonaManagerService", "allowShareClipboardDataToOwner : SecurityException occurred");
+            return false;
+        }
+    }
+
+    public final void logDpmsKA(Bundle bundle) {
+        try {
+            Message obtainMessage = this.mPersonaHandler.obtainMessage(110);
+            if (bundle.containsKey("kB") && bundle.getBundle("kB").containsKey("userId")) {
+                bundle.putInt("userId", bundle.getBundle("kB").getInt("userId"));
+                obtainMessage.obj = bundle;
+                this.mPersonaHandler.sendMessage(obtainMessage);
+            }
+            bundle.putInt("userId", UserHandle.getUserId(Binder.getCallingUid()));
+            obtainMessage.obj = bundle;
+            this.mPersonaHandler.sendMessage(obtainMessage);
+        } catch (Exception e) {
+            DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(e, "logDpmsKA exception -", "PersonaManagerService");
+        }
+    }
+
+    public final void notifyApplicationChanged(String str, int i) {
+        if (Binder.getCallingUid() != 1000) {
+            throw new SecurityException("caller not system");
+        }
+        try {
+            ArrayList arrayList = new ArrayList();
+            arrayList.add(str);
+            Computer snapshotComputer = this.mPm.snapshotComputer();
+            if (this.mBroadcastHelper == null) {
+                this.mBroadcastHelper = new BroadcastHelper(this.mPm.mInjector);
+            }
+            this.mBroadcastHelper.sendPackageChangedBroadcast(snapshotComputer, str, true, arrayList, snapshotComputer.getPackageUid(str, 0L, i), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public final void notifyStatusToKspAgent(Intent intent) {
         Log.d("PersonaManagerService", "notifyStatusToKspAgent() " + intent);
         try {
@@ -3388,9 +3290,61 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         }
     }
 
+    public final void onUserRemoved(int i) {
+        String str = "";
+        int callingUid = Binder.getCallingUid();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                String str2 = "" + i;
+                String format = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+                if (i == -1) {
+                    str2 = "fallbackToSingleUserLP";
+                } else {
+                    try {
+                        UserInfo userInfo = getUserManager().getUserInfo(i);
+                        if (userInfo != null) {
+                            userInfo.name = null;
+                            userInfo.iconPath = null;
+                            str2 = userInfo.toString();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                try {
+                    str = Debug.getCallers(20);
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+                String str3 = "====================\n UID : " + callingUid + "\n" + format + "\n" + str2 + "\n" + str + "\n\n";
+                Log.e("PersonaManagerService", "onUserRemoved \n" + str3);
+                try {
+                    this.mPersonaHandler.removeMessages(30);
+                    Message obtainMessage = this.mPersonaHandler.obtainMessage(30, i, 0);
+                    obtainMessage.obj = str3;
+                    this.mPersonaHandler.sendMessage(obtainMessage);
+                } catch (Exception e3) {
+                    e3.printStackTrace();
+                }
+            } catch (Exception e4) {
+                e4.printStackTrace();
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final void postPwdChangeNotificationForDeviceOwner(int i) {
+        this.mPersonaHandler.sendMessage(this.mPersonaHandler.obtainMessage(200, i, 0));
+    }
+
     public final void processAppSeparationCreation() {
         Log.d("PersonaManagerService", "processAppSeparationCreation");
-        Bundle appSeparationConfig = getAppSeparationConfig();
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        Bundle appSeparationConfig = KnoxContainerManager.getAppSeparationConfig();
         ArrayList<String> arrayList = new ArrayList<>();
         int appSeparationId = getAppSeparationId();
         try {
@@ -3424,7 +3378,7 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         arrayList.addAll(iMEPackages);
         Iterator<String> it = arrayList.iterator();
         while (it.hasNext()) {
-            Log.d("PersonaManagerService", "processAppSeparationCreation: packageName = " + it.next());
+            DualAppManagerService$$ExternalSyntheticOutline0.m("processAppSeparationCreation: packageName = ", it.next(), "PersonaManagerService");
         }
         Intent intent = new Intent("com.samsung.android.knox.action.PROVISION_KNOX_PROFILE");
         intent.addFlags(268435456);
@@ -3432,173 +3386,27 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         intent.putStringArrayListExtra("packageNames", arrayList);
         this.mContext.sendBroadcastAsUser(intent, UserHandle.SYSTEM);
         try {
-            this.mKnoxAnalyticsContainer.logEventActivationForAppSep(arrayList, getAppSeparationConfig().getStringArrayList("APP_SEPARATION_APP_LIST"));
+            KnoxAnalyticsContainer knoxAnalyticsContainer = this.mKnoxAnalyticsContainer;
+            ContainerDependencyWrapper containerDependencyWrapper2 = ContainerDependencyWrapper.sInstance;
+            knoxAnalyticsContainer.logEventActivationForAppSep(arrayList, KnoxContainerManager.getAppSeparationConfig().getStringArrayList("APP_SEPARATION_APP_LIST"));
         } catch (Exception e2) {
             e2.printStackTrace();
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:133:0x057e  */
-    /* JADX WARN: Removed duplicated region for block: B:142:0x05c5  */
-    /* JADX WARN: Removed duplicated region for block: B:156:? A[RETURN, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:160:0x05be  */
-    /* JADX WARN: Removed duplicated region for block: B:28:0x0669  */
-    /* JADX WARN: Removed duplicated region for block: B:37:0x06b4  */
-    /* JADX WARN: Removed duplicated region for block: B:49:0x073f  */
-    /* JADX WARN: Removed duplicated region for block: B:52:? A[SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:56:0x06ab  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void enforceAppSeparationAllowListUpdateInternal() {
-        /*
-            Method dump skipped, instructions count: 1859
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.enforceAppSeparationAllowListUpdateInternal():void");
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:140:0x08ec  */
-    /* JADX WARN: Removed duplicated region for block: B:155:0x095c  */
-    /* JADX WARN: Removed duplicated region for block: B:173:0x0a1d  */
-    /* JADX WARN: Removed duplicated region for block: B:175:? A[RETURN, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:179:0x0955  */
-    /* JADX WARN: Removed duplicated region for block: B:26:0x0a42  */
-    /* JADX WARN: Removed duplicated region for block: B:41:0x0ab6  */
-    /* JADX WARN: Removed duplicated region for block: B:59:0x0b74  */
-    /* JADX WARN: Removed duplicated region for block: B:62:? A[SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:66:0x0aad  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void enforceAppSeparationCoexistenceAllowListUpdateInternal() {
-        /*
-            Method dump skipped, instructions count: 2936
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.enforceAppSeparationCoexistenceAllowListUpdateInternal():void");
-    }
-
-    public boolean isAppSeparationApp(String str) {
-        Bundle separationConfigfromCache = getSeparationConfigfromCache();
-        if (checkNullParameter(separationConfigfromCache, str)) {
-            Log.d("PersonaManagerService", "isAppSeparationApp null");
-            return false;
-        }
-        if (isInputMethodApp(str)) {
-            Log.d("PersonaManagerService", "isAppSeparationApp IME package name after isInputMethodApp = " + str);
-            return true;
-        }
-        PackageInfo separationPackageInfo = getSeparationPackageInfo(str);
-        if (checkNullParameter(separationPackageInfo) || isAppSeparationIndepdentApp(separationPackageInfo)) {
-            if (DEBUG) {
-                Log.d("PersonaManagerService", "isAppSeparationApp Return false due to null or IndependentApp");
-            }
-            return false;
-        }
-        return isAppSeparationAppInternal(str, separationConfigfromCache);
-    }
-
-    public final boolean isAppSeparationAppInternal(String str, Bundle bundle) {
-        boolean z = bundle.getBoolean("APP_SEPARATION_OUTSIDE", false);
-        ArrayList<String> stringArrayList = bundle.getStringArrayList("APP_SEPARATION_APP_LIST");
-        if (isCoexistenceListApp(str, bundle.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST"))) {
-            return true;
-        }
-        return isAllowListApp(str, stringArrayList) ? !z : z;
-    }
-
-    public final boolean isAllowListApp(String str, List list) {
-        return list != null && list.contains(str);
-    }
-
-    public final boolean isCoexistenceListApp(String str, List list) {
-        return list != null && list.contains(str);
-    }
-
-    public final boolean checkNullParameter(Object... objArr) {
-        int i = 1;
-        for (Object obj : objArr) {
-            if (obj == null) {
-                Log.d("PersonaManagerService", "Parameter(" + i + ") is null.");
-                return true;
-            }
-            i++;
-        }
-        return false;
-    }
-
-    public boolean isAppSeparationIndepdentApp(PackageInfo packageInfo) {
-        if (packageInfo == null) {
-            return false;
-        }
-        if ((packageInfo.applicationInfo.flags & 129) != 0) {
-            return true;
-        }
-        String str = packageInfo.packageName;
-        String deviceOwnerPackage = getDeviceOwnerPackage();
-        if (deviceOwnerPackage != null && deviceOwnerPackage.equals(str)) {
-            Log.d("PersonaManagerService", "isAppSeparationIndepdentApp ignoring DO packageName - " + deviceOwnerPackage);
-            return true;
-        }
-        if (!isKpuPackage(str)) {
-            return false;
-        }
-        Log.d("PersonaManagerService", "isAppSeparationIndepdentApp ignoring KSP packageName - " + str);
-        return true;
-    }
-
-    public final boolean isKeyboardApp(String str) {
-        Set set = this.mImeSet;
-        return set != null && set.contains(str);
-    }
-
-    public final boolean isKpuPackage(String str) {
-        return str.startsWith("com.samsung.android.knox.kpu");
-    }
-
-    public int processAppSeparationInstallation(String str) {
+    public final void processAppSeparationInstallation(String str) {
         updateAppsListOnlyPresentInSeparatedApps();
         if (str != null && getAppSeparationId() == 0 && isAppSeparationApp(str) && !isInputMethodApp(str)) {
             Message obtainMessage = this.mPersonaHandler.obtainMessage(74);
             obtainMessage.obj = str;
             this.mPersonaHandler.sendMessage(obtainMessage);
             suspendAppsInOwner(str, true);
-        } else {
-            Message obtainMessage2 = this.mPersonaHandler.obtainMessage(73);
-            obtainMessage2.obj = str;
-            this.mPersonaHandler.sendMessage(obtainMessage2);
-            Log.d("PersonaManagerService", "processAppSeparationInstallation packageName - " + str);
+            return;
         }
-        return 1;
-    }
-
-    public final PackageInfo getSeparationPackageInfo(String str) {
-        return getSeparationPackageInfo(str, getAppSeparationId());
-    }
-
-    public final PackageInfo getSeparationPackageInfo(String str, int i) {
-        PackageInfo packageInfo;
-        try {
-            packageInfo = getIPackageManager().getPackageInfo(str, 64L, 0);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            packageInfo = null;
-        }
-        if (packageInfo != null) {
-            return packageInfo;
-        }
-        try {
-            packageInfo = getIPackageManager().getPackageInfo(str, 64L, i);
-        } catch (RemoteException e2) {
-            e2.printStackTrace();
-        }
-        if (packageInfo == null) {
-            return null;
-        }
-        return packageInfo;
+        Message obtainMessage2 = this.mPersonaHandler.obtainMessage(73);
+        obtainMessage2.obj = str;
+        this.mPersonaHandler.sendMessage(obtainMessage2);
+        Log.d("PersonaManagerService", "processAppSeparationInstallation packageName - " + str);
     }
 
     public int processAppSeparationInstallationInternal(String str) {
@@ -3608,20 +3416,33 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
             return 1;
         }
         boolean z = separationConfigfromCache.getBoolean("APP_SEPARATION_OUTSIDE", false);
-        List separationAppsList = getSeparationAppsList(separationConfigfromCache);
-        List appSeparationCoexistenceList = getAppSeparationCoexistenceList(separationConfigfromCache);
-        HashSet hashSet = new HashSet(separationAppsList);
+        ArrayList<String> stringArrayList = separationConfigfromCache.getStringArrayList("APP_SEPARATION_APP_LIST");
+        if (stringArrayList == null) {
+            stringArrayList = new ArrayList<>();
+        }
+        ArrayList<String> stringArrayList2 = separationConfigfromCache.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST");
+        if (stringArrayList2 == null) {
+            stringArrayList2 = new ArrayList<>();
+        }
+        HashSet hashSet = new HashSet(stringArrayList);
         int appSeparationId = getAppSeparationId();
         Log.d("PersonaManagerService", "processAppSeparationInstallationInternal is called for isOutside - " + z + ", packageName - " + str);
-        PackageInfo separationPackageInfo = getSeparationPackageInfo(str, appSeparationId);
+        PackageInfo separationPackageInfo = getSeparationPackageInfo(appSeparationId, str);
         if (checkNullParameter(separationPackageInfo) || isAppSeparationIndepdentApp(separationPackageInfo)) {
             Log.d("PersonaManagerService", "processAppSeparationInstallationInternal Return false due to null or IndependentApp");
             return 1;
         }
         try {
             Log.d("PersonaManagerService", "processAppSeparationInstallationInternal Non system app - " + separationPackageInfo.packageName + ", Is in allowlist ? - " + hashSet.contains(separationPackageInfo.packageName) + ",  wlAppsSet size - " + hashSet.size());
-            if (!isCoexistenceListApp(separationPackageInfo.packageName, appSeparationCoexistenceList) && !isAppSeparationInstallationRequired(z, hashSet, separationPackageInfo)) {
-                return (!isPackageInstalledInAppSeparation(appSeparationId, separationPackageInfo) || deletePackageForAppSeparation(appSeparationId, separationPackageInfo)) ? 1 : -110;
+            if (!stringArrayList2.contains(separationPackageInfo.packageName) && ((!z || hashSet.contains(separationPackageInfo.packageName)) && ((z || !hashSet.contains(separationPackageInfo.packageName)) && !isInputMethodApp(separationPackageInfo.packageName)))) {
+                if (appSeparationId != 0 && isPackageInstalledAsUser(appSeparationId, separationPackageInfo.packageName)) {
+                    boolean deletePackageAsUser = deletePackageAsUser(appSeparationId, separationPackageInfo.packageName);
+                    Log.d("PersonaManagerService", "processAppSeparationInstallationInternal deletePackageAsUser result - " + deletePackageAsUser);
+                    if (!deletePackageAsUser) {
+                        return -110;
+                    }
+                }
+                return 1;
             }
             Log.d("PersonaManagerService", "processAppSeparationInstallationInternal Disable package in Owner space and Install package in PO - " + separationPackageInfo.packageName);
             return installPackageForAppSeparation(appSeparationId, separationPackageInfo);
@@ -3632,334 +3453,189 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         }
     }
 
-    public final boolean deletePackageForAppSeparation(int i, PackageInfo packageInfo) {
-        boolean deletePackageAsUser = deletePackageAsUser(i, packageInfo.packageName, 268435456);
-        Log.d("PersonaManagerService", "processAppSeparationInstallationInternal deletePackageAsUser result - " + deletePackageAsUser);
-        return deletePackageAsUser;
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x00a1, code lost:
+    
+        if (r2 == 0) goto L57;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x0096, code lost:
+    
+        r2.close();
+        r2 = r2;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:57:0x0094, code lost:
+    
+        if (r2 == 0) goto L57;
+     */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r2v1 */
+    /* JADX WARN: Type inference failed for: r2v10 */
+    /* JADX WARN: Type inference failed for: r2v11 */
+    /* JADX WARN: Type inference failed for: r2v13, types: [int] */
+    /* JADX WARN: Type inference failed for: r2v2 */
+    /* JADX WARN: Type inference failed for: r2v20 */
+    /* JADX WARN: Type inference failed for: r2v21 */
+    /* JADX WARN: Type inference failed for: r2v22 */
+    /* JADX WARN: Type inference failed for: r2v23 */
+    /* JADX WARN: Type inference failed for: r2v3, types: [java.io.FileInputStream] */
+    /* JADX WARN: Type inference failed for: r2v4 */
+    /* JADX WARN: Type inference failed for: r2v6 */
+    /* JADX WARN: Type inference failed for: r2v7 */
+    /* JADX WARN: Type inference failed for: r2v8 */
+    /* JADX WARN: Type inference failed for: r2v9 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void readPersonaCacheLocked() {
+        /*
+            r10 = this;
+            java.lang.String r0 = "PersonaManagerService"
+            java.lang.String r1 = "readPersonaCacheLocked is called..."
+            android.util.Log.d(r0, r1)
+            android.util.AtomicFile r1 = new android.util.AtomicFile
+            java.io.File r2 = r10.mPersonaCacheFile
+            r1.<init>(r2)
+            r2 = 0
+            java.io.FileInputStream r3 = r1.openRead()     // Catch: java.lang.Throwable -> L8b org.xmlpull.v1.XmlPullParserException -> L8d java.io.IOException -> L9a
+            org.xmlpull.v1.XmlPullParser r4 = android.util.Xml.newPullParser()     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            r4.setInput(r3, r2)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+        L1b:
+            int r2 = r4.next()     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            r5 = 1
+            r6 = 2
+            if (r2 == r6) goto L26
+            if (r2 == r5) goto L26
+            goto L1b
+        L26:
+            if (r2 == r6) goto L40
+            atomicFileProcessDamagedFile(r1)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            java.lang.String r10 = "Unable to read persona cache"
+            android.util.Slog.e(r0, r10)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            if (r3 == 0) goto L35
+            r3.close()     // Catch: java.io.IOException -> L35
+        L35:
+            return
+        L36:
+            r10 = move-exception
+            r2 = r3
+            goto La5
+        L3a:
+            r10 = move-exception
+            r2 = r3
+            goto L8e
+        L3d:
+            r10 = move-exception
+            r2 = r3
+            goto L9b
+        L40:
+            int r2 = r4.next()     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            if (r2 == r5) goto L85
+            if (r2 != r6) goto L40
+            java.lang.String r2 = r4.getName()     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            if (r2 == 0) goto L40
+            java.lang.String r2 = r4.getName()     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            java.lang.String r7 = "cache"
+            boolean r2 = r2.equals(r7)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            if (r2 == 0) goto L40
+            r2 = 0
+            java.lang.String r7 = r4.getAttributeName(r2)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            java.lang.String r2 = r4.getAttributeValue(r2)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            java.util.HashMap r8 = r10.mPersonaCacheMap     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            r8.put(r7, r2)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            java.lang.StringBuilder r8 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            r8.<init>()     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            java.lang.String r9 = "PersonaCache entry - "
+            r8.append(r9)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            r8.append(r7)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            java.lang.String r7 = " - "
+            r8.append(r7)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            r8.append(r2)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            java.lang.String r2 = r8.toString()     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            android.util.Log.d(r0, r2)     // Catch: java.lang.Throwable -> L36 org.xmlpull.v1.XmlPullParserException -> L3a java.io.IOException -> L3d
+            goto L40
+        L85:
+            if (r3 == 0) goto La4
+            r3.close()     // Catch: java.io.IOException -> La4
+            goto La4
+        L8b:
+            r10 = move-exception
+            goto La5
+        L8d:
+            r10 = move-exception
+        L8e:
+            atomicFileProcessDamagedFile(r1)     // Catch: java.lang.Throwable -> L8b
+            r10.printStackTrace()     // Catch: java.lang.Throwable -> L8b
+            if (r2 == 0) goto La4
+        L96:
+            r2.close()     // Catch: java.io.IOException -> La4
+            goto La4
+        L9a:
+            r10 = move-exception
+        L9b:
+            atomicFileProcessDamagedFile(r1)     // Catch: java.lang.Throwable -> L8b
+            r10.printStackTrace()     // Catch: java.lang.Throwable -> L8b
+            if (r2 == 0) goto La4
+            goto L96
+        La4:
+            return
+        La5:
+            if (r2 == 0) goto Laa
+            r2.close()     // Catch: java.io.IOException -> Laa
+        Laa:
+            throw r10
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.readPersonaCacheLocked():void");
     }
 
-    public final boolean isPackageInstalledInAppSeparation(int i, PackageInfo packageInfo) {
-        return i != 0 && isPackageInstalledAsUser(i, packageInfo.packageName);
-    }
-
-    public final int installPackageForAppSeparation(int i, PackageInfo packageInfo) {
-        boolean isPackageInstalledAsUser = isPackageInstalledAsUser(0, packageInfo.packageName);
-        boolean isPackageInstalledAsUser2 = isPackageInstalledAsUser(i, packageInfo.packageName);
-        int i2 = 1;
-        if (isPackageInstalledAsUser && isPackageInstalledAsUser2) {
-            Log.d("PersonaManagerService", "processAppSeparationInstallationInternal Installing package " + packageInfo.packageName + " exist in both mode.");
-            suspendAppsInOwner(packageInfo.packageName, true);
-            return 1;
+    public final void refreshLockTimer(int i) {
+        checkCallerPermissionFor("refreshLockTimer");
+        Log.d("PersonaManagerService", "RefreshLockTimer for user : " + i);
+        long screenOffTimeoutLocked = (long) getScreenOffTimeoutLocked(i);
+        if (this.mPowerManagerInternal == null) {
+            this.mPowerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
         }
-        try {
-            if (isPackageInstalledAsUser) {
-                suspendAppsInOwner(packageInfo.packageName, true);
-                i2 = getIPackageManager().installExistingPackageAsUser(packageInfo.packageName, i, 4194304, 0, (List) null);
-                Log.d("PersonaManagerService", "processAppSeparationInstallationInternal Installing package " + packageInfo.packageName + " in user 0 out return -" + i2);
-            } else {
-                int installExistingPackageAsUser = getIPackageManager().installExistingPackageAsUser(packageInfo.packageName, 0, 4194304, 0, (List) null);
-                try {
-                    Log.d("PersonaManagerService", "processAppSeparationInstallationInternal Installing package " + packageInfo.packageName + " in user 0 out return -" + installExistingPackageAsUser);
-                    suspendAppsInOwner(packageInfo.packageName, true);
-                    i2 = installExistingPackageAsUser;
-                } catch (RemoteException e) {
-                    e = e;
-                    i2 = installExistingPackageAsUser;
-                    e.printStackTrace();
-                    return i2;
-                }
-            }
-        } catch (RemoteException e2) {
-            e = e2;
-        }
-        return i2;
+        this.mPowerManagerInternal.setMaximumScreenOffTimeoutFromKnox(i, screenOffTimeoutLocked);
     }
 
-    public final boolean isAppSeparationInstallationRequired(boolean z, HashSet hashSet, PackageInfo packageInfo) {
-        return (z && !hashSet.contains(packageInfo.packageName)) || (!z && hashSet.contains(packageInfo.packageName)) || isInputMethodApp(packageInfo.packageName);
-    }
-
-    public final List getSeparationAppsList(Bundle bundle) {
-        ArrayList<String> stringArrayList = bundle.getStringArrayList("APP_SEPARATION_APP_LIST");
-        return stringArrayList == null ? new ArrayList() : stringArrayList;
-    }
-
-    public final List getAppSeparationCoexistenceList(Bundle bundle) {
-        ArrayList<String> stringArrayList = bundle.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST");
-        return stringArrayList == null ? new ArrayList() : stringArrayList;
-    }
-
-    public final boolean isQuickSwitchToSecureFolderSupported() {
-        return ContainerDependencyWrapper.isSupportPrivateMode();
-    }
-
-    public void launchSeamLessSf() {
-        if (isQuickSwitchToSecureFolderSupported()) {
-            this.mPersonaHandler.sendMessage(this.mPersonaHandler.obtainMessage(90));
-        }
-    }
-
-    public void clearStorageForUser(int i) {
-        try {
-            Log.d("PersonaManagerService", "clearStorageForUser " + i);
-            ContainerDependencyWrapper.clearStorageForUser((LockSettingsInternal) LocalServices.getService(LockSettingsInternal.class), i);
-        } catch (Exception e) {
-            Log.d("PersonaManagerService", "clearStorageForUser err.");
-            e.printStackTrace();
-        }
-    }
-
-    public void startTermsActivity() {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            try {
-                Intent intent = new Intent("com.sec.android.app.secsetupwizard.TERMS");
-                intent.addFlags(268435456);
-                this.mContext.startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } finally {
-            this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-        }
-    }
-
-    public void startCountrySelectionActivity(boolean z) {
-        long binderClearCallingIdentity = this.mInjector.binderClearCallingIdentity();
-        try {
-            try {
-                if (!z) {
-                    try {
-                        Intent intent = new Intent("com.sec.android.app.secsetupwizard.NET_TSS_SETUP");
-                        intent.addFlags(268435456);
-                        this.mContext.startActivity(intent);
-                    } catch (ActivityNotFoundException unused) {
-                        Intent intent2 = new Intent("com.sec.android.app.secsetupwizard.TSS_SETUP");
-                        intent2.addFlags(268435456);
-                        this.mContext.startActivity(intent2);
-                    }
-                } else {
-                    Intent intent3 = new Intent("com.sec.android.app.secsetupwizard.COUNTRY_SELECTION");
-                    intent3.addFlags(268435456);
-                    this.mContext.startActivity(intent3);
-                }
-            } finally {
-                this.mInjector.binderRestoreCallingIdentity(binderClearCallingIdentity);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void onUserRemoved(int i) {
-        String str = "";
-        int callingUid = Binder.getCallingUid();
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                String str2 = "" + i;
-                String format = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-                if (i == -1) {
-                    str2 = "fallbackToSingleUserLP";
-                } else {
-                    try {
-                        UserInfo userInfo = getUserManager().getUserInfo(i);
-                        if (userInfo != null) {
-                            userInfo.name = null;
-                            userInfo.iconPath = null;
-                            str2 = userInfo.toString();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                try {
-                    str = Debug.getCallers(20);
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-                String str3 = "====================\n UID : " + callingUid + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + format + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + str2 + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + str + "\n\n";
-                Log.e("PersonaManagerService", "onUserRemoved \n" + str3);
-                try {
-                    this.mPersonaHandler.removeMessages(30);
-                    Message obtainMessage = this.mPersonaHandler.obtainMessage(30, i, 0);
-                    obtainMessage.obj = str3;
-                    this.mPersonaHandler.sendMessage(obtainMessage);
-                } catch (Exception e3) {
-                    e3.printStackTrace();
-                }
-            } catch (Exception e4) {
-                e4.printStackTrace();
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
+    public final void registerPackageReceiver() {
+        if (this.packageFilter == null) {
+            IntentFilter intentFilter = new IntentFilter();
+            this.packageFilter = intentFilter;
+            intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
+            this.packageFilter.addAction("android.intent.action.PACKAGE_REMOVED");
+            this.packageFilter.addAction("android.intent.action.PACKAGE_CHANGED");
+            this.packageFilter.addDataScheme("package");
+            this.mContext.registerReceiverAsUser(this.mPackageReceiver, UserHandle.ALL, this.packageFilter, null, null);
         }
     }
 
-    public final void logUserRemoval(int i, String str) {
-        try {
-            synchronized (this.mPersonaCacheMap) {
-                this.mPersonaCacheMap.put("USER-REMOVED", str);
-                writePersonaCacheLocked();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final String getLastUserRemovalLog() {
-        String str;
-        try {
-            synchronized (this.mPersonaCacheMap) {
-                str = (String) this.mPersonaCacheMap.get("USER-REMOVED");
-            }
-            return str;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "NA";
-        }
-    }
-
-    public String getSecureFolderName() {
-        try {
-            PackageManager packageManager = this.mInjector.getPackageManager();
-            return (String) packageManager.getPackageInfo("com.samsung.knox.securefolder", 0).applicationInfo.loadUnsafeLabel(packageManager);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Secure Folder";
-        }
-    }
-
-    public void postPwdChangeNotificationForDeviceOwner(int i) {
-        this.mPersonaHandler.sendMessage(this.mPersonaHandler.obtainMessage(200, i, 0));
-    }
-
-    public final boolean isStubApp(String str, int i) {
-        Set launchableApps;
-        try {
-            List list = this.requiredApps;
-            if (list == null || !list.contains(str) || (launchableApps = getLaunchableApps(i)) == null) {
-                return false;
-            }
-            return launchableApps.contains(str);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public final boolean registerSystemPersonaObserver(ISystemPersonaObserver iSystemPersonaObserver) {
+        RemoteCallbackList remoteCallbackList;
+        checkCallerPermissionFor("registerSystemPersonaObserver");
+        PersonaLegacyStateMonitor personaLegacyStateMonitor = this.mLegacyStateMonitor;
+        if (personaLegacyStateMonitor == null || (remoteCallbackList = personaLegacyStateMonitor.mObserverList) == null) {
             return false;
         }
+        return remoteCallbackList.register(iSystemPersonaObserver);
     }
 
-    public final void printAllApprovedInstallers(PrintWriter printWriter) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                Iterator it = getPersonaManager().getKnoxIds(true).iterator();
-                while (it.hasNext()) {
-                    int intValue = ((Integer) it.next()).intValue();
-                    printWriter.println("approved installers user : #" + intValue);
-                    Iterator it2 = IKnoxContainerManager.Stub.asInterface(ServiceManager.getService("mum_container_policy")).getPackagesFromInstallWhiteList(ContainerDependencyWrapper.getContextInfo(ContainerDependencyWrapper.getOwnerUidFromEdm(this.mContext, intValue), intValue)).iterator();
-                    while (it2.hasNext()) {
-                        printWriter.println(" - " + ((String) it2.next()));
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
+    public final int resetUCMProfile() {
+        Context context = this.mContext;
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        Log.d("UCMStorageHelper", "resetUCMProfile()");
+        if (!UCMStorageHelper.isCallerValidPlatformApp(context)) {
+            Log.e("UCMStorageHelper", "Error ! caller not a valid platform app");
+            return -1;
         }
-    }
-
-    public final IPackageManager getIPackageManager() {
-        return this.mInjector.getIPackageManager();
-    }
-
-    public final void enableMyFilesLauncherActivity(int i) {
-        Log.d("PersonaManagerService", "enableMyFilesLauncherActivity");
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("visible_app_icon", true);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                this.mContext.createContextAsUser(UserHandle.of(i), 0).getContentResolver().call("myfiles", "SET_APP_ICON_STATUS", "", bundle);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
+        if (new EdmStorageProvider(context).delete("UCM_CONFIG", null) > 0) {
+            Log.d("UCMStorageHelper", "resetUCMProfile triggered successfully");
+            return 0;
         }
+        Log.e("UCMStorageHelper", "resetUCMProfile trigger failed");
+        return -1;
     }
 
-    public final ArrayList getLauncherPackages() {
-        Intent intent = new Intent("android.intent.action.MAIN");
-        intent.addCategory("android.intent.category.HOME");
-        List<ResolveInfo> queryIntentActivitiesAsUser = this.mContext.getPackageManager().queryIntentActivitiesAsUser(intent, 786432, 0);
-        ArrayList arrayList = new ArrayList();
-        for (ResolveInfo resolveInfo : queryIntentActivitiesAsUser) {
-            new HashMap();
-            arrayList.add(resolveInfo.activityInfo.packageName);
-        }
-        return arrayList;
-    }
-
-    public final ArrayList getWorkTabSupportLauncherUids() {
-        ArrayList arrayList = new ArrayList();
-        String[] strArr = {"com.nttdocomo.android.dhome", "com.nttdocomo.android.homezozo"};
-        Iterator it = getLauncherPackages().iterator();
-        while (it.hasNext()) {
-            String str = (String) it.next();
-            if (Arrays.asList(strArr).contains(str)) {
-                try {
-                    PackageInfo packageInfo = getIPackageManager().getPackageInfo(str, 64L, 0);
-                    if (packageInfo != null) {
-                        arrayList.add(Integer.valueOf(packageInfo.applicationInfo.uid));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public boolean isWorkTabSupported() {
-        return workTabSupportLauncherUids.contains(Integer.valueOf(Binder.getCallingUid()));
-    }
-
-    public final void checkForesightUpdate() {
-        String str = SystemProperties.get("persist.sys.knox.foresight.version");
-        if (str == null || str.equals("") || !isVersionCheckNeeded()) {
-            return;
-        }
-        Intent intent = new Intent("com.samsung.android.knox.containercore.action.FORESIGHT_COMMAND");
-        intent.setClassName("com.samsung.android.knox.containercore", "com.samsung.android.knox.containercore.KnoxForesightCommandReceiver");
-        intent.putExtra("check", "check");
-        intent.addFlags(268435456);
-        this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
-    }
-
-    public final boolean isVersionCheckNeeded() {
-        try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
-            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.mContext);
-            String string = defaultSharedPreferences.getString("knox_foresight_regulary_check", "");
-            String format = simpleDateFormat.format(new Date());
-            if (!string.equals("") && format.equals(string)) {
-                Log.d(this.LOG_FS_TAG, "!isVersionCheckNeeded");
-                return false;
-            }
-            Log.d(this.LOG_FS_TAG, "isVersionCheckNeeded");
-            SharedPreferences.Editor edit = defaultSharedPreferences.edit();
-            edit.putString("knox_foresight_regulary_check", format);
-            edit.apply();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(this.LOG_FS_TAG, "!isVersionCheckNeeded exception.");
-            return false;
-        }
-    }
-
-    public boolean sendKnoxForesightBroadcast(Intent intent) {
+    public final boolean sendKnoxForesightBroadcast(Intent intent) {
         Intent intent2 = new Intent("com.samsung.android.knox.containercore.action.FORESIGHT_COMMAND");
         intent2.setClassName("com.samsung.android.knox.containercore", "com.samsung.android.knox.containercore.KnoxForesightCommandReceiver");
         int callingUid = Binder.getCallingUid();
@@ -3980,128 +3656,905 @@ public class PersonaManagerService extends ISemPersonaManager.Stub {
         return hasLicensePermission;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x006f, code lost:
-    
-        if (hasPermission(getProfileOwnerPackage(r0), r11, r0) != false) goto L24;
-     */
+    public final Bundle sendProxyMessage(String str, String str2, Bundle bundle) {
+        Bundle bundle2;
+        ContainerServiceWrapper containerServiceWrapper;
+        checkCallerPermissionFor("sendProxyMessage");
+        StringBuilder sb = new StringBuilder("sendProxyMessage() name:");
+        sb.append(str2);
+        sb.append(" bundle:");
+        sb.append(bundle == null ? "null" : bundle.toString());
+        Log.e("PersonaManagerService", sb.toString());
+        PersonaServiceProxy personaServiceProxy = this.mPersonaServiceProxy;
+        personaServiceProxy.getClass();
+        StringBuilder sb2 = new StringBuilder("sendProxyMessage() name:");
+        sb2.append(str2);
+        sb2.append(" bundle:");
+        sb2.append(bundle == null ? "null" : bundle.toString());
+        Log.e("PersonaManagerService::Proxy", sb2.toString());
+        synchronized (personaServiceProxy.mContainerServiceLock) {
+            try {
+                bundle2 = null;
+                if (personaServiceProxy.mContainerServices.isEmpty()) {
+                    Log.e("PersonaManagerService::Proxy", "sendProxyMessage() no container service");
+                } else {
+                    Iterator it = personaServiceProxy.mContainerServices.entrySet().iterator();
+                    while (true) {
+                        if (!it.hasNext()) {
+                            containerServiceWrapper = null;
+                            break;
+                        }
+                        Map.Entry entry = (Map.Entry) it.next();
+                        ContainerServiceInfo containerServiceInfo = (ContainerServiceInfo) entry.getKey();
+                        if (containerServiceInfo.category.equals(str) && containerServiceInfo.userid == 0) {
+                            Log.v("PersonaManagerService::Proxy", "sending message:" + str2 + " to " + containerServiceInfo.toString());
+                            containerServiceWrapper = (ContainerServiceWrapper) entry.getValue();
+                            break;
+                        }
+                    }
+                    if (containerServiceWrapper != null) {
+                        if (bundle == null) {
+                            bundle = new Bundle();
+                        }
+                        bundle.putInt("knox.container.proxy.EXTRA_CALLING_UID", Binder.getCallingUid());
+                        Log.i("PersonaManagerService::Proxy", "sendProxyAgentMessage() Calling UID:" + Binder.getCallingUid());
+                        bundle.putInt("knox.container.proxy.EXTRA_CALLING_PID", Binder.getCallingPid());
+                        Log.i("PersonaManagerService::Proxy", "sendProxyAgentMessage() Calling PID:" + Binder.getCallingUid());
+                        try {
+                            IContainerService iContainerService = containerServiceWrapper.mContainerService;
+                            if (iContainerService != null) {
+                                bundle2 = iContainerService.onMessage(str2, bundle);
+                            }
+                        } catch (RemoteException e) {
+                            Log.e("KnoxService::ContainerServiceWrapper", "RemoteException: name:" + containerServiceWrapper.name.flattenToShortString() + " action:" + str2);
+                            e.printStackTrace();
+                        }
+                        StringBuilder sb3 = new StringBuilder("result:");
+                        sb3.append(bundle2 == null ? "null" : Integer.valueOf(bundle2.getInt("android.intent.extra.RETURN_RESULT")));
+                        Log.v("PersonaManagerService::Proxy", sb3.toString());
+                    } else {
+                        Log.e("PersonaManagerService::Proxy", "service not found, name - " + str2);
+                        new Bundle().putInt("android.intent.extra.RETURN_RESULT", 99);
+                    }
+                }
+            } finally {
+            }
+        }
+        return bundle2;
+    }
+
+    public final void sendRequestKeyStatus(int i) {
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            Intent intent = new Intent("com.sec.knox.containeragent.klms.licensekey.check");
+            intent.putExtra("container_id", i);
+            intent.setPackage("com.samsung.klmsagent");
+            this.mContext.sendBroadcast(intent);
+        } finally {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:12:0x0080 A[Catch: Exception -> 0x0086, TryCatch #3 {Exception -> 0x0086, blocks: (B:10:0x0072, B:12:0x0080, B:24:0x0088), top: B:9:0x0072 }] */
+    /* JADX WARN: Removed duplicated region for block: B:24:0x0088 A[Catch: Exception -> 0x0086, TRY_LEAVE, TryCatch #3 {Exception -> 0x0086, blocks: (B:10:0x0072, B:12:0x0080, B:24:0x0088), top: B:9:0x0072 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public boolean hasLicensePermission(int r10, java.lang.String r11) {
+    public final void setAppSeparationDefaultPolicy(int r7) {
         /*
-            r9 = this;
-            int r0 = android.os.UserHandle.getUserId(r10)
-            android.content.Context r1 = r9.mContext
-            android.content.pm.PackageManager r1 = r1.getPackageManager()
-            java.lang.String[] r10 = r1.getPackagesForUid(r10)
-            int r1 = r10.length
-            r2 = 0
-            r3 = r2
-        L11:
-            r4 = 1
-            if (r3 >= r1) goto L37
-            r5 = r10[r3]
-            java.lang.String r6 = r9.LOG_FS_TAG
+            r6 = this;
+            java.lang.String r0 = "ContainerDependencyWrapper"
+            android.content.Context r1 = r6.mContext
+            com.android.server.knox.ContainerDependencyWrapper r2 = com.android.server.knox.ContainerDependencyWrapper.sInstance
+            java.lang.String r2 = "com.samsung.android.appseparation"
+            r3 = 1000(0x3e8, float:1.401E-42)
+            android.content.pm.IPackageManager r4 = android.app.ActivityThread.getPackageManager()     // Catch: java.lang.Exception -> L1f
+            int r5 = android.os.Binder.getCallingUid()     // Catch: java.lang.Exception -> L1f
+            int r4 = r4.checkUidSignatures(r3, r5)     // Catch: java.lang.Exception -> L1f
+            if (r4 != 0) goto L21
+            java.lang.String r4 = "setOwnership"
+            android.util.Log.d(r0, r4)     // Catch: java.lang.Exception -> L1f
+            goto L2b
+        L1f:
+            r4 = move-exception
+            goto L28
+        L21:
+            java.lang.String r4 = "setOwnership failed"
+            android.util.Log.e(r0, r4)     // Catch: java.lang.Exception -> L1f
+            goto L6e
+        L28:
+            r4.printStackTrace()
+        L2b:
+            com.samsung.android.knox.container.ContainerCreationParams r4 = new com.samsung.android.knox.container.ContainerCreationParams     // Catch: java.lang.Exception -> L5c
+            r4.<init>()     // Catch: java.lang.Exception -> L5c
+            r4.setAdminParam(r2)     // Catch: java.lang.Exception -> L5c
+            r4.setContainerId(r7)     // Catch: java.lang.Exception -> L5c
+            android.content.pm.PackageManager r1 = r1.getPackageManager()     // Catch: java.lang.Exception -> L5c
+            int r1 = r1.getPackageUidAsUser(r2, r7)     // Catch: java.lang.Exception -> L5c
+            r4.setAdminUid(r1)     // Catch: java.lang.Exception -> L5c
+            java.lang.Class<com.android.server.enterprise.container.KnoxMUMContainerPolicy$LocalService> r1 = com.android.server.enterprise.container.KnoxMUMContainerPolicy.LocalService.class
+            java.lang.Object r1 = com.android.server.LocalServices.getService(r1)     // Catch: java.lang.Exception -> L5c
+            com.android.server.enterprise.container.KnoxMUMContainerPolicy$LocalService r1 = (com.android.server.enterprise.container.KnoxMUMContainerPolicy.LocalService) r1     // Catch: java.lang.Exception -> L5c
+            r1.getClass()     // Catch: java.lang.Exception -> L5c
+            android.content.Context r2 = com.android.server.enterprise.container.KnoxMUMContainerPolicy.mContext     // Catch: java.lang.Exception -> L5c
+            java.lang.String r2 = "KnoxMUMContainerPolicy"
+            java.lang.String r5 = "setAppSeparationOwnership."
+            android.util.Log.d(r2, r5)     // Catch: java.lang.Exception -> L5c
+            com.android.server.enterprise.container.KnoxMUMContainerPolicy r1 = com.android.server.enterprise.container.KnoxMUMContainerPolicy.this     // Catch: java.lang.Exception -> L5c
+            r1.createContainerInternal(r4)     // Catch: java.lang.Exception -> L5c
+            goto L6e
+        L5c:
+            r1 = move-exception
+            java.lang.StringBuilder r2 = new java.lang.StringBuilder
+            java.lang.String r4 = "exception setOwnership"
+            r2.<init>(r4)
+            r2.append(r1)
+            java.lang.String r1 = r2.toString()
+            android.util.Log.d(r0, r1)
+        L6e:
+            android.content.Context r6 = r6.mContext
+            com.android.server.knox.ContainerDependencyWrapper r1 = com.android.server.knox.ContainerDependencyWrapper.sInstance
+            android.content.pm.IPackageManager r1 = android.app.ActivityThread.getPackageManager()     // Catch: java.lang.Exception -> L86
+            int r2 = android.os.Binder.getCallingUid()     // Catch: java.lang.Exception -> L86
+            int r1 = r1.checkUidSignatures(r3, r2)     // Catch: java.lang.Exception -> L86
+            if (r1 != 0) goto L88
+            java.lang.String r1 = "applyDefaultPolicyForAppSeparation"
+            android.util.Log.d(r0, r1)     // Catch: java.lang.Exception -> L86
+            goto L91
+        L86:
+            r1 = move-exception
+            goto L8e
+        L88:
+            java.lang.String r1 = "applyDefaultPolicyForAppSeparation failed"
+            android.util.Log.e(r0, r1)     // Catch: java.lang.Exception -> L86
+            goto Lcb
+        L8e:
+            r1.printStackTrace()
+        L91:
+            com.android.server.enterprise.storage.EdmStorageProvider r1 = com.android.server.knox.ContainerDependencyWrapper.mEdmStorageProvider     // Catch: java.lang.Exception -> Lb9
+            if (r1 != 0) goto L9c
+            com.android.server.enterprise.storage.EdmStorageProvider r1 = new com.android.server.enterprise.storage.EdmStorageProvider     // Catch: java.lang.Exception -> Lb9
+            r1.<init>(r6)     // Catch: java.lang.Exception -> Lb9
+            com.android.server.knox.ContainerDependencyWrapper.mEdmStorageProvider = r1     // Catch: java.lang.Exception -> Lb9
+        L9c:
+            com.android.server.enterprise.storage.EdmStorageProvider r1 = com.android.server.knox.ContainerDependencyWrapper.mEdmStorageProvider     // Catch: java.lang.Exception -> Lb9
+            int r1 = r1.getMUMContainerOwnerUid(r7)     // Catch: java.lang.Exception -> Lb9
+            com.samsung.android.knox.EnterpriseKnoxManager r2 = com.samsung.android.knox.EnterpriseKnoxManager.getInstance()     // Catch: java.lang.Exception -> Lb9
+            com.samsung.android.knox.ContextInfo r3 = new com.samsung.android.knox.ContextInfo     // Catch: java.lang.Exception -> Lb9
+            r3.<init>(r1, r7)     // Catch: java.lang.Exception -> Lb9
+            com.samsung.android.knox.container.KnoxContainerManager r6 = r2.getKnoxContainerManager(r6, r3)     // Catch: java.lang.Exception -> Lb9
+            com.samsung.android.knox.container.ContainerConfigurationPolicy r6 = r6.getContainerConfigurationPolicy()     // Catch: java.lang.Exception -> Lb9
+            r7 = 1
+            r1 = 0
+            r6.enableNFC(r7, r1)     // Catch: java.lang.Exception -> Lb9
+            goto Lcb
+        Lb9:
+            r6 = move-exception
             java.lang.StringBuilder r7 = new java.lang.StringBuilder
-            r7.<init>()
-            java.lang.String r8 = "hasLicensePermission : packageName = "
-            r7.append(r8)
-            r7.append(r5)
-            java.lang.String r7 = r7.toString()
-            android.util.Log.d(r6, r7)
-            boolean r5 = r9.hasPermission(r5, r11, r0)
-            if (r5 == 0) goto L34
-            r10 = r4
-            goto L38
-        L34:
-            int r3 = r3 + 1
-            goto L11
-        L37:
-            r10 = r2
-        L38:
-            long r5 = android.os.Binder.clearCallingIdentity()
-            boolean r1 = com.samsung.android.knox.SemPersonaManager.isDoEnabled(r0)     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            if (r1 == 0) goto L54
-            java.lang.String r1 = r9.LOG_FS_TAG     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            java.lang.String r3 = "hasLicensePermission : DO"
-            android.util.Log.d(r1, r3)     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            java.lang.String r1 = r9.getDeviceOwnerPackage()     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            boolean r1 = r9.hasPermission(r1, r11, r2)     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            if (r1 == 0) goto L54
-            r10 = r4
-        L54:
-            boolean r1 = com.samsung.android.knox.SemPersonaManager.isKnoxId(r0)     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            if (r1 == 0) goto L72
-            boolean r1 = com.samsung.android.knox.SemPersonaManager.isSecureFolderId(r0)     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            if (r1 != 0) goto L72
-            java.lang.String r1 = r9.LOG_FS_TAG     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            java.lang.String r2 = "hasLicensePermission : PO"
-            android.util.Log.d(r1, r2)     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            java.lang.String r1 = r9.getProfileOwnerPackage(r0)     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            boolean r11 = r9.hasPermission(r1, r11, r0)     // Catch: java.lang.Throwable -> L77 java.lang.Exception -> L79
-            if (r11 == 0) goto L72
-            goto L73
-        L72:
-            r4 = r10
-        L73:
-            android.os.Binder.restoreCallingIdentity(r5)
-            goto L81
-        L77:
-            r9 = move-exception
-            goto L98
-        L79:
-            r11 = move-exception
-            r11.printStackTrace()     // Catch: java.lang.Throwable -> L77
-            android.os.Binder.restoreCallingIdentity(r5)
-            r4 = r10
-        L81:
-            java.lang.String r9 = r9.LOG_FS_TAG
-            java.lang.StringBuilder r10 = new java.lang.StringBuilder
-            r10.<init>()
-            java.lang.String r11 = "hasLicensePermission : "
-            r10.append(r11)
-            r10.append(r4)
-            java.lang.String r10 = r10.toString()
-            android.util.Log.d(r9, r10)
-            return r4
-        L98:
-            android.os.Binder.restoreCallingIdentity(r5)
-            throw r9
+            java.lang.String r1 = "exception applyDefaultPolicyForAppSeparation"
+            r7.<init>(r1)
+            r7.append(r6)
+            java.lang.String r6 = r7.toString()
+            android.util.Log.d(r0, r6)
+        Lcb:
+            return
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.hasLicensePermission(int, java.lang.String):boolean");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.setAppSeparationDefaultPolicy(int):void");
     }
 
-    public final boolean hasPermission(String str, String str2, int i) {
-        PackageManagerService packageManagerService;
-        Log.d(this.LOG_FS_TAG, "hasPermission packageName " + str + " permission " + str2 + " userId " + i);
-        return (str == null || (packageManagerService = this.mPm) == null || packageManagerService.checkPermission(str2, str, i) != 0) ? false : true;
+    public final boolean setAttributes(int i, int i2) {
+        checkCallerPermissionFor("setAttributes");
+        if (getUserManager().getUserInfo(i) == null) {
+            ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m(i, "user not found ", "PersonaManagerService");
+            return false;
+        }
+        if (this.mUserManagerInternal == null) {
+            this.mUserManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
+        }
+        return this.mUserManagerInternal.setAttributes(i, i2);
     }
 
-    public void notifyAppRestrictionChanged(String str, int i) {
-        Intent intent = new Intent("android.intent.action.APPLICATION_RESTRICTIONS_CHANGED");
-        intent.setPackage(str);
-        intent.addFlags(1073741824);
-        int appSeparationId = getAppSeparationId();
-        if (appSeparationId != i) {
-            this.mContext.sendBroadcastAsUser(intent, UserHandle.of(appSeparationId));
+    public final int setDualDARProfile(Bundle bundle) {
+        Context context = this.mContext;
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        Log.d("DualDARStorageHelper", "setDualDARProfile called ");
+        context.enforceCallingPermission("com.samsung.android.knox.permission.KNOX_DUAL_DAR_INTERNAL", "dualdar storage denied");
+        if (bundle == null) {
+            return -1;
+        }
+        String string = TextUtils.isEmpty(bundle.getString("dualdar-config-client-package")) ? "default" : bundle.getString("dualdar-config-client-package");
+        String string2 = TextUtils.isEmpty(bundle.getString("dualdar-config-client-signature")) ? "default" : bundle.getString("dualdar-config-client-signature");
+        String string3 = TextUtils.isEmpty(bundle.getString("dualdar-config-client-location")) ? "default" : bundle.getString("dualdar-config-client-location");
+        StringBuilder m = InitialConfiguration$$ExternalSyntheticOutline0.m("setDualDARProfile() - package Name ", string, " signature ", string2, " location ");
+        m.append(string3);
+        Log.d("DualDARStorageHelper", m.toString());
+        ContentValues contentValues = new ContentValues();
+        KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(1, contentValues, "configValue", "clientAppPackageName", string);
+        contentValues.put("clientAppSignature", string2);
+        contentValues.put("clientAppLocation", string3);
+        if (new EdmStorageProvider(context).putValues("DUAL_DAR_CONFIG", contentValues)) {
+            Log.d("DualDARStorageHelper", "setEnableDualDAR triggered successfully");
+        } else {
+            Log.e("DualDARStorageHelper", "setEnableDualDAR trigger failed");
+        }
+        return 0;
+    }
+
+    public final void setFocusedLauncherId(int i) {
+        checkCallerPermissionFor("setFocusedLauncherId");
+        synchronized (this.mFocusLauncherLock) {
+            this.mFocusedLauncherId = i;
+            Log.d("PersonaManagerService", "setFocusedUser: Focus changed - current uesr id is " + this.mFocusedLauncherId);
+        }
+    }
+
+    public final boolean setPackageSettingInstalled(String str, boolean z, int i) {
+        checkCallerPermissionFor("setPackageSettingInstalled");
+        PackageManagerService packageManagerService = this.mPm;
+        synchronized (packageManagerService.mLock) {
+            try {
+                PackageSetting packageSetting = (PackageSetting) packageManagerService.mSettings.mPackages.mStorage.get(str);
+                if (packageSetting == null) {
+                    return false;
+                }
+                packageSetting.setInstalled(i, z);
+                return true;
+            } finally {
+            }
+        }
+    }
+
+    public final boolean setPersonalModeName(int i, String str) {
+        try {
+            PersonaPolicyManagerService personaPolicyManagerService = this.mPersonaPolicyManagerService;
+            personaPolicyManagerService.getClass();
+            ContainerDependencyWrapper.checkCallerPermissionFor(PersonaPolicyManagerService.sContext, "PersonaPolicyManagerService", "setAllowCustomBadgeIcon");
+            personaPolicyManagerService.getPersonaData(0).mPersonalModeLabel = str;
+            personaPolicyManagerService.saveSettingsLocked(0);
+        } catch (Exception unused) {
+            Log.e("PersonaManagerService:FOTA", "setPersonalModeName unable to set PersonalModeName");
+        }
+        if (DEBUG) {
+            DualAppManagerService$$ExternalSyntheticOutline0.m("setPersonalModeName name - ", str, " false", "PersonaManagerService:FOTA");
+        }
+        return false;
+    }
+
+    public final boolean setProfileName(int i, String str) {
+        try {
+            PersonaPolicyManagerService personaPolicyManagerService = this.mPersonaPolicyManagerService;
+            personaPolicyManagerService.getClass();
+            ContainerDependencyWrapper.checkCallerPermissionFor(PersonaPolicyManagerService.sContext, "PersonaPolicyManagerService", "setAllowCustomBadgeIcon");
+            personaPolicyManagerService.getPersonaData(i).mCustomPersonaName = str;
+            personaPolicyManagerService.saveSettingsLocked(i);
+            return false;
+        } catch (Exception unused) {
+            Log.e("PersonaManagerService:FOTA", "setProfileName unable to setProfileName");
+            return false;
+        }
+    }
+
+    public final boolean setRCPDataPolicy(String str, String str2, String str3) {
+        int userId;
+        PersonaPolicyManagerService personaPolicyManagerService = this.mPersonaPolicyManagerService;
+        personaPolicyManagerService.getClass();
+        ContainerDependencyWrapper.checkCallerPermissionFor(PersonaPolicyManagerService.sContext, "PersonaPolicyManagerService", "setRCPDataPolicy");
+        if (str3.startsWith("EDM")) {
+            String[] split = str3.split(":");
+            userId = Integer.parseInt(split[1]);
+            String str4 = split[2];
+        } else {
+            userId = UserHandle.getUserId(Binder.getCallingUid());
+        }
+        synchronized (personaPolicyManagerService) {
+            try {
+                if (!SemPersonaManager.isKnoxId(userId)) {
+                    return false;
+                }
+                personaPolicyManagerService.getPersonaData(userId);
+                return true;
+            } finally {
+            }
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:27:0x007d  */
+    /* JADX WARN: Removed duplicated region for block: B:40:0x00bc  */
+    /* JADX WARN: Removed duplicated region for block: B:63:0x0107  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final boolean setSecureFolderPolicy(java.lang.String r12, java.util.List r13, int r14) {
+        /*
+            Method dump skipped, instructions count: 332
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.PersonaManagerService.setSecureFolderPolicy(java.lang.String, java.util.List, int):boolean");
+    }
+
+    public final int setUCMProfile(Bundle bundle) {
+        Context context = this.mContext;
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        Log.d("UCMStorageHelper", "setUCMProfile called");
+        context.enforceCallingPermission("com.samsung.android.knox.permission.KNOX_UCM_INTERNAL", "ucm storage denied");
+        if (bundle == null) {
+            return -1;
+        }
+        if (TextUtils.isEmpty(bundle.getString("ucm-config-client-package")) && TextUtils.isEmpty(bundle.getString("ucm-config-client-signature")) && TextUtils.isEmpty(bundle.getString("ucm-config-client-location"))) {
+            return -1;
+        }
+        String string = bundle.getString("ucm-config-client-package");
+        String string2 = bundle.getString("ucm-config-client-signature");
+        String string3 = bundle.getString("ucm-config-client-location");
+        StringBuilder m = InitialConfiguration$$ExternalSyntheticOutline0.m("setUCMProfile() - package Name ", string, " signature ", string2, " location ");
+        m.append(string3);
+        Log.d("UCMStorageHelper", m.toString());
+        ContentValues contentValues = new ContentValues();
+        KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(1, contentValues, "configValue", "clientAppPackageName", string);
+        contentValues.put("clientAppSignature", string2);
+        contentValues.put("clientAppLocation", string3);
+        if (new EdmStorageProvider(context).putValues("UCM_CONFIG", contentValues)) {
+            Log.d("UCMStorageHelper", "setEnableUCM triggered successfully");
+        } else {
+            Log.e("UCMStorageHelper", "setEnableUCM trigger failed");
+        }
+        return 0;
+    }
+
+    public final boolean startActivityThroughPersona(Intent intent) {
+        checkCallerPermissionFor("startActivityThroughPersona");
+        Log.d("PersonaManagerService", "startActivityThroughPersona Intent =" + intent);
+        Context context = this.mContext;
+        if (context != null && intent != null) {
+            try {
+                context.startActivity(intent);
+                return true;
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r4v3, types: [com.android.server.pm.PersonaManagerService] */
+    /* JADX WARN: Type inference failed for: r4v6, types: [com.android.server.pm.PersonaManagerService$Injector] */
+    public final void startCountrySelectionActivity(boolean z) {
+        Injector injector;
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                if (z) {
+                    Intent intent = new Intent("com.sec.android.app.secsetupwizard.COUNTRY_SELECTION");
+                    intent.addFlags(268435456);
+                    this.mContext.startActivity(intent);
+                } else {
+                    try {
+                        Intent intent2 = new Intent("com.sec.android.app.secsetupwizard.NET_TSS_SETUP");
+                        intent2.addFlags(268435456);
+                        this.mContext.startActivity(intent2);
+                    } catch (ActivityNotFoundException unused) {
+                        Intent intent3 = new Intent("com.sec.android.app.secsetupwizard.TSS_SETUP");
+                        intent3.addFlags(268435456);
+                        this.mContext.startActivity(intent3);
+                    }
+                }
+                this = this.mInjector;
+                injector = this;
+            } catch (Exception e) {
+                e.printStackTrace();
+                injector = this.mInjector;
+            }
+            injector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        } catch (Throwable th) {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r4v1, types: [com.android.server.pm.PersonaManagerService$Injector] */
+    /* JADX WARN: Type inference failed for: r4v5, types: [com.android.server.pm.PersonaManagerService$Injector] */
+    public final void startTermsActivity() {
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                Intent intent = new Intent("com.sec.android.app.secsetupwizard.TERMS");
+                intent.addFlags(268435456);
+                this.mContext.startActivity(intent);
+                this = this.mInjector;
+            } catch (Exception e) {
+                e.printStackTrace();
+                this = this.mInjector;
+            }
+            this.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        } catch (Throwable th) {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final void suspendAppsInOwner(String str, boolean z) {
+        Log.d("PersonaManagerService", "suspendAppInOwner is called" + str + ", suspend - " + z);
+        if (isInputMethodApp(str)) {
+            DualAppManagerService$$ExternalSyntheticOutline0.m("suspendAppInOwner()", str, ", do not suspend keyboard app- ", "PersonaManagerService");
+            return;
+        }
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        Bundle appSeparationConfig = KnoxContainerManager.getAppSeparationConfig();
+        if (appSeparationConfig == null) {
+            Log.d("PersonaManagerService", "No appseparation present");
+            return;
+        }
+        ArrayList<String> stringArrayList = appSeparationConfig.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST");
+        if (stringArrayList == null) {
+            stringArrayList = new ArrayList<>();
+        }
+        if (new HashSet(stringArrayList).contains(str) && z) {
+            ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m("Package is allowed for both users do not suspend: ", str, "PersonaManagerService");
+            return;
+        }
+        String[] strArr = {str};
+        if (this.mAPM == null) {
+            this.mAPM = this.mInjector.mContext.getPackageManager();
         }
         try {
-            if (str.equals("com.samsung.android.appseparation")) {
-                Intent intent2 = new Intent("com.samsung.android.knox.intent.action.NOTIFY_APPSEPARATION_INTERNAL");
-                intent2.setPackage("com.samsung.android.appseparation");
-                intent2.addFlags(32);
-                this.mContext.sendBroadcastAsUser(intent2, UserHandle.of(i));
-                if (appSeparationId != i) {
-                    this.mContext.sendBroadcastAsUser(intent2, UserHandle.of(appSeparationId));
-                }
+            this.mAPM.setPackagesSuspended(strArr, z, (PersistableBundle) null, (PersistableBundle) null, "");
+            Log.d("PersonaManagerService", (z ? "Suspend Package:" : "Unsuspend Package:") + str);
+            ArrayList arrayList = new ArrayList();
+            arrayList.add(str);
+            Computer snapshotComputer = this.mPm.snapshotComputer();
+            if (this.mBroadcastHelper == null) {
+                this.mBroadcastHelper = new BroadcastHelper(this.mPm.mInjector);
             }
+            this.mBroadcastHelper.sendPackageChangedBroadcast(snapshotComputer, str, true, arrayList, 0, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public IBasicCommand getKnoxForesightService() {
-        return KnoxForesightService.getInstance(this.mContext);
+    public final void systemReady() {
+        Injector injector;
+        final int i = 0;
+        final int i2 = 1;
+        checkCallerPermissionFor("systemReady");
+        Log.i("PersonaManagerService", "systemReady");
+        this.mDevicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService("device_policy");
+        ((PowerManager) this.mContext.getSystemService("power")).isInteractive();
+        Context context = this.mContext;
+        final PersonaServiceProxy personaServiceProxy = new PersonaServiceProxy();
+        personaServiceProxy.mContainerServices = new HashMap();
+        personaServiceProxy.mContainerServiceLock = new Object();
+        personaServiceProxy.mIsDoEnabled = false;
+        BroadcastReceiver anonymousClass2 = new BroadcastReceiver() { // from class: com.android.server.pm.PersonaServiceProxy.2
+            public final /* synthetic */ int $r8$classId;
+            public final /* synthetic */ PersonaServiceProxy this$0;
+
+            public /* synthetic */ AnonymousClass2(final PersonaServiceProxy personaServiceProxy2, final int i3) {
+                r2 = i3;
+                r1 = personaServiceProxy2;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                switch (r2) {
+                    case 0:
+                        String action = intent.getAction();
+                        int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -10000);
+                        Log.i("PersonaManagerService::Proxy", "broadcast received. Action:" + action);
+                        if ("android.intent.action.USER_STARTED".equals(action)) {
+                            Log.i("PersonaManagerService::Proxy", "user-" + intExtra + " started. Finding container service...");
+                            PersonaServiceProxy.m773$$Nest$mfindAndConnectToContainerService(r1, intExtra);
+                            Log.i("PersonaManagerService::Proxy", "Checking if " + intExtra + " is enabled COM container");
+                            UserManager userManager = r1.mUserManager;
+                            if (userManager != null) {
+                                userManager.getUserInfo(intExtra);
+                                return;
+                            }
+                            return;
+                        }
+                        if (!"android.intent.action.USER_REMOVED".equals(action)) {
+                            if ("android.intent.action.USER_ADDED".equals(action)) {
+                                int intExtra2 = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                                Log.d("PersonaManagerService::Proxy", "Added User - " + intExtra2);
+                                if (SemPersonaManager.isKnoxId(intExtra2)) {
+                                    PersonaServiceProxy.m773$$Nest$mfindAndConnectToContainerService(r1, 0);
+                                    return;
+                                }
+                                NetworkScoreService$$ExternalSyntheticOutline0.m(intExtra2, "Added User - ", " is a non-knox user, so disable Secure Folder", "PersonaManagerService::Proxy");
+                                try {
+                                    ((PackageManagerService.IPackageManagerImpl) ServiceManager.getService("package")).setApplicationEnabledSetting("com.samsung.knox.securefolder", 2, 0, intExtra2, null);
+                                    return;
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    return;
+                                }
+                            }
+                            return;
+                        }
+                        NetworkScorerAppManager$$ExternalSyntheticOutline0.m(intent.getIntExtra("android.intent.extra.user_handle", -1), "Removed User - ", "PersonaManagerService::Proxy");
+                        PersonaServiceProxy personaServiceProxy2 = r1;
+                        if (personaServiceProxy2.mIsDoEnabled || personaServiceProxy2.isKnoxProfileExist()) {
+                            Log.d("PersonaManagerService::Proxy", "Knox profile exist on device so not stopping Container service...");
+                            return;
+                        }
+                        Log.d("PersonaManagerService::Proxy", "No Knox profile exist on device so stopping all Container service");
+                        synchronized (r1.mContainerServiceLock) {
+                            try {
+                                HashMap hashMap = r1.mContainerServices;
+                                if (hashMap != null && hashMap.size() > 0) {
+                                    for (Map.Entry entry : r1.mContainerServices.entrySet()) {
+                                        ContainerServiceInfo containerServiceInfo = (ContainerServiceInfo) entry.getKey();
+                                        ContainerServiceWrapper containerServiceWrapper = (ContainerServiceWrapper) entry.getValue();
+                                        Log.i("PersonaManagerService::Proxy", "Stopping Container service - " + containerServiceInfo.toString());
+                                        if (containerServiceWrapper.mBound) {
+                                            containerServiceWrapper.mContext.unbindService(containerServiceWrapper.mConnection);
+                                            containerServiceWrapper.mContainerService = null;
+                                            containerServiceWrapper.mBound = false;
+                                            Log.d("KnoxService::ContainerServiceWrapper", "Ubinding service is successful...");
+                                        }
+                                    }
+                                    r1.mContainerServices.clear();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                    default:
+                        String action2 = intent.getAction();
+                        if ("android.intent.action.PACKAGE_ADDED".equals(action2) || "android.intent.action.PACKAGE_CHANGED".equals(action2)) {
+                            String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
+                            ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m("newPackage is ", schemeSpecificPart, "PersonaManagerService::Proxy");
+                            if (schemeSpecificPart == null || !schemeSpecificPart.equals("com.samsung.android.knox.containercore")) {
+                                return;
+                            }
+                            PersonaServiceProxy.m773$$Nest$mfindAndConnectToContainerService(r1, 0);
+                            return;
+                        }
+                        return;
+                }
+            }
+        };
+        BroadcastReceiver anonymousClass22 = new BroadcastReceiver() { // from class: com.android.server.pm.PersonaServiceProxy.2
+            public final /* synthetic */ int $r8$classId;
+            public final /* synthetic */ PersonaServiceProxy this$0;
+
+            public /* synthetic */ AnonymousClass2(final PersonaServiceProxy personaServiceProxy2, final int i22) {
+                r2 = i22;
+                r1 = personaServiceProxy2;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                switch (r2) {
+                    case 0:
+                        String action = intent.getAction();
+                        int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -10000);
+                        Log.i("PersonaManagerService::Proxy", "broadcast received. Action:" + action);
+                        if ("android.intent.action.USER_STARTED".equals(action)) {
+                            Log.i("PersonaManagerService::Proxy", "user-" + intExtra + " started. Finding container service...");
+                            PersonaServiceProxy.m773$$Nest$mfindAndConnectToContainerService(r1, intExtra);
+                            Log.i("PersonaManagerService::Proxy", "Checking if " + intExtra + " is enabled COM container");
+                            UserManager userManager = r1.mUserManager;
+                            if (userManager != null) {
+                                userManager.getUserInfo(intExtra);
+                                return;
+                            }
+                            return;
+                        }
+                        if (!"android.intent.action.USER_REMOVED".equals(action)) {
+                            if ("android.intent.action.USER_ADDED".equals(action)) {
+                                int intExtra2 = intent.getIntExtra("android.intent.extra.user_handle", -1);
+                                Log.d("PersonaManagerService::Proxy", "Added User - " + intExtra2);
+                                if (SemPersonaManager.isKnoxId(intExtra2)) {
+                                    PersonaServiceProxy.m773$$Nest$mfindAndConnectToContainerService(r1, 0);
+                                    return;
+                                }
+                                NetworkScoreService$$ExternalSyntheticOutline0.m(intExtra2, "Added User - ", " is a non-knox user, so disable Secure Folder", "PersonaManagerService::Proxy");
+                                try {
+                                    ((PackageManagerService.IPackageManagerImpl) ServiceManager.getService("package")).setApplicationEnabledSetting("com.samsung.knox.securefolder", 2, 0, intExtra2, null);
+                                    return;
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    return;
+                                }
+                            }
+                            return;
+                        }
+                        NetworkScorerAppManager$$ExternalSyntheticOutline0.m(intent.getIntExtra("android.intent.extra.user_handle", -1), "Removed User - ", "PersonaManagerService::Proxy");
+                        PersonaServiceProxy personaServiceProxy2 = r1;
+                        if (personaServiceProxy2.mIsDoEnabled || personaServiceProxy2.isKnoxProfileExist()) {
+                            Log.d("PersonaManagerService::Proxy", "Knox profile exist on device so not stopping Container service...");
+                            return;
+                        }
+                        Log.d("PersonaManagerService::Proxy", "No Knox profile exist on device so stopping all Container service");
+                        synchronized (r1.mContainerServiceLock) {
+                            try {
+                                HashMap hashMap = r1.mContainerServices;
+                                if (hashMap != null && hashMap.size() > 0) {
+                                    for (Map.Entry entry : r1.mContainerServices.entrySet()) {
+                                        ContainerServiceInfo containerServiceInfo = (ContainerServiceInfo) entry.getKey();
+                                        ContainerServiceWrapper containerServiceWrapper = (ContainerServiceWrapper) entry.getValue();
+                                        Log.i("PersonaManagerService::Proxy", "Stopping Container service - " + containerServiceInfo.toString());
+                                        if (containerServiceWrapper.mBound) {
+                                            containerServiceWrapper.mContext.unbindService(containerServiceWrapper.mConnection);
+                                            containerServiceWrapper.mContainerService = null;
+                                            containerServiceWrapper.mBound = false;
+                                            Log.d("KnoxService::ContainerServiceWrapper", "Ubinding service is successful...");
+                                        }
+                                    }
+                                    r1.mContainerServices.clear();
+                                }
+                            } finally {
+                            }
+                        }
+                        return;
+                    default:
+                        String action2 = intent.getAction();
+                        if ("android.intent.action.PACKAGE_ADDED".equals(action2) || "android.intent.action.PACKAGE_CHANGED".equals(action2)) {
+                            String schemeSpecificPart = intent.getData().getSchemeSpecificPart();
+                            ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m("newPackage is ", schemeSpecificPart, "PersonaManagerService::Proxy");
+                            if (schemeSpecificPart == null || !schemeSpecificPart.equals("com.samsung.android.knox.containercore")) {
+                                return;
+                            }
+                            PersonaServiceProxy.m773$$Nest$mfindAndConnectToContainerService(r1, 0);
+                            return;
+                        }
+                        return;
+                }
+            }
+        };
+        personaServiceProxy2.mContext = context;
+        personaServiceProxy2.mUserManager = (UserManager) context.getSystemService("user");
+        personaServiceProxy2.mKeyguardManager = (KeyguardManager) context.getSystemService("keyguard");
+        personaServiceProxy2.mTrustManager = (TrustManager) context.getSystemService("trust");
+        personaServiceProxy2.mLockPatternUtils = new LockPatternUtils(context);
+        personaServiceProxy2.mPersonaManager = (SemPersonaManager) context.getSystemService("persona");
+        personaServiceProxy2.mIsDoEnabled = SemPersonaManager.isDoEnabled(0);
+        IntentFilter m = GmsAlarmManager$$ExternalSyntheticOutline0.m("android.intent.action.USER_STARTED", "android.intent.action.USER_REMOVED", "android.intent.action.USER_ADDED");
+        UserHandle userHandle = UserHandle.ALL;
+        context.registerReceiverAsUser(anonymousClass2, userHandle, m, null, null);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
+        intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
+        intentFilter.addAction("android.intent.action.PACKAGE_CHANGED");
+        intentFilter.addDataScheme("package");
+        intentFilter.addDataSchemeSpecificPart("com.samsung.android.knox.containercore", 0);
+        context.registerReceiverAsUser(anonymousClass22, userHandle, intentFilter, null, null);
+        ContainerStateReceiver.register(context, new ContainerStateReceiver() { // from class: com.android.server.pm.PersonaServiceProxy.1
+            public AnonymousClass1() {
+            }
+
+            public final void onDeviceOwnerActivated(Context context2, Bundle bundle) {
+                Log.d("PersonaManagerService::Proxy", "onDeviceOwnerActivated...");
+                PersonaServiceProxy personaServiceProxy2 = PersonaServiceProxy.this;
+                personaServiceProxy2.mIsDoEnabled = true;
+                PersonaServiceProxy.m773$$Nest$mfindAndConnectToContainerService(personaServiceProxy2, 0);
+            }
+        });
+        this.mPersonaServiceProxy = personaServiceProxy2;
+        ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+        if (SemCscFeature.getInstance().getBoolean("CscFeature_Common_SupportPrivateMode", false)) {
+            Log.d("PersonaManagerService", "Quick Switch is supported");
+            this.mSeamLessSwitchHandler = new SeamLessSwitchHandler(this.mContext, this);
+        }
+        this.mKeyguardManager = (KeyguardManager) this.mContext.getSystemService("keyguard");
+        this.mLockPatternUtils = new LockPatternUtils(this.mContext);
+        mSeparationConfiginCache = KnoxContainerManager.getAppSeparationConfig();
+        cachedTime.put("separatedapps", Long.valueOf(System.currentTimeMillis()));
+        this.mPersonaHandler.sendMessage(this.mPersonaHandler.obtainMessage(15));
+        this.mContext.registerReceiver(new AnonymousClass2(this, 5), new IntentFilter("android.intent.action.BOOT_COMPLETED"));
+        IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter2.addAction(DevicePolicyListener.ACTION_PROFILE_OWNER_ADDED);
+        intentFilter2.addAction(DevicePolicyListener.ACTION_PROFILE_OWNER_REMOVED);
+        ActivityManagerService$$ExternalSyntheticOutline0.m(intentFilter2, "android.intent.action.MANAGED_PROFILE_AVAILABLE", "android.intent.action.MANAGED_PROFILE_UNAVAILABLE", "android.intent.action.USER_STOPPED", "android.intent.action.USER_UNLOCKED");
+        intentFilter2.addAction("android.intent.action.USER_PRESENT");
+        intentFilter2.addAction("android.intent.action.SCREEN_OFF");
+        intentFilter2.addAction(DevicePolicyListener.ACTION_DEVICE_OWNER_CHANGED);
+        this.mContext.registerReceiver(this.mUserReceiver, intentFilter2);
+        try {
+            ActivityManagerNative.getDefault().registerUserSwitchObserver(this.mUserSwitchObserver, "PersonaManagerService");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        this.mContext.registerReceiver(this.mSetupWizardCompleteReceiver, DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(Constants.INTENT_SECSETUPWIZARD_COMPLETE, Constants.INTENT_SETUPWIZARD_COMPLETE), 2);
+        IntentFilter intentFilter3 = new IntentFilter();
+        intentFilter3.addAction("com.samsung.android.intent.action.FINGERPRINT_ADDED");
+        intentFilter3.addAction("com.samsung.android.intent.action.FINGERPRINT_PASSWORD_UPDATED");
+        intentFilter3.addAction("com.samsung.android.intent.action.FINGERPRINT_REMOVED");
+        intentFilter3.addAction("com.samsung.android.intent.action.FINGERPRINT_RESET");
+        this.mContext.registerReceiverAsUser(this.mFingerPrintReceiver, UserHandle.ALL, intentFilter3, null, null, 2);
+        List profiles = getProfiles(0, false);
+        int i3 = 0;
+        boolean z = false;
+        while (true) {
+            ArrayList arrayList = (ArrayList) profiles;
+            if (i3 >= arrayList.size()) {
+                break;
+            }
+            UserInfo userInfo = (UserInfo) arrayList.get(i3);
+            LocalService localService = this.mLocalService;
+            int i4 = userInfo.id;
+            localService.getClass();
+            if (SemPersonaManager.isKnoxId(i4) && !SemPersonaManager.isSecureFolderId(userInfo.id)) {
+                z = true;
+            }
+            i3++;
+        }
+        if (SemPersonaManager.isDoEnabled(0) || z) {
+            registerPackageReceiver();
+        }
+        IntentFilter m2 = VcnManagementService$$ExternalSyntheticOutline0.m("android.intent.action.MANAGED_PROFILE_AVAILABLE", "android.intent.action.MANAGED_PROFILE_UNAVAILABLE", "android.intent.action.ACTION_SHUTDOWN", "android.intent.action.SCREEN_OFF", "android.intent.action.USER_INFO_CHANGED");
+        ActivityManagerService$$ExternalSyntheticOutline0.m(m2, "samsung.knox.intent.action.RCP_POLICY_CHANGED", "samsung.knox.intent.action.rcp.MOVEMENT", "samsung.knox.intent.action.CHANGE_LOCK_TYPE", "com.samsung.android.knox.profilepolicy.intent.action.update");
+        this.mContext.registerReceiverAsUser(this.mAnalyticsReceiver, UserHandle.ALL, m2, null, null, 2);
+        Log.d("PersonaManagerService", "registerContentObserver - 0");
+        this.mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor("knox_screen_off_timeout"), false, this.analyticsObserver, -1);
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                AppGlobals.getPackageManager().clearCrossProfileIntentFilters(0, "com.samsung.android.knox.containercore");
+                injector = this.mInjector;
+            } catch (RemoteException e2) {
+                Log.e("PersonaManagerService:FOTA", "clearCrossProfileIntentFilters Exception: " + e2);
+                injector = this.mInjector;
+            }
+            injector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            if (this.mDevicePolicyManager.getDeviceOwnerComponentOnAnyUser() != null && getUserManager().getUserInfo(0).isSuperLocked()) {
+                Log.e("PersonaManagerService", "Device is super locked - start lock screen");
+            }
+            try {
+                ((ArrayList) this.mCorePackageUid).add(Integer.valueOf(this.mContext.getPackageManager().getPackageUidAsUser("com.samsung.knox.securefolder", 0)));
+            } catch (PackageManager.NameNotFoundException unused) {
+                Log.e("PersonaManagerService", "Cannot get UID for securefolder");
+            }
+            try {
+                ((ArrayList) this.mCorePackageUid).add(Integer.valueOf(this.mContext.getPackageManager().getPackageUidAsUser("com.samsung.android.knox.containercore", 0)));
+            } catch (PackageManager.NameNotFoundException unused2) {
+                Log.e("PersonaManagerService", "Cannot get UID for KnoxCore package");
+            }
+            try {
+                ((ArrayList) this.mCorePackageUid).add(Integer.valueOf(this.mContext.getPackageManager().getPackageUidAsUser("com.samsung.android.appseparation", 0)));
+            } catch (PackageManager.NameNotFoundException unused3) {
+                Log.e("PersonaManagerService", "Cannot get UID for App separation");
+            }
+        } catch (Throwable th) {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final void updateAppsListOnlyPresentInSeparatedApps() {
+        Injector injector;
+        ArrayList arrayList = new ArrayList();
+        this.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                ContainerDependencyWrapper containerDependencyWrapper = ContainerDependencyWrapper.sInstance;
+                Bundle appSeparationConfig = KnoxContainerManager.getAppSeparationConfig();
+                if (appSeparationConfig != null) {
+                    if (mDeviceOwnerPackage.equals("")) {
+                        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService("device_policy");
+                        mDeviceOwnerPackage = devicePolicyManager != null ? devicePolicyManager.getDeviceOwner() : "";
+                    }
+                    boolean z = appSeparationConfig.getBoolean("APP_SEPARATION_OUTSIDE", false);
+                    HashSet hashSet = new HashSet(appSeparationConfig.getStringArrayList("APP_SEPARATION_APP_LIST"));
+                    HashSet hashSet2 = new HashSet(appSeparationConfig.getStringArrayList("APP_SEPARATION_COEXISTANCE_LIST"));
+                    HashSet hashSet3 = new HashSet(getSystemApps());
+                    this.mImeSet = getIMEPackages();
+                    Iterator it = this.mContext.getPackageManager().getInstalledPackagesAsUser(0, 0).iterator();
+                    while (it.hasNext()) {
+                        String str = ((PackageInfo) it.next()).packageName;
+                        if (!hashSet2.contains(str) && !hashSet3.contains(str) && !isKeyboardApp(str) && z != hashSet.contains(str) && !mDeviceOwnerPackage.equals(str) && !str.startsWith("com.samsung.android.knox.kpu")) {
+                            arrayList.add(str);
+                        }
+                    }
+                }
+                injector = this.mInjector;
+            } catch (Exception e) {
+                Log.e("PersonaManagerService", "Exception in getSeparatedAppsList");
+                e.printStackTrace();
+                injector = this.mInjector;
+            }
+            injector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            mAppsListOnlyPresentInSeparatedApps = arrayList;
+        } catch (Throwable th) {
+            this.mInjector.getClass();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final boolean updatePersonaCache(String str, String str2) {
+        checkCallerPermissionFor("updatePersonaCache");
+        boolean z = false;
+        if (str != null && str.length() > 0) {
+            synchronized (this.mPersonaCacheLock) {
+                try {
+                    if (!"fwversion".equals(str) && !"fotaversion".equals(str)) {
+                        if (this.mPersonaCacheMap.containsKey(str) && str2 == null) {
+                            Log.d("PersonaManagerService", "Remove cache entry request");
+                            this.mPersonaCacheMap.remove(str);
+                            z = true;
+                        }
+                        if (!this.mPersonaCacheMap.containsKey(str) && str2 != null) {
+                            Log.d("PersonaManagerService", "Add cache entry request");
+                            this.mPersonaCacheMap.put(str, str2);
+                            z = true;
+                        }
+                        if (this.mPersonaCacheMap.containsKey(str) && str2 != null) {
+                            Log.d("PersonaManagerService", "update cache entry request");
+                            this.mPersonaCacheMap.remove(str);
+                            this.mPersonaCacheMap.put(str, str2);
+                            z = true;
+                        }
+                        if (z) {
+                            writePersonaCacheLocked();
+                        }
+                    }
+                    return false;
+                } finally {
+                }
+            }
+        }
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("updatePersonaCache status - ", "PersonaManagerService", z);
+        return z;
+    }
+
+    public final void updateProfileActivityTimeFromKnox(int i, long j) {
+        checkCallerPermissionFor("updateProfileActivityTimeFromKnox");
+        if (this.mPowerManagerInternal == null) {
+            this.mPowerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
+        }
+        this.mPowerManagerInternal.updateProfileActivityTimeFromKnox(i, j);
+    }
+
+    public final void writePersonaCacheLocked() {
+        FileOutputStream startWrite;
+        Log.i("PersonaManagerService", "writeUsersWithPersona() is called...");
+        AtomicFile atomicFile = new AtomicFile(this.mPersonaCacheFile);
+        FileOutputStream fileOutputStream = null;
+        try {
+            startWrite = atomicFile.startWrite();
+        } catch (Exception unused) {
+        }
+        try {
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(startWrite);
+            FastXmlSerializer fastXmlSerializer = new FastXmlSerializer();
+            fastXmlSerializer.setOutput(bufferedOutputStream, "utf-8");
+            fastXmlSerializer.startDocument((String) null, Boolean.TRUE);
+            fastXmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+            fastXmlSerializer.startTag((String) null, "personacache");
+            for (Map.Entry entry : this.mPersonaCacheMap.entrySet()) {
+                String str = (String) entry.getKey();
+                String str2 = (String) entry.getValue();
+                if (!str.startsWith("volatile.")) {
+                    fastXmlSerializer.startTag((String) null, "cache");
+                    fastXmlSerializer.attribute((String) null, str, str2);
+                    fastXmlSerializer.endTag((String) null, "cache");
+                }
+            }
+            fastXmlSerializer.endTag((String) null, "personacache");
+            fastXmlSerializer.endDocument();
+            atomicFile.finishWrite(startWrite);
+        } catch (Exception unused2) {
+            fileOutputStream = startWrite;
+            atomicFile.failWrite(fileOutputStream);
+            Slog.e("PersonaManagerService", "writePersonaCacheLocked() Error writing persona cache list");
+        }
     }
 }

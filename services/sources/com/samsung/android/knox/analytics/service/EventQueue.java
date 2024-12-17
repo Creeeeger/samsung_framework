@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-import com.android.server.backup.BackupAgentTimeoutParameters;
 import com.samsung.android.knox.analytics.KnoxAnalyticsData;
 import com.samsung.android.knox.analytics.util.BlacklistedFeature;
 import com.samsung.android.knox.analytics.util.KnoxAnalyticsDataConverter;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class EventQueue {
     public static final String API_USAGE_FEATURE_NAME = "API_USAGE";
@@ -35,7 +35,7 @@ public final class EventQueue {
     public static final int MAX_CACHED_EVENTS = 100;
     public static final String PACKAGE_NAME_FLAG_PROPERTY_NAME = "ReservedKey_Pid_PackageNameFlag";
     public static final String PACKAGE_NAME_KEY = "pN";
-    public static final String TAG = "[KnoxAnalytics] " + EventQueue.class.getSimpleName();
+    public static final String TAG = "[KnoxAnalytics] EventQueue";
     public static final String USER_TYPE_FLAG_PROPERTY_NAME = "ReservedKey_UserId_UserTypeFlag";
     public static final String USER_TYPE_KEY = "uT";
     public final Context mContext;
@@ -51,19 +51,19 @@ public final class EventQueue {
     public List mEventsCache = new ArrayList();
     public BroadcastReceiver mShutdownReceiver = new BroadcastReceiver() { // from class: com.samsung.android.knox.analytics.service.EventQueue.1
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             EventQueue.this.saveCachedLogs();
         }
     };
 
-    /* loaded from: classes2.dex */
-    public class EventHandler extends Handler {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class EventHandler extends Handler {
         public EventHandler(Looper looper) {
             super(looper);
         }
 
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             if (message == null) {
                 Log.e(EventQueue.TAG, "handleMessage(): msg is null!");
                 return;
@@ -80,14 +80,14 @@ public final class EventQueue {
                     EventQueue.this.stop();
                     return;
                 }
-                if (i == 3) {
-                    Log.d(EventQueue.TAG, "EventQueue.handleMessage() - EVENT_QUEUE_MSG_CLEANED_LOG_API");
-                    KnoxAnalyticsData parcelable = message.getData().getParcelable(EventQueue.EVENT_QUEUE_ANALYTICS_DATA_KEY);
-                    EventQueue.this.saveCachedLogs();
-                    EventQueue.this.addEvent(parcelable, 0);
+                if (i != 3) {
+                    Log.e(EventQueue.TAG, "handleMessage(): invalid msg.what");
                     return;
                 }
-                Log.e(EventQueue.TAG, "handleMessage(): invalid msg.what");
+                Log.d(EventQueue.TAG, "EventQueue.handleMessage() - EVENT_QUEUE_MSG_CLEANED_LOG_API");
+                KnoxAnalyticsData parcelable = message.getData().getParcelable(EventQueue.EVENT_QUEUE_ANALYTICS_DATA_KEY);
+                EventQueue.this.saveCachedLogs();
+                EventQueue.this.addEvent(parcelable, 0, false);
             }
         }
     }
@@ -98,100 +98,17 @@ public final class EventQueue {
         context.registerReceiver(this.mShutdownReceiver, new IntentFilter("android.intent.action.ACTION_SHUTDOWN"));
     }
 
-    public void start() {
-        synchronized (this.mDeactivationLock) {
-            Log.d(TAG, "start()");
-            if (this.mHandlerThread == null) {
-                HandlerThread handlerThread = new HandlerThread(HT_NAME);
-                this.mHandlerThread = handlerThread;
-                handlerThread.start();
-            }
-            if (this.mHandler == null) {
-                this.mHandler = new EventHandler(this.mHandlerThread.getLooper());
-            }
-            if (this.mMessageDelayHandler == null) {
-                this.mMessageDelayHandler = new Handler(this.mHandlerThread.getLooper());
-            }
-            if (this.mFeatureBlacklistObserver == null) {
-                FeatureBlacklistObserver featureBlacklistObserver = new FeatureBlacklistObserver(this.mContext);
-                this.mFeatureBlacklistObserver = featureBlacklistObserver;
-                featureBlacklistObserver.start();
-            }
-            if (this.mFeatureWhitelistObserver == null) {
-                FeatureWhitelistObserver featureWhitelistObserver = new FeatureWhitelistObserver(this.mContext);
-                this.mFeatureWhitelistObserver = featureWhitelistObserver;
-                featureWhitelistObserver.start();
-            }
-            this.mIsStarted = true;
-        }
-    }
-
-    public final void stop() {
-        synchronized (this.mDeactivationLock) {
-            Log.d(TAG, "stop()");
-            this.mIsStarted = false;
-            EventHandler eventHandler = this.mHandler;
-            if (eventHandler != null) {
-                eventHandler.removeMessages(1);
-            }
-            saveCachedLogs();
-        }
-    }
-
-    public void postMessage(int i, KnoxAnalyticsData knoxAnalyticsData) {
-        synchronized (this.mDeactivationLock) {
-            EventHandler eventHandler = this.mHandler;
-            if (eventHandler != null) {
-                Message obtainMessage = eventHandler.obtainMessage(i);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(EVENT_QUEUE_ANALYTICS_DATA_KEY, knoxAnalyticsData);
-                obtainMessage.setData(bundle);
-                this.mHandler.sendMessage(obtainMessage);
-            }
-        }
-    }
-
-    public final void enqueueEvent(KnoxAnalyticsData knoxAnalyticsData) {
-        if (!checkEventFeatureWhitelisted(knoxAnalyticsData) && checkEventFeatureBlacklisted(knoxAnalyticsData)) {
-            Log.d(TAG, "enqueueEvent(): feature blacklisted, discarding event.");
-            return;
-        }
-        checkFillUserType(knoxAnalyticsData);
-        checkFillPackageName(knoxAnalyticsData);
-        this.mEventsCache.add(knoxAnalyticsData);
-        if (this.mEventsCache.size() == 100) {
-            saveCachedLogs();
+    public final void addBulkEvents() {
+        String str = TAG;
+        Log.d(str, "addBulkEvents()");
+        long lastEventId = KnoxAnalyticsQueryResolver.getLastEventId(this.mContext) + 1;
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("eventsList", (ArrayList) KnoxAnalyticsDataConverter.formatBulkEvents(lastEventId, this.mEventsCache));
+        if (KnoxAnalyticsQueryResolver.addBulkEvents(this.mContext, lastEventId, bundle, 1) == -1) {
+            Log.e(str, "addBulkEvents(): error adding events, aborting.");
         } else {
-            restartMessageHandler();
-        }
-    }
-
-    public final synchronized void saveCachedLogs() {
-        Log.d(TAG, "saveCachedLogs(): Number of events: " + this.mEventsCache.size());
-        if (this.mEventsCache.size() == 0) {
-            return;
-        }
-        cancelMessageHandler();
-        if (this.mEventsCache.size() > 1) {
-            addBulkEvents();
-        } else {
-            addEvent((KnoxAnalyticsData) this.mEventsCache.get(0), 1, true);
             this.mEventsCache.clear();
         }
-    }
-
-    public final void cancelMessageHandler() {
-        this.mMessageDelayHandler.removeCallbacksAndMessages(null);
-    }
-
-    public final void restartMessageHandler() {
-        cancelMessageHandler();
-        this.mMessageDelayHandler.postDelayed(new Runnable() { // from class: com.samsung.android.knox.analytics.service.EventQueue.2
-            @Override // java.lang.Runnable
-            public void run() {
-                EventQueue.this.saveCachedLogs();
-            }
-        }, BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS);
     }
 
     public final void addEvent(KnoxAnalyticsData knoxAnalyticsData, int i) {
@@ -214,17 +131,8 @@ public final class EventQueue {
         }
     }
 
-    public final void addBulkEvents() {
-        String str = TAG;
-        Log.d(str, "addBulkEvents()");
-        long lastEventId = KnoxAnalyticsQueryResolver.getLastEventId(this.mContext) + 1;
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("eventsList", (ArrayList) KnoxAnalyticsDataConverter.formatBulkEvents(lastEventId, this.mEventsCache));
-        if (KnoxAnalyticsQueryResolver.addBulkEvents(this.mContext, lastEventId, bundle, 1) == -1) {
-            Log.e(str, "addBulkEvents(): error adding events, aborting.");
-        } else {
-            this.mEventsCache.clear();
-        }
+    public final void cancelMessageHandler() {
+        this.mMessageDelayHandler.removeCallbacksAndMessages(null);
     }
 
     public final boolean checkEventFeatureBlacklisted(KnoxAnalyticsData knoxAnalyticsData) {
@@ -235,12 +143,12 @@ public final class EventQueue {
             Log.e(str, "Features Blacklist Observer is null, can't check!");
             return false;
         }
-        List featureBlacklist = featureBlacklistObserver.getFeatureBlacklist();
-        if (featureBlacklist == null) {
+        List list = featureBlacklistObserver.mFeaturesBlacklistCache;
+        if (list == null) {
             Log.e(str, "Features Blacklist is null, can't check!");
             return false;
         }
-        Iterator it = featureBlacklist.iterator();
+        Iterator it = list.iterator();
         while (it.hasNext()) {
             if (((BlacklistedFeature) it.next()).isBlacklisted(knoxAnalyticsData.getFeature(), knoxAnalyticsData.getEvent())) {
                 return true;
@@ -257,12 +165,12 @@ public final class EventQueue {
             Log.e(str, "Features Whitelist Observer is null, can't check!");
             return false;
         }
-        List featureWhitelist = featureWhitelistObserver.getFeatureWhitelist();
-        if (featureWhitelist == null) {
+        List list = featureWhitelistObserver.mFeaturesWhitelistCache;
+        if (list == null) {
             Log.e(str, "Features Whitelist is null, can't check!");
             return false;
         }
-        Iterator it = featureWhitelist.iterator();
+        Iterator it = list.iterator();
         while (true) {
             if (!it.hasNext()) {
                 break;
@@ -275,25 +183,6 @@ public final class EventQueue {
             }
         }
         return false;
-    }
-
-    public final void checkFillUserType(KnoxAnalyticsData knoxAnalyticsData) {
-        String str = TAG;
-        Log.d(str, "checkFillUserType()");
-        if (knoxAnalyticsData.getPayload().containsKey(USER_TYPE_FLAG_PROPERTY_NAME)) {
-            int i = knoxAnalyticsData.getPayload().getInt(USER_TYPE_FLAG_PROPERTY_NAME, -1);
-            knoxAnalyticsData.getPayload().remove(USER_TYPE_FLAG_PROPERTY_NAME);
-            if (i == -1) {
-                Log.e(str, "checkFillUserType() - invalid userId " + i);
-                return;
-            }
-            int userType = new UserManagerHelper(this.mContext).getUserType(i);
-            if (userType == -1) {
-                Log.e(str, "checkFillUserType() - Couldn't get userType");
-            } else {
-                knoxAnalyticsData.setProperty(USER_TYPE_KEY, userType);
-            }
-        }
     }
 
     public final void checkFillPackageName(KnoxAnalyticsData knoxAnalyticsData) {
@@ -314,6 +203,40 @@ public final class EventQueue {
         }
     }
 
+    public final void checkFillUserType(KnoxAnalyticsData knoxAnalyticsData) {
+        String str = TAG;
+        Log.d(str, "checkFillUserType()");
+        if (knoxAnalyticsData.getPayload().containsKey(USER_TYPE_FLAG_PROPERTY_NAME)) {
+            int i = knoxAnalyticsData.getPayload().getInt(USER_TYPE_FLAG_PROPERTY_NAME, -1);
+            knoxAnalyticsData.getPayload().remove(USER_TYPE_FLAG_PROPERTY_NAME);
+            if (i == -1) {
+                Log.e(str, "checkFillUserType() - invalid userId " + i);
+            } else {
+                int userType = new UserManagerHelper(this.mContext).getUserType(i);
+                if (userType == -1) {
+                    Log.e(str, "checkFillUserType() - Couldn't get userType");
+                } else {
+                    knoxAnalyticsData.setProperty(USER_TYPE_KEY, userType);
+                }
+            }
+        }
+    }
+
+    public final void enqueueEvent(KnoxAnalyticsData knoxAnalyticsData) {
+        if (!checkEventFeatureWhitelisted(knoxAnalyticsData) && checkEventFeatureBlacklisted(knoxAnalyticsData)) {
+            Log.d(TAG, "enqueueEvent(): feature blacklisted, discarding event.");
+            return;
+        }
+        checkFillUserType(knoxAnalyticsData);
+        checkFillPackageName(knoxAnalyticsData);
+        this.mEventsCache.add(knoxAnalyticsData);
+        if (this.mEventsCache.size() == 100) {
+            saveCachedLogs();
+        } else {
+            restartMessageHandler();
+        }
+    }
+
     public final String getAppNameByPID(int i) {
         String str = TAG;
         Log.d(str, "getAppNameByPID(" + i + ")");
@@ -331,8 +254,109 @@ public final class EventQueue {
         return null;
     }
 
-    public boolean isStarted() {
+    public final boolean isStarted() {
         return this.mIsStarted;
+    }
+
+    public final void notifyVersioningCompleted() {
+        Log.d(TAG, "notifyVersioningCompleted()");
+        synchronized (this.mVersioningCompletedLock) {
+            this.mVersioningCompleted = true;
+            this.mVersioningCompletedLock.notifyAll();
+        }
+    }
+
+    public final void postMessage(int i, KnoxAnalyticsData knoxAnalyticsData) {
+        synchronized (this.mDeactivationLock) {
+            try {
+                EventHandler eventHandler = this.mHandler;
+                if (eventHandler != null) {
+                    Message obtainMessage = eventHandler.obtainMessage(i);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(EVENT_QUEUE_ANALYTICS_DATA_KEY, knoxAnalyticsData);
+                    obtainMessage.setData(bundle);
+                    this.mHandler.sendMessage(obtainMessage);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void restartMessageHandler() {
+        cancelMessageHandler();
+        this.mMessageDelayHandler.postDelayed(new Runnable() { // from class: com.samsung.android.knox.analytics.service.EventQueue.2
+            @Override // java.lang.Runnable
+            public final void run() {
+                EventQueue.this.saveCachedLogs();
+            }
+        }, 300000L);
+    }
+
+    public final synchronized void saveCachedLogs() {
+        try {
+            Log.d(TAG, "saveCachedLogs(): Number of events: " + this.mEventsCache.size());
+            if (this.mEventsCache.size() == 0) {
+                return;
+            }
+            cancelMessageHandler();
+            if (this.mEventsCache.size() > 1) {
+                addBulkEvents();
+            } else {
+                addEvent((KnoxAnalyticsData) this.mEventsCache.get(0), 1, true);
+                this.mEventsCache.clear();
+            }
+        } catch (Throwable th) {
+            throw th;
+        }
+    }
+
+    public final void start() {
+        synchronized (this.mDeactivationLock) {
+            try {
+                Log.d(TAG, "start()");
+                if (this.mHandlerThread == null) {
+                    HandlerThread handlerThread = new HandlerThread(HT_NAME);
+                    this.mHandlerThread = handlerThread;
+                    handlerThread.start();
+                }
+                if (this.mHandler == null) {
+                    this.mHandler = new EventHandler(this.mHandlerThread.getLooper());
+                }
+                if (this.mMessageDelayHandler == null) {
+                    this.mMessageDelayHandler = new Handler(this.mHandlerThread.getLooper());
+                }
+                if (this.mFeatureBlacklistObserver == null) {
+                    FeatureBlacklistObserver featureBlacklistObserver = new FeatureBlacklistObserver(this.mContext);
+                    this.mFeatureBlacklistObserver = featureBlacklistObserver;
+                    featureBlacklistObserver.start();
+                }
+                if (this.mFeatureWhitelistObserver == null) {
+                    FeatureWhitelistObserver featureWhitelistObserver = new FeatureWhitelistObserver(this.mContext);
+                    this.mFeatureWhitelistObserver = featureWhitelistObserver;
+                    featureWhitelistObserver.start();
+                }
+                this.mIsStarted = true;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void stop() {
+        synchronized (this.mDeactivationLock) {
+            try {
+                Log.d(TAG, "stop()");
+                this.mIsStarted = false;
+                EventHandler eventHandler = this.mHandler;
+                if (eventHandler != null) {
+                    eventHandler.removeMessages(1);
+                }
+                saveCachedLogs();
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
     public final void waitVersioningCompleted() {
@@ -349,13 +373,5 @@ public final class EventQueue {
             }
         }
         Log.d(TAG, "waitVersioningCompleted(): done");
-    }
-
-    public void notifyVersioningCompleted() {
-        Log.d(TAG, "notifyVersioningCompleted()");
-        synchronized (this.mVersioningCompletedLock) {
-            this.mVersioningCompleted = true;
-            this.mVersioningCompletedLock.notifyAll();
-        }
     }
 }

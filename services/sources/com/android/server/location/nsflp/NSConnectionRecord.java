@@ -3,19 +3,10 @@ package com.android.server.location.nsflp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/* loaded from: classes2.dex */
-public class NSConnectionRecord implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: com.android.server.location.nsflp.NSConnectionRecord.1
-        @Override // android.os.Parcelable.Creator
-        public NSConnectionRecord createFromParcel(Parcel parcel) {
-            return new NSConnectionRecord(parcel);
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public NSConnectionRecord[] newArray(int i) {
-            return new NSConnectionRecord[i];
-        }
-    };
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class NSConnectionRecord implements Parcelable {
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public String componentName;
     public long connectedTime;
     public int connectionCount;
@@ -27,22 +18,18 @@ public class NSConnectionRecord implements Parcelable {
     public String prevPackageName;
     public long serviceBindingDiedTime;
 
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return 0;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.location.nsflp.NSConnectionRecord$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            return new NSConnectionRecord(parcel);
+        }
 
-    public NSConnectionRecord(String str) {
-        this.componentName = null;
-        this.prevComponentName = null;
-        this.packageName = null;
-        this.prevPackageName = null;
-        this.connectionCount = 0;
-        this.disconnectionCount = 0;
-        this.connectedTime = 0L;
-        this.disconnectedTime = 0L;
-        this.serviceBindingDiedTime = 0L;
-        this.logTag = str;
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new NSConnectionRecord[i];
+        }
     }
 
     public NSConnectionRecord(Parcel parcel) {
@@ -67,8 +54,48 @@ public class NSConnectionRecord implements Parcelable {
         this.serviceBindingDiedTime = parcel.readLong();
     }
 
+    public NSConnectionRecord(String str) {
+        this.componentName = null;
+        this.prevComponentName = null;
+        this.packageName = null;
+        this.prevPackageName = null;
+        this.connectionCount = 0;
+        this.disconnectionCount = 0;
+        this.connectedTime = 0L;
+        this.disconnectedTime = 0L;
+        this.serviceBindingDiedTime = 0L;
+        this.logTag = str;
+    }
+
     @Override // android.os.Parcelable
-    public void writeToParcel(Parcel parcel, int i) {
+    public final int describeContents() {
+        return 0;
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("tag=");
+        sb.append(this.logTag);
+        sb.append("_prevComp=");
+        sb.append(this.prevComponentName);
+        sb.append("_comp=");
+        sb.append(this.componentName);
+        sb.append("_connCnt=");
+        sb.append(this.connectionCount);
+        sb.append("_discCnt=");
+        sb.append(this.disconnectionCount);
+        sb.append("_discTime=");
+        sb.append(this.disconnectedTime);
+        sb.append("_discDur=");
+        long j = this.connectedTime;
+        long j2 = this.disconnectedTime;
+        sb.append(j >= j2 ? j - j2 : 0L);
+        sb.append("_bindDiedTime=");
+        sb.append(this.serviceBindingDiedTime);
+        return sb.toString();
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.logTag);
         parcel.writeString(this.componentName);
         parcel.writeString(this.prevComponentName);
@@ -79,54 +106,5 @@ public class NSConnectionRecord implements Parcelable {
         parcel.writeLong(this.connectedTime);
         parcel.writeLong(this.disconnectedTime);
         parcel.writeLong(this.serviceBindingDiedTime);
-    }
-
-    public void setComponentName(String str) {
-        String str2 = this.componentName;
-        if (str2 != null) {
-            this.prevComponentName = str2;
-        }
-        this.componentName = str;
-    }
-
-    public void setPackageName(String str) {
-        String str2 = this.packageName;
-        if (str2 != null) {
-            this.prevPackageName = str2;
-        }
-        this.packageName = str;
-    }
-
-    public void increaseConnectionCount() {
-        this.connectionCount++;
-    }
-
-    public void increaseDisconnectionCount() {
-        this.disconnectionCount++;
-    }
-
-    public void setConnectedTime(long j) {
-        this.connectedTime = j;
-    }
-
-    public void setDisconnectedTime(long j) {
-        this.disconnectedTime = j;
-    }
-
-    public void setServiceBindingDiedTime(long j) {
-        this.serviceBindingDiedTime = j;
-    }
-
-    public String toString() {
-        return "tag=" + this.logTag + "_prevComp=" + this.prevComponentName + "_comp=" + this.componentName + "_connCnt=" + this.connectionCount + "_discCnt=" + this.disconnectionCount + "_discTime=" + this.disconnectedTime + "_discDur=" + getDisconnectedDuration() + "_bindDiedTime=" + this.serviceBindingDiedTime;
-    }
-
-    public long getDisconnectedDuration() {
-        long j = this.connectedTime;
-        long j2 = this.disconnectedTime;
-        if (j >= j2) {
-            return j - j2;
-        }
-        return 0L;
     }
 }

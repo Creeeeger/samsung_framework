@@ -2,40 +2,17 @@ package com.android.server.pm;
 
 import android.os.Binder;
 
-/* loaded from: classes3.dex */
-public class KeySetHandle extends Binder {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class KeySetHandle extends Binder {
     public final long mId;
-    public int mRefCount;
+    public int mRefCount = 1;
 
     public KeySetHandle(long j) {
         this.mId = j;
-        this.mRefCount = 1;
     }
 
     public KeySetHandle(long j, int i) {
         this.mId = j;
-        this.mRefCount = i;
-    }
-
-    public long getId() {
-        return this.mId;
-    }
-
-    public int getRefCountLPr() {
-        return this.mRefCount;
-    }
-
-    public void setRefCountLPw(int i) {
-        this.mRefCount = i;
-    }
-
-    public void incrRefCountLPw() {
-        this.mRefCount++;
-    }
-
-    public int decrRefCountLPw() {
-        int i = this.mRefCount - 1;
-        this.mRefCount = i;
-        return i;
     }
 }

@@ -2,33 +2,43 @@ package com.android.server.knox.dar.ddar.nativedaemon;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageDataObserver;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Process;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
-import android.os.UserHandle;
+import android.os.storage.StorageManager;
 import android.text.TextUtils;
+import android.util.Log;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
 import com.android.server.knox.dar.DarManagerService;
 import com.android.server.knox.dar.DarUtil;
 import com.android.server.knox.dar.EnterprisePartitionManager;
 import com.android.server.knox.dar.ddar.DDLog;
 import com.android.server.knox.dar.ddar.DualDarDoPolicyChecker;
+import com.android.server.om.SemSamsungThemeUtils;
+import com.android.server.pm.Installer;
 import com.android.server.pm.PersonaServiceHelper;
 import com.samsung.android.knox.SemPersonaManager;
 import com.samsung.android.knox.dar.ddar.proxy.IProxyAgentService;
 import com.samsung.android.knox.dar.ddar.securesession.Wiper;
-import com.samsung.android.knox.ddar.FileInfo;
 import com.samsung.android.knox.ddar.Secret;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes2.dex */
-public class DualDARDaemonProxy extends IProxyAgentService implements INativeDaemonConnectorCallbacks {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DualDARDaemonProxy extends IProxyAgentService implements INativeDaemonConnectorCallbacks {
     public static Context mContext;
     public static DualDARDaemonProxy mInstance;
     public DualDarDaemonConnector mConnector;
@@ -41,29 +51,20 @@ public class DualDARDaemonProxy extends IProxyAgentService implements INativeDae
     public final List mBlockedClearablePackages = new ArrayList();
     public final List mDualDARDOPolicyPackages = new ArrayList();
 
-    public final boolean isZippedLocaleOverlay(String str) {
-        return false;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ClearUserDataObserver extends IPackageDataObserver.Stub {
+        public boolean finished;
+        public String packageName;
+        public boolean success;
 
-    @Override // com.android.server.knox.dar.ddar.nativedaemon.INativeDaemonConnectorCallbacks
-    public boolean onDaemonDisconnected() {
-        return false;
-    }
-
-    @Override // com.android.server.knox.dar.ddar.nativedaemon.INativeDaemonConnectorCallbacks
-    public boolean onEvent(int i, String str, String[] strArr) {
-        return false;
-    }
-
-    public static synchronized DualDARDaemonProxy getInstance(Context context) {
-        DualDARDaemonProxy dualDARDaemonProxy;
-        synchronized (DualDARDaemonProxy.class) {
-            if (mInstance == null) {
-                mInstance = new DualDARDaemonProxy(context);
+        public final void onRemoveCompleted(String str, boolean z) {
+            synchronized (this) {
+                this.finished = true;
+                this.packageName = str;
+                this.success = z;
+                notifyAll();
             }
-            dualDARDaemonProxy = mInstance;
         }
-        return dualDARDaemonProxy;
     }
 
     public DualDARDaemonProxy(Context context) {
@@ -74,284 +75,98 @@ public class DualDARDaemonProxy extends IProxyAgentService implements INativeDae
         }
     }
 
-    public final void startConnectorThread() {
-        DDLog.d("DualDARDaemonProxy", "startConnectorThread() ", new Object[0]);
-        this.mConnector = new DualDarDaemonConnector(Looper.getMainLooper(), this);
-        Thread thread = new Thread(this.mConnector, "DualDARDaemonProxy");
-        this.mConnectorThread = thread;
-        thread.start();
+    /* JADX WARN: Removed duplicated region for block: B:52:0x00cc A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:59:? A[SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:60:0x00bc A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void fetchDumpStateInfo(com.samsung.android.knox.ddar.FileInfo r7) {
+        /*
+            Method dump skipped, instructions count: 219
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.knox.dar.ddar.nativedaemon.DualDARDaemonProxy.fetchDumpStateInfo(com.samsung.android.knox.ddar.FileInfo):void");
     }
 
-    public final void stopConnectorThread() {
-        DDLog.d("DualDARDaemonProxy", "stopConnectorThread() ", new Object[0]);
-        DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
-        if (dualDarDaemonConnector != null) {
-            dualDarDaemonConnector.setIsListening(false);
-            this.mConnectorThread.interrupt();
-            this.mConnector = null;
-        }
-    }
-
-    public final boolean fetchDumpStateInfo(FileInfo fileInfo) {
-        DDLog.d("DualDARDaemonProxy", "fetchDumpStateInfo()", new Object[0]);
-        fileCopy(fileInfo.fd, "/data/log/ddar_log.txt");
-        DDLog.d("DualDARDaemonProxy", "fetchDumpStateInfo() successfullly read the log file", new Object[0]);
-        return true;
-    }
-
-    public Bundle onMessage(int i, String str, Bundle bundle) {
-        char c;
-        NativeDaemonEvent nativeDaemonEvent;
-        NativeDaemonEvent nativeDaemonEvent2;
-        NativeDaemonEvent nativeDaemonEvent3;
-        NativeDaemonEvent nativeDaemonEvent4;
-        NativeDaemonEvent nativeDaemonEvent5;
-        NativeDaemonEvent nativeDaemonEvent6;
-        NativeDaemonEvent nativeDaemonEvent7;
-        enforceCallingUser(i);
-        try {
-            DDLog.d("DualDARDaemonProxy", "onMessage() " + str, new Object[0]);
-            Bundle bundle2 = new Bundle();
-            switch (str.hashCode()) {
-                case -2016587526:
-                    if (str.equals("CLEAR_APP_DATA")) {
-                        c = 5;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case -1958949728:
-                    if (str.equals("LOAD_CLIENT_LIBRARY")) {
-                        c = 6;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case -1092001439:
-                    if (str.equals("STOP_DAEMON")) {
-                        c = 1;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case -971190072:
-                    if (str.equals("FETCH_DUMPSTATE_REQUEST")) {
-                        c = '\f';
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case -965502524:
-                    if (str.equals("START_CLIENT_LIBRARY")) {
-                        c = '\b';
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 70449002:
-                    if (str.equals("GET_CLIENTLIB_VERSION")) {
-                        c = '\t';
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 222645537:
-                    if (str.equals("START_DAEMON")) {
-                        c = 0;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 321737340:
-                    if (str.equals("SET_EVICTION")) {
-                        c = 2;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 542984053:
-                    if (str.equals("PUSH_SECRET")) {
-                        c = '\n';
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 725375061:
-                    if (str.equals("SET_DUALDAR_POLICY")) {
-                        c = 3;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 766354690:
-                    if (str.equals("CLEAR_SECRET")) {
-                        c = 11;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 1297457511:
-                    if (str.equals("UNLOAD_CLIENT_LIBRARY")) {
-                        c = 7;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                case 1776465251:
-                    if (str.equals("SET_DUALDAR_DO_POLICY")) {
-                        c = 4;
-                        break;
-                    }
-                    c = 65535;
-                    break;
-                default:
-                    c = 65535;
-                    break;
-            }
-            switch (c) {
-                case 0:
-                    startDualDARDaemon(bundle2);
-                    break;
-                case 1:
-                    stopConnectorThread();
-                    setSystemPropertyBoolean("persist.sys.knox.dualdard", false);
-                    bundle2.putBoolean("dual_dar_response", true);
-                    break;
-                case 2:
-                    boolean eviction = setEviction(bundle.getInt("user_id"), bundle.getBoolean("EVICT", false));
-                    bundle2.putBoolean("dual_dar_response", eviction);
-                    if (!eviction && (nativeDaemonEvent = this.mEvent) != null) {
-                        bundle2.putString("dual_dar_response_message", nativeDaemonEvent.getMessage());
-                        break;
-                    }
-                    break;
-                case 3:
-                    setDualDARPolicyForManagedProfile(bundle, bundle2);
-                    break;
-                case 4:
-                    setDualDARPolicyForManagedDevice(bundle, bundle2);
-                    break;
-                case 5:
-                    boolean clearApplicationUserDataForPackages = clearApplicationUserDataForPackages(bundle.getInt("user_id"), this.mDualDARDOPolicyPackages);
-                    bundle2.putBoolean("dual_dar_response", clearApplicationUserDataForPackages);
-                    if (!clearApplicationUserDataForPackages && (nativeDaemonEvent2 = this.mEvent) != null) {
-                        bundle2.putString("dual_dar_response_message", nativeDaemonEvent2.getMessage());
-                        break;
-                    }
-                    break;
-                case 6:
-                    boolean loadClientLibrary = loadClientLibrary(bundle.getInt("user_id"), bundle.getString("CRYPTO_PATH"));
-                    bundle2.putBoolean("dual_dar_response", loadClientLibrary);
-                    if (!loadClientLibrary && (nativeDaemonEvent3 = this.mEvent) != null) {
-                        bundle2.putString("dual_dar_response_message", nativeDaemonEvent3.getMessage());
-                        break;
-                    }
-                    break;
-                case 7:
-                    boolean unloadClientLibrary = unloadClientLibrary(bundle.getInt("user_id"));
-                    bundle2.putBoolean("dual_dar_response", unloadClientLibrary);
-                    if (!unloadClientLibrary && (nativeDaemonEvent4 = this.mEvent) != null) {
-                        bundle2.putString("dual_dar_response_message", nativeDaemonEvent4.getMessage());
-                        break;
-                    }
-                    break;
-                case '\b':
-                    boolean startClientLibrary = startClientLibrary(bundle.getInt("user_id"));
-                    bundle2.putBoolean("dual_dar_response", startClientLibrary);
-                    if (!startClientLibrary && (nativeDaemonEvent5 = this.mEvent) != null) {
-                        bundle2.putString("dual_dar_response_message", nativeDaemonEvent5.getMessage());
-                        break;
-                    }
-                    break;
-                case '\t':
-                    bundle2.putString("dual_dar_response", getClientLibraryVersion(bundle.getString("CRYPTO_PATH")));
-                    break;
-                case '\n':
-                    boolean pushSecret = pushSecret(bundle.getInt("user_id"), bundle.getParcelableArrayList("INNER_LAYER_SECRET"), bundle.getString("ORIGINATING_SECURE_CLIENT_ID"));
-                    bundle2.putBoolean("dual_dar_response", pushSecret);
-                    if (!pushSecret && (nativeDaemonEvent6 = this.mEvent) != null) {
-                        bundle2.putString("dual_dar_response_message", nativeDaemonEvent6.getMessage());
-                        break;
-                    }
-                    break;
-                case 11:
-                    boolean clearSecret = clearSecret(bundle.getInt("user_id"));
-                    bundle2.putBoolean("dual_dar_response", clearSecret);
-                    if (!clearSecret && (nativeDaemonEvent7 = this.mEvent) != null) {
-                        bundle2.putString("dual_dar_response_message", nativeDaemonEvent7.getMessage());
-                        break;
-                    }
-                    break;
-                case '\f':
-                    bundle2.putBoolean("dual_dar_response", fetchDumpStateInfo((FileInfo) bundle.getParcelable("FSLOG_FILE_INFO")));
-                    break;
-            }
-            return bundle2;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public final void setDualDARPolicyForManagedDevice(Bundle bundle, Bundle bundle2) {
-        NativeDaemonEvent nativeDaemonEvent;
-        boolean dualDARDOPolicy = setDualDARDOPolicy(bundle.getInt("user_id"), bundle.getInt("CRYPTO_TYPE"));
-        bundle2.putBoolean("dual_dar_response", dualDARDOPolicy);
-        if (dualDARDOPolicy || (nativeDaemonEvent = this.mEvent) == null) {
-            return;
-        }
-        bundle2.putString("dual_dar_response_message", nativeDaemonEvent.getMessage());
-    }
-
-    public final void setDualDARPolicyForManagedProfile(Bundle bundle, Bundle bundle2) {
-        boolean dualDARPOPolicy;
-        NativeDaemonEvent nativeDaemonEvent;
-        int i = bundle.getInt("user_id");
-        int i2 = bundle.getInt("CRYPTO_TYPE");
-        int i3 = bundle.getInt("STORAGE_TYPE");
-        if (i3 == 1) {
-            dualDARPOPolicy = setDualDARPOPolicy(i, 9);
-        } else {
-            dualDARPOPolicy = i3 == 2 ? setDualDARPOPolicy(i, i2) : false;
-        }
-        bundle2.putBoolean("dual_dar_response", dualDARPOPolicy);
-        if (dualDARPOPolicy || (nativeDaemonEvent = this.mEvent) == null) {
-            return;
-        }
-        bundle2.putString("dual_dar_response_message", nativeDaemonEvent.getMessage());
-    }
-
-    public final void startDualDARDaemon(Bundle bundle) {
-        try {
-            synchronized (this.mLock) {
-                if (!DarUtil.isDaemonRunning("dualdard")) {
-                    DDLog.i("DualDARDaemonProxy", "start newly dualdard daemon ! ", new Object[0]);
-                    setSystemPropertyBoolean("persist.sys.knox.dualdard", true);
+    public static synchronized DualDARDaemonProxy getInstance(Context context) {
+        DualDARDaemonProxy dualDARDaemonProxy;
+        synchronized (DualDARDaemonProxy.class) {
+            try {
+                if (mInstance == null) {
+                    mInstance = new DualDARDaemonProxy(context);
                 }
-                startConnectorThread();
-                startTimer();
-                this.mLock.wait();
-                if (!this.isDaemonConnectionFailed) {
-                    bundle.putBoolean("dual_dar_response", true);
-                } else {
-                    bundle.putBoolean("dual_dar_response", false);
-                }
-                cancelTimer();
+                dualDARDaemonProxy = mInstance;
+            } catch (Throwable th) {
+                throw th;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        return dualDARDaemonProxy;
+    }
+
+    public static boolean setDualDARPOPolicy(int i, int i2) {
+        boolean z;
+        EnterprisePartitionManager enterprisePartitionManager = EnterprisePartitionManager.getInstance(mContext);
+        enterprisePartitionManager.mInjector.getClass();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            StorageManager storageManager = (StorageManager) enterprisePartitionManager.mContext.getSystemService(StorageManager.class);
+            if (storageManager != null) {
+                z = storageManager.setDualDARPolicy(i, i2);
+            } else {
+                Log.e("EnterprisePartitionManager", "StorageManager instance is NULL");
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                z = false;
+            }
+            if (z) {
+                return true;
+            }
+            DDLog.e("DualDARDaemonProxy", "setDualDARPolicy failed!", new Object[0]);
+            return false;
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public static void setSystemPropertyBoolean(String str, boolean z) {
-        if (TextUtils.isEmpty(str)) {
+    public static boolean setEviction(int i, boolean z) {
+        boolean z2;
+        EnterprisePartitionManager.getInstance(mContext).getClass();
+        StringBuilder sb = new StringBuilder("setEviction(user:");
+        sb.append(i);
+        sb.append(" evict:");
+        sb.append(z);
+        DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(sb, ")", "EnterprisePartitionManager");
+        synchronized (EnterprisePartitionManager.mInstallLock) {
+            try {
+                Installer installer = EnterprisePartitionManager.mPackageTasker;
+                installer.getClass();
+                try {
+                    z2 = installer.mInstalld.setEviction(i, z);
+                } catch (Exception e) {
+                    Installer.InstallerException.from(e);
+                    throw null;
+                }
+            } catch (Installer.InstallerException unused) {
+                z2 = false;
+            }
+        }
+        if (z2) {
+            return true;
+        }
+        DDLog.e("DualDARDaemonProxy", "setEviction failed!", new Object[0]);
+        return false;
+    }
+
+    public static void setSystemPropertyBoolean(boolean z) {
+        if (TextUtils.isEmpty("persist.sys.knox.dualdard")) {
             DDLog.e("DualDARDaemonProxy", "Invalid property", new Object[0]);
             return;
         }
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             try {
-                SystemProperties.set(str, Boolean.toString(z));
+                SystemProperties.set("persist.sys.knox.dualdard", Boolean.toString(z));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -360,197 +175,25 @@ public class DualDARDaemonProxy extends IProxyAgentService implements INativeDae
         }
     }
 
-    public final void startTimer() {
-        Handler handler = new Handler(Looper.getMainLooper());
-        this.mHandler = handler;
-        handler.postDelayed(new Runnable() { // from class: com.android.server.knox.dar.ddar.nativedaemon.DualDARDaemonProxy.1
-            @Override // java.lang.Runnable
-            public void run() {
-                DDLog.e("DualDARDaemonProxy", "coudn't connect with daemon!", new Object[0]);
-                DualDARDaemonProxy dualDARDaemonProxy = DualDARDaemonProxy.this;
-                dualDARDaemonProxy.isDaemonConnectionFailed = true;
-                dualDARDaemonProxy.mLock.notify();
-            }
-        }, 10000L);
-    }
-
-    public void cancelTimer() {
-        Handler handler = this.mHandler;
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-        }
-        this.isDaemonConnectionFailed = false;
-    }
-
-    public boolean setEviction(int i, boolean z) {
-        if (EnterprisePartitionManager.getInstance(mContext).setEviction(i, z)) {
-            return true;
-        }
-        DDLog.e("DualDARDaemonProxy", "setEviction failed!", new Object[0]);
-        return false;
-    }
-
-    public final boolean setDualDARPOPolicy(int i, int i2) {
-        if (EnterprisePartitionManager.getInstance(mContext).setDualDARPolicy(i, i2)) {
-            return true;
-        }
-        DDLog.e("DualDARDaemonProxy", "setDualDARPolicy failed!", new Object[0]);
-        return false;
-    }
-
-    public final boolean setDualDARDOPolicy(int i, int i2) {
-        DDLog.d("DualDARDaemonProxy", "setDualDARDOPolicy for user " + i + " type " + i2, new Object[0]);
-        if (setDualDARPolicyToDirectories(i, i2)) {
-            return false;
-        }
-        DarManagerService darManagerService = (DarManagerService) ServiceManager.getService("dar");
-        if (darManagerService != null) {
-            ArrayList arrayList = new ArrayList();
-            ArrayList arrayList2 = new ArrayList();
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                List packageListForDualDarPolicy = darManagerService.getPackageListForDualDarPolicy("pkg_clearable_system");
-                List packageListForDualDarPolicy2 = darManagerService.getPackageListForDualDarPolicy("pkg_not_system");
-                List packageListForDualDarPolicy3 = darManagerService.getPackageListForDualDarPolicy("pkg_not_clearable_system");
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                refreshNonClearablePackagesList(i);
-                if (packageListForDualDarPolicy == null || packageListForDualDarPolicy.isEmpty()) {
-                    DDLog.e("DualDARDaemonProxy", "Clearable system package list is Empty.", new Object[0]);
-                } else {
-                    makeListUpWithClearableSystemPackages(packageListForDualDarPolicy, arrayList, arrayList2);
-                }
-                if (packageListForDualDarPolicy2 == null || packageListForDualDarPolicy2.isEmpty()) {
-                    DDLog.e("DualDARDaemonProxy", "Not system package list is Empty.", new Object[0]);
-                } else {
-                    makeListUpWithNonSystemPackages(packageListForDualDarPolicy2, arrayList, arrayList2);
-                }
-                if (packageListForDualDarPolicy3 == null || packageListForDualDarPolicy3.isEmpty()) {
-                    DDLog.e("DualDARDaemonProxy", "Not clearable system package list is Empty.", new Object[0]);
-                } else {
-                    makeListUpWithNonClearableSystemPackages(packageListForDualDarPolicy3, arrayList);
-                }
-                if (!setDualDARPolicyForPackages(i, i2, arrayList2, arrayList)) {
-                    DDLog.e("DualDARDaemonProxy", "setDualDARPolicyForPackages failed!", new Object[0]);
-                    return false;
-                }
-                DualDarDoPolicyChecker.getInstance(mContext).saveSkippedPackages(arrayList);
-            } catch (Throwable th) {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                throw th;
-            }
-        }
-        DDLog.d("DualDARDaemonProxy", "setDualDARDOPolicy res : true", new Object[0]);
-        return true;
-    }
-
-    public final void makeListUpWithNonClearableSystemPackages(List list, List list2) {
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            String str = (String) it.next();
-            DDLog.e("DualDARDaemonProxy", "3. Skip ddar policy for the pkg " + str, new Object[0]);
-            list2.add(str);
-        }
-    }
-
-    public final void makeListUpWithNonSystemPackages(List list, List list2, List list3) {
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            String str = (String) it.next();
-            if (isNonClearablePackage(str)) {
-                DDLog.e("DualDARDaemonProxy", "2. Skip ddar policy for the pkg " + str, new Object[0]);
-                list2.add(str);
-            } else {
-                list3.add(str);
-            }
-        }
-    }
-
-    public final void makeListUpWithClearableSystemPackages(List list, List list2, List list3) {
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            String str = (String) it.next();
-            if (isNonClearablePackage(str)) {
-                DDLog.d("DualDARDaemonProxy", "1. Skip ddar policy for the pkg " + str, new Object[0]);
-                list2.add(str);
-            } else {
-                list3.add(str);
-            }
-        }
-    }
-
-    public final boolean setDualDARPolicyToDirectories(int i, int i2) {
-        if (!setDualDARPolicyForDir(i, i2, "/data/media/" + i)) {
-            DDLog.e("DualDARDaemonProxy", "Failed to set the policy to shared folders...", new Object[0]);
-            return true;
-        }
-        if (setDualDARPolicyForUser(i, i2)) {
-            return false;
-        }
-        DDLog.e("DualDARDaemonProxy", "Failed to set the policy to data package folder...", new Object[0]);
-        return true;
-    }
-
-    public final boolean setDualDARPolicyForUser(int i, int i2) {
-        EnterprisePartitionManager enterprisePartitionManager = EnterprisePartitionManager.getInstance(mContext);
-        String str = "/data/user/" + i;
-        String str2 = "/data/user_de/" + i;
-        if (!enterprisePartitionManager.setDualDARPolicyDir(i, i2, str)) {
-            DDLog.e("DualDARDaemonProxy", "setDualDARPolicyDir user failed! : " + str, new Object[0]);
-            return false;
-        }
-        if (enterprisePartitionManager.setDualDARPolicyDir(i, 9, str2)) {
-            return true;
-        }
-        DDLog.e("DualDARDaemonProxy", "setDualDARPolicyDir user failed! : " + str2, new Object[0]);
-        return true;
-    }
-
-    public final boolean setDualDARPolicyForPackages(int i, int i2, List list, List list2) {
-        EnterprisePartitionManager enterprisePartitionManager = EnterprisePartitionManager.getInstance(mContext);
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            String str = (String) it.next();
-            String str2 = "/data/user/" + i + "/" + str;
-            String str3 = "/data/user_de/" + i + "/" + str;
-            if (!enterprisePartitionManager.setDualDARPolicyDirRecursively(i, i2, str2)) {
-                if (isSetPolicyFailureExceptional(str)) {
-                    DDLog.e("DualDARDaemonProxy", "setDualDARPolicyDirRecursively failure exceptional! : " + str2, new Object[0]);
-                    list2.add(str);
-                } else {
-                    DDLog.e("DualDARDaemonProxy", "setDualDARPolicyDirRecursively failed! : " + str2, new Object[0]);
-                    return false;
-                }
-            } else if (!enterprisePartitionManager.setDualDARPolicyDirRecursively(i, 9, str3)) {
-                DDLog.e("DualDARDaemonProxy", "setDualDARPolicyDirRecursively failed! : " + str3, new Object[0]);
-            }
-            this.mDualDARDOPolicyPackages.add(str);
-        }
-        return true;
-    }
-
-    public final boolean isSetPolicyFailureExceptional(String str) {
-        return isZippedLocaleOverlay(str);
-    }
-
     public final boolean clearApplicationUserDataForPackages(int i, List list) {
         if (i != 0 || !SemPersonaManager.isDarDualEncryptionEnabled(i)) {
             DDLog.d("DualDARDaemonProxy", "clearApplicationUserDataForPackages failed! : (reason) DualDAR at DO user", new Object[0]);
             return false;
         }
-        if (this.mDualDARDOPolicyPackages.isEmpty()) {
+        if (((ArrayList) this.mDualDARDOPolicyPackages).isEmpty()) {
             DDLog.d("DualDARDaemonProxy", "clearApplicationUserDataForPackages - there is no package to clear", new Object[0]);
             return true;
         }
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
             try {
-                Iterator it = list.iterator();
+                Iterator it = ((ArrayList) list).iterator();
                 while (it.hasNext()) {
                     String str = (String) it.next();
-                    if (!clearUserData(str, i)) {
-                        DDLog.e("DualDARDaemonProxy", "clearApplicationUserData failed! : " + str, new Object[0]);
-                    } else {
+                    if (clearUserData(str)) {
                         DDLog.d("DualDARDaemonProxy", "clearApplicationUserData success! : " + str, new Object[0]);
+                    } else {
+                        DDLog.e("DualDARDaemonProxy", "clearApplicationUserData failed! : " + str, new Object[0]);
                     }
                 }
                 Binder.restoreCallingIdentity(clearCallingIdentity);
@@ -568,212 +211,7 @@ public class DualDARDaemonProxy extends IProxyAgentService implements INativeDae
         }
     }
 
-    public final boolean clearUserData(String str, int i) {
-        boolean z;
-        if (str != null) {
-            IPackageDataObserver clearUserDataObserver = new ClearUserDataObserver();
-            try {
-                if (this.mAm == null) {
-                    this.mAm = (ActivityManager) mContext.getSystemService("activity");
-                }
-                DDLog.d("DualDARDaemonProxy", str + " try to clear application User Data", new Object[0]);
-                if (!this.mAm.clearApplicationUserData(str, clearUserDataObserver)) {
-                    DDLog.e("DualDARDaemonProxy", "Couldn't clear application user data for package: " + str, new Object[0]);
-                } else {
-                    synchronized (clearUserDataObserver) {
-                        while (!clearUserDataObserver.finished) {
-                            try {
-                                clearUserDataObserver.wait(100L);
-                            } catch (InterruptedException e) {
-                                DDLog.e("DualDARDaemonProxy", "InterruptedException occur", new Object[0]);
-                                e.printStackTrace();
-                            }
-                        }
-                        z = clearUserDataObserver.success && clearUserDataObserver.packageName.equalsIgnoreCase(str);
-                    }
-                    return z;
-                }
-            } catch (Exception e2) {
-                DDLog.e("DualDARDaemonProxy", e2.getMessage(), new Object[0]);
-            }
-        }
-        return false;
-    }
-
-    /* loaded from: classes2.dex */
-    public class ClearUserDataObserver extends IPackageDataObserver.Stub {
-        public boolean finished;
-        public String packageName;
-        public boolean success;
-
-        public ClearUserDataObserver() {
-            this.finished = false;
-            this.success = false;
-        }
-
-        public void onRemoveCompleted(String str, boolean z) {
-            synchronized (this) {
-                this.finished = true;
-                this.packageName = str;
-                this.success = z;
-                notifyAll();
-            }
-        }
-    }
-
-    public final boolean setDualDARPolicyForDir(int i, int i2, String str) {
-        if (EnterprisePartitionManager.getInstance(mContext).setDualDARPolicyDirRecursively(i, i2, str)) {
-            return true;
-        }
-        DDLog.e("DualDARDaemonProxy", "setDualDARPolicyDirRecursively failed! : " + str, new Object[0]);
-        return false;
-    }
-
-    public final boolean isNonClearablePackage(String str) {
-        return !this.mBlockedClearablePackages.isEmpty() && this.mBlockedClearablePackages.contains(str);
-    }
-
-    public final void refreshNonClearablePackagesList(int i) {
-        DarManagerService darManagerService = (DarManagerService) ServiceManager.getService("dar");
-        List blockedClearablePackages = darManagerService != null ? darManagerService.getBlockedClearablePackages(i) : null;
-        if (blockedClearablePackages != null) {
-            this.mBlockedClearablePackages.clear();
-            this.mBlockedClearablePackages.addAll(blockedClearablePackages);
-        }
-        List list = this.mBlockedClearablePackages;
-        if (list != null) {
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                DDLog.d("DualDARDaemonProxy", "refreshNonClearablePackagesList = " + ((String) it.next()), new Object[0]);
-            }
-        }
-    }
-
-    public boolean loadClientLibrary(int i, String str) {
-        DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
-        if (dualDarDaemonConnector == null) {
-            DDLog.e("DualDARDaemonProxy", "loadClientLibrary failed! Error: native interface not yet connected failed", new Object[0]);
-            return false;
-        }
-        try {
-            NativeDaemonEvent executeSync = dualDarDaemonConnector.executeSync("vendor_lib", "load", Integer.valueOf(i), str);
-            this.mEvent = executeSync;
-            if (!executeSync.isClassOk()) {
-                if (!this.mEvent.isClassContinue()) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean unloadClientLibrary(int i) {
-        DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
-        if (dualDarDaemonConnector == null) {
-            DDLog.e("DualDARDaemonProxy", "unloadClientLibrary failed! Error: native interface not yet connected failed", new Object[0]);
-            return false;
-        }
-        try {
-            NativeDaemonEvent executeSync = dualDarDaemonConnector.executeSync("vendor_lib", "unload", Integer.valueOf(i));
-            this.mEvent = executeSync;
-            if (!executeSync.isClassOk()) {
-                if (!this.mEvent.isClassContinue()) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean startClientLibrary(int i) {
-        DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
-        if (dualDarDaemonConnector == null) {
-            DDLog.e("DualDARDaemonProxy", "startClientLibrary failed! Error: native interface not yet connected failed", new Object[0]);
-            return false;
-        }
-        try {
-            NativeDaemonEvent executeSync = dualDarDaemonConnector.executeSync("vendor_lib", "start", Integer.valueOf(i), 16);
-            this.mEvent = executeSync;
-            if (!executeSync.isClassOk()) {
-                if (!this.mEvent.isClassContinue()) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public String getClientLibraryVersion(String str) {
-        DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
-        if (dualDarDaemonConnector == null) {
-            DDLog.e("DualDARDaemonProxy", "startClientLibrary failed! Error: native interface not yet connected failed", new Object[0]);
-            return "";
-        }
-        try {
-            NativeDaemonEvent executeSync = dualDarDaemonConnector.executeSync("vendor_lib", "version", 0, str);
-            DDLog.d("DualDARDaemonProxy", "getClientLibraryVersion() got response from executeSync", new Object[0]);
-            if (executeSync.getResponseCode() >= 0) {
-                return executeSync.getMessage();
-            }
-            DDLog.e("DualDARDaemonProxy", "startClientLibrary failed! Error code: " + executeSync.getCode() + " message: " + executeSync.getMessage(), new Object[0]);
-            return "";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-    public boolean pushSecret(int i, List list, String str) {
-        if (this.mConnector == null) {
-            DDLog.e("DualDARDaemonProxy", "pushSecret failed! Error: native interface not yet connected failed", new Object[0]);
-            return false;
-        }
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            Secret secret = (Secret) it.next();
-            try {
-                byte[] decryptMessageFrom = ((IProxyAgentService) this).mSecureClientForInAPI.decryptMessageFrom(str, secret.data);
-                if (decryptMessageFrom == null) {
-                    DDLog.e("DualDARDaemonProxy", "pushSecret failed ! decData is null", new Object[0]);
-                    return false;
-                }
-                this.mEvent = this.mConnector.executeSync("key", "install", Integer.valueOf(i), secret.alias, byteArrayToHex(decryptMessageFrom));
-                Wiper.wipe(decryptMessageFrom);
-                if (!this.mEvent.isClassOk()) {
-                    DDLog.e("DualDARDaemonProxy", "pushSecret failed !", new Object[0]);
-                    return false;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static String byteArrayToHex(byte[] bArr) {
-        if (bArr == null) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder(bArr.length * 2);
-        for (byte b : bArr) {
-            sb.append(String.format("%02x", Byte.valueOf(b)));
-        }
-        String sb2 = sb.toString();
-        sb.delete(0, sb.length());
-        return sb2;
-    }
-
-    public boolean clearSecret(int i) {
+    public final boolean clearSecret(int i) {
         DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
         if (dualDarDaemonConnector == null) {
             DDLog.e("DualDARDaemonProxy", "clearSecret failed! Error: native interface not yet connected failed", new Object[0]);
@@ -794,14 +232,69 @@ public class DualDARDaemonProxy extends IProxyAgentService implements INativeDae
         }
     }
 
-    public boolean dumpSecret(int i, String str) {
-        if (this.mConnector == null) {
-            DDLog.e("DualDARDaemonProxy", "dumpSecret failed! Error: native interface not yet connected failed", new Object[0]);
+    public final boolean clearUserData(String str) {
+        boolean z;
+        if (str != null) {
+            IPackageDataObserver clearUserDataObserver = new ClearUserDataObserver();
+            clearUserDataObserver.finished = false;
+            clearUserDataObserver.success = false;
+            try {
+                if (this.mAm == null) {
+                    this.mAm = (ActivityManager) mContext.getSystemService("activity");
+                }
+                DDLog.d("DualDARDaemonProxy", str.concat(" try to clear application User Data"), new Object[0]);
+                if (this.mAm.clearApplicationUserData(str, clearUserDataObserver)) {
+                    synchronized (clearUserDataObserver) {
+                        while (!clearUserDataObserver.finished) {
+                            try {
+                                clearUserDataObserver.wait(100L);
+                            } catch (InterruptedException e) {
+                                DDLog.e("DualDARDaemonProxy", "InterruptedException occur", new Object[0]);
+                                e.printStackTrace();
+                            }
+                        }
+                        z = clearUserDataObserver.success && clearUserDataObserver.packageName.equalsIgnoreCase(str);
+                    }
+                    return z;
+                }
+                DDLog.e("DualDARDaemonProxy", "Couldn't clear application user data for package: ".concat(str), new Object[0]);
+            } catch (Exception e2) {
+                DDLog.e("DualDARDaemonProxy", e2.getMessage(), new Object[0]);
+            }
+        }
+        return false;
+    }
+
+    public final String getClientLibraryVersion(String str) {
+        DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
+        if (dualDarDaemonConnector == null) {
+            DDLog.e("DualDARDaemonProxy", "startClientLibrary failed! Error: native interface not yet connected failed", new Object[0]);
+            return "";
+        }
+        try {
+            NativeDaemonEvent executeSync = dualDarDaemonConnector.executeSync("vendor_lib", "version", 0, str);
+            DDLog.d("DualDARDaemonProxy", "getClientLibraryVersion() got response from executeSync", new Object[0]);
+            int i = executeSync.mResponseCode;
+            String str2 = executeSync.mMessage;
+            if (i >= 0) {
+                return str2;
+            }
+            DDLog.e("DualDARDaemonProxy", "startClientLibrary failed! Error code: " + executeSync.mCode + " message: " + str2, new Object[0]);
+            return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public final boolean loadClientLibrary(int i, String str) {
+        DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
+        if (dualDarDaemonConnector == null) {
+            DDLog.e("DualDARDaemonProxy", "loadClientLibrary failed! Error: native interface not yet connected failed", new Object[0]);
             return false;
         }
-        DDLog.d("DualDARDaemonProxy.DUALDAR", "dumpSecret() - userId : " + i + ", filePath : " + str, new Object[0]);
         try {
-            NativeDaemonEvent executeSync = this.mConnector.executeSync("key", "key_dump", Integer.valueOf(i), str);
+            NativeDaemonEvent executeSync = dualDarDaemonConnector.executeSync("vendor_lib", "load", Integer.valueOf(i), str);
             this.mEvent = executeSync;
             if (!executeSync.isClassOk()) {
                 if (!this.mEvent.isClassContinue()) {
@@ -815,38 +308,286 @@ public class DualDARDaemonProxy extends IProxyAgentService implements INativeDae
         }
     }
 
-    @Override // com.android.server.knox.dar.ddar.nativedaemon.INativeDaemonConnectorCallbacks
-    public void onDaemonConnected() {
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x0211, code lost:
+    
+        return r11;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final android.os.Bundle onMessage(int r11, java.lang.String r12, android.os.Bundle r13) {
+        /*
+            Method dump skipped, instructions count: 626
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.knox.dar.ddar.nativedaemon.DualDARDaemonProxy.onMessage(int, java.lang.String, android.os.Bundle):android.os.Bundle");
+    }
+
+    public final boolean pushSecret(int i, String str, List list) {
+        if (this.mConnector == null) {
+            DDLog.e("DualDARDaemonProxy", "pushSecret failed! Error: native interface not yet connected failed", new Object[0]);
+            return false;
+        }
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            Secret secret = (Secret) it.next();
+            try {
+                byte[] decryptMessageFrom = ((IProxyAgentService) this).mSecureClientForInAPI.decryptMessageFrom(str, secret.data);
+                if (decryptMessageFrom == null) {
+                    DDLog.e("DualDARDaemonProxy", "pushSecret failed ! decData is null", new Object[0]);
+                    return false;
+                }
+                StringBuilder sb = new StringBuilder(decryptMessageFrom.length * 2);
+                for (byte b : decryptMessageFrom) {
+                    sb.append(String.format("%02x", Byte.valueOf(b)));
+                }
+                String sb2 = sb.toString();
+                sb.delete(0, sb.length());
+                this.mEvent = this.mConnector.executeSync("key", "install", Integer.valueOf(i), secret.alias, sb2);
+                Wiper.wipe(decryptMessageFrom);
+                if (!this.mEvent.isClassOk()) {
+                    DDLog.e("DualDARDaemonProxy", "pushSecret failed !", new Object[0]);
+                    return false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    public final void setDualDARPolicyForManagedDevice(Bundle bundle, Bundle bundle2) {
+        int i;
+        ApplicationInfo applicationInfo;
+        String str;
+        NativeDaemonEvent nativeDaemonEvent;
+        int i2 = bundle.getInt("user_id");
+        int i3 = bundle.getInt("CRYPTO_TYPE");
+        boolean z = false;
+        DDLog.d("DualDARDaemonProxy", ArrayUtils$$ExternalSyntheticOutline0.m(i2, i3, "setDualDARDOPolicy for user ", " type "), new Object[0]);
+        String str2 = "/data/media/" + i2;
+        EnterprisePartitionManager.getInstance(mContext).getClass();
+        if (EnterprisePartitionManager.setDualDARPolicyDirRecursively(i2, i3, str2)) {
+            EnterprisePartitionManager enterprisePartitionManager = EnterprisePartitionManager.getInstance(mContext);
+            String m = VibrationParam$1$$ExternalSyntheticOutline0.m(i2, "/data/user/");
+            String str3 = "/data/user_de/" + i2;
+            enterprisePartitionManager.getClass();
+            if (EnterprisePartitionManager.setDualDARPolicyDir(i2, i3, m)) {
+                if (!EnterprisePartitionManager.setDualDARPolicyDir(i2, 9, str3)) {
+                    DDLog.e("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("setDualDARPolicyDir user failed! : ", str3), new Object[0]);
+                }
+                DarManagerService darManagerService = (DarManagerService) ServiceManager.getService("dar");
+                if (darManagerService != null) {
+                    ArrayList arrayList = new ArrayList();
+                    ArrayList arrayList2 = new ArrayList();
+                    long clearCallingIdentity = Binder.clearCallingIdentity();
+                    try {
+                        List<String> packageListForDualDarPolicy = darManagerService.getPackageListForDualDarPolicy("pkg_clearable_system");
+                        List<String> packageListForDualDarPolicy2 = darManagerService.getPackageListForDualDarPolicy("pkg_not_system");
+                        List<String> packageListForDualDarPolicy3 = darManagerService.getPackageListForDualDarPolicy("pkg_not_clearable_system");
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                        DarManagerService darManagerService2 = (DarManagerService) ServiceManager.getService("dar");
+                        List blockedClearablePackages = darManagerService2 != null ? darManagerService2.getBlockedClearablePackages(i2) : null;
+                        if (blockedClearablePackages != null) {
+                            ((ArrayList) this.mBlockedClearablePackages).clear();
+                            ((ArrayList) this.mBlockedClearablePackages).addAll(blockedClearablePackages);
+                        }
+                        List list = this.mBlockedClearablePackages;
+                        if (list != null) {
+                            Iterator it = ((ArrayList) list).iterator();
+                            while (it.hasNext()) {
+                                DDLog.d("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("refreshNonClearablePackagesList = ", (String) it.next()), new Object[0]);
+                            }
+                        }
+                        if (packageListForDualDarPolicy == null || packageListForDualDarPolicy.isEmpty()) {
+                            DDLog.e("DualDARDaemonProxy", "Clearable system package list is Empty.", new Object[0]);
+                        } else {
+                            for (String str4 : packageListForDualDarPolicy) {
+                                if (((ArrayList) this.mBlockedClearablePackages).isEmpty() || !((ArrayList) this.mBlockedClearablePackages).contains(str4)) {
+                                    arrayList2.add(str4);
+                                } else {
+                                    DDLog.d("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("1. Skip ddar policy for the pkg ", str4), new Object[0]);
+                                    arrayList.add(str4);
+                                }
+                            }
+                        }
+                        if (packageListForDualDarPolicy2 == null || packageListForDualDarPolicy2.isEmpty()) {
+                            DDLog.e("DualDARDaemonProxy", "Not system package list is Empty.", new Object[0]);
+                        } else {
+                            for (String str5 : packageListForDualDarPolicy2) {
+                                if (((ArrayList) this.mBlockedClearablePackages).isEmpty() || !((ArrayList) this.mBlockedClearablePackages).contains(str5)) {
+                                    arrayList2.add(str5);
+                                } else {
+                                    DDLog.e("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("2. Skip ddar policy for the pkg ", str5), new Object[0]);
+                                    arrayList.add(str5);
+                                }
+                            }
+                        }
+                        if (packageListForDualDarPolicy3 == null || packageListForDualDarPolicy3.isEmpty()) {
+                            DDLog.e("DualDARDaemonProxy", "Not clearable system package list is Empty.", new Object[0]);
+                        } else {
+                            for (String str6 : packageListForDualDarPolicy3) {
+                                DDLog.e("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("3. Skip ddar policy for the pkg ", str6), new Object[0]);
+                                arrayList.add(str6);
+                            }
+                        }
+                        EnterprisePartitionManager enterprisePartitionManager2 = EnterprisePartitionManager.getInstance(mContext);
+                        Iterator it2 = arrayList2.iterator();
+                        while (it2.hasNext()) {
+                            String str7 = (String) it2.next();
+                            String m2 = AccessibilityManagerService$$ExternalSyntheticOutline0.m(i2, "/data/user/", "/", str7);
+                            String str8 = "/data/user_de/" + i2 + "/" + str7;
+                            enterprisePartitionManager2.getClass();
+                            if (!EnterprisePartitionManager.setDualDARPolicyDirRecursively(i2, i3, m2)) {
+                                PackageManager packageManager = mContext.getPackageManager();
+                                if (packageManager != null) {
+                                    try {
+                                        PackageInfo packageInfo = packageManager.getPackageInfo(str7, 0);
+                                        List list2 = SemSamsungThemeUtils.disableOverlayList;
+                                        if (packageInfo != null && (applicationInfo = packageInfo.applicationInfo) != null && (str = applicationInfo.sourceDir) != null && str.startsWith("/data/overlays/current_locale_apks/files") && "zipped-overlay".equals(packageInfo.overlayCategory)) {
+                                            DDLog.e("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("setDualDARPolicyDirRecursively failure exceptional! : ", m2), new Object[0]);
+                                            arrayList.add(str7);
+                                        }
+                                    } catch (PackageManager.NameNotFoundException e) {
+                                        i = 0;
+                                        DDLog.e("DualDARDaemonProxy", e.toString(), new Object[0]);
+                                    }
+                                }
+                                i = 0;
+                                DDLog.e("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("setDualDARPolicyDirRecursively failed! : ", m2), new Object[i]);
+                                DDLog.e("DualDARDaemonProxy", "setDualDARPolicyForPackages failed!", new Object[i]);
+                                z = i;
+                                break;
+                            }
+                            if (!EnterprisePartitionManager.setDualDARPolicyDirRecursively(i2, 9, str8)) {
+                                DDLog.e("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("setDualDARPolicyDirRecursively failed! : ", str8), new Object[0]);
+                            }
+                            ((ArrayList) this.mDualDARDOPolicyPackages).add(str7);
+                        }
+                        DualDarDoPolicyChecker dualDarDoPolicyChecker = DualDarDoPolicyChecker.getInstance(mContext);
+                        dualDarDoPolicyChecker.getClass();
+                        Iterator it3 = arrayList.iterator();
+                        while (it3.hasNext()) {
+                            ((ArrayList) dualDarDoPolicyChecker.skippedPackages).add((String) it3.next());
+                        }
+                    } catch (Throwable th) {
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                        throw th;
+                    }
+                }
+                DDLog.d("DualDARDaemonProxy", "setDualDARDOPolicy res : true", new Object[0]);
+                z = true;
+            } else {
+                DDLog.e("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("setDualDARPolicyDir user failed! : ", m), new Object[0]);
+                DDLog.e("DualDARDaemonProxy", "Failed to set the policy to data package folder...", new Object[0]);
+            }
+        } else {
+            DDLog.e("DualDARDaemonProxy", ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("setDualDARPolicyDirRecursively failed! : ", str2), new Object[0]);
+            DDLog.e("DualDARDaemonProxy", "Failed to set the policy to shared folders...", new Object[0]);
+        }
+        bundle2.putBoolean("dual_dar_response", z);
+        if (z || (nativeDaemonEvent = this.mEvent) == null) {
+            return;
+        }
+        bundle2.putString("dual_dar_response_message", nativeDaemonEvent.mMessage);
+    }
+
+    public final boolean startClientLibrary(int i) {
+        DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
+        if (dualDarDaemonConnector == null) {
+            DDLog.e("DualDARDaemonProxy", "startClientLibrary failed! Error: native interface not yet connected failed", new Object[0]);
+            return false;
+        }
         try {
-            DDLog.d("DualDARDaemonProxy", "onDaemonConnected()", new Object[0]);
+            NativeDaemonEvent executeSync = dualDarDaemonConnector.executeSync("vendor_lib", "start", Integer.valueOf(i), 16);
+            this.mEvent = executeSync;
+            if (!executeSync.isClassOk()) {
+                if (!this.mEvent.isClassContinue()) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public final void startConnectorThread() {
+        DDLog.d("DualDARDaemonProxy", "startConnectorThread() ", new Object[0]);
+        Looper.getMainLooper();
+        this.mConnector = new DualDarDaemonConnector(this);
+        Thread thread = new Thread(this.mConnector, "DualDARDaemonProxy");
+        this.mConnectorThread = thread;
+        thread.start();
+    }
+
+    public final void startDualDARDaemon(Bundle bundle) {
+        try {
             synchronized (this.mLock) {
-                this.mLock.notify();
+                try {
+                    if (!DarUtil.isDaemonRunning()) {
+                        DDLog.i("DualDARDaemonProxy", "start newly dualdard daemon ! ", new Object[0]);
+                        setSystemPropertyBoolean(true);
+                    }
+                    startConnectorThread();
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    this.mHandler = handler;
+                    handler.postDelayed(new Runnable() { // from class: com.android.server.knox.dar.ddar.nativedaemon.DualDARDaemonProxy.1
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            synchronized (DualDARDaemonProxy.this.mLock) {
+                                DDLog.e("DualDARDaemonProxy", "coudn't connect with daemon!", new Object[0]);
+                                DualDARDaemonProxy dualDARDaemonProxy = DualDARDaemonProxy.this;
+                                dualDARDaemonProxy.isDaemonConnectionFailed = true;
+                                dualDARDaemonProxy.mLock.notify();
+                            }
+                        }
+                    }, 10000L);
+                    this.mLock.wait();
+                    if (this.isDaemonConnectionFailed) {
+                        DDLog.e("DualDARDaemonProxy", "failed to start newly dualdard daemon ! ", new Object[0]);
+                        bundle.putBoolean("dual_dar_response", false);
+                        setSystemPropertyBoolean(false);
+                    } else {
+                        bundle.putBoolean("dual_dar_response", true);
+                    }
+                    Handler handler2 = this.mHandler;
+                    if (handler2 != null) {
+                        handler2.removeCallbacksAndMessages(null);
+                    }
+                    this.isDaemonConnectionFailed = false;
+                } catch (Throwable th) {
+                    throw th;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public final void enforceCallingUser(int i) {
-        DDLog.d("DualDARDaemonProxy", "enforceCallingUser", new Object[0]);
-        int callingUid = Binder.getCallingUid();
-        if (UserHandle.getAppId(callingUid) != 5250 && UserHandle.getAppId(callingUid) != Process.myUid()) {
-            throw new SecurityException("Can only be called by system user");
+    public final boolean unloadClientLibrary(int i) {
+        DualDarDaemonConnector dualDarDaemonConnector = this.mConnector;
+        if (dualDarDaemonConnector == null) {
+            DDLog.e("DualDARDaemonProxy", "unloadClientLibrary failed! Error: native interface not yet connected failed", new Object[0]);
+            return false;
         }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:54:0x00b7 A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:61:? A[SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:62:0x00a7 A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static boolean fileCopy(android.os.ParcelFileDescriptor r6, java.lang.String r7) {
-        /*
-            Method dump skipped, instructions count: 198
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.knox.dar.ddar.nativedaemon.DualDARDaemonProxy.fileCopy(android.os.ParcelFileDescriptor, java.lang.String):boolean");
+        try {
+            NativeDaemonEvent executeSync = dualDarDaemonConnector.executeSync("vendor_lib", "unload", Integer.valueOf(i));
+            this.mEvent = executeSync;
+            if (!executeSync.isClassOk()) {
+                if (!this.mEvent.isClassContinue()) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

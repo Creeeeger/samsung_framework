@@ -1,53 +1,12 @@
 package com.android.server.enterprise.email;
 
-/* loaded from: classes2.dex */
-public class AccountMetaData {
-    public boolean mAllowHTMLEmail;
-    public String mCompatibilityUuid;
-    public String mDisplayName;
-    public String mEasDomain;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class AccountMetaData {
     public String mEmailAddress;
-    public int mEmailBodyTruncationSize;
-    public boolean mEmailNotificationVibrateAlways;
-    public boolean mEmailNotificationVibrateWhenSilent;
-    public int mEmailRoamingBodyTruncationSize;
-    public int mFlags;
     public long mHostAuthKeyRecv;
     public long mHostAuthKeySend;
-    public int mId = -1;
     public String mInComingProtocol;
-    public boolean mInComingServerAcceptAllCertificates;
-    public String mInComingServerAddress;
-    public int mInComingServerFlags;
     public String mInComingServerLogin;
-    public String mInComingServerPassword;
-    public String mInComingServerPathPrefix;
-    public int mInComingServerPort;
-    public boolean mInComingServerUseSSL;
-    public boolean mInComingServerUseTLS;
-    public boolean mIsDefault;
     public boolean mIsEAS;
-    public int mOffPeakSyncSchedule;
-    public String mOutGoingProtocol;
-    public boolean mOutGoingServerAcceptAllCertificates;
-    public String mOutGoingServerAddress;
-    public int mOutGoingServerFlags;
-    public String mOutGoingServerLogin;
-    public String mOutGoingServerPassword;
-    public String mOutGoingServerPathPrefix;
-    public int mOutGoingServerPort;
-    public boolean mOutGoingServerUseSSL;
-    public boolean mOutGoingServerUseTLS;
-    public int mPeakDays;
-    public int mPeakEndMinute;
-    public int mPeakStartMinute;
-    public int mPeakSyncSchedule;
-    public String mProtocolVersion;
-    public String mRingtoneUri;
-    public int mRoamingSyncSchedule;
-    public String mSenderName;
-    public String mSignature;
-    public int mSyncCalendarAge;
-    public int mSyncInterval;
-    public int mSyncLookback;
 }

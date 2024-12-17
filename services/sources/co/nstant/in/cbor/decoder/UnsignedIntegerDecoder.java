@@ -1,16 +1,6 @@
 package co.nstant.in.cbor.decoder;
 
-import co.nstant.in.cbor.CborDecoder;
-import co.nstant.in.cbor.model.UnsignedInteger;
-import java.io.InputStream;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class UnsignedIntegerDecoder extends AbstractDecoder {
-    public UnsignedIntegerDecoder(CborDecoder cborDecoder, InputStream inputStream) {
-        super(cborDecoder, inputStream);
-    }
-
-    public UnsignedInteger decode(int i) {
-        return new UnsignedInteger(getLengthAsBigInteger(i));
-    }
+public final class UnsignedIntegerDecoder extends AbstractDecoder {
 }

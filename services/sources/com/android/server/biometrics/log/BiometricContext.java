@@ -1,44 +1,26 @@
 package com.android.server.biometrics.log;
 
 import android.content.Context;
-import com.android.internal.statusbar.ISessionListener;
+import android.os.ServiceManager;
+import android.os.SystemClock;
+import android.view.WindowManager;
+import com.android.internal.statusbar.IStatusBarService;
+import com.android.server.biometrics.BiometricHandlerProvider;
 import com.android.server.biometrics.sensors.AuthSessionCoordinator;
-import com.android.server.biometrics.sensors.fingerprint.SemBiometricDisplayStateMonitor;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface BiometricContext {
-    void ensureBiometricContextListener(SemBiometricDisplayStateMonitor semBiometricDisplayStateMonitor);
-
-    AuthSessionCoordinator getAuthSessionCoordinator();
-
-    BiometricContextSessionInfo getBiometricPromptSessionInfo();
-
-    int getCurrentRotation();
-
-    int getDisplayState();
-
-    int getDockedState();
-
-    int getFoldState();
-
-    ISessionListener getISessionListener();
-
-    BiometricContextSessionInfo getKeyguardEntrySessionInfo();
-
-    boolean isAod();
-
-    boolean isAwake();
-
-    boolean isDisplayOn();
-
-    void subscribe(OperationContextExt operationContextExt, Consumer consumer);
-
-    void unsubscribe(OperationContextExt operationContextExt);
-
-    OperationContextExt updateContext(OperationContextExt operationContextExt, boolean z);
-
-    static BiometricContext getInstance(Context context) {
-        return BiometricContextProvider.defaultProvider(context);
+    static BiometricContextProvider getInstance(Context context) {
+        synchronized (BiometricContextProvider.class) {
+            if (BiometricContextProvider.sInstance == null) {
+                try {
+                    BiometricContextProvider.sInstance = new BiometricContextProvider(context, (WindowManager) context.getSystemService("window"), IStatusBarService.Stub.asInterface(ServiceManager.getServiceOrThrow("statusbar")), BiometricHandlerProvider.sBiometricHandlerProvider.getBiometricCallbackHandler(), new AuthSessionCoordinator(SystemClock.elapsedRealtimeClock()));
+                } catch (ServiceManager.ServiceNotFoundException e) {
+                    throw new IllegalStateException("Failed to find required service", e);
+                }
+            }
+        }
+        return BiometricContextProvider.sInstance;
     }
 }

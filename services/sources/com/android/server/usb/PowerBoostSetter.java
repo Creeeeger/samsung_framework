@@ -5,8 +5,9 @@ import android.util.Log;
 import com.android.server.LocalServices;
 import java.time.Instant;
 
-/* loaded from: classes3.dex */
-public class PowerBoostSetter {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PowerBoostSetter {
     public PowerManagerInternal mPowerManagerInternal;
     public Instant mPreviousTimeout = null;
 
@@ -15,7 +16,7 @@ public class PowerBoostSetter {
         this.mPowerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
     }
 
-    public void boostPower() {
+    public final void boostPower() {
         if (this.mPowerManagerInternal == null) {
             this.mPowerManagerInternal = (PowerManagerInternal) LocalServices.getService(PowerManagerInternal.class);
         }

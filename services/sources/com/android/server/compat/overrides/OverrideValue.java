@@ -2,66 +2,40 @@ package com.android.server.compat.overrides;
 
 import org.xmlpull.v1.XmlPullParser;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class OverrideValue {
+public final class OverrideValue {
     public Boolean enabled;
     public String packageName;
-
-    public String getPackageName() {
-        return this.packageName;
-    }
-
-    public boolean hasPackageName() {
-        return this.packageName != null;
-    }
-
-    public void setPackageName(String str) {
-        this.packageName = str;
-    }
-
-    public boolean getEnabled() {
-        Boolean bool = this.enabled;
-        if (bool == null) {
-            return false;
-        }
-        return bool.booleanValue();
-    }
-
-    public boolean hasEnabled() {
-        return this.enabled != null;
-    }
-
-    public void setEnabled(boolean z) {
-        this.enabled = Boolean.valueOf(z);
-    }
 
     public static OverrideValue read(XmlPullParser xmlPullParser) {
         OverrideValue overrideValue = new OverrideValue();
         String attributeValue = xmlPullParser.getAttributeValue(null, "packageName");
         if (attributeValue != null) {
-            overrideValue.setPackageName(attributeValue);
+            overrideValue.packageName = attributeValue;
         }
         String attributeValue2 = xmlPullParser.getAttributeValue(null, "enabled");
         if (attributeValue2 != null) {
-            overrideValue.setEnabled(Boolean.parseBoolean(attributeValue2));
+            overrideValue.enabled = Boolean.valueOf(Boolean.parseBoolean(attributeValue2));
         }
         XmlParser.skip(xmlPullParser);
         return overrideValue;
     }
 
-    public void write(XmlWriter xmlWriter, String str) {
-        xmlWriter.print("<" + str);
-        if (hasPackageName()) {
+    public final void write(XmlWriter xmlWriter) {
+        xmlWriter.print("<override-value");
+        if (this.packageName != null) {
             xmlWriter.print(" packageName=\"");
-            xmlWriter.print(getPackageName());
+            xmlWriter.print(this.packageName);
             xmlWriter.print("\"");
         }
-        if (hasEnabled()) {
+        if (this.enabled != null) {
             xmlWriter.print(" enabled=\"");
-            xmlWriter.print(Boolean.toString(getEnabled()));
+            Boolean bool = this.enabled;
+            xmlWriter.print(Boolean.toString(bool == null ? false : bool.booleanValue()));
             xmlWriter.print("\"");
         }
         xmlWriter.print(">\n");
-        xmlWriter.print("</" + str + ">\n");
+        xmlWriter.print("</override-value>\n");
     }
 }

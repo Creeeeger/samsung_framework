@@ -1,16 +1,6 @@
 package co.nstant.in.cbor.decoder;
 
-import co.nstant.in.cbor.CborDecoder;
-import co.nstant.in.cbor.model.Tag;
-import java.io.InputStream;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TagDecoder extends AbstractDecoder {
-    public TagDecoder(CborDecoder cborDecoder, InputStream inputStream) {
-        super(cborDecoder, inputStream);
-    }
-
-    public Tag decode(int i) {
-        return new Tag(getLength(i));
-    }
+public final class TagDecoder extends AbstractDecoder {
 }

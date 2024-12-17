@@ -3,6 +3,7 @@ package com.android.server.trust;
 import android.R;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.trust.ITrustListener;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -22,24 +25,31 @@ import android.service.trust.ITrustAgentServiceCallback;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
+import android.view.WindowManagerGlobal;
 import com.android.internal.infra.AndroidFuture;
-import com.android.server.backup.BackupAgentTimeoutParameters;
+import com.android.internal.widget.LockPatternUtils;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import com.android.server.trust.TrustAgentWrapper;
+import com.android.server.trust.TrustArchive;
+import com.android.server.trust.TrustManagerService;
+import com.android.server.utils.Slogf;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class TrustAgentWrapper {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class TrustAgentWrapper {
     public static final boolean DEBUG = TrustManagerService.DEBUG;
     public final Intent mAlarmIntent;
-    public AlarmManager mAlarmManager;
+    public final AlarmManager mAlarmManager;
     public PendingIntent mAlarmPendingIntent;
     public boolean mBound;
-    public final BroadcastReceiver mBroadcastReceiver;
-    public ITrustAgentServiceCallback mCallback;
-    public final ServiceConnection mConnection;
+    public final AnonymousClass1 mBroadcastReceiver;
+    public final AnonymousClass4 mCallback;
+    public final AnonymousClass5 mConnection;
     public final Context mContext;
     public boolean mDisplayTrustGrantedMessage;
-    public final Handler mHandler;
+    public final AnonymousClass3 mHandler;
     public boolean mManagingTrust;
     public long mMaximumTimeToLock;
     public CharSequence mMessage;
@@ -50,356 +60,572 @@ public class TrustAgentWrapper {
     public boolean mTrustDisabledByDpm;
     public final TrustManagerService mTrustManagerService;
     public boolean mTrustable;
-    public final BroadcastReceiver mTrustableDowngradeReceiver;
+    public final AnonymousClass1 mTrustableDowngradeReceiver;
     public boolean mTrusted;
     public final int mUserId;
     public boolean mPendingSuccessfulUnlock = false;
     public boolean mWaitingForTrustableDowngrade = false;
     public boolean mWithinSecurityLockdownWindow = false;
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     /* renamed from: com.android.server.trust.TrustAgentWrapper$3, reason: invalid class name */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 extends Handler {
+    public final class AnonymousClass3 extends Handler {
         public AnonymousClass3() {
         }
 
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             long j;
-            int i = 1;
-            boolean z = true;
-            boolean z2 = false;
-            switch (message.what) {
+            boolean z;
+            int i = message.what;
+            int i2 = 0;
+            TrustAgentWrapper trustAgentWrapper = TrustAgentWrapper.this;
+            switch (i) {
                 case 1:
-                    if (!TrustAgentWrapper.this.isConnected()) {
-                        Log.w("TrustAgentWrapper", "Agent is not connected, cannot grant trust: " + TrustAgentWrapper.this.mName.flattenToShortString());
+                    if (trustAgentWrapper.mTrustAgentService == null) {
+                        Log.w("TrustAgentWrapper", "Agent is not connected, cannot grant trust: " + trustAgentWrapper.mName.flattenToShortString());
                         return;
                     }
-                    TrustAgentWrapper.this.mTrusted = true;
-                    TrustAgentWrapper.this.mTrustable = false;
+                    trustAgentWrapper.mTrusted = true;
+                    trustAgentWrapper.mTrustable = false;
                     Pair pair = (Pair) message.obj;
-                    TrustAgentWrapper.this.mMessage = (CharSequence) pair.first;
+                    trustAgentWrapper.mMessage = (CharSequence) pair.first;
                     AndroidFuture androidFuture = (AndroidFuture) pair.second;
-                    int i2 = message.arg1;
-                    TrustAgentWrapper.this.mDisplayTrustGrantedMessage = (i2 & 8) != 0;
-                    if ((i2 & 4) != 0) {
-                        TrustAgentWrapper.this.mWaitingForTrustableDowngrade = true;
+                    int i3 = message.arg1;
+                    trustAgentWrapper.mDisplayTrustGrantedMessage = (i3 & 8) != 0;
+                    if ((i3 & 4) != 0) {
+                        trustAgentWrapper.mWaitingForTrustableDowngrade = true;
                         androidFuture.thenAccept(new Consumer() { // from class: com.android.server.trust.TrustAgentWrapper$3$$ExternalSyntheticLambda0
                             @Override // java.util.function.Consumer
                             public final void accept(Object obj) {
-                                TrustAgentWrapper.AnonymousClass3.this.lambda$handleMessage$0((GrantTrustResult) obj);
+                                TrustAgentWrapper.AnonymousClass3 anonymousClass3 = TrustAgentWrapper.AnonymousClass3.this;
+                                anonymousClass3.getClass();
+                                if (((GrantTrustResult) obj).getStatus() == 1) {
+                                    final TrustAgentWrapper trustAgentWrapper2 = TrustAgentWrapper.this;
+                                    trustAgentWrapper2.mWithinSecurityLockdownWindow = true;
+                                    trustAgentWrapper2.mAlarmManager.setExact(2, SystemClock.elapsedRealtime() + 15000, "TrustAgentWrapper", new AlarmManager.OnAlarmListener() { // from class: com.android.server.trust.TrustAgentWrapper.6
+                                        @Override // android.app.AlarmManager.OnAlarmListener
+                                        public final void onAlarm() {
+                                            TrustAgentWrapper.this.mWithinSecurityLockdownWindow = false;
+                                        }
+                                    }, Handler.getMain());
+                                }
                             }
                         });
                     } else {
-                        TrustAgentWrapper.this.mWaitingForTrustableDowngrade = false;
+                        trustAgentWrapper.mWaitingForTrustableDowngrade = false;
                     }
                     long j2 = message.getData().getLong("duration");
                     if (j2 > 0) {
-                        if (TrustAgentWrapper.this.mMaximumTimeToLock != 0) {
-                            j = Math.min(j2, TrustAgentWrapper.this.mMaximumTimeToLock);
+                        long j3 = trustAgentWrapper.mMaximumTimeToLock;
+                        if (j3 != 0) {
+                            j = Math.min(j2, j3);
                             if (TrustAgentWrapper.DEBUG) {
-                                Slog.d("TrustAgentWrapper", "DPM lock timeout in effect. Timeout adjusted from " + j2 + " to " + j);
+                                BatteryService$$ExternalSyntheticOutline0.m(BatteryService$$ExternalSyntheticOutline0.m("DPM lock timeout in effect. Timeout adjusted from ", j2, " to "), j, "TrustAgentWrapper");
                             }
                         } else {
                             j = j2;
                         }
                         long elapsedRealtime = SystemClock.elapsedRealtime() + j;
-                        TrustAgentWrapper trustAgentWrapper = TrustAgentWrapper.this;
-                        trustAgentWrapper.mAlarmPendingIntent = PendingIntent.getBroadcast(trustAgentWrapper.mContext, 0, TrustAgentWrapper.this.mAlarmIntent, 301989888);
-                        TrustAgentWrapper.this.mAlarmManager.set(2, elapsedRealtime, TrustAgentWrapper.this.mAlarmPendingIntent);
+                        PendingIntent broadcast = PendingIntent.getBroadcast(trustAgentWrapper.mContext, 0, trustAgentWrapper.mAlarmIntent, 301989888);
+                        trustAgentWrapper.mAlarmPendingIntent = broadcast;
+                        trustAgentWrapper.mAlarmManager.set(2, elapsedRealtime, broadcast);
                     }
-                    TrustAgentWrapper.this.mTrustManagerService.mArchive.logGrantTrust(TrustAgentWrapper.this.mUserId, TrustAgentWrapper.this.mName, TrustAgentWrapper.this.mMessage != null ? TrustAgentWrapper.this.mMessage.toString() : null, j2, i2);
-                    TrustAgentWrapper.this.mTrustManagerService.updateTrust(TrustAgentWrapper.this.mUserId, i2, androidFuture);
+                    TrustManagerService trustManagerService = trustAgentWrapper.mTrustManagerService;
+                    TrustArchive trustArchive = trustManagerService.mArchive;
+                    ComponentName componentName = trustAgentWrapper.mName;
+                    CharSequence charSequence = trustAgentWrapper.mMessage;
+                    String charSequence2 = charSequence != null ? charSequence.toString() : null;
+                    trustArchive.getClass();
+                    trustArchive.addEvent(new TrustArchive.Event(0, trustAgentWrapper.mUserId, componentName, charSequence2, j2, i3, false));
+                    trustManagerService.updateTrust(trustAgentWrapper.mUserId, i3, false, androidFuture);
                     return;
                 case 2:
                     break;
                 case 3:
                     if (TrustAgentWrapper.DEBUG) {
-                        Slog.d("TrustAgentWrapper", "Trust timed out : " + TrustAgentWrapper.this.mName.flattenToShortString());
+                        Slog.d("TrustAgentWrapper", "Trust timed out : " + trustAgentWrapper.mName.flattenToShortString());
                     }
-                    TrustAgentWrapper.this.mTrustManagerService.mArchive.logTrustTimeout(TrustAgentWrapper.this.mUserId, TrustAgentWrapper.this.mName);
-                    TrustAgentWrapper.this.onTrustTimeout();
+                    TrustArchive trustArchive2 = trustAgentWrapper.mTrustManagerService.mArchive;
+                    ComponentName componentName2 = trustAgentWrapper.mName;
+                    trustArchive2.getClass();
+                    trustArchive2.addEvent(new TrustArchive.Event(2, trustAgentWrapper.mUserId, componentName2, null, 0L, 0, false));
+                    try {
+                        ITrustAgentService iTrustAgentService = trustAgentWrapper.mTrustAgentService;
+                        if (iTrustAgentService != null) {
+                            iTrustAgentService.onTrustTimeout();
+                            break;
+                        }
+                    } catch (RemoteException e) {
+                        TrustAgentWrapper.onError(e);
+                        break;
+                    }
                     break;
                 case 4:
-                    Slog.w("TrustAgentWrapper", "Connection attempt to agent " + TrustAgentWrapper.this.mName.flattenToShortString() + " timed out, rebinding");
-                    TrustAgentWrapper.this.destroy();
-                    TrustAgentWrapper.this.mTrustManagerService.resetAgent(TrustAgentWrapper.this.mName, TrustAgentWrapper.this.mUserId);
-                    return;
-                case 5:
-                    IBinder iBinder = (IBinder) message.obj;
-                    int i3 = message.arg1 == 0 ? 0 : 1;
-                    if (TrustAgentWrapper.this.mSetTrustAgentFeaturesToken == iBinder) {
-                        TrustAgentWrapper.this.mSetTrustAgentFeaturesToken = null;
-                        if (!TrustAgentWrapper.this.mTrustDisabledByDpm || i3 == 0) {
+                    Slog.w("TrustAgentWrapper", "Connection attempt to agent " + trustAgentWrapper.mName.flattenToShortString() + " timed out, rebinding");
+                    trustAgentWrapper.destroy();
+                    ComponentName componentName3 = trustAgentWrapper.mName;
+                    TrustManagerService trustManagerService2 = trustAgentWrapper.mTrustManagerService;
+                    int size = trustManagerService2.mActiveAgents.size() - 1;
+                    while (true) {
+                        int i4 = trustAgentWrapper.mUserId;
+                        if (size < 0) {
+                            if (i2 != 0) {
+                                trustManagerService2.updateTrust(i4);
+                            }
+                            trustManagerService2.refreshAgentList(i4);
                             return;
                         }
-                        if (TrustAgentWrapper.DEBUG) {
-                            Slog.d("TrustAgentWrapper", "Re-enabling agent because it acknowledged enabled features: " + TrustAgentWrapper.this.mName.flattenToShortString());
+                        TrustManagerService.AgentInfo agentInfo = (TrustManagerService.AgentInfo) trustManagerService2.mActiveAgents.valueAt(size);
+                        if (componentName3.equals(agentInfo.component) && i4 == agentInfo.userId) {
+                            Log.i("TrustManagerService", "Resetting agent " + agentInfo.component.flattenToShortString());
+                            if (agentInfo.agent.isManagingTrust()) {
+                                i2 = 1;
+                            }
+                            agentInfo.agent.destroy();
+                            trustManagerService2.mActiveAgents.removeAt(size);
                         }
-                        TrustAgentWrapper.this.mTrustDisabledByDpm = false;
-                        TrustAgentWrapper.this.mTrustManagerService.updateTrust(TrustAgentWrapper.this.mUserId, 0);
+                        size--;
+                    }
+                    break;
+                case 5:
+                    IBinder iBinder = (IBinder) message.obj;
+                    z = message.arg1 != 0;
+                    if (trustAgentWrapper.mSetTrustAgentFeaturesToken != iBinder) {
+                        if (TrustAgentWrapper.DEBUG) {
+                            Slog.w("TrustAgentWrapper", "Ignoring MSG_SET_TRUST_AGENT_FEATURES_COMPLETED with obsolete token: " + trustAgentWrapper.mName.flattenToShortString());
+                            return;
+                        }
                         return;
                     }
-                    if (TrustAgentWrapper.DEBUG) {
-                        Slog.w("TrustAgentWrapper", "Ignoring MSG_SET_TRUST_AGENT_FEATURES_COMPLETED with obsolete token: " + TrustAgentWrapper.this.mName.flattenToShortString());
+                    trustAgentWrapper.mSetTrustAgentFeaturesToken = null;
+                    if (trustAgentWrapper.mTrustDisabledByDpm && z) {
+                        if (TrustAgentWrapper.DEBUG) {
+                            Slog.d("TrustAgentWrapper", "Re-enabling agent because it acknowledged enabled features: " + trustAgentWrapper.mName.flattenToShortString());
+                        }
+                        trustAgentWrapper.mTrustDisabledByDpm = false;
+                        trustAgentWrapper.mTrustManagerService.updateTrust(trustAgentWrapper.mUserId);
                         return;
                     }
                     return;
                 case 6:
-                    TrustAgentWrapper.this.mManagingTrust = message.arg1 != 0;
-                    if (!TrustAgentWrapper.this.mManagingTrust) {
-                        TrustAgentWrapper.this.mTrusted = false;
-                        TrustAgentWrapper.this.mDisplayTrustGrantedMessage = false;
-                        TrustAgentWrapper.this.mMessage = null;
+                    z = message.arg1 != 0;
+                    trustAgentWrapper.mManagingTrust = z;
+                    if (!z) {
+                        trustAgentWrapper.mTrusted = false;
+                        trustAgentWrapper.mDisplayTrustGrantedMessage = false;
+                        trustAgentWrapper.mMessage = null;
                     }
-                    TrustAgentWrapper.this.mTrustManagerService.mArchive.logManagingTrust(TrustAgentWrapper.this.mUserId, TrustAgentWrapper.this.mName, TrustAgentWrapper.this.mManagingTrust);
-                    TrustAgentWrapper.this.mTrustManagerService.updateTrust(TrustAgentWrapper.this.mUserId, 0);
+                    TrustManagerService trustManagerService3 = trustAgentWrapper.mTrustManagerService;
+                    TrustArchive trustArchive3 = trustManagerService3.mArchive;
+                    ComponentName componentName4 = trustAgentWrapper.mName;
+                    trustArchive3.getClass();
+                    trustArchive3.addEvent(new TrustArchive.Event(6, trustAgentWrapper.mUserId, componentName4, null, 0L, 0, z));
+                    trustManagerService3.updateTrust(trustAgentWrapper.mUserId);
                     return;
                 case 7:
                     byte[] byteArray = message.getData().getByteArray("escrow_token");
-                    int i4 = message.getData().getInt("user_id");
-                    long addEscrowToken = TrustAgentWrapper.this.mTrustManagerService.addEscrowToken(byteArray, i4);
-                    try {
-                        if (TrustAgentWrapper.this.mTrustAgentService != null) {
-                            TrustAgentWrapper.this.mTrustAgentService.onEscrowTokenAdded(byteArray, addEscrowToken, UserHandle.of(i4));
-                        } else {
-                            z = false;
+                    int i5 = message.getData().getInt("user_id");
+                    final TrustManagerService trustManagerService4 = trustAgentWrapper.mTrustManagerService;
+                    long addEscrowToken = trustManagerService4.mLockPatternUtils.addEscrowToken(byteArray, i5, new LockPatternUtils.EscrowTokenStateChangeCallback() { // from class: com.android.server.trust.TrustManagerService$$ExternalSyntheticLambda1
+                        public final void onEscrowTokenActivated(long j4, int i6) {
+                            TrustManagerService trustManagerService5 = TrustManagerService.this;
+                            for (int i7 = 0; i7 < trustManagerService5.mActiveAgents.size(); i7++) {
+                                TrustManagerService.AgentInfo agentInfo2 = (TrustManagerService.AgentInfo) trustManagerService5.mActiveAgents.valueAt(i7);
+                                if (agentInfo2.userId == i6) {
+                                    TrustAgentWrapper trustAgentWrapper2 = agentInfo2.agent;
+                                    if (TrustAgentWrapper.DEBUG) {
+                                        trustAgentWrapper2.getClass();
+                                        StringBuilder sb = new StringBuilder("onEscrowTokenActivated: ");
+                                        sb.append(j4);
+                                        sb.append(" user: ");
+                                        DeviceIdleController$$ExternalSyntheticOutline0.m(sb, i6, "TrustAgentWrapper");
+                                    }
+                                    ITrustAgentService iTrustAgentService2 = trustAgentWrapper2.mTrustAgentService;
+                                    if (iTrustAgentService2 != null) {
+                                        try {
+                                            iTrustAgentService2.onTokenStateReceived(j4, 1);
+                                        } catch (RemoteException e2) {
+                                            TrustAgentWrapper.onError(e2);
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        z2 = z;
-                    } catch (RemoteException e) {
-                        TrustAgentWrapper.this.onError(e);
-                    }
-                    if (z2) {
-                        return;
-                    }
-                    TrustAgentWrapper.this.mTrustManagerService.removeEscrowToken(addEscrowToken, i4);
-                    return;
-                case 8:
-                    long j3 = message.getData().getLong("handle");
-                    boolean removeEscrowToken = TrustAgentWrapper.this.mTrustManagerService.removeEscrowToken(j3, message.getData().getInt("user_id"));
+                    });
                     try {
-                        if (TrustAgentWrapper.this.mTrustAgentService != null) {
-                            TrustAgentWrapper.this.mTrustAgentService.onEscrowTokenRemoved(j3, removeEscrowToken);
+                        ITrustAgentService iTrustAgentService2 = trustAgentWrapper.mTrustAgentService;
+                        if (iTrustAgentService2 != null) {
+                            iTrustAgentService2.onEscrowTokenAdded(byteArray, addEscrowToken, UserHandle.of(i5));
                             return;
                         }
-                        return;
                     } catch (RemoteException e2) {
-                        TrustAgentWrapper.this.onError(e2);
-                        return;
+                        TrustAgentWrapper.onError(e2);
                     }
-                case 9:
+                    trustAgentWrapper.mTrustManagerService.mLockPatternUtils.removeEscrowToken(addEscrowToken, i5);
+                    return;
+                case 8:
                     long j4 = message.getData().getLong("handle");
-                    boolean isEscrowTokenActive = TrustAgentWrapper.this.mTrustManagerService.isEscrowTokenActive(j4, message.getData().getInt("user_id"));
+                    boolean removeEscrowToken = trustAgentWrapper.mTrustManagerService.mLockPatternUtils.removeEscrowToken(j4, message.getData().getInt("user_id"));
                     try {
-                        if (TrustAgentWrapper.this.mTrustAgentService != null) {
-                            ITrustAgentService iTrustAgentService = TrustAgentWrapper.this.mTrustAgentService;
-                            if (!isEscrowTokenActive) {
-                                i = 0;
-                            }
-                            iTrustAgentService.onTokenStateReceived(j4, i);
+                        ITrustAgentService iTrustAgentService3 = trustAgentWrapper.mTrustAgentService;
+                        if (iTrustAgentService3 != null) {
+                            iTrustAgentService3.onEscrowTokenRemoved(j4, removeEscrowToken);
                             return;
                         }
                         return;
                     } catch (RemoteException e3) {
-                        TrustAgentWrapper.this.onError(e3);
+                        TrustAgentWrapper.onError(e3);
+                        return;
+                    }
+                case 9:
+                    long j5 = message.getData().getLong("handle");
+                    boolean isEscrowTokenActive = trustAgentWrapper.mTrustManagerService.mLockPatternUtils.isEscrowTokenActive(j5, message.getData().getInt("user_id"));
+                    try {
+                        ITrustAgentService iTrustAgentService4 = trustAgentWrapper.mTrustAgentService;
+                        if (iTrustAgentService4 != null) {
+                            iTrustAgentService4.onTokenStateReceived(j5, isEscrowTokenActive ? 1 : 0);
+                            return;
+                        }
+                        return;
+                    } catch (RemoteException e4) {
+                        TrustAgentWrapper.onError(e4);
                         return;
                     }
                 case 10:
-                    TrustAgentWrapper.this.mTrustManagerService.unlockUserWithToken(message.getData().getLong("handle"), message.getData().getByteArray("escrow_token"), message.getData().getInt("user_id"));
+                    trustAgentWrapper.mTrustManagerService.mLockPatternUtils.unlockUserWithToken(message.getData().getLong("handle"), message.getData().getByteArray("escrow_token"), message.getData().getInt("user_id"));
                     return;
                 case 11:
-                    TrustAgentWrapper.this.mTrustManagerService.showKeyguardErrorMessage(message.getData().getCharSequence("message"));
+                    CharSequence charSequence3 = message.getData().getCharSequence("message");
+                    TrustManagerService trustManagerService5 = trustAgentWrapper.mTrustManagerService;
+                    if (TrustManagerService.DEBUG) {
+                        trustManagerService5.getClass();
+                        Log.i("TrustManagerService", "onTrustError(" + ((Object) charSequence3) + ")");
+                    }
+                    while (i2 < trustManagerService5.mTrustListeners.size()) {
+                        try {
+                            ((ITrustListener) trustManagerService5.mTrustListeners.get(i2)).onTrustError(charSequence3);
+                        } catch (DeadObjectException unused) {
+                            Slogf.d("TrustManagerService", "Removing dead TrustListener.");
+                            trustManagerService5.mTrustListeners.remove(i2);
+                            i2--;
+                        } catch (RemoteException e5) {
+                            Slogf.e("TrustManagerService", "Exception while notifying TrustListener.", e5);
+                        }
+                        i2++;
+                    }
                     return;
                 case 12:
-                    TrustAgentWrapper.this.mTrusted = false;
-                    TrustAgentWrapper.this.mTrustable = false;
-                    TrustAgentWrapper.this.mTrustManagerService.updateTrust(TrustAgentWrapper.this.mUserId, 0);
-                    TrustAgentWrapper.this.mTrustManagerService.lockUser(TrustAgentWrapper.this.mUserId);
-                    return;
+                    trustAgentWrapper.mTrusted = false;
+                    trustAgentWrapper.mTrustable = false;
+                    TrustManagerService trustManagerService6 = trustAgentWrapper.mTrustManagerService;
+                    int i6 = trustAgentWrapper.mUserId;
+                    trustManagerService6.updateTrust(i6);
+                    trustManagerService6.mLockPatternUtils.requireStrongAuth(256, i6);
+                    try {
+                        WindowManagerGlobal.getWindowManagerService().lockNow((Bundle) null);
+                        return;
+                    } catch (RemoteException unused2) {
+                        Slogf.e("TrustManagerService", "Error locking screen when called from trust agent");
+                        return;
+                    }
                 default:
                     return;
             }
-            TrustAgentWrapper.this.mTrusted = false;
-            TrustAgentWrapper.this.mTrustable = false;
-            TrustAgentWrapper.this.mWaitingForTrustableDowngrade = false;
-            TrustAgentWrapper.this.mDisplayTrustGrantedMessage = false;
-            TrustAgentWrapper.this.mMessage = null;
-            TrustAgentWrapper.this.mHandler.removeMessages(3);
-            if (message.what == 2) {
-                TrustAgentWrapper.this.mTrustManagerService.mArchive.logRevokeTrust(TrustAgentWrapper.this.mUserId, TrustAgentWrapper.this.mName);
+            trustAgentWrapper.mTrusted = false;
+            trustAgentWrapper.mTrustable = false;
+            trustAgentWrapper.mWaitingForTrustableDowngrade = false;
+            trustAgentWrapper.mDisplayTrustGrantedMessage = false;
+            trustAgentWrapper.mMessage = null;
+            trustAgentWrapper.mHandler.removeMessages(3);
+            int i7 = message.what;
+            TrustManagerService trustManagerService7 = trustAgentWrapper.mTrustManagerService;
+            if (i7 == 2) {
+                TrustArchive trustArchive4 = trustManagerService7.mArchive;
+                ComponentName componentName5 = trustAgentWrapper.mName;
+                trustArchive4.getClass();
+                trustArchive4.addEvent(new TrustArchive.Event(1, trustAgentWrapper.mUserId, componentName5, null, 0L, 0, false));
             }
-            TrustAgentWrapper.this.mTrustManagerService.updateTrust(TrustAgentWrapper.this.mUserId, 0);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$handleMessage$0(GrantTrustResult grantTrustResult) {
-            if (grantTrustResult.getStatus() == 1) {
-                TrustAgentWrapper.this.setSecurityWindowTimer();
-            }
+            trustManagerService7.updateTrust(trustAgentWrapper.mUserId);
         }
     }
 
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r1v0, types: [android.content.BroadcastReceiver, com.android.server.trust.TrustAgentWrapper$1] */
+    /* JADX WARN: Type inference failed for: r3v0, types: [com.android.server.trust.TrustAgentWrapper$4] */
+    /* JADX WARN: Type inference failed for: r3v1, types: [android.content.ServiceConnection, com.android.server.trust.TrustAgentWrapper$5] */
+    /* JADX WARN: Type inference failed for: r4v0, types: [android.content.BroadcastReceiver, com.android.server.trust.TrustAgentWrapper$1] */
     public TrustAgentWrapper(Context context, TrustManagerService trustManagerService, Intent intent, UserHandle userHandle) {
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.trust.TrustAgentWrapper.1
+        final int i = 0;
+        ?? r1 = new BroadcastReceiver(this) { // from class: com.android.server.trust.TrustAgentWrapper.1
+            public final /* synthetic */ TrustAgentWrapper this$0;
+
+            {
+                this.this$0 = this;
+            }
+
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent2) {
-                if (TrustManagerService.ENABLE_ACTIVE_UNLOCK_FLAG && "android.intent.action.SCREEN_OFF".equals(intent2.getAction())) {
-                    TrustAgentWrapper.this.downgradeToTrustable();
+            public final void onReceive(Context context2, Intent intent2) {
+                switch (i) {
+                    case 0:
+                        if ("android.intent.action.SCREEN_OFF".equals(intent2.getAction())) {
+                            TrustAgentWrapper trustAgentWrapper = this.this$0;
+                            if (trustAgentWrapper.mWaitingForTrustableDowngrade) {
+                                trustAgentWrapper.mWaitingForTrustableDowngrade = false;
+                                trustAgentWrapper.mTrusted = false;
+                                trustAgentWrapper.mTrustable = true;
+                                trustAgentWrapper.mTrustManagerService.updateTrust(trustAgentWrapper.mUserId);
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                        ComponentName componentName = (ComponentName) intent2.getParcelableExtra("componentName", ComponentName.class);
+                        if ("android.server.trust.TRUST_EXPIRED_ACTION".equals(intent2.getAction()) && this.this$0.mName.equals(componentName)) {
+                            this.this$0.mHandler.removeMessages(3);
+                            this.this$0.mHandler.sendEmptyMessage(3);
+                            break;
+                        }
+                        break;
                 }
             }
         };
-        this.mTrustableDowngradeReceiver = broadcastReceiver;
-        BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() { // from class: com.android.server.trust.TrustAgentWrapper.2
+        this.mTrustableDowngradeReceiver = r1;
+        final int i2 = 1;
+        ?? r4 = new BroadcastReceiver(this) { // from class: com.android.server.trust.TrustAgentWrapper.1
+            public final /* synthetic */ TrustAgentWrapper this$0;
+
+            {
+                this.this$0 = this;
+            }
+
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent2) {
-                ComponentName componentName = (ComponentName) intent2.getParcelableExtra("componentName", ComponentName.class);
-                if ("android.server.trust.TRUST_EXPIRED_ACTION".equals(intent2.getAction()) && TrustAgentWrapper.this.mName.equals(componentName)) {
-                    TrustAgentWrapper.this.mHandler.removeMessages(3);
-                    TrustAgentWrapper.this.mHandler.sendEmptyMessage(3);
+            public final void onReceive(Context context2, Intent intent2) {
+                switch (i2) {
+                    case 0:
+                        if ("android.intent.action.SCREEN_OFF".equals(intent2.getAction())) {
+                            TrustAgentWrapper trustAgentWrapper = this.this$0;
+                            if (trustAgentWrapper.mWaitingForTrustableDowngrade) {
+                                trustAgentWrapper.mWaitingForTrustableDowngrade = false;
+                                trustAgentWrapper.mTrusted = false;
+                                trustAgentWrapper.mTrustable = true;
+                                trustAgentWrapper.mTrustManagerService.updateTrust(trustAgentWrapper.mUserId);
+                                break;
+                            }
+                        }
+                        break;
+                    default:
+                        ComponentName componentName = (ComponentName) intent2.getParcelableExtra("componentName", ComponentName.class);
+                        if ("android.server.trust.TRUST_EXPIRED_ACTION".equals(intent2.getAction()) && this.this$0.mName.equals(componentName)) {
+                            this.this$0.mHandler.removeMessages(3);
+                            this.this$0.mHandler.sendEmptyMessage(3);
+                            break;
+                        }
+                        break;
                 }
             }
         };
-        this.mBroadcastReceiver = broadcastReceiver2;
-        this.mHandler = new AnonymousClass3();
+        this.mBroadcastReceiver = r4;
+        AnonymousClass3 anonymousClass3 = new AnonymousClass3();
+        this.mHandler = anonymousClass3;
         this.mCallback = new ITrustAgentServiceCallback.Stub() { // from class: com.android.server.trust.TrustAgentWrapper.4
-            public void grantTrust(CharSequence charSequence, long j, int i, AndroidFuture androidFuture) {
+            public final void addEscrowToken(byte[] bArr, int i3) {
                 if (TrustAgentWrapper.DEBUG) {
-                    Slog.d("TrustAgentWrapper", "enableTrust(" + ((Object) charSequence) + ", durationMs = " + j + ", flags = " + i + ")");
+                    Slogf.d("TrustAgentWrapper", "addEscrowToken(userId=%d)", Integer.valueOf(i3));
                 }
-                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(1, i, 0, Pair.create(charSequence, androidFuture));
+                if (TrustAgentWrapper.this.mContext.getResources().getBoolean(R.bool.config_allowRotationResolver)) {
+                    throw new SecurityException("Escrow token API is not allowed.");
+                }
+                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(7);
+                obtainMessage.getData().putByteArray("escrow_token", bArr);
+                obtainMessage.getData().putInt("user_id", i3);
+                obtainMessage.sendToTarget();
+            }
+
+            public final void grantTrust(CharSequence charSequence, long j, int i3, AndroidFuture androidFuture) {
+                if (TrustAgentWrapper.DEBUG) {
+                    Slogf.d("TrustAgentWrapper", "grantTrust(message=\"%s\", durationMs=%d, flags=0x%x)", charSequence, Long.valueOf(j), Integer.valueOf(i3));
+                }
+                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(1, i3, 0, Pair.create(charSequence, androidFuture));
                 obtainMessage.getData().putLong("duration", j);
                 obtainMessage.sendToTarget();
             }
 
-            public void revokeTrust() {
+            public final void isEscrowTokenActive(long j, int i3) {
+                if (TrustAgentWrapper.DEBUG) {
+                    Slogf.d("TrustAgentWrapper", "isEscrowTokenActive(handle=%016x, userId=%d)", Long.valueOf(j), Integer.valueOf(i3));
+                }
+                if (TrustAgentWrapper.this.mContext.getResources().getBoolean(R.bool.config_allowRotationResolver)) {
+                    throw new SecurityException("Escrow token API is not allowed.");
+                }
+                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(9);
+                obtainMessage.getData().putLong("handle", j);
+                obtainMessage.getData().putInt("user_id", i3);
+                obtainMessage.sendToTarget();
+            }
+
+            public final void lockUser() {
+                if (TrustAgentWrapper.DEBUG) {
+                    Slog.d("TrustAgentWrapper", "lockUser()");
+                }
+                TrustAgentWrapper.this.mHandler.sendEmptyMessage(12);
+            }
+
+            public final void onConfigureCompleted(boolean z, IBinder iBinder) {
+                if (TrustAgentWrapper.DEBUG) {
+                    Slogf.d("TrustAgentWrapper", "onConfigureCompleted(result=%s)", Boolean.valueOf(z));
+                }
+                TrustAgentWrapper.this.mHandler.obtainMessage(5, z ? 1 : 0, 0, iBinder).sendToTarget();
+            }
+
+            public final void removeEscrowToken(long j, int i3) {
+                if (TrustAgentWrapper.DEBUG) {
+                    Slogf.d("TrustAgentWrapper", "removeEscrowToken(handle=%016x, userId=%d)", Long.valueOf(j), Integer.valueOf(i3));
+                }
+                if (TrustAgentWrapper.this.mContext.getResources().getBoolean(R.bool.config_allowRotationResolver)) {
+                    throw new SecurityException("Escrow token API is not allowed.");
+                }
+                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(8);
+                obtainMessage.getData().putLong("handle", j);
+                obtainMessage.getData().putInt("user_id", i3);
+                obtainMessage.sendToTarget();
+            }
+
+            public final void revokeTrust() {
                 if (TrustAgentWrapper.DEBUG) {
                     Slog.d("TrustAgentWrapper", "revokeTrust()");
                 }
                 TrustAgentWrapper.this.mHandler.sendEmptyMessage(2);
             }
 
-            public void lockUser() {
-                TrustAgentWrapper.this.mHandler.sendEmptyMessage(12);
-            }
-
-            public void setManagingTrust(boolean z) {
+            public final void setManagingTrust(boolean z) {
                 if (TrustAgentWrapper.DEBUG) {
-                    Slog.d("TrustAgentWrapper", "managingTrust()");
+                    Slogf.d("TrustAgentWrapper", "setManagingTrust(%s)", Boolean.valueOf(z));
                 }
                 TrustAgentWrapper.this.mHandler.obtainMessage(6, z ? 1 : 0, 0).sendToTarget();
             }
 
-            public void onConfigureCompleted(boolean z, IBinder iBinder) {
+            public final void showKeyguardErrorMessage(CharSequence charSequence) {
                 if (TrustAgentWrapper.DEBUG) {
-                    Slog.d("TrustAgentWrapper", "onSetTrustAgentFeaturesEnabledCompleted(result=" + z);
-                }
-                TrustAgentWrapper.this.mHandler.obtainMessage(5, z ? 1 : 0, 0, iBinder).sendToTarget();
-            }
-
-            public void addEscrowToken(byte[] bArr, int i) {
-                if (TrustAgentWrapper.this.mContext.getResources().getBoolean(R.bool.config_allowTheaterModeWakeFromWindowLayout)) {
-                    throw new SecurityException("Escrow token API is not allowed.");
-                }
-                if (TrustAgentWrapper.DEBUG) {
-                    Slog.d("TrustAgentWrapper", "adding escrow token for user " + i);
-                }
-                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(7);
-                obtainMessage.getData().putByteArray("escrow_token", bArr);
-                obtainMessage.getData().putInt("user_id", i);
-                obtainMessage.sendToTarget();
-            }
-
-            public void isEscrowTokenActive(long j, int i) {
-                if (TrustAgentWrapper.this.mContext.getResources().getBoolean(R.bool.config_allowTheaterModeWakeFromWindowLayout)) {
-                    throw new SecurityException("Escrow token API is not allowed.");
-                }
-                if (TrustAgentWrapper.DEBUG) {
-                    Slog.d("TrustAgentWrapper", "checking the state of escrow token on user " + i);
-                }
-                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(9);
-                obtainMessage.getData().putLong("handle", j);
-                obtainMessage.getData().putInt("user_id", i);
-                obtainMessage.sendToTarget();
-            }
-
-            public void removeEscrowToken(long j, int i) {
-                if (TrustAgentWrapper.this.mContext.getResources().getBoolean(R.bool.config_allowTheaterModeWakeFromWindowLayout)) {
-                    throw new SecurityException("Escrow token API is not allowed.");
-                }
-                if (TrustAgentWrapper.DEBUG) {
-                    Slog.d("TrustAgentWrapper", "removing escrow token on user " + i);
-                }
-                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(8);
-                obtainMessage.getData().putLong("handle", j);
-                obtainMessage.getData().putInt("user_id", i);
-                obtainMessage.sendToTarget();
-            }
-
-            public void unlockUserWithToken(long j, byte[] bArr, int i) {
-                if (TrustAgentWrapper.this.mContext.getResources().getBoolean(R.bool.config_allowTheaterModeWakeFromWindowLayout)) {
-                    throw new SecurityException("Escrow token API is not allowed.");
-                }
-                if (TrustAgentWrapper.DEBUG) {
-                    Slog.d("TrustAgentWrapper", "unlocking user " + i);
-                }
-                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(10);
-                obtainMessage.getData().putInt("user_id", i);
-                obtainMessage.getData().putLong("handle", j);
-                obtainMessage.getData().putByteArray("escrow_token", bArr);
-                obtainMessage.sendToTarget();
-            }
-
-            public void showKeyguardErrorMessage(CharSequence charSequence) {
-                if (TrustAgentWrapper.DEBUG) {
-                    Slog.d("TrustAgentWrapper", "Showing keyguard error message: " + ((Object) charSequence));
+                    Slogf.d("TrustAgentWrapper", "showKeyguardErrorMessage(\"%s\")", charSequence);
                 }
                 Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(11);
                 obtainMessage.getData().putCharSequence("message", charSequence);
                 obtainMessage.sendToTarget();
             }
+
+            public final void unlockUserWithToken(long j, byte[] bArr, int i3) {
+                if (TrustAgentWrapper.DEBUG) {
+                    Slogf.d("TrustAgentWrapper", "unlockUserWithToken(handle=%016x, userId=%d)", Long.valueOf(j), Integer.valueOf(i3));
+                }
+                if (TrustAgentWrapper.this.mContext.getResources().getBoolean(R.bool.config_allowRotationResolver)) {
+                    throw new SecurityException("Escrow token API is not allowed.");
+                }
+                Message obtainMessage = TrustAgentWrapper.this.mHandler.obtainMessage(10);
+                obtainMessage.getData().putInt("user_id", i3);
+                obtainMessage.getData().putLong("handle", j);
+                obtainMessage.getData().putByteArray("escrow_token", bArr);
+                obtainMessage.sendToTarget();
+            }
         };
-        ServiceConnection serviceConnection = new ServiceConnection() { // from class: com.android.server.trust.TrustAgentWrapper.5
+        ?? r3 = new ServiceConnection() { // from class: com.android.server.trust.TrustAgentWrapper.5
             @Override // android.content.ServiceConnection
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
                 if (TrustAgentWrapper.DEBUG) {
                     Slog.d("TrustAgentWrapper", "TrustAgent started : " + componentName.flattenToString());
                 }
                 TrustAgentWrapper.this.mHandler.removeMessages(4);
                 TrustAgentWrapper.this.mTrustAgentService = ITrustAgentService.Stub.asInterface(iBinder);
-                TrustAgentWrapper.this.mTrustManagerService.mArchive.logAgentConnected(TrustAgentWrapper.this.mUserId, componentName);
                 TrustAgentWrapper trustAgentWrapper = TrustAgentWrapper.this;
-                trustAgentWrapper.setCallback(trustAgentWrapper.mCallback);
+                TrustArchive trustArchive = trustAgentWrapper.mTrustManagerService.mArchive;
+                trustArchive.getClass();
+                trustArchive.addEvent(new TrustArchive.Event(4, trustAgentWrapper.mUserId, componentName, null, 0L, 0, false));
+                TrustAgentWrapper trustAgentWrapper2 = TrustAgentWrapper.this;
+                AnonymousClass4 anonymousClass4 = trustAgentWrapper2.mCallback;
+                try {
+                    ITrustAgentService iTrustAgentService = trustAgentWrapper2.mTrustAgentService;
+                    if (iTrustAgentService != null) {
+                        iTrustAgentService.setCallback(anonymousClass4);
+                    }
+                } catch (RemoteException e) {
+                    TrustAgentWrapper.onError(e);
+                }
                 TrustAgentWrapper.this.updateDevicePolicyFeatures();
-                if (TrustAgentWrapper.this.mPendingSuccessfulUnlock) {
-                    TrustAgentWrapper.this.onUnlockAttempt(true);
+                TrustAgentWrapper trustAgentWrapper3 = TrustAgentWrapper.this;
+                if (trustAgentWrapper3.mPendingSuccessfulUnlock) {
+                    try {
+                        ITrustAgentService iTrustAgentService2 = trustAgentWrapper3.mTrustAgentService;
+                        if (iTrustAgentService2 != null) {
+                            iTrustAgentService2.onUnlockAttempt(true);
+                        } else {
+                            trustAgentWrapper3.mPendingSuccessfulUnlock = true;
+                        }
+                    } catch (RemoteException e2) {
+                        TrustAgentWrapper.onError(e2);
+                    }
                     TrustAgentWrapper.this.mPendingSuccessfulUnlock = false;
                 }
-                if (TrustAgentWrapper.this.mTrustManagerService.isDeviceLockedInner(TrustAgentWrapper.this.mUserId)) {
-                    TrustAgentWrapper.this.onDeviceLocked();
-                } else {
-                    TrustAgentWrapper.this.onDeviceUnlocked();
+                TrustAgentWrapper trustAgentWrapper4 = TrustAgentWrapper.this;
+                if (trustAgentWrapper4.mTrustManagerService.isDeviceLockedInner(trustAgentWrapper4.mUserId)) {
+                    TrustAgentWrapper trustAgentWrapper5 = TrustAgentWrapper.this;
+                    trustAgentWrapper5.mWithinSecurityLockdownWindow = false;
+                    try {
+                        ITrustAgentService iTrustAgentService3 = trustAgentWrapper5.mTrustAgentService;
+                        if (iTrustAgentService3 != null) {
+                            iTrustAgentService3.onDeviceLocked();
+                            return;
+                        }
+                        return;
+                    } catch (RemoteException e3) {
+                        TrustAgentWrapper.onError(e3);
+                        return;
+                    }
+                }
+                TrustAgentWrapper trustAgentWrapper6 = TrustAgentWrapper.this;
+                trustAgentWrapper6.getClass();
+                try {
+                    ITrustAgentService iTrustAgentService4 = trustAgentWrapper6.mTrustAgentService;
+                    if (iTrustAgentService4 != null) {
+                        iTrustAgentService4.onDeviceUnlocked();
+                    }
+                } catch (RemoteException e4) {
+                    TrustAgentWrapper.onError(e4);
                 }
             }
 
             @Override // android.content.ServiceConnection
-            public void onServiceDisconnected(ComponentName componentName) {
+            public final void onServiceDisconnected(ComponentName componentName) {
                 if (TrustAgentWrapper.DEBUG) {
                     Slog.d("TrustAgentWrapper", "TrustAgent disconnected : " + componentName.flattenToShortString());
                 }
-                TrustAgentWrapper.this.mTrustAgentService = null;
-                TrustAgentWrapper.this.mManagingTrust = false;
-                TrustAgentWrapper.this.mSetTrustAgentFeaturesToken = null;
-                TrustAgentWrapper.this.mTrustManagerService.mArchive.logAgentDied(TrustAgentWrapper.this.mUserId, componentName);
+                TrustAgentWrapper trustAgentWrapper = TrustAgentWrapper.this;
+                trustAgentWrapper.mTrustAgentService = null;
+                trustAgentWrapper.mManagingTrust = false;
+                trustAgentWrapper.mSetTrustAgentFeaturesToken = null;
+                TrustArchive trustArchive = trustAgentWrapper.mTrustManagerService.mArchive;
+                trustArchive.getClass();
+                trustArchive.addEvent(new TrustArchive.Event(3, trustAgentWrapper.mUserId, componentName, null, 0L, 0, false));
                 TrustAgentWrapper.this.mHandler.sendEmptyMessage(2);
-                if (TrustAgentWrapper.this.mBound) {
-                    TrustAgentWrapper.this.scheduleRestart();
+                TrustAgentWrapper trustAgentWrapper2 = TrustAgentWrapper.this;
+                if (trustAgentWrapper2.mBound) {
+                    AnonymousClass3 anonymousClass32 = trustAgentWrapper2.mHandler;
+                    anonymousClass32.removeMessages(4);
+                    long uptimeMillis = SystemClock.uptimeMillis() + 300000;
+                    trustAgentWrapper2.mScheduledRestartUptimeMillis = uptimeMillis;
+                    anonymousClass32.sendEmptyMessageAtTime(4, uptimeMillis);
                 }
-                if (TrustAgentWrapper.this.mWithinSecurityLockdownWindow) {
-                    TrustAgentWrapper.this.mTrustManagerService.lockUser(TrustAgentWrapper.this.mUserId);
+                TrustAgentWrapper trustAgentWrapper3 = TrustAgentWrapper.this;
+                if (trustAgentWrapper3.mWithinSecurityLockdownWindow) {
+                    trustAgentWrapper3.mTrustManagerService.mLockPatternUtils.requireStrongAuth(256, trustAgentWrapper3.mUserId);
+                    try {
+                        WindowManagerGlobal.getWindowManagerService().lockNow((Bundle) null);
+                    } catch (RemoteException unused) {
+                        Slogf.e("TrustManagerService", "Error locking screen when called from trust agent");
+                    }
                 }
             }
         };
-        this.mConnection = serviceConnection;
+        this.mConnection = r3;
         this.mContext = context;
         this.mTrustManagerService = trustManagerService;
         this.mAlarmManager = (AlarmManager) context.getSystemService("alarm");
@@ -414,321 +640,160 @@ public class TrustAgentWrapper {
         intentFilter.addDataScheme(putExtra.getScheme());
         intentFilter.addDataPath(putExtra.toUri(1), 0);
         IntentFilter intentFilter2 = new IntentFilter("android.intent.action.SCREEN_OFF");
-        scheduleRestart();
-        boolean bindServiceAsUser = context.bindServiceAsUser(intent, serviceConnection, 67108865, userHandle);
+        anonymousClass3.removeMessages(4);
+        long uptimeMillis = SystemClock.uptimeMillis() + 300000;
+        this.mScheduledRestartUptimeMillis = uptimeMillis;
+        anonymousClass3.sendEmptyMessageAtTime(4, uptimeMillis);
+        boolean bindServiceAsUser = context.bindServiceAsUser(intent, (ServiceConnection) r3, 67108865, userHandle);
         this.mBound = bindServiceAsUser;
         if (bindServiceAsUser) {
-            context.registerReceiver(broadcastReceiver2, intentFilter, "android.permission.PROVIDE_TRUST_AGENT", null, 2);
-            context.registerReceiver(broadcastReceiver, intentFilter2);
+            context.registerReceiver(r4, intentFilter, "android.permission.PROVIDE_TRUST_AGENT", null, 2);
+            context.registerReceiver(r1, intentFilter2);
         } else {
             Log.e("TrustAgentWrapper", "Can't bind to TrustAgent " + component.flattenToShortString());
         }
     }
 
-    public final void onError(Exception exc) {
+    public static void onError(Exception exc) {
         Slog.w("TrustAgentWrapper", "Exception ", exc);
     }
 
-    public final void onTrustTimeout() {
-        try {
-            ITrustAgentService iTrustAgentService = this.mTrustAgentService;
-            if (iTrustAgentService != null) {
-                iTrustAgentService.onTrustTimeout();
-            }
-        } catch (RemoteException e) {
-            onError(e);
-        }
-    }
-
-    public void onUnlockAttempt(boolean z) {
-        try {
-            ITrustAgentService iTrustAgentService = this.mTrustAgentService;
-            if (iTrustAgentService != null) {
-                iTrustAgentService.onUnlockAttempt(z);
-            } else {
-                this.mPendingSuccessfulUnlock = z;
-            }
-        } catch (RemoteException e) {
-            onError(e);
-        }
-    }
-
-    public void onUserRequestedUnlock(boolean z) {
-        try {
-            ITrustAgentService iTrustAgentService = this.mTrustAgentService;
-            if (iTrustAgentService != null) {
-                iTrustAgentService.onUserRequestedUnlock(z);
-            }
-        } catch (RemoteException e) {
-            onError(e);
-        }
-    }
-
-    public void onUserMayRequestUnlock() {
-        try {
-            ITrustAgentService iTrustAgentService = this.mTrustAgentService;
-            if (iTrustAgentService != null) {
-                iTrustAgentService.onUserMayRequestUnlock();
-            }
-        } catch (RemoteException e) {
-            onError(e);
-        }
-    }
-
-    public void onUnlockLockout(int i) {
-        try {
-            ITrustAgentService iTrustAgentService = this.mTrustAgentService;
-            if (iTrustAgentService != null) {
-                iTrustAgentService.onUnlockLockout(i);
-            }
-        } catch (RemoteException e) {
-            onError(e);
-        }
-    }
-
-    public void onDeviceLocked() {
-        this.mWithinSecurityLockdownWindow = false;
-        try {
-            ITrustAgentService iTrustAgentService = this.mTrustAgentService;
-            if (iTrustAgentService != null) {
-                iTrustAgentService.onDeviceLocked();
-            }
-        } catch (RemoteException e) {
-            onError(e);
-        }
-    }
-
-    public void onDeviceUnlocked() {
-        try {
-            ITrustAgentService iTrustAgentService = this.mTrustAgentService;
-            if (iTrustAgentService != null) {
-                iTrustAgentService.onDeviceUnlocked();
-            }
-        } catch (RemoteException e) {
-            onError(e);
-        }
-    }
-
-    public void onEscrowTokenActivated(long j, int i) {
-        if (DEBUG) {
-            Slog.d("TrustAgentWrapper", "onEscrowTokenActivated: " + j + " user: " + i);
-        }
-        ITrustAgentService iTrustAgentService = this.mTrustAgentService;
-        if (iTrustAgentService != null) {
-            try {
-                iTrustAgentService.onTokenStateReceived(j, 1);
-            } catch (RemoteException e) {
-                onError(e);
-            }
-        }
-    }
-
-    public final void setCallback(ITrustAgentServiceCallback iTrustAgentServiceCallback) {
-        try {
-            ITrustAgentService iTrustAgentService = this.mTrustAgentService;
-            if (iTrustAgentService != null) {
-                iTrustAgentService.setCallback(iTrustAgentServiceCallback);
-            }
-        } catch (RemoteException e) {
-            onError(e);
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:29:0x00c9  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public boolean updateDevicePolicyFeatures() {
-        /*
-            r9 = this;
-            boolean r0 = com.android.server.trust.TrustAgentWrapper.DEBUG
-            java.lang.String r1 = "TrustAgentWrapper"
-            if (r0 == 0) goto L22
-            java.lang.StringBuilder r2 = new java.lang.StringBuilder
-            r2.<init>()
-            java.lang.String r3 = "updateDevicePolicyFeatures("
-            r2.append(r3)
-            android.content.ComponentName r3 = r9.mName
-            r2.append(r3)
-            java.lang.String r3 = ")"
-            r2.append(r3)
-            java.lang.String r2 = r2.toString()
-            android.util.Slog.d(r1, r2)
-        L22:
-            r2 = 0
-            android.service.trust.ITrustAgentService r3 = r9.mTrustAgentService     // Catch: android.os.RemoteException -> Lc0
-            if (r3 == 0) goto Lbe
-            android.content.Context r3 = r9.mContext     // Catch: android.os.RemoteException -> Lc0
-            java.lang.String r4 = "device_policy"
-            java.lang.Object r3 = r3.getSystemService(r4)     // Catch: android.os.RemoteException -> Lc0
-            android.app.admin.DevicePolicyManager r3 = (android.app.admin.DevicePolicyManager) r3     // Catch: android.os.RemoteException -> Lc0
-            int r4 = r9.mUserId     // Catch: android.os.RemoteException -> Lc0
-            r5 = 0
-            int r4 = r3.getKeyguardDisabledFeatures(r5, r4)     // Catch: android.os.RemoteException -> Lc0
-            r4 = r4 & 16
-            if (r4 == 0) goto L94
-            android.content.ComponentName r4 = r9.mName     // Catch: android.os.RemoteException -> Lc0
-            int r6 = r9.mUserId     // Catch: android.os.RemoteException -> Lc0
-            java.util.List r4 = r3.getTrustAgentConfiguration(r5, r4, r6)     // Catch: android.os.RemoteException -> Lc0
-            r6 = 1
-            if (r0 == 0) goto L5b
-            java.lang.StringBuilder r7 = new java.lang.StringBuilder     // Catch: android.os.RemoteException -> Lbc
-            r7.<init>()     // Catch: android.os.RemoteException -> Lbc
-            java.lang.String r8 = "Detected trust agents disabled. Config = "
-            r7.append(r8)     // Catch: android.os.RemoteException -> Lbc
-            r7.append(r4)     // Catch: android.os.RemoteException -> Lbc
-            java.lang.String r7 = r7.toString()     // Catch: android.os.RemoteException -> Lbc
-            android.util.Slog.d(r1, r7)     // Catch: android.os.RemoteException -> Lbc
-        L5b:
-            if (r4 == 0) goto L9c
-            int r7 = r4.size()     // Catch: android.os.RemoteException -> Lbc
-            if (r7 <= 0) goto L9c
-            if (r0 == 0) goto L87
-            java.lang.StringBuilder r0 = new java.lang.StringBuilder     // Catch: android.os.RemoteException -> Lbc
-            r0.<init>()     // Catch: android.os.RemoteException -> Lbc
-            java.lang.String r7 = "TrustAgent "
-            r0.append(r7)     // Catch: android.os.RemoteException -> Lbc
-            android.content.ComponentName r7 = r9.mName     // Catch: android.os.RemoteException -> Lbc
-            java.lang.String r7 = r7.flattenToShortString()     // Catch: android.os.RemoteException -> Lbc
-            r0.append(r7)     // Catch: android.os.RemoteException -> Lbc
-            java.lang.String r7 = " disabled until it acknowledges "
-            r0.append(r7)     // Catch: android.os.RemoteException -> Lbc
-            r0.append(r4)     // Catch: android.os.RemoteException -> Lbc
-            java.lang.String r0 = r0.toString()     // Catch: android.os.RemoteException -> Lbc
-            android.util.Slog.d(r1, r0)     // Catch: android.os.RemoteException -> Lbc
-        L87:
-            android.os.Binder r0 = new android.os.Binder     // Catch: android.os.RemoteException -> Lbc
-            r0.<init>()     // Catch: android.os.RemoteException -> Lbc
-            r9.mSetTrustAgentFeaturesToken = r0     // Catch: android.os.RemoteException -> Lbc
-            android.service.trust.ITrustAgentService r1 = r9.mTrustAgentService     // Catch: android.os.RemoteException -> Lbc
-            r1.onConfigure(r4, r0)     // Catch: android.os.RemoteException -> Lbc
-            goto L9c
-        L94:
-            android.service.trust.ITrustAgentService r0 = r9.mTrustAgentService     // Catch: android.os.RemoteException -> Lc0
-            java.util.List r1 = java.util.Collections.EMPTY_LIST     // Catch: android.os.RemoteException -> Lc0
-            r0.onConfigure(r1, r5)     // Catch: android.os.RemoteException -> Lc0
-            r6 = r2
-        L9c:
-            int r0 = r9.mUserId     // Catch: android.os.RemoteException -> Lbc
-            long r0 = r3.getMaximumTimeToLock(r5, r0)     // Catch: android.os.RemoteException -> Lbc
-            long r3 = r9.mMaximumTimeToLock     // Catch: android.os.RemoteException -> Lbc
-            int r3 = (r0 > r3 ? 1 : (r0 == r3 ? 0 : -1))
-            if (r3 == 0) goto Lc5
-            r9.mMaximumTimeToLock = r0     // Catch: android.os.RemoteException -> Lbc
-            android.app.PendingIntent r0 = r9.mAlarmPendingIntent     // Catch: android.os.RemoteException -> Lbc
-            if (r0 == 0) goto Lc5
-            android.app.AlarmManager r1 = r9.mAlarmManager     // Catch: android.os.RemoteException -> Lbc
-            r1.cancel(r0)     // Catch: android.os.RemoteException -> Lbc
-            r9.mAlarmPendingIntent = r5     // Catch: android.os.RemoteException -> Lbc
-            android.os.Handler r0 = r9.mHandler     // Catch: android.os.RemoteException -> Lbc
-            r1 = 3
-            r0.sendEmptyMessage(r1)     // Catch: android.os.RemoteException -> Lbc
-            goto Lc5
-        Lbc:
-            r0 = move-exception
-            goto Lc2
-        Lbe:
-            r6 = r2
-            goto Lc5
-        Lc0:
-            r0 = move-exception
-            r6 = r2
-        Lc2:
-            r9.onError(r0)
-        Lc5:
-            boolean r0 = r9.mTrustDisabledByDpm
-            if (r0 == r6) goto Ld2
-            r9.mTrustDisabledByDpm = r6
-            com.android.server.trust.TrustManagerService r0 = r9.mTrustManagerService
-            int r9 = r9.mUserId
-            r0.updateTrust(r9, r2)
-        Ld2:
-            return r6
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.trust.TrustAgentWrapper.updateDevicePolicyFeatures():boolean");
-    }
-
-    public boolean isTrusted() {
-        return this.mTrusted && this.mManagingTrust && !this.mTrustDisabledByDpm;
-    }
-
-    public boolean isTrustable() {
-        return this.mTrustable && this.mManagingTrust && !this.mTrustDisabledByDpm;
-    }
-
-    public boolean isTrustableOrWaitingForDowngrade() {
-        return this.mWaitingForTrustableDowngrade || isTrustable();
-    }
-
-    public void setUntrustable() {
-        this.mTrustable = false;
-    }
-
-    public void downgradeToTrustable() {
-        if (this.mWaitingForTrustableDowngrade) {
-            this.mWaitingForTrustableDowngrade = false;
-            this.mTrusted = false;
-            this.mTrustable = true;
-            this.mTrustManagerService.updateTrust(this.mUserId, 0);
-        }
-    }
-
-    public final void setSecurityWindowTimer() {
-        this.mWithinSecurityLockdownWindow = true;
-        this.mAlarmManager.setExact(2, SystemClock.elapsedRealtime() + 15000, "TrustAgentWrapper", new AlarmManager.OnAlarmListener() { // from class: com.android.server.trust.TrustAgentWrapper.6
-            @Override // android.app.AlarmManager.OnAlarmListener
-            public void onAlarm() {
-                TrustAgentWrapper.this.mWithinSecurityLockdownWindow = false;
-            }
-        }, Handler.getMain());
-    }
-
-    public boolean isManagingTrust() {
-        return this.mManagingTrust && !this.mTrustDisabledByDpm;
-    }
-
-    public CharSequence getMessage() {
-        return this.mMessage;
-    }
-
-    public boolean shouldDisplayTrustGrantedMessage() {
-        return this.mDisplayTrustGrantedMessage;
-    }
-
-    public void destroy() {
-        this.mHandler.removeMessages(4);
+    public final void destroy() {
+        AnonymousClass3 anonymousClass3 = this.mHandler;
+        anonymousClass3.removeMessages(4);
         if (this.mBound) {
             if (DEBUG) {
                 Slog.d("TrustAgentWrapper", "TrustAgent unbound : " + this.mName.flattenToShortString());
             }
-            this.mTrustManagerService.mArchive.logAgentStopped(this.mUserId, this.mName);
+            TrustArchive trustArchive = this.mTrustManagerService.mArchive;
+            ComponentName componentName = this.mName;
+            trustArchive.getClass();
+            trustArchive.addEvent(new TrustArchive.Event(5, this.mUserId, componentName, null, 0L, 0, false));
             this.mContext.unbindService(this.mConnection);
             this.mBound = false;
             this.mContext.unregisterReceiver(this.mBroadcastReceiver);
             this.mContext.unregisterReceiver(this.mTrustableDowngradeReceiver);
             this.mTrustAgentService = null;
             this.mSetTrustAgentFeaturesToken = null;
-            this.mHandler.sendEmptyMessage(2);
+            anonymousClass3.sendEmptyMessage(2);
         }
     }
 
-    public boolean isConnected() {
-        return this.mTrustAgentService != null;
+    public final boolean isManagingTrust() {
+        return this.mManagingTrust && !this.mTrustDisabledByDpm;
     }
 
-    public boolean isBound() {
-        return this.mBound;
+    public final boolean isTrusted() {
+        return this.mTrusted && this.mManagingTrust && !this.mTrustDisabledByDpm;
     }
 
-    public long getScheduledRestartUptimeMillis() {
-        return this.mScheduledRestartUptimeMillis;
-    }
-
-    public final void scheduleRestart() {
-        this.mHandler.removeMessages(4);
-        long uptimeMillis = SystemClock.uptimeMillis() + BackupAgentTimeoutParameters.DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS;
-        this.mScheduledRestartUptimeMillis = uptimeMillis;
-        this.mHandler.sendEmptyMessageAtTime(4, uptimeMillis);
+    /* JADX WARN: Removed duplicated region for block: B:35:0x00bc  */
+    /* JADX WARN: Removed duplicated region for block: B:38:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void updateDevicePolicyFeatures() {
+        /*
+            r10 = this;
+            int r0 = r10.mUserId
+            java.lang.String r1 = "TrustAgent "
+            java.lang.String r2 = "Detected trust agents disabled. Config = "
+            java.lang.String r3 = "TrustAgentWrapper"
+            boolean r4 = com.android.server.trust.TrustAgentWrapper.DEBUG
+            if (r4 == 0) goto L25
+            java.lang.StringBuilder r5 = new java.lang.StringBuilder
+            java.lang.String r6 = "updateDevicePolicyFeatures("
+            r5.<init>(r6)
+            android.content.ComponentName r6 = r10.mName
+            r5.append(r6)
+            java.lang.String r6 = ")"
+            r5.append(r6)
+            java.lang.String r5 = r5.toString()
+            android.util.Slog.d(r3, r5)
+        L25:
+            r5 = 0
+            android.service.trust.ITrustAgentService r6 = r10.mTrustAgentService     // Catch: android.os.RemoteException -> L8e
+            if (r6 == 0) goto Lb8
+            android.content.Context r6 = r10.mContext     // Catch: android.os.RemoteException -> L8e
+            java.lang.String r7 = "device_policy"
+            java.lang.Object r6 = r6.getSystemService(r7)     // Catch: android.os.RemoteException -> L8e
+            android.app.admin.DevicePolicyManager r6 = (android.app.admin.DevicePolicyManager) r6     // Catch: android.os.RemoteException -> L8e
+            r7 = 0
+            int r8 = r6.getKeyguardDisabledFeatures(r7, r0)     // Catch: android.os.RemoteException -> L8e
+            r8 = r8 & 16
+            if (r8 == 0) goto L90
+            android.content.ComponentName r8 = r10.mName     // Catch: android.os.RemoteException -> L8e
+            java.util.List r5 = r6.getTrustAgentConfiguration(r7, r8, r0)     // Catch: android.os.RemoteException -> L8e
+            r8 = 1
+            if (r4 == 0) goto L59
+            java.lang.StringBuilder r9 = new java.lang.StringBuilder     // Catch: android.os.RemoteException -> L56
+            r9.<init>(r2)     // Catch: android.os.RemoteException -> L56
+            r9.append(r5)     // Catch: android.os.RemoteException -> L56
+            java.lang.String r2 = r9.toString()     // Catch: android.os.RemoteException -> L56
+            android.util.Slog.d(r3, r2)     // Catch: android.os.RemoteException -> L56
+            goto L59
+        L56:
+            r1 = move-exception
+            r5 = r8
+            goto Lb5
+        L59:
+            if (r5 == 0) goto L8c
+            int r2 = r5.size()     // Catch: android.os.RemoteException -> L56
+            if (r2 <= 0) goto L8c
+            if (r4 == 0) goto L80
+            java.lang.StringBuilder r2 = new java.lang.StringBuilder     // Catch: android.os.RemoteException -> L56
+            r2.<init>(r1)     // Catch: android.os.RemoteException -> L56
+            android.content.ComponentName r1 = r10.mName     // Catch: android.os.RemoteException -> L56
+            java.lang.String r1 = r1.flattenToShortString()     // Catch: android.os.RemoteException -> L56
+            r2.append(r1)     // Catch: android.os.RemoteException -> L56
+            java.lang.String r1 = " disabled until it acknowledges "
+            r2.append(r1)     // Catch: android.os.RemoteException -> L56
+            r2.append(r5)     // Catch: android.os.RemoteException -> L56
+            java.lang.String r1 = r2.toString()     // Catch: android.os.RemoteException -> L56
+            android.util.Slog.d(r3, r1)     // Catch: android.os.RemoteException -> L56
+        L80:
+            android.os.Binder r1 = new android.os.Binder     // Catch: android.os.RemoteException -> L56
+            r1.<init>()     // Catch: android.os.RemoteException -> L56
+            r10.mSetTrustAgentFeaturesToken = r1     // Catch: android.os.RemoteException -> L56
+            android.service.trust.ITrustAgentService r2 = r10.mTrustAgentService     // Catch: android.os.RemoteException -> L56
+            r2.onConfigure(r5, r1)     // Catch: android.os.RemoteException -> L56
+        L8c:
+            r5 = r8
+            goto L97
+        L8e:
+            r1 = move-exception
+            goto Lb5
+        L90:
+            android.service.trust.ITrustAgentService r1 = r10.mTrustAgentService     // Catch: android.os.RemoteException -> L8e
+            java.util.List r2 = java.util.Collections.EMPTY_LIST     // Catch: android.os.RemoteException -> L8e
+            r1.onConfigure(r2, r7)     // Catch: android.os.RemoteException -> L8e
+        L97:
+            long r1 = r6.getMaximumTimeToLock(r7, r0)     // Catch: android.os.RemoteException -> L8e
+            long r3 = r10.mMaximumTimeToLock     // Catch: android.os.RemoteException -> L8e
+            int r3 = (r1 > r3 ? 1 : (r1 == r3 ? 0 : -1))
+            if (r3 == 0) goto Lb8
+            r10.mMaximumTimeToLock = r1     // Catch: android.os.RemoteException -> L8e
+            android.app.PendingIntent r1 = r10.mAlarmPendingIntent     // Catch: android.os.RemoteException -> L8e
+            if (r1 == 0) goto Lb8
+            android.app.AlarmManager r2 = r10.mAlarmManager     // Catch: android.os.RemoteException -> L8e
+            r2.cancel(r1)     // Catch: android.os.RemoteException -> L8e
+            r10.mAlarmPendingIntent = r7     // Catch: android.os.RemoteException -> L8e
+            com.android.server.trust.TrustAgentWrapper$3 r1 = r10.mHandler     // Catch: android.os.RemoteException -> L8e
+            r2 = 3
+            r1.sendEmptyMessage(r2)     // Catch: android.os.RemoteException -> L8e
+            goto Lb8
+        Lb5:
+            onError(r1)
+        Lb8:
+            boolean r1 = r10.mTrustDisabledByDpm
+            if (r1 == r5) goto Lc3
+            r10.mTrustDisabledByDpm = r5
+            com.android.server.trust.TrustManagerService r10 = r10.mTrustManagerService
+            r10.updateTrust(r0)
+        Lc3:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.trust.TrustAgentWrapper.updateDevicePolicyFeatures():void");
     }
 }

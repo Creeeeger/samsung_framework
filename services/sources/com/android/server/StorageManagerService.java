@@ -1,5 +1,6 @@
 package com.android.server;
 
+import android.R;
 import android.app.ActivityManager;
 import android.app.ActivityManagerInternal;
 import android.app.ActivityOptions;
@@ -9,7 +10,6 @@ import android.app.IActivityManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
-import android.app.admin.SecurityLog;
 import android.app.usage.StorageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,24 +18,28 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageManager;
 import android.content.pm.IPackageMoveObserver;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManagerInternal;
 import android.content.pm.ProviderInfo;
+import android.content.pm.ResolveInfo;
 import android.content.pm.UserInfo;
 import android.content.res.ObbInfo;
-import android.database.ContentObserver;
 import android.database.Cursor;
-import android.media.MediaCodecInfo;
-import android.media.MediaCodecList;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
+import android.net.shared.InitialConfiguration$$ExternalSyntheticOutline0;
 import android.os.Binder;
 import android.os.Build;
 import android.os.DropBoxManager;
 import android.os.Environment;
 import android.os.FileUtils;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.IInstalld;
 import android.os.IStoraged;
 import android.os.IVold;
 import android.os.IVoldListener;
@@ -57,6 +61,7 @@ import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.storage.DiskInfo;
+import android.os.storage.ICeStorageLockEventListener;
 import android.os.storage.IObbActionListener;
 import android.os.storage.IStorageEventListener;
 import android.os.storage.IStorageManager;
@@ -84,6 +89,7 @@ import android.util.Xml;
 import android.util.sysfwutil.Slog;
 import com.android.internal.app.IAppOpsService;
 import com.android.internal.content.PackageMonitor;
+import com.android.internal.hidden_from_bootclasspath.android.os.Flags;
 import com.android.internal.os.AppFuseMount;
 import com.android.internal.os.BackgroundThread;
 import com.android.internal.os.FuseUnavailableMountException;
@@ -91,20 +97,20 @@ import com.android.internal.os.SomeArgs;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.DumpUtils;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.internal.util.HexDump;
 import com.android.internal.util.IndentingPrintWriter;
-import com.android.internal.util.Preconditions;
 import com.android.internal.util.XmlUtils;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
-import com.android.server.StorageManagerService;
 import com.android.server.SystemService;
 import com.android.server.Watchdog;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.pm.Installer;
+import com.android.server.pm.PackageManagerService;
 import com.android.server.pm.UserManagerInternal;
 import com.android.server.storage.AppFuseBridge;
 import com.android.server.storage.StorageSessionController;
+import com.android.server.storage.StorageUserConnection;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import com.samsung.android.app.SemDualAppManager;
 import com.samsung.android.feature.SemFloatingFeature;
@@ -112,17 +118,22 @@ import com.samsung.android.jdsms.Sender;
 import com.samsung.android.knox.ContextInfo;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
 import com.samsung.android.knox.restriction.IRestrictionPolicy;
-import com.samsung.android.security.IDirEncryptServiceListener;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import com.samsung.android.security.SemSdCardEncryption;
+import dalvik.system.BlockGuard;
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -132,6 +143,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -141,379 +153,590 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import libcore.io.IoUtils;
 import libcore.util.EmptyArray;
+import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class StorageManagerService extends IStorageManager.Stub implements Watchdog.Monitor, ActivityTaskManagerInternal.ScreenObserver {
+public final class StorageManagerService extends IStorageManager.Stub implements Watchdog.Monitor, ActivityTaskManagerInternal.ScreenObserver {
     public static String sMediaStoreAuthorityProcessName;
     public static StorageManagerService sSelf;
+    public AppFuseBridge mAppFuseBridge;
+    public final Object mAppFuseLock;
+    public final HashSet mAsecMountSet;
+    public final CountDownLatch mAsecsScanned;
+    public volatile boolean mBootCompleted;
     public final Callbacks mCallbacks;
-    public volatile boolean mChargingRequired;
+    public final CopyOnWriteArrayList mCeStorageEventCallbacks;
+    public final WatchedUnlockedUsers mCeUnlockedUsers;
+    public final SparseArray mCloudMediaProviders;
     public final Context mContext;
-    public volatile float mDirtyReclaimRate;
-    public final StorageManagerServiceHandler mHandler;
+    public volatile int mCurrentUserId;
+    public volatile boolean mDaemonConnected;
+    public final ArrayMap mDiskScanLatches;
+    public final ArrayMap mDisks;
+    public volatile int mDownloadsAuthorityAppId;
+    public volatile int mExternalStorageAuthorityAppId;
+    public final Callbacks mHandler;
     public HeimdAllFsService mHeimdAllFs;
     public IAppOpsService mIAppOpsService;
     public IPackageManager mIPackageManager;
     public final Installer mInstaller;
+    public final HashMap mIsMediaSharedWithParent;
     public long mLastMaintenance;
     public final File mLastMaintenanceFile;
-    public volatile int mLifetimePercentThreshold;
-    public volatile float mLowBatteryLevel;
+    public final AnonymousClass4 mListener;
     public volatile int mMaxWriteRecords;
-    public volatile int mMinGCSleepTime;
-    public volatile int mMinSegmentsThreshold;
+    public volatile int mMediaStoreAuthorityAppId;
     public IPackageMoveObserver mMoveCallback;
     public String mMoveTargetUuid;
-    public final ObbActionHandler mObbActionHandler;
+    public int mNextAppFuseName;
+    public final Callbacks mObbActionHandler;
+    public final Map mObbMounts;
+    public final Map mObbPathToStateMap;
+    public final SparseArray mPackageMonitorsForUser;
+    public final AnonymousClass1 mPassReceiver;
     public volatile boolean mPassedLifetimeThresh;
     public PackageManagerInternal mPmInternal;
+    public final AnonymousClass1 mPolicyReceiver;
     public String mPrimaryStorageUuid;
-    public volatile float mSegmentReclaimWeight;
+    public final ArrayMap mRecords;
+    public volatile boolean mRemountCurrentUserVolumesOnUnlock;
+    public volatile boolean mSecureKeyguardShowing;
     public final AtomicFile mSettingsFile;
+    public final StorageManagerInternalImpl mStorageManagerInternal;
     public final StorageSessionController mStorageSessionController;
     public volatile int[] mStorageWriteRecords;
     public volatile IStoraged mStoraged;
-    public volatile int mTargetDirtyRatio;
+    public int[] mSystemUnlockedUsers;
+    public final Set mUidsWithLegacyExternalStorage;
+    public final Object mUnmountLock;
     public CountDownLatch mUnmountSignal;
+    public final AnonymousClass1 mUserReceiver;
+    public final SparseIntArray mUserSharesMediaWith;
     public volatile IVold mVold;
     public final boolean mVoldAppDataIsolationEnabled;
+    public final ArrayMap mVolumes;
     public final AtomicFile mWriteRecordFile;
+    public boolean preSDPolicy;
     public static final boolean LOCAL_LOGV = Log.isLoggable("StorageManagerService", 2);
     public static volatile int sSmartIdleMaintPeriod = 60;
     public static final Pattern KNOWN_APP_DIR_PATHS = Pattern.compile("(?i)(^/storage/[^/]+/(?:([0-9]+)/)?Android/(?:data|media|obb|sandbox)/)([^/]+)(/.*)?");
+    public static final List PASS_CLIENTS = Arrays.asList("com.samsung.android.smartsuggestions", "com.samsung.android.moneta", "com.samsung.sept.Security", "com.samsung.android.privateaccesstokens", "com.samsung.android.mcfds");
     public final Set mFuseMountedUser = new ArraySet();
     public final Set mCeStoragePreparedUsers = new ArraySet();
+    public volatile long mInternalStorageSize = 0;
     public volatile boolean mNeedGC = true;
-    public final Object mLock = LockGuard.installNewLock(4);
-    public WatchedLockedUsers mLocalUnlockedUsers = new WatchedLockedUsers();
-    public int[] mSystemUnlockedUsers = EmptyArray.INT;
-    public ArrayMap mDisks = new ArrayMap();
-    public final ArrayMap mVolumes = new ArrayMap();
-    public ArrayMap mRecords = new ArrayMap();
-    public ArrayMap mDiskScanLatches = new ArrayMap();
-    public final SparseArray mCloudMediaProviders = new SparseArray();
-    public volatile int mMediaStoreAuthorityAppId = -1;
-    public volatile int mDownloadsAuthorityAppId = -1;
-    public volatile int mExternalStorageAuthorityAppId = -1;
-    public volatile int mCurrentUserId = 0;
-    public volatile boolean mRemountCurrentUserVolumesOnUnlock = false;
-    public final Object mAppFuseLock = new Object();
-    public int mNextAppFuseName = 0;
-    public AppFuseBridge mAppFuseBridge = null;
-    public HashMap mIsMediaSharedWithParent = new HashMap();
-    public final HashSet mAsecMountSet = new HashSet();
-    public final Object mUnmountLock = new Object();
-    public final CountDownLatch mAsecsScanned = new CountDownLatch(1);
-    public boolean preSDPolicy = true;
-    public final SparseIntArray mUserSharesMediaWith = new SparseIntArray();
-    public volatile boolean mBootCompleted = false;
-    public volatile boolean mDaemonConnected = false;
-    public volatile boolean mSecureKeyguardShowing = true;
-    public final Map mObbMounts = new HashMap();
-    public final Map mObbPathToStateMap = new HashMap();
-    public final StorageManagerInternalImpl mStorageManagerInternal = new StorageManagerInternalImpl();
-    public final Set mUidsWithLegacyExternalStorage = new ArraySet();
-    public final SparseArray mPackageMonitorsForUser = new SparseArray();
-    public BroadcastReceiver mUserReceiver = new BroadcastReceiver() { // from class: com.android.server.StorageManagerService.1
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            int intExtra = intent.getIntExtra("android.intent.extra.user_handle", -1);
-            Preconditions.checkArgument(intExtra >= 0);
-            try {
-                if ("android.intent.action.USER_ADDED".equals(action)) {
-                    UserManager userManager = (UserManager) StorageManagerService.this.mContext.getSystemService(UserManager.class);
-                    int userSerialNumber = userManager.getUserSerialNumber(intExtra);
-                    UserInfo userInfo = userManager.getUserInfo(intExtra);
-                    if (userInfo.isCloneProfile()) {
-                        StorageManagerService.this.mVold.onUserAdded(intExtra, userSerialNumber, userInfo.profileGroupId);
-                        return;
-                    } else {
-                        StorageManagerService.this.mVold.onUserAdded(intExtra, userSerialNumber, -1);
-                        return;
+    public final Object mLock = LockGuard.installNewLock(4, false);
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.StorageManagerService$11, reason: invalid class name */
+    public final class AnonymousClass11 extends IVoldTaskListener.Stub {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ StorageManagerService this$0;
+        public final /* synthetic */ Runnable val$callback;
+
+        public /* synthetic */ AnonymousClass11(StorageManagerService storageManagerService, Runnable runnable, int i) {
+            this.$r8$classId = i;
+            this.this$0 = storageManagerService;
+            this.val$callback = runnable;
+        }
+
+        private final void onStatus$com$android$server$StorageManagerService$11(int i, PersistableBundle persistableBundle) {
+        }
+
+        private final void onStatus$com$android$server$StorageManagerService$12(int i, PersistableBundle persistableBundle) {
+        }
+
+        @Override // android.os.IVoldTaskListener
+        public final void onFinished(int i, PersistableBundle persistableBundle) {
+            switch (this.$r8$classId) {
+                case 0:
+                    HeimdAllFsService heimdAllFsService = this.this$0.mHeimdAllFs;
+                    if (heimdAllFsService != null) {
+                        heimdAllFsService.waitForFinished();
                     }
-                }
-                if ("android.intent.action.USER_REMOVED".equals(action)) {
-                    synchronized (StorageManagerService.this.mLock) {
-                        int size = StorageManagerService.this.mVolumes.size();
-                        for (int i = 0; i < size; i++) {
-                            VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.valueAt(i);
-                            if (volumeInfo.mountUserId == intExtra) {
-                                volumeInfo.mountUserId = -10000;
-                                StorageManagerService.this.mHandler.obtainMessage(8, volumeInfo).sendToTarget();
-                            }
-                        }
+                    this.this$0.mHeimdAllFs = null;
+                    if (this.val$callback != null) {
+                        BackgroundThread.getHandler().post(this.val$callback);
+                        break;
                     }
-                    StorageManagerService.this.mVold.onUserRemoved(intExtra);
-                }
-            } catch (Exception e) {
-                Slog.wtf("StorageManagerService", e);
+                    break;
+                default:
+                    HeimdAllFsService heimdAllFsService2 = this.this$0.mHeimdAllFs;
+                    if (heimdAllFsService2 != null) {
+                        heimdAllFsService2.waitForFinished();
+                    }
+                    this.this$0.mHeimdAllFs = null;
+                    if (this.val$callback != null) {
+                        BackgroundThread.getHandler().post(this.val$callback);
+                        break;
+                    }
+                    break;
             }
         }
-    };
-    public final IVoldListener mListener = new IVoldListener.Stub() { // from class: com.android.server.StorageManagerService.3
-        /* JADX WARN: Removed duplicated region for block: B:11:0x0035  */
-        /* JADX WARN: Removed duplicated region for block: B:19:0x003b A[Catch: all -> 0x004d, TryCatch #0 {, blocks: (B:4:0x0007, B:13:0x003d, B:14:0x004b, B:18:0x0038, B:19:0x003b, B:20:0x001e, B:23:0x0028), top: B:3:0x0007 }] */
-        @Override // android.os.IVoldListener
+
+        @Override // android.os.IVoldTaskListener
+        public final void onStatus(int i, PersistableBundle persistableBundle) {
+            int i2 = this.$r8$classId;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.StorageManagerService$15, reason: invalid class name */
+    public final class AnonymousClass15 extends IVoldTaskListener.Stub {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ Object val$result;
+
+        public /* synthetic */ AnonymousClass15(int i, Object obj) {
+            this.$r8$classId = i;
+            this.val$result = obj;
+        }
+
+        private final void onFinished$com$android$server$StorageManagerService$13(int i, PersistableBundle persistableBundle) {
+        }
+
+        private final void onStatus$com$android$server$StorageManagerService$15(int i, PersistableBundle persistableBundle) {
+        }
+
+        private final void onStatus$com$android$server$StorageManagerService$16(int i, PersistableBundle persistableBundle) {
+        }
+
+        @Override // android.os.IVoldTaskListener
+        public final void onFinished(int i, PersistableBundle persistableBundle) {
+            switch (this.$r8$classId) {
+                case 0:
+                    ((CompletableFuture) this.val$result).complete(persistableBundle);
+                    break;
+                case 1:
+                    ((CompletableFuture) this.val$result).complete(persistableBundle);
+                    break;
+            }
+        }
+
+        @Override // android.os.IVoldTaskListener
+        public final void onStatus(int i, PersistableBundle persistableBundle) {
+            switch (this.$r8$classId) {
+                case 0:
+                case 1:
+                    return;
+                default:
+                    synchronized (((StorageManagerService) this.val$result).mLock) {
+                        ((StorageManagerService) this.val$result).onMoveStatusLocked(i);
+                    }
+                    return;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.StorageManagerService$5, reason: invalid class name */
+    public final class AnonymousClass5 implements IBinder.DeathRecipient {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ StorageManagerService this$0;
+
+        public /* synthetic */ AnonymousClass5(StorageManagerService storageManagerService, int i) {
+            this.$r8$classId = i;
+            this.this$0 = storageManagerService;
+        }
+
+        @Override // android.os.IBinder.DeathRecipient
+        public final void binderDied() {
+            switch (this.$r8$classId) {
+                case 0:
+                    Slog.w("StorageManagerService", "storaged died; reconnecting");
+                    this.this$0.mStoraged = null;
+                    this.this$0.connectStoraged();
+                    break;
+                default:
+                    Slog.w("StorageManagerService", "vold died; reconnecting");
+                    this.this$0.mVold = null;
+                    this.this$0.connectVold();
+                    break;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.StorageManagerService$9, reason: invalid class name */
+    public final class AnonymousClass9 extends IVoldTaskListener.Stub {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ StorageManagerService this$0;
+        public final /* synthetic */ IVoldTaskListener val$listener;
+
+        public /* synthetic */ AnonymousClass9(StorageManagerService storageManagerService, IVoldTaskListener iVoldTaskListener, int i) {
+            this.$r8$classId = i;
+            this.this$0 = storageManagerService;
+            this.val$listener = iVoldTaskListener;
+        }
+
+        @Override // android.os.IVoldTaskListener
+        public final void onFinished(int i, PersistableBundle persistableBundle) {
+            switch (this.$r8$classId) {
+                case 0:
+                    StorageManagerService.m88$$Nest$mdispatchOnFinished(this.this$0, this.val$listener, i, persistableBundle);
+                    String string = persistableBundle.getString("path");
+                    String string2 = persistableBundle.getString("ident");
+                    long j = persistableBundle.getLong("create");
+                    long j2 = persistableBundle.getLong("run");
+                    long j3 = persistableBundle.getLong("destroy");
+                    DropBoxManager dropBoxManager = (DropBoxManager) this.this$0.mContext.getSystemService(DropBoxManager.class);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(StorageManagerService.m93$$Nest$mscrubPath(this.this$0, string));
+                    sb.append(" ");
+                    sb.append(string2);
+                    BootReceiver$$ExternalSyntheticOutline0.m(sb, " ", j, " ");
+                    sb.append(j2);
+                    sb.append(" ");
+                    sb.append(j3);
+                    dropBoxManager.addText("storage_benchmark", sb.toString());
+                    synchronized (this.this$0.mLock) {
+                        try {
+                            VolumeRecord findRecordForPath = this.this$0.findRecordForPath(string);
+                            if (findRecordForPath != null) {
+                                findRecordForPath.lastBenchMillis = System.currentTimeMillis();
+                                this.this$0.writeSettingsLocked();
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
+                    return;
+                default:
+                    StorageManagerService.m88$$Nest$mdispatchOnFinished(this.this$0, this.val$listener, i, persistableBundle);
+                    return;
+            }
+        }
+
+        @Override // android.os.IVoldTaskListener
+        public final void onStatus(int i, PersistableBundle persistableBundle) {
+            switch (this.$r8$classId) {
+                case 0:
+                    StorageManagerService.m89$$Nest$mdispatchOnStatus(this.this$0, this.val$listener, i, persistableBundle);
+                    return;
+                default:
+                    StorageManagerService.m89$$Nest$mdispatchOnStatus(this.this$0, this.val$listener, i, persistableBundle);
+                    if (i != 0) {
+                        return;
+                    }
+                    String string = persistableBundle.getString("path");
+                    long j = persistableBundle.getLong("bytes");
+                    long j2 = persistableBundle.getLong("time");
+                    ((DropBoxManager) this.this$0.mContext.getSystemService(DropBoxManager.class)).addText("storage_trim", StorageManagerService.m93$$Nest$mscrubPath(this.this$0, string) + " " + j + " " + j2);
+                    synchronized (this.this$0.mLock) {
+                        try {
+                            VolumeRecord findRecordForPath = this.this$0.findRecordForPath(string);
+                            if (findRecordForPath != null) {
+                                findRecordForPath.lastTrimMillis = System.currentTimeMillis();
+                                this.this$0.writeSettingsLocked();
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
+                    return;
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AppFuseMountScope extends AppFuseBridge.MountScope {
+        public boolean mMounted;
+
+        public AppFuseMountScope(int i, int i2) {
+            super(i, i2);
+            this.mMounted = false;
+        }
+
+        @Override // java.lang.AutoCloseable
+        public final void close() {
+            StorageManagerService.this.getClass();
+            StorageManagerService.extendWatchdogTimeout("#close might be slow");
+            if (this.mMounted) {
+                BackgroundThread.getHandler().post(new StorageManagerService$$ExternalSyntheticLambda1(2, this));
+                this.mMounted = false;
+            }
+        }
+
+        @Override // com.android.server.storage.AppFuseBridge.MountScope
+        public final ParcelFileDescriptor open() {
+            StorageManagerService.this.getClass();
+            StorageManagerService.extendWatchdogTimeout("#open might be slow");
+            try {
+                FileDescriptor mountAppFuse = StorageManagerService.this.mVold.mountAppFuse(this.uid, this.mountId);
+                this.mMounted = true;
+                return new ParcelFileDescriptor(mountAppFuse);
+            } catch (Exception e) {
+                throw new AppFuseMountException("Failed to mount", e);
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Callbacks extends Handler {
+        public static final /* synthetic */ int $r8$clinit = 0;
+        public final /* synthetic */ int $r8$classId;
+        public final Object mCallbacks;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public Callbacks(Looper looper) {
+            super(looper);
+            this.$r8$classId = 0;
+            this.mCallbacks = new RemoteCallbackList();
+        }
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public /* synthetic */ Callbacks(StorageManagerService storageManagerService, Looper looper, int i) {
+            super(looper);
+            this.$r8$classId = i;
+            this.mCallbacks = storageManagerService;
+        }
+
+        private final void handleMessage$com$android$server$StorageManagerService$ObbActionHandler(Message message) {
+            Iterator it;
+            ObbState obbState;
+            int i = message.what;
+            if (i == 1) {
+                ObbAction obbAction = (ObbAction) message.obj;
+                obbAction.getClass();
+                try {
+                    obbAction.handleExecute();
+                    return;
+                } catch (ObbException e) {
+                    Slog.w("StorageManagerService", e);
+                    obbAction.notifyObbStateChange(e.status);
+                    return;
+                }
+            }
+            if (i != 2) {
+                return;
+            }
+            String str = (String) message.obj;
+            synchronized (((StorageManagerService) this.mCallbacks).mObbMounts) {
+                try {
+                    ArrayList arrayList = new ArrayList();
+                    for (ObbState obbState2 : ((HashMap) ((StorageManagerService) this.mCallbacks).mObbPathToStateMap).values()) {
+                        if (obbState2.canonicalPath.startsWith(str)) {
+                            arrayList.add(obbState2);
+                        }
+                    }
+                    it = arrayList.iterator();
+                } catch (RemoteException unused) {
+                    Slog.i("StorageManagerService", "Couldn't send unmount notification for  OBB: " + obbState.rawPath);
+                } finally {
+                }
+                while (it.hasNext()) {
+                    obbState = (ObbState) it.next();
+                    StorageManagerService.m92$$Nest$mremoveObbStateLocked((StorageManagerService) this.mCallbacks, obbState);
+                    obbState.token.onObbResult(obbState.rawPath, obbState.nonce, 2);
+                }
+            }
+        }
+
+        public static void invokeCallback(IStorageEventListener iStorageEventListener, int i, SomeArgs someArgs) {
+            switch (i) {
+                case 1:
+                    iStorageEventListener.onStorageStateChanged((String) someArgs.arg1, (String) someArgs.arg2, (String) someArgs.arg3);
+                    break;
+                case 2:
+                    iStorageEventListener.onVolumeStateChanged((VolumeInfo) someArgs.arg1, someArgs.argi2, someArgs.argi3);
+                    break;
+                case 3:
+                    iStorageEventListener.onVolumeRecordChanged((VolumeRecord) someArgs.arg1);
+                    break;
+                case 4:
+                    iStorageEventListener.onVolumeForgotten((String) someArgs.arg1);
+                    break;
+                case 5:
+                    iStorageEventListener.onDiskScanned((DiskInfo) someArgs.arg1, someArgs.argi2);
+                    break;
+                case 6:
+                    iStorageEventListener.onDiskDestroyed((DiskInfo) someArgs.arg1);
+                    break;
+            }
+        }
+
+        /* JADX WARN: Code restructure failed: missing block: B:126:0x021e, code lost:
+        
+            if (r0.isUsb() != false) goto L111;
+         */
+        @Override // android.os.Handler
         /*
             Code decompiled incorrectly, please refer to instructions dump.
             To view partially-correct code enable 'Show inconsistent code' option in preferences
         */
-        public void onDiskCreated(java.lang.String r6, int r7) {
+        public final void handleMessage(android.os.Message r18) {
             /*
-                r5 = this;
-                com.android.server.StorageManagerService r0 = com.android.server.StorageManagerService.this
-                java.lang.Object r0 = com.android.server.StorageManagerService.m597$$Nest$fgetmLock(r0)
-                monitor-enter(r0)
-                java.lang.String r1 = "persist.sys.adoptable"
-                java.lang.String r1 = android.os.SystemProperties.get(r1)     // Catch: java.lang.Throwable -> L4d
-                int r2 = r1.hashCode()     // Catch: java.lang.Throwable -> L4d
-                r3 = 464944051(0x1bb67bb3, float:3.0189313E-22)
-                r4 = 1
-                if (r2 == r3) goto L28
-                r3 = 1528363547(0x5b18fa1b, float:4.305919E16)
-                if (r2 == r3) goto L1e
-                goto L32
-            L1e:
-                java.lang.String r2 = "force_off"
-                boolean r1 = r1.equals(r2)     // Catch: java.lang.Throwable -> L4d
-                if (r1 == 0) goto L32
-                r1 = r4
-                goto L33
-            L28:
-                java.lang.String r2 = "force_on"
-                boolean r1 = r1.equals(r2)     // Catch: java.lang.Throwable -> L4d
-                if (r1 == 0) goto L32
-                r1 = 0
-                goto L33
-            L32:
-                r1 = -1
-            L33:
-                if (r1 == 0) goto L3b
-                if (r1 == r4) goto L38
-                goto L3d
-            L38:
-                r7 = r7 & (-2)
-                goto L3d
-            L3b:
-                r7 = r7 | 1
-            L3d:
-                com.android.server.StorageManagerService r5 = com.android.server.StorageManagerService.this     // Catch: java.lang.Throwable -> L4d
-                android.util.ArrayMap r5 = com.android.server.StorageManagerService.m588$$Nest$fgetmDisks(r5)     // Catch: java.lang.Throwable -> L4d
-                android.os.storage.DiskInfo r1 = new android.os.storage.DiskInfo     // Catch: java.lang.Throwable -> L4d
-                r1.<init>(r6, r7)     // Catch: java.lang.Throwable -> L4d
-                r5.put(r6, r1)     // Catch: java.lang.Throwable -> L4d
-                monitor-exit(r0)     // Catch: java.lang.Throwable -> L4d
-                return
-            L4d:
-                r5 = move-exception
-                monitor-exit(r0)     // Catch: java.lang.Throwable -> L4d
-                throw r5
+                Method dump skipped, instructions count: 1804
+                To view this dump change 'Code comments level' option to 'DEBUG'
             */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.AnonymousClass3.onDiskCreated(java.lang.String, int):void");
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.Callbacks.handleMessage(android.os.Message):void");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ExternalStorageServiceAnrController implements AnrController {
+        public ExternalStorageServiceAnrController() {
         }
 
-        @Override // android.os.IVoldListener
-        public void onDiskScanned(String str) {
-            synchronized (StorageManagerService.this.mLock) {
-                DiskInfo diskInfo = (DiskInfo) StorageManagerService.this.mDisks.get(str);
-                if (diskInfo != null) {
-                    StorageManagerService.this.onDiskScannedLocked(diskInfo);
-                }
+        public final long getAnrDelayMillis(String str, int i) {
+            if (!StorageManagerService.this.isAppIoBlocked(i)) {
+                return 0L;
             }
+            int i2 = DeviceConfig.getInt("storage_native_boot", "anr_delay_millis", 5000);
+            Slog.v("StorageManagerService", AppStateTrackerImpl$MyHandler$$ExternalSyntheticOutline0.m(i2, "getAnrDelayMillis for ", str, ". ", "ms"));
+            return i2;
         }
 
-        @Override // android.os.IVoldListener
-        public void onDiskMetadataChanged(String str, long j, String str2, String str3) {
-            synchronized (StorageManagerService.this.mLock) {
-                DiskInfo diskInfo = (DiskInfo) StorageManagerService.this.mDisks.get(str);
-                if (diskInfo != null) {
-                    diskInfo.size = j;
-                    diskInfo.label = str2;
-                    diskInfo.sysPath = str3;
-                }
+        public final boolean onAnrDelayCompleted(String str, int i) {
+            if (StorageManagerService.this.isAppIoBlocked(i)) {
+                Slog.d("StorageManagerService", "onAnrDelayCompleted for " + str + ". Showing ANR dialog...");
+                return true;
             }
+            Slog.d("StorageManagerService", "onAnrDelayCompleted for " + str + ". Skipping ANR dialog...");
+            return false;
         }
 
-        @Override // android.os.IVoldListener
-        public void onDiskDestroyed(String str) {
-            synchronized (StorageManagerService.this.mLock) {
-                DiskInfo diskInfo = (DiskInfo) StorageManagerService.this.mDisks.remove(str);
-                if (diskInfo != null) {
-                    StorageManagerService.this.mCallbacks.notifyDiskDestroyed(diskInfo);
-                }
-            }
-        }
-
-        @Override // android.os.IVoldListener
-        public void onVolumeCreated(String str, int i, String str2, String str3, int i2) {
-            synchronized (StorageManagerService.this.mLock) {
-                VolumeInfo volumeInfo = new VolumeInfo(str, i, (DiskInfo) StorageManagerService.this.mDisks.get(str2), str3);
-                volumeInfo.mountUserId = i2;
-                StorageManagerService.this.mVolumes.put(str, volumeInfo);
-                StorageManagerService.this.onVolumeCreatedLocked(volumeInfo);
-            }
-        }
-
-        @Override // android.os.IVoldListener
-        public void onVolumeStateChanged(String str, int i) {
-            synchronized (StorageManagerService.this.mLock) {
-                VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.get(str);
-                if (volumeInfo != null) {
-                    int i2 = volumeInfo.state;
-                    volumeInfo.state = i;
-                    VolumeInfo volumeInfo2 = new VolumeInfo(volumeInfo);
-                    SomeArgs obtain = SomeArgs.obtain();
-                    obtain.arg1 = volumeInfo2;
-                    obtain.argi1 = i2;
-                    obtain.argi2 = i;
-                    StorageManagerService.this.mHandler.obtainMessage(15, obtain).sendToTarget();
-                    StorageManagerService.this.onVolumeStateChangedLocked(volumeInfo2, i);
-                }
-            }
-        }
-
-        @Override // android.os.IVoldListener
-        public void onVolumeMetadataChanged(String str, String str2, String str3, String str4) {
-            synchronized (StorageManagerService.this.mLock) {
-                VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.get(str);
-                if (volumeInfo != null) {
-                    volumeInfo.fsType = str2;
-                    volumeInfo.fsUuid = str3;
-                    volumeInfo.fsLabel = str4;
-                }
-            }
-        }
-
-        @Override // android.os.IVoldListener
-        public void onVolumePathChanged(String str, String str2) {
-            synchronized (StorageManagerService.this.mLock) {
-                VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.get(str);
-                if (volumeInfo != null) {
-                    volumeInfo.path = str2;
-                }
-            }
-        }
-
-        @Override // android.os.IVoldListener
-        public void onVolumeInternalPathChanged(String str, String str2) {
-            synchronized (StorageManagerService.this.mLock) {
-                VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.get(str);
-                if (volumeInfo != null) {
-                    volumeInfo.internalPath = str2;
-                }
-            }
-        }
-
-        @Override // android.os.IVoldListener
-        public void onVolumeDestroyed(String str) {
-            VolumeInfo volumeInfo;
-            synchronized (StorageManagerService.this.mLock) {
-                volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.remove(str);
-            }
-            if (volumeInfo != null) {
-                StorageManagerService.this.mStorageSessionController.onVolumeRemove(volumeInfo);
+        public final void onAnrDelayStarted(String str, int i) {
+            if (StorageManagerService.this.isAppIoBlocked(i) && DeviceConfig.getBoolean("storage_native_boot", "anr_delay_notify_external_storage_service", true)) {
+                Slog.d("StorageManagerService", "onAnrDelayStarted for " + str + ". Notifying external storage service");
                 try {
-                    if (volumeInfo.type == 1) {
-                        StorageManagerService.this.mInstaller.onPrivateVolumeRemoved(volumeInfo.getFsUuid());
-                    }
-                } catch (Installer.InstallerException e) {
-                    Slog.i("StorageManagerService", "Failed when private volume unmounted " + volumeInfo, e);
+                    StorageManagerService.this.mStorageSessionController.notifyAnrDelayStarted(i, str);
+                } catch (StorageSessionController.ExternalStorageServiceException e) {
+                    Slog.e("StorageManagerService", "Failed to notify ANR delay started for " + str, e);
                 }
             }
         }
-
-        @Override // android.os.IVoldListener
-        public void sendVoldMessage(String str) {
-            Intent intent = new Intent("com.samsung.intent.action.EXTERNAL_STORAGE_WARNING_SEC");
-            if (str == null) {
-                Slog.d("StorageManagerService", "Intent[" + intent + "] cannot be sent");
-                return;
-            }
-            intent.putExtra("message", str);
-            if (("BAD_REMOVAL_SDCARD".equals(str) && StorageManagerService.this.isExtSDCardTrayRemoved()) || "BAD_REMOVAL_USB".equals(str) || "REBOOT".equals(str)) {
-                StorageManagerService.this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
-                Slog.d("StorageManagerService", "[" + str + "] Bad Removal broadcasting " + intent + " extras: " + intent.getExtras());
-                return;
-            }
-            Slog.d("StorageManagerService", "Don't send the Intent[" + intent + "] extras: " + intent.getExtras());
-        }
-
-        @Override // android.os.IVoldListener
-        public void onEncryptionStateChanged(String str, String str2, String str3) {
-            synchronized (StorageManagerService.this.mLock) {
-                Slog.d("StorageManagerService", "onEncryptionStateChanged state = " + str2 + ", type : " + str3);
-                if (((VolumeInfo) StorageManagerService.this.mVolumes.get(str)) != null) {
-                    if ("encryptable".equals(str2)) {
-                        SemSdCardEncryption semSdCardEncryption = new SemSdCardEncryption(StorageManagerService.this.mContext);
-                        PersistableBundle persistableBundle = new PersistableBundle();
-                        persistableBundle.putInt("status", 0);
-                        persistableBundle.putString("description", str3);
-                        try {
-                            semSdCardEncryption.getListener().onStatus(692, persistableBundle);
-                        } catch (RemoteException e) {
-                            Slog.e("StorageManagerService", "failed to send onStatus()", e);
-                        }
-                        str3 = "block";
-                    }
-                    SystemProperties.set("sec.fle.encryption.status", str2);
-                    SystemProperties.set("sec.vold.ext_encrypted_type", str3);
-                    Slog.d("StorageManagerService", "onEncryptionStateChanged status updated ");
-                }
-            }
-        }
-    };
-    public DirEncryptListner mDirEncryptListner = null;
-    public SemSdCardEncryption mDem = null;
-    public BroadcastReceiver mRestartSdcardBadremoveReceiver = new AnonymousClass16();
-    public BroadcastReceiver mPolicyReceiver = new BroadcastReceiver() { // from class: com.android.server.StorageManagerService.17
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            Slog.d("StorageManagerService", "mPolicyReceiver :: ");
-            StorageManagerService storageManagerService = StorageManagerService.this;
-            storageManagerService.applyCurrentSdCardPolicy(storageManagerService.isMountDisallowedByEAS(true));
-        }
-    };
-
-    @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
-    public void onAwakeStateChanged(boolean z) {
     }
 
-    public final boolean prepareSmartIdleMaint() {
-        return false;
-    }
-
-    /* loaded from: classes.dex */
-    public class Lifecycle extends SystemService {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Lifecycle extends SystemService {
         public StorageManagerService mStorageManagerService;
 
         public Lifecycle(Context context) {
             super(context);
         }
 
-        /* JADX WARN: Multi-variable type inference failed */
-        /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.StorageManagerService, android.os.IBinder] */
         @Override // com.android.server.SystemService
-        public void onStart() {
+        public final void onBootPhase(int i) {
+            if (i != 500) {
+                if (i == 550) {
+                    StorageManagerService storageManagerService = this.mStorageManagerService;
+                    StorageManagerService storageManagerService2 = StorageManagerService.sSelf;
+                    storageManagerService.getClass();
+                    ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class)).registerScreenObserver(storageManagerService);
+                    storageManagerService.mHandler.obtainMessage(1).sendToTarget();
+                    return;
+                }
+                if (i == 1000) {
+                    StorageManagerService storageManagerService3 = this.mStorageManagerService;
+                    storageManagerService3.mBootCompleted = true;
+                    storageManagerService3.mHandler.obtainMessage(13).sendToTarget();
+                    return;
+                }
+                return;
+            }
+            StorageManagerService storageManagerService4 = this.mStorageManagerService;
+            StorageManagerService storageManagerService5 = StorageManagerService.sSelf;
+            storageManagerService4.getClass();
+            storageManagerService4.mPmInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
+            storageManagerService4.mIPackageManager = IPackageManager.Stub.asInterface(ServiceManager.getService("package"));
+            storageManagerService4.mIAppOpsService = IAppOpsService.Stub.asInterface(ServiceManager.getService("appops"));
+            PackageManagerInternal packageManagerInternal = storageManagerService4.mPmInternal;
+            ProviderInfo resolveContentProvider = ((PackageManagerService.PackageManagerInternalImpl) packageManagerInternal).mService.snapshotComputer().resolveContentProvider(UserHandle.getUserId(0), 1000, 786432L, "media");
+            if (resolveContentProvider != null) {
+                storageManagerService4.mMediaStoreAuthorityAppId = UserHandle.getAppId(resolveContentProvider.applicationInfo.uid);
+                StorageManagerService.sMediaStoreAuthorityProcessName = resolveContentProvider.applicationInfo.processName;
+            }
+            PackageManagerInternal packageManagerInternal2 = storageManagerService4.mPmInternal;
+            ProviderInfo resolveContentProvider2 = ((PackageManagerService.PackageManagerInternalImpl) packageManagerInternal2).mService.snapshotComputer().resolveContentProvider(UserHandle.getUserId(0), 1000, 786432L, "downloads");
+            if (resolveContentProvider2 != null) {
+                storageManagerService4.mDownloadsAuthorityAppId = UserHandle.getAppId(resolveContentProvider2.applicationInfo.uid);
+            }
+            PackageManagerInternal packageManagerInternal3 = storageManagerService4.mPmInternal;
+            ProviderInfo resolveContentProvider3 = ((PackageManagerService.PackageManagerInternalImpl) packageManagerInternal3).mService.snapshotComputer().resolveContentProvider(UserHandle.getUserId(0), 1000, 786432L, "com.android.externalstorage.documents");
+            if (resolveContentProvider3 != null) {
+                storageManagerService4.mExternalStorageAuthorityAppId = UserHandle.getAppId(resolveContentProvider3.applicationInfo.uid);
+            }
+        }
+
+        /* JADX WARN: Multi-variable type inference failed */
+        /* JADX WARN: Type inference failed for: r0v0, types: [android.os.IBinder, com.android.server.StorageManagerService] */
+        @Override // com.android.server.SystemService
+        public final void onStart() {
             ?? storageManagerService = new StorageManagerService(getContext());
             this.mStorageManagerService = storageManagerService;
             publishBinderService("mount", storageManagerService);
-            this.mStorageManagerService.start();
+            StorageManagerService storageManagerService2 = this.mStorageManagerService;
+            storageManagerService2.connectStoraged();
+            storageManagerService2.connectVold();
         }
 
         @Override // com.android.server.SystemService
-        public void onBootPhase(int i) {
-            if (i == 500) {
-                this.mStorageManagerService.servicesReady();
-            } else if (i == 550) {
-                this.mStorageManagerService.systemReady();
-            } else if (i == 1000) {
-                this.mStorageManagerService.bootCompleted();
+        public final void onUserStarting(SystemService.TargetUser targetUser) {
+            final StorageManagerService storageManagerService = this.mStorageManagerService;
+            UserHandle userHandle = targetUser.getUserHandle();
+            StorageManagerService storageManagerService2 = StorageManagerService.sSelf;
+            storageManagerService.getClass();
+            int identifier = userHandle.getIdentifier();
+            for (ApplicationInfo applicationInfo : storageManagerService.mPmInternal.getInstalledApplications(identifier, Process.myUid(), 4988928L)) {
+                try {
+                    storageManagerService.updateLegacyStorageApps(applicationInfo.uid, applicationInfo.packageName, storageManagerService.mIAppOpsService.checkOperation(87, applicationInfo.uid, applicationInfo.packageName) == 0);
+                } catch (RemoteException e) {
+                    Slog.e("StorageManagerService", "Failed to check legacy op for package " + applicationInfo.packageName, e);
+                }
+            }
+            if (storageManagerService.mPackageMonitorsForUser.get(identifier) == null) {
+                PackageMonitor packageMonitor = new PackageMonitor() { // from class: com.android.server.StorageManagerService.7
+                    public final void onPackageRemoved(String str, int i) {
+                        StorageManagerService.this.updateLegacyStorageApps(i, str, false);
+                    }
+                };
+                packageMonitor.register(storageManagerService.mContext, userHandle, storageManagerService.mHandler);
+                storageManagerService.mPackageMonitorsForUser.put(identifier, packageMonitor);
+            } else {
+                Slog.w("StorageManagerService", "PackageMonitor is already registered for: " + identifier);
             }
         }
 
         @Override // com.android.server.SystemService
-        public void onUserSwitching(SystemService.TargetUser targetUser, SystemService.TargetUser targetUser2) {
+        public final void onUserStopped(SystemService.TargetUser targetUser) {
+            StorageManagerService storageManagerService = this.mStorageManagerService;
+            int userIdentifier = targetUser.getUserIdentifier();
+            StorageManagerService storageManagerService2 = StorageManagerService.sSelf;
+            storageManagerService.getClass();
+            Slog.d("StorageManagerService", "onUserStopped " + userIdentifier);
+            StorageManagerService.extendWatchdogTimeout("#onUserStopped might be slow");
+            try {
+                storageManagerService.mVold.onUserStopped(userIdentifier);
+                storageManagerService.mStoraged.onUserStopped(userIdentifier);
+            } catch (Exception e) {
+                Slog.wtf("StorageManagerService", e);
+            }
+            synchronized (storageManagerService.mLock) {
+                storageManagerService.mSystemUnlockedUsers = ArrayUtils.removeInt(storageManagerService.mSystemUnlockedUsers, userIdentifier);
+            }
+        }
+
+        @Override // com.android.server.SystemService
+        public final void onUserStopping(SystemService.TargetUser targetUser) {
+            StorageManagerService storageManagerService = this.mStorageManagerService;
+            int userIdentifier = targetUser.getUserIdentifier();
+            StorageManagerService storageManagerService2 = StorageManagerService.sSelf;
+            storageManagerService.getClass();
+            Slog.i("StorageManagerService", "onUserStopping " + userIdentifier);
+            try {
+                storageManagerService.mStorageSessionController.onUserStopping(userIdentifier);
+            } catch (Exception e) {
+                Slog.wtf("StorageManagerService", e);
+            }
+            PackageMonitor packageMonitor = (PackageMonitor) storageManagerService.mPackageMonitorsForUser.removeReturnOld(userIdentifier);
+            if (packageMonitor != null) {
+                packageMonitor.unregister();
+            }
+        }
+
+        @Override // com.android.server.SystemService
+        public final void onUserSwitching(SystemService.TargetUser targetUser, SystemService.TargetUser targetUser2) {
             int userIdentifier = targetUser2.getUserIdentifier();
             this.mStorageManagerService.mCurrentUserId = userIdentifier;
             if (((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).isUserUnlocked(userIdentifier)) {
@@ -527,168 +750,143 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
         }
 
         @Override // com.android.server.SystemService
-        public void onUserUnlocking(SystemService.TargetUser targetUser) {
-            this.mStorageManagerService.onUnlockUser(targetUser.getUserIdentifier());
-        }
-
-        @Override // com.android.server.SystemService
-        public void onUserStopped(SystemService.TargetUser targetUser) {
-            this.mStorageManagerService.onCleanupUser(targetUser.getUserIdentifier());
-        }
-
-        @Override // com.android.server.SystemService
-        public void onUserStopping(SystemService.TargetUser targetUser) {
-            this.mStorageManagerService.onStopUser(targetUser.getUserIdentifier());
-        }
-
-        @Override // com.android.server.SystemService
-        public void onUserStarting(SystemService.TargetUser targetUser) {
-            this.mStorageManagerService.snapshotAndMonitorLegacyStorageAppOp(targetUser.getUserHandle());
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class WatchedLockedUsers {
-        public int[] users = EmptyArray.INT;
-
-        public WatchedLockedUsers() {
-            invalidateIsUserUnlockedCache();
-        }
-
-        public void append(int i) {
-            this.users = ArrayUtils.appendInt(this.users, i);
-            invalidateIsUserUnlockedCache();
-        }
-
-        public void appendAll(int[] iArr) {
-            for (int i : iArr) {
-                this.users = ArrayUtils.appendInt(this.users, i);
-            }
-            invalidateIsUserUnlockedCache();
-        }
-
-        public void remove(int i) {
-            this.users = ArrayUtils.removeInt(this.users, i);
-            invalidateIsUserUnlockedCache();
-        }
-
-        public boolean contains(int i) {
-            return ArrayUtils.contains(this.users, i);
-        }
-
-        public String toString() {
-            return Arrays.toString(this.users);
-        }
-
-        public final void invalidateIsUserUnlockedCache() {
-            UserManager.invalidateIsUserUnlockedCache();
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class PackageInstalledMap {
-        public final boolean external;
-        public final String id;
-
-        public PackageInstalledMap(String str, boolean z) {
-            this.id = str;
-            this.external = z;
-        }
-
-        public PackageInstalledMap(String str) {
-            this.id = str;
-            this.external = true;
-        }
-
-        public boolean equals(Object obj) {
-            if (obj instanceof PackageInstalledMap) {
-                return this.id.equals(((PackageInstalledMap) obj).id);
-            }
-            return false;
-        }
-
-        public int hashCode() {
-            return this.id.hashCode();
-        }
-    }
-
-    public final VolumeInfo findVolumeByIdOrThrow(String str) {
-        synchronized (this.mLock) {
-            VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.get(str);
-            if (volumeInfo != null) {
-                return volumeInfo;
-            }
-            throw new IllegalArgumentException("No volume found for ID " + str);
-        }
-    }
-
-    public final String findVolumeIdForPathOrThrow(String str) {
-        synchronized (this.mLock) {
-            for (int i = 0; i < this.mVolumes.size(); i++) {
-                VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i);
-                String str2 = volumeInfo.path;
-                if (str2 != null && str.startsWith(str2)) {
-                    return volumeInfo.id;
+        public final void onUserUnlocking(SystemService.TargetUser targetUser) {
+            StorageManagerService storageManagerService = this.mStorageManagerService;
+            int userIdentifier = targetUser.getUserIdentifier();
+            StorageManagerService storageManagerService2 = StorageManagerService.sSelf;
+            storageManagerService.getClass();
+            Slog.d("StorageManagerService", "onUserUnlocking: userId=" + userIdentifier);
+            if (userIdentifier != 0) {
+                try {
+                    UserManager userManager = (UserManager) storageManagerService.mContext.createPackageContextAsUser("system", 0, UserHandle.of(userIdentifier)).getSystemService(UserManager.class);
+                    if (userManager != null) {
+                        storageManagerService.mIsMediaSharedWithParent.put(Integer.valueOf(userIdentifier), Boolean.valueOf(userManager.isMediaSharedWithParent()));
+                    } else {
+                        Slog.d("StorageManagerService", "onUserUnlocking: um is null, so just put userId(" + userIdentifier + ") with false");
+                        storageManagerService.mIsMediaSharedWithParent.put(Integer.valueOf(userIdentifier), Boolean.FALSE);
+                    }
+                    if (userManager != null && userManager.isMediaSharedWithParent()) {
+                        int i = userManager.getProfileParent(userIdentifier).id;
+                        storageManagerService.mUserSharesMediaWith.put(userIdentifier, i);
+                        storageManagerService.mUserSharesMediaWith.put(i, userIdentifier);
+                    } else if (SemDualAppManager.isDualAppId(userIdentifier)) {
+                        storageManagerService.mUserSharesMediaWith.put(userIdentifier, 0);
+                        storageManagerService.mUserSharesMediaWith.put(0, userIdentifier);
+                    }
+                } catch (PackageManager.NameNotFoundException unused) {
+                    ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m(userIdentifier, "Failed to create user context for user ", "StorageManagerService");
                 }
             }
-            throw new IllegalArgumentException("No volume found for path " + str);
+            try {
+                storageManagerService.mStorageSessionController.onUnlockUser(userIdentifier);
+                storageManagerService.mVold.onUserStarted(userIdentifier);
+                storageManagerService.mStoraged.onUserStarted(userIdentifier);
+            } catch (Exception e) {
+                Slog.wtf("StorageManagerService", e);
+            }
+            storageManagerService.mHandler.obtainMessage(14, userIdentifier, 0).sendToTarget();
+            if (storageManagerService.mRemountCurrentUserVolumesOnUnlock && userIdentifier == storageManagerService.mCurrentUserId) {
+                storageManagerService.maybeRemountVolumes(userIdentifier);
+                storageManagerService.mRemountCurrentUserVolumesOnUnlock = false;
+            }
         }
     }
 
-    public final VolumeRecord findRecordForPath(String str) {
-        synchronized (this.mLock) {
-            for (int i = 0; i < this.mVolumes.size(); i++) {
-                VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i);
-                String str2 = volumeInfo.path;
-                if (str2 != null && str.startsWith(str2)) {
-                    return (VolumeRecord) this.mRecords.get(volumeInfo.fsUuid);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MountObbAction extends ObbAction {
+        public final int mCallingUid;
+        public final ObbInfo mObbInfo;
+
+        public MountObbAction(ObbState obbState, int i, ObbInfo obbInfo) {
+            super(obbState);
+            this.mCallingUid = i;
+            this.mObbInfo = obbInfo;
+        }
+
+        @Override // com.android.server.StorageManagerService.ObbAction
+        public final void handleExecute() {
+            boolean isSameApp;
+            boolean containsKey;
+            StorageManagerService.this.warnOnNotMounted();
+            StorageManagerService storageManagerService = StorageManagerService.this;
+            String str = this.mObbInfo.packageName;
+            int i = this.mCallingUid;
+            if (i == 1000) {
+                storageManagerService.getClass();
+                isSameApp = true;
+            } else {
+                isSameApp = ((PackageManagerService.PackageManagerInternalImpl) storageManagerService.mPmInternal).isSameApp(i, UserHandle.getUserId(i), 0L, str);
+            }
+            if (!isSameApp) {
+                throw new ObbException(25, "Denied attempt to mount OBB " + this.mObbInfo.filename + " which is owned by " + this.mObbInfo.packageName);
+            }
+            synchronized (StorageManagerService.this.mObbMounts) {
+                containsKey = ((HashMap) StorageManagerService.this.mObbPathToStateMap).containsKey(this.mObbState.rawPath);
+            }
+            if (containsKey) {
+                throw new ObbException(24, "Attempt to mount OBB which is already mounted: " + this.mObbInfo.filename);
+            }
+            try {
+                ObbState obbState = this.mObbState;
+                IVold iVold = StorageManagerService.this.mVold;
+                ObbState obbState2 = this.mObbState;
+                obbState.volId = iVold.createObb(obbState2.canonicalPath, obbState2.ownerGid);
+                StorageManagerService.this.mVold.mount(this.mObbState.volId, 0, -1, null);
+                synchronized (StorageManagerService.this.mObbMounts) {
+                    StorageManagerService.m86$$Nest$maddObbStateLocked(StorageManagerService.this, this.mObbState);
                 }
-            }
-            return null;
-        }
-    }
-
-    public final String scrubPath(String str) {
-        if (str.startsWith(Environment.getDataDirectory().getAbsolutePath())) {
-            return "internal";
-        }
-        VolumeRecord findRecordForPath = findRecordForPath(str);
-        if (findRecordForPath == null || findRecordForPath.createdMillis == 0) {
-            return "unknown";
-        }
-        return "ext:" + ((int) ((System.currentTimeMillis() - findRecordForPath.createdMillis) / 604800000)) + "w";
-    }
-
-    public final VolumeInfo findStorageForUuidAsUser(String str, int i) {
-        StorageManager storageManager = (StorageManager) this.mContext.getSystemService(StorageManager.class);
-        if (Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, str)) {
-            return storageManager.findVolumeById("emulated;" + i);
-        }
-        if ("primary_physical".equals(str)) {
-            return storageManager.getPrimaryPhysicalVolume();
-        }
-        VolumeInfo findVolumeByUuid = storageManager.findVolumeByUuid(str);
-        if (findVolumeByUuid == null) {
-            Slog.w("StorageManagerService", "findStorageForUuidAsUser cannot find volumeUuid:" + str);
-            return null;
-        }
-        return storageManager.findVolumeById(findVolumeByUuid.getId().replace("private", "emulated") + KnoxVpnFirewallHelper.DELIMITER + i);
-    }
-
-    public final CountDownLatch findOrCreateDiskScanLatch(String str) {
-        CountDownLatch countDownLatch;
-        synchronized (this.mLock) {
-            countDownLatch = (CountDownLatch) this.mDiskScanLatches.get(str);
-            if (countDownLatch == null) {
-                countDownLatch = new CountDownLatch(1);
-                this.mDiskScanLatches.put(str, countDownLatch);
+                notifyObbStateChange(1);
+            } catch (Exception e) {
+                throw new ObbException(21, e);
             }
         }
-        return countDownLatch;
+
+        public final String toString() {
+            return "MountObbAction{" + this.mObbState + '}';
+        }
     }
 
-    /* loaded from: classes.dex */
-    public class ObbState implements IBinder.DeathRecipient {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public abstract class ObbAction {
+        public final ObbState mObbState;
+
+        public ObbAction(ObbState obbState) {
+            this.mObbState = obbState;
+        }
+
+        public abstract void handleExecute();
+
+        public final void notifyObbStateChange(int i) {
+            IObbActionListener iObbActionListener;
+            ObbState obbState = this.mObbState;
+            if (obbState == null || (iObbActionListener = obbState.token) == null) {
+                return;
+            }
+            try {
+                iObbActionListener.onObbResult(obbState.rawPath, obbState.nonce, i);
+            } catch (RemoteException unused) {
+                Slog.w("StorageManagerService", "StorageEventListener went away while calling onObbStateChanged");
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    class ObbException extends Exception {
+        public final int status;
+
+        public ObbException(int i, String str) {
+            super(str);
+            this.status = i;
+        }
+
+        public ObbException(int i, Throwable th) {
+            super(th.getMessage(), th);
+            this.status = i;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ObbState implements IBinder.DeathRecipient {
         public final String canonicalPath;
         public final int nonce;
         public final int ownerGid;
@@ -705,576 +903,537 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
             this.volId = str3;
         }
 
-        public IBinder getBinder() {
-            return this.token.asBinder();
-        }
-
         @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            StorageManagerService.this.mObbActionHandler.sendMessage(StorageManagerService.this.mObbActionHandler.obtainMessage(1, new UnmountObbAction(this, true)));
+        public final void binderDied() {
+            StorageManagerService storageManagerService = StorageManagerService.this;
+            UnmountObbAction unmountObbAction = storageManagerService.new UnmountObbAction(this, true);
+            Callbacks callbacks = storageManagerService.mObbActionHandler;
+            callbacks.sendMessage(callbacks.obtainMessage(1, unmountObbAction));
         }
 
-        public void link() {
-            getBinder().linkToDeath(this, 0);
-        }
-
-        public void unlink() {
-            getBinder().unlinkToDeath(this, 0);
-        }
-
-        public String toString() {
-            return "ObbState{rawPath=" + this.rawPath + ",canonicalPath=" + this.canonicalPath + ",ownerGid=" + this.ownerGid + ",token=" + this.token + ",binder=" + getBinder() + ",volId=" + this.volId + '}';
+        public final String toString() {
+            return "ObbState{rawPath=" + this.rawPath + ",canonicalPath=" + this.canonicalPath + ",ownerGid=" + this.ownerGid + ",token=" + this.token + ",binder=" + this.token.asBinder() + ",volId=" + this.volId + '}';
         }
     }
 
-    /* loaded from: classes.dex */
-    public class StorageManagerServiceHandler extends Handler {
-        public StorageManagerServiceHandler(Looper looper) {
-            super(looper);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackageInstalledMap {
+        public final boolean external;
+        public final String id;
+
+        public PackageInstalledMap(String str) {
+            this.id = str;
+            this.external = true;
         }
 
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            boolean z;
-            switch (message.what) {
-                case 1:
-                    Slog.d("StorageManagerService", "handleMessage -> H_SYSTEM_READY");
-                    StorageManagerService.this.handleSystemReady();
-                    return;
-                case 2:
-                    Slog.d("StorageManagerService", "handleMessage -> H_DAEMON_CONNECTED");
-                    StorageManagerService.this.handleDaemonConnected();
-                    return;
-                case 3:
-                    Slog.d("StorageManagerService", "handleMessage -> H_SHUTDOWN");
-                    IStorageShutdownObserver iStorageShutdownObserver = (IStorageShutdownObserver) message.obj;
-                    try {
-                        StorageManagerService.this.mVold.shutdown();
-                        z = true;
-                    } catch (Exception e) {
-                        Slog.wtf("StorageManagerService", e);
-                        z = false;
-                    }
-                    if (iStorageShutdownObserver == null) {
-                        return;
-                    }
-                    try {
-                        iStorageShutdownObserver.onShutDownComplete(z ? 0 : -1);
-                    } catch (Exception unused) {
-                        return;
-                    }
-                case 4:
-                    Slog.d("StorageManagerService", "handleMessage -> H_FSTRIM");
-                    Slog.i("StorageManagerService", "Running fstrim idle maintenance");
-                    try {
-                        StorageManagerService.this.mLastMaintenance = System.currentTimeMillis();
-                        StorageManagerService.this.mLastMaintenanceFile.setLastModified(StorageManagerService.this.mLastMaintenance);
-                    } catch (Exception unused2) {
-                        Slog.e("StorageManagerService", "Unable to record last fstrim!");
-                    }
-                    StorageManagerService.this.fstrim(0, null);
-                    Runnable runnable = (Runnable) message.obj;
-                    if (runnable != null) {
-                        runnable.run();
-                        return;
-                    }
-                    return;
-                case 5:
-                    Slog.d("StorageManagerService", "handleMessage -> H_VOLUME_MOUNT");
-                    VolumeInfo volumeInfo = (VolumeInfo) message.obj;
-                    if (StorageManagerService.this.isMountDisallowed(volumeInfo)) {
-                        Slog.i("StorageManagerService", "Ignoring mount " + volumeInfo.getId() + " due to policy");
-                        return;
-                    }
-                    StorageManagerService.this.mount(volumeInfo);
-                    return;
-                case 6:
-                    Slog.d("StorageManagerService", "handleMessage -> H_VOLUME_BROADCAST");
-                    StorageVolume storageVolume = (StorageVolume) message.obj;
-                    String state = storageVolume.getState();
-                    Slog.d("StorageManagerService", "Volume " + storageVolume.getId() + " broadcasting " + state + " to " + storageVolume.getOwner());
-                    String broadcastForEnvironment = VolumeInfo.getBroadcastForEnvironment(state);
-                    if (broadcastForEnvironment != null) {
-                        Intent intent = new Intent(broadcastForEnvironment, Uri.fromFile(storageVolume.getPathFile()));
-                        intent.putExtra("android.os.storage.extra.STORAGE_VOLUME", storageVolume);
-                        intent.addFlags(83886080);
-                        StorageManagerService.this.mContext.sendBroadcastAsUser(intent, storageVolume.getOwner());
-                        return;
-                    }
-                    return;
-                case 7:
-                    Slog.d("StorageManagerService", "handleMessage -> H_INTERNAL_BROADCAST");
-                    Intent intent2 = (Intent) message.obj;
-                    Slog.d("StorageManagerService", "broadcasting (" + intent2 + ") state=" + intent2.getIntExtra("android.os.storage.extra.VOLUME_STATE", -1) + ", fsUuid=" + intent2.getStringExtra("android.os.storage.extra.FS_UUID"));
-                    StorageManagerService.this.mContext.sendBroadcastAsUser(intent2, UserHandle.ALL, "android.permission.WRITE_MEDIA_STORAGE");
-                    return;
-                case 8:
-                    Slog.d("StorageManagerService", "handleMessage -> H_VOLUME_UNMOUNT");
-                    StorageManagerService.this.unmount((VolumeInfo) message.obj);
-                    return;
-                case 9:
-                    Slog.d("StorageManagerService", "handleMessage -> H_PARTITION_FORGET rec=" + ((VolumeRecord) message.obj));
-                    VolumeRecord volumeRecord = (VolumeRecord) message.obj;
-                    StorageManagerService.this.forgetPartition(volumeRecord.partGuid, volumeRecord.fsUuid);
-                    return;
-                case 10:
-                    Slog.d("StorageManagerService", "handleMessage -> H_RESET");
-                    StorageManagerService.this.resetIfBootedAndConnected();
-                    return;
-                case 11:
-                    Slog.d("StorageManagerService", "handleMessage -> H_RUN_IDLE_MAINT");
-                    Slog.i("StorageManagerService", "Running idle maintenance");
-                    StorageManagerService.this.runIdleMaint((Runnable) message.obj);
-                    return;
-                case 12:
-                    Slog.d("StorageManagerService", "handleMessage -> H_ABORT_IDLE_MAINT");
-                    Slog.i("StorageManagerService", "Aborting idle maintenance");
-                    StorageManagerService.this.abortIdleMaint((Runnable) message.obj);
-                    return;
-                case 13:
-                    Slog.d("StorageManagerService", "handleMessage -> H_BOOT_COMPLETED");
-                    StorageManagerService.this.handleBootCompleted();
-                    return;
-                case 14:
-                    Slog.d("StorageManagerService", "handleMessage -> H_COMPLETE_UNLOCK_USER");
-                    StorageManagerService.this.completeUnlockUser(message.arg1);
-                    return;
-                case 15:
-                    Slog.d("StorageManagerService", "handleMessage -> H_VOLUME_STATE_CHANGED");
-                    SomeArgs someArgs = (SomeArgs) message.obj;
-                    StorageManagerService.this.onVolumeStateChangedAsync((VolumeInfo) someArgs.arg1, someArgs.argi1, someArgs.argi2);
-                    someArgs.recycle();
-                    return;
-                case 16:
-                    Object obj = message.obj;
-                    if (obj instanceof StorageManagerInternal.CloudProviderChangeListener) {
-                        StorageManagerService.this.notifyCloudMediaProviderChangedAsync((StorageManagerInternal.CloudProviderChangeListener) obj);
-                        return;
-                    } else {
-                        StorageManagerService.this.onCloudMediaProviderChangedAsync(message.arg1, (String) obj);
-                        return;
-                    }
-                case 17:
-                    Slog.d("StorageManagerService", "handleMessage -> H_SECURE_KEYGUARD_STATE_CHANGED isShowing=" + ((Boolean) message.obj).booleanValue());
-                    try {
-                        StorageManagerService.this.mVold.onSecureKeyguardStateChanged(((Boolean) message.obj).booleanValue());
-                        return;
-                    } catch (Exception e2) {
-                        Slog.wtf("StorageManagerService", e2);
-                        return;
-                    }
-                default:
-                    return;
+        public PackageInstalledMap(String str, boolean z) {
+            this.id = str;
+            this.external = z;
+        }
+
+        public final boolean equals(Object obj) {
+            if (obj instanceof PackageInstalledMap) {
+                return this.id.equals(((PackageInstalledMap) obj).id);
+            }
+            return false;
+        }
+
+        public final int hashCode() {
+            return this.id.hashCode();
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class StorageBadRemovalReceiver extends BroadcastReceiver {
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            String stringExtra = intent.getStringExtra("msg");
+            Slog.d("StorageManagerService", "StorageBadRemovalReceiver msg : " + stringExtra);
+            if ("reboot".equals(stringExtra)) {
+                ((PowerManager) context.getSystemService(PowerManager.class)).reboot("RESTART_OF_SDCARDBADREMOVED_HASAPK");
             }
         }
     }
 
-    public void waitForAsecScan() {
-        waitForLatch(this.mAsecsScanned, "mAsecsScanned");
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class StorageManagerInternalImpl extends StorageManagerInternal {
+        public final List mResetListeners = new ArrayList();
+        public final CopyOnWriteArraySet mCloudProviderChangeListeners = new CopyOnWriteArraySet();
 
-    public final void waitForLatch(CountDownLatch countDownLatch, String str) {
-        try {
-            waitForLatch(countDownLatch, str, -1L);
-        } catch (TimeoutException e) {
-            Slog.e("StorageManagerService", "TimeoutException in " + str, e);
+        public StorageManagerInternalImpl() {
         }
-    }
 
-    public final void waitForLatch(CountDownLatch countDownLatch, String str, long j) {
-        long elapsedRealtime = SystemClock.elapsedRealtime();
-        while (!countDownLatch.await(5000L, TimeUnit.MILLISECONDS)) {
+        public static void killAppForOpChange(int i, int i2) {
+            IActivityManager service = ActivityManager.getService();
             try {
-                Slog.w("StorageManagerService", "Thread " + Thread.currentThread().getName() + " still waiting for " + str + "...");
-            } catch (InterruptedException unused) {
-                Slog.w("StorageManagerService", "Interrupt while waiting for " + str);
-            }
-            if (j > 0 && SystemClock.elapsedRealtime() > elapsedRealtime + j) {
-                throw new TimeoutException("Thread " + Thread.currentThread().getName() + " gave up waiting for " + str + " after " + j + "ms");
+                service.killUid(UserHandle.getAppId(i2), -1, AppOpsManager.opToName(i) + " changed.");
+            } catch (RemoteException unused) {
             }
         }
-    }
 
-    public final void handleSystemReady() {
-        if (prepareSmartIdleMaint()) {
-            SmartStorageMaintIdler.scheduleSmartIdlePass(this.mContext, sSmartIdleMaintPeriod);
-        }
-        MountServiceIdler.scheduleIdlePass(this.mContext);
-        NandswapManager.scheduleNandswapManager(this.mContext);
-        this.mContext.getContentResolver().registerContentObserver(Settings.Global.getUriFor("zram_enabled"), false, new ContentObserver(null) { // from class: com.android.server.StorageManagerService.2
-            @Override // android.database.ContentObserver
-            public void onChange(boolean z) {
-                StorageManagerService.this.refreshZramSettings();
+        public final void addResetListener(StorageManagerInternal.ResetListener resetListener) {
+            synchronized (this.mResetListeners) {
+                ((ArrayList) this.mResetListeners).add(resetListener);
             }
-        });
-        refreshZramSettings();
-        if (!SystemProperties.get("persist.sys.zram_enabled").equals("0") && this.mContext.getResources().getBoolean(17891932)) {
-            ZramWriteback.scheduleZramWriteback(this.mContext);
         }
-        configureTranscoding();
-    }
 
-    public final void refreshZramSettings() {
-        String str = SystemProperties.get("persist.sys.zram_enabled");
-        if ("".equals(str)) {
-            return;
+        public final IInstalld.IFsveritySetupAuthToken createFsveritySetupAuthToken(ParcelFileDescriptor parcelFileDescriptor, int i) {
+            try {
+                Installer installer = StorageManagerService.this.mInstaller;
+                if (!installer.checkBeforeRemote()) {
+                    return null;
+                }
+                try {
+                    return installer.mInstalld.createFsveritySetupAuthToken(parcelFileDescriptor, i);
+                } catch (Exception e) {
+                    Installer.InstallerException.from(e);
+                    throw null;
+                }
+            } catch (Installer.InstallerException e2) {
+                throw new IOException(e2);
+            }
         }
-        String str2 = Settings.Global.getInt(this.mContext.getContentResolver(), "zram_enabled", 1) != 0 ? "1" : "0";
-        if (str2.equals(str)) {
-            return;
-        }
-        SystemProperties.set("persist.sys.zram_enabled", str2);
-        if (str2.equals("1") && this.mContext.getResources().getBoolean(17891932)) {
-            ZramWriteback.scheduleZramWriteback(this.mContext);
-        }
-    }
 
-    public final boolean isHevcDecoderSupported() {
-        for (MediaCodecInfo mediaCodecInfo : new MediaCodecList(0).getCodecInfos()) {
-            if (!mediaCodecInfo.isEncoder()) {
-                for (String str : mediaCodecInfo.getSupportedTypes()) {
-                    if (str.equalsIgnoreCase("video/hevc")) {
-                        return true;
+        public final int enableFsverity(IInstalld.IFsveritySetupAuthToken iFsveritySetupAuthToken, String str, String str2) {
+            try {
+                Installer installer = StorageManagerService.this.mInstaller;
+                if (!installer.checkBeforeRemote()) {
+                    throw new Installer.InstallerException("fs-verity wasn't enabled with an isolated installer");
+                }
+                BlockGuard.getVmPolicy().onPathAccess(str);
+                try {
+                    return installer.mInstalld.enableFsverity(iFsveritySetupAuthToken, str, str2);
+                } catch (Exception e) {
+                    Installer.InstallerException.from(e);
+                    throw null;
+                }
+            } catch (Installer.InstallerException e2) {
+                throw new IOException(e2);
+            }
+        }
+
+        public final void freeCache(String str, long j) {
+            try {
+                StorageManagerService.this.mStorageSessionController.freeCache(str, j);
+            } catch (StorageSessionController.ExternalStorageServiceException e) {
+                Log.e("StorageManagerService", "Failed to free cache of vol : " + str, e);
+            }
+        }
+
+        public final int getExternalStorageMountMode(int i, String str) {
+            ApplicationInfo applicationInfo;
+            StorageManagerService storageManagerService = StorageManagerService.this;
+            storageManagerService.getClass();
+            int i2 = 0;
+            try {
+                if (!Process.isIsolated(i) && !Process.isSdkSandboxUid(i)) {
+                    String[] packagesForUid = storageManagerService.mIPackageManager.getPackagesForUid(i);
+                    if (!ArrayUtils.isEmpty(packagesForUid)) {
+                        String str2 = str == null ? packagesForUid[0] : str;
+                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                        try {
+                            if (storageManagerService.mPmInternal.isInstantApp(str2, UserHandle.getUserId(i))) {
+                                Binder.restoreCallingIdentity(clearCallingIdentity);
+                            } else {
+                                Binder.restoreCallingIdentity(clearCallingIdentity);
+                                if (storageManagerService.mStorageManagerInternal.isExternalStorageService(i)) {
+                                    i2 = 3;
+                                } else {
+                                    if (storageManagerService.mDownloadsAuthorityAppId != UserHandle.getAppId(i) && storageManagerService.mExternalStorageAuthorityAppId != UserHandle.getAppId(i) && (storageManagerService.mIPackageManager.checkUidPermission("android.permission.ACCESS_MTP", i) != 0 || (applicationInfo = storageManagerService.mIPackageManager.getApplicationInfo(str2, 0L, UserHandle.getUserId(i))) == null || !applicationInfo.isSignedWithPlatformKey())) {
+                                        boolean z = storageManagerService.mIPackageManager.checkUidPermission("android.permission.INSTALL_PACKAGES", i) == 0;
+                                        int length = packagesForUid.length;
+                                        int i3 = 0;
+                                        while (true) {
+                                            if (i3 >= length) {
+                                                break;
+                                            }
+                                            if (storageManagerService.mIAppOpsService.checkOperation(66, i, packagesForUid[i3]) == 0) {
+                                                i2 = 1;
+                                                break;
+                                            }
+                                            i3++;
+                                        }
+                                        if (!z && i2 == 0) {
+                                            i2 = 1;
+                                        }
+                                        i2 = 2;
+                                    }
+                                    i2 = 4;
+                                }
+                            }
+                        } catch (Throwable th) {
+                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                            throw th;
+                        }
                     }
                 }
+            } catch (RemoteException unused) {
             }
-        }
-        return false;
-    }
-
-    public final void configureTranscoding() {
-        boolean z;
-        boolean isHevcDecoderSupported = isHevcDecoderSupported();
-        if (SystemProperties.getBoolean("persist.sys.fuse.transcode_user_control", false)) {
-            z = SystemProperties.getBoolean("persist.sys.fuse.transcode_enabled", isHevcDecoderSupported);
-        } else {
-            z = DeviceConfig.getBoolean("storage_native_boot", "transcode_enabled", isHevcDecoderSupported);
-        }
-        SystemProperties.set("sys.fuse.transcode_enabled", String.valueOf(z));
-        if (z) {
-            ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).registerAnrController(new ExternalStorageServiceAnrController());
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class ExternalStorageServiceAnrController implements AnrController {
-        public ExternalStorageServiceAnrController() {
-        }
-
-        public long getAnrDelayMillis(String str, int i) {
-            if (!StorageManagerService.this.isAppIoBlocked(i)) {
-                return 0L;
+            if (StorageManagerService.LOCAL_LOGV) {
+                StringBuilder m = DirEncryptService$$ExternalSyntheticOutline0.m(i2, "Resolved mode ", " for ", str, "/");
+                m.append(UserHandle.formatUid(i));
+                Slog.v("StorageManagerService", m.toString());
             }
-            int i2 = DeviceConfig.getInt("storage_native_boot", "anr_delay_millis", 5000);
-            Slog.v("StorageManagerService", "getAnrDelayMillis for " + str + ". " + i2 + "ms");
             return i2;
         }
 
-        public void onAnrDelayStarted(String str, int i) {
-            if (StorageManagerService.this.isAppIoBlocked(i) && DeviceConfig.getBoolean("storage_native_boot", "anr_delay_notify_external_storage_service", true)) {
-                Slog.d("StorageManagerService", "onAnrDelayStarted for " + str + ". Notifying external storage service");
-                try {
-                    StorageManagerService.this.mStorageSessionController.notifyAnrDelayStarted(str, i, 0, 1);
-                } catch (StorageSessionController.ExternalStorageServiceException e) {
-                    Slog.e("StorageManagerService", "Failed to notify ANR delay started for " + str, e);
-                }
-            }
-        }
-
-        public boolean onAnrDelayCompleted(String str, int i) {
-            if (StorageManagerService.this.isAppIoBlocked(i)) {
-                Slog.d("StorageManagerService", "onAnrDelayCompleted for " + str + ". Showing ANR dialog...");
-                return true;
-            }
-            Slog.d("StorageManagerService", "onAnrDelayCompleted for " + str + ". Skipping ANR dialog...");
-            return false;
-        }
-    }
-
-    public final void addInternalVolumeLocked() {
-        VolumeInfo volumeInfo = new VolumeInfo("private", 1, (DiskInfo) null, (String) null);
-        volumeInfo.state = 2;
-        volumeInfo.path = Environment.getDataDirectory().getAbsolutePath();
-        this.mVolumes.put(volumeInfo.id, volumeInfo);
-    }
-
-    public final void resetIfBootedAndConnected() {
-        int[] copyOf;
-        Slog.d("StorageManagerService", "Thinking about reset, mBootCompleted=" + this.mBootCompleted + ", mDaemonConnected=" + this.mDaemonConnected);
-        if (this.mBootCompleted && this.mDaemonConnected) {
-            UserManager userManager = (UserManager) this.mContext.getSystemService(UserManager.class);
-            List<UserInfo> users = userManager.getUsers();
-            this.mStorageSessionController.onReset(this.mVold, new Runnable() { // from class: com.android.server.StorageManagerService$$ExternalSyntheticLambda4
-                @Override // java.lang.Runnable
-                public final void run() {
-                    StorageManagerService.this.lambda$resetIfBootedAndConnected$0();
-                }
-            });
-            synchronized (this.mLock) {
-                int[] iArr = this.mSystemUnlockedUsers;
-                copyOf = Arrays.copyOf(iArr, iArr.length);
-                this.mDisks.clear();
-                this.mVolumes.clear();
-                addInternalVolumeLocked();
-            }
-            try {
-                Slog.i("StorageManagerService", "Resetting vold...");
-                this.mVold.reset();
-                Slog.i("StorageManagerService", "Reset vold");
-                cleanupSercureContainerList("external");
-                for (UserInfo userInfo : users) {
-                    if (userInfo.isCloneProfile()) {
-                        this.mVold.onUserAdded(userInfo.id, userInfo.serialNumber, userInfo.profileGroupId);
-                    } else {
-                        this.mVold.onUserAdded(userInfo.id, userInfo.serialNumber, -1);
+        public final List getPrimaryVolumeIds() {
+            ArrayList arrayList = new ArrayList();
+            synchronized (StorageManagerService.this.mLock) {
+                for (int i = 0; i < StorageManagerService.this.mVolumes.size(); i++) {
+                    try {
+                        VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.valueAt(i);
+                        if (volumeInfo.isPrimary()) {
+                            arrayList.add(volumeInfo.getId());
+                        }
+                    } catch (Throwable th) {
+                        throw th;
                     }
                 }
-                for (int i : copyOf) {
-                    this.mVold.onUserStarted(i);
-                    this.mStoraged.onUserStarted(i);
-                }
-                restoreSystemUnlockedUsers(userManager, users, copyOf);
-                this.mVold.onSecureKeyguardStateChanged(this.mSecureKeyguardShowing);
-                this.mStorageManagerInternal.onReset(this.mVold);
-            } catch (Exception e) {
-                Slog.wtf("StorageManagerService", e);
             }
+            return arrayList;
         }
-    }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$resetIfBootedAndConnected$0() {
-        this.mHandler.removeCallbacksAndMessages(null);
-    }
-
-    public final void restoreSystemUnlockedUsers(UserManager userManager, List list, int[] iArr) {
-        Arrays.sort(iArr);
-        UserManager.invalidateIsUserUnlockedCache();
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            int i = ((UserInfo) it.next()).id;
-            if (userManager.isUserRunning(i) && Arrays.binarySearch(iArr, i) < 0 && userManager.isUserUnlockingOrUnlocked(i)) {
-                Slog.w("StorageManagerService", "UNLOCK_USER lost from vold reset, will retry, user:" + i);
-                this.mVold.onUserStarted(i);
-                this.mStoraged.onUserStarted(i);
-                this.mHandler.obtainMessage(14, i, 0).sendToTarget();
-            }
-        }
-    }
-
-    public final void restoreLocalUnlockedUsers() {
-        try {
-            int[] unlockedUsers = this.mVold.getUnlockedUsers();
-            if (ArrayUtils.isEmpty(unlockedUsers)) {
-                return;
-            }
-            Slog.d("StorageManagerService", "CE storage for users " + Arrays.toString(unlockedUsers) + " is already unlocked");
-            synchronized (this.mLock) {
-                this.mLocalUnlockedUsers.appendAll(unlockedUsers);
-            }
-        } catch (Exception e) {
-            Slog.e("StorageManagerService", "Failed to get unlocked users from vold", e);
-        }
-    }
-
-    public final void onUnlockUser(int i) {
-        Slog.d("StorageManagerService", "onUnlockUser: userId=" + i);
-        if (i != 0) {
+        public final boolean hasExternalStorageAccess(int i, String str) {
             try {
-                UserManager userManager = (UserManager) this.mContext.createPackageContextAsUser("system", 0, UserHandle.of(i)).getSystemService(UserManager.class);
-                if (userManager != null) {
-                    this.mIsMediaSharedWithParent.put(Integer.valueOf(i), Boolean.valueOf(userManager.isMediaSharedWithParent()));
-                } else {
-                    Slog.d("StorageManagerService", "onUnlockUser: um is null, so just put userId(" + i + ") with false");
-                    this.mIsMediaSharedWithParent.put(Integer.valueOf(i), Boolean.FALSE);
-                }
-                if (userManager != null && userManager.isMediaSharedWithParent()) {
-                    int i2 = userManager.getProfileParent(i).id;
-                    this.mUserSharesMediaWith.put(i, i2);
-                    this.mUserSharesMediaWith.put(i2, i);
-                } else if (SemDualAppManager.isDualAppId(i)) {
-                    this.mUserSharesMediaWith.put(i, 0);
-                    this.mUserSharesMediaWith.put(0, i);
-                }
-            } catch (PackageManager.NameNotFoundException unused) {
-                Log.e("StorageManagerService", "Failed to create user context for user " + i);
-            }
-        }
-        try {
-            this.mStorageSessionController.onUnlockUser(i);
-            this.mVold.onUserStarted(i);
-            this.mStoraged.onUserStarted(i);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-        if (SemSdCardEncryption.isEncryptionFeatureEnabled() && i == 0) {
-            initDirEncryptService();
-        }
-        this.mHandler.obtainMessage(14, i, 0).sendToTarget();
-        if (this.mRemountCurrentUserVolumesOnUnlock && i == this.mCurrentUserId) {
-            maybeRemountVolumes(i);
-            this.mRemountCurrentUserVolumesOnUnlock = false;
-        }
-    }
-
-    public final void completeUnlockUser(int i) {
-        Slog.d("StorageManagerService", "completeUnlockUser: userId=" + i);
-        onKeyguardStateChanged(false);
-        synchronized (this.mLock) {
-            for (int i2 : this.mSystemUnlockedUsers) {
-                if (i2 == i) {
-                    Log.i("StorageManagerService", "completeUnlockUser called for already unlocked user:" + i);
-                    return;
-                }
-            }
-            for (int i3 = 0; i3 < this.mVolumes.size(); i3++) {
-                VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i3);
-                if (volumeInfo.isVisibleForUser(i) && volumeInfo.isMountedReadable()) {
-                    StorageVolume buildStorageVolume = volumeInfo.buildStorageVolume(this.mContext, i, false);
-                    this.mHandler.obtainMessage(6, buildStorageVolume).sendToTarget();
-                    String environmentForState = VolumeInfo.getEnvironmentForState(volumeInfo.getState());
-                    this.mCallbacks.notifyStorageStateChanged(buildStorageVolume.getPath(), environmentForState, environmentForState);
-                }
-            }
-            this.mSystemUnlockedUsers = ArrayUtils.appendInt(this.mSystemUnlockedUsers, i);
-        }
-    }
-
-    public final void onCleanupUser(int i) {
-        Slog.d("StorageManagerService", "onCleanupUser " + i);
-        try {
-            this.mVold.onUserStopped(i);
-            this.mStoraged.onUserStopped(i);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-        synchronized (this.mLock) {
-            this.mSystemUnlockedUsers = ArrayUtils.removeInt(this.mSystemUnlockedUsers, i);
-        }
-    }
-
-    public final void onStopUser(int i) {
-        Slog.i("StorageManagerService", "onStopUser " + i);
-        try {
-            this.mStorageSessionController.onUserStopping(i);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-        PackageMonitor packageMonitor = (PackageMonitor) this.mPackageMonitorsForUser.removeReturnOld(i);
-        if (packageMonitor != null) {
-            packageMonitor.unregister();
-        }
-    }
-
-    public final String createVolumeInfoStrForPulbicVolume(VolumeInfo volumeInfo) {
-        String valueToString = DebugUtils.valueToString(VolumeInfo.class, "TYPE_", volumeInfo.type);
-        String diskId = volumeInfo.getDiskId() != null ? volumeInfo.getDiskId() : "null";
-        String str = volumeInfo.partGuid;
-        if (str == null) {
-            str = "";
-        }
-        String flagsToString = DebugUtils.flagsToString(VolumeInfo.class, "MOUNT_FLAG_", volumeInfo.mountFlags);
-        String valueToString2 = DebugUtils.valueToString(VolumeInfo.class, "STATE_", volumeInfo.state);
-        return ((((("VolumeInfo" + String.format("{%s}:", volumeInfo.id)) + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE) + String.format("type=%s diskId=%s partGuid=%s", valueToString, diskId, str)) + String.format(" mountFlags=%s mountUserId=%d state=%s", flagsToString, Integer.valueOf(volumeInfo.getMountUserId()), valueToString2)) + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE) + String.format(" fsType=%s fsUuid=%s path=%s internalPath=%s", volumeInfo.fsType, volumeInfo.fsUuid, volumeInfo.path, volumeInfo.internalPath);
-    }
-
-    public final void maybeRemountVolumes(int i) {
-        ArrayList<VolumeInfo> arrayList = new ArrayList();
-        synchronized (this.mLock) {
-            for (int i2 = 0; i2 < this.mVolumes.size(); i2++) {
-                VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i2);
-                if (!volumeInfo.isPrimary() && volumeInfo.isMountedWritable() && volumeInfo.isVisible() && volumeInfo.getMountUserId() != this.mCurrentUserId) {
-                    volumeInfo.mountUserId = this.mCurrentUserId;
-                    arrayList.add(volumeInfo);
-                }
-            }
-        }
-        for (VolumeInfo volumeInfo2 : arrayList) {
-            Slog.i("StorageManagerService", "Remounting volume for user: " + i + ". Volume: " + createVolumeInfoStrForPulbicVolume(volumeInfo2));
-            this.mHandler.obtainMessage(8, volumeInfo2).sendToTarget();
-            this.mHandler.obtainMessage(5, volumeInfo2).sendToTarget();
-        }
-    }
-
-    public final boolean supportsBlockCheckpoint() {
-        enforcePermission("android.permission.MOUNT_FORMAT_FILESYSTEMS");
-        return this.mVold.supportsBlockCheckpoint();
-    }
-
-    @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
-    public void onKeyguardStateChanged(boolean z) {
-        boolean z2 = z && ((KeyguardManager) this.mContext.getSystemService(KeyguardManager.class)).isDeviceSecure(this.mCurrentUserId);
-        if (this.mSecureKeyguardShowing != z2) {
-            this.mSecureKeyguardShowing = z2;
-            this.mHandler.obtainMessage(17, Boolean.valueOf(this.mSecureKeyguardShowing)).sendToTarget();
-        }
-    }
-
-    public void runIdleMaintenance(Runnable runnable) {
-        StorageManagerServiceHandler storageManagerServiceHandler = this.mHandler;
-        storageManagerServiceHandler.sendMessage(storageManagerServiceHandler.obtainMessage(4, runnable));
-    }
-
-    public void runMaintenance() {
-        super.runMaintenance_enforcePermission();
-        runIdleMaintenance(null);
-    }
-
-    public long lastMaintenance() {
-        return this.mLastMaintenance;
-    }
-
-    public void onDaemonConnected() {
-        this.mDaemonConnected = true;
-        this.mHandler.obtainMessage(2).sendToTarget();
-    }
-
-    public final void handleDaemonConnected() {
-        resetIfBootedAndConnected();
-    }
-
-    public final boolean isExtSDCardTrayRemoved() {
-        try {
-            File file = new File("/sys/class/sec/sdcard/status");
-            if (file.exists()) {
-                if (FileUtils.readTextFile(file, 0, null).trim().equals("Notray")) {
-                    return true;
-                }
-                Slog.d("StorageManagerService", "Ext SD Card Tray State is not proper");
+                int checkOperation = StorageManagerService.this.mIAppOpsService.checkOperation(92, i, str);
+                return checkOperation == 3 ? StorageManagerService.this.mIPackageManager.checkUidPermission("android.permission.MANAGE_EXTERNAL_STORAGE", i) == 0 : checkOperation == 0;
+            } catch (RemoteException e) {
+                Slog.w("Failed to check MANAGE_EXTERNAL_STORAGE access for " + str, e);
                 return false;
             }
-            Slog.d("StorageManagerService", "Ext SD Card Tray State File Not Exist");
-            return true;
-        } catch (Exception e) {
-            Slog.e("StorageManagerService", "Could't read Ext SD Card Tray State File : ", e);
-            return false;
+        }
+
+        public final boolean hasLegacyExternalStorage(int i) {
+            boolean contains;
+            synchronized (StorageManagerService.this.mLock) {
+                contains = ((ArraySet) StorageManagerService.this.mUidsWithLegacyExternalStorage).contains(Integer.valueOf(i));
+            }
+            return contains;
+        }
+
+        public final boolean isCeStoragePrepared(int i) {
+            boolean contains;
+            synchronized (StorageManagerService.this.mLock) {
+                contains = ((ArraySet) StorageManagerService.this.mCeStoragePreparedUsers).contains(Integer.valueOf(i));
+            }
+            return contains;
+        }
+
+        public final boolean isExternalStorageService(int i) {
+            return StorageManagerService.this.mMediaStoreAuthorityAppId == UserHandle.getAppId(i);
+        }
+
+        public final boolean isFuseMounted(int i) {
+            boolean contains;
+            synchronized (StorageManagerService.this.mLock) {
+                contains = ((ArraySet) StorageManagerService.this.mFuseMountedUser).contains(Integer.valueOf(i));
+            }
+            return contains;
+        }
+
+        public final void markCeStoragePrepared(int i) {
+            synchronized (StorageManagerService.this.mLock) {
+                ((ArraySet) StorageManagerService.this.mCeStoragePreparedUsers).add(Integer.valueOf(i));
+            }
+        }
+
+        public final void onAppOpsChanged(int i, int i2, String str, int i3, int i4) {
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                if (i == 66) {
+                    if (i4 == 0 && i3 != 0) {
+                        killAppForOpChange(i, i2);
+                    }
+                } else if (i == 87) {
+                    StorageManagerService.this.updateLegacyStorageApps(i2, str, i3 == 0);
+                } else {
+                    if (i != 92) {
+                        return;
+                    }
+                    if (i3 != 0) {
+                        killAppForOpChange(i, i2);
+                    }
+                }
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+
+        public final void onReset(IVold iVold) {
+            synchronized (this.mResetListeners) {
+                try {
+                    Iterator it = ((ArrayList) this.mResetListeners).iterator();
+                    while (it.hasNext()) {
+                        ((StorageManagerInternal.ResetListener) it.next()).onReset(iVold);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void prepareAppDataAfterInstall(String str, int i) {
+            for (File file : new Environment.UserEnvironment(UserHandle.getUserId(i)).buildExternalStorageAppObbDirs(str)) {
+                if (file.getPath().startsWith(Environment.getDataPreloadsMediaDirectory().getPath())) {
+                    Slog.i("StorageManagerService", "Skipping app data preparation for " + file);
+                } else {
+                    try {
+                        StorageManagerService.this.mVold.fixupAppDir(file.getCanonicalPath() + "/", i);
+                    } catch (RemoteException | ServiceSpecificException e) {
+                        Log.e("StorageManagerService", "Failed to fixup app dir for " + str, e);
+                    } catch (IOException unused) {
+                        StorageManagerService$$ExternalSyntheticOutline0.m("Failed to get canonical path for ", str, "StorageManagerService");
+                    }
+                }
+            }
+        }
+
+        public final boolean prepareStorageDirs(int i, Set set, String str) {
+            synchronized (StorageManagerService.this.mLock) {
+                try {
+                    if (!((ArraySet) StorageManagerService.this.mFuseMountedUser).contains(Integer.valueOf(i))) {
+                        Slog.w("StorageManagerService", "User " + i + " is not unlocked yet so skip mounting obb");
+                        return false;
+                    }
+                    try {
+                        IVold asInterface = IVold.Stub.asInterface(ServiceManager.getServiceOrThrow("vold"));
+                        Iterator it = set.iterator();
+                        while (it.hasNext()) {
+                            String str2 = (String) it.next();
+                            Locale locale = Locale.US;
+                            asInterface.ensureAppDirsCreated(new String[]{"/storage/emulated/" + i + "/Android/obb/" + str2 + "/", "/storage/emulated/" + i + "/Android/data/" + str2 + "/"}, UserHandle.getUid(i, StorageManagerService.this.mPmInternal.getPackage(str2).getUid()));
+                        }
+                        return true;
+                    } catch (ServiceManager.ServiceNotFoundException | RemoteException e) {
+                        Slog.e("StorageManagerService", "Unable to create obb and data directories for " + str, e);
+                        return false;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void prepareUserStorageForMove(String str, String str2, List list) {
+            try {
+                StorageManagerService storageManagerService = StorageManagerService.this;
+                storageManagerService.getClass();
+                Iterator it = list.iterator();
+                while (it.hasNext()) {
+                    UserInfo userInfo = (UserInfo) it.next();
+                    storageManagerService.prepareUserStorageInternal(userInfo.id, 3, str);
+                    storageManagerService.prepareUserStorageInternal(userInfo.id, 3, str2);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public final void registerCloudProviderChangeListener(StorageManagerInternal.CloudProviderChangeListener cloudProviderChangeListener) {
+            this.mCloudProviderChangeListeners.add(cloudProviderChangeListener);
+            StorageManagerService.this.mHandler.obtainMessage(16, cloudProviderChangeListener).sendToTarget();
+        }
+
+        public final void registerStorageLockEventListener(ICeStorageLockEventListener iCeStorageLockEventListener) {
+            if (StorageManagerService.this.mCeStorageEventCallbacks.add(iCeStorageLockEventListener)) {
+                return;
+            }
+            Slog.w("StorageManagerService", "Failed to register listener: " + iCeStorageLockEventListener);
+        }
+
+        public final void resetUser(int i) {
+            StorageManagerService.this.mHandler.obtainMessage(10).sendToTarget();
+        }
+
+        public final void unregisterStorageLockEventListener(ICeStorageLockEventListener iCeStorageLockEventListener) {
+            if (StorageManagerService.this.mCeStorageEventCallbacks.remove(iCeStorageLockEventListener)) {
+                return;
+            }
+            Slog.w("StorageManagerService", "Unregistering " + iCeStorageLockEventListener + " that was not registered");
         }
     }
 
-    public final void onDiskScannedLocked(DiskInfo diskInfo) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UnmountObbAction extends ObbAction {
+        public final boolean mForceUnmount;
+
+        public UnmountObbAction(ObbState obbState, boolean z) {
+            super(obbState);
+            this.mForceUnmount = z;
+        }
+
+        @Override // com.android.server.StorageManagerService.ObbAction
+        public final void handleExecute() {
+            ObbState obbState;
+            StorageManagerService storageManagerService = StorageManagerService.this;
+            StorageManagerService storageManagerService2 = StorageManagerService.sSelf;
+            storageManagerService.warnOnNotMounted();
+            synchronized (StorageManagerService.this.mObbMounts) {
+                obbState = (ObbState) ((HashMap) StorageManagerService.this.mObbPathToStateMap).get(this.mObbState.rawPath);
+            }
+            if (obbState == null) {
+                throw new ObbException(23, "Missing existingState");
+            }
+            if (obbState.ownerGid != this.mObbState.ownerGid) {
+                StringBuilder sb = new StringBuilder("Permission denied to unmount OBB ");
+                sb.append(obbState.rawPath);
+                sb.append(" (owned by GID ");
+                ObbException obbException = new ObbException(25, AmFmBandRange$$ExternalSyntheticOutline0.m(obbState.ownerGid, sb, ")"));
+                Slog.w("StorageManagerService", obbException);
+                notifyObbStateChange(obbException.status);
+                return;
+            }
+            try {
+                StorageManagerService.this.mVold.unmount(this.mObbState.volId);
+                StorageManagerService.this.mVold.destroyObb(this.mObbState.volId);
+                this.mObbState.volId = null;
+                synchronized (StorageManagerService.this.mObbMounts) {
+                    StorageManagerService.m92$$Nest$mremoveObbStateLocked(StorageManagerService.this, obbState);
+                }
+                notifyObbStateChange(2);
+            } catch (Exception e) {
+                throw new ObbException(22, e);
+            }
+        }
+
+        public final String toString() {
+            return "UnmountObbAction{" + this.mObbState + ",force=" + this.mForceUnmount + '}';
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class WatchedUnlockedUsers {
+        public int[] users;
+
+        public final String toString() {
+            return Arrays.toString(this.users);
+        }
+    }
+
+    /* renamed from: -$$Nest$maddObbStateLocked, reason: not valid java name */
+    public static void m86$$Nest$maddObbStateLocked(StorageManagerService storageManagerService, ObbState obbState) {
+        storageManagerService.getClass();
+        IBinder asBinder = obbState.token.asBinder();
+        List list = (List) ((HashMap) storageManagerService.mObbMounts).get(asBinder);
+        if (list == null) {
+            list = new ArrayList();
+            ((HashMap) storageManagerService.mObbMounts).put(asBinder, list);
+        } else {
+            Iterator it = list.iterator();
+            while (it.hasNext()) {
+                if (((ObbState) it.next()).rawPath.equals(obbState.rawPath)) {
+                    throw new IllegalStateException("Attempt to add ObbState twice. This indicates an error in the StorageManagerService logic.");
+                }
+            }
+        }
+        list.add(obbState);
+        try {
+            obbState.token.asBinder().linkToDeath(obbState, 0);
+            ((HashMap) storageManagerService.mObbPathToStateMap).put(obbState.rawPath, obbState);
+        } catch (RemoteException e) {
+            list.remove(obbState);
+            if (list.isEmpty()) {
+                ((HashMap) storageManagerService.mObbMounts).remove(asBinder);
+            }
+            throw e;
+        }
+    }
+
+    /* renamed from: -$$Nest$mcompleteUnlockUser, reason: not valid java name */
+    public static void m87$$Nest$mcompleteUnlockUser(StorageManagerService storageManagerService, int i) {
+        storageManagerService.getClass();
+        Slog.d("StorageManagerService", "completeUnlockUser: userId=" + i);
+        storageManagerService.onKeyguardStateChanged(false);
+        synchronized (storageManagerService.mLock) {
+            try {
+                for (int i2 : storageManagerService.mSystemUnlockedUsers) {
+                    if (i2 == i) {
+                        Log.i("StorageManagerService", "completeUnlockUser called for already unlocked user:" + i);
+                        return;
+                    }
+                }
+                for (int i3 = 0; i3 < storageManagerService.mVolumes.size(); i3++) {
+                    VolumeInfo volumeInfo = (VolumeInfo) storageManagerService.mVolumes.valueAt(i3);
+                    if (volumeInfo.isVisibleForUser(i) && volumeInfo.isMountedReadable()) {
+                        StorageVolume buildStorageVolume = volumeInfo.buildStorageVolume(storageManagerService.mContext, i, false);
+                        storageManagerService.mHandler.obtainMessage(6, buildStorageVolume).sendToTarget();
+                        String environmentForState = VolumeInfo.getEnvironmentForState(volumeInfo.getState());
+                        Callbacks callbacks = storageManagerService.mCallbacks;
+                        String path = buildStorageVolume.getPath();
+                        int i4 = Callbacks.$r8$clinit;
+                        callbacks.getClass();
+                        SomeArgs obtain = SomeArgs.obtain();
+                        obtain.arg1 = path;
+                        obtain.arg2 = environmentForState;
+                        obtain.arg3 = environmentForState;
+                        callbacks.obtainMessage(1, obtain).sendToTarget();
+                    }
+                }
+                storageManagerService.mSystemUnlockedUsers = ArrayUtils.appendInt(storageManagerService.mSystemUnlockedUsers, i);
+            } finally {
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$mdispatchOnFinished, reason: not valid java name */
+    public static void m88$$Nest$mdispatchOnFinished(StorageManagerService storageManagerService, IVoldTaskListener iVoldTaskListener, int i, PersistableBundle persistableBundle) {
+        storageManagerService.getClass();
+        if (iVoldTaskListener != null) {
+            try {
+                iVoldTaskListener.onFinished(i, persistableBundle);
+            } catch (RemoteException unused) {
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$mdispatchOnStatus, reason: not valid java name */
+    public static void m89$$Nest$mdispatchOnStatus(StorageManagerService storageManagerService, IVoldTaskListener iVoldTaskListener, int i, PersistableBundle persistableBundle) {
+        storageManagerService.getClass();
+        if (iVoldTaskListener != null) {
+            try {
+                iVoldTaskListener.onStatus(i, persistableBundle);
+            } catch (RemoteException unused) {
+            }
+        }
+    }
+
+    /* renamed from: -$$Nest$monDiskScannedLocked, reason: not valid java name */
+    public static void m90$$Nest$monDiskScannedLocked(StorageManagerService storageManagerService, DiskInfo diskInfo) {
         int i = 0;
-        for (int i2 = 0; i2 < this.mVolumes.size(); i2++) {
-            if (Objects.equals(diskInfo.id, ((VolumeInfo) this.mVolumes.valueAt(i2)).getDiskId())) {
+        for (int i2 = 0; i2 < storageManagerService.mVolumes.size(); i2++) {
+            if (Objects.equals(diskInfo.id, ((VolumeInfo) storageManagerService.mVolumes.valueAt(i2)).getDiskId())) {
                 i++;
             }
         }
         int i3 = diskInfo.flags;
         String str = (i3 & 4) != 0 ? "SD" : (i3 & 8) != 0 ? "USB" : "null";
-        Slog.d("StorageManagerService", "onDiskScannedLocked: disk=" + (((((("DiskInfo" + String.format("{%s}:", diskInfo.id)) + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE) + String.format("  flags=%s size=%d volumeCount=%d", str, Long.valueOf(diskInfo.size), Integer.valueOf(diskInfo.volumeCount))) + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE) + String.format("  sysPath=%s", diskInfo.sysPath)) + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE) + " volumeCount=" + i);
-        Intent intent = new Intent("android.os.storage.action.DISK_SCANNED");
-        intent.addFlags(83886080);
-        intent.putExtra("android.os.storage.extra.DISK_ID", diskInfo.id);
-        intent.putExtra("android.os.storage.extra.VOLUME_COUNT", i);
-        this.mHandler.obtainMessage(7, intent).sendToTarget();
-        CountDownLatch countDownLatch = (CountDownLatch) this.mDiskScanLatches.remove(diskInfo.id);
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1("DiskInfo".concat("{" + diskInfo.id + "}:"), "\n"));
+        m.append(String.format("  flags=%s size=%d volumeCount=%d", str, Long.valueOf(diskInfo.size), Integer.valueOf(diskInfo.volumeCount)));
+        StringBuilder m2 = BootReceiver$$ExternalSyntheticOutline0.m(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(m.toString(), "\n"));
+        m2.append("  sysPath=" + diskInfo.sysPath);
+        Slog.d("StorageManagerService", "onDiskScannedLocked: disk=" + ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(m2.toString(), "\n") + " volumeCount=" + i);
+        Intent m3 = BatteryService$$ExternalSyntheticOutline0.m(83886080, "android.os.storage.action.DISK_SCANNED");
+        m3.putExtra("android.os.storage.extra.DISK_ID", diskInfo.id);
+        m3.putExtra("android.os.storage.extra.VOLUME_COUNT", i);
+        storageManagerService.mHandler.obtainMessage(7, m3).sendToTarget();
+        CountDownLatch countDownLatch = (CountDownLatch) storageManagerService.mDiskScanLatches.remove(diskInfo.id);
         if (countDownLatch != null) {
             countDownLatch.countDown();
         }
         diskInfo.volumeCount = i;
-        this.mCallbacks.notifyDiskScanned(diskInfo, i);
+        Callbacks callbacks = storageManagerService.mCallbacks;
+        int i4 = Callbacks.$r8$clinit;
+        callbacks.getClass();
+        SomeArgs obtain = SomeArgs.obtain();
+        obtain.arg1 = diskInfo.clone();
+        obtain.argi2 = i;
+        callbacks.obtainMessage(5, obtain).sendToTarget();
     }
 
-    public final void onVolumeCreatedLocked(VolumeInfo volumeInfo) {
+    /* renamed from: -$$Nest$monVolumeCreatedLocked, reason: not valid java name */
+    public static void m91$$Nest$monVolumeCreatedLocked(StorageManagerService storageManagerService, VolumeInfo volumeInfo) {
+        storageManagerService.getClass();
         ActivityManagerInternal activityManagerInternal = (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class);
         int i = volumeInfo.mountUserId;
         if (i >= 0 && !activityManagerInternal.isUserRunning(i, 0)) {
@@ -1283,257 +1442,2027 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
         }
         int i2 = volumeInfo.type;
         if (i2 == 2) {
-            Context createContextAsUser = this.mContext.createContextAsUser(UserHandle.of(volumeInfo.mountUserId), 0);
-            if (!(createContextAsUser != null ? ((UserManager) createContextAsUser.getSystemService(UserManager.class)).isMediaSharedWithParent() : false) && !this.mStorageSessionController.supportsExternalStorage(volumeInfo.mountUserId)) {
-                Slog.d("StorageManagerService", "Ignoring volume " + volumeInfo.getId() + " because user " + Integer.toString(volumeInfo.mountUserId) + " does not support external storage.");
-                return;
+            Context createContextAsUser = storageManagerService.mContext.createContextAsUser(UserHandle.of(volumeInfo.mountUserId), 0);
+            if (!(createContextAsUser != null ? ((UserManager) createContextAsUser.getSystemService(UserManager.class)).isMediaSharedWithParent() : false)) {
+                StorageSessionController storageSessionController = storageManagerService.mStorageSessionController;
+                int i3 = volumeInfo.mountUserId;
+                storageSessionController.getClass();
+                Intent intent = new Intent("android.service.storage.ExternalStorageService");
+                intent.setPackage(storageSessionController.mExternalStorageServicePackageName);
+                ResolveInfo resolveServiceAsUser = storageSessionController.mContext.getPackageManager().resolveServiceAsUser(intent, 786564, i3);
+                if (!((resolveServiceAsUser == null ? null : resolveServiceAsUser.serviceInfo) != null)) {
+                    Slog.d("StorageManagerService", "Ignoring volume " + volumeInfo.getId() + " because user " + Integer.toString(volumeInfo.mountUserId) + " does not support external storage.");
+                    return;
+                }
             }
-            VolumeInfo findPrivateForEmulated = ((StorageManager) this.mContext.getSystemService(StorageManager.class)).findPrivateForEmulated(volumeInfo);
-            if ((Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, this.mPrimaryStorageUuid) && "private".equals(findPrivateForEmulated.id)) || Objects.equals(findPrivateForEmulated.fsUuid, this.mPrimaryStorageUuid)) {
+            VolumeInfo findPrivateForEmulated = ((StorageManager) storageManagerService.mContext.getSystemService(StorageManager.class)).findPrivateForEmulated(volumeInfo);
+            if ((Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, storageManagerService.mPrimaryStorageUuid) && "private".equals(findPrivateForEmulated.id)) || Objects.equals(findPrivateForEmulated.fsUuid, storageManagerService.mPrimaryStorageUuid)) {
                 Slog.v("StorageManagerService", "Found primary storage at #1 " + volumeInfo);
-                volumeInfo.mountFlags = volumeInfo.mountFlags | 1 | 4;
-                this.mHandler.obtainMessage(5, volumeInfo).sendToTarget();
+                volumeInfo.mountFlags = volumeInfo.mountFlags | 5;
+                storageManagerService.mHandler.obtainMessage(5, volumeInfo).sendToTarget();
                 return;
             }
             return;
         }
         if (i2 == 0) {
-            if ("primary_physical".equals(this.mPrimaryStorageUuid) && volumeInfo.disk.isDefaultPrimary()) {
+            if ("primary_physical".equals(storageManagerService.mPrimaryStorageUuid) && volumeInfo.disk.isDefaultPrimary()) {
                 Slog.v("StorageManagerService", "Found primary storage at #2 " + volumeInfo);
-                volumeInfo.mountFlags = volumeInfo.mountFlags | 1 | 4;
+                volumeInfo.mountFlags = volumeInfo.mountFlags | 5;
             }
             if (volumeInfo.disk.isAdoptable() && volumeInfo.disk.isSd()) {
                 volumeInfo.mountFlags |= 4;
             }
-            volumeInfo.mountUserId = this.mCurrentUserId;
-            this.mHandler.obtainMessage(5, volumeInfo).sendToTarget();
+            volumeInfo.mountUserId = storageManagerService.mCurrentUserId;
+            storageManagerService.mHandler.obtainMessage(5, volumeInfo).sendToTarget();
             return;
         }
         if (i2 == 1) {
-            this.mHandler.obtainMessage(5, volumeInfo).sendToTarget();
+            storageManagerService.mHandler.obtainMessage(5, volumeInfo).sendToTarget();
             return;
         }
-        if (i2 == 5) {
+        if (i2 != 5) {
+            Slog.d("StorageManagerService", "Skipping automatic mounting of " + volumeInfo);
+        } else {
             if (volumeInfo.disk.isStubVisible()) {
                 volumeInfo.mountFlags |= 4;
             } else {
                 volumeInfo.mountFlags |= 2;
             }
-            volumeInfo.mountUserId = this.mCurrentUserId;
-            this.mHandler.obtainMessage(5, volumeInfo).sendToTarget();
-            return;
+            volumeInfo.mountUserId = storageManagerService.mCurrentUserId;
+            storageManagerService.mHandler.obtainMessage(5, volumeInfo).sendToTarget();
         }
-        Slog.d("StorageManagerService", "Skipping automatic mounting of " + volumeInfo);
     }
 
-    public final boolean isBroadcastWorthy(VolumeInfo volumeInfo) {
-        int type = volumeInfo.getType();
-        if (type != 0 && type != 1 && type != 2 && type != 5) {
-            return false;
-        }
-        int state = volumeInfo.getState();
-        if (state != 0 && state != 2 && state != 3 && state != 5 && state != 6) {
-            if (state == 7) {
-                DiskInfo disk = volumeInfo.getDisk();
-                if (disk == null || !disk.isUsb()) {
-                    return false;
-                }
-            } else if (state != 8) {
-                return false;
+    /* renamed from: -$$Nest$mremoveObbStateLocked, reason: not valid java name */
+    public static void m92$$Nest$mremoveObbStateLocked(StorageManagerService storageManagerService, ObbState obbState) {
+        storageManagerService.getClass();
+        IBinder asBinder = obbState.token.asBinder();
+        List list = (List) ((HashMap) storageManagerService.mObbMounts).get(asBinder);
+        if (list != null) {
+            if (list.remove(obbState)) {
+                obbState.token.asBinder().unlinkToDeath(obbState, 0);
+            }
+            if (list.isEmpty()) {
+                ((HashMap) storageManagerService.mObbMounts).remove(asBinder);
             }
         }
-        return true;
+        ((HashMap) storageManagerService.mObbPathToStateMap).remove(obbState.rawPath);
     }
 
-    public final void onVolumeStateChangedLocked(final VolumeInfo volumeInfo, int i) {
-        if (volumeInfo.type == 2) {
-            if (i != 2) {
-                this.mFuseMountedUser.remove(Integer.valueOf(volumeInfo.getMountUserId()));
-            } else if (this.mVoldAppDataIsolationEnabled) {
-                final int mountUserId = volumeInfo.getMountUserId();
-                new Thread(new Runnable() { // from class: com.android.server.StorageManagerService$$ExternalSyntheticLambda3
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StorageManagerService.this.lambda$onVolumeStateChangedLocked$1(mountUserId, volumeInfo);
+    /* renamed from: -$$Nest$mscrubPath, reason: not valid java name */
+    public static String m93$$Nest$mscrubPath(StorageManagerService storageManagerService, String str) {
+        storageManagerService.getClass();
+        if (str.startsWith(Environment.getDataDirectory().getAbsolutePath())) {
+            return "internal";
+        }
+        VolumeRecord findRecordForPath = storageManagerService.findRecordForPath(str);
+        if (findRecordForPath == null || findRecordForPath.createdMillis == 0) {
+            return "unknown";
+        }
+        return AmFmBandRange$$ExternalSyntheticOutline0.m((int) ((System.currentTimeMillis() - findRecordForPath.createdMillis) / 604800000), new StringBuilder("ext:"), "w");
+    }
+
+    /* JADX WARN: Type inference failed for: r3v12, types: [com.android.server.StorageManagerService$1] */
+    /* JADX WARN: Type inference failed for: r3v13, types: [com.android.server.StorageManagerService$1] */
+    /* JADX WARN: Type inference failed for: r3v14, types: [com.android.server.StorageManagerService$4] */
+    /* JADX WARN: Type inference failed for: r3v15, types: [com.android.server.StorageManagerService$1] */
+    public StorageManagerService(Context context) {
+        WatchedUnlockedUsers watchedUnlockedUsers = new WatchedUnlockedUsers();
+        int[] iArr = EmptyArray.INT;
+        watchedUnlockedUsers.users = iArr;
+        UserManager.invalidateIsUserUnlockedCache();
+        this.mCeUnlockedUsers = watchedUnlockedUsers;
+        this.mSystemUnlockedUsers = iArr;
+        this.mDisks = new ArrayMap();
+        this.mVolumes = new ArrayMap();
+        this.mRecords = new ArrayMap();
+        this.mDiskScanLatches = new ArrayMap();
+        this.mCloudMediaProviders = new SparseArray();
+        this.mMediaStoreAuthorityAppId = -1;
+        this.mDownloadsAuthorityAppId = -1;
+        this.mExternalStorageAuthorityAppId = -1;
+        this.mCurrentUserId = 0;
+        this.mRemountCurrentUserVolumesOnUnlock = false;
+        this.mAppFuseLock = new Object();
+        this.mNextAppFuseName = 0;
+        this.mAppFuseBridge = null;
+        this.mIsMediaSharedWithParent = new HashMap();
+        this.mAsecMountSet = new HashSet();
+        this.mUnmountLock = new Object();
+        this.mAsecsScanned = new CountDownLatch(1);
+        this.preSDPolicy = true;
+        this.mUserSharesMediaWith = new SparseIntArray();
+        this.mBootCompleted = false;
+        this.mDaemonConnected = false;
+        this.mSecureKeyguardShowing = true;
+        this.mObbMounts = new HashMap();
+        this.mObbPathToStateMap = new HashMap();
+        this.mStorageManagerInternal = new StorageManagerInternalImpl();
+        this.mUidsWithLegacyExternalStorage = new ArraySet();
+        this.mPackageMonitorsForUser = new SparseArray();
+        this.mCeStorageEventCallbacks = new CopyOnWriteArrayList();
+        final int i = 0;
+        this.mUserReceiver = new BroadcastReceiver(this) { // from class: com.android.server.StorageManagerService.1
+            public final /* synthetic */ StorageManagerService this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            /* JADX WARN: Removed duplicated region for block: B:45:0x00e1 A[Catch: IllegalArgumentException -> 0x00d6, TryCatch #3 {IllegalArgumentException -> 0x00d6, blocks: (B:29:0x00bb, B:32:0x00c1, B:38:0x00d1, B:42:0x00d9, B:45:0x00e1, B:48:0x00e6), top: B:28:0x00bb, inners: #4 }] */
+            @Override // android.content.BroadcastReceiver
+            /*
+                Code decompiled incorrectly, please refer to instructions dump.
+                To view partially-correct code enable 'Show inconsistent code' option in preferences
+            */
+            public final void onReceive(android.content.Context r7, android.content.Intent r8) {
+                /*
+                    Method dump skipped, instructions count: 404
+                    To view this dump change 'Code comments level' option to 'DEBUG'
+                */
+                throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.AnonymousClass1.onReceive(android.content.Context, android.content.Intent):void");
+            }
+        };
+        final int i2 = 2;
+        this.mPassReceiver = new BroadcastReceiver(this) { // from class: com.android.server.StorageManagerService.1
+            public final /* synthetic */ StorageManagerService this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                /*
+                    Method dump skipped, instructions count: 404
+                    To view this dump change 'Code comments level' option to 'DEBUG'
+                */
+                throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.AnonymousClass1.onReceive(android.content.Context, android.content.Intent):void");
+            }
+        };
+        this.mListener = new IVoldListener.Stub() { // from class: com.android.server.StorageManagerService.4
+            /* JADX WARN: Removed duplicated region for block: B:11:0x0037  */
+            /* JADX WARN: Removed duplicated region for block: B:19:0x003d A[Catch: all -> 0x0027, TryCatch #0 {all -> 0x0027, blocks: (B:4:0x0005, B:13:0x003f, B:14:0x004b, B:18:0x003a, B:19:0x003d, B:20:0x001c, B:23:0x0029), top: B:3:0x0005 }] */
+            @Override // android.os.IVoldListener
+            /*
+                Code decompiled incorrectly, please refer to instructions dump.
+                To view partially-correct code enable 'Show inconsistent code' option in preferences
+            */
+            public final void onDiskCreated(java.lang.String r6, int r7) {
+                /*
+                    r5 = this;
+                    com.android.server.StorageManagerService r0 = com.android.server.StorageManagerService.this
+                    java.lang.Object r0 = r0.mLock
+                    monitor-enter(r0)
+                    java.lang.String r1 = "persist.sys.adoptable"
+                    java.lang.String r1 = android.os.SystemProperties.get(r1)     // Catch: java.lang.Throwable -> L27
+                    int r2 = r1.hashCode()     // Catch: java.lang.Throwable -> L27
+                    r3 = 464944051(0x1bb67bb3, float:3.0189313E-22)
+                    r4 = 1
+                    if (r2 == r3) goto L29
+                    r3 = 1528363547(0x5b18fa1b, float:4.305919E16)
+                    if (r2 == r3) goto L1c
+                    goto L34
+                L1c:
+                    java.lang.String r2 = "force_off"
+                    boolean r1 = r1.equals(r2)     // Catch: java.lang.Throwable -> L27
+                    if (r1 == 0) goto L34
+                    r1 = r4
+                    goto L35
+                L27:
+                    r5 = move-exception
+                    goto L4d
+                L29:
+                    java.lang.String r2 = "force_on"
+                    boolean r1 = r1.equals(r2)     // Catch: java.lang.Throwable -> L27
+                    if (r1 == 0) goto L34
+                    r1 = 0
+                    goto L35
+                L34:
+                    r1 = -1
+                L35:
+                    if (r1 == 0) goto L3d
+                    if (r1 == r4) goto L3a
+                    goto L3f
+                L3a:
+                    r7 = r7 & (-2)
+                    goto L3f
+                L3d:
+                    r7 = r7 | 1
+                L3f:
+                    com.android.server.StorageManagerService r5 = com.android.server.StorageManagerService.this     // Catch: java.lang.Throwable -> L27
+                    android.util.ArrayMap r5 = r5.mDisks     // Catch: java.lang.Throwable -> L27
+                    android.os.storage.DiskInfo r1 = new android.os.storage.DiskInfo     // Catch: java.lang.Throwable -> L27
+                    r1.<init>(r6, r7)     // Catch: java.lang.Throwable -> L27
+                    r5.put(r6, r1)     // Catch: java.lang.Throwable -> L27
+                    monitor-exit(r0)     // Catch: java.lang.Throwable -> L27
+                    return
+                L4d:
+                    monitor-exit(r0)     // Catch: java.lang.Throwable -> L27
+                    throw r5
+                */
+                throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.AnonymousClass4.onDiskCreated(java.lang.String, int):void");
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onDiskDestroyed(String str) {
+                synchronized (StorageManagerService.this.mLock) {
+                    try {
+                        DiskInfo diskInfo = (DiskInfo) StorageManagerService.this.mDisks.remove(str);
+                        if (diskInfo != null) {
+                            Callbacks callbacks = StorageManagerService.this.mCallbacks;
+                            int i3 = Callbacks.$r8$clinit;
+                            callbacks.getClass();
+                            SomeArgs obtain = SomeArgs.obtain();
+                            obtain.arg1 = diskInfo.clone();
+                            callbacks.obtainMessage(6, obtain).sendToTarget();
+                        }
+                    } catch (Throwable th) {
+                        throw th;
                     }
-                }).start();
+                }
             }
-        }
-    }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onVolumeStateChangedLocked$1(int i, VolumeInfo volumeInfo) {
-        Map map;
-        if (i == 0 && Build.VERSION.DEVICE_INITIAL_SDK_INT < 29) {
-            this.mPmInternal.migrateLegacyObbData();
-        }
-        synchronized (this.mLock) {
-            this.mFuseMountedUser.add(Integer.valueOf(i));
-        }
-        int i2 = 0;
-        while (true) {
-            if (i2 >= 5) {
-                map = null;
-                break;
+            @Override // android.os.IVoldListener
+            public final void onDiskMetadataChanged(String str, long j, String str2, String str3) {
+                synchronized (StorageManagerService.this.mLock) {
+                    try {
+                        DiskInfo diskInfo = (DiskInfo) StorageManagerService.this.mDisks.get(str);
+                        if (diskInfo != null) {
+                            diskInfo.size = j;
+                            diskInfo.label = str2;
+                            diskInfo.sysPath = str3;
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
             }
-            try {
-                map = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).getProcessesWithPendingBindMounts(volumeInfo.getMountUserId());
-                break;
-            } catch (IllegalStateException unused) {
-                Slog.i("StorageManagerService", "Some processes are starting, retry");
-                SystemClock.sleep(100L);
-                i2++;
-            }
-        }
-        if (map != null) {
-            remountAppStorageDirs(map, i);
-        } else {
-            Slog.wtf("StorageManagerService", "Not able to getStorageNotOptimizedProcesses() after 5 retries");
-        }
-    }
 
-    public final void onVolumeStateChangedAsync(VolumeInfo volumeInfo, int i, int i2) {
-        if (i2 == 2) {
-            try {
-                try {
-                    prepareUserStorageIfNeeded(volumeInfo);
-                } catch (Exception unused) {
-                    this.mVold.unmount(volumeInfo.id);
+            @Override // android.os.IVoldListener
+            public final void onDiskScanned(String str) {
+                synchronized (StorageManagerService.this.mLock) {
+                    try {
+                        DiskInfo diskInfo = (DiskInfo) StorageManagerService.this.mDisks.get(str);
+                        if (diskInfo != null) {
+                            StorageManagerService.m90$$Nest$monDiskScannedLocked(StorageManagerService.this, diskInfo);
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onEncryptionStateChanged(String str, String str2, String str3) {
+                synchronized (StorageManagerService.this.mLock) {
+                    Slog.d("StorageManagerService", "onEncryptionStateChanged state = " + str2 + ", type : " + str3);
+                    if (((VolumeInfo) StorageManagerService.this.mVolumes.get(str)) != null) {
+                        if ("encryptable".equals(str2)) {
+                            SemSdCardEncryption semSdCardEncryption = new SemSdCardEncryption(StorageManagerService.this.mContext);
+                            PersistableBundle persistableBundle = new PersistableBundle();
+                            persistableBundle.putInt(Constants.JSON_CLIENT_DATA_STATUS, 0);
+                            persistableBundle.putString("description", str3);
+                            try {
+                                semSdCardEncryption.getListener().onStatus(692, persistableBundle);
+                            } catch (RemoteException e) {
+                                Slog.e("StorageManagerService", "failed to send onStatus()", e);
+                            }
+                            str3 = "block";
+                        }
+                        SystemProperties.set("sec.fle.encryption.status", str2);
+                        SystemProperties.set("sec.vold.ext_encrypted_type", str3);
+                        Slog.d("StorageManagerService", "onEncryptionStateChanged status updated ");
+                    }
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeCreated(String str, int i3, String str2, String str3, int i4) {
+                synchronized (StorageManagerService.this.mLock) {
+                    VolumeInfo volumeInfo = new VolumeInfo(str, i3, (DiskInfo) StorageManagerService.this.mDisks.get(str2), str3);
+                    volumeInfo.mountUserId = i4;
+                    StorageManagerService.this.mVolumes.put(str, volumeInfo);
+                    StorageManagerService.m91$$Nest$monVolumeCreatedLocked(StorageManagerService.this, volumeInfo);
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeDestroyed(String str) {
+                VolumeInfo volumeInfo;
+                synchronized (StorageManagerService.this.mLock) {
+                    volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.remove(str);
+                }
+                if (volumeInfo != null) {
+                    StorageManagerService.this.mStorageSessionController.onVolumeRemove(volumeInfo);
+                    try {
+                        if (volumeInfo.type == 1) {
+                            Installer installer = StorageManagerService.this.mInstaller;
+                            String fsUuid = volumeInfo.getFsUuid();
+                            if (installer.checkBeforeRemote()) {
+                                try {
+                                    installer.mInstalld.onPrivateVolumeRemoved(fsUuid);
+                                } catch (Exception e) {
+                                    Installer.InstallerException.from(e);
+                                    throw null;
+                                }
+                            }
+                        }
+                    } catch (Installer.InstallerException e2) {
+                        Slog.i("StorageManagerService", "Failed when private volume unmounted " + volumeInfo, e2);
+                    }
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeInternalPathChanged(String str, String str2) {
+                synchronized (StorageManagerService.this.mLock) {
+                    try {
+                        VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.get(str);
+                        if (volumeInfo != null) {
+                            volumeInfo.internalPath = str2;
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeMetadataChanged(String str, String str2, String str3, String str4) {
+                synchronized (StorageManagerService.this.mLock) {
+                    try {
+                        VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.get(str);
+                        if (volumeInfo != null) {
+                            volumeInfo.fsType = str2;
+                            volumeInfo.fsUuid = str3;
+                            volumeInfo.fsLabel = str4;
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumePathChanged(String str, String str2) {
+                synchronized (StorageManagerService.this.mLock) {
+                    try {
+                        VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.get(str);
+                        if (volumeInfo != null) {
+                            volumeInfo.path = str2;
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void onVolumeStateChanged(String str, int i3, int i4) {
+                synchronized (StorageManagerService.this.mLock) {
+                    try {
+                        VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.get(str);
+                        if (volumeInfo != null) {
+                            int i5 = volumeInfo.state;
+                            volumeInfo.state = i3;
+                            final VolumeInfo volumeInfo2 = new VolumeInfo(volumeInfo);
+                            volumeInfo2.mountUserId = i4;
+                            SomeArgs obtain = SomeArgs.obtain();
+                            obtain.arg1 = volumeInfo2;
+                            obtain.argi1 = i5;
+                            obtain.argi2 = i3;
+                            StorageManagerService.this.mHandler.obtainMessage(15, obtain).sendToTarget();
+                            final StorageManagerService storageManagerService = StorageManagerService.this;
+                            storageManagerService.getClass();
+                            if (volumeInfo2.type == 2) {
+                                if (i3 != 2) {
+                                    ((ArraySet) storageManagerService.mFuseMountedUser).remove(Integer.valueOf(volumeInfo2.getMountUserId()));
+                                } else if (storageManagerService.mVoldAppDataIsolationEnabled) {
+                                    final int mountUserId = volumeInfo2.getMountUserId();
+                                    new Thread(new Runnable() { // from class: com.android.server.StorageManagerService$$ExternalSyntheticLambda4
+                                        @Override // java.lang.Runnable
+                                        public final void run() {
+                                            StorageManagerService storageManagerService2 = StorageManagerService.this;
+                                            int i6 = mountUserId;
+                                            VolumeInfo volumeInfo3 = volumeInfo2;
+                                            Map map = null;
+                                            if (i6 == 0) {
+                                                storageManagerService2.getClass();
+                                                if (Build.VERSION.DEVICE_INITIAL_SDK_INT < 29) {
+                                                    PackageManagerService.PackageManagerInternalImpl packageManagerInternalImpl = (PackageManagerService.PackageManagerInternalImpl) storageManagerService2.mPmInternal;
+                                                    packageManagerInternalImpl.getClass();
+                                                    try {
+                                                        Installer installer = PackageManagerService.this.mInstaller;
+                                                        if (installer.checkBeforeRemote()) {
+                                                            try {
+                                                                installer.mInstalld.migrateLegacyObbData();
+                                                            } catch (Exception e) {
+                                                                Installer.InstallerException.from(e);
+                                                                throw null;
+                                                            }
+                                                        }
+                                                    } catch (Exception e2) {
+                                                        android.util.Slog.wtf("PackageManager", e2);
+                                                    }
+                                                }
+                                            }
+                                            synchronized (storageManagerService2.mLock) {
+                                                ((ArraySet) storageManagerService2.mFuseMountedUser).add(Integer.valueOf(i6));
+                                            }
+                                            for (int i7 = 0; i7 < 5; i7++) {
+                                                try {
+                                                    map = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).getProcessesWithPendingBindMounts(volumeInfo3.getMountUserId());
+                                                    break;
+                                                } catch (IllegalStateException unused) {
+                                                    Slog.i("StorageManagerService", "Some processes are starting, retry");
+                                                    SystemClock.sleep(100L);
+                                                }
+                                            }
+                                            if (map == null) {
+                                                Slog.wtf("StorageManagerService", "Not able to getStorageNotOptimizedProcesses() after 5 retries");
+                                                return;
+                                            }
+                                            for (Map.Entry entry : map.entrySet()) {
+                                                int intValue = ((Integer) entry.getKey()).intValue();
+                                                String str2 = (String) entry.getValue();
+                                                Slog.i("StorageManagerService", "Remounting storage for pid: " + intValue);
+                                                String[] sharedUserPackagesForPackage = storageManagerService2.mPmInternal.getSharedUserPackagesForPackage(i6, str2);
+                                                int packageUid = storageManagerService2.mPmInternal.getPackageUid(str2, 0L, i6);
+                                                if (sharedUserPackagesForPackage.length == 0) {
+                                                    sharedUserPackagesForPackage = new String[]{str2};
+                                                }
+                                                try {
+                                                    storageManagerService2.mVold.remountAppStorageDirs(packageUid, intValue, sharedUserPackagesForPackage);
+                                                } catch (RemoteException e3) {
+                                                    throw e3.rethrowAsRuntimeException();
+                                                }
+                                            }
+                                        }
+                                    }).start();
+                                }
+                            }
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+
+            @Override // android.os.IVoldListener
+            public final void sendVoldMessage(String str) {
+                Intent intent = new Intent("com.samsung.intent.action.EXTERNAL_STORAGE_WARNING_SEC");
+                if (str == null) {
+                    Slog.d("StorageManagerService", "Intent[" + intent + "] cannot be sent");
                     return;
                 }
+                intent.putExtra("message", str);
+                if ("BAD_REMOVAL_SDCARD".equals(str)) {
+                    StorageManagerService.this.getClass();
+                    try {
+                        File file = new File("/sys/class/sec/sdcard/status");
+                        if (!file.exists()) {
+                            Slog.d("StorageManagerService", "Ext SD Card Tray State File Not Exist");
+                        } else if (!FileUtils.readTextFile(file, 0, null).trim().equals("Notray")) {
+                            Slog.d("StorageManagerService", "Ext SD Card Tray State is not proper");
+                        }
+                    } catch (Exception e) {
+                        Slog.e("StorageManagerService", "Could't read Ext SD Card Tray State File : ", e);
+                    }
+                    StorageManagerService.this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
+                    Slog.d("StorageManagerService", "[" + str + "] Bad Removal broadcasting " + intent + " extras: " + intent.getExtras());
+                }
+                if (!"BAD_REMOVAL_USB".equals(str) && !"REBOOT".equals(str)) {
+                    Slog.d("StorageManagerService", "Don't send the Intent[" + intent + "] extras: " + intent.getExtras());
+                    return;
+                }
+                StorageManagerService.this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
+                Slog.d("StorageManagerService", "[" + str + "] Bad Removal broadcasting " + intent + " extras: " + intent.getExtras());
+            }
+        };
+        final int i3 = 1;
+        this.mPolicyReceiver = new BroadcastReceiver(this) { // from class: com.android.server.StorageManagerService.1
+            public final /* synthetic */ StorageManagerService this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                /*
+                    Method dump skipped, instructions count: 404
+                    To view this dump change 'Code comments level' option to 'DEBUG'
+                */
+                throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.AnonymousClass1.onReceive(android.content.Context, android.content.Intent):void");
+            }
+        };
+        sSelf = this;
+        this.mVoldAppDataIsolationEnabled = SystemProperties.getBoolean("persist.sys.vold_app_data_isolation_enabled", false);
+        this.mContext = context;
+        this.mCallbacks = new Callbacks(FgThread.get().getLooper());
+        this.mHandler = new Callbacks(this, KnoxCaptureInputFilter$$ExternalSyntheticOutline0.m("StorageManagerService").getLooper(), 2);
+        this.mObbActionHandler = new Callbacks(this, IoThread.get().getLooper(), 1);
+        this.mStorageSessionController = new StorageSessionController(context);
+        Installer installer = new Installer(context);
+        this.mInstaller = installer;
+        installer.onStart();
+        File file = new File(new File(Environment.getDataDirectory(), "system"), "last-fstrim");
+        this.mLastMaintenanceFile = file;
+        if (file.exists()) {
+            this.mLastMaintenance = file.lastModified();
+        } else {
+            try {
+                new FileOutputStream(file).close();
+            } catch (IOException unused) {
+                Slog.e("StorageManagerService", "Unable to create fstrim record " + this.mLastMaintenanceFile.getPath());
+            }
+        }
+        this.mSettingsFile = new AtomicFile(new File(Environment.getDataSystemDirectory(), "storage.xml"), "storage-settings");
+        this.mWriteRecordFile = new AtomicFile(new File(Environment.getDataSystemDirectory(), "storage-write-records"));
+        sSmartIdleMaintPeriod = DeviceConfig.getInt("storage_native_boot", "smart_idle_maint_period", 60);
+        if (sSmartIdleMaintPeriod < 10) {
+            sSmartIdleMaintPeriod = 10;
+        } else if (sSmartIdleMaintPeriod > 1440) {
+            sSmartIdleMaintPeriod = 1440;
+        }
+        this.mMaxWriteRecords = 4320 / sSmartIdleMaintPeriod;
+        this.mStorageWriteRecords = new int[this.mMaxWriteRecords];
+        synchronized (this.mLock) {
+            readSettingsLocked();
+        }
+        LocalServices.addService(StorageManagerInternal.class, this.mStorageManagerInternal);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.USER_ADDED");
+        intentFilter.addAction("android.intent.action.USER_REMOVED");
+        this.mContext.registerReceiver(this.mUserReceiver, intentFilter, null, this.mHandler);
+        IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter2.addAction("android.intent.action.PACKAGE_REMOVED");
+        intentFilter2.addDataScheme("package");
+        this.mContext.registerReceiver(this.mPassReceiver, intentFilter2, null, this.mHandler);
+        synchronized (this.mLock) {
+            VolumeInfo volumeInfo = new VolumeInfo("private", 1, (DiskInfo) null, (String) null);
+            volumeInfo.state = 2;
+            volumeInfo.path = Environment.getDataDirectory().getAbsolutePath();
+            this.mVolumes.put(volumeInfo.id, volumeInfo);
+        }
+        Watchdog.getInstance().addMonitor(this);
+        this.mContext.registerReceiver(this.mPolicyReceiver, new IntentFilter("android.app.action.DEVICE_POLICY_MANAGER_STATE_CHANGED"), null, null);
+    }
+
+    public static boolean chkMountUnmountFormatCaller(String str) {
+        if ("com.sec.android.app.myfiles".equalsIgnoreCase(str)) {
+            return true;
+        }
+        Slog.d("StorageManagerService", "Caller is not MyFiles");
+        return false;
+    }
+
+    public static String createVolumeInfoStrForPulbicVolume(VolumeInfo volumeInfo) {
+        String valueToString = DebugUtils.valueToString(VolumeInfo.class, "TYPE_", volumeInfo.type);
+        String diskId = volumeInfo.getDiskId() != null ? volumeInfo.getDiskId() : "null";
+        String str = volumeInfo.partGuid;
+        if (str == null) {
+            str = "";
+        }
+        String flagsToString = DebugUtils.flagsToString(VolumeInfo.class, "MOUNT_FLAG_", volumeInfo.mountFlags);
+        String valueToString2 = DebugUtils.valueToString(VolumeInfo.class, "STATE_", volumeInfo.state);
+        StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1("VolumeInfo".concat("{" + volumeInfo.id + "}:"), "\n"));
+        StringBuilder m2 = InitialConfiguration$$ExternalSyntheticOutline0.m("type=", valueToString, " diskId=", diskId, " partGuid=");
+        m2.append(str);
+        m.append(m2.toString());
+        StringBuilder m3 = BootReceiver$$ExternalSyntheticOutline0.m(m.toString());
+        m3.append(String.format(" mountFlags=%s mountUserId=%d state=%s", flagsToString, Integer.valueOf(volumeInfo.getMountUserId()), valueToString2));
+        StringBuilder m4 = BootReceiver$$ExternalSyntheticOutline0.m(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(m3.toString(), "\n"));
+        String str2 = volumeInfo.fsType;
+        String str3 = volumeInfo.fsUuid;
+        String str4 = volumeInfo.path;
+        String str5 = volumeInfo.internalPath;
+        StringBuilder m5 = InitialConfiguration$$ExternalSyntheticOutline0.m(" fsType=", str2, " fsUuid=", str3, " path=");
+        m5.append(str4);
+        m5.append(" internalPath=");
+        m5.append(str5);
+        m4.append(m5.toString());
+        return m4.toString();
+    }
+
+    public static void extendWatchdogTimeout(String str) {
+        Watchdog watchdog = Watchdog.getInstance();
+        watchdog.mMonitorChecker.pauseForLocked(str);
+        watchdog.pauseWatchingCurrentThreadFor(str);
+    }
+
+    public static boolean isMediaPath(String str) {
+        try {
+            String canonicalPath = new File(str).getCanonicalPath();
+            if (canonicalPath != null) {
+                return canonicalPath.startsWith("/data/media");
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean isRootedDevice() {
+        String str = SystemProperties.get("ro.boot.flash.locked");
+        Slog.d("StorageManagerService", "phone status : " + str);
+        if ("0".equalsIgnoreCase(str)) {
+            return true;
+        }
+        String[] strArr = {"/sbin/su", "/system/su", "/system/bin/su", "/system/xbin/su", "/system/bin/.ext/.su", "/data/local/xbin/su", "/data/local/bin/su", "/system/sd/xbin/su", "/system/bin/failsafe/su", "/data/local/su", "/system/app/Superuser.apk", "/system/usr/we-need-root/su-backup", "/system/xbin/mu"};
+        String[] strArr2 = {"/data", "/system", "/system/bin", "/system/sbin", "/system/xbin", "/vendor/bin", "/sys", "/sbin", "/etc", "/proc", "/dev"};
+        for (int i = 0; i < 13; i++) {
+            String str2 = strArr[i];
+            if (TextUtils.isEmpty(str2)) {
+                break;
+            }
+            if (BatteryService$$ExternalSyntheticOutline0.m45m(str2)) {
+                Slog.d("StorageManagerService", "rooting:su located at : " + str2);
+                return true;
+            }
+        }
+        for (int i2 = 0; i2 < 11; i2++) {
+            String str3 = strArr2[i2];
+            if (TextUtils.isEmpty(str3)) {
+                break;
+            }
+            if (new File(str3).canWrite()) {
+                Slog.d("StorageManagerService", "rooting:read only changed as writable : " + str3);
+            }
+        }
+        return false;
+    }
+
+    public static boolean isValidPath(String str) {
+        try {
+            String canonicalPath = new File(str).getCanonicalPath();
+            if (canonicalPath == null) {
+                return false;
+            }
+            if (!canonicalPath.startsWith("/data/media") && !canonicalPath.startsWith("/data/sec")) {
+                Slog.d("StorageManagerService", "input path is not supported");
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static VolumeRecord readVolumeRecord(TypedXmlPullParser typedXmlPullParser) {
+        VolumeRecord volumeRecord = new VolumeRecord(typedXmlPullParser.getAttributeInt((String) null, "type"), XmlUtils.readStringAttribute(typedXmlPullParser, "fsUuid"));
+        volumeRecord.partGuid = XmlUtils.readStringAttribute(typedXmlPullParser, "partGuid");
+        volumeRecord.nickname = XmlUtils.readStringAttribute(typedXmlPullParser, "nickname");
+        volumeRecord.userFlags = typedXmlPullParser.getAttributeInt((String) null, "userFlags");
+        volumeRecord.createdMillis = typedXmlPullParser.getAttributeLong((String) null, "createdMillis", 0L);
+        volumeRecord.lastSeenMillis = typedXmlPullParser.getAttributeLong((String) null, "lastSeenMillis", 0L);
+        volumeRecord.lastTrimMillis = typedXmlPullParser.getAttributeLong((String) null, "lastTrimMillis", 0L);
+        volumeRecord.lastBenchMillis = typedXmlPullParser.getAttributeLong((String) null, "lastBenchMillis", 0L);
+        return volumeRecord;
+    }
+
+    public static void waitForLatch(CountDownLatch countDownLatch, long j, String str) {
+        long elapsedRealtime = SystemClock.elapsedRealtime();
+        while (!countDownLatch.await(5000L, TimeUnit.MILLISECONDS)) {
+            try {
+                Slog.w("StorageManagerService", "Thread " + Thread.currentThread().getName() + " still waiting for " + str + "...");
+            } catch (InterruptedException unused) {
+                Slog.w("StorageManagerService", "Interrupt while waiting for ".concat(str));
+            }
+            if (j > 0 && SystemClock.elapsedRealtime() > elapsedRealtime + j) {
+                StringBuilder sb = new StringBuilder("Thread ");
+                sb.append(Thread.currentThread().getName());
+                sb.append(" gave up waiting for ");
+                sb.append(str);
+                sb.append(" after ");
+                throw new TimeoutException(AudioConfig$$ExternalSyntheticOutline0.m(sb, j, "ms"));
+            }
+        }
+    }
+
+    public static void writeVolumeRecord(TypedXmlSerializer typedXmlSerializer, VolumeRecord volumeRecord) {
+        typedXmlSerializer.startTag((String) null, "volume");
+        typedXmlSerializer.attributeInt((String) null, "type", volumeRecord.type);
+        XmlUtils.writeStringAttribute(typedXmlSerializer, "fsUuid", volumeRecord.fsUuid);
+        XmlUtils.writeStringAttribute(typedXmlSerializer, "partGuid", volumeRecord.partGuid);
+        XmlUtils.writeStringAttribute(typedXmlSerializer, "nickname", volumeRecord.nickname);
+        typedXmlSerializer.attributeInt((String) null, "userFlags", volumeRecord.userFlags);
+        typedXmlSerializer.attributeLong((String) null, "createdMillis", volumeRecord.createdMillis);
+        typedXmlSerializer.attributeLong((String) null, "lastSeenMillis", volumeRecord.lastSeenMillis);
+        typedXmlSerializer.attributeLong((String) null, "lastTrimMillis", volumeRecord.lastTrimMillis);
+        typedXmlSerializer.attributeLong((String) null, "lastBenchMillis", volumeRecord.lastBenchMillis);
+        typedXmlSerializer.endTag((String) null, "volume");
+    }
+
+    public final void abortChanges(String str, boolean z) {
+        if (Binder.getCallingUid() != 1000) {
+            throw new SecurityException("no permission to commit checkpoint changes");
+        }
+        this.mVold.abortChanges(str, z);
+    }
+
+    public final void abortIdleMaint(Runnable runnable) {
+        enforcePermission$1("android.permission.MOUNT_FORMAT_FILESYSTEMS");
+        try {
+            this.mVold.abortIdleMaint(new AnonymousClass11(this, runnable, 1));
+            Slog.d("StorageManagerService", "abortIdleMaint, HeimdAllFSThread = null");
+            HeimdAllFsService heimdAllFsService = this.mHeimdAllFs;
+            if (heimdAllFsService != null) {
+                android.util.Slog.w("HeimdAllFS", "Abort()");
+                heimdAllFsService.mHeimdallFsThread = null;
+            }
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+        }
+    }
+
+    public final void abortIdleMaintenance() {
+        abortIdleMaint(null);
+    }
+
+    public final int adjustAllocateFlags(int i, int i2, String str) {
+        if ((i & 1) != 0) {
+            this.mContext.enforceCallingOrSelfPermission("android.permission.ALLOCATE_AGGRESSIVE", "StorageManagerService");
+        }
+        int i3 = i & (-7);
+        AppOpsManager appOpsManager = (AppOpsManager) this.mContext.getSystemService(AppOpsManager.class);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            if (appOpsManager.isOperationActive(26, i2, str)) {
+                Slog.d("StorageManagerService", "UID " + i2 + " is actively using camera; letting them defy reserved cached data");
+                i3 |= 4;
+            }
+            return i3;
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final void allocateBytes(String str, long j, int i, String str2) {
+        int adjustAllocateFlags = adjustAllocateFlags(i, Binder.getCallingUid(), str2);
+        long allocatableBytes = getAllocatableBytes(str, adjustAllocateFlags | 8, str2);
+        if (j > allocatableBytes) {
+            long allocatableBytes2 = getAllocatableBytes(str, adjustAllocateFlags | 16, str2) + allocatableBytes;
+            if (j > allocatableBytes2) {
+                throw new ParcelableException(new IOException(AudioConfig$$ExternalSyntheticOutline0.m(BatteryService$$ExternalSyntheticOutline0.m("Failed to allocate ", j, " because only "), allocatableBytes2, " allocatable")));
+            }
+        }
+        StorageManager storageManager = (StorageManager) this.mContext.getSystemService(StorageManager.class);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                File findPathForUuid = storageManager.findPathForUuid(str);
+                ((PackageManagerService.PackageManagerInternalImpl) this.mPmInternal).mService.freeStorage(adjustAllocateFlags, str, j + ((adjustAllocateFlags & 1) != 0 ? storageManager.getStorageFullBytes(findPathForUuid) : storageManager.getStorageLowBytes(findPathForUuid)));
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            } catch (IOException e) {
+                throw new ParcelableException(e);
+            }
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final void benchmark(String str, IVoldTaskListener iVoldTaskListener) {
+        benchmark_enforcePermission();
+        try {
+            this.mVold.benchmark(str, new AnonymousClass9(this, iVoldTaskListener, 0));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
+        }
+    }
+
+    public final boolean checkChargeStatus() {
+        Intent registerReceiver = this.mContext.registerReceiver(null, new IntentFilter("android.intent.action.BATTERY_CHANGED"));
+        float intExtra = (registerReceiver.getIntExtra("level", -1) * 100.0f) / registerReceiver.getIntExtra("scale", -1);
+        if (intExtra >= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            return true;
+        }
+        Slog.w("StorageManagerService", "Battery level is " + intExtra + ", which is lower than threshold: 0.0");
+        return false;
+    }
+
+    public final boolean checkExternalSecureContainerMounted() {
+        DiskInfo disk;
+        for (VolumeInfo volumeInfo : ((StorageManager) this.mContext.getSystemService(StorageManager.class)).getVolumes()) {
+            if (volumeInfo.getState() == 2 && (disk = volumeInfo.getDisk()) != null && disk.isSd()) {
+                Slog.d("StorageManagerService", "Description : " + volumeInfo.getDescription() + " state : " + volumeInfo.getState());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final void cleanupSercureContainerList() {
+        synchronized (this.mAsecMountSet) {
+            try {
+                Iterator it = this.mAsecMountSet.iterator();
+                while (it.hasNext()) {
+                    if (((PackageInstalledMap) it.next()).external) {
+                        it.remove();
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void commitChanges() {
+        if (Binder.getCallingUid() != 1000) {
+            throw new SecurityException("no permission to commit checkpoint changes");
+        }
+        this.mVold.commitChanges();
+    }
+
+    public final void connectStoraged() {
+        IBinder service = ServiceManager.getService("storaged");
+        if (service != null) {
+            try {
+                service.linkToDeath(new AnonymousClass5(this, 0), 0);
+            } catch (RemoteException unused) {
+                service = null;
+            }
+        }
+        if (service != null) {
+            this.mStoraged = IStoraged.Stub.asInterface(service);
+        } else {
+            Slog.w("StorageManagerService", "storaged not found; trying again");
+        }
+        if (this.mStoraged == null) {
+            BackgroundThread.getHandler().postDelayed(new StorageManagerService$$ExternalSyntheticLambda1(0, this), 1000L);
+        } else {
+            this.mDaemonConnected = true;
+            this.mHandler.obtainMessage(2).sendToTarget();
+        }
+    }
+
+    public final void connectVold() {
+        IBinder service = ServiceManager.getService("vold");
+        if (service != null) {
+            try {
+                service.linkToDeath(new AnonymousClass5(this, 1), 0);
+            } catch (RemoteException unused) {
+                service = null;
+            }
+        }
+        if (service != null) {
+            this.mVold = IVold.Stub.asInterface(service);
+            try {
+                this.mVold.setListener(this.mListener);
+            } catch (RemoteException e) {
+                this.mVold = null;
+                Slog.w("StorageManagerService", "vold listener rejected; trying again", e);
+            }
+        } else {
+            Slog.w("StorageManagerService", "vold not found; trying again");
+        }
+        if (this.mVold == null) {
+            BackgroundThread.getHandler().postDelayed(new StorageManagerService$$ExternalSyntheticLambda1(1, this), 1000L);
+            return;
+        }
+        try {
+            int[] unlockedUsers = this.mVold.getUnlockedUsers();
+            if (!ArrayUtils.isEmpty(unlockedUsers)) {
+                Slog.d("StorageManagerService", "CE storage for users " + Arrays.toString(unlockedUsers) + " is already unlocked");
+                synchronized (this.mLock) {
+                    WatchedUnlockedUsers watchedUnlockedUsers = this.mCeUnlockedUsers;
+                    watchedUnlockedUsers.getClass();
+                    for (int i : unlockedUsers) {
+                        watchedUnlockedUsers.users = ArrayUtils.appendInt(watchedUnlockedUsers.users, i);
+                    }
+                    UserManager.invalidateIsUserUnlockedCache();
+                }
+            }
+        } catch (Exception e2) {
+            Slog.e("StorageManagerService", "Failed to get unlocked users from vold", e2);
+        }
+        this.mDaemonConnected = true;
+        this.mHandler.obtainMessage(2).sendToTarget();
+    }
+
+    public final boolean cpFileAtData(String str, String str2) {
+        this.mContext.enforceCallingOrSelfPermission("com.samsung.android.permission.SEM_VOLD_DATA_MOVE", null);
+        if (!isValidPath(str) || !isValidPath(str2)) {
+            Slog.d("StorageManagerService", "cpFileAtData not support other than media or sec dir, so return false");
+            return false;
+        }
+        if (isMediaPath(str) && isMediaPath(str2)) {
+            Slog.d("StorageManagerService", "cpFileAtData not support from media to media dir, so return false");
+            return false;
+        }
+        try {
+            CompletableFuture completableFuture = new CompletableFuture();
+            this.mVold.cpFileAtData(str, str2, this.mMediaStoreAuthorityAppId, Process.myUid(), new AnonymousClass15(1, completableFuture));
+            boolean z = ((PersistableBundle) completableFuture.get()).getBoolean(KnoxCustomManagerService.SPCM_KEY_RESULT, false);
+            Slog.d("StorageManagerService", "File copy in media path result ".concat(z ? "true" : "false"));
+            return z;
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return false;
+        }
+    }
+
+    public final int createPassStorage() {
+        int callingUid = Binder.getCallingUid();
+        String packageName = getPackageName(callingUid);
+        if (packageName.equals("Unknown")) {
+            Slog.d("StorageManagerService", "Package name of Client not allowed ".concat(packageName));
+            throw new SecurityException(" calling package is not allowed");
+        }
+        if (isRootedDevice()) {
+            Slog.d("StorageManagerService", "isDetectedRoot: true ");
+            throw new SecurityException(" Root detected");
+        }
+        if (!isPlatformSignedApp(packageName)) {
+            throw new SecurityException(" Signature of the calling package is not match");
+        }
+        try {
+            return this.mVold.createPassStorage(packageName, this.mCurrentUserId, callingUid);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return -12;
+        }
+    }
+
+    public final int createSecureContainer(String str, int i, String str2, String str3, int i2, boolean z) {
+        int i3;
+        enforcePermission$1("android.permission.ASEC_CREATE");
+        warnOnNotMounted();
+        try {
+            this.mVold.asecCreate(str, i, str2, str3, i2, z);
+            i3 = 0;
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            i3 = -1;
+        }
+        if (i3 == 0) {
+            synchronized (this.mAsecMountSet) {
+                try {
+                    if (z) {
+                        this.mAsecMountSet.add(new PackageInstalledMap(str, true));
+                    } else {
+                        this.mAsecMountSet.add(new PackageInstalledMap(str, false));
+                    }
+                } finally {
+                }
+            }
+        }
+        return i3;
+    }
+
+    public final void createUserStorageKeys(int i, boolean z) {
+        createUserStorageKeys_enforcePermission();
+        try {
+            this.mVold.createUserStorageKeys(i, z);
+            synchronized (this.mLock) {
+                WatchedUnlockedUsers watchedUnlockedUsers = this.mCeUnlockedUsers;
+                watchedUnlockedUsers.users = ArrayUtils.appendInt(watchedUnlockedUsers.users, i);
+                UserManager.invalidateIsUserUnlockedCache();
+            }
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+        }
+    }
+
+    public final int destroyPassStorage() {
+        int callingUid = Binder.getCallingUid();
+        String packageName = getPackageName(callingUid);
+        if (packageName.equals("Unknown")) {
+            throw new SecurityException(" calling package is not allowed");
+        }
+        if (!isPlatformSignedApp(packageName)) {
+            throw new SecurityException(" Signature of the calling package is not match");
+        }
+        try {
+            return this.mVold.destroyPassStorage(packageName, this.mCurrentUserId, callingUid);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return -12;
+        }
+    }
+
+    public final int destroySecureContainer(String str, boolean z) {
+        int i;
+        enforcePermission$1("android.permission.ASEC_DESTROY");
+        warnOnNotMounted();
+        Runtime.getRuntime().gc();
+        try {
+            this.mVold.asecDestroy(str, z);
+            i = 0;
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            i = -1;
+        }
+        if (i == 0) {
+            synchronized (this.mAsecMountSet) {
+                try {
+                    if (this.mAsecMountSet.contains(new PackageInstalledMap(str))) {
+                        this.mAsecMountSet.remove(new PackageInstalledMap(str));
+                    }
+                } finally {
+                }
+            }
+        }
+        return i;
+    }
+
+    public final void destroyUserStorage(String str, int i, int i2) {
+        destroyUserStorage_enforcePermission();
+        try {
+            this.mVold.destroyUserStorage(str, i, i2);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+        }
+    }
+
+    public final void destroyUserStorageKeys(int i) {
+        destroyUserStorageKeys_enforcePermission();
+        try {
+            this.mVold.destroyUserStorageKeys(i);
+            synchronized (this.mLock) {
+                WatchedUnlockedUsers watchedUnlockedUsers = this.mCeUnlockedUsers;
+                watchedUnlockedUsers.users = ArrayUtils.removeInt(watchedUnlockedUsers.users, i);
+                UserManager.invalidateIsUserUnlockedCache();
+            }
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+        }
+    }
+
+    public final void disableAppDataIsolation(String str, int i, int i2) {
+        int callingUid = Binder.getCallingUid();
+        if (callingUid != 0 && callingUid != 2000) {
+            throw new SecurityException("no permission to enable app visibility");
+        }
+        String[] sharedUserPackagesForPackage = this.mPmInternal.getSharedUserPackagesForPackage(i2, str);
+        int packageUid = this.mPmInternal.getPackageUid(str, 0L, i2);
+        if (sharedUserPackagesForPackage.length == 0) {
+            sharedUserPackagesForPackage = new String[]{str};
+        }
+        try {
+            this.mVold.unmountAppStorageDirs(packageUid, i, sharedUserPackagesForPackage);
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
+        }
+    }
+
+    public void dispatchCeStorageLockedEvent(int i) {
+        Iterator it = this.mCeStorageEventCallbacks.iterator();
+        while (it.hasNext()) {
+            ((ICeStorageLockEventListener) it.next()).onStorageLocked(i);
+        }
+    }
+
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+        if (DumpUtils.checkDumpPermission(this.mContext, "StorageManagerService", printWriter)) {
+            final IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ", 160);
+            ArrayList arrayList = new ArrayList();
+            try {
+                Collections.addAll(arrayList, getVolumeList(this.mContext.getUserId(), "android.SecVold.StorageManagerService", FrameworkStatsLog.APP_STANDBY_BUCKET_CHANGED__MAIN_REASON__MAIN_FORCED_BY_SYSTEM));
             } catch (Exception e) {
-                Slog.wtf("StorageManagerService", e);
+                Slog.e("StorageManagerService", "Failed to get StorageVolume List ", e);
+                arrayList = null;
+            }
+            if (arrayList != null) {
+                indentingPrintWriter.println();
+                indentingPrintWriter.println("StorageVolumes:");
+                indentingPrintWriter.println("Size:" + arrayList.size());
+                indentingPrintWriter.increaseIndent();
+                Iterator it = arrayList.iterator();
+                while (it.hasNext()) {
+                    ((StorageVolume) it.next()).dump(indentingPrintWriter);
+                    indentingPrintWriter.println();
+                }
+                indentingPrintWriter.decreaseIndent();
+            }
+            indentingPrintWriter.println();
+            synchronized (this.mLock) {
+                try {
+                    indentingPrintWriter.println("Disks:");
+                    indentingPrintWriter.increaseIndent();
+                    for (int i = 0; i < this.mDisks.size(); i++) {
+                        ((DiskInfo) this.mDisks.valueAt(i)).dump(indentingPrintWriter);
+                    }
+                    indentingPrintWriter.decreaseIndent();
+                    indentingPrintWriter.println();
+                    indentingPrintWriter.println("Volumes:");
+                    indentingPrintWriter.println("Size:" + this.mVolumes.size());
+                    indentingPrintWriter.increaseIndent();
+                    for (int i2 = 0; i2 < this.mVolumes.size(); i2++) {
+                        VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i2);
+                        if (!"private".equals(volumeInfo.id)) {
+                            volumeInfo.dump(indentingPrintWriter);
+                        }
+                    }
+                    indentingPrintWriter.decreaseIndent();
+                    indentingPrintWriter.println();
+                    indentingPrintWriter.println("Records:");
+                    indentingPrintWriter.increaseIndent();
+                    for (int i3 = 0; i3 < this.mRecords.size(); i3++) {
+                        ((VolumeRecord) this.mRecords.valueAt(i3)).dump(indentingPrintWriter);
+                    }
+                    indentingPrintWriter.decreaseIndent();
+                    indentingPrintWriter.println();
+                    indentingPrintWriter.println("Primary storage UUID: " + this.mPrimaryStorageUuid);
+                    indentingPrintWriter.println();
+                    Pair primaryStoragePathAndSize = StorageManager.getPrimaryStoragePathAndSize();
+                    if (primaryStoragePathAndSize == null) {
+                        indentingPrintWriter.println("Internal storage total size: N/A");
+                    } else {
+                        indentingPrintWriter.print("Internal storage (");
+                        indentingPrintWriter.print((String) primaryStoragePathAndSize.first);
+                        indentingPrintWriter.print(") total size: ");
+                        indentingPrintWriter.print(primaryStoragePathAndSize.second);
+                        indentingPrintWriter.print(" (");
+                        indentingPrintWriter.print(((Long) primaryStoragePathAndSize.second).longValue() / DataUnit.MEBIBYTES.toBytes(1L));
+                        indentingPrintWriter.println(" MiB)");
+                    }
+                    indentingPrintWriter.println();
+                    indentingPrintWriter.println("CE unlocked users: " + this.mCeUnlockedUsers);
+                    indentingPrintWriter.println("System unlocked users: " + Arrays.toString(this.mSystemUnlockedUsers));
+                    indentingPrintWriter.print("Sharing media with parent : ");
+                    this.mIsMediaSharedWithParent.forEach(new BiConsumer() { // from class: com.android.server.StorageManagerService$$ExternalSyntheticLambda2
+                        @Override // java.util.function.BiConsumer
+                        public final void accept(Object obj, Object obj2) {
+                            indentingPrintWriter.print(" [" + ((Integer) obj) + ", " + ((Boolean) obj2) + "] ");
+                        }
+                    });
+                    indentingPrintWriter.println();
+                    indentingPrintWriter.print("User pairs for sharing media : ");
+                    for (int i4 = 0; i4 < this.mUserSharesMediaWith.size(); i4++) {
+                        int keyAt = this.mUserSharesMediaWith.keyAt(i4);
+                        indentingPrintWriter.print(" [" + keyAt + ", " + this.mUserSharesMediaWith.get(keyAt, -1) + "] ");
+                    }
+                    indentingPrintWriter.println();
+                    indentingPrintWriter.println();
+                    for (int i5 = 0; i5 < 20; i5++) {
+                        String format = String.format("/data/log/vold-dump_%02d", Integer.valueOf(i5));
+                        try {
+                            indentingPrintWriter.println("VOLD LAST LOG BUF#" + i5);
+                            indentingPrintWriter.println(IoUtils.readFileAsString(format));
+                        } catch (IOException unused) {
+                        }
+                    }
+                } finally {
+                }
+            }
+            synchronized (this.mObbMounts) {
+                try {
+                    indentingPrintWriter.println();
+                    indentingPrintWriter.println("mObbMounts:");
+                    indentingPrintWriter.increaseIndent();
+                    for (Map.Entry entry : ((HashMap) this.mObbMounts).entrySet()) {
+                        indentingPrintWriter.println(entry.getKey() + ":");
+                        indentingPrintWriter.increaseIndent();
+                        Iterator it2 = ((List) entry.getValue()).iterator();
+                        while (it2.hasNext()) {
+                            indentingPrintWriter.println((ObbState) it2.next());
+                        }
+                        indentingPrintWriter.decreaseIndent();
+                    }
+                    indentingPrintWriter.decreaseIndent();
+                    indentingPrintWriter.println();
+                    indentingPrintWriter.println("mObbPathToStateMap:");
+                    indentingPrintWriter.increaseIndent();
+                    for (Map.Entry entry2 : ((HashMap) this.mObbPathToStateMap).entrySet()) {
+                        indentingPrintWriter.print((String) entry2.getKey());
+                        indentingPrintWriter.print(" -> ");
+                        indentingPrintWriter.println(entry2.getValue());
+                    }
+                    indentingPrintWriter.decreaseIndent();
+                } finally {
+                }
+            }
+            synchronized (this.mCloudMediaProviders) {
+                indentingPrintWriter.println();
+                indentingPrintWriter.print("Media cloud providers: ");
+                indentingPrintWriter.println(this.mCloudMediaProviders);
+            }
+            indentingPrintWriter.println();
+            indentingPrintWriter.print("Last maintenance: ");
+            indentingPrintWriter.println(TimeUtils.formatForLogging(this.mLastMaintenance));
+        }
+    }
+
+    public final int encryptExternalStorage(boolean z) {
+        VolumeInfo volumeInfo;
+        List volumes = ((StorageManager) this.mContext.getSystemService(StorageManager.class)).getVolumes();
+        Collections.sort(volumes, VolumeInfo.getDescriptionComparator());
+        Iterator it = volumes.iterator();
+        while (true) {
+            if (!it.hasNext()) {
+                volumeInfo = null;
+                break;
+            }
+            volumeInfo = (VolumeInfo) it.next();
+            if (volumeInfo != null && volumeInfo.getType() == 0 && volumeInfo.getDisk() != null && volumeInfo.getDisk().isSd()) {
+                break;
+            }
+        }
+        if (volumeInfo == null) {
+            Slog.e("StorageManagerService", "sdVolume == null");
+            return -1;
+        }
+        if (hasDeviceRestriction("readonly_storage")) {
+            Slog.w("StorageManagerService", "Policy has restriction 'readonly_storage'; readonly");
+        }
+        Slog.i("StorageManagerService", "state : " + volumeInfo.getState());
+        return volumeInfo.getState() == 0 ? 202 : 0;
+    }
+
+    public final void enforceAdminUser() {
+        UserManager userManager = (UserManager) this.mContext.getSystemService("user");
+        int callingUserId = UserHandle.getCallingUserId();
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            if (!userManager.getUserInfo(callingUserId).isAdmin()) {
+                throw new SecurityException("Only admin users can adopt sd cards");
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final void enforceExternalStorageService() {
+        enforcePermission$1("android.permission.WRITE_MEDIA_STORAGE");
+        if (UserHandle.getAppId(Binder.getCallingUid()) != this.mMediaStoreAuthorityAppId) {
+            throw new SecurityException("Only the ExternalStorageService is permitted");
+        }
+    }
+
+    public final void enforcePermission$1(String str) {
+        this.mContext.enforceCallingOrSelfPermission(str, str);
+    }
+
+    public final int finalizeSecureContainer(String str) {
+        enforcePermission$1("android.permission.ASEC_CREATE");
+        warnOnNotMounted();
+        try {
+            this.mVold.asecFinalize(str);
+            return 0;
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return -1;
+        }
+    }
+
+    public final CountDownLatch findOrCreateDiskScanLatch(String str) {
+        CountDownLatch countDownLatch;
+        synchronized (this.mLock) {
+            try {
+                countDownLatch = (CountDownLatch) this.mDiskScanLatches.get(str);
+                if (countDownLatch == null) {
+                    countDownLatch = new CountDownLatch(1);
+                    this.mDiskScanLatches.put(str, countDownLatch);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return countDownLatch;
+    }
+
+    public final VolumeRecord findRecordForPath(String str) {
+        synchronized (this.mLock) {
+            for (int i = 0; i < this.mVolumes.size(); i++) {
+                try {
+                    VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i);
+                    String str2 = volumeInfo.path;
+                    if (str2 != null && str.startsWith(str2)) {
+                        return (VolumeRecord) this.mRecords.get(volumeInfo.fsUuid);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            return null;
+        }
+    }
+
+    public final VolumeInfo findStorageForUuidAsUser(int i, String str) {
+        StorageManager storageManager = (StorageManager) this.mContext.getSystemService(StorageManager.class);
+        if (Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, str)) {
+            return storageManager.findVolumeById("emulated;" + i);
+        }
+        if ("primary_physical".equals(str)) {
+            return storageManager.getPrimaryPhysicalVolume();
+        }
+        VolumeInfo findVolumeByUuid = storageManager.findVolumeByUuid(str);
+        if (findVolumeByUuid == null) {
+            Slog.w("StorageManagerService", "findStorageForUuidAsUser cannot find volumeUuid:" + str);
+            return null;
+        }
+        return storageManager.findVolumeById(findVolumeByUuid.getId().replace("private", "emulated") + ";" + i);
+    }
+
+    public final VolumeInfo findVolumeByIdOrThrow(String str) {
+        synchronized (this.mLock) {
+            try {
+                VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.get(str);
+                if (volumeInfo != null) {
+                    return volumeInfo;
+                }
+                throw new IllegalArgumentException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("No volume found for ID ", str));
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final String findVolumeIdForPathOrThrow(String str) {
+        synchronized (this.mLock) {
+            for (int i = 0; i < this.mVolumes.size(); i++) {
+                try {
+                    VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i);
+                    String str2 = volumeInfo.path;
+                    if (str2 != null && str.startsWith(str2)) {
+                        return volumeInfo.id;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            throw new IllegalArgumentException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("No volume found for path ", str));
+        }
+    }
+
+    public final void finishMediaUpdate() {
+        if (Binder.getCallingUid() != 1000) {
+            throw new SecurityException("no permission to call finishMediaUpdate()");
+        }
+        CountDownLatch countDownLatch = this.mUnmountSignal;
+        if (countDownLatch != null) {
+            countDownLatch.countDown();
+        } else {
+            Slog.w("StorageManagerService", "Odd, nobody asked to unmount?");
+        }
+    }
+
+    public final int fixPermissionsSecureContainer(String str, int i, String str2) {
+        StringBuilder m = StorageManagerService$$ExternalSyntheticOutline0.m(i, "fixPermissionsSecureContainer: id=", str, " gid=", " filename=");
+        m.append(str2);
+        Slog.d("StorageManagerService", m.toString());
+        enforcePermission$1("android.permission.ASEC_CREATE");
+        warnOnNotMounted();
+        if (str2 == null) {
+            str2 = "";
+        }
+        try {
+            this.mVold.asecFixperms(str, i, str2);
+            return 0;
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return -1;
+        }
+    }
+
+    public final void fixupAppDir(String str) {
+        Matcher matcher = KNOWN_APP_DIR_PATHS.matcher(str);
+        if (!matcher.matches()) {
+            Log.e("StorageManagerService", "Path " + str + " is not a valid application-specific directory");
+            return;
+        }
+        if (matcher.group(2) == null) {
+            StorageManagerService$$ExternalSyntheticOutline0.m("Asked to fixup an app dir without a userId: ", str, "StorageManagerService");
+            return;
+        }
+        try {
+            int parseInt = Integer.parseInt(matcher.group(2));
+            String group = matcher.group(3);
+            int packageUidAsUser = this.mContext.getPackageManager().getPackageUidAsUser(group, parseInt);
+            try {
+                this.mVold.fixupAppDir(str + "/", packageUidAsUser);
+            } catch (RemoteException | ServiceSpecificException e) {
+                Log.e("StorageManagerService", "Failed to fixup app dir for " + group, e);
+            }
+        } catch (PackageManager.NameNotFoundException e2) {
+            Log.e("StorageManagerService", "Couldn't find package to fixup app dir " + str, e2);
+        } catch (NumberFormatException e3) {
+            Log.e("StorageManagerService", "Invalid userId in path: " + str, e3);
+        }
+    }
+
+    public final void forgetAllVolumes() {
+        forgetAllVolumes_enforcePermission();
+        Slog.d("StorageManagerService", "forgetAllVolumes");
+        synchronized (this.mLock) {
+            for (int i = 0; i < this.mRecords.size(); i++) {
+                try {
+                    String str = (String) this.mRecords.keyAt(i);
+                    VolumeRecord volumeRecord = (VolumeRecord) this.mRecords.valueAt(i);
+                    if (!TextUtils.isEmpty(volumeRecord.partGuid)) {
+                        this.mHandler.obtainMessage(9, volumeRecord).sendToTarget();
+                    }
+                    Callbacks callbacks = this.mCallbacks;
+                    int i2 = Callbacks.$r8$clinit;
+                    callbacks.getClass();
+                    SomeArgs obtain = SomeArgs.obtain();
+                    obtain.arg1 = str;
+                    callbacks.obtainMessage(4, obtain).sendToTarget();
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            this.mRecords.clear();
+            String str2 = StorageManager.UUID_PRIVATE_INTERNAL;
+            if (!Objects.equals(str2, this.mPrimaryStorageUuid)) {
+                if (SystemProperties.getBoolean("ro.vold.primary_physical", false)) {
+                    str2 = "primary_physical";
+                }
+                this.mPrimaryStorageUuid = str2;
+            }
+            writeSettingsLocked();
+            this.mHandler.obtainMessage(10).sendToTarget();
+        }
+    }
+
+    public final void forgetVolume(String str) {
+        forgetVolume_enforcePermission();
+        Slog.d("StorageManagerService", "forgetVolume: fsUuid=" + str);
+        Objects.requireNonNull(str);
+        synchronized (this.mLock) {
+            try {
+                VolumeRecord volumeRecord = (VolumeRecord) this.mRecords.remove(str);
+                if (volumeRecord != null && !TextUtils.isEmpty(volumeRecord.partGuid)) {
+                    this.mHandler.obtainMessage(9, volumeRecord).sendToTarget();
+                }
+                Callbacks callbacks = this.mCallbacks;
+                int i = Callbacks.$r8$clinit;
+                callbacks.getClass();
+                SomeArgs obtain = SomeArgs.obtain();
+                obtain.arg1 = str;
+                callbacks.obtainMessage(4, obtain).sendToTarget();
+                if (Objects.equals(this.mPrimaryStorageUuid, str)) {
+                    this.mPrimaryStorageUuid = SystemProperties.getBoolean("ro.vold.primary_physical", false) ? "primary_physical" : StorageManager.UUID_PRIVATE_INTERNAL;
+                    this.mHandler.obtainMessage(10).sendToTarget();
+                }
+                writeSettingsLocked();
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void format(String str) {
+        format_enforcePermission();
+        Slog.d("StorageManagerService", "Begin format: volId=" + str);
+        VolumeInfo findVolumeByIdOrThrow = findVolumeByIdOrThrow(str);
+        String str2 = findVolumeByIdOrThrow.fsUuid;
+        try {
+            this.mVold.format(findVolumeByIdOrThrow.id, "auto");
+            if (TextUtils.isEmpty(str2)) {
                 return;
             }
-        }
-        synchronized (this.mLock) {
-            if (!TextUtils.isEmpty(volumeInfo.fsUuid)) {
-                VolumeRecord volumeRecord = (VolumeRecord) this.mRecords.get(volumeInfo.fsUuid);
-                if (volumeRecord == null) {
-                    volumeRecord = new VolumeRecord(volumeInfo.type, volumeInfo.fsUuid);
-                    volumeRecord.partGuid = volumeInfo.partGuid;
-                    volumeRecord.createdMillis = System.currentTimeMillis();
-                    if (volumeInfo.type == 1) {
-                        volumeRecord.nickname = volumeInfo.disk.getDescription();
-                    }
-                    this.mRecords.put(volumeRecord.fsUuid, volumeRecord);
-                } else if (TextUtils.isEmpty(volumeRecord.partGuid)) {
-                    volumeRecord.partGuid = volumeInfo.partGuid;
-                }
-                volumeRecord.lastSeenMillis = System.currentTimeMillis();
-                writeSettingsLocked();
-            }
-        }
-        try {
-            this.mStorageSessionController.notifyVolumeStateChanged(volumeInfo);
-        } catch (StorageSessionController.ExternalStorageServiceException e2) {
-            Log.e("StorageManagerService", "Failed to notify volume state changed to the Storage Service", e2);
-        }
-        synchronized (this.mLock) {
-            this.mCallbacks.notifyVolumeStateChanged(volumeInfo, i, i2);
-            if (this.mBootCompleted && isBroadcastWorthy(volumeInfo)) {
-                Intent intent = new Intent("android.os.storage.action.VOLUME_STATE_CHANGED");
-                intent.putExtra("android.os.storage.extra.VOLUME_ID", volumeInfo.id);
-                intent.putExtra("android.os.storage.extra.VOLUME_STATE", i2);
-                intent.putExtra("android.os.storage.extra.FS_UUID", volumeInfo.fsUuid);
-                intent.addFlags(83886080);
-                this.mHandler.obtainMessage(7, intent).sendToTarget();
-            }
-            String environmentForState = VolumeInfo.getEnvironmentForState(i);
-            String environmentForState2 = VolumeInfo.getEnvironmentForState(i2);
-            if (!Objects.equals(environmentForState, environmentForState2)) {
-                for (int i3 : this.mSystemUnlockedUsers) {
-                    if (volumeInfo.isVisibleForUser(i3)) {
-                        StorageVolume buildStorageVolume = volumeInfo.buildStorageVolume(this.mContext, i3, false);
-                        this.mHandler.obtainMessage(6, buildStorageVolume).sendToTarget();
-                        this.mCallbacks.notifyStorageStateChanged(buildStorageVolume.getPath(), environmentForState, environmentForState2);
-                    }
-                }
-            }
-            if (volumeInfo.type == 0) {
-                DiskInfo disk = volumeInfo.getDisk();
-                if (disk != null && disk.isSd()) {
-                    if ("mounted".equals(environmentForState2)) {
-                        String str = volumeInfo.fsType;
-                        Slog.d("StorageManagerService", "Set Ext SD Card FsType Property by Ext SD Card Info");
-                        SystemProperties.set("sys.ext_sdcard.fstype", str);
-                    } else {
-                        Slog.d("StorageManagerService", "Set Ext SD Card FsType Property to default");
-                        SystemProperties.set("sys.ext_sdcard.fstype", "none");
-                    }
-                } else if (disk != null && disk.isUsb()) {
-                    if ("mounted".equals(environmentForState2)) {
-                        String str2 = volumeInfo.fsType;
-                        Slog.d("StorageManagerService", "Set USB Storage FsType Property by USB Storage Info");
-                        SystemProperties.set("sys.usb_storage.fstype", str2);
-                    } else {
-                        Slog.d("StorageManagerService", "Set USB Storage FsType Property to default");
-                        SystemProperties.set("sys.usb_storage.fstype", "none");
-                    }
-                }
-            }
-            int i4 = volumeInfo.type;
-            if ((i4 == 0 || i4 == 5) && volumeInfo.state == 5) {
-                ObbActionHandler obbActionHandler = this.mObbActionHandler;
-                obbActionHandler.sendMessage(obbActionHandler.obtainMessage(2, volumeInfo.path));
-            }
-            maybeLogMediaMount(volumeInfo, i2);
+            forgetVolume(str2);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
         }
     }
 
-    public final void notifyCloudMediaProviderChangedAsync(StorageManagerInternal.CloudProviderChangeListener cloudProviderChangeListener) {
+    public final void formatBySecApp(String str, String str2) {
+        if (!chkMountUnmountFormatCaller(str2)) {
+            throw new SecurityException(XmlUtils$$ExternalSyntheticOutline0.m("Format call denied to [", str2, "]"));
+        }
+        Slog.d("StorageManagerService", "Format call accepted");
+        String str3 = null;
+        for (VolumeInfo volumeInfo : ((StorageManager) this.mContext.getSystemService(StorageManager.class)).getVolumes()) {
+            if (Objects.equals(volumeInfo.id, str)) {
+                str3 = volumeInfo.getDiskId();
+            }
+        }
+        if (str3 == null) {
+            Slog.d("StorageManagerService", "No matched storage to format by SecApp, so just return");
+        } else {
+            partitionPublic(str3);
+        }
+    }
+
+    public final void fstrim(int i, IVoldTaskListener iVoldTaskListener) {
+        fstrim_enforcePermission();
+        try {
+            if (needsCheckpoint()) {
+                enforcePermission$1("android.permission.MOUNT_FORMAT_FILESYSTEMS");
+                if (this.mVold.supportsBlockCheckpoint()) {
+                    Slog.i("StorageManagerService", "Skipping fstrim - block based checkpoint in progress");
+                    return;
+                }
+            }
+            this.mVold.fstrim(i, new AnonymousClass9(this, iVoldTaskListener, 1));
+        } catch (RemoteException e) {
+            throw e.rethrowAsRuntimeException();
+        }
+    }
+
+    public final long getAllocatableBytes(String str, int i, String str2) {
+        long j;
+        long j2;
+        long j3;
+        int adjustAllocateFlags = adjustAllocateFlags(i, Binder.getCallingUid(), str2);
+        StorageManager storageManager = (StorageManager) this.mContext.getSystemService(StorageManager.class);
+        StorageStatsManager storageStatsManager = (StorageStatsManager) this.mContext.getSystemService(StorageStatsManager.class);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                File findPathForUuid = storageManager.findPathForUuid(str);
+                if ((adjustAllocateFlags & 16) == 0) {
+                    j = findPathForUuid.getUsableSpace();
+                    j2 = storageManager.getStorageLowBytes(findPathForUuid);
+                    j3 = storageManager.getStorageFullBytes(findPathForUuid);
+                } else {
+                    j = 0;
+                    j2 = 0;
+                    j3 = 0;
+                }
+                long max = ((adjustAllocateFlags & 8) == 0 && storageStatsManager.isQuotaSupported(str)) ? Math.max(0L, storageStatsManager.getCacheBytes(str) - storageManager.getStorageCacheBytes(findPathForUuid, adjustAllocateFlags)) : 0L;
+                if ((adjustAllocateFlags & 1) != 0) {
+                    long max2 = Math.max(0L, (j + max) - j3);
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                    return max2;
+                }
+                long max3 = Math.max(0L, (j + max) - j2);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return max3;
+            } catch (IOException e) {
+                throw new ParcelableException(e);
+            }
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
+        }
+    }
+
+    public final long getCacheQuotaBytes(String str, int i) {
+        if (i != Binder.getCallingUid()) {
+            this.mContext.enforceCallingPermission("android.permission.STORAGE_INTERNAL", "StorageManagerService");
+        }
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            return ((StorageStatsManager) this.mContext.getSystemService(StorageStatsManager.class)).getCacheQuotaBytes(str, i);
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final long getCacheSizeBytes(String str, int i) {
+        if (i != Binder.getCallingUid()) {
+            this.mContext.enforceCallingPermission("android.permission.STORAGE_INTERNAL", "StorageManagerService");
+        }
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                return ((StorageStatsManager) this.mContext.getSystemService(StorageStatsManager.class)).queryStatsForUid(str, i).getCacheBytes();
+            } catch (IOException e) {
+                throw new ParcelableException(e);
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public CopyOnWriteArrayList getCeStorageEventCallbacks() {
+        return this.mCeStorageEventCallbacks;
+    }
+
+    public final String getCloudMediaProvider() {
+        String str;
+        ProviderInfo resolveContentProvider;
+        int callingUid = Binder.getCallingUid();
+        int userId = UserHandle.getUserId(callingUid);
         synchronized (this.mCloudMediaProviders) {
-            for (int size = this.mCloudMediaProviders.size() - 1; size >= 0; size--) {
-                cloudProviderChangeListener.onCloudProviderChanged(this.mCloudMediaProviders.keyAt(size), (String) this.mCloudMediaProviders.valueAt(size));
+            str = (String) this.mCloudMediaProviders.get(userId);
+        }
+        if (str == null || (resolveContentProvider = ((PackageManagerService.PackageManagerInternalImpl) this.mPmInternal).mService.snapshotComputer().resolveContentProvider(userId, callingUid, 0L, str)) == null || this.mPmInternal.filterAppAccess(callingUid, userId, resolveContentProvider.packageName, true)) {
+            return null;
+        }
+        return str;
+    }
+
+    public final DiskInfo[] getDisks() {
+        DiskInfo[] diskInfoArr;
+        synchronized (this.mLock) {
+            try {
+                diskInfoArr = new DiskInfo[this.mDisks.size()];
+                for (int i = 0; i < this.mDisks.size(); i++) {
+                    diskInfoArr[i] = (DiskInfo) this.mDisks.valueAt(i);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return diskInfoArr;
+    }
+
+    public final int getExternalStorageMountMode(int i, String str) {
+        getExternalStorageMountMode_enforcePermission();
+        return this.mStorageManagerInternal.getExternalStorageMountMode(i, str);
+    }
+
+    public final long getInternalStorageBlockDeviceSize() {
+        if (this.mInternalStorageSize == 0) {
+            this.mInternalStorageSize = this.mVold.getStorageSize();
+        }
+        return this.mInternalStorageSize;
+    }
+
+    public final int getInternalStorageRemainingLifetime() {
+        getInternalStorageRemainingLifetime_enforcePermission();
+        return this.mVold.getStorageRemainingLifetime();
+    }
+
+    public final PendingIntent getManageSpaceActivityIntent(String str, int i) {
+        int callingUidOrThrow = Binder.getCallingUidOrThrow();
+        try {
+            String[] packagesForUid = this.mIPackageManager.getPackagesForUid(callingUidOrThrow);
+            if (packagesForUid == null) {
+                throw new SecurityException("Unknown uid " + callingUidOrThrow);
+            }
+            if (!this.mStorageManagerInternal.hasExternalStorageAccess(callingUidOrThrow, packagesForUid[0])) {
+                throw new SecurityException("Only File Manager Apps permitted");
+            }
+            try {
+                ApplicationInfo applicationInfo = this.mIPackageManager.getApplicationInfo(str, 0L, UserHandle.getUserId(callingUidOrThrow));
+                if (applicationInfo == null) {
+                    throw new IllegalArgumentException("Invalid packageName");
+                }
+                if (applicationInfo.manageSpaceActivityName == null) {
+                    Log.i("StorageManagerService", str + " doesn't have a manageSpaceActivity");
+                    return null;
+                }
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    try {
+                        Context createPackageContext = this.mContext.createPackageContext(str, 0);
+                        Intent intent = new Intent("android.intent.action.VIEW");
+                        intent.setClassName(str, applicationInfo.manageSpaceActivityName);
+                        intent.setFlags(268435456);
+                        return PendingIntent.getActivity(createPackageContext, i, intent, 1409286144, ActivityOptions.makeBasic().setPendingIntentCreatorBackgroundActivityStartMode(2).toBundle());
+                    } catch (PackageManager.NameNotFoundException unused) {
+                        throw new IllegalArgumentException("packageName not found");
+                    }
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            } catch (RemoteException unused2) {
+                throw new SecurityException("Only File Manager Apps permitted");
+            }
+        } catch (RemoteException e) {
+            throw new SecurityException(VibrationParam$1$$ExternalSyntheticOutline0.m(callingUidOrThrow, "Unknown uid "), e);
+        }
+    }
+
+    public final String getMountedObbPath(String str) {
+        ObbState obbState;
+        Objects.requireNonNull(str, "rawPath cannot be null");
+        warnOnNotMounted();
+        synchronized (this.mObbMounts) {
+            obbState = (ObbState) ((HashMap) this.mObbPathToStateMap).get(str);
+        }
+        if (obbState != null) {
+            return findVolumeByIdOrThrow(obbState.volId).getPath().getAbsolutePath();
+        }
+        Slog.w("StorageManagerService", "Failed to find OBB mounted at ".concat(str));
+        return null;
+    }
+
+    public final String getPackageName(int i) {
+        Slog.d("StorageManagerService", "ID of Client " + i);
+        String str = "Unknown";
+        for (String str2 : this.mContext.getPackageManager().getPackagesForUid(i)) {
+            Slog.d("StorageManagerService", "Package name of Client " + str2);
+            Iterator it = PASS_CLIENTS.iterator();
+            while (true) {
+                if (!it.hasNext()) {
+                    break;
+                }
+                if (((String) it.next()).equals(str2)) {
+                    str = str2;
+                    break;
+                }
+            }
+        }
+        return str;
+    }
+
+    public final String getPassStorage() {
+        int callingUid = Binder.getCallingUid();
+        String packageName = getPackageName(callingUid);
+        if (packageName.equals("Unknown")) {
+            Slog.d("StorageManagerService", "Package name of Client not allowed ".concat(packageName));
+            throw new SecurityException(" calling package is not allowed");
+        }
+        if (!isPlatformSignedApp(packageName)) {
+            throw new SecurityException(" Signature of the calling package is not match");
+        }
+        try {
+            return this.mVold.getPassStorage(packageName, this.mCurrentUserId, callingUid);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return null;
+        }
+    }
+
+    public final String getPrimaryStorageUuid() {
+        String str;
+        synchronized (this.mLock) {
+            str = this.mPrimaryStorageUuid;
+        }
+        return str;
+    }
+
+    public final String getSecureContainerFilesystemPath(String str) {
+        enforcePermission$1("android.permission.ASEC_ACCESS");
+        warnOnNotMounted();
+        try {
+            return this.mVold.asecFsPath(str);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return null;
+        }
+    }
+
+    public final String[] getSecureContainerList() {
+        String[] strArr;
+        enforcePermission$1("android.permission.ASEC_ACCESS");
+        warnOnNotMounted();
+        try {
+            strArr = this.mVold.asecList();
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            strArr = new String[0];
+        }
+        ArrayList arrayList = new ArrayList(Arrays.asList(strArr));
+        synchronized (this.mAsecMountSet) {
+            try {
+                if (!checkExternalSecureContainerMounted()) {
+                    ArrayList arrayList2 = new ArrayList();
+                    Iterator it = this.mAsecMountSet.iterator();
+                    int i = 0;
+                    while (it.hasNext()) {
+                        PackageInstalledMap packageInstalledMap = (PackageInstalledMap) it.next();
+                        if (packageInstalledMap.external) {
+                            arrayList2.add(packageInstalledMap.id);
+                            i++;
+                        }
+                    }
+                    if (i > 0) {
+                        Slog.d("StorageManagerService", "getSecureContainerList : (no media) lists = " + i);
+                    }
+                    arrayList.addAll(arrayList2);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return (String[]) arrayList.toArray(new String[0]);
+    }
+
+    public final String getSecureContainerPath(String str) {
+        Slog.d("StorageManagerService", "getSecureContainerPath: id=" + str);
+        enforcePermission$1("android.permission.ASEC_ACCESS");
+        warnOnNotMounted();
+        if (isExternalSecureContainer(str) && !checkExternalSecureContainerMounted() && this.mAsecMountSet.contains(new PackageInstalledMap(str))) {
+            return ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("/mnt/asec/", str);
+        }
+        try {
+            return this.mVold.asecPath(str);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return null;
+        }
+    }
+
+    public final long getUsedF2fsFileNode() {
+        try {
+            return this.mVold.getUsedF2fsFileNode();
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return -1L;
+        }
+    }
+
+    public final int getUsedSpaceSecureContainer(String str) {
+        enforcePermission$1("android.permission.ASEC_CREATE");
+        warnOnNotMounted();
+        try {
+            return this.mVold.asecGetUsedSpace(str);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return -1;
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:118:0x019a, code lost:
+    
+        if (r8.getPath() == null) goto L117;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:122:0x01a6, code lost:
+    
+        if (r8.isVisibleForUser(r3) == false) goto L121;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x0141, code lost:
+    
+        if (r14 != 5) goto L85;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x016b, code lost:
+    
+        if (r8.isVisibleForWrite(r39) != false) goto L107;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:77:0x016d, code lost:
+    
+        if (r2 == false) goto L105;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:79:0x0173, code lost:
+    
+        if (r8.isVisibleForWrite(r3) != false) goto L107;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:81:0x017b, code lost:
+    
+        if (r8.isVisibleForWrite(77) == false) goto L85;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:100:0x01bf  */
+    /* JADX WARN: Removed duplicated region for block: B:162:0x00ef A[Catch: all -> 0x0353, TryCatch #0 {all -> 0x0353, blocks: (B:43:0x00d4, B:45:0x00ea, B:47:0x00f7, B:162:0x00ef), top: B:42:0x00d4 }] */
+    /* JADX WARN: Removed duplicated region for block: B:45:0x00ea A[Catch: all -> 0x0353, TryCatch #0 {all -> 0x0353, blocks: (B:43:0x00d4, B:45:0x00ea, B:47:0x00f7, B:162:0x00ef), top: B:42:0x00d4 }] */
+    /* JADX WARN: Removed duplicated region for block: B:50:0x0112  */
+    /* JADX WARN: Removed duplicated region for block: B:84:0x01bb  */
+    /* JADX WARN: Removed duplicated region for block: B:88:0x0238 A[Catch: all -> 0x0157, TryCatch #2 {all -> 0x0157, blocks: (B:52:0x0119, B:54:0x0121, B:62:0x026d, B:63:0x0147, B:67:0x0150, B:70:0x015a, B:75:0x0167, B:78:0x016f, B:80:0x0175, B:86:0x0232, B:88:0x0238, B:90:0x023e, B:91:0x0244, B:93:0x0250, B:95:0x0256, B:96:0x0264, B:98:0x025f, B:101:0x01c1, B:103:0x01e0, B:106:0x01eb, B:109:0x0214, B:110:0x0180, B:112:0x0186, B:114:0x018e, B:117:0x0196, B:119:0x019c, B:121:0x01a2, B:124:0x01aa, B:130:0x027f, B:131:0x0288, B:133:0x0290, B:137:0x02bd, B:138:0x02a1, B:142:0x02ad, B:147:0x02c0), top: B:51:0x0119 }] */
+    /* JADX WARN: Removed duplicated region for block: B:93:0x0250 A[Catch: all -> 0x0157, TryCatch #2 {all -> 0x0157, blocks: (B:52:0x0119, B:54:0x0121, B:62:0x026d, B:63:0x0147, B:67:0x0150, B:70:0x015a, B:75:0x0167, B:78:0x016f, B:80:0x0175, B:86:0x0232, B:88:0x0238, B:90:0x023e, B:91:0x0244, B:93:0x0250, B:95:0x0256, B:96:0x0264, B:98:0x025f, B:101:0x01c1, B:103:0x01e0, B:106:0x01eb, B:109:0x0214, B:110:0x0180, B:112:0x0186, B:114:0x018e, B:117:0x0196, B:119:0x019c, B:121:0x01a2, B:124:0x01aa, B:130:0x027f, B:131:0x0288, B:133:0x0290, B:137:0x02bd, B:138:0x02a1, B:142:0x02ad, B:147:0x02c0), top: B:51:0x0119 }] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final android.os.storage.StorageVolume[] getVolumeList(int r39, java.lang.String r40, int r41) {
+        /*
+            Method dump skipped, instructions count: 868
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.getVolumeList(int, java.lang.String, int):android.os.storage.StorageVolume[]");
+    }
+
+    public final VolumeRecord[] getVolumeRecords(int i) {
+        VolumeRecord[] volumeRecordArr;
+        synchronized (this.mLock) {
+            try {
+                volumeRecordArr = new VolumeRecord[this.mRecords.size()];
+                for (int i2 = 0; i2 < this.mRecords.size(); i2++) {
+                    volumeRecordArr[i2] = (VolumeRecord) this.mRecords.valueAt(i2);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return volumeRecordArr;
+    }
+
+    public final String getVolumeState(String str) {
+        if (str == null) {
+            return "unknown";
+        }
+        synchronized (this.mLock) {
+            try {
+                VolumeInfo[] volumeInfoArr = new VolumeInfo[this.mVolumes.size()];
+                for (int i = 0; i < this.mVolumes.size(); i++) {
+                    VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i);
+                    volumeInfoArr[i] = volumeInfo;
+                    if (str.equals(volumeInfo.path)) {
+                        Slog.d("StorageManagerService", "getVolumeState: path=" + str + ", state=" + volumeInfoArr[i].state + " From pid=" + Binder.getCallingPid());
+                        return VolumeInfo.getEnvironmentForState(volumeInfoArr[i].state);
+                    }
+                }
+                Slog.d("StorageManagerService", "getVolumeState: No matched Volume");
+                return "unknown";
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    public final void onCloudMediaProviderChangedAsync(int i, String str) {
-        Iterator it = this.mStorageManagerInternal.mCloudProviderChangeListeners.iterator();
-        while (it.hasNext()) {
-            ((StorageManagerInternal.CloudProviderChangeListener) it.next()).onCloudProviderChanged(i, str);
+    public final VolumeInfo[] getVolumes(int i) {
+        VolumeInfo[] volumeInfoArr;
+        synchronized (this.mLock) {
+            try {
+                volumeInfoArr = new VolumeInfo[this.mVolumes.size()];
+                for (int i2 = 0; i2 < this.mVolumes.size(); i2++) {
+                    volumeInfoArr[i2] = (VolumeInfo) this.mVolumes.valueAt(i2);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
         }
+        return volumeInfoArr;
     }
 
-    public final void maybeLogMediaMount(VolumeInfo volumeInfo, int i) {
-        DiskInfo disk;
-        if (!SecurityLog.isLoggingEnabled() || (disk = volumeInfo.getDisk()) == null || (disk.flags & 12) == 0) {
-            return;
+    public final boolean hasDeviceRestriction(String str) {
+        Slog.w("StorageManagerService", "hasDeviceRestriction: ".concat(str));
+        if ("usbhost_storage".equals(str)) {
+            return hasSecRestriction(str, "content://com.sec.knox.provider/RestrictionPolicy4", "isUsbHostStorageAllowed", new String[]{"true"});
         }
-        String str = disk.label;
-        String trim = str != null ? str.trim() : "";
-        if (i == 2 || i == 3) {
-            SecurityLog.writeEvent(210013, new Object[]{volumeInfo.path, trim});
-        } else if (i == 0 || i == 8) {
-            SecurityLog.writeEvent(210014, new Object[]{volumeInfo.path, trim});
+        if ("sdcard_storage".equals(str)) {
+            return hasSecRestriction(str, "content://com.sec.knox.provider/RestrictionPolicy3", "isSdCardEnabled", null);
         }
+        if ("mass_storage".equals(str)) {
+            return hasSecRestriction(str, "content://com.sec.knox.provider/RestrictionPolicy4", "isUsbMassStorageEnabled", new String[]{"true"});
+        }
+        if ("readonly_storage".equals(str)) {
+            return hasSecRestriction(str, "content://com.sec.knox.provider/RestrictionPolicy4", "isSDCardWriteAllowed", null);
+        }
+        Slog.d("StorageManagerService", "not define policy !!!");
+        return false;
     }
 
-    public final void onMoveStatusLocked(int i) {
-        IPackageMoveObserver iPackageMoveObserver = this.mMoveCallback;
-        if (iPackageMoveObserver == null) {
-            Slog.w("StorageManagerService", "Odd, status but no move requested");
-            return;
-        }
+    /* JADX WARN: Multi-variable type inference failed */
+    public final boolean hasSecRestriction(String str, String str2, String str3, String[] strArr) {
+        Cursor query = this.mContext.getContentResolver().query(Uri.parse(str2), null, str3, strArr, null);
         try {
-            iPackageMoveObserver.onStatusChanged(-1, i, -1L);
-        } catch (RemoteException unused) {
-        }
-        if (i == 82) {
-            Slog.d("StorageManagerService", "Move to " + this.mMoveTargetUuid + " copy phase finshed; persisting");
-            this.mPrimaryStorageUuid = this.mMoveTargetUuid;
-            writeSettingsLocked();
-        }
-        if (PackageManager.isMoveStatusFinished(i)) {
-            Slog.d("StorageManagerService", "Move to " + this.mMoveTargetUuid + " finished with status " + i);
-            this.mMoveCallback = null;
-            this.mMoveTargetUuid = null;
+            try {
+                if (query != null) {
+                    query.moveToFirst();
+                    String string = query.getString(query.getColumnIndex(str3));
+                    Slog.d("StorageManagerService", "policy : " + str + ", restrict(allow) = " + string);
+                    boolean equals = "false".equals(string);
+                    str = equals;
+                    if (equals != 0) {
+                        query.close();
+                        return true;
+                    }
+                } else {
+                    Slog.e("StorageManagerService", str.concat(" policy not yet?"));
+                    str = str;
+                }
+                if (query == null) {
+                    return false;
+                }
+            } catch (Exception e) {
+                Slog.e("StorageManagerService", "policy : " + str + ", return exception", e);
+                if (query == null) {
+                    return false;
+                }
+            }
+            query.close();
+            return false;
+        } catch (Throwable th) {
+            if (query != null) {
+                query.close();
+            }
+            throw th;
         }
     }
 
-    public final void enforcePermission(String str) {
-        this.mContext.enforceCallingOrSelfPermission(str, str);
+    public final boolean isAppIoBlocked(int i) {
+        StorageUserConnection storageUserConnection;
+        boolean contains;
+        StorageSessionController storageSessionController = this.mStorageSessionController;
+        storageSessionController.getClass();
+        int userId = UserHandle.getUserId(i);
+        synchronized (storageSessionController.mLock) {
+            storageUserConnection = (StorageUserConnection) storageSessionController.mConnections.get(userId);
+        }
+        if (storageUserConnection == null) {
+            return false;
+        }
+        synchronized (storageUserConnection.mSessionsLock) {
+            contains = storageUserConnection.mUidsBlockedOnIo.contains(i);
+        }
+        return contains;
+    }
+
+    public final boolean isAppIoBlocked(String str, int i, int i2, int i3) {
+        return isAppIoBlocked(i);
+    }
+
+    public final boolean isCeStorageUnlocked(int i) {
+        boolean contains;
+        synchronized (this.mLock) {
+            contains = ArrayUtils.contains(this.mCeUnlockedUsers.users, i);
+        }
+        return contains;
+    }
+
+    public final boolean isExternalSecureContainer(String str) {
+        boolean z;
+        synchronized (this.mAsecMountSet) {
+            try {
+                Iterator it = this.mAsecMountSet.iterator();
+                while (true) {
+                    if (!it.hasNext()) {
+                        z = false;
+                        break;
+                    }
+                    PackageInstalledMap packageInstalledMap = (PackageInstalledMap) it.next();
+                    if (packageInstalledMap.id.equals(str)) {
+                        z = packageInstalledMap.external;
+                        break;
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        Slog.d("StorageManagerService", "isExternalSecureContainer: id=" + str + " result=" + z);
+        return z;
     }
 
     public final boolean isMountDisallowed(VolumeInfo volumeInfo) {
@@ -1582,448 +3511,216 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
         return hasUserRestriction || ((i == 0 || i == 1 || i == 5) ? userManager.hasUserRestriction("no_physical_media", Binder.getCallingUserHandle()) : false);
     }
 
-    public final void enforceAdminUser() {
-        UserManager userManager = (UserManager) this.mContext.getSystemService("user");
-        int callingUserId = UserHandle.getCallingUserId();
-        long clearCallingIdentity = Binder.clearCallingIdentity();
+    public final boolean isMountDisallowedByEAS(boolean z) {
+        Slog.w("StorageManagerService", "isMountDisallowedByEAS: storage_itpolicy from_intent " + z);
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService("device_policy");
+        if (devicePolicyManager == null) {
+            Slog.w("StorageManagerService", "isMountDisallowedByEAS: DevicePolicyManager is NULL");
+            return false;
+        }
+        boolean semGetAllowStorageCard = devicePolicyManager.semGetAllowStorageCard(null);
+        if (semGetAllowStorageCard) {
+            Slog.w("StorageManagerService", "isMountDisallowedByEAS: check is true");
+            this.preSDPolicy = true;
+            return false;
+        }
+        if (z && semGetAllowStorageCard == this.preSDPolicy) {
+            Slog.w("StorageManagerService", "policy has restriction but not show noti storage_itpolicy");
+            return true;
+        }
+        this.preSDPolicy = false;
+        Slog.d("StorageManagerService", "policy has restriction storage_itpolicy");
+        Slog.d("StorageManagerService", "Send ACTION_SDCARD_ITPOLICY_TOAST_EVENT INTENT!!");
+        this.mContext.sendBroadcastAsUser(new Intent("com.samsung.intent.action.SDCARD_ITPOLICY_TOAST_EVENT"), UserHandle.ALL);
+        return true;
+    }
+
+    public final boolean isObbMounted(String str) {
+        boolean containsKey;
+        Objects.requireNonNull(str, "rawPath cannot be null");
+        synchronized (this.mObbMounts) {
+            containsKey = ((HashMap) this.mObbPathToStateMap).containsKey(str);
+        }
+        return containsKey;
+    }
+
+    public final boolean isPassUnlocked() {
+        int callingUid = Binder.getCallingUid();
+        String packageName = getPackageName(callingUid);
+        if (packageName.equals("Unknown")) {
+            throw new SecurityException(" calling package is not allowed");
+        }
+        if (!isPlatformSignedApp(packageName)) {
+            throw new SecurityException(" Signature of the calling package is not match");
+        }
         try {
-            if (!userManager.getUserInfo(callingUserId).isAdmin()) {
-                throw new SecurityException("Only admin users can adopt sd cards");
+            return this.mVold.isPassUnlocked(packageName, this.mCurrentUserId, callingUid);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return false;
+        }
+    }
+
+    public final boolean isPlatformSignedApp(String str) {
+        PackageInfo packageInfo;
+        PackageManager packageManager = this.mContext.getPackageManager();
+        try {
+            packageInfo = packageManager.getPackageInfoAsUser(str, 0, this.mCurrentUserId);
+        } catch (PackageManager.NameNotFoundException unused) {
+            Log.e("StorageManagerService", "package not found: ".concat(str));
+            packageInfo = null;
+        }
+        if (packageInfo == null) {
+            return false;
+        }
+        return packageInfo.applicationInfo.isSignedWithPlatformKey();
+    }
+
+    public final boolean isSecureContainerMounted(String str) {
+        boolean contains;
+        enforcePermission$1("android.permission.ASEC_ACCESS");
+        warnOnNotMounted();
+        synchronized (this.mAsecMountSet) {
+            contains = this.mAsecMountSet.contains(new PackageInstalledMap(str));
+            Slog.d("StorageManagerService", "isSecureContainerMounted: id=" + str + " ret=" + contains);
+        }
+        return contains;
+    }
+
+    public final boolean isSensitive(String str) {
+        if (str == null) {
+            return false;
+        }
+        try {
+            if (str.isEmpty()) {
+                return false;
             }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return this.mVold.isSensitive(str);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return false;
         }
     }
 
-    public StorageManagerService(Context context) {
-        sSelf = this;
-        this.mVoldAppDataIsolationEnabled = SystemProperties.getBoolean("persist.sys.vold_app_data_isolation_enabled", false);
-        this.mContext = context;
-        this.mCallbacks = new Callbacks(FgThread.get().getLooper());
-        HandlerThread handlerThread = new HandlerThread("StorageManagerService");
-        handlerThread.start();
-        this.mHandler = new StorageManagerServiceHandler(handlerThread.getLooper());
-        this.mObbActionHandler = new ObbActionHandler(IoThread.get().getLooper());
-        this.mStorageSessionController = new StorageSessionController(context);
-        Installer installer = new Installer(context);
-        this.mInstaller = installer;
-        installer.onStart();
-        File file = new File(new File(Environment.getDataDirectory(), "system"), "last-fstrim");
-        this.mLastMaintenanceFile = file;
-        if (!file.exists()) {
-            try {
-                new FileOutputStream(file).close();
-            } catch (IOException unused) {
-                Slog.e("StorageManagerService", "Unable to create fstrim record " + this.mLastMaintenanceFile.getPath());
+    public final long lastMaintenance() {
+        return this.mLastMaintenance;
+    }
+
+    public final void lockCeStorage(int i) {
+        lockCeStorage_enforcePermission();
+        if (i == 0 && UserManager.isHeadlessSystemUserMode()) {
+            throw new IllegalArgumentException("Headless system user data cannot be locked..");
+        }
+        if (!isCeStorageUnlocked(i)) {
+            Slog.d("StorageManagerService", "User " + i + "'s CE storage is already locked");
+            return;
+        }
+        try {
+            this.mVold.lockCeStorage(i);
+            synchronized (this.mLock) {
+                WatchedUnlockedUsers watchedUnlockedUsers = this.mCeUnlockedUsers;
+                watchedUnlockedUsers.users = ArrayUtils.removeInt(watchedUnlockedUsers.users, i);
+                UserManager.invalidateIsUserUnlockedCache();
             }
-        } else {
-            this.mLastMaintenance = file.lastModified();
+            if (Flags.allowPrivateProfile() && android.multiuser.Flags.enablePrivateSpaceFeatures() && android.multiuser.Flags.enableBiometricsToUnlockPrivateSpace()) {
+                dispatchCeStorageLockedEvent(i);
+            }
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
         }
-        this.mSettingsFile = new AtomicFile(new File(Environment.getDataSystemDirectory(), "storage.xml"), "storage-settings");
-        this.mWriteRecordFile = new AtomicFile(new File(Environment.getDataSystemDirectory(), "storage-write-records"));
-        sSmartIdleMaintPeriod = DeviceConfig.getInt("storage_native_boot", "smart_idle_maint_period", 60);
-        if (sSmartIdleMaintPeriod < 10) {
-            sSmartIdleMaintPeriod = 10;
-        } else if (sSmartIdleMaintPeriod > 1440) {
-            sSmartIdleMaintPeriod = 1440;
-        }
-        this.mMaxWriteRecords = 4320 / sSmartIdleMaintPeriod;
-        this.mStorageWriteRecords = new int[this.mMaxWriteRecords];
-        synchronized (this.mLock) {
-            readSettingsLocked();
-        }
-        LocalServices.addService(StorageManagerInternal.class, this.mStorageManagerInternal);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.USER_ADDED");
-        intentFilter.addAction("android.intent.action.USER_REMOVED");
-        this.mContext.registerReceiver(this.mUserReceiver, intentFilter, null, this.mHandler);
-        synchronized (this.mLock) {
-            addInternalVolumeLocked();
-        }
-        Watchdog.getInstance().addMonitor(this);
-        this.mContext.registerReceiver(this.mRestartSdcardBadremoveReceiver, new IntentFilter("com.samsung.intent.action.RESTART_OF_SDCARDBADREMOVED_HASAPK"));
-        this.mContext.registerReceiver(this.mPolicyReceiver, new IntentFilter("android.app.action.DEVICE_POLICY_MANAGER_STATE_CHANGED"), null, null);
     }
 
-    public final void start() {
-        lambda$connectStoraged$2();
-        lambda$connectVold$3();
+    public final int lockPassStorage() {
+        int callingUid = Binder.getCallingUid();
+        String packageName = getPackageName(callingUid);
+        if (packageName.equals("Unknown")) {
+            throw new SecurityException(" calling package is not allowed");
+        }
+        if (!isPlatformSignedApp(packageName)) {
+            throw new SecurityException(" Signature of the calling package is not match");
+        }
+        try {
+            return this.mVold.lockPassStorage(packageName, this.mCurrentUserId, callingUid);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return -12;
+        }
     }
 
-    /* renamed from: connectStoraged, reason: merged with bridge method [inline-methods] */
-    public final void lambda$connectStoraged$2() {
-        IBinder service = ServiceManager.getService("storaged");
-        if (service != null) {
-            try {
-                service.linkToDeath(new IBinder.DeathRecipient() { // from class: com.android.server.StorageManagerService.4
-                    @Override // android.os.IBinder.DeathRecipient
-                    public void binderDied() {
-                        Slog.w("StorageManagerService", "storaged died; reconnecting");
-                        StorageManagerService.this.mStoraged = null;
-                        StorageManagerService.this.lambda$connectStoraged$2();
+    public final void maybeRemountVolumes(int i) {
+        ArrayList arrayList = new ArrayList();
+        synchronized (this.mLock) {
+            for (int i2 = 0; i2 < this.mVolumes.size(); i2++) {
+                try {
+                    VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i2);
+                    if (!volumeInfo.isPrimary() && volumeInfo.isMountedWritable() && volumeInfo.isVisible() && volumeInfo.getMountUserId() != this.mCurrentUserId) {
+                        volumeInfo.mountUserId = this.mCurrentUserId;
+                        arrayList.add(volumeInfo);
                     }
-                }, 0);
-            } catch (RemoteException unused) {
-                service = null;
-            }
-        }
-        if (service != null) {
-            this.mStoraged = IStoraged.Stub.asInterface(service);
-        } else {
-            Slog.w("StorageManagerService", "storaged not found; trying again");
-        }
-        if (this.mStoraged == null) {
-            BackgroundThread.getHandler().postDelayed(new Runnable() { // from class: com.android.server.StorageManagerService$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    StorageManagerService.this.lambda$connectStoraged$2();
+                } catch (Throwable th) {
+                    throw th;
                 }
-            }, 1000L);
-        } else {
-            onDaemonConnected();
-        }
-    }
-
-    /* renamed from: connectVold, reason: merged with bridge method [inline-methods] */
-    public final void lambda$connectVold$3() {
-        IBinder service = ServiceManager.getService("vold");
-        if (service != null) {
-            try {
-                service.linkToDeath(new IBinder.DeathRecipient() { // from class: com.android.server.StorageManagerService.5
-                    @Override // android.os.IBinder.DeathRecipient
-                    public void binderDied() {
-                        Slog.w("StorageManagerService", "vold died; reconnecting");
-                        StorageManagerService.this.mVold = null;
-                        StorageManagerService.this.lambda$connectVold$3();
-                    }
-                }, 0);
-            } catch (RemoteException unused) {
-                service = null;
             }
         }
-        if (service != null) {
-            this.mVold = IVold.Stub.asInterface(service);
-            try {
-                this.mVold.setListener(this.mListener);
-            } catch (RemoteException e) {
-                this.mVold = null;
-                Slog.w("StorageManagerService", "vold listener rejected; trying again", e);
-            }
-        } else {
-            Slog.w("StorageManagerService", "vold not found; trying again");
-        }
-        if (this.mVold == null) {
-            BackgroundThread.getHandler().postDelayed(new Runnable() { // from class: com.android.server.StorageManagerService$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    StorageManagerService.this.lambda$connectVold$3();
-                }
-            }, 1000L);
-        } else {
-            restoreLocalUnlockedUsers();
-            onDaemonConnected();
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            VolumeInfo volumeInfo2 = (VolumeInfo) it.next();
+            Slog.i("StorageManagerService", "Remounting volume for user: " + i + ". Volume: " + createVolumeInfoStrForPulbicVolume(volumeInfo2));
+            this.mHandler.obtainMessage(8, volumeInfo2).sendToTarget();
+            this.mHandler.obtainMessage(5, volumeInfo2).sendToTarget();
         }
     }
 
-    public final void servicesReady() {
-        this.mPmInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
-        this.mIPackageManager = IPackageManager.Stub.asInterface(ServiceManager.getService("package"));
-        this.mIAppOpsService = IAppOpsService.Stub.asInterface(ServiceManager.getService("appops"));
-        ProviderInfo providerInfo = getProviderInfo("media");
-        if (providerInfo != null) {
-            this.mMediaStoreAuthorityAppId = UserHandle.getAppId(providerInfo.applicationInfo.uid);
-            sMediaStoreAuthorityProcessName = providerInfo.applicationInfo.processName;
+    public final void mkdirs(String str, String str2) {
+        int callingUid = Binder.getCallingUid();
+        int userId = UserHandle.getUserId(callingUid);
+        String m = BinaryTransparencyService$$ExternalSyntheticOutline0.m(userId, "sys.user.", ".ce_available");
+        if (!isCeStorageUnlocked(userId)) {
+            throw new IllegalStateException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Failed to prepare ", str2));
         }
-        ProviderInfo providerInfo2 = getProviderInfo("downloads");
-        if (providerInfo2 != null) {
-            this.mDownloadsAuthorityAppId = UserHandle.getAppId(providerInfo2.applicationInfo.uid);
+        if (userId == 0 && !SystemProperties.getBoolean(m, false)) {
+            throw new IllegalStateException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Failed to prepare ", str2));
         }
-        ProviderInfo providerInfo3 = getProviderInfo("com.android.externalstorage.documents");
-        if (providerInfo3 != null) {
-            this.mExternalStorageAuthorityAppId = UserHandle.getAppId(providerInfo3.applicationInfo.uid);
-        }
-    }
-
-    public final ProviderInfo getProviderInfo(String str) {
-        return this.mPmInternal.resolveContentProvider(str, 786432L, UserHandle.getUserId(0), 1000);
-    }
-
-    public final void updateLegacyStorageApps(String str, int i, boolean z) {
-        synchronized (this.mLock) {
-            if (z) {
-                Slog.v("StorageManagerService", "Package " + str + " has legacy storage");
-                this.mUidsWithLegacyExternalStorage.add(Integer.valueOf(i));
-            } else {
-                Slog.v("StorageManagerService", "Package " + str + " does not have legacy storage");
-                this.mUidsWithLegacyExternalStorage.remove(Integer.valueOf(i));
-            }
-        }
-    }
-
-    public final void snapshotAndMonitorLegacyStorageAppOp(UserHandle userHandle) {
-        int identifier = userHandle.getIdentifier();
-        Iterator it = this.mPmInternal.getInstalledApplications(4988928L, identifier, Process.myUid()).iterator();
-        while (true) {
-            boolean z = true;
-            if (!it.hasNext()) {
-                break;
-            }
-            ApplicationInfo applicationInfo = (ApplicationInfo) it.next();
-            try {
-                if (this.mIAppOpsService.checkOperation(87, applicationInfo.uid, applicationInfo.packageName) != 0) {
-                    z = false;
-                }
-                updateLegacyStorageApps(applicationInfo.packageName, applicationInfo.uid, z);
-            } catch (RemoteException e) {
-                Slog.e("StorageManagerService", "Failed to check legacy op for package " + applicationInfo.packageName, e);
-            }
-        }
-        if (this.mPackageMonitorsForUser.get(identifier) == null) {
-            PackageMonitor packageMonitor = new PackageMonitor() { // from class: com.android.server.StorageManagerService.6
-                public void onPackageRemoved(String str, int i) {
-                    StorageManagerService.this.updateLegacyStorageApps(str, i, false);
-                }
-            };
-            packageMonitor.register(this.mContext, userHandle, true, this.mHandler);
-            this.mPackageMonitorsForUser.put(identifier, packageMonitor);
-        } else {
-            Slog.w("StorageManagerService", "PackageMonitor is already registered for: " + identifier);
-        }
-    }
-
-    public final void systemReady() {
-        ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class)).registerScreenObserver(this);
-        this.mHandler.obtainMessage(1).sendToTarget();
-    }
-
-    public final void bootCompleted() {
-        this.mBootCompleted = true;
-        this.mHandler.obtainMessage(13).sendToTarget();
-    }
-
-    public final void handleBootCompleted() {
-        resetIfBootedAndConnected();
-    }
-
-    public final String getDefaultPrimaryStorageUuid() {
-        return SystemProperties.getBoolean("ro.vold.primary_physical", false) ? "primary_physical" : StorageManager.UUID_PRIVATE_INTERNAL;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x006a, code lost:
-    
-        r11.mPrimaryStorageUuid = com.android.internal.util.XmlUtils.readStringAttribute(r4, "primaryStorageUuid");
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void readSettingsLocked() {
-        /*
-            r11 = this;
-            java.lang.String r0 = "Failed reading metadata"
-            java.lang.String r1 = "StorageManagerService"
-            android.util.ArrayMap r2 = r11.mRecords
-            r2.clear()
-            java.lang.String r2 = r11.getDefaultPrimaryStorageUuid()
-            r11.mPrimaryStorageUuid = r2
-            r2 = 0
-            android.util.AtomicFile r3 = r11.mSettingsFile     // Catch: java.lang.Throwable -> Lb7 org.xmlpull.v1.XmlPullParserException -> Lb9 java.io.IOException -> Lbe java.io.FileNotFoundException -> Lc7
-            java.io.FileInputStream r3 = r3.openRead()     // Catch: java.lang.Throwable -> Lb7 org.xmlpull.v1.XmlPullParserException -> Lb9 java.io.IOException -> Lbe java.io.FileNotFoundException -> Lc7
-            java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            r4.<init>()     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r5 = "readSettingsLocked: "
-            r4.append(r5)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            android.util.AtomicFile r5 = r11.mSettingsFile     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.io.File r5 = r5.getBaseFile()     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r5 = r5.getAbsolutePath()     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            r4.append(r5)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r4 = r4.toString()     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            android.util.sysfwutil.Slog.d(r1, r4)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            com.android.modules.utils.TypedXmlPullParser r4 = android.util.Xml.resolvePullParser(r3)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-        L39:
-            int r5 = r4.next()     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            r6 = 1
-            if (r5 == r6) goto La8
-            r7 = 2
-            if (r5 != r7) goto L39
-            java.lang.String r5 = r4.getName()     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r8 = "volumes"
-            boolean r8 = r8.equals(r5)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            if (r8 == 0) goto L74
-            java.lang.String r5 = "version"
-            int r5 = r4.getAttributeInt(r2, r5, r6)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r8 = "ro.vold.primary_physical"
-            r9 = 0
-            boolean r8 = android.os.SystemProperties.getBoolean(r8, r9)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            r10 = 3
-            if (r5 >= r10) goto L68
-            if (r5 < r7) goto L67
-            if (r8 != 0) goto L67
-            goto L68
-        L67:
-            r6 = r9
-        L68:
-            if (r6 == 0) goto L39
-            java.lang.String r5 = "primaryStorageUuid"
-            java.lang.String r5 = com.android.internal.util.XmlUtils.readStringAttribute(r4, r5)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            r11.mPrimaryStorageUuid = r5     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            goto L39
-        L74:
-            java.lang.String r6 = "volume"
-            boolean r5 = r6.equals(r5)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            if (r5 == 0) goto L39
-            android.os.storage.VolumeRecord r5 = readVolumeRecord(r4)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            android.util.ArrayMap r6 = r11.mRecords     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r7 = r5.fsUuid     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            r6.put(r7, r5)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            r6.<init>()     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r7 = "readSettingsLocked: TAG_VOLUME rec="
-            r6.append(r7)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            r6.append(r5)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r7 = " rec.fsUuid="
-            r6.append(r7)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r5 = r5.fsUuid     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            r6.append(r5)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            java.lang.String r5 = r6.toString()     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            android.util.sysfwutil.Slog.d(r1, r5)     // Catch: java.lang.Throwable -> Lac org.xmlpull.v1.XmlPullParserException -> Laf java.io.IOException -> Lb2 java.io.FileNotFoundException -> Lb5
-            goto L39
-        La8:
-            libcore.io.IoUtils.closeQuietly(r3)
-            goto Lca
-        Lac:
-            r11 = move-exception
-            r2 = r3
-            goto Lc3
-        Laf:
-            r11 = move-exception
-            r2 = r3
-            goto Lba
-        Lb2:
-            r11 = move-exception
-            r2 = r3
-            goto Lbf
-        Lb5:
-            r2 = r3
-            goto Lc7
-        Lb7:
-            r11 = move-exception
-            goto Lc3
-        Lb9:
-            r11 = move-exception
-        Lba:
-            android.util.sysfwutil.Slog.wtf(r1, r0, r11)     // Catch: java.lang.Throwable -> Lb7
-            goto Lc7
-        Lbe:
-            r11 = move-exception
-        Lbf:
-            android.util.sysfwutil.Slog.wtf(r1, r0, r11)     // Catch: java.lang.Throwable -> Lb7
-            goto Lc7
-        Lc3:
-            libcore.io.IoUtils.closeQuietly(r2)
-            throw r11
-        Lc7:
-            libcore.io.IoUtils.closeQuietly(r2)
-        Lca:
-            return
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.readSettingsLocked():void");
-    }
-
-    public final void writeSettingsLocked() {
-        FileOutputStream startWrite;
-        FileOutputStream fileOutputStream = null;
+        ((AppOpsManager) this.mContext.getSystemService("appops")).checkPackage(callingUid, str);
         try {
-            startWrite = this.mSettingsFile.startWrite();
-        } catch (IOException unused) {
+            PackageManager.Property propertyAsUser = this.mContext.getPackageManager().getPropertyAsUser("android.internal.PROPERTY_NO_APP_DATA_STORAGE", str, null, userId);
+            if (propertyAsUser != null && propertyAsUser.getBoolean()) {
+                throw new SecurityException(str + " should not have " + str2);
+            }
+        } catch (PackageManager.NameNotFoundException unused) {
         }
         try {
-            Slog.d("StorageManagerService", "writeSettingsLocked: " + this.mSettingsFile.getBaseFile().getAbsolutePath());
-            TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
-            resolveSerializer.startDocument((String) null, Boolean.TRUE);
-            resolveSerializer.startTag((String) null, "volumes");
-            resolveSerializer.attributeInt((String) null, "version", 3);
-            XmlUtils.writeStringAttribute(resolveSerializer, "primaryStorageUuid", this.mPrimaryStorageUuid);
-            int size = this.mRecords.size();
-            for (int i = 0; i < size; i++) {
-                writeVolumeRecord(resolveSerializer, (VolumeRecord) this.mRecords.valueAt(i));
+            File canonicalFile = new File(str2).getCanonicalFile();
+            String absolutePath = canonicalFile.getAbsolutePath();
+            if (!absolutePath.endsWith("/")) {
+                absolutePath = absolutePath.concat("/");
             }
-            resolveSerializer.endTag((String) null, "volumes");
-            resolveSerializer.endDocument();
-            this.mSettingsFile.finishWrite(startWrite);
-        } catch (IOException unused2) {
-            fileOutputStream = startWrite;
-            if (fileOutputStream != null) {
-                this.mSettingsFile.failWrite(fileOutputStream);
+            Matcher matcher = KNOWN_APP_DIR_PATHS.matcher(absolutePath);
+            if (!matcher.matches()) {
+                throw new SecurityException("Invalid mkdirs path: " + canonicalFile + " is not a known app path.");
             }
-        }
-    }
-
-    public static VolumeRecord readVolumeRecord(TypedXmlPullParser typedXmlPullParser) {
-        VolumeRecord volumeRecord = new VolumeRecord(typedXmlPullParser.getAttributeInt((String) null, "type"), XmlUtils.readStringAttribute(typedXmlPullParser, "fsUuid"));
-        volumeRecord.partGuid = XmlUtils.readStringAttribute(typedXmlPullParser, "partGuid");
-        volumeRecord.nickname = XmlUtils.readStringAttribute(typedXmlPullParser, "nickname");
-        volumeRecord.userFlags = typedXmlPullParser.getAttributeInt((String) null, "userFlags");
-        volumeRecord.createdMillis = typedXmlPullParser.getAttributeLong((String) null, "createdMillis", 0L);
-        volumeRecord.lastSeenMillis = typedXmlPullParser.getAttributeLong((String) null, "lastSeenMillis", 0L);
-        volumeRecord.lastTrimMillis = typedXmlPullParser.getAttributeLong((String) null, "lastTrimMillis", 0L);
-        volumeRecord.lastBenchMillis = typedXmlPullParser.getAttributeLong((String) null, "lastBenchMillis", 0L);
-        return volumeRecord;
-    }
-
-    public static void writeVolumeRecord(TypedXmlSerializer typedXmlSerializer, VolumeRecord volumeRecord) {
-        typedXmlSerializer.startTag((String) null, "volume");
-        typedXmlSerializer.attributeInt((String) null, "type", volumeRecord.type);
-        XmlUtils.writeStringAttribute(typedXmlSerializer, "fsUuid", volumeRecord.fsUuid);
-        XmlUtils.writeStringAttribute(typedXmlSerializer, "partGuid", volumeRecord.partGuid);
-        XmlUtils.writeStringAttribute(typedXmlSerializer, "nickname", volumeRecord.nickname);
-        typedXmlSerializer.attributeInt((String) null, "userFlags", volumeRecord.userFlags);
-        typedXmlSerializer.attributeLong((String) null, "createdMillis", volumeRecord.createdMillis);
-        typedXmlSerializer.attributeLong((String) null, "lastSeenMillis", volumeRecord.lastSeenMillis);
-        typedXmlSerializer.attributeLong((String) null, "lastTrimMillis", volumeRecord.lastTrimMillis);
-        typedXmlSerializer.attributeLong((String) null, "lastBenchMillis", volumeRecord.lastBenchMillis);
-        typedXmlSerializer.endTag((String) null, "volume");
-    }
-
-    public void registerListener(IStorageEventListener iStorageEventListener) {
-        this.mCallbacks.register(iStorageEventListener);
-    }
-
-    public void unregisterListener(IStorageEventListener iStorageEventListener) {
-        this.mCallbacks.unregister(iStorageEventListener);
-    }
-
-    public void shutdown(IStorageShutdownObserver iStorageShutdownObserver) {
-        super.shutdown_enforcePermission();
-        Slog.i("StorageManagerService", "Shutting down");
-        this.mHandler.obtainMessage(3, iStorageShutdownObserver).sendToTarget();
-    }
-
-    public void mount(String str) {
-        super.mount_enforcePermission();
-        Slog.d("StorageManagerService", "Begin mount: volId=" + str);
-        VolumeInfo findVolumeByIdOrThrow = findVolumeByIdOrThrow(str);
-        if (isMountDisallowed(findVolumeByIdOrThrow)) {
-            throw new SecurityException("Mounting " + str + " restricted by policy");
-        }
-        mount(findVolumeByIdOrThrow);
-    }
-
-    public final void remountAppStorageDirs(Map map, int i) {
-        for (Map.Entry entry : map.entrySet()) {
-            int intValue = ((Integer) entry.getKey()).intValue();
-            String str = (String) entry.getValue();
-            Slog.i("StorageManagerService", "Remounting storage for pid: " + intValue);
-            String[] sharedUserPackagesForPackage = this.mPmInternal.getSharedUserPackagesForPackage(str, i);
-            int packageUid = this.mPmInternal.getPackageUid(str, 0L, i);
-            if (sharedUserPackagesForPackage.length == 0) {
-                sharedUserPackagesForPackage = new String[]{str};
+            if (!matcher.group(3).equals(str)) {
+                throw new SecurityException("Invalid mkdirs path: " + canonicalFile + " does not contain calling package " + str);
+            }
+            if ((matcher.group(2) != null && !matcher.group(2).equals(Integer.toString(userId))) || (matcher.group(2) == null && userId != this.mCurrentUserId)) {
+                throw new SecurityException("Invalid mkdirs path: " + canonicalFile + " does not match calling user id " + userId);
             }
             try {
-                this.mVold.remountAppStorageDirs(packageUid, intValue, sharedUserPackagesForPackage);
+                this.mVold.setupAppDir(absolutePath, callingUid);
             } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
+                throw new IllegalStateException("Failed to prepare " + absolutePath + ": " + e);
             }
+        } catch (IOException e2) {
+            throw new IllegalStateException("Failed to resolve " + str2 + ": " + e2);
+        }
+    }
+
+    @Override // com.android.server.Watchdog.Monitor
+    public final void monitor() {
+        try {
+            this.mVold.monitor();
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
         }
     }
 
@@ -2043,15 +3740,16 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
             } else {
                 i = 0;
             }
+            extendWatchdogTimeout("#mount might be slow");
             if (((DevicePolicyManager) this.mContext.getSystemService("device_policy")).semGetRequireStorageCardEncryption(null)) {
                 Slog.i("StorageManagerService", "Admin Stirage Card Encryption Policy is Set");
                 i2 = 536870912;
             } else {
                 i2 = 0;
             }
-            this.mVold.mount(volumeInfo.id, i | volumeInfo.mountFlags | i2, volumeInfo.mountUserId, new IVoldMountCallback.Stub() { // from class: com.android.server.StorageManagerService.7
+            this.mVold.mount(volumeInfo.id, i | volumeInfo.mountFlags | i2, volumeInfo.mountUserId, new IVoldMountCallback.Stub() { // from class: com.android.server.StorageManagerService.8
                 @Override // android.os.IVoldMountCallback
-                public boolean onVolumeChecking(FileDescriptor fileDescriptor, String str, String str2) {
+                public final boolean onVolumeChecking(FileDescriptor fileDescriptor, String str, String str2) {
                     VolumeInfo volumeInfo2 = volumeInfo;
                     volumeInfo2.path = str;
                     volumeInfo2.internalPath = str2;
@@ -2069,13 +3767,15 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
                         } catch (StorageSessionController.ExternalStorageServiceException e2) {
                             VolumeInfo volumeInfo3 = volumeInfo;
                             if (volumeInfo3.type == 0) {
-                                Slog.e("StorageManagerService", "Failed to mount volume " + StorageManagerService.this.createVolumeInfoStrForPulbicVolume(volumeInfo3), e2);
+                                StorageManagerService.this.getClass();
+                                Slog.e("StorageManagerService", "Failed to mount volume " + StorageManagerService.createVolumeInfoStrForPulbicVolume(volumeInfo3), e2);
                             } else {
                                 Slog.e("StorageManagerService", "Failed to mount volume " + volumeInfo, e2);
                             }
                             Slog.i("StorageManagerService", "Scheduling reset in 10s");
                             StorageManagerService.this.mHandler.removeMessages(10);
-                            StorageManagerService.this.mHandler.sendMessageDelayed(StorageManagerService.this.mHandler.obtainMessage(10), TimeUnit.SECONDS.toMillis((long) 10));
+                            Callbacks callbacks = StorageManagerService.this.mHandler;
+                            callbacks.sendMessageDelayed(callbacks.obtainMessage(10), TimeUnit.SECONDS.toMillis(10));
                             try {
                                 parcelFileDescriptor.close();
                                 return false;
@@ -2111,1050 +3811,45 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
         }
     }
 
-    public void unmount(String str) {
-        DiskInfo diskInfo;
-        super.unmount_enforcePermission();
-        Slog.d("StorageManagerService", "Begin unmount: volId=" + str);
+    public final void mount(String str) {
+        mount_enforcePermission();
+        Slog.d("StorageManagerService", "Begin mount: volId=" + str);
         VolumeInfo findVolumeByIdOrThrow = findVolumeByIdOrThrow(str);
-        if (findVolumeByIdOrThrow.isPrimaryPhysical() || ((diskInfo = findVolumeByIdOrThrow.disk) != null && diskInfo.isSd())) {
-            long clearCallingIdentity = Binder.clearCallingIdentity();
+        if (isMountDisallowed(findVolumeByIdOrThrow)) {
+            throw new SecurityException(XmlUtils$$ExternalSyntheticOutline0.m("Mounting ", str, " restricted by policy"));
+        }
+        synchronized (this.mLock) {
             try {
-                synchronized (this.mUnmountLock) {
-                    this.mUnmountSignal = new CountDownLatch(1);
-                    this.mPmInternal.updateExternalMediaStatus(false, true);
-                    waitForLatch(this.mUnmountSignal, "mUnmountSignal");
-                    this.mUnmountSignal = null;
+                if (!findVolumeByIdOrThrow.isPrimary() && findVolumeByIdOrThrow.isVisible() && findVolumeByIdOrThrow.getMountUserId() != this.mCurrentUserId) {
+                    findVolumeByIdOrThrow.mountUserId = this.mCurrentUserId;
                 }
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
+            } catch (Throwable th) {
+                throw th;
             }
         }
-        unmount(findVolumeByIdOrThrow);
+        mount(findVolumeByIdOrThrow);
     }
 
-    public final void unmount(VolumeInfo volumeInfo) {
-        try {
-            try {
-                if (volumeInfo.type == 1) {
-                    this.mInstaller.onPrivateVolumeRemoved(volumeInfo.getFsUuid());
-                }
-            } catch (Installer.InstallerException e) {
-                Slog.e("StorageManagerService", "Failed unmount mirror data", e);
-            }
-            this.mVold.unmount(volumeInfo.id);
-            this.mStorageSessionController.onVolumeUnmount(volumeInfo);
-        } catch (Exception e2) {
-            Slog.wtf("StorageManagerService", e2);
+    public final void mountBySecApp(String str, String str2) {
+        if (!chkMountUnmountFormatCaller(str2)) {
+            throw new SecurityException(XmlUtils$$ExternalSyntheticOutline0.m("Mount call denied to [", str2, "]"));
         }
+        Slog.d("StorageManagerService", "Mount call accepted");
+        mount(str);
     }
 
-    public void format(String str) {
-        super.format_enforcePermission();
-        Slog.d("StorageManagerService", "Begin format: volId=" + str);
-        VolumeInfo findVolumeByIdOrThrow = findVolumeByIdOrThrow(str);
-        String str2 = findVolumeByIdOrThrow.fsUuid;
-        try {
-            this.mVold.format(findVolumeByIdOrThrow.id, "auto");
-            if (TextUtils.isEmpty(str2)) {
-                return;
-            }
-            forgetVolume(str2);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void benchmark(String str, final IVoldTaskListener iVoldTaskListener) {
-        super.benchmark_enforcePermission();
-        try {
-            this.mVold.benchmark(str, new IVoldTaskListener.Stub() { // from class: com.android.server.StorageManagerService.8
-                @Override // android.os.IVoldTaskListener
-                public void onStatus(int i, PersistableBundle persistableBundle) {
-                    StorageManagerService.this.dispatchOnStatus(iVoldTaskListener, i, persistableBundle);
-                }
-
-                @Override // android.os.IVoldTaskListener
-                public void onFinished(int i, PersistableBundle persistableBundle) {
-                    StorageManagerService.this.dispatchOnFinished(iVoldTaskListener, i, persistableBundle);
-                    String string = persistableBundle.getString("path");
-                    String string2 = persistableBundle.getString("ident");
-                    long j = persistableBundle.getLong("create");
-                    long j2 = persistableBundle.getLong("run");
-                    long j3 = persistableBundle.getLong("destroy");
-                    ((DropBoxManager) StorageManagerService.this.mContext.getSystemService(DropBoxManager.class)).addText("storage_benchmark", StorageManagerService.this.scrubPath(string) + " " + string2 + " " + j + " " + j2 + " " + j3);
-                    synchronized (StorageManagerService.this.mLock) {
-                        VolumeRecord findRecordForPath = StorageManagerService.this.findRecordForPath(string);
-                        if (findRecordForPath != null) {
-                            findRecordForPath.lastBenchMillis = System.currentTimeMillis();
-                            StorageManagerService.this.writeSettingsLocked();
-                        }
-                    }
-                }
-            });
-        } catch (RemoteException e) {
-            throw e.rethrowAsRuntimeException();
-        }
-    }
-
-    public void partitionPublic(String str) {
-        super.partitionPublic_enforcePermission();
-        Slog.d("StorageManagerService", "partitionPublic: diskId=" + str);
-        CountDownLatch findOrCreateDiskScanLatch = findOrCreateDiskScanLatch(str);
-        try {
-            this.mVold.partition(str, 0, -1);
-            waitForLatch(findOrCreateDiskScanLatch, "partitionPublic", 600000L);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void partitionPrivate(String str) {
-        super.partitionPrivate_enforcePermission();
-        enforceAdminUser();
-        Slog.d("StorageManagerService", "partitionPrivate: diskId=" + str);
-        CountDownLatch findOrCreateDiskScanLatch = findOrCreateDiskScanLatch(str);
-        try {
-            this.mVold.partition(str, 1, -1);
-            waitForLatch(findOrCreateDiskScanLatch, "partitionPrivate", 180000L);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void partitionMixed(String str, int i) {
-        super.partitionMixed_enforcePermission();
-        enforceAdminUser();
-        Slog.d("StorageManagerService", "partitionMixed: diskId=" + str);
-        CountDownLatch findOrCreateDiskScanLatch = findOrCreateDiskScanLatch(str);
-        try {
-            this.mVold.partition(str, 2, i);
-            waitForLatch(findOrCreateDiskScanLatch, "partitionMixed", 180000L);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void setVolumeNickname(String str, String str2) {
-        super.setVolumeNickname_enforcePermission();
-        Slog.d("StorageManagerService", "setVolumeNickname: fsUuid=" + str + " nickname=" + str2);
-        Objects.requireNonNull(str);
-        synchronized (this.mLock) {
-            VolumeRecord volumeRecord = (VolumeRecord) this.mRecords.get(str);
-            volumeRecord.nickname = str2;
-            this.mCallbacks.notifyVolumeRecordChanged(volumeRecord);
-            writeSettingsLocked();
-        }
-    }
-
-    public void setVolumeUserFlags(String str, int i, int i2) {
-        super.setVolumeUserFlags_enforcePermission();
-        Slog.d("StorageManagerService", "setVolumeUserFlags: fsUuid=" + str + " flags=" + i + " mask=" + i2);
-        Objects.requireNonNull(str);
-        synchronized (this.mLock) {
-            VolumeRecord volumeRecord = (VolumeRecord) this.mRecords.get(str);
-            volumeRecord.userFlags = (i & i2) | (volumeRecord.userFlags & (~i2));
-            this.mCallbacks.notifyVolumeRecordChanged(volumeRecord);
-            writeSettingsLocked();
-        }
-    }
-
-    public void forgetVolume(String str) {
-        super.forgetVolume_enforcePermission();
-        Slog.d("StorageManagerService", "forgetVolume: fsUuid=" + str);
-        Objects.requireNonNull(str);
-        synchronized (this.mLock) {
-            VolumeRecord volumeRecord = (VolumeRecord) this.mRecords.remove(str);
-            if (volumeRecord != null && !TextUtils.isEmpty(volumeRecord.partGuid)) {
-                this.mHandler.obtainMessage(9, volumeRecord).sendToTarget();
-            }
-            this.mCallbacks.notifyVolumeForgotten(str);
-            if (Objects.equals(this.mPrimaryStorageUuid, str)) {
-                this.mPrimaryStorageUuid = getDefaultPrimaryStorageUuid();
-                this.mHandler.obtainMessage(10).sendToTarget();
-            }
-            writeSettingsLocked();
-        }
-    }
-
-    public void forgetAllVolumes() {
-        super.forgetAllVolumes_enforcePermission();
-        Slog.d("StorageManagerService", "forgetAllVolumes");
-        synchronized (this.mLock) {
-            for (int i = 0; i < this.mRecords.size(); i++) {
-                String str = (String) this.mRecords.keyAt(i);
-                VolumeRecord volumeRecord = (VolumeRecord) this.mRecords.valueAt(i);
-                if (!TextUtils.isEmpty(volumeRecord.partGuid)) {
-                    this.mHandler.obtainMessage(9, volumeRecord).sendToTarget();
-                }
-                this.mCallbacks.notifyVolumeForgotten(str);
-            }
-            this.mRecords.clear();
-            if (!Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, this.mPrimaryStorageUuid)) {
-                this.mPrimaryStorageUuid = getDefaultPrimaryStorageUuid();
-            }
-            writeSettingsLocked();
-            this.mHandler.obtainMessage(10).sendToTarget();
-        }
-    }
-
-    public final void forgetPartition(String str, String str2) {
-        try {
-            this.mVold.forgetPartition(str, str2);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void fstrim(int i, final IVoldTaskListener iVoldTaskListener) {
-        super.fstrim_enforcePermission();
-        try {
-            if (needsCheckpoint() && supportsBlockCheckpoint()) {
-                Slog.i("StorageManagerService", "Skipping fstrim - block based checkpoint in progress");
-                return;
-            }
-            this.mVold.fstrim(i, new IVoldTaskListener.Stub() { // from class: com.android.server.StorageManagerService.9
-                @Override // android.os.IVoldTaskListener
-                public void onStatus(int i2, PersistableBundle persistableBundle) {
-                    StorageManagerService.this.dispatchOnStatus(iVoldTaskListener, i2, persistableBundle);
-                    if (i2 != 0) {
-                        return;
-                    }
-                    String string = persistableBundle.getString("path");
-                    long j = persistableBundle.getLong("bytes");
-                    long j2 = persistableBundle.getLong("time");
-                    ((DropBoxManager) StorageManagerService.this.mContext.getSystemService(DropBoxManager.class)).addText("storage_trim", StorageManagerService.this.scrubPath(string) + " " + j + " " + j2);
-                    synchronized (StorageManagerService.this.mLock) {
-                        VolumeRecord findRecordForPath = StorageManagerService.this.findRecordForPath(string);
-                        if (findRecordForPath != null) {
-                            findRecordForPath.lastTrimMillis = System.currentTimeMillis();
-                            StorageManagerService.this.writeSettingsLocked();
-                        }
-                    }
-                }
-
-                @Override // android.os.IVoldTaskListener
-                public void onFinished(int i2, PersistableBundle persistableBundle) {
-                    StorageManagerService.this.dispatchOnFinished(iVoldTaskListener, i2, persistableBundle);
-                }
-            });
-        } catch (RemoteException e) {
-            throw e.rethrowAsRuntimeException();
-        }
-    }
-
-    public void runIdleMaint(final Runnable runnable) {
-        enforcePermission("android.permission.MOUNT_FORMAT_FILESYSTEMS");
-        try {
-            this.mHeimdAllFs = new HeimdAllFsService(this.mContext);
-            if (needsCheckpoint() && supportsBlockCheckpoint()) {
-                Slog.i("StorageManagerService", "Skipping idle maintenance - block based checkpoint in progress");
-            }
-            this.mVold.runIdleMaint(this.mNeedGC, new IVoldTaskListener.Stub() { // from class: com.android.server.StorageManagerService.10
-                @Override // android.os.IVoldTaskListener
-                public void onStatus(int i, PersistableBundle persistableBundle) {
-                }
-
-                @Override // android.os.IVoldTaskListener
-                public void onFinished(int i, PersistableBundle persistableBundle) {
-                    if (StorageManagerService.this.mHeimdAllFs != null) {
-                        StorageManagerService.this.mHeimdAllFs.waitForFinished();
-                    }
-                    StorageManagerService.this.mHeimdAllFs = null;
-                    if (runnable != null) {
-                        BackgroundThread.getHandler().post(runnable);
-                    }
-                }
-            });
-            HeimdAllFsService heimdAllFsService = this.mHeimdAllFs;
-            if (heimdAllFsService != null) {
-                heimdAllFsService.start();
-            }
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void runIdleMaintenance() {
-        runIdleMaint(null);
-    }
-
-    public void abortIdleMaint(final Runnable runnable) {
-        enforcePermission("android.permission.MOUNT_FORMAT_FILESYSTEMS");
-        try {
-            this.mVold.abortIdleMaint(new IVoldTaskListener.Stub() { // from class: com.android.server.StorageManagerService.11
-                @Override // android.os.IVoldTaskListener
-                public void onStatus(int i, PersistableBundle persistableBundle) {
-                }
-
-                @Override // android.os.IVoldTaskListener
-                public void onFinished(int i, PersistableBundle persistableBundle) {
-                    if (StorageManagerService.this.mHeimdAllFs != null) {
-                        StorageManagerService.this.mHeimdAllFs.waitForFinished();
-                    }
-                    StorageManagerService.this.mHeimdAllFs = null;
-                    if (runnable != null) {
-                        BackgroundThread.getHandler().post(runnable);
-                    }
-                }
-            });
-            Slog.d("StorageManagerService", "abortIdleMaint, HeimdAllFSThread = null");
-            HeimdAllFsService heimdAllFsService = this.mHeimdAllFs;
-            if (heimdAllFsService != null) {
-                heimdAllFsService.abort();
-            }
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void abortIdleMaintenance() {
-        abortIdleMaint(null);
-    }
-
-    public boolean isPassedLifetimeThresh() {
-        return this.mPassedLifetimeThresh;
-    }
-
-    public final int getAverageWriteAmount() {
-        return Arrays.stream(this.mStorageWriteRecords).sum() / this.mMaxWriteRecords;
-    }
-
-    public final void updateStorageWriteRecords(int i) {
-        System.arraycopy(this.mStorageWriteRecords, 0, this.mStorageWriteRecords, 1, this.mMaxWriteRecords - 1);
-        this.mStorageWriteRecords[0] = i;
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = this.mWriteRecordFile.startWrite();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeInt(sSmartIdleMaintPeriod);
-            objectOutputStream.writeObject(this.mStorageWriteRecords);
-            this.mWriteRecordFile.finishWrite(fileOutputStream);
-        } catch (IOException unused) {
-            if (fileOutputStream != null) {
-                this.mWriteRecordFile.failWrite(fileOutputStream);
-            }
-        }
-    }
-
-    public final boolean checkChargeStatus() {
-        int intExtra;
-        Intent registerReceiver = this.mContext.registerReceiver(null, new IntentFilter("android.intent.action.BATTERY_CHANGED"));
-        if (this.mChargingRequired && (intExtra = registerReceiver.getIntExtra("status", -1)) != 2 && intExtra != 5) {
-            Slog.w("StorageManagerService", "Battery is not being charged");
-            return false;
-        }
-        float intExtra2 = (registerReceiver.getIntExtra("level", -1) * 100.0f) / registerReceiver.getIntExtra("scale", -1);
-        if (intExtra2 >= this.mLowBatteryLevel) {
-            return true;
-        }
-        Slog.w("StorageManagerService", "Battery level is " + intExtra2 + ", which is lower than threshold: " + this.mLowBatteryLevel);
-        return false;
-    }
-
-    public final boolean refreshLifetimeConstraint() {
-        try {
-            int storageLifeTime = this.mVold.getStorageLifeTime();
-            if (storageLifeTime == -1) {
-                Slog.w("StorageManagerService", "Failed to get storage lifetime");
-                return false;
-            }
-            if (storageLifeTime > this.mLifetimePercentThreshold) {
-                Slog.w("StorageManagerService", "Ended smart idle maintenance, because of lifetime(" + storageLifeTime + "), lifetime threshold(" + this.mLifetimePercentThreshold + ")");
-                this.mPassedLifetimeThresh = true;
-                return false;
-            }
-            Slog.i("StorageManagerService", "Storage lifetime: " + storageLifeTime);
-            return true;
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return false;
-        }
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:19:0x00bd, code lost:
-    
-        if (r12 != null) goto L26;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x00bf, code lost:
-    
-        r12.run();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:22:0x00cf, code lost:
-    
-        return;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:37:0x00cb, code lost:
-    
-        if (r12 == null) goto L34;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public synchronized void runSmartIdleMaint(java.lang.Runnable r12) {
-        /*
-            r11 = this;
-            monitor-enter(r11)
-            java.lang.String r0 = "android.permission.MOUNT_FORMAT_FILESYSTEMS"
-            r11.enforcePermission(r0)     // Catch: java.lang.Throwable -> Ld6
-            int r0 = r11.mTargetDirtyRatio     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            android.os.IVold r1 = r11.mVold     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            int r1 = r1.getWriteAmount()     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2 = -1
-            if (r1 != r2) goto L1f
-            java.lang.String r0 = "StorageManagerService"
-            java.lang.String r1 = "Failed to get storage write record"
-            android.util.sysfwutil.Slog.w(r0, r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            if (r12 == 0) goto L1d
-            r12.run()     // Catch: java.lang.Throwable -> Ld6
-        L1d:
-            monitor-exit(r11)
-            return
-        L1f:
-            r11.updateStorageWriteRecords(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            boolean r2 = r11.needsCheckpoint()     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            if (r2 == 0) goto L38
-            boolean r2 = r11.supportsBlockCheckpoint()     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            if (r2 != 0) goto L2f
-            goto L38
-        L2f:
-            java.lang.String r0 = "StorageManagerService"
-            java.lang.String r1 = "Skipping smart idle maintenance - block based checkpoint in progress"
-            android.util.sysfwutil.Slog.i(r0, r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            goto Lbd
-        L38:
-            boolean r2 = r11.refreshLifetimeConstraint()     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            if (r2 == 0) goto L4a
-            boolean r2 = r11.checkChargeStatus()     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            if (r2 != 0) goto L45
-            goto L4a
-        L45:
-            int r2 = r11.getAverageWriteAmount()     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            goto L54
-        L4a:
-            java.lang.String r0 = "StorageManagerService"
-            java.lang.String r2 = "Turn off gc_urgent based on checking lifetime and charge status"
-            android.util.sysfwutil.Slog.i(r0, r2)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2 = 0
-            r0 = 100
-        L54:
-            r10 = r0
-            r4 = r2
-            java.lang.String r0 = "StorageManagerService"
-            java.lang.StringBuilder r2 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2.<init>()     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            java.lang.String r3 = "Set smart idle maintenance: latest write amount: "
-            r2.append(r3)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            java.lang.String r1 = ", average write amount: "
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2.append(r4)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            java.lang.String r1 = ", min segment threshold: "
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            int r1 = r11.mMinSegmentsThreshold     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            java.lang.String r1 = ", dirty reclaim rate: "
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            float r1 = r11.mDirtyReclaimRate     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            java.lang.String r1 = ", segment reclaim weight: "
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            float r1 = r11.mSegmentReclaimWeight     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            java.lang.String r1 = ", period(min): "
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            int r1 = com.android.server.StorageManagerService.sSmartIdleMaintPeriod     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            java.lang.String r1 = ", min gc sleep time(ms): "
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            int r1 = r11.mMinGCSleepTime     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            java.lang.String r1 = ", target dirty ratio: "
-            r2.append(r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r2.append(r10)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            java.lang.String r1 = r2.toString()     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            android.util.sysfwutil.Slog.i(r0, r1)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            android.os.IVold r3 = r11.mVold     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            int r5 = r11.mMinSegmentsThreshold     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            float r6 = r11.mDirtyReclaimRate     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            float r7 = r11.mSegmentReclaimWeight     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            int r8 = com.android.server.StorageManagerService.sSmartIdleMaintPeriod     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            int r9 = r11.mMinGCSleepTime     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-            r3.setGCUrgentPace(r4, r5, r6, r7, r8, r9, r10)     // Catch: java.lang.Throwable -> Lc3 java.lang.Exception -> Lc5
-        Lbd:
-            if (r12 == 0) goto Lce
-        Lbf:
-            r12.run()     // Catch: java.lang.Throwable -> Ld6
-            goto Lce
-        Lc3:
-            r0 = move-exception
-            goto Ld0
-        Lc5:
-            r0 = move-exception
-            java.lang.String r1 = "StorageManagerService"
-            android.util.sysfwutil.Slog.wtf(r1, r0)     // Catch: java.lang.Throwable -> Lc3
-            if (r12 == 0) goto Lce
-            goto Lbf
-        Lce:
-            monitor-exit(r11)
-            return
-        Ld0:
-            if (r12 == 0) goto Ld5
-            r12.run()     // Catch: java.lang.Throwable -> Ld6
-        Ld5:
-            throw r0     // Catch: java.lang.Throwable -> Ld6
-        Ld6:
-            r12 = move-exception
-            monitor-exit(r11)
-            throw r12
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.runSmartIdleMaint(java.lang.Runnable):void");
-    }
-
-    public void setDebugFlags(int i, int i2) {
-        long clearCallingIdentity;
-        super.setDebugFlags_enforcePermission();
-        String str = "force_off";
-        if ((i2 & 3) != 0) {
-            String str2 = (i & 1) != 0 ? "force_on" : (i & 2) != 0 ? "force_off" : "";
-            clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                SystemProperties.set("persist.sys.adoptable", str2);
-                this.mHandler.obtainMessage(10).sendToTarget();
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            } finally {
-            }
-        }
-        if ((i2 & 12) != 0) {
-            if ((i & 4) != 0) {
-                str = "force_on";
-            } else if ((i & 8) == 0) {
-                str = "";
-            }
-            clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                SystemProperties.set("persist.sys.sdcardfs", str);
-                this.mHandler.obtainMessage(10).sendToTarget();
-            } finally {
-            }
-        }
-        if ((i2 & 16) != 0) {
-            boolean z = (i & 16) != 0;
-            clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                SystemProperties.set("persist.sys.virtual_disk", Boolean.toString(z));
-                this.mHandler.obtainMessage(10).sendToTarget();
-            } finally {
-            }
-        }
-    }
-
-    public String getPrimaryStorageUuid() {
-        String str;
-        synchronized (this.mLock) {
-            str = this.mPrimaryStorageUuid;
-        }
-        return str;
-    }
-
-    public void setPrimaryStorageUuid(String str, IPackageMoveObserver iPackageMoveObserver) {
-        super.setPrimaryStorageUuid_enforcePermission();
-        synchronized (this.mLock) {
-            if (Objects.equals(this.mPrimaryStorageUuid, str)) {
-                throw new IllegalArgumentException("Primary storage already at " + str);
-            }
-            if (this.mMoveCallback != null) {
-                throw new IllegalStateException("Move already in progress");
-            }
-            this.mMoveCallback = iPackageMoveObserver;
-            this.mMoveTargetUuid = str;
-            for (UserInfo userInfo : ((UserManager) this.mContext.getSystemService(UserManager.class)).getUsers()) {
-                if (StorageManager.isFileEncrypted() && !isUserKeyUnlocked(userInfo.id)) {
-                    Slog.w("StorageManagerService", "Failing move due to locked user " + userInfo.id);
-                    onMoveStatusLocked(-10);
-                    return;
-                }
-            }
-            if (!"primary_physical".equals(this.mPrimaryStorageUuid) && !"primary_physical".equals(str)) {
-                int i = this.mCurrentUserId;
-                VolumeInfo findStorageForUuidAsUser = findStorageForUuidAsUser(this.mPrimaryStorageUuid, i);
-                VolumeInfo findStorageForUuidAsUser2 = findStorageForUuidAsUser(str, i);
-                if (findStorageForUuidAsUser == null) {
-                    Slog.w("StorageManagerService", "Failing move due to missing from volume " + this.mPrimaryStorageUuid);
-                    onMoveStatusLocked(-6);
-                    return;
-                }
-                if (findStorageForUuidAsUser2 == null) {
-                    Slog.w("StorageManagerService", "Failing move due to missing to volume " + str);
-                    onMoveStatusLocked(-6);
-                    return;
-                }
-                try {
-                    this.mVold.moveStorage(findStorageForUuidAsUser.id, findStorageForUuidAsUser2.id, new IVoldTaskListener.Stub() { // from class: com.android.server.StorageManagerService.12
-                        @Override // android.os.IVoldTaskListener
-                        public void onFinished(int i2, PersistableBundle persistableBundle) {
-                        }
-
-                        @Override // android.os.IVoldTaskListener
-                        public void onStatus(int i2, PersistableBundle persistableBundle) {
-                            synchronized (StorageManagerService.this.mLock) {
-                                StorageManagerService.this.onMoveStatusLocked(i2);
-                            }
-                        }
-                    });
-                    return;
-                } catch (Exception e) {
-                    Slog.wtf("StorageManagerService", e);
-                    return;
-                }
-            }
-            Slog.d("StorageManagerService", "Skipping move to/from primary physical");
-            onMoveStatusLocked(82);
-            onMoveStatusLocked(-100);
-            this.mHandler.obtainMessage(10).sendToTarget();
-        }
-    }
-
-    public final void warnOnNotMounted() {
-        synchronized (this.mLock) {
-            for (int i = 0; i < this.mVolumes.size(); i++) {
-                VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i);
-                if (volumeInfo.isPrimary() && volumeInfo.isMountedWritable()) {
-                    return;
-                }
-            }
-            Slog.w("StorageManagerService", "No primary storage mounted!");
-        }
-    }
-
-    public final boolean isUidOwnerOfPackageOrSystem(String str, int i) {
-        if (i == 1000) {
-            return true;
-        }
-        return this.mPmInternal.isSameApp(str, i, UserHandle.getUserId(i));
-    }
-
-    public String getMountedObbPath(String str) {
-        ObbState obbState;
-        Objects.requireNonNull(str, "rawPath cannot be null");
-        warnOnNotMounted();
-        synchronized (this.mObbMounts) {
-            obbState = (ObbState) this.mObbPathToStateMap.get(str);
-        }
-        if (obbState == null) {
-            Slog.w("StorageManagerService", "Failed to find OBB mounted at " + str);
-            return null;
-        }
-        return findVolumeByIdOrThrow(obbState.volId).getPath().getAbsolutePath();
-    }
-
-    public boolean isObbMounted(String str) {
-        boolean containsKey;
-        Objects.requireNonNull(str, "rawPath cannot be null");
-        synchronized (this.mObbMounts) {
-            containsKey = this.mObbPathToStateMap.containsKey(str);
-        }
-        return containsKey;
-    }
-
-    public void mountObb(String str, String str2, IObbActionListener iObbActionListener, int i, ObbInfo obbInfo) {
+    public final void mountObb(String str, String str2, IObbActionListener iObbActionListener, int i, ObbInfo obbInfo) {
         Objects.requireNonNull(str, "rawPath cannot be null");
         Objects.requireNonNull(str2, "canonicalPath cannot be null");
         Objects.requireNonNull(iObbActionListener, "token cannot be null");
         Objects.requireNonNull(obbInfo, "obbIfno cannot be null");
         int callingUid = Binder.getCallingUid();
         MountObbAction mountObbAction = new MountObbAction(new ObbState(str, str2, callingUid, iObbActionListener, i, null), callingUid, obbInfo);
-        ObbActionHandler obbActionHandler = this.mObbActionHandler;
-        obbActionHandler.sendMessage(obbActionHandler.obtainMessage(1, mountObbAction));
+        Callbacks callbacks = this.mObbActionHandler;
+        callbacks.sendMessage(callbacks.obtainMessage(1, mountObbAction));
     }
 
-    public void unmountObb(String str, boolean z, IObbActionListener iObbActionListener, int i) {
-        ObbState obbState;
-        Objects.requireNonNull(str, "rawPath cannot be null");
-        synchronized (this.mObbMounts) {
-            obbState = (ObbState) this.mObbPathToStateMap.get(str);
-        }
-        if (obbState != null) {
-            UnmountObbAction unmountObbAction = new UnmountObbAction(new ObbState(str, obbState.canonicalPath, Binder.getCallingUid(), iObbActionListener, i, obbState.volId), z);
-            ObbActionHandler obbActionHandler = this.mObbActionHandler;
-            obbActionHandler.sendMessage(obbActionHandler.obtainMessage(1, unmountObbAction));
-            return;
-        }
-        Slog.w("StorageManagerService", "Unknown OBB mount at " + str);
-    }
-
-    public boolean supportsCheckpoint() {
-        return this.mVold.supportsCheckpoint();
-    }
-
-    public void startCheckpoint(int i) {
-        int callingUid = Binder.getCallingUid();
-        if (callingUid != 1000 && callingUid != 0 && callingUid != 2000) {
-            throw new SecurityException("no permission to start filesystem checkpoint");
-        }
-        this.mVold.startCheckpoint(i);
-    }
-
-    public void commitChanges() {
-        if (Binder.getCallingUid() != 1000) {
-            throw new SecurityException("no permission to commit checkpoint changes");
-        }
-        this.mVold.commitChanges();
-    }
-
-    public boolean needsCheckpoint() {
-        super.needsCheckpoint_enforcePermission();
-        return this.mVold.needsCheckpoint();
-    }
-
-    public void abortChanges(String str, boolean z) {
-        if (Binder.getCallingUid() != 1000) {
-            throw new SecurityException("no permission to commit checkpoint changes");
-        }
-        this.mVold.abortChanges(str, z);
-    }
-
-    public void createUserKey(int i, int i2, boolean z) {
-        super.createUserKey_enforcePermission();
-        try {
-            this.mVold.createUserKey(i, i2, z);
-            synchronized (this.mLock) {
-                this.mLocalUnlockedUsers.append(i);
-            }
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void destroyUserKey(int i) {
-        super.destroyUserKey_enforcePermission();
-        try {
-            this.mVold.destroyUserKey(i);
-            synchronized (this.mLock) {
-                this.mLocalUnlockedUsers.remove(i);
-            }
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void setUserKeyProtection(int i, byte[] bArr) {
-        super.setUserKeyProtection_enforcePermission();
-        this.mVold.setUserKeyProtection(i, HexDump.toHexString(bArr));
-    }
-
-    public void unlockUserKey(int i, int i2, byte[] bArr, byte[] bArr2) {
-        super.unlockUserKey_enforcePermission();
-        if (StorageManager.isFileEncrypted()) {
-            this.mVold.unlockUserKey(i, i2, encodeBytes(bArr), HexDump.toHexString(bArr2));
-        }
-        synchronized (this.mLock) {
-            this.mLocalUnlockedUsers.append(i);
-        }
-    }
-
-    public final String encodeBytes(byte[] bArr) {
-        return ArrayUtils.isEmpty(bArr) ? "!" : HexDump.toHexString(bArr);
-    }
-
-    public void lockUserKey(int i) {
-        super.lockUserKey_enforcePermission();
-        if (i == 0 && UserManager.isHeadlessSystemUserMode()) {
-            throw new IllegalArgumentException("Headless system user data cannot be locked..");
-        }
-        if (!isUserKeyUnlocked(i)) {
-            Slog.d("StorageManagerService", "User " + i + "'s CE storage is already locked");
-            return;
-        }
-        try {
-            this.mVold.lockUserKey(i);
-            synchronized (this.mLock) {
-                this.mLocalUnlockedUsers.remove(i);
-            }
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public boolean isUserKeyUnlocked(int i) {
-        boolean contains;
-        synchronized (this.mLock) {
-            contains = this.mLocalUnlockedUsers.contains(i);
-        }
-        return contains;
-    }
-
-    public final boolean isSystemUnlocked(int i) {
-        boolean contains;
-        synchronized (this.mLock) {
-            contains = ArrayUtils.contains(this.mSystemUnlockedUsers, i);
-        }
-        return contains;
-    }
-
-    public final void prepareUserStorageIfNeeded(VolumeInfo volumeInfo) {
-        int i;
-        if (volumeInfo.type != 1) {
-            return;
-        }
-        UserManager userManager = (UserManager) this.mContext.getSystemService(UserManager.class);
-        UserManagerInternal userManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
-        for (UserInfo userInfo : userManager.getUsers()) {
-            if (userManagerInternal.isUserUnlockingOrUnlocked(userInfo.id)) {
-                i = 3;
-            } else if (userManagerInternal.isUserRunning(userInfo.id)) {
-                i = 1;
-            }
-            prepareUserStorageInternal(volumeInfo.fsUuid, userInfo.id, userInfo.serialNumber, i);
-        }
-    }
-
-    public void prepareUserStorage(String str, int i, int i2, int i3) {
-        super.prepareUserStorage_enforcePermission();
-        try {
-            prepareUserStorageInternal(str, i, i2, i3);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public final void prepareUserStorageInternal(String str, int i, int i2, int i3) {
-        VolumeInfo findVolumeByUuid;
-        try {
-            this.mVold.prepareUserStorage(str, i, i2, i3);
-            if (str != null && (findVolumeByUuid = ((StorageManager) this.mContext.getSystemService(StorageManager.class)).findVolumeByUuid(str)) != null && i == 0 && findVolumeByUuid.type == 1) {
-                this.mInstaller.tryMountDataMirror(str);
-            }
-            if (i == 0) {
-                try {
-                    new Sender(this.mContext).send("FBE4", "encryption policy success");
-                    Slog.i("StorageManagerService", "encryption policy for SA logging");
-                } catch (Exception e) {
-                    Slog.e("StorageManagerService", "encryption policy for SA logging : " + e.toString());
-                }
-            }
-        } catch (Exception e2) {
-            EventLog.writeEvent(1397638484, "224585613", -1, "");
-            Slog.wtf("StorageManagerService", e2);
-            String str2 = SystemProperties.get("security.fbe.global_de");
-            UserManagerInternal userManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
-            if (SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_COMMON_SUPPORT_UNPACK", false) || "loaded".equals(str2) || userManagerInternal.shouldIgnorePrepareStorageErrors(i)) {
-                Slog.wtf("StorageManagerService", "ignoring error preparing storage for existing user " + i + "; device may be insecure!");
-                if (i != 0 || SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_COMMON_SUPPORT_UNPACK", false)) {
-                    return;
-                }
-                try {
-                    new Sender(this.mContext).send("FBE5", SystemProperties.get("security.fbe.fail_cause"));
-                    Slog.i("StorageManagerService", "encryption policy for SA logging");
-                    return;
-                } catch (Exception e3) {
-                    Slog.e("StorageManagerService", "encryption policy for SA logging : " + e3.toString());
-                    return;
-                }
-            }
-            throw new RuntimeException(e2);
-        }
-    }
-
-    public void destroyUserStorage(String str, int i, int i2) {
-        super.destroyUserStorage_enforcePermission();
-        try {
-            this.mVold.destroyUserStorage(str, i, i2);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-        }
-    }
-
-    public void fixupAppDir(String str) {
-        Matcher matcher = KNOWN_APP_DIR_PATHS.matcher(str);
-        if (matcher.matches()) {
-            if (matcher.group(2) == null) {
-                Log.e("StorageManagerService", "Asked to fixup an app dir without a userId: " + str);
-                return;
-            }
-            try {
-                int parseInt = Integer.parseInt(matcher.group(2));
-                String group = matcher.group(3);
-                int packageUidAsUser = this.mContext.getPackageManager().getPackageUidAsUser(group, parseInt);
-                try {
-                    this.mVold.fixupAppDir(str + "/", packageUidAsUser);
-                    return;
-                } catch (RemoteException | ServiceSpecificException e) {
-                    Log.e("StorageManagerService", "Failed to fixup app dir for " + group, e);
-                    return;
-                }
-            } catch (PackageManager.NameNotFoundException e2) {
-                Log.e("StorageManagerService", "Couldn't find package to fixup app dir " + str, e2);
-                return;
-            } catch (NumberFormatException e3) {
-                Log.e("StorageManagerService", "Invalid userId in path: " + str, e3);
-                return;
-            }
-        }
-        Log.e("StorageManagerService", "Path " + str + " is not a valid application-specific directory");
-    }
-
-    public void disableAppDataIsolation(String str, int i, int i2) {
-        int callingUid = Binder.getCallingUid();
-        if (callingUid != 0 && callingUid != 2000) {
-            throw new SecurityException("no permission to enable app visibility");
-        }
-        String[] sharedUserPackagesForPackage = this.mPmInternal.getSharedUserPackagesForPackage(str, i2);
-        int packageUid = this.mPmInternal.getPackageUid(str, 0L, i2);
-        if (sharedUserPackagesForPackage.length == 0) {
-            sharedUserPackagesForPackage = new String[]{str};
-        }
-        try {
-            this.mVold.unmountAppStorageDirs(packageUid, i, sharedUserPackagesForPackage);
-        } catch (RemoteException e) {
-            throw e.rethrowAsRuntimeException();
-        }
-    }
-
-    public PendingIntent getManageSpaceActivityIntent(String str, int i) {
-        int callingUidOrThrow = Binder.getCallingUidOrThrow();
-        try {
-            String[] packagesForUid = this.mIPackageManager.getPackagesForUid(callingUidOrThrow);
-            if (packagesForUid == null) {
-                throw new SecurityException("Unknown uid " + callingUidOrThrow);
-            }
-            if (!this.mStorageManagerInternal.hasExternalStorageAccess(callingUidOrThrow, packagesForUid[0])) {
-                throw new SecurityException("Only File Manager Apps permitted");
-            }
-            try {
-                ApplicationInfo applicationInfo = this.mIPackageManager.getApplicationInfo(str, 0L, UserHandle.getUserId(callingUidOrThrow));
-                if (applicationInfo == null) {
-                    throw new IllegalArgumentException("Invalid packageName");
-                }
-                if (applicationInfo.manageSpaceActivityName == null) {
-                    Log.i("StorageManagerService", str + " doesn't have a manageSpaceActivity");
-                    return null;
-                }
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    try {
-                        Context createPackageContext = this.mContext.createPackageContext(str, 0);
-                        Intent intent = new Intent("android.intent.action.VIEW");
-                        intent.setClassName(str, applicationInfo.manageSpaceActivityName);
-                        intent.setFlags(268435456);
-                        return PendingIntent.getActivity(createPackageContext, i, intent, 1409286144, ActivityOptions.makeBasic().setPendingIntentCreatorBackgroundActivityStartMode(2).toBundle());
-                    } finally {
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                    }
-                } catch (PackageManager.NameNotFoundException unused) {
-                    throw new IllegalArgumentException("packageName not found");
-                }
-            } catch (RemoteException unused2) {
-                throw new SecurityException("Only File Manager Apps permitted");
-            }
-        } catch (RemoteException e) {
-            throw new SecurityException("Unknown uid " + callingUidOrThrow, e);
-        }
-    }
-
-    public void notifyAppIoBlocked(String str, int i, int i2, int i3) {
-        enforceExternalStorageService();
-        this.mStorageSessionController.notifyAppIoBlocked(str, i, i2, i3);
-    }
-
-    public void notifyAppIoResumed(String str, int i, int i2, int i3) {
-        enforceExternalStorageService();
-        this.mStorageSessionController.notifyAppIoResumed(str, i, i2, i3);
-    }
-
-    public boolean isAppIoBlocked(String str, int i, int i2, int i3) {
-        return isAppIoBlocked(i);
-    }
-
-    public final boolean isAppIoBlocked(int i) {
-        return this.mStorageSessionController.isAppIoBlocked(i);
-    }
-
-    public void setCloudMediaProvider(String str) {
-        enforceExternalStorageService();
-        int userId = UserHandle.getUserId(Binder.getCallingUid());
-        synchronized (this.mCloudMediaProviders) {
-            if (!Objects.equals(str, (String) this.mCloudMediaProviders.get(userId))) {
-                this.mCloudMediaProviders.put(userId, str);
-                this.mHandler.obtainMessage(16, userId, 0, str).sendToTarget();
-            }
-        }
-    }
-
-    public String getCloudMediaProvider() {
-        String str;
-        ProviderInfo resolveContentProvider;
-        int callingUid = Binder.getCallingUid();
-        int userId = UserHandle.getUserId(callingUid);
-        synchronized (this.mCloudMediaProviders) {
-            str = (String) this.mCloudMediaProviders.get(userId);
-        }
-        if (str == null || (resolveContentProvider = this.mPmInternal.resolveContentProvider(str, 0L, userId, callingUid)) == null || this.mPmInternal.filterAppAccess(resolveContentProvider.packageName, callingUid, userId)) {
-            return null;
-        }
-        return str;
-    }
-
-    public final void enforceExternalStorageService() {
-        enforcePermission("android.permission.WRITE_MEDIA_STORAGE");
-        if (UserHandle.getAppId(Binder.getCallingUid()) != this.mMediaStoreAuthorityAppId) {
-            throw new SecurityException("Only the ExternalStorageService is permitted");
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class AppFuseMountScope extends AppFuseBridge.MountScope {
-        public boolean mMounted;
-
-        public AppFuseMountScope(int i, int i2) {
-            super(i, i2);
-            this.mMounted = false;
-        }
-
-        @Override // com.android.server.storage.AppFuseBridge.MountScope
-        public ParcelFileDescriptor open() {
-            try {
-                FileDescriptor mountAppFuse = StorageManagerService.this.mVold.mountAppFuse(this.uid, this.mountId);
-                this.mMounted = true;
-                return new ParcelFileDescriptor(mountAppFuse);
-            } catch (Exception e) {
-                throw new AppFuseMountException("Failed to mount", e);
-            }
-        }
-
-        @Override // com.android.server.storage.AppFuseBridge.MountScope
-        public ParcelFileDescriptor openFile(int i, int i2, int i3) {
-            try {
-                return new ParcelFileDescriptor(StorageManagerService.this.mVold.openAppFuseFile(this.uid, i, i2, i3));
-            } catch (Exception e) {
-                throw new AppFuseMountException("Failed to open", e);
-            }
-        }
-
-        @Override // java.lang.AutoCloseable
-        public void close() {
-            if (this.mMounted) {
-                BackgroundThread.getHandler().post(new Runnable() { // from class: com.android.server.StorageManagerService$AppFuseMountScope$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StorageManagerService.AppFuseMountScope.this.lambda$close$0();
-                    }
-                });
-                this.mMounted = false;
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$close$0() {
-            try {
-                StorageManagerService.this.mVold.unmountAppFuse(this.uid, this.mountId);
-            } catch (RemoteException e) {
-                throw e.rethrowAsRuntimeException();
-            }
-        }
-    }
-
-    public AppFuseMount mountProxyFileDescriptorBridge() {
+    public final AppFuseMount mountProxyFileDescriptorBridge() {
         boolean z;
         AppFuseMount appFuseMount;
         Slog.v("StorageManagerService", "mountProxyFileDescriptorBridge");
@@ -3181,24 +3876,184 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
                         this.mAppFuseBridge = null;
                     }
                 } catch (AppFuseMountException e2) {
-                    throw e2.rethrowAsParcelableException();
+                    throw new IllegalStateException(e2.getMessage(), e2);
                 }
             }
             return appFuseMount;
         }
     }
 
-    public ParcelFileDescriptor openProxyFileDescriptor(int i, int i2, int i3) {
+    public final boolean mountSdpMediaStorageCmd(int i) {
+        try {
+            return this.mVold.mountSdpMediaStorageCmd(i);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return false;
+        }
+    }
+
+    public final int mountSecureContainer(String str, String str2, int i, boolean z) {
+        int i2;
+        enforcePermission$1("android.permission.ASEC_MOUNT_UNMOUNT");
+        warnOnNotMounted();
+        synchronized (this.mAsecMountSet) {
+            try {
+                if (this.mAsecMountSet.contains(new PackageInstalledMap(str))) {
+                    return -6;
+                }
+                try {
+                    this.mVold.asecMount(str, str2, i, z);
+                    i2 = 0;
+                } catch (Exception e) {
+                    Slog.wtf("StorageManagerService", e);
+                    i2 = -1;
+                }
+                String secureContainerFilesystemPath = getSecureContainerFilesystemPath(str);
+                if (i2 == 0) {
+                    synchronized (this.mAsecMountSet) {
+                        if (secureContainerFilesystemPath != null) {
+                            try {
+                                if (secureContainerFilesystemPath.startsWith("/data/app-asec/")) {
+                                    this.mAsecMountSet.add(new PackageInstalledMap(str, false));
+                                }
+                            } finally {
+                            }
+                        }
+                        this.mAsecMountSet.add(new PackageInstalledMap(str, true));
+                    }
+                }
+                return i2;
+            } finally {
+            }
+        }
+    }
+
+    public final int mountVolume(String str) {
+        Slog.i("StorageManagerService", "mountVolume : " + str);
+        mount(findVolumeIdForPathOrThrow(str));
+        return 0;
+    }
+
+    public final boolean mvFileAtData(String str, String str2) {
+        this.mContext.enforceCallingOrSelfPermission("com.samsung.android.permission.SEM_VOLD_DATA_MOVE", null);
+        if (!isValidPath(str) || !isValidPath(str2)) {
+            Slog.d("StorageManagerService", "mvFileAtData not support other than media or sec dir, so return false");
+            return false;
+        }
+        if (isMediaPath(str) && isMediaPath(str2)) {
+            Slog.d("StorageManagerService", "mvFileAtData not support from media to media dir, so return false");
+            return false;
+        }
+        try {
+            CompletableFuture completableFuture = new CompletableFuture();
+            this.mVold.mvFileAtData(str, str2, this.mMediaStoreAuthorityAppId, Process.myUid(), new AnonymousClass15(0, completableFuture));
+            boolean z = ((PersistableBundle) completableFuture.get()).getBoolean(KnoxCustomManagerService.SPCM_KEY_RESULT, false);
+            Slog.d("StorageManagerService", "Rename in media path result ".concat(z ? "true" : "false"));
+            return z;
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return false;
+        }
+    }
+
+    public final boolean needsCheckpoint() {
+        needsCheckpoint_enforcePermission();
+        return this.mVold.needsCheckpoint();
+    }
+
+    public final void notifyAppIoBlocked(String str, int i, int i2, int i3) {
+        StorageUserConnection storageUserConnection;
+        enforceExternalStorageService();
+        StorageSessionController storageSessionController = this.mStorageSessionController;
+        storageSessionController.getClass();
+        int userId = UserHandle.getUserId(i);
+        synchronized (storageSessionController.mLock) {
+            storageUserConnection = (StorageUserConnection) storageSessionController.mConnections.get(userId);
+        }
+        if (storageUserConnection != null) {
+            synchronized (storageUserConnection.mSessionsLock) {
+                storageUserConnection.mUidsBlockedOnIo.put(i, Integer.valueOf(((Integer) storageUserConnection.mUidsBlockedOnIo.get(i, 0)).intValue() + 1));
+            }
+        }
+    }
+
+    public final void notifyAppIoResumed(String str, int i, int i2, int i3) {
+        StorageUserConnection storageUserConnection;
+        enforceExternalStorageService();
+        StorageSessionController storageSessionController = this.mStorageSessionController;
+        storageSessionController.getClass();
+        int userId = UserHandle.getUserId(i);
+        synchronized (storageSessionController.mLock) {
+            storageUserConnection = (StorageUserConnection) storageSessionController.mConnections.get(userId);
+        }
+        if (storageUserConnection != null) {
+            synchronized (storageUserConnection.mSessionsLock) {
+                try {
+                    int intValue = ((Integer) storageUserConnection.mUidsBlockedOnIo.get(i, 0)).intValue();
+                    if (intValue == 0) {
+                        Slog.w("StorageUserConnection", "Unexpected app IO resumption for uid: " + i);
+                    }
+                    if (intValue <= 1) {
+                        storageUserConnection.mUidsBlockedOnIo.remove(i);
+                    } else {
+                        storageUserConnection.mUidsBlockedOnIo.put(i, Integer.valueOf(intValue - 1));
+                    }
+                } finally {
+                }
+            }
+        }
+    }
+
+    @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
+    public final void onAwakeStateChanged(boolean z) {
+    }
+
+    @Override // com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver
+    public final void onKeyguardStateChanged(boolean z) {
+        boolean z2 = z && ((KeyguardManager) this.mContext.getSystemService(KeyguardManager.class)).isDeviceSecure(this.mCurrentUserId);
+        if (this.mSecureKeyguardShowing != z2) {
+            this.mSecureKeyguardShowing = z2;
+            this.mHandler.obtainMessage(17, Boolean.valueOf(this.mSecureKeyguardShowing)).sendToTarget();
+        }
+    }
+
+    public final void onMoveStatusLocked(int i) {
+        IPackageMoveObserver iPackageMoveObserver = this.mMoveCallback;
+        if (iPackageMoveObserver == null) {
+            Slog.w("StorageManagerService", "Odd, status but no move requested");
+            return;
+        }
+        try {
+            iPackageMoveObserver.onStatusChanged(-1, i, -1L);
+        } catch (RemoteException unused) {
+        }
+        if (i == 82) {
+            Slog.d("StorageManagerService", "Move to " + this.mMoveTargetUuid + " copy phase finshed; persisting");
+            this.mPrimaryStorageUuid = this.mMoveTargetUuid;
+            writeSettingsLocked();
+            this.mHandler.obtainMessage(18).sendToTarget();
+        }
+        if (PackageManager.isMoveStatusFinished(i)) {
+            Slog.d("StorageManagerService", "Move to " + this.mMoveTargetUuid + " finished with status " + i);
+            this.mMoveCallback = null;
+            this.mMoveTargetUuid = null;
+        }
+    }
+
+    public final ParcelFileDescriptor openProxyFileDescriptor(int i, int i2, int i3) {
         Slog.v("StorageManagerService", "mountProxyFileDescriptor");
         int i4 = i3 & 805306368;
         try {
             synchronized (this.mAppFuseLock) {
-                AppFuseBridge appFuseBridge = this.mAppFuseBridge;
-                if (appFuseBridge == null) {
-                    Slog.e("StorageManagerService", "FuseBridge has not been created");
-                    return null;
+                try {
+                    AppFuseBridge appFuseBridge = this.mAppFuseBridge;
+                    if (appFuseBridge == null) {
+                        Slog.e("StorageManagerService", "FuseBridge has not been created");
+                        return null;
+                    }
+                    return appFuseBridge.openFile(i, i2, i4);
+                } finally {
                 }
-                return appFuseBridge.openFile(i, i2, i4);
             }
         } catch (FuseUnavailableMountException | InterruptedException e) {
             Slog.v("StorageManagerService", "The mount point has already been invalid", e);
@@ -3206,1086 +4061,340 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
         }
     }
 
-    public void mkdirs(String str, String str2) {
-        int callingUid = Binder.getCallingUid();
-        int userId = UserHandle.getUserId(callingUid);
-        String str3 = "sys.user." + userId + ".ce_available";
-        if (!isUserKeyUnlocked(userId)) {
-            throw new IllegalStateException("Failed to prepare " + str2);
-        }
-        if (userId == 0 && !SystemProperties.getBoolean(str3, false)) {
-            throw new IllegalStateException("Failed to prepare " + str2);
-        }
-        ((AppOpsManager) this.mContext.getSystemService("appops")).checkPackage(callingUid, str);
+    public final void partitionMixed(String str, int i) {
+        partitionMixed_enforcePermission();
+        Slog.d("StorageManagerService", "partitionMixed: diskId=" + str);
+        enforceAdminUser();
+        CountDownLatch findOrCreateDiskScanLatch = findOrCreateDiskScanLatch(str);
+        extendWatchdogTimeout("#partition might be slow");
         try {
-            PackageManager.Property propertyAsUser = this.mContext.getPackageManager().getPropertyAsUser("android.internal.PROPERTY_NO_APP_DATA_STORAGE", str, null, userId);
-            if (propertyAsUser != null && propertyAsUser.getBoolean()) {
-                throw new SecurityException(str + " should not have " + str2);
-            }
-        } catch (PackageManager.NameNotFoundException unused) {
-        }
-        try {
-            File canonicalFile = new File(str2).getCanonicalFile();
-            String absolutePath = canonicalFile.getAbsolutePath();
-            if (!absolutePath.endsWith("/")) {
-                absolutePath = absolutePath + "/";
-            }
-            Matcher matcher = KNOWN_APP_DIR_PATHS.matcher(absolutePath);
-            if (matcher.matches()) {
-                if (!matcher.group(3).equals(str)) {
-                    throw new SecurityException("Invalid mkdirs path: " + canonicalFile + " does not contain calling package " + str);
-                }
-                if ((matcher.group(2) != null && !matcher.group(2).equals(Integer.toString(userId))) || (matcher.group(2) == null && userId != this.mCurrentUserId)) {
-                    throw new SecurityException("Invalid mkdirs path: " + canonicalFile + " does not match calling user id " + userId);
-                }
-                try {
-                    this.mVold.setupAppDir(absolutePath, callingUid);
-                    return;
-                } catch (RemoteException e) {
-                    throw new IllegalStateException("Failed to prepare " + absolutePath + ": " + e);
-                }
-            }
-            throw new SecurityException("Invalid mkdirs path: " + canonicalFile + " is not a known app path.");
-        } catch (IOException e2) {
-            throw new IllegalStateException("Failed to resolve " + str2 + ": " + e2);
-        }
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:61:0x014e, code lost:
-    
-        if (r14.isVisibleForWrite(r38) != false) goto L86;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:62:0x0150, code lost:
-    
-        if (r2 == false) goto L82;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:64:0x0156, code lost:
-    
-        if (r14.isVisibleForWrite(r13) != false) goto L86;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:66:0x015e, code lost:
-    
-        if (r14.isVisibleForWrite(77) == false) goto L85;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x0161, code lost:
-    
-        r6 = false;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:69:0x0164, code lost:
-    
-        r7 = r6;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:98:0x0163, code lost:
-    
-        r6 = true;
-     */
-    /* JADX WARN: Removed duplicated region for block: B:71:0x01a8  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public android.os.storage.StorageVolume[] getVolumeList(int r38, java.lang.String r39, int r40) {
-        /*
-            Method dump skipped, instructions count: 840
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.StorageManagerService.getVolumeList(int, java.lang.String, int):android.os.storage.StorageVolume[]");
-    }
-
-    public DiskInfo[] getDisks() {
-        DiskInfo[] diskInfoArr;
-        synchronized (this.mLock) {
-            diskInfoArr = new DiskInfo[this.mDisks.size()];
-            for (int i = 0; i < this.mDisks.size(); i++) {
-                diskInfoArr[i] = (DiskInfo) this.mDisks.valueAt(i);
-            }
-        }
-        return diskInfoArr;
-    }
-
-    public VolumeInfo[] getVolumes(int i) {
-        VolumeInfo[] volumeInfoArr;
-        synchronized (this.mLock) {
-            volumeInfoArr = new VolumeInfo[this.mVolumes.size()];
-            for (int i2 = 0; i2 < this.mVolumes.size(); i2++) {
-                volumeInfoArr[i2] = (VolumeInfo) this.mVolumes.valueAt(i2);
-            }
-        }
-        return volumeInfoArr;
-    }
-
-    public VolumeRecord[] getVolumeRecords(int i) {
-        VolumeRecord[] volumeRecordArr;
-        synchronized (this.mLock) {
-            volumeRecordArr = new VolumeRecord[this.mRecords.size()];
-            for (int i2 = 0; i2 < this.mRecords.size(); i2++) {
-                volumeRecordArr[i2] = (VolumeRecord) this.mRecords.valueAt(i2);
-            }
-        }
-        return volumeRecordArr;
-    }
-
-    public long getCacheQuotaBytes(String str, int i) {
-        if (i != Binder.getCallingUid()) {
-            this.mContext.enforceCallingPermission("android.permission.STORAGE_INTERNAL", "StorageManagerService");
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return ((StorageStatsManager) this.mContext.getSystemService(StorageStatsManager.class)).getCacheQuotaBytes(str, i);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public long getCacheSizeBytes(String str, int i) {
-        if (i != Binder.getCallingUid()) {
-            this.mContext.enforceCallingPermission("android.permission.STORAGE_INTERNAL", "StorageManagerService");
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                return ((StorageStatsManager) this.mContext.getSystemService(StorageStatsManager.class)).queryStatsForUid(str, i).getCacheBytes();
-            } catch (IOException e) {
-                throw new ParcelableException(e);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final int adjustAllocateFlags(int i, int i2, String str) {
-        if ((i & 1) != 0) {
-            this.mContext.enforceCallingOrSelfPermission("android.permission.ALLOCATE_AGGRESSIVE", "StorageManagerService");
-        }
-        int i3 = i & (-3) & (-5);
-        AppOpsManager appOpsManager = (AppOpsManager) this.mContext.getSystemService(AppOpsManager.class);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            if (appOpsManager.isOperationActive(26, i2, str)) {
-                Slog.d("StorageManagerService", "UID " + i2 + " is actively using camera; letting them defy reserved cached data");
-                i3 |= 4;
-            }
-            return i3;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public long getAllocatableBytes(String str, int i, String str2) {
-        long j;
-        long j2;
-        long j3;
-        int adjustAllocateFlags = adjustAllocateFlags(i, Binder.getCallingUid(), str2);
-        StorageManager storageManager = (StorageManager) this.mContext.getSystemService(StorageManager.class);
-        StorageStatsManager storageStatsManager = (StorageStatsManager) this.mContext.getSystemService(StorageStatsManager.class);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                File findPathForUuid = storageManager.findPathForUuid(str);
-                if ((adjustAllocateFlags & 16) == 0) {
-                    j = findPathForUuid.getUsableSpace();
-                    j2 = storageManager.getStorageLowBytes(findPathForUuid);
-                    j3 = storageManager.getStorageFullBytes(findPathForUuid);
-                } else {
-                    j = 0;
-                    j2 = 0;
-                    j3 = 0;
-                }
-                long max = ((adjustAllocateFlags & 8) == 0 && storageStatsManager.isQuotaSupported(str)) ? Math.max(0L, storageStatsManager.getCacheBytes(str) - storageManager.getStorageCacheBytes(findPathForUuid, adjustAllocateFlags)) : 0L;
-                if ((adjustAllocateFlags & 1) != 0) {
-                    return Math.max(0L, (j + max) - j3);
-                }
-                return Math.max(0L, (j + max) - j2);
-            } catch (IOException e) {
-                throw new ParcelableException(e);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void allocateBytes(String str, long j, int i, String str2) {
-        long storageLowBytes;
-        int adjustAllocateFlags = adjustAllocateFlags(i, Binder.getCallingUid(), str2);
-        long allocatableBytes = getAllocatableBytes(str, adjustAllocateFlags | 8, str2);
-        if (j > allocatableBytes) {
-            long allocatableBytes2 = allocatableBytes + getAllocatableBytes(str, adjustAllocateFlags | 16, str2);
-            if (j > allocatableBytes2) {
-                throw new ParcelableException(new IOException("Failed to allocate " + j + " because only " + allocatableBytes2 + " allocatable"));
-            }
-        }
-        StorageManager storageManager = (StorageManager) this.mContext.getSystemService(StorageManager.class);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                File findPathForUuid = storageManager.findPathForUuid(str);
-                if ((adjustAllocateFlags & 1) != 0) {
-                    storageLowBytes = storageManager.getStorageFullBytes(findPathForUuid);
-                } else {
-                    storageLowBytes = storageManager.getStorageLowBytes(findPathForUuid);
-                }
-                this.mPmInternal.freeStorage(str, j + storageLowBytes, adjustAllocateFlags);
-            } catch (IOException e) {
-                throw new ParcelableException(e);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final void addObbStateLocked(ObbState obbState) {
-        IBinder binder = obbState.getBinder();
-        List list = (List) this.mObbMounts.get(binder);
-        if (list == null) {
-            list = new ArrayList();
-            this.mObbMounts.put(binder, list);
-        } else {
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                if (((ObbState) it.next()).rawPath.equals(obbState.rawPath)) {
-                    throw new IllegalStateException("Attempt to add ObbState twice. This indicates an error in the StorageManagerService logic.");
-                }
-            }
-        }
-        list.add(obbState);
-        try {
-            obbState.link();
-            this.mObbPathToStateMap.put(obbState.rawPath, obbState);
-        } catch (RemoteException e) {
-            list.remove(obbState);
-            if (list.isEmpty()) {
-                this.mObbMounts.remove(binder);
-            }
-            throw e;
-        }
-    }
-
-    public final void removeObbStateLocked(ObbState obbState) {
-        IBinder binder = obbState.getBinder();
-        List list = (List) this.mObbMounts.get(binder);
-        if (list != null) {
-            if (list.remove(obbState)) {
-                obbState.unlink();
-            }
-            if (list.isEmpty()) {
-                this.mObbMounts.remove(binder);
-            }
-        }
-        this.mObbPathToStateMap.remove(obbState.rawPath);
-    }
-
-    /* loaded from: classes.dex */
-    public class ObbActionHandler extends Handler {
-        public ObbActionHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            int i = message.what;
-            if (i == 1) {
-                ((ObbAction) message.obj).execute(this);
-                return;
-            }
-            if (i != 2) {
-                return;
-            }
-            String str = (String) message.obj;
-            synchronized (StorageManagerService.this.mObbMounts) {
-                ArrayList<ObbState> arrayList = new ArrayList();
-                for (ObbState obbState : StorageManagerService.this.mObbPathToStateMap.values()) {
-                    if (obbState.canonicalPath.startsWith(str)) {
-                        arrayList.add(obbState);
-                    }
-                }
-                for (ObbState obbState2 : arrayList) {
-                    StorageManagerService.this.removeObbStateLocked(obbState2);
-                    try {
-                        obbState2.token.onObbResult(obbState2.rawPath, obbState2.nonce, 2);
-                    } catch (RemoteException unused) {
-                        Slog.i("StorageManagerService", "Couldn't send unmount notification for  OBB: " + obbState2.rawPath);
-                    }
-                }
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes.dex */
-    public class ObbException extends Exception {
-        public final int status;
-
-        public ObbException(int i, String str) {
-            super(str);
-            this.status = i;
-        }
-
-        public ObbException(int i, Throwable th) {
-            super(th.getMessage(), th);
-            this.status = i;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public abstract class ObbAction {
-        public ObbState mObbState;
-
-        public abstract void handleExecute();
-
-        public ObbAction(ObbState obbState) {
-            this.mObbState = obbState;
-        }
-
-        public void execute(ObbActionHandler obbActionHandler) {
-            try {
-                handleExecute();
-            } catch (ObbException e) {
-                notifyObbStateChange(e);
-            }
-        }
-
-        public void notifyObbStateChange(ObbException obbException) {
-            Slog.w("StorageManagerService", obbException);
-            notifyObbStateChange(obbException.status);
-        }
-
-        public void notifyObbStateChange(int i) {
-            IObbActionListener iObbActionListener;
-            ObbState obbState = this.mObbState;
-            if (obbState == null || (iObbActionListener = obbState.token) == null) {
-                return;
-            }
-            try {
-                iObbActionListener.onObbResult(obbState.rawPath, obbState.nonce, i);
-            } catch (RemoteException unused) {
-                Slog.w("StorageManagerService", "StorageEventListener went away while calling onObbStateChanged");
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class MountObbAction extends ObbAction {
-        public final int mCallingUid;
-        public ObbInfo mObbInfo;
-
-        public MountObbAction(ObbState obbState, int i, ObbInfo obbInfo) {
-            super(obbState);
-            this.mCallingUid = i;
-            this.mObbInfo = obbInfo;
-        }
-
-        @Override // com.android.server.StorageManagerService.ObbAction
-        public void handleExecute() {
-            boolean containsKey;
-            StorageManagerService.this.warnOnNotMounted();
-            if (!StorageManagerService.this.isUidOwnerOfPackageOrSystem(this.mObbInfo.packageName, this.mCallingUid)) {
-                throw new ObbException(25, "Denied attempt to mount OBB " + this.mObbInfo.filename + " which is owned by " + this.mObbInfo.packageName);
-            }
-            synchronized (StorageManagerService.this.mObbMounts) {
-                containsKey = StorageManagerService.this.mObbPathToStateMap.containsKey(this.mObbState.rawPath);
-            }
-            if (containsKey) {
-                throw new ObbException(24, "Attempt to mount OBB which is already mounted: " + this.mObbInfo.filename);
-            }
-            try {
-                ObbState obbState = this.mObbState;
-                IVold iVold = StorageManagerService.this.mVold;
-                ObbState obbState2 = this.mObbState;
-                obbState.volId = iVold.createObb(obbState2.canonicalPath, obbState2.ownerGid);
-                StorageManagerService.this.mVold.mount(this.mObbState.volId, 0, -1, null);
-                synchronized (StorageManagerService.this.mObbMounts) {
-                    StorageManagerService.this.addObbStateLocked(this.mObbState);
-                }
-                notifyObbStateChange(1);
-            } catch (Exception e) {
-                throw new ObbException(21, e);
-            }
-        }
-
-        public String toString() {
-            return "MountObbAction{" + this.mObbState + '}';
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class UnmountObbAction extends ObbAction {
-        public final boolean mForceUnmount;
-
-        public UnmountObbAction(ObbState obbState, boolean z) {
-            super(obbState);
-            this.mForceUnmount = z;
-        }
-
-        @Override // com.android.server.StorageManagerService.ObbAction
-        public void handleExecute() {
-            ObbState obbState;
-            StorageManagerService.this.warnOnNotMounted();
-            synchronized (StorageManagerService.this.mObbMounts) {
-                obbState = (ObbState) StorageManagerService.this.mObbPathToStateMap.get(this.mObbState.rawPath);
-            }
-            if (obbState == null) {
-                throw new ObbException(23, "Missing existingState");
-            }
-            if (obbState.ownerGid != this.mObbState.ownerGid) {
-                notifyObbStateChange(new ObbException(25, "Permission denied to unmount OBB " + obbState.rawPath + " (owned by GID " + obbState.ownerGid + ")"));
-                return;
-            }
-            try {
-                StorageManagerService.this.mVold.unmount(this.mObbState.volId);
-                StorageManagerService.this.mVold.destroyObb(this.mObbState.volId);
-                this.mObbState.volId = null;
-                synchronized (StorageManagerService.this.mObbMounts) {
-                    StorageManagerService.this.removeObbStateLocked(obbState);
-                }
-                notifyObbStateChange(2);
-            } catch (Exception e) {
-                throw new ObbException(22, e);
-            }
-        }
-
-        public String toString() {
-            return "UnmountObbAction{" + this.mObbState + ",force=" + this.mForceUnmount + '}';
-        }
-    }
-
-    public final void dispatchOnStatus(IVoldTaskListener iVoldTaskListener, int i, PersistableBundle persistableBundle) {
-        if (iVoldTaskListener != null) {
-            try {
-                iVoldTaskListener.onStatus(i, persistableBundle);
-            } catch (RemoteException unused) {
-            }
-        }
-    }
-
-    public final void dispatchOnFinished(IVoldTaskListener iVoldTaskListener, int i, PersistableBundle persistableBundle) {
-        if (iVoldTaskListener != null) {
-            try {
-                iVoldTaskListener.onFinished(i, persistableBundle);
-            } catch (RemoteException unused) {
-            }
-        }
-    }
-
-    public int getExternalStorageMountMode(int i, String str) {
-        super.getExternalStorageMountMode_enforcePermission();
-        return this.mStorageManagerInternal.getExternalStorageMountMode(i, str);
-    }
-
-    public final int getMountModeInternal(int i, String str) {
-        ApplicationInfo applicationInfo;
-        boolean z = false;
-        try {
-            if (!Process.isIsolated(i) && !Process.isSdkSandboxUid(i)) {
-                String[] packagesForUid = this.mIPackageManager.getPackagesForUid(i);
-                if (ArrayUtils.isEmpty(packagesForUid)) {
-                    return 0;
-                }
-                if (str == null) {
-                    str = packagesForUid[0];
-                }
-                long clearCallingIdentity = Binder.clearCallingIdentity();
-                try {
-                    if (this.mPmInternal.isInstantApp(str, UserHandle.getUserId(i))) {
-                        return 0;
-                    }
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                    if (this.mStorageManagerInternal.isExternalStorageService(i)) {
-                        return 3;
-                    }
-                    if (this.mDownloadsAuthorityAppId != UserHandle.getAppId(i) && this.mExternalStorageAuthorityAppId != UserHandle.getAppId(i)) {
-                        if ((this.mIPackageManager.checkUidPermission("android.permission.ACCESS_MTP", i) == 0) && (applicationInfo = this.mIPackageManager.getApplicationInfo(str, 0L, UserHandle.getUserId(i))) != null && applicationInfo.isSignedWithPlatformKey()) {
-                            return 4;
-                        }
-                        boolean z2 = this.mIPackageManager.checkUidPermission("android.permission.INSTALL_PACKAGES", i) == 0;
-                        int length = packagesForUid.length;
-                        int i2 = 0;
-                        while (true) {
-                            if (i2 >= length) {
-                                break;
-                            }
-                            if (this.mIAppOpsService.checkOperation(66, i, packagesForUid[i2]) == 0) {
-                                z = true;
-                                break;
-                            }
-                            i2++;
-                        }
-                        return (z2 || z) ? 2 : 1;
-                    }
-                    return 4;
-                } finally {
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                }
-            }
-        } catch (RemoteException unused) {
-        }
-        return 0;
-    }
-
-    /* loaded from: classes.dex */
-    public class Callbacks extends Handler {
-        public final RemoteCallbackList mCallbacks;
-
-        public Callbacks(Looper looper) {
-            super(looper);
-            this.mCallbacks = new RemoteCallbackList();
-        }
-
-        public void register(IStorageEventListener iStorageEventListener) {
-            this.mCallbacks.register(iStorageEventListener);
-        }
-
-        public void unregister(IStorageEventListener iStorageEventListener) {
-            this.mCallbacks.unregister(iStorageEventListener);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            SomeArgs someArgs = (SomeArgs) message.obj;
-            int beginBroadcast = this.mCallbacks.beginBroadcast();
-            for (int i = 0; i < beginBroadcast; i++) {
-                try {
-                    invokeCallback((IStorageEventListener) this.mCallbacks.getBroadcastItem(i), message.what, someArgs);
-                } catch (RemoteException unused) {
-                }
-            }
-            this.mCallbacks.finishBroadcast();
-            someArgs.recycle();
-        }
-
-        public final void invokeCallback(IStorageEventListener iStorageEventListener, int i, SomeArgs someArgs) {
-            switch (i) {
-                case 1:
-                    iStorageEventListener.onStorageStateChanged((String) someArgs.arg1, (String) someArgs.arg2, (String) someArgs.arg3);
-                    return;
-                case 2:
-                    iStorageEventListener.onVolumeStateChanged((VolumeInfo) someArgs.arg1, someArgs.argi2, someArgs.argi3);
-                    return;
-                case 3:
-                    iStorageEventListener.onVolumeRecordChanged((VolumeRecord) someArgs.arg1);
-                    return;
-                case 4:
-                    iStorageEventListener.onVolumeForgotten((String) someArgs.arg1);
-                    return;
-                case 5:
-                    iStorageEventListener.onDiskScanned((DiskInfo) someArgs.arg1, someArgs.argi2);
-                    return;
-                case 6:
-                    iStorageEventListener.onDiskDestroyed((DiskInfo) someArgs.arg1);
-                    return;
-                default:
-                    return;
-            }
-        }
-
-        public final void notifyStorageStateChanged(String str, String str2, String str3) {
-            SomeArgs obtain = SomeArgs.obtain();
-            obtain.arg1 = str;
-            obtain.arg2 = str2;
-            obtain.arg3 = str3;
-            obtainMessage(1, obtain).sendToTarget();
-        }
-
-        public final void notifyVolumeStateChanged(VolumeInfo volumeInfo, int i, int i2) {
-            SomeArgs obtain = SomeArgs.obtain();
-            obtain.arg1 = volumeInfo.clone();
-            obtain.argi2 = i;
-            obtain.argi3 = i2;
-            obtainMessage(2, obtain).sendToTarget();
-        }
-
-        public final void notifyVolumeRecordChanged(VolumeRecord volumeRecord) {
-            SomeArgs obtain = SomeArgs.obtain();
-            obtain.arg1 = volumeRecord.clone();
-            obtainMessage(3, obtain).sendToTarget();
-        }
-
-        public final void notifyVolumeForgotten(String str) {
-            SomeArgs obtain = SomeArgs.obtain();
-            obtain.arg1 = str;
-            obtainMessage(4, obtain).sendToTarget();
-        }
-
-        public final void notifyDiskScanned(DiskInfo diskInfo, int i) {
-            SomeArgs obtain = SomeArgs.obtain();
-            obtain.arg1 = diskInfo.clone();
-            obtain.argi2 = i;
-            obtainMessage(5, obtain).sendToTarget();
-        }
-
-        public final void notifyDiskDestroyed(DiskInfo diskInfo) {
-            SomeArgs obtain = SomeArgs.obtain();
-            obtain.arg1 = diskInfo.clone();
-            obtainMessage(6, obtain).sendToTarget();
-        }
-    }
-
-    public final List getStorageVolumes() {
-        ArrayList arrayList = new ArrayList();
-        try {
-            Collections.addAll(arrayList, getVolumeList(this.mContext.getUserId(), "android.SecVold.StorageManagerService", FrameworkStatsLog.APP_STANDBY_BUCKET_CHANGED__MAIN_REASON__MAIN_FORCED_BY_SYSTEM));
-            return arrayList;
-        } catch (Exception e) {
-            Slog.e("StorageManagerService", "Failed to get StorageVolume List ", e);
-            return null;
-        }
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        if (DumpUtils.checkDumpPermission(this.mContext, "StorageManagerService", printWriter)) {
-            final IndentingPrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ", 160);
-            List storageVolumes = getStorageVolumes();
-            if (storageVolumes != null) {
-                indentingPrintWriter.println();
-                indentingPrintWriter.println("StorageVolumes:");
-                indentingPrintWriter.println("Size:" + storageVolumes.size());
-                indentingPrintWriter.increaseIndent();
-                Iterator it = storageVolumes.iterator();
-                while (it.hasNext()) {
-                    ((StorageVolume) it.next()).dump(indentingPrintWriter);
-                    indentingPrintWriter.println();
-                }
-                indentingPrintWriter.decreaseIndent();
-            }
-            indentingPrintWriter.println();
-            synchronized (this.mLock) {
-                indentingPrintWriter.println("Disks:");
-                indentingPrintWriter.increaseIndent();
-                for (int i = 0; i < this.mDisks.size(); i++) {
-                    ((DiskInfo) this.mDisks.valueAt(i)).dump(indentingPrintWriter);
-                }
-                indentingPrintWriter.decreaseIndent();
-                indentingPrintWriter.println();
-                indentingPrintWriter.println("Volumes:");
-                indentingPrintWriter.println("Size:" + this.mVolumes.size());
-                indentingPrintWriter.increaseIndent();
-                for (int i2 = 0; i2 < this.mVolumes.size(); i2++) {
-                    VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i2);
-                    if (!"private".equals(volumeInfo.id)) {
-                        volumeInfo.dump(indentingPrintWriter);
-                    }
-                }
-                indentingPrintWriter.decreaseIndent();
-                indentingPrintWriter.println();
-                indentingPrintWriter.println("Records:");
-                indentingPrintWriter.increaseIndent();
-                for (int i3 = 0; i3 < this.mRecords.size(); i3++) {
-                    ((VolumeRecord) this.mRecords.valueAt(i3)).dump(indentingPrintWriter);
-                }
-                indentingPrintWriter.decreaseIndent();
-                indentingPrintWriter.println();
-                indentingPrintWriter.println("Primary storage UUID: " + this.mPrimaryStorageUuid);
-                indentingPrintWriter.println();
-                Pair primaryStoragePathAndSize = StorageManager.getPrimaryStoragePathAndSize();
-                if (primaryStoragePathAndSize == null) {
-                    indentingPrintWriter.println("Internal storage total size: N/A");
-                } else {
-                    indentingPrintWriter.print("Internal storage (");
-                    indentingPrintWriter.print((String) primaryStoragePathAndSize.first);
-                    indentingPrintWriter.print(") total size: ");
-                    indentingPrintWriter.print(primaryStoragePathAndSize.second);
-                    indentingPrintWriter.print(" (");
-                    indentingPrintWriter.print(DataUnit.MEBIBYTES.toBytes(((Long) primaryStoragePathAndSize.second).longValue()));
-                    indentingPrintWriter.println(" MiB)");
-                }
-                indentingPrintWriter.println();
-                indentingPrintWriter.println("Local unlocked users: " + this.mLocalUnlockedUsers);
-                indentingPrintWriter.println("System unlocked users: " + Arrays.toString(this.mSystemUnlockedUsers));
-                indentingPrintWriter.print("Sharing media with parent : ");
-                this.mIsMediaSharedWithParent.forEach(new BiConsumer() { // from class: com.android.server.StorageManagerService$$ExternalSyntheticLambda0
-                    @Override // java.util.function.BiConsumer
-                    public final void accept(Object obj, Object obj2) {
-                        StorageManagerService.lambda$dump$4(indentingPrintWriter, (Integer) obj, (Boolean) obj2);
-                    }
-                });
-                indentingPrintWriter.println();
-                indentingPrintWriter.print("User pairs for sharing media : ");
-                for (int i4 = 0; i4 < this.mUserSharesMediaWith.size(); i4++) {
-                    int keyAt = this.mUserSharesMediaWith.keyAt(i4);
-                    indentingPrintWriter.print(" [" + keyAt + ", " + this.mUserSharesMediaWith.get(keyAt, -1) + "] ");
-                }
-                indentingPrintWriter.println();
-                indentingPrintWriter.println();
-                for (int i5 = 0; i5 < 20; i5++) {
-                    String format = String.format("/data/log/vold-dump_%02d", Integer.valueOf(i5));
-                    try {
-                        indentingPrintWriter.println("VOLD LAST LOG BUF#" + i5);
-                        indentingPrintWriter.println(IoUtils.readFileAsString(format));
-                    } catch (IOException unused) {
-                    }
-                }
-            }
-            synchronized (this.mObbMounts) {
-                indentingPrintWriter.println();
-                indentingPrintWriter.println("mObbMounts:");
-                indentingPrintWriter.increaseIndent();
-                for (Map.Entry entry : this.mObbMounts.entrySet()) {
-                    indentingPrintWriter.println(entry.getKey() + com.android.internal.util.jobs.XmlUtils.STRING_ARRAY_SEPARATOR);
-                    indentingPrintWriter.increaseIndent();
-                    Iterator it2 = ((List) entry.getValue()).iterator();
-                    while (it2.hasNext()) {
-                        indentingPrintWriter.println((ObbState) it2.next());
-                    }
-                    indentingPrintWriter.decreaseIndent();
-                }
-                indentingPrintWriter.decreaseIndent();
-                indentingPrintWriter.println();
-                indentingPrintWriter.println("mObbPathToStateMap:");
-                indentingPrintWriter.increaseIndent();
-                for (Map.Entry entry2 : this.mObbPathToStateMap.entrySet()) {
-                    indentingPrintWriter.print((String) entry2.getKey());
-                    indentingPrintWriter.print(" -> ");
-                    indentingPrintWriter.println(entry2.getValue());
-                }
-                indentingPrintWriter.decreaseIndent();
-            }
-            synchronized (this.mCloudMediaProviders) {
-                indentingPrintWriter.println();
-                indentingPrintWriter.print("Media cloud providers: ");
-                indentingPrintWriter.println(this.mCloudMediaProviders);
-            }
-            indentingPrintWriter.println();
-            indentingPrintWriter.print("Last maintenance: ");
-            indentingPrintWriter.println(TimeUtils.formatForLogging(this.mLastMaintenance));
-        }
-    }
-
-    public static /* synthetic */ void lambda$dump$4(IndentingPrintWriter indentingPrintWriter, Integer num, Boolean bool) {
-        indentingPrintWriter.print(" [" + num + ", " + bool + "] ");
-    }
-
-    @Override // com.android.server.Watchdog.Monitor
-    public void monitor() {
-        try {
-            this.mVold.monitor();
+            this.mVold.partition(str, 2, i);
+            waitForLatch(findOrCreateDiskScanLatch, 180000L, "partitionMixed");
         } catch (Exception e) {
             Slog.wtf("StorageManagerService", e);
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class StorageManagerInternalImpl extends StorageManagerInternal {
-        public final CopyOnWriteArraySet mCloudProviderChangeListeners;
-        public final List mResetListeners;
-
-        public StorageManagerInternalImpl() {
-            this.mResetListeners = new ArrayList();
-            this.mCloudProviderChangeListeners = new CopyOnWriteArraySet();
+    public final void partitionPrivate(String str) {
+        partitionPrivate_enforcePermission();
+        enforceAdminUser();
+        Slog.d("StorageManagerService", "partitionPrivate: diskId=" + str);
+        CountDownLatch findOrCreateDiskScanLatch = findOrCreateDiskScanLatch(str);
+        extendWatchdogTimeout("#partition might be slow");
+        try {
+            this.mVold.partition(str, 1, -1);
+            waitForLatch(findOrCreateDiskScanLatch, 180000L, "partitionPrivate");
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
         }
+    }
 
-        public boolean isFuseMounted(int i) {
-            boolean contains;
-            synchronized (StorageManagerService.this.mLock) {
-                contains = StorageManagerService.this.mFuseMountedUser.contains(Integer.valueOf(i));
+    public final void partitionPublic(String str) {
+        partitionPublic_enforcePermission();
+        Slog.d("StorageManagerService", "partitionPublic: diskId=" + str);
+        CountDownLatch findOrCreateDiskScanLatch = findOrCreateDiskScanLatch(str);
+        extendWatchdogTimeout("#partition might be slow");
+        try {
+            this.mVold.partition(str, 0, -1);
+            waitForLatch(findOrCreateDiskScanLatch, 600000L, "partitionPublic");
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+        }
+    }
+
+    public final void prepareUserStorage(String str, int i, int i2) {
+        prepareUserStorage_enforcePermission();
+        try {
+            prepareUserStorageInternal(i, i2, str);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public final void prepareUserStorageIfNeeded(VolumeInfo volumeInfo) {
+        int i;
+        if (volumeInfo.type != 1) {
+            return;
+        }
+        UserManager userManager = (UserManager) this.mContext.getSystemService(UserManager.class);
+        UserManagerInternal userManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
+        for (UserInfo userInfo : userManager.getUsers()) {
+            if (userManagerInternal.isUserUnlockingOrUnlocked(userInfo.id)) {
+                i = 3;
+            } else if (userManagerInternal.isUserRunning(userInfo.id)) {
+                i = 1;
             }
-            return contains;
+            prepareUserStorageInternal(userInfo.id, i, volumeInfo.fsUuid);
         }
+    }
 
-        public boolean prepareStorageDirs(int i, Set set, String str) {
-            synchronized (StorageManagerService.this.mLock) {
-                if (!StorageManagerService.this.mFuseMountedUser.contains(Integer.valueOf(i))) {
-                    Slog.w("StorageManagerService", "User " + i + " is not unlocked yet so skip mounting obb");
-                    return false;
-                }
-                try {
-                    IVold asInterface = IVold.Stub.asInterface(ServiceManager.getServiceOrThrow("vold"));
-                    Iterator it = set.iterator();
-                    while (it.hasNext()) {
-                        String str2 = (String) it.next();
-                        Locale locale = Locale.US;
-                        asInterface.ensureAppDirsCreated(new String[]{String.format(locale, "/storage/emulated/%d/Android/obb/%s/", Integer.valueOf(i), str2), String.format(locale, "/storage/emulated/%d/Android/data/%s/", Integer.valueOf(i), str2)}, UserHandle.getUid(i, StorageManagerService.this.mPmInternal.getPackage(str2).getUid()));
+    public final void prepareUserStorageInternal(int i, int i2, String str) {
+        VolumeInfo findVolumeByUuid;
+        try {
+            this.mVold.prepareUserStorage(str, i, i2);
+            if (str != null && (findVolumeByUuid = ((StorageManager) this.mContext.getSystemService(StorageManager.class)).findVolumeByUuid(str)) != null && i == 0 && findVolumeByUuid.type == 1) {
+                Installer installer = this.mInstaller;
+                if (installer.checkBeforeRemote()) {
+                    try {
+                        installer.mInstalld.tryMountDataMirror(str);
+                    } catch (Exception e) {
+                        Installer.InstallerException.from(e);
+                        throw null;
                     }
-                    return true;
-                } catch (ServiceManager.ServiceNotFoundException | RemoteException e) {
-                    Slog.e("StorageManagerService", "Unable to create obb and data directories for " + str, e);
-                    return false;
                 }
             }
-        }
-
-        public int getExternalStorageMountMode(int i, String str) {
-            int mountModeInternal = StorageManagerService.this.getMountModeInternal(i, str);
-            if (StorageManagerService.LOCAL_LOGV) {
-                Slog.v("StorageManagerService", "Resolved mode " + mountModeInternal + " for " + str + "/" + UserHandle.formatUid(i));
+            if (i == 0) {
+                try {
+                    new Sender(this.mContext).send("FBE4", "encryption policy success");
+                    Slog.i("StorageManagerService", "encryption policy for SA logging");
+                } catch (Exception e2) {
+                    Slog.e("StorageManagerService", "encryption policy for SA logging : " + e2.toString());
+                }
             }
-            return mountModeInternal;
-        }
-
-        public boolean hasExternalStorageAccess(int i, String str) {
+        } catch (Exception e3) {
+            EventLog.writeEvent(1397638484, "224585613", -1, "");
+            Slog.wtf("StorageManagerService", e3);
+            String str2 = SystemProperties.get("security.fbe.global_de");
+            UserManagerInternal userManagerInternal = (UserManagerInternal) LocalServices.getService(UserManagerInternal.class);
+            if (!SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_COMMON_SUPPORT_UNPACK", false) && !"loaded".equals(str2) && !userManagerInternal.shouldIgnorePrepareStorageErrors(i)) {
+                throw new RuntimeException(e3);
+            }
+            Slog.wtf("StorageManagerService", "ignoring error preparing storage for existing user " + i + "; device may be insecure!");
+            if (i != 0 || SemFloatingFeature.getInstance().getBoolean("SEC_FLOATING_FEATURE_COMMON_SUPPORT_UNPACK", false)) {
+                return;
+            }
             try {
-                int checkOperation = StorageManagerService.this.mIAppOpsService.checkOperation(92, i, str);
-                return checkOperation == 3 ? StorageManagerService.this.mIPackageManager.checkUidPermission("android.permission.MANAGE_EXTERNAL_STORAGE", i) == 0 : checkOperation == 0;
-            } catch (RemoteException e) {
-                Slog.w("Failed to check MANAGE_EXTERNAL_STORAGE access for " + str, e);
+                new Sender(this.mContext).send("FBE5", SystemProperties.get("security.fbe.fail_cause"));
+                Slog.i("StorageManagerService", "encryption policy for SA logging");
+            } catch (Exception e4) {
+                Slog.e("StorageManagerService", "encryption policy for SA logging : " + e4.toString());
+            }
+        }
+    }
+
+    public final void readSettingsLocked() {
+        this.mRecords.clear();
+        this.mPrimaryStorageUuid = SystemProperties.getBoolean("ro.vold.primary_physical", false) ? "primary_physical" : StorageManager.UUID_PRIVATE_INTERNAL;
+        FileInputStream fileInputStream = null;
+        try {
+            try {
+                FileInputStream openRead = this.mSettingsFile.openRead();
+                try {
+                    Slog.d("StorageManagerService", "readSettingsLocked: " + this.mSettingsFile.getBaseFile().getAbsolutePath());
+                    TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(openRead);
+                    while (true) {
+                        int next = resolvePullParser.next();
+                        if (next == 1) {
+                            IoUtils.closeQuietly(openRead);
+                            return;
+                        }
+                        if (next == 2) {
+                            String name = resolvePullParser.getName();
+                            if ("volumes".equals(name)) {
+                                int attributeInt = resolvePullParser.getAttributeInt((String) null, "version", 1);
+                                boolean z = SystemProperties.getBoolean("ro.vold.primary_physical", false);
+                                if (attributeInt >= 3 || (attributeInt >= 2 && !z)) {
+                                    this.mPrimaryStorageUuid = XmlUtils.readStringAttribute(resolvePullParser, "primaryStorageUuid");
+                                }
+                            } else if ("volume".equals(name)) {
+                                VolumeRecord readVolumeRecord = readVolumeRecord(resolvePullParser);
+                                this.mRecords.put(readVolumeRecord.fsUuid, readVolumeRecord);
+                                Slog.d("StorageManagerService", "readSettingsLocked: TAG_VOLUME rec=" + readVolumeRecord + " rec.fsUuid=" + readVolumeRecord.fsUuid);
+                            }
+                        }
+                    }
+                } catch (FileNotFoundException unused) {
+                    fileInputStream = openRead;
+                    IoUtils.closeQuietly(fileInputStream);
+                } catch (IOException e) {
+                    e = e;
+                    fileInputStream = openRead;
+                    Slog.wtf("StorageManagerService", "Failed reading metadata", e);
+                    IoUtils.closeQuietly(fileInputStream);
+                } catch (XmlPullParserException e2) {
+                    e = e2;
+                    fileInputStream = openRead;
+                    Slog.wtf("StorageManagerService", "Failed reading metadata", e);
+                    IoUtils.closeQuietly(fileInputStream);
+                } catch (Throwable th) {
+                    th = th;
+                    fileInputStream = openRead;
+                    IoUtils.closeQuietly(fileInputStream);
+                    throw th;
+                }
+            } catch (FileNotFoundException unused2) {
+                IoUtils.closeQuietly(fileInputStream);
+            } catch (IOException e3) {
+                e = e3;
+            } catch (XmlPullParserException e4) {
+                e = e4;
+            }
+        } catch (Throwable th2) {
+            th = th2;
+        }
+    }
+
+    public final boolean refreshLifetimeConstraint() {
+        try {
+            int storageLifeTime = this.mVold.getStorageLifeTime();
+            if (storageLifeTime == -1) {
+                Slog.w("StorageManagerService", "Failed to get storage lifetime");
                 return false;
             }
-        }
-
-        public void addResetListener(StorageManagerInternal.ResetListener resetListener) {
-            synchronized (this.mResetListeners) {
-                this.mResetListeners.add(resetListener);
+            if (storageLifeTime <= 0) {
+                Slog.i("StorageManagerService", "Storage lifetime: " + storageLifeTime);
+                return true;
             }
-        }
-
-        public void onReset(IVold iVold) {
-            synchronized (this.mResetListeners) {
-                Iterator it = this.mResetListeners.iterator();
-                while (it.hasNext()) {
-                    ((StorageManagerInternal.ResetListener) it.next()).onReset(iVold);
-                }
-            }
-        }
-
-        public void resetUser(int i) {
-            StorageManagerService.this.mHandler.obtainMessage(10).sendToTarget();
-        }
-
-        public boolean hasLegacyExternalStorage(int i) {
-            boolean contains;
-            synchronized (StorageManagerService.this.mLock) {
-                contains = StorageManagerService.this.mUidsWithLegacyExternalStorage.contains(Integer.valueOf(i));
-            }
-            return contains;
-        }
-
-        public void prepareAppDataAfterInstall(String str, int i) {
-            for (File file : new Environment.UserEnvironment(UserHandle.getUserId(i)).buildExternalStorageAppObbDirs(str)) {
-                if (file.getPath().startsWith(Environment.getDataPreloadsMediaDirectory().getPath())) {
-                    Slog.i("StorageManagerService", "Skipping app data preparation for " + file);
-                } else {
-                    try {
-                        StorageManagerService.this.mVold.fixupAppDir(file.getCanonicalPath() + "/", i);
-                    } catch (RemoteException | ServiceSpecificException e) {
-                        Log.e("StorageManagerService", "Failed to fixup app dir for " + str, e);
-                    } catch (IOException unused) {
-                        Log.e("StorageManagerService", "Failed to get canonical path for " + str);
-                    }
-                }
-            }
-        }
-
-        public boolean isExternalStorageService(int i) {
-            return StorageManagerService.this.mMediaStoreAuthorityAppId == UserHandle.getAppId(i);
-        }
-
-        public void freeCache(String str, long j) {
-            try {
-                StorageManagerService.this.mStorageSessionController.freeCache(str, j);
-            } catch (StorageSessionController.ExternalStorageServiceException e) {
-                Log.e("StorageManagerService", "Failed to free cache of vol : " + str, e);
-            }
-        }
-
-        public boolean hasExternalStorage(int i, String str) {
-            return i == 1000 || getExternalStorageMountMode(i, str) != 0;
-        }
-
-        public final void killAppForOpChange(int i, int i2) {
-            IActivityManager service = ActivityManager.getService();
-            try {
-                service.killUid(UserHandle.getAppId(i2), -1, AppOpsManager.opToName(i) + " changed.");
-            } catch (RemoteException unused) {
-            }
-        }
-
-        public void onAppOpsChanged(int i, int i2, String str, int i3, int i4) {
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                if (i == 66) {
-                    if (i4 == 0 && i3 != 0) {
-                        killAppForOpChange(i, i2);
-                    }
-                } else if (i == 87) {
-                    StorageManagerService.this.updateLegacyStorageApps(str, i2, i3 == 0);
-                } else {
-                    if (i != 92) {
-                        return;
-                    }
-                    if (i3 != 0) {
-                        killAppForOpChange(i, i2);
-                    }
-                }
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-
-        public List getPrimaryVolumeIds() {
-            ArrayList arrayList = new ArrayList();
-            synchronized (StorageManagerService.this.mLock) {
-                for (int i = 0; i < StorageManagerService.this.mVolumes.size(); i++) {
-                    VolumeInfo volumeInfo = (VolumeInfo) StorageManagerService.this.mVolumes.valueAt(i);
-                    if (volumeInfo.isPrimary()) {
-                        arrayList.add(volumeInfo.getId());
-                    }
-                }
-            }
-            return arrayList;
-        }
-
-        public void markCeStoragePrepared(int i) {
-            synchronized (StorageManagerService.this.mLock) {
-                StorageManagerService.this.mCeStoragePreparedUsers.add(Integer.valueOf(i));
-            }
-        }
-
-        public boolean isCeStoragePrepared(int i) {
-            boolean contains;
-            synchronized (StorageManagerService.this.mLock) {
-                contains = StorageManagerService.this.mCeStoragePreparedUsers.contains(Integer.valueOf(i));
-            }
-            return contains;
-        }
-
-        public void registerCloudProviderChangeListener(StorageManagerInternal.CloudProviderChangeListener cloudProviderChangeListener) {
-            this.mCloudProviderChangeListeners.add(cloudProviderChangeListener);
-            StorageManagerService.this.mHandler.obtainMessage(16, cloudProviderChangeListener).sendToTarget();
+            Slog.w("StorageManagerService", "Ended smart idle maintenance, because of lifetime(" + storageLifeTime + "), lifetime threshold(0)");
+            this.mPassedLifetimeThresh = true;
+            return false;
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return false;
         }
     }
 
-    /* loaded from: classes.dex */
-    public class DirEncryptListner extends IDirEncryptServiceListener.Stub {
-        public DirEncryptListner() {
+    public final void refreshZramSettings() {
+        String str = SystemProperties.get("persist.sys.zram_enabled");
+        if ("".equals(str)) {
+            return;
         }
+        String str2 = Settings.Global.getInt(this.mContext.getContentResolver(), "zram_enabled", 1) != 0 ? "1" : "0";
+        if (str2.equals(str)) {
+            return;
+        }
+        SystemProperties.set("persist.sys.zram_enabled", str2);
+        if (str2.equals("1") && this.mContext.getResources().getBoolean(R.bool.skipHoldBeforeMerge)) {
+            ZramWriteback.scheduleZramWriteback(this.mContext);
+        }
+    }
 
-        public void onEncryptionStatusChanged(String str, int i, String str2, int i2, int i3) {
-            final VolumeInfo findVolumeByIdOrThrow = StorageManagerService.this.findVolumeByIdOrThrow(str);
-            if (findVolumeByIdOrThrow.getType() == 0 && findVolumeByIdOrThrow.disk.isSd() && "done".equals(str2)) {
+    public final void registerListener(IStorageEventListener iStorageEventListener) {
+        ((RemoteCallbackList) this.mCallbacks.mCallbacks).register(iStorageEventListener);
+    }
+
+    public final int renameSecureContainer(String str, String str2) {
+        enforcePermission$1("android.permission.ASEC_RENAME");
+        warnOnNotMounted();
+        synchronized (this.mAsecMountSet) {
+            if (!this.mAsecMountSet.contains(new PackageInstalledMap(str)) && !this.mAsecMountSet.contains(new PackageInstalledMap(str2))) {
                 try {
-                    StorageManagerService.this.mStorageSessionController.onVolumeUnmount(findVolumeByIdOrThrow);
-                    StorageManagerService.this.mVold.sdeMoveMountHidden(findVolumeByIdOrThrow.id, findVolumeByIdOrThrow.mountFlags, findVolumeByIdOrThrow.mountUserId, new IVoldMountCallback.Stub() { // from class: com.android.server.StorageManagerService.DirEncryptListner.1
-                        @Override // android.os.IVoldMountCallback
-                        public boolean onVolumeChecking(FileDescriptor fileDescriptor, String str3, String str4) {
-                            VolumeInfo volumeInfo = findVolumeByIdOrThrow;
-                            volumeInfo.path = str3;
-                            volumeInfo.internalPath = str4;
-                            ParcelFileDescriptor parcelFileDescriptor = new ParcelFileDescriptor(fileDescriptor);
-                            try {
-                                try {
-                                    StorageManagerService.this.mStorageSessionController.onVolumeMount(parcelFileDescriptor, findVolumeByIdOrThrow);
-                                    try {
-                                        parcelFileDescriptor.close();
-                                        return true;
-                                    } catch (Exception e) {
-                                        Slog.e("StorageManagerService", "Failed to close FUSE device fd", e);
-                                        return true;
-                                    }
-                                } catch (StorageSessionController.ExternalStorageServiceException e2) {
-                                    Slog.e("StorageManagerService", "Failed to mount volume " + findVolumeByIdOrThrow, e2);
-                                    Slog.i("StorageManagerService", "Scheduling reset in 10s");
-                                    StorageManagerService.this.mHandler.removeMessages(10);
-                                    StorageManagerService.this.mHandler.sendMessageDelayed(StorageManagerService.this.mHandler.obtainMessage(10), TimeUnit.SECONDS.toMillis((long) 10));
-                                    try {
-                                        parcelFileDescriptor.close();
-                                        return false;
-                                    } catch (Exception e3) {
-                                        Slog.e("StorageManagerService", "Failed to close FUSE device fd", e3);
-                                        return false;
-                                    }
-                                }
-                            } catch (Throwable th) {
-                                try {
-                                    parcelFileDescriptor.close();
-                                } catch (Exception e4) {
-                                    Slog.e("StorageManagerService", "Failed to close FUSE device fd", e4);
-                                }
-                                throw th;
-                            }
-                        }
-                    });
+                    this.mVold.asecRename(str, str2);
+                    return 0;
                 } catch (Exception e) {
                     Slog.wtf("StorageManagerService", e);
+                    return -1;
                 }
             }
+            return -6;
         }
     }
 
-    public final boolean initDirEncryptService() {
-        Slog.i("StorageManagerService", "initDirEncryptService");
-        if (this.mDem == null) {
-            this.mDem = new SemSdCardEncryption(this.mContext);
-        }
-        if (this.mDirEncryptListner != null) {
-            return true;
-        }
-        DirEncryptListner dirEncryptListner = new DirEncryptListner();
-        this.mDirEncryptListner = dirEncryptListner;
-        this.mDem.registerListener(dirEncryptListner);
-        Slog.d("StorageManagerService", "register direncryption listener");
-        return true;
+    public final int reserveDataBlocks(long j) {
+        return -1;
     }
 
-    public int encryptExternalStorage(boolean z) {
-        final VolumeInfo volumeInfo;
-        int i;
-        List volumes = ((StorageManager) this.mContext.getSystemService(StorageManager.class)).getVolumes();
-        Collections.sort(volumes, VolumeInfo.getDescriptionComparator());
-        Iterator it = volumes.iterator();
-        while (true) {
-            if (!it.hasNext()) {
-                volumeInfo = null;
-                break;
-            }
-            volumeInfo = (VolumeInfo) it.next();
-            if (volumeInfo != null && volumeInfo.getType() == 0 && volumeInfo.getDisk() != null && volumeInfo.getDisk().isSd()) {
-                break;
-            }
-        }
-        if (volumeInfo == null) {
-            Slog.e("StorageManagerService", "sdVolume == null");
-            return -1;
-        }
-        if (hasDeviceRestriction("readonly_storage")) {
-            Slog.w("StorageManagerService", "Policy has restriction 'readonly_storage'; readonly");
-            i = Integer.MIN_VALUE;
-        } else {
-            i = 0;
-        }
-        Slog.i("StorageManagerService", "state : " + volumeInfo.getState());
-        volumeInfo.getState();
-        try {
-            if (this.mDem != null) {
-                this.mStorageSessionController.onVolumeUnmount(volumeInfo);
-                this.mVold.sdeEnable(volumeInfo.id, volumeInfo.mountFlags | i, volumeInfo.mountUserId, z, this.mDem.getListener(), new IVoldMountCallback.Stub() { // from class: com.android.server.StorageManagerService.13
-                    @Override // android.os.IVoldMountCallback
-                    public boolean onVolumeChecking(FileDescriptor fileDescriptor, String str, String str2) {
-                        VolumeInfo volumeInfo2 = volumeInfo;
-                        volumeInfo2.path = str;
-                        volumeInfo2.internalPath = str2;
-                        ParcelFileDescriptor parcelFileDescriptor = new ParcelFileDescriptor(fileDescriptor);
+    public final void resetIfBootedAndConnected() {
+        int[] copyOf;
+        HashSet hashSet;
+        Slog.d("StorageManagerService", "Thinking about reset, mBootCompleted=" + this.mBootCompleted + ", mDaemonConnected=" + this.mDaemonConnected);
+        if (this.mBootCompleted && this.mDaemonConnected) {
+            UserManager userManager = (UserManager) this.mContext.getSystemService(UserManager.class);
+            List<UserInfo> users = userManager.getUsers();
+            extendWatchdogTimeout("#onReset might be slow");
+            StorageSessionController storageSessionController = this.mStorageSessionController;
+            IVold iVold = this.mVold;
+            if (storageSessionController.shouldHandle(null)) {
+                SparseArray sparseArray = new SparseArray();
+                synchronized (storageSessionController.mLock) {
+                    try {
+                        storageSessionController.mIsResetting = true;
+                        Slog.i("StorageSessionController", "Started resetting external storage service...");
+                        for (int i = 0; i < storageSessionController.mConnections.size(); i++) {
+                            sparseArray.put(storageSessionController.mConnections.keyAt(i), (StorageUserConnection) storageSessionController.mConnections.valueAt(i));
+                        }
+                    } finally {
+                    }
+                }
+                for (int i2 = 0; i2 < sparseArray.size(); i2++) {
+                    StorageUserConnection storageUserConnection = (StorageUserConnection) sparseArray.valueAt(i2);
+                    synchronized (storageUserConnection.mSessionsLock) {
+                        hashSet = new HashSet(((HashMap) storageUserConnection.mSessions).keySet());
+                    }
+                    Iterator it = hashSet.iterator();
+                    while (it.hasNext()) {
+                        String str = (String) it.next();
                         try {
+                            Slog.i("StorageSessionController", "Unmounting " + str);
+                            iVold.unmount(str);
+                            Slog.i("StorageSessionController", "Unmounted " + str);
+                        } catch (ServiceSpecificException | RemoteException e) {
+                            Slog.e("StorageSessionController", "Failed to unmount volume: " + str, e);
+                        }
+                        try {
+                            Slog.i("StorageSessionController", "Exiting " + str);
+                            storageUserConnection.removeSessionAndWait(str);
+                            Slog.i("StorageSessionController", "Exited " + str);
+                        } catch (StorageSessionController.ExternalStorageServiceException | IllegalStateException e2) {
+                            Slog.e("StorageSessionController", "Failed to exit session: " + str + ". Killing MediaProvider...", e2);
+                            int keyAt = sparseArray.keyAt(i2);
                             try {
-                                StorageManagerService.this.mStorageSessionController.onVolumeMount(parcelFileDescriptor, volumeInfo);
-                                try {
-                                    parcelFileDescriptor.close();
-                                    return true;
-                                } catch (Exception e) {
-                                    Slog.e("StorageManagerService", "Failed to close FUSE device fd", e);
-                                    return true;
-                                }
-                            } catch (StorageSessionController.ExternalStorageServiceException e2) {
-                                Slog.e("StorageManagerService", "Failed to mount volume " + volumeInfo, e2);
-                                Slog.i("StorageManagerService", "Scheduling reset in 10s");
-                                StorageManagerService.this.mHandler.removeMessages(10);
-                                StorageManagerService.this.mHandler.sendMessageDelayed(StorageManagerService.this.mHandler.obtainMessage(10), TimeUnit.SECONDS.toMillis((long) 10));
-                                try {
-                                    parcelFileDescriptor.close();
-                                    return false;
-                                } catch (Exception e3) {
-                                    Slog.e("StorageManagerService", "Failed to close FUSE device fd", e3);
-                                    return false;
-                                }
+                                ActivityManager.getService().killApplication(storageSessionController.mExternalStorageServicePackageName, storageSessionController.mExternalStorageServiceAppId, keyAt, "storage_session_controller reset", 13);
+                            } catch (RemoteException unused) {
+                                Slog.i("StorageSessionController", "Failed to kill the ExtenalStorageService for user " + keyAt);
                             }
-                        } catch (Throwable th) {
-                            try {
-                                parcelFileDescriptor.close();
-                            } catch (Exception e4) {
-                                Slog.e("StorageManagerService", "Failed to close FUSE device fd", e4);
-                            }
-                            throw th;
                         }
                     }
-                });
+                    storageUserConnection.mActiveConnection.close();
+                    storageUserConnection.mHandlerThread.quit();
+                }
+                this.mHandler.removeCallbacksAndMessages(null);
+                synchronized (storageSessionController.mLock) {
+                    storageSessionController.mConnections.clear();
+                    storageSessionController.mIsResetting = false;
+                    Slog.i("StorageSessionController", "Finished resetting external storage service");
+                }
             }
+            synchronized (this.mLock) {
+                int[] iArr = this.mSystemUnlockedUsers;
+                copyOf = Arrays.copyOf(iArr, iArr.length);
+                this.mDisks.clear();
+                this.mVolumes.clear();
+                VolumeInfo volumeInfo = new VolumeInfo("private", 1, (DiskInfo) null, (String) null);
+                volumeInfo.state = 2;
+                volumeInfo.path = Environment.getDataDirectory().getAbsolutePath();
+                this.mVolumes.put(volumeInfo.id, volumeInfo);
+            }
+            try {
+                Slog.i("StorageManagerService", "Resetting vold...");
+                this.mVold.reset();
+                Slog.i("StorageManagerService", "Reset vold");
+                cleanupSercureContainerList();
+                for (UserInfo userInfo : users) {
+                    if (userInfo.isCloneProfile()) {
+                        this.mVold.onUserAdded(userInfo.id, userInfo.serialNumber, userInfo.profileGroupId);
+                    } else {
+                        this.mVold.onUserAdded(userInfo.id, userInfo.serialNumber, -1);
+                    }
+                }
+                for (int i3 : copyOf) {
+                    this.mVold.onUserStarted(i3);
+                    this.mStoraged.onUserStarted(i3);
+                }
+                restoreSystemUnlockedUsers(userManager, users, copyOf);
+                this.mVold.onSecureKeyguardStateChanged(this.mSecureKeyguardShowing);
+                this.mStorageManagerInternal.onReset(this.mVold);
+            } catch (Exception e3) {
+                Slog.wtf("StorageManagerService", e3);
+            }
+        }
+    }
+
+    public final int resizeSecureContainer(String str, int i, String str2) {
+        enforcePermission$1("android.permission.ASEC_CREATE");
+        warnOnNotMounted();
+        try {
+            this.mVold.asecResize(str, i, str2);
             return 0;
         } catch (Exception e) {
             Slog.wtf("StorageManagerService", e);
@@ -4293,7 +4402,117 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
         }
     }
 
-    public int semGetExternalSdCardHealthState() {
+    public final void restoreSystemUnlockedUsers(UserManager userManager, List list, int[] iArr) {
+        Arrays.sort(iArr);
+        UserManager.invalidateIsUserUnlockedCache();
+        Iterator it = list.iterator();
+        while (it.hasNext()) {
+            int i = ((UserInfo) it.next()).id;
+            if (userManager.isUserRunning(i) && Arrays.binarySearch(iArr, i) < 0 && userManager.isUserUnlockingOrUnlocked(i)) {
+                Slog.w("StorageManagerService", "UNLOCK_USER lost from vold reset, will retry, user:" + i);
+                this.mVold.onUserStarted(i);
+                this.mStoraged.onUserStarted(i);
+                this.mHandler.obtainMessage(14, i, 0).sendToTarget();
+            }
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r6v1, types: [com.android.server.HeimdAllFsService$1, java.lang.Thread] */
+    public final void runIdleMaint(Runnable runnable) {
+        enforcePermission$1("android.permission.MOUNT_FORMAT_FILESYSTEMS");
+        try {
+            this.mHeimdAllFs = new HeimdAllFsService(this.mContext);
+            if (needsCheckpoint()) {
+                enforcePermission$1("android.permission.MOUNT_FORMAT_FILESYSTEMS");
+                if (this.mVold.supportsBlockCheckpoint()) {
+                    Slog.i("StorageManagerService", "Skipping idle maintenance - block based checkpoint in progress");
+                }
+            }
+            this.mVold.runIdleMaint(this.mNeedGC, new AnonymousClass11(this, runnable, 0));
+            final HeimdAllFsService heimdAllFsService = this.mHeimdAllFs;
+            if (heimdAllFsService != null) {
+                ?? anonymousClass1 = new Thread() { // from class: com.android.server.HeimdAllFsService.1
+                    public AnonymousClass1() {
+                    }
+
+                    @Override // java.lang.Thread, java.lang.Runnable
+                    public final void run() {
+                        CountDownLatch countDownLatch;
+                        String format;
+                        try {
+                            try {
+                                android.util.Slog.i("HeimdAllFS", "runIdleMaint, HeimdAllFS Thread Start");
+                                HeimdAllFsService.this.mHeimdallFsLatch = new CountDownLatch(1);
+                                format = new SimpleDateFormat("yyMMdd").format(new Date());
+                                if (HeimdAllFsService.mIsUserTrial) {
+                                    HeimdAllFsService.this.getClass();
+                                    HeimdAllFsService.setTriggerThreshold();
+                                }
+                            } catch (Exception e) {
+                                android.util.Slog.e("HeimdAllFS", "Exception!!");
+                                android.util.Slog.wtf("HeimdAllFS", e);
+                                android.util.Slog.i("HeimdAllFS", "runIdleMaint, HeimdAllFS Thread End, latch down");
+                                countDownLatch = HeimdAllFsService.this.mHeimdallFsLatch;
+                                if (countDownLatch == null) {
+                                    return;
+                                }
+                            }
+                            if (!HeimdAllFsService.mForceService && SystemProperties.get("sys.heimdallfs.todayinfo").equals(format)) {
+                                android.util.Slog.i("HeimdAllFS", "Once a day, bye bye");
+                                android.util.Slog.i("HeimdAllFS", "runIdleMaint, HeimdAllFS Thread End, latch down");
+                                CountDownLatch countDownLatch2 = HeimdAllFsService.this.mHeimdallFsLatch;
+                                if (countDownLatch2 != null) {
+                                    countDownLatch2.countDown();
+                                    return;
+                                }
+                                return;
+                            }
+                            SystemProperties.set("sys.heimdallfs.todayinfo", format);
+                            HeimdAllFsService heimdAllFsService2 = HeimdAllFsService.this;
+                            heimdAllFsService2.mPackagesInfo = heimdAllFsService2.getPackagesOnUserdata();
+                            if (HeimdAllFsService.isServiceActivate(FunctionOrder.DEFRAG)) {
+                                android.util.Slog.i("HeimdAllFS", "Defrag!!");
+                            }
+                            if (HeimdAllFsService.isServiceActivate(FunctionOrder.COMPRESS)) {
+                                HeimdAllFsService heimdAllFsService3 = HeimdAllFsService.this;
+                                heimdAllFsService3.startCompress((List) heimdAllFsService3.mPackagesInfo.get(0));
+                            }
+                            android.util.Slog.i("HeimdAllFS", "HeimdAllFS Thread End Normally");
+                            android.util.Slog.i("HeimdAllFS", "runIdleMaint, HeimdAllFS Thread End, latch down");
+                            countDownLatch = HeimdAllFsService.this.mHeimdallFsLatch;
+                            if (countDownLatch == null) {
+                                return;
+                            }
+                            countDownLatch.countDown();
+                        } catch (Throwable th) {
+                            android.util.Slog.i("HeimdAllFS", "runIdleMaint, HeimdAllFS Thread End, latch down");
+                            CountDownLatch countDownLatch3 = HeimdAllFsService.this.mHeimdallFsLatch;
+                            if (countDownLatch3 != null) {
+                                countDownLatch3.countDown();
+                            }
+                            throw th;
+                        }
+                    }
+                };
+                heimdAllFsService.mHeimdallFsThread = anonymousClass1;
+                anonymousClass1.start();
+            }
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+        }
+    }
+
+    public final void runIdleMaintenance() {
+        runIdleMaint(null);
+    }
+
+    public final void runMaintenance() {
+        runMaintenance_enforcePermission();
+        Callbacks callbacks = this.mHandler;
+        callbacks.sendMessage(callbacks.obtainMessage(4, null));
+    }
+
+    public final int semGetExternalSdCardHealthState() {
         File file = new File("/sys/class/sec/sdinfo/fc");
         int i = -1;
         if (!file.exists()) {
@@ -4316,7 +4535,7 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
         return i;
     }
 
-    public String semGetExternalSdCardId() {
+    public final String semGetExternalSdCardId() {
         String str;
         PackageManager packageManager = this.mContext.getPackageManager();
         if (packageManager.checkSignatures("android", packageManager.getNameForUid(Binder.getCallingUid())) != 0) {
@@ -4324,351 +4543,178 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
             return null;
         }
         File file = new File("/sys/class/sec/sdinfo/data");
-        String trim = SystemProperties.get("ro.build.type").trim();
         if (!file.exists()) {
             Slog.d("StorageManagerService", "EXTERNAL SD CARD CID VALUE FILE does not exist!!");
             return null;
         }
         try {
             str = FileUtils.readTextFile(file, 0, null).trim();
-            try {
-                if (trim.equalsIgnoreCase("eng") || trim.equalsIgnoreCase("userdebug")) {
-                    Slog.d("StorageManagerService", "External SD Card CID [" + str + "]");
-                }
-            } catch (Exception e) {
-                e = e;
-                Slog.e("StorageManagerService", "Error at reading SD Card CID Value", e);
-                if ("empty".equals(str)) {
-                }
-                Slog.d("StorageManagerService", "External SD Card CID value -> return as null");
-                return null;
-            }
-        } catch (Exception e2) {
-            e = e2;
+        } catch (Exception e) {
+            Slog.e("StorageManagerService", "Error at reading SD Card CID Value", e);
             str = "empty";
         }
-        if ("empty".equals(str) && !"No Card".equalsIgnoreCase(str)) {
+        if (!"empty".equals(str) && !"No Card".equalsIgnoreCase(str)) {
             return str;
         }
         Slog.d("StorageManagerService", "External SD Card CID value -> return as null");
         return null;
     }
 
-    public long getUsedF2fsFileNode() {
-        try {
-            return this.mVold.getUsedF2fsFileNode();
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return -1L;
-        }
+    public final void setCeStorageProtection(int i, byte[] bArr) {
+        setCeStorageProtection_enforcePermission();
+        this.mVold.setCeStorageProtection(i, bArr);
     }
 
-    public final boolean isValidPath(String str) {
-        try {
-            String canonicalPath = new File(str).getCanonicalPath();
-            if (canonicalPath == null) {
-                return false;
-            }
-            if (!canonicalPath.startsWith("/data/media") && !canonicalPath.startsWith("/data/sec")) {
-                Slog.d("StorageManagerService", "input path is not supported");
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public final boolean isMediaPath(String str) {
-        try {
-            String canonicalPath = new File(str).getCanonicalPath();
-            if (canonicalPath != null) {
-                return canonicalPath.startsWith("/data/media");
-            }
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean mvFileAtData(String str, String str2) {
-        this.mContext.enforceCallingOrSelfPermission("com.samsung.android.permission.SEM_VOLD_DATA_MOVE", null);
-        if (!isValidPath(str) || !isValidPath(str2)) {
-            Slog.d("StorageManagerService", "mvFileAtData not support other than media or sec dir, so return false");
-            return false;
-        }
-        if (isMediaPath(str) && isMediaPath(str2)) {
-            Slog.d("StorageManagerService", "mvFileAtData not support from media to media dir, so return false");
-            return false;
-        }
-        try {
-            final CompletableFuture completableFuture = new CompletableFuture();
-            this.mVold.mvFileAtData(str, str2, this.mMediaStoreAuthorityAppId, Process.myUid(), new IVoldTaskListener.Stub() { // from class: com.android.server.StorageManagerService.14
-                @Override // android.os.IVoldTaskListener
-                public void onStatus(int i, PersistableBundle persistableBundle) {
-                }
-
-                @Override // android.os.IVoldTaskListener
-                public void onFinished(int i, PersistableBundle persistableBundle) {
-                    completableFuture.complete(persistableBundle);
-                }
-            });
-            boolean z = ((PersistableBundle) completableFuture.get()).getBoolean(KnoxCustomManagerService.SPCM_KEY_RESULT, false);
-            StringBuilder sb = new StringBuilder();
-            sb.append("Rename in media path result ");
-            sb.append(z ? "true" : "false");
-            Slog.d("StorageManagerService", sb.toString());
-            return z;
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return false;
-        }
-    }
-
-    public boolean cpFileAtData(String str, String str2) {
-        this.mContext.enforceCallingOrSelfPermission("com.samsung.android.permission.SEM_VOLD_DATA_MOVE", null);
-        if (!isValidPath(str) || !isValidPath(str2)) {
-            Slog.d("StorageManagerService", "cpFileAtData not support other than media or sec dir, so return false");
-            return false;
-        }
-        if (isMediaPath(str) && isMediaPath(str2)) {
-            Slog.d("StorageManagerService", "cpFileAtData not support from media to media dir, so return false");
-            return false;
-        }
-        try {
-            final CompletableFuture completableFuture = new CompletableFuture();
-            this.mVold.cpFileAtData(str, str2, this.mMediaStoreAuthorityAppId, Process.myUid(), new IVoldTaskListener.Stub() { // from class: com.android.server.StorageManagerService.15
-                @Override // android.os.IVoldTaskListener
-                public void onStatus(int i, PersistableBundle persistableBundle) {
-                }
-
-                @Override // android.os.IVoldTaskListener
-                public void onFinished(int i, PersistableBundle persistableBundle) {
-                    completableFuture.complete(persistableBundle);
-                }
-            });
-            boolean z = ((PersistableBundle) completableFuture.get()).getBoolean(KnoxCustomManagerService.SPCM_KEY_RESULT, false);
-            StringBuilder sb = new StringBuilder();
-            sb.append("File copy in media path result ");
-            sb.append(z ? "true" : "false");
-            Slog.d("StorageManagerService", sb.toString());
-            return z;
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return false;
-        }
-    }
-
-    /* renamed from: com.android.server.StorageManagerService$16, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public class AnonymousClass16 extends BroadcastReceiver {
-        public AnonymousClass16() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Slog.d("StorageManagerService", "mRestartSdcardBadremoveReceiver :: get Intent RESTART_OF_SDCARDBADREMOVED_HASAPK");
-            if ("com.samsung.intent.action.RESTART_OF_SDCARDBADREMOVED_HASAPK".equals(action)) {
-                new Thread(new Runnable() { // from class: com.android.server.StorageManagerService$16$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StorageManagerService.AnonymousClass16.this.lambda$onReceive$0();
-                    }
-                }).start();
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onReceive$0() {
-            ((PowerManager) StorageManagerService.this.mContext.getSystemService(PowerManager.class)).reboot("RESTART_OF_SDCARDBADREMOVED_HASAPK");
-        }
-    }
-
-    public final boolean isMountDisallowedByEAS(boolean z) {
-        Slog.w("StorageManagerService", "isMountDisallowedByEAS: storage_itpolicy from_intent " + z);
-        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService("device_policy");
-        if (devicePolicyManager == null) {
-            Slog.w("StorageManagerService", "isMountDisallowedByEAS: DevicePolicyManager is NULL");
-            return false;
-        }
-        boolean semGetAllowStorageCard = devicePolicyManager.semGetAllowStorageCard(null);
-        if (!semGetAllowStorageCard) {
-            if (z && semGetAllowStorageCard == this.preSDPolicy) {
-                Slog.w("StorageManagerService", "policy has restriction but not show noti storage_itpolicy");
-                return true;
-            }
-            this.preSDPolicy = false;
-            Slog.d("StorageManagerService", "policy has restriction storage_itpolicy");
-            Slog.d("StorageManagerService", "Send ACTION_SDCARD_ITPOLICY_TOAST_EVENT INTENT!!");
-            this.mContext.sendBroadcastAsUser(new Intent("com.samsung.intent.action.SDCARD_ITPOLICY_TOAST_EVENT"), UserHandle.ALL);
-            return true;
-        }
-        Slog.w("StorageManagerService", "isMountDisallowedByEAS: check is true");
-        this.preSDPolicy = true;
-        return false;
-    }
-
-    public final void applyCurrentSdCardPolicy(boolean z) {
-        Slog.d("StorageManagerService", "applyCurrentSdCardPolicy :: " + z);
-        if (z) {
-            for (int i = 0; i < this.mVolumes.size(); i++) {
-                VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i);
-                String str = volumeInfo.path;
-                String id = volumeInfo.getId();
-                if (volumeInfo.getType() != 2 && volumeInfo.getDiskId() != null) {
-                    Slog.d("StorageManagerService", "removable storage path :: " + str);
-                    try {
-                        if (volumeInfo.state == 1) {
-                            int i2 = 30;
-                            while (findVolumeByIdOrThrow(id).getState() == 1) {
-                                int i3 = i2 - 1;
-                                if (i2 >= 0) {
-                                    try {
-                                        Thread.sleep(1000L);
-                                        i2 = i3;
-                                    } catch (InterruptedException e) {
-                                        Slog.e("StorageManagerService", "Interrupted while waiting for media", e);
-                                    }
-                                }
-                                i2 = i3;
-                            }
-                            if (i2 == 0) {
-                                Slog.e("StorageManagerService", "Timed out waiting for media to check");
-                            }
-                        }
-                        unmount(id);
-                    } catch (IllegalArgumentException e2) {
-                        Slog.e("StorageManagerService", "volume removed, while waiting ", e2);
-                    }
-                }
-            }
-        }
-    }
-
-    public void mountBySecApp(String str, String str2) {
-        if (chkMountUnmountFormatCaller(str2)) {
-            Slog.d("StorageManagerService", "Mount call accepted");
-            mount(str);
-        } else {
-            throw new SecurityException("Mount call denied to [" + str2 + "]");
-        }
-    }
-
-    public void unmountBySecApp(String str, String str2) {
-        if (chkMountUnmountFormatCaller(str2)) {
-            Slog.d("StorageManagerService", "Unmount call accepted");
-            unmount(str);
-        } else {
-            throw new SecurityException("Unmount call denied to [" + str2 + "]");
-        }
-    }
-
-    public void formatBySecApp(String str, String str2) {
-        if (chkMountUnmountFormatCaller(str2)) {
-            Slog.d("StorageManagerService", "Format call accepted");
-            String str3 = null;
-            for (VolumeInfo volumeInfo : ((StorageManager) this.mContext.getSystemService(StorageManager.class)).getVolumes()) {
-                if (Objects.equals(volumeInfo.id, str)) {
-                    str3 = volumeInfo.getDiskId();
-                }
-            }
-            if (str3 == null) {
-                Slog.d("StorageManagerService", "No matched storage to format by SecApp, so just return");
-                return;
-            } else {
-                partitionPublic(str3);
-                return;
-            }
-        }
-        throw new SecurityException("Format call denied to [" + str2 + "]");
-    }
-
-    public final boolean chkMountUnmountFormatCaller(String str) {
-        if ("com.sec.android.app.myfiles".equalsIgnoreCase(str)) {
-            return true;
-        }
-        Slog.d("StorageManagerService", "Caller is not MyFiles");
-        return false;
-    }
-
-    public int mountVolume(String str) {
-        Slog.i("StorageManagerService", "mountVolume : " + str);
-        mount(findVolumeIdForPathOrThrow(str));
-        return 0;
-    }
-
-    public void unmountVolume(String str, boolean z, boolean z2) {
-        Slog.i("StorageManagerService", "unmountVolume :" + str);
-        unmount(findVolumeIdForPathOrThrow(str));
-    }
-
-    public final boolean hasDeviceRestriction(String str) {
-        Slog.w("StorageManagerService", "hasDeviceRestriction: " + str);
-        if ("usbhost_storage".equals(str)) {
-            return hasSecRestriction(str, "content://com.sec.knox.provider/RestrictionPolicy4", "isUsbHostStorageAllowed", new String[]{"true"});
-        }
-        if ("sdcard_storage".equals(str)) {
-            return hasSecRestriction(str, "content://com.sec.knox.provider/RestrictionPolicy3", "isSdCardEnabled", null);
-        }
-        if ("mass_storage".equals(str)) {
-            return hasSecRestriction(str, "content://com.sec.knox.provider/RestrictionPolicy4", "isUsbMassStorageEnabled", new String[]{"true"});
-        }
-        if ("readonly_storage".equals(str)) {
-            return hasSecRestriction(str, "content://com.sec.knox.provider/RestrictionPolicy4", "isSDCardWriteAllowed", null);
-        }
-        Slog.d("StorageManagerService", "not define policy !!!");
-        return false;
-    }
-
-    /* JADX WARN: Multi-variable type inference failed */
-    public final boolean hasSecRestriction(String str, String str2, String str3, String[] strArr) {
-        Cursor query = this.mContext.getContentResolver().query(Uri.parse(str2), null, str3, strArr, null);
-        try {
+    public final void setCloudMediaProvider(String str) {
+        enforceExternalStorageService();
+        int userId = UserHandle.getUserId(Binder.getCallingUid());
+        synchronized (this.mCloudMediaProviders) {
             try {
-                if (query != null) {
-                    query.moveToFirst();
-                    String string = query.getString(query.getColumnIndex(str3));
-                    Slog.d("StorageManagerService", "policy : " + str + ", restrict(allow) = " + string);
-                    boolean equals = "false".equals(string);
-                    str = equals;
-                    if (equals != 0) {
-                        query.close();
-                        return true;
-                    }
-                } else {
-                    Slog.e("StorageManagerService", str + " policy not yet?");
-                    str = str;
+                if (!Objects.equals(str, (String) this.mCloudMediaProviders.get(userId))) {
+                    this.mCloudMediaProviders.put(userId, str);
+                    this.mHandler.obtainMessage(16, userId, 0, str).sendToTarget();
                 }
-                if (query == null) {
-                    return false;
-                }
-            } catch (Exception e) {
-                Slog.e("StorageManagerService", "policy : " + str + ", return exception", e);
-                if (query == null) {
-                    return false;
-                }
+            } catch (Throwable th) {
+                throw th;
             }
-            query.close();
-            return false;
-        } catch (Throwable th) {
-            if (query != null) {
-                query.close();
-            }
-            throw th;
         }
     }
 
-    public final void checkCallerPermissionIsSystemOrRoot() {
+    public final void setDebugFlags(int i, int i2) {
+        long clearCallingIdentity;
+        setDebugFlags_enforcePermission();
+        String str = "";
+        if ((i2 & 3) != 0) {
+            String str2 = (i & 1) != 0 ? "force_on" : (i & 2) != 0 ? "force_off" : "";
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                SystemProperties.set("persist.sys.adoptable", str2);
+                this.mHandler.obtainMessage(10).sendToTarget();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            } finally {
+            }
+        }
+        if ((i2 & 12) != 0) {
+            if ((i & 4) != 0) {
+                str = "force_on";
+            } else if ((i & 8) != 0) {
+                str = "force_off";
+            }
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                SystemProperties.set("persist.sys.sdcardfs", str);
+                this.mHandler.obtainMessage(10).sendToTarget();
+            } finally {
+            }
+        }
+        if ((i2 & 16) != 0) {
+            boolean z = (i & 16) != 0;
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                SystemProperties.set("persist.sys.virtual_disk", Boolean.toString(z));
+                this.mHandler.obtainMessage(10).sendToTarget();
+            } finally {
+            }
+        }
+    }
+
+    public final boolean setDualDARPolicyCmd(int i, int i2) {
         int callingUid = Binder.getCallingUid();
         if (callingUid != 1000 && callingUid != 0) {
             throw new SecurityException("System can call this API");
         }
+        try {
+            return this.mVold.setDualDARPolicyCmd(i, i2);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return false;
+        }
     }
 
-    public boolean setSensitive(int i, String str) {
+    public final void setPrimaryStorageUuid(String str, IPackageMoveObserver iPackageMoveObserver) {
+        setPrimaryStorageUuid_enforcePermission();
+        synchronized (this.mLock) {
+            try {
+                if (Objects.equals(this.mPrimaryStorageUuid, str)) {
+                    throw new IllegalArgumentException("Primary storage already at " + str);
+                }
+                if (this.mMoveCallback != null) {
+                    throw new IllegalStateException("Move already in progress");
+                }
+                this.mMoveCallback = iPackageMoveObserver;
+                this.mMoveTargetUuid = str;
+                List<UserInfo> users = ((UserManager) this.mContext.getSystemService(UserManager.class)).getUsers();
+                for (UserInfo userInfo : users) {
+                    if (StorageManager.isFileEncrypted() && !isCeStorageUnlocked(userInfo.id)) {
+                        Slog.w("StorageManagerService", "Failing move due to locked user " + userInfo.id);
+                        onMoveStatusLocked(-10);
+                        return;
+                    }
+                }
+                if (!"primary_physical".equals(this.mPrimaryStorageUuid) && !"primary_physical".equals(str)) {
+                    int i = this.mCurrentUserId;
+                    VolumeInfo findStorageForUuidAsUser = findStorageForUuidAsUser(i, this.mPrimaryStorageUuid);
+                    VolumeInfo findStorageForUuidAsUser2 = findStorageForUuidAsUser(i, str);
+                    if (findStorageForUuidAsUser == null) {
+                        Slog.w("StorageManagerService", "Failing move due to missing from volume " + this.mPrimaryStorageUuid);
+                        onMoveStatusLocked(-6);
+                        return;
+                    }
+                    if (findStorageForUuidAsUser2 == null) {
+                        Slog.w("StorageManagerService", "Failing move due to missing to volume " + str);
+                        onMoveStatusLocked(-6);
+                        return;
+                    }
+                    try {
+                        String str2 = this.mPrimaryStorageUuid;
+                        for (UserInfo userInfo2 : users) {
+                            prepareUserStorageInternal(userInfo2.id, 3, str2);
+                            prepareUserStorageInternal(userInfo2.id, 3, str);
+                        }
+                        try {
+                            this.mVold.moveStorage(findStorageForUuidAsUser.id, findStorageForUuidAsUser2.id, new AnonymousClass15(2, this));
+                            return;
+                        } catch (Exception e) {
+                            Slog.wtf("StorageManagerService", e);
+                            return;
+                        }
+                    } catch (Exception e2) {
+                        Slog.w("StorageManagerService", "Failing move due to failure on prepare user data", e2);
+                        synchronized (this.mLock) {
+                            onMoveStatusLocked(-6);
+                            return;
+                        }
+                    }
+                }
+                Slog.d("StorageManagerService", "Skipping move to/from primary physical");
+                onMoveStatusLocked(82);
+                onMoveStatusLocked(-100);
+                this.mHandler.obtainMessage(10).sendToTarget();
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final boolean setSdpPolicyCmd(int i) {
+        try {
+            return this.mVold.setSdpPolicyCmd(i);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return false;
+        }
+    }
+
+    public final boolean setSdpPolicyToPathCmd(int i, String str) {
+        try {
+            return this.mVold.setSdpPolicyToPathCmd(i, str);
+        } catch (Exception e) {
+            Slog.wtf("StorageManagerService", e);
+            return false;
+        }
+    }
+
+    public final boolean setSensitive(int i, String str) {
         if (str == null) {
             return false;
         }
@@ -4683,390 +4729,66 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
         }
     }
 
-    public boolean isSensitive(String str) {
-        if (str == null) {
-            return false;
-        }
-        try {
-            if (str.isEmpty()) {
-                return false;
-            }
-            return this.mVold.isSensitive(str);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return false;
-        }
-    }
-
-    public boolean mountSdpMediaStorageCmd(int i) {
-        try {
-            return this.mVold.mountSdpMediaStorageCmd(i);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return false;
-        }
-    }
-
-    public boolean setSdpPolicyCmd(int i) {
-        try {
-            return this.mVold.setSdpPolicyCmd(i);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return false;
-        }
-    }
-
-    public boolean setSdpPolicyToPathCmd(int i, String str) {
-        try {
-            return this.mVold.setSdpPolicyToPathCmd(i, str);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return false;
-        }
-    }
-
-    public boolean setDualDARPolicyCmd(int i, int i2) {
-        checkCallerPermissionIsSystemOrRoot();
-        try {
-            return this.mVold.setDualDARPolicyCmd(i, i2);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return false;
-        }
-    }
-
-    public boolean shrinkDataDdp(long j) {
-        try {
-            return this.mVold.shrinkDataDdp(j);
-        } catch (Exception unused) {
-            Slog.e("StorageManagerService", "[DDP] Failed to shrink data partition");
-            return false;
-        }
-    }
-
-    public int reserveDataBlocks(long j) {
-        try {
-            return this.mVold.reserveDataBlocks(j);
-        } catch (Exception unused) {
-            Slog.e("StorageManagerService", "[DDP] Failed to set reserved_blocks");
-            return -1;
-        }
-    }
-
-    public String getVolumeState(String str) {
-        if (str == null) {
-            return "unknown";
-        }
+    public final void setVolumeNickname(String str, String str2) {
+        setVolumeNickname_enforcePermission();
+        Slog.d("StorageManagerService", "setVolumeNickname: fsUuid=" + str + " nickname=" + str2);
+        Objects.requireNonNull(str);
         synchronized (this.mLock) {
-            VolumeInfo[] volumeInfoArr = new VolumeInfo[this.mVolumes.size()];
-            for (int i = 0; i < this.mVolumes.size(); i++) {
-                VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i);
-                volumeInfoArr[i] = volumeInfo;
-                if (str.equals(volumeInfo.path)) {
-                    Slog.d("StorageManagerService", "getVolumeState: path=" + str + ", state=" + volumeInfoArr[i].state + " From pid=" + Binder.getCallingPid());
-                    return VolumeInfo.getEnvironmentForState(volumeInfoArr[i].state);
-                }
-            }
-            Slog.d("StorageManagerService", "getVolumeState: No matched Volume");
-            return "unknown";
+            VolumeRecord volumeRecord = (VolumeRecord) this.mRecords.get(str);
+            volumeRecord.nickname = str2;
+            Callbacks callbacks = this.mCallbacks;
+            int i = Callbacks.$r8$clinit;
+            callbacks.getClass();
+            SomeArgs obtain = SomeArgs.obtain();
+            obtain.arg1 = volumeRecord.clone();
+            callbacks.obtainMessage(3, obtain).sendToTarget();
+            writeSettingsLocked();
         }
     }
 
-    public final boolean checkExternalSecureContainerMounted() {
-        DiskInfo disk;
-        for (VolumeInfo volumeInfo : ((StorageManager) this.mContext.getSystemService(StorageManager.class)).getVolumes()) {
-            if (volumeInfo.getState() == 2 && (disk = volumeInfo.getDisk()) != null && disk.isSd()) {
-                Slog.d("StorageManagerService", "Description : " + volumeInfo.getDescription() + " state : " + volumeInfo.getState());
-                return true;
-            }
+    public final void setVolumeUserFlags(String str, int i, int i2) {
+        setVolumeUserFlags_enforcePermission();
+        StringBuilder m = StorageManagerService$$ExternalSyntheticOutline0.m(i, "setVolumeUserFlags: fsUuid=", str, " flags=", " mask=");
+        m.append(i2);
+        Slog.d("StorageManagerService", m.toString());
+        Objects.requireNonNull(str);
+        synchronized (this.mLock) {
+            VolumeRecord volumeRecord = (VolumeRecord) this.mRecords.get(str);
+            volumeRecord.userFlags = (i & i2) | (volumeRecord.userFlags & (~i2));
+            Callbacks callbacks = this.mCallbacks;
+            int i3 = Callbacks.$r8$clinit;
+            callbacks.getClass();
+            SomeArgs obtain = SomeArgs.obtain();
+            obtain.arg1 = volumeRecord.clone();
+            callbacks.obtainMessage(3, obtain).sendToTarget();
+            writeSettingsLocked();
         }
+    }
+
+    public final boolean shrinkDataDdp(long j) {
         return false;
     }
 
-    public String[] getSecureContainerList() {
-        String[] strArr;
-        enforcePermission("android.permission.ASEC_ACCESS");
-        warnOnNotMounted();
-        try {
-            strArr = this.mVold.asecList();
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            strArr = new String[0];
-        }
-        ArrayList arrayList = new ArrayList(Arrays.asList(strArr));
-        synchronized (this.mAsecMountSet) {
-            if (!checkExternalSecureContainerMounted()) {
-                ArrayList arrayList2 = new ArrayList();
-                Iterator it = this.mAsecMountSet.iterator();
-                int i = 0;
-                while (it.hasNext()) {
-                    PackageInstalledMap packageInstalledMap = (PackageInstalledMap) it.next();
-                    if (packageInstalledMap.external) {
-                        arrayList2.add(packageInstalledMap.id);
-                        i++;
-                    }
-                }
-                if (i > 0) {
-                    Slog.d("StorageManagerService", "getSecureContainerList : (no media) lists = " + i);
-                }
-                arrayList.addAll(arrayList2);
-            }
-        }
-        return (String[]) arrayList.toArray(new String[0]);
+    public final void shutdown(IStorageShutdownObserver iStorageShutdownObserver) {
+        shutdown_enforcePermission();
+        Slog.i("StorageManagerService", "Shutting down");
+        this.mHandler.obtainMessage(3, iStorageShutdownObserver).sendToTarget();
     }
 
-    public int createSecureContainer(String str, int i, String str2, String str3, int i2, boolean z) {
-        int i3;
-        enforcePermission("android.permission.ASEC_CREATE");
-        warnOnNotMounted();
-        try {
-            this.mVold.asecCreate(str, i, str2, str3, i2, z);
-            i3 = 0;
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            i3 = -1;
+    public final void startCheckpoint(int i) {
+        int callingUid = Binder.getCallingUid();
+        if (callingUid != 1000 && callingUid != 0 && callingUid != 2000) {
+            throw new SecurityException("no permission to start filesystem checkpoint");
         }
-        if (i3 == 0) {
-            synchronized (this.mAsecMountSet) {
-                if (z) {
-                    this.mAsecMountSet.add(new PackageInstalledMap(str, true));
-                } else {
-                    this.mAsecMountSet.add(new PackageInstalledMap(str, false));
-                }
-            }
-        }
-        return i3;
+        this.mVold.startCheckpoint(i);
     }
 
-    public int resizeSecureContainer(String str, int i, String str2) {
-        enforcePermission("android.permission.ASEC_CREATE");
-        warnOnNotMounted();
-        try {
-            this.mVold.asecResize(str, i, str2);
-            return 0;
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return -1;
-        }
+    public final boolean supportsCheckpoint() {
+        return this.mVold.supportsCheckpoint();
     }
 
-    public int finalizeSecureContainer(String str) {
-        enforcePermission("android.permission.ASEC_CREATE");
-        warnOnNotMounted();
-        try {
-            this.mVold.asecFinalize(str);
-            return 0;
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return -1;
-        }
-    }
-
-    public int fixPermissionsSecureContainer(String str, int i, String str2) {
-        Slog.d("StorageManagerService", "fixPermissionsSecureContainer: id=" + str + " gid=" + i + " filename=" + str2);
-        enforcePermission("android.permission.ASEC_CREATE");
-        warnOnNotMounted();
-        if (str2 == null) {
-            str2 = "";
-        }
-        try {
-            this.mVold.asecFixperms(str, i, str2);
-            return 0;
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return -1;
-        }
-    }
-
-    public int destroySecureContainer(String str, boolean z) {
-        int i;
-        enforcePermission("android.permission.ASEC_DESTROY");
-        warnOnNotMounted();
-        Runtime.getRuntime().gc();
-        try {
-            this.mVold.asecDestroy(str, z);
-            i = 0;
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            i = -1;
-        }
-        if (i == 0) {
-            synchronized (this.mAsecMountSet) {
-                if (this.mAsecMountSet.contains(new PackageInstalledMap(str))) {
-                    this.mAsecMountSet.remove(new PackageInstalledMap(str));
-                }
-            }
-        }
-        return i;
-    }
-
-    public int mountSecureContainer(String str, String str2, int i, boolean z) {
-        int i2;
-        enforcePermission("android.permission.ASEC_MOUNT_UNMOUNT");
-        warnOnNotMounted();
-        synchronized (this.mAsecMountSet) {
-            if (this.mAsecMountSet.contains(new PackageInstalledMap(str))) {
-                return -6;
-            }
-            try {
-                this.mVold.asecMount(str, str2, i, z);
-                i2 = 0;
-            } catch (Exception e) {
-                Slog.wtf("StorageManagerService", e);
-                i2 = -1;
-            }
-            String secureContainerFilesystemPath = getSecureContainerFilesystemPath(str);
-            if (i2 == 0) {
-                synchronized (this.mAsecMountSet) {
-                    if (secureContainerFilesystemPath != null) {
-                        if (secureContainerFilesystemPath.startsWith("/data/app-asec/")) {
-                            this.mAsecMountSet.add(new PackageInstalledMap(str, false));
-                        }
-                    }
-                    this.mAsecMountSet.add(new PackageInstalledMap(str, true));
-                }
-            }
-            return i2;
-        }
-    }
-
-    public final void cleanupSercureContainerList(String str) {
-        synchronized (this.mAsecMountSet) {
-            if ("all".equals(str)) {
-                this.mAsecMountSet.clear();
-            } else {
-                Iterator it = this.mAsecMountSet.iterator();
-                while (it.hasNext()) {
-                    PackageInstalledMap packageInstalledMap = (PackageInstalledMap) it.next();
-                    if (packageInstalledMap.external && "external".equals(str)) {
-                        it.remove();
-                    } else if (!packageInstalledMap.external && "internal".equals(str)) {
-                        it.remove();
-                    }
-                }
-            }
-        }
-    }
-
-    public final boolean isExternalSecureContainer(String str) {
-        boolean z;
-        synchronized (this.mAsecMountSet) {
-            Iterator it = this.mAsecMountSet.iterator();
-            while (true) {
-                if (!it.hasNext()) {
-                    z = false;
-                    break;
-                }
-                PackageInstalledMap packageInstalledMap = (PackageInstalledMap) it.next();
-                if (packageInstalledMap.id.equals(str)) {
-                    z = packageInstalledMap.external;
-                    break;
-                }
-            }
-        }
-        Slog.d("StorageManagerService", "isExternalSecureContainer: id=" + str + " result=" + z);
-        return z;
-    }
-
-    public int unmountSecureContainer(String str, boolean z) {
-        Slog.d("StorageManagerService", "unmountSecureContainer: id=" + str + " force=" + z);
-        enforcePermission("android.permission.ASEC_MOUNT_UNMOUNT");
-        warnOnNotMounted();
-        synchronized (this.mAsecMountSet) {
-            if (!this.mAsecMountSet.contains(new PackageInstalledMap(str))) {
-                Slog.d("StorageManagerService", "unmountSecureContainer: fail");
-                return -5;
-            }
-            int i = 0;
-            if (isExternalSecureContainer(str) && !checkExternalSecureContainerMounted()) {
-                Slog.w("StorageManagerService", "unmountSecureContainer: no media");
-                this.mAsecMountSet.remove(new PackageInstalledMap(str));
-                return 0;
-            }
-            Runtime.getRuntime().gc();
-            try {
-                this.mVold.asecUnmount(str, z);
-            } catch (Exception e) {
-                Slog.wtf("StorageManagerService", e);
-                i = -1;
-            }
-            if (i == 0) {
-                synchronized (this.mAsecMountSet) {
-                    this.mAsecMountSet.remove(new PackageInstalledMap(str));
-                }
-            }
-            return i;
-        }
-    }
-
-    public boolean isSecureContainerMounted(String str) {
-        boolean contains;
-        enforcePermission("android.permission.ASEC_ACCESS");
-        warnOnNotMounted();
-        synchronized (this.mAsecMountSet) {
-            contains = this.mAsecMountSet.contains(new PackageInstalledMap(str));
-            Slog.d("StorageManagerService", "isSecureContainerMounted: id=" + str + " ret=" + contains);
-        }
-        return contains;
-    }
-
-    public int renameSecureContainer(String str, String str2) {
-        enforcePermission("android.permission.ASEC_RENAME");
-        warnOnNotMounted();
-        synchronized (this.mAsecMountSet) {
-            if (!this.mAsecMountSet.contains(new PackageInstalledMap(str)) && !this.mAsecMountSet.contains(new PackageInstalledMap(str2))) {
-                try {
-                    this.mVold.asecRename(str, str2);
-                    return 0;
-                } catch (Exception e) {
-                    Slog.wtf("StorageManagerService", e);
-                    return -1;
-                }
-            }
-            return -6;
-        }
-    }
-
-    public String getSecureContainerPath(String str) {
-        Slog.d("StorageManagerService", "getSecureContainerPath: id=" + str);
-        enforcePermission("android.permission.ASEC_ACCESS");
-        warnOnNotMounted();
-        if (isExternalSecureContainer(str) && !checkExternalSecureContainerMounted() && this.mAsecMountSet.contains(new PackageInstalledMap(str))) {
-            return "/mnt/asec/" + str;
-        }
-        try {
-            return this.mVold.asecPath(str);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return null;
-        }
-    }
-
-    public String getSecureContainerFilesystemPath(String str) {
-        enforcePermission("android.permission.ASEC_ACCESS");
-        warnOnNotMounted();
-        try {
-            return this.mVold.asecFsPath(str);
-        } catch (Exception e) {
-            Slog.wtf("StorageManagerService", e);
-            return null;
-        }
-    }
-
-    public void finishMediaUpdate() {
-        if (Binder.getCallingUid() != 1000) {
-            throw new SecurityException("no permission to call finishMediaUpdate()");
-        }
-        CountDownLatch countDownLatch = this.mUnmountSignal;
-        if (countDownLatch != null) {
-            countDownLatch.countDown();
-        } else {
-            Slog.w("StorageManagerService", "Odd, nobody asked to unmount?");
-        }
-    }
-
-    public int trimSecureContainer(String str, int i, String str2) {
-        enforcePermission("android.permission.ASEC_CREATE");
+    public final int trimSecureContainer(String str, int i, String str2) {
+        enforcePermission$1("android.permission.ASEC_CREATE");
         warnOnNotMounted();
         try {
             this.mVold.asecTrim(str, i, str2);
@@ -5077,14 +4799,260 @@ public class StorageManagerService extends IStorageManager.Stub implements Watch
         }
     }
 
-    public int getUsedSpaceSecureContainer(String str) {
-        enforcePermission("android.permission.ASEC_CREATE");
-        warnOnNotMounted();
+    public final void unlockCeStorage(int i, byte[] bArr) {
+        unlockCeStorage_enforcePermission();
+        if (StorageManager.isFileEncrypted()) {
+            this.mVold.unlockCeStorage(i, bArr);
+        }
+        synchronized (this.mLock) {
+            WatchedUnlockedUsers watchedUnlockedUsers = this.mCeUnlockedUsers;
+            watchedUnlockedUsers.users = ArrayUtils.appendInt(watchedUnlockedUsers.users, i);
+            UserManager.invalidateIsUserUnlockedCache();
+        }
+    }
+
+    public final int unlockPassStorage() {
+        int callingUid = Binder.getCallingUid();
+        String packageName = getPackageName(callingUid);
+        if (packageName.equals("Unknown")) {
+            throw new SecurityException(" calling package is not allowed");
+        }
+        if (isRootedDevice()) {
+            Slog.d("StorageManagerService", "isDetectedRoot: true ");
+            throw new SecurityException(" Root detected");
+        }
+        if (!isPlatformSignedApp(packageName)) {
+            throw new SecurityException(" Signature of the calling package is not match");
+        }
         try {
-            return this.mVold.asecGetUsedSpace(str);
+            return this.mVold.unlockPassStorage(packageName, this.mCurrentUserId, callingUid);
         } catch (Exception e) {
             Slog.wtf("StorageManagerService", e);
-            return -1;
+            return -12;
+        }
+    }
+
+    public final void unmount(VolumeInfo volumeInfo) {
+        try {
+            try {
+                if (volumeInfo.type == 1) {
+                    Installer installer = this.mInstaller;
+                    String fsUuid = volumeInfo.getFsUuid();
+                    if (installer.checkBeforeRemote()) {
+                        try {
+                            installer.mInstalld.onPrivateVolumeRemoved(fsUuid);
+                        } catch (Exception e) {
+                            Installer.InstallerException.from(e);
+                            throw null;
+                        }
+                    }
+                }
+            } catch (Installer.InstallerException e2) {
+                Slog.e("StorageManagerService", "Failed unmount mirror data", e2);
+            }
+            this.mVold.unmount(volumeInfo.id);
+            StorageSessionController storageSessionController = this.mStorageSessionController;
+            storageSessionController.getClass();
+            String id = volumeInfo.getId();
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                try {
+                    StorageUserConnection onVolumeRemove = storageSessionController.onVolumeRemove(volumeInfo);
+                    if (volumeInfo.type == 0) {
+                        Slog.i("StorageSessionController", "On volume unmount " + StorageSessionController.createVolumeInfoStrForPulbicVolume(volumeInfo));
+                    } else {
+                        Slog.i("StorageSessionController", "On volume unmount " + volumeInfo);
+                    }
+                    if (onVolumeRemove != null) {
+                        onVolumeRemove.removeSessionAndWait(id);
+                    }
+                } catch (Throwable th) {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                    throw th;
+                }
+            } catch (StorageSessionController.ExternalStorageServiceException e3) {
+                Slog.e("StorageSessionController", "Failed to end session for vol with id: " + id, e3);
+            }
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        } catch (Exception e4) {
+            Slog.wtf("StorageManagerService", e4);
+        }
+    }
+
+    public final void unmount(String str) {
+        DiskInfo diskInfo;
+        unmount_enforcePermission();
+        Slog.d("StorageManagerService", "Begin unmount: volId=" + str);
+        VolumeInfo findVolumeByIdOrThrow = findVolumeByIdOrThrow(str);
+        if (findVolumeByIdOrThrow.isPrimaryPhysical() || ((diskInfo = findVolumeByIdOrThrow.disk) != null && diskInfo.isSd())) {
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                synchronized (this.mUnmountLock) {
+                    this.mUnmountSignal = new CountDownLatch(1);
+                    PackageManagerService.this.mCustomInjector.getAsecInstallHelper().updateExternalMediaStatus(false, true);
+                    try {
+                        waitForLatch(this.mUnmountSignal, -1L, "mUnmountSignal");
+                    } catch (TimeoutException e) {
+                        Slog.e("StorageManagerService", "TimeoutException in ".concat("mUnmountSignal"), e);
+                    }
+                    this.mUnmountSignal = null;
+                }
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
+        }
+        unmount(findVolumeByIdOrThrow);
+    }
+
+    public final void unmountBySecApp(String str, String str2) {
+        if (!chkMountUnmountFormatCaller(str2)) {
+            throw new SecurityException(XmlUtils$$ExternalSyntheticOutline0.m("Unmount call denied to [", str2, "]"));
+        }
+        Slog.d("StorageManagerService", "Unmount call accepted");
+        unmount(str);
+    }
+
+    public final void unmountObb(String str, boolean z, IObbActionListener iObbActionListener, int i) {
+        ObbState obbState;
+        Objects.requireNonNull(str, "rawPath cannot be null");
+        synchronized (this.mObbMounts) {
+            obbState = (ObbState) ((HashMap) this.mObbPathToStateMap).get(str);
+        }
+        if (obbState == null) {
+            Slog.w("StorageManagerService", "Unknown OBB mount at ".concat(str));
+            return;
+        }
+        UnmountObbAction unmountObbAction = new UnmountObbAction(new ObbState(str, obbState.canonicalPath, Binder.getCallingUid(), iObbActionListener, i, obbState.volId), z);
+        Callbacks callbacks = this.mObbActionHandler;
+        callbacks.sendMessage(callbacks.obtainMessage(1, unmountObbAction));
+    }
+
+    public final int unmountSecureContainer(String str, boolean z) {
+        Slog.d("StorageManagerService", "unmountSecureContainer: id=" + str + " force=" + z);
+        enforcePermission$1("android.permission.ASEC_MOUNT_UNMOUNT");
+        warnOnNotMounted();
+        synchronized (this.mAsecMountSet) {
+            try {
+                if (!this.mAsecMountSet.contains(new PackageInstalledMap(str))) {
+                    Slog.d("StorageManagerService", "unmountSecureContainer: fail");
+                    return -5;
+                }
+                int i = 0;
+                if (isExternalSecureContainer(str) && !checkExternalSecureContainerMounted()) {
+                    Slog.w("StorageManagerService", "unmountSecureContainer: no media");
+                    this.mAsecMountSet.remove(new PackageInstalledMap(str));
+                    return 0;
+                }
+                Runtime.getRuntime().gc();
+                try {
+                    this.mVold.asecUnmount(str, z);
+                } catch (Exception e) {
+                    Slog.wtf("StorageManagerService", e);
+                    i = -1;
+                }
+                if (i == 0) {
+                    synchronized (this.mAsecMountSet) {
+                        this.mAsecMountSet.remove(new PackageInstalledMap(str));
+                    }
+                }
+                return i;
+            } finally {
+            }
+        }
+    }
+
+    public final void unmountVolume(String str, boolean z, boolean z2) {
+        Slog.i("StorageManagerService", "unmountVolume :" + str);
+        unmount(findVolumeIdForPathOrThrow(str));
+    }
+
+    public final void unregisterListener(IStorageEventListener iStorageEventListener) {
+        ((RemoteCallbackList) this.mCallbacks.mCallbacks).unregister(iStorageEventListener);
+    }
+
+    public final void updateLegacyStorageApps(int i, String str, boolean z) {
+        synchronized (this.mLock) {
+            try {
+                if (z) {
+                    Slog.v("StorageManagerService", "Package " + str + " has legacy storage");
+                    ((ArraySet) this.mUidsWithLegacyExternalStorage).add(Integer.valueOf(i));
+                } else {
+                    Slog.v("StorageManagerService", "Package " + str + " does not have legacy storage");
+                    ((ArraySet) this.mUidsWithLegacyExternalStorage).remove(Integer.valueOf(i));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void updateStorageWriteRecords(int i) {
+        System.arraycopy(this.mStorageWriteRecords, 0, this.mStorageWriteRecords, 1, this.mMaxWriteRecords - 1);
+        this.mStorageWriteRecords[0] = i;
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = this.mWriteRecordFile.startWrite();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeInt(sSmartIdleMaintPeriod);
+            objectOutputStream.writeObject(this.mStorageWriteRecords);
+            this.mWriteRecordFile.finishWrite(fileOutputStream);
+        } catch (IOException unused) {
+            if (fileOutputStream != null) {
+                this.mWriteRecordFile.failWrite(fileOutputStream);
+            }
+        }
+    }
+
+    public final void waitForAsecScan() {
+        try {
+            waitForLatch(this.mAsecsScanned, -1L, "mAsecsScanned");
+        } catch (TimeoutException e) {
+            Slog.e("StorageManagerService", "TimeoutException in ".concat("mAsecsScanned"), e);
+        }
+    }
+
+    public final void warnOnNotMounted() {
+        synchronized (this.mLock) {
+            for (int i = 0; i < this.mVolumes.size(); i++) {
+                try {
+                    VolumeInfo volumeInfo = (VolumeInfo) this.mVolumes.valueAt(i);
+                    if (volumeInfo.isPrimary() && volumeInfo.isMountedWritable()) {
+                        return;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            Slog.w("StorageManagerService", "No primary storage mounted!");
+        }
+    }
+
+    public final void writeSettingsLocked() {
+        FileOutputStream startWrite;
+        FileOutputStream fileOutputStream = null;
+        try {
+            startWrite = this.mSettingsFile.startWrite();
+        } catch (IOException unused) {
+        }
+        try {
+            Slog.d("StorageManagerService", "writeSettingsLocked: " + this.mSettingsFile.getBaseFile().getAbsolutePath());
+            TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
+            resolveSerializer.startDocument((String) null, Boolean.TRUE);
+            resolveSerializer.startTag((String) null, "volumes");
+            resolveSerializer.attributeInt((String) null, "version", 3);
+            XmlUtils.writeStringAttribute(resolveSerializer, "primaryStorageUuid", this.mPrimaryStorageUuid);
+            int size = this.mRecords.size();
+            for (int i = 0; i < size; i++) {
+                writeVolumeRecord(resolveSerializer, (VolumeRecord) this.mRecords.valueAt(i));
+            }
+            resolveSerializer.endTag((String) null, "volumes");
+            resolveSerializer.endDocument();
+            this.mSettingsFile.finishWrite(startWrite);
+        } catch (IOException unused2) {
+            fileOutputStream = startWrite;
+            if (fileOutputStream != null) {
+                this.mSettingsFile.failWrite(fileOutputStream);
+            }
         }
     }
 }

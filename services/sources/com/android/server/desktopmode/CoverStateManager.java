@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.os.SystemClock;
 import android.os.UserHandle;
 import android.util.IndentingPrintWriter;
 import com.android.server.desktopmode.CoverStateManager;
@@ -17,258 +17,196 @@ import com.samsung.android.cover.CoverState;
 import com.samsung.android.desktopmode.DesktopModeFeature;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
 
-/* loaded from: classes2.dex */
-public class CoverStateManager {
-    public static final String TAG = "[DMS]" + CoverStateManager.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class CoverStateManager {
     public final Context mContext;
     public final CoverManager mCoverManager;
+    public final Handler mHandler;
     public final InputManagerService mInputManagerService;
     public final boolean mIsNfcAuthSystemFeatureEnabled;
     public final SemDesktopModeManager mManager;
     public final PowerManager mPowerManager;
     public final IStateManager mStateManager;
     public final Object mLock = new Object();
-    public boolean mBlockState = false;
     public boolean mCoverManagerDisabled = false;
     public boolean mDesktopDockConnected = false;
     public boolean mScreenMirroringDisabled = false;
     public boolean mAuthComplete = false;
     public int mCoverSupportState = -1;
     public CoverState mCoverState = new CoverState();
-    public final CoverManager.StateListener mCoverStateListener = new CoverManager.StateListener() { // from class: com.android.server.desktopmode.CoverStateManager.1
-        public void onCoverStateChanged(CoverState coverState) {
-            if (DesktopModeFeature.DEBUG) {
-                Log.d(CoverStateManager.TAG, "mCoverState=" + coverState);
+    public final AnonymousClass1 mCoverStateListener = new CoverManager.StateListener() { // from class: com.android.server.desktopmode.CoverStateManager.1
+        public final void onCoverStateChanged(CoverState coverState) {
+            boolean z = DesktopModeFeature.DEBUG;
+            if (z) {
+                Log.d("[DMS]CoverStateManager", "mCoverState=" + coverState);
             }
             synchronized (CoverStateManager.this.mLock) {
-                if (CoverStateManager.this.mCoverManagerDisabled && coverState.attached == CoverStateManager.this.mCoverState.attached) {
-                    if (DesktopModeFeature.DEBUG) {
-                        Log.d(CoverStateManager.TAG, "onCoverStateChanged - mCoverManagerDisabled && state.attached == mCoverState.attached");
+                try {
+                    CoverStateManager coverStateManager = CoverStateManager.this;
+                    if (coverStateManager.mCoverManagerDisabled && coverState.attached == coverStateManager.mCoverState.attached) {
+                        if (z) {
+                            Log.d("[DMS]CoverStateManager", "onCoverStateChanged - mCoverManagerDisabled && state.attached == mCoverState.attached");
+                        }
+                    } else {
+                        coverStateManager.mCoverState = coverState;
+                        coverStateManager.updateCoverSupportStateLocked();
                     }
-                } else {
-                    CoverStateManager.this.mCoverState = coverState;
-                    CoverStateManager.this.updateCoverSupportStateLocked();
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
         }
     };
-    public final StateManager.StateListener mStateListener = new StateManager.StateListener() { // from class: com.android.server.desktopmode.CoverStateManager.2
+    public final AnonymousClass2 mStateListener = new StateManager.StateListener() { // from class: com.android.server.desktopmode.CoverStateManager.2
         @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onDualModeStartLoadingScreen(boolean z) {
+        public final void onDockStateChanged(StateManager.InternalState internalState) {
+            synchronized (CoverStateManager.this.mLock) {
+                try {
+                    if (CoverStateManager.this.mDesktopDockConnected != internalState.mDockState.isDexStation()) {
+                        CoverStateManager.this.mDesktopDockConnected = internalState.mDockState.isDexStation();
+                        CoverStateManager.this.updateCoverSupportStateLocked();
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
         }
 
         @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onDualModeStopLoadingScreen(boolean z) {
+        public final void onDualModeStartLoadingScreen(boolean z) {
         }
 
         @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onExternalDisplayConnectionChanged(State state) {
+        public final void onDualModeStopLoadingScreen(boolean z) {
+        }
+
+        @Override // com.android.server.desktopmode.StateManager.StateListener
+        public final void onExternalDisplayConnectionChanged(StateManager.InternalState internalState) {
             synchronized (CoverStateManager.this.mLock) {
                 CoverStateManager.this.updateCoverSupportStateLocked();
             }
         }
-
-        @Override // com.android.server.desktopmode.StateManager.StateListener
-        public void onDockStateChanged(State state) {
-            synchronized (CoverStateManager.this.mLock) {
-                if (CoverStateManager.this.mDesktopDockConnected != state.getDockState().isDexStation()) {
-                    CoverStateManager.this.mDesktopDockConnected = state.getDockState().isDexStation();
-                    CoverStateManager.this.updateCoverSupportStateLocked();
-                }
-            }
-        }
     };
-    public final SemDesktopModeManager.DesktopModeBlocker mBlocker = new SemDesktopModeManager.DesktopModeBlocker() { // from class: com.android.server.desktopmode.CoverStateManager.3
-        public String onBlocked() {
-            if (!CoverStateManager.this.mAuthComplete) {
-                Log.i(CoverStateManager.TAG, "onBlocked(), !mAuthComplete");
+    public final AnonymousClass3 mBlocker = new SemDesktopModeManager.DesktopModeBlocker() { // from class: com.android.server.desktopmode.CoverStateManager.3
+        public final String onBlocked() {
+            if (CoverStateManager.this.mAuthComplete) {
+                Log.w("[DMS]CoverStateManager", "onBlocked(), Unknown reason");
                 return null;
             }
-            Log.w(CoverStateManager.TAG, "onBlocked(), Unknown reason");
+            Log.i("[DMS]CoverStateManager", "onBlocked(), !mAuthComplete");
             return null;
         }
     };
-    public final Handler mHandler = new Handler();
 
-    /* loaded from: classes2.dex */
-    public class Authenticator extends BroadcastReceiver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Authenticator extends BroadcastReceiver {
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        /* renamed from: com.android.server.desktopmode.CoverStateManager$Authenticator$1, reason: invalid class name */
+        public final class AnonymousClass1 implements InputManagerService.DesktopModeServiceCallbacks {
+            public AnonymousClass1() {
+            }
+        }
+
         public Authenticator() {
         }
 
-        public void initialize() {
-            if (isAuthNeeded()) {
-                CoverStateManager.this.mContext.registerReceiverAsUser(this, UserHandle.ALL, new IntentFilter("com.samsung.android.intent.action.ACCESSORY_AUTHENTICATION_STOPPED"), null, null);
-                if (CoverStateManager.this.mInputManagerService != null) {
-                    CoverStateManager.this.mInputManagerService.setDesktopModeServiceCallbacks(new InputManagerService.DesktopModeServiceCallbacks() { // from class: com.android.server.desktopmode.CoverStateManager.Authenticator.1
-                        @Override // com.android.server.input.InputManagerService.DesktopModeServiceCallbacks
-                        public void notifyUnverifiedCoverAttachChanged(long j, boolean z) {
-                            if (DesktopModeFeature.DEBUG) {
-                                Log.d(CoverStateManager.TAG, "notifyUnverifiedCoverAttachChanged, attached=" + z);
-                            }
-                            if (z) {
-                                return;
-                            }
-                            CoverStateManager.this.mHandler.removeCallbacksAndMessages(null);
-                            Authenticator.this.setAuthCompleteAndResetCallbacksReceiver();
-                        }
-                    });
-                }
-                CoverStateManager.this.mHandler.removeCallbacksAndMessages(null);
-                CoverStateManager.this.mHandler.postDelayed(new Runnable() { // from class: com.android.server.desktopmode.CoverStateManager$Authenticator$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        CoverStateManager.Authenticator.this.lambda$initialize$0();
-                    }
-                }, 20000L);
-                return;
-            }
-            setAuthComplete();
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$initialize$0() {
-            if (DesktopModeFeature.DEBUG) {
-                Log.d(CoverStateManager.TAG, "Cover auth timeout, mAuthComplete=" + CoverStateManager.this.mAuthComplete);
-            }
-            if (CoverStateManager.this.mAuthComplete) {
-                return;
-            }
-            setAuthCompleteAndResetCallbacksReceiver();
-        }
-
-        public boolean isAuthNeeded() {
-            return CoverStateManager.this.mIsNfcAuthSystemFeatureEnabled && CoverStateManager.this.mInputManagerService != null && CoverStateManager.this.mInputManagerService.getSwitchState(-1, -256, 27) == 1;
-        }
-
-        public void setAuthComplete() {
-            synchronized (CoverStateManager.this.mLock) {
-                if (!CoverStateManager.this.mAuthComplete) {
-                    CoverStateManager.this.mAuthComplete = true;
-                    if (!CoverStateManager.this.initializeCoverState()) {
-                        CoverStateManager.this.mStateManager.notifyScheduleUpdateDesktopMode(true);
-                    }
-                }
-            }
-        }
-
-        public void setAuthCompleteAndResetCallbacksReceiver() {
-            setAuthComplete();
-            CoverStateManager.this.mInputManagerService.setDesktopModeServiceCallbacks(null);
-            CoverStateManager.this.mContext.unregisterReceiver(this);
-        }
-
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             if (DesktopModeFeature.DEBUG) {
-                Log.d(CoverStateManager.TAG, "onReceive(), action=" + intent.getAction());
+                Log.d("[DMS]CoverStateManager", "onReceive(), action=" + intent.getAction());
             }
             CoverStateManager.this.mHandler.removeCallbacksAndMessages(null);
-            setAuthCompleteAndResetCallbacksReceiver();
+            setAuthComplete();
+            CoverStateManager coverStateManager = CoverStateManager.this;
+            coverStateManager.mInputManagerService.mDesktopModeServiceCallbacks = null;
+            coverStateManager.mContext.unregisterReceiver(this);
+        }
+
+        public final void setAuthComplete() {
+            synchronized (CoverStateManager.this.mLock) {
+                try {
+                    CoverStateManager coverStateManager = CoverStateManager.this;
+                    if (!coverStateManager.mAuthComplete) {
+                        coverStateManager.mAuthComplete = true;
+                        if (!CoverStateManager.m395$$Nest$minitializeCoverState(coverStateManager)) {
+                            ((StateManager) CoverStateManager.this.mStateManager).notifyScheduleUpdateDesktopMode(true);
+                        }
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
         }
     }
 
+    /* renamed from: -$$Nest$minitializeCoverState, reason: not valid java name */
+    public static boolean m395$$Nest$minitializeCoverState(CoverStateManager coverStateManager) {
+        boolean updateCoverSupportStateLocked;
+        synchronized (coverStateManager.mLock) {
+            try {
+                CoverState coverState = coverStateManager.mCoverManager.getCoverState();
+                if (coverState != null) {
+                    coverStateManager.mCoverState = coverState;
+                }
+                coverStateManager.mDesktopDockConnected = ((StateManager) coverStateManager.mStateManager).getState().mDockState.isDexStation();
+                updateCoverSupportStateLocked = coverStateManager.updateCoverSupportStateLocked();
+                coverStateManager.mCoverManager.registerListener(coverStateManager.mCoverStateListener);
+                ((StateManager) coverStateManager.mStateManager).registerListener(coverStateManager.mStateListener);
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return updateCoverSupportStateLocked;
+    }
+
+    /* JADX WARN: Type inference failed for: r1v1, types: [com.android.server.desktopmode.CoverStateManager$1] */
+    /* JADX WARN: Type inference failed for: r1v2, types: [com.android.server.desktopmode.CoverStateManager$2] */
+    /* JADX WARN: Type inference failed for: r1v3, types: [com.android.server.desktopmode.CoverStateManager$3] */
     public CoverStateManager(Context context, IStateManager iStateManager, SemDesktopModeManager semDesktopModeManager, PowerManager powerManager, InputManagerService inputManagerService) {
+        InputManagerService inputManagerService2;
         this.mContext = context;
         this.mStateManager = iStateManager;
         this.mCoverManager = new CoverManager(context);
         this.mManager = semDesktopModeManager;
-        new Authenticator().initialize();
+        Handler handler = new Handler();
+        this.mHandler = handler;
+        final Authenticator authenticator = new Authenticator();
+        if (this.mIsNfcAuthSystemFeatureEnabled && (inputManagerService2 = this.mInputManagerService) != null && inputManagerService2.mNative.getSwitchState(-1, -256, 27) == 1) {
+            context.registerReceiverAsUser(authenticator, UserHandle.ALL, new IntentFilter("com.samsung.android.intent.action.ACCESSORY_AUTHENTICATION_STOPPED"), null, null, 2);
+            InputManagerService inputManagerService3 = this.mInputManagerService;
+            if (inputManagerService3 != null) {
+                inputManagerService3.mDesktopModeServiceCallbacks = authenticator.new AnonymousClass1();
+            }
+            handler.removeCallbacksAndMessages(null);
+            handler.postDelayed(new Runnable() { // from class: com.android.server.desktopmode.CoverStateManager$Authenticator$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    CoverStateManager.Authenticator authenticator2 = CoverStateManager.Authenticator.this;
+                    authenticator2.getClass();
+                    if (DesktopModeFeature.DEBUG) {
+                        Log.d("[DMS]CoverStateManager", "Cover auth timeout, mAuthComplete=" + CoverStateManager.this.mAuthComplete);
+                    }
+                    if (CoverStateManager.this.mAuthComplete) {
+                        return;
+                    }
+                    authenticator2.setAuthComplete();
+                    CoverStateManager coverStateManager = CoverStateManager.this;
+                    coverStateManager.mInputManagerService.mDesktopModeServiceCallbacks = null;
+                    coverStateManager.mContext.unregisterReceiver(authenticator2);
+                }
+            }, 20000L);
+        } else {
+            authenticator.setAuthComplete();
+        }
         this.mPowerManager = powerManager;
         this.mInputManagerService = inputManagerService;
         this.mIsNfcAuthSystemFeatureEnabled = context.getPackageManager().hasSystemFeature("com.sec.feature.nfc_authentication_cover");
     }
 
-    public void initialize() {
-        synchronized (this.mLock) {
-            this.mScreenMirroringDisabled = getSettingMirroringSwitchDisabled();
-            updateCoverSupportStateLocked();
-        }
-    }
-
-    public final boolean initializeCoverState() {
-        boolean updateCoverSupportStateLocked;
-        synchronized (this.mLock) {
-            CoverState coverState = this.mCoverManager.getCoverState();
-            if (coverState != null) {
-                this.mCoverState = coverState;
-            }
-            this.mDesktopDockConnected = this.mStateManager.getState().getDockState().isDexStation();
-            updateCoverSupportStateLocked = updateCoverSupportStateLocked();
-            this.mCoverManager.registerListener(this.mCoverStateListener);
-            this.mStateManager.registerListener(this.mStateListener);
-        }
-        return updateCoverSupportStateLocked;
-    }
-
-    public final boolean updateCoverSupportStateLocked() {
-        int i;
-        boolean z;
-        if (this.mAuthComplete) {
-            i = (!this.mCoverState.attached || this.mStateManager.getState().isDexOnPcOrWirelessDexConnected() || DesktopModeFeature.IS_TABLET || !this.mDesktopDockConnected || this.mCoverState.switchState) ? 1 : 2;
-        } else {
-            i = 3;
-        }
-        if (this.mCoverSupportState != i) {
-            this.mCoverSupportState = i;
-            if (i == 3) {
-                this.mManager.registerBlocker(this.mBlocker);
-            } else {
-                this.mManager.unregisterBlocker(this.mBlocker);
-            }
-            this.mStateManager.setCoverState(this.mCoverState, this.mCoverSupportState);
-            z = true;
-        } else {
-            z = false;
-        }
-        if (this.mDesktopDockConnected && this.mCoverSupportState == 2) {
-            setMirroringSwitchDisabled(true);
-        } else if (this.mScreenMirroringDisabled) {
-            setMirroringSwitchDisabled(false);
-        }
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "updateCoverSupportState(), mCoverSupportState=" + coverSupportStateToString(this.mCoverSupportState) + ", mCoverState=" + this.mCoverState + ", mAuthComplete=" + this.mAuthComplete + ", mDesktopDockConnected=" + this.mDesktopDockConnected);
-        }
-        return z;
-    }
-
-    public final void setMirroringSwitchDisabled(boolean z) {
-        this.mScreenMirroringDisabled = z;
-        DesktopModeSettings.setSettings(this.mContext.getContentResolver(), "mirroring_switch_disabled", z);
-    }
-
-    public final boolean getSettingMirroringSwitchDisabled() {
-        return DesktopModeSettings.getSettings(this.mContext.getContentResolver(), "mirroring_switch_disabled", false);
-    }
-
-    public void disableCoverManager(boolean z) {
-        synchronized (this.mLock) {
-            if (this.mCoverManagerDisabled != z) {
-                if (DesktopModeFeature.DEBUG) {
-                    Log.d(TAG, "disableCoverManager()=" + this.mCoverManagerDisabled + " -> " + z);
-                }
-                this.mCoverManagerDisabled = z;
-                this.mCoverManager.disableCoverManager(z);
-                if (!z) {
-                    this.mCoverState = this.mCoverManager.getCoverState();
-                }
-            }
-        }
-    }
-
-    public final void goToSleep() {
-        this.mPowerManager.goToSleep(SystemClock.uptimeMillis());
-    }
-
-    public boolean goToSleepIfFlipTypeCoverClosed() {
-        CoverState coverState = this.mCoverState;
-        if (DesktopModeFeature.DEBUG) {
-            Log.d(TAG, "goToSleepIfFlipTypeCoverClosed(), coverState=" + coverState);
-        }
-        if (!coverState.attached || !isFlipTypeCover(coverState) || isCoverUiTypeCover(coverState) || coverState.switchState) {
-            return false;
-        }
-        goToSleep();
-        return true;
+    public static String coverSupportStateToString(int i) {
+        return i != 1 ? i != 2 ? i != 3 ? VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Unknown=") : "COVER_SUPPORT_STATE_NONE" : "COVER_SUPPORT_STATE_PARTIAL" : "COVER_SUPPORT_STATE_FULL";
     }
 
     public static boolean isFlipTypeCover(CoverState coverState) {
@@ -276,31 +214,27 @@ public class CoverStateManager {
         return i == 7 || i == 0 || i == 11 || i == 8 || i == 15 || i == 1 || i == 3 || i == 6 || coverState.friendsType == 2;
     }
 
-    public static boolean isCoverUiTypeCover(CoverState coverState) {
-        int i = coverState.type;
-        return i == 1 || i == 3 || i == 6 || i == 8 || i == 15;
+    public final void disableCoverManager(boolean z) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mCoverManagerDisabled != z) {
+                    if (DesktopModeFeature.DEBUG) {
+                        Log.d("[DMS]CoverStateManager", "disableCoverManager()=" + this.mCoverManagerDisabled + " -> " + z);
+                    }
+                    this.mCoverManagerDisabled = z;
+                    this.mCoverManager.disableCoverManager(z);
+                    if (!z) {
+                        this.mCoverState = this.mCoverManager.getCoverState();
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
-    public boolean isFlipTypeCoverClosed() {
-        CoverState coverState = this.mCoverManager.getCoverState();
-        return coverState != null && coverState.getAttachState() && isFlipTypeCover(coverState) && !coverState.getSwitchState();
-    }
-
-    public static String coverSupportStateToString(int i) {
-        if (i == 1) {
-            return "COVER_SUPPORT_STATE_FULL";
-        }
-        if (i == 2) {
-            return "COVER_SUPPORT_STATE_PARTIAL";
-        }
-        if (i == 3) {
-            return "COVER_SUPPORT_STATE_NONE";
-        }
-        return "Unknown=" + i;
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.println("Current " + CoverStateManager.class.getSimpleName() + " state:");
+    public final void dump(IndentingPrintWriter indentingPrintWriter) {
+        indentingPrintWriter.println("Current CoverStateManager state:");
         indentingPrintWriter.increaseIndent();
         synchronized (this.mLock) {
             indentingPrintWriter.println("mAuthComplete=" + this.mAuthComplete);
@@ -312,5 +246,57 @@ public class CoverStateManager {
             indentingPrintWriter.println("mIsNfcAuthSystemFeatureEnabled=" + this.mIsNfcAuthSystemFeatureEnabled);
         }
         indentingPrintWriter.decreaseIndent();
+    }
+
+    public final boolean updateCoverSupportStateLocked() {
+        boolean z;
+        boolean z2;
+        int i = !this.mAuthComplete ? 3 : (!this.mCoverState.attached || ((StateManager) this.mStateManager).getState().isDexOnPcOrWirelessDexConnected() || DesktopModeFeature.IS_TABLET || !this.mDesktopDockConnected || this.mCoverState.switchState) ? 1 : 2;
+        if (this.mCoverSupportState != i) {
+            this.mCoverSupportState = i;
+            if (i == 3) {
+                this.mManager.registerBlocker(this.mBlocker);
+            } else {
+                this.mManager.unregisterBlocker(this.mBlocker);
+            }
+            IStateManager iStateManager = this.mStateManager;
+            CoverState coverState = this.mCoverState;
+            int i2 = this.mCoverSupportState;
+            StateManager stateManager = (StateManager) iStateManager;
+            stateManager.getClass();
+            if (DesktopModeFeature.DEBUG) {
+                Log.d("[DMS]StateManager", "setCoverState(coverState=" + coverState + ", coverSupportState=" + i2 + ")");
+            }
+            synchronized (stateManager.mLock) {
+                try {
+                    if (stateManager.mInternalState.mCoverSupportState != i2) {
+                        stateManager.mInternalState.mCoverSupportState = i2;
+                        z2 = true;
+                    } else {
+                        z2 = false;
+                    }
+                    stateManager.mInternalState.mCoverState = coverState;
+                    StateManager.InternalState copyInternalStateLocked = stateManager.copyInternalStateLocked(stateManager.mInternalState);
+                    if (z2) {
+                        stateManager.mHandler.post(new StateManager$$ExternalSyntheticLambda2(stateManager, copyInternalStateLocked, 2));
+                    }
+                } finally {
+                }
+            }
+            z = true;
+        } else {
+            z = false;
+        }
+        if (this.mDesktopDockConnected && this.mCoverSupportState == 2) {
+            this.mScreenMirroringDisabled = true;
+            DesktopModeSettings.setSettings(this.mContext.getContentResolver(), "mirroring_switch_disabled", true);
+        } else if (this.mScreenMirroringDisabled) {
+            this.mScreenMirroringDisabled = false;
+            DesktopModeSettings.setSettings(this.mContext.getContentResolver(), "mirroring_switch_disabled", false);
+        }
+        if (DesktopModeFeature.DEBUG) {
+            Log.d("[DMS]CoverStateManager", "updateCoverSupportState(), mCoverSupportState=" + coverSupportStateToString(this.mCoverSupportState) + ", mCoverState=" + this.mCoverState + ", mAuthComplete=" + this.mAuthComplete + ", mDesktopDockConnected=" + this.mDesktopDockConnected);
+        }
+        return z;
     }
 }

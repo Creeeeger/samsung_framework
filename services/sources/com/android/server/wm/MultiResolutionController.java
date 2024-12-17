@@ -1,6 +1,5 @@
 package com.android.server.wm;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Binder;
@@ -9,62 +8,25 @@ import android.os.Debug;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Slog;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AbstractAccessibilityServiceConnection$$ExternalSyntheticOutline0;
 import com.samsung.android.rune.CoreRune;
 import com.samsung.android.view.MultiResolutionChangeRequestInfo;
-import java.io.PrintWriter;
-import java.util.Arrays;
 
-/* loaded from: classes3.dex */
-public class MultiResolutionController {
-    public Context mContext;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class MultiResolutionController {
+    public final Context mContext;
     public String mDisplaySizeDensityChangedReason;
-    public String mReasonForMigrationDensity;
-    public WindowManagerService mService;
+    public final WindowManagerService mService;
     public final Point mTmpDisplaySize = new Point();
-    public final String DENSITY_MIGRATION_FOR_TAB_S9_ULTRA = "density_migration_for_tabs_nine_ultra";
 
-    public int getValidValue(int i, int i2) {
-        return i < 0 ? i2 : i;
-    }
-
-    public MultiResolutionController(WindowManagerService windowManagerService, Context context) {
+    public MultiResolutionController(Context context, WindowManagerService windowManagerService) {
         this.mService = windowManagerService;
         this.mContext = context;
-        if (CoreRune.FW_MIGRATION_DENSITY_FOR_TAB_S9_ULTRA) {
-            if (Settings.Secure.getInt(context.getContentResolver(), "density_migration_for_tabs_nine_ultra", 0) == 1) {
-                return;
-            }
-            migrationDensityForTabS9Ultra();
-        }
     }
 
-    public void getForcedDisplaySize(Point point) {
-        int indexOf;
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                String string = Settings.Global.getString(this.mContext.getContentResolver(), "display_size_forced");
-                if (string != null && string.length() > 0 && (indexOf = string.indexOf(44)) > 0 && string.lastIndexOf(44) == indexOf) {
-                    try {
-                        point.set(Integer.parseInt(string.substring(0, indexOf)), Integer.parseInt(string.substring(indexOf + 1)));
-                        WindowManagerService.resetPriorityAfterLockedSection();
-                        return;
-                    } catch (NumberFormatException e) {
-                        Slog.e("MultiResolutionController", "NumberFormatException", e);
-                    }
-                }
-                DisplayContent defaultDisplayContentLocked = this.mService.getDefaultDisplayContentLocked();
-                point.set(defaultDisplayContentLocked.mInitialDisplayWidth, defaultDisplayContentLocked.mInitialDisplayHeight);
-                WindowManagerService.resetPriorityAfterLockedSection();
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-    }
-
-    public int getForcedDisplayDensity() {
+    public final int getForcedDisplayDensity() {
         WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
@@ -89,52 +51,37 @@ public class MultiResolutionController {
         }
     }
 
-    public void clearForcedDisplaySizeDensity(int i) {
-        if (this.mContext.checkCallingOrSelfPermission("android.permission.WRITE_SECURE_SETTINGS") != 0) {
-            throw new SecurityException("Must hold permission android.permission.WRITE_SECURE_SETTINGS");
-        }
-        if (i != 0) {
-            throw new IllegalArgumentException("input illegalArgument(displayId=" + i + ")");
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
-            WindowManagerService.boostPriorityForLockedSection();
-            synchronized (windowManagerGlobalLock) {
-                try {
-                    DisplayContent displayContent = this.mService.mRoot.getDisplayContent(i);
-                    if (displayContent != null) {
-                        getForcedDisplaySize(this.mTmpDisplaySize);
-                        Point point = this.mTmpDisplaySize;
-                        displayContent.setForcedSizeDensity(point.x, point.y, getForcedDisplayDensity(), false, false, 0);
+    public final void getForcedDisplaySize(Point point) {
+        int indexOf;
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                String string = Settings.Global.getString(this.mContext.getContentResolver(), "display_size_forced");
+                if (!TextUtils.isEmpty(string) && (indexOf = string.indexOf(44)) > 0 && string.lastIndexOf(44) == indexOf) {
+                    try {
+                        point.set(Integer.parseInt(string.substring(0, indexOf)), Integer.parseInt(string.substring(indexOf + 1)));
+                        WindowManagerService.resetPriorityAfterLockedSection();
+                        return;
+                    } catch (NumberFormatException e) {
+                        Slog.e("MultiResolutionController", "NumberFormatException ", e);
                     }
-                } catch (Throwable th) {
-                    WindowManagerService.resetPriorityAfterLockedSection();
-                    throw th;
                 }
+                DisplayContent defaultDisplayContentLocked = this.mService.getDefaultDisplayContentLocked();
+                if (defaultDisplayContentLocked == null) {
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                } else {
+                    point.set(defaultDisplayContentLocked.mInitialDisplayWidth, defaultDisplayContentLocked.mInitialDisplayHeight);
+                    WindowManagerService.resetPriorityAfterLockedSection();
+                }
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
             }
-            WindowManagerService.resetPriorityAfterLockedSection();
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            updateDisplaySizeDensityChangedReason(i, -1, -1, -1, -1, false, null);
         }
     }
 
-    public void setForcedDisplaySizeDensity(MultiResolutionChangeRequestInfo multiResolutionChangeRequestInfo) {
-        checkMultiResolutionChangePermission(multiResolutionChangeRequestInfo);
-        int width = multiResolutionChangeRequestInfo.getWidth();
-        int height = multiResolutionChangeRequestInfo.getHeight();
-        int density = multiResolutionChangeRequestInfo.getDensity();
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            setForcedDisplaySizeDensityInner(multiResolutionChangeRequestInfo);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            updateDisplaySizeDensityChangedReason(multiResolutionChangeRequestInfo.getDisplayId(), -1, width, height, density, multiResolutionChangeRequestInfo.getSaveToSettings(), multiResolutionChangeRequestInfo.getCallerInfo());
-        }
-    }
-
-    public void setForcedDisplaySizeDensityInner(MultiResolutionChangeRequestInfo multiResolutionChangeRequestInfo) {
+    public final void setForcedDisplaySizeDensityInner(MultiResolutionChangeRequestInfo multiResolutionChangeRequestInfo) {
         WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
@@ -143,13 +90,26 @@ public class MultiResolutionController {
                 if (displayContent != null) {
                     boolean z = multiResolutionChangeRequestInfo.getSaveToSettings() && multiResolutionChangeRequestInfo.getWidth() >= 0 && multiResolutionChangeRequestInfo.getHeight() >= 0;
                     boolean z2 = multiResolutionChangeRequestInfo.getSaveToSettings() && multiResolutionChangeRequestInfo.getDensity() >= 0;
-                    int validValue = getValidValue(multiResolutionChangeRequestInfo.getWidth(), displayContent.mBaseDisplayWidth);
-                    int validValue2 = getValidValue(multiResolutionChangeRequestInfo.getHeight(), displayContent.mBaseDisplayHeight);
-                    int validValue3 = getValidValue(multiResolutionChangeRequestInfo.getDensity(), displayContent.mBaseDisplayDensity);
+                    int width = multiResolutionChangeRequestInfo.getWidth();
+                    int i = displayContent.mBaseDisplayWidth;
+                    if (width < 0) {
+                        width = i;
+                    }
+                    int height = multiResolutionChangeRequestInfo.getHeight();
+                    int i2 = height < 0 ? displayContent.mBaseDisplayHeight : height;
+                    int density = multiResolutionChangeRequestInfo.getDensity();
+                    int i3 = density < 0 ? displayContent.mBaseDisplayDensity : density;
                     if (multiResolutionChangeRequestInfo.getWidth() < 0) {
                         multiResolutionChangeRequestInfo.getHeight();
                     }
-                    displayContent.setForcedSizeDensity(validValue, validValue2, validValue3, z, z2, multiResolutionChangeRequestInfo.getForcedHideCutout());
+                    displayContent.setForcedSizeDensity(width, i2, i3, z, multiResolutionChangeRequestInfo.getForcedHideCutout(), z2);
+                    if (CoreRune.FW_FLEXIBLE_TABLE_MODE) {
+                        if (Math.abs((Math.max(width, i2) / Math.min(width, i2)) - 1.7777778f) <= 0.001f) {
+                            this.mService.setTableModeEnabled(false);
+                        } else {
+                            this.mService.setTableModeEnabled(true);
+                        }
+                    }
                 }
             } catch (Throwable th) {
                 WindowManagerService.resetPriorityAfterLockedSection();
@@ -159,17 +119,34 @@ public class MultiResolutionController {
         WindowManagerService.resetPriorityAfterLockedSection();
     }
 
-    public String getDisplaySizeDensityChangedReason() {
-        return this.mDisplaySizeDensityChangedReason;
+    public final void updateDefaultDisplaySizeDensityChangedReason(String str) {
+        this.mDisplaySizeDensityChangedReason = str;
+        StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, " [");
+        m.append(Build.VERSION.INCREMENTAL);
+        m.append("]");
+        WindowManagerServiceExt.logCriticalInfo(m.toString(), null);
     }
 
-    public void updateDisplaySizeDensityChangedReason(int i, int i2, int i3, int i4, int i5, boolean z, String str) {
-        StringBuilder sb = new StringBuilder();
+    public final void updateDisplaySizeDensityChangedReason(int i, int i2, int i3, String str, int i4, int i5, boolean z) {
+        String str2;
+        StringBuilder sb = new StringBuilder("Pid=");
         int callingPid = Binder.getCallingPid();
-        sb.append("Pid=");
         sb.append(callingPid);
         sb.append(", ProcessName=");
-        sb.append(this.mService.mExt.getProcessName(callingPid));
+        WindowManagerServiceExt windowManagerServiceExt = this.mService.mExt;
+        WindowManagerGlobalLock windowManagerGlobalLock = windowManagerServiceExt.mService.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                WindowProcessController process = windowManagerServiceExt.mService.mAtmService.mProcessMap.getProcess(callingPid);
+                str2 = process != null ? process.mName : null;
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
+        sb.append(str2);
         sb.append(", displayId=");
         sb.append(i);
         if (i2 != -1) {
@@ -177,10 +154,7 @@ public class MultiResolutionController {
             sb.append(i2);
         }
         if (i3 != -1 && i4 != -1) {
-            sb.append(", Size=");
-            sb.append(i3);
-            sb.append("x");
-            sb.append(i4);
+            AbstractAccessibilityServiceConnection$$ExternalSyntheticOutline0.m(i3, i4, ", Size=", "x", sb);
         }
         if (i5 != -1) {
             sb.append(", Density=");
@@ -200,83 +174,5 @@ public class MultiResolutionController {
             updateDefaultDisplaySizeDensityChangedReason(sb2);
         }
         Slog.i("MultiResolutionController", "updateDisplaySizeDensityChangedReason: " + sb2);
-    }
-
-    public void checkMultiResolutionChangePermission(MultiResolutionChangeRequestInfo multiResolutionChangeRequestInfo) {
-        if (this.mContext.checkCallingOrSelfPermission("android.permission.WRITE_SECURE_SETTINGS") != 0) {
-            throw new SecurityException("Must hold permission android.permission.WRITE_SECURE_SETTINGS");
-        }
-        if (multiResolutionChangeRequestInfo.getDisplayId() == 0) {
-            return;
-        }
-        throw new IllegalArgumentException("input illegalArgument(displayId=" + multiResolutionChangeRequestInfo.getDisplayId() + ")");
-    }
-
-    public void updateDefaultDisplaySizeDensityChangedReason(String str) {
-        this.mDisplaySizeDensityChangedReason = str;
-        WindowManagerServiceExt.logCriticalInfo(str + " [" + Build.VERSION.INCREMENTAL + "]");
-    }
-
-    public void dumpLocked(String str, PrintWriter printWriter) {
-        if (this.mDisplaySizeDensityChangedReason != null) {
-            printWriter.print(str);
-            printWriter.print("mDisplaySizeDensityChangedReason: ");
-            printWriter.println(this.mDisplaySizeDensityChangedReason);
-            printWriter.println();
-        }
-        if (!CoreRune.FW_MIGRATION_DENSITY_FOR_TAB_S9_ULTRA || TextUtils.isEmpty(this.mReasonForMigrationDensity)) {
-            return;
-        }
-        printWriter.print(str);
-        printWriter.println("mReasonForMigrationDensity=" + this.mReasonForMigrationDensity);
-    }
-
-    public final boolean hasSupportDensity(int i, int[] iArr) {
-        for (int i2 : iArr) {
-            if (i2 == i) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final void migrationDensityForTabS9Ultra() {
-        int[] intArray = this.mContext.getResources().getIntArray(17236455);
-        Slog.d("MultiResolutionController", "densityValues=" + Arrays.toString(intArray));
-        if (intArray.length <= 0) {
-            Slog.d("MultiResolutionController", "No need migration density. density array is empty");
-            this.mReasonForMigrationDensity = "No need migration density. density array is empty";
-            return;
-        }
-        ContentResolver contentResolver = this.mContext.getContentResolver();
-        String stringForUser = Settings.Secure.getStringForUser(contentResolver, "display_density_forced", 0);
-        if (TextUtils.isEmpty(stringForUser)) {
-            Slog.d("MultiResolutionController", "Density is not set from user. Use lcd_density.");
-            this.mReasonForMigrationDensity = "Density is not set from user. " + stringForUser;
-            return;
-        }
-        int parseInt = Integer.parseInt(stringForUser);
-        if (hasSupportDensity(parseInt, intArray)) {
-            Slog.d("MultiResolutionController", "Density value is normal. currentDensity=" + parseInt);
-            this.mReasonForMigrationDensity = "Density value is normal. " + parseInt;
-            return;
-        }
-        try {
-            int i = intArray[0];
-            int abs = Math.abs(parseInt - i);
-            for (int i2 = 1; i2 < intArray.length; i2++) {
-                int abs2 = Math.abs(parseInt - intArray[i2]);
-                if (abs > abs2) {
-                    i = intArray[i2];
-                    abs = abs2;
-                }
-            }
-            Settings.Secure.putStringForUser(contentResolver, "display_density_forced", Integer.toString(i), 0);
-            Slog.d("MultiResolutionController", "Set density to " + i);
-            this.mReasonForMigrationDensity = "Set density to " + i;
-            Settings.Secure.putInt(contentResolver, "density_migration_for_tabs_nine_ultra", 1);
-        } catch (NumberFormatException unused) {
-            Slog.d("MultiResolutionController", "parseInt API occurs NumberFormatException now.");
-        }
     }
 }

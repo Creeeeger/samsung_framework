@@ -14,7 +14,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class ListenerMultiplexer {
     public Object mMerged;
     public final Object mMultiplexerLock = new Object();
@@ -24,434 +25,219 @@ public abstract class ListenerMultiplexer {
     public int mActiveRegistrationsCount = 0;
     public boolean mServiceRegistered = false;
 
-    public abstract boolean isActive(ListenerRegistration listenerRegistration);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ReentrancyGuard implements AutoCloseable {
+        public int mGuardCount = 0;
+        public ArraySet mScheduledRemovals = null;
 
-    public abstract Object mergeRegistrations(Collection collection);
-
-    public void onActive() {
-    }
-
-    public void onInactive() {
-    }
-
-    public void onRegister() {
-    }
-
-    public void onRegistrationAdded(Object obj, ListenerRegistration listenerRegistration) {
-    }
-
-    public void onRegistrationRemoved(Object obj, ListenerRegistration listenerRegistration) {
-    }
-
-    public void onTransferUnregisteredRegistration(ListenerRegistration listenerRegistration) {
-    }
-
-    public void onUnregister() {
-    }
-
-    public abstract boolean registerWithService(Object obj, Collection collection);
-
-    public abstract void unregisterWithService();
-
-    public boolean reregisterWithService(Object obj, Object obj2, Collection collection) {
-        return registerWithService(obj2, collection);
-    }
-
-    public void onRegistrationReplaced(Object obj, ListenerRegistration listenerRegistration, Object obj2, ListenerRegistration listenerRegistration2) {
-        onRegistrationRemoved(obj, listenerRegistration);
-        onRegistrationAdded(obj2, listenerRegistration2);
-    }
-
-    public final void putRegistration(Object obj, ListenerRegistration listenerRegistration) {
-        replaceRegistration(obj, obj, listenerRegistration);
-    }
-
-    public boolean isRegistrationEmpty() {
-        boolean isEmpty;
-        synchronized (this.mMultiplexerLock) {
-            isEmpty = this.mRegistrations.isEmpty();
+        public ReentrancyGuard() {
         }
-        return isEmpty;
-    }
 
-    public int getRegistrationCountWith(Predicate predicate) {
-        int i;
-        synchronized (this.mMultiplexerLock) {
-            int size = this.mRegistrations.size();
-            i = 0;
-            for (int i2 = 0; i2 < size; i2++) {
-                if (predicate.test((ListenerRegistration) this.mRegistrations.valueAt(i2))) {
-                    i++;
-                }
+        public final void acquire() {
+            synchronized (ListenerMultiplexer.this.mMultiplexerLock) {
+                this.mGuardCount++;
             }
         }
-        return i;
-    }
 
-    public final void replaceRegistration(Object obj, Object obj2, ListenerRegistration listenerRegistration) {
-        ListenerRegistration listenerRegistration2;
-        Objects.requireNonNull(obj);
-        Objects.requireNonNull(obj2);
-        Objects.requireNonNull(listenerRegistration);
-        synchronized (this.mMultiplexerLock) {
-            boolean z = true;
-            Preconditions.checkState(!this.mReentrancyGuard.isReentrant());
-            if (obj != obj2 && this.mRegistrations.containsKey(obj2)) {
-                z = false;
-            }
-            Preconditions.checkArgument(z);
-            UpdateServiceBuffer acquire = this.mUpdateServiceBuffer.acquire();
-            try {
-                ReentrancyGuard acquire2 = this.mReentrancyGuard.acquire();
+        @Override // java.lang.AutoCloseable
+        public final void close() {
+            synchronized (ListenerMultiplexer.this.mMultiplexerLock) {
                 try {
-                    boolean isEmpty = this.mRegistrations.isEmpty();
-                    int indexOfKey = this.mRegistrations.indexOfKey(obj);
-                    if (indexOfKey >= 0) {
-                        listenerRegistration2 = (ListenerRegistration) this.mRegistrations.valueAt(indexOfKey);
-                        unregister(listenerRegistration2);
-                        listenerRegistration2.onUnregister();
-                        if (obj != obj2) {
-                            this.mRegistrations.removeAt(indexOfKey);
+                    Preconditions.checkState(this.mGuardCount > 0);
+                    int i = this.mGuardCount - 1;
+                    this.mGuardCount = i;
+                    ArraySet arraySet = null;
+                    if (i == 0) {
+                        ArraySet arraySet2 = this.mScheduledRemovals;
+                        this.mScheduledRemovals = null;
+                        arraySet = arraySet2;
+                    }
+                    if (arraySet == null) {
+                        return;
+                    }
+                    UpdateServiceBuffer updateServiceBuffer = ListenerMultiplexer.this.mUpdateServiceBuffer;
+                    updateServiceBuffer.acquire();
+                    try {
+                        int size = arraySet.size();
+                        for (int i2 = 0; i2 < size; i2++) {
+                            Map.Entry entry = (Map.Entry) arraySet.valueAt(i2);
+                            ListenerMultiplexer.this.removeRegistration(entry.getKey(), (RemovableListenerRegistration) entry.getValue());
                         }
-                    } else {
-                        listenerRegistration2 = null;
+                        updateServiceBuffer.close();
+                    } finally {
                     }
-                    if (obj == obj2 && indexOfKey >= 0) {
-                        this.mRegistrations.setValueAt(indexOfKey, listenerRegistration);
-                    } else {
-                        this.mRegistrations.put(obj2, listenerRegistration);
-                    }
-                    if (isEmpty) {
-                        onRegister();
-                    }
-                    listenerRegistration.onRegister(obj2);
-                    if (listenerRegistration2 == null) {
-                        onRegistrationAdded(obj2, listenerRegistration);
-                    } else {
-                        onRegistrationReplaced(obj, listenerRegistration2, obj2, listenerRegistration);
-                    }
-                    onRegistrationActiveChanged(listenerRegistration);
-                    if (acquire2 != null) {
-                        acquire2.close();
-                    }
-                    if (acquire != null) {
-                        acquire.close();
-                    }
-                } finally {
+                } catch (Throwable th) {
+                    throw th;
                 }
-            } finally {
             }
         }
-    }
 
-    public final void removeRegistrationIf(Predicate predicate) {
-        synchronized (this.mMultiplexerLock) {
-            Preconditions.checkState(!this.mReentrancyGuard.isReentrant());
-            UpdateServiceBuffer acquire = this.mUpdateServiceBuffer.acquire();
-            try {
-                ReentrancyGuard acquire2 = this.mReentrancyGuard.acquire();
+        public final boolean isReentrant() {
+            boolean z;
+            synchronized (ListenerMultiplexer.this.mMultiplexerLock) {
+                z = this.mGuardCount != 0;
+            }
+            return z;
+        }
+
+        public final void markForRemoval(Object obj, RemovableListenerRegistration removableListenerRegistration) {
+            synchronized (ListenerMultiplexer.this.mMultiplexerLock) {
                 try {
-                    int size = this.mRegistrations.size();
-                    for (int i = 0; i < size; i++) {
-                        Object keyAt = this.mRegistrations.keyAt(i);
-                        if (predicate.test(keyAt)) {
-                            removeRegistration(keyAt, (ListenerRegistration) this.mRegistrations.valueAt(i));
-                        }
+                    Preconditions.checkState(isReentrant());
+                    if (this.mScheduledRemovals == null) {
+                        this.mScheduledRemovals = new ArraySet(ListenerMultiplexer.this.mRegistrations.size());
                     }
-                    if (acquire2 != null) {
-                        acquire2.close();
-                    }
-                    if (acquire != null) {
-                        acquire.close();
-                    }
-                } finally {
+                    this.mScheduledRemovals.add(new AbstractMap.SimpleImmutableEntry(obj, removableListenerRegistration));
+                } catch (Throwable th) {
+                    throw th;
                 }
-            } finally {
             }
         }
     }
 
-    public final void removeRegistration(Object obj) {
-        synchronized (this.mMultiplexerLock) {
-            Preconditions.checkState(!this.mReentrancyGuard.isReentrant());
-            int indexOfKey = this.mRegistrations.indexOfKey(obj);
-            if (indexOfKey < 0) {
-                return;
-            }
-            removeRegistration(indexOfKey);
-        }
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UpdateServiceBuffer implements AutoCloseable {
+        public int mBufferCount = 0;
+        public boolean mUpdateServiceRequired = false;
 
-    public final void removeRegistration(Object obj, ListenerRegistration listenerRegistration) {
-        synchronized (this.mMultiplexerLock) {
-            int indexOfKey = this.mRegistrations.indexOfKey(obj);
-            if (indexOfKey < 0) {
-                return;
-            }
-            ListenerRegistration listenerRegistration2 = (ListenerRegistration) this.mRegistrations.valueAt(indexOfKey);
-            if (listenerRegistration2 != listenerRegistration) {
-                return;
-            }
-            if (this.mReentrancyGuard.isReentrant()) {
-                unregister(listenerRegistration2);
-                this.mReentrancyGuard.markForRemoval(obj, listenerRegistration2);
-            } else {
-                removeRegistration(indexOfKey);
-            }
+        public UpdateServiceBuffer() {
         }
-    }
 
-    public final void removeRegistration(int i) {
-        Object keyAt = this.mRegistrations.keyAt(i);
-        ListenerRegistration listenerRegistration = (ListenerRegistration) this.mRegistrations.valueAt(i);
-        UpdateServiceBuffer acquire = this.mUpdateServiceBuffer.acquire();
-        try {
-            ReentrancyGuard acquire2 = this.mReentrancyGuard.acquire();
-            try {
-                unregister(listenerRegistration);
-                onRegistrationRemoved(keyAt, listenerRegistration);
-                listenerRegistration.onUnregister();
-                this.mRegistrations.removeAt(i);
-                if (this.mRegistrations.isEmpty()) {
-                    onUnregister();
-                }
-                if (acquire2 != null) {
-                    acquire2.close();
-                }
-                if (acquire != null) {
-                    acquire.close();
-                }
-            } finally {
-            }
-        } catch (Throwable th) {
-            if (acquire != null) {
+        public final synchronized void acquire() {
+            this.mBufferCount++;
+        }
+
+        @Override // java.lang.AutoCloseable
+        public final void close() {
+            boolean z;
+            synchronized (this) {
                 try {
-                    acquire.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
+                    z = false;
+                    Preconditions.checkState(this.mBufferCount > 0);
+                    int i = this.mBufferCount - 1;
+                    this.mBufferCount = i;
+                    if (i == 0) {
+                        boolean z2 = this.mUpdateServiceRequired;
+                        this.mUpdateServiceRequired = false;
+                        z = z2;
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
-            throw th;
-        }
-    }
-
-    public final void updateService() {
-        synchronized (this.mMultiplexerLock) {
-            if (this.mUpdateServiceBuffer.isBuffered()) {
-                this.mUpdateServiceBuffer.markUpdateServiceRequired();
-                return;
-            }
-            int size = this.mRegistrations.size();
-            ArrayList arrayList = new ArrayList(size);
-            for (int i = 0; i < size; i++) {
-                ListenerRegistration listenerRegistration = (ListenerRegistration) this.mRegistrations.valueAt(i);
-                if (listenerRegistration.isActive()) {
-                    arrayList.add(listenerRegistration);
-                }
-            }
-            if (arrayList.isEmpty()) {
-                if (this.mServiceRegistered) {
-                    this.mMerged = null;
-                    this.mServiceRegistered = false;
-                    unregisterWithService();
-                }
-            } else {
-                Object mergeRegistrations = mergeRegistrations(arrayList);
-                if (this.mServiceRegistered) {
-                    if (!Objects.equals(mergeRegistrations, this.mMerged)) {
-                        boolean reregisterWithService = reregisterWithService(this.mMerged, mergeRegistrations, arrayList);
-                        this.mServiceRegistered = reregisterWithService;
-                        this.mMerged = reregisterWithService ? mergeRegistrations : null;
-                    }
-                } else {
-                    boolean registerWithService = registerWithService(mergeRegistrations, arrayList);
-                    this.mServiceRegistered = registerWithService;
-                    this.mMerged = registerWithService ? mergeRegistrations : null;
-                }
-            }
-        }
-    }
-
-    public final void resetService() {
-        synchronized (this.mMultiplexerLock) {
-            if (this.mServiceRegistered) {
-                this.mMerged = null;
-                this.mServiceRegistered = false;
-                unregisterWithService();
-                updateService();
-            }
-        }
-    }
-
-    public final boolean findRegistration(Predicate predicate) {
-        synchronized (this.mMultiplexerLock) {
-            ReentrancyGuard acquire = this.mReentrancyGuard.acquire();
-            try {
-                int size = this.mRegistrations.size();
-                for (int i = 0; i < size; i++) {
-                    if (predicate.test((ListenerRegistration) this.mRegistrations.valueAt(i))) {
-                        if (acquire != null) {
-                            acquire.close();
-                        }
-                        return true;
-                    }
-                }
-                if (acquire != null) {
-                    acquire.close();
-                }
-                return false;
-            } finally {
-            }
-        }
-    }
-
-    public final void updateRegistrations(Predicate predicate) {
-        synchronized (this.mMultiplexerLock) {
-            UpdateServiceBuffer acquire = this.mUpdateServiceBuffer.acquire();
-            try {
-                ReentrancyGuard acquire2 = this.mReentrancyGuard.acquire();
-                try {
-                    int size = this.mRegistrations.size();
-                    for (int i = 0; i < size; i++) {
-                        ListenerRegistration listenerRegistration = (ListenerRegistration) this.mRegistrations.valueAt(i);
-                        if (predicate.test(listenerRegistration)) {
-                            onRegistrationActiveChanged(listenerRegistration);
-                        }
-                    }
-                    if (acquire2 != null) {
-                        acquire2.close();
-                    }
-                    if (acquire != null) {
-                        acquire.close();
-                    }
-                } finally {
-                }
-            } finally {
-            }
-        }
-    }
-
-    public final boolean updateRegistration(Object obj, Predicate predicate) {
-        synchronized (this.mMultiplexerLock) {
-            UpdateServiceBuffer acquire = this.mUpdateServiceBuffer.acquire();
-            try {
-                ReentrancyGuard acquire2 = this.mReentrancyGuard.acquire();
-                try {
-                    int indexOfKey = this.mRegistrations.indexOfKey(obj);
-                    if (indexOfKey < 0) {
-                        if (acquire2 != null) {
-                            acquire2.close();
-                        }
-                        if (acquire != null) {
-                            acquire.close();
-                        }
-                        return false;
-                    }
-                    ListenerRegistration listenerRegistration = (ListenerRegistration) this.mRegistrations.valueAt(indexOfKey);
-                    if (predicate.test(listenerRegistration)) {
-                        onRegistrationActiveChanged(listenerRegistration);
-                    }
-                    if (acquire2 != null) {
-                        acquire2.close();
-                    }
-                    if (acquire != null) {
-                        acquire.close();
-                    }
-                    return true;
-                } finally {
-                }
-            } finally {
-            }
-        }
-    }
-
-    public final void onRegistrationActiveChanged(ListenerRegistration listenerRegistration) {
-        boolean z = listenerRegistration.isRegistered() && isActive(listenerRegistration);
-        if (listenerRegistration.setActive(z)) {
             if (z) {
-                int i = this.mActiveRegistrationsCount + 1;
-                this.mActiveRegistrationsCount = i;
-                if (i == 1) {
-                    onActive();
-                }
-                listenerRegistration.onActive();
-            } else {
-                listenerRegistration.onInactive();
-                int i2 = this.mActiveRegistrationsCount - 1;
-                this.mActiveRegistrationsCount = i2;
-                if (i2 == 0) {
-                    onInactive();
-                }
-            }
-            updateService();
-        }
-    }
-
-    public final void deliverToListeners(Function function) {
-        ListenerExecutor.ListenerOperation listenerOperation;
-        synchronized (this.mMultiplexerLock) {
-            ReentrancyGuard acquire = this.mReentrancyGuard.acquire();
-            try {
-                int size = this.mRegistrations.size();
-                for (int i = 0; i < size; i++) {
-                    ListenerRegistration listenerRegistration = (ListenerRegistration) this.mRegistrations.valueAt(i);
-                    if ((listenerRegistration.isActive() || listenerRegistration.isActiveMotionControl()) && (listenerOperation = (ListenerExecutor.ListenerOperation) function.apply(listenerRegistration)) != null) {
-                        listenerRegistration.executeOperation(listenerOperation);
-                    }
-                }
-                if (acquire != null) {
-                    acquire.close();
-                }
-            } finally {
+                ListenerMultiplexer.this.updateService();
             }
         }
     }
 
     public final void deliverToListeners(ListenerExecutor.ListenerOperation listenerOperation) {
         synchronized (this.mMultiplexerLock) {
-            ReentrancyGuard acquire = this.mReentrancyGuard.acquire();
+            ReentrancyGuard reentrancyGuard = this.mReentrancyGuard;
+            reentrancyGuard.acquire();
             try {
                 int size = this.mRegistrations.size();
                 for (int i = 0; i < size; i++) {
-                    ListenerRegistration listenerRegistration = (ListenerRegistration) this.mRegistrations.valueAt(i);
-                    if (listenerRegistration.isActive() || listenerRegistration.isActiveMotionControl()) {
-                        listenerRegistration.executeOperation(listenerOperation);
+                    RemovableListenerRegistration removableListenerRegistration = (RemovableListenerRegistration) this.mRegistrations.valueAt(i);
+                    if (removableListenerRegistration.mActive || removableListenerRegistration.mActiveMotionControl) {
+                        removableListenerRegistration.executeOperation(listenerOperation);
                     }
                 }
-                if (acquire != null) {
-                    acquire.close();
-                }
+                reentrancyGuard.close();
             } finally {
             }
         }
     }
 
-    public final void unregister(ListenerRegistration listenerRegistration) {
-        listenerRegistration.unregisterInternal();
-        onTransferUnregisteredRegistration(listenerRegistration);
-        onRegistrationActiveChanged(listenerRegistration);
+    public final void deliverToListeners(Function function) {
+        ListenerExecutor.ListenerOperation listenerOperation;
+        synchronized (this.mMultiplexerLock) {
+            ReentrancyGuard reentrancyGuard = this.mReentrancyGuard;
+            reentrancyGuard.acquire();
+            try {
+                int size = this.mRegistrations.size();
+                for (int i = 0; i < size; i++) {
+                    RemovableListenerRegistration removableListenerRegistration = (RemovableListenerRegistration) this.mRegistrations.valueAt(i);
+                    if ((removableListenerRegistration.mActive || removableListenerRegistration.mActiveMotionControl) && (listenerOperation = (ListenerExecutor.ListenerOperation) function.apply(removableListenerRegistration)) != null) {
+                        removableListenerRegistration.executeOperation(listenerOperation);
+                    }
+                }
+                reentrancyGuard.close();
+            } finally {
+            }
+        }
     }
 
     public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
         synchronized (this.mMultiplexerLock) {
-            printWriter.print("service: ");
-            printWriter.print(getServiceState());
-            printWriter.println();
-            if (!this.mRegistrations.isEmpty()) {
-                printWriter.println("listeners:");
-                int size = this.mRegistrations.size();
-                for (int i = 0; i < size; i++) {
-                    ListenerRegistration listenerRegistration = (ListenerRegistration) this.mRegistrations.valueAt(i);
-                    printWriter.print("  ");
-                    printWriter.print(listenerRegistration);
-                    if (!listenerRegistration.isActive()) {
-                        printWriter.println(" (inactive)");
-                    } else {
-                        printWriter.println();
+            try {
+                printWriter.print("service: ");
+                printWriter.print(getServiceState());
+                printWriter.println();
+                if (!this.mRegistrations.isEmpty()) {
+                    printWriter.println("listeners:");
+                    int size = this.mRegistrations.size();
+                    for (int i = 0; i < size; i++) {
+                        RemovableListenerRegistration removableListenerRegistration = (RemovableListenerRegistration) this.mRegistrations.valueAt(i);
+                        printWriter.print("  ");
+                        printWriter.print(removableListenerRegistration);
+                        if (removableListenerRegistration.mActive) {
+                            printWriter.println();
+                        } else {
+                            printWriter.println(" (inactive)");
+                        }
                     }
                 }
+            } catch (Throwable th) {
+                throw th;
             }
         }
+    }
+
+    public final boolean findRegistration(Predicate predicate) {
+        synchronized (this.mMultiplexerLock) {
+            try {
+                ReentrancyGuard reentrancyGuard = this.mReentrancyGuard;
+                reentrancyGuard.acquire();
+                try {
+                    int size = this.mRegistrations.size();
+                    for (int i = 0; i < size; i++) {
+                        if (predicate.test((RemovableListenerRegistration) this.mRegistrations.valueAt(i))) {
+                            reentrancyGuard.close();
+                            return true;
+                        }
+                    }
+                    reentrancyGuard.close();
+                    return false;
+                } finally {
+                    try {
+                        reentrancyGuard.close();
+                    } catch (Throwable th) {
+                        th.addSuppressed(th);
+                    }
+                }
+            } catch (Throwable th2) {
+                throw th2;
+            }
+        }
+    }
+
+    public final int getRegistrationCountWith(Predicate predicate) {
+        int i;
+        synchronized (this.mMultiplexerLock) {
+            try {
+                int size = this.mRegistrations.size();
+                i = 0;
+                for (int i2 = 0; i2 < size; i2++) {
+                    if (predicate.test((RemovableListenerRegistration) this.mRegistrations.valueAt(i2))) {
+                        i++;
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return i;
     }
 
     public String getServiceState() {
@@ -462,108 +248,331 @@ public abstract class ListenerMultiplexer {
         return obj != null ? obj.toString() : "registered";
     }
 
-    /* loaded from: classes2.dex */
-    public final class ReentrancyGuard implements AutoCloseable {
-        public int mGuardCount = 0;
-        public ArraySet mScheduledRemovals = null;
+    public abstract boolean isActive(RemovableListenerRegistration removableListenerRegistration);
 
-        public ReentrancyGuard() {
-        }
+    public abstract Object mergeRegistrations(Collection collection);
 
-        public boolean isReentrant() {
-            boolean z;
-            synchronized (ListenerMultiplexer.this.mMultiplexerLock) {
-                z = this.mGuardCount != 0;
-            }
-            return z;
-        }
+    public void onActive() {
+    }
 
-        public void markForRemoval(Object obj, ListenerRegistration listenerRegistration) {
-            synchronized (ListenerMultiplexer.this.mMultiplexerLock) {
-                Preconditions.checkState(isReentrant());
-                if (this.mScheduledRemovals == null) {
-                    this.mScheduledRemovals = new ArraySet(ListenerMultiplexer.this.mRegistrations.size());
+    public void onHalRestarted() {
+        resetService();
+    }
+
+    public void onInactive() {
+    }
+
+    public void onRegister() {
+    }
+
+    public final void onRegistrationActiveChanged(RemovableListenerRegistration removableListenerRegistration) {
+        boolean z = removableListenerRegistration.mListener != null && isActive(removableListenerRegistration);
+        if (z != removableListenerRegistration.mActive) {
+            removableListenerRegistration.mActive = z;
+            if (z) {
+                int i = this.mActiveRegistrationsCount + 1;
+                this.mActiveRegistrationsCount = i;
+                if (i == 1) {
+                    onActive();
                 }
-                this.mScheduledRemovals.add(new AbstractMap.SimpleImmutableEntry(obj, listenerRegistration));
-            }
-        }
-
-        public ReentrancyGuard acquire() {
-            synchronized (ListenerMultiplexer.this.mMultiplexerLock) {
-                this.mGuardCount++;
-            }
-            return this;
-        }
-
-        @Override // java.lang.AutoCloseable
-        public void close() {
-            synchronized (ListenerMultiplexer.this.mMultiplexerLock) {
-                Preconditions.checkState(this.mGuardCount > 0);
-                int i = this.mGuardCount - 1;
-                this.mGuardCount = i;
-                ArraySet arraySet = null;
-                if (i == 0) {
-                    ArraySet arraySet2 = this.mScheduledRemovals;
-                    this.mScheduledRemovals = null;
-                    arraySet = arraySet2;
+                removableListenerRegistration.onActive();
+            } else {
+                removableListenerRegistration.onInactive();
+                int i2 = this.mActiveRegistrationsCount - 1;
+                this.mActiveRegistrationsCount = i2;
+                if (i2 == 0) {
+                    onInactive();
                 }
-                if (arraySet == null) {
-                    return;
-                }
-                UpdateServiceBuffer acquire = ListenerMultiplexer.this.mUpdateServiceBuffer.acquire();
+            }
+            updateService();
+        }
+    }
+
+    public abstract void onRegistrationAdded(Object obj, RemovableListenerRegistration removableListenerRegistration);
+
+    public abstract void onRegistrationRemoved(Object obj, RemovableListenerRegistration removableListenerRegistration);
+
+    public void onRegistrationReplaced(Object obj, RemovableListenerRegistration removableListenerRegistration, Object obj2, RemovableListenerRegistration removableListenerRegistration2) {
+        onRegistrationRemoved(obj, removableListenerRegistration);
+        onRegistrationAdded(obj2, removableListenerRegistration2);
+    }
+
+    public void onSettingChanged() {
+        updateService();
+    }
+
+    public void onTransferUnregisteredRegistration(RemovableListenerRegistration removableListenerRegistration) {
+    }
+
+    public void onUnregister() {
+    }
+
+    public final void putRegistration(Object obj, RemovableListenerRegistration removableListenerRegistration) {
+        Objects.requireNonNull(obj);
+        Objects.requireNonNull(removableListenerRegistration);
+        synchronized (this.mMultiplexerLock) {
+            Preconditions.checkState(!this.mReentrancyGuard.isReentrant());
+            Preconditions.checkArgument(true);
+            UpdateServiceBuffer updateServiceBuffer = this.mUpdateServiceBuffer;
+            updateServiceBuffer.acquire();
+            try {
+                ReentrancyGuard reentrancyGuard = this.mReentrancyGuard;
+                reentrancyGuard.acquire();
                 try {
-                    int size = arraySet.size();
-                    for (int i2 = 0; i2 < size; i2++) {
-                        Map.Entry entry = (Map.Entry) arraySet.valueAt(i2);
-                        ListenerMultiplexer.this.removeRegistration(entry.getKey(), (ListenerRegistration) entry.getValue());
+                    boolean isEmpty = this.mRegistrations.isEmpty();
+                    int indexOfKey = this.mRegistrations.indexOfKey(obj);
+                    RemovableListenerRegistration removableListenerRegistration2 = null;
+                    if (indexOfKey >= 0) {
+                        RemovableListenerRegistration removableListenerRegistration3 = (RemovableListenerRegistration) this.mRegistrations.valueAt(indexOfKey);
+                        removableListenerRegistration3.mListener = null;
+                        removableListenerRegistration3.onListenerUnregister();
+                        onTransferUnregisteredRegistration(removableListenerRegistration3);
+                        onRegistrationActiveChanged(removableListenerRegistration3);
+                        removableListenerRegistration3.onUnregister();
+                        removableListenerRegistration2 = removableListenerRegistration3;
                     }
-                    if (acquire != null) {
-                        acquire.close();
+                    if (indexOfKey >= 0) {
+                        this.mRegistrations.setValueAt(indexOfKey, removableListenerRegistration);
+                    } else {
+                        this.mRegistrations.put(obj, removableListenerRegistration);
                     }
+                    if (isEmpty) {
+                        onRegister();
+                    }
+                    removableListenerRegistration.mKey = obj;
+                    removableListenerRegistration.onRegister();
+                    if (removableListenerRegistration2 == null) {
+                        onRegistrationAdded(obj, removableListenerRegistration);
+                    } else {
+                        onRegistrationReplaced(obj, removableListenerRegistration2, obj, removableListenerRegistration);
+                    }
+                    onRegistrationActiveChanged(removableListenerRegistration);
+                    reentrancyGuard.close();
+                    updateServiceBuffer.close();
                 } finally {
                 }
+            } finally {
             }
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class UpdateServiceBuffer implements AutoCloseable {
-        public int mBufferCount = 0;
-        public boolean mUpdateServiceRequired = false;
+    public abstract boolean registerWithService(Collection collection, Object obj);
 
-        public UpdateServiceBuffer() {
-        }
-
-        public synchronized boolean isBuffered() {
-            return this.mBufferCount != 0;
-        }
-
-        public synchronized void markUpdateServiceRequired() {
-            Preconditions.checkState(isBuffered());
-            this.mUpdateServiceRequired = true;
-        }
-
-        public synchronized UpdateServiceBuffer acquire() {
-            this.mBufferCount++;
-            return this;
-        }
-
-        @Override // java.lang.AutoCloseable
-        public void close() {
-            boolean z;
-            synchronized (this) {
-                z = false;
-                Preconditions.checkState(this.mBufferCount > 0);
-                int i = this.mBufferCount - 1;
-                this.mBufferCount = i;
-                if (i == 0) {
-                    boolean z2 = this.mUpdateServiceRequired;
-                    this.mUpdateServiceRequired = false;
-                    z = z2;
+    public final void removeRegistration(int i) {
+        Object keyAt = this.mRegistrations.keyAt(i);
+        RemovableListenerRegistration removableListenerRegistration = (RemovableListenerRegistration) this.mRegistrations.valueAt(i);
+        UpdateServiceBuffer updateServiceBuffer = this.mUpdateServiceBuffer;
+        updateServiceBuffer.acquire();
+        try {
+            ReentrancyGuard reentrancyGuard = this.mReentrancyGuard;
+            reentrancyGuard.acquire();
+            try {
+                removableListenerRegistration.mListener = null;
+                removableListenerRegistration.onListenerUnregister();
+                onTransferUnregisteredRegistration(removableListenerRegistration);
+                onRegistrationActiveChanged(removableListenerRegistration);
+                onRegistrationRemoved(keyAt, removableListenerRegistration);
+                removableListenerRegistration.onUnregister();
+                this.mRegistrations.removeAt(i);
+                if (this.mRegistrations.isEmpty()) {
+                    onUnregister();
                 }
+                reentrancyGuard.close();
+                updateServiceBuffer.close();
+            } finally {
+            }
+        } catch (Throwable th) {
+            try {
+                updateServiceBuffer.close();
+            } catch (Throwable th2) {
+                th.addSuppressed(th2);
+            }
+            throw th;
+        }
+    }
+
+    public final void removeRegistration(Object obj) {
+        synchronized (this.mMultiplexerLock) {
+            try {
+                Preconditions.checkState(!this.mReentrancyGuard.isReentrant());
+                int indexOfKey = this.mRegistrations.indexOfKey(obj);
+                if (indexOfKey < 0) {
+                    return;
+                }
+                removeRegistration(indexOfKey);
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void removeRegistration(Object obj, RemovableListenerRegistration removableListenerRegistration) {
+        synchronized (this.mMultiplexerLock) {
+            try {
+                int indexOfKey = this.mRegistrations.indexOfKey(obj);
+                if (indexOfKey < 0) {
+                    return;
+                }
+                RemovableListenerRegistration removableListenerRegistration2 = (RemovableListenerRegistration) this.mRegistrations.valueAt(indexOfKey);
+                if (removableListenerRegistration2 != removableListenerRegistration) {
+                    return;
+                }
+                if (this.mReentrancyGuard.isReentrant()) {
+                    removableListenerRegistration2.mListener = null;
+                    removableListenerRegistration2.onListenerUnregister();
+                    onTransferUnregisteredRegistration(removableListenerRegistration2);
+                    onRegistrationActiveChanged(removableListenerRegistration2);
+                    this.mReentrancyGuard.markForRemoval(obj, removableListenerRegistration2);
+                } else {
+                    removeRegistration(indexOfKey);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void removeRegistrationIf(Predicate predicate) {
+        synchronized (this.mMultiplexerLock) {
+            Preconditions.checkState(!this.mReentrancyGuard.isReentrant());
+            UpdateServiceBuffer updateServiceBuffer = this.mUpdateServiceBuffer;
+            updateServiceBuffer.acquire();
+            try {
+                ReentrancyGuard reentrancyGuard = this.mReentrancyGuard;
+                reentrancyGuard.acquire();
+                try {
+                    int size = this.mRegistrations.size();
+                    for (int i = 0; i < size; i++) {
+                        Object keyAt = this.mRegistrations.keyAt(i);
+                        if (predicate.test(keyAt)) {
+                            removeRegistration(keyAt, (RemovableListenerRegistration) this.mRegistrations.valueAt(i));
+                        }
+                    }
+                    reentrancyGuard.close();
+                    updateServiceBuffer.close();
+                } finally {
+                }
+            } finally {
+            }
+        }
+    }
+
+    public boolean reregisterWithService(Object obj, Object obj2, Collection collection) {
+        return registerWithService(collection, obj2);
+    }
+
+    public final void resetService() {
+        synchronized (this.mMultiplexerLock) {
+            try {
+                if (this.mServiceRegistered) {
+                    this.mMerged = null;
+                    this.mServiceRegistered = false;
+                    unregisterWithService();
+                    updateService();
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public abstract void unregisterWithService();
+
+    public final boolean updateRegistration(Predicate predicate, Object obj) {
+        synchronized (this.mMultiplexerLock) {
+            UpdateServiceBuffer updateServiceBuffer = this.mUpdateServiceBuffer;
+            updateServiceBuffer.acquire();
+            try {
+                ReentrancyGuard reentrancyGuard = this.mReentrancyGuard;
+                reentrancyGuard.acquire();
+                try {
+                    int indexOfKey = this.mRegistrations.indexOfKey(obj);
+                    if (indexOfKey < 0) {
+                        reentrancyGuard.close();
+                        updateServiceBuffer.close();
+                        return false;
+                    }
+                    RemovableListenerRegistration removableListenerRegistration = (RemovableListenerRegistration) this.mRegistrations.valueAt(indexOfKey);
+                    if (predicate.test(removableListenerRegistration)) {
+                        onRegistrationActiveChanged(removableListenerRegistration);
+                    }
+                    reentrancyGuard.close();
+                    updateServiceBuffer.close();
+                    return true;
+                } finally {
+                }
+            } finally {
+            }
+        }
+    }
+
+    public final void updateRegistrations(Predicate predicate) {
+        synchronized (this.mMultiplexerLock) {
+            UpdateServiceBuffer updateServiceBuffer = this.mUpdateServiceBuffer;
+            updateServiceBuffer.acquire();
+            try {
+                ReentrancyGuard reentrancyGuard = this.mReentrancyGuard;
+                reentrancyGuard.acquire();
+                try {
+                    int size = this.mRegistrations.size();
+                    for (int i = 0; i < size; i++) {
+                        RemovableListenerRegistration removableListenerRegistration = (RemovableListenerRegistration) this.mRegistrations.valueAt(i);
+                        if (predicate.test(removableListenerRegistration)) {
+                            onRegistrationActiveChanged(removableListenerRegistration);
+                        }
+                    }
+                    reentrancyGuard.close();
+                    updateServiceBuffer.close();
+                } finally {
+                }
+            } finally {
+            }
+        }
+    }
+
+    public final void updateService() {
+        boolean z;
+        boolean z2;
+        synchronized (this.mMultiplexerLock) {
+            UpdateServiceBuffer updateServiceBuffer = this.mUpdateServiceBuffer;
+            synchronized (updateServiceBuffer) {
+                z = updateServiceBuffer.mBufferCount != 0;
             }
             if (z) {
-                ListenerMultiplexer.this.updateService();
+                UpdateServiceBuffer updateServiceBuffer2 = this.mUpdateServiceBuffer;
+                synchronized (updateServiceBuffer2) {
+                    synchronized (updateServiceBuffer2) {
+                        z2 = updateServiceBuffer2.mBufferCount != 0;
+                    }
+                    return;
+                }
+                Preconditions.checkState(z2);
+                updateServiceBuffer2.mUpdateServiceRequired = true;
+                return;
+            }
+            int size = this.mRegistrations.size();
+            ArrayList arrayList = new ArrayList(size);
+            for (int i = 0; i < size; i++) {
+                RemovableListenerRegistration removableListenerRegistration = (RemovableListenerRegistration) this.mRegistrations.valueAt(i);
+                if (removableListenerRegistration.mActive) {
+                    arrayList.add(removableListenerRegistration);
+                }
+            }
+            if (!arrayList.isEmpty()) {
+                Object mergeRegistrations = mergeRegistrations(arrayList);
+                if (!this.mServiceRegistered) {
+                    boolean registerWithService = registerWithService(arrayList, mergeRegistrations);
+                    this.mServiceRegistered = registerWithService;
+                    this.mMerged = registerWithService ? mergeRegistrations : null;
+                } else if (!Objects.equals(mergeRegistrations, this.mMerged)) {
+                    boolean reregisterWithService = reregisterWithService(this.mMerged, mergeRegistrations, arrayList);
+                    this.mServiceRegistered = reregisterWithService;
+                    this.mMerged = reregisterWithService ? mergeRegistrations : null;
+                }
+            } else if (this.mServiceRegistered) {
+                this.mMerged = null;
+                this.mServiceRegistered = false;
+                unregisterWithService();
             }
         }
     }

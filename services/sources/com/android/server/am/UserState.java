@@ -1,14 +1,16 @@
 package com.android.server.am;
 
+import android.hardware.biometrics.face.V1_0.OptionalBool$$ExternalSyntheticOutline0;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.util.ArrayMap;
+import android.util.EventLog;
 import android.util.Slog;
-import android.util.proto.ProtoOutputStream;
 import com.android.internal.util.ProgressReporter;
-import java.io.PrintWriter;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import java.util.ArrayList;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class UserState {
     public final UserHandle mHandle;
@@ -20,50 +22,16 @@ public final class UserState {
     public int lastState = 0;
     public final ArrayMap mProviderLastReportedFg = new ArrayMap();
 
-    /* loaded from: classes.dex */
-    public interface KeyEvictedCallback {
-        void keyEvicted(int i);
-    }
-
-    public static int stateToProtoEnum(int i) {
-        if (i == 0) {
-            return 0;
-        }
-        int i2 = 1;
-        if (i != 1) {
-            i2 = 2;
-            if (i != 2) {
-                i2 = 3;
-                if (i != 3) {
-                    i2 = 4;
-                    if (i != 4) {
-                        i2 = 5;
-                        if (i != 5) {
-                            return i;
-                        }
-                    }
-                }
-            }
-        }
-        return i2;
-    }
-
     public UserState(UserHandle userHandle) {
         this.mHandle = userHandle;
         this.mUnlockProgress = new ProgressReporter(userHandle.getIdentifier());
     }
 
-    public boolean setState(int i, int i2) {
-        if (this.state == i) {
-            setState(i2);
-            return true;
-        }
-        Slog.w("ActivityManager", "Expected user " + this.mHandle.getIdentifier() + " in state " + stateToString(i) + " but was in state " + stateToString(this.state));
-        Slog.i("ActivityManager", "!@Boot: setStateFail, finishUserUnlocking");
-        return false;
+    public static String stateToString(int i) {
+        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? i != 4 ? i != 5 ? Integer.toString(i) : "SHUTDOWN" : "STOPPING" : "RUNNING_UNLOCKED" : "RUNNING_UNLOCKING" : "RUNNING_LOCKED" : "BOOTING";
     }
 
-    public void setState(int i) {
+    public final void setState(int i) {
         if (i == this.state) {
             return;
         }
@@ -74,34 +42,34 @@ public final class UserState {
         if (i != 5) {
             Trace.asyncTraceBegin(64L, stateToString(i) + " " + identifier, identifier);
         }
-        Slog.i("ActivityManager", "User " + identifier + " state changed from " + stateToString(this.state) + " to " + stateToString(i));
-        EventLogTags.writeAmUserStateChanged(identifier, i);
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(identifier, "User ", " state changed from ");
+        m.append(stateToString(this.state));
+        m.append(" to ");
+        m.append(stateToString(i));
+        Slog.i("ActivityManager", m.toString());
+        EventLog.writeEvent(30051, Integer.valueOf(identifier), Integer.valueOf(i));
         this.lastState = this.state;
         this.state = i;
     }
 
-    public static String stateToString(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? i != 4 ? i != 5 ? Integer.toString(i) : "SHUTDOWN" : "STOPPING" : "RUNNING_UNLOCKED" : "RUNNING_UNLOCKING" : "RUNNING_LOCKED" : "BOOTING";
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        printWriter.print(str);
-        printWriter.print("state=");
-        printWriter.print(stateToString(this.state));
-        if (this.switching) {
-            printWriter.print(" SWITCHING");
+    public final boolean setState(int i, int i2) {
+        if (this.state == i) {
+            setState(i2);
+            return true;
         }
-        printWriter.println();
+        Slog.w("ActivityManager", "Expected user " + this.mHandle.getIdentifier() + " in state " + stateToString(i) + " but was in state " + stateToString(this.state));
+        Slog.i("ActivityManager", "!@Boot: setStateFail, finishUserUnlocking");
+        return false;
     }
 
-    public void dumpDebug(ProtoOutputStream protoOutputStream, long j) {
-        long start = protoOutputStream.start(j);
-        protoOutputStream.write(1159641169921L, stateToProtoEnum(this.state));
-        protoOutputStream.write(1133871366146L, this.switching);
-        protoOutputStream.end(start);
-    }
-
-    public String toString() {
-        return "[UserState: id=" + this.mHandle.getIdentifier() + ", state=" + stateToString(this.state) + ", lastState=" + stateToString(this.lastState) + ", switching=" + this.switching + "]";
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("[UserState: id=");
+        sb.append(this.mHandle.getIdentifier());
+        sb.append(", state=");
+        sb.append(stateToString(this.state));
+        sb.append(", lastState=");
+        sb.append(stateToString(this.lastState));
+        sb.append(", switching=");
+        return OptionalBool$$ExternalSyntheticOutline0.m("]", sb, this.switching);
     }
 }

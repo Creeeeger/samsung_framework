@@ -2,124 +2,92 @@ package com.samsung.ucm.ucmservice;
 
 import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
 import android.util.Log;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class EFSProperties {
     public static final String[] STORAGE_TYPES = {"eSE", "SIM", "SD", "eSE1", "SIM1", "SD1", "eSE2", "SIM2", "SD2", "ETC"};
     public static final String[] SCP_TYPES = {"NONE", "SCP11a", "SCP11b", "SCPCustom"};
 
-    public static boolean checkKeyguardProperty(KeyguardProperties keyguardProperties) {
-        return true;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class KeyguardProperties {
+        public byte[] AID;
+        public byte[] csName;
+        public int enabledSCP;
+        public int pinMaxLength;
+        public int pinMinLength;
+        public int pukMaxLength;
+        public int pukMinLength;
+        public int storageType;
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ODEProperties {
+        public int enabledUCSInODE = 0;
+        public byte[] AID = null;
+        public int storageType = 0;
+        public int enabledSCP = 0;
+        public int enabledWrap = 0;
+        public int pinMinLength = 0;
+        public int pinMaxLength = 0;
+        public int authMode = 0;
+        public int authMaxCnt = 0;
+        public int pukMinLength = 0;
+        public int pukMaxLength = 0;
+        public byte[] csName = null;
+        public int CertAdminID = 0;
+        public int CertUserID = 0;
+        public byte[] CertAlias = null;
+        public byte[] CertLocation = null;
+        public byte[] cofiguratorPkg = null;
+        public byte[] cofiguratorSign = null;
+        public byte[] scpCreationParam = null;
+        public byte[] pluginSignatureHash = null;
+        public int version = 1;
+        public byte[] defaultLanguage = null;
+
+        public static int getSCPTypeIndex(String str) {
+            if (str == null || str.isEmpty()) {
+                Log.d("EFSProperties", "SCP empty, set SCP_NONE");
+                return 0;
+            }
+            String lowerCase = str.toLowerCase();
+            for (int i = 0; i < 4; i++) {
+                if (EFSProperties.SCP_TYPES[i].toLowerCase().equals(lowerCase)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public static int getStorageTypeIndex(String str) {
+            if (str == null || str.isEmpty()) {
+                return -1;
+            }
+            String replace = str.toLowerCase().replace("uicc", "sim");
+            for (int i = 0; i < 10; i++) {
+                if (EFSProperties.STORAGE_TYPES[i].equalsIgnoreCase(replace)) {
+                    return i;
+                }
+            }
+            return 9;
+        }
     }
 
     public static void clearAppletInfo() {
-        log("deletePluginUidResult: " + deleteStoredPluginUid() + ", deleteLccmScript: " + deleteAppletDeletionLccmScript());
-    }
-
-    public static File getPluginUidFile() {
-        return new File("/efs/sec_efs", "ucm_applet_pluginuid");
-    }
-
-    public static boolean isPluginUidStored() {
-        return getPluginUidFile().exists();
-    }
-
-    public static boolean savePluginUid(int i) {
-        log("savePluginUid");
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(getPluginUidFile());
-            try {
-                fileOutputStream.write(String.valueOf(i).getBytes(StandardCharsets.UTF_8));
-                fileOutputStream.close();
-                return true;
-            } finally {
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static int getStoredPluginUid() {
-        log("getStoredPluginUid");
-        int i = -1;
-        try {
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(getPluginUidFile()));
-            try {
-                int length = (int) getPluginUidFile().length();
-                byte[] bArr = new byte[length];
-                log("getByteArray read: " + bufferedInputStream.read(bArr, 0, length));
-                i = Integer.parseInt(new String(bArr, "UTF-8"));
-                bufferedInputStream.close();
-            } finally {
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return i;
-    }
-
-    public static boolean deleteStoredPluginUid() {
-        log("deleteStoredPluginUid");
-        return deleteFile(getPluginUidFile());
-    }
-
-    public static File getLccmScriptFile() {
-        return new File("/efs/sec_efs", "ucm_delete_applet_lccmscript");
-    }
-
-    public static boolean isAppletDeletionLccmScriptExist() {
-        return getLccmScriptFile().exists();
-    }
-
-    public static boolean saveAppletDeletionLccmScript(byte[] bArr) {
-        log("saveAppletDeletionLccmScript");
-        if (bArr == null) {
-            return false;
-        }
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(getLccmScriptFile());
-            try {
-                fileOutputStream.write(bArr);
-                fileOutputStream.close();
-                return true;
-            } finally {
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static byte[] getAppletDeletionLccmScript() {
-        log("getAppletDeletionLccmScript");
-        if (!isAppletDeletionLccmScriptExist()) {
-            return null;
-        }
-        int length = (int) getLccmScriptFile().length();
-        byte[] bArr = new byte[length];
-        try {
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(getLccmScriptFile()));
-            try {
-                log("getByteArray read: " + bufferedInputStream.read(bArr, 0, length));
-                bufferedInputStream.close();
-            } finally {
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return bArr;
-    }
-
-    public static boolean deleteAppletDeletionLccmScript() {
         log("deleteAppletDeletionLccmScript");
-        return deleteFile(getLccmScriptFile());
+        boolean deleteFile = deleteFile(new File("/efs/sec_efs", "ucm_delete_applet_lccmscript"));
+        log("deletePluginPackageNameFile");
+        boolean deleteFile2 = deleteFile(new File("/efs/sec_efs", "ucm_applet_pluginpackagename"));
+        log("deletePluginSigHash");
+        boolean deleteFile3 = deleteFile(new File("/efs/sec_efs", "ucm_applet_plugin_hash_of_signature"));
+        log("deleteLccmScript: " + deleteFile);
+        log("deletePluginPackageNameFileResult: " + deleteFile2);
+        log("deletePluginSigHashResult: " + deleteFile3);
     }
 
     public static boolean deleteFile(File file) {
@@ -130,6 +98,19 @@ public abstract class EFSProperties {
             return true;
         }
         log("failed to delete the existing file");
+        return false;
+    }
+
+    public static boolean deleteODEConfig() {
+        File file = new File("/efs/sec_efs", "odeConfig");
+        if (!file.exists()) {
+            return true;
+        }
+        boolean delete = file.delete();
+        if (delete) {
+            return delete;
+        }
+        log("failed to delete the existing ODE config file");
         return false;
     }
 
@@ -215,7 +196,7 @@ public abstract class EFSProperties {
                 if (fileInputStream.read(bArr7, 0, 2) < 2) {
                     throw new IOException();
                 }
-                int i = ((bArr7[0] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) << 8) | 0 | (bArr7[1] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT);
+                int i = ((bArr7[0] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT) << 8) | (bArr7[1] & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT);
                 if (i != 0) {
                     byte[] bArr8 = new byte[i];
                     oDEProperties.scpCreationParam = bArr8;
@@ -257,127 +238,89 @@ public abstract class EFSProperties {
         }
     }
 
-    public static boolean deleteODEConfig() {
-        File file = new File("/efs/sec_efs", "odeConfig");
-        if (!file.exists()) {
-            return true;
-        }
-        boolean delete = file.delete();
-        if (delete) {
-            return delete;
-        }
-        log("failed to delete the existing ODE config file");
-        return false;
+    public static void log(String str) {
+        Log.d("EFSProperties", str);
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:65:0x0152 A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static boolean saveODEConfig(com.samsung.ucm.ucmservice.EFSProperties.ODEProperties r8) {
-        /*
-            Method dump skipped, instructions count: 349
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.samsung.ucm.ucmservice.EFSProperties.saveODEConfig(com.samsung.ucm.ucmservice.EFSProperties$ODEProperties):boolean");
-    }
-
-    public static boolean deleteKeyguardConfig() {
-        File file = new File("/efs/sec_efs", "keyguardConfig");
-        if (!file.exists()) {
-            return true;
-        }
-        boolean delete = file.delete();
-        if (delete) {
-            return delete;
-        }
-        log("failed to delete the existing keyguard config file");
-        return false;
-    }
-
+    /* JADX WARN: Unsupported multi-entry loop pattern (BACK_EDGE: B:53:0x0070 -> B:23:0x0097). Please report as a decompilation issue!!! */
     public static boolean saveKeyguardConfig(KeyguardProperties keyguardProperties) {
         FileOutputStream fileOutputStream;
         byte[] bArr;
         int i;
         int i2;
         log("save Keyguard config");
-        boolean z = false;
-        if (keyguardProperties == null) {
-            log("KeyguardProperties is null");
-            return false;
-        }
-        if (!checkKeyguardProperty(keyguardProperties)) {
-            log("checkKeyguardProperty false");
-            return false;
-        }
         File file = new File("/efs/sec_efs", "keyguardConfig");
+        boolean z = false;
         if (file.exists() && !file.delete()) {
             log("failed to delete the existing Keyguard ODE config file");
             return false;
         }
         FileOutputStream fileOutputStream2 = null;
-        fileOutputStream2 = null;
-        fileOutputStream2 = null;
+        FileOutputStream fileOutputStream3 = null;
+        FileOutputStream fileOutputStream4 = null;
         fileOutputStream2 = null;
         try {
+        } catch (IOException e) {
+            e.printStackTrace();
+            fileOutputStream2 = fileOutputStream2;
+        }
+        try {
             try {
+                fileOutputStream = new FileOutputStream(file);
                 try {
-                    fileOutputStream = new FileOutputStream(file);
-                    try {
-                        byte[] bArr2 = keyguardProperties.csName;
-                        int length = bArr2.length;
-                        fileOutputStream.write(length);
-                        fileOutputStream.write(bArr2, 0, length);
-                        bArr = keyguardProperties.AID;
-                        i = length;
-                    } catch (IOException e) {
-                        e = e;
-                        fileOutputStream2 = fileOutputStream;
-                        log("saveKeyguardConfig : IOException");
-                        e.printStackTrace();
-                        if (fileOutputStream2 != null) {
-                            fileOutputStream2.close();
-                            fileOutputStream2 = fileOutputStream2;
-                        }
-                        return z;
-                    } catch (Exception e2) {
-                        e = e2;
-                        fileOutputStream2 = fileOutputStream;
-                        log("saveKeyguardConfig : Exception");
-                        e.printStackTrace();
-                        if (fileOutputStream2 != null) {
-                            fileOutputStream2.close();
-                            fileOutputStream2 = fileOutputStream2;
-                        }
-                        return z;
-                    } catch (Throwable th) {
-                        th = th;
-                        fileOutputStream2 = fileOutputStream;
-                        if (fileOutputStream2 != null) {
-                            try {
-                                fileOutputStream2.close();
-                            } catch (IOException e3) {
-                                e3.printStackTrace();
-                            }
-                        }
-                        throw th;
+                    byte[] bArr2 = keyguardProperties.csName;
+                    int length = bArr2.length;
+                    fileOutputStream.write(length);
+                    fileOutputStream.write(bArr2, 0, length);
+                    bArr = keyguardProperties.AID;
+                    i = length;
+                } catch (IOException e2) {
+                    e = e2;
+                    fileOutputStream3 = fileOutputStream;
+                    log("saveKeyguardConfig : IOException");
+                    e.printStackTrace();
+                    fileOutputStream2 = fileOutputStream3;
+                    if (fileOutputStream3 != null) {
+                        fileOutputStream3.close();
+                        fileOutputStream2 = fileOutputStream3;
                     }
-                } catch (IOException e4) {
-                    e = e4;
-                } catch (Exception e5) {
-                    e = e5;
+                    return z;
+                } catch (Exception e3) {
+                    e = e3;
+                    fileOutputStream4 = fileOutputStream;
+                    log("saveKeyguardConfig : Exception");
+                    e.printStackTrace();
+                    fileOutputStream2 = fileOutputStream4;
+                    if (fileOutputStream4 != null) {
+                        fileOutputStream4.close();
+                        fileOutputStream2 = fileOutputStream4;
+                    }
+                    return z;
+                } catch (Throwable th) {
+                    th = th;
+                    fileOutputStream2 = fileOutputStream;
+                    if (fileOutputStream2 != null) {
+                        try {
+                            fileOutputStream2.close();
+                        } catch (IOException e4) {
+                            e4.printStackTrace();
+                        }
+                    }
+                    throw th;
                 }
-            } catch (IOException e6) {
-                e6.printStackTrace();
+            } catch (IOException e5) {
+                e = e5;
+            } catch (Exception e6) {
+                e = e6;
             }
             if (bArr != null) {
                 int length2 = bArr.length;
                 i = length2;
                 if (length2 > 0) {
-                    fileOutputStream.write(bArr.length);
-                    fileOutputStream.write(keyguardProperties.AID);
-                    i2 = length2;
+                    int length3 = bArr.length;
+                    fileOutputStream.write(length3);
+                    fileOutputStream.write(bArr);
+                    i2 = length3;
                     fileOutputStream.write(keyguardProperties.storageType);
                     fileOutputStream.write(keyguardProperties.enabledSCP);
                     fileOutputStream.write(keyguardProperties.pinMinLength);
@@ -407,85 +350,16 @@ public abstract class EFSProperties {
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class ODEProperties {
-        public int enabledUCSInODE = 0;
-        public byte[] AID = null;
-        public int storageType = 0;
-        public int enabledSCP = 0;
-        public int enabledWrap = 0;
-        public int pinMinLength = 0;
-        public int pinMaxLength = 0;
-        public int authMode = 0;
-        public int authMaxCnt = 0;
-        public int pukMinLength = 0;
-        public int pukMaxLength = 0;
-        public byte[] csName = null;
-        public int CertAdminID = 0;
-        public int CertUserID = 0;
-        public byte[] CertAlias = null;
-        public byte[] CertLocation = null;
-        public byte[] cofiguratorPkg = null;
-        public byte[] cofiguratorSign = null;
-        public byte[] scpCreationParam = null;
-        public byte[] pluginSignatureHash = null;
-        public int version = 1;
-        public byte[] defaultLanguage = null;
-
-        public static int getStorageTypeIndex(String str) {
-            int length = EFSProperties.STORAGE_TYPES.length;
-            if (str == null || str.isEmpty()) {
-                return -1;
-            }
-            String replace = str.toLowerCase().replace("uicc", "sim");
-            for (int i = 0; i < length; i++) {
-                if (EFSProperties.STORAGE_TYPES[i].equalsIgnoreCase(replace)) {
-                    return i;
-                }
-            }
-            return 9;
-        }
-
-        public static int getSCPTypeIndex(String str) {
-            int length = EFSProperties.SCP_TYPES.length;
-            if (str == null || str.isEmpty()) {
-                Log.d("EFSProperties", "SCP empty, set SCP_NONE");
-                return 0;
-            }
-            String lowerCase = str.toLowerCase();
-            for (int i = 0; i < length; i++) {
-                if (EFSProperties.SCP_TYPES[i].toLowerCase().equals(lowerCase)) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class KeyguardProperties {
-        public byte[] AID;
-        public byte[] csName;
-        public int enabledSCP;
-        public int pinMaxLength;
-        public int pinMinLength;
-        public int pukMaxLength;
-        public int pukMinLength;
-        public int storageType;
-
-        public KeyguardProperties(byte[] bArr, byte[] bArr2, int i, int i2, int i3, int i4, int i5, int i6) {
-            this.csName = bArr;
-            this.AID = bArr2;
-            this.storageType = i;
-            this.enabledSCP = i2;
-            this.pinMinLength = i3;
-            this.pinMaxLength = i4;
-            this.pukMinLength = i5;
-            this.pukMaxLength = i6;
-        }
-    }
-
-    public static void log(String str) {
-        Log.d("EFSProperties", str);
+    /* JADX WARN: Removed duplicated region for block: B:62:0x014f A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static boolean saveODEConfig(com.samsung.ucm.ucmservice.EFSProperties.ODEProperties r7) {
+        /*
+            Method dump skipped, instructions count: 346
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.ucm.ucmservice.EFSProperties.saveODEConfig(com.samsung.ucm.ucmservice.EFSProperties$ODEProperties):boolean");
     }
 }

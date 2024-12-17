@@ -1,444 +1,241 @@
 package com.android.server.chimera;
 
 import android.net.util.NetworkConstants;
-import android.os.IInstalld;
 import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.RCPManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ChimeraStrategy {
-    public int mAlwaysRunningProcessQuota;
-    public int mDeviceIdleAppThreshold;
-    public int mDeviceIdleNativeThreshold;
-    public DynamicFreeMem mDynamicFreeMem;
-    public long mFixedMemFreeTarget;
+public final class ChimeraStrategy {
+    public final int mAlwaysRunningProcessQuota;
+    public final int mDeviceIdleAppThreshold;
+    public final int mDeviceIdleNativeThreshold;
     public long mMemFreeTarget;
-    public int mProtectedCountOnDynamic;
+    public final int mProtectedCountOnDynamic;
     public int mProtectedCountOnHomeTrigger;
     public int mProtectedCountOnLmkdTrigger;
-    public int mQuickReclaimDefaultThreshold;
-    public ChimeraRecentAppManager mRecentAppManager;
+    public final int mQuickReclaimDefaultThreshold;
     public final SettingRepository mSettingRepository;
     public final SystemRepository mSystemRepository;
-    public final String PROPERTY_NAME_PROTECTED_COUNT_LMKD = "persist.config.chimera.protected_count_on_lmkd";
-    public final String PROPERTY_NAME_PROTECTED_COUNT_HOME = "persist.config.chimera.protected_count_on_home";
-    public final String PROPERTY_NAME_STRATEGY = "ro.slmk.chimera_strategy_%dgb";
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class DefaultParameters {
-        public static int UNKNOWN_GB_PROTECTED_COUNT_ON_HOME = 32;
-        public static int UNKNOWN_GB_PROTECTED_COUNT_ON_LMKD = 32;
-        public static int UNKNOWN_GB_TARGET_FREE = 32768;
-        public static int[][] sParameters = {new int[]{2, 485, 5, 3, 885, 100, 400, 500, 600}, new int[]{3, 614, 7, 6, 1098, 150, 400, 500, 1000}, new int[]{4, 630, 11, 8, 1406, 300, 400, 500, NetworkConstants.ETHER_MTU}, new int[]{6, 1100, 19, 9, 2034, 350, 600, 500, IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES}, new int[]{8, 2150, 24, 10, 2550, 400, 600, 1024, 2480}, new int[]{12, 2457, 28, 14, 2857, 500, 1024, FrameworkStatsLog.APP_STANDBY_BUCKET_CHANGED__MAIN_REASON__MAIN_FORCED_BY_SYSTEM, IInstalld.FLAG_USE_QUOTA}, new int[]{16, 2457, 28, 14, 2857, 600, 1024, FrameworkStatsLog.APP_STANDBY_BUCKET_CHANGED__MAIN_REASON__MAIN_FORCED_BY_SYSTEM, 6144}, new int[]{-1, -1, -1, -1, -1, -1}};
-        public static int IDX_DYNAMIC_REENTRY = 2;
-        public static int IDX_DYNAMIC_PROTECT = 1;
-        public static float[][] sDynamicParameters = {new float[]{2.0f, 3.0f, 5.0f}, new float[]{3.0f, 3.0f, 7.0f}, new float[]{4.0f, 6.0f, 10.0f}, new float[]{6.0f, 7.0f, 13.0f}, new float[]{8.0f, 8.0f, 16.0f}, new float[]{12.0f, 14.0f, 16.0f}, new float[]{16.0f, 14.0f, 17.0f}, new float[]{-1.0f, -1.0f, -1.0f}};
-
-        public static int getTargetFree(int i) {
-            int i2 = 0;
-            while (true) {
-                int[] iArr = sParameters[i2];
-                int i3 = iArr[0];
-                if (i3 <= 0) {
-                    return -1;
-                }
-                if (i3 >= i) {
-                    return iArr[1];
-                }
-                i2++;
-            }
-        }
-
-        public static int getProtectedCountOnLmkdTrigger(int i) {
-            int i2 = 0;
-            while (true) {
-                int[] iArr = sParameters[i2];
-                int i3 = iArr[0];
-                if (i3 <= 0) {
-                    return -1;
-                }
-                if (i3 >= i) {
-                    return iArr[2];
-                }
-                i2++;
-            }
-        }
-
-        public static int getProtectedCountOnHomeTrigger(int i) {
-            int i2 = 0;
-            while (true) {
-                int[] iArr = sParameters[i2];
-                int i3 = iArr[0];
-                if (i3 <= 0) {
-                    return -1;
-                }
-                if (i3 >= i) {
-                    return iArr[3];
-                }
-                i2++;
-            }
-        }
-
-        public static float getDynamicProtectedCount(int i) {
-            int i2 = 0;
-            while (true) {
-                float[] fArr = sDynamicParameters[i2];
-                float f = fArr[0];
-                if (f <= DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    return -1.0f;
-                }
-                if (f >= i) {
-                    return fArr[IDX_DYNAMIC_PROTECT];
-                }
-                i2++;
-            }
-        }
-
-        public static float getReentry(int i) {
-            for (int i2 = 0; sParameters[i2][0] > 0; i2++) {
-                float[] fArr = sDynamicParameters[i2];
-                if (fArr[0] >= i) {
-                    return fArr[IDX_DYNAMIC_REENTRY];
-                }
-            }
-            return -1.0f;
-        }
-
-        public static int getQuickReclaimDefaultThreshold(int i) {
-            int i2 = 0;
-            while (true) {
-                int[] iArr = sParameters[i2];
-                int i3 = iArr[0];
-                if (i3 <= 0) {
-                    return -1;
-                }
-                if (i3 >= i) {
-                    return iArr[5];
-                }
-                i2++;
-            }
-        }
-
-        public static int getDeviceIdleAppThreshold(int i) {
-            int i2 = 0;
-            while (true) {
-                int[] iArr = sParameters[i2];
-                int i3 = iArr[0];
-                if (i3 <= 0) {
-                    return -1;
-                }
-                if (i3 >= i) {
-                    return iArr[6];
-                }
-                i2++;
-            }
-        }
-
-        public static int getDeviceIdleNativeThreshold(int i) {
-            int i2 = 0;
-            while (true) {
-                int[] iArr = sParameters[i2];
-                int i3 = iArr[0];
-                if (i3 <= 0) {
-                    return -1;
-                }
-                if (i3 >= i) {
-                    return iArr[7];
-                }
-                i2++;
-            }
-        }
-
-        public static int getAlwaysRunningProcQuota(int i) {
-            int i2 = 0;
-            while (true) {
-                int[] iArr = sParameters[i2];
-                int i3 = iArr[0];
-                if (i3 <= 0) {
-                    return -1;
-                }
-                if (i3 >= i) {
-                    return iArr[8];
-                }
-                i2++;
-            }
-        }
+        public static final int[][] sParameters = {new int[]{2, 485, 5, 3, 885, 100, 400, 500, 600}, new int[]{3, 614, 7, 6, 1098, 150, 400, 500, 1000}, new int[]{4, 630, 11, 8, 1406, 300, 400, 500, NetworkConstants.ETHER_MTU}, new int[]{6, 1100, 19, 9, 2034, 350, 600, 500, 2048}, new int[]{8, 2150, 24, 10, 2550, 400, 600, 1024, 2480}, new int[]{12, 2457, 28, 14, 2857, 500, 1024, FrameworkStatsLog.APP_STANDBY_BUCKET_CHANGED__MAIN_REASON__MAIN_FORCED_BY_SYSTEM, 4096}, new int[]{16, 2457, 28, 14, 2857, 600, 1024, FrameworkStatsLog.APP_STANDBY_BUCKET_CHANGED__MAIN_REASON__MAIN_FORCED_BY_SYSTEM, 6144}, new int[]{-1, -1, -1, -1, -1, -1}};
+        public static final float[][] sDynamicParameters = {new float[]{2.0f, 3.0f, 5.0f}, new float[]{3.0f, 3.0f, 7.0f}, new float[]{4.0f, 6.0f, 10.0f}, new float[]{6.0f, 7.0f, 13.0f}, new float[]{8.0f, 8.0f, 16.0f}, new float[]{12.0f, 14.0f, 16.0f}, new float[]{16.0f, 14.0f, 17.0f}, new float[]{-1.0f, -1.0f, -1.0f}};
     }
 
-    /* loaded from: classes.dex */
-    public class DynamicFreeMem {
-        public long PSI_MEM_SOME_THRESHOLD_MIN;
-        public long PSI_MEN_SOME_THRESHOLD_MAX;
-        public float mReentry;
-        public ReentryCounter mReentryCounter;
-        public int ramSizeGb;
-        public int mTriggerCnt = 0;
-        public int mKeepCnt = 0;
-
-        public DynamicFreeMem() {
-            int ramSizeGb = ChimeraCommonUtil.getRamSizeGb();
-            this.ramSizeGb = ramSizeGb;
-            this.mReentry = DefaultParameters.getReentry(ramSizeGb);
-            this.PSI_MEM_SOME_THRESHOLD_MIN = 0L;
-            this.PSI_MEN_SOME_THRESHOLD_MAX = 0L;
-            if (this.ramSizeGb < 6) {
-                this.PSI_MEM_SOME_THRESHOLD_MIN = Integer.parseInt(SystemProperties.get("ro.slmk.psi_medium", "100")) * 1000;
-                this.PSI_MEN_SOME_THRESHOLD_MAX = Integer.parseInt(SystemProperties.get("ro.slmk.psi_critical", "150")) * 1000;
-            } else {
-                this.PSI_MEM_SOME_THRESHOLD_MIN = Integer.parseInt(SystemProperties.get("ro.slmk.psi_medium", "60")) * 1000;
-                this.PSI_MEN_SOME_THRESHOLD_MAX = Integer.parseInt(SystemProperties.get("ro.slmk.psi_critical", "100")) * 1000;
-            }
-            ReentryCounter reentryCounter = new ReentryCounter(ChimeraStrategy.this.mSystemRepository);
-            this.mReentryCounter = reentryCounter;
-            reentryCounter.setTargetReentryCount(this.mReentry);
-        }
-
-        /* JADX WARN: Code restructure failed: missing block: B:25:0x0065, code lost:
-        
-            if (r4 > r6) goto L19;
-         */
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public long updateFreeMem(long r18) {
-            /*
-                Method dump skipped, instructions count: 358
-                To view this dump change 'Code comments level' option to 'DEBUG'
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.server.chimera.ChimeraStrategy.DynamicFreeMem.updateFreeMem(long):long");
-        }
-
-        public final void setThresholdMin(long j) {
-            this.PSI_MEM_SOME_THRESHOLD_MIN = j;
-        }
-
-        public final void setThresholdMax(long j) {
-            this.PSI_MEN_SOME_THRESHOLD_MAX = j;
-        }
-
-        public final void setReentry(float f) {
-            this.mReentry = f;
-            this.mReentryCounter.setTargetReentryCount(f);
-        }
-    }
-
-    public ChimeraStrategy(ChimeraRecentAppManager chimeraRecentAppManager, SystemRepository systemRepository, SettingRepository settingRepository) {
-        this.mRecentAppManager = chimeraRecentAppManager;
+    public ChimeraStrategy(SystemRepository systemRepository, SettingRepository settingRepository) {
+        int[][] iArr;
+        int i;
+        int i2;
+        int i3;
+        int i4;
+        int i5;
+        float f;
+        int i6;
+        int i7;
+        int i8;
         this.mSystemRepository = systemRepository;
         this.mSettingRepository = settingRepository;
-        initializeDefaultParameters();
-    }
-
-    public final void initializeDefaultParameters() {
         int ramSizeGb = ChimeraCommonUtil.getRamSizeGb();
-        updateDefaultParametersIfExist(ramSizeGb);
-        long targetFree = DefaultParameters.getTargetFree(ramSizeGb) * 1024;
-        this.mMemFreeTarget = targetFree;
-        this.mFixedMemFreeTarget = targetFree;
-        this.mProtectedCountOnLmkdTrigger = SystemProperties.getInt("persist.config.chimera.protected_count_on_lmkd", DefaultParameters.getProtectedCountOnLmkdTrigger(ramSizeGb));
-        int i = SystemProperties.getInt("persist.config.chimera.protected_count_on_home", DefaultParameters.getProtectedCountOnHomeTrigger(ramSizeGb));
-        this.mProtectedCountOnHomeTrigger = i;
-        if (this.mMemFreeTarget < 0 || i < 0 || this.mProtectedCountOnLmkdTrigger < 0) {
-            this.mMemFreeTarget = DefaultParameters.UNKNOWN_GB_TARGET_FREE;
-            this.mProtectedCountOnHomeTrigger = DefaultParameters.UNKNOWN_GB_PROTECTED_COUNT_ON_HOME;
-            this.mProtectedCountOnLmkdTrigger = DefaultParameters.UNKNOWN_GB_PROTECTED_COUNT_ON_LMKD;
-        }
-        this.mProtectedCountOnDynamic = (int) DefaultParameters.getDynamicProtectedCount(ramSizeGb);
-        this.mQuickReclaimDefaultThreshold = DefaultParameters.getQuickReclaimDefaultThreshold(ramSizeGb);
-        this.mDeviceIdleAppThreshold = DefaultParameters.getDeviceIdleAppThreshold(ramSizeGb);
-        this.mDeviceIdleNativeThreshold = DefaultParameters.getDeviceIdleNativeThreshold(ramSizeGb);
-        this.mAlwaysRunningProcessQuota = DefaultParameters.getAlwaysRunningProcQuota(ramSizeGb);
-        this.mSystemRepository.logDebug("ChimeraStrategy", "ChimeraStrategy() - ramSizeGb: " + ramSizeGb + " mMemFreeTarget: " + this.mMemFreeTarget + " mProtectedCountOnLmkdTrigger: " + this.mProtectedCountOnLmkdTrigger + " mProtectedCountOnHomeTrigger: " + this.mProtectedCountOnHomeTrigger + " mEnableDynamicFreeMem: " + isEnableDynamicFreeMem() + " mProtectedCountOnDynamic: " + this.mProtectedCountOnDynamic + " mQuickReclaimDefaultThreshold: " + this.mQuickReclaimDefaultThreshold + " mDeviceIdleAppThreshold: " + this.mDeviceIdleAppThreshold + " mDeviceIdleNativeThreshold: " + this.mDeviceIdleNativeThreshold + " mAlwaysRunningProcessQuota: " + this.mAlwaysRunningProcessQuota);
-    }
-
-    public final void updateDefaultParametersIfExist(int i) {
-        int i2;
-        int i3 = 0;
-        int i4 = 0;
+        int i9 = 0;
         while (true) {
-            if (DefaultParameters.sParameters[i4][0] <= 0) {
-                i2 = -1;
+            iArr = DefaultParameters.sParameters;
+            i = iArr[i9][0];
+            i2 = -1;
+            if (i <= 0) {
+                i9 = 0;
+                i = -1;
+                break;
+            } else if (i >= ramSizeGb) {
                 break;
             } else {
-                if (DefaultParameters.sParameters[i4][0] >= i) {
-                    i2 = DefaultParameters.sParameters[i4][0];
-                    i3 = i4;
+                i9++;
+            }
+        }
+        SystemRepository systemRepository2 = this.mSystemRepository;
+        if (i != -1) {
+            String format = String.format("ro.slmk.chimera_strategy_%dgb", Integer.valueOf(i));
+            String str = SystemProperties.get(format, "");
+            systemRepository2.getClass();
+            SystemRepository.logDebug("ChimeraStrategy", "updateDefaultParameters > " + format + " : " + str);
+            if (!TextUtils.isEmpty(str)) {
+                String[] split = str.split(",");
+                if (split.length > 3) {
+                    for (int i10 = 1; i10 <= 3; i10++) {
+                        try {
+                            iArr[i9][i10] = Integer.parseInt(split[i10 - 1].trim());
+                        } catch (Exception e) {
+                            RCPManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("Error while updating default : "), "ChimeraStrategy");
+                        }
+                    }
+                } else {
+                    Log.e("ChimeraStrategy", "Chimera parameter mismatched");
+                }
+            }
+        }
+        int i11 = 0;
+        while (true) {
+            int[] iArr2 = iArr[i11];
+            int i12 = iArr2[0];
+            if (i12 <= 0) {
+                i3 = -1;
+                break;
+            } else {
+                if (i12 >= ramSizeGb) {
+                    i3 = iArr2[1];
                     break;
                 }
-                i4++;
+                i11++;
             }
         }
-        if (i2 != -1) {
-            String format = String.format("ro.slmk.chimera_strategy_%dgb", Integer.valueOf(i2));
-            String str = SystemProperties.get(format, "");
-            this.mSystemRepository.logDebug("ChimeraStrategy", "updateDefaultParameters > " + format + " : " + str);
-            if (TextUtils.isEmpty(str)) {
-                return;
-            }
-            String[] split = str.split(",");
-            if (split.length <= 3) {
-                Log.e("ChimeraStrategy", "Chimera parameter mismatched");
-                return;
-            }
-            for (int i5 = 1; i5 <= 3; i5++) {
-                try {
-                    DefaultParameters.sParameters[i3][i5] = Integer.parseInt(split[i5 - 1].trim());
-                } catch (Exception e) {
-                    Log.e("ChimeraStrategy", "Error while updating default : " + e.getMessage());
+        this.mMemFreeTarget = i3 * 1024;
+        int i13 = 0;
+        while (true) {
+            int[] iArr3 = iArr[i13];
+            int i14 = iArr3[0];
+            if (i14 <= 0) {
+                i4 = -1;
+                break;
+            } else {
+                if (i14 >= ramSizeGb) {
+                    i4 = iArr3[2];
+                    break;
                 }
+                i13++;
             }
         }
-    }
-
-    public int getProtectedCountOnLmkdTrigger() {
-        if (isEnableDynamicFreeMem()) {
-            return this.mProtectedCountOnDynamic;
-        }
-        return this.mProtectedCountOnLmkdTrigger;
-    }
-
-    public int getProtectedCountOnHomeTrigger() {
-        if (isEnableDynamicFreeMem()) {
-            return this.mProtectedCountOnDynamic;
-        }
-        return this.mProtectedCountOnHomeTrigger;
-    }
-
-    public long getFreeMemTarget(long j) {
-        DynamicFreeMem dynamicFreeMem;
-        if (!isEnableDynamicFreeMem() || (dynamicFreeMem = this.mDynamicFreeMem) == null) {
-            return this.mMemFreeTarget;
-        }
-        long updateFreeMem = dynamicFreeMem.updateFreeMem(j);
-        this.mMemFreeTarget = updateFreeMem;
-        return updateFreeMem;
-    }
-
-    public boolean isEnableDynamicFreeMem() {
-        return this.mSettingRepository.isDynamicTargetFreeEnabled();
-    }
-
-    public void setTargetMem(long j) {
-        this.mMemFreeTarget = j;
-        this.mSettingRepository.enableDynamicTargetFree(false);
-    }
-
-    public int getQuickReclaimDefaultThreshold() {
-        return this.mQuickReclaimDefaultThreshold;
-    }
-
-    public int getDeviceIdleAppThreshold() {
-        return this.mDeviceIdleAppThreshold;
-    }
-
-    public int getDeviceIdleNativeThreshold() {
-        return this.mDeviceIdleNativeThreshold;
-    }
-
-    public int getAlwaysRunningProcQuota() {
-        return this.mAlwaysRunningProcessQuota;
-    }
-
-    public void dump(PrintWriter printWriter, String[] strArr) {
-        ReentryCounter reentryCounter;
-        if (strArr == null || strArr.length == 0) {
-            return;
-        }
-        if ("-a".equals(strArr[0])) {
-            dumpInfo(printWriter);
-            return;
-        }
-        if (strArr.length > 0) {
-            String str = strArr[0];
-            if (str.equals("info")) {
-                dumpInfo(printWriter);
-                return;
-            }
-            if (str.equals("mem") && strArr.length > 1) {
-                try {
-                    long parseLong = Long.parseLong(strArr[1]);
-                    setTargetMem(parseLong);
-                    printWriter.println("Target mem : " + parseLong);
-                    return;
-                } catch (NumberFormatException e) {
-                    printWriter.println(e.getMessage());
-                    return;
+        this.mProtectedCountOnLmkdTrigger = SystemProperties.getInt("persist.config.chimera.protected_count_on_lmkd", i4);
+        int i15 = 0;
+        while (true) {
+            int[] iArr4 = iArr[i15];
+            int i16 = iArr4[0];
+            if (i16 <= 0) {
+                i5 = -1;
+                break;
+            } else {
+                if (i16 >= ramSizeGb) {
+                    i5 = iArr4[3];
+                    break;
                 }
+                i15++;
             }
-            if (str.equals("set_protected_count_on_lmkd") && strArr.length > 1) {
-                try {
-                    this.mProtectedCountOnLmkdTrigger = Integer.parseInt(strArr[1]);
-                } catch (NumberFormatException e2) {
-                    printWriter.println(e2.getMessage());
-                }
-                printWriter.println("ProtectedCount On Lmkd : " + this.mProtectedCountOnLmkdTrigger);
-                return;
-            }
-            if (str.equals("set_protected_count_on_home") && strArr.length > 1) {
-                try {
-                    this.mProtectedCountOnHomeTrigger = Integer.parseInt(strArr[1]);
-                } catch (NumberFormatException e3) {
-                    printWriter.println(e3.getMessage());
-                }
-                printWriter.println("ProtectedCount On Home : " + this.mProtectedCountOnHomeTrigger);
-                return;
-            }
-            if (str.equals("enable_dynamic")) {
-                enableDynamicTargetFree();
-                printWriter.println("enable dynamic memfreetarget");
-                return;
-            }
-            if (str.equals("dynamic_min") && strArr.length > 1) {
-                if (this.mDynamicFreeMem != null) {
-                    long parseLong2 = Long.parseLong(strArr[1]);
-                    this.mDynamicFreeMem.setThresholdMin(parseLong2);
-                    printWriter.println("set dynamic threshold min: " + parseLong2);
-                    return;
-                }
-                return;
-            }
-            if (str.equals("dynamic_max") && strArr.length > 1) {
-                if (this.mDynamicFreeMem != null) {
-                    long parseLong3 = Long.parseLong(strArr[1]);
-                    this.mDynamicFreeMem.setThresholdMax(parseLong3);
-                    printWriter.println("set dynamic threshold max: " + parseLong3);
-                    return;
-                }
-                return;
-            }
-            if (str.equals("get_reentry")) {
-                DynamicFreeMem dynamicFreeMem = this.mDynamicFreeMem;
-                if (dynamicFreeMem == null || (reentryCounter = dynamicFreeMem.mReentryCounter) == null) {
-                    return;
-                }
-                printWriter.println("get reentry: " + reentryCounter.getReentry());
-                return;
-            }
-            if (!str.equals("set_reentry") || this.mDynamicFreeMem == null) {
-                return;
-            }
-            float parseFloat = Float.parseFloat(strArr[1]);
-            printWriter.println("set reentry: " + parseFloat);
-            this.mDynamicFreeMem.setReentry(parseFloat);
         }
+        int i17 = SystemProperties.getInt("persist.config.chimera.protected_count_on_home", i5);
+        this.mProtectedCountOnHomeTrigger = i17;
+        if (this.mMemFreeTarget < 0 || i17 < 0 || this.mProtectedCountOnLmkdTrigger < 0) {
+            this.mMemFreeTarget = 32768;
+            this.mProtectedCountOnHomeTrigger = 32;
+            this.mProtectedCountOnLmkdTrigger = 32;
+        }
+        int i18 = 0;
+        while (true) {
+            float[] fArr = DefaultParameters.sDynamicParameters[i18];
+            float f2 = fArr[0];
+            if (f2 <= FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                f = -1.0f;
+                break;
+            } else {
+                if (f2 >= ramSizeGb) {
+                    f = fArr[1];
+                    break;
+                }
+                i18++;
+            }
+        }
+        this.mProtectedCountOnDynamic = (int) f;
+        int i19 = 0;
+        while (true) {
+            int[] iArr5 = iArr[i19];
+            int i20 = iArr5[0];
+            if (i20 <= 0) {
+                i6 = -1;
+                break;
+            } else {
+                if (i20 >= ramSizeGb) {
+                    i6 = iArr5[5];
+                    break;
+                }
+                i19++;
+            }
+        }
+        this.mQuickReclaimDefaultThreshold = i6;
+        int i21 = 0;
+        while (true) {
+            int[] iArr6 = iArr[i21];
+            int i22 = iArr6[0];
+            if (i22 <= 0) {
+                i7 = -1;
+                break;
+            } else {
+                if (i22 >= ramSizeGb) {
+                    i7 = iArr6[6];
+                    break;
+                }
+                i21++;
+            }
+        }
+        this.mDeviceIdleAppThreshold = i7;
+        int i23 = 0;
+        while (true) {
+            int[] iArr7 = iArr[i23];
+            int i24 = iArr7[0];
+            if (i24 <= 0) {
+                i8 = -1;
+                break;
+            } else {
+                if (i24 >= ramSizeGb) {
+                    i8 = iArr7[7];
+                    break;
+                }
+                i23++;
+            }
+        }
+        this.mDeviceIdleNativeThreshold = i8;
+        int i25 = 0;
+        while (true) {
+            int[] iArr8 = iArr[i25];
+            int i26 = iArr8[0];
+            if (i26 <= 0) {
+                break;
+            }
+            if (i26 >= ramSizeGb) {
+                i2 = iArr8[8];
+                break;
+            }
+            i25++;
+        }
+        this.mAlwaysRunningProcessQuota = i2;
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(ramSizeGb, "ChimeraStrategy() - ramSizeGb: ", " mMemFreeTarget: ");
+        m.append(this.mMemFreeTarget);
+        m.append(" mProtectedCountOnLmkdTrigger: ");
+        m.append(this.mProtectedCountOnLmkdTrigger);
+        m.append(" mProtectedCountOnHomeTrigger: ");
+        m.append(this.mProtectedCountOnHomeTrigger);
+        m.append(" mProtectedCountOnDynamic: ");
+        m.append(this.mProtectedCountOnDynamic);
+        m.append(" mQuickReclaimDefaultThreshold: ");
+        m.append(this.mQuickReclaimDefaultThreshold);
+        m.append(" mDeviceIdleAppThreshold: ");
+        m.append(this.mDeviceIdleAppThreshold);
+        m.append(" mDeviceIdleNativeThreshold: ");
+        m.append(this.mDeviceIdleNativeThreshold);
+        m.append(" mAlwaysRunningProcessQuota: ");
+        m.append(this.mAlwaysRunningProcessQuota);
+        String sb = m.toString();
+        systemRepository2.getClass();
+        SystemRepository.logDebug("ChimeraStrategy", sb);
     }
 
-    public final void enableDynamicTargetFree() {
-        this.mSettingRepository.enableDynamicTargetFree(true);
-        if (this.mDynamicFreeMem == null) {
-            this.mDynamicFreeMem = new DynamicFreeMem();
-        }
-    }
-
-    public void dumpInfo(PrintWriter printWriter) {
-        printWriter.println("UseDynamicFreeMem: " + isEnableDynamicFreeMem());
-        printWriter.println("MemFreeTarget: " + this.mMemFreeTarget);
-        printWriter.println("ProtectedCountOnLmkdTrigger: " + this.mProtectedCountOnLmkdTrigger);
-        printWriter.println("ProtectedCountOnHomeTrigger: " + this.mProtectedCountOnHomeTrigger);
+    public final void dumpInfo(PrintWriter printWriter) {
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("MemFreeTarget: "), this.mMemFreeTarget, printWriter, "ProtectedCountOnLmkdTrigger: "), this.mProtectedCountOnLmkdTrigger, printWriter, "ProtectedCountOnHomeTrigger: "), this.mProtectedCountOnHomeTrigger, printWriter);
     }
 }

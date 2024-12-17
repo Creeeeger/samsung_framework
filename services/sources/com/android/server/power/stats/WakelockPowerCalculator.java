@@ -8,108 +8,101 @@ import android.util.ArrayMap;
 import android.util.SparseArray;
 import com.android.internal.os.PowerProfile;
 
-/* loaded from: classes3.dex */
-public class WakelockPowerCalculator extends PowerCalculator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WakelockPowerCalculator extends PowerCalculator {
     public final UsageBasedPowerEstimator mPowerEstimator;
-
-    /* loaded from: classes3.dex */
-    public class PowerAndDuration {
-        public long durationMs;
-        public double powerMah;
-
-        public PowerAndDuration() {
-        }
-    }
-
-    @Override // com.android.server.power.stats.PowerCalculator
-    public boolean isPowerComponentSupported(int i) {
-        return i == 12;
-    }
 
     public WakelockPowerCalculator(PowerProfile powerProfile) {
         this.mPowerEstimator = new UsageBasedPowerEstimator(powerProfile.getAveragePower("cpu.idle"));
     }
 
     @Override // com.android.server.power.stats.PowerCalculator
-    public void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
-        int i;
-        PowerAndDuration powerAndDuration = new PowerAndDuration();
+    public final void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
+        UsageBasedPowerEstimator usageBasedPowerEstimator;
+        long j3;
+        double d;
+        long j4;
+        BatteryUsageStats.Builder builder2;
+        BatteryStats batteryStats2 = batteryStats;
+        long j5 = j;
         SparseArray uidBatteryConsumerBuilders = builder.getUidBatteryConsumerBuilders();
-        UidBatteryConsumer.Builder builder2 = null;
-        double d = 0.0d;
+        int size = uidBatteryConsumerBuilders.size() - 1;
+        UidBatteryConsumer.Builder builder3 = null;
+        long j6 = 0;
         double d2 = 0.0d;
-        long j3 = 0;
-        long j4 = 0;
-        for (int size = uidBatteryConsumerBuilders.size() - 1; size >= 0; size--) {
-            UidBatteryConsumer.Builder builder3 = (UidBatteryConsumer.Builder) uidBatteryConsumerBuilders.valueAt(size);
-            double d3 = d;
-            long j5 = j3;
-            calculateApp(powerAndDuration, builder3.getBatteryStatsUid(), j, 0);
-            builder3.setUsageDurationMillis(12, powerAndDuration.durationMs).setConsumedPower(12, powerAndDuration.powerMah);
-            if (builder3.isVirtualUid()) {
-                j3 = j5;
+        double d3 = 0.0d;
+        long j7 = 0;
+        while (true) {
+            usageBasedPowerEstimator = this.mPowerEstimator;
+            if (size < 0) {
+                break;
+            }
+            UidBatteryConsumer.Builder builder4 = (UidBatteryConsumer.Builder) uidBatteryConsumerBuilders.valueAt(size);
+            SparseArray sparseArray = uidBatteryConsumerBuilders;
+            ArrayMap wakelockStats = builder4.getBatteryStatsUid().getWakelockStats();
+            UidBatteryConsumer.Builder builder5 = builder3;
+            int size2 = wakelockStats.size();
+            double d4 = d3;
+            int i = 0;
+            long j8 = 0;
+            while (i < size2) {
+                ArrayMap arrayMap = wakelockStats;
+                BatteryStats.Timer wakeTime = ((BatteryStats.Uid.Wakelock) wakelockStats.valueAt(i)).getWakeTime(0);
+                if (wakeTime != null) {
+                    j8 = wakeTime.getTotalTimeLocked(j5, 0) + j8;
+                }
+                i++;
+                wakelockStats = arrayMap;
+            }
+            long j9 = j8 / 1000;
+            double d5 = usageBasedPowerEstimator.mAveragePowerMahPerMs * j9;
+            builder4.setUsageDurationMillis(12, j9).setConsumedPower(12, d5);
+            if (!builder4.isVirtualUid()) {
+                j6 += j9;
+                d2 += d5;
+            }
+            if (builder4.getUid() == 0) {
+                j7 = j9;
+                d3 = d5;
+                builder3 = builder4;
             } else {
-                j3 = j5 + powerAndDuration.durationMs;
-                d2 += powerAndDuration.powerMah;
+                builder3 = builder5;
+                d3 = d4;
             }
-            if (builder3.getUid() == 0) {
-                long j6 = powerAndDuration.durationMs;
-                d = powerAndDuration.powerMah;
-                j4 = j6;
-                builder2 = builder3;
-            } else {
-                d = d3;
-            }
+            size--;
+            batteryStats2 = batteryStats;
+            j5 = j;
+            uidBatteryConsumerBuilders = sparseArray;
         }
-        double d4 = d;
-        long j7 = j3;
-        double d5 = d2;
-        UidBatteryConsumer.Builder builder4 = builder2;
-        calculateRemaining(powerAndDuration, batteryStats, j, j2, 0, d4, j4, j7);
-        double d6 = powerAndDuration.powerMah;
-        if (builder4 != null) {
-            i = 12;
-            builder4.setUsageDurationMillis(12, powerAndDuration.durationMs).setConsumedPower(12, d6);
+        UidBatteryConsumer.Builder builder6 = builder3;
+        double d6 = d3;
+        long batteryUptime = ((batteryStats2.getBatteryUptime(j2) - batteryStats2.getScreenOnTime(j, 0)) / 1000) - j6;
+        if (batteryUptime > 0) {
+            j3 = j6;
+            d = d6 + (usageBasedPowerEstimator.mAveragePowerMahPerMs * batteryUptime);
+            j4 = j7 + batteryUptime;
         } else {
-            i = 12;
+            j3 = j6;
+            d = 0.0d;
+            j4 = 0;
         }
-        long calculateWakeTimeMillis = calculateWakeTimeMillis(batteryStats, j, j2);
-        if (calculateWakeTimeMillis < 0) {
-            calculateWakeTimeMillis = 0;
+        if (builder6 != null) {
+            builder6.setUsageDurationMillis(12, j4).setConsumedPower(12, d);
         }
-        int i2 = i;
-        builder.getAggregateBatteryConsumerBuilder(0).setUsageDurationMillis(i2, calculateWakeTimeMillis).setConsumedPower(i2, d6 + d5);
-        builder.getAggregateBatteryConsumerBuilder(1).setUsageDurationMillis(i2, j7).setConsumedPower(i2, d5);
-    }
-
-    public final void calculateApp(PowerAndDuration powerAndDuration, BatteryStats.Uid uid, long j, int i) {
-        ArrayMap wakelockStats = uid.getWakelockStats();
-        int size = wakelockStats.size();
-        long j2 = 0;
-        for (int i2 = 0; i2 < size; i2++) {
-            BatteryStats.Timer wakeTime = ((BatteryStats.Uid.Wakelock) wakelockStats.valueAt(i2)).getWakeTime(0);
-            if (wakeTime != null) {
-                j2 += wakeTime.getTotalTimeLocked(j, i);
-            }
-        }
-        long j3 = j2 / 1000;
-        powerAndDuration.durationMs = j3;
-        powerAndDuration.powerMah = this.mPowerEstimator.calculatePower(j3);
-    }
-
-    public final void calculateRemaining(PowerAndDuration powerAndDuration, BatteryStats batteryStats, long j, long j2, int i, double d, long j3, long j4) {
-        long calculateWakeTimeMillis = calculateWakeTimeMillis(batteryStats, j, j2) - j4;
-        if (calculateWakeTimeMillis > 0) {
-            double calculatePower = this.mPowerEstimator.calculatePower(calculateWakeTimeMillis);
-            powerAndDuration.durationMs = j3 + calculateWakeTimeMillis;
-            powerAndDuration.powerMah = d + calculatePower;
+        long batteryUptime2 = (batteryStats2.getBatteryUptime(j2) - batteryStats2.getScreenOnTime(j, 0)) / 1000;
+        if (batteryUptime2 < 0) {
+            builder2 = builder;
+            batteryUptime2 = 0;
         } else {
-            powerAndDuration.durationMs = 0L;
-            powerAndDuration.powerMah = 0.0d;
+            builder2 = builder;
         }
+        builder2.getAggregateBatteryConsumerBuilder(0).setUsageDurationMillis(12, batteryUptime2).setConsumedPower(12, d + d2);
+        builder2.getAggregateBatteryConsumerBuilder(1).setUsageDurationMillis(12, j3).setConsumedPower(12, d2);
     }
 
-    public final long calculateWakeTimeMillis(BatteryStats batteryStats, long j, long j2) {
-        return (batteryStats.getBatteryUptime(j2) - batteryStats.getScreenOnTime(j, 0)) / 1000;
+    @Override // com.android.server.power.stats.PowerCalculator
+    public final boolean isPowerComponentSupported(int i) {
+        return i == 12;
     }
 }

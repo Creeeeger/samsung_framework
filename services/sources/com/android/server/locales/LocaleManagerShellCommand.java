@@ -7,282 +7,254 @@ import android.os.LocaleList;
 import android.os.RemoteException;
 import android.os.ShellCommand;
 import android.os.UserHandle;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.UiModeManagerService$13$$ExternalSyntheticOutline0;
 import com.android.server.pm.PackageManagerShellCommandDataLoader;
 import java.io.PrintWriter;
 
-/* loaded from: classes2.dex */
-public class LocaleManagerShellCommand extends ShellCommand {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class LocaleManagerShellCommand extends ShellCommand {
     public final ILocaleManager mBinderService;
 
     public LocaleManagerShellCommand(ILocaleManager iLocaleManager) {
         this.mBinderService = iLocaleManager;
     }
 
-    public int onCommand(String str) {
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    public final int onCommand(String str) {
+        char c;
+        char c2;
         if (str == null) {
             return handleDefaultCommands(str);
         }
-        char c = 65535;
         switch (str.hashCode()) {
             case -843437997:
                 if (str.equals("set-app-localeconfig")) {
                     c = 0;
                     break;
                 }
+                c = 65535;
                 break;
             case -232514593:
                 if (str.equals("get-app-localeconfig")) {
                     c = 1;
                     break;
                 }
+                c = 65535;
                 break;
             case 819706294:
                 if (str.equals("get-app-locales")) {
                     c = 2;
                     break;
                 }
+                c = 65535;
                 break;
             case 1730458818:
                 if (str.equals("set-app-locales")) {
                     c = 3;
                     break;
                 }
+                c = 65535;
+                break;
+            default:
+                c = 65535;
                 break;
         }
         switch (c) {
             case 0:
-                return runSetAppOverrideLocaleConfig();
+                String nextArg = getNextArg();
+                if (nextArg == null) {
+                    getErrPrintWriter().println("Error: no package specified");
+                    return -1;
+                }
+                int currentUser = ActivityManager.getCurrentUser();
+                LocaleConfig localeConfig = null;
+                while (true) {
+                    LocaleList localeList = null;
+                    while (true) {
+                        String nextOption = getNextOption();
+                        if (nextOption == null) {
+                            if (localeList != null) {
+                                try {
+                                    localeConfig = new LocaleConfig(localeList);
+                                } catch (RemoteException e) {
+                                    UiModeManagerService$13$$ExternalSyntheticOutline0.m("Remote Exception: ", e, getOutPrintWriter());
+                                }
+                            }
+                            this.mBinderService.setOverrideLocaleConfig(nextArg, currentUser, localeConfig);
+                            return 0;
+                        }
+                        if (nextOption.equals("--user")) {
+                            currentUser = UserHandle.parseUserArg(getNextArgRequired());
+                        } else {
+                            if (!nextOption.equals("--locales")) {
+                                throw new IllegalArgumentException("Unknown option: ".concat(nextOption));
+                            }
+                            String nextArg2 = getNextArg();
+                            if (nextArg2 == null) {
+                                break;
+                            }
+                            if (nextArg2.equals("empty")) {
+                                localeList = LocaleList.getEmptyLocaleList();
+                            } else {
+                                if (nextArg2.startsWith(PackageManagerShellCommandDataLoader.STDIN_PATH)) {
+                                    throw new IllegalArgumentException("Unknown locales: ".concat(nextArg2));
+                                }
+                                localeList = LocaleList.forLanguageTags(nextArg2);
+                            }
+                        }
+                    }
+                }
             case 1:
-                return runGetAppOverrideLocaleConfig();
+                String nextArg3 = getNextArg();
+                if (nextArg3 == null) {
+                    getErrPrintWriter().println("Error: no package specified");
+                    return -1;
+                }
+                int currentUser2 = ActivityManager.getCurrentUser();
+                String nextOption2 = getNextOption();
+                if (nextOption2 != null) {
+                    if (!"--user".equals(nextOption2)) {
+                        throw new IllegalArgumentException("Unknown option: ".concat(nextOption2));
+                    }
+                    currentUser2 = UserHandle.parseUserArg(getNextArgRequired());
+                }
+                try {
+                    LocaleConfig overrideLocaleConfig = this.mBinderService.getOverrideLocaleConfig(nextArg3, currentUser2);
+                    if (overrideLocaleConfig == null) {
+                        getOutPrintWriter().println("LocaleConfig for " + nextArg3 + " for user " + currentUser2 + " is null");
+                    } else {
+                        LocaleList supportedLocales = overrideLocaleConfig.getSupportedLocales();
+                        if (supportedLocales == null) {
+                            getOutPrintWriter().println("Locales within the LocaleConfig for " + nextArg3 + " for user " + currentUser2 + " are null");
+                        } else {
+                            getOutPrintWriter().println("Locales within the LocaleConfig for " + nextArg3 + " for user " + currentUser2 + " are [" + supportedLocales.toLanguageTags() + "]");
+                        }
+                    }
+                } catch (RemoteException e2) {
+                    UiModeManagerService$13$$ExternalSyntheticOutline0.m("Remote Exception: ", e2, getOutPrintWriter());
+                }
+                return 0;
             case 2:
-                return runGetAppLocales();
+                PrintWriter errPrintWriter = getErrPrintWriter();
+                String nextArg4 = getNextArg();
+                if (nextArg4 == null) {
+                    errPrintWriter.println("Error: no package specified");
+                    return -1;
+                }
+                int currentUser3 = ActivityManager.getCurrentUser();
+                String nextOption3 = getNextOption();
+                if (nextOption3 != null) {
+                    if (!"--user".equals(nextOption3)) {
+                        throw new IllegalArgumentException("Unknown option: ".concat(nextOption3));
+                    }
+                    currentUser3 = UserHandle.parseUserArg(getNextArgRequired());
+                }
+                try {
+                    LocaleList applicationLocales = this.mBinderService.getApplicationLocales(nextArg4, currentUser3);
+                    getOutPrintWriter().println("Locales for " + nextArg4 + " for user " + currentUser3 + " are [" + applicationLocales.toLanguageTags() + "]");
+                } catch (RemoteException e3) {
+                    UiModeManagerService$13$$ExternalSyntheticOutline0.m("Remote Exception: ", e3, getOutPrintWriter());
+                } catch (IllegalArgumentException unused) {
+                    getOutPrintWriter().println("Unknown package " + nextArg4 + " for userId " + currentUser3);
+                }
+                return 0;
             case 3:
-                return runSetAppLocales();
+                PrintWriter errPrintWriter2 = getErrPrintWriter();
+                String nextArg5 = getNextArg();
+                if (nextArg5 == null) {
+                    errPrintWriter2.println("Error: no package specified");
+                    return -1;
+                }
+                int currentUser4 = ActivityManager.getCurrentUser();
+                LocaleList emptyLocaleList = LocaleList.getEmptyLocaleList();
+                while (true) {
+                    boolean z = false;
+                    while (true) {
+                        String nextOption4 = getNextOption();
+                        if (nextOption4 == null) {
+                            try {
+                                this.mBinderService.setApplicationLocales(nextArg5, currentUser4, emptyLocaleList, z);
+                            } catch (RemoteException e4) {
+                                UiModeManagerService$13$$ExternalSyntheticOutline0.m("Remote Exception: ", e4, getOutPrintWriter());
+                            } catch (IllegalArgumentException unused2) {
+                                getOutPrintWriter().println("Unknown package " + nextArg5 + " for userId " + currentUser4);
+                            }
+                            return 0;
+                        }
+                        switch (nextOption4.hashCode()) {
+                            case 835076901:
+                                if (nextOption4.equals("--delegate")) {
+                                    c2 = 0;
+                                    break;
+                                }
+                                c2 = 65535;
+                                break;
+                            case 1333469547:
+                                if (nextOption4.equals("--user")) {
+                                    c2 = 1;
+                                    break;
+                                }
+                                c2 = 65535;
+                                break;
+                            case 1724392377:
+                                if (nextOption4.equals("--locales")) {
+                                    c2 = 2;
+                                    break;
+                                }
+                                c2 = 65535;
+                                break;
+                            default:
+                                c2 = 65535;
+                                break;
+                        }
+                        switch (c2) {
+                            case 0:
+                                String nextArg6 = getNextArg();
+                                if (nextArg6 == null) {
+                                    break;
+                                }
+                                if (!nextArg6.startsWith(PackageManagerShellCommandDataLoader.STDIN_PATH)) {
+                                    z = Boolean.parseBoolean(nextArg6);
+                                    break;
+                                } else {
+                                    throw new IllegalArgumentException("Unknown source: ".concat(nextArg6));
+                                }
+                            case 1:
+                                currentUser4 = UserHandle.parseUserArg(getNextArgRequired());
+                                break;
+                            case 2:
+                                String nextArg7 = getNextArg();
+                                if (nextArg7 == null) {
+                                    emptyLocaleList = LocaleList.getEmptyLocaleList();
+                                    break;
+                                } else if (!nextArg7.startsWith(PackageManagerShellCommandDataLoader.STDIN_PATH)) {
+                                    emptyLocaleList = LocaleList.forLanguageTags(nextArg7);
+                                    break;
+                                } else {
+                                    throw new IllegalArgumentException("Unknown locales: ".concat(nextArg7));
+                                }
+                            default:
+                                throw new IllegalArgumentException("Unknown option: ".concat(nextOption4));
+                        }
+                    }
+                }
             default:
                 return handleDefaultCommands(str);
         }
     }
 
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.println("Locale manager (locale) shell commands:");
         outPrintWriter.println("  help");
         outPrintWriter.println("      Print this help text.");
         outPrintWriter.println("  set-app-locales <PACKAGE_NAME> [--user <USER_ID>] [--locales <LOCALE_INFO>][--delegate <FROM_DELEGATE>]");
-        outPrintWriter.println("      Set the locales for the specified app.");
-        outPrintWriter.println("      --user <USER_ID>: apply for the given user, the current user is used when unspecified.");
-        outPrintWriter.println("      --locales <LOCALE_INFO>: The language tags of locale to be included as a single String separated by commas.");
-        outPrintWriter.println("                 eg. en,en-US,hi ");
-        outPrintWriter.println("                 Empty locale list is used when unspecified.");
-        outPrintWriter.println("      --delegate <FROM_DELEGATE>: The locales are set from a delegate, the value could be true or false. false is the default when unspecified.");
-        outPrintWriter.println("  get-app-locales <PACKAGE_NAME> [--user <USER_ID>]");
-        outPrintWriter.println("      Get the locales for the specified app.");
-        outPrintWriter.println("      --user <USER_ID>: get for the given user, the current user is used when unspecified.");
-        outPrintWriter.println("  set-app-localeconfig <PACKAGE_NAME> [--user <USER_ID>] [--locales <LOCALE_INFO>]");
-        outPrintWriter.println("      Set the override LocaleConfig for the specified app.");
-        outPrintWriter.println("      --user <USER_ID>: apply for the given user, the current user is used when unspecified.");
-        outPrintWriter.println("      --locales <LOCALE_INFO>: The language tags of locale to be included as a single String separated by commas.");
-        outPrintWriter.println("                 eg. en,en-US,hi ");
-        outPrintWriter.println("                 Empty locale list is used when typing a 'empty' word");
-        outPrintWriter.println("                 NULL is used when unspecified.");
-        outPrintWriter.println("  get-app-localeconfig <PACKAGE_NAME> [--user <USER_ID>]");
-        outPrintWriter.println("      Get the locales within the override LocaleConfig for the specified app.");
-        outPrintWriter.println("      --user <USER_ID>: get for the given user, the current user is used when unspecified.");
-    }
-
-    public final int runSetAppLocales() {
-        char c;
-        PrintWriter errPrintWriter = getErrPrintWriter();
-        String nextArg = getNextArg();
-        if (nextArg != null) {
-            int currentUser = ActivityManager.getCurrentUser();
-            LocaleList emptyLocaleList = LocaleList.getEmptyLocaleList();
-            boolean z = false;
-            while (true) {
-                String nextOption = getNextOption();
-                if (nextOption != null) {
-                    switch (nextOption.hashCode()) {
-                        case 835076901:
-                            if (nextOption.equals("--delegate")) {
-                                c = 0;
-                                break;
-                            }
-                            break;
-                        case 1333469547:
-                            if (nextOption.equals("--user")) {
-                                c = 1;
-                                break;
-                            }
-                            break;
-                        case 1724392377:
-                            if (nextOption.equals("--locales")) {
-                                c = 2;
-                                break;
-                            }
-                            break;
-                    }
-                    c = 65535;
-                    switch (c) {
-                        case 0:
-                            z = parseFromDelegate();
-                            break;
-                        case 1:
-                            currentUser = UserHandle.parseUserArg(getNextArgRequired());
-                            break;
-                        case 2:
-                            emptyLocaleList = parseLocales();
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Unknown option: " + nextOption);
-                    }
-                } else {
-                    try {
-                        this.mBinderService.setApplicationLocales(nextArg, currentUser, emptyLocaleList, z);
-                    } catch (RemoteException e) {
-                        getOutPrintWriter().println("Remote Exception: " + e);
-                    } catch (IllegalArgumentException unused) {
-                        getOutPrintWriter().println("Unknown package " + nextArg + " for userId " + currentUser);
-                    }
-                    return 0;
-                }
-            }
-        } else {
-            errPrintWriter.println("Error: no package specified");
-            return -1;
-        }
-    }
-
-    public final int runGetAppLocales() {
-        PrintWriter errPrintWriter = getErrPrintWriter();
-        String nextArg = getNextArg();
-        if (nextArg != null) {
-            int currentUser = ActivityManager.getCurrentUser();
-            String nextOption = getNextOption();
-            if (nextOption != null) {
-                if ("--user".equals(nextOption)) {
-                    currentUser = UserHandle.parseUserArg(getNextArgRequired());
-                } else {
-                    throw new IllegalArgumentException("Unknown option: " + nextOption);
-                }
-            }
-            try {
-                LocaleList applicationLocales = this.mBinderService.getApplicationLocales(nextArg, currentUser);
-                getOutPrintWriter().println("Locales for " + nextArg + " for user " + currentUser + " are [" + applicationLocales.toLanguageTags() + "]");
-                return 0;
-            } catch (RemoteException e) {
-                getOutPrintWriter().println("Remote Exception: " + e);
-                return 0;
-            } catch (IllegalArgumentException unused) {
-                getOutPrintWriter().println("Unknown package " + nextArg + " for userId " + currentUser);
-                return 0;
-            }
-        }
-        errPrintWriter.println("Error: no package specified");
-        return -1;
-    }
-
-    public final int runSetAppOverrideLocaleConfig() {
-        String nextArg = getNextArg();
-        if (nextArg != null) {
-            int currentUser = ActivityManager.getCurrentUser();
-            LocaleConfig localeConfig = null;
-            LocaleList localeList = null;
-            while (true) {
-                String nextOption = getNextOption();
-                if (nextOption != null) {
-                    if (nextOption.equals("--user")) {
-                        currentUser = UserHandle.parseUserArg(getNextArgRequired());
-                    } else if (nextOption.equals("--locales")) {
-                        localeList = parseOverrideLocales();
-                    } else {
-                        throw new IllegalArgumentException("Unknown option: " + nextOption);
-                    }
-                } else {
-                    if (localeList != null) {
-                        try {
-                            localeConfig = new LocaleConfig(localeList);
-                        } catch (RemoteException e) {
-                            getOutPrintWriter().println("Remote Exception: " + e);
-                            return 0;
-                        }
-                    }
-                    this.mBinderService.setOverrideLocaleConfig(nextArg, currentUser, localeConfig);
-                    return 0;
-                }
-            }
-        } else {
-            getErrPrintWriter().println("Error: no package specified");
-            return -1;
-        }
-    }
-
-    public final int runGetAppOverrideLocaleConfig() {
-        String nextArg = getNextArg();
-        if (nextArg != null) {
-            int currentUser = ActivityManager.getCurrentUser();
-            String nextOption = getNextOption();
-            if (nextOption != null) {
-                if ("--user".equals(nextOption)) {
-                    currentUser = UserHandle.parseUserArg(getNextArgRequired());
-                } else {
-                    throw new IllegalArgumentException("Unknown option: " + nextOption);
-                }
-            }
-            try {
-                LocaleConfig overrideLocaleConfig = this.mBinderService.getOverrideLocaleConfig(nextArg, currentUser);
-                if (overrideLocaleConfig == null) {
-                    getOutPrintWriter().println("LocaleConfig for " + nextArg + " for user " + currentUser + " is null");
-                    return 0;
-                }
-                LocaleList supportedLocales = overrideLocaleConfig.getSupportedLocales();
-                if (supportedLocales == null) {
-                    getOutPrintWriter().println("Locales within the LocaleConfig for " + nextArg + " for user " + currentUser + " are null");
-                    return 0;
-                }
-                getOutPrintWriter().println("Locales within the LocaleConfig for " + nextArg + " for user " + currentUser + " are [" + supportedLocales.toLanguageTags() + "]");
-                return 0;
-            } catch (RemoteException e) {
-                getOutPrintWriter().println("Remote Exception: " + e);
-                return 0;
-            }
-        }
-        getErrPrintWriter().println("Error: no package specified");
-        return -1;
-    }
-
-    public final LocaleList parseOverrideLocales() {
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            return null;
-        }
-        if (nextArg.equals("empty")) {
-            return LocaleList.getEmptyLocaleList();
-        }
-        if (nextArg.startsWith(PackageManagerShellCommandDataLoader.STDIN_PATH)) {
-            throw new IllegalArgumentException("Unknown locales: " + nextArg);
-        }
-        return LocaleList.forLanguageTags(nextArg);
-    }
-
-    public final LocaleList parseLocales() {
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            return LocaleList.getEmptyLocaleList();
-        }
-        if (nextArg.startsWith(PackageManagerShellCommandDataLoader.STDIN_PATH)) {
-            throw new IllegalArgumentException("Unknown locales: " + nextArg);
-        }
-        return LocaleList.forLanguageTags(nextArg);
-    }
-
-    public final boolean parseFromDelegate() {
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            return false;
-        }
-        if (nextArg.startsWith(PackageManagerShellCommandDataLoader.STDIN_PATH)) {
-            throw new IllegalArgumentException("Unknown source: " + nextArg);
-        }
-        return Boolean.parseBoolean(nextArg);
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "      Set the locales for the specified app.", "      --user <USER_ID>: apply for the given user, the current user is used when unspecified.", "      --locales <LOCALE_INFO>: The language tags of locale to be included as a single String separated by commas.", "                 eg. en,en-US,hi ");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "                 Empty locale list is used when unspecified.", "      --delegate <FROM_DELEGATE>: The locales are set from a delegate, the value could be true or false. false is the default when unspecified.", "  get-app-locales <PACKAGE_NAME> [--user <USER_ID>]", "      Get the locales for the specified app.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "      --user <USER_ID>: get for the given user, the current user is used when unspecified.", "  set-app-localeconfig <PACKAGE_NAME> [--user <USER_ID>] [--locales <LOCALE_INFO>]", "      Set the override LocaleConfig for the specified app.", "      --user <USER_ID>: apply for the given user, the current user is used when unspecified.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "      --locales <LOCALE_INFO>: The language tags of locale to be included as a single String separated by commas.", "                 eg. en,en-US,hi ", "                 Empty locale list is used when typing a 'empty' word", "                 NULL is used when unspecified.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  get-app-localeconfig <PACKAGE_NAME> [--user <USER_ID>]", "      Get the locales within the override LocaleConfig for the specified app.", "      --user <USER_ID>: get for the given user, the current user is used when unspecified.");
     }
 }

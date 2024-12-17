@@ -11,8 +11,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
-/* loaded from: classes3.dex */
-public class SignatureVerifier {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SignatureVerifier {
     public final PublicKey mDebugKey;
     public final SignedConfigEvent mEvent;
     public final PublicKey mProdKey;
@@ -37,23 +38,20 @@ public class SignatureVerifier {
         }
     }
 
-    public final boolean verifyWithPublicKey(PublicKey publicKey, byte[] bArr, byte[] bArr2) {
-        Signature signature = Signature.getInstance("SHA256withECDSA");
-        signature.initVerify(publicKey);
-        signature.update(bArr);
-        return signature.verify(bArr2);
-    }
-
-    public boolean verifySignature(String str, String str2) {
+    public final boolean verifySignature(String str, String str2) {
+        SignedConfigEvent signedConfigEvent = this.mEvent;
         try {
             byte[] decode = Base64.getDecoder().decode(str2);
             byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
             if (Build.IS_DEBUGGABLE) {
                 PublicKey publicKey = this.mDebugKey;
                 if (publicKey != null) {
-                    if (verifyWithPublicKey(publicKey, bytes, decode)) {
+                    Signature signature = Signature.getInstance("SHA256withECDSA");
+                    signature.initVerify(publicKey);
+                    signature.update(bytes);
+                    if (signature.verify(decode)) {
                         Slog.i("SignedConfig", "Verified config using debug key");
-                        this.mEvent.verifiedWith = 1;
+                        signedConfigEvent.verifiedWith = 1;
                         return true;
                     }
                 } else {
@@ -63,18 +61,21 @@ public class SignatureVerifier {
             PublicKey publicKey2 = this.mProdKey;
             if (publicKey2 == null) {
                 Slog.e("SignedConfig", "No prod key; construction failed?");
-                this.mEvent.status = 9;
+                signedConfigEvent.status = 9;
                 return false;
             }
-            if (verifyWithPublicKey(publicKey2, bytes, decode)) {
-                Slog.i("SignedConfig", "Verified config using production key");
-                this.mEvent.verifiedWith = 2;
-                return true;
+            Signature signature2 = Signature.getInstance("SHA256withECDSA");
+            signature2.initVerify(publicKey2);
+            signature2.update(bytes);
+            if (!signature2.verify(decode)) {
+                signedConfigEvent.status = 7;
+                return false;
             }
-            this.mEvent.status = 7;
-            return false;
+            Slog.i("SignedConfig", "Verified config using production key");
+            signedConfigEvent.verifiedWith = 2;
+            return true;
         } catch (IllegalArgumentException unused) {
-            this.mEvent.status = 3;
+            signedConfigEvent.status = 3;
             Slog.e("SignedConfig", "Failed to base64 decode signature");
             return false;
         }

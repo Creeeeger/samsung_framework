@@ -3,35 +3,30 @@ package com.android.server.inputmethod;
 import android.app.ActivityThread;
 import android.provider.DeviceConfig;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class InputMethodDeviceConfigs {
-    public final DeviceConfig.OnPropertiesChangedListener mDeviceConfigChangedListener;
+    public final InputMethodDeviceConfigs$$ExternalSyntheticLambda0 mDeviceConfigChangedListener;
     public boolean mHideImeWhenNoEditorFocus;
 
+    /* JADX WARN: Type inference failed for: r0v0, types: [android.provider.DeviceConfig$OnPropertiesChangedListener, com.android.server.inputmethod.InputMethodDeviceConfigs$$ExternalSyntheticLambda0] */
     public InputMethodDeviceConfigs() {
-        DeviceConfig.OnPropertiesChangedListener onPropertiesChangedListener = new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.inputmethod.InputMethodDeviceConfigs$$ExternalSyntheticLambda0
+        ?? r0 = new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.inputmethod.InputMethodDeviceConfigs$$ExternalSyntheticLambda0
             public final void onPropertiesChanged(DeviceConfig.Properties properties) {
-                InputMethodDeviceConfigs.this.lambda$new$0(properties);
-            }
-        };
-        this.mDeviceConfigChangedListener = onPropertiesChangedListener;
-        this.mHideImeWhenNoEditorFocus = DeviceConfig.getBoolean("input_method_manager", "hide_ime_when_no_editor_focus", true);
-        DeviceConfig.addOnPropertiesChangedListener("input_method_manager", ActivityThread.currentApplication().getMainExecutor(), onPropertiesChangedListener);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(DeviceConfig.Properties properties) {
-        if ("input_method_manager".equals(properties.getNamespace())) {
-            for (String str : properties.getKeyset()) {
-                if ("hide_ime_when_no_editor_focus".equals(str)) {
-                    this.mHideImeWhenNoEditorFocus = properties.getBoolean(str, true);
+                InputMethodDeviceConfigs inputMethodDeviceConfigs = InputMethodDeviceConfigs.this;
+                inputMethodDeviceConfigs.getClass();
+                if ("input_method_manager".equals(properties.getNamespace())) {
+                    for (String str : properties.getKeyset()) {
+                        if ("hide_ime_when_no_editor_focus".equals(str)) {
+                            inputMethodDeviceConfigs.mHideImeWhenNoEditorFocus = properties.getBoolean(str, true);
+                        }
+                    }
                 }
             }
-        }
-    }
-
-    public boolean shouldHideImeWhenNoEditorFocus() {
-        return this.mHideImeWhenNoEditorFocus;
+        };
+        this.mDeviceConfigChangedListener = r0;
+        this.mHideImeWhenNoEditorFocus = DeviceConfig.getBoolean("input_method_manager", "hide_ime_when_no_editor_focus", true);
+        DeviceConfig.addOnPropertiesChangedListener("input_method_manager", ActivityThread.currentApplication().getMainExecutor(), (DeviceConfig.OnPropertiesChangedListener) r0);
     }
 
     public void destroy() {

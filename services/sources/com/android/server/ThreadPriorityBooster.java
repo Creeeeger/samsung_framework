@@ -2,16 +2,30 @@ package com.android.server;
 
 import android.os.Process;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class ThreadPriorityBooster {
+    public static final boolean ENABLE_LOCK_GUARD = false;
+    public static final int PRIORITY_NOT_ADJUSTED = Integer.MAX_VALUE;
     public volatile int mBoostToPriority;
     public final int mLockGuardIndex;
-    public final ThreadLocal mThreadState = new ThreadLocal() { // from class: com.android.server.ThreadPriorityBooster.1
+    public final ThreadLocal mThreadState = new AnonymousClass1();
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.ThreadPriorityBooster$1, reason: invalid class name */
+    public final class AnonymousClass1 extends ThreadLocal {
         @Override // java.lang.ThreadLocal
-        public PriorityState initialValue() {
+        public final Object initialValue() {
             return new PriorityState();
         }
-    };
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PriorityState {
+        public int regionCounter;
+        public final int tid = Process.myTid();
+        public int prevPriority = Integer.MAX_VALUE;
+    }
 
     public ThreadPriorityBooster(int i, int i2) {
         this.mBoostToPriority = i;
@@ -40,24 +54,12 @@ public class ThreadPriorityBooster {
         priorityState.prevPriority = Integer.MAX_VALUE;
     }
 
-    public void setBoostToPriority(int i) {
+    public final void setBoostToPriority(int i) {
         this.mBoostToPriority = i;
         PriorityState priorityState = (PriorityState) this.mThreadState.get();
         if (priorityState.regionCounter == 0 || Process.getThreadPriority(priorityState.tid) == i) {
             return;
         }
         Process.setThreadPriority(priorityState.tid, i);
-    }
-
-    /* loaded from: classes.dex */
-    public class PriorityState {
-        public int prevPriority;
-        public int regionCounter;
-        public final int tid;
-
-        public PriorityState() {
-            this.tid = Process.myTid();
-            this.prevPriority = Integer.MAX_VALUE;
-        }
     }
 }

@@ -1,194 +1,48 @@
 package com.android.server.pm;
 
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManagerInternal;
 import android.content.pm.SigningInfo;
-import android.util.Slog;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
-import com.android.server.LocalServices;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.backup.BackupUtils;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Base64;
 import libcore.util.HexEncoding;
 
-/* loaded from: classes3.dex */
-public class ShortcutPackageInfo {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ShortcutPackageInfo {
     public boolean mBackupAllowedInitialized;
-    public boolean mIsShadow;
     public long mLastUpdateTime;
     public ArrayList mSigHashes;
     public long mVersionCode;
     public long mBackupSourceVersionCode = -1;
+    public boolean mIsShadow = false;
     public boolean mBackupAllowed = false;
     public boolean mBackupSourceBackupAllowed = false;
 
-    public ShortcutPackageInfo(long j, long j2, ArrayList arrayList, boolean z) {
+    public ShortcutPackageInfo(long j, long j2, ArrayList arrayList) {
         this.mVersionCode = j;
         this.mLastUpdateTime = j2;
-        this.mIsShadow = z;
         this.mSigHashes = arrayList;
-    }
-
-    public static ShortcutPackageInfo newEmpty() {
-        return new ShortcutPackageInfo(-1L, 0L, new ArrayList(0), false);
-    }
-
-    public boolean isShadow() {
-        return this.mIsShadow;
-    }
-
-    public void setShadow(boolean z) {
-        this.mIsShadow = z;
-    }
-
-    public long getVersionCode() {
-        return this.mVersionCode;
-    }
-
-    public long getBackupSourceVersionCode() {
-        return this.mBackupSourceVersionCode;
-    }
-
-    public boolean isBackupSourceBackupAllowed() {
-        return this.mBackupSourceBackupAllowed;
-    }
-
-    public long getLastUpdateTime() {
-        return this.mLastUpdateTime;
-    }
-
-    public boolean isBackupAllowed() {
-        return this.mBackupAllowed;
-    }
-
-    public void updateFromPackageInfo(PackageInfo packageInfo) {
-        if (packageInfo != null) {
-            this.mVersionCode = packageInfo.getLongVersionCode();
-            this.mLastUpdateTime = packageInfo.lastUpdateTime;
-            this.mBackupAllowed = ShortcutService.shouldBackupApp(packageInfo);
-            this.mBackupAllowedInitialized = true;
-        }
-    }
-
-    public boolean hasSignatures() {
-        return this.mSigHashes.size() > 0;
-    }
-
-    public int canRestoreTo(ShortcutService shortcutService, PackageInfo packageInfo, boolean z) {
-        if (!BackupUtils.signaturesMatch(this.mSigHashes, packageInfo, (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class))) {
-            Slog.w("ShortcutService", "Can't restore: Package signature mismatch");
-            return 102;
-        }
-        if (!shortcutService.isSmartSwitchBackupAllowed() && (!ShortcutService.shouldBackupApp(packageInfo) || !this.mBackupSourceBackupAllowed)) {
-            Slog.w("ShortcutService", "Can't restore: package didn't or doesn't allow backup");
-            return 101;
-        }
-        if (z || packageInfo.getLongVersionCode() >= this.mBackupSourceVersionCode) {
-            return 0;
-        }
-        Slog.w("ShortcutService", String.format("Can't restore: package current version %d < backed up version %d", Long.valueOf(packageInfo.getLongVersionCode()), Long.valueOf(this.mBackupSourceVersionCode)));
-        return 100;
     }
 
     public static ShortcutPackageInfo generateForInstalledPackageForTest(ShortcutService shortcutService, String str, int i) {
-        PackageInfo packageInfoWithSignatures = shortcutService.getPackageInfoWithSignatures(str, i);
-        SigningInfo signingInfo = packageInfoWithSignatures.signingInfo;
+        PackageInfo packageInfo = shortcutService.getPackageInfo(str, i, true);
+        SigningInfo signingInfo = packageInfo.signingInfo;
         if (signingInfo == null) {
-            Slog.e("ShortcutService", "Can't get signatures: package=" + str);
+            BootReceiver$$ExternalSyntheticOutline0.m("Can't get signatures: package=", str, "ShortcutService");
             return null;
         }
-        ShortcutPackageInfo shortcutPackageInfo = new ShortcutPackageInfo(packageInfoWithSignatures.getLongVersionCode(), packageInfoWithSignatures.lastUpdateTime, BackupUtils.hashSignatureArray(signingInfo.getApkContentsSigners()), false);
-        shortcutPackageInfo.mBackupSourceBackupAllowed = ShortcutService.shouldBackupApp(packageInfoWithSignatures);
-        shortcutPackageInfo.mBackupSourceVersionCode = packageInfoWithSignatures.getLongVersionCode();
+        ShortcutPackageInfo shortcutPackageInfo = new ShortcutPackageInfo(packageInfo.getLongVersionCode(), packageInfo.lastUpdateTime, BackupUtils.hashSignatureArray(signingInfo.getApkContentsSigners()));
+        shortcutPackageInfo.mBackupSourceBackupAllowed = (packageInfo.applicationInfo.flags & 32768) != 0;
+        shortcutPackageInfo.mBackupSourceVersionCode = packageInfo.getLongVersionCode();
         return shortcutPackageInfo;
     }
 
-    public void refreshSignature(ShortcutService shortcutService, ShortcutPackageItem shortcutPackageItem) {
-        if (this.mIsShadow) {
-            shortcutService.wtf("Attempted to refresh package info for shadow package " + shortcutPackageItem.getPackageName() + ", user=" + shortcutPackageItem.getOwnerUserId());
-            return;
-        }
-        PackageInfo packageInfoWithSignatures = shortcutService.getPackageInfoWithSignatures(shortcutPackageItem.getPackageName(), shortcutPackageItem.getPackageUserId());
-        if (packageInfoWithSignatures == null) {
-            Slog.w("ShortcutService", "Package not found: " + shortcutPackageItem.getPackageName());
-            return;
-        }
-        SigningInfo signingInfo = packageInfoWithSignatures.signingInfo;
-        if (signingInfo == null) {
-            Slog.w("ShortcutService", "Not refreshing signature for " + shortcutPackageItem.getPackageName() + " since it appears to have no signing info.");
-            return;
-        }
-        this.mSigHashes = BackupUtils.hashSignatureArray(signingInfo.getApkContentsSigners());
-    }
-
-    public void saveToXml(ShortcutService shortcutService, TypedXmlSerializer typedXmlSerializer, boolean z) {
-        if (z && !this.mBackupAllowedInitialized) {
-            shortcutService.wtf("Backup happened before mBackupAllowed is initialized.");
-        }
-        typedXmlSerializer.startTag((String) null, "package-info");
-        ShortcutService.writeAttr(typedXmlSerializer, "version", this.mVersionCode);
-        ShortcutService.writeAttr(typedXmlSerializer, "last_udpate_time", this.mLastUpdateTime);
-        ShortcutService.writeAttr(typedXmlSerializer, "shadow", this.mIsShadow);
-        ShortcutService.writeAttr(typedXmlSerializer, "allow-backup", this.mBackupAllowed);
-        ShortcutService.writeAttr(typedXmlSerializer, "allow-backup-initialized", this.mBackupAllowedInitialized);
-        ShortcutService.writeAttr(typedXmlSerializer, "bk_src_version", this.mBackupSourceVersionCode);
-        ShortcutService.writeAttr(typedXmlSerializer, "bk_src_backup-allowed", this.mBackupSourceBackupAllowed);
-        for (int i = 0; i < this.mSigHashes.size(); i++) {
-            typedXmlSerializer.startTag((String) null, "signature");
-            ShortcutService.writeAttr(typedXmlSerializer, "hash", Base64.getEncoder().encodeToString((byte[]) this.mSigHashes.get(i)));
-            typedXmlSerializer.endTag((String) null, "signature");
-        }
-        typedXmlSerializer.endTag((String) null, "package-info");
-    }
-
-    public void loadFromXml(TypedXmlPullParser typedXmlPullParser, boolean z) {
-        long parseLongAttribute = ShortcutService.parseLongAttribute(typedXmlPullParser, "version", -1L);
-        long parseLongAttribute2 = ShortcutService.parseLongAttribute(typedXmlPullParser, "last_udpate_time");
-        int i = 1;
-        boolean z2 = z || ShortcutService.parseBooleanAttribute(typedXmlPullParser, "shadow");
-        long parseLongAttribute3 = ShortcutService.parseLongAttribute(typedXmlPullParser, "bk_src_version", -1L);
-        boolean parseBooleanAttribute = ShortcutService.parseBooleanAttribute(typedXmlPullParser, "allow-backup", true);
-        boolean parseBooleanAttribute2 = ShortcutService.parseBooleanAttribute(typedXmlPullParser, "bk_src_backup-allowed", true);
-        ArrayList arrayList = new ArrayList();
-        int depth = typedXmlPullParser.getDepth();
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == i || (next == 3 && typedXmlPullParser.getDepth() <= depth)) {
-                break;
-            }
-            if (next == 2) {
-                int depth2 = typedXmlPullParser.getDepth();
-                String name = typedXmlPullParser.getName();
-                if (depth2 == depth + 1) {
-                    name.hashCode();
-                    if (name.equals("signature")) {
-                        arrayList.add(Base64.getDecoder().decode(ShortcutService.parseStringAttribute(typedXmlPullParser, "hash")));
-                        i = 1;
-                    }
-                }
-                ShortcutService.warnForInvalidTag(depth2, name);
-                i = 1;
-            }
-        }
-        if (z) {
-            this.mVersionCode = -1L;
-            this.mBackupSourceVersionCode = parseLongAttribute;
-            this.mBackupSourceBackupAllowed = parseBooleanAttribute;
-        } else {
-            this.mVersionCode = parseLongAttribute;
-            this.mBackupSourceVersionCode = parseLongAttribute3;
-            this.mBackupSourceBackupAllowed = parseBooleanAttribute2;
-        }
-        this.mLastUpdateTime = parseLongAttribute2;
-        this.mIsShadow = z2;
-        this.mSigHashes = arrayList;
-        this.mBackupAllowed = false;
-        this.mBackupAllowedInitialized = false;
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
+    public final void dump(PrintWriter printWriter, String str) {
         printWriter.println();
         printWriter.print(str);
         printWriter.println("PackageInfo:");
@@ -227,5 +81,76 @@ public class ShortcutPackageInfo {
             printWriter.print("SigHash: ");
             printWriter.println(HexEncoding.encode((byte[]) this.mSigHashes.get(i)));
         }
+    }
+
+    public boolean isBackupSourceBackupAllowed() {
+        return this.mBackupSourceBackupAllowed;
+    }
+
+    public final void loadFromXml(TypedXmlPullParser typedXmlPullParser, boolean z) {
+        long parseLongAttribute = ShortcutService.parseLongAttribute(typedXmlPullParser, "version", -1L);
+        long parseLongAttribute2 = ShortcutService.parseLongAttribute(typedXmlPullParser, "last_udpate_time", 0L);
+        boolean z2 = z || ShortcutService.parseLongAttribute(typedXmlPullParser, "shadow", 0L) == 1;
+        long parseLongAttribute3 = ShortcutService.parseLongAttribute(typedXmlPullParser, "bk_src_version", -1L);
+        long j = 1;
+        boolean z3 = ShortcutService.parseLongAttribute(typedXmlPullParser, "allow-backup", j) == 1;
+        boolean z4 = ShortcutService.parseLongAttribute(typedXmlPullParser, "bk_src_backup-allowed", j) == 1;
+        ArrayList arrayList = new ArrayList();
+        int depth = typedXmlPullParser.getDepth();
+        while (true) {
+            int next = typedXmlPullParser.next();
+            if (next == 1 || (next == 3 && typedXmlPullParser.getDepth() <= depth)) {
+                break;
+            }
+            if (next == 2) {
+                int depth2 = typedXmlPullParser.getDepth();
+                String name = typedXmlPullParser.getName();
+                boolean z5 = z2;
+                if (depth2 == depth + 1) {
+                    name.getClass();
+                    if (name.equals("signature")) {
+                        arrayList.add(Base64.getDecoder().decode(typedXmlPullParser.getAttributeValue((String) null, "hash")));
+                        z2 = z5;
+                    }
+                }
+                ShortcutService.warnForInvalidTag(depth2, name);
+                z2 = z5;
+            }
+        }
+        boolean z6 = z2;
+        if (z) {
+            this.mVersionCode = -1L;
+            this.mBackupSourceVersionCode = parseLongAttribute;
+            this.mBackupSourceBackupAllowed = z3;
+        } else {
+            this.mVersionCode = parseLongAttribute;
+            this.mBackupSourceVersionCode = parseLongAttribute3;
+            this.mBackupSourceBackupAllowed = z4;
+        }
+        this.mLastUpdateTime = parseLongAttribute2;
+        this.mIsShadow = z6;
+        this.mSigHashes = arrayList;
+        this.mBackupAllowed = false;
+        this.mBackupAllowedInitialized = false;
+    }
+
+    public final void saveToXml(ShortcutService shortcutService, TypedXmlSerializer typedXmlSerializer, boolean z) {
+        if (z && !this.mBackupAllowedInitialized) {
+            shortcutService.wtf("Backup happened before mBackupAllowed is initialized.", null);
+        }
+        typedXmlSerializer.startTag((String) null, "package-info");
+        ShortcutService.writeAttr(typedXmlSerializer, "version", this.mVersionCode);
+        ShortcutService.writeAttr(typedXmlSerializer, "last_udpate_time", this.mLastUpdateTime);
+        ShortcutService.writeAttr(typedXmlSerializer, "shadow", this.mIsShadow);
+        ShortcutService.writeAttr(typedXmlSerializer, "allow-backup", this.mBackupAllowed);
+        ShortcutService.writeAttr(typedXmlSerializer, "allow-backup-initialized", this.mBackupAllowedInitialized);
+        ShortcutService.writeAttr(typedXmlSerializer, "bk_src_version", this.mBackupSourceVersionCode);
+        ShortcutService.writeAttr(typedXmlSerializer, "bk_src_backup-allowed", this.mBackupSourceBackupAllowed);
+        for (int i = 0; i < this.mSigHashes.size(); i++) {
+            typedXmlSerializer.startTag((String) null, "signature");
+            ShortcutService.writeAttr(typedXmlSerializer, "hash", Base64.getEncoder().encodeToString((byte[]) this.mSigHashes.get(i)));
+            typedXmlSerializer.endTag((String) null, "signature");
+        }
+        typedXmlSerializer.endTag((String) null, "package-info");
     }
 }

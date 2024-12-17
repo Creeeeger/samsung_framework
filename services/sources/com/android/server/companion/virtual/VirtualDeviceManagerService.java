@@ -5,561 +5,157 @@ import android.app.ActivityOptions;
 import android.companion.AssociationInfo;
 import android.companion.CompanionDeviceManager;
 import android.companion.virtual.IVirtualDevice;
-import android.companion.virtual.IVirtualDeviceActivityListener;
+import android.companion.virtual.IVirtualDeviceListener;
 import android.companion.virtual.IVirtualDeviceManager;
-import android.companion.virtual.IVirtualDeviceSoundEffectListener;
 import android.companion.virtual.VirtualDevice;
-import android.companion.virtual.VirtualDeviceParams;
 import android.companion.virtual.sensor.VirtualSensor;
+import android.companion.virtualnative.IVirtualDeviceManagerNative;
 import android.content.Context;
-import android.content.Intent;
+import android.hardware.display.DisplayManagerInternal;
 import android.hardware.display.IVirtualDisplayCallback;
 import android.hardware.display.VirtualDisplayConfig;
 import android.os.Binder;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.LocaleList;
 import android.os.Looper;
 import android.os.Parcel;
+import android.os.RemoteCallbackList;
 import android.os.RemoteException;
-import android.os.UserHandle;
+import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.ExceptionUtils;
 import android.util.Slog;
 import android.util.SparseArray;
 import com.android.internal.util.DumpUtils;
+import com.android.modules.expresslog.Counter;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.LocalServices;
+import com.android.server.SensitiveContentProtectionManagerService$SensitiveContentProtectionManagerServiceBinder$$ExternalSyntheticOutline0;
 import com.android.server.SystemService;
-import com.android.server.companion.virtual.CameraAccessController;
+import com.android.server.accessibility.ProxyManager$$ExternalSyntheticLambda4;
+import com.android.server.audio.AudioService$$ExternalSyntheticLambda1;
+import com.android.server.companion.virtual.InputController;
 import com.android.server.companion.virtual.VirtualDeviceImpl;
-import com.android.server.companion.virtual.VirtualDeviceManagerInternal;
-import com.android.server.companion.virtual.VirtualDeviceManagerService;
+import com.android.server.companion.virtual.VirtualDeviceLog;
+import com.android.server.input.InputManagerService;
 import com.android.server.wm.ActivityInterceptorCallback;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class VirtualDeviceManagerService extends SystemService {
-    public static AtomicInteger sNextUniqueIndex = new AtomicInteger(1);
-    public final ActivityInterceptorCallback mActivityInterceptorCallback;
+public final class VirtualDeviceManagerService extends SystemService {
+    public static final List VIRTUAL_DEVICE_COMPANION_DEVICE_PROFILES = Arrays.asList("android.app.role.SYSTEM_AUTOMOTIVE_PROJECTION", "android.app.role.COMPANION_DEVICE_APP_STREAMING", "android.app.role.COMPANION_DEVICE_NEARBY_DEVICE_STREAMING");
+    public static final AtomicInteger sNextUniqueIndex = new AtomicInteger(1);
+    public ArrayMap mActiveAssociations;
+    public final AnonymousClass2 mActivityInterceptorCallback;
     public final SparseArray mAppsOnVirtualDevices;
-    public final CompanionDeviceManager.OnAssociationsChangedListener mCdmAssociationListener;
+    public final AnonymousClass1 mCdmAssociationListener;
     public final Handler mHandler;
     public final VirtualDeviceManagerImpl mImpl;
-    public final VirtualDeviceManagerInternal mLocalService;
+    public final LocalService mLocalService;
+    public final VirtualDeviceManagerNativeImpl mNativeImpl;
     public final PendingTrampolineMap mPendingTrampolines;
+    public final RemoteCallbackList mVirtualDeviceListeners;
+    public final VirtualDeviceLog mVirtualDeviceLog;
     public final Object mVirtualDeviceManagerLock;
     public final SparseArray mVirtualDevices;
 
-    public VirtualDeviceManagerService(Context context) {
-        super(context);
-        this.mVirtualDeviceManagerLock = new Object();
-        Handler handler = new Handler(Looper.getMainLooper());
-        this.mHandler = handler;
-        this.mPendingTrampolines = new PendingTrampolineMap(handler);
-        this.mCdmAssociationListener = new CompanionDeviceManager.OnAssociationsChangedListener() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService.1
-            public void onAssociationsChanged(List list) {
-                VirtualDeviceManagerService.this.syncVirtualDevicesToCdmAssociations(list);
-            }
-        };
-        this.mVirtualDevices = new SparseArray();
-        this.mAppsOnVirtualDevices = new SparseArray();
-        this.mActivityInterceptorCallback = new ActivityInterceptorCallback() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService.2
-            @Override // com.android.server.wm.ActivityInterceptorCallback
-            public ActivityInterceptorCallback.ActivityInterceptResult onInterceptActivityLaunch(ActivityInterceptorCallback.ActivityInterceptorInfo activityInterceptorInfo) {
-                VirtualDeviceImpl.PendingTrampoline remove;
-                if (activityInterceptorInfo.getCallingPackage() == null || (remove = VirtualDeviceManagerService.this.mPendingTrampolines.remove(activityInterceptorInfo.getCallingPackage())) == null) {
-                    return null;
-                }
-                remove.mResultReceiver.send(0, null);
-                ActivityOptions checkedOptions = activityInterceptorInfo.getCheckedOptions();
-                if (checkedOptions == null) {
-                    checkedOptions = ActivityOptions.makeBasic();
-                }
-                return new ActivityInterceptorCallback.ActivityInterceptResult(activityInterceptorInfo.getIntent(), checkedOptions.setLaunchDisplayId(remove.mDisplayId));
-            }
-        };
-        this.mImpl = new VirtualDeviceManagerImpl();
-        this.mLocalService = new LocalService();
-    }
-
-    @Override // com.android.server.SystemService
-    public void onStart() {
-        publishBinderService("virtualdevice", this.mImpl);
-        publishLocalService(VirtualDeviceManagerInternal.class, this.mLocalService);
-        ((ActivityTaskManagerInternal) getLocalService(ActivityTaskManagerInternal.class)).registerActivityStartInterceptor(3, this.mActivityInterceptorCallback);
-    }
-
-    public void onCameraAccessBlocked(int i) {
-        ArrayList virtualDevicesSnapshot = getVirtualDevicesSnapshot();
-        for (int i2 = 0; i2 < virtualDevicesSnapshot.size(); i2++) {
-            VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) virtualDevicesSnapshot.get(i2);
-            virtualDeviceImpl.showToastWhereUidIsRunning(i, getContext().getString(17043214, virtualDeviceImpl.getDisplayName()), 1, Looper.myLooper());
-        }
-    }
-
-    public CameraAccessController getCameraAccessController(UserHandle userHandle) {
-        int identifier = userHandle.getIdentifier();
-        synchronized (this.mVirtualDeviceManagerLock) {
-            for (int i = 0; i < this.mVirtualDevices.size(); i++) {
-                CameraAccessController cameraAccessController = ((VirtualDeviceImpl) this.mVirtualDevices.valueAt(i)).getCameraAccessController();
-                if (cameraAccessController.getUserId() == identifier) {
-                    return cameraAccessController;
-                }
-            }
-            return new CameraAccessController(getContext().createContextAsUser(userHandle, 0), this.mLocalService, new CameraAccessController.CameraAccessBlockedCallback() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService$$ExternalSyntheticLambda0
-                @Override // com.android.server.companion.virtual.CameraAccessController.CameraAccessBlockedCallback
-                public final void onCameraAccessBlocked(int i2) {
-                    VirtualDeviceManagerService.this.onCameraAccessBlocked(i2);
-                }
-            });
-        }
-    }
-
-    public VirtualDeviceManagerInternal getLocalServiceInstance() {
-        return this.mLocalService;
-    }
-
-    public void notifyRunningAppsChanged(int i, ArraySet arraySet) {
-        synchronized (this.mVirtualDeviceManagerLock) {
-            if (!this.mVirtualDevices.contains(i)) {
-                Slog.e("VirtualDeviceManagerService", "notifyRunningAppsChanged called for unknown deviceId:" + i + " (maybe it was recently closed?)");
-                return;
-            }
-            this.mAppsOnVirtualDevices.put(i, arraySet);
-            this.mLocalService.onAppsOnVirtualDeviceChanged();
-        }
-    }
-
-    public void addVirtualDevice(VirtualDeviceImpl virtualDeviceImpl) {
-        synchronized (this.mVirtualDeviceManagerLock) {
-            this.mVirtualDevices.put(virtualDeviceImpl.getDeviceId(), virtualDeviceImpl);
-        }
-    }
-
-    public boolean removeVirtualDevice(int i) {
-        synchronized (this.mVirtualDeviceManagerLock) {
-            if (!this.mVirtualDevices.contains(i)) {
-                return false;
-            }
-            this.mAppsOnVirtualDevices.remove(i);
-            this.mVirtualDevices.remove(i);
-            Intent intent = new Intent("android.companion.virtual.action.VIRTUAL_DEVICE_REMOVED");
-            intent.putExtra("android.companion.virtual.extra.VIRTUAL_DEVICE_ID", i);
-            intent.setFlags(1073741824);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                getContext().sendBroadcastAsUser(intent, UserHandle.ALL);
-                synchronized (this.mVirtualDeviceManagerLock) {
-                    if (this.mVirtualDevices.size() == 0) {
-                        unregisterCdmAssociationListener();
-                    }
-                }
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                return true;
-            } catch (Throwable th) {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                throw th;
-            }
-        }
-    }
-
-    public final void syncVirtualDevicesToCdmAssociations(List list) {
-        HashSet hashSet = new HashSet();
-        synchronized (this.mVirtualDeviceManagerLock) {
-            if (this.mVirtualDevices.size() == 0) {
-                return;
-            }
-            HashSet hashSet2 = new HashSet(list.size());
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                hashSet2.add(Integer.valueOf(((AssociationInfo) it.next()).getId()));
-            }
-            for (int i = 0; i < this.mVirtualDevices.size(); i++) {
-                VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) this.mVirtualDevices.valueAt(i);
-                if (!hashSet2.contains(Integer.valueOf(virtualDeviceImpl.getAssociationId()))) {
-                    hashSet.add(virtualDeviceImpl);
-                }
-            }
-            Iterator it2 = hashSet.iterator();
-            while (it2.hasNext()) {
-                ((VirtualDeviceImpl) it2.next()).close();
-            }
-        }
-    }
-
-    public final void registerCdmAssociationListener() {
-        ((CompanionDeviceManager) getContext().getSystemService(CompanionDeviceManager.class)).addOnAssociationsChangedListener(getContext().getMainExecutor(), this.mCdmAssociationListener);
-    }
-
-    public final void unregisterCdmAssociationListener() {
-        ((CompanionDeviceManager) getContext().getSystemService(CompanionDeviceManager.class)).removeOnAssociationsChangedListener(this.mCdmAssociationListener);
-    }
-
-    public final ArrayList getVirtualDevicesSnapshot() {
-        ArrayList arrayList;
-        synchronized (this.mVirtualDeviceManagerLock) {
-            arrayList = new ArrayList(this.mVirtualDevices.size());
-            for (int i = 0; i < this.mVirtualDevices.size(); i++) {
-                arrayList.add((VirtualDeviceImpl) this.mVirtualDevices.valueAt(i));
-            }
-        }
-        return arrayList;
-    }
-
-    /* loaded from: classes.dex */
-    public class VirtualDeviceManagerImpl extends IVirtualDeviceManager.Stub {
-        public final VirtualDeviceImpl.PendingTrampolineCallback mPendingTrampolineCallback = new VirtualDeviceImpl.PendingTrampolineCallback() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService.VirtualDeviceManagerImpl.1
-            @Override // com.android.server.companion.virtual.VirtualDeviceImpl.PendingTrampolineCallback
-            public void startWaitingForPendingTrampoline(VirtualDeviceImpl.PendingTrampoline pendingTrampoline) {
-                VirtualDeviceImpl.PendingTrampoline put = VirtualDeviceManagerService.this.mPendingTrampolines.put(pendingTrampoline.mPendingIntent.getCreatorPackage(), pendingTrampoline);
-                if (put != null) {
-                    put.mResultReceiver.send(2, null);
-                }
-            }
-
-            @Override // com.android.server.companion.virtual.VirtualDeviceImpl.PendingTrampolineCallback
-            public void stopWaitingForPendingTrampoline(VirtualDeviceImpl.PendingTrampoline pendingTrampoline) {
-                VirtualDeviceManagerService.this.mPendingTrampolines.remove(pendingTrampoline.mPendingIntent.getCreatorPackage());
-            }
-        };
-
-        public VirtualDeviceManagerImpl() {
-        }
-
-        public IVirtualDevice createVirtualDevice(IBinder iBinder, String str, int i, VirtualDeviceParams virtualDeviceParams, IVirtualDeviceActivityListener iVirtualDeviceActivityListener, IVirtualDeviceSoundEffectListener iVirtualDeviceSoundEffectListener) {
-            VirtualDeviceManagerService.this.getContext().enforceCallingOrSelfPermission("android.permission.CREATE_VIRTUAL_DEVICE", "createVirtualDevice");
-            int callingUid = IVirtualDeviceManager.Stub.getCallingUid();
-            if (!PermissionUtils.validateCallingPackageName(VirtualDeviceManagerService.this.getContext(), str)) {
-                throw new SecurityException("Package name " + str + " does not belong to calling uid " + callingUid);
-            }
-            AssociationInfo associationInfo = getAssociationInfo(str, i);
-            if (associationInfo == null) {
-                throw new IllegalArgumentException("No association with ID " + i);
-            }
-            Objects.requireNonNull(virtualDeviceParams);
-            Objects.requireNonNull(iVirtualDeviceActivityListener);
-            Objects.requireNonNull(iVirtualDeviceSoundEffectListener);
-            CameraAccessController cameraAccessController = VirtualDeviceManagerService.this.getCameraAccessController(IVirtualDeviceManager.Stub.getCallingUserHandle());
-            final int andIncrement = VirtualDeviceManagerService.sNextUniqueIndex.getAndIncrement();
-            VirtualDeviceImpl virtualDeviceImpl = new VirtualDeviceImpl(VirtualDeviceManagerService.this.getContext(), associationInfo, VirtualDeviceManagerService.this, iBinder, callingUid, andIncrement, cameraAccessController, this.mPendingTrampolineCallback, iVirtualDeviceActivityListener, iVirtualDeviceSoundEffectListener, new Consumer() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService$VirtualDeviceManagerImpl$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    VirtualDeviceManagerService.VirtualDeviceManagerImpl.this.lambda$createVirtualDevice$0(andIncrement, (ArraySet) obj);
-                }
-            }, virtualDeviceParams);
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                if (VirtualDeviceManagerService.this.mVirtualDevices.size() == 0) {
-                    long clearCallingIdentity = Binder.clearCallingIdentity();
-                    try {
-                        VirtualDeviceManagerService.this.registerCdmAssociationListener();
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                    } catch (Throwable th) {
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                        throw th;
-                    }
-                }
-                VirtualDeviceManagerService.this.mVirtualDevices.put(andIncrement, virtualDeviceImpl);
-            }
-            return virtualDeviceImpl;
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$createVirtualDevice$0(int i, ArraySet arraySet) {
-            VirtualDeviceManagerService.this.notifyRunningAppsChanged(i, arraySet);
-        }
-
-        public int createVirtualDisplay(VirtualDisplayConfig virtualDisplayConfig, IVirtualDisplayCallback iVirtualDisplayCallback, IVirtualDevice iVirtualDevice, String str) {
-            VirtualDeviceImpl virtualDeviceImpl;
-            Objects.requireNonNull(virtualDisplayConfig);
-            int callingUid = IVirtualDeviceManager.Stub.getCallingUid();
-            if (!PermissionUtils.validateCallingPackageName(VirtualDeviceManagerService.this.getContext(), str)) {
-                throw new SecurityException("Package name " + str + " does not belong to calling uid " + callingUid);
-            }
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(iVirtualDevice.getDeviceId());
-                if (virtualDeviceImpl == null) {
-                    throw new SecurityException("Invalid VirtualDevice");
-                }
-            }
-            if (virtualDeviceImpl.getOwnerUid() != callingUid) {
-                throw new SecurityException("uid " + callingUid + " is not the owner of the supplied VirtualDevice");
-            }
-            int createVirtualDisplay = virtualDeviceImpl.createVirtualDisplay(virtualDisplayConfig, iVirtualDisplayCallback, str);
-            VirtualDeviceManagerService.this.mLocalService.onVirtualDisplayCreated(createVirtualDisplay);
-            return createVirtualDisplay;
-        }
-
-        public List getVirtualDevices() {
-            ArrayList arrayList = new ArrayList();
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                for (int i = 0; i < VirtualDeviceManagerService.this.mVirtualDevices.size(); i++) {
-                    VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.valueAt(i);
-                    arrayList.add(new VirtualDevice(virtualDeviceImpl.getDeviceId(), virtualDeviceImpl.getDeviceName()));
-                }
-            }
-            return arrayList;
-        }
-
-        public int getDevicePolicy(int i, int i2) {
-            int devicePolicy;
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
-                devicePolicy = virtualDeviceImpl != null ? virtualDeviceImpl.getDevicePolicy(i2) : 0;
-            }
-            return devicePolicy;
-        }
-
-        public int getDeviceIdForDisplayId(int i) {
-            if (i != -1 && i != 0) {
-                ArrayList virtualDevicesSnapshot = VirtualDeviceManagerService.this.getVirtualDevicesSnapshot();
-                for (int i2 = 0; i2 < virtualDevicesSnapshot.size(); i2++) {
-                    VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) virtualDevicesSnapshot.get(i2);
-                    if (virtualDeviceImpl.isDisplayOwnedByVirtualDevice(i)) {
-                        return virtualDeviceImpl.getDeviceId();
-                    }
-                }
-            }
-            return 0;
-        }
-
-        public boolean isValidVirtualDeviceId(int i) {
-            boolean contains;
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                contains = VirtualDeviceManagerService.this.mVirtualDevices.contains(i);
-            }
-            return contains;
-        }
-
-        public int getAudioPlaybackSessionId(int i) {
-            int audioPlaybackSessionId;
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
-                audioPlaybackSessionId = virtualDeviceImpl != null ? virtualDeviceImpl.getAudioPlaybackSessionId() : 0;
-            }
-            return audioPlaybackSessionId;
-        }
-
-        public int getAudioRecordingSessionId(int i) {
-            int audioRecordingSessionId;
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
-                audioRecordingSessionId = virtualDeviceImpl != null ? virtualDeviceImpl.getAudioRecordingSessionId() : 0;
-            }
-            return audioRecordingSessionId;
-        }
-
-        public void playSoundEffect(int i, int i2) {
-            VirtualDeviceImpl virtualDeviceImpl;
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
-            }
-            if (virtualDeviceImpl != null) {
-                virtualDeviceImpl.playSoundEffect(i2);
-            }
-        }
-
-        public final AssociationInfo getAssociationInfo(String str, int i) {
-            UserHandle callingUserHandle = IVirtualDeviceManager.Stub.getCallingUserHandle();
-            CompanionDeviceManager companionDeviceManager = (CompanionDeviceManager) VirtualDeviceManagerService.this.getContext().createContextAsUser(callingUserHandle, 0).getSystemService(CompanionDeviceManager.class);
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                List allAssociations = companionDeviceManager.getAllAssociations();
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                int identifier = callingUserHandle.getIdentifier();
-                if (allAssociations != null) {
-                    int size = allAssociations.size();
-                    for (int i2 = 0; i2 < size; i2++) {
-                        AssociationInfo associationInfo = (AssociationInfo) allAssociations.get(i2);
-                        if (associationInfo.belongsToPackage(identifier, str) && i == associationInfo.getId()) {
-                            return associationInfo;
-                        }
-                    }
-                    return null;
-                }
-                Slog.w("VirtualDeviceManagerService", "No associations for user " + identifier);
-                return null;
-            } catch (Throwable th) {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                throw th;
-            }
-        }
-
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
-            try {
-                return super.onTransact(i, parcel, parcel2, i2);
-            } catch (Throwable th) {
-                Slog.e("VirtualDeviceManagerService", "Error during IPC", th);
-                throw ExceptionUtils.propagate(th, RemoteException.class);
-            }
-        }
-
-        public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-            if (DumpUtils.checkDumpAndUsageStatsPermission(VirtualDeviceManagerService.this.getContext(), "VirtualDeviceManagerService", printWriter)) {
-                printWriter.println("Created virtual devices: ");
-                ArrayList virtualDevicesSnapshot = VirtualDeviceManagerService.this.getVirtualDevicesSnapshot();
-                for (int i = 0; i < virtualDevicesSnapshot.size(); i++) {
-                    ((VirtualDeviceImpl) virtualDevicesSnapshot.get(i)).dump(fileDescriptor, printWriter, strArr);
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class LocalService extends VirtualDeviceManagerInternal {
-        public final ArraySet mAllUidsOnVirtualDevice;
-        public final ArrayList mAppsOnVirtualDeviceListeners;
-        public final ArrayList mVirtualDisplayListeners;
+        public final ArrayList mAppsOnVirtualDeviceListeners = new ArrayList();
+        public final ArrayList mPersistentDeviceIdRemovedListeners = new ArrayList();
+        public final ArraySet mAllUidsOnVirtualDevice = new ArraySet();
 
         public LocalService() {
-            this.mVirtualDisplayListeners = new ArrayList();
-            this.mAppsOnVirtualDeviceListeners = new ArrayList();
-            this.mAllUidsOnVirtualDevice = new ArraySet();
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public int getDeviceOwnerUid(int i) {
-            VirtualDeviceImpl virtualDeviceImpl;
+        public final Set getAllPersistentDeviceIds() {
+            Set copyOf;
             synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
+                copyOf = Set.copyOf(VirtualDeviceManagerService.this.mActiveAssociations.keySet());
             }
-            if (virtualDeviceImpl != null) {
-                return virtualDeviceImpl.getOwnerUid();
-            }
-            return -1;
+            return copyOf;
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public VirtualSensor getVirtualSensor(int i, int i2) {
-            VirtualDeviceImpl virtualDeviceImpl;
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
-            }
-            if (virtualDeviceImpl != null) {
-                return virtualDeviceImpl.getVirtualSensorByHandle(i2);
-            }
-            return null;
+        public final int getBaseVirtualDisplayFlags(IVirtualDevice iVirtualDevice) {
+            return ((VirtualDeviceImpl) iVirtualDevice).mBaseVirtualDisplayFlags;
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public ArraySet getDeviceIdsForUid(int i) {
+        public final ArraySet getDeviceIdsForUid(int i) {
             ArrayList virtualDevicesSnapshot = VirtualDeviceManagerService.this.getVirtualDevicesSnapshot();
             ArraySet arraySet = new ArraySet();
             for (int i2 = 0; i2 < virtualDevicesSnapshot.size(); i2++) {
                 VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) virtualDevicesSnapshot.get(i2);
                 if (virtualDeviceImpl.isAppRunningOnVirtualDevice(i)) {
-                    arraySet.add(Integer.valueOf(virtualDeviceImpl.getDeviceId()));
+                    arraySet.add(Integer.valueOf(virtualDeviceImpl.mDeviceId));
                 }
             }
             return arraySet;
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public void onVirtualDisplayCreated(final int i) {
-            final VirtualDeviceManagerInternal.VirtualDisplayListener[] virtualDisplayListenerArr;
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                virtualDisplayListenerArr = (VirtualDeviceManagerInternal.VirtualDisplayListener[]) this.mVirtualDisplayListeners.toArray(new VirtualDeviceManagerInternal.VirtualDisplayListener[0]);
-            }
-            VirtualDeviceManagerService.this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService$LocalService$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    VirtualDeviceManagerService.LocalService.lambda$onVirtualDisplayCreated$0(virtualDisplayListenerArr, i);
-                }
-            });
-        }
-
-        public static /* synthetic */ void lambda$onVirtualDisplayCreated$0(VirtualDeviceManagerInternal.VirtualDisplayListener[] virtualDisplayListenerArr, int i) {
-            for (VirtualDeviceManagerInternal.VirtualDisplayListener virtualDisplayListener : virtualDisplayListenerArr) {
-                virtualDisplayListener.onVirtualDisplayCreated(i);
-            }
-        }
-
-        @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public void onVirtualDisplayRemoved(IVirtualDevice iVirtualDevice, final int i) {
-            final VirtualDeviceManagerInternal.VirtualDisplayListener[] virtualDisplayListenerArr;
+        public final int getDeviceOwnerUid(int i) {
             VirtualDeviceImpl virtualDeviceImpl;
             synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                virtualDisplayListenerArr = (VirtualDeviceManagerInternal.VirtualDisplayListener[]) this.mVirtualDisplayListeners.toArray(new VirtualDeviceManagerInternal.VirtualDisplayListener[0]);
-                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(((VirtualDeviceImpl) iVirtualDevice).getDeviceId());
+                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
             }
             if (virtualDeviceImpl != null) {
-                virtualDeviceImpl.onVirtualDisplayRemoved(i);
+                return virtualDeviceImpl.mOwnerUid;
             }
-            VirtualDeviceManagerService.this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService$LocalService$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    VirtualDeviceManagerService.LocalService.lambda$onVirtualDisplayRemoved$1(virtualDisplayListenerArr, i);
-                }
-            });
-        }
-
-        public static /* synthetic */ void lambda$onVirtualDisplayRemoved$1(VirtualDeviceManagerInternal.VirtualDisplayListener[] virtualDisplayListenerArr, int i) {
-            for (VirtualDeviceManagerInternal.VirtualDisplayListener virtualDisplayListener : virtualDisplayListenerArr) {
-                virtualDisplayListener.onVirtualDisplayRemoved(i);
-            }
+            return -1;
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public void onAppsOnVirtualDeviceChanged() {
-            final VirtualDeviceManagerInternal.AppsOnVirtualDeviceListener[] appsOnVirtualDeviceListenerArr;
-            final ArraySet arraySet = new ArraySet();
+        public final ArraySet getDisplayIdsForDevice(int i) {
+            VirtualDeviceImpl virtualDeviceImpl;
             synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                int size = VirtualDeviceManagerService.this.mAppsOnVirtualDevices.size();
-                for (int i = 0; i < size; i++) {
-                    arraySet.addAll((ArraySet) VirtualDeviceManagerService.this.mAppsOnVirtualDevices.valueAt(i));
-                }
-                if (this.mAllUidsOnVirtualDevice.equals(arraySet)) {
-                    appsOnVirtualDeviceListenerArr = null;
-                } else {
-                    this.mAllUidsOnVirtualDevice.clear();
-                    this.mAllUidsOnVirtualDevice.addAll(arraySet);
-                    appsOnVirtualDeviceListenerArr = (VirtualDeviceManagerInternal.AppsOnVirtualDeviceListener[]) this.mAppsOnVirtualDeviceListeners.toArray(new VirtualDeviceManagerInternal.AppsOnVirtualDeviceListener[0]);
-                }
+                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
             }
-            if (appsOnVirtualDeviceListenerArr != null) {
-                VirtualDeviceManagerService.this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService$LocalService$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        VirtualDeviceManagerService.LocalService.lambda$onAppsOnVirtualDeviceChanged$2(appsOnVirtualDeviceListenerArr, arraySet);
-                    }
-                });
-            }
-        }
-
-        public static /* synthetic */ void lambda$onAppsOnVirtualDeviceChanged$2(VirtualDeviceManagerInternal.AppsOnVirtualDeviceListener[] appsOnVirtualDeviceListenerArr, ArraySet arraySet) {
-            for (VirtualDeviceManagerInternal.AppsOnVirtualDeviceListener appsOnVirtualDeviceListener : appsOnVirtualDeviceListenerArr) {
-                appsOnVirtualDeviceListener.onAppsOnAnyVirtualDeviceChanged(arraySet);
-            }
+            return virtualDeviceImpl == null ? new ArraySet() : (ArraySet) Arrays.stream(virtualDeviceImpl.getDisplayIds()).boxed().collect(Collectors.toCollection(new VirtualDeviceManagerService$LocalService$$ExternalSyntheticLambda1()));
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public void onAuthenticationPrompt(int i) {
+        public final String getPersistentIdForDevice(int i) {
+            VirtualDeviceImpl virtualDeviceImpl;
+            if (i == 0) {
+                return "default:0";
+            }
             synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                for (int i2 = 0; i2 < VirtualDeviceManagerService.this.mVirtualDevices.size(); i2++) {
-                    ((VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.valueAt(i2)).showToastWhereUidIsRunning(i, R.string.config_bodyFontFamilyMedium, 1, Looper.getMainLooper());
-                }
+                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
             }
+            if (virtualDeviceImpl == null) {
+                return null;
+            }
+            return virtualDeviceImpl.mPersistentDeviceId;
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public int getBaseVirtualDisplayFlags(IVirtualDevice iVirtualDevice) {
-            return ((VirtualDeviceImpl) iVirtualDevice).getBaseVirtualDisplayFlags();
-        }
-
-        @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public LocaleList getPreferredLocaleListForUid(int i) {
+        public final LocaleList getPreferredLocaleListForUid(int i) {
+            LocaleList localeList;
             synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
                 for (int i2 = 0; i2 < VirtualDeviceManagerService.this.mAppsOnVirtualDevices.size(); i2++) {
                     if (((ArraySet) VirtualDeviceManagerService.this.mAppsOnVirtualDevices.valueAt(i2)).contains(Integer.valueOf(i))) {
-                        return ((VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(VirtualDeviceManagerService.this.mAppsOnVirtualDevices.keyAt(i2))).getDeviceLocaleList();
+                        VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(VirtualDeviceManagerService.this.mAppsOnVirtualDevices.keyAt(i2));
+                        synchronized (virtualDeviceImpl.mVirtualDeviceLock) {
+                            localeList = virtualDeviceImpl.mLocaleList;
+                        }
+                        return localeList;
                     }
                 }
                 return null;
@@ -567,7 +163,24 @@ public class VirtualDeviceManagerService extends SystemService {
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public boolean isAppRunningOnAnyVirtualDevice(int i) {
+        public final VirtualSensor getVirtualSensor(int i, int i2) {
+            VirtualDeviceImpl virtualDeviceImpl;
+            VirtualSensor virtualSensor;
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
+            }
+            if (virtualDeviceImpl == null) {
+                return null;
+            }
+            SensorController sensorController = virtualDeviceImpl.mSensorController;
+            synchronized (sensorController.mLock) {
+                virtualSensor = (VirtualSensor) sensorController.mVirtualSensors.get(i2);
+            }
+            return virtualSensor;
+        }
+
+        @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
+        public final boolean isAppRunningOnAnyVirtualDevice(int i) {
             ArrayList virtualDevicesSnapshot = VirtualDeviceManagerService.this.getVirtualDevicesSnapshot();
             for (int i2 = 0; i2 < virtualDevicesSnapshot.size(); i2++) {
                 if (((VirtualDeviceImpl) virtualDevicesSnapshot.get(i2)).isAppRunningOnVirtualDevice(i)) {
@@ -578,10 +191,17 @@ public class VirtualDeviceManagerService extends SystemService {
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public boolean isDisplayOwnedByAnyVirtualDevice(int i) {
+        public final boolean isInputDeviceOwnedByVirtualDevice(final int i) {
             ArrayList virtualDevicesSnapshot = VirtualDeviceManagerService.this.getVirtualDevicesSnapshot();
             for (int i2 = 0; i2 < virtualDevicesSnapshot.size(); i2++) {
-                if (((VirtualDeviceImpl) virtualDevicesSnapshot.get(i2)).isDisplayOwnedByVirtualDevice(i)) {
+                if (((VirtualDeviceImpl) virtualDevicesSnapshot.get(i2)).mInputController.getInputDeviceDescriptors().values().stream().anyMatch(new Predicate() { // from class: com.android.server.companion.virtual.VirtualDeviceImpl$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Predicate
+                    public final boolean test(Object obj) {
+                        int i3 = i;
+                        int i4 = VirtualDeviceImpl.$r8$clinit;
+                        return ((InputController.InputDeviceDescriptor) obj).mInputDeviceId == i3;
+                    }
+                })) {
                     return true;
                 }
             }
@@ -589,30 +209,46 @@ public class VirtualDeviceManagerService extends SystemService {
         }
 
         @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public ArraySet getDisplayIdsForDevice(int i) {
+        public final void onAuthenticationPrompt(int i) {
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                for (int i2 = 0; i2 < VirtualDeviceManagerService.this.mVirtualDevices.size(); i2++) {
+                    try {
+                        VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.valueAt(i2);
+                        virtualDeviceImpl.showToastWhereUidIsRunning(i, virtualDeviceImpl.mContext.getString(R.string.config_accountTypeToKeepFirstAccount), Looper.getMainLooper());
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+        }
+
+        @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
+        public final void onVirtualDisplayRemoved(IVirtualDevice iVirtualDevice, int i) {
             VirtualDeviceImpl virtualDeviceImpl;
+            VirtualDeviceImpl.VirtualDisplayWrapper virtualDisplayWrapper;
             synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
+                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(((VirtualDeviceImpl) iVirtualDevice).mDeviceId);
             }
-            return virtualDeviceImpl == null ? new ArraySet() : virtualDeviceImpl.getDisplayIds();
-        }
-
-        @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public void registerVirtualDisplayListener(VirtualDeviceManagerInternal.VirtualDisplayListener virtualDisplayListener) {
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                this.mVirtualDisplayListeners.add(virtualDisplayListener);
-            }
-        }
-
-        @Override // com.android.server.companion.virtual.VirtualDeviceManagerInternal
-        public void registerAppsOnVirtualDeviceListener(VirtualDeviceManagerInternal.AppsOnVirtualDeviceListener appsOnVirtualDeviceListener) {
-            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
-                this.mAppsOnVirtualDeviceListeners.add(appsOnVirtualDeviceListener);
+            if (virtualDeviceImpl != null) {
+                synchronized (virtualDeviceImpl.mVirtualDeviceLock) {
+                    virtualDisplayWrapper = (VirtualDeviceImpl.VirtualDisplayWrapper) virtualDeviceImpl.mVirtualDisplays.removeReturnOld(i);
+                }
+                if (virtualDisplayWrapper == null) {
+                    Slog.w("VirtualDeviceImpl", "Virtual device " + virtualDeviceImpl.mDeviceId + " doesn't have a virtual display with ID " + i);
+                    return;
+                }
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    virtualDisplayWrapper.mWakeLock.release();
+                    virtualDisplayWrapper.mWindowPolicyController.unregisterRunningAppsChangedListener(virtualDeviceImpl);
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
             }
         }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class PendingTrampolineMap {
         public final Handler mHandler;
         public final ConcurrentHashMap mMap = new ConcurrentHashMap();
@@ -620,31 +256,461 @@ public class VirtualDeviceManagerService extends SystemService {
         public PendingTrampolineMap(Handler handler) {
             this.mHandler = handler;
         }
+    }
 
-        public VirtualDeviceImpl.PendingTrampoline put(String str, final VirtualDeviceImpl.PendingTrampoline pendingTrampoline) {
-            VirtualDeviceImpl.PendingTrampoline pendingTrampoline2 = (VirtualDeviceImpl.PendingTrampoline) this.mMap.put(str, pendingTrampoline);
-            this.mHandler.removeCallbacksAndMessages(pendingTrampoline2);
-            this.mHandler.postDelayed(new Runnable() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService$PendingTrampolineMap$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    VirtualDeviceManagerService.PendingTrampolineMap.this.lambda$put$0(pendingTrampoline);
-                }
-            }, pendingTrampoline, 5000L);
-            return pendingTrampoline2;
-        }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class VirtualDeviceManagerImpl extends IVirtualDeviceManager.Stub {
+        public final AnonymousClass1 mPendingTrampolineCallback = new AnonymousClass1();
 
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$put$0(VirtualDeviceImpl.PendingTrampoline pendingTrampoline) {
-            String creatorPackage = pendingTrampoline.mPendingIntent.getCreatorPackage();
-            if (creatorPackage != null) {
-                remove(creatorPackage);
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        /* renamed from: com.android.server.companion.virtual.VirtualDeviceManagerService$VirtualDeviceManagerImpl$1, reason: invalid class name */
+        public final class AnonymousClass1 implements VirtualDeviceImpl.PendingTrampolineCallback {
+            public AnonymousClass1() {
             }
         }
 
-        public VirtualDeviceImpl.PendingTrampoline remove(String str) {
-            VirtualDeviceImpl.PendingTrampoline pendingTrampoline = (VirtualDeviceImpl.PendingTrampoline) this.mMap.remove(str);
-            this.mHandler.removeCallbacksAndMessages(pendingTrampoline);
-            return pendingTrampoline;
+        public VirtualDeviceManagerImpl() {
+        }
+
+        /* JADX WARN: Removed duplicated region for block: B:28:0x012b  */
+        /* JADX WARN: Removed duplicated region for block: B:31:0x0136 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+        /* JADX WARN: Type inference failed for: r2v6, types: [com.android.server.companion.virtual.VirtualDeviceManagerService$VirtualDeviceManagerImpl$$ExternalSyntheticLambda0] */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final android.companion.virtual.IVirtualDevice createVirtualDevice(android.os.IBinder r22, android.content.AttributionSource r23, int r24, android.companion.virtual.VirtualDeviceParams r25, android.companion.virtual.IVirtualDeviceActivityListener r26, android.companion.virtual.IVirtualDeviceSoundEffectListener r27) {
+            /*
+                Method dump skipped, instructions count: 448
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.companion.virtual.VirtualDeviceManagerService.VirtualDeviceManagerImpl.createVirtualDevice(android.os.IBinder, android.content.AttributionSource, int, android.companion.virtual.VirtualDeviceParams, android.companion.virtual.IVirtualDeviceActivityListener, android.companion.virtual.IVirtualDeviceSoundEffectListener):android.companion.virtual.IVirtualDevice");
+        }
+
+        public final int createVirtualDisplay(VirtualDisplayConfig virtualDisplayConfig, IVirtualDisplayCallback iVirtualDisplayCallback, IVirtualDevice iVirtualDevice, String str) {
+            VirtualDeviceImpl virtualDeviceImpl;
+            GenericWindowPolicyController createWindowPolicyControllerLocked;
+            boolean z;
+            Objects.requireNonNull(virtualDisplayConfig);
+            int callingUid = IVirtualDeviceManager.Stub.getCallingUid();
+            if (!PermissionUtils.validateCallingPackageName(VirtualDeviceManagerService.this.getContext(), str)) {
+                throw new SecurityException(SensitiveContentProtectionManagerService$SensitiveContentProtectionManagerServiceBinder$$ExternalSyntheticOutline0.m(callingUid, "Package name ", str, " does not belong to calling uid "));
+            }
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(iVirtualDevice.getDeviceId());
+                if (virtualDeviceImpl == null) {
+                    throw new SecurityException("Invalid VirtualDevice (deviceId = " + iVirtualDevice.getDeviceId() + ")");
+                }
+            }
+            if (virtualDeviceImpl.mOwnerUid != callingUid) {
+                StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(callingUid, "uid ", " is not the owner of the supplied VirtualDevice (deviceId = ");
+                m.append(iVirtualDevice.getDeviceId());
+                m.append(")");
+                throw new SecurityException(m.toString());
+            }
+            synchronized (virtualDeviceImpl.mVirtualDeviceLock) {
+                createWindowPolicyControllerLocked = virtualDeviceImpl.createWindowPolicyControllerLocked(virtualDisplayConfig.getDisplayCategories());
+            }
+            int createVirtualDisplay = virtualDeviceImpl.mDisplayManagerInternal.createVirtualDisplay(virtualDisplayConfig, iVirtualDisplayCallback, virtualDeviceImpl, createWindowPolicyControllerLocked, str);
+            boolean z2 = android.companion.virtual.flags.Flags.interactiveScreenMirror() && virtualDeviceImpl.mDisplayManagerInternal.getDisplayIdToMirror(createVirtualDisplay) != -1;
+            createWindowPolicyControllerLocked.mDisplayId = createVirtualDisplay;
+            createWindowPolicyControllerLocked.mIsMirrorDisplay = z2;
+            createWindowPolicyControllerLocked.mDisplayIdSetLatch.countDown();
+            synchronized (virtualDeviceImpl.mVirtualDeviceLock) {
+                if (virtualDeviceImpl.mVirtualDisplays.contains(createVirtualDisplay)) {
+                    createWindowPolicyControllerLocked.unregisterRunningAppsChangedListener(virtualDeviceImpl);
+                    throw new IllegalStateException("Virtual device already has a virtual display with ID " + createVirtualDisplay);
+                }
+                virtualDeviceImpl.mVirtualDisplays.put(createVirtualDisplay, new VirtualDeviceImpl.VirtualDisplayWrapper(iVirtualDisplayCallback, createWindowPolicyControllerLocked, virtualDeviceImpl.createAndAcquireWakeLockForDisplay(createVirtualDisplay)));
+                z = virtualDeviceImpl.mDefaultShowPointerIcon;
+            }
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                InputManagerService.LocalService localService = virtualDeviceImpl.mInputController.mInputManagerInternal;
+                localService.getClass();
+                boolean z3 = InputManagerService.DEBUG;
+                InputManagerService.this.setPointerIconVisible(z, createVirtualDisplay);
+                InputManagerService.LocalService localService2 = virtualDeviceImpl.mInputController.mInputManagerInternal;
+                localService2.getClass();
+                InputManagerService.this.setMousePointerAccelerationEnabled(false, createVirtualDisplay);
+                InputManagerService.LocalService localService3 = virtualDeviceImpl.mInputController.mInputManagerInternal;
+                localService3.getClass();
+                InputManagerService.this.setDisplayEligibilityForPointerCapture(createVirtualDisplay, false);
+                if ((virtualDeviceImpl.mDisplayManagerInternal.getDisplayInfo(createVirtualDisplay).flags & 128) == 128) {
+                    virtualDeviceImpl.mInputController.mWindowManager.setDisplayImePolicy(createVirtualDisplay, 0);
+                }
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                if (android.companion.virtualdevice.flags.Flags.metricsCollection()) {
+                    Counter.logIncrementWithUid("virtual_devices.value_virtual_display_created_count", virtualDeviceImpl.mAttributionSource.getUid());
+                }
+                return createVirtualDisplay;
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                throw th;
+            }
+        }
+
+        public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+            if (DumpUtils.checkDumpAndUsageStatsPermission(VirtualDeviceManagerService.this.getContext(), "VirtualDeviceManagerService", printWriter)) {
+                printWriter.println("Created virtual devices: ");
+                ArrayList virtualDevicesSnapshot = VirtualDeviceManagerService.this.getVirtualDevicesSnapshot();
+                for (int i = 0; i < virtualDevicesSnapshot.size(); i++) {
+                    ((VirtualDeviceImpl) virtualDevicesSnapshot.get(i)).dump(fileDescriptor, printWriter, strArr);
+                }
+                VirtualDeviceLog virtualDeviceLog = VirtualDeviceManagerService.this.mVirtualDeviceLog;
+                virtualDeviceLog.getClass();
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    Flags.dumpHistory();
+                    printWriter.println("VirtualDevice Log:");
+                    VirtualDeviceLog.UidToPackageNameCache uidToPackageNameCache = new VirtualDeviceLog.UidToPackageNameCache(virtualDeviceLog.mContext.getPackageManager());
+                    Iterator it = virtualDeviceLog.mLogEntries.iterator();
+                    while (it.hasNext()) {
+                        ((VirtualDeviceLog.LogEntry) it.next()).dump(printWriter, uidToPackageNameCache);
+                    }
+                } finally {
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                }
+            }
+        }
+
+        public final List getAllPersistentDeviceIds() {
+            return new ArrayList(VirtualDeviceManagerService.this.mLocalService.getAllPersistentDeviceIds());
+        }
+
+        public final int getAudioPlaybackSessionId(int i) {
+            int audioPlaybackSessionId;
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
+                audioPlaybackSessionId = virtualDeviceImpl != null ? virtualDeviceImpl.mParams.getAudioPlaybackSessionId() : 0;
+            }
+            return audioPlaybackSessionId;
+        }
+
+        public final int getAudioRecordingSessionId(int i) {
+            int audioRecordingSessionId;
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
+                audioRecordingSessionId = virtualDeviceImpl != null ? virtualDeviceImpl.mParams.getAudioRecordingSessionId() : 0;
+            }
+            return audioRecordingSessionId;
+        }
+
+        public final int getDeviceIdForDisplayId(int i) {
+            boolean contains;
+            if (i != -1 && i != 0) {
+                ArrayList virtualDevicesSnapshot = VirtualDeviceManagerService.this.getVirtualDevicesSnapshot();
+                for (int i2 = 0; i2 < virtualDevicesSnapshot.size(); i2++) {
+                    VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) virtualDevicesSnapshot.get(i2);
+                    synchronized (virtualDeviceImpl.mVirtualDeviceLock) {
+                        contains = virtualDeviceImpl.mVirtualDisplays.contains(i);
+                    }
+                    if (contains) {
+                        return virtualDeviceImpl.mDeviceId;
+                    }
+                }
+            }
+            return 0;
+        }
+
+        public final int getDevicePolicy(int i, int i2) {
+            int devicePolicy;
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                try {
+                    VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
+                    devicePolicy = virtualDeviceImpl != null ? virtualDeviceImpl.getDevicePolicy(i2) : 0;
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            return devicePolicy;
+        }
+
+        public final CharSequence getDisplayNameForPersistentDeviceId(String str) {
+            AssociationInfo associationInfo;
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                associationInfo = (AssociationInfo) VirtualDeviceManagerService.this.mActiveAssociations.get(str);
+            }
+            if (associationInfo == null) {
+                return null;
+            }
+            return associationInfo.getDisplayName();
+        }
+
+        public final VirtualDevice getVirtualDevice(int i) {
+            VirtualDeviceImpl virtualDeviceImpl;
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
+            }
+            if (virtualDeviceImpl == null) {
+                return null;
+            }
+            return virtualDeviceImpl.mPublicVirtualDeviceObject;
+        }
+
+        public final List getVirtualDevices() {
+            ArrayList arrayList = new ArrayList();
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                for (int i = 0; i < VirtualDeviceManagerService.this.mVirtualDevices.size(); i++) {
+                    try {
+                        arrayList.add(((VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.valueAt(i)).mPublicVirtualDeviceObject);
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+            return arrayList;
+        }
+
+        public final boolean isValidVirtualDeviceId(int i) {
+            boolean contains;
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                contains = VirtualDeviceManagerService.this.mVirtualDevices.contains(i);
+            }
+            return contains;
+        }
+
+        public final boolean isVirtualDeviceOwnedMirrorDisplay(int i) {
+            return (getDeviceIdForDisplayId(i) == 0 || ((DisplayManagerInternal) LocalServices.getService(DisplayManagerInternal.class)).getDisplayIdToMirror(i) == -1) ? false : true;
+        }
+
+        public final boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
+            try {
+                return super.onTransact(i, parcel, parcel2, i2);
+            } catch (Throwable th) {
+                Slog.e("VirtualDeviceManagerService", "Error during IPC", th);
+                throw ExceptionUtils.propagate(th, RemoteException.class);
+            }
+        }
+
+        public final void playSoundEffect(int i, int i2) {
+            VirtualDeviceImpl virtualDeviceImpl;
+            synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                virtualDeviceImpl = (VirtualDeviceImpl) VirtualDeviceManagerService.this.mVirtualDevices.get(i);
+            }
+            if (virtualDeviceImpl != null) {
+                try {
+                    virtualDeviceImpl.mSoundEffectListener.onPlaySoundEffect(i2);
+                } catch (RemoteException e) {
+                    Slog.w("VirtualDeviceImpl", "Unable to invoke sound effect listener", e);
+                }
+            }
+        }
+
+        public final void registerVirtualDeviceListener(IVirtualDeviceListener iVirtualDeviceListener) {
+            VirtualDeviceManagerService.this.mVirtualDeviceListeners.register(iVirtualDeviceListener);
+        }
+
+        public final void unregisterVirtualDeviceListener(IVirtualDeviceListener iVirtualDeviceListener) {
+            VirtualDeviceManagerService.this.mVirtualDeviceListeners.unregister(iVirtualDeviceListener);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class VirtualDeviceManagerNativeImpl extends IVirtualDeviceManagerNative.Stub {
+        public VirtualDeviceManagerNativeImpl() {
+        }
+
+        public final int[] getDeviceIdsForUid(int i) {
+            return VirtualDeviceManagerService.this.mLocalService.getDeviceIdsForUid(i).stream().mapToInt(new AudioService$$ExternalSyntheticLambda1(2)).toArray();
+        }
+
+        public final int getDevicePolicy(int i, int i2) {
+            return VirtualDeviceManagerService.this.mImpl.getDevicePolicy(i, i2);
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r2v5, types: [com.android.server.companion.virtual.VirtualDeviceManagerService$1] */
+    /* JADX WARN: Type inference failed for: r2v9, types: [com.android.server.companion.virtual.VirtualDeviceManagerService$2] */
+    public VirtualDeviceManagerService(Context context) {
+        super(context);
+        this.mVirtualDeviceManagerLock = new Object();
+        this.mVirtualDeviceLog = new VirtualDeviceLog(getContext());
+        Handler handler = new Handler(Looper.getMainLooper());
+        this.mHandler = handler;
+        this.mPendingTrampolines = new PendingTrampolineMap(handler);
+        this.mActiveAssociations = new ArrayMap();
+        this.mCdmAssociationListener = new CompanionDeviceManager.OnAssociationsChangedListener() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService.1
+            public final void onAssociationsChanged(List list) {
+                VirtualDeviceManagerService virtualDeviceManagerService = VirtualDeviceManagerService.this;
+                virtualDeviceManagerService.getClass();
+                HashSet hashSet = new HashSet();
+                synchronized (virtualDeviceManagerService.mVirtualDeviceManagerLock) {
+                    try {
+                        if (virtualDeviceManagerService.mVirtualDevices.size() == 0) {
+                            return;
+                        }
+                        HashSet hashSet2 = new HashSet(list.size());
+                        Iterator it = list.iterator();
+                        while (it.hasNext()) {
+                            hashSet2.add(Integer.valueOf(((AssociationInfo) it.next()).getId()));
+                        }
+                        for (int i = 0; i < virtualDeviceManagerService.mVirtualDevices.size(); i++) {
+                            VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) virtualDeviceManagerService.mVirtualDevices.valueAt(i);
+                            if (!hashSet2.contains(Integer.valueOf(virtualDeviceImpl.mAssociationInfo.getId()))) {
+                                hashSet.add(virtualDeviceImpl);
+                            }
+                        }
+                        Iterator it2 = hashSet.iterator();
+                        while (it2.hasNext()) {
+                            ((VirtualDeviceImpl) it2.next()).close();
+                        }
+                    } finally {
+                    }
+                }
+            }
+        };
+        this.mVirtualDeviceListeners = new RemoteCallbackList();
+        this.mVirtualDevices = new SparseArray();
+        this.mAppsOnVirtualDevices = new SparseArray();
+        this.mActivityInterceptorCallback = new ActivityInterceptorCallback() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService.2
+            @Override // com.android.server.wm.ActivityInterceptorCallback
+            public final ActivityInterceptorCallback.ActivityInterceptResult onInterceptActivityLaunch(ActivityInterceptorCallback.ActivityInterceptorInfo activityInterceptorInfo) {
+                if (activityInterceptorInfo.getCallingPackage() == null) {
+                    return null;
+                }
+                PendingTrampolineMap pendingTrampolineMap = VirtualDeviceManagerService.this.mPendingTrampolines;
+                VirtualDeviceImpl.PendingTrampoline pendingTrampoline = (VirtualDeviceImpl.PendingTrampoline) pendingTrampolineMap.mMap.remove(activityInterceptorInfo.getCallingPackage());
+                pendingTrampolineMap.mHandler.removeCallbacksAndMessages(pendingTrampoline);
+                if (pendingTrampoline == null) {
+                    return null;
+                }
+                pendingTrampoline.mResultReceiver.send(0, null);
+                ActivityOptions checkedOptions = activityInterceptorInfo.getCheckedOptions();
+                if (checkedOptions == null) {
+                    checkedOptions = ActivityOptions.makeBasic();
+                }
+                return new ActivityInterceptorCallback.ActivityInterceptResult(activityInterceptorInfo.getIntent(), checkedOptions.setLaunchDisplayId(pendingTrampoline.mDisplayId));
+            }
+        };
+        this.mImpl = new VirtualDeviceManagerImpl();
+        this.mNativeImpl = android.companion.virtual.flags.Flags.enableNativeVdm() ? new VirtualDeviceManagerNativeImpl() : null;
+        this.mLocalService = new LocalService();
+    }
+
+    public void addVirtualDevice(VirtualDeviceImpl virtualDeviceImpl) {
+        synchronized (this.mVirtualDeviceManagerLock) {
+            this.mVirtualDevices.put(virtualDeviceImpl.mDeviceId, virtualDeviceImpl);
+        }
+    }
+
+    public VirtualDeviceManagerInternal getLocalServiceInstance() {
+        return this.mLocalService;
+    }
+
+    public final ArrayList getVirtualDevicesSnapshot() {
+        ArrayList arrayList;
+        synchronized (this.mVirtualDeviceManagerLock) {
+            try {
+                arrayList = new ArrayList(this.mVirtualDevices.size());
+                for (int i = 0; i < this.mVirtualDevices.size(); i++) {
+                    arrayList.add((VirtualDeviceImpl) this.mVirtualDevices.valueAt(i));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return arrayList;
+    }
+
+    public void notifyRunningAppsChanged(int i, ArraySet arraySet) {
+        ProxyManager$$ExternalSyntheticLambda4[] proxyManager$$ExternalSyntheticLambda4Arr;
+        synchronized (this.mVirtualDeviceManagerLock) {
+            try {
+                if (!this.mVirtualDevices.contains(i)) {
+                    Slog.e("VirtualDeviceManagerService", "notifyRunningAppsChanged called for unknown deviceId:" + i + " (maybe it was recently closed?)");
+                    return;
+                }
+                this.mAppsOnVirtualDevices.put(i, arraySet);
+                LocalService localService = this.mLocalService;
+                localService.getClass();
+                ArraySet arraySet2 = new ArraySet();
+                synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+                    try {
+                        int size = VirtualDeviceManagerService.this.mAppsOnVirtualDevices.size();
+                        for (int i2 = 0; i2 < size; i2++) {
+                            arraySet2.addAll((ArraySet) VirtualDeviceManagerService.this.mAppsOnVirtualDevices.valueAt(i2));
+                        }
+                        if (localService.mAllUidsOnVirtualDevice.equals(arraySet2)) {
+                            proxyManager$$ExternalSyntheticLambda4Arr = null;
+                        } else {
+                            localService.mAllUidsOnVirtualDevice.clear();
+                            localService.mAllUidsOnVirtualDevice.addAll(arraySet2);
+                            proxyManager$$ExternalSyntheticLambda4Arr = (ProxyManager$$ExternalSyntheticLambda4[]) localService.mAppsOnVirtualDeviceListeners.toArray(new ProxyManager$$ExternalSyntheticLambda4[0]);
+                        }
+                    } finally {
+                    }
+                }
+                if (proxyManager$$ExternalSyntheticLambda4Arr != null) {
+                    VirtualDeviceManagerService.this.mHandler.post(new VirtualDeviceManagerService$LocalService$$ExternalSyntheticLambda0(0, proxyManager$$ExternalSyntheticLambda4Arr, arraySet2));
+                }
+            } finally {
+            }
+        }
+    }
+
+    public final void onCdmAssociationsChanged(List list) {
+        Set keySet;
+        List copyOf;
+        ArrayMap arrayMap = new ArrayMap();
+        for (int i = 0; i < list.size(); i++) {
+            AssociationInfo associationInfo = (AssociationInfo) list.get(i);
+            if (VIRTUAL_DEVICE_COMPANION_DEVICE_PROFILES.contains(associationInfo.getDeviceProfile()) && !associationInfo.isRevoked()) {
+                int id = associationInfo.getId();
+                int i2 = VirtualDeviceImpl.$r8$clinit;
+                arrayMap.put("companion:" + id, associationInfo);
+            }
+        }
+        HashSet hashSet = new HashSet();
+        synchronized (this.mVirtualDeviceManagerLock) {
+            try {
+                keySet = this.mActiveAssociations.keySet();
+                keySet.removeAll(arrayMap.keySet());
+                this.mActiveAssociations = arrayMap;
+                for (int i3 = 0; i3 < this.mVirtualDevices.size(); i3++) {
+                    VirtualDeviceImpl virtualDeviceImpl = (VirtualDeviceImpl) this.mVirtualDevices.valueAt(i3);
+                    if (keySet.contains(virtualDeviceImpl.mPersistentDeviceId)) {
+                        hashSet.add(virtualDeviceImpl);
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        Iterator it = hashSet.iterator();
+        while (it.hasNext()) {
+            ((VirtualDeviceImpl) it.next()).close();
+        }
+        if (keySet.isEmpty()) {
+            return;
+        }
+        LocalService localService = this.mLocalService;
+        synchronized (VirtualDeviceManagerService.this.mVirtualDeviceManagerLock) {
+            copyOf = List.copyOf(localService.mPersistentDeviceIdRemovedListeners);
+        }
+        VirtualDeviceManagerService.this.mHandler.post(new VirtualDeviceManagerService$LocalService$$ExternalSyntheticLambda0(keySet, copyOf));
+    }
+
+    @Override // com.android.server.SystemService
+    public final void onStart() {
+        publishBinderService("virtualdevice", this.mImpl);
+        if (android.companion.virtual.flags.Flags.enableNativeVdm()) {
+            publishBinderService("virtualdevice_native", this.mNativeImpl);
+        }
+        publishLocalService(VirtualDeviceManagerInternal.class, this.mLocalService);
+        ((ActivityTaskManagerInternal) getLocalService(ActivityTaskManagerInternal.class)).registerActivityStartInterceptor(3, this.mActivityInterceptorCallback);
+        if (android.companion.virtual.flags.Flags.persistentDeviceIdApi()) {
+            CompanionDeviceManager companionDeviceManager = (CompanionDeviceManager) getContext().getSystemService(CompanionDeviceManager.class);
+            if (companionDeviceManager == null) {
+                Slog.e("VirtualDeviceManagerService", "Failed to find CompanionDeviceManager. No CDM association info  will be available.");
+            } else {
+                onCdmAssociationsChanged(companionDeviceManager.getAllAssociations(-1));
+                companionDeviceManager.addOnAssociationsChangedListener(getContext().getMainExecutor(), new CompanionDeviceManager.OnAssociationsChangedListener() { // from class: com.android.server.companion.virtual.VirtualDeviceManagerService$$ExternalSyntheticLambda0
+                    public final void onAssociationsChanged(List list) {
+                        VirtualDeviceManagerService.this.onCdmAssociationsChanged(list);
+                    }
+                }, -1);
+            }
         }
     }
 }

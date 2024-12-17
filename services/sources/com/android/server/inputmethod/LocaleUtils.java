@@ -1,87 +1,69 @@
 package com.android.server.inputmethod;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.icu.util.ULocale;
 import android.os.LocaleList;
 import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.view.inputmethod.InputMethodSubtype;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class LocaleUtils {
 
-    /* loaded from: classes2.dex */
-    public interface LocaleExtractor {
-        Locale get(Object obj);
-    }
-
-    public static byte calculateMatchingSubScore(ULocale uLocale, ULocale uLocale2) {
-        if (uLocale.equals(uLocale2)) {
-            return (byte) 3;
-        }
-        String script = uLocale.getScript();
-        if (script.isEmpty() || !script.equals(uLocale2.getScript())) {
-            return (byte) 1;
-        }
-        String country = uLocale.getCountry();
-        return (country.isEmpty() || !country.equals(uLocale2.getCountry())) ? (byte) 2 : (byte) 3;
-    }
-
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class ScoreEntry implements Comparable {
-        public int mIndex = -1;
+        public int mIndex;
         public final byte[] mScore;
 
-        public ScoreEntry(byte[] bArr, int i) {
+        public ScoreEntry(int i, byte[] bArr) {
+            this.mIndex = -1;
             this.mScore = new byte[bArr.length];
-            set(bArr, i);
-        }
-
-        public final void set(byte[] bArr, int i) {
             int i2 = 0;
             while (true) {
                 byte[] bArr2 = this.mScore;
-                if (i2 < bArr2.length) {
-                    bArr2[i2] = bArr[i2];
-                    i2++;
-                } else {
+                if (i2 >= bArr2.length) {
                     this.mIndex = i;
                     return;
+                } else {
+                    bArr2[i2] = bArr[i2];
+                    i2++;
                 }
             }
-        }
-
-        public void updateIfBetter(byte[] bArr, int i) {
-            if (compare(this.mScore, bArr) == -1) {
-                set(bArr, i);
-            }
-        }
-
-        public static int compare(byte[] bArr, byte[] bArr2) {
-            for (int i = 0; i < bArr.length; i++) {
-                byte b = bArr[i];
-                byte b2 = bArr2[i];
-                if (b > b2) {
-                    return 1;
-                }
-                if (b < b2) {
-                    return -1;
-                }
-            }
-            return 0;
         }
 
         @Override // java.lang.Comparable
-        public int compareTo(ScoreEntry scoreEntry) {
-            return compare(this.mScore, scoreEntry.mScore) * (-1);
+        public final int compareTo(Object obj) {
+            byte[] bArr = this.mScore;
+            byte[] bArr2 = ((ScoreEntry) obj).mScore;
+            int i = 0;
+            int i2 = 0;
+            while (true) {
+                if (i2 >= bArr.length) {
+                    break;
+                }
+                byte b = bArr[i2];
+                byte b2 = bArr2[i2];
+                if (b > b2) {
+                    i = 1;
+                    break;
+                }
+                if (b < b2) {
+                    i = -1;
+                    break;
+                }
+                i2++;
+            }
+            return i * (-1);
         }
     }
 
-    public static void filterByLanguage(List list, LocaleExtractor localeExtractor, LocaleList localeList, ArrayList arrayList) {
+    public static void filterByLanguage(List list, LocaleList localeList, ArrayList arrayList) {
+        byte b;
+        byte b2;
         if (localeList.isEmpty()) {
             return;
         }
@@ -90,57 +72,96 @@ public abstract class LocaleUtils {
         byte[] bArr = new byte[size];
         ULocale[] uLocaleArr = new ULocale[size];
         int size2 = list.size();
-        for (int i = 0; i < size2; i++) {
-            Locale locale = localeExtractor.get(list.get(i));
-            if (locale != null) {
+        byte b3 = 0;
+        int i = 0;
+        while (i < size2) {
+            InputMethodSubtype inputMethodSubtype = (InputMethodSubtype) list.get(i);
+            Locale localeObject = inputMethodSubtype != null ? inputMethodSubtype.getLocaleObject() : null;
+            if (localeObject != null) {
+                int i2 = b3;
                 boolean z = true;
-                for (int i2 = 0; i2 < size; i2++) {
-                    Locale locale2 = localeList.get(i2);
-                    if (!TextUtils.equals(locale.getLanguage(), locale2.getLanguage())) {
-                        bArr[i2] = 0;
-                    } else {
+                while (i2 < size) {
+                    Locale locale = localeList.get(i2);
+                    if (TextUtils.equals(localeObject.getLanguage(), locale.getLanguage())) {
                         if (uLocaleArr[i2] == null) {
-                            uLocaleArr[i2] = ULocale.addLikelySubtags(ULocale.forLocale(locale2));
+                            uLocaleArr[i2] = ULocale.addLikelySubtags(ULocale.forLocale(locale));
                         }
-                        byte calculateMatchingSubScore = calculateMatchingSubScore(uLocaleArr[i2], ULocale.addLikelySubtags(ULocale.forLocale(locale)));
-                        bArr[i2] = calculateMatchingSubScore;
-                        if (z && calculateMatchingSubScore != 0) {
+                        ULocale uLocale = uLocaleArr[i2];
+                        ULocale forLocale = ULocale.forLocale(localeObject);
+                        byte b4 = 4;
+                        if (!uLocale.equals(forLocale)) {
+                            ULocale addLikelySubtags = ULocale.addLikelySubtags(forLocale);
+                            String script = uLocale.getScript();
+                            if (script.isEmpty() || !script.equals(addLikelySubtags.getScript())) {
+                                b4 = 1;
+                            } else {
+                                String country = uLocale.getCountry();
+                                if (country.isEmpty() || !country.equals(addLikelySubtags.getCountry())) {
+                                    b4 = 2;
+                                } else {
+                                    String script2 = forLocale.getScript();
+                                    String country2 = forLocale.getCountry();
+                                    if ((!script2.isEmpty() && !script2.equals(addLikelySubtags.getScript())) || (!country2.isEmpty() && !country2.equals(addLikelySubtags.getCountry()))) {
+                                        b4 = 3;
+                                    }
+                                }
+                            }
+                        }
+                        bArr[i2] = b4;
+                        if (z && b4 != 0) {
                             z = false;
                         }
+                    } else {
+                        bArr[i2] = b3;
                     }
+                    i2++;
+                    b3 = 0;
                 }
                 if (!z) {
-                    String language = locale.getLanguage();
+                    String language = localeObject.getLanguage();
                     ScoreEntry scoreEntry = (ScoreEntry) arrayMap.get(language);
                     if (scoreEntry == null) {
-                        arrayMap.put(language, new ScoreEntry(bArr, i));
+                        arrayMap.put(language, new ScoreEntry(i, bArr));
                     } else {
-                        scoreEntry.updateIfBetter(bArr, i);
+                        byte[] bArr2 = scoreEntry.mScore;
+                        int i3 = 0;
+                        while (true) {
+                            if (i3 < bArr2.length && (b = bArr2[i3]) <= (b2 = bArr[i3])) {
+                                if (b < b2) {
+                                    int i4 = 0;
+                                    while (true) {
+                                        byte[] bArr3 = scoreEntry.mScore;
+                                        if (i4 >= bArr3.length) {
+                                            break;
+                                        }
+                                        bArr3[i4] = bArr[i4];
+                                        i4++;
+                                    }
+                                    scoreEntry.mIndex = i;
+                                } else {
+                                    i3++;
+                                }
+                            }
+                        }
                     }
                 }
             }
+            i++;
+            b3 = 0;
         }
         int size3 = arrayMap.size();
         ScoreEntry[] scoreEntryArr = new ScoreEntry[size3];
-        for (int i3 = 0; i3 < size3; i3++) {
-            scoreEntryArr[i3] = (ScoreEntry) arrayMap.valueAt(i3);
+        for (int i5 = 0; i5 < size3; i5++) {
+            scoreEntryArr[i5] = (ScoreEntry) arrayMap.valueAt(i5);
         }
         Arrays.sort(scoreEntryArr);
-        for (int i4 = 0; i4 < size3; i4++) {
-            arrayList.add(list.get(scoreEntryArr[i4].mIndex));
+        for (int i6 = 0; i6 < size3; i6++) {
+            arrayList.add(list.get(scoreEntryArr[i6].mIndex));
         }
     }
 
     public static String getLanguageFromLocaleString(String str) {
         int indexOf = str.indexOf(95);
         return indexOf < 0 ? str : str.substring(0, indexOf);
-    }
-
-    public static Locale getSystemLocaleFromContext(Context context) {
-        try {
-            return context.getResources().getConfiguration().locale;
-        } catch (Resources.NotFoundException unused) {
-            return null;
-        }
     }
 }

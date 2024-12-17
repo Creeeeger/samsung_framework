@@ -10,6 +10,7 @@ import android.hardware.input.InputManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Process;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.sec.enterprise.auditlog.AuditLog;
@@ -20,20 +21,31 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.WindowManager;
+import android.view.WindowManagerGlobal;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.KnoxCaptureInputFilter$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
+import com.android.server.UiModeManagerService$13$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountsDb$CeDatabaseHelper$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.EnterpriseServiceCallback;
+import com.android.server.enterprise.accessControl.EnterpriseAccessController;
 import com.android.server.enterprise.adapter.AdapterRegistry;
 import com.android.server.enterprise.adapter.IPersonaManagerAdapter;
 import com.android.server.enterprise.adapterlayer.PackageManagerAdapter;
-import com.android.server.enterprise.common.EnterprisePermissionChecker;
+import com.android.server.enterprise.adapterlayer.PersonaManagerAdapter;
 import com.android.server.enterprise.storage.EdmStorageProvider;
 import com.android.server.enterprise.utils.Utils;
+import com.android.server.input.KeyboardMetricsCollector;
 import com.samsung.android.desktopmode.SemDesktopModeManager;
 import com.samsung.android.knox.ContextInfo;
 import com.samsung.android.knox.EnterpriseDeviceManager;
+import com.samsung.android.knox.SemPersonaManager;
 import com.samsung.android.knox.localservice.RemoteInjectionInternal;
 import com.samsung.android.knox.remotecontrol.IRemoteInjection;
+import com.samsung.android.knox.remotecontrol.IRemoteScreenWatcherCallback;
+import com.samsung.android.rune.CoreRune;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -41,322 +53,65 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-/* loaded from: classes2.dex */
-public class RemoteInjectionService extends IRemoteInjection.Stub implements EnterpriseServiceCallback {
-    public static RemoteInjectionService mSelf;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RemoteInjectionService extends IRemoteInjection.Stub implements EnterpriseServiceCallback {
     public final Context mContext;
     public int mCurrentDisplayHeight;
     public int mCurrentDisplayWidth;
     public int mDexScreenHeight;
     public int mDexScreenWidth;
     public EnterpriseDeviceManager mEDM;
-    public EdmStorageProvider mEdmStorageProvider;
+    public final EdmStorageProvider mEdmStorageProvider;
     public final Injector mInjector;
     public int mKnoxRemoteScreenSessionOwnerUid;
-    public SparseArray mRemoteControlDisabled;
+    public final SparseArray mRemoteControlDisabled;
     public int mRemoteScreenHeight;
+    public IRemoteScreenWatcherCallback mRemoteScreenWatcherCallback;
     public int mRemoteScreenWidth;
     public WindowManager mWindowManager;
 
-    public final int getDisplayIdDex() {
-        return 2;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Injector {
+        public final Context mContext;
+
+        public Injector(Context context) {
+            this.mContext = context;
+        }
     }
 
-    public final boolean isDexDisplay(int i) {
-        return i != 0;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalService extends RemoteInjectionInternal {
+        public LocalService() {
+        }
 
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void notifyToAddSystemService(String str, IBinder iBinder) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminAdded(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onPreAdminRemoval(int i) {
+        public final boolean isRemoteControlDisabled(int i) {
+            return RemoteInjectionService.this.isRemoteControlDisabled(i);
+        }
     }
 
     public RemoteInjectionService(Context context) {
-        this(new Injector(context));
-    }
-
-    public RemoteInjectionService(Injector injector) {
+        Injector injector = new Injector(context);
         this.mRemoteControlDisabled = new SparseArray();
         this.mEDM = null;
         this.mEdmStorageProvider = null;
         this.mWindowManager = null;
-        this.mContext = injector.mContext;
+        this.mContext = context;
         this.mInjector = injector;
-        Display defaultDisplay = getWindowManager().getDefaultDisplay();
+        WindowManager windowManager = (WindowManager) context.getSystemService("window");
+        this.mWindowManager = windowManager;
+        Display defaultDisplay = windowManager.getDefaultDisplay();
         updateCurrentDisplayDimensions(0);
         this.mRemoteScreenWidth = isInPortrait(defaultDisplay) ? this.mCurrentDisplayWidth : this.mCurrentDisplayHeight;
         this.mRemoteScreenHeight = isInPortrait(defaultDisplay) ? this.mCurrentDisplayHeight : this.mCurrentDisplayWidth;
-        this.mEdmStorageProvider = injector.getEDMStorageProvider();
-        updateKnoxRemoteScreenSessionUid(-1);
-        mSelf = this;
+        this.mEdmStorageProvider = new EdmStorageProvider(context);
+        this.mKnoxRemoteScreenSessionOwnerUid = -1;
         this.mDexScreenWidth = 0;
         this.mDexScreenHeight = 0;
         LocalServices.addService(RemoteInjectionInternal.class, new LocalService());
     }
 
-    public final boolean isInPortrait(Display display) {
-        int rotation = display.getRotation();
-        return rotation == 0 || rotation == 2;
-    }
-
-    public final EnterpriseDeviceManager getEDM() {
-        if (this.mEDM == null) {
-            this.mEDM = this.mInjector.getEnterpriseDeviceManager();
-        }
-        return this.mEDM;
-    }
-
-    public final ContextInfo enforceRemoteControlPermission(ContextInfo contextInfo, boolean z) {
-        if (z) {
-            return getEDM().enforceDoPoOnlyPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_ADVANCED_RESTRICTION")));
-        }
-        return getEDM().enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_REMOTE_CONTROL")));
-    }
-
-    public final void enforceRemoteControlPermissionNoActiveAdmin() {
-        EnterprisePermissionChecker.getInstance(this.mContext).enforceCallingOrSelfPermissions(new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_REMOTE_CONTROL")), null);
-    }
-
-    public final void enforceRemoteDexPermissionNoActiveAdmin() {
-        EnterprisePermissionChecker.getInstance(this.mContext).enforceCallingOrSelfPermissions(new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_ADVANCED_RESTRICTION")), null);
-    }
-
-    public final void enforceSystemUser() {
-        if (Binder.getCallingPid() != Process.myPid()) {
-            throw new SecurityException("Can only be called by system user");
-        }
-    }
-
-    public boolean injectKeyEvent(KeyEvent keyEvent, boolean z) {
-        long clearCallingIdentity;
-        int callingUid = Binder.getCallingUid();
-        int userId = UserHandle.getUserId(callingUid);
-        boolean z2 = false;
-        if (keyEvent == null) {
-            clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a keystroke event into the UI failed", userId);
-                return false;
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-        enforceRemoteControlPermissionNoActiveAdmin();
-        clearCallingIdentity = Binder.clearCallingIdentity();
-        if (isRemoteInjectionDisabled(callingUid)) {
-            Slog.d("RemoteInjection", "Remote Control is disabled, couldnt inject key event");
-            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a keystroke event into the UI failed", userId);
-            return false;
-        }
-        if (keyEvent.getDisplayId() != getDisplayIdDex()) {
-            keyEvent.setDisplayId(0);
-        }
-        try {
-            z2 = injectKeyEventInternal(keyEvent, z);
-        } catch (Exception e) {
-            Slog.d("RemoteInjection", "Error injecting key event : " + e);
-        }
-        if (z2) {
-            AuditLog.logAsUser(5, 4, true, Process.myPid(), "RemoteInjectionService", "Remotely injecting a keystroke event into the UI succeeded", userId);
-        } else {
-            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a keystroke event into the UI failed", userId);
-        }
-        return z2;
-    }
-
-    public boolean injectPointerEvent(MotionEvent motionEvent, boolean z) {
-        enforceRemoteControlPermissionNoActiveAdmin();
-        int callingUid = Binder.getCallingUid();
-        int userId = UserHandle.getUserId(callingUid);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        boolean z2 = false;
-        if (isRemoteInjectionDisabled(callingUid)) {
-            Slog.d("RemoteInjection", "Remote Control is disabled, couldnt inject pointer event");
-            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI failed", userId);
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            return false;
-        }
-        MotionEvent motionEvent2 = null;
-        try {
-            motionEvent.setDisplayId(0);
-            motionEvent2 = transformMotionEvent(motionEvent);
-            z2 = injectPointerEventInternal(motionEvent2, z);
-        } catch (Exception e) {
-            Slog.d("RemoteInjection", "Error injecting trackball event : " + e);
-        }
-        if (z2) {
-            AuditLog.logAsUser(5, 4, true, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI succeeded", userId);
-        } else {
-            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI failed", userId);
-        }
-        if (motionEvent2 != null) {
-            motionEvent2.recycle();
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-        return z2;
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:12:0x0052  */
-    /* JADX WARN: Removed duplicated region for block: B:14:0x0071  */
-    /* JADX WARN: Removed duplicated region for block: B:17:0x0061  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public boolean injectTrackballEvent(android.view.MotionEvent r12, boolean r13) {
-        /*
-            r11 = this;
-            r11.enforceRemoteControlPermissionNoActiveAdmin()
-            int r0 = android.os.Binder.getCallingUid()
-            int r7 = android.os.UserHandle.getUserId(r0)
-            long r8 = android.os.Binder.clearCallingIdentity()
-            boolean r0 = r11.isRemoteInjectionDisabled(r0)
-            java.lang.String r1 = "RemoteInjection"
-            r10 = 0
-            if (r0 == 0) goto L2f
-            java.lang.String r11 = "Remote Control is disabled, couldnt inject track ball event"
-            android.util.Slog.d(r1, r11)
-            r1 = 5
-            r2 = 4
-            r3 = 0
-            int r4 = android.os.Process.myPid()
-            java.lang.String r5 = "RemoteInjectionService"
-            java.lang.String r6 = "Remotely injecting a trackball event into the UI failed"
-            android.sec.enterprise.auditlog.AuditLog.logAsUser(r1, r2, r3, r4, r5, r6, r7)
-            android.os.Binder.restoreCallingIdentity(r8)
-            return r10
-        L2f:
-            android.view.MotionEvent r12 = r11.transformMotionEvent(r12)     // Catch: java.lang.Exception -> L3a
-            boolean r10 = r11.injectTrackballEventInternal(r12, r13)     // Catch: java.lang.Exception -> L38
-            goto L50
-        L38:
-            r11 = move-exception
-            goto L3c
-        L3a:
-            r11 = move-exception
-            r12 = 0
-        L3c:
-            java.lang.StringBuilder r13 = new java.lang.StringBuilder
-            r13.<init>()
-            java.lang.String r0 = "Error injecting trackball event : "
-            r13.append(r0)
-            r13.append(r11)
-            java.lang.String r11 = r13.toString()
-            android.util.Slog.d(r1, r11)
-        L50:
-            if (r10 == 0) goto L61
-            r1 = 5
-            r2 = 4
-            r3 = 1
-            int r4 = android.os.Process.myPid()
-            java.lang.String r5 = "RemoteInjectionService"
-            java.lang.String r6 = "Remotely injecting a trackball event into the UI succeeded"
-            android.sec.enterprise.auditlog.AuditLog.logAsUser(r1, r2, r3, r4, r5, r6, r7)
-            goto L6f
-        L61:
-            r1 = 5
-            r2 = 4
-            r3 = 0
-            int r4 = android.os.Process.myPid()
-            java.lang.String r5 = "RemoteInjectionService"
-            java.lang.String r6 = "Remotely injecting a trackball event into the UI failed"
-            android.sec.enterprise.auditlog.AuditLog.logAsUser(r1, r2, r3, r4, r5, r6, r7)
-        L6f:
-            if (r12 == 0) goto L74
-            r12.recycle()
-        L74:
-            android.os.Binder.restoreCallingIdentity(r8)
-            return r10
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.remotecontrol.RemoteInjectionService.injectTrackballEvent(android.view.MotionEvent, boolean):boolean");
-    }
-
-    public boolean injectPointerEventDex(MotionEvent motionEvent, boolean z) {
-        enforceRemoteDexPermissionNoActiveAdmin();
-        int callingUid = Binder.getCallingUid();
-        int userId = UserHandle.getUserId(callingUid);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        boolean z2 = false;
-        if (isRemoteInjectionDisabled(callingUid)) {
-            Slog.d("RemoteInjection", "Remote Control is disabled, couldnt inject pointer event");
-            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI failed", userId);
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            return false;
-        }
-        MotionEvent motionEvent2 = null;
-        try {
-            motionEvent.setDisplayId(getDisplayIdDex());
-            if (motionEvent.getAction() == 0 && motionEvent.getButtonState() != 2) {
-                motionEvent.setButtonState(1);
-            }
-            motionEvent2 = transformMotionEvent(motionEvent);
-            z2 = injectPointerEventInternalDex(motionEvent2, z);
-        } catch (Exception e) {
-            Slog.d("RemoteInjection", "Error injecting pointer event in dex screen : " + e);
-        }
-        if (z2) {
-            AuditLog.logAsUser(5, 4, true, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI succeeded", userId);
-        } else {
-            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI failed", userId);
-        }
-        if (motionEvent2 != null) {
-            motionEvent2.recycle();
-        }
-        Binder.restoreCallingIdentity(clearCallingIdentity);
-        return z2;
-    }
-
-    public boolean injectKeyEventDex(KeyEvent keyEvent, boolean z) {
-        enforceRemoteDexPermissionNoActiveAdmin();
-        keyEvent.setDisplayId(getDisplayIdDex());
-        boolean injectKeyEvent = injectKeyEvent(keyEvent, z);
-        if (!injectKeyEvent) {
-            Slog.d("RemoteInjection", "Error injecting Key event in dex screen");
-        }
-        return injectKeyEvent;
-    }
-
-    public void updateDexScreenDimensions(int i, int i2, int i3) {
-        enforceSystemUser();
-        Log.i("RemoteInjection", "RemoteInjectionService: updateDexScreenDimensions() width : " + i + ", height : " + i2);
-        updateKnoxRemoteScreenSessionUid(i3);
-        if (isUsingKnoxRemoteScreen()) {
-            this.mDexScreenWidth = i;
-            this.mDexScreenHeight = i2;
-        } else {
-            updateCurrentDisplayDimensions(getDisplayIdDex());
-            this.mDexScreenWidth = this.mCurrentDisplayWidth;
-            this.mDexScreenHeight = this.mCurrentDisplayHeight;
-        }
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminRemoved(int i) {
-        this.mRemoteControlDisabled.put(UserHandle.getUserId(i), Boolean.valueOf(!isRemoteControlAllowed(UserHandle.getUserId(i))));
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void systemReady() {
-        new Thread(new Runnable() { // from class: com.android.server.enterprise.remotecontrol.RemoteInjectionService.1
-            @Override // java.lang.Runnable
-            public void run() {
-                List users = PackageManagerAdapter.getUsers(true);
-                int size = users.size();
-                for (int i = 0; i < size; i++) {
-                    RemoteInjectionService.this.mRemoteControlDisabled.put(((UserInfo) users.get(i)).id, Boolean.valueOf(!r5.isRemoteControlAllowed(r4)));
-                }
-            }
-        }).start();
-    }
-
-    public final boolean injectKeyEventInternal(KeyEvent keyEvent, boolean z) {
+    public static boolean injectKeyEventInternal(KeyEvent keyEvent, boolean z) {
         long downTime = keyEvent.getDownTime();
         long eventTime = keyEvent.getEventTime();
         int action = keyEvent.getAction();
@@ -380,274 +135,53 @@ public class RemoteInjectionService extends IRemoteInjection.Stub implements Ent
         }
         KeyEvent keyEvent2 = new KeyEvent(downTime, eventTime, action, keyCode, repeatCount, metaState, deviceId, scanCode, flags | 8, i);
         keyEvent2.setDisplayId(displayId);
-        return injectInputManagerKeyEvent(keyEvent2, z);
+        return InputManager.getInstance().injectInputEvent(keyEvent2, z ? 2 : 1);
     }
 
-    public final boolean injectPointerEventInternal(MotionEvent motionEvent, boolean z) {
-        MotionEvent obtain = MotionEvent.obtain(motionEvent);
-        if ((obtain.getSource() & 2) == 0) {
-            obtain.setSource(4098);
-        }
-        return injectInputManagerMotionEvent(obtain, z);
+    public static boolean isInPortrait(Display display) {
+        int rotation = display.getRotation();
+        return rotation == 0 || rotation == 2;
     }
 
-    public final boolean injectPointerEventInternalDex(MotionEvent motionEvent, boolean z) {
-        MotionEvent obtain = MotionEvent.obtain(motionEvent);
-        obtain.setSource(12290);
-        return injectInputManagerMotionEvent(obtain, z);
+    public final boolean addRemoteScreenWatcherCallback(IRemoteScreenWatcherCallback iRemoteScreenWatcherCallback) {
+        this.mRemoteScreenWatcherCallback = iRemoteScreenWatcherCallback;
+        return isUsingKnoxRemoteScreen();
     }
 
-    public final boolean injectTrackballEventInternal(MotionEvent motionEvent, boolean z) {
-        MotionEvent obtain = MotionEvent.obtain(motionEvent);
-        if ((obtain.getSource() & 4) == 0) {
-            obtain.setSource(65540);
-        }
-        return injectInputManagerMotionEvent(obtain, z);
-    }
-
-    public final boolean injectInputManagerKeyEvent(KeyEvent keyEvent, boolean z) {
-        return InputManager.getInstance().injectInputEvent(keyEvent, z ? 2 : 1);
-    }
-
-    public final boolean injectInputManagerMotionEvent(MotionEvent motionEvent, boolean z) {
-        return InputManager.getInstance().injectInputEvent(motionEvent, z ? 2 : 1);
-    }
-
-    public final WindowManager getWindowManager() {
-        WindowManager windowManager = this.mWindowManager;
-        if (windowManager != null) {
-            return windowManager;
-        }
-        WindowManager windowManager2 = this.mInjector.getWindowManager();
-        this.mWindowManager = windowManager2;
-        return windowManager2;
-    }
-
-    public final MotionEvent transformMotionEvent(MotionEvent motionEvent) {
-        float remoteWidth;
-        float remoteHeight;
-        boolean isDexModeOn = isDexModeOn();
-        boolean isDexDisplay = isDexDisplay(motionEvent.getDisplayId());
-        int i = 1;
-        int i2 = 0;
-        boolean z = isDexModeOn && isDexDisplay;
-        Display display = getDisplay(z);
-        updateCurrentDisplayDimensions(motionEvent.getDisplayId());
-        int pointerCount = motionEvent.getPointerCount();
-        MotionEvent.PointerCoords[] pointerCoordsArr = new MotionEvent.PointerCoords[pointerCount];
-        MotionEvent.PointerProperties[] pointerPropertiesArr = new MotionEvent.PointerProperties[pointerCount];
-        int i3 = 0;
-        while (i3 < pointerCount) {
-            pointerCoordsArr[i3] = new MotionEvent.PointerCoords();
-            pointerPropertiesArr[i3] = new MotionEvent.PointerProperties();
-            motionEvent.getPointerCoords(i3, pointerCoordsArr[i3]);
-            motionEvent.getPointerProperties(i3, pointerPropertiesArr[i3]);
-            MotionEvent.PointerProperties pointerProperties = pointerPropertiesArr[i3];
-            pointerProperties.toolType = i;
-            if (i3 == 0 && z) {
-                pointerProperties.toolType = 3;
+    public final boolean allowRemoteControl(ContextInfo contextInfo, boolean z, boolean z2) {
+        ContextInfo enforceActiveAdminPermissionByContext;
+        if (z2) {
+            ArrayList arrayList = new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_ADVANCED_RESTRICTION"));
+            if (this.mEDM == null) {
+                this.mEDM = EnterpriseDeviceManager.getInstance(this.mInjector.mContext);
             }
-            if (isUsingKnoxRemoteScreen()) {
-                if (z) {
-                    remoteWidth = getRemoteWidthForDex(display);
-                } else {
-                    remoteWidth = getRemoteWidth(display);
-                }
-                if (z) {
-                    remoteHeight = getRemoteHeightForDex(display);
-                } else {
-                    remoteHeight = getRemoteHeight(display);
-                }
-                MotionEvent.PointerCoords pointerCoords = pointerCoordsArr[i3];
-                pointerCoords.x *= this.mCurrentDisplayWidth / remoteWidth;
-                pointerCoords.y *= this.mCurrentDisplayHeight / remoteHeight;
+            enforceActiveAdminPermissionByContext = this.mEDM.enforceDoPoOnlyPermissionByContext(contextInfo, arrayList);
+        } else {
+            ArrayList arrayList2 = new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_REMOTE_CONTROL"));
+            if (this.mEDM == null) {
+                this.mEDM = EnterpriseDeviceManager.getInstance(this.mInjector.mContext);
             }
-            i3++;
-            i = 1;
+            enforceActiveAdminPermissionByContext = this.mEDM.enforceActiveAdminPermissionByContext(contextInfo, arrayList2);
         }
-        if (!isDexDisplay) {
-            i2 = display.getDisplayId();
-        } else if (isDexModeOn) {
-            i2 = getDisplayIdDex();
-        }
-        return MotionEvent.obtain(motionEvent.getDownTime(), motionEvent.getEventTime(), motionEvent.getAction(), pointerCount, pointerPropertiesArr, pointerCoordsArr, motionEvent.getMetaState(), motionEvent.getButtonState(), motionEvent.getXPrecision(), motionEvent.getYPrecision(), motionEvent.getDeviceId(), motionEvent.getEdgeFlags(), motionEvent.getSource(), i2, motionEvent.getFlags());
-    }
-
-    public final float getRemoteWidth(Display display) {
-        float f = isInPortrait(display) ? this.mRemoteScreenWidth : this.mRemoteScreenHeight;
-        Log.d("RemoteInjection", "getRemoteWidth() : " + f);
-        return f;
-    }
-
-    public final float getRemoteWidthForDex(Display display) {
-        int i;
-        if (this.mDexScreenWidth == 0 || this.mDexScreenHeight == 0) {
-            i = isInPortrait(display) ? this.mCurrentDisplayWidth : this.mCurrentDisplayHeight;
-        } else {
-            i = isInPortrait(display) ? this.mDexScreenWidth : this.mDexScreenHeight;
-        }
-        float f = i;
-        Log.d("RemoteInjection", "getRemoteWidthForDex() : " + f);
-        return f;
-    }
-
-    public final float getRemoteHeight(Display display) {
-        float f = isInPortrait(display) ? this.mRemoteScreenHeight : this.mRemoteScreenWidth;
-        Log.d("RemoteInjection", "getRemoteHeight() : " + f);
-        return f;
-    }
-
-    public final float getRemoteHeightForDex(Display display) {
-        int i;
-        if (this.mDexScreenWidth == 0 || this.mDexScreenHeight == 0) {
-            i = isInPortrait(display) ? this.mCurrentDisplayHeight : this.mCurrentDisplayWidth;
-        } else {
-            i = isInPortrait(display) ? this.mDexScreenHeight : this.mDexScreenWidth;
-        }
-        float f = i;
-        Log.d("RemoteInjection", "getRemoteHeightForDex() : " + f);
-        return f;
-    }
-
-    public final void updateCurrentDisplayDimensions(int i) {
-        Display display = getDisplay(isDexDisplay(i));
-        Point point = new Point();
-        display.getRealSize(point);
-        this.mCurrentDisplayWidth = point.x;
-        this.mCurrentDisplayHeight = point.y;
-        Log.d("RemoteInjection", "mCurrentDisplayWidth : " + this.mCurrentDisplayWidth + ", mCurrentDisplayHeight : " + this.mCurrentDisplayHeight);
-    }
-
-    public void updateRemoteScreenDimensionsAndCallerUid(int i, int i2, int i3) {
-        enforceSystemUser();
-        Log.i("RemoteInjection", "RemoteInjectionService: updateRemoteScreenDimensions() width : " + i + ", height : " + i2 + ", uid " + i3);
-        updateKnoxRemoteScreenSessionUid(i3);
-        if (isUsingKnoxRemoteScreen()) {
-            this.mRemoteScreenWidth = i;
-            this.mRemoteScreenHeight = i2;
-        } else {
-            updateCurrentDisplayDimensions(0);
-            this.mRemoteScreenWidth = this.mCurrentDisplayWidth;
-            this.mRemoteScreenHeight = this.mCurrentDisplayHeight;
-        }
-        this.mDexScreenWidth = 0;
-        this.mDexScreenHeight = 0;
-    }
-
-    public final void updateKnoxRemoteScreenSessionUid(int i) {
-        this.mKnoxRemoteScreenSessionOwnerUid = i;
-    }
-
-    public final boolean isUsingKnoxRemoteScreen() {
-        return this.mKnoxRemoteScreenSessionOwnerUid != -1;
-    }
-
-    public boolean allowRemoteControl(ContextInfo contextInfo, boolean z, boolean z2) {
-        int i = enforceRemoteControlPermission(contextInfo, z2).mCallerUid;
+        int i = enforceActiveAdminPermissionByContext.mCallerUid;
         long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z3 = false;
         try {
             try {
-                boolean putBoolean = this.mEdmStorageProvider.putBoolean(i, "RESTRICTION", "allowRemoteControl", z);
-                if (putBoolean) {
-                    try {
-                        int userId = UserHandle.getUserId(i);
-                        this.mRemoteControlDisabled.put(userId, Boolean.valueOf(isRemoteControlAllowed(userId) ? false : true));
-                    } catch (Exception unused) {
-                        r8 = putBoolean;
-                        Slog.w("RemoteInjection", "RemoteInjection.allowRemoteControl() exception : ");
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                        return r8;
-                    }
+                z3 = this.mEdmStorageProvider.putBoolean("RESTRICTION", i, z, 0, "allowRemoteControl");
+                if (z3) {
+                    this.mRemoteControlDisabled.put(UserHandle.getUserId(i), Boolean.valueOf(!isRemoteControlAllowed(r9)));
                 }
-                return putBoolean;
-            } catch (Exception unused2) {
+            } catch (Exception unused) {
+                Slog.w("RemoteInjection", "RemoteInjection.allowRemoteControl() exception : ");
             }
+            return z3;
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public boolean isRemoteControlAllowed(int i) {
-        try {
-            Iterator it = this.mEdmStorageProvider.getBooleanListAsUser("RESTRICTION", "allowRemoteControl", i).iterator();
-            while (it.hasNext()) {
-                boolean booleanValue = ((Boolean) it.next()).booleanValue();
-                if (!booleanValue) {
-                    return booleanValue;
-                }
-            }
-            return true;
-        } catch (Exception unused) {
-            Slog.w("RemoteInjection", "RemoteInjection.isRemoteControlAllowed() exception : ");
-            return true;
-        }
-    }
-
-    public boolean isRemoteControlAllowed(ContextInfo contextInfo) {
-        return isRemoteControlAllowed(Utils.getCallingOrCurrentUserId(contextInfo));
-    }
-
-    public boolean isRemoteControlDisabled(int i) {
-        if (isUsingKnoxRemoteScreen()) {
-            return isRemoteControlDisabledInternal(i, this.mKnoxRemoteScreenSessionOwnerUid);
-        }
-        return false;
-    }
-
-    public final boolean isRemoteInjectionDisabled(int i) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return isRemoteControlDisabledInternal(((ActivityManager.RunningTaskInfo) ActivityManagerNative.getDefault().getTasks(1).get(0)).userId, i);
-        } catch (Exception unused) {
-            Log.w("RemoteInjection", "Failed to get top activity user id");
-            return false;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final boolean isRemoteControlDisabledInternal(int i, int i2) {
-        int userId = UserHandle.getUserId(i2);
-        if (userId != 0 && i != userId) {
-            return true;
-        }
-        Boolean bool = (Boolean) this.mRemoteControlDisabled.get(getUserIdToCheckPolicy(i));
-        if (bool == null) {
-            return false;
-        }
-        return bool.booleanValue();
-    }
-
-    public final int getUserIdToCheckPolicy(int i) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            if (!getPersonaManagerAdapter().isAppSeparationUserId(i)) {
-                return i;
-            }
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            return 0;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public final IPersonaManagerAdapter getPersonaManagerAdapter() {
-        return (IPersonaManagerAdapter) AdapterRegistry.getAdapter(IPersonaManagerAdapter.class);
-    }
-
-    public final Display getDisplay(boolean z) {
-        if (z) {
-            return ((DisplayManager) this.mContext.getSystemService("display")).getDisplay(getDisplayIdDex());
-        }
-        return getWindowManager().getDefaultDisplay();
-    }
-
-    public final boolean isDexModeOn() {
-        SemDesktopModeManager semDesktopModeManager = (SemDesktopModeManager) this.mContext.getSystemService("desktopmode");
-        return semDesktopModeManager != null && semDesktopModeManager.getDesktopModeState().getEnabled() == 4;
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
         if (this.mContext.checkCallingOrSelfPermission("android.permission.DUMP") != 0) {
             printWriter.println("Permission Denial: can't dump Enterprise Device Manager Service");
             return;
@@ -664,38 +198,405 @@ public class RemoteInjectionService extends IRemoteInjection.Stub implements Ent
             }
         }
         if (i == 0) {
-            printWriter.println("None");
+            printWriter.println(KeyboardMetricsCollector.DEFAULT_LANGUAGE_TAG);
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class Injector {
-        public final Context mContext;
-
-        public Injector(Context context) {
-            this.mContext = context;
+    public final boolean injectKeyEvent(KeyEvent keyEvent, boolean z) {
+        long clearCallingIdentity;
+        int callingUid = Binder.getCallingUid();
+        int userId = UserHandle.getUserId(callingUid);
+        boolean z2 = false;
+        if (keyEvent == null) {
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a keystroke event into the UI failed", userId);
+                return false;
+            } finally {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            }
         }
-
-        public WindowManager getWindowManager() {
-            return (WindowManager) this.mContext.getSystemService("window");
+        EnterpriseAccessController.enforceCaller(null, "INJECT_KEY_EVENT");
+        clearCallingIdentity = Binder.clearCallingIdentity();
+        if (isRemoteInjectionDisabled(callingUid)) {
+            Slog.d("RemoteInjection", "Remote Control is disabled, couldnt inject key event");
+            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a keystroke event into the UI failed", userId);
+            return false;
         }
-
-        public EdmStorageProvider getEDMStorageProvider() {
-            return new EdmStorageProvider(this.mContext);
+        if (keyEvent.getDisplayId() != 2) {
+            keyEvent.setDisplayId(0);
         }
+        try {
+            z2 = injectKeyEventInternal(keyEvent, z);
+        } catch (Exception e) {
+            KnoxCaptureInputFilter$$ExternalSyntheticOutline0.m(e, "Error injecting key event : ", "RemoteInjection");
+        }
+        if (z2) {
+            AuditLog.logAsUser(5, 4, true, Process.myPid(), "RemoteInjectionService", "Remotely injecting a keystroke event into the UI succeeded", userId);
+        } else {
+            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a keystroke event into the UI failed", userId);
+        }
+        return z2;
+    }
 
-        public EnterpriseDeviceManager getEnterpriseDeviceManager() {
-            return EnterpriseDeviceManager.getInstance(this.mContext);
+    public final boolean injectKeyEventDex(KeyEvent keyEvent, boolean z) {
+        EnterpriseAccessController.enforceCaller(null, "INJECT_KEY_EVENT_DEX");
+        keyEvent.setDisplayId(2);
+        boolean injectKeyEvent = injectKeyEvent(keyEvent, z);
+        if (!injectKeyEvent) {
+            Slog.d("RemoteInjection", "Error injecting Key event in dex screen");
+        }
+        return injectKeyEvent;
+    }
+
+    public final boolean injectPointerEvent(MotionEvent motionEvent, boolean z) {
+        MotionEvent motionEvent2 = null;
+        EnterpriseAccessController.enforceCaller(null, "INJECT_POINTER_EVENT");
+        int callingUid = Binder.getCallingUid();
+        int userId = UserHandle.getUserId(callingUid);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z2 = false;
+        if (isRemoteInjectionDisabled(callingUid)) {
+            Slog.d("RemoteInjection", "Remote Control is disabled, couldnt inject pointer event");
+            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI failed", userId);
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return false;
+        }
+        try {
+            motionEvent.setDisplayId(0);
+            motionEvent2 = transformMotionEvent(motionEvent);
+            MotionEvent obtain = MotionEvent.obtain(motionEvent2);
+            int i = 2;
+            if ((obtain.getSource() & 2) == 0) {
+                obtain.setSource(4098);
+            }
+            InputManager inputManager = InputManager.getInstance();
+            if (!z) {
+                i = 1;
+            }
+            z2 = inputManager.injectInputEvent(obtain, i);
+        } catch (Exception e) {
+            KnoxCaptureInputFilter$$ExternalSyntheticOutline0.m(e, "Error injecting trackball event : ", "RemoteInjection");
+        }
+        if (z2) {
+            AuditLog.logAsUser(5, 4, true, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI succeeded", userId);
+        } else {
+            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI failed", userId);
+        }
+        if (motionEvent2 != null) {
+            motionEvent2.recycle();
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return z2;
+    }
+
+    public final boolean injectPointerEventDex(MotionEvent motionEvent, boolean z) {
+        MotionEvent motionEvent2 = null;
+        EnterpriseAccessController.enforceCaller(null, "INJECT_POINTER_EVENT_DEX");
+        int callingUid = Binder.getCallingUid();
+        int userId = UserHandle.getUserId(callingUid);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z2 = false;
+        if (isRemoteInjectionDisabled(callingUid)) {
+            Slog.d("RemoteInjection", "Remote Control is disabled, couldnt inject pointer event");
+            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI failed", userId);
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return false;
+        }
+        int i = 2;
+        try {
+            motionEvent.setDisplayId(2);
+            if (motionEvent.getAction() == 0 && motionEvent.getButtonState() != 2) {
+                motionEvent.setButtonState(1);
+            }
+            motionEvent2 = transformMotionEvent(motionEvent);
+            MotionEvent obtain = MotionEvent.obtain(motionEvent2);
+            obtain.setSource(8194);
+            InputManager inputManager = InputManager.getInstance();
+            if (!z) {
+                i = 1;
+            }
+            z2 = inputManager.injectInputEvent(obtain, i);
+        } catch (Exception e) {
+            KnoxCaptureInputFilter$$ExternalSyntheticOutline0.m(e, "Error injecting pointer event in dex screen : ", "RemoteInjection");
+        }
+        if (z2) {
+            AuditLog.logAsUser(5, 4, true, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI succeeded", userId);
+        } else {
+            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a pointer (touch) event into the UI failed", userId);
+        }
+        if (motionEvent2 != null) {
+            motionEvent2.recycle();
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return z2;
+    }
+
+    public final boolean injectTrackballEvent(MotionEvent motionEvent, boolean z) {
+        MotionEvent motionEvent2 = null;
+        EnterpriseAccessController.enforceCaller(null, "INJECT_TRACKBALL_EVENT");
+        int callingUid = Binder.getCallingUid();
+        int userId = UserHandle.getUserId(callingUid);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        boolean z2 = false;
+        if (isRemoteInjectionDisabled(callingUid)) {
+            Slog.d("RemoteInjection", "Remote Control is disabled, couldnt inject track ball event");
+            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a trackball event into the UI failed", userId);
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return false;
+        }
+        try {
+            motionEvent2 = transformMotionEvent(motionEvent);
+            MotionEvent obtain = MotionEvent.obtain(motionEvent2);
+            if ((obtain.getSource() & 4) == 0) {
+                obtain.setSource(65540);
+            }
+            z2 = InputManager.getInstance().injectInputEvent(obtain, z ? 2 : 1);
+        } catch (Exception e) {
+            KnoxCaptureInputFilter$$ExternalSyntheticOutline0.m(e, "Error injecting trackball event : ", "RemoteInjection");
+        }
+        if (z2) {
+            AuditLog.logAsUser(5, 4, true, Process.myPid(), "RemoteInjectionService", "Remotely injecting a trackball event into the UI succeeded", userId);
+        } else {
+            AuditLog.logAsUser(5, 4, false, Process.myPid(), "RemoteInjectionService", "Remotely injecting a trackball event into the UI failed", userId);
+        }
+        if (motionEvent2 != null) {
+            motionEvent2.recycle();
+        }
+        Binder.restoreCallingIdentity(clearCallingIdentity);
+        return z2;
+    }
+
+    public final boolean isRemoteControlAllowed(int i) {
+        try {
+            Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(i, "RESTRICTION", "allowRemoteControl").iterator();
+            while (it.hasNext()) {
+                boolean booleanValue = ((Boolean) it.next()).booleanValue();
+                if (!booleanValue) {
+                    return booleanValue;
+                }
+            }
+            return true;
+        } catch (Exception unused) {
+            Slog.w("RemoteInjection", "RemoteInjection.isRemoteControlAllowed() exception : ");
+            return true;
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class LocalService extends RemoteInjectionInternal {
-        public LocalService() {
-        }
+    public final boolean isRemoteControlAllowed(ContextInfo contextInfo) {
+        return isRemoteControlAllowed(Utils.getCallingOrCurrentUserId(contextInfo));
+    }
 
-        public boolean isRemoteControlDisabled(int i) {
-            return RemoteInjectionService.this.isRemoteControlDisabled(i);
+    public final boolean isRemoteControlDisabled(int i) {
+        if (isUsingKnoxRemoteScreen()) {
+            return isRemoteControlDisabledInternal(i, this.mKnoxRemoteScreenSessionOwnerUid);
         }
+        return false;
+    }
+
+    public final boolean isRemoteControlDisabledInternal(int i, int i2) {
+        int userId = UserHandle.getUserId(i2);
+        if (userId != 0 && i != userId) {
+            return true;
+        }
+        SparseArray sparseArray = this.mRemoteControlDisabled;
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            ((PersonaManagerAdapter) ((IPersonaManagerAdapter) AdapterRegistry.mAdapterHandles.get(IPersonaManagerAdapter.class))).getClass();
+            if (SemPersonaManager.isAppSeparationUserId(i)) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                i = 0;
+            }
+            Boolean bool = (Boolean) sparseArray.get(i);
+            if (bool == null) {
+                return false;
+            }
+            return bool.booleanValue();
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final boolean isRemoteInjectionDisabled(int i) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            return isRemoteControlDisabledInternal(((ActivityManager.RunningTaskInfo) ActivityManagerNative.getDefault().getTasks(1).get(0)).userId, i);
+        } catch (Exception unused) {
+            Log.w("RemoteInjection", "Failed to get top activity user id");
+            return false;
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final boolean isUsingKnoxRemoteScreen() {
+        return this.mKnoxRemoteScreenSessionOwnerUid != -1;
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void notifyToAddSystemService(String str, IBinder iBinder) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminAdded(int i) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminRemoved(int i) {
+        this.mRemoteControlDisabled.put(UserHandle.getUserId(i), Boolean.valueOf(!isRemoteControlAllowed(UserHandle.getUserId(i))));
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onPreAdminRemoval(int i) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void systemReady() {
+        new Thread(new Runnable() { // from class: com.android.server.enterprise.remotecontrol.RemoteInjectionService.1
+            @Override // java.lang.Runnable
+            public final void run() {
+                List users = PackageManagerAdapter.getUsers(true);
+                int size = users.size();
+                for (int i = 0; i < size; i++) {
+                    RemoteInjectionService.this.mRemoteControlDisabled.put(((UserInfo) users.get(i)).id, Boolean.valueOf(!r5.isRemoteControlAllowed(r4)));
+                }
+            }
+        }).start();
+    }
+
+    public final MotionEvent transformMotionEvent(MotionEvent motionEvent) {
+        Display defaultDisplay;
+        float f;
+        float f2;
+        SemDesktopModeManager semDesktopModeManager = (SemDesktopModeManager) this.mContext.getSystemService("desktopmode");
+        int i = 1;
+        boolean z = semDesktopModeManager != null && semDesktopModeManager.getDesktopModeState().getEnabled() == 4;
+        boolean z2 = motionEvent.getDisplayId() != 0;
+        boolean z3 = z && z2;
+        if (z3) {
+            defaultDisplay = ((DisplayManager) this.mContext.getSystemService("display")).getDisplay(2);
+        } else {
+            WindowManager windowManager = this.mWindowManager;
+            if (windowManager == null) {
+                windowManager = (WindowManager) this.mInjector.mContext.getSystemService("window");
+                this.mWindowManager = windowManager;
+            }
+            defaultDisplay = windowManager.getDefaultDisplay();
+        }
+        updateCurrentDisplayDimensions(motionEvent.getDisplayId());
+        int pointerCount = motionEvent.getPointerCount();
+        MotionEvent.PointerCoords[] pointerCoordsArr = new MotionEvent.PointerCoords[pointerCount];
+        MotionEvent.PointerProperties[] pointerPropertiesArr = new MotionEvent.PointerProperties[pointerCount];
+        int i2 = 0;
+        while (i2 < pointerCount) {
+            pointerCoordsArr[i2] = new MotionEvent.PointerCoords();
+            pointerPropertiesArr[i2] = new MotionEvent.PointerProperties();
+            motionEvent.getPointerCoords(i2, pointerCoordsArr[i2]);
+            motionEvent.getPointerProperties(i2, pointerPropertiesArr[i2]);
+            MotionEvent.PointerProperties pointerProperties = pointerPropertiesArr[i2];
+            pointerProperties.toolType = i;
+            if (i2 == 0 && z3) {
+                pointerProperties.toolType = 3;
+            }
+            if (isUsingKnoxRemoteScreen()) {
+                if (z3) {
+                    f = (this.mDexScreenWidth == 0 || this.mDexScreenHeight == 0) ? isInPortrait(defaultDisplay) ? this.mCurrentDisplayWidth : this.mCurrentDisplayHeight : isInPortrait(defaultDisplay) ? this.mDexScreenWidth : this.mDexScreenHeight;
+                    Log.d("RemoteInjection", "getRemoteWidthForDex() : " + f);
+                } else {
+                    f = isInPortrait(defaultDisplay) ? this.mRemoteScreenWidth : this.mRemoteScreenHeight;
+                    Log.d("RemoteInjection", "getRemoteWidth() : " + f);
+                }
+                if (z3) {
+                    f2 = (this.mDexScreenWidth == 0 || this.mDexScreenHeight == 0) ? isInPortrait(defaultDisplay) ? this.mCurrentDisplayHeight : this.mCurrentDisplayWidth : isInPortrait(defaultDisplay) ? this.mDexScreenHeight : this.mDexScreenWidth;
+                    Log.d("RemoteInjection", "getRemoteHeightForDex() : " + f2);
+                } else {
+                    f2 = isInPortrait(defaultDisplay) ? this.mRemoteScreenHeight : this.mRemoteScreenWidth;
+                    Log.d("RemoteInjection", "getRemoteHeight() : " + f2);
+                }
+                MotionEvent.PointerCoords pointerCoords = pointerCoordsArr[i2];
+                pointerCoords.x = (this.mCurrentDisplayWidth / f) * pointerCoords.x;
+                pointerCoords.y = (this.mCurrentDisplayHeight / f2) * pointerCoords.y;
+            }
+            i2++;
+            i = 1;
+        }
+        return MotionEvent.obtain(motionEvent.getDownTime(), motionEvent.getEventTime(), motionEvent.getAction(), pointerCount, pointerPropertiesArr, pointerCoordsArr, motionEvent.getMetaState(), motionEvent.getButtonState(), motionEvent.getXPrecision(), motionEvent.getYPrecision(), motionEvent.getDeviceId(), motionEvent.getEdgeFlags(), motionEvent.getSource(), !z2 ? defaultDisplay.getDisplayId() : z ? 2 : 0, motionEvent.getFlags());
+    }
+
+    public final void updateCurrentDisplayDimensions(int i) {
+        Display defaultDisplay;
+        if (i != 0) {
+            defaultDisplay = ((DisplayManager) this.mContext.getSystemService("display")).getDisplay(2);
+        } else {
+            WindowManager windowManager = this.mWindowManager;
+            if (windowManager == null) {
+                windowManager = (WindowManager) this.mInjector.mContext.getSystemService("window");
+                this.mWindowManager = windowManager;
+            }
+            defaultDisplay = windowManager.getDefaultDisplay();
+        }
+        Point point = new Point();
+        if (CoreRune.FW_FLEXIBLE_DUAL_MODE) {
+            try {
+                WindowManagerGlobal.getWindowManagerService().getInitialDisplaySize(i, point);
+            } catch (RemoteException unused) {
+                Log.e("RemoteInjection", "getInitialDisplaySize() exception!!");
+            }
+            this.mCurrentDisplayWidth = isInPortrait(defaultDisplay) ? point.x : point.y;
+            this.mCurrentDisplayHeight = isInPortrait(defaultDisplay) ? point.y : point.x;
+        } else {
+            defaultDisplay.getRealSize(point);
+            this.mCurrentDisplayWidth = point.x;
+            this.mCurrentDisplayHeight = point.y;
+        }
+        StringBuilder sb = new StringBuilder("mCurrentDisplayWidth : ");
+        sb.append(this.mCurrentDisplayWidth);
+        sb.append(", mCurrentDisplayHeight : ");
+        GestureWakeup$$ExternalSyntheticOutline0.m(sb, this.mCurrentDisplayHeight, "RemoteInjection");
+    }
+
+    public final void updateDexScreenDimensions(int i, int i2, int i3) {
+        if (Binder.getCallingPid() != Process.myPid()) {
+            throw new SecurityException("Can only be called by system user");
+        }
+        AccountsDb$CeDatabaseHelper$$ExternalSyntheticOutline0.m(i, i2, "RemoteInjectionService: updateDexScreenDimensions() width : ", ", height : ", "RemoteInjection");
+        this.mKnoxRemoteScreenSessionOwnerUid = i3;
+        if (isUsingKnoxRemoteScreen()) {
+            this.mDexScreenWidth = i;
+            this.mDexScreenHeight = i2;
+        } else {
+            updateCurrentDisplayDimensions(2);
+            this.mDexScreenWidth = this.mCurrentDisplayWidth;
+            this.mDexScreenHeight = this.mCurrentDisplayHeight;
+        }
+    }
+
+    public final void updateRemoteScreenDimensionsAndCallerUid(int i, int i2, int i3) {
+        if (Binder.getCallingPid() != Process.myPid()) {
+            throw new SecurityException("Can only be called by system user");
+        }
+        UiModeManagerService$13$$ExternalSyntheticOutline0.m(ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "RemoteInjectionService: updateRemoteScreenDimensions() width : ", ", height : ", ", uid "), i3, "RemoteInjection");
+        this.mKnoxRemoteScreenSessionOwnerUid = i3;
+        if (isUsingKnoxRemoteScreen()) {
+            this.mRemoteScreenWidth = i;
+            this.mRemoteScreenHeight = i2;
+        } else {
+            updateCurrentDisplayDimensions(0);
+            this.mRemoteScreenWidth = this.mCurrentDisplayWidth;
+            this.mRemoteScreenHeight = this.mCurrentDisplayHeight;
+        }
+        try {
+            if (this.mRemoteScreenWatcherCallback != null) {
+                if (isUsingKnoxRemoteScreen()) {
+                    this.mRemoteScreenWatcherCallback.onRemoteScreenStart();
+                } else {
+                    this.mRemoteScreenWatcherCallback.onRemoteScreenStop();
+                }
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        this.mDexScreenWidth = 0;
+        this.mDexScreenHeight = 0;
     }
 }

@@ -4,26 +4,61 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class PriorityDump {
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface PriorityDumper {
+        default void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr, boolean z) {
+            dumpCritical(fileDescriptor, printWriter, strArr, z);
+            dumpHigh(fileDescriptor, printWriter, strArr, z);
+            dumpNormal(fileDescriptor, printWriter, strArr, z);
+        }
+
+        default void dumpCritical(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr, boolean z) {
+        }
+
+        default void dumpHigh(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr, boolean z) {
+        }
+
+        default void dumpNormal(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr, boolean z) {
+        }
+    }
+
     public static void dump(PriorityDumper priorityDumper, FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        int i = 0;
         if (strArr == null) {
             priorityDumper.dump(fileDescriptor, printWriter, strArr, false);
             return;
         }
         String[] strArr2 = new String[strArr.length];
+        int i = 0;
         int i2 = 0;
-        int i3 = 0;
+        char c = 0;
         boolean z = false;
         while (i < strArr.length) {
             if (strArr[i].equals("--proto")) {
                 z = true;
             } else if (strArr[i].equals("--dump-priority")) {
-                int i4 = i + 1;
-                if (i4 < strArr.length) {
-                    i3 = getPriorityType(strArr[i4]);
-                    i = i4;
+                int i3 = i + 1;
+                if (i3 < strArr.length) {
+                    String str = strArr[i3];
+                    str.getClass();
+                    switch (str) {
+                        case "NORMAL":
+                            c = 3;
+                            break;
+                        case "CRITICAL":
+                            c = 1;
+                            break;
+                        case "HIGH":
+                            c = 2;
+                            break;
+                        default:
+                            c = 0;
+                            break;
+                    }
+                    i = i3;
                 }
             } else {
                 strArr2[i2] = strArr[i];
@@ -34,69 +69,16 @@ public abstract class PriorityDump {
         if (i2 < strArr.length) {
             strArr2 = (String[]) Arrays.copyOf(strArr2, i2);
         }
-        if (i3 == 1) {
+        if (c == 1) {
             priorityDumper.dumpCritical(fileDescriptor, printWriter, strArr2, z);
             return;
         }
-        if (i3 == 2) {
+        if (c == 2) {
             priorityDumper.dumpHigh(fileDescriptor, printWriter, strArr2, z);
-        } else if (i3 == 3) {
-            priorityDumper.dumpNormal(fileDescriptor, printWriter, strArr2, z);
-        } else {
+        } else if (c != 3) {
             priorityDumper.dump(fileDescriptor, printWriter, strArr2, z);
-        }
-    }
-
-    public static int getPriorityType(String str) {
-        str.hashCode();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1986416409:
-                if (str.equals("NORMAL")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case -1560189025:
-                if (str.equals("CRITICAL")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 2217378:
-                if (str.equals("HIGH")) {
-                    c = 2;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return 3;
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-            default:
-                return 0;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public interface PriorityDumper {
-        default void dumpCritical(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr, boolean z) {
-        }
-
-        default void dumpHigh(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr, boolean z) {
-        }
-
-        default void dumpNormal(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr, boolean z) {
-        }
-
-        default void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr, boolean z) {
-            dumpCritical(fileDescriptor, printWriter, strArr, z);
-            dumpHigh(fileDescriptor, printWriter, strArr, z);
-            dumpNormal(fileDescriptor, printWriter, strArr, z);
+        } else {
+            priorityDumper.dumpNormal(fileDescriptor, printWriter, strArr2, z);
         }
     }
 }

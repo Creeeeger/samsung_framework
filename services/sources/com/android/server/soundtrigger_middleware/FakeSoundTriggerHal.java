@@ -4,7 +4,6 @@ import android.hardware.soundtrigger3.ISoundTriggerHw;
 import android.hardware.soundtrigger3.ISoundTriggerHwCallback;
 import android.hardware.soundtrigger3.ISoundTriggerHwGlobalCallback;
 import android.media.soundtrigger.ModelParameterRange;
-import android.media.soundtrigger.Phrase;
 import android.media.soundtrigger.PhraseRecognitionEvent;
 import android.media.soundtrigger.PhraseRecognitionExtra;
 import android.media.soundtrigger.PhraseSoundModel;
@@ -23,7 +22,6 @@ import android.os.Parcel;
 import android.os.ServiceSpecificException;
 import android.util.Slog;
 import com.android.internal.util.FunctionalUtils;
-import com.android.server.soundtrigger_middleware.FakeSoundTriggerHal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,607 +29,242 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-/* loaded from: classes3.dex */
-public class FakeSoundTriggerHal extends ISoundTriggerHw.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class FakeSoundTriggerHal extends ISoundTriggerHw.Stub {
     public IBinder.DeathRecipient mDeathRecipient;
-    public GlobalCallbackDispatcher mGlobalCallbackDispatcher;
-    public final IInjectGlobalEvent.Stub mGlobalEventSession;
-    public final InjectionDispatcher mInjectionDispatcher;
+    public CallbackDispatcher mGlobalCallbackDispatcher;
+    public final AnonymousClass1 mGlobalEventSession;
+    public final CallbackDispatcher mInjectionDispatcher;
+    public final Properties mProperties;
     public final Object mLock = new Object();
     public boolean mIsResourceContended = false;
     public final Map mModelSessionMap = new HashMap();
     public int mModelKeyCounter = 101;
     public boolean mIsDead = false;
-    public final Properties mProperties = createDefaultProperties();
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$1, reason: invalid class name */
+    public final class AnonymousClass1 extends IInjectGlobalEvent.Stub {
+        public AnonymousClass1() {
+        }
+
+        public final void setResourceContention(boolean z, IAcknowledgeEvent iAcknowledgeEvent) {
+            synchronized (FakeSoundTriggerHal.this.mLock) {
+                try {
+                    FakeSoundTriggerHal fakeSoundTriggerHal = FakeSoundTriggerHal.this;
+                    if (fakeSoundTriggerHal.mIsDead) {
+                        return;
+                    }
+                    boolean z2 = fakeSoundTriggerHal.mIsResourceContended;
+                    fakeSoundTriggerHal.mIsResourceContended = z;
+                    CallbackDispatcher.m896$$Nest$mwrap$2(fakeSoundTriggerHal.mInjectionDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda0(iAcknowledgeEvent));
+                    FakeSoundTriggerHal fakeSoundTriggerHal2 = FakeSoundTriggerHal.this;
+                    if (!fakeSoundTriggerHal2.mIsResourceContended && z2) {
+                        CallbackDispatcher.m895$$Nest$mwrap$1(fakeSoundTriggerHal2.mGlobalCallbackDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda2(1));
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void triggerOnResourcesAvailable() {
+            synchronized (FakeSoundTriggerHal.this.mLock) {
+                try {
+                    FakeSoundTriggerHal fakeSoundTriggerHal = FakeSoundTriggerHal.this;
+                    if (fakeSoundTriggerHal.mIsDead) {
+                        return;
+                    }
+                    CallbackDispatcher.m895$$Nest$mwrap$1(fakeSoundTriggerHal.mGlobalCallbackDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda2(2));
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void triggerRestart() {
+            synchronized (FakeSoundTriggerHal.this.mLock) {
+                try {
+                    FakeSoundTriggerHal fakeSoundTriggerHal = FakeSoundTriggerHal.this;
+                    if (fakeSoundTriggerHal.mIsDead) {
+                        return;
+                    }
+                    fakeSoundTriggerHal.mIsDead = true;
+                    CallbackDispatcher.m896$$Nest$mwrap$2(fakeSoundTriggerHal.mInjectionDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda0(this));
+                    ((HashMap) FakeSoundTriggerHal.this.mModelSessionMap).clear();
+                    IBinder.DeathRecipient deathRecipient = FakeSoundTriggerHal.this.mDeathRecipient;
+                    if (deathRecipient != null) {
+                        ExecutorHolder.CALLBACK_EXECUTOR.execute(new FakeSoundTriggerHal$1$$ExternalSyntheticLambda3(0, this, deathRecipient));
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CallbackDispatcher {
+        public final Object mCallback;
+
+        /* renamed from: -$$Nest$mwrap, reason: not valid java name */
+        public static void m894$$Nest$mwrap(CallbackDispatcher callbackDispatcher, FunctionalUtils.ThrowingConsumer throwingConsumer) {
+            callbackDispatcher.getClass();
+            ExecutorHolder.CALLBACK_EXECUTOR.execute(new FakeSoundTriggerHal$1$$ExternalSyntheticLambda3(1, callbackDispatcher, throwingConsumer));
+        }
+
+        /* renamed from: -$$Nest$mwrap$1, reason: not valid java name */
+        public static void m895$$Nest$mwrap$1(CallbackDispatcher callbackDispatcher, FunctionalUtils.ThrowingConsumer throwingConsumer) {
+            callbackDispatcher.getClass();
+            ExecutorHolder.CALLBACK_EXECUTOR.execute(new FakeSoundTriggerHal$1$$ExternalSyntheticLambda3(2, callbackDispatcher, throwingConsumer));
+        }
+
+        /* renamed from: -$$Nest$mwrap$2, reason: not valid java name */
+        public static void m896$$Nest$mwrap$2(CallbackDispatcher callbackDispatcher, FunctionalUtils.ThrowingConsumer throwingConsumer) {
+            callbackDispatcher.getClass();
+            ExecutorHolder.INJECTION_EXECUTOR.execute(new FakeSoundTriggerHal$1$$ExternalSyntheticLambda3(3, callbackDispatcher, throwingConsumer));
+        }
+
+        public CallbackDispatcher(ISoundTriggerHwCallback iSoundTriggerHwCallback) {
+            this.mCallback = iSoundTriggerHwCallback;
+        }
+
+        public CallbackDispatcher(ISoundTriggerHwGlobalCallback iSoundTriggerHwGlobalCallback) {
+            this.mCallback = iSoundTriggerHwGlobalCallback;
+        }
+
+        public CallbackDispatcher(SoundTriggerInjection soundTriggerInjection) {
+            this.mCallback = soundTriggerInjection;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class ExecutorHolder {
         public static final Executor CALLBACK_EXECUTOR = Executors.newSingleThreadExecutor();
         public static final Executor INJECTION_EXECUTOR = Executors.newSingleThreadExecutor();
     }
 
-    /* loaded from: classes3.dex */
-    public class ModelSession extends IInjectModelEvent.Stub {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ModelSession extends IInjectModelEvent.Stub {
         public final CallbackDispatcher mCallbackDispatcher;
         public final boolean mIsKeyphrase;
-        public boolean mIsUnloaded;
         public final int mModelHandle;
         public RecognitionSession mRecognitionSession;
-        public int mThreshold;
+        public int mThreshold = 0;
+        public boolean mIsUnloaded = false;
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class RecognitionSession extends IInjectRecognitionEvent.Stub {
+            public RecognitionSession() {
+            }
+
+            public final void triggerAbortRecognition() {
+                synchronized (FakeSoundTriggerHal.this.mLock) {
+                    try {
+                        ModelSession modelSession = ModelSession.this;
+                        if (!FakeSoundTriggerHal.this.mIsDead && modelSession.mRecognitionSession == this) {
+                            modelSession.mRecognitionSession = null;
+                            if (modelSession.mIsKeyphrase) {
+                                CallbackDispatcher.m894$$Nest$mwrap(modelSession.mCallbackDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda7(this, 1));
+                            } else {
+                                CallbackDispatcher.m894$$Nest$mwrap(modelSession.mCallbackDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda7(this, 2));
+                            }
+                        }
+                    } finally {
+                    }
+                }
+            }
+
+            public final void triggerRecognitionEvent(byte[] bArr, PhraseRecognitionExtra[] phraseRecognitionExtraArr) {
+                synchronized (FakeSoundTriggerHal.this.mLock) {
+                    try {
+                        ModelSession modelSession = ModelSession.this;
+                        if (!FakeSoundTriggerHal.this.mIsDead && modelSession.mRecognitionSession == this) {
+                            modelSession.mRecognitionSession = null;
+                            if (modelSession.mIsKeyphrase) {
+                                PhraseRecognitionEvent m893$$Nest$smcreateDefaultKeyphraseEvent = FakeSoundTriggerHal.m893$$Nest$smcreateDefaultKeyphraseEvent(0);
+                                m893$$Nest$smcreateDefaultKeyphraseEvent.common.data = bArr;
+                                if (phraseRecognitionExtraArr != null) {
+                                    m893$$Nest$smcreateDefaultKeyphraseEvent.phraseExtras = phraseRecognitionExtraArr;
+                                }
+                                CallbackDispatcher.m894$$Nest$mwrap(ModelSession.this.mCallbackDispatcher, new FakeSoundTriggerHal$ModelSession$$ExternalSyntheticLambda2(this, m893$$Nest$smcreateDefaultKeyphraseEvent));
+                            } else {
+                                RecognitionEvent createDefaultEvent = FakeSoundTriggerHal.createDefaultEvent(0);
+                                createDefaultEvent.data = bArr;
+                                CallbackDispatcher.m894$$Nest$mwrap(ModelSession.this.mCallbackDispatcher, new FakeSoundTriggerHal$ModelSession$$ExternalSyntheticLambda2(this, createDefaultEvent));
+                            }
+                        }
+                    } finally {
+                    }
+                }
+            }
+        }
+
+        /* renamed from: -$$Nest$mforceRecognitionForModel, reason: not valid java name */
+        public static void m897$$Nest$mforceRecognitionForModel(ModelSession modelSession) {
+            synchronized (FakeSoundTriggerHal.this.mLock) {
+                try {
+                    if (modelSession.mIsKeyphrase) {
+                        CallbackDispatcher.m894$$Nest$mwrap(modelSession.mCallbackDispatcher, new FakeSoundTriggerHal$ModelSession$$ExternalSyntheticLambda2(modelSession, FakeSoundTriggerHal.m893$$Nest$smcreateDefaultKeyphraseEvent(3)));
+                    } else {
+                        CallbackDispatcher.m894$$Nest$mwrap(modelSession.mCallbackDispatcher, new FakeSoundTriggerHal$ModelSession$$ExternalSyntheticLambda2(modelSession, FakeSoundTriggerHal.createDefaultEvent(3)));
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        /* renamed from: -$$Nest$mgetIsUnloaded, reason: not valid java name */
+        public static boolean m898$$Nest$mgetIsUnloaded(ModelSession modelSession) {
+            boolean z;
+            synchronized (FakeSoundTriggerHal.this.mLock) {
+                z = modelSession.mIsUnloaded;
+            }
+            return z;
+        }
 
         public ModelSession(int i, CallbackDispatcher callbackDispatcher, boolean z) {
-            this.mThreshold = 0;
-            this.mIsUnloaded = false;
             this.mModelHandle = i;
             this.mCallbackDispatcher = callbackDispatcher;
             this.mIsKeyphrase = z;
         }
 
-        public final RecognitionSession startRecognitionForModel() {
-            RecognitionSession recognitionSession;
+        public final void triggerUnloadModel() {
             synchronized (FakeSoundTriggerHal.this.mLock) {
-                recognitionSession = new RecognitionSession();
-                this.mRecognitionSession = recognitionSession;
-            }
-            return recognitionSession;
-        }
-
-        public final RecognitionSession stopRecognitionForModel() {
-            RecognitionSession recognitionSession;
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                recognitionSession = this.mRecognitionSession;
-                this.mRecognitionSession = null;
-            }
-            return recognitionSession;
-        }
-
-        public final void forceRecognitionForModel() {
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                if (this.mIsKeyphrase) {
-                    final PhraseRecognitionEvent createDefaultKeyphraseEvent = FakeSoundTriggerHal.createDefaultKeyphraseEvent(3);
-                    this.mCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$ModelSession$$ExternalSyntheticLambda2
-                        public final void acceptOrThrow(Object obj) {
-                            FakeSoundTriggerHal.ModelSession.this.lambda$forceRecognitionForModel$0(createDefaultKeyphraseEvent, (ISoundTriggerHwCallback) obj);
+                try {
+                    if (!FakeSoundTriggerHal.this.mIsDead && !this.mIsUnloaded) {
+                        RecognitionSession recognitionSession = this.mRecognitionSession;
+                        if (recognitionSession != null) {
+                            recognitionSession.triggerAbortRecognition();
                         }
-                    });
-                } else {
-                    final RecognitionEvent createDefaultEvent = FakeSoundTriggerHal.createDefaultEvent(3);
-                    this.mCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$ModelSession$$ExternalSyntheticLambda3
-                        public final void acceptOrThrow(Object obj) {
-                            FakeSoundTriggerHal.ModelSession.this.lambda$forceRecognitionForModel$1(createDefaultEvent, (ISoundTriggerHwCallback) obj);
-                        }
-                    });
-                }
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$forceRecognitionForModel$0(PhraseRecognitionEvent phraseRecognitionEvent, ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-            iSoundTriggerHwCallback.phraseRecognitionCallback(this.mModelHandle, phraseRecognitionEvent);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$forceRecognitionForModel$1(RecognitionEvent recognitionEvent, ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-            iSoundTriggerHwCallback.recognitionCallback(this.mModelHandle, recognitionEvent);
-        }
-
-        public final void setThresholdFactor(int i) {
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                this.mThreshold = i;
-            }
-        }
-
-        public final int getThresholdFactor() {
-            int i;
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                i = this.mThreshold;
-            }
-            return i;
-        }
-
-        public final boolean getIsUnloaded() {
-            boolean z;
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                z = this.mIsUnloaded;
-            }
-            return z;
-        }
-
-        public final RecognitionSession getRecogSession() {
-            RecognitionSession recognitionSession;
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                recognitionSession = this.mRecognitionSession;
-            }
-            return recognitionSession;
-        }
-
-        public void triggerUnloadModel() {
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                if (!FakeSoundTriggerHal.this.mIsDead && !this.mIsUnloaded) {
-                    RecognitionSession recognitionSession = this.mRecognitionSession;
-                    if (recognitionSession != null) {
-                        recognitionSession.triggerAbortRecognition();
-                    }
-                    this.mIsUnloaded = true;
-                    this.mCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$ModelSession$$ExternalSyntheticLambda0
-                        public final void acceptOrThrow(Object obj) {
-                            FakeSoundTriggerHal.ModelSession.this.lambda$triggerUnloadModel$2((ISoundTriggerHwCallback) obj);
-                        }
-                    });
-                    if (FakeSoundTriggerHal.this.getNumLoadedModelsLocked() == FakeSoundTriggerHal.this.mProperties.maxSoundModels - 1 && !FakeSoundTriggerHal.this.mIsResourceContended) {
-                        FakeSoundTriggerHal.this.mGlobalCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$ModelSession$$ExternalSyntheticLambda1
-                            public final void acceptOrThrow(Object obj) {
-                                ((ISoundTriggerHwGlobalCallback) obj).onResourcesAvailable();
-                            }
-                        });
-                    }
-                }
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$triggerUnloadModel$2(ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-            iSoundTriggerHwCallback.modelUnloaded(this.mModelHandle);
-        }
-
-        /* loaded from: classes3.dex */
-        public class RecognitionSession extends IInjectRecognitionEvent.Stub {
-            public RecognitionSession() {
-            }
-
-            public void triggerRecognitionEvent(byte[] bArr, PhraseRecognitionExtra[] phraseRecognitionExtraArr) {
-                synchronized (FakeSoundTriggerHal.this.mLock) {
-                    if (!FakeSoundTriggerHal.this.mIsDead && ModelSession.this.mRecognitionSession == this) {
-                        ModelSession.this.mRecognitionSession = null;
-                        if (ModelSession.this.mIsKeyphrase) {
-                            final PhraseRecognitionEvent createDefaultKeyphraseEvent = FakeSoundTriggerHal.createDefaultKeyphraseEvent(0);
-                            createDefaultKeyphraseEvent.common.data = bArr;
-                            if (phraseRecognitionExtraArr != null) {
-                                createDefaultKeyphraseEvent.phraseExtras = phraseRecognitionExtraArr;
-                            }
-                            ModelSession.this.mCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$ModelSession$RecognitionSession$$ExternalSyntheticLambda0
-                                public final void acceptOrThrow(Object obj) {
-                                    FakeSoundTriggerHal.ModelSession.RecognitionSession.this.lambda$triggerRecognitionEvent$0(createDefaultKeyphraseEvent, (ISoundTriggerHwCallback) obj);
-                                }
-                            });
-                        } else {
-                            final RecognitionEvent createDefaultEvent = FakeSoundTriggerHal.createDefaultEvent(0);
-                            createDefaultEvent.data = bArr;
-                            ModelSession.this.mCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$ModelSession$RecognitionSession$$ExternalSyntheticLambda1
-                                public final void acceptOrThrow(Object obj) {
-                                    FakeSoundTriggerHal.ModelSession.RecognitionSession.this.lambda$triggerRecognitionEvent$1(createDefaultEvent, (ISoundTriggerHwCallback) obj);
-                                }
-                            });
+                        this.mIsUnloaded = true;
+                        CallbackDispatcher.m894$$Nest$mwrap(this.mCallbackDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda1(this, 1));
+                        int numLoadedModelsLocked = FakeSoundTriggerHal.this.getNumLoadedModelsLocked();
+                        FakeSoundTriggerHal fakeSoundTriggerHal = FakeSoundTriggerHal.this;
+                        if (numLoadedModelsLocked == fakeSoundTriggerHal.mProperties.maxSoundModels - 1 && !fakeSoundTriggerHal.mIsResourceContended) {
+                            CallbackDispatcher.m895$$Nest$mwrap$1(fakeSoundTriggerHal.mGlobalCallbackDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda2(3));
                         }
                     }
+                } finally {
                 }
-            }
-
-            /* JADX INFO: Access modifiers changed from: private */
-            public /* synthetic */ void lambda$triggerRecognitionEvent$0(PhraseRecognitionEvent phraseRecognitionEvent, ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-                iSoundTriggerHwCallback.phraseRecognitionCallback(ModelSession.this.mModelHandle, phraseRecognitionEvent);
-            }
-
-            /* JADX INFO: Access modifiers changed from: private */
-            public /* synthetic */ void lambda$triggerRecognitionEvent$1(RecognitionEvent recognitionEvent, ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-                iSoundTriggerHwCallback.recognitionCallback(ModelSession.this.mModelHandle, recognitionEvent);
-            }
-
-            public void triggerAbortRecognition() {
-                synchronized (FakeSoundTriggerHal.this.mLock) {
-                    if (!FakeSoundTriggerHal.this.mIsDead && ModelSession.this.mRecognitionSession == this) {
-                        ModelSession.this.mRecognitionSession = null;
-                        if (ModelSession.this.mIsKeyphrase) {
-                            ModelSession.this.mCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$ModelSession$RecognitionSession$$ExternalSyntheticLambda2
-                                public final void acceptOrThrow(Object obj) {
-                                    FakeSoundTriggerHal.ModelSession.RecognitionSession.this.lambda$triggerAbortRecognition$2((ISoundTriggerHwCallback) obj);
-                                }
-                            });
-                        } else {
-                            ModelSession.this.mCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$ModelSession$RecognitionSession$$ExternalSyntheticLambda3
-                                public final void acceptOrThrow(Object obj) {
-                                    FakeSoundTriggerHal.ModelSession.RecognitionSession.this.lambda$triggerAbortRecognition$3((ISoundTriggerHwCallback) obj);
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-
-            /* JADX INFO: Access modifiers changed from: private */
-            public /* synthetic */ void lambda$triggerAbortRecognition$2(ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-                iSoundTriggerHwCallback.phraseRecognitionCallback(ModelSession.this.mModelHandle, FakeSoundTriggerHal.createDefaultKeyphraseEvent(1));
-            }
-
-            /* JADX INFO: Access modifiers changed from: private */
-            public /* synthetic */ void lambda$triggerAbortRecognition$3(ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-                iSoundTriggerHwCallback.recognitionCallback(ModelSession.this.mModelHandle, FakeSoundTriggerHal.createDefaultEvent(1));
             }
         }
     }
 
-    public FakeSoundTriggerHal(ISoundTriggerInjection iSoundTriggerInjection) {
+    /* renamed from: -$$Nest$smcreateDefaultKeyphraseEvent, reason: not valid java name */
+    public static PhraseRecognitionEvent m893$$Nest$smcreateDefaultKeyphraseEvent(int i) {
+        RecognitionEvent createDefaultEvent = createDefaultEvent(i);
+        createDefaultEvent.type = 0;
+        PhraseRecognitionEvent phraseRecognitionEvent = new PhraseRecognitionEvent();
+        phraseRecognitionEvent.common = createDefaultEvent;
+        phraseRecognitionEvent.phraseExtras = new PhraseRecognitionExtra[0];
+        return phraseRecognitionEvent;
+    }
+
+    public FakeSoundTriggerHal(SoundTriggerInjection soundTriggerInjection) {
         this.mGlobalCallbackDispatcher = null;
-        InjectionDispatcher injectionDispatcher = new InjectionDispatcher(iSoundTriggerInjection);
-        this.mInjectionDispatcher = injectionDispatcher;
-        this.mGlobalCallbackDispatcher = null;
-        this.mGlobalEventSession = new AnonymousClass1();
-        injectionDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$$ExternalSyntheticLambda7
-            public final void acceptOrThrow(Object obj) {
-                FakeSoundTriggerHal.this.lambda$new$0((ISoundTriggerInjection) obj);
-            }
-        });
-    }
-
-    /* renamed from: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$1, reason: invalid class name */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends IInjectGlobalEvent.Stub {
-        public AnonymousClass1() {
-        }
-
-        public void triggerRestart() {
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                if (FakeSoundTriggerHal.this.mIsDead) {
-                    return;
-                }
-                FakeSoundTriggerHal.this.mIsDead = true;
-                FakeSoundTriggerHal.this.mInjectionDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$1$$ExternalSyntheticLambda0
-                    public final void acceptOrThrow(Object obj) {
-                        FakeSoundTriggerHal.AnonymousClass1.this.lambda$triggerRestart$0((ISoundTriggerInjection) obj);
-                    }
-                });
-                FakeSoundTriggerHal.this.mModelSessionMap.clear();
-                if (FakeSoundTriggerHal.this.mDeathRecipient != null) {
-                    final IBinder.DeathRecipient deathRecipient = FakeSoundTriggerHal.this.mDeathRecipient;
-                    ExecutorHolder.CALLBACK_EXECUTOR.execute(new Runnable() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$1$$ExternalSyntheticLambda1
-                        @Override // java.lang.Runnable
-                        public final void run() {
-                            FakeSoundTriggerHal.AnonymousClass1.this.lambda$triggerRestart$1(deathRecipient);
-                        }
-                    });
-                }
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$triggerRestart$0(ISoundTriggerInjection iSoundTriggerInjection) {
-            iSoundTriggerInjection.onRestarted(this);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$triggerRestart$1(IBinder.DeathRecipient deathRecipient) {
-            try {
-                deathRecipient.binderDied(FakeSoundTriggerHal.this.asBinder());
-            } catch (Throwable th) {
-                Slog.wtf("FakeSoundTriggerHal", "Callback dispatch threw", th);
-            }
-        }
-
-        public void setResourceContention(boolean z, final IAcknowledgeEvent iAcknowledgeEvent) {
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                if (FakeSoundTriggerHal.this.mIsDead) {
-                    return;
-                }
-                boolean z2 = FakeSoundTriggerHal.this.mIsResourceContended;
-                FakeSoundTriggerHal.this.mIsResourceContended = z;
-                FakeSoundTriggerHal.this.mInjectionDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$1$$ExternalSyntheticLambda3
-                    public final void acceptOrThrow(Object obj) {
-                        iAcknowledgeEvent.eventReceived();
-                    }
-                });
-                if (!FakeSoundTriggerHal.this.mIsResourceContended && z2) {
-                    FakeSoundTriggerHal.this.mGlobalCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$1$$ExternalSyntheticLambda4
-                        public final void acceptOrThrow(Object obj) {
-                            ((ISoundTriggerHwGlobalCallback) obj).onResourcesAvailable();
-                        }
-                    });
-                }
-            }
-        }
-
-        public void triggerOnResourcesAvailable() {
-            synchronized (FakeSoundTriggerHal.this.mLock) {
-                if (FakeSoundTriggerHal.this.mIsDead) {
-                    return;
-                }
-                FakeSoundTriggerHal.this.mGlobalCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$1$$ExternalSyntheticLambda2
-                    public final void acceptOrThrow(Object obj) {
-                        ((ISoundTriggerHwGlobalCallback) obj).onResourcesAvailable();
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(ISoundTriggerInjection iSoundTriggerInjection) {
-        iSoundTriggerInjection.registerGlobalEventInjection(this.mGlobalEventSession);
-    }
-
-    public IInjectGlobalEvent getGlobalEventInjection() {
-        return this.mGlobalEventSession;
-    }
-
-    public void linkToDeath(IBinder.DeathRecipient deathRecipient, int i) {
-        synchronized (this.mLock) {
-            if (this.mDeathRecipient != null) {
-                Slog.wtf("FakeSoundTriggerHal", "Received two death recipients concurrently");
-            }
-            this.mDeathRecipient = deathRecipient;
-        }
-    }
-
-    public boolean unlinkToDeath(IBinder.DeathRecipient deathRecipient, int i) {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                return false;
-            }
-            if (this.mDeathRecipient != deathRecipient) {
-                throw new NoSuchElementException();
-            }
-            this.mDeathRecipient = null;
-            return true;
-        }
-    }
-
-    public Properties getProperties() {
-        Properties properties;
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            Parcel obtain = Parcel.obtain();
-            try {
-                this.mProperties.writeToParcel(obtain, 0);
-                obtain.setDataPosition(0);
-                properties = (Properties) Properties.CREATOR.createFromParcel(obtain);
-            } finally {
-                obtain.recycle();
-            }
-        }
-        return properties;
-    }
-
-    public void registerGlobalCallback(ISoundTriggerHwGlobalCallback iSoundTriggerHwGlobalCallback) {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            this.mGlobalCallbackDispatcher = new GlobalCallbackDispatcher(iSoundTriggerHwGlobalCallback);
-        }
-    }
-
-    public int loadSoundModel(final SoundModel soundModel, ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-        int i;
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            if (this.mIsResourceContended || getNumLoadedModelsLocked() == this.mProperties.maxSoundModels) {
-                throw new ServiceSpecificException(1);
-            }
-            i = this.mModelKeyCounter;
-            this.mModelKeyCounter = i + 1;
-            final ModelSession modelSession = new ModelSession(i, new CallbackDispatcher(iSoundTriggerHwCallback), false);
-            this.mModelSessionMap.put(Integer.valueOf(i), modelSession);
-            this.mInjectionDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$$ExternalSyntheticLambda4
-                public final void acceptOrThrow(Object obj) {
-                    FakeSoundTriggerHal.this.lambda$loadSoundModel$1(soundModel, modelSession, (ISoundTriggerInjection) obj);
-                }
-            });
-        }
-        return i;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$loadSoundModel$1(SoundModel soundModel, ModelSession modelSession, ISoundTriggerInjection iSoundTriggerInjection) {
-        iSoundTriggerInjection.onSoundModelLoaded(soundModel, (Phrase[]) null, modelSession, this.mGlobalEventSession);
-    }
-
-    public int loadPhraseSoundModel(final PhraseSoundModel phraseSoundModel, ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-        int i;
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            if (this.mIsResourceContended || getNumLoadedModelsLocked() == this.mProperties.maxSoundModels) {
-                throw new ServiceSpecificException(1);
-            }
-            i = this.mModelKeyCounter;
-            this.mModelKeyCounter = i + 1;
-            final ModelSession modelSession = new ModelSession(i, new CallbackDispatcher(iSoundTriggerHwCallback), true);
-            this.mModelSessionMap.put(Integer.valueOf(i), modelSession);
-            this.mInjectionDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$$ExternalSyntheticLambda1
-                public final void acceptOrThrow(Object obj) {
-                    FakeSoundTriggerHal.this.lambda$loadPhraseSoundModel$2(phraseSoundModel, modelSession, (ISoundTriggerInjection) obj);
-                }
-            });
-        }
-        return i;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$loadPhraseSoundModel$2(PhraseSoundModel phraseSoundModel, ModelSession modelSession, ISoundTriggerInjection iSoundTriggerInjection) {
-        iSoundTriggerInjection.onSoundModelLoaded(phraseSoundModel.common, phraseSoundModel.phrases, modelSession, this.mGlobalEventSession);
-    }
-
-    public void unloadSoundModel(int i) {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            final ModelSession modelSession = (ModelSession) this.mModelSessionMap.get(Integer.valueOf(i));
-            if (modelSession == null) {
-                Slog.wtf("FakeSoundTriggerHal", "Attempted to unload model which was never loaded");
-            }
-            if (modelSession.getRecogSession() != null) {
-                Slog.wtf("FakeSoundTriggerHal", "Session unloaded before recog stopped!");
-            }
-            if (modelSession.getIsUnloaded()) {
-                return;
-            }
-            this.mInjectionDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$$ExternalSyntheticLambda5
-                public final void acceptOrThrow(Object obj) {
-                    ((ISoundTriggerInjection) obj).onSoundModelUnloaded(FakeSoundTriggerHal.ModelSession.this);
-                }
-            });
-            if (getNumLoadedModelsLocked() == this.mProperties.maxSoundModels - 1 && !this.mIsResourceContended) {
-                this.mGlobalCallbackDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$$ExternalSyntheticLambda6
-                    public final void acceptOrThrow(Object obj) {
-                        ((ISoundTriggerHwGlobalCallback) obj).onResourcesAvailable();
-                    }
-                });
-            }
-        }
-    }
-
-    public void startRecognition(int i, int i2, int i3, final RecognitionConfig recognitionConfig) {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            final ModelSession modelSession = (ModelSession) this.mModelSessionMap.get(Integer.valueOf(i));
-            if (modelSession == null) {
-                Slog.wtf("FakeSoundTriggerHal", "Attempted to start recognition with invalid handle");
-            }
-            if (this.mIsResourceContended) {
-                throw new ServiceSpecificException(1);
-            }
-            if (modelSession.getIsUnloaded()) {
-                throw new ServiceSpecificException(1);
-            }
-            final ModelSession.RecognitionSession startRecognitionForModel = modelSession.startRecognitionForModel();
-            this.mInjectionDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$$ExternalSyntheticLambda3
-                public final void acceptOrThrow(Object obj) {
-                    ((ISoundTriggerInjection) obj).onRecognitionStarted(-1, recognitionConfig, startRecognitionForModel, modelSession);
-                }
-            });
-        }
-    }
-
-    public void stopRecognition(int i) {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            ModelSession modelSession = (ModelSession) this.mModelSessionMap.get(Integer.valueOf(i));
-            if (modelSession == null) {
-                Slog.wtf("FakeSoundTriggerHal", "Attempted to stop recognition with invalid handle");
-            }
-            final ModelSession.RecognitionSession stopRecognitionForModel = modelSession.stopRecognitionForModel();
-            if (stopRecognitionForModel != null) {
-                this.mInjectionDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$$ExternalSyntheticLambda2
-                    public final void acceptOrThrow(Object obj) {
-                        ((ISoundTriggerInjection) obj).onRecognitionStopped(FakeSoundTriggerHal.ModelSession.RecognitionSession.this);
-                    }
-                });
-            }
-        }
-    }
-
-    public void forceRecognitionEvent(int i) {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            ModelSession modelSession = (ModelSession) this.mModelSessionMap.get(Integer.valueOf(i));
-            if (modelSession == null) {
-                Slog.wtf("FakeSoundTriggerHal", "Attempted to force recognition with invalid handle");
-            }
-            if (modelSession.getRecogSession() == null) {
-                return;
-            }
-            modelSession.forceRecognitionForModel();
-        }
-    }
-
-    public ModelParameterRange queryParameter(int i, int i2) {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            if (((ModelSession) this.mModelSessionMap.get(Integer.valueOf(i))) == null) {
-                Slog.wtf("FakeSoundTriggerHal", "Attempted to get param with invalid handle");
-            }
-        }
-        if (i2 != 0) {
-            return null;
-        }
-        ModelParameterRange modelParameterRange = new ModelParameterRange();
-        modelParameterRange.minInclusive = -10;
-        modelParameterRange.maxInclusive = 10;
-        return modelParameterRange;
-    }
-
-    public int getParameter(int i, int i2) {
-        int thresholdFactor;
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            ModelSession modelSession = (ModelSession) this.mModelSessionMap.get(Integer.valueOf(i));
-            if (modelSession == null) {
-                Slog.wtf("FakeSoundTriggerHal", "Attempted to get param with invalid handle");
-            }
-            if (i2 != 0) {
-                throw new IllegalArgumentException();
-            }
-            thresholdFactor = modelSession.getThresholdFactor();
-        }
-        return thresholdFactor;
-    }
-
-    public void setParameter(int i, final int i2, final int i3) {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-            final ModelSession modelSession = (ModelSession) this.mModelSessionMap.get(Integer.valueOf(i));
-            if (modelSession == null) {
-                Slog.wtf("FakeSoundTriggerHal", "Attempted to get param with invalid handle");
-            }
-            if (i2 != 0 && (i3 < -10 || i3 > 10)) {
-                throw new IllegalArgumentException();
-            }
-            modelSession.setThresholdFactor(i3);
-            this.mInjectionDispatcher.wrap(new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$$ExternalSyntheticLambda0
-                public final void acceptOrThrow(Object obj) {
-                    ((ISoundTriggerInjection) obj).onParamSet(i2, i3, modelSession);
-                }
-            });
-        }
-    }
-
-    public int getInterfaceVersion() {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-        }
-        return 1;
-    }
-
-    public String getInterfaceHash() {
-        synchronized (this.mLock) {
-            if (this.mIsDead) {
-                throw new DeadObjectException();
-            }
-        }
-        return "7d8d63478cd50e766d2072140c8aa3457f9fb585";
-    }
-
-    public final int getNumLoadedModelsLocked() {
-        Iterator it = this.mModelSessionMap.values().iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            if (!((ModelSession) it.next()).getIsUnloaded()) {
-                i++;
-            }
-        }
-        return i;
-    }
-
-    public static Properties createDefaultProperties() {
         Properties properties = new Properties();
         properties.implementor = "android";
         properties.description = "AOSP fake STHAL";
@@ -648,7 +281,12 @@ public class FakeSoundTriggerHal extends ISoundTriggerHw.Stub {
         properties.triggerInEvent = false;
         properties.powerConsumptionMw = 0;
         properties.audioCapabilities = 0;
-        return properties;
+        this.mProperties = properties;
+        CallbackDispatcher callbackDispatcher = new CallbackDispatcher(soundTriggerInjection);
+        this.mInjectionDispatcher = callbackDispatcher;
+        this.mGlobalCallbackDispatcher = null;
+        this.mGlobalEventSession = new AnonymousClass1();
+        CallbackDispatcher.m896$$Nest$mwrap$2(callbackDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda0(this));
     }
 
     public static RecognitionEvent createDefaultEvent(int i) {
@@ -665,92 +303,323 @@ public class FakeSoundTriggerHal extends ISoundTriggerHw.Stub {
         return recognitionEvent;
     }
 
-    public static PhraseRecognitionEvent createDefaultKeyphraseEvent(int i) {
-        RecognitionEvent createDefaultEvent = createDefaultEvent(i);
-        createDefaultEvent.type = 0;
-        PhraseRecognitionEvent phraseRecognitionEvent = new PhraseRecognitionEvent();
-        phraseRecognitionEvent.common = createDefaultEvent;
-        phraseRecognitionEvent.phraseExtras = new PhraseRecognitionExtra[0];
-        return phraseRecognitionEvent;
-    }
-
-    /* loaded from: classes3.dex */
-    public class CallbackDispatcher {
-        public final ISoundTriggerHwCallback mCallback;
-
-        public CallbackDispatcher(ISoundTriggerHwCallback iSoundTriggerHwCallback) {
-            this.mCallback = iSoundTriggerHwCallback;
-        }
-
-        public final void wrap(final FunctionalUtils.ThrowingConsumer throwingConsumer) {
-            ExecutorHolder.CALLBACK_EXECUTOR.execute(new Runnable() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$CallbackDispatcher$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    FakeSoundTriggerHal.CallbackDispatcher.this.lambda$wrap$0(throwingConsumer);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$wrap$0(FunctionalUtils.ThrowingConsumer throwingConsumer) {
+    public final void forceRecognitionEvent(int i) {
+        ModelSession.RecognitionSession recognitionSession;
+        synchronized (this.mLock) {
             try {
-                throwingConsumer.accept(this.mCallback);
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                ModelSession modelSession = (ModelSession) ((HashMap) this.mModelSessionMap).get(Integer.valueOf(i));
+                if (modelSession == null) {
+                    Slog.wtf("FakeSoundTriggerHal", "Attempted to force recognition with invalid handle");
+                }
+                synchronized (FakeSoundTriggerHal.this.mLock) {
+                    recognitionSession = modelSession.mRecognitionSession;
+                }
+                if (recognitionSession == null) {
+                    return;
+                }
+                ModelSession.m897$$Nest$mforceRecognitionForModel(modelSession);
             } catch (Throwable th) {
-                Slog.wtf("FakeSoundTriggerHal", "Callback dispatch threw", th);
+                throw th;
             }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class GlobalCallbackDispatcher {
-        public final ISoundTriggerHwGlobalCallback mCallback;
-
-        public GlobalCallbackDispatcher(ISoundTriggerHwGlobalCallback iSoundTriggerHwGlobalCallback) {
-            this.mCallback = iSoundTriggerHwGlobalCallback;
+    public final String getInterfaceHash() {
+        synchronized (this.mLock) {
+            if (this.mIsDead) {
+                throw new DeadObjectException();
+            }
         }
+        return "6b24e60ad261e3ff56106efd86ce6aa7ef5621b0";
+    }
 
-        public final void wrap(final FunctionalUtils.ThrowingConsumer throwingConsumer) {
-            ExecutorHolder.CALLBACK_EXECUTOR.execute(new Runnable() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$GlobalCallbackDispatcher$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    FakeSoundTriggerHal.GlobalCallbackDispatcher.this.lambda$wrap$0(throwingConsumer);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$wrap$0(FunctionalUtils.ThrowingConsumer throwingConsumer) {
+    public final int getInterfaceVersion() {
+        synchronized (this.mLock) {
             try {
-                throwingConsumer.accept(this.mCallback);
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
             } catch (Throwable th) {
-                Slog.wtf("FakeSoundTriggerHal", "Callback dispatch threw", th);
+                throw th;
+            }
+        }
+        return 2;
+    }
+
+    public final int getNumLoadedModelsLocked() {
+        Iterator it = ((HashMap) this.mModelSessionMap).values().iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            if (!ModelSession.m898$$Nest$mgetIsUnloaded((ModelSession) it.next())) {
+                i++;
+            }
+        }
+        return i;
+    }
+
+    public final int getParameter(int i, int i2) {
+        int i3;
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                ModelSession modelSession = (ModelSession) ((HashMap) this.mModelSessionMap).get(Integer.valueOf(i));
+                if (modelSession == null) {
+                    Slog.wtf("FakeSoundTriggerHal", "Attempted to get param with invalid handle");
+                }
+                if (i2 != 0) {
+                    throw new IllegalArgumentException();
+                }
+                synchronized (FakeSoundTriggerHal.this.mLock) {
+                    i3 = modelSession.mThreshold;
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return i3;
+    }
+
+    public final Properties getProperties() {
+        Properties properties;
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                Parcel obtain = Parcel.obtain();
+                try {
+                    this.mProperties.writeToParcel(obtain, 0);
+                    obtain.setDataPosition(0);
+                    properties = (Properties) Properties.CREATOR.createFromParcel(obtain);
+                } finally {
+                    obtain.recycle();
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return properties;
+    }
+
+    public final void linkToDeath(IBinder.DeathRecipient deathRecipient, int i) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mDeathRecipient != null) {
+                    Slog.wtf("FakeSoundTriggerHal", "Received two death recipients concurrently");
+                }
+                this.mDeathRecipient = deathRecipient;
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class InjectionDispatcher {
-        public final ISoundTriggerInjection mInjection;
-
-        public InjectionDispatcher(ISoundTriggerInjection iSoundTriggerInjection) {
-            this.mInjection = iSoundTriggerInjection;
-        }
-
-        public final void wrap(final FunctionalUtils.ThrowingConsumer throwingConsumer) {
-            ExecutorHolder.INJECTION_EXECUTOR.execute(new Runnable() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$InjectionDispatcher$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    FakeSoundTriggerHal.InjectionDispatcher.this.lambda$wrap$0(throwingConsumer);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$wrap$0(FunctionalUtils.ThrowingConsumer throwingConsumer) {
+    public final int loadPhraseSoundModel(PhraseSoundModel phraseSoundModel, ISoundTriggerHwCallback iSoundTriggerHwCallback) {
+        int i;
+        synchronized (this.mLock) {
             try {
-                throwingConsumer.accept(this.mInjection);
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                if (this.mIsResourceContended || getNumLoadedModelsLocked() == this.mProperties.maxSoundModels) {
+                    throw new ServiceSpecificException(1);
+                }
+                i = this.mModelKeyCounter;
+                this.mModelKeyCounter = i + 1;
+                ModelSession modelSession = new ModelSession(i, new CallbackDispatcher(iSoundTriggerHwCallback), true);
+                ((HashMap) this.mModelSessionMap).put(Integer.valueOf(i), modelSession);
+                CallbackDispatcher.m896$$Nest$mwrap$2(this.mInjectionDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda4(this, phraseSoundModel, modelSession));
             } catch (Throwable th) {
-                Slog.wtf("FakeSoundTriggerHal", "Callback dispatch threw", th);
+                throw th;
+            }
+        }
+        return i;
+    }
+
+    public final int loadSoundModel(SoundModel soundModel, ISoundTriggerHwCallback iSoundTriggerHwCallback) {
+        int i;
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                if (this.mIsResourceContended || getNumLoadedModelsLocked() == this.mProperties.maxSoundModels) {
+                    throw new ServiceSpecificException(1);
+                }
+                i = this.mModelKeyCounter;
+                this.mModelKeyCounter = i + 1;
+                ModelSession modelSession = new ModelSession(i, new CallbackDispatcher(iSoundTriggerHwCallback), false);
+                ((HashMap) this.mModelSessionMap).put(Integer.valueOf(i), modelSession);
+                CallbackDispatcher.m896$$Nest$mwrap$2(this.mInjectionDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda4(this, soundModel, modelSession, 0));
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return i;
+    }
+
+    public final ModelParameterRange queryParameter(int i, int i2) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                if (((ModelSession) ((HashMap) this.mModelSessionMap).get(Integer.valueOf(i))) == null) {
+                    Slog.wtf("FakeSoundTriggerHal", "Attempted to get param with invalid handle");
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        if (i2 != 0) {
+            return null;
+        }
+        ModelParameterRange modelParameterRange = new ModelParameterRange();
+        modelParameterRange.minInclusive = -10;
+        modelParameterRange.maxInclusive = 10;
+        return modelParameterRange;
+    }
+
+    public final void registerGlobalCallback(ISoundTriggerHwGlobalCallback iSoundTriggerHwGlobalCallback) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                this.mGlobalCallbackDispatcher = new CallbackDispatcher(iSoundTriggerHwGlobalCallback);
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void setParameter(int i, final int i2, final int i3) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                final ModelSession modelSession = (ModelSession) ((HashMap) this.mModelSessionMap).get(Integer.valueOf(i));
+                if (modelSession == null) {
+                    Slog.wtf("FakeSoundTriggerHal", "Attempted to get param with invalid handle");
+                }
+                if (i2 != 0 && (i3 < -10 || i3 > 10)) {
+                    throw new IllegalArgumentException();
+                }
+                synchronized (FakeSoundTriggerHal.this.mLock) {
+                    modelSession.mThreshold = i3;
+                }
+                CallbackDispatcher.m896$$Nest$mwrap$2(this.mInjectionDispatcher, new FunctionalUtils.ThrowingConsumer() { // from class: com.android.server.soundtrigger_middleware.FakeSoundTriggerHal$$ExternalSyntheticLambda3
+                    public final void acceptOrThrow(Object obj) {
+                        ((ISoundTriggerInjection) obj).onParamSet(i2, i3, modelSession);
+                    }
+                });
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void startRecognition(int i, int i2, int i3, RecognitionConfig recognitionConfig) {
+        ModelSession.RecognitionSession recognitionSession;
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                ModelSession modelSession = (ModelSession) ((HashMap) this.mModelSessionMap).get(Integer.valueOf(i));
+                if (modelSession == null) {
+                    Slog.wtf("FakeSoundTriggerHal", "Attempted to start recognition with invalid handle");
+                }
+                if (this.mIsResourceContended) {
+                    throw new ServiceSpecificException(1);
+                }
+                if (ModelSession.m898$$Nest$mgetIsUnloaded(modelSession)) {
+                    throw new ServiceSpecificException(1);
+                }
+                synchronized (FakeSoundTriggerHal.this.mLock) {
+                    recognitionSession = modelSession.new RecognitionSession();
+                    modelSession.mRecognitionSession = recognitionSession;
+                }
+                CallbackDispatcher.m896$$Nest$mwrap$2(this.mInjectionDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda4(recognitionConfig, recognitionSession, modelSession, 2));
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void stopRecognition(int i) {
+        ModelSession.RecognitionSession recognitionSession;
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                ModelSession modelSession = (ModelSession) ((HashMap) this.mModelSessionMap).get(Integer.valueOf(i));
+                if (modelSession == null) {
+                    Slog.wtf("FakeSoundTriggerHal", "Attempted to stop recognition with invalid handle");
+                }
+                synchronized (FakeSoundTriggerHal.this.mLock) {
+                    recognitionSession = modelSession.mRecognitionSession;
+                    modelSession.mRecognitionSession = null;
+                }
+                if (recognitionSession != null) {
+                    CallbackDispatcher.m896$$Nest$mwrap$2(this.mInjectionDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda7(recognitionSession, 0));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final boolean unlinkToDeath(IBinder.DeathRecipient deathRecipient, int i) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    return false;
+                }
+                if (this.mDeathRecipient != deathRecipient) {
+                    throw new NoSuchElementException();
+                }
+                this.mDeathRecipient = null;
+                return true;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void unloadSoundModel(int i) {
+        ModelSession.RecognitionSession recognitionSession;
+        synchronized (this.mLock) {
+            try {
+                if (this.mIsDead) {
+                    throw new DeadObjectException();
+                }
+                ModelSession modelSession = (ModelSession) ((HashMap) this.mModelSessionMap).get(Integer.valueOf(i));
+                if (modelSession == null) {
+                    Slog.wtf("FakeSoundTriggerHal", "Attempted to unload model which was never loaded");
+                }
+                synchronized (FakeSoundTriggerHal.this.mLock) {
+                    recognitionSession = modelSession.mRecognitionSession;
+                }
+                if (recognitionSession != null) {
+                    Slog.wtf("FakeSoundTriggerHal", "Session unloaded before recog stopped!");
+                }
+                if (ModelSession.m898$$Nest$mgetIsUnloaded(modelSession)) {
+                    return;
+                }
+                CallbackDispatcher.m896$$Nest$mwrap$2(this.mInjectionDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda1(modelSession, 0));
+                if (getNumLoadedModelsLocked() == this.mProperties.maxSoundModels - 1 && !this.mIsResourceContended) {
+                    CallbackDispatcher.m895$$Nest$mwrap$1(this.mGlobalCallbackDispatcher, new FakeSoundTriggerHal$$ExternalSyntheticLambda2(0));
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }

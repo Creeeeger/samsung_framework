@@ -8,27 +8,23 @@ import android.util.proto.ProtoOutputStream;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
 import com.android.server.wm.SurfaceAnimator;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class WallpaperAnimationAdapter implements AnimationAdapter {
-    public Consumer mAnimationCanceledRunnable;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WallpaperAnimationAdapter implements AnimationAdapter {
+    public final Consumer mAnimationCanceledRunnable;
     public SurfaceControl mCapturedLeash;
     public SurfaceAnimator.OnAnimationFinishedCallback mCapturedLeashFinishCallback;
-    public long mDurationHint;
+    public final long mDurationHint;
     public int mLastAnimationType;
-    public long mStatusBarTransitionDelay;
+    public final long mStatusBarTransitionDelay;
     public RemoteAnimationTarget mTarget;
     public final WallpaperWindowToken mWallpaperToken;
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public boolean getShowWallpaper() {
-        return false;
-    }
 
     public WallpaperAnimationAdapter(WallpaperWindowToken wallpaperWindowToken, long j, long j2, Consumer consumer) {
         this.mWallpaperToken = wallpaperWindowToken;
@@ -38,106 +34,89 @@ public class WallpaperAnimationAdapter implements AnimationAdapter {
     }
 
     public static RemoteAnimationTarget[] startWallpaperAnimations(DisplayContent displayContent, final long j, final long j2, final Consumer consumer, final ArrayList arrayList) {
-        if (!shouldStartWallpaperAnimation(displayContent)) {
-            if (ProtoLogCache.WM_DEBUG_REMOTE_ANIMATIONS_enabled) {
-                ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, 2024493888, 0, "\tWallpaper of display=%s is not visible", new Object[]{String.valueOf(displayContent)});
-            }
-            return new RemoteAnimationTarget[0];
+        if (displayContent.mWallpaperController.isWallpaperVisible()) {
+            final ArrayList arrayList2 = new ArrayList();
+            displayContent.forAllWallpaperWindows(new Consumer() { // from class: com.android.server.wm.WallpaperAnimationAdapter$$ExternalSyntheticLambda0
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    long j3 = j;
+                    long j4 = j2;
+                    Consumer consumer2 = consumer;
+                    ArrayList arrayList3 = arrayList2;
+                    ArrayList arrayList4 = arrayList;
+                    WallpaperWindowToken wallpaperWindowToken = (WallpaperWindowToken) obj;
+                    WallpaperAnimationAdapter wallpaperAnimationAdapter = new WallpaperAnimationAdapter(wallpaperWindowToken, j3, j4, consumer2);
+                    wallpaperWindowToken.startAnimation(wallpaperWindowToken.getPendingTransaction(), wallpaperAnimationAdapter, false, 16);
+                    RemoteAnimationTarget remoteAnimationTarget = new RemoteAnimationTarget(-1, -1, wallpaperAnimationAdapter.mCapturedLeash, false, (Rect) null, (Rect) null, wallpaperWindowToken.getPrefixOrderIndex(), new Point(), (Rect) null, (Rect) null, wallpaperWindowToken.getWindowConfiguration(), true, (SurfaceControl) null, (Rect) null, (ActivityManager.RunningTaskInfo) null, false);
+                    wallpaperAnimationAdapter.mTarget = remoteAnimationTarget;
+                    arrayList3.add(remoteAnimationTarget);
+                    arrayList4.add(wallpaperAnimationAdapter);
+                }
+            });
+            return (RemoteAnimationTarget[]) arrayList2.toArray(new RemoteAnimationTarget[arrayList2.size()]);
         }
-        final ArrayList arrayList2 = new ArrayList();
-        displayContent.forAllWallpaperWindows(new Consumer() { // from class: com.android.server.wm.WallpaperAnimationAdapter$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                WallpaperAnimationAdapter.lambda$startWallpaperAnimations$0(j, j2, consumer, arrayList2, arrayList, (WallpaperWindowToken) obj);
-            }
-        });
-        return (RemoteAnimationTarget[]) arrayList2.toArray(new RemoteAnimationTarget[arrayList2.size()]);
-    }
-
-    public static /* synthetic */ void lambda$startWallpaperAnimations$0(long j, long j2, Consumer consumer, ArrayList arrayList, ArrayList arrayList2, WallpaperWindowToken wallpaperWindowToken) {
-        WallpaperAnimationAdapter wallpaperAnimationAdapter = new WallpaperAnimationAdapter(wallpaperWindowToken, j, j2, consumer);
-        wallpaperWindowToken.startAnimation(wallpaperWindowToken.getPendingTransaction(), wallpaperAnimationAdapter, false, 16);
-        arrayList.add(wallpaperAnimationAdapter.createRemoteAnimationTarget());
-        arrayList2.add(wallpaperAnimationAdapter);
-    }
-
-    public static boolean shouldStartWallpaperAnimation(DisplayContent displayContent) {
-        return displayContent.mWallpaperController.isWallpaperVisible();
-    }
-
-    public RemoteAnimationTarget createRemoteAnimationTarget() {
-        RemoteAnimationTarget remoteAnimationTarget = new RemoteAnimationTarget(-1, -1, getLeash(), false, (Rect) null, (Rect) null, this.mWallpaperToken.getPrefixOrderIndex(), new Point(), (Rect) null, (Rect) null, this.mWallpaperToken.getWindowConfiguration(), true, (SurfaceControl) null, (Rect) null, (ActivityManager.RunningTaskInfo) null, false);
-        this.mTarget = remoteAnimationTarget;
-        return remoteAnimationTarget;
-    }
-
-    public SurfaceControl getLeash() {
-        return this.mCapturedLeash;
-    }
-
-    public SurfaceAnimator.OnAnimationFinishedCallback getLeashFinishedCallback() {
-        return this.mCapturedLeashFinishCallback;
-    }
-
-    public int getLastAnimationType() {
-        return this.mLastAnimationType;
-    }
-
-    public WallpaperWindowToken getToken() {
-        return this.mWallpaperToken;
-    }
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public void startAnimation(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback) {
-        if (ProtoLogCache.WM_DEBUG_REMOTE_ANIMATIONS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, 1073230342, 0, "startAnimation", (Object[]) null);
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_REMOTE_ANIMATIONS_enabled[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, 1964980935866463086L, 0, null, String.valueOf(displayContent));
         }
-        transaction.setLayer(surfaceControl, this.mWallpaperToken.getPrefixOrderIndex());
-        this.mCapturedLeash = surfaceControl;
-        this.mCapturedLeashFinishCallback = onAnimationFinishedCallback;
-        this.mLastAnimationType = i;
+        return new RemoteAnimationTarget[0];
     }
 
     @Override // com.android.server.wm.AnimationAdapter
-    public void onAnimationCancelled(SurfaceControl surfaceControl) {
-        if (ProtoLogCache.WM_DEBUG_REMOTE_ANIMATIONS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, -760801764, 0, "onAnimationCancelled", (Object[]) null);
-        }
-        this.mAnimationCanceledRunnable.accept(this);
-    }
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public long getDurationHint() {
-        return this.mDurationHint;
-    }
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public long getStatusBarTransitionsStartTime() {
-        return SystemClock.uptimeMillis() + this.mStatusBarTransitionDelay;
-    }
-
-    @Override // com.android.server.wm.AnimationAdapter
-    public void dump(PrintWriter printWriter, String str) {
+    public final void dump(PrintWriter printWriter, String str) {
         printWriter.print(str);
         printWriter.print("token=");
         printWriter.println(this.mWallpaperToken);
-        if (this.mTarget != null) {
+        if (this.mTarget == null) {
             printWriter.print(str);
-            printWriter.println("Target:");
-            this.mTarget.dump(printWriter, str + "  ");
+            printWriter.println("Target: null");
             return;
         }
         printWriter.print(str);
-        printWriter.println("Target: null");
+        printWriter.println("Target:");
+        this.mTarget.dump(printWriter, str + "  ");
     }
 
     @Override // com.android.server.wm.AnimationAdapter
-    public void dumpDebug(ProtoOutputStream protoOutputStream) {
+    public final void dumpDebug$1(ProtoOutputStream protoOutputStream) {
         long start = protoOutputStream.start(1146756268034L);
         RemoteAnimationTarget remoteAnimationTarget = this.mTarget;
         if (remoteAnimationTarget != null) {
             remoteAnimationTarget.dumpDebug(protoOutputStream, 1146756268033L);
         }
         protoOutputStream.end(start);
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final long getDurationHint() {
+        return this.mDurationHint;
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final boolean getShowWallpaper() {
+        return false;
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final long getStatusBarTransitionsStartTime() {
+        return SystemClock.uptimeMillis() + this.mStatusBarTransitionDelay;
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final void onAnimationCancelled(SurfaceControl surfaceControl) {
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_REMOTE_ANIMATIONS_enabled[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, 8030745595351281943L, 0, null, null);
+        }
+        this.mAnimationCanceledRunnable.accept(this);
+    }
+
+    @Override // com.android.server.wm.AnimationAdapter
+    public final void startAnimation(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, SurfaceAnimator.OnAnimationFinishedCallback onAnimationFinishedCallback) {
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_REMOTE_ANIMATIONS_enabled[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_REMOTE_ANIMATIONS, 8131665298937888044L, 0, null, null);
+        }
+        transaction.setLayer(surfaceControl, this.mWallpaperToken.getPrefixOrderIndex());
+        this.mCapturedLeash = surfaceControl;
+        this.mCapturedLeashFinishCallback = onAnimationFinishedCallback;
+        this.mLastAnimationType = i;
     }
 }

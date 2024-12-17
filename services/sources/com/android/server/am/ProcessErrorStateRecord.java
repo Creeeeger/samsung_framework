@@ -4,25 +4,17 @@ import android.app.ActivityManager;
 import android.app.ApplicationErrorReport;
 import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.content.Intent;
-import android.os.Process;
-import android.os.SystemProperties;
-import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Slog;
-import android.util.SparseBooleanArray;
-import com.android.internal.os.anr.AnrLatencyTracker;
-import com.android.server.Watchdog;
 import com.android.server.am.AppNotRespondingDialog;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
-import com.android.server.stats.pull.ProcfsMemoryUtil;
+import com.android.server.wm.ActivityTaskManagerService;
+import com.samsung.android.knoxguard.service.utils.Constants;
 import com.samsung.android.rune.CoreRune;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ProcessErrorStateRecord {
-    public boolean DEBUG_ATRACE;
+public final class ProcessErrorStateRecord {
+    public final boolean DEBUG_ATRACE;
     public String mAnrAnnotation;
     public AppNotRespondingDialog.Data mAnrData;
     public final ProcessRecord mApp;
@@ -38,88 +30,6 @@ public class ProcessErrorStateRecord {
     public final ActivityManagerGlobalLock mProcLock;
     public final ActivityManagerService mService;
 
-    public boolean isBad() {
-        return this.mBad;
-    }
-
-    public void setBad(boolean z) {
-        this.mBad = z;
-    }
-
-    public boolean isCrashing() {
-        return this.mCrashing;
-    }
-
-    public void setCrashing(boolean z) {
-        this.mCrashing = z;
-        this.mApp.getWindowProcessController().setCrashing(z);
-    }
-
-    public boolean isForceCrashReport() {
-        return this.mForceCrashReport;
-    }
-
-    public void setForceCrashReport(boolean z) {
-        this.mForceCrashReport = z;
-    }
-
-    public boolean isNotResponding() {
-        return this.mNotResponding;
-    }
-
-    public void setNotResponding(boolean z) {
-        this.mNotResponding = z;
-        this.mApp.getWindowProcessController().setNotResponding(z);
-    }
-
-    public Runnable getCrashHandler() {
-        return this.mCrashHandler;
-    }
-
-    public void setCrashHandler(Runnable runnable) {
-        this.mCrashHandler = runnable;
-    }
-
-    public ActivityManager.ProcessErrorStateInfo getCrashingReport() {
-        return this.mCrashingReport;
-    }
-
-    public void setCrashingReport(ActivityManager.ProcessErrorStateInfo processErrorStateInfo) {
-        this.mCrashingReport = processErrorStateInfo;
-    }
-
-    public String getAnrAnnotation() {
-        return this.mAnrAnnotation;
-    }
-
-    public void setAnrAnnotation(String str) {
-        this.mAnrAnnotation = str;
-    }
-
-    public ActivityManager.ProcessErrorStateInfo getNotRespondingReport() {
-        return this.mNotRespondingReport;
-    }
-
-    public void setNotRespondingReport(ActivityManager.ProcessErrorStateInfo processErrorStateInfo) {
-        this.mNotRespondingReport = processErrorStateInfo;
-    }
-
-    public ComponentName getErrorReportReceiver() {
-        return this.mErrorReportReceiver;
-    }
-
-    public ErrorDialogController getDialogController() {
-        return this.mDialogController;
-    }
-
-    public void setAnrData(AppNotRespondingDialog.Data data) {
-        this.mAnrData = data;
-    }
-
-    public AppNotRespondingDialog.Data getAnrData() {
-        return this.mAnrData;
-    }
-
     public ProcessErrorStateRecord(ProcessRecord processRecord) {
         this.DEBUG_ATRACE = CoreRune.IS_DEBUG_LEVEL_MID || CoreRune.IS_DEBUG_LEVEL_HIGH;
         this.mApp = processRecord;
@@ -129,239 +39,67 @@ public class ProcessErrorStateRecord {
         this.mDialogController = new ErrorDialogController(processRecord);
     }
 
-    public boolean skipAnrLocked(String str) {
-        if (this.mService.mAtmInternal.isShuttingDown()) {
-            Slog.i("ActivityManager", "During shutdown skipping ANR: " + this + " " + str);
-            return true;
-        }
-        if (isNotResponding()) {
-            Slog.i("ActivityManager", "Skipping duplicate ANR: " + this + " " + str);
-            return true;
-        }
-        if (isCrashing()) {
-            Slog.i("ActivityManager", "Crashing app skipping ANR: " + this + " " + str);
-            return true;
-        }
-        if (this.mApp.isKilledByAm()) {
-            Slog.i("ActivityManager", "App already killed by AM skipping ANR: " + this + " " + str);
-            return true;
-        }
-        if (!this.mApp.isKilled()) {
-            return false;
-        }
-        Slog.i("ActivityManager", "Skipping died app ANR: " + this + " " + str);
-        return true;
-    }
-
-    public void captureAtraceLog() {
-        if (this.DEBUG_ATRACE) {
-            int i = SystemProperties.getInt("debug.perfmond.atrace", 0);
-            boolean z = i == 1 || i == 3 || i == 103;
-            Slog.i("ActivityManager", "Trace mode: " + i + ", ANR trace enabled : " + z);
-            if (z) {
-                Intent intent = new Intent("com.samsung.intent.action.PERFORMANCE_LOGGING");
-                intent.putExtra("performance_logging_ctrl", 3);
-                this.mService.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
-            }
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:102:0x0419  */
-    /* JADX WARN: Removed duplicated region for block: B:105:0x0426  */
-    /* JADX WARN: Removed duplicated region for block: B:107:0x042d  */
-    /* JADX WARN: Removed duplicated region for block: B:110:0x0439  */
-    /* JADX WARN: Removed duplicated region for block: B:112:0x0444  */
-    /* JADX WARN: Removed duplicated region for block: B:118:0x045a  */
-    /* JADX WARN: Removed duplicated region for block: B:120:0x0465  */
-    /* JADX WARN: Removed duplicated region for block: B:122:0x0470  */
-    /* JADX WARN: Removed duplicated region for block: B:124:0x047b  */
-    /* JADX WARN: Removed duplicated region for block: B:126:0x0486  */
-    /* JADX WARN: Removed duplicated region for block: B:129:0x048e  */
-    /* JADX WARN: Removed duplicated region for block: B:131:0x0499  */
-    /* JADX WARN: Removed duplicated region for block: B:133:0x04a4  */
-    /* JADX WARN: Removed duplicated region for block: B:136:0x04bc  */
-    /* JADX WARN: Removed duplicated region for block: B:139:0x04c8  */
-    /* JADX WARN: Removed duplicated region for block: B:142:0x051d A[RETURN] */
-    /* JADX WARN: Removed duplicated region for block: B:143:0x051e  */
-    /* JADX WARN: Removed duplicated region for block: B:181:0x04cb  */
-    /* JADX WARN: Removed duplicated region for block: B:182:0x04c2  */
-    /* JADX WARN: Removed duplicated region for block: B:183:0x04a0  */
-    /* JADX WARN: Removed duplicated region for block: B:184:0x0495  */
-    /* JADX WARN: Removed duplicated region for block: B:185:0x0482  */
-    /* JADX WARN: Removed duplicated region for block: B:186:0x0477  */
-    /* JADX WARN: Removed duplicated region for block: B:187:0x046c  */
-    /* JADX WARN: Removed duplicated region for block: B:188:0x0461  */
-    /* JADX WARN: Removed duplicated region for block: B:190:0x044b  */
-    /* JADX WARN: Removed duplicated region for block: B:191:0x0440  */
-    /* JADX WARN: Removed duplicated region for block: B:192:0x0434  */
-    /* JADX WARN: Removed duplicated region for block: B:193:0x0429  */
-    /* JADX WARN: Removed duplicated region for block: B:194:0x0420  */
-    /* JADX WARN: Removed duplicated region for block: B:195:0x040b  */
-    /* JADX WARN: Removed duplicated region for block: B:197:0x03fe  */
-    /* JADX WARN: Removed duplicated region for block: B:198:0x03e8  */
-    /* JADX WARN: Removed duplicated region for block: B:88:0x03c9  */
-    /* JADX WARN: Removed duplicated region for block: B:91:0x03e2  */
-    /* JADX WARN: Removed duplicated region for block: B:94:0x03ee  */
-    /* JADX WARN: Removed duplicated region for block: B:99:0x0408  */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:114:0x04ed  */
+    /* JADX WARN: Removed duplicated region for block: B:117:0x0504  */
+    /* JADX WARN: Removed duplicated region for block: B:120:0x0511  */
+    /* JADX WARN: Removed duplicated region for block: B:125:0x052b  */
+    /* JADX WARN: Removed duplicated region for block: B:128:0x053c  */
+    /* JADX WARN: Removed duplicated region for block: B:131:0x054a  */
+    /* JADX WARN: Removed duplicated region for block: B:133:0x0551  */
+    /* JADX WARN: Removed duplicated region for block: B:136:0x055d  */
+    /* JADX WARN: Removed duplicated region for block: B:138:0x0565  */
+    /* JADX WARN: Removed duplicated region for block: B:144:0x057d  */
+    /* JADX WARN: Removed duplicated region for block: B:146:0x0588  */
+    /* JADX WARN: Removed duplicated region for block: B:148:0x0593  */
+    /* JADX WARN: Removed duplicated region for block: B:150:0x059e  */
+    /* JADX WARN: Removed duplicated region for block: B:152:0x05a9  */
+    /* JADX WARN: Removed duplicated region for block: B:155:0x05b1  */
+    /* JADX WARN: Removed duplicated region for block: B:157:0x05bc  */
+    /* JADX WARN: Removed duplicated region for block: B:159:0x05c7  */
+    /* JADX WARN: Removed duplicated region for block: B:162:0x05e3  */
+    /* JADX WARN: Removed duplicated region for block: B:165:0x063e A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:166:0x063f  */
+    /* JADX WARN: Removed duplicated region for block: B:216:0x05e9  */
+    /* JADX WARN: Removed duplicated region for block: B:217:0x05ce  */
+    /* JADX WARN: Removed duplicated region for block: B:218:0x05c3  */
+    /* JADX WARN: Removed duplicated region for block: B:219:0x05b8  */
+    /* JADX WARN: Removed duplicated region for block: B:220:0x05a5  */
+    /* JADX WARN: Removed duplicated region for block: B:221:0x059a  */
+    /* JADX WARN: Removed duplicated region for block: B:222:0x058f  */
+    /* JADX WARN: Removed duplicated region for block: B:223:0x0584  */
+    /* JADX WARN: Removed duplicated region for block: B:225:0x056c  */
+    /* JADX WARN: Removed duplicated region for block: B:226:0x0562  */
+    /* JADX WARN: Removed duplicated region for block: B:227:0x0558  */
+    /* JADX WARN: Removed duplicated region for block: B:228:0x054d  */
+    /* JADX WARN: Removed duplicated region for block: B:229:0x0545  */
+    /* JADX WARN: Removed duplicated region for block: B:230:0x052e  */
+    /* JADX WARN: Removed duplicated region for block: B:232:0x0521  */
+    /* JADX WARN: Removed duplicated region for block: B:233:0x050a  */
+    /* JADX WARN: Removed duplicated region for block: B:242:0x03c3 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:259:0x03a9  */
+    /* JADX WARN: Removed duplicated region for block: B:260:0x03a2  */
+    /* JADX WARN: Removed duplicated region for block: B:261:0x0366  */
+    /* JADX WARN: Removed duplicated region for block: B:67:0x02ce  */
+    /* JADX WARN: Removed duplicated region for block: B:70:0x02e0  */
+    /* JADX WARN: Removed duplicated region for block: B:76:0x02f8  */
+    /* JADX WARN: Removed duplicated region for block: B:79:0x0339  */
+    /* JADX WARN: Removed duplicated region for block: B:82:0x039f  */
+    /* JADX WARN: Removed duplicated region for block: B:84:0x03a6  */
+    /* JADX WARN: Removed duplicated region for block: B:87:0x0403  */
+    /* JADX WARN: Removed duplicated region for block: B:90:0x040d A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Type inference failed for: r3v49, types: [com.android.server.am.ProcessErrorStateRecord$$ExternalSyntheticLambda4] */
+    /* JADX WARN: Type inference failed for: r4v12, types: [com.android.server.am.ProcessErrorStateRecord$$ExternalSyntheticLambda4] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void appNotResponding(java.lang.String r56, android.content.pm.ApplicationInfo r57, java.lang.String r58, com.android.server.wm.WindowProcessController r59, boolean r60, com.android.internal.os.TimeoutRecord r61, java.util.concurrent.ExecutorService r62, final boolean r63, boolean r64, java.util.concurrent.Future r65) {
+    public final void appNotResponding(java.lang.String r56, android.content.pm.ApplicationInfo r57, java.lang.String r58, com.android.server.wm.WindowProcessController r59, boolean r60, com.android.internal.os.TimeoutRecord r61, java.util.concurrent.ExecutorService r62, final boolean r63, boolean r64, java.util.concurrent.Future r65) {
         /*
-            Method dump skipped, instructions count: 1489
+            Method dump skipped, instructions count: 1805
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.ProcessErrorStateRecord.appNotResponding(java.lang.String, android.content.pm.ApplicationInfo, java.lang.String, com.android.server.wm.WindowProcessController, boolean, com.android.internal.os.TimeoutRecord, java.util.concurrent.ExecutorService, boolean, boolean, java.util.concurrent.Future):void");
-    }
-
-    public /* synthetic */ void lambda$appNotResponding$0(AnrLatencyTracker anrLatencyTracker, String str) {
-        anrLatencyTracker.waitingOnAMSLockStarted();
-        ActivityManagerService activityManagerService = this.mService;
-        ActivityManagerService.boostPriorityForLockedSection();
-        synchronized (activityManagerService) {
-            try {
-                anrLatencyTracker.waitingOnAMSLockEnded();
-                setAnrAnnotation(str);
-                this.mApp.killLocked("anr", 6, true);
-            } catch (Throwable th) {
-                ActivityManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        ActivityManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public /* synthetic */ void lambda$appNotResponding$1(AnrLatencyTracker anrLatencyTracker) {
-        anrLatencyTracker.updateCpuStatsNowCalled();
-        this.mService.updateCpuStatsNow();
-        anrLatencyTracker.updateCpuStatsNowReturned();
-    }
-
-    public static /* synthetic */ void lambda$appNotResponding$2(int i, int i2, ArrayList arrayList, SparseBooleanArray sparseBooleanArray, ProcessRecord processRecord) {
-        int pid;
-        if (processRecord == null || processRecord.getThread() == null || (pid = processRecord.getPid()) <= 0 || pid == i || pid == i2 || pid == ActivityManagerService.MY_PID) {
-            return;
-        }
-        if (processRecord.isPersistent()) {
-            arrayList.add(Integer.valueOf(pid));
-        } else if (processRecord.mServices.isTreatedLikeActivity()) {
-            arrayList.add(Integer.valueOf(pid));
-        } else {
-            sparseBooleanArray.put(pid, true);
-        }
-    }
-
-    public /* synthetic */ ArrayList lambda$appNotResponding$3(AnrLatencyTracker anrLatencyTracker, boolean z, boolean z2) {
-        String[] strArr;
-        anrLatencyTracker.nativePidCollectionStarted();
-        ArrayList arrayList = null;
-        if (!(this.mApp.info.isSystemApp() || this.mApp.info.isSystemExt()) || z || z2) {
-            int i = 0;
-            while (true) {
-                String[] strArr2 = Watchdog.NATIVE_STACKS_OF_INTEREST;
-                if (i >= strArr2.length) {
-                    strArr = null;
-                    break;
-                }
-                if (strArr2[i].equals(this.mApp.processName)) {
-                    strArr = new String[]{this.mApp.processName};
-                    break;
-                }
-                i++;
-            }
-        } else {
-            strArr = Watchdog.NATIVE_STACKS_OF_INTEREST;
-        }
-        int[] pidsForCommands = strArr == null ? null : Process.getPidsForCommands(strArr);
-        if (pidsForCommands != null) {
-            arrayList = new ArrayList(pidsForCommands.length);
-            for (int i2 : pidsForCommands) {
-                arrayList.add(Integer.valueOf(i2));
-            }
-        }
-        anrLatencyTracker.nativePidCollectionEnded();
-        return arrayList;
-    }
-
-    public /* synthetic */ void lambda$appNotResponding$4() {
-        ActivityManagerService activityManagerService = this.mService;
-        ActivityManagerService.boostPriorityForLockedSection();
-        synchronized (activityManagerService) {
-            try {
-                this.mApp.killLocked("anr", 6, true);
-            } catch (Throwable th) {
-                ActivityManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        ActivityManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public /* synthetic */ void lambda$appNotResponding$5() {
-        ActivityManagerService activityManagerService = this.mService;
-        ActivityManagerService.boostPriorityForLockedSection();
-        synchronized (activityManagerService) {
-            try {
-                this.mService.mServices.scheduleServiceTimeoutLocked(this.mApp);
-            } catch (Throwable th) {
-                ActivityManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        ActivityManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public final void makeAppNotRespondingLSP(String str, String str2, String str3) {
-        setNotResponding(true);
-        AppErrors appErrors = this.mService.mAppErrors;
-        if (appErrors != null) {
-            this.mNotRespondingReport = appErrors.generateProcessError(this.mApp, 2, str, str2, str3, null);
-        }
-        startAppProblemLSP();
-        this.mApp.getWindowProcessController().stopFreezingActivities();
-    }
-
-    public void startAppProblemLSP() {
-        this.mErrorReportReceiver = null;
-        for (int i : this.mService.mUserController.getCurrentProfileIds()) {
-            ProcessRecord processRecord = this.mApp;
-            if (processRecord.userId == i) {
-                this.mErrorReportReceiver = ApplicationErrorReport.getErrorReportReceiver(this.mService.mContext, processRecord.info.packageName, this.mApp.info.flags);
-            }
-        }
-        for (BroadcastQueue broadcastQueue : this.mService.mBroadcastQueues) {
-            broadcastQueue.onApplicationProblemLocked(this.mApp);
-        }
-    }
-
-    public final boolean isInterestingForBackgroundTraces() {
-        if (this.mApp.getPid() == ActivityManagerService.MY_PID || this.mApp.isInterestingToUserLocked()) {
-            return true;
-        }
-        return (this.mApp.info != null && "com.android.systemui".equals(this.mApp.info.packageName)) || this.mApp.mState.hasTopUi() || this.mApp.mState.hasOverlayUi();
-    }
-
-    public final boolean getShowBackground() {
-        ContentResolver contentResolver = this.mService.mContext.getContentResolver();
-        return Settings.Secure.getIntForUser(contentResolver, "anr_show_background", 0, contentResolver.getUserId()) != 0;
-    }
-
-    public final String buildMemoryHeadersFor(int i) {
-        if (i <= 0) {
-            Slog.i("ActivityManager", "Memory header requested with invalid pid: " + i);
-            return null;
-        }
-        ProcfsMemoryUtil.MemorySnapshot readMemorySnapshotFromProcfs = ProcfsMemoryUtil.readMemorySnapshotFromProcfs(i);
-        if (readMemorySnapshotFromProcfs == null) {
-            Slog.i("ActivityManager", "Failed to get memory snapshot for pid:" + i);
-            return null;
-        }
-        return "RssHwmKb: " + readMemorySnapshotFromProcfs.rssHighWaterMarkInKilobytes + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + "RssKb: " + readMemorySnapshotFromProcfs.rssInKilobytes + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + "RssAnonKb: " + readMemorySnapshotFromProcfs.anonRssInKilobytes + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + "RssShmemKb: " + readMemorySnapshotFromProcfs.rssShmemKilobytes + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE + "VmSwapKb: " + readMemorySnapshotFromProcfs.swapInKilobytes + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE;
-    }
-
-    public boolean isSilentAnr() {
-        return (getShowBackground() || isInterestingForBackgroundTraces()) ? false : true;
     }
 
     public boolean isMonitorCpuUsage() {
@@ -369,35 +107,60 @@ public class ProcessErrorStateRecord {
         return true;
     }
 
-    public void onCleanupApplicationRecordLSP() {
-        getDialogController().clearAllErrorDialogs();
-        setCrashing(false);
-        setNotResponding(false);
+    public boolean isSilentAnr() {
+        ContentResolver contentResolver = this.mService.mContext.getContentResolver();
+        if (Settings.Secure.getIntForUser(contentResolver, "anr_show_background", 0, contentResolver.getUserId()) != 0) {
+            return false;
+        }
+        ProcessRecord processRecord = this.mApp;
+        if (processRecord.mPid == ActivityManagerService.MY_PID || processRecord.isInterestingToUserLocked()) {
+            return false;
+        }
+        if (this.mApp.info != null && Constants.SYSTEMUI_PACKAGE_NAME.equals(this.mApp.info.packageName)) {
+            return false;
+        }
+        ProcessStateRecord processStateRecord = this.mApp.mState;
+        return (processStateRecord.mHasTopUi || processStateRecord.mHasOverlayUi) ? false : true;
     }
 
-    public void dump(PrintWriter printWriter, String str, long j) {
-        ActivityManagerGlobalLock activityManagerGlobalLock = this.mProcLock;
-        ActivityManagerService.boostPriorityForProcLockedSection();
-        synchronized (activityManagerGlobalLock) {
-            try {
-                if (this.mCrashing || this.mDialogController.hasCrashDialogs() || this.mNotResponding || this.mDialogController.hasAnrDialogs() || this.mBad) {
-                    printWriter.print(str);
-                    printWriter.print(" mCrashing=" + this.mCrashing);
-                    printWriter.print(" " + this.mDialogController.getCrashDialogs());
-                    printWriter.print(" mNotResponding=" + this.mNotResponding);
-                    printWriter.print(" " + this.mDialogController.getAnrDialogs());
-                    printWriter.print(" bad=" + this.mBad);
-                    if (this.mErrorReportReceiver != null) {
-                        printWriter.print(" errorReportReceiver=");
-                        printWriter.print(this.mErrorReportReceiver.flattenToShortString());
-                    }
-                    printWriter.println();
-                }
-            } catch (Throwable th) {
-                ActivityManagerService.resetPriorityAfterProcLockedSection();
-                throw th;
+    public final void setNotResponding(boolean z) {
+        this.mNotResponding = z;
+        this.mApp.mWindowProcessController.mNotResponding = z;
+    }
+
+    public final boolean skipAnrLocked(String str) {
+        if (ActivityTaskManagerService.this.mShuttingDown) {
+            Slog.i("ActivityManager", "During shutdown skipping ANR: " + this + " " + str);
+            return true;
+        }
+        if (this.mNotResponding) {
+            Slog.i("ActivityManager", "Skipping duplicate ANR: " + this + " " + str);
+            return true;
+        }
+        if (this.mCrashing) {
+            Slog.i("ActivityManager", "Crashing app skipping ANR: " + this + " " + str);
+            return true;
+        }
+        ProcessRecord processRecord = this.mApp;
+        if (processRecord.mKilledByAm) {
+            Slog.i("ActivityManager", "App already killed by AM skipping ANR: " + this + " " + str);
+            return true;
+        }
+        if (!processRecord.mKilled) {
+            return false;
+        }
+        Slog.i("ActivityManager", "Skipping died app ANR: " + this + " " + str);
+        return true;
+    }
+
+    public final void startAppProblemLSP() {
+        this.mErrorReportReceiver = null;
+        for (int i : this.mService.mUserController.getCurrentProfileIds()) {
+            ProcessRecord processRecord = this.mApp;
+            if (processRecord.userId == i) {
+                this.mErrorReportReceiver = ApplicationErrorReport.getErrorReportReceiver(this.mService.mContext, processRecord.info.packageName, this.mApp.info.flags);
             }
         }
-        ActivityManagerService.resetPriorityAfterProcLockedSection();
+        this.mService.mBroadcastQueue.onApplicationCleanupLocked(this.mApp);
     }
 }

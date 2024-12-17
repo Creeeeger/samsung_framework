@@ -2,85 +2,41 @@ package com.android.server.hdmi;
 
 import android.media.AudioDescriptor;
 import android.os.Handler;
-import android.util.IndentingPrintWriter;
 import android.util.Slog;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes2.dex */
-public class HdmiEarcLocalDeviceTx extends HdmiEarcLocalDevice {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class HdmiEarcLocalDeviceTx extends HdmiEarcLocalDevice {
     public static final String[] earcStatusNames = {"HDMI_EARC_STATUS_IDLE", "HDMI_EARC_STATUS_EARC_PENDING", "HDMI_EARC_STATUS_ARC_PENDING", "HDMI_EARC_STATUS_EARC_CONNECTED"};
     public Handler mReportCapsHandler;
     public ReportCapsRunnable mReportCapsRunnable;
 
-    public HdmiEarcLocalDeviceTx(HdmiControlService hdmiControlService) {
-        super(hdmiControlService, 0);
-        synchronized (this.mLock) {
-            this.mEarcStatus = 1;
-        }
-        this.mReportCapsHandler = new Handler(hdmiControlService.getServiceLooper());
-        this.mReportCapsRunnable = new ReportCapsRunnable();
-    }
-
-    public final String earcStatusToString(int i) {
-        return earcStatusNames[i];
-    }
-
-    @Override // com.android.server.hdmi.HdmiEarcLocalDevice
-    public void handleEarcStateChange(int i) {
-        int i2;
-        synchronized (this.mLock) {
-            HdmiLogger.debug("eARC state change [old: %s(%d) new: %s(%d)]", earcStatusToString(this.mEarcStatus), Integer.valueOf(this.mEarcStatus), earcStatusToString(i), Integer.valueOf(i));
-            i2 = this.mEarcStatus;
-            this.mEarcStatus = i;
-        }
-        this.mReportCapsHandler.removeCallbacksAndMessages(null);
-        if (i == 0) {
-            this.mService.notifyEarcStatusToAudioService(false, new ArrayList());
-            this.mService.startArcAction(false, null);
-            return;
-        }
-        if (i == 2) {
-            this.mService.notifyEarcStatusToAudioService(false, new ArrayList());
-            this.mService.startArcAction(true, null);
-        } else if (i == 1 && i2 == 2) {
-            this.mService.startArcAction(false, null);
-        } else if (i == 3) {
-            if (i2 == 2) {
-                this.mService.startArcAction(false, null);
-            }
-            this.mReportCapsHandler.postDelayed(this.mReportCapsRunnable, 2000L);
-        }
-    }
-
-    @Override // com.android.server.hdmi.HdmiEarcLocalDevice
-    public void handleEarcCapabilitiesReported(byte[] bArr) {
-        synchronized (this.mLock) {
-            if (this.mEarcStatus == 3 && this.mReportCapsHandler.hasCallbacks(this.mReportCapsRunnable)) {
-                this.mReportCapsHandler.removeCallbacksAndMessages(null);
-                this.mService.notifyEarcStatusToAudioService(true, parseCapabilities(bArr));
-            }
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class ReportCapsRunnable implements Runnable {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ReportCapsRunnable implements Runnable {
         public ReportCapsRunnable() {
         }
 
         @Override // java.lang.Runnable
-        public void run() {
+        public final void run() {
             synchronized (HdmiEarcLocalDeviceTx.this.mLock) {
-                HdmiEarcLocalDeviceTx hdmiEarcLocalDeviceTx = HdmiEarcLocalDeviceTx.this;
-                if (hdmiEarcLocalDeviceTx.mEarcStatus == 3) {
-                    hdmiEarcLocalDeviceTx.mService.notifyEarcStatusToAudioService(true, new ArrayList());
+                try {
+                    HdmiEarcLocalDeviceTx hdmiEarcLocalDeviceTx = HdmiEarcLocalDeviceTx.this;
+                    if (hdmiEarcLocalDeviceTx.mEarcStatus == 3) {
+                        hdmiEarcLocalDeviceTx.mService.notifyEarcStatusToAudioService(new ArrayList(), true);
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
         }
     }
 
-    public final List parseCapabilities(byte[] bArr) {
+    public static List parseCapabilities(byte[] bArr) {
         ArrayList arrayList = new ArrayList();
         if (bArr.length < 4) {
             Slog.i("HdmiEarcLocalDeviceTx", "Raw eARC capabilities array doesn´t contain any blocks.");
@@ -102,7 +58,7 @@ public class HdmiEarcLocalDeviceTx extends HdmiEarcLocalDevice {
             if (i4 == 1) {
                 int i6 = i5 % 3;
                 if (i6 != 0) {
-                    Slog.e("HdmiEarcLocalDeviceTx", "Invalid length of SAD block: expected a factor of 3 but got " + i6);
+                    NandswapManager$$ExternalSyntheticOutline0.m(i6, "Invalid length of SAD block: expected a factor of 3 but got ", "HdmiEarcLocalDeviceTx");
                 } else {
                     byte[] bArr2 = new byte[i5];
                     System.arraycopy(bArr, i2 + 1, bArr2, 0, i5);
@@ -118,25 +74,16 @@ public class HdmiEarcLocalDeviceTx extends HdmiEarcLocalDevice {
                 byte[] bArr3 = new byte[i9];
                 System.arraycopy(bArr, i2, bArr3, 0, i9);
                 arrayList.add(new AudioDescriptor(2, 0, bArr3));
-            } else if (i4 == 7) {
-                if (bArr[i2 + 1] == 17) {
-                    int i10 = i5 + 1;
-                    byte[] bArr4 = new byte[i10];
-                    System.arraycopy(bArr, i2, bArr4, 0, i10);
-                    arrayList.add(new AudioDescriptor(3, 0, bArr4));
-                }
-            } else {
-                Slog.w("HdmiEarcLocalDeviceTx", "This tagcode was not handled: " + i4);
+            } else if (i4 != 7) {
+                DeviceIdleController$$ExternalSyntheticOutline0.m(i4, "This tagcode was not handled: ", "HdmiEarcLocalDeviceTx");
+            } else if (bArr[i2 + 1] == 17) {
+                int i10 = i5 + 1;
+                byte[] bArr4 = new byte[i10];
+                System.arraycopy(bArr, i2, bArr4, 0, i10);
+                arrayList.add(new AudioDescriptor(3, 0, bArr4));
             }
             i2 += i5 + 1;
         }
         return arrayList;
-    }
-
-    @Override // com.android.server.hdmi.HdmiEarcLocalDevice
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-        synchronized (this.mLock) {
-            indentingPrintWriter.println("TX, mEarcStatus: " + this.mEarcStatus);
-        }
     }
 }

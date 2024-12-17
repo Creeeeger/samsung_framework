@@ -1,12 +1,14 @@
 package com.android.server.enterprise.nap;
 
 import android.os.AsyncTask;
+import android.os.Message;
 import android.util.Log;
+import com.android.server.enterprise.nap.NetworkAnalyticsDataDelivery;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes2.dex */
-public class NetworkAnalyticsDriver {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+class NetworkAnalyticsDriver {
     public static final boolean DBG = NetworkAnalyticsService.DBG;
     public static int REATTEMPT_COMMAND_ACTIVATE = 1;
     public static int REATTEMPT_COMMAND_DEACTIVATE = 2;
@@ -25,24 +27,53 @@ public class NetworkAnalyticsDriver {
     public boolean stateOfIntervalSet = false;
     public String test = "{ \"src\":\"10.10.12.12\", \"dst\":\"66.7.251.20\", \"sport\":\"5000\", \"dport\":\"443\", \"uid\":\"10197\", \"pid\":\"666\", \"bsent\":\"1400\", \"brecv\":\"4500\", \"hostname\":\"www.space.com\", \"protocol\":\"tcp\", \"hash\":\"a0627953\" }";
 
-    public native int activate(int i);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class KernelDataFetch extends AsyncTask {
+        public KernelDataFetch() {
+        }
 
-    public void checkDataCollectionState() {
+        @Override // android.os.AsyncTask
+        public final Object doInBackground(Object[] objArr) {
+            boolean z;
+            try {
+                z = NetworkAnalyticsDriver.DBG;
+                if (z) {
+                    Log.d(NetworkAnalyticsDriver.TAG, "_deliverDataToRecipients: Starting Async task.");
+                }
+            } catch (InterruptedException unused) {
+            } catch (Exception e) {
+                Log.e(NetworkAnalyticsDriver.TAG, "doInBackground: Exception", e);
+            }
+            if (NetworkAnalyticsDriver.this.dataDeliver == null) {
+                if (z) {
+                    Log.d(NetworkAnalyticsDriver.TAG, "_deliverDataToRecipients: Data Delivery object is null. Terminate.");
+                }
+                NetworkAnalyticsDriver.this.setStateOfThread(false);
+                return null;
+            }
+            if (z) {
+                Log.d(NetworkAnalyticsDriver.TAG, "_deliverDataToRecipients: Initialzing handler thread from Async task.");
+            }
+            NetworkAnalyticsDriver.this.dataDeliver.initializeHandlerThread();
+            while (NetworkAnalyticsDriver.this.atomicBoolean.get()) {
+                NetworkAnalyticsDriver.this.readDevice();
+                Thread.currentThread();
+                Thread.sleep(25L);
+            }
+            NetworkAnalyticsDriver networkAnalyticsDriver = NetworkAnalyticsDriver.this;
+            String str = NetworkAnalyticsDriver.TAG;
+            networkAnalyticsDriver.setStateOfThread(false);
+            return null;
+        }
+
+        @Override // android.os.AsyncTask
+        public final /* bridge */ /* synthetic */ void onPostExecute(Object obj) {
+        }
+
+        @Override // android.os.AsyncTask
+        public final void onPreExecute() {
+        }
     }
-
-    public native int checkNcmVersion();
-
-    public native int closeDevice();
-
-    public native int deactivate();
-
-    public native int getNcmVersion();
-
-    public native int openDevice(int i);
-
-    public native String readDevice();
-
-    public native int setIntervalValue(int i);
 
     public NetworkAnalyticsDriver(NetworkAnalyticsConnectionManager networkAnalyticsConnectionManager, NetworkAnalyticsDataDelivery networkAnalyticsDataDelivery) {
         this.atomicBoolean = null;
@@ -56,6 +87,73 @@ public class NetworkAnalyticsDriver {
             mInstance = new NetworkAnalyticsDriver(networkAnalyticsConnectionManager, networkAnalyticsDataDelivery);
         }
         return mInstance;
+    }
+
+    public native int activate(int i);
+
+    public void beginDataRecording(int i) {
+        if (this.dataFetchThread != null) {
+            return;
+        }
+        if (activate(i) < 0) {
+            Log.i(TAG, "beginDataRecording: Activation ioctl failed.");
+            return;
+        }
+        this.stateOfIntervalSet = true;
+        KernelDataFetch kernelDataFetch = new KernelDataFetch();
+        this.dataFetchThread = kernelDataFetch;
+        kernelDataFetch.execute(new Void[0]);
+        setStateOfThread(true);
+    }
+
+    public void checkDataCollectionState() {
+    }
+
+    public native int checkNcmVersion();
+
+    public synchronized int checkNcmVersionMismatch() {
+        if (this.versionMismatchCheck == null) {
+            if (checkNcmVersion() < 0) {
+                Log.i(TAG, "beginDataRecording: Mismatch between kernel and userspace npa version.");
+                this.versionMismatchCheck = -20;
+                return -20;
+            }
+            this.versionMismatchCheck = 0;
+        }
+        return this.versionMismatchCheck.intValue();
+    }
+
+    public native int closeDevice();
+
+    public native int deactivate();
+
+    public void endDataRecording() {
+        KernelDataFetch kernelDataFetch = this.dataFetchThread;
+        if (kernelDataFetch != null && this.mConnectionManager.activatedProfileCounter <= 0) {
+            kernelDataFetch.cancel(true);
+            this.dataFetchThread = null;
+            setStateOfThread(false);
+            if (deactivate() < 0) {
+                Log.i(TAG, "endDataRecording: Deactivation ioctl failed.");
+                return;
+            }
+            this.stateOfIntervalSet = false;
+            if (closeDevice() < 0) {
+                Log.i(TAG, "endDataRecording: closing of character device failed.");
+            } else {
+                setStateOfCharDevice(false);
+            }
+        }
+    }
+
+    public native int getNcmVersion();
+
+    public void jniSendingData(String str) {
+        NetworkAnalyticsDataDelivery networkAnalyticsDataDelivery = this.dataDeliver;
+        NetworkAnalyticsDataDelivery.DataDeliveryHandler dataDeliveryHandler = networkAnalyticsDataDelivery.mHandler;
+        if (dataDeliveryHandler != null) {
+            networkAnalyticsDataDelivery.mHandler.sendMessage(Message.obtain(dataDeliveryHandler, 1, 0, 0, str));
+        }
     }
 
     public synchronized int openCharDevice(int i) {
@@ -78,21 +176,11 @@ public class NetworkAnalyticsDriver {
         return 0;
     }
 
-    public final void setStateOfCharDevice(boolean z) {
-        this.stateOfFileDescriptor = z;
-    }
+    public native int openDevice(int i);
 
-    public synchronized int checkNcmVersionMismatch() {
-        if (this.versionMismatchCheck == null) {
-            if (checkNcmVersion() < 0) {
-                Log.i(TAG, "beginDataRecording: Mismatch between kernel and userspace npa version.");
-                this.versionMismatchCheck = -20;
-                return -20;
-            }
-            this.versionMismatchCheck = 0;
-        }
-        return this.versionMismatchCheck.intValue();
-    }
+    public native String readDevice();
+
+    public native int setIntervalValue(int i);
 
     public synchronized int setIntervalValueForFlow(int i) {
         if (this.stateOfIntervalSet || setIntervalValue(i) >= 0) {
@@ -102,88 +190,11 @@ public class NetworkAnalyticsDriver {
         return -1;
     }
 
-    public void beginDataRecording(int i) {
-        if (this.dataFetchThread != null) {
-            return;
-        }
-        if (activate(i) < 0) {
-            Log.i(TAG, "beginDataRecording: Activation ioctl failed.");
-            return;
-        }
-        this.stateOfIntervalSet = true;
-        KernelDataFetch kernelDataFetch = new KernelDataFetch();
-        this.dataFetchThread = kernelDataFetch;
-        kernelDataFetch.execute(new Void[0]);
-        setStateOfThread(true);
-    }
-
-    public void endDataRecording() {
-        if (this.dataFetchThread != null && this.mConnectionManager.getActiveProfilesNumber() <= 0) {
-            this.dataFetchThread.cancel(true);
-            this.dataFetchThread = null;
-            setStateOfThread(false);
-            if (deactivate() < 0) {
-                Log.i(TAG, "endDataRecording: Deactivation ioctl failed.");
-                return;
-            }
-            this.stateOfIntervalSet = false;
-            if (closeDevice() < 0) {
-                Log.i(TAG, "endDataRecording: closing of character device failed.");
-            } else {
-                setStateOfCharDevice(false);
-            }
-        }
+    public final void setStateOfCharDevice(boolean z) {
+        this.stateOfFileDescriptor = z;
     }
 
     public final void setStateOfThread(boolean z) {
         this.atomicBoolean.set(z);
-    }
-
-    /* loaded from: classes2.dex */
-    public class KernelDataFetch extends AsyncTask {
-        @Override // android.os.AsyncTask
-        public void onPostExecute(Void r1) {
-        }
-
-        @Override // android.os.AsyncTask
-        public void onPreExecute() {
-        }
-
-        public KernelDataFetch() {
-        }
-
-        @Override // android.os.AsyncTask
-        public Void doInBackground(Void... voidArr) {
-            try {
-                if (NetworkAnalyticsDriver.DBG) {
-                    Log.d(NetworkAnalyticsDriver.TAG, "_deliverDataToRecipients: Starting Async task.");
-                }
-            } catch (InterruptedException unused) {
-            } catch (Exception e) {
-                Log.e(NetworkAnalyticsDriver.TAG, "doInBackground: Exception", e);
-            }
-            if (NetworkAnalyticsDriver.this.dataDeliver != null) {
-                if (NetworkAnalyticsDriver.DBG) {
-                    Log.d(NetworkAnalyticsDriver.TAG, "_deliverDataToRecipients: Initialzing handler thread from Async task.");
-                }
-                NetworkAnalyticsDriver.this.dataDeliver.initializeHandlerThread();
-                while (NetworkAnalyticsDriver.this.atomicBoolean.get()) {
-                    NetworkAnalyticsDriver.this.readDevice();
-                    Thread.currentThread();
-                    Thread.sleep(25L);
-                }
-                NetworkAnalyticsDriver.this.setStateOfThread(false);
-                return null;
-            }
-            if (NetworkAnalyticsDriver.DBG) {
-                Log.d(NetworkAnalyticsDriver.TAG, "_deliverDataToRecipients: Data Delivery object is null. Terminate.");
-            }
-            NetworkAnalyticsDriver.this.setStateOfThread(false);
-            return null;
-        }
-    }
-
-    public void jniSendingData(String str) {
-        this.dataDeliver.accumulateData(str);
     }
 }

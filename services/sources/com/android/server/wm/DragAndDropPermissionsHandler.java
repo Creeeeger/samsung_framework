@@ -8,10 +8,14 @@ import android.os.IBinder;
 import com.android.internal.view.IDragAndDropPermissions;
 import com.android.server.LocalServices;
 import com.android.server.uri.UriGrantsManagerInternal;
+import com.android.server.uri.UriGrantsManagerService;
+import com.android.server.uri.UriPermissionOwner;
+import com.android.server.uri.UriPermissionOwner.ExternalToken;
 import java.util.ArrayList;
 
-/* loaded from: classes3.dex */
-public class DragAndDropPermissionsHandler extends IDragAndDropPermissions.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DragAndDropPermissionsHandler extends IDragAndDropPermissions.Stub {
     public IBinder mActivityToken;
     public final WindowManagerGlobalLock mGlobalLock;
     public final int mMode;
@@ -36,13 +40,6 @@ public class DragAndDropPermissionsHandler extends IDragAndDropPermissions.Stub 
         clipData.collectUris(arrayList);
     }
 
-    public void take(IBinder iBinder) {
-        if (this.mActivityToken == null && this.mPermissionOwnerToken == null) {
-            this.mActivityToken = iBinder;
-            doTake(getUriPermissionOwnerForActivity(iBinder));
-        }
-    }
-
     public final void doTake(IBinder iBinder) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         for (int i = 0; i < this.mUris.size(); i++) {
@@ -54,15 +51,43 @@ public class DragAndDropPermissionsHandler extends IDragAndDropPermissions.Stub 
         }
     }
 
-    public void takeTransient() {
-        if (this.mActivityToken == null && this.mPermissionOwnerToken == null) {
-            IBinder newUriPermissionOwner = ((UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class)).newUriPermissionOwner("drop");
-            this.mPermissionOwnerToken = newUriPermissionOwner;
-            doTake(newUriPermissionOwner);
+    public final void finalize() {
+        if (this.mActivityToken != null || this.mPermissionOwnerToken == null) {
+            return;
         }
+        release();
     }
 
-    public void release() {
+    public final int getFlags() {
+        return this.mMode;
+    }
+
+    public final IBinder getUriPermissionOwnerForActivity(IBinder iBinder) {
+        UriPermissionOwner.ExternalToken externalToken;
+        ActivityTaskManagerService.enforceNotIsolatedCaller("getUriPermissionOwnerForActivity");
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                ActivityRecord isInRootTaskLocked = ActivityRecord.isInRootTaskLocked(iBinder);
+                if (isInRootTaskLocked == null) {
+                    throw new IllegalArgumentException("Activity does not exist; token=" + iBinder);
+                }
+                UriPermissionOwner uriPermissionsLocked = isInRootTaskLocked.getUriPermissionsLocked();
+                if (uriPermissionsLocked.externalToken == null) {
+                    uriPermissionsLocked.externalToken = uriPermissionsLocked.new ExternalToken();
+                }
+                externalToken = uriPermissionsLocked.externalToken;
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
+        return externalToken;
+    }
+
+    public final void release() {
         IBinder uriPermissionOwnerForActivity;
         IBinder iBinder = this.mActivityToken;
         if (iBinder == null && this.mPermissionOwnerToken == null) {
@@ -82,39 +107,22 @@ public class DragAndDropPermissionsHandler extends IDragAndDropPermissions.Stub 
         }
         UriGrantsManagerInternal uriGrantsManagerInternal = (UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class);
         for (int i = 0; i < this.mUris.size(); i++) {
-            uriGrantsManagerInternal.revokeUriPermissionFromOwner(uriPermissionOwnerForActivity, (Uri) this.mUris.get(i), this.mMode, this.mSourceUserId);
+            ((UriGrantsManagerService.LocalService) uriGrantsManagerInternal).revokeUriPermissionFromOwner(uriPermissionOwnerForActivity, (Uri) this.mUris.get(i), this.mMode, this.mSourceUserId);
         }
     }
 
-    public int getFlags() {
-        return this.mMode;
+    public final void take(IBinder iBinder) {
+        if (this.mActivityToken == null && this.mPermissionOwnerToken == null) {
+            this.mActivityToken = iBinder;
+            doTake(getUriPermissionOwnerForActivity(iBinder));
+        }
     }
 
-    public final IBinder getUriPermissionOwnerForActivity(IBinder iBinder) {
-        Binder externalToken;
-        ActivityTaskManagerService.enforceNotIsolatedCaller("getUriPermissionOwnerForActivity");
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                ActivityRecord isInRootTaskLocked = ActivityRecord.isInRootTaskLocked(iBinder);
-                if (isInRootTaskLocked == null) {
-                    throw new IllegalArgumentException("Activity does not exist; token=" + iBinder);
-                }
-                externalToken = isInRootTaskLocked.getUriPermissionsLocked().getExternalToken();
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
+    public final void takeTransient() {
+        if (this.mActivityToken == null && this.mPermissionOwnerToken == null) {
+            IBinder newUriPermissionOwner = ((UriGrantsManagerService.LocalService) ((UriGrantsManagerInternal) LocalServices.getService(UriGrantsManagerInternal.class))).newUriPermissionOwner("drop");
+            this.mPermissionOwnerToken = newUriPermissionOwner;
+            doTake(newUriPermissionOwner);
         }
-        WindowManagerService.resetPriorityAfterLockedSection();
-        return externalToken;
-    }
-
-    public void finalize() {
-        if (this.mActivityToken != null || this.mPermissionOwnerToken == null) {
-            return;
-        }
-        release();
     }
 }

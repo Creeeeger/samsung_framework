@@ -3,33 +3,29 @@ package com.android.server.wm;
 import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.os.Debug;
 import android.os.RemoteException;
 import android.os.Trace;
 import android.util.Slog;
 import android.view.IRecentsAnimationRunner;
 import android.window.TaskSnapshot;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
 import com.android.internal.util.function.pooled.PooledLambda;
 import com.android.internal.util.function.pooled.PooledPredicate;
 import com.android.server.wm.ActivityMetricsLogger;
 import com.android.server.wm.ActivityRecord;
-import com.android.server.wm.RecentsAnimationController;
-import com.android.server.wm.TaskDisplayArea;
-import com.samsung.android.rune.CoreRune;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
+import com.android.server.wm.ActivityStarter;
+import com.android.server.wm.ActivityTaskManagerService;
 
-/* loaded from: classes3.dex */
-public class RecentsAnimation implements RecentsAnimationController.RecentsAnimationCallbacks, TaskDisplayArea.OnRootTaskOrderChangedListener {
-    public static final String TAG = "RecentsAnimation";
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RecentsAnimation {
     public final ActivityStartController mActivityStartController;
     public final WindowProcessController mCaller;
     public final TaskDisplayArea mDefaultTaskDisplayArea;
     public ActivityRecord mLaunchedTargetActivity;
     public final ComponentName mRecentsComponent;
-    public final String mRecentsFeatureId;
+    public final String mRecentsFeatureId = null;
     public final int mRecentsUid;
     public Task mRestoreTargetBehindRootTask;
     public final ActivityTaskManagerService mService;
@@ -39,196 +35,95 @@ public class RecentsAnimation implements RecentsAnimationController.RecentsAnima
     public final int mUserId;
     public final WindowManagerService mWindowManager;
 
-    public static /* synthetic */ boolean lambda$onRootTaskOrderChanged$1(Task task, Task task2) {
-        return task2 == task;
-    }
-
-    public RecentsAnimation(ActivityTaskManagerService activityTaskManagerService, ActivityTaskSupervisor activityTaskSupervisor, ActivityStartController activityStartController, WindowManagerService windowManagerService, Intent intent, ComponentName componentName, String str, int i, WindowProcessController windowProcessController) {
+    public RecentsAnimation(ActivityTaskManagerService activityTaskManagerService, ActivityTaskSupervisor activityTaskSupervisor, ActivityStartController activityStartController, WindowManagerService windowManagerService, Intent intent, ComponentName componentName, int i, WindowProcessController windowProcessController) {
         this.mService = activityTaskManagerService;
         this.mTaskSupervisor = activityTaskSupervisor;
-        this.mDefaultTaskDisplayArea = activityTaskManagerService.mRootWindowContainer.getDefaultTaskDisplayArea();
+        this.mDefaultTaskDisplayArea = activityTaskManagerService.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea();
         this.mActivityStartController = activityStartController;
         this.mWindowManager = windowManagerService;
         this.mTargetIntent = intent;
         this.mRecentsComponent = componentName;
-        this.mRecentsFeatureId = str;
         this.mRecentsUid = i;
         this.mCaller = windowProcessController;
-        this.mUserId = activityTaskManagerService.getCurrentUserId();
+        this.mUserId = activityTaskManagerService.mAmInternal.getCurrentUserId();
         this.mTargetActivityType = (intent.getComponent() == null || !componentName.equals(intent.getComponent())) ? 2 : 3;
     }
 
-    public void preloadRecentsActivity() {
-        if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -106400104, 0, "Preload recents with %s", new Object[]{String.valueOf(this.mTargetIntent)});
+    public final ActivityRecord getTargetActivity(Task task) {
+        if (task == null) {
+            return null;
         }
-        ActivityRecord targetActivity = getTargetActivity(this.mDefaultTaskDisplayArea.getRootTask(0, this.mTargetActivityType));
-        if (targetActivity != null) {
-            if (targetActivity.isVisibleRequested() || targetActivity.isTopRunningActivity()) {
-                return;
-            }
-            if (targetActivity.attachedToProcess()) {
-                targetActivity.ensureActivityConfiguration(0, false, true);
-                if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-                    ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -1156118957, 0, "Updated config=%s", new Object[]{String.valueOf(targetActivity.getConfiguration())});
-                }
-            }
-        } else {
-            if (this.mDefaultTaskDisplayArea.getActivity(new Predicate() { // from class: com.android.server.wm.RecentsAnimation$$ExternalSyntheticLambda1
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    return ((ActivityRecord) obj).occludesParent();
-                }
-            }, false) == null) {
-                return;
-            }
-            startRecentsActivityInBackground("preloadRecents");
-            targetActivity = getTargetActivity(this.mDefaultTaskDisplayArea.getRootTask(0, this.mTargetActivityType));
-            if (targetActivity == null) {
-                Slog.w(TAG, "Cannot start " + this.mTargetIntent);
-                return;
-            }
+        PooledPredicate obtainPredicate = PooledLambda.obtainPredicate(new RecentsAnimation$$ExternalSyntheticLambda0(), this, PooledLambda.__(Task.class));
+        Task task2 = task.getTask(obtainPredicate);
+        obtainPredicate.recycle();
+        if (task2 != null) {
+            return task2.getTopNonFinishingActivity(true, true);
         }
-        if (!targetActivity.attachedToProcess()) {
-            if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-                ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, 644675193, 0, "Real start recents", (Object[]) null);
-            }
-            this.mTaskSupervisor.startSpecificActivity(targetActivity, false, false);
-            if (targetActivity.getDisplayContent() != null) {
-                targetActivity.getDisplayContent().mUnknownAppVisibilityController.appRemovedOrHidden(targetActivity);
-            }
-        }
-        if (targetActivity.isState(ActivityRecord.State.STOPPING, ActivityRecord.State.STOPPED)) {
-            return;
-        }
-        targetActivity.addToStopping(true, true, "preloadRecents");
+        return null;
     }
 
-    public void startRecentsActivity(IRecentsAnimationRunner iRecentsAnimationRunner, long j) {
-        ActivityOptions activityOptions;
-        Task task;
-        boolean z;
-        if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -1413901262, 0, "startRecentsActivity(): intent=%s", new Object[]{String.valueOf(this.mTargetIntent)});
-        }
-        Trace.traceBegin(32L, "RecentsAnimation#startRecentsActivity");
-        if (this.mWindowManager.getRecentsAnimationController() != null) {
-            this.mWindowManager.getRecentsAnimationController().forceCancelAnimation(2, "startRecentsActivity");
-        }
-        Task rootTask = this.mDefaultTaskDisplayArea.getRootTask(0, this.mTargetActivityType);
-        ActivityRecord targetActivity = getTargetActivity(rootTask);
-        boolean z2 = targetActivity != null;
-        if (z2) {
-            Task rootTaskAbove = TaskDisplayArea.getRootTaskAbove(rootTask);
-            this.mRestoreTargetBehindRootTask = rootTaskAbove;
-            if (rootTaskAbove == null && rootTask.getTopMostTask() == targetActivity.getTask()) {
-                notifyAnimationCancelBeforeStart(iRecentsAnimationRunner);
-                if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-                    ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -8483143, 0, "No root task above target root task=%s", new Object[]{String.valueOf(rootTask)});
-                    return;
-                }
-                return;
-            }
-            if (this.mService.mController != null) {
-                try {
-                    z = !this.mService.mController.activityStarting(this.mTargetIntent.cloneFilter(), targetActivity.packageName);
-                } catch (RemoteException unused) {
-                    this.mService.mController = null;
-                    z = false;
-                }
-                if (z) {
-                    notifyAnimationCancelBeforeStart(iRecentsAnimationRunner);
-                    Slog.d(TAG, "Abort cause controller : " + this.mService.mControllerDescription);
-                    return;
-                }
-            }
-        }
-        if (targetActivity == null || !targetActivity.isVisibleRequested()) {
-            this.mService.mRootWindowContainer.startPowerModeLaunchIfNeeded(true, targetActivity);
-        }
-        ActivityMetricsLogger.LaunchingState notifyActivityLaunching = this.mTaskSupervisor.getActivityMetricsLogger().notifyActivityLaunching(this.mTargetIntent);
-        setProcessAnimating(true);
-        this.mService.deferWindowLayout();
-        try {
-            try {
-                if (z2) {
-                    this.mDefaultTaskDisplayArea.moveRootTaskBehindBottomMostVisibleRootTask(rootTask);
-                    if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-                        ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, 1191587912, 0, "Moved rootTask=%s behind rootTask=%s", new Object[]{String.valueOf(rootTask), String.valueOf(TaskDisplayArea.getRootTaskAbove(rootTask))});
-                    }
-                    Task task2 = targetActivity.getTask();
-                    if (rootTask.getTopMostTask() != task2) {
-                        rootTask.positionChildAtTop(task2);
-                    }
-                } else {
-                    startRecentsActivityInBackground("startRecentsActivity_noTargetActivity");
-                    Task rootTask2 = this.mDefaultTaskDisplayArea.getRootTask(0, this.mTargetActivityType);
-                    targetActivity = getTargetActivity(rootTask2);
-                    this.mDefaultTaskDisplayArea.moveRootTaskBehindBottomMostVisibleRootTask(rootTask2);
-                    if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-                        ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, 1191587912, 0, "Moved rootTask=%s behind rootTask=%s", new Object[]{String.valueOf(rootTask2), String.valueOf(TaskDisplayArea.getRootTaskAbove(rootTask2))});
-                    }
-                    this.mWindowManager.prepareAppTransitionNone();
-                    this.mWindowManager.executeAppTransition();
-                    if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-                        ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, 646155519, 0, "Started intent=%s", new Object[]{String.valueOf(this.mTargetIntent)});
-                    }
-                }
-                ActivityRecord activityRecord = targetActivity;
-                activityRecord.mLaunchTaskBehind = true;
-                this.mLaunchedTargetActivity = activityRecord;
-                activityRecord.intent.replaceExtras(this.mTargetIntent);
-                this.mWindowManager.initializeRecentsAnimation(this.mTargetActivityType, iRecentsAnimationRunner, this, this.mDefaultTaskDisplayArea.getDisplayId(), this.mTaskSupervisor.mRecentTasks.getRecentTaskIds(), activityRecord);
-                this.mService.mRootWindowContainer.ensureActivitiesVisible(null, 0, true);
-                if (j > 0) {
-                    ActivityOptions makeBasic = ActivityOptions.makeBasic();
-                    makeBasic.setSourceInfo(4, j);
-                    activityOptions = makeBasic;
-                } else {
-                    activityOptions = null;
-                }
-                this.mTaskSupervisor.getActivityMetricsLogger().notifyActivityLaunched(notifyActivityLaunching, 2, !z2, activityRecord, activityOptions);
-                this.mDefaultTaskDisplayArea.registerRootTaskOrderChangedListener(this);
-                if (CoreRune.FW_BOUNDS_COMPAT_UI && (task = this.mRestoreTargetBehindRootTask) != null) {
-                    task.dispatchTaskInfoChangedByBoundsCompat();
-                }
-            } catch (Exception e) {
-                Slog.e(TAG, "Failed to start recents activity", e);
-                throw e;
-            }
-        } finally {
-            this.mService.continueWindowLayout();
-            Trace.traceEnd(32L);
-        }
-    }
-
-    public final void finishAnimation(final int i, final boolean z) {
+    public final void onAnimationFinished(final int i, final boolean z) {
         WindowManagerGlobalLock windowManagerGlobalLock = this.mService.mGlobalLock;
         WindowManagerService.boostPriorityForLockedSection();
         synchronized (windowManagerGlobalLock) {
             try {
-                Slog.d(TAG, "finishAnimation(), caller=" + Debug.getCallers(7));
-                if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-                    ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, 765395228, 4, "onAnimationFinished(): controller=%s reorderMode=%d", new Object[]{String.valueOf(this.mWindowManager.getRecentsAnimationController()), Long.valueOf(i)});
+                if (ProtoLogImpl_54989576.Cache.WM_DEBUG_RECENTS_ANIMATIONS_enabled[0]) {
+                    ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, 5474198007669537235L, 4, null, String.valueOf(this.mWindowManager.mRecentsAnimationController), Long.valueOf(i));
                 }
-                this.mDefaultTaskDisplayArea.unregisterRootTaskOrderChangedListener(this);
-                final RecentsAnimationController recentsAnimationController = this.mWindowManager.getRecentsAnimationController();
+                this.mDefaultTaskDisplayArea.mRootTaskOrderChangedCallbacks.remove(this);
+                final RecentsAnimationController recentsAnimationController = this.mWindowManager.mRecentsAnimationController;
                 if (recentsAnimationController == null) {
                     WindowManagerService.resetPriorityAfterLockedSection();
                     return;
                 }
                 if (i != 0) {
-                    this.mService.endLaunchPowerMode(1);
+                    this.mService.endPowerMode(1);
                 }
                 if (i == 1) {
                     this.mService.stopAppSwitches();
                 }
-                this.mWindowManager.inSurfaceTransaction(new Runnable() { // from class: com.android.server.wm.RecentsAnimation$$ExternalSyntheticLambda2
+                new Runnable() { // from class: com.android.server.wm.RecentsAnimation$$ExternalSyntheticLambda1
+                    /* JADX WARN: Code restructure failed: missing block: B:16:0x0070, code lost:
+                    
+                        if (r7.mRoot.isLayoutNeeded() != false) goto L22;
+                     */
+                    /* JADX WARN: Code restructure failed: missing block: B:17:0x0072, code lost:
+                    
+                        r7.mRoot.performSurfacePlacement();
+                     */
+                    /* JADX WARN: Code restructure failed: missing block: B:18:0x0077, code lost:
+                    
+                        r1.setProcessAnimating(false);
+                        android.os.Trace.traceEnd(32);
+                     */
+                    /* JADX WARN: Code restructure failed: missing block: B:19:0x0172, code lost:
+                    
+                        return;
+                     */
+                    /* JADX WARN: Code restructure failed: missing block: B:38:0x014c, code lost:
+                    
+                        if (r7.mRoot.isLayoutNeeded() != false) goto L22;
+                     */
+                    /* JADX WARN: Code restructure failed: missing block: B:56:0x016e, code lost:
+                    
+                        if (r7.mRoot.isLayoutNeeded() != false) goto L22;
+                     */
+                    /* JADX WARN: Removed duplicated region for block: B:13:0x0043 A[Catch: all -> 0x0036, Exception -> 0x0039, TRY_LEAVE, TryCatch #1 {Exception -> 0x0039, blocks: (B:3:0x001f, B:5:0x002a, B:8:0x002f, B:11:0x003d, B:13:0x0043, B:21:0x0081, B:23:0x0087, B:25:0x008e, B:26:0x00a9, B:28:0x00b1, B:30:0x00bd, B:32:0x00c1, B:33:0x011d, B:35:0x0128, B:36:0x012a, B:39:0x00a3, B:42:0x00dd, B:44:0x00f1, B:47:0x00fb, B:49:0x00ff, B:50:0x0150, B:52:0x0154, B:57:0x0159, B:59:0x015f), top: B:2:0x001f, outer: #0 }] */
+                    /* JADX WARN: Removed duplicated region for block: B:15:0x0065  */
+                    /* JADX WARN: Removed duplicated region for block: B:21:0x0081 A[Catch: all -> 0x0036, Exception -> 0x0039, TRY_ENTER, TryCatch #1 {Exception -> 0x0039, blocks: (B:3:0x001f, B:5:0x002a, B:8:0x002f, B:11:0x003d, B:13:0x0043, B:21:0x0081, B:23:0x0087, B:25:0x008e, B:26:0x00a9, B:28:0x00b1, B:30:0x00bd, B:32:0x00c1, B:33:0x011d, B:35:0x0128, B:36:0x012a, B:39:0x00a3, B:42:0x00dd, B:44:0x00f1, B:47:0x00fb, B:49:0x00ff, B:50:0x0150, B:52:0x0154, B:57:0x0159, B:59:0x015f), top: B:2:0x001f, outer: #0 }] */
                     @Override // java.lang.Runnable
+                    /*
+                        Code decompiled incorrectly, please refer to instructions dump.
+                        To view partially-correct code enable 'Show inconsistent code' option in preferences
+                    */
                     public final void run() {
-                        RecentsAnimation.this.lambda$finishAnimation$0(i, z, recentsAnimationController);
+                        /*
+                            Method dump skipped, instructions count: 404
+                            To view this dump change 'Code comments level' option to 'DEBUG'
+                        */
+                        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.RecentsAnimation$$ExternalSyntheticLambda1.run():void");
                     }
-                });
+                }.run();
                 WindowManagerService.resetPriorityAfterLockedSection();
             } catch (Throwable th) {
                 WindowManagerService.resetPriorityAfterLockedSection();
@@ -237,25 +132,51 @@ public class RecentsAnimation implements RecentsAnimationController.RecentsAnima
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* JADX WARN: Code restructure failed: missing block: B:15:0x0068, code lost:
-    
-        return;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:60:0x0174, code lost:
-    
-        if (r12.mWindowManager.mRoot.isLayoutNeeded() != false) goto L13;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public /* synthetic */ void lambda$finishAnimation$0(int r13, boolean r14, com.android.server.wm.RecentsAnimationController r15) {
-        /*
-            Method dump skipped, instructions count: 420
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.RecentsAnimation.lambda$finishAnimation$0(int, boolean, com.android.server.wm.RecentsAnimationController):void");
+    public final void preloadRecentsActivity() {
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_RECENTS_ANIMATIONS_enabled;
+        if (zArr[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -3758280623533049031L, 0, null, String.valueOf(this.mTargetIntent));
+        }
+        ActivityRecord targetActivity = getTargetActivity(this.mDefaultTaskDisplayArea.getRootTask(0, this.mTargetActivityType));
+        if (targetActivity != null) {
+            if (targetActivity.attachedToProcess()) {
+                if (targetActivity.isVisibleRequested() || targetActivity.isTopRunningActivity()) {
+                    return;
+                }
+                if (targetActivity.app.mCurProcState >= 16) {
+                    Slog.v("RecentsAnimation", "Skip preload recents for cached proc " + targetActivity.app);
+                    return;
+                } else {
+                    targetActivity.ensureActivityConfiguration(true);
+                    if (zArr[0]) {
+                        ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -3365656764099317101L, 0, null, String.valueOf(targetActivity.getConfiguration()));
+                    }
+                }
+            }
+        } else {
+            if (this.mDefaultTaskDisplayArea.getActivity(new RecentsAnimation$$ExternalSyntheticLambda2(0), false) == null) {
+                return;
+            }
+            startRecentsActivityInBackground("preloadRecents");
+            targetActivity = getTargetActivity(this.mDefaultTaskDisplayArea.getRootTask(0, this.mTargetActivityType));
+            if (targetActivity == null) {
+                Slog.w("RecentsAnimation", "Cannot start " + this.mTargetIntent);
+                return;
+            }
+        }
+        if (!targetActivity.attachedToProcess()) {
+            if (zArr[0]) {
+                ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -7165162073742035900L, 0, null, null);
+            }
+            this.mTaskSupervisor.startSpecificActivity(targetActivity, false, false);
+            if (targetActivity.getDisplayContent() != null) {
+                targetActivity.getDisplayContent().mUnknownAppVisibilityController.appRemovedOrHidden(targetActivity);
+            }
+        }
+        if (targetActivity.finishing || !targetActivity.isAttached() || targetActivity.isState(ActivityRecord.State.STOPPING, ActivityRecord.State.STOPPED)) {
+            return;
+        }
+        targetActivity.addToStopping("preloadRecents", true, true);
     }
 
     public final void setProcessAnimating(boolean z) {
@@ -263,39 +184,124 @@ public class RecentsAnimation implements RecentsAnimationController.RecentsAnima
         if (windowProcessController == null) {
             return;
         }
-        windowProcessController.setRunningRecentsAnimation(z);
-        int i = this.mService.mDemoteTopAppReasons;
-        this.mService.mDemoteTopAppReasons = z ? i | 2 : i & (-3);
+        if (z) {
+            int i = windowProcessController.mAnimatingReasons;
+            windowProcessController.mAnimatingReasons = i | 4;
+            if (i == 0) {
+                windowProcessController.mAtm.mH.post(new WindowProcessController$$ExternalSyntheticLambda1(windowProcessController, true));
+            }
+        } else {
+            windowProcessController.removeAnimatingReason(4);
+        }
+        int i2 = this.mService.mDemoteTopAppReasons;
+        this.mService.mDemoteTopAppReasons = z ? i2 | 2 : i2 & (-3);
         if (!z || this.mService.mTopApp == null) {
             return;
         }
-        this.mService.mTopApp.scheduleUpdateOomAdj();
+        WindowProcessController windowProcessController2 = this.mService.mTopApp;
+        ActivityTaskManagerService.H h = windowProcessController2.mAtm.mH;
+        WindowProcessController$$ExternalSyntheticLambda2 windowProcessController$$ExternalSyntheticLambda2 = new WindowProcessController$$ExternalSyntheticLambda2();
+        Boolean bool = Boolean.FALSE;
+        h.sendMessage(PooledLambda.obtainMessage(windowProcessController$$ExternalSyntheticLambda2, windowProcessController2.mListener, bool, bool, Boolean.TRUE));
     }
 
-    @Override // com.android.server.wm.RecentsAnimationController.RecentsAnimationCallbacks
-    public void onAnimationFinished(int i, boolean z) {
-        finishAnimation(i, z);
-    }
-
-    @Override // com.android.server.wm.TaskDisplayArea.OnRootTaskOrderChangedListener
-    public void onRootTaskOrderChanged(final Task task) {
-        RecentsAnimationController recentsAnimationController;
-        if (ProtoLogCache.WM_DEBUG_RECENTS_ANIMATIONS_enabled) {
-            ProtoLogImpl.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -1069336896, 0, "onRootTaskOrderChanged(): rootTask=%s", new Object[]{String.valueOf(task)});
+    public final void startRecentsActivity(IRecentsAnimationRunner iRecentsAnimationRunner, long j) {
+        ActivityOptions activityOptions;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_RECENTS_ANIMATIONS_enabled;
+        if (zArr[0]) {
+            ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -3403665718306852375L, 0, null, String.valueOf(this.mTargetIntent));
         }
-        if (this.mDefaultTaskDisplayArea.getRootTask(new Predicate() { // from class: com.android.server.wm.RecentsAnimation$$ExternalSyntheticLambda4
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$onRootTaskOrderChanged$1;
-                lambda$onRootTaskOrderChanged$1 = RecentsAnimation.lambda$onRootTaskOrderChanged$1(Task.this, (Task) obj);
-                return lambda$onRootTaskOrderChanged$1;
+        Trace.traceBegin(32L, "RecentsAnimation#startRecentsActivity");
+        WindowManagerService windowManagerService = this.mWindowManager;
+        RecentsAnimationController recentsAnimationController = windowManagerService.mRecentsAnimationController;
+        if (recentsAnimationController != null) {
+            if (recentsAnimationController.mCanceled) {
+                recentsAnimationController.continueDeferredCancelAnimation();
+            } else {
+                recentsAnimationController.cancelAnimation(2, "startRecentsActivity", false);
             }
-        }) == null || !task.shouldBeVisible(null) || (recentsAnimationController = this.mWindowManager.getRecentsAnimationController()) == null) {
-            return;
         }
-        if ((!recentsAnimationController.isAnimatingTask(task.getTopMostTask()) || recentsAnimationController.isTargetApp(task.getTopNonFinishingActivity())) && recentsAnimationController.shouldDeferCancelUntilNextTransition()) {
-            this.mWindowManager.prepareAppTransitionNone();
-            recentsAnimationController.setCancelOnNextTransitionStart();
+        TaskDisplayArea taskDisplayArea = this.mDefaultTaskDisplayArea;
+        int i = this.mTargetActivityType;
+        Task rootTask = taskDisplayArea.getRootTask(0, i);
+        ActivityRecord targetActivity = getTargetActivity(rootTask);
+        boolean z = targetActivity != null;
+        if (z) {
+            Task rootTaskAbove = TaskDisplayArea.getRootTaskAbove(rootTask);
+            this.mRestoreTargetBehindRootTask = rootTaskAbove;
+            if (rootTaskAbove == null && rootTask.getTopMostTask() == targetActivity.task) {
+                try {
+                    iRecentsAnimationRunner.onAnimationCanceled((int[]) null, (TaskSnapshot[]) null);
+                } catch (RemoteException e) {
+                    Slog.e("RecentsAnimation", "Failed to cancel recents animation before start", e);
+                }
+                if (zArr[0]) {
+                    ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -8325607672707336373L, 0, null, String.valueOf(rootTask));
+                    return;
+                }
+                return;
+            }
+        }
+        ActivityTaskManagerService activityTaskManagerService = this.mService;
+        if (targetActivity == null || !targetActivity.isVisibleRequested()) {
+            activityTaskManagerService.mRootWindowContainer.startPowerModeLaunchIfNeeded(true, targetActivity);
+        }
+        ActivityTaskSupervisor activityTaskSupervisor = this.mTaskSupervisor;
+        ActivityMetricsLogger.LaunchingState notifyActivityLaunching = activityTaskSupervisor.mActivityMetricsLogger.notifyActivityLaunching(this.mTargetIntent, null, -1);
+        setProcessAnimating(true);
+        activityTaskManagerService.deferWindowLayout();
+        try {
+            try {
+                if (z) {
+                    taskDisplayArea.moveRootTaskBehindBottomMostVisibleRootTask(rootTask);
+                    if (zArr[0]) {
+                        ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -7278356485797757819L, 0, null, String.valueOf(rootTask), String.valueOf(TaskDisplayArea.getRootTaskAbove(rootTask)));
+                    }
+                    Task task = targetActivity.task;
+                    if (rootTask.getTopMostTask() != task) {
+                        rootTask.positionChildAtTop(task);
+                    }
+                } else {
+                    startRecentsActivityInBackground("startRecentsActivity_noTargetActivity");
+                    Task rootTask2 = taskDisplayArea.getRootTask(0, i);
+                    targetActivity = getTargetActivity(rootTask2);
+                    taskDisplayArea.moveRootTaskBehindBottomMostVisibleRootTask(rootTask2);
+                    if (zArr[0]) {
+                        ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, -7278356485797757819L, 0, null, String.valueOf(rootTask2), String.valueOf(TaskDisplayArea.getRootTaskAbove(rootTask2)));
+                    }
+                    windowManagerService.prepareAppTransitionNone();
+                    windowManagerService.executeAppTransition();
+                    if (zArr[0]) {
+                        ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, 1012359606301505741L, 0, null, String.valueOf(this.mTargetIntent));
+                    }
+                }
+                ActivityRecord activityRecord = targetActivity;
+                activityRecord.mLaunchTaskBehind = true;
+                this.mLaunchedTargetActivity = activityRecord;
+                activityRecord.intent.replaceExtras(this.mTargetIntent);
+                this.mWindowManager.initializeRecentsAnimation(this.mTargetActivityType, iRecentsAnimationRunner, this, taskDisplayArea.mDisplayContent.mDisplayId, activityTaskSupervisor.mRecentTasks.getRecentTaskIds(), activityRecord);
+                activityTaskManagerService.mRootWindowContainer.ensureActivitiesVisible();
+                if (j > 0) {
+                    ActivityOptions makeBasic = ActivityOptions.makeBasic();
+                    makeBasic.setSourceInfo(4, j);
+                    activityOptions = makeBasic;
+                } else {
+                    activityOptions = null;
+                }
+                activityTaskSupervisor.mActivityMetricsLogger.notifyActivityLaunched(notifyActivityLaunching, 2, !z, activityRecord, activityOptions);
+                if (!taskDisplayArea.mRootTaskOrderChangedCallbacks.contains(this)) {
+                    taskDisplayArea.mRootTaskOrderChangedCallbacks.add(this);
+                }
+                activityTaskManagerService.continueWindowLayout();
+                Trace.traceEnd(32L);
+            } catch (Exception e2) {
+                Slog.e("RecentsAnimation", "Failed to start recents activity", e2);
+                throw e2;
+            }
+        } catch (Throwable th) {
+            activityTaskManagerService.continueWindowLayout();
+            Trace.traceEnd(32L);
+            throw th;
         }
     }
 
@@ -304,53 +310,16 @@ public class RecentsAnimation implements RecentsAnimationController.RecentsAnima
         makeBasic.setLaunchActivityType(this.mTargetActivityType);
         makeBasic.setAvoidMoveToFront();
         this.mTargetIntent.addFlags(268500992);
-        this.mActivityStartController.obtainStarter(this.mTargetIntent, str).setCallingUid(this.mRecentsUid).setCallingPackage(this.mRecentsComponent.getPackageName()).setCallingFeatureId(this.mRecentsFeatureId).setActivityOptions(new SafeActivityOptions(makeBasic)).setUserId(this.mUserId).execute();
-    }
-
-    public static void notifyAnimationCancelBeforeStart(IRecentsAnimationRunner iRecentsAnimationRunner) {
-        try {
-            iRecentsAnimationRunner.onAnimationCanceled((int[]) null, (TaskSnapshot[]) null);
-        } catch (RemoteException e) {
-            Slog.e(TAG, "Failed to cancel recents animation before start", e);
-        }
-    }
-
-    public final Task getTopNonAlwaysOnTopRootTask() {
-        return this.mDefaultTaskDisplayArea.getRootTask(new Predicate() { // from class: com.android.server.wm.RecentsAnimation$$ExternalSyntheticLambda3
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getTopNonAlwaysOnTopRootTask$2;
-                lambda$getTopNonAlwaysOnTopRootTask$2 = RecentsAnimation.lambda$getTopNonAlwaysOnTopRootTask$2((Task) obj);
-                return lambda$getTopNonAlwaysOnTopRootTask$2;
-            }
-        });
-    }
-
-    public static /* synthetic */ boolean lambda$getTopNonAlwaysOnTopRootTask$2(Task task) {
-        return !task.getWindowConfiguration().isAlwaysOnTop();
-    }
-
-    public final ActivityRecord getTargetActivity(Task task) {
-        if (task == null) {
-            return null;
-        }
-        PooledPredicate obtainPredicate = PooledLambda.obtainPredicate(new BiPredicate() { // from class: com.android.server.wm.RecentsAnimation$$ExternalSyntheticLambda0
-            @Override // java.util.function.BiPredicate
-            public final boolean test(Object obj, Object obj2) {
-                boolean matchesTarget;
-                matchesTarget = ((RecentsAnimation) obj).matchesTarget((Task) obj2);
-                return matchesTarget;
-            }
-        }, this, PooledLambda.__(Task.class));
-        Task task2 = task.getTask(obtainPredicate);
-        obtainPredicate.recycle();
-        if (task2 != null) {
-            return task2.getTopNonFinishingActivity();
-        }
-        return null;
-    }
-
-    public final boolean matchesTarget(Task task) {
-        return task.getNonFinishingActivityCount() > 0 && task.mUserId == this.mUserId && task.getBaseIntent().getComponent().equals(this.mTargetIntent.getComponent());
+        ActivityStarter obtainStarter = this.mActivityStartController.obtainStarter(this.mTargetIntent, str);
+        obtainStarter.mRequest.callingUid = this.mRecentsUid;
+        String packageName = this.mRecentsComponent.getPackageName();
+        ActivityStarter.Request request = obtainStarter.mRequest;
+        request.callingPackage = packageName;
+        request.callingFeatureId = this.mRecentsFeatureId;
+        SafeActivityOptions safeActivityOptions = new SafeActivityOptions(makeBasic);
+        ActivityStarter.Request request2 = obtainStarter.mRequest;
+        request2.activityOptions = safeActivityOptions;
+        request2.userId = this.mUserId;
+        obtainStarter.execute();
     }
 }

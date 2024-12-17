@@ -2,18 +2,29 @@ package com.android.server;
 
 import android.os.Handler;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class DisplayThread extends ServiceThread {
     public static Handler sHandler;
     public static DisplayThread sInstance;
 
-    public DisplayThread() {
-        super("android.display", -3, false);
+    public static void dispose() {
+        synchronized (DisplayThread.class) {
+            try {
+                if (sInstance == null) {
+                    return;
+                }
+                getHandler().runWithScissors(new DisplayThread$$ExternalSyntheticLambda0(), 0L);
+                sInstance = null;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
     public static void ensureThreadLocked() {
         if (sInstance == null) {
-            DisplayThread displayThread = new DisplayThread();
+            DisplayThread displayThread = new DisplayThread(-3, "android.display", false);
             sInstance = displayThread;
             displayThread.start();
             sInstance.getLooper().setTraceTag(524288L);
@@ -37,24 +48,5 @@ public final class DisplayThread extends ServiceThread {
             handler = sHandler;
         }
         return handler;
-    }
-
-    public static void dispose() {
-        synchronized (DisplayThread.class) {
-            if (sInstance == null) {
-                return;
-            }
-            getHandler().runWithScissors(new Runnable() { // from class: com.android.server.DisplayThread$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    DisplayThread.lambda$dispose$0();
-                }
-            }, 0L);
-            sInstance = null;
-        }
-    }
-
-    public static /* synthetic */ void lambda$dispose$0() {
-        sInstance.quit();
     }
 }

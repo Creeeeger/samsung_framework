@@ -9,8 +9,24 @@ import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.util.Log;
 
-/* loaded from: classes2.dex */
-public class LedBackCoverService extends Binder {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class LedBackCoverService extends Binder {
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UpdateReceiver extends BroadcastReceiver {
+        @Override // android.content.BroadcastReceiver
+        public final void onReceive(Context context, Intent intent) {
+            String action;
+            if (intent == null || (action = intent.getAction()) == null) {
+                return;
+            }
+            if (action.equals("android.intent.action.PACKAGE_REPLACED") || action.equals("android.intent.action.PACKAGE_ADDED")) {
+                LedBackCoverService.backgroundWhitelist(context);
+            }
+        }
+    }
+
     public LedBackCoverService(Context context) {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addDataScheme("package");
@@ -22,29 +38,12 @@ public class LedBackCoverService extends Binder {
         backgroundWhitelist(context);
     }
 
-    /* loaded from: classes2.dex */
-    public class UpdateReceiver extends BroadcastReceiver {
-        public UpdateReceiver() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            String action;
-            if (intent == null || (action = intent.getAction()) == null) {
-                return;
-            }
-            if (action.equals("android.intent.action.PACKAGE_REPLACED") || action.equals("android.intent.action.PACKAGE_ADDED")) {
-                LedBackCoverService.backgroundWhitelist(context);
-            }
-        }
-    }
-
     public static void backgroundWhitelist(Context context) {
         try {
             int i = context.getPackageManager().getApplicationInfo("com.samsung.android.app.ledbackcover", 0).uid;
             String num = Integer.toString(i);
             if (i >= 1000 && num != null) {
-                if (hasValidSignature(context, "com.samsung.android.app.ledbackcover")) {
+                if (hasValidSignature(context)) {
                     ActivityManager.getService().backgroundAllowlistUid(i);
                     Log.d("LedBackCoverService", "backgroundWhitelist successfully called");
                     return;
@@ -57,11 +56,11 @@ public class LedBackCoverService extends Binder {
         }
     }
 
-    public static boolean hasValidSignature(Context context, String str) {
+    public static boolean hasValidSignature(Context context) {
         try {
             PackageManager packageManager = context.getPackageManager();
-            if (packageManager.getPackageInfo("android", 64).signatures[0].equals(packageManager.getPackageInfo(str, 64).signatures[0])) {
-                Log.d("LedBackCoverService", "hasValidSignature, VALID : " + str);
+            if (packageManager.getPackageInfo("android", 64).signatures[0].equals(packageManager.getPackageInfo("com.samsung.android.app.ledbackcover", 64).signatures[0])) {
+                Log.d("LedBackCoverService", "hasValidSignature, VALID : com.samsung.android.app.ledbackcover");
                 return true;
             }
         } catch (PackageManager.NameNotFoundException | NullPointerException e) {

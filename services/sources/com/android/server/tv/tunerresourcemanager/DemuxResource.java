@@ -1,51 +1,31 @@
 package com.android.server.tv.tunerresourcemanager;
 
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import com.android.server.tv.tunerresourcemanager.TunerResourceBasic;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class DemuxResource extends TunerResourceBasic {
     public final int mFilterTypes;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Builder extends TunerResourceBasic.Builder {
+        public int mFilterTypes;
+    }
 
     public DemuxResource(Builder builder) {
         super(builder);
         this.mFilterTypes = builder.mFilterTypes;
     }
 
-    public String toString() {
-        return "DemuxResource[handle=" + this.mHandle + ", filterTypes=" + this.mFilterTypes + ", isInUse=" + this.mIsInUse + ", ownerClientId=" + this.mOwnerClientId + "]";
-    }
-
-    public boolean hasSufficientCaps(int i) {
-        return i == (this.mFilterTypes & i);
-    }
-
-    public int getNumOfCaps() {
-        int i = 1;
-        int i2 = 0;
-        for (int i3 = 0; i3 < 32; i3++) {
-            if ((this.mFilterTypes & i) == i) {
-                i2++;
-            }
-            i <<= 1;
-        }
-        return i2;
-    }
-
-    /* loaded from: classes3.dex */
-    public class Builder extends TunerResourceBasic.Builder {
-        public int mFilterTypes;
-
-        public Builder(int i) {
-            super(i);
-        }
-
-        public Builder filterTypes(int i) {
-            this.mFilterTypes = i;
-            return this;
-        }
-
-        public DemuxResource build() {
-            return new DemuxResource(this);
-        }
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("DemuxResource[handle=");
+        sb.append(this.mHandle);
+        sb.append(", filterTypes=");
+        sb.append(this.mFilterTypes);
+        sb.append(", isInUse=");
+        sb.append(this.mIsInUse);
+        sb.append(", ownerClientId=");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.mOwnerClientId, sb, "]");
     }
 }

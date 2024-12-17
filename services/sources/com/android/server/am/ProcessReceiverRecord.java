@@ -2,88 +2,33 @@ package com.android.server.am;
 
 import android.util.ArraySet;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ProcessReceiverRecord {
-    public final ProcessRecord mApp;
     public int mCurReceiversSize;
     public final ActivityManagerService mService;
     public final ArraySet mCurReceivers = new ArraySet();
     public final ArraySet mReceivers = new ArraySet();
 
-    public int numberOfCurReceivers() {
-        return this.mCurReceiversSize;
-    }
-
-    public void incrementCurReceivers() {
-        this.mCurReceiversSize++;
-    }
-
-    public void decrementCurReceivers() {
-        this.mCurReceiversSize--;
-    }
-
-    public boolean hasCurReceiver(BroadcastRecord broadcastRecord) {
-        return this.mCurReceivers.contains(broadcastRecord);
-    }
-
-    public void addCurReceiver(BroadcastRecord broadcastRecord) {
-        this.mCurReceivers.add(broadcastRecord);
-        this.mCurReceiversSize = this.mCurReceivers.size();
-    }
-
-    public void removeCurReceiver(BroadcastRecord broadcastRecord) {
-        this.mCurReceivers.remove(broadcastRecord);
-        this.mCurReceiversSize = this.mCurReceivers.size();
-    }
-
-    public int numberOfReceivers() {
-        return this.mReceivers.size();
-    }
-
-    public ReceiverList getReceiverAt(int i) {
-        return (ReceiverList) this.mReceivers.valueAt(i);
-    }
-
-    public void addReceiver(ReceiverList receiverList) {
-        this.mReceivers.add(receiverList);
-    }
-
-    public void removeReceiver(ReceiverList receiverList) {
-        this.mReceivers.remove(receiverList);
-    }
-
     public ProcessReceiverRecord(ProcessRecord processRecord) {
-        this.mApp = processRecord;
         this.mService = processRecord.mService;
     }
 
-    public void onCleanupApplicationRecordLocked() {
-        for (int size = this.mReceivers.size() - 1; size >= 0; size--) {
-            this.mService.removeReceiverLocked((ReceiverList) this.mReceivers.valueAt(size));
-        }
-        this.mReceivers.clear();
-    }
-
-    public void dump(PrintWriter printWriter, String str, long j) {
-        if (!this.mCurReceivers.isEmpty()) {
-            printWriter.print(str);
-            printWriter.println("Current mReceivers:");
-            int size = this.mCurReceivers.size();
-            for (int i = 0; i < size; i++) {
-                printWriter.print(str);
-                printWriter.print("  - ");
-                printWriter.println(this.mCurReceivers.valueAt(i));
-            }
-        }
+    public final void dumpReceivers(PrintWriter printWriter) {
         if (this.mReceivers.size() > 0) {
-            printWriter.print(str);
-            printWriter.println("mReceivers:");
-            int size2 = this.mReceivers.size();
+            ArrayList arrayList = new ArrayList();
+            int size = this.mReceivers.size();
+            for (int i = 0; i < size; i++) {
+                arrayList.add(((ReceiverList) this.mReceivers.valueAt(i)).toString());
+            }
+            arrayList.sort(new ProcessReceiverRecord$$ExternalSyntheticLambda0());
+            printWriter.println("Receiver list:");
+            int size2 = arrayList.size();
             for (int i2 = 0; i2 < size2; i2++) {
-                printWriter.print(str);
-                printWriter.print("  - ");
-                printWriter.println(this.mReceivers.valueAt(i2));
+                printWriter.print("    #" + i2 + ":");
+                printWriter.println((String) arrayList.get(i2));
             }
         }
     }

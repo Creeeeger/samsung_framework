@@ -5,10 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.weaver.IWeaver;
+import android.hardware.weaver.V1_0.IWeaver;
+import android.hardware.weaver.V1_0.WeaverReadResponse;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.os.SemHqmManager;
 import android.os.SystemProperties;
+import android.util.Log;
 import android.util.Slog;
 import com.android.server.HermesBigdataFunction;
 import com.android.server.sepunion.AbsSemSystemService;
@@ -16,37 +21,63 @@ import com.samsung.android.service.HermesService.IHermesService;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
+import java.util.concurrent.TimeUnit;
+import vendor.samsung.hardware.security.hermes.SehCommandResult;
+import vendor.samsung.hardware.security.hermes.extension.ISehHermesExtension;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class HermesService extends IHermesService.Stub implements AbsSemSystemService {
     public static Context mContext;
-    public HermesHalAdapter halAdapter;
-    public final BroadcastReceiver mReceiver;
+    public final HermesHalAdapter halAdapter;
+    public final AnonymousClass3 mReceiver;
 
-    @Override // com.android.server.sepunion.AbsSemSystemService
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-    }
-
-    @Override // com.android.server.sepunion.AbsSemSystemService
-    public void onCreate(Bundle bundle) {
-    }
-
-    static {
-        System.loadLibrary("hermes_jni");
-    }
-
-    @Override // com.android.server.sepunion.AbsSemSystemService
-    public void onBootPhase(int i) {
-        if (i == 1000) {
-            Slog.i("HERMES#Service", "HermesService onBootPhase: " + i);
-            TransmitCollectedDataToServer();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.HermesService$1, reason: invalid class name */
+    public final class AnonymousClass1 extends Thread {
+        @Override // java.lang.Thread, java.lang.Runnable
+        public final void run() {
+            try {
+                if (!HermesBigdataFunction.CHECK_CHIPSET_LISTS[0].equals(SystemProperties.get("ro.soc.model"))) {
+                    throw new BigdataException(HermesBigdataFunction.BigdataError.ERR_NOT_SUPPORTED);
+                }
+                HermesBigdataFunction.unZipDumpstate();
+                HermesBigdataFunction.parseDumpstate();
+                HermesBigdataFunction.cleanDumpstateFiles();
+                HermesService.m65$$Nest$smreportToDiagmon();
+                try {
+                    TimeUnit.MINUTES.sleep(1L);
+                    HermesBigdataFunction.cleanBigdataLogFiles();
+                } catch (BigdataException e) {
+                    throw e;
+                } catch (InterruptedException unused) {
+                    throw new BigdataException(HermesBigdataFunction.BigdataError.ERR_INTERRUPTION_EXCEPTION);
+                }
+            } catch (BigdataException e2) {
+                Slog.e("HERMES#Service", "Some problem has occured, Err = " + e2.getErrCode());
+                e2.printStackTrace();
+            }
         }
     }
 
-    public static void reportToDiagmon() {
-        Intent intent = new Intent("com.sec.android.diagmonagent.intent.REPORT_ERROR_V2");
-        intent.addFlags(32);
+    /* renamed from: -$$Nest$mCollectSkeymasterDumpThread, reason: not valid java name */
+    public static void m64$$Nest$mCollectSkeymasterDumpThread(HermesService hermesService) {
+        hermesService.getClass();
+        Slog.i("HERMES#Service", "CollectSkeymasterDumpThread");
+        try {
+            new AnonymousClass1().start();
+        } catch (Exception e) {
+            Slog.e("HERMES#Service", "Error occurs on CollectSkeymasterDumpThread. Err = " + e.toString());
+        }
+        Slog.i("HERMES#Service", "CollectSkeymasterDumpThread done");
+    }
+
+    /* renamed from: -$$Nest$smreportToDiagmon, reason: not valid java name */
+    public static void m65$$Nest$smreportToDiagmon() {
+        Intent m = BatteryService$$ExternalSyntheticOutline0.m(32, "com.sec.android.diagmonagent.intent.REPORT_ERROR_V2");
         try {
             File file = new File("/data/log/sepunion/hermes/parsed_skeymast.txt");
             if (!file.exists() || file.length() == 0) {
@@ -72,49 +103,104 @@ public final class HermesService extends IHermesService.Stub implements AbsSemSy
             bundle5.putString("Agree", "D");
             bundle5.putString("LogPath", "/data/log/sepunion/hermes/parsed_skeymast.txt");
             bundle5.putString("ServiceName", "SAMSUNG KEYMASTER");
-            intent.putExtra("uploadMO", bundle);
-            intent.setFlags(32);
-            intent.setPackage("com.sec.android.diagmonagent");
-            mContext.sendBroadcast(intent);
+            m.putExtra("uploadMO", bundle);
+            m.setFlags(32);
+            m.setPackage("com.sec.android.diagmonagent");
+            mContext.sendBroadcast(m);
             Slog.i("HERMES#Service", "reportToDiagmon done");
         } catch (Exception unused) {
             throw new BigdataException(HermesBigdataFunction.BigdataError.ERR_SEND_DIAGMON);
         }
     }
 
-    public final void CollectSkeymasterDumpThread() {
-        Slog.i("HERMES#Service", "CollectSkeymasterDumpThread");
-        try {
-            new Thread() { // from class: com.android.server.HermesService.1
-                @Override // java.lang.Thread, java.lang.Runnable
-                public void run() {
-                    try {
-                        HermesBigdataFunction hermesBigdataFunction = new HermesBigdataFunction();
-                        hermesBigdataFunction.makeSkeymasterDumpstate();
-                        HermesService.reportToDiagmon();
-                        hermesBigdataFunction.finishSkeymasterDumpstate();
-                    } catch (BigdataException e) {
-                        Slog.e("HERMES#Service", "Some problem has occured, Err = " + e.getErrCode());
-                        e.printStackTrace();
+    static {
+        System.loadLibrary("hermes_jni");
+    }
+
+    public HermesService(Context context) {
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.HermesService.3
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                if ("android.intent.action.SCREEN_ON".equals(intent.getAction())) {
+                    if (((KeyguardManager) HermesService.mContext.getSystemService("keyguard")).inKeyguardRestrictedInputMode() && SystemProperties.get("security.securenvm.available").equals("true")) {
+                        HermesService$3$$ExternalSyntheticOutline0.m(HermesService.this.halAdapter.SecnvmPowerOn(), "notify key guard showing to hermesd ret : ", "HERMES#Service");
+                        return;
+                    }
+                    return;
+                }
+                if ("android.intent.action.DATE_CHANGED".equals(intent.getAction())) {
+                    Slog.d("HERMES#Service", "ACTION_DATE_CHANGED intent called");
+                    HermesService hermesService = HermesService.this;
+                    Context context3 = HermesService.mContext;
+                    hermesService.TransmitCollectedDataToServer();
+                    HermesService.m64$$Nest$mCollectSkeymasterDumpThread(HermesService.this);
+                    return;
+                }
+                if ("com.sec.android.intent.action.TEST_TRIGGER".equals(intent.getAction())) {
+                    Slog.d("HERMES#Service", "Test intent trigger called");
+                    HermesService.m64$$Nest$mCollectSkeymasterDumpThread(HermesService.this);
+                    for (int i = 0; i < 16; i++) {
+                        Log.i("HERMES#Service", "failcount(" + i + ") : " + HermesService.this.getFailureCount(i));
                     }
                 }
-            }.start();
-        } catch (Exception e) {
-            Slog.e("HERMES#Service", "Error occurs on CollectSkeymasterDumpThread. Err = " + e.toString());
+            }
+        };
+        mContext = context;
+        IntentFilter m = BatteryService$$ExternalSyntheticOutline0.m("android.intent.action.SCREEN_ON");
+        if (!"user".equals(Build.TYPE)) {
+            m.addAction("com.sec.android.intent.action.TEST_TRIGGER");
         }
-        Slog.i("HERMES#Service", "CollectSkeymasterDumpThread done");
+        m.addAction("android.intent.action.DATE_CHANGED");
+        mContext.registerReceiver(broadcastReceiver, m);
+        HermesHalAdapter hermesHalAdapter = new HermesHalAdapter();
+        hermesHalAdapter.hc = null;
+        hermesHalAdapter.hce = null;
+        hermesHalAdapter.aidlWeaver = null;
+        hermesHalAdapter.hidlWeaver = null;
+        hermesHalAdapter.hc = hermesHalAdapter.getService();
+        hermesHalAdapter.hce = hermesHalAdapter.getExtAidlService();
+        hermesHalAdapter.aidlWeaver = hermesHalAdapter.getAidlWeaverService();
+        this.halAdapter = hermesHalAdapter;
     }
 
     public final void TransmitCollectedDataToServer() {
         try {
             new Thread() { // from class: com.android.server.HermesService.2
                 @Override // java.lang.Thread, java.lang.Runnable
-                public void run() {
+                public final void run() {
                     String bigdataLog = HermesService.this.halAdapter.getBigdataLog();
-                    if (bigdataLog != null) {
-                        HermesService.this.sendBigData(bigdataLog);
-                    } else {
+                    if (bigdataLog == null) {
                         Slog.e("HERMES#Service", "getBigdataLog is null, skip send bigdata.");
+                        return;
+                    }
+                    HermesService.this.getClass();
+                    String str = SystemProperties.get("ro.hardware.chipname");
+                    String str2 = SystemProperties.get("ro.hardware");
+                    StringTokenizer stringTokenizer = new StringTokenizer(bigdataLog, "\r\n");
+                    Slog.i("HERMES#Service", "Full String : ".concat(bigdataLog));
+                    while (stringTokenizer.hasMoreTokens()) {
+                        StringTokenizer stringTokenizer2 = new StringTokenizer(stringTokenizer.nextToken(), "=");
+                        if (stringTokenizer2.hasMoreTokens()) {
+                            String nextToken = stringTokenizer2.nextToken();
+                            if (stringTokenizer2.hasMoreTokens()) {
+                                String nextToken2 = stringTokenizer2.nextToken();
+                                SemHqmManager semHqmManager = (SemHqmManager) HermesService.mContext.getSystemService("HqmManagerService");
+                                if (semHqmManager != null) {
+                                    Slog.i("HERMES#Service", "sendToHQM data : " + nextToken2);
+                                    if (nextToken2 == null) {
+                                        Slog.i("HERMES#Service", "bigdata is null.");
+                                    } else if (!semHqmManager.sendHWParamToHQM(0, "GPU", nextToken, "ph", str, str2, "", nextToken2, "")) {
+                                        Slog.i("HERMES#Service", "sendHWParamToHQM is failed.");
+                                    }
+                                } else {
+                                    Slog.i("HERMES#Service", "HQM service is not alive, skip sending a data.");
+                                }
+                            } else {
+                                Slog.i("HERMES#Service", "Hermes bigdata has wrong value.");
+                            }
+                        } else {
+                            Slog.i("HERMES#Service", "Hermes feature has wrong value.");
+                        }
                     }
                 }
             }.start();
@@ -123,101 +209,247 @@ public final class HermesService extends IHermesService.Stub implements AbsSemSy
         }
     }
 
-    public final int sendBigData(String str) {
-        String str2 = SystemProperties.get("ro.hardware.chipname");
-        String str3 = SystemProperties.get("ro.hardware");
-        StringTokenizer stringTokenizer = new StringTokenizer(str, "\r\n");
-        int i = 0;
-        while (stringTokenizer.hasMoreTokens()) {
-            StringTokenizer stringTokenizer2 = new StringTokenizer(stringTokenizer.nextToken(), "=");
-            if (stringTokenizer2.hasMoreTokens()) {
-                String nextToken = stringTokenizer2.nextToken();
-                if (stringTokenizer2.hasMoreTokens()) {
-                    String nextToken2 = stringTokenizer2.nextToken();
-                    SemHqmManager semHqmManager = (SemHqmManager) mContext.getSystemService("HqmManagerService");
-                    if (semHqmManager != null) {
-                        Slog.i("HERMES#Service", "sendToHQM data : " + nextToken2);
-                        if (nextToken2 != null) {
-                            if (!semHqmManager.sendHWParamToHQM(0, "GPU", nextToken, "ph", str2, str3, "", nextToken2, "")) {
-                                Slog.i("HERMES#Service", "sendHWParamToHQM is failed.");
-                                i = -23;
-                            }
-                        } else {
-                            Slog.i("HERMES#Service", "bigdata is null.");
-                            i = -25;
-                        }
-                    } else {
-                        Slog.i("HERMES#Service", "HQM service is not alive, skip sending a data.");
-                        i = -26;
-                    }
-                } else {
-                    Slog.i("HERMES#Service", "Hermes bigdata has wrong value.");
-                }
+    @Override // com.android.server.sepunion.AbsSemSystemService
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+    }
+
+    public final int getFailureCount(int i) {
+        HermesHalAdapter hermesHalAdapter = this.halAdapter;
+        hermesHalAdapter.getClass();
+        Slog.i("HERMES#HalAdapter", "getFailureCount called!.");
+        final int[] iArr = {-100};
+        try {
+            IWeaver aidlWeaverService = hermesHalAdapter.getAidlWeaverService();
+            hermesHalAdapter.aidlWeaver = aidlWeaverService;
+            if (aidlWeaverService != null) {
+                iArr[0] = (int) aidlWeaverService.read(i + 100000, new byte[]{0}).timeout;
             } else {
-                Slog.i("HERMES#Service", "Hermes feature has wrong value.");
+                try {
+                    hermesHalAdapter.hidlWeaver = android.hardware.weaver.V1_0.IWeaver.getService(false);
+                } catch (RemoteException | NoSuchElementException unused) {
+                    Slog.w("HERMES#HalAdapter", "Does not have permissions to get HIDL weaver service");
+                }
+                android.hardware.weaver.V1_0.IWeaver iWeaver = hermesHalAdapter.hidlWeaver;
+                hermesHalAdapter.hidlWeaver = iWeaver;
+                if (iWeaver != null) {
+                    Slog.i("HERMES#HalAdapter", "supporthidlWeaver");
+                    ArrayList arrayList = new ArrayList(16);
+                    arrayList.add((byte) 0);
+                    ((IWeaver.Proxy) hermesHalAdapter.hidlWeaver).read(i + 100000, arrayList, new IWeaver.readCallback() { // from class: com.android.server.HermesHalAdapter$$ExternalSyntheticLambda0
+                        @Override // android.hardware.weaver.V1_0.IWeaver.readCallback
+                        public final void onValues(int i2, WeaverReadResponse weaverReadResponse) {
+                            String str = HermesHalAdapter.HERMES_AIDL_INTERFACE;
+                            iArr[0] = weaverReadResponse.timeout;
+                        }
+                    });
+                    return iArr[0];
+                }
+                Slog.i("HERMES#HalAdapter", "supportExtensionHal failed");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return i;
+        return iArr[0];
     }
 
-    public HermesService(Context context) {
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.HermesService.3
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
-                if ("android.intent.action.SCREEN_ON".equals(intent.getAction())) {
-                    if (((KeyguardManager) HermesService.mContext.getSystemService("keyguard")).inKeyguardRestrictedInputMode() && SystemProperties.get("security.securenvm.available").equals("true")) {
-                        Slog.i("HERMES#Service", "notify key guard showing to hermesd ret : " + HermesService.this.hermesSecnvmPowerOn());
-                        return;
-                    }
-                    return;
-                }
-                if ("android.intent.action.DATE_CHANGED".equals(intent.getAction())) {
-                    Slog.d("HERMES#Service", "ACTION_DATE_CHANGED intent called");
-                    HermesService.this.TransmitCollectedDataToServer();
-                    HermesService.this.CollectSkeymasterDumpThread();
-                } else if ("com.sec.android.intent.action.TEST_TRIGGER".equals(intent.getAction())) {
-                    Slog.d("HERMES#Service", "Test intent trigger called");
-                    HermesService.this.CollectSkeymasterDumpThread();
-                }
-            }
-        };
-        this.mReceiver = broadcastReceiver;
-        mContext = context;
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.SCREEN_ON");
-        if (!"user".equals(Build.TYPE)) {
-            intentFilter.addAction("com.sec.android.intent.action.TEST_TRIGGER");
-        }
-        intentFilter.addAction("android.intent.action.DATE_CHANGED");
-        mContext.registerReceiver(broadcastReceiver, intentFilter);
-        this.halAdapter = new HermesHalAdapter();
+    public final AbsSemSystemService getSemSystemService(String str) {
+        return null;
     }
 
-    public byte[] hermesGetSecureHWInfo() {
+    public final byte[] hermesCosPatchTest(byte[] bArr) {
+        ISehHermesExtension extAidlService;
+        HermesHalAdapter hermesHalAdapter = this.halAdapter;
+        hermesHalAdapter.getClass();
+        Slog.i("HERMES#HalAdapter", "cosPatchTest called!.");
+        try {
+            extAidlService = hermesHalAdapter.getExtAidlService();
+            hermesHalAdapter.hce = extAidlService;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (extAidlService != null) {
+            return ((ISehHermesExtension.Stub.Proxy) extAidlService).updateCOSpatchTest(bArr).msg;
+        }
+        Slog.i("HERMES#HalAdapter", "supportExtensionHal failed");
+        return null;
+    }
+
+    public final byte[] hermesGetSeId() {
+        ISehHermesExtension extAidlService;
+        HermesHalAdapter hermesHalAdapter = this.halAdapter;
+        hermesHalAdapter.getClass();
+        Slog.i("HERMES#HalAdapter", "getSeId called!.");
+        try {
+            extAidlService = hermesHalAdapter.getExtAidlService();
+            hermesHalAdapter.hce = extAidlService;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (extAidlService != null) {
+            return ((ISehHermesExtension.Stub.Proxy) extAidlService).getSeId().msg;
+        }
+        Slog.i("HERMES#HalAdapter", "supportExtensionHal failed");
+        return null;
+    }
+
+    public final byte[] hermesGetSecureHWInfo() {
         return this.halAdapter.GetSecureHWInfo();
     }
 
-    public byte[] hermesUpdateCryptoFW() {
-        return this.halAdapter.UpdateCryptoFW();
-    }
-
-    public byte[] hermesSelftest() {
-        return this.halAdapter.Selftest();
-    }
-
-    public int hermesProvisioning() {
+    public final int hermesProvisioning() {
         return this.halAdapter.Provisioning();
     }
 
-    public int hermesVerifyProvisioning() {
-        return this.halAdapter.VerifyProvisioning();
+    public final int hermesSecnvmPowerOff() {
+        return this.halAdapter.SecnvmPowerOff();
     }
 
-    public int hermesTerminateService() {
+    public final int hermesSecnvmPowerOn() {
+        return this.halAdapter.SecnvmPowerOn();
+    }
+
+    public final int hermesSecureHwPowerOff() {
+        ISehHermesExtension extAidlService;
+        HermesHalAdapter hermesHalAdapter = this.halAdapter;
+        hermesHalAdapter.getClass();
+        Slog.i("HERMES#HalAdapter", "secureHwPowerOff called!.");
+        try {
+            extAidlService = hermesHalAdapter.getExtAidlService();
+            hermesHalAdapter.hce = extAidlService;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (extAidlService != null) {
+            return ((ISehHermesExtension.Stub.Proxy) extAidlService).turnOffSecureHardwarePower().result;
+        }
+        Slog.i("HERMES#HalAdapter", "supportExtensionHal failed");
+        return -1;
+    }
+
+    public final int hermesSecureHwPowerOn() {
+        ISehHermesExtension extAidlService;
+        HermesHalAdapter hermesHalAdapter = this.halAdapter;
+        hermesHalAdapter.getClass();
+        Slog.i("HERMES#HalAdapter", "secureHwPowerOn called!.");
+        try {
+            extAidlService = hermesHalAdapter.getExtAidlService();
+            hermesHalAdapter.hce = extAidlService;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (extAidlService != null) {
+            return ((ISehHermesExtension.Stub.Proxy) extAidlService).turnOnSecureHardwarePower().result;
+        }
+        Slog.i("HERMES#HalAdapter", "supportExtensionHal failed");
+        return -1;
+    }
+
+    public final byte[] hermesSelftest() {
+        return this.halAdapter.Selftest();
+    }
+
+    public final byte[] hermesSelftest2(String str) {
+        HermesHalAdapter hermesHalAdapter = this.halAdapter;
+        hermesHalAdapter.getClass();
+        Slog.i("HERMES#HalAdapter", "Selftest called.");
+        try {
+            ISehHermesExtension extAidlService = hermesHalAdapter.getExtAidlService();
+            hermesHalAdapter.hce = extAidlService;
+            if (extAidlService == null) {
+                return null;
+            }
+            SehCommandResult selftest = ((ISehHermesExtension.Stub.Proxy) hermesHalAdapter.hce).selftest(HermesHalAdapter.getSehSelftestParameter(str));
+            if (selftest.result != 0) {
+                return selftest.msg;
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public final byte[] hermesSendApdu(byte[] bArr) {
+        ISehHermesExtension extAidlService;
+        HermesHalAdapter hermesHalAdapter = this.halAdapter;
+        hermesHalAdapter.getClass();
+        Slog.i("HERMES#HalAdapter", "sendApdu called!.");
+        try {
+            extAidlService = hermesHalAdapter.getExtAidlService();
+            hermesHalAdapter.hce = extAidlService;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (extAidlService != null) {
+            return ((ISehHermesExtension.Stub.Proxy) extAidlService).sendAPDU(bArr).msg;
+        }
+        Slog.i("HERMES#HalAdapter", "supportExtensionHal failed");
+        return null;
+    }
+
+    public final int hermesTerminateService() {
         return this.halAdapter.TerminateService();
     }
 
-    public int hermesSecnvmPowerOn() {
-        return this.halAdapter.SecnvmPowerOn();
+    public final byte[] hermesUpdateApplet() {
+        HermesHalAdapter hermesHalAdapter = this.halAdapter;
+        hermesHalAdapter.getClass();
+        Slog.i("HERMES#HalAdapter", "UpdateApplet called.");
+        try {
+            ISehHermesExtension extAidlService = hermesHalAdapter.getExtAidlService();
+            hermesHalAdapter.hce = extAidlService;
+            if (extAidlService == null) {
+                return null;
+            }
+            SehCommandResult updateApplet = ((ISehHermesExtension.Stub.Proxy) extAidlService).updateApplet();
+            if (updateApplet.result == 0) {
+                return updateApplet.msg;
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public final byte[] hermesUpdateCryptoFW() {
+        return this.halAdapter.UpdateCryptoFW();
+    }
+
+    public final int hermesVerifyProvisioning() {
+        return this.halAdapter.VerifyProvisioning();
+    }
+
+    @Override // com.android.server.sepunion.AbsSemSystemService
+    public final void onBootPhase(int i) {
+        if (i == 1000) {
+            Slog.i("HERMES#Service", "HermesService onBootPhase: " + i);
+            TransmitCollectedDataToServer();
+        }
+    }
+
+    public final void onCleanupUser(int i) {
+    }
+
+    @Override // com.android.server.sepunion.AbsSemSystemService
+    public final void onCreate(Bundle bundle) {
+    }
+
+    public final void onDestroy() {
+    }
+
+    public final void onStart() {
+    }
+
+    public final void onStartUser(int i) {
+    }
+
+    public final void onStopUser(int i) {
+    }
+
+    public final void onSwitchUser(int i) {
+    }
+
+    public final void onUnlockUser(int i) {
     }
 }

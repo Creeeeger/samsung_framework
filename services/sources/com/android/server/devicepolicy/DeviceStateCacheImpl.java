@@ -2,69 +2,58 @@ package com.android.server.devicepolicy;
 
 import android.app.admin.DeviceStateCache;
 import android.util.IndentingPrintWriter;
+import com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticOutline0;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/* loaded from: classes2.dex */
-public class DeviceStateCacheImpl extends DeviceStateCache {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DeviceStateCacheImpl extends DeviceStateCache {
     public final Object mLock = new Object();
-    public AtomicInteger mDeviceOwnerType = new AtomicInteger(-1);
-    public Map mHasProfileOwner = new ConcurrentHashMap();
-    public Map mAffiliationWithDevice = new ConcurrentHashMap();
+    public final AtomicInteger mDeviceOwnerType = new AtomicInteger(-1);
+    public final Map mHasProfileOwner = new ConcurrentHashMap();
+    public final Map mAffiliationWithDevice = new ConcurrentHashMap();
     public boolean mIsDeviceProvisioned = false;
 
-    public boolean isDeviceProvisioned() {
+    public final void dump(IndentingPrintWriter indentingPrintWriter) {
+        indentingPrintWriter.println("Device state cache:");
+        indentingPrintWriter.increaseIndent();
+        StringBuilder m = DesktopModeService$$ExternalSyntheticOutline0.m(new StringBuilder("Device provisioned: "), this.mIsDeviceProvisioned, indentingPrintWriter, "Device Owner Type: ");
+        m.append(this.mDeviceOwnerType.get());
+        indentingPrintWriter.println(m.toString());
+        indentingPrintWriter.println("Has PO:");
+        for (Integer num : ((ConcurrentHashMap) this.mHasProfileOwner).keySet()) {
+            indentingPrintWriter.println("User " + num + ": " + ((ConcurrentHashMap) this.mHasProfileOwner).get(num));
+        }
+        indentingPrintWriter.decreaseIndent();
+    }
+
+    public final boolean hasAffiliationWithDevice(int i) {
+        return ((Boolean) ((ConcurrentHashMap) this.mAffiliationWithDevice).getOrDefault(Integer.valueOf(i), Boolean.FALSE)).booleanValue();
+    }
+
+    public final boolean isDeviceProvisioned() {
         return this.mIsDeviceProvisioned;
     }
 
-    public void setDeviceProvisioned(boolean z) {
-        synchronized (this.mLock) {
-            this.mIsDeviceProvisioned = z;
-        }
+    public final boolean isUserOrganizationManaged(int i) {
+        return ((Boolean) ((ConcurrentHashMap) this.mHasProfileOwner).getOrDefault(Integer.valueOf(i), Boolean.FALSE)).booleanValue() || this.mDeviceOwnerType.get() == 0;
     }
 
-    public void setDeviceOwnerType(int i) {
-        this.mDeviceOwnerType.set(i);
-    }
-
-    public void setHasProfileOwner(int i, boolean z) {
-        if (z) {
-            this.mHasProfileOwner.put(Integer.valueOf(i), Boolean.TRUE);
-        } else {
-            this.mHasProfileOwner.remove(Integer.valueOf(i));
-        }
-    }
-
-    public void setHasAffiliationWithDevice(int i, Boolean bool) {
+    public final void setHasAffiliationWithDevice(int i, Boolean bool) {
         if (bool.booleanValue()) {
-            this.mAffiliationWithDevice.put(Integer.valueOf(i), Boolean.TRUE);
+            ((ConcurrentHashMap) this.mAffiliationWithDevice).put(Integer.valueOf(i), Boolean.TRUE);
         } else {
-            this.mAffiliationWithDevice.remove(Integer.valueOf(i));
+            ((ConcurrentHashMap) this.mAffiliationWithDevice).remove(Integer.valueOf(i));
         }
     }
 
-    public boolean hasAffiliationWithDevice(int i) {
-        return ((Boolean) this.mAffiliationWithDevice.getOrDefault(Integer.valueOf(i), Boolean.FALSE)).booleanValue();
-    }
-
-    public boolean isUserOrganizationManaged(int i) {
-        return ((Boolean) this.mHasProfileOwner.getOrDefault(Integer.valueOf(i), Boolean.FALSE)).booleanValue() || hasEnterpriseDeviceOwner();
-    }
-
-    public final boolean hasEnterpriseDeviceOwner() {
-        return this.mDeviceOwnerType.get() == 0;
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.println("Device state cache:");
-        indentingPrintWriter.increaseIndent();
-        indentingPrintWriter.println("Device provisioned: " + this.mIsDeviceProvisioned);
-        indentingPrintWriter.println("Device Owner Type: " + this.mDeviceOwnerType.get());
-        indentingPrintWriter.println("Has PO:");
-        for (Integer num : this.mHasProfileOwner.keySet()) {
-            indentingPrintWriter.println("User " + num + ": " + this.mHasProfileOwner.get(num));
+    public final void setHasProfileOwner(int i, boolean z) {
+        if (z) {
+            ((ConcurrentHashMap) this.mHasProfileOwner).put(Integer.valueOf(i), Boolean.TRUE);
+        } else {
+            ((ConcurrentHashMap) this.mHasProfileOwner).remove(Integer.valueOf(i));
         }
-        indentingPrintWriter.decreaseIndent();
     }
 }

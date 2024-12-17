@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONObject;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class ScData extends EndpointData {
     public static final String TAG = "ScData";
     public final EndpointData data;
@@ -18,16 +19,13 @@ public final class ScData extends EndpointData {
         this.data = endpointData;
     }
 
-    public ScOpenData getOpenData() {
-        try {
-            return (ScOpenData) this.data;
-        } catch (ClassCastException unused) {
-            printCastError();
-            return null;
-        }
+    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
+    public final EndpointData adjustTime(long j) {
+        EndpointData self = self();
+        return self != null ? self.adjustTime(j) : this;
     }
 
-    public ScCloseData getCloseData() {
+    public final ScCloseData getCloseData() {
         try {
             return (ScCloseData) this.data;
         } catch (ClassCastException unused) {
@@ -36,7 +34,70 @@ public final class ScData extends EndpointData {
         }
     }
 
-    public ScMountData getMountData() {
+    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
+    public final int getEvent() {
+        EndpointData self = self();
+        if (self != null) {
+            return self.getEvent();
+        }
+        return 0;
+    }
+
+    public final ScExecveData getExecveData() {
+        try {
+            return (ScExecveData) this.data;
+        } catch (ClassCastException unused) {
+            printCastError();
+            return null;
+        }
+    }
+
+    public final ScFchmodData getFchmodData() {
+        try {
+            return (ScFchmodData) this.data;
+        } catch (ClassCastException unused) {
+            printCastError();
+            return null;
+        }
+    }
+
+    public final ScFchmodatData getFchmodatData() {
+        try {
+            return (ScFchmodatData) this.data;
+        } catch (ClassCastException unused) {
+            printCastError();
+            return null;
+        }
+    }
+
+    public final ScFchownData getFchownData() {
+        try {
+            return (ScFchownData) this.data;
+        } catch (ClassCastException unused) {
+            printCastError();
+            return null;
+        }
+    }
+
+    public final ScFchownatData getFchownatData() {
+        try {
+            return (ScFchownatData) this.data;
+        } catch (ClassCastException unused) {
+            printCastError();
+            return null;
+        }
+    }
+
+    public final ScMemfdCreateData getMemfdCreateData() {
+        try {
+            return (ScMemfdCreateData) this.data;
+        } catch (ClassCastException unused) {
+            printCastError();
+            return null;
+        }
+    }
+
+    public final ScMountData getMountData() {
         try {
             return (ScMountData) this.data;
         } catch (ClassCastException unused) {
@@ -45,13 +106,40 @@ public final class ScData extends EndpointData {
         }
     }
 
-    public ScExecveData getExecveData() {
+    public final ScOpenData getOpenData() {
         try {
-            return (ScExecveData) this.data;
+            return (ScOpenData) this.data;
         } catch (ClassCastException unused) {
             printCastError();
             return null;
         }
+    }
+
+    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
+    public final int getPid() {
+        EndpointData self = self();
+        if (self != null) {
+            return self.getPid();
+        }
+        return 0;
+    }
+
+    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
+    public final long getTime() {
+        EndpointData self = self();
+        if (self != null) {
+            return self.getTime();
+        }
+        return 0L;
+    }
+
+    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
+    public final int getUid() {
+        EndpointData self = self();
+        if (self != null) {
+            return self.getUid();
+        }
+        return -1;
     }
 
     public final void printCastError() {
@@ -66,87 +154,48 @@ public final class ScData extends EndpointData {
         if (i == 221) {
             return getExecveData();
         }
-        if (i == 56) {
-            return getOpenData();
+        if (i == 279) {
+            return getMemfdCreateData();
         }
-        if (i != 57) {
-            return null;
+        switch (i) {
+            case 52:
+                return getFchmodData();
+            case 53:
+                return getFchmodatData();
+            case 54:
+                return getFchownatData();
+            case 55:
+                return getFchownData();
+            case 56:
+                return getOpenData();
+            case 57:
+                return getCloseData();
+            default:
+                return null;
         }
-        return getCloseData();
     }
 
     @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public int getEvent() {
+    public final Bundle toBundle() {
         EndpointData self = self();
-        if (self != null) {
-            return self.getEvent();
-        }
-        return 0;
+        return self != null ? self.toBundle() : new Bundle();
     }
 
     @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public long getTime() {
+    public final String toJson() {
         EndpointData self = self();
-        if (self != null) {
-            return self.getTime();
-        }
-        return 0L;
+        return self != null ? self.toJson() : new JSONObject().toString();
     }
 
     @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public EndpointData adjustTime(long j) {
-        EndpointData self = self();
-        return self != null ? self.adjustTime(j) : this;
-    }
-
-    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public String toLine() {
+    public final String toLine() {
         EndpointData self = self();
         return self != null ? self.toLine() : "";
     }
 
     @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public Map toMap() {
+    public final Map toMap() {
         EndpointData self = self();
-        if (self != null) {
-            return self.toMap();
-        }
-        return new HashMap();
-    }
-
-    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public Bundle toBundle() {
-        EndpointData self = self();
-        if (self != null) {
-            return self.toBundle();
-        }
-        return new Bundle();
-    }
-
-    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public String toJson() {
-        EndpointData self = self();
-        if (self != null) {
-            return self.toJson();
-        }
-        return new JSONObject().toString();
-    }
-
-    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public int getPid() {
-        EndpointData self = self();
-        if (self != null) {
-            return self.getPid();
-        }
-        return 0;
-    }
-
-    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public int getUid() {
-        EndpointData self = self();
-        if (self != null) {
-            return self.getUid();
-        }
-        return -1;
+        return self != null ? self.toMap() : new HashMap();
     }
 }

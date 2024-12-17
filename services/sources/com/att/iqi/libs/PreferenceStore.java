@@ -23,7 +23,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xmlpull.v1.XmlSerializer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class PreferenceStore {
     private static final String IQI_PREF_FILE = "att_prefs.xml";
     public static final String PREF_BRIDGE_LIBRARY_PATH = "bridge_path";
@@ -38,7 +39,7 @@ public class PreferenceStore {
     private final List mPreferenceChangeListeners = new ArrayList();
     private final File mPreferenceFile = new File(new File(Environment.getDataDirectory(), "system"), IQI_PREF_FILE);
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface PreferenceChangeListener {
         void onPreferenceChanged(String str);
     }
@@ -57,23 +58,21 @@ public class PreferenceStore {
         loadPrefsFromFileLocked();
     }
 
-    public static PreferenceStore getInstance() {
-        PreferenceStore preferenceStore;
-        synchronized (mLock) {
-            if (sInstance == null) {
-                sInstance = new PreferenceStore();
-            }
-            preferenceStore = sInstance;
+    private void broadcastPreferenceChange(final String str) {
+        for (final PreferenceChangeListener preferenceChangeListener : this.mPreferenceChangeListeners) {
+            WorkerThread.getHandler().post(new Runnable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda1
+                @Override // java.lang.Runnable
+                public final void run() {
+                    PreferenceStore.PreferenceChangeListener.this.onPreferenceChanged(str);
+                }
+            });
         }
-        return preferenceStore;
     }
 
     private boolean createPrefStoreLocked() {
         try {
             if (!this.mPreferenceFile.createNewFile()) {
-                if (LogUtil.canLog()) {
-                    LogUtil.loge("Failed to create prefs file!");
-                }
+                LogUtil.loge("Failed to create prefs file!");
                 return false;
             }
             FileOutputStream fileOutputStream = new FileOutputStream(this.mPreferenceFile);
@@ -106,188 +105,44 @@ public class PreferenceStore {
                 return true;
             } catch (Throwable th) {
                 try {
-                    if (LogUtil.canLog()) {
-                        LogUtil.loge("Exception thrown while creating pref file", th);
-                    }
+                    LogUtil.loge("Exception thrown while creating pref file", th);
                     try {
                         fileOutputStream.close();
                     } catch (Exception e) {
-                        if (LogUtil.canLog()) {
-                            LogUtil.loge("Error occurred while closing output stream", e);
-                        }
+                        LogUtil.loge("Error occurred while closing output stream", e);
                     }
                     return false;
                 } finally {
                     try {
                         fileOutputStream.close();
                     } catch (Exception e2) {
-                        if (LogUtil.canLog()) {
-                            LogUtil.loge("Error occurred while closing output stream", e2);
-                        }
+                        LogUtil.loge("Error occurred while closing output stream", e2);
                     }
                 }
             }
         } catch (IOException e3) {
-            if (LogUtil.canLog()) {
-                LogUtil.loge("Unable to open stream to write prefs", e3);
-            }
+            LogUtil.loge("Unable to open stream to write prefs", e3);
             return false;
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:32:0x009d A[Catch: all -> 0x0125, Exception -> 0x0127, TRY_ENTER, TryCatch #4 {Exception -> 0x0127, blocks: (B:14:0x0023, B:19:0x0039, B:21:0x003f, B:23:0x004e, B:25:0x0057, B:28:0x0060, B:29:0x008b, B:32:0x009d, B:39:0x00c6, B:41:0x00cc, B:45:0x00e1, B:46:0x00e7, B:47:0x00f5, B:48:0x0103, B:49:0x00a5, B:52:0x00ad, B:55:0x00b5, B:60:0x0065, B:62:0x006b, B:63:0x007f, B:67:0x0084, B:42:0x0110), top: B:13:0x0023, outer: #2 }] */
-    /* JADX WARN: Removed duplicated region for block: B:36:0x00c0  */
-    /* JADX WARN: Removed duplicated region for block: B:48:0x0103 A[Catch: all -> 0x0125, Exception -> 0x0127, TryCatch #4 {Exception -> 0x0127, blocks: (B:14:0x0023, B:19:0x0039, B:21:0x003f, B:23:0x004e, B:25:0x0057, B:28:0x0060, B:29:0x008b, B:32:0x009d, B:39:0x00c6, B:41:0x00cc, B:45:0x00e1, B:46:0x00e7, B:47:0x00f5, B:48:0x0103, B:49:0x00a5, B:52:0x00ad, B:55:0x00b5, B:60:0x0065, B:62:0x006b, B:63:0x007f, B:67:0x0084, B:42:0x0110), top: B:13:0x0023, outer: #2 }] */
-    /* JADX WARN: Removed duplicated region for block: B:49:0x00a5 A[Catch: all -> 0x0125, Exception -> 0x0127, TryCatch #4 {Exception -> 0x0127, blocks: (B:14:0x0023, B:19:0x0039, B:21:0x003f, B:23:0x004e, B:25:0x0057, B:28:0x0060, B:29:0x008b, B:32:0x009d, B:39:0x00c6, B:41:0x00cc, B:45:0x00e1, B:46:0x00e7, B:47:0x00f5, B:48:0x0103, B:49:0x00a5, B:52:0x00ad, B:55:0x00b5, B:60:0x0065, B:62:0x006b, B:63:0x007f, B:67:0x0084, B:42:0x0110), top: B:13:0x0023, outer: #2 }] */
-    /* JADX WARN: Removed duplicated region for block: B:52:0x00ad A[Catch: all -> 0x0125, Exception -> 0x0127, TryCatch #4 {Exception -> 0x0127, blocks: (B:14:0x0023, B:19:0x0039, B:21:0x003f, B:23:0x004e, B:25:0x0057, B:28:0x0060, B:29:0x008b, B:32:0x009d, B:39:0x00c6, B:41:0x00cc, B:45:0x00e1, B:46:0x00e7, B:47:0x00f5, B:48:0x0103, B:49:0x00a5, B:52:0x00ad, B:55:0x00b5, B:60:0x0065, B:62:0x006b, B:63:0x007f, B:67:0x0084, B:42:0x0110), top: B:13:0x0023, outer: #2 }] */
-    /* JADX WARN: Removed duplicated region for block: B:55:0x00b5 A[Catch: all -> 0x0125, Exception -> 0x0127, TryCatch #4 {Exception -> 0x0127, blocks: (B:14:0x0023, B:19:0x0039, B:21:0x003f, B:23:0x004e, B:25:0x0057, B:28:0x0060, B:29:0x008b, B:32:0x009d, B:39:0x00c6, B:41:0x00cc, B:45:0x00e1, B:46:0x00e7, B:47:0x00f5, B:48:0x0103, B:49:0x00a5, B:52:0x00ad, B:55:0x00b5, B:60:0x0065, B:62:0x006b, B:63:0x007f, B:67:0x0084, B:42:0x0110), top: B:13:0x0023, outer: #2 }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    private void loadPrefsFromFileLocked() {
-        /*
-            Method dump skipped, instructions count: 366
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.att.iqi.libs.PreferenceStore.loadPrefsFromFileLocked():void");
-    }
-
-    public void setBoolean(final String str, final boolean z) {
+    public static PreferenceStore getInstance() {
+        PreferenceStore preferenceStore;
         synchronized (mLock) {
-            Map map = sPreferences;
-            if (map.containsKey(str)) {
-                map.put(str, Boolean.valueOf(z));
-                WorkerThread.getHandler().post(new Runnable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda2
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        PreferenceStore.this.lambda$setBoolean$0(str, z);
-                    }
-                });
+            try {
+                if (sInstance == null) {
+                    sInstance = new PreferenceStore();
+                }
+                preferenceStore = sInstance;
+            } catch (Throwable th) {
+                throw th;
             }
         }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setBoolean$0(String str, boolean z) {
-        lambda$setString$2(str, Boolean.valueOf(z));
-    }
-
-    public void setInteger(final String str, final int i) {
-        synchronized (mLock) {
-            Map map = sPreferences;
-            if (map.containsKey(str)) {
-                map.put(str, Integer.valueOf(i));
-                WorkerThread.getHandler().post(new Runnable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda0
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        PreferenceStore.this.lambda$setInteger$1(str, i);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setInteger$1(String str, int i) {
-        lambda$setString$2(str, Integer.valueOf(i));
-    }
-
-    public void setString(final String str, final String str2) {
-        synchronized (mLock) {
-            Map map = sPreferences;
-            if (map.containsKey(str)) {
-                map.put(str, str2);
-                WorkerThread.getHandler().post(new Runnable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda3
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        PreferenceStore.this.lambda$setString$2(str, str2);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    /* renamed from: updatePreference, reason: merged with bridge method [inline-methods] */
-    public void lambda$setString$2(String str, Object obj) {
-        String str2;
-        String str3;
-        boolean z;
-        try {
-            synchronized (mLock) {
-                if (obj instanceof Boolean) {
-                    str2 = "boolean";
-                    str3 = ((Boolean) obj).booleanValue() ? "true" : "false";
-                } else if (obj instanceof Integer) {
-                    str2 = "int";
-                    str3 = String.valueOf(obj);
-                } else if (obj instanceof String) {
-                    str2 = "string";
-                    str3 = (String) obj;
-                } else {
-                    if (LogUtil.canLog()) {
-                        LogUtil.loge("Tried to write an unsupported preference type " + obj.getClass());
-                    }
-                    return;
-                }
-                if (!this.mPreferenceFile.exists() && !createPrefStoreLocked()) {
-                    if (LogUtil.canLog()) {
-                        LogUtil.loge("Unable to persist preference " + str + " in storage!");
-                    }
-                    broadcastPreferenceChange(str);
-                    return;
-                }
-                Document parse = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(this.mPreferenceFile);
-                Iterator it = iterable(parse.getElementsByTagName(str2)).iterator();
-                while (true) {
-                    if (!it.hasNext()) {
-                        z = false;
-                        break;
-                    }
-                    Node node = (Node) it.next();
-                    if (TextUtils.equals(node.getAttributes().getNamedItem("name").getNodeValue(), str)) {
-                        if (LogUtil.canLog()) {
-                            LogUtil.loge("Found pref " + str);
-                        }
-                        Node namedItem = node.getAttributes().getNamedItem("value");
-                        if (namedItem != null) {
-                            namedItem.setNodeValue(str3);
-                        } else {
-                            node.setTextContent(str3);
-                        }
-                        TransformerFactory.newInstance().newTransformer().transform(new DOMSource(parse), new StreamResult(this.mPreferenceFile));
-                        if (LogUtil.canLog()) {
-                            LogUtil.loge("Pref file updated [" + str + "] ==> " + obj);
-                        }
-                        broadcastPreferenceChange(str);
-                        z = true;
-                    }
-                }
-                if (!z && LogUtil.canLog()) {
-                    LogUtil.loge("Preference " + str + " was not found!");
-                }
-            }
-        } catch (Throwable th) {
-            if (LogUtil.canLog()) {
-                LogUtil.loge("An exception was thrown while trying to update preference", th);
-            }
-        }
-    }
-
-    private void broadcastPreferenceChange(final String str) {
-        for (final PreferenceChangeListener preferenceChangeListener : this.mPreferenceChangeListeners) {
-            WorkerThread.getHandler().post(new Runnable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    PreferenceStore.PreferenceChangeListener.this.onPreferenceChanged(str);
-                }
-            });
-        }
+        return preferenceStore;
     }
 
     private static Iterable iterable(final NodeList nodeList) {
-        return new Iterable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda5
+        return new Iterable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda3
             @Override // java.lang.Iterable
             public final Iterator iterator() {
                 Iterator lambda$iterable$4;
@@ -299,12 +154,102 @@ public class PreferenceStore {
 
     /* JADX INFO: Access modifiers changed from: private */
     public static /* synthetic */ Iterator lambda$iterable$4(final NodeList nodeList) {
-        return IntStream.range(0, nodeList.getLength()).mapToObj(new IntFunction() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda4
+        return IntStream.range(0, nodeList.getLength()).mapToObj(new IntFunction() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda5
             @Override // java.util.function.IntFunction
             public final Object apply(int i) {
                 return nodeList.item(i);
             }
         }).iterator();
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$setBoolean$0(String str, boolean z) {
+        lambda$setString$2(str, Boolean.valueOf(z));
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public /* synthetic */ void lambda$setInteger$1(String str, int i) {
+        lambda$setString$2(str, Integer.valueOf(i));
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:31:0x00ca A[Catch: all -> 0x005e, Exception -> 0x0061, TRY_ENTER, TryCatch #4 {Exception -> 0x0061, blocks: (B:12:0x001d, B:75:0x0043, B:77:0x0049, B:79:0x0053, B:28:0x00bb, B:31:0x00ca, B:38:0x00f2, B:40:0x0107, B:41:0x010d, B:42:0x011b, B:43:0x0129, B:44:0x00d2, B:47:0x00da, B:50:0x00e1, B:54:0x0138, B:58:0x0064, B:60:0x006a, B:62:0x0076, B:65:0x007f, B:69:0x0098, B:19:0x00a0, B:22:0x00ad), top: B:11:0x001d, outer: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:35:0x00ec  */
+    /* JADX WARN: Removed duplicated region for block: B:43:0x0129 A[Catch: all -> 0x005e, Exception -> 0x0061, TryCatch #4 {Exception -> 0x0061, blocks: (B:12:0x001d, B:75:0x0043, B:77:0x0049, B:79:0x0053, B:28:0x00bb, B:31:0x00ca, B:38:0x00f2, B:40:0x0107, B:41:0x010d, B:42:0x011b, B:43:0x0129, B:44:0x00d2, B:47:0x00da, B:50:0x00e1, B:54:0x0138, B:58:0x0064, B:60:0x006a, B:62:0x0076, B:65:0x007f, B:69:0x0098, B:19:0x00a0, B:22:0x00ad), top: B:11:0x001d, outer: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:44:0x00d2 A[Catch: all -> 0x005e, Exception -> 0x0061, TryCatch #4 {Exception -> 0x0061, blocks: (B:12:0x001d, B:75:0x0043, B:77:0x0049, B:79:0x0053, B:28:0x00bb, B:31:0x00ca, B:38:0x00f2, B:40:0x0107, B:41:0x010d, B:42:0x011b, B:43:0x0129, B:44:0x00d2, B:47:0x00da, B:50:0x00e1, B:54:0x0138, B:58:0x0064, B:60:0x006a, B:62:0x0076, B:65:0x007f, B:69:0x0098, B:19:0x00a0, B:22:0x00ad), top: B:11:0x001d, outer: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:47:0x00da A[Catch: all -> 0x005e, Exception -> 0x0061, TryCatch #4 {Exception -> 0x0061, blocks: (B:12:0x001d, B:75:0x0043, B:77:0x0049, B:79:0x0053, B:28:0x00bb, B:31:0x00ca, B:38:0x00f2, B:40:0x0107, B:41:0x010d, B:42:0x011b, B:43:0x0129, B:44:0x00d2, B:47:0x00da, B:50:0x00e1, B:54:0x0138, B:58:0x0064, B:60:0x006a, B:62:0x0076, B:65:0x007f, B:69:0x0098, B:19:0x00a0, B:22:0x00ad), top: B:11:0x001d, outer: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:50:0x00e1 A[Catch: all -> 0x005e, Exception -> 0x0061, TryCatch #4 {Exception -> 0x0061, blocks: (B:12:0x001d, B:75:0x0043, B:77:0x0049, B:79:0x0053, B:28:0x00bb, B:31:0x00ca, B:38:0x00f2, B:40:0x0107, B:41:0x010d, B:42:0x011b, B:43:0x0129, B:44:0x00d2, B:47:0x00da, B:50:0x00e1, B:54:0x0138, B:58:0x0064, B:60:0x006a, B:62:0x0076, B:65:0x007f, B:69:0x0098, B:19:0x00a0, B:22:0x00ad), top: B:11:0x001d, outer: #2 }] */
+    /* JADX WARN: Removed duplicated region for block: B:53:0x00e9  */
+    /* JADX WARN: Type inference failed for: r1v2, types: [java.io.InputStream] */
+    /* JADX WARN: Type inference failed for: r1v6 */
+    /* JADX WARN: Type inference failed for: r1v7 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    private void loadPrefsFromFileLocked() {
+        /*
+            Method dump skipped, instructions count: 370
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.att.iqi.libs.PreferenceStore.loadPrefsFromFileLocked():void");
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    /* renamed from: updatePreference, reason: merged with bridge method [inline-methods] */
+    public void lambda$setString$2(String str, Object obj) {
+        String str2;
+        String str3;
+        try {
+            synchronized (mLock) {
+                try {
+                    if (obj instanceof Boolean) {
+                        str2 = "boolean";
+                        str3 = ((Boolean) obj).booleanValue() ? "true" : "false";
+                    } else if (obj instanceof Integer) {
+                        str2 = "int";
+                        str3 = String.valueOf(obj);
+                    } else {
+                        if (!(obj instanceof String)) {
+                            LogUtil.loge("Tried to write an unsupported preference type " + obj.getClass());
+                            return;
+                        }
+                        str2 = "string";
+                        str3 = (String) obj;
+                    }
+                    if (!this.mPreferenceFile.exists() && !createPrefStoreLocked()) {
+                        LogUtil.loge("Unable to persist preference " + str + " in storage!");
+                        broadcastPreferenceChange(str);
+                        return;
+                    }
+                    Document parse = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(this.mPreferenceFile);
+                    Iterator it = iterable(parse.getElementsByTagName(str2)).iterator();
+                    while (true) {
+                        if (!it.hasNext()) {
+                            LogUtil.loge("Preference " + str + " was not found!");
+                            break;
+                        }
+                        Node node = (Node) it.next();
+                        if (TextUtils.equals(node.getAttributes().getNamedItem("name").getNodeValue(), str)) {
+                            LogUtil.loge("Found pref " + str);
+                            Node namedItem = node.getAttributes().getNamedItem("value");
+                            if (namedItem != null) {
+                                namedItem.setNodeValue(str3);
+                            } else {
+                                node.setTextContent(str3);
+                            }
+                            TransformerFactory.newInstance().newTransformer().transform(new DOMSource(parse), new StreamResult(this.mPreferenceFile));
+                            LogUtil.loge("Pref file updated [" + str + "] ==> " + obj);
+                            broadcastPreferenceChange(str);
+                        }
+                    }
+                } finally {
+                }
+            }
+        } catch (Throwable th) {
+            LogUtil.loge("An exception was thrown while trying to update preference", th);
+        }
     }
 
     public boolean getBoolean(String str, boolean z) {
@@ -339,6 +284,63 @@ public class PreferenceStore {
 
     public void registerPreferenceChangeListener(PreferenceChangeListener preferenceChangeListener) {
         this.mPreferenceChangeListeners.add(preferenceChangeListener);
+    }
+
+    public void setBoolean(final String str, final boolean z) {
+        synchronized (mLock) {
+            try {
+                Map map = sPreferences;
+                if (map.containsKey(str) && z != getBoolean(str, false)) {
+                    map.put(str, Boolean.valueOf(z));
+                    WorkerThread.getHandler().post(new Runnable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda0
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            PreferenceStore.this.lambda$setBoolean$0(str, z);
+                        }
+                    });
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public void setInteger(final String str, final int i) {
+        synchronized (mLock) {
+            try {
+                Map map = sPreferences;
+                if (map.containsKey(str) && i != getInteger(str, -1)) {
+                    map.put(str, Integer.valueOf(i));
+                    WorkerThread.getHandler().post(new Runnable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda2
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            PreferenceStore.this.lambda$setInteger$1(str, i);
+                        }
+                    });
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public void setString(final String str, final String str2) {
+        synchronized (mLock) {
+            try {
+                Map map = sPreferences;
+                if (map.containsKey(str) && !TextUtils.equals(str2, getString(str, null))) {
+                    map.put(str, str2);
+                    WorkerThread.getHandler().post(new Runnable() { // from class: com.att.iqi.libs.PreferenceStore$$ExternalSyntheticLambda4
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            PreferenceStore.this.lambda$setString$2(str, str2);
+                        }
+                    });
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
     public void unregisterPreferenceChangeListener(PreferenceChangeListener preferenceChangeListener) {

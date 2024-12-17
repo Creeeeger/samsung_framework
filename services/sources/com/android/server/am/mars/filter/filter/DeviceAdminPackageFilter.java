@@ -10,36 +10,67 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class DeviceAdminPackageFilter implements IFilter {
+public final class DeviceAdminPackageFilter implements IFilter {
     public ArrayMap mActiveAdmins;
     public Context mContext;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class DeviceAdminPackageFilterHolder {
-        public static final DeviceAdminPackageFilter INSTANCE = new DeviceAdminPackageFilter();
+        public static final DeviceAdminPackageFilter INSTANCE;
+
+        static {
+            DeviceAdminPackageFilter deviceAdminPackageFilter = new DeviceAdminPackageFilter();
+            deviceAdminPackageFilter.mContext = null;
+            deviceAdminPackageFilter.mActiveAdmins = new ArrayMap();
+            INSTANCE = deviceAdminPackageFilter;
+        }
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void deInit() {
+    public final void deInit() {
     }
 
-    public DeviceAdminPackageFilter() {
-        this.mContext = null;
-        this.mActiveAdmins = new ArrayMap();
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final int filter(int i, int i2, int i3, String str) {
+        synchronized (this.mActiveAdmins) {
+            try {
+                ArrayList arrayList = (ArrayList) this.mActiveAdmins.get(Integer.valueOf(i));
+                return (arrayList == null || !arrayList.contains(str)) ? 0 : 9;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
-    public static DeviceAdminPackageFilter getInstance() {
-        return DeviceAdminPackageFilterHolder.INSTANCE;
+    public final void getActiveAdminsPackages(int i) {
+        synchronized (this.mActiveAdmins) {
+            try {
+                ArrayList arrayList = (ArrayList) this.mActiveAdmins.get(Integer.valueOf(i));
+                List<ComponentName> activeAdmins = ((DevicePolicyManager) this.mContext.getSystemService("device_policy")).getActiveAdmins();
+                if (arrayList == null) {
+                    arrayList = new ArrayList();
+                }
+                if (activeAdmins != null) {
+                    Iterator<ComponentName> it = activeAdmins.iterator();
+                    while (it.hasNext()) {
+                        String packageName = it.next().getPackageName();
+                        if (!arrayList.contains(packageName)) {
+                            arrayList.add(packageName);
+                            this.mActiveAdmins.put(Integer.valueOf(i), arrayList);
+                        }
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
-    public final void setContext(Context context) {
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void init(Context context) {
         this.mContext = context;
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public void init(Context context) {
-        setContext(context);
         getActiveAdminsPackages(context.getUserId());
         SemPersonaManager semPersonaManager = (SemPersonaManager) this.mContext.getSystemService("persona");
         if (semPersonaManager != null) {
@@ -51,53 +82,19 @@ public class DeviceAdminPackageFilter implements IFilter {
         }
     }
 
-    @Override // com.android.server.am.mars.filter.IFilter
-    public int filter(String str, int i, int i2, int i3) {
+    public final void onDeviceAdminEnabled(int i, String str) {
         synchronized (this.mActiveAdmins) {
-            ArrayList arrayList = (ArrayList) this.mActiveAdmins.get(Integer.valueOf(i));
-            return (arrayList == null || !arrayList.contains(str)) ? 0 : 9;
-        }
-    }
-
-    public final void getActiveAdminsPackages(int i) {
-        synchronized (this.mActiveAdmins) {
-            ArrayList arrayList = (ArrayList) this.mActiveAdmins.get(Integer.valueOf(i));
-            List<ComponentName> activeAdmins = ((DevicePolicyManager) this.mContext.getSystemService("device_policy")).getActiveAdmins();
-            if (arrayList == null) {
-                arrayList = new ArrayList();
-            }
-            if (activeAdmins != null) {
-                Iterator<ComponentName> it = activeAdmins.iterator();
-                while (it.hasNext()) {
-                    String packageName = it.next().getPackageName();
-                    if (!arrayList.contains(packageName)) {
-                        arrayList.add(packageName);
-                        this.mActiveAdmins.put(Integer.valueOf(i), arrayList);
-                    }
+            try {
+                ArrayList arrayList = (ArrayList) this.mActiveAdmins.get(Integer.valueOf(i));
+                if (arrayList == null) {
+                    arrayList = new ArrayList();
                 }
-            }
-        }
-    }
-
-    public void onDeviceAdminEnabled(String str, int i) {
-        synchronized (this.mActiveAdmins) {
-            ArrayList arrayList = (ArrayList) this.mActiveAdmins.get(Integer.valueOf(i));
-            if (arrayList == null) {
-                arrayList = new ArrayList();
-            }
-            if (!arrayList.contains(str)) {
-                arrayList.add(str);
-                this.mActiveAdmins.put(Integer.valueOf(i), arrayList);
-            }
-        }
-    }
-
-    public void onDeviceAdminDisabled(String str, int i) {
-        synchronized (this.mActiveAdmins) {
-            ArrayList arrayList = (ArrayList) this.mActiveAdmins.get(Integer.valueOf(i));
-            if (arrayList != null && arrayList.contains(str)) {
-                arrayList.remove(str);
-                this.mActiveAdmins.put(Integer.valueOf(i), arrayList);
+                if (!arrayList.contains(str)) {
+                    arrayList.add(str);
+                    this.mActiveAdmins.put(Integer.valueOf(i), arrayList);
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }

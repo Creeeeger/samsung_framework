@@ -6,51 +6,59 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.DualAppManagerService$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-/* loaded from: classes2.dex */
-public class ExynosDisplayFactory {
-    public String APS_SYSFS_PATH;
-    public String CGC17_CON_SYSFS_PATH;
-    public String CGC17_DEC_SYSFS_PATH;
-    public String CGC17_ENC_SYSFS_PATH;
-    public String CGC17_IDX_SYSFS_PATH;
-    public String CGC_DITHER_SYSFS_PATH;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ExynosDisplayFactory {
+    public final String APS_SYSFS_PATH;
+    public final String CGC17_CON_SYSFS_PATH;
+    public final String CGC17_DEC_SYSFS_PATH;
+    public final String CGC17_ENC_SYSFS_PATH;
+    public final String CGC17_IDX_SYSFS_PATH;
+    public final String CGC_DITHER_SYSFS_PATH;
     public final boolean DEBUG;
-    public String DEGAMMA_EXT_SYSFS_PATH;
-    public String DEGAMMA_SYSFS_PATH;
-    public String DE_SYSFS_PATH;
-    public String DQE_COEF_XML_FILE_PATH;
-    public String DQE_SYSFS_PATH;
-    public String EXTENSION_OFF;
-    public String EXTENSION_ON;
-    public String GAMMA_EXT_SYSFS_PATH;
-    public String GAMMA_MATRIX_SYSFS_PATH;
-    public String GAMMA_SYSFS_PATH;
-    public String HDR_SYSFS_PATH;
-    public String HSC48_IDX_SYSFS_PATH;
-    public String HSC48_LCG_SYSFS_PATH;
-    public String HSC_SYSFS_PATH;
-    public String MODE_IDX_SYSFS_PATH;
-    public String SCL_SYSFS_PATH;
-    public int[] mColorModeModeIdx;
-    public int mColorModeModeIdxDefault;
-    public String[] mColorModeSettingTable;
-    public Context mContext;
+    public final String DEGAMMA_EXT_SYSFS_PATH;
+    public final String DEGAMMA_SYSFS_PATH;
+    public final String DE_SYSFS_PATH;
+    public final String DQE_COEF_XML_FILE_PATH;
+    public final String DQE_SYSFS_PATH;
+    public final String EXTENSION_OFF;
+    public final String EXTENSION_ON;
+    public final String GAMMA_EXT_SYSFS_PATH;
+    public final String GAMMA_MATRIX_SYSFS_PATH;
+    public final String GAMMA_SYSFS_PATH;
+    public final String HDR_SYSFS_PATH;
+    public final String HSC48_IDX_SYSFS_PATH;
+    public final String HSC48_LCG_SYSFS_PATH;
+    public final String HSC_SYSFS_PATH;
+    public final String MODE_IDX_SYSFS_PATH;
+    public final String SCL_SYSFS_PATH;
+    public final int[] mColorModeModeIdx;
+    public final String[] mColorModeSettingTable;
     public int mCountDownTimerCount;
-    public int[][] mCountDownTimerTable;
-    public CountDownTimer mCountdownTimer;
-    public ExynosDisplayATC mExynosDisplayATC;
+    public final int[][] mCountDownTimerTable;
+    public final AnonymousClass3 mCountdownTimer;
     public String mFactoryXMLPath;
-    public Handler mHandler;
-    public int mIntervalMs;
-    public Handler mLocalHandler;
-    public int mTimeoutMs;
+    public final int mIntervalMs;
+    public final Handler mLocalHandler;
+    public final int mTimeoutMs;
 
+    /* renamed from: -$$Nest$msetCalibrationMODE_IDX, reason: not valid java name */
+    public static boolean m482$$Nest$msetCalibrationMODE_IDX(ExynosDisplayFactory exynosDisplayFactory, int i) {
+        exynosDisplayFactory.getClass();
+        return ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory.MODE_IDX_SYSFS_PATH, Integer.toString(i));
+    }
+
+    /* JADX WARN: Type inference failed for: r13v41, types: [com.android.server.display.exynos.ExynosDisplayFactory$3] */
     public ExynosDisplayFactory(Context context) {
-        String str = Build.TYPE;
-        this.DEBUG = "eng".equals(str) || "userdebug".equals(str);
+        boolean equals = "eng".equals(Build.TYPE);
+        this.DEBUG = equals;
         this.mCountdownTimer = null;
         this.mTimeoutMs = 800;
         this.mIntervalMs = 40;
@@ -78,82 +86,481 @@ public class ExynosDisplayFactory {
         this.EXTENSION_OFF = "0";
         this.EXTENSION_ON = "1";
         this.mFactoryXMLPath = null;
-        this.mExynosDisplayATC = null;
-        this.mColorModeModeIdxDefault = 0;
         this.mColorModeModeIdx = new int[]{1, 2};
         this.mColorModeSettingTable = new String[]{"hdr10", "hdr10p"};
         this.mCountDownTimerTable = new int[][]{new int[]{0}, new int[]{0}};
-        this.mHandler = new Handler() { // from class: com.android.server.display.exynos.ExynosDisplayFactory.2
+        new Handler() { // from class: com.android.server.display.exynos.ExynosDisplayFactory.2
             @Override // android.os.Handler
-            public void handleMessage(Message message) {
+            public final void handleMessage(Message message) {
                 super.handleMessage(message);
                 int i = message.what;
                 if (i == 1) {
                     ExynosDisplayUtils.sendEmptyUpdate();
-                } else if (i == 2) {
-                    ExynosDisplayFactory.this.sysfsWriteCGC17_IDX(message.arg1);
+                    return;
+                }
+                ExynosDisplayFactory exynosDisplayFactory = ExynosDisplayFactory.this;
+                if (i == 2) {
+                    exynosDisplayFactory.sysfsWriteCGC17_IDX(message.arg1);
                 } else {
                     if (i != 3) {
                         return;
                     }
-                    ExynosDisplayFactory.this.sysfsWriteCGC17_ENC(message.obj.toString());
+                    ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory.CGC17_ENC_SYSFS_PATH, message.obj.toString());
                 }
             }
         };
-        this.mContext = context;
         this.mLocalHandler = new Handler(context.getMainLooper());
-        setSysfsPath();
+        this.MODE_IDX_SYSFS_PATH = sysfsPathReplace(this.MODE_IDX_SYSFS_PATH);
+        this.APS_SYSFS_PATH = sysfsPathReplace(this.APS_SYSFS_PATH);
+        this.GAMMA_EXT_SYSFS_PATH = sysfsPathReplace(this.GAMMA_EXT_SYSFS_PATH);
+        this.GAMMA_SYSFS_PATH = sysfsPathReplace(this.GAMMA_SYSFS_PATH);
+        this.DEGAMMA_EXT_SYSFS_PATH = sysfsPathReplace(this.DEGAMMA_EXT_SYSFS_PATH);
+        this.DEGAMMA_SYSFS_PATH = sysfsPathReplace(this.DEGAMMA_SYSFS_PATH);
+        this.HSC_SYSFS_PATH = sysfsPathReplace(this.HSC_SYSFS_PATH);
+        this.CGC17_IDX_SYSFS_PATH = sysfsPathReplace(this.CGC17_IDX_SYSFS_PATH);
+        this.CGC17_ENC_SYSFS_PATH = sysfsPathReplace(this.CGC17_ENC_SYSFS_PATH);
+        this.CGC17_DEC_SYSFS_PATH = sysfsPathReplace(this.CGC17_DEC_SYSFS_PATH);
+        this.CGC17_CON_SYSFS_PATH = sysfsPathReplace(this.CGC17_CON_SYSFS_PATH);
+        this.GAMMA_MATRIX_SYSFS_PATH = sysfsPathReplace(this.GAMMA_MATRIX_SYSFS_PATH);
+        this.CGC_DITHER_SYSFS_PATH = sysfsPathReplace(this.CGC_DITHER_SYSFS_PATH);
+        this.HSC48_IDX_SYSFS_PATH = sysfsPathReplace(this.HSC48_IDX_SYSFS_PATH);
+        this.HSC48_LCG_SYSFS_PATH = sysfsPathReplace(this.HSC48_LCG_SYSFS_PATH);
+        this.SCL_SYSFS_PATH = sysfsPathReplace(this.SCL_SYSFS_PATH);
+        this.DE_SYSFS_PATH = sysfsPathReplace(this.DE_SYSFS_PATH);
+        if (equals) {
+            Log.d("ExynosDisplayFactory", "setSysfsPath: " + sysfsPathReplace("/sys/class/dqe/dqe"));
+        }
         this.mCountDownTimerTable = (int[][]) Array.newInstance((Class<?>) Integer.TYPE, 2, 20);
         for (int i = 0; i < 2; i++) {
             for (int i2 = 0; i2 < 20; i2++) {
                 this.mCountDownTimerTable[i][i2] = 0;
             }
         }
-        initCountDownTimer();
+        this.mCountdownTimer = new CountDownTimer(this.mTimeoutMs, this.mIntervalMs) { // from class: com.android.server.display.exynos.ExynosDisplayFactory.3
+            @Override // android.os.CountDownTimer
+            public final void onFinish() {
+                if (ExynosDisplayFactory.this.DEBUG) {
+                    GestureWakeup$$ExternalSyntheticOutline0.m(new StringBuilder("CountDownTimer finished = "), ExynosDisplayFactory.this.mCountDownTimerCount, "ExynosDisplayFactory");
+                }
+                ExynosDisplayFactory.this.mCountDownTimerCount = 0;
+            }
+
+            @Override // android.os.CountDownTimer
+            public final void onTick(long j) {
+                ExynosDisplayFactory exynosDisplayFactory = ExynosDisplayFactory.this;
+                int i3 = exynosDisplayFactory.mCountDownTimerCount;
+                if (i3 <= 0) {
+                    for (int i4 = 0; i4 < 2; i4++) {
+                        ExynosDisplayFactory exynosDisplayFactory2 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory2.mCountDownTimerTable[i4][exynosDisplayFactory2.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory2, exynosDisplayFactory2.mColorModeModeIdx[i4])) {
+                            ExynosDisplayFactory exynosDisplayFactory3 = ExynosDisplayFactory.this;
+                            String str = exynosDisplayFactory3.mFactoryXMLPath;
+                            String str2 = exynosDisplayFactory3.mColorModeSettingTable[i4];
+                            Log.d("ExynosDisplayFactory", "setCalibrationAPS");
+                            try {
+                                String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str, str2, "aps");
+                                if (parserFactoryXMLText == null) {
+                                    Log.d("ExynosDisplayFactory", "xml aps not found");
+                                } else if (parserFactoryXMLText.length < 1) {
+                                    Log.d("ExynosDisplayFactory", "xml array size wrong: " + parserFactoryXMLText.length);
+                                } else {
+                                    String str3 = parserFactoryXMLText[0];
+                                    String stringFromFile = ExynosDisplayUtils.getStringFromFile(exynosDisplayFactory3.APS_SYSFS_PATH);
+                                    if (stringFromFile != null && !stringFromFile.equals("0")) {
+                                        ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory3.APS_SYSFS_PATH, str3);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (i3 <= 1) {
+                    for (int i5 = 0; i5 < 2; i5++) {
+                        ExynosDisplayFactory exynosDisplayFactory4 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory4.mCountDownTimerTable[i5][exynosDisplayFactory4.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory4, exynosDisplayFactory4.mColorModeModeIdx[i5])) {
+                            ExynosDisplayFactory exynosDisplayFactory5 = ExynosDisplayFactory.this;
+                            String str4 = exynosDisplayFactory5.mFactoryXMLPath;
+                            String str5 = exynosDisplayFactory5.mColorModeSettingTable[i5];
+                            Log.d("ExynosDisplayFactory", "setCalibrationDEGAMMA");
+                            try {
+                                String[] parserFactoryXMLText2 = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str4, str5, "degamma");
+                                String str6 = exynosDisplayFactory5.EXTENSION_OFF;
+                                if (parserFactoryXMLText2 == null || parserFactoryXMLText2.length < 1) {
+                                    String[] parserFactoryXMLText3 = ExynosDisplayUtils.parserFactoryXMLText(10, 0, str4, str5, "degamma");
+                                    if (parserFactoryXMLText3 != null && parserFactoryXMLText3.length >= 1) {
+                                        exynosDisplayFactory5.sysfsWriteDEGAMMA(parserFactoryXMLText3[0], str6);
+                                        String[] parserFactoryXMLText4 = ExynosDisplayUtils.parserFactoryXMLText(8, 0, str4, str5, "degamma");
+                                        if (parserFactoryXMLText4 != null && parserFactoryXMLText4.length >= 1) {
+                                            exynosDisplayFactory5.sysfsWriteDEGAMMA(parserFactoryXMLText4[0], exynosDisplayFactory5.EXTENSION_ON);
+                                        }
+                                    }
+                                } else {
+                                    exynosDisplayFactory5.sysfsWriteDEGAMMA(parserFactoryXMLText2[0], str6);
+                                }
+                            } catch (Exception e2) {
+                                e2.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (i3 <= 2) {
+                    for (int i6 = 0; i6 < 2; i6++) {
+                        ExynosDisplayFactory exynosDisplayFactory6 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory6.mCountDownTimerTable[i6][exynosDisplayFactory6.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory6, exynosDisplayFactory6.mColorModeModeIdx[i6])) {
+                            ExynosDisplayFactory exynosDisplayFactory7 = ExynosDisplayFactory.this;
+                            String str7 = exynosDisplayFactory7.mFactoryXMLPath;
+                            String str8 = exynosDisplayFactory7.mColorModeSettingTable[i6];
+                            Log.d("ExynosDisplayFactory", "setCalibrationGAMMA");
+                            try {
+                                String[] parserFactoryXMLText5 = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str7, str8, "gamma");
+                                String str9 = exynosDisplayFactory7.EXTENSION_OFF;
+                                if (parserFactoryXMLText5 == null || parserFactoryXMLText5.length < 1) {
+                                    String[] parserFactoryXMLText6 = ExynosDisplayUtils.parserFactoryXMLText(10, 0, str7, str8, "gamma");
+                                    if (parserFactoryXMLText6 != null && parserFactoryXMLText6.length >= 1) {
+                                        exynosDisplayFactory7.sysfsWriteGAMMA(parserFactoryXMLText6[0], str9);
+                                        String[] parserFactoryXMLText7 = ExynosDisplayUtils.parserFactoryXMLText(8, 0, str7, str8, "gamma");
+                                        if (parserFactoryXMLText7 != null && parserFactoryXMLText7.length >= 1) {
+                                            exynosDisplayFactory7.sysfsWriteGAMMA(parserFactoryXMLText7[0], exynosDisplayFactory7.EXTENSION_ON);
+                                        }
+                                    }
+                                } else {
+                                    exynosDisplayFactory7.sysfsWriteGAMMA(parserFactoryXMLText5[0], str9);
+                                }
+                            } catch (Exception e3) {
+                                e3.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (i3 <= 3) {
+                    for (int i7 = 0; i7 < 2; i7++) {
+                        ExynosDisplayFactory exynosDisplayFactory8 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory8.mCountDownTimerTable[i7][exynosDisplayFactory8.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory8, exynosDisplayFactory8.mColorModeModeIdx[i7])) {
+                            ExynosDisplayFactory exynosDisplayFactory9 = ExynosDisplayFactory.this;
+                            String str10 = exynosDisplayFactory9.mFactoryXMLPath;
+                            String str11 = exynosDisplayFactory9.mColorModeSettingTable[i7];
+                            Log.d("ExynosDisplayFactory", "setCalibrationGAMMA_MATRIX");
+                            try {
+                                String[] parserFactoryXMLText8 = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str10, str11, "gamma_matrix");
+                                if (parserFactoryXMLText8 == null) {
+                                    Log.d("ExynosDisplayFactory", "xml gamma_matrix not found");
+                                } else if (parserFactoryXMLText8.length < 1) {
+                                    Log.d("ExynosDisplayFactory", "xml array size wrong: " + parserFactoryXMLText8.length);
+                                } else {
+                                    String str12 = parserFactoryXMLText8[0];
+                                    String stringFromFile2 = ExynosDisplayUtils.getStringFromFile(exynosDisplayFactory9.GAMMA_MATRIX_SYSFS_PATH);
+                                    if (stringFromFile2 != null && !stringFromFile2.equals("0")) {
+                                        ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory9.GAMMA_MATRIX_SYSFS_PATH, str12);
+                                    }
+                                }
+                            } catch (Exception e4) {
+                                e4.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (i3 <= 4) {
+                    for (int i8 = 0; i8 < 2; i8++) {
+                        ExynosDisplayFactory exynosDisplayFactory10 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory10.mCountDownTimerTable[i8][exynosDisplayFactory10.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory10, exynosDisplayFactory10.mColorModeModeIdx[i8])) {
+                            ExynosDisplayFactory exynosDisplayFactory11 = ExynosDisplayFactory.this;
+                            String str13 = exynosDisplayFactory11.mFactoryXMLPath;
+                            String str14 = exynosDisplayFactory11.mColorModeSettingTable[i8];
+                            NetworkScorerAppManager$$ExternalSyntheticOutline0.m(exynosDisplayFactory11.mCountDownTimerCount - 4, "setCalibrationHSC48_LCG: ", "ExynosDisplayFactory");
+                            for (int i9 = 0; i9 < 3; i9++) {
+                                try {
+                                    String[] parserFactoryXMLText9 = ExynosDisplayUtils.parserFactoryXMLText(i9, 0, str13, str14, "hsc48_lcg");
+                                    if (parserFactoryXMLText9 != null && parserFactoryXMLText9.length >= 1) {
+                                        String str15 = parserFactoryXMLText9[0];
+                                        ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory11.HSC48_IDX_SYSFS_PATH, Integer.toString(i9));
+                                        ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory11.HSC48_LCG_SYSFS_PATH, str15);
+                                    }
+                                    Log.d("ExynosDisplayFactory", "xml hsc48_lcg not found");
+                                    break;
+                                } catch (Exception e5) {
+                                    e5.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                } else if (i3 <= 5) {
+                    for (int i10 = 0; i10 < 2; i10++) {
+                        ExynosDisplayFactory exynosDisplayFactory12 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory12.mCountDownTimerTable[i10][exynosDisplayFactory12.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory12, exynosDisplayFactory12.mColorModeModeIdx[i10])) {
+                            ExynosDisplayFactory exynosDisplayFactory13 = ExynosDisplayFactory.this;
+                            String str16 = exynosDisplayFactory13.mFactoryXMLPath;
+                            String str17 = exynosDisplayFactory13.mColorModeSettingTable[i10];
+                            Log.d("ExynosDisplayFactory", "setCalibrationHSC");
+                            try {
+                                String[] parserFactoryXMLText10 = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str16, str17, "hsc");
+                                if (parserFactoryXMLText10 == null) {
+                                    Log.d("ExynosDisplayFactory", "xml hsc not found");
+                                } else if (parserFactoryXMLText10.length < 1) {
+                                    Log.d("ExynosDisplayFactory", "xml array size wrong: " + parserFactoryXMLText10.length);
+                                } else {
+                                    String str18 = parserFactoryXMLText10[0];
+                                    String stringFromFile3 = ExynosDisplayUtils.getStringFromFile(exynosDisplayFactory13.HSC_SYSFS_PATH);
+                                    if (stringFromFile3 != null && !stringFromFile3.equals("0")) {
+                                        ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory13.HSC_SYSFS_PATH, str18);
+                                    }
+                                }
+                            } catch (Exception e6) {
+                                e6.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (i3 <= 6) {
+                    for (int i11 = 0; i11 < 2; i11++) {
+                        ExynosDisplayFactory exynosDisplayFactory14 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory14.mCountDownTimerTable[i11][exynosDisplayFactory14.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory14, exynosDisplayFactory14.mColorModeModeIdx[i11])) {
+                            ExynosDisplayFactory exynosDisplayFactory15 = ExynosDisplayFactory.this;
+                            String str19 = exynosDisplayFactory15.mFactoryXMLPath;
+                            String str20 = exynosDisplayFactory15.mColorModeSettingTable[i11];
+                            Log.d("ExynosDisplayFactory", "setCalibrationSCL");
+                            try {
+                                String[] parserFactoryXMLText11 = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str19, str20, "scl");
+                                if (parserFactoryXMLText11 == null) {
+                                    Log.d("ExynosDisplayFactory", "xml scl not found");
+                                } else if (parserFactoryXMLText11.length < 1) {
+                                    Log.d("ExynosDisplayFactory", "xml array size wrong: " + parserFactoryXMLText11.length);
+                                } else {
+                                    String str21 = parserFactoryXMLText11[0];
+                                    String stringFromFile4 = ExynosDisplayUtils.getStringFromFile(exynosDisplayFactory15.SCL_SYSFS_PATH);
+                                    if (stringFromFile4 != null && !stringFromFile4.equals("0")) {
+                                        ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory15.SCL_SYSFS_PATH, str21);
+                                    }
+                                }
+                            } catch (Exception e7) {
+                                e7.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (i3 <= 9) {
+                    for (int i12 = 0; i12 < 2; i12++) {
+                        ExynosDisplayFactory exynosDisplayFactory16 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory16.mCountDownTimerTable[i12][exynosDisplayFactory16.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory16, exynosDisplayFactory16.mColorModeModeIdx[i12])) {
+                            ExynosDisplayFactory exynosDisplayFactory17 = ExynosDisplayFactory.this;
+                            String str22 = exynosDisplayFactory17.mFactoryXMLPath;
+                            String str23 = exynosDisplayFactory17.mColorModeSettingTable[i12];
+                            int i13 = exynosDisplayFactory17.mCountDownTimerCount - 7;
+                            NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i13, "setCalibrationCGC17_ENC + ", "ExynosDisplayFactory");
+                            for (int i14 = 0; i14 < 17; i14++) {
+                                try {
+                                    String[] parserFactoryXMLText12 = ExynosDisplayUtils.parserFactoryXMLText(i13, i14, str22, str23, "cgc17_enc");
+                                    if (parserFactoryXMLText12 != null && parserFactoryXMLText12.length >= 1) {
+                                        String str24 = parserFactoryXMLText12[0];
+                                        exynosDisplayFactory17.sysfsWriteCGC17_IDX((i13 * 17) + i14);
+                                        ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory17.CGC17_ENC_SYSFS_PATH, str24);
+                                    }
+                                    Log.d("ExynosDisplayFactory", "xml cgc17_enc not found");
+                                    break;
+                                } catch (Exception e8) {
+                                    e8.printStackTrace();
+                                }
+                            }
+                            NetworkScorerAppManager$$ExternalSyntheticOutline0.m(i13, "setCalibrationCGC17_ENC - ", "ExynosDisplayFactory");
+                        }
+                    }
+                } else if (i3 <= 10) {
+                    for (int i15 = 0; i15 < 2; i15++) {
+                        ExynosDisplayFactory exynosDisplayFactory18 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory18.mCountDownTimerTable[i15][exynosDisplayFactory18.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory18, exynosDisplayFactory18.mColorModeModeIdx[i15])) {
+                            ExynosDisplayFactory exynosDisplayFactory19 = ExynosDisplayFactory.this;
+                            exynosDisplayFactory19.getClass();
+                            Log.d("ExynosDisplayFactory", "setCalibrationCGC17_DEC");
+                            ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory19.CGC17_DEC_SYSFS_PATH, "7");
+                        }
+                    }
+                } else if (i3 <= 11) {
+                    for (int i16 = 0; i16 < 2; i16++) {
+                        ExynosDisplayFactory exynosDisplayFactory20 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory20.mCountDownTimerTable[i16][exynosDisplayFactory20.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory20, exynosDisplayFactory20.mColorModeModeIdx[i16])) {
+                            ExynosDisplayFactory exynosDisplayFactory21 = ExynosDisplayFactory.this;
+                            String str25 = exynosDisplayFactory21.mFactoryXMLPath;
+                            String str26 = exynosDisplayFactory21.mColorModeSettingTable[i16];
+                            Log.d("ExynosDisplayFactory", "setCalibrationCGC17_CON");
+                            try {
+                                String[] parserFactoryXMLText13 = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str25, str26, "cgc17_con");
+                                if (parserFactoryXMLText13 == null) {
+                                    Log.d("ExynosDisplayFactory", "xml cgc17_con not found");
+                                } else if (parserFactoryXMLText13.length < 1) {
+                                    Log.d("ExynosDisplayFactory", "xml array size wrong: " + parserFactoryXMLText13.length);
+                                } else {
+                                    String str27 = parserFactoryXMLText13[0];
+                                    String stringFromFile5 = ExynosDisplayUtils.getStringFromFile(exynosDisplayFactory21.CGC17_CON_SYSFS_PATH);
+                                    if (stringFromFile5 != null && !stringFromFile5.equals("0")) {
+                                        ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory21.CGC17_CON_SYSFS_PATH, str27);
+                                    }
+                                }
+                            } catch (Exception e9) {
+                                e9.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (i3 <= 12) {
+                    for (int i17 = 0; i17 < 2; i17++) {
+                        ExynosDisplayFactory exynosDisplayFactory22 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory22.mCountDownTimerTable[i17][exynosDisplayFactory22.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory22, exynosDisplayFactory22.mColorModeModeIdx[i17])) {
+                            ExynosDisplayFactory exynosDisplayFactory23 = ExynosDisplayFactory.this;
+                            String str28 = exynosDisplayFactory23.mFactoryXMLPath;
+                            String str29 = exynosDisplayFactory23.mColorModeSettingTable[i17];
+                            Log.d("ExynosDisplayFactory", "setCalibrationCGC_DITHER");
+                            try {
+                                String[] parserFactoryXMLText14 = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str28, str29, "cgc_dither");
+                                if (parserFactoryXMLText14 == null) {
+                                    Log.d("ExynosDisplayFactory", "xml degamma not found");
+                                } else if (parserFactoryXMLText14.length < 1) {
+                                    Log.d("ExynosDisplayFactory", "xml array size wrong: " + parserFactoryXMLText14.length);
+                                } else {
+                                    ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory23.CGC_DITHER_SYSFS_PATH, parserFactoryXMLText14[0]);
+                                }
+                            } catch (Exception e10) {
+                                e10.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (i3 <= 13) {
+                    for (int i18 = 0; i18 < 2; i18++) {
+                        ExynosDisplayFactory exynosDisplayFactory24 = ExynosDisplayFactory.this;
+                        if (exynosDisplayFactory24.mCountDownTimerTable[i18][exynosDisplayFactory24.mCountDownTimerCount] != 0 && ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory24, exynosDisplayFactory24.mColorModeModeIdx[i18])) {
+                            ExynosDisplayFactory exynosDisplayFactory25 = ExynosDisplayFactory.this;
+                            String str30 = exynosDisplayFactory25.mFactoryXMLPath;
+                            String str31 = exynosDisplayFactory25.mColorModeSettingTable[i18];
+                            Log.d("ExynosDisplayFactory", "setCalibrationDE");
+                            try {
+                                String[] parserFactoryXMLText15 = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str30, str31, "de");
+                                if (parserFactoryXMLText15 == null) {
+                                    Log.d("ExynosDisplayFactory", "xml de not found");
+                                } else if (parserFactoryXMLText15.length < 1) {
+                                    Log.d("ExynosDisplayFactory", "xml array size wrong: " + parserFactoryXMLText15.length);
+                                } else {
+                                    String str32 = parserFactoryXMLText15[0];
+                                    String stringFromFile6 = ExynosDisplayUtils.getStringFromFile(exynosDisplayFactory25.DE_SYSFS_PATH);
+                                    if (stringFromFile6 != null && !stringFromFile6.equals("0")) {
+                                        ExynosDisplayUtils.sysfsWriteSting(exynosDisplayFactory25.DE_SYSFS_PATH, str32);
+                                    }
+                                }
+                            } catch (Exception e11) {
+                                e11.printStackTrace();
+                            }
+                        }
+                    }
+                } else if (i3 <= 14) {
+                    ExynosDisplayFactory.m482$$Nest$msetCalibrationMODE_IDX(exynosDisplayFactory, 0);
+                }
+                ExynosDisplayFactory.this.mCountDownTimerCount++;
+            }
+        };
         this.mFactoryXMLPath = null;
         this.mLocalHandler.postDelayed(new Runnable() { // from class: com.android.server.display.exynos.ExynosDisplayFactory.1
             @Override // java.lang.Runnable
-            public void run() {
+            public final void run() {
                 ExynosDisplayFactory exynosDisplayFactory = ExynosDisplayFactory.this;
                 exynosDisplayFactory.startCountDownTimer(exynosDisplayFactory.mFactoryXMLPath);
             }
         }, 0L);
     }
 
-    public void setExynosDisplayATC(ExynosDisplayATC exynosDisplayATC) {
-        this.mExynosDisplayATC = exynosDisplayATC;
+    public static int getItemEnable(String str, String str2, String str3) {
+        try {
+            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(0, 0, str, str2, str3);
+            if (parserFactoryXMLText != null && parserFactoryXMLText.length >= 1) {
+                return Integer.parseInt(parserFactoryXMLText[0].split("\\s*,\\s*")[0]);
+            }
+            return 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public final void startCountDownTimer(String str) {
+        int[][] iArr;
+        if (str == null) {
+            str = ExynosDisplayUtils.getPathWithPanel(this.DQE_COEF_XML_FILE_PATH);
+        }
+        this.mFactoryXMLPath = str;
+        if (ExynosDisplayUtils.existFile(str)) {
+            boolean z = this.DEBUG;
+            if (z) {
+                DualAppManagerService$$ExternalSyntheticOutline0.m("startCountDownTimer: xml_path=", str, "ExynosDisplayFactory");
+            }
+            int i = 0;
+            while (true) {
+                iArr = this.mCountDownTimerTable;
+                if (i < 2) {
+                    for (int i2 = 0; i2 < 20; i2++) {
+                        iArr[i][i2] = 0;
+                    }
+                    i++;
+                } else {
+                    try {
+                        break;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            String[] parserXMLNodeText = ExynosDisplayUtils.parserXMLNodeText(str);
+            if (parserXMLNodeText != null && parserXMLNodeText.length >= 1) {
+                if (z) {
+                    Log.d("ExynosDisplayFactory", "xml version: " + parserXMLNodeText[0]);
+                }
+                for (int i3 = 0; i3 < 2; i3++) {
+                    String str2 = this.mColorModeSettingTable[i3];
+                    if (getItemEnable(str, str2, "aps") > 0) {
+                        iArr[i3][0] = 1;
+                    }
+                    if (getItemEnable(str, str2, "degamma") > 0) {
+                        iArr[i3][1] = 1;
+                    }
+                    if (getItemEnable(str, str2, "gamma") > 0) {
+                        iArr[i3][2] = 1;
+                    }
+                    if (getItemEnable(str, str2, "gamma_matrix") > 0) {
+                        iArr[i3][3] = 1;
+                    }
+                    int itemEnable = getItemEnable(str, str2, "hsc");
+                    for (int i4 = 4; i4 <= 5; i4++) {
+                        if (itemEnable > 0) {
+                            iArr[i3][i4] = 1;
+                        }
+                    }
+                    if (getItemEnable(str, str2, "scl") > 0) {
+                        iArr[i3][6] = 1;
+                    }
+                    int itemEnable2 = getItemEnable(str, str2, "cgc17_con");
+                    for (int i5 = 7; i5 <= 11; i5++) {
+                        if (itemEnable2 > 0) {
+                            iArr[i3][i5] = 1;
+                        }
+                    }
+                    if (getItemEnable(str, str2, "cgc_dither") > 0) {
+                        iArr[i3][12] = 1;
+                    }
+                    if (getItemEnable(str, str2, "de") > 0) {
+                        iArr[i3][13] = 1;
+                    }
+                    Log.d("ExynosDisplayFactory", str2 + " enable " + Arrays.toString(iArr[i3]));
+                }
+                AnonymousClass3 anonymousClass3 = this.mCountdownTimer;
+                if (anonymousClass3 != null) {
+                    this.mCountDownTimerCount = 0;
+                    anonymousClass3.cancel();
+                    start();
+                    return;
+                }
+                return;
+            }
+            Log.d("ExynosDisplayFactory", "xml version not found");
+        }
     }
 
     public final String sysfsPathReplace(String str) {
-        return ExynosDisplayUtils.existPath(this.HDR_SYSFS_PATH) ? str.replaceFirst(this.DQE_SYSFS_PATH, this.HDR_SYSFS_PATH) : str;
-    }
-
-    public final boolean sysfsWriteMODE_IDX(int i) {
-        return ExynosDisplayUtils.sysfsWriteSting(this.MODE_IDX_SYSFS_PATH, Integer.toString(i));
+        String str2 = this.HDR_SYSFS_PATH;
+        return (str2 != null && BatteryService$$ExternalSyntheticOutline0.m45m(str2)) ? str.replaceFirst(this.DQE_SYSFS_PATH, str2) : str;
     }
 
     public final void sysfsWriteCGC17_IDX(int i) {
         ExynosDisplayUtils.sysfsWriteSting(this.CGC17_IDX_SYSFS_PATH, Integer.toString(i / 17) + " " + Integer.toString(i % 17));
-    }
-
-    public final void sysfsWriteCGC17_ENC(String str) {
-        ExynosDisplayUtils.sysfsWriteSting(this.CGC17_ENC_SYSFS_PATH, str);
-    }
-
-    public final void sysfsWriteCGC17_DEC(String str) {
-        ExynosDisplayUtils.sysfsWriteSting(this.CGC17_DEC_SYSFS_PATH, str);
-    }
-
-    public final void sysfsWriteCGC17_CON(String str) {
-        String stringFromFile = ExynosDisplayUtils.getStringFromFile(this.CGC17_CON_SYSFS_PATH);
-        if (stringFromFile == null || stringFromFile.equals("0")) {
-            return;
-        }
-        ExynosDisplayUtils.sysfsWriteSting(this.CGC17_CON_SYSFS_PATH, str);
-    }
-
-    public final void sysfsWriteCGC_DITHER(String str) {
-        ExynosDisplayUtils.sysfsWriteSting(this.CGC_DITHER_SYSFS_PATH, str);
     }
 
     public final void sysfsWriteDEGAMMA(String str, String str2) {
@@ -172,600 +579,5 @@ public class ExynosDisplayFactory {
         }
         ExynosDisplayUtils.sysfsWriteSting(this.GAMMA_EXT_SYSFS_PATH, str2);
         ExynosDisplayUtils.sysfsWriteSting(this.GAMMA_SYSFS_PATH, str);
-    }
-
-    public final void sysfsWriteGAMMA_MATRIX(String str) {
-        String stringFromFile = ExynosDisplayUtils.getStringFromFile(this.GAMMA_MATRIX_SYSFS_PATH);
-        if (stringFromFile == null || stringFromFile.equals("0")) {
-            return;
-        }
-        ExynosDisplayUtils.sysfsWriteSting(this.GAMMA_MATRIX_SYSFS_PATH, str);
-    }
-
-    public final void sysfsWriteHSC48_IDX(int i) {
-        ExynosDisplayUtils.sysfsWriteSting(this.HSC48_IDX_SYSFS_PATH, Integer.toString(i));
-    }
-
-    public final void sysfsWriteHSC48_LCG(String str) {
-        ExynosDisplayUtils.sysfsWriteSting(this.HSC48_LCG_SYSFS_PATH, str);
-    }
-
-    public final void sysfsWriteHSC(String str) {
-        String stringFromFile = ExynosDisplayUtils.getStringFromFile(this.HSC_SYSFS_PATH);
-        if (stringFromFile == null || stringFromFile.equals("0")) {
-            return;
-        }
-        ExynosDisplayUtils.sysfsWriteSting(this.HSC_SYSFS_PATH, str);
-    }
-
-    public final void sysfsWriteSCL(String str) {
-        String stringFromFile = ExynosDisplayUtils.getStringFromFile(this.SCL_SYSFS_PATH);
-        if (stringFromFile == null || stringFromFile.equals("0")) {
-            return;
-        }
-        ExynosDisplayUtils.sysfsWriteSting(this.SCL_SYSFS_PATH, str);
-    }
-
-    public final void sysfsWriteAPS(String str) {
-        String stringFromFile = ExynosDisplayUtils.getStringFromFile(this.APS_SYSFS_PATH);
-        if (stringFromFile == null || stringFromFile.equals("0")) {
-            return;
-        }
-        ExynosDisplayUtils.sysfsWriteSting(this.APS_SYSFS_PATH, str);
-    }
-
-    public final void sysfsWriteDE(String str) {
-        String stringFromFile = ExynosDisplayUtils.getStringFromFile(this.DE_SYSFS_PATH);
-        if (stringFromFile == null || stringFromFile.equals("0")) {
-            return;
-        }
-        ExynosDisplayUtils.sysfsWriteSting(this.DE_SYSFS_PATH, str);
-    }
-
-    public final void setSysfsPath() {
-        this.MODE_IDX_SYSFS_PATH = sysfsPathReplace(this.MODE_IDX_SYSFS_PATH);
-        this.APS_SYSFS_PATH = sysfsPathReplace(this.APS_SYSFS_PATH);
-        this.GAMMA_EXT_SYSFS_PATH = sysfsPathReplace(this.GAMMA_EXT_SYSFS_PATH);
-        this.GAMMA_SYSFS_PATH = sysfsPathReplace(this.GAMMA_SYSFS_PATH);
-        this.DEGAMMA_EXT_SYSFS_PATH = sysfsPathReplace(this.DEGAMMA_EXT_SYSFS_PATH);
-        this.DEGAMMA_SYSFS_PATH = sysfsPathReplace(this.DEGAMMA_SYSFS_PATH);
-        this.HSC_SYSFS_PATH = sysfsPathReplace(this.HSC_SYSFS_PATH);
-        this.CGC17_IDX_SYSFS_PATH = sysfsPathReplace(this.CGC17_IDX_SYSFS_PATH);
-        this.CGC17_ENC_SYSFS_PATH = sysfsPathReplace(this.CGC17_ENC_SYSFS_PATH);
-        this.CGC17_DEC_SYSFS_PATH = sysfsPathReplace(this.CGC17_DEC_SYSFS_PATH);
-        this.CGC17_CON_SYSFS_PATH = sysfsPathReplace(this.CGC17_CON_SYSFS_PATH);
-        this.GAMMA_MATRIX_SYSFS_PATH = sysfsPathReplace(this.GAMMA_MATRIX_SYSFS_PATH);
-        this.CGC_DITHER_SYSFS_PATH = sysfsPathReplace(this.CGC_DITHER_SYSFS_PATH);
-        this.HSC48_IDX_SYSFS_PATH = sysfsPathReplace(this.HSC48_IDX_SYSFS_PATH);
-        this.HSC48_LCG_SYSFS_PATH = sysfsPathReplace(this.HSC48_LCG_SYSFS_PATH);
-        this.SCL_SYSFS_PATH = sysfsPathReplace(this.SCL_SYSFS_PATH);
-        this.DE_SYSFS_PATH = sysfsPathReplace(this.DE_SYSFS_PATH);
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setSysfsPath: " + sysfsPathReplace(this.DQE_SYSFS_PATH));
-        }
-    }
-
-    public final boolean setCalibrationMODE_IDX(int i) {
-        return sysfsWriteMODE_IDX(i);
-    }
-
-    public final void setCalibrationCGC17_ENC(String str, String str2, int i) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationCGC17_ENC + " + i);
-        }
-        for (int i2 = 0; i2 < 17; i2++) {
-            try {
-                String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "cgc17_enc", i, i2);
-                if (parserFactoryXMLText != null && parserFactoryXMLText.length >= 1) {
-                    String str3 = parserFactoryXMLText[0];
-                    sysfsWriteCGC17_IDX((i * 17) + i2);
-                    sysfsWriteCGC17_ENC(str3);
-                }
-                if (this.DEBUG) {
-                    Log.d("ExynosDisplayFactory", "xml cgc17_enc not found");
-                    return;
-                }
-                return;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationCGC17_ENC - " + i);
-        }
-    }
-
-    public final void setCalibrationCGC17_DEC() {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationCGC17_DEC");
-        }
-        sysfsWriteCGC17_DEC("7");
-    }
-
-    public final void setCalibrationCGC17_CON(String str, String str2) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationCGC17_CON");
-        }
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "cgc17_con", 0, 0);
-            if (parserFactoryXMLText == null) {
-                if (this.DEBUG) {
-                    Log.d("ExynosDisplayFactory", "xml cgc17_con not found");
-                }
-            } else {
-                if (parserFactoryXMLText.length < 1) {
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "xml cgc17_con array size wrong: " + parserFactoryXMLText.length);
-                        return;
-                    }
-                    return;
-                }
-                sysfsWriteCGC17_CON(parserFactoryXMLText[0]);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void setCalibrationCGC_DITHER(String str, String str2) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationCGC_DITHER");
-        }
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "cgc_dither", 0, 0);
-            if (parserFactoryXMLText == null) {
-                Log.d("ExynosDisplayFactory", "xml cgc_dither not found");
-                return;
-            }
-            if (parserFactoryXMLText.length < 1) {
-                Log.d("ExynosDisplayFactory", "xml cgc_dither array size wrong: " + parserFactoryXMLText.length);
-                return;
-            }
-            sysfsWriteCGC_DITHER(parserFactoryXMLText[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void setCalibrationDEGAMMA(String str, String str2) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationDEGAMMA");
-        }
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "degamma", 0, 0);
-            if (parserFactoryXMLText != null && parserFactoryXMLText.length >= 1) {
-                sysfsWriteDEGAMMA(parserFactoryXMLText[0], this.EXTENSION_OFF);
-            } else {
-                String[] parserFactoryXMLText2 = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "degamma", 10, 0);
-                if (parserFactoryXMLText2 != null && parserFactoryXMLText2.length >= 1) {
-                    sysfsWriteDEGAMMA(parserFactoryXMLText2[0], this.EXTENSION_OFF);
-                    String[] parserFactoryXMLText3 = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "degamma", 8, 0);
-                    if (parserFactoryXMLText3 != null && parserFactoryXMLText3.length >= 1) {
-                        sysfsWriteDEGAMMA(parserFactoryXMLText3[0], this.EXTENSION_ON);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void setCalibrationGAMMA(String str, String str2) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationGAMMA");
-        }
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "gamma", 0, 0);
-            if (parserFactoryXMLText != null && parserFactoryXMLText.length >= 1) {
-                sysfsWriteGAMMA(parserFactoryXMLText[0], this.EXTENSION_OFF);
-            } else {
-                String[] parserFactoryXMLText2 = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "gamma", 10, 0);
-                if (parserFactoryXMLText2 != null && parserFactoryXMLText2.length >= 1) {
-                    sysfsWriteGAMMA(parserFactoryXMLText2[0], this.EXTENSION_OFF);
-                    String[] parserFactoryXMLText3 = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "gamma", 8, 0);
-                    if (parserFactoryXMLText3 != null && parserFactoryXMLText3.length >= 1) {
-                        sysfsWriteGAMMA(parserFactoryXMLText3[0], this.EXTENSION_ON);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void setCalibrationGAMMA_MATRIX(String str, String str2) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationGAMMA_MATRIX");
-        }
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "gamma_matrix", 0, 0);
-            if (parserFactoryXMLText == null) {
-                Log.d("ExynosDisplayFactory", "xml gamma_matrix not found");
-                return;
-            }
-            if (parserFactoryXMLText.length < 1) {
-                Log.d("ExynosDisplayFactory", "xml gamma_matrix array size wrong: " + parserFactoryXMLText.length);
-                return;
-            }
-            sysfsWriteGAMMA_MATRIX(parserFactoryXMLText[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void setCalibrationHSC48_LCG(String str, String str2, int i) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationHSC48_LCG: " + i);
-        }
-        for (int i2 = 0; i2 < 3; i2++) {
-            try {
-                String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "hsc48_lcg", i2, 0);
-                if (parserFactoryXMLText != null && parserFactoryXMLText.length >= 1) {
-                    String str3 = parserFactoryXMLText[0];
-                    sysfsWriteHSC48_IDX(i2);
-                    sysfsWriteHSC48_LCG(str3);
-                }
-                Log.d("ExynosDisplayFactory", "xml hsc48_lcg not found");
-                return;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-        }
-    }
-
-    public final void setCalibrationHSC(String str, String str2) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationHSC");
-        }
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "hsc", 0, 0);
-            if (parserFactoryXMLText == null) {
-                Log.d("ExynosDisplayFactory", "xml hsc not found");
-                return;
-            }
-            if (parserFactoryXMLText.length < 1) {
-                Log.d("ExynosDisplayFactory", "xml hsc array size wrong: " + parserFactoryXMLText.length);
-                return;
-            }
-            sysfsWriteHSC(parserFactoryXMLText[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void setCalibrationSCL(String str, String str2) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationSCL");
-        }
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "scl", 0, 0);
-            if (parserFactoryXMLText == null) {
-                Log.d("ExynosDisplayFactory", "xml scl not found");
-                return;
-            }
-            if (parserFactoryXMLText.length < 1) {
-                Log.d("ExynosDisplayFactory", "xml scl array size wrong: " + parserFactoryXMLText.length);
-                return;
-            }
-            sysfsWriteSCL(parserFactoryXMLText[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void setCalibrationAPS(String str, String str2) {
-        if (this.DEBUG) {
-            Log.d("ExynosDisplayFactory", "setCalibrationAPS");
-        }
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "aps", 0, 0);
-            if (parserFactoryXMLText == null) {
-                Log.d("ExynosDisplayFactory", "xml aps not found");
-                return;
-            }
-            if (parserFactoryXMLText.length < 1) {
-                Log.d("ExynosDisplayFactory", "xml aps array size wrong: " + parserFactoryXMLText.length);
-                return;
-            }
-            sysfsWriteAPS(parserFactoryXMLText[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void setCalibrationDE(String str, String str2) {
-        Log.d("ExynosDisplayFactory", "setCalibrationDE");
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, "de", 0, 0);
-            if (parserFactoryXMLText == null) {
-                Log.d("ExynosDisplayFactory", "xml de not found");
-                return;
-            }
-            if (parserFactoryXMLText.length < 1) {
-                Log.d("ExynosDisplayFactory", "xml array size wrong: " + parserFactoryXMLText.length);
-                return;
-            }
-            sysfsWriteDE(parserFactoryXMLText[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void initCountDownTimer() {
-        this.mCountdownTimer = new CountDownTimer(this.mTimeoutMs, this.mIntervalMs) { // from class: com.android.server.display.exynos.ExynosDisplayFactory.3
-            @Override // android.os.CountDownTimer
-            public void onTick(long j) {
-                int i = 0;
-                if (ExynosDisplayFactory.this.mCountDownTimerCount <= 0) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory.setCalibrationMODE_IDX(exynosDisplayFactory.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory2 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory2.setCalibrationAPS(exynosDisplayFactory2.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i]);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 1) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory3 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory3.setCalibrationMODE_IDX(exynosDisplayFactory3.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory4 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory4.setCalibrationDEGAMMA(exynosDisplayFactory4.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i]);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 2) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory5 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory5.setCalibrationMODE_IDX(exynosDisplayFactory5.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory6 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory6.setCalibrationGAMMA(exynosDisplayFactory6.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i]);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 3) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory7 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory7.setCalibrationMODE_IDX(exynosDisplayFactory7.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory8 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory8.setCalibrationGAMMA_MATRIX(exynosDisplayFactory8.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i]);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 4) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory9 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory9.setCalibrationMODE_IDX(exynosDisplayFactory9.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory10 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory10.setCalibrationHSC48_LCG(exynosDisplayFactory10.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i], ExynosDisplayFactory.this.mCountDownTimerCount - 4);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 5) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory11 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory11.setCalibrationMODE_IDX(exynosDisplayFactory11.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory12 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory12.setCalibrationHSC(exynosDisplayFactory12.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i]);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 6) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory13 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory13.setCalibrationMODE_IDX(exynosDisplayFactory13.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory14 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory14.setCalibrationSCL(exynosDisplayFactory14.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i]);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 9) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory15 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory15.setCalibrationMODE_IDX(exynosDisplayFactory15.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory16 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory16.setCalibrationCGC17_ENC(exynosDisplayFactory16.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i], ExynosDisplayFactory.this.mCountDownTimerCount - 7);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 10) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory17 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory17.setCalibrationMODE_IDX(exynosDisplayFactory17.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory.this.setCalibrationCGC17_DEC();
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 11) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory18 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory18.setCalibrationMODE_IDX(exynosDisplayFactory18.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory19 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory19.setCalibrationCGC17_CON(exynosDisplayFactory19.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i]);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 12) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory20 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory20.setCalibrationMODE_IDX(exynosDisplayFactory20.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory21 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory21.setCalibrationCGC_DITHER(exynosDisplayFactory21.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i]);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 13) {
-                    while (i < 2) {
-                        if (ExynosDisplayFactory.this.mCountDownTimerTable[i][ExynosDisplayFactory.this.mCountDownTimerCount] != 0) {
-                            ExynosDisplayFactory exynosDisplayFactory22 = ExynosDisplayFactory.this;
-                            if (exynosDisplayFactory22.setCalibrationMODE_IDX(exynosDisplayFactory22.mColorModeModeIdx[i])) {
-                                ExynosDisplayFactory exynosDisplayFactory23 = ExynosDisplayFactory.this;
-                                exynosDisplayFactory23.setCalibrationDE(exynosDisplayFactory23.mFactoryXMLPath, ExynosDisplayFactory.this.mColorModeSettingTable[i]);
-                            }
-                        }
-                        i++;
-                    }
-                } else if (ExynosDisplayFactory.this.mCountDownTimerCount <= 14) {
-                    ExynosDisplayFactory exynosDisplayFactory24 = ExynosDisplayFactory.this;
-                    exynosDisplayFactory24.setCalibrationMODE_IDX(exynosDisplayFactory24.mColorModeModeIdxDefault);
-                }
-                ExynosDisplayFactory.this.mCountDownTimerCount++;
-            }
-
-            @Override // android.os.CountDownTimer
-            public void onFinish() {
-                if (ExynosDisplayFactory.this.DEBUG) {
-                    Log.d("ExynosDisplayFactory", "CountDownTimer finished = " + ExynosDisplayFactory.this.mCountDownTimerCount);
-                }
-                ExynosDisplayFactory.this.mCountDownTimerCount = 0;
-            }
-        };
-    }
-
-    public final int getItemEnable(String str, String str2, String str3) {
-        try {
-            String[] parserFactoryXMLText = ExynosDisplayUtils.parserFactoryXMLText(str, str2, str3, 0, 0);
-            if (parserFactoryXMLText != null && parserFactoryXMLText.length >= 1) {
-                return Integer.parseInt(parserFactoryXMLText[0].split("\\s*,\\s*")[0]);
-            }
-            return 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public void startCountDownTimer(String str) {
-        String[] parserXMLNodeText;
-        if (str == null) {
-            str = ExynosDisplayUtils.getPathWithPanel(this.DQE_COEF_XML_FILE_PATH);
-        }
-        this.mFactoryXMLPath = str;
-        if (ExynosDisplayUtils.existFile(str)) {
-            if (this.DEBUG) {
-                Log.d("ExynosDisplayFactory", "startCountDownTimer: xml_path=" + str);
-            }
-            for (int i = 0; i < 2; i++) {
-                for (int i2 = 0; i2 < 20; i2++) {
-                    this.mCountDownTimerTable[i][i2] = 0;
-                }
-            }
-            try {
-                parserXMLNodeText = ExynosDisplayUtils.parserXMLNodeText(str, "version");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (parserXMLNodeText != null && parserXMLNodeText.length >= 1) {
-                if (this.DEBUG) {
-                    Log.d("ExynosDisplayFactory", "xml version: " + parserXMLNodeText[0]);
-                }
-                for (int i3 = 0; i3 < 2; i3++) {
-                    String str2 = this.mColorModeSettingTable[i3];
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "mode = " + str2);
-                    }
-                    int itemEnable = getItemEnable(str, str2, "aps");
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "aps: enable = " + itemEnable);
-                    }
-                    if (itemEnable > 0) {
-                        this.mCountDownTimerTable[i3][0] = 1;
-                    }
-                    int itemEnable2 = getItemEnable(str, str2, "degamma");
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "degamma: enable = " + itemEnable2);
-                    }
-                    if (itemEnable2 > 0) {
-                        this.mCountDownTimerTable[i3][1] = 1;
-                    }
-                    int itemEnable3 = getItemEnable(str, str2, "gamma");
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "gamma: enable = " + itemEnable3);
-                    }
-                    if (itemEnable3 > 0) {
-                        this.mCountDownTimerTable[i3][2] = 1;
-                    }
-                    int itemEnable4 = getItemEnable(str, str2, "gamma_matrix");
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "gamma_matrix: enable = " + itemEnable4);
-                    }
-                    if (itemEnable4 > 0) {
-                        this.mCountDownTimerTable[i3][3] = 1;
-                    }
-                    int itemEnable5 = getItemEnable(str, str2, "hsc");
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "hsc: enable = " + itemEnable5);
-                    }
-                    for (int i4 = 4; i4 <= 5; i4++) {
-                        if (itemEnable5 > 0) {
-                            this.mCountDownTimerTable[i3][i4] = 1;
-                        }
-                    }
-                    int itemEnable6 = getItemEnable(str, str2, "scl");
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "scl: enable = " + itemEnable6);
-                    }
-                    if (itemEnable6 > 0) {
-                        this.mCountDownTimerTable[i3][6] = 1;
-                    }
-                    int itemEnable7 = getItemEnable(str, str2, "cgc17_con");
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "cgc17_con: enable = " + itemEnable7);
-                    }
-                    for (int i5 = 7; i5 <= 11; i5++) {
-                        if (itemEnable7 > 0) {
-                            this.mCountDownTimerTable[i3][i5] = 1;
-                        }
-                    }
-                    int itemEnable8 = getItemEnable(str, str2, "cgc_dither");
-                    if (this.DEBUG) {
-                        Log.d("ExynosDisplayFactory", "cgc_dither: enable = " + itemEnable8);
-                    }
-                    if (itemEnable8 > 0) {
-                        this.mCountDownTimerTable[i3][12] = 1;
-                    }
-                    if (getItemEnable(str, str2, "de") > 0) {
-                        this.mCountDownTimerTable[i3][13] = 1;
-                    }
-                    Log.d("ExynosDisplayFactory", str2 + " enable " + Arrays.toString(this.mCountDownTimerTable[i3]));
-                }
-                CountDownTimer countDownTimer = this.mCountdownTimer;
-                if (countDownTimer != null) {
-                    this.mCountDownTimerCount = 0;
-                    countDownTimer.cancel();
-                    this.mCountdownTimer.start();
-                    return;
-                }
-                return;
-            }
-            Log.d("ExynosDisplayFactory", "xml version not found");
-        }
-    }
-
-    public int getCountDownTimerCount() {
-        return this.mCountDownTimerCount;
     }
 }

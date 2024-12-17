@@ -6,155 +6,28 @@ import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IWeaver extends IInterface {
     public static final String DESCRIPTOR = "android$hardware$weaver$IWeaver".replace('$', '.');
 
-    /* loaded from: classes.dex */
-    public class Default implements IWeaver {
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return null;
-        }
-
-        @Override // android.hardware.weaver.IWeaver
-        public WeaverConfig getConfig() {
-            return null;
-        }
-
-        @Override // android.hardware.weaver.IWeaver
-        public WeaverReadResponse read(int i, byte[] bArr) {
-            return null;
-        }
-
-        @Override // android.hardware.weaver.IWeaver
-        public void write(int i, byte[] bArr, byte[] bArr2) {
-        }
-    }
-
-    WeaverConfig getConfig();
-
-    String getInterfaceHash();
-
-    int getInterfaceVersion();
-
-    WeaverReadResponse read(int i, byte[] bArr);
-
-    void write(int i, byte[] bArr, byte[] bArr2);
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements IWeaver {
-        public static String getDefaultTransactionName(int i) {
-            if (i == 1) {
-                return "getConfig";
-            }
-            if (i == 2) {
-                return "read";
-            }
-            if (i == 3) {
-                return "write";
-            }
-            switch (i) {
-                case 16777214:
-                    return "getInterfaceHash";
-                case 16777215:
-                    return "getInterfaceVersion";
-                default:
-                    return null;
-            }
-        }
+        public static final /* synthetic */ int $r8$clinit = 0;
 
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
-        }
-
-        public int getMaxTransactionId() {
-            return 16777214;
-        }
-
-        public Stub() {
-            markVintfStability();
-            attachInterface(this, IWeaver.DESCRIPTOR);
-        }
-
-        public static IWeaver asInterface(IBinder iBinder) {
-            if (iBinder == null) {
-                return null;
-            }
-            IInterface queryLocalInterface = iBinder.queryLocalInterface(IWeaver.DESCRIPTOR);
-            if (queryLocalInterface != null && (queryLocalInterface instanceof IWeaver)) {
-                return (IWeaver) queryLocalInterface;
-            }
-            return new Proxy(iBinder);
-        }
-
-        public String getTransactionName(int i) {
-            return getDefaultTransactionName(i);
-        }
-
-        @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
-            String str = IWeaver.DESCRIPTOR;
-            if (i >= 1 && i <= 16777215) {
-                parcel.enforceInterface(str);
-            }
-            switch (i) {
-                case 16777214:
-                    parcel2.writeNoException();
-                    parcel2.writeString(getInterfaceHash());
-                    return true;
-                case 16777215:
-                    parcel2.writeNoException();
-                    parcel2.writeInt(getInterfaceVersion());
-                    return true;
-                case 1598968902:
-                    parcel2.writeString(str);
-                    return true;
-                default:
-                    if (i == 1) {
-                        WeaverConfig config = getConfig();
-                        parcel2.writeNoException();
-                        parcel2.writeTypedObject(config, 1);
-                    } else if (i == 2) {
-                        int readInt = parcel.readInt();
-                        byte[] createByteArray = parcel.createByteArray();
-                        parcel.enforceNoDataAvail();
-                        WeaverReadResponse read = read(readInt, createByteArray);
-                        parcel2.writeNoException();
-                        parcel2.writeTypedObject(read, 1);
-                    } else if (i == 3) {
-                        int readInt2 = parcel.readInt();
-                        byte[] createByteArray2 = parcel.createByteArray();
-                        byte[] createByteArray3 = parcel.createByteArray();
-                        parcel.enforceNoDataAvail();
-                        write(readInt2, createByteArray2, createByteArray3);
-                        parcel2.writeNoException();
-                    } else {
-                        return super.onTransact(i, parcel, parcel2, i2);
-                    }
-                    return true;
-            }
-        }
-
-        /* loaded from: classes.dex */
-        public class Proxy implements IWeaver {
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements IWeaver {
+            public int mCachedVersion;
             public IBinder mRemote;
-            public int mCachedVersion = -1;
-            public String mCachedHash = "-1";
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
 
             @Override // android.os.IInterface
-            public IBinder asBinder() {
+            public final IBinder asBinder() {
                 return this.mRemote;
             }
 
             @Override // android.hardware.weaver.IWeaver
-            public WeaverConfig getConfig() {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final WeaverConfig getConfig() {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(IWeaver.DESCRIPTOR);
@@ -170,8 +43,26 @@ public interface IWeaver extends IInterface {
             }
 
             @Override // android.hardware.weaver.IWeaver
-            public WeaverReadResponse read(int i, byte[] bArr) {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final int getInterfaceVersion() {
+                if (this.mCachedVersion == -1) {
+                    Parcel obtain = Parcel.obtain(this.mRemote);
+                    Parcel obtain2 = Parcel.obtain();
+                    try {
+                        obtain.writeInterfaceToken(IWeaver.DESCRIPTOR);
+                        this.mRemote.transact(16777215, obtain, obtain2, 0);
+                        obtain2.readException();
+                        this.mCachedVersion = obtain2.readInt();
+                    } finally {
+                        obtain2.recycle();
+                        obtain.recycle();
+                    }
+                }
+                return this.mCachedVersion;
+            }
+
+            @Override // android.hardware.weaver.IWeaver
+            public final WeaverReadResponse read(int i, byte[] bArr) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(IWeaver.DESCRIPTOR);
@@ -189,8 +80,8 @@ public interface IWeaver extends IInterface {
             }
 
             @Override // android.hardware.weaver.IWeaver
-            public void write(int i, byte[] bArr, byte[] bArr2) {
-                Parcel obtain = Parcel.obtain(asBinder());
+            public final void write(int i, byte[] bArr, byte[] bArr2) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(IWeaver.DESCRIPTOR);
@@ -208,4 +99,12 @@ public interface IWeaver extends IInterface {
             }
         }
     }
+
+    WeaverConfig getConfig();
+
+    int getInterfaceVersion();
+
+    WeaverReadResponse read(int i, byte[] bArr);
+
+    void write(int i, byte[] bArr, byte[] bArr2);
 }

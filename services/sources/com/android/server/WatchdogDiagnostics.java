@@ -1,24 +1,12 @@
 package com.android.server;
 
-import android.util.Log;
-import android.util.LogWriter;
-import com.android.server.Watchdog;
 import dalvik.system.AnnotatedStackTraceElement;
 import dalvik.system.VMStack;
 import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class WatchdogDiagnostics {
-    public static String getBlockedOnString(Object obj) {
-        return String.format("- waiting to lock <0x%08x> (a %s)", Integer.valueOf(System.identityHashCode(obj)), obj.getClass().getName());
-    }
-
-    public static String getLockedString(Object obj) {
-        return String.format("- locked <0x%08x> (a %s)", Integer.valueOf(System.identityHashCode(obj)), obj.getClass().getName());
-    }
-
     public static boolean printAnnotatedStack(Thread thread, PrintWriter printWriter) {
         AnnotatedStackTraceElement[] annotatedThreadStackTrace = VMStack.getAnnotatedThreadStackTrace(thread);
         if (annotatedThreadStackTrace == null) {
@@ -30,30 +18,15 @@ public abstract class WatchdogDiagnostics {
             AnnotatedStackTraceElement annotatedStackTraceElement = annotatedThreadStackTrace[i];
             printWriter.println("!@    at " + annotatedStackTraceElement.getStackTraceElement());
             if (annotatedStackTraceElement.getBlockedOn() != null) {
-                printWriter.println("!@    " + getBlockedOnString(annotatedStackTraceElement.getBlockedOn()));
+                Object blockedOn = annotatedStackTraceElement.getBlockedOn();
+                printWriter.println("!@    ".concat(String.format("- waiting to lock <0x%08x> (a %s)", Integer.valueOf(System.identityHashCode(blockedOn)), blockedOn.getClass().getName())));
             }
             if (annotatedStackTraceElement.getHeldLocks() != null) {
                 for (Object obj : annotatedStackTraceElement.getHeldLocks()) {
-                    printWriter.println("!@    " + getLockedString(obj));
+                    printWriter.println("!@    ".concat(String.format("- locked <0x%08x> (a %s)", Integer.valueOf(System.identityHashCode(obj)), obj.getClass().getName())));
                 }
             }
         }
         return true;
-    }
-
-    public static void diagnoseCheckers(List list) {
-        PrintWriter printWriter = new PrintWriter((Writer) new LogWriter(5, "Watchdog", 4), true);
-        Log.printlns(4, 6, "Watchdog", "PLATFORM WATCHDOG RESET", null);
-        for (int i = 0; i < list.size(); i++) {
-            Thread thread = ((Watchdog.HandlerChecker) list.get(i)).getThread();
-            if (!printAnnotatedStack(thread, printWriter)) {
-                Log.printlns(4, 6, "Watchdog", thread.getName() + " stack trace:", null);
-                StackTraceElement[] stackTrace = thread.getStackTrace();
-                int length = stackTrace.length;
-                for (int i2 = 0; i2 < length; i2++) {
-                    Log.printlns(4, 6, "Watchdog", " at " + stackTrace[i2], null);
-                }
-            }
-        }
     }
 }

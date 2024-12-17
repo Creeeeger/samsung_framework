@@ -1,131 +1,71 @@
 package com.android.server.powerstats;
 
 import android.app.StatsManager;
-import android.content.Context;
+import android.frameworks.vibrator.VibrationParam$1$$ExternalSyntheticOutline0;
 import android.hardware.power.stats.Channel;
 import android.hardware.power.stats.EnergyMeasurement;
-import android.hardware.power.stats.PowerEntity;
-import android.hardware.power.stats.State;
 import android.hardware.power.stats.StateResidency;
 import android.hardware.power.stats.StateResidencyResult;
-import android.power.PowerStatsInternal;
 import android.util.Slog;
-import com.android.internal.util.ConcurrentUtils;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.powerstats.PowerStatsService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes3.dex */
-public class StatsPullAtomCallbackImpl implements StatsManager.StatsPullAtomCallback {
-    public static final String TAG = StatsPullAtomCallbackImpl.class.getSimpleName();
-    public Context mContext;
-    public PowerStatsInternal mPowerStatsInternal;
-    public Map mChannels = new HashMap();
-    public Map mEntityNames = new HashMap();
-    public Map mStateNames = new HashMap();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class StatsPullAtomCallbackImpl implements StatsManager.StatsPullAtomCallback {
+    public Map mChannels;
+    public Map mEntityNames;
+    public PowerStatsService.LocalService mPowerStatsInternal;
+    public Map mStateNames;
 
-    public int onPullAtom(int i, List list) {
+    public final int onPullAtom(int i, List list) {
         if (i == 10005) {
-            return pullSubsystemSleepState(i, list);
-        }
-        if (i == 10038) {
-            return pullOnDevicePowerMeasurement(i, list);
-        }
-        throw new UnsupportedOperationException("Unknown tagId=" + i);
-    }
-
-    public final boolean initPullOnDevicePowerMeasurement() {
-        Channel[] energyMeterInfo = this.mPowerStatsInternal.getEnergyMeterInfo();
-        if (energyMeterInfo == null || energyMeterInfo.length == 0) {
-            Slog.e(TAG, "Failed to init OnDevicePowerMeasurement puller");
-            return false;
-        }
-        for (Channel channel : energyMeterInfo) {
-            this.mChannels.put(Integer.valueOf(channel.id), channel);
-        }
-        return true;
-    }
-
-    public final int pullOnDevicePowerMeasurement(int i, List list) {
-        try {
-            EnergyMeasurement[] energyMeasurementArr = (EnergyMeasurement[]) this.mPowerStatsInternal.readEnergyMeterAsync(new int[0]).get(2000L, TimeUnit.MILLISECONDS);
-            if (energyMeasurementArr == null) {
-                return 1;
-            }
-            for (EnergyMeasurement energyMeasurement : energyMeasurementArr) {
-                if (energyMeasurement.durationMs == energyMeasurement.timestampMs) {
-                    list.add(FrameworkStatsLog.buildStatsEvent(i, ((Channel) this.mChannels.get(Integer.valueOf(energyMeasurement.id))).subsystem, ((Channel) this.mChannels.get(Integer.valueOf(energyMeasurement.id))).name, energyMeasurement.durationMs, energyMeasurement.energyUWs));
+            try {
+                StateResidencyResult[] stateResidencyResultArr = (StateResidencyResult[]) this.mPowerStatsInternal.getStateResidencyAsync(new int[0]).get(2000L, TimeUnit.MILLISECONDS);
+                if (stateResidencyResultArr != null) {
+                    for (StateResidencyResult stateResidencyResult : stateResidencyResultArr) {
+                        int i2 = 0;
+                        while (true) {
+                            StateResidency[] stateResidencyArr = stateResidencyResult.stateResidencyData;
+                            if (i2 < stateResidencyArr.length) {
+                                StateResidency stateResidency = stateResidencyArr[i2];
+                                list.add(FrameworkStatsLog.buildStatsEvent(i, (String) ((HashMap) this.mEntityNames).get(Integer.valueOf(stateResidencyResult.id)), (String) ((Map) ((HashMap) this.mStateNames).get(Integer.valueOf(stateResidencyResult.id))).get(Integer.valueOf(stateResidency.id)), stateResidency.totalStateEntryCount, stateResidency.totalTimeInStateMs));
+                                i2++;
+                            }
+                        }
+                    }
+                    return 0;
                 }
+            } catch (Exception e) {
+                Slog.e("StatsPullAtomCallbackImpl", "Failed to getStateResidencyAsync", e);
             }
-            return 0;
-        } catch (Exception e) {
-            Slog.e(TAG, "Failed to readEnergyMeterAsync", e);
             return 1;
         }
-    }
-
-    public final boolean initSubsystemSleepState() {
-        PowerEntity[] powerEntityInfo = this.mPowerStatsInternal.getPowerEntityInfo();
-        if (powerEntityInfo == null || powerEntityInfo.length == 0) {
-            Slog.e(TAG, "Failed to init SubsystemSleepState puller");
-            return false;
+        if (i != 10038) {
+            throw new UnsupportedOperationException(VibrationParam$1$$ExternalSyntheticOutline0.m(i, "Unknown tagId="));
         }
-        for (PowerEntity powerEntity : powerEntityInfo) {
-            HashMap hashMap = new HashMap();
-            int i = 0;
-            while (true) {
-                State[] stateArr = powerEntity.states;
-                if (i < stateArr.length) {
-                    State state = stateArr[i];
-                    hashMap.put(Integer.valueOf(state.id), state.name);
-                    i++;
-                }
-            }
-            this.mEntityNames.put(Integer.valueOf(powerEntity.id), powerEntity.name);
-            this.mStateNames.put(Integer.valueOf(powerEntity.id), hashMap);
-        }
-        return true;
-    }
-
-    public final int pullSubsystemSleepState(int i, List list) {
         try {
-            StateResidencyResult[] stateResidencyResultArr = (StateResidencyResult[]) this.mPowerStatsInternal.getStateResidencyAsync(new int[0]).get(2000L, TimeUnit.MILLISECONDS);
-            if (stateResidencyResultArr == null) {
-                return 1;
-            }
-            for (StateResidencyResult stateResidencyResult : stateResidencyResultArr) {
-                int i2 = 0;
-                while (true) {
-                    StateResidency[] stateResidencyArr = stateResidencyResult.stateResidencyData;
-                    if (i2 < stateResidencyArr.length) {
-                        StateResidency stateResidency = stateResidencyArr[i2];
-                        list.add(FrameworkStatsLog.buildStatsEvent(i, (String) this.mEntityNames.get(Integer.valueOf(stateResidencyResult.id)), (String) ((Map) this.mStateNames.get(Integer.valueOf(stateResidencyResult.id))).get(Integer.valueOf(stateResidency.id)), stateResidency.totalStateEntryCount, stateResidency.totalTimeInStateMs));
-                        i2++;
+            PowerStatsService.LocalService localService = this.mPowerStatsInternal;
+            localService.getClass();
+            CompletableFuture completableFuture = new CompletableFuture();
+            PowerStatsService.m850$$Nest$mgetHandler(PowerStatsService.this).post(new PowerStatsService$LocalService$$ExternalSyntheticLambda0(localService, completableFuture, new int[0], 1));
+            EnergyMeasurement[] energyMeasurementArr = (EnergyMeasurement[]) completableFuture.get(2000L, TimeUnit.MILLISECONDS);
+            if (energyMeasurementArr != null) {
+                for (EnergyMeasurement energyMeasurement : energyMeasurementArr) {
+                    if (energyMeasurement.durationMs == energyMeasurement.timestampMs) {
+                        list.add(FrameworkStatsLog.buildStatsEvent(i, ((Channel) ((HashMap) this.mChannels).get(Integer.valueOf(energyMeasurement.id))).subsystem, ((Channel) ((HashMap) this.mChannels).get(Integer.valueOf(energyMeasurement.id))).name, energyMeasurement.durationMs, energyMeasurement.energyUWs));
                     }
                 }
+                return 0;
             }
-            return 0;
-        } catch (Exception e) {
-            Slog.e(TAG, "Failed to getStateResidencyAsync", e);
-            return 1;
+        } catch (Exception e2) {
+            Slog.e("StatsPullAtomCallbackImpl", "Failed to readEnergyMeterAsync", e2);
         }
-    }
-
-    public StatsPullAtomCallbackImpl(Context context, PowerStatsInternal powerStatsInternal) {
-        this.mContext = context;
-        this.mPowerStatsInternal = powerStatsInternal;
-        if (powerStatsInternal == null) {
-            Slog.e(TAG, "Failed to start PowerStatsService statsd pullers");
-            return;
-        }
-        StatsManager statsManager = (StatsManager) context.getSystemService(StatsManager.class);
-        if (initPullOnDevicePowerMeasurement()) {
-            statsManager.setPullAtomCallback(FrameworkStatsLog.ON_DEVICE_POWER_MEASUREMENT, (StatsManager.PullAtomMetadata) null, ConcurrentUtils.DIRECT_EXECUTOR, this);
-        }
-        if (initSubsystemSleepState()) {
-            statsManager.setPullAtomCallback(FrameworkStatsLog.SUBSYSTEM_SLEEP_STATE, (StatsManager.PullAtomMetadata) null, ConcurrentUtils.DIRECT_EXECUTOR, this);
-        }
+        return 1;
     }
 }

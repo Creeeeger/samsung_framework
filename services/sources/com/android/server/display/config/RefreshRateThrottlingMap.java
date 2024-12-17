@@ -1,54 +1,10 @@
 package com.android.server.display.config;
 
-import java.util.ArrayList;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
-import org.xmlpull.v1.XmlPullParser;
 
-/* loaded from: classes2.dex */
-public class RefreshRateThrottlingMap {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RefreshRateThrottlingMap {
     public String id;
     public List refreshRateThrottlingPoint;
-
-    public final List getRefreshRateThrottlingPoint() {
-        if (this.refreshRateThrottlingPoint == null) {
-            this.refreshRateThrottlingPoint = new ArrayList();
-        }
-        return this.refreshRateThrottlingPoint;
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String str) {
-        this.id = str;
-    }
-
-    public static RefreshRateThrottlingMap read(XmlPullParser xmlPullParser) {
-        int next;
-        RefreshRateThrottlingMap refreshRateThrottlingMap = new RefreshRateThrottlingMap();
-        String attributeValue = xmlPullParser.getAttributeValue(null, "id");
-        if (attributeValue != null) {
-            refreshRateThrottlingMap.setId(attributeValue);
-        }
-        xmlPullParser.getDepth();
-        while (true) {
-            next = xmlPullParser.next();
-            if (next == 1 || next == 3) {
-                break;
-            }
-            if (xmlPullParser.getEventType() == 2) {
-                if (xmlPullParser.getName().equals("refreshRateThrottlingPoint")) {
-                    refreshRateThrottlingMap.getRefreshRateThrottlingPoint().add(RefreshRateThrottlingPoint.read(xmlPullParser));
-                } else {
-                    XmlParser.skip(xmlPullParser);
-                }
-            }
-        }
-        if (next == 3) {
-            return refreshRateThrottlingMap;
-        }
-        throw new DatatypeConfigurationException("RefreshRateThrottlingMap is not closed");
-    }
 }

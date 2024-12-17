@@ -1,11 +1,13 @@
 package org.tukaani.xz;
 
+import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
 import java.io.IOException;
 import java.io.InputStream;
 import org.tukaani.xz.delta.DeltaDecoder;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class DeltaInputStream extends InputStream {
+public final class DeltaInputStream extends InputStream {
     public final DeltaDecoder delta;
     public InputStream in;
     public IOException exception = null;
@@ -18,7 +20,32 @@ public class DeltaInputStream extends InputStream {
     }
 
     @Override // java.io.InputStream
-    public int read() {
+    public final int available() {
+        InputStream inputStream = this.in;
+        if (inputStream == null) {
+            throw new XZIOException("Stream closed");
+        }
+        IOException iOException = this.exception;
+        if (iOException == null) {
+            return inputStream.available();
+        }
+        throw iOException;
+    }
+
+    @Override // java.io.InputStream, java.io.Closeable, java.lang.AutoCloseable
+    public final void close() {
+        InputStream inputStream = this.in;
+        if (inputStream != null) {
+            try {
+                inputStream.close();
+            } finally {
+                this.in = null;
+            }
+        }
+    }
+
+    @Override // java.io.InputStream
+    public final int read() {
         if (read(this.tempBuf, 0, 1) == -1) {
             return -1;
         }
@@ -26,7 +53,7 @@ public class DeltaInputStream extends InputStream {
     }
 
     @Override // java.io.InputStream
-    public int read(byte[] bArr, int i, int i2) {
+    public final int read(byte[] bArr, int i, int i2) {
         if (i2 == 0) {
             return 0;
         }
@@ -43,36 +70,24 @@ public class DeltaInputStream extends InputStream {
             if (read == -1) {
                 return -1;
             }
-            this.delta.decode(bArr, i, read);
+            DeltaDecoder deltaDecoder = this.delta;
+            deltaDecoder.getClass();
+            int i3 = i + read;
+            while (i < i3) {
+                byte b = bArr[i];
+                int i4 = deltaDecoder.pos;
+                int i5 = (deltaDecoder.distance + i4) & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
+                byte[] bArr2 = deltaDecoder.history;
+                byte b2 = (byte) (b + bArr2[i5]);
+                bArr[i] = b2;
+                deltaDecoder.pos = i4 - 1;
+                bArr2[i4 & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT] = b2;
+                i++;
+            }
             return read;
         } catch (IOException e) {
             this.exception = e;
             throw e;
-        }
-    }
-
-    @Override // java.io.InputStream
-    public int available() {
-        InputStream inputStream = this.in;
-        if (inputStream == null) {
-            throw new XZIOException("Stream closed");
-        }
-        IOException iOException = this.exception;
-        if (iOException != null) {
-            throw iOException;
-        }
-        return inputStream.available();
-    }
-
-    @Override // java.io.InputStream, java.io.Closeable, java.lang.AutoCloseable
-    public void close() {
-        InputStream inputStream = this.in;
-        if (inputStream != null) {
-            try {
-                inputStream.close();
-            } finally {
-                this.in = null;
-            }
         }
     }
 }

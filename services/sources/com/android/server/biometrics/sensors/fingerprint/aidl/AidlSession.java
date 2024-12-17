@@ -1,60 +1,45 @@
 package com.android.server.biometrics.sensors.fingerprint.aidl;
 
 import android.hardware.biometrics.fingerprint.ISession;
-import android.hardware.keymaster.HardwareAuthToken;
 import android.util.Slog;
-import com.android.server.biometrics.sensors.fingerprint.aidl.Sensor;
-import java.util.function.Supplier;
-import vendor.samsung.hardware.biometrics.fingerprint.ISehFingerprint;
+import com.android.server.HermesService$3$$ExternalSyntheticOutline0;
+import com.android.server.biometrics.sensors.fingerprint.hidl.HidlToAidlSensorAdapter$$ExternalSyntheticLambda3;
+import com.android.server.biometrics.sensors.fingerprint.hidl.HidlToAidlSessionAdapter;
+import com.android.server.biometrics.sensors.fingerprint.hidl.SemHidlToAidlSehFingerprintAdapter;
+import java.util.function.Function;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AidlSession {
+public final class AidlSession {
+    public final SemFpAidlResponseHandler mAidlResponseHandler;
     public final int mHalInterfaceVersion;
-    public final Sensor.HalSessionCallback mHalSessionCallback;
-    public Supplier mLazySehFingerprint;
+    public Function mLazySehFingerprint;
     public final ISession mSession;
     public final int mUserId;
 
-    public AidlSession(int i, ISession iSession, int i2, Sensor.HalSessionCallback halSessionCallback) {
+    public AidlSession(int i, ISession iSession, int i2, SemFpAidlResponseHandler semFpAidlResponseHandler) {
         this.mHalInterfaceVersion = i;
         this.mSession = iSession;
         this.mUserId = i2;
-        this.mHalSessionCallback = halSessionCallback;
-        Slog.i("FingerprintService", "AidlSession: " + i);
+        this.mAidlResponseHandler = semFpAidlResponseHandler;
+        HermesService$3$$ExternalSyntheticOutline0.m(i, "AidlSession: Ver = ", "FingerprintService");
     }
 
-    public ISession getSession() {
-        return this.mSession;
+    public AidlSession(final HidlToAidlSensorAdapter$$ExternalSyntheticLambda3 hidlToAidlSensorAdapter$$ExternalSyntheticLambda3, int i, SemFpAidlResponseHandler semFpAidlResponseHandler) {
+        this.mSession = new HidlToAidlSessionAdapter(hidlToAidlSensorAdapter$$ExternalSyntheticLambda3, i, semFpAidlResponseHandler);
+        this.mHalInterfaceVersion = 0;
+        this.mUserId = i;
+        this.mAidlResponseHandler = semFpAidlResponseHandler;
+        this.mLazySehFingerprint = new Function() { // from class: com.android.server.biometrics.sensors.fingerprint.aidl.AidlSession$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                return new SemHidlToAidlSehFingerprintAdapter((HidlToAidlSensorAdapter$$ExternalSyntheticLambda3) hidlToAidlSensorAdapter$$ExternalSyntheticLambda3);
+            }
+        };
+        Slog.i("FingerprintService", "AidlSession: Ver = 0");
     }
 
-    public int getUserId() {
-        return this.mUserId;
-    }
-
-    public Sensor.HalSessionCallback getHalSessionCallback() {
-        return this.mHalSessionCallback;
-    }
-
-    public boolean hasContextMethods() {
+    public final boolean hasContextMethods() {
         return this.mHalInterfaceVersion >= 2;
-    }
-
-    public void resetLockout(HardwareAuthToken hardwareAuthToken) {
-        Sensor.HalSessionCallback halSessionCallback = this.mHalSessionCallback;
-        if (halSessionCallback != null) {
-            halSessionCallback.onLockoutCleared();
-        }
-    }
-
-    public void setLazySehFingerprint(Supplier supplier) {
-        this.mLazySehFingerprint = supplier;
-    }
-
-    public ISehFingerprint getSehFingerprint() {
-        Supplier supplier = this.mLazySehFingerprint;
-        if (supplier != null) {
-            return (ISehFingerprint) supplier.get();
-        }
-        return null;
     }
 }

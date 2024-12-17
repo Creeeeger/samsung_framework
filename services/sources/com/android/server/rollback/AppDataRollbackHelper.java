@@ -3,12 +3,13 @@ package com.android.server.rollback;
 import android.content.rollback.PackageRollbackInfo;
 import android.os.storage.StorageManager;
 import android.util.Slog;
+import com.android.internal.util.Preconditions;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.pm.ApexManager;
 import com.android.server.pm.Installer;
-import java.util.ArrayList;
-import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class AppDataRollbackHelper {
     public final ApexManager mApexManager;
     public final Installer mInstaller;
@@ -23,132 +24,95 @@ public class AppDataRollbackHelper {
         this.mApexManager = apexManager;
     }
 
-    public void snapshotAppData(int i, PackageRollbackInfo packageRollbackInfo, int[] iArr) {
-        int i2;
-        for (int i3 : iArr) {
-            if (isUserCredentialLocked(i3)) {
-                Slog.v("RollbackManager", "User: " + i3 + " isn't unlocked, skipping CE userdata backup.");
-                packageRollbackInfo.addPendingBackup(i3);
-                i2 = 1;
-            } else {
-                i2 = 3;
-            }
-            doSnapshot(packageRollbackInfo, i3, i, i2);
-        }
-    }
-
-    public boolean restoreAppData(int i, PackageRollbackInfo packageRollbackInfo, int i2, int i3, String str) {
-        int i4;
-        List pendingBackups = packageRollbackInfo.getPendingBackups();
-        ArrayList pendingRestores = packageRollbackInfo.getPendingRestores();
-        boolean z = true;
-        if (pendingBackups != null && pendingBackups.indexOf(Integer.valueOf(i2)) != -1) {
-            pendingBackups.remove(pendingBackups.indexOf(Integer.valueOf(i2)));
-        } else if (isUserCredentialLocked(i2)) {
-            pendingRestores.add(new PackageRollbackInfo.RestoreInfo(i2, i3, str));
-        } else {
-            z = false;
-            i4 = 3;
-            doRestoreOrWipe(packageRollbackInfo, i2, i, i3, str, i4);
-            return z;
-        }
-        i4 = 1;
-        doRestoreOrWipe(packageRollbackInfo, i2, i, i3, str, i4);
-        return z;
-    }
-
-    public final boolean doSnapshot(PackageRollbackInfo packageRollbackInfo, int i, int i2, int i3) {
-        if (packageRollbackInfo.isApex()) {
-            if ((i3 & 2) != 0) {
-                return this.mApexManager.snapshotCeData(i, i2, packageRollbackInfo.getPackageName());
-            }
-            return true;
-        }
-        try {
-            return this.mInstaller.snapshotAppData(packageRollbackInfo.getPackageName(), i, i2, i3);
-        } catch (Installer.InstallerException e) {
-            Slog.e("RollbackManager", "Unable to create app data snapshot for: " + packageRollbackInfo.getPackageName() + ", userId: " + i, e);
-            return false;
-        }
-    }
-
     public final boolean doRestoreOrWipe(PackageRollbackInfo packageRollbackInfo, int i, int i2, int i3, String str, int i4) {
-        if (packageRollbackInfo.isApex()) {
-            if (packageRollbackInfo.getRollbackDataPolicy() == 0 && (i4 & 2) != 0) {
-                this.mApexManager.restoreCeData(i, i2, packageRollbackInfo.getPackageName());
-            }
-        } else {
+        String str2;
+        if (!packageRollbackInfo.isApex()) {
             try {
                 int rollbackDataPolicy = packageRollbackInfo.getRollbackDataPolicy();
                 if (rollbackDataPolicy == 0) {
-                    this.mInstaller.restoreAppDataSnapshot(packageRollbackInfo.getPackageName(), i3, str, i, i2, i4);
+                    Installer installer = this.mInstaller;
+                    String packageName = packageRollbackInfo.getPackageName();
+                    if (installer.checkBeforeRemote()) {
+                        try {
+                            installer.mInstalld.restoreAppDataSnapshot(null, packageName, i3, str, i, i2, i4);
+                        } catch (Exception e) {
+                            Installer.InstallerException.from(e);
+                            throw null;
+                        }
+                    }
                 } else if (rollbackDataPolicy == 1) {
                     this.mInstaller.clearAppData(null, packageRollbackInfo.getPackageName(), i, i4, 0L);
                 }
-            } catch (Installer.InstallerException e) {
-                Slog.e("RollbackManager", "Unable to restore/wipe app data: " + packageRollbackInfo.getPackageName() + " policy=" + packageRollbackInfo.getRollbackDataPolicy(), e);
+            } catch (Installer.InstallerException e2) {
+                Slog.e("RollbackManager", "Unable to restore/wipe app data: " + packageRollbackInfo.getPackageName() + " policy=" + packageRollbackInfo.getRollbackDataPolicy(), e2);
                 return false;
+            }
+        } else if (packageRollbackInfo.getRollbackDataPolicy() == 0 && (i4 & 2) != 0) {
+            ApexManager apexManager = this.mApexManager;
+            String packageName2 = packageRollbackInfo.getPackageName();
+            ApexManager.ApexManagerImpl apexManagerImpl = (ApexManager.ApexManagerImpl) apexManager;
+            synchronized (apexManagerImpl.mLock) {
+                Preconditions.checkState(apexManagerImpl.mPackageNameToApexModuleName != null, "APEX packages have not been scanned");
+                str2 = (String) apexManagerImpl.mPackageNameToApexModuleName.get(packageName2);
+            }
+            if (str2 == null) {
+                BootReceiver$$ExternalSyntheticOutline0.m("Invalid apex package name: ", packageName2, "ApexManager");
+            } else {
+                try {
+                    apexManagerImpl.waitForApexService().restoreCeData(i, i2, str2);
+                } catch (Exception e3) {
+                    Slog.e("ApexManager", e3.getMessage(), e3);
+                }
             }
         }
         return true;
     }
 
-    public void destroyAppDataSnapshot(int i, PackageRollbackInfo packageRollbackInfo, int i2) {
+    public final boolean doSnapshot(PackageRollbackInfo packageRollbackInfo, int i, int i2, int i3) {
+        String str;
+        if (packageRollbackInfo.isApex()) {
+            if ((i3 & 2) == 0) {
+                return true;
+            }
+            ApexManager apexManager = this.mApexManager;
+            String packageName = packageRollbackInfo.getPackageName();
+            ApexManager.ApexManagerImpl apexManagerImpl = (ApexManager.ApexManagerImpl) apexManager;
+            synchronized (apexManagerImpl.mLock) {
+                Preconditions.checkState(apexManagerImpl.mPackageNameToApexModuleName != null, "APEX packages have not been scanned");
+                str = (String) apexManagerImpl.mPackageNameToApexModuleName.get(packageName);
+            }
+            if (str == null) {
+                BootReceiver$$ExternalSyntheticOutline0.m("Invalid apex package name: ", packageName, "ApexManager");
+                return false;
+            }
+            try {
+                apexManagerImpl.waitForApexService().snapshotCeData(i, i2, str);
+                return true;
+            } catch (Exception e) {
+                Slog.e("ApexManager", e.getMessage(), e);
+                return false;
+            }
+        }
         try {
-            this.mInstaller.destroyAppDataSnapshot(packageRollbackInfo.getPackageName(), i2, i, 3);
-        } catch (Installer.InstallerException e) {
-            Slog.e("RollbackManager", "Unable to delete app data snapshot for " + packageRollbackInfo.getPackageName(), e);
-        }
-    }
-
-    public void destroyApexDeSnapshots(int i) {
-        this.mApexManager.destroyDeSnapshots(i);
-    }
-
-    public void destroyApexCeSnapshots(int i, int i2) {
-        if (isUserCredentialLocked(i)) {
-            return;
-        }
-        this.mApexManager.destroyCeSnapshots(i, i2);
-    }
-
-    public boolean commitPendingBackupAndRestoreForUser(int i, Rollback rollback) {
-        boolean z;
-        boolean z2 = false;
-        for (PackageRollbackInfo packageRollbackInfo : rollback.info.getPackages()) {
-            List pendingBackups = packageRollbackInfo.getPendingBackups();
-            boolean z3 = true;
-            if (pendingBackups == null || pendingBackups.indexOf(Integer.valueOf(i)) == -1) {
-                z = false;
-            } else {
-                z2 = true;
-                z = true;
+            Installer installer = this.mInstaller;
+            String packageName2 = packageRollbackInfo.getPackageName();
+            if (!installer.checkBeforeRemote()) {
+                return false;
             }
-            PackageRollbackInfo.RestoreInfo restoreInfo = packageRollbackInfo.getRestoreInfo(i);
-            if (restoreInfo != null) {
-                z2 = true;
-            } else {
-                z3 = false;
+            try {
+                installer.mInstalld.snapshotAppData(null, packageName2, i, i2, i3);
+                return true;
+            } catch (Exception e2) {
+                Installer.InstallerException.from(e2);
+                throw null;
             }
-            if (z && z3) {
-                packageRollbackInfo.removePendingBackup(i);
-                packageRollbackInfo.removePendingRestoreInfo(i);
-            } else {
-                if (z) {
-                    int indexOf = pendingBackups.indexOf(Integer.valueOf(i));
-                    if (doSnapshot(packageRollbackInfo, i, rollback.info.getRollbackId(), 2)) {
-                        pendingBackups.remove(indexOf);
-                    }
-                }
-                if (z3 && doRestoreOrWipe(packageRollbackInfo, i, rollback.info.getRollbackId(), restoreInfo.appId, restoreInfo.seInfo, 2)) {
-                    packageRollbackInfo.removeRestoreInfo(restoreInfo);
-                }
-            }
+        } catch (Installer.InstallerException e3) {
+            Slog.e("RollbackManager", "Unable to create app data snapshot for: " + packageRollbackInfo.getPackageName() + ", userId: " + i, e3);
+            return false;
         }
-        return z2;
     }
 
     public boolean isUserCredentialLocked(int i) {
-        return StorageManager.isFileEncrypted() && !StorageManager.isUserKeyUnlocked(i);
+        return StorageManager.isFileEncrypted() && !StorageManager.isCeStorageUnlocked(i);
     }
 }

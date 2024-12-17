@@ -1,32 +1,59 @@
 package com.android.server.contentsuggestions;
 
 import android.os.ShellCommand;
+import com.android.server.am.ActiveServices$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ContentSuggestionsManagerServiceShellCommand extends ShellCommand {
-    public static final String TAG = ContentSuggestionsManagerServiceShellCommand.class.getSimpleName();
+public final class ContentSuggestionsManagerServiceShellCommand extends ShellCommand {
     public final ContentSuggestionsManagerService mService;
 
     public ContentSuggestionsManagerServiceShellCommand(ContentSuggestionsManagerService contentSuggestionsManagerService) {
         this.mService = contentSuggestionsManagerService;
     }
 
-    public int onCommand(String str) {
+    public final int onCommand(String str) {
         if (str == null) {
             return handleDefaultCommands(str);
         }
         PrintWriter outPrintWriter = getOutPrintWriter();
         if (str.equals("get")) {
-            return requestGet(outPrintWriter);
+            String nextArgRequired = getNextArgRequired();
+            nextArgRequired.getClass();
+            if (!nextArgRequired.equals("default-service-enabled")) {
+                outPrintWriter.println("Invalid get: ".concat(nextArgRequired));
+                return -1;
+            }
+            outPrintWriter.println(this.mService.isDefaultServiceEnabled(Integer.parseInt(getNextArgRequired())));
+            return 0;
         }
-        if (str.equals("set")) {
-            return requestSet(outPrintWriter);
+        if (!str.equals("set")) {
+            return handleDefaultCommands(str);
         }
-        return handleDefaultCommands(str);
+        String nextArgRequired2 = getNextArgRequired();
+        nextArgRequired2.getClass();
+        if (nextArgRequired2.equals("default-service-enabled")) {
+            this.mService.setDefaultServiceEnabled(Integer.parseInt(getNextArgRequired()), Boolean.parseBoolean(getNextArg()));
+        } else {
+            if (!nextArgRequired2.equals("temporary-service")) {
+                outPrintWriter.println("Invalid set: ".concat(nextArgRequired2));
+                return -1;
+            }
+            int parseInt = Integer.parseInt(getNextArgRequired());
+            String nextArg = getNextArg();
+            if (nextArg == null) {
+                this.mService.resetTemporaryService(parseInt);
+            } else {
+                int parseInt2 = Integer.parseInt(getNextArgRequired());
+                this.mService.setTemporaryService(parseInt, nextArg, parseInt2);
+                outPrintWriter.println(ActiveServices$$ExternalSyntheticOutline0.m(parseInt2, nextArg, " for ", "ms", new StringBuilder("ContentSuggestionsService temporarily set to ")));
+            }
+        }
+        return 0;
     }
 
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         try {
             outPrintWriter.println("ContentSuggestionsManagerService commands:");
@@ -54,55 +81,5 @@ public class ContentSuggestionsManagerServiceShellCommand extends ShellCommand {
             }
             throw th;
         }
-    }
-
-    public final int requestSet(PrintWriter printWriter) {
-        String nextArgRequired = getNextArgRequired();
-        nextArgRequired.hashCode();
-        if (nextArgRequired.equals("default-service-enabled")) {
-            return setDefaultServiceEnabled();
-        }
-        if (nextArgRequired.equals("temporary-service")) {
-            return setTemporaryService(printWriter);
-        }
-        printWriter.println("Invalid set: " + nextArgRequired);
-        return -1;
-    }
-
-    public final int requestGet(PrintWriter printWriter) {
-        String nextArgRequired = getNextArgRequired();
-        nextArgRequired.hashCode();
-        if (nextArgRequired.equals("default-service-enabled")) {
-            return getDefaultServiceEnabled(printWriter);
-        }
-        printWriter.println("Invalid get: " + nextArgRequired);
-        return -1;
-    }
-
-    public final int setTemporaryService(PrintWriter printWriter) {
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            this.mService.resetTemporaryService(parseInt);
-            return 0;
-        }
-        int parseInt2 = Integer.parseInt(getNextArgRequired());
-        this.mService.setTemporaryService(parseInt, nextArg, parseInt2);
-        printWriter.println("ContentSuggestionsService temporarily set to " + nextArg + " for " + parseInt2 + "ms");
-        return 0;
-    }
-
-    public final int setDefaultServiceEnabled() {
-        this.mService.setDefaultServiceEnabled(getNextIntArgRequired(), Boolean.parseBoolean(getNextArg()));
-        return 0;
-    }
-
-    public final int getDefaultServiceEnabled(PrintWriter printWriter) {
-        printWriter.println(this.mService.isDefaultServiceEnabled(getNextIntArgRequired()));
-        return 0;
-    }
-
-    public final int getNextIntArgRequired() {
-        return Integer.parseInt(getNextArgRequired());
     }
 }

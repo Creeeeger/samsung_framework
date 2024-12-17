@@ -1,208 +1,25 @@
 package com.android.server.policy;
 
-import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.util.Slog;
-import android.util.proto.ProtoOutputStream;
-import android.view.Display;
-import android.view.IDisplayFoldListener;
-import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.view.WindowManagerPolicyConstants;
-import com.android.internal.policy.IKeyguardDismissCallback;
-import com.android.internal.policy.IShortcutService;
-import com.android.server.policy.WindowManagerPolicyExt;
-import com.android.server.wm.DisplayRotation;
-import com.android.server.wm.StartingSurfaceController;
+import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
 import com.android.server.wm.WmCoverState;
-import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface WindowManagerPolicy extends WindowManagerPolicyConstants {
 
-    /* loaded from: classes3.dex */
-    public interface DisplayContentInfo {
-        Display getDisplay();
-
-        DisplayRotation getDisplayRotation();
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface OnKeyguardExitResult {
         void onKeyguardExitResult(boolean z);
     }
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface ScreenOffListener {
-        void onScreenOff();
     }
 
-    /* loaded from: classes3.dex */
-    public interface ScreenOnListener {
-        void onScreenOn();
-    }
-
-    /* loaded from: classes3.dex */
-    public interface WindowState extends WindowManagerPolicyExt.WindowStateExt {
-        boolean canAddInternalSystemWindow();
-
-        int getBaseType();
-
-        String getOwningPackage();
-    }
-
-    void adjustConfigurationLw(Configuration configuration, int i, int i2);
-
-    int applyKeyguardOcclusionChange();
-
-    boolean canDismissBootAnimation();
-
-    int checkAddPermission(int i, boolean z, String str, int[] iArr);
-
-    WindowManagerPolicyExt createPolicyExtension(Context context, WindowManagerPolicyExt.WindowManagerFuncs windowManagerFuncs);
-
-    void dismissKeyguardLw(IKeyguardDismissCallback iKeyguardDismissCallback, CharSequence charSequence);
-
-    KeyEvent dispatchUnhandledKey(IBinder iBinder, KeyEvent keyEvent, int i);
-
-    void dump(String str, PrintWriter printWriter, String[] strArr);
-
-    void dumpDebug(ProtoOutputStream protoOutputStream, long j);
-
-    void enableKeyguard(boolean z);
-
-    void enableScreenAfterBoot();
-
-    void exitKeyguardSecurely(OnKeyguardExitResult onKeyguardExitResult);
-
-    void finishedBootAnimation();
-
-    void finishedGoingToSleep(int i, int i2);
-
-    void finishedGoingToSleepGlobal(int i);
-
-    void finishedWakingUp(int i, int i2);
-
-    void finishedWakingUpGlobal(int i);
-
-    Rect getFoldedArea();
-
-    default int getMaxWindowLayer() {
-        return 36;
-    }
-
-    void hideBootMessages();
-
-    void init(Context context, WindowManagerFuncs windowManagerFuncs);
-
-    long interceptKeyBeforeDispatching(IBinder iBinder, KeyEvent keyEvent, int i);
-
-    int interceptKeyBeforeQueueing(KeyEvent keyEvent, int i);
-
-    int interceptMotionBeforeQueueingNonInteractive(int i, long j, int i2);
-
-    boolean isGlobalKey(int i);
-
-    boolean isKeyguardDrawnLw();
-
-    boolean isKeyguardHostWindow(WindowManager.LayoutParams layoutParams);
-
-    boolean isKeyguardLocked();
-
-    boolean isKeyguardOccluded();
-
-    boolean isKeyguardSecure(int i);
-
-    boolean isKeyguardShowing();
-
-    boolean isKeyguardShowingAndNotOccluded();
-
-    boolean isKeyguardTrustedLw();
-
-    boolean isKeyguardUnoccluding();
-
-    boolean isScreenOn();
-
-    boolean isScreenOn(int i);
-
-    boolean isUserSetupComplete();
-
-    void lockNow(Bundle bundle);
-
-    void notifyCameraLensCoverSwitchChanged(long j, boolean z);
-
-    void notifyLidSwitchChanged(long j, boolean z);
-
-    boolean okToAnimate(boolean z);
-
-    void onDefaultDisplayFocusChangedLw(WindowState windowState);
-
-    void onSystemUiStarted();
-
-    boolean performHapticFeedback(int i, String str, int i2, boolean z, String str2);
-
-    void registerDisplayFoldListener(IDisplayFoldListener iDisplayFoldListener);
-
-    void registerShortcutKey(long j, IShortcutService iShortcutService);
-
-    void screenTurnedOff(int i, boolean z);
-
-    void screenTurnedOn(int i);
-
-    void screenTurningOff(int i, ScreenOffListener screenOffListener);
-
-    void screenTurningOn(int i, ScreenOnListener screenOnListener);
-
-    void setAllowLockscreenWhenOn(int i, boolean z);
-
-    void setCoverViewDisplay(DisplayContentInfo displayContentInfo);
-
-    void setCurrentUserLw(int i);
-
-    void setDefaultDisplay(DisplayContentInfo displayContentInfo);
-
-    void setDexDisplay(DisplayContentInfo displayContentInfo);
-
-    void setDismissImeOnBackKeyPressed(boolean z);
-
-    void setNavBarVirtualKeyHapticFeedbackEnabledLw(boolean z);
-
-    void setOverrideFoldedArea(Rect rect);
-
-    void setPipVisibilityLw(boolean z);
-
-    void setRecentsVisibilityLw(boolean z);
-
-    void setSafeMode(boolean z);
-
-    void setSwitchingUser(boolean z);
-
-    void setTopFocusedDisplay(int i);
-
-    void showGlobalActions();
-
-    void startedEarlyWakingUp(int i);
-
-    void startedGoingToSleep(int i, int i2);
-
-    void startedGoingToSleepGlobal(int i);
-
-    void startedWakingUp(int i, int i2);
-
-    void startedWakingUpGlobal(int i);
-
-    void systemBooted();
-
-    void systemReady();
-
-    void unregisterDisplayFoldListener(IDisplayFoldListener iDisplayFoldListener);
-
-    void userActivity(int i, int i2);
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface WindowManagerFuncs {
         void enableScreenIfNeeded();
 
@@ -211,8 +28,6 @@ public interface WindowManagerPolicy extends WindowManagerPolicyConstants {
         int getLidState();
 
         boolean isAppTransitionStateIdle();
-
-        boolean isFolded();
 
         void lockDeviceNow();
 
@@ -234,41 +49,28 @@ public interface WindowManagerPolicy extends WindowManagerPolicyConstants {
 
         void shutdown(boolean z);
 
-        void switchKeyboardLayout(int i, int i2);
-
         void triggerAnimationFailsafe();
 
         void updateRotation(boolean z, boolean z2);
-
-        static String lidStateToString(int i) {
-            return i != -1 ? i != 0 ? i != 1 ? Integer.toString(i) : "LID_OPEN" : "LID_CLOSED" : "LID_ABSENT";
-        }
-
-        static String cameraLensStateToString(int i) {
-            return i != -1 ? i != 0 ? i != 1 ? Integer.toString(i) : "CAMERA_LENS_COVERED" : "CAMERA_LENS_UNCOVERED" : "CAMERA_LENS_COVER_ABSENT";
-        }
     }
 
-    default int getWindowLayerLw(WindowState windowState) {
-        return getWindowLayerFromTypeLw(windowState.getBaseType(), windowState.canAddInternalSystemWindow());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface WindowState {
     }
 
-    default int getWindowLayerFromTypeLw(int i) {
+    static int getWindowLayerFromTypeLw(int i) {
         if (WindowManager.LayoutParams.isSystemAlertWindowType(i)) {
             throw new IllegalArgumentException("Use getWindowLayerFromTypeLw() or getWindowLayerLw() for alert window types");
         }
-        return getWindowLayerFromTypeLw(i, false);
+        return getWindowLayerFromTypeLw(i, false, false);
     }
 
-    default int getWindowLayerFromTypeLw(int i, boolean z) {
-        return getWindowLayerFromTypeLw(i, z, false);
-    }
-
-    default int getWindowLayerFromTypeLw(int i, boolean z, boolean z2) {
+    static int getWindowLayerFromTypeLw(int i, boolean z, boolean z2) {
         int windowLayerFromTypeLw;
         if (z2 && z) {
-            return getMaxWindowLayer();
+            return 36;
         }
+        int i2 = 1;
         if (i >= 1 && i <= 99) {
             return 2;
         }
@@ -292,14 +94,107 @@ public interface WindowManagerPolicy extends WindowManagerPolicyConstants {
             case 2028:
             case 2029:
             default:
-                int windowLayerFromTypeLw2 = WindowManagerPolicyExt.getWindowLayerFromTypeLw(i, z, z2);
-                if (windowLayerFromTypeLw2 > 0) {
-                    return windowLayerFromTypeLw2;
+                switch (i) {
+                    case FrameworkStatsLog.MEDIA_CODEC_RENDERED__RESOLUTION__RESOLUTION_1080P_FHD /* 2095 */:
+                        i2 = 6;
+                        break;
+                    case 2099:
+                    case 2411:
+                        if (!WmCoverState.sIsEnabled || (i2 = WmCoverState.getInstance().getWindowLayerFromTypeLw(i)) == -1) {
+                            i2 = 21;
+                            break;
+                        }
+                        break;
+                    case 2225:
+                        i2 = 10;
+                        break;
+                    case 2226:
+                    case 2415:
+                        i2 = 18;
+                        break;
+                    case 2227:
+                    case 2600:
+                        i2 = 31;
+                        break;
+                    case 2228:
+                    case 2601:
+                    case 2605:
+                        i2 = 26;
+                        break;
+                    case 2270:
+                    case 2271:
+                    case 2621:
+                        i2 = 15;
+                        break;
+                    case 2274:
+                    case 2281:
+                    case 2440:
+                    case 2441:
+                        i2 = 23;
+                        break;
+                    case 2280:
+                    case 2401:
+                    case 2405:
+                        i2 = 25;
+                        break;
+                    case 2402:
+                    case 2412:
+                        i2 = 7;
+                        break;
+                    case 2403:
+                        i2 = 5;
+                        break;
+                    case 2406:
+                    case 2430:
+                    case 2632:
+                        i2 = 3;
+                        break;
+                    case 2407:
+                    case 2619:
+                        i2 = 34;
+                        break;
+                    case 2408:
+                        i2 = 30;
+                        break;
+                    case 2414:
+                        i2 = 22;
+                        break;
+                    case 2431:
+                    case FrameworkStatsLog.MEDIA_CODEC_RENDERED__RESOLUTION__RESOLUTION_1080X2400 /* 2618 */:
+                    case 2624:
+                        i2 = 12;
+                        break;
+                    case 2442:
+                    case 2606:
+                    case 2623:
+                        i2 = 24;
+                        break;
+                    case 2620:
+                        break;
+                    case 2622:
+                        i2 = 17;
+                        break;
+                    case 2630:
+                        i2 = 28;
+                        break;
+                    case 2631:
+                        i2 = 27;
+                        break;
+                    default:
+                        i2 = (i == 2603 || i == 2604) ? 3 : i != 2606 ? -1 : 4;
+                        if (i2 <= 0) {
+                            i2 = -1;
+                            break;
+                        }
+                        break;
                 }
-                Slog.e(StartingSurfaceController.TAG, "Unknown window type: " + i);
+                if (i2 > 0) {
+                    return i2;
+                }
+                NandswapManager$$ExternalSyntheticOutline0.m(i, "Unknown window type: ", "WindowManager");
                 return 3;
             case 2005:
-                if (!WmCoverState.isEnabled() || (windowLayerFromTypeLw = WmCoverState.getInstance().getWindowLayerFromTypeLw(i)) == -1) {
+                if (!WmCoverState.sIsEnabled || (windowLayerFromTypeLw = WmCoverState.getInstance().getWindowLayerFromTypeLw(i)) == -1) {
                     return 21;
                 }
                 return windowLayerFromTypeLw;
@@ -360,30 +255,20 @@ public interface WindowManagerPolicy extends WindowManagerPolicyConstants {
         }
     }
 
-    default int getSubWindowLayerFromTypeLw(int i) {
-        switch (i) {
-            case 1000:
-            case 1003:
-                return 1;
-            case 1001:
-                return -2;
-            case 1002:
-                return 2;
-            case 1004:
-                return -1;
-            case 1005:
-                return 3;
-            default:
-                int subWindowLayerFromTypeLw = WindowManagerPolicyExt.getSubWindowLayerFromTypeLw(i);
-                if (subWindowLayerFromTypeLw > 0) {
-                    return subWindowLayerFromTypeLw;
+    static int getWindowLayerLw(WindowState windowState) {
+        com.android.server.wm.WindowState windowState2;
+        com.android.server.wm.WindowState windowState3 = (com.android.server.wm.WindowState) windowState;
+        windowState3.getClass();
+        com.android.server.wm.WindowState windowState4 = windowState3;
+        loop0: while (true) {
+            windowState2 = windowState4;
+            while (windowState4 != null && windowState4.mIsChildWindow) {
+                windowState4 = windowState4.getParentWindow();
+                if (windowState4 != null) {
+                    break;
                 }
-                Slog.e(StartingSurfaceController.TAG, "Unknown sub-window type: " + i);
-                return 0;
+            }
         }
-    }
-
-    static String userRotationModeToString(int i) {
-        return i != 0 ? i != 1 ? Integer.toString(i) : "USER_ROTATION_LOCKED" : "USER_ROTATION_FREE";
+        return getWindowLayerFromTypeLw(windowState2.mAttrs.type, windowState3.mOwnerCanAddInternalSystemWindow, false);
     }
 }

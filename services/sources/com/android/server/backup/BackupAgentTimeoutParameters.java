@@ -7,8 +7,9 @@ import android.provider.Settings;
 import android.util.KeyValueListParser;
 import android.util.KeyValueSettingObserver;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class BackupAgentTimeoutParameters extends KeyValueSettingObserver {
+public final class BackupAgentTimeoutParameters extends KeyValueSettingObserver {
     public static final long DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS = 300000;
     public static final long DEFAULT_KV_BACKUP_AGENT_TIMEOUT_MILLIS = 30000;
     public static final long DEFAULT_QUOTA_EXCEEDED_TIMEOUT_MILLIS = 3000;
@@ -41,32 +42,7 @@ public class BackupAgentTimeoutParameters extends KeyValueSettingObserver {
         this.mLock = new Object();
     }
 
-    public String getSettingValue(ContentResolver contentResolver) {
-        return Settings.Global.getString(contentResolver, SETTING);
-    }
-
-    public void update(KeyValueListParser keyValueListParser) {
-        synchronized (this.mLock) {
-            this.mKvBackupAgentTimeoutMillis = keyValueListParser.getLong(SETTING_KV_BACKUP_AGENT_TIMEOUT_MILLIS, 30000L);
-            this.mFullBackupAgentTimeoutMillis = keyValueListParser.getLong(SETTING_FULL_BACKUP_AGENT_TIMEOUT_MILLIS, DEFAULT_FULL_BACKUP_AGENT_TIMEOUT_MILLIS);
-            this.mSharedBackupAgentTimeoutMillis = keyValueListParser.getLong(SETTING_SHARED_BACKUP_AGENT_TIMEOUT_MILLIS, 1800000L);
-            this.mRestoreAgentTimeoutMillis = keyValueListParser.getLong(SETTING_RESTORE_AGENT_TIMEOUT_MILLIS, 60000L);
-            this.mRestoreSystemAgentTimeoutMillis = keyValueListParser.getLong(SETTING_RESTORE_SYSTEM_AGENT_TIMEOUT_MILLIS, 180000L);
-            this.mRestoreAgentFinishedTimeoutMillis = keyValueListParser.getLong(SETTING_RESTORE_AGENT_FINISHED_TIMEOUT_MILLIS, 30000L);
-            this.mRestoreSessionTimeoutMillis = keyValueListParser.getLong(SETTING_RESTORE_SESSION_TIMEOUT_MILLIS, 60000L);
-            this.mQuotaExceededTimeoutMillis = keyValueListParser.getLong(SETTING_QUOTA_EXCEEDED_TIMEOUT_MILLIS, 3000L);
-        }
-    }
-
-    public long getKvBackupAgentTimeoutMillis() {
-        long j;
-        synchronized (this.mLock) {
-            j = this.mKvBackupAgentTimeoutMillis;
-        }
-        return j;
-    }
-
-    public long getFullBackupAgentTimeoutMillis() {
+    public final long getFullBackupAgentTimeoutMillis() {
         long j;
         synchronized (this.mLock) {
             j = this.mFullBackupAgentTimeoutMillis;
@@ -74,23 +50,35 @@ public class BackupAgentTimeoutParameters extends KeyValueSettingObserver {
         return j;
     }
 
-    public long getSharedBackupAgentTimeoutMillis() {
+    public final long getKvBackupAgentTimeoutMillis() {
         long j;
         synchronized (this.mLock) {
-            j = this.mSharedBackupAgentTimeoutMillis;
+            j = this.mKvBackupAgentTimeoutMillis;
         }
         return j;
     }
 
-    public long getRestoreAgentTimeoutMillis(int i) {
+    public final long getQuotaExceededTimeoutMillis() {
         long j;
         synchronized (this.mLock) {
-            j = UserHandle.isCore(i) ? this.mRestoreSystemAgentTimeoutMillis : this.mRestoreAgentTimeoutMillis;
+            j = this.mQuotaExceededTimeoutMillis;
         }
         return j;
     }
 
-    public long getRestoreSessionTimeoutMillis() {
+    public final long getRestoreAgentTimeoutMillis(int i) {
+        long j;
+        synchronized (this.mLock) {
+            try {
+                j = UserHandle.isCore(i) ? this.mRestoreSystemAgentTimeoutMillis : this.mRestoreAgentTimeoutMillis;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return j;
+    }
+
+    public final long getRestoreSessionTimeoutMillis() {
         long j;
         synchronized (this.mLock) {
             j = this.mRestoreSessionTimeoutMillis;
@@ -98,19 +86,20 @@ public class BackupAgentTimeoutParameters extends KeyValueSettingObserver {
         return j;
     }
 
-    public long getRestoreAgentFinishedTimeoutMillis() {
-        long j;
-        synchronized (this.mLock) {
-            j = this.mRestoreAgentFinishedTimeoutMillis;
-        }
-        return j;
+    public final String getSettingValue(ContentResolver contentResolver) {
+        return Settings.Global.getString(contentResolver, SETTING);
     }
 
-    public long getQuotaExceededTimeoutMillis() {
-        long j;
+    public final void update(KeyValueListParser keyValueListParser) {
         synchronized (this.mLock) {
-            j = this.mQuotaExceededTimeoutMillis;
+            this.mKvBackupAgentTimeoutMillis = keyValueListParser.getLong(SETTING_KV_BACKUP_AGENT_TIMEOUT_MILLIS, 30000L);
+            this.mFullBackupAgentTimeoutMillis = keyValueListParser.getLong(SETTING_FULL_BACKUP_AGENT_TIMEOUT_MILLIS, 300000L);
+            this.mSharedBackupAgentTimeoutMillis = keyValueListParser.getLong(SETTING_SHARED_BACKUP_AGENT_TIMEOUT_MILLIS, 1800000L);
+            this.mRestoreAgentTimeoutMillis = keyValueListParser.getLong(SETTING_RESTORE_AGENT_TIMEOUT_MILLIS, 60000L);
+            this.mRestoreSystemAgentTimeoutMillis = keyValueListParser.getLong(SETTING_RESTORE_SYSTEM_AGENT_TIMEOUT_MILLIS, 180000L);
+            this.mRestoreAgentFinishedTimeoutMillis = keyValueListParser.getLong(SETTING_RESTORE_AGENT_FINISHED_TIMEOUT_MILLIS, 30000L);
+            this.mRestoreSessionTimeoutMillis = keyValueListParser.getLong(SETTING_RESTORE_SESSION_TIMEOUT_MILLIS, 60000L);
+            this.mQuotaExceededTimeoutMillis = keyValueListParser.getLong(SETTING_QUOTA_EXCEEDED_TIMEOUT_MILLIS, 3000L);
         }
-        return j;
     }
 }

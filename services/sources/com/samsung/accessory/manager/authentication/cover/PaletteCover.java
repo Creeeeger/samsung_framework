@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import com.android.server.accessibility.AccessibilityManagerService$$ExternalSyntheticOutline0;
 import com.samsung.accessory.manager.authentication.AuthenticationResult;
 import java.util.Arrays;
 
-/* loaded from: classes.dex */
-public class PaletteCover {
-    public static final String TAG = "SAccessoryManager_" + PaletteCover.class.getSimpleName();
-    public Context mContext;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PaletteCover {
+    public final Context mContext;
     public byte[] mUriData;
     public byte mPackage = 0;
     public boolean mCoverAttached = false;
@@ -20,13 +21,17 @@ public class PaletteCover {
         this.mContext = context;
     }
 
-    public boolean isCoverAttached() {
-        return this.mCoverAttached;
+    public static boolean isDataChanged(Context context, byte[] bArr) {
+        String arrays = bArr != null ? Arrays.toString(bArr) : "";
+        String string = Settings.System.getString(context.getContentResolver(), "accessory_cover_uri");
+        Log.d("SAccessoryManager_PaletteCover", "isDataChanged:uriDataString=" + arrays + ",uriSet=" + string);
+        return (TextUtils.isEmpty(string) || arrays.equals(string)) ? false : true;
     }
 
-    public void setCoverVerified(boolean z, AuthenticationResult authenticationResult) {
-        Log.d(TAG, "setCoverVerified:isVerified=" + z);
-        this.mUriData = z ? authenticationResult.getByteArrayManagerURI() : null;
+    public final void disableSetting() {
+        Log.i("SAccessoryManager_PaletteCover", "disableSetting");
+        this.mPackage = (byte) 3;
+        this.mUriData = null;
         onCoverStateChanged();
     }
 
@@ -34,18 +39,17 @@ public class PaletteCover {
         try {
             byte[] bArr = this.mUriData;
             String arrays = bArr != null ? Arrays.toString(bArr) : "";
-            String str = TAG;
-            Log.d(str, "On cover state change : data = " + arrays);
+            Log.d("SAccessoryManager_PaletteCover", "On cover state change : data = " + arrays);
             Intent intent = new Intent();
             intent.putExtra("accessoryType", 18);
             if (this.mUriData != null) {
                 intent.setAction("com.samsung.android.intent.action.ACCESSORY_COVER_ATTACH");
                 this.mPackage = this.mUriData[1];
-                Log.d(str, "Attach Target package type: " + ((int) this.mPackage));
+                Log.d("SAccessoryManager_PaletteCover", "Attach Target package type: " + ((int) this.mPackage));
                 intent.putExtra("URI", this.mUriData);
                 this.mCoverAttached = true;
             } else {
-                Log.d(str, "Palette cover detached");
+                Log.d("SAccessoryManager_PaletteCover", "Palette cover detached");
                 intent.putExtra("URI", "");
                 intent.setAction("com.samsung.android.intent.action.ACCESSORY_COVER_DETACH");
                 this.mCoverAttached = false;
@@ -62,30 +66,15 @@ public class PaletteCover {
                 this.mPackage = (byte) 0;
             }
             Settings.System.putString(this.mContext.getContentResolver(), "accessory_cover_uri", arrays);
+            Settings.System.putString(this.mContext.getContentResolver(), "cover_type_id", this.mCoverAttached ? "18" : "");
         } catch (Exception unused) {
-            Log.d(TAG, "error during cover state change");
+            Log.d("SAccessoryManager_PaletteCover", "error during cover state change");
         }
     }
 
-    public static boolean isSettingEnabled(Context context) {
-        return !TextUtils.isEmpty(getSetURI(context));
-    }
-
-    public static boolean isDataChanged(Context context, byte[] bArr) {
-        String arrays = bArr != null ? Arrays.toString(bArr) : "";
-        String setURI = getSetURI(context);
-        Log.d(TAG, "isDataChanged:uriDataString=" + arrays + ",uriSet=" + setURI);
-        return (TextUtils.isEmpty(setURI) || arrays.equals(setURI)) ? false : true;
-    }
-
-    public static String getSetURI(Context context) {
-        return Settings.System.getString(context.getContentResolver(), "accessory_cover_uri");
-    }
-
-    public void disableSetting() {
-        Log.i(TAG, "disableSetting");
-        this.mPackage = (byte) 3;
-        this.mUriData = null;
+    public final void setCoverVerified(boolean z, AuthenticationResult authenticationResult) {
+        AccessibilityManagerService$$ExternalSyntheticOutline0.m("setCoverVerified:isVerified=", "SAccessoryManager_PaletteCover", z);
+        this.mUriData = z ? authenticationResult.mByteArrayManagerURI : null;
         onCoverStateChanged();
     }
 }

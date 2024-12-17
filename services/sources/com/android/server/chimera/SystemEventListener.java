@@ -1,6 +1,7 @@
 package com.android.server.chimera;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,11 +13,10 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
-import com.android.internal.util.jobs.XmlUtils;
+import com.android.server.DssController$$ExternalSyntheticThrowCCEIfNotNull0;
 import com.android.server.LocalServices;
-import com.android.server.audio.CurrentDeviceManager$$ExternalSyntheticThrowCCEIfNotNull0;
-import com.android.server.chimera.ChimeraQuotaMonitor;
 import com.android.server.chimera.SystemRepository;
+import com.android.server.chimera.psitracker.PSITracker;
 import com.android.server.wm.ActivityMetricsLaunchObserver;
 import com.android.server.wm.ActivityMetricsLaunchObserverRegistry;
 import com.android.server.wm.ActivityTaskManagerInternal;
@@ -27,14 +27,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SystemEventListener extends BroadcastReceiver {
-    public static boolean mFirstTriggeredAfterBooting = false;
-    public SystemEventHandler mHandler;
+public final class SystemEventListener extends BroadcastReceiver {
+    public static boolean mFirstTriggeredAfterBooting;
+    public final AppLaunchIntent mAppLaunchObserver;
+    public final SystemEventHandler mHandler;
+    public final SystemEventListener$$ExternalSyntheticLambda0 mProcessObserver;
     public final SystemRepository mSystemRepository;
-    public final List mBottleNeckHintListeners = new ArrayList();
-    public final List mPmmCriticalListeners = new ArrayList();
-    public final List mPmmStateChangeListeners = new ArrayList();
     public final List mLmkdEventListeners = new ArrayList();
     public final List mHomeLaunchListeners = new ArrayList();
     public final List mAppLaunchListeners = new ArrayList();
@@ -46,581 +46,104 @@ public class SystemEventListener extends BroadcastReceiver {
     public final List mTimeOrTimeZoneChangedListeners = new ArrayList();
     public final List mOneHourTimerListeners = new ArrayList();
     public final List mQuotaListeners = new ArrayList();
-    public final SystemRepository.ChimeraProcessObserver mProcessObserver = new SystemRepository.ChimeraProcessObserver() { // from class: com.android.server.chimera.SystemEventListener$$ExternalSyntheticLambda0
-        @Override // com.android.server.chimera.SystemRepository.ChimeraProcessObserver
-        public final void onForegroundActivitiesChanged(int i, int i2, boolean z, int i3, String[] strArr, boolean z2) {
-            SystemEventListener.this.lambda$new$0(i, i2, z, i3, strArr, z2);
-        }
-    };
-    public AppLaunchIntent mAppLaunchObserver = new AppLaunchIntent();
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface AlwaysRunningQuotaExceedListener {
-        void onQuotaExceed(ChimeraQuotaMonitor.QuotaReclaimTarget quotaReclaimTarget);
     }
 
-    /* loaded from: classes.dex */
-    public interface AppLaunchIntentListener {
-        void onAppLaunchIntent(String str);
-    }
-
-    /* loaded from: classes.dex */
-    public interface BottleNeckHintListener {
-        void onBottleNeckHintTriggered();
-    }
-
-    /* loaded from: classes.dex */
-    public interface CameraStateListener {
-        void onCameraClose();
-
-        void onCameraOpen();
-    }
-
-    /* loaded from: classes.dex */
-    public interface CarModeChangeListener {
-        void onCarModeChanged(boolean z);
-    }
-
-    /* loaded from: classes.dex */
-    public interface DeviceIdleListener {
-        void onDeviceIdle();
-    }
-
-    /* loaded from: classes.dex */
-    public interface HomeLaunchListener {
-        void onHomeLaunched();
-    }
-
-    /* loaded from: classes.dex */
-    public interface LmkdEventListener {
-        void onLmkdEventTriggered(int i, int i2, int i3);
-    }
-
-    /* loaded from: classes.dex */
-    public interface MediaScanFinishedListener {
-        void onMediaScanFinished();
-    }
-
-    /* loaded from: classes.dex */
-    public interface OneHourTimerListener {
-        void onOneHourTimer();
-    }
-
-    /* loaded from: classes.dex */
-    public interface PmmCriticalListener {
-        void onPmmCriticalTriggered();
-    }
-
-    /* loaded from: classes.dex */
-    public interface PmmStateChangeListener {
-        void onPmmStateChanged(int i);
-    }
-
-    /* loaded from: classes.dex */
-    public interface TimeOrTimeZoneChangedListener {
-        void onTimeOrTimeZoneChanged(String str);
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    @Override // android.content.BroadcastReceiver
-    public void onReceive(Context context, Intent intent) {
-        char c;
-        if (intent == null || intent.getAction() == null) {
-            return;
-        }
-        String action = intent.getAction();
-        this.mSystemRepository.log("SystemEventListener", "onReceive() - action: " + action);
-        action.hashCode();
-        switch (action.hashCode()) {
-            case -1142424621:
-                if (action.equals("android.intent.action.MEDIA_SCANNER_FINISHED")) {
-                    c = 0;
-                    break;
-                }
-                c = 65535;
-                break;
-            case -671746826:
-                if (action.equals("com.samsung.BOTTLENECK_HINT_FOR_CHIMERA")) {
-                    c = 1;
-                    break;
-                }
-                c = 65535;
-                break;
-            case -340910879:
-                if (action.equals("android.app.action.ENTER_CAR_MODE")) {
-                    c = 2;
-                    break;
-                }
-                c = 65535;
-                break;
-            case -332007453:
-                if (action.equals("android.app.action.EXIT_CAR_MODE")) {
-                    c = 3;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 37241134:
-                if (action.equals("com.samsung.KPM_STATE_CHANGED")) {
-                    c = 4;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 502473491:
-                if (action.equals("android.intent.action.TIMEZONE_CHANGED")) {
-                    c = 5;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 505380757:
-                if (action.equals("android.intent.action.TIME_SET")) {
-                    c = 6;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 870701415:
-                if (action.equals("android.os.action.DEVICE_IDLE_MODE_CHANGED")) {
-                    c = 7;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 1790399016:
-                if (action.equals("com.samsung.PMM_CRITICAL_TRIGGER")) {
-                    c = '\b';
-                    break;
-                }
-                c = 65535;
-                break;
-            default:
-                c = 65535;
-                break;
-        }
-        switch (c) {
-            case 0:
-                if (mFirstTriggeredAfterBooting) {
-                    return;
-                }
-                this.mHandler.sendEmptyMessage(8);
-                mFirstTriggeredAfterBooting = true;
-                return;
-            case 1:
-                this.mHandler.sendEmptyMessage(2);
-                return;
-            case 2:
-                this.mHandler.sendEmptyMessage(6);
-                return;
-            case 3:
-                this.mHandler.sendEmptyMessage(7);
-                return;
-            case 4:
-                int intExtra = intent.getIntExtra("kpm_level", -1);
-                if (intExtra != -1) {
-                    this.mHandler.sendMessage(this.mHandler.obtainMessage(3, Integer.valueOf(intExtra)));
-                    return;
-                }
-                return;
-            case 5:
-            case 6:
-                Message obtainMessage = this.mHandler.obtainMessage(15);
-                obtainMessage.obj = intent.getAction();
-                this.mHandler.sendMessage(obtainMessage);
-                return;
-            case 7:
-                PowerManager powerManager = (PowerManager) context.getSystemService("power");
-                if (powerManager != null) {
-                    if (powerManager.isDeviceIdleMode()) {
-                        this.mSystemRepository.log("SystemEventListener", "Device idle is true ! ");
-                        this.mHandler.sendEmptyMessage(10);
-                        return;
-                    } else {
-                        this.mSystemRepository.log("SystemEventListener", "Device idle is false ! ");
-                        return;
-                    }
-                }
-                return;
-            case '\b':
-                this.mHandler.sendEmptyMessage(1);
-                return;
-            default:
-                return;
-        }
-    }
-
-    public final void registerBroadcastReceivers(Context context) {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.samsung.BOTTLENECK_HINT_FOR_CHIMERA");
-        intentFilter.addAction("com.samsung.KPM_STATE_CHANGED");
-        intentFilter.addAction("android.app.action.ENTER_CAR_MODE");
-        intentFilter.addAction("android.app.action.EXIT_CAR_MODE");
-        context.registerReceiver(this, intentFilter);
-        IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("com.samsung.PMM_CRITICAL_TRIGGER");
-        context.registerReceiver(this, intentFilter2, "com.samsung.android.permission.BROADCAST_PMM_CRITICAL_TRIGGER", null);
-        IntentFilter intentFilter3 = new IntentFilter();
-        intentFilter3.addAction("android.intent.action.MEDIA_SCANNER_FINISHED");
-        intentFilter3.addDataScheme("file");
-        context.registerReceiver(this, intentFilter3);
-        IntentFilter intentFilter4 = new IntentFilter();
-        intentFilter4.addAction("android.os.action.DEVICE_IDLE_MODE_CHANGED");
-        context.registerReceiver(this, intentFilter4);
-        IntentFilter intentFilter5 = new IntentFilter();
-        intentFilter5.addAction("android.intent.action.TIME_SET");
-        intentFilter5.addAction("android.intent.action.TIMEZONE_CHANGED");
-        context.registerReceiver(this, intentFilter5);
-    }
-
-    public void addCarModeChangeListener(CarModeChangeListener carModeChangeListener) {
-        this.mCarModeChangeListeners.add(carModeChangeListener);
-    }
-
-    public SystemEventListener(Context context, Looper looper, SystemRepository systemRepository) {
-        this.mSystemRepository = systemRepository;
-        SystemEventHandler systemEventHandler = new SystemEventHandler(looper);
-        this.mHandler = systemEventHandler;
-        systemRepository.setSystemEventListenerHandler(systemEventHandler);
-        registerBroadcastReceivers(context);
-        createSocketServer();
-        registerProcessObserver();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(int i, int i2, boolean z, int i3, String[] strArr, boolean z2) {
-        if (z) {
-            if (z2) {
-                if (this.mHandler.hasMessages(5)) {
-                    return;
-                }
-                this.mHandler.sendMessageDelayed(Message.obtain(this.mHandler, 5, Integer.valueOf(i2)), 2000L);
-                return;
-            }
-            this.mHandler.removeMessages(5);
-            Message obtain = Message.obtain(this.mHandler, 9);
-            obtain.obj = strArr[0];
-            this.mHandler.sendMessage(obtain);
-        }
-    }
-
-    public final void registerProcessObserver() {
-        this.mSystemRepository.registerProcessObserver(this.mProcessObserver);
-    }
-
-    public final void createSocketServer() {
-        new LmkdEventServerThread(this.mSystemRepository, this.mHandler).start();
-    }
-
-    /* loaded from: classes.dex */
-    public class AppLaunchIntent extends ActivityMetricsLaunchObserver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AppLaunchIntent extends ActivityMetricsLaunchObserver {
         public AppLaunchIntent() {
         }
 
         @Override // com.android.server.wm.ActivityMetricsLaunchObserver
-        public void onIntentStarted(Intent intent, long j) {
+        public final void onIntentStarted(Intent intent, long j) {
             String str;
-            if (intent.getComponent() != null) {
+            if (intent == null) {
+                return;
+            }
+            ComponentName component = intent.getComponent();
+            SystemEventListener systemEventListener = SystemEventListener.this;
+            if (component != null) {
                 str = intent.getComponent().getPackageName();
-            } else if (intent.getPackage() != null) {
-                str = intent.getPackage();
             } else {
-                SystemEventListener.this.mSystemRepository.log("SystemEventListener", "Not an effective intent: " + intent);
-                return;
-            }
-            if (str.contains(SystemEventListener.this.mSystemRepository.getCurrentHomePackageName()) || str.contains("com.samsung.android.permissioncontroller")) {
-                return;
-            }
-            Message obtain = Message.obtain(SystemEventListener.this.mHandler, 11);
-            obtain.obj = str;
-            SystemEventListener.this.mSystemRepository.log("SystemEventListener", "appLaunchIntent package name is: " + str);
-            SystemEventListener.this.mHandler.sendMessage(obtain);
-        }
-    }
-
-    public ActivityMetricsLaunchObserverRegistry provideLaunchObserverRegistry() {
-        return ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class)).getLaunchObserverRegistry();
-    }
-
-    public void removeCarModeChangeListener(CarModeChangeListener carModeChangeListener) {
-        this.mCarModeChangeListeners.remove(carModeChangeListener);
-    }
-
-    public void addBottleNeckHintListener(BottleNeckHintListener bottleNeckHintListener) {
-        this.mBottleNeckHintListeners.add(bottleNeckHintListener);
-    }
-
-    public void addPmmCriticalListener(PmmCriticalListener pmmCriticalListener) {
-        this.mPmmCriticalListeners.add(pmmCriticalListener);
-    }
-
-    public void addPmmStateChangeListener(PmmStateChangeListener pmmStateChangeListener) {
-        this.mPmmStateChangeListeners.add(pmmStateChangeListener);
-    }
-
-    public void addLmkdEventListener(LmkdEventListener lmkdEventListener) {
-        this.mLmkdEventListeners.add(lmkdEventListener);
-    }
-
-    public void addHomeLaunchListener(HomeLaunchListener homeLaunchListener) {
-        this.mHomeLaunchListeners.add(homeLaunchListener);
-    }
-
-    public void addMediaScanFinishedListener(MediaScanFinishedListener mediaScanFinishedListener) {
-        this.mMediaScanFinishedListeners.add(mediaScanFinishedListener);
-    }
-
-    public void addAppLaunchIntentListener(AppLaunchIntentListener appLaunchIntentListener) {
-        this.mAppLaunchIntentListeners.add(appLaunchIntentListener);
-    }
-
-    public void addDeviceIdleListener(DeviceIdleListener deviceIdleListener) {
-        this.mDeviceIdleListeners.add(deviceIdleListener);
-    }
-
-    public void addCameraDeviceStateCallback(Context context) {
-        ((CameraManager) context.getSystemService("camera")).registerSemCameraDeviceStateCallback(this.mSystemRepository.getCameraDeviceStateCallback(), this.mHandler);
-    }
-
-    public void addAppLaunchIntent() {
-        provideLaunchObserverRegistry().registerLaunchObserver(this.mAppLaunchObserver);
-    }
-
-    public void addCameraStateListener(CameraStateListener cameraStateListener) {
-        this.mCameraStateListeners.add(cameraStateListener);
-    }
-
-    public void addOneHourTimerListener(OneHourTimerListener oneHourTimerListener) {
-        if (this.mOneHourTimerListeners.size() == 0) {
-            startOneHourTimer();
-        }
-        this.mOneHourTimerListeners.add(oneHourTimerListener);
-    }
-
-    public void addTimeOrTimeZoneChangedListener(TimeOrTimeZoneChangedListener timeOrTimeZoneChangedListener) {
-        this.mTimeOrTimeZoneChangedListeners.add(timeOrTimeZoneChangedListener);
-    }
-
-    public void removeBottleNeckHintListener(BottleNeckHintListener bottleNeckHintListener) {
-        this.mBottleNeckHintListeners.remove(bottleNeckHintListener);
-    }
-
-    public void removePmmCriticalListener(PmmCriticalListener pmmCriticalListener) {
-        this.mPmmCriticalListeners.remove(pmmCriticalListener);
-    }
-
-    public void removePmmStateChangeListener(PmmStateChangeListener pmmStateChangeListener) {
-        this.mPmmStateChangeListeners.remove(pmmStateChangeListener);
-    }
-
-    public void removeLmkdEventListener(LmkdEventListener lmkdEventListener) {
-        this.mLmkdEventListeners.remove(lmkdEventListener);
-    }
-
-    public void removeHomeLaunchListener(HomeLaunchListener homeLaunchListener) {
-        this.mHomeLaunchListeners.remove(homeLaunchListener);
-    }
-
-    public void removeAppLaunchIntentListener(AppLaunchIntentListener appLaunchIntentListener) {
-        this.mAppLaunchIntentListeners.remove(appLaunchIntentListener);
-    }
-
-    public void removeDeviceIdleListener(DeviceIdleListener deviceIdleListener) {
-        this.mDeviceIdleListeners.remove(deviceIdleListener);
-    }
-
-    public void removeCameraStateListener(CameraStateListener cameraStateListener) {
-        this.mCameraStateListeners.remove(cameraStateListener);
-    }
-
-    public void removeTimeOrTimeZoneChangedListener(TimeOrTimeZoneChangedListener timeOrTimeZoneChangedListener) {
-        this.mTimeOrTimeZoneChangedListeners.remove(timeOrTimeZoneChangedListener);
-    }
-
-    public void removeOneHourTimerListener(OneHourTimerListener oneHourTimerListener) {
-        this.mOneHourTimerListeners.remove(oneHourTimerListener);
-        if (this.mOneHourTimerListeners.size() == 0) {
-            this.mHandler.removeMessages(14);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class SystemEventHandler extends Handler {
-        public SystemEventHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override // android.os.Handler
-        public void handleMessage(Message message) {
-            try {
-                switch (message.what) {
-                    case 1:
-                        Iterator it = SystemEventListener.this.mPmmCriticalListeners.iterator();
-                        while (it.hasNext()) {
-                            ((PmmCriticalListener) it.next()).onPmmCriticalTriggered();
-                        }
-                        return;
-                    case 2:
-                        Iterator it2 = SystemEventListener.this.mBottleNeckHintListeners.iterator();
-                        while (it2.hasNext()) {
-                            ((BottleNeckHintListener) it2.next()).onBottleNeckHintTriggered();
-                        }
-                        return;
-                    case 3:
-                        Iterator it3 = SystemEventListener.this.mPmmStateChangeListeners.iterator();
-                        while (it3.hasNext()) {
-                            ((PmmStateChangeListener) it3.next()).onPmmStateChanged(((Integer) message.obj).intValue());
-                        }
-                        return;
-                    case 4:
-                        Iterator it4 = SystemEventListener.this.mLmkdEventListeners.iterator();
-                        while (it4.hasNext()) {
-                            ((LmkdEventListener) it4.next()).onLmkdEventTriggered(message.arg1, message.arg2, ((Integer) message.obj).intValue());
-                        }
-                        return;
-                    case 5:
-                        Iterator it5 = SystemEventListener.this.mHomeLaunchListeners.iterator();
-                        while (it5.hasNext()) {
-                            ((HomeLaunchListener) it5.next()).onHomeLaunched();
-                        }
-                        return;
-                    case 6:
-                        Iterator it6 = SystemEventListener.this.mCarModeChangeListeners.iterator();
-                        while (it6.hasNext()) {
-                            ((CarModeChangeListener) it6.next()).onCarModeChanged(true);
-                        }
-                        return;
-                    case 7:
-                        Iterator it7 = SystemEventListener.this.mCarModeChangeListeners.iterator();
-                        while (it7.hasNext()) {
-                            ((CarModeChangeListener) it7.next()).onCarModeChanged(false);
-                        }
-                        return;
-                    case 8:
-                        Iterator it8 = SystemEventListener.this.mMediaScanFinishedListeners.iterator();
-                        while (it8.hasNext()) {
-                            ((MediaScanFinishedListener) it8.next()).onMediaScanFinished();
-                        }
-                        return;
-                    case 9:
-                        Iterator it9 = SystemEventListener.this.mAppLaunchListeners.iterator();
-                        if (it9.hasNext()) {
-                            CurrentDeviceManager$$ExternalSyntheticThrowCCEIfNotNull0.m(it9.next());
-                            throw null;
-                        }
-                        return;
-                    case 10:
-                        Iterator it10 = SystemEventListener.this.mDeviceIdleListeners.iterator();
-                        while (it10.hasNext()) {
-                            ((DeviceIdleListener) it10.next()).onDeviceIdle();
-                        }
-                        return;
-                    case 11:
-                        Iterator it11 = SystemEventListener.this.mAppLaunchIntentListeners.iterator();
-                        while (it11.hasNext()) {
-                            ((AppLaunchIntentListener) it11.next()).onAppLaunchIntent((String) message.obj);
-                        }
-                        return;
-                    case 12:
-                        Iterator it12 = SystemEventListener.this.mCameraStateListeners.iterator();
-                        while (it12.hasNext()) {
-                            ((CameraStateListener) it12.next()).onCameraOpen();
-                        }
-                        return;
-                    case 13:
-                        Iterator it13 = SystemEventListener.this.mCameraStateListeners.iterator();
-                        while (it13.hasNext()) {
-                            ((CameraStateListener) it13.next()).onCameraClose();
-                        }
-                        return;
-                    case 14:
-                        SystemEventListener.this.mSystemRepository.log("SystemEventListener", "MSG_ONE_HOUR_TIMER");
-                        Iterator it14 = SystemEventListener.this.mOneHourTimerListeners.iterator();
-                        while (it14.hasNext()) {
-                            ((OneHourTimerListener) it14.next()).onOneHourTimer();
-                        }
-                        SystemEventListener.this.startOneHourTimer();
-                        return;
-                    case 15:
-                        Iterator it15 = SystemEventListener.this.mTimeOrTimeZoneChangedListeners.iterator();
-                        while (it15.hasNext()) {
-                            ((TimeOrTimeZoneChangedListener) it15.next()).onTimeOrTimeZoneChanged((String) message.obj);
-                        }
-                        return;
-                    case 16:
-                        Iterator it16 = SystemEventListener.this.mQuotaListeners.iterator();
-                        while (it16.hasNext()) {
-                            ((AlwaysRunningQuotaExceedListener) it16.next()).onQuotaExceed((ChimeraQuotaMonitor.QuotaReclaimTarget) message.obj);
-                        }
-                        return;
-                    default:
-                        return;
+                if (intent.getPackage() == null) {
+                    systemEventListener.mSystemRepository.getClass();
+                    SystemRepository.log("SystemEventListener", "Not an effective intent: " + intent);
+                    return;
                 }
-            } catch (RuntimeException e) {
-                Log.e(SystemRepositoryDefault.convertToChimeraTag("SystemEventListener"), "Handler execute with exception " + e.getMessage());
+                str = intent.getPackage();
             }
+            systemEventListener.mSystemRepository.getClass();
+            if (str.contains(SystemRepository.getCurrentHomePackageName()) || str.contains("com.samsung.android.permissioncontroller")) {
+                return;
+            }
+            Message obtain = Message.obtain(systemEventListener.mHandler, 11);
+            obtain.obj = str;
+            SystemRepository systemRepository = systemEventListener.mSystemRepository;
+            String concat = "appLaunchIntent package name is: ".concat(str);
+            systemRepository.getClass();
+            SystemRepository.log("SystemEventListener", concat);
+            systemEventListener.mHandler.sendMessage(obtain);
         }
     }
 
-    public void startOneHourTimer() {
-        this.mSystemRepository.log("SystemEventListener", "startOneHourTimer");
-        this.mHandler.sendMessageDelayed(Message.obtain(this.mHandler, 14), Duration.ofHours(1L).toMillis());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface AppLaunchIntentListener {
     }
 
-    public void removeCameraDeviceStateCallback(Context context) {
-        ((CameraManager) context.getSystemService("camera")).unregisterSemCameraDeviceStateCallback(this.mSystemRepository.getCameraDeviceStateCallback());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface CameraStateListener {
     }
 
-    public void removeAppLaunchIntent() {
-        provideLaunchObserverRegistry().unregisterLaunchObserver(this.mAppLaunchObserver);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface CarModeChangeListener {
     }
 
-    public void addAlwaysRunningQuotaExceedListener(AlwaysRunningQuotaExceedListener alwaysRunningQuotaExceedListener) {
-        this.mQuotaListeners.add(alwaysRunningQuotaExceedListener);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface DeviceIdleListener {
     }
 
-    public void removeAlwaysRunningQuotaExceedListener(AlwaysRunningQuotaExceedListener alwaysRunningQuotaExceedListener) {
-        this.mQuotaListeners.remove(alwaysRunningQuotaExceedListener);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface HomeLaunchListener {
     }
 
-    public void sendQuotaExceedMessage(ChimeraQuotaMonitor.QuotaReclaimTarget quotaReclaimTarget) {
-        Message obtain = Message.obtain(this.mHandler, 16);
-        obtain.obj = quotaReclaimTarget;
-        this.mHandler.sendMessage(obtain);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface LmkdEventListener {
     }
 
-    /* loaded from: classes.dex */
-    public class LmkdEventServerThread extends Thread {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LmkdEventServerThread extends Thread {
         public Handler mHandler;
         public LocalServerSocket mServerSocket;
         public LocalSocket mSocket;
         public SystemRepository mSystemRepository;
 
-        public LmkdEventServerThread(SystemRepository systemRepository, Handler handler) {
-            this.mSystemRepository = systemRepository;
-            this.mHandler = handler;
-        }
-
         @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
+        public final void run() {
             try {
                 this.mServerSocket = new LocalServerSocket("chimera");
             } catch (Exception unused) {
-                this.mSystemRepository.log("SystemEventListener", "Failed to execute socket service.");
+                this.mSystemRepository.getClass();
+                SystemRepository.log("SystemEventListener", "Failed to execute socket service.");
             }
             if (this.mServerSocket == null) {
                 return;
             }
-            this.mSystemRepository.log("SystemEventListener", "Waiting Client connected...");
+            this.mSystemRepository.getClass();
+            SystemRepository.log("SystemEventListener", "Waiting Client connected...");
             try {
                 LocalSocket accept = this.mServerSocket.accept();
                 this.mSocket = accept;
                 accept.setReceiveBufferSize(256);
                 this.mSocket.setSendBufferSize(256);
-                this.mSystemRepository.log("SystemEventListener", "There is a client is accepted: " + this.mSocket.toString());
+                SystemRepository systemRepository = this.mSystemRepository;
+                String str = "There is a client is accepted: " + this.mSocket.toString();
+                systemRepository.getClass();
+                SystemRepository.log("SystemEventListener", str);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(this.mSocket.getInputStream()), 256);
                 while (true) {
-                    String[] split = bufferedReader.readLine().split(XmlUtils.STRING_ARRAY_SEPARATOR);
+                    String[] split = bufferedReader.readLine().split(":");
                     if (split != null && split.length > 1) {
                         if (split[0] != null && split[1] != null) {
                             this.mHandler.sendMessage(this.mHandler.obtainMessage(4, Integer.parseInt(split[2].trim()), Integer.parseInt(split[3].trim()), new Integer(Integer.parseInt(split[4].trim()))));
@@ -629,8 +152,237 @@ public class SystemEventListener extends BroadcastReceiver {
                     }
                 }
             } catch (Exception e) {
-                this.mSystemRepository.log("SystemEventListener", "Socket Exception: " + e.toString());
+                SystemRepository systemRepository2 = this.mSystemRepository;
+                String str2 = "Socket Exception: " + e.toString();
+                systemRepository2.getClass();
+                SystemRepository.log("SystemEventListener", str2);
             }
         }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SystemEventHandler extends Handler {
+        public SystemEventHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            try {
+                int i = message.what;
+                SystemEventListener systemEventListener = SystemEventListener.this;
+                switch (i) {
+                    case 4:
+                        Iterator it = ((ArrayList) systemEventListener.mLmkdEventListeners).iterator();
+                        while (it.hasNext()) {
+                            ((PolicyHandler) ((LmkdEventListener) it.next())).onLmkdEventTriggered(message.arg1, ((Integer) message.obj).intValue());
+                        }
+                        return;
+                    case 5:
+                        Iterator it2 = ((ArrayList) systemEventListener.mHomeLaunchListeners).iterator();
+                        while (it2.hasNext()) {
+                            ((PolicyHandler) ((HomeLaunchListener) it2.next())).onHomeLaunched();
+                        }
+                        return;
+                    case 6:
+                        Iterator it3 = ((ArrayList) systemEventListener.mCarModeChangeListeners).iterator();
+                        while (it3.hasNext()) {
+                            ((PolicyHandler) ((CarModeChangeListener) it3.next())).mIsCarMode = true;
+                        }
+                        return;
+                    case 7:
+                        Iterator it4 = ((ArrayList) systemEventListener.mCarModeChangeListeners).iterator();
+                        while (it4.hasNext()) {
+                            ((PolicyHandler) ((CarModeChangeListener) it4.next())).mIsCarMode = false;
+                        }
+                        return;
+                    case 8:
+                        Iterator it5 = ((ArrayList) systemEventListener.mMediaScanFinishedListeners).iterator();
+                        while (it5.hasNext()) {
+                            ((ChimeraManager) it5.next()).onMediaScanFinished();
+                        }
+                        return;
+                    case 9:
+                        Iterator it6 = ((ArrayList) systemEventListener.mAppLaunchListeners).iterator();
+                        if (it6.hasNext()) {
+                            DssController$$ExternalSyntheticThrowCCEIfNotNull0.m(it6.next());
+                            throw null;
+                        }
+                        return;
+                    case 10:
+                        Iterator it7 = ((ArrayList) systemEventListener.mDeviceIdleListeners).iterator();
+                        while (it7.hasNext()) {
+                            ((PolicyHandler) ((DeviceIdleListener) it7.next())).onDeviceIdle();
+                        }
+                        return;
+                    case 11:
+                        Iterator it8 = ((ArrayList) systemEventListener.mAppLaunchIntentListeners).iterator();
+                        while (it8.hasNext()) {
+                            ((PolicyHandler) ((AppLaunchIntentListener) it8.next())).onAppLaunchIntent((String) message.obj);
+                        }
+                        return;
+                    case 12:
+                        Iterator it9 = ((ArrayList) systemEventListener.mCameraStateListeners).iterator();
+                        while (it9.hasNext()) {
+                            ((PolicyHandler) ((CameraStateListener) it9.next())).onCameraOpen();
+                        }
+                        return;
+                    case 13:
+                        Iterator it10 = ((ArrayList) systemEventListener.mCameraStateListeners).iterator();
+                        while (it10.hasNext()) {
+                            ((PolicyHandler) ((CameraStateListener) it10.next())).onCameraClose();
+                        }
+                        return;
+                    case 14:
+                        systemEventListener.mSystemRepository.getClass();
+                        SystemRepository.log("SystemEventListener", "MSG_ONE_HOUR_TIMER");
+                        Iterator it11 = ((ArrayList) systemEventListener.mOneHourTimerListeners).iterator();
+                        while (it11.hasNext()) {
+                            ((AbnormalFgsDetector) it11.next()).onOneHourTimer();
+                        }
+                        systemEventListener.startOneHourTimer();
+                        return;
+                    case 15:
+                        Iterator it12 = ((ArrayList) systemEventListener.mTimeOrTimeZoneChangedListeners).iterator();
+                        while (it12.hasNext()) {
+                            PSITracker pSITracker = (PSITracker) it12.next();
+                            String str = (String) message.obj;
+                            pSITracker.getClass();
+                            pSITracker.mSystemRepository.getClass();
+                            SystemRepository.log("PSITracker", "onTimeOrTimeZoneChanged() action: " + str);
+                            pSITracker.scheduleAvailMem240PeriodRecord("TIME_CHANGED");
+                        }
+                        return;
+                    case 16:
+                        Iterator it13 = ((ArrayList) systemEventListener.mQuotaListeners).iterator();
+                        while (it13.hasNext()) {
+                            ((PolicyHandler) ((AlwaysRunningQuotaExceedListener) it13.next())).onQuotaKill(message.arg1 == 1);
+                        }
+                        return;
+                    default:
+                        return;
+                }
+            } catch (RuntimeException e) {
+                Log.e(SystemRepository.convertToChimeraTag("SystemEventListener"), "Handler execute with exception " + e.getMessage());
+            }
+        }
+    }
+
+    public SystemEventListener(Context context, Looper looper, SystemRepository systemRepository) {
+        SystemRepository.ChimeraProcessObserver chimeraProcessObserver = new SystemRepository.ChimeraProcessObserver() { // from class: com.android.server.chimera.SystemEventListener$$ExternalSyntheticLambda0
+            @Override // com.android.server.chimera.SystemRepository.ChimeraProcessObserver
+            public final void onForegroundActivitiesChanged(int i, int i2, boolean z, int i3, String[] strArr, boolean z2) {
+                SystemEventListener systemEventListener = SystemEventListener.this;
+                if (!z) {
+                    systemEventListener.getClass();
+                    return;
+                }
+                if (z2) {
+                    if (systemEventListener.mHandler.hasMessages(5)) {
+                        return;
+                    }
+                    systemEventListener.mHandler.sendMessageDelayed(Message.obtain(systemEventListener.mHandler, 5, Integer.valueOf(i2)), 2000L);
+                    return;
+                }
+                systemEventListener.mHandler.removeMessages(5);
+                Message obtain = Message.obtain(systemEventListener.mHandler, 9);
+                obtain.obj = strArr[0];
+                systemEventListener.mHandler.sendMessage(obtain);
+            }
+        };
+        this.mAppLaunchObserver = new AppLaunchIntent();
+        this.mSystemRepository = systemRepository;
+        SystemEventHandler systemEventHandler = new SystemEventHandler(looper);
+        this.mHandler = systemEventHandler;
+        systemRepository.mSystemEventListenerHandler = systemEventHandler;
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.app.action.ENTER_CAR_MODE");
+        intentFilter.addAction("android.app.action.EXIT_CAR_MODE");
+        intentFilter.addAction("android.intent.action.SCREEN_OFF");
+        intentFilter.addAction("android.intent.action.SCREEN_ON");
+        context.registerReceiver(this, intentFilter);
+        IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter2.addAction("android.intent.action.MEDIA_SCANNER_FINISHED");
+        intentFilter2.addDataScheme("file");
+        context.registerReceiver(this, intentFilter2, 2);
+        IntentFilter intentFilter3 = new IntentFilter();
+        intentFilter3.addAction("android.os.action.DEVICE_IDLE_MODE_CHANGED");
+        context.registerReceiver(this, intentFilter3);
+        IntentFilter intentFilter4 = new IntentFilter();
+        intentFilter4.addAction("android.intent.action.TIME_SET");
+        intentFilter4.addAction("android.intent.action.TIMEZONE_CHANGED");
+        context.registerReceiver(this, intentFilter4);
+        LmkdEventServerThread lmkdEventServerThread = new LmkdEventServerThread();
+        lmkdEventServerThread.mSystemRepository = systemRepository;
+        lmkdEventServerThread.mHandler = systemEventHandler;
+        lmkdEventServerThread.start();
+        systemRepository.registerProcessObserver(chimeraProcessObserver);
+    }
+
+    public final void addCameraDeviceStateCallback(Context context) {
+        ((CameraManager) context.getSystemService("camera")).registerSemCameraDeviceStateCallback(this.mSystemRepository.mCameraDeviceStateCallback, this.mHandler);
+    }
+
+    @Override // android.content.BroadcastReceiver
+    public final void onReceive(Context context, Intent intent) {
+        if (intent == null || intent.getAction() == null) {
+            return;
+        }
+        String action = intent.getAction();
+        this.mSystemRepository.getClass();
+        SystemRepository.log("SystemEventListener", "onReceive() - action: " + action);
+        action.getClass();
+        switch (action) {
+            case "android.intent.action.SCREEN_OFF":
+                this.mHandler.sendEmptyMessageDelayed(16, 2000L);
+                break;
+            case "android.intent.action.SCREEN_ON":
+                this.mHandler.removeMessages(16);
+                break;
+            case "android.intent.action.MEDIA_SCANNER_FINISHED":
+                if (!mFirstTriggeredAfterBooting) {
+                    this.mHandler.sendEmptyMessage(8);
+                    mFirstTriggeredAfterBooting = true;
+                    break;
+                }
+                break;
+            case "android.app.action.ENTER_CAR_MODE":
+                this.mHandler.sendEmptyMessage(6);
+                break;
+            case "android.app.action.EXIT_CAR_MODE":
+                this.mHandler.sendEmptyMessage(7);
+                break;
+            case "android.intent.action.TIMEZONE_CHANGED":
+            case "android.intent.action.TIME_SET":
+                Message obtainMessage = this.mHandler.obtainMessage(15);
+                obtainMessage.obj = intent.getAction();
+                this.mHandler.sendMessage(obtainMessage);
+                break;
+            case "android.os.action.DEVICE_IDLE_MODE_CHANGED":
+                PowerManager powerManager = (PowerManager) context.getSystemService("power");
+                if (powerManager != null) {
+                    if (!powerManager.isDeviceIdleMode()) {
+                        this.mSystemRepository.getClass();
+                        SystemRepository.log("SystemEventListener", "Device idle is false ! ");
+                        break;
+                    } else {
+                        this.mSystemRepository.getClass();
+                        SystemRepository.log("SystemEventListener", "Device idle is true ! ");
+                        this.mHandler.sendEmptyMessage(10);
+                        break;
+                    }
+                }
+                break;
+        }
+    }
+
+    public ActivityMetricsLaunchObserverRegistry provideLaunchObserverRegistry() {
+        return ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class)).getLaunchObserverRegistry();
+    }
+
+    public final void startOneHourTimer() {
+        this.mSystemRepository.getClass();
+        SystemRepository.log("SystemEventListener", "startOneHourTimer");
+        this.mHandler.sendMessageDelayed(Message.obtain(this.mHandler, 14), Duration.ofHours(1L).toMillis());
     }
 }

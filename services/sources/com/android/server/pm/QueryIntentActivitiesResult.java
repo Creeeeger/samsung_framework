@@ -2,12 +2,13 @@ package com.android.server.pm;
 
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class QueryIntentActivitiesResult {
-    public boolean addInstant;
-    public List answer;
+    public final boolean addInstant;
+    public final List answer;
     public List result;
-    public boolean sortResult;
+    public final boolean sortResult;
 
     public QueryIntentActivitiesResult(List list) {
         this.sortResult = false;
@@ -16,7 +17,7 @@ public final class QueryIntentActivitiesResult {
         this.answer = list;
     }
 
-    public QueryIntentActivitiesResult(boolean z, boolean z2, List list) {
+    public QueryIntentActivitiesResult(List list, boolean z, boolean z2) {
         this.answer = null;
         this.sortResult = z;
         this.addInstant = z2;

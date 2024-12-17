@@ -1,25 +1,22 @@
 package com.android.server.tv.tunerresourcemanager;
 
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import com.android.server.tv.tunerresourcemanager.TunerResourceBasic;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class LnbResource extends TunerResourceBasic {
-    public LnbResource(Builder builder) {
-        super(builder);
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Builder extends TunerResourceBasic.Builder {
     }
 
-    public String toString() {
-        return "LnbResource[handle=" + this.mHandle + ", isInUse=" + this.mIsInUse + ", ownerClientId=" + this.mOwnerClientId + "]";
-    }
-
-    /* loaded from: classes3.dex */
-    public class Builder extends TunerResourceBasic.Builder {
-        public Builder(int i) {
-            super(i);
-        }
-
-        public LnbResource build() {
-            return new LnbResource(this);
-        }
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("LnbResource[handle=");
+        sb.append(this.mHandle);
+        sb.append(", isInUse=");
+        sb.append(this.mIsInUse);
+        sb.append(", ownerClientId=");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.mOwnerClientId, sb, "]");
     }
 }

@@ -1,66 +1,26 @@
 package com.samsung.android.server.continuity.common;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
+import com.samsung.android.server.continuity.autoswitch.AutoSwitchSettingHelper$$ExternalSyntheticLambda0;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class ExecutorUtil {
     public static ThreadPoolExecutor sExecutorIO;
     public static Handler sHandler;
 
-    public static void start() {
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(64, 64, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadFactory() { // from class: com.samsung.android.server.continuity.common.ExecutorUtil$$ExternalSyntheticLambda0
-            @Override // java.util.concurrent.ThreadFactory
-            public final Thread newThread(Runnable runnable) {
-                Thread lambda$start$0;
-                lambda$start$0 = ExecutorUtil.lambda$start$0(runnable);
-                return lambda$start$0;
-            }
-        });
-        sExecutorIO = threadPoolExecutor;
-        threadPoolExecutor.allowCoreThreadTimeOut(true);
-        sHandler = new Handler(Looper.getMainLooper());
-    }
-
-    public static /* synthetic */ Thread lambda$start$0(Runnable runnable) {
-        Thread thread = new Thread(runnable);
-        thread.setPriority(4);
-        thread.setDaemon(true);
-        thread.setName("Executor IO:" + thread.getId());
-        return thread;
-    }
-
-    public static void executeOnIO(Runnable runnable) {
-        sExecutorIO.execute(wrapRunnable(runnable));
-    }
-
-    public static void executeOnMain(Runnable runnable) {
-        if (Looper.getMainLooper().equals(Looper.myLooper())) {
-            runnable.run();
-        } else {
-            sHandler.post(runnable);
-        }
-    }
-
-    public static ThrowExceptionRunnable wrapRunnable(Runnable runnable) {
-        return new ThrowExceptionRunnable(runnable);
-    }
-
-    /* loaded from: classes2.dex */
-    public class ThrowExceptionRunnable implements Runnable {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class ThrowExceptionRunnable implements Runnable {
         public final Runnable mTask;
 
-        public ThrowExceptionRunnable(Runnable runnable) {
-            this.mTask = runnable;
+        public ThrowExceptionRunnable(AutoSwitchSettingHelper$$ExternalSyntheticLambda0 autoSwitchSettingHelper$$ExternalSyntheticLambda0) {
+            this.mTask = autoSwitchSettingHelper$$ExternalSyntheticLambda0;
         }
 
         @Override // java.lang.Runnable
-        public void run() {
+        public final void run() {
             try {
                 this.mTask.run();
             } catch (Throwable th) {

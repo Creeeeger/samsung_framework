@@ -1,44 +1,39 @@
 package android.net;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Arrays;
 import java.util.StringJoiner;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class InformationElementParcelable implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.net.InformationElementParcelable.1
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
+    public int id = 0;
+    public byte[] payload;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.net.InformationElementParcelable$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
         @Override // android.os.Parcelable.Creator
-        public InformationElementParcelable createFromParcel(Parcel parcel) {
+        public final Object createFromParcel(Parcel parcel) {
             InformationElementParcelable informationElementParcelable = new InformationElementParcelable();
             informationElementParcelable.readFromParcel(parcel);
             return informationElementParcelable;
         }
 
         @Override // android.os.Parcelable.Creator
-        public InformationElementParcelable[] newArray(int i) {
+        public final Object[] newArray(int i) {
             return new InformationElementParcelable[i];
         }
-    };
-    public int id = 0;
-    public byte[] payload;
+    }
 
     @Override // android.os.Parcelable
     public int describeContents() {
         return 0;
-    }
-
-    @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeInt(this.id);
-        parcel.writeByteArray(this.payload);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
     }
 
     public final void readFromParcel(Parcel parcel) {
@@ -76,8 +71,20 @@ public class InformationElementParcelable implements Parcelable {
 
     public String toString() {
         StringJoiner stringJoiner = new StringJoiner(", ", "{", "}");
-        stringJoiner.add("id: " + this.id);
-        stringJoiner.add("payload: " + Arrays.toString(this.payload));
-        return "android.net.InformationElementParcelable" + stringJoiner.toString();
+        StringBuilder m = AmFmBandRange$$ExternalSyntheticOutline0.m(new StringBuilder("id: "), this.id, stringJoiner, "payload: ");
+        m.append(Arrays.toString(this.payload));
+        stringJoiner.add(m.toString());
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(stringJoiner, new StringBuilder("InformationElementParcelable"));
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeInt(this.id);
+        parcel.writeByteArray(this.payload);
+        int dataPosition2 = parcel.dataPosition();
+        parcel.setDataPosition(dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(dataPosition2, dataPosition, parcel, dataPosition2);
     }
 }

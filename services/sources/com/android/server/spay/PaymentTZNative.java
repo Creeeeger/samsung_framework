@@ -5,9 +5,9 @@ import android.spay.TACommandRequest;
 import android.spay.TACommandResponse;
 import android.util.Log;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes3.dex */
-public class PaymentTZNative {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+class PaymentTZNative {
     public static final boolean DEBUG = PaymentManagerService.DEBUG;
     public boolean mIsLoaded;
     public long mMOPTZNativePtr_;
@@ -20,25 +20,7 @@ public class PaymentTZNative {
 
     private native boolean nativeProcessTACommand(TACommandRequest tACommandRequest, TACommandResponse tACommandResponse);
 
-    public native long nativeCreateTLCommunicationContext(Context context, int i, int i2, int i3, int i4, int i5, int i6, String str, String str2, String str3);
-
-    public native void nativeDestroyTLCommunicationContext();
-
-    public PaymentTZNative(int i, String str, String str2, String str3, int i2, int i3) {
-        if (DEBUG) {
-            Log.d("PaymentManagerService", "PaymentTZNative constructor: taId = " + i);
-        }
-        this.mTAId = i;
-        this.mMOPTZNativePtr_ = 0L;
-        this.mSendBufSize = i2;
-        this.mRecvBufSize = i3;
-        this.mTATechnology = str;
-        this.mRootName = str2;
-        this.mProcessName = str3;
-        this.mIsLoaded = false;
-    }
-
-    public boolean loadTA(Context context, int i, long j, long j2) {
+    public final boolean loadTA(Context context, int i, long j, long j2) {
         if (this.mMOPTZNativePtr_ != 0) {
             Log.e("PaymentManagerService", "PaymentTZNative::loadTA called for TA that is already loaded. Call Ignored");
             return true;
@@ -62,7 +44,23 @@ public class PaymentTZNative {
         return true;
     }
 
-    public void unloadTA() {
+    public native long nativeCreateTLCommunicationContext(Context context, int i, int i2, int i3, int i4, int i5, int i6, String str, String str2, String str3);
+
+    public native void nativeDestroyTLCommunicationContext();
+
+    public final TACommandResponse processTACommand(TACommandRequest tACommandRequest) {
+        if (DEBUG) {
+            Log.d("PaymentManagerService", "PaymentTZNative::processTACommand: request = " + tACommandRequest + "; mMOPTZNativePtr_ = " + this.mMOPTZNativePtr_);
+        }
+        TACommandResponse tACommandResponse = new TACommandResponse();
+        if (nativeProcessTACommand(tACommandRequest, tACommandResponse)) {
+            return tACommandResponse;
+        }
+        Log.e("PaymentManagerService", "PaymentTZNative::processTACommand: Error: nativeProcessTACommand returned failure");
+        return null;
+    }
+
+    public final void unloadTA() {
         synchronized (PaymentTZNative.class) {
             if (this.mMOPTZNativePtr_ != 0 && this.mIsLoaded) {
                 this.mIsLoaded = false;
@@ -76,17 +74,5 @@ public class PaymentTZNative {
             }
             Log.e("PaymentManagerService", "PaymentTZNative::unloadTA called for TA that is not loaded. Call Ignored: ta loaded: " + this.mIsLoaded);
         }
-    }
-
-    public TACommandResponse processTACommand(TACommandRequest tACommandRequest) {
-        if (DEBUG) {
-            Log.d("PaymentManagerService", "PaymentTZNative::processTACommand: request = " + tACommandRequest + "; mMOPTZNativePtr_ = " + this.mMOPTZNativePtr_);
-        }
-        TACommandResponse tACommandResponse = new TACommandResponse();
-        if (nativeProcessTACommand(tACommandRequest, tACommandResponse)) {
-            return tACommandResponse;
-        }
-        Log.e("PaymentManagerService", "PaymentTZNative::processTACommand: Error: nativeProcessTACommand returned failure");
-        return null;
     }
 }

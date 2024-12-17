@@ -1,332 +1,329 @@
 package com.android.server.inputmethod;
 
 import android.R;
+import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManagerInternal;
-import android.graphics.Matrix;
 import android.os.Binder;
-import android.os.Debug;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
-import android.util.ArrayMap;
-import android.util.EventLog;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.view.InputChannel;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.InputMethodSubtype;
 import com.android.internal.inputmethod.IInputMethod;
 import com.android.internal.inputmethod.IInputMethodSession;
+import com.android.internal.inputmethod.InlineSuggestionsRequestCallback;
+import com.android.internal.inputmethod.InlineSuggestionsRequestInfo;
 import com.android.internal.inputmethod.InputBindResult;
-import com.android.server.inputmethod.InputMethodUtils;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
+import com.android.server.autofill.AutofillInlineSuggestionsRequestSession;
+import com.android.server.inputmethod.AutofillSuggestionsController;
+import com.android.server.inputmethod.InputMethodManagerService;
+import com.android.server.statusbar.StatusBarManagerInternal;
+import com.android.server.statusbar.StatusBarManagerService;
 import com.android.server.wm.WindowManagerInternal;
-import java.util.concurrent.CountDownLatch;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class InputMethodBindingController {
     static final int IME_CONNECTION_BIND_FLAGS = 1082654725;
     static final int IME_VISIBLE_BIND_FLAGS = 738201601;
-    public static final String TAG = "InputMethodBindingController";
     public final Context mContext;
     public String mCurId;
     public Intent mCurIntent;
     public IInputMethodInvoker mCurMethod;
-    public int mCurMethodUid;
     public int mCurSeq;
     public IBinder mCurToken;
-    public boolean mHasConnection;
-    public final int mImeConnectionBindFlags;
+    public InputMethodSubtype mCurrentSubtype;
+    public boolean mHasMainConnection;
     public long mLastBindTime;
-    public CountDownLatch mLatchForTesting;
-    public final ServiceConnection mMainConnection;
-    public final ArrayMap mMethodMap;
     public final PackageManagerInternal mPackageManagerInternal;
     public String mSelectedMethodId;
     public final InputMethodManagerService mService;
-    public final InputMethodUtils.InputMethodSettings mSettings;
+    public boolean mSupportsConnectionlessStylusHw;
     public boolean mSupportsStylusHw;
+    public final int mUserId;
     public boolean mVisibleBound;
-    public final ServiceConnection mVisibleConnection;
     public final WindowManagerInternal mWindowManagerInternal;
-
-    public InputMethodBindingController(InputMethodManagerService inputMethodManagerService) {
-        this(inputMethodManagerService, IME_CONNECTION_BIND_FLAGS, null);
-    }
-
-    public InputMethodBindingController(InputMethodManagerService inputMethodManagerService, int i, CountDownLatch countDownLatch) {
-        this.mCurMethodUid = -1;
-        this.mVisibleConnection = new ServiceConnection() { // from class: com.android.server.inputmethod.InputMethodBindingController.1
-            @Override // android.content.ServiceConnection
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            }
-
-            @Override // android.content.ServiceConnection
-            public void onBindingDied(ComponentName componentName) {
-                synchronized (ImfLock.class) {
-                    InputMethodBindingController.this.mService.invalidateAutofillSessionLocked();
-                    if (InputMethodBindingController.this.isVisibleBound()) {
-                        InputMethodBindingController.this.unbindVisibleConnection();
-                    }
+    public int mCurMethodUid = -1;
+    public int mCurTokenDisplayId = -1;
+    public int mDisplayIdToShowIme = -1;
+    public int mDeviceIdToShowIme = 0;
+    public final AnonymousClass1 mVisibleConnection = new ServiceConnection() { // from class: com.android.server.inputmethod.InputMethodBindingController.1
+        @Override // android.content.ServiceConnection
+        public final void onBindingDied(ComponentName componentName) {
+            synchronized (ImfLock.class) {
+                InlineSuggestionsRequestCallback inlineSuggestionsRequestCallback = InputMethodBindingController.this.mAutofillController.mInlineSuggestionsRequestCallback;
+                if (inlineSuggestionsRequestCallback != null) {
+                    inlineSuggestionsRequestCallback.onInlineSuggestionsSessionInvalidated();
+                }
+                InputMethodBindingController inputMethodBindingController = InputMethodBindingController.this;
+                if (inputMethodBindingController.mVisibleBound) {
+                    inputMethodBindingController.mContext.unbindService(inputMethodBindingController.mVisibleConnection);
+                    inputMethodBindingController.mVisibleBound = false;
                 }
             }
+        }
 
-            @Override // android.content.ServiceConnection
-            public void onServiceDisconnected(ComponentName componentName) {
-                synchronized (ImfLock.class) {
-                    InputMethodBindingController.this.mService.invalidateAutofillSessionLocked();
+        @Override // android.content.ServiceConnection
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        }
+
+        @Override // android.content.ServiceConnection
+        public final void onServiceDisconnected(ComponentName componentName) {
+            synchronized (ImfLock.class) {
+                InlineSuggestionsRequestCallback inlineSuggestionsRequestCallback = InputMethodBindingController.this.mAutofillController.mInlineSuggestionsRequestCallback;
+                if (inlineSuggestionsRequestCallback != null) {
+                    inlineSuggestionsRequestCallback.onInlineSuggestionsSessionInvalidated();
                 }
             }
-        };
-        this.mMainConnection = new ServiceConnection() { // from class: com.android.server.inputmethod.InputMethodBindingController.2
-            @Override // android.content.ServiceConnection
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                Trace.traceBegin(32L, "IMMS.onServiceConnected");
-                synchronized (ImfLock.class) {
-                    if (InputMethodBindingController.this.mCurIntent != null && componentName.equals(InputMethodBindingController.this.mCurIntent.getComponent())) {
-                        InputMethodBindingController.this.mCurMethod = IInputMethodInvoker.create(IInputMethod.Stub.asInterface(iBinder));
+        }
+    };
+    public final AnonymousClass2 mMainConnection = new ServiceConnection() { // from class: com.android.server.inputmethod.InputMethodBindingController.2
+        @Override // android.content.ServiceConnection
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            IInputMethodInvoker iInputMethodInvoker;
+            Trace.traceBegin(32L, "IMMS.onServiceConnected");
+            synchronized (ImfLock.class) {
+                try {
+                    Intent intent = InputMethodBindingController.this.mCurIntent;
+                    if (intent != null && componentName.equals(intent.getComponent())) {
+                        InputMethodBindingController inputMethodBindingController = InputMethodBindingController.this;
+                        IInputMethod asInterface = IInputMethod.Stub.asInterface(iBinder);
+                        if (asInterface == null) {
+                            iInputMethodInvoker = null;
+                        } else {
+                            if (!Binder.isProxy(asInterface)) {
+                                throw new UnsupportedOperationException(asInterface + " must have been a BinderProxy.");
+                            }
+                            iInputMethodInvoker = new IInputMethodInvoker(asInterface);
+                        }
+                        inputMethodBindingController.mCurMethod = iInputMethodInvoker;
                         updateCurrentMethodUid();
-                        Slog.w(InputMethodBindingController.TAG, "onServiceConnected");
+                        Slog.w("InputMethodBindingController", "onServiceConnected");
                         if (InputMethodBindingController.this.mCurToken == null) {
-                            Slog.w(InputMethodBindingController.TAG, "Service connected without a token!");
+                            Slog.w("InputMethodBindingController", "Service connected without a token!");
                             InputMethodBindingController.this.unbindCurrentMethod();
                             Trace.traceEnd(32L);
                             return;
                         }
-                        Slog.v(InputMethodBindingController.TAG, "Initiating attach with token: " + InputMethodBindingController.this.mCurToken);
-                        InputMethodInfo inputMethodInfo = (InputMethodInfo) InputMethodBindingController.this.mMethodMap.get(InputMethodBindingController.this.mSelectedMethodId);
+                        Slog.v("InputMethodBindingController", "Initiating attach with token: " + InputMethodBindingController.this.mCurToken);
+                        InputMethodInfo inputMethodInfo = InputMethodSettingsRepository.get(InputMethodBindingController.this.mUserId).mMethodMap.get(InputMethodBindingController.this.mSelectedMethodId);
                         boolean z = InputMethodBindingController.this.mSupportsStylusHw != inputMethodInfo.supportsStylusHandwriting();
                         InputMethodBindingController.this.mSupportsStylusHw = inputMethodInfo.supportsStylusHandwriting();
                         if (z) {
                             InputMethodManager.invalidateLocalStylusHandwritingAvailabilityCaches();
                         }
-                        InputMethodBindingController.this.mService.initializeImeLocked(InputMethodBindingController.this.mCurMethod, InputMethodBindingController.this.mCurToken);
-                        InputMethodBindingController.this.mService.scheduleNotifyImeUidToAudioService(InputMethodBindingController.this.mCurMethodUid);
-                        InputMethodBindingController.this.mService.reRequestCurrentClientSessionLocked();
-                        InputMethodBindingController.this.mService.performOnCreateInlineSuggestionsRequestLocked();
+                        if (InputMethodBindingController.this.mSupportsConnectionlessStylusHw != inputMethodInfo.supportsConnectionlessStylusHandwriting()) {
+                            InputMethodBindingController.this.mSupportsConnectionlessStylusHw = inputMethodInfo.supportsConnectionlessStylusHandwriting();
+                            InputMethodManager.invalidateLocalConnectionlessStylusHandwritingAvailabilityCaches();
+                        }
+                        InputMethodBindingController inputMethodBindingController2 = InputMethodBindingController.this;
+                        InputMethodManagerService inputMethodManagerService = inputMethodBindingController2.mService;
+                        IInputMethodInvoker iInputMethodInvoker2 = inputMethodBindingController2.mCurMethod;
+                        IBinder iBinder2 = inputMethodBindingController2.mCurToken;
+                        inputMethodManagerService.getClass();
+                        InputMethodManagerService.InputMethodPrivilegedOperationsImpl inputMethodPrivilegedOperationsImpl = new InputMethodManagerService.InputMethodPrivilegedOperationsImpl(inputMethodManagerService, iBinder2);
+                        int inputMethodNavButtonFlagsLocked = inputMethodManagerService.getInputMethodNavButtonFlagsLocked();
+                        iInputMethodInvoker2.getClass();
+                        IInputMethod.InitParams initParams = new IInputMethod.InitParams();
+                        initParams.token = iBinder2;
+                        initParams.privilegedOperations = inputMethodPrivilegedOperationsImpl;
+                        initParams.navigationBarFlags = inputMethodNavButtonFlagsLocked;
+                        try {
+                            iInputMethodInvoker2.mTarget.initializeInternal(initParams);
+                        } catch (RemoteException e) {
+                            IInputMethodInvoker.logRemoteException(e);
+                        }
+                        InputMethodBindingController inputMethodBindingController3 = InputMethodBindingController.this;
+                        InputMethodManagerService inputMethodManagerService2 = inputMethodBindingController3.mService;
+                        int i = inputMethodBindingController3.mCurMethodUid;
+                        inputMethodManagerService2.mHandler.removeMessages(7000);
+                        inputMethodManagerService2.mHandler.obtainMessage(7000, i, 0).sendToTarget();
+                        InputMethodManagerService inputMethodManagerService3 = InputMethodBindingController.this.mService;
+                        ClientState clientState = inputMethodManagerService3.mCurClient;
+                        if (clientState != null) {
+                            inputMethodManagerService3.finishSessionLocked(clientState.mCurSession);
+                            clientState.mCurSession = null;
+                            clientState.mSessionRequested = false;
+                            InputMethodManagerService.clearClientSessionForAccessibilityLocked(inputMethodManagerService3.mCurClient);
+                            inputMethodManagerService3.requestClientSessionLocked(inputMethodManagerService3.mCurClient);
+                            InputMethodManagerService.requestClientSessionForAccessibilityLocked(inputMethodManagerService3.mCurClient);
+                        }
+                        InputMethodBindingController.this.mAutofillController.performOnCreateInlineSuggestionsRequest();
                     }
-                    InputMethodBindingController.this.mService.scheduleResetStylusHandwriting();
+                    InputMethodBindingController.this.mService.mHandler.obtainMessage(1090).sendToTarget();
                     Trace.traceEnd(32L);
-                    if (InputMethodBindingController.this.mLatchForTesting != null) {
-                        InputMethodBindingController.this.mLatchForTesting.countDown();
-                    }
+                    InputMethodBindingController.this.getClass();
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
+        }
 
-            public final void updateCurrentMethodUid() {
-                String packageName = InputMethodBindingController.this.mCurIntent.getComponent().getPackageName();
-                int packageUid = InputMethodBindingController.this.mPackageManagerInternal.getPackageUid(packageName, 0L, InputMethodBindingController.this.mSettings.getCurrentUserId());
-                if (packageUid < 0) {
-                    Slog.e(InputMethodBindingController.TAG, "Failed to get UID for package=" + packageName);
-                    InputMethodBindingController.this.mCurMethodUid = -1;
-                    return;
-                }
-                InputMethodBindingController.this.mCurMethodUid = packageUid;
-            }
-
-            @Override // android.content.ServiceConnection
-            public void onServiceDisconnected(ComponentName componentName) {
-                synchronized (ImfLock.class) {
-                    Slog.v(InputMethodBindingController.TAG, "Service disconnected: " + componentName + " mCurIntent=" + InputMethodBindingController.this.mCurIntent);
-                    if (InputMethodBindingController.this.mCurMethod != null && InputMethodBindingController.this.mCurIntent != null && componentName.equals(InputMethodBindingController.this.mCurIntent.getComponent())) {
+        @Override // android.content.ServiceConnection
+        public final void onServiceDisconnected(ComponentName componentName) {
+            Intent intent;
+            synchronized (ImfLock.class) {
+                try {
+                    Slog.v("InputMethodBindingController", "Service disconnected: " + componentName + " mCurIntent=" + InputMethodBindingController.this.mCurIntent);
+                    InputMethodBindingController inputMethodBindingController = InputMethodBindingController.this;
+                    if (inputMethodBindingController.mCurMethod != null && (intent = inputMethodBindingController.mCurIntent) != null && componentName.equals(intent.getComponent())) {
                         InputMethodBindingController.this.mLastBindTime = SystemClock.uptimeMillis();
-                        Slog.d(InputMethodBindingController.TAG, "onServiceDisconnected: mLastBindTime=" + InputMethodBindingController.this.mLastBindTime);
+                        Slog.d("InputMethodBindingController", "onServiceDisconnected: mLastBindTime=" + InputMethodBindingController.this.mLastBindTime);
                         InputMethodBindingController.this.clearCurMethodAndSessions();
-                        InputMethodBindingController.this.mService.clearInputShownLocked();
-                        InputMethodBindingController.this.mService.unbindCurrentClientLocked(3);
+                        InputMethodManagerService inputMethodManagerService = InputMethodBindingController.this.mService;
+                        inputMethodManagerService.mVisibilityStateComputer.mInputShown = false;
+                        inputMethodManagerService.unbindCurrentClientLocked(3);
                     }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
-        };
+        }
+
+        public final void updateCurrentMethodUid() {
+            String packageName = InputMethodBindingController.this.mCurIntent.getComponent().getPackageName();
+            InputMethodBindingController inputMethodBindingController = InputMethodBindingController.this;
+            int packageUid = inputMethodBindingController.mPackageManagerInternal.getPackageUid(packageName, 0L, inputMethodBindingController.mUserId);
+            if (packageUid >= 0) {
+                InputMethodBindingController.this.mCurMethodUid = packageUid;
+            } else {
+                BootReceiver$$ExternalSyntheticOutline0.m("Failed to get UID for package=", packageName, "InputMethodBindingController");
+                InputMethodBindingController.this.mCurMethodUid = -1;
+            }
+        }
+    };
+    public final AutofillSuggestionsController mAutofillController = new AutofillSuggestionsController(this);
+
+    /* JADX WARN: Type inference failed for: r0v2, types: [com.android.server.inputmethod.InputMethodBindingController$1] */
+    /* JADX WARN: Type inference failed for: r0v3, types: [com.android.server.inputmethod.InputMethodBindingController$2] */
+    public InputMethodBindingController(int i, InputMethodManagerService inputMethodManagerService) {
+        this.mUserId = i;
         this.mService = inputMethodManagerService;
         this.mContext = inputMethodManagerService.mContext;
-        this.mMethodMap = inputMethodManagerService.mMethodMap;
-        this.mSettings = inputMethodManagerService.mSettings;
         this.mPackageManagerInternal = inputMethodManagerService.mPackageManagerInternal;
         this.mWindowManagerInternal = inputMethodManagerService.mWindowManagerInternal;
-        this.mImeConnectionBindFlags = i;
-        this.mLatchForTesting = countDownLatch;
     }
 
-    public long getLastBindTime() {
-        return this.mLastBindTime;
-    }
-
-    public boolean hasConnection() {
-        return this.mHasConnection;
-    }
-
-    public String getCurId() {
-        return this.mCurId;
-    }
-
-    public String getSelectedMethodId() {
-        return this.mSelectedMethodId;
-    }
-
-    public void setSelectedMethodId(String str) {
-        this.mSelectedMethodId = str;
-    }
-
-    public IBinder getCurToken() {
-        return this.mCurToken;
-    }
-
-    public Intent getCurIntent() {
-        return this.mCurIntent;
-    }
-
-    public int getSequenceNumber() {
-        return this.mCurSeq;
-    }
-
-    public void advanceSequenceNumber() {
-        int i = this.mCurSeq + 1;
-        this.mCurSeq = i;
-        if (i <= 0) {
-            this.mCurSeq = 1;
+    public final boolean bindCurrentInputMethodService(ServiceConnection serviceConnection, int i) {
+        if (this.mCurIntent != null && serviceConnection != null) {
+            ActivityManagerService$$ExternalSyntheticOutline0.m(10, new StringBuilder("bindCurrentInputMethodService: caller="), "InputMethodBindingController");
+            return this.mContext.bindServiceAsUser(this.mCurIntent, serviceConnection, i, new UserHandle(this.mUserId));
         }
+        Slog.e("InputMethodBindingController", "--- bind failed: service = " + this.mCurIntent + ", conn = " + serviceConnection);
+        return false;
     }
 
-    public IInputMethodInvoker getCurMethod() {
-        return this.mCurMethod;
-    }
-
-    public int getCurMethodUid() {
-        return this.mCurMethodUid;
-    }
-
-    public boolean isVisibleBound() {
-        return this.mVisibleBound;
-    }
-
-    public boolean supportsStylusHandwriting() {
-        return this.mSupportsStylusHw;
-    }
-
-    public void unbindCurrentMethod() {
-        Slog.d(TAG, "unbindCurrentMethod: caller=" + Debug.getCallers(10));
-        if (isVisibleBound()) {
-            unbindVisibleConnection();
+    public final InputBindResult bindCurrentMethod() {
+        if (this.mSelectedMethodId == null) {
+            Slog.e("InputMethodBindingController", "mSelectedMethodId is null!");
+            return InputBindResult.NO_IME;
         }
-        if (hasConnection()) {
-            unbindMainConnection();
+        InputMethodInfo inputMethodInfo = InputMethodSettingsRepository.get(this.mUserId).mMethodMap.get(this.mSelectedMethodId);
+        if (inputMethodInfo == null) {
+            throw new IllegalArgumentException("Unknown id: " + this.mSelectedMethodId);
         }
-        if (getCurToken() != null) {
-            removeCurrentToken();
-            this.mService.resetSystemUiLocked();
-            this.mCurToken = null;
+        ComponentName component = inputMethodInfo.getComponent();
+        Intent intent = new Intent("android.view.InputMethod");
+        intent.setComponent(component);
+        intent.putExtra("android.intent.extra.client_label", R.string.notification_reply_button_accessibility);
+        intent.putExtra("android.intent.extra.client_intent", PendingIntent.getActivity(this.mContext, 0, new Intent("android.settings.INPUT_METHOD_SETTINGS"), 67108864, ActivityOptions.makeBasic().setPendingIntentCreatorBackgroundActivityStartMode(2).toBundle()));
+        this.mCurIntent = intent;
+        boolean bindCurrentInputMethodService = bindCurrentInputMethodService(this.mMainConnection, IME_CONNECTION_BIND_FLAGS);
+        this.mHasMainConnection = bindCurrentInputMethodService;
+        if (!bindCurrentInputMethodService) {
+            Slog.w("InputMethodManagerService", "Failure connecting to input method service: " + this.mCurIntent);
+            this.mCurIntent = null;
+            return InputBindResult.IME_NOT_CONNECTED;
         }
-        this.mCurId = null;
-        clearCurMethodAndSessions();
+        this.mCurId = inputMethodInfo.getId();
+        this.mLastBindTime = SystemClock.uptimeMillis();
+        Slog.d("InputMethodBindingController", "bindCurrentMethod: mLastBindTime=" + this.mLastBindTime);
+        Binder binder = new Binder();
+        this.mCurToken = binder;
+        int i = this.mDisplayIdToShowIme;
+        this.mCurTokenDisplayId = i;
+        this.mWindowManagerInternal.addWindowToken(binder, 2011, i, null);
+        return new InputBindResult(2, (IInputMethodSession) null, (SparseArray) null, (InputChannel) null, this.mCurId, this.mCurSeq, false);
     }
 
     public final void clearCurMethodAndSessions() {
-        this.mService.clearClientSessionsLocked();
+        InputMethodManagerService inputMethodManagerService = this.mService;
+        if (inputMethodManagerService.getCurMethodLocked() != null) {
+            inputMethodManagerService.mClientController.forAllClients(new InputMethodManagerService$$ExternalSyntheticLambda9(1, inputMethodManagerService));
+            inputMethodManagerService.finishSessionLocked(inputMethodManagerService.mEnabledSession);
+            for (int i = 0; i < inputMethodManagerService.mEnabledAccessibilitySessions.size(); i++) {
+                InputMethodManagerService.finishSessionForAccessibilityLocked((InputMethodManagerService.AccessibilitySessionState) inputMethodManagerService.mEnabledAccessibilitySessions.valueAt(i));
+            }
+            inputMethodManagerService.mEnabledSession = null;
+            inputMethodManagerService.mEnabledAccessibilitySessions.clear();
+            inputMethodManagerService.mHandler.removeMessages(7000);
+            inputMethodManagerService.mHandler.obtainMessage(7000, -1, 0).sendToTarget();
+        }
+        StatusBarManagerInternal statusBarManagerInternal = inputMethodManagerService.mStatusBarManagerInternal;
+        if (statusBarManagerInternal != null) {
+            StatusBarManagerService.this.setIconVisibility(inputMethodManagerService.mSlotIme, false);
+        }
+        inputMethodManagerService.mInFullscreenMode = false;
+        inputMethodManagerService.mWindowManagerInternal.setDismissImeOnBackKeyPressed(false, (inputMethodManagerService.mImeWindowVis & 2) != 0);
         this.mCurMethod = null;
         this.mCurMethodUid = -1;
     }
 
-    public final void removeCurrentToken() {
-        int curTokenDisplayIdLocked = this.mService.getCurTokenDisplayIdLocked();
-        Slog.v(TAG, "Removing window token: " + this.mCurToken + " for display: " + curTokenDisplayIdLocked);
-        this.mWindowManagerInternal.removeWindowToken(this.mCurToken, false, false, curTokenDisplayIdLocked);
-    }
-
-    public InputBindResult bindCurrentMethod() {
-        String str = this.mSelectedMethodId;
-        if (str == null) {
-            Slog.e(TAG, "mSelectedMethodId is null!");
-            return InputBindResult.NO_IME;
-        }
-        InputMethodInfo inputMethodInfo = (InputMethodInfo) this.mMethodMap.get(str);
-        if (inputMethodInfo == null) {
-            throw new IllegalArgumentException("Unknown id: " + this.mSelectedMethodId);
-        }
-        this.mCurIntent = createImeBindingIntent(inputMethodInfo.getComponent());
-        if (bindCurrentInputMethodServiceMainConnection()) {
-            this.mCurId = inputMethodInfo.getId();
-            this.mLastBindTime = SystemClock.uptimeMillis();
-            Slog.d(TAG, "bindCurrentMethod: mLastBindTime=" + this.mLastBindTime);
-            addFreshWindowToken();
-            return new InputBindResult(2, (IInputMethodSession) null, (SparseArray) null, (InputChannel) null, this.mCurId, this.mCurSeq, (Matrix) null, false);
-        }
-        Slog.w("InputMethodManagerService", "Failure connecting to input method service: " + this.mCurIntent);
-        this.mCurIntent = null;
-        return InputBindResult.IME_NOT_CONNECTED;
-    }
-
-    public final Intent createImeBindingIntent(ComponentName componentName) {
-        Intent intent = new Intent("android.view.InputMethod");
-        intent.setComponent(componentName);
-        intent.putExtra("android.intent.extra.client_label", R.string.permlab_changeNetworkState);
-        intent.putExtra("android.intent.extra.client_intent", PendingIntent.getActivity(this.mContext, 0, new Intent("android.settings.INPUT_METHOD_SETTINGS"), 67108864));
-        return intent;
-    }
-
-    public final void addFreshWindowToken() {
-        int displayIdToShowImeLocked = this.mService.getDisplayIdToShowImeLocked();
-        this.mCurToken = new Binder();
-        this.mService.setCurTokenDisplayIdLocked(displayIdToShowImeLocked);
-        this.mWindowManagerInternal.addWindowToken(this.mCurToken, 2011, displayIdToShowImeLocked, null);
-    }
-
-    public final void unbindMainConnection() {
-        this.mContext.unbindService(this.mMainConnection);
-        this.mHasConnection = false;
-    }
-
-    public void unbindVisibleConnection() {
-        this.mContext.unbindService(this.mVisibleConnection);
-        this.mVisibleBound = false;
-    }
-
-    public final boolean bindCurrentInputMethodService(ServiceConnection serviceConnection, int i) {
-        if (this.mCurIntent == null || serviceConnection == null) {
-            Slog.e(TAG, "--- bind failed: service = " + this.mCurIntent + ", conn = " + serviceConnection);
-            return false;
-        }
-        Slog.d(TAG, "bindCurrentInputMethodService: caller=" + Debug.getCallers(10));
-        return this.mContext.bindServiceAsUser(this.mCurIntent, serviceConnection, i, new UserHandle(this.mSettings.getCurrentUserId()));
-    }
-
-    public final boolean bindCurrentInputMethodServiceMainConnection() {
-        boolean bindCurrentInputMethodService = bindCurrentInputMethodService(this.mMainConnection, this.mImeConnectionBindFlags);
-        this.mHasConnection = bindCurrentInputMethodService;
-        return bindCurrentInputMethodService;
-    }
-
-    public void setCurrentMethodVisible() {
-        if (this.mCurMethod != null) {
-            if (!hasConnection() || isVisibleBound()) {
-                return;
-            }
-            this.mVisibleBound = bindCurrentInputMethodService(this.mVisibleConnection, IME_VISIBLE_BIND_FLAGS);
+    public final void onCreateInlineSuggestionsRequest(InlineSuggestionsRequestInfo inlineSuggestionsRequestInfo, AutofillInlineSuggestionsRequestSession.InlineSuggestionsRequestCallbackImpl inlineSuggestionsRequestCallbackImpl, boolean z) {
+        AutofillSuggestionsController autofillSuggestionsController = this.mAutofillController;
+        autofillSuggestionsController.mPendingInlineSuggestionsRequest = null;
+        autofillSuggestionsController.mInlineSuggestionsRequestCallback = inlineSuggestionsRequestCallbackImpl;
+        InputMethodBindingController inputMethodBindingController = autofillSuggestionsController.mBindingController;
+        InputMethodInfo inputMethodInfo = InputMethodSettingsRepository.get(inputMethodBindingController.mUserId).mMethodMap.get(inputMethodBindingController.mSelectedMethodId);
+        if (inputMethodInfo == null || !inputMethodInfo.isInlineSuggestionsEnabled() || (z && !inputMethodInfo.supportsInlineSuggestionsWithTouchExploration())) {
+            inlineSuggestionsRequestCallbackImpl.onInlineSuggestionsUnsupported();
             return;
         }
-        if (!hasConnection()) {
-            bindCurrentMethod();
-            return;
-        }
-        long uptimeMillis = SystemClock.uptimeMillis() - this.mLastBindTime;
-        String str = TAG;
-        Slog.d(str, "setCurrentMethodVisible: bindingDuration=" + uptimeMillis + ", mLastBindTime=" + this.mLastBindTime);
-        if (uptimeMillis >= 3000) {
-            EventLog.writeEvent(32000, getSelectedMethodId(), Long.valueOf(uptimeMillis), 1);
-            Slog.w(str, "Force disconnect/connect to the IME in setCurrentMethodVisible()");
-            unbindMainConnection();
-            bindCurrentInputMethodServiceMainConnection();
+        autofillSuggestionsController.mPendingInlineSuggestionsRequest = new AutofillSuggestionsController.CreateInlineSuggestionsRequest(inlineSuggestionsRequestInfo, inlineSuggestionsRequestCallbackImpl, inputMethodInfo.getPackageName());
+        if (inputMethodBindingController.mCurMethod != null) {
+            autofillSuggestionsController.performOnCreateInlineSuggestionsRequest();
         }
     }
 
-    public void setCurrentMethodNotVisible() {
-        if (isVisibleBound()) {
-            unbindVisibleConnection();
+    public final void unbindCurrentMethod() {
+        ActivityManagerService$$ExternalSyntheticOutline0.m(10, new StringBuilder("unbindCurrentMethod: caller="), "InputMethodBindingController");
+        if (this.mVisibleBound) {
+            this.mContext.unbindService(this.mVisibleConnection);
+            this.mVisibleBound = false;
         }
+        if (this.mHasMainConnection) {
+            this.mContext.unbindService(this.mMainConnection);
+            this.mHasMainConnection = false;
+        }
+        if (this.mCurToken != null) {
+            StringBuilder sb = new StringBuilder("Removing window token: ");
+            sb.append(this.mCurToken);
+            sb.append(" for display: ");
+            GmsAlarmManager$$ExternalSyntheticOutline0.m(sb, this.mCurTokenDisplayId, "InputMethodBindingController");
+            this.mWindowManagerInternal.removeWindowToken(this.mCurToken, true, false, this.mCurTokenDisplayId);
+            this.mCurTokenDisplayId = -1;
+            InputMethodManagerService inputMethodManagerService = this.mService;
+            inputMethodManagerService.mImeWindowVis = 0;
+            inputMethodManagerService.mBackDisposition = 0;
+            inputMethodManagerService.updateSystemUiLocked(0, 0);
+            this.mAutofillController.mCurHostInputToken = null;
+            this.mCurToken = null;
+        }
+        this.mCurId = null;
+        clearCurMethodAndSessions();
     }
 }

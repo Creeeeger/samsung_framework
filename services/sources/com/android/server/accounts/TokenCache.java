@@ -10,23 +10,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TokenCache {
-    public TokenLruCache mCachedTokens = new TokenLruCache();
+public final class TokenCache {
+    public TokenLruCache mCachedTokens;
 
-    /* loaded from: classes.dex */
-    public class Value {
-        public final long expiryEpochMillis;
-        public final String token;
-
-        public Value(String str, long j) {
-            this.token = str;
-            this.expiryEpochMillis = j;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class Key {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Key {
         public final Account account;
         public final String packageName;
         public final byte[] sigDigest;
@@ -39,7 +29,7 @@ public class TokenCache {
             this.sigDigest = bArr;
         }
 
-        public boolean equals(Object obj) {
+        public final boolean equals(Object obj) {
             if (obj == null || !(obj instanceof Key)) {
                 return false;
             }
@@ -47,113 +37,82 @@ public class TokenCache {
             return Objects.equals(this.account, key.account) && Objects.equals(this.packageName, key.packageName) && Objects.equals(this.tokenType, key.tokenType) && Arrays.equals(this.sigDigest, key.sigDigest);
         }
 
-        public int hashCode() {
+        public final int hashCode() {
             return Arrays.hashCode(this.sigDigest) ^ ((this.account.hashCode() ^ this.packageName.hashCode()) ^ this.tokenType.hashCode());
         }
     }
 
-    /* loaded from: classes.dex */
-    public class TokenLruCache extends LruCache {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TokenLruCache extends LruCache {
         public HashMap mAccountEvictors;
         public HashMap mTokenEvictors;
 
-        /* loaded from: classes.dex */
-        public class Evictor {
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Evictor {
             public final List mKeys = new ArrayList();
 
             public Evictor() {
             }
 
-            public void add(Key key) {
-                this.mKeys.add(key);
-            }
-
-            public void evict() {
-                Iterator it = this.mKeys.iterator();
+            public final void evict() {
+                Iterator it = ((ArrayList) this.mKeys).iterator();
                 while (it.hasNext()) {
                     TokenLruCache.this.remove((Key) it.next());
                 }
             }
         }
 
-        public TokenLruCache() {
-            super(64000);
-            this.mTokenEvictors = new HashMap();
-            this.mAccountEvictors = new HashMap();
-        }
-
         @Override // android.util.LruCache
-        public int sizeOf(Key key, Value value) {
-            return value.token.length();
-        }
-
-        @Override // android.util.LruCache
-        public void entryRemoved(boolean z, Key key, Value value, Value value2) {
+        public final void entryRemoved(boolean z, Object obj, Object obj2, Object obj3) {
             Evictor evictor;
+            Key key = (Key) obj;
+            Value value = (Value) obj2;
+            Value value2 = (Value) obj3;
             if (value == null || value2 != null || (evictor = (Evictor) this.mTokenEvictors.remove(new Pair(key.account.type, value.token))) == null) {
                 return;
             }
             evictor.evict();
         }
 
-        public void putToken(Key key, Value value) {
-            Pair pair = new Pair(key.account.type, value.token);
-            Evictor evictor = (Evictor) this.mTokenEvictors.get(pair);
-            if (evictor == null) {
-                evictor = new Evictor();
-            }
-            evictor.add(key);
-            this.mTokenEvictors.put(pair, evictor);
-            Evictor evictor2 = (Evictor) this.mAccountEvictors.get(key.account);
-            if (evictor2 == null) {
-                evictor2 = new Evictor();
-            }
-            evictor2.add(key);
-            this.mAccountEvictors.put(key.account, evictor2);
-            put(key, value);
-        }
-
-        public void evict(String str, String str2) {
-            Evictor evictor = (Evictor) this.mTokenEvictors.get(new Pair(str, str2));
-            if (evictor != null) {
-                evictor.evict();
-            }
-        }
-
-        public void evict(Account account) {
-            Evictor evictor = (Evictor) this.mAccountEvictors.get(account);
-            if (evictor != null) {
-                evictor.evict();
-            }
+        @Override // android.util.LruCache
+        public final int sizeOf(Object obj, Object obj2) {
+            return ((Value) obj2).token.length();
         }
     }
 
-    public void put(Account account, String str, String str2, String str3, byte[] bArr, long j) {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Value {
+        public final long expiryEpochMillis;
+        public final String token;
+
+        public Value(long j, String str) {
+            this.token = str;
+            this.expiryEpochMillis = j;
+        }
+    }
+
+    public final void put(Account account, String str, String str2, String str3, byte[] bArr, long j) {
         Objects.requireNonNull(account);
-        if (str == null || System.currentTimeMillis() > j) {
+        if (System.currentTimeMillis() > j) {
             return;
         }
-        this.mCachedTokens.putToken(new Key(account, str2, str3, bArr), new Value(str, j));
-    }
-
-    public void remove(String str, String str2) {
-        this.mCachedTokens.evict(str, str2);
-    }
-
-    public void remove(Account account) {
-        this.mCachedTokens.evict(account);
-    }
-
-    public Value get(Account account, String str, String str2, byte[] bArr) {
-        Value value = (Value) this.mCachedTokens.get(new Key(account, str, str2, bArr));
-        long currentTimeMillis = System.currentTimeMillis();
-        if (value != null && currentTimeMillis < value.expiryEpochMillis) {
-            return value;
+        Key key = new Key(account, str2, str3, bArr);
+        Value value = new Value(j, str);
+        TokenLruCache tokenLruCache = this.mCachedTokens;
+        tokenLruCache.getClass();
+        Pair pair = new Pair(account.type, str);
+        TokenLruCache.Evictor evictor = (TokenLruCache.Evictor) tokenLruCache.mTokenEvictors.get(pair);
+        if (evictor == null) {
+            evictor = tokenLruCache.new Evictor();
         }
-        if (value == null) {
-            return null;
+        ((ArrayList) evictor.mKeys).add(key);
+        tokenLruCache.mTokenEvictors.put(pair, evictor);
+        TokenLruCache.Evictor evictor2 = (TokenLruCache.Evictor) tokenLruCache.mAccountEvictors.get(account);
+        if (evictor2 == null) {
+            evictor2 = tokenLruCache.new Evictor();
         }
-        remove(account.type, value.token);
-        return null;
+        ((ArrayList) evictor2.mKeys).add(key);
+        tokenLruCache.mAccountEvictors.put(account, evictor2);
+        tokenLruCache.put(key, value);
     }
 }

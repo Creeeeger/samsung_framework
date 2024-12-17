@@ -3,71 +3,34 @@ package com.android.server.location.geofence;
 import android.R;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
-import android.hardware.location.GeofenceHardwareService;
 import android.hardware.location.IGeofenceHardware;
 import android.location.IGeofenceProvider;
 import android.location.IGpsGeofenceHardware;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.os.UserHandle;
 import android.util.Log;
-import com.android.server.location.injector.Injector;
+import com.android.server.FgThread;
+import com.android.server.location.gnss.GnssGeofenceProxy;
 import com.android.server.servicewatcher.CurrentUserServiceSupplier;
-import com.android.server.servicewatcher.ServiceWatcher;
+import com.android.server.servicewatcher.ServiceWatcher$ServiceListener;
+import com.android.server.servicewatcher.ServiceWatcherImpl;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
-public final class GeofenceProxy implements ServiceWatcher.ServiceListener {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class GeofenceProxy implements ServiceWatcher$ServiceListener {
     public volatile IGeofenceHardware mGeofenceHardware;
     public final IGpsGeofenceHardware mGpsGeofenceHardware;
-    public final ServiceWatcher mServiceWatcher;
+    public final ServiceWatcherImpl mServiceWatcher;
 
-    @Override // com.android.server.servicewatcher.ServiceWatcher.ServiceListener
-    public void onUnbind() {
-    }
-
-    public static GeofenceProxy createAndBind(Context context, IGpsGeofenceHardware iGpsGeofenceHardware, Injector injector) {
-        GeofenceProxy geofenceProxy = new GeofenceProxy(context, iGpsGeofenceHardware, injector);
-        if (geofenceProxy.register(context)) {
-            return geofenceProxy;
-        }
-        return null;
-    }
-
-    public GeofenceProxy(Context context, IGpsGeofenceHardware iGpsGeofenceHardware, Injector injector) {
-        Objects.requireNonNull(iGpsGeofenceHardware);
-        this.mGpsGeofenceHardware = iGpsGeofenceHardware;
-        this.mServiceWatcher = ServiceWatcher.create(context, "GeofenceProxy", CurrentUserServiceSupplier.createFromConfig(context, "com.android.location.service.GeofenceProvider", 17891665, R.string.fingerprint_acquired_imager_dirty), this, injector);
-        this.mGeofenceHardware = null;
-    }
-
-    public void updateGeofenceHardware(IBinder iBinder) {
-        IGeofenceProvider.Stub.asInterface(iBinder).setGeofenceHardware(this.mGeofenceHardware);
-    }
-
-    public final boolean register(Context context) {
-        boolean checkServiceResolves = this.mServiceWatcher.checkServiceResolves();
-        if (checkServiceResolves) {
-            this.mServiceWatcher.register();
-            context.bindServiceAsUser(new Intent(context, (Class<?>) GeofenceHardwareService.class), new GeofenceProxyServiceConnection(), 1, UserHandle.SYSTEM);
-        }
-        return checkServiceResolves;
-    }
-
-    @Override // com.android.server.servicewatcher.ServiceWatcher.ServiceListener
-    public void onBind(IBinder iBinder, CurrentUserServiceSupplier.BoundServiceInfo boundServiceInfo) {
-        updateGeofenceHardware(iBinder);
-    }
-
-    /* loaded from: classes2.dex */
-    public class GeofenceProxyServiceConnection implements ServiceConnection {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class GeofenceProxyServiceConnection implements ServiceConnection {
         public GeofenceProxyServiceConnection() {
         }
 
         @Override // android.content.ServiceConnection
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        public final void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             IGeofenceHardware asInterface = IGeofenceHardware.Stub.asInterface(iBinder);
             try {
                 asInterface.setGpsGeofenceHardware(GeofenceProxy.this.mGpsGeofenceHardware);
@@ -80,10 +43,26 @@ public final class GeofenceProxy implements ServiceWatcher.ServiceListener {
         }
 
         @Override // android.content.ServiceConnection
-        public void onServiceDisconnected(ComponentName componentName) {
+        public final void onServiceDisconnected(ComponentName componentName) {
             GeofenceProxy.this.mGeofenceHardware = null;
             GeofenceProxy geofenceProxy = GeofenceProxy.this;
             geofenceProxy.mServiceWatcher.runOnBinder(new GeofenceProxy$GeofenceProxyServiceConnection$$ExternalSyntheticLambda0(geofenceProxy));
         }
+    }
+
+    public GeofenceProxy(Context context, GnssGeofenceProxy gnssGeofenceProxy) {
+        Objects.requireNonNull(gnssGeofenceProxy);
+        this.mGpsGeofenceHardware = gnssGeofenceProxy;
+        this.mServiceWatcher = new ServiceWatcherImpl(context, FgThread.getHandler(), "GeofenceProxy", CurrentUserServiceSupplier.createFromConfig(context, "com.android.location.service.GeofenceProvider", R.bool.config_enableMultiUserUI, R.string.duration_years_relative), this, null);
+        this.mGeofenceHardware = null;
+    }
+
+    @Override // com.android.server.servicewatcher.ServiceWatcher$ServiceListener
+    public final void onBind(IBinder iBinder, CurrentUserServiceSupplier.BoundServiceInfo boundServiceInfo) {
+        IGeofenceProvider.Stub.asInterface(iBinder).setGeofenceHardware(this.mGeofenceHardware);
+    }
+
+    @Override // com.android.server.servicewatcher.ServiceWatcher$ServiceListener
+    public final void onUnbind() {
     }
 }

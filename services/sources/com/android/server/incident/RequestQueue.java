@@ -4,21 +4,26 @@ import android.os.Handler;
 import android.os.IBinder;
 import java.util.ArrayList;
 
-/* loaded from: classes2.dex */
-public class RequestQueue {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RequestQueue {
     public final Handler mHandler;
     public boolean mStarted;
-    public ArrayList mPending = new ArrayList();
-    public final Runnable mWorker = new Runnable() { // from class: com.android.server.incident.RequestQueue.1
+    public final ArrayList mPending = new ArrayList();
+    public final AnonymousClass1 mWorker = new Runnable() { // from class: com.android.server.incident.RequestQueue.1
         @Override // java.lang.Runnable
-        public void run() {
+        public final void run() {
             ArrayList arrayList;
             synchronized (RequestQueue.this.mPending) {
-                if (RequestQueue.this.mPending.size() > 0) {
-                    arrayList = new ArrayList(RequestQueue.this.mPending);
-                    RequestQueue.this.mPending.clear();
-                } else {
-                    arrayList = null;
+                try {
+                    if (RequestQueue.this.mPending.size() > 0) {
+                        arrayList = new ArrayList(RequestQueue.this.mPending);
+                        RequestQueue.this.mPending.clear();
+                    } else {
+                        arrayList = null;
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
             if (arrayList != null) {
@@ -30,8 +35,8 @@ public class RequestQueue {
         }
     };
 
-    /* loaded from: classes2.dex */
-    public class Rec {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Rec {
         public final IBinder key;
         public final Runnable runnable;
         public final boolean value;
@@ -43,27 +48,15 @@ public class RequestQueue {
         }
     }
 
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.incident.RequestQueue$1] */
     public RequestQueue(Handler handler) {
         this.mHandler = handler;
     }
 
-    public void start() {
-        synchronized (this.mPending) {
-            if (!this.mStarted) {
-                if (this.mPending.size() > 0) {
-                    this.mHandler.post(this.mWorker);
-                }
-                this.mStarted = true;
-            }
-        }
-    }
-
-    public void enqueue(IBinder iBinder, boolean z, Runnable runnable) {
-        boolean z2;
+    public final void enqueue(IBinder iBinder, boolean z, Runnable runnable) {
         synchronized (this.mPending) {
             if (!z) {
                 try {
-                    z2 = true;
                     for (int size = this.mPending.size() - 1; size >= 0; size--) {
                         Rec rec = (Rec) this.mPending.get(size);
                         if (rec.key == iBinder && rec.value) {
@@ -75,10 +68,7 @@ public class RequestQueue {
                     throw th;
                 }
             }
-            z2 = false;
-            if (!z2) {
-                this.mPending.add(new Rec(iBinder, z, runnable));
-            }
+            this.mPending.add(new Rec(iBinder, z, runnable));
             if (this.mStarted) {
                 this.mHandler.post(this.mWorker);
             }

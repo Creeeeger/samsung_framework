@@ -1,19 +1,35 @@
 package com.android.server.display.brightness.strategy;
 
-import android.hardware.display.DisplayManagerInternal;
 import com.android.server.display.DisplayBrightnessState;
 import com.android.server.display.brightness.BrightnessUtils;
+import com.android.server.display.brightness.StrategyExecutionRequest;
+import com.android.server.display.brightness.StrategySelectionNotifyRequest;
+import java.io.PrintWriter;
 
-/* loaded from: classes2.dex */
-public class DozeBrightnessStrategy implements DisplayBrightnessStrategy {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DozeBrightnessStrategy implements DisplayBrightnessStrategy {
     @Override // com.android.server.display.brightness.strategy.DisplayBrightnessStrategy
-    public String getName() {
+    public final void dump(PrintWriter printWriter) {
+    }
+
+    @Override // com.android.server.display.brightness.strategy.DisplayBrightnessStrategy
+    public final String getName() {
         return "DozeBrightnessStrategy";
     }
 
     @Override // com.android.server.display.brightness.strategy.DisplayBrightnessStrategy
-    public DisplayBrightnessState updateBrightness(DisplayManagerInternal.DisplayPowerRequest displayPowerRequest) {
-        float f = displayPowerRequest.dozeScreenBrightness;
-        return BrightnessUtils.constructDisplayBrightnessState(2, f, f, getName());
+    public final int getReason() {
+        return 2;
+    }
+
+    @Override // com.android.server.display.brightness.strategy.DisplayBrightnessStrategy
+    public final void strategySelectionPostProcessor(StrategySelectionNotifyRequest strategySelectionNotifyRequest) {
+    }
+
+    @Override // com.android.server.display.brightness.strategy.DisplayBrightnessStrategy
+    public final DisplayBrightnessState updateBrightness(StrategyExecutionRequest strategyExecutionRequest) {
+        float f = strategyExecutionRequest.mDisplayPowerRequest.dozeScreenBrightness;
+        return BrightnessUtils.constructDisplayBrightnessState(2, f, f, "DozeBrightnessStrategy", false);
     }
 }

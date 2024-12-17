@@ -1,102 +1,61 @@
 package com.samsung.accessory.manager.authentication.cover;
 
-/* loaded from: classes.dex */
-public class CoverInfo {
-    public byte[] chip_id;
-    public int color;
-    public String id;
-    public int idVersion;
-    public int model;
-    public int month;
-    public byte reserved;
-    public String serial;
-    public int smapp;
+import com.android.server.am.mars.MARsFreezeStateRecord$$ExternalSyntheticOutline0;
+
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class CoverInfo {
+    public final String[] HexDecimalTable = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z", "I", "O", "U"};
+    public final byte[] chip_id;
+    public final int color;
+    public final String id;
+    public final int model;
+    public final byte reserved;
+    public final String serial;
+    public final int smapp;
     public int type;
-    public int url;
-    public boolean valid;
-    public int year;
-    public byte[] sn = new byte[14];
-    public byte[] cover_id = new byte[9];
-    public byte[] vendorInfo = new byte[2];
-    public String[] HexDecimalTable = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "X", "Y", "Z", "I", "O", "U"};
+    public final int url;
+    public final boolean valid;
+    public final int year;
 
     public CoverInfo(byte[] bArr) {
         this.chip_id = new byte[23];
+        byte[] bArr2 = new byte[14];
+        byte[] bArr3 = new byte[9];
         this.valid = false;
         if (bArr == null || bArr.length != 23) {
             return;
         }
-        this.chip_id = (byte[]) bArr.clone();
-        setId();
+        byte[] bArr4 = (byte[]) bArr.clone();
+        this.chip_id = bArr4;
+        System.arraycopy(bArr4, 0, bArr2, 0, 14);
+        System.arraycopy(bArr4, 14, bArr3, 0, 9);
+        this.serial = convertHexStringTo33Hexdecimal(byteArrayToString(bArr2));
+        this.id = convertHexStringTo33Hexdecimal(byteArrayToString(bArr3));
+        this.year = bArr4[3] & 255;
+        byte b = bArr4[4];
+        this.model = bArr4[14] & 255;
+        this.smapp = bArr4[15] & 255;
+        this.color = bArr4[16] & 255;
+        this.type = bArr4[17] & 255;
+        byte b2 = bArr4[18];
+        byte b3 = bArr4[19];
+        byte b4 = bArr4[20];
+        this.url = bArr4[21] & 255;
+        this.reserved = bArr4[22];
         this.valid = true;
     }
 
-    public final void setId() {
-        System.arraycopy(this.chip_id, 0, this.sn, 0, 14);
-        System.arraycopy(this.chip_id, 14, this.cover_id, 0, 9);
-        this.serial = convertHexStringTo33Hexdecimal(byteArrayToString(this.sn));
-        this.id = convertHexStringTo33Hexdecimal(byteArrayToString(this.cover_id));
-        byte[] bArr = this.chip_id;
-        this.year = bArr[3] & 255;
-        this.month = bArr[4] & 255;
-        this.model = bArr[14] & 255;
-        this.smapp = bArr[15] & 255;
-        this.color = bArr[16] & 255;
-        this.type = bArr[17] & 255;
-        this.idVersion = bArr[18] & 255;
-        byte[] bArr2 = this.vendorInfo;
-        bArr2[0] = bArr[19];
-        bArr2[1] = bArr[20];
-        this.url = bArr[21] & 255;
-        this.reserved = bArr[22];
-    }
-
-    public boolean isValid() {
-        return this.valid;
-    }
-
-    public byte[] getId() {
-        return this.chip_id;
-    }
-
-    public int getYear() {
-        return this.year;
-    }
-
-    public String getSn() {
-        return this.serial;
-    }
-
-    public String getCoverId() {
-        return this.id;
-    }
-
-    public int getModel() {
-        return this.model;
-    }
-
-    public int getSmapp() {
-        return this.smapp;
-    }
-
-    public int getColor() {
-        return this.color;
-    }
-
-    public int getType() {
-        return this.type;
-    }
-
-    public void setType(int i) {
-        this.type = i;
-    }
-
-    public int getUrl() {
-        return this.url;
-    }
-
-    public byte getReserved() {
-        return this.reserved;
+    public static String byteArrayToString(byte[] bArr) {
+        if (bArr == null) {
+            return "null";
+        }
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (i < bArr.length) {
+            i = MARsFreezeStateRecord$$ExternalSyntheticOutline0.m("%02x", new Object[]{Byte.valueOf(bArr[i])}, sb, i, 1);
+        }
+        return sb.toString();
     }
 
     public final String convertHexStringTo33Hexdecimal(String str) {
@@ -123,17 +82,6 @@ public class CoverInfo {
             } catch (NumberFormatException unused) {
             }
             i = i2;
-        }
-        return sb.toString();
-    }
-
-    public String byteArrayToString(byte[] bArr) {
-        if (bArr == null) {
-            return "null";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bArr) {
-            sb.append(String.format("%02x", Byte.valueOf(b)));
         }
         return sb.toString();
     }

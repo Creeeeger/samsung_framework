@@ -2,23 +2,25 @@ package com.android.server.webkit;
 
 import android.os.ShellCommand;
 import android.webkit.IWebViewUpdateService;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
-public class WebViewUpdateServiceShellCommand extends ShellCommand {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WebViewUpdateServiceShellCommand extends ShellCommand {
     public final IWebViewUpdateService mInterface;
 
     public WebViewUpdateServiceShellCommand(IWebViewUpdateService iWebViewUpdateService) {
         this.mInterface = iWebViewUpdateService;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:16:0x0045  */
-    /* JADX WARN: Removed duplicated region for block: B:24:0x0058 A[Catch: RemoteException -> 0x005d, TRY_LEAVE, TryCatch #0 {RemoteException -> 0x005d, blocks: (B:7:0x000c, B:18:0x0049, B:20:0x004e, B:22:0x0053, B:24:0x0058, B:26:0x0023, B:29:0x002d, B:32:0x0038), top: B:6:0x000c }] */
+    /* JADX WARN: Removed duplicated region for block: B:16:0x0047  */
+    /* JADX WARN: Removed duplicated region for block: B:25:0x006c A[Catch: RemoteException -> 0x002d, TRY_LEAVE, TryCatch #0 {RemoteException -> 0x002d, blocks: (B:7:0x000c, B:19:0x004d, B:21:0x0052, B:23:0x005f, B:25:0x006c, B:27:0x0023, B:30:0x002f, B:33:0x003a), top: B:6:0x000c }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public int onCommand(java.lang.String r8) {
+    public final int onCommand(java.lang.String r8) {
         /*
             r7 = this;
             if (r8 != 0) goto L7
@@ -27,64 +29,84 @@ public class WebViewUpdateServiceShellCommand extends ShellCommand {
         L7:
             java.io.PrintWriter r0 = r7.getOutPrintWriter()
             r1 = -1
-            int r2 = r8.hashCode()     // Catch: android.os.RemoteException -> L5d
+            int r2 = r8.hashCode()     // Catch: android.os.RemoteException -> L2d
             r3 = -1857752288(0xffffffff9144f320, float:-1.5536592E-28)
-            r4 = 0
-            r5 = 2
-            r6 = 1
-            if (r2 == r3) goto L38
+            r4 = 2
+            r5 = 1
+            r6 = 0
+            if (r2 == r3) goto L3a
             r3 = -1381305903(0xffffffffadaaf1d1, float:-1.943415E-11)
-            if (r2 == r3) goto L2d
+            if (r2 == r3) goto L2f
             r3 = 436183515(0x19ffa1db, float:2.6431755E-23)
             if (r2 == r3) goto L23
-            goto L42
+            goto L44
         L23:
             java.lang.String r2 = "disable-multiprocess"
-            boolean r2 = r8.equals(r2)     // Catch: android.os.RemoteException -> L5d
-            if (r2 == 0) goto L42
-            r2 = r5
-            goto L43
-        L2d:
-            java.lang.String r2 = "set-webview-implementation"
-            boolean r2 = r8.equals(r2)     // Catch: android.os.RemoteException -> L5d
-            if (r2 == 0) goto L42
+            boolean r2 = r8.equals(r2)     // Catch: android.os.RemoteException -> L2d
+            if (r2 == 0) goto L44
             r2 = r4
-            goto L43
-        L38:
-            java.lang.String r2 = "enable-multiprocess"
-            boolean r2 = r8.equals(r2)     // Catch: android.os.RemoteException -> L5d
-            if (r2 == 0) goto L42
-            r2 = r6
-            goto L43
-        L42:
-            r2 = r1
-        L43:
-            if (r2 == 0) goto L58
-            if (r2 == r6) goto L53
-            if (r2 == r5) goto L4e
-            int r7 = r7.handleDefaultCommands(r8)     // Catch: android.os.RemoteException -> L5d
-            return r7
-        L4e:
-            int r7 = r7.enableMultiProcess(r4)     // Catch: android.os.RemoteException -> L5d
-            return r7
-        L53:
-            int r7 = r7.enableMultiProcess(r6)     // Catch: android.os.RemoteException -> L5d
-            return r7
-        L58:
-            int r7 = r7.setWebViewImplementation()     // Catch: android.os.RemoteException -> L5d
-            return r7
-        L5d:
+            goto L45
+        L2d:
             r7 = move-exception
-            java.lang.StringBuilder r8 = new java.lang.StringBuilder
-            r8.<init>()
-            java.lang.String r2 = "Remote exception: "
-            r8.append(r2)
-            r8.append(r7)
-            java.lang.String r7 = r8.toString()
-            r0.println(r7)
+            goto L71
+        L2f:
+            java.lang.String r2 = "set-webview-implementation"
+            boolean r2 = r8.equals(r2)     // Catch: android.os.RemoteException -> L2d
+            if (r2 == 0) goto L44
+            r2 = r6
+            goto L45
+        L3a:
+            java.lang.String r2 = "enable-multiprocess"
+            boolean r2 = r8.equals(r2)     // Catch: android.os.RemoteException -> L2d
+            if (r2 == 0) goto L44
+            r2 = r5
+            goto L45
+        L44:
+            r2 = r1
+        L45:
+            if (r2 == 0) goto L6c
+            java.lang.String r3 = "Success"
+            if (r2 == r5) goto L5f
+            if (r2 == r4) goto L52
+            int r7 = r7.handleDefaultCommands(r8)     // Catch: android.os.RemoteException -> L2d
+            return r7
+        L52:
+            java.io.PrintWriter r8 = r7.getOutPrintWriter()     // Catch: android.os.RemoteException -> L2d
+            android.webkit.IWebViewUpdateService r7 = r7.mInterface     // Catch: android.os.RemoteException -> L2d
+            r7.enableMultiProcess(r6)     // Catch: android.os.RemoteException -> L2d
+            r8.println(r3)     // Catch: android.os.RemoteException -> L2d
+            return r6
+        L5f:
+            java.io.PrintWriter r8 = r7.getOutPrintWriter()     // Catch: android.os.RemoteException -> L2d
+            android.webkit.IWebViewUpdateService r7 = r7.mInterface     // Catch: android.os.RemoteException -> L2d
+            r7.enableMultiProcess(r5)     // Catch: android.os.RemoteException -> L2d
+            r8.println(r3)     // Catch: android.os.RemoteException -> L2d
+            return r6
+        L6c:
+            int r7 = r7.setWebViewImplementation()     // Catch: android.os.RemoteException -> L2d
+            return r7
+        L71:
+            java.lang.String r8 = "Remote exception: "
+            com.android.server.UiModeManagerService$13$$ExternalSyntheticOutline0.m(r8, r7, r0)
             return r1
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.webkit.WebViewUpdateServiceShellCommand.onCommand(java.lang.String):int");
+    }
+
+    public final void onHelp() {
+        PrintWriter outPrintWriter = getOutPrintWriter();
+        outPrintWriter.println("WebView updater commands:");
+        outPrintWriter.println("  help");
+        outPrintWriter.println("    Print this help text.");
+        outPrintWriter.println("");
+        PrintWriter outPrintWriter2 = getOutPrintWriter();
+        outPrintWriter2.println("  set-webview-implementation PACKAGE");
+        outPrintWriter2.println("    Set the WebView implementation to the specified package.");
+        outPrintWriter.println("  enable-multiprocess");
+        outPrintWriter.println("    Enable multi-process mode for WebView");
+        outPrintWriter.println("  disable-multiprocess");
+        outPrintWriter.println("    Disable multi-process mode for WebView");
+        outPrintWriter.println();
     }
 
     public final int setWebViewImplementation() {
@@ -93,7 +115,9 @@ public class WebViewUpdateServiceShellCommand extends ShellCommand {
         if (nextArg == null) {
             outPrintWriter.println("Failed to switch, no PACKAGE provided.");
             outPrintWriter.println("");
-            helpSetWebViewImplementation();
+            PrintWriter outPrintWriter2 = getOutPrintWriter();
+            outPrintWriter2.println("  set-webview-implementation PACKAGE");
+            outPrintWriter2.println("    Set the WebView implementation to the specified package.");
             return 1;
         }
         String changeProviderAndSetting = this.mInterface.changeProviderAndSetting(nextArg);
@@ -101,34 +125,7 @@ public class WebViewUpdateServiceShellCommand extends ShellCommand {
             outPrintWriter.println("Success");
             return 0;
         }
-        outPrintWriter.println(String.format("Failed to switch to %s, the WebView implementation is now provided by %s.", nextArg, changeProviderAndSetting));
+        outPrintWriter.println(XmlUtils$$ExternalSyntheticOutline0.m("Failed to switch to ", nextArg, ", the WebView implementation is now provided by ", changeProviderAndSetting, "."));
         return 1;
-    }
-
-    public final int enableMultiProcess(boolean z) {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        this.mInterface.enableMultiProcess(z);
-        outPrintWriter.println("Success");
-        return 0;
-    }
-
-    public void helpSetWebViewImplementation() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        outPrintWriter.println("  set-webview-implementation PACKAGE");
-        outPrintWriter.println("    Set the WebView implementation to the specified package.");
-    }
-
-    public void onHelp() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        outPrintWriter.println("WebView updater commands:");
-        outPrintWriter.println("  help");
-        outPrintWriter.println("    Print this help text.");
-        outPrintWriter.println("");
-        helpSetWebViewImplementation();
-        outPrintWriter.println("  enable-multiprocess");
-        outPrintWriter.println("    Enable multi-process mode for WebView");
-        outPrintWriter.println("  disable-multiprocess");
-        outPrintWriter.println("    Disable multi-process mode for WebView");
-        outPrintWriter.println();
     }
 }

@@ -1,12 +1,6 @@
 package com.android.server.pm;
 
-import android.content.IIntentReceiver;
-import android.os.Bundle;
-import android.util.SparseArray;
-
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface PackageSender {
-    void notifyPackageRemoved(String str, int i);
-
-    void sendPackageBroadcast(String str, String str2, Bundle bundle, int i, String str3, IIntentReceiver iIntentReceiver, int[] iArr, int[] iArr2, SparseArray sparseArray, Bundle bundle2);
 }

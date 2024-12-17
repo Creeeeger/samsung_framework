@@ -12,6 +12,7 @@ import android.permission.PermissionManager;
 import android.util.ArraySet;
 import android.util.Log;
 import android.util.Slog;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.pm.SettingBase;
 import com.android.server.pm.SharedUserSetting;
@@ -21,69 +22,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class GetAppListHelper {
+public final class GetAppListHelper {
     public final String[] EXEMPTED_PACKAGES = {"com.google.android.wearable.app.cn"};
 
-    /* JADX WARN: Multi-variable type inference failed */
-    public boolean isExemptedPackage(int i, SettingBase settingBase) {
-        if (i == 1000 || i == 0) {
-            return true;
-        }
-        if (settingBase == 0) {
-            return false;
-        }
-        if ((settingBase.getFlags() & 1) != 0) {
-            return true;
-        }
-        PackageStateInternal packageStateInternal = null;
-        if (settingBase instanceof SharedUserSetting) {
-            ArraySet packageStates = ((SharedUserSetting) settingBase).getPackageStates();
-            if (packageStates != null && packageStates.size() > 0) {
-                Iterator it = packageStates.iterator();
-                while (it.hasNext()) {
-                    if (containsInAllowlist(((PackageStateInternal) it.next()).getPackageName())) {
-                        return true;
-                    }
-                }
-                packageStateInternal = (PackageStateInternal) packageStates.valueAt(0);
-            }
-        } else if (settingBase instanceof PackageStateInternal) {
-            packageStateInternal = (PackageStateInternal) settingBase;
-            if (containsInAllowlist(packageStateInternal.getPackageName())) {
-                return true;
-            }
-        }
-        return (packageStateInternal == null || packageStateInternal.getPkg().getRequestedPermissions().contains("com.samsung.android.permission.GET_APP_LIST")) ? false : true;
-    }
-
-    public final boolean containsInAllowlist(String str) {
-        if (str == null) {
-            return false;
-        }
-        for (String str2 : this.EXEMPTED_PACKAGES) {
-            if (str.equals(str2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void requestGetAppListPermIfNeeded(Context context, int i, int i2) {
-        try {
-            String packageNameOfPid = getPackageNameOfPid(i2);
-            if (packageNameOfPid != null) {
-                List appTasks = getAppTasks(packageNameOfPid, i);
-                if (hasPackageVisibleActivity(appTasks)) {
-                    showGetAppListConfirmDialog(context, packageNameOfPid, getTaskIdOfVisibleActivity(appTasks), UserHandle.getUserId(i));
-                }
-            }
-        } catch (Exception unused) {
-            Slog.d("GetAppListHelper", "Failed to request GET_APP_LIST for " + i);
-        }
-    }
-
-    public boolean checkCallingGetAppList(Context context, int i, boolean z, Function function) {
+    public static boolean checkCallingGetAppList(Context context, int i, boolean z, Function function) {
         if (z) {
             return false;
         }
@@ -103,33 +47,18 @@ public class GetAppListHelper {
         }
     }
 
-    public final String getPackageNameOfPid(int i) {
-        return ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).getPackageNameByPid(i);
-    }
-
-    public final boolean hasPackageVisibleActivity(List list) {
-        if (list == null) {
-            return false;
-        }
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            ActivityManager.RecentTaskInfo taskInfo = ((ActivityManager.AppTask) it.next()).getTaskInfo();
-            if (taskInfo != null && taskInfo.isVisible && taskInfo.isRunning) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public final int getTaskIdOfVisibleActivity(List list) {
+    public static int getTaskIdOfVisibleActivity(List list) {
         if (list == null) {
             return -1;
         }
         Iterator it = list.iterator();
         while (it.hasNext()) {
             ActivityManager.RecentTaskInfo taskInfo = ((ActivityManager.AppTask) it.next()).getTaskInfo();
-            if (taskInfo != null && taskInfo.isVisible && taskInfo.isRunning && isLauncherIntent(taskInfo.baseIntent)) {
-                return taskInfo.id;
+            if (taskInfo != null && taskInfo.isVisible && taskInfo.isRunning) {
+                Intent intent = taskInfo.baseIntent;
+                if ("android.intent.action.MAIN".equals(intent.getAction()) && intent.getCategories() != null && (intent.getCategories().contains("android.intent.category.LAUNCHER") || intent.getCategories().contains("android.intent.category.LEANBACK_LAUNCHER") || intent.getCategories().contains("android.intent.category.CAR_LAUNCHER"))) {
+                    return taskInfo.id;
+                }
             }
         }
         Iterator it2 = list.iterator();
@@ -142,25 +71,40 @@ public class GetAppListHelper {
         return -1;
     }
 
-    public final boolean isLauncherIntent(Intent intent) {
-        return "android.intent.action.MAIN".equals(intent.getAction()) && intent.getCategories() != null && (intent.getCategories().contains("android.intent.category.LAUNCHER") || intent.getCategories().contains("android.intent.category.LEANBACK_LAUNCHER") || intent.getCategories().contains("android.intent.category.CAR_LAUNCHER"));
-    }
-
-    public final List getAppTasks(String str, int i) {
+    public static void requestGetAppListPermIfNeeded(Context context, int i, int i2) {
+        List list;
         try {
-            return ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class)).getAppTasks(str, i);
-        } catch (Exception unused) {
-            Slog.d("GetAppListHelper", "Failed to get app tasks for " + str);
-            return null;
+            String packageNameByPid = ((ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class)).getPackageNameByPid(i2);
+            if (packageNameByPid != null) {
+                try {
+                    list = ((ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class)).getAppTasks(i, packageNameByPid);
+                } catch (Exception unused) {
+                    Slog.d("GetAppListHelper", "Failed to get app tasks for ".concat(packageNameByPid));
+                    list = null;
+                }
+                if (list == null) {
+                    return;
+                }
+                Iterator it = list.iterator();
+                while (it.hasNext()) {
+                    ActivityManager.RecentTaskInfo taskInfo = ((ActivityManager.AppTask) it.next()).getTaskInfo();
+                    if (taskInfo != null && taskInfo.isVisible && taskInfo.isRunning) {
+                        showGetAppListConfirmDialog(context, packageNameByPid, getTaskIdOfVisibleActivity(list), UserHandle.getUserId(i));
+                        return;
+                    }
+                }
+            }
+        } catch (Exception unused2) {
+            AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "Failed to request GET_APP_LIST for ", "GetAppListHelper");
         }
     }
 
-    public final void showGetAppListConfirmDialog(Context context, String str, int i, int i2) {
+    public static void showGetAppListConfirmDialog(Context context, String str, int i, int i2) {
         if (i < 0) {
             return;
         }
         try {
-            Log.d("GetAppListHelper", "Request GET_APP_LIST permission for " + str);
+            Log.d("GetAppListHelper", "Request GET_APP_LIST permission for ".concat(str));
             Intent intent = new Intent("android.content.pm.action.REQUEST_PERMISSIONS_FOR_OTHER");
             intent.putExtra("android.content.pm.extra.REQUEST_PERMISSIONS_NAMES", new String[]{"com.samsung.android.permission.GET_APP_LIST"});
             intent.setPackage("com.samsung.android.permissioncontroller");
@@ -180,5 +124,46 @@ public class GetAppListHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    public final boolean isExemptedPackage(int i, SettingBase settingBase) {
+        String packageName;
+        if (i == 1000 || i == 0) {
+            return true;
+        }
+        if (settingBase == 0) {
+            return false;
+        }
+        if ((settingBase.mPkgFlags & 1) != 0) {
+            return true;
+        }
+        boolean z = settingBase instanceof SharedUserSetting;
+        String[] strArr = this.EXEMPTED_PACKAGES;
+        PackageStateInternal packageStateInternal = null;
+        if (z) {
+            ArraySet arraySet = ((SharedUserSetting) settingBase).mPackages.mStorage;
+            if (arraySet != null && arraySet.size() > 0) {
+                Iterator it = arraySet.iterator();
+                while (it.hasNext()) {
+                    String packageName2 = ((PackageStateInternal) it.next()).getPackageName();
+                    if (packageName2 != null) {
+                        for (String str : strArr) {
+                            if (packageName2.equals(str)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                packageStateInternal = (PackageStateInternal) arraySet.valueAt(0);
+            }
+        } else if ((settingBase instanceof PackageStateInternal) && (packageName = (packageStateInternal = (PackageStateInternal) settingBase).getPackageName()) != null) {
+            for (String str2 : strArr) {
+                if (packageName.equals(str2)) {
+                    return true;
+                }
+            }
+        }
+        return (packageStateInternal == null || packageStateInternal.getPkg().getRequestedPermissions().contains("com.samsung.android.permission.GET_APP_LIST")) ? false : true;
     }
 }

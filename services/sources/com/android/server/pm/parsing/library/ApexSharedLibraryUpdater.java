@@ -1,11 +1,12 @@
 package com.android.server.pm.parsing.library;
 
 import android.util.ArrayMap;
+import com.android.internal.pm.parsing.pkg.ParsedPackage;
 import com.android.modules.utils.build.UnboundedSdkLevel;
 import com.android.server.SystemConfig;
-import com.android.server.pm.parsing.pkg.ParsedPackage;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class ApexSharedLibraryUpdater extends PackageSharedLibraryUpdater {
     public final ArrayMap mSharedLibraries;
 
@@ -14,30 +15,27 @@ public class ApexSharedLibraryUpdater extends PackageSharedLibraryUpdater {
     }
 
     @Override // com.android.server.pm.parsing.library.PackageSharedLibraryUpdater
-    public void updatePackage(ParsedPackage parsedPackage, boolean z, boolean z2) {
+    public final void updatePackage(ParsedPackage parsedPackage, boolean z, boolean z2) {
         int size = this.mSharedLibraries.size();
         for (int i = 0; i < size; i++) {
-            updateSharedLibraryForPackage((SystemConfig.SharedLibraryEntry) this.mSharedLibraries.valueAt(i), parsedPackage);
+            SystemConfig.SharedLibraryEntry sharedLibraryEntry = (SystemConfig.SharedLibraryEntry) this.mSharedLibraries.valueAt(i);
+            String str = sharedLibraryEntry.onBootclasspathBefore;
+            String str2 = sharedLibraryEntry.name;
+            if (str != null) {
+                int targetSdkVersion = parsedPackage.getTargetSdkVersion();
+                String str3 = sharedLibraryEntry.onBootclasspathBefore;
+                if (str3.length() == 0) {
+                    throw new IllegalArgumentException();
+                }
+                if (!Character.isUpperCase(str3.charAt(0)) ? targetSdkVersion < Integer.parseInt(str3) : targetSdkVersion < 10000) {
+                    if (UnboundedSdkLevel.isAtLeast(str3)) {
+                        PackageSharedLibraryUpdater.prefixRequiredLibrary(parsedPackage, str2);
+                    }
+                }
+            }
+            if (sharedLibraryEntry.canBeSafelyIgnored) {
+                parsedPackage.removeUsesLibrary(str2).removeUsesOptionalLibrary(str2);
+            }
         }
-    }
-
-    public final void updateSharedLibraryForPackage(SystemConfig.SharedLibraryEntry sharedLibraryEntry, ParsedPackage parsedPackage) {
-        if (sharedLibraryEntry.onBootclasspathBefore != null && isTargetSdkAtMost(parsedPackage.getTargetSdkVersion(), sharedLibraryEntry.onBootclasspathBefore) && UnboundedSdkLevel.isAtLeast(sharedLibraryEntry.onBootclasspathBefore)) {
-            prefixRequiredLibrary(parsedPackage, sharedLibraryEntry.name);
-        }
-        if (sharedLibraryEntry.canBeSafelyIgnored) {
-            PackageSharedLibraryUpdater.removeLibrary(parsedPackage, sharedLibraryEntry.name);
-        }
-    }
-
-    public static boolean isTargetSdkAtMost(int i, String str) {
-        return isCodename(str) ? i < 10000 : i < Integer.parseInt(str);
-    }
-
-    public static boolean isCodename(String str) {
-        if (str.length() == 0) {
-            throw new IllegalArgumentException();
-        }
-        return Character.isUpperCase(str.charAt(0));
     }
 }

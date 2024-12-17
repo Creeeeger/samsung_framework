@@ -5,15 +5,16 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class MostRecent extends ResolutionMechanism {
-    public String toString() {
-        return "MostRecent {}";
+    @Override // com.android.server.devicepolicy.ResolutionMechanism
+    public final android.app.admin.ResolutionMechanism getParcelableResolutionMechanism() {
+        return new android.app.admin.MostRecent();
     }
 
     @Override // com.android.server.devicepolicy.ResolutionMechanism
-    /* renamed from: resolve */
-    public PolicyValue mo5120resolve(LinkedHashMap linkedHashMap) {
+    public final PolicyValue resolve(LinkedHashMap linkedHashMap) {
         ArrayList arrayList = new ArrayList(linkedHashMap.entrySet());
         if (arrayList.isEmpty()) {
             return null;
@@ -21,9 +22,7 @@ public final class MostRecent extends ResolutionMechanism {
         return (PolicyValue) ((Map.Entry) arrayList.get(arrayList.size() - 1)).getValue();
     }
 
-    @Override // com.android.server.devicepolicy.ResolutionMechanism
-    /* renamed from: getParcelableResolutionMechanism, reason: merged with bridge method [inline-methods] */
-    public android.app.admin.MostRecent mo5119getParcelableResolutionMechanism() {
-        return new android.app.admin.MostRecent();
+    public final String toString() {
+        return "MostRecent {}";
     }
 }

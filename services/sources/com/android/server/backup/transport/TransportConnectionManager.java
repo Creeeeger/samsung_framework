@@ -4,91 +4,59 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.android.server.backup.TransportManager;
-import java.io.PrintWriter;
-import java.util.Iterator;
+import android.os.Handler;
+import android.os.Looper;
+import com.android.internal.util.Preconditions;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TransportConnectionManager {
+public final class TransportConnectionManager {
     public final Context mContext;
     public final Function mIntentFunction;
-    public Map mTransportClientsCallerMap;
+    public final Map mTransportClientsCallerMap;
     public int mTransportClientsCreated;
     public final Object mTransportClientsLock;
     public final TransportStats mTransportStats;
     public final int mUserId;
 
-    public static Intent getRealTransportIntent(ComponentName componentName) {
-        return new Intent(TransportManager.SERVICE_ACTION_TRANSPORT_HOST).setComponent(componentName);
-    }
-
     public TransportConnectionManager(int i, Context context, TransportStats transportStats) {
-        this(i, context, transportStats, new Function() { // from class: com.android.server.backup.transport.TransportConnectionManager$$ExternalSyntheticLambda0
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                Intent realTransportIntent;
-                realTransportIntent = TransportConnectionManager.getRealTransportIntent((ComponentName) obj);
-                return realTransportIntent;
-            }
-        });
-    }
-
-    public TransportConnectionManager(int i, Context context, TransportStats transportStats, Function function) {
+        TransportConnectionManager$$ExternalSyntheticLambda0 transportConnectionManager$$ExternalSyntheticLambda0 = new TransportConnectionManager$$ExternalSyntheticLambda0();
         this.mTransportClientsLock = new Object();
         this.mTransportClientsCreated = 0;
         this.mTransportClientsCallerMap = new WeakHashMap();
         this.mUserId = i;
         this.mContext = context;
         this.mTransportStats = transportStats;
-        this.mIntentFunction = function;
+        this.mIntentFunction = transportConnectionManager$$ExternalSyntheticLambda0;
     }
 
-    public TransportConnection getTransportClient(ComponentName componentName, String str) {
-        return getTransportClient(componentName, (Bundle) null, str);
+    public final void disposeOfTransportClient(TransportConnection transportConnection, String str) {
+        transportConnection.unbind(str);
+        synchronized (transportConnection.mStateLock) {
+            Preconditions.checkState(transportConnection.mState < 2, "Can't mark as disposed if still bound");
+            transportConnection.mCloseGuard.close();
+        }
+        synchronized (this.mTransportClientsLock) {
+            TransportUtils.log(3, "TransportConnectionManager", TransportUtils.formatMessage(null, str, "Disposing of " + transportConnection));
+            ((WeakHashMap) this.mTransportClientsCallerMap).remove(transportConnection);
+        }
     }
 
-    public TransportConnection getTransportClient(ComponentName componentName, Bundle bundle, String str) {
+    public final TransportConnection getTransportClient(ComponentName componentName, Bundle bundle, String str) {
+        TransportConnection transportConnection;
         Intent intent = (Intent) this.mIntentFunction.apply(componentName);
         if (bundle != null) {
             intent.putExtras(bundle);
         }
-        return getTransportClient(componentName, str, intent);
-    }
-
-    public final TransportConnection getTransportClient(ComponentName componentName, String str, Intent intent) {
-        TransportConnection transportConnection;
         synchronized (this.mTransportClientsLock) {
-            transportConnection = new TransportConnection(this.mUserId, this.mContext, this.mTransportStats, intent, componentName, Integer.toString(this.mTransportClientsCreated), str);
-            this.mTransportClientsCallerMap.put(transportConnection, str);
+            transportConnection = new TransportConnection(this.mUserId, this.mContext, this.mTransportStats, intent, componentName, Integer.toString(this.mTransportClientsCreated), str, new Handler(Looper.getMainLooper()));
+            ((WeakHashMap) this.mTransportClientsCallerMap).put(transportConnection, str);
             this.mTransportClientsCreated++;
             TransportUtils.log(3, "TransportConnectionManager", TransportUtils.formatMessage(null, str, "Retrieving " + transportConnection));
         }
         return transportConnection;
-    }
-
-    public void disposeOfTransportClient(TransportConnection transportConnection, String str) {
-        transportConnection.unbind(str);
-        transportConnection.markAsDisposed();
-        synchronized (this.mTransportClientsLock) {
-            TransportUtils.log(3, "TransportConnectionManager", TransportUtils.formatMessage(null, str, "Disposing of " + transportConnection));
-            this.mTransportClientsCallerMap.remove(transportConnection);
-        }
-    }
-
-    public void dump(PrintWriter printWriter) {
-        printWriter.println("Transport clients created: " + this.mTransportClientsCreated);
-        synchronized (this.mTransportClientsLock) {
-            printWriter.println("Current transport clients: " + this.mTransportClientsCallerMap.size());
-            for (TransportConnection transportConnection : this.mTransportClientsCallerMap.keySet()) {
-                printWriter.println("    " + transportConnection + " [" + ((String) this.mTransportClientsCallerMap.get(transportConnection)) + "]");
-                Iterator it = transportConnection.getLogBuffer().iterator();
-                while (it.hasNext()) {
-                    printWriter.println("        " + ((String) it.next()));
-                }
-            }
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.android.server.knox.zt.devicetrust.data;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class TracepointData extends EndpointData {
     public final String comm;
     public final long pidTgid;
@@ -10,20 +11,20 @@ public abstract class TracepointData extends EndpointData {
         super(i, j);
         this.pidTgid = j2;
         this.uidGid = j3;
-        this.comm = Utils.nullSafe(str);
+        this.comm = str == null ? "" : str;
+    }
+
+    public final String getComm() {
+        return this.comm;
     }
 
     @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public int getPid() {
+    public final int getPid() {
         return (int) (this.pidTgid >> 32);
     }
 
     @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public int getUid() {
+    public final int getUid() {
         return (int) this.uidGid;
-    }
-
-    public String getComm() {
-        return this.comm;
     }
 }

@@ -1,22 +1,14 @@
 package com.android.server;
 
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* compiled from: ResetReasonCode.java */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class CommonPlatformResetReasonCode extends ResetReasonCode {
-    @Override // com.android.server.ResetReasonCode
-    public Pattern getPatternByReason() {
-        Pattern compile = Pattern.compile(".*FATAL EXCEPTION IN SYSTEM PROCESS: (.*)");
-        this.pattern = compile;
-        return compile;
-    }
-
     @Override // com.android.server.ResetReasonCode
     public List addCauseStackFromContexts(List list) {
         ArrayList arrayList = new ArrayList();
@@ -45,11 +37,18 @@ public abstract class CommonPlatformResetReasonCode extends ResetReasonCode {
                     break;
                 }
                 sb2.append(str.trim());
-                sb2.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+                sb2.append("\n");
             }
         }
         arrayList.add(sb.toString());
         arrayList.add(sb2.toString());
         return arrayList;
+    }
+
+    @Override // com.android.server.ResetReasonCode
+    public Pattern getPatternByReason() {
+        Pattern compile = Pattern.compile(".*FATAL EXCEPTION IN SYSTEM PROCESS: (.*)");
+        this.pattern = compile;
+        return compile;
     }
 }

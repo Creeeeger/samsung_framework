@@ -3,71 +3,65 @@ package com.android.server.am.mars;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.SemHqmManager;
-import android.os.UserHandle;
 import android.util.SparseArray;
+import com.android.server.DropBoxManagerService$EntryFile$$ExternalSyntheticOutline0;
 import com.android.server.am.MARsPackageInfo;
 import com.android.server.am.MARsPkgMap;
 import com.android.server.am.MARsPolicyManager;
 import com.android.server.am.mars.util.ForegroundServiceMgr;
-import com.android.server.clipboard.ClipboardService;
+import com.android.server.pm.pu.ProfileUtilizationService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class MARsBigData {
-    public static MARsBigData sInstance;
-    public final Context mContext;
+public final class MARsBigData {
+    public String PLEVdata;
+    public Context mContext;
     public SemHqmManager mHQM;
-    public String PLEVdata = null;
-    public BroadcastReceiver mIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.am.mars.MARsBigData.1
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            try {
-                String action = intent.getAction();
-                if (action == null || !"com.sec.android.intent.action.HQM_UPDATE_REQ".equals(action)) {
-                    return;
+    public AnonymousClass1 mIntentReceiver;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LevelInfo {
+        public int totalSize;
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public abstract class MARsBigDataHolder {
+        public static final MARsBigData INSTANCE;
+
+        /* JADX WARN: Type inference failed for: r1v1, types: [com.android.server.am.mars.MARsBigData$1] */
+        static {
+            final MARsBigData mARsBigData = new MARsBigData();
+            mARsBigData.mHQM = null;
+            mARsBigData.PLEVdata = null;
+            mARsBigData.mIntentReceiver = new BroadcastReceiver() { // from class: com.android.server.am.mars.MARsBigData.1
+                @Override // android.content.BroadcastReceiver
+                public final void onReceive(Context context, Intent intent) {
+                    try {
+                        String action = intent.getAction();
+                        if (action == null || !"com.sec.android.intent.action.HQM_UPDATE_REQ".equals(action)) {
+                            return;
+                        }
+                        MARsBigData.this.updateBigdataInfo();
+                        MARsBigData mARsBigData2 = MARsBigData.this;
+                        String str = mARsBigData2.PLEVdata;
+                        if (str != null) {
+                            mARsBigData2.sendBigData("PLEV", str);
+                        }
+                        MARsBigData.this.sendFGSTypeBigData();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                MARsBigData.this.updateBigdataInfo();
-                MARsBigData.this.sendBigDataInfoPLEV();
-                MARsBigData.this.sendFGSTypeBigData();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            };
+            INSTANCE = mARsBigData;
         }
-    };
-
-    public static MARsBigData getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new MARsBigData(context);
-        }
-        return sInstance;
     }
 
-    public MARsBigData(Context context) {
-        this.mHQM = null;
-        this.mContext = context;
-        if (this.mHQM == null) {
-            this.mHQM = (SemHqmManager) context.getSystemService("HqmManagerService");
-        }
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.sec.android.intent.action.HQM_UPDATE_REQ");
-        context.registerReceiverAsUser(this.mIntentReceiver, UserHandle.ALL, intentFilter, "com.samsung.android.permission.HQM_NOTIFICATION_PERMISSION", null);
-    }
-
-    public void sendBigDataInfoToHQM() {
-        try {
-            updateBigdataInfo();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-            this.PLEVdata = new UsageInfo().toString();
-        }
-        sendBigDataInfoPLEV();
-    }
-
-    /* loaded from: classes.dex */
-    public class UsageInfo {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UsageInfo {
         public final String batteryUsage;
         public final String disableLevelSize;
         public final String extras;
@@ -88,84 +82,25 @@ public class MARsBigData {
             this.extras = "IllegalArgumentException";
         }
 
-        public UsageInfo(String str, String str2, LevelInfo[] levelInfoArr, String str3, String str4) {
-            this.packageName = str == null ? "NONE" : str;
-            this.totalSize = str2 == null ? "NONE" : str2;
+        public UsageInfo(String str, LevelInfo[] levelInfoArr) {
+            this.packageName = "NONE";
+            this.totalSize = str == null ? "NONE" : str;
             this.freecessLevelSize = Integer.toString(levelInfoArr[0].totalSize);
             this.fasLevelSize = Integer.toString(levelInfoArr[1].totalSize);
             this.forceStopLevelSize = Integer.toString(levelInfoArr[2].totalSize);
             this.disableLevelSize = Integer.toString(levelInfoArr[3].totalSize);
-            this.batteryUsage = str3 == null ? "NONE" : str3;
-            if (str4 == null) {
-                str4 = "NONE";
-            } else if (str4.length() > 400) {
-                str4 = str4.substring(0, 400);
-            }
-            this.extras = str4;
+            this.batteryUsage = "NONE";
+            this.extras = "NONE";
         }
 
-        public String toString() {
+        public final String toString() {
             JSONObject jSONObject = new JSONObject();
             try {
                 jSONObject.put("PKNA", this.packageName).put("PKLV", this.totalSize).put("COMA", this.freecessLevelSize).put("COMS", this.fasLevelSize).put("COMR", this.forceStopLevelSize).put("COMB", this.disableLevelSize).put("BATU", this.batteryUsage).put("EXTR", this.extras);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            String jSONObject2 = jSONObject.toString();
-            return jSONObject2.substring(1, jSONObject2.length() - 1);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class LevelInfo {
-        public int totalSize = 0;
-        public double batteryUsage = 0.0d;
-        public String packageName = "";
-        public int prePackageCnt = 0;
-        public double preBatteryUsage = 0.0d;
-        public String reason = "";
-
-        public LevelInfo() {
-        }
-    }
-
-    public void updateBigdataInfo() {
-        int size;
-        String str = null;
-        LevelInfo[] levelInfoArr = new LevelInfo[4];
-        for (int i = 0; i < 4; i++) {
-            levelInfoArr[i] = new LevelInfo();
-        }
-        MARsPkgMap mARsTargetPkgMap = MARsPolicyManager.getInstance().getMARsTargetPkgMap();
-        synchronized (MARsPolicyManager.MARsLock) {
-            size = mARsTargetPkgMap.size();
-            for (int i2 = 0; i2 < mARsTargetPkgMap.getMap().size(); i2++) {
-                SparseArray sparseArray = (SparseArray) mARsTargetPkgMap.getMap().valueAt(i2);
-                for (int i3 = 0; i3 < sparseArray.size(); i3++) {
-                    MARsPackageInfo mARsPackageInfo = (MARsPackageInfo) sparseArray.valueAt(i3);
-                    int maxLevel = mARsPackageInfo.getMaxLevel();
-                    if (maxLevel == 0 || maxLevel == 1) {
-                        levelInfoArr[0].totalSize++;
-                    } else if (maxLevel == 2) {
-                        levelInfoArr[1].totalSize++;
-                    } else if (maxLevel == 3) {
-                        levelInfoArr[2].totalSize++;
-                    } else {
-                        if (maxLevel != 4) {
-                            throw new IllegalStateException("Unexpected value: " + mARsPackageInfo.getMaxLevel());
-                        }
-                        levelInfoArr[3].totalSize++;
-                    }
-                }
-            }
-        }
-        this.PLEVdata = new UsageInfo(str, Integer.toString(size), levelInfoArr, null, null).toString();
-    }
-
-    public final void sendBigDataInfoPLEV() {
-        String str = this.PLEVdata;
-        if (str != null) {
-            sendBigData("PLEV", str);
+            return DropBoxManagerService$EntryFile$$ExternalSyntheticOutline0.m(1, 1, jSONObject.toString());
         }
     }
 
@@ -174,31 +109,60 @@ public class MARsBigData {
         if (semHqmManager == null) {
             return;
         }
-        semHqmManager.sendHWParamToHQM(0, "Sluggish", str, "ph", "1.0", "sec", "", str2, "");
+        semHqmManager.sendHWParamToHQM(0, "Sluggish", str, "ph", ProfileUtilizationService.PU_VERSION, "sec", "", str2, "");
     }
 
-    public void sendFalconBigData(MARsPackageInfo mARsPackageInfo) {
+    public final void sendFGSTypeBigData() {
         JSONObject jSONObject = new JSONObject();
-        try {
-            jSONObject.put("PKGN", mARsPackageInfo.getName()).put("UID", mARsPackageInfo.getUid()).put("NUSD", (System.currentTimeMillis() - mARsPackageInfo.getDisableResetTime()) / ClipboardService.DEFAULT_CLIPBOARD_TIMEOUT_MILLIS).put("BUSE", mARsPackageInfo.getBatteryUsage());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        String jSONObject2 = jSONObject.toString();
-        sendBigData("FGSN", jSONObject2.substring(1, jSONObject2.length() - 1));
-    }
-
-    public void sendFGSTypeBigData() {
-        JSONObject jSONObject = new JSONObject();
-        for (ForegroundServiceRecord foregroundServiceRecord : ForegroundServiceMgr.getInstance().getMap().values()) {
+        int i = ForegroundServiceMgr.$r8$clinit;
+        for (ForegroundServiceRecord foregroundServiceRecord : ForegroundServiceMgr.ForegroundServiceMgrHolder.INSTANCE.mMapFGSRecord.values()) {
             try {
-                jSONObject.put("PKGN", foregroundServiceRecord.getPackageName()).put("UID", 0).put("NUSD", foregroundServiceRecord.getFGSType()).put("BUSE", foregroundServiceRecord.getUsingFGSType());
+                jSONObject.put("PKGN", foregroundServiceRecord.mPackageName).put("UID", 0).put("NUSD", foregroundServiceRecord.mForegroundType).put("BUSE", foregroundServiceRecord.mUsingForegroundType);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             String jSONObject2 = jSONObject.toString();
             sendBigData("FGSN", jSONObject2.substring(1, jSONObject2.length() - 1));
         }
-        ForegroundServiceMgr.getInstance().clearMap();
+        ForegroundServiceMgr.ForegroundServiceMgrHolder.INSTANCE.mMapFGSRecord.clear();
+    }
+
+    public final void updateBigdataInfo() {
+        int size;
+        LevelInfo[] levelInfoArr = new LevelInfo[4];
+        for (int i = 0; i < 4; i++) {
+            LevelInfo levelInfo = new LevelInfo();
+            levelInfo.totalSize = 0;
+            levelInfoArr[i] = levelInfo;
+        }
+        boolean z = MARsPolicyManager.MARs_ENABLE;
+        MARsPkgMap mARsPkgMap = MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.mMARsTargetPackages;
+        synchronized (MARsPolicyManager.MARsLock) {
+            try {
+                size = mARsPkgMap.mMap.size();
+                for (int i2 = 0; i2 < mARsPkgMap.mMap.size(); i2++) {
+                    SparseArray sparseArray = (SparseArray) mARsPkgMap.mMap.valueAt(i2);
+                    for (int i3 = 0; i3 < sparseArray.size(); i3++) {
+                        MARsPackageInfo mARsPackageInfo = (MARsPackageInfo) sparseArray.valueAt(i3);
+                        int i4 = mARsPackageInfo.maxLevel;
+                        if (i4 == 0 || i4 == 1) {
+                            levelInfoArr[0].totalSize++;
+                        } else if (i4 == 2) {
+                            levelInfoArr[1].totalSize++;
+                        } else if (i4 == 3) {
+                            levelInfoArr[2].totalSize++;
+                        } else {
+                            if (i4 != 4) {
+                                throw new IllegalStateException("Unexpected value: " + mARsPackageInfo.maxLevel);
+                            }
+                            levelInfoArr[3].totalSize++;
+                        }
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        this.PLEVdata = new UsageInfo(Integer.toString(size), levelInfoArr).toString();
     }
 }

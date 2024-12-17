@@ -2,6 +2,7 @@ package android.net.util;
 
 import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class NetworkConstants {
     public static final int DNS_SERVER_PORT = 53;
@@ -20,19 +21,18 @@ public final class NetworkConstants {
     public static final int IPV6_ADDR_BITS = 128;
     public static final int IPV6_ADDR_LEN = 16;
     public static final int IPV6_MIN_MTU = 1280;
-    public static final int RFC7421_PREFIX_LENGTH = 64;
 
-    public static byte asByte(int i) {
-        return (byte) i;
+    static {
+        byte asByte = asByte(IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT);
+        FF = asByte;
+        ETHER_ADDR_BROADCAST = new byte[]{asByte, asByte, asByte, asByte, asByte, asByte};
     }
 
     private NetworkConstants() {
         throw new RuntimeException("no instance permitted");
     }
 
-    static {
-        byte asByte = asByte(IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT);
-        FF = asByte;
-        ETHER_ADDR_BROADCAST = new byte[]{asByte, asByte, asByte, asByte, asByte, asByte};
+    public static byte asByte(int i) {
+        return (byte) i;
     }
 }

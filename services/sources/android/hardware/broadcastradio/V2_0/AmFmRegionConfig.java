@@ -6,11 +6,12 @@ import android.os.HwParcel;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AmFmRegionConfig {
     public byte fmDeemphasis;
     public byte fmRds;
-    public ArrayList ranges = new ArrayList();
+    public ArrayList ranges;
 
     public final boolean equals(Object obj) {
         if (this == obj) {
@@ -27,45 +28,66 @@ public final class AmFmRegionConfig {
         return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.ranges)), Integer.valueOf(HidlSupport.deepHashCode(Byte.valueOf(this.fmDeemphasis))), Integer.valueOf(HidlSupport.deepHashCode(Byte.valueOf(this.fmRds))));
     }
 
-    public final String toString() {
-        return "{.ranges = " + this.ranges + ", .fmDeemphasis = " + Deemphasis.dumpBitfield(this.fmDeemphasis) + ", .fmRds = " + Rds.dumpBitfield(this.fmRds) + "}";
-    }
-
     public final void readFromParcel(HwParcel hwParcel) {
-        readEmbeddedFromParcel(hwParcel, hwParcel.readBuffer(24L), 0L);
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        long j2 = j + 0;
-        int int32 = hwBlob.getInt32(8 + j2);
-        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 16, hwBlob.handle(), j2 + 0, true);
+        HwBlob readBuffer = hwParcel.readBuffer(24L);
+        int int32 = readBuffer.getInt32(8L);
+        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 16, readBuffer.handle(), 0L, true);
         this.ranges.clear();
         for (int i = 0; i < int32; i++) {
             AmFmBandRange amFmBandRange = new AmFmBandRange();
-            amFmBandRange.readEmbeddedFromParcel(hwParcel, readEmbeddedBuffer, i * 16);
+            amFmBandRange.lowerBound = 0;
+            amFmBandRange.upperBound = 0;
+            amFmBandRange.spacing = 0;
+            amFmBandRange.scanSpacing = 0;
+            long j = i * 16;
+            amFmBandRange.lowerBound = readEmbeddedBuffer.getInt32(j);
+            amFmBandRange.upperBound = readEmbeddedBuffer.getInt32(4 + j);
+            amFmBandRange.spacing = readEmbeddedBuffer.getInt32(j + 8);
+            amFmBandRange.scanSpacing = readEmbeddedBuffer.getInt32(j + 12);
             this.ranges.add(amFmBandRange);
         }
-        this.fmDeemphasis = hwBlob.getInt8(j + 16);
-        this.fmRds = hwBlob.getInt8(j + 17);
+        this.fmDeemphasis = readBuffer.getInt8(16L);
+        this.fmRds = readBuffer.getInt8(17L);
     }
 
-    public final void writeToParcel(HwParcel hwParcel) {
-        HwBlob hwBlob = new HwBlob(24);
-        writeEmbeddedToBlob(hwBlob, 0L);
-        hwParcel.writeBuffer(hwBlob);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        int size = this.ranges.size();
-        long j2 = j + 0;
-        hwBlob.putInt32(8 + j2, size);
-        hwBlob.putBool(12 + j2, false);
-        HwBlob hwBlob2 = new HwBlob(size * 16);
-        for (int i = 0; i < size; i++) {
-            ((AmFmBandRange) this.ranges.get(i)).writeEmbeddedToBlob(hwBlob2, i * 16);
+    public final String toString() {
+        byte b;
+        StringBuilder sb = new StringBuilder("{.ranges = ");
+        sb.append(this.ranges);
+        sb.append(", .fmDeemphasis = ");
+        byte b2 = this.fmDeemphasis;
+        ArrayList arrayList = new ArrayList();
+        byte b3 = 0;
+        if ((b2 & 1) == 1) {
+            arrayList.add("D50");
+            b = (byte) 1;
+        } else {
+            b = 0;
         }
-        hwBlob.putBlob(j2 + 0, hwBlob2);
-        hwBlob.putInt8(16 + j, this.fmDeemphasis);
-        hwBlob.putInt8(j + 17, this.fmRds);
+        if ((b2 & 2) == 2) {
+            arrayList.add("D75");
+            b = (byte) (b | 2);
+        }
+        if (b2 != b) {
+            arrayList.add("0x" + Integer.toHexString(Byte.toUnsignedInt((byte) (b2 & (~b)))));
+        }
+        sb.append(String.join(" | ", arrayList));
+        sb.append(", .fmRds = ");
+        byte b4 = this.fmRds;
+        ArrayList arrayList2 = new ArrayList();
+        if ((b4 & 1) == 1) {
+            arrayList2.add("RDS");
+            b3 = (byte) 1;
+        }
+        if ((b4 & 2) == 2) {
+            arrayList2.add("RBDS");
+            b3 = (byte) (b3 | 2);
+        }
+        if (b4 != b3) {
+            arrayList2.add("0x" + Integer.toHexString(Byte.toUnsignedInt((byte) (b4 & (~b3)))));
+        }
+        sb.append(String.join(" | ", arrayList2));
+        sb.append("}");
+        return sb.toString();
     }
 }

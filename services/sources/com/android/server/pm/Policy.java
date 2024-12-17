@@ -2,6 +2,8 @@ package com.android.server.pm;
 
 import android.content.pm.Signature;
 import android.content.pm.SigningDetails;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.server.pm.pkg.AndroidPackage;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,12 +12,26 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-/* compiled from: SELinuxMMAC.java */
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class Policy {
     public final Set mCerts;
     public final Map mPkgMap;
     public final String mSeinfo;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PolicyBuilder {
+        public final Set mCerts = new HashSet(2);
+        public final Map mPkgMap = new HashMap(2);
+        public String mSeinfo;
+
+        public final void addSignature(String str) {
+            if (str == null) {
+                throw new IllegalArgumentException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Invalid signature value ", str));
+            }
+            ((HashSet) this.mCerts).add(new Signature(str));
+        }
+    }
 
     public Policy(PolicyBuilder policyBuilder) {
         this.mSeinfo = policyBuilder.mSeinfo;
@@ -23,101 +39,30 @@ public final class Policy {
         this.mPkgMap = Collections.unmodifiableMap(policyBuilder.mPkgMap);
     }
 
-    public Set getSignatures() {
-        return this.mCerts;
-    }
-
-    public boolean hasInnerPackages() {
-        return !this.mPkgMap.isEmpty();
-    }
-
-    public Map getInnerPackages() {
-        return this.mPkgMap;
-    }
-
-    public boolean hasGlobalSeinfo() {
-        return this.mSeinfo != null;
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        Iterator it = this.mCerts.iterator();
-        while (it.hasNext()) {
-            sb.append("cert=" + ((Signature) it.next()).toCharsString().substring(0, 11) + "... ");
-        }
-        if (this.mSeinfo != null) {
-            sb.append("seinfo=" + this.mSeinfo);
-        }
-        for (String str : this.mPkgMap.keySet()) {
-            sb.append(" " + str + "=" + ((String) this.mPkgMap.get(str)));
-        }
-        return sb.toString();
-    }
-
-    public String getMatchedSeInfo(AndroidPackage androidPackage) {
+    public final String getMatchedSeInfo(AndroidPackage androidPackage) {
         Signature[] signatureArr = (Signature[]) this.mCerts.toArray(new Signature[0]);
-        if (androidPackage.getSigningDetails() != SigningDetails.UNKNOWN && !Signature.areExactMatch(signatureArr, androidPackage.getSigningDetails().getSignatures()) && (signatureArr.length > 1 || !androidPackage.getSigningDetails().hasCertificate(signatureArr[0]))) {
+        if (androidPackage.getSigningDetails() != SigningDetails.UNKNOWN && !Signature.areExactMatch(androidPackage.getSigningDetails(), signatureArr) && (signatureArr.length > 1 || !androidPackage.getSigningDetails().hasCertificate(signatureArr[0]))) {
             return null;
         }
         String str = (String) this.mPkgMap.get(androidPackage.getPackageName());
         return str != null ? str : this.mSeinfo;
     }
 
-    /* compiled from: SELinuxMMAC.java */
-    /* loaded from: classes3.dex */
-    public final class PolicyBuilder {
-        public final Set mCerts = new HashSet(2);
-        public final Map mPkgMap = new HashMap(2);
-        public String mSeinfo;
-
-        public PolicyBuilder addSignature(String str) {
-            if (str == null) {
-                throw new IllegalArgumentException("Invalid signature value " + str);
-            }
-            this.mCerts.add(new Signature(str));
-            return this;
+    public final String toString() {
+        StringBuilder sb = new StringBuilder();
+        Iterator it = this.mCerts.iterator();
+        while (it.hasNext()) {
+            sb.append("cert=" + ((Signature) it.next()).toCharsString().substring(0, 11) + "... ");
         }
-
-        public PolicyBuilder setGlobalSeinfoOrThrow(String str) {
-            if (!validateValue(str)) {
-                throw new IllegalArgumentException("Invalid seinfo value " + str);
-            }
-            String str2 = this.mSeinfo;
-            if (str2 != null && !str2.equals(str)) {
-                throw new IllegalStateException("Duplicate seinfo tag found");
-            }
-            this.mSeinfo = str;
-            return this;
+        String str = this.mSeinfo;
+        if (str != null) {
+            sb.append("seinfo=" + str);
         }
-
-        public PolicyBuilder addInnerPackageMapOrThrow(String str, String str2) {
-            if (!validateValue(str)) {
-                throw new IllegalArgumentException("Invalid package name " + str);
-            }
-            if (!validateValue(str2)) {
-                throw new IllegalArgumentException("Invalid seinfo value " + str2);
-            }
-            String str3 = (String) this.mPkgMap.get(str);
-            if (str3 != null && !str3.equals(str2)) {
-                throw new IllegalStateException("Conflicting seinfo value found");
-            }
-            this.mPkgMap.put(str, str2);
-            return this;
+        for (String str2 : this.mPkgMap.keySet()) {
+            StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m(" ", str2, "=");
+            m.append((String) this.mPkgMap.get(str2));
+            sb.append(m.toString());
         }
-
-        public final boolean validateValue(String str) {
-            return str != null && str.matches("\\A[\\.\\w]+\\z");
-        }
-
-        public Policy build() {
-            Policy policy = new Policy(this);
-            if (policy.mCerts.isEmpty()) {
-                throw new IllegalStateException("Missing certs with signer tag. Expecting at least one.");
-            }
-            if ((policy.mSeinfo == null) ^ policy.mPkgMap.isEmpty()) {
-                return policy;
-            }
-            throw new IllegalStateException("Only seinfo tag XOR package tags are allowed within a signer stanza.");
-        }
+        return sb.toString();
     }
 }

@@ -1,121 +1,162 @@
 package com.android.server.companion.transport;
 
+import android.companion.AssociationInfo;
 import android.content.Context;
 import android.os.ParcelFileDescriptor;
 import android.util.Slog;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import com.android.server.companion.securechannel.AttestationVerifier;
 import com.android.server.companion.securechannel.SecureChannel;
-import java.io.IOException;
+import com.android.server.companion.securechannel.SecureChannelException;
+import com.android.server.companion.transport.SecureTransport;
+import com.google.security.cryptauth.lib.securegcm.ukey2.BadHandleException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SecureTransport extends Transport implements SecureChannel.Callback {
+public final class SecureTransport extends Transport implements SecureChannel.Callback {
     public final BlockingQueue mRequestQueue;
     public final SecureChannel mSecureChannel;
     public volatile boolean mShouldProcessRequests;
 
     public SecureTransport(int i, ParcelFileDescriptor parcelFileDescriptor, Context context) {
-        super(i, parcelFileDescriptor, context);
+        super(i, parcelFileDescriptor);
         this.mShouldProcessRequests = false;
-        this.mRequestQueue = new ArrayBlockingQueue(100);
-        this.mSecureChannel = new SecureChannel(this.mRemoteIn, this.mRemoteOut, this, context);
+        this.mRequestQueue = new ArrayBlockingQueue(500);
+        this.mSecureChannel = new SecureChannel(this.mRemoteIn, this.mRemoteOut, this, null, new AttestationVerifier(context));
     }
 
-    public SecureTransport(int i, ParcelFileDescriptor parcelFileDescriptor, Context context, byte[] bArr, AttestationVerifier attestationVerifier) {
-        super(i, parcelFileDescriptor, context);
+    public SecureTransport(int i, ParcelFileDescriptor parcelFileDescriptor, byte[] bArr) {
+        super(i, parcelFileDescriptor);
         this.mShouldProcessRequests = false;
-        this.mRequestQueue = new ArrayBlockingQueue(100);
-        this.mSecureChannel = new SecureChannel(this.mRemoteIn, this.mRemoteOut, this, bArr, attestationVerifier);
+        this.mRequestQueue = new ArrayBlockingQueue(500);
+        this.mSecureChannel = new SecureChannel(this.mRemoteIn, this.mRemoteOut, this, bArr, null);
     }
 
-    @Override // com.android.server.companion.transport.Transport
-    public void start() {
-        this.mSecureChannel.start();
-    }
-
-    @Override // com.android.server.companion.transport.Transport
-    public void stop() {
-        this.mSecureChannel.stop();
-        this.mShouldProcessRequests = false;
-    }
-
-    @Override // com.android.server.companion.transport.Transport
-    public void close() {
+    public final void close() {
         this.mSecureChannel.close();
         this.mShouldProcessRequests = false;
-        super.close();
+        CompanionTransportManager$$ExternalSyntheticLambda2 companionTransportManager$$ExternalSyntheticLambda2 = this.mOnTransportClosed;
+        if (companionTransportManager$$ExternalSyntheticLambda2 != null) {
+            CompanionTransportManager companionTransportManager = companionTransportManager$$ExternalSyntheticLambda2.f$0;
+            companionTransportManager.getClass();
+            AssociationInfo associationById = companionTransportManager.mAssociationStore.getAssociationById(this.mAssociationId);
+            if (associationById != null) {
+                companionTransportManager.detachSystemDataTransport(associationById.getId());
+            }
+        }
     }
 
     @Override // com.android.server.companion.transport.Transport
-    public void sendMessage(int i, int i2, byte[] bArr) {
+    public final void sendMessage(int i, int i2, byte[] bArr) {
         if (!this.mShouldProcessRequests) {
-            establishSecureConnection();
+            Slog.d("CDM_CompanionTransport", "Establishing secure connection.");
+            try {
+                SecureChannel secureChannel = this.mSecureChannel;
+                if (secureChannel.isSecured()) {
+                    Slog.d("CDM_SecureChannel", "Channel is already secure.");
+                } else if (secureChannel.mInProgress) {
+                    Slog.w("CDM_SecureChannel", "Channel has already started establishing secure connection.");
+                } else {
+                    try {
+                        secureChannel.mInProgress = true;
+                        secureChannel.initiateHandshake();
+                    } catch (BadHandleException e) {
+                        throw new SecureChannelException("Failed to initiate handshake protocol.", e);
+                    }
+                }
+            } catch (Exception e2) {
+                Slog.e("CDM_CompanionTransport", "Failed to initiate secure channel handshake.", e2);
+                close();
+            }
         }
         if (Transport.DEBUG) {
-            Slog.d("CDM_CompanionTransport", "Queueing message 0x" + Integer.toHexString(i) + " sequence " + i2 + " length " + bArr.length + " to association " + this.mAssociationId);
+            StringBuilder sb = new StringBuilder("Queueing message 0x");
+            sb.append(Integer.toHexString(i));
+            sb.append(" sequence ");
+            sb.append(i2);
+            sb.append(" length ");
+            sb.append(bArr.length);
+            sb.append(" to association ");
+            DeviceIdleController$$ExternalSyntheticOutline0.m(sb, this.mAssociationId, "CDM_CompanionTransport");
         }
         try {
-            this.mRequestQueue.add(ByteBuffer.allocate(bArr.length + 12).putInt(i).putInt(i2).putInt(bArr.length).put(bArr).array());
-        } catch (IllegalStateException e) {
-            Slog.w("CDM_CompanionTransport", "Failed to queue message 0x" + Integer.toHexString(i) + " . Request buffer is full; detaching transport.", e);
+            ((ArrayBlockingQueue) this.mRequestQueue).add(ByteBuffer.allocate(bArr.length + 12).putInt(i).putInt(i2).putInt(bArr.length).put(bArr).array());
+        } catch (IllegalStateException e3) {
+            Slog.w("CDM_CompanionTransport", "Failed to queue message 0x" + Integer.toHexString(i) + " . Request buffer is full; detaching transport.", e3);
             close();
         }
     }
 
-    public final void establishSecureConnection() {
-        Slog.d("CDM_CompanionTransport", "Establishing secure connection.");
-        try {
-            this.mSecureChannel.establishSecureConnection();
-        } catch (Exception e) {
-            Slog.e("CDM_CompanionTransport", "Failed to initiate secure channel handshake.", e);
-            close();
+    @Override // com.android.server.companion.transport.Transport
+    public final void start() {
+        final SecureChannel secureChannel = this.mSecureChannel;
+        if (SecureChannel.DEBUG) {
+            secureChannel.getClass();
+            Slog.d("CDM_SecureChannel", "Starting secure channel.");
         }
-    }
-
-    @Override // com.android.server.companion.securechannel.SecureChannel.Callback
-    public void onSecureConnection() {
-        this.mShouldProcessRequests = true;
-        Slog.d("CDM_CompanionTransport", "Secure connection established.");
-        new Thread(new Runnable() { // from class: com.android.server.companion.transport.SecureTransport$$ExternalSyntheticLambda0
+        secureChannel.mStopped = false;
+        new Thread(new Runnable() { // from class: com.android.server.companion.securechannel.SecureChannel$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
-                SecureTransport.this.lambda$onSecureConnection$0();
+                SecureChannel secureChannel2 = SecureChannel.this;
+                secureChannel2.getClass();
+                try {
+                    secureChannel2.exchangeHandshake();
+                    secureChannel2.exchangeAuthentication();
+                    secureChannel2.mInProgress = false;
+                    final SecureTransport secureTransport = (SecureTransport) secureChannel2.mCallback;
+                    secureTransport.mShouldProcessRequests = true;
+                    Slog.d("CDM_CompanionTransport", "Secure connection established.");
+                    new Thread(new Runnable() { // from class: com.android.server.companion.transport.SecureTransport$$ExternalSyntheticLambda0
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            SecureTransport secureTransport2 = SecureTransport.this;
+                            while (secureTransport2.mShouldProcessRequests) {
+                                try {
+                                    secureTransport2.mSecureChannel.sendSecureMessage((byte[]) ((ArrayBlockingQueue) secureTransport2.mRequestQueue).take());
+                                } catch (Exception e) {
+                                    Slog.e("CDM_CompanionTransport", "Failed to send secure message.", e);
+                                    secureTransport2.close();
+                                }
+                            }
+                        }
+                    }).start();
+                    while (!secureChannel2.mStopped) {
+                        secureChannel2.receiveSecureMessage();
+                    }
+                } catch (Exception e) {
+                    if (secureChannel2.mStopped) {
+                        return;
+                    }
+                    Slog.e("CDM_SecureChannel", "Secure channel encountered an error.", e);
+                    secureChannel2.close();
+                    SecureTransport secureTransport2 = (SecureTransport) secureChannel2.mCallback;
+                    secureTransport2.getClass();
+                    Slog.e("CDM_CompanionTransport", "Secure transport encountered an error.", e);
+                    if (secureTransport2.mSecureChannel.mStopped) {
+                        secureTransport2.close();
+                    }
+                }
             }
         }).start();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onSecureConnection$0() {
-        while (this.mShouldProcessRequests) {
-            try {
-                this.mSecureChannel.sendSecureMessage((byte[]) this.mRequestQueue.take());
-            } catch (Exception e) {
-                Slog.e("CDM_CompanionTransport", "Failed to send secure message.", e);
-                close();
-            }
+    @Override // com.android.server.companion.transport.Transport
+    public final void stop() {
+        SecureChannel secureChannel = this.mSecureChannel;
+        if (SecureChannel.DEBUG) {
+            secureChannel.getClass();
+            Slog.d("CDM_SecureChannel", "Stopping secure channel.");
         }
+        secureChannel.mStopped = true;
+        secureChannel.mInProgress = false;
+        this.mShouldProcessRequests = false;
     }
 
-    @Override // com.android.server.companion.securechannel.SecureChannel.Callback
-    public void onSecureMessageReceived(byte[] bArr) {
-        ByteBuffer wrap = ByteBuffer.wrap(bArr);
-        int i = wrap.getInt();
-        int i2 = wrap.getInt();
-        byte[] bArr2 = new byte[wrap.getInt()];
-        wrap.get(bArr2);
-        try {
-            handleMessage(i, i2, bArr2);
-        } catch (IOException unused) {
-        }
-    }
-
-    @Override // com.android.server.companion.securechannel.SecureChannel.Callback
-    public void onError(Throwable th) {
-        Slog.e("CDM_CompanionTransport", "Secure transport encountered an error.", th);
-        if (this.mSecureChannel.isStopped()) {
-            close();
-        }
+    public final String toString() {
+        return "SecureTransport{mAssociationId=" + this.mAssociationId + ", mSecureChannel=" + this.mSecureChannel + '}';
     }
 }

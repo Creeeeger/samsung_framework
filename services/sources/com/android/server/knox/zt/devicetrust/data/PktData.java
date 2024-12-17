@@ -1,13 +1,17 @@
 package com.android.server.knox.zt.devicetrust.data;
 
 import android.os.Bundle;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.SystemServiceManager$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.AbstractAccessibilityServiceConnection$$ExternalSyntheticOutline0;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class PktData extends SchedClsData {
     public final String dstAddr;
     public final int dstPort;
@@ -27,31 +31,11 @@ public final class PktData extends SchedClsData {
     }
 
     @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public String toLine() {
-        return String.format(Locale.US, "when : %d | what : %d | uid : %d | type : %d | fingerprint : %s | saddr : %s | daddr : %s | sport : %d | dport : %d%s", Long.valueOf(getTime()), Integer.valueOf(getEvent()), Integer.valueOf(getUid()), Integer.valueOf(this.type), this.fingerprint, this.srcAddr, this.dstAddr, Integer.valueOf(this.srcPort), Integer.valueOf(this.dstPort), readExtras(true));
-    }
-
-    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public Map toMap() {
-        HashMap hashMap = new HashMap();
-        hashMap.put("when", Long.toString(getTime()));
-        hashMap.put("what", Integer.toString(getEvent()));
-        hashMap.put("uid", Integer.toString(getUid()));
-        hashMap.put("type", Integer.toString(this.type));
-        hashMap.put("fingerprint", this.fingerprint);
-        hashMap.put("saddr", this.srcAddr);
-        hashMap.put("daddr", this.dstAddr);
-        hashMap.put("sport", Integer.toString(this.srcPort));
-        hashMap.put("dport", Integer.toString(this.dstPort));
-        return hashMap;
-    }
-
-    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public Bundle toBundle() {
+    public final Bundle toBundle() {
         Bundle bundle = new Bundle();
-        bundle.putLong("when", getTime());
-        bundle.putInt("what", getEvent());
-        bundle.putInt("uid", getUid());
+        bundle.putLong("when", this.actualEventTime);
+        bundle.putInt("what", this.event);
+        bundle.putInt("uid", this.uid);
         bundle.putInt("type", this.type);
         bundle.putString("fingerprint", this.fingerprint);
         bundle.putString("saddr", this.srcAddr);
@@ -63,12 +47,12 @@ public final class PktData extends SchedClsData {
     }
 
     @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
-    public String toJson() {
+    public final String toJson() {
         JSONObject jSONObject = new JSONObject();
         try {
-            jSONObject.put("when", getTime());
-            jSONObject.put("what", getEvent());
-            jSONObject.put("uid", getUid());
+            jSONObject.put("when", this.actualEventTime);
+            jSONObject.put("what", this.event);
+            jSONObject.put("uid", this.uid);
             jSONObject.put("type", this.type);
             jSONObject.put("fingerprint", this.fingerprint);
             jSONObject.put("saddr", this.srcAddr);
@@ -79,5 +63,46 @@ public final class PktData extends SchedClsData {
         } catch (JSONException unused) {
         }
         return jSONObject.toString();
+    }
+
+    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
+    public final String toLine() {
+        Locale locale = Locale.US;
+        long j = this.actualEventTime;
+        int i = this.event;
+        int i2 = this.uid;
+        int i3 = this.type;
+        String str = this.fingerprint;
+        String str2 = this.srcAddr;
+        String str3 = this.dstAddr;
+        int i4 = this.srcPort;
+        int i5 = this.dstPort;
+        String readExtras = readExtras(true);
+        StringBuilder m = SystemServiceManager$$ExternalSyntheticOutline0.m(i, "when : ", j, " | what : ");
+        AbstractAccessibilityServiceConnection$$ExternalSyntheticOutline0.m(i2, i3, " | uid : ", " | type : ", m);
+        DirEncryptServiceHelper$$ExternalSyntheticOutline0.m(m, " | fingerprint : ", str, " | saddr : ", str2);
+        m.append(" | daddr : ");
+        m.append(str3);
+        m.append(" | sport : ");
+        m.append(i4);
+        m.append(" | dport : ");
+        m.append(i5);
+        m.append(readExtras);
+        return m.toString();
+    }
+
+    @Override // com.android.server.knox.zt.devicetrust.data.EndpointData
+    public final Map toMap() {
+        HashMap hashMap = new HashMap();
+        hashMap.put("when", Long.toString(this.actualEventTime));
+        hashMap.put("what", Integer.toString(this.event));
+        hashMap.put("uid", Integer.toString(this.uid));
+        hashMap.put("type", Integer.toString(this.type));
+        hashMap.put("fingerprint", this.fingerprint);
+        hashMap.put("saddr", this.srcAddr);
+        hashMap.put("daddr", this.dstAddr);
+        hashMap.put("sport", Integer.toString(this.srcPort));
+        hashMap.put("dport", Integer.toString(this.dstPort));
+        return hashMap;
     }
 }

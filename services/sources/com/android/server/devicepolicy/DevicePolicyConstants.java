@@ -5,8 +5,9 @@ import android.util.KeyValueListParser;
 import com.android.server.utils.Slogf;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes2.dex */
-public class DevicePolicyConstants {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DevicePolicyConstants {
     public final int BATTERY_THRESHOLD_CHARGING;
     public final int BATTERY_THRESHOLD_NOT_CHARGING;
     public final double DAS_DIED_SERVICE_RECONNECT_BACKOFF_INCREASE;
@@ -41,11 +42,7 @@ public class DevicePolicyConstants {
         this.USE_TEST_ADMIN_AS_SUPERVISION_COMPONENT = z;
     }
 
-    public static DevicePolicyConstants loadFromString(String str) {
-        return new DevicePolicyConstants(str);
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
+    public final void dump(IndentingPrintWriter indentingPrintWriter) {
         indentingPrintWriter.println("Constants:");
         indentingPrintWriter.increaseIndent();
         indentingPrintWriter.print("DAS_DIED_SERVICE_RECONNECT_BACKOFF_SEC: ");

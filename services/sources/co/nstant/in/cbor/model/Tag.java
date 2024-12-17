@@ -1,9 +1,10 @@
 package co.nstant.in.cbor.model;
 
-import java.util.Objects;
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class Tag extends DataItem {
+public final class Tag extends DataItem {
     public final long value;
 
     public Tag(long j) {
@@ -11,12 +12,8 @@ public class Tag extends DataItem {
         this.value = j;
     }
 
-    public long getValue() {
-        return this.value;
-    }
-
     @Override // co.nstant.in.cbor.model.DataItem
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (obj instanceof Tag) {
             return super.equals(obj) && this.value == ((Tag) obj).value;
         }
@@ -24,11 +21,11 @@ public class Tag extends DataItem {
     }
 
     @Override // co.nstant.in.cbor.model.DataItem
-    public int hashCode() {
-        return Objects.hashCode(Long.valueOf(this.value)) ^ super.hashCode();
+    public final int hashCode() {
+        return Long.valueOf(this.value).hashCode() ^ super.hashCode();
     }
 
-    public String toString() {
-        return "Tag(" + this.value + ")";
+    public final String toString() {
+        return AudioConfig$$ExternalSyntheticOutline0.m(new StringBuilder("Tag("), this.value, ")");
     }
 }

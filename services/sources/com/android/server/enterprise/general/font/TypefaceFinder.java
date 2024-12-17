@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.util.Log;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,52 +15,20 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-/* loaded from: classes2.dex */
-public class TypefaceFinder {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class TypefaceFinder {
     public final List mTypefaces = new ArrayList();
 
-    public boolean findTypefaces(AssetManager assetManager, String str) {
-        try {
-            String[] list = assetManager.list("xml");
-            for (int i = 0; i < list.length; i++) {
-                try {
-                    parseTypefaceXml(list[i], assetManager.open("xml/" + list[i]), str);
-                } catch (Exception unused) {
-                }
-            }
-            return true;
-        } catch (Exception unused2) {
-            return false;
-        }
-    }
-
-    public void parseTypefaceXml(String str, InputStream inputStream, String str2) {
-        try {
-            XMLReader xMLReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
-            TypefaceParser typefaceParser = new TypefaceParser();
-            xMLReader.setContentHandler(typefaceParser);
-            xMLReader.parse(new InputSource(inputStream));
-            Typeface parsedData = typefaceParser.getParsedData();
-            if (str2.equals("com.monotype.android.font.samsungone")) {
-                parsedData.setTypefaceFilename("SamsungOneUI-Regular.xml");
-            } else {
-                parsedData.setTypefaceFilename(str);
-            }
-            parsedData.setFontPackageName(str2);
-            this.mTypefaces.add(parsedData);
-        } catch (Exception unused) {
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class TypefaceSortByName implements Comparator, Serializable {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TypefaceSortByName implements Comparator {
         @Override // java.util.Comparator
-        public int compare(Typeface typeface, Typeface typeface2) {
-            return typeface.getName().compareTo(typeface2.getName());
+        public final int compare(Object obj, Object obj2) {
+            return ((Typeface) obj).mName.compareTo(((Typeface) obj2).mName);
         }
     }
 
-    public final String deleteWhiteSpace(String str) {
+    public static String deleteWhiteSpace(String str) {
         StringBuffer stringBuffer = new StringBuffer();
         for (int i = 0; i < str.length(); i++) {
             if (str.charAt(i) != ' ') {
@@ -71,58 +38,63 @@ public class TypefaceFinder {
         return stringBuffer.toString();
     }
 
-    public void getSansEntries(PackageManager packageManager, Vector vector, Vector vector2, Vector vector3) {
-        boolean z;
+    public final void findTypefaces(AssetManager assetManager, String str) {
+        try {
+            String[] list = assetManager.list("xml");
+            for (int i = 0; i < list.length; i++) {
+                try {
+                    parseTypefaceXml(list[i], assetManager.open("xml/" + list[i]), str);
+                } catch (Exception unused) {
+                }
+            }
+        } catch (Exception unused2) {
+        }
+    }
+
+    public final void getSansEntries(PackageManager packageManager, Vector vector, Vector vector2, Vector vector3) {
         vector.add("default");
         vector2.add("default");
         vector3.add("");
         Collections.sort(this.mTypefaces, new TypefaceSortByName());
-        for (int i = 0; i < this.mTypefaces.size(); i++) {
-            String sansName = ((Typeface) this.mTypefaces.get(i)).getSansName();
-            if (sansName != null) {
-                String typefaceFilename = ((Typeface) this.mTypefaces.get(i)).getTypefaceFilename();
-                int lastIndexOf = typefaceFilename.lastIndexOf(47);
-                int lastIndexOf2 = typefaceFilename.lastIndexOf(46);
+        for (int i = 0; i < ((ArrayList) this.mTypefaces).size(); i++) {
+            Typeface typeface = (Typeface) ((ArrayList) this.mTypefaces).get(i);
+            String str = ((ArrayList) typeface.mSansFonts).isEmpty() ? null : typeface.mName;
+            if (str != null) {
+                String str2 = ((Typeface) ((ArrayList) this.mTypefaces).get(i)).mTypefaceFilename;
+                int lastIndexOf = str2.lastIndexOf(47);
+                int lastIndexOf2 = str2.lastIndexOf(46);
                 if (lastIndexOf2 < 0) {
-                    lastIndexOf2 = typefaceFilename.length();
+                    lastIndexOf2 = str2.length();
                 }
-                String replaceAll = typefaceFilename.substring(lastIndexOf + 1, lastIndexOf2).replaceAll(" ", "");
+                String replaceAll = str2.substring(lastIndexOf + 1, lastIndexOf2).replaceAll(" ", "");
                 try {
-                    ApplicationInfo applicationInfo = packageManager.getApplicationInfo(((Typeface) this.mTypefaces.get(i)).getFontPackageName(), 128);
+                    ApplicationInfo applicationInfo = packageManager.getApplicationInfo(((Typeface) ((ArrayList) this.mTypefaces).get(i)).mFontPackageName, 128);
                     applicationInfo.publicSourceDir = applicationInfo.sourceDir;
                     android.graphics.Typeface.createFromAsset(packageManager.getResourcesForApplication(applicationInfo).getAssets(), "fonts/" + replaceAll + ".ttf");
-                    if (((Typeface) this.mTypefaces.get(i)).getFontPackageName() != null) {
-                        if (!((Typeface) this.mTypefaces.get(i)).getFontPackageName().contains("com.monotype.android.font.droidserifitalic")) {
-                            if (((Typeface) this.mTypefaces.get(i)).getFontPackageName().equals("com.monotype.android.font.samsungoneuiregular")) {
-                                Iterator it = this.mTypefaces.iterator();
-                                while (true) {
-                                    if (it.hasNext()) {
-                                        if (((Typeface) it.next()).getFontPackageName().equalsIgnoreCase("com.monotype.android.font.samsungone")) {
-                                            z = true;
-                                            break;
-                                        }
-                                    } else {
-                                        z = false;
+                    if (((Typeface) ((ArrayList) this.mTypefaces).get(i)).mFontPackageName != null) {
+                        if (!((Typeface) ((ArrayList) this.mTypefaces).get(i)).mFontPackageName.contains("com.monotype.android.font.droidserifitalic")) {
+                            if (((Typeface) ((ArrayList) this.mTypefaces).get(i)).mFontPackageName.equals("com.monotype.android.font.samsungoneuiregular")) {
+                                Iterator it = ((ArrayList) this.mTypefaces).iterator();
+                                while (it.hasNext()) {
+                                    if (((Typeface) it.next()).mFontPackageName.equalsIgnoreCase("com.monotype.android.font.samsungone")) {
                                         break;
                                     }
-                                }
-                                if (z) {
                                 }
                             }
                         }
                     }
-                    if (((Typeface) this.mTypefaces.get(i)).getFontPackageName().equals("com.monotype.android.font.foundation")) {
-                        vector.add(1, deleteWhiteSpace(sansName));
-                        vector2.add(1, ((Typeface) this.mTypefaces.get(i)).getTypefaceFilename());
-                        vector3.add(1, ((Typeface) this.mTypefaces.get(i)).getFontPackageName());
-                    } else if (((Typeface) this.mTypefaces.get(i)).getFontPackageName().equals("com.monotype.android.font.samsungone")) {
-                        vector.add(1, deleteWhiteSpace(sansName));
-                        vector2.add(1, ((Typeface) this.mTypefaces.get(i)).getTypefaceFilename());
-                        vector3.add(1, ((Typeface) this.mTypefaces.get(i)).getFontPackageName());
+                    if (((Typeface) ((ArrayList) this.mTypefaces).get(i)).mFontPackageName.equals("com.monotype.android.font.foundation")) {
+                        vector.add(1, deleteWhiteSpace(str));
+                        vector2.add(1, ((Typeface) ((ArrayList) this.mTypefaces).get(i)).mTypefaceFilename);
+                        vector3.add(1, ((Typeface) ((ArrayList) this.mTypefaces).get(i)).mFontPackageName);
+                    } else if (((Typeface) ((ArrayList) this.mTypefaces).get(i)).mFontPackageName.equals("com.monotype.android.font.samsungone")) {
+                        vector.add(1, deleteWhiteSpace(str));
+                        vector2.add(1, ((Typeface) ((ArrayList) this.mTypefaces).get(i)).mTypefaceFilename);
+                        vector3.add(1, ((Typeface) ((ArrayList) this.mTypefaces).get(i)).mFontPackageName);
                     } else {
-                        vector.add(sansName);
-                        vector2.add(((Typeface) this.mTypefaces.get(i)).getTypefaceFilename());
-                        vector3.add(((Typeface) this.mTypefaces.get(i)).getFontPackageName());
+                        vector.add(str);
+                        vector2.add(((Typeface) ((ArrayList) this.mTypefaces).get(i)).mTypefaceFilename);
+                        vector3.add(((Typeface) ((ArrayList) this.mTypefaces).get(i)).mFontPackageName);
                     }
                 } catch (Exception e) {
                     Log.d("TypefaceFinder", "getSansEntries - Typeface.createFromAsset caused an exception for - fonts/" + replaceAll + ".ttf");
@@ -132,15 +104,28 @@ public class TypefaceFinder {
         }
     }
 
-    public Typeface findMatchingTypefaceByName(String str) {
-        Log.i("TypefaceFinder", "findMatchingTypefaceByName:" + str);
-        for (int i = 0; i < this.mTypefaces.size(); i++) {
-            Typeface typeface = (Typeface) this.mTypefaces.get(i);
-            Log.i("TypefaceFinder", "findMatchingTypeface:" + typeface.getName());
-            if (typeface.getName().equalsIgnoreCase(str)) {
-                return typeface;
+    public final void parseTypefaceXml(String str, InputStream inputStream, String str2) {
+        try {
+            XMLReader xMLReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+            TypefaceParser typefaceParser = new TypefaceParser();
+            typefaceParser.in_sans = false;
+            typefaceParser.in_serif = false;
+            typefaceParser.in_monospace = false;
+            typefaceParser.in_filename = false;
+            typefaceParser.in_droidname = false;
+            typefaceParser.mFont = null;
+            typefaceParser.mFontFile = null;
+            xMLReader.setContentHandler(typefaceParser);
+            xMLReader.parse(new InputSource(inputStream));
+            Typeface typeface = typefaceParser.mFont;
+            if (str2.equals("com.monotype.android.font.samsungone")) {
+                typeface.mTypefaceFilename = "SamsungOneUI-Regular.xml";
+            } else {
+                typeface.mTypefaceFilename = str;
             }
+            typeface.mFontPackageName = str2;
+            ((ArrayList) this.mTypefaces).add(typeface);
+        } catch (Exception unused) {
         }
-        return null;
     }
 }

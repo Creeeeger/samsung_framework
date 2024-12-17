@@ -6,30 +6,30 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.EventLogTags;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-/* loaded from: classes3.dex */
-public class SnapshotStatistics {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SnapshotStatistics {
     public static final long SNAPSHOT_LOG_INTERVAL_US = TimeUnit.DAYS.toMicros(1);
-    public Handler mHandler;
+    public final AnonymousClass1 mHandler;
     public long mLastLogTimeUs;
-    public Stats[] mLong;
+    public final Stats[] mLong;
     public int mPackageCount;
-    public Stats[] mShort;
+    public final Stats[] mShort;
     public final Object mLock = new Object();
     public int mEventsReported = 0;
     public final BinMap mTimeBins = new BinMap(new int[]{1, 2, 5, 10, 20, 50, 100});
     public final BinMap mUseBins = new BinMap(new int[]{1, 10, 100, 1000, 10000});
 
-    /* loaded from: classes3.dex */
-    public class BinMap {
-        public int mCount;
-        public int mMaxBin;
-        public int[] mUserKey;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BinMap {
+        public final int mCount;
+        public final int mMaxBin;
+        public final int[] mUserKey;
 
         public BinMap(int[] iArr) {
             int[] copyOf = Arrays.copyOf(iArr, iArr.length);
@@ -38,70 +38,122 @@ public class SnapshotStatistics {
             this.mMaxBin = copyOf[copyOf.length - 1] + 1;
         }
 
-        public int getBin(int i) {
-            if (i < 0 || i >= this.mMaxBin) {
-                if (i >= this.mMaxBin) {
-                    return this.mUserKey.length;
+        public final int getBin(int i) {
+            int[] iArr = this.mUserKey;
+            int i2 = this.mMaxBin;
+            if (i < 0 || i >= i2) {
+                if (i >= i2) {
+                    return iArr.length;
                 }
                 return 0;
             }
-            int i2 = 0;
-            while (true) {
-                int[] iArr = this.mUserKey;
-                if (i2 >= iArr.length) {
-                    return 0;
+            for (int i3 = 0; i3 < iArr.length; i3++) {
+                if (i <= iArr[i3]) {
+                    return i3;
                 }
-                if (i <= iArr[i2]) {
-                    return i2;
-                }
-                i2++;
             }
-        }
-
-        public int count() {
-            return this.mCount;
-        }
-
-        public int[] userKeys() {
-            return this.mUserKey;
+            return 0;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class Stats {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Stats {
         public int mBigBuilds;
         public int mMaxBuildTimeUs;
         public int mMaxUsedCount;
         public int mShortLived;
-        public long mStartTimeUs;
+        public final long mStartTimeUs;
         public long mStopTimeUs;
-        public int[] mTimes;
+        public final int[] mTimes;
         public int mTotalBuilds;
         public long mTotalTimeUs;
         public int mTotalUsed;
-        public int[] mUsed;
+        public final int[] mUsed;
 
-        public final void rebuild(int i, int i2, int i3, int i4, boolean z, boolean z2) {
-            this.mTotalBuilds++;
-            int[] iArr = this.mTimes;
+        /* renamed from: -$$Nest$mdump, reason: not valid java name */
+        public static void m778$$Nest$mdump(Stats stats, PrintWriter printWriter, long j, boolean z, String str) {
+            stats.getClass();
+            if (str.equals("stats")) {
+                stats.dumpPrefix(printWriter, j, z, "Summary stats");
+                if (z) {
+                    printWriter.format(Locale.US, "  %10s  %10s  %10s  %10s  %10s  %10s", "TotBlds", "TotUsed", "BigBlds", "ShortLvd", "TotTime", "MaxTime");
+                } else {
+                    printWriter.format(Locale.US, "  %10d  %10d  %10d  %10d  %10d  %10d", Integer.valueOf(stats.mTotalBuilds), Integer.valueOf(stats.mTotalUsed), Integer.valueOf(stats.mBigBuilds), Integer.valueOf(stats.mShortLived), Long.valueOf(stats.mTotalTimeUs / 1000), Integer.valueOf(stats.mMaxBuildTimeUs / 1000));
+                }
+                printWriter.println();
+                return;
+            }
+            boolean equals = str.equals("times");
+            SnapshotStatistics snapshotStatistics = SnapshotStatistics.this;
+            int i = 0;
+            if (equals) {
+                stats.dumpPrefix(printWriter, j, z, "Build times");
+                if (!z) {
+                    while (true) {
+                        int[] iArr = stats.mTimes;
+                        if (i >= iArr.length) {
+                            break;
+                        }
+                        printWriter.format(Locale.US, "  %10d", Integer.valueOf(iArr[i]));
+                        i++;
+                    }
+                } else {
+                    int[] iArr2 = snapshotStatistics.mTimeBins.mUserKey;
+                    while (i < iArr2.length) {
+                        printWriter.format(Locale.US, "  %10s", TextUtils.formatSimple("<= %dms", new Object[]{Integer.valueOf(iArr2[i])}));
+                        i++;
+                    }
+                    printWriter.format(Locale.US, "  %10s", TextUtils.formatSimple("> %dms", new Object[]{Integer.valueOf(iArr2[iArr2.length - 1])}));
+                }
+                printWriter.println();
+                return;
+            }
+            if (!str.equals("usage")) {
+                throw new IllegalArgumentException("unrecognized choice: ".concat(str));
+            }
+            stats.dumpPrefix(printWriter, j, z, "Use counters");
+            if (!z) {
+                while (true) {
+                    int[] iArr3 = stats.mUsed;
+                    if (i >= iArr3.length) {
+                        break;
+                    }
+                    printWriter.format(Locale.US, "  %10d", Integer.valueOf(iArr3[i]));
+                    i++;
+                }
+            } else {
+                int[] iArr4 = snapshotStatistics.mUseBins.mUserKey;
+                while (i < iArr4.length) {
+                    printWriter.format(Locale.US, "  %10s", TextUtils.formatSimple("<= %d", new Object[]{Integer.valueOf(iArr4[i])}));
+                    i++;
+                }
+                printWriter.format(Locale.US, "  %10s", TextUtils.formatSimple("> %d", new Object[]{Integer.valueOf(iArr4[iArr4.length - 1])}));
+            }
+            printWriter.println();
+        }
+
+        /* renamed from: -$$Nest$mrebuild, reason: not valid java name */
+        public static void m779$$Nest$mrebuild(Stats stats, int i, int i2, int i3, int i4, boolean z, boolean z2) {
+            stats.mTotalBuilds++;
+            int[] iArr = stats.mTimes;
             iArr[i3] = iArr[i3] + 1;
             if (i2 >= 0) {
-                this.mTotalUsed += i2;
-                int[] iArr2 = this.mUsed;
+                stats.mTotalUsed += i2;
+                int[] iArr2 = stats.mUsed;
                 iArr2[i4] = iArr2[i4] + 1;
             }
-            this.mTotalTimeUs += i;
+            stats.mTotalTimeUs += i;
             if (z) {
-                this.mBigBuilds++;
+                stats.mBigBuilds++;
             }
             if (z2) {
-                this.mShortLived++;
+                stats.mShortLived++;
             }
-            if (this.mMaxBuildTimeUs < i) {
-                this.mMaxBuildTimeUs = i;
+            if (stats.mMaxBuildTimeUs < i) {
+                stats.mMaxBuildTimeUs = i;
             }
-            if (this.mMaxUsedCount < i2) {
-                this.mMaxUsedCount = i2;
+            if (stats.mMaxUsedCount < i2) {
+                stats.mMaxUsedCount = i2;
             }
         }
 
@@ -115,8 +167,8 @@ public class SnapshotStatistics {
             this.mMaxBuildTimeUs = 0;
             this.mMaxUsedCount = 0;
             this.mStartTimeUs = j;
-            this.mTimes = new int[SnapshotStatistics.this.mTimeBins.count()];
-            this.mUsed = new int[SnapshotStatistics.this.mUseBins.count()];
+            this.mTimes = new int[SnapshotStatistics.this.mTimeBins.mCount];
+            this.mUsed = new int[SnapshotStatistics.this.mUseBins.mCount];
         }
 
         public Stats(Stats stats) {
@@ -144,11 +196,7 @@ public class SnapshotStatistics {
             this.mMaxUsedCount = stats.mMaxUsedCount;
         }
 
-        public final void complete(long j) {
-            this.mStopTimeUs = j;
-        }
-
-        public final String durationToString(long j) {
+        public static String durationToString(long j) {
             int i = (int) (j / 1000000);
             int i2 = i / 60;
             int i3 = i % 60;
@@ -156,19 +204,13 @@ public class SnapshotStatistics {
             int i5 = i2 % 60;
             int i6 = i4 / 24;
             int i7 = i4 % 24;
-            if (i6 != 0) {
-                return TextUtils.formatSimple("%2d:%02d:%02d:%02d", new Object[]{Integer.valueOf(i6), Integer.valueOf(i7), Integer.valueOf(i5), Integer.valueOf(i3)});
-            }
-            if (i7 != 0) {
-                return TextUtils.formatSimple("%2s %02d:%02d:%02d", new Object[]{"", Integer.valueOf(i7), Integer.valueOf(i5), Integer.valueOf(i3)});
-            }
-            return TextUtils.formatSimple("%2s %2s %2d:%02d", new Object[]{"", "", Integer.valueOf(i5), Integer.valueOf(i3)});
+            return i6 != 0 ? TextUtils.formatSimple("%2d:%02d:%02d:%02d", new Object[]{Integer.valueOf(i6), Integer.valueOf(i7), Integer.valueOf(i5), Integer.valueOf(i3)}) : i7 != 0 ? TextUtils.formatSimple("%2s %02d:%02d:%02d", new Object[]{"", Integer.valueOf(i7), Integer.valueOf(i5), Integer.valueOf(i3)}) : TextUtils.formatSimple("%2s %2s %2d:%02d", new Object[]{"", "", Integer.valueOf(i5), Integer.valueOf(i3)});
         }
 
-        public final void dumpPrefix(PrintWriter printWriter, String str, long j, boolean z, String str2) {
-            printWriter.print(str + " ");
+        public final void dumpPrefix(PrintWriter printWriter, long j, boolean z, String str) {
+            printWriter.print("    ");
             if (z) {
-                printWriter.format(Locale.US, "%-23s", str2);
+                printWriter.format(Locale.US, "%-23s", str);
                 return;
             }
             Locale locale = Locale.US;
@@ -180,85 +222,9 @@ public class SnapshotStatistics {
                 printWriter.format(locale, " %11s", "now");
             }
         }
-
-        public final void dumpStats(PrintWriter printWriter, String str, long j, boolean z) {
-            dumpPrefix(printWriter, str, j, z, "Summary stats");
-            if (z) {
-                printWriter.format(Locale.US, "  %10s  %10s  %10s  %10s  %10s  %10s", "TotBlds", "TotUsed", "BigBlds", "ShortLvd", "TotTime", "MaxTime");
-            } else {
-                printWriter.format(Locale.US, "  %10d  %10d  %10d  %10d  %10d  %10d", Integer.valueOf(this.mTotalBuilds), Integer.valueOf(this.mTotalUsed), Integer.valueOf(this.mBigBuilds), Integer.valueOf(this.mShortLived), Long.valueOf(this.mTotalTimeUs / 1000), Integer.valueOf(this.mMaxBuildTimeUs / 1000));
-            }
-            printWriter.println();
-        }
-
-        public final void dumpTimes(PrintWriter printWriter, String str, long j, boolean z) {
-            dumpPrefix(printWriter, str, j, z, "Build times");
-            int i = 0;
-            if (!z) {
-                while (true) {
-                    int[] iArr = this.mTimes;
-                    if (i >= iArr.length) {
-                        break;
-                    }
-                    printWriter.format(Locale.US, "  %10d", Integer.valueOf(iArr[i]));
-                    i++;
-                }
-            } else {
-                int[] userKeys = SnapshotStatistics.this.mTimeBins.userKeys();
-                while (i < userKeys.length) {
-                    printWriter.format(Locale.US, "  %10s", TextUtils.formatSimple("<= %dms", new Object[]{Integer.valueOf(userKeys[i])}));
-                    i++;
-                }
-                printWriter.format(Locale.US, "  %10s", TextUtils.formatSimple("> %dms", new Object[]{Integer.valueOf(userKeys[userKeys.length - 1])}));
-            }
-            printWriter.println();
-        }
-
-        public final void dumpUsage(PrintWriter printWriter, String str, long j, boolean z) {
-            dumpPrefix(printWriter, str, j, z, "Use counters");
-            int i = 0;
-            if (!z) {
-                while (true) {
-                    int[] iArr = this.mUsed;
-                    if (i >= iArr.length) {
-                        break;
-                    }
-                    printWriter.format(Locale.US, "  %10d", Integer.valueOf(iArr[i]));
-                    i++;
-                }
-            } else {
-                int[] userKeys = SnapshotStatistics.this.mUseBins.userKeys();
-                while (i < userKeys.length) {
-                    printWriter.format(Locale.US, "  %10s", TextUtils.formatSimple("<= %d", new Object[]{Integer.valueOf(userKeys[i])}));
-                    i++;
-                }
-                printWriter.format(Locale.US, "  %10s", TextUtils.formatSimple("> %d", new Object[]{Integer.valueOf(userKeys[userKeys.length - 1])}));
-            }
-            printWriter.println();
-        }
-
-        public final void dump(PrintWriter printWriter, String str, long j, boolean z, String str2) {
-            if (str2.equals("stats")) {
-                dumpStats(printWriter, str, j, z);
-                return;
-            }
-            if (str2.equals("times")) {
-                dumpTimes(printWriter, str, j, z);
-            } else {
-                if (str2.equals("usage")) {
-                    dumpUsage(printWriter, str, j, z);
-                    return;
-                }
-                throw new IllegalArgumentException("unrecognized choice: " + str2);
-            }
-        }
-
-        public final void logSnapshotStatistics(int i) {
-            int i2 = this.mTotalBuilds;
-            FrameworkStatsLog.write(FrameworkStatsLog.PACKAGE_MANAGER_SNAPSHOT_REPORTED, this.mTimes, this.mUsed, this.mMaxBuildTimeUs, this.mMaxUsedCount, i2 == 0 ? 0L : this.mTotalTimeUs / i2, i2 == 0 ? 0 : this.mTotalUsed / i2, i);
-        }
     }
 
+    /* JADX WARN: Type inference failed for: r1v5, types: [android.os.Handler, com.android.server.pm.SnapshotStatistics$1] */
     public SnapshotStatistics() {
         this.mHandler = null;
         long currentTimeMicro = SystemClock.currentTimeMicro();
@@ -269,104 +235,53 @@ public class SnapshotStatistics {
         this.mShort = statsArr2;
         statsArr2[0] = new Stats(currentTimeMicro);
         this.mLastLogTimeUs = currentTimeMicro;
-        this.mHandler = new Handler(Looper.getMainLooper()) { // from class: com.android.server.pm.SnapshotStatistics.1
+        ?? r1 = new Handler(Looper.getMainLooper()) { // from class: com.android.server.pm.SnapshotStatistics.1
             @Override // android.os.Handler
-            public void handleMessage(Message message) {
-                SnapshotStatistics.this.handleMessage(message);
+            public final void handleMessage(Message message) {
+                SnapshotStatistics snapshotStatistics = SnapshotStatistics.this;
+                synchronized (snapshotStatistics.mLock) {
+                    try {
+                        long currentTimeMicro2 = SystemClock.currentTimeMicro();
+                        if (currentTimeMicro2 - snapshotStatistics.mLastLogTimeUs > SnapshotStatistics.SNAPSHOT_LOG_INTERVAL_US) {
+                            snapshotStatistics.shift(snapshotStatistics.mLong, currentTimeMicro2);
+                            snapshotStatistics.mLastLogTimeUs = currentTimeMicro2;
+                            Stats stats = snapshotStatistics.mLong[r2.length - 1];
+                            int i = snapshotStatistics.mPackageCount;
+                            int i2 = stats.mTotalBuilds;
+                            FrameworkStatsLog.write(FrameworkStatsLog.PACKAGE_MANAGER_SNAPSHOT_REPORTED, stats.mTimes, stats.mUsed, stats.mMaxBuildTimeUs, stats.mMaxUsedCount, i2 == 0 ? 0L : stats.mTotalTimeUs / i2, i2 == 0 ? 0 : stats.mTotalUsed / i2, i);
+                        }
+                        snapshotStatistics.shift(snapshotStatistics.mShort, currentTimeMicro2);
+                        snapshotStatistics.mEventsReported = 0;
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+                snapshotStatistics.mHandler.sendEmptyMessageDelayed(0, 60000L);
             }
         };
-        scheduleTick();
+        this.mHandler = r1;
+        r1.sendEmptyMessageDelayed(0, 60000L);
     }
 
-    public final void handleMessage(Message message) {
-        tick();
-        scheduleTick();
-    }
-
-    public final void scheduleTick() {
-        this.mHandler.sendEmptyMessageDelayed(0, 60000L);
-    }
-
-    public final void rebuild(long j, long j2, int i, int i2) {
-        boolean z;
-        int i3 = (int) (j2 - j);
-        synchronized (this.mLock) {
-            this.mPackageCount = i2;
-            int bin = this.mTimeBins.getBin(i3 / 1000);
-            int bin2 = this.mUseBins.getBin(i);
-            z = true;
-            boolean z2 = i3 >= 10000;
-            boolean z3 = i <= 5;
-            this.mShort[0].rebuild(i3, i, bin, bin2, z2, z3);
-            this.mLong[0].rebuild(i3, i, bin, bin2, z2, z3);
-            if (i3 >= 30000) {
-                int i4 = this.mEventsReported;
-                this.mEventsReported = i4 + 1;
-                if (i4 < 10) {
-                }
-            }
-            z = false;
-        }
-        if (z) {
-            EventLogTags.writePmSnapshotRebuild(i3 / 1000, i);
-        }
-    }
-
-    public final void shift(Stats[] statsArr, long j) {
-        statsArr[0].complete(j);
-        for (int length = statsArr.length - 1; length > 0; length--) {
-            statsArr[length] = statsArr[length - 1];
-        }
-        statsArr[0] = new Stats(j);
-    }
-
-    public final void tick() {
-        synchronized (this.mLock) {
-            long currentTimeMicro = SystemClock.currentTimeMicro();
-            if (currentTimeMicro - this.mLastLogTimeUs > SNAPSHOT_LOG_INTERVAL_US) {
-                shift(this.mLong, currentTimeMicro);
-                this.mLastLogTimeUs = currentTimeMicro;
-                this.mLong[r3.length - 1].logSnapshotStatistics(this.mPackageCount);
-            }
-            shift(this.mShort, currentTimeMicro);
-            this.mEventsReported = 0;
-        }
-    }
-
-    public final void dump(PrintWriter printWriter, String str, long j, Stats[] statsArr, Stats[] statsArr2, String str2) {
-        statsArr[0].dump(printWriter, str, j, true, str2);
+    public static void dump(PrintWriter printWriter, long j, Stats[] statsArr, Stats[] statsArr2, String str) {
+        Stats.m778$$Nest$mdump(statsArr[0], printWriter, j, true, str);
         for (Stats stats : statsArr2) {
             if (stats != null) {
-                stats.dump(printWriter, str, j, false, str2);
+                Stats.m778$$Nest$mdump(stats, printWriter, j, false, str);
             }
         }
         for (Stats stats2 : statsArr) {
             if (stats2 != null) {
-                stats2.dump(printWriter, str, j, false, str2);
+                Stats.m778$$Nest$mdump(stats2, printWriter, j, false, str);
             }
         }
     }
 
-    public void dump(PrintWriter printWriter, String str, long j, int i, boolean z) {
-        Stats[] statsArr;
-        Stats[] statsArr2;
-        synchronized (this.mLock) {
-            Stats[] statsArr3 = this.mLong;
-            statsArr = (Stats[]) Arrays.copyOf(statsArr3, statsArr3.length);
-            statsArr[0] = new Stats(statsArr[0]);
-            Stats[] statsArr4 = this.mShort;
-            statsArr2 = (Stats[]) Arrays.copyOf(statsArr4, statsArr4.length);
-            statsArr2[0] = new Stats(statsArr2[0]);
+    public final void shift(Stats[] statsArr, long j) {
+        statsArr[0].mStopTimeUs = j;
+        for (int length = statsArr.length - 1; length > 0; length--) {
+            statsArr[length] = statsArr[length - 1];
         }
-        printWriter.format(Locale.US, "%s Unrecorded-hits: %d", str, Integer.valueOf(i));
-        printWriter.println();
-        dump(printWriter, str, j, statsArr, statsArr2, "stats");
-        if (z) {
-            return;
-        }
-        printWriter.println();
-        dump(printWriter, str, j, statsArr, statsArr2, "times");
-        printWriter.println();
-        dump(printWriter, str, j, statsArr, statsArr2, "usage");
+        statsArr[0] = new Stats(j);
     }
 }

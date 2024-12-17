@@ -1,14 +1,17 @@
 package com.android.server.credentials.metrics;
 
-import com.android.server.audio.AudioService$$ExternalSyntheticLambda0;
 import com.android.server.credentials.ProviderSession;
 import com.android.server.credentials.metrics.shared.ResponseCollective;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class CandidateAggregateMetric {
+public final class CandidateAggregateMetric {
     public final int mSessionIdProvider;
     public boolean mQueryReturned = false;
     public long mServiceBeganTimeNanoseconds = -1;
@@ -20,138 +23,68 @@ public class CandidateAggregateMetric {
     public long mMinProviderTimestampNanoseconds = -1;
     public long mMaxProviderTimestampNanoseconds = -1;
     public int mTotalQueryFailures = 0;
-    public Map mExceptionCountQuery = new LinkedHashMap();
-    public int mTotalAuthFailures = 0;
-    public Map mExceptionCountAuth = new LinkedHashMap();
+    public final Map mExceptionCountQuery = new LinkedHashMap();
+    public final Map mExceptionCountAuth = new LinkedHashMap();
 
     public CandidateAggregateMetric(int i) {
         this.mSessionIdProvider = i;
     }
 
-    public int getSessionIdProvider() {
-        return this.mSessionIdProvider;
-    }
-
-    public void collectAverages(Map map) {
-        collectQueryAggregates(map);
-        collectAuthAggregates(map);
-    }
-
-    public final void collectQueryAggregates(Map map) {
-        this.mNumProviders = map.size();
+    public final void collectAverages(Map map) {
+        ConcurrentHashMap concurrentHashMap = (ConcurrentHashMap) map;
+        this.mNumProviders = concurrentHashMap.size();
         LinkedHashMap linkedHashMap = new LinkedHashMap();
         LinkedHashMap linkedHashMap2 = new LinkedHashMap();
-        Iterator it = map.values().iterator();
+        Iterator it = concurrentHashMap.values().iterator();
         long j = Long.MAX_VALUE;
         long j2 = Long.MIN_VALUE;
         while (it.hasNext()) {
-            CandidatePhaseMetric candidatePhasePerProviderMetric = ((ProviderSession) it.next()).getProviderSessionMetric().getCandidatePhasePerProviderMetric();
-            if (candidatePhasePerProviderMetric.getCandidateUid() == -1) {
+            CandidatePhaseMetric candidatePhaseMetric = ((ProviderSession) it.next()).mProviderSessionMetric.mCandidatePhasePerProviderMetric;
+            if (candidatePhaseMetric.mCandidateUid == -1) {
                 this.mNumProviders--;
             } else {
                 if (this.mServiceBeganTimeNanoseconds == -1) {
-                    this.mServiceBeganTimeNanoseconds = candidatePhasePerProviderMetric.getServiceBeganTimeNanoseconds();
+                    this.mServiceBeganTimeNanoseconds = candidatePhaseMetric.mServiceBeganTimeNanoseconds;
                 }
-                this.mQueryReturned = this.mQueryReturned || candidatePhasePerProviderMetric.isQueryReturned();
-                ResponseCollective responseCollective = candidatePhasePerProviderMetric.getResponseCollective();
-                ResponseCollective.combineTypeCountMaps(linkedHashMap, responseCollective.getResponseCountsMap());
-                ResponseCollective.combineTypeCountMaps(linkedHashMap2, responseCollective.getEntryCountsMap());
-                j = Math.min(j, candidatePhasePerProviderMetric.getStartQueryTimeNanoseconds());
-                j2 = Math.max(j2, candidatePhasePerProviderMetric.getQueryFinishTimeNanoseconds());
-                this.mTotalQueryFailures += candidatePhasePerProviderMetric.isHasException() ? 1 : 0;
-                if (!candidatePhasePerProviderMetric.getFrameworkException().isEmpty()) {
-                    this.mExceptionCountQuery.put(candidatePhasePerProviderMetric.getFrameworkException(), Integer.valueOf(((Integer) this.mExceptionCountQuery.getOrDefault(candidatePhasePerProviderMetric.getFrameworkException(), 0)).intValue() + 1));
+                this.mQueryReturned = this.mQueryReturned || candidatePhaseMetric.mQueryReturned;
+                ResponseCollective responseCollective = candidatePhaseMetric.mResponseCollective;
+                ResponseCollective.combineTypeCountMaps(linkedHashMap, Collections.unmodifiableMap(responseCollective.mResponseCounts));
+                ResponseCollective.combineTypeCountMaps(linkedHashMap2, Collections.unmodifiableMap(responseCollective.mEntryCounts));
+                j = Math.min(j, candidatePhaseMetric.mStartQueryTimeNanoseconds);
+                j2 = Math.max(j2, candidatePhaseMetric.mQueryFinishTimeNanoseconds);
+                this.mTotalQueryFailures += candidatePhaseMetric.mHasException ? 1 : 0;
+                if (!candidatePhaseMetric.mFrameworkException.isEmpty()) {
+                    Map map2 = this.mExceptionCountQuery;
+                    String str = candidatePhaseMetric.mFrameworkException;
+                    map2.put(str, Integer.valueOf(((Integer) ((LinkedHashMap) map2).getOrDefault(str, 0)).intValue() + 1));
                 }
             }
         }
         this.mMinProviderTimestampNanoseconds = j;
         this.mMaxProviderTimestampNanoseconds = j2;
         this.mAggregateCollectiveQuery = new ResponseCollective(linkedHashMap, linkedHashMap2);
-    }
-
-    public final void collectAuthAggregates(Map map) {
-        LinkedHashMap linkedHashMap = new LinkedHashMap();
-        LinkedHashMap linkedHashMap2 = new LinkedHashMap();
-        Iterator it = map.values().iterator();
-        while (it.hasNext()) {
-            for (BrowsedAuthenticationMetric browsedAuthenticationMetric : ((ProviderSession) it.next()).getProviderSessionMetric().getBrowsedAuthenticationMetric()) {
-                if (browsedAuthenticationMetric.getProviderUid() != -1) {
+        LinkedHashMap linkedHashMap3 = new LinkedHashMap();
+        LinkedHashMap linkedHashMap4 = new LinkedHashMap();
+        Iterator it2 = concurrentHashMap.values().iterator();
+        while (it2.hasNext()) {
+            Iterator it3 = ((ArrayList) ((ProviderSession) it2.next()).mProviderSessionMetric.mBrowsedAuthenticationMetric).iterator();
+            while (it3.hasNext()) {
+                BrowsedAuthenticationMetric browsedAuthenticationMetric = (BrowsedAuthenticationMetric) it3.next();
+                if (browsedAuthenticationMetric.mProviderUid != -1) {
                     this.mNumAuthEntriesTapped++;
-                    this.mAuthReturned = this.mAuthReturned || browsedAuthenticationMetric.isAuthReturned();
-                    ResponseCollective authEntryCollective = browsedAuthenticationMetric.getAuthEntryCollective();
-                    ResponseCollective.combineTypeCountMaps(linkedHashMap, authEntryCollective.getResponseCountsMap());
-                    ResponseCollective.combineTypeCountMaps(linkedHashMap2, authEntryCollective.getEntryCountsMap());
-                    this.mTotalQueryFailures += browsedAuthenticationMetric.isHasException() ? 1 : 0;
-                    if (!browsedAuthenticationMetric.getFrameworkException().isEmpty()) {
-                        this.mExceptionCountQuery.put(browsedAuthenticationMetric.getFrameworkException(), Integer.valueOf(((Integer) this.mExceptionCountQuery.getOrDefault(browsedAuthenticationMetric.getFrameworkException(), 0)).intValue() + 1));
+                    this.mAuthReturned = this.mAuthReturned || browsedAuthenticationMetric.mAuthReturned;
+                    ResponseCollective responseCollective2 = browsedAuthenticationMetric.mAuthEntryCollective;
+                    ResponseCollective.combineTypeCountMaps(linkedHashMap3, Collections.unmodifiableMap(responseCollective2.mResponseCounts));
+                    ResponseCollective.combineTypeCountMaps(linkedHashMap4, Collections.unmodifiableMap(responseCollective2.mEntryCounts));
+                    this.mTotalQueryFailures += browsedAuthenticationMetric.mHasException ? 1 : 0;
+                    String str2 = browsedAuthenticationMetric.mFrameworkException;
+                    if (!str2.isEmpty()) {
+                        Map map3 = this.mExceptionCountQuery;
+                        map3.put(str2, Integer.valueOf(((Integer) ((LinkedHashMap) map3).getOrDefault(str2, 0)).intValue() + 1));
                     }
                 }
             }
         }
-        this.mAggregateCollectiveAuth = new ResponseCollective(linkedHashMap, linkedHashMap2);
-    }
-
-    public int getNumProviders() {
-        return this.mNumProviders;
-    }
-
-    public boolean isQueryReturned() {
-        return this.mQueryReturned;
-    }
-
-    public int getNumAuthEntriesTapped() {
-        return this.mNumAuthEntriesTapped;
-    }
-
-    public ResponseCollective getAggregateCollectiveQuery() {
-        return this.mAggregateCollectiveQuery;
-    }
-
-    public ResponseCollective getAggregateCollectiveAuth() {
-        return this.mAggregateCollectiveAuth;
-    }
-
-    public boolean isAuthReturned() {
-        return this.mAuthReturned;
-    }
-
-    public long getMaxProviderTimestampNanoseconds() {
-        return this.mMaxProviderTimestampNanoseconds;
-    }
-
-    public long getMinProviderTimestampNanoseconds() {
-        return this.mMinProviderTimestampNanoseconds;
-    }
-
-    public int getTotalQueryFailures() {
-        return this.mTotalQueryFailures;
-    }
-
-    public String[] getUniqueExceptionStringsQuery() {
-        String[] strArr = new String[this.mExceptionCountQuery.keySet().size()];
-        this.mExceptionCountQuery.keySet().toArray(strArr);
-        return strArr;
-    }
-
-    public int[] getUniqueExceptionCountsQuery() {
-        return this.mExceptionCountQuery.values().stream().mapToInt(new AudioService$$ExternalSyntheticLambda0()).toArray();
-    }
-
-    public String[] getUniqueExceptionStringsAuth() {
-        String[] strArr = new String[this.mExceptionCountAuth.keySet().size()];
-        this.mExceptionCountAuth.keySet().toArray(strArr);
-        return strArr;
-    }
-
-    public int[] getUniqueExceptionCountsAuth() {
-        return this.mExceptionCountAuth.values().stream().mapToInt(new AudioService$$ExternalSyntheticLambda0()).toArray();
-    }
-
-    public long getServiceBeganTimeNanoseconds() {
-        return this.mServiceBeganTimeNanoseconds;
-    }
-
-    public int getTotalAuthFailures() {
-        return this.mTotalAuthFailures;
+        this.mAggregateCollectiveAuth = new ResponseCollective(linkedHashMap3, linkedHashMap4);
     }
 }

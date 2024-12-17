@@ -1,18 +1,19 @@
 package com.android.server.enterprise.threatdefense;
 
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/* loaded from: classes2.dex */
-public class RUFSParser {
-    public static final String TAG = "RUFSParser";
-    public int mExceptionLength;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RUFSParser {
+    public final int mExceptionLength;
     public final ArrayList mExceptions = new ArrayList();
-    public String mPolicy;
-    public String mVersion;
+    public final String mPolicy;
+    public final String mVersion;
 
     public RUFSParser(String str) {
         JSONObject jSONObject = new JSONObject(str);
@@ -28,45 +29,45 @@ public class RUFSParser {
         this.mExceptionLength = this.mExceptions.size();
     }
 
-    public int getVersion() {
+    public final ArrayList getExceptionList() {
+        int size = this.mExceptions.size();
+        int i = this.mExceptionLength;
+        if (size > 0 && this.mExceptions.size() == i) {
+            return this.mExceptions;
+        }
+        Log.e("RUFSParser", "No exceptions : " + this.mExceptions.size() + "/" + i);
+        return null;
+    }
+
+    public final int getPolicyVersion() {
+        String str = this.mPolicy;
         try {
-            return Integer.parseInt(this.mVersion);
+            return Integer.parseInt(str);
         } catch (NumberFormatException unused) {
-            throw new NumberFormatException("RUFSParser, Invalid format : " + this.mVersion);
+            throw new NumberFormatException("RUFSParser, Invalid policy format : " + str);
         }
     }
 
-    public int getPolicyVersion() {
-        try {
-            return Integer.parseInt(this.mPolicy);
-        } catch (NumberFormatException unused) {
-            throw new NumberFormatException("RUFSParser, Invalid policy format : " + this.mPolicy);
-        }
-    }
-
-    public ArrayList getExceptionList() {
-        if (this.mExceptions.size() <= 0 || this.mExceptions.size() != this.mExceptionLength) {
-            Log.e(TAG, "No exceptions : " + this.mExceptions.size() + "/" + this.mExceptionLength);
-            return null;
-        }
-        return this.mExceptions;
-    }
-
-    public String toString() {
+    public final String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getPolicyVersion());
         sb.append("|");
-        sb.append(getVersion());
-        sb.append("|");
-        sb.append(this.mExceptions.size());
-        sb.append("|");
-        if (ThreatDefenseService.DEBUG) {
-            Iterator it = this.mExceptions.iterator();
-            while (it.hasNext()) {
-                sb.append((String) it.next());
-                sb.append("|");
+        String str = this.mVersion;
+        try {
+            sb.append(Integer.parseInt(str));
+            sb.append("|");
+            sb.append(this.mExceptions.size());
+            sb.append("|");
+            if (ThreatDefenseService.DEBUG) {
+                Iterator it = this.mExceptions.iterator();
+                while (it.hasNext()) {
+                    sb.append((String) it.next());
+                    sb.append("|");
+                }
             }
+            return sb.toString();
+        } catch (NumberFormatException unused) {
+            throw new NumberFormatException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("RUFSParser, Invalid format : ", str));
         }
-        return sb.toString();
     }
 }

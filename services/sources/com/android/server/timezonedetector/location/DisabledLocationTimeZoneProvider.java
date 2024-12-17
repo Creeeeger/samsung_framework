@@ -1,48 +1,13 @@
 package com.android.server.timezonedetector.location;
 
-import android.service.timezone.TimeZoneProviderEvent;
 import android.util.IndentingPrintWriter;
-import com.android.server.timezonedetector.location.LocationTimeZoneProvider;
 import java.time.Duration;
 
-/* loaded from: classes3.dex */
-public class DisabledLocationTimeZoneProvider extends LocationTimeZoneProvider {
-    public static /* synthetic */ TimeZoneProviderEvent lambda$new$0(TimeZoneProviderEvent timeZoneProviderEvent) {
-        return timeZoneProviderEvent;
-    }
-
-    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
-    public void onDestroy() {
-    }
-
-    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
-    public boolean onInitialize() {
-        return false;
-    }
-
-    public DisabledLocationTimeZoneProvider(LocationTimeZoneProvider.ProviderMetricsLogger providerMetricsLogger, ThreadingDomain threadingDomain, String str, boolean z) {
-        super(providerMetricsLogger, threadingDomain, str, new TimeZoneProviderEventPreProcessor() { // from class: com.android.server.timezonedetector.location.DisabledLocationTimeZoneProvider$$ExternalSyntheticLambda0
-            @Override // com.android.server.timezonedetector.location.TimeZoneProviderEventPreProcessor
-            public final TimeZoneProviderEvent preProcess(TimeZoneProviderEvent timeZoneProviderEvent) {
-                TimeZoneProviderEvent lambda$new$0;
-                lambda$new$0 = DisabledLocationTimeZoneProvider.lambda$new$0(timeZoneProviderEvent);
-                return lambda$new$0;
-            }
-        }, z);
-    }
-
-    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
-    public void onStartUpdates(Duration duration, Duration duration2) {
-        throw new UnsupportedOperationException("Provider is disabled");
-    }
-
-    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
-    public void onStopUpdates() {
-        throw new UnsupportedOperationException("Provider is disabled");
-    }
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DisabledLocationTimeZoneProvider extends LocationTimeZoneProvider {
     @Override // com.android.server.timezonedetector.Dumpable
-    public void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
+    public final void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
         synchronized (this.mSharedLock) {
             indentingPrintWriter.println("{DisabledLocationTimeZoneProvider}");
             indentingPrintWriter.println("mProviderName=" + this.mProviderName);
@@ -50,7 +15,26 @@ public class DisabledLocationTimeZoneProvider extends LocationTimeZoneProvider {
         }
     }
 
-    public String toString() {
+    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
+    public final void onDestroy() {
+    }
+
+    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
+    public final boolean onInitialize() {
+        return false;
+    }
+
+    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
+    public final void onStartUpdates(Duration duration, Duration duration2) {
+        throw new UnsupportedOperationException("Provider is disabled");
+    }
+
+    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
+    public final void onStopUpdates() {
+        throw new UnsupportedOperationException("Provider is disabled");
+    }
+
+    public final String toString() {
         String str;
         synchronized (this.mSharedLock) {
             str = "DisabledLocationTimeZoneProvider{mProviderName=" + this.mProviderName + ", mCurrentState=" + this.mCurrentState + '}';

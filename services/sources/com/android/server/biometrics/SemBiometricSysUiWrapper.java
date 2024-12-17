@@ -2,232 +2,166 @@ package com.android.server.biometrics;
 
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
-import android.hardware.biometrics.IBiometricSysuiReceiver;
 import android.hardware.biometrics.PromptInfo;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
+import android.os.Handler;
 import android.os.UserManager;
 import android.util.Pair;
 import android.util.Slog;
-import com.android.internal.logging.InstanceId;
 import com.android.internal.logging.InstanceIdSequence;
-import com.android.internal.statusbar.ISessionListener;
-import com.android.internal.statusbar.IStatusBarService;
-import com.android.internal.util.jobs.XmlUtils;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.MagnificationConnectionManager$$ExternalSyntheticOutline0;
+import com.android.server.biometrics.BiometricService;
 import com.android.server.biometrics.log.BiometricContext;
+import com.android.server.biometrics.log.BiometricContextProvider;
 import com.samsung.android.knox.SemPersonaManager;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SemBiometricSysUiWrapper {
+public final class SemBiometricSysUiWrapper {
     public final BiometricContext mBiometricContext;
     public final Context mContext;
+    public Pair mCurrentSession;
     public final IntFunction mGetModalityFunc;
-    public final IStatusBarService mStatusBarService;
+    public final Handler mHandler;
     public final InstanceIdSequence mInstanceIdGenerator = new InstanceIdSequence(1048576);
     public final Map mSessionToInstanceId = new HashMap();
     public final Map mSessions = new HashMap(2);
-    public final SemBiometricSysUiManager mSysUiManager = SemBiometricSysUiManager.get();
+    public final SemBiometricSysUiManager mSysUiManager = SemBiometricSysUiManager.sInstance;
+    public final SemBiometricSysUiWrapper$$ExternalSyntheticLambda0 mShowDialogWatchdog = new Runnable() { // from class: com.android.server.biometrics.SemBiometricSysUiWrapper$$ExternalSyntheticLambda0
+        @Override // java.lang.Runnable
+        public final void run() {
+            SemBiometricSysUiWrapper semBiometricSysUiWrapper = SemBiometricSysUiWrapper.this;
+            if (semBiometricSysUiWrapper.mCurrentSession != null) {
+                Slog.d("SemBiometricSysUiWrapper", "ShowDialogWatchdog: No response from BP UI");
+                BiometricService.AnonymousClass2 anonymousClass2 = (BiometricService.AnonymousClass2) semBiometricSysUiWrapper.mCurrentSession.second;
+                BiometricService.this.mHandler.post(new BiometricService$2$$ExternalSyntheticLambda4(anonymousClass2, anonymousClass2.val$requestId, 3, -1));
+            }
+        }
+    };
 
-    public SemBiometricSysUiWrapper(Context context, BiometricContext biometricContext, IStatusBarService iStatusBarService, IntFunction intFunction) {
+    /* JADX WARN: Type inference failed for: r3v3, types: [com.android.server.biometrics.SemBiometricSysUiWrapper$$ExternalSyntheticLambda0] */
+    public SemBiometricSysUiWrapper(Context context, Handler handler, BiometricContextProvider biometricContextProvider, BiometricService$$ExternalSyntheticLambda0 biometricService$$ExternalSyntheticLambda0) {
         this.mContext = context;
-        this.mBiometricContext = biometricContext;
-        this.mStatusBarService = iStatusBarService;
-        this.mGetModalityFunc = intFunction;
+        this.mHandler = handler;
+        this.mBiometricContext = biometricContextProvider;
+        this.mGetModalityFunc = biometricService$$ExternalSyntheticLambda0;
     }
 
-    public void openSession(IBinder iBinder, long j, IBiometricSysuiReceiver iBiometricSysuiReceiver) {
-        if (iBiometricSysuiReceiver instanceof SemBiometricSysUiReceiver) {
-            SemBiometricSysUiReceiver semBiometricSysUiReceiver = (SemBiometricSysUiReceiver) iBiometricSysuiReceiver;
-            this.mSessions.put(Long.valueOf(j), new Pair(Integer.valueOf(this.mSysUiManager.openSession(iBinder.toString() + XmlUtils.STRING_ARRAY_SEPARATOR + j, semBiometricSysUiReceiver.getSysUiListener())), semBiometricSysUiReceiver));
-        }
-    }
-
-    public void closeSession(long j) {
-        Pair pair = (Pair) this.mSessions.get(Long.valueOf(j));
+    public final void hideAuthenticationDialog(long j) {
+        Pair pair = (Pair) ((HashMap) this.mSessions).get(Long.valueOf(j));
         if (pair == null) {
-            Slog.w("SemBiometricSysUiWrapper", "closeSession: no session info with " + j);
-            return;
+            Slog.w("SemBiometricSysUiWrapper", "hideAuthenticationDialog: no session info with " + j);
+        } else {
+            int intValue = ((Integer) pair.first).intValue();
+            SemBiometricSysUiManager semBiometricSysUiManager = this.mSysUiManager;
+            semBiometricSysUiManager.getClass();
+            semBiometricSysUiManager.handleRequest(new SemBiometricSysUiManager$$ExternalSyntheticLambda8(semBiometricSysUiManager, intValue));
         }
-        this.mSessions.remove(Long.valueOf(j));
-        this.mSysUiManager.closeSession(((Integer) pair.first).intValue());
     }
 
-    public void showAuthenticationDialog(PromptInfo promptInfo, IBiometricSysuiReceiver iBiometricSysuiReceiver, int[] iArr, boolean z, boolean z2, int i, long j, String str, long j2) {
-        int i2;
+    public final void onBiometricError(final int i, final int i2, final int i3) {
+        if (i2 == 100) {
+            ((HashMap) this.mSessions).forEach(new BiConsumer() { // from class: com.android.server.biometrics.SemBiometricSysUiWrapper$$ExternalSyntheticLambda1
+                @Override // java.util.function.BiConsumer
+                public final void accept(Object obj, Object obj2) {
+                    SemBiometricSysUiWrapper semBiometricSysUiWrapper = SemBiometricSysUiWrapper.this;
+                    int i4 = i;
+                    semBiometricSysUiWrapper.getClass();
+                    int intValue = ((Integer) ((Pair) obj2).first).intValue();
+                    SemBiometricSysUiManager semBiometricSysUiManager = semBiometricSysUiWrapper.mSysUiManager;
+                    semBiometricSysUiManager.getClass();
+                    semBiometricSysUiManager.handleRequest(new SemBiometricSysUiManager$$ExternalSyntheticLambda10(semBiometricSysUiManager, intValue, i4, false, null));
+                }
+            });
+        } else {
+            ((HashMap) this.mSessions).forEach(new BiConsumer() { // from class: com.android.server.biometrics.SemBiometricSysUiWrapper$$ExternalSyntheticLambda2
+                @Override // java.util.function.BiConsumer
+                public final void accept(Object obj, Object obj2) {
+                    SemBiometricSysUiWrapper semBiometricSysUiWrapper = SemBiometricSysUiWrapper.this;
+                    int i4 = i;
+                    int i5 = i2;
+                    int i6 = i3;
+                    semBiometricSysUiWrapper.getClass();
+                    int intValue = ((Integer) ((Pair) obj2).first).intValue();
+                    SemBiometricSysUiManager semBiometricSysUiManager = semBiometricSysUiWrapper.mSysUiManager;
+                    semBiometricSysUiManager.getClass();
+                    semBiometricSysUiManager.handleRequest(new SemBiometricSysUiManager$$ExternalSyntheticLambda11(semBiometricSysUiManager, intValue, i4, i5, i6));
+                }
+            });
+        }
+    }
+
+    public final void showAuthenticationDialog(PromptInfo promptInfo, int[] iArr, boolean z, boolean z2, int i, long j, String str, long j2) {
         int credentialOwnerProfile = UserManager.get(this.mContext).getCredentialOwnerProfile(i);
-        Pair pair = (Pair) this.mSessions.get(Long.valueOf(j2));
+        Pair pair = (Pair) ((HashMap) this.mSessions).get(Long.valueOf(j2));
         if (pair == null) {
             Slog.w("SemBiometricSysUiWrapper", "showAuthenticationDialog: no session info with " + j2);
             return;
         }
         Bundle bundle = new Bundle();
+        int i2 = 32768;
         if (iArr != null && iArr.length > 0) {
             int i3 = 0;
             for (int i4 : iArr) {
                 i3 |= ((Integer) this.mGetModalityFunc.apply(i4)).intValue();
             }
             bundle.putInt("KEY_AVAILABILITY_BIOMETRIC", i3);
-            i2 = Utils.biometricAuthenticatorModalityToVendorSysUiType(((Integer) this.mGetModalityFunc.apply(iArr[0])).intValue());
-        } else {
-            if (!z) {
-                Slog.w("SemBiometricSysUiWrapper", "showAuthenticationDialog: Unknown prompt type");
-                ((SemBiometricSysUiReceiver) pair.second).onSysUiError(3, -1);
-                return;
+            int intValue = ((Integer) this.mGetModalityFunc.apply(iArr[0])).intValue();
+            boolean z3 = Utils.DEBUG;
+            if (intValue != 1) {
+                if (intValue == 2) {
+                    i2 = 8;
+                } else if (intValue == 4) {
+                    i2 = 8192;
+                } else if (intValue == 8) {
+                    i2 = 4096;
+                } else if (intValue != 256) {
+                    DeviceIdleController$$ExternalSyntheticOutline0.m(intValue, "biometricAuthenticatorModalityToVendorSysUiType: Unknown modality:", "BiometricUtils");
+                    i2 = 0;
+                } else {
+                    i2 = EndpointMonitorConst.FLAG_TRACING_PROCESS_PERMISSIONS_MODIFICATION;
+                }
             }
-            i2 = 32768;
+        } else if (!z) {
+            Slog.w("SemBiometricSysUiWrapper", "showAuthenticationDialog: Unknown prompt type");
+            BiometricService.AnonymousClass2 anonymousClass2 = (BiometricService.AnonymousClass2) pair.second;
+            BiometricService.this.mHandler.post(new BiometricService$2$$ExternalSyntheticLambda4(anonymousClass2, anonymousClass2.val$requestId, 3, -1));
+            return;
         }
-        setManagedProfileInfo(credentialOwnerProfile, promptInfo, bundle);
-        this.mSysUiManager.show(((Integer) pair.first).intValue(), i2, bundle, z2, credentialOwnerProfile, str, j, promptInfo);
-    }
-
-    public final void setManagedProfileInfo(int i, PromptInfo promptInfo, Bundle bundle) {
-        if (Utils.isWorkProfile(this.mContext, i)) {
+        int i5 = i2;
+        if (Utils.isWorkProfile(this.mContext, credentialOwnerProfile)) {
             try {
                 DevicePolicyManager devicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService(DevicePolicyManager.class);
                 bundle.putBoolean("MANAGED_PROFILE", true);
-                bundle.putInt("MANAGED_PROFILE_COLOR", devicePolicyManager.getOrganizationColorForUser(i));
+                bundle.putInt("MANAGED_PROFILE_COLOR", devicePolicyManager.getOrganizationColorForUser(credentialOwnerProfile));
             } catch (Exception e) {
-                Slog.w("SemBiometricSysUiWrapper", "setManagedProfileInfo: " + e.getMessage());
+                MagnificationConnectionManager$$ExternalSyntheticOutline0.m(e, new StringBuilder("setManagedProfileInfo: "), "SemBiometricSysUiWrapper");
             }
         }
-        if (SemPersonaManager.isKnoxId(i) && Utils.isKnoxInternal(promptInfo.semGetPrivilegedFlag())) {
-            if (SemPersonaManager.isSecureFolderId(i)) {
+        if (SemPersonaManager.isKnoxId(credentialOwnerProfile) && (promptInfo.semGetPrivilegedFlag() & 32) != 0) {
+            if (SemPersonaManager.isSecureFolderId(credentialOwnerProfile)) {
                 bundle.putBoolean("SECURE_FOLDER", true);
-                bundle.putString("SECURE_FOLDER_NAME", SemPersonaManager.getPersonaName(this.mContext, i));
-                return;
-            }
-            bundle.putBoolean("MANAGED_PROFILE_KNOX", true);
-            bundle.putString("MANAGED_PROFILE_KNOX_NAME", SemPersonaManager.getPersonaName(this.mContext, i));
-            bundle.putBoolean("MANAGED_PROFILE_KNOX_TWO_FACTOR", Utils.isKnoxTwoFactor(this.mContext, i));
-            if (Utils.isKnoxTwoFactor(this.mContext, i) && Utils.isKnoxOnlyConfirmBiometric(promptInfo.semGetPrivilegedFlag())) {
-                bundle.putBoolean("MANAGED_PROFILE_KNOX_ONLY_CONFIRM_BIOMETRIC", true);
-            }
-        }
-    }
-
-    public void onBiometricAuthenticated(int i) {
-        onBiometricAuthenticated(i, "");
-    }
-
-    public void onBiometricAuthenticated(final int i, final String str) {
-        this.mSessions.forEach(new BiConsumer() { // from class: com.android.server.biometrics.SemBiometricSysUiWrapper$$ExternalSyntheticLambda3
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                SemBiometricSysUiWrapper.this.lambda$onBiometricAuthenticated$0(i, str, (Long) obj, (Pair) obj2);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onBiometricAuthenticated$0(int i, String str, Long l, Pair pair) {
-        this.mSysUiManager.onAuthenticated(((Integer) pair.first).intValue(), i, true, str);
-    }
-
-    public void onBiometricHelp(final int i, final int i2, final int i3, final String str) {
-        this.mSessions.forEach(new BiConsumer() { // from class: com.android.server.biometrics.SemBiometricSysUiWrapper$$ExternalSyntheticLambda2
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                SemBiometricSysUiWrapper.this.lambda$onBiometricHelp$1(i, i2, i3, str, (Long) obj, (Pair) obj2);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onBiometricHelp$1(int i, int i2, int i3, String str, Long l, Pair pair) {
-        this.mSysUiManager.onBiometricHelp(((Integer) pair.first).intValue(), i, i2, i3, str);
-    }
-
-    public void onBiometricError(final int i, final int i2, final int i3) {
-        if (i2 == 100) {
-            this.mSessions.forEach(new BiConsumer() { // from class: com.android.server.biometrics.SemBiometricSysUiWrapper$$ExternalSyntheticLambda0
-                @Override // java.util.function.BiConsumer
-                public final void accept(Object obj, Object obj2) {
-                    SemBiometricSysUiWrapper.this.lambda$onBiometricError$2(i, (Long) obj, (Pair) obj2);
+                bundle.putString("SECURE_FOLDER_NAME", SemPersonaManager.getPersonaName(this.mContext, credentialOwnerProfile));
+            } else {
+                bundle.putBoolean("MANAGED_PROFILE_KNOX", true);
+                bundle.putString("MANAGED_PROFILE_KNOX_NAME", SemPersonaManager.getPersonaName(this.mContext, credentialOwnerProfile));
+                bundle.putBoolean("MANAGED_PROFILE_KNOX_TWO_FACTOR", Utils.getIntDb(this.mContext, 0, credentialOwnerProfile, "knox_finger_print_plus", true) == 1);
+                if (Utils.getIntDb(this.mContext, 0, credentialOwnerProfile, "knox_finger_print_plus", true) == 1 && (promptInfo.semGetPrivilegedFlag() & 128) != 0) {
+                    bundle.putBoolean("MANAGED_PROFILE_KNOX_ONLY_CONFIRM_BIOMETRIC", true);
                 }
-            });
-        } else {
-            this.mSessions.forEach(new BiConsumer() { // from class: com.android.server.biometrics.SemBiometricSysUiWrapper$$ExternalSyntheticLambda1
-                @Override // java.util.function.BiConsumer
-                public final void accept(Object obj, Object obj2) {
-                    SemBiometricSysUiWrapper.this.lambda$onBiometricError$3(i, i2, i3, (Long) obj, (Pair) obj2);
-                }
-            });
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onBiometricError$2(int i, Long l, Pair pair) {
-        this.mSysUiManager.onAuthenticated(((Integer) pair.first).intValue(), i, false, null);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onBiometricError$3(int i, int i2, int i3, Long l, Pair pair) {
-        this.mSysUiManager.onBiometricError(((Integer) pair.first).intValue(), i, i2, i3, null);
-    }
-
-    public void hideAuthenticationDialog(long j) {
-        Pair pair = (Pair) this.mSessions.get(Long.valueOf(j));
-        if (pair == null) {
-            Slog.w("SemBiometricSysUiWrapper", "hideAuthenticationDialog: no session info with " + j);
-            return;
-        }
-        this.mSysUiManager.hide(((Integer) pair.first).intValue(), 0, 0);
-    }
-
-    public synchronized void startSession(int i) {
-        ISessionListener iSessionListener = this.mBiometricContext.getISessionListener();
-        if (iSessionListener == null) {
-            return;
-        }
-        if (this.mSessionToInstanceId.getOrDefault(Integer.valueOf(i), null) != null) {
-            Slog.e("SemBiometricSysUiWrapper", "session [" + getString(i) + "] was already started");
-            return;
-        }
-        InstanceId newInstanceId = this.mInstanceIdGenerator.newInstanceId();
-        this.mSessionToInstanceId.put(Integer.valueOf(i), newInstanceId);
-        try {
-            if (Utils.DEBUG) {
-                Slog.d("SemBiometricSysUiWrapper", "Session start for [" + getString(i) + "] id=" + newInstanceId);
             }
-            iSessionListener.onSessionStarted(i, newInstanceId);
-        } catch (RemoteException e) {
-            Slog.e("SemBiometricSysUiWrapper", "Unable to send onSessionStarted for session=[" + getString(i) + "]", e);
         }
-    }
-
-    public synchronized void endSession(int i) {
-        ISessionListener iSessionListener = this.mBiometricContext.getISessionListener();
-        if (iSessionListener == null) {
-            return;
-        }
-        if (this.mSessionToInstanceId.getOrDefault(Integer.valueOf(i), null) == null) {
-            Slog.e("SemBiometricSysUiWrapper", "session [" + getString(i) + "] was not started");
-            return;
-        }
-        InstanceId instanceId = (InstanceId) this.mSessionToInstanceId.get(Integer.valueOf(i));
-        this.mSessionToInstanceId.put(Integer.valueOf(i), null);
-        try {
-            if (Utils.DEBUG) {
-                Slog.d("SemBiometricSysUiWrapper", "Session end for [" + getString(i) + "] id=" + instanceId);
-            }
-            iSessionListener.onSessionEnded(i, instanceId);
-        } catch (RemoteException e) {
-            Slog.e("SemBiometricSysUiWrapper", "Unable to send onSessionEnded for session=[" + getString(i) + "]", e);
-        }
-    }
-
-    public static String getString(int i) {
-        if (i == 1) {
-            return "KEYGUARD";
-        }
-        if (i == 2) {
-            return "BIOMETRIC_PROMPT";
-        }
-        return "unknownType=" + i;
+        int intValue2 = ((Integer) pair.first).intValue();
+        SemBiometricSysUiManager semBiometricSysUiManager = this.mSysUiManager;
+        semBiometricSysUiManager.getClass();
+        semBiometricSysUiManager.handleRequest(new SemBiometricSysUiManager$$ExternalSyntheticLambda5(semBiometricSysUiManager, intValue2, i5, z2, credentialOwnerProfile, str, j, bundle, promptInfo));
+        this.mCurrentSession = pair;
+        this.mHandler.postDelayed(this.mShowDialogWatchdog, 3000L);
     }
 }

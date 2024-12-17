@@ -1,53 +1,10 @@
 package com.android.server.display.config;
 
 import java.math.BigDecimal;
-import javax.xml.datatype.DatatypeConfigurationException;
-import org.xmlpull.v1.XmlPullParser;
 
-/* loaded from: classes2.dex */
-public class BrightnessThrottlingPoint {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class BrightnessThrottlingPoint {
     public BigDecimal brightness;
     public ThermalStatus thermalStatus;
-
-    public final ThermalStatus getThermalStatus() {
-        return this.thermalStatus;
-    }
-
-    public final void setThermalStatus(ThermalStatus thermalStatus) {
-        this.thermalStatus = thermalStatus;
-    }
-
-    public final BigDecimal getBrightness() {
-        return this.brightness;
-    }
-
-    public final void setBrightness(BigDecimal bigDecimal) {
-        this.brightness = bigDecimal;
-    }
-
-    public static BrightnessThrottlingPoint read(XmlPullParser xmlPullParser) {
-        int next;
-        BrightnessThrottlingPoint brightnessThrottlingPoint = new BrightnessThrottlingPoint();
-        xmlPullParser.getDepth();
-        while (true) {
-            next = xmlPullParser.next();
-            if (next == 1 || next == 3) {
-                break;
-            }
-            if (xmlPullParser.getEventType() == 2) {
-                String name = xmlPullParser.getName();
-                if (name.equals("thermalStatus")) {
-                    brightnessThrottlingPoint.setThermalStatus(ThermalStatus.fromString(XmlParser.readText(xmlPullParser)));
-                } else if (name.equals("brightness")) {
-                    brightnessThrottlingPoint.setBrightness(new BigDecimal(XmlParser.readText(xmlPullParser)));
-                } else {
-                    XmlParser.skip(xmlPullParser);
-                }
-            }
-        }
-        if (next == 3) {
-            return brightnessThrottlingPoint;
-        }
-        throw new DatatypeConfigurationException("BrightnessThrottlingPoint is not closed");
-    }
 }

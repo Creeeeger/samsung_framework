@@ -1,43 +1,30 @@
 package com.android.server.location.provider;
 
-import android.content.Context;
-import android.location.LocationResult;
 import android.location.provider.ProviderProperties;
 import android.location.provider.ProviderRequest;
-import android.location.util.identity.CallerIdentity;
 import android.os.Bundle;
-import com.android.internal.util.ConcurrentUtils;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.util.Collections;
 
-/* loaded from: classes2.dex */
-public class PassiveLocationProvider extends AbstractLocationProvider {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class PassiveLocationProvider extends AbstractLocationProvider {
     public static final ProviderProperties PROPERTIES = new ProviderProperties.Builder().setPowerUsage(1).setAccuracy(1).build();
 
     @Override // com.android.server.location.provider.AbstractLocationProvider
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
     }
 
     @Override // com.android.server.location.provider.AbstractLocationProvider
-    public void onExtraCommand(int i, int i2, String str, Bundle bundle) {
+    public final void onExtraCommand(int i, String str, Bundle bundle, int i2) {
     }
 
     @Override // com.android.server.location.provider.AbstractLocationProvider
-    public void onSetRequest(ProviderRequest providerRequest) {
-    }
-
-    public PassiveLocationProvider(Context context) {
-        super(ConcurrentUtils.DIRECT_EXECUTOR, CallerIdentity.fromContext(context), PROPERTIES, Collections.emptySet());
-        setAllowed(true);
-    }
-
-    public void updateLocation(LocationResult locationResult) {
-        reportLocation(locationResult);
+    public final void onFlush(LocationProviderManager$Registration$$ExternalSyntheticLambda0 locationProviderManager$Registration$$ExternalSyntheticLambda0) {
+        locationProviderManager$Registration$$ExternalSyntheticLambda0.run();
     }
 
     @Override // com.android.server.location.provider.AbstractLocationProvider
-    public void onFlush(Runnable runnable) {
-        runnable.run();
+    public final void onSetRequest(ProviderRequest providerRequest) {
     }
 }

@@ -2,10 +2,11 @@ package com.android.server.am.mars;
 
 import android.os.SystemProperties;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class HistoryBuffer {
-    public String[] buffer;
-    public int totalSize;
+public final class HistoryBuffer {
+    public final String[] buffer;
+    public final int totalSize;
     public int size = 0;
     public int pointer = 0;
 
@@ -26,19 +27,7 @@ public class HistoryBuffer {
         this.buffer = new String[i2];
     }
 
-    public synchronized void put(String str) {
-        String[] strArr = this.buffer;
-        int i = this.pointer;
-        strArr[i] = str;
-        int i2 = this.totalSize;
-        this.pointer = (i + 1) % i2;
-        int i3 = this.size;
-        if (i3 < i2) {
-            this.size = i3 + 1;
-        }
-    }
-
-    public synchronized String[] getBuffer() {
+    public final synchronized String[] getBuffer() {
         int i = this.size;
         if (i < this.totalSize) {
             return this.buffer;
@@ -61,7 +50,15 @@ public class HistoryBuffer {
         return strArr;
     }
 
-    public int getSize() {
-        return this.size;
+    public final synchronized void put(String str) {
+        String[] strArr = this.buffer;
+        int i = this.pointer;
+        strArr[i] = str;
+        int i2 = this.totalSize;
+        this.pointer = (i + 1) % i2;
+        int i3 = this.size;
+        if (i3 < i2) {
+            this.size = i3 + 1;
+        }
     }
 }

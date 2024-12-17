@@ -7,20 +7,21 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import com.android.internal.util.Preconditions;
 import com.android.server.accessibility.gestures.GestureMatcher;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class MultiFingerMultiTap extends GestureMatcher {
-    public PointF[] mBases;
+    public final PointF[] mBases;
     public int mCompletedTapCount;
-    public int mDoubleTapSlop;
-    public ArrayList mExcludedPointsForDownSlopChecked;
+    public final int mDoubleTapSlop;
+    public final ArrayList mExcludedPointsForDownSlopChecked;
     public boolean mIsTargetFingerCountReached;
     public final int mTargetFingerCount;
     public final int mTargetTapCount;
-    public int mTouchSlop;
+    public final int mTouchSlop;
 
     public MultiFingerMultiTap(Context context, int i, int i2, int i3, GestureMatcher.StateChangeListener stateChangeListener) {
         super(i3, new Handler(context.getMainLooper()), stateChangeListener);
@@ -35,118 +36,68 @@ public class MultiFingerMultiTap extends GestureMatcher {
         this.mBases = new PointF[i];
         while (true) {
             PointF[] pointFArr = this.mBases;
-            if (i4 < pointFArr.length) {
-                pointFArr[i4] = new PointF();
-                i4++;
-            } else {
+            if (i4 >= pointFArr.length) {
                 this.mExcludedPointsForDownSlopChecked = new ArrayList(this.mTargetFingerCount);
                 clear();
                 return;
+            } else {
+                pointFArr[i4] = new PointF();
+                i4++;
             }
         }
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void clear() {
+    public final void clear() {
         int i = 0;
         this.mCompletedTapCount = 0;
         this.mIsTargetFingerCountReached = false;
         while (true) {
             PointF[] pointFArr = this.mBases;
-            if (i < pointFArr.length) {
-                pointFArr[i].set(Float.NaN, Float.NaN);
-                i++;
-            } else {
+            if (i >= pointFArr.length) {
                 this.mExcludedPointsForDownSlopChecked.clear();
                 super.clear();
                 return;
+            } else {
+                pointFArr[i].set(Float.NaN, Float.NaN);
+                i++;
             }
         }
     }
 
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (this.mCompletedTapCount == this.mTargetTapCount) {
-            cancelGesture(motionEvent, motionEvent2, i);
-            return;
-        }
-        cancelAfterTapTimeout(motionEvent, motionEvent2, i);
-        if (this.mCompletedTapCount == 0) {
-            initBaseLocation(motionEvent2);
-            return;
-        }
-        PointF findNearestPoint = findNearestPoint(motionEvent2, this.mDoubleTapSlop, true);
-        if (findNearestPoint != null) {
-            int actionIndex = motionEvent.getActionIndex();
-            findNearestPoint.set(motionEvent.getX(actionIndex), motionEvent.getY(actionIndex));
-        } else {
-            cancelGesture(motionEvent, motionEvent2, i);
-        }
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        cancelAfterDoubleTapTimeout(motionEvent, motionEvent2, i);
-        PointF findNearestPoint = findNearestPoint(motionEvent2, this.mTouchSlop, false);
-        if ((getState() == 1 || getState() == 0) && findNearestPoint != null) {
-            if (this.mIsTargetFingerCountReached) {
-                this.mCompletedTapCount++;
-                this.mIsTargetFingerCountReached = false;
-                this.mExcludedPointsForDownSlopChecked.clear();
+    public final PointF findNearestPoint(MotionEvent motionEvent, float f, boolean z) {
+        float f2 = Float.MAX_VALUE;
+        int i = 0;
+        PointF pointF = null;
+        while (true) {
+            PointF[] pointFArr = this.mBases;
+            if (i >= pointFArr.length) {
+                if (f2 >= f) {
+                    return null;
+                }
+                if (z) {
+                    this.mExcludedPointsForDownSlopChecked.add(pointF);
+                }
+                return pointF;
             }
-            if (this.mCompletedTapCount == 1) {
-                startGesture(motionEvent, motionEvent2, i);
+            PointF pointF2 = pointFArr[i];
+            if ((!Float.isNaN(pointF2.x) || !Float.isNaN(pointF2.y)) && (!z || !this.mExcludedPointsForDownSlopChecked.contains(pointF2))) {
+                int actionIndex = motionEvent.getActionIndex();
+                float x = pointF2.x - motionEvent.getX(actionIndex);
+                float y = pointF2.y - motionEvent.getY(actionIndex);
+                if (x == FullScreenMagnificationGestureHandler.MAX_SCALE && y == FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                    if (z) {
+                        this.mExcludedPointsForDownSlopChecked.add(pointF2);
+                    }
+                    return pointF2;
+                }
+                float hypot = (float) Math.hypot(x, y);
+                if (f2 > hypot) {
+                    pointF = pointF2;
+                    f2 = hypot;
+                }
             }
-            if (this.mCompletedTapCount == this.mTargetTapCount) {
-                completeAfterDoubleTapTimeout(motionEvent, motionEvent2, i);
-                return;
-            }
-            return;
-        }
-        cancelGesture(motionEvent, motionEvent2, i);
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onMove(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (findNearestPoint(motionEvent2, this.mTouchSlop, false) == null) {
-            cancelGesture(motionEvent, motionEvent2, i);
-        }
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onPointerDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        PointF findNearestPoint;
-        cancelAfterTapTimeout(motionEvent, motionEvent2, i);
-        int pointerCount = motionEvent.getPointerCount();
-        if (pointerCount > this.mTargetFingerCount || this.mIsTargetFingerCountReached) {
-            this.mIsTargetFingerCountReached = false;
-            cancelGesture(motionEvent, motionEvent2, i);
-            return;
-        }
-        if (this.mCompletedTapCount == 0) {
-            findNearestPoint = initBaseLocation(motionEvent2);
-        } else {
-            findNearestPoint = findNearestPoint(motionEvent2, this.mDoubleTapSlop, true);
-        }
-        if ((getState() == 1 || getState() == 0) && findNearestPoint != null) {
-            if (pointerCount == this.mTargetFingerCount) {
-                this.mIsTargetFingerCountReached = true;
-            }
-            int actionIndex = motionEvent.getActionIndex();
-            findNearestPoint.set(motionEvent.getX(actionIndex), motionEvent.getY(actionIndex));
-            return;
-        }
-        cancelGesture(motionEvent, motionEvent2, i);
-    }
-
-    @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public void onPointerUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (!this.mIsTargetFingerCountReached) {
-            cancelGesture(motionEvent, motionEvent2, i);
-        } else if (getState() == 1 || getState() == 0) {
-            cancelAfterTapTimeout(motionEvent, motionEvent2, i);
-        } else {
-            cancelGesture(motionEvent, motionEvent2, i);
+            i++;
         }
     }
 
@@ -178,46 +129,104 @@ public class MultiFingerMultiTap extends GestureMatcher {
         return pointF;
     }
 
-    public final PointF findNearestPoint(MotionEvent motionEvent, float f, boolean z) {
-        float f2 = Float.MAX_VALUE;
-        int i = 0;
-        PointF pointF = null;
-        while (true) {
-            PointF[] pointFArr = this.mBases;
-            if (i >= pointFArr.length) {
-                if (f2 >= f) {
-                    return null;
-                }
-                if (z) {
-                    this.mExcludedPointsForDownSlopChecked.add(pointF);
-                }
-                return pointF;
-            }
-            PointF pointF2 = pointFArr[i];
-            if ((!Float.isNaN(pointF2.x) || !Float.isNaN(pointF2.y)) && (!z || !this.mExcludedPointsForDownSlopChecked.contains(pointF2))) {
-                int actionIndex = motionEvent.getActionIndex();
-                float x = pointF2.x - motionEvent.getX(actionIndex);
-                float y = pointF2.y - motionEvent.getY(actionIndex);
-                if (x == DisplayPowerController2.RATE_FROM_DOZE_TO_ON && y == DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    if (z) {
-                        this.mExcludedPointsForDownSlopChecked.add(pointF2);
-                    }
-                    return pointF2;
-                }
-                float hypot = (float) Math.hypot(x, y);
-                if (f2 > hypot) {
-                    pointF = pointF2;
-                    f2 = hypot;
-                }
-            }
-            i++;
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public final void onDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        if (this.mCompletedTapCount == this.mTargetTapCount) {
+            setState(3, motionEvent, motionEvent2, i);
+            return;
+        }
+        long tapTimeout = ViewConfiguration.getTapTimeout();
+        this.mDelayedTransition.cancel();
+        this.mDelayedTransition.post(3, tapTimeout, motionEvent, motionEvent2, i);
+        if (this.mCompletedTapCount == 0) {
+            initBaseLocation(motionEvent2);
+            return;
+        }
+        PointF findNearestPoint = findNearestPoint(motionEvent2, this.mDoubleTapSlop, true);
+        if (findNearestPoint == null) {
+            setState(3, motionEvent, motionEvent2, i);
+        } else {
+            int actionIndex = motionEvent.getActionIndex();
+            findNearestPoint.set(motionEvent.getX(actionIndex), motionEvent.getY(actionIndex));
         }
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher
-    public String toString() {
+    public final void onMove(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        if (findNearestPoint(motionEvent2, this.mTouchSlop, false) == null) {
+            setState(3, motionEvent, motionEvent2, i);
+        }
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public void onPointerDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        long tapTimeout = ViewConfiguration.getTapTimeout();
+        this.mDelayedTransition.cancel();
+        this.mDelayedTransition.post(3, tapTimeout, motionEvent, motionEvent2, i);
+        int pointerCount = motionEvent.getPointerCount();
+        int i2 = this.mTargetFingerCount;
+        if (pointerCount > i2 || this.mIsTargetFingerCountReached) {
+            this.mIsTargetFingerCountReached = false;
+            setState(3, motionEvent, motionEvent2, i);
+            return;
+        }
+        PointF initBaseLocation = this.mCompletedTapCount == 0 ? initBaseLocation(motionEvent2) : findNearestPoint(motionEvent2, this.mDoubleTapSlop, true);
+        int i3 = this.mState;
+        if ((i3 != 1 && i3 != 0) || initBaseLocation == null) {
+            setState(3, motionEvent, motionEvent2, i);
+            return;
+        }
+        if (pointerCount == i2) {
+            this.mIsTargetFingerCountReached = true;
+        }
+        int actionIndex = motionEvent.getActionIndex();
+        initBaseLocation.set(motionEvent.getX(actionIndex), motionEvent.getY(actionIndex));
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public final void onPointerUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        if (!this.mIsTargetFingerCountReached) {
+            setState(3, motionEvent, motionEvent2, i);
+            return;
+        }
+        int i2 = this.mState;
+        if (i2 != 1 && i2 != 0) {
+            setState(3, motionEvent, motionEvent2, i);
+            return;
+        }
+        long tapTimeout = ViewConfiguration.getTapTimeout();
+        this.mDelayedTransition.cancel();
+        this.mDelayedTransition.post(3, tapTimeout, motionEvent, motionEvent2, i);
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public void onUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        cancelAfterDoubleTapTimeout(motionEvent, motionEvent2, i);
+        PointF findNearestPoint = findNearestPoint(motionEvent2, this.mTouchSlop, false);
+        int i2 = this.mState;
+        if ((i2 != 1 && i2 != 0) || findNearestPoint == null) {
+            setState(3, motionEvent, motionEvent2, i);
+            return;
+        }
+        if (this.mIsTargetFingerCountReached) {
+            this.mCompletedTapCount++;
+            this.mIsTargetFingerCountReached = false;
+            this.mExcludedPointsForDownSlopChecked.clear();
+        }
+        if (this.mCompletedTapCount == 1) {
+            setState(1, motionEvent, motionEvent2, i);
+        }
+        if (this.mCompletedTapCount == this.mTargetTapCount) {
+            long doubleTapTimeout = ViewConfiguration.getDoubleTapTimeout();
+            this.mDelayedTransition.cancel();
+            this.mDelayedTransition.post(2, doubleTapTimeout, motionEvent, motionEvent2, i);
+        }
+    }
+
+    @Override // com.android.server.accessibility.gestures.GestureMatcher
+    public final String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        if (getState() != 3) {
+        if (this.mState != 3) {
             sb.append(", CompletedTapCount: ");
             sb.append(this.mCompletedTapCount);
             sb.append(", IsTargetFingerCountReached: ");

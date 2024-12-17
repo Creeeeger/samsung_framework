@@ -1,22 +1,12 @@
 package android.os;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
 import android.os.Parcelable;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class CreateAppDataArgs implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.os.CreateAppDataArgs.1
-        @Override // android.os.Parcelable.Creator
-        public CreateAppDataArgs createFromParcel(Parcel parcel) {
-            CreateAppDataArgs createAppDataArgs = new CreateAppDataArgs();
-            createAppDataArgs.readFromParcel(parcel);
-            return createAppDataArgs;
-        }
-
-        @Override // android.os.Parcelable.Creator
-        public CreateAppDataArgs[] newArray(int i) {
-            return new CreateAppDataArgs[i];
-        }
-    };
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
     public String packageName;
     public String seInfo;
     public String uuid;
@@ -26,27 +16,25 @@ public class CreateAppDataArgs implements Parcelable {
     public int previousAppId = 0;
     public int targetSdkVersion = 0;
 
-    @Override // android.os.Parcelable
-    public int describeContents() {
-        return 0;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.os.CreateAppDataArgs$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
+        @Override // android.os.Parcelable.Creator
+        public final Object createFromParcel(Parcel parcel) {
+            CreateAppDataArgs createAppDataArgs = new CreateAppDataArgs();
+            createAppDataArgs.readFromParcel(parcel);
+            return createAppDataArgs;
+        }
+
+        @Override // android.os.Parcelable.Creator
+        public final Object[] newArray(int i) {
+            return new CreateAppDataArgs[i];
+        }
     }
 
     @Override // android.os.Parcelable
-    public final void writeToParcel(Parcel parcel, int i) {
-        int dataPosition = parcel.dataPosition();
-        parcel.writeInt(0);
-        parcel.writeString(this.uuid);
-        parcel.writeString(this.packageName);
-        parcel.writeInt(this.userId);
-        parcel.writeInt(this.flags);
-        parcel.writeInt(this.appId);
-        parcel.writeInt(this.previousAppId);
-        parcel.writeString(this.seInfo);
-        parcel.writeInt(this.targetSdkVersion);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
+    public int describeContents() {
+        return 0;
     }
 
     public final void readFromParcel(Parcel parcel) {
@@ -110,5 +98,20 @@ public class CreateAppDataArgs implements Parcelable {
             parcel.setDataPosition(dataPosition + readInt);
             throw th;
         }
+    }
+
+    @Override // android.os.Parcelable
+    public final void writeToParcel(Parcel parcel, int i) {
+        int dataPosition = parcel.dataPosition();
+        parcel.writeInt(0);
+        parcel.writeString(this.uuid);
+        parcel.writeString(this.packageName);
+        parcel.writeInt(this.userId);
+        parcel.writeInt(this.flags);
+        parcel.writeInt(this.appId);
+        parcel.writeInt(this.previousAppId);
+        parcel.writeString(this.seInfo);
+        int m = SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(parcel, this.targetSdkVersion, dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(m, dataPosition, parcel, m);
     }
 }

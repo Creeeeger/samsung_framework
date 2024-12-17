@@ -3,9 +3,11 @@ package com.att.iqi.lib.metrics.ea;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.att.iqi.lib.Metric;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class EA13 extends Metric {
     private final int lSerialNumber;
     private final int lServiceCategory;
@@ -22,6 +24,11 @@ public class EA13 extends Metric {
         }
     };
 
+    public EA13(int i, int i2) {
+        this.lServiceCategory = i;
+        this.lSerialNumber = i2;
+    }
+
     public EA13(Parcel parcel) {
         super(parcel);
         parcel.readInt();
@@ -29,13 +36,8 @@ public class EA13 extends Metric {
         this.lSerialNumber = parcel.readInt();
     }
 
-    public EA13(int i, int i2) {
-        this.lServiceCategory = i;
-        this.lSerialNumber = i2;
-    }
-
     @Override // com.att.iqi.lib.Metric
-    public int serialize(ByteBuffer byteBuffer) {
+    public int serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
         byteBuffer.putInt(this.lServiceCategory);
         byteBuffer.putInt(this.lSerialNumber);
         return byteBuffer.position();

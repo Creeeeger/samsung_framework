@@ -1,29 +1,63 @@
 package android.hardware.ir;
 
+import android.companion.virtualcamera.SupportedStreamConfiguration$$ExternalSyntheticOutline0;
 import android.os.BadParcelableException;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ConsumerIrFreqRange implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() { // from class: android.hardware.ir.ConsumerIrFreqRange.1
+public final class ConsumerIrFreqRange implements Parcelable {
+    public static final Parcelable.Creator CREATOR = new AnonymousClass1();
+    public int maxHz;
+    public int minHz;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: android.hardware.ir.ConsumerIrFreqRange$1, reason: invalid class name */
+    public final class AnonymousClass1 implements Parcelable.Creator {
         @Override // android.os.Parcelable.Creator
-        public ConsumerIrFreqRange createFromParcel(Parcel parcel) {
+        public final Object createFromParcel(Parcel parcel) {
             ConsumerIrFreqRange consumerIrFreqRange = new ConsumerIrFreqRange();
-            consumerIrFreqRange.readFromParcel(parcel);
-            return consumerIrFreqRange;
+            consumerIrFreqRange.minHz = 0;
+            consumerIrFreqRange.maxHz = 0;
+            int dataPosition = parcel.dataPosition();
+            int readInt = parcel.readInt();
+            try {
+                if (readInt < 4) {
+                    throw new BadParcelableException("Parcelable too small");
+                }
+                if (parcel.dataPosition() - dataPosition < readInt) {
+                    consumerIrFreqRange.minHz = parcel.readInt();
+                    if (parcel.dataPosition() - dataPosition < readInt) {
+                        consumerIrFreqRange.maxHz = parcel.readInt();
+                        if (dataPosition > Integer.MAX_VALUE - readInt) {
+                            throw new BadParcelableException("Overflow in the size of parcelable");
+                        }
+                    } else if (dataPosition > Integer.MAX_VALUE - readInt) {
+                        throw new BadParcelableException("Overflow in the size of parcelable");
+                    }
+                } else if (dataPosition > Integer.MAX_VALUE - readInt) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                parcel.setDataPosition(dataPosition + readInt);
+                return consumerIrFreqRange;
+            } catch (Throwable th) {
+                if (dataPosition > Integer.MAX_VALUE - readInt) {
+                    throw new BadParcelableException("Overflow in the size of parcelable");
+                }
+                parcel.setDataPosition(dataPosition + readInt);
+                throw th;
+            }
         }
 
         @Override // android.os.Parcelable.Creator
-        public ConsumerIrFreqRange[] newArray(int i) {
+        public final Object[] newArray(int i) {
             return new ConsumerIrFreqRange[i];
         }
-    };
-    public int minHz = 0;
-    public int maxHz = 0;
+    }
 
     @Override // android.os.Parcelable
-    public int describeContents() {
+    public final int describeContents() {
         return 0;
     }
 
@@ -36,43 +70,7 @@ public class ConsumerIrFreqRange implements Parcelable {
         int dataPosition = parcel.dataPosition();
         parcel.writeInt(0);
         parcel.writeInt(this.minHz);
-        parcel.writeInt(this.maxHz);
-        int dataPosition2 = parcel.dataPosition();
-        parcel.setDataPosition(dataPosition);
-        parcel.writeInt(dataPosition2 - dataPosition);
-        parcel.setDataPosition(dataPosition2);
-    }
-
-    public final void readFromParcel(Parcel parcel) {
-        int dataPosition = parcel.dataPosition();
-        int readInt = parcel.readInt();
-        try {
-            if (readInt < 4) {
-                throw new BadParcelableException("Parcelable too small");
-            }
-            if (parcel.dataPosition() - dataPosition < readInt) {
-                this.minHz = parcel.readInt();
-                if (parcel.dataPosition() - dataPosition < readInt) {
-                    this.maxHz = parcel.readInt();
-                    if (dataPosition > Integer.MAX_VALUE - readInt) {
-                        throw new BadParcelableException("Overflow in the size of parcelable");
-                    }
-                    parcel.setDataPosition(dataPosition + readInt);
-                    return;
-                }
-                if (dataPosition > Integer.MAX_VALUE - readInt) {
-                    throw new BadParcelableException("Overflow in the size of parcelable");
-                }
-            } else if (dataPosition > Integer.MAX_VALUE - readInt) {
-                throw new BadParcelableException("Overflow in the size of parcelable");
-            }
-            parcel.setDataPosition(dataPosition + readInt);
-        } catch (Throwable th) {
-            if (dataPosition > Integer.MAX_VALUE - readInt) {
-                throw new BadParcelableException("Overflow in the size of parcelable");
-            }
-            parcel.setDataPosition(dataPosition + readInt);
-            throw th;
-        }
+        int m = SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(parcel, this.maxHz, dataPosition);
+        SupportedStreamConfiguration$$ExternalSyntheticOutline0.m(m, dataPosition, parcel, m);
     }
 }

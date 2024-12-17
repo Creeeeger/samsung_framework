@@ -1,34 +1,66 @@
 package com.android.server.chimera;
 
 import android.os.Debug;
-import android.os.IInstalld;
-import android.os.SystemProperties;
-import android.util.Log;
-import android.util.Slog;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.internal.util.jobs.XmlUtils;
-import com.android.server.chimera.ChimeraCommonUtil;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class ChimeraCommonUtil {
-    public static final int[] ADJ_LEVELS = {999, 900, 860, 850, 800, 700, 600, 500, 400, 300, FrameworkStatsLog.CAMERA_SHOT_LATENCY_REPORTED__MODE__CONTROL_DS_MODE_MACRO_RAW_SR_MERGE, 200, 100, 0};
-    public static Map mAppLaunchInfoMap = new ConcurrentHashMap();
+    public static final int[] ADJ_LEVELS = {999, FrameworkStatsLog.CAMERA_FEATURE_COMBINATION_QUERY_EVENT, FrameworkStatsLog.VPN_CONNECTION_STATE_CHANGED, 800, 700, 600, 500, 400, 300, FrameworkStatsLog.CAMERA_SHOT_LATENCY_REPORTED__MODE__CONTROL_DS_MODE_MACRO_RAW_SR_MERGE, 200, 100, 0};
+    public static final Map mAppLaunchInfoMap = new ConcurrentHashMap();
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public enum PsiDataType {
+        AVG10("avg10"),
+        TOTAL("total");
+
+        private String mPath;
+
+        PsiDataType(String str) {
+            this.mPath = str;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PsiFile {
+        public boolean mIsEmptyFile;
+        public long mPsiFullTotal;
+        public long mPsiSomeTotal;
+
+        public static String getItem(int i, String str, String str2) {
+            String[] split = str.split(" ");
+            String concat = str2.concat("=");
+            return (split.length <= i || !split[i].startsWith(concat)) ? "0" : split[i].replace(concat, "");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public enum PsiFileType {
+        /* JADX INFO: Fake field, exist only in values array */
+        EF0("/proc/pressure/io"),
+        MEMORY("/proc/pressure/memory"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF29("/proc/pressure/cpu");
+
+        private String mPath;
+
+        PsiFileType(String str) {
+            this.mPath = str;
+        }
+
+        public final String getPath() {
+            return this.mPath;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public enum TriggerSource {
         TRIGGER_SOURCE_LMKD("LMKD"),
         TRIGGER_SOURCE_BOTTLENECK_HINT("BottleneckHint"),
@@ -36,7 +68,8 @@ public abstract class ChimeraCommonUtil {
         TRIGGER_SOURCE_PMM_CRITICAL("PMMCritical"),
         TRIGGER_SOURCE_DEVICE_IDLE("DeviceIdle"),
         TRIGGER_SOURCE_APP_LAUNCH_INTENT("AppLaunchIntent"),
-        TRIGGER_SOURCE_QUOTA("Quota");
+        TRIGGER_SOURCE_QUOTA("Quota"),
+        TRIGGER_SOURCE_LMKD_GENIE("LMKDGenie");
 
         String name;
 
@@ -45,120 +78,63 @@ public abstract class ChimeraCommonUtil {
         }
     }
 
-    public static void putAppLaunchInfo(String str, String str2) {
-        mAppLaunchInfoMap.put(str, str2);
-    }
-
-    public static void clearAppLaunchInfoMap() {
-        mAppLaunchInfoMap.clear();
-    }
-
-    public static boolean isColdLaunch(String str) {
-        String str2 = (String) mAppLaunchInfoMap.get(str);
-        if (str2 != null) {
-            return str2.startsWith("COLD");
-        }
-        return false;
-    }
-
-    public static boolean isWarmLaunch(String str) {
-        String str2 = (String) mAppLaunchInfoMap.get(str);
-        if (str2 != null) {
-            return str2.startsWith("WARM");
-        }
-        return false;
-    }
-
-    public static boolean doReclaimPageCacheByFilePath(String str) {
-        try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("/proc/proc_caches_reclaim"), IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES);
-            try {
-                bufferedWriter.write(str + "\u0000");
-                bufferedWriter.close();
-                return true;
-            } finally {
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean isBubEnabled(SystemRepository systemRepository) {
-        return systemRepository.getSystemProperty("persist.sys.bub_onoff", "on").equals("on");
+    public static long[] getAnonSizeAndZramSize(int i) {
+        return new long[]{Math.max(getSmapsRollupParams(i, new String[]{"Pss_Anon:", "Swap:", "SwapShared:", "Writeback:"})[0], 0L), Math.max((long) (((r11[1] - r11[2]) - r11[3]) * 0.33d), 0L)};
     }
 
     public static long getAvailableMemoryKb(SystemRepository systemRepository) {
         return systemRepository.getAvailableMemory() / 1024;
     }
 
-    public static long getMemInfoByName(String str) {
-        try {
-            FileReader fileReader = new FileReader("/proc/meminfo");
-            try {
-                BufferedReader bufferedReader = new BufferedReader(fileReader, IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES);
-                try {
-                    String readLine = bufferedReader.readLine();
-                    if (readLine == null) {
-                        bufferedReader.close();
-                        fileReader.close();
-                        return 0L;
-                    }
-                    int indexOf = readLine.indexOf(str + XmlUtils.STRING_ARRAY_SEPARATOR);
-                    while (indexOf < 0) {
-                        readLine = bufferedReader.readLine();
-                        indexOf = readLine.indexOf(str + XmlUtils.STRING_ARRAY_SEPARATOR);
-                    }
-                    long parseInt = Integer.parseInt(readLine.substring(indexOf).replaceAll("\\D+", ""));
-                    bufferedReader.close();
-                    fileReader.close();
-                    return parseInt;
-                } finally {
-                }
-            } catch (Throwable th) {
-                try {
-                    fileReader.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-                throw th;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 0L;
-        } catch (NullPointerException e2) {
-            e2.printStackTrace();
-            return 0L;
-        } catch (Exception e3) {
-            e3.printStackTrace();
-            return 0L;
+    public static long getDRAMUsed(int i, long j) {
+        boolean z;
+        if (j <= 0) {
+            j = Debug.getPss(i, null, null);
+            z = true;
+        } else {
+            z = false;
         }
+        long[] smapsRollupParams = getSmapsRollupParams(i, new String[]{"SwapPss:", "Writeback:"});
+        if (!z && j - smapsRollupParams[0] < 0) {
+            j = Debug.getPss(i, null, null);
+        }
+        long j2 = smapsRollupParams[0];
+        return Math.max((long) (((j2 - smapsRollupParams[1]) * 0.33d) + (j - j2)), 0L);
     }
 
-    public static long getTotalMemFree() {
+    public static int getRamSizeGb() {
+        return (int) Math.ceil(getTotalMemorySizeKb() / 1048576.0f);
+    }
+
+    public static long[] getSmapsRollupParams(int i, String[] strArr) {
+        int length = strArr.length;
+        long[] jArr = new long[length];
         try {
-            FileReader fileReader = new FileReader("/proc/meminfo");
-            try {
-                BufferedReader bufferedReader = new BufferedReader(fileReader, IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "/proc/", "/smaps_rollup"), StandardCharsets.UTF_8));
+            int i2 = 0;
+            while (true) {
                 try {
-                    bufferedReader.readLine();
                     String readLine = bufferedReader.readLine();
                     if (readLine == null) {
-                        bufferedReader.close();
-                        fileReader.close();
-                        return 0L;
+                        break;
                     }
-                    long parseInt = Integer.parseInt(readLine.substring(readLine.indexOf("MemFree:")).replaceAll("\\D+", ""));
-                    bufferedReader.close();
-                    fileReader.close();
-                    return parseInt;
+                    if (readLine.startsWith(strArr[i2])) {
+                        String[] split = readLine.split("\\s+");
+                        if (split.length == 3) {
+                            jArr[i2] = Long.parseLong(split[1]);
+                        }
+                        i2++;
+                        if (i2 == length) {
+                            break;
+                        }
+                    }
                 } finally {
                 }
-            } finally {
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 0L;
+            bufferedReader.close();
+            return jArr;
+        } catch (IOException unused) {
+            return new long[length];
         }
     }
 
@@ -166,7 +142,7 @@ public abstract class ChimeraCommonUtil {
         try {
             FileReader fileReader = new FileReader("/proc/meminfo");
             try {
-                BufferedReader bufferedReader = new BufferedReader(fileReader, IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES);
+                BufferedReader bufferedReader = new BufferedReader(fileReader, 2048);
                 try {
                     String readLine = bufferedReader.readLine();
                     if (readLine == null) {
@@ -186,313 +162,5 @@ public abstract class ChimeraCommonUtil {
             e.printStackTrace();
             return 0L;
         }
-    }
-
-    public static int getRamSizeGb() {
-        return (int) Math.ceil(((float) getTotalMemorySizeKb()) / 1048576.0f);
-    }
-
-    public static long getProcPss(SystemRepository systemRepository, int i) {
-        return systemRepository.getPss(i, null);
-    }
-
-    public static PsiFile getPsiFile(PsiFileType psiFileType, PsiDataType psiDataType) {
-        StringBuilder sb;
-        StringBuilder sb2 = new StringBuilder();
-        BufferedReader bufferedReader = null;
-        try {
-            try {
-                BufferedReader bufferedReader2 = new BufferedReader(new FileReader(psiFileType.getPath()));
-                while (true) {
-                    try {
-                        String readLine = bufferedReader2.readLine();
-                        if (readLine != null) {
-                            sb2.append(readLine);
-                            sb2.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                        } else {
-                            try {
-                                break;
-                            } catch (Exception e) {
-                                e = e;
-                                sb = new StringBuilder();
-                                sb.append("Exception");
-                                sb.append(e.getMessage());
-                                Slog.e("ActivityManager", sb.toString());
-                                return new PsiFile(sb2.toString(), psiDataType);
-                            }
-                        }
-                    } catch (Exception e2) {
-                        e = e2;
-                        bufferedReader = bufferedReader2;
-                        Slog.e("ActivityManager", "getPsiFile Exception" + e.getMessage());
-                        if (bufferedReader != null) {
-                            try {
-                                bufferedReader.close();
-                            } catch (Exception e3) {
-                                e = e3;
-                                sb = new StringBuilder();
-                                sb.append("Exception");
-                                sb.append(e.getMessage());
-                                Slog.e("ActivityManager", sb.toString());
-                                return new PsiFile(sb2.toString(), psiDataType);
-                            }
-                        }
-                        return new PsiFile(sb2.toString(), psiDataType);
-                    } catch (Throwable th) {
-                        th = th;
-                        bufferedReader = bufferedReader2;
-                        if (bufferedReader != null) {
-                            try {
-                                bufferedReader.close();
-                            } catch (Exception e4) {
-                                Slog.e("ActivityManager", "Exception" + e4.getMessage());
-                            }
-                        }
-                        throw th;
-                    }
-                }
-                bufferedReader2.close();
-            } catch (Throwable th2) {
-                th = th2;
-            }
-        } catch (Exception e5) {
-            e = e5;
-        }
-        return new PsiFile(sb2.toString(), psiDataType);
-    }
-
-    /* loaded from: classes.dex */
-    public enum PsiDataType {
-        AVG10("avg10"),
-        TOTAL("total");
-
-        private String mPath;
-
-        PsiDataType(String str) {
-            this.mPath = str;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public enum PsiFileType {
-        IO("/proc/pressure/io"),
-        MEMORY("/proc/pressure/memory"),
-        CPU("/proc/pressure/cpu");
-
-        private String mPath;
-
-        PsiFileType(String str) {
-            this.mPath = str;
-        }
-
-        public String getPath() {
-            return this.mPath;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class PsiFile {
-        public double mFullAvg10;
-        public boolean mIsEmptyFile;
-        public long mPsiFullTotal;
-        public long mPsiSomeTotal;
-        public double mSomeAvg10;
-
-        public PsiFile(String str, final PsiDataType psiDataType) {
-            if (str == null || str.length() == 0) {
-                this.mIsEmptyFile = true;
-            } else {
-                Arrays.stream(str.split(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE)).forEach(new Consumer() { // from class: com.android.server.chimera.ChimeraCommonUtil$PsiFile$$ExternalSyntheticLambda0
-                    @Override // java.util.function.Consumer
-                    public final void accept(Object obj) {
-                        ChimeraCommonUtil.PsiFile.this.lambda$new$0(psiDataType, (String) obj);
-                    }
-                });
-            }
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$new$0(PsiDataType psiDataType, String str) {
-            if (str.startsWith("some")) {
-                if (psiDataType == PsiDataType.AVG10) {
-                    this.mSomeAvg10 = Double.parseDouble(getItem(str, "avg10", 1));
-                    return;
-                } else {
-                    if (psiDataType == PsiDataType.TOTAL) {
-                        this.mPsiSomeTotal = Long.parseLong(getItem(str, "total", 4));
-                        return;
-                    }
-                    return;
-                }
-            }
-            if (str.startsWith("full")) {
-                if (psiDataType == PsiDataType.AVG10) {
-                    this.mFullAvg10 = Double.parseDouble(getItem(str, "avg10", 1));
-                } else if (psiDataType == PsiDataType.TOTAL) {
-                    this.mPsiFullTotal = Long.parseLong(getItem(str, "total", 4));
-                }
-            }
-        }
-
-        public final String getItem(String str, String str2, int i) {
-            String[] split = str.split(" ");
-            String str3 = str2 + "=";
-            return (split.length <= i || !split[i].startsWith(str3)) ? "0" : split[i].replace(str3, "");
-        }
-
-        public long getPsiSomeTotal() {
-            return this.mPsiSomeTotal;
-        }
-
-        public long getPsiFullTotal() {
-            return this.mPsiFullTotal;
-        }
-
-        public boolean isEmpty() {
-            return this.mIsEmptyFile;
-        }
-    }
-
-    public static Set getAllRunningPackagePids(int i) {
-        String[] list;
-        String str = "/acct/uid_" + i;
-        File file = new File(str);
-        HashSet hashSet = new HashSet();
-        if (file.isDirectory() && (list = file.list()) != null) {
-            for (int i2 = 0; i2 < list.length; i2++) {
-                if (list[i2].contains("pid")) {
-                    readAcctFile(str + "/" + list[i2] + "/cgroup.procs", hashSet);
-                }
-            }
-        }
-        return hashSet;
-    }
-
-    public static void readAcctFile(String str, Set set) {
-        BufferedReader bufferedReader = null;
-        bufferedReader = null;
-        bufferedReader = null;
-        try {
-            try {
-                try {
-                    BufferedReader bufferedReader2 = new BufferedReader(new FileReader(str));
-                    try {
-                        String readLine = bufferedReader2.readLine();
-                        while (readLine != null) {
-                            set.add(Integer.valueOf(readLine));
-                            readLine = bufferedReader2.readLine();
-                        }
-                        bufferedReader2.close();
-                        bufferedReader = readLine;
-                    } catch (IOException e) {
-                        e = e;
-                        bufferedReader = bufferedReader2;
-                        Log.e("ChimeraCommonUtil", "can't read " + str + e.getMessage());
-                        if (bufferedReader != null) {
-                            bufferedReader.close();
-                            bufferedReader = bufferedReader;
-                        }
-                    } catch (Throwable th) {
-                        th = th;
-                        bufferedReader = bufferedReader2;
-                        if (bufferedReader != null) {
-                            try {
-                                bufferedReader.close();
-                            } catch (IOException e2) {
-                                e2.printStackTrace();
-                            }
-                        }
-                        throw th;
-                    }
-                } catch (IOException e3) {
-                    e = e3;
-                }
-            } catch (IOException e4) {
-                e4.printStackTrace();
-            }
-        } catch (Throwable th2) {
-            th = th2;
-        }
-    }
-
-    public static long[] getAnonSizeAndZramSize(int i) {
-        String[] strArr = {"Pss_Anon:", "Swap:", "SwapShared:", "Writeback:"};
-        long[] jArr = new long[4];
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("/proc/" + i + "/smaps_rollup", StandardCharsets.UTF_8));
-            int i2 = 0;
-            while (true) {
-                try {
-                    String readLine = bufferedReader.readLine();
-                    if (readLine == null) {
-                        break;
-                    }
-                    if (readLine.startsWith(strArr[i2])) {
-                        String[] split = readLine.split("\\s+");
-                        if (split.length == 3) {
-                            jArr[i2] = Long.parseLong(split[1]);
-                        }
-                        i2++;
-                        if (i2 == 4) {
-                            break;
-                        }
-                    }
-                } finally {
-                }
-            }
-            bufferedReader.close();
-            return new long[]{Math.max(jArr[0], 0L), Math.max((long) (((jArr[1] - jArr[2]) - jArr[3]) * 0.33d), 0L)};
-        } catch (IOException unused) {
-            return new long[]{0, 0};
-        }
-    }
-
-    public static long getDRAMUsed(int i, long j) {
-        long j2;
-        boolean z;
-        if (j <= 0) {
-            j2 = Debug.getPss(i, null, null);
-            z = true;
-        } else {
-            j2 = j;
-            z = false;
-        }
-        String[] strArr = {"SwapPss:", "Writeback:"};
-        long[] jArr = new long[2];
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("/proc/" + i + "/smaps_rollup", StandardCharsets.UTF_8));
-            int i2 = 0;
-            while (true) {
-                try {
-                    String readLine = bufferedReader.readLine();
-                    if (readLine == null) {
-                        break;
-                    }
-                    if (readLine.startsWith(strArr[i2])) {
-                        String[] split = readLine.split("\\s+");
-                        if (split.length == 3) {
-                            jArr[i2] = Long.parseLong(split[1]);
-                        }
-                        i2++;
-                        if (i2 == 2) {
-                            break;
-                        }
-                    }
-                } finally {
-                }
-            }
-            bufferedReader.close();
-            if (!z && j2 - jArr[0] < 0) {
-                j2 = Debug.getPss(i, null, null);
-            }
-            long j3 = jArr[0];
-            return Math.max((long) ((j2 - j3) + ((j3 - jArr[1]) * 0.33d)), 0L);
-        } catch (IOException unused) {
-            return j2;
-        }
-    }
-
-    public static boolean isQuotaEnable() {
-        return SystemProperties.getBoolean("ro.slmk.chimera_quota_enable", false);
     }
 }

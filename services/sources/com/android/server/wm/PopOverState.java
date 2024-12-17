@@ -1,17 +1,15 @@
 package com.android.server.wm;
 
 import android.app.ActivityOptions;
-import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Bundle;
-import com.samsung.android.rune.CoreRune;
-import java.io.PrintWriter;
+import com.android.server.wm.Transition;
+import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class PopOverState {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PopOverState {
     public final ActivityRecord mActivityRecord;
     public boolean mIsActivated;
     public boolean mLastOccludesParent;
@@ -24,47 +22,21 @@ public class PopOverState {
         this.mActivityRecord = activityRecord;
     }
 
-    public void setupOptions(ActivityOptions activityOptions, ActivityRecord activityRecord) {
-        ActivityOptions activityOptions2;
-        if (supportsPopOver(this.mActivityRecord.info)) {
-            if (activityOptions.isPopOver()) {
-                this.mOptions = new ActivityOptions(activityOptions.toBundle());
-                if (activityRecord == null || activityRecord.getTask() == null) {
-                    return;
-                }
-                this.mOriginTaskId = activityRecord.getTask().mTaskId;
-                return;
-            }
-            if (!activityOptions.mPopOverInheritOptions || activityRecord == null || activityRecord.getTask() == null || activityRecord.getTask().mTaskId == -1 || (activityOptions2 = activityRecord.mPopOverState.mOptions) == null || !activityOptions2.mPopOverInheritOptions) {
-                return;
-            }
-            this.mOptionsInherited = activityOptions2;
-            this.mOriginTaskIdInherited = activityRecord.getTask().mTaskId;
-        }
-    }
-
-    public void applyOptionsInherited() {
-        if (this.mOptionsInherited == null || this.mActivityRecord.getTask() == null) {
+    public final void adjustOptions(int[] iArr, int[] iArr2, Point[] pointArr, int[] iArr3) {
+        WindowState findMainWindow;
+        if (this.mOptions == null && this.mOptionsInherited == null) {
             return;
         }
-        int i = this.mActivityRecord.getTask().mTaskId;
-        int i2 = this.mOriginTaskIdInherited;
-        if (i != i2) {
+        ActivityRecord activityRecord = this.mActivityRecord;
+        if (activityRecord.task == null) {
             return;
         }
-        this.mOptions = this.mOptionsInherited;
-        this.mOptionsInherited = null;
-        this.mOriginTaskId = i2;
-        this.mOriginTaskIdInherited = -1;
-    }
-
-    public void adjustOptions(int[] iArr, int[] iArr2, Point[] pointArr, int[] iArr3) {
-        if (!hasOptions() || this.mActivityRecord.getTask() == null) {
-            return;
-        }
-        Rect bounds = PopOverBoundsCalculator.getBounds(this.mActivityRecord);
+        Rect bounds = PopOverBoundsCalculator.getBounds(activityRecord);
         if (iArr == null && iArr2 == null && pointArr == null && iArr3 == null) {
-            clearOptions();
+            this.mOptions = null;
+            this.mOptionsInherited = null;
+            this.mOriginTaskId = -1;
+            this.mOriginTaskIdInherited = -1;
         } else {
             ActivityOptions activityOptions = this.mOptions;
             if (activityOptions == null) {
@@ -80,183 +52,89 @@ public class PopOverState {
                 activityOptions.mPopOverAnchorMarginDp = (Point[]) pointArr.clone();
             }
             if (iArr3 != null) {
-                activityOptions.mPopOverAnchorPosition.equals(iArr3.clone());
+                if (!Arrays.equals(activityOptions.mPopOverAnchorPosition, (int[]) iArr3.clone()) && (findMainWindow = activityRecord.findMainWindow(true)) != null) {
+                    findMainWindow.forceReportingResized();
+                }
                 activityOptions.mPopOverAnchorPosition = (int[]) iArr3.clone();
             }
         }
-        this.mActivityRecord.recomputeConfiguration();
-        this.mActivityRecord.ensureActivityConfiguration(0, true, true);
-        Rect bounds2 = PopOverBoundsCalculator.getBounds(this.mActivityRecord);
+        activityRecord.recomputeConfiguration();
+        activityRecord.ensureActivityConfiguration(true);
+        Rect bounds2 = PopOverBoundsCalculator.getBounds(activityRecord);
         if (bounds.width() == bounds2.width() && bounds.height() == bounds2.height()) {
             return;
         }
-        ActivityRecord activityRecord = this.mActivityRecord;
-        activityRecord.mAtmService.mChangeTransitController.handlePopOverChangeTransitionRequest(activityRecord, bounds);
-    }
-
-    public boolean hasOptions() {
-        return (this.mOptions == null && this.mOptionsInherited == null) ? false : true;
-    }
-
-    public ActivityOptions getOptions() {
-        return this.mOptions;
-    }
-
-    public void clearOptions() {
-        this.mOptions = null;
-        this.mOptionsInherited = null;
-        this.mOriginTaskId = -1;
-        this.mOriginTaskIdInherited = -1;
-    }
-
-    public void setLastOccludesParent(boolean z) {
-        this.mLastOccludesParent = z;
-    }
-
-    public void toggle() {
-        if (this.mActivityRecord.isEmbedded()) {
-            inactivate();
-        } else if (isInLargeSizeTask()) {
-            activate();
-        } else {
-            inactivate();
+        ChangeTransitionController changeTransitionController = activityRecord.mAtmService.mChangeTransitController;
+        changeTransitionController.getClass();
+        DisplayContent displayContent = activityRecord.mDisplayContent;
+        Task task = activityRecord.task;
+        if (displayContent == null || task == null || !activityRecord.mPopOverState.mIsActivated || task.isChangeTransitionBlockedByCommonPolicy()) {
+            return;
         }
+        Transition.ChangeInfo findCollectingChangeInfo = changeTransitionController.findCollectingChangeInfo(activityRecord);
+        if (findCollectingChangeInfo == null || findCollectingChangeInfo.mChangeLeash == null) {
+            Transition createTransition = !changeTransitionController.mTransitionController.isCollecting() ? changeTransitionController.mTransitionController.createTransition(6, 0) : null;
+            changeTransitionController.mTransitionController.collect(activityRecord);
+            changeTransitionController.updateChangeInfo(activityRecord, 5, 1, bounds, 0);
+            changeTransitionController.mTransitionController.collectVisibleChange(activityRecord);
+            if (createTransition != null) {
+                changeTransitionController.mTransitionController.requestStartTransition(createTransition, task, null, null);
+                createTransition.setReady(task, true);
+            }
+        }
+    }
+
+    public boolean isAboveAnotherOpaquePopOver() {
+        ActivityRecord activityRecord = this.mActivityRecord;
+        Task task = activityRecord.task;
+        return (task == null || task.getActivity(new PopOverState$$ExternalSyntheticLambda0(0, this), activityRecord, false, true) == null) ? false : true;
     }
 
     public boolean isInLargeSizeTask() {
-        return this.mActivityRecord.getTask() != null && this.mActivityRecord.getTask().getConfiguration().smallestScreenWidthDp >= 600;
-    }
-
-    public final void activate() {
-        if (this.mIsActivated || this.mOptions == null || this.mActivityRecord.getTask() == null || this.mActivityRecord.getTask().mTaskId != this.mOriginTaskId || this.mActivityRecord.isRootOfTask()) {
-            return;
-        }
-        ActivityRecord activityRecord = this.mActivityRecord;
-        if (activityRecord.mReparenting) {
-            return;
-        }
-        this.mIsActivated = true;
-        activityRecord.mOccludesParent = false;
-        if (CoreRune.FW_SUPPORT_OCCLUDES_PARENT_CHANGE_CALLBACK) {
-            updateOccludeTargetIfNeeded();
-        }
-        if (!this.mActivityRecord.getTask().getLastDispatchedWindowFocusInTask()) {
-            this.mActivityRecord.getTask().updateWindowFocusInTask();
-        }
-        if (!this.mActivityRecord.getDisplayContent().mWaitingForConfig && this.mActivityRecord.isVisible() && this.mActivityRecord.getTask().shouldBeVisible(null)) {
-            if (this.mActivityRecord.getTask().inSplitScreenWindowingMode()) {
-                this.mActivityRecord.getParent().getParent().asTask().mPendingEnsureVisibleForPopOver = true;
-            } else if (this.mActivityRecord.getTask().inFreeformWindowingMode()) {
-                this.mActivityRecord.getTask().mPendingEnsureVisibleForPopOver = true;
-            }
-        }
-    }
-
-    public final void inactivate() {
-        if (this.mIsActivated) {
-            this.mIsActivated = false;
-            this.mActivityRecord.mOccludesParent = this.mLastOccludesParent;
-            if (CoreRune.FW_SUPPORT_OCCLUDES_PARENT_CHANGE_CALLBACK) {
-                updateOccludeTargetIfNeeded();
-            }
-            this.mActivityRecord.forAllWindows(new Consumer() { // from class: com.android.server.wm.PopOverState$$ExternalSyntheticLambda2
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((WindowState) obj).clearPopOverDimmer();
-                }
-            }, true);
-        }
-    }
-
-    public boolean isActivated() {
-        return this.mIsActivated;
-    }
-
-    public int getState() {
-        if (isActivated()) {
-            return shouldRemoveOutlineEffect() ? 3 : 1;
-        }
-        return 2;
+        Task task = this.mActivityRecord.task;
+        return task != null && task.getConfiguration().smallestScreenWidthDp >= 600;
     }
 
     public boolean shouldRemoveOutlineEffect() {
         return !this.mLastOccludesParent && isAboveAnotherOpaquePopOver();
     }
 
-    public boolean isAboveAnotherOpaquePopOver() {
-        return (this.mActivityRecord.getTask() == null || this.mActivityRecord.getTask().getActivity(new Predicate() { // from class: com.android.server.wm.PopOverState$$ExternalSyntheticLambda0
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$isAboveAnotherOpaquePopOver$1;
-                lambda$isAboveAnotherOpaquePopOver$1 = PopOverState.this.lambda$isAboveAnotherOpaquePopOver$1((ActivityRecord) obj);
-                return lambda$isAboveAnotherOpaquePopOver$1;
+    public final void toggle() {
+        Task task;
+        ActivityRecord activityRecord = this.mActivityRecord;
+        if (activityRecord.isEmbedded()) {
+            if (this.mIsActivated) {
+                this.mIsActivated = false;
+                activityRecord.mOccludesParent = this.mLastOccludesParent;
+                activityRecord.forAllWindows((Consumer) new PopOverState$$ExternalSyntheticLambda2(), true);
+                return;
             }
-        }, this.mActivityRecord, false, true) == null) ? false : true;
-    }
-
-    public /* synthetic */ boolean lambda$isAboveAnotherOpaquePopOver$1(ActivityRecord activityRecord) {
-        if (activityRecord.mPopOverState.isActivated() && !activityRecord.finishing) {
-            PopOverState popOverState = activityRecord.mPopOverState;
-            if (popOverState.mOptions == this.mOptions && popOverState.mLastOccludesParent) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isBelowAnotherOpaquePopOver() {
-        final Rect bounds = this.mActivityRecord.getBounds();
-        return (this.mActivityRecord.getTask() == null || this.mActivityRecord.getTask().getActivity(new Predicate() { // from class: com.android.server.wm.PopOverState$$ExternalSyntheticLambda1
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$isBelowAnotherOpaquePopOver$2;
-                lambda$isBelowAnotherOpaquePopOver$2 = PopOverState.lambda$isBelowAnotherOpaquePopOver$2(bounds, (ActivityRecord) obj);
-                return lambda$isBelowAnotherOpaquePopOver$2;
-            }
-        }, this.mActivityRecord, false, false) == null) ? false : true;
-    }
-
-    public static /* synthetic */ boolean lambda$isBelowAnotherOpaquePopOver$2(Rect rect, ActivityRecord activityRecord) {
-        return activityRecord.mPopOverState.isActivated() && !activityRecord.finishing && activityRecord.getBounds().contains(rect) && activityRecord.mPopOverState.mLastOccludesParent;
-    }
-
-    public final void updateOccludeTargetIfNeeded() {
-        if (this.mLastOccludesParent) {
-            ActivityRecord activityRecord = this.mActivityRecord;
-            TransitionController transitionController = activityRecord.mDisplayContent.mTransitionController;
-            activityRecord.mWmService.mExt.updateOccludeTargetIfNeeded(activityRecord.getDisplayContent());
-        }
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
-        if (this.mOptions == null) {
             return;
         }
-        printWriter.println(str + "PopOver=" + this.mIsActivated);
-        printWriter.println(str + " size=land(" + this.mOptions.mPopOverWidthDp[0] + "," + this.mOptions.mPopOverHeightDp[0] + ")/port(" + this.mOptions.mPopOverWidthDp[1] + "," + this.mOptions.mPopOverHeightDp[1] + ")");
-        StringBuilder sb = new StringBuilder();
-        sb.append(str);
-        sb.append(" margin=land(");
-        sb.append(this.mOptions.mPopOverAnchorMarginDp[0]);
-        sb.append(")/port(");
-        sb.append(this.mOptions.mPopOverAnchorMarginDp[1]);
-        sb.append(")");
-        printWriter.println(sb.toString());
-        printWriter.println(str + " position=land(0x" + Integer.toHexString(this.mOptions.mPopOverAnchorPosition[0]) + ")/port(0x" + Integer.toHexString(this.mOptions.mPopOverAnchorPosition[1]) + ")");
-        if (this.mIsActivated) {
-            printWriter.println(str + " inherit=" + this.mOptions.mPopOverInheritOptions + ", mLastOccludesParent=" + this.mLastOccludesParent + ", isBelowAnotherOpaquePopOver=" + isBelowAnotherOpaquePopOver() + ", isAboveAnotherOpaquePopOver=" + isAboveAnotherOpaquePopOver());
+        if (!isInLargeSizeTask()) {
+            if (this.mIsActivated) {
+                this.mIsActivated = false;
+                activityRecord.mOccludesParent = this.mLastOccludesParent;
+                activityRecord.forAllWindows((Consumer) new PopOverState$$ExternalSyntheticLambda2(), true);
+                return;
+            }
+            return;
         }
-    }
-
-    public static boolean supportsPopOver(ActivityInfo activityInfo) {
-        Bundle bundle = activityInfo.metaData;
-        if (bundle != null && bundle.containsKey("com.samsung.android.supports_pop_over")) {
-            return activityInfo.metaData.getBoolean("com.samsung.android.supports_pop_over", true);
+        if (this.mIsActivated || this.mOptions == null || (task = activityRecord.task) == null || task.mTaskId != this.mOriginTaskId || activityRecord.isRootOfTask() || activityRecord.mReparenting) {
+            return;
         }
-        Bundle bundle2 = activityInfo.applicationInfo.metaData;
-        if (bundle2 == null || !bundle2.containsKey("com.samsung.android.supports_pop_over")) {
-            return true;
+        this.mIsActivated = true;
+        activityRecord.mOccludesParent = false;
+        Task task2 = activityRecord.task;
+        if (!task2.mLastDispatchedWindowFocusInTask) {
+            task2.updateWindowFocusInTask();
         }
-        return activityInfo.applicationInfo.metaData.getBoolean("com.samsung.android.supports_pop_over", true);
+        if (!activityRecord.getDisplayContent().mWaitingForConfig && activityRecord.mVisible && activityRecord.task.shouldBeVisible(null)) {
+            if (activityRecord.task.inSplitScreenWindowingMode()) {
+                activityRecord.getParent().getParent().asTask().mPendingEnsureVisibleForPopOver = true;
+            } else if (activityRecord.task.inFreeformWindowingMode()) {
+                activityRecord.task.mPendingEnsureVisibleForPopOver = true;
+            }
+        }
     }
 }

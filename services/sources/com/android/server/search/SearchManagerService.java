@@ -8,57 +8,95 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManagerInternal;
 import android.database.ContentObserver;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
+import android.net.util.NetdService$$ExternalSyntheticOutline0;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
-import android.os.Message;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
+import android.util.ArraySet;
 import android.util.Log;
 import android.util.SparseArray;
 import com.android.internal.content.PackageMonitor;
 import com.android.internal.os.BackgroundThread;
+import com.android.internal.statusbar.IStatusBar;
 import com.android.internal.util.DumpUtils;
 import com.android.internal.util.IndentingPrintWriter;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.SystemService;
-import com.android.server.search.SearchManagerService;
 import com.android.server.statusbar.StatusBarManagerInternal;
+import com.android.server.statusbar.StatusBarManagerService;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/* loaded from: classes3.dex */
-public class SearchManagerService extends ISearchManager.Stub {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SearchManagerService extends ISearchManager.Stub {
     public final Context mContext;
-    public final Handler mHandler;
     public final SparseArray mSearchables = new SparseArray();
 
-    /* loaded from: classes3.dex */
-    public class Lifecycle extends SystemService {
-        public BroadcastReceiver mBootCompleteReceiver;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class GlobalSearchProviderObserver extends ContentObserver {
+        public GlobalSearchProviderObserver(ContentResolver contentResolver) {
+            super(null);
+            contentResolver.registerContentObserver(Settings.Secure.getUriFor("search_global_search_activity"), false, this);
+        }
+
+        @Override // android.database.ContentObserver
+        public final void onChange(boolean z) {
+            synchronized (SearchManagerService.this.mSearchables) {
+                for (int i = 0; i < SearchManagerService.this.mSearchables.size(); i++) {
+                    try {
+                        Searchables searchables = (Searchables) SearchManagerService.this.mSearchables.valueAt(i);
+                        synchronized (searchables) {
+                            searchables.mRebuildSearchables = true;
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+            SearchManagerService.this.mContext.sendBroadcastAsUser(BatteryService$$ExternalSyntheticOutline0.m(536870912, "android.search.action.GLOBAL_SEARCH_ACTIVITY_CHANGED"), UserHandle.ALL);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Lifecycle extends SystemService {
+        public final AnonymousClass1 mBootCompleteReceiver;
         public SearchManagerService mService;
 
+        /* JADX WARN: Type inference failed for: r1v1, types: [com.android.server.search.SearchManagerService$Lifecycle$1] */
         public Lifecycle(Context context) {
             super(context);
             this.mBootCompleteReceiver = new BroadcastReceiver() { // from class: com.android.server.search.SearchManagerService.Lifecycle.1
                 @Override // android.content.BroadcastReceiver
-                public void onReceive(Context context2, final Intent intent) {
+                public final void onReceive(Context context2, final Intent intent) {
                     ExecutorService newSingleThreadExecutor = Executors.newSingleThreadExecutor();
                     newSingleThreadExecutor.execute(new Runnable() { // from class: com.android.server.search.SearchManagerService.Lifecycle.1.1
                         @Override // java.lang.Runnable
-                        public void run() {
+                        public final void run() {
                             Intent intent2 = intent;
                             if (intent2 == null) {
                                 Log.e("SearchManagerService", "onReceive: null intent");
-                            } else if ("android.intent.action.BOOT_COMPLETED".equals(intent2.getAction())) {
-                                Lifecycle.this.sendBroadcastReadyIntent();
+                                return;
+                            }
+                            if ("android.intent.action.BOOT_COMPLETED".equals(intent2.getAction())) {
+                                Lifecycle lifecycle = Lifecycle.this;
+                                lifecycle.getClass();
+                                Intent intent3 = new Intent("com.samsung.intent.action.SEARCH_MANAGER_READY");
+                                intent3.addFlags(-1996488704);
+                                lifecycle.getContext().sendBroadcastAsUser(intent3, UserHandle.ALL);
                             }
                         }
                     });
@@ -67,17 +105,8 @@ public class SearchManagerService extends ISearchManager.Stub {
             };
         }
 
-        /* JADX WARN: Multi-variable type inference failed */
-        /* JADX WARN: Type inference failed for: r0v0, types: [com.android.server.search.SearchManagerService, android.os.IBinder] */
         @Override // com.android.server.SystemService
-        public void onStart() {
-            ?? searchManagerService = new SearchManagerService(getContext());
-            this.mService = searchManagerService;
-            publishBinderService("search", searchManagerService);
-        }
-
-        @Override // com.android.server.SystemService
-        public void onBootPhase(int i) {
+        public final void onBootPhase(int i) {
             if (i == 1000) {
                 try {
                     IntentFilter intentFilter = new IntentFilter();
@@ -90,30 +119,98 @@ public class SearchManagerService extends ISearchManager.Stub {
             }
         }
 
-        public final void sendBroadcastReadyIntent() {
-            Intent intent = new Intent("com.samsung.intent.action.SEARCH_MANAGER_READY");
-            intent.addFlags(-1996488704);
-            getContext().sendBroadcastAsUser(intent, UserHandle.ALL);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onUserUnlocking$0(SystemService.TargetUser targetUser) {
-            this.mService.onUnlockUser(targetUser.getUserIdentifier());
+        /* JADX WARN: Multi-variable type inference failed */
+        /* JADX WARN: Type inference failed for: r0v0, types: [android.os.IBinder, com.android.server.search.SearchManagerService] */
+        @Override // com.android.server.SystemService
+        public final void onStart() {
+            ?? searchManagerService = new SearchManagerService(getContext());
+            this.mService = searchManagerService;
+            publishBinderService("search", searchManagerService);
         }
 
         @Override // com.android.server.SystemService
-        public void onUserUnlocking(final SystemService.TargetUser targetUser) {
-            this.mService.mHandler.post(new Runnable() { // from class: com.android.server.search.SearchManagerService$Lifecycle$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    SearchManagerService.Lifecycle.this.lambda$onUserUnlocking$0(targetUser);
+        public final void onUserStopped(SystemService.TargetUser targetUser) {
+            SearchManagerService searchManagerService = this.mService;
+            int userIdentifier = targetUser.getUserIdentifier();
+            synchronized (searchManagerService.mSearchables) {
+                searchManagerService.mSearchables.remove(userIdentifier);
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MyPackageMonitor extends PackageMonitor {
+        public final ArrayList mChangedPackages = new ArrayList();
+        public boolean mSearchablePackageAppeared = false;
+
+        public MyPackageMonitor() {
+        }
+
+        public final void onBeginPackageChanges() {
+            this.mChangedPackages.clear();
+            this.mSearchablePackageAppeared = false;
+        }
+
+        public final void onFinishPackageChanges() {
+            int changingUserId = getChangingUserId();
+            if (!this.mSearchablePackageAppeared) {
+                ArraySet arraySet = new ArraySet();
+                synchronized (SearchManagerService.this.mSearchables) {
+                    Searchables searchables = (Searchables) SearchManagerService.this.mSearchables.get(changingUserId);
+                    if (searchables != null) {
+                        synchronized (searchables) {
+                            arraySet = searchables.mKnownSearchablePackageNames;
+                        }
+                    }
                 }
-            });
+                int size = this.mChangedPackages.size();
+                for (int i = 0; i < size; i++) {
+                    if (!arraySet.contains((String) this.mChangedPackages.get(i))) {
+                    }
+                }
+                this.mChangedPackages.clear();
+                this.mSearchablePackageAppeared = false;
+            }
+            Log.i("SearchManagerService", "_updateSearchables");
+            synchronized (SearchManagerService.this.mSearchables) {
+                Searchables searchables2 = (Searchables) SearchManagerService.this.mSearchables.get(changingUserId);
+                if (searchables2 != null) {
+                    synchronized (searchables2) {
+                        searchables2.mRebuildSearchables = true;
+                    }
+                }
+            }
+            Log.i("SearchManagerService", "_updateSearchables completed.");
+            Intent intent = new Intent("android.search.action.SEARCHABLES_CHANGED");
+            intent.addFlags(603979776);
+            SearchManagerService.this.mContext.sendBroadcastAsUser(intent, new UserHandle(changingUserId));
+            this.mChangedPackages.clear();
+            this.mSearchablePackageAppeared = false;
         }
 
-        @Override // com.android.server.SystemService
-        public void onUserStopped(SystemService.TargetUser targetUser) {
-            this.mService.onCleanupUser(targetUser.getUserIdentifier());
+        public final void onPackageAppeared(String str, int i) {
+            if (!this.mSearchablePackageAppeared) {
+                int changingUserId = getChangingUserId();
+                Context context = SearchManagerService.this.mContext;
+                boolean z = true;
+                if (context.getPackageManager().queryIntentActivitiesAsUser(new Intent("android.intent.action.SEARCH").setPackage(str), 276824192, changingUserId).isEmpty()) {
+                    Context context2 = SearchManagerService.this.mContext;
+                    if (context2.getPackageManager().queryIntentActivitiesAsUser(new Intent("android.intent.action.WEB_SEARCH").setPackage(str), 276824192, changingUserId).isEmpty()) {
+                        Context context3 = SearchManagerService.this.mContext;
+                        z = true ^ context3.getPackageManager().queryIntentActivitiesAsUser(new Intent("android.search.action.GLOBAL_SEARCH").setPackage(str), 276824192, changingUserId).isEmpty();
+                    }
+                }
+                this.mSearchablePackageAppeared = z;
+            }
+            this.mChangedPackages.add(str);
+        }
+
+        public final void onPackageDisappeared(String str, int i) {
+            this.mChangedPackages.add(str);
+        }
+
+        public final void onPackageModified(String str) {
+            this.mChangedPackages.add(str);
         }
     }
 
@@ -121,14 +218,107 @@ public class SearchManagerService extends ISearchManager.Stub {
         this.mContext = context;
         new MyPackageMonitor().register(context, (Looper) null, UserHandle.ALL, true);
         new GlobalSearchProviderObserver(context.getContentResolver());
-        this.mHandler = BackgroundThread.getHandler();
+        BackgroundThread.getHandler();
+    }
+
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+        if (DumpUtils.checkDumpPermission(this.mContext, "SearchManagerService", printWriter)) {
+            PrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ");
+            synchronized (this.mSearchables) {
+                for (int i = 0; i < this.mSearchables.size(); i++) {
+                    try {
+                        indentingPrintWriter.print("\nUser: ");
+                        indentingPrintWriter.println(this.mSearchables.keyAt(i));
+                        indentingPrintWriter.increaseIndent();
+                        ((Searchables) this.mSearchables.valueAt(i)).dump(indentingPrintWriter);
+                        indentingPrintWriter.decreaseIndent();
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+            }
+        }
+    }
+
+    public final List getGlobalSearchActivities() {
+        ArrayList createFilterdResolveInfoList;
+        Searchables searchables = getSearchables(UserHandle.getCallingUserId());
+        synchronized (searchables) {
+            createFilterdResolveInfoList = Searchables.createFilterdResolveInfoList(searchables.mGlobalSearchActivities);
+        }
+        return createFilterdResolveInfoList;
+    }
+
+    public final ComponentName getGlobalSearchActivity() {
+        Searchables searchables = getSearchables(UserHandle.getCallingUserId());
+        synchronized (searchables) {
+            PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
+            int callingUid = Binder.getCallingUid();
+            int callingUserId = UserHandle.getCallingUserId();
+            ComponentName componentName = searchables.mCurrentGlobalSearchActivity;
+            if (componentName == null || !packageManagerInternal.canAccessComponent(callingUid, callingUserId, componentName)) {
+                return null;
+            }
+            return searchables.mCurrentGlobalSearchActivity;
+        }
+    }
+
+    public final SearchableInfo getSearchableInfo(ComponentName componentName) {
+        Bundle bundle;
+        if (componentName == null) {
+            Log.e("SearchManagerService", "getSearchableInfo(), activity == null");
+            return null;
+        }
+        Searchables searchables = getSearchables(UserHandle.getCallingUserId());
+        synchronized (searchables) {
+            try {
+                SearchableInfo searchableInfo = (SearchableInfo) searchables.mSearchablesMap.get(componentName);
+                if (searchableInfo == null) {
+                    try {
+                        ActivityInfo activityInfo = searchables.mPm.getActivityInfo(componentName, 128L, searchables.mUserId);
+                        if (activityInfo == null) {
+                            Log.e("Searchables", "Error activity info is null:" + componentName);
+                            return null;
+                        }
+                        Bundle bundle2 = activityInfo.metaData;
+                        String string = bundle2 != null ? bundle2.getString("android.app.default_searchable") : null;
+                        if (string == null && (bundle = activityInfo.applicationInfo.metaData) != null) {
+                            string = bundle.getString("android.app.default_searchable");
+                        }
+                        if (string == null || string.equals("*")) {
+                            return null;
+                        }
+                        String packageName = componentName.getPackageName();
+                        ComponentName componentName2 = string.charAt(0) == '.' ? new ComponentName(packageName, ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(packageName, string)) : new ComponentName(packageName, string);
+                        synchronized (searchables) {
+                            try {
+                                searchableInfo = (SearchableInfo) searchables.mSearchablesMap.get(componentName2);
+                                if (searchableInfo != null) {
+                                    searchables.mSearchablesMap.put(componentName, searchableInfo);
+                                }
+                            } finally {
+                            }
+                        }
+                        if (searchableInfo == null) {
+                            return null;
+                        }
+                        if (!((PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class)).canAccessComponent(Binder.getCallingUid(), UserHandle.getCallingUserId(), searchableInfo.getSearchActivity())) {
+                            return null;
+                        }
+                    } catch (RemoteException e) {
+                        NetdService$$ExternalSyntheticOutline0.m("Error getting activity info ", e, "Searchables");
+                        return null;
+                    }
+                } else if (!((PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class)).canAccessComponent(Binder.getCallingUid(), UserHandle.getCallingUserId(), searchableInfo.getSearchActivity())) {
+                    return null;
+                }
+                return searchableInfo;
+            } finally {
+            }
+        }
     }
 
     public final Searchables getSearchables(int i) {
-        return getSearchables(i, false);
-    }
-
-    public final Searchables getSearchables(int i, boolean z) {
         Searchables searchables;
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
@@ -141,13 +331,14 @@ public class SearchManagerService extends ISearchManager.Stub {
             }
             Binder.restoreCallingIdentity(clearCallingIdentity);
             synchronized (this.mSearchables) {
-                searchables = (Searchables) this.mSearchables.get(i);
-                if (searchables == null) {
-                    searchables = new Searchables(this.mContext, i);
-                    searchables.updateSearchableList();
-                    this.mSearchables.append(i, searchables);
-                } else if (z) {
-                    searchables.updateSearchableList();
+                try {
+                    searchables = (Searchables) this.mSearchables.get(i);
+                    if (searchables == null) {
+                        searchables = new Searchables(this.mContext, i);
+                        this.mSearchables.put(i, searchables);
+                    }
+                    searchables.updateSearchableListIfNeeded();
+                } finally {
                 }
             }
             return searchables;
@@ -157,144 +348,38 @@ public class SearchManagerService extends ISearchManager.Stub {
         }
     }
 
-    public List getSearchablesInInsightSearch(boolean z) {
-        return getSearchables(UserHandle.getCallingUserId()).getSearchablesInInsightSearchList(z);
+    public final List getSearchablesInGlobalSearch() {
+        ArrayList createFilterdSearchableInfoList;
+        Searchables searchables = getSearchables(UserHandle.getCallingUserId());
+        synchronized (searchables) {
+            createFilterdSearchableInfoList = Searchables.createFilterdSearchableInfoList(searchables.mSearchablesInGlobalSearchList);
+        }
+        return createFilterdSearchableInfoList;
     }
 
-    public final void onUnlockUser(int i) {
-        try {
-            getSearchables(i, true);
-        } catch (IllegalStateException unused) {
-        }
-    }
-
-    public final void onCleanupUser(int i) {
-        synchronized (this.mSearchables) {
-            this.mSearchables.remove(i);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class MyPackageMonitor extends PackageMonitor {
-        public Handler myHandler;
-
-        public MyPackageMonitor() {
-            HandlerThread handlerThread = new HandlerThread("android.sm");
-            handlerThread.start();
-            Looper looper = handlerThread.getLooper();
-            looper.setTraceTag(524288L);
-            looper.setSlowLogThresholdMs(10000L, 30000L);
-            this.myHandler = new Handler(looper) { // from class: com.android.server.search.SearchManagerService.MyPackageMonitor.1
-                @Override // android.os.Handler
-                public void handleMessage(Message message) {
-                    super.handleMessage(message);
-                    removeMessages(message.what);
-                    MyPackageMonitor.this._updateSearchables(message.what);
-                }
-            };
-        }
-
-        public void onSomePackagesChanged() {
-            updateSearchables();
-        }
-
-        public void onPackageModified(String str) {
-            updateSearchables();
-        }
-
-        public final void updateSearchables() {
-            Log.i("SearchManagerService", "updateSearchables");
-            this.myHandler.sendEmptyMessageDelayed(getChangingUserId(), 1000L);
-        }
-
-        public final void _updateSearchables(int i) {
-            Log.i("SearchManagerService", "_updateSearchables");
-            synchronized (SearchManagerService.this.mSearchables) {
-                int i2 = 0;
-                while (true) {
-                    if (i2 >= SearchManagerService.this.mSearchables.size()) {
-                        break;
-                    }
-                    if (i == SearchManagerService.this.mSearchables.keyAt(i2)) {
-                        ((Searchables) SearchManagerService.this.mSearchables.valueAt(i2)).updateSearchableList();
-                        break;
-                    }
-                    i2++;
-                }
+    public final ComponentName getWebSearchActivity() {
+        Searchables searchables = getSearchables(UserHandle.getCallingUserId());
+        synchronized (searchables) {
+            PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
+            int callingUid = Binder.getCallingUid();
+            int callingUserId = UserHandle.getCallingUserId();
+            ComponentName componentName = searchables.mWebSearchActivity;
+            if (componentName == null || !packageManagerInternal.canAccessComponent(callingUid, callingUserId, componentName)) {
+                return null;
             }
-            Log.i("SearchManagerService", "_updateSearchables completed.");
-            Intent intent = new Intent("android.search.action.SEARCHABLES_CHANGED");
-            intent.addFlags(603979776);
-            SearchManagerService.this.mContext.sendBroadcastAsUser(intent, new UserHandle(i));
+            return searchables.mWebSearchActivity;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class GlobalSearchProviderObserver extends ContentObserver {
-        public final ContentResolver mResolver;
-
-        public GlobalSearchProviderObserver(ContentResolver contentResolver) {
-            super(null);
-            this.mResolver = contentResolver;
-            contentResolver.registerContentObserver(Settings.Secure.getUriFor("search_global_search_activity"), false, this);
-        }
-
-        @Override // android.database.ContentObserver
-        public void onChange(boolean z) {
-            synchronized (SearchManagerService.this.mSearchables) {
-                for (int i = 0; i < SearchManagerService.this.mSearchables.size(); i++) {
-                    ((Searchables) SearchManagerService.this.mSearchables.valueAt(i)).updateSearchableList();
-                }
-            }
-            Intent intent = new Intent("android.search.action.GLOBAL_SEARCH_ACTIVITY_CHANGED");
-            intent.addFlags(536870912);
-            SearchManagerService.this.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
-        }
-    }
-
-    public SearchableInfo getSearchableInfo(ComponentName componentName) {
-        if (componentName == null) {
-            Log.e("SearchManagerService", "getSearchableInfo(), activity == null");
-            return null;
-        }
-        return getSearchables(UserHandle.getCallingUserId()).getSearchableInfo(componentName);
-    }
-
-    public List getSearchablesInGlobalSearch() {
-        return getSearchables(UserHandle.getCallingUserId()).getSearchablesInGlobalSearchList();
-    }
-
-    public List getGlobalSearchActivities() {
-        return getSearchables(UserHandle.getCallingUserId()).getGlobalSearchActivities();
-    }
-
-    public ComponentName getGlobalSearchActivity() {
-        return getSearchables(UserHandle.getCallingUserId()).getGlobalSearchActivity();
-    }
-
-    public ComponentName getWebSearchActivity() {
-        return getSearchables(UserHandle.getCallingUserId()).getWebSearchActivity();
-    }
-
-    public void launchAssist(int i, Bundle bundle) {
+    public final void launchAssist(int i, Bundle bundle) {
+        IStatusBar iStatusBar;
         StatusBarManagerInternal statusBarManagerInternal = (StatusBarManagerInternal) LocalServices.getService(StatusBarManagerInternal.class);
-        if (statusBarManagerInternal != null) {
-            statusBarManagerInternal.startAssist(bundle);
+        if (statusBarManagerInternal == null || (iStatusBar = StatusBarManagerService.this.mBar) == null) {
+            return;
         }
-    }
-
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        if (DumpUtils.checkDumpPermission(this.mContext, "SearchManagerService", printWriter)) {
-            PrintWriter indentingPrintWriter = new IndentingPrintWriter(printWriter, "  ");
-            synchronized (this.mSearchables) {
-                for (int i = 0; i < this.mSearchables.size(); i++) {
-                    indentingPrintWriter.print("\nUser: ");
-                    indentingPrintWriter.println(this.mSearchables.keyAt(i));
-                    indentingPrintWriter.increaseIndent();
-                    ((Searchables) this.mSearchables.valueAt(i)).dump(fileDescriptor, indentingPrintWriter, strArr);
-                    indentingPrintWriter.decreaseIndent();
-                }
-            }
+        try {
+            iStatusBar.startAssist(bundle);
+        } catch (RemoteException unused) {
         }
     }
 }

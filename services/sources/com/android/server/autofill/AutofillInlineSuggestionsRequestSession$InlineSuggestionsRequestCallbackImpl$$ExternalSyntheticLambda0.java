@@ -1,14 +1,21 @@
 package com.android.server.autofill;
 
-import android.view.inputmethod.InlineSuggestionsRequest;
-import com.android.internal.inputmethod.IInlineSuggestionsResponseCallback;
-import com.android.internal.util.function.TriConsumer;
-import com.android.server.autofill.AutofillInlineSuggestionsRequestSession;
+import java.util.function.Consumer;
 
-/* compiled from: R8$$SyntheticClass */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public final /* synthetic */ class AutofillInlineSuggestionsRequestSession$InlineSuggestionsRequestCallbackImpl$$ExternalSyntheticLambda0 implements TriConsumer {
-    public final void accept(Object obj, Object obj2, Object obj3) {
-        AutofillInlineSuggestionsRequestSession.InlineSuggestionsRequestCallbackImpl.m2920$r8$lambda$Z2etnVz9YnrU3oHRVw82QMhyM8((AutofillInlineSuggestionsRequestSession) obj, (InlineSuggestionsRequest) obj2, (IInlineSuggestionsResponseCallback) obj3);
+public final /* synthetic */ class AutofillInlineSuggestionsRequestSession$InlineSuggestionsRequestCallbackImpl$$ExternalSyntheticLambda0 implements Consumer {
+    @Override // java.util.function.Consumer
+    public final void accept(Object obj) {
+        AutofillInlineSuggestionsRequestSession autofillInlineSuggestionsRequestSession = (AutofillInlineSuggestionsRequestSession) obj;
+        synchronized (autofillInlineSuggestionsRequestSession.mLock) {
+            try {
+                if (autofillInlineSuggestionsRequestSession.mDestroyed) {
+                    return;
+                }
+                autofillInlineSuggestionsRequestSession.mImeSessionInvalidated = true;
+            } finally {
+            }
+        }
     }
 }

@@ -7,34 +7,31 @@ import com.android.internal.util.Preconditions;
 import java.io.ByteArrayInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.Function;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class SettingsStore {
-    public VersionedSettings mCache;
+    public LocationUserSettings mCache;
     public final AtomicFile mFile;
     public boolean mInitialized;
 
-    /* loaded from: classes2.dex */
-    public interface VersionedSettings {
-        int getVersion();
-    }
-
-    public abstract void onChange(VersionedSettings versionedSettings, VersionedSettings versionedSettings2);
-
-    public abstract VersionedSettings read(int i, DataInput dataInput);
-
-    public abstract void write(DataOutput dataOutput, VersionedSettings versionedSettings);
-
     public SettingsStore(File file) {
         this.mFile = new AtomicFile(file);
+    }
+
+    public synchronized void deleteFile() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        BackgroundThread.getExecutor().execute(new SettingsStore$$ExternalSyntheticLambda1(this, countDownLatch, 0));
+        countDownLatch.await();
+    }
+
+    public synchronized void flushFile() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        BackgroundThread.getExecutor().execute(new SettingsStore$$ExternalSyntheticLambda0(countDownLatch));
+        countDownLatch.await();
     }
 
     public final synchronized void initializeCache() {
@@ -43,9 +40,8 @@ public abstract class SettingsStore {
                 try {
                     DataInputStream dataInputStream = new DataInputStream(this.mFile.openRead());
                     try {
-                        VersionedSettings read = read(dataInputStream.readInt(), dataInputStream);
-                        this.mCache = read;
-                        Preconditions.checkState(read.getVersion() < Integer.MAX_VALUE);
+                        this.mCache = read(dataInputStream.readInt(), dataInputStream);
+                        Preconditions.checkState(true);
                         dataInputStream.close();
                     } catch (Throwable th) {
                         try {
@@ -61,9 +57,8 @@ public abstract class SettingsStore {
             }
             if (this.mCache == null) {
                 try {
-                    VersionedSettings read2 = read(Integer.MAX_VALUE, new DataInputStream(new ByteArrayInputStream(new byte[0])));
-                    this.mCache = read2;
-                    Preconditions.checkState(read2.getVersion() < Integer.MAX_VALUE);
+                    this.mCache = read(Integer.MAX_VALUE, new DataInputStream(new ByteArrayInputStream(new byte[0])));
+                    Preconditions.checkState(true);
                 } catch (IOException e2) {
                     throw new AssertionError(e2);
                 }
@@ -72,73 +67,5 @@ public abstract class SettingsStore {
         }
     }
 
-    public final synchronized VersionedSettings get() {
-        initializeCache();
-        return this.mCache;
-    }
-
-    public synchronized void update(Function function) {
-        initializeCache();
-        VersionedSettings versionedSettings = this.mCache;
-        VersionedSettings versionedSettings2 = (VersionedSettings) function.apply(versionedSettings);
-        Objects.requireNonNull(versionedSettings2);
-        VersionedSettings versionedSettings3 = versionedSettings2;
-        if (versionedSettings.equals(versionedSettings3)) {
-            return;
-        }
-        this.mCache = versionedSettings3;
-        Preconditions.checkState(versionedSettings3.getVersion() < Integer.MAX_VALUE);
-        writeLazily(versionedSettings3);
-        onChange(versionedSettings, versionedSettings3);
-    }
-
-    public synchronized void flushFile() {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        BackgroundThread.getExecutor().execute(new SettingsStore$$ExternalSyntheticLambda1(countDownLatch));
-        countDownLatch.await();
-    }
-
-    public synchronized void deleteFile() {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        BackgroundThread.getExecutor().execute(new Runnable() { // from class: com.android.server.location.settings.SettingsStore$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                SettingsStore.this.lambda$deleteFile$0(countDownLatch);
-            }
-        });
-        countDownLatch.await();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$deleteFile$0(CountDownLatch countDownLatch) {
-        this.mFile.delete();
-        countDownLatch.countDown();
-    }
-
-    public final void writeLazily(final VersionedSettings versionedSettings) {
-        BackgroundThread.getExecutor().execute(new Runnable() { // from class: com.android.server.location.settings.SettingsStore$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                SettingsStore.this.lambda$writeLazily$1(versionedSettings);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$writeLazily$1(VersionedSettings versionedSettings) {
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = this.mFile.startWrite();
-            DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
-            dataOutputStream.writeInt(versionedSettings.getVersion());
-            write(dataOutputStream, versionedSettings);
-            this.mFile.finishWrite(fileOutputStream);
-        } catch (IOException e) {
-            this.mFile.failWrite(fileOutputStream);
-            Log.e("LocationManagerService", "failure serializing location settings", e);
-        } catch (Throwable th) {
-            this.mFile.failWrite(fileOutputStream);
-            throw th;
-        }
-    }
+    public abstract LocationUserSettings read(int i, DataInput dataInput);
 }

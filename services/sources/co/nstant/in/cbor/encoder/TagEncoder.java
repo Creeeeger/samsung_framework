@@ -1,17 +1,6 @@
 package co.nstant.in.cbor.encoder;
 
-import co.nstant.in.cbor.CborEncoder;
-import co.nstant.in.cbor.model.MajorType;
-import co.nstant.in.cbor.model.Tag;
-import java.io.OutputStream;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TagEncoder extends AbstractEncoder {
-    public TagEncoder(CborEncoder cborEncoder, OutputStream outputStream) {
-        super(cborEncoder, outputStream);
-    }
-
-    public void encode(Tag tag) {
-        encodeTypeAndLength(MajorType.TAG, tag.getValue());
-    }
+public final class TagEncoder extends AbstractEncoder {
 }

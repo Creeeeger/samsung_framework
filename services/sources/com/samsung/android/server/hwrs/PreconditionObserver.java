@@ -1,65 +1,265 @@
 package com.samsung.android.server.hwrs;
 
-import android.content.ComponentName;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.OnAccountsUpdateListener;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.SemSystemProperties;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
-import com.samsung.android.server.hwrs.AbstractPreconditionObserver;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.DirEncryptService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.FlashNotificationsController$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0;
+import com.android.server.audio.AudioDeviceInventory$$ExternalSyntheticOutline0;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class PreconditionObserver extends AbstractPreconditionObserver {
-    public boolean mBoundCameraShare;
-    public ServiceConnection mConn;
+public final class PreconditionObserver {
+    public final AbstractPreconditionObserver$3 mAccountChangeReceiver;
+    public boolean mCameraShareInstalled;
+    public final Context mContext;
     public UserHandle mCurrentUserHandle;
-    public final Handler mHandler;
-    public boolean mIsTablet;
+    public final AnonymousClass1 mHandler;
+    public boolean mIsAddedAccountListener;
+    public boolean mIsRegisteredCameraShareObserver;
+    public boolean mIsRegisteredStorageShareObserver;
     public boolean mIsValidState;
+    public AnonymousClass2 mListener;
+    public final AbstractPreconditionObserver$2 mOnAccountsUpdateListener;
+    public final AbstractPreconditionObserver$1 mSettingObserver;
+    public int mState;
+    public boolean mStorageShareInstalled;
+    public List settingList;
+    public final Uri URI_CAMERASHARE = Settings.System.getUriFor("hwrs_camerashare_setting");
+    public final Uri URI_STORAGESHARE = Settings.System.getUriFor("hwrs_storageshare_setting");
+    public int mUserId = -10000;
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.samsung.android.server.hwrs.PreconditionObserver$2, reason: invalid class name */
+    public final class AnonymousClass2 {
+        public AnonymousClass2() {
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v5, types: [com.samsung.android.server.hwrs.AbstractPreconditionObserver$1] */
+    /* JADX WARN: Type inference failed for: r0v6, types: [com.samsung.android.server.hwrs.AbstractPreconditionObserver$2] */
+    /* JADX WARN: Type inference failed for: r0v7, types: [com.samsung.android.server.hwrs.AbstractPreconditionObserver$3] */
+    /* JADX WARN: Type inference failed for: r4v2, types: [com.samsung.android.server.hwrs.PreconditionObserver$1] */
     public PreconditionObserver(Context context) {
-        super(context);
-        this.mConn = new ServiceConnection() { // from class: com.samsung.android.server.hwrs.PreconditionObserver.3
-            @Override // android.content.ServiceConnection
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                Log.d("[HWRS_SYS]PreconditionObserver", "onServiceConnected - binding completed");
-                PreconditionObserver.this.mBoundCameraShare = true;
-            }
-
-            @Override // android.content.ServiceConnection
-            public void onServiceDisconnected(ComponentName componentName) {
-                Log.d("[HWRS_SYS]PreconditionObserver", "onServiceDisconnected");
-                PreconditionObserver.this.mBoundCameraShare = false;
-                PreconditionObserver.this.sendMessageDelayed(2, 4, 3000L);
+        final Handler handler = new Handler(Looper.getMainLooper());
+        this.mSettingObserver = new ContentObserver(handler) { // from class: com.samsung.android.server.hwrs.AbstractPreconditionObserver$1
+            @Override // android.database.ContentObserver
+            public final void onChange(boolean z, Uri uri) {
+                if (uri == null) {
+                    return;
+                }
+                if (PreconditionObserver.this.URI_CAMERASHARE.equals(uri)) {
+                    PreconditionObserver preconditionObserver = PreconditionObserver.this;
+                    int i = preconditionObserver.getValues("hwrs_camerashare_setting") > 0 ? 4 : 5;
+                    preconditionObserver.updateFlag(2, preconditionObserver.isSettingEnabled$1());
+                    preconditionObserver.notifyChanged(i);
+                    return;
+                }
+                if (PreconditionObserver.this.URI_STORAGESHARE.equals(uri)) {
+                    PreconditionObserver preconditionObserver2 = PreconditionObserver.this;
+                    int i2 = preconditionObserver2.getValues("hwrs_storageshare_setting") > 0 ? 6 : 7;
+                    preconditionObserver2.updateFlag(2, preconditionObserver2.isSettingEnabled$1());
+                    preconditionObserver2.notifyChanged(i2);
+                }
             }
         };
+        this.mOnAccountsUpdateListener = new OnAccountsUpdateListener() { // from class: com.samsung.android.server.hwrs.AbstractPreconditionObserver$2
+            @Override // android.accounts.OnAccountsUpdateListener
+            public final void onAccountsUpdated(Account[] accountArr) {
+                GestureWakeup$$ExternalSyntheticOutline0.m(new StringBuilder("onAccountsUpdated - "), accountArr.length, "[HWRS_SYS]PreconditionObserver");
+                PreconditionObserver preconditionObserver = PreconditionObserver.this;
+                preconditionObserver.getClass();
+                Log.d("[HWRS_SYS]PreconditionObserver", "handleSamsungAccountUpdate");
+                preconditionObserver.updateFlag(1, preconditionObserver.isSamsungAccountLogin());
+                preconditionObserver.notifyChanged(2);
+            }
+        };
+        this.mAccountChangeReceiver = new BroadcastReceiver() { // from class: com.samsung.android.server.hwrs.AbstractPreconditionObserver$3
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                if ("android.accounts.LOGIN_ACCOUNTS_CHANGED".equals(intent.getAction())) {
+                    Log.d("[HWRS_SYS]PreconditionObserver", "mAccountChangeReceiver.onReceive - LOGIN_ACCOUNTS_CHANGED_ACTION");
+                    PreconditionObserver preconditionObserver = PreconditionObserver.this;
+                    preconditionObserver.getClass();
+                    Log.d("[HWRS_SYS]PreconditionObserver", "handleSamsungAccountUpdate");
+                    preconditionObserver.updateFlag(1, preconditionObserver.isSamsungAccountLogin());
+                    preconditionObserver.notifyChanged(2);
+                }
+            }
+        };
+        this.mContext = context;
         Log.d("[HWRS_SYS]PreconditionObserver", "PreconditionObserver entered");
         this.mHandler = new Handler(Looper.getMainLooper()) { // from class: com.samsung.android.server.hwrs.PreconditionObserver.1
             @Override // android.os.Handler
-            public void handleMessage(Message message) {
-                PreconditionObserver.this.handleMessageWhat(message.what, message.arg1);
+            public final void handleMessage(Message message) {
+                int i = message.what;
+                PreconditionObserver preconditionObserver = PreconditionObserver.this;
+                preconditionObserver.getClass();
+                if (i != 0) {
+                    if (i != 1) {
+                        return;
+                    }
+                    preconditionObserver.stopUser();
+                    return;
+                }
+                Log.i("[HWRS_SYS]PreconditionObserver", "start entered");
+                UserHandle userHandle = preconditionObserver.mCurrentUserHandle;
+                int semGetIdentifier = userHandle == null ? -10000 : userHandle.semGetIdentifier();
+                AnonymousClass2 anonymousClass2 = preconditionObserver.new AnonymousClass2();
+                preconditionObserver.mUserId = semGetIdentifier;
+                preconditionObserver.mListener = anonymousClass2;
+                preconditionObserver.mCameraShareInstalled = preconditionObserver.isPackageInstalled("com.samsung.android.hwresourceshare");
+                preconditionObserver.mStorageShareInstalled = preconditionObserver.isPackageInstalled("com.samsung.android.hwresourceshare.storage");
+                Log.d("[HWRS_SYS]PreconditionObserver", "initCheck");
+                ArrayList arrayList = new ArrayList();
+                preconditionObserver.settingList = arrayList;
+                if (preconditionObserver.mCameraShareInstalled) {
+                    arrayList.add("hwrs_camerashare_setting");
+                }
+                if (preconditionObserver.mStorageShareInstalled) {
+                    ((ArrayList) preconditionObserver.settingList).add("hwrs_storageshare_setting");
+                }
+                preconditionObserver.updateFlag(1, preconditionObserver.isSamsungAccountLogin());
+                preconditionObserver.updateFlag(2, preconditionObserver.isSettingEnabled$1());
+                boolean z = preconditionObserver.mIsRegisteredCameraShareObserver;
+                AbstractPreconditionObserver$1 abstractPreconditionObserver$1 = preconditionObserver.mSettingObserver;
+                if (!z && preconditionObserver.mCameraShareInstalled) {
+                    preconditionObserver.mContext.getContentResolver().registerContentObserver(preconditionObserver.URI_CAMERASHARE, false, abstractPreconditionObserver$1, preconditionObserver.mUserId);
+                    preconditionObserver.mIsRegisteredCameraShareObserver = true;
+                }
+                if (!preconditionObserver.mIsRegisteredStorageShareObserver && preconditionObserver.mStorageShareInstalled) {
+                    preconditionObserver.mContext.getContentResolver().registerContentObserver(preconditionObserver.URI_STORAGESHARE, false, abstractPreconditionObserver$1, preconditionObserver.mUserId);
+                    preconditionObserver.mIsRegisteredStorageShareObserver = true;
+                }
+                if (preconditionObserver.mIsAddedAccountListener) {
+                    Log.w("[HWRS_SYS]PreconditionObserver", "addOnAccountsUpdatedListener - already added");
+                } else {
+                    Log.d("[HWRS_SYS]PreconditionObserver", "addOnAccountsUpdatedListener");
+                    AccountManager.get(preconditionObserver.mContext).addOnAccountsUpdatedListener(preconditionObserver.mOnAccountsUpdateListener, null, true, new String[]{"com.osp.app.signin"});
+                    if (preconditionObserver.mUserId != 0) {
+                        preconditionObserver.mContext.semRegisterReceiverAsUser(preconditionObserver.mAccountChangeReceiver, new UserHandle(preconditionObserver.mUserId), BatteryService$$ExternalSyntheticOutline0.m("android.accounts.LOGIN_ACCOUNTS_CHANGED"), null, null);
+                    }
+                    preconditionObserver.mIsAddedAccountListener = true;
+                }
+                preconditionObserver.mIsValidState = preconditionObserver.meetConditions();
+                FlashNotificationsController$$ExternalSyntheticOutline0.m("[HWRS_SYS]PreconditionObserver", new StringBuilder("mIsValidState : "), preconditionObserver.mIsValidState);
             }
         };
-        this.mIsTablet = isTablet();
     }
 
-    public int getCurrentUserId() {
-        UserHandle userHandle = this.mCurrentUserHandle;
-        if (userHandle == null) {
-            return -10000;
+    public final int getValues(String str) {
+        int semGetIntForUser = Settings.System.semGetIntForUser(this.mContext.getContentResolver(), str, -1, this.mUserId);
+        Log.i("[HWRS_SYS]PreconditionObserver", "getValues ID : " + str + ", value : " + semGetIntForUser);
+        return semGetIntForUser;
+    }
+
+    public final boolean isPackageInstalled(String str) {
+        try {
+            Log.i("[HWRS_SYS]PreconditionObserver", XmlUtils$$ExternalSyntheticOutline0.m("Package : ", str, "(", this.mContext.getPackageManager().getPackageInfo(str, 1).versionName, ") installed"));
+            return true;
+        } catch (PackageManager.NameNotFoundException unused) {
+            AudioDeviceInventory$$ExternalSyntheticOutline0.m("Package : ", str, " not installed", "[HWRS_SYS]PreconditionObserver");
+            return false;
         }
-        return userHandle.semGetIdentifier();
     }
 
-    public void startUser(UserHandle userHandle) {
+    public final boolean isSamsungAccountLogin() {
+        if (AccountManager.get(this.mContext).getAccountsByTypeAsUser("com.osp.app.signin", new UserHandle(this.mUserId)).length > 0) {
+            Log.i("[HWRS_SYS]PreconditionObserver", "SamsungAccount login");
+            return true;
+        }
+        Log.i("[HWRS_SYS]PreconditionObserver", "SamsungAccount not login");
+        return false;
+    }
+
+    public final boolean isSettingEnabled$1() {
+        Iterator it = ((ArrayList) this.settingList).iterator();
+        while (true) {
+            boolean z = false;
+            while (it.hasNext()) {
+                String str = (String) it.next();
+                if (!z) {
+                    boolean z2 = Settings.System.semGetIntForUser(this.mContext.getContentResolver(), str, 0, this.mUserId) == 1;
+                    Log.i("[HWRS_SYS]PreconditionObserver", "isSettingEnabled - " + str + " : " + z2);
+                    if (z2) {
+                    }
+                }
+                z = true;
+            }
+            return z;
+        }
+    }
+
+    public final boolean meetConditions() {
+        Log.i("[HWRS_SYS]PreconditionObserver", "meetConditions - current state : " + Integer.toHexString(this.mState));
+        return this.mState == 3;
+    }
+
+    public final void notifyChanged(int i) {
+        AnonymousClass2 anonymousClass2 = this.mListener;
+        if (anonymousClass2 != null) {
+            PreconditionObserver preconditionObserver = PreconditionObserver.this;
+            boolean meetConditions = preconditionObserver.meetConditions();
+            Log.i("[HWRS_SYS]PreconditionObserver", "onChanged - isValid : " + meetConditions + ", reason : " + i);
+            preconditionObserver.mIsValidState = meetConditions;
+            if (meetConditions) {
+                preconditionObserver.setValues(1);
+            } else {
+                preconditionObserver.setValues(0);
+            }
+        }
+    }
+
+    public void removeAndSendMessageDelayed(int i, int i2, long j) {
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        if (anonymousClass1.hasMessages(i)) {
+            anonymousClass1.removeMessages(i);
+        }
+        Message obtain = Message.obtain();
+        obtain.what = i;
+        obtain.arg1 = i2;
+        anonymousClass1.sendMessageDelayed(obtain, j);
+    }
+
+    public void removeAndSendMessageDelayed(int i, long j) {
+        AnonymousClass1 anonymousClass1 = this.mHandler;
+        if (anonymousClass1.hasMessages(i)) {
+            anonymousClass1.removeMessages(i);
+        }
+        anonymousClass1.sendEmptyMessageDelayed(i, j);
+    }
+
+    public final void setValues(int i) {
+        DirEncryptService$$ExternalSyntheticOutline0.m(i, "setValues ID : hwrs_service, value : ", "[HWRS_SYS]PreconditionObserver");
+        if (Settings.System.semGetIntForUser(this.mContext.getContentResolver(), "hwrs_service", -1, this.mUserId) != i) {
+            Settings.System.semPutIntForUser(this.mContext.getContentResolver(), "hwrs_service", i, this.mUserId);
+        } else {
+            Log.i("[HWRS_SYS]PreconditionObserver", "setValues ID : hwrs_service, same value");
+        }
+    }
+
+    public final void startUser(UserHandle userHandle) {
         Log.d("[HWRS_SYS]PreconditionObserver", "startUser entered");
-        if (getCurrentUserId() != -10000) {
+        UserHandle userHandle2 = this.mCurrentUserHandle;
+        if ((userHandle2 == null ? -10000 : userHandle2.semGetIdentifier()) != -10000) {
             Log.e("[HWRS_SYS]PreconditionObserver", "startUser - invalid request!");
             return;
         }
@@ -68,126 +268,35 @@ public class PreconditionObserver extends AbstractPreconditionObserver {
         removeAndSendMessageDelayed(0, 0L);
     }
 
-    public void stopUser() {
+    public final void stopUser() {
         this.mCurrentUserHandle = null;
-        stop();
-    }
-
-    public final boolean isTablet() {
-        String str = SemSystemProperties.get("ro.build.characteristics");
-        return str != null && str.contains("tablet");
-    }
-
-    public final void startPreconditionObserver() {
-        Log.d("[HWRS_SYS]PreconditionObserver", "start entered");
-        start(getCurrentUserId(), new AbstractPreconditionObserver.StateChangedListener() { // from class: com.samsung.android.server.hwrs.PreconditionObserver.2
-            @Override // com.samsung.android.server.hwrs.AbstractPreconditionObserver.StateChangedListener
-            public void onChanged(int i, int i2) {
-                boolean meetConditions = PreconditionObserver.this.meetConditions();
-                if (PreconditionObserver.this.mIsValidState == meetConditions) {
-                    return;
-                }
-                Log.d("[HWRS_SYS]PreconditionObserver", "onChanged - isValid : " + meetConditions + ", reason" + i2);
-                PreconditionObserver.this.mIsValidState = meetConditions;
-                if (PreconditionObserver.this.mIsValidState) {
-                    PreconditionObserver.this.setValues("hwrs_service", 1);
-                    if (PreconditionObserver.this.mIsTablet) {
-                        return;
-                    }
-                    PreconditionObserver.this.removeMessage(3);
-                    PreconditionObserver.this.removeAndSendMessageDelayed(2, 0L);
-                    return;
-                }
-                PreconditionObserver.this.setValues("hwrs_service", 0);
-                if (PreconditionObserver.this.mIsTablet) {
-                    return;
-                }
-                PreconditionObserver.this.removeMessage(2);
-                PreconditionObserver.this.removeAndSendMessageDelayed(3, 0L);
+        if (this.mIsRegisteredCameraShareObserver && this.mCameraShareInstalled) {
+            this.mIsRegisteredCameraShareObserver = false;
+        }
+        if (this.mIsRegisteredStorageShareObserver && this.mStorageShareInstalled) {
+            this.mIsRegisteredStorageShareObserver = false;
+        }
+        this.mContext.getContentResolver().unregisterContentObserver(this.mSettingObserver);
+        if (this.mIsAddedAccountListener) {
+            Log.d("[HWRS_SYS]PreconditionObserver", "removeOnAccountsUpdatedListener");
+            AccountManager.get(this.mContext).removeOnAccountsUpdatedListener(this.mOnAccountsUpdateListener);
+            if (this.mUserId != 0) {
+                this.mContext.unregisterReceiver(this.mAccountChangeReceiver);
             }
-        });
-        boolean meetConditions = meetConditions();
-        this.mIsValidState = meetConditions;
-        if (meetConditions) {
-            Log.d("[HWRS_SYS]PreconditionObserver", "mIsValidState : " + this.mIsValidState);
-            removeAndSendMessageDelayed(2, 1, 0L);
-        }
-    }
-
-    public final void removeMessage(int i) {
-        if (this.mHandler.hasMessages(i)) {
-            this.mHandler.removeMessages(i);
-        }
-    }
-
-    public final void sendMessageDelayed(int i, int i2, long j) {
-        Message obtain = Message.obtain();
-        obtain.what = i;
-        obtain.arg1 = i2;
-        this.mHandler.sendMessageDelayed(obtain, j);
-    }
-
-    public void removeAndSendMessageDelayed(int i, int i2, long j) {
-        removeMessage(i);
-        sendMessageDelayed(i, i2, j);
-    }
-
-    public void removeAndSendMessageDelayed(int i, long j) {
-        removeMessage(i);
-        this.mHandler.sendEmptyMessageDelayed(i, j);
-    }
-
-    public final void handleMessageWhat(int i, int i2) {
-        if (i == 0) {
-            startPreconditionObserver();
-            return;
-        }
-        if (i == 1) {
-            stopUser();
-        } else if (i == 2) {
-            bindCS(i2);
+            this.mIsAddedAccountListener = false;
         } else {
-            if (i != 3) {
-                return;
-            }
-            unbindCS();
+            Log.w("[HWRS_SYS]PreconditionObserver", "removeOnAccountsUpdatedListener - already added");
         }
+        this.mState = 0;
+        this.mUserId = -10000;
     }
 
-    public void setValues(String str, int i) {
-        Log.d("[HWRS_SYS]PreconditionObserver", "setValues ID : " + str + ", value : " + i);
-        if (Settings.System.semGetIntForUser(this.mContext.getContentResolver(), str, -1, this.mUserId) != i) {
-            Settings.System.semPutIntForUser(this.mContext.getContentResolver(), str, i, this.mUserId);
-            return;
+    public final void updateFlag(int i, boolean z) {
+        Log.i("[HWRS_SYS]PreconditionObserver", "updateFlag - " + i + ", " + z);
+        if (z) {
+            this.mState = i | this.mState;
+        } else {
+            this.mState = (~i) & this.mState;
         }
-        Log.d("[HWRS_SYS]PreconditionObserver", "setValues ID : " + str + ", same value");
-    }
-
-    public final void bindCS(int i) {
-        if (!this.mIsValidState) {
-            Log.d("[HWRS_SYS]PreconditionObserver", "bindCS - invalid state");
-            return;
-        }
-        if (!this.mBoundCameraShare) {
-            Log.d("[HWRS_SYS]PreconditionObserver", "bind Camera Share");
-            Intent intent = new Intent("com.samsung.android.hwresourceshare.CAMERA_SHARE_REQUEST");
-            intent.setPackage("com.samsung.android.hwresourceshare");
-            this.mContext.bindService(intent, this.mConn, 1);
-            return;
-        }
-        Log.d("[HWRS_SYS]PreconditionObserver", "already camera share was bound");
-    }
-
-    public final void unbindCS() {
-        if (this.mHandler.hasMessages(2)) {
-            removeMessage(2);
-        }
-        if (this.mBoundCameraShare) {
-            Log.d("[HWRS_SYS]PreconditionObserver", "unbindCS");
-            this.mContext.unbindService(this.mConn);
-            this.mBoundCameraShare = false;
-            return;
-        }
-        Log.d("[HWRS_SYS]PreconditionObserver", "already camera share was unbound");
     }
 }

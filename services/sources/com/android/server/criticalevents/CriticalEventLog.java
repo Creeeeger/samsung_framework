@@ -1,10 +1,10 @@
 package com.android.server.criticalevents;
 
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Slog;
-import com.android.framework.protobuf.nano.MessageNanoPrinter;
 import com.android.internal.util.RingBuffer;
+import com.android.server.KnoxCaptureInputFilter$$ExternalSyntheticOutline0;
+import com.android.server.criticalevents.CriticalEventLog;
 import com.android.server.criticalevents.nano.CriticalEventLogProto;
 import com.android.server.criticalevents.nano.CriticalEventLogStorageProto;
 import com.android.server.criticalevents.nano.CriticalEventProto;
@@ -15,131 +15,209 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.UUID;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class CriticalEventLog {
+public final class CriticalEventLog {
     static final String FILENAME = "critical_event_log.pb";
-    public static final String TAG = "CriticalEventLog";
     public static CriticalEventLog sInstance;
     public final ThreadSafeRingBuffer mEvents;
     public final Handler mHandler;
-    public long mLastSaveAttemptMs;
     public final boolean mLoadAndSaveImmediately;
     public final File mLogFile;
     public final long mMinTimeBetweenSavesMs;
-    public final Runnable mSaveRunnable;
     public final int mWindowMs;
+    public long mLastSaveAttemptMs = 0;
+    public final CriticalEventLog$$ExternalSyntheticLambda0 mSaveRunnable = new Runnable() { // from class: com.android.server.criticalevents.CriticalEventLog$$ExternalSyntheticLambda0
+        @Override // java.lang.Runnable
+        public final void run() {
+            CriticalEventLog.this.saveLogToFileNow();
+        }
+    };
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface ILogLoader {
-        void load(File file, ThreadSafeRingBuffer threadSafeRingBuffer);
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LogLoader implements ILogLoader {
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LogSanitizer {
+        public int mTraceProcessClassEnum;
+        public String mTraceProcessName;
+        public int mTraceUid;
+
+        public final boolean shouldSanitize(int i, int i2, String str) {
+            return i == 1 && this.mTraceProcessClassEnum == 1 && !(str != null && str.equals(this.mTraceProcessName) && this.mTraceUid == i2);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class ThreadSafeRingBuffer {
+        public final RingBuffer mBuffer;
+        public final int mCapacity;
+
+        public ThreadSafeRingBuffer(Class cls, int i) {
+            this.mCapacity = i;
+            this.mBuffer = new RingBuffer(cls, i);
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.criticalevents.CriticalEventLog$$ExternalSyntheticLambda0] */
     public CriticalEventLog(String str, int i, int i2, long j, boolean z, final ILogLoader iLogLoader) {
-        this.mLastSaveAttemptMs = 0L;
-        this.mSaveRunnable = new Runnable() { // from class: com.android.server.criticalevents.CriticalEventLog$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                CriticalEventLog.this.saveLogToFileNow();
-            }
-        };
         this.mLogFile = Paths.get(str, FILENAME).toFile();
         this.mWindowMs = i2;
         this.mMinTimeBetweenSavesMs = j;
         this.mLoadAndSaveImmediately = z;
         this.mEvents = new ThreadSafeRingBuffer(CriticalEventProto.class, i);
-        HandlerThread handlerThread = new HandlerThread("CriticalEventLogIO");
-        handlerThread.start();
-        Handler handler = new Handler(handlerThread.getLooper());
+        Handler handler = new Handler(KnoxCaptureInputFilter$$ExternalSyntheticOutline0.m("CriticalEventLogIO").getLooper());
         this.mHandler = handler;
         Runnable runnable = new Runnable() { // from class: com.android.server.criticalevents.CriticalEventLog$$ExternalSyntheticLambda1
             @Override // java.lang.Runnable
             public final void run() {
-                CriticalEventLog.this.lambda$new$0(iLogLoader);
+                CriticalEventLogStorageProto criticalEventLogStorageProto;
+                CriticalEventLog criticalEventLog = CriticalEventLog.this;
+                CriticalEventLog.ILogLoader iLogLoader2 = iLogLoader;
+                File file = criticalEventLog.mLogFile;
+                ((CriticalEventLog.LogLoader) iLogLoader2).getClass();
+                if (file.exists()) {
+                    try {
+                        criticalEventLogStorageProto = CriticalEventLogStorageProto.parseFrom(Files.readAllBytes(file.toPath()));
+                    } catch (IOException e) {
+                        Slog.e("CriticalEventLog", "Error reading log from disk.", e);
+                        criticalEventLogStorageProto = new CriticalEventLogStorageProto();
+                    }
+                } else {
+                    Slog.i("CriticalEventLog", "No log found, returning empty log proto.");
+                    criticalEventLogStorageProto = new CriticalEventLogStorageProto();
+                }
+                for (CriticalEventProto criticalEventProto : criticalEventLogStorageProto.events) {
+                    CriticalEventLog.ThreadSafeRingBuffer threadSafeRingBuffer = criticalEventLog.mEvents;
+                    synchronized (threadSafeRingBuffer) {
+                        threadSafeRingBuffer.mBuffer.append(criticalEventProto);
+                    }
+                }
             }
         };
-        if (!z) {
-            handler.post(runnable);
-        } else {
+        if (z) {
             runnable.run();
+        } else {
+            handler.post(runnable);
         }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(ILogLoader iLogLoader) {
-        iLogLoader.load(this.mLogFile, this.mEvents);
-    }
-
-    public CriticalEventLog() {
-        this("/data/misc/critical-events", 20, (int) Duration.ofMinutes(5L).toMillis(), Duration.ofSeconds(2L).toMillis(), false, new LogLoader());
     }
 
     public static CriticalEventLog getInstance() {
         if (sInstance == null) {
-            sInstance = new CriticalEventLog();
+            sInstance = new CriticalEventLog("/data/misc/critical-events", 20, (int) Duration.ofMinutes(5L).toMillis(), Duration.ofSeconds(2L).toMillis(), false, new LogLoader());
         }
         return sInstance;
     }
 
-    public static void init() {
-        getInstance();
+    public void appendAndSave(CriticalEventProto criticalEventProto) {
+        ThreadSafeRingBuffer threadSafeRingBuffer = this.mEvents;
+        synchronized (threadSafeRingBuffer) {
+            threadSafeRingBuffer.mBuffer.append(criticalEventProto);
+        }
+        if (this.mLoadAndSaveImmediately) {
+            saveLogToFileNow();
+            return;
+        }
+        Handler handler = this.mHandler;
+        if (handler.hasCallbacks(this.mSaveRunnable) || handler.postDelayed(this.mSaveRunnable, saveDelayMs())) {
+            return;
+        }
+        Slog.w("CriticalEventLog", "Error scheduling save");
+    }
+
+    public CriticalEventLogProto getOutputLogProto(int i, String str, int i2) {
+        Object[] array;
+        CriticalEventProto[] criticalEventProtoArr;
+        CriticalEventProto criticalEventProto;
+        CriticalEventLogProto criticalEventLogProto = new CriticalEventLogProto();
+        long wallTimeMillis = getWallTimeMillis();
+        criticalEventLogProto.timestampMs = wallTimeMillis;
+        int i3 = this.mWindowMs;
+        criticalEventLogProto.windowMs = i3;
+        ThreadSafeRingBuffer threadSafeRingBuffer = this.mEvents;
+        criticalEventLogProto.capacity = threadSafeRingBuffer.mCapacity;
+        long j = wallTimeMillis - i3;
+        synchronized (threadSafeRingBuffer) {
+            array = threadSafeRingBuffer.mBuffer.toArray();
+        }
+        CriticalEventProto[] criticalEventProtoArr2 = (CriticalEventProto[]) array;
+        int i4 = 0;
+        while (true) {
+            if (i4 >= criticalEventProtoArr2.length) {
+                criticalEventProtoArr = new CriticalEventProto[0];
+                break;
+            }
+            if (criticalEventProtoArr2[i4].timestampMs >= j) {
+                criticalEventProtoArr = (CriticalEventProto[]) Arrays.copyOfRange(criticalEventProtoArr2, i4, criticalEventProtoArr2.length);
+                break;
+            }
+            i4++;
+        }
+        LogSanitizer logSanitizer = new LogSanitizer();
+        logSanitizer.mTraceProcessClassEnum = i;
+        logSanitizer.mTraceProcessName = str;
+        logSanitizer.mTraceUid = i2;
+        for (int i5 = 0; i5 < criticalEventProtoArr.length; i5++) {
+            CriticalEventProto criticalEventProto2 = criticalEventProtoArr[i5];
+            if (criticalEventProto2.hasAnr()) {
+                CriticalEventProto.AppNotResponding anr = criticalEventProto2.getAnr();
+                if (logSanitizer.shouldSanitize(anr.processClass, anr.uid, anr.process)) {
+                    CriticalEventProto.AppNotResponding appNotResponding = new CriticalEventProto.AppNotResponding();
+                    appNotResponding.processClass = criticalEventProto2.getAnr().processClass;
+                    appNotResponding.uid = criticalEventProto2.getAnr().uid;
+                    appNotResponding.pid = criticalEventProto2.getAnr().pid;
+                    criticalEventProto = new CriticalEventProto();
+                    criticalEventProto.timestampMs = criticalEventProto2.timestampMs;
+                    criticalEventProto.setAnr(appNotResponding);
+                    criticalEventProto2 = criticalEventProto;
+                    criticalEventProtoArr[i5] = criticalEventProto2;
+                } else {
+                    criticalEventProtoArr[i5] = criticalEventProto2;
+                }
+            } else if (criticalEventProto2.hasJavaCrash()) {
+                CriticalEventProto.JavaCrash javaCrash = criticalEventProto2.getJavaCrash();
+                if (logSanitizer.shouldSanitize(javaCrash.processClass, javaCrash.uid, javaCrash.process)) {
+                    CriticalEventProto.JavaCrash javaCrash2 = new CriticalEventProto.JavaCrash();
+                    javaCrash2.processClass = criticalEventProto2.getJavaCrash().processClass;
+                    javaCrash2.uid = criticalEventProto2.getJavaCrash().uid;
+                    javaCrash2.pid = criticalEventProto2.getJavaCrash().pid;
+                    criticalEventProto = new CriticalEventProto();
+                    criticalEventProto.timestampMs = criticalEventProto2.timestampMs;
+                    criticalEventProto.setJavaCrash(javaCrash2);
+                    criticalEventProto2 = criticalEventProto;
+                    criticalEventProtoArr[i5] = criticalEventProto2;
+                } else {
+                    criticalEventProtoArr[i5] = criticalEventProto2;
+                }
+            } else {
+                if (criticalEventProto2.hasNativeCrash()) {
+                    CriticalEventProto.NativeCrash nativeCrash = criticalEventProto2.getNativeCrash();
+                    if (logSanitizer.shouldSanitize(nativeCrash.processClass, nativeCrash.uid, nativeCrash.process)) {
+                        CriticalEventProto.NativeCrash nativeCrash2 = new CriticalEventProto.NativeCrash();
+                        nativeCrash2.processClass = criticalEventProto2.getNativeCrash().processClass;
+                        nativeCrash2.uid = criticalEventProto2.getNativeCrash().uid;
+                        nativeCrash2.pid = criticalEventProto2.getNativeCrash().pid;
+                        criticalEventProto = new CriticalEventProto();
+                        criticalEventProto.timestampMs = criticalEventProto2.timestampMs;
+                        criticalEventProto.setNativeCrash(nativeCrash2);
+                        criticalEventProto2 = criticalEventProto;
+                    }
+                }
+                criticalEventProtoArr[i5] = criticalEventProto2;
+            }
+        }
+        criticalEventLogProto.events = criticalEventProtoArr;
+        return criticalEventLogProto;
     }
 
     public long getWallTimeMillis() {
         return System.currentTimeMillis();
-    }
-
-    public void logWatchdog(String str, UUID uuid) {
-        CriticalEventProto.Watchdog watchdog = new CriticalEventProto.Watchdog();
-        watchdog.subject = str;
-        watchdog.uuid = uuid.toString();
-        CriticalEventProto criticalEventProto = new CriticalEventProto();
-        criticalEventProto.setWatchdog(watchdog);
-        log(criticalEventProto);
-    }
-
-    public void logHalfWatchdog(String str) {
-        CriticalEventProto.HalfWatchdog halfWatchdog = new CriticalEventProto.HalfWatchdog();
-        halfWatchdog.subject = str;
-        CriticalEventProto criticalEventProto = new CriticalEventProto();
-        criticalEventProto.setHalfWatchdog(halfWatchdog);
-        log(criticalEventProto);
-    }
-
-    public void logAnr(String str, int i, String str2, int i2, int i3) {
-        CriticalEventProto.AppNotResponding appNotResponding = new CriticalEventProto.AppNotResponding();
-        appNotResponding.subject = str;
-        appNotResponding.processClass = i;
-        appNotResponding.process = str2;
-        appNotResponding.uid = i2;
-        appNotResponding.pid = i3;
-        CriticalEventProto criticalEventProto = new CriticalEventProto();
-        criticalEventProto.setAnr(appNotResponding);
-        log(criticalEventProto);
-    }
-
-    public void logJavaCrash(String str, int i, String str2, int i2, int i3) {
-        CriticalEventProto.JavaCrash javaCrash = new CriticalEventProto.JavaCrash();
-        javaCrash.exceptionClass = str;
-        javaCrash.processClass = i;
-        javaCrash.process = str2;
-        javaCrash.uid = i2;
-        javaCrash.pid = i3;
-        CriticalEventProto criticalEventProto = new CriticalEventProto();
-        criticalEventProto.setJavaCrash(javaCrash);
-        log(criticalEventProto);
-    }
-
-    public void logNativeCrash(int i, String str, int i2, int i3) {
-        CriticalEventProto.NativeCrash nativeCrash = new CriticalEventProto.NativeCrash();
-        nativeCrash.processClass = i;
-        nativeCrash.process = str;
-        nativeCrash.uid = i2;
-        nativeCrash.pid = i3;
-        CriticalEventProto criticalEventProto = new CriticalEventProto();
-        criticalEventProto.setNativeCrash(nativeCrash);
-        log(criticalEventProto);
     }
 
     public final void log(CriticalEventProto criticalEventProto) {
@@ -147,75 +225,32 @@ public class CriticalEventLog {
         appendAndSave(criticalEventProto);
     }
 
-    public void appendAndSave(CriticalEventProto criticalEventProto) {
-        this.mEvents.append(criticalEventProto);
-        saveLogToFile();
-    }
-
-    public String logLinesForSystemServerTraceFile() {
-        return logLinesForTraceFile(3, "AID_SYSTEM", 1000);
-    }
-
-    public String logLinesForTraceFile(int i, String str, int i2) {
-        return "--- CriticalEventLog ---\n" + MessageNanoPrinter.print(getOutputLogProto(i, str, i2)) + '\n';
-    }
-
-    public CriticalEventLogProto getOutputLogProto(int i, String str, int i2) {
-        CriticalEventLogProto criticalEventLogProto = new CriticalEventLogProto();
-        criticalEventLogProto.timestampMs = getWallTimeMillis();
-        criticalEventLogProto.windowMs = this.mWindowMs;
-        criticalEventLogProto.capacity = this.mEvents.capacity();
-        CriticalEventProto[] recentEventsWithMinTimestamp = recentEventsWithMinTimestamp(criticalEventLogProto.timestampMs - this.mWindowMs);
-        LogSanitizer logSanitizer = new LogSanitizer(i, str, i2);
-        for (int i3 = 0; i3 < recentEventsWithMinTimestamp.length; i3++) {
-            recentEventsWithMinTimestamp[i3] = logSanitizer.process(recentEventsWithMinTimestamp[i3]);
-        }
-        criticalEventLogProto.events = recentEventsWithMinTimestamp;
-        return criticalEventLogProto;
-    }
-
-    public final CriticalEventProto[] recentEventsWithMinTimestamp(long j) {
-        CriticalEventProto[] criticalEventProtoArr = (CriticalEventProto[]) this.mEvents.toArray();
-        for (int i = 0; i < criticalEventProtoArr.length; i++) {
-            if (criticalEventProtoArr[i].timestampMs >= j) {
-                return (CriticalEventProto[]) Arrays.copyOfRange(criticalEventProtoArr, i, criticalEventProtoArr.length);
-            }
-        }
-        return new CriticalEventProto[0];
-    }
-
-    public final void saveLogToFile() {
-        if (this.mLoadAndSaveImmediately) {
-            saveLogToFileNow();
-        } else {
-            if (this.mHandler.hasCallbacks(this.mSaveRunnable) || this.mHandler.postDelayed(this.mSaveRunnable, saveDelayMs())) {
-                return;
-            }
-            Slog.w(TAG, "Error scheduling save");
-        }
-    }
-
     public long saveDelayMs() {
         return Math.max(0L, (this.mLastSaveAttemptMs + this.mMinTimeBetweenSavesMs) - getWallTimeMillis());
     }
 
     public void saveLogToFileNow() {
+        Object[] array;
         this.mLastSaveAttemptMs = getWallTimeMillis();
         File parentFile = this.mLogFile.getParentFile();
         if (!parentFile.exists() && !parentFile.mkdir()) {
-            Slog.e(TAG, "Error creating log directory: " + parentFile.getPath());
+            Slog.e("CriticalEventLog", "Error creating log directory: " + parentFile.getPath());
             return;
         }
         if (!this.mLogFile.exists()) {
             try {
                 this.mLogFile.createNewFile();
             } catch (IOException e) {
-                Slog.e(TAG, "Error creating log file", e);
+                Slog.e("CriticalEventLog", "Error creating log file", e);
                 return;
             }
         }
         CriticalEventLogStorageProto criticalEventLogStorageProto = new CriticalEventLogStorageProto();
-        criticalEventLogStorageProto.events = (CriticalEventProto[]) this.mEvents.toArray();
+        ThreadSafeRingBuffer threadSafeRingBuffer = this.mEvents;
+        synchronized (threadSafeRingBuffer) {
+            array = threadSafeRingBuffer.mBuffer.toArray();
+        }
+        criticalEventLogStorageProto.events = (CriticalEventProto[]) array;
         byte[] byteArray = CriticalEventLogStorageProto.toByteArray(criticalEventLogStorageProto);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(this.mLogFile, false);
@@ -225,126 +260,7 @@ public class CriticalEventLog {
             } finally {
             }
         } catch (IOException e2) {
-            Slog.e(TAG, "Error saving log to disk.", e2);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class ThreadSafeRingBuffer {
-        public final RingBuffer mBuffer;
-        public final int mCapacity;
-
-        public ThreadSafeRingBuffer(Class cls, int i) {
-            this.mCapacity = i;
-            this.mBuffer = new RingBuffer(cls, i);
-        }
-
-        public synchronized void append(Object obj) {
-            this.mBuffer.append(obj);
-        }
-
-        public synchronized Object[] toArray() {
-            return this.mBuffer.toArray();
-        }
-
-        public int capacity() {
-            return this.mCapacity;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class LogLoader implements ILogLoader {
-        @Override // com.android.server.criticalevents.CriticalEventLog.ILogLoader
-        public void load(File file, ThreadSafeRingBuffer threadSafeRingBuffer) {
-            for (CriticalEventProto criticalEventProto : loadLogFromFile(file).events) {
-                threadSafeRingBuffer.append(criticalEventProto);
-            }
-        }
-
-        public static CriticalEventLogStorageProto loadLogFromFile(File file) {
-            if (!file.exists()) {
-                Slog.i(CriticalEventLog.TAG, "No log found, returning empty log proto.");
-                return new CriticalEventLogStorageProto();
-            }
-            try {
-                return CriticalEventLogStorageProto.parseFrom(Files.readAllBytes(file.toPath()));
-            } catch (IOException e) {
-                Slog.e(CriticalEventLog.TAG, "Error reading log from disk.", e);
-                return new CriticalEventLogStorageProto();
-            }
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class LogSanitizer {
-        public int mTraceProcessClassEnum;
-        public String mTraceProcessName;
-        public int mTraceUid;
-
-        public LogSanitizer(int i, String str, int i2) {
-            this.mTraceProcessClassEnum = i;
-            this.mTraceProcessName = str;
-            this.mTraceUid = i2;
-        }
-
-        public CriticalEventProto process(CriticalEventProto criticalEventProto) {
-            if (criticalEventProto.hasAnr()) {
-                CriticalEventProto.AppNotResponding anr = criticalEventProto.getAnr();
-                if (shouldSanitize(anr.processClass, anr.process, anr.uid)) {
-                    return sanitizeAnr(criticalEventProto);
-                }
-            } else if (criticalEventProto.hasJavaCrash()) {
-                CriticalEventProto.JavaCrash javaCrash = criticalEventProto.getJavaCrash();
-                if (shouldSanitize(javaCrash.processClass, javaCrash.process, javaCrash.uid)) {
-                    return sanitizeJavaCrash(criticalEventProto);
-                }
-            } else if (criticalEventProto.hasNativeCrash()) {
-                CriticalEventProto.NativeCrash nativeCrash = criticalEventProto.getNativeCrash();
-                if (shouldSanitize(nativeCrash.processClass, nativeCrash.process, nativeCrash.uid)) {
-                    return sanitizeNativeCrash(criticalEventProto);
-                }
-            }
-            return criticalEventProto;
-        }
-
-        public final boolean shouldSanitize(int i, String str, int i2) {
-            return i == 1 && this.mTraceProcessClassEnum == 1 && !(str != null && str.equals(this.mTraceProcessName) && this.mTraceUid == i2);
-        }
-
-        public static CriticalEventProto sanitizeAnr(CriticalEventProto criticalEventProto) {
-            CriticalEventProto.AppNotResponding appNotResponding = new CriticalEventProto.AppNotResponding();
-            appNotResponding.processClass = criticalEventProto.getAnr().processClass;
-            appNotResponding.uid = criticalEventProto.getAnr().uid;
-            appNotResponding.pid = criticalEventProto.getAnr().pid;
-            CriticalEventProto sanitizeCriticalEventProto = sanitizeCriticalEventProto(criticalEventProto);
-            sanitizeCriticalEventProto.setAnr(appNotResponding);
-            return sanitizeCriticalEventProto;
-        }
-
-        public static CriticalEventProto sanitizeJavaCrash(CriticalEventProto criticalEventProto) {
-            CriticalEventProto.JavaCrash javaCrash = new CriticalEventProto.JavaCrash();
-            javaCrash.processClass = criticalEventProto.getJavaCrash().processClass;
-            javaCrash.uid = criticalEventProto.getJavaCrash().uid;
-            javaCrash.pid = criticalEventProto.getJavaCrash().pid;
-            CriticalEventProto sanitizeCriticalEventProto = sanitizeCriticalEventProto(criticalEventProto);
-            sanitizeCriticalEventProto.setJavaCrash(javaCrash);
-            return sanitizeCriticalEventProto;
-        }
-
-        public static CriticalEventProto sanitizeNativeCrash(CriticalEventProto criticalEventProto) {
-            CriticalEventProto.NativeCrash nativeCrash = new CriticalEventProto.NativeCrash();
-            nativeCrash.processClass = criticalEventProto.getNativeCrash().processClass;
-            nativeCrash.uid = criticalEventProto.getNativeCrash().uid;
-            nativeCrash.pid = criticalEventProto.getNativeCrash().pid;
-            CriticalEventProto sanitizeCriticalEventProto = sanitizeCriticalEventProto(criticalEventProto);
-            sanitizeCriticalEventProto.setNativeCrash(nativeCrash);
-            return sanitizeCriticalEventProto;
-        }
-
-        public static CriticalEventProto sanitizeCriticalEventProto(CriticalEventProto criticalEventProto) {
-            CriticalEventProto criticalEventProto2 = new CriticalEventProto();
-            criticalEventProto2.timestampMs = criticalEventProto.timestampMs;
-            return criticalEventProto2;
+            Slog.e("CriticalEventLog", "Error saving log to disk.", e2);
         }
     }
 }

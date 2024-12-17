@@ -1,11 +1,11 @@
 package android.hardware.soundtrigger.V2_3;
 
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
 import android.hardware.soundtrigger.V2_0.ISoundTriggerHw;
 import android.os.HidlSupport;
-import android.os.HwBlob;
-import android.os.HwParcel;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class Properties {
     public int audioCapabilities;
@@ -24,34 +24,10 @@ public final class Properties {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.base)), Integer.valueOf(HidlSupport.deepHashCode(this.supportedModelArch)), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.audioCapabilities))));
+        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.base)), Integer.valueOf(HidlSupport.deepHashCode(this.supportedModelArch)), AudioConfig$$ExternalSyntheticOutline0.m(this.audioCapabilities));
     }
 
     public final String toString() {
         return "{.base = " + this.base + ", .supportedModelArch = " + this.supportedModelArch + ", .audioCapabilities = " + AudioCapabilities.dumpBitfield(this.audioCapabilities) + "}";
-    }
-
-    public final void readFromParcel(HwParcel hwParcel) {
-        readEmbeddedFromParcel(hwParcel, hwParcel.readBuffer(112L), 0L);
-    }
-
-    public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        this.base.readEmbeddedFromParcel(hwParcel, hwBlob, j + 0);
-        long j2 = j + 88;
-        this.supportedModelArch = hwBlob.getString(j2);
-        hwParcel.readEmbeddedBuffer(r2.getBytes().length + 1, hwBlob.handle(), j2 + 0, false);
-        this.audioCapabilities = hwBlob.getInt32(j + 104);
-    }
-
-    public final void writeToParcel(HwParcel hwParcel) {
-        HwBlob hwBlob = new HwBlob(112);
-        writeEmbeddedToBlob(hwBlob, 0L);
-        hwParcel.writeBuffer(hwBlob);
-    }
-
-    public final void writeEmbeddedToBlob(HwBlob hwBlob, long j) {
-        this.base.writeEmbeddedToBlob(hwBlob, 0 + j);
-        hwBlob.putString(88 + j, this.supportedModelArch);
-        hwBlob.putInt32(j + 104, this.audioCapabilities);
     }
 }

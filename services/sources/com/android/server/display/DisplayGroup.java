@@ -3,50 +3,14 @@ package com.android.server.display;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes2.dex */
-public class DisplayGroup {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DisplayGroup {
     public int mChangeCount;
     public final List mDisplays = new ArrayList();
     public final int mGroupId;
 
     public DisplayGroup(int i) {
         this.mGroupId = i;
-    }
-
-    public int getGroupId() {
-        return this.mGroupId;
-    }
-
-    public void addDisplayLocked(LogicalDisplay logicalDisplay) {
-        if (containsLocked(logicalDisplay)) {
-            return;
-        }
-        this.mChangeCount++;
-        this.mDisplays.add(logicalDisplay);
-    }
-
-    public boolean containsLocked(LogicalDisplay logicalDisplay) {
-        return this.mDisplays.contains(logicalDisplay);
-    }
-
-    public boolean removeDisplayLocked(LogicalDisplay logicalDisplay) {
-        this.mChangeCount++;
-        return this.mDisplays.remove(logicalDisplay);
-    }
-
-    public boolean isEmptyLocked() {
-        return this.mDisplays.isEmpty();
-    }
-
-    public int getChangeCountLocked() {
-        return this.mChangeCount;
-    }
-
-    public int getSizeLocked() {
-        return this.mDisplays.size();
-    }
-
-    public int getIdLocked(int i) {
-        return ((LogicalDisplay) this.mDisplays.get(i)).getDisplayIdLocked();
     }
 }

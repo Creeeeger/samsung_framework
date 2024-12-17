@@ -10,17 +10,18 @@ import com.samsung.android.knox.analytics.util.KnoxAnalyticsQueryResolver;
 import com.samsung.android.knox.analytics.util.Log;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class FeatureBlacklistObserver {
+public final class FeatureBlacklistObserver {
     public static final String HT_NAME = "FeatureBlacklistObserver";
-    public static final String TAG = "[KnoxAnalytics] " + FeatureBlacklistContentObserver.class.getSimpleName();
+    public static final String TAG = "[KnoxAnalytics] ".concat(FeatureBlacklistContentObserver.class.getSimpleName());
     public final Context mContext;
     public FeatureBlacklistContentObserver mFeatureBlacklistContentObserver;
     public List mFeaturesBlacklistCache;
     public HandlerThread mHandlerThread;
 
-    /* loaded from: classes2.dex */
-    public class FeatureBlacklistContentObserver extends ContentObserver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class FeatureBlacklistContentObserver extends ContentObserver {
         public FeatureBlacklistContentObserver(Handler handler) {
             super(handler);
             Log.d(FeatureBlacklistObserver.TAG, "FeatureBlacklistContentObserver()");
@@ -28,7 +29,7 @@ public class FeatureBlacklistObserver {
         }
 
         @Override // android.database.ContentObserver
-        public void onChange(boolean z, Uri uri) {
+        public final void onChange(boolean z, Uri uri) {
             super.onChange(z, uri);
             Log.d(FeatureBlacklistObserver.TAG, "FeatureBlacklist.onChange(" + uri.toString() + ")");
             updateFeatureBlacklistCache();
@@ -47,11 +48,11 @@ public class FeatureBlacklistObserver {
         this.mContext = context;
     }
 
-    public List getFeatureBlacklist() {
+    public final List getFeatureBlacklist() {
         return this.mFeaturesBlacklistCache;
     }
 
-    public void start() {
+    public final void start() {
         Log.d(TAG, "start()");
         HandlerThread handlerThread = new HandlerThread(HT_NAME);
         this.mHandlerThread = handlerThread;
@@ -60,7 +61,7 @@ public class FeatureBlacklistObserver {
         this.mContext.getContentResolver().registerContentObserver(Contract.FeaturesBlacklist.CONTENT_URI, true, this.mFeatureBlacklistContentObserver, 0);
     }
 
-    public void stop() {
+    public final void stop() {
         Log.d(TAG, "stop()");
         if (this.mFeatureBlacklistContentObserver != null) {
             this.mContext.getContentResolver().unregisterContentObserver(this.mFeatureBlacklistContentObserver);

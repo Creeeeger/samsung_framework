@@ -1,11 +1,14 @@
 package com.android.server.asks;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class RUFSContainer {
+public final class RUFSContainer {
     public boolean mHasRUFSToken = false;
+    public boolean mIsDelta = false;
     public String mDigestInToken = "";
     public String mRUFSpolicyPath = "";
     public String mRUFSpolicyVersion = "";
+    public String mRUFSpolicyDeltaVersion = "";
     public long mSizeofFiles = 0;
     public long mSizeofZip = 0;
     public String mADPModels = null;
@@ -13,79 +16,31 @@ public class RUFSContainer {
     public String mASKSRNEWModels = null;
     public String mASKSRNEWCarriers = null;
 
-    public void setHasRUFSToken(boolean z) {
-        this.mHasRUFSToken = z;
-    }
-
-    public void setDigest(String str) {
-        this.mDigestInToken = str;
-    }
-
-    public void setPolicyVersion(String str) {
-        this.mRUFSpolicyVersion = str;
-    }
-
-    public void setSizeofFiles(long j) {
-        this.mSizeofFiles = j;
-    }
-
-    public void setSizeofZip(long j) {
-        this.mSizeofZip = j;
-    }
-
-    public void setADPModels(String str) {
-        this.mADPModels = str;
-    }
-
-    public void setADPCarriers(String str) {
+    public final void setADPCarriers(String str) {
         this.mADPCarriers = str;
     }
 
-    public void setASKSRNEWModels(String str) {
-        this.mASKSRNEWModels = str;
+    public final void setADPModels(String str) {
+        this.mADPModels = str;
     }
 
-    public void setASKSRNEWCarriers(String str) {
+    public final void setASKSRNEWCarriers(String str) {
         this.mASKSRNEWCarriers = str;
     }
 
-    public boolean getHasRUFSToken() {
-        return this.mHasRUFSToken;
+    public final void setASKSRNEWModels(String str) {
+        this.mASKSRNEWModels = str;
     }
 
-    public String getDigest() {
-        return this.mDigestInToken;
+    public final void setDigest(String str) {
+        this.mDigestInToken = str;
     }
 
-    public String getPolicyPath() {
-        return this.mRUFSpolicyPath;
+    public final void setSizeofFiles(long j) {
+        this.mSizeofFiles = j;
     }
 
-    public String getPolicyVersion() {
-        return this.mRUFSpolicyVersion;
-    }
-
-    public long getSizeofFiles() {
-        return this.mSizeofFiles;
-    }
-
-    public long getSizeofzip() {
-        return this.mSizeofZip;
-    }
-
-    public String getADPModels() {
-        return this.mADPModels;
-    }
-
-    public String getADPCarriers() {
-        return this.mADPCarriers;
-    }
-
-    public String getASKSRNEWModels() {
-        return this.mASKSRNEWModels;
-    }
-
-    public String getASKSRNEWCarriers() {
-        return this.mASKSRNEWCarriers;
+    public final void setSizeofZip(long j) {
+        this.mSizeofZip = j;
     }
 }

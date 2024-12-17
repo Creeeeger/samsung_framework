@@ -6,14 +6,10 @@ import android.os.BatteryUsageStatsQuery;
 import android.util.LongSparseArray;
 import com.android.internal.os.PowerProfile;
 
-/* loaded from: classes3.dex */
-public class MemoryPowerCalculator extends PowerCalculator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class MemoryPowerCalculator extends PowerCalculator {
     public final UsageBasedPowerEstimator[] mPowerEstimators;
-
-    @Override // com.android.server.power.stats.PowerCalculator
-    public boolean isPowerComponentSupported(int i) {
-        return i == 13;
-    }
 
     public MemoryPowerCalculator(PowerProfile powerProfile) {
         int numElements = powerProfile.getNumElements("memory.bandwidths");
@@ -24,35 +20,36 @@ public class MemoryPowerCalculator extends PowerCalculator {
     }
 
     @Override // com.android.server.power.stats.PowerCalculator
-    public void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
-        long calculateDuration = calculateDuration(batteryStats, j, 0);
-        builder.getAggregateBatteryConsumerBuilder(0).setUsageDurationMillis(13, calculateDuration).setConsumedPower(13, calculatePower(batteryStats, j, 0));
-    }
-
-    public final long calculateDuration(BatteryStats batteryStats, long j, int i) {
+    public final void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
+        UsageBasedPowerEstimator[] usageBasedPowerEstimatorArr;
         LongSparseArray kernelMemoryStats = batteryStats.getKernelMemoryStats();
-        long j2 = 0;
-        for (int i2 = 0; i2 < kernelMemoryStats.size(); i2++) {
-            UsageBasedPowerEstimator[] usageBasedPowerEstimatorArr = this.mPowerEstimators;
-            if (i2 >= usageBasedPowerEstimatorArr.length) {
+        long j3 = 0;
+        int i = 0;
+        while (true) {
+            int size = kernelMemoryStats.size();
+            usageBasedPowerEstimatorArr = this.mPowerEstimators;
+            if (i >= size || i >= usageBasedPowerEstimatorArr.length) {
                 break;
             }
-            j2 += usageBasedPowerEstimatorArr[i2].calculateDuration((BatteryStats.Timer) kernelMemoryStats.valueAt(i2), j, i);
+            UsageBasedPowerEstimator usageBasedPowerEstimator = usageBasedPowerEstimatorArr[i];
+            BatteryStats.Timer timer = (BatteryStats.Timer) kernelMemoryStats.valueAt(i);
+            usageBasedPowerEstimator.getClass();
+            j3 += UsageBasedPowerEstimator.calculateDuration(timer, j);
+            i++;
         }
-        return j2;
-    }
-
-    public final double calculatePower(BatteryStats batteryStats, long j, int i) {
-        LongSparseArray kernelMemoryStats = batteryStats.getKernelMemoryStats();
+        LongSparseArray kernelMemoryStats2 = batteryStats.getKernelMemoryStats();
         double d = 0.0d;
-        for (int i2 = 0; i2 < kernelMemoryStats.size(); i2++) {
-            UsageBasedPowerEstimator[] usageBasedPowerEstimatorArr = this.mPowerEstimators;
-            if (i2 >= usageBasedPowerEstimatorArr.length) {
-                break;
-            }
-            UsageBasedPowerEstimator usageBasedPowerEstimator = usageBasedPowerEstimatorArr[(int) kernelMemoryStats.keyAt(i2)];
-            d += usageBasedPowerEstimator.calculatePower(usageBasedPowerEstimator.calculateDuration((BatteryStats.Timer) kernelMemoryStats.valueAt(i2), j, i));
+        for (int i2 = 0; i2 < kernelMemoryStats2.size() && i2 < usageBasedPowerEstimatorArr.length; i2++) {
+            UsageBasedPowerEstimator usageBasedPowerEstimator2 = usageBasedPowerEstimatorArr[(int) kernelMemoryStats2.keyAt(i2)];
+            BatteryStats.Timer timer2 = (BatteryStats.Timer) kernelMemoryStats2.valueAt(i2);
+            usageBasedPowerEstimator2.getClass();
+            d += usageBasedPowerEstimator2.mAveragePowerMahPerMs * UsageBasedPowerEstimator.calculateDuration(timer2, j);
         }
-        return d;
+        builder.getAggregateBatteryConsumerBuilder(0).setUsageDurationMillis(13, j3).setConsumedPower(13, d);
+    }
+
+    @Override // com.android.server.power.stats.PowerCalculator
+    public final boolean isPowerComponentSupported(int i) {
+        return i == 13;
     }
 }

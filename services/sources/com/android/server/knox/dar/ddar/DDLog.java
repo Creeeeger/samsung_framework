@@ -1,9 +1,9 @@
 package com.android.server.knox.dar.ddar;
 
-import android.content.Context;
+import android.os.Bundle;
 import android.os.SystemProperties;
 import android.util.Log;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import com.samsung.android.knox.dar.ddar.proxy.IProxyAgentService;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.FilterOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -19,131 +18,56 @@ import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/* loaded from: classes2.dex */
-public class DDLog {
-    public static int v(String str, String str2, Object... objArr) {
-        String format = format(str2, objArr);
-        Logger.enqueLog(str + ": " + format + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        return Log.d(str, format);
-    }
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public abstract class DDLog {
 
-    public static int d(String str, String str2, Object... objArr) {
-        String format = format(str2, objArr);
-        Logger.enqueLog(str + ": " + format + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        return Log.d(str, format);
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class CountingOutputStream extends FilterOutputStream {
+        public long count;
 
-    public static int w(String str, String str2, Object... objArr) {
-        String format = format(str2, objArr);
-        Logger.enqueLog(str + ": " + format + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        return Log.w(str, format);
-    }
+        @Override // java.io.FilterOutputStream, java.io.OutputStream, java.io.Closeable, java.lang.AutoCloseable
+        public final synchronized void close() {
+            ((FilterOutputStream) this).out.close();
+        }
 
-    public static int i(String str, String str2, Object... objArr) {
-        String format = format(str2, objArr);
-        Logger.enqueLog(str + ": " + format + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        return Log.i(str, format);
-    }
+        @Override // java.io.FilterOutputStream, java.io.OutputStream
+        public final synchronized void write(int i) {
+            ((FilterOutputStream) this).out.write(i);
+            this.count++;
+        }
 
-    public static int e(String str, String str2, Object... objArr) {
-        String format = format(str2, objArr);
-        Logger.enqueLog(str + ": " + format + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        return Log.e(str, format);
-    }
-
-    public static String format(String str, Object... objArr) {
-        try {
-            return String.format(str == null ? "" : str, objArr);
-        } catch (Exception e) {
-            Log.w("DDLog", "format error. reason = " + e.getMessage() + ", format = " + str);
-            return String.format("", str);
+        @Override // java.io.FilterOutputStream, java.io.OutputStream
+        public final synchronized void write(byte[] bArr, int i, int i2) {
+            ((FilterOutputStream) this).out.write(bArr, i, i2);
+            this.count += i2;
         }
     }
 
-    /* loaded from: classes2.dex */
-    public class LoggerProxy extends IProxyAgentService {
-        public static LoggerProxy mInstance;
-        public final Context mContext;
-
-        public static synchronized LoggerProxy getInstance(Context context) {
-            LoggerProxy loggerProxy;
-            synchronized (LoggerProxy.class) {
-                if (mInstance == null) {
-                    mInstance = new LoggerProxy(context);
-                }
-                loggerProxy = mInstance;
-            }
-            return loggerProxy;
-        }
-
-        public LoggerProxy(Context context) {
-            Log.d("DDLog", "Logger ready");
-            this.mContext = context;
-            Logger.createInstance(context);
-        }
-
-        /* JADX WARN: Removed duplicated region for block: B:10:0x001d A[Catch: Exception -> 0x0027, TRY_LEAVE, TryCatch #0 {Exception -> 0x0027, blocks: (B:2:0x0000, B:10:0x001d, B:12:0x000f), top: B:1:0x0000 }] */
-        /* JADX WARN: Removed duplicated region for block: B:7:0x001c  */
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public android.os.Bundle onMessage(int r2, java.lang.String r3, android.os.Bundle r4) {
-            /*
-                r1 = this;
-                android.os.Bundle r1 = new android.os.Bundle     // Catch: java.lang.Exception -> L27
-                r1.<init>()     // Catch: java.lang.Exception -> L27
-                int r2 = r3.hashCode()     // Catch: java.lang.Exception -> L27
-                r0 = 1835875250(0x6d6d3bb2, float:4.5887572E27)
-                if (r2 == r0) goto Lf
-                goto L19
-            Lf:
-                java.lang.String r2 = "LOG_MSG_COMMAND"
-                boolean r2 = r3.equals(r2)     // Catch: java.lang.Exception -> L27
-                if (r2 == 0) goto L19
-                r2 = 0
-                goto L1a
-            L19:
-                r2 = -1
-            L1a:
-                if (r2 == 0) goto L1d
-                goto L26
-            L1d:
-                java.lang.String r2 = "LOG_MSG"
-                java.lang.String r2 = r4.getString(r2)     // Catch: java.lang.Exception -> L27
-                com.android.server.knox.dar.ddar.DDLog.Logger.m7605$$Nest$smenqueLog(r2)     // Catch: java.lang.Exception -> L27
-            L26:
-                return r1
-            L27:
-                r1 = move-exception
-                r1.printStackTrace()
-                r1 = 0
-                return r1
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.server.knox.dar.ddar.DDLog.LoggerProxy.onMessage(int, java.lang.String, android.os.Bundle):android.os.Bundle");
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class Logger {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Logger {
         public static Logger mInstance;
-        public Context mCtx;
-        public BlockingQueue storeQ = new LinkedBlockingQueue();
+        public final BlockingQueue storeQ = new LinkedBlockingQueue();
         public final File storageDir = new File("/data/log");
         public File currentFile = null;
         public CountingOutputStream cos = null;
         public OutputStreamWriter fos = null;
         public boolean loggerRunning = false;
-        public Thread logWorker = new Thread("Log Worker") { // from class: com.android.server.knox.dar.ddar.DDLog.Logger.2
+        public final AnonymousClass2 logWorker = new Thread() { // from class: com.android.server.knox.dar.ddar.DDLog.Logger.2
             @Override // java.lang.Thread, java.lang.Runnable
-            public void run() {
+            public final void run() {
+                OutputStreamWriter outputStreamWriter;
                 Log.d("DualDAR:DDLog:Logger", "DDAR Logger started running");
-                while (Logger.this.loggerRunning) {
+                while (true) {
+                    Logger logger = Logger.this;
+                    if (!logger.loggerRunning) {
+                        return;
+                    }
                     try {
-                        if (Logger.this.storeQ.size() == 0 && Logger.this.fos != null) {
-                            Logger.this.fos.flush();
+                        if (((LinkedBlockingQueue) logger.storeQ).size() == 0 && (outputStreamWriter = Logger.this.fos) != null) {
+                            outputStreamWriter.flush();
                         }
-                        Logger.this.realStore((String) Logger.this.storeQ.take());
+                        Logger.m631$$Nest$mrealStore(Logger.this, (String) ((LinkedBlockingQueue) Logger.this.storeQ).take());
                     } catch (Exception e) {
                         Log.w("DualDAR:DDLog:Logger", "Caught exception in log worker: " + e);
                         e.printStackTrace();
@@ -152,45 +76,58 @@ public class DDLog {
             }
         };
 
-        public static synchronized Logger createInstance(Context context) {
-            Logger logger;
-            synchronized (Logger.class) {
-                if (mInstance == null) {
-                    Logger logger2 = new Logger(context);
-                    mInstance = logger2;
-                    logger2.start();
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        /* renamed from: com.android.server.knox.dar.ddar.DDLog$Logger$1, reason: invalid class name */
+        public final class AnonymousClass1 implements FilenameFilter {
+            @Override // java.io.FilenameFilter
+            public final boolean accept(File file, String str) {
+                return str.startsWith("ddar_fw_log") && str.endsWith(".txt") && !str.equalsIgnoreCase("ddar_fw_log.txt");
+            }
+        }
+
+        /* renamed from: -$$Nest$mrealStore, reason: not valid java name */
+        public static void m631$$Nest$mrealStore(Logger logger, String str) {
+            long j;
+            synchronized (logger) {
+                try {
+                    try {
+                        if (logger.currentFile == null) {
+                            logger.openCurrentFile();
+                            if (logger.currentFile == null) {
+                                throw new IllegalStateException("No current file set in realStore!");
+                            }
+                        }
+                        CountingOutputStream countingOutputStream = logger.cos;
+                        synchronized (countingOutputStream) {
+                            j = countingOutputStream.count;
+                        }
+                        if (j > 4194304) {
+                            Log.d("DualDAR:DDLog:Logger", "File '" + logger.currentFile.getAbsolutePath() + "' is larger than 4194304 bytes. Rotating file.");
+                            logger.roll();
+                        }
+                        logger.fos.write(str);
+                    } catch (Exception e) {
+                        Log.e("DualDAR:DDLog:Logger", "Caught exception while writing to stream! " + e);
+                        e.printStackTrace();
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
-                logger = mInstance;
             }
-            return logger;
-        }
-
-        public static synchronized Logger getInstance() {
-            Logger logger;
-            synchronized (Logger.class) {
-                logger = mInstance;
-            }
-            return logger;
-        }
-
-        public Logger(Context context) {
-            this.mCtx = null;
-            this.mCtx = context;
         }
 
         public static void enqueLog(String str) {
-            Logger logger = getInstance();
+            Logger logger;
+            synchronized (Logger.class) {
+                logger = mInstance;
+            }
             if (logger == null) {
                 Log.d("", str);
-            } else {
-                logger.log(str);
+                return;
             }
-        }
-
-        public void log(String str) {
-            if (this.loggerRunning) {
+            if (logger.loggerRunning) {
                 try {
-                    this.storeQ.add(getCurrentTime() + " " + str);
+                    logger.storeQ.add(new SimpleDateFormat("MM-dd HH:mm:ss.SSS").format((Object) new Date(System.currentTimeMillis())) + " " + str);
                 } catch (Exception e) {
                     Log.e("DualDAR:DDLog:Logger", "Caught exception while adding to store queue! " + e);
                     e.printStackTrace();
@@ -198,82 +135,23 @@ public class DDLog {
             }
         }
 
-        public void start() {
-            this.loggerRunning = true;
-            this.logWorker.setDaemon(true);
-            this.logWorker.start();
-            enqueLog(String.format("DDAR Logging Started [DeviceVersion : %s]%n", getDeviceVersion()));
-        }
-
-        public final String getDeviceVersion() {
-            String str = SystemProperties.get("ro.build.PDA", "Unknown");
-            return (str == null || str.indexOf(95) == -1) ? str : str.substring(0, str.indexOf(95));
-        }
-
-        public String getCurrentTime() {
-            return new SimpleDateFormat("MM-dd HH:mm:ss.SSS").format((Object) new Date(System.currentTimeMillis()));
-        }
-
-        public final boolean roll() {
-            try {
-                internalClose();
-                cleanupBackupFiles();
-                moveCurrentToBackup();
-                openCurrentFile();
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        public final void internalClose() {
-            OutputStreamWriter outputStreamWriter = this.fos;
-            if (outputStreamWriter == null) {
-                return;
-            }
-            try {
-                outputStreamWriter.flush();
-                this.fos.close();
-                this.fos = null;
-            } catch (IOException e) {
-                Log.e("DualDAR:DDLog:Logger", "Caught exception while closing stream! " + e);
-                e.printStackTrace();
-            }
-        }
-
-        public final synchronized void realStore(String str) {
-            try {
-                if (this.currentFile == null) {
-                    openCurrentFile();
-                    if (this.currentFile == null) {
-                        throw new IllegalStateException("No current file set in realStore!");
-                    }
-                }
-                if (this.cos.getByteCount() > 4194304) {
-                    Log.d("DualDAR:DDLog:Logger", "File '" + this.currentFile.getAbsolutePath() + "' is larger than 4194304 bytes. Rotating file.");
-                    roll();
-                }
-                this.fos.write(str);
-            } catch (Exception e) {
-                Log.e("DualDAR:DDLog:Logger", "Caught exception while writing to stream! " + e);
-                e.printStackTrace();
-            }
-        }
-
         public final void cleanupBackupFiles() {
-            File[] listFiles = this.storageDir.listFiles(new FilenameFilter() { // from class: com.android.server.knox.dar.ddar.DDLog.Logger.1
-                @Override // java.io.FilenameFilter
-                public boolean accept(File file, String str) {
-                    return str.startsWith("ddar_fw_log") && str.endsWith(".txt") && !str.equalsIgnoreCase("ddar_fw_log.txt");
-                }
-            });
+            File[] listFiles = this.storageDir.listFiles(new AnonymousClass1());
             for (int i = 0; i < listFiles.length; i++) {
                 if (!listFiles[i].delete()) {
                     Log.w("DualDAR:DDLog:Logger", String.format("Failed to delete file: %s", listFiles[i]));
                 }
                 Log.d("DualDAR:DDLog:Logger", "Log File " + listFiles[i].getAbsolutePath() + "is removed as next backup log file is ready");
             }
+        }
+
+        public final void moveCurrentToBackup() {
+            File file = new File(this.storageDir, XmlUtils$$ExternalSyntheticOutline0.m("ddar_fw_log", new SimpleDateFormat("-yyyy-MM-dd-HH-mm-ss").format(new Date()), ".txt"));
+            Log.d("DualDAR:DDLog:Logger", "Rename Log File " + this.currentFile.getAbsolutePath() + " to " + file.getAbsolutePath());
+            if (this.currentFile.renameTo(file)) {
+                return;
+            }
+            Log.w("DualDAR:DDLog:Logger", String.format("Failed to renameTo file: %s to %s", this.currentFile, file));
         }
 
         public final void openCurrentFile() {
@@ -285,51 +163,94 @@ public class DDLog {
             Log.d("DualDAR:DDLog:Logger", "Opened Existing or New Log file " + this.currentFile.getAbsolutePath() + " of length " + this.currentFile.length());
             CountingOutputStream countingOutputStream = new CountingOutputStream(new BufferedOutputStream(new FileOutputStream(this.currentFile, true)));
             this.cos = countingOutputStream;
-            countingOutputStream.beforeWrite(this.currentFile.length());
+            long length = this.currentFile.length();
+            synchronized (countingOutputStream) {
+                countingOutputStream.count += length;
+            }
             this.fos = new OutputStreamWriter(this.cos, Charset.forName("UTF-8"));
         }
 
-        public final void moveCurrentToBackup() {
-            File file = new File(this.storageDir, "ddar_fw_log" + new SimpleDateFormat("-yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".txt");
-            Log.d("DualDAR:DDLog:Logger", "Rename Log File " + this.currentFile.getAbsolutePath() + " to " + file.getAbsolutePath());
-            if (this.currentFile.renameTo(file)) {
-                return;
+        public final void roll() {
+            try {
+                OutputStreamWriter outputStreamWriter = this.fos;
+                if (outputStreamWriter != null) {
+                    try {
+                        outputStreamWriter.flush();
+                        this.fos.close();
+                        this.fos = null;
+                    } catch (IOException e) {
+                        Log.e("DualDAR:DDLog:Logger", "Caught exception while closing stream! " + e);
+                        e.printStackTrace();
+                    }
+                }
+                cleanupBackupFiles();
+                moveCurrentToBackup();
+                openCurrentFile();
+            } catch (IOException e2) {
+                e2.printStackTrace();
             }
-            Log.w("DualDAR:DDLog:Logger", String.format("Failed to renameTo file: %s to %s", this.currentFile, file));
+        }
+
+        public final void start() {
+            this.loggerRunning = true;
+            setDaemon(true);
+            start();
+            String str = SystemProperties.get("ro.build.PDA", "Unknown");
+            if (str != null && str.indexOf(95) != -1) {
+                str = str.substring(0, str.indexOf(95));
+            }
+            enqueLog(String.format("DDAR Logging Started [DeviceVersion : %s]%n", str));
         }
     }
 
-    /* loaded from: classes2.dex */
-    public final class CountingOutputStream extends FilterOutputStream {
-        public long count;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LoggerProxy extends IProxyAgentService {
+        public static LoggerProxy mInstance;
 
-        public CountingOutputStream(OutputStream outputStream) {
-            super(outputStream);
+        public final Bundle onMessage(int i, String str, Bundle bundle) {
+            try {
+                Bundle bundle2 = new Bundle();
+                if (str.hashCode() == 1835875250 && str.equals("LOG_MSG_COMMAND")) {
+                    Logger.enqueLog(bundle.getString("LOG_MSG"));
+                }
+                return bundle2;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
+    }
 
-        public synchronized void beforeWrite(long j) {
-            this.count += j;
-        }
+    public static void d(String str, String str2, Object... objArr) {
+        String format = format(str2, objArr);
+        Logger.enqueLog(str + ": " + format + "\n");
+        Log.d(str, format);
+    }
 
-        public synchronized long getByteCount() {
-            return this.count;
-        }
+    public static void e(String str, String str2, Object... objArr) {
+        String format = format(str2, objArr);
+        Logger.enqueLog(str + ": " + format + "\n");
+        Log.e(str, format);
+    }
 
-        @Override // java.io.FilterOutputStream, java.io.OutputStream
-        public synchronized void write(byte[] bArr, int i, int i2) {
-            ((FilterOutputStream) this).out.write(bArr, i, i2);
-            this.count += i2;
+    public static String format(String str, Object... objArr) {
+        try {
+            return String.format(str == null ? "" : str, objArr);
+        } catch (Exception e) {
+            Log.w("DDLog", "format error. reason = " + e.getMessage() + ", format = " + str);
+            return "";
         }
+    }
 
-        @Override // java.io.FilterOutputStream, java.io.OutputStream
-        public synchronized void write(int i) {
-            ((FilterOutputStream) this).out.write(i);
-            this.count++;
-        }
+    public static void i(String str, String str2, Object... objArr) {
+        String format = format(str2, objArr);
+        Logger.enqueLog(str + ": " + format + "\n");
+        Log.i(str, format);
+    }
 
-        @Override // java.io.FilterOutputStream, java.io.OutputStream, java.io.Closeable, java.lang.AutoCloseable
-        public synchronized void close() {
-            ((FilterOutputStream) this).out.close();
-        }
+    public static void v(String str, String str2, Object... objArr) {
+        String format = format(str2, objArr);
+        Logger.enqueLog(str + ": " + format + "\n");
+        Log.d(str, format);
     }
 }

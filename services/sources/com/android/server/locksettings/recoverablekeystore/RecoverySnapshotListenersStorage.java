@@ -5,29 +5,11 @@ import android.util.ArraySet;
 import android.util.Log;
 import android.util.SparseArray;
 
-/* loaded from: classes2.dex */
-public class RecoverySnapshotListenersStorage {
-    public SparseArray mAgentIntents = new SparseArray();
-    public ArraySet mAgentsWithPendingSnapshots = new ArraySet();
-
-    public synchronized void setSnapshotListener(int i, PendingIntent pendingIntent) {
-        Log.i("RecoverySnapshotLstnrs", "Registered listener for agent with uid " + i);
-        this.mAgentIntents.put(i, pendingIntent);
-        if (this.mAgentsWithPendingSnapshots.contains(Integer.valueOf(i))) {
-            Log.i("RecoverySnapshotLstnrs", "Snapshot already created for agent. Immediately triggering intent.");
-            tryToSendIntent(i, pendingIntent);
-        }
-    }
-
-    public synchronized void recoverySnapshotAvailable(int i) {
-        PendingIntent pendingIntent = (PendingIntent) this.mAgentIntents.get(i);
-        if (pendingIntent == null) {
-            Log.i("RecoverySnapshotLstnrs", "Snapshot available for agent " + i + " but agent has not yet initialized. Will notify agent when it does.");
-            this.mAgentsWithPendingSnapshots.add(Integer.valueOf(i));
-            return;
-        }
-        tryToSendIntent(i, pendingIntent);
-    }
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class RecoverySnapshotListenersStorage {
+    public SparseArray mAgentIntents;
+    public ArraySet mAgentsWithPendingSnapshots;
 
     public final synchronized void tryToSendIntent(int i, PendingIntent pendingIntent) {
         try {

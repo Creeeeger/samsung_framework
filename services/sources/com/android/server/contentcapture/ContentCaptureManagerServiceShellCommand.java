@@ -1,14 +1,11 @@
 package com.android.server.contentcapture;
 
-import android.os.Bundle;
 import android.os.ShellCommand;
-import android.os.UserHandle;
-import com.android.internal.os.IResultReceiver;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ContentCaptureManagerServiceShellCommand extends ShellCommand {
     public final ContentCaptureManagerService mService;
@@ -17,53 +14,41 @@ public final class ContentCaptureManagerServiceShellCommand extends ShellCommand
         this.mService = contentCaptureManagerService;
     }
 
-    public int onCommand(String str) {
-        if (str == null) {
-            return handleDefaultCommands(str);
-        }
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case 102230:
-                if (str.equals("get")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case 113762:
-                if (str.equals("set")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 3322014:
-                if (str.equals("list")) {
-                    c = 2;
-                    break;
-                }
-                break;
-            case 1557372922:
-                if (str.equals("destroy")) {
-                    c = 3;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return requestGet(outPrintWriter);
-            case 1:
-                return requestSet(outPrintWriter);
-            case 2:
-                return requestList(outPrintWriter);
-            case 3:
-                return requestDestroy(outPrintWriter);
-            default:
-                return handleDefaultCommands(str);
+    public static int requestSessionCommon(PrintWriter printWriter, CountDownLatch countDownLatch, Runnable runnable) {
+        runnable.run();
+        try {
+            if (countDownLatch.await(5L, TimeUnit.SECONDS)) {
+                return 0;
+            }
+            printWriter.println("Timed out after 5 seconds");
+            return -1;
+        } catch (InterruptedException unused) {
+            printWriter.println("System call interrupted");
+            Thread.currentThread().interrupt();
+            return -1;
         }
     }
 
-    public void onHelp() {
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x00de, code lost:
+    
+        if (r8.equals("temporary-service") == false) goto L46;
+     */
+    /* JADX WARN: Type inference failed for: r0v20, types: [com.android.server.contentcapture.ContentCaptureManagerServiceShellCommand$2] */
+    /* JADX WARN: Type inference failed for: r0v23, types: [com.android.server.contentcapture.ContentCaptureManagerServiceShellCommand$1] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final int onCommand(java.lang.String r8) {
+        /*
+            Method dump skipped, instructions count: 544
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.contentcapture.ContentCaptureManagerServiceShellCommand.onCommand(java.lang.String):int");
+    }
+
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         try {
             outPrintWriter.println("ContentCapture Service (content_capture) commands:");
@@ -103,205 +88,5 @@ public final class ContentCaptureManagerServiceShellCommand extends ShellCommand
             }
             throw th;
         }
-    }
-
-    public final int requestGet(PrintWriter printWriter) {
-        String nextArgRequired = getNextArgRequired();
-        nextArgRequired.hashCode();
-        if (nextArgRequired.equals("default-service-enabled")) {
-            return getDefaultServiceEnabled(printWriter);
-        }
-        if (nextArgRequired.equals("bind-instant-service-allowed")) {
-            return getBindInstantService(printWriter);
-        }
-        printWriter.println("Invalid set: " + nextArgRequired);
-        return -1;
-    }
-
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-    public final int requestSet(PrintWriter printWriter) {
-        char c;
-        String nextArgRequired = getNextArgRequired();
-        nextArgRequired.hashCode();
-        switch (nextArgRequired.hashCode()) {
-            case 529654941:
-                if (nextArgRequired.equals("default-service-enabled")) {
-                    c = 0;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 809633044:
-                if (nextArgRequired.equals("bind-instant-service-allowed")) {
-                    c = 1;
-                    break;
-                }
-                c = 65535;
-                break;
-            case 2003978041:
-                if (nextArgRequired.equals("temporary-service")) {
-                    c = 2;
-                    break;
-                }
-                c = 65535;
-                break;
-            default:
-                c = 65535;
-                break;
-        }
-        switch (c) {
-            case 0:
-                return setDefaultServiceEnabled(printWriter);
-            case 1:
-                return setBindInstantService(printWriter);
-            case 2:
-                return setTemporaryService(printWriter);
-            default:
-                printWriter.println("Invalid set: " + nextArgRequired);
-                return -1;
-        }
-    }
-
-    public final int getBindInstantService(PrintWriter printWriter) {
-        if (this.mService.getAllowInstantService()) {
-            printWriter.println("true");
-            return 0;
-        }
-        printWriter.println("false");
-        return 0;
-    }
-
-    public final int setBindInstantService(PrintWriter printWriter) {
-        String nextArgRequired = getNextArgRequired();
-        String lowerCase = nextArgRequired.toLowerCase();
-        lowerCase.hashCode();
-        if (lowerCase.equals("true")) {
-            this.mService.setAllowInstantService(true);
-            return 0;
-        }
-        if (lowerCase.equals("false")) {
-            this.mService.setAllowInstantService(false);
-            return 0;
-        }
-        printWriter.println("Invalid mode: " + nextArgRequired);
-        return -1;
-    }
-
-    public final int setTemporaryService(PrintWriter printWriter) {
-        int nextIntArgRequired = getNextIntArgRequired();
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            this.mService.resetTemporaryService(nextIntArgRequired);
-            return 0;
-        }
-        int nextIntArgRequired2 = getNextIntArgRequired();
-        this.mService.setTemporaryService(nextIntArgRequired, nextArg, nextIntArgRequired2);
-        printWriter.println("ContentCaptureService temporarily set to " + nextArg + " for " + nextIntArgRequired2 + "ms");
-        return 0;
-    }
-
-    public final int setDefaultServiceEnabled(PrintWriter printWriter) {
-        int nextIntArgRequired = getNextIntArgRequired();
-        boolean parseBoolean = Boolean.parseBoolean(getNextArgRequired());
-        if (this.mService.setDefaultServiceEnabled(nextIntArgRequired, parseBoolean)) {
-            return 0;
-        }
-        printWriter.println("already " + parseBoolean);
-        return 0;
-    }
-
-    public final int getDefaultServiceEnabled(PrintWriter printWriter) {
-        printWriter.println(this.mService.isDefaultServiceEnabled(getNextIntArgRequired()));
-        return 0;
-    }
-
-    public final int requestDestroy(PrintWriter printWriter) {
-        if (!isNextArgSessions(printWriter)) {
-            return -1;
-        }
-        final int userIdFromArgsOrAllUsers = getUserIdFromArgsOrAllUsers();
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final IResultReceiver.Stub stub = new IResultReceiver.Stub() { // from class: com.android.server.contentcapture.ContentCaptureManagerServiceShellCommand.1
-            public void send(int i, Bundle bundle) {
-                countDownLatch.countDown();
-            }
-        };
-        return requestSessionCommon(printWriter, countDownLatch, new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerServiceShellCommand$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                ContentCaptureManagerServiceShellCommand.this.lambda$requestDestroy$0(userIdFromArgsOrAllUsers, stub);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$requestDestroy$0(int i, IResultReceiver iResultReceiver) {
-        this.mService.destroySessions(i, iResultReceiver);
-    }
-
-    public final int requestList(final PrintWriter printWriter) {
-        if (!isNextArgSessions(printWriter)) {
-            return -1;
-        }
-        final int userIdFromArgsOrAllUsers = getUserIdFromArgsOrAllUsers();
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final IResultReceiver.Stub stub = new IResultReceiver.Stub() { // from class: com.android.server.contentcapture.ContentCaptureManagerServiceShellCommand.2
-            public void send(int i, Bundle bundle) {
-                Iterator<String> it = bundle.getStringArrayList("sessions").iterator();
-                while (it.hasNext()) {
-                    printWriter.println(it.next());
-                }
-                countDownLatch.countDown();
-            }
-        };
-        return requestSessionCommon(printWriter, countDownLatch, new Runnable() { // from class: com.android.server.contentcapture.ContentCaptureManagerServiceShellCommand$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                ContentCaptureManagerServiceShellCommand.this.lambda$requestList$1(userIdFromArgsOrAllUsers, stub);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$requestList$1(int i, IResultReceiver iResultReceiver) {
-        this.mService.listSessions(i, iResultReceiver);
-    }
-
-    public final boolean isNextArgSessions(PrintWriter printWriter) {
-        if (getNextArgRequired().equals("sessions")) {
-            return true;
-        }
-        printWriter.println("Error: invalid list type");
-        return false;
-    }
-
-    public final int requestSessionCommon(PrintWriter printWriter, CountDownLatch countDownLatch, Runnable runnable) {
-        runnable.run();
-        return waitForLatch(printWriter, countDownLatch);
-    }
-
-    public final int waitForLatch(PrintWriter printWriter, CountDownLatch countDownLatch) {
-        try {
-            if (countDownLatch.await(5L, TimeUnit.SECONDS)) {
-                return 0;
-            }
-            printWriter.println("Timed out after 5 seconds");
-            return -1;
-        } catch (InterruptedException unused) {
-            printWriter.println("System call interrupted");
-            Thread.currentThread().interrupt();
-            return -1;
-        }
-    }
-
-    public final int getUserIdFromArgsOrAllUsers() {
-        if ("--user".equals(getNextArg())) {
-            return UserHandle.parseUserArg(getNextArgRequired());
-        }
-        return -1;
-    }
-
-    public final int getNextIntArgRequired() {
-        return Integer.parseInt(getNextArgRequired());
     }
 }

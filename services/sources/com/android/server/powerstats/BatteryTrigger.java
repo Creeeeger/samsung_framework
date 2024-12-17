@@ -4,35 +4,34 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Message;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class BatteryTrigger extends PowerStatsLogTrigger {
     public int mBatteryLevel;
-    public final BroadcastReceiver mBatteryLevelReceiver;
+    public final AnonymousClass1 mBatteryLevelReceiver;
 
-    public BatteryTrigger(Context context, PowerStatsLogger powerStatsLogger, boolean z) {
+    public BatteryTrigger(Context context, PowerStatsLogger powerStatsLogger) {
         super(context, powerStatsLogger);
         this.mBatteryLevel = 0;
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() { // from class: com.android.server.powerstats.BatteryTrigger.1
+        Intent registerReceiver = context.registerReceiver(new BroadcastReceiver() { // from class: com.android.server.powerstats.BatteryTrigger.1
             @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context2, Intent intent) {
+            public final void onReceive(Context context2, Intent intent) {
                 String action = intent.getAction();
-                action.hashCode();
+                action.getClass();
                 if (action.equals("android.intent.action.BATTERY_CHANGED")) {
                     int intExtra = intent.getIntExtra("level", 0);
-                    if (intExtra < BatteryTrigger.this.mBatteryLevel) {
-                        BatteryTrigger.this.logPowerStatsData(0);
+                    BatteryTrigger batteryTrigger = BatteryTrigger.this;
+                    if (intExtra < batteryTrigger.mBatteryLevel) {
+                        Message.obtain(batteryTrigger.mPowerStatsLogger, 0).sendToTarget();
                     }
                     BatteryTrigger.this.mBatteryLevel = intExtra;
                 }
             }
-        };
-        this.mBatteryLevelReceiver = broadcastReceiver;
-        if (z) {
-            Intent registerReceiver = this.mContext.registerReceiver(broadcastReceiver, new IntentFilter("android.intent.action.BATTERY_CHANGED"));
-            if (registerReceiver != null) {
-                this.mBatteryLevel = registerReceiver.getIntExtra("level", 0);
-            }
+        }, new IntentFilter("android.intent.action.BATTERY_CHANGED"));
+        if (registerReceiver != null) {
+            this.mBatteryLevel = registerReceiver.getIntExtra("level", 0);
         }
     }
 }

@@ -1,11 +1,14 @@
 package android.hardware.usb.V1_0;
 
+import android.hardware.audio.common.V2_0.AudioChannelMask$$ExternalSyntheticOutline0;
+import android.hardware.audio.common.V2_0.AudioConfig$$ExternalSyntheticOutline0;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
 import android.os.HidlSupport;
 import android.os.HwBlob;
 import android.os.HwParcel;
-import java.util.ArrayList;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class PortStatus {
     public String portName = new String();
@@ -29,37 +32,41 @@ public final class PortStatus {
     }
 
     public final int hashCode() {
-        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.portName)), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.currentDataRole))), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.currentPowerRole))), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.currentMode))), Integer.valueOf(HidlSupport.deepHashCode(Boolean.valueOf(this.canChangeMode))), Integer.valueOf(HidlSupport.deepHashCode(Boolean.valueOf(this.canChangeDataRole))), Integer.valueOf(HidlSupport.deepHashCode(Boolean.valueOf(this.canChangePowerRole))), Integer.valueOf(HidlSupport.deepHashCode(Integer.valueOf(this.supportedModes))));
-    }
-
-    public final String toString() {
-        return "{.portName = " + this.portName + ", .currentDataRole = " + PortDataRole.toString(this.currentDataRole) + ", .currentPowerRole = " + PortPowerRole.toString(this.currentPowerRole) + ", .currentMode = " + PortMode.toString(this.currentMode) + ", .canChangeMode = " + this.canChangeMode + ", .canChangeDataRole = " + this.canChangeDataRole + ", .canChangePowerRole = " + this.canChangePowerRole + ", .supportedModes = " + PortMode.toString(this.supportedModes) + "}";
-    }
-
-    public static final ArrayList readVectorFromParcel(HwParcel hwParcel) {
-        ArrayList arrayList = new ArrayList();
-        HwBlob readBuffer = hwParcel.readBuffer(16L);
-        int int32 = readBuffer.getInt32(8L);
-        HwBlob readEmbeddedBuffer = hwParcel.readEmbeddedBuffer(int32 * 40, readBuffer.handle(), 0L, true);
-        arrayList.clear();
-        for (int i = 0; i < int32; i++) {
-            PortStatus portStatus = new PortStatus();
-            portStatus.readEmbeddedFromParcel(hwParcel, readEmbeddedBuffer, i * 40);
-            arrayList.add(portStatus);
-        }
-        return arrayList;
+        return Objects.hash(Integer.valueOf(HidlSupport.deepHashCode(this.portName)), AudioConfig$$ExternalSyntheticOutline0.m(this.currentDataRole), AudioConfig$$ExternalSyntheticOutline0.m(this.currentPowerRole), AudioConfig$$ExternalSyntheticOutline0.m(this.currentMode), AudioOffloadInfo$$ExternalSyntheticOutline0.m(this.canChangeMode), AudioOffloadInfo$$ExternalSyntheticOutline0.m(this.canChangeDataRole), AudioOffloadInfo$$ExternalSyntheticOutline0.m(this.canChangePowerRole), AudioConfig$$ExternalSyntheticOutline0.m(this.supportedModes));
     }
 
     public final void readEmbeddedFromParcel(HwParcel hwParcel, HwBlob hwBlob, long j) {
-        long j2 = j + 0;
-        this.portName = hwBlob.getString(j2);
-        hwParcel.readEmbeddedBuffer(r6.getBytes().length + 1, hwBlob.handle(), j2 + 0, false);
-        this.currentDataRole = hwBlob.getInt32(j + 16);
-        this.currentPowerRole = hwBlob.getInt32(j + 20);
-        this.currentMode = hwBlob.getInt32(j + 24);
-        this.canChangeMode = hwBlob.getBool(j + 28);
-        this.canChangeDataRole = hwBlob.getBool(j + 29);
-        this.canChangePowerRole = hwBlob.getBool(j + 30);
+        this.portName = hwBlob.getString(j);
+        hwParcel.readEmbeddedBuffer(r0.getBytes().length + 1, hwBlob.handle(), j, false);
+        this.currentDataRole = hwBlob.getInt32(16 + j);
+        this.currentPowerRole = hwBlob.getInt32(20 + j);
+        this.currentMode = hwBlob.getInt32(24 + j);
+        this.canChangeMode = hwBlob.getBool(28 + j);
+        this.canChangeDataRole = hwBlob.getBool(29 + j);
+        this.canChangePowerRole = hwBlob.getBool(30 + j);
         this.supportedModes = hwBlob.getInt32(j + 32);
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("{.portName = ");
+        sb.append(this.portName);
+        sb.append(", .currentDataRole = ");
+        int i = this.currentDataRole;
+        sb.append(i == 0 ? "NONE" : i == 1 ? "HOST" : i == 2 ? "DEVICE" : i == 3 ? "NUM_DATA_ROLES" : AudioChannelMask$$ExternalSyntheticOutline0.m(new StringBuilder("0x"), i));
+        sb.append(", .currentPowerRole = ");
+        int i2 = this.currentPowerRole;
+        sb.append(i2 != 0 ? i2 == 1 ? "SOURCE" : i2 == 2 ? "SINK" : i2 == 3 ? "NUM_POWER_ROLES" : AudioChannelMask$$ExternalSyntheticOutline0.m(new StringBuilder("0x"), i2) : "NONE");
+        sb.append(", .currentMode = ");
+        sb.append(PortMode.toString(this.currentMode));
+        sb.append(", .canChangeMode = ");
+        sb.append(this.canChangeMode);
+        sb.append(", .canChangeDataRole = ");
+        sb.append(this.canChangeDataRole);
+        sb.append(", .canChangePowerRole = ");
+        sb.append(this.canChangePowerRole);
+        sb.append(", .supportedModes = ");
+        sb.append(PortMode.toString(this.supportedModes));
+        sb.append("}");
+        return sb.toString();
     }
 }

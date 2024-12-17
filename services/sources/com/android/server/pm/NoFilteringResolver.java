@@ -1,32 +1,21 @@
 package com.android.server.pm;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.os.Binder;
-import com.android.internal.config.appcloning.AppCloningDeviceConfigHelper;
-import com.android.server.pm.resolution.ComponentResolverApi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-/* loaded from: classes3.dex */
-public class NoFilteringResolver extends CrossProfileResolver {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class NoFilteringResolver extends CrossProfileResolver {
     @Override // com.android.server.pm.CrossProfileResolver
-    public List filterResolveInfoWithDomainPreferredActivity(Intent intent, List list, long j, int i, int i2, int i3) {
+    public final List filterResolveInfoWithDomainPreferredActivity(int i, List list) {
         return list;
     }
 
-    public static boolean isIntentRedirectionAllowed(Context context, AppCloningDeviceConfigHelper appCloningDeviceConfigHelper, boolean z, long j) {
-        return isAppCloningBuildingBlocksEnabled(context, appCloningDeviceConfigHelper) && (z || ((536870912 & j) != 0 && hasPermission(context, "android.permission.QUERY_CLONED_APPS")));
-    }
-
-    public NoFilteringResolver(ComponentResolverApi componentResolverApi, UserManagerService userManagerService) {
-        super(componentResolverApi, userManagerService);
-    }
-
     @Override // com.android.server.pm.CrossProfileResolver
-    public List resolveIntent(Computer computer, Intent intent, String str, int i, int i2, long j, String str2, List list, boolean z, Function function) {
+    public final List resolveIntent(Computer computer, Intent intent, String str, int i, int i2, long j, String str2, List list, boolean z, Function function) {
         List queryActivities = this.mComponentResolver.queryActivities(computer, intent, str, j, i2);
         ArrayList arrayList = new ArrayList();
         if (queryActivities != null) {
@@ -34,27 +23,7 @@ public class NoFilteringResolver extends CrossProfileResolver {
                 arrayList.add(new CrossProfileDomainInfo((ResolveInfo) queryActivities.get(i3), 0, i2));
             }
         }
-        return filterIfNotSystemUser(arrayList, i);
-    }
-
-    public static boolean hasPermission(Context context, String str) {
-        return context.checkCallingOrSelfPermission(str) == 0;
-    }
-
-    public static boolean isAppCloningBuildingBlocksEnabled(Context context, AppCloningDeviceConfigHelper appCloningDeviceConfigHelper) {
-        boolean z;
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            if (context.getResources().getBoolean(17891655)) {
-                if (appCloningDeviceConfigHelper.getEnableAppCloningBuildingBlocks()) {
-                    z = true;
-                    return z;
-                }
-            }
-            z = false;
-            return z;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
+        CrossProfileResolver.filterIfNotSystemUser(i, arrayList);
+        return arrayList;
     }
 }

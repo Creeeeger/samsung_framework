@@ -19,18 +19,18 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class CountryDetectorService extends ICountryDetector.Stub {
+public final class CountryDetectorService extends ICountryDetector.Stub {
     public final Context mContext;
     public CountryDetectorBase mCountryDetector;
-    public Handler mHandler;
-    public CountryListener mLocationBasedDetectorListener;
+    public final Handler mHandler;
+    public CountryDetectorService$$ExternalSyntheticLambda0 mLocationBasedDetectorListener;
     public final HashMap mReceivers;
     public boolean mSystemReady;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class Receiver implements IBinder.DeathRecipient {
         public final IBinder mKey;
         public final ICountryListener mListener;
@@ -41,23 +41,19 @@ public class CountryDetectorService extends ICountryDetector.Stub {
         }
 
         @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
+        public final void binderDied() {
             CountryDetectorService.this.removeListener(this.mKey);
         }
 
-        public boolean equals(Object obj) {
+        public final boolean equals(Object obj) {
             if (obj instanceof Receiver) {
                 return this.mKey.equals(((Receiver) obj).mKey);
             }
             return false;
         }
 
-        public int hashCode() {
+        public final int hashCode() {
             return this.mKey.hashCode();
-        }
-
-        public ICountryListener getListener() {
-            return this.mListener;
         }
     }
 
@@ -71,90 +67,61 @@ public class CountryDetectorService extends ICountryDetector.Stub {
         this.mHandler = handler;
     }
 
-    public Country detectCountry() {
+    public final void addCountryListener(ICountryListener iCountryListener) {
+        if (!this.mSystemReady) {
+            throw new RemoteException();
+        }
+        synchronized (this.mReceivers) {
+            try {
+                Receiver receiver = new Receiver(iCountryListener);
+                try {
+                    iCountryListener.asBinder().linkToDeath(receiver, 0);
+                    Country detectCountry = detectCountry();
+                    if (detectCountry != null) {
+                        iCountryListener.onCountryDetected(detectCountry);
+                    }
+                    this.mReceivers.put(iCountryListener.asBinder(), receiver);
+                    if (this.mReceivers.size() == 1) {
+                        Slog.d("CountryDetector", "The first listener is added");
+                        this.mHandler.post(new CountryDetectorService$$ExternalSyntheticLambda1(this, this.mLocationBasedDetectorListener, 0));
+                    }
+                } catch (RemoteException e) {
+                    Slog.e("CountryDetector", "linkToDeath failed:", e);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final Country detectCountry() {
         if (this.mSystemReady) {
             return this.mCountryDetector.detectCountry();
         }
         return null;
     }
 
-    public void addCountryListener(ICountryListener iCountryListener) {
-        if (!this.mSystemReady) {
-            throw new RemoteException();
-        }
-        addListener(iCountryListener);
+    public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+        DumpUtils.checkDumpPermission(this.mContext, "CountryDetector", printWriter);
     }
 
-    public void removeCountryListener(ICountryListener iCountryListener) {
-        if (!this.mSystemReady) {
-            throw new RemoteException();
-        }
-        removeListener(iCountryListener.asBinder());
+    public CountryDetectorBase getCountryDetector() {
+        return this.mCountryDetector;
     }
 
-    public final void addListener(ICountryListener iCountryListener) {
-        synchronized (this.mReceivers) {
-            Receiver receiver = new Receiver(iCountryListener);
-            try {
-                iCountryListener.asBinder().linkToDeath(receiver, 0);
-                Country detectCountry = detectCountry();
-                if (detectCountry != null) {
-                    iCountryListener.onCountryDetected(detectCountry);
-                }
-                this.mReceivers.put(iCountryListener.asBinder(), receiver);
-                if (this.mReceivers.size() == 1) {
-                    Slog.d("CountryDetector", "The first listener is added");
-                    setCountryListener(this.mLocationBasedDetectorListener);
-                }
-            } catch (RemoteException e) {
-                Slog.e("CountryDetector", "linkToDeath failed:", e);
-            }
-        }
-    }
-
-    public final void removeListener(IBinder iBinder) {
-        synchronized (this.mReceivers) {
-            this.mReceivers.remove(iBinder);
-            if (this.mReceivers.isEmpty()) {
-                setCountryListener(null);
-                Slog.d("CountryDetector", "No listener is left");
-            }
-        }
-    }
-
-    /* renamed from: notifyReceivers, reason: merged with bridge method [inline-methods] */
-    public void lambda$initialize$1(Country country) {
-        synchronized (this.mReceivers) {
-            Iterator it = this.mReceivers.values().iterator();
-            while (it.hasNext()) {
-                try {
-                    ((Receiver) it.next()).getListener().onCountryDetected(country);
-                } catch (RemoteException e) {
-                    Slog.e("CountryDetector", "notifyReceivers failed:", e);
-                }
-            }
-        }
-    }
-
-    public void systemRunning() {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.CountryDetectorService$$ExternalSyntheticLambda3
-            @Override // java.lang.Runnable
-            public final void run() {
-                CountryDetectorService.this.lambda$systemRunning$0();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$systemRunning$0() {
-        initialize();
-        this.mSystemReady = true;
-    }
-
+    /* JADX WARN: Type inference failed for: r0v3, types: [com.android.server.CountryDetectorService$$ExternalSyntheticLambda0] */
     public void initialize() {
-        String string = this.mContext.getString(R.string.ext_media_move_specific_title);
+        CountryDetectorBase countryDetectorBase;
+        String string = this.mContext.getString(R.string.data_usage_mobile_limit_title);
         if (!TextUtils.isEmpty(string)) {
-            this.mCountryDetector = loadCustomCountryDetectorIfAvailable(string);
+            BinaryTransparencyService$$ExternalSyntheticOutline0.m("Using custom country detector class: ", string, "CountryDetector");
+            try {
+                countryDetectorBase = (CountryDetectorBase) Class.forName(string).asSubclass(CountryDetectorBase.class).getConstructor(Context.class).newInstance(this.mContext);
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException unused) {
+                Slog.e("CountryDetector", "Could not instantiate the custom country detector class");
+                countryDetectorBase = null;
+            }
+            this.mCountryDetector = countryDetectorBase;
         }
         if (this.mCountryDetector == null) {
             Slog.d("CountryDetector", "Using default country detector");
@@ -162,54 +129,34 @@ public class CountryDetectorService extends ICountryDetector.Stub {
         }
         this.mLocationBasedDetectorListener = new CountryListener() { // from class: com.android.server.CountryDetectorService$$ExternalSyntheticLambda0
             public final void onCountryDetected(Country country) {
-                CountryDetectorService.this.lambda$initialize$2(country);
+                CountryDetectorService countryDetectorService = CountryDetectorService.this;
+                countryDetectorService.mHandler.post(new CountryDetectorService$$ExternalSyntheticLambda1(countryDetectorService, country, 1));
             }
         };
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$initialize$2(final Country country) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.CountryDetectorService$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                CountryDetectorService.this.lambda$initialize$1(country);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setCountryListener$3(CountryListener countryListener) {
-        this.mCountryDetector.setCountryListener(countryListener);
-    }
-
-    public void setCountryListener(final CountryListener countryListener) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.CountryDetectorService$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                CountryDetectorService.this.lambda$setCountryListener$3(countryListener);
-            }
-        });
-    }
-
-    public CountryDetectorBase getCountryDetector() {
-        return this.mCountryDetector;
     }
 
     public boolean isSystemReady() {
         return this.mSystemReady;
     }
 
-    public final CountryDetectorBase loadCustomCountryDetectorIfAvailable(String str) {
-        Slog.d("CountryDetector", "Using custom country detector class: " + str);
-        try {
-            return (CountryDetectorBase) Class.forName(str).asSubclass(CountryDetectorBase.class).getConstructor(Context.class).newInstance(this.mContext);
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException unused) {
-            Slog.e("CountryDetector", "Could not instantiate the custom country detector class");
-            return null;
+    public final void removeCountryListener(ICountryListener iCountryListener) {
+        if (!this.mSystemReady) {
+            throw new RemoteException();
         }
+        removeListener(iCountryListener.asBinder());
     }
 
-    public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-        DumpUtils.checkDumpPermission(this.mContext, "CountryDetector", printWriter);
+    public final void removeListener(IBinder iBinder) {
+        synchronized (this.mReceivers) {
+            try {
+                this.mReceivers.remove(iBinder);
+                if (this.mReceivers.isEmpty()) {
+                    this.mHandler.post(new CountryDetectorService$$ExternalSyntheticLambda1(this, null, 0));
+                    Slog.d("CountryDetector", "No listener is left");
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 }

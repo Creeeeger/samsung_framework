@@ -1,7 +1,6 @@
 package com.android.server.rotationresolver;
 
 import android.R;
-import android.content.ComponentName;
 import android.content.Context;
 import android.hardware.SensorPrivacyManager;
 import android.os.Binder;
@@ -12,29 +11,87 @@ import android.os.UserHandle;
 import android.provider.DeviceConfig;
 import android.rotationresolver.RotationResolverInternal;
 import android.service.rotationresolver.RotationResolutionRequest;
-import android.text.TextUtils;
 import android.util.Slog;
 import com.android.internal.util.DumpUtils;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.internal.util.LatencyTracker;
 import com.android.server.infra.AbstractMasterSystemService;
+import com.android.server.infra.AbstractPerUserSystemService;
 import com.android.server.infra.FrameworkResourcesServiceNameResolver;
+import com.android.server.rotationresolver.RemoteRotationResolverService;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Objects;
-import java.util.Set;
 
-/* loaded from: classes3.dex */
-public class RotationResolverManagerService extends AbstractMasterSystemService {
-    public static final String TAG = "RotationResolverManagerService";
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RotationResolverManagerService extends AbstractMasterSystemService {
     public final Context mContext;
     public boolean mIsServiceEnabled;
     public final SensorPrivacyManager mPrivacyManager;
 
-    public static int errorCodeToProto(int i) {
-        if (i == 0 || i == 1 || i == 2) {
-            return 0;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BinderService extends Binder {
+        public BinderService() {
         }
-        return i != 4 ? 8 : 7;
+
+        @Override // android.os.Binder
+        public final void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
+            if (DumpUtils.checkDumpPermission(RotationResolverManagerService.this.mContext, "RotationResolverManagerService", printWriter)) {
+                synchronized (RotationResolverManagerService.this.mLock) {
+                    RotationResolverManagerService.this.dumpLocked(printWriter);
+                }
+            }
+        }
+
+        public final void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
+            RotationResolverManagerService.this.mContext.enforceCallingOrSelfPermission("android.permission.MANAGE_ROTATION_RESOLVER", "RotationResolverManagerService");
+            new RotationResolverShellCommand(RotationResolverManagerService.this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LocalService extends RotationResolverInternal {
+        public LocalService() {
+        }
+
+        public final boolean isRotationResolverSupported() {
+            boolean z;
+            synchronized (RotationResolverManagerService.this.mLock) {
+                z = RotationResolverManagerService.this.mIsServiceEnabled;
+            }
+            return z;
+        }
+
+        public final void resolveRotation(RotationResolverInternal.RotationResolverCallbackInternal rotationResolverCallbackInternal, String str, int i, int i2, long j, CancellationSignal cancellationSignal) {
+            Objects.requireNonNull(rotationResolverCallbackInternal);
+            Objects.requireNonNull(cancellationSignal);
+            synchronized (RotationResolverManagerService.this.mLock) {
+                try {
+                    boolean z = !RotationResolverManagerService.this.mPrivacyManager.isSensorPrivacyEnabled(2);
+                    RotationResolverManagerService rotationResolverManagerService = RotationResolverManagerService.this;
+                    if (rotationResolverManagerService.mIsServiceEnabled && z) {
+                        ((RotationResolverManagerPerUserService) rotationResolverManagerService.getServiceForUserLocked(UserHandle.getCallingUserId())).resolveRotationLocked(rotationResolverCallbackInternal, str == null ? new RotationResolutionRequest("", i2, i, true, j) : new RotationResolutionRequest(str, i2, i, true, j), cancellationSignal);
+                    } else {
+                        if (z) {
+                            Slog.w("RotationResolverManagerService", "Rotation Resolver service is disabled.");
+                        } else {
+                            Slog.w("RotationResolverManagerService", "Camera is locked by a toggle.");
+                        }
+                        rotationResolverCallbackInternal.onFailure(0);
+                        FrameworkStatsLog.write(328, RotationResolverManagerService.surfaceRotationToProto(i2), RotationResolverManagerService.surfaceRotationToProto(i), 6);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    public RotationResolverManagerService(Context context) {
+        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.deleted_key), null, 68);
+        this.mContext = context;
+        this.mPrivacyManager = SensorPrivacyManager.getInstance(context);
     }
 
     public static int surfaceRotationToProto(int i) {
@@ -50,148 +107,55 @@ public class RotationResolverManagerService extends AbstractMasterSystemService 
         return 4;
     }
 
-    public RotationResolverManagerService(Context context) {
-        super(context, new FrameworkResourcesServiceNameResolver(context, R.string.face_acquired_too_dark), null, 68);
-        this.mContext = context;
-        this.mPrivacyManager = SensorPrivacyManager.getInstance(context);
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final AbstractPerUserSystemService newServiceLocked(int i, boolean z) {
+        RotationResolverManagerPerUserService rotationResolverManagerPerUserService = new RotationResolverManagerPerUserService(this, this.mLock, i);
+        rotationResolverManagerPerUserService.mLatencyTracker = LatencyTracker.getInstance(getContext());
+        return rotationResolverManagerPerUserService;
     }
 
     @Override // com.android.server.infra.AbstractMasterSystemService, com.android.server.SystemService
-    public void onBootPhase(int i) {
+    public final void onBootPhase(int i) {
         if (i == 500) {
             DeviceConfig.addOnPropertiesChangedListener("rotation_resolver", getContext().getMainExecutor(), new DeviceConfig.OnPropertiesChangedListener() { // from class: com.android.server.rotationresolver.RotationResolverManagerService$$ExternalSyntheticLambda0
                 public final void onPropertiesChanged(DeviceConfig.Properties properties) {
-                    RotationResolverManagerService.this.lambda$onBootPhase$0(properties);
+                    RotationResolverManagerService rotationResolverManagerService = RotationResolverManagerService.this;
+                    rotationResolverManagerService.getClass();
+                    if (properties.getKeyset().contains("service_enabled")) {
+                        rotationResolverManagerService.mIsServiceEnabled = DeviceConfig.getBoolean("rotation_resolver", "service_enabled", true);
+                    }
                 }
             });
             this.mIsServiceEnabled = DeviceConfig.getBoolean("rotation_resolver", "service_enabled", true);
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onBootPhase$0(DeviceConfig.Properties properties) {
-        onDeviceConfigChange(properties.getKeyset());
-    }
-
-    public final void onDeviceConfigChange(Set set) {
-        if (set.contains("service_enabled")) {
-            this.mIsServiceEnabled = DeviceConfig.getBoolean("rotation_resolver", "service_enabled", true);
+    @Override // com.android.server.infra.AbstractMasterSystemService
+    public final void onServiceRemoved(AbstractPerUserSystemService abstractPerUserSystemService, int i) {
+        RotationResolverManagerPerUserService rotationResolverManagerPerUserService = (RotationResolverManagerPerUserService) abstractPerUserSystemService;
+        synchronized (this.mLock) {
+            if (rotationResolverManagerPerUserService.mMaster.verbose) {
+                Slog.v("RotationResolverManagerPerUserService", "destroyLocked()");
+            }
+            if (rotationResolverManagerPerUserService.mCurrentRequest != null) {
+                Slog.d("RotationResolverManagerPerUserService", "Trying to cancel the remote request. Reason: Service destroyed.");
+                RemoteRotationResolverService.RotationRequest rotationRequest = rotationResolverManagerPerUserService.mCurrentRequest;
+                if (rotationRequest != null) {
+                    rotationRequest.cancelInternal();
+                    rotationResolverManagerPerUserService.mCurrentRequest = null;
+                }
+                RemoteRotationResolverService remoteRotationResolverService = rotationResolverManagerPerUserService.mRemoteService;
+                if (remoteRotationResolverService != null) {
+                    remoteRotationResolverService.unbind();
+                    rotationResolverManagerPerUserService.mRemoteService = null;
+                }
+            }
         }
     }
 
     @Override // com.android.server.SystemService
-    public void onStart() {
+    public final void onStart() {
         publishBinderService("resolver", new BinderService());
         publishLocalService(RotationResolverInternal.class, new LocalService());
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public RotationResolverManagerPerUserService newServiceLocked(int i, boolean z) {
-        return new RotationResolverManagerPerUserService(this, this.mLock, i);
-    }
-
-    @Override // com.android.server.infra.AbstractMasterSystemService
-    public void onServiceRemoved(RotationResolverManagerPerUserService rotationResolverManagerPerUserService, int i) {
-        synchronized (this.mLock) {
-            rotationResolverManagerPerUserService.destroyLocked();
-        }
-    }
-
-    public static boolean isServiceConfigured(Context context) {
-        return !TextUtils.isEmpty(getServiceConfigPackage(context));
-    }
-
-    public ComponentName getComponentNameShellCommand(int i) {
-        synchronized (this.mLock) {
-            RotationResolverManagerPerUserService rotationResolverManagerPerUserService = (RotationResolverManagerPerUserService) getServiceForUserLocked(i);
-            if (rotationResolverManagerPerUserService == null) {
-                return null;
-            }
-            return rotationResolverManagerPerUserService.getComponentName();
-        }
-    }
-
-    public void resolveRotationShellCommand(int i, RotationResolverInternal.RotationResolverCallbackInternal rotationResolverCallbackInternal, RotationResolutionRequest rotationResolutionRequest) {
-        synchronized (this.mLock) {
-            RotationResolverManagerPerUserService rotationResolverManagerPerUserService = (RotationResolverManagerPerUserService) getServiceForUserLocked(i);
-            if (rotationResolverManagerPerUserService != null) {
-                rotationResolverManagerPerUserService.resolveRotationLocked(rotationResolverCallbackInternal, rotationResolutionRequest, new CancellationSignal());
-            } else {
-                Slog.i(TAG, "service not available for user_id: " + i);
-            }
-        }
-    }
-
-    public static String getServiceConfigPackage(Context context) {
-        return context.getPackageManager().getRotationResolverPackageName();
-    }
-
-    /* loaded from: classes3.dex */
-    public final class LocalService extends RotationResolverInternal {
-        public LocalService() {
-        }
-
-        public boolean isRotationResolverSupported() {
-            boolean z;
-            synchronized (RotationResolverManagerService.this.mLock) {
-                z = RotationResolverManagerService.this.mIsServiceEnabled;
-            }
-            return z;
-        }
-
-        public void resolveRotation(RotationResolverInternal.RotationResolverCallbackInternal rotationResolverCallbackInternal, String str, int i, int i2, long j, CancellationSignal cancellationSignal) {
-            RotationResolutionRequest rotationResolutionRequest;
-            Objects.requireNonNull(rotationResolverCallbackInternal);
-            Objects.requireNonNull(cancellationSignal);
-            synchronized (RotationResolverManagerService.this.mLock) {
-                boolean z = !RotationResolverManagerService.this.mPrivacyManager.isSensorPrivacyEnabled(2);
-                RotationResolverManagerService rotationResolverManagerService = RotationResolverManagerService.this;
-                if (rotationResolverManagerService.mIsServiceEnabled && z) {
-                    RotationResolverManagerPerUserService rotationResolverManagerPerUserService = (RotationResolverManagerPerUserService) rotationResolverManagerService.getServiceForUserLocked(UserHandle.getCallingUserId());
-                    if (str == null) {
-                        rotationResolutionRequest = new RotationResolutionRequest("", i2, i, true, j);
-                    } else {
-                        rotationResolutionRequest = new RotationResolutionRequest(str, i2, i, true, j);
-                    }
-                    rotationResolverManagerPerUserService.resolveRotationLocked(rotationResolverCallbackInternal, rotationResolutionRequest, cancellationSignal);
-                } else {
-                    if (z) {
-                        Slog.w(RotationResolverManagerService.TAG, "Rotation Resolver service is disabled.");
-                    } else {
-                        Slog.w(RotationResolverManagerService.TAG, "Camera is locked by a toggle.");
-                    }
-                    rotationResolverCallbackInternal.onFailure(0);
-                    RotationResolverManagerService.logRotationStats(i, i2, 6);
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class BinderService extends Binder {
-        public BinderService() {
-        }
-
-        @Override // android.os.Binder
-        public void dump(FileDescriptor fileDescriptor, PrintWriter printWriter, String[] strArr) {
-            if (DumpUtils.checkDumpPermission(RotationResolverManagerService.this.mContext, RotationResolverManagerService.TAG, printWriter)) {
-                synchronized (RotationResolverManagerService.this.mLock) {
-                    RotationResolverManagerService.this.dumpLocked("", printWriter);
-                }
-            }
-        }
-
-        public void onShellCommand(FileDescriptor fileDescriptor, FileDescriptor fileDescriptor2, FileDescriptor fileDescriptor3, String[] strArr, ShellCallback shellCallback, ResultReceiver resultReceiver) {
-            RotationResolverManagerService.this.mContext.enforceCallingOrSelfPermission("android.permission.MANAGE_ROTATION_RESOLVER", RotationResolverManagerService.TAG);
-            new RotationResolverShellCommand(RotationResolverManagerService.this).exec(this, fileDescriptor, fileDescriptor2, fileDescriptor3, strArr, shellCallback, resultReceiver);
-        }
-    }
-
-    public static void logRotationStatsWithTimeToCalculate(int i, int i2, int i3, long j) {
-        FrameworkStatsLog.write(FrameworkStatsLog.AUTO_ROTATE_REPORTED, surfaceRotationToProto(i2), surfaceRotationToProto(i), i3, j);
-    }
-
-    public static void logRotationStats(int i, int i2, int i3) {
-        FrameworkStatsLog.write(FrameworkStatsLog.AUTO_ROTATE_REPORTED, surfaceRotationToProto(i2), surfaceRotationToProto(i), i3);
     }
 }

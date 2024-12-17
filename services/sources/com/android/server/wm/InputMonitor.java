@@ -5,27 +5,29 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
-import android.util.ArrayMap;
 import android.util.EventLog;
+import android.util.Slog;
 import android.view.InputApplicationHandle;
 import android.view.InputChannel;
 import android.view.InputWindowHandle;
 import android.view.SurfaceControl;
-import android.view.WindowManager;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
-import com.android.server.LocalServices;
-import com.android.server.inputmethod.InputMethodManagerInternal;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.server.SensitiveContentProtectionManagerService$SensitiveContentProtectionManagerServiceBinder$$ExternalSyntheticOutline0;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
 import com.samsung.android.rune.CoreRune;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class InputMonitor {
     public final DisplayContent mDisplayContent;
     public int mDisplayHeight;
@@ -42,38 +44,81 @@ public final class InputMonitor {
     public long mInputFocusRequestTimeMillis = 0;
     public boolean mUpdateInputWindowsNeeded = true;
     public final Region mTmpRegion = new Region();
-    public final ArrayMap mInputConsumers = new ArrayMap();
+    public final ArrayList mInputConsumers = new ArrayList();
     public WeakReference mActiveRecentsActivity = null;
     public WeakReference mActiveRecentsLayerRef = null;
     public final UpdateInputWindows mUpdateInputWindows = new UpdateInputWindows();
     public final UpdateInputForAllWindowsConsumer mUpdateInputForAllWindowsConsumer = new UpdateInputForAllWindowsConsumer();
 
-    public static boolean isTrustedOverlay(int i) {
-        return i == 2039 || i == 2011 || i == 2012 || i == 2027 || i == 2000 || i == 2040 || i == 2019 || i == 2024 || i == 2015 || i == 2034 || i == 2032 || i == 2022 || i == 2031 || i == 2041;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UpdateInputForAllWindowsConsumer implements Consumer {
+        public boolean mAddPipInputConsumerHandle;
+        public boolean mAddRecentsAnimationInputConsumerHandle;
+        public boolean mAddWallpaperInputConsumerHandle;
+        public boolean mInDrag;
+        public InputConsumerImpl mPipInputConsumer;
+        public InputConsumerImpl mRecentsAnimationInputConsumer;
+        public final Rect mTmpRect = new Rect();
+        public InputConsumerImpl mWallpaperInputConsumer;
 
-    /* loaded from: classes3.dex */
-    public class UpdateInputWindows implements Runnable {
-        public /* synthetic */ UpdateInputWindows(InputMonitor inputMonitor, UpdateInputWindowsIA updateInputWindowsIA) {
-            this();
+        /* JADX WARN: Code restructure failed: missing block: B:82:0x010a, code lost:
+        
+            if (r6.isActivityTypeHomeOrRecents() != false) goto L59;
+         */
+        /* JADX WARN: Removed duplicated region for block: B:71:0x01f9  */
+        /* renamed from: -$$Nest$mupdateInputWindows, reason: not valid java name */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public static void m1062$$Nest$mupdateInputWindows(com.android.server.wm.InputMonitor.UpdateInputForAllWindowsConsumer r10, boolean r11) {
+            /*
+                Method dump skipped, instructions count: 529
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.InputMonitor.UpdateInputForAllWindowsConsumer.m1062$$Nest$mupdateInputWindows(com.android.server.wm.InputMonitor$UpdateInputForAllWindowsConsumer, boolean):void");
         }
 
+        public UpdateInputForAllWindowsConsumer() {
+        }
+
+        /* JADX WARN: Code restructure failed: missing block: B:62:0x017d, code lost:
+        
+            if (r9.mKeyInterceptionInfo.windowOwnerUid == r9.mOwnerUid) goto L68;
+         */
+        @Override // java.util.function.Consumer
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void accept(java.lang.Object r9) {
+            /*
+                Method dump skipped, instructions count: 501
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.InputMonitor.UpdateInputForAllWindowsConsumer.accept(java.lang.Object):void");
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UpdateInputWindows implements Runnable {
         public UpdateInputWindows() {
         }
 
         @Override // java.lang.Runnable
-        public void run() {
+        public final void run() {
             WindowManagerGlobalLock windowManagerGlobalLock = InputMonitor.this.mService.mGlobalLock;
             WindowManagerService.boostPriorityForLockedSection();
             synchronized (windowManagerGlobalLock) {
                 try {
-                    InputMonitor.this.mUpdateInputWindowsPending = false;
-                    InputMonitor.this.mUpdateInputWindowsNeeded = false;
-                    if (InputMonitor.this.mDisplayRemoved) {
+                    InputMonitor inputMonitor = InputMonitor.this;
+                    inputMonitor.mUpdateInputWindowsPending = false;
+                    inputMonitor.mUpdateInputWindowsNeeded = false;
+                    if (inputMonitor.mDisplayRemoved) {
                         WindowManagerService.resetPriorityAfterLockedSection();
                         return;
                     }
-                    InputMonitor.this.mUpdateInputForAllWindowsConsumer.updateInputWindows(InputMonitor.this.mService.mDragDropController.dragDropActiveLocked());
+                    UpdateInputForAllWindowsConsumer.m1062$$Nest$mupdateInputWindows(InputMonitor.this.mUpdateInputForAllWindowsConsumer, inputMonitor.mService.mDragDropController.dragDropActiveLocked());
                     WindowManagerService.resetPriorityAfterLockedSection();
                 } catch (Throwable th) {
                     WindowManagerService.resetPriorityAfterLockedSection();
@@ -86,59 +131,144 @@ public final class InputMonitor {
     public InputMonitor(WindowManagerService windowManagerService, DisplayContent displayContent) {
         this.mService = windowManagerService;
         this.mDisplayContent = displayContent;
-        this.mDisplayId = displayContent.getDisplayId();
+        this.mDisplayId = displayContent.mDisplayId;
         this.mInputTransaction = (SurfaceControl.Transaction) windowManagerService.mTransactionFactory.get();
         this.mHandler = windowManagerService.mAnimationHandler;
     }
 
-    public void onDisplayRemoved() {
-        this.mHandler.removeCallbacks(this.mUpdateInputWindows);
-        ((SurfaceControl.Transaction) this.mService.mTransactionFactory.get()).addWindowInfosReportedListener(new Runnable() { // from class: com.android.server.wm.InputMonitor$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                InputMonitor.this.lambda$onDisplayRemoved$0();
+    public static void populateOverlayInputInfo(InputWindowHandleWrapper inputWindowHandleWrapper) {
+        InputWindowHandle inputWindowHandle = inputWindowHandleWrapper.mHandle;
+        if (inputWindowHandle.dispatchingTimeoutMillis != 0) {
+            inputWindowHandle.dispatchingTimeoutMillis = 0L;
+            inputWindowHandleWrapper.mChanged = true;
+        }
+        inputWindowHandleWrapper.setFocusable(false);
+        inputWindowHandleWrapper.setToken(null);
+        InputWindowHandle inputWindowHandle2 = inputWindowHandleWrapper.mHandle;
+        if (inputWindowHandle2.scaleFactor != 1.0f) {
+            inputWindowHandle2.scaleFactor = 1.0f;
+            inputWindowHandleWrapper.mChanged = true;
+        }
+        if (inputWindowHandle2.layoutParamsType != 2) {
+            inputWindowHandle2.layoutParamsType = 2;
+            inputWindowHandleWrapper.mChanged = true;
+        }
+        inputWindowHandleWrapper.setInputConfigMasked(InputConfigAdapter.getInputConfigFromWindowParams(2, 16, 1), InputConfigAdapter.LAYOUT_PARAM_FLAG_TO_CONFIG_MASK | InputConfigAdapter.INPUT_FEATURE_TO_CONFIG_MASK | 64);
+        if (!inputWindowHandleWrapper.mHandle.touchableRegion.isEmpty()) {
+            inputWindowHandleWrapper.mHandle.touchableRegion.setEmpty();
+            inputWindowHandleWrapper.mChanged = true;
+        }
+        if (inputWindowHandleWrapper.mHandle.touchableRegionSurfaceControl.get() == null) {
+            return;
+        }
+        inputWindowHandleWrapper.mHandle.setTouchableRegionCrop((SurfaceControl) null);
+        inputWindowHandleWrapper.mChanged = true;
+    }
+
+    public static void setInputWindowInfoIfNeeded(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, InputWindowHandleWrapper inputWindowHandleWrapper) {
+        if (inputWindowHandleWrapper.mChanged) {
+            transaction.setInputWindowInfo(surfaceControl, inputWindowHandleWrapper.mHandle);
+            inputWindowHandleWrapper.mChanged = false;
+        }
+    }
+
+    public static void setTrustedOverlayInputInfo(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, String str) {
+        InputWindowHandle inputWindowHandle = new InputWindowHandle((InputApplicationHandle) null, i);
+        InputWindowHandleWrapper inputWindowHandleWrapper = new InputWindowHandleWrapper(inputWindowHandle);
+        inputWindowHandleWrapper.setName(str);
+        if (inputWindowHandle.layoutParamsType != 2015) {
+            inputWindowHandle.layoutParamsType = 2015;
+            inputWindowHandleWrapper.mChanged = true;
+        }
+        inputWindowHandle.setTrustedOverlay(transaction, surfaceControl, true);
+        populateOverlayInputInfo(inputWindowHandleWrapper);
+        setInputWindowInfoIfNeeded(transaction, surfaceControl, inputWindowHandleWrapper);
+    }
+
+    public final void createInputConsumer(IBinder iBinder, String str, InputChannel inputChannel, int i, UserHandle userHandle) {
+        int i2;
+        InputConsumerImpl inputConsumerImpl;
+        InputConsumerImpl inputConsumer = getInputConsumer(str);
+        i2 = this.mDisplayId;
+        if (inputConsumer != null && inputConsumer.mClientUser.equals(userHandle)) {
+            destroyInputConsumer(inputConsumer.mToken);
+            Slog.w("WindowManager", "Replacing existing input consumer found with name: " + str + ", display: " + i2 + ", user: " + userHandle);
+        }
+        inputConsumerImpl = new InputConsumerImpl(this.mService, iBinder, str, inputChannel, i, userHandle, this.mDisplayId, this.mInputTransaction);
+        str.getClass();
+        switch (str) {
+            case "recents_animation_input_consumer":
+                inputConsumerImpl.mWindowHandle.inputConfig &= -5;
+                break;
+            case "pip_input_consumer":
+                break;
+            case "wallpaper_input_consumer":
+                inputConsumerImpl.mWindowHandle.inputConfig |= 32;
+                break;
+            default:
+                throw new IllegalArgumentException(SensitiveContentProtectionManagerService$SensitiveContentProtectionManagerServiceBinder$$ExternalSyntheticOutline0.m(i2, "Illegal input consumer : ", str, ", display: "));
+        }
+        this.mInputConsumers.add(inputConsumerImpl);
+        IBinder iBinder2 = inputConsumerImpl.mToken;
+        if (iBinder2 != null) {
+            try {
+                iBinder2.linkToDeath(inputConsumerImpl, 0);
+            } catch (RemoteException unused) {
             }
-        }).apply();
-        this.mDisplayRemoved = true;
-    }
-
-    public /* synthetic */ void lambda$onDisplayRemoved$0() {
-        this.mService.mInputManager.onDisplayRemoved(this.mDisplayId);
-    }
-
-    public final void addInputConsumer(String str, InputConsumerImpl inputConsumerImpl) {
-        this.mInputConsumers.put(str, inputConsumerImpl);
-        inputConsumerImpl.linkToDeathRecipient();
-        inputConsumerImpl.layout(this.mInputTransaction, this.mDisplayWidth, this.mDisplayHeight);
+        }
+        SurfaceControl.Transaction transaction = this.mInputTransaction;
+        inputConsumerImpl.mTmpRect.set(0, 0, this.mDisplayWidth, this.mDisplayHeight);
+        inputConsumerImpl.layout(transaction, inputConsumerImpl.mTmpRect);
         updateInputWindowsLw(true);
     }
 
-    public boolean destroyInputConsumer(String str) {
-        if (!disposeInputConsumer((InputConsumerImpl) this.mInputConsumers.remove(str))) {
-            return false;
+    public final boolean destroyInputConsumer(IBinder iBinder) {
+        for (int i = 0; i < this.mInputConsumers.size(); i++) {
+            InputConsumerImpl inputConsumerImpl = (InputConsumerImpl) this.mInputConsumers.get(i);
+            if (inputConsumerImpl != null && inputConsumerImpl.mToken == iBinder) {
+                SurfaceControl.Transaction transaction = this.mInputTransaction;
+                inputConsumerImpl.mService.mInputManager.removeInputChannel(inputConsumerImpl.mClientChannel.getToken());
+                inputConsumerImpl.mClientChannel.dispose();
+                transaction.remove(inputConsumerImpl.mInputSurface);
+                IBinder iBinder2 = inputConsumerImpl.mToken;
+                if (iBinder2 != null) {
+                    iBinder2.unlinkToDeath(inputConsumerImpl, 0);
+                }
+                this.mInputConsumers.remove(inputConsumerImpl);
+                updateInputWindowsLw(true);
+                return true;
+            }
         }
-        updateInputWindowsLw(true);
-        return true;
+        return false;
     }
 
-    public final boolean disposeInputConsumer(InputConsumerImpl inputConsumerImpl) {
-        if (inputConsumerImpl == null) {
-            return false;
+    public final void dump(PrintWriter printWriter) {
+        if (this.mInputConsumers.isEmpty()) {
+            return;
         }
-        inputConsumerImpl.disposeChannelsLw(this.mInputTransaction);
-        return true;
+        printWriter.println("  InputConsumers:");
+        for (int i = 0; i < this.mInputConsumers.size(); i++) {
+            InputConsumerImpl inputConsumerImpl = (InputConsumerImpl) this.mInputConsumers.get(i);
+            StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("    name=", inputConsumerImpl.mName, " pid=");
+            m.append(inputConsumerImpl.mClientPid);
+            m.append(" user=");
+            m.append(inputConsumerImpl.mClientUser);
+            printWriter.println(m.toString());
+        }
     }
 
-    public InputConsumerImpl getInputConsumer(String str) {
-        return (InputConsumerImpl) this.mInputConsumers.get(str);
+    public final InputConsumerImpl getInputConsumer(String str) {
+        for (int size = this.mInputConsumers.size() - 1; size >= 0; size--) {
+            InputConsumerImpl inputConsumerImpl = (InputConsumerImpl) this.mInputConsumers.get(size);
+            if (inputConsumerImpl.mName.equals(str)) {
+                return inputConsumerImpl;
+            }
+        }
+        return null;
     }
 
-    public void layoutInputConsumers(int i, int i2) {
-        layoutInputConsumers(i, i2, false);
-    }
-
-    public void layoutInputConsumers(int i, int i2, boolean z) {
-        if (this.mDisplayWidth == i && this.mDisplayHeight == i2) {
+    public final void layoutInputConsumers(int i, int i2, boolean z) {
+        if (this.mDisplayWidth == i && this.mDisplayHeight == i2 && !z) {
             return;
         }
         this.mDisplayWidth = i;
@@ -146,220 +276,40 @@ public final class InputMonitor {
         try {
             Trace.traceBegin(32L, "layoutInputConsumer");
             for (int size = this.mInputConsumers.size() - 1; size >= 0; size--) {
-                ((InputConsumerImpl) this.mInputConsumers.valueAt(size)).layout(this.mInputTransaction, i, i2);
+                if (z) {
+                    InputConsumerImpl inputConsumerImpl = (InputConsumerImpl) this.mInputConsumers.get(size);
+                    SurfaceControl.Transaction transaction = this.mInputTransaction;
+                    inputConsumerImpl.mOldPosition.set(-1, -1);
+                    inputConsumerImpl.mTmpRect.set(0, 0, i, i2);
+                    inputConsumerImpl.layout(transaction, inputConsumerImpl.mTmpRect);
+                } else {
+                    InputConsumerImpl inputConsumerImpl2 = (InputConsumerImpl) this.mInputConsumers.get(size);
+                    SurfaceControl.Transaction transaction2 = this.mInputTransaction;
+                    inputConsumerImpl2.mTmpRect.set(0, 0, i, i2);
+                    inputConsumerImpl2.layout(transaction2, inputConsumerImpl2.mTmpRect);
+                }
             }
-        } finally {
             Trace.traceEnd(32L);
+        } catch (Throwable th) {
+            Trace.traceEnd(32L);
+            throw th;
         }
     }
 
-    public void resetInputConsumers(SurfaceControl.Transaction transaction) {
-        for (int size = this.mInputConsumers.size() - 1; size >= 0; size--) {
-            ((InputConsumerImpl) this.mInputConsumers.valueAt(size)).hide(transaction);
-        }
-    }
-
-    public void createInputConsumer(IBinder iBinder, String str, InputChannel inputChannel, int i, UserHandle userHandle) {
-        if (this.mInputConsumers.containsKey(str)) {
-            throw new IllegalStateException("Existing input consumer found with name: " + str + ", display: " + this.mDisplayId);
-        }
-        InputConsumerImpl inputConsumerImpl = new InputConsumerImpl(this.mService, iBinder, str, inputChannel, i, userHandle, this.mDisplayId);
-        str.hashCode();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1525776435:
-                if (str.equals("recents_animation_input_consumer")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case 1024719987:
-                if (str.equals("pip_input_consumer")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 1415830696:
-                if (str.equals("wallpaper_input_consumer")) {
-                    c = 2;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                inputConsumerImpl.mWindowHandle.inputConfig &= -5;
-                break;
-            case 1:
-                break;
-            case 2:
-                inputConsumerImpl.mWindowHandle.inputConfig |= 32;
-                break;
-            default:
-                throw new IllegalArgumentException("Illegal input consumer : " + str + ", display: " + this.mDisplayId);
-        }
-        addInputConsumer(str, inputConsumerImpl);
-    }
-
-    public void populateInputWindowHandle(InputWindowHandleWrapper inputWindowHandleWrapper, WindowState windowState) {
-        TaskFragment taskFragment;
-        ActivityRecord activityRecord = windowState.mActivityRecord;
-        SurfaceControl surfaceControl = null;
-        inputWindowHandleWrapper.setInputApplicationHandle(activityRecord != null ? activityRecord.getInputApplicationHandle(false) : null);
-        inputWindowHandleWrapper.setToken(windowState.mInputChannelToken);
-        inputWindowHandleWrapper.setDispatchingTimeoutMillis(windowState.getInputDispatchingTimeoutMillis());
-        inputWindowHandleWrapper.setTouchOcclusionMode(windowState.getTouchOcclusionMode());
-        ActivityRecord activityRecord2 = windowState.mActivityRecord;
-        inputWindowHandleWrapper.setPaused(activityRecord2 != null && activityRecord2.paused);
-        inputWindowHandleWrapper.setWindowToken(windowState.mClient);
-        inputWindowHandleWrapper.setName(windowState.getName());
-        WindowManager.LayoutParams layoutParams = windowState.mAttrs;
-        int i = layoutParams.flags;
-        if (layoutParams.isModal()) {
-            i |= 32;
-        }
-        inputWindowHandleWrapper.setLayoutParamsFlags(i);
-        inputWindowHandleWrapper.setLayoutParamsSamsungFlags(windowState.mAttrs.samsungFlags);
-        WindowManager.LayoutParams layoutParams2 = windowState.mAttrs;
-        inputWindowHandleWrapper.setInputConfigMasked(InputConfigAdapter.getInputConfigFromWindowParams(layoutParams2.type, i, layoutParams2.inputFeatures), InputConfigAdapter.getMask());
-        inputWindowHandleWrapper.setFocusable(windowState.canReceiveKeys() && (this.mDisplayContent.hasOwnFocus() || this.mDisplayContent.isOnTop()));
-        inputWindowHandleWrapper.setHasWallpaper(this.mDisplayContent.mWallpaperController.isWallpaperTarget(windowState) && (!this.mService.mPolicy.isKeyguardShowing() || (CoreRune.FW_ALLOW_TOUCH_TO_KEYGUARD_WALLPAPER && this.mDisplayContent.mWallpaperController.getTopVisibleWallpaper() != null && this.mDisplayContent.mWallpaperController.getTopVisibleWallpaper().getKeyguardWallpaperTouchAllowed())) && windowState.mAttrs.areWallpaperTouchEventsEnabled());
-        inputWindowHandleWrapper.setSurfaceInset(windowState.mAttrs.surfaceInsets.left);
-        float f = windowState.mGlobalScale;
-        inputWindowHandleWrapper.setScaleFactor(f != 1.0f ? 1.0f / f : 1.0f);
-        Task task = windowState.getTask();
-        if (task != null) {
-            if (task.isOrganized() && task.getWindowingMode() != 1 && !task.inFreeformWindowingMode()) {
-                r2 = windowState.mTouchableInsets != 3;
-                if (windowState.mAttrs.isModal() && (taskFragment = windowState.getTaskFragment()) != null) {
-                    surfaceControl = taskFragment.getSurfaceControl();
-                }
-            } else if (task.cropWindowsToRootTaskBounds() && !windowState.inFreeformWindowingMode()) {
-                surfaceControl = task.getRootTask().getSurfaceControl();
-            }
-        }
-        inputWindowHandleWrapper.setReplaceTouchableRegionWithCrop(r2);
-        inputWindowHandleWrapper.setTouchableRegionCrop(surfaceControl);
-        if (r2) {
-            return;
-        }
-        windowState.getSurfaceTouchableRegion(this.mTmpRegion, windowState.mAttrs);
-        inputWindowHandleWrapper.setTouchableRegion(this.mTmpRegion);
-    }
-
-    public void setUpdateInputWindowsNeededLw() {
-        this.mUpdateInputWindowsNeeded = true;
-    }
-
-    public void updateInputWindowsLw(boolean z) {
-        if (z || this.mUpdateInputWindowsNeeded) {
-            scheduleUpdateInputWindows();
-        }
-    }
-
-    public final void scheduleUpdateInputWindows() {
-        if (this.mDisplayRemoved || this.mUpdateInputWindowsPending) {
-            return;
-        }
-        this.mUpdateInputWindowsPending = true;
-        this.mHandler.post(this.mUpdateInputWindows);
-    }
-
-    public void updateInputWindowsImmediately(SurfaceControl.Transaction transaction) {
-        this.mHandler.removeCallbacks(this.mUpdateInputWindows);
-        this.mUpdateInputWindowsImmediately = true;
-        this.mUpdateInputWindows.run();
-        this.mUpdateInputWindowsImmediately = false;
-        transaction.merge(this.mInputTransaction);
-    }
-
-    public void setInputFocusLw(WindowState windowState, boolean z) {
-        if (ProtoLogCache.WM_DEBUG_FOCUS_LIGHT_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_FOCUS_LIGHT, -1438175584, 4, (String) null, new Object[]{String.valueOf(windowState), Long.valueOf(this.mDisplayId)});
-        }
-        if ((windowState != null ? windowState.mInputChannelToken : null) == this.mInputFocus) {
-            return;
-        }
-        if (windowState != null && windowState.canReceiveKeys()) {
-            windowState.mToken.paused = false;
-        }
-        setUpdateInputWindowsNeededLw();
-        if (z) {
-            updateInputWindowsLw(false);
-        }
-    }
-
-    public void setActiveRecents(ActivityRecord activityRecord, ActivityRecord activityRecord2) {
-        boolean z = activityRecord == null;
-        this.mActiveRecentsActivity = z ? null : new WeakReference(activityRecord);
-        this.mActiveRecentsLayerRef = z ? null : new WeakReference(activityRecord2);
-    }
-
-    public static Object getWeak(WeakReference weakReference) {
-        if (weakReference != null) {
-            return weakReference.get();
-        }
-        return null;
-    }
-
-    public final void updateInputFocusRequest(InputConsumerImpl inputConsumerImpl) {
-        InputWindowHandle inputWindowHandle;
-        WindowState windowState = this.mDisplayContent.mCurrentFocus;
-        if (inputConsumerImpl != null && windowState != null) {
-            RecentsAnimationController recentsAnimationController = this.mService.getRecentsAnimationController();
-            if ((recentsAnimationController != null && recentsAnimationController.shouldApplyInputConsumer(windowState.mActivityRecord)) || (getWeak(this.mActiveRecentsActivity) != null && windowState.inTransition() && windowState.isActivityTypeHomeOrRecents())) {
-                IBinder iBinder = this.mInputFocus;
-                IBinder iBinder2 = inputConsumerImpl.mWindowHandle.token;
-                if (iBinder != iBinder2) {
-                    requestFocus(iBinder2, inputConsumerImpl.mName);
-                }
-                WindowState windowState2 = this.mDisplayContent.mInputMethodWindow;
-                if (windowState2 == null || !windowState2.isVisible()) {
-                    return;
-                }
-                if (!this.mDisplayContent.isImeAttachedToApp()) {
-                    InputMethodManagerInternal inputMethodManagerInternal = (InputMethodManagerInternal) LocalServices.getService(InputMethodManagerInternal.class);
-                    if (inputMethodManagerInternal != null) {
-                        inputMethodManagerInternal.hideCurrentInputMethod(19);
-                    }
-                    ActivityRecord activityRecord = this.mDisplayContent.getImeInputTarget() != null ? this.mDisplayContent.getImeInputTarget().getActivityRecord() : null;
-                    if (activityRecord != null) {
-                        this.mDisplayContent.removeImeSurfaceImmediately();
-                        if (activityRecord.getTask() != null) {
-                            this.mDisplayContent.mAtmService.takeTaskSnapshot(activityRecord.getTask().mTaskId, true);
-                            return;
-                        }
-                        return;
-                    }
-                    return;
-                }
-                InputMethodManagerInternal.get().updateImeWindowStatus(true);
-                return;
-            }
-        }
-        IBinder iBinder3 = windowState != null ? windowState.mInputChannelToken : null;
-        if (iBinder3 != null) {
-            if (!windowState.mWinAnimator.hasSurface() || !windowState.mInputWindowHandle.isFocusable()) {
-                if (ProtoLogCache.WM_DEBUG_FOCUS_LIGHT_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_FOCUS_LIGHT, -760764543, 0, (String) null, new Object[]{String.valueOf(windowState)});
-                }
-                this.mInputFocus = null;
-                return;
-            }
-            requestFocus(iBinder3, windowState.getName());
-            return;
-        }
-        if (inputConsumerImpl == null || (inputWindowHandle = inputConsumerImpl.mWindowHandle) == null || this.mInputFocus != inputWindowHandle.token) {
-            ActivityRecord activityRecord2 = this.mDisplayContent.mFocusedApp;
-            if (activityRecord2 != null && this.mInputFocus != null) {
-                if (ProtoLogCache.WM_DEBUG_FOCUS_LIGHT_enabled) {
-                    ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_FOCUS_LIGHT, 2001473656, 0, (String) null, new Object[]{String.valueOf(activityRecord2.getName())});
-                }
-                EventLog.writeEvent(62001, "Requesting to set focus to null window", "reason=UpdateInputWindows");
-                this.mInputTransaction.removeCurrentInputFocus(this.mDisplayId);
-            }
-            this.mInputFocus = null;
-        }
+    /* JADX WARN: Removed duplicated region for block: B:102:0x01cb  */
+    /* JADX WARN: Removed duplicated region for block: B:105:0x01d8  */
+    /* JADX WARN: Removed duplicated region for block: B:107:0x01e1  */
+    /* JADX WARN: Removed duplicated region for block: B:146:? A[RETURN, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public void populateInputWindowHandle(com.android.server.wm.InputWindowHandleWrapper r11, com.android.server.wm.WindowState r12) {
+        /*
+            Method dump skipped, instructions count: 688
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.InputMonitor.populateInputWindowHandle(com.android.server.wm.InputWindowHandleWrapper, com.android.server.wm.WindowState):void");
     }
 
     public final void requestFocus(IBinder iBinder, String str) {
@@ -373,8 +323,8 @@ public final class InputMonitor {
         this.mInputFocusRequestTimeMillis = SystemClock.uptimeMillis();
         this.mInputTransaction.setFocusedWindow(this.mInputFocus, str, this.mDisplayId);
         EventLog.writeEvent(62001, "Focus request " + str, "reason=UpdateInputWindows");
-        if (ProtoLogCache.WM_DEBUG_FOCUS_LIGHT_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_FOCUS_LIGHT, 155482615, 0, (String) null, new Object[]{String.valueOf(str)});
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_FOCUS_LIGHT_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_FOCUS_LIGHT, -6346673514571615151L, 0, null, String.valueOf(str));
         }
         ComponentName unflattenFromString = ComponentName.unflattenFromString(str);
         if (unflattenFromString == null || (indexOf = (packageName = unflattenFromString.getPackageName()).indexOf(32)) < 0 || (i = indexOf + 1) >= packageName.length()) {
@@ -383,170 +333,48 @@ public final class InputMonitor {
         this.mFreezeExceptionPkg = packageName.substring(i);
     }
 
-    public void setFocusedAppLw(ActivityRecord activityRecord) {
-        this.mService.mInputManager.setFocusedApplication(this.mDisplayId, activityRecord != null ? activityRecord.getInputApplicationHandle(true) : null);
+    public final void setActiveRecents(Task task, ActivityRecord activityRecord) {
+        if (CoreRune.FW_SHELL_TRANSITION_LOG) {
+            StringBuilder sb = new StringBuilder("setActiveRecents, recents=");
+            sb.append(activityRecord);
+            sb.append(", task=");
+            sb.append(task);
+            sb.append(", caller=");
+            ActivityManagerService$$ExternalSyntheticOutline0.m(3, sb, "WindowManager");
+        }
+        boolean z = false;
+        boolean z2 = activityRecord == null;
+        if (this.mActiveRecentsActivity != null && this.mActiveRecentsLayerRef != null) {
+            z = true;
+        }
+        this.mActiveRecentsActivity = z2 ? null : new WeakReference(activityRecord);
+        this.mActiveRecentsLayerRef = z2 ? null : new WeakReference(task);
+        if (z2 && z) {
+            this.mUpdateInputWindowsNeeded = true;
+        }
     }
 
-    public void pauseDispatchingLw(WindowToken windowToken) {
-        if (windowToken.paused) {
+    public final void setInputFocusLw(WindowState windowState, boolean z) {
+        if (ProtoLogImpl_54989576.Cache.WM_DEBUG_FOCUS_LIGHT_enabled[1]) {
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_FOCUS_LIGHT, -8553129529717081823L, 4, null, String.valueOf(windowState), Long.valueOf(this.mDisplayId));
+        }
+        if ((windowState != null ? windowState.mInputChannelToken : null) == this.mInputFocus) {
             return;
         }
-        windowToken.paused = true;
-        updateInputWindowsLw(true);
-    }
-
-    public void resumeDispatchingLw(WindowToken windowToken) {
-        if (windowToken.paused) {
-            windowToken.paused = false;
-            updateInputWindowsLw(true);
+        if (windowState != null && windowState.canReceiveKeys(false)) {
+            windowState.mToken.paused = false;
+        }
+        this.mUpdateInputWindowsNeeded = true;
+        if (z) {
+            updateInputWindowsLw(false);
         }
     }
 
-    public void dump(PrintWriter printWriter, String str) {
-        Set<String> keySet = this.mInputConsumers.keySet();
-        if (keySet.isEmpty()) {
+    public final void updateInputWindowsLw(boolean z) {
+        if ((!z && !this.mUpdateInputWindowsNeeded) || this.mDisplayRemoved || this.mUpdateInputWindowsPending) {
             return;
         }
-        printWriter.println(str + "InputConsumers:");
-        for (String str2 : keySet) {
-            ((InputConsumerImpl) this.mInputConsumers.get(str2)).dump(printWriter, str2, str);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class UpdateInputForAllWindowsConsumer implements Consumer {
-        public boolean mAddPipInputConsumerHandle;
-        public boolean mAddRecentsAnimationInputConsumerHandle;
-        public boolean mAddWallpaperInputConsumerHandle;
-        public boolean mInDrag;
-        public InputConsumerImpl mPipInputConsumer;
-        public InputConsumerImpl mRecentsAnimationInputConsumer;
-        public final Rect mTmpRect;
-        public InputConsumerImpl mWallpaperInputConsumer;
-
-        public /* synthetic */ UpdateInputForAllWindowsConsumer(InputMonitor inputMonitor, UpdateInputForAllWindowsConsumerIA updateInputForAllWindowsConsumerIA) {
-            this();
-        }
-
-        public UpdateInputForAllWindowsConsumer() {
-            this.mTmpRect = new Rect();
-        }
-
-        public final void updateInputWindows(boolean z) {
-            Trace.traceBegin(32L, "updateInputWindows");
-            this.mPipInputConsumer = InputMonitor.this.getInputConsumer("pip_input_consumer");
-            this.mWallpaperInputConsumer = InputMonitor.this.getInputConsumer("wallpaper_input_consumer");
-            InputConsumerImpl inputConsumer = InputMonitor.this.getInputConsumer("recents_animation_input_consumer");
-            this.mRecentsAnimationInputConsumer = inputConsumer;
-            this.mAddPipInputConsumerHandle = this.mPipInputConsumer != null;
-            this.mAddWallpaperInputConsumerHandle = this.mWallpaperInputConsumer != null;
-            this.mAddRecentsAnimationInputConsumerHandle = inputConsumer != null;
-            this.mInDrag = z;
-            InputMonitor inputMonitor = InputMonitor.this;
-            inputMonitor.resetInputConsumers(inputMonitor.mInputTransaction);
-            ActivityRecord activityRecord = (ActivityRecord) InputMonitor.getWeak(InputMonitor.this.mActiveRecentsActivity);
-            if (this.mAddRecentsAnimationInputConsumerHandle && activityRecord != null && activityRecord.getSurfaceControl() != null) {
-                WindowContainer windowContainer = (WindowContainer) InputMonitor.getWeak(InputMonitor.this.mActiveRecentsLayerRef);
-                if (windowContainer == null) {
-                    windowContainer = activityRecord;
-                }
-                if (windowContainer.getSurfaceControl() != null) {
-                    WindowState findMainWindow = activityRecord.findMainWindow();
-                    if (findMainWindow != null) {
-                        findMainWindow.getBounds(this.mTmpRect);
-                        this.mRecentsAnimationInputConsumer.mWindowHandle.touchableRegion.set(this.mTmpRect);
-                    }
-                    this.mRecentsAnimationInputConsumer.show(InputMonitor.this.mInputTransaction, windowContainer);
-                    this.mAddRecentsAnimationInputConsumerHandle = false;
-                }
-            }
-            InputMonitor.this.mDisplayContent.forAllWindows((Consumer) this, true);
-            InputMonitor.this.updateInputFocusRequest(this.mRecentsAnimationInputConsumer);
-            if (!InputMonitor.this.mUpdateInputWindowsImmediately) {
-                InputMonitor.this.mDisplayContent.getPendingTransaction().merge(InputMonitor.this.mInputTransaction);
-                InputMonitor.this.mDisplayContent.scheduleAnimation();
-            }
-            Trace.traceEnd(32L);
-        }
-
-        @Override // java.util.function.Consumer
-        public void accept(WindowState windowState) {
-            DisplayArea targetAppDisplayArea;
-            InputWindowHandleWrapper inputWindowHandleWrapper = windowState.mInputWindowHandle;
-            if (windowState.mInputChannelToken == null || windowState.mRemoved || !windowState.canReceiveTouchInput()) {
-                if (windowState.mWinAnimator.hasSurface()) {
-                    InputMonitor.populateOverlayInputInfo(inputWindowHandleWrapper, windowState);
-                    InputMonitor.setInputWindowInfoIfNeeded(InputMonitor.this.mInputTransaction, windowState.mWinAnimator.mSurfaceController.mSurfaceControl, inputWindowHandleWrapper);
-                    return;
-                }
-                return;
-            }
-            RecentsAnimationController recentsAnimationController = InputMonitor.this.mService.getRecentsAnimationController();
-            boolean z = recentsAnimationController != null && recentsAnimationController.shouldApplyInputConsumer(windowState.mActivityRecord);
-            if (this.mAddRecentsAnimationInputConsumerHandle && z && recentsAnimationController.updateInputConsumerForApp(this.mRecentsAnimationInputConsumer.mWindowHandle) && (targetAppDisplayArea = recentsAnimationController.getTargetAppDisplayArea()) != null) {
-                this.mRecentsAnimationInputConsumer.reparent(InputMonitor.this.mInputTransaction, targetAppDisplayArea);
-                this.mRecentsAnimationInputConsumer.show(InputMonitor.this.mInputTransaction, 2147483645);
-                this.mAddRecentsAnimationInputConsumerHandle = false;
-            }
-            if (windowState.inPinnedWindowingMode() && this.mAddPipInputConsumerHandle) {
-                Task rootTask = windowState.getTask().getRootTask();
-                this.mPipInputConsumer.mWindowHandle.replaceTouchableRegionWithCrop(rootTask.getSurfaceControl());
-                TaskDisplayArea displayArea = rootTask.getDisplayArea();
-                if (displayArea != null) {
-                    this.mPipInputConsumer.layout(InputMonitor.this.mInputTransaction, rootTask.getBounds());
-                    this.mPipInputConsumer.reparent(InputMonitor.this.mInputTransaction, displayArea);
-                    this.mPipInputConsumer.show(InputMonitor.this.mInputTransaction, 2147483646);
-                    this.mAddPipInputConsumerHandle = false;
-                }
-            }
-            if (this.mAddWallpaperInputConsumerHandle && windowState.mAttrs.type == 2013 && windowState.isVisible()) {
-                this.mWallpaperInputConsumer.mWindowHandle.replaceTouchableRegionWithCrop((SurfaceControl) null);
-                this.mWallpaperInputConsumer.show(InputMonitor.this.mInputTransaction, windowState);
-                this.mAddWallpaperInputConsumerHandle = false;
-            }
-            if (this.mInDrag && windowState.isVisible() && (windowState.getDisplayContent().isDefaultDisplay || windowState.getDisplayContent().isDexMode())) {
-                InputMonitor.this.mService.mDragDropController.sendDragStartedIfNeededLocked(windowState, true);
-            }
-            InputMonitor.this.mService.mKeyInterceptionInfoForToken.put(windowState.mInputChannelToken, windowState.getKeyInterceptionInfo());
-            if (windowState.mWinAnimator.hasSurface()) {
-                InputMonitor.this.populateInputWindowHandle(inputWindowHandleWrapper, windowState);
-                InputMonitor.setInputWindowInfoIfNeeded(InputMonitor.this.mInputTransaction, windowState.mWinAnimator.mSurfaceController.mSurfaceControl, inputWindowHandleWrapper);
-            }
-        }
-    }
-
-    public static void setInputWindowInfoIfNeeded(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl, InputWindowHandleWrapper inputWindowHandleWrapper) {
-        if (inputWindowHandleWrapper.isChanged()) {
-            inputWindowHandleWrapper.applyChangesToSurface(transaction, surfaceControl);
-        }
-    }
-
-    public static void populateOverlayInputInfo(InputWindowHandleWrapper inputWindowHandleWrapper, WindowState windowState) {
-        populateOverlayInputInfo(inputWindowHandleWrapper);
-        inputWindowHandleWrapper.setTouchOcclusionMode(windowState.getTouchOcclusionMode());
-    }
-
-    public static void populateOverlayInputInfo(InputWindowHandleWrapper inputWindowHandleWrapper) {
-        inputWindowHandleWrapper.setDispatchingTimeoutMillis(0L);
-        inputWindowHandleWrapper.setFocusable(false);
-        inputWindowHandleWrapper.setToken(null);
-        inputWindowHandleWrapper.setScaleFactor(1.0f);
-        inputWindowHandleWrapper.setLayoutParamsType(2);
-        inputWindowHandleWrapper.setInputConfigMasked(InputConfigAdapter.getInputConfigFromWindowParams(2, 16, 1), InputConfigAdapter.getMask());
-        inputWindowHandleWrapper.clearTouchableRegion();
-        inputWindowHandleWrapper.setTouchableRegionCrop(null);
-    }
-
-    public static void setTrustedOverlayInputInfo(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, int i, String str) {
-        InputWindowHandleWrapper inputWindowHandleWrapper = new InputWindowHandleWrapper(new InputWindowHandle((InputApplicationHandle) null, i));
-        inputWindowHandleWrapper.setName(str);
-        inputWindowHandleWrapper.setLayoutParamsType(2015);
-        inputWindowHandleWrapper.setTrustedOverlay(true);
-        populateOverlayInputInfo(inputWindowHandleWrapper);
-        setInputWindowInfoIfNeeded(transaction, surfaceControl, inputWindowHandleWrapper);
-    }
-
-    public String getRequestFocusPkg() {
-        return this.mFreezeExceptionPkg;
+        this.mUpdateInputWindowsPending = true;
+        this.mHandler.post(this.mUpdateInputWindows);
     }
 }

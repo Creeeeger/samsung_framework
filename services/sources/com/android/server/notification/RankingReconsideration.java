@@ -1,33 +1,21 @@
 package com.android.server.notification;
 
-import java.util.concurrent.TimeUnit;
-
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class RankingReconsideration implements Runnable {
-    public long mDelay;
-    public String mKey;
-    public int mState;
+    public final long mDelay;
+    public final String mKey;
+    public int mState = 0;
+
+    public RankingReconsideration(long j, String str) {
+        this.mDelay = j;
+        this.mKey = str;
+    }
 
     public abstract void applyChangesLocked(NotificationRecord notificationRecord);
 
-    public abstract void work();
-
-    public RankingReconsideration(String str) {
-        this(str, 0L);
-    }
-
-    public RankingReconsideration(String str, long j) {
-        this.mDelay = j;
-        this.mKey = str;
-        this.mState = 0;
-    }
-
-    public String getKey() {
-        return this.mKey;
-    }
-
     @Override // java.lang.Runnable
-    public void run() {
+    public final void run() {
         if (this.mState == 0) {
             this.mState = 1;
             work();
@@ -38,7 +26,5 @@ public abstract class RankingReconsideration implements Runnable {
         }
     }
 
-    public long getDelay(TimeUnit timeUnit) {
-        return timeUnit.convert(this.mDelay, TimeUnit.MILLISECONDS);
-    }
+    public abstract void work();
 }

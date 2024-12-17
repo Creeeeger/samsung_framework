@@ -3,23 +3,22 @@ package com.android.server.permission.access;
 import com.android.modules.utils.BinaryXmlPullParser;
 import com.android.modules.utils.BinaryXmlSerializer;
 import com.android.server.pm.pkg.PackageState;
+import java.util.List;
 
-/* compiled from: AccessPolicy.kt */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class SchemePolicy {
-    public abstract int getDecision(GetStateScope getStateScope, AccessUri accessUri, AccessUri accessUri2);
-
     public abstract String getObjectScheme();
 
     public abstract String getSubjectScheme();
 
-    public void onAppIdAdded(MutateStateScope mutateStateScope, int i) {
+    public void migrateSystemState(MutableAccessState mutableAccessState) {
+    }
+
+    public void migrateUserState(MutableAccessState mutableAccessState, int i) {
     }
 
     public void onAppIdRemoved(MutateStateScope mutateStateScope, int i) {
-    }
-
-    public void onInitialized(MutateStateScope mutateStateScope) {
     }
 
     public void onPackageAdded(MutateStateScope mutateStateScope, PackageState packageState) {
@@ -31,32 +30,30 @@ public abstract class SchemePolicy {
     public void onPackageRemoved(MutateStateScope mutateStateScope, String str, int i) {
     }
 
-    public void onPackageUninstalled(MutateStateScope mutateStateScope, String str, int i, int i2) {
+    public void onPackageUninstalled(MutateStateScope mutateStateScope, String str, int i) {
     }
 
-    public abstract void onStateMutated(GetStateScope getStateScope);
+    public abstract void onStateMutated();
 
-    public void onStorageVolumeMounted(MutateStateScope mutateStateScope, String str, boolean z) {
+    public void onStorageVolumeMounted(MutateStateScope mutateStateScope, List list, boolean z) {
     }
 
-    public void onSystemReady(MutateStateScope mutateStateScope) {
+    public void onSystemReady() {
     }
 
     public void onUserAdded(MutateStateScope mutateStateScope, int i) {
     }
 
-    public void onUserRemoved(MutateStateScope mutateStateScope, int i) {
+    public void parseSystemState(BinaryXmlPullParser binaryXmlPullParser, MutableAccessState mutableAccessState) {
     }
 
-    public void parseSystemState(BinaryXmlPullParser binaryXmlPullParser, AccessState accessState) {
-    }
-
-    public abstract void parseUserState(BinaryXmlPullParser binaryXmlPullParser, AccessState accessState, int i);
+    public abstract void parseUserState(BinaryXmlPullParser binaryXmlPullParser, MutableAccessState mutableAccessState, int i);
 
     public void serializeSystemState(BinaryXmlSerializer binaryXmlSerializer, AccessState accessState) {
     }
 
     public abstract void serializeUserState(BinaryXmlSerializer binaryXmlSerializer, AccessState accessState, int i);
 
-    public abstract void setDecision(MutateStateScope mutateStateScope, AccessUri accessUri, AccessUri accessUri2, int i);
+    public void upgradePackageState(MutateStateScope mutateStateScope, PackageState packageState, int i, int i2) {
+    }
 }

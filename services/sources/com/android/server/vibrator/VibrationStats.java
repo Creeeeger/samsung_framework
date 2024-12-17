@@ -1,19 +1,21 @@
 package com.android.server.vibrator;
 
 import android.os.SystemClock;
-import android.os.vibrator.PrebakedSegment;
 import android.os.vibrator.PrimitiveSegment;
-import android.os.vibrator.RampSegment;
-import android.util.Slog;
 import android.util.SparseBooleanArray;
-import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.display.DisplayPowerController2;
 import com.android.server.vibrator.Vibration;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class VibrationStats {
+    public float mAdaptiveScale;
+    public long mCreateTimeDebug;
+    public long mCreateUptimeMillis;
     public long mEndTimeDebug;
     public long mEndUptimeMillis;
+    public int mEndedByUid;
+    public int mEndedByUsage;
+    public int mInterruptedUsage;
     public int mRepeatCount;
     public long mStartTimeDebug;
     public long mStartUptimeMillis;
@@ -21,155 +23,18 @@ public final class VibrationStats {
     public int mVibrationPwleTotalSize;
     public int mVibratorComposeCount;
     public int mVibratorComposePwleCount;
+    public SparseBooleanArray mVibratorEffectsUsed;
     public int mVibratorOffCount;
     public int mVibratorOnCount;
     public int mVibratorOnTotalDurationMillis;
     public int mVibratorPerformCount;
+    public SparseBooleanArray mVibratorPrimitivesUsed;
     public int mVibratorSetAmplitudeCount;
     public int mVibratorSetExternalControlCount;
-    public SparseBooleanArray mVibratorEffectsUsed = new SparseBooleanArray();
-    public SparseBooleanArray mVibratorPrimitivesUsed = new SparseBooleanArray();
-    public long mCreateUptimeMillis = SystemClock.uptimeMillis();
-    public long mCreateTimeDebug = System.currentTimeMillis();
-    public int mEndedByUid = -1;
-    public int mEndedByUsage = -1;
-    public int mInterruptedUsage = -1;
 
-    public long getCreateUptimeMillis() {
-        return this.mCreateUptimeMillis;
-    }
-
-    public long getStartUptimeMillis() {
-        return this.mStartUptimeMillis;
-    }
-
-    public long getEndUptimeMillis() {
-        return this.mEndUptimeMillis;
-    }
-
-    public long getCreateTimeDebug() {
-        return this.mCreateTimeDebug;
-    }
-
-    public long getStartTimeDebug() {
-        return this.mStartTimeDebug;
-    }
-
-    public long getEndTimeDebug() {
-        return this.mEndTimeDebug;
-    }
-
-    public long getDurationDebug() {
-        if (hasEnded()) {
-            return this.mEndUptimeMillis - this.mCreateUptimeMillis;
-        }
-        return -1L;
-    }
-
-    public boolean hasEnded() {
-        return this.mEndUptimeMillis > 0;
-    }
-
-    public boolean hasStarted() {
-        return this.mStartUptimeMillis > 0;
-    }
-
-    public void reportStarted() {
-        if (hasEnded() || this.mStartUptimeMillis != 0) {
-            return;
-        }
-        this.mStartUptimeMillis = SystemClock.uptimeMillis();
-        this.mStartTimeDebug = System.currentTimeMillis();
-    }
-
-    public boolean reportEnded(Vibration.CallerInfo callerInfo) {
-        if (hasEnded()) {
-            return false;
-        }
-        if (callerInfo != null) {
-            this.mEndedByUid = callerInfo.uid;
-            this.mEndedByUsage = callerInfo.attrs.getUsage();
-        }
-        this.mEndUptimeMillis = SystemClock.uptimeMillis();
-        this.mEndTimeDebug = System.currentTimeMillis();
-        return true;
-    }
-
-    public void reportInterruptedAnotherVibration(Vibration.CallerInfo callerInfo) {
-        if (this.mInterruptedUsage < 0) {
-            this.mInterruptedUsage = callerInfo.attrs.getUsage();
-        }
-    }
-
-    public void reportRepetition(int i) {
-        this.mRepeatCount += i;
-    }
-
-    public void reportVibratorOn(long j) {
-        this.mVibratorOnCount++;
-        if (j > 0) {
-            this.mVibratorOnTotalDurationMillis += (int) j;
-        }
-    }
-
-    public void reportVibratorOff() {
-        this.mVibratorOffCount++;
-    }
-
-    public void reportSetAmplitude() {
-        this.mVibratorSetAmplitudeCount++;
-    }
-
-    public void reportPerformEffect(long j, PrebakedSegment prebakedSegment) {
-        this.mVibratorPerformCount++;
-        if (j > 0) {
-            this.mVibratorEffectsUsed.put(prebakedSegment.getEffectId(), true);
-            this.mVibratorOnTotalDurationMillis += (int) j;
-        } else {
-            this.mVibratorEffectsUsed.put(prebakedSegment.getEffectId(), false);
-        }
-    }
-
-    public void reportComposePrimitives(long j, PrimitiveSegment[] primitiveSegmentArr) {
-        this.mVibratorComposeCount++;
-        this.mVibrationCompositionTotalSize += primitiveSegmentArr.length;
-        if (j > 0) {
-            for (PrimitiveSegment primitiveSegment : primitiveSegmentArr) {
-                j -= r5.getDelay();
-                this.mVibratorPrimitivesUsed.put(primitiveSegment.getPrimitiveId(), true);
-            }
-            if (j > 0) {
-                this.mVibratorOnTotalDurationMillis += (int) j;
-                return;
-            }
-            return;
-        }
-        for (PrimitiveSegment primitiveSegment2 : primitiveSegmentArr) {
-            this.mVibratorPrimitivesUsed.put(primitiveSegment2.getPrimitiveId(), false);
-        }
-    }
-
-    public void reportComposePwle(long j, RampSegment[] rampSegmentArr) {
-        this.mVibratorComposePwleCount++;
-        this.mVibrationPwleTotalSize += rampSegmentArr.length;
-        if (j > 0) {
-            for (RampSegment rampSegment : rampSegmentArr) {
-                if (rampSegment.getStartAmplitude() == DisplayPowerController2.RATE_FROM_DOZE_TO_ON && rampSegment.getEndAmplitude() == DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                    j -= rampSegment.getDuration();
-                }
-            }
-            if (j > 0) {
-                this.mVibratorOnTotalDurationMillis += (int) j;
-            }
-        }
-    }
-
-    public void reportSetExternalControl() {
-        this.mVibratorSetExternalControlCount++;
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class StatsInfo {
+        public final float adaptiveScale;
         public final int endLatencyMillis;
         public final boolean endedBySameUid;
         public final int endedByUsage;
@@ -202,14 +67,17 @@ public final class VibrationStats {
             this.vibrationType = i2;
             this.usage = i3;
             this.status = status.getProtoEnumValue();
+            this.adaptiveScale = vibrationStats.mAdaptiveScale;
             this.endedBySameUid = i == vibrationStats.mEndedByUid;
             this.endedByUsage = vibrationStats.mEndedByUsage;
             this.interruptedUsage = vibrationStats.mInterruptedUsage;
             this.repeatCount = vibrationStats.mRepeatCount;
-            this.totalDurationMillis = (int) Math.max(0L, j - vibrationStats.mCreateUptimeMillis);
+            long j2 = vibrationStats.mCreateUptimeMillis;
+            this.totalDurationMillis = (int) Math.max(0L, j - j2);
             this.vibratorOnMillis = vibrationStats.mVibratorOnTotalDurationMillis;
-            if (vibrationStats.hasStarted()) {
-                this.startLatencyMillis = (int) Math.max(0L, vibrationStats.mStartUptimeMillis - vibrationStats.mCreateUptimeMillis);
+            long j3 = vibrationStats.mStartUptimeMillis;
+            if (j3 > 0) {
+                this.startLatencyMillis = (int) Math.max(0L, j3 - j2);
                 this.endLatencyMillis = (int) Math.max(0L, j - vibrationStats.mEndUptimeMillis);
             } else {
                 this.endLatencyMillis = 0;
@@ -228,18 +96,6 @@ public final class VibrationStats {
             this.halSupportedEffectsUsed = filteredKeys(vibrationStats.mVibratorEffectsUsed, true);
             this.halUnsupportedCompositionPrimitivesUsed = filteredKeys(vibrationStats.mVibratorPrimitivesUsed, false);
             this.halUnsupportedEffectsUsed = filteredKeys(vibrationStats.mVibratorEffectsUsed, false);
-        }
-
-        public boolean isWritten() {
-            return this.mIsWritten;
-        }
-
-        public void writeVibrationReported() {
-            if (this.mIsWritten) {
-                Slog.wtf("VibrationStats", "Writing same vibration stats multiple times for uid=" + this.uid);
-            }
-            this.mIsWritten = true;
-            FrameworkStatsLog.write_non_chained(FrameworkStatsLog.VIBRATION_REPORTED, this.uid, null, this.vibrationType, this.usage, this.status, this.endedBySameUid, this.endedByUsage, this.interruptedUsage, this.repeatCount, this.totalDurationMillis, this.vibratorOnMillis, this.startLatencyMillis, this.endLatencyMillis, this.halComposeCount, this.halComposePwleCount, this.halOnCount, this.halOffCount, this.halPerformCount, this.halSetAmplitudeCount, this.halSetExternalControlCount, this.halSupportedCompositionPrimitivesUsed, this.halSupportedEffectsUsed, this.halUnsupportedCompositionPrimitivesUsed, this.halUnsupportedEffectsUsed, this.halCompositionSize, this.halPwleSize);
         }
 
         public static int[] filteredKeys(SparseBooleanArray sparseBooleanArray, boolean z) {
@@ -261,6 +117,46 @@ public final class VibrationStats {
                 }
             }
             return iArr;
+        }
+
+        public boolean isWritten() {
+            return this.mIsWritten;
+        }
+    }
+
+    public final void reportComposePrimitives(PrimitiveSegment[] primitiveSegmentArr, long j) {
+        this.mVibratorComposeCount++;
+        this.mVibrationCompositionTotalSize += primitiveSegmentArr.length;
+        if (j <= 0) {
+            for (PrimitiveSegment primitiveSegment : primitiveSegmentArr) {
+                this.mVibratorPrimitivesUsed.put(primitiveSegment.getPrimitiveId(), false);
+            }
+            return;
+        }
+        for (PrimitiveSegment primitiveSegment2 : primitiveSegmentArr) {
+            j -= r5.getDelay();
+            this.mVibratorPrimitivesUsed.put(primitiveSegment2.getPrimitiveId(), true);
+        }
+        if (j > 0) {
+            this.mVibratorOnTotalDurationMillis += (int) j;
+        }
+    }
+
+    public final void reportEnded(Vibration.CallerInfo callerInfo) {
+        if (this.mEndUptimeMillis > 0) {
+            return;
+        }
+        if (callerInfo != null) {
+            this.mEndedByUid = callerInfo.uid;
+            this.mEndedByUsage = callerInfo.attrs.getUsage();
+        }
+        this.mEndUptimeMillis = SystemClock.uptimeMillis();
+        this.mEndTimeDebug = System.currentTimeMillis();
+    }
+
+    public final void reportInterruptedAnotherVibration(Vibration.CallerInfo callerInfo) {
+        if (this.mInterruptedUsage < 0) {
+            this.mInterruptedUsage = callerInfo.attrs.getUsage();
         }
     }
 }

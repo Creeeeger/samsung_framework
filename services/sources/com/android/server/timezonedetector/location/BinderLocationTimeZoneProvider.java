@@ -1,84 +1,87 @@
 package com.android.server.timezonedetector.location;
 
-import android.service.timezone.TimeZoneProviderEvent;
 import android.util.IndentingPrintWriter;
+import com.android.server.servicewatcher.ServiceWatcherImpl;
 import com.android.server.timezonedetector.location.LocationTimeZoneProvider;
-import com.android.server.timezonedetector.location.LocationTimeZoneProviderProxy;
 import java.time.Duration;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class BinderLocationTimeZoneProvider extends LocationTimeZoneProvider {
-    public final LocationTimeZoneProviderProxy mProxy;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class BinderLocationTimeZoneProvider extends LocationTimeZoneProvider {
+    public final RealLocationTimeZoneProviderProxy mProxy;
 
-    public BinderLocationTimeZoneProvider(LocationTimeZoneProvider.ProviderMetricsLogger providerMetricsLogger, ThreadingDomain threadingDomain, String str, LocationTimeZoneProviderProxy locationTimeZoneProviderProxy, boolean z) {
-        super(providerMetricsLogger, threadingDomain, str, new ZoneInfoDbTimeZoneProviderEventPreProcessor(), z);
-        Objects.requireNonNull(locationTimeZoneProviderProxy);
-        this.mProxy = locationTimeZoneProviderProxy;
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.timezonedetector.location.BinderLocationTimeZoneProvider$1, reason: invalid class name */
+    public final class AnonymousClass1 {
+        public AnonymousClass1() {
+        }
 
-    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
-    public boolean onInitialize() {
-        this.mProxy.initialize(new LocationTimeZoneProviderProxy.Listener() { // from class: com.android.server.timezonedetector.location.BinderLocationTimeZoneProvider.1
-            @Override // com.android.server.timezonedetector.location.LocationTimeZoneProviderProxy.Listener
-            public void onReportTimeZoneProviderEvent(TimeZoneProviderEvent timeZoneProviderEvent) {
-                BinderLocationTimeZoneProvider.this.handleTimeZoneProviderEvent(timeZoneProviderEvent);
+        public final void onProviderBound() {
+            BinderLocationTimeZoneProvider binderLocationTimeZoneProvider = BinderLocationTimeZoneProvider.this;
+            binderLocationTimeZoneProvider.mThreadingDomain.assertCurrentThread();
+            synchronized (binderLocationTimeZoneProvider.mSharedLock) {
+                try {
+                    LocationTimeZoneProvider.ProviderState providerState = (LocationTimeZoneProvider.ProviderState) binderLocationTimeZoneProvider.mCurrentState.get();
+                    switch (providerState.stateEnum) {
+                        case 1:
+                        case 2:
+                        case 3:
+                            LocationTimeZoneManagerService.debugLog("handleOnProviderBound mProviderName=" + binderLocationTimeZoneProvider.mProviderName + ", currentState=" + providerState + ": Provider is started.");
+                            break;
+                        case 4:
+                            LocationTimeZoneManagerService.debugLog("handleOnProviderBound mProviderName=" + binderLocationTimeZoneProvider.mProviderName + ", currentState=" + providerState + ": Provider is stopped.");
+                            break;
+                        case 5:
+                        case 6:
+                            LocationTimeZoneManagerService.debugLog("handleOnProviderBound, mProviderName=" + binderLocationTimeZoneProvider.mProviderName + ", currentState=" + providerState + ": No state change required, provider is terminated.");
+                            break;
+                        default:
+                            throw new IllegalStateException("Unknown currentState=" + providerState);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
             }
+        }
 
-            @Override // com.android.server.timezonedetector.location.LocationTimeZoneProviderProxy.Listener
-            public void onProviderBound() {
-                BinderLocationTimeZoneProvider.this.handleOnProviderBound();
-            }
-
-            @Override // com.android.server.timezonedetector.location.LocationTimeZoneProviderProxy.Listener
-            public void onProviderUnbound() {
-                BinderLocationTimeZoneProvider.this.handleTemporaryFailure("onProviderUnbound()");
-            }
-        });
-        return true;
-    }
-
-    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
-    public void onDestroy() {
-        this.mProxy.destroy();
-    }
-
-    /* JADX WARN: Failed to find 'out' block for switch in B:5:0x0012. Please report as an issue. */
-    public final void handleOnProviderBound() {
-        this.mThreadingDomain.assertCurrentThread();
-        synchronized (this.mSharedLock) {
-            LocationTimeZoneProvider.ProviderState providerState = (LocationTimeZoneProvider.ProviderState) this.mCurrentState.get();
-            switch (providerState.stateEnum) {
-                case 1:
-                case 2:
-                case 3:
-                    LocationTimeZoneManagerService.debugLog("handleOnProviderBound mProviderName=" + this.mProviderName + ", currentState=" + providerState + ": Provider is started.");
-                    break;
-                case 4:
-                    LocationTimeZoneManagerService.debugLog("handleOnProviderBound mProviderName=" + this.mProviderName + ", currentState=" + providerState + ": Provider is stopped.");
-                    break;
-                case 5:
-                case 6:
-                    LocationTimeZoneManagerService.debugLog("handleOnProviderBound, mProviderName=" + this.mProviderName + ", currentState=" + providerState + ": No state change required, provider is terminated.");
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown currentState=" + providerState);
+        public final void onProviderUnbound() {
+            BinderLocationTimeZoneProvider binderLocationTimeZoneProvider = BinderLocationTimeZoneProvider.this;
+            binderLocationTimeZoneProvider.mThreadingDomain.assertCurrentThread();
+            synchronized (binderLocationTimeZoneProvider.mSharedLock) {
+                try {
+                    LocationTimeZoneProvider.ProviderState providerState = (LocationTimeZoneProvider.ProviderState) binderLocationTimeZoneProvider.mCurrentState.get();
+                    switch (providerState.stateEnum) {
+                        case 1:
+                        case 2:
+                        case 3:
+                            binderLocationTimeZoneProvider.setCurrentState(providerState.newState(3, null, providerState.currentUserConfiguration, "handleTemporaryFailure: reason=onProviderUnbound(), currentState=" + LocationTimeZoneProvider.ProviderState.prettyPrintStateEnum(providerState.stateEnum)), true);
+                            binderLocationTimeZoneProvider.cancelInitializationTimeoutIfSet();
+                            break;
+                        case 4:
+                            LocationTimeZoneManagerService.debugLog("handleProviderLost reason=onProviderUnbound(), mProviderName=" + binderLocationTimeZoneProvider.mProviderName + ", currentState=" + providerState + ": No state change required, provider is stopped.");
+                            break;
+                        case 5:
+                        case 6:
+                            LocationTimeZoneManagerService.debugLog("handleProviderLost reason=onProviderUnbound(), mProviderName=" + binderLocationTimeZoneProvider.mProviderName + ", currentState=" + providerState + ": No state change required, provider is terminated.");
+                            break;
+                        default:
+                            throw new IllegalStateException("Unknown currentState=" + providerState);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
             }
         }
     }
 
-    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
-    public void onStartUpdates(Duration duration, Duration duration2) {
-        this.mProxy.setRequest(TimeZoneProviderRequest.createStartUpdatesRequest(duration, duration2));
-    }
-
-    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
-    public void onStopUpdates() {
-        this.mProxy.setRequest(TimeZoneProviderRequest.createStopUpdatesRequest());
+    public BinderLocationTimeZoneProvider(RealProviderMetricsLogger realProviderMetricsLogger, HandlerThreadingDomain handlerThreadingDomain, String str, RealLocationTimeZoneProviderProxy realLocationTimeZoneProviderProxy, boolean z) {
+        super(realProviderMetricsLogger, handlerThreadingDomain, str, new ZoneInfoDbTimeZoneProviderEventPreProcessor(), z);
+        this.mProxy = realLocationTimeZoneProviderProxy;
     }
 
     @Override // com.android.server.timezonedetector.Dumpable
-    public void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
+    public final void dump(IndentingPrintWriter indentingPrintWriter, String[] strArr) {
         synchronized (this.mSharedLock) {
             indentingPrintWriter.println("{BinderLocationTimeZoneProvider}");
             indentingPrintWriter.println("mProviderName=" + this.mProviderName);
@@ -95,7 +98,64 @@ public class BinderLocationTimeZoneProvider extends LocationTimeZoneProvider {
         }
     }
 
-    public String toString() {
+    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
+    public final void onDestroy() {
+        RealLocationTimeZoneProviderProxy realLocationTimeZoneProviderProxy = this.mProxy;
+        synchronized (realLocationTimeZoneProviderProxy.mSharedLock) {
+            realLocationTimeZoneProviderProxy.mServiceWatcher.unregister();
+        }
+    }
+
+    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
+    public final boolean onInitialize() {
+        RealLocationTimeZoneProviderProxy realLocationTimeZoneProviderProxy = this.mProxy;
+        AnonymousClass1 anonymousClass1 = new AnonymousClass1();
+        realLocationTimeZoneProviderProxy.getClass();
+        synchronized (realLocationTimeZoneProviderProxy.mSharedLock) {
+            try {
+                if (realLocationTimeZoneProviderProxy.mListener != null) {
+                    throw new IllegalStateException("listener already set");
+                }
+                realLocationTimeZoneProviderProxy.mListener = anonymousClass1;
+                ServiceWatcherImpl serviceWatcherImpl = realLocationTimeZoneProviderProxy.mServiceWatcher;
+                boolean checkServiceResolves = serviceWatcherImpl.checkServiceResolves();
+                if (checkServiceResolves) {
+                    serviceWatcherImpl.register();
+                }
+                if (!checkServiceResolves) {
+                    throw new IllegalStateException("Unable to register binder proxy");
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return true;
+    }
+
+    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
+    public final void onStartUpdates(Duration duration, Duration duration2) {
+        Objects.requireNonNull(duration2);
+        TimeZoneProviderRequest timeZoneProviderRequest = new TimeZoneProviderRequest(true, duration, duration2);
+        RealLocationTimeZoneProviderProxy realLocationTimeZoneProviderProxy = this.mProxy;
+        realLocationTimeZoneProviderProxy.mThreadingDomain.assertCurrentThread();
+        synchronized (realLocationTimeZoneProviderProxy.mSharedLock) {
+            realLocationTimeZoneProviderProxy.mRequest = timeZoneProviderRequest;
+            realLocationTimeZoneProviderProxy.mServiceWatcher.runOnBinder(new RealLocationTimeZoneProviderProxy$$ExternalSyntheticLambda0(timeZoneProviderRequest, realLocationTimeZoneProviderProxy.mManagerProxy));
+        }
+    }
+
+    @Override // com.android.server.timezonedetector.location.LocationTimeZoneProvider
+    public final void onStopUpdates() {
+        TimeZoneProviderRequest timeZoneProviderRequest = TimeZoneProviderRequest.STOP_UPDATES;
+        RealLocationTimeZoneProviderProxy realLocationTimeZoneProviderProxy = this.mProxy;
+        realLocationTimeZoneProviderProxy.mThreadingDomain.assertCurrentThread();
+        synchronized (realLocationTimeZoneProviderProxy.mSharedLock) {
+            realLocationTimeZoneProviderProxy.mRequest = timeZoneProviderRequest;
+            realLocationTimeZoneProviderProxy.mServiceWatcher.runOnBinder(new RealLocationTimeZoneProviderProxy$$ExternalSyntheticLambda0(timeZoneProviderRequest, realLocationTimeZoneProviderProxy.mManagerProxy));
+        }
+    }
+
+    public final String toString() {
         String str;
         synchronized (this.mSharedLock) {
             str = "BinderLocationTimeZoneProvider{mProviderName=" + this.mProviderName + ", mCurrentState=" + this.mCurrentState + ", mProxy=" + this.mProxy + '}';

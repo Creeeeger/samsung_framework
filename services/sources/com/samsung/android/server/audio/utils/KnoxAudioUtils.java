@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import com.android.server.RCPManagerService$$ExternalSyntheticOutline0;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class KnoxAudioUtils {
     public static boolean isRestrictedHeadphone(Context context) {
@@ -22,12 +24,14 @@ public abstract class KnoxAudioUtils {
                 } finally {
                 }
             }
-            if (query != null) {
-                query.close();
+            if (query == null) {
+                return false;
             }
+            query.close();
+            return false;
         } catch (Exception e) {
-            Log.e("AS.KnoxAudioUtils", "isRestrictedHeadphone throws " + e.getMessage());
+            RCPManagerService$$ExternalSyntheticOutline0.m(e, new StringBuilder("isRestrictedHeadphone throws "), "AS.KnoxAudioUtils");
+            return false;
         }
-        return false;
     }
 }

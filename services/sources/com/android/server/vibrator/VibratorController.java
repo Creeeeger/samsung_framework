@@ -1,6 +1,5 @@
 package com.android.server.vibrator;
 
-import android.os.Binder;
 import android.os.IVibratorStateListener;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
@@ -8,248 +7,37 @@ import android.os.VibratorInfo;
 import android.os.vibrator.PrebakedSegment;
 import android.os.vibrator.PrimitiveSegment;
 import android.os.vibrator.RampSegment;
+import android.util.IndentingPrintWriter;
 import android.util.Slog;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.desktopmode.DesktopModeService$$ExternalSyntheticOutline0;
 import com.samsung.android.server.vibrator.VibratorHelper;
 import java.util.function.Consumer;
 import libcore.util.NativeAllocationRegistry;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class VibratorController {
     public volatile float mCurrentAmplitude;
     public volatile boolean mIsUnderExternalControl;
     public volatile boolean mIsVibrating;
-    public final Object mLock;
     public final NativeWrapper mNativeWrapper;
-    public boolean mSupportEnhancedSamsungHapticPattern;
-    public boolean mSupportFrequencyControl;
-    public boolean mSupportHapticEngine;
-    public boolean mSupportIndexWideBand;
-    public boolean mSupportIntensityControl;
-    public boolean mSupportPrebakedHapticPattern;
+    public final boolean mSupportEnhancedSamsungHapticPattern;
+    public final boolean mSupportFrequencyControl;
+    public final boolean mSupportHapticEngine;
+    public final boolean mSupportIndexWideBand;
+    public final boolean mSupportIntensityControl;
+    public final boolean mSupportPrebakedHapticPattern;
     public final int mVibratorGroup;
     public volatile VibratorInfo mVibratorInfo;
     public volatile boolean mVibratorInfoLoadSuccessful;
-    public final RemoteCallbackList mVibratorStateListeners;
     private int mVibratorType;
+    public final Object mLock = new Object();
+    public final RemoteCallbackList mVibratorStateListeners = new RemoteCallbackList();
 
-    /* loaded from: classes3.dex */
-    public interface OnVibrationCompleteListener {
-        void onComplete(int i, long j);
-    }
-
-    public VibratorController(int i, OnVibrationCompleteListener onVibrationCompleteListener) {
-        this(i, onVibrationCompleteListener, new NativeWrapper());
-    }
-
-    public VibratorController(int i, OnVibrationCompleteListener onVibrationCompleteListener, NativeWrapper nativeWrapper) {
-        this.mLock = new Object();
-        this.mVibratorStateListeners = new RemoteCallbackList();
-        this.mNativeWrapper = nativeWrapper;
-        nativeWrapper.init(i, onVibrationCompleteListener);
-        VibratorInfo.Builder builder = new VibratorInfo.Builder(i);
-        this.mVibratorInfoLoadSuccessful = nativeWrapper.getInfo(builder);
-        this.mVibratorInfo = builder.build();
-        if (!this.mVibratorInfoLoadSuccessful) {
-            Slog.e("VibratorController", "Vibrator controller initialization failed to load some HAL info for vibrator " + i);
-        }
-        this.mVibratorGroup = initVibratorGroup();
-    }
-
-    public boolean registerVibratorStateListener(IVibratorStateListener iVibratorStateListener) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            synchronized (this.mLock) {
-                if (this.mVibratorStateListeners.register(iVibratorStateListener)) {
-                    lambda$notifyListenerOnVibrating$0(iVibratorStateListener, this.mIsVibrating);
-                    Binder.restoreCallingIdentity(clearCallingIdentity);
-                    return true;
-                }
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                return false;
-            }
-        } catch (Throwable th) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            throw th;
-        }
-    }
-
-    public boolean unregisterVibratorStateListener(IVibratorStateListener iVibratorStateListener) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return this.mVibratorStateListeners.unregister(iVibratorStateListener);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public void reloadVibratorInfoIfNeeded() {
-        if (this.mVibratorInfoLoadSuccessful) {
-            return;
-        }
-        synchronized (this.mLock) {
-            if (this.mVibratorInfoLoadSuccessful) {
-                return;
-            }
-            int id = this.mVibratorInfo.getId();
-            VibratorInfo.Builder builder = new VibratorInfo.Builder(id);
-            this.mVibratorInfoLoadSuccessful = this.mNativeWrapper.getInfo(builder);
-            this.mVibratorInfo = builder.build();
-            if (!this.mVibratorInfoLoadSuccessful) {
-                Slog.e("VibratorController", "Failed retry of HAL getInfo for vibrator " + id);
-            }
-        }
-    }
-
-    public boolean isVibratorInfoLoadSuccessful() {
-        return this.mVibratorInfoLoadSuccessful;
-    }
-
-    public VibratorInfo getVibratorInfo() {
-        return this.mVibratorInfo;
-    }
-
-    public boolean isVibrating() {
-        return this.mIsVibrating;
-    }
-
-    public float getCurrentAmplitude() {
-        return this.mCurrentAmplitude;
-    }
-
-    public boolean isUnderExternalControl() {
-        return this.mIsUnderExternalControl;
-    }
-
-    public boolean hasCapability(long j) {
-        return this.mVibratorInfo.hasCapability(j);
-    }
-
-    public void setExternalControl(boolean z) {
-        if (this.mVibratorInfo.hasCapability(8L)) {
-            synchronized (this.mLock) {
-                this.mIsUnderExternalControl = z;
-                this.mNativeWrapper.setExternalControl(z);
-            }
-        }
-    }
-
-    public void updateAlwaysOn(int i, PrebakedSegment prebakedSegment) {
-        if (this.mVibratorInfo.hasCapability(64L)) {
-            synchronized (this.mLock) {
-                if (prebakedSegment == null) {
-                    this.mNativeWrapper.alwaysOnDisable(i);
-                } else {
-                    this.mNativeWrapper.alwaysOnEnable(i, prebakedSegment.getEffectId(), prebakedSegment.getEffectStrength());
-                }
-            }
-        }
-    }
-
-    public void setAmplitude(float f) {
-        synchronized (this.mLock) {
-            if (this.mVibratorInfo.hasCapability(4L)) {
-                this.mNativeWrapper.setAmplitude(f);
-            }
-            if (this.mIsVibrating) {
-                this.mCurrentAmplitude = f;
-            }
-        }
-    }
-
-    public long on(long j, long j2) {
-        long on;
-        synchronized (this.mLock) {
-            on = this.mNativeWrapper.on(j, j2);
-            if (on > 0) {
-                this.mCurrentAmplitude = -1.0f;
-                notifyListenerOnVibrating(true);
-            }
-        }
-        return on;
-    }
-
-    public long on(PrebakedSegment prebakedSegment, long j) {
-        long perform;
-        synchronized (this.mLock) {
-            perform = this.mNativeWrapper.perform(prebakedSegment.getEffectId(), prebakedSegment.getEffectStrength(), j);
-            if (perform > 0) {
-                this.mCurrentAmplitude = -1.0f;
-                notifyListenerOnVibrating(true);
-            }
-        }
-        return perform;
-    }
-
-    public long on(PrimitiveSegment[] primitiveSegmentArr, long j) {
-        long compose;
-        if (!this.mVibratorInfo.hasCapability(32L)) {
-            return 0L;
-        }
-        synchronized (this.mLock) {
-            compose = this.mNativeWrapper.compose(primitiveSegmentArr, j);
-            if (compose > 0) {
-                this.mCurrentAmplitude = -1.0f;
-                notifyListenerOnVibrating(true);
-            }
-        }
-        return compose;
-    }
-
-    public long on(RampSegment[] rampSegmentArr, long j) {
-        long composePwle;
-        if (!this.mVibratorInfo.hasCapability(1024L)) {
-            return 0L;
-        }
-        synchronized (this.mLock) {
-            composePwle = this.mNativeWrapper.composePwle(rampSegmentArr, this.mVibratorInfo.getDefaultBraking(), j);
-            if (composePwle > 0) {
-                this.mCurrentAmplitude = -1.0f;
-                notifyListenerOnVibrating(true);
-            }
-        }
-        return composePwle;
-    }
-
-    public void off() {
-        synchronized (this.mLock) {
-            this.mNativeWrapper.off();
-            this.mCurrentAmplitude = DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-            notifyListenerOnVibrating(false);
-        }
-    }
-
-    public void reset() {
-        setExternalControl(false);
-        off();
-    }
-
-    public String toString() {
-        return "VibratorController{mVibratorInfo=" + this.mVibratorInfo + ", mVibratorInfoLoadSuccessful=" + this.mVibratorInfoLoadSuccessful + ", mIsVibrating=" + this.mIsVibrating + ", mCurrentAmplitude=" + this.mCurrentAmplitude + ", mIsUnderExternalControl=" + this.mIsUnderExternalControl + ", mVibratorStateListeners count=" + this.mVibratorStateListeners.getRegisteredCallbackCount() + '}';
-    }
-
-    public final void notifyListenerOnVibrating(final boolean z) {
-        if (this.mIsVibrating != z) {
-            this.mIsVibrating = z;
-            this.mVibratorStateListeners.broadcast(new Consumer() { // from class: com.android.server.vibrator.VibratorController$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    VibratorController.this.lambda$notifyListenerOnVibrating$0(z, (IVibratorStateListener) obj);
-                }
-            });
-        }
-    }
-
-    /* renamed from: notifyStateListener, reason: merged with bridge method [inline-methods] */
-    public final void lambda$notifyListenerOnVibrating$0(IVibratorStateListener iVibratorStateListener, boolean z) {
-        try {
-            iVibratorStateListener.onVibrating(z);
-        } catch (RemoteException | RuntimeException e) {
-            Slog.e("VibratorController", "Vibrator state listener failed to call", e);
-        }
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class NativeWrapper {
         public long mNativePtr = 0;
 
@@ -319,7 +107,39 @@ public final class VibratorController {
 
         private static native boolean supportsTentState(long j);
 
-        public void init(int i, OnVibrationCompleteListener onVibrationCompleteListener) {
+        public final void alwaysOnDisable(long j) {
+            alwaysOnDisable(this.mNativePtr, j);
+        }
+
+        public final void alwaysOnEnable(long j, long j2, long j3) {
+            alwaysOnEnable(this.mNativePtr, j, j2, j3);
+        }
+
+        public final long compose(PrimitiveSegment[] primitiveSegmentArr, long j) {
+            return performComposedEffect(this.mNativePtr, primitiveSegmentArr, j);
+        }
+
+        public final long composePwle(RampSegment[] rampSegmentArr, int i, long j) {
+            return performPwleEffect(this.mNativePtr, rampSegmentArr, i, j);
+        }
+
+        public final int[] getAmplitudeList(int i) {
+            return getAmplitudeList(this.mNativePtr, i);
+        }
+
+        public final boolean getInfo(VibratorInfo.Builder builder) {
+            return getInfo(this.mNativePtr, builder);
+        }
+
+        public final int getNumberOfPrebakedHapticPattern() {
+            return getNumberOfPrebakedHapticPattern(this.mNativePtr);
+        }
+
+        public final boolean hasFeature(String str) {
+            return hasFeature(this.mNativePtr, str);
+        }
+
+        public final void init(int i, OnVibrationCompleteListener onVibrationCompleteListener) {
             this.mNativePtr = nativeInit(i, onVibrationCompleteListener);
             long nativeFinalizer = getNativeFinalizer();
             if (nativeFinalizer != 0) {
@@ -327,253 +147,276 @@ public final class VibratorController {
             }
         }
 
-        public boolean isAvailable() {
+        public final boolean isAvailable() {
             return isAvailable(this.mNativePtr);
         }
 
-        public long on(long j, long j2) {
-            return on(this.mNativePtr, j, j2);
-        }
-
-        public void off() {
+        public final void off() {
             off(this.mNativePtr);
         }
 
-        public void setAmplitude(float f) {
-            setAmplitude(this.mNativePtr, f);
+        public final long on(long j, long j2) {
+            return on(this.mNativePtr, j, j2);
         }
 
-        public long perform(long j, long j2, long j3) {
+        public final long perform(long j, long j2, long j3) {
             return performEffect(this.mNativePtr, j, j2, j3);
         }
 
-        public long compose(PrimitiveSegment[] primitiveSegmentArr, long j) {
-            return performComposedEffect(this.mNativePtr, primitiveSegmentArr, j);
-        }
-
-        public long composePwle(RampSegment[] rampSegmentArr, int i, long j) {
-            return performPwleEffect(this.mNativePtr, rampSegmentArr, i, j);
-        }
-
-        public void setExternalControl(boolean z) {
-            setExternalControl(this.mNativePtr, z);
-        }
-
-        public void alwaysOnEnable(long j, long j2, long j3) {
-            alwaysOnEnable(this.mNativePtr, j, j2, j3);
-        }
-
-        public void alwaysOnDisable(long j) {
-            alwaysOnDisable(this.mNativePtr, j);
-        }
-
-        public boolean getInfo(VibratorInfo.Builder builder) {
-            return getInfo(this.mNativePtr, builder);
-        }
-
-        public boolean supportsPrebakedHapticPattern() {
-            return supportsPrebakedHapticPattern(this.mNativePtr);
-        }
-
-        public boolean supportsHapticEngine() {
-            return supportsHapticEngine(this.mNativePtr);
-        }
-
-        public boolean supportsEnhancedSamsungHapticPattern() {
-            return supportsEnhancedSamsungHapticPattern(this.mNativePtr);
-        }
-
-        public boolean supportIntensityControl() {
-            return supportIntensityControl(this.mNativePtr);
-        }
-
-        public void setIntensity(long j) {
-            setIntensity(this.mNativePtr, j);
-        }
-
-        public boolean supportsFrequencyControl() {
-            return supportsFrequencyControl(this.mNativePtr);
-        }
-
-        public void setFrequencyType(long j) {
-            setFrequencyType(this.mNativePtr, j);
-        }
-
-        public void performHapticEngine(int[] iArr, int i) {
-            performHapticEngine(this.mNativePtr, iArr, i);
-        }
-
-        public void performCommonInputff(int[] iArr, boolean z, int i) {
+        public final void performCommonInputff(int[] iArr, boolean z, int i) {
             performCommonInputff(this.mNativePtr, iArr, z, i);
         }
 
-        public void performPrebakedHapticPattern(long j, long j2, boolean z) {
+        public final void performHapticEngine(int[] iArr, int i) {
+            performHapticEngine(this.mNativePtr, iArr, i);
+        }
+
+        public final void performPrebakedHapticPattern(long j, long j2, boolean z) {
             performPrebakedHapticPattern(this.mNativePtr, j, j2, z);
         }
 
-        public int getNumberOfPrebakedHapticPattern() {
-            return getNumberOfPrebakedHapticPattern(this.mNativePtr);
-        }
-
-        public void setForceTouchAmplitude(long j) {
-            setForceTouchAmplitude(this.mNativePtr, j);
-        }
-
-        public boolean supportsFoldState() {
-            return supportsFoldState(this.mNativePtr);
-        }
-
-        public void setFoldState(boolean z) {
-            setFoldState(this.mNativePtr, z);
-        }
-
-        public boolean supportsTentState() {
-            return supportsTentState(this.mNativePtr);
-        }
-
-        public void setTentState(boolean z) {
-            setTentState(this.mNativePtr, z);
-        }
-
-        public int[] getAmplitudeList(int i) {
-            return getAmplitudeList(this.mNativePtr, i);
-        }
-
-        public long sehPerformEffect(long j, long j2, Vibration vibration, boolean z) {
+        public final long sehPerformEffect(long j, long j2, Vibration vibration, boolean z) {
             return sehPerformEffect(this.mNativePtr, j, j2, vibration, z);
         }
 
-        public boolean supportsHasFeature() {
+        public final void setAmplitude(float f) {
+            setAmplitude(this.mNativePtr, f);
+        }
+
+        public final void setExternalControl(boolean z) {
+            setExternalControl(this.mNativePtr, z);
+        }
+
+        public final void setFoldState(boolean z) {
+            setFoldState(this.mNativePtr, z);
+        }
+
+        public final void setForceTouchAmplitude(long j) {
+            setForceTouchAmplitude(this.mNativePtr, j);
+        }
+
+        public final void setFrequencyType(long j) {
+            setFrequencyType(this.mNativePtr, j);
+        }
+
+        public final void setIntensity(long j) {
+            setIntensity(this.mNativePtr, j);
+        }
+
+        public final void setTentState(boolean z) {
+            setTentState(this.mNativePtr, z);
+        }
+
+        public final boolean supportIntensityControl() {
+            return supportIntensityControl(this.mNativePtr);
+        }
+
+        public final boolean supportsEnhancedSamsungHapticPattern() {
+            return supportsEnhancedSamsungHapticPattern(this.mNativePtr);
+        }
+
+        public final boolean supportsFoldState() {
+            return supportsFoldState(this.mNativePtr);
+        }
+
+        public final boolean supportsFrequencyControl() {
+            return supportsFrequencyControl(this.mNativePtr);
+        }
+
+        public final boolean supportsHapticEngine() {
+            return supportsHapticEngine(this.mNativePtr);
+        }
+
+        public final boolean supportsHasFeature() {
             return supportsHasFeature(this.mNativePtr);
         }
 
-        public boolean hasFeature(String str) {
-            return hasFeature(this.mNativePtr, str);
+        public final boolean supportsPrebakedHapticPattern() {
+            return supportsPrebakedHapticPattern(this.mNativePtr);
+        }
+
+        public final boolean supportsTentState() {
+            return supportsTentState(this.mNativePtr);
         }
     }
 
-    public final int initVibratorGroup() {
-        int i = 1;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface OnVibrationCompleteListener {
+        void onComplete(int i, long j);
+    }
+
+    public VibratorController(int i, OnVibrationCompleteListener onVibrationCompleteListener, NativeWrapper nativeWrapper) {
+        int i2;
+        this.mNativeWrapper = nativeWrapper;
+        nativeWrapper.init(i, onVibrationCompleteListener);
+        VibratorInfo.Builder builder = new VibratorInfo.Builder(i);
+        this.mVibratorInfoLoadSuccessful = nativeWrapper.getInfo(builder);
+        this.mVibratorInfo = builder.build();
+        if (!this.mVibratorInfoLoadSuccessful) {
+            NandswapManager$$ExternalSyntheticOutline0.m(i, "Vibrator controller initialization failed to load some HAL info for vibrator ", "VibratorController");
+        }
         this.mVibratorType = 1;
-        this.mSupportHapticEngine = supportsHapticEngine();
-        this.mSupportIntensityControl = supportIntensityControl();
-        this.mSupportFrequencyControl = supportsFrequencyControl();
-        this.mSupportPrebakedHapticPattern = supportsPrebakedHapticPattern();
-        this.mSupportEnhancedSamsungHapticPattern = supportsEnhancedSamsungHapticPattern();
-        boolean hasFeature = hasFeature("INDEX_WIDE_BAND");
+        this.mSupportHapticEngine = nativeWrapper.supportsHapticEngine();
+        this.mSupportIntensityControl = nativeWrapper.supportIntensityControl();
+        this.mSupportFrequencyControl = nativeWrapper.supportsFrequencyControl();
+        this.mSupportPrebakedHapticPattern = nativeWrapper.supportsPrebakedHapticPattern();
+        this.mSupportEnhancedSamsungHapticPattern = nativeWrapper.supportsEnhancedSamsungHapticPattern();
+        boolean hasFeature = nativeWrapper.hasFeature("INDEX_WIDE_BAND");
         this.mSupportIndexWideBand = hasFeature;
         if (this.mSupportPrebakedHapticPattern) {
             if (this.mSupportHapticEngine || hasFeature) {
                 this.mVibratorType = 5;
-                i = 4;
+                i2 = 4;
             } else {
                 this.mVibratorType = 9;
-                i = 2;
+                i2 = 2;
             }
         } else if (this.mSupportHapticEngine) {
             if (this.mSupportEnhancedSamsungHapticPattern) {
                 this.mVibratorType = 7;
-                i = 3;
+                i2 = 3;
             } else {
                 this.mVibratorType = 6;
-                i = 2;
+                i2 = 2;
             }
         } else if (this.mSupportIntensityControl) {
             this.mVibratorType = 2;
-            i = 2;
+            i2 = 2;
+        } else {
+            i2 = 1;
         }
-        Slog.d("VibratorController", "motor group: " + VibratorHelper.getVibrationTypeToString(i) + " (" + this.mVibratorType + ")");
-        return i;
+        StringBuilder sb = new StringBuilder("motor group: ");
+        VibratorHelper vibratorHelper = VibratorHelper.sInstance;
+        sb.append(i2 != 1 ? i2 != 2 ? i2 != 3 ? i2 != 4 ? "SEM_SUPPORTED_VIBRATION_NONE" : "SEM_SUPPORTED_VIBRATION_TYPE_D" : "SEM_SUPPORTED_VIBRATION_TYPE_C" : "SEM_SUPPORTED_VIBRATION_TYPE_B" : "SEM_SUPPORTED_VIBRATION_TYPE_A");
+        sb.append(" (");
+        BinaryTransparencyService$$ExternalSyntheticOutline0.m(sb, this.mVibratorType, ")", "VibratorController");
+        this.mVibratorGroup = i2;
     }
 
-    public int getMotorType() {
+    public final void dump(IndentingPrintWriter indentingPrintWriter) {
+        indentingPrintWriter.println("Vibrator (id=" + this.mVibratorInfo.getId() + "):");
+        indentingPrintWriter.increaseIndent();
+        StringBuilder m = DesktopModeService$$ExternalSyntheticOutline0.m(DesktopModeService$$ExternalSyntheticOutline0.m(new StringBuilder("isVibrating = "), this.mIsVibrating, indentingPrintWriter, "isUnderExternalControl = "), this.mIsUnderExternalControl, indentingPrintWriter, "currentAmplitude = ");
+        m.append(this.mCurrentAmplitude);
+        indentingPrintWriter.println(m.toString());
+        StringBuilder m2 = DesktopModeService$$ExternalSyntheticOutline0.m(new StringBuilder("vibratorInfoLoadSuccessful = "), this.mVibratorInfoLoadSuccessful, indentingPrintWriter, "vibratorStateListener size = ");
+        m2.append(this.mVibratorStateListeners.getRegisteredCallbackCount());
+        indentingPrintWriter.println(m2.toString());
+        this.mVibratorInfo.dump(indentingPrintWriter);
+        indentingPrintWriter.decreaseIndent();
+    }
+
+    public final int getMotorType() {
         return this.mVibratorType;
     }
 
-    public int getVibratorGroup() {
-        return this.mVibratorGroup;
+    public final void notifyListenerOnVibrating(final boolean z) {
+        if (this.mIsVibrating != z) {
+            this.mIsVibrating = z;
+            this.mVibratorStateListeners.broadcast(new Consumer() { // from class: com.android.server.vibrator.VibratorController$$ExternalSyntheticLambda0
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    VibratorController vibratorController = VibratorController.this;
+                    boolean z2 = z;
+                    IVibratorStateListener iVibratorStateListener = (IVibratorStateListener) obj;
+                    vibratorController.getClass();
+                    try {
+                        iVibratorStateListener.onVibrating(z2);
+                    } catch (RemoteException | RuntimeException e) {
+                        Slog.e("VibratorController", "Vibrator state listener failed to call", e);
+                    }
+                }
+            });
+        }
     }
 
-    public boolean isSupportHapticEngine() {
-        return this.mSupportHapticEngine;
+    public final void off() {
+        synchronized (this.mLock) {
+            this.mNativeWrapper.off();
+            this.mCurrentAmplitude = FullScreenMagnificationGestureHandler.MAX_SCALE;
+            notifyListenerOnVibrating(false);
+        }
     }
 
-    public boolean isSupportIntensityControl() {
-        return this.mSupportIntensityControl;
+    public final long on(long j, long j2) {
+        long on;
+        synchronized (this.mLock) {
+            try {
+                on = this.mNativeWrapper.on(j, j2);
+                if (on > 0) {
+                    this.mCurrentAmplitude = -1.0f;
+                    notifyListenerOnVibrating(true);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return on;
     }
 
-    public boolean isSupportFrequencyControl() {
-        return this.mSupportFrequencyControl;
+    public final void reloadVibratorInfoIfNeeded() {
+        if (this.mVibratorInfoLoadSuccessful) {
+            return;
+        }
+        synchronized (this.mLock) {
+            try {
+                if (this.mVibratorInfoLoadSuccessful) {
+                    return;
+                }
+                int id = this.mVibratorInfo.getId();
+                VibratorInfo.Builder builder = new VibratorInfo.Builder(id);
+                this.mVibratorInfoLoadSuccessful = this.mNativeWrapper.getInfo(builder);
+                this.mVibratorInfo = builder.build();
+                if (!this.mVibratorInfoLoadSuccessful) {
+                    Slog.e("VibratorController", "Failed retry of HAL getInfo for vibrator " + id);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
-    public boolean isSupportPrebakedHapticPattern() {
-        return this.mSupportPrebakedHapticPattern;
+    public final void setAmplitude(float f) {
+        synchronized (this.mLock) {
+            try {
+                if (this.mVibratorInfo.hasCapability(4L)) {
+                    this.mNativeWrapper.setAmplitude(f);
+                }
+                if (this.mIsVibrating) {
+                    this.mCurrentAmplitude = f;
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
-    public boolean isSupportEnhancedSamsungHapticPattern() {
-        return this.mSupportEnhancedSamsungHapticPattern;
+    public final void setExternalControl(boolean z) {
+        if (this.mVibratorInfo.hasCapability(8L)) {
+            synchronized (this.mLock) {
+                this.mIsUnderExternalControl = z;
+                this.mNativeWrapper.setExternalControl(z);
+            }
+        }
     }
 
-    public boolean isSupportIndexWideBand() {
-        return this.mSupportIndexWideBand;
+    public final String toString() {
+        return "VibratorController{mVibratorInfo=" + this.mVibratorInfo + ", mVibratorInfoLoadSuccessful=" + this.mVibratorInfoLoadSuccessful + ", mIsVibrating=" + this.mIsVibrating + ", mCurrentAmplitude=" + this.mCurrentAmplitude + ", mIsUnderExternalControl=" + this.mIsUnderExternalControl + ", mVibratorStateListeners count=" + this.mVibratorStateListeners.getRegisteredCallbackCount() + '}';
     }
 
-    public boolean supportsPrebakedHapticPattern() {
-        return this.mNativeWrapper.supportsPrebakedHapticPattern();
-    }
-
-    public boolean supportsHapticEngine() {
-        return this.mNativeWrapper.supportsHapticEngine();
-    }
-
-    public boolean supportsEnhancedSamsungHapticPattern() {
-        return this.mNativeWrapper.supportsEnhancedSamsungHapticPattern();
-    }
-
-    public boolean supportIntensityControl() {
-        return this.mNativeWrapper.supportIntensityControl();
-    }
-
-    public void setIntensity(long j) {
-        this.mNativeWrapper.setIntensity(j);
-    }
-
-    public boolean supportsFrequencyControl() {
-        return this.mNativeWrapper.supportsFrequencyControl();
-    }
-
-    public void setFrequencyType(long j) {
-        this.mNativeWrapper.setFrequencyType(j);
-    }
-
-    public void performHapticEngine(int[] iArr, int i) {
-        this.mNativeWrapper.performHapticEngine(iArr, i);
-        notifyListenerOnVibrating(true);
-    }
-
-    public void performPrebakedHapticPattern(long j, long j2, boolean z) {
-        this.mNativeWrapper.performPrebakedHapticPattern(j, j2, z);
-        notifyListenerOnVibrating(true);
-    }
-
-    public void performCommonInputff(int[] iArr, boolean z, int i) {
-        this.mNativeWrapper.performCommonInputff(iArr, z, i);
-        notifyListenerOnVibrating(true);
-    }
-
-    public boolean supportsFoldState() {
-        return this.mNativeWrapper.supportsFoldState();
-    }
-
-    public void setFoldState(boolean z) {
-        this.mNativeWrapper.setFoldState(z);
-    }
-
-    public int[] getAmplitudeList(int i) {
-        return this.mNativeWrapper.getAmplitudeList(i);
-    }
-
-    public boolean hasFeature(String str) {
-        return this.mNativeWrapper.hasFeature(str);
+    public final void updateAlwaysOn(int i, PrebakedSegment prebakedSegment) {
+        if (this.mVibratorInfo.hasCapability(64L)) {
+            synchronized (this.mLock) {
+                try {
+                    if (prebakedSegment == null) {
+                        this.mNativeWrapper.alwaysOnDisable(i);
+                    } else {
+                        this.mNativeWrapper.alwaysOnEnable(i, prebakedSegment.getEffectId(), prebakedSegment.getEffectStrength());
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
     }
 }

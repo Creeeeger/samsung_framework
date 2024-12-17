@@ -12,21 +12,27 @@ import com.android.internal.R;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AccountAuthenticatorCache extends RegisteredServicesCache implements IAccountAuthenticatorCache {
+public final class AccountAuthenticatorCache extends RegisteredServicesCache implements IAccountAuthenticatorCache {
     public static final MySerializer sSerializer = new MySerializer();
 
-    @Override // com.android.server.accounts.IAccountAuthenticatorCache
-    public /* bridge */ /* synthetic */ RegisteredServicesCache.ServiceInfo getServiceInfo(AuthenticatorDescription authenticatorDescription, int i) {
-        return super.getServiceInfo(authenticatorDescription, i);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class MySerializer implements XmlSerializerAndParser {
+        public final Object createFromXml(TypedXmlPullParser typedXmlPullParser) {
+            return AuthenticatorDescription.newKey(typedXmlPullParser.getAttributeValue((String) null, "type"));
+        }
+
+        public final void writeAsXml(Object obj, TypedXmlSerializer typedXmlSerializer) {
+            typedXmlSerializer.attribute((String) null, "type", ((AuthenticatorDescription) obj).type);
+        }
     }
 
     public AccountAuthenticatorCache(Context context) {
         super(context, "android.accounts.AccountAuthenticator", "android.accounts.AccountAuthenticator", "account-authenticator", sSerializer);
     }
 
-    /* renamed from: parseServiceAttributes, reason: merged with bridge method [inline-methods] */
-    public AuthenticatorDescription m1239parseServiceAttributes(Resources resources, String str, AttributeSet attributeSet) {
+    public final Object parseServiceAttributes(Resources resources, String str, AttributeSet attributeSet) {
         TypedArray obtainAttributes = resources.obtainAttributes(attributeSet, R.styleable.AccountAuthenticator);
         try {
             String string = obtainAttributes.getString(2);
@@ -42,21 +48,6 @@ public class AccountAuthenticatorCache extends RegisteredServicesCache implement
             return null;
         } finally {
             obtainAttributes.recycle();
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class MySerializer implements XmlSerializerAndParser {
-        public MySerializer() {
-        }
-
-        public void writeAsXml(AuthenticatorDescription authenticatorDescription, TypedXmlSerializer typedXmlSerializer) {
-            typedXmlSerializer.attribute((String) null, "type", authenticatorDescription.type);
-        }
-
-        /* renamed from: createFromXml, reason: merged with bridge method [inline-methods] */
-        public AuthenticatorDescription m1240createFromXml(TypedXmlPullParser typedXmlPullParser) {
-            return AuthenticatorDescription.newKey(typedXmlPullParser.getAttributeValue((String) null, "type"));
         }
     }
 }

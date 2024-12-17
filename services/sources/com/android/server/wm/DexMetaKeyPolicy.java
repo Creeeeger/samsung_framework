@@ -9,14 +9,18 @@ import android.os.IBinder;
 import android.util.Slog;
 import android.util.SparseArray;
 import android.view.KeyEvent;
+import com.android.internal.os.SomeArgs;
+import com.android.server.wm.DexController;
 import com.samsung.android.multiwindow.MultiWindowUtils;
 import com.samsung.android.rune.CoreRune;
+import java.lang.ref.WeakReference;
 
-/* loaded from: classes3.dex */
-public class DexMetaKeyPolicy {
-    public static final boolean DEBUG = CoreRune.SAFE_DEBUG;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DexMetaKeyPolicy {
     public final ActivityTaskManagerService mAtm;
     public final DexController mDexController;
+    public final SparseArray mMetaKeyBoundsProviderMap;
     public final Rect mTaskBounds = new Rect();
     public final Rect mDisplayBounds = new Rect();
     public final Rect mLeftHalfDisplayBounds = new Rect();
@@ -31,108 +35,448 @@ public class DexMetaKeyPolicy {
     public final Rect mMaxHeightBounds = new Rect();
     public Task mSnappingTask = null;
     public Rect mOtherSnappingBounds = null;
-    public final SparseArray mMetaKeyBoundsProviderMap = new SparseArray();
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public abstract class MetaKeyBoundsProvider {
+        public MetaKeyBoundsProvider() {
+        }
+
+        public void applyBounds(Task task, Rect rect) {
+            boolean isMoveToDefaultDisplayBounds = MultiWindowUtils.MetaKeyBoundsChecker.isMoveToDefaultDisplayBounds(rect);
+            DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
+            if (isMoveToDefaultDisplayBounds) {
+                ActivityOptions makeBasic = ActivityOptions.makeBasic();
+                makeBasic.setLaunchDisplayId(0);
+                dexMetaKeyPolicy.mAtm.startActivityFromRecents(task.mTaskId, makeBasic.toBundle());
+            } else {
+                if (task.inFreeformWindowingMode()) {
+                    dexMetaKeyPolicy.mAtm.resizeTask(task.mTaskId, rect, 0);
+                    return;
+                }
+                if (task.inFullscreenWindowingMode()) {
+                    ActivityRecord activityRecord = task.topRunningActivity(false);
+                    IBinder iBinder = activityRecord != null ? activityRecord.token : null;
+                    if (iBinder != null) {
+                        dexMetaKeyPolicy.mAtm.mActivityClientController.toggleFreeformWindowingMode(iBinder);
+                    }
+                }
+            }
+        }
+
+        public final Rect getDefaultBounds() {
+            int i;
+            float f;
+            float f2;
+            DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
+            int width = dexMetaKeyPolicy.mDisplayBounds.width();
+            int height = dexMetaKeyPolicy.mDisplayBounds.height();
+            if (dexMetaKeyPolicy.mDexController.getDexModeLocked() == 2) {
+                PointF pointF = MultiWindowUtils.DEX_DEFAULT_SIZE_RATIO;
+                i = (int) (width * pointF.x);
+                f = height;
+                f2 = pointF.y;
+            } else {
+                PointF pointF2 = MultiWindowUtils.DEX_DEFAULT_SIZE_RATIO_FOR_STANDALONE;
+                i = (int) (width * pointF2.x);
+                f = height;
+                f2 = pointF2.y;
+            }
+            int i2 = (int) (f * f2);
+            int i3 = (width - i) / 2;
+            int i4 = (height - i2) / 2;
+            return new Rect(i3, i4, i + i3, i2 + i4);
+        }
+
+        public abstract Rect getLaunchBounds(Task task, KeyEvent keyEvent);
+
+        public abstract void updateTaskBoundsInfoIfNeeded(Task task, Rect rect);
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UpMetaKeyBoundsProvider extends MetaKeyBoundsProvider {
+        public final /* synthetic */ int $r8$classId;
+        public final /* synthetic */ DexMetaKeyPolicy this$0;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public /* synthetic */ UpMetaKeyBoundsProvider(DexMetaKeyPolicy dexMetaKeyPolicy, int i) {
+            super();
+            this.$r8$classId = i;
+            this.this$0 = dexMetaKeyPolicy;
+        }
+
+        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
+        public void applyBounds(Task task, Rect rect) {
+            switch (this.$r8$classId) {
+                case 0:
+                    DexMetaKeyPolicy dexMetaKeyPolicy = this.this$0;
+                    if (rect == null) {
+                        ActivityRecord activityRecord = task.topRunningActivity(false);
+                        IBinder iBinder = activityRecord != null ? activityRecord.token : null;
+                        if (iBinder != null) {
+                            dexMetaKeyPolicy.mAtm.mActivityClientController.toggleFreeformWindowingMode(iBinder);
+                            break;
+                        }
+                    } else {
+                        dexMetaKeyPolicy.mAtm.resizeTask(task.mTaskId, rect, 0);
+                        break;
+                    }
+                    break;
+                case 1:
+                    boolean isMinimizeBounds = MultiWindowUtils.MetaKeyBoundsChecker.isMinimizeBounds(rect);
+                    DexMetaKeyPolicy dexMetaKeyPolicy2 = this.this$0;
+                    if (!isMinimizeBounds) {
+                        if (!task.inFreeformWindowingMode()) {
+                            ActivityRecord activityRecord2 = task.topRunningActivity(false);
+                            IBinder iBinder2 = activityRecord2 != null ? activityRecord2.token : null;
+                            if (iBinder2 != null && task.inFullscreenWindowingMode()) {
+                                dexMetaKeyPolicy2.mAtm.mActivityClientController.toggleFreeformWindowingMode(iBinder2);
+                                break;
+                            }
+                        } else {
+                            dexMetaKeyPolicy2.mAtm.resizeTask(task.mTaskId, rect, 0);
+                            break;
+                        }
+                    } else {
+                        dexMetaKeyPolicy2.mAtm.mMultiTaskingController.minimizeTaskLocked(-1, -1, task, true);
+                        break;
+                    }
+                    break;
+                default:
+                    super.applyBounds(task, rect);
+                    break;
+            }
+        }
+
+        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
+        public final Rect getLaunchBounds(Task task, KeyEvent keyEvent) {
+            Rect rect;
+            Rect rect2;
+            Rect rect3;
+            switch (this.$r8$classId) {
+                case 0:
+                    if (!task.inFreeformWindowingMode()) {
+                        return MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
+                    }
+                    DexMetaKeyPolicy dexMetaKeyPolicy = this.this$0;
+                    if (dexMetaKeyPolicy.mLeftHalfDisplayBounds.equals(dexMetaKeyPolicy.mTaskBounds)) {
+                        return dexMetaKeyPolicy.mLeftTopQuarterDisplayBounds;
+                    }
+                    if (dexMetaKeyPolicy.mRightHalfDisplayBounds.equals(dexMetaKeyPolicy.mTaskBounds)) {
+                        return dexMetaKeyPolicy.mRightTopQuarterDisplayBounds;
+                    }
+                    if (dexMetaKeyPolicy.mLeftBottomQuarterDisplayBounds.equals(dexMetaKeyPolicy.mTaskBounds)) {
+                        return dexMetaKeyPolicy.mLeftHalfDisplayBounds;
+                    }
+                    if (dexMetaKeyPolicy.mRightBottomQuarterDisplayBounds.equals(dexMetaKeyPolicy.mTaskBounds)) {
+                        return dexMetaKeyPolicy.mRightHalfDisplayBounds;
+                    }
+                    if (!keyEvent.isShiftPressed()) {
+                        return null;
+                    }
+                    if (task.isDexCompatEnabled() || !task.inFreeformWindowingMode() || ((rect = dexMetaKeyPolicy.mTaskBounds) != null && rect.equals(dexMetaKeyPolicy.mMaxHeightBounds))) {
+                        return MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
+                    }
+                    Rect rect4 = dexMetaKeyPolicy.mTaskBounds;
+                    if (rect4 == null || !rect4.equals(dexMetaKeyPolicy.mMinHeightBounds)) {
+                        return dexMetaKeyPolicy.mMaxHeightBounds;
+                    }
+                    Rect rect5 = task.mMetaKeyBounds;
+                    if (rect5 != null) {
+                        task.mMetaKeyBounds = null;
+                        return rect5;
+                    }
+                    Rect defaultBounds = getDefaultBounds();
+                    Rect rect6 = dexMetaKeyPolicy.mTaskBounds;
+                    defaultBounds.left = rect6.left;
+                    defaultBounds.right = rect6.right;
+                    return defaultBounds;
+                case 1:
+                    DexMetaKeyPolicy dexMetaKeyPolicy2 = this.this$0;
+                    if (dexMetaKeyPolicy2.mLeftHalfDisplayBounds.equals(dexMetaKeyPolicy2.mTaskBounds)) {
+                        return dexMetaKeyPolicy2.mLeftBottomQuarterDisplayBounds;
+                    }
+                    if (dexMetaKeyPolicy2.mRightHalfDisplayBounds.equals(dexMetaKeyPolicy2.mTaskBounds)) {
+                        return dexMetaKeyPolicy2.mRightBottomQuarterDisplayBounds;
+                    }
+                    if (dexMetaKeyPolicy2.mLeftTopQuarterDisplayBounds.equals(dexMetaKeyPolicy2.mTaskBounds)) {
+                        return dexMetaKeyPolicy2.mLeftHalfDisplayBounds;
+                    }
+                    if (dexMetaKeyPolicy2.mRightTopQuarterDisplayBounds.equals(dexMetaKeyPolicy2.mTaskBounds)) {
+                        return dexMetaKeyPolicy2.mRightHalfDisplayBounds;
+                    }
+                    if (keyEvent.isShiftPressed()) {
+                        if (task.isDexCompatEnabled() || !task.inFreeformWindowingMode() || ((rect3 = dexMetaKeyPolicy2.mTaskBounds) != null && rect3.equals(dexMetaKeyPolicy2.mMinHeightBounds))) {
+                            return MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
+                        }
+                        Rect rect7 = dexMetaKeyPolicy2.mTaskBounds;
+                        if (rect7 == null || !rect7.equals(dexMetaKeyPolicy2.mMaxHeightBounds)) {
+                            return dexMetaKeyPolicy2.mMinHeightBounds;
+                        }
+                        rect2 = task.mMetaKeyBounds;
+                        if (rect2 == null) {
+                            Rect defaultBounds2 = getDefaultBounds();
+                            Rect rect8 = dexMetaKeyPolicy2.mTaskBounds;
+                            defaultBounds2.left = rect8.left;
+                            defaultBounds2.right = rect8.right;
+                            return defaultBounds2;
+                        }
+                        task.mMetaKeyBounds = null;
+                    } else {
+                        if (!task.inFullscreenWindowingMode()) {
+                            return MultiWindowUtils.MetaKeyBoundsChecker.sMinimizeBounds;
+                        }
+                        rect2 = task.mMetaKeyBounds;
+                        if (rect2 == null) {
+                            return getDefaultBounds();
+                        }
+                        task.mMetaKeyBounds = null;
+                    }
+                    return rect2;
+                case 2:
+                    boolean isShiftPressed = keyEvent.isShiftPressed();
+                    DexMetaKeyPolicy dexMetaKeyPolicy3 = this.this$0;
+                    if (isShiftPressed) {
+                        return dexMetaKeyPolicy3.mDexController.getDexModeLocked() == 2 ? MultiWindowUtils.MetaKeyBoundsChecker.sMoveToDefaultDisplayBounds : MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
+                    }
+                    if (task.isDexCompatEnabled()) {
+                        return MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
+                    }
+                    if (dexMetaKeyPolicy3.isLeftHalfDisplayBounds(dexMetaKeyPolicy3.mTaskBounds)) {
+                        return dexMetaKeyPolicy3.mRightHalfDisplayBounds;
+                    }
+                    if (dexMetaKeyPolicy3.isRightHalfDisplayBounds(dexMetaKeyPolicy3.mTaskBounds)) {
+                        Rect rect9 = task.mMetaKeyBounds;
+                        if (rect9 == null) {
+                            return getDefaultBounds();
+                        }
+                        task.mMetaKeyBounds = null;
+                        return rect9;
+                    }
+                    Rect rect10 = dexMetaKeyPolicy3.mTaskBounds;
+                    if (rect10 != null && (dexMetaKeyPolicy3.mLeftTopQuarterDisplayBounds.equals(rect10) || dexMetaKeyPolicy3.mRightTopQuarterDisplayBounds.equals(rect10))) {
+                        return dexMetaKeyPolicy3.mLeftTopQuarterDisplayBounds.equals(dexMetaKeyPolicy3.mTaskBounds) ? dexMetaKeyPolicy3.mRightTopQuarterDisplayBounds : dexMetaKeyPolicy3.mLeftTopQuarterDisplayBounds;
+                    }
+                    Rect rect11 = dexMetaKeyPolicy3.mTaskBounds;
+                    return (rect11 != null && (dexMetaKeyPolicy3.mLeftBottomQuarterDisplayBounds.equals(rect11) || dexMetaKeyPolicy3.mRightBottomQuarterDisplayBounds.equals(rect11))) ? dexMetaKeyPolicy3.mLeftBottomQuarterDisplayBounds.equals(dexMetaKeyPolicy3.mTaskBounds) ? dexMetaKeyPolicy3.mRightBottomQuarterDisplayBounds : dexMetaKeyPolicy3.mLeftBottomQuarterDisplayBounds : dexMetaKeyPolicy3.mLeftHalfDisplayBounds;
+                default:
+                    boolean isShiftPressed2 = keyEvent.isShiftPressed();
+                    DexMetaKeyPolicy dexMetaKeyPolicy4 = this.this$0;
+                    if (isShiftPressed2) {
+                        return dexMetaKeyPolicy4.mDexController.getDexModeLocked() == 2 ? MultiWindowUtils.MetaKeyBoundsChecker.sMoveToDefaultDisplayBounds : MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
+                    }
+                    if (task.isDexCompatEnabled()) {
+                        return MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
+                    }
+                    if (dexMetaKeyPolicy4.isLeftHalfDisplayBounds(dexMetaKeyPolicy4.mTaskBounds)) {
+                        Rect rect12 = task.mMetaKeyBounds;
+                        if (rect12 == null) {
+                            return getDefaultBounds();
+                        }
+                        task.mMetaKeyBounds = null;
+                        return rect12;
+                    }
+                    if (dexMetaKeyPolicy4.isRightHalfDisplayBounds(dexMetaKeyPolicy4.mTaskBounds)) {
+                        return dexMetaKeyPolicy4.mLeftHalfDisplayBounds;
+                    }
+                    Rect rect13 = dexMetaKeyPolicy4.mTaskBounds;
+                    if (rect13 != null && (dexMetaKeyPolicy4.mLeftTopQuarterDisplayBounds.equals(rect13) || dexMetaKeyPolicy4.mRightTopQuarterDisplayBounds.equals(rect13))) {
+                        return dexMetaKeyPolicy4.mLeftTopQuarterDisplayBounds.equals(dexMetaKeyPolicy4.mTaskBounds) ? dexMetaKeyPolicy4.mRightTopQuarterDisplayBounds : dexMetaKeyPolicy4.mLeftTopQuarterDisplayBounds;
+                    }
+                    Rect rect14 = dexMetaKeyPolicy4.mTaskBounds;
+                    return (rect14 != null && (dexMetaKeyPolicy4.mLeftBottomQuarterDisplayBounds.equals(rect14) || dexMetaKeyPolicy4.mRightBottomQuarterDisplayBounds.equals(rect14))) ? dexMetaKeyPolicy4.mLeftBottomQuarterDisplayBounds.equals(dexMetaKeyPolicy4.mTaskBounds) ? dexMetaKeyPolicy4.mRightBottomQuarterDisplayBounds : dexMetaKeyPolicy4.mLeftBottomQuarterDisplayBounds : dexMetaKeyPolicy4.mRightHalfDisplayBounds;
+            }
+        }
+
+        /* JADX WARN: Removed duplicated region for block: B:34:0x006b  */
+        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void updateTaskBoundsInfoIfNeeded(com.android.server.wm.Task r2, android.graphics.Rect r3) {
+            /*
+                r1 = this;
+                int r0 = r1.$r8$classId
+                switch(r0) {
+                    case 0: goto L75;
+                    case 1: goto L57;
+                    case 2: goto L2e;
+                    default: goto L5;
+                }
+            L5:
+                com.android.server.wm.DexMetaKeyPolicy r1 = r1.this$0
+                boolean r0 = r1.isRightHalfDisplayBounds(r3)
+                if (r0 != 0) goto Le
+                goto L2d
+            Le:
+                android.graphics.Rect r0 = r1.mTaskBounds
+                boolean r0 = r1.isQuarterDisplayBounds(r0)
+                if (r0 == 0) goto L17
+                goto L2d
+            L17:
+                boolean r0 = r2.inFullscreenWindowingMode()
+                if (r0 == 0) goto L24
+                r1 = 0
+                r2.mMetaKeyBounds = r1
+                r2.setLastNonFullscreenBounds(r3)
+                goto L2d
+            L24:
+                android.graphics.Rect r3 = new android.graphics.Rect
+                android.graphics.Rect r1 = r1.mTaskBounds
+                r3.<init>(r1)
+                r2.mMetaKeyBounds = r3
+            L2d:
+                return
+            L2e:
+                com.android.server.wm.DexMetaKeyPolicy r1 = r1.this$0
+                boolean r0 = r1.isLeftHalfDisplayBounds(r3)
+                if (r0 != 0) goto L37
+                goto L56
+            L37:
+                android.graphics.Rect r0 = r1.mTaskBounds
+                boolean r0 = r1.isQuarterDisplayBounds(r0)
+                if (r0 == 0) goto L40
+                goto L56
+            L40:
+                boolean r0 = r2.inFullscreenWindowingMode()
+                if (r0 == 0) goto L4d
+                r1 = 0
+                r2.mMetaKeyBounds = r1
+                r2.setLastNonFullscreenBounds(r3)
+                goto L56
+            L4d:
+                android.graphics.Rect r3 = new android.graphics.Rect
+                android.graphics.Rect r1 = r1.mTaskBounds
+                r3.<init>(r1)
+                r2.mMetaKeyBounds = r3
+            L56:
+                return
+            L57:
+                com.android.server.wm.DexMetaKeyPolicy r1 = r1.this$0
+                if (r3 == 0) goto L65
+                android.graphics.Rect r0 = r1.mMinHeightBounds
+                boolean r3 = r3.equals(r0)
+                if (r3 == 0) goto L68
+                r3 = 1
+                goto L69
+            L65:
+                r1.getClass()
+            L68:
+                r3 = 0
+            L69:
+                if (r3 == 0) goto L74
+                android.graphics.Rect r3 = new android.graphics.Rect
+                android.graphics.Rect r1 = r1.mTaskBounds
+                r3.<init>(r1)
+                r2.mMetaKeyBounds = r3
+            L74:
+                return
+            L75:
+                com.android.server.wm.DexMetaKeyPolicy r1 = r1.this$0
+                android.graphics.Rect r0 = r1.mTaskBounds
+                boolean r0 = r1.isQuarterDisplayBounds(r0)
+                if (r0 == 0) goto L80
+                goto La0
+            L80:
+                if (r3 != 0) goto L93
+                android.graphics.Rect r0 = r1.mTaskBounds
+                boolean r0 = r1.isLeftHalfDisplayBounds(r0)
+                if (r0 != 0) goto L93
+                android.graphics.Rect r0 = r1.mTaskBounds
+                boolean r0 = r1.isRightHalfDisplayBounds(r0)
+                if (r0 != 0) goto L93
+                goto L9d
+            L93:
+                if (r3 == 0) goto La0
+                android.graphics.Rect r1 = r1.mMaxHeightBounds
+                boolean r1 = r3.equals(r1)
+                if (r1 == 0) goto La0
+            L9d:
+                r1 = 0
+                r2.mMetaKeyBounds = r1
+            La0:
+                return
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.DexMetaKeyPolicy.UpMetaKeyBoundsProvider.updateTaskBoundsInfoIfNeeded(com.android.server.wm.Task, android.graphics.Rect):void");
+        }
+    }
 
     public DexMetaKeyPolicy(ActivityTaskManagerService activityTaskManagerService, DexController dexController) {
+        SparseArray sparseArray = new SparseArray();
+        this.mMetaKeyBoundsProviderMap = sparseArray;
         this.mAtm = activityTaskManagerService;
         this.mDexController = dexController;
-        registerMetaKeyBoundsProviders();
+        sparseArray.put(21, new UpMetaKeyBoundsProvider(this, 2));
+        sparseArray.put(22, new UpMetaKeyBoundsProvider(this, 3));
+        sparseArray.put(19, new UpMetaKeyBoundsProvider(this, 0));
+        sparseArray.put(20, new UpMetaKeyBoundsProvider(this, 1));
     }
 
-    public final void registerMetaKeyBoundsProviders() {
-        this.mMetaKeyBoundsProviderMap.put(21, new LeftMetaKeyBoundsProvider());
-        this.mMetaKeyBoundsProviderMap.put(22, new RightMetaKeyBoundsProvider());
-        this.mMetaKeyBoundsProviderMap.put(19, new UpMetaKeyBoundsProvider());
-        this.mMetaKeyBoundsProviderMap.put(20, new DownMetaKeyBoundsProvider());
+    public MetaKeyBoundsProvider getMetaKeyBoundsProvider(int i) {
+        return (MetaKeyBoundsProvider) this.mMetaKeyBoundsProviderMap.get(i);
     }
 
-    public void handleMetaKeyEvent(IBinder iBinder, KeyEvent keyEvent) {
-        MetaKeyBoundsProvider metaKeyBoundsProvider = getMetaKeyBoundsProvider(keyEvent.getKeyCode());
-        if (metaKeyBoundsProvider == null) {
-            if (DEBUG) {
-                Slog.d("DexMetaKeyPolicy", "handleMetaKeyEvent: cannot find provider, " + keyEvent);
-                return;
-            }
-            return;
-        }
-        Task taskForMetaKey = getTaskForMetaKey(iBinder);
-        if (taskForMetaKey == null) {
-            if (DEBUG) {
-                Slog.d("DexMetaKeyPolicy", "handleMetaKeyEvent: cannot find task, " + iBinder);
-                return;
-            }
-            return;
-        }
-        updateBoundsInfo(taskForMetaKey);
-        Rect launchBounds = metaKeyBoundsProvider.getLaunchBounds(taskForMetaKey, keyEvent);
-        if (MultiWindowUtils.MetaKeyBoundsChecker.isInvalidBounds(launchBounds)) {
-            return;
-        }
-        metaKeyBoundsProvider.updateTaskBoundsInfoIfNeeded(taskForMetaKey, launchBounds);
-        metaKeyBoundsProvider.applyBounds(taskForMetaKey, launchBounds);
-        updateSnappingTaskIfNeeded(taskForMetaKey, launchBounds);
-    }
-
-    public void updateSnappingTaskIfNeeded(Task task, Rect rect) {
-        Rect rect2;
-        boolean isLeftHalfDisplayBounds = isLeftHalfDisplayBounds(rect);
-        boolean isRightHalfDisplayBounds = isRightHalfDisplayBounds(rect);
-        if (!isLeftHalfDisplayBounds && !isRightHalfDisplayBounds) {
-            this.mSnappingTask = null;
-            this.mOtherSnappingBounds = null;
-            return;
-        }
-        this.mSnappingTask = task;
-        if (isLeftHalfDisplayBounds) {
-            rect2 = new Rect(this.mRightDockingBounds);
-        } else {
-            rect2 = new Rect(this.mLeftDockingBounds);
-        }
-        this.mOtherSnappingBounds = rect2;
-    }
-
-    public void handleDexMetaKeyForSnapping() {
+    public final void handleDexMetaKeyForSnapping() {
         if (this.mSnappingTask == null) {
             return;
         }
-        this.mAtm.mDexDockingController.initDockingBounds(this.mLeftDockingBounds, this.mRightDockingBounds, this.mDisplayBounds.width());
-        this.mAtm.mDexDockingController.setCandidateTask(this.mSnappingTask);
-        this.mAtm.mDexController.scheduleNotifyDexSnappingCallback(this.mSnappingTask.mTaskId, this.mOtherSnappingBounds);
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        DexDockingController dexDockingController = activityTaskManagerService.mDexDockingController;
+        Rect rect = this.mLeftDockingBounds;
+        Rect rect2 = this.mRightDockingBounds;
+        int width = this.mDisplayBounds.width();
+        dexDockingController.mDockingBounds.put(1, rect);
+        dexDockingController.mDockingBounds.put(2, rect2);
+        dexDockingController.mDisplayWidth = width;
+        DexDockingController dexDockingController2 = activityTaskManagerService.mDexDockingController;
+        Task task = this.mSnappingTask;
+        dexDockingController2.getClass();
+        Slog.d("DexDockingController", "setCandidateTask t=" + task);
+        dexDockingController2.mCandidateTask = new WeakReference(task);
+        if (CoreRune.MW_CAPTION_SHELL_DEX_SNAPPING_WINDOW) {
+            DexController dexController = activityTaskManagerService.mDexController;
+            int i = this.mSnappingTask.mTaskId;
+            Rect rect3 = this.mOtherSnappingBounds;
+            dexController.getClass();
+            SomeArgs obtain = SomeArgs.obtain();
+            obtain.argi1 = i;
+            obtain.arg1 = rect3;
+            DexController.H h = dexController.mH;
+            h.sendMessage(h.obtainMessage(11, obtain));
+        }
         this.mSnappingTask = null;
         this.mOtherSnappingBounds = null;
     }
 
-    public final Task getTaskForMetaKey(IBinder iBinder) {
-        WindowState windowState = (WindowState) this.mAtm.mWindowManager.mInputToWindowMap.get(iBinder);
-        Task task = windowState != null ? windowState.getTask() : null;
-        if (task == null || task.getDisplayContent() == null || !task.isDexMode()) {
-            return null;
-        }
-        if (task.inFreeformWindowingMode() || (task.inFullscreenWindowingMode() && task.isActivityTypeStandardOrUndefined())) {
-            return task;
-        }
-        return null;
-    }
-
-    public void updateBoundsInfo(Task task) {
+    public final void handleMetaKeyEvent(IBinder iBinder, KeyEvent keyEvent) {
         int i;
         int i2;
+        MetaKeyBoundsProvider metaKeyBoundsProvider = getMetaKeyBoundsProvider(keyEvent.getKeyCode());
+        if (metaKeyBoundsProvider == null) {
+            return;
+        }
+        WindowState windowState = (WindowState) this.mAtm.mWindowManager.mInputToWindowMap.get(iBinder);
+        Task task = windowState != null ? windowState.getTask() : null;
+        if (task == null || task.getDisplayContent() == null || !task.isDexMode() || (!task.inFreeformWindowingMode() && (!task.inFullscreenWindowingMode() || !task.isActivityTypeStandardOrUndefined()))) {
+            task = null;
+        }
+        if (task == null) {
+            return;
+        }
         task.getBounds(this.mTaskBounds);
         DisplayContent displayContent = task.getDisplayContent();
         displayContent.getStableRect(this.mDisplayBounds);
         if (CoreRune.MW_CAPTION_SHELL) {
-            int captionHeight = task.getCaptionHeight();
             i = task.getFreeformThickness();
-            this.mDisplayBounds.top = captionHeight;
-            i2 = (captionHeight + i) / 2;
+            i2 = i / 2;
         } else {
             i = 0;
             i2 = 0;
         }
         Rect rect = this.mDisplayBounds;
-        int width = rect.left + (rect.width() / 2);
+        int width = (rect.width() / 2) + rect.left;
         Rect rect2 = this.mDisplayBounds;
-        int height = rect2.top + (rect2.height() / 2);
+        int height = (rect2.height() / 2) + rect2.top;
         this.mLeftHalfDisplayBounds.set(this.mDisplayBounds);
         Rect rect3 = this.mLeftHalfDisplayBounds;
         rect3.right = width;
@@ -153,10 +497,10 @@ public class DexMetaKeyPolicy {
         this.mLeftBottomQuarterDisplayBounds.top = i4;
         this.mRightBottomQuarterDisplayBounds.set(this.mRightHalfDisplayBounds);
         this.mRightBottomQuarterDisplayBounds.top = i4;
-        Resources currentUserResources = displayContent.getDisplayPolicy().getCurrentUserResources();
+        Resources currentUserResources = displayContent.mDisplayPolicy.getCurrentUserResources();
         int i5 = task.mMinHeight;
         if (i5 == -1) {
-            i5 = currentUserResources.getDimensionPixelSize(R.dimen.highlight_alpha_material_dark);
+            i5 = currentUserResources.getDimensionPixelSize(R.dimen.floating_toolbar_vertical_margin);
         }
         this.mMaxHeightBounds.set(this.mTaskBounds);
         Rect rect5 = this.mMaxHeightBounds;
@@ -165,355 +509,37 @@ public class DexMetaKeyPolicy {
         rect5.bottom = rect6.bottom;
         this.mMinHeightBounds.set(this.mTaskBounds);
         this.mMinHeightBounds.bottom = this.mTaskBounds.top + i5;
+        Rect launchBounds = metaKeyBoundsProvider.getLaunchBounds(task, keyEvent);
+        if (MultiWindowUtils.MetaKeyBoundsChecker.isInvalidBounds(launchBounds)) {
+            return;
+        }
+        metaKeyBoundsProvider.updateTaskBoundsInfoIfNeeded(task, launchBounds);
+        metaKeyBoundsProvider.applyBounds(task, launchBounds);
+        if (CoreRune.MW_CAPTION_SHELL_DEX_SNAPPING_WINDOW) {
+            boolean isLeftHalfDisplayBounds = isLeftHalfDisplayBounds(launchBounds);
+            boolean isRightHalfDisplayBounds = isRightHalfDisplayBounds(launchBounds);
+            if (isLeftHalfDisplayBounds || isRightHalfDisplayBounds) {
+                this.mSnappingTask = task;
+                this.mOtherSnappingBounds = isLeftHalfDisplayBounds ? new Rect(this.mRightDockingBounds) : new Rect(this.mLeftDockingBounds);
+            } else {
+                this.mSnappingTask = null;
+                this.mOtherSnappingBounds = null;
+            }
+        }
     }
 
-    public MetaKeyBoundsProvider getMetaKeyBoundsProvider(int i) {
-        return (MetaKeyBoundsProvider) this.mMetaKeyBoundsProviderMap.get(i);
-    }
-
-    public boolean isDexDualMode() {
-        return this.mDexController.getDexModeLocked() == 2;
-    }
-
-    public boolean isLeftHalfDisplayBounds(Rect rect) {
+    public final boolean isLeftHalfDisplayBounds(Rect rect) {
         return rect != null && rect.equals(this.mLeftHalfDisplayBounds);
     }
 
-    public boolean isRightHalfDisplayBounds(Rect rect) {
-        return rect != null && rect.equals(this.mRightHalfDisplayBounds);
-    }
-
-    public boolean isMinHeightBounds(Rect rect) {
-        return rect != null && rect.equals(this.mMinHeightBounds);
-    }
-
-    public boolean isMaxHeightBounds(Rect rect) {
-        return rect != null && rect.equals(this.mMaxHeightBounds);
-    }
-
-    public boolean isQuarterDisplayBounds(Rect rect) {
+    public final boolean isQuarterDisplayBounds(Rect rect) {
         if (rect == null) {
             return false;
         }
         return this.mLeftTopQuarterDisplayBounds.equals(rect) || this.mLeftBottomQuarterDisplayBounds.equals(rect) || this.mRightTopQuarterDisplayBounds.equals(rect) || this.mRightBottomQuarterDisplayBounds.equals(rect);
     }
 
-    public boolean isTopQuarterDisplayBounds(Rect rect) {
-        if (rect == null) {
-            return false;
-        }
-        return this.mLeftTopQuarterDisplayBounds.equals(rect) || this.mRightTopQuarterDisplayBounds.equals(rect);
-    }
-
-    public boolean isBottomQuarterDisplayBounds(Rect rect) {
-        if (rect == null) {
-            return false;
-        }
-        return this.mLeftBottomQuarterDisplayBounds.equals(rect) || this.mRightBottomQuarterDisplayBounds.equals(rect);
-    }
-
-    /* loaded from: classes3.dex */
-    public abstract class MetaKeyBoundsProvider {
-        public abstract Rect getLaunchBounds(Task task, KeyEvent keyEvent);
-
-        public abstract void updateTaskBoundsInfoIfNeeded(Task task, Rect rect);
-
-        public MetaKeyBoundsProvider() {
-        }
-
-        public Rect getDefaultBounds() {
-            int i;
-            float f;
-            float f2;
-            int width = DexMetaKeyPolicy.this.mDisplayBounds.width();
-            int height = DexMetaKeyPolicy.this.mDisplayBounds.height();
-            if (DexMetaKeyPolicy.this.isDexDualMode()) {
-                PointF pointF = MultiWindowUtils.DEX_DEFAULT_SIZE_RATIO;
-                i = (int) (width * pointF.x);
-                f = height;
-                f2 = pointF.y;
-            } else {
-                PointF pointF2 = MultiWindowUtils.DEX_DEFAULT_SIZE_RATIO_FOR_STANDALONE;
-                i = (int) (width * pointF2.x);
-                f = height;
-                f2 = pointF2.y;
-            }
-            int i2 = (int) (f * f2);
-            int i3 = (width - i) / 2;
-            int i4 = (height - i2) / 2;
-            return new Rect(i3, i4, i + i3, i2 + i4);
-        }
-
-        public void applyBounds(Task task, Rect rect) {
-            IBinder topAppToken;
-            if (MultiWindowUtils.MetaKeyBoundsChecker.isMoveToDefaultDisplayBounds(rect)) {
-                ActivityOptions makeBasic = ActivityOptions.makeBasic();
-                makeBasic.setLaunchDisplayId(0);
-                DexMetaKeyPolicy.this.mAtm.startActivityFromRecents(task.mTaskId, makeBasic.toBundle());
-            } else if (task.inFreeformWindowingMode()) {
-                DexMetaKeyPolicy.this.mAtm.resizeTask(task.mTaskId, rect, 0);
-            } else {
-                if (!task.inFullscreenWindowingMode() || (topAppToken = task.getTopAppToken()) == null) {
-                    return;
-                }
-                DexMetaKeyPolicy.this.mAtm.mActivityClientController.toggleFreeformWindowingMode(topAppToken);
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class LeftMetaKeyBoundsProvider extends MetaKeyBoundsProvider {
-        public LeftMetaKeyBoundsProvider() {
-            super();
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public Rect getLaunchBounds(Task task, KeyEvent keyEvent) {
-            if (keyEvent.isShiftPressed()) {
-                return DexMetaKeyPolicy.this.isDexDualMode() ? MultiWindowUtils.MetaKeyBoundsChecker.sMoveToDefaultDisplayBounds : MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
-            }
-            if (task.isDexCompatEnabled()) {
-                return MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
-            if (dexMetaKeyPolicy.isLeftHalfDisplayBounds(dexMetaKeyPolicy.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mRightHalfDisplayBounds;
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy2 = DexMetaKeyPolicy.this;
-            if (dexMetaKeyPolicy2.isRightHalfDisplayBounds(dexMetaKeyPolicy2.mTaskBounds)) {
-                return task.hasMetaKeyBounds() ? task.takeMetaKeyBounds() : getDefaultBounds();
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy3 = DexMetaKeyPolicy.this;
-            if (dexMetaKeyPolicy3.isTopQuarterDisplayBounds(dexMetaKeyPolicy3.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mLeftTopQuarterDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds) ? DexMetaKeyPolicy.this.mRightTopQuarterDisplayBounds : DexMetaKeyPolicy.this.mLeftTopQuarterDisplayBounds;
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy4 = DexMetaKeyPolicy.this;
-            if (dexMetaKeyPolicy4.isBottomQuarterDisplayBounds(dexMetaKeyPolicy4.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mLeftBottomQuarterDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds) ? DexMetaKeyPolicy.this.mRightBottomQuarterDisplayBounds : DexMetaKeyPolicy.this.mLeftBottomQuarterDisplayBounds;
-            }
-            return DexMetaKeyPolicy.this.mLeftHalfDisplayBounds;
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public void updateTaskBoundsInfoIfNeeded(Task task, Rect rect) {
-            if (DexMetaKeyPolicy.this.isLeftHalfDisplayBounds(rect)) {
-                DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
-                if (dexMetaKeyPolicy.isQuarterDisplayBounds(dexMetaKeyPolicy.mTaskBounds)) {
-                    return;
-                }
-                if (task.inFullscreenWindowingMode()) {
-                    task.setMetaKeyBounds(null);
-                    task.setLastNonFullscreenBounds(rect);
-                } else {
-                    task.setMetaKeyBounds(new Rect(DexMetaKeyPolicy.this.mTaskBounds));
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class RightMetaKeyBoundsProvider extends MetaKeyBoundsProvider {
-        public RightMetaKeyBoundsProvider() {
-            super();
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public Rect getLaunchBounds(Task task, KeyEvent keyEvent) {
-            if (keyEvent.isShiftPressed()) {
-                return DexMetaKeyPolicy.this.isDexDualMode() ? MultiWindowUtils.MetaKeyBoundsChecker.sMoveToDefaultDisplayBounds : MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
-            }
-            if (task.isDexCompatEnabled()) {
-                return MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
-            if (dexMetaKeyPolicy.isLeftHalfDisplayBounds(dexMetaKeyPolicy.mTaskBounds)) {
-                return task.hasMetaKeyBounds() ? task.takeMetaKeyBounds() : getDefaultBounds();
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy2 = DexMetaKeyPolicy.this;
-            if (dexMetaKeyPolicy2.isRightHalfDisplayBounds(dexMetaKeyPolicy2.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mLeftHalfDisplayBounds;
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy3 = DexMetaKeyPolicy.this;
-            if (dexMetaKeyPolicy3.isTopQuarterDisplayBounds(dexMetaKeyPolicy3.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mLeftTopQuarterDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds) ? DexMetaKeyPolicy.this.mRightTopQuarterDisplayBounds : DexMetaKeyPolicy.this.mLeftTopQuarterDisplayBounds;
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy4 = DexMetaKeyPolicy.this;
-            if (dexMetaKeyPolicy4.isBottomQuarterDisplayBounds(dexMetaKeyPolicy4.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mLeftBottomQuarterDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds) ? DexMetaKeyPolicy.this.mRightBottomQuarterDisplayBounds : DexMetaKeyPolicy.this.mLeftBottomQuarterDisplayBounds;
-            }
-            return DexMetaKeyPolicy.this.mRightHalfDisplayBounds;
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public void updateTaskBoundsInfoIfNeeded(Task task, Rect rect) {
-            if (DexMetaKeyPolicy.this.isRightHalfDisplayBounds(rect)) {
-                DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
-                if (dexMetaKeyPolicy.isQuarterDisplayBounds(dexMetaKeyPolicy.mTaskBounds)) {
-                    return;
-                }
-                if (task.inFullscreenWindowingMode()) {
-                    task.setMetaKeyBounds(null);
-                    task.setLastNonFullscreenBounds(rect);
-                } else {
-                    task.setMetaKeyBounds(new Rect(DexMetaKeyPolicy.this.mTaskBounds));
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class UpMetaKeyBoundsProvider extends MetaKeyBoundsProvider {
-        public UpMetaKeyBoundsProvider() {
-            super();
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public Rect getLaunchBounds(Task task, KeyEvent keyEvent) {
-            if (!task.inFreeformWindowingMode()) {
-                return MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
-            }
-            if (DexMetaKeyPolicy.this.mLeftHalfDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mLeftTopQuarterDisplayBounds;
-            }
-            if (DexMetaKeyPolicy.this.mRightHalfDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mRightTopQuarterDisplayBounds;
-            }
-            if (DexMetaKeyPolicy.this.mLeftBottomQuarterDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mLeftHalfDisplayBounds;
-            }
-            if (DexMetaKeyPolicy.this.mRightBottomQuarterDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mRightHalfDisplayBounds;
-            }
-            if (keyEvent.isShiftPressed()) {
-                return canUseShiftKey(task) ? DexMetaKeyPolicy.this.mMaxHeightBounds : MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
-            }
-            return null;
-        }
-
-        public boolean canUseShiftKey(Task task) {
-            if (task.isDexCompatEnabled() || !task.inFreeformWindowingMode()) {
-                return false;
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
-            return !dexMetaKeyPolicy.isMaxHeightBounds(dexMetaKeyPolicy.mTaskBounds);
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public void updateTaskBoundsInfoIfNeeded(Task task, Rect rect) {
-            boolean z;
-            DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
-            if (dexMetaKeyPolicy.isQuarterDisplayBounds(dexMetaKeyPolicy.mTaskBounds)) {
-                return;
-            }
-            if (rect == null) {
-                DexMetaKeyPolicy dexMetaKeyPolicy2 = DexMetaKeyPolicy.this;
-                if (!dexMetaKeyPolicy2.isLeftHalfDisplayBounds(dexMetaKeyPolicy2.mTaskBounds)) {
-                    DexMetaKeyPolicy dexMetaKeyPolicy3 = DexMetaKeyPolicy.this;
-                    if (!dexMetaKeyPolicy3.isRightHalfDisplayBounds(dexMetaKeyPolicy3.mTaskBounds)) {
-                        z = true;
-                        if (!z || DexMetaKeyPolicy.this.isMaxHeightBounds(rect)) {
-                            task.setMetaKeyBounds(null);
-                        }
-                        return;
-                    }
-                }
-            }
-            z = false;
-            if (z) {
-            }
-            task.setMetaKeyBounds(null);
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public void applyBounds(Task task, Rect rect) {
-            if (rect != null) {
-                DexMetaKeyPolicy.this.mAtm.resizeTask(task.mTaskId, rect, 0);
-                return;
-            }
-            IBinder topAppToken = task.getTopAppToken();
-            if (topAppToken == null) {
-                return;
-            }
-            DexMetaKeyPolicy.this.mAtm.mActivityClientController.toggleFreeformWindowingMode(topAppToken);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class DownMetaKeyBoundsProvider extends MetaKeyBoundsProvider {
-        public DownMetaKeyBoundsProvider() {
-            super();
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public Rect getLaunchBounds(Task task, KeyEvent keyEvent) {
-            if (DexMetaKeyPolicy.this.mLeftHalfDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mLeftBottomQuarterDisplayBounds;
-            }
-            if (DexMetaKeyPolicy.this.mRightHalfDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mRightBottomQuarterDisplayBounds;
-            }
-            if (DexMetaKeyPolicy.this.mLeftTopQuarterDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mLeftHalfDisplayBounds;
-            }
-            if (DexMetaKeyPolicy.this.mRightTopQuarterDisplayBounds.equals(DexMetaKeyPolicy.this.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mRightHalfDisplayBounds;
-            }
-            if (keyEvent.isShiftPressed()) {
-                return getLaunchBoundsWhenShiftPressed(task);
-            }
-            if (task.inFullscreenWindowingMode()) {
-                return task.hasMetaKeyBounds() ? task.takeMetaKeyBounds() : getDefaultBounds();
-            }
-            return MultiWindowUtils.MetaKeyBoundsChecker.sMinimizeBounds;
-        }
-
-        public final Rect getLaunchBoundsWhenShiftPressed(Task task) {
-            if (!canUseShiftKey(task)) {
-                return MultiWindowUtils.MetaKeyBoundsChecker.sInvalidBounds;
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
-            if (!dexMetaKeyPolicy.isMaxHeightBounds(dexMetaKeyPolicy.mTaskBounds)) {
-                return DexMetaKeyPolicy.this.mMinHeightBounds;
-            }
-            if (task.hasMetaKeyBounds()) {
-                return task.takeMetaKeyBounds();
-            }
-            Rect defaultBounds = getDefaultBounds();
-            defaultBounds.left = DexMetaKeyPolicy.this.mTaskBounds.left;
-            defaultBounds.right = DexMetaKeyPolicy.this.mTaskBounds.right;
-            return defaultBounds;
-        }
-
-        public boolean canUseShiftKey(Task task) {
-            if (task.isDexCompatEnabled() || !task.inFreeformWindowingMode()) {
-                return false;
-            }
-            DexMetaKeyPolicy dexMetaKeyPolicy = DexMetaKeyPolicy.this;
-            return !dexMetaKeyPolicy.isMinHeightBounds(dexMetaKeyPolicy.mTaskBounds);
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public void updateTaskBoundsInfoIfNeeded(Task task, Rect rect) {
-            if (DexMetaKeyPolicy.this.isMinHeightBounds(rect)) {
-                task.setMetaKeyBounds(new Rect(DexMetaKeyPolicy.this.mTaskBounds));
-            }
-        }
-
-        @Override // com.android.server.wm.DexMetaKeyPolicy.MetaKeyBoundsProvider
-        public void applyBounds(Task task, Rect rect) {
-            if (MultiWindowUtils.MetaKeyBoundsChecker.isMinimizeBounds(rect)) {
-                DexMetaKeyPolicy.this.mAtm.mMultiTaskingController.minimizeTaskLocked(task, true);
-                return;
-            }
-            if (task.inFreeformWindowingMode()) {
-                DexMetaKeyPolicy.this.mAtm.resizeTask(task.mTaskId, rect, 0);
-                return;
-            }
-            IBinder topAppToken = task.getTopAppToken();
-            if (topAppToken == null || !task.inFullscreenWindowingMode()) {
-                return;
-            }
-            DexMetaKeyPolicy.this.mAtm.mActivityClientController.toggleFreeformWindowingMode(topAppToken);
-        }
+    public final boolean isRightHalfDisplayBounds(Rect rect) {
+        return rect != null && rect.equals(this.mRightHalfDisplayBounds);
     }
 }

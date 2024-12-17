@@ -1,18 +1,6 @@
 package com.android.server.devicepolicy;
 
-import com.android.internal.util.JournaledFile;
-import java.util.List;
-import java.util.function.Function;
-
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public interface PolicyUpgraderDataProvider {
-    Function getAdminInfoSupplier(int i);
-
-    List getPlatformSuspendedPackages(int i);
-
-    int[] getUsersForUpgrade();
-
-    JournaledFile makeDevicePoliciesJournaledFile(int i);
-
-    JournaledFile makePoliciesVersionJournaledFile(int i);
 }

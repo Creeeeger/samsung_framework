@@ -13,6 +13,7 @@ import android.util.Xml;
 import com.android.internal.util.XmlUtils;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,12 +21,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import libcore.io.IoUtils;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class PersistentDataStore {
     public final AtomicFile mAtomicFile;
     public boolean mBlockedRatingsChanged;
@@ -35,138 +36,44 @@ public final class PersistentDataStore {
     public boolean mParentalControlsEnabledChanged;
     public final Handler mHandler = new Handler();
     public final List mBlockedRatings = Collections.synchronizedList(new ArrayList());
-    public final Runnable mSaveRunnable = new Runnable() { // from class: com.android.server.tv.PersistentDataStore.1
+    public final AnonymousClass1 mSaveRunnable = new Runnable() { // from class: com.android.server.tv.PersistentDataStore.1
         @Override // java.lang.Runnable
-        public void run() {
-            PersistentDataStore.this.save();
+        public final void run() {
+            PersistentDataStore persistentDataStore = PersistentDataStore.this;
+            persistentDataStore.getClass();
+            try {
+                FileOutputStream startWrite = persistentDataStore.mAtomicFile.startWrite();
+                try {
+                    TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
+                    persistentDataStore.saveToXml(resolveSerializer);
+                    resolveSerializer.flush();
+                    persistentDataStore.mAtomicFile.finishWrite(startWrite);
+                    if (persistentDataStore.mParentalControlsEnabledChanged) {
+                        persistentDataStore.mParentalControlsEnabledChanged = false;
+                        persistentDataStore.mContext.sendBroadcastAsUser(new Intent("android.media.tv.action.PARENTAL_CONTROLS_ENABLED_CHANGED"), UserHandle.ALL);
+                    }
+                    if (persistentDataStore.mBlockedRatingsChanged) {
+                        persistentDataStore.mBlockedRatingsChanged = false;
+                        persistentDataStore.mContext.sendBroadcastAsUser(new Intent("android.media.tv.action.BLOCKED_RATINGS_CHANGED"), UserHandle.ALL);
+                    }
+                } catch (Throwable th) {
+                    persistentDataStore.mAtomicFile.failWrite(startWrite);
+                    throw th;
+                }
+            } catch (IOException e) {
+                Slog.w("TvInputManagerService", "Failed to save tv input manager persistent store data.", e);
+            }
         }
     };
 
+    /* JADX WARN: Type inference failed for: r0v3, types: [com.android.server.tv.PersistentDataStore$1] */
     public PersistentDataStore(Context context, int i) {
         this.mContext = context;
         File userSystemDirectory = Environment.getUserSystemDirectory(i);
         if (!userSystemDirectory.exists() && !userSystemDirectory.mkdirs()) {
-            throw new IllegalStateException("User dir cannot be created: " + userSystemDirectory);
+            throw new IllegalStateException(AccountManagerService$$ExternalSyntheticOutline0.m(userSystemDirectory, "User dir cannot be created: "));
         }
         this.mAtomicFile = new AtomicFile(new File(userSystemDirectory, "tv-input-manager-state.xml"), "tv-input-state");
-    }
-
-    public boolean isParentalControlsEnabled() {
-        loadIfNeeded();
-        return this.mParentalControlsEnabled;
-    }
-
-    public void setParentalControlsEnabled(boolean z) {
-        loadIfNeeded();
-        if (this.mParentalControlsEnabled != z) {
-            this.mParentalControlsEnabled = z;
-            this.mParentalControlsEnabledChanged = true;
-            postSave();
-        }
-    }
-
-    public boolean isRatingBlocked(TvContentRating tvContentRating) {
-        loadIfNeeded();
-        synchronized (this.mBlockedRatings) {
-            Iterator it = this.mBlockedRatings.iterator();
-            while (it.hasNext()) {
-                if (tvContentRating.contains((TvContentRating) it.next())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    public TvContentRating[] getBlockedRatings() {
-        loadIfNeeded();
-        List list = this.mBlockedRatings;
-        return (TvContentRating[]) list.toArray(new TvContentRating[list.size()]);
-    }
-
-    public void addBlockedRating(TvContentRating tvContentRating) {
-        loadIfNeeded();
-        if (tvContentRating == null || this.mBlockedRatings.contains(tvContentRating)) {
-            return;
-        }
-        this.mBlockedRatings.add(tvContentRating);
-        this.mBlockedRatingsChanged = true;
-        postSave();
-    }
-
-    public void removeBlockedRating(TvContentRating tvContentRating) {
-        loadIfNeeded();
-        if (tvContentRating == null || !this.mBlockedRatings.contains(tvContentRating)) {
-            return;
-        }
-        this.mBlockedRatings.remove(tvContentRating);
-        this.mBlockedRatingsChanged = true;
-        postSave();
-    }
-
-    public final void loadIfNeeded() {
-        if (this.mLoaded) {
-            return;
-        }
-        load();
-        this.mLoaded = true;
-    }
-
-    public final void clearState() {
-        this.mBlockedRatings.clear();
-        this.mParentalControlsEnabled = false;
-    }
-
-    public final void load() {
-        clearState();
-        try {
-            FileInputStream openRead = this.mAtomicFile.openRead();
-            try {
-                try {
-                    loadFromXml(Xml.resolvePullParser(openRead));
-                } catch (IOException | XmlPullParserException e) {
-                    Slog.w("TvInputManagerService", "Failed to load tv input manager persistent store data.", e);
-                    clearState();
-                }
-            } finally {
-                IoUtils.closeQuietly(openRead);
-            }
-        } catch (FileNotFoundException unused) {
-        }
-    }
-
-    public final void postSave() {
-        this.mHandler.removeCallbacks(this.mSaveRunnable);
-        this.mHandler.post(this.mSaveRunnable);
-    }
-
-    public final void save() {
-        try {
-            FileOutputStream startWrite = this.mAtomicFile.startWrite();
-            try {
-                TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
-                saveToXml(resolveSerializer);
-                resolveSerializer.flush();
-                this.mAtomicFile.finishWrite(startWrite);
-                broadcastChangesIfNeeded();
-            } catch (Throwable th) {
-                this.mAtomicFile.failWrite(startWrite);
-                throw th;
-            }
-        } catch (IOException e) {
-            Slog.w("TvInputManagerService", "Failed to save tv input manager persistent store data.", e);
-        }
-    }
-
-    public final void broadcastChangesIfNeeded() {
-        if (this.mParentalControlsEnabledChanged) {
-            this.mParentalControlsEnabledChanged = false;
-            this.mContext.sendBroadcastAsUser(new Intent("android.media.tv.action.PARENTAL_CONTROLS_ENABLED_CHANGED"), UserHandle.ALL);
-        }
-        if (this.mBlockedRatingsChanged) {
-            this.mBlockedRatingsChanged = false;
-            this.mContext.sendBroadcastAsUser(new Intent("android.media.tv.action.BLOCKED_RATINGS_CHANGED"), UserHandle.ALL);
-        }
     }
 
     public final void loadFromXml(TypedXmlPullParser typedXmlPullParser) {
@@ -174,24 +81,44 @@ public final class PersistentDataStore {
         int depth = typedXmlPullParser.getDepth();
         while (XmlUtils.nextElementWithin(typedXmlPullParser, depth)) {
             if (typedXmlPullParser.getName().equals("blocked-ratings")) {
-                loadBlockedRatingsFromXml(typedXmlPullParser);
+                int depth2 = typedXmlPullParser.getDepth();
+                while (XmlUtils.nextElementWithin(typedXmlPullParser, depth2)) {
+                    if (typedXmlPullParser.getName().equals("rating")) {
+                        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "string");
+                        if (TextUtils.isEmpty(attributeValue)) {
+                            throw new XmlPullParserException("Missing string attribute on rating");
+                        }
+                        this.mBlockedRatings.add(TvContentRating.unflattenFromString(attributeValue));
+                    }
+                }
             } else if (typedXmlPullParser.getName().equals("parental-controls")) {
                 this.mParentalControlsEnabled = typedXmlPullParser.getAttributeBoolean((String) null, "enabled");
             }
         }
     }
 
-    public final void loadBlockedRatingsFromXml(TypedXmlPullParser typedXmlPullParser) {
-        int depth = typedXmlPullParser.getDepth();
-        while (XmlUtils.nextElementWithin(typedXmlPullParser, depth)) {
-            if (typedXmlPullParser.getName().equals("rating")) {
-                String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "string");
-                if (TextUtils.isEmpty(attributeValue)) {
-                    throw new XmlPullParserException("Missing string attribute on rating");
-                }
-                this.mBlockedRatings.add(TvContentRating.unflattenFromString(attributeValue));
-            }
+    public final void loadIfNeeded() {
+        if (this.mLoaded) {
+            return;
         }
+        this.mBlockedRatings.clear();
+        this.mParentalControlsEnabled = false;
+        try {
+            FileInputStream openRead = this.mAtomicFile.openRead();
+            try {
+                try {
+                    loadFromXml(Xml.resolvePullParser(openRead));
+                } finally {
+                    IoUtils.closeQuietly(openRead);
+                }
+            } catch (IOException | XmlPullParserException e) {
+                Slog.w("TvInputManagerService", "Failed to load tv input manager persistent store data.", e);
+                this.mBlockedRatings.clear();
+                this.mParentalControlsEnabled = false;
+            }
+        } catch (FileNotFoundException unused) {
+        }
+        this.mLoaded = true;
     }
 
     public final void saveToXml(TypedXmlSerializer typedXmlSerializer) {
@@ -200,10 +127,14 @@ public final class PersistentDataStore {
         typedXmlSerializer.startTag((String) null, "tv-input-manager-state");
         typedXmlSerializer.startTag((String) null, "blocked-ratings");
         synchronized (this.mBlockedRatings) {
-            for (TvContentRating tvContentRating : this.mBlockedRatings) {
-                typedXmlSerializer.startTag((String) null, "rating");
-                typedXmlSerializer.attribute((String) null, "string", tvContentRating.flattenToString());
-                typedXmlSerializer.endTag((String) null, "rating");
+            try {
+                for (TvContentRating tvContentRating : this.mBlockedRatings) {
+                    typedXmlSerializer.startTag((String) null, "rating");
+                    typedXmlSerializer.attribute((String) null, "string", tvContentRating.flattenToString());
+                    typedXmlSerializer.endTag((String) null, "rating");
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
         typedXmlSerializer.endTag((String) null, "blocked-ratings");

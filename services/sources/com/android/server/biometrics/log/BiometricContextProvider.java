@@ -3,257 +3,258 @@ package com.android.server.biometrics.log;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.hardware.biometrics.AuthenticateOptions;
 import android.hardware.biometrics.IBiometricContextListener;
+import android.hardware.biometrics.common.AuthenticateReason;
+import android.hardware.biometrics.common.OperationContext;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
+import android.hardware.face.FaceAuthenticateOptions;
+import android.hardware.fingerprint.FingerprintAuthenticateOptions;
 import android.os.Handler;
 import android.os.RemoteException;
-import android.os.ServiceManager;
 import android.util.Slog;
 import android.view.WindowManager;
 import com.android.internal.logging.InstanceId;
 import com.android.internal.statusbar.ISessionListener;
 import com.android.internal.statusbar.IStatusBarService;
-import com.android.server.biometrics.SemBioFgThread;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import com.android.server.biometrics.Utils;
 import com.android.server.biometrics.sensors.AuthSessionCoordinator;
-import com.android.server.biometrics.sensors.fingerprint.SemBiometricDisplayMonitor;
-import com.android.server.biometrics.sensors.fingerprint.SemBiometricDisplayStateMonitor;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class BiometricContextProvider implements BiometricContext {
     public static BiometricContextProvider sInstance;
     public final AuthSessionCoordinator mAuthSessionCoordinator;
     public final Handler mHandler;
-    public IBiometricContextListener mIBiometricContextListener;
-    public ISessionListener mISessionListener;
+    public final AnonymousClass2 mIBiometricContextListener;
+    public final AnonymousClass3 mISessionListener;
     public final WindowManager mWindowManager;
     public final Map mSubscribers = new ConcurrentHashMap();
     public final Map mSession = new ConcurrentHashMap();
     public int mDockState = 0;
     public int mFoldState = 0;
     public int mDisplayState = 0;
+    public boolean mIsHardwareIgnoringTouches = false;
     final BroadcastReceiver mDockStateReceiver = new BroadcastReceiver() { // from class: com.android.server.biometrics.log.BiometricContextProvider.1
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             BiometricContextProvider.this.mDockState = intent.getIntExtra("android.intent.extra.DOCK_STATE", 0);
         }
     };
 
-    public static String displayStateToString(int i) {
-        return i != 0 ? i != 1 ? i != 2 ? i != 3 ? i != 4 ? "" : "DISPLAY_STATE_AOD" : "DISPLAY_STATE_SCREENSAVER" : "DISPLAY_STATE_NO_UI" : "DISPLAY_STATE_LOCKSCREEN" : "DISPLAY_STATE_UNKNOWN";
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.biometrics.log.BiometricContextProvider$2, reason: invalid class name */
+    public final class AnonymousClass2 extends IBiometricContextListener.Stub {
+        public AnonymousClass2() {
+        }
 
-    public static BiometricContextProvider defaultProvider(Context context) {
-        synchronized (BiometricContextProvider.class) {
-            if (sInstance == null) {
-                try {
-                    sInstance = new BiometricContextProvider(context, (WindowManager) context.getSystemService("window"), IStatusBarService.Stub.asInterface(ServiceManager.getServiceOrThrow("statusbar")), SemBioFgThread.get().getHandler(), new AuthSessionCoordinator());
-                } catch (ServiceManager.ServiceNotFoundException e) {
-                    throw new IllegalStateException("Failed to find required service", e);
+        public final void onDisplayStateChanged(int i) {
+            Slog.i("BiometricContextProvider", "onDisplayStateChanged: ".concat(i != 0 ? i != 1 ? i != 2 ? i != 3 ? i != 4 ? "" : "DISPLAY_STATE_AOD" : "DISPLAY_STATE_SCREENSAVER" : "DISPLAY_STATE_NO_UI" : "DISPLAY_STATE_LOCKSCREEN" : "DISPLAY_STATE_UNKNOWN"));
+            BiometricContextProvider biometricContextProvider = BiometricContextProvider.this;
+            if (i != biometricContextProvider.mDisplayState) {
+                biometricContextProvider.mDisplayState = i;
+                Handler handler = biometricContextProvider.mHandler;
+                if (handler != null) {
+                    handler.post(new BiometricContextProvider$$ExternalSyntheticLambda0(biometricContextProvider));
+                } else {
+                    ((ConcurrentHashMap) biometricContextProvider.mSubscribers).forEach(new BiometricContextProvider$$ExternalSyntheticLambda1(biometricContextProvider));
                 }
             }
         }
-        return sInstance;
+
+        public final void onFoldChanged(int i) {
+            BiometricContextProvider biometricContextProvider = BiometricContextProvider.this;
+            if (biometricContextProvider.mFoldState != i) {
+                biometricContextProvider.mFoldState = i;
+                Handler handler = biometricContextProvider.mHandler;
+                if (handler != null) {
+                    handler.post(new BiometricContextProvider$$ExternalSyntheticLambda0(biometricContextProvider));
+                    return;
+                }
+                ((ConcurrentHashMap) biometricContextProvider.mSubscribers).forEach(new BiometricContextProvider$$ExternalSyntheticLambda1(biometricContextProvider));
+            }
+        }
+
+        public final void onHardwareIgnoreTouchesChanged(boolean z) {
+            BiometricContextProvider biometricContextProvider = BiometricContextProvider.this;
+            if (biometricContextProvider.mIsHardwareIgnoringTouches != z) {
+                biometricContextProvider.mIsHardwareIgnoringTouches = z;
+                Handler handler = biometricContextProvider.mHandler;
+                if (handler != null) {
+                    handler.post(new BiometricContextProvider$$ExternalSyntheticLambda0(biometricContextProvider));
+                    return;
+                }
+                ((ConcurrentHashMap) biometricContextProvider.mSubscribers).forEach(new BiometricContextProvider$$ExternalSyntheticLambda1(biometricContextProvider));
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.biometrics.log.BiometricContextProvider$3, reason: invalid class name */
+    public final class AnonymousClass3 extends ISessionListener.Stub {
+        public AnonymousClass3() {
+        }
+
+        public final void onSessionEnded(int i, InstanceId instanceId) {
+            if (Utils.DEBUG) {
+                Slog.d("BiometricContextProvider", "onSessionEnded: " + i + ", " + instanceId);
+            }
+            BiometricContextSessionInfo biometricContextSessionInfo = (BiometricContextSessionInfo) ((ConcurrentHashMap) BiometricContextProvider.this.mSession).remove(Integer.valueOf(i));
+            if (biometricContextSessionInfo == null || instanceId == null || biometricContextSessionInfo.mId.getId() == instanceId.getId()) {
+                return;
+            }
+            Slog.w("BiometricContextProvider", "session id mismatch");
+        }
+
+        public final void onSessionStarted(int i, InstanceId instanceId) {
+            if (Utils.DEBUG) {
+                Slog.d("BiometricContextProvider", "onSessionStarted: " + i + ", " + instanceId);
+            }
+            ((ConcurrentHashMap) BiometricContextProvider.this.mSession).put(Integer.valueOf(i), new BiometricContextSessionInfo(instanceId));
+        }
     }
 
     public BiometricContextProvider(Context context, WindowManager windowManager, IStatusBarService iStatusBarService, Handler handler, AuthSessionCoordinator authSessionCoordinator) {
         this.mWindowManager = windowManager;
         this.mAuthSessionCoordinator = authSessionCoordinator;
         this.mHandler = handler;
-        subscribeBiometricContextListener(iStatusBarService);
-        subscribeDockState(context);
-    }
-
-    public final void subscribeBiometricContextListener(IStatusBarService iStatusBarService) {
         try {
-            IBiometricContextListener.Stub stub = new IBiometricContextListener.Stub() { // from class: com.android.server.biometrics.log.BiometricContextProvider.2
-                public void onFoldChanged(int i) {
-                    if (Utils.DEBUG) {
-                        Slog.d("BiometricContextProvider", "onFoldChanged: " + i);
-                    }
-                    BiometricContextProvider.this.mFoldState = i;
-                }
-
-                public void onDisplayStateChanged(int i) {
-                    Slog.i("BiometricContextProvider", "onDisplayStateChanged: " + BiometricContextProvider.displayStateToString(i));
-                    if (i != BiometricContextProvider.this.mDisplayState) {
-                        BiometricContextProvider.this.mDisplayState = i;
-                        BiometricContextProvider.this.notifyChanged();
-                    }
-                }
-            };
-            this.mIBiometricContextListener = stub;
-            iStatusBarService.setBiometicContextListener(stub);
-            ISessionListener.Stub stub2 = new ISessionListener.Stub() { // from class: com.android.server.biometrics.log.BiometricContextProvider.3
-                public void onSessionStarted(int i, InstanceId instanceId) {
-                    if (Utils.DEBUG) {
-                        Slog.d("BiometricContextProvider", "onSessionStarted: " + i + ", " + instanceId);
-                    }
-                    BiometricContextProvider.this.mSession.put(Integer.valueOf(i), new BiometricContextSessionInfo(instanceId));
-                }
-
-                public void onSessionEnded(int i, InstanceId instanceId) {
-                    if (Utils.DEBUG) {
-                        Slog.d("BiometricContextProvider", "onSessionEnded: " + i + ", " + instanceId);
-                    }
-                    BiometricContextSessionInfo biometricContextSessionInfo = (BiometricContextSessionInfo) BiometricContextProvider.this.mSession.remove(Integer.valueOf(i));
-                    if (biometricContextSessionInfo == null || instanceId == null || biometricContextSessionInfo.getId() == instanceId.getId()) {
-                        return;
-                    }
-                    Slog.w("BiometricContextProvider", "session id mismatch");
-                }
-            };
-            this.mISessionListener = stub2;
-            iStatusBarService.registerSessionListener(3, stub2);
+            AnonymousClass2 anonymousClass2 = new AnonymousClass2();
+            this.mIBiometricContextListener = anonymousClass2;
+            iStatusBarService.setBiometicContextListener(anonymousClass2);
+            AnonymousClass3 anonymousClass3 = new AnonymousClass3();
+            this.mISessionListener = anonymousClass3;
+            iStatusBarService.registerSessionListener(3, anonymousClass3);
         } catch (RemoteException e) {
             Slog.e("BiometricContextProvider", "Unable to register biometric context listener", e);
         }
-    }
-
-    public final void subscribeDockState(Context context) {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.DOCK_EVENT");
         try {
-            context.registerReceiver(this.mDockStateReceiver, intentFilter);
-        } catch (Exception e) {
-            Slog.w("BiometricContextProvider", "subscribeDockState: " + e.getMessage());
+            context.registerReceiver(this.mDockStateReceiver, BatteryService$$ExternalSyntheticOutline0.m("android.intent.action.DOCK_EVENT"));
+        } catch (SecurityException e2) {
+            e2.printStackTrace();
         }
     }
 
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public OperationContextExt updateContext(OperationContextExt operationContextExt, boolean z) {
-        return operationContextExt.update(this, z);
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public BiometricContextSessionInfo getKeyguardEntrySessionInfo() {
-        return (BiometricContextSessionInfo) this.mSession.get(1);
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public BiometricContextSessionInfo getBiometricPromptSessionInfo() {
-        return (BiometricContextSessionInfo) this.mSession.get(2);
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public boolean isAod() {
-        return this.mDisplayState == 4;
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public boolean isAwake() {
+    public final boolean isAwake() {
         int i = this.mDisplayState;
         return i == 0 || i == 1 || i == 3;
     }
 
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public boolean isDisplayOn() {
-        return this.mWindowManager.getDefaultDisplay().getState() == 2;
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public int getDockedState() {
-        return this.mDockState;
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public int getFoldState() {
-        return this.mFoldState;
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public int getCurrentRotation() {
-        return this.mWindowManager.getDefaultDisplay().getRotation();
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public int getDisplayState() {
-        return this.mDisplayState;
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public void subscribe(OperationContextExt operationContextExt, Consumer consumer) {
-        this.mSubscribers.put(operationContextExt, consumer);
-        if (operationContextExt.getDisplayState() != getDisplayState()) {
-            consumer.accept(operationContextExt.update(this, operationContextExt.isCrypto()).toAidlContext());
+    public final void subscribe(OperationContextExt operationContextExt, Consumer consumer, Consumer consumer2, AuthenticateOptions authenticateOptions) {
+        OperationContext operationContext;
+        int i;
+        Map map = this.mSubscribers;
+        operationContextExt.update(this, operationContextExt.mAidlContext.isCrypto);
+        ((ConcurrentHashMap) map).put(operationContextExt, consumer2);
+        if (authenticateOptions == null) {
+            consumer.accept(operationContextExt.mAidlContext);
+            return;
         }
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public void unsubscribe(OperationContextExt operationContextExt) {
-        this.mSubscribers.remove(operationContextExt);
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public AuthSessionCoordinator getAuthSessionCoordinator() {
-        return this.mAuthSessionCoordinator;
-    }
-
-    public final void notifyChanged() {
-        Handler handler = this.mHandler;
-        if (handler != null) {
-            handler.post(new Runnable() { // from class: com.android.server.biometrics.log.BiometricContextProvider$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    BiometricContextProvider.this.notifySubscribers();
+        int i2 = 0;
+        if (authenticateOptions instanceof FaceAuthenticateOptions) {
+            FaceAuthenticateOptions faceAuthenticateOptions = (FaceAuthenticateOptions) authenticateOptions;
+            OperationContext operationContext2 = operationContextExt.mAidlContext;
+            switch (faceAuthenticateOptions.getAuthenticateReason()) {
+                case 1:
+                    i = 1;
+                    break;
+                case 2:
+                    i = 2;
+                    break;
+                case 3:
+                    i = 3;
+                    break;
+                case 4:
+                    i = 4;
+                    break;
+                case 5:
+                    i = 5;
+                    break;
+                case 6:
+                    i = 6;
+                    break;
+                case 7:
+                    i = 7;
+                    break;
+                case 8:
+                    i = 8;
+                    break;
+                case 9:
+                    i = 9;
+                    break;
+                case 10:
+                    i = 10;
+                    break;
+                default:
+                    i = 0;
+                    break;
+            }
+            operationContext2.authenticateReason = AuthenticateReason.faceAuthenticateReason(i);
+            OperationContext operationContext3 = operationContextExt.mAidlContext;
+            int wakeReason = faceAuthenticateOptions.getWakeReason();
+            if (wakeReason == 1) {
+                i2 = 1;
+            } else if (wakeReason == 4) {
+                i2 = 2;
+            } else if (wakeReason == 10) {
+                i2 = 6;
+            } else if (wakeReason == 6) {
+                i2 = 3;
+            } else if (wakeReason != 7) {
+                switch (wakeReason) {
+                    case 15:
+                        i2 = 7;
+                        break;
+                    case 16:
+                        i2 = 8;
+                        break;
+                    case 17:
+                        i2 = 9;
+                        break;
                 }
-            });
+            } else {
+                i2 = 4;
+            }
+            operationContext3.wakeReason = i2;
+            operationContext = operationContextExt.mAidlContext;
         } else {
-            notifySubscribers();
+            if (!(authenticateOptions instanceof FingerprintAuthenticateOptions)) {
+                throw new IllegalStateException("Authenticate options are invalid.");
+            }
+            FingerprintAuthenticateOptions fingerprintAuthenticateOptions = (FingerprintAuthenticateOptions) authenticateOptions;
+            if (fingerprintAuthenticateOptions.getVendorReason() != null) {
+                operationContextExt.mAidlContext.authenticateReason = AuthenticateReason.vendorAuthenticateReason(fingerprintAuthenticateOptions.getVendorReason());
+            } else {
+                operationContextExt.mAidlContext.authenticateReason = AuthenticateReason.fingerprintAuthenticateReason(0);
+            }
+            operationContext = operationContextExt.mAidlContext;
+            operationContext.wakeReason = 0;
         }
+        consumer.accept(operationContext);
     }
 
-    public final void notifySubscribers() {
-        this.mSubscribers.forEach(new BiConsumer() { // from class: com.android.server.biometrics.log.BiometricContextProvider$$ExternalSyntheticLambda1
-            @Override // java.util.function.BiConsumer
-            public final void accept(Object obj, Object obj2) {
-                BiometricContextProvider.this.lambda$notifySubscribers$0((OperationContextExt) obj, (Consumer) obj2);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$notifySubscribers$0(OperationContextExt operationContextExt, Consumer consumer) {
-        consumer.accept(operationContextExt.update(this, operationContextExt.isCrypto()).toAidlContext());
-    }
-
-    public String toString() {
-        return "[keyguard session: " + getKeyguardEntrySessionInfo() + ", bp session: " + getBiometricPromptSessionInfo() + ", displayState: " + getDisplayState() + ", isAwake: " + isAwake() + ", isDisplayOn: " + isDisplayOn() + ", dock: " + getDockedState() + ", rotation: " + getCurrentRotation() + "]";
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public ISessionListener getISessionListener() {
-        return this.mISessionListener;
-    }
-
-    @Override // com.android.server.biometrics.log.BiometricContext
-    public void ensureBiometricContextListener(SemBiometricDisplayStateMonitor semBiometricDisplayStateMonitor) {
-        Slog.i("BiometricContextProvider", "ensureBiometricContextListener");
-        try {
-            IStatusBarService.Stub.asInterface(ServiceManager.getServiceOrThrow("statusbar")).setBiometicContextListener(this.mIBiometricContextListener);
-        } catch (ServiceManager.ServiceNotFoundException | RemoteException e) {
-            e.printStackTrace();
-        }
-        semBiometricDisplayStateMonitor.registerCallback(new SemBiometricDisplayMonitor.Callback() { // from class: com.android.server.biometrics.log.BiometricContextProvider.4
-            @Override // com.android.server.biometrics.sensors.fingerprint.SemBiometricDisplayMonitor.Callback
-            public void onDisplayOn() {
-            }
-
-            @Override // com.android.server.biometrics.sensors.fingerprint.SemBiometricDisplayMonitor.Callback
-            public void onDisplayOff() {
-                if (Utils.DEBUG) {
-                    Slog.d("BiometricContextProvider", "onDisplayOff");
-                }
-                try {
-                    BiometricContextProvider.this.mIBiometricContextListener.onDisplayStateChanged(2);
-                } catch (RemoteException e2) {
-                    e2.printStackTrace();
-                }
-            }
-        });
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("[keyguard session: ");
+        sb.append((BiometricContextSessionInfo) ((ConcurrentHashMap) this.mSession).get(1));
+        sb.append(", bp session: ");
+        sb.append((BiometricContextSessionInfo) ((ConcurrentHashMap) this.mSession).get(2));
+        sb.append(", displayState: ");
+        sb.append(this.mDisplayState);
+        sb.append(", isAwake: ");
+        sb.append(isAwake());
+        sb.append(", isHardwareIgnoring: ");
+        sb.append(this.mIsHardwareIgnoringTouches);
+        sb.append(", isDisplayOn: ");
+        sb.append(this.mWindowManager.getDefaultDisplay().getState() == 2);
+        sb.append(", dock: ");
+        sb.append(this.mDockState);
+        sb.append(", rotation: ");
+        sb.append(this.mWindowManager.getDefaultDisplay().getRotation());
+        sb.append(", foldState: ");
+        return AmFmBandRange$$ExternalSyntheticOutline0.m(this.mFoldState, sb, "]");
     }
 }

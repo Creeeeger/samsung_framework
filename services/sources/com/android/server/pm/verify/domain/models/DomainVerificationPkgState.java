@@ -7,54 +7,18 @@ import com.android.internal.util.AnnotationValidations;
 import java.util.Objects;
 import java.util.UUID;
 
-/* loaded from: classes3.dex */
-public class DomainVerificationPkgState {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DomainVerificationPkgState {
     public final String mBackupSignatureHash;
     public final boolean mHasAutoVerifyDomains;
-    public UUID mId;
+    public final UUID mId;
     public final String mPackageName;
     public final ArrayMap mStateMap;
+    public final ArrayMap mUriRelativeFilterGroupMap;
     public final SparseArray mUserStates;
 
-    public DomainVerificationPkgState(String str, UUID uuid, boolean z) {
-        this(str, uuid, z, new ArrayMap(0), new SparseArray(0), null);
-    }
-
-    public DomainVerificationPkgState(DomainVerificationPkgState domainVerificationPkgState, UUID uuid, boolean z) {
-        this(domainVerificationPkgState.getPackageName(), uuid, z, domainVerificationPkgState.getStateMap(), domainVerificationPkgState.getUserStates(), null);
-    }
-
-    public DomainVerificationInternalUserState getUserState(int i) {
-        return (DomainVerificationInternalUserState) this.mUserStates.get(i);
-    }
-
-    public DomainVerificationInternalUserState getOrCreateUserState(int i) {
-        DomainVerificationInternalUserState domainVerificationInternalUserState = (DomainVerificationInternalUserState) this.mUserStates.get(i);
-        if (domainVerificationInternalUserState != null) {
-            return domainVerificationInternalUserState;
-        }
-        DomainVerificationInternalUserState domainVerificationInternalUserState2 = new DomainVerificationInternalUserState(i);
-        this.mUserStates.put(i, domainVerificationInternalUserState2);
-        return domainVerificationInternalUserState2;
-    }
-
-    public void removeUser(int i) {
-        this.mUserStates.remove(i);
-    }
-
-    public void removeAllUsers() {
-        this.mUserStates.clear();
-    }
-
-    public final int userStatesHashCode() {
-        return this.mUserStates.contentHashCode();
-    }
-
-    public final boolean userStatesEquals(SparseArray sparseArray) {
-        return this.mUserStates.contentEquals(sparseArray);
-    }
-
-    public DomainVerificationPkgState(String str, UUID uuid, boolean z, ArrayMap arrayMap, SparseArray sparseArray, String str2) {
+    public DomainVerificationPkgState(String str, UUID uuid, boolean z, ArrayMap arrayMap, SparseArray sparseArray, String str2, ArrayMap arrayMap2) {
         this.mPackageName = str;
         AnnotationValidations.validate(NonNull.class, (NonNull) null, str);
         this.mId = uuid;
@@ -65,48 +29,45 @@ public class DomainVerificationPkgState {
         this.mUserStates = sparseArray;
         AnnotationValidations.validate(NonNull.class, (NonNull) null, sparseArray);
         this.mBackupSignatureHash = str2;
+        this.mUriRelativeFilterGroupMap = arrayMap2;
+        AnnotationValidations.validate(NonNull.class, (NonNull) null, arrayMap2);
     }
 
-    public String getPackageName() {
-        return this.mPackageName;
-    }
-
-    public UUID getId() {
-        return this.mId;
-    }
-
-    public boolean isHasAutoVerifyDomains() {
-        return this.mHasAutoVerifyDomains;
-    }
-
-    public ArrayMap getStateMap() {
-        return this.mStateMap;
-    }
-
-    public SparseArray getUserStates() {
-        return this.mUserStates;
-    }
-
-    public String getBackupSignatureHash() {
-        return this.mBackupSignatureHash;
-    }
-
-    public String toString() {
-        return "DomainVerificationPkgState { packageName = " + this.mPackageName + ", id = " + this.mId + ", hasAutoVerifyDomains = " + this.mHasAutoVerifyDomains + ", stateMap = " + this.mStateMap + ", userStates = " + this.mUserStates + ", backupSignatureHash = " + this.mBackupSignatureHash + " }";
-    }
-
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (obj == null || DomainVerificationPkgState.class != obj.getClass()) {
             return false;
         }
         DomainVerificationPkgState domainVerificationPkgState = (DomainVerificationPkgState) obj;
-        return Objects.equals(this.mPackageName, domainVerificationPkgState.mPackageName) && Objects.equals(this.mId, domainVerificationPkgState.mId) && this.mHasAutoVerifyDomains == domainVerificationPkgState.mHasAutoVerifyDomains && Objects.equals(this.mStateMap, domainVerificationPkgState.mStateMap) && userStatesEquals(domainVerificationPkgState.mUserStates) && Objects.equals(this.mBackupSignatureHash, domainVerificationPkgState.mBackupSignatureHash);
+        if (Objects.equals(this.mPackageName, domainVerificationPkgState.mPackageName) && Objects.equals(this.mId, domainVerificationPkgState.mId) && this.mHasAutoVerifyDomains == domainVerificationPkgState.mHasAutoVerifyDomains && Objects.equals(this.mStateMap, domainVerificationPkgState.mStateMap)) {
+            if (this.mUserStates.contentEquals(domainVerificationPkgState.mUserStates) && Objects.equals(this.mBackupSignatureHash, domainVerificationPkgState.mBackupSignatureHash) && Objects.equals(this.mUriRelativeFilterGroupMap, domainVerificationPkgState.mUriRelativeFilterGroupMap)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public int hashCode() {
-        return ((((((((((Objects.hashCode(this.mPackageName) + 31) * 31) + Objects.hashCode(this.mId)) * 31) + Boolean.hashCode(this.mHasAutoVerifyDomains)) * 31) + Objects.hashCode(this.mStateMap)) * 31) + userStatesHashCode()) * 31) + Objects.hashCode(this.mBackupSignatureHash);
+    public final DomainVerificationInternalUserState getOrCreateUserState(int i) {
+        DomainVerificationInternalUserState domainVerificationInternalUserState = (DomainVerificationInternalUserState) this.mUserStates.get(i);
+        if (domainVerificationInternalUserState != null) {
+            return domainVerificationInternalUserState;
+        }
+        DomainVerificationInternalUserState domainVerificationInternalUserState2 = new DomainVerificationInternalUserState(i);
+        this.mUserStates.put(i, domainVerificationInternalUserState2);
+        return domainVerificationInternalUserState2;
+    }
+
+    public final int hashCode() {
+        return Objects.hashCode(this.mUriRelativeFilterGroupMap) + ((Objects.hashCode(this.mBackupSignatureHash) + ((this.mUserStates.contentHashCode() + ((Objects.hashCode(this.mStateMap) + ((Boolean.hashCode(this.mHasAutoVerifyDomains) + ((Objects.hashCode(this.mId) + ((Objects.hashCode(this.mPackageName) + 31) * 31)) * 31)) * 31)) * 31)) * 31)) * 31);
+    }
+
+    public final void removeUser(int i) {
+        this.mUserStates.remove(i);
+    }
+
+    public final String toString() {
+        return "DomainVerificationPkgState { packageName = " + this.mPackageName + ", id = " + this.mId + ", hasAutoVerifyDomains = " + this.mHasAutoVerifyDomains + ", stateMap = " + this.mStateMap + ", userStates = " + this.mUserStates + ", backupSignatureHash = " + this.mBackupSignatureHash + ", uriRelativeFilterGroupMap = " + this.mUriRelativeFilterGroupMap + " }";
     }
 }

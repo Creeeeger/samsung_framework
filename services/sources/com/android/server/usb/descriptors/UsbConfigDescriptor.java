@@ -1,69 +1,21 @@
 package com.android.server.usb.descriptors;
 
-import android.hardware.usb.UsbConfiguration;
-import android.hardware.usb.UsbInterface;
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 import java.util.ArrayList;
-import java.util.Iterator;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class UsbConfigDescriptor extends UsbDescriptor {
     public int mAttribs;
-    public boolean mBlockAudio;
     public byte mConfigIndex;
     public int mConfigValue;
     public ArrayList mInterfaceDescriptors;
     public int mMaxPower;
     public byte mNumInterfaces;
-    public int mTotalLength;
-
-    public UsbConfigDescriptor(int i, byte b) {
-        super(i, b);
-        this.mInterfaceDescriptors = new ArrayList();
-        this.mHierarchyLevel = 2;
-    }
-
-    public byte getNumInterfaces() {
-        return this.mNumInterfaces;
-    }
-
-    public int getConfigValue() {
-        return this.mConfigValue;
-    }
-
-    public int getAttribs() {
-        return this.mAttribs;
-    }
-
-    public void addInterfaceDescriptor(UsbInterfaceDescriptor usbInterfaceDescriptor) {
-        this.mInterfaceDescriptors.add(usbInterfaceDescriptor);
-    }
-
-    public ArrayList getInterfaceDescriptors() {
-        return this.mInterfaceDescriptors;
-    }
-
-    public final boolean isAudioInterface(UsbInterfaceDescriptor usbInterfaceDescriptor) {
-        return usbInterfaceDescriptor.getUsbClass() == 1 && usbInterfaceDescriptor.getUsbSubclass() == 2;
-    }
-
-    public UsbConfiguration toAndroid(UsbDescriptorParser usbDescriptorParser) {
-        UsbConfiguration usbConfiguration = new UsbConfiguration(this.mConfigValue, usbDescriptorParser.getDescriptorString(this.mConfigIndex), this.mAttribs, this.mMaxPower);
-        ArrayList arrayList = new ArrayList();
-        Iterator it = this.mInterfaceDescriptors.iterator();
-        while (it.hasNext()) {
-            UsbInterfaceDescriptor usbInterfaceDescriptor = (UsbInterfaceDescriptor) it.next();
-            if (!this.mBlockAudio || !isAudioInterface(usbInterfaceDescriptor)) {
-                arrayList.add(usbInterfaceDescriptor.toAndroid(usbDescriptorParser));
-            }
-        }
-        usbConfiguration.setInterfaces((UsbInterface[]) arrayList.toArray(new UsbInterface[0]));
-        return usbConfiguration;
-    }
 
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
-        this.mTotalLength = byteStream.unpackUsbShort();
+    public final int parseRawDescriptors(ByteStream byteStream) {
+        byteStream.unpackUsbShort();
         this.mNumInterfaces = byteStream.getByte();
         this.mConfigValue = byteStream.getUnsignedByte();
         this.mConfigIndex = byteStream.getByte();
@@ -73,12 +25,14 @@ public final class UsbConfigDescriptor extends UsbDescriptor {
     }
 
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        reportCanvas.openList();
-        reportCanvas.writeListItem("Config # " + getConfigValue());
-        reportCanvas.writeListItem(((int) getNumInterfaces()) + " Interfaces.");
-        reportCanvas.writeListItem("Attributes: " + ReportCanvas.getHexString(getAttribs()));
-        reportCanvas.closeList();
+    public final void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        textReportCanvas.openList();
+        textReportCanvas.writeListItem("Config # " + this.mConfigValue);
+        textReportCanvas.writeListItem(((int) this.mNumInterfaces) + " Interfaces.");
+        StringBuilder sb = new StringBuilder("Attributes: ");
+        sb.append(TextReportCanvas.getHexString(this.mAttribs));
+        textReportCanvas.writeListItem(sb.toString());
+        textReportCanvas.closeList();
     }
 }

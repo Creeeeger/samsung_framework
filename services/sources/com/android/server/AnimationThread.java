@@ -2,18 +2,29 @@ package com.android.server;
 
 import android.os.Handler;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AnimationThread extends ServiceThread {
     public static Handler sHandler;
     public static AnimationThread sInstance;
 
-    public AnimationThread() {
-        super("android.anim", -4, false);
+    public static void dispose() {
+        synchronized (AnimationThread.class) {
+            try {
+                if (sInstance == null) {
+                    return;
+                }
+                getHandler().runWithScissors(new AnimationThread$$ExternalSyntheticLambda0(), 0L);
+                sInstance = null;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
     public static void ensureThreadLocked() {
         if (sInstance == null) {
-            AnimationThread animationThread = new AnimationThread();
+            AnimationThread animationThread = new AnimationThread(-4, "android.anim", false);
             sInstance = animationThread;
             animationThread.start();
             sInstance.getLooper().setTraceTag(32L);
@@ -37,24 +48,5 @@ public final class AnimationThread extends ServiceThread {
             handler = sHandler;
         }
         return handler;
-    }
-
-    public static void dispose() {
-        synchronized (AnimationThread.class) {
-            if (sInstance == null) {
-                return;
-            }
-            getHandler().runWithScissors(new Runnable() { // from class: com.android.server.AnimationThread$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    AnimationThread.lambda$dispose$0();
-                }
-            }, 0L);
-            sInstance = null;
-        }
-    }
-
-    public static /* synthetic */ void lambda$dispose$0() {
-        sInstance.quit();
     }
 }

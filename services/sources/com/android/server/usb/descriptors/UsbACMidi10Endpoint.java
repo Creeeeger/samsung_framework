@@ -1,25 +1,17 @@
 package com.android.server.usb.descriptors;
 
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class UsbACMidi10Endpoint extends UsbACEndpoint {
     public byte[] mJackIds;
     public byte mNumJacks;
 
-    public UsbACMidi10Endpoint(int i, byte b, int i2, byte b2) {
-        super(i, b, i2, b2);
-        this.mJackIds = new byte[0];
-    }
-
-    public byte getNumJacks() {
-        return this.mNumJacks;
-    }
-
     /* JADX WARN: Multi-variable type inference failed */
-    @Override // com.android.server.usb.descriptors.UsbACEndpoint, com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
-        super.parseRawDescriptors(byteStream);
+    @Override // com.android.server.usb.descriptors.UsbDescriptor
+    public final int parseRawDescriptors(ByteStream byteStream) {
         int i = byteStream.getByte();
         this.mNumJacks = i;
         if (i > 0) {
@@ -32,14 +24,16 @@ public final class UsbACMidi10Endpoint extends UsbACEndpoint {
     }
 
     @Override // com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        reportCanvas.writeHeader(3, "ACMidi10Endpoint: " + ReportCanvas.getHexString(getType()) + " Length: " + getLength());
-        reportCanvas.openList();
-        reportCanvas.writeListItem("" + ((int) getNumJacks()) + " Jacks.");
-        for (int i = 0; i < getNumJacks(); i++) {
-            reportCanvas.writeListItem("Jack " + i + ": " + ((int) this.mJackIds[i]));
+    public final void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        textReportCanvas.writeHeader("ACMidi10Endpoint: " + TextReportCanvas.getHexString(this.mType) + " Length: " + this.mLength);
+        textReportCanvas.openList();
+        textReportCanvas.writeListItem("" + ((int) this.mNumJacks) + " Jacks.");
+        for (int i = 0; i < this.mNumJacks; i++) {
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "Jack ", ": ");
+            m.append((int) this.mJackIds[i]);
+            textReportCanvas.writeListItem(m.toString());
         }
-        reportCanvas.closeList();
+        textReportCanvas.closeList();
     }
 }

@@ -2,60 +2,37 @@ package com.android.server.am.mars.filter.filter;
 
 import android.content.Context;
 import android.hardware.camera2.CameraManager;
-import com.android.server.am.FreecessController;
 import com.android.server.am.MARsPolicyManager;
+import com.android.server.am.mars.MARsUtils;
 import com.android.server.am.mars.filter.IFilter;
 import java.util.HashSet;
 import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class CameraInFgsFilter implements IFilter {
-    public final CameraManager.SemCameraDeviceStateCallback mCameraDeviceStateCallback;
+public final class CameraInFgsFilter implements IFilter {
     public CameraManager mCameraManager;
-    public Set mCameraUsingList;
+    public final Set mCameraUsingList = new HashSet();
+    public final AnonymousClass1 mCameraDeviceStateCallback = new CameraManager.SemCameraDeviceStateCallback() { // from class: com.android.server.am.mars.filter.filter.CameraInFgsFilter.1
+        public final void onCameraDeviceStateChanged(String str, int i, int i2, String str2) {
+            if ("android.system".equals(str2) || "com.sec.android.app.camera".equals(str2)) {
+                return;
+            }
+            if (i2 == 1) {
+                ((HashSet) CameraInFgsFilter.this.mCameraUsingList).add(str2);
+            } else if (i2 == 3) {
+                ((HashSet) CameraInFgsFilter.this.mCameraUsingList).remove(str2);
+            }
+        }
+    };
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class CameraInFgsFilterHolder {
         public static final CameraInFgsFilter INSTANCE = new CameraInFgsFilter();
     }
 
-    public /* synthetic */ CameraInFgsFilter(CameraInFgsFilterIA cameraInFgsFilterIA) {
-        this();
-    }
-
-    public CameraInFgsFilter() {
-        this.mCameraUsingList = new HashSet();
-        this.mCameraDeviceStateCallback = new CameraManager.SemCameraDeviceStateCallback() { // from class: com.android.server.am.mars.filter.filter.CameraInFgsFilter.1
-            public AnonymousClass1() {
-            }
-
-            public void onCameraDeviceStateChanged(String str, int i, int i2, String str2) {
-                if ("android.system".equals(str2) || "com.sec.android.app.camera".equals(str2)) {
-                    return;
-                }
-                if (i2 == 1) {
-                    CameraInFgsFilter.this.mCameraUsingList.add(str2);
-                } else if (i2 == 3) {
-                    CameraInFgsFilter.this.mCameraUsingList.remove(str2);
-                }
-            }
-        };
-    }
-
-    public static CameraInFgsFilter getInstance() {
-        return CameraInFgsFilterHolder.INSTANCE;
-    }
-
     @Override // com.android.server.am.mars.filter.IFilter
-    public void init(Context context) {
-        if (this.mCameraManager == null) {
-            this.mCameraManager = (CameraManager) context.getSystemService("camera");
-        }
-        this.mCameraManager.registerSemCameraDeviceStateCallback(this.mCameraDeviceStateCallback, null);
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public void deInit() {
+    public final void deInit() {
         CameraManager cameraManager = this.mCameraManager;
         if (cameraManager != null) {
             cameraManager.unregisterSemCameraDeviceStateCallback(this.mCameraDeviceStateCallback);
@@ -63,30 +40,20 @@ public class CameraInFgsFilter implements IFilter {
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public int filter(String str, int i, int i2, int i3) {
-        return (FreecessController.IS_SUPPORT_FREEZE_FG_SERVICE_FEATURE && MARsPolicyManager.getInstance().isChinaPolicyEnabled() && MARsPolicyManager.getInstance().isForegroundServicePkg(i2) && isUsingCamera(str)) ? 29 : 0;
+    public final int filter(int i, int i2, int i3, String str) {
+        Set set;
+        if (!MARsUtils.IS_SUPPORT_FREEZE_FG_SERVICE_FEATURE || !MARsUtils.isChinaPolicyEnabled()) {
+            return 0;
+        }
+        boolean z = MARsPolicyManager.MARs_ENABLE;
+        return (MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.getForegroundServiceStartTime(i2) == 0 || (set = this.mCameraUsingList) == null || !((HashSet) set).contains(str)) ? 0 : 29;
     }
 
-    public boolean isUsingCamera(String str) {
-        Set set = this.mCameraUsingList;
-        return set != null && set.contains(str);
-    }
-
-    /* renamed from: com.android.server.am.mars.filter.filter.CameraInFgsFilter$1 */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends CameraManager.SemCameraDeviceStateCallback {
-        public AnonymousClass1() {
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void init(Context context) {
+        if (this.mCameraManager == null) {
+            this.mCameraManager = (CameraManager) context.getSystemService("camera");
         }
-
-        public void onCameraDeviceStateChanged(String str, int i, int i2, String str2) {
-            if ("android.system".equals(str2) || "com.sec.android.app.camera".equals(str2)) {
-                return;
-            }
-            if (i2 == 1) {
-                CameraInFgsFilter.this.mCameraUsingList.add(str2);
-            } else if (i2 == 3) {
-                CameraInFgsFilter.this.mCameraUsingList.remove(str2);
-            }
-        }
+        this.mCameraManager.registerSemCameraDeviceStateCallback(this.mCameraDeviceStateCallback, null);
     }
 }

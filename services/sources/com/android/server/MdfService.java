@@ -1,13 +1,15 @@
 package com.android.server;
 
 import android.content.Context;
+import android.os.SystemProperties;
 import android.util.Log;
 import com.samsung.android.security.mdf.MdfService.IMdfService;
 import com.samsung.android.security.mdf.MdfService.MdfPolicy;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class MdfService extends IMdfService.Stub {
-    public MdfPolicy mdfPolicy;
+public final class MdfService extends IMdfService.Stub {
+    public final MdfPolicy mdfPolicy;
 
     public MdfService(Context context) {
         MdfPolicy mdfPolicy = MdfPolicy.getInstance(context);
@@ -16,23 +18,22 @@ public class MdfService extends IMdfService.Stub {
             Log.i("MdfService", "mdfService is null");
             return;
         }
-        if (mdfPolicy.isCCModeSupport()) {
-            try {
-                int initCCMode = this.mdfPolicy.initCCMode();
-                if (initCCMode != 0) {
-                    Log.e("MdfService", "initCCMode res = " + Integer.toString(initCCMode));
-                    return;
-                }
-                return;
-            } catch (SecurityException e) {
-                e.printStackTrace();
-                throw e;
-            }
+        if (!"Enabled".equals(SystemProperties.get("ro.security.mdf.ux"))) {
+            Log.i("MdfService", "This device does not support the MDF");
+            return;
         }
-        Log.i("MdfService", "This device does not support the MDF");
+        try {
+            int initCCMode = mdfPolicy.initCCMode();
+            if (initCCMode != 0) {
+                Log.e("MdfService", "initCCMode res = " + Integer.toString(initCCMode));
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
-    public int initCCMode() {
+    public final int initCCMode() {
         try {
             MdfPolicy mdfPolicy = this.mdfPolicy;
             if (mdfPolicy == null) {

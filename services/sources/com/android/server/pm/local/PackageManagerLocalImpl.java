@@ -1,47 +1,31 @@
 package com.android.server.pm.local;
 
+import android.content.pm.SigningDetails;
 import android.os.Binder;
+import android.os.Build;
+import android.os.ReconcileSdkDataArgs;
 import android.os.UserHandle;
 import android.util.ArrayMap;
+import android.util.apk.ApkSignatureVerifier;
 import com.android.server.pm.Computer;
+import com.android.server.pm.Installer;
 import com.android.server.pm.PackageManagerLocal;
 import com.android.server.pm.PackageManagerService;
+import com.android.server.pm.PackageManagerTracedLock;
 import com.android.server.pm.pkg.PackageState;
 import com.android.server.pm.pkg.PackageStateInternal;
 import com.android.server.pm.snapshot.PackageDataSnapshot;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/* loaded from: classes3.dex */
-public class PackageManagerLocalImpl implements PackageManagerLocal {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PackageManagerLocalImpl implements PackageManagerLocal {
     public final PackageManagerService mService;
 
-    public PackageManagerLocalImpl(PackageManagerService packageManagerService) {
-        this.mService = packageManagerService;
-    }
-
-    @Override // com.android.server.pm.PackageManagerLocal
-    public void reconcileSdkData(String str, String str2, List list, int i, int i2, int i3, String str3, int i4) {
-        this.mService.reconcileSdkData(str, str2, list, i, i2, i3, str3, i4);
-    }
-
-    @Override // com.android.server.pm.PackageManagerLocal
-    public UnfilteredSnapshotImpl withUnfilteredSnapshot() {
-        return new UnfilteredSnapshotImpl(this.mService.snapshotComputer(false));
-    }
-
-    @Override // com.android.server.pm.PackageManagerLocal
-    public FilteredSnapshotImpl withFilteredSnapshot() {
-        return withFilteredSnapshot(Binder.getCallingUid(), Binder.getCallingUserHandle());
-    }
-
-    @Override // com.android.server.pm.PackageManagerLocal
-    public FilteredSnapshotImpl withFilteredSnapshot(int i, UserHandle userHandle) {
-        return new FilteredSnapshotImpl(i, userHandle, this.mService.snapshotComputer(false), null);
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class BaseSnapshotImpl implements AutoCloseable {
         public boolean mClosed;
         public Computer mSnapshot;
@@ -50,61 +34,21 @@ public class PackageManagerLocalImpl implements PackageManagerLocal {
             this.mSnapshot = (Computer) packageDataSnapshot;
         }
 
-        @Override // java.lang.AutoCloseable
-        public void close() {
-            this.mClosed = true;
-            this.mSnapshot = null;
-        }
-
         public void checkClosed() {
             if (this.mClosed) {
                 throw new IllegalStateException("Snapshot already closed");
             }
         }
-    }
 
-    /* loaded from: classes3.dex */
-    public class UnfilteredSnapshotImpl extends BaseSnapshotImpl implements PackageManagerLocal.UnfilteredSnapshot {
-        public Map mCachedUnmodifiableDisabledSystemPackageStates;
-        public Map mCachedUnmodifiablePackageStates;
-
-        public UnfilteredSnapshotImpl(PackageDataSnapshot packageDataSnapshot) {
-            super(packageDataSnapshot);
-        }
-
-        @Override // com.android.server.pm.PackageManagerLocal.UnfilteredSnapshot
-        public PackageManagerLocal.FilteredSnapshot filtered(int i, UserHandle userHandle) {
-            return new FilteredSnapshotImpl(i, userHandle, this.mSnapshot, this);
-        }
-
-        @Override // com.android.server.pm.PackageManagerLocal.UnfilteredSnapshot
-        public Map getPackageStates() {
-            checkClosed();
-            if (this.mCachedUnmodifiablePackageStates == null) {
-                this.mCachedUnmodifiablePackageStates = Collections.unmodifiableMap(this.mSnapshot.getPackageStates());
-            }
-            return this.mCachedUnmodifiablePackageStates;
-        }
-
-        @Override // com.android.server.pm.PackageManagerLocal.UnfilteredSnapshot
-        public Map getDisabledSystemPackageStates() {
-            checkClosed();
-            if (this.mCachedUnmodifiableDisabledSystemPackageStates == null) {
-                this.mCachedUnmodifiableDisabledSystemPackageStates = Collections.unmodifiableMap(this.mSnapshot.getDisabledSystemPackageStates());
-            }
-            return this.mCachedUnmodifiableDisabledSystemPackageStates;
-        }
-
-        @Override // com.android.server.pm.local.PackageManagerLocalImpl.BaseSnapshotImpl, java.lang.AutoCloseable
+        @Override // java.lang.AutoCloseable
         public void close() {
-            super.close();
-            this.mCachedUnmodifiablePackageStates = null;
-            this.mCachedUnmodifiableDisabledSystemPackageStates = null;
+            this.mClosed = true;
+            this.mSnapshot = null;
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class FilteredSnapshotImpl extends BaseSnapshotImpl implements PackageManagerLocal.FilteredSnapshot {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class FilteredSnapshotImpl extends BaseSnapshotImpl implements PackageManagerLocal.FilteredSnapshot {
         public final int mCallingUid;
         public Map mFilteredPackageStates;
         public final UnfilteredSnapshotImpl mParentSnapshot;
@@ -118,7 +62,7 @@ public class PackageManagerLocalImpl implements PackageManagerLocal {
         }
 
         @Override // com.android.server.pm.local.PackageManagerLocalImpl.BaseSnapshotImpl
-        public void checkClosed() {
+        public final void checkClosed() {
             UnfilteredSnapshotImpl unfilteredSnapshotImpl = this.mParentSnapshot;
             if (unfilteredSnapshotImpl != null) {
                 unfilteredSnapshotImpl.checkClosed();
@@ -127,19 +71,19 @@ public class PackageManagerLocalImpl implements PackageManagerLocal {
         }
 
         @Override // com.android.server.pm.local.PackageManagerLocalImpl.BaseSnapshotImpl, java.lang.AutoCloseable
-        public void close() {
+        public final void close() {
             super.close();
             this.mFilteredPackageStates = null;
         }
 
         @Override // com.android.server.pm.PackageManagerLocal.FilteredSnapshot
-        public PackageState getPackageState(String str) {
+        public final PackageState getPackageState(String str) {
             checkClosed();
-            return this.mSnapshot.getPackageStateFiltered(str, this.mCallingUid, this.mUserId);
+            return this.mSnapshot.getPackageStateFiltered(this.mCallingUid, this.mUserId, str);
         }
 
         @Override // com.android.server.pm.PackageManagerLocal.FilteredSnapshot
-        public Map getPackageStates() {
+        public final Map getPackageStates() {
             checkClosed();
             if (this.mFilteredPackageStates == null) {
                 ArrayMap packageStates = this.mSnapshot.getPackageStates();
@@ -155,5 +99,129 @@ public class PackageManagerLocalImpl implements PackageManagerLocal {
             }
             return this.mFilteredPackageStates;
         }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UnfilteredSnapshotImpl extends BaseSnapshotImpl implements PackageManagerLocal.UnfilteredSnapshot {
+        public Map mCachedUnmodifiableDisabledSystemPackageStates;
+        public Map mCachedUnmodifiablePackageStates;
+        public Map mCachedUnmodifiableSharedUsers;
+
+        @Override // com.android.server.pm.local.PackageManagerLocalImpl.BaseSnapshotImpl, java.lang.AutoCloseable
+        public final void close() {
+            super.close();
+            this.mCachedUnmodifiablePackageStates = null;
+            this.mCachedUnmodifiableDisabledSystemPackageStates = null;
+        }
+
+        @Override // com.android.server.pm.PackageManagerLocal.UnfilteredSnapshot
+        public final PackageManagerLocal.FilteredSnapshot filtered(int i, UserHandle userHandle) {
+            return new FilteredSnapshotImpl(i, userHandle, this.mSnapshot, this);
+        }
+
+        @Override // com.android.server.pm.PackageManagerLocal.UnfilteredSnapshot
+        public final Map getDisabledSystemPackageStates() {
+            checkClosed();
+            if (this.mCachedUnmodifiableDisabledSystemPackageStates == null) {
+                this.mCachedUnmodifiableDisabledSystemPackageStates = Collections.unmodifiableMap(this.mSnapshot.getDisabledSystemPackageStates());
+            }
+            return this.mCachedUnmodifiableDisabledSystemPackageStates;
+        }
+
+        @Override // com.android.server.pm.PackageManagerLocal.UnfilteredSnapshot
+        public final Map getPackageStates() {
+            checkClosed();
+            if (this.mCachedUnmodifiablePackageStates == null) {
+                this.mCachedUnmodifiablePackageStates = Collections.unmodifiableMap(this.mSnapshot.getPackageStates());
+            }
+            return this.mCachedUnmodifiablePackageStates;
+        }
+
+        @Override // com.android.server.pm.PackageManagerLocal.UnfilteredSnapshot
+        public final Map getSharedUsers() {
+            checkClosed();
+            if (this.mCachedUnmodifiableSharedUsers == null) {
+                this.mCachedUnmodifiableSharedUsers = Collections.unmodifiableMap(this.mSnapshot.getSharedUsers());
+            }
+            return this.mCachedUnmodifiableSharedUsers;
+        }
+    }
+
+    public PackageManagerLocalImpl(PackageManagerService packageManagerService) {
+        this.mService = packageManagerService;
+    }
+
+    @Override // com.android.server.pm.PackageManagerLocal
+    public final void addOverrideSigningDetails(SigningDetails signingDetails, SigningDetails signingDetails2) {
+        if (!Build.isDebuggable()) {
+            throw new SecurityException("This test API is only available on debuggable builds");
+        }
+        ApkSignatureVerifier.addOverrideSigningDetails(signingDetails, signingDetails2);
+    }
+
+    @Override // com.android.server.pm.PackageManagerLocal
+    public final void clearOverrideSigningDetails() {
+        if (!Build.isDebuggable()) {
+            throw new SecurityException("This test API is only available on debuggable builds");
+        }
+        ApkSignatureVerifier.clearOverrideSigningDetails();
+    }
+
+    @Override // com.android.server.pm.PackageManagerLocal
+    public final void reconcileSdkData(String str, String str2, List list, int i, int i2, int i3, String str3, int i4) {
+        PackageManagerService packageManagerService = this.mService;
+        packageManagerService.getClass();
+        int i5 = Installer.$r8$clinit;
+        ReconcileSdkDataArgs reconcileSdkDataArgs = new ReconcileSdkDataArgs();
+        reconcileSdkDataArgs.uuid = str;
+        reconcileSdkDataArgs.packageName = str2;
+        reconcileSdkDataArgs.subDirNames = list;
+        reconcileSdkDataArgs.userId = i;
+        reconcileSdkDataArgs.appId = i2;
+        reconcileSdkDataArgs.seInfo = str3;
+        reconcileSdkDataArgs.flags = i4;
+        reconcileSdkDataArgs.previousAppId = i3;
+        try {
+            PackageManagerTracedLock packageManagerTracedLock = packageManagerService.mInstallLock;
+            packageManagerTracedLock.mLock.lock();
+            try {
+                Installer installer = packageManagerService.mInstaller;
+                if (installer.checkBeforeRemote()) {
+                    try {
+                        installer.mInstalld.reconcileSdkData(reconcileSdkDataArgs);
+                    } catch (Exception e) {
+                        Installer.InstallerException.from(e);
+                        throw null;
+                    }
+                }
+                packageManagerTracedLock.close();
+            } finally {
+            }
+        } catch (Installer.InstallerException e2) {
+            throw new IOException(e2.getMessage());
+        }
+    }
+
+    @Override // com.android.server.pm.PackageManagerLocal
+    public final void removeOverrideSigningDetails(SigningDetails signingDetails) {
+        if (!Build.isDebuggable()) {
+            throw new SecurityException("This test API is only available on debuggable builds");
+        }
+        ApkSignatureVerifier.removeOverrideSigningDetails(signingDetails);
+    }
+
+    @Override // com.android.server.pm.PackageManagerLocal
+    public final PackageManagerLocal.FilteredSnapshot withFilteredSnapshot() {
+        return new FilteredSnapshotImpl(Binder.getCallingUid(), Binder.getCallingUserHandle(), this.mService.snapshotComputer(false), null);
+    }
+
+    @Override // com.android.server.pm.PackageManagerLocal
+    public final PackageManagerLocal.FilteredSnapshot withFilteredSnapshot(int i, UserHandle userHandle) {
+        return new FilteredSnapshotImpl(i, userHandle, this.mService.snapshotComputer(false), null);
+    }
+
+    @Override // com.android.server.pm.PackageManagerLocal
+    public final PackageManagerLocal.UnfilteredSnapshot withUnfilteredSnapshot() {
+        return new UnfilteredSnapshotImpl(this.mService.snapshotComputer(false));
     }
 }

@@ -1,6 +1,5 @@
 package com.android.server.power.stats.wakeups;
 
-import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -10,12 +9,12 @@ import com.android.internal.util.XmlUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
-public class IrqDeviceMap {
-    public static LongSparseArray sInstanceMap = new LongSparseArray(1);
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class IrqDeviceMap {
+    public static final LongSparseArray sInstanceMap = new LongSparseArray(1);
     public final ArrayMap mSubsystemsForDevice = new ArrayMap();
 
     public IrqDeviceMap(XmlResourceParser xmlResourceParser) {
@@ -28,6 +27,7 @@ public class IrqDeviceMap {
                     while (true) {
                         int eventType = xmlResourceParser.getEventType();
                         if (eventType == 1) {
+                            xmlResourceParser.close();
                             return;
                         }
                         if (eventType == 2 && xmlResourceParser.getName().equals("device")) {
@@ -48,37 +48,19 @@ public class IrqDeviceMap {
                         }
                         xmlResourceParser.next();
                     }
-                } catch (IOException e) {
+                } catch (XmlPullParserException e) {
                     throw new RuntimeException(e);
                 }
-            } catch (XmlPullParserException e2) {
+            } catch (IOException e2) {
                 throw new RuntimeException(e2);
             }
-        } finally {
+        } catch (Throwable th) {
             xmlResourceParser.close();
+            throw th;
         }
     }
 
-    public static IrqDeviceMap getInstance(Context context, int i) {
-        synchronized (IrqDeviceMap.class) {
-            long j = i;
-            int indexOfKey = sInstanceMap.indexOfKey(j);
-            if (indexOfKey >= 0) {
-                return (IrqDeviceMap) sInstanceMap.valueAt(indexOfKey);
-            }
-            IrqDeviceMap irqDeviceMap = new IrqDeviceMap(context.getResources().getXml(i));
-            synchronized (IrqDeviceMap.class) {
-                sInstanceMap.put(j, irqDeviceMap);
-            }
-            return irqDeviceMap;
-        }
-    }
-
-    public List getSubsystemsForDevice(String str) {
-        return (List) this.mSubsystemsForDevice.get(str);
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
+    public final void dump(IndentingPrintWriter indentingPrintWriter) {
         LongSparseArray longSparseArray;
         indentingPrintWriter.println("Irq device map:");
         indentingPrintWriter.increaseIndent();

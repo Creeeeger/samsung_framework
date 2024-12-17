@@ -8,33 +8,33 @@ import com.android.server.enterprise.plm.context.PeripheralContext;
 import com.android.server.enterprise.plm.impl.BindServiceImpl;
 import java.util.ArrayList;
 
-/* loaded from: classes2.dex */
-public class ProcessLifecycleManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ProcessLifecycleManager {
     public static volatile ProcessLifecycleManager sInstance;
     public final ProcessStateTracker mStateTracker;
-
-    public static ProcessLifecycleManager getInstance(Context context) {
-        if (sInstance == null) {
-            synchronized (ProcessLifecycleManager.class) {
-                if (sInstance == null) {
-                    sInstance = new ProcessLifecycleManager(context);
-                }
-            }
-        }
-        return sInstance;
-    }
 
     public ProcessLifecycleManager(Context context) {
         HandlerThread handlerThread = new HandlerThread("ProcessLifecycleManager");
         handlerThread.start();
         Looper looper = handlerThread.getLooper();
         ArrayList arrayList = new ArrayList();
-        arrayList.add(new ProcessAdapter(looper, context, new BindServiceImpl(context, new PeripheralContext(context))));
-        arrayList.add(new ProcessAdapter(looper, context, new BindServiceImpl(context, new KnoxZtContext(context))));
+        arrayList.add(new ProcessAdapter(looper, new BindServiceImpl(context, new PeripheralContext())));
+        arrayList.add(new ProcessAdapter(looper, new BindServiceImpl(context, new KnoxZtContext())));
         this.mStateTracker = new ProcessStateTracker(looper, context, arrayList);
     }
 
-    public void start(StartReason startReason) {
-        this.mStateTracker.start(startReason);
+    public static ProcessLifecycleManager getInstance(Context context) {
+        if (sInstance == null) {
+            synchronized (ProcessLifecycleManager.class) {
+                try {
+                    if (sInstance == null) {
+                        sInstance = new ProcessLifecycleManager(context);
+                    }
+                } finally {
+                }
+            }
+        }
+        return sInstance;
     }
 }

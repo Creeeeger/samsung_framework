@@ -3,9 +3,11 @@ package com.att.iqi.lib.metrics.rp;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.att.iqi.lib.Metric;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class RP01 extends Metric {
     private int m_dwSourceId;
     private int m_dwTimestamp;
@@ -31,16 +33,6 @@ public class RP01 extends Metric {
         reset();
     }
 
-    public void reset() {
-        this.m_wByteCount = (short) 0;
-        this.m_wDstPort = (short) 0;
-        this.m_ucFlags = (byte) 0;
-        this.m_ucPayloadType = (byte) 0;
-        this.m_wSequenceNum = (short) 0;
-        this.m_dwTimestamp = 0;
-        this.m_dwSourceId = 0;
-    }
-
     public RP01(Parcel parcel) {
         super(parcel);
         if (parcel.readInt() >= 1) {
@@ -54,71 +46,46 @@ public class RP01 extends Metric {
         }
     }
 
-    public RP01 setByteCount(short s) {
-        this.m_wByteCount = s;
-        return this;
-    }
-
     public short getByteCount() {
         return this.m_wByteCount;
-    }
-
-    public RP01 setDstPort(short s) {
-        this.m_wDstPort = s;
-        return this;
     }
 
     public short getDstPort() {
         return this.m_wDstPort;
     }
 
-    public RP01 setFlags(byte b) {
-        this.m_ucFlags = b;
-        return this;
-    }
-
     public byte getFlags() {
         return this.m_ucFlags;
-    }
-
-    public RP01 setPayloadType(byte b) {
-        this.m_ucPayloadType = b;
-        return this;
     }
 
     public byte getPayloadType() {
         return this.m_ucPayloadType;
     }
 
-    public RP01 setSequenceNum(short s) {
-        this.m_wSequenceNum = s;
-        return this;
-    }
-
     public short getSequenceNum() {
         return this.m_wSequenceNum;
-    }
-
-    public RP01 setTimestamp(int i) {
-        this.m_dwTimestamp = i;
-        return this;
-    }
-
-    public int getTimestamp() {
-        return this.m_dwTimestamp;
-    }
-
-    public RP01 setSourceId(int i) {
-        this.m_dwSourceId = i;
-        return this;
     }
 
     public int getSourceId() {
         return this.m_dwSourceId;
     }
 
+    public int getTimestamp() {
+        return this.m_dwTimestamp;
+    }
+
+    public void reset() {
+        this.m_wByteCount = (short) 0;
+        this.m_wDstPort = (short) 0;
+        this.m_ucFlags = (byte) 0;
+        this.m_ucPayloadType = (byte) 0;
+        this.m_wSequenceNum = (short) 0;
+        this.m_dwTimestamp = 0;
+        this.m_dwSourceId = 0;
+    }
+
     @Override // com.att.iqi.lib.Metric
-    public int serialize(ByteBuffer byteBuffer) {
+    public int serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
         byteBuffer.putShort(this.m_wByteCount);
         byteBuffer.putShort(this.m_wDstPort);
         byteBuffer.put(this.m_ucFlags);
@@ -127,6 +94,41 @@ public class RP01 extends Metric {
         byteBuffer.putInt(this.m_dwTimestamp);
         byteBuffer.putInt(this.m_dwSourceId);
         return byteBuffer.position();
+    }
+
+    public RP01 setByteCount(short s) {
+        this.m_wByteCount = s;
+        return this;
+    }
+
+    public RP01 setDstPort(short s) {
+        this.m_wDstPort = s;
+        return this;
+    }
+
+    public RP01 setFlags(byte b) {
+        this.m_ucFlags = b;
+        return this;
+    }
+
+    public RP01 setPayloadType(byte b) {
+        this.m_ucPayloadType = b;
+        return this;
+    }
+
+    public RP01 setSequenceNum(short s) {
+        this.m_wSequenceNum = s;
+        return this;
+    }
+
+    public RP01 setSourceId(int i) {
+        this.m_dwSourceId = i;
+        return this;
+    }
+
+    public RP01 setTimestamp(int i) {
+        this.m_dwTimestamp = i;
+        return this;
     }
 
     @Override // com.att.iqi.lib.Metric, android.os.Parcelable

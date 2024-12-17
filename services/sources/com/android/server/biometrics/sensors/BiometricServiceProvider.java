@@ -1,30 +1,13 @@
 package com.android.server.biometrics.sensors;
 
-import android.hardware.biometrics.SensorPropertiesInternal;
-import android.util.proto.ProtoOutputStream;
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface BiometricServiceProvider {
     boolean containsSensor(int i);
 
-    void dumpInternal(int i, PrintWriter printWriter);
-
-    void dumpProtoMetrics(int i, FileDescriptor fileDescriptor);
-
-    void dumpProtoState(int i, ProtoOutputStream protoOutputStream, boolean z);
-
-    long getAuthenticatorId(int i, int i2);
-
-    int getLockoutModeForUser(int i, int i2);
-
-    SensorPropertiesInternal getSensorProperties(int i);
-
     List getSensorProperties();
 
     boolean hasEnrollments(int i, int i2);
-
-    boolean isHardwareDetected(int i);
 }

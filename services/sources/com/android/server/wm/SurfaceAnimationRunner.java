@@ -24,72 +24,127 @@ import android.view.animation.Transformation;
 import android.window.ScreenCapture;
 import com.android.internal.graphics.SfVsyncFrameCallbackProvider;
 import com.android.server.AnimationThread;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.wm.LocalAnimationAdapter;
 import com.android.server.wm.SurfaceAnimationRunner;
+import com.android.server.wm.SurfaceAnimationRunner.SfValueAnimator;
 import com.samsung.android.rune.CoreRune;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class SurfaceAnimationRunner {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SurfaceAnimationRunner {
     public final AnimationHandler mAnimationHandler;
     public boolean mAnimationStartDeferred;
-    public final Handler mAnimationThreadHandler;
     public final AnimatorFactory mAnimatorFactory;
     public boolean mApplyScheduled;
-    public final Runnable mApplyTransactionRunnable;
-    public final Object mCancelLock;
+    public final SurfaceAnimationRunner$$ExternalSyntheticLambda0 mApplyTransactionRunnable;
     Choreographer mChoreographer;
     public final ExecutorService mEdgeExtensionExecutor;
-    public final Object mEdgeExtensionLock;
     public final ArrayMap mEdgeExtensions;
     public final SurfaceControl.Transaction mFrameTransaction;
-    public final Object mLock;
-    public final ArrayList mPendingAnimationList;
     final ArrayMap mPendingAnimations;
     public final PowerManagerInternal mPowerManagerInternal;
     final ArrayMap mPreProcessingAnimations;
     final ArrayMap mRunningAnimations;
     public final Handler mSurfaceAnimationHandler;
+    public final Object mLock = new Object();
+    public final Object mCancelLock = new Object();
+    public final Object mEdgeExtensionLock = new Object();
+    public final Handler mAnimationThreadHandler = AnimationThread.getHandler();
 
-    /* loaded from: classes3.dex */
-    public interface AnimatorFactory {
-        ValueAnimator makeAnimator();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    interface AnimatorFactory {
+        SfValueAnimator makeAnimator();
     }
 
-    public SurfaceAnimationRunner(Supplier supplier, PowerManagerInternal powerManagerInternal) {
-        this(null, null, (SurfaceControl.Transaction) supplier.get(), powerManagerInternal);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RunningAnimation {
+        public ValueAnimator mAnim;
+        public final LocalAnimationAdapter.AnimationSpec mAnimSpec;
+        public boolean mCancelled;
+        public final Runnable mFinishCallback;
+        public final SurfaceControl mLeash;
+
+        public RunningAnimation(LocalAnimationAdapter.AnimationSpec animationSpec, SurfaceControl surfaceControl, LocalAnimationAdapter$$ExternalSyntheticLambda0 localAnimationAdapter$$ExternalSyntheticLambda0) {
+            this.mAnimSpec = animationSpec;
+            this.mLeash = surfaceControl;
+            this.mFinishCallback = localAnimationAdapter$$ExternalSyntheticLambda0;
+        }
     }
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SfValueAnimator extends ValueAnimator {
+        public SfValueAnimator() {
+            setFloatValues(FullScreenMagnificationGestureHandler.MAX_SCALE, 1.0f);
+        }
+
+        public final AnimationHandler getAnimationHandler() {
+            return SurfaceAnimationRunner.this.mAnimationHandler;
+        }
+    }
+
+    /* JADX WARN: Type inference failed for: r1v0, types: [com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda0] */
     public SurfaceAnimationRunner(AnimationHandler.AnimationFrameCallbackProvider animationFrameCallbackProvider, AnimatorFactory animatorFactory, SurfaceControl.Transaction transaction, PowerManagerInternal powerManagerInternal) {
-        this.mLock = new Object();
-        this.mCancelLock = new Object();
-        this.mEdgeExtensionLock = new Object();
-        this.mAnimationThreadHandler = AnimationThread.getHandler();
         Handler handler = SurfaceAnimationThread.getHandler();
         this.mSurfaceAnimationHandler = handler;
-        this.mApplyTransactionRunnable = new Runnable() { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda0
+        final int i = 0;
+        this.mApplyTransactionRunnable = new Runnable(this) { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda0
+            public final /* synthetic */ SurfaceAnimationRunner f$0;
+
+            {
+                this.f$0 = this;
+            }
+
             @Override // java.lang.Runnable
             public final void run() {
-                SurfaceAnimationRunner.this.applyTransaction();
+                int i2 = i;
+                SurfaceAnimationRunner surfaceAnimationRunner = this.f$0;
+                switch (i2) {
+                    case 0:
+                        surfaceAnimationRunner.mFrameTransaction.setAnimationTransaction();
+                        surfaceAnimationRunner.mFrameTransaction.setFrameTimelineVsync(surfaceAnimationRunner.mChoreographer.getVsyncId());
+                        surfaceAnimationRunner.mFrameTransaction.apply();
+                        surfaceAnimationRunner.mApplyScheduled = false;
+                        break;
+                    default:
+                        surfaceAnimationRunner.getClass();
+                        surfaceAnimationRunner.mChoreographer = Choreographer.getSfInstance();
+                        break;
+                }
             }
         };
         this.mEdgeExtensionExecutor = Executors.newFixedThreadPool(2);
         this.mPendingAnimations = new ArrayMap();
-        this.mPendingAnimationList = new ArrayList();
         this.mPreProcessingAnimations = new ArrayMap();
         this.mRunningAnimations = new ArrayMap();
         this.mEdgeExtensions = new ArrayMap();
-        handler.runWithScissors(new Runnable() { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda1
+        final int i2 = 1;
+        handler.runWithScissors(new Runnable(this) { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda0
+            public final /* synthetic */ SurfaceAnimationRunner f$0;
+
+            {
+                this.f$0 = this;
+            }
+
             @Override // java.lang.Runnable
             public final void run() {
-                SurfaceAnimationRunner.this.lambda$new$0();
+                int i22 = i2;
+                SurfaceAnimationRunner surfaceAnimationRunner = this.f$0;
+                switch (i22) {
+                    case 0:
+                        surfaceAnimationRunner.mFrameTransaction.setAnimationTransaction();
+                        surfaceAnimationRunner.mFrameTransaction.setFrameTimelineVsync(surfaceAnimationRunner.mChoreographer.getVsyncId());
+                        surfaceAnimationRunner.mFrameTransaction.apply();
+                        surfaceAnimationRunner.mApplyScheduled = false;
+                        break;
+                    default:
+                        surfaceAnimationRunner.getClass();
+                        surfaceAnimationRunner.mChoreographer = Choreographer.getSfInstance();
+                        break;
+                }
             }
         }, 0L);
         this.mFrameTransaction = transaction;
@@ -98,44 +153,127 @@ public class SurfaceAnimationRunner {
         animationHandler.setProvider(animationFrameCallbackProvider == null ? new SfVsyncFrameCallbackProvider(this.mChoreographer) : animationFrameCallbackProvider);
         this.mAnimatorFactory = animatorFactory == null ? new AnimatorFactory() { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda2
             @Override // com.android.server.wm.SurfaceAnimationRunner.AnimatorFactory
-            public final ValueAnimator makeAnimator() {
-                ValueAnimator lambda$new$1;
-                lambda$new$1 = SurfaceAnimationRunner.this.lambda$new$1();
-                return lambda$new$1;
+            public final SurfaceAnimationRunner.SfValueAnimator makeAnimator() {
+                SurfaceAnimationRunner surfaceAnimationRunner = SurfaceAnimationRunner.this;
+                surfaceAnimationRunner.getClass();
+                return surfaceAnimationRunner.new SfValueAnimator();
             }
         } : animatorFactory;
         this.mPowerManagerInternal = powerManagerInternal;
     }
 
-    public /* synthetic */ void lambda$new$0() {
-        this.mChoreographer = Choreographer.getSfInstance();
-    }
-
-    public /* synthetic */ ValueAnimator lambda$new$1() {
-        return new SfValueAnimator();
-    }
-
-    public void deferStartingAnimations() {
+    public final void continueStartingAnimations() {
         synchronized (this.mLock) {
-            this.mAnimationStartDeferred = true;
-        }
-    }
-
-    public void continueStartingAnimations() {
-        synchronized (this.mLock) {
-            this.mAnimationStartDeferred = false;
-            if (!this.mPendingAnimationList.isEmpty() && this.mPreProcessingAnimations.isEmpty()) {
-                this.mChoreographer.postFrameCallback(new SurfaceAnimationRunner$$ExternalSyntheticLambda3(this));
+            try {
+                this.mAnimationStartDeferred = false;
+                if (!this.mPendingAnimations.isEmpty() && this.mPreProcessingAnimations.isEmpty()) {
+                    this.mChoreographer.postFrameCallback(new SurfaceAnimationRunner$$ExternalSyntheticLambda5(this));
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    public void startAnimation(final LocalAnimationAdapter.AnimationSpec animationSpec, final SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, Runnable runnable) {
+    public final void createExtensionSurface(SurfaceControl surfaceControl, Rect rect, Rect rect2, int i, int i2, String str, SurfaceControl.Transaction transaction) {
+        int i3;
+        Trace.traceBegin(32L, "createExtensionSurface");
+        ScreenCapture.ScreenshotHardwareBuffer captureLayers = ScreenCapture.captureLayers(new ScreenCapture.LayerCaptureArgs.Builder(surfaceControl).setSourceCrop(rect).setFrameScale(1.0f).setPixelFormat(1).setChildrenOnly(true).setAllowProtected(true).setCaptureSecureLayers(true).build());
+        if (captureLayers == null) {
+            Log.e("SurfaceAnimationRunner", "Failed to create edge extension - edge buffer is null");
+        } else {
+            SurfaceControl build = new SurfaceControl.Builder().setName(str).setHidden(true).setCallsite("DefaultTransitionHandler#startAnimation").setOpaque(true).setBufferSize(rect2.width(), rect2.height()).build();
+            Bitmap asBitmap = captureLayers.asBitmap();
+            Shader.TileMode tileMode = Shader.TileMode.CLAMP;
+            BitmapShader bitmapShader = new BitmapShader(asBitmap, tileMode, tileMode);
+            Paint paint = new Paint();
+            if (CoreRune.FW_EDGE_EXTENSION_ANIM_DEBUG) {
+                switch (str) {
+                    case "Right Edge Extension":
+                        i3 = -16776961;
+                        break;
+                    case "Left Edge Extension":
+                        i3 = -65536;
+                        break;
+                    case "Bottom Edge Extension":
+                        i3 = -16711681;
+                        break;
+                    case "Top Edge Extension":
+                        i3 = -16711936;
+                        break;
+                    default:
+                        i3 = -65281;
+                        break;
+                }
+                paint.setColor(i3);
+            } else {
+                paint.setShader(bitmapShader);
+            }
+            Surface surface = new Surface(build);
+            Canvas lockHardwareCanvas = surface.lockHardwareCanvas();
+            lockHardwareCanvas.drawRect(rect2, paint);
+            surface.unlockCanvasAndPost(lockHardwareCanvas);
+            surface.release();
+            synchronized (this.mEdgeExtensionLock) {
+                try {
+                    if (this.mEdgeExtensions.containsKey(surfaceControl)) {
+                        transaction.reparent(build, surfaceControl);
+                        transaction.setLayer(build, Integer.MIN_VALUE);
+                        transaction.setPosition(build, i, i2);
+                        transaction.setVisibility(build, true);
+                        ((ArrayList) this.mEdgeExtensions.get(surfaceControl)).add(build);
+                    } else {
+                        transaction.remove(build);
+                    }
+                } finally {
+                }
+            }
+        }
+        Trace.traceEnd(32L);
+    }
+
+    public final void onAnimationCancelled(SurfaceControl surfaceControl) {
         synchronized (this.mLock) {
-            final RunningAnimation runningAnimation = new RunningAnimation(animationSpec, surfaceControl, runnable);
-            runningAnimation.setPosition(this.mPendingAnimationList.size() + this.mPreProcessingAnimations.size());
-            boolean requiresEdgeExtension = requiresEdgeExtension(animationSpec);
-            if (requiresEdgeExtension) {
+            try {
+                if (this.mPendingAnimations.containsKey(surfaceControl)) {
+                    this.mPendingAnimations.remove(surfaceControl);
+                    return;
+                }
+                if (this.mPreProcessingAnimations.containsKey(surfaceControl)) {
+                    this.mPreProcessingAnimations.remove(surfaceControl);
+                    return;
+                }
+                final RunningAnimation runningAnimation = (RunningAnimation) this.mRunningAnimations.get(surfaceControl);
+                if (runningAnimation != null) {
+                    this.mRunningAnimations.remove(surfaceControl);
+                    synchronized (this.mCancelLock) {
+                        runningAnimation.mCancelled = true;
+                    }
+                    this.mSurfaceAnimationHandler.post(new Runnable() { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda3
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            SurfaceAnimationRunner surfaceAnimationRunner = SurfaceAnimationRunner.this;
+                            SurfaceAnimationRunner.RunningAnimation runningAnimation2 = runningAnimation;
+                            surfaceAnimationRunner.getClass();
+                            runningAnimation2.mAnim.cancel();
+                            surfaceAnimationRunner.mFrameTransaction.setAnimationTransaction();
+                            surfaceAnimationRunner.mFrameTransaction.setFrameTimelineVsync(surfaceAnimationRunner.mChoreographer.getVsyncId());
+                            surfaceAnimationRunner.mFrameTransaction.apply();
+                            surfaceAnimationRunner.mApplyScheduled = false;
+                        }
+                    });
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void startAnimation(final LocalAnimationAdapter.AnimationSpec animationSpec, final SurfaceControl surfaceControl, SurfaceControl.Transaction transaction, LocalAnimationAdapter$$ExternalSyntheticLambda0 localAnimationAdapter$$ExternalSyntheticLambda0) {
+        synchronized (this.mLock) {
+            final RunningAnimation runningAnimation = new RunningAnimation(animationSpec, surfaceControl, localAnimationAdapter$$ExternalSyntheticLambda0);
+            boolean z = animationSpec.asWindowAnimationSpec() != null && animationSpec.asWindowAnimationSpec().mAnimation.hasExtension();
+            if (z) {
                 ArrayList arrayList = new ArrayList();
                 synchronized (this.mEdgeExtensionLock) {
                     this.mEdgeExtensions.put(surfaceControl, arrayList);
@@ -144,385 +282,161 @@ public class SurfaceAnimationRunner {
                 transaction.addTransactionCommittedListener(this.mEdgeExtensionExecutor, new SurfaceControl.TransactionCommittedListener() { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda4
                     @Override // android.view.SurfaceControl.TransactionCommittedListener
                     public final void onTransactionCommitted() {
-                        SurfaceAnimationRunner.this.lambda$startAnimation$2(animationSpec, surfaceControl, runningAnimation);
+                        SurfaceAnimationRunner.RunningAnimation runningAnimation2;
+                        int i;
+                        SurfaceAnimationRunner surfaceAnimationRunner = SurfaceAnimationRunner.this;
+                        SurfaceControl surfaceControl2 = surfaceControl;
+                        LocalAnimationAdapter.AnimationSpec animationSpec2 = animationSpec;
+                        SurfaceAnimationRunner.RunningAnimation runningAnimation3 = runningAnimation;
+                        surfaceAnimationRunner.getClass();
+                        if (!surfaceControl2.isValid()) {
+                            Log.e("SurfaceAnimationRunner", "Animation leash is not valid");
+                            synchronized (surfaceAnimationRunner.mEdgeExtensionLock) {
+                                surfaceAnimationRunner.mEdgeExtensions.remove(surfaceControl2);
+                            }
+                            synchronized (surfaceAnimationRunner.mLock) {
+                                surfaceAnimationRunner.mPreProcessingAnimations.remove(surfaceControl2);
+                            }
+                            return;
+                        }
+                        WindowAnimationSpec asWindowAnimationSpec = animationSpec2.asWindowAnimationSpec();
+                        SurfaceControl.Transaction transaction2 = new SurfaceControl.Transaction();
+                        Rect rect = asWindowAnimationSpec.mRootTaskBounds;
+                        Animation animation = asWindowAnimationSpec.mAnimation;
+                        Transformation transformation = new Transformation();
+                        animation.getTransformationAt(FullScreenMagnificationGestureHandler.MAX_SCALE, transformation);
+                        Transformation transformation2 = new Transformation();
+                        animation.getTransformationAt(1.0f, transformation2);
+                        Insets min = Insets.min(transformation.getInsets(), transformation2.getInsets());
+                        int height = rect.height();
+                        int width = rect.width();
+                        if (min.left < 0) {
+                            int i2 = rect.left;
+                            runningAnimation2 = runningAnimation3;
+                            i = 0;
+                            surfaceAnimationRunner.createExtensionSurface(surfaceControl2, new Rect(i2, rect.top, i2 + 1, rect.bottom), new Rect(0, 0, -min.left, height), rect.left + min.left, rect.top, "Left Edge Extension", transaction2);
+                        } else {
+                            runningAnimation2 = runningAnimation3;
+                            i = 0;
+                        }
+                        if (min.top < 0) {
+                            int i3 = rect.left;
+                            int i4 = rect.top;
+                            surfaceAnimationRunner.createExtensionSurface(surfaceControl2, new Rect(i3, i4, width, i4 + 1), new Rect(i, i, width, -min.top), rect.left, rect.top + min.top, "Top Edge Extension", transaction2);
+                        }
+                        if (min.right < 0) {
+                            int i5 = rect.right;
+                            surfaceAnimationRunner.createExtensionSurface(surfaceControl2, new Rect(i5 - 1, rect.top, i5, rect.bottom), new Rect(i, i, -min.right, height), rect.right, rect.top, "Right Edge Extension", transaction2);
+                        }
+                        if (min.bottom < 0) {
+                            int i6 = rect.left;
+                            int i7 = rect.bottom;
+                            surfaceAnimationRunner.createExtensionSurface(surfaceControl2, new Rect(i6, i7 - 1, rect.right, i7), new Rect(i, i, width, -min.bottom), rect.left, rect.bottom, "Bottom Edge Extension", transaction2);
+                        }
+                        synchronized (surfaceAnimationRunner.mLock) {
+                            SurfaceAnimationRunner.RunningAnimation runningAnimation4 = runningAnimation2;
+                            if (surfaceAnimationRunner.mPreProcessingAnimations.get(surfaceControl2) == runningAnimation4) {
+                                synchronized (surfaceAnimationRunner.mEdgeExtensionLock) {
+                                    try {
+                                        if (!surfaceAnimationRunner.mEdgeExtensions.isEmpty()) {
+                                            transaction2.apply();
+                                        }
+                                    } finally {
+                                    }
+                                }
+                                surfaceAnimationRunner.mPreProcessingAnimations.remove(surfaceControl2);
+                                surfaceAnimationRunner.mPendingAnimations.put(surfaceControl2, runningAnimation4);
+                                if (!surfaceAnimationRunner.mAnimationStartDeferred && surfaceAnimationRunner.mPreProcessingAnimations.isEmpty()) {
+                                    surfaceAnimationRunner.mChoreographer.postFrameCallback(new SurfaceAnimationRunner$$ExternalSyntheticLambda5(surfaceAnimationRunner));
+                                }
+                            }
+                        }
                     }
                 });
             }
-            if (!requiresEdgeExtension) {
-                addAnimationToList(runningAnimation);
+            if (!z) {
+                this.mPendingAnimations.put(surfaceControl, runningAnimation);
                 if (!this.mAnimationStartDeferred && this.mPreProcessingAnimations.isEmpty()) {
-                    this.mChoreographer.postFrameCallback(new SurfaceAnimationRunner$$ExternalSyntheticLambda3(this));
+                    this.mChoreographer.postFrameCallback(new SurfaceAnimationRunner$$ExternalSyntheticLambda5(this));
                 }
             }
-            applyTransformation(runningAnimation, transaction, 0L);
+            animationSpec.apply(transaction, surfaceControl, 0L);
         }
-    }
-
-    public /* synthetic */ void lambda$startAnimation$2(LocalAnimationAdapter.AnimationSpec animationSpec, SurfaceControl surfaceControl, RunningAnimation runningAnimation) {
-        WindowAnimationSpec asWindowAnimationSpec = animationSpec.asWindowAnimationSpec();
-        SurfaceControl.Transaction transaction = new SurfaceControl.Transaction();
-        edgeExtendWindow(surfaceControl, asWindowAnimationSpec.getRootTaskBounds(), asWindowAnimationSpec.getAnimation(), transaction);
-        synchronized (this.mLock) {
-            if (this.mPreProcessingAnimations.get(surfaceControl) == runningAnimation) {
-                synchronized (this.mEdgeExtensionLock) {
-                    if (!this.mEdgeExtensions.isEmpty()) {
-                        transaction.apply();
-                    }
-                }
-                this.mPreProcessingAnimations.remove(surfaceControl);
-                addAnimationToList(runningAnimation);
-                if (!this.mAnimationStartDeferred && this.mPreProcessingAnimations.isEmpty()) {
-                    this.mChoreographer.postFrameCallback(new SurfaceAnimationRunner$$ExternalSyntheticLambda3(this));
-                }
-            }
-        }
-    }
-
-    public final boolean requiresEdgeExtension(LocalAnimationAdapter.AnimationSpec animationSpec) {
-        return animationSpec.asWindowAnimationSpec() != null && animationSpec.asWindowAnimationSpec().hasExtension() && animationSpec.asWindowAnimationSpec().allowExtension();
-    }
-
-    public void onAnimationCancelled(SurfaceControl surfaceControl) {
-        synchronized (this.mLock) {
-            RunningAnimation animationByLeash = getAnimationByLeash(surfaceControl);
-            if (animationByLeash != null) {
-                this.mPendingAnimationList.remove(animationByLeash);
-                return;
-            }
-            if (this.mPreProcessingAnimations.containsKey(surfaceControl)) {
-                this.mPreProcessingAnimations.remove(surfaceControl);
-                return;
-            }
-            final RunningAnimation runningAnimation = (RunningAnimation) this.mRunningAnimations.get(surfaceControl);
-            if (runningAnimation != null) {
-                this.mRunningAnimations.remove(surfaceControl);
-                synchronized (this.mCancelLock) {
-                    runningAnimation.mCancelled = true;
-                }
-                this.mSurfaceAnimationHandler.post(new Runnable() { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda5
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        SurfaceAnimationRunner.this.lambda$onAnimationCancelled$3(runningAnimation);
-                    }
-                });
-            }
-        }
-    }
-
-    public /* synthetic */ void lambda$onAnimationCancelled$3(RunningAnimation runningAnimation) {
-        runningAnimation.mAnim.cancel();
-        applyTransaction();
-    }
-
-    public static /* synthetic */ int lambda$startPendingAnimationsLocked$4(RunningAnimation runningAnimation, RunningAnimation runningAnimation2) {
-        return runningAnimation.mPos - runningAnimation2.mPos;
     }
 
     public final void startPendingAnimationsLocked() {
-        Collections.sort(this.mPendingAnimationList, new Comparator() { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda6
-            @Override // java.util.Comparator
-            public final int compare(Object obj, Object obj2) {
-                int lambda$startPendingAnimationsLocked$4;
-                lambda$startPendingAnimationsLocked$4 = SurfaceAnimationRunner.lambda$startPendingAnimationsLocked$4((SurfaceAnimationRunner.RunningAnimation) obj, (SurfaceAnimationRunner.RunningAnimation) obj2);
-                return lambda$startPendingAnimationsLocked$4;
-            }
-        });
-        for (int i = 0; i < this.mPendingAnimationList.size(); i++) {
-            startAnimationLocked((RunningAnimation) this.mPendingAnimationList.get(i));
-        }
-        this.mPendingAnimationList.clear();
-    }
-
-    public final void startAnimationLocked(final RunningAnimation runningAnimation) {
-        final ValueAnimator makeAnimator = this.mAnimatorFactory.makeAnimator();
-        makeAnimator.overrideDurationScale(1.0f);
-        makeAnimator.setDuration(runningAnimation.mAnimSpec.getDuration());
-        makeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda7
-            @Override // android.animation.ValueAnimator.AnimatorUpdateListener
-            public final void onAnimationUpdate(ValueAnimator valueAnimator) {
-                SurfaceAnimationRunner.this.lambda$startAnimationLocked$5(runningAnimation, makeAnimator, valueAnimator);
-            }
-        });
-        makeAnimator.addListener(new AnimatorListenerAdapter() { // from class: com.android.server.wm.SurfaceAnimationRunner.1
-            public final /* synthetic */ RunningAnimation val$a;
-
-            public AnonymousClass1(final RunningAnimation runningAnimation2) {
-                r2 = runningAnimation2;
-            }
-
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-            public void onAnimationStart(Animator animator) {
-                synchronized (SurfaceAnimationRunner.this.mCancelLock) {
-                    if (!r2.mCancelled) {
-                        SurfaceAnimationRunner.this.mFrameTransaction.setAlpha(r2.mLeash, 1.0f);
+        for (int size = this.mPendingAnimations.size() - 1; size >= 0; size--) {
+            final RunningAnimation runningAnimation = (RunningAnimation) this.mPendingAnimations.valueAt(size);
+            final SfValueAnimator makeAnimator = this.mAnimatorFactory.makeAnimator();
+            makeAnimator.overrideDurationScale(1.0f);
+            makeAnimator.setDuration(runningAnimation.mAnimSpec.getDuration());
+            makeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() { // from class: com.android.server.wm.SurfaceAnimationRunner$$ExternalSyntheticLambda6
+                @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+                public final void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    SurfaceAnimationRunner surfaceAnimationRunner = SurfaceAnimationRunner.this;
+                    SurfaceAnimationRunner.RunningAnimation runningAnimation2 = runningAnimation;
+                    ValueAnimator valueAnimator2 = makeAnimator;
+                    synchronized (surfaceAnimationRunner.mCancelLock) {
+                        try {
+                            if (!runningAnimation2.mCancelled) {
+                                long duration = valueAnimator2.getDuration();
+                                long currentPlayTime = valueAnimator2.getCurrentPlayTime();
+                                if (currentPlayTime <= duration) {
+                                    duration = currentPlayTime;
+                                }
+                                runningAnimation2.mAnimSpec.apply(surfaceAnimationRunner.mFrameTransaction, runningAnimation2.mLeash, duration);
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
                     }
+                    if (surfaceAnimationRunner.mApplyScheduled) {
+                        return;
+                    }
+                    surfaceAnimationRunner.mChoreographer.postCallback(3, surfaceAnimationRunner.mApplyTransactionRunnable, null);
+                    surfaceAnimationRunner.mApplyScheduled = true;
                 }
-            }
-
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-            public void onAnimationEnd(Animator animator) {
-                synchronized (SurfaceAnimationRunner.this.mLock) {
-                    SurfaceAnimationRunner.this.mRunningAnimations.remove(r2.mLeash);
-                    synchronized (SurfaceAnimationRunner.this.mCancelLock) {
-                        if (!r2.mCancelled) {
-                            SurfaceAnimationRunner.this.mAnimationThreadHandler.post(r2.mFinishCallback);
+            });
+            makeAnimator.addListener(new AnimatorListenerAdapter() { // from class: com.android.server.wm.SurfaceAnimationRunner.1
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public final void onAnimationEnd(Animator animator) {
+                    synchronized (SurfaceAnimationRunner.this.mLock) {
+                        SurfaceAnimationRunner.this.mRunningAnimations.remove(runningAnimation.mLeash);
+                        synchronized (SurfaceAnimationRunner.this.mCancelLock) {
+                            try {
+                                RunningAnimation runningAnimation2 = runningAnimation;
+                                if (!runningAnimation2.mCancelled) {
+                                    SurfaceAnimationRunner.this.mAnimationThreadHandler.post(runningAnimation2.mFinishCallback);
+                                }
+                            } catch (Throwable th) {
+                                throw th;
+                            }
                         }
                     }
                 }
-            }
-        });
-        runningAnimation2.mAnim = makeAnimator;
-        this.mRunningAnimations.put(runningAnimation2.mLeash, runningAnimation2);
-        makeAnimator.start();
-        if (runningAnimation2.mAnimSpec.canSkipFirstFrame()) {
-            makeAnimator.setCurrentPlayTime(this.mChoreographer.getFrameIntervalNanos() / 1000000);
-        }
-        makeAnimator.doAnimationFrame(this.mChoreographer.getFrameTime());
-    }
 
-    public /* synthetic */ void lambda$startAnimationLocked$5(RunningAnimation runningAnimation, ValueAnimator valueAnimator, ValueAnimator valueAnimator2) {
-        synchronized (this.mCancelLock) {
-            if (!runningAnimation.mCancelled) {
-                long duration = valueAnimator.getDuration();
-                long currentPlayTime = valueAnimator.getCurrentPlayTime();
-                if (currentPlayTime <= duration) {
-                    duration = currentPlayTime;
-                }
-                applyTransformation(runningAnimation, this.mFrameTransaction, duration);
-            }
-        }
-        scheduleApplyTransaction();
-    }
-
-    /* renamed from: com.android.server.wm.SurfaceAnimationRunner$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends AnimatorListenerAdapter {
-        public final /* synthetic */ RunningAnimation val$a;
-
-        public AnonymousClass1(final RunningAnimation runningAnimation2) {
-            r2 = runningAnimation2;
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationStart(Animator animator) {
-            synchronized (SurfaceAnimationRunner.this.mCancelLock) {
-                if (!r2.mCancelled) {
-                    SurfaceAnimationRunner.this.mFrameTransaction.setAlpha(r2.mLeash, 1.0f);
-                }
-            }
-        }
-
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
-        public void onAnimationEnd(Animator animator) {
-            synchronized (SurfaceAnimationRunner.this.mLock) {
-                SurfaceAnimationRunner.this.mRunningAnimations.remove(r2.mLeash);
-                synchronized (SurfaceAnimationRunner.this.mCancelLock) {
-                    if (!r2.mCancelled) {
-                        SurfaceAnimationRunner.this.mAnimationThreadHandler.post(r2.mFinishCallback);
+                @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+                public final void onAnimationStart(Animator animator) {
+                    synchronized (SurfaceAnimationRunner.this.mCancelLock) {
+                        try {
+                            RunningAnimation runningAnimation2 = runningAnimation;
+                            if (!runningAnimation2.mCancelled) {
+                                SurfaceAnimationRunner.this.mFrameTransaction.setAlpha(runningAnimation2.mLeash, 1.0f);
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
                     }
                 }
+            });
+            runningAnimation.mAnim = makeAnimator;
+            this.mRunningAnimations.put(runningAnimation.mLeash, runningAnimation);
+            makeAnimator.start();
+            if (runningAnimation.mAnimSpec.canSkipFirstFrame()) {
+                makeAnimator.setCurrentPlayTime(this.mChoreographer.getFrameIntervalNanos() / 1000000);
             }
+            makeAnimator.doAnimationFrame(this.mChoreographer.getFrameTime());
         }
-    }
-
-    public final void applyTransformation(RunningAnimation runningAnimation, SurfaceControl.Transaction transaction, long j) {
-        runningAnimation.mAnimSpec.apply(transaction, runningAnimation.mLeash, j);
-    }
-
-    public final void startAnimations(long j) {
-        synchronized (this.mLock) {
-            if (this.mPreProcessingAnimations.isEmpty()) {
-                startPendingAnimationsLocked();
-                this.mPowerManagerInternal.setPowerBoost(0, 0);
-            }
-        }
-    }
-
-    public final void scheduleApplyTransaction() {
-        if (this.mApplyScheduled) {
-            return;
-        }
-        this.mChoreographer.postCallback(3, this.mApplyTransactionRunnable, null);
-        this.mApplyScheduled = true;
-    }
-
-    public final void applyTransaction() {
-        this.mFrameTransaction.setAnimationTransaction();
-        this.mFrameTransaction.setFrameTimelineVsync(this.mChoreographer.getVsyncId());
-        this.mFrameTransaction.apply();
-        this.mApplyScheduled = false;
-    }
-
-    public final void edgeExtendWindow(SurfaceControl surfaceControl, Rect rect, Animation animation, SurfaceControl.Transaction transaction) {
-        Transformation transformation = new Transformation();
-        animation.getTransformationAt(DisplayPowerController2.RATE_FROM_DOZE_TO_ON, transformation);
-        Transformation transformation2 = new Transformation();
-        animation.getTransformationAt(1.0f, transformation2);
-        Insets min = Insets.min(transformation.getInsets(), transformation2.getInsets());
-        int height = rect.height();
-        int width = rect.width();
-        if (min.left < 0) {
-            int i = rect.left;
-            createExtensionSurface(surfaceControl, new Rect(i, rect.top, i + 1, rect.bottom), new Rect(0, 0, -min.left, height), rect.left + min.left, rect.top, "Left Edge Extension", transaction);
-        }
-        if (min.top < 0) {
-            int i2 = rect.left;
-            int i3 = rect.top;
-            createExtensionSurface(surfaceControl, new Rect(i2, i3, width, i3 + 1), new Rect(0, 0, width, -min.top), rect.left, rect.top + min.top, "Top Edge Extension", transaction);
-        }
-        if (min.right < 0) {
-            int i4 = rect.right;
-            createExtensionSurface(surfaceControl, new Rect(i4 - 1, rect.top, i4, rect.bottom), new Rect(0, 0, -min.right, height), rect.right, rect.top, "Right Edge Extension", transaction);
-        }
-        if (min.bottom < 0) {
-            int i5 = rect.left;
-            int i6 = rect.bottom;
-            createExtensionSurface(surfaceControl, new Rect(i5, i6 - 1, rect.right, i6), new Rect(0, 0, width, -min.bottom), rect.left, rect.bottom, "Bottom Edge Extension", transaction);
-        }
-    }
-
-    public final void createExtensionSurface(SurfaceControl surfaceControl, Rect rect, Rect rect2, int i, int i2, String str, SurfaceControl.Transaction transaction) {
-        Trace.traceBegin(32L, "createExtensionSurface");
-        doCreateExtensionSurface(surfaceControl, rect, rect2, i, i2, str, transaction);
-        Trace.traceEnd(32L);
-    }
-
-    public final void doCreateExtensionSurface(SurfaceControl surfaceControl, Rect rect, Rect rect2, int i, int i2, String str, SurfaceControl.Transaction transaction) {
-        ScreenCapture.ScreenshotHardwareBuffer captureLayers = ScreenCapture.captureLayers(new ScreenCapture.LayerCaptureArgs.Builder(surfaceControl).setSourceCrop(rect).setFrameScale(1.0f).setPixelFormat(1).setChildrenOnly(true).setAllowProtected(true).setCaptureSecureLayers(true).build());
-        if (captureLayers == null) {
-            Log.e("SurfaceAnimationRunner", "Failed to create edge extension - edge buffer is null");
-            return;
-        }
-        SurfaceControl build = new SurfaceControl.Builder().setName(str).setHidden(true).setCallsite("DefaultTransitionHandler#startAnimation").setOpaque(true).setBufferSize(rect2.width(), rect2.height()).build();
-        Bitmap asBitmap = captureLayers.asBitmap();
-        Shader.TileMode tileMode = Shader.TileMode.CLAMP;
-        BitmapShader bitmapShader = new BitmapShader(asBitmap, tileMode, tileMode);
-        Paint paint = new Paint();
-        if (CoreRune.FW_EDGE_EXTENSION_ANIM_DEBUG) {
-            paint.setColor(convertToColor(str));
-        } else {
-            paint.setShader(bitmapShader);
-        }
-        Surface surface = new Surface(build);
-        Canvas lockHardwareCanvas = surface.lockHardwareCanvas();
-        lockHardwareCanvas.drawRect(rect2, paint);
-        surface.unlockCanvasAndPost(lockHardwareCanvas);
-        surface.release();
-        synchronized (this.mEdgeExtensionLock) {
-            if (!this.mEdgeExtensions.containsKey(surfaceControl)) {
-                transaction.remove(build);
-                return;
-            }
-            transaction.reparent(build, surfaceControl);
-            transaction.setLayer(build, Integer.MIN_VALUE);
-            transaction.setPosition(build, i, i2);
-            transaction.setVisibility(build, true);
-            ((ArrayList) this.mEdgeExtensions.get(surfaceControl)).add(build);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class RunningAnimation {
-        public ValueAnimator mAnim;
-        public final LocalAnimationAdapter.AnimationSpec mAnimSpec;
-        public boolean mCancelled;
-        public final Runnable mFinishCallback;
-        public final SurfaceControl mLeash;
-        public int mPos;
-
-        public RunningAnimation(LocalAnimationAdapter.AnimationSpec animationSpec, SurfaceControl surfaceControl, Runnable runnable) {
-            this.mAnimSpec = animationSpec;
-            this.mLeash = surfaceControl;
-            this.mFinishCallback = runnable;
-        }
-
-        public void setPosition(int i) {
-            this.mPos = i;
-        }
-    }
-
-    public void onAnimationLeashLost(SurfaceControl surfaceControl, SurfaceControl.Transaction transaction) {
-        synchronized (this.mEdgeExtensionLock) {
-            if (this.mEdgeExtensions.containsKey(surfaceControl)) {
-                ArrayList arrayList = (ArrayList) this.mEdgeExtensions.get(surfaceControl);
-                for (int i = 0; i < arrayList.size(); i++) {
-                    transaction.remove((SurfaceControl) arrayList.get(i));
-                }
-                this.mEdgeExtensions.remove(surfaceControl);
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class SfValueAnimator extends ValueAnimator {
-        public SfValueAnimator() {
-            setFloatValues(DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 1.0f);
-        }
-
-        public AnimationHandler getAnimationHandler() {
-            return SurfaceAnimationRunner.this.mAnimationHandler;
-        }
-    }
-
-    public final void addAnimationToList(RunningAnimation runningAnimation) {
-        RunningAnimation animationByLeash = getAnimationByLeash(runningAnimation.mLeash);
-        if (animationByLeash != null) {
-            this.mPendingAnimationList.remove(animationByLeash);
-        }
-        this.mPendingAnimationList.add(runningAnimation);
-    }
-
-    public final RunningAnimation getAnimationByLeash(SurfaceControl surfaceControl) {
-        Iterator it = this.mPendingAnimationList.iterator();
-        while (it.hasNext()) {
-            RunningAnimation runningAnimation = (RunningAnimation) it.next();
-            if (runningAnimation.mLeash == surfaceControl) {
-                return runningAnimation;
-            }
-        }
-        return null;
-    }
-
-    public final int convertToColor(String str) {
-        str.hashCode();
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1732636608:
-                if (str.equals("Right Edge Extension")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case -266415435:
-                if (str.equals("Left Edge Extension")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case -253668335:
-                if (str.equals("Bottom Edge Extension")) {
-                    c = 2;
-                    break;
-                }
-                break;
-            case 596320231:
-                if (str.equals("Top Edge Extension")) {
-                    c = 3;
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return -16776961;
-            case 1:
-                return -65536;
-            case 2:
-                return -16711681;
-            case 3:
-                return -16711936;
-            default:
-                return -65281;
-        }
+        this.mPendingAnimations.clear();
     }
 }

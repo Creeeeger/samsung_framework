@@ -2,44 +2,28 @@ package com.android.server.pm;
 
 import android.content.ComponentName;
 import android.content.IntentFilter;
+import android.hardware.biometrics.face.V1_0.OptionalBool$$ExternalSyntheticOutline0;
 import com.android.internal.util.XmlUtils;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
 import com.android.modules.utils.TypedXmlPullParser;
-import com.android.modules.utils.TypedXmlSerializer;
 import com.android.server.utils.SnapshotCache;
 
-/* loaded from: classes3.dex */
-public class PersistentPreferredActivity extends WatchedIntentFilter {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PersistentPreferredActivity extends WatchedIntentFilter {
     public final ComponentName mComponent;
     public final boolean mIsSetByDpm;
     public final SnapshotCache mSnapshot;
 
-    public final SnapshotCache makeCache() {
-        return new SnapshotCache(this, this) { // from class: com.android.server.pm.PersistentPreferredActivity.1
-            @Override // com.android.server.utils.SnapshotCache
-            public PersistentPreferredActivity createSnapshot() {
-                PersistentPreferredActivity persistentPreferredActivity = new PersistentPreferredActivity();
-                persistentPreferredActivity.seal();
-                return persistentPreferredActivity;
-            }
-        };
-    }
-
-    public PersistentPreferredActivity(IntentFilter intentFilter, ComponentName componentName, boolean z) {
-        super(intentFilter);
-        this.mComponent = componentName;
-        this.mIsSetByDpm = z;
-        this.mSnapshot = makeCache();
-    }
-
-    public PersistentPreferredActivity(WatchedIntentFilter watchedIntentFilter, ComponentName componentName, boolean z) {
-        this(watchedIntentFilter.mFilter, componentName, z);
-    }
-
-    public PersistentPreferredActivity(PersistentPreferredActivity persistentPreferredActivity) {
-        super(persistentPreferredActivity);
-        this.mComponent = persistentPreferredActivity.mComponent;
-        this.mIsSetByDpm = persistentPreferredActivity.mIsSetByDpm;
-        this.mSnapshot = new SnapshotCache.Sealed();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.pm.PersistentPreferredActivity$1, reason: invalid class name */
+    public final class AnonymousClass1 extends SnapshotCache {
+        @Override // com.android.server.utils.SnapshotCache
+        public final Object createSnapshot() {
+            PersistentPreferredActivity persistentPreferredActivity = new PersistentPreferredActivity((PersistentPreferredActivity) this.mSource);
+            persistentPreferredActivity.seal();
+            return persistentPreferredActivity;
+        }
     }
 
     public PersistentPreferredActivity(TypedXmlPullParser typedXmlPullParser) {
@@ -47,7 +31,9 @@ public class PersistentPreferredActivity extends WatchedIntentFilter {
         ComponentName unflattenFromString = ComponentName.unflattenFromString(attributeValue);
         this.mComponent = unflattenFromString;
         if (unflattenFromString == null) {
-            PackageManagerService.reportSettingsProblem(5, "Error in package manager settings: Bad activity name " + attributeValue + " at " + typedXmlPullParser.getPositionDescription());
+            String m = CrossProfileIntentFilter$$ExternalSyntheticOutline0.m(typedXmlPullParser, DumpUtils$$ExternalSyntheticOutline0.m("Error in package manager settings: Bad activity name ", attributeValue, " at "));
+            boolean z = PackageManagerService.DEBUG_COMPRESSION;
+            PackageManagerServiceUtils.logCriticalInfo(5, m);
         }
         this.mIsSetByDpm = typedXmlPullParser.getAttributeBoolean((String) null, "set-by-dpm", false);
         int depth = typedXmlPullParser.getDepth();
@@ -62,38 +48,58 @@ public class PersistentPreferredActivity extends WatchedIntentFilter {
                 if (name.equals("filter")) {
                     break;
                 }
-                PackageManagerService.reportSettingsProblem(5, "Unknown element: " + name + " at " + typedXmlPullParser.getPositionDescription());
+                String m2 = CrossProfileIntentFilter$$ExternalSyntheticOutline0.m(typedXmlPullParser, DumpUtils$$ExternalSyntheticOutline0.m("Unknown element: ", name, " at "));
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                PackageManagerServiceUtils.logCriticalInfo(5, m2);
                 XmlUtils.skipCurrentTag(typedXmlPullParser);
             }
         }
         if (name.equals("filter")) {
             this.mFilter.readFromXml(typedXmlPullParser);
         } else {
-            PackageManagerService.reportSettingsProblem(5, "Missing element filter at " + typedXmlPullParser.getPositionDescription());
+            String m3 = CrossProfileIntentFilter$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Missing element filter at "));
+            boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+            PackageManagerServiceUtils.logCriticalInfo(5, m3);
             XmlUtils.skipCurrentTag(typedXmlPullParser);
         }
-        this.mSnapshot = makeCache();
+        this.mSnapshot = new AnonymousClass1(this, this, null);
     }
 
-    public void writeToXml(TypedXmlSerializer typedXmlSerializer) {
-        typedXmlSerializer.attribute((String) null, "name", this.mComponent.flattenToShortString());
-        typedXmlSerializer.attributeBoolean((String) null, "set-by-dpm", this.mIsSetByDpm);
-        typedXmlSerializer.startTag((String) null, "filter");
-        this.mFilter.writeToXml(typedXmlSerializer);
-        typedXmlSerializer.endTag((String) null, "filter");
+    public PersistentPreferredActivity(PersistentPreferredActivity persistentPreferredActivity) {
+        super(persistentPreferredActivity);
+        this.mComponent = persistentPreferredActivity.mComponent;
+        this.mIsSetByDpm = persistentPreferredActivity.mIsSetByDpm;
+        this.mSnapshot = new SnapshotCache.Auto();
+    }
+
+    public PersistentPreferredActivity(WatchedIntentFilter watchedIntentFilter, ComponentName componentName) {
+        super(watchedIntentFilter.mFilter);
+        this.mComponent = componentName;
+        this.mIsSetByDpm = true;
+        this.mSnapshot = new AnonymousClass1(this, this, null);
     }
 
     @Override // com.android.server.pm.WatchedIntentFilter
-    public IntentFilter getIntentFilter() {
+    public final IntentFilter getIntentFilter$3() {
         return this.mFilter;
     }
 
-    public String toString() {
-        return "PersistentPreferredActivity{0x" + Integer.toHexString(System.identityHashCode(this)) + " " + this.mComponent.flattenToShortString() + ", mIsSetByDpm=" + this.mIsSetByDpm + "}";
+    @Override // com.android.server.pm.WatchedIntentFilter, com.android.server.utils.Snappable
+    public final WatchedIntentFilter snapshot() {
+        return (PersistentPreferredActivity) this.mSnapshot.snapshot();
     }
 
     @Override // com.android.server.pm.WatchedIntentFilter, com.android.server.utils.Snappable
-    public PersistentPreferredActivity snapshot() {
+    public final Object snapshot() {
         return (PersistentPreferredActivity) this.mSnapshot.snapshot();
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("PersistentPreferredActivity{0x");
+        sb.append(Integer.toHexString(System.identityHashCode(this)));
+        sb.append(" ");
+        sb.append(this.mComponent.flattenToShortString());
+        sb.append(", mIsSetByDpm=");
+        return OptionalBool$$ExternalSyntheticOutline0.m("}", sb, this.mIsSetByDpm);
     }
 }

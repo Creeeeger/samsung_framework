@@ -1,288 +1,160 @@
 package com.android.server.companion.virtual;
 
+import android.app.ActivityOptions;
 import android.app.compat.CompatChanges;
 import android.companion.virtual.VirtualDeviceManager;
+import android.content.AttributionSource;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.hardware.display.DisplayManager;
 import android.os.Handler;
-import android.os.IInstalld;
 import android.os.Looper;
 import android.os.UserHandle;
 import android.util.ArraySet;
 import android.util.Slog;
 import android.window.DisplayWindowPolicyController;
 import com.android.internal.app.BlockedAppStreamingActivity;
+import com.android.modules.expresslog.Counter;
+import com.android.server.companion.virtual.GenericWindowPolicyController;
+import com.android.server.companion.virtual.VirtualDeviceImpl;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class GenericWindowPolicyController extends DisplayWindowPolicyController {
+public final class GenericWindowPolicyController extends DisplayWindowPolicyController {
     public static final ComponentName BLOCKED_APP_STREAMING_COMPONENT = new ComponentName("android", BlockedAppStreamingActivity.class.getName());
-    public final ActivityBlockedCallback mActivityBlockedCallback;
+    public final VirtualDeviceImpl$$ExternalSyntheticLambda2 mActivityBlockedCallback;
+    public boolean mActivityLaunchAllowedByDefault;
     public final VirtualDeviceManager.ActivityListener mActivityListener;
-    public final ArraySet mAllowedActivities;
-    public final ArraySet mAllowedCrossTaskNavigations;
+    public final Set mActivityPolicyExemptions;
     public final ArraySet mAllowedUsers;
-    public final ArraySet mBlockedActivities;
-    public final ArraySet mBlockedCrossTaskNavigations;
-    public final int mDefaultActivityPolicy;
+    public final AttributionSource mAttributionSource;
+    public final boolean mCrossTaskNavigationAllowedByDefault;
+    public final ArraySet mCrossTaskNavigationExemptions;
+    public final ComponentName mCustomHomeComponent;
     public final Set mDisplayCategories;
-    public final IntentListenerCallback mIntentListenerCallback;
-    public final PipBlockedCallback mPipBlockedCallback;
-    public final SecureWindowCallback mSecureWindowCallback;
-    public final boolean mShowTasksInHostDeviceRecents;
+    public final VirtualDeviceImpl$$ExternalSyntheticLambda2 mIntentListenerCallback;
+    public final ComponentName mPermissionDialogComponent;
+    public final VirtualDeviceImpl$$ExternalSyntheticLambda2 mPipBlockedCallback;
+    public final VirtualDeviceImpl$$ExternalSyntheticLambda2 mSecureWindowCallback;
+    public boolean mShowTasksInHostDeviceRecents;
     public final Object mGenericWindowPolicyControllerLock = new Object();
     public int mDisplayId = -1;
+    public boolean mIsMirrorDisplay = false;
+    public final CountDownLatch mDisplayIdSetLatch = new CountDownLatch(1);
     public final ArraySet mRunningUids = new ArraySet();
     public final Handler mHandler = new Handler(Looper.getMainLooper());
     public final ArraySet mRunningAppsChangedListeners = new ArraySet();
 
-    /* loaded from: classes.dex */
-    public interface ActivityBlockedCallback {
-        void onActivityBlocked(int i, ActivityInfo activityInfo);
-    }
-
-    /* loaded from: classes.dex */
-    public interface IntentListenerCallback {
-        boolean shouldInterceptIntent(Intent intent);
-    }
-
-    /* loaded from: classes.dex */
-    public interface PipBlockedCallback {
-        void onEnteringPipBlocked(int i);
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface RunningAppsChangedListener {
         void onRunningAppsChanged(ArraySet arraySet);
     }
 
-    /* loaded from: classes.dex */
-    public interface SecureWindowCallback {
-        void onSecureWindowShown(int i, int i2);
-    }
-
-    public GenericWindowPolicyController(int i, int i2, ArraySet arraySet, Set set, Set set2, Set set3, Set set4, int i3, VirtualDeviceManager.ActivityListener activityListener, PipBlockedCallback pipBlockedCallback, ActivityBlockedCallback activityBlockedCallback, SecureWindowCallback secureWindowCallback, IntentListenerCallback intentListenerCallback, Set set5, boolean z) {
+    public GenericWindowPolicyController(AttributionSource attributionSource, ArraySet arraySet, boolean z, Set set, boolean z2, Set set2, ComponentName componentName, VirtualDeviceImpl.AnonymousClass1 anonymousClass1, VirtualDeviceImpl$$ExternalSyntheticLambda2 virtualDeviceImpl$$ExternalSyntheticLambda2, VirtualDeviceImpl$$ExternalSyntheticLambda2 virtualDeviceImpl$$ExternalSyntheticLambda22, VirtualDeviceImpl$$ExternalSyntheticLambda2 virtualDeviceImpl$$ExternalSyntheticLambda23, VirtualDeviceImpl$$ExternalSyntheticLambda2 virtualDeviceImpl$$ExternalSyntheticLambda24, Set set3, boolean z3, ComponentName componentName2) {
+        this.mAttributionSource = attributionSource;
         this.mAllowedUsers = arraySet;
-        this.mAllowedCrossTaskNavigations = new ArraySet(set);
-        this.mBlockedCrossTaskNavigations = new ArraySet(set2);
-        this.mAllowedActivities = new ArraySet(set3);
-        this.mBlockedActivities = new ArraySet(set4);
-        this.mDefaultActivityPolicy = i3;
-        this.mActivityBlockedCallback = activityBlockedCallback;
-        setInterestedWindowFlags(i, i2);
-        this.mActivityListener = activityListener;
-        this.mPipBlockedCallback = pipBlockedCallback;
-        this.mSecureWindowCallback = secureWindowCallback;
-        this.mIntentListenerCallback = intentListenerCallback;
-        this.mDisplayCategories = set5;
-        this.mShowTasksInHostDeviceRecents = z;
+        this.mActivityLaunchAllowedByDefault = z;
+        this.mActivityPolicyExemptions = set;
+        this.mCrossTaskNavigationAllowedByDefault = z2;
+        this.mCrossTaskNavigationExemptions = new ArraySet(set2);
+        this.mPermissionDialogComponent = componentName;
+        this.mActivityBlockedCallback = virtualDeviceImpl$$ExternalSyntheticLambda22;
+        setInterestedWindowFlags(8192, 524288);
+        this.mActivityListener = anonymousClass1;
+        this.mPipBlockedCallback = virtualDeviceImpl$$ExternalSyntheticLambda2;
+        this.mSecureWindowCallback = virtualDeviceImpl$$ExternalSyntheticLambda23;
+        this.mIntentListenerCallback = virtualDeviceImpl$$ExternalSyntheticLambda24;
+        this.mDisplayCategories = set3;
+        this.mShowTasksInHostDeviceRecents = z3;
+        this.mCustomHomeComponent = componentName2;
     }
 
-    public void setDisplayId(int i) {
-        this.mDisplayId = i;
-    }
-
-    public void registerRunningAppsChangedListener(RunningAppsChangedListener runningAppsChangedListener) {
-        synchronized (this.mGenericWindowPolicyControllerLock) {
-            this.mRunningAppsChangedListeners.add(runningAppsChangedListener);
-        }
-    }
-
-    public void unregisterRunningAppsChangedListener(RunningAppsChangedListener runningAppsChangedListener) {
-        synchronized (this.mGenericWindowPolicyControllerLock) {
-            this.mRunningAppsChangedListeners.remove(runningAppsChangedListener);
-        }
-    }
-
-    public boolean canContainActivities(List list, int i) {
-        if (!isWindowingModeSupported(i)) {
-            return false;
-        }
-        int size = list.size();
-        for (int i2 = 0; i2 < size; i2++) {
-            ActivityInfo activityInfo = (ActivityInfo) list.get(i2);
-            if (!canContainActivity(activityInfo, 0, 0)) {
-                this.mActivityBlockedCallback.onActivityBlocked(this.mDisplayId, activityInfo);
+    public final boolean canActivityBeLaunched(ActivityInfo activityInfo, Intent intent, int i, int i2, boolean z) {
+        if (android.companion.virtual.flags.Flags.interceptIntentsBeforeApplyingPolicy()) {
+            VirtualDeviceImpl$$ExternalSyntheticLambda2 virtualDeviceImpl$$ExternalSyntheticLambda2 = this.mIntentListenerCallback;
+            if (virtualDeviceImpl$$ExternalSyntheticLambda2 != null && intent != null && virtualDeviceImpl$$ExternalSyntheticLambda2.shouldInterceptIntent(intent)) {
+                logActivityLaunchBlocked("Virtual device intercepting intent");
                 return false;
             }
+            if (canContainActivity(activityInfo, i, i2, z)) {
+                return true;
+            }
+            notifyActivityBlocked(activityInfo);
+            return false;
         }
-        return true;
+        if (!canContainActivity(activityInfo, i, i2, z)) {
+            notifyActivityBlocked(activityInfo);
+            return false;
+        }
+        VirtualDeviceImpl$$ExternalSyntheticLambda2 virtualDeviceImpl$$ExternalSyntheticLambda22 = this.mIntentListenerCallback;
+        if (virtualDeviceImpl$$ExternalSyntheticLambda22 == null || intent == null || !virtualDeviceImpl$$ExternalSyntheticLambda22.shouldInterceptIntent(intent)) {
+            return true;
+        }
+        logActivityLaunchBlocked("Virtual device intercepting intent");
+        return false;
     }
 
-    public boolean canActivityBeLaunched(ActivityInfo activityInfo, Intent intent, int i, int i2, boolean z) {
+    public final boolean canContainActivity(ActivityInfo activityInfo, int i, int i2, boolean z) {
+        String str;
+        if (waitAndGetIsMirrorDisplay()) {
+            logActivityLaunchBlocked("Mirror virtual displays cannot contain activities.");
+            return false;
+        }
         if (!isWindowingModeSupported(i)) {
+            logActivityLaunchBlocked("Virtual device doesn't support windowing mode " + i);
             return false;
         }
-        ComponentName componentName = activityInfo.getComponentName();
-        if (BLOCKED_APP_STREAMING_COMPONENT.equals(componentName)) {
-            return true;
-        }
-        if (!canContainActivity(activityInfo, 0, 0)) {
-            this.mActivityBlockedCallback.onActivityBlocked(this.mDisplayId, activityInfo);
-            return false;
-        }
-        if (i2 == 0) {
-            return true;
-        }
-        if (z && !this.mBlockedCrossTaskNavigations.isEmpty() && this.mBlockedCrossTaskNavigations.contains(componentName)) {
-            Slog.d("GenericWindowPolicyController", "Virtual device blocking cross task navigation of " + componentName);
-            this.mActivityBlockedCallback.onActivityBlocked(this.mDisplayId, activityInfo);
-            return false;
-        }
-        if (z && !this.mAllowedCrossTaskNavigations.isEmpty() && !this.mAllowedCrossTaskNavigations.contains(componentName)) {
-            Slog.d("GenericWindowPolicyController", "Virtual device not allowing cross task navigation of " + componentName);
-            this.mActivityBlockedCallback.onActivityBlocked(this.mDisplayId, activityInfo);
-            return false;
-        }
-        IntentListenerCallback intentListenerCallback = this.mIntentListenerCallback;
-        if (intentListenerCallback == null || intent == null || !intentListenerCallback.shouldInterceptIntent(intent)) {
-            return true;
-        }
-        Slog.d("GenericWindowPolicyController", "Virtual device has intercepted intent");
-        return false;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$keepActivityOnWindowFlagsChanged$0(ActivityInfo activityInfo) {
-        this.mSecureWindowCallback.onSecureWindowShown(this.mDisplayId, activityInfo.applicationInfo.uid);
-    }
-
-    public boolean keepActivityOnWindowFlagsChanged(final ActivityInfo activityInfo, int i, int i2) {
-        if ((i & IInstalld.FLAG_FORCE) != 0) {
-            this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda3
-                @Override // java.lang.Runnable
-                public final void run() {
-                    GenericWindowPolicyController.this.lambda$keepActivityOnWindowFlagsChanged$0(activityInfo);
-                }
-            });
-        }
-        if (canContainActivity(activityInfo, i, i2)) {
-            return true;
-        }
-        this.mActivityBlockedCallback.onActivityBlocked(this.mDisplayId, activityInfo);
-        return false;
-    }
-
-    public void onTopActivityChanged(final ComponentName componentName, int i, final int i2) {
-        if (this.mActivityListener == null || componentName == null) {
-            return;
-        }
-        this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda4
-            @Override // java.lang.Runnable
-            public final void run() {
-                GenericWindowPolicyController.this.lambda$onTopActivityChanged$1(componentName, i2);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onTopActivityChanged$1(ComponentName componentName, int i) {
-        this.mActivityListener.onTopActivityChanged(this.mDisplayId, componentName, i);
-    }
-
-    public void onRunningAppsChanged(final ArraySet arraySet) {
-        synchronized (this.mGenericWindowPolicyControllerLock) {
-            this.mRunningUids.clear();
-            this.mRunningUids.addAll(arraySet);
-            if (this.mActivityListener != null && this.mRunningUids.isEmpty()) {
-                this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda1
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        GenericWindowPolicyController.this.lambda$onRunningAppsChanged$2();
-                    }
-                });
-            }
-            if (!this.mRunningAppsChangedListeners.isEmpty()) {
-                final ArraySet arraySet2 = new ArraySet(this.mRunningAppsChangedListeners);
-                this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda2
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        GenericWindowPolicyController.lambda$onRunningAppsChanged$3(arraySet2, arraySet);
-                    }
-                });
-            }
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onRunningAppsChanged$2() {
-        this.mActivityListener.onDisplayEmpty(this.mDisplayId);
-    }
-
-    public static /* synthetic */ void lambda$onRunningAppsChanged$3(ArraySet arraySet, ArraySet arraySet2) {
-        Iterator it = arraySet.iterator();
-        while (it.hasNext()) {
-            ((RunningAppsChangedListener) it.next()).onRunningAppsChanged(arraySet2);
-        }
-    }
-
-    public boolean canShowTasksInHostDeviceRecents() {
-        return this.mShowTasksInHostDeviceRecents;
-    }
-
-    public boolean isEnteringPipAllowed(final int i) {
-        if (super.isEnteringPipAllowed(i)) {
-            return true;
-        }
-        this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                GenericWindowPolicyController.this.lambda$isEnteringPipAllowed$4(i);
-            }
-        });
-        return false;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$isEnteringPipAllowed$4(int i) {
-        this.mPipBlockedCallback.onEnteringPipBlocked(i);
-    }
-
-    public boolean containsUid(int i) {
-        boolean contains;
-        synchronized (this.mGenericWindowPolicyControllerLock) {
-            contains = this.mRunningUids.contains(Integer.valueOf(i));
-        }
-        return contains;
-    }
-
-    public final boolean activityMatchesDisplayCategory(ActivityInfo activityInfo) {
-        if (this.mDisplayCategories.isEmpty()) {
-            return activityInfo.requiredDisplayCategory == null;
-        }
-        String str = activityInfo.requiredDisplayCategory;
-        return str != null && this.mDisplayCategories.contains(str);
-    }
-
-    public final boolean canContainActivity(ActivityInfo activityInfo, int i, int i2) {
-        if ((activityInfo.flags & 65536) == 0) {
-            return false;
-        }
-        ComponentName componentName = activityInfo.getComponentName();
-        if (BLOCKED_APP_STREAMING_COMPONENT.equals(componentName)) {
-            return true;
-        }
-        if (!activityMatchesDisplayCategory(activityInfo)) {
-            Slog.d("GenericWindowPolicyController", String.format("The activity's required display category: %s is not found on virtual display with the following categories: %s", activityInfo.requiredDisplayCategory, this.mDisplayCategories.toString()));
+        if ((activityInfo.flags & EndpointMonitorConst.FLAG_TRACING_NETWORK_EVENT_ABNORMAL_PKT) == 0) {
+            logActivityLaunchBlocked("Activity requires android:canDisplayOnRemoteDevices=true");
             return false;
         }
         UserHandle userHandleForUid = UserHandle.getUserHandleForUid(activityInfo.applicationInfo.uid);
-        if (!this.mAllowedUsers.contains(userHandleForUid)) {
-            Slog.d("GenericWindowPolicyController", "Virtual device activity not allowed from user " + userHandleForUid);
+        ComponentName componentName = activityInfo.getComponentName();
+        if (BLOCKED_APP_STREAMING_COMPONENT.equals(componentName) && userHandleForUid.isSystem()) {
+            return true;
+        }
+        if (!userHandleForUid.isSystem() && !this.mAllowedUsers.contains(userHandleForUid)) {
+            logActivityLaunchBlocked("Activity launch disallowed from user " + userHandleForUid);
             return false;
         }
-        if (this.mDefaultActivityPolicy == 0 && this.mBlockedActivities.contains(componentName)) {
-            Slog.d("GenericWindowPolicyController", "Virtual device blocking launch of " + componentName);
+        if (!this.mDisplayCategories.isEmpty() ? !((str = activityInfo.requiredDisplayCategory) == null || !this.mDisplayCategories.contains(str)) : activityInfo.requiredDisplayCategory == null) {
+            logActivityLaunchBlocked("The activity's required display category '" + activityInfo.requiredDisplayCategory + "' not found on virtual display with the following categories: " + this.mDisplayCategories);
             return false;
         }
-        if (this.mDefaultActivityPolicy != 1 || this.mAllowedActivities.contains(componentName)) {
-            return CompatChanges.isChangeEnabled(201712607L, activityInfo.packageName, userHandleForUid) || ((i & IInstalld.FLAG_FORCE) == 0 && (524288 & i2) == 0);
+        synchronized (this.mGenericWindowPolicyControllerLock) {
+            if (this.mActivityLaunchAllowedByDefault == this.mActivityPolicyExemptions.contains(componentName)) {
+                logActivityLaunchBlocked("Activity launch disallowed by policy: " + componentName);
+                return false;
+            }
+            if (z && i2 != 0 && this.mCrossTaskNavigationAllowedByDefault == this.mCrossTaskNavigationExemptions.contains(componentName)) {
+                logActivityLaunchBlocked("Cross task navigation disallowed by policy: " + componentName);
+                return false;
+            }
+            ComponentName componentName2 = this.mPermissionDialogComponent;
+            if (componentName2 == null || !componentName2.equals(componentName)) {
+                return true;
+            }
+            logActivityLaunchBlocked("Permission dialog not allowed on virtual device");
+            return false;
         }
-        Slog.d("GenericWindowPolicyController", componentName + " is not in the allowed list.");
-        return false;
+    }
+
+    public final boolean canShowTasksInHostDeviceRecents() {
+        boolean z;
+        synchronized (this.mGenericWindowPolicyControllerLock) {
+            z = this.mShowTasksInHostDeviceRecents;
+        }
+        return z;
+    }
+
+    public final ComponentName getCustomHomeComponent() {
+        return this.mCustomHomeComponent;
     }
 
     public int getRunningAppsChangedListenersSizeForTesting() {
@@ -291,5 +163,163 @@ public class GenericWindowPolicyController extends DisplayWindowPolicyController
             size = this.mRunningAppsChangedListeners.size();
         }
         return size;
+    }
+
+    public final boolean isEnteringPipAllowed(final int i) {
+        if (super.isEnteringPipAllowed(i)) {
+            return true;
+        }
+        if (this.mPipBlockedCallback == null) {
+            return false;
+        }
+        this.mHandler.post(new Runnable(i) { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda2
+            @Override // java.lang.Runnable
+            public final void run() {
+                GenericWindowPolicyController.this.mPipBlockedCallback.f$0.getClass();
+            }
+        });
+        return false;
+    }
+
+    public final boolean keepActivityOnWindowFlagsChanged(final ActivityInfo activityInfo, int i, int i2) {
+        final int waitAndGetDisplayId = waitAndGetDisplayId();
+        int i3 = i & 8192;
+        if (i3 != 0 && this.mSecureWindowCallback != null && waitAndGetDisplayId != -1) {
+            this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda1
+                @Override // java.lang.Runnable
+                public final void run() {
+                    GenericWindowPolicyController genericWindowPolicyController = GenericWindowPolicyController.this;
+                    int i4 = waitAndGetDisplayId;
+                    ActivityInfo activityInfo2 = activityInfo;
+                    VirtualDeviceImpl$$ExternalSyntheticLambda2 virtualDeviceImpl$$ExternalSyntheticLambda2 = genericWindowPolicyController.mSecureWindowCallback;
+                    int i5 = activityInfo2.applicationInfo.uid;
+                    VirtualDeviceImpl virtualDeviceImpl = virtualDeviceImpl$$ExternalSyntheticLambda2.f$0;
+                    synchronized (virtualDeviceImpl.mVirtualDeviceLock) {
+                        try {
+                            if (virtualDeviceImpl.mVirtualDisplays.contains(i4)) {
+                                if ((((DisplayManager) virtualDeviceImpl.mContext.getSystemService(DisplayManager.class)).getDisplay(i4).getFlags() & 2) == 0) {
+                                    virtualDeviceImpl.showToastWhereUidIsRunning(i5, virtualDeviceImpl.mContext.getString(17043439), virtualDeviceImpl.mContext.getMainLooper());
+                                    if (android.companion.virtualdevice.flags.Flags.metricsCollection()) {
+                                        Counter.logIncrementWithUid("virtual_devices.value_secure_window_blocked_count", virtualDeviceImpl.mAttributionSource.getUid());
+                                    }
+                                }
+                            }
+                        } finally {
+                        }
+                    }
+                }
+            });
+        }
+        if (CompatChanges.isChangeEnabled(201712607L, activityInfo.packageName, UserHandle.getUserHandleForUid(activityInfo.applicationInfo.uid))) {
+            return true;
+        }
+        if (i3 == 0 && (524288 & i2) == 0) {
+            return true;
+        }
+        notifyActivityBlocked(activityInfo);
+        return false;
+    }
+
+    public final void logActivityLaunchBlocked(String str) {
+        Slog.d("GenericWindowPolicyController", "Virtual device activity launch disallowed on display " + waitAndGetDisplayId() + ", reason: " + str);
+    }
+
+    public final void notifyActivityBlocked(ActivityInfo activityInfo) {
+        VirtualDeviceImpl$$ExternalSyntheticLambda2 virtualDeviceImpl$$ExternalSyntheticLambda2;
+        int waitAndGetDisplayId = waitAndGetDisplayId();
+        if (!waitAndGetIsMirrorDisplay() && (virtualDeviceImpl$$ExternalSyntheticLambda2 = this.mActivityBlockedCallback) != null && waitAndGetDisplayId != -1) {
+            VirtualDeviceImpl virtualDeviceImpl = virtualDeviceImpl$$ExternalSyntheticLambda2.f$0;
+            virtualDeviceImpl.mContext.startActivityAsUser(BlockedAppStreamingActivity.createIntent(activityInfo, virtualDeviceImpl.mAssociationInfo.getDisplayName()).addFlags(268468224), ActivityOptions.makeBasic().setLaunchDisplayId(waitAndGetDisplayId).toBundle(), UserHandle.SYSTEM);
+        }
+        if (android.companion.virtualdevice.flags.Flags.metricsCollection()) {
+            Counter.logIncrementWithUid("virtual_devices.value_activity_blocked_count", this.mAttributionSource.getUid());
+        }
+    }
+
+    public final void onRunningAppsChanged(final ArraySet arraySet) {
+        synchronized (this.mGenericWindowPolicyControllerLock) {
+            try {
+                this.mRunningUids.clear();
+                this.mRunningUids.addAll(arraySet);
+                final int waitAndGetDisplayId = waitAndGetDisplayId();
+                if (this.mActivityListener != null && this.mRunningUids.isEmpty() && waitAndGetDisplayId != -1) {
+                    this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda3
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            GenericWindowPolicyController genericWindowPolicyController = GenericWindowPolicyController.this;
+                            genericWindowPolicyController.mActivityListener.onDisplayEmpty(waitAndGetDisplayId);
+                        }
+                    });
+                }
+                if (!this.mRunningAppsChangedListeners.isEmpty()) {
+                    final ArraySet arraySet2 = new ArraySet(this.mRunningAppsChangedListeners);
+                    this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda4
+                        @Override // java.lang.Runnable
+                        public final void run() {
+                            ArraySet arraySet3 = arraySet2;
+                            ArraySet arraySet4 = arraySet;
+                            Iterator it = arraySet3.iterator();
+                            while (it.hasNext()) {
+                                ((GenericWindowPolicyController.RunningAppsChangedListener) it.next()).onRunningAppsChanged(arraySet4);
+                            }
+                        }
+                    });
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void onTopActivityChanged(final ComponentName componentName, int i, final int i2) {
+        final int waitAndGetDisplayId = waitAndGetDisplayId();
+        if (this.mActivityListener == null || componentName == null || waitAndGetDisplayId == -1) {
+            return;
+        }
+        this.mHandler.post(new Runnable() { // from class: com.android.server.companion.virtual.GenericWindowPolicyController$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                GenericWindowPolicyController genericWindowPolicyController = GenericWindowPolicyController.this;
+                genericWindowPolicyController.mActivityListener.onTopActivityChanged(waitAndGetDisplayId, componentName, i2);
+            }
+        });
+    }
+
+    public final void setShowInHostDeviceRecents(boolean z) {
+        synchronized (this.mGenericWindowPolicyControllerLock) {
+            this.mShowTasksInHostDeviceRecents = z;
+        }
+    }
+
+    public final void unregisterRunningAppsChangedListener(RunningAppsChangedListener runningAppsChangedListener) {
+        synchronized (this.mGenericWindowPolicyControllerLock) {
+            this.mRunningAppsChangedListeners.remove(runningAppsChangedListener);
+        }
+    }
+
+    public final int waitAndGetDisplayId() {
+        try {
+            if (this.mDisplayIdSetLatch.await(10L, TimeUnit.SECONDS)) {
+                return this.mDisplayId;
+            }
+            Slog.e("GenericWindowPolicyController", "Timed out while waiting for GWPC displayId to be set.");
+            return -1;
+        } catch (InterruptedException unused) {
+            Slog.e("GenericWindowPolicyController", "Interrupted while waiting for GWPC displayId to be set.");
+            return -1;
+        }
+    }
+
+    public final boolean waitAndGetIsMirrorDisplay() {
+        try {
+            if (this.mDisplayIdSetLatch.await(10L, TimeUnit.SECONDS)) {
+                return this.mIsMirrorDisplay;
+            }
+            Slog.e("GenericWindowPolicyController", "Timed out while waiting for GWPC isMirrorDisplay to be set.");
+            return false;
+        } catch (InterruptedException unused) {
+            Slog.e("GenericWindowPolicyController", "Interrupted while waiting for GWPC isMirrorDisplay to be set.");
+            return false;
+        }
     }
 }

@@ -9,6 +9,7 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface INetd extends IInterface {
     public static final int CLAT_MARK = -559038041;
@@ -29,7 +30,7 @@ public interface INetd extends IInterface {
 
     @Deprecated
     public static final int FIREWALL_WHITELIST = 0;
-    public static final String HASH = "38614f80a23b92603d4851177e57c460aec1b606";
+    public static final String HASH = "2be6ff6fb01645cdddb3bb60f6de5727e5733267";
     public static final String IF_FLAG_BROADCAST = "broadcast";
     public static final String IF_FLAG_LOOPBACK = "loopback";
     public static final String IF_FLAG_MULTICAST = "multicast";
@@ -63,9 +64,9 @@ public interface INetd extends IInterface {
     public static final int PERMISSION_UNINSTALLED = -1;
     public static final int PERMISSION_UPDATE_DEVICE_STATS = 8;
     public static final int UNREACHABLE_NET_ID = 52;
-    public static final int VERSION = 13;
+    public static final int VERSION = 15;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class Default implements INetd {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -73,86 +74,86 @@ public interface INetd extends IInterface {
         }
 
         @Override // android.net.INetd
-        public void bandwidthAddNaughtyApp(int i) {
+        public void bandwidthAddNaughtyApp(int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void bandwidthAddNiceApp(int i) {
+        public void bandwidthAddNiceApp(int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public boolean bandwidthEnableDataSaver(boolean z) {
+        public boolean bandwidthEnableDataSaver(boolean z) throws RemoteException {
             return false;
         }
 
         @Override // android.net.INetd
-        public void bandwidthRemoveInterfaceAlert(String str) {
+        public void bandwidthRemoveInterfaceAlert(String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void bandwidthRemoveInterfaceQuota(String str) {
+        public void bandwidthRemoveInterfaceQuota(String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void bandwidthRemoveNaughtyApp(int i) {
+        public void bandwidthRemoveNaughtyApp(int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void bandwidthRemoveNiceApp(int i) {
+        public void bandwidthRemoveNiceApp(int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void bandwidthSetGlobalAlert(long j) {
+        public void bandwidthSetGlobalAlert(long j) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void bandwidthSetInterfaceAlert(String str, long j) {
+        public void bandwidthSetInterfaceAlert(String str, long j) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void bandwidthSetInterfaceQuota(String str, long j) {
+        public void bandwidthSetInterfaceQuota(String str, long j) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public String clatdStart(String str, String str2) {
+        public String clatdStart(String str, String str2) throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public void clatdStop(String str) {
+        public void clatdStop(String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void firewallAddUidInterfaceRules(String str, int[] iArr) {
+        public void firewallAddUidInterfaceRules(String str, int[] iArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void firewallEnableChildChain(int i, boolean z) {
+        public void firewallEnableChildChain(int i, boolean z) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void firewallRemoveUidInterfaceRules(int[] iArr) {
+        public void firewallRemoveUidInterfaceRules(int[] iArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public boolean firewallReplaceUidChain(String str, boolean z, int[] iArr) {
+        public boolean firewallReplaceUidChain(String str, boolean z, int[] iArr) throws RemoteException {
             return false;
         }
 
         @Override // android.net.INetd
-        public void firewallSetFirewallType(int i) {
+        public void firewallSetFirewallType(int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void firewallSetInterfaceRule(String str, int i) {
+        public void firewallSetInterfaceRule(String str, int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void firewallSetUidRule(int i, int i2, int i3) {
+        public void firewallSetUidRule(int i, int i2, int i3) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public MarkMaskParcel getFwmarkForNetwork(int i) {
+        public MarkMaskParcel getFwmarkForNetwork(int i) throws RemoteException {
             return null;
         }
 
@@ -167,611 +168,384 @@ public interface INetd extends IInterface {
         }
 
         @Override // android.net.INetd
-        public IBinder getOemNetd() {
+        public IBinder getOemNetd() throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public String getProcSysNet(int i, int i2, String str, String str2) {
+        public String getProcSysNet(int i, int i2, String str, String str2) throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public void idletimerAddInterface(String str, int i, String str2) {
+        public void idletimerAddInterface(String str, int i, String str2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void idletimerRemoveInterface(String str, int i, String str2) {
+        public void idletimerRemoveInterface(String str, int i, String str2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void interfaceAddAddress(String str, String str2, int i) {
+        public void interfaceAddAddress(String str, String str2, int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void interfaceClearAddrs(String str) {
+        public void interfaceClearAddrs(String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void interfaceDelAddress(String str, String str2, int i) {
+        public void interfaceDelAddress(String str, String str2, int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public InterfaceConfigurationParcel interfaceGetCfg(String str) {
+        public InterfaceConfigurationParcel interfaceGetCfg(String str) throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public String[] interfaceGetList() {
+        public String[] interfaceGetList() throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public void interfaceSetCfg(InterfaceConfigurationParcel interfaceConfigurationParcel) {
+        public void interfaceSetCfg(InterfaceConfigurationParcel interfaceConfigurationParcel) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void interfaceSetEnableIPv6(String str, boolean z) {
+        public void interfaceSetEnableIPv6(String str, boolean z) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void interfaceSetIPv6PrivacyExtensions(String str, boolean z) {
+        public void interfaceSetIPv6PrivacyExtensions(String str, boolean z) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void interfaceSetMtu(String str, int i) {
+        public void interfaceSetMtu(String str, int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecAddSecurityAssociation(int i, int i2, String str, String str2, int i3, int i4, int i5, int i6, String str3, byte[] bArr, int i7, String str4, byte[] bArr2, int i8, String str5, byte[] bArr3, int i9, int i10, int i11, int i12, int i13) {
+        public void ipSecAddSecurityAssociation(int i, int i2, String str, String str2, int i3, int i4, int i5, int i6, String str3, byte[] bArr, int i7, String str4, byte[] bArr2, int i8, String str5, byte[] bArr3, int i9, int i10, int i11, int i12, int i13) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecAddSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) {
+        public void ipSecAddSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecAddTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) {
+        public void ipSecAddTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public int ipSecAllocateSpi(int i, String str, String str2, int i2) {
+        public int ipSecAllocateSpi(int i, String str, String str2, int i2) throws RemoteException {
             return 0;
         }
 
         @Override // android.net.INetd
-        public void ipSecApplyTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor, int i, int i2, String str, String str2, int i3) {
+        public void ipSecApplyTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor, int i, int i2, String str, String str2, int i3) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecDeleteSecurityAssociation(int i, String str, String str2, int i2, int i3, int i4, int i5) {
+        public void ipSecDeleteSecurityAssociation(int i, String str, String str2, int i2, int i3, int i4, int i5) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecDeleteSecurityPolicy(int i, int i2, int i3, int i4, int i5, int i6) {
+        public void ipSecDeleteSecurityPolicy(int i, int i2, int i3, int i4, int i5, int i6) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecMigrate(IpSecMigrateInfoParcel ipSecMigrateInfoParcel) {
+        public void ipSecMigrate(IpSecMigrateInfoParcel ipSecMigrateInfoParcel) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecRemoveTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor) {
+        public void ipSecRemoveTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecRemoveTunnelInterface(String str) {
+        public void ipSecRemoveTunnelInterface(String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecSetEncapSocketOwner(ParcelFileDescriptor parcelFileDescriptor, int i) {
+        public void ipSecSetEncapSocketOwner(ParcelFileDescriptor parcelFileDescriptor, int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecUpdateSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) {
+        public void ipSecUpdateSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipSecUpdateTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) {
+        public void ipSecUpdateTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipfwdAddInterfaceForward(String str, String str2) {
+        public void ipfwdAddInterfaceForward(String str, String str2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipfwdDisableForwarding(String str) {
+        public void ipfwdDisableForwarding(String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void ipfwdEnableForwarding(String str) {
+        public void ipfwdEnableForwarding(String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public boolean ipfwdEnabled() {
+        public boolean ipfwdEnabled() throws RemoteException {
             return false;
         }
 
         @Override // android.net.INetd
-        public String[] ipfwdGetRequesterList() {
+        public String[] ipfwdGetRequesterList() throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public void ipfwdRemoveInterfaceForward(String str, String str2) {
+        public void ipfwdRemoveInterfaceForward(String str, String str2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public boolean isAlive() {
+        public boolean isAlive() throws RemoteException {
             return false;
         }
 
         @Override // android.net.INetd
-        public void networkAddInterface(int i, String str) {
+        public void networkAddInterface(int i, String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkAddLegacyRoute(int i, String str, String str2, String str3, int i2) {
+        public void networkAddLegacyRoute(int i, String str, String str2, String str3, int i2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkAddRoute(int i, String str, String str2, String str3) {
+        public void networkAddRoute(int i, String str, String str2, String str3) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkAddRouteParcel(int i, RouteInfoParcel routeInfoParcel) {
+        public void networkAddRouteParcel(int i, RouteInfoParcel routeInfoParcel) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkAddUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) {
+        public void networkAddUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkAddUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) {
+        public void networkAddUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public boolean networkCanProtect(int i) {
+        public void networkAllowBypassVpnOnNetwork(boolean z, int i, int i2) throws RemoteException {
+        }
+
+        @Override // android.net.INetd
+        public boolean networkCanProtect(int i) throws RemoteException {
             return false;
         }
 
         @Override // android.net.INetd
-        public void networkClearDefault() {
+        public void networkClearDefault() throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkClearPermissionForUser(int[] iArr) {
+        public void networkClearPermissionForUser(int[] iArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkCreate(NativeNetworkConfig nativeNetworkConfig) {
+        public void networkCreate(NativeNetworkConfig nativeNetworkConfig) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkCreatePhysical(int i, int i2) {
+        public void networkCreatePhysical(int i, int i2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkCreateVpn(int i, boolean z) {
+        public void networkCreateVpn(int i, boolean z) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkDestroy(int i) {
+        public void networkDestroy(int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public int networkGetDefault() {
+        public int networkGetDefault() throws RemoteException {
             return 0;
         }
 
         @Override // android.net.INetd
-        public void networkRejectNonSecureVpn(boolean z, UidRangeParcel[] uidRangeParcelArr) {
+        public void networkRejectNonSecureVpn(boolean z, UidRangeParcel[] uidRangeParcelArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkRemoveInterface(int i, String str) {
+        public void networkRemoveInterface(int i, String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkRemoveLegacyRoute(int i, String str, String str2, String str3, int i2) {
+        public void networkRemoveLegacyRoute(int i, String str, String str2, String str3, int i2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkRemoveRoute(int i, String str, String str2, String str3) {
+        public void networkRemoveRoute(int i, String str, String str2, String str3) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkRemoveRouteParcel(int i, RouteInfoParcel routeInfoParcel) {
+        public void networkRemoveRouteParcel(int i, RouteInfoParcel routeInfoParcel) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkRemoveUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) {
+        public void networkRemoveUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkRemoveUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) {
+        public void networkRemoveUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkSetDefault(int i) {
+        public void networkSetDefault(int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkSetPermissionForNetwork(int i, int i2) {
+        public void networkSetPermissionForNetwork(int i, int i2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkSetPermissionForUser(int i, int[] iArr) {
+        public void networkSetPermissionForUser(int i, int[] iArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkSetProtectAllow(int i) {
+        public void networkSetProtectAllow(int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkSetProtectDeny(int i) {
+        public void networkSetProtectDeny(int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void networkUpdateRouteParcel(int i, RouteInfoParcel routeInfoParcel) {
+        public void networkUpdateRouteParcel(int i, RouteInfoParcel routeInfoParcel) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void registerUnsolicitedEventListener(INetdUnsolicitedEventListener iNetdUnsolicitedEventListener) {
+        public void registerUnsolicitedEventListener(INetdUnsolicitedEventListener iNetdUnsolicitedEventListener) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void setIPv6AddrGenMode(String str, int i) {
+        public void setIPv6AddrGenMode(String str, int i) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void setNetworkAllowlist(NativeUidRangeConfig[] nativeUidRangeConfigArr) {
+        public void setNetworkAllowlist(NativeUidRangeConfig[] nativeUidRangeConfigArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void setProcSysNet(int i, int i2, String str, String str2, String str3) {
+        public void setProcSysNet(int i, int i2, String str, String str2, String str3) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void setTcpRWmemorySize(String str, String str2) {
+        public void setTcpRWmemorySize(String str, String str2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void socketDestroy(UidRangeParcel[] uidRangeParcelArr, int[] iArr) {
+        public void socketDestroy(UidRangeParcel[] uidRangeParcelArr, int[] iArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void strictUidCleartextPenalty(int i, int i2) {
+        public void strictUidCleartextPenalty(int i, int i2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void tetherAddForward(String str, String str2) {
+        public void tetherAddForward(String str, String str2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public boolean tetherApplyDnsInterfaces() {
+        public boolean tetherApplyDnsInterfaces() throws RemoteException {
             return false;
         }
 
         @Override // android.net.INetd
-        public String[] tetherDnsList() {
+        public String[] tetherDnsList() throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public void tetherDnsSet(int i, String[] strArr) {
+        public void tetherDnsSet(int i, String[] strArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public TetherStatsParcel[] tetherGetStats() {
+        public TetherStatsParcel[] tetherGetStats() throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public void tetherInterfaceAdd(String str) {
+        public void tetherInterfaceAdd(String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public String[] tetherInterfaceList() {
+        public String[] tetherInterfaceList() throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public void tetherInterfaceRemove(String str) {
+        public void tetherInterfaceRemove(String str) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public boolean tetherIsEnabled() {
+        public boolean tetherIsEnabled() throws RemoteException {
             return false;
         }
 
         @Override // android.net.INetd
-        public TetherStatsParcel tetherOffloadGetAndClearStats(int i) {
+        public TetherStatsParcel tetherOffloadGetAndClearStats(int i) throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public TetherStatsParcel[] tetherOffloadGetStats() {
+        public TetherStatsParcel[] tetherOffloadGetStats() throws RemoteException {
             return null;
         }
 
         @Override // android.net.INetd
-        public void tetherOffloadRuleAdd(TetherOffloadRuleParcel tetherOffloadRuleParcel) {
+        public void tetherOffloadRuleAdd(TetherOffloadRuleParcel tetherOffloadRuleParcel) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void tetherOffloadRuleRemove(TetherOffloadRuleParcel tetherOffloadRuleParcel) {
+        public void tetherOffloadRuleRemove(TetherOffloadRuleParcel tetherOffloadRuleParcel) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void tetherOffloadSetInterfaceQuota(int i, long j) {
+        public void tetherOffloadSetInterfaceQuota(int i, long j) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void tetherRemoveForward(String str, String str2) {
+        public void tetherRemoveForward(String str, String str2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void tetherStart(String[] strArr) {
+        public void tetherStart(String[] strArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void tetherStartWithConfiguration(TetherConfigParcel tetherConfigParcel) {
+        public void tetherStartWithConfiguration(TetherConfigParcel tetherConfigParcel) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void tetherStop() {
+        public void tetherStop() throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void trafficSetNetPermForUids(int i, int[] iArr) {
+        public void trafficSetNetPermForUids(int i, int[] iArr) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void trafficSwapActiveStatsMap() {
+        public void trafficSwapActiveStatsMap() throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void wakeupAddInterface(String str, String str2, int i, int i2) {
+        public void wakeupAddInterface(String str, String str2, int i, int i2) throws RemoteException {
         }
 
         @Override // android.net.INetd
-        public void wakeupDelInterface(String str, String str2, int i, int i2) {
+        public void wakeupDelInterface(String str, String str2, int i, int i2) throws RemoteException {
         }
     }
 
-    void bandwidthAddNaughtyApp(int i);
-
-    void bandwidthAddNiceApp(int i);
-
-    boolean bandwidthEnableDataSaver(boolean z);
-
-    void bandwidthRemoveInterfaceAlert(String str);
-
-    void bandwidthRemoveInterfaceQuota(String str);
-
-    void bandwidthRemoveNaughtyApp(int i);
-
-    void bandwidthRemoveNiceApp(int i);
-
-    void bandwidthSetGlobalAlert(long j);
-
-    void bandwidthSetInterfaceAlert(String str, long j);
-
-    void bandwidthSetInterfaceQuota(String str, long j);
-
-    @Deprecated
-    String clatdStart(String str, String str2);
-
-    @Deprecated
-    void clatdStop(String str);
-
-    void firewallAddUidInterfaceRules(String str, int[] iArr);
-
-    void firewallEnableChildChain(int i, boolean z);
-
-    void firewallRemoveUidInterfaceRules(int[] iArr);
-
-    boolean firewallReplaceUidChain(String str, boolean z, int[] iArr);
-
-    void firewallSetFirewallType(int i);
-
-    void firewallSetInterfaceRule(String str, int i);
-
-    void firewallSetUidRule(int i, int i2, int i3);
-
-    MarkMaskParcel getFwmarkForNetwork(int i);
-
-    String getInterfaceHash();
-
-    int getInterfaceVersion();
-
-    IBinder getOemNetd();
-
-    String getProcSysNet(int i, int i2, String str, String str2);
-
-    void idletimerAddInterface(String str, int i, String str2);
-
-    void idletimerRemoveInterface(String str, int i, String str2);
-
-    void interfaceAddAddress(String str, String str2, int i);
-
-    void interfaceClearAddrs(String str);
-
-    void interfaceDelAddress(String str, String str2, int i);
-
-    InterfaceConfigurationParcel interfaceGetCfg(String str);
-
-    String[] interfaceGetList();
-
-    void interfaceSetCfg(InterfaceConfigurationParcel interfaceConfigurationParcel);
-
-    void interfaceSetEnableIPv6(String str, boolean z);
-
-    void interfaceSetIPv6PrivacyExtensions(String str, boolean z);
-
-    void interfaceSetMtu(String str, int i);
-
-    void ipSecAddSecurityAssociation(int i, int i2, String str, String str2, int i3, int i4, int i5, int i6, String str3, byte[] bArr, int i7, String str4, byte[] bArr2, int i8, String str5, byte[] bArr3, int i9, int i10, int i11, int i12, int i13);
-
-    void ipSecAddSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7);
-
-    void ipSecAddTunnelInterface(String str, String str2, String str3, int i, int i2, int i3);
-
-    int ipSecAllocateSpi(int i, String str, String str2, int i2);
-
-    void ipSecApplyTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor, int i, int i2, String str, String str2, int i3);
-
-    void ipSecDeleteSecurityAssociation(int i, String str, String str2, int i2, int i3, int i4, int i5);
-
-    void ipSecDeleteSecurityPolicy(int i, int i2, int i3, int i4, int i5, int i6);
-
-    void ipSecMigrate(IpSecMigrateInfoParcel ipSecMigrateInfoParcel);
-
-    void ipSecRemoveTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor);
-
-    void ipSecRemoveTunnelInterface(String str);
-
-    void ipSecSetEncapSocketOwner(ParcelFileDescriptor parcelFileDescriptor, int i);
-
-    void ipSecUpdateSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7);
-
-    void ipSecUpdateTunnelInterface(String str, String str2, String str3, int i, int i2, int i3);
-
-    void ipfwdAddInterfaceForward(String str, String str2);
-
-    void ipfwdDisableForwarding(String str);
-
-    void ipfwdEnableForwarding(String str);
-
-    boolean ipfwdEnabled();
-
-    String[] ipfwdGetRequesterList();
-
-    void ipfwdRemoveInterfaceForward(String str, String str2);
-
-    boolean isAlive();
-
-    void networkAddInterface(int i, String str);
-
-    void networkAddLegacyRoute(int i, String str, String str2, String str3, int i2);
-
-    void networkAddRoute(int i, String str, String str2, String str3);
-
-    void networkAddRouteParcel(int i, RouteInfoParcel routeInfoParcel);
-
-    void networkAddUidRanges(int i, UidRangeParcel[] uidRangeParcelArr);
-
-    void networkAddUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig);
-
-    boolean networkCanProtect(int i);
-
-    void networkClearDefault();
-
-    void networkClearPermissionForUser(int[] iArr);
-
-    void networkCreate(NativeNetworkConfig nativeNetworkConfig);
-
-    @Deprecated
-    void networkCreatePhysical(int i, int i2);
-
-    @Deprecated
-    void networkCreateVpn(int i, boolean z);
-
-    void networkDestroy(int i);
-
-    int networkGetDefault();
-
-    void networkRejectNonSecureVpn(boolean z, UidRangeParcel[] uidRangeParcelArr);
-
-    void networkRemoveInterface(int i, String str);
-
-    void networkRemoveLegacyRoute(int i, String str, String str2, String str3, int i2);
-
-    void networkRemoveRoute(int i, String str, String str2, String str3);
-
-    void networkRemoveRouteParcel(int i, RouteInfoParcel routeInfoParcel);
-
-    void networkRemoveUidRanges(int i, UidRangeParcel[] uidRangeParcelArr);
-
-    void networkRemoveUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig);
-
-    void networkSetDefault(int i);
-
-    void networkSetPermissionForNetwork(int i, int i2);
-
-    void networkSetPermissionForUser(int i, int[] iArr);
-
-    void networkSetProtectAllow(int i);
-
-    void networkSetProtectDeny(int i);
-
-    void networkUpdateRouteParcel(int i, RouteInfoParcel routeInfoParcel);
-
-    void registerUnsolicitedEventListener(INetdUnsolicitedEventListener iNetdUnsolicitedEventListener);
-
-    void setIPv6AddrGenMode(String str, int i);
-
-    void setNetworkAllowlist(NativeUidRangeConfig[] nativeUidRangeConfigArr);
-
-    void setProcSysNet(int i, int i2, String str, String str2, String str3);
-
-    void setTcpRWmemorySize(String str, String str2);
-
-    void socketDestroy(UidRangeParcel[] uidRangeParcelArr, int[] iArr);
-
-    void strictUidCleartextPenalty(int i, int i2);
-
-    void tetherAddForward(String str, String str2);
-
-    boolean tetherApplyDnsInterfaces();
-
-    String[] tetherDnsList();
-
-    void tetherDnsSet(int i, String[] strArr);
-
-    TetherStatsParcel[] tetherGetStats();
-
-    void tetherInterfaceAdd(String str);
-
-    String[] tetherInterfaceList();
-
-    void tetherInterfaceRemove(String str);
-
-    boolean tetherIsEnabled();
-
-    @Deprecated
-    TetherStatsParcel tetherOffloadGetAndClearStats(int i);
-
-    @Deprecated
-    TetherStatsParcel[] tetherOffloadGetStats();
-
-    @Deprecated
-    void tetherOffloadRuleAdd(TetherOffloadRuleParcel tetherOffloadRuleParcel);
-
-    @Deprecated
-    void tetherOffloadRuleRemove(TetherOffloadRuleParcel tetherOffloadRuleParcel);
-
-    @Deprecated
-    void tetherOffloadSetInterfaceQuota(int i, long j);
-
-    void tetherRemoveForward(String str, String str2);
-
-    void tetherStart(String[] strArr);
-
-    void tetherStartWithConfiguration(TetherConfigParcel tetherConfigParcel);
-
-    void tetherStop();
-
-    void trafficSetNetPermForUids(int i, int[] iArr);
-
-    void trafficSwapActiveStatsMap();
-
-    void wakeupAddInterface(String str, String str2, int i, int i2);
-
-    void wakeupDelInterface(String str, String str2, int i, int i2);
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements INetd {
         public static final String DESCRIPTOR = "android$net$INetd".replace('$', '.');
         static final int TRANSACTION_bandwidthAddNaughtyApp = 50;
@@ -835,6 +609,7 @@ public interface INetd extends IInterface {
         static final int TRANSACTION_networkAddRouteParcel = 97;
         static final int TRANSACTION_networkAddUidRanges = 9;
         static final int TRANSACTION_networkAddUidRangesParcel = 106;
+        static final int TRANSACTION_networkAllowBypassVpnOnNetwork = 110;
         static final int TRANSACTION_networkCanProtect = 75;
         static final int TRANSACTION_networkClearDefault = 68;
         static final int TRANSACTION_networkClearPermissionForUser = 71;
@@ -886,533 +661,60 @@ public interface INetd extends IInterface {
         static final int TRANSACTION_wakeupAddInterface = 31;
         static final int TRANSACTION_wakeupDelInterface = 32;
 
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
-        }
-
-        public Stub() {
-            attachInterface(this, DESCRIPTOR);
-        }
-
-        public static INetd asInterface(IBinder iBinder) {
-            if (iBinder == null) {
-                return null;
-            }
-            IInterface queryLocalInterface = iBinder.queryLocalInterface(DESCRIPTOR);
-            if (queryLocalInterface != null && (queryLocalInterface instanceof INetd)) {
-                return (INetd) queryLocalInterface;
-            }
-            return new Proxy(iBinder);
-        }
-
-        /* JADX WARN: Failed to find 'out' block for switch in B:7:0x0018. Please report as an issue. */
-        @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
-            String str = DESCRIPTOR;
-            if (i >= 1 && i <= TRANSACTION_getInterfaceVersion) {
-                parcel.enforceInterface(str);
-            }
-            switch (i) {
-                case TRANSACTION_getInterfaceHash /* 16777214 */:
-                    parcel2.writeNoException();
-                    parcel2.writeString(getInterfaceHash());
-                    return true;
-                case TRANSACTION_getInterfaceVersion /* 16777215 */:
-                    parcel2.writeNoException();
-                    parcel2.writeInt(getInterfaceVersion());
-                    return true;
-                case 1598968902:
-                    parcel2.writeString(str);
-                    return true;
-                default:
-                    switch (i) {
-                        case 1:
-                            boolean isAlive = isAlive();
-                            parcel2.writeNoException();
-                            parcel2.writeBoolean(isAlive);
-                            return true;
-                        case 2:
-                            boolean firewallReplaceUidChain = firewallReplaceUidChain(parcel.readString(), parcel.readBoolean(), parcel.createIntArray());
-                            parcel2.writeNoException();
-                            parcel2.writeBoolean(firewallReplaceUidChain);
-                            return true;
-                        case 3:
-                            boolean bandwidthEnableDataSaver = bandwidthEnableDataSaver(parcel.readBoolean());
-                            parcel2.writeNoException();
-                            parcel2.writeBoolean(bandwidthEnableDataSaver);
-                            return true;
-                        case 4:
-                            networkCreatePhysical(parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 5:
-                            networkCreateVpn(parcel.readInt(), parcel.readBoolean());
-                            parcel2.writeNoException();
-                            return true;
-                        case 6:
-                            networkDestroy(parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 7:
-                            networkAddInterface(parcel.readInt(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 8:
-                            networkRemoveInterface(parcel.readInt(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 9:
-                            networkAddUidRanges(parcel.readInt(), (UidRangeParcel[]) parcel.createTypedArray(UidRangeParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 10:
-                            networkRemoveUidRanges(parcel.readInt(), (UidRangeParcel[]) parcel.createTypedArray(UidRangeParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 11:
-                            networkRejectNonSecureVpn(parcel.readBoolean(), (UidRangeParcel[]) parcel.createTypedArray(UidRangeParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 12:
-                            socketDestroy((UidRangeParcel[]) parcel.createTypedArray(UidRangeParcel.CREATOR), parcel.createIntArray());
-                            parcel2.writeNoException();
-                            return true;
-                        case 13:
-                            boolean tetherApplyDnsInterfaces = tetherApplyDnsInterfaces();
-                            parcel2.writeNoException();
-                            parcel2.writeBoolean(tetherApplyDnsInterfaces);
-                            return true;
-                        case 14:
-                            TetherStatsParcel[] tetherGetStats = tetherGetStats();
-                            parcel2.writeNoException();
-                            parcel2.writeTypedArray(tetherGetStats, 1);
-                            return true;
-                        case 15:
-                            interfaceAddAddress(parcel.readString(), parcel.readString(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 16:
-                            interfaceDelAddress(parcel.readString(), parcel.readString(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 17:
-                            String procSysNet = getProcSysNet(parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            parcel2.writeString(procSysNet);
-                            return true;
-                        case 18:
-                            setProcSysNet(parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 19:
-                            ipSecSetEncapSocketOwner((ParcelFileDescriptor) parcel.readTypedObject(ParcelFileDescriptor.CREATOR), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 20:
-                            int ipSecAllocateSpi = ipSecAllocateSpi(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt());
-                            parcel2.writeNoException();
-                            parcel2.writeInt(ipSecAllocateSpi);
-                            return true;
-                        case 21:
-                            ipSecAddSecurityAssociation(parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.createByteArray(), parcel.readInt(), parcel.readString(), parcel.createByteArray(), parcel.readInt(), parcel.readString(), parcel.createByteArray(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 22:
-                            ipSecDeleteSecurityAssociation(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 23:
-                            ipSecApplyTransportModeTransform((ParcelFileDescriptor) parcel.readTypedObject(ParcelFileDescriptor.CREATOR), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 24:
-                            ipSecRemoveTransportModeTransform((ParcelFileDescriptor) parcel.readTypedObject(ParcelFileDescriptor.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 25:
-                            ipSecAddSecurityPolicy(parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 26:
-                            ipSecUpdateSecurityPolicy(parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 27:
-                            ipSecDeleteSecurityPolicy(parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 28:
-                            ipSecAddTunnelInterface(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 29:
-                            ipSecUpdateTunnelInterface(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 30:
-                            ipSecRemoveTunnelInterface(parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 31:
-                            wakeupAddInterface(parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 32:
-                            wakeupDelInterface(parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 33:
-                            setIPv6AddrGenMode(parcel.readString(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 34:
-                            idletimerAddInterface(parcel.readString(), parcel.readInt(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 35:
-                            idletimerRemoveInterface(parcel.readString(), parcel.readInt(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 36:
-                            strictUidCleartextPenalty(parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 37:
-                            String clatdStart = clatdStart(parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            parcel2.writeString(clatdStart);
-                            return true;
-                        case 38:
-                            clatdStop(parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 39:
-                            boolean ipfwdEnabled = ipfwdEnabled();
-                            parcel2.writeNoException();
-                            parcel2.writeBoolean(ipfwdEnabled);
-                            return true;
-                        case 40:
-                            String[] ipfwdGetRequesterList = ipfwdGetRequesterList();
-                            parcel2.writeNoException();
-                            parcel2.writeStringArray(ipfwdGetRequesterList);
-                            return true;
-                        case 41:
-                            ipfwdEnableForwarding(parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 42:
-                            ipfwdDisableForwarding(parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 43:
-                            ipfwdAddInterfaceForward(parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 44:
-                            ipfwdRemoveInterfaceForward(parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 45:
-                            bandwidthSetInterfaceQuota(parcel.readString(), parcel.readLong());
-                            parcel2.writeNoException();
-                            return true;
-                        case 46:
-                            bandwidthRemoveInterfaceQuota(parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 47:
-                            bandwidthSetInterfaceAlert(parcel.readString(), parcel.readLong());
-                            parcel2.writeNoException();
-                            return true;
-                        case 48:
-                            bandwidthRemoveInterfaceAlert(parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 49:
-                            bandwidthSetGlobalAlert(parcel.readLong());
-                            parcel2.writeNoException();
-                            return true;
-                        case 50:
-                            bandwidthAddNaughtyApp(parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 51:
-                            bandwidthRemoveNaughtyApp(parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 52:
-                            bandwidthAddNiceApp(parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 53:
-                            bandwidthRemoveNiceApp(parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 54:
-                            tetherStart(parcel.createStringArray());
-                            parcel2.writeNoException();
-                            return true;
-                        case 55:
-                            tetherStop();
-                            parcel2.writeNoException();
-                            return true;
-                        case 56:
-                            boolean tetherIsEnabled = tetherIsEnabled();
-                            parcel2.writeNoException();
-                            parcel2.writeBoolean(tetherIsEnabled);
-                            return true;
-                        case 57:
-                            tetherInterfaceAdd(parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 58:
-                            tetherInterfaceRemove(parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 59:
-                            String[] tetherInterfaceList = tetherInterfaceList();
-                            parcel2.writeNoException();
-                            parcel2.writeStringArray(tetherInterfaceList);
-                            return true;
-                        case 60:
-                            tetherDnsSet(parcel.readInt(), parcel.createStringArray());
-                            parcel2.writeNoException();
-                            return true;
-                        case 61:
-                            String[] tetherDnsList = tetherDnsList();
-                            parcel2.writeNoException();
-                            parcel2.writeStringArray(tetherDnsList);
-                            return true;
-                        case 62:
-                            networkAddRoute(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 63:
-                            networkRemoveRoute(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 64:
-                            networkAddLegacyRoute(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 65:
-                            networkRemoveLegacyRoute(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 66:
-                            int networkGetDefault = networkGetDefault();
-                            parcel2.writeNoException();
-                            parcel2.writeInt(networkGetDefault);
-                            return true;
-                        case 67:
-                            networkSetDefault(parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 68:
-                            networkClearDefault();
-                            parcel2.writeNoException();
-                            return true;
-                        case 69:
-                            networkSetPermissionForNetwork(parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 70:
-                            networkSetPermissionForUser(parcel.readInt(), parcel.createIntArray());
-                            parcel2.writeNoException();
-                            return true;
-                        case 71:
-                            networkClearPermissionForUser(parcel.createIntArray());
-                            parcel2.writeNoException();
-                            return true;
-                        case 72:
-                            trafficSetNetPermForUids(parcel.readInt(), parcel.createIntArray());
-                            parcel2.writeNoException();
-                            return true;
-                        case 73:
-                            networkSetProtectAllow(parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 74:
-                            networkSetProtectDeny(parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 75:
-                            boolean networkCanProtect = networkCanProtect(parcel.readInt());
-                            parcel2.writeNoException();
-                            parcel2.writeBoolean(networkCanProtect);
-                            return true;
-                        case 76:
-                            firewallSetFirewallType(parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 77:
-                            firewallSetInterfaceRule(parcel.readString(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 78:
-                            firewallSetUidRule(parcel.readInt(), parcel.readInt(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 79:
-                            firewallEnableChildChain(parcel.readInt(), parcel.readBoolean());
-                            parcel2.writeNoException();
-                            return true;
-                        case 80:
-                            String[] interfaceGetList = interfaceGetList();
-                            parcel2.writeNoException();
-                            parcel2.writeStringArray(interfaceGetList);
-                            return true;
-                        case 81:
-                            InterfaceConfigurationParcel interfaceGetCfg = interfaceGetCfg(parcel.readString());
-                            parcel2.writeNoException();
-                            parcel2.writeTypedObject(interfaceGetCfg, 1);
-                            return true;
-                        case 82:
-                            interfaceSetCfg((InterfaceConfigurationParcel) parcel.readTypedObject(InterfaceConfigurationParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 83:
-                            interfaceSetIPv6PrivacyExtensions(parcel.readString(), parcel.readBoolean());
-                            parcel2.writeNoException();
-                            return true;
-                        case 84:
-                            interfaceClearAddrs(parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 85:
-                            interfaceSetEnableIPv6(parcel.readString(), parcel.readBoolean());
-                            parcel2.writeNoException();
-                            return true;
-                        case 86:
-                            interfaceSetMtu(parcel.readString(), parcel.readInt());
-                            parcel2.writeNoException();
-                            return true;
-                        case 87:
-                            tetherAddForward(parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 88:
-                            tetherRemoveForward(parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 89:
-                            setTcpRWmemorySize(parcel.readString(), parcel.readString());
-                            parcel2.writeNoException();
-                            return true;
-                        case 90:
-                            registerUnsolicitedEventListener(INetdUnsolicitedEventListener.Stub.asInterface(parcel.readStrongBinder()));
-                            parcel2.writeNoException();
-                            return true;
-                        case 91:
-                            firewallAddUidInterfaceRules(parcel.readString(), parcel.createIntArray());
-                            parcel2.writeNoException();
-                            return true;
-                        case 92:
-                            firewallRemoveUidInterfaceRules(parcel.createIntArray());
-                            parcel2.writeNoException();
-                            return true;
-                        case 93:
-                            trafficSwapActiveStatsMap();
-                            parcel2.writeNoException();
-                            return true;
-                        case 94:
-                            IBinder oemNetd = getOemNetd();
-                            parcel2.writeNoException();
-                            parcel2.writeStrongBinder(oemNetd);
-                            return true;
-                        case 95:
-                            tetherStartWithConfiguration((TetherConfigParcel) parcel.readTypedObject(TetherConfigParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 96:
-                            MarkMaskParcel fwmarkForNetwork = getFwmarkForNetwork(parcel.readInt());
-                            parcel2.writeNoException();
-                            parcel2.writeTypedObject(fwmarkForNetwork, 1);
-                            return true;
-                        case 97:
-                            networkAddRouteParcel(parcel.readInt(), (RouteInfoParcel) parcel.readTypedObject(RouteInfoParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 98:
-                            networkUpdateRouteParcel(parcel.readInt(), (RouteInfoParcel) parcel.readTypedObject(RouteInfoParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 99:
-                            networkRemoveRouteParcel(parcel.readInt(), (RouteInfoParcel) parcel.readTypedObject(RouteInfoParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 100:
-                            tetherOffloadRuleAdd((TetherOffloadRuleParcel) parcel.readTypedObject(TetherOffloadRuleParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 101:
-                            tetherOffloadRuleRemove((TetherOffloadRuleParcel) parcel.readTypedObject(TetherOffloadRuleParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 102:
-                            TetherStatsParcel[] tetherOffloadGetStats = tetherOffloadGetStats();
-                            parcel2.writeNoException();
-                            parcel2.writeTypedArray(tetherOffloadGetStats, 1);
-                            return true;
-                        case 103:
-                            tetherOffloadSetInterfaceQuota(parcel.readInt(), parcel.readLong());
-                            parcel2.writeNoException();
-                            return true;
-                        case 104:
-                            TetherStatsParcel tetherOffloadGetAndClearStats = tetherOffloadGetAndClearStats(parcel.readInt());
-                            parcel2.writeNoException();
-                            parcel2.writeTypedObject(tetherOffloadGetAndClearStats, 1);
-                            return true;
-                        case 105:
-                            networkCreate((NativeNetworkConfig) parcel.readTypedObject(NativeNetworkConfig.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 106:
-                            networkAddUidRangesParcel((NativeUidRangeConfig) parcel.readTypedObject(NativeUidRangeConfig.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 107:
-                            networkRemoveUidRangesParcel((NativeUidRangeConfig) parcel.readTypedObject(NativeUidRangeConfig.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 108:
-                            ipSecMigrate((IpSecMigrateInfoParcel) parcel.readTypedObject(IpSecMigrateInfoParcel.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        case 109:
-                            setNetworkAllowlist((NativeUidRangeConfig[]) parcel.createTypedArray(NativeUidRangeConfig.CREATOR));
-                            parcel2.writeNoException();
-                            return true;
-                        default:
-                            return super.onTransact(i, parcel, parcel2, i2);
-                    }
-            }
-        }
-
-        /* loaded from: classes.dex */
-        public class Proxy implements INetd {
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements INetd {
+            public String mCachedHash;
+            public int mCachedVersion;
             public IBinder mRemote;
-            public int mCachedVersion = -1;
-            public String mCachedHash = "-1";
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
 
             @Override // android.os.IInterface
-            public IBinder asBinder() {
+            public final IBinder asBinder() {
                 return this.mRemote;
             }
 
             @Override // android.net.INetd
-            public boolean isAlive() {
+            public final void bandwidthAddNaughtyApp(int i) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(1, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method isAlive is unimplemented.");
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(50, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthAddNaughtyApp is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void bandwidthAddNiceApp(int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(52, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthAddNiceApp is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final boolean bandwidthEnableDataSaver(boolean z) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeBoolean(z);
+                    if (!this.mRemote.transact(3, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthEnableDataSaver is unimplemented.");
                     }
                     obtain2.readException();
                     return obtain2.readBoolean();
@@ -1423,7 +725,217 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public boolean firewallReplaceUidChain(String str, boolean z, int[] iArr) {
+            public final void bandwidthRemoveInterfaceAlert(String str) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(48, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthRemoveInterfaceAlert is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void bandwidthRemoveInterfaceQuota(String str) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(46, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthRemoveInterfaceQuota is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void bandwidthRemoveNaughtyApp(int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(51, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthRemoveNaughtyApp is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void bandwidthRemoveNiceApp(int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(53, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthRemoveNiceApp is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void bandwidthSetGlobalAlert(long j) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeLong(j);
+                    if (!this.mRemote.transact(49, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthSetGlobalAlert is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void bandwidthSetInterfaceAlert(String str, long j) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeLong(j);
+                    if (!this.mRemote.transact(47, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthSetInterfaceAlert is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void bandwidthSetInterfaceQuota(String str, long j) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeLong(j);
+                    if (!this.mRemote.transact(45, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method bandwidthSetInterfaceQuota is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final String clatdStart(String str, String str2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    if (!this.mRemote.transact(37, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method clatdStart is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.readString();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void clatdStop(String str) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(38, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method clatdStop is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void firewallAddUidInterfaceRules(String str, int[] iArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeIntArray(iArr);
+                    if (!this.mRemote.transact(91, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method firewallAddUidInterfaceRules is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void firewallEnableChildChain(int i, boolean z) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeBoolean(z);
+                    if (!this.mRemote.transact(79, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method firewallEnableChildChain is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void firewallRemoveUidInterfaceRules(int[] iArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeIntArray(iArr);
+                    if (!this.mRemote.transact(92, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method firewallRemoveUidInterfaceRules is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final boolean firewallReplaceUidChain(String str, boolean z, int[] iArr) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -1443,17 +955,16 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public boolean bandwidthEnableDataSaver(boolean z) {
+            public final void firewallSetFirewallType(int i) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeBoolean(z);
-                    if (!this.mRemote.transact(3, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthEnableDataSaver is unimplemented.");
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(76, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method firewallSetFirewallType is unimplemented.");
                     }
                     obtain2.readException();
-                    return obtain2.readBoolean();
                 } finally {
                     obtain2.recycle();
                     obtain.recycle();
@@ -1461,15 +972,34 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void networkCreatePhysical(int i, int i2) {
+            public final void firewallSetInterfaceRule(String str, int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(77, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method firewallSetInterfaceRule is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void firewallSetUidRule(int i, int i2, int i3) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeInt(i);
                     obtain.writeInt(i2);
-                    if (!this.mRemote.transact(4, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkCreatePhysical is unimplemented.");
+                    obtain.writeInt(i3);
+                    if (!this.mRemote.transact(78, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method firewallSetUidRule is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -1479,17 +1009,17 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void networkCreateVpn(int i, boolean z) {
+            public final MarkMaskParcel getFwmarkForNetwork(int i) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeInt(i);
-                    obtain.writeBoolean(z);
-                    if (!this.mRemote.transact(5, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkCreateVpn is unimplemented.");
+                    if (!this.mRemote.transact(96, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method getFwmarkForNetwork is unimplemented.");
                     }
                     obtain2.readException();
+                    return (MarkMaskParcel) obtain2.readTypedObject(MarkMaskParcel.CREATOR);
                 } finally {
                     obtain2.recycle();
                     obtain.recycle();
@@ -1497,16 +1027,59 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void networkDestroy(int i) {
+            public final synchronized String getInterfaceHash() {
+                try {
+                    if ("-1".equals(this.mCachedHash)) {
+                        Parcel obtain = Parcel.obtain();
+                        Parcel obtain2 = Parcel.obtain();
+                        try {
+                            obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                            this.mRemote.transact(Stub.TRANSACTION_getInterfaceHash, obtain, obtain2, 0);
+                            obtain2.readException();
+                            this.mCachedHash = obtain2.readString();
+                            obtain2.recycle();
+                            obtain.recycle();
+                        } catch (Throwable th) {
+                            obtain2.recycle();
+                            obtain.recycle();
+                            throw th;
+                        }
+                    }
+                } catch (Throwable th2) {
+                    throw th2;
+                }
+                return this.mCachedHash;
+            }
+
+            @Override // android.net.INetd
+            public final int getInterfaceVersion() {
+                if (this.mCachedVersion == -1) {
+                    Parcel obtain = Parcel.obtain();
+                    Parcel obtain2 = Parcel.obtain();
+                    try {
+                        obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                        this.mRemote.transact(Stub.TRANSACTION_getInterfaceVersion, obtain, obtain2, 0);
+                        obtain2.readException();
+                        this.mCachedVersion = obtain2.readInt();
+                    } finally {
+                        obtain2.recycle();
+                        obtain.recycle();
+                    }
+                }
+                return this.mCachedVersion;
+            }
+
+            @Override // android.net.INetd
+            public final IBinder getOemNetd() {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(6, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkDestroy is unimplemented.");
+                    if (!this.mRemote.transact(94, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method getOemNetd is unimplemented.");
                     }
                     obtain2.readException();
+                    return obtain2.readStrongBinder();
                 } finally {
                     obtain2.recycle();
                     obtain.recycle();
@@ -1514,187 +1087,7 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void networkAddInterface(int i, String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(7, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkAddInterface is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkRemoveInterface(int i, String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(8, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkRemoveInterface is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkAddUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeTypedArray(uidRangeParcelArr, 0);
-                    if (!this.mRemote.transact(9, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkAddUidRanges is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkRemoveUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeTypedArray(uidRangeParcelArr, 0);
-                    if (!this.mRemote.transact(10, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkRemoveUidRanges is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkRejectNonSecureVpn(boolean z, UidRangeParcel[] uidRangeParcelArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeBoolean(z);
-                    obtain.writeTypedArray(uidRangeParcelArr, 0);
-                    if (!this.mRemote.transact(11, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkRejectNonSecureVpn is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void socketDestroy(UidRangeParcel[] uidRangeParcelArr, int[] iArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedArray(uidRangeParcelArr, 0);
-                    obtain.writeIntArray(iArr);
-                    if (!this.mRemote.transact(12, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method socketDestroy is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public boolean tetherApplyDnsInterfaces() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(13, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherApplyDnsInterfaces is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public TetherStatsParcel[] tetherGetStats() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(14, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherGetStats is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return (TetherStatsParcel[]) obtain2.createTypedArray(TetherStatsParcel.CREATOR);
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void interfaceAddAddress(String str, String str2, int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(15, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method interfaceAddAddress is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void interfaceDelAddress(String str, String str2, int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(16, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method interfaceDelAddress is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public String getProcSysNet(int i, int i2, String str, String str2) {
+            public final String getProcSysNet(int i, int i2, String str, String str2) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -1715,18 +1108,54 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void setProcSysNet(int i, int i2, String str, String str2, String str3) {
+            public final void idletimerAddInterface(String str, int i, String str2) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
                     obtain.writeInt(i);
-                    obtain.writeInt(i2);
+                    obtain.writeString(str2);
+                    if (!this.mRemote.transact(34, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method idletimerAddInterface is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void idletimerRemoveInterface(String str, int i, String str2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    obtain.writeString(str2);
+                    if (!this.mRemote.transact(35, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method idletimerRemoveInterface is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void interfaceAddAddress(String str, String str2, int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeString(str);
                     obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    if (!this.mRemote.transact(18, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method setProcSysNet is unimplemented.");
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(15, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method interfaceAddAddress is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -1736,15 +1165,14 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void ipSecSetEncapSocketOwner(ParcelFileDescriptor parcelFileDescriptor, int i) {
+            public final void interfaceClearAddrs(String str) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(parcelFileDescriptor, 0);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(19, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipSecSetEncapSocketOwner is unimplemented.");
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(84, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method interfaceClearAddrs is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -1754,20 +1182,18 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public int ipSecAllocateSpi(int i, String str, String str2, int i2) {
+            public final void interfaceDelAddress(String str, String str2, int i) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
                     obtain.writeString(str);
                     obtain.writeString(str2);
-                    obtain.writeInt(i2);
-                    if (!this.mRemote.transact(20, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipSecAllocateSpi is unimplemented.");
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(16, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method interfaceDelAddress is unimplemented.");
                     }
                     obtain2.readException();
-                    return obtain2.readInt();
                 } finally {
                     obtain2.recycle();
                     obtain.recycle();
@@ -1775,7 +1201,113 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void ipSecAddSecurityAssociation(int i, int i2, String str, String str2, int i3, int i4, int i5, int i6, String str3, byte[] bArr, int i7, String str4, byte[] bArr2, int i8, String str5, byte[] bArr3, int i9, int i10, int i11, int i12, int i13) {
+            public final InterfaceConfigurationParcel interfaceGetCfg(String str) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(81, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method interfaceGetCfg is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return (InterfaceConfigurationParcel) obtain2.readTypedObject(InterfaceConfigurationParcel.CREATOR);
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final String[] interfaceGetList() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(80, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method interfaceGetList is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.createStringArray();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void interfaceSetCfg(InterfaceConfigurationParcel interfaceConfigurationParcel) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(interfaceConfigurationParcel, 0);
+                    if (!this.mRemote.transact(82, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method interfaceSetCfg is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void interfaceSetEnableIPv6(String str, boolean z) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeBoolean(z);
+                    if (!this.mRemote.transact(85, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method interfaceSetEnableIPv6 is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void interfaceSetIPv6PrivacyExtensions(String str, boolean z) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeBoolean(z);
+                    if (!this.mRemote.transact(83, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method interfaceSetIPv6PrivacyExtensions is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void interfaceSetMtu(String str, int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(86, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method interfaceSetMtu is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipSecAddSecurityAssociation(int i, int i2, String str, String str2, int i3, int i4, int i5, int i6, String str3, byte[] bArr, int i7, String str4, byte[] bArr2, int i8, String str5, byte[] bArr3, int i9, int i10, int i11, int i12, int i13) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -1812,69 +1344,7 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void ipSecDeleteSecurityAssociation(int i, String str, String str2, int i2, int i3, int i4, int i5) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i2);
-                    obtain.writeInt(i3);
-                    obtain.writeInt(i4);
-                    obtain.writeInt(i5);
-                    if (!this.mRemote.transact(22, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipSecDeleteSecurityAssociation is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void ipSecApplyTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor, int i, int i2, String str, String str2, int i3) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(parcelFileDescriptor, 0);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i3);
-                    if (!this.mRemote.transact(23, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipSecApplyTransportModeTransform is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void ipSecRemoveTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(parcelFileDescriptor, 0);
-                    if (!this.mRemote.transact(24, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipSecRemoveTransportModeTransform is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void ipSecAddSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) {
+            public final void ipSecAddSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -1899,7 +1369,186 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void ipSecUpdateSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) {
+            public final void ipSecAddTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeString(str3);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeInt(i3);
+                    if (!this.mRemote.transact(28, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipSecAddTunnelInterface is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final int ipSecAllocateSpi(int i, String str, String str2, int i2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i2);
+                    if (!this.mRemote.transact(20, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipSecAllocateSpi is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipSecApplyTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor, int i, int i2, String str, String str2, int i3) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(parcelFileDescriptor, 0);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i3);
+                    if (!this.mRemote.transact(23, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipSecApplyTransportModeTransform is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipSecDeleteSecurityAssociation(int i, String str, String str2, int i2, int i3, int i4, int i5) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i2);
+                    obtain.writeInt(i3);
+                    obtain.writeInt(i4);
+                    obtain.writeInt(i5);
+                    if (!this.mRemote.transact(22, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipSecDeleteSecurityAssociation is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipSecDeleteSecurityPolicy(int i, int i2, int i3, int i4, int i5, int i6) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeInt(i3);
+                    obtain.writeInt(i4);
+                    obtain.writeInt(i5);
+                    obtain.writeInt(i6);
+                    if (!this.mRemote.transact(27, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipSecDeleteSecurityPolicy is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipSecMigrate(IpSecMigrateInfoParcel ipSecMigrateInfoParcel) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(ipSecMigrateInfoParcel, 0);
+                    if (!this.mRemote.transact(108, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipSecMigrate is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipSecRemoveTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(parcelFileDescriptor, 0);
+                    if (!this.mRemote.transact(24, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipSecRemoveTransportModeTransform is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipSecRemoveTunnelInterface(String str) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(30, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipSecRemoveTunnelInterface is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipSecSetEncapSocketOwner(ParcelFileDescriptor parcelFileDescriptor, int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(parcelFileDescriptor, 0);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(19, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipSecSetEncapSocketOwner is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipSecUpdateSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -1924,51 +1573,7 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void ipSecDeleteSecurityPolicy(int i, int i2, int i3, int i4, int i5, int i6) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeInt(i3);
-                    obtain.writeInt(i4);
-                    obtain.writeInt(i5);
-                    obtain.writeInt(i6);
-                    if (!this.mRemote.transact(27, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipSecDeleteSecurityPolicy is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void ipSecAddTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeInt(i3);
-                    if (!this.mRemote.transact(28, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipSecAddTunnelInterface is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void ipSecUpdateTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) {
+            public final void ipSecUpdateTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -1990,242 +1595,7 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void ipSecRemoveTunnelInterface(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(30, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipSecRemoveTunnelInterface is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void wakeupAddInterface(String str, String str2, int i, int i2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    if (!this.mRemote.transact(31, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method wakeupAddInterface is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void wakeupDelInterface(String str, String str2, int i, int i2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    if (!this.mRemote.transact(32, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method wakeupDelInterface is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void setIPv6AddrGenMode(String str, int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(33, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method setIPv6AddrGenMode is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void idletimerAddInterface(String str, int i, String str2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeString(str2);
-                    if (!this.mRemote.transact(34, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method idletimerAddInterface is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void idletimerRemoveInterface(String str, int i, String str2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    obtain.writeString(str2);
-                    if (!this.mRemote.transact(35, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method idletimerRemoveInterface is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void strictUidCleartextPenalty(int i, int i2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    if (!this.mRemote.transact(36, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method strictUidCleartextPenalty is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public String clatdStart(String str, String str2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    if (!this.mRemote.transact(37, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method clatdStart is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.readString();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void clatdStop(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(38, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method clatdStop is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public boolean ipfwdEnabled() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(39, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipfwdEnabled is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public String[] ipfwdGetRequesterList() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(40, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipfwdGetRequesterList is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.createStringArray();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void ipfwdEnableForwarding(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(41, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipfwdEnableForwarding is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void ipfwdDisableForwarding(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(42, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipfwdDisableForwarding is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void ipfwdAddInterfaceForward(String str, String str2) {
+            public final void ipfwdAddInterfaceForward(String str, String str2) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -2243,7 +1613,75 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void ipfwdRemoveInterfaceForward(String str, String str2) {
+            public final void ipfwdDisableForwarding(String str) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(42, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipfwdDisableForwarding is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipfwdEnableForwarding(String str) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(41, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipfwdEnableForwarding is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final boolean ipfwdEnabled() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(39, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipfwdEnabled is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final String[] ipfwdGetRequesterList() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(40, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method ipfwdGetRequesterList is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.createStringArray();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void ipfwdRemoveInterfaceForward(String str, String str2) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -2261,201 +1699,13 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void bandwidthSetInterfaceQuota(String str, long j) {
+            public final boolean isAlive() {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeLong(j);
-                    if (!this.mRemote.transact(45, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthSetInterfaceQuota is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void bandwidthRemoveInterfaceQuota(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(46, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthRemoveInterfaceQuota is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void bandwidthSetInterfaceAlert(String str, long j) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeLong(j);
-                    if (!this.mRemote.transact(47, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthSetInterfaceAlert is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void bandwidthRemoveInterfaceAlert(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(48, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthRemoveInterfaceAlert is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void bandwidthSetGlobalAlert(long j) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeLong(j);
-                    if (!this.mRemote.transact(49, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthSetGlobalAlert is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void bandwidthAddNaughtyApp(int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(50, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthAddNaughtyApp is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void bandwidthRemoveNaughtyApp(int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(51, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthRemoveNaughtyApp is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void bandwidthAddNiceApp(int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(52, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthAddNiceApp is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void bandwidthRemoveNiceApp(int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(53, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method bandwidthRemoveNiceApp is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void tetherStart(String[] strArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeStringArray(strArr);
-                    if (!this.mRemote.transact(54, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherStart is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void tetherStop() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(55, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherStop is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public boolean tetherIsEnabled() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(56, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherIsEnabled is unimplemented.");
+                    if (!this.mRemote.transact(1, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method isAlive is unimplemented.");
                     }
                     obtain2.readException();
                     return obtain2.readBoolean();
@@ -2466,103 +1716,15 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void tetherInterfaceAdd(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(57, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherInterfaceAdd is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void tetherInterfaceRemove(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(58, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherInterfaceRemove is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public String[] tetherInterfaceList() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(59, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherInterfaceList is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.createStringArray();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void tetherDnsSet(int i, String[] strArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeStringArray(strArr);
-                    if (!this.mRemote.transact(60, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherDnsSet is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public String[] tetherDnsList() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(61, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherDnsList is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.createStringArray();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkAddRoute(int i, String str, String str2, String str3) {
+            public final void networkAddInterface(int i, String str) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeInt(i);
                     obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    if (!this.mRemote.transact(62, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkAddRoute is unimplemented.");
+                    if (!this.mRemote.transact(7, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkAddInterface is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -2572,27 +1734,7 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void networkRemoveRoute(int i, String str, String str2, String str3) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    obtain.writeString(str3);
-                    if (!this.mRemote.transact(63, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkRemoveRoute is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkAddLegacyRoute(int i, String str, String str2, String str3, int i2) {
+            public final void networkAddLegacyRoute(int i, String str, String str2, String str3, int i2) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -2613,7 +1755,273 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void networkRemoveLegacyRoute(int i, String str, String str2, String str3, int i2) {
+            public final void networkAddRoute(int i, String str, String str2, String str3) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeString(str3);
+                    if (!this.mRemote.transact(62, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkAddRoute is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkAddRouteParcel(int i, RouteInfoParcel routeInfoParcel) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeTypedObject(routeInfoParcel, 0);
+                    if (!this.mRemote.transact(97, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkAddRouteParcel is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkAddUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeTypedArray(uidRangeParcelArr, 0);
+                    if (!this.mRemote.transact(9, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkAddUidRanges is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkAddUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(nativeUidRangeConfig, 0);
+                    if (!this.mRemote.transact(106, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkAddUidRangesParcel is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkAllowBypassVpnOnNetwork(boolean z, int i, int i2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeBoolean(z);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    if (!this.mRemote.transact(110, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkAllowBypassVpnOnNetwork is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final boolean networkCanProtect(int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(75, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkCanProtect is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkClearDefault() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(68, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkClearDefault is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkClearPermissionForUser(int[] iArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeIntArray(iArr);
+                    if (!this.mRemote.transact(71, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkClearPermissionForUser is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkCreate(NativeNetworkConfig nativeNetworkConfig) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(nativeNetworkConfig, 0);
+                    if (!this.mRemote.transact(105, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkCreate is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkCreatePhysical(int i, int i2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    if (!this.mRemote.transact(4, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkCreatePhysical is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkCreateVpn(int i, boolean z) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeBoolean(z);
+                    if (!this.mRemote.transact(5, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkCreateVpn is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkDestroy(int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(6, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkDestroy is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final int networkGetDefault() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(66, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkGetDefault is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.readInt();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkRejectNonSecureVpn(boolean z, UidRangeParcel[] uidRangeParcelArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeBoolean(z);
+                    obtain.writeTypedArray(uidRangeParcelArr, 0);
+                    if (!this.mRemote.transact(11, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkRejectNonSecureVpn is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkRemoveInterface(int i, String str) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(8, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkRemoveInterface is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkRemoveLegacyRoute(int i, String str, String str2, String str3, int i2) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -2634,383 +2042,17 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public int networkGetDefault() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(66, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkGetDefault is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.readInt();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkSetDefault(int i) {
+            public final void networkRemoveRoute(int i, String str, String str2, String str3) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeInt(i);
-                    if (!this.mRemote.transact(67, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkSetDefault is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkClearDefault() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(68, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkClearDefault is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkSetPermissionForNetwork(int i, int i2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    if (!this.mRemote.transact(69, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkSetPermissionForNetwork is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkSetPermissionForUser(int i, int[] iArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeIntArray(iArr);
-                    if (!this.mRemote.transact(70, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkSetPermissionForUser is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkClearPermissionForUser(int[] iArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeIntArray(iArr);
-                    if (!this.mRemote.transact(71, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkClearPermissionForUser is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void trafficSetNetPermForUids(int i, int[] iArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeIntArray(iArr);
-                    if (!this.mRemote.transact(72, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method trafficSetNetPermForUids is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkSetProtectAllow(int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(73, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkSetProtectAllow is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkSetProtectDeny(int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(74, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkSetProtectDeny is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public boolean networkCanProtect(int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(75, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkCanProtect is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.readBoolean();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void firewallSetFirewallType(int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(76, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method firewallSetFirewallType is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void firewallSetInterfaceRule(String str, int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(77, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method firewallSetInterfaceRule is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void firewallSetUidRule(int i, int i2, int i3) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeInt(i2);
-                    obtain.writeInt(i3);
-                    if (!this.mRemote.transact(78, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method firewallSetUidRule is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void firewallEnableChildChain(int i, boolean z) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeBoolean(z);
-                    if (!this.mRemote.transact(79, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method firewallEnableChildChain is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public String[] interfaceGetList() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(80, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method interfaceGetList is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.createStringArray();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public InterfaceConfigurationParcel interfaceGetCfg(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(81, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method interfaceGetCfg is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return (InterfaceConfigurationParcel) obtain2.readTypedObject(InterfaceConfigurationParcel.CREATOR);
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void interfaceSetCfg(InterfaceConfigurationParcel interfaceConfigurationParcel) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(interfaceConfigurationParcel, 0);
-                    if (!this.mRemote.transact(82, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method interfaceSetCfg is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void interfaceSetIPv6PrivacyExtensions(String str, boolean z) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeBoolean(z);
-                    if (!this.mRemote.transact(83, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method interfaceSetIPv6PrivacyExtensions is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void interfaceClearAddrs(String str) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    if (!this.mRemote.transact(84, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method interfaceClearAddrs is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void interfaceSetEnableIPv6(String str, boolean z) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeBoolean(z);
-                    if (!this.mRemote.transact(85, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method interfaceSetEnableIPv6 is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void interfaceSetMtu(String str, int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(86, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method interfaceSetMtu is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void tetherAddForward(String str, String str2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
                     obtain.writeString(str);
                     obtain.writeString(str2);
-                    if (!this.mRemote.transact(87, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherAddForward is unimplemented.");
+                    obtain.writeString(str3);
+                    if (!this.mRemote.transact(63, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkRemoveRoute is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -3020,199 +2062,7 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void tetherRemoveForward(String str, String str2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    if (!this.mRemote.transact(88, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherRemoveForward is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void setTcpRWmemorySize(String str, String str2) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeString(str2);
-                    if (!this.mRemote.transact(89, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method setTcpRWmemorySize is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void registerUnsolicitedEventListener(INetdUnsolicitedEventListener iNetdUnsolicitedEventListener) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeStrongInterface(iNetdUnsolicitedEventListener);
-                    if (!this.mRemote.transact(90, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method registerUnsolicitedEventListener is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void firewallAddUidInterfaceRules(String str, int[] iArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeString(str);
-                    obtain.writeIntArray(iArr);
-                    if (!this.mRemote.transact(91, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method firewallAddUidInterfaceRules is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void firewallRemoveUidInterfaceRules(int[] iArr) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeIntArray(iArr);
-                    if (!this.mRemote.transact(92, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method firewallRemoveUidInterfaceRules is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void trafficSwapActiveStatsMap() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(93, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method trafficSwapActiveStatsMap is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public IBinder getOemNetd() {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(94, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method getOemNetd is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return obtain2.readStrongBinder();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void tetherStartWithConfiguration(TetherConfigParcel tetherConfigParcel) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(tetherConfigParcel, 0);
-                    if (!this.mRemote.transact(95, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherStartWithConfiguration is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public MarkMaskParcel getFwmarkForNetwork(int i) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    if (!this.mRemote.transact(96, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method getFwmarkForNetwork is unimplemented.");
-                    }
-                    obtain2.readException();
-                    return (MarkMaskParcel) obtain2.readTypedObject(MarkMaskParcel.CREATOR);
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkAddRouteParcel(int i, RouteInfoParcel routeInfoParcel) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeTypedObject(routeInfoParcel, 0);
-                    if (!this.mRemote.transact(97, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkAddRouteParcel is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkUpdateRouteParcel(int i, RouteInfoParcel routeInfoParcel) {
-                Parcel obtain = Parcel.obtain();
-                Parcel obtain2 = Parcel.obtain();
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeTypedObject(routeInfoParcel, 0);
-                    if (!this.mRemote.transact(98, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkUpdateRouteParcel is unimplemented.");
-                    }
-                    obtain2.readException();
-                } finally {
-                    obtain2.recycle();
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.net.INetd
-            public void networkRemoveRouteParcel(int i, RouteInfoParcel routeInfoParcel) {
+            public final void networkRemoveRouteParcel(int i, RouteInfoParcel routeInfoParcel) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -3230,14 +2080,15 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void tetherOffloadRuleAdd(TetherOffloadRuleParcel tetherOffloadRuleParcel) {
+            public final void networkRemoveUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(tetherOffloadRuleParcel, 0);
-                    if (!this.mRemote.transact(100, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherOffloadRuleAdd is unimplemented.");
+                    obtain.writeInt(i);
+                    obtain.writeTypedArray(uidRangeParcelArr, 0);
+                    if (!this.mRemote.transact(10, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkRemoveUidRanges is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -3247,14 +2098,14 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void tetherOffloadRuleRemove(TetherOffloadRuleParcel tetherOffloadRuleParcel) {
+            public final void networkRemoveUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(tetherOffloadRuleParcel, 0);
-                    if (!this.mRemote.transact(101, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherOffloadRuleRemove is unimplemented.");
+                    obtain.writeTypedObject(nativeUidRangeConfig, 0);
+                    if (!this.mRemote.transact(107, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkRemoveUidRangesParcel is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -3264,13 +2115,315 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public TetherStatsParcel[] tetherOffloadGetStats() {
+            public final void networkSetDefault(int i) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    if (!this.mRemote.transact(102, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherOffloadGetStats is unimplemented.");
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(67, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkSetDefault is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkSetPermissionForNetwork(int i, int i2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    if (!this.mRemote.transact(69, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkSetPermissionForNetwork is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkSetPermissionForUser(int i, int[] iArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeIntArray(iArr);
+                    if (!this.mRemote.transact(70, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkSetPermissionForUser is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkSetProtectAllow(int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(73, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkSetProtectAllow is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkSetProtectDeny(int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(74, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkSetProtectDeny is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void networkUpdateRouteParcel(int i, RouteInfoParcel routeInfoParcel) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeTypedObject(routeInfoParcel, 0);
+                    if (!this.mRemote.transact(98, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method networkUpdateRouteParcel is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void registerUnsolicitedEventListener(INetdUnsolicitedEventListener iNetdUnsolicitedEventListener) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeStrongInterface(iNetdUnsolicitedEventListener);
+                    if (!this.mRemote.transact(90, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method registerUnsolicitedEventListener is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void setIPv6AddrGenMode(String str, int i) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeInt(i);
+                    if (!this.mRemote.transact(33, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method setIPv6AddrGenMode is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void setNetworkAllowlist(NativeUidRangeConfig[] nativeUidRangeConfigArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedArray(nativeUidRangeConfigArr, 0);
+                    if (!this.mRemote.transact(109, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method setNetworkAllowlist is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void setProcSysNet(int i, int i2, String str, String str2, String str3) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeString(str3);
+                    if (!this.mRemote.transact(18, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method setProcSysNet is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void setTcpRWmemorySize(String str, String str2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    if (!this.mRemote.transact(89, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method setTcpRWmemorySize is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void socketDestroy(UidRangeParcel[] uidRangeParcelArr, int[] iArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedArray(uidRangeParcelArr, 0);
+                    obtain.writeIntArray(iArr);
+                    if (!this.mRemote.transact(12, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method socketDestroy is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void strictUidCleartextPenalty(int i, int i2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    if (!this.mRemote.transact(36, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method strictUidCleartextPenalty is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void tetherAddForward(String str, String str2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    if (!this.mRemote.transact(87, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherAddForward is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final boolean tetherApplyDnsInterfaces() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(13, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherApplyDnsInterfaces is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final String[] tetherDnsList() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(61, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherDnsList is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.createStringArray();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void tetherDnsSet(int i, String[] strArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeStringArray(strArr);
+                    if (!this.mRemote.transact(60, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherDnsSet is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final TetherStatsParcel[] tetherGetStats() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(14, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherGetStats is unimplemented.");
                     }
                     obtain2.readException();
                     return (TetherStatsParcel[]) obtain2.createTypedArray(TetherStatsParcel.CREATOR);
@@ -3281,15 +2434,14 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void tetherOffloadSetInterfaceQuota(int i, long j) {
+            public final void tetherInterfaceAdd(String str) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeLong(j);
-                    if (!this.mRemote.transact(103, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method tetherOffloadSetInterfaceQuota is unimplemented.");
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(57, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherInterfaceAdd is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -3299,7 +2451,58 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public TetherStatsParcel tetherOffloadGetAndClearStats(int i) {
+            public final String[] tetherInterfaceList() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(59, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherInterfaceList is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.createStringArray();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void tetherInterfaceRemove(String str) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    if (!this.mRemote.transact(58, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherInterfaceRemove is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final boolean tetherIsEnabled() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(56, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherIsEnabled is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return obtain2.readBoolean();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final TetherStatsParcel tetherOffloadGetAndClearStats(int i) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
@@ -3317,14 +2520,31 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void networkCreate(NativeNetworkConfig nativeNetworkConfig) {
+            public final TetherStatsParcel[] tetherOffloadGetStats() {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(nativeNetworkConfig, 0);
-                    if (!this.mRemote.transact(105, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkCreate is unimplemented.");
+                    if (!this.mRemote.transact(102, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherOffloadGetStats is unimplemented.");
+                    }
+                    obtain2.readException();
+                    return (TetherStatsParcel[]) obtain2.createTypedArray(TetherStatsParcel.CREATOR);
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void tetherOffloadRuleAdd(TetherOffloadRuleParcel tetherOffloadRuleParcel) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(tetherOffloadRuleParcel, 0);
+                    if (!this.mRemote.transact(100, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherOffloadRuleAdd is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -3334,14 +2554,14 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void networkAddUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) {
+            public final void tetherOffloadRuleRemove(TetherOffloadRuleParcel tetherOffloadRuleParcel) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(nativeUidRangeConfig, 0);
-                    if (!this.mRemote.transact(106, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkAddUidRangesParcel is unimplemented.");
+                    obtain.writeTypedObject(tetherOffloadRuleParcel, 0);
+                    if (!this.mRemote.transact(101, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherOffloadRuleRemove is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -3351,14 +2571,15 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void networkRemoveUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) {
+            public final void tetherOffloadSetInterfaceQuota(int i, long j) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(nativeUidRangeConfig, 0);
-                    if (!this.mRemote.transact(107, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method networkRemoveUidRangesParcel is unimplemented.");
+                    obtain.writeInt(i);
+                    obtain.writeLong(j);
+                    if (!this.mRemote.transact(103, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherOffloadSetInterfaceQuota is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -3368,14 +2589,15 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void ipSecMigrate(IpSecMigrateInfoParcel ipSecMigrateInfoParcel) {
+            public final void tetherRemoveForward(String str, String str2) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedObject(ipSecMigrateInfoParcel, 0);
-                    if (!this.mRemote.transact(108, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method ipSecMigrate is unimplemented.");
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    if (!this.mRemote.transact(88, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherRemoveForward is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -3385,14 +2607,14 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public void setNetworkAllowlist(NativeUidRangeConfig[] nativeUidRangeConfigArr) {
+            public final void tetherStart(String[] strArr) {
                 Parcel obtain = Parcel.obtain();
                 Parcel obtain2 = Parcel.obtain();
                 try {
                     obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeTypedArray(nativeUidRangeConfigArr, 0);
-                    if (!this.mRemote.transact(109, obtain, obtain2, 0)) {
-                        throw new RemoteException("Method setNetworkAllowlist is unimplemented.");
+                    obtain.writeStringArray(strArr);
+                    if (!this.mRemote.transact(54, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherStart is unimplemented.");
                     }
                     obtain2.readException();
                 } finally {
@@ -3402,43 +2624,865 @@ public interface INetd extends IInterface {
             }
 
             @Override // android.net.INetd
-            public int getInterfaceVersion() {
-                if (this.mCachedVersion == -1) {
-                    Parcel obtain = Parcel.obtain();
-                    Parcel obtain2 = Parcel.obtain();
-                    try {
-                        obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                        this.mRemote.transact(Stub.TRANSACTION_getInterfaceVersion, obtain, obtain2, 0);
-                        obtain2.readException();
-                        this.mCachedVersion = obtain2.readInt();
-                    } finally {
-                        obtain2.recycle();
-                        obtain.recycle();
+            public final void tetherStartWithConfiguration(TetherConfigParcel tetherConfigParcel) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeTypedObject(tetherConfigParcel, 0);
+                    if (!this.mRemote.transact(95, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherStartWithConfiguration is unimplemented.");
                     }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
                 }
-                return this.mCachedVersion;
             }
 
             @Override // android.net.INetd
-            public synchronized String getInterfaceHash() {
-                if ("-1".equals(this.mCachedHash)) {
-                    Parcel obtain = Parcel.obtain();
-                    Parcel obtain2 = Parcel.obtain();
-                    try {
-                        obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                        this.mRemote.transact(Stub.TRANSACTION_getInterfaceHash, obtain, obtain2, 0);
-                        obtain2.readException();
-                        this.mCachedHash = obtain2.readString();
-                        obtain2.recycle();
-                        obtain.recycle();
-                    } catch (Throwable th) {
-                        obtain2.recycle();
-                        obtain.recycle();
-                        throw th;
+            public final void tetherStop() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(55, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method tetherStop is unimplemented.");
                     }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
                 }
-                return this.mCachedHash;
+            }
+
+            @Override // android.net.INetd
+            public final void trafficSetNetPermForUids(int i, int[] iArr) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeIntArray(iArr);
+                    if (!this.mRemote.transact(72, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method trafficSetNetPermForUids is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void trafficSwapActiveStatsMap() {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    if (!this.mRemote.transact(93, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method trafficSwapActiveStatsMap is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void wakeupAddInterface(String str, String str2, int i, int i2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    if (!this.mRemote.transact(31, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method wakeupAddInterface is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.net.INetd
+            public final void wakeupDelInterface(String str, String str2, int i, int i2) {
+                Parcel obtain = Parcel.obtain();
+                Parcel obtain2 = Parcel.obtain();
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeString(str);
+                    obtain.writeString(str2);
+                    obtain.writeInt(i);
+                    obtain.writeInt(i2);
+                    if (!this.mRemote.transact(32, obtain, obtain2, 0)) {
+                        throw new RemoteException("Method wakeupDelInterface is unimplemented.");
+                    }
+                    obtain2.readException();
+                } finally {
+                    obtain2.recycle();
+                    obtain.recycle();
+                }
             }
         }
+
+        public Stub() {
+            attachInterface(this, DESCRIPTOR);
+        }
+
+        public static INetd asInterface(IBinder iBinder) {
+            if (iBinder == null) {
+                return null;
+            }
+            IInterface queryLocalInterface = iBinder.queryLocalInterface(DESCRIPTOR);
+            if (queryLocalInterface != null && (queryLocalInterface instanceof INetd)) {
+                return (INetd) queryLocalInterface;
+            }
+            Proxy proxy = new Proxy();
+            proxy.mCachedVersion = -1;
+            proxy.mCachedHash = "-1";
+            proxy.mRemote = iBinder;
+            return proxy;
+        }
+
+        @Override // android.os.IInterface
+        public IBinder asBinder() {
+            return this;
+        }
+
+        @Override // android.os.Binder
+        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
+            String str = DESCRIPTOR;
+            if (i >= 1 && i <= TRANSACTION_getInterfaceVersion) {
+                parcel.enforceInterface(str);
+            }
+            if (i == 1598968902) {
+                parcel2.writeString(str);
+                return true;
+            }
+            if (i == TRANSACTION_getInterfaceVersion) {
+                parcel2.writeNoException();
+                parcel2.writeInt(getInterfaceVersion());
+                return true;
+            }
+            if (i == TRANSACTION_getInterfaceHash) {
+                parcel2.writeNoException();
+                parcel2.writeString(getInterfaceHash());
+                return true;
+            }
+            switch (i) {
+                case 1:
+                    boolean isAlive = isAlive();
+                    parcel2.writeNoException();
+                    parcel2.writeBoolean(isAlive);
+                    break;
+                case 2:
+                    boolean firewallReplaceUidChain = firewallReplaceUidChain(parcel.readString(), parcel.readBoolean(), parcel.createIntArray());
+                    parcel2.writeNoException();
+                    parcel2.writeBoolean(firewallReplaceUidChain);
+                    break;
+                case 3:
+                    boolean bandwidthEnableDataSaver = bandwidthEnableDataSaver(parcel.readBoolean());
+                    parcel2.writeNoException();
+                    parcel2.writeBoolean(bandwidthEnableDataSaver);
+                    break;
+                case 4:
+                    networkCreatePhysical(parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 5:
+                    networkCreateVpn(parcel.readInt(), parcel.readBoolean());
+                    parcel2.writeNoException();
+                    break;
+                case 6:
+                    networkDestroy(parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 7:
+                    networkAddInterface(parcel.readInt(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 8:
+                    networkRemoveInterface(parcel.readInt(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 9:
+                    networkAddUidRanges(parcel.readInt(), (UidRangeParcel[]) parcel.createTypedArray(UidRangeParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 10:
+                    networkRemoveUidRanges(parcel.readInt(), (UidRangeParcel[]) parcel.createTypedArray(UidRangeParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 11:
+                    networkRejectNonSecureVpn(parcel.readBoolean(), (UidRangeParcel[]) parcel.createTypedArray(UidRangeParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 12:
+                    socketDestroy((UidRangeParcel[]) parcel.createTypedArray(UidRangeParcel.CREATOR), parcel.createIntArray());
+                    parcel2.writeNoException();
+                    break;
+                case 13:
+                    boolean tetherApplyDnsInterfaces = tetherApplyDnsInterfaces();
+                    parcel2.writeNoException();
+                    parcel2.writeBoolean(tetherApplyDnsInterfaces);
+                    break;
+                case 14:
+                    TetherStatsParcel[] tetherGetStats = tetherGetStats();
+                    parcel2.writeNoException();
+                    parcel2.writeTypedArray(tetherGetStats, 1);
+                    break;
+                case 15:
+                    interfaceAddAddress(parcel.readString(), parcel.readString(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 16:
+                    interfaceDelAddress(parcel.readString(), parcel.readString(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 17:
+                    String procSysNet = getProcSysNet(parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    parcel2.writeString(procSysNet);
+                    break;
+                case 18:
+                    setProcSysNet(parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 19:
+                    ipSecSetEncapSocketOwner((ParcelFileDescriptor) parcel.readTypedObject(ParcelFileDescriptor.CREATOR), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 20:
+                    int ipSecAllocateSpi = ipSecAllocateSpi(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt());
+                    parcel2.writeNoException();
+                    parcel2.writeInt(ipSecAllocateSpi);
+                    break;
+                case 21:
+                    ipSecAddSecurityAssociation(parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.createByteArray(), parcel.readInt(), parcel.readString(), parcel.createByteArray(), parcel.readInt(), parcel.readString(), parcel.createByteArray(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 22:
+                    ipSecDeleteSecurityAssociation(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 23:
+                    ipSecApplyTransportModeTransform((ParcelFileDescriptor) parcel.readTypedObject(ParcelFileDescriptor.CREATOR), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 24:
+                    ipSecRemoveTransportModeTransform((ParcelFileDescriptor) parcel.readTypedObject(ParcelFileDescriptor.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 25:
+                    ipSecAddSecurityPolicy(parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 26:
+                    ipSecUpdateSecurityPolicy(parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 27:
+                    ipSecDeleteSecurityPolicy(parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 28:
+                    ipSecAddTunnelInterface(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 29:
+                    ipSecUpdateTunnelInterface(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 30:
+                    ipSecRemoveTunnelInterface(parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 31:
+                    wakeupAddInterface(parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 32:
+                    wakeupDelInterface(parcel.readString(), parcel.readString(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 33:
+                    setIPv6AddrGenMode(parcel.readString(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 34:
+                    idletimerAddInterface(parcel.readString(), parcel.readInt(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 35:
+                    idletimerRemoveInterface(parcel.readString(), parcel.readInt(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 36:
+                    strictUidCleartextPenalty(parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 37:
+                    String clatdStart = clatdStart(parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    parcel2.writeString(clatdStart);
+                    break;
+                case 38:
+                    clatdStop(parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 39:
+                    boolean ipfwdEnabled = ipfwdEnabled();
+                    parcel2.writeNoException();
+                    parcel2.writeBoolean(ipfwdEnabled);
+                    break;
+                case 40:
+                    String[] ipfwdGetRequesterList = ipfwdGetRequesterList();
+                    parcel2.writeNoException();
+                    parcel2.writeStringArray(ipfwdGetRequesterList);
+                    break;
+                case 41:
+                    ipfwdEnableForwarding(parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 42:
+                    ipfwdDisableForwarding(parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 43:
+                    ipfwdAddInterfaceForward(parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 44:
+                    ipfwdRemoveInterfaceForward(parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 45:
+                    bandwidthSetInterfaceQuota(parcel.readString(), parcel.readLong());
+                    parcel2.writeNoException();
+                    break;
+                case 46:
+                    bandwidthRemoveInterfaceQuota(parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 47:
+                    bandwidthSetInterfaceAlert(parcel.readString(), parcel.readLong());
+                    parcel2.writeNoException();
+                    break;
+                case 48:
+                    bandwidthRemoveInterfaceAlert(parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 49:
+                    bandwidthSetGlobalAlert(parcel.readLong());
+                    parcel2.writeNoException();
+                    break;
+                case 50:
+                    bandwidthAddNaughtyApp(parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 51:
+                    bandwidthRemoveNaughtyApp(parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 52:
+                    bandwidthAddNiceApp(parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 53:
+                    bandwidthRemoveNiceApp(parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 54:
+                    tetherStart(parcel.createStringArray());
+                    parcel2.writeNoException();
+                    break;
+                case 55:
+                    tetherStop();
+                    parcel2.writeNoException();
+                    break;
+                case 56:
+                    boolean tetherIsEnabled = tetherIsEnabled();
+                    parcel2.writeNoException();
+                    parcel2.writeBoolean(tetherIsEnabled);
+                    break;
+                case 57:
+                    tetherInterfaceAdd(parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 58:
+                    tetherInterfaceRemove(parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 59:
+                    String[] tetherInterfaceList = tetherInterfaceList();
+                    parcel2.writeNoException();
+                    parcel2.writeStringArray(tetherInterfaceList);
+                    break;
+                case 60:
+                    tetherDnsSet(parcel.readInt(), parcel.createStringArray());
+                    parcel2.writeNoException();
+                    break;
+                case 61:
+                    String[] tetherDnsList = tetherDnsList();
+                    parcel2.writeNoException();
+                    parcel2.writeStringArray(tetherDnsList);
+                    break;
+                case 62:
+                    networkAddRoute(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 63:
+                    networkRemoveRoute(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 64:
+                    networkAddLegacyRoute(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 65:
+                    networkRemoveLegacyRoute(parcel.readInt(), parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 66:
+                    int networkGetDefault = networkGetDefault();
+                    parcel2.writeNoException();
+                    parcel2.writeInt(networkGetDefault);
+                    break;
+                case 67:
+                    networkSetDefault(parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 68:
+                    networkClearDefault();
+                    parcel2.writeNoException();
+                    break;
+                case 69:
+                    networkSetPermissionForNetwork(parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 70:
+                    networkSetPermissionForUser(parcel.readInt(), parcel.createIntArray());
+                    parcel2.writeNoException();
+                    break;
+                case 71:
+                    networkClearPermissionForUser(parcel.createIntArray());
+                    parcel2.writeNoException();
+                    break;
+                case 72:
+                    trafficSetNetPermForUids(parcel.readInt(), parcel.createIntArray());
+                    parcel2.writeNoException();
+                    break;
+                case 73:
+                    networkSetProtectAllow(parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 74:
+                    networkSetProtectDeny(parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 75:
+                    boolean networkCanProtect = networkCanProtect(parcel.readInt());
+                    parcel2.writeNoException();
+                    parcel2.writeBoolean(networkCanProtect);
+                    break;
+                case 76:
+                    firewallSetFirewallType(parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 77:
+                    firewallSetInterfaceRule(parcel.readString(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 78:
+                    firewallSetUidRule(parcel.readInt(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 79:
+                    firewallEnableChildChain(parcel.readInt(), parcel.readBoolean());
+                    parcel2.writeNoException();
+                    break;
+                case 80:
+                    String[] interfaceGetList = interfaceGetList();
+                    parcel2.writeNoException();
+                    parcel2.writeStringArray(interfaceGetList);
+                    break;
+                case 81:
+                    InterfaceConfigurationParcel interfaceGetCfg = interfaceGetCfg(parcel.readString());
+                    parcel2.writeNoException();
+                    parcel2.writeTypedObject(interfaceGetCfg, 1);
+                    break;
+                case 82:
+                    interfaceSetCfg((InterfaceConfigurationParcel) parcel.readTypedObject(InterfaceConfigurationParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 83:
+                    interfaceSetIPv6PrivacyExtensions(parcel.readString(), parcel.readBoolean());
+                    parcel2.writeNoException();
+                    break;
+                case 84:
+                    interfaceClearAddrs(parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 85:
+                    interfaceSetEnableIPv6(parcel.readString(), parcel.readBoolean());
+                    parcel2.writeNoException();
+                    break;
+                case 86:
+                    interfaceSetMtu(parcel.readString(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+                case 87:
+                    tetherAddForward(parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 88:
+                    tetherRemoveForward(parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 89:
+                    setTcpRWmemorySize(parcel.readString(), parcel.readString());
+                    parcel2.writeNoException();
+                    break;
+                case 90:
+                    registerUnsolicitedEventListener(INetdUnsolicitedEventListener.Stub.asInterface(parcel.readStrongBinder()));
+                    parcel2.writeNoException();
+                    break;
+                case 91:
+                    firewallAddUidInterfaceRules(parcel.readString(), parcel.createIntArray());
+                    parcel2.writeNoException();
+                    break;
+                case 92:
+                    firewallRemoveUidInterfaceRules(parcel.createIntArray());
+                    parcel2.writeNoException();
+                    break;
+                case 93:
+                    trafficSwapActiveStatsMap();
+                    parcel2.writeNoException();
+                    break;
+                case 94:
+                    IBinder oemNetd = getOemNetd();
+                    parcel2.writeNoException();
+                    parcel2.writeStrongBinder(oemNetd);
+                    break;
+                case 95:
+                    tetherStartWithConfiguration((TetherConfigParcel) parcel.readTypedObject(TetherConfigParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 96:
+                    MarkMaskParcel fwmarkForNetwork = getFwmarkForNetwork(parcel.readInt());
+                    parcel2.writeNoException();
+                    parcel2.writeTypedObject(fwmarkForNetwork, 1);
+                    break;
+                case 97:
+                    networkAddRouteParcel(parcel.readInt(), (RouteInfoParcel) parcel.readTypedObject(RouteInfoParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 98:
+                    networkUpdateRouteParcel(parcel.readInt(), (RouteInfoParcel) parcel.readTypedObject(RouteInfoParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 99:
+                    networkRemoveRouteParcel(parcel.readInt(), (RouteInfoParcel) parcel.readTypedObject(RouteInfoParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 100:
+                    tetherOffloadRuleAdd((TetherOffloadRuleParcel) parcel.readTypedObject(TetherOffloadRuleParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 101:
+                    tetherOffloadRuleRemove((TetherOffloadRuleParcel) parcel.readTypedObject(TetherOffloadRuleParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 102:
+                    TetherStatsParcel[] tetherOffloadGetStats = tetherOffloadGetStats();
+                    parcel2.writeNoException();
+                    parcel2.writeTypedArray(tetherOffloadGetStats, 1);
+                    break;
+                case 103:
+                    tetherOffloadSetInterfaceQuota(parcel.readInt(), parcel.readLong());
+                    parcel2.writeNoException();
+                    break;
+                case 104:
+                    TetherStatsParcel tetherOffloadGetAndClearStats = tetherOffloadGetAndClearStats(parcel.readInt());
+                    parcel2.writeNoException();
+                    parcel2.writeTypedObject(tetherOffloadGetAndClearStats, 1);
+                    break;
+                case 105:
+                    networkCreate((NativeNetworkConfig) parcel.readTypedObject(NativeNetworkConfig.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 106:
+                    networkAddUidRangesParcel((NativeUidRangeConfig) parcel.readTypedObject(NativeUidRangeConfig.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 107:
+                    networkRemoveUidRangesParcel((NativeUidRangeConfig) parcel.readTypedObject(NativeUidRangeConfig.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 108:
+                    ipSecMigrate((IpSecMigrateInfoParcel) parcel.readTypedObject(IpSecMigrateInfoParcel.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 109:
+                    setNetworkAllowlist((NativeUidRangeConfig[]) parcel.createTypedArray(NativeUidRangeConfig.CREATOR));
+                    parcel2.writeNoException();
+                    break;
+                case 110:
+                    networkAllowBypassVpnOnNetwork(parcel.readBoolean(), parcel.readInt(), parcel.readInt());
+                    parcel2.writeNoException();
+                    break;
+            }
+            return true;
+        }
     }
+
+    @Deprecated
+    void bandwidthAddNaughtyApp(int i) throws RemoteException;
+
+    @Deprecated
+    void bandwidthAddNiceApp(int i) throws RemoteException;
+
+    boolean bandwidthEnableDataSaver(boolean z) throws RemoteException;
+
+    void bandwidthRemoveInterfaceAlert(String str) throws RemoteException;
+
+    void bandwidthRemoveInterfaceQuota(String str) throws RemoteException;
+
+    @Deprecated
+    void bandwidthRemoveNaughtyApp(int i) throws RemoteException;
+
+    @Deprecated
+    void bandwidthRemoveNiceApp(int i) throws RemoteException;
+
+    void bandwidthSetGlobalAlert(long j) throws RemoteException;
+
+    void bandwidthSetInterfaceAlert(String str, long j) throws RemoteException;
+
+    void bandwidthSetInterfaceQuota(String str, long j) throws RemoteException;
+
+    @Deprecated
+    String clatdStart(String str, String str2) throws RemoteException;
+
+    @Deprecated
+    void clatdStop(String str) throws RemoteException;
+
+    @Deprecated
+    void firewallAddUidInterfaceRules(String str, int[] iArr) throws RemoteException;
+
+    @Deprecated
+    void firewallEnableChildChain(int i, boolean z) throws RemoteException;
+
+    @Deprecated
+    void firewallRemoveUidInterfaceRules(int[] iArr) throws RemoteException;
+
+    @Deprecated
+    boolean firewallReplaceUidChain(String str, boolean z, int[] iArr) throws RemoteException;
+
+    void firewallSetFirewallType(int i) throws RemoteException;
+
+    void firewallSetInterfaceRule(String str, int i) throws RemoteException;
+
+    @Deprecated
+    void firewallSetUidRule(int i, int i2, int i3) throws RemoteException;
+
+    MarkMaskParcel getFwmarkForNetwork(int i) throws RemoteException;
+
+    String getInterfaceHash() throws RemoteException;
+
+    int getInterfaceVersion() throws RemoteException;
+
+    IBinder getOemNetd() throws RemoteException;
+
+    String getProcSysNet(int i, int i2, String str, String str2) throws RemoteException;
+
+    void idletimerAddInterface(String str, int i, String str2) throws RemoteException;
+
+    void idletimerRemoveInterface(String str, int i, String str2) throws RemoteException;
+
+    void interfaceAddAddress(String str, String str2, int i) throws RemoteException;
+
+    void interfaceClearAddrs(String str) throws RemoteException;
+
+    void interfaceDelAddress(String str, String str2, int i) throws RemoteException;
+
+    InterfaceConfigurationParcel interfaceGetCfg(String str) throws RemoteException;
+
+    String[] interfaceGetList() throws RemoteException;
+
+    void interfaceSetCfg(InterfaceConfigurationParcel interfaceConfigurationParcel) throws RemoteException;
+
+    void interfaceSetEnableIPv6(String str, boolean z) throws RemoteException;
+
+    void interfaceSetIPv6PrivacyExtensions(String str, boolean z) throws RemoteException;
+
+    void interfaceSetMtu(String str, int i) throws RemoteException;
+
+    void ipSecAddSecurityAssociation(int i, int i2, String str, String str2, int i3, int i4, int i5, int i6, String str3, byte[] bArr, int i7, String str4, byte[] bArr2, int i8, String str5, byte[] bArr3, int i9, int i10, int i11, int i12, int i13) throws RemoteException;
+
+    void ipSecAddSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) throws RemoteException;
+
+    void ipSecAddTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) throws RemoteException;
+
+    int ipSecAllocateSpi(int i, String str, String str2, int i2) throws RemoteException;
+
+    void ipSecApplyTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor, int i, int i2, String str, String str2, int i3) throws RemoteException;
+
+    void ipSecDeleteSecurityAssociation(int i, String str, String str2, int i2, int i3, int i4, int i5) throws RemoteException;
+
+    void ipSecDeleteSecurityPolicy(int i, int i2, int i3, int i4, int i5, int i6) throws RemoteException;
+
+    void ipSecMigrate(IpSecMigrateInfoParcel ipSecMigrateInfoParcel) throws RemoteException;
+
+    void ipSecRemoveTransportModeTransform(ParcelFileDescriptor parcelFileDescriptor) throws RemoteException;
+
+    void ipSecRemoveTunnelInterface(String str) throws RemoteException;
+
+    void ipSecSetEncapSocketOwner(ParcelFileDescriptor parcelFileDescriptor, int i) throws RemoteException;
+
+    void ipSecUpdateSecurityPolicy(int i, int i2, int i3, String str, String str2, int i4, int i5, int i6, int i7) throws RemoteException;
+
+    void ipSecUpdateTunnelInterface(String str, String str2, String str3, int i, int i2, int i3) throws RemoteException;
+
+    void ipfwdAddInterfaceForward(String str, String str2) throws RemoteException;
+
+    void ipfwdDisableForwarding(String str) throws RemoteException;
+
+    void ipfwdEnableForwarding(String str) throws RemoteException;
+
+    boolean ipfwdEnabled() throws RemoteException;
+
+    String[] ipfwdGetRequesterList() throws RemoteException;
+
+    void ipfwdRemoveInterfaceForward(String str, String str2) throws RemoteException;
+
+    boolean isAlive() throws RemoteException;
+
+    void networkAddInterface(int i, String str) throws RemoteException;
+
+    void networkAddLegacyRoute(int i, String str, String str2, String str3, int i2) throws RemoteException;
+
+    void networkAddRoute(int i, String str, String str2, String str3) throws RemoteException;
+
+    void networkAddRouteParcel(int i, RouteInfoParcel routeInfoParcel) throws RemoteException;
+
+    void networkAddUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) throws RemoteException;
+
+    void networkAddUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) throws RemoteException;
+
+    void networkAllowBypassVpnOnNetwork(boolean z, int i, int i2) throws RemoteException;
+
+    boolean networkCanProtect(int i) throws RemoteException;
+
+    void networkClearDefault() throws RemoteException;
+
+    void networkClearPermissionForUser(int[] iArr) throws RemoteException;
+
+    void networkCreate(NativeNetworkConfig nativeNetworkConfig) throws RemoteException;
+
+    @Deprecated
+    void networkCreatePhysical(int i, int i2) throws RemoteException;
+
+    @Deprecated
+    void networkCreateVpn(int i, boolean z) throws RemoteException;
+
+    void networkDestroy(int i) throws RemoteException;
+
+    int networkGetDefault() throws RemoteException;
+
+    void networkRejectNonSecureVpn(boolean z, UidRangeParcel[] uidRangeParcelArr) throws RemoteException;
+
+    void networkRemoveInterface(int i, String str) throws RemoteException;
+
+    void networkRemoveLegacyRoute(int i, String str, String str2, String str3, int i2) throws RemoteException;
+
+    void networkRemoveRoute(int i, String str, String str2, String str3) throws RemoteException;
+
+    void networkRemoveRouteParcel(int i, RouteInfoParcel routeInfoParcel) throws RemoteException;
+
+    void networkRemoveUidRanges(int i, UidRangeParcel[] uidRangeParcelArr) throws RemoteException;
+
+    void networkRemoveUidRangesParcel(NativeUidRangeConfig nativeUidRangeConfig) throws RemoteException;
+
+    void networkSetDefault(int i) throws RemoteException;
+
+    void networkSetPermissionForNetwork(int i, int i2) throws RemoteException;
+
+    void networkSetPermissionForUser(int i, int[] iArr) throws RemoteException;
+
+    void networkSetProtectAllow(int i) throws RemoteException;
+
+    void networkSetProtectDeny(int i) throws RemoteException;
+
+    void networkUpdateRouteParcel(int i, RouteInfoParcel routeInfoParcel) throws RemoteException;
+
+    void registerUnsolicitedEventListener(INetdUnsolicitedEventListener iNetdUnsolicitedEventListener) throws RemoteException;
+
+    void setIPv6AddrGenMode(String str, int i) throws RemoteException;
+
+    void setNetworkAllowlist(NativeUidRangeConfig[] nativeUidRangeConfigArr) throws RemoteException;
+
+    void setProcSysNet(int i, int i2, String str, String str2, String str3) throws RemoteException;
+
+    void setTcpRWmemorySize(String str, String str2) throws RemoteException;
+
+    void socketDestroy(UidRangeParcel[] uidRangeParcelArr, int[] iArr) throws RemoteException;
+
+    void strictUidCleartextPenalty(int i, int i2) throws RemoteException;
+
+    void tetherAddForward(String str, String str2) throws RemoteException;
+
+    boolean tetherApplyDnsInterfaces() throws RemoteException;
+
+    String[] tetherDnsList() throws RemoteException;
+
+    void tetherDnsSet(int i, String[] strArr) throws RemoteException;
+
+    TetherStatsParcel[] tetherGetStats() throws RemoteException;
+
+    void tetherInterfaceAdd(String str) throws RemoteException;
+
+    String[] tetherInterfaceList() throws RemoteException;
+
+    void tetherInterfaceRemove(String str) throws RemoteException;
+
+    boolean tetherIsEnabled() throws RemoteException;
+
+    @Deprecated
+    TetherStatsParcel tetherOffloadGetAndClearStats(int i) throws RemoteException;
+
+    @Deprecated
+    TetherStatsParcel[] tetherOffloadGetStats() throws RemoteException;
+
+    @Deprecated
+    void tetherOffloadRuleAdd(TetherOffloadRuleParcel tetherOffloadRuleParcel) throws RemoteException;
+
+    @Deprecated
+    void tetherOffloadRuleRemove(TetherOffloadRuleParcel tetherOffloadRuleParcel) throws RemoteException;
+
+    @Deprecated
+    void tetherOffloadSetInterfaceQuota(int i, long j) throws RemoteException;
+
+    void tetherRemoveForward(String str, String str2) throws RemoteException;
+
+    void tetherStart(String[] strArr) throws RemoteException;
+
+    void tetherStartWithConfiguration(TetherConfigParcel tetherConfigParcel) throws RemoteException;
+
+    void tetherStop() throws RemoteException;
+
+    @Deprecated
+    void trafficSetNetPermForUids(int i, int[] iArr) throws RemoteException;
+
+    @Deprecated
+    void trafficSwapActiveStatsMap() throws RemoteException;
+
+    void wakeupAddInterface(String str, String str2, int i, int i2) throws RemoteException;
+
+    void wakeupDelInterface(String str, String str2, int i, int i2) throws RemoteException;
 }

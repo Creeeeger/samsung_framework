@@ -1,78 +1,21 @@
 package com.android.server.utils;
 
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.TokenWatcher;
 import android.util.SparseArray;
 import com.android.internal.util.IndentingPrintWriter;
-import com.android.internal.util.jobs.XmlUtils;
+import com.android.server.wm.KeyguardDisableHandler;
 import java.io.PrintWriter;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class UserTokenWatcher {
-    public final Callback mCallback;
+    public final KeyguardDisableHandler.AnonymousClass1 mCallback;
     public final Handler mHandler;
-    public final String mTag;
     public final SparseArray mWatchers = new SparseArray(1);
+    public final String mTag = "WindowManager";
 
-    /* loaded from: classes3.dex */
-    public interface Callback {
-        void acquired(int i);
-
-        void released(int i);
-    }
-
-    public UserTokenWatcher(Callback callback, Handler handler, String str) {
-        this.mCallback = callback;
-        this.mHandler = handler;
-        this.mTag = str;
-    }
-
-    public void acquire(IBinder iBinder, String str, int i) {
-        synchronized (this.mWatchers) {
-            TokenWatcher tokenWatcher = (TokenWatcher) this.mWatchers.get(i);
-            if (tokenWatcher == null) {
-                tokenWatcher = new InnerTokenWatcher(i, this.mHandler, this.mTag);
-                this.mWatchers.put(i, tokenWatcher);
-            }
-            tokenWatcher.acquire(iBinder, str);
-        }
-    }
-
-    public void release(IBinder iBinder, int i) {
-        synchronized (this.mWatchers) {
-            TokenWatcher tokenWatcher = (TokenWatcher) this.mWatchers.get(i);
-            if (tokenWatcher != null) {
-                tokenWatcher.release(iBinder);
-            }
-        }
-    }
-
-    public boolean isAcquired(int i) {
-        boolean z;
-        synchronized (this.mWatchers) {
-            TokenWatcher tokenWatcher = (TokenWatcher) this.mWatchers.get(i);
-            z = tokenWatcher != null && tokenWatcher.isAcquired();
-        }
-        return z;
-    }
-
-    public void dump(PrintWriter printWriter) {
-        synchronized (this.mWatchers) {
-            for (int i = 0; i < this.mWatchers.size(); i++) {
-                int keyAt = this.mWatchers.keyAt(i);
-                TokenWatcher tokenWatcher = (TokenWatcher) this.mWatchers.valueAt(i);
-                if (tokenWatcher.isAcquired()) {
-                    printWriter.print("User ");
-                    printWriter.print(keyAt);
-                    printWriter.println(XmlUtils.STRING_ARRAY_SEPARATOR);
-                    tokenWatcher.dump(new IndentingPrintWriter(printWriter, " "));
-                }
-            }
-        }
-    }
-
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class InnerTokenWatcher extends TokenWatcher {
         public final int mUserId;
 
@@ -82,19 +25,61 @@ public final class UserTokenWatcher {
         }
 
         @Override // android.os.TokenWatcher
-        public void acquired() {
-            UserTokenWatcher.this.mCallback.acquired(this.mUserId);
+        public final void acquired() {
+            KeyguardDisableHandler.AnonymousClass1 anonymousClass1 = UserTokenWatcher.this.mCallback;
+            KeyguardDisableHandler.this.updateKeyguardEnabled(this.mUserId);
         }
 
         @Override // android.os.TokenWatcher
-        public void released() {
-            UserTokenWatcher.this.mCallback.released(this.mUserId);
+        public final void released() {
+            KeyguardDisableHandler.AnonymousClass1 anonymousClass1 = UserTokenWatcher.this.mCallback;
+            KeyguardDisableHandler.this.updateKeyguardEnabled(this.mUserId);
             synchronized (UserTokenWatcher.this.mWatchers) {
-                TokenWatcher tokenWatcher = (TokenWatcher) UserTokenWatcher.this.mWatchers.get(this.mUserId);
-                if (tokenWatcher != null && !tokenWatcher.isAcquired()) {
-                    UserTokenWatcher.this.mWatchers.remove(this.mUserId);
+                try {
+                    TokenWatcher tokenWatcher = (TokenWatcher) UserTokenWatcher.this.mWatchers.get(this.mUserId);
+                    if (tokenWatcher != null && !tokenWatcher.isAcquired()) {
+                        UserTokenWatcher.this.mWatchers.remove(this.mUserId);
+                    }
+                } catch (Throwable th) {
+                    throw th;
                 }
             }
         }
+    }
+
+    public UserTokenWatcher(KeyguardDisableHandler.AnonymousClass1 anonymousClass1, Handler handler) {
+        this.mCallback = anonymousClass1;
+        this.mHandler = handler;
+    }
+
+    public final void dump(PrintWriter printWriter) {
+        synchronized (this.mWatchers) {
+            for (int i = 0; i < this.mWatchers.size(); i++) {
+                try {
+                    int keyAt = this.mWatchers.keyAt(i);
+                    TokenWatcher tokenWatcher = (TokenWatcher) this.mWatchers.valueAt(i);
+                    if (tokenWatcher.isAcquired()) {
+                        printWriter.print("User ");
+                        printWriter.print(keyAt);
+                        printWriter.println(":");
+                        tokenWatcher.dump(new IndentingPrintWriter(printWriter, " "));
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
+    public final boolean isAcquired(int i) {
+        boolean z;
+        synchronized (this.mWatchers) {
+            try {
+                TokenWatcher tokenWatcher = (TokenWatcher) this.mWatchers.get(i);
+                z = tokenWatcher != null && tokenWatcher.isAcquired();
+            } finally {
+            }
+        }
+        return z;
     }
 }

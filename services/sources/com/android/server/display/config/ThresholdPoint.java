@@ -1,53 +1,10 @@
 package com.android.server.display.config;
 
 import java.math.BigDecimal;
-import javax.xml.datatype.DatatypeConfigurationException;
-import org.xmlpull.v1.XmlPullParser;
 
-/* loaded from: classes2.dex */
-public class ThresholdPoint {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class ThresholdPoint {
     public BigDecimal percentage;
     public BigDecimal threshold;
-
-    public final BigDecimal getThreshold() {
-        return this.threshold;
-    }
-
-    public final void setThreshold(BigDecimal bigDecimal) {
-        this.threshold = bigDecimal;
-    }
-
-    public final BigDecimal getPercentage() {
-        return this.percentage;
-    }
-
-    public final void setPercentage(BigDecimal bigDecimal) {
-        this.percentage = bigDecimal;
-    }
-
-    public static ThresholdPoint read(XmlPullParser xmlPullParser) {
-        int next;
-        ThresholdPoint thresholdPoint = new ThresholdPoint();
-        xmlPullParser.getDepth();
-        while (true) {
-            next = xmlPullParser.next();
-            if (next == 1 || next == 3) {
-                break;
-            }
-            if (xmlPullParser.getEventType() == 2) {
-                String name = xmlPullParser.getName();
-                if (name.equals("threshold")) {
-                    thresholdPoint.setThreshold(new BigDecimal(XmlParser.readText(xmlPullParser)));
-                } else if (name.equals("percentage")) {
-                    thresholdPoint.setPercentage(new BigDecimal(XmlParser.readText(xmlPullParser)));
-                } else {
-                    XmlParser.skip(xmlPullParser);
-                }
-            }
-        }
-        if (next == 3) {
-            return thresholdPoint;
-        }
-        throw new DatatypeConfigurationException("ThresholdPoint is not closed");
-    }
 }

@@ -1,101 +1,152 @@
 package com.android.server.biometrics.sensors.face;
 
+import android.content.Context;
+import android.os.Binder;
+import android.os.Build;
 import android.os.ShellCommand;
+import android.util.Pair;
+import android.util.Slog;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.biometrics.AuthenticationStatsCollector;
+import com.android.server.biometrics.Utils;
+import com.android.server.biometrics.sensors.BiometricNotificationImpl;
+import com.android.server.biometrics.sensors.face.aidl.FaceProvider;
 import java.io.PrintWriter;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FaceShellCommand extends ShellCommand {
+public final class FaceShellCommand extends ShellCommand {
     public final FaceService mService;
 
     public FaceShellCommand(FaceService faceService) {
         this.mService = faceService;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:15:0x002f  */
-    /* JADX WARN: Removed duplicated region for block: B:20:0x004f A[Catch: Exception -> 0x0054, TRY_LEAVE, TryCatch #0 {Exception -> 0x0054, blocks: (B:8:0x0008, B:16:0x0031, B:18:0x004a, B:20:0x004f, B:22:0x0017, B:25:0x0022), top: B:7:0x0008 }] */
+    public final void doNotify() {
+        FaceService faceService = this.mService;
+        Context context = faceService.getContext();
+        boolean z = Utils.DEBUG;
+        if (Binder.getCallingUid() != 2000) {
+            Utils.checkPermission(context, "com.samsung.android.bio.face.permission.MANAGE_FACE");
+        }
+        if (Build.IS_DEBUGGABLE) {
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                Pair singleProvider = faceService.mRegistry.getSingleProvider();
+                if (singleProvider != null) {
+                    AuthenticationStatsCollector authenticationStatsCollector = ((FaceProvider) singleProvider.second).mAuthenticationStatsCollector;
+                    BiometricNotificationImpl biometricNotificationImpl = authenticationStatsCollector.mBiometricNotification;
+                    Context context2 = authenticationStatsCollector.mContext;
+                    biometricNotificationImpl.getClass();
+                    BiometricNotificationImpl.sendFaceEnrollNotification(context2);
+                } else {
+                    Slog.w("FaceService", "Null provider for notification");
+                }
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+            } catch (Throwable th) {
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                throw th;
+            }
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:17:0x0046  */
+    /* JADX WARN: Removed duplicated region for block: B:29:0x0075 A[Catch: Exception -> 0x002b, TRY_LEAVE, TryCatch #0 {Exception -> 0x002b, blocks: (B:8:0x000a, B:19:0x004a, B:21:0x0056, B:23:0x005a, B:26:0x0071, B:28:0x006e, B:29:0x0075, B:31:0x0020, B:34:0x002d, B:37:0x0038), top: B:7:0x000a }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public int onCommand(java.lang.String r5) {
+    public final int onCommand(java.lang.String r8) {
         /*
-            r4 = this;
-            r0 = 1
-            if (r5 != 0) goto L7
-            r4.onHelp()
-            return r0
-        L7:
-            r1 = -1
-            int r2 = r5.hashCode()     // Catch: java.lang.Exception -> L54
-            r3 = 3198785(0x30cf41, float:4.482453E-39)
-            if (r2 == r3) goto L22
-            r3 = 3545755(0x361a9b, float:4.968661E-39)
-            if (r2 == r3) goto L17
-            goto L2c
-        L17:
-            java.lang.String r2 = "sync"
-            boolean r2 = r5.equals(r2)     // Catch: java.lang.Exception -> L54
-            if (r2 == 0) goto L2c
-            r2 = r0
-            goto L2d
-        L22:
-            java.lang.String r2 = "help"
-            boolean r2 = r5.equals(r2)     // Catch: java.lang.Exception -> L54
-            if (r2 == 0) goto L2c
-            r2 = 0
-            goto L2d
-        L2c:
-            r2 = r1
-        L2d:
-            if (r2 == 0) goto L4f
-            if (r2 == r0) goto L4a
-            java.io.PrintWriter r0 = r4.getOutPrintWriter()     // Catch: java.lang.Exception -> L54
-            java.lang.StringBuilder r2 = new java.lang.StringBuilder     // Catch: java.lang.Exception -> L54
-            r2.<init>()     // Catch: java.lang.Exception -> L54
-            java.lang.String r3 = "Unrecognized command: "
-            r2.append(r3)     // Catch: java.lang.Exception -> L54
-            r2.append(r5)     // Catch: java.lang.Exception -> L54
-            java.lang.String r5 = r2.toString()     // Catch: java.lang.Exception -> L54
-            r0.println(r5)     // Catch: java.lang.Exception -> L54
-            goto L6d
-        L4a:
-            int r4 = r4.doSync()     // Catch: java.lang.Exception -> L54
-            return r4
-        L4f:
-            int r4 = r4.doHelp()     // Catch: java.lang.Exception -> L54
-            return r4
-        L54:
-            r5 = move-exception
-            java.io.PrintWriter r4 = r4.getOutPrintWriter()
-            java.lang.StringBuilder r0 = new java.lang.StringBuilder
-            r0.<init>()
-            java.lang.String r2 = "Exception: "
-            r0.append(r2)
-            r0.append(r5)
-            java.lang.String r5 = r0.toString()
-            r4.println(r5)
-        L6d:
+            r7 = this;
+            java.lang.String r0 = "Unrecognized command: "
+            r1 = 1
+            if (r8 != 0) goto L9
+            r7.onHelp()
             return r1
+        L9:
+            r2 = -1
+            int r3 = r8.hashCode()     // Catch: java.lang.Exception -> L2b
+            r4 = 3198785(0x30cf41, float:4.482453E-39)
+            r5 = 2
+            r6 = 0
+            if (r3 == r4) goto L38
+            r4 = 3545755(0x361a9b, float:4.968661E-39)
+            if (r3 == r4) goto L2d
+            r4 = 595233003(0x237a88eb, float:1.3581521E-17)
+            if (r3 == r4) goto L20
+            goto L43
+        L20:
+            java.lang.String r3 = "notification"
+            boolean r3 = r8.equals(r3)     // Catch: java.lang.Exception -> L2b
+            if (r3 == 0) goto L43
+            r3 = r5
+            goto L44
+        L2b:
+            r8 = move-exception
+            goto L79
+        L2d:
+            java.lang.String r3 = "sync"
+            boolean r3 = r8.equals(r3)     // Catch: java.lang.Exception -> L2b
+            if (r3 == 0) goto L43
+            r3 = r1
+            goto L44
+        L38:
+            java.lang.String r3 = "help"
+            boolean r3 = r8.equals(r3)     // Catch: java.lang.Exception -> L2b
+            if (r3 == 0) goto L43
+            r3 = r6
+            goto L44
+        L43:
+            r3 = r2
+        L44:
+            if (r3 == 0) goto L75
+            if (r3 == r1) goto L5a
+            if (r3 == r5) goto L56
+            java.io.PrintWriter r1 = r7.getOutPrintWriter()     // Catch: java.lang.Exception -> L2b
+            java.lang.String r8 = r0.concat(r8)     // Catch: java.lang.Exception -> L2b
+            r1.println(r8)     // Catch: java.lang.Exception -> L2b
+            goto L8e
+        L56:
+            r7.doNotify()     // Catch: java.lang.Exception -> L2b
+            return r6
+        L5a:
+            com.android.server.biometrics.sensors.face.FaceService r8 = r7.mService     // Catch: java.lang.Exception -> L2b
+            android.content.Context r8 = r8.getContext()     // Catch: java.lang.Exception -> L2b
+            java.lang.String r0 = "com.samsung.android.bio.face.permission.MANAGE_FACE"
+            boolean r1 = com.android.server.biometrics.Utils.DEBUG     // Catch: java.lang.Exception -> L2b
+            int r1 = android.os.Binder.getCallingUid()     // Catch: java.lang.Exception -> L2b
+            r3 = 2000(0x7d0, float:2.803E-42)
+            if (r1 != r3) goto L6e
+            goto L71
+        L6e:
+            com.android.server.biometrics.Utils.checkPermission(r8, r0)     // Catch: java.lang.Exception -> L2b
+        L71:
+            com.android.server.biometrics.Flags.faceVhalFeature()     // Catch: java.lang.Exception -> L2b
+            return r6
+        L75:
+            r7.onHelp()     // Catch: java.lang.Exception -> L2b
+            return r6
+        L79:
+            java.io.PrintWriter r7 = r7.getOutPrintWriter()
+            java.lang.StringBuilder r0 = new java.lang.StringBuilder
+            java.lang.String r1 = "Exception: "
+            r0.<init>(r1)
+            r0.append(r8)
+            java.lang.String r8 = r0.toString()
+            r7.println(r8)
+        L8e:
+            return r2
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.biometrics.sensors.face.FaceShellCommand.onCommand(java.lang.String):int");
     }
 
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.println("Face Service commands:");
         outPrintWriter.println("  help");
         outPrintWriter.println("      Print this help text.");
         outPrintWriter.println("  sync");
-        outPrintWriter.println("      Sync enrollments now (virtualized sensors only).");
-    }
-
-    public final int doHelp() {
-        onHelp();
-        return 0;
-    }
-
-    public final int doSync() {
-        this.mService.syncEnrollmentsNow();
-        return 0;
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "      Sync enrollments now (virtualized sensors only).", "  notification", "     Sends a Face re-enrollment notification");
     }
 }

@@ -10,71 +10,42 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.util.Log;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0;
 import com.android.server.ServiceKeeper;
+import com.android.server.VpnManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.GestureWakeup$$ExternalSyntheticOutline0;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class BlockchainTZService extends IBlockchainManager.Stub {
     public static final boolean DEBUG = !SystemProperties.getBoolean("ro.product_ship", true);
     public static Context mContext;
     public Map mRegisteredFWKClientMap;
 
-    public native byte[] nativeGetCredential(int i);
-
-    public native boolean nativePutCredential(int i, byte[] bArr);
-
-    public native int nativeSspExit();
-
-    public native int nativeSspInit();
-
-    public static int checkCallerPermissionFor(String str) {
-        if (ServiceKeeper.isAuthorized(mContext, Binder.getCallingPid(), Binder.getCallingUid(), "BlockchainTZService", str) != 0) {
-            SecurityException securityException = new SecurityException("Security Exception Occurred while pid[" + Binder.getCallingPid() + "] with uid[" + Binder.getCallingUid() + "] trying to access methodName [" + str + "] in [BlockchainTZService] service");
-            Log.d("BlockchainTZService", "BlockchainTZService() - Invalid Caller");
-            throw securityException;
-        }
-        Log.d("BlockchainTZService", "BlockchainTZService() - Valid Caller");
-        return 0;
-    }
-
-    /* loaded from: classes.dex */
-    public class FrameworkClient {
-        public ClientBinderDeathReceiver mBinderDeathReceiver;
-        public BlockchainTZServiceCommnInfo mCommnInfo;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class FrameworkClient {
+        public final ClientBinderDeathReceiver mBinderDeathReceiver;
+        public final BlockchainTZServiceCommnInfo mCommnInfo;
         public final String mPackageName;
         public final int mPid;
-        public final int mUid;
 
-        public FrameworkClient(BlockchainTZServiceConfig blockchainTZServiceConfig, BlockchainTZServiceCommnInfo blockchainTZServiceCommnInfo, int i, int i2, String str) {
-            this.mBinderDeathReceiver = null;
-            this.mCommnInfo = blockchainTZServiceCommnInfo;
-            this.mUid = i;
-            this.mPid = i2;
-            this.mPackageName = str;
-            ClientBinderDeathReceiver clientBinderDeathReceiver = new ClientBinderDeathReceiver();
-            this.mBinderDeathReceiver = clientBinderDeathReceiver;
-            clientBinderDeathReceiver.setReceiver(blockchainTZServiceConfig.mClient);
-            try {
-                blockchainTZServiceConfig.mClient.linkToDeath(this.mBinderDeathReceiver, 0);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-
-        /* loaded from: classes.dex */
-        public class ClientBinderDeathReceiver implements IBinder.DeathRecipient {
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class ClientBinderDeathReceiver implements IBinder.DeathRecipient {
             public IBinder mReceiver;
-
-            public void setReceiver(IBinder iBinder) {
-                this.mReceiver = iBinder;
-            }
 
             public ClientBinderDeathReceiver() {
             }
 
             @Override // android.os.IBinder.DeathRecipient
-            public void binderDied() {
+            public final void binderDied() {
                 Log.e("BlockchainTZService", "Error: Framework App dead, unloading loaded TAs");
                 deleteClient();
             }
@@ -85,7 +56,8 @@ public class BlockchainTZService extends IBlockchainManager.Stub {
                     TAController tAController = (TAController) FrameworkClient.this.mCommnInfo.mTAs.get(num);
                     try {
                         if (num.intValue() == 257 && tAController.SET_QSEE_SECURE_UI) {
-                            Log.d("BlockchainTZService", "sendSecureUIAbortIntent: " + Utils.sendSecureUIAbortIntent(BlockchainTZService.mContext));
+                            Utils.sendSecureUIAbortIntent(BlockchainTZService.mContext);
+                            Log.d("BlockchainTZService", "sendSecureUIAbortIntent: true");
                             int i = 0;
                             while (true) {
                                 if (i >= 10) {
@@ -109,43 +81,38 @@ public class BlockchainTZService extends IBlockchainManager.Stub {
                         e.printStackTrace();
                     }
                 }
-                BlockchainTZService.this.mRegisteredFWKClientMap.remove(FrameworkClient.this.mPackageName);
+                FrameworkClient frameworkClient = FrameworkClient.this;
+                ((HashMap) BlockchainTZService.this.mRegisteredFWKClientMap).remove(frameworkClient.mPackageName);
+            }
+        }
+
+        public FrameworkClient(BlockchainTZServiceConfig blockchainTZServiceConfig, BlockchainTZServiceCommnInfo blockchainTZServiceCommnInfo, int i, String str) {
+            this.mCommnInfo = blockchainTZServiceCommnInfo;
+            this.mPid = i;
+            this.mPackageName = str;
+            ClientBinderDeathReceiver clientBinderDeathReceiver = new ClientBinderDeathReceiver();
+            this.mBinderDeathReceiver = clientBinderDeathReceiver;
+            IBinder iBinder = blockchainTZServiceConfig.mClient;
+            clientBinderDeathReceiver.mReceiver = iBinder;
+            try {
+                iBinder.linkToDeath(clientBinderDeathReceiver, 0);
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
         }
     }
 
-    public BlockchainTZServiceCommnInfo registerBlockchainFW(BlockchainTZServiceConfig blockchainTZServiceConfig) {
-        int callingUid = Binder.getCallingUid();
-        int callingPid = Binder.getCallingPid();
-        String packageNameFromPid = getPackageNameFromPid(callingUid, callingPid);
-        Log.d("BlockchainTZService", "Inside registerBlockchainFW, uid: " + callingUid + ", pid: " + callingPid + ", package: " + packageNameFromPid);
-        if (this.mRegisteredFWKClientMap.containsKey(packageNameFromPid)) {
-            FrameworkClient frameworkClient = (FrameworkClient) this.mRegisteredFWKClientMap.get(packageNameFromPid);
-            if (callingPid != frameworkClient.mPid) {
-                Log.e("BlockchainTZService", "Registered Client Died. Need to Rebind");
-                frameworkClient.mBinderDeathReceiver.deleteClient();
-            } else {
-                Log.e("BlockchainTZService", "Error: Framework App is already registered. Re-Registration not allowed");
-                return null;
-            }
+    public static void checkCallerPermissionFor(String str) {
+        if (ServiceKeeper.isAuthorized(Binder.getCallingPid(), Binder.getCallingUid(), mContext, "BlockchainTZService", str) == 0) {
+            Log.d("BlockchainTZService", "BlockchainTZService() - Valid Caller");
+            return;
         }
-        checkCallerPermissionFor("registerBlockchainFW");
-        BlockchainTZServiceCommnInfo blockchainTZServiceCommnInfo = new BlockchainTZServiceCommnInfo();
-        blockchainTZServiceCommnInfo.mServiceVersion = 1;
-        for (Map.Entry entry : blockchainTZServiceConfig.mTAConfigs.entrySet()) {
-            blockchainTZServiceCommnInfo.mTAs.put((Integer) entry.getKey(), new TAController(mContext, ((Integer) entry.getKey()).intValue(), (BlockchainTZServiceConfig.TAConfig) entry.getValue()));
-        }
-        this.mRegisteredFWKClientMap.put(packageNameFromPid, new FrameworkClient(blockchainTZServiceConfig, blockchainTZServiceCommnInfo, callingUid, callingPid, packageNameFromPid));
-        Log.d("BlockchainTZService", "callingApp: " + packageNameFromPid + " is registered, current size: " + this.mRegisteredFWKClientMap.size());
-        return blockchainTZServiceCommnInfo;
+        SecurityException securityException = new SecurityException("Security Exception Occurred while pid[" + Binder.getCallingPid() + "] with uid[" + Binder.getCallingUid() + "] trying to access methodName [" + str + "] in [BlockchainTZService] service");
+        Log.d("BlockchainTZService", "BlockchainTZService() - Invalid Caller");
+        throw securityException;
     }
 
-    public byte[] getMeasurementFile() {
-        checkCallerPermissionFor("getMeasurementFile");
-        return Utils.readFile("/system/tima_measurement_info");
-    }
-
-    public byte[] getCredential(int i) {
+    public final byte[] getCredential(int i) {
         if (DEBUG) {
             Log.d("BlockchainTZService", "getCredential");
         }
@@ -153,7 +120,84 @@ public class BlockchainTZService extends IBlockchainManager.Stub {
         return nativeGetCredential(i);
     }
 
-    public boolean putCredential(int i, byte[] bArr) {
+    public final byte[] getMeasurementFile() {
+        byte[] bArr;
+        FileInputStream fileInputStream;
+        int length;
+        checkCallerPermissionFor("getMeasurementFile");
+        File file = new File("/system/tima_measurement_info");
+        Log.d("com.android.server.blockchain.Utils", "In readFile - Path /system/tima_measurement_info");
+        FileInputStream fileInputStream2 = null;
+        byte[] bArr2 = null;
+        fileInputStream2 = null;
+        try {
+            try {
+                fileInputStream = new FileInputStream(file);
+            } catch (Throwable th) {
+                th = th;
+            }
+            try {
+                try {
+                    Log.d("com.android.server.blockchain.Utils", "File Read - Length = " + file.length());
+                    length = (int) file.length();
+                    bArr = new byte[length];
+                } catch (Exception e) {
+                    e = e;
+                    bArr = null;
+                }
+                try {
+                    if (fileInputStream.read(bArr) != length) {
+                        Log.d("com.android.server.blockchain.Utils", "File Read Failed");
+                    } else {
+                        bArr2 = bArr;
+                    }
+                    try {
+                        fileInputStream.close();
+                        return bArr2;
+                    } catch (IOException unused) {
+                        Log.d("com.android.server.blockchain.Utils", "Error closing InputStream");
+                        return bArr2;
+                    }
+                } catch (Exception e2) {
+                    e = e2;
+                    fileInputStream2 = fileInputStream;
+                    e.printStackTrace();
+                    if (fileInputStream2 != null) {
+                        try {
+                            fileInputStream2.close();
+                        } catch (IOException unused2) {
+                            Log.d("com.android.server.blockchain.Utils", "Error closing InputStream");
+                        }
+                    }
+                    return bArr;
+                }
+            } catch (Throwable th2) {
+                th = th2;
+                fileInputStream2 = fileInputStream;
+                if (fileInputStream2 != null) {
+                    try {
+                        fileInputStream2.close();
+                    } catch (IOException unused3) {
+                        Log.d("com.android.server.blockchain.Utils", "Error closing InputStream");
+                    }
+                }
+                throw th;
+            }
+        } catch (Exception e3) {
+            e = e3;
+            bArr = null;
+        }
+    }
+
+    public native byte[] nativeGetCredential(int i);
+
+    public native boolean nativePutCredential(int i, byte[] bArr);
+
+    public native int nativeSspExit();
+
+    public native int nativeSspInit();
+
+    public final boolean putCredential(int i, byte[] bArr) {
         if (DEBUG) {
             Log.d("BlockchainTZService", "putCredential");
         }
@@ -161,15 +205,89 @@ public class BlockchainTZService extends IBlockchainManager.Stub {
         return nativePutCredential(i, bArr);
     }
 
-    public int sspInit() {
-        if (DEBUG) {
-            Log.d("BlockchainTZService", "sspInit");
+    public final BlockchainTZServiceCommnInfo registerBlockchainFW(BlockchainTZServiceConfig blockchainTZServiceConfig) {
+        String str;
+        Iterator it;
+        int callingUid = Binder.getCallingUid();
+        int callingPid = Binder.getCallingPid();
+        ActivityManager activityManager = (ActivityManager) mContext.getSystemService("activity");
+        String str2 = "BlockchainTZService";
+        if (activityManager.getRunningAppProcesses() != null) {
+            for (ActivityManager.RunningAppProcessInfo runningAppProcessInfo : activityManager.getRunningAppProcesses()) {
+                if (runningAppProcessInfo.pid == callingPid) {
+                    str = runningAppProcessInfo.processName;
+                    break;
+                }
+            }
+        } else {
+            Log.e("BlockchainTZService", "Error: am.getRunningAppProcesses() is null");
         }
-        checkCallerPermissionFor("sspInit");
-        return nativeSspInit();
+        str = null;
+        if (str == null) {
+            Log.e("BlockchainTZService", "Error: can't find processname for PID");
+            str = Integer.toString(callingUid);
+        }
+        String str3 = str;
+        VpnManagerService$$ExternalSyntheticOutline0.m(ArrayUtils$$ExternalSyntheticOutline0.m(callingUid, callingPid, "Inside registerBlockchainFW, uid: ", ", pid: ", ", package: "), str3, "BlockchainTZService");
+        if (((HashMap) this.mRegisteredFWKClientMap).containsKey(str3)) {
+            FrameworkClient frameworkClient = (FrameworkClient) ((HashMap) this.mRegisteredFWKClientMap).get(str3);
+            if (callingPid == frameworkClient.mPid) {
+                Log.e("BlockchainTZService", "Error: Framework App is already registered. Re-Registration not allowed");
+                return null;
+            }
+            Log.e("BlockchainTZService", "Registered Client Died. Need to Rebind");
+            frameworkClient.mBinderDeathReceiver.deleteClient();
+        }
+        checkCallerPermissionFor("registerBlockchainFW");
+        BlockchainTZServiceCommnInfo blockchainTZServiceCommnInfo = new BlockchainTZServiceCommnInfo();
+        blockchainTZServiceCommnInfo.mServiceVersion = 1;
+        Iterator it2 = blockchainTZServiceConfig.mTAConfigs.entrySet().iterator();
+        while (it2.hasNext()) {
+            Map.Entry entry = (Map.Entry) it2.next();
+            Context context = mContext;
+            int intValue = ((Integer) entry.getKey()).intValue();
+            BlockchainTZServiceConfig.TAConfig tAConfig = (BlockchainTZServiceConfig.TAConfig) entry.getValue();
+            TAController tAController = new TAController();
+            tAController.SET_QSEE_SECURE_UI = false;
+            if (TAController.DEBUG) {
+                StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(intValue, "TAController constructor: taId = ", "; maxSendCmdSize = ");
+                m.append(tAConfig.maxSendCmdSize);
+                m.append("; maxRecvRespSize = ");
+                GestureWakeup$$ExternalSyntheticOutline0.m(m, tAConfig.maxRecvRespSize, str2);
+            }
+            tAController.mContext = context;
+            tAController.mTAId = intValue;
+            String str4 = tAConfig.taTechnology;
+            String str5 = tAConfig.rootName;
+            String str6 = tAConfig.processName;
+            int i = tAConfig.maxSendCmdSize;
+            int i2 = tAConfig.maxRecvRespSize;
+            BlockchainTZNative blockchainTZNative = new BlockchainTZNative();
+            if (BlockchainTZNative.DEBUG) {
+                it = it2;
+                NetworkScorerAppManager$$ExternalSyntheticOutline0.m(intValue, "BlockchainTZNative constructor: taId = ", str2);
+            } else {
+                it = it2;
+            }
+            blockchainTZNative.mTAId = intValue;
+            blockchainTZNative.mMOPTZNativePtr_ = 0L;
+            blockchainTZNative.mSendBufSize = i;
+            blockchainTZNative.mRecvBufSize = i2;
+            blockchainTZNative.mTATechnology = str4;
+            blockchainTZNative.mRootName = str5;
+            blockchainTZNative.mProcessName = str6;
+            blockchainTZNative.mIsLoaded = false;
+            tAController.mNative = blockchainTZNative;
+            blockchainTZServiceCommnInfo.mTAs.put((Integer) entry.getKey(), tAController);
+            str2 = str2;
+            it2 = it;
+        }
+        ((HashMap) this.mRegisteredFWKClientMap).put(str3, new FrameworkClient(blockchainTZServiceConfig, blockchainTZServiceCommnInfo, callingPid, str3));
+        Log.d(str2, "callingApp: " + str3 + " is registered, current size: " + ((HashMap) this.mRegisteredFWKClientMap).size());
+        return blockchainTZServiceCommnInfo;
     }
 
-    public int sspExit() {
+    public final int sspExit() {
         if (DEBUG) {
             Log.d("BlockchainTZService", "sspExit");
         }
@@ -177,28 +295,11 @@ public class BlockchainTZService extends IBlockchainManager.Stub {
         return nativeSspExit();
     }
 
-    public final String getPackageNameFromPid(int i, int i2) {
-        ActivityManager activityManager = (ActivityManager) mContext.getSystemService("activity");
-        String str = null;
-        if (activityManager.getRunningAppProcesses() != null) {
-            Iterator<ActivityManager.RunningAppProcessInfo> it = activityManager.getRunningAppProcesses().iterator();
-            while (true) {
-                if (!it.hasNext()) {
-                    break;
-                }
-                ActivityManager.RunningAppProcessInfo next = it.next();
-                if (next.pid == i2) {
-                    str = next.processName;
-                    break;
-                }
-            }
-        } else {
-            Log.e("BlockchainTZService", "Error: am.getRunningAppProcesses() is null");
+    public final int sspInit() {
+        if (DEBUG) {
+            Log.d("BlockchainTZService", "sspInit");
         }
-        if (str != null) {
-            return str;
-        }
-        Log.e("BlockchainTZService", "Error: can't find processname for PID");
-        return Integer.toString(i);
+        checkCallerPermissionFor("sspInit");
+        return nativeSspInit();
     }
 }

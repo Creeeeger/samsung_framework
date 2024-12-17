@@ -6,12 +6,15 @@ import android.app.backup.IRestoreSession;
 import android.app.backup.RestoreSet;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManagerInternal;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.Message;
 import android.util.Slog;
+import com.android.server.LocalServices;
+import com.android.server.backup.Flags;
 import com.android.server.backup.TransportManager;
 import com.android.server.backup.UserBackupManagerService;
+import com.android.server.backup.internal.BackupHandler;
 import com.android.server.backup.internal.OnTaskFinishedListener;
 import com.android.server.backup.params.RestoreGetSetsParams;
 import com.android.server.backup.params.RestoreParams;
@@ -20,8 +23,9 @@ import com.android.server.backup.utils.BackupEligibilityRules;
 import java.util.List;
 import java.util.function.BiFunction;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ActiveRestoreSession extends IRestoreSession.Stub {
+public final class ActiveRestoreSession extends IRestoreSession.Stub {
     public final BackupEligibilityRules mBackupEligibilityRules;
     public final UserBackupManagerService mBackupManagerService;
     public final String mPackageName;
@@ -32,25 +36,64 @@ public class ActiveRestoreSession extends IRestoreSession.Stub {
     public boolean mEnded = false;
     public boolean mTimedOut = false;
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class EndRestoreRunnable implements Runnable {
+        public final UserBackupManagerService mBackupManager;
+        public final ActiveRestoreSession mSession;
+
+        public EndRestoreRunnable(UserBackupManagerService userBackupManagerService, ActiveRestoreSession activeRestoreSession) {
+            this.mBackupManager = userBackupManagerService;
+            this.mSession = activeRestoreSession;
+        }
+
+        @Override // java.lang.Runnable
+        public final void run() {
+            ActiveRestoreSession activeRestoreSession;
+            synchronized (this.mSession) {
+                activeRestoreSession = this.mSession;
+                activeRestoreSession.mEnded = true;
+            }
+            UserBackupManagerService userBackupManagerService = this.mBackupManager;
+            synchronized (userBackupManagerService) {
+                try {
+                    if (activeRestoreSession != userBackupManagerService.mActiveRestoreSession) {
+                        Slog.e("BackupManagerService", UserBackupManagerService.addUserIdToLogMessage(userBackupManagerService.mUserId, "ending non-current restore session"));
+                    } else {
+                        Slog.v("BackupManagerService", UserBackupManagerService.addUserIdToLogMessage(userBackupManagerService.mUserId, "Clearing restore session and halting timeout"));
+                        userBackupManagerService.mActiveRestoreSession = null;
+                        userBackupManagerService.mBackupHandler.removeMessages(8);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+    }
+
     public ActiveRestoreSession(UserBackupManagerService userBackupManagerService, String str, String str2, BackupEligibilityRules backupEligibilityRules) {
         this.mBackupManagerService = userBackupManagerService;
         this.mPackageName = str;
-        this.mTransportManager = userBackupManagerService.getTransportManager();
+        this.mTransportManager = userBackupManagerService.mTransportManager;
         this.mTransportName = str2;
-        this.mUserId = userBackupManagerService.getUserId();
+        this.mUserId = userBackupManagerService.mUserId;
         this.mBackupEligibilityRules = backupEligibilityRules;
     }
 
-    public void markTimedOut() {
-        this.mTimedOut = true;
+    public final synchronized void endRestoreSession() {
+        Slog.d("RestoreSession", "endRestoreSession");
+        if (this.mTimedOut) {
+            Slog.i("RestoreSession", "Session already timed out");
+        } else {
+            if (this.mEnded) {
+                throw new IllegalStateException("Restore session already ended");
+            }
+            UserBackupManagerService userBackupManagerService = this.mBackupManagerService;
+            userBackupManagerService.mBackupHandler.post(new EndRestoreRunnable(userBackupManagerService, this));
+        }
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r2v0, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r2v2, types: [long] */
-    public synchronized int getAvailableRestoreSets(IRestoreObserver iRestoreObserver, IBackupManagerMonitor iBackupManagerMonitor) {
-        long j = "getAvailableRestoreSets";
-        this.mBackupManagerService.getContext().enforceCallingOrSelfPermission("android.permission.BACKUP", "getAvailableRestoreSets");
+    public final synchronized int getAvailableRestoreSets(IRestoreObserver iRestoreObserver, IBackupManagerMonitor iBackupManagerMonitor) {
+        this.mBackupManagerService.mContext.enforceCallingOrSelfPermission("android.permission.BACKUP", "getAvailableRestoreSets");
         if (iRestoreObserver == null) {
             throw new IllegalArgumentException("Observer must not be null");
         }
@@ -62,38 +105,41 @@ public class ActiveRestoreSession extends IRestoreSession.Stub {
             return -1;
         }
         try {
-            j = Binder.clearCallingIdentity();
-            final TransportConnection transportClient = this.mTransportManager.getTransportClient(this.mTransportName, "RestoreSession.getAvailableRestoreSets()");
-            if (transportClient == null) {
-                Slog.w("RestoreSession", "Null transport client getting restore sets");
+            long clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                TransportConnection transportClient = this.mTransportManager.getTransportClient(this.mTransportName, "RestoreSession.getAvailableRestoreSets()");
+                if (transportClient == null) {
+                    Slog.w("RestoreSession", "Null transport client getting restore sets");
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                    return -1;
+                }
+                this.mBackupManagerService.mBackupHandler.removeMessages(8);
+                UserBackupManagerService.BackupWakeLock backupWakeLock = this.mBackupManagerService.mWakelock;
+                backupWakeLock.acquire();
+                this.mBackupManagerService.mBackupHandler.sendMessage(this.mBackupManagerService.mBackupHandler.obtainMessage(6, new RestoreGetSetsParams(transportClient, this, iRestoreObserver, new ActiveRestoreSession$$ExternalSyntheticLambda0(this.mTransportManager, transportClient, backupWakeLock, 0))));
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return 0;
+            } catch (Exception e) {
+                Slog.e("RestoreSession", "Error in getAvailableRestoreSets", e);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
                 return -1;
             }
-            this.mBackupManagerService.getBackupHandler().removeMessages(8);
-            final UserBackupManagerService.BackupWakeLock wakelock = this.mBackupManagerService.getWakelock();
-            wakelock.acquire();
-            final TransportManager transportManager = this.mTransportManager;
-            this.mBackupManagerService.getBackupHandler().sendMessage(this.mBackupManagerService.getBackupHandler().obtainMessage(6, new RestoreGetSetsParams(transportClient, this, iRestoreObserver, iBackupManagerMonitor, new OnTaskFinishedListener() { // from class: com.android.server.backup.restore.ActiveRestoreSession$$ExternalSyntheticLambda2
-                @Override // com.android.server.backup.internal.OnTaskFinishedListener
-                public final void onFinished(String str) {
-                    ActiveRestoreSession.lambda$getAvailableRestoreSets$0(TransportManager.this, transportClient, wakelock, str);
-                }
-            })));
-            return 0;
-        } catch (Exception e) {
-            Slog.e("RestoreSession", "Error in getAvailableRestoreSets", e);
-            return -1;
-        } finally {
-            Binder.restoreCallingIdentity(j);
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity("getAvailableRestoreSets");
+            throw th;
         }
     }
 
-    public static /* synthetic */ void lambda$getAvailableRestoreSets$0(TransportManager transportManager, TransportConnection transportConnection, UserBackupManagerService.BackupWakeLock backupWakeLock, String str) {
-        transportManager.disposeOfTransportClient(transportConnection, str);
-        backupWakeLock.release();
+    public BackupEligibilityRules getBackupEligibilityRules(RestoreSet restoreSet) {
+        boolean equals = "D2D".equals(restoreSet.device);
+        if (Flags.enableSkippingRestoreLaunchedApps()) {
+            return new BackupEligibilityRules(this.mBackupManagerService.mPackageManager, (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class), this.mUserId, this.mBackupManagerService.mContext, equals ? 1 : 0, (restoreSet.backupTransportFlags & 4) != 0);
+        }
+        return this.mBackupManagerService.getEligibilityRulesForOperation(equals ? 1 : 0);
     }
 
-    public synchronized int restoreAll(final long j, final IRestoreObserver iRestoreObserver, final IBackupManagerMonitor iBackupManagerMonitor) {
-        this.mBackupManagerService.getContext().enforceCallingOrSelfPermission("android.permission.BACKUP", "performRestore");
+    public final synchronized int restoreAll(long j, IRestoreObserver iRestoreObserver, IBackupManagerMonitor iBackupManagerMonitor) {
+        this.mBackupManagerService.mContext.enforceCallingOrSelfPermission("android.permission.BACKUP", "performRestore");
         Slog.d("RestoreSession", "restoreAll token=" + Long.toHexString(j) + " observer=" + iRestoreObserver);
         if (this.mEnded) {
             throw new IllegalStateException("Restore session already ended");
@@ -114,20 +160,12 @@ public class ActiveRestoreSession extends IRestoreSession.Stub {
             Slog.e("RestoreSession", "Transport " + this.mTransportName + " not registered");
             return -1;
         }
-        synchronized (this.mBackupManagerService.getQueueLock()) {
+        synchronized (this.mBackupManagerService.mQueueLock) {
             for (int i = 0; i < this.mRestoreSets.size(); i++) {
                 if (j == ((RestoreSet) this.mRestoreSets.get(i)).token) {
                     long clearCallingIdentity = Binder.clearCallingIdentity();
-                    final RestoreSet restoreSet = (RestoreSet) this.mRestoreSets.get(i);
                     try {
-                        return sendRestoreToHandlerLocked(new BiFunction() { // from class: com.android.server.backup.restore.ActiveRestoreSession$$ExternalSyntheticLambda0
-                            @Override // java.util.function.BiFunction
-                            public final Object apply(Object obj, Object obj2) {
-                                RestoreParams lambda$restoreAll$1;
-                                lambda$restoreAll$1 = ActiveRestoreSession.this.lambda$restoreAll$1(iRestoreObserver, iBackupManagerMonitor, j, restoreSet, (TransportConnection) obj, (OnTaskFinishedListener) obj2);
-                                return lambda$restoreAll$1;
-                            }
-                        }, "RestoreSession.restoreAll()");
+                        return sendRestoreToHandlerLocked(new ActiveRestoreSession$$ExternalSyntheticLambda2(this, iRestoreObserver, iBackupManagerMonitor, j, (RestoreSet) this.mRestoreSets.get(i)), "RestoreSession.restoreAll()");
                     } finally {
                         Binder.restoreCallingIdentity(clearCallingIdentity);
                     }
@@ -138,98 +176,7 @@ public class ActiveRestoreSession extends IRestoreSession.Stub {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ RestoreParams lambda$restoreAll$1(IRestoreObserver iRestoreObserver, IBackupManagerMonitor iBackupManagerMonitor, long j, RestoreSet restoreSet, TransportConnection transportConnection, OnTaskFinishedListener onTaskFinishedListener) {
-        return RestoreParams.createForRestoreAll(transportConnection, iRestoreObserver, iBackupManagerMonitor, j, onTaskFinishedListener, getBackupEligibilityRules(restoreSet));
-    }
-
-    public synchronized int restorePackages(final long j, final IRestoreObserver iRestoreObserver, final String[] strArr, final IBackupManagerMonitor iBackupManagerMonitor) {
-        this.mBackupManagerService.getContext().enforceCallingOrSelfPermission("android.permission.BACKUP", "performRestore");
-        StringBuilder sb = new StringBuilder(128);
-        sb.append("restorePackages token=");
-        sb.append(Long.toHexString(j));
-        sb.append(" observer=");
-        if (iRestoreObserver == null) {
-            sb.append("null");
-        } else {
-            sb.append(iRestoreObserver.toString());
-        }
-        sb.append(" monitor=");
-        if (iBackupManagerMonitor == null) {
-            sb.append("null");
-        } else {
-            sb.append(iBackupManagerMonitor.toString());
-        }
-        sb.append(" packages=");
-        if (strArr == null) {
-            sb.append("null");
-        } else {
-            sb.append('{');
-            boolean z = true;
-            for (String str : strArr) {
-                if (z) {
-                    z = false;
-                } else {
-                    sb.append(", ");
-                }
-                sb.append(str);
-            }
-            sb.append('}');
-        }
-        Slog.d("RestoreSession", sb.toString());
-        if (this.mEnded) {
-            throw new IllegalStateException("Restore session already ended");
-        }
-        if (this.mTimedOut) {
-            Slog.i("RestoreSession", "Session already timed out");
-            return -1;
-        }
-        if (this.mRestoreSets == null) {
-            Slog.e("RestoreSession", "Ignoring restoreAll() with no restore set");
-            return -1;
-        }
-        if (this.mPackageName != null) {
-            Slog.e("RestoreSession", "Ignoring restoreAll() on single-package session");
-            return -1;
-        }
-        if (!this.mTransportManager.isTransportRegistered(this.mTransportName)) {
-            Slog.e("RestoreSession", "Transport " + this.mTransportName + " not registered");
-            return -1;
-        }
-        synchronized (this.mBackupManagerService.getQueueLock()) {
-            for (int i = 0; i < this.mRestoreSets.size(); i++) {
-                if (j == ((RestoreSet) this.mRestoreSets.get(i)).token) {
-                    long clearCallingIdentity = Binder.clearCallingIdentity();
-                    final RestoreSet restoreSet = (RestoreSet) this.mRestoreSets.get(i);
-                    try {
-                        return sendRestoreToHandlerLocked(new BiFunction() { // from class: com.android.server.backup.restore.ActiveRestoreSession$$ExternalSyntheticLambda1
-                            @Override // java.util.function.BiFunction
-                            public final Object apply(Object obj, Object obj2) {
-                                RestoreParams lambda$restorePackages$2;
-                                lambda$restorePackages$2 = ActiveRestoreSession.this.lambda$restorePackages$2(iRestoreObserver, iBackupManagerMonitor, j, strArr, restoreSet, (TransportConnection) obj, (OnTaskFinishedListener) obj2);
-                                return lambda$restorePackages$2;
-                            }
-                        }, "RestoreSession.restorePackages(" + strArr.length + " packages)");
-                    } finally {
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                    }
-                }
-            }
-            Slog.w("RestoreSession", "Restore token " + Long.toHexString(j) + " not found");
-            return -1;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ RestoreParams lambda$restorePackages$2(IRestoreObserver iRestoreObserver, IBackupManagerMonitor iBackupManagerMonitor, long j, String[] strArr, RestoreSet restoreSet, TransportConnection transportConnection, OnTaskFinishedListener onTaskFinishedListener) {
-        return RestoreParams.createForRestorePackages(transportConnection, iRestoreObserver, iBackupManagerMonitor, j, strArr, strArr.length > 1, onTaskFinishedListener, getBackupEligibilityRules(restoreSet));
-    }
-
-    public final BackupEligibilityRules getBackupEligibilityRules(RestoreSet restoreSet) {
-        return this.mBackupManagerService.getEligibilityRulesForOperation("D2D".equals(restoreSet.device) ? 1 : 0);
-    }
-
-    public synchronized int restorePackage(String str, final IRestoreObserver iRestoreObserver, final IBackupManagerMonitor iBackupManagerMonitor) {
+    public final synchronized int restorePackage(String str, IRestoreObserver iRestoreObserver, IBackupManagerMonitor iBackupManagerMonitor) {
         Slog.v("RestoreSession", "restorePackage pkg=" + str + " obs=" + iRestoreObserver + "monitor=" + iBackupManagerMonitor);
         if (this.mEnded) {
             throw new IllegalStateException("Restore session already ended");
@@ -244,8 +191,8 @@ public class ActiveRestoreSession extends IRestoreSession.Stub {
             return -1;
         }
         try {
-            final PackageInfo packageInfoAsUser = this.mBackupManagerService.getPackageManager().getPackageInfoAsUser(str, 0, this.mUserId);
-            if (this.mBackupManagerService.getContext().checkPermission("android.permission.BACKUP", Binder.getCallingPid(), Binder.getCallingUid()) == -1 && packageInfoAsUser.applicationInfo.uid != Binder.getCallingUid()) {
+            PackageInfo packageInfoAsUser = this.mBackupManagerService.mPackageManager.getPackageInfoAsUser(str, 0, this.mUserId);
+            if (this.mBackupManagerService.mContext.checkPermission("android.permission.BACKUP", Binder.getCallingPid(), Binder.getCallingUid()) == -1 && packageInfoAsUser.applicationInfo.uid != Binder.getCallingUid()) {
                 Slog.w("RestoreSession", "restorePackage: bad packageName=" + str + " or calling uid=" + Binder.getCallingUid());
                 throw new SecurityException("No permission to restore other packages");
             }
@@ -255,20 +202,13 @@ public class ActiveRestoreSession extends IRestoreSession.Stub {
             }
             long clearCallingIdentity = Binder.clearCallingIdentity();
             try {
-                final long availableRestoreToken = this.mBackupManagerService.getAvailableRestoreToken(str);
+                long availableRestoreToken = this.mBackupManagerService.getAvailableRestoreToken(str);
                 Slog.v("RestoreSession", "restorePackage pkg=" + str + " token=" + Long.toHexString(availableRestoreToken));
                 if (availableRestoreToken == 0) {
                     Slog.w("RestoreSession", "No data available for this package; not restoring");
                     return -1;
                 }
-                return sendRestoreToHandlerLocked(new BiFunction() { // from class: com.android.server.backup.restore.ActiveRestoreSession$$ExternalSyntheticLambda3
-                    @Override // java.util.function.BiFunction
-                    public final Object apply(Object obj, Object obj2) {
-                        RestoreParams lambda$restorePackage$3;
-                        lambda$restorePackage$3 = ActiveRestoreSession.this.lambda$restorePackage$3(iRestoreObserver, iBackupManagerMonitor, availableRestoreToken, packageInfoAsUser, (TransportConnection) obj, (OnTaskFinishedListener) obj2);
-                        return lambda$restorePackage$3;
-                    }
-                }, "RestoreSession.restorePackage(" + str + ")");
+                return sendRestoreToHandlerLocked(new ActiveRestoreSession$$ExternalSyntheticLambda2(this, iRestoreObserver, iBackupManagerMonitor, availableRestoreToken, packageInfoAsUser), "RestoreSession.restorePackage(" + str + ")");
             } finally {
                 Binder.restoreCallingIdentity(clearCallingIdentity);
             }
@@ -278,73 +218,108 @@ public class ActiveRestoreSession extends IRestoreSession.Stub {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ RestoreParams lambda$restorePackage$3(IRestoreObserver iRestoreObserver, IBackupManagerMonitor iBackupManagerMonitor, long j, PackageInfo packageInfo, TransportConnection transportConnection, OnTaskFinishedListener onTaskFinishedListener) {
-        return RestoreParams.createForSinglePackage(transportConnection, iRestoreObserver, iBackupManagerMonitor, j, packageInfo, onTaskFinishedListener, this.mBackupEligibilityRules);
-    }
-
-    public void setRestoreSets(List list) {
-        this.mRestoreSets = list;
+    public final synchronized int restorePackages(final long j, final IRestoreObserver iRestoreObserver, final String[] strArr, final IBackupManagerMonitor iBackupManagerMonitor) {
+        try {
+            this.mBackupManagerService.mContext.enforceCallingOrSelfPermission("android.permission.BACKUP", "performRestore");
+            StringBuilder sb = new StringBuilder(128);
+            sb.append("restorePackages token=");
+            sb.append(Long.toHexString(j));
+            sb.append(" observer=");
+            if (iRestoreObserver == null) {
+                sb.append("null");
+            } else {
+                sb.append(iRestoreObserver.toString());
+            }
+            sb.append(" monitor=");
+            if (iBackupManagerMonitor == null) {
+                sb.append("null");
+            } else {
+                sb.append(iBackupManagerMonitor.toString());
+            }
+            sb.append(" packages=");
+            if (strArr == null) {
+                sb.append("null");
+            } else {
+                sb.append('{');
+                boolean z = true;
+                for (String str : strArr) {
+                    if (z) {
+                        z = false;
+                    } else {
+                        sb.append(", ");
+                    }
+                    sb.append(str);
+                }
+                sb.append('}');
+            }
+            Slog.d("RestoreSession", sb.toString());
+            if (this.mEnded) {
+                throw new IllegalStateException("Restore session already ended");
+            }
+            if (this.mTimedOut) {
+                Slog.i("RestoreSession", "Session already timed out");
+                return -1;
+            }
+            if (this.mRestoreSets == null) {
+                Slog.e("RestoreSession", "Ignoring restoreAll() with no restore set");
+                return -1;
+            }
+            if (this.mPackageName != null) {
+                Slog.e("RestoreSession", "Ignoring restoreAll() on single-package session");
+                return -1;
+            }
+            if (!this.mTransportManager.isTransportRegistered(this.mTransportName)) {
+                Slog.e("RestoreSession", "Transport " + this.mTransportName + " not registered");
+                return -1;
+            }
+            synchronized (this.mBackupManagerService.mQueueLock) {
+                for (int i = 0; i < this.mRestoreSets.size(); i++) {
+                    if (j == ((RestoreSet) this.mRestoreSets.get(i)).token) {
+                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                        final RestoreSet restoreSet = (RestoreSet) this.mRestoreSets.get(i);
+                        try {
+                            return sendRestoreToHandlerLocked(new BiFunction() { // from class: com.android.server.backup.restore.ActiveRestoreSession$$ExternalSyntheticLambda1
+                                @Override // java.util.function.BiFunction
+                                public final Object apply(Object obj, Object obj2) {
+                                    ActiveRestoreSession activeRestoreSession = ActiveRestoreSession.this;
+                                    IRestoreObserver iRestoreObserver2 = iRestoreObserver;
+                                    IBackupManagerMonitor iBackupManagerMonitor2 = iBackupManagerMonitor;
+                                    long j2 = j;
+                                    String[] strArr2 = strArr;
+                                    RestoreSet restoreSet2 = restoreSet;
+                                    TransportConnection transportConnection = (TransportConnection) obj;
+                                    OnTaskFinishedListener onTaskFinishedListener = (OnTaskFinishedListener) obj2;
+                                    activeRestoreSession.getClass();
+                                    return new RestoreParams(transportConnection, iRestoreObserver2, iBackupManagerMonitor2, j2, null, 0, strArr2.length > 1, strArr2, onTaskFinishedListener, activeRestoreSession.getBackupEligibilityRules(restoreSet2));
+                                }
+                            }, "RestoreSession.restorePackages(" + strArr.length + " packages)");
+                        } finally {
+                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                        }
+                    }
+                }
+                Slog.w("RestoreSession", "Restore token " + Long.toHexString(j) + " not found");
+                return -1;
+            }
+        } catch (Throwable th) {
+            throw th;
+        }
     }
 
     public final int sendRestoreToHandlerLocked(BiFunction biFunction, String str) {
-        final TransportConnection transportClient = this.mTransportManager.getTransportClient(this.mTransportName, str);
+        TransportConnection transportClient = this.mTransportManager.getTransportClient(this.mTransportName, str);
         if (transportClient == null) {
             Slog.e("RestoreSession", "Transport " + this.mTransportName + " got unregistered");
             return -1;
         }
-        Handler backupHandler = this.mBackupManagerService.getBackupHandler();
+        BackupHandler backupHandler = this.mBackupManagerService.mBackupHandler;
         backupHandler.removeMessages(8);
-        final UserBackupManagerService.BackupWakeLock wakelock = this.mBackupManagerService.getWakelock();
-        wakelock.acquire();
-        final TransportManager transportManager = this.mTransportManager;
-        OnTaskFinishedListener onTaskFinishedListener = new OnTaskFinishedListener() { // from class: com.android.server.backup.restore.ActiveRestoreSession$$ExternalSyntheticLambda4
-            @Override // com.android.server.backup.internal.OnTaskFinishedListener
-            public final void onFinished(String str2) {
-                ActiveRestoreSession.lambda$sendRestoreToHandlerLocked$4(TransportManager.this, transportClient, wakelock, str2);
-            }
-        };
+        UserBackupManagerService.BackupWakeLock backupWakeLock = this.mBackupManagerService.mWakelock;
+        backupWakeLock.acquire();
+        ActiveRestoreSession$$ExternalSyntheticLambda0 activeRestoreSession$$ExternalSyntheticLambda0 = new ActiveRestoreSession$$ExternalSyntheticLambda0(this.mTransportManager, transportClient, backupWakeLock, 1);
         Message obtainMessage = backupHandler.obtainMessage(3);
-        obtainMessage.obj = biFunction.apply(transportClient, onTaskFinishedListener);
+        obtainMessage.obj = biFunction.apply(transportClient, activeRestoreSession$$ExternalSyntheticLambda0);
         backupHandler.sendMessage(obtainMessage);
         return 0;
-    }
-
-    public static /* synthetic */ void lambda$sendRestoreToHandlerLocked$4(TransportManager transportManager, TransportConnection transportConnection, UserBackupManagerService.BackupWakeLock backupWakeLock, String str) {
-        transportManager.disposeOfTransportClient(transportConnection, str);
-        backupWakeLock.release();
-    }
-
-    /* loaded from: classes.dex */
-    public class EndRestoreRunnable implements Runnable {
-        public UserBackupManagerService mBackupManager;
-        public ActiveRestoreSession mSession;
-
-        public EndRestoreRunnable(UserBackupManagerService userBackupManagerService, ActiveRestoreSession activeRestoreSession) {
-            this.mBackupManager = userBackupManagerService;
-            this.mSession = activeRestoreSession;
-        }
-
-        @Override // java.lang.Runnable
-        public void run() {
-            ActiveRestoreSession activeRestoreSession;
-            synchronized (this.mSession) {
-                activeRestoreSession = this.mSession;
-                activeRestoreSession.mEnded = true;
-            }
-            this.mBackupManager.clearRestoreSession(activeRestoreSession);
-        }
-    }
-
-    public synchronized void endRestoreSession() {
-        Slog.d("RestoreSession", "endRestoreSession");
-        if (this.mTimedOut) {
-            Slog.i("RestoreSession", "Session already timed out");
-        } else {
-            if (this.mEnded) {
-                throw new IllegalStateException("Restore session already ended");
-            }
-            this.mBackupManagerService.getBackupHandler().post(new EndRestoreRunnable(this.mBackupManagerService, this));
-        }
     }
 }

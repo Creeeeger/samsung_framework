@@ -1,84 +1,42 @@
 package com.android.server.net.watchlist;
 
-import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Environment;
 import android.util.Slog;
 import com.android.internal.util.HexDump;
-import java.io.File;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class WatchlistReportDbHelper extends SQLiteOpenHelper {
+public final class WatchlistReportDbHelper extends SQLiteOpenHelper {
     public static final String[] DIGEST_DOMAIN_PROJECTION = {"app_digest", "cnc_domain"};
     public static WatchlistReportDbHelper sInstance;
 
-    /* loaded from: classes2.dex */
-    public class AggregatedResult {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AggregatedResult {
         public final HashMap appDigestCNCList;
         public final Set appDigestList;
-        public final String cncDomainVisited;
 
-        public AggregatedResult(Set set, String str, HashMap hashMap) {
+        public AggregatedResult(Set set, HashMap hashMap) {
             this.appDigestList = set;
-            this.cncDomainVisited = str;
             this.appDigestCNCList = hashMap;
         }
     }
 
-    public static File getSystemWatchlistDbFile() {
-        return new File(Environment.getDataSystemDirectory(), "watchlist_report.db");
-    }
-
-    public WatchlistReportDbHelper(Context context) {
-        super(context, getSystemWatchlistDbFile().getAbsolutePath(), (SQLiteDatabase.CursorFactory) null, 2);
-        setIdleConnectionTimeout(30000L);
-    }
-
-    public static synchronized WatchlistReportDbHelper getInstance(Context context) {
-        synchronized (WatchlistReportDbHelper.class) {
-            WatchlistReportDbHelper watchlistReportDbHelper = sInstance;
-            if (watchlistReportDbHelper != null) {
-                return watchlistReportDbHelper;
-            }
-            WatchlistReportDbHelper watchlistReportDbHelper2 = new WatchlistReportDbHelper(context);
-            sInstance = watchlistReportDbHelper2;
-            return watchlistReportDbHelper2;
-        }
-    }
-
-    @Override // android.database.sqlite.SQLiteOpenHelper
-    public void onCreate(SQLiteDatabase sQLiteDatabase) {
-        sQLiteDatabase.execSQL("CREATE TABLE records(app_digest BLOB,cnc_domain TEXT,timestamp INTEGER DEFAULT 0 )");
-    }
-
-    @Override // android.database.sqlite.SQLiteOpenHelper
-    public void onUpgrade(SQLiteDatabase sQLiteDatabase, int i, int i2) {
-        sQLiteDatabase.execSQL("DROP TABLE IF EXISTS records");
-        onCreate(sQLiteDatabase);
-    }
-
-    public boolean insertNewRecord(byte[] bArr, String str, long j) {
+    public final void cleanup(long j) {
         try {
-            SQLiteDatabase writableDatabase = getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("app_digest", bArr);
-            contentValues.put("cnc_domain", str);
-            contentValues.put("timestamp", Long.valueOf(j));
-            return writableDatabase.insert("records", null, contentValues) != -1;
+            getWritableDatabase().delete("records", DeviceIdleController$$ExternalSyntheticOutline0.m(j, "timestamp< "), null);
         } catch (SQLiteException e) {
-            Slog.e("WatchlistReportDbHelper", "Error opening the database to insert a new record", e);
-            return false;
+            Slog.e("WatchlistReportDbHelper", "Error opening the database to cleanup", e);
         }
     }
 
-    public AggregatedResult getAggregatedRecords(long j) {
+    public final AggregatedResult getAggregatedRecords(long j) {
         Cursor cursor = null;
         try {
             try {
@@ -96,9 +54,12 @@ public class WatchlistReportDbHelper extends SQLiteOpenHelper {
                         String hexString = HexDump.toHexString(query.getBlob(0));
                         String string = query.getString(1);
                         hashSet.add(hexString);
+                        if (cursor != null) {
+                            cursor = string;
+                        }
                         hashMap.put(hexString, string);
                     }
-                    AggregatedResult aggregatedResult = new AggregatedResult(hashSet, null, hashMap);
+                    AggregatedResult aggregatedResult = new AggregatedResult(hashSet, hashMap);
                     query.close();
                     return aggregatedResult;
                 } catch (Throwable th) {
@@ -118,16 +79,14 @@ public class WatchlistReportDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean cleanup(long j) {
-        try {
-            SQLiteDatabase writableDatabase = getWritableDatabase();
-            StringBuilder sb = new StringBuilder();
-            sb.append("timestamp< ");
-            sb.append(j);
-            return writableDatabase.delete("records", sb.toString(), null) != 0;
-        } catch (SQLiteException e) {
-            Slog.e("WatchlistReportDbHelper", "Error opening the database to cleanup", e);
-            return false;
-        }
+    @Override // android.database.sqlite.SQLiteOpenHelper
+    public final void onCreate(SQLiteDatabase sQLiteDatabase) {
+        sQLiteDatabase.execSQL("CREATE TABLE records(app_digest BLOB,cnc_domain TEXT,timestamp INTEGER DEFAULT 0 )");
+    }
+
+    @Override // android.database.sqlite.SQLiteOpenHelper
+    public final void onUpgrade(SQLiteDatabase sQLiteDatabase, int i, int i2) {
+        sQLiteDatabase.execSQL("DROP TABLE IF EXISTS records");
+        sQLiteDatabase.execSQL("CREATE TABLE records(app_digest BLOB,cnc_domain TEXT,timestamp INTEGER DEFAULT 0 )");
     }
 }

@@ -3,18 +3,20 @@ package com.android.server.display;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.hardware.display.DisplayViewport;
 import android.os.IBinder;
-import android.util.Slog;
+import android.util.ArraySet;
 import android.view.Display;
-import android.view.DisplayAddress;
 import android.view.Surface;
 import android.view.SurfaceControl;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
 import com.android.server.display.mode.DisplayModeDirector;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class DisplayDevice {
     public static final Display.Mode EMPTY_DISPLAY_MODE = new Display.Mode.Builder().build();
     public final Context mContext;
@@ -24,17 +26,48 @@ public abstract class DisplayDevice {
     public DisplayDeviceInfo mDebugLastLoggedDeviceInfo;
     public final DisplayAdapter mDisplayAdapter;
     public final IBinder mDisplayToken;
+    public final boolean mIsAnisotropyCorrectionEnabled;
     public final String mUniqueId;
     public int mCurrentLayerStack = -1;
     public int mCurrentFlags = 0;
     public int mCurrentOrientation = -1;
     public DisplayDeviceConfig mDisplayDeviceConfig = null;
 
+    public DisplayDevice(DisplayAdapter displayAdapter, IBinder iBinder, String str, Context context, boolean z) {
+        this.mDisplayAdapter = displayAdapter;
+        this.mDisplayToken = iBinder;
+        this.mUniqueId = str;
+        this.mContext = context;
+        this.mIsAnisotropyCorrectionEnabled = z;
+    }
+
     public void applyPendingDisplayDeviceInfoChangesLocked() {
+    }
+
+    public void dumpLocked(PrintWriter printWriter) {
+        StringBuilder m = BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, this.mUniqueId, "mDisplayToken=", BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, this.mDisplayAdapter.mName, "mUniqueId=", new StringBuilder("mAdapter=")));
+        m.append(this.mDisplayToken);
+        printWriter.println(m.toString());
+        StringBuilder m2 = BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(BinaryTransparencyService$$ExternalSyntheticOutline0.m(new StringBuilder("mCurrentLayerStack="), this.mCurrentLayerStack, printWriter, "mCurrentFlags="), this.mCurrentFlags, printWriter, "mCurrentOrientation="), this.mCurrentOrientation, printWriter, "mCurrentLayerStackRect=");
+        m2.append(this.mCurrentLayerStackRect);
+        printWriter.println(m2.toString());
+        printWriter.println("mCurrentDisplayRect=" + this.mCurrentDisplayRect);
+        printWriter.println("mCurrentSurface=" + this.mCurrentSurface);
+    }
+
+    public Display.Mode getActiveDisplayModeAtStartLocked() {
+        return EMPTY_DISPLAY_MODE;
     }
 
     public boolean getDexEnabledStateLocked() {
         return false;
+    }
+
+    public DisplayDeviceConfig getDisplayDeviceConfig() {
+        if (this.mDisplayDeviceConfig == null) {
+            this.mDisplayDeviceConfig = DisplayDeviceConfig.getConfigFromPmValues(this.mContext, this.mDisplayAdapter.mFeatureFlags);
+        }
+        return this.mDisplayDeviceConfig;
     }
 
     public abstract DisplayDeviceInfo getDisplayDeviceInfoLocked();
@@ -43,10 +76,54 @@ public abstract class DisplayDevice {
         return 0;
     }
 
+    public Point getDisplaySurfaceDefaultSizeLocked() {
+        DisplayDeviceInfo displayDeviceInfoLocked = getDisplayDeviceInfoLocked();
+        int i = displayDeviceInfoLocked.width;
+        int i2 = displayDeviceInfoLocked.height;
+        if (this.mIsAnisotropyCorrectionEnabled && displayDeviceInfoLocked.type == 2) {
+            float f = displayDeviceInfoLocked.yDpi;
+            if (f > FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                float f2 = displayDeviceInfoLocked.xDpi;
+                if (f2 > FullScreenMagnificationGestureHandler.MAX_SCALE) {
+                    if (f2 > f * 1.025f) {
+                        i2 = (int) (((i2 * f2) / f) + 0.5d);
+                    } else if (1.025f * f2 < f) {
+                        i = (int) (((i * f) / f2) + 0.5d);
+                    }
+                }
+            }
+        }
+        return isRotatedLocked() ? new Point(i2, i) : new Point(i, i2);
+    }
+
+    public final Point[] getSupportedResolutionsLocked() {
+        ArraySet arraySet = new ArraySet(2);
+        for (Display.Mode mode : getDisplayDeviceInfoLocked().supportedModes) {
+            arraySet.add(new Point(mode.getPhysicalWidth(), mode.getPhysicalHeight()));
+        }
+        Point[] pointArr = new Point[arraySet.size()];
+        arraySet.toArray(pointArr);
+        Arrays.sort(pointArr, new DisplayDevice$$ExternalSyntheticLambda0());
+        return pointArr;
+    }
+
+    public Display.Mode getSystemPreferredDisplayModeLocked() {
+        return EMPTY_DISPLAY_MODE;
+    }
+
+    public Display.Mode getUserPreferredDisplayModeLocked() {
+        return EMPTY_DISPLAY_MODE;
+    }
+
     public abstract boolean hasStableUniqueId();
 
     public boolean isFirstDisplay() {
         return false;
+    }
+
+    public boolean isRotatedLocked() {
+        int i = this.mCurrentOrientation;
+        return i == 1 || i == 3;
     }
 
     public boolean isWindowManagerMirroringLocked() {
@@ -59,8 +136,12 @@ public abstract class DisplayDevice {
     public void performTraversalLocked(SurfaceControl.Transaction transaction) {
     }
 
-    public Runnable requestDisplayStateLocked(int i, float f, float f2) {
+    public Runnable requestDisplayStateLocked(int i, float f, float f2, DisplayOffloadSessionImpl displayOffloadSessionImpl) {
         return null;
+    }
+
+    public Runnable requestDisplayStateLocked(int i, float f, float f2, DisplayOffloadSessionImpl displayOffloadSessionImpl, int i2, ArrayList arrayList) {
+        return requestDisplayStateLocked(i, f, f2, displayOffloadSessionImpl);
     }
 
     public void setAutoLowLatencyModeLocked(boolean z) {
@@ -82,144 +163,5 @@ public abstract class DisplayDevice {
     }
 
     public void updateDexEnabledStateLocked(boolean z) {
-    }
-
-    public DisplayDevice(DisplayAdapter displayAdapter, IBinder iBinder, String str, Context context) {
-        this.mDisplayAdapter = displayAdapter;
-        this.mDisplayToken = iBinder;
-        this.mUniqueId = str;
-        this.mContext = context;
-    }
-
-    public DisplayDeviceConfig getDisplayDeviceConfig() {
-        if (this.mDisplayDeviceConfig == null) {
-            this.mDisplayDeviceConfig = loadDisplayDeviceConfig();
-        }
-        return this.mDisplayDeviceConfig;
-    }
-
-    public final IBinder getDisplayTokenLocked() {
-        return this.mDisplayToken;
-    }
-
-    public Point getDisplaySurfaceDefaultSizeLocked() {
-        DisplayDeviceInfo displayDeviceInfoLocked = getDisplayDeviceInfoLocked();
-        return new Point(displayDeviceInfoLocked.width, displayDeviceInfoLocked.height);
-    }
-
-    public final String getNameLocked() {
-        return getDisplayDeviceInfoLocked().name;
-    }
-
-    public final String getUniqueId() {
-        return this.mUniqueId;
-    }
-
-    public Runnable requestDisplayStateLocked(int i, float f, float f2, int i2, ArrayList arrayList) {
-        return requestDisplayStateLocked(i, f, f2);
-    }
-
-    public Display.Mode getUserPreferredDisplayModeLocked() {
-        return EMPTY_DISPLAY_MODE;
-    }
-
-    public Display.Mode getSystemPreferredDisplayModeLocked() {
-        return EMPTY_DISPLAY_MODE;
-    }
-
-    public Display.Mode getActiveDisplayModeAtStartLocked() {
-        return EMPTY_DISPLAY_MODE;
-    }
-
-    public final void setLayerStackLocked(SurfaceControl.Transaction transaction, int i, int i2) {
-        if (this.mCurrentLayerStack != i) {
-            this.mCurrentLayerStack = i;
-            transaction.setDisplayLayerStack(this.mDisplayToken, i);
-            Slog.i("DisplayDevice", "[" + i2 + "] Layerstack set to " + i + " for " + this.mUniqueId);
-        }
-    }
-
-    public final void setDisplayFlagsLocked(SurfaceControl.Transaction transaction, int i) {
-        if (this.mCurrentFlags != i) {
-            this.mCurrentFlags = i;
-            transaction.setDisplayFlags(this.mDisplayToken, i);
-        }
-    }
-
-    public final void setProjectionLocked(SurfaceControl.Transaction transaction, int i, Rect rect, Rect rect2) {
-        Rect rect3;
-        Rect rect4;
-        if (this.mCurrentOrientation == i && (rect3 = this.mCurrentLayerStackRect) != null && rect3.equals(rect) && (rect4 = this.mCurrentDisplayRect) != null && rect4.equals(rect2)) {
-            return;
-        }
-        this.mCurrentOrientation = i;
-        if (this.mCurrentLayerStackRect == null) {
-            this.mCurrentLayerStackRect = new Rect();
-        }
-        this.mCurrentLayerStackRect.set(rect);
-        if (this.mCurrentDisplayRect == null) {
-            this.mCurrentDisplayRect = new Rect();
-        }
-        this.mCurrentDisplayRect.set(rect2);
-        Slog.d("DisplayDevice", "setProjectionLocked, orientation=" + i + ", layerStackRect=" + rect + ", displayRect=" + rect2 + " for " + this.mUniqueId);
-        transaction.setDisplayProjection(this.mDisplayToken, i, rect, rect2);
-    }
-
-    public final void setSurfaceLocked(SurfaceControl.Transaction transaction, Surface surface) {
-        if (this.mCurrentSurface != surface) {
-            this.mCurrentSurface = surface;
-            transaction.setDisplaySurface(this.mDisplayToken, surface);
-        }
-    }
-
-    public final void populateViewportLocked(DisplayViewport displayViewport) {
-        displayViewport.orientation = this.mCurrentOrientation;
-        Rect rect = this.mCurrentLayerStackRect;
-        if (rect != null) {
-            displayViewport.logicalFrame.set(rect);
-        } else {
-            displayViewport.logicalFrame.setEmpty();
-        }
-        Rect rect2 = this.mCurrentDisplayRect;
-        if (rect2 != null) {
-            displayViewport.physicalFrame.set(rect2);
-        } else {
-            displayViewport.physicalFrame.setEmpty();
-        }
-        int i = this.mCurrentOrientation;
-        boolean z = true;
-        if (i != 1 && i != 3) {
-            z = false;
-        }
-        DisplayDeviceInfo displayDeviceInfoLocked = getDisplayDeviceInfoLocked();
-        displayViewport.deviceWidth = z ? displayDeviceInfoLocked.height : displayDeviceInfoLocked.width;
-        displayViewport.deviceHeight = z ? displayDeviceInfoLocked.width : displayDeviceInfoLocked.height;
-        displayViewport.uniqueId = displayDeviceInfoLocked.uniqueId;
-        DisplayAddress.Physical physical = displayDeviceInfoLocked.address;
-        if (physical instanceof DisplayAddress.Physical) {
-            displayViewport.physicalPort = Integer.valueOf(physical.getPort());
-        } else {
-            displayViewport.physicalPort = null;
-        }
-    }
-
-    public int getCurrentLayerStackLocked() {
-        return this.mCurrentLayerStack;
-    }
-
-    public void dumpLocked(PrintWriter printWriter) {
-        printWriter.println("mAdapter=" + this.mDisplayAdapter.getName());
-        printWriter.println("mUniqueId=" + this.mUniqueId);
-        printWriter.println("mDisplayToken=" + this.mDisplayToken);
-        printWriter.println("mCurrentLayerStack=" + this.mCurrentLayerStack);
-        printWriter.println("mCurrentFlags=" + this.mCurrentFlags);
-        printWriter.println("mCurrentOrientation=" + this.mCurrentOrientation);
-        printWriter.println("mCurrentLayerStackRect=" + this.mCurrentLayerStackRect);
-        printWriter.println("mCurrentDisplayRect=" + this.mCurrentDisplayRect);
-        printWriter.println("mCurrentSurface=" + this.mCurrentSurface);
-    }
-
-    public final DisplayDeviceConfig loadDisplayDeviceConfig() {
-        return DisplayDeviceConfig.create(this.mContext, false);
     }
 }

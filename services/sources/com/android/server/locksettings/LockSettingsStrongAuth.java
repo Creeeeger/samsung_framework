@@ -17,13 +17,12 @@ import android.util.Log;
 import android.util.Slog;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
-import com.android.internal.util.IndentingPrintWriter;
 import com.android.internal.widget.LockPatternUtils;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import com.android.server.backup.BackupManagerConstants;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public class LockSettingsStrongAuth {
     public static final boolean DEBUG;
     protected static final String NON_STRONG_BIOMETRIC_IDLE_TIMEOUT_ALARM_TAG = "LockSettingsPrimaryAuth.nonStrongBiometricIdleTimeoutForUser";
@@ -31,81 +30,198 @@ public class LockSettingsStrongAuth {
     protected static final String STRONG_AUTH_TIMEOUT_ALARM_TAG = "LockSettingsStrongAuth.timeoutForUser";
     public final AlarmManager mAlarmManager;
     public final Context mContext;
-    public final boolean mDefaultIsNonStrongBiometricAllowed;
     public final int mDefaultStrongAuthFlags;
-    protected final Handler mHandler;
     public final Injector mInjector;
-    protected final SparseBooleanArray mIsNonStrongBiometricAllowedForUser;
     public final LockPatternUtils mLockPatternUtils;
-    protected final ArrayMap mNonStrongBiometricIdleTimeoutAlarmListener;
-    protected final ArrayMap mNonStrongBiometricTimeoutAlarmListener;
-    protected final SparseIntArray mStrongAuthForUser;
-    protected final ArrayMap mStrongAuthTimeoutAlarmListenerForUser;
-    public final RemoteCallbackList mTrackers;
-
-    static {
-        DEBUG = Build.IS_DEBUGGABLE && Log.isLoggable("LockSettingsStrongAuth", 3);
-    }
-
-    public LockSettingsStrongAuth(Context context) {
-        this(context, new Injector());
-    }
-
-    public LockSettingsStrongAuth(Context context, Injector injector) {
-        this.mTrackers = new RemoteCallbackList();
-        this.mStrongAuthForUser = new SparseIntArray();
-        this.mIsNonStrongBiometricAllowedForUser = new SparseBooleanArray();
-        this.mStrongAuthTimeoutAlarmListenerForUser = new ArrayMap();
-        this.mNonStrongBiometricTimeoutAlarmListener = new ArrayMap();
-        this.mNonStrongBiometricIdleTimeoutAlarmListener = new ArrayMap();
-        this.mDefaultIsNonStrongBiometricAllowed = true;
-        this.mHandler = new Handler(Looper.getMainLooper()) { // from class: com.android.server.locksettings.LockSettingsStrongAuth.1
-            @Override // android.os.Handler
-            public void handleMessage(Message message) {
-                switch (message.what) {
-                    case 1:
-                        LockSettingsStrongAuth.this.handleRequireStrongAuth(message.arg1, message.arg2);
-                        return;
-                    case 2:
-                        LockSettingsStrongAuth.this.handleAddStrongAuthTracker((IStrongAuthTracker) message.obj);
-                        return;
-                    case 3:
-                        LockSettingsStrongAuth.this.handleRemoveStrongAuthTracker((IStrongAuthTracker) message.obj);
-                        return;
-                    case 4:
-                        LockSettingsStrongAuth.this.handleRemoveUser(message.arg1);
-                        return;
-                    case 5:
-                        LockSettingsStrongAuth.this.handleScheduleStrongAuthTimeout(message.arg1);
-                        return;
-                    case 6:
-                        LockSettingsStrongAuth.this.handleNoLongerRequireStrongAuth(message.arg1, message.arg2);
-                        return;
-                    case 7:
-                        LockSettingsStrongAuth.this.handleScheduleNonStrongBiometricTimeout(message.arg1);
-                        return;
-                    case 8:
-                        LockSettingsStrongAuth.this.handleStrongBiometricUnlock(message.arg1);
-                        return;
-                    case 9:
-                        LockSettingsStrongAuth.this.handleScheduleNonStrongBiometricIdleTimeout(message.arg1);
-                        return;
-                    case 10:
-                        LockSettingsStrongAuth.this.handleRefreshStrongAuthTimeout(message.arg1);
-                        return;
-                    default:
-                        return;
-                }
+    public final RemoteCallbackList mTrackers = new RemoteCallbackList();
+    protected final SparseIntArray mStrongAuthForUser = new SparseIntArray();
+    protected final SparseBooleanArray mIsNonStrongBiometricAllowedForUser = new SparseBooleanArray();
+    protected final ArrayMap mStrongAuthTimeoutAlarmListenerForUser = new ArrayMap();
+    protected final ArrayMap mNonStrongBiometricTimeoutAlarmListener = new ArrayMap();
+    protected final ArrayMap mNonStrongBiometricIdleTimeoutAlarmListener = new ArrayMap();
+    protected final Handler mHandler = new Handler(Looper.getMainLooper()) { // from class: com.android.server.locksettings.LockSettingsStrongAuth.1
+        @Override // android.os.Handler
+        public final void handleMessage(Message message) {
+            int i = message.what;
+            LockSettingsStrongAuth lockSettingsStrongAuth = LockSettingsStrongAuth.this;
+            switch (i) {
+                case 1:
+                    int i2 = message.arg1;
+                    int i3 = message.arg2;
+                    if (i3 == -1) {
+                        for (int i4 = 0; i4 < lockSettingsStrongAuth.mStrongAuthForUser.size(); i4++) {
+                            int keyAt = lockSettingsStrongAuth.mStrongAuthForUser.keyAt(i4);
+                            int i5 = lockSettingsStrongAuth.mStrongAuthForUser.get(keyAt, lockSettingsStrongAuth.mDefaultStrongAuthFlags);
+                            int i6 = i2 == 0 ? 0 : i5 | i2;
+                            if (i5 != i6) {
+                                lockSettingsStrongAuth.mStrongAuthForUser.put(keyAt, i6);
+                                lockSettingsStrongAuth.notifyStrongAuthTrackers(i6, keyAt);
+                            }
+                        }
+                        break;
+                    } else {
+                        boolean z = LockSettingsStrongAuth.DEBUG;
+                        int i7 = lockSettingsStrongAuth.mStrongAuthForUser.get(i3, lockSettingsStrongAuth.mDefaultStrongAuthFlags);
+                        r8 = i2 != 0 ? i7 | i2 : 0;
+                        if (i7 != r8) {
+                            lockSettingsStrongAuth.mStrongAuthForUser.put(i3, r8);
+                            lockSettingsStrongAuth.notifyStrongAuthTrackers(r8, i3);
+                            break;
+                        }
+                    }
+                    break;
+                case 2:
+                    IStrongAuthTracker iStrongAuthTracker = (IStrongAuthTracker) message.obj;
+                    lockSettingsStrongAuth.mTrackers.register(iStrongAuthTracker);
+                    for (int i8 = 0; i8 < lockSettingsStrongAuth.mStrongAuthForUser.size(); i8++) {
+                        try {
+                            iStrongAuthTracker.onStrongAuthRequiredChanged(lockSettingsStrongAuth.mStrongAuthForUser.valueAt(i8), lockSettingsStrongAuth.mStrongAuthForUser.keyAt(i8));
+                        } catch (RemoteException e) {
+                            Slog.e("LockSettingsStrongAuth", "Exception while adding StrongAuthTracker.", e);
+                        }
+                    }
+                    while (r8 < lockSettingsStrongAuth.mIsNonStrongBiometricAllowedForUser.size()) {
+                        try {
+                            iStrongAuthTracker.onIsNonStrongBiometricAllowedChanged(lockSettingsStrongAuth.mIsNonStrongBiometricAllowedForUser.valueAt(r8), lockSettingsStrongAuth.mIsNonStrongBiometricAllowedForUser.keyAt(r8));
+                        } catch (RemoteException e2) {
+                            Slog.e("LockSettingsStrongAuth", "Exception while adding StrongAuthTracker: IsNonStrongBiometricAllowedChanged.", e2);
+                        }
+                        r8++;
+                    }
+                    break;
+                case 3:
+                    lockSettingsStrongAuth.mTrackers.unregister((IStrongAuthTracker) message.obj);
+                    break;
+                case 4:
+                    int i9 = message.arg1;
+                    int indexOfKey = lockSettingsStrongAuth.mStrongAuthForUser.indexOfKey(i9);
+                    if (indexOfKey >= 0) {
+                        lockSettingsStrongAuth.mStrongAuthForUser.removeAt(indexOfKey);
+                        lockSettingsStrongAuth.notifyStrongAuthTrackers(lockSettingsStrongAuth.mDefaultStrongAuthFlags, i9);
+                    }
+                    int indexOfKey2 = lockSettingsStrongAuth.mIsNonStrongBiometricAllowedForUser.indexOfKey(i9);
+                    if (indexOfKey2 >= 0) {
+                        lockSettingsStrongAuth.mIsNonStrongBiometricAllowedForUser.removeAt(indexOfKey2);
+                        lockSettingsStrongAuth.notifyStrongAuthTrackersForIsNonStrongBiometricAllowed(i9, true);
+                        break;
+                    }
+                    break;
+                case 5:
+                    int i10 = message.arg1;
+                    if (LockSettingsStrongAuth.DEBUG) {
+                        lockSettingsStrongAuth.getClass();
+                        Slog.d("LockSettingsStrongAuth", "handleScheduleStrongAuthTimeout for userId=" + i10);
+                    }
+                    lockSettingsStrongAuth.rescheduleStrongAuthTimeoutAlarm(i10, lockSettingsStrongAuth.mInjector.getElapsedRealtimeMs());
+                    lockSettingsStrongAuth.cancelNonStrongBiometricAlarmListener(i10);
+                    lockSettingsStrongAuth.cancelNonStrongBiometricIdleAlarmListener(i10);
+                    lockSettingsStrongAuth.setIsNonStrongBiometricAllowed(true, i10);
+                    break;
+                case 6:
+                    int i11 = message.arg1;
+                    int i12 = message.arg2;
+                    if (i12 == -1) {
+                        while (r8 < lockSettingsStrongAuth.mStrongAuthForUser.size()) {
+                            int keyAt2 = lockSettingsStrongAuth.mStrongAuthForUser.keyAt(r8);
+                            int i13 = lockSettingsStrongAuth.mStrongAuthForUser.get(keyAt2, lockSettingsStrongAuth.mDefaultStrongAuthFlags);
+                            int i14 = (~i11) & i13;
+                            if (i13 != i14) {
+                                lockSettingsStrongAuth.mStrongAuthForUser.put(keyAt2, i14);
+                                lockSettingsStrongAuth.notifyStrongAuthTrackers(i14, keyAt2);
+                            }
+                            r8++;
+                        }
+                        break;
+                    } else {
+                        boolean z2 = LockSettingsStrongAuth.DEBUG;
+                        int i15 = lockSettingsStrongAuth.mStrongAuthForUser.get(i12, lockSettingsStrongAuth.mDefaultStrongAuthFlags);
+                        int i16 = (~i11) & i15;
+                        if (i15 != i16) {
+                            lockSettingsStrongAuth.mStrongAuthForUser.put(i12, i16);
+                            lockSettingsStrongAuth.notifyStrongAuthTrackers(i16, i12);
+                            break;
+                        }
+                    }
+                    break;
+                case 7:
+                    int i17 = message.arg1;
+                    boolean z3 = LockSettingsStrongAuth.DEBUG;
+                    lockSettingsStrongAuth.getClass();
+                    boolean z4 = LockSettingsStrongAuth.DEBUG;
+                    if (z4) {
+                        AnyMotionDetector$$ExternalSyntheticOutline0.m(i17, "handleScheduleNonStrongBiometricTimeout for userId=", "LockSettingsStrongAuth");
+                    }
+                    long j = SystemProperties.getLong("persist.lock.non_strong_biometric_timeout", 0L);
+                    if (!SystemProperties.get("ro.build.tags", "").equals("test-keys") || j == 0) {
+                        j = BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS;
+                    }
+                    long nextAlarmTimeMs = lockSettingsStrongAuth.mInjector.getNextAlarmTimeMs(j);
+                    if (((NonStrongBiometricTimeoutAlarmListener) lockSettingsStrongAuth.mNonStrongBiometricTimeoutAlarmListener.get(Integer.valueOf(i17))) == null) {
+                        if (z4) {
+                            Slog.d("LockSettingsStrongAuth", "Schedule a new alarm for non-strong biometric fallback timeout");
+                        }
+                        NonStrongBiometricTimeoutAlarmListener nonStrongBiometricTimeoutAlarmListener = lockSettingsStrongAuth.new NonStrongBiometricTimeoutAlarmListener(i17);
+                        lockSettingsStrongAuth.mNonStrongBiometricTimeoutAlarmListener.put(Integer.valueOf(i17), nonStrongBiometricTimeoutAlarmListener);
+                        lockSettingsStrongAuth.updateStrongAuthTimeoutInfo(i17, "lockscreen.non_strong_bio_timeout", nextAlarmTimeMs);
+                        lockSettingsStrongAuth.mAlarmManager.setExact(2, nextAlarmTimeMs, LockSettingsStrongAuth.NON_STRONG_BIOMETRIC_TIMEOUT_ALARM_TAG, nonStrongBiometricTimeoutAlarmListener, lockSettingsStrongAuth.mHandler);
+                    } else if (z4) {
+                        Slog.d("LockSettingsStrongAuth", "There is an existing alarm for non-strong biometric fallback timeout, so do not re-schedule");
+                    }
+                    lockSettingsStrongAuth.cancelNonStrongBiometricIdleAlarmListener(i17);
+                    break;
+                case 8:
+                    int i18 = message.arg1;
+                    if (LockSettingsStrongAuth.DEBUG) {
+                        lockSettingsStrongAuth.getClass();
+                        Slog.d("LockSettingsStrongAuth", "handleStrongBiometricUnlock for userId=" + i18);
+                    }
+                    lockSettingsStrongAuth.cancelNonStrongBiometricAlarmListener(i18);
+                    lockSettingsStrongAuth.cancelNonStrongBiometricIdleAlarmListener(i18);
+                    lockSettingsStrongAuth.setIsNonStrongBiometricAllowed(true, i18);
+                    break;
+                case 9:
+                    int i19 = message.arg1;
+                    boolean z5 = LockSettingsStrongAuth.DEBUG;
+                    lockSettingsStrongAuth.getClass();
+                    boolean z6 = LockSettingsStrongAuth.DEBUG;
+                    if (z6) {
+                        AnyMotionDetector$$ExternalSyntheticOutline0.m(i19, "handleScheduleNonStrongBiometricIdleTimeout for userId=", "LockSettingsStrongAuth");
+                    }
+                    long j2 = SystemProperties.getLong("persist.lock.non_strong_biometric_idle_timeout", 0L);
+                    if (!SystemProperties.get("ro.build.tags", "").equals("test-keys") || j2 == 0) {
+                        j2 = BackupManagerConstants.DEFAULT_KEY_VALUE_BACKUP_INTERVAL_MILLISECONDS;
+                    }
+                    long nextAlarmTimeMs2 = lockSettingsStrongAuth.mInjector.getNextAlarmTimeMs(j2);
+                    NonStrongBiometricIdleTimeoutAlarmListener nonStrongBiometricIdleTimeoutAlarmListener = (NonStrongBiometricIdleTimeoutAlarmListener) lockSettingsStrongAuth.mNonStrongBiometricIdleTimeoutAlarmListener.get(Integer.valueOf(i19));
+                    if (nonStrongBiometricIdleTimeoutAlarmListener != null) {
+                        if (z6) {
+                            Slog.d("LockSettingsStrongAuth", "Cancel existing alarm for non-strong biometric idle timeout");
+                        }
+                        lockSettingsStrongAuth.mAlarmManager.cancel(nonStrongBiometricIdleTimeoutAlarmListener);
+                    } else {
+                        nonStrongBiometricIdleTimeoutAlarmListener = lockSettingsStrongAuth.new NonStrongBiometricIdleTimeoutAlarmListener(i19);
+                        lockSettingsStrongAuth.mNonStrongBiometricIdleTimeoutAlarmListener.put(Integer.valueOf(i19), nonStrongBiometricIdleTimeoutAlarmListener);
+                    }
+                    NonStrongBiometricIdleTimeoutAlarmListener nonStrongBiometricIdleTimeoutAlarmListener2 = nonStrongBiometricIdleTimeoutAlarmListener;
+                    if (z6) {
+                        Slog.d("LockSettingsStrongAuth", "Schedule a new alarm for non-strong biometric idle timeout");
+                    }
+                    lockSettingsStrongAuth.updateStrongAuthTimeoutInfo(i19, "lockscreen.non_strong_bio_idle_timeout", nextAlarmTimeMs2);
+                    lockSettingsStrongAuth.mAlarmManager.setExact(2, nextAlarmTimeMs2, LockSettingsStrongAuth.NON_STRONG_BIOMETRIC_IDLE_TIMEOUT_ALARM_TAG, nonStrongBiometricIdleTimeoutAlarmListener2, lockSettingsStrongAuth.mHandler);
+                    break;
+                case 10:
+                    int i20 = message.arg1;
+                    StrongAuthTimeoutAlarmListener strongAuthTimeoutAlarmListener = (StrongAuthTimeoutAlarmListener) lockSettingsStrongAuth.mStrongAuthTimeoutAlarmListenerForUser.get(Integer.valueOf(i20));
+                    if (strongAuthTimeoutAlarmListener != null) {
+                        lockSettingsStrongAuth.rescheduleStrongAuthTimeoutAlarm(i20, strongAuthTimeoutAlarmListener.mLatestStrongAuthTime);
+                        break;
+                    }
+                    break;
             }
-        };
-        this.mContext = context;
-        this.mInjector = injector;
-        this.mDefaultStrongAuthFlags = injector.getDefaultStrongAuthFlags(context);
-        this.mAlarmManager = injector.getAlarmManager(context);
-        this.mLockPatternUtils = injector.getLockPatternUtils(context);
-    }
+        }
+    };
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class Injector {
         public AlarmManager getAlarmManager(Context context) {
             return (AlarmManager) context.getSystemService(AlarmManager.class);
@@ -115,10 +231,6 @@ public class LockSettingsStrongAuth {
             return LockPatternUtils.StrongAuthTracker.getDefaultFlags(context);
         }
 
-        public long getNextAlarmTimeMs(long j) {
-            return SystemClock.elapsedRealtime() + j;
-        }
-
         public long getElapsedRealtimeMs() {
             return SystemClock.elapsedRealtime();
         }
@@ -126,152 +238,79 @@ public class LockSettingsStrongAuth {
         public LockPatternUtils getLockPatternUtils(Context context) {
             return new LockPatternUtils(context);
         }
-    }
 
-    public final void handleAddStrongAuthTracker(IStrongAuthTracker iStrongAuthTracker) {
-        this.mTrackers.register(iStrongAuthTracker);
-        for (int i = 0; i < this.mStrongAuthForUser.size(); i++) {
-            try {
-                iStrongAuthTracker.onStrongAuthRequiredChanged(this.mStrongAuthForUser.valueAt(i), this.mStrongAuthForUser.keyAt(i));
-            } catch (RemoteException e) {
-                Slog.e("LockSettingsStrongAuth", "Exception while adding StrongAuthTracker.", e);
-            }
-        }
-        for (int i2 = 0; i2 < this.mIsNonStrongBiometricAllowedForUser.size(); i2++) {
-            try {
-                iStrongAuthTracker.onIsNonStrongBiometricAllowedChanged(this.mIsNonStrongBiometricAllowedForUser.valueAt(i2), this.mIsNonStrongBiometricAllowedForUser.keyAt(i2));
-            } catch (RemoteException e2) {
-                Slog.e("LockSettingsStrongAuth", "Exception while adding StrongAuthTracker: IsNonStrongBiometricAllowedChanged.", e2);
-            }
+        public long getNextAlarmTimeMs(long j) {
+            return SystemClock.elapsedRealtime() + j;
         }
     }
 
-    public final void handleRemoveStrongAuthTracker(IStrongAuthTracker iStrongAuthTracker) {
-        this.mTrackers.unregister(iStrongAuthTracker);
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class NonStrongBiometricIdleTimeoutAlarmListener implements AlarmManager.OnAlarmListener {
+        public final int mUserId;
 
-    public final void handleRequireStrongAuth(int i, int i2) {
-        if (i2 == -1) {
-            for (int i3 = 0; i3 < this.mStrongAuthForUser.size(); i3++) {
-                handleRequireStrongAuthOneUser(i, this.mStrongAuthForUser.keyAt(i3));
-            }
-            return;
+        public NonStrongBiometricIdleTimeoutAlarmListener(int i) {
+            this.mUserId = i;
         }
-        handleRequireStrongAuthOneUser(i, i2);
-    }
 
-    public final void handleRequireStrongAuthOneUser(int i, int i2) {
-        int i3 = this.mStrongAuthForUser.get(i2, this.mDefaultStrongAuthFlags);
-        int i4 = i == 0 ? 0 : i | i3;
-        if (i3 != i4) {
-            this.mStrongAuthForUser.put(i2, i4);
-            notifyStrongAuthTrackers(i4, i2);
+        @Override // android.app.AlarmManager.OnAlarmListener
+        public final void onAlarm() {
+            LockSettingsStrongAuth.this.setIsNonStrongBiometricAllowed(false, this.mUserId);
         }
     }
 
-    public final void handleNoLongerRequireStrongAuth(int i, int i2) {
-        if (i2 == -1) {
-            for (int i3 = 0; i3 < this.mStrongAuthForUser.size(); i3++) {
-                handleNoLongerRequireStrongAuthOneUser(i, this.mStrongAuthForUser.keyAt(i3));
-            }
-            return;
-        }
-        handleNoLongerRequireStrongAuthOneUser(i, i2);
-    }
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class NonStrongBiometricTimeoutAlarmListener implements AlarmManager.OnAlarmListener {
+        public final int mUserId;
 
-    public final void handleNoLongerRequireStrongAuthOneUser(int i, int i2) {
-        int i3 = this.mStrongAuthForUser.get(i2, this.mDefaultStrongAuthFlags);
-        int i4 = (~i) & i3;
-        if (i3 != i4) {
-            this.mStrongAuthForUser.put(i2, i4);
-            notifyStrongAuthTrackers(i4, i2);
+        public NonStrongBiometricTimeoutAlarmListener(int i) {
+            this.mUserId = i;
+        }
+
+        @Override // android.app.AlarmManager.OnAlarmListener
+        public final void onAlarm() {
+            LockSettingsStrongAuth.this.requireStrongAuth(128, this.mUserId);
         }
     }
 
-    public final void handleRemoveUser(int i) {
-        int indexOfKey = this.mStrongAuthForUser.indexOfKey(i);
-        if (indexOfKey >= 0) {
-            this.mStrongAuthForUser.removeAt(indexOfKey);
-            notifyStrongAuthTrackers(this.mDefaultStrongAuthFlags, i);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public class StrongAuthTimeoutAlarmListener implements AlarmManager.OnAlarmListener {
+        public long mLatestStrongAuthTime;
+        public final int mUserId;
+
+        public StrongAuthTimeoutAlarmListener(long j, int i) {
+            this.mLatestStrongAuthTime = j;
+            this.mUserId = i;
         }
-        int indexOfKey2 = this.mIsNonStrongBiometricAllowedForUser.indexOfKey(i);
-        if (indexOfKey2 >= 0) {
-            this.mIsNonStrongBiometricAllowedForUser.removeAt(indexOfKey2);
-            notifyStrongAuthTrackersForIsNonStrongBiometricAllowed(true, i);
+
+        @Override // android.app.AlarmManager.OnAlarmListener
+        public final void onAlarm() {
+            LockSettingsStrongAuth.this.requireStrongAuth(16, this.mUserId);
         }
     }
 
-    public final void rescheduleStrongAuthTimeoutAlarm(long j, int i) {
-        StrongAuthTimeoutAlarmListener strongAuthTimeoutAlarmListener = (StrongAuthTimeoutAlarmListener) this.mStrongAuthTimeoutAlarmListenerForUser.get(Integer.valueOf(i));
-        if (strongAuthTimeoutAlarmListener != null) {
-            this.mAlarmManager.cancel(strongAuthTimeoutAlarmListener);
-            strongAuthTimeoutAlarmListener.setLatestStrongAuthTime(j);
-        } else {
-            strongAuthTimeoutAlarmListener = new StrongAuthTimeoutAlarmListener(j, i);
-            this.mStrongAuthTimeoutAlarmListenerForUser.put(Integer.valueOf(i), strongAuthTimeoutAlarmListener);
-        }
-        long requiredStrongAuthTimeout = j + getRequiredStrongAuthTimeout(i);
-        updateStrongAuthTimeoutInfo("lockscreen.strong_bio_timeout", requiredStrongAuthTimeout, i);
-        this.mAlarmManager.setExact(2, requiredStrongAuthTimeout, STRONG_AUTH_TIMEOUT_ALARM_TAG, strongAuthTimeoutAlarmListener, this.mHandler);
+    static {
+        DEBUG = Build.IS_DEBUGGABLE && Log.isLoggable("LockSettingsStrongAuth", 3);
     }
 
-    public final void handleScheduleStrongAuthTimeout(int i) {
-        if (DEBUG) {
-            Slog.d("LockSettingsStrongAuth", "handleScheduleStrongAuthTimeout for userId=" + i);
-        }
-        rescheduleStrongAuthTimeoutAlarm(this.mInjector.getElapsedRealtimeMs(), i);
-        cancelNonStrongBiometricAlarmListener(i);
-        cancelNonStrongBiometricIdleAlarmListener(i);
-        setIsNonStrongBiometricAllowed(true, i);
-    }
-
-    public final void handleRefreshStrongAuthTimeout(int i) {
-        StrongAuthTimeoutAlarmListener strongAuthTimeoutAlarmListener = (StrongAuthTimeoutAlarmListener) this.mStrongAuthTimeoutAlarmListenerForUser.get(Integer.valueOf(i));
-        if (strongAuthTimeoutAlarmListener != null) {
-            rescheduleStrongAuthTimeoutAlarm(strongAuthTimeoutAlarmListener.getLatestStrongAuthTime(), i);
-        }
-    }
-
-    public final void handleScheduleNonStrongBiometricTimeout(int i) {
-        boolean z = DEBUG;
-        if (z) {
-            Slog.d("LockSettingsStrongAuth", "handleScheduleNonStrongBiometricTimeout for userId=" + i);
-        }
-        long requiredNonStrongBiometricTimeout = getRequiredNonStrongBiometricTimeout();
-        if (((NonStrongBiometricTimeoutAlarmListener) this.mNonStrongBiometricTimeoutAlarmListener.get(Integer.valueOf(i))) == null) {
-            if (z) {
-                Slog.d("LockSettingsStrongAuth", "Schedule a new alarm for non-strong biometric fallback timeout");
-            }
-            NonStrongBiometricTimeoutAlarmListener nonStrongBiometricTimeoutAlarmListener = new NonStrongBiometricTimeoutAlarmListener(i);
-            this.mNonStrongBiometricTimeoutAlarmListener.put(Integer.valueOf(i), nonStrongBiometricTimeoutAlarmListener);
-            updateStrongAuthTimeoutInfo("lockscreen.non_strong_bio_timeout", requiredNonStrongBiometricTimeout, i);
-            this.mAlarmManager.setExact(2, requiredNonStrongBiometricTimeout, NON_STRONG_BIOMETRIC_TIMEOUT_ALARM_TAG, nonStrongBiometricTimeoutAlarmListener, this.mHandler);
-        } else if (z) {
-            Slog.d("LockSettingsStrongAuth", "There is an existing alarm for non-strong biometric fallback timeout, so do not re-schedule");
-        }
-        cancelNonStrongBiometricIdleAlarmListener(i);
-    }
-
-    public final void handleStrongBiometricUnlock(int i) {
-        if (DEBUG) {
-            Slog.d("LockSettingsStrongAuth", "handleStrongBiometricUnlock for userId=" + i);
-        }
-        cancelNonStrongBiometricAlarmListener(i);
-        cancelNonStrongBiometricIdleAlarmListener(i);
-        setIsNonStrongBiometricAllowed(true, i);
+    public LockSettingsStrongAuth(Context context, Injector injector) {
+        this.mContext = context;
+        this.mInjector = injector;
+        this.mDefaultStrongAuthFlags = injector.getDefaultStrongAuthFlags(context);
+        this.mAlarmManager = injector.getAlarmManager(context);
+        this.mLockPatternUtils = injector.getLockPatternUtils(context);
     }
 
     public final void cancelNonStrongBiometricAlarmListener(int i) {
         boolean z = DEBUG;
         if (z) {
-            Slog.d("LockSettingsStrongAuth", "cancelNonStrongBiometricAlarmListener for userId=" + i);
+            AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "cancelNonStrongBiometricAlarmListener for userId=", "LockSettingsStrongAuth");
         }
         NonStrongBiometricTimeoutAlarmListener nonStrongBiometricTimeoutAlarmListener = (NonStrongBiometricTimeoutAlarmListener) this.mNonStrongBiometricTimeoutAlarmListener.get(Integer.valueOf(i));
         if (nonStrongBiometricTimeoutAlarmListener != null) {
             if (z) {
                 Slog.d("LockSettingsStrongAuth", "Cancel alarm for non-strong biometric fallback timeout");
             }
-            updateStrongAuthTimeoutInfo("lockscreen.non_strong_bio_timeout", 0L, i);
+            updateStrongAuthTimeoutInfo(i, "lockscreen.non_strong_bio_timeout", 0L);
             this.mAlarmManager.cancel(nonStrongBiometricTimeoutAlarmListener);
             this.mNonStrongBiometricTimeoutAlarmListener.remove(Integer.valueOf(i));
         }
@@ -280,68 +319,16 @@ public class LockSettingsStrongAuth {
     public final void cancelNonStrongBiometricIdleAlarmListener(int i) {
         boolean z = DEBUG;
         if (z) {
-            Slog.d("LockSettingsStrongAuth", "cancelNonStrongBiometricIdleAlarmListener for userId=" + i);
+            AnyMotionDetector$$ExternalSyntheticOutline0.m(i, "cancelNonStrongBiometricIdleAlarmListener for userId=", "LockSettingsStrongAuth");
         }
         NonStrongBiometricIdleTimeoutAlarmListener nonStrongBiometricIdleTimeoutAlarmListener = (NonStrongBiometricIdleTimeoutAlarmListener) this.mNonStrongBiometricIdleTimeoutAlarmListener.get(Integer.valueOf(i));
         if (nonStrongBiometricIdleTimeoutAlarmListener != null) {
             if (z) {
                 Slog.d("LockSettingsStrongAuth", "Cancel alarm for non-strong biometric idle timeout");
             }
-            updateStrongAuthTimeoutInfo("lockscreen.non_strong_bio_idle_timeout", 0L, i);
+            updateStrongAuthTimeoutInfo(i, "lockscreen.non_strong_bio_idle_timeout", 0L);
             this.mAlarmManager.cancel(nonStrongBiometricIdleTimeoutAlarmListener);
         }
-    }
-
-    public void setIsNonStrongBiometricAllowed(boolean z, int i) {
-        if (DEBUG) {
-            Slog.d("LockSettingsStrongAuth", "setIsNonStrongBiometricAllowed for allowed=" + z + ", userId=" + i);
-        }
-        if (i == -1) {
-            for (int i2 = 0; i2 < this.mIsNonStrongBiometricAllowedForUser.size(); i2++) {
-                setIsNonStrongBiometricAllowedOneUser(z, this.mIsNonStrongBiometricAllowedForUser.keyAt(i2));
-            }
-            return;
-        }
-        setIsNonStrongBiometricAllowedOneUser(z, i);
-    }
-
-    public final void setIsNonStrongBiometricAllowedOneUser(boolean z, int i) {
-        boolean z2 = DEBUG;
-        if (z2) {
-            Slog.d("LockSettingsStrongAuth", "setIsNonStrongBiometricAllowedOneUser for allowed=" + z + ", userId=" + i);
-        }
-        boolean z3 = this.mIsNonStrongBiometricAllowedForUser.get(i, true);
-        if (z != z3) {
-            if (z2) {
-                Slog.d("LockSettingsStrongAuth", "mIsNonStrongBiometricAllowedForUser value changed: oldValue=" + z3 + ", allowed=" + z);
-            }
-            this.mIsNonStrongBiometricAllowedForUser.put(i, z);
-            notifyStrongAuthTrackersForIsNonStrongBiometricAllowed(z, i);
-        }
-    }
-
-    public final void handleScheduleNonStrongBiometricIdleTimeout(int i) {
-        boolean z = DEBUG;
-        if (z) {
-            Slog.d("LockSettingsStrongAuth", "handleScheduleNonStrongBiometricIdleTimeout for userId=" + i);
-        }
-        long requiredNonStrongBiometricIdleTimeout = getRequiredNonStrongBiometricIdleTimeout();
-        NonStrongBiometricIdleTimeoutAlarmListener nonStrongBiometricIdleTimeoutAlarmListener = (NonStrongBiometricIdleTimeoutAlarmListener) this.mNonStrongBiometricIdleTimeoutAlarmListener.get(Integer.valueOf(i));
-        if (nonStrongBiometricIdleTimeoutAlarmListener != null) {
-            if (z) {
-                Slog.d("LockSettingsStrongAuth", "Cancel existing alarm for non-strong biometric idle timeout");
-            }
-            this.mAlarmManager.cancel(nonStrongBiometricIdleTimeoutAlarmListener);
-        } else {
-            nonStrongBiometricIdleTimeoutAlarmListener = new NonStrongBiometricIdleTimeoutAlarmListener(i);
-            this.mNonStrongBiometricIdleTimeoutAlarmListener.put(Integer.valueOf(i), nonStrongBiometricIdleTimeoutAlarmListener);
-        }
-        NonStrongBiometricIdleTimeoutAlarmListener nonStrongBiometricIdleTimeoutAlarmListener2 = nonStrongBiometricIdleTimeoutAlarmListener;
-        if (z) {
-            Slog.d("LockSettingsStrongAuth", "Schedule a new alarm for non-strong biometric idle timeout");
-        }
-        updateStrongAuthTimeoutInfo("lockscreen.non_strong_bio_idle_timeout", requiredNonStrongBiometricIdleTimeout, i);
-        this.mAlarmManager.setExact(2, requiredNonStrongBiometricIdleTimeout, NON_STRONG_BIOMETRIC_IDLE_TIMEOUT_ALARM_TAG, nonStrongBiometricIdleTimeoutAlarmListener2, this.mHandler);
     }
 
     public final void notifyStrongAuthTrackers(int i, int i2) {
@@ -360,7 +347,7 @@ public class LockSettingsStrongAuth {
         }
     }
 
-    public final void notifyStrongAuthTrackersForIsNonStrongBiometricAllowed(boolean z, int i) {
+    public final void notifyStrongAuthTrackersForIsNonStrongBiometricAllowed(int i, boolean z) {
         if (DEBUG) {
             Slog.d("LockSettingsStrongAuth", "notifyStrongAuthTrackersForIsNonStrongBiometricAllowed for allowed=" + z + ", userId=" + i);
         }
@@ -379,175 +366,62 @@ public class LockSettingsStrongAuth {
         }
     }
 
-    public void registerStrongAuthTracker(IStrongAuthTracker iStrongAuthTracker) {
-        this.mHandler.obtainMessage(2, iStrongAuthTracker).sendToTarget();
-    }
-
-    public void unregisterStrongAuthTracker(IStrongAuthTracker iStrongAuthTracker) {
-        this.mHandler.obtainMessage(3, iStrongAuthTracker).sendToTarget();
-    }
-
-    public void removeUser(int i) {
-        this.mHandler.obtainMessage(4, i, 0).sendToTarget();
-    }
-
-    public void requireStrongAuth(int i, int i2) {
-        if (i2 == -1 || i2 >= 0) {
-            this.mHandler.obtainMessage(1, i, i2).sendToTarget();
-            return;
+    public final void requireStrongAuth(int i, int i2) {
+        if (i2 != -1 && i2 < 0) {
+            throw new IllegalArgumentException("userId must be an explicit user id or USER_ALL");
         }
-        throw new IllegalArgumentException("userId must be an explicit user id or USER_ALL");
+        this.mHandler.obtainMessage(1, i, i2).sendToTarget();
     }
 
-    public void noLongerRequireStrongAuth(int i, int i2) {
-        if (i2 == -1 || i2 >= 0) {
-            this.mHandler.obtainMessage(6, i, i2).sendToTarget();
-            return;
-        }
-        throw new IllegalArgumentException("userId must be an explicit user id or USER_ALL");
-    }
-
-    public void reportUnlock(int i) {
-        requireStrongAuth(0, i);
-    }
-
-    public void reportSuccessfulStrongAuthUnlock(int i) {
-        this.mHandler.obtainMessage(5, i, 0).sendToTarget();
-    }
-
-    public void refreshStrongAuthTimeout(int i) {
-        this.mHandler.obtainMessage(10, i, 0).sendToTarget();
-    }
-
-    public void reportSuccessfulBiometricUnlock(boolean z, int i) {
-        if (DEBUG) {
-            Slog.d("LockSettingsStrongAuth", "reportSuccessfulBiometricUnlock for isStrongBiometric=" + z + ", userId=" + i);
-        }
-        if (z) {
-            this.mHandler.obtainMessage(8, i, 0).sendToTarget();
+    public final void rescheduleStrongAuthTimeoutAlarm(int i, long j) {
+        StrongAuthTimeoutAlarmListener strongAuthTimeoutAlarmListener = (StrongAuthTimeoutAlarmListener) this.mStrongAuthTimeoutAlarmListenerForUser.get(Integer.valueOf(i));
+        if (strongAuthTimeoutAlarmListener != null) {
+            this.mAlarmManager.cancel(strongAuthTimeoutAlarmListener);
+            strongAuthTimeoutAlarmListener.mLatestStrongAuthTime = j;
         } else {
-            this.mHandler.obtainMessage(7, i, 0).sendToTarget();
+            strongAuthTimeoutAlarmListener = new StrongAuthTimeoutAlarmListener(j, i);
+            this.mStrongAuthTimeoutAlarmListenerForUser.put(Integer.valueOf(i), strongAuthTimeoutAlarmListener);
         }
-    }
-
-    public void scheduleNonStrongBiometricIdleTimeout(int i) {
-        if (DEBUG) {
-            Slog.d("LockSettingsStrongAuth", "scheduleNonStrongBiometricIdleTimeout for userId=" + i);
-        }
-        this.mHandler.obtainMessage(9, i, 0).sendToTarget();
-    }
-
-    /* loaded from: classes2.dex */
-    public class StrongAuthTimeoutAlarmListener implements AlarmManager.OnAlarmListener {
-        public long mLatestStrongAuthTime;
-        public final int mUserId;
-
-        public StrongAuthTimeoutAlarmListener(long j, int i) {
-            this.mLatestStrongAuthTime = j;
-            this.mUserId = i;
-        }
-
-        public void setLatestStrongAuthTime(long j) {
-            this.mLatestStrongAuthTime = j;
-        }
-
-        public long getLatestStrongAuthTime() {
-            return this.mLatestStrongAuthTime;
-        }
-
-        @Override // android.app.AlarmManager.OnAlarmListener
-        public void onAlarm() {
-            LockSettingsStrongAuth.this.requireStrongAuth(16, this.mUserId);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class NonStrongBiometricTimeoutAlarmListener implements AlarmManager.OnAlarmListener {
-        public final int mUserId;
-
-        public NonStrongBiometricTimeoutAlarmListener(int i) {
-            this.mUserId = i;
-        }
-
-        @Override // android.app.AlarmManager.OnAlarmListener
-        public void onAlarm() {
-            LockSettingsStrongAuth.this.requireStrongAuth(128, this.mUserId);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class NonStrongBiometricIdleTimeoutAlarmListener implements AlarmManager.OnAlarmListener {
-        public final int mUserId;
-
-        public NonStrongBiometricIdleTimeoutAlarmListener(int i) {
-            this.mUserId = i;
-        }
-
-        @Override // android.app.AlarmManager.OnAlarmListener
-        public void onAlarm() {
-            LockSettingsStrongAuth.this.setIsNonStrongBiometricAllowed(false, this.mUserId);
-        }
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.println("PrimaryAuthFlags state:");
-        indentingPrintWriter.increaseIndent();
-        for (int i = 0; i < this.mStrongAuthForUser.size(); i++) {
-            indentingPrintWriter.println("userId=" + this.mStrongAuthForUser.keyAt(i) + ", primaryAuthFlags=" + Integer.toHexString(this.mStrongAuthForUser.valueAt(i)));
-        }
-        indentingPrintWriter.println();
-        indentingPrintWriter.decreaseIndent();
-        indentingPrintWriter.println("NonStrongBiometricAllowed state:");
-        indentingPrintWriter.increaseIndent();
-        for (int i2 = 0; i2 < this.mIsNonStrongBiometricAllowedForUser.size(); i2++) {
-            indentingPrintWriter.println("userId=" + this.mIsNonStrongBiometricAllowedForUser.keyAt(i2) + ", allowed=" + this.mIsNonStrongBiometricAllowedForUser.valueAt(i2));
-        }
-        indentingPrintWriter.println();
-        indentingPrintWriter.decreaseIndent();
-        indentingPrintWriter.println("strong auth timeout state:");
-        indentingPrintWriter.increaseIndent();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-        long biometricStrongAuthTimeout = this.mLockPatternUtils.getBiometricStrongAuthTimeout("lockscreen.strong_bio_timeout", 0);
-        if (biometricStrongAuthTimeout != 0) {
-            indentingPrintWriter.println("strong biometric timeout:" + simpleDateFormat.format(new Date(biometricStrongAuthTimeout)));
-        }
-        long biometricStrongAuthTimeout2 = this.mLockPatternUtils.getBiometricStrongAuthTimeout("lockscreen.non_strong_bio_timeout", 0);
-        if (biometricStrongAuthTimeout2 != 0) {
-            indentingPrintWriter.println("non strong biometric timeout:" + simpleDateFormat.format(new Date(biometricStrongAuthTimeout2)));
-        }
-        long biometricStrongAuthTimeout3 = this.mLockPatternUtils.getBiometricStrongAuthTimeout("lockscreen.non_strong_bio_idle_timeout", 0);
-        if (biometricStrongAuthTimeout3 != 0) {
-            indentingPrintWriter.println("non strong biometric idle timeout:" + simpleDateFormat.format(new Date(biometricStrongAuthTimeout3)));
-        }
-        indentingPrintWriter.println();
-        indentingPrintWriter.decreaseIndent();
-    }
-
-    public final long getRequiredStrongAuthTimeout(int i) {
+        StrongAuthTimeoutAlarmListener strongAuthTimeoutAlarmListener2 = strongAuthTimeoutAlarmListener;
         DevicePolicyManager devicePolicyManager = (DevicePolicyManager) this.mContext.getSystemService("device_policy");
-        long j = SystemProperties.getLong("persist.lock.strong_auth_timeout", 0L);
-        return (!SystemProperties.get("ro.build.tags", "").equals("test-keys") || j == 0) ? devicePolicyManager.getRequiredStrongAuthTimeout(null, i) : j;
-    }
-
-    public final long getRequiredNonStrongBiometricTimeout() {
-        long j = SystemProperties.getLong("persist.lock.non_strong_biometric_timeout", 0L);
-        Injector injector = this.mInjector;
-        if (!SystemProperties.get("ro.build.tags", "").equals("test-keys") || j == 0) {
-            j = BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS;
+        long j2 = SystemProperties.getLong("persist.lock.strong_auth_timeout", 0L);
+        if (!SystemProperties.get("ro.build.tags", "").equals("test-keys") || j2 == 0) {
+            j2 = devicePolicyManager.getRequiredStrongAuthTimeout(null, i);
         }
-        return injector.getNextAlarmTimeMs(j);
+        long j3 = j + j2;
+        updateStrongAuthTimeoutInfo(i, "lockscreen.strong_bio_timeout", j3);
+        this.mAlarmManager.setExact(2, j3, STRONG_AUTH_TIMEOUT_ALARM_TAG, strongAuthTimeoutAlarmListener2, this.mHandler);
     }
 
-    public final long getRequiredNonStrongBiometricIdleTimeout() {
-        long j = SystemProperties.getLong("persist.lock.non_strong_biometric_idle_timeout", 0L);
-        Injector injector = this.mInjector;
-        if (!SystemProperties.get("ro.build.tags", "").equals("test-keys") || j == 0) {
-            j = BackupManagerConstants.DEFAULT_KEY_VALUE_BACKUP_INTERVAL_MILLISECONDS;
+    public void setIsNonStrongBiometricAllowed(boolean z, int i) {
+        if (DEBUG) {
+            Slog.d("LockSettingsStrongAuth", "setIsNonStrongBiometricAllowed for allowed=" + z + ", userId=" + i);
         }
-        return injector.getNextAlarmTimeMs(j);
+        if (i != -1) {
+            setIsNonStrongBiometricAllowedOneUser(i, z);
+            return;
+        }
+        for (int i2 = 0; i2 < this.mIsNonStrongBiometricAllowedForUser.size(); i2++) {
+            setIsNonStrongBiometricAllowedOneUser(this.mIsNonStrongBiometricAllowedForUser.keyAt(i2), z);
+        }
     }
 
-    public final void updateStrongAuthTimeoutInfo(String str, long j, int i) {
+    public final void setIsNonStrongBiometricAllowedOneUser(int i, boolean z) {
+        boolean z2 = DEBUG;
+        if (z2) {
+            Slog.d("LockSettingsStrongAuth", "setIsNonStrongBiometricAllowedOneUser for allowed=" + z + ", userId=" + i);
+        }
+        boolean z3 = this.mIsNonStrongBiometricAllowedForUser.get(i, true);
+        if (z != z3) {
+            if (z2) {
+                Slog.d("LockSettingsStrongAuth", "mIsNonStrongBiometricAllowedForUser value changed: oldValue=" + z3 + ", allowed=" + z);
+            }
+            this.mIsNonStrongBiometricAllowedForUser.put(i, z);
+            notifyStrongAuthTrackersForIsNonStrongBiometricAllowed(i, z);
+        }
+    }
+
+    public final void updateStrongAuthTimeoutInfo(int i, String str, long j) {
         this.mLockPatternUtils.setBiometricStrongAuthTimeout(str, j != 0 ? (System.currentTimeMillis() + j) - SystemClock.elapsedRealtime() : 0L, i);
     }
 }

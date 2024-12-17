@@ -1,79 +1,69 @@
 package com.android.server.pm;
 
 import android.content.ComponentName;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManagerInternal;
-import android.content.pm.ResolveInfo;
-import android.util.Slog;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import com.android.internal.util.XmlUtils;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import com.android.modules.utils.TypedXmlPullParser;
-import com.android.modules.utils.TypedXmlSerializer;
-import com.android.server.LocalServices;
-import com.android.server.pm.pkg.PackageUserState;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
-/* loaded from: classes3.dex */
-public class PreferredComponent {
-    public boolean mAlways;
-    public final Callbacks mCallbacks;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PreferredComponent {
+    public final boolean mAlways;
+    public final PreferredActivity mCallbacks;
     public final ComponentName mComponent;
     public final int mMatch;
-    public String mParseError;
+    public final String mParseError;
     public final String[] mSetClasses;
     public final String[] mSetComponents;
     public final String[] mSetPackages;
     public final String mShortComponent;
 
-    /* loaded from: classes3.dex */
-    public interface Callbacks {
-        boolean onReadTag(String str, TypedXmlPullParser typedXmlPullParser);
-    }
-
-    public PreferredComponent(Callbacks callbacks, int i, ComponentName[] componentNameArr, ComponentName componentName, boolean z) {
-        this.mCallbacks = callbacks;
+    public PreferredComponent(PreferredActivity preferredActivity, int i, ComponentName[] componentNameArr, ComponentName componentName, boolean z) {
+        this.mCallbacks = preferredActivity;
         this.mMatch = 268369920 & i;
         this.mComponent = componentName;
         this.mAlways = z;
         this.mShortComponent = componentName.flattenToShortString();
         this.mParseError = null;
-        if (componentNameArr != null) {
-            int length = componentNameArr.length;
-            String[] strArr = new String[length];
-            String[] strArr2 = new String[length];
-            String[] strArr3 = new String[length];
-            for (int i2 = 0; i2 < length; i2++) {
-                ComponentName componentName2 = componentNameArr[i2];
-                if (componentName2 == null) {
-                    this.mSetPackages = null;
-                    this.mSetClasses = null;
-                    this.mSetComponents = null;
-                    return;
-                } else {
-                    strArr[i2] = componentName2.getPackageName().intern();
-                    strArr2[i2] = componentName2.getClassName().intern();
-                    strArr3[i2] = componentName2.flattenToShortString();
-                }
-            }
-            this.mSetPackages = strArr;
-            this.mSetClasses = strArr2;
-            this.mSetComponents = strArr3;
+        if (componentNameArr == null) {
+            this.mSetPackages = null;
+            this.mSetClasses = null;
+            this.mSetComponents = null;
             return;
         }
-        this.mSetPackages = null;
-        this.mSetClasses = null;
-        this.mSetComponents = null;
+        int length = componentNameArr.length;
+        String[] strArr = new String[length];
+        String[] strArr2 = new String[length];
+        String[] strArr3 = new String[length];
+        for (int i2 = 0; i2 < length; i2++) {
+            ComponentName componentName2 = componentNameArr[i2];
+            if (componentName2 == null) {
+                this.mSetPackages = null;
+                this.mSetClasses = null;
+                this.mSetComponents = null;
+                return;
+            } else {
+                strArr[i2] = componentName2.getPackageName().intern();
+                strArr2[i2] = componentName2.getClassName().intern();
+                strArr3[i2] = componentName2.flattenToShortString();
+            }
+        }
+        this.mSetPackages = strArr;
+        this.mSetClasses = strArr2;
+        this.mSetComponents = strArr3;
     }
 
-    public PreferredComponent(Callbacks callbacks, TypedXmlPullParser typedXmlPullParser) {
-        this.mCallbacks = callbacks;
+    public PreferredComponent(PreferredActivity preferredActivity, TypedXmlPullParser typedXmlPullParser) {
+        this.mCallbacks = preferredActivity;
         String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
         this.mShortComponent = attributeValue;
         ComponentName unflattenFromString = ComponentName.unflattenFromString(attributeValue);
         this.mComponent = unflattenFromString;
         if (unflattenFromString == null) {
-            this.mParseError = "Bad activity name " + attributeValue;
+            this.mParseError = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Bad activity name ", attributeValue);
         }
         int i = 0;
         this.mMatch = typedXmlPullParser.getAttributeIntHex((String) null, "match", 0);
@@ -96,234 +86,43 @@ public class PreferredComponent {
                         if (this.mParseError == null) {
                             this.mParseError = "No name in set tag in preferred activity " + this.mShortComponent;
                         }
-                    } else if (i >= attributeInt) {
-                        if (this.mParseError == null) {
-                            this.mParseError = "Too many set tags in preferred activity " + this.mShortComponent;
-                        }
-                    } else {
+                    } else if (i < attributeInt) {
                         ComponentName unflattenFromString2 = ComponentName.unflattenFromString(attributeValue2);
-                        if (unflattenFromString2 == null) {
-                            if (this.mParseError == null) {
-                                this.mParseError = "Bad set name " + attributeValue2 + " in preferred activity " + this.mShortComponent;
-                            }
-                        } else {
+                        if (unflattenFromString2 != null) {
                             strArr[i] = unflattenFromString2.getPackageName();
                             strArr2[i] = unflattenFromString2.getClassName();
                             strArr3[i] = attributeValue2;
                             i++;
+                        } else if (this.mParseError == null) {
+                            StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("Bad set name ", attributeValue2, " in preferred activity ");
+                            m.append(this.mShortComponent);
+                            this.mParseError = m.toString();
                         }
+                    } else if (this.mParseError == null) {
+                        this.mParseError = "Too many set tags in preferred activity " + this.mShortComponent;
                     }
                     XmlUtils.skipCurrentTag(typedXmlPullParser);
-                } else if (!this.mCallbacks.onReadTag(name, typedXmlPullParser)) {
-                    Slog.w("PreferredComponent", "Unknown element: " + typedXmlPullParser.getName());
-                    XmlUtils.skipCurrentTag(typedXmlPullParser);
+                } else {
+                    PreferredActivity preferredActivity2 = this.mCallbacks;
+                    preferredActivity2.getClass();
+                    if (name.equals("filter")) {
+                        preferredActivity2.mFilter.readFromXml(typedXmlPullParser);
+                    } else {
+                        String m2 = XmlUtils$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Unknown element under <preferred-activities>: "));
+                        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                        PackageManagerServiceUtils.logCriticalInfo(5, m2);
+                        XmlUtils.skipCurrentTag(typedXmlPullParser);
+                    }
                 }
             }
         }
         if (i != attributeInt && this.mParseError == null) {
-            this.mParseError = "Not enough set tags (expected " + attributeInt + " but found " + i + ") in " + this.mShortComponent;
+            StringBuilder m3 = ArrayUtils$$ExternalSyntheticOutline0.m(attributeInt, i, "Not enough set tags (expected ", " but found ", ") in ");
+            m3.append(this.mShortComponent);
+            this.mParseError = m3.toString();
         }
         this.mSetPackages = strArr;
         this.mSetClasses = strArr2;
         this.mSetComponents = strArr3;
-    }
-
-    public String getParseError() {
-        return this.mParseError;
-    }
-
-    public void writeToXml(TypedXmlSerializer typedXmlSerializer, boolean z) {
-        String[] strArr = this.mSetClasses;
-        int length = strArr != null ? strArr.length : 0;
-        typedXmlSerializer.attribute((String) null, "name", this.mShortComponent);
-        if (z) {
-            int i = this.mMatch;
-            if (i != 0) {
-                typedXmlSerializer.attributeIntHex((String) null, "match", i);
-            }
-            typedXmlSerializer.attributeBoolean((String) null, "always", this.mAlways);
-            typedXmlSerializer.attributeInt((String) null, "set", length);
-            for (int i2 = 0; i2 < length; i2++) {
-                typedXmlSerializer.startTag((String) null, "set");
-                typedXmlSerializer.attribute((String) null, "name", this.mSetComponents[i2]);
-                typedXmlSerializer.endTag((String) null, "set");
-            }
-        }
-    }
-
-    public boolean sameSet(List list, boolean z, int i) {
-        PackageUserState packageUserState;
-        boolean z2;
-        if (this.mSetPackages == null) {
-            return list == null;
-        }
-        if (list == null) {
-            return false;
-        }
-        int size = list.size();
-        int length = this.mSetPackages.length;
-        PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
-        String setupWizardPackageName = packageManagerInternal.getSetupWizardPackageName();
-        int i2 = 0;
-        for (int i3 = 0; i3 < size; i3++) {
-            ActivityInfo activityInfo = ((ResolveInfo) list.get(i3)).activityInfo;
-            if ((!z || !activityInfo.packageName.equals(setupWizardPackageName)) && ((packageUserState = (PackageUserState) packageManagerInternal.getPackageStateInternal(activityInfo.packageName).getUserStates().get(i)) == null || packageUserState.getInstallReason() != 3)) {
-                int i4 = 0;
-                while (true) {
-                    if (i4 >= length) {
-                        z2 = false;
-                        break;
-                    }
-                    if (this.mSetPackages[i4].equals(activityInfo.packageName) && this.mSetClasses[i4].equals(activityInfo.name)) {
-                        i2++;
-                        z2 = true;
-                        break;
-                    }
-                    i4++;
-                }
-                if (!z2) {
-                    return false;
-                }
-            }
-        }
-        return i2 == length;
-    }
-
-    public boolean sameSet(ComponentName[] componentNameArr) {
-        String[] strArr = this.mSetPackages;
-        if (strArr == null) {
-            return false;
-        }
-        int length = componentNameArr.length;
-        int length2 = strArr.length;
-        int i = 0;
-        int i2 = 0;
-        while (true) {
-            boolean z = true;
-            if (i >= length) {
-                return i2 == length2;
-            }
-            ComponentName componentName = componentNameArr[i];
-            int i3 = 0;
-            while (true) {
-                if (i3 >= length2) {
-                    z = false;
-                    break;
-                }
-                if (this.mSetPackages[i3].equals(componentName.getPackageName()) && this.mSetClasses[i3].equals(componentName.getClassName())) {
-                    i2++;
-                    break;
-                }
-                i3++;
-            }
-            if (!z) {
-                return false;
-            }
-            i++;
-        }
-    }
-
-    public boolean sameSet(PreferredComponent preferredComponent) {
-        if (this.mSetPackages == null || preferredComponent == null || preferredComponent.mSetPackages == null || !sameComponent(preferredComponent.mComponent)) {
-            return false;
-        }
-        int length = preferredComponent.mSetPackages.length;
-        int length2 = this.mSetPackages.length;
-        if (length != length2) {
-            return false;
-        }
-        for (int i = 0; i < length2; i++) {
-            if (!this.mSetPackages[i].equals(preferredComponent.mSetPackages[i]) || !this.mSetClasses[i].equals(preferredComponent.mSetClasses[i])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public final boolean sameComponent(ComponentName componentName) {
-        ComponentName componentName2 = this.mComponent;
-        return componentName2 != null && componentName != null && componentName2.getPackageName().equals(componentName.getPackageName()) && this.mComponent.getClassName().equals(componentName.getClassName());
-    }
-
-    public boolean isSuperset(List list, boolean z) {
-        boolean z2;
-        if (this.mSetPackages == null) {
-            return list == null;
-        }
-        if (list == null) {
-            return true;
-        }
-        int size = list.size();
-        int length = this.mSetPackages.length;
-        if (!z && length < size) {
-            return false;
-        }
-        String setupWizardPackageName = ((PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class)).getSetupWizardPackageName();
-        for (int i = 0; i < size; i++) {
-            ActivityInfo activityInfo = ((ResolveInfo) list.get(i)).activityInfo;
-            if (!z || !activityInfo.packageName.equals(setupWizardPackageName)) {
-                int i2 = 0;
-                while (true) {
-                    if (i2 >= length) {
-                        z2 = false;
-                        break;
-                    }
-                    if (this.mSetPackages[i2].equals(activityInfo.packageName) && this.mSetClasses[i2].equals(activityInfo.name)) {
-                        z2 = true;
-                        break;
-                    }
-                    i2++;
-                }
-                if (!z2) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public ComponentName[] discardObsoleteComponents(List list) {
-        if (this.mSetPackages == null || list == null) {
-            return new ComponentName[0];
-        }
-        int size = list.size();
-        int length = this.mSetPackages.length;
-        ArrayList arrayList = new ArrayList();
-        for (int i = 0; i < size; i++) {
-            ActivityInfo activityInfo = ((ResolveInfo) list.get(i)).activityInfo;
-            int i2 = 0;
-            while (true) {
-                if (i2 >= length) {
-                    break;
-                }
-                if (this.mSetPackages[i2].equals(activityInfo.packageName) && this.mSetClasses[i2].equals(activityInfo.name)) {
-                    arrayList.add(new ComponentName(this.mSetPackages[i2], this.mSetClasses[i2]));
-                    break;
-                }
-                i2++;
-            }
-        }
-        return (ComponentName[]) arrayList.toArray(new ComponentName[arrayList.size()]);
-    }
-
-    public void dump(PrintWriter printWriter, String str, Object obj) {
-        printWriter.print(str);
-        printWriter.print(Integer.toHexString(System.identityHashCode(obj)));
-        printWriter.print(' ');
-        printWriter.println(this.mShortComponent);
-        printWriter.print(str);
-        printWriter.print(" mMatch=0x");
-        printWriter.print(Integer.toHexString(this.mMatch));
-        printWriter.print(" mAlways=");
-        printWriter.println(this.mAlways);
-        if (this.mSetComponents != null) {
-            printWriter.print(str);
-            printWriter.println("  Selected from:");
-            for (int i = 0; i < this.mSetComponents.length; i++) {
-                printWriter.print(str);
-                printWriter.print("    ");
-                printWriter.println(this.mSetComponents[i]);
-            }
-        }
     }
 }

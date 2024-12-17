@@ -1,11 +1,12 @@
 package com.android.server.backup.transport;
 
+import android.provider.DeviceConfig;
 import android.util.Slog;
 import com.android.internal.backup.ITransportStatusCallback;
-import com.android.server.backup.BackupAndRestoreFeatureFlags;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class TransportStatusCallback extends ITransportStatusCallback.Stub {
+public final class TransportStatusCallback extends ITransportStatusCallback.Stub {
     public boolean mHasCompletedOperation;
     public int mOperationStatus;
     public final long mOperationTimeout;
@@ -13,7 +14,7 @@ public class TransportStatusCallback extends ITransportStatusCallback.Stub {
     public TransportStatusCallback() {
         this.mOperationStatus = 0;
         this.mHasCompletedOperation = false;
-        this.mOperationTimeout = BackupAndRestoreFeatureFlags.getBackupTransportCallbackTimeoutMillis();
+        this.mOperationTimeout = DeviceConfig.getLong("backup_and_restore", "backup_transport_callback_timeout_millis", 300000L);
     }
 
     public TransportStatusCallback(int i) {
@@ -22,17 +23,7 @@ public class TransportStatusCallback extends ITransportStatusCallback.Stub {
         this.mOperationTimeout = i;
     }
 
-    public synchronized void onOperationCompleteWithStatus(int i) {
-        this.mHasCompletedOperation = true;
-        this.mOperationStatus = i;
-        notifyAll();
-    }
-
-    public synchronized void onOperationComplete() {
-        onOperationCompleteWithStatus(0);
-    }
-
-    public synchronized int getOperationStatus() {
+    public final synchronized int getOperationStatus() {
         if (this.mHasCompletedOperation) {
             return this.mOperationStatus;
         }
@@ -53,8 +44,13 @@ public class TransportStatusCallback extends ITransportStatusCallback.Stub {
         return -1000;
     }
 
-    public synchronized void reset() {
-        this.mHasCompletedOperation = false;
-        this.mOperationStatus = 0;
+    public final synchronized void onOperationComplete() {
+        onOperationCompleteWithStatus(0);
+    }
+
+    public final synchronized void onOperationCompleteWithStatus(int i) {
+        this.mHasCompletedOperation = true;
+        this.mOperationStatus = i;
+        notifyAll();
     }
 }

@@ -2,24 +2,9 @@ package com.android.server.display;
 
 import java.util.ArrayDeque;
 
-/* loaded from: classes2.dex */
-public class HighBrightnessModeMetadata {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class HighBrightnessModeMetadata {
     public final ArrayDeque mEvents = new ArrayDeque();
     public long mRunningStartTimeMillis = -1;
-
-    public long getRunningStartTimeMillis() {
-        return this.mRunningStartTimeMillis;
-    }
-
-    public void setRunningStartTimeMillis(long j) {
-        this.mRunningStartTimeMillis = j;
-    }
-
-    public ArrayDeque getHbmEventQueue() {
-        return this.mEvents;
-    }
-
-    public void addHbmEvent(HbmEvent hbmEvent) {
-        this.mEvents.addFirst(hbmEvent);
-    }
 }

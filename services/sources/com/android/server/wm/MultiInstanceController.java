@@ -3,37 +3,92 @@ package com.android.server.wm;
 import android.app.ActivityOptions;
 import android.app.WindowConfiguration;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.window.WindowContainerTransaction;
-import com.android.server.wm.ActivityRecord;
 import com.android.server.wm.MultiInstanceController;
 import com.android.server.wm.WindowOrganizerController;
 import com.samsung.android.rune.CoreRune;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class MultiInstanceController implements IController {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class MultiInstanceController implements IController {
     public final ActivityTaskManagerService mAtm;
     public final WindowManagerGlobalLock mGlobalLock;
-    public final int LAUNCH_SINGLE_INSTANCE_PER_TASK_MAX_COUNT = 5;
     public final FindTasksResult mTmpFindTaskResult = new FindTasksResult();
 
-    @Override // com.android.server.wm.IController
-    public void initialize() {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class FindTasksResult {
+        public ComponentName cls;
+        public Uri documentData;
+        public Intent intent;
+        public boolean isDocument;
+        public ActivityRecord mTarget;
+        public int userId;
+
+        public final void process(ActivityRecord activityRecord, WindowContainer windowContainer, final ArrayList arrayList) {
+            this.mTarget = activityRecord;
+            Intent intent = activityRecord.intent;
+            this.intent = intent;
+            this.cls = activityRecord.mActivityComponent;
+            this.userId = activityRecord.mUserId;
+            boolean z = intent != null && intent.isDocument();
+            this.isDocument = z;
+            this.documentData = z ? this.intent.getData() : null;
+            windowContainer.forAllLeafTasks(new Consumer() { // from class: com.android.server.wm.MultiInstanceController$FindTasksResult$$ExternalSyntheticLambda0
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    Uri uri;
+                    String str;
+                    MultiInstanceController.FindTasksResult findTasksResult = MultiInstanceController.FindTasksResult.this;
+                    ArrayList arrayList2 = arrayList;
+                    findTasksResult.getClass();
+                    Task task = (Task) obj;
+                    if (task.voiceSession == null && task.mUserId == findTasksResult.userId) {
+                        boolean z2 = true;
+                        ActivityRecord topNonFinishingActivity = task.getTopNonFinishingActivity(false, true);
+                        if (topNonFinishingActivity == null || topNonFinishingActivity.finishing || topNonFinishingActivity.mUserId != findTasksResult.userId || !ConfigurationContainer.isCompatibleActivityType(topNonFinishingActivity.getActivityType(), findTasksResult.mTarget.getActivityType())) {
+                            return;
+                        }
+                        Intent intent2 = task.intent;
+                        Intent intent3 = task.affinityIntent;
+                        if (intent2 != null && intent2.isDocument()) {
+                            uri = intent2.getData();
+                        } else if (intent3 == null || !intent3.isDocument()) {
+                            z2 = false;
+                            uri = null;
+                        } else {
+                            uri = intent3.getData();
+                        }
+                        ComponentName componentName = task.realActivity;
+                        if (componentName != null && componentName.compareTo(findTasksResult.cls) == 0 && Objects.equals(findTasksResult.documentData, uri)) {
+                            arrayList2.add(task);
+                            return;
+                        }
+                        if (intent3 != null && intent3.getComponent() != null && intent3.getComponent().compareTo(findTasksResult.cls) == 0 && Objects.equals(findTasksResult.documentData, uri)) {
+                            arrayList2.add(task);
+                        } else {
+                            if (findTasksResult.isDocument || z2 || (str = task.rootAffinity) == null || !str.equals(findTasksResult.mTarget.taskAffinity)) {
+                                return;
+                            }
+                            arrayList2.add(task);
+                        }
+                    }
+                }
+            }, true);
+        }
     }
 
     public MultiInstanceController(ActivityTaskManagerService activityTaskManagerService) {
@@ -41,41 +96,37 @@ public class MultiInstanceController implements IController {
         this.mGlobalLock = activityTaskManagerService.mGlobalLock;
     }
 
-    public boolean adjustStartIntents(WindowContainerTransaction windowContainerTransaction, WindowOrganizerController.CallerInfo callerInfo) {
+    public final void adjustStartIntents(WindowContainerTransaction windowContainerTransaction, WindowOrganizerController.CallerInfo callerInfo) {
         Task task;
         ActivityInfo activityInfo;
         Bundle bundle;
-        Intent[] intentArr = {null, null, null};
+        Task fromWindowContainerToken;
+        Intent[] intentArr = new Intent[3];
+        intentArr[0] = null;
+        intentArr[1] = null;
+        intentArr[2] = null;
         WindowContainerTransaction.HierarchyOp[] hierarchyOpArr = {null, null, null};
-        WindowContainerTransaction.HierarchyOp[] hierarchyOpArr2 = {null, null, null};
         int[] iArr = new int[3];
         int i = 0;
-        int i2 = 0;
         for (WindowContainerTransaction.HierarchyOp hierarchyOp : windowContainerTransaction.getHierarchyOps()) {
-            if (hierarchyOp.getType() == 7) {
-                Task fromWindowContainerToken = Task.fromWindowContainerToken(new ActivityOptions(hierarchyOp.getLaunchOptions()).getLaunchRootTask());
-                if (fromWindowContainerToken != null) {
-                    int stageType = fromWindowContainerToken.getWindowConfiguration().getStageType();
-                    Intent activityIntent = hierarchyOp.getActivityIntent();
-                    int userId = hierarchyOp.getPendingIntent().getTarget().getUserId();
-                    if (stageType == 1) {
-                        intentArr[0] = activityIntent;
-                        iArr[0] = userId;
-                        hierarchyOpArr[0] = hierarchyOp;
-                    } else if (stageType == 2) {
-                        intentArr[1] = activityIntent;
-                        iArr[1] = userId;
-                        hierarchyOpArr[1] = hierarchyOp;
-                    } else if (CoreRune.MW_MULTI_SPLIT_TASK_ORGANIZER && stageType == 4) {
-                        intentArr[2] = activityIntent;
-                        iArr[2] = userId;
-                        hierarchyOpArr[2] = hierarchyOp;
-                    }
-                    i++;
+            if (hierarchyOp.getType() == 7 && (fromWindowContainerToken = Task.fromWindowContainerToken(new ActivityOptions(hierarchyOp.getLaunchOptions()).getLaunchRootTask())) != null) {
+                int stageType = fromWindowContainerToken.getWindowConfiguration().getStageType();
+                Intent activityIntent = hierarchyOp.getActivityIntent();
+                int i2 = hierarchyOp.getPendingIntent().getTarget().key.userId;
+                if (stageType == 1) {
+                    intentArr[0] = activityIntent;
+                    iArr[0] = i2;
+                    hierarchyOpArr[0] = hierarchyOp;
+                } else if (stageType == 2) {
+                    intentArr[1] = activityIntent;
+                    iArr[1] = i2;
+                    hierarchyOpArr[1] = hierarchyOp;
+                } else if (CoreRune.MW_MULTI_SPLIT_TASK_ORGANIZER && stageType == 4) {
+                    intentArr[2] = activityIntent;
+                    iArr[2] = i2;
+                    hierarchyOpArr[2] = hierarchyOp;
                 }
-            } else if (hierarchyOp.isReparent()) {
-                hierarchyOpArr2[i2] = hierarchyOp;
-                i2++;
+                i++;
             }
         }
         Task[] taskArr = new Task[i];
@@ -91,11 +142,11 @@ public class MultiInstanceController implements IController {
         synchronized (windowManagerGlobalLock) {
             for (int i3 = 0; i3 < i; i3++) {
                 try {
-                    Task topRootTaskInStageType = this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea().getTopRootTaskInStageType(iArr2[i3]);
+                    Task topRootTaskInStageType = this.mAtm.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea().getTopRootTaskInStageType(iArr2[i3]);
                     taskArr[i3] = topRootTaskInStageType;
                     Task topMostTask = (topRootTaskInStageType == null || !topRootTaskInStageType.shouldBeVisible(null)) ? null : taskArr[i3].getTopMostTask();
-                    if (topMostTask != null && topMostTask.getRootActivity() != null) {
-                        activityRecordArr[i3] = topMostTask.getRootActivity();
+                    if (topMostTask != null && topMostTask.getRootActivity(true, false) != null) {
+                        activityRecordArr[i3] = topMostTask.getRootActivity(true, false);
                     }
                 } catch (Throwable th) {
                     WindowManagerService.resetPriorityAfterLockedSection();
@@ -106,36 +157,24 @@ public class MultiInstanceController implements IController {
         WindowManagerService.resetPriorityAfterLockedSection();
         String[] strArr = new String[i];
         ArrayList arrayList = new ArrayList();
-        int i4 = 0;
-        for (int i5 = 0; i5 < i; i5++) {
-            ResolveInfo resolveIntent = this.mAtm.mTaskSupervisor.resolveIntent(intentArr[i5], null, iArr[i5], 0, callerInfo.mUid, callerInfo.mPid);
+        for (int i4 = 0; i4 < i; i4++) {
+            ResolveInfo resolveIntent = this.mAtm.mTaskSupervisor.resolveIntent(intentArr[i4], null, iArr[i4], 0, callerInfo.mUid, callerInfo.mPid);
             if (resolveIntent != null && (activityInfo = resolveIntent.activityInfo) != null && (bundle = activityInfo.metaData) != null && !TextUtils.isEmpty(bundle.getString("com.samsung.android.multiwindow.activity.alias.targetactivity"))) {
                 String str = resolveIntent.activityInfo.packageName;
-                strArr[i5] = str;
-                ActivityRecord activityRecord = activityRecordArr[i5];
+                strArr[i4] = str;
+                ActivityRecord activityRecord = activityRecordArr[i4];
                 if (activityRecord != null && activityRecord.packageName.equals(str)) {
-                    arrayList.add(Integer.valueOf(activityRecordArr[i5].getTask().mTaskId));
-                    intentArr[i5] = null;
-                    windowContainerTransaction.getHierarchyOps().remove(hierarchyOpArr[i5]);
-                    if (hierarchyOpArr2[i5] != null) {
-                        windowContainerTransaction.getHierarchyOps().remove(hierarchyOpArr2[i5]);
-                    }
-                    i4++;
+                    arrayList.add(Integer.valueOf(activityRecordArr[i4].task.mTaskId));
+                    intentArr[i4] = null;
+                    windowContainerTransaction.getHierarchyOps().remove(hierarchyOpArr[i4]);
                 }
             }
         }
-        for (int i6 = 0; i6 < i; i6++) {
-            if (intentArr[i6] != null && strArr[i6] != null) {
+        for (int i5 = 0; i5 < i; i5++) {
+            if (intentArr[i5] != null && strArr[i5] != null) {
                 ArrayList arrayList2 = new ArrayList();
-                findAliasManagedTaskInPackage(strArr[i6], iArr[i6], arrayList2);
-                arrayList2.sort(new Comparator() { // from class: com.android.server.wm.MultiInstanceController$$ExternalSyntheticLambda0
-                    @Override // java.util.Comparator
-                    public final int compare(Object obj, Object obj2) {
-                        int lambda$adjustStartIntents$0;
-                        lambda$adjustStartIntents$0 = MultiInstanceController.lambda$adjustStartIntents$0((Task) obj, (Task) obj2);
-                        return lambda$adjustStartIntents$0;
-                    }
-                });
+                findAliasManagedTaskInPackage(iArr[i5], strArr[i5], arrayList2);
+                arrayList2.sort(new MultiInstanceController$$ExternalSyntheticLambda0(1));
                 for (int size = arrayList2.size() - 1; size >= 0; size--) {
                     task = (Task) arrayList2.get(size);
                     if (arrayList.contains(Integer.valueOf(task.mTaskId))) {
@@ -147,138 +186,53 @@ public class MultiInstanceController implements IController {
                 }
                 task = null;
                 if (task == null) {
-                    int i7 = 0;
+                    int i6 = 0;
                     while (true) {
-                        if (i7 >= arrayList2.size()) {
+                        if (i6 >= arrayList2.size()) {
                             break;
                         }
-                        Task task2 = (Task) arrayList2.get(i7);
+                        Task task2 = (Task) arrayList2.get(i6);
                         if (task2.getWindowingMode() == 5) {
                             task = task2;
                             break;
                         }
-                        i7++;
+                        i6++;
                     }
                 }
                 if (task != null) {
-                    intentArr[i6].setLaunchTaskIdForAliasManagedTarget(task.mTaskId);
-                    intentArr[i6].setComponent(task.getBaseIntent().getComponent());
+                    intentArr[i5].setLaunchTaskIdForAliasManagedTarget(task.mTaskId);
+                    intentArr[i5].setComponent(task.getBaseIntent().getComponent());
                     arrayList.add(Integer.valueOf(task.mTaskId));
                 }
             }
         }
-        return i4 != i;
     }
 
-    public static /* synthetic */ int lambda$adjustStartIntents$0(Task task, Task task2) {
-        return Long.compare(task2.lastGainFocusTime, task.lastGainFocusTime);
-    }
-
-    public void findAliasManagedTaskInPackage(final String str, final int i, final ArrayList arrayList) {
-        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
-        WindowManagerService.boostPriorityForLockedSection();
-        synchronized (windowManagerGlobalLock) {
-            try {
-                this.mAtm.mRootWindowContainer.forAllLeafTasks(new Consumer() { // from class: com.android.server.wm.MultiInstanceController$$ExternalSyntheticLambda2
-                    @Override // java.util.function.Consumer
-                    public final void accept(Object obj) {
-                        MultiInstanceController.lambda$findAliasManagedTaskInPackage$1(i, str, arrayList, (Task) obj);
-                    }
-                }, true);
-            } catch (Throwable th) {
-                WindowManagerService.resetPriorityAfterLockedSection();
-                throw th;
-            }
-        }
-        WindowManagerService.resetPriorityAfterLockedSection();
-    }
-
-    public static /* synthetic */ void lambda$findAliasManagedTaskInPackage$1(int i, String str, ArrayList arrayList, Task task) {
-        ActivityRecord rootActivity;
-        if (task.isAliasManaged() && task.mUserId == i && (rootActivity = task.getRootActivity()) != null && str.equals(rootActivity.packageName)) {
-            arrayList.add(task);
-        }
-    }
-
-    public boolean allowMultipleTask(ActivityRecord activityRecord, int i, int i2, ActivityRecord activityRecord2) {
-        if (activityRecord.intent.getLaunchTaskIdForSingleInstancePerTask() != -1) {
-            return false;
-        }
-        ArrayList arrayList = new ArrayList();
-        findTasks(activityRecord, arrayList);
-        if ((activityRecord2 == null && i == 0 && i2 == 0) || (activityRecord2 != null && !activityRecord2.isActivityTypeHome() && i == 0 && i2 == 0)) {
-            int i3 = 0;
-            while (true) {
-                if (i3 >= arrayList.size()) {
-                    break;
-                }
-                Task task = (Task) arrayList.get(i3);
-                if (task.isVisible()) {
-                    activityRecord.intent.setLaunchTaskIdForSingleInstancePerTask(task.mTaskId);
-                    break;
-                }
-                i3++;
-            }
-            return false;
-        }
-        if (activityRecord2 != null && !activityRecord2.isActivityTypeHome() && !activityRecord2.inMultiWindowMode()) {
-            return false;
-        }
-        HashMap hashMap = new HashMap();
-        Task task2 = null;
-        Task task3 = null;
-        for (int i4 = 0; i4 < arrayList.size(); i4++) {
-            Task task4 = (Task) arrayList.get(i4);
-            if (task4.inSplitScreenWindowingMode() && task4.getStageType() == i2) {
-                activityRecord.intent.setLaunchTaskIdForSingleInstancePerTask(task4.mTaskId);
-                return false;
-            }
-            if (task4.inFreeformWindowingMode()) {
-                if (task4.isMinimized() || (task4.isDexMode() && !task4.isVisible())) {
-                    activityRecord.intent.setLaunchTaskIdForSingleInstancePerTask(task4.mTaskId);
-                    return false;
-                }
-                if (task3 == null) {
-                    task3 = task4;
-                }
-            } else if (task4.isVisible()) {
-                if (task4.inSplitScreenWindowingMode()) {
-                    hashMap.put(Integer.valueOf(task4.getStageType()), task4);
-                } else {
-                    hashMap.put(Integer.valueOf(task4.getWindowingMode()), task4);
-                }
-            } else if (task2 == null) {
-                task2 = task4;
-            }
-        }
-        Task task5 = (Task) hashMap.get(Integer.valueOf(i));
-        if (task5 != null || task2 == null) {
-            task2 = task5;
-        }
-        if (task2 != null) {
-            activityRecord.intent.setLaunchTaskIdForSingleInstancePerTask(task2.mTaskId);
-            return false;
-        }
-        if (arrayList.size() < 5 && arrayList.size() != 0) {
-            return true;
-        }
-        if (task3 != null) {
-            activityRecord.intent.setLaunchTaskIdForSingleInstancePerTask(task3.mTaskId);
-        }
-        return false;
-    }
-
-    public boolean adjustStartIntentsForSingleInstancePerTask(WindowContainerTransaction windowContainerTransaction) {
+    public final void adjustStartIntentsForSingleInstancePerTask(WindowContainerTransaction windowContainerTransaction) {
+        int i;
+        ActivityTaskManagerService activityTaskManagerService;
+        FindTasksResult findTasksResult;
+        ActivityTaskManagerService activityTaskManagerService2;
         Task task;
+        ActivityInfo activityInfo;
+        ActivityTaskManagerService activityTaskManagerService3;
         Task fromWindowContainerToken;
-        Task task2 = null;
-        Intent[] intentArr = {null, null, null};
+        Intent[] intentArr = new Intent[3];
+        intentArr[0] = null;
+        intentArr[1] = null;
+        intentArr[2] = null;
         WindowContainerTransaction.HierarchyOp[] hierarchyOpArr = {null, null, null};
-        for (WindowContainerTransaction.HierarchyOp hierarchyOp : windowContainerTransaction.getHierarchyOps()) {
+        Iterator it = windowContainerTransaction.getHierarchyOps().iterator();
+        while (true) {
+            i = 4;
+            if (!it.hasNext()) {
+                break;
+            }
+            WindowContainerTransaction.HierarchyOp hierarchyOp = (WindowContainerTransaction.HierarchyOp) it.next();
             if (hierarchyOp.getType() == 7 && (fromWindowContainerToken = Task.fromWindowContainerToken(new ActivityOptions(hierarchyOp.getLaunchOptions()).getLaunchRootTask())) != null) {
                 int stageType = fromWindowContainerToken.getWindowConfiguration().getStageType();
                 Intent activityIntent = hierarchyOp.getActivityIntent();
-                hierarchyOp.getPendingIntent().getTarget().getUserId();
+                int i2 = hierarchyOp.getPendingIntent().getTarget().key.userId;
                 if (stageType == 1) {
                     intentArr[0] = activityIntent;
                     hierarchyOpArr[0] = hierarchyOp;
@@ -299,214 +253,185 @@ public class MultiInstanceController implements IController {
         if (CoreRune.MW_MULTI_SPLIT_TASK_ORGANIZER) {
             iArr[2] = 4;
         }
-        for (int i = 0; i < 3; i++) {
-            Task topRootTaskInStageType = this.mAtm.mRootWindowContainer.getDefaultTaskDisplayArea().getTopRootTaskInStageType(iArr[i]);
-            taskArr[i] = topRootTaskInStageType;
-            Task topMostTask = (topRootTaskInStageType == null || !topRootTaskInStageType.shouldBeVisible(null)) ? null : taskArr[i].getTopMostTask();
-            if (topMostTask != null && topMostTask.getRootActivity() != null) {
-                taskArr2[i] = topMostTask;
+        int i3 = 0;
+        while (true) {
+            activityTaskManagerService = this.mAtm;
+            if (i3 >= 3) {
+                break;
             }
+            Task topRootTaskInStageType = activityTaskManagerService.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea().getTopRootTaskInStageType(iArr[i3]);
+            taskArr[i3] = topRootTaskInStageType;
+            Task topMostTask = (topRootTaskInStageType == null || !topRootTaskInStageType.shouldBeVisible(null)) ? null : taskArr[i3].getTopMostTask();
+            if (topMostTask != null && topMostTask.getRootActivity(true, false) != null) {
+                taskArr2[i3] = topMostTask;
+            }
+            i3++;
         }
         ActivityRecord[] activityRecordArr = new ActivityRecord[3];
         ArrayList arrayList = new ArrayList();
-        int i2 = 0;
-        for (int i3 = 0; i3 < 3; i3++) {
-            Intent intent = intentArr[i3];
+        int i4 = 0;
+        while (true) {
+            findTasksResult = this.mTmpFindTaskResult;
+            if (i4 >= 3) {
+                break;
+            }
+            Intent intent = intentArr[i4];
             if (intent != null) {
-                ActivityInfo launchModeSingleInstancePerTask = getLaunchModeSingleInstancePerTask(this.mAtm.mContext, intent);
-                if (launchModeSingleInstancePerTask != null) {
+                PackageManager packageManager = activityTaskManagerService.mContext.getPackageManager();
+                if (packageManager != null) {
+                    Iterator<ResolveInfo> it2 = packageManager.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(65536L)).iterator();
+                    while (it2.hasNext()) {
+                        ActivityInfo activityInfo2 = it2.next().activityInfo;
+                        if (activityInfo2.launchMode == i) {
+                            activityInfo = activityInfo2;
+                            break;
+                        }
+                    }
+                }
+                activityInfo = null;
+                if (activityInfo != null) {
                     long clearCallingIdentity = Binder.clearCallingIdentity();
                     try {
-                        ActivityRecord build = new ActivityRecord.Builder(this.mAtm).setCaller(null).setLaunchedFromPid(0).setLaunchedFromUid(-1).setLaunchedFromPackage(null).setLaunchedFromFeature(null).setIntent(intentArr[i3]).setResolvedType(null).setActivityInfo(launchModeSingleInstancePerTask).setConfiguration(this.mAtm.getGlobalConfiguration()).setResultTo(null).setResultWho(null).setRequestCode(0).setComponentSpecified(intentArr[i3].getComponent() != null).setRootVoiceInteraction(false).setActivityOptions(null).setSourceRecord(null).build();
-                        Binder.restoreCallingIdentity(clearCallingIdentity);
-                        activityRecordArr[i3] = build;
-                        Task task3 = taskArr2[i3];
-                        if (task3 != null && hasMatchedActivity(build, task3)) {
-                            arrayList.add(Integer.valueOf(taskArr2[i3].mTaskId));
-                            intentArr[i3] = null;
-                            windowContainerTransaction.getHierarchyOps().remove(hierarchyOpArr[i3]);
+                        Intent intent2 = intentArr[i4];
+                        Configuration globalConfiguration = activityTaskManagerService.getGlobalConfiguration();
+                        boolean z = intentArr[i4].getComponent() != null;
+                        if (globalConfiguration == null) {
+                            globalConfiguration = activityTaskManagerService.getConfiguration();
                         }
+                        activityTaskManagerService3 = activityTaskManagerService;
+                        ActivityRecord activityRecord = new ActivityRecord(activityTaskManagerService, null, 0, -1, null, null, intent2, null, activityInfo, globalConfiguration, null, null, 0, z, false, activityTaskManagerService.mTaskSupervisor, null, null, null, null, 0L);
+                        Binder.restoreCallingIdentity(clearCallingIdentity);
+                        activityRecordArr[i4] = activityRecord;
+                        Task task2 = taskArr2[i4];
+                        if (task2 != null) {
+                            ArrayList arrayList2 = new ArrayList();
+                            findTasksResult.process(activityRecord, task2, arrayList2);
+                            if (arrayList2.size() > 0) {
+                                arrayList.add(Integer.valueOf(taskArr2[i4].mTaskId));
+                                intentArr[i4] = null;
+                                windowContainerTransaction.getHierarchyOps().remove(hierarchyOpArr[i4]);
+                            }
+                        }
+                        i4++;
+                        activityTaskManagerService = activityTaskManagerService3;
+                        i = 4;
                     } catch (Throwable th) {
                         Binder.restoreCallingIdentity(clearCallingIdentity);
                         throw th;
                     }
-                } else {
-                    continue;
                 }
             }
-            i2++;
+            activityTaskManagerService3 = activityTaskManagerService;
+            i4++;
+            activityTaskManagerService = activityTaskManagerService3;
+            i = 4;
         }
-        ArrayList arrayList2 = new ArrayList();
-        int i4 = 0;
-        while (i4 < 3) {
-            if (intentArr[i4] != null && activityRecordArr[i4] != null) {
-                ArrayList arrayList3 = new ArrayList();
-                String flattenToShortString = intentArr[i4].getComponent().flattenToShortString();
-                findTasks(activityRecordArr[i4], arrayList3);
-                if (arrayList3.size() == 0 && !arrayList2.contains(flattenToShortString)) {
-                    arrayList2.add(flattenToShortString);
-                } else {
-                    int size = arrayList3.size() - 1;
+        ActivityTaskManagerService activityTaskManagerService4 = activityTaskManagerService;
+        ArrayList arrayList3 = new ArrayList();
+        int i5 = 0;
+        while (i5 < 3) {
+            if (intentArr[i5] == null || activityRecordArr[i5] == null) {
+                activityTaskManagerService2 = activityTaskManagerService4;
+            } else {
+                ArrayList arrayList4 = new ArrayList();
+                String flattenToShortString = intentArr[i5].getComponent().flattenToShortString();
+                activityTaskManagerService2 = activityTaskManagerService4;
+                findTasksResult.process(activityRecordArr[i5], activityTaskManagerService2.mRootWindowContainer, arrayList4);
+                arrayList4.sort(new MultiInstanceController$$ExternalSyntheticLambda0(0));
+                if (arrayList4.size() != 0 || arrayList3.contains(flattenToShortString)) {
+                    int size = arrayList4.size() - 1;
                     while (true) {
                         if (size < 0) {
-                            task = task2;
+                            task = null;
                             break;
                         }
-                        task = (Task) arrayList3.get(size);
-                        if (arrayList.contains(Integer.valueOf(task.mTaskId))) {
-                            arrayList3.remove(task);
-                        } else if (task.isVisible()) {
-                            if (WindowConfiguration.isSplitScreenWindowingMode(task.getWindowConfiguration()) || task.getWindowingMode() == 1) {
+                        task = (Task) arrayList4.get(size);
+                        if (!arrayList.contains(Integer.valueOf(task.mTaskId))) {
+                            if (!task.isVisible()) {
+                                continue;
+                            } else if (WindowConfiguration.isSplitScreenWindowingMode(task.getWindowConfiguration()) || task.getWindowingMode() == 1) {
                                 break;
                             }
-                            size--;
+                        } else {
+                            arrayList4.remove(task);
                         }
                         size--;
                     }
                     if (task == null) {
-                        int i5 = 0;
-                        while (true) {
-                            if (i5 >= arrayList3.size()) {
-                                break;
-                            }
-                            Task task4 = (Task) arrayList3.get(i5);
-                            if (task4.getWindowingMode() == 5) {
-                                task = task4;
-                                break;
-                            }
-                            i5++;
-                        }
-                    }
-                    if (task == null) {
                         int i6 = 0;
                         while (true) {
-                            if (i6 >= arrayList3.size()) {
+                            if (i6 >= arrayList4.size()) {
                                 break;
                             }
-                            Task task5 = (Task) arrayList3.get(i6);
-                            if (!task5.isVisible()) {
-                                task = task5;
+                            Task task3 = (Task) arrayList4.get(i6);
+                            if (task3.getWindowingMode() == 5) {
+                                task = task3;
                                 break;
                             }
                             i6++;
                         }
                     }
                     if (task == null) {
-                        intentArr[i4].addFlags(134217728);
+                        int i7 = 0;
+                        while (true) {
+                            if (i7 >= arrayList4.size()) {
+                                break;
+                            }
+                            Task task4 = (Task) arrayList4.get(i7);
+                            if (!task4.isVisible()) {
+                                task = task4;
+                                break;
+                            }
+                            i7++;
+                        }
+                    }
+                    if (task == null) {
+                        intentArr[i5].addFlags(134217728);
                     } else {
-                        intentArr[i4].setLaunchTaskIdForSingleInstancePerTask(task.mTaskId);
+                        intentArr[i5].setLaunchTaskIdForSingleInstancePerTask(task.mTaskId);
                         arrayList.add(Integer.valueOf(task.mTaskId));
                     }
-                    i4++;
-                    task2 = null;
-                }
-            }
-            i4++;
-            task2 = null;
-        }
-        return i2 != 3;
-    }
-
-    public boolean hasMatchedActivity(ActivityRecord activityRecord, Task task) {
-        ArrayList arrayList = new ArrayList();
-        this.mTmpFindTaskResult.process(activityRecord, task, arrayList);
-        return arrayList.size() > 0;
-    }
-
-    public ActivityInfo getLaunchModeSingleInstancePerTask(Context context, Intent intent) {
-        PackageManager packageManager = context.getPackageManager();
-        if (packageManager == null) {
-            return null;
-        }
-        Iterator<ResolveInfo> it = packageManager.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(65536L)).iterator();
-        while (it.hasNext()) {
-            ActivityInfo activityInfo = it.next().activityInfo;
-            if (activityInfo.launchMode == 4) {
-                return activityInfo;
-            }
-        }
-        return null;
-    }
-
-    public final void findTasks(ActivityRecord activityRecord, ArrayList arrayList) {
-        this.mTmpFindTaskResult.process(activityRecord, this.mAtm.mRootWindowContainer, arrayList);
-        arrayList.sort(new Comparator() { // from class: com.android.server.wm.MultiInstanceController$$ExternalSyntheticLambda1
-            @Override // java.util.Comparator
-            public final int compare(Object obj, Object obj2) {
-                int lambda$findTasks$2;
-                lambda$findTasks$2 = MultiInstanceController.lambda$findTasks$2((Task) obj, (Task) obj2);
-                return lambda$findTasks$2;
-            }
-        });
-    }
-
-    public static /* synthetic */ int lambda$findTasks$2(Task task, Task task2) {
-        return Long.compare(task2.lastGainFocusTime, task.lastGainFocusTime);
-    }
-
-    /* loaded from: classes3.dex */
-    public class FindTasksResult {
-        public ComponentName cls;
-        public Uri documentData;
-        public Intent intent;
-        public boolean isDocument;
-        public ActivityRecord mTarget;
-        public int userId;
-
-        public void process(ActivityRecord activityRecord, WindowContainer windowContainer, final ArrayList arrayList) {
-            this.mTarget = activityRecord;
-            Intent intent = activityRecord.intent;
-            this.intent = intent;
-            this.cls = activityRecord.mActivityComponent;
-            this.userId = activityRecord.mUserId;
-            boolean z = intent != null && intent.isDocument();
-            this.isDocument = z;
-            this.documentData = z ? this.intent.getData() : null;
-            windowContainer.forAllLeafTasks(new Consumer() { // from class: com.android.server.wm.MultiInstanceController$FindTasksResult$$ExternalSyntheticLambda0
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    MultiInstanceController.FindTasksResult.this.lambda$process$0(arrayList, obj);
-                }
-            }, true);
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$process$0(ArrayList arrayList, Object obj) {
-            ActivityRecord topNonFinishingActivity;
-            Uri uri;
-            String str;
-            Task task = (Task) obj;
-            if (task.voiceSession == null && task.mUserId == this.userId && (topNonFinishingActivity = task.getTopNonFinishingActivity(false)) != null && !topNonFinishingActivity.finishing && topNonFinishingActivity.mUserId == this.userId && ConfigurationContainer.isCompatibleActivityType(topNonFinishingActivity.getActivityType(), this.mTarget.getActivityType())) {
-                Intent intent = task.intent;
-                Intent intent2 = task.affinityIntent;
-                boolean z = true;
-                if (intent != null && intent.isDocument()) {
-                    uri = intent.getData();
-                } else if (intent2 == null || !intent2.isDocument()) {
-                    z = false;
-                    uri = null;
                 } else {
-                    uri = intent2.getData();
-                }
-                ComponentName componentName = task.realActivity;
-                if (componentName != null && componentName.compareTo(this.cls) == 0 && Objects.equals(this.documentData, uri)) {
-                    arrayList.add(task);
-                    return;
-                }
-                if (intent2 != null && intent2.getComponent() != null && intent2.getComponent().compareTo(this.cls) == 0 && Objects.equals(this.documentData, uri)) {
-                    arrayList.add(task);
-                } else {
-                    if (this.isDocument || z || (str = task.rootAffinity) == null || !str.equals(this.mTarget.taskAffinity)) {
-                        return;
-                    }
-                    arrayList.add(task);
+                    arrayList3.add(flattenToShortString);
                 }
             }
+            i5++;
+            activityTaskManagerService4 = activityTaskManagerService2;
         }
     }
 
     @Override // com.android.server.wm.IController
-    public void dumpLocked(PrintWriter printWriter, String str) {
+    public final void dumpLocked(PrintWriter printWriter) {
         printWriter.println("[MultiInstanceController]");
+    }
+
+    public final void findAliasManagedTaskInPackage(final int i, final String str, final ArrayList arrayList) {
+        WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
+        WindowManagerService.boostPriorityForLockedSection();
+        synchronized (windowManagerGlobalLock) {
+            try {
+                this.mAtm.mRootWindowContainer.forAllLeafTasks(new Consumer() { // from class: com.android.server.wm.MultiInstanceController$$ExternalSyntheticLambda2
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        ActivityRecord rootActivity;
+                        int i2 = i;
+                        String str2 = str;
+                        ArrayList arrayList2 = arrayList;
+                        Task task = (Task) obj;
+                        if (task.mIsAliasManaged && task.mUserId == i2 && (rootActivity = task.getRootActivity(true, false)) != null && str2.equals(rootActivity.packageName)) {
+                            arrayList2.add(task);
+                        }
+                    }
+                }, true);
+            } catch (Throwable th) {
+                WindowManagerService.resetPriorityAfterLockedSection();
+                throw th;
+            }
+        }
+        WindowManagerService.resetPriorityAfterLockedSection();
+    }
+
+    @Override // com.android.server.wm.IController
+    public final void initialize() {
     }
 }

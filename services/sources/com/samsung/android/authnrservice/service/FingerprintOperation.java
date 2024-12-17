@@ -7,22 +7,12 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class FingerprintOperation {
     public static FingerprintOperation sFingerprintOperation;
-    public FingerprintManager mFingerprintManager;
+    public final FingerprintManager mFingerprintManager;
     public final int mUserId;
-
-    public static synchronized FingerprintOperation getInstance(Context context) {
-        FingerprintOperation fingerprintOperation;
-        synchronized (FingerprintOperation.class) {
-            if (sFingerprintOperation == null) {
-                sFingerprintOperation = new FingerprintOperation(context);
-            }
-            fingerprintOperation = sFingerprintOperation;
-        }
-        return fingerprintOperation;
-    }
 
     public FingerprintOperation(Context context) {
         this.mFingerprintManager = null;
@@ -30,8 +20,43 @@ public final class FingerprintOperation {
         this.mUserId = context.getUserId();
     }
 
+    public static synchronized FingerprintOperation getInstance(Context context) {
+        FingerprintOperation fingerprintOperation;
+        synchronized (FingerprintOperation.class) {
+            try {
+                if (sFingerprintOperation == null) {
+                    sFingerprintOperation = new FingerprintOperation(context);
+                }
+                fingerprintOperation = sFingerprintOperation;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        return fingerprintOperation;
+    }
+
+    public final synchronized byte[] getWrappedObject(byte[] bArr) {
+        ByteBuffer allocate = ByteBuffer.allocate(bArr.length + 4);
+        ByteOrder byteOrder = ByteOrder.LITTLE_ENDIAN;
+        allocate.order(byteOrder);
+        allocate.putShort((short) 2);
+        allocate.putShort((short) bArr.length);
+        allocate.put(bArr);
+        byte[] sendRequest = sendRequest(Arrays.copyOfRange(allocate.array(), 0, allocate.position()));
+        if (sendRequest != null && sendRequest.length != 0) {
+            ByteBuffer wrap = ByteBuffer.wrap(sendRequest);
+            wrap.order(byteOrder);
+            if (wrap.getShort() == 0) {
+                return sendRequest;
+            }
+            AuthnrLog.e("FPO", "getWrappedObject failed");
+            return new byte[0];
+        }
+        AuthnrLog.e("FPO", "sendRequest failed");
+        return new byte[0];
+    }
+
     public final synchronized byte[] sendRequest(byte[] bArr) {
-        AuthnrLog.v("FPO", "sendRequest");
         if (this.mFingerprintManager == null) {
             AuthnrLog.e("FPO", "Fingerprint Service not found");
             return new byte[0];
@@ -58,9 +83,8 @@ public final class FingerprintOperation {
         return null;
     }
 
-    public synchronized boolean setChallenge(byte[] bArr) {
-        AuthnrLog.v("FPO", "set challenge");
-        ByteBuffer allocate = ByteBuffer.allocate(bArr.length + 2 + 2);
+    public final synchronized boolean setChallenge(byte[] bArr) {
+        ByteBuffer allocate = ByteBuffer.allocate(bArr.length + 4);
         ByteOrder byteOrder = ByteOrder.LITTLE_ENDIAN;
         allocate.order(byteOrder);
         allocate.putShort((short) 1);
@@ -78,27 +102,5 @@ public final class FingerprintOperation {
         }
         AuthnrLog.e("FPO", "sendRequest failed");
         return false;
-    }
-
-    public synchronized byte[] getWrappedObject(byte[] bArr) {
-        AuthnrLog.v("FPO", "getWrappedObject");
-        ByteBuffer allocate = ByteBuffer.allocate(bArr.length + 2 + 2);
-        ByteOrder byteOrder = ByteOrder.LITTLE_ENDIAN;
-        allocate.order(byteOrder);
-        allocate.putShort((short) 2);
-        allocate.putShort((short) bArr.length);
-        allocate.put(bArr);
-        byte[] sendRequest = sendRequest(Arrays.copyOfRange(allocate.array(), 0, allocate.position()));
-        if (sendRequest != null && sendRequest.length != 0) {
-            ByteBuffer wrap = ByteBuffer.wrap(sendRequest);
-            wrap.order(byteOrder);
-            if (wrap.getShort() == 0) {
-                return sendRequest;
-            }
-            AuthnrLog.e("FPO", "getWrappedObject failed");
-            return new byte[0];
-        }
-        AuthnrLog.e("FPO", "sendRequest failed");
-        return new byte[0];
     }
 }

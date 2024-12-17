@@ -2,88 +2,84 @@ package com.android.server.biometrics.sensors.fingerprint;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Handler;
-import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
-import com.android.internal.util.FrameworkStatsLog;
-import com.android.server.biometrics.SemBiometricFeature;
+import com.android.server.HeimdAllFsService$$ExternalSyntheticOutline0;
 import com.android.server.biometrics.Utils;
+import com.android.server.biometrics.sensors.fingerprint.aidl.FingerprintProvider;
 import com.samsung.android.content.smartclip.SpenGestureManager;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class SemFpSpenConstraintHandler implements SemFpEventListener, SemFpEnrollmentListener, SemFpAuthenticationListener {
+public final class SemFpSpenConstraintHandler implements SemFpEventListener, SemFpEnrollmentListener, SemFpAuthenticationListener {
     static final String ACTION_FOD_UPDATE = "com.samsung.android.fingerprint.action.FINGER_ON_DISPLAY";
     static final int EXTRA_FOD_UPDATE_TSP_BLOCK = 226;
     static final int EXTRA_FOD_UPDATE_TSP_UNBLOCK = 225;
     static final String KEY_FOD_EXTRA_INFO = "info";
     public final Context mContext;
+    public final Handler mH;
     public boolean mIsTspBlocked;
     public final Pair mProvider;
-    public SpenGestureManager mSpenGestureManager;
-    BroadcastReceiver mTspBrReceiver;
-    public final Handler mH = SemFpMainThread.get().getHandler();
-    public final Runnable mRunnableHandleTspBlockAction = new Runnable() { // from class: com.android.server.biometrics.sensors.fingerprint.SemFpSpenConstraintHandler$$ExternalSyntheticLambda1
+    public final SemFpSpenConstraintHandler$$ExternalSyntheticLambda0 mRunnableHandleTspBlockAction = new Runnable() { // from class: com.android.server.biometrics.sensors.fingerprint.SemFpSpenConstraintHandler$$ExternalSyntheticLambda0
         @Override // java.lang.Runnable
         public final void run() {
-            SemFpSpenConstraintHandler.this.lambda$new$0();
+            SemFpSpenConstraintHandler semFpSpenConstraintHandler = SemFpSpenConstraintHandler.this;
+            semFpSpenConstraintHandler.getClass();
+            if (Utils.DEBUG) {
+                HeimdAllFsService$$ExternalSyntheticOutline0.m("SemFpSpenConstraintHandler", new StringBuilder("handleTspBlockAction: "), semFpSpenConstraintHandler.mIsTspBlocked);
+            }
+            semFpSpenConstraintHandler.notifyTspBlockStatusToHal(((Integer) semFpSpenConstraintHandler.mProvider.first).intValue());
+            ((FingerprintProvider) ((ServiceProvider) semFpSpenConstraintHandler.mProvider.second)).semNotifyTspBlockStateToClient(semFpSpenConstraintHandler.mIsTspBlocked);
         }
     };
+    public SpenGestureManager mSpenGestureManager;
+    BroadcastReceiver mTspBrReceiver;
 
-    public SemFpSpenConstraintHandler(Context context, Pair pair) {
+    /* JADX WARN: Type inference failed for: r1v1, types: [com.android.server.biometrics.sensors.fingerprint.SemFpSpenConstraintHandler$$ExternalSyntheticLambda0] */
+    public SemFpSpenConstraintHandler(Context context, Pair pair, Handler handler) {
         this.mContext = context;
         this.mProvider = pair;
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0() {
-        if (Utils.DEBUG) {
-            Slog.i("SemFpSpenConstraintHandler", "handleTspBlockAction: " + this.mIsTspBlocked);
-        }
-        lambda$onEnrollStarted$1(((Integer) this.mProvider.first).intValue());
-        ((ServiceProvider) this.mProvider.second).semNotifyTspBlockStateToClient(this.mIsTspBlocked);
-    }
-
-    public void start() {
-        ((ServiceProvider) this.mProvider.second).semAddEventListener(this);
-        ((ServiceProvider) this.mProvider.second).semAddAuthenticationListener(this);
-        ((ServiceProvider) this.mProvider.second).semAddEnrollmentListener(this);
-        if (SemBiometricFeature.FP_FEATURE_TSP_BLOCK) {
-            startObserveTspBlockEvent();
-        }
-    }
-
-    public final void startObserveTspBlockEvent() {
-        if (this.mTspBrReceiver != null) {
-            return;
-        }
-        this.mTspBrReceiver = new BroadcastReceiver() { // from class: com.android.server.biometrics.sensors.fingerprint.SemFpSpenConstraintHandler.1
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                if (SemFpSpenConstraintHandler.ACTION_FOD_UPDATE.equals(intent.getAction())) {
-                    int intExtra = intent.getIntExtra(SemFpSpenConstraintHandler.KEY_FOD_EXTRA_INFO, -1);
-                    if (intExtra == SemFpSpenConstraintHandler.EXTRA_FOD_UPDATE_TSP_BLOCK && !SemFpSpenConstraintHandler.this.mIsTspBlocked) {
-                        SemFpSpenConstraintHandler.this.mIsTspBlocked = true;
-                        SemFpSpenConstraintHandler.this.handleTspBlockAction(FrameworkStatsLog.CAMERA_SHOT_LATENCY_REPORTED__MODE__CONTROL_DS_MODE_MACRO_RAW_SR_MERGE);
-                    } else if (intExtra == SemFpSpenConstraintHandler.EXTRA_FOD_UPDATE_TSP_UNBLOCK && SemFpSpenConstraintHandler.this.mIsTspBlocked) {
-                        SemFpSpenConstraintHandler.this.mIsTspBlocked = false;
-                        SemFpSpenConstraintHandler.this.handleTspBlockAction(FrameworkStatsLog.CAMERA_SHOT_LATENCY_REPORTED__MODE__CONTROL_DS_MODE_MACRO_RAW_SR_MERGE);
-                    }
-                }
-            }
-        };
-        Utils.registerBroadcastAsUser(this.mContext, this.mTspBrReceiver, new IntentFilter(ACTION_FOD_UPDATE), UserHandle.ALL, this.mH);
+        this.mH = handler;
     }
 
     public void handleTspBlockAction(int i) {
-        this.mH.removeCallbacks(this.mRunnableHandleTspBlockAction);
-        this.mH.postDelayed(this.mRunnableHandleTspBlockAction, i);
+        Handler handler = this.mH;
+        SemFpSpenConstraintHandler$$ExternalSyntheticLambda0 semFpSpenConstraintHandler$$ExternalSyntheticLambda0 = this.mRunnableHandleTspBlockAction;
+        handler.removeCallbacks(semFpSpenConstraintHandler$$ExternalSyntheticLambda0);
+        handler.postDelayed(semFpSpenConstraintHandler$$ExternalSyntheticLambda0, i);
+    }
+
+    public final void notifyTspBlockStatusToHal(int i) {
+        ((FingerprintProvider) ((ServiceProvider) this.mProvider.second)).semRequest(i, 35, this.mIsTspBlocked ? 1 : 0, null, null);
+    }
+
+    @Override // com.android.server.biometrics.sensors.fingerprint.SemFpAuthenticationListener
+    public final void onAuthenticationAcquire(int i, int i2, int i3) {
+        if (i2 == 6 && i3 == 10001 && this.mIsTspBlocked) {
+            handleTspBlockAction(0);
+        }
+    }
+
+    @Override // com.android.server.biometrics.sensors.fingerprint.SemFpAuthenticationListener
+    public final void onAuthenticationStarted(int i, int i2) {
+        this.mH.postDelayed(new SemFpSpenConstraintHandler$$ExternalSyntheticLambda1(this, i, 1), 10L);
+    }
+
+    @Override // com.android.server.biometrics.sensors.fingerprint.SemFpEnrollmentListener
+    public final void onEnrollAcquire(int i, int i2) {
+        if (i == 6 && i2 == 10001 && this.mIsTspBlocked) {
+            handleTspBlockAction(0);
+        }
+    }
+
+    @Override // com.android.server.biometrics.sensors.fingerprint.SemFpEnrollmentListener
+    public final void onEnrollStarted(int i, int i2) {
+        this.mH.postDelayed(new SemFpSpenConstraintHandler$$ExternalSyntheticLambda1(this, i, 0), 10L);
     }
 
     @Override // com.android.server.biometrics.sensors.fingerprint.SemFpEventListener
-    public void onSpenEvent(int i, int i2) {
+    public final void onSpenEvent(int i) {
         if (this.mSpenGestureManager == null) {
             this.mSpenGestureManager = (SpenGestureManager) this.mContext.getSystemService("spengestureservice");
         }
@@ -92,49 +88,10 @@ public class SemFpSpenConstraintHandler implements SemFpEventListener, SemFpEnro
             return;
         }
         try {
-            spenGestureManager.notifyBleSpenChargeLockState(i2 == 30002);
+            spenGestureManager.notifyBleSpenChargeLockState(i == 30002);
         } catch (RuntimeException e) {
             Slog.w("SemFpSpenConstraintHandler", "onSpenEvent: " + e.getMessage());
         }
-    }
-
-    @Override // com.android.server.biometrics.sensors.fingerprint.SemFpAuthenticationListener
-    public void onAuthenticationAcquire(int i, int i2, int i3, int i4) {
-        if (i3 == 6 && i4 == 10001 && this.mIsTspBlocked) {
-            handleTspBlockAction(0);
-        }
-    }
-
-    @Override // com.android.server.biometrics.sensors.fingerprint.SemFpEnrollmentListener
-    public void onEnrollAcquire(int i, int i2, int i3, int i4) {
-        if (i3 == 6 && i4 == 10001 && this.mIsTspBlocked) {
-            handleTspBlockAction(0);
-        }
-    }
-
-    @Override // com.android.server.biometrics.sensors.fingerprint.SemFpEnrollmentListener
-    public void onEnrollStarted(final int i, int i2) {
-        this.mH.postDelayed(new Runnable() { // from class: com.android.server.biometrics.sensors.fingerprint.SemFpSpenConstraintHandler$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                SemFpSpenConstraintHandler.this.lambda$onEnrollStarted$1(i);
-            }
-        }, 10L);
-    }
-
-    @Override // com.android.server.biometrics.sensors.fingerprint.SemFpAuthenticationListener
-    public void onAuthenticationStarted(final int i, int i2) {
-        this.mH.postDelayed(new Runnable() { // from class: com.android.server.biometrics.sensors.fingerprint.SemFpSpenConstraintHandler$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                SemFpSpenConstraintHandler.this.lambda$onAuthenticationStarted$2(i);
-            }
-        }, 10L);
-    }
-
-    /* renamed from: notifyTspBlockStatusToHal, reason: merged with bridge method [inline-methods] and merged with bridge method [inline-methods] */
-    public final void lambda$onEnrollStarted$1(int i) {
-        ((ServiceProvider) this.mProvider.second).semRequest(i, 35, this.mIsTspBlocked ? 1 : 0, null, null);
     }
 
     public void setTspBlockState(boolean z) {

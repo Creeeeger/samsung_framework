@@ -1,23 +1,24 @@
 package com.android.server.display.mode;
 
 import android.content.Context;
-import android.os.Debug;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.EventLog;
 import android.util.Slog;
 import android.util.SparseArray;
-import android.view.Display;
-import android.view.DisplayInfo;
 import android.view.SurfaceControl;
-import com.android.server.display.DisplayPowerController2;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.am.ActivityManagerService$$ExternalSyntheticOutline0;
 import com.android.server.display.mode.DisplayModeDirector;
 import com.android.server.display.mode.RefreshRateController;
 import com.android.server.display.mode.RefreshRateToken;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import com.samsung.android.core.SystemHistory;
-import com.samsung.android.hardware.display.IRefreshRateToken;
 import com.samsung.android.hardware.display.RefreshRateConfig;
 import com.samsung.android.rune.CoreRune;
 import java.io.File;
@@ -25,117 +26,322 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public class RefreshRateController {
     public static Context mContext;
     public static SystemHistory mDisplayModeDirectorHistory;
     public static DisplayModeDirector mDm;
     public static Handler mHandler;
-    public static IBinder mPrimaryDisplayToken;
     public static RefreshRateTokenController mRefreshRateTokenController;
     public static VotesStorage mVotesStorage;
-    public RefreshRateConfig mConfig;
-    public IBinder mDisplayToken;
-    public int mDisplayType;
-    public boolean mIsSubScreen;
-    public AtomicBoolean mPassive;
-    public AtomicInteger mRefreshRateMode;
-    public String mRefreshRateModeSetting;
-    public AtomicInteger mReportedRefreshRateMode;
-    public AtomicBoolean mUpdateRefreshRateMode;
-    public static SparseArray mIsDisplayPowerModeOnByDisplayType = new SparseArray();
-    public static AtomicInteger mBrightness = new AtomicInteger(-1);
-    public static AtomicReference mAmbientLux = new AtomicReference(Float.valueOf(-1.0f));
-    public static AtomicBoolean mIsWirelessCharging = new AtomicBoolean(false);
+    public static IBinder sPrimaryDisplayToken;
+    public final RefreshRateConfig mConfig;
+    public final IBinder mDisplayToken;
+    public final int mDisplayType;
+    public final boolean mIsSubScreen;
+    public final String mRefreshRateModeSetting;
+    public static final SparseArray mIsDisplayPowerModeOnByDisplayType = new SparseArray();
+    public static final AtomicInteger mBrightness = new AtomicInteger(-1);
+    public static final AtomicReference mAmbientLux = new AtomicReference(Float.valueOf(-1.0f));
+    public static final AtomicBoolean mIsWirelessCharging = new AtomicBoolean(false);
+    public final AtomicInteger mRefreshRateMode = new AtomicInteger(-1);
+    public final AtomicInteger mReportedRefreshRateMode = new AtomicInteger(-1);
+    public final AtomicBoolean mUpdateRefreshRateMode = new AtomicBoolean(false);
+    public final AtomicBoolean mPassive = new AtomicBoolean(false);
 
-    public String getControllerType() {
-        return "RefreshRateController";
-    }
-
-    public int getSwitchingType() {
-        return 1;
-    }
-
-    public boolean isPassiveModeForTypeLocked() {
-        return false;
-    }
-
-    public String logBrightnessStateLocked() {
-        return "";
-    }
-
-    public void onDisplayStateOffLocked() {
-    }
-
-    public void updateDefaultDisplayOrOffDisplayLocked() {
-    }
-
-    public void updateLfdValueLocked(boolean z) {
-    }
-
-    public static void init(Context context, DisplayModeDirector displayModeDirector, Handler handler, VotesStorage votesStorage, RefreshRateTokenController refreshRateTokenController) {
-        mDm = displayModeDirector;
-        mContext = context;
-        mHandler = handler;
-        mVotesStorage = votesStorage;
-        mRefreshRateTokenController = refreshRateTokenController;
-        if (CoreRune.FW_VRR_SYSTEM_HISTORY) {
-            mDisplayModeDirectorHistory = new SystemHistory(25, "RefreshRateModeManager");
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LowRefreshRateToken extends RefreshRateToken {
+        @Override // com.android.server.display.mode.RefreshRateToken
+        public final void accept() {
+            RefreshRateController.mVotesStorage.updateVote(-1, 19, RefreshRateController.mRefreshRateTokenController.mRefreshRateTokens.stream().anyMatch(new RefreshRateController$$ExternalSyntheticLambda1(3)) ? Vote.forPolicyRate(FullScreenMagnificationGestureHandler.MAX_SCALE, 60.0f) : null);
         }
     }
 
-    public static int getBrightnessZone(int i) {
-        if (RefreshRateConfig.getInstance().getBrightnessThreshold().mLowBrightnessThreshold > i) {
-            return 1;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class NullController extends RefreshRateController {
+        public final /* synthetic */ int $r8$classId;
+
+        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+        public /* synthetic */ NullController(int i, IBinder iBinder) {
+            super(iBinder);
+            this.$r8$classId = i;
         }
-        return RefreshRateConfig.getInstance().getBrightnessThreshold().mHighBrightnessThreshold < i ? 3 : 2;
-    }
 
-    public static int getAmbientLuxZone(float f) {
-        if (f < DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            return 0;
+        private final void onBrightnessChangedLocked$com$android$server$display$mode$RefreshRateController$SwitchableController() {
         }
-        if (RefreshRateConfig.getInstance().getBrightnessThreshold().mLowAmbientLuxThreshold > f) {
-            return 1;
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public final String getControllerType() {
+            switch (this.$r8$classId) {
+                case 0:
+                    return "NullController";
+                case 1:
+                    return "SeamlessController";
+                default:
+                    return "SwitchableController";
+            }
         }
-        return ((float) RefreshRateConfig.getInstance().getBrightnessThreshold().mHighAmbientLuxThreshold) < f ? 3 : 2;
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public Vote getNormalSpeedVote() {
+            switch (this.$r8$classId) {
+                case 2:
+                    return Vote.forPolicyRate(this.mConfig.getNormalSpeedRefreshRates().min(), this.mConfig.getNormalSpeedRefreshRates().max());
+                default:
+                    return super.getNormalSpeedVote();
+            }
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public int getSwitchingType() {
+            switch (this.$r8$classId) {
+                case 2:
+                    return 0;
+                default:
+                    return super.getSwitchingType();
+            }
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public boolean isPassiveModeForTypeLocked() {
+            switch (this.$r8$classId) {
+                case 1:
+                    return RefreshRateController.getBrightnessZone(RefreshRateController.mBrightness.get()) == 1 || RefreshRateController.isLowAmbientLuxZone() || isHighBrightnessAmbientLuxZone() || RefreshRateController.hasPassiveModeToken();
+                default:
+                    return super.isPassiveModeForTypeLocked();
+            }
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public String logBrightnessStateLocked() {
+            switch (this.$r8$classId) {
+                case 1:
+                    return " BrightnessState mPassive=" + this.mPassive + ", PassiveModeToken=" + RefreshRateController.hasPassiveModeToken() + ", mBrightness=" + RefreshRateController.mBrightness + ", mAmbientLux=" + RefreshRateController.mAmbientLux;
+                default:
+                    return super.logBrightnessStateLocked();
+            }
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public void onBrightnessChangedLocked() {
+            switch (this.$r8$classId) {
+                case 2:
+                    break;
+                default:
+                    super.onBrightnessChangedLocked();
+                    break;
+            }
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public void updatePassiveLocked() {
+            switch (this.$r8$classId) {
+                case 0:
+                    Slog.d("RefreshRateModeManager", "NullController-updatePassiveLocked controller is not ready!");
+                    break;
+                default:
+                    super.updatePassiveLocked();
+                    break;
+            }
+        }
     }
 
-    public boolean compareAndSetBrightnessZone(int i) {
-        return getBrightnessZone(mBrightness.getAndSet(i)) == getBrightnessZone(i);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PassiveModeToken extends RefreshRateToken {
+        public PassiveModeToken() {
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateToken
+        public final void accept() {
+            if (!CoreRune.FW_VRR_FOR_SUB_DISPLAY || RefreshRateConfig.isSubScreen() == RefreshRateController.this.mIsSubScreen) {
+                RefreshRateController.this.updateLfdValueLocked(false);
+                RefreshRateController.this.updatePassiveLocked();
+            } else {
+                Slog.d("RefreshRateModeManager", "default display was changed!, don't need to check passive mode for " + RefreshRateController.this.mDisplayToken);
+            }
+        }
     }
 
-    public boolean compareAndSetAmbientLuxZone(float f) {
-        return getAmbientLuxZone(((Float) mAmbientLux.getAndSet(Float.valueOf(f))).floatValue()) == getAmbientLuxZone(f);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RefreshRateMaxLimitToken extends RefreshRateToken {
+        public RefreshRateMaxLimitToken() {
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateToken
+        public final void accept() {
+            Vote vote;
+            boolean z = CoreRune.FW_VRR_SEAMLESS;
+            if (!z || RefreshRateController.mDm.getModeSwitchingType() == 0) {
+                return;
+            }
+            int intValue = ((Integer) RefreshRateController.mRefreshRateTokenController.mRefreshRateTokens.stream().filter(new RefreshRateController$$ExternalSyntheticLambda1(4)).map(new RefreshRateController$RefreshRateMaxLimitToken$$ExternalSyntheticLambda1(0)).min(new RefreshRateController$RefreshRateMaxLimitToken$$ExternalSyntheticLambda2()).orElse(Integer.MAX_VALUE)).intValue();
+            if (intValue < Integer.MAX_VALUE) {
+                float f = intValue;
+                if (z && RefreshRateController.mDm.mRefreshRateModeManager.getController().mPassive.get()) {
+                    f = RefreshRateController.this.mConfig.getHighSpeedRefreshRates().getSupportedRefreshRateForPassive(intValue);
+                }
+                vote = Vote.forPolicyRate(FullScreenMagnificationGestureHandler.MAX_SCALE, f);
+            } else {
+                vote = null;
+            }
+            RefreshRateController.mVotesStorage.updateVote(-1, 1, vote);
+        }
     }
 
-    public boolean compareAndSetIsWirelessCharging(boolean z) {
-        return mIsWirelessCharging.getAndSet(z) == z;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RefreshRateMinLimitToken extends RefreshRateToken {
+        @Override // com.android.server.display.mode.RefreshRateToken
+        public final void accept() {
+            if (!CoreRune.FW_VRR_SEAMLESS || RefreshRateController.mDm.getModeSwitchingType() == 0) {
+                return;
+            }
+            int intValue = ((Integer) RefreshRateController.mRefreshRateTokenController.mRefreshRateTokens.stream().filter(new RefreshRateController$$ExternalSyntheticLambda1(5)).map(new RefreshRateController$RefreshRateMaxLimitToken$$ExternalSyntheticLambda1(1)).filter(new RefreshRateController$$ExternalSyntheticLambda1(6)).max(new RefreshRateController$RefreshRateMaxLimitToken$$ExternalSyntheticLambda2()).orElse(Integer.MIN_VALUE)).intValue();
+            Vote forPolicyRate = intValue == Integer.MIN_VALUE ? null : Vote.forPolicyRate(intValue, Float.POSITIVE_INFINITY);
+            RefreshRateController.mVotesStorage.updateVote(-1, 2, forPolicyRate);
+            if (CoreRune.FW_VRR_DISCRETE) {
+                RefreshRateController.mVotesStorage.updateVote(-1, 7, forPolicyRate);
+            }
+        }
     }
 
-    public void setPrimaryDisplayToken(IBinder iBinder) {
-        mPrimaryDisplayToken = iBinder;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SeamlessPlusController extends RefreshRateController {
+        public static final AtomicInteger mReportedLfd = new AtomicInteger(-1);
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public final String getControllerType() {
+            return "SeamlessPlusController";
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public final boolean isPassiveModeForTypeLocked() {
+            if (supportApsr()) {
+                return mReportedLfd.get() == 3 || RefreshRateController.hasPassiveModeToken();
+            }
+            return false;
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public final String logBrightnessStateLocked() {
+            return " BrightnessState mPassive=" + this.mPassive + ", PassiveModeToken=" + RefreshRateController.hasPassiveModeToken() + ", mLfd=" + mReportedLfd + ", mBrightness=" + RefreshRateController.mBrightness + ", mAmbientLux=" + RefreshRateController.mAmbientLux + ", mIsWirelessCharing=" + RefreshRateController.mIsWirelessCharging;
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public final void onDisplayStateOffLocked() {
+            if (isPassiveModeForTypeLocked()) {
+                updateDefaultDisplayOrOffDisplayLocked();
+            }
+        }
+
+        public final void setLfd(final int i, final String str) {
+            StringBuilder m = StorageManagerService$$ExternalSyntheticOutline0.m(i, "set ", str, "=", ", brightness=");
+            m.append(RefreshRateController.mBrightness);
+            m.append(", lux=");
+            m.append(RefreshRateController.mAmbientLux);
+            m.append(", mIsWirelessCharging=");
+            m.append(RefreshRateController.mIsWirelessCharging);
+            Slog.d("RefreshRateModeManager", m.toString());
+            new Thread(new Runnable() { // from class: com.android.server.display.mode.RefreshRateController$SeamlessPlusController$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    RefreshRateController.SeamlessPlusController seamlessPlusController = RefreshRateController.SeamlessPlusController.this;
+                    String str2 = str;
+                    int i2 = i;
+                    seamlessPlusController.getClass();
+                    String str3 = "client=disp scope=normal,lpm " + str2 + "=" + i2;
+                    File file = new File("/sys/class/lcd/panel/vrr_lfd");
+                    if (file.exists()) {
+                        try {
+                            FileOutputStream fileOutputStream = new FileOutputStream(file);
+                            try {
+                                fileOutputStream.write(str3.getBytes());
+                                fileOutputStream.close();
+                            } finally {
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+        }
+
+        public final boolean supportApsr() {
+            return this.mConfig.getHighSpeedRefreshRates().min() == 10;
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public final void updateDefaultDisplayOrOffDisplayLocked() {
+            if (!supportApsr()) {
+                updateLfdScalabilityLocked(true, false);
+            } else {
+                updateLfdFixLocked(true);
+                updatePassiveLocked();
+            }
+        }
+
+        public final void updateLfdFixLocked(boolean z) {
+            int i = 0;
+            if (!z && (RefreshRateController.mIsWirelessCharging.get() || ((RefreshRateController.getBrightnessZone(RefreshRateController.mBrightness.get()) == 1 && RefreshRateController.isLowAmbientLuxZone()) || RefreshRateController.hasPassiveModeToken()))) {
+                i = 3;
+            }
+            if (mReportedLfd.getAndSet(i) == i) {
+                return;
+            }
+            setLfd(i, "fix");
+        }
+
+        public final void updateLfdScalabilityLocked(boolean z, boolean z2) {
+            Vote vote;
+            DisableRefreshRateSwitchingVote disableRefreshRateSwitchingVote;
+            int i = 0;
+            if (!z) {
+                if (RefreshRateController.mIsWirelessCharging.get() || (RefreshRateController.getBrightnessZone(RefreshRateController.mBrightness.get()) == 1 && (RefreshRateController.isLowAmbientLuxZone() || RefreshRateController.getAmbientLuxZone(((Float) RefreshRateController.mAmbientLux.get()).floatValue()) == 0))) {
+                    i = 1;
+                } else if (isHighBrightnessAmbientLuxZone()) {
+                    i = 6;
+                }
+            }
+            if (mReportedLfd.getAndSet(i) != i) {
+                setLfd(i, "scalability");
+            } else if (this.mRefreshRateMode.get() == this.mReportedRefreshRateMode.get() && !z2) {
+                return;
+            }
+            if (i == 1) {
+                float max = this.mRefreshRateMode.get() == 0 ? this.mConfig.getNormalSpeedRefreshRates().max() : this.mConfig.getHighSpeedRefreshRates().max();
+                vote = Vote.forPolicyRate(max, max);
+                disableRefreshRateSwitchingVote = new DisableRefreshRateSwitchingVote(true);
+            } else {
+                vote = null;
+                disableRefreshRateSwitchingVote = null;
+            }
+            RefreshRateController.mVotesStorage.updateVote(-1, 3, vote);
+            RefreshRateController.mVotesStorage.updateVote(-1, 21, disableRefreshRateSwitchingVote);
+        }
+
+        @Override // com.android.server.display.mode.RefreshRateController
+        public final void updateLfdValueLocked(boolean z) {
+            if (supportApsr()) {
+                updateLfdFixLocked(false);
+            } else {
+                updateLfdScalabilityLocked(false, z);
+            }
+        }
     }
 
     public RefreshRateController(IBinder iBinder) {
         this.mRefreshRateModeSetting = "refresh_rate_mode";
         this.mDisplayType = 1;
         this.mIsSubScreen = false;
-        this.mRefreshRateMode = new AtomicInteger(-1);
-        this.mReportedRefreshRateMode = new AtomicInteger(-1);
-        this.mUpdateRefreshRateMode = new AtomicBoolean(false);
-        this.mPassive = new AtomicBoolean(false);
         this.mDisplayToken = iBinder;
         boolean z = CoreRune.FW_VRR_FOR_SUB_DISPLAY;
         if (z) {
-            IBinder iBinder2 = mPrimaryDisplayToken;
+            IBinder iBinder2 = sPrimaryDisplayToken;
             boolean z2 = (iBinder2 == null || iBinder2 == iBinder) ? false : true;
             this.mIsSubScreen = z2;
             if (z2) {
@@ -146,78 +352,99 @@ public class RefreshRateController {
         this.mConfig = RefreshRateConfig.getInstance(z && this.mIsSubScreen);
     }
 
+    public static RefreshRateMinLimitToken createRefreshRateMinLimitToken(int i, IBinder iBinder, String str) {
+        RefreshRateTokenController refreshRateTokenController = mRefreshRateTokenController;
+        RefreshRateMinLimitToken refreshRateMinLimitToken = new RefreshRateMinLimitToken();
+        String m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("RefreshRateMinLimitToken:", str);
+        long uptimeMillis = SystemClock.uptimeMillis();
+        RefreshRateToken.RefreshRateTokenInfo refreshRateTokenInfo = new RefreshRateToken.RefreshRateTokenInfo();
+        refreshRateTokenInfo.mToken = iBinder;
+        refreshRateTokenInfo.mTag = m;
+        refreshRateTokenInfo.mAcquireTime = uptimeMillis;
+        refreshRateTokenInfo.mRefreshRate = i;
+        refreshRateTokenController.createRefreshRateToken(refreshRateMinLimitToken, refreshRateTokenInfo);
+        return refreshRateMinLimitToken;
+    }
+
+    public static int getAmbientLuxZone(float f) {
+        if (f < FullScreenMagnificationGestureHandler.MAX_SCALE) {
+            return 0;
+        }
+        if (RefreshRateConfig.getInstance().getBrightnessThreshold().mLowAmbientLuxThreshold > f) {
+            return 1;
+        }
+        return ((float) RefreshRateConfig.getInstance().getBrightnessThreshold().mHighAmbientLuxThreshold) < f ? 3 : 2;
+    }
+
+    public static int getBrightnessZone(int i) {
+        if (RefreshRateConfig.getInstance().getBrightnessThreshold().mLowBrightnessThreshold > i) {
+            return 1;
+        }
+        return RefreshRateConfig.getInstance().getBrightnessThreshold().mHighBrightnessThreshold < i ? 3 : 2;
+    }
+
+    public static boolean hasPassiveModeToken() {
+        return mRefreshRateTokenController.mRefreshRateTokens.stream().anyMatch(new RefreshRateController$$ExternalSyntheticLambda1(1));
+    }
+
+    public static boolean isLowAmbientLuxZone() {
+        return getAmbientLuxZone(((Float) mAmbientLux.get()).floatValue()) == 1;
+    }
+
     public static RefreshRateController makeController(IBinder iBinder) {
         if (iBinder == null) {
-            return new NullController(null);
+            return new NullController(0, null);
         }
-        if (RefreshRateConfig.getInstance().isSwitchable()) {
-            return new SwitchableController(iBinder);
+        return RefreshRateConfig.getInstance().isSwitchable() ? new NullController(2, iBinder) : RefreshRateConfig.getInstance().isSeamless() ? new NullController(1, iBinder) : RefreshRateConfig.getInstance().isSeamlessPlus() ? new SeamlessPlusController(iBinder) : new RefreshRateController(iBinder);
+    }
+
+    public static void updateRefreshRateMaxLimitTokenLocked() {
+        RefreshRateToken refreshRateToken = (RefreshRateToken) mRefreshRateTokenController.mRefreshRateTokens.stream().filter(new RefreshRateController$$ExternalSyntheticLambda1(0)).findFirst().orElse(null);
+        if (refreshRateToken != null) {
+            refreshRateToken.accept();
         }
-        if (RefreshRateConfig.getInstance().isSeamless()) {
-            return new SeamlessController(iBinder);
-        }
-        if (RefreshRateConfig.getInstance().isSeamlessPlus()) {
-            return new SeamlessPlusController(iBinder);
-        }
-        return new RefreshRateController(iBinder);
     }
 
-    public Boolean getPowerModeOnByDisplayType(int i) {
-        return (Boolean) mIsDisplayPowerModeOnByDisplayType.get(i);
+    public final PassiveModeToken createPassiveModeToken(IBinder iBinder, String str) {
+        RefreshRateTokenController refreshRateTokenController = mRefreshRateTokenController;
+        PassiveModeToken passiveModeToken = new PassiveModeToken();
+        String m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("PassiveModeToken:", str);
+        long uptimeMillis = SystemClock.uptimeMillis();
+        RefreshRateToken.RefreshRateTokenInfo refreshRateTokenInfo = new RefreshRateToken.RefreshRateTokenInfo();
+        refreshRateTokenInfo.mToken = iBinder;
+        refreshRateTokenInfo.mTag = m;
+        refreshRateTokenInfo.mAcquireTime = uptimeMillis;
+        refreshRateTokenInfo.mRefreshRate = 0;
+        refreshRateTokenController.createRefreshRateToken(passiveModeToken, refreshRateTokenInfo);
+        return passiveModeToken;
     }
 
-    public void setPowerModeOnByDisplayType(int i, boolean z) {
-        mIsDisplayPowerModeOnByDisplayType.put(i, Boolean.valueOf(z));
-    }
-
-    public int getRefreshRateModeLocked() {
-        return this.mRefreshRateMode.get();
-    }
-
-    public boolean isRefreshRateModeChangingLocked() {
-        return this.mRefreshRateMode.get() != this.mReportedRefreshRateMode.get();
-    }
-
-    public boolean consumeUpdateRefreshRateMode() {
-        return this.mUpdateRefreshRateMode.getAndSet(false);
+    public String getControllerType() {
+        return "RefreshRateController";
     }
 
     public Vote getNormalSpeedVote() {
-        return Vote.forPhysicalRefreshRates(this.mConfig.getNormalSpeedRefreshRates().min(), this.mConfig.getNormalSpeedRefreshRates().max());
+        return this.mConfig.unsupportedNS() ? Vote.forPolicyRate(this.mConfig.getHighSpeedRefreshRates().min(), this.mConfig.getNormalSpeedRefreshRates().max()) : Vote.forPolicyRate(this.mConfig.getNormalSpeedRefreshRates().min(), this.mConfig.getNormalSpeedRefreshRates().max());
     }
 
-    public Vote getHighSpeedVote() {
-        return Vote.forPhysicalRefreshRates(this.mConfig.getHighSpeedRefreshRates().min(), this.mConfig.getHighSpeedRefreshRates().max());
+    public int getSwitchingType() {
+        return 1;
     }
 
-    public final Vote getVoteForMode(int i) {
-        if (i == 0) {
-            return getNormalSpeedVote();
-        }
-        if (i == 1 || i == 2) {
-            return getHighSpeedVote();
-        }
-        return null;
+    public final boolean isHighBrightnessAmbientLuxZone() {
+        return this.mConfig.getBrightnessThreshold().mHighBrightnessThreshold != -1 && this.mConfig.getBrightnessThreshold().mHighAmbientLuxThreshold != -1 && getBrightnessZone(mBrightness.get()) == 3 && getAmbientLuxZone(((Float) mAmbientLux.get()).floatValue()) == 3;
     }
 
-    public void updateRefreshRateModeLocked(boolean z) {
-        int intForUser = Settings.Secure.getIntForUser(mContext.getContentResolver(), this.mRefreshRateModeSetting, 0, -2);
-        if (intForUser != getRefreshRateModeLocked() || z) {
-            if (CoreRune.FW_VRR_FOR_SUB_DISPLAY && z) {
-                mDm.setModeSwitchingType(getSwitchingType());
-            }
-            EventLog.writeEvent(1290001, String.format("%s", this.mDisplayToken), Integer.valueOf(intForUser));
-            this.mRefreshRateMode.set(intForUser);
-            this.mUpdateRefreshRateMode.set(true);
-            mVotesStorage.updateVote(-1, 10, getVoteForMode(intForUser));
-            if (CoreRune.FW_VRR_SEAMLESS) {
-                onBrightnessChangedLocked(false, true);
-            }
-            notifyRefreshRateModeLocked();
-        }
+    public boolean isPassiveModeForTypeLocked() {
+        return false;
     }
 
-    public boolean logCurrentStateLocked(DisplayModeDirector.DesiredDisplayModeSpecs desiredDisplayModeSpecs) {
+    public String logBrightnessStateLocked() {
+        return "";
+    }
+
+    public final void logCurrentStateLocked(DisplayModeDirector.DesiredDisplayModeSpecs desiredDisplayModeSpecs) {
+        boolean z;
         StringBuilder sb = new StringBuilder();
         if (desiredDisplayModeSpecs != null) {
             sb.append("Schedule to change allowedModes=");
@@ -231,572 +458,123 @@ public class RefreshRateController {
         StringWriter stringWriter = new StringWriter();
         mVotesStorage.dump(new PrintWriter(stringWriter));
         sb.append(stringWriter);
-        sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        sb.append(" mModeSwitchingType: ");
+        sb.append("\n mModeSwitchingType: ");
         sb.append(DisplayModeDirector.switchingTypeToString(mDm.getModeSwitchingType()));
         sb.append(" mAlwaysRespectAppRequest: ");
-        sb.append(mDm.shouldAlwaysRespectAppRequestedMode());
-        sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        sb.append(logModeStateLocked());
-        sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
+        DisplayModeDirector displayModeDirector = mDm;
+        synchronized (displayModeDirector.mLock) {
+            z = displayModeDirector.mAlwaysRespectAppRequest;
+        }
+        sb.append(z);
+        sb.append("\n");
+        sb.append(" Current Mode mReportedRefreshRateMode(toSurfaceFlinger)=" + Settings.Secure.refreshRateModeToString(this.mReportedRefreshRateMode.get()) + ", mRefreshRateMode(fromSettings)=" + Settings.Secure.refreshRateModeToString(this.mRefreshRateMode.get()));
+        sb.append("\n");
         sb.append(logBrightnessStateLocked());
         mDisplayModeDirectorHistory.add(sb.toString());
-        return true;
     }
 
-    public final String logModeStateLocked() {
-        return " Current Mode mReportedRefreshRateMode(toSurfaceFlinger)=" + Settings.Secure.refreshRateModeToString(this.mReportedRefreshRateMode.get()) + ", mRefreshRateMode(fromSettings)=" + Settings.Secure.refreshRateModeToString(this.mRefreshRateMode.get());
-    }
-
-    public void dumpHistory(PrintWriter printWriter) {
-        printWriter.println("DisplayModeDirector History");
-        mDisplayModeDirectorHistory.dump(printWriter);
-        printWriter.println("RefreshRateToken History");
-        mRefreshRateTokenController.dump(printWriter);
-    }
-
-    public void dumpLocked(PrintWriter printWriter, String str) {
-        if (CoreRune.FW_VRR_FOR_SUB_DISPLAY) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(str);
-            sb.append("PrimaryDisplay: ");
-            sb.append(!this.mIsSubScreen);
-            printWriter.println(sb.toString());
-        }
-        printWriter.println(str + "ControllerType: " + getControllerType());
-        printWriter.println(str + "RefreshRateMode: " + Settings.Secure.refreshRateModeToString(getRefreshRateModeLocked()));
-        if (this.mDisplayToken != null) {
-            RefreshRateConfig.dump(printWriter, str, this.mIsSubScreen);
-        }
-    }
-
-    public final boolean notifyRefreshRateModeLocked() {
-        final int refreshRateModeLocked;
-        if (CoreRune.FW_VRR_SEAMLESS && this.mPassive.get()) {
-            refreshRateModeLocked = 3;
-        } else {
-            refreshRateModeLocked = this.mConfig.unsupportedNS() ? 1 : getRefreshRateModeLocked();
-        }
-        if (this.mReportedRefreshRateMode.getAndSet(refreshRateModeLocked) == refreshRateModeLocked) {
-            return false;
+    public final void notifyRefreshRateModeLocked() {
+        final int i = (CoreRune.FW_VRR_SEAMLESS && this.mPassive.get()) ? 3 : this.mConfig.unsupportedNS() ? 1 : this.mRefreshRateMode.get();
+        if (this.mReportedRefreshRateMode.getAndSet(i) == i) {
+            return;
         }
         final IBinder iBinder = this.mDisplayToken;
-        mHandler.post(new Runnable() { // from class: com.android.server.display.mode.RefreshRateController$$ExternalSyntheticLambda2
+        mHandler.post(new Runnable() { // from class: com.android.server.display.mode.RefreshRateController$$ExternalSyntheticLambda3
             @Override // java.lang.Runnable
             public final void run() {
-                SurfaceControl.notifyHFRmode(iBinder, refreshRateModeLocked);
+                SurfaceControl.notifyHFRmode(iBinder, i);
             }
         });
         if (CoreRune.FW_VRR_SYSTEM_HISTORY) {
             logCurrentStateLocked(null);
         }
-        return true;
     }
 
-    public final boolean isPassiveModeLocked() {
-        if (mDm.getModeSwitchingType() == 0 || mDm.shouldAlwaysRespectAppRequestedMode()) {
-            return false;
-        }
-        if (getRefreshRateModeLocked() == 1 || this.mConfig.unsupportedNS()) {
-            return isPassiveModeForTypeLocked();
-        }
-        return false;
+    public void onBrightnessChangedLocked() {
+        onBrightnessChangedLocked(false);
     }
 
-    public void onDisplayStateChangeLocked(boolean z) {
-        if (z) {
-            onBrightnessChangedLocked(false);
-        } else {
-            onDisplayStateOffLocked();
-        }
-    }
-
-    public void updatePassiveLocked(boolean z) {
-        boolean isPassiveModeLocked = isPassiveModeLocked();
-        if (this.mPassive.getAndSet(isPassiveModeLocked) != isPassiveModeLocked || z) {
-            Slog.d("RefreshRateModeManager", "setPassiveMode=" + isPassiveModeLocked + ", brightness=" + mBrightness + ", lux=" + mAmbientLux + ", PassiveModeToken=" + checkPassiveModeToken());
-            notifyRefreshRateModeLocked();
-            updateRefreshRateMaxLimitTokenLocked();
-        }
-    }
-
-    public void onBrightnessChangedLocked(boolean z) {
-        onBrightnessChangedLocked(z, false);
-    }
-
-    public void onBrightnessChangedLocked(boolean z, boolean z2) {
+    public final void onBrightnessChangedLocked(boolean z) {
         if (CoreRune.FW_VRR_FOR_SUB_DISPLAY && RefreshRateConfig.isSubScreen() != this.mIsSubScreen) {
             Slog.d("RefreshRateModeManager", "default display was changed!, don't need to check passive mode for " + this.mDisplayToken);
             return;
         }
-        if (mBrightness.get() < 0) {
+        AtomicInteger atomicInteger = mBrightness;
+        if (atomicInteger.get() < 0) {
             return;
         }
-        Boolean powerModeOnByDisplayType = getPowerModeOnByDisplayType(this.mDisplayType);
-        if (powerModeOnByDisplayType != null && !powerModeOnByDisplayType.booleanValue()) {
-            Slog.d("RefreshRateModeManager", "onBrightnessChangedLocked returned by powerMode, caller=" + Debug.getCallers(3));
+        Boolean bool = (Boolean) mIsDisplayPowerModeOnByDisplayType.get(this.mDisplayType);
+        if (bool != null && !bool.booleanValue()) {
+            ActivityManagerService$$ExternalSyntheticOutline0.m(3, new StringBuilder("onBrightnessChangedLocked returned by powerMode, caller="), "RefreshRateModeManager");
             return;
         }
-        Slog.d("RefreshRateModeManager", "onBrightnessChangedLocked, brightness=" + mBrightness + ", lux=" + mAmbientLux);
-        updateLfdValueLocked(z2);
-        updatePassiveLocked(z);
+        Slog.d("RefreshRateModeManager", "onBrightnessChangedLocked, brightness=" + atomicInteger + ", lux=" + mAmbientLux);
+        updateLfdValueLocked(z);
+        updatePassiveLocked();
     }
 
-    public boolean isLowBrightnessZone() {
-        return getBrightnessZone(mBrightness.get()) == 1;
+    public void onDisplayStateOffLocked() {
     }
 
-    public boolean isLowAmbientLuxZone() {
-        return getAmbientLuxZone(((Float) mAmbientLux.get()).floatValue()) == 1;
+    public void updateDefaultDisplayOrOffDisplayLocked() {
     }
 
-    public boolean isUnknownAmbientLuxZone() {
-        return getAmbientLuxZone(((Float) mAmbientLux.get()).floatValue()) == 0;
+    public void updateLfdValueLocked(boolean z) {
     }
 
-    public boolean isHighBrightnessAmbientLuxZone() {
-        return this.mConfig.getBrightnessThreshold().mHighBrightnessThreshold != -1 && this.mConfig.getBrightnessThreshold().mHighAmbientLuxThreshold != -1 && getBrightnessZone(mBrightness.get()) == 3 && getAmbientLuxZone(((Float) mAmbientLux.get()).floatValue()) == 3;
-    }
-
-    public boolean checkLowRefershRateToken() {
-        return mRefreshRateTokenController.getRefreshRateTokens().stream().anyMatch(new Predicate() { // from class: com.android.server.display.mode.RefreshRateController$$ExternalSyntheticLambda3
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$checkLowRefershRateToken$1;
-                lambda$checkLowRefershRateToken$1 = RefreshRateController.lambda$checkLowRefershRateToken$1((RefreshRateToken) obj);
-                return lambda$checkLowRefershRateToken$1;
+    public void updatePassiveLocked() {
+        boolean z;
+        boolean z2 = false;
+        if (mDm.getModeSwitchingType() != 0) {
+            DisplayModeDirector displayModeDirector = mDm;
+            synchronized (displayModeDirector.mLock) {
+                z = displayModeDirector.mAlwaysRespectAppRequest;
             }
-        });
-    }
-
-    public static /* synthetic */ boolean lambda$checkLowRefershRateToken$1(RefreshRateToken refreshRateToken) {
-        return refreshRateToken instanceof LowRefreshRateToken;
-    }
-
-    public boolean checkPassiveModeToken() {
-        return mRefreshRateTokenController.getRefreshRateTokens().stream().anyMatch(new Predicate() { // from class: com.android.server.display.mode.RefreshRateController$$ExternalSyntheticLambda4
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$checkPassiveModeToken$2;
-                lambda$checkPassiveModeToken$2 = RefreshRateController.lambda$checkPassiveModeToken$2((RefreshRateToken) obj);
-                return lambda$checkPassiveModeToken$2;
+            if (!z && (this.mRefreshRateMode.get() == 1 || this.mConfig.unsupportedNS())) {
+                z2 = isPassiveModeForTypeLocked();
             }
-        });
-    }
-
-    public static /* synthetic */ boolean lambda$checkPassiveModeToken$2(RefreshRateToken refreshRateToken) {
-        return refreshRateToken instanceof PassiveModeToken;
-    }
-
-    public void updateRefreshRateMaxLimitTokenLocked() {
-        RefreshRateToken refreshRateToken = (RefreshRateToken) mRefreshRateTokenController.getRefreshRateTokens().stream().filter(new Predicate() { // from class: com.android.server.display.mode.RefreshRateController$$ExternalSyntheticLambda0
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$updateRefreshRateMaxLimitTokenLocked$3;
-                lambda$updateRefreshRateMaxLimitTokenLocked$3 = RefreshRateController.lambda$updateRefreshRateMaxLimitTokenLocked$3((RefreshRateToken) obj);
-                return lambda$updateRefreshRateMaxLimitTokenLocked$3;
-            }
-        }).findFirst().orElse(null);
-        if (refreshRateToken != null) {
-            refreshRateToken.accept();
         }
-    }
-
-    public static /* synthetic */ boolean lambda$updateRefreshRateMaxLimitTokenLocked$3(RefreshRateToken refreshRateToken) {
-        return refreshRateToken instanceof RefreshRateMaxLimitToken;
-    }
-
-    public IRefreshRateToken createPassiveModeToken(IBinder iBinder, String str) {
-        return mRefreshRateTokenController.createRefreshRateToken(new PassiveModeToken(), new RefreshRateToken.RefreshRateTokenInfo.Builder(iBinder, "PassiveModeToken:" + str).build());
-    }
-
-    /* loaded from: classes2.dex */
-    public class PassiveModeToken extends RefreshRateToken {
-        public PassiveModeToken() {
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateToken
-        public void accept() {
-            if (CoreRune.FW_VRR_FOR_SUB_DISPLAY && RefreshRateConfig.isSubScreen() != RefreshRateController.this.mIsSubScreen) {
-                Slog.d("RefreshRateModeManager", "default display was changed!, don't need to check passive mode for " + RefreshRateController.this.mDisplayToken);
-                return;
-            }
-            RefreshRateController.this.updateLfdValueLocked(false);
-            RefreshRateController.this.updatePassiveLocked(false);
-        }
-    }
-
-    public IRefreshRateToken createLowRefreshRateToken(IBinder iBinder, String str) {
-        return mRefreshRateTokenController.createRefreshRateToken(new LowRefreshRateToken(), new RefreshRateToken.RefreshRateTokenInfo.Builder(iBinder, "LowRefreshRateToken:" + str).build());
-    }
-
-    /* loaded from: classes2.dex */
-    public class LowRefreshRateToken extends RefreshRateToken {
-        public LowRefreshRateToken() {
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateToken
-        public void accept() {
-            RefreshRateController.mVotesStorage.updateVote(-1, 14, RefreshRateController.mRefreshRateTokenController.getRefreshRateTokens().stream().anyMatch(new Predicate() { // from class: com.android.server.display.mode.RefreshRateController$LowRefreshRateToken$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$accept$0;
-                    lambda$accept$0 = RefreshRateController.LowRefreshRateToken.lambda$accept$0((RefreshRateToken) obj);
-                    return lambda$accept$0;
-                }
-            }) ? Vote.forPhysicalRefreshRates(DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 60.0f) : null);
-        }
-
-        public static /* synthetic */ boolean lambda$accept$0(RefreshRateToken refreshRateToken) {
-            return refreshRateToken instanceof LowRefreshRateToken;
-        }
-    }
-
-    public IRefreshRateToken createRefreshRateMaxLimitToken(IBinder iBinder, int i, String str) {
-        return mRefreshRateTokenController.createRefreshRateToken(new RefreshRateMaxLimitToken(), new RefreshRateToken.RefreshRateTokenInfo.Builder(iBinder, "RefreshRateMaxLimitToken:" + str).setRefreshRate(i).build());
-    }
-
-    /* loaded from: classes2.dex */
-    public class RefreshRateMaxLimitToken extends RefreshRateToken {
-        public RefreshRateMaxLimitToken() {
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateToken
-        public void accept() {
-            Vote vote;
-            if (!CoreRune.FW_VRR_SEAMLESS || RefreshRateController.mDm.getModeSwitchingType() == 0) {
-                return;
-            }
-            int intValue = ((Integer) RefreshRateController.mRefreshRateTokenController.getRefreshRateTokens().stream().filter(new Predicate() { // from class: com.android.server.display.mode.RefreshRateController$RefreshRateMaxLimitToken$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$accept$0;
-                    lambda$accept$0 = RefreshRateController.RefreshRateMaxLimitToken.lambda$accept$0((RefreshRateToken) obj);
-                    return lambda$accept$0;
-                }
-            }).map(new Function() { // from class: com.android.server.display.mode.RefreshRateController$RefreshRateMaxLimitToken$$ExternalSyntheticLambda1
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    Integer lambda$accept$1;
-                    lambda$accept$1 = RefreshRateController.RefreshRateMaxLimitToken.lambda$accept$1((RefreshRateToken) obj);
-                    return lambda$accept$1;
-                }
-            }).min(new RefreshRateController$RefreshRateMaxLimitToken$$ExternalSyntheticLambda2()).orElse(Integer.MAX_VALUE)).intValue();
-            if (intValue >= Integer.MAX_VALUE) {
-                vote = null;
-            } else if (CoreRune.FW_VRR_SEAMLESS && RefreshRateController.mDm.getRefreshRateModeManager().getController().mPassive.get()) {
-                vote = Vote.forPhysicalRefreshRates(DisplayPowerController2.RATE_FROM_DOZE_TO_ON, RefreshRateController.this.mConfig.getHighSpeedRefreshRates().getSupportedRefreshRateForPassive(intValue));
-            } else {
-                vote = Vote.forPhysicalRefreshRates(DisplayPowerController2.RATE_FROM_DOZE_TO_ON, intValue);
-            }
-            RefreshRateController.mVotesStorage.updateVote(-1, 1, vote);
-        }
-
-        public static /* synthetic */ boolean lambda$accept$0(RefreshRateToken refreshRateToken) {
-            return refreshRateToken instanceof RefreshRateMaxLimitToken;
-        }
-
-        public static /* synthetic */ Integer lambda$accept$1(RefreshRateToken refreshRateToken) {
-            return Integer.valueOf(refreshRateToken.mInfo.mRefreshRate);
-        }
-    }
-
-    public IRefreshRateToken createRefreshRateMinLimitToken(IBinder iBinder, int i, String str) {
-        return mRefreshRateTokenController.createRefreshRateToken(new RefreshRateMinLimitToken(), new RefreshRateToken.RefreshRateTokenInfo.Builder(iBinder, "RefreshRateMinLimitToken:" + str).setRefreshRate(i).build());
-    }
-
-    /* loaded from: classes2.dex */
-    public class RefreshRateMinLimitToken extends RefreshRateToken {
-        public RefreshRateMinLimitToken() {
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateToken
-        public void accept() {
-            if (!CoreRune.FW_VRR_SEAMLESS || RefreshRateController.mDm.getModeSwitchingType() == 0) {
-                return;
-            }
-            int intValue = ((Integer) RefreshRateController.mRefreshRateTokenController.getRefreshRateTokens().stream().filter(new Predicate() { // from class: com.android.server.display.mode.RefreshRateController$RefreshRateMinLimitToken$$ExternalSyntheticLambda0
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$accept$0;
-                    lambda$accept$0 = RefreshRateController.RefreshRateMinLimitToken.lambda$accept$0((RefreshRateToken) obj);
-                    return lambda$accept$0;
-                }
-            }).map(new Function() { // from class: com.android.server.display.mode.RefreshRateController$RefreshRateMinLimitToken$$ExternalSyntheticLambda1
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    Integer lambda$accept$1;
-                    lambda$accept$1 = RefreshRateController.RefreshRateMinLimitToken.lambda$accept$1((RefreshRateToken) obj);
-                    return lambda$accept$1;
-                }
-            }).filter(new Predicate() { // from class: com.android.server.display.mode.RefreshRateController$RefreshRateMinLimitToken$$ExternalSyntheticLambda2
-                @Override // java.util.function.Predicate
-                public final boolean test(Object obj) {
-                    boolean lambda$accept$2;
-                    lambda$accept$2 = RefreshRateController.RefreshRateMinLimitToken.lambda$accept$2((Integer) obj);
-                    return lambda$accept$2;
-                }
-            }).max(new RefreshRateController$RefreshRateMaxLimitToken$$ExternalSyntheticLambda2()).orElse(Integer.MIN_VALUE)).intValue();
-            RefreshRateController.mVotesStorage.updateVote(-1, 2, intValue > Integer.MIN_VALUE ? Vote.forPhysicalRefreshRates(intValue, Float.POSITIVE_INFINITY) : null);
-        }
-
-        public static /* synthetic */ boolean lambda$accept$0(RefreshRateToken refreshRateToken) {
-            return refreshRateToken instanceof RefreshRateMinLimitToken;
-        }
-
-        public static /* synthetic */ Integer lambda$accept$1(RefreshRateToken refreshRateToken) {
-            return Integer.valueOf(refreshRateToken.mInfo.mRefreshRate);
-        }
-
-        public static /* synthetic */ boolean lambda$accept$2(Integer num) {
-            return num.intValue() >= 60;
-        }
-    }
-
-    public void updateResolutionLocked(int i, DisplayInfo displayInfo) {
-        final int min = Math.min(displayInfo.logicalWidth, displayInfo.logicalHeight);
-        Display.Mode mode = (Display.Mode) Arrays.stream(displayInfo.supportedModes).filter(new Predicate() { // from class: com.android.server.display.mode.RefreshRateController$$ExternalSyntheticLambda1
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$updateResolutionLocked$4;
-                lambda$updateResolutionLocked$4 = RefreshRateController.lambda$updateResolutionLocked$4(min, (Display.Mode) obj);
-                return lambda$updateResolutionLocked$4;
-            }
-        }).findFirst().orElse(null);
-        if (mode == null) {
+        if (this.mPassive.getAndSet(z2) == z2) {
             return;
         }
-        int physicalWidth = mode.getPhysicalWidth();
-        int physicalHeight = mode.getPhysicalHeight();
-        Vote vote = mDm.getVote(i, 11);
-        if (vote == null || vote.width != physicalWidth) {
-            mVotesStorage.updateVote(i, 11, Vote.forSize(physicalWidth, physicalHeight));
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m("setPassiveMode=", ", brightness=", z2);
+        m.append(mBrightness);
+        m.append(", lux=");
+        m.append(mAmbientLux);
+        m.append(", PassiveModeToken=");
+        m.append(hasPassiveModeToken());
+        Slog.d("RefreshRateModeManager", m.toString());
+        notifyRefreshRateModeLocked();
+        if (CoreRune.FW_VRR_REFRESH_RATE_TOKEN) {
+            updateRefreshRateMaxLimitTokenLocked();
         }
     }
 
-    public static /* synthetic */ boolean lambda$updateResolutionLocked$4(int i, Display.Mode mode) {
-        return mode.getPhysicalWidth() == i;
-    }
-
-    /* loaded from: classes2.dex */
-    public class NullController extends RefreshRateController {
-        @Override // com.android.server.display.mode.RefreshRateController
-        public String getControllerType() {
-            return "NullController";
-        }
-
-        public NullController(IBinder iBinder) {
-            super(iBinder);
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public void updatePassiveLocked(boolean z) {
-            Slog.d("RefreshRateModeManager", "NullController-updatePassiveLocked controller is not ready!");
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class SwitchableController extends RefreshRateController {
-        @Override // com.android.server.display.mode.RefreshRateController
-        public String getControllerType() {
-            return "SwitchableController";
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public int getSwitchingType() {
-            return 0;
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public void onBrightnessChangedLocked(boolean z) {
-        }
-
-        public SwitchableController(IBinder iBinder) {
-            super(iBinder);
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class SeamlessController extends RefreshRateController {
-        @Override // com.android.server.display.mode.RefreshRateController
-        public String getControllerType() {
-            return "SeamlessController";
-        }
-
-        public SeamlessController(IBinder iBinder) {
-            super(iBinder);
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public boolean isPassiveModeForTypeLocked() {
-            return checkPassiveModeToken() || isLowBrightnessZone() || isLowAmbientLuxZone() || isHighBrightnessAmbientLuxZone();
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public Vote getNormalSpeedVote() {
-            if (this.mConfig.unsupportedNS()) {
-                return Vote.forPhysicalRefreshRates(this.mConfig.getHighSpeedRefreshRates().min(), this.mConfig.getNormalSpeedRefreshRates().max());
-            }
-            return super.getNormalSpeedVote();
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public String logBrightnessStateLocked() {
-            return " BrightnessState mPassive=" + this.mPassive + ", PassiveModeToken=" + checkPassiveModeToken() + ", mBrightness=" + RefreshRateController.mBrightness + ", mAmbientLux=" + RefreshRateController.mAmbientLux;
-        }
-    }
-
-    /* loaded from: classes2.dex */
-    public class SeamlessPlusController extends RefreshRateController {
-        public static AtomicInteger mReportedLfd = new AtomicInteger(-1);
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public String getControllerType() {
-            return "SeamlessPlusController";
-        }
-
-        public SeamlessPlusController(IBinder iBinder) {
-            super(iBinder);
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public Vote getNormalSpeedVote() {
-            if (this.mConfig.unsupportedNS()) {
-                return Vote.forPhysicalRefreshRates(this.mConfig.getHighSpeedRefreshRates().min(), this.mConfig.getNormalSpeedRefreshRates().max());
-            }
-            return super.getNormalSpeedVote();
-        }
-
-        public final void sysfsWrite(String str, String str2) {
-            File file = new File(str);
-            if (file.exists()) {
-                try {
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+    public final void updateRefreshRateModeLocked(boolean z) {
+        int intForUser = Settings.Secure.getIntForUser(mContext.getContentResolver(), this.mRefreshRateModeSetting, 0, -2);
+        if (intForUser != this.mRefreshRateMode.get() || z) {
+            if (CoreRune.FW_VRR_FOR_SUB_DISPLAY && z) {
+                DisplayModeDirector displayModeDirector = mDm;
+                int switchingType = getSwitchingType();
+                synchronized (displayModeDirector.mLock) {
                     try {
-                        fileOutputStream.write(str2.getBytes());
-                        fileOutputStream.close();
+                        if (switchingType != displayModeDirector.mModeSwitchingType) {
+                            displayModeDirector.mModeSwitchingType = switchingType;
+                            displayModeDirector.notifyDesiredDisplayModeSpecsChangedLocked();
+                        }
                     } finally {
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
-        }
-
-        public final void setLfd(final String str, final int i) {
-            Slog.d("RefreshRateModeManager", "set " + str + "=" + i + ", brightness=" + RefreshRateController.mBrightness + ", lux=" + RefreshRateController.mAmbientLux + ", mIsWirelessCharging=" + RefreshRateController.mIsWirelessCharging);
-            new Thread(new Runnable() { // from class: com.android.server.display.mode.RefreshRateController$SeamlessPlusController$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RefreshRateController.SeamlessPlusController.this.lambda$setLfd$0(str, i);
-                }
-            }).start();
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$setLfd$0(String str, int i) {
-            sysfsWrite("/sys/class/lcd/panel/vrr_lfd", "client=disp scope=normal,lpm " + str + "=" + i);
-        }
-
-        public final int getLfdFix() {
-            if (checkPassiveModeToken() || RefreshRateController.mIsWirelessCharging.get()) {
-                return 3;
+            EventLog.writeEvent(1290001, String.format("%s", this.mDisplayToken), Integer.valueOf(intForUser));
+            this.mRefreshRateMode.set(intForUser);
+            Message.obtain(mHandler, 31, intForUser, -1).sendToTarget();
+            this.mUpdateRefreshRateMode.set(true);
+            mVotesStorage.updateVote(-1, 11, intForUser != 0 ? (intForUser == 1 || intForUser == 2) ? Vote.forPolicyRate(this.mConfig.getHighSpeedRefreshRates().min(), this.mConfig.getHighSpeedRefreshRates().max()) : null : getNormalSpeedVote());
+            if (CoreRune.FW_VRR_SEAMLESS) {
+                onBrightnessChangedLocked(true);
             }
-            return (isLowBrightnessZone() && isLowAmbientLuxZone()) ? 3 : 0;
-        }
-
-        public final void updateLfdFixLocked(boolean z) {
-            int lfdFix = z ? 0 : getLfdFix();
-            if (mReportedLfd.getAndSet(lfdFix) == lfdFix) {
-                return;
-            }
-            setLfd("fix", lfdFix);
-        }
-
-        public final Vote getVoteAsLfdScalabilityMaxLocked() {
-            if (getRefreshRateModeLocked() == 0) {
-                return Vote.forPhysicalRefreshRates(this.mConfig.getNormalSpeedRefreshRates().max(), this.mConfig.getNormalSpeedRefreshRates().max());
-            }
-            return Vote.forPhysicalRefreshRates(this.mConfig.getHighSpeedRefreshRates().max(), this.mConfig.getHighSpeedRefreshRates().max());
-        }
-
-        public final void voteForScalabilityMaxLocked(int i) {
-            Vote vote;
-            Vote vote2;
-            if (i == 1) {
-                vote = getVoteAsLfdScalabilityMaxLocked();
-                vote2 = Vote.forDisableRefreshRateSwitching();
-            } else {
-                vote = null;
-                vote2 = null;
-            }
-            RefreshRateController.mVotesStorage.updateVote(-1, 3, vote);
-            RefreshRateController.mVotesStorage.updateVote(-1, 15, vote2);
-        }
-
-        public final int getScalability() {
-            if (RefreshRateController.mIsWirelessCharging.get()) {
-                return 1;
-            }
-            if (isLowBrightnessZone() && (isLowAmbientLuxZone() || isUnknownAmbientLuxZone())) {
-                return 1;
-            }
-            return isHighBrightnessAmbientLuxZone() ? 6 : 0;
-        }
-
-        public final void updateLfdScalabilityLocked(boolean z, boolean z2) {
-            boolean z3 = false;
-            int scalability = z ? 0 : getScalability();
-            if (mReportedLfd.getAndSet(scalability) != scalability) {
-                setLfd("scalability", scalability);
-                z3 = true;
-            }
-            if (z3 || isRefreshRateModeChangingLocked() || z2) {
-                voteForScalabilityMaxLocked(scalability);
-            }
-        }
-
-        public boolean supportApsr() {
-            return this.mConfig.getHighSpeedRefreshRates().min() == 10;
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public void updateLfdValueLocked(boolean z) {
-            if (supportApsr()) {
-                updateLfdFixLocked(false);
-            } else {
-                updateLfdScalabilityLocked(false, z);
-            }
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public boolean isPassiveModeForTypeLocked() {
-            if (supportApsr()) {
-                return checkPassiveModeToken() || mReportedLfd.get() == 3;
-            }
-            return false;
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public void onDisplayStateOffLocked() {
-            if (isPassiveModeForTypeLocked()) {
-                updateDefaultDisplayOrOffDisplayLocked();
-            }
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public void updateDefaultDisplayOrOffDisplayLocked() {
-            if (supportApsr()) {
-                updateLfdFixLocked(true);
-                super.updatePassiveLocked(false);
-            } else {
-                updateLfdScalabilityLocked(true, false);
-            }
-        }
-
-        @Override // com.android.server.display.mode.RefreshRateController
-        public String logBrightnessStateLocked() {
-            return " BrightnessState mPassive=" + this.mPassive + ", PassiveModeToken=" + checkPassiveModeToken() + ", mLfd=" + mReportedLfd + ", mBrightness=" + RefreshRateController.mBrightness + ", mAmbientLux=" + RefreshRateController.mAmbientLux + ", mIsWirelessCharing=" + RefreshRateController.mIsWirelessCharging;
+            notifyRefreshRateModeLocked();
         }
     }
 }

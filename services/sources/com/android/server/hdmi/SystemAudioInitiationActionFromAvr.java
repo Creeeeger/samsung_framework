@@ -1,19 +1,14 @@
 package com.android.server.hdmi;
 
-import android.hardware.hdmi.IHdmiControlCallback;
-import com.android.server.hdmi.HdmiCecLocalDeviceAudioSystem;
-import com.android.server.hdmi.HdmiControlService;
+import android.util.Slog;
+import com.android.server.hdmi.HdmiCecFeatureAction;
 
-/* loaded from: classes2.dex */
-public class SystemAudioInitiationActionFromAvr extends HdmiCecFeatureAction {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class SystemAudioInitiationActionFromAvr extends HdmiCecFeatureAction {
     static final int MAX_RETRY_COUNT = 5;
     public int mSendRequestActiveSourceRetryCount;
     public int mSendSetSystemAudioModeRetryCount;
-
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public /* bridge */ /* synthetic */ void addCallback(IHdmiControlCallback iHdmiControlCallback) {
-        super.addCallback(iHdmiControlCallback);
-    }
 
     public SystemAudioInitiationActionFromAvr(HdmiCecLocalDevice hdmiCecLocalDevice) {
         super(hdmiCecLocalDevice);
@@ -22,112 +17,81 @@ public class SystemAudioInitiationActionFromAvr extends HdmiCecFeatureAction {
     }
 
     @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean start() {
-        if (audioSystem().getActiveSource().physicalAddress == 65535) {
-            this.mState = 1;
-            addTimer(1, 2000);
-            sendRequestActiveSource();
-        } else {
-            this.mState = 2;
-            queryTvSystemAudioModeSupport();
-        }
-        return true;
-    }
-
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public boolean processCommand(HdmiCecMessage hdmiCecMessage) {
-        if (hdmiCecMessage.getOpcode() != 130 || this.mState != 1) {
-            return false;
-        }
-        this.mActionTimer.clearTimerMessage();
-        audioSystem().handleActiveSource(hdmiCecMessage);
-        this.mState = 2;
-        queryTvSystemAudioModeSupport();
-        return true;
-    }
-
-    @Override // com.android.server.hdmi.HdmiCecFeatureAction
-    public void handleTimerEvent(int i) {
+    public final void handleTimerEvent(int i) {
         int i2 = this.mState;
         if (i2 == i && i2 == 1) {
-            handleActiveSourceTimeout();
-        }
-    }
-
-    public void sendRequestActiveSource() {
-        sendCommand(HdmiCecMessageBuilder.buildRequestActiveSource(getSourceAddress()), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda1
-            @Override // com.android.server.hdmi.HdmiControlService.SendMessageCallback
-            public final void onSendCompleted(int i) {
-                SystemAudioInitiationActionFromAvr.this.lambda$sendRequestActiveSource$0(i);
+            HdmiLogger.debug("Cannot get active source.", new Object[0]);
+            HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+            HdmiCecLocalDeviceAudioSystem hdmiCecLocalDeviceAudioSystem = (HdmiCecLocalDeviceAudioSystem) hdmiCecLocalDevice;
+            HdmiControlService hdmiControlService = hdmiCecLocalDeviceAudioSystem.mService;
+            if (hdmiControlService.mStandbyMessageReceived) {
+                Slog.d("SystemAudioInitiationActionFromAvr", "Device is going to sleep, avoid to wake it up.");
+                return;
             }
-        });
-    }
-
-    public /* synthetic */ void lambda$sendRequestActiveSource$0(int i) {
-        if (i != 0) {
-            int i2 = this.mSendRequestActiveSourceRetryCount;
-            if (i2 < 5) {
-                this.mSendRequestActiveSourceRetryCount = i2 + 1;
-                sendRequestActiveSource();
+            if (hdmiControlService.isPlaybackDevice()) {
+                hdmiCecLocalDeviceAudioSystem.mService.setAndBroadcastActiveSourceFromOneDeviceType(15, hdmiCecLocalDevice.getDeviceInfo().getPhysicalAddress(), "SystemAudioInitiationActionFromAvr#handleActiveSourceTimeout()");
+                this.mState = 2;
+                HdmiCecLocalDeviceAudioSystem hdmiCecLocalDeviceAudioSystem2 = (HdmiCecLocalDeviceAudioSystem) hdmiCecLocalDevice;
+                SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0 systemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0 = new SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0(this);
+                Boolean bool = hdmiCecLocalDeviceAudioSystem2.mTvSystemAudioModeSupport;
+                if (bool == null) {
+                    DetectTvSystemAudioModeSupportAction detectTvSystemAudioModeSupportAction = new DetectTvSystemAudioModeSupportAction(hdmiCecLocalDeviceAudioSystem2);
+                    detectTvSystemAudioModeSupportAction.mSendSetSystemAudioModeRetryCount = 0;
+                    detectTvSystemAudioModeSupportAction.mCallback = systemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0;
+                    hdmiCecLocalDeviceAudioSystem2.addAndStartAction(detectTvSystemAudioModeSupportAction);
+                } else {
+                    systemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0.onResult(bool.booleanValue());
+                }
             } else {
-                audioSystem().checkSupportAndSetSystemAudioMode(false);
-                finish();
+                hdmiCecLocalDeviceAudioSystem.checkSupportAndSetSystemAudioMode(false);
             }
+            finish(true);
         }
     }
 
-    public void sendSetSystemAudioMode(final boolean z, final int i) {
-        sendCommand(HdmiCecMessageBuilder.buildSetSystemAudioMode(getSourceAddress(), i, z), new HdmiControlService.SendMessageCallback() { // from class: com.android.server.hdmi.SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda2
-            @Override // com.android.server.hdmi.HdmiControlService.SendMessageCallback
-            public final void onSendCompleted(int i2) {
-                SystemAudioInitiationActionFromAvr.this.lambda$sendSetSystemAudioMode$1(z, i, i2);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$sendSetSystemAudioMode$1(boolean z, int i, int i2) {
-        if (i2 != 0) {
-            int i3 = this.mSendSetSystemAudioModeRetryCount;
-            if (i3 < 5) {
-                this.mSendSetSystemAudioModeRetryCount = i3 + 1;
-                sendSetSystemAudioMode(z, i);
-            } else {
-                audioSystem().checkSupportAndSetSystemAudioMode(false);
-                finish();
-            }
+    @Override // com.android.server.hdmi.HdmiCecFeatureAction
+    public final boolean processCommand(HdmiCecMessage hdmiCecMessage) {
+        if (hdmiCecMessage.mOpcode != 130 || this.mState != 1) {
+            return false;
         }
-    }
-
-    public final void handleActiveSourceTimeout() {
-        HdmiLogger.debug("Cannot get active source.", new Object[0]);
-        if (audioSystem().mService.isPlaybackDevice()) {
-            audioSystem().mService.setAndBroadcastActiveSourceFromOneDeviceType(15, getSourcePath(), "SystemAudioInitiationActionFromAvr#handleActiveSourceTimeout()");
-            this.mState = 2;
-            queryTvSystemAudioModeSupport();
+        ((HdmiCecFeatureAction.ActionTimerHandler) this.mActionTimer).clearTimerMessage();
+        HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+        ((HdmiCecLocalDeviceAudioSystem) hdmiCecLocalDevice).handleActiveSource(hdmiCecMessage);
+        this.mState = 2;
+        HdmiCecLocalDeviceAudioSystem hdmiCecLocalDeviceAudioSystem = (HdmiCecLocalDeviceAudioSystem) hdmiCecLocalDevice;
+        SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0 systemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0 = new SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0(this);
+        Boolean bool = hdmiCecLocalDeviceAudioSystem.mTvSystemAudioModeSupport;
+        if (bool == null) {
+            DetectTvSystemAudioModeSupportAction detectTvSystemAudioModeSupportAction = new DetectTvSystemAudioModeSupportAction(hdmiCecLocalDeviceAudioSystem);
+            detectTvSystemAudioModeSupportAction.mSendSetSystemAudioModeRetryCount = 0;
+            detectTvSystemAudioModeSupportAction.mCallback = systemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0;
+            hdmiCecLocalDeviceAudioSystem.addAndStartAction(detectTvSystemAudioModeSupportAction);
         } else {
-            audioSystem().checkSupportAndSetSystemAudioMode(false);
+            systemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0.onResult(bool.booleanValue());
         }
-        finish();
+        return true;
     }
 
-    public final void queryTvSystemAudioModeSupport() {
-        audioSystem().queryTvSystemAudioModeSupport(new HdmiCecLocalDeviceAudioSystem.TvSystemAudioModeSupportedCallback() { // from class: com.android.server.hdmi.SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0
-            @Override // com.android.server.hdmi.HdmiCecLocalDeviceAudioSystem.TvSystemAudioModeSupportedCallback
-            public final void onResult(boolean z) {
-                SystemAudioInitiationActionFromAvr.this.lambda$queryTvSystemAudioModeSupport$2(z);
-            }
-        });
-    }
-
-    public /* synthetic */ void lambda$queryTvSystemAudioModeSupport$2(boolean z) {
-        if (z) {
-            if (audioSystem().checkSupportAndSetSystemAudioMode(true)) {
-                sendSetSystemAudioMode(true, 15);
-            }
-            finish();
-        } else {
-            audioSystem().checkSupportAndSetSystemAudioMode(false);
-            finish();
+    @Override // com.android.server.hdmi.HdmiCecFeatureAction
+    public final void start() {
+        HdmiCecLocalDevice hdmiCecLocalDevice = this.mSource;
+        if (((HdmiCecLocalDeviceAudioSystem) hdmiCecLocalDevice).mService.getLocalActiveSource().physicalAddress == 65535) {
+            this.mState = 1;
+            addTimer(1, 2000);
+            this.mService.sendCecCommand(HdmiCecMessage.build(getSourceAddress(), 15, 133), new SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0(this));
+            return;
         }
+        this.mState = 2;
+        HdmiCecLocalDeviceAudioSystem hdmiCecLocalDeviceAudioSystem = (HdmiCecLocalDeviceAudioSystem) hdmiCecLocalDevice;
+        SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0 systemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0 = new SystemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0(this);
+        Boolean bool = hdmiCecLocalDeviceAudioSystem.mTvSystemAudioModeSupport;
+        if (bool != null) {
+            systemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0.onResult(bool.booleanValue());
+            return;
+        }
+        DetectTvSystemAudioModeSupportAction detectTvSystemAudioModeSupportAction = new DetectTvSystemAudioModeSupportAction(hdmiCecLocalDeviceAudioSystem);
+        detectTvSystemAudioModeSupportAction.mSendSetSystemAudioModeRetryCount = 0;
+        detectTvSystemAudioModeSupportAction.mCallback = systemAudioInitiationActionFromAvr$$ExternalSyntheticLambda0;
+        hdmiCecLocalDeviceAudioSystem.addAndStartAction(detectTvSystemAudioModeSupportAction);
     }
 }

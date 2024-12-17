@@ -1,69 +1,62 @@
 package com.android.server.am.mars.filter.filter;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.Slog;
 import com.android.server.am.MARsPolicyManager;
-import com.android.server.am.mars.MARsDebugConfig;
-import com.android.server.am.mars.database.MARsVersionManager;
+import com.android.server.am.mars.MARsUtils;
 import com.android.server.am.mars.filter.IFilter;
 import com.sec.android.sdhms.ISamsungDeviceHealthManager;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class ActiveTrafficFilter implements IFilter {
-    public static String TAG = "MARs:" + ActiveTrafficFilter.class.getSimpleName();
+public final class ActiveTrafficFilter implements IFilter {
     public Context mContext;
     public boolean mIsDataConnectionConnected;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class ActiveTrafficFilterHolder {
-        public static final ActiveTrafficFilter INSTANCE = new ActiveTrafficFilter();
+        public static final ActiveTrafficFilter INSTANCE;
+
+        static {
+            ActiveTrafficFilter activeTrafficFilter = new ActiveTrafficFilter();
+            activeTrafficFilter.mContext = null;
+            activeTrafficFilter.mIsDataConnectionConnected = false;
+            INSTANCE = activeTrafficFilter;
+        }
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void deInit() {
-    }
-
-    public ActiveTrafficFilter() {
-        this.mContext = null;
-        this.mIsDataConnectionConnected = false;
-    }
-
-    public static ActiveTrafficFilter getInstance() {
-        return ActiveTrafficFilterHolder.INSTANCE;
+    public final void deInit() {
     }
 
     @Override // com.android.server.am.mars.filter.IFilter
-    public void init(Context context) {
-        this.mContext = context;
-    }
-
-    @Override // com.android.server.am.mars.filter.IFilter
-    public int filter(String str, int i, int i2, int i3) {
+    public final int filter(int i, int i2, int i3, String str) {
         IBinder service;
         ISamsungDeviceHealthManager asInterface;
-        if ((!MARsPolicyManager.getInstance().isChinaPolicyEnabled() || MARsPolicyManager.getInstance().isForegroundServicePkg(i2) || MARsVersionManager.getInstance().isAdjustRestrictionMatch(15, null, str, null)) && this.mIsDataConnectionConnected && (service = ServiceManager.getService("sdhms")) != null && (asInterface = ISamsungDeviceHealthManager.Stub.asInterface(service)) != null) {
+        if (MARsUtils.isChinaPolicyEnabled()) {
+            boolean z = MARsPolicyManager.MARs_ENABLE;
+            if (MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.getForegroundServiceStartTime(i2) == 0) {
+                return 0;
+            }
+        }
+        if (this.mIsDataConnectionConnected && (service = ServiceManager.getService("sdhms")) != null && (asInterface = ISamsungDeviceHealthManager.Stub.asInterface(service)) != null) {
             try {
                 if (asInterface.isDownLoadingForUid(i2)) {
-                    Slog.d(TAG, "filter : " + str + "(" + i + ")");
+                    Slog.d("MARs:ActiveTrafficFilter", "filter : " + str + "(" + i + ")");
                     return 8;
                 }
             } catch (RemoteException e) {
-                Slog.e(TAG, "isDownloadingPackage exception:" + e);
+                Slog.e("MARs:ActiveTrafficFilter", "isDownloadingPackage exception:" + e);
             }
         }
         return 0;
     }
 
-    public void updateDataConnectionInfo() {
-        NetworkInfo activeNetworkInfo = ((ConnectivityManager) this.mContext.getSystemService("connectivity")).getActiveNetworkInfo();
-        this.mIsDataConnectionConnected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        if (MARsDebugConfig.DEBUG_FILTER) {
-            Slog.d(TAG, "DataConnection: " + this.mIsDataConnectionConnected);
-        }
+    @Override // com.android.server.am.mars.filter.IFilter
+    public final void init(Context context) {
+        this.mContext = context;
     }
 }

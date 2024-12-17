@@ -9,290 +9,261 @@ import android.os.RemoteCallback;
 import android.os.ShellCommand;
 import android.util.Slog;
 import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.am.ActiveServices$$ExternalSyntheticOutline0;
 import com.android.server.ambientcontext.AmbientContextManagerPerUserService;
+import com.android.server.ambientcontext.AmbientContextManagerService;
 import com.android.server.ambientcontext.AmbientContextShellCommand;
+import com.android.server.infra.AbstractPerUserSystemService;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class AmbientContextShellCommand extends ShellCommand {
     public final AmbientContextManagerService mService;
-    public static final String TAG = AmbientContextShellCommand.class.getSimpleName();
     public static final AmbientContextEventRequest REQUEST = new AmbientContextEventRequest.Builder().addEventType(1).addEventType(2).addEventType(3).build();
     public static final AmbientContextEventRequest WEARABLE_REQUEST = new AmbientContextEventRequest.Builder().addEventType(FrameworkStatsLog.GPS_ENGINE_STATE_CHANGED).build();
     public static final AmbientContextEventRequest MIXED_REQUEST = new AmbientContextEventRequest.Builder().addEventType(1).addEventType(FrameworkStatsLog.GPS_ENGINE_STATE_CHANGED).build();
     public static final TestableCallbackInternal sTestableCallbackInternal = new TestableCallbackInternal();
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class TestableCallbackInternal {
+        public int mLastStatus;
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        /* renamed from: com.android.server.ambientcontext.AmbientContextShellCommand$TestableCallbackInternal$1, reason: invalid class name */
+        public final class AnonymousClass1 extends IAmbientContextObserver.Stub {
+            public AnonymousClass1() {
+            }
+
+            public final void onEvents(List list) {
+                TestableCallbackInternal.this.getClass();
+                System.out.println("Detection events available: " + list);
+            }
+
+            public final void onRegistrationComplete(int i) {
+                TestableCallbackInternal.this.mLastStatus = i;
+            }
+        }
+
+        /* renamed from: -$$Nest$mcreateAmbientContextObserver, reason: not valid java name */
+        public static AnonymousClass1 m212$$Nest$mcreateAmbientContextObserver(TestableCallbackInternal testableCallbackInternal) {
+            testableCallbackInternal.getClass();
+            return testableCallbackInternal.new AnonymousClass1();
+        }
+    }
+
     public AmbientContextShellCommand(AmbientContextManagerService ambientContextManagerService) {
         this.mService = ambientContextManagerService;
     }
 
-    /* loaded from: classes.dex */
-    public class TestableCallbackInternal {
-        public List mLastEvents;
-        public int mLastStatus;
-
-        public int getLastStatus() {
-            return this.mLastStatus;
-        }
-
-        public final IAmbientContextObserver createAmbientContextObserver() {
-            return new IAmbientContextObserver.Stub() { // from class: com.android.server.ambientcontext.AmbientContextShellCommand.TestableCallbackInternal.1
-                public void onEvents(List list) {
-                    TestableCallbackInternal.this.mLastEvents = list;
-                    System.out.println("Detection events available: " + list);
-                }
-
-                public void onRegistrationComplete(int i) {
-                    TestableCallbackInternal.this.mLastStatus = i;
-                }
-            };
-        }
-
-        public final RemoteCallback createRemoteStatusCallback() {
-            return new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: com.android.server.ambientcontext.AmbientContextShellCommand$TestableCallbackInternal$$ExternalSyntheticLambda0
-                public final void onResult(Bundle bundle) {
-                    AmbientContextShellCommand.TestableCallbackInternal.this.lambda$createRemoteStatusCallback$0(bundle);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$createRemoteStatusCallback$0(Bundle bundle) {
-            int i = bundle.getInt("android.app.ambientcontext.AmbientContextStatusBundleKey");
-            long clearCallingIdentity = Binder.clearCallingIdentity();
-            try {
-                this.mLastStatus = i;
-            } finally {
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-            }
-        }
-    }
-
-    public int onCommand(String str) {
+    public final int onCommand(String str) {
+        ComponentName componentName;
         if (str == null) {
             return handleDefaultCommands(str);
         }
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -2084150080:
-                if (str.equals("get-bound-package")) {
-                    c = 0;
-                    break;
+        switch (str) {
+            case "get-bound-package":
+                PrintWriter outPrintWriter = getOutPrintWriter();
+                int parseInt = Integer.parseInt(getNextArgRequired());
+                AmbientContextManagerService ambientContextManagerService = this.mService;
+                AmbientContextManagerPerUserService.ServiceType serviceType = AmbientContextManagerPerUserService.ServiceType.DEFAULT;
+                synchronized (ambientContextManagerService.mLock) {
+                    try {
+                        AmbientContextManagerPerUserService serviceForType = ambientContextManagerService.getServiceForType(parseInt, serviceType);
+                        componentName = serviceForType != null ? serviceForType.getComponentName() : null;
+                    } finally {
+                    }
                 }
-                break;
-            case -2048517510:
-                if (str.equals("stop-detection")) {
-                    c = 1;
-                    break;
+                outPrintWriter.println(componentName == null ? "" : componentName.getPackageName());
+                return 0;
+            case "stop-detection":
+                int parseInt2 = Integer.parseInt(getNextArgRequired());
+                String nextArgRequired = getNextArgRequired();
+                AmbientContextManagerService ambientContextManagerService2 = this.mService;
+                ambientContextManagerService2.mContext.enforceCallingOrSelfPermission("android.permission.ACCESS_AMBIENT_CONTEXT_EVENT", "AmbientContextManagerService");
+                synchronized (ambientContextManagerService2.mLock) {
+                    try {
+                        for (AmbientContextManagerService.ClientRequest clientRequest : ambientContextManagerService2.mExistingClientRequests) {
+                            Slog.i("AmbientContextManagerService", "Looping through clients");
+                            if (clientRequest.hasUserIdAndPackageName(parseInt2, nextArgRequired)) {
+                                Slog.i("AmbientContextManagerService", "we have an existing client");
+                                AmbientContextManagerPerUserService ambientContextManagerPerUserServiceForEventTypes = ambientContextManagerService2.getAmbientContextManagerPerUserServiceForEventTypes(parseInt2, clientRequest.mRequest.getEventTypes());
+                                if (ambientContextManagerPerUserServiceForEventTypes != null) {
+                                    ambientContextManagerPerUserServiceForEventTypes.stopDetection(nextArgRequired);
+                                } else {
+                                    Slog.i("AmbientContextManagerService", "service not available for user_id: " + parseInt2);
+                                }
+                            }
+                        }
+                    } finally {
+                    }
                 }
-                break;
-            case -1827236351:
-                if (str.equals("query-mixed-service-status")) {
-                    c = 2;
-                    break;
+                return 0;
+            case "query-mixed-service-status":
+                int parseInt3 = Integer.parseInt(getNextArgRequired());
+                String nextArgRequired2 = getNextArgRequired();
+                int[] iArr = {1, FrameworkStatsLog.GPS_ENGINE_STATE_CHANGED};
+                AmbientContextManagerService ambientContextManagerService3 = this.mService;
+                final TestableCallbackInternal testableCallbackInternal = sTestableCallbackInternal;
+                testableCallbackInternal.getClass();
+                ambientContextManagerService3.queryServiceStatus(parseInt3, nextArgRequired2, iArr, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: com.android.server.ambientcontext.AmbientContextShellCommand$TestableCallbackInternal$$ExternalSyntheticLambda0
+                    public final void onResult(Bundle bundle) {
+                        AmbientContextShellCommand.TestableCallbackInternal testableCallbackInternal2 = AmbientContextShellCommand.TestableCallbackInternal.this;
+                        testableCallbackInternal2.getClass();
+                        int i = bundle.getInt("android.app.ambientcontext.AmbientContextStatusBundleKey");
+                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                        try {
+                            testableCallbackInternal2.mLastStatus = i;
+                        } finally {
+                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                        }
+                    }
+                }));
+                return 0;
+            case "start-detection-wearable":
+                int parseInt4 = Integer.parseInt(getNextArgRequired());
+                String nextArgRequired3 = getNextArgRequired();
+                AmbientContextManagerService ambientContextManagerService4 = this.mService;
+                AmbientContextEventRequest ambientContextEventRequest = WEARABLE_REQUEST;
+                TestableCallbackInternal testableCallbackInternal2 = sTestableCallbackInternal;
+                ambientContextManagerService4.startDetection(parseInt4, ambientContextEventRequest, nextArgRequired3, TestableCallbackInternal.m212$$Nest$mcreateAmbientContextObserver(testableCallbackInternal2));
+                this.mService.newClientAdded(parseInt4, ambientContextEventRequest, nextArgRequired3, testableCallbackInternal2.new AnonymousClass1());
+                return 0;
+            case "start-detection-mixed":
+                int parseInt5 = Integer.parseInt(getNextArgRequired());
+                String nextArgRequired4 = getNextArgRequired();
+                AmbientContextManagerService ambientContextManagerService5 = this.mService;
+                AmbientContextEventRequest ambientContextEventRequest2 = MIXED_REQUEST;
+                TestableCallbackInternal testableCallbackInternal3 = sTestableCallbackInternal;
+                ambientContextManagerService5.startDetection(parseInt5, ambientContextEventRequest2, nextArgRequired4, TestableCallbackInternal.m212$$Nest$mcreateAmbientContextObserver(testableCallbackInternal3));
+                this.mService.newClientAdded(parseInt5, ambientContextEventRequest2, nextArgRequired4, testableCallbackInternal3.new AnonymousClass1());
+                return 0;
+            case "set-temporary-services":
+                PrintWriter outPrintWriter2 = getOutPrintWriter();
+                int parseInt6 = Integer.parseInt(getNextArgRequired());
+                this.mService.setDefaultServiceEnabled(parseInt6, false);
+                String nextArg = getNextArg();
+                String nextArg2 = getNextArg();
+                if (nextArg == null || nextArg2 == null) {
+                    this.mService.resetTemporaryService(parseInt6);
+                    this.mService.setDefaultServiceEnabled(parseInt6, true);
+                    outPrintWriter2.println("AmbientContextDetectionService temporary reset.");
+                } else {
+                    String[] strArr = {nextArg, nextArg2};
+                    int parseInt7 = Integer.parseInt(getNextArgRequired());
+                    AmbientContextManagerService ambientContextManagerService6 = this.mService;
+                    Slog.i(ambientContextManagerService6.mTag, ActiveServices$$ExternalSyntheticOutline0.m(parseInt7, Arrays.toString(strArr), " for ", "ms", BatteryService$$ExternalSyntheticOutline0.m(parseInt6, "setTemporaryService(", ") to ")));
+                    if (ambientContextManagerService6.mServiceNameResolver != null) {
+                        ambientContextManagerService6.enforceCallingPermissionForManagement();
+                        if (parseInt7 > 30000) {
+                            throw new IllegalArgumentException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(parseInt7, "Max duration is 30000 (called with ", ")"));
+                        }
+                        synchronized (ambientContextManagerService6.mLock) {
+                            try {
+                                AbstractPerUserSystemService peekServiceForUserLocked = ambientContextManagerService6.peekServiceForUserLocked(parseInt6);
+                                if (peekServiceForUserLocked != null) {
+                                    peekServiceForUserLocked.removeSelfFromCache();
+                                }
+                                ambientContextManagerService6.mServiceNameResolver.setTemporaryServices(parseInt6, parseInt7, strArr);
+                            } finally {
+                            }
+                        }
+                    }
+                    StringBuilder sb = new StringBuilder("AmbientContextDetectionService temporarily set to ");
+                    sb.append(strArr[0]);
+                    sb.append(" and ");
+                    Slog.w("AmbientContextShellCommand", ActiveServices$$ExternalSyntheticOutline0.m(parseInt7, strArr[1], " for ", "ms", sb));
+                    StringBuilder sb2 = new StringBuilder("AmbientContextDetectionService temporarily set to ");
+                    sb2.append(strArr[0]);
+                    sb2.append(" and ");
+                    outPrintWriter2.println(ActiveServices$$ExternalSyntheticOutline0.m(parseInt7, strArr[1], " for ", "ms", sb2));
                 }
-                break;
-            case -920381716:
-                if (str.equals("start-detection-wearable")) {
-                    c = 3;
-                    break;
+                return 0;
+            case "query-wearable-service-status":
+                int parseInt8 = Integer.parseInt(getNextArgRequired());
+                String nextArgRequired5 = getNextArgRequired();
+                int[] iArr2 = {FrameworkStatsLog.GPS_ENGINE_STATE_CHANGED};
+                AmbientContextManagerService ambientContextManagerService7 = this.mService;
+                final TestableCallbackInternal testableCallbackInternal4 = sTestableCallbackInternal;
+                testableCallbackInternal4.getClass();
+                ambientContextManagerService7.queryServiceStatus(parseInt8, nextArgRequired5, iArr2, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: com.android.server.ambientcontext.AmbientContextShellCommand$TestableCallbackInternal$$ExternalSyntheticLambda0
+                    public final void onResult(Bundle bundle) {
+                        AmbientContextShellCommand.TestableCallbackInternal testableCallbackInternal22 = AmbientContextShellCommand.TestableCallbackInternal.this;
+                        testableCallbackInternal22.getClass();
+                        int i = bundle.getInt("android.app.ambientcontext.AmbientContextStatusBundleKey");
+                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                        try {
+                            testableCallbackInternal22.mLastStatus = i;
+                        } finally {
+                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                        }
+                    }
+                }));
+                return 0;
+            case "set-temporary-service":
+                PrintWriter outPrintWriter3 = getOutPrintWriter();
+                int parseInt9 = Integer.parseInt(getNextArgRequired());
+                String nextArg3 = getNextArg();
+                if (nextArg3 == null) {
+                    this.mService.resetTemporaryService(parseInt9);
+                    outPrintWriter3.println("AmbientContextDetectionService temporary reset. ");
+                    this.mService.setDefaultServiceEnabled(parseInt9, true);
+                } else {
+                    int parseInt10 = Integer.parseInt(getNextArgRequired());
+                    this.mService.setTemporaryService(parseInt9, nextArg3, parseInt10);
+                    outPrintWriter3.println(ActiveServices$$ExternalSyntheticOutline0.m(parseInt10, nextArg3, " for ", "ms", new StringBuilder("AmbientContextDetectionService temporarily set to ")));
                 }
-                break;
-            case -919702712:
-                if (str.equals("start-detection-mixed")) {
-                    c = 4;
-                    break;
-                }
-                break;
-            case -108354651:
-                if (str.equals("set-temporary-services")) {
-                    c = 5;
-                    break;
-                }
-                break;
-            case 943496953:
-                if (str.equals("query-wearable-service-status")) {
-                    c = 6;
-                    break;
-                }
-                break;
-            case 1104883342:
-                if (str.equals("set-temporary-service")) {
-                    c = 7;
-                    break;
-                }
-                break;
-            case 1519475119:
-                if (str.equals("query-service-status")) {
-                    c = '\b';
-                    break;
-                }
-                break;
-            case 2018305992:
-                if (str.equals("get-last-status-code")) {
-                    c = '\t';
-                    break;
-                }
-                break;
-            case 2084757210:
-                if (str.equals("start-detection")) {
-                    c = '\n';
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return getBoundPackageName();
-            case 1:
-                return runStopDetection();
-            case 2:
-                return runQueryMixedServiceStatus();
-            case 3:
-                return runWearableStartDetection();
-            case 4:
-                return runMixedStartDetection();
-            case 5:
-                return setTemporaryServices();
-            case 6:
-                return runQueryWearableServiceStatus();
-            case 7:
-                return setTemporaryService();
-            case '\b':
-                return runQueryServiceStatus();
-            case '\t':
-                return getLastStatusCode();
-            case '\n':
-                return runStartDetection();
+                return 0;
+            case "query-service-status":
+                AmbientContextManagerService ambientContextManagerService8 = this.mService;
+                final TestableCallbackInternal testableCallbackInternal5 = sTestableCallbackInternal;
+                testableCallbackInternal5.getClass();
+                ambientContextManagerService8.queryServiceStatus(Integer.parseInt(getNextArgRequired()), getNextArgRequired(), new int[]{1, 2}, new RemoteCallback(new RemoteCallback.OnResultListener() { // from class: com.android.server.ambientcontext.AmbientContextShellCommand$TestableCallbackInternal$$ExternalSyntheticLambda0
+                    public final void onResult(Bundle bundle) {
+                        AmbientContextShellCommand.TestableCallbackInternal testableCallbackInternal22 = AmbientContextShellCommand.TestableCallbackInternal.this;
+                        testableCallbackInternal22.getClass();
+                        int i = bundle.getInt("android.app.ambientcontext.AmbientContextStatusBundleKey");
+                        long clearCallingIdentity = Binder.clearCallingIdentity();
+                        try {
+                            testableCallbackInternal22.mLastStatus = i;
+                        } finally {
+                            Binder.restoreCallingIdentity(clearCallingIdentity);
+                        }
+                    }
+                }));
+                return 0;
+            case "get-last-status-code":
+                getOutPrintWriter().println(sTestableCallbackInternal.mLastStatus);
+                return 0;
+            case "start-detection":
+                int parseInt11 = Integer.parseInt(getNextArgRequired());
+                String nextArgRequired6 = getNextArgRequired();
+                AmbientContextManagerService ambientContextManagerService9 = this.mService;
+                AmbientContextEventRequest ambientContextEventRequest3 = REQUEST;
+                TestableCallbackInternal testableCallbackInternal6 = sTestableCallbackInternal;
+                ambientContextManagerService9.startDetection(parseInt11, ambientContextEventRequest3, nextArgRequired6, TestableCallbackInternal.m212$$Nest$mcreateAmbientContextObserver(testableCallbackInternal6));
+                this.mService.newClientAdded(parseInt11, ambientContextEventRequest3, nextArgRequired6, testableCallbackInternal6.new AnonymousClass1());
+                return 0;
             default:
                 return handleDefaultCommands(str);
         }
     }
 
-    public final int runStartDetection() {
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        String nextArgRequired = getNextArgRequired();
-        AmbientContextManagerService ambientContextManagerService = this.mService;
-        AmbientContextEventRequest ambientContextEventRequest = REQUEST;
-        TestableCallbackInternal testableCallbackInternal = sTestableCallbackInternal;
-        ambientContextManagerService.startDetection(parseInt, ambientContextEventRequest, nextArgRequired, testableCallbackInternal.createAmbientContextObserver());
-        this.mService.newClientAdded(parseInt, ambientContextEventRequest, nextArgRequired, testableCallbackInternal.createAmbientContextObserver());
-        return 0;
-    }
-
-    public final int runWearableStartDetection() {
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        String nextArgRequired = getNextArgRequired();
-        AmbientContextManagerService ambientContextManagerService = this.mService;
-        AmbientContextEventRequest ambientContextEventRequest = WEARABLE_REQUEST;
-        TestableCallbackInternal testableCallbackInternal = sTestableCallbackInternal;
-        ambientContextManagerService.startDetection(parseInt, ambientContextEventRequest, nextArgRequired, testableCallbackInternal.createAmbientContextObserver());
-        this.mService.newClientAdded(parseInt, ambientContextEventRequest, nextArgRequired, testableCallbackInternal.createAmbientContextObserver());
-        return 0;
-    }
-
-    public final int runMixedStartDetection() {
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        String nextArgRequired = getNextArgRequired();
-        AmbientContextManagerService ambientContextManagerService = this.mService;
-        AmbientContextEventRequest ambientContextEventRequest = MIXED_REQUEST;
-        TestableCallbackInternal testableCallbackInternal = sTestableCallbackInternal;
-        ambientContextManagerService.startDetection(parseInt, ambientContextEventRequest, nextArgRequired, testableCallbackInternal.createAmbientContextObserver());
-        this.mService.newClientAdded(parseInt, ambientContextEventRequest, nextArgRequired, testableCallbackInternal.createAmbientContextObserver());
-        return 0;
-    }
-
-    public final int runStopDetection() {
-        this.mService.stopAmbientContextEvent(Integer.parseInt(getNextArgRequired()), getNextArgRequired());
-        return 0;
-    }
-
-    public final int runQueryServiceStatus() {
-        this.mService.queryServiceStatus(Integer.parseInt(getNextArgRequired()), getNextArgRequired(), new int[]{1, 2}, sTestableCallbackInternal.createRemoteStatusCallback());
-        return 0;
-    }
-
-    public final int runQueryWearableServiceStatus() {
-        this.mService.queryServiceStatus(Integer.parseInt(getNextArgRequired()), getNextArgRequired(), new int[]{FrameworkStatsLog.GPS_ENGINE_STATE_CHANGED}, sTestableCallbackInternal.createRemoteStatusCallback());
-        return 0;
-    }
-
-    public final int runQueryMixedServiceStatus() {
-        this.mService.queryServiceStatus(Integer.parseInt(getNextArgRequired()), getNextArgRequired(), new int[]{1, FrameworkStatsLog.GPS_ENGINE_STATE_CHANGED}, sTestableCallbackInternal.createRemoteStatusCallback());
-        return 0;
-    }
-
-    public final int getLastStatusCode() {
-        getOutPrintWriter().println(sTestableCallbackInternal.getLastStatus());
-        return 0;
-    }
-
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.println("AmbientContextEvent commands: ");
         outPrintWriter.println("  help");
         outPrintWriter.println("    Print this help text.");
         outPrintWriter.println();
         outPrintWriter.println("  start-detection USER_ID PACKAGE_NAME: Starts AmbientContextEvent detection.");
-        outPrintWriter.println("  start-detection-wearable USER_ID PACKAGE_NAME: Starts AmbientContextEvent detection for wearable.");
-        outPrintWriter.println("  start-detection-mixed USER_ID PACKAGE_NAME:  Starts AmbientContextEvent detection for mixed events.");
-        outPrintWriter.println("  stop-detection USER_ID PACKAGE_NAME: Stops AmbientContextEvent detection.");
-        outPrintWriter.println("  get-last-status-code: Prints the latest request status code.");
-        outPrintWriter.println("  query-service-status USER_ID PACKAGE_NAME: Prints the service status code.");
-        outPrintWriter.println("  query-wearable-service-status USER_ID PACKAGE_NAME: Prints the service status code for wearable.");
-        outPrintWriter.println("  query-mixed-service-status USER_ID PACKAGE_NAME: Prints the service status code for mixed events.");
-        outPrintWriter.println("  get-bound-package USER_ID:     Print the bound package that implements the service.");
-        outPrintWriter.println("  set-temporary-service USER_ID [PACKAGE_NAME] [COMPONENT_NAME DURATION]");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  start-detection-wearable USER_ID PACKAGE_NAME: Starts AmbientContextEvent detection for wearable.", "  start-detection-mixed USER_ID PACKAGE_NAME:  Starts AmbientContextEvent detection for mixed events.", "  stop-detection USER_ID PACKAGE_NAME: Stops AmbientContextEvent detection.", "  get-last-status-code: Prints the latest request status code.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  query-service-status USER_ID PACKAGE_NAME: Prints the service status code.", "  query-wearable-service-status USER_ID PACKAGE_NAME: Prints the service status code for wearable.", "  query-mixed-service-status USER_ID PACKAGE_NAME: Prints the service status code for mixed events.", "  get-bound-package USER_ID:     Print the bound package that implements the service.");
+        BatteryService$$ExternalSyntheticOutline0.m(outPrintWriter, "  set-temporary-service USER_ID [PACKAGE_NAME] [COMPONENT_NAME DURATION]", "    Temporarily (for DURATION ms) changes the service implementation.", "    To reset, call with just the USER_ID argument.", "  set-temporary-services USER_ID [FIRST_PACKAGE_NAME] [SECOND_PACKAGE_NAME] [COMPONENT_NAME DURATION]");
         outPrintWriter.println("    Temporarily (for DURATION ms) changes the service implementation.");
         outPrintWriter.println("    To reset, call with just the USER_ID argument.");
-        outPrintWriter.println("  set-temporary-services USER_ID [FIRST_PACKAGE_NAME] [SECOND_PACKAGE_NAME] [COMPONENT_NAME DURATION]");
-        outPrintWriter.println("    Temporarily (for DURATION ms) changes the service implementation.");
-        outPrintWriter.println("    To reset, call with just the USER_ID argument.");
-    }
-
-    public final int getBoundPackageName() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        ComponentName componentName = this.mService.getComponentName(Integer.parseInt(getNextArgRequired()), AmbientContextManagerPerUserService.ServiceType.DEFAULT);
-        outPrintWriter.println(componentName == null ? "" : componentName.getPackageName());
-        return 0;
-    }
-
-    public final int setTemporaryService() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        String nextArg = getNextArg();
-        if (nextArg == null) {
-            this.mService.resetTemporaryService(parseInt);
-            outPrintWriter.println("AmbientContextDetectionService temporary reset. ");
-            this.mService.setDefaultServiceEnabled(parseInt, true);
-            return 0;
-        }
-        int parseInt2 = Integer.parseInt(getNextArgRequired());
-        this.mService.setTemporaryService(parseInt, nextArg, parseInt2);
-        outPrintWriter.println("AmbientContextDetectionService temporarily set to " + nextArg + " for " + parseInt2 + "ms");
-        return 0;
-    }
-
-    public final int setTemporaryServices() {
-        String[] strArr = new String[2];
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        this.mService.setDefaultServiceEnabled(parseInt, false);
-        String nextArg = getNextArg();
-        String nextArg2 = getNextArg();
-        if (nextArg == null || nextArg2 == null) {
-            this.mService.resetTemporaryService(parseInt);
-            this.mService.setDefaultServiceEnabled(parseInt, true);
-            outPrintWriter.println("AmbientContextDetectionService temporary reset.");
-            return 0;
-        }
-        strArr[0] = nextArg;
-        strArr[1] = nextArg2;
-        int parseInt2 = Integer.parseInt(getNextArgRequired());
-        this.mService.setTemporaryServices(parseInt, strArr, parseInt2);
-        Slog.w(TAG, "AmbientContextDetectionService temporarily set to " + strArr[0] + " and " + strArr[1] + " for " + parseInt2 + "ms");
-        outPrintWriter.println("AmbientContextDetectionService temporarily set to " + strArr[0] + " and " + strArr[1] + " for " + parseInt2 + "ms");
-        return 0;
     }
 }

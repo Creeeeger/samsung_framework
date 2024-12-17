@@ -7,8 +7,14 @@ import android.os.Message;
 import android.os.Process;
 import android.util.Log;
 import android.util.Pair;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
+import com.android.server.am.FreecessController$$ExternalSyntheticOutline0;
+import com.android.server.am.OverlayChangeObserverImpl;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
+import com.samsung.android.localeoverlaymanager.LocaleOverlayManager;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
@@ -17,31 +23,69 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class LocaleOverlayManagerWrapper implements ILocaleOverlayManager {
-    public static final String TAG = "LocaleOverlayManagerWrapper";
+public final class LocaleOverlayManagerWrapper {
     public static LocaleOverlayManagerWrapper sInstance;
     public final Context mContext;
     public LocaleOverlayManager mManager;
+    public final LocaleOverlayManagerWrapper$$ExternalSyntheticLambda0 mPendingActionRunnable;
+    public final LocaleOverlayManagerWrapper$$ExternalSyntheticLambda0 mQuitRunnable;
     public boolean mRequestInProgress = false;
     public final ScheduledExecutorService mExecutor = Executors.newSingleThreadScheduledExecutor();
     public final Queue mPendingRequestQueue = new ConcurrentLinkedQueue();
-    public Runnable mPendingActionRunnable = new Runnable() { // from class: com.samsung.android.localeoverlaymanager.LocaleOverlayManagerWrapper$$ExternalSyntheticLambda0
-        @Override // java.lang.Runnable
-        public final void run() {
-            LocaleOverlayManagerWrapper.this.requestPendingActions();
-        }
-    };
-    public Runnable mQuitRunnable = new Runnable() { // from class: com.samsung.android.localeoverlaymanager.LocaleOverlayManagerWrapper$$ExternalSyntheticLambda1
-        @Override // java.lang.Runnable
-        public final void run() {
-            LocaleOverlayManagerWrapper.this.waitAndQuit();
-        }
-    };
 
+    /* JADX WARN: Type inference failed for: r0v3, types: [com.samsung.android.localeoverlaymanager.LocaleOverlayManagerWrapper$$ExternalSyntheticLambda0] */
+    /* JADX WARN: Type inference failed for: r0v4, types: [com.samsung.android.localeoverlaymanager.LocaleOverlayManagerWrapper$$ExternalSyntheticLambda0] */
     public LocaleOverlayManagerWrapper(Context context) {
+        final int i = 0;
+        this.mPendingActionRunnable = new Runnable(this) { // from class: com.samsung.android.localeoverlaymanager.LocaleOverlayManagerWrapper$$ExternalSyntheticLambda0
+            public final /* synthetic */ LocaleOverlayManagerWrapper f$0;
+
+            {
+                this.f$0 = this;
+            }
+
+            @Override // java.lang.Runnable
+            public final void run() {
+                int i2 = i;
+                LocaleOverlayManagerWrapper localeOverlayManagerWrapper = this.f$0;
+                switch (i2) {
+                    case 0:
+                        localeOverlayManagerWrapper.requestPendingActions();
+                        break;
+                    default:
+                        localeOverlayManagerWrapper.waitAndQuit();
+                        break;
+                }
+            }
+        };
+        final int i2 = 1;
+        this.mQuitRunnable = new Runnable(this) { // from class: com.samsung.android.localeoverlaymanager.LocaleOverlayManagerWrapper$$ExternalSyntheticLambda0
+            public final /* synthetic */ LocaleOverlayManagerWrapper f$0;
+
+            {
+                this.f$0 = this;
+            }
+
+            @Override // java.lang.Runnable
+            public final void run() {
+                int i22 = i2;
+                LocaleOverlayManagerWrapper localeOverlayManagerWrapper = this.f$0;
+                switch (i22) {
+                    case 0:
+                        localeOverlayManagerWrapper.requestPendingActions();
+                        break;
+                    default:
+                        localeOverlayManagerWrapper.waitAndQuit();
+                        break;
+                }
+            }
+        };
         this.mContext = context;
-        Utils.setCurrentUserId(Process.myUserHandle().semGetIdentifier());
+        int semGetIdentifier = Process.myUserHandle().semGetIdentifier();
+        Utils.setCurrentUserId(semGetIdentifier);
+        LogWriter.logDebugInfoAndLogcat("LocaleOverlayManagerWrapper", "onCreate() called. UserId: " + semGetIdentifier);
         initManager();
         requestPendingActions();
     }
@@ -49,77 +93,100 @@ public class LocaleOverlayManagerWrapper implements ILocaleOverlayManager {
     public static synchronized LocaleOverlayManagerWrapper getInstance(Context context) {
         LocaleOverlayManagerWrapper localeOverlayManagerWrapper;
         synchronized (LocaleOverlayManagerWrapper.class) {
-            if (sInstance == null) {
-                sInstance = new LocaleOverlayManagerWrapper(context);
+            try {
+                if (sInstance == null) {
+                    sInstance = new LocaleOverlayManagerWrapper(context);
+                }
+                localeOverlayManagerWrapper = sInstance;
+            } catch (Throwable th) {
+                throw th;
             }
-            localeOverlayManagerWrapper = sInstance;
         }
         return localeOverlayManagerWrapper;
     }
 
-    public static void clearInstance() {
-        sInstance = null;
+    public final void applyLocales(LocaleList localeList, int i, OverlayChangeObserverImpl overlayChangeObserverImpl) {
+        LocaleOverlayManager.OverlayHandler overlayHandler;
+        LogWriter.logDebugInfoAndLogcat("LocaleOverlayManagerWrapper", "applyLocales() called with: localeList = [" + localeList + "], userId = [" + i + "], observer = [" + overlayChangeObserverImpl + "]");
+        LocaleOverlayManager localeOverlayManager = this.mManager;
+        if (localeOverlayManager != null && (overlayHandler = localeOverlayManager.mHandler) != null) {
+            overlayHandler.removeCallbacks(this.mQuitRunnable);
+        }
+        synchronized (this) {
+            try {
+                LogWriter.logDebugInfoAndLogcat("LocaleOverlayManagerWrapper", "localeChanged localeList " + localeList);
+                HashSet hashSet = new HashSet();
+                for (int i2 = 0; i2 < localeList.size(); i2++) {
+                    String language = localeList.get(i2).getLanguage();
+                    if (language.length() == 3) {
+                        Log.i("LocaleOverlayManagerWrapper", "localeChanged: trying to get ISO_639_1 mapping for locale: " + language);
+                        language = (String) ((HashMap) OverlayConstants.ISO_639_2_TO_639_1_MAPPING).get(language);
+                    }
+                    if (language != null) {
+                        hashSet.add(language);
+                    }
+                }
+                Utils.handleNewLocaleCodes(hashSet);
+                Log.i("LocaleOverlayManagerWrapper", "CurrentLocales list from config - " + hashSet);
+                Bundle bundle = new Bundle();
+                bundle.putString("pending_action", "android.intent.action.LOCALE_CHANGED");
+                bundle.putStringArrayList("config_locale_list", new ArrayList<>(hashSet));
+                bundle.putInt("userId", i);
+                ((ConcurrentLinkedQueue) this.mPendingRequestQueue).add(new Pair(bundle, overlayChangeObserverImpl));
+                requestPendingActions();
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
     }
 
-    @Override // com.samsung.android.localeoverlaymanager.ILocaleOverlayManager
-    public void applyLocales(LocaleList localeList, int i, OverlayChangeObserver overlayChangeObserver) {
-        LogWriter.logDebugInfoAndLogcat(TAG, "applyLocales() called with: localeList = [" + localeList + "], userId = [" + i + "], observer = [" + overlayChangeObserver + "]");
-        cancelQuit();
-        localeChanged(localeList, i, overlayChangeObserver);
+    public final void applyLocalesForPackage(String str, int i, int i2, com.android.server.pm.OverlayChangeObserverImpl overlayChangeObserverImpl) {
+        LocaleOverlayManager.OverlayHandler overlayHandler;
+        StringBuilder m = StorageManagerService$$ExternalSyntheticOutline0.m(i, "applyLocalesForPackage() called with: packageName = [", str, "], token = [", "], observer = [");
+        m.append(overlayChangeObserverImpl);
+        m.append("]");
+        LogWriter.logDebugInfoAndLogcat("LocaleOverlayManagerWrapper", m.toString());
+        LocaleOverlayManager localeOverlayManager = this.mManager;
+        if (localeOverlayManager != null && (overlayHandler = localeOverlayManager.mHandler) != null) {
+            overlayHandler.removeCallbacks(this.mQuitRunnable);
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString("pending_action", "com.samsung.android.localeoverlaymanager.action.PACKAGE_ADDED");
+        bundle.putString("added_package", str);
+        bundle.putInt(KnoxCustomManagerService.SPCM_KEY_TOKEN, i);
+        bundle.putInt("userId", i2);
+        ((ConcurrentLinkedQueue) this.mPendingRequestQueue).add(new Pair(bundle, overlayChangeObserverImpl));
+        requestPendingActions();
     }
 
-    @Override // com.samsung.android.localeoverlaymanager.ILocaleOverlayManager
-    public boolean applyLocalesForPackage(String str, int i, int i2, OverlayChangeObserver overlayChangeObserver) {
-        LogWriter.logDebugInfoAndLogcat(TAG, "applyLocalesForPackage() called with: packageName = [" + str + "], token = [" + i + "], observer = [" + overlayChangeObserver + "]");
-        cancelQuit();
-        packageInstalled(str, i, i2, overlayChangeObserver);
-        return true;
-    }
-
-    @Override // com.samsung.android.localeoverlaymanager.ILocaleOverlayManager
-    public void applyPerAppLocale(LocaleList localeList, String str, int i) {
-        LogWriter.logDebugInfoAndLogcat(TAG, "applyPerAppLocale() called with: localeList = [" + localeList + "], packageName = [" + str + "], userId = [" + i + "]");
+    public final void applyPerAppLocale(LocaleList localeList, String str, int i) {
+        LogWriter.logDebugInfoAndLogcat("LocaleOverlayManagerWrapper", "applyPerAppLocale() called with: localeList = [" + localeList + "], packageName = [" + str + "], userId = [" + i + "]");
         if (localeList == null || str == null) {
             return;
         }
-        localeChangedPerApp(localeList, str, i);
-    }
-
-    @Override // com.samsung.android.localeoverlaymanager.ILocaleOverlayManager
-    public void initializeOverlaysForSafeMode() {
-        Context context = this.mContext;
-        if (context == null || !PreferenceUtils.getPreferences(context).getBoolean("safeMode", false)) {
-            return;
-        }
-        init(true, false);
-    }
-
-    @Override // com.samsung.android.localeoverlaymanager.ILocaleOverlayManager
-    public void initializeOverlays(boolean z) {
-        Context context = this.mContext;
-        if (context != null) {
-            PreferenceUtils.getPreferences(context).edit().putBoolean("safeMode", z).commit();
-            init(false, false);
+        synchronized (this) {
+            Log.i("LocaleOverlayManagerWrapper", "APK_OPTIMIZATION localeChangedPerApp localeList " + localeList);
+            Set localesListAsSet = Utils.getLocalesListAsSet(localeList);
+            Log.i("LocaleOverlayManagerWrapper", "APK_OPTIMIZATION CurrentLocales list from config - " + localesListAsSet);
+            Bundle bundle = new Bundle();
+            bundle.putString("pending_action", "com.samsung.android.localeoverlaymanager.action.MSG_HANDLE_PER_APP_LOCALE");
+            bundle.putString("perAppPackageName", str);
+            bundle.putStringArrayList("config_locale_list", new ArrayList<>(localesListAsSet));
+            bundle.putInt("userId", i);
+            ((ConcurrentLinkedQueue) this.mPendingRequestQueue).add(new Pair(bundle, null));
+            requestPendingActions();
         }
     }
 
-    @Override // com.samsung.android.localeoverlaymanager.ILocaleOverlayManager
-    public void cleanUpOverlays() {
-        if (this.mContext != null) {
-            init(false, true);
-        }
-    }
-
-    @Override // com.samsung.android.localeoverlaymanager.ILocaleOverlayManager
-    public void checkSanityOfOverlays(int i) {
-        LogWriter.logDebugInfoAndLogcat(TAG, "checkSanityOfOverlays() called with: userId = [" + i + "], mContext = " + this.mContext);
+    public final void checkSanityOfOverlays(int i) {
+        StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "checkSanityOfOverlays() called with: userId = [", "], mContext = ");
+        m.append(this.mContext);
+        LogWriter.logDebugInfoAndLogcat("LocaleOverlayManagerWrapper", m.toString());
         if (this.mContext == null) {
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putString("pending_action", "com.samsung.android.localeoverlaymanager.action.JOB_SCHEDULED");
-        bundle.putInt("userId", i);
-        this.mPendingRequestQueue.add(new Pair(bundle, null));
+        Bundle m2 = FreecessController$$ExternalSyntheticOutline0.m(i, "pending_action", "com.samsung.android.localeoverlaymanager.action.JOB_SCHEDULED", "userId");
+        ((ConcurrentLinkedQueue) this.mPendingRequestQueue).add(new Pair(m2, null));
         requestPendingActions();
     }
 
@@ -128,144 +195,103 @@ public class LocaleOverlayManagerWrapper implements ILocaleOverlayManager {
         bundle.putString("pending_action", "init_on_boot");
         bundle.putBoolean("safeMode", z);
         bundle.putBoolean("startCleanUpOverlay", z2);
-        this.mPendingRequestQueue.add(new Pair(bundle, null));
+        ((ConcurrentLinkedQueue) this.mPendingRequestQueue).add(new Pair(bundle, null));
         requestPendingActions();
     }
 
-    public final void packageInstalled(String str, int i, int i2, OverlayChangeObserver overlayChangeObserver) {
-        Bundle bundle = new Bundle();
-        bundle.putString("pending_action", "com.samsung.android.localeoverlaymanager.action.PACKAGE_ADDED");
-        bundle.putString("added_package", str);
-        bundle.putInt(KnoxCustomManagerService.SPCM_KEY_TOKEN, i);
-        bundle.putInt("userId", i2);
-        this.mPendingRequestQueue.add(new Pair(bundle, overlayChangeObserver));
-        requestPendingActions();
-    }
-
-    public final void cancelQuit() {
-        LocaleOverlayManager localeOverlayManager = this.mManager;
-        if (localeOverlayManager == null || localeOverlayManager.getHandler() == null) {
-            return;
-        }
-        this.mManager.getHandler().removeCallbacks(this.mQuitRunnable);
-    }
-
+    /* JADX WARN: Type inference failed for: r1v3, types: [com.samsung.android.localeoverlaymanager.LocaleOverlayManager$$ExternalSyntheticLambda0] */
     public final void initManager() {
         LocaleOverlayManager localeOverlayManager = this.mManager;
         if (localeOverlayManager != null && localeOverlayManager.isAlive()) {
-            Log.i(TAG, "initManager thread not getting created");
+            Log.i("LocaleOverlayManagerWrapper", "initManager thread not getting created");
             return;
         }
-        Log.i(TAG, "initManager thread creation");
-        LocaleOverlayManager localeOverlayManager2 = new LocaleOverlayManager("ResourceOverlayService", this);
+        Log.i("LocaleOverlayManagerWrapper", "initManager thread creation");
+        final LocaleOverlayManager localeOverlayManager2 = new LocaleOverlayManager("ResourceOverlayService");
+        localeOverlayManager2.mInProgress = false;
+        localeOverlayManager2.progressResetRunnable = new Runnable() { // from class: com.samsung.android.localeoverlaymanager.LocaleOverlayManager$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                LocaleOverlayManager.this.checkSanityAndCompleteTask();
+            }
+        };
+        localeOverlayManager2.initOverlayManager();
+        localeOverlayManager2.mService = this;
         this.mManager = localeOverlayManager2;
         localeOverlayManager2.start();
-        this.mManager.setContext(this.mContext);
+        this.mManager.mContext = this.mContext;
     }
 
-    public void setRequestInProgress(boolean z) {
-        this.mRequestInProgress = z;
-    }
-
-    public void doDestroy() {
-        LocaleOverlayManager localeOverlayManager = this.mManager;
-        if (localeOverlayManager == null || localeOverlayManager.isInProgress() || !this.mPendingRequestQueue.isEmpty()) {
-            return;
-        }
-        if (this.mManager.getHandler() != null) {
-            this.mManager.getHandler().removeCallbacks(this.mQuitRunnable);
-        }
-        this.mManager.quit();
-        this.mManager = null;
-    }
-
-    public synchronized void localeChanged(LocaleList localeList, int i, OverlayChangeObserver overlayChangeObserver) {
-        LogWriter.logDebugInfoAndLogcat(TAG, "localeChanged localeList " + localeList);
-        HashSet hashSet = new HashSet();
-        for (int i2 = 0; i2 < localeList.size(); i2++) {
-            String language = localeList.get(i2).getLanguage();
-            if (language.length() == 3) {
-                Log.i(TAG, "localeChanged: trying to get ISO_639_1 mapping for locale: " + language);
-                language = (String) OverlayConstants.ISO_639_2_TO_639_1_MAPPING.get(language);
-            }
-            if (language != null) {
-                hashSet.add(language);
-            }
-        }
-        Log.i(TAG, "CurrentLocales list from config - " + hashSet);
-        Bundle bundle = new Bundle();
-        bundle.putString("pending_action", "android.intent.action.LOCALE_CHANGED");
-        bundle.putStringArrayList("config_locale_list", new ArrayList<>(hashSet));
-        bundle.putInt("userId", i);
-        this.mPendingRequestQueue.add(new Pair(bundle, overlayChangeObserver));
-        requestPendingActions();
-    }
-
-    public synchronized void localeChangedPerApp(LocaleList localeList, String str, int i) {
-        String str2 = TAG;
-        Log.i(str2, "APK_OPTIMIZATION localeChangedPerApp localeList " + localeList);
-        Set localesListAsSet = Utils.getLocalesListAsSet(localeList);
-        Log.i(str2, "APK_OPTIMIZATION CurrentLocales list from config - " + localesListAsSet);
-        Bundle bundle = new Bundle();
-        bundle.putString("pending_action", "com.samsung.android.localeoverlaymanager.action.MSG_HANDLE_PER_APP_LOCALE");
-        bundle.putString("perAppPackageName", str);
-        bundle.putStringArrayList("config_locale_list", new ArrayList<>(localesListAsSet));
-        bundle.putInt("userId", i);
-        this.mPendingRequestQueue.add(new Pair(bundle, null));
-        requestPendingActions();
-    }
-
-    public synchronized void requestPendingActions() {
+    public final synchronized void requestPendingActions() {
         Bundle bundle;
-        if (this.mPendingRequestQueue.isEmpty()) {
-            Log.i(TAG, "requestPendingActions() called - No pending actions!");
+        LocaleOverlayManager.OverlayHandler overlayHandler;
+        if (((ConcurrentLinkedQueue) this.mPendingRequestQueue).isEmpty()) {
+            Log.i("LocaleOverlayManagerWrapper", "requestPendingActions() called - No pending actions!");
             return;
         }
-        cancelQuit();
         LocaleOverlayManager localeOverlayManager = this.mManager;
-        if (localeOverlayManager != null && localeOverlayManager.isAlive()) {
-            if (this.mManager.getHandler() == null) {
-                Log.e(TAG, "requestPendingAction delayed, handler -> " + this.mManager.getHandler());
+        if (localeOverlayManager != null && (overlayHandler = localeOverlayManager.mHandler) != null) {
+            overlayHandler.removeCallbacks(this.mQuitRunnable);
+        }
+        LocaleOverlayManager localeOverlayManager2 = this.mManager;
+        if (localeOverlayManager2 != null && localeOverlayManager2.isAlive()) {
+            LocaleOverlayManager localeOverlayManager3 = this.mManager;
+            if (localeOverlayManager3.mHandler == null) {
+                Log.e("LocaleOverlayManagerWrapper", "requestPendingAction delayed, handler -> " + this.mManager.mHandler);
                 this.mExecutor.schedule(this.mPendingActionRunnable, 100L, TimeUnit.MILLISECONDS);
                 return;
             }
-            if (!this.mRequestInProgress && !this.mManager.isInProgress()) {
-                Pair pair = (Pair) this.mPendingRequestQueue.poll();
-                Log.e(TAG, "requestPendingAction sending bundle " + pair);
+            if (!this.mRequestInProgress && !localeOverlayManager3.mInProgress) {
+                Pair pair = (Pair) ((ConcurrentLinkedQueue) this.mPendingRequestQueue).poll();
+                Log.e("LocaleOverlayManagerWrapper", "requestPendingAction sending bundle " + pair);
                 if (pair != null && (bundle = (Bundle) pair.first) != null) {
                     this.mRequestInProgress = true;
                     Message obtain = Message.obtain(null, 1, bundle);
-                    this.mManager.setObserver((OverlayChangeObserver) pair.second);
-                    this.mManager.getHandler().sendMessage(obtain);
+                    LocaleOverlayManager localeOverlayManager4 = this.mManager;
+                    localeOverlayManager4.mCurrentObserver = (OverlayChangeObserver) pair.second;
+                    localeOverlayManager4.mHandler.sendMessage(obtain);
                 }
             }
-            if (this.mRequestInProgress || !this.mPendingRequestQueue.isEmpty()) {
+            if (this.mRequestInProgress || !((ConcurrentLinkedQueue) this.mPendingRequestQueue).isEmpty()) {
                 this.mExecutor.schedule(this.mPendingActionRunnable, 100L, TimeUnit.MILLISECONDS);
             }
             return;
         }
-        Log.e(TAG, "requestPendingAction delayed: Manager not alive");
+        Log.e("LocaleOverlayManagerWrapper", "requestPendingAction delayed: Manager not alive");
         initManager();
         this.mExecutor.schedule(this.mPendingActionRunnable, 100L, TimeUnit.MILLISECONDS);
     }
 
-    public void waitAndQuit() {
-        Log.i(TAG, "waitAndQuit called");
+    public final void waitAndQuit() {
+        LocaleOverlayManager.OverlayHandler overlayHandler;
+        Log.i("LocaleOverlayManagerWrapper", "waitAndQuit called");
         synchronized (this) {
-            if (!this.mPendingRequestQueue.isEmpty()) {
-                requestPendingActions();
-                return;
-            }
-            LocaleOverlayManager localeOverlayManager = this.mManager;
-            if (localeOverlayManager != null && localeOverlayManager.getHandler() != null) {
-                if (this.mManager.isCleanupInProgress()) {
-                    this.mManager.getHandler().removeCallbacks(this.mQuitRunnable);
-                    this.mManager.getHandler().postDelayed(this.mQuitRunnable, 60000L);
-                } else {
-                    clearInstance();
-                    this.mManager.getHandler().removeCallbacks(this.mQuitRunnable);
-                    doDestroy();
+            try {
+                if (!((ConcurrentLinkedQueue) this.mPendingRequestQueue).isEmpty()) {
+                    requestPendingActions();
+                    return;
                 }
+                LocaleOverlayManager localeOverlayManager = this.mManager;
+                if (localeOverlayManager != null && (overlayHandler = localeOverlayManager.mHandler) != null) {
+                    if (localeOverlayManager.mIsCleanupInProgress) {
+                        overlayHandler.removeCallbacks(this.mQuitRunnable);
+                        this.mManager.mHandler.postDelayed(this.mQuitRunnable, 60000L);
+                    } else {
+                        sInstance = null;
+                        overlayHandler.removeCallbacks(this.mQuitRunnable);
+                        LocaleOverlayManager localeOverlayManager2 = this.mManager;
+                        if (localeOverlayManager2 != null && !localeOverlayManager2.mInProgress && ((ConcurrentLinkedQueue) this.mPendingRequestQueue).isEmpty()) {
+                            LocaleOverlayManager.OverlayHandler overlayHandler2 = this.mManager.mHandler;
+                            if (overlayHandler2 != null) {
+                                overlayHandler2.removeCallbacks(this.mQuitRunnable);
+                            }
+                            this.mManager.quit();
+                            this.mManager = null;
+                        }
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }

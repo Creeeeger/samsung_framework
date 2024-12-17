@@ -2,43 +2,34 @@ package com.android.server.accessibility.gestures;
 
 import android.accessibilityservice.AccessibilityGestureEvent;
 import android.content.Context;
-import android.os.Handler;
 import android.util.Slog;
 import android.view.MotionEvent;
+import com.android.server.accessibility.AccessibilityManagerService;
 import com.android.server.accessibility.gestures.GestureMatcher;
+import com.android.server.accessibility.gestures.TouchExplorer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class GestureManifold implements GestureMatcher.StateChangeListener {
-    public final Context mContext;
-    public List mEvents;
+public final class GestureManifold implements GestureMatcher.StateChangeListener {
+    public final List mEvents;
     public final List mGestures;
-    public final Handler mHandler;
-    public Listener mListener;
+    public final Listener mListener;
     public final List mMultiFingerGestures;
     public boolean mMultiFingerGesturesEnabled;
     public boolean mSendMotionEventsEnabled;
     public boolean mServiceHandlesDoubleTap;
-    public TouchState mState;
+    public final TouchState mState;
     public boolean mTwoFingerPassthroughEnabled;
     public final List mTwoFingerSwipes;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface Listener {
-        boolean onDoubleTap(MotionEvent motionEvent, MotionEvent motionEvent2, int i);
-
-        void onDoubleTapAndHold(MotionEvent motionEvent, MotionEvent motionEvent2, int i);
-
-        boolean onGestureCancelled(MotionEvent motionEvent, MotionEvent motionEvent2, int i);
-
-        boolean onGestureCompleted(AccessibilityGestureEvent accessibilityGestureEvent);
-
-        boolean onGestureStarted();
     }
 
-    public GestureManifold(Context context, Listener listener, TouchState touchState, Handler handler) {
+    public GestureManifold(Context context, Listener listener, TouchState touchState) {
         ArrayList arrayList = new ArrayList();
         this.mGestures = arrayList;
         this.mServiceHandlesDoubleTap = false;
@@ -48,15 +39,13 @@ public class GestureManifold implements GestureMatcher.StateChangeListener {
         ArrayList arrayList3 = new ArrayList();
         this.mTwoFingerSwipes = arrayList3;
         this.mEvents = new ArrayList();
-        this.mContext = context;
-        this.mHandler = handler;
         this.mListener = listener;
         this.mState = touchState;
         this.mMultiFingerGesturesEnabled = false;
         this.mTwoFingerPassthroughEnabled = false;
         arrayList.add(new MultiTap(context, 2, 17, this));
         arrayList.add(new MultiTapAndHold(context, 2, 18, this));
-        arrayList.add(new SecondFingerMultiTap(context, 2, 17, this));
+        arrayList.add(new SecondFingerMultiTap(context, this));
         arrayList.add(new Swipe(context, 1, 4, this));
         arrayList.add(new Swipe(context, 0, 3, this));
         arrayList.add(new Swipe(context, 2, 1, this));
@@ -105,154 +94,97 @@ public class GestureManifold implements GestureMatcher.StateChangeListener {
         arrayList2.add(new SemMultiFingerMultiTapAndHold(context, 2, 1, 1000, this));
     }
 
-    public boolean onMotionEvent(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (this.mState.isClear()) {
-            if (motionEvent.getActionMasked() != 0) {
-                return false;
-            }
-            clear();
-        }
-        if (this.mSendMotionEventsEnabled) {
-            this.mEvents.add(MotionEvent.obtainNoHistory(motionEvent2));
-        }
-        for (GestureMatcher gestureMatcher : this.mGestures) {
-            if (gestureMatcher.getState() != 3) {
-                boolean z = TouchExplorer.DEBUG;
-                if (z) {
-                    Slog.d("GestureManifold", gestureMatcher.toString());
-                }
-                gestureMatcher.onMotionEvent(motionEvent, motionEvent2, i);
-                if (z) {
-                    Slog.d("GestureManifold", gestureMatcher.toString());
-                }
-                if (gestureMatcher.getState() == 2) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public void clear() {
-        Iterator it = this.mGestures.iterator();
+    public final void clear() {
+        Iterator it = ((ArrayList) this.mGestures).iterator();
         while (it.hasNext()) {
             ((GestureMatcher) it.next()).clear();
         }
         if (this.mEvents != null) {
-            while (this.mEvents.size() > 0) {
-                ((MotionEvent) this.mEvents.remove(0)).recycle();
+            while (((ArrayList) this.mEvents).size() > 0) {
+                ((MotionEvent) ((ArrayList) this.mEvents).remove(0)).recycle();
             }
         }
     }
 
     @Override // com.android.server.accessibility.gestures.GestureMatcher.StateChangeListener
-    public void onStateChanged(int i, int i2, MotionEvent motionEvent, MotionEvent motionEvent2, int i3) {
-        if (i2 == 1 && !this.mState.isGestureDetecting()) {
-            if (i == 17 || i == 18) {
+    public final void onStateChanged(int i, int i2, int i3, MotionEvent motionEvent, MotionEvent motionEvent2) {
+        TouchState touchState = this.mState;
+        Listener listener = this.mListener;
+        if (i2 == 1 && touchState.mState != 5) {
+            if (i != 17 && i != 18) {
+                ((TouchExplorer) listener).onGestureStarted();
+                return;
+            } else {
                 if (this.mServiceHandlesDoubleTap) {
-                    this.mListener.onGestureStarted();
+                    ((TouchExplorer) listener).onGestureStarted();
                     return;
                 }
                 return;
             }
-            this.mListener.onGestureStarted();
-            return;
         }
         if (i2 == 2) {
-            onGestureCompleted(i, motionEvent, motionEvent2, i3);
+            if (i != 17) {
+                if (i != 18) {
+                    ((TouchExplorer) listener).onGestureCompleted(new AccessibilityGestureEvent(i, motionEvent.getDisplayId(), this.mEvents));
+                } else if (this.mServiceHandlesDoubleTap) {
+                    ((TouchExplorer) listener).onGestureCompleted(new AccessibilityGestureEvent(i, motionEvent.getDisplayId(), this.mEvents));
+                } else {
+                    ((TouchExplorer) listener).onDoubleTapAndHold(motionEvent, motionEvent2, i3);
+                }
+            } else if (this.mServiceHandlesDoubleTap) {
+                ((TouchExplorer) listener).onGestureCompleted(new AccessibilityGestureEvent(i, motionEvent.getDisplayId(), this.mEvents));
+            } else {
+                ((TouchExplorer) listener).onDoubleTap(motionEvent, motionEvent2, i3);
+            }
+            clear();
             return;
         }
-        if (i2 == 3 && this.mState.isGestureDetecting()) {
-            Iterator it = this.mGestures.iterator();
+        if (i2 == 3 && touchState.mState == 5) {
+            Iterator it = ((ArrayList) this.mGestures).iterator();
             while (it.hasNext()) {
-                if (((GestureMatcher) it.next()).getState() == 1) {
+                if (((GestureMatcher) it.next()).mState == 1) {
                     return;
                 }
             }
             if (TouchExplorer.DEBUG) {
                 Slog.d("GestureManifold", "Cancelling.");
             }
-            this.mListener.onGestureCancelled(motionEvent, motionEvent2, i3);
-        }
-    }
-
-    public final void onGestureCompleted(int i, MotionEvent motionEvent, MotionEvent motionEvent2, int i2) {
-        if (i != 17) {
-            if (i == 18) {
-                if (this.mServiceHandlesDoubleTap) {
-                    this.mListener.onGestureCompleted(new AccessibilityGestureEvent(i, motionEvent.getDisplayId(), this.mEvents));
-                } else {
-                    this.mListener.onDoubleTapAndHold(motionEvent, motionEvent2, i2);
+            TouchExplorer touchExplorer = (TouchExplorer) listener;
+            AccessibilityManagerService accessibilityManagerService = touchExplorer.mAms;
+            if (accessibilityManagerService.mTraceManager.isA11yTracingEnabledForTypes(12288L)) {
+                accessibilityManagerService.mTraceManager.logTrace("TouchExplorer.onGestureCancelled", 12288L, "event=" + motionEvent + ";rawEvent=" + motionEvent2 + ";policyFlags=" + i3);
+            }
+            TouchState touchState2 = touchExplorer.mState;
+            if (touchState2.mState == 5) {
+                boolean z = motionEvent.getActionMasked() == 1;
+                touchExplorer.mAms.onTouchInteractionEnd();
+                EventDispatcher eventDispatcher = touchExplorer.mDispatcher;
+                eventDispatcher.sendAccessibilityEvent(524288);
+                if (z) {
+                    eventDispatcher.sendAccessibilityEvent(2097152);
                 }
-            } else {
-                this.mListener.onGestureCompleted(new AccessibilityGestureEvent(i, motionEvent.getDisplayId(), this.mEvents));
+                TouchExplorer.ExitGestureDetectionModeDelayed exitGestureDetectionModeDelayed = touchExplorer.mExitGestureDetectionModeDelayed;
+                TouchExplorer.this.mHandler.removeCallbacks(exitGestureDetectionModeDelayed);
+                return;
             }
-        } else if (this.mServiceHandlesDoubleTap) {
-            this.mListener.onGestureCompleted(new AccessibilityGestureEvent(i, motionEvent.getDisplayId(), this.mEvents));
-        } else {
-            this.mListener.onDoubleTap(motionEvent, motionEvent2, i2);
-        }
-        clear();
-    }
-
-    public boolean isMultiFingerGesturesEnabled() {
-        return this.mMultiFingerGesturesEnabled;
-    }
-
-    public void setMultiFingerGesturesEnabled(boolean z) {
-        if (this.mMultiFingerGesturesEnabled != z) {
-            this.mMultiFingerGesturesEnabled = z;
-            if (z) {
-                this.mGestures.addAll(this.mMultiFingerGestures);
-            } else {
-                this.mGestures.removeAll(this.mMultiFingerGestures);
-            }
-        }
-    }
-
-    public boolean isTwoFingerPassthroughEnabled() {
-        return this.mTwoFingerPassthroughEnabled;
-    }
-
-    public void setTwoFingerPassthroughEnabled(boolean z) {
-        if (this.mTwoFingerPassthroughEnabled != z) {
-            this.mTwoFingerPassthroughEnabled = z;
-            if (!z) {
-                this.mMultiFingerGestures.addAll(this.mTwoFingerSwipes);
-                if (this.mMultiFingerGesturesEnabled) {
-                    this.mGestures.addAll(this.mTwoFingerSwipes);
+            if (!touchState2.isTouchExploring() || motionEvent.getActionMasked() != 2) {
+                GestureManifold gestureManifold = touchExplorer.mGestureDetector;
+                if (gestureManifold.mSendMotionEventsEnabled) {
+                    touchExplorer.dispatchGesture(new AccessibilityGestureEvent(0, touchExplorer.mDisplayId, gestureManifold.mEvents));
                     return;
                 }
                 return;
             }
-            this.mMultiFingerGestures.removeAll(this.mTwoFingerSwipes);
-            this.mGestures.removeAll(this.mTwoFingerSwipes);
+            int primaryPointerId = 1 << touchExplorer.mReceivedPointerTracker.getPrimaryPointerId();
+            MotionEvent motionEvent3 = touchState2.mLastReceivedEvent;
+            TouchExplorer.SendHoverExitDelayed sendHoverExitDelayed = touchExplorer.mSendHoverEnterAndMoveDelayed;
+            sendHoverExitDelayed.addEvent(motionEvent, motionEvent3);
+            if (sendHoverExitDelayed.isPending()) {
+                sendHoverExitDelayed.run();
+                sendHoverExitDelayed.cancel();
+            }
+            touchExplorer.mSendHoverExitDelayed.cancel();
+            touchExplorer.mDispatcher.sendMotionEvent(7, primaryPointerId, i3, motionEvent, motionEvent);
         }
-    }
-
-    public void setServiceHandlesDoubleTap(boolean z) {
-        this.mServiceHandlesDoubleTap = z;
-    }
-
-    public void setSendMotionEventsEnabled(boolean z) {
-        this.mSendMotionEventsEnabled = z;
-        if (z) {
-            return;
-        }
-        while (this.mEvents.size() > 0) {
-            ((MotionEvent) this.mEvents.remove(0)).recycle();
-        }
-    }
-
-    public boolean isSendMotionEventsEnabled() {
-        return this.mSendMotionEventsEnabled;
-    }
-
-    public List getMotionEvents() {
-        return this.mEvents;
-    }
-
-    public List getGestures() {
-        return this.mGestures;
     }
 }

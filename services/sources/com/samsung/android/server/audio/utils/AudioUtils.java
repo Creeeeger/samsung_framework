@@ -1,28 +1,20 @@
 package com.samsung.android.server.audio.utils;
 
 import android.app.ActivityManager;
+import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioSystem;
-import android.media.MediaRecorder;
 import android.os.Binder;
-import android.os.PowerManager;
 import android.os.RemoteException;
-import android.os.SystemClock;
-import android.os.SystemProperties;
-import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.Log;
-import com.samsung.android.audio.Rune;
 import com.samsung.android.multiwindow.MultiWindowManager;
-import com.samsung.android.server.audio.SamsungMusicHelper;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class AudioUtils {
     public static final Set DEVICE_OUT_WIRED_DEVICE_SET;
@@ -40,34 +32,22 @@ public abstract class AudioUtils {
         hashSet2.add(32768);
     }
 
-    public static boolean isUsingAudioForUid(int i) {
-        return "true".equalsIgnoreCase(AudioSystem.getParameters("l_multi_sound_active_track_uid=" + i));
-    }
-
-    public static boolean isUsingAudioUponDevice(int i) {
-        return "true".equalsIgnoreCase(AudioSystem.getParameters("l_multi_sound_active_track_device=" + i));
-    }
-
-    public static void setDeviceVolumeProperty(int i, int i2) {
-        String num = Integer.toString(i2);
-        if (i == 2) {
-            SystemProperties.set("persist.audio.sysvolume", num);
-            return;
-        }
-        if (isWiredDeviceType(i)) {
-            if (i == 4) {
-                SystemProperties.set("persist.audio.headsetsysvolume", num);
-            } else if (i == 8) {
-                SystemProperties.set("persist.audio.hphonesysvolume", num);
-            }
-        }
-    }
-
-    public static int getUidForPackage(Context context, String str) {
+    public static boolean checkRunningBackground(String str) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            return context.getPackageManager().getApplicationInfoAsUser(str, 0, getCurrentUserId()).uid;
-        } catch (PackageManager.NameNotFoundException unused) {
-            return 0;
+            List visibleTasks = new MultiWindowManager().getVisibleTasks();
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            int size = visibleTasks.size();
+            for (int i = 0; i < size; i++) {
+                if (str.equals(((ActivityManager.RunningTaskInfo) visibleTasks.get(i)).topActivity.getPackageName())) {
+                    Log.d("AS.AudioUtils", "checkRunningBackground : visible Tasks =".concat(str));
+                    return false;
+                }
+            }
+            return true;
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
         }
     }
 
@@ -86,83 +66,134 @@ public abstract class AudioUtils {
         }
     }
 
-    public static boolean isSkipRestoreDevice(int i) {
-        return SKIP_RESTORE_DEVICE_SET.contains(Integer.valueOf(i));
+    public static int getUidForPackage(Context context, String str) {
+        try {
+            return context.getPackageManager().getApplicationInfoAsUser(str, 0, getCurrentUserId()).uid;
+        } catch (PackageManager.NameNotFoundException unused) {
+            return 0;
+        }
+    }
+
+    public static boolean isUsingAudioForUid(int i) {
+        return "true".equalsIgnoreCase(AudioSystem.getParameters("l_multi_sound_active_track_uid=" + i));
     }
 
     public static boolean isWiredDeviceType(int i) {
-        return DEVICE_OUT_WIRED_DEVICE_SET.contains(Integer.valueOf(i));
+        return ((HashSet) DEVICE_OUT_WIRED_DEVICE_SET).contains(Integer.valueOf(i));
     }
 
-    public static int getWiredDeviceIdFromSysFile() {
-        int i = -1;
-        try {
-            FileReader fileReader = new FileReader("/sys/class/switch/h2w/state", StandardCharsets.UTF_8);
-            try {
-                if (fileReader.ready()) {
-                    char[] cArr = new char[1024];
-                    i = Integer.parseInt(new String(cArr, 0, fileReader.read(cArr, 0, 1024)).trim());
-                }
-                fileReader.close();
-            } finally {
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return i;
-    }
-
-    public static void sendBroadcastToUser(Context context, Intent intent, UserHandle userHandle, String str) {
+    public static void setSettingsInt(ContentResolver contentResolver, String str, int i) {
         long clearCallingIdentity = Binder.clearCallingIdentity();
         try {
-            context.sendBroadcastAsUser(intent, userHandle, str);
+            Settings.System.putInt(contentResolver, str, i);
         } finally {
             Binder.restoreCallingIdentity(clearCallingIdentity);
         }
     }
 
-    public static void wakeUpDeviceByWiredHeadset(Context context, int i) {
-        if (Rune.SEC_AUDIO_SCREEN_OFF_MUSIC && SamsungMusicHelper.isScreenOffMusicEnabled(context)) {
-            Log.i("AS.AudioUtils", "Screen on is handled by samsung music");
-        } else if (isWiredDeviceType(i)) {
-            ((PowerManager) context.getSystemService("power")).semWakeUp(SystemClock.uptimeMillis(), 3, "WAKE_REASON_PLUGGED_IN");
-        }
-    }
-
-    public static List getVisibleTasks() {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return new MultiWindowManager().getVisibleTasks();
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public static boolean checkRunningBackground(String str) {
-        List visibleTasks = getVisibleTasks();
-        int size = visibleTasks.size();
-        for (int i = 0; i < size; i++) {
-            if (str.equals(((ActivityManager.RunningTaskInfo) visibleTasks.get(i)).topActivity.getPackageName())) {
-                Log.d("AS.AudioUtils", "checkRunningBackground : visible Tasks =" + str);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean isRecordActive(int i) {
-        if (i == -1) {
-            return "true".equalsIgnoreCase(AudioSystem.getParameters("l_record_active_enable"));
-        }
-        if (!MediaRecorder.isValidAudioSource(i) && !MediaRecorder.isValidAudioSourceForSem(i)) {
-            Log.e("AS.AudioUtils", "Invalid AudioSource : " + i);
-            return false;
-        }
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            return AudioSystem.isSourceActive(i);
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
+    /* JADX WARN: Removed duplicated region for block: B:27:0x0072 A[Catch: Exception -> 0x0076, TRY_ENTER, TRY_LEAVE, TryCatch #2 {Exception -> 0x0076, blocks: (B:23:0x004c, B:27:0x0072, B:32:0x0082, B:37:0x007f, B:39:0x0052, B:42:0x0059, B:25:0x006a, B:34:0x007a), top: B:22:0x004c, inners: #0, #3 }] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void wakeUpDeviceByWiredHeadset(android.content.Context r10, int r11) {
+        /*
+            boolean r0 = com.samsung.android.audio.Rune.SEC_AUDIO_SCREEN_OFF_MUSIC
+            if (r0 == 0) goto L90
+            java.lang.String r0 = "content://"
+            android.content.ContentResolver r1 = r10.getContentResolver()
+            android.content.pm.PackageManager r2 = r10.getPackageManager()
+            java.lang.String r3 = "com.sec.android.app.music.shared"
+            r7 = 0
+            android.content.pm.ProviderInfo r2 = r2.resolveContentProvider(r3, r7)
+            r8 = 1
+            if (r2 == 0) goto L1a
+            r2 = r8
+            goto L1b
+        L1a:
+            r2 = r7
+        L1b:
+            android.content.pm.PackageManager r4 = r10.getPackageManager()
+            java.lang.String r5 = "com.samsung.android.app.music.chn.setting"
+            android.content.pm.ProviderInfo r4 = r4.resolveContentProvider(r5, r7)
+            if (r4 == 0) goto L29
+            r4 = r8
+            goto L2a
+        L29:
+            r4 = r7
+        L2a:
+            java.lang.String r9 = "AS.SamsungMusicHelper"
+            if (r2 != 0) goto L36
+            if (r4 != 0) goto L36
+            java.lang.String r0 = "ScreenOffMusicProvider does not exist"
+            android.util.Log.i(r9, r0)
+            goto L86
+        L36:
+            if (r4 == 0) goto L39
+            r3 = r5
+        L39:
+            java.lang.String r0 = r0.concat(r3)     // Catch: java.lang.NullPointerException -> L86
+            android.net.Uri r0 = android.net.Uri.parse(r0)     // Catch: java.lang.NullPointerException -> L86
+            java.lang.String r2 = "setting/ready_screen_off_music"
+            android.net.Uri r2 = android.net.Uri.withAppendedPath(r0, r2)     // Catch: java.lang.NullPointerException -> L86
+            r3 = 0
+            r4 = 0
+            r5 = 0
+            r6 = 0
+            android.database.Cursor r0 = r1.query(r2, r3, r4, r5, r6)     // Catch: java.lang.Exception -> L76
+            if (r0 == 0) goto L6a
+            int r1 = r0.getCount()     // Catch: java.lang.Throwable -> L68
+            if (r1 > 0) goto L59
+            goto L6a
+        L59:
+            r0.moveToFirst()     // Catch: java.lang.Throwable -> L68
+            java.lang.String r1 = r0.getString(r8)     // Catch: java.lang.Throwable -> L68
+            java.lang.String r2 = "true"
+            boolean r7 = r2.equals(r1)     // Catch: java.lang.Throwable -> L68
+            goto L70
+        L68:
+            r1 = move-exception
+            goto L78
+        L6a:
+            java.lang.String r1 = "screen off music query failed"
+            android.util.Log.e(r9, r1)     // Catch: java.lang.Throwable -> L68
+        L70:
+            if (r0 == 0) goto L86
+            r0.close()     // Catch: java.lang.Exception -> L76
+            goto L86
+        L76:
+            r0 = move-exception
+            goto L83
+        L78:
+            if (r0 == 0) goto L82
+            r0.close()     // Catch: java.lang.Throwable -> L7e
+            goto L82
+        L7e:
+            r0 = move-exception
+            r1.addSuppressed(r0)     // Catch: java.lang.Exception -> L76
+        L82:
+            throw r1     // Catch: java.lang.Exception -> L76
+        L83:
+            r0.printStackTrace()
+        L86:
+            if (r7 == 0) goto L90
+            java.lang.String r10 = "AS.AudioUtils"
+            java.lang.String r11 = "Screen on is handled by samsung music"
+            android.util.Log.i(r10, r11)
+            return
+        L90:
+            boolean r11 = isWiredDeviceType(r11)
+            if (r11 == 0) goto La9
+            java.lang.String r11 = "power"
+            java.lang.Object r10 = r10.getSystemService(r11)
+            android.os.PowerManager r10 = (android.os.PowerManager) r10
+            long r0 = android.os.SystemClock.uptimeMillis()
+            r11 = 3
+            java.lang.String r2 = "WAKE_REASON_PLUGGED_IN"
+            r10.semWakeUp(r0, r11, r2)
+        La9:
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.samsung.android.server.audio.utils.AudioUtils.wakeUpDeviceByWiredHeadset(android.content.Context, int):void");
     }
 }

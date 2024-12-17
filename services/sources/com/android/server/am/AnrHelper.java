@@ -1,29 +1,27 @@
 package com.android.server.am;
 
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.SystemClock;
-import android.os.Trace;
-import android.os.UserHandle;
 import android.util.ArraySet;
-import android.util.Slog;
 import com.android.internal.os.TimeoutRecord;
 import com.android.server.wm.WindowProcessController;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class AnrHelper {
+public final class AnrHelper {
+    public static final long CONSECUTIVE_ANR_TIME_MS;
+    public static final long EXPIRED_REPORT_TIME_MS = TimeUnit.SECONDS.toMillis(10);
+    public static final long SELF_ONLY_AFTER_BOOT_MS;
+    public static final AnrHelper$$ExternalSyntheticLambda0 sDefaultThreadFactory;
+    public static final AnrHelper$$ExternalSyntheticLambda0 sMainProcessDumpThreadFactory;
     public final ArrayList mAnrRecords;
     public final ExecutorService mAuxiliaryTaskExecutor;
     public final ExecutorService mEarlyDumpExecutor;
@@ -32,236 +30,86 @@ public class AnrHelper {
     public final AtomicBoolean mRunning;
     public final ActivityManagerService mService;
     public final Set mTempDumpedPids;
-    public static final long EXPIRED_REPORT_TIME_MS = TimeUnit.SECONDS.toMillis(10);
-    public static final long CONSECUTIVE_ANR_TIME_MS = TimeUnit.MINUTES.toMillis(2);
-    public static final ThreadFactory sDefaultThreadFactory = new ThreadFactory() { // from class: com.android.server.am.AnrHelper$$ExternalSyntheticLambda1
-        @Override // java.util.concurrent.ThreadFactory
-        public final Thread newThread(Runnable runnable) {
-            Thread lambda$static$0;
-            lambda$static$0 = AnrHelper.lambda$static$0(runnable);
-            return lambda$static$0;
-        }
-    };
-    public static final ThreadFactory sMainProcessDumpThreadFactory = new ThreadFactory() { // from class: com.android.server.am.AnrHelper$$ExternalSyntheticLambda2
-        @Override // java.util.concurrent.ThreadFactory
-        public final Thread newThread(Runnable runnable) {
-            Thread lambda$static$1;
-            lambda$static$1 = AnrHelper.lambda$static$1(runnable);
-            return lambda$static$1;
-        }
-    };
 
-    public static /* synthetic */ Thread lambda$static$0(Runnable runnable) {
-        return new Thread(runnable, "AnrAuxiliaryTaskExecutor");
-    }
-
-    public static /* synthetic */ Thread lambda$static$1(Runnable runnable) {
-        return new Thread(runnable, "AnrMainProcessDumpThread");
-    }
-
-    public AnrHelper(ActivityManagerService activityManagerService) {
-        this(activityManagerService, makeExpiringThreadPoolWithSize(1, sDefaultThreadFactory), makeExpiringThreadPoolWithSize(2, sMainProcessDumpThreadFactory));
-    }
-
-    public AnrHelper(ActivityManagerService activityManagerService, ExecutorService executorService, ExecutorService executorService2) {
-        this.mAnrRecords = new ArrayList();
-        this.mTempDumpedPids = Collections.synchronizedSet(new ArraySet());
-        this.mRunning = new AtomicBoolean(false);
-        this.mLastAnrTimeMs = 0L;
-        this.mProcessingPid = -1;
-        this.mService = activityManagerService;
-        this.mAuxiliaryTaskExecutor = executorService;
-        this.mEarlyDumpExecutor = executorService2;
-    }
-
-    public void appNotResponding(ProcessRecord processRecord, TimeoutRecord timeoutRecord) {
-        appNotResponding(processRecord, null, null, null, null, false, timeoutRecord, false);
-    }
-
-    public void appNotResponding(final ProcessRecord processRecord, String str, final ApplicationInfo applicationInfo, String str2, WindowProcessController windowProcessController, boolean z, final TimeoutRecord timeoutRecord, boolean z2) {
-        TimeoutRecord timeoutRecord2;
-        try {
-            timeoutRecord.mLatencyTracker.appNotRespondingStarted();
-            final int i = processRecord.mPid;
-            timeoutRecord.mLatencyTracker.waitingOnAnrRecordLockStarted();
-            synchronized (this.mAnrRecords) {
-                try {
-                    timeoutRecord.mLatencyTracker.waitingOnAnrRecordLockEnded();
-                    if (i == 0) {
-                        Slog.i("ActivityManager", "Skip zero pid ANR, process=" + processRecord.processName);
-                    } else if (this.mProcessingPid == i) {
-                        Slog.i("ActivityManager", "Skip duplicated ANR, pid=" + i + " " + timeoutRecord.mReason);
-                    } else if (this.mTempDumpedPids.add(Integer.valueOf(i))) {
-                        for (int size = this.mAnrRecords.size() - 1; size >= 0; size--) {
-                            if (((AnrRecord) this.mAnrRecords.get(size)).mPid == i) {
-                                Slog.i("ActivityManager", "Skip queued ANR, pid=" + i + " " + timeoutRecord.mReason);
-                            }
-                        }
-                        timeoutRecord.mLatencyTracker.earlyDumpRequestSubmittedWithSize(this.mTempDumpedPids.size());
-                        Future submit = this.mEarlyDumpExecutor.submit(new Callable() { // from class: com.android.server.am.AnrHelper$$ExternalSyntheticLambda0
-                            @Override // java.util.concurrent.Callable
-                            public final Object call() {
-                                File lambda$appNotResponding$2;
-                                lambda$appNotResponding$2 = AnrHelper.this.lambda$appNotResponding$2(i, timeoutRecord);
-                                return lambda$appNotResponding$2;
-                            }
-                        });
-                        timeoutRecord.mLatencyTracker.anrRecordPlacingOnQueueWithSize(this.mAnrRecords.size());
-                        try {
-                            this.mAnrRecords.add(new AnrRecord(processRecord, str, applicationInfo, str2, windowProcessController, z, timeoutRecord, z2, submit));
-                            if (applicationInfo != null) {
-                                try {
-                                    if (processRecord.uid >= 10000) {
-                                        new Thread("AppAnrHistoryBroadcastThread") { // from class: com.android.server.am.AnrHelper.1
-                                            @Override // java.lang.Thread, java.lang.Runnable
-                                            public void run() {
-                                                Slog.w("ActivityManager", "anr : " + applicationInfo.packageName + "," + applicationInfo.uid);
-                                                Intent intent = new Intent("com.sec.android.sdhms.action.CRASH_ANR");
-                                                intent.setPackage("com.sec.android.sdhms");
-                                                intent.putExtra("pkgName", applicationInfo.packageName);
-                                                intent.putExtra("userId", processRecord.userId);
-                                                intent.putExtra("uid", processRecord.uid);
-                                                intent.putExtra("type", "anr");
-                                                AnrHelper.this.mService.mContext.sendBroadcastAsUser(intent, UserHandle.ALL, "com.samsung.permission.WRITE_SDHMS_DATA");
-                                            }
-                                        }.start();
-                                        startAnrConsumerIfNeeded();
-                                        timeoutRecord.mLatencyTracker.appNotRespondingEnded();
-                                        return;
-                                    }
-                                } catch (Throwable th) {
-                                    th = th;
-                                    timeoutRecord2 = timeoutRecord;
-                                    timeoutRecord2.mLatencyTracker.appNotRespondingEnded();
-                                    throw th;
-                                }
-                            }
-                            startAnrConsumerIfNeeded();
-                            timeoutRecord.mLatencyTracker.appNotRespondingEnded();
-                            return;
-                        } catch (Throwable th2) {
-                            th = th2;
-                            timeoutRecord2 = timeoutRecord;
-                            while (true) {
-                                try {
-                                    try {
-                                        break;
-                                    } catch (Throwable th3) {
-                                        th = th3;
-                                        timeoutRecord2.mLatencyTracker.appNotRespondingEnded();
-                                        throw th;
-                                    }
-                                } catch (Throwable th4) {
-                                    th = th4;
-                                }
-                            }
-                            throw th;
-                        }
-                    } else {
-                        Slog.i("ActivityManager", "Skip ANR being predumped, pid=" + i + " " + timeoutRecord.mReason);
-                    }
-                    timeoutRecord.mLatencyTracker.appNotRespondingEnded();
-                } catch (Throwable th5) {
-                    th = th5;
-                    timeoutRecord2 = timeoutRecord;
-                }
-            }
-        } catch (Throwable th6) {
-            th = th6;
-            timeoutRecord2 = timeoutRecord;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ File lambda$appNotResponding$2(int i, TimeoutRecord timeoutRecord) {
-        File dumpStackTracesTempFile = StackTracesDumpHelper.dumpStackTracesTempFile(i, timeoutRecord.mLatencyTracker);
-        this.mTempDumpedPids.remove(Integer.valueOf(i));
-        return dumpStackTracesTempFile;
-    }
-
-    public final void startAnrConsumerIfNeeded() {
-        if (this.mRunning.compareAndSet(false, true)) {
-            new AnrConsumerThread().start();
-        }
-    }
-
-    public static ThreadPoolExecutor makeExpiringThreadPoolWithSize(int i, ThreadFactory threadFactory) {
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(i, i, 10L, TimeUnit.SECONDS, new LinkedBlockingQueue(), threadFactory);
-        threadPoolExecutor.allowCoreThreadTimeOut(true);
-        return threadPoolExecutor;
-    }
-
-    /* loaded from: classes.dex */
-    public class AnrConsumerThread extends Thread {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AnrConsumerThread extends Thread {
         public AnrConsumerThread() {
             super("AnrConsumer");
         }
 
-        public final AnrRecord next() {
-            synchronized (AnrHelper.this.mAnrRecords) {
-                if (AnrHelper.this.mAnrRecords.isEmpty()) {
-                    return null;
-                }
-                AnrRecord anrRecord = (AnrRecord) AnrHelper.this.mAnrRecords.remove(0);
-                AnrHelper.this.mProcessingPid = anrRecord.mPid;
-                anrRecord.mTimeoutRecord.mLatencyTracker.anrRecordsQueueSizeWhenPopped(AnrHelper.this.mAnrRecords.size());
-                return anrRecord;
-            }
-        }
-
+        /* JADX WARN: Code restructure failed: missing block: B:21:0x0091, code lost:
+        
+            r4 = android.os.SystemClock.uptimeMillis();
+            r6 = r4 - r1.mTimestamp;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:22:0x009d, code lost:
+        
+            if (r6 > com.android.server.am.AnrHelper.EXPIRED_REPORT_TIME_MS) goto L30;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:24:0x00a3, code lost:
+        
+            if (r4 >= com.android.server.am.AnrHelper.SELF_ONLY_AFTER_BOOT_MS) goto L63;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:26:0x00a6, code lost:
+        
+            r1.mTimeoutRecord.mLatencyTracker.anrProcessingStarted();
+            r1.mApp.mErrorState.appNotResponding(r1.mActivityShortComponentName, r1.mAppInfo, r1.mParentShortComponentName, r1.mParentProcess, r1.mAboveSystem, r1.mTimeoutRecord, r1.this$0.mAuxiliaryTaskExecutor, r3, r1.mIsContinuousAnr, r1.mFirstPidFilePromise);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:27:0x00d0, code lost:
+        
+            r1.mTimeoutRecord.mLatencyTracker.anrProcessingEnded();
+            r8 = android.os.SystemClock.uptimeMillis();
+            r2 = new java.lang.StringBuilder("Completed ANR of ");
+            r2.append(r1.mApp.processName);
+            r2.append(" in ");
+            r2.append(r8 - r4);
+            r2.append("ms, latency ");
+            r2.append(r6);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:28:0x00fd, code lost:
+        
+            if (r3 == false) goto L35;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:29:0x00ff, code lost:
+        
+            r1 = "ms (expired, only dump ANR app)";
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:32:0x0103, code lost:
+        
+            r1 = "ms";
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:35:0x010b, code lost:
+        
+            r0 = move-exception;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:36:0x010c, code lost:
+        
+            r1.mTimeoutRecord.mLatencyTracker.anrProcessingEnded();
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:37:0x0113, code lost:
+        
+            throw r0;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:39:0x00a5, code lost:
+        
+            r3 = true;
+         */
         @Override // java.lang.Thread, java.lang.Runnable
-        public void run() {
-            while (true) {
-                AnrRecord next = next();
-                if (next == null) {
-                    break;
-                }
-                AnrHelper.this.scheduleBinderHeavyHitterAutoSamplerIfNecessary();
-                int i = next.mApp.mPid;
-                if (i != next.mPid) {
-                    Slog.i("ActivityManager", "Skip ANR with mismatched pid=" + next.mPid + ", current pid=" + i);
-                } else {
-                    long uptimeMillis = SystemClock.uptimeMillis();
-                    long j = uptimeMillis - next.mTimestamp;
-                    boolean z = j > AnrHelper.EXPIRED_REPORT_TIME_MS;
-                    next.appNotResponding(z);
-                    long uptimeMillis2 = SystemClock.uptimeMillis();
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Completed ANR of ");
-                    sb.append(next.mApp.processName);
-                    sb.append(" in ");
-                    sb.append(uptimeMillis2 - uptimeMillis);
-                    sb.append("ms, latency ");
-                    sb.append(j);
-                    sb.append(z ? "ms (expired, only dump ANR app)" : "ms");
-                    Slog.d("ActivityManager", sb.toString());
-                }
-            }
-            AnrHelper.this.mRunning.set(false);
-            synchronized (AnrHelper.this.mAnrRecords) {
-                AnrHelper.this.mProcessingPid = -1;
-                if (!AnrHelper.this.mAnrRecords.isEmpty()) {
-                    AnrHelper.this.startAnrConsumerIfNeeded();
-                }
-            }
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void run() {
+            /*
+                Method dump skipped, instructions count: 332
+                To view this dump change 'Code comments level' option to 'DEBUG'
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.AnrHelper.AnrConsumerThread.run():void");
         }
     }
 
-    public final void scheduleBinderHeavyHitterAutoSamplerIfNecessary() {
-        try {
-            Trace.traceBegin(64L, "scheduleBinderHeavyHitterAutoSamplerIfNecessary()");
-            long uptimeMillis = SystemClock.uptimeMillis();
-            if (this.mLastAnrTimeMs + CONSECUTIVE_ANR_TIME_MS > uptimeMillis) {
-                this.mService.scheduleBinderHeavyHitterAutoSampler();
-            }
-            this.mLastAnrTimeMs = uptimeMillis;
-        } finally {
-            Trace.traceEnd(64L);
-        }
-    }
-
-    /* loaded from: classes.dex */
-    public class AnrRecord {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AnrRecord {
         public final boolean mAboveSystem;
         public final String mActivityShortComponentName;
         public final ProcessRecord mApp;
@@ -286,14 +134,103 @@ public class AnrHelper {
             this.mIsContinuousAnr = z2;
             this.mFirstPidFilePromise = future;
         }
+    }
 
-        public void appNotResponding(boolean z) {
-            try {
-                this.mTimeoutRecord.mLatencyTracker.anrProcessingStarted();
-                this.mApp.mErrorState.appNotResponding(this.mActivityShortComponentName, this.mAppInfo, this.mParentShortComponentName, this.mParentProcess, this.mAboveSystem, this.mTimeoutRecord, AnrHelper.this.mAuxiliaryTaskExecutor, z, this.mIsContinuousAnr, this.mFirstPidFilePromise);
-            } finally {
-                this.mTimeoutRecord.mLatencyTracker.anrProcessingEnded();
+    /* JADX WARN: Type inference failed for: r0v3, types: [com.android.server.am.AnrHelper$$ExternalSyntheticLambda0] */
+    /* JADX WARN: Type inference failed for: r0v4, types: [com.android.server.am.AnrHelper$$ExternalSyntheticLambda0] */
+    static {
+        TimeUnit timeUnit = TimeUnit.MINUTES;
+        CONSECUTIVE_ANR_TIME_MS = timeUnit.toMillis(2L);
+        SELF_ONLY_AFTER_BOOT_MS = timeUnit.toMillis(10L);
+        final int i = 0;
+        sDefaultThreadFactory = new ThreadFactory() { // from class: com.android.server.am.AnrHelper$$ExternalSyntheticLambda0
+            @Override // java.util.concurrent.ThreadFactory
+            public final Thread newThread(Runnable runnable) {
+                switch (i) {
+                    case 0:
+                        return new Thread(runnable, "AnrAuxiliaryTaskExecutor");
+                    default:
+                        return new Thread(runnable, "AnrMainProcessDumpThread");
+                }
             }
-        }
+        };
+        final int i2 = 1;
+        sMainProcessDumpThreadFactory = new ThreadFactory() { // from class: com.android.server.am.AnrHelper$$ExternalSyntheticLambda0
+            @Override // java.util.concurrent.ThreadFactory
+            public final Thread newThread(Runnable runnable) {
+                switch (i2) {
+                    case 0:
+                        return new Thread(runnable, "AnrAuxiliaryTaskExecutor");
+                    default:
+                        return new Thread(runnable, "AnrMainProcessDumpThread");
+                }
+            }
+        };
+    }
+
+    /* JADX WARN: Illegal instructions before constructor call */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public AnrHelper(com.android.server.am.ActivityManagerService r13) {
+        /*
+            r12 = this;
+            java.util.concurrent.ThreadPoolExecutor r8 = new java.util.concurrent.ThreadPoolExecutor
+            java.util.concurrent.TimeUnit r9 = java.util.concurrent.TimeUnit.SECONDS
+            java.util.concurrent.LinkedBlockingQueue r6 = new java.util.concurrent.LinkedBlockingQueue
+            r6.<init>()
+            r3 = 10
+            r2 = 1
+            com.android.server.am.AnrHelper$$ExternalSyntheticLambda0 r7 = com.android.server.am.AnrHelper.sDefaultThreadFactory
+            r0 = r8
+            r1 = r2
+            r5 = r9
+            r0.<init>(r1, r2, r3, r5, r6, r7)
+            r10 = 1
+            r8.allowCoreThreadTimeOut(r10)
+            java.util.concurrent.ThreadPoolExecutor r11 = new java.util.concurrent.ThreadPoolExecutor
+            java.util.concurrent.LinkedBlockingQueue r6 = new java.util.concurrent.LinkedBlockingQueue
+            r6.<init>()
+            r3 = 10
+            r2 = 2
+            com.android.server.am.AnrHelper$$ExternalSyntheticLambda0 r7 = com.android.server.am.AnrHelper.sMainProcessDumpThreadFactory
+            r0 = r11
+            r1 = r2
+            r5 = r9
+            r0.<init>(r1, r2, r3, r5, r6, r7)
+            r11.allowCoreThreadTimeOut(r10)
+            r12.<init>(r13, r8, r11)
+            return
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.AnrHelper.<init>(com.android.server.am.ActivityManagerService):void");
+    }
+
+    public AnrHelper(ActivityManagerService activityManagerService, ExecutorService executorService, ExecutorService executorService2) {
+        this.mAnrRecords = new ArrayList();
+        this.mTempDumpedPids = Collections.synchronizedSet(new ArraySet());
+        this.mRunning = new AtomicBoolean(false);
+        this.mLastAnrTimeMs = 0L;
+        this.mProcessingPid = -1;
+        this.mService = activityManagerService;
+        this.mAuxiliaryTaskExecutor = executorService;
+        this.mEarlyDumpExecutor = executorService2;
+    }
+
+    public final void appNotResponding(ProcessRecord processRecord, TimeoutRecord timeoutRecord) {
+        appNotResponding(processRecord, null, null, null, null, false, timeoutRecord, false);
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:43:0x012e A[Catch: all -> 0x011e, TRY_LEAVE, TryCatch #3 {all -> 0x011e, blocks: (B:52:0x010d, B:54:0x0113, B:41:0x0124, B:43:0x012e), top: B:51:0x010d }] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void appNotResponding(final com.android.server.am.ProcessRecord r18, java.lang.String r19, final android.content.pm.ApplicationInfo r20, java.lang.String r21, com.android.server.wm.WindowProcessController r22, boolean r23, final com.android.internal.os.TimeoutRecord r24, boolean r25) {
+        /*
+            Method dump skipped, instructions count: 335
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.am.AnrHelper.appNotResponding(com.android.server.am.ProcessRecord, java.lang.String, android.content.pm.ApplicationInfo, java.lang.String, com.android.server.wm.WindowProcessController, boolean, com.android.internal.os.TimeoutRecord, boolean):void");
     }
 }

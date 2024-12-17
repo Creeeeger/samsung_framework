@@ -1,5 +1,6 @@
 package com.android.internal.util.jobs;
 
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.os.Process;
 import android.util.Slog;
 import java.util.concurrent.CountDownLatch;
@@ -12,36 +13,41 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class ConcurrentUtils {
     public static final Executor DIRECT_EXECUTOR = new DirectExecutor();
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DirectExecutor implements Executor {
+        @Override // java.util.concurrent.Executor
+        public final void execute(Runnable runnable) {
+            runnable.run();
+        }
+
+        public final String toString() {
+            return "DIRECT_EXECUTOR";
+        }
+    }
+
+    private ConcurrentUtils() {
+    }
 
     public static ExecutorService newFixedThreadPool(int i, final String str, final int i2) {
         return Executors.newFixedThreadPool(i, new ThreadFactory() { // from class: com.android.internal.util.jobs.ConcurrentUtils.1
             public final AtomicInteger threadNum = new AtomicInteger(0);
 
             @Override // java.util.concurrent.ThreadFactory
-            public Thread newThread(final Runnable runnable) {
+            public final Thread newThread(final Runnable runnable) {
                 return new Thread(str + this.threadNum.incrementAndGet()) { // from class: com.android.internal.util.jobs.ConcurrentUtils.1.1
                     @Override // java.lang.Thread, java.lang.Runnable
-                    public void run() {
+                    public final void run() {
                         Process.setThreadPriority(i2);
                         runnable.run();
                     }
                 };
             }
         });
-    }
-
-    public static Object waitForFutureNoInterrupt(Future future, String str) {
-        try {
-            return future.get();
-        } catch (InterruptedException unused) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException(str + " interrupted");
-        } catch (ExecutionException e) {
-            throw new RuntimeException(str + " failed", e);
-        }
     }
 
     public static void waitForCountDownNoInterrupt(CountDownLatch countDownLatch, long j, String str) {
@@ -52,7 +58,18 @@ public class ConcurrentUtils {
             throw new IllegalStateException(str + " timed out.");
         } catch (InterruptedException unused) {
             Thread.currentThread().interrupt();
-            throw new IllegalStateException(str + " interrupted.");
+            throw new IllegalStateException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, " interrupted."));
+        }
+    }
+
+    public static Object waitForFutureNoInterrupt(Future future, String str) {
+        try {
+            return future.get();
+        } catch (InterruptedException unused) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, " interrupted"));
+        } catch (ExecutionException e) {
+            throw new RuntimeException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, " failed"), e);
         }
     }
 
@@ -67,20 +84,5 @@ public class ConcurrentUtils {
             return;
         }
         Slog.wtf(str, "Lock must be held");
-    }
-
-    /* loaded from: classes.dex */
-    public class DirectExecutor implements Executor {
-        public DirectExecutor() {
-        }
-
-        public String toString() {
-            return "DIRECT_EXECUTOR";
-        }
-
-        @Override // java.util.concurrent.Executor
-        public void execute(Runnable runnable) {
-            runnable.run();
-        }
     }
 }

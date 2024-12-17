@@ -10,6 +10,7 @@ import android.util.Log;
 import com.android.internal.util.FrameworkStatsLog;
 import java.util.function.Consumer;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public abstract class RotationHelper {
     public static Context sContext;
@@ -23,32 +24,20 @@ public abstract class RotationHelper {
     public static final Object sRotationLock = new Object();
     public static final Object sFoldStateLock = new Object();
 
-    public static void init(Context context, Handler handler, Consumer consumer, Consumer consumer2) {
-        if (context == null) {
-            throw new IllegalArgumentException("Invalid null context");
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class AudioDisplayListener implements DisplayManager.DisplayListener {
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public final void onDisplayAdded(int i) {
         }
-        sContext = context;
-        sHandler = handler;
-        sDisplayListener = new AudioDisplayListener();
-        sRotationCallback = consumer;
-        sFoldStateCallback = consumer2;
-        enable();
-    }
 
-    public static void enable() {
-        ((DisplayManager) sContext.getSystemService("display")).registerDisplayListener(sDisplayListener, sHandler);
-        updateOrientation();
-        sFoldStateListener = new DeviceStateManager.FoldStateListener(sContext, new Consumer() { // from class: com.android.server.audio.RotationHelper$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                RotationHelper.lambda$enable$0((Boolean) obj);
-            }
-        });
-        ((DeviceStateManager) sContext.getSystemService(DeviceStateManager.class)).registerCallback(new HandlerExecutor(sHandler), sFoldStateListener);
-    }
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public final void onDisplayChanged(int i) {
+            RotationHelper.updateOrientation();
+        }
 
-    public static /* synthetic */ void lambda$enable$0(Boolean bool) {
-        updateFoldState(bool.booleanValue());
+        @Override // android.hardware.display.DisplayManager.DisplayListener
+        public final void onDisplayRemoved(int i) {
+        }
     }
 
     public static void disable() {
@@ -56,45 +45,10 @@ public abstract class RotationHelper {
         ((DeviceStateManager) sContext.getSystemService(DeviceStateManager.class)).unregisterCallback(sFoldStateListener);
     }
 
-    public static void updateOrientation() {
-        int i = DisplayManagerGlobal.getInstance().getDisplayInfo(0).rotation;
-        synchronized (sRotationLock) {
-            Integer num = sRotation;
-            if (num == null || num.intValue() != i) {
-                Integer valueOf = Integer.valueOf(i);
-                sRotation = valueOf;
-                publishRotation(valueOf.intValue());
-            }
-        }
-    }
-
-    public static void publishRotation(int i) {
-        int i2;
-        if (i == 0) {
-            i2 = 0;
-        } else if (i == 1) {
-            i2 = 90;
-        } else if (i == 2) {
-            i2 = 180;
-        } else if (i != 3) {
-            Log.e("AudioService.RotationHelper", "Unknown device rotation");
-            i2 = -1;
-        } else {
-            i2 = FrameworkStatsLog.CAMERA_SHOT_LATENCY_REPORTED__MODE__CONTROL_DS_MODE_AI_CLEAR_ZOOM_MERGE_ZSL_ANCHOR_6;
-        }
-        if (i2 != -1) {
-            sRotationCallback.accept(Integer.valueOf(i2));
-        }
-    }
-
-    public static void updateFoldState(boolean z) {
-        synchronized (sFoldStateLock) {
-            Boolean bool = sFoldState;
-            if (bool == null || bool.booleanValue() != z) {
-                sFoldState = Boolean.valueOf(z);
-                sFoldStateCallback.accept(Boolean.valueOf(z));
-            }
-        }
+    public static void enable() {
+        ((DisplayManager) sContext.getSystemService("display")).registerDisplayListener(sDisplayListener, sHandler);
+        updateOrientation();
+        ((DeviceStateManager) sContext.getSystemService(DeviceStateManager.class)).registerCallback(new HandlerExecutor(sHandler), sFoldStateListener);
     }
 
     public static void forceUpdate() {
@@ -103,26 +57,47 @@ public abstract class RotationHelper {
         }
         updateOrientation();
         synchronized (sFoldStateLock) {
-            Boolean bool = sFoldState;
-            if (bool != null) {
-                sFoldStateCallback.accept(bool);
+            try {
+                Boolean bool = sFoldState;
+                if (bool != null) {
+                    sFoldStateCallback.accept(bool);
+                }
+            } catch (Throwable th) {
+                throw th;
             }
         }
     }
 
-    /* loaded from: classes.dex */
-    public final class AudioDisplayListener implements DisplayManager.DisplayListener {
-        @Override // android.hardware.display.DisplayManager.DisplayListener
-        public void onDisplayAdded(int i) {
-        }
-
-        @Override // android.hardware.display.DisplayManager.DisplayListener
-        public void onDisplayRemoved(int i) {
-        }
-
-        @Override // android.hardware.display.DisplayManager.DisplayListener
-        public void onDisplayChanged(int i) {
-            RotationHelper.updateOrientation();
+    public static void updateOrientation() {
+        int i = 0;
+        int i2 = DisplayManagerGlobal.getInstance().getDisplayInfo(0).rotation;
+        synchronized (sRotationLock) {
+            try {
+                Integer num = sRotation;
+                if (num != null) {
+                    if (num.intValue() != i2) {
+                    }
+                }
+                Integer valueOf = Integer.valueOf(i2);
+                sRotation = valueOf;
+                int intValue = valueOf.intValue();
+                if (intValue != 0) {
+                    if (intValue == 1) {
+                        i = 90;
+                    } else if (intValue == 2) {
+                        i = 180;
+                    } else if (intValue != 3) {
+                        Log.e("AudioService.RotationHelper", "Unknown device rotation");
+                        i = -1;
+                    } else {
+                        i = FrameworkStatsLog.CAMERA_SHOT_LATENCY_REPORTED__MODE__CONTROL_DS_MODE_AI_CLEAR_ZOOM_MERGE_ZSL_ANCHOR_6;
+                    }
+                }
+                if (i != -1) {
+                    sRotationCallback.accept(Integer.valueOf(i));
+                }
+            } finally {
+            }
         }
     }
 }

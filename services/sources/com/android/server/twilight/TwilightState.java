@@ -1,11 +1,9 @@
 package com.android.server.twilight;
 
 import android.text.format.DateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.TimeZone;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class TwilightState {
     public final long mSunriseTimeMillis;
     public final long mSunsetTimeMillis;
@@ -15,40 +13,21 @@ public final class TwilightState {
         this.mSunsetTimeMillis = j2;
     }
 
-    public long sunriseTimeMillis() {
-        return this.mSunriseTimeMillis;
+    public final boolean equals(Object obj) {
+        TwilightState twilightState;
+        return (obj instanceof TwilightState) && (twilightState = (TwilightState) obj) != null && this.mSunriseTimeMillis == twilightState.mSunriseTimeMillis && this.mSunsetTimeMillis == twilightState.mSunsetTimeMillis;
     }
 
-    public LocalDateTime sunrise() {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(this.mSunriseTimeMillis), TimeZone.getDefault().toZoneId());
+    public final int hashCode() {
+        return Long.hashCode(this.mSunsetTimeMillis) ^ Long.hashCode(this.mSunriseTimeMillis);
     }
 
-    public long sunsetTimeMillis() {
-        return this.mSunsetTimeMillis;
-    }
-
-    public LocalDateTime sunset() {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(this.mSunsetTimeMillis), TimeZone.getDefault().toZoneId());
-    }
-
-    public boolean isNight() {
+    public final boolean isNight() {
         long currentTimeMillis = System.currentTimeMillis();
         return currentTimeMillis >= this.mSunsetTimeMillis && currentTimeMillis < this.mSunriseTimeMillis;
     }
 
-    public boolean equals(Object obj) {
-        return (obj instanceof TwilightState) && equals((TwilightState) obj);
-    }
-
-    public boolean equals(TwilightState twilightState) {
-        return twilightState != null && this.mSunriseTimeMillis == twilightState.mSunriseTimeMillis && this.mSunsetTimeMillis == twilightState.mSunsetTimeMillis;
-    }
-
-    public int hashCode() {
-        return Long.hashCode(this.mSunsetTimeMillis) ^ Long.hashCode(this.mSunriseTimeMillis);
-    }
-
-    public String toString() {
+    public final String toString() {
         return "TwilightState { sunrise=" + ((Object) DateFormat.format("MM-dd HH:mm", this.mSunriseTimeMillis)) + " sunset=" + ((Object) DateFormat.format("MM-dd HH:mm", this.mSunsetTimeMillis)) + " }";
     }
 }

@@ -8,6 +8,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
+import com.android.internal.util.jobs.ArrayUtils$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.am.Pageboost$PageboostFileDBHelper$$ExternalSyntheticOutline0;
+import com.android.server.enterprise.container.KnoxMUMContainerPolicy$$ExternalSyntheticOutline0;
 import com.samsung.android.knox.SemPersonaManager;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,20 +19,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public class EdmStorageProviderBase {
-    public EdmStorageHelper mEdmDbHelper;
-
-    public static int getAdminUidFromLUID(long j) {
-        return (int) j;
-    }
-
-    public static int getContainerIdFromLUID(long j) {
-        return (int) (j >>> 32);
-    }
+    public final EdmStorageHelper mEdmDbHelper;
 
     public EdmStorageProviderBase(Context context) {
-        EdmStorageHelper edmStorageHelper = EdmStorageHelper.getInstance(context);
+        EdmStorageHelper edmStorageHelper;
+        EdmStorageHelper edmStorageHelper2 = EdmStorageHelper.mInstance;
+        synchronized (EdmStorageHelper.class) {
+            try {
+                if (EdmStorageHelper.mInstance == null) {
+                    EdmStorageHelper edmStorageHelper3 = new EdmStorageHelper(context, "enterprise.db", null, 9);
+                    edmStorageHelper3.mContext = context;
+                    EdmStorageHelper.mInstance = edmStorageHelper3;
+                }
+                edmStorageHelper = EdmStorageHelper.mInstance;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
         this.mEdmDbHelper = edmStorageHelper;
         try {
             edmStorageHelper.getWritableDatabase().enableWriteAheadLogging();
@@ -37,409 +47,20 @@ public class EdmStorageProviderBase {
         }
     }
 
-    public boolean getBoolean(String str, String str2, ContentValues contentValues) {
-        List booleanList = getBooleanList(str, str2, contentValues);
-        if (booleanList.size() > 0) {
-            return ((Boolean) booleanList.get(0)).booleanValue();
+    public static void convertAdminIdToLUID(ContentValues contentValues) {
+        boolean containsKey = contentValues.containsKey("containerID");
+        if (!contentValues.containsKey("adminUid") || !containsKey || contentValues.getAsInteger("containerID") == null || contentValues.getAsInteger("adminUid") == null) {
+            return;
         }
-        throw new SettingNotFoundException("Admin data is null");
+        int intValue = contentValues.getAsInteger("containerID").intValue();
+        int intValue2 = contentValues.getAsInteger("adminUid").intValue();
+        contentValues.remove("containerID");
+        contentValues.remove("adminUid");
+        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(intValue2, intValue)));
     }
 
-    public List getBooleanList(String str, String str2, ContentValues contentValues) {
-        ArrayList arrayList = new ArrayList();
-        Cursor cursor = getCursor(str, new String[]{str2}, contentValues, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                try {
-                    try {
-                        if (!cursor.isNull(0)) {
-                            arrayList.add(Boolean.valueOf(cursor.getInt(0) == 1));
-                        }
-                    } catch (SQLException e) {
-                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public int getInt(String str, String str2, ContentValues contentValues) {
-        List intList = getIntList(str, str2, contentValues);
-        if (intList.size() > 0) {
-            return ((Integer) intList.get(0)).intValue();
-        }
-        return -1;
-    }
-
-    public List getIntList(String str, String str2, ContentValues contentValues) {
-        ArrayList arrayList = new ArrayList();
-        Cursor cursor = getCursor(str, new String[]{str2}, contentValues, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                try {
-                    try {
-                        if (!cursor.isNull(0)) {
-                            arrayList.add(Integer.valueOf(cursor.getInt(0)));
-                        }
-                    } catch (SQLException e) {
-                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public long getLong(String str, String str2, ContentValues contentValues) {
-        List longList = getLongList(str, str2, contentValues);
-        if (longList.size() > 0) {
-            return ((Long) longList.get(0)).longValue();
-        }
-        return -1L;
-    }
-
-    public List getLongList(String str, String str2, ContentValues contentValues) {
-        ArrayList arrayList = new ArrayList();
-        Cursor cursor = getCursor(str, new String[]{str2}, contentValues, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                try {
-                    try {
-                        if (!cursor.isNull(0)) {
-                            arrayList.add(Long.valueOf(cursor.getLong(0)));
-                        }
-                    } catch (SQLException e) {
-                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public boolean updateBlob(int i, int i2, String str, String str2, byte[] bArr) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put(str2, bArr);
-        return put(str, contentValues2, contentValues);
-    }
-
-    public byte[] getBlob(String str, String str2, ContentValues contentValues) {
-        List blobList = getBlobList(str, str2, contentValues);
-        if (blobList.size() > 0) {
-            return (byte[]) blobList.get(0);
-        }
-        return null;
-    }
-
-    public List getBlobList(String str, String str2, ContentValues contentValues) {
-        ArrayList arrayList = new ArrayList();
-        Cursor cursor = getCursor(str, new String[]{str2}, contentValues, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                try {
-                    try {
-                        if (!cursor.isNull(0)) {
-                            arrayList.add(cursor.getBlob(0));
-                        }
-                    } catch (SQLException e) {
-                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public String getString(String str, String str2, ContentValues contentValues) {
-        List stringList = getStringList(str, str2, contentValues);
-        if (stringList.size() > 0) {
-            return (String) stringList.get(0);
-        }
-        return null;
-    }
-
-    public List getStringList(String str, String str2, ContentValues contentValues) {
-        ArrayList arrayList = new ArrayList();
-        Cursor cursor = getCursor(str, new String[]{str2}, contentValues, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                try {
-                    try {
-                        if (!cursor.isNull(0)) {
-                            arrayList.add(cursor.getString(0));
-                        }
-                    } catch (SQLException e) {
-                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:11:0x0026, code lost:
-    
-        if (r1.getType(r5) != 3) goto L13;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0028, code lost:
-    
-        r4.put(r1.getColumnName(r5), r1.getString(r5));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0074, code lost:
-    
-        r5 = r5 + 1;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x0039, code lost:
-    
-        if (r1.getType(r5) != 1) goto L16;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x003b, code lost:
-    
-        r4.put(r1.getColumnName(r5), java.lang.Long.valueOf(r1.getLong(r5)));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:20:0x0050, code lost:
-    
-        if (r1.getType(r5) != 2) goto L19;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:21:0x0052, code lost:
-    
-        r4.put(r1.getColumnName(r5), java.lang.Float.valueOf(r1.getFloat(r5)));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:24:0x0067, code lost:
-    
-        if (r1.getType(r5) != 4) goto L50;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:25:0x0069, code lost:
-    
-        r4.put(r1.getColumnName(r5), r1.getBlob(r5));
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:30:0x007b, code lost:
-    
-        if (r4.size() <= 0) goto L26;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:31:0x007d, code lost:
-    
-        r0.add(r4);
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:33:0x0084, code lost:
-    
-        if (r1.moveToNext() != false) goto L44;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:39:0x00ac, code lost:
-    
-        return r0;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:43:0x00a9, code lost:
-    
-        if (r1 == null) goto L36;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:6:0x0013, code lost:
-    
-        if (r1.getCount() > 0) goto L7;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:7:0x0015, code lost:
-    
-        r4 = new android.content.ContentValues();
-        r5 = 0;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x001f, code lost:
-    
-        if (r5 >= r1.getColumnCount()) goto L45;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public java.util.List getValues(java.lang.String r5, java.lang.String[] r6, android.content.ContentValues r7) {
-        /*
-            r4 = this;
-            java.util.ArrayList r0 = new java.util.ArrayList
-            r0.<init>()
-            r1 = 0
-            android.database.Cursor r1 = r4.getCursor(r5, r6, r7, r1)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            if (r1 == 0) goto L86
-            r1.moveToFirst()     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            int r4 = r1.getCount()     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            if (r4 <= 0) goto L86
-        L15:
-            android.content.ContentValues r4 = new android.content.ContentValues     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r4.<init>()     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r5 = 0
-        L1b:
-            int r6 = r1.getColumnCount()     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            if (r5 >= r6) goto L77
-            int r6 = r1.getType(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r7 = 3
-            if (r6 != r7) goto L34
-            java.lang.String r6 = r1.getColumnName(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            java.lang.String r7 = r1.getString(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r4.put(r6, r7)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            goto L74
-        L34:
-            int r6 = r1.getType(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r7 = 1
-            if (r6 != r7) goto L4b
-            java.lang.String r6 = r1.getColumnName(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            long r2 = r1.getLong(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            java.lang.Long r7 = java.lang.Long.valueOf(r2)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r4.put(r6, r7)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            goto L74
-        L4b:
-            int r6 = r1.getType(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r7 = 2
-            if (r6 != r7) goto L62
-            java.lang.String r6 = r1.getColumnName(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            float r7 = r1.getFloat(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            java.lang.Float r7 = java.lang.Float.valueOf(r7)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r4.put(r6, r7)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            goto L74
-        L62:
-            int r6 = r1.getType(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r7 = 4
-            if (r6 != r7) goto L74
-            java.lang.String r6 = r1.getColumnName(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            byte[] r7 = r1.getBlob(r5)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            r4.put(r6, r7)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-        L74:
-            int r5 = r5 + 1
-            goto L1b
-        L77:
-            int r5 = r4.size()     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            if (r5 <= 0) goto L80
-            r0.add(r4)     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-        L80:
-            boolean r4 = r1.moveToNext()     // Catch: java.lang.Throwable -> L8c android.database.SQLException -> L8e
-            if (r4 != 0) goto L15
-        L86:
-            if (r1 == 0) goto Lac
-        L88:
-            r1.close()
-            goto Lac
-        L8c:
-            r4 = move-exception
-            goto Lad
-        L8e:
-            r4 = move-exception
-            java.lang.String r5 = "EdmStorageProvider"
-            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L8c
-            r6.<init>()     // Catch: java.lang.Throwable -> L8c
-            java.lang.String r7 = "Exception occurred accessing Enterprise db "
-            r6.append(r7)     // Catch: java.lang.Throwable -> L8c
-            java.lang.String r4 = r4.getMessage()     // Catch: java.lang.Throwable -> L8c
-            r6.append(r4)     // Catch: java.lang.Throwable -> L8c
-            java.lang.String r4 = r6.toString()     // Catch: java.lang.Throwable -> L8c
-            android.util.Log.e(r5, r4)     // Catch: java.lang.Throwable -> L8c
-            if (r1 == 0) goto Lac
-            goto L88
-        Lac:
-            return r0
-        Lad:
-            if (r1 == 0) goto Lb2
-            r1.close()
-        Lb2:
-            throw r4
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.storage.EdmStorageProviderBase.getValues(java.lang.String, java.lang.String[], android.content.ContentValues):java.util.List");
-    }
-
-    public Cursor getCursor(String str, String[] strArr, ContentValues contentValues, String str2) {
-        StringBuilder sb = new StringBuilder();
-        return getCursor(str, strArr, sb.length() > 0 ? sb.toString() : null, formatContentValues(contentValues, sb), str2);
-    }
-
-    public Cursor getCursor(String str, String[] strArr, String str2, String[] strArr2, String str3) {
-        return this.mEdmDbHelper.getReadableDatabase().query(str, strArr, str2, strArr2, null, null, str3);
-    }
-
-    public int getCount(String str, ContentValues contentValues) {
-        SQLiteDatabase writableDatabase = this.mEdmDbHelper.getWritableDatabase();
-        if (contentValues == null || contentValues.size() <= 0) {
-            Cursor rawQuery = writableDatabase.rawQuery("SELECT COUNT(*) from " + str, null);
-            int i = -1;
-            if (rawQuery != null) {
-                try {
-                    try {
-                        rawQuery.moveToNext();
-                        i = rawQuery.getInt(0);
-                        Log.d("EdmStorageProvider", "getCount(" + str + ") - " + i);
-                    } catch (SQLException e) {
-                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
-                    }
-                } finally {
-                    rawQuery.close();
-                }
-            }
-            return i;
-        }
-        parseContentValues(contentValues);
-        return getInt(str, "COUNT(*)", contentValues);
-    }
-
-    public void handleFirmwareUpgrade() {
-        try {
-            EdmStorageHelper edmStorageHelper = this.mEdmDbHelper;
-            edmStorageHelper.doTablesCreationOrUpdate(edmStorageHelper.getWritableDatabase());
-        } catch (Exception e) {
-            Log.e("EdmStorageProvider", "handleUpgrade EX:", e);
-        }
-    }
-
-    public int delete(String str, ContentValues contentValues) {
-        StringBuilder sb = new StringBuilder();
-        return delete(str, sb.length() > 0 ? sb.toString() : null, formatContentValues(contentValues, sb));
-    }
-
-    public int delete(String str, String str2, String[] strArr) {
-        return this.mEdmDbHelper.getWritableDatabase().delete(str, str2, strArr);
-    }
-
-    public boolean put(String str, ContentValues contentValues, ContentValues contentValues2) {
-        StringBuilder sb = new StringBuilder();
-        if (update(str, contentValues, sb.length() > 0 ? sb.toString() : null, formatContentValues(contentValues2, sb)) > 0) {
-            return true;
-        }
-        contentValues.putAll(contentValues2);
-        return insert(str, contentValues) != -1;
-    }
-
-    public int update(String str, ContentValues contentValues, ContentValues contentValues2) {
-        StringBuilder sb = new StringBuilder();
-        return update(str, contentValues, sb.length() > 0 ? sb.toString() : null, formatContentValues(contentValues2, sb));
-    }
-
-    public int update(String str, ContentValues contentValues, String str2, String[] strArr) {
-        try {
-            return this.mEdmDbHelper.getWritableDatabase().update(str, contentValues, str2, strArr);
-        } catch (SQLiteException e) {
-            Log.e("EdmStorageProvider", "update()", e);
-            return -1;
-        }
-    }
-
-    public long insert(String str, ContentValues contentValues) {
-        try {
-            return this.mEdmDbHelper.getWritableDatabase().insert(str, null, contentValues);
-        } catch (SQLiteException e) {
-            Log.e("EdmStorageProvider", "insert()", e);
-            return -1L;
-        }
-    }
-
-    public final String[] formatContentValues(ContentValues contentValues, StringBuilder sb) {
-        if (contentValues != null && sb != null && contentValues.size() > 0) {
+    public static String[] formatContentValues(ContentValues contentValues, StringBuilder sb) {
+        if (contentValues != null && contentValues.size() > 0) {
             Set<Map.Entry<String, Object>> valueSet = contentValues.valueSet();
             ArrayList arrayList = new ArrayList();
             int i = 0;
@@ -466,18 +87,20 @@ public class EdmStorageProviderBase {
         return null;
     }
 
-    public static long translateToAdminLUID(int i, int i2) {
-        if (i == 0 || i2 <= 0 || SemPersonaManager.isKnoxId(i2)) {
-            return i;
-        }
-        return i | (i2 << 32);
-    }
-
     public static String getAdminLUIDWhereIn(int i, int i2) {
-        return "adminUid IN (" + getAdminLUIDWhereInArgs(i, i2) + ")";
+        StringBuilder sb = new StringBuilder("adminUid IN (");
+        if (i == -1) {
+            throw new IllegalArgumentException("Invalid container id!!");
+        }
+        if (SemPersonaManager.isKnoxId(i)) {
+            i = 0;
+        }
+        sb.append(new StringBuilder(ArrayUtils$$ExternalSyntheticOutline0.m(i, i2, "SELECT adminUid FROM ADMIN WHERE containerID=", " AND userID=")).toString());
+        sb.append(")");
+        return sb.toString();
     }
 
-    public final void parseContentValues(ContentValues contentValues) {
+    public static void parseContentValues(ContentValues contentValues) {
         int i;
         if (contentValues == null) {
             return;
@@ -497,114 +120,451 @@ public class EdmStorageProviderBase {
         contentValues.put(getAdminLUIDWhereIn(intValue, i), "#SelectClause#");
     }
 
-    public final void convertAdminIdToLUID(ContentValues contentValues) {
-        boolean containsKey = contentValues.containsKey("containerID");
-        if (!contentValues.containsKey("adminUid") || !containsKey || contentValues.getAsInteger("containerID") == null || contentValues.getAsInteger("adminUid") == null) {
-            return;
+    public static long translateToAdminLUID(int i, int i2) {
+        if (i == 0 || i2 <= 0 || SemPersonaManager.isKnoxId(i2)) {
+            return i;
         }
-        int intValue = contentValues.getAsInteger("containerID").intValue();
-        int intValue2 = contentValues.getAsInteger("adminUid").intValue();
-        contentValues.remove("containerID");
-        contentValues.remove("adminUid");
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(intValue2, intValue)));
+        return i | (i2 << 32);
     }
 
-    public static String getAdminLUIDWhereInArgs(int i, int i2) {
-        if (i == -1) {
-            throw new IllegalArgumentException("Invalid container id!!");
-        }
-        if (SemPersonaManager.isKnoxId(i)) {
-            i = 0;
-        }
-        return new StringBuilder("SELECT adminUid FROM ADMIN WHERE containerID=" + i + " AND userID=" + i2).toString();
+    public final void addAdmin(int i, String str) {
+        ContentValues contentValues = new ContentValues();
+        KnoxMUMContainerPolicy$$ExternalSyntheticOutline0.m(i, contentValues, "adminUid", "adminName", str);
+        contentValues.put("canRemove", Boolean.TRUE);
+        insert("ADMIN_INFO", contentValues);
     }
 
-    public final boolean addAdminLUID(int i, int i2) {
-        if (i2 == 0 || i <= 0) {
+    public final boolean addMUMContainer(int i, int i2) {
+        ContentValues contentValues = new ContentValues();
+        Pageboost$PageboostFileDBHelper$$ExternalSyntheticOutline0.m(i, contentValues, "containerID", i2, "adminUid");
+        return insert("MUMCONTAINER", contentValues) != -1;
+    }
+
+    public final boolean addorUpdateAdmin(int i, String str, boolean z) {
+        ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("adminName", str);
+        m.put("canRemove", Boolean.valueOf(z));
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid", Integer.valueOf(i));
+        if (update("ADMIN_INFO", m, contentValues) > 0) {
             return true;
         }
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i2, i)));
-        contentValues.put("containerID", Integer.valueOf(i));
-        contentValues.put("adminID", Integer.valueOf(i2));
-        return insert("ADMIN", contentValues) != -1;
+        m.putAll(contentValues);
+        return insert("ADMIN_INFO", m) != -1;
     }
 
-    public boolean putString(int i, int i2, String str, String str2, String str3) {
-        ContentValues contentValues;
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put(str2, str3);
-        long translateToAdminLUID = translateToAdminLUID(i, i2);
-        if (translateToAdminLUID != 0) {
-            contentValues = new ContentValues();
-            contentValues.put("adminUid", Long.valueOf(translateToAdminLUID));
-        } else {
-            contentValues = null;
+    public final boolean addorUpdateAdminWithPseudo(int i, String str) {
+        ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("adminName", str);
+        m.put("canRemove", Boolean.FALSE);
+        m.put("isPseudoAdmin", Boolean.TRUE);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid", Integer.valueOf(i));
+        if (update("ADMIN_INFO", m, contentValues) > 0) {
+            return true;
         }
-        return put(str, contentValues2, contentValues);
+        m.putAll(contentValues);
+        return insert("ADMIN_INFO", m) != -1;
     }
 
-    public String getString(int i, int i2, String str, String str2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        return getString(str, str2, contentValues);
-    }
-
-    public List getStringListAsUser(int i, String str, String str2, int i2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(getAdminLUIDWhereIn(i, i2), "#SelectClause#");
-        return getStringList(str, str2, contentValues);
-    }
-
-    public boolean putInt(int i, int i2, String str, String str2, int i3) {
-        ContentValues contentValues;
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put(str2, Integer.valueOf(i3));
-        long translateToAdminLUID = translateToAdminLUID(i, i2);
-        if (translateToAdminLUID != 0) {
-            contentValues = new ContentValues();
-            contentValues.put("adminUid", Long.valueOf(translateToAdminLUID));
-        } else {
-            contentValues = null;
+    public final boolean canRemoveAdmin(int i) {
+        try {
+            return getBoolean(i, 0, "ADMIN_INFO", "canRemove");
+        } catch (Exception unused) {
+            Log.e("EdmStorageProvider", "Admin not in database, something went wrong");
+            return true;
         }
-        return put(str, contentValues2, contentValues);
     }
 
-    public boolean putLong(int i, int i2, String str, String str2, long j) {
-        ContentValues contentValues;
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put(str2, Long.valueOf(j));
-        long translateToAdminLUID = translateToAdminLUID(i, i2);
-        if (translateToAdminLUID != 0) {
-            contentValues = new ContentValues();
-            contentValues.put("adminUid", Long.valueOf(translateToAdminLUID));
-        } else {
-            contentValues = null;
-        }
-        return put(str, contentValues2, contentValues);
-    }
-
-    public int getInt(int i, int i2, String str, String str2) {
+    public final boolean checkPseudoAdminForUid(int i) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        List intList = getIntList(str, str2, contentValues);
-        if (intList.size() > 0) {
-            return ((Integer) intList.get(0)).intValue();
+        contentValues.put("adminUid", Integer.valueOf(i));
+        ArrayList arrayList = (ArrayList) getBooleanList(contentValues, "ADMIN_INFO", "isPseudoAdmin");
+        if (arrayList.size() > 0) {
+            return ((Boolean) arrayList.get(0)).booleanValue();
         }
         throw new SettingNotFoundException("Admin data is null");
     }
 
-    public ArrayList getIntList(int i, String str, String str2) {
-        return getIntListAsUser(i, str, str2, 0);
+    public final int delete(String str, ContentValues contentValues) {
+        StringBuilder sb = new StringBuilder();
+        return this.mEdmDbHelper.getWritableDatabase().delete(str, sb.length() > 0 ? sb.toString() : null, formatContentValues(contentValues, sb));
     }
 
-    public ArrayList getIntListAsUser(int i, String str, String str2, int i2) {
+    public final ArrayList getAdminUidList() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid!=?", (Integer) 0);
+        return new ArrayList(getIntList(contentValues, "ADMIN_INFO", "adminUid"));
+    }
+
+    public final ArrayList getAdminUidListAsUser(int i) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid!=?", (Integer) 0);
+        contentValues.put("userID", Integer.valueOf(i));
+        return new ArrayList(getIntList(contentValues, "ADMIN", "adminUid"));
+    }
+
+    public final byte[] getBlob(ContentValues contentValues, String str, String str2) {
+        ArrayList arrayList = (ArrayList) getBlobList(contentValues, str, str2);
+        if (arrayList.size() > 0) {
+            return (byte[]) arrayList.get(0);
+        }
+        return null;
+    }
+
+    public final List getBlobList(ContentValues contentValues, String str, String str2) {
+        ArrayList arrayList = new ArrayList();
+        Cursor cursor = getCursor(str, new String[]{str2}, contentValues);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                try {
+                    try {
+                        if (!cursor.isNull(0)) {
+                            arrayList.add(cursor.getBlob(0));
+                        }
+                    } catch (SQLException e) {
+                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    public final boolean getBoolean(int i, int i2, String str, String str2) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
+        ArrayList arrayList = (ArrayList) getBooleanList(contentValues, str, str2);
+        if (arrayList.size() > 0) {
+            return ((Boolean) arrayList.get(0)).booleanValue();
+        }
+        throw new SettingNotFoundException("Admin data is null");
+    }
+
+    public final List getBooleanList(ContentValues contentValues, String str, String str2) {
+        ArrayList arrayList = new ArrayList();
+        Cursor cursor = getCursor(str, new String[]{str2}, contentValues);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                try {
+                    try {
+                        if (!cursor.isNull(0)) {
+                            arrayList.add(Boolean.valueOf(cursor.getInt(0) == 1));
+                        }
+                    } catch (SQLException e) {
+                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    public final ArrayList getBooleanListAsUser(int i, String str, String str2) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(getAdminLUIDWhereIn(0, i), "#SelectClause#");
+        return new ArrayList(getBooleanList(contentValues, str, str2));
+    }
+
+    public final ComponentName getComponentNameForUid(int i) {
+        String string = getString(i, 0, "ADMIN_INFO", "adminName");
+        if (string == null) {
+            return null;
+        }
+        return ComponentName.unflattenFromString(string);
+    }
+
+    public final Cursor getCursor(String str, String[] strArr, ContentValues contentValues) {
+        StringBuilder sb = new StringBuilder();
+        return this.mEdmDbHelper.getReadableDatabase().query(str, strArr, sb.length() > 0 ? sb.toString() : null, formatContentValues(contentValues, sb), null, null, null);
+    }
+
+    public final Cursor getCursorByAdmin(int i, int i2, String str, String[] strArr) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
+        return getCursor(str, strArr, contentValues);
+    }
+
+    public final String getDatabaseUpgradeValue(String str) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", str);
+        return getString(contentValues, "generic", "value");
+    }
+
+    public final String getGenericValueAsUser(int i, String str) {
+        ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("name", str);
+        Pageboost$PageboostFileDBHelper$$ExternalSyntheticOutline0.m(0, m, "containerID", i, "userID");
+        return getString(m, "generic", "value");
+    }
+
+    public final int getInt(int i, int i2, String str, String str2) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
+        ArrayList arrayList = (ArrayList) getIntList(contentValues, str, str2);
+        if (arrayList.size() > 0) {
+            return ((Integer) arrayList.get(0)).intValue();
+        }
+        throw new SettingNotFoundException("Admin data is null");
+    }
+
+    public final int getInt(ContentValues contentValues, String str, String str2) {
+        ArrayList arrayList = (ArrayList) getIntList(contentValues, str, str2);
+        if (arrayList.size() > 0) {
+            return ((Integer) arrayList.get(0)).intValue();
+        }
+        return -1;
+    }
+
+    public final List getIntList(ContentValues contentValues, String str, String str2) {
+        ArrayList arrayList = new ArrayList();
+        Cursor cursor = getCursor(str, new String[]{str2}, contentValues);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                try {
+                    try {
+                        if (!cursor.isNull(0)) {
+                            arrayList.add(Integer.valueOf(cursor.getInt(0)));
+                        }
+                    } catch (SQLException e) {
+                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    public final ArrayList getIntListAsUser(int i, int i2, String str, String str2) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(getAdminLUIDWhereIn(i, i2), "#SelectClause#");
-        return new ArrayList(getIntList(str, str2, contentValues));
+        return new ArrayList(getIntList(contentValues, str, str2));
     }
 
-    public boolean putBoolean(int i, int i2, String str, String str2, boolean z) {
+    public final List getLongList(ContentValues contentValues, String str, String str2) {
+        ArrayList arrayList = new ArrayList();
+        Cursor cursor = getCursor(str, new String[]{str2}, contentValues);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                try {
+                    try {
+                        if (!cursor.isNull(0)) {
+                            arrayList.add(Long.valueOf(cursor.getLong(0)));
+                        }
+                    } catch (SQLException e) {
+                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    public final ArrayList getLongListAsUser(int i, String str, String str2) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(getAdminLUIDWhereIn(0, i), "#SelectClause#");
+        return new ArrayList(getLongList(contentValues, str, str2));
+    }
+
+    public final int getMUMContainerOwnerUid(int i) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("containerID", Integer.valueOf(i));
+        return getInt(contentValues, "MUMCONTAINER", "adminUid");
+    }
+
+    public final String getPackageNameForUid(int i) {
+        ComponentName componentNameForUid = getComponentNameForUid(i);
+        if (componentNameForUid == null) {
+            return null;
+        }
+        return componentNameForUid.getPackageName();
+    }
+
+    public final String getString(int i, int i2, String str, String str2) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
+        return getString(contentValues, str, str2);
+    }
+
+    public final String getString(ContentValues contentValues, String str, String str2) {
+        ArrayList arrayList = (ArrayList) getStringList(contentValues, str, str2);
+        if (arrayList.size() > 0) {
+            return (String) arrayList.get(0);
+        }
+        return null;
+    }
+
+    public final List getStringList(ContentValues contentValues, String str, String str2) {
+        ArrayList arrayList = new ArrayList();
+        Cursor cursor = getCursor(str, new String[]{str2}, contentValues);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                try {
+                    try {
+                        if (!cursor.isNull(0)) {
+                            arrayList.add(cursor.getString(0));
+                        }
+                    } catch (SQLException e) {
+                        Log.e("EdmStorageProvider", "Exception occurred accessing Enterprise db " + e.getMessage());
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    public final List getStringListAsUser(int i, String str, String str2) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(getAdminLUIDWhereIn(0, i), "#SelectClause#");
+        return getStringList(contentValues, str, str2);
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x008b, code lost:
+    
+        if (r1 != null) goto L33;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x008d, code lost:
+    
+        r1.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:39:0x00ae, code lost:
+    
+        return r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x00ab, code lost:
+    
+        if (r1 == null) goto L37;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final java.util.List getValues(java.lang.String r5, java.lang.String[] r6, android.content.ContentValues r7) {
+        /*
+            r4 = this;
+            java.util.ArrayList r0 = new java.util.ArrayList
+            r0.<init>()
+            r1 = 0
+            android.database.Cursor r1 = r4.getCursor(r5, r6, r7)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            if (r1 == 0) goto L8b
+            r1.moveToFirst()     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            int r4 = r1.getCount()     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            if (r4 <= 0) goto L8b
+        L15:
+            android.content.ContentValues r4 = new android.content.ContentValues     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r4.<init>()     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r5 = 0
+        L1b:
+            int r6 = r1.getColumnCount()     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            if (r5 >= r6) goto L7c
+            int r6 = r1.getType(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r7 = 3
+            if (r6 != r7) goto L39
+            java.lang.String r6 = r1.getColumnName(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            java.lang.String r7 = r1.getString(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r4.put(r6, r7)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            goto L79
+        L34:
+            r4 = move-exception
+            goto Laf
+        L37:
+            r4 = move-exception
+            goto L91
+        L39:
+            int r6 = r1.getType(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r7 = 1
+            if (r6 != r7) goto L50
+            java.lang.String r6 = r1.getColumnName(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            long r2 = r1.getLong(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            java.lang.Long r7 = java.lang.Long.valueOf(r2)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r4.put(r6, r7)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            goto L79
+        L50:
+            int r6 = r1.getType(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r7 = 2
+            if (r6 != r7) goto L67
+            java.lang.String r6 = r1.getColumnName(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            float r7 = r1.getFloat(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            java.lang.Float r7 = java.lang.Float.valueOf(r7)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r4.put(r6, r7)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            goto L79
+        L67:
+            int r6 = r1.getType(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r7 = 4
+            if (r6 != r7) goto L79
+            java.lang.String r6 = r1.getColumnName(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            byte[] r7 = r1.getBlob(r5)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            r4.put(r6, r7)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+        L79:
+            int r5 = r5 + 1
+            goto L1b
+        L7c:
+            int r5 = r4.size()     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            if (r5 <= 0) goto L85
+            r0.add(r4)     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+        L85:
+            boolean r4 = r1.moveToNext()     // Catch: java.lang.Throwable -> L34 android.database.SQLException -> L37
+            if (r4 != 0) goto L15
+        L8b:
+            if (r1 == 0) goto Lae
+        L8d:
+            r1.close()
+            goto Lae
+        L91:
+            java.lang.String r5 = "EdmStorageProvider"
+            java.lang.StringBuilder r6 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L34
+            r6.<init>()     // Catch: java.lang.Throwable -> L34
+            java.lang.String r7 = "Exception occurred accessing Enterprise db "
+            r6.append(r7)     // Catch: java.lang.Throwable -> L34
+            java.lang.String r4 = r4.getMessage()     // Catch: java.lang.Throwable -> L34
+            r6.append(r4)     // Catch: java.lang.Throwable -> L34
+            java.lang.String r4 = r6.toString()     // Catch: java.lang.Throwable -> L34
+            android.util.Log.e(r5, r4)     // Catch: java.lang.Throwable -> L34
+            if (r1 == 0) goto Lae
+            goto L8d
+        Lae:
+            return r0
+        Laf:
+            if (r1 == 0) goto Lb4
+            r1.close()
+        Lb4:
+            throw r4
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.storage.EdmStorageProviderBase.getValues(java.lang.String, java.lang.String[], android.content.ContentValues):java.util.List");
+    }
+
+    public final List getValuesListAsUser(int i, int i2, String str, String[] strArr) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(getAdminLUIDWhereIn(i, i2), "#SelectClause#");
+        return getValues(str, strArr, contentValues);
+    }
+
+    public final long insert(String str, ContentValues contentValues) {
+        try {
+            return this.mEdmDbHelper.getWritableDatabase().insert(str, null, contentValues);
+        } catch (SQLiteException e) {
+            Log.e("EdmStorageProvider", "insert()", e);
+            return -1L;
+        }
+    }
+
+    public final boolean put(String str, ContentValues contentValues, ContentValues contentValues2) {
+        StringBuilder sb = new StringBuilder();
+        if (update(str, contentValues, sb.length() > 0 ? sb.toString() : null, formatContentValues(contentValues2, sb)) > 0) {
+            return true;
+        }
+        contentValues.putAll(contentValues2);
+        return insert(str, contentValues) != -1;
+    }
+
+    public final boolean putBoolean(String str, int i, boolean z, int i2, String str2) {
         ContentValues contentValues;
         ContentValues contentValues2 = new ContentValues();
         contentValues2.put(str2, Integer.valueOf(z ? 1 : 0));
@@ -618,401 +578,94 @@ public class EdmStorageProviderBase {
         return put(str, contentValues2, contentValues);
     }
 
-    public boolean getBoolean(int i, int i2, String str, String str2) {
+    public final boolean putGenericValueAsUser(int i, String str, String str2) {
+        ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m("name", str);
+        m.put("containerID", (Integer) 0);
+        m.put("userID", Integer.valueOf(i));
         ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        List booleanList = getBooleanList(str, str2, contentValues);
-        if (booleanList.size() > 0) {
-            return ((Boolean) booleanList.get(0)).booleanValue();
+        contentValues.put("value", str2);
+        return put("generic", contentValues, m);
+    }
+
+    public final boolean putInt(int i, int i2, int i3, String str, String str2) {
+        ContentValues contentValues;
+        ContentValues contentValues2 = new ContentValues();
+        contentValues2.put(str2, Integer.valueOf(i3));
+        long translateToAdminLUID = translateToAdminLUID(i, i2);
+        if (translateToAdminLUID != 0) {
+            contentValues = new ContentValues();
+            contentValues.put("adminUid", Long.valueOf(translateToAdminLUID));
+        } else {
+            contentValues = null;
         }
-        throw new SettingNotFoundException("Admin data is null");
+        return put(str, contentValues2, contentValues);
     }
 
-    public ArrayList getBooleanListAsUser(int i, String str, String str2, int i2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(getAdminLUIDWhereIn(i, i2), "#SelectClause#");
-        return new ArrayList(getBooleanList(str, str2, contentValues));
-    }
-
-    public ContentValues getValues(int i, int i2, String str, String[] strArr) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        List values = getValues(str, strArr, contentValues);
-        if (!values.isEmpty()) {
-            return (ContentValues) values.get(0);
+    public final boolean putString(int i, int i2, String str, String str2, String str3) {
+        ContentValues contentValues;
+        ContentValues m = AccountManagerService$$ExternalSyntheticOutline0.m(str2, str3);
+        long translateToAdminLUID = translateToAdminLUID(i, i2);
+        if (translateToAdminLUID != 0) {
+            contentValues = new ContentValues();
+            contentValues.put("adminUid", Long.valueOf(translateToAdminLUID));
+        } else {
+            contentValues = null;
         }
-        return new ContentValues();
+        return put(str, m, contentValues);
     }
 
-    public List getValuesListAsUser(int i, String str, String[] strArr, int i2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(getAdminLUIDWhereIn(i, i2), "#SelectClause#");
-        return getValues(str, strArr, contentValues);
-    }
-
-    public List getValuesList(String str, String[] strArr, ContentValues contentValues) {
-        parseContentValues(contentValues);
-        return getValues(str, strArr, contentValues);
-    }
-
-    public boolean putValuesNoUpdate(String str, ContentValues contentValues) {
-        convertAdminIdToLUID(contentValues);
-        return insert(str, contentValues) != -1;
-    }
-
-    public int insertValuesNoUpdate(String str, ContentValues contentValues) {
-        convertAdminIdToLUID(contentValues);
-        return (int) insert(str, contentValues);
-    }
-
-    public boolean putValues(int i, int i2, String str, ContentValues contentValues) {
+    public final boolean putValues(int i, int i2, String str, ContentValues contentValues) {
         ContentValues contentValues2 = new ContentValues();
         contentValues2.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
         convertAdminIdToLUID(contentValues);
         return put(str, contentValues, contentValues2);
     }
 
-    public boolean putValues(String str, ContentValues contentValues, ContentValues contentValues2) {
-        if (contentValues == null || contentValues2 == null) {
-            return false;
-        }
-        convertAdminIdToLUID(contentValues);
-        convertAdminIdToLUID(contentValues2);
-        return (contentValues2.size() > 0 && update(str, contentValues, contentValues2) > 0) || insert(str, contentValues) != -1;
-    }
-
-    public boolean putValues(String str, ContentValues contentValues) {
-        return update(str, contentValues, null) > 0 || insert(str, contentValues) != -1;
-    }
-
-    public boolean addAdmin(int i, String str, boolean z, int i2) {
+    public final void removeAdminFromDatabase(int i) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Integer.valueOf(i));
-        contentValues.put("adminName", str);
-        contentValues.put("canRemove", Boolean.valueOf(z));
-        if (insert("ADMIN_INFO", contentValues) == -1) {
-            return false;
-        }
-        addAdminLUID(i2, i);
-        return true;
+        Pageboost$PageboostFileDBHelper$$ExternalSyntheticOutline0.m(i, contentValues, "adminUid", 1, "canRemove");
+        delete("ADMIN_INFO", contentValues);
     }
 
-    public boolean addorUpdateAdmin(int i, String str, boolean z, int i2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminName", str);
-        contentValues.put("canRemove", Boolean.valueOf(z));
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("adminUid", Integer.valueOf(i));
-        if (update("ADMIN_INFO", contentValues, contentValues2) > 0) {
-            return true;
-        }
-        contentValues.putAll(contentValues2);
-        if (insert("ADMIN_INFO", contentValues) == -1) {
-            return false;
-        }
-        addAdminLUID(i2, i);
-        return true;
-    }
-
-    public boolean removeAdminFromDatabase(int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Integer.valueOf(i));
-        contentValues.put("canRemove", (Integer) 1);
-        return delete("ADMIN_INFO", contentValues) > 0;
-    }
-
-    public boolean addMUMContainer(int i, int i2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("containerID", Integer.valueOf(i));
-        contentValues.put("adminUid", Integer.valueOf(i2));
-        return insert("MUMCONTAINER", contentValues) != -1;
-    }
-
-    public boolean updateApplicationTable(ContentValues contentValues, String str) {
-        Log.d("EdmStorageProvider", "Updating application table  ");
-        boolean z = update("APPLICATION", contentValues, str, null) > 0;
-        Log.d("EdmStorageProvider", "Return value  " + z);
-        return z;
-    }
-
-    public boolean removeMUMContainer(int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("containerID", Integer.valueOf(i));
-        return delete("MUMCONTAINER", contentValues) > 0;
-    }
-
-    public int getMUMContainerOwnerUid(int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("containerID", Integer.valueOf(i));
-        return getInt("MUMCONTAINER", "adminUid", contentValues);
-    }
-
-    public int getAdminByField(String str, String str2, String str3) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(str2, str3);
-        return getInt(str, "adminUid", contentValues);
-    }
-
-    public boolean putGenericValueAsUser(int i, String str, String str2, int i2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", str);
-        contentValues.put("containerID", Integer.valueOf(i));
-        contentValues.put("userID", Integer.valueOf(i2));
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("value", str2);
-        return put("generic", contentValues2, contentValues);
-    }
-
-    public String getGenericValueAsUser(int i, String str, int i2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", str);
-        contentValues.put("containerID", Integer.valueOf(i));
-        contentValues.put("userID", Integer.valueOf(i2));
-        return getString("generic", "value", contentValues);
-    }
-
-    public ArrayList getDataByFields(String str, String[] strArr, String[] strArr2, String[] strArr3) {
-        ContentValues contentValues;
-        if (strArr == null || strArr.length <= 0 || strArr2 == null || strArr2.length <= 0) {
-            contentValues = null;
-        } else {
-            contentValues = new ContentValues();
-            for (int i = 0; i < strArr.length; i++) {
-                contentValues.put(strArr[i], strArr2[i]);
-            }
-        }
-        return new ArrayList(getValues(str, strArr3, contentValues));
-    }
-
-    public boolean putDataByFields(String str, String[] strArr, String[] strArr2, ContentValues contentValues) {
-        ContentValues contentValues2;
-        if (strArr == null || strArr.length <= 0 || strArr2 == null || strArr2.length <= 0) {
-            contentValues2 = null;
-        } else {
-            contentValues2 = new ContentValues();
-            for (int i = 0; i < strArr.length; i++) {
-                contentValues2.put(strArr[i], strArr2[i]);
-            }
-        }
-        if (contentValues2 == null) {
-            return insert(str, contentValues) != -1;
-        }
-        return put(str, contentValues, contentValues2);
-    }
-
-    public boolean deleteDataByFields(String str, String[] strArr, String[] strArr2) {
-        ContentValues contentValues;
-        if (strArr == null || strArr.length <= 0 || strArr2 == null || strArr2.length <= 0) {
-            contentValues = null;
-        } else {
-            contentValues = new ContentValues();
-            for (int i = 0; i < strArr.length; i++) {
-                contentValues.put(strArr[i], strArr2[i]);
-            }
-        }
-        return delete(str, contentValues) > 0;
-    }
-
-    public int getIntByAdminAndField(String str, int i, int i2, String str2, String str3, String str4) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        contentValues.put(str2, str3);
-        return getInt(str, str4, contentValues);
-    }
-
-    public Cursor getCursorByAdminAndField(String str, int i, int i2, String str2, String str3, String[] strArr) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        if (str3 != null) {
-            contentValues.put(str2, str3);
-        }
-        return getCursor(str, strArr, contentValues, null);
-    }
-
-    public Cursor getCursorByAdmin(String str, int i, int i2, String[] strArr) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        return getCursor(str, strArr, contentValues, null);
-    }
-
-    public boolean putValuesForAdminAndField(String str, int i, int i2, String str2, String str3, ContentValues contentValues) {
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        contentValues2.put(str2, str3);
-        convertAdminIdToLUID(contentValues);
-        return put(str, contentValues, contentValues2);
-    }
-
-    public boolean removeByAdminAndField(String str, int i, int i2, String str2, String str3) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
-        contentValues.put(str2, str3);
-        return delete(str, contentValues) > 0;
-    }
-
-    public boolean removeByAdmin(String str, int i, int i2) {
+    public final boolean removeByAdmin(int i, int i2, String str) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("adminUid", Long.valueOf(translateToAdminLUID(i, i2)));
         return delete(str, contentValues) > 0;
     }
 
-    public int removeByFieldsAsUser(String str, int i, HashMap hashMap, int i2) {
+    public final int removeByFieldsAsUser(int i, String str, HashMap hashMap) {
         ContentValues contentValues = new ContentValues();
-        if (hashMap != null && hashMap.size() > 0) {
+        if (hashMap.size() > 0) {
             for (Map.Entry entry : hashMap.entrySet()) {
                 contentValues.put((String) entry.getKey(), (String) entry.getValue());
             }
         }
-        contentValues.put(getAdminLUIDWhereIn(i, i2), "#SelectClause#");
+        contentValues.put(getAdminLUIDWhereIn(0, i), "#SelectClause#");
         return delete(str, contentValues);
     }
 
-    public ArrayList getLongListAsUser(int i, String str, String str2, int i2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(getAdminLUIDWhereIn(i, i2), "#SelectClause#");
-        return new ArrayList(getLongList(str, str2, contentValues));
-    }
-
-    public String getString(int i, String str, String str2, String str3, String str4) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(getAdminLUIDWhereIn(i, 0), "#SelectClause#");
-        contentValues.put(str2, str3);
-        return getString(str, str4, contentValues);
-    }
-
-    public boolean remove(String str) {
-        return delete(str, null) > 0;
-    }
-
-    public void insertConfiguration(String str, ContentValues contentValues) {
-        convertAdminIdToLUID(contentValues);
-        if (insert(str, contentValues) != -1) {
-            return;
-        }
-        Log.d("EdmStorageProvider", "insertConfiguration was failed");
-    }
-
-    public boolean removeByFilterSmallerThan(String str, ContentValues contentValues) {
-        return contentValues == null ? this.mEdmDbHelper.getWritableDatabase().delete(str, "1", null) >= 0 : delete(str, contentValues) > 0;
-    }
-
-    public byte[] getBlob(String str, String str2, String str3, String str4) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(str2, str3);
-        return getBlob(str, str4, contentValues);
-    }
-
-    public ContentValues getValue(String str, String str2, ContentValues contentValues) {
-        List values = getValues(str, new String[]{str2}, contentValues);
-        if (values.isEmpty()) {
-            return null;
-        }
-        return (ContentValues) values.get(0);
-    }
-
-    public ComponentName getComponentNameForUid(int i) {
-        String string = getString(i, 0, "ADMIN_INFO", "adminName");
-        if (string == null) {
-            return null;
-        }
-        return ComponentName.unflattenFromString(string);
-    }
-
-    public String getPackageNameForUid(int i) {
-        ComponentName componentNameForUid = getComponentNameForUid(i);
-        if (componentNameForUid == null) {
-            return null;
-        }
-        return componentNameForUid.getPackageName();
-    }
-
-    public ArrayList getAdminUidList() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid!=?", (Integer) 0);
-        return new ArrayList(getIntList("ADMIN_INFO", "adminUid", contentValues));
-    }
-
-    public ArrayList getAdminUidListAsUser(int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid!=?", (Integer) 0);
-        contentValues.put("userID", Integer.valueOf(i));
-        return new ArrayList(getIntList("ADMIN", "adminUid", contentValues));
-    }
-
-    public ArrayList getAdminLUidList() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid!=?", (Integer) 0);
-        return new ArrayList(getLongList("ADMIN", "adminUid", contentValues));
-    }
-
-    public ArrayList getAdminLUidListAsUser(int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid!=?", (Integer) 0);
-        contentValues.put("userID", Integer.valueOf(i));
-        return new ArrayList(getLongList("ADMIN", "adminUid", contentValues));
-    }
-
-    public boolean canRemoveAdmin(int i) {
-        try {
-            return getBoolean(i, 0, "ADMIN_INFO", "canRemove");
-        } catch (Exception unused) {
-            Log.e("EdmStorageProvider", "Admin not in database, something went wrong");
-            return true;
-        }
-    }
-
-    public boolean setDatabaseUpgradeValue(String str, String str2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", str);
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("value", str2);
-        return put("generic", contentValues2, contentValues);
-    }
-
-    public String getDatabaseUpgradeValue(String str) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("name", str);
-        return getString("generic", "value", contentValues);
-    }
-
-    public boolean addorUpdateAdminWithPseudo(int i, String str, boolean z, int i2, boolean z2) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminName", str);
-        contentValues.put("canRemove", Boolean.valueOf(z));
-        contentValues.put("isPseudoAdmin", Boolean.valueOf(z2));
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("adminUid", Integer.valueOf(i));
-        if (update("ADMIN_INFO", contentValues, contentValues2) > 0) {
-            return true;
-        }
-        contentValues.putAll(contentValues2);
-        if (insert("ADMIN_INFO", contentValues) == -1) {
-            return false;
-        }
-        addAdminLUID(i2, i);
-        return true;
-    }
-
-    public boolean checkPseudoAdminForUid(int i) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Integer.valueOf(i));
-        return getBoolean("ADMIN_INFO", "isPseudoAdmin", contentValues);
-    }
-
-    public int getPseudoAdminUid() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("isPseudoAdmin", Boolean.TRUE);
-        return getInt("ADMIN_INFO", "adminUid", contentValues);
-    }
-
-    public void resetControlStateBits(int i, int i2) {
+    public final void resetControlStateBits(int i) {
         SQLiteDatabase writableDatabase = this.mEdmDbHelper.getWritableDatabase();
         try {
-            String str = "UPDATE APPLICATION SET controlState = (controlState & " + i2 + ") WHERE adminUid = " + i;
+            String str = "UPDATE APPLICATION SET controlState = (controlState & -15329266) WHERE adminUid = " + i;
             Log.d("EdmStorageProvider", "resetControlStateBits: query -> " + str);
             writableDatabase.execSQL(str);
         } catch (SQLiteException e) {
             Log.e("EdmStorageProvider", "resetControlStateBits()", e);
+        }
+    }
+
+    public int update(String str, ContentValues contentValues, ContentValues contentValues2) {
+        StringBuilder sb = new StringBuilder();
+        return update(str, contentValues, sb.length() > 0 ? sb.toString() : null, formatContentValues(contentValues2, sb));
+    }
+
+    public final int update(String str, ContentValues contentValues, String str2, String[] strArr) {
+        try {
+            return this.mEdmDbHelper.getWritableDatabase().update(str, contentValues, str2, strArr);
+        } catch (SQLiteException e) {
+            Log.e("EdmStorageProvider", "update()", e);
+            return -1;
         }
     }
 }

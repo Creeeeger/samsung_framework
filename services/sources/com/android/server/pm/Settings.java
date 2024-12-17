@@ -11,18 +11,21 @@ import android.content.pm.PermissionInfo;
 import android.content.pm.UserInfo;
 import android.content.pm.VerifierDeviceIdentity;
 import android.content.pm.overlay.OverlayPaths;
+import android.hardware.audio.common.V2_0.AudioOffloadInfo$$ExternalSyntheticOutline0;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.FileUtils;
 import android.os.Handler;
-import android.os.IInstalld;
 import android.os.Message;
 import android.os.PatternMatcher;
 import android.os.SELinux;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
+import android.os.incremental.IncrementalManager;
 import android.os.storage.StorageManager;
 import android.text.TextUtils;
 import android.util.ArrayMap;
@@ -37,40 +40,50 @@ import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.util.SparseLongArray;
 import android.util.Xml;
-import android.util.proto.ProtoOutputStream;
-import com.android.internal.logging.EventLogTags;
+import com.android.internal.hidden_from_bootclasspath.android.content.pm.Flags;
 import com.android.internal.os.BackgroundThread;
+import com.android.internal.pm.parsing.pkg.AndroidPackageInternal;
+import com.android.internal.pm.pkg.component.ParsedComponent;
+import com.android.internal.pm.pkg.component.ParsedIntentInfo;
+import com.android.internal.pm.pkg.component.ParsedPermission;
+import com.android.internal.pm.pkg.component.ParsedProcess;
 import com.android.internal.util.ArrayUtils;
 import com.android.internal.util.CollectionUtils;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.internal.util.IndentingPrintWriter;
 import com.android.internal.util.JournaledFile;
 import com.android.internal.util.XmlUtils;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.internal.util.jobs.XmlUtils$$ExternalSyntheticOutline0;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
 import com.android.permission.persistence.RuntimePermissionsPersistence;
 import com.android.permission.persistence.RuntimePermissionsState;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.IntentResolver;
 import com.android.server.LocalServices;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
+import com.android.server.UiModeManagerService$13$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.BrailleDisplayConnection$$ExternalSyntheticOutline0;
+import com.android.server.am.BroadcastStats$$ExternalSyntheticOutline0;
+import com.android.server.am.ProcessList$$ExternalSyntheticOutline0;
 import com.android.server.pm.ResilientAtomicFile;
 import com.android.server.pm.Settings;
 import com.android.server.pm.parsing.PackageInfoUtils;
-import com.android.server.pm.parsing.pkg.AndroidPackageInternal;
-import com.android.server.pm.permission.LegacyPermissionDataProvider;
+import com.android.server.pm.parsing.pkg.AndroidPackageUtils;
 import com.android.server.pm.permission.LegacyPermissionSettings;
 import com.android.server.pm.permission.LegacyPermissionState;
-import com.android.server.pm.pkg.AndroidPackage;
+import com.android.server.pm.permission.PermissionManagerService;
+import com.android.server.pm.pkg.ArchiveState;
 import com.android.server.pm.pkg.PackageStateInternal;
-import com.android.server.pm.pkg.PackageUserState;
+import com.android.server.pm.pkg.PackageStateUnserialized;
 import com.android.server.pm.pkg.PackageUserStateInternal;
 import com.android.server.pm.pkg.SuspendParams;
-import com.android.server.pm.pkg.component.ParsedComponent;
-import com.android.server.pm.pkg.component.ParsedIntentInfo;
-import com.android.server.pm.pkg.component.ParsedPermission;
-import com.android.server.pm.pkg.component.ParsedProcess;
 import com.android.server.pm.resolution.ComponentResolver;
 import com.android.server.pm.snapshot.PackageDataSnapshot;
 import com.android.server.pm.verify.domain.DomainVerificationManagerInternal;
+import com.android.server.pm.verify.domain.DomainVerificationService;
 import com.android.server.utils.Slogf;
 import com.android.server.utils.Snappable;
 import com.android.server.utils.SnapshotCache;
@@ -83,8 +96,8 @@ import com.android.server.utils.WatchedArraySet;
 import com.android.server.utils.WatchedSparseArray;
 import com.android.server.utils.WatchedSparseIntArray;
 import com.android.server.utils.Watcher;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
 import com.samsung.android.rune.PMRune;
-import com.samsung.android.server.pm.rescueparty.PackageManagerBackupController;
 import dalvik.annotation.optimization.NeverCompile;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -96,12 +109,15 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -115,19 +131,16 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class Settings implements Watchable, Snappable, ResilientAtomicFile.ReadEventLogger {
     public static final Object[] FLAG_DUMP_SPEC;
-    public static int PRE_M_APP_INFO_FLAG_CANT_SAVE_STATE = 268435456;
-    public static int PRE_M_APP_INFO_FLAG_HIDDEN = 134217728;
-    public static int PRE_M_APP_INFO_FLAG_PRIVILEGED = 1073741824;
     public static final Object[] PRIVATE_FLAG_DUMP_SPEC;
     public final AppIdSettingMap mAppIds;
     public final File mBackupStoppedPackagesFilename;
     public final WatchedSparseArray mBlockUninstallPackages;
     public final WatchedSparseArray mCrossProfileIntentResolvers;
     public final SnapshotCache mCrossProfileIntentResolversSnapshot;
-    public final WatchedSparseArray mDefaultBrowserApp;
 
     @Watched
     final WatchedArrayMap mDisabledSysPackages;
@@ -139,23 +152,20 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
     public final File mKernelMappingFilename;
     public final SnapshotCache mKernelMappingSnapshot;
     public final KeySetManagerService mKeySetManagerService;
-    public final WatchedArrayMap mKeySetRefs;
-    public final SnapshotCache mKeySetRefsSnapshot;
     public final PackageManagerTracedLock mLock;
     public final WatchedSparseIntArray mNextAppLinkGeneration;
-    public final Watcher mObserver;
+    public final AnonymousClass1 mObserver;
     public final File mPackageListFilename;
     public final Object mPackageRestrictionsLock;
 
     @Watched
     final WatchedArrayMap mPackages;
     public final SnapshotCache mPackagesSnapshot;
-    public final WatchedArrayList mPastSignatures;
-    public final SnapshotCache mPastSignaturesSnapshot;
     public final SparseIntArray mPendingAsyncPackageRestrictionsWrites;
+    public final WatchedSparseArray mPendingDefaultBrowser;
     public final WatchedArrayList mPendingPackages;
     public final SnapshotCache mPendingPackagesSnapshot;
-    public final LegacyPermissionDataProvider mPermissionDataProvider;
+    public final PermissionManagerService.PermissionManagerServiceInternalImpl mPermissionDataProvider;
     public final LegacyPermissionSettings mPermissions;
     public final WatchedSparseArray mPersistentPreferredActivities;
     public final SnapshotCache mPersistentPreferredActivitiesSnapshot;
@@ -175,55 +185,696 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
     public final WatchedArrayMap mVersion;
     public final WatchableImpl mWatchable;
 
-    /* loaded from: classes3.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.pm.Settings$2, reason: invalid class name */
+    public final class AnonymousClass2 extends SnapshotCache {
+        @Override // com.android.server.utils.SnapshotCache
+        public final Object createSnapshot() {
+            Settings settings = new Settings((Settings) this.mSource);
+            settings.mWatchable.seal();
+            return settings;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public final class KernelPackageState {
-        public int appId;
         public int[] excludedUserIds;
+    }
 
-        public KernelPackageState() {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class KeySetToValueMap implements Map {
+        public final Set mKeySet;
+        public final Object mValue;
+
+        public KeySetToValueMap(Set set, Object obj) {
+            this.mKeySet = set;
+            this.mValue = obj;
         }
 
-        public /* synthetic */ KernelPackageState(KernelPackageStateIA kernelPackageStateIA) {
-            this();
+        @Override // java.util.Map
+        public final void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // java.util.Map
+        public final boolean containsKey(Object obj) {
+            return this.mKeySet.contains(obj);
+        }
+
+        @Override // java.util.Map
+        public final boolean containsValue(Object obj) {
+            return this.mValue == obj;
+        }
+
+        @Override // java.util.Map
+        public final Set entrySet() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // java.util.Map
+        public final Object get(Object obj) {
+            return this.mValue;
+        }
+
+        @Override // java.util.Map
+        public final boolean isEmpty() {
+            return this.mKeySet.isEmpty();
+        }
+
+        @Override // java.util.Map
+        public final Set keySet() {
+            return this.mKeySet;
+        }
+
+        @Override // java.util.Map
+        public final Object put(Object obj, Object obj2) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // java.util.Map
+        public final void putAll(Map map) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // java.util.Map
+        public final Object remove(Object obj) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override // java.util.Map
+        public final int size() {
+            return this.mKeySet.size();
+        }
+
+        @Override // java.util.Map
+        public final Collection values() {
+            throw new UnsupportedOperationException();
         }
     }
 
-    public /* synthetic */ Settings(Settings settings, SettingsIA settingsIA) {
-        this(settings);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class RuntimePermissionPersistence {
+        public static final Random sRandom = new Random();
+        public String mExtendedFingerprint;
+        public final Consumer mInvokeWriteUserStateAsyncCallback;
+        public final RuntimePermissionsPersistence mPersistence;
+        public final Object mPersistenceLock = new Object();
+        public final MyHandler mAsyncHandler = new MyHandler(this, 0);
+        public final MyHandler mPersistenceHandler = new MyHandler(this, 1);
+        public final Object mLock = new Object();
+        public long mLastWriteDoneTimeMillis = 0;
+        public final SparseBooleanArray mWriteScheduled = new SparseBooleanArray();
+        public final SparseLongArray mLastNotWrittenMutationTimesMillis = new SparseLongArray();
+        public final AtomicBoolean mIsLegacyPermissionStateStale = new AtomicBoolean(false);
+        public final SparseIntArray mVersions = new SparseIntArray();
+        public final SparseArray mFingerprints = new SparseArray();
+        public final SparseBooleanArray mPermissionUpgradeNeeded = new SparseBooleanArray();
+        public final SparseArray mPendingStatesToWrite = new SparseArray();
+
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class MyHandler extends Handler {
+            public final /* synthetic */ int $r8$classId;
+            public final /* synthetic */ RuntimePermissionPersistence this$0;
+
+            /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
+            public MyHandler(RuntimePermissionPersistence runtimePermissionPersistence, int i) {
+                super(BackgroundThread.getHandler().getLooper());
+                this.$r8$classId = i;
+                switch (i) {
+                    case 1:
+                        this.this$0 = runtimePermissionPersistence;
+                        super(BackgroundThread.getHandler().getLooper());
+                        break;
+                    default:
+                        this.this$0 = runtimePermissionPersistence;
+                        break;
+                }
+            }
+
+            @Override // android.os.Handler
+            public final void handleMessage(Message message) {
+                switch (this.$r8$classId) {
+                    case 0:
+                        int i = message.what;
+                        Runnable runnable = (Runnable) message.obj;
+                        long uptimeMillis = SystemClock.uptimeMillis();
+                        RuntimePermissionPersistence runtimePermissionPersistence = this.this$0;
+                        long j = uptimeMillis - runtimePermissionPersistence.mLastWriteDoneTimeMillis;
+                        if (j >= 500) {
+                            runtimePermissionPersistence.mInvokeWriteUserStateAsyncCallback.accept(Integer.valueOf(i));
+                            if (runnable != null) {
+                                runnable.run();
+                                break;
+                            }
+                        } else {
+                            MyHandler myHandler = runtimePermissionPersistence.mAsyncHandler;
+                            myHandler.sendMessageDelayed(myHandler.obtainMessage(i), 500 - j);
+                            break;
+                        }
+                        break;
+                    default:
+                        this.this$0.writePendingStates();
+                        break;
+                }
+            }
+        }
+
+        public RuntimePermissionPersistence(RuntimePermissionsPersistence runtimePermissionsPersistence, AnonymousClass3 anonymousClass3) {
+            this.mPersistence = runtimePermissionsPersistence;
+            this.mInvokeWriteUserStateAsyncCallback = anonymousClass3;
+        }
+
+        public static Map getPackagePermissions(int i, WatchedArrayMap watchedArrayMap) {
+            ArrayMap arrayMap = new ArrayMap();
+            int size = watchedArrayMap.mStorage.size();
+            for (int i2 = 0; i2 < size; i2++) {
+                String str = (String) watchedArrayMap.mStorage.keyAt(i2);
+                PackageStateInternal packageStateInternal = (PackageStateInternal) watchedArrayMap.mStorage.valueAt(i2);
+                if (!packageStateInternal.hasSharedUser()) {
+                    List permissionsFromPermissionsState = getPermissionsFromPermissionsState(packageStateInternal.getLegacyPermissionState(), i);
+                    if (!((ArrayList) permissionsFromPermissionsState).isEmpty() || packageStateInternal.isInstallPermissionsFixed()) {
+                        arrayMap.put(str, permissionsFromPermissionsState);
+                    }
+                }
+            }
+            return arrayMap;
+        }
+
+        public static List getPermissionsFromPermissionsState(LegacyPermissionState legacyPermissionState, int i) {
+            Collection<LegacyPermissionState.PermissionState> permissionStates = legacyPermissionState.getPermissionStates(i);
+            ArrayList arrayList = new ArrayList();
+            for (LegacyPermissionState.PermissionState permissionState : permissionStates) {
+                arrayList.add(new RuntimePermissionsState.PermissionState(permissionState.mName, permissionState.mGranted, permissionState.mFlags));
+            }
+            return arrayList;
+        }
+
+        public static Map getShareUsersPermissions(int i, WatchedArrayMap watchedArrayMap) {
+            ArrayMap arrayMap = new ArrayMap();
+            int size = watchedArrayMap.mStorage.size();
+            for (int i2 = 0; i2 < size; i2++) {
+                arrayMap.put((String) watchedArrayMap.mStorage.keyAt(i2), getPermissionsFromPermissionsState(((SharedUserSetting) watchedArrayMap.mStorage.valueAt(i2)).mLegacyPermissionsState, i));
+            }
+            return arrayMap;
+        }
+
+        public static void readPermissionsState(List list, LegacyPermissionState legacyPermissionState, int i) {
+            int size = list.size();
+            for (int i2 = 0; i2 < size; i2++) {
+                RuntimePermissionsState.PermissionState permissionState = (RuntimePermissionsState.PermissionState) list.get(i2);
+                legacyPermissionState.putPermissionState(new LegacyPermissionState.PermissionState(permissionState.getName(), true, permissionState.isGranted(), permissionState.getFlags()), i);
+            }
+        }
+
+        /* JADX WARN: Code restructure failed: missing block: B:20:0x001d, code lost:
+        
+            if (r1 != 4) goto L33;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:22:0x0020, code lost:
+        
+            r1 = r8.getName();
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:23:0x002b, code lost:
+        
+            if (r1.hashCode() == 3242771) goto L34;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:26:0x0034, code lost:
+        
+            if (r1.equals("item") == false) goto L40;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:28:0x0036, code lost:
+        
+            r9.putPermissionState(new com.android.server.pm.permission.LegacyPermissionState.PermissionState(r8.getAttributeValue((java.lang.String) null, "name"), true, r8.getAttributeBoolean((java.lang.String) null, "granted", true), r8.getAttributeIntHex((java.lang.String) null, "flags", 0)), r10);
+         */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void parseLegacyPermissionsLPr(com.android.modules.utils.TypedXmlPullParser r8, com.android.server.pm.permission.LegacyPermissionState r9, int r10) {
+            /*
+                r7 = this;
+                java.lang.Object r7 = r7.mLock
+                monitor-enter(r7)
+                int r0 = r8.getDepth()     // Catch: java.lang.Throwable -> L18
+            L7:
+                int r1 = r8.next()     // Catch: java.lang.Throwable -> L18
+                r2 = 1
+                if (r1 == r2) goto L54
+                r3 = 3
+                if (r1 != r3) goto L1a
+                int r4 = r8.getDepth()     // Catch: java.lang.Throwable -> L18
+                if (r4 <= r0) goto L54
+                goto L1a
+            L18:
+                r8 = move-exception
+                goto L56
+            L1a:
+                if (r1 == r3) goto L7
+                r3 = 4
+                if (r1 != r3) goto L20
+                goto L7
+            L20:
+                java.lang.String r1 = r8.getName()     // Catch: java.lang.Throwable -> L18
+                int r3 = r1.hashCode()     // Catch: java.lang.Throwable -> L18
+                r4 = 3242771(0x317b13, float:4.54409E-39)
+                if (r3 == r4) goto L2e
+                goto L7
+            L2e:
+                java.lang.String r3 = "item"
+                boolean r1 = r1.equals(r3)     // Catch: java.lang.Throwable -> L18
+                if (r1 == 0) goto L7
+                java.lang.String r1 = "name"
+                r3 = 0
+                java.lang.String r1 = r8.getAttributeValue(r3, r1)     // Catch: java.lang.Throwable -> L18
+                java.lang.String r4 = "granted"
+                boolean r4 = r8.getAttributeBoolean(r3, r4, r2)     // Catch: java.lang.Throwable -> L18
+                java.lang.String r5 = "flags"
+                r6 = 0
+                int r3 = r8.getAttributeIntHex(r3, r5, r6)     // Catch: java.lang.Throwable -> L18
+                com.android.server.pm.permission.LegacyPermissionState$PermissionState r5 = new com.android.server.pm.permission.LegacyPermissionState$PermissionState     // Catch: java.lang.Throwable -> L18
+                r5.<init>(r1, r2, r4, r3)     // Catch: java.lang.Throwable -> L18
+                r9.putPermissionState(r5, r10)     // Catch: java.lang.Throwable -> L18
+                goto L7
+            L54:
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> L18
+                return
+            L56:
+                monitor-exit(r7)     // Catch: java.lang.Throwable -> L18
+                throw r8
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.RuntimePermissionPersistence.parseLegacyPermissionsLPr(com.android.modules.utils.TypedXmlPullParser, com.android.server.pm.permission.LegacyPermissionState, int):void");
+        }
+
+        /* JADX WARN: Code restructure failed: missing block: B:20:0x001e, code lost:
+        
+            if (r2 != 4) goto L58;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:22:0x0021, code lost:
+        
+            r2 = r9.getName();
+            r4 = r2.hashCode();
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:23:0x002e, code lost:
+        
+            if (r4 == 111052) goto L31;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:25:0x0033, code lost:
+        
+            if (r4 == 160289295) goto L28;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:27:0x0038, code lost:
+        
+            if (r4 == 485578803) goto L25;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:29:0x005c, code lost:
+        
+            r2 = 65535;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:31:0x005e, code lost:
+        
+            if (r2 == 0) goto L59;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:33:0x00cd, code lost:
+        
+            r8.mVersions.put(r10, r9.getAttributeInt((java.lang.String) null, "version", -1));
+            r8.mFingerprints.put(r10, r9.getAttributeValue((java.lang.String) null, "fingerprint"));
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:37:0x0060, code lost:
+        
+            if (r2 == 1) goto L61;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:39:0x0098, code lost:
+        
+            r2 = r9.getAttributeValue((java.lang.String) null, "name");
+            r3 = (com.android.server.pm.pkg.PackageStateInternal) r11.mStorage.get(r2);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:40:0x00a7, code lost:
+        
+            if (r3 != null) goto L67;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:42:0x00c4, code lost:
+        
+            parseLegacyPermissionsLPr(r9, r3.getLegacyPermissionState(), r10);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:45:0x00a9, code lost:
+        
+            android.util.Slog.w("PackageManager", "Unknown package:" + r2);
+            com.android.internal.util.XmlUtils.skipCurrentTag(r9);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:48:0x0062, code lost:
+        
+            if (r2 == 2) goto L62;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:50:0x0065, code lost:
+        
+            r2 = r9.getAttributeValue((java.lang.String) null, "name");
+            r3 = (com.android.server.pm.SharedUserSetting) r12.mStorage.get(r2);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:51:0x0074, code lost:
+        
+            if (r3 != null) goto L64;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:53:0x0091, code lost:
+        
+            parseLegacyPermissionsLPr(r9, r3.mLegacyPermissionsState, r10);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:56:0x0076, code lost:
+        
+            android.util.Slog.w("PackageManager", "Unknown shared user:" + r2);
+            com.android.internal.util.XmlUtils.skipCurrentTag(r9);
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:62:0x0042, code lost:
+        
+            if (r2.equals("shared-user") == false) goto L34;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:63:0x0044, code lost:
+        
+            r2 = 2;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:65:0x004d, code lost:
+        
+            if (r2.equals("runtime-permissions") == false) goto L34;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:66:0x004f, code lost:
+        
+            r2 = 0;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:68:0x0058, code lost:
+        
+            if (r2.equals("pkg") == false) goto L34;
+         */
+        /* JADX WARN: Code restructure failed: missing block: B:69:0x005a, code lost:
+        
+            r2 = 1;
+         */
+        /*
+            Code decompiled incorrectly, please refer to instructions dump.
+            To view partially-correct code enable 'Show inconsistent code' option in preferences
+        */
+        public final void parseLegacyRuntimePermissions(com.android.modules.utils.TypedXmlPullParser r9, int r10, com.android.server.utils.WatchedArrayMap r11, com.android.server.utils.WatchedArrayMap r12) {
+            /*
+                r8 = this;
+                java.lang.Object r0 = r8.mLock
+                monitor-enter(r0)
+                int r1 = r9.getDepth()     // Catch: java.lang.Throwable -> L18
+            L7:
+                int r2 = r9.next()     // Catch: java.lang.Throwable -> L18
+                r3 = 1
+                if (r2 == r3) goto Le6
+                r4 = 3
+                if (r2 != r4) goto L1b
+                int r5 = r9.getDepth()     // Catch: java.lang.Throwable -> L18
+                if (r5 <= r1) goto Le6
+                goto L1b
+            L18:
+                r8 = move-exception
+                goto Le8
+            L1b:
+                if (r2 == r4) goto L7
+                r4 = 4
+                if (r2 != r4) goto L21
+                goto L7
+            L21:
+                java.lang.String r2 = r9.getName()     // Catch: java.lang.Throwable -> L18
+                int r4 = r2.hashCode()     // Catch: java.lang.Throwable -> L18
+                r5 = 111052(0x1b1cc, float:1.55617E-40)
+                r6 = 2
+                r7 = -1
+                if (r4 == r5) goto L51
+                r5 = 160289295(0x98dd20f, float:3.4142053E-33)
+                if (r4 == r5) goto L46
+                r5 = 485578803(0x1cf15833, float:1.5970841E-21)
+                if (r4 == r5) goto L3b
+                goto L5c
+            L3b:
+                java.lang.String r4 = "shared-user"
+                boolean r2 = r2.equals(r4)     // Catch: java.lang.Throwable -> L18
+                if (r2 == 0) goto L5c
+                r2 = r6
+                goto L5d
+            L46:
+                java.lang.String r4 = "runtime-permissions"
+                boolean r2 = r2.equals(r4)     // Catch: java.lang.Throwable -> L18
+                if (r2 == 0) goto L5c
+                r2 = 0
+                goto L5d
+            L51:
+                java.lang.String r4 = "pkg"
+                boolean r2 = r2.equals(r4)     // Catch: java.lang.Throwable -> L18
+                if (r2 == 0) goto L5c
+                r2 = r3
+                goto L5d
+            L5c:
+                r2 = r7
+            L5d:
+                r4 = 0
+                if (r2 == 0) goto Lcd
+                if (r2 == r3) goto L98
+                if (r2 == r6) goto L65
+                goto L7
+            L65:
+                java.lang.String r2 = "name"
+                java.lang.String r2 = r9.getAttributeValue(r4, r2)     // Catch: java.lang.Throwable -> L18
+                android.util.ArrayMap r3 = r12.mStorage     // Catch: java.lang.Throwable -> L18
+                java.lang.Object r3 = r3.get(r2)     // Catch: java.lang.Throwable -> L18
+                com.android.server.pm.SharedUserSetting r3 = (com.android.server.pm.SharedUserSetting) r3     // Catch: java.lang.Throwable -> L18
+                if (r3 != 0) goto L91
+                java.lang.String r3 = "PackageManager"
+                java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L18
+                r4.<init>()     // Catch: java.lang.Throwable -> L18
+                java.lang.String r5 = "Unknown shared user:"
+                r4.append(r5)     // Catch: java.lang.Throwable -> L18
+                r4.append(r2)     // Catch: java.lang.Throwable -> L18
+                java.lang.String r2 = r4.toString()     // Catch: java.lang.Throwable -> L18
+                android.util.Slog.w(r3, r2)     // Catch: java.lang.Throwable -> L18
+                com.android.internal.util.XmlUtils.skipCurrentTag(r9)     // Catch: java.lang.Throwable -> L18
+                goto L7
+            L91:
+                com.android.server.pm.permission.LegacyPermissionState r2 = r3.mLegacyPermissionsState     // Catch: java.lang.Throwable -> L18
+                r8.parseLegacyPermissionsLPr(r9, r2, r10)     // Catch: java.lang.Throwable -> L18
+                goto L7
+            L98:
+                java.lang.String r2 = "name"
+                java.lang.String r2 = r9.getAttributeValue(r4, r2)     // Catch: java.lang.Throwable -> L18
+                android.util.ArrayMap r3 = r11.mStorage     // Catch: java.lang.Throwable -> L18
+                java.lang.Object r3 = r3.get(r2)     // Catch: java.lang.Throwable -> L18
+                com.android.server.pm.pkg.PackageStateInternal r3 = (com.android.server.pm.pkg.PackageStateInternal) r3     // Catch: java.lang.Throwable -> L18
+                if (r3 != 0) goto Lc4
+                java.lang.String r3 = "PackageManager"
+                java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L18
+                r4.<init>()     // Catch: java.lang.Throwable -> L18
+                java.lang.String r5 = "Unknown package:"
+                r4.append(r5)     // Catch: java.lang.Throwable -> L18
+                r4.append(r2)     // Catch: java.lang.Throwable -> L18
+                java.lang.String r2 = r4.toString()     // Catch: java.lang.Throwable -> L18
+                android.util.Slog.w(r3, r2)     // Catch: java.lang.Throwable -> L18
+                com.android.internal.util.XmlUtils.skipCurrentTag(r9)     // Catch: java.lang.Throwable -> L18
+                goto L7
+            Lc4:
+                com.android.server.pm.permission.LegacyPermissionState r2 = r3.getLegacyPermissionState()     // Catch: java.lang.Throwable -> L18
+                r8.parseLegacyPermissionsLPr(r9, r2, r10)     // Catch: java.lang.Throwable -> L18
+                goto L7
+            Lcd:
+                java.lang.String r2 = "version"
+                int r2 = r9.getAttributeInt(r4, r2, r7)     // Catch: java.lang.Throwable -> L18
+                android.util.SparseIntArray r3 = r8.mVersions     // Catch: java.lang.Throwable -> L18
+                r3.put(r10, r2)     // Catch: java.lang.Throwable -> L18
+                java.lang.String r2 = "fingerprint"
+                java.lang.String r2 = r9.getAttributeValue(r4, r2)     // Catch: java.lang.Throwable -> L18
+                android.util.SparseArray r3 = r8.mFingerprints     // Catch: java.lang.Throwable -> L18
+                r3.put(r10, r2)     // Catch: java.lang.Throwable -> L18
+                goto L7
+            Le6:
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L18
+                return
+            Le8:
+                monitor-exit(r0)     // Catch: java.lang.Throwable -> L18
+                throw r8
+            */
+            throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.RuntimePermissionPersistence.parseLegacyRuntimePermissions(com.android.modules.utils.TypedXmlPullParser, int, com.android.server.utils.WatchedArrayMap, com.android.server.utils.WatchedArrayMap):void");
+        }
+
+        public final void readStateForUserSync(int i, VersionInfo versionInfo, WatchedArrayMap watchedArrayMap, WatchedArrayMap watchedArrayMap2, File file) {
+            RuntimePermissionsState readForUser;
+            synchronized (this.mPersistenceLock) {
+                readForUser = this.mPersistence.readForUser(UserHandle.of(i));
+            }
+            if (readForUser == null) {
+                synchronized (this.mLock) {
+                    if (file.exists()) {
+                        try {
+                            FileInputStream openRead = new AtomicFile(file).openRead();
+                            try {
+                                try {
+                                    parseLegacyRuntimePermissions(Xml.resolvePullParser(openRead), i, watchedArrayMap, watchedArrayMap2);
+                                } catch (IOException | XmlPullParserException e) {
+                                    throw new IllegalStateException("Failed parsing permissions file: " + file, e);
+                                }
+                            } finally {
+                                IoUtils.closeQuietly(openRead);
+                            }
+                        } catch (FileNotFoundException unused) {
+                            Slog.i("PackageManager", "No permissions state");
+                        }
+                    }
+                }
+                writeStateForUserAsync(i);
+                return;
+            }
+            synchronized (this.mLock) {
+                try {
+                    int version = readForUser.getVersion();
+                    if (version == -1) {
+                        version = -1;
+                    }
+                    this.mVersions.put(i, version);
+                    this.mFingerprints.put(i, readForUser.getFingerprint());
+                    boolean z = versionInfo.sdkVersion < 30;
+                    Map packagePermissions = readForUser.getPackagePermissions();
+                    int size = watchedArrayMap.mStorage.size();
+                    for (int i2 = 0; i2 < size; i2++) {
+                        String str = (String) watchedArrayMap.mStorage.keyAt(i2);
+                        PackageSetting packageSetting = (PackageSetting) watchedArrayMap.mStorage.valueAt(i2);
+                        List list = (List) packagePermissions.get(str);
+                        if (list != null) {
+                            readPermissionsState(list, packageSetting.mLegacyPermissionsState, i);
+                            packageSetting.setBoolean(1, true);
+                        } else if (!packageSetting.hasSharedUser() && !z) {
+                            Slogf.w("PackageSettings", "Missing permission state for package %s on user %d", str, Integer.valueOf(i));
+                            packageSetting.mLegacyPermissionsState.setMissing(i, true);
+                        }
+                    }
+                    Map sharedUserPermissions = readForUser.getSharedUserPermissions();
+                    int size2 = watchedArrayMap2.mStorage.size();
+                    for (int i3 = 0; i3 < size2; i3++) {
+                        String str2 = (String) watchedArrayMap2.mStorage.keyAt(i3);
+                        SharedUserSetting sharedUserSetting = (SharedUserSetting) watchedArrayMap2.mStorage.valueAt(i3);
+                        List list2 = (List) sharedUserPermissions.get(str2);
+                        if (list2 != null) {
+                            readPermissionsState(list2, sharedUserSetting.mLegacyPermissionsState, i);
+                        } else if (!z) {
+                            Slog.w("PackageSettings", "Missing permission state for shared user: " + str2);
+                            sharedUserSetting.mLegacyPermissionsState.setMissing(i, true);
+                        }
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+
+        public final void writePendingStates() {
+            int keyAt;
+            RuntimePermissionsState runtimePermissionsState;
+            while (true) {
+                synchronized (this.mLock) {
+                    try {
+                        if (this.mPendingStatesToWrite.size() == 0) {
+                            return;
+                        }
+                        keyAt = this.mPendingStatesToWrite.keyAt(0);
+                        runtimePermissionsState = (RuntimePermissionsState) this.mPendingStatesToWrite.valueAt(0);
+                        this.mPendingStatesToWrite.removeAt(0);
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+                synchronized (this.mPersistenceLock) {
+                    this.mPersistence.writeForUser(runtimePermissionsState, UserHandle.of(keyAt));
+                }
+            }
+        }
+
+        public final void writeStateForUser(final int i, final PermissionManagerService.PermissionManagerServiceInternalImpl permissionManagerServiceInternalImpl, final WatchedArrayMap watchedArrayMap, final WatchedArrayMap watchedArrayMap2, final Handler handler, final PackageManagerTracedLock packageManagerTracedLock, final boolean z) {
+            Trace.traceBegin(262144L, "writePerm");
+            StringBuilder sb = new StringBuilder("++ writeStateForUserSyncLPr(");
+            sb.append(i);
+            BootReceiver$$ExternalSyntheticOutline0.m(sb, ")", "PackageSettings");
+            synchronized (this.mLock) {
+                this.mAsyncHandler.removeMessages(i);
+                this.mWriteScheduled.delete(i);
+            }
+            Runnable runnable = new Runnable() { // from class: com.android.server.pm.Settings$RuntimePermissionPersistence$$ExternalSyntheticLambda0
+                @Override // java.lang.Runnable
+                public final void run() {
+                    Map packagePermissions;
+                    Map shareUsersPermissions;
+                    Settings.RuntimePermissionPersistence runtimePermissionPersistence = Settings.RuntimePermissionPersistence.this;
+                    PackageManagerTracedLock packageManagerTracedLock2 = packageManagerTracedLock;
+                    boolean z2 = z;
+                    PermissionManagerService.PermissionManagerServiceInternalImpl permissionManagerServiceInternalImpl2 = permissionManagerServiceInternalImpl;
+                    int i2 = i;
+                    WatchedArrayMap watchedArrayMap3 = watchedArrayMap;
+                    WatchedArrayMap watchedArrayMap4 = watchedArrayMap2;
+                    Handler handler2 = handler;
+                    boolean andSet = runtimePermissionPersistence.mIsLegacyPermissionStateStale.getAndSet(false);
+                    boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+                    synchronized (packageManagerTracedLock2) {
+                        if (z2 || andSet) {
+                            try {
+                                PermissionManagerService.this.mPermissionManagerServiceImpl.writeLegacyPermissionStateTEMP();
+                            } catch (Throwable th) {
+                                boolean z4 = PackageManagerService.DEBUG_COMPRESSION;
+                                throw th;
+                            }
+                        }
+                        packagePermissions = Settings.RuntimePermissionPersistence.getPackagePermissions(i2, watchedArrayMap3);
+                        shareUsersPermissions = Settings.RuntimePermissionPersistence.getShareUsersPermissions(i2, watchedArrayMap4);
+                    }
+                    synchronized (runtimePermissionPersistence.mLock) {
+                        runtimePermissionPersistence.mPendingStatesToWrite.put(i2, new RuntimePermissionsState(runtimePermissionPersistence.mVersions.get(i2, 0), (String) runtimePermissionPersistence.mFingerprints.get(i2), packagePermissions, shareUsersPermissions));
+                    }
+                    if (handler2 != null) {
+                        runtimePermissionPersistence.mPersistenceHandler.obtainMessage(i2).sendToTarget();
+                    } else {
+                        runtimePermissionPersistence.writePendingStates();
+                    }
+                }
+            };
+            if (handler != null) {
+                handler.post(runnable);
+            } else {
+                runnable.run();
+            }
+            this.mLastWriteDoneTimeMillis = SystemClock.uptimeMillis();
+            BrailleDisplayConnection$$ExternalSyntheticOutline0.m(i, "-- writeStateForUserSyncLPr(", ")", "PackageSettings");
+            Trace.traceEnd(262144L);
+        }
+
+        public final void writeStateForUserAsync(int i) {
+            this.mIsLegacyPermissionStateStale.set(true);
+            synchronized (this.mLock) {
+                try {
+                    long uptimeMillis = SystemClock.uptimeMillis();
+                    long nextDouble = ((long) ((sRandom.nextDouble() * 600.0d) - 300.0d)) + 1000;
+                    if (this.mWriteScheduled.get(i)) {
+                        this.mAsyncHandler.removeMessages(i);
+                        long j = this.mLastNotWrittenMutationTimesMillis.get(i);
+                        if (uptimeMillis - j >= 2000) {
+                            this.mAsyncHandler.obtainMessage(i).sendToTarget();
+                        } else {
+                            this.mAsyncHandler.sendMessageDelayed(this.mAsyncHandler.obtainMessage(i), Math.min(nextDouble, Math.max((j + 2000) - uptimeMillis, 0L)));
+                        }
+                    } else {
+                        this.mLastNotWrittenMutationTimesMillis.put(i, uptimeMillis);
+                        this.mAsyncHandler.sendMessageDelayed(this.mAsyncHandler.obtainMessage(i), nextDouble);
+                        this.mWriteScheduled.put(i, true);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
     }
 
-    @Override // com.android.server.utils.Watchable
-    public void registerObserver(Watcher watcher) {
-        this.mWatchable.registerObserver(watcher);
-    }
-
-    @Override // com.android.server.utils.Watchable
-    public void unregisterObserver(Watcher watcher) {
-        this.mWatchable.unregisterObserver(watcher);
-    }
-
-    @Override // com.android.server.utils.Watchable
-    public boolean isRegisteredObserver(Watcher watcher) {
-        return this.mWatchable.isRegisteredObserver(watcher);
-    }
-
-    @Override // com.android.server.utils.Watchable
-    public void dispatchChange(Watchable watchable) {
-        this.mWatchable.dispatchChange(watchable);
-    }
-
-    public void onChanged() {
-        dispatchChange(this);
-    }
-
-    /* loaded from: classes3.dex */
-    public class VersionInfo {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class VersionInfo {
         public String buildFingerprint;
         public int databaseVersion;
         public String fingerprint;
         public int sdkVersion;
 
-        public void forceCurrent() {
+        public final void forceCurrent() {
             this.sdkVersion = Build.VERSION.SDK_INT;
             this.databaseVersion = 3;
             this.buildFingerprint = Build.FINGERPRINT;
@@ -231,126 +882,49 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         }
     }
 
-    /* renamed from: com.android.server.pm.Settings$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends Watcher {
-        public AnonymousClass1() {
-        }
-
-        @Override // com.android.server.utils.Watcher
-        public void onChange(Watchable watchable) {
-            Settings.this.dispatchChange(watchable);
-        }
+    static {
+        Integer valueOf = Integer.valueOf(EndpointMonitorConst.FLAG_TRACING_PROCESS_PERMISSIONS_MODIFICATION);
+        Integer valueOf2 = Integer.valueOf(EndpointMonitorConst.FLAG_TRACING_NETWORK_EVENT_ABNORMAL_PKT);
+        FLAG_DUMP_SPEC = new Object[]{1, "SYSTEM", 2, "DEBUGGABLE", 4, "HAS_CODE", 8, "PERSISTENT", 16, "FACTORY_TEST", 32, "ALLOW_TASK_REPARENTING", 64, "ALLOW_CLEAR_USER_DATA", 128, "UPDATED_SYSTEM_APP", 256, "TEST_ONLY", valueOf, "VM_SAFE_MODE", 32768, "ALLOW_BACKUP", valueOf2, "KILL_AFTER_RESTORE", 131072, "RESTORE_ANY_VERSION", 262144, "EXTERNAL_STORAGE", 1048576, "LARGE_HEAP"};
+        PRIVATE_FLAG_DUMP_SPEC = new Object[]{1024, "PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE", 4096, "PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION", 2048, "PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_UNRESIZEABLE", 134217728, "ALLOW_AUDIO_PLAYBACK_CAPTURE", 536870912, "PRIVATE_FLAG_REQUEST_LEGACY_EXTERNAL_STORAGE", 8192, "BACKUP_IN_FOREGROUND", 2, "CANT_SAVE_STATE", 32, "DEFAULT_TO_DEVICE_PROTECTED_STORAGE", 64, "DIRECT_BOOT_AWARE", 16, "HAS_DOMAIN_URLS", 1, "HIDDEN", 128, "EPHEMERAL", 32768, "ISOLATED_SPLIT_LOADING", 131072, "OEM", 256, "PARTIALLY_DIRECT_BOOT_AWARE", 8, "PRIVILEGED", 512, "REQUIRED_FOR_SYSTEM_USER", valueOf, "STATIC_SHARED_LIBRARY", 262144, "VENDOR", 524288, "PRODUCT", 2097152, "SYSTEM_EXT", valueOf2, "VIRTUAL_PRELOAD", 1073741824, "ODM", Integer.MIN_VALUE, "PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING", 16777216, "PRIVATE_FLAG_HAS_FRAGILE_USER_DATA"};
     }
 
-    /* renamed from: com.android.server.pm.Settings$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 extends SnapshotCache {
-        public AnonymousClass2(Settings settings, Watchable watchable) {
-            super(settings, watchable);
-        }
-
-        @Override // com.android.server.utils.SnapshotCache
-        public Settings createSnapshot() {
-            Settings settings = new Settings();
-            settings.mWatchable.seal();
-            return settings;
-        }
-    }
-
-    public final SnapshotCache makeCache() {
-        return new SnapshotCache(this, this) { // from class: com.android.server.pm.Settings.2
-            public AnonymousClass2(Watchable this, Watchable this) {
-                super(this, this);
-            }
-
-            @Override // com.android.server.utils.SnapshotCache
-            public Settings createSnapshot() {
-                Settings settings = new Settings();
-                settings.mWatchable.seal();
-                return settings;
-            }
-        };
-    }
-
-    public final void registerObservers() {
-        this.mPackages.registerObserver(this.mObserver);
-        this.mInstallerPackages.registerObserver(this.mObserver);
-        this.mKernelMapping.registerObserver(this.mObserver);
-        this.mDisabledSysPackages.registerObserver(this.mObserver);
-        this.mBlockUninstallPackages.registerObserver(this.mObserver);
-        this.mVersion.registerObserver(this.mObserver);
-        this.mPreferredActivities.registerObserver(this.mObserver);
-        this.mPersistentPreferredActivities.registerObserver(this.mObserver);
-        this.mCrossProfileIntentResolvers.registerObserver(this.mObserver);
-        this.mSharedUsers.registerObserver(this.mObserver);
-        this.mAppIds.registerObserver(this.mObserver);
-        this.mRenamedPackages.registerObserver(this.mObserver);
-        this.mNextAppLinkGeneration.registerObserver(this.mObserver);
-        this.mDefaultBrowserApp.registerObserver(this.mObserver);
-        this.mPendingPackages.registerObserver(this.mObserver);
-        this.mPastSignatures.registerObserver(this.mObserver);
-        this.mKeySetRefs.registerObserver(this.mObserver);
-    }
-
-    public Settings(Map map) {
+    /* JADX WARN: Type inference failed for: r7v1, types: [com.android.server.pm.Settings$1] */
+    public Settings(Settings settings) {
         this.mWatchable = new WatchableImpl();
         this.mPackageRestrictionsLock = new Object();
         this.mPendingAsyncPackageRestrictionsWrites = new SparseIntArray();
-        this.mDisabledSysPackages = new WatchedArrayMap();
-        this.mBlockUninstallPackages = new WatchedSparseArray();
-        this.mVersion = new WatchedArrayMap();
-        this.mSharedUsers = new WatchedArrayMap();
-        this.mRenamedPackages = new WatchedArrayMap();
-        this.mDefaultBrowserApp = new WatchedSparseArray();
-        this.mNextAppLinkGeneration = new WatchedSparseIntArray();
+        WatchedArrayMap watchedArrayMap = new WatchedArrayMap(0);
+        this.mDisabledSysPackages = watchedArrayMap;
+        WatchedSparseArray watchedSparseArray = new WatchedSparseArray();
+        this.mBlockUninstallPackages = watchedSparseArray;
+        WatchedArrayMap watchedArrayMap2 = new WatchedArrayMap(0);
+        this.mVersion = watchedArrayMap2;
+        WatchedArrayMap watchedArrayMap3 = new WatchedArrayMap(0);
+        this.mSharedUsers = watchedArrayMap3;
+        WatchedArrayMap watchedArrayMap4 = new WatchedArrayMap(0);
+        this.mRenamedPackages = watchedArrayMap4;
+        this.mPendingDefaultBrowser = new WatchedSparseArray();
+        WatchedSparseIntArray watchedSparseIntArray = new WatchedSparseIntArray();
+        this.mNextAppLinkGeneration = watchedSparseIntArray;
         this.mReadMessages = new StringBuilder();
-        AnonymousClass1 anonymousClass1 = new Watcher() { // from class: com.android.server.pm.Settings.1
-            public AnonymousClass1() {
-            }
-
+        this.mObserver = new Watcher() { // from class: com.android.server.pm.Settings.1
             @Override // com.android.server.utils.Watcher
-            public void onChange(Watchable watchable) {
+            public final void onChange(Watchable watchable) {
                 Settings.this.dispatchChange(watchable);
             }
         };
-        this.mObserver = anonymousClass1;
-        WatchedArrayMap watchedArrayMap = new WatchedArrayMap();
-        this.mPackages = watchedArrayMap;
-        this.mPackagesSnapshot = new SnapshotCache.Auto(watchedArrayMap, watchedArrayMap, "Settings.mPackages");
-        WatchedArrayMap watchedArrayMap2 = new WatchedArrayMap();
-        this.mKernelMapping = watchedArrayMap2;
-        this.mKernelMappingSnapshot = new SnapshotCache.Auto(watchedArrayMap2, watchedArrayMap2, "Settings.mKernelMapping");
-        WatchedArraySet watchedArraySet = new WatchedArraySet();
-        this.mInstallerPackages = watchedArraySet;
-        this.mInstallerPackagesSnapshot = new SnapshotCache.Auto(watchedArraySet, watchedArraySet, "Settings.mInstallerPackages");
-        WatchedSparseArray watchedSparseArray = new WatchedSparseArray();
-        this.mPreferredActivities = watchedSparseArray;
-        this.mPreferredActivitiesSnapshot = new SnapshotCache.Auto(watchedSparseArray, watchedSparseArray, "Settings.mPreferredActivities");
-        WatchedSparseArray watchedSparseArray2 = new WatchedSparseArray();
-        this.mPersistentPreferredActivities = watchedSparseArray2;
-        this.mPersistentPreferredActivitiesSnapshot = new SnapshotCache.Auto(watchedSparseArray2, watchedSparseArray2, "Settings.mPersistentPreferredActivities");
-        WatchedSparseArray watchedSparseArray3 = new WatchedSparseArray();
-        this.mCrossProfileIntentResolvers = watchedSparseArray3;
-        this.mCrossProfileIntentResolversSnapshot = new SnapshotCache.Auto(watchedSparseArray3, watchedSparseArray3, "Settings.mCrossProfileIntentResolvers");
-        WatchedArrayList watchedArrayList = new WatchedArrayList();
-        this.mPastSignatures = watchedArrayList;
-        this.mPastSignaturesSnapshot = new SnapshotCache.Auto(watchedArrayList, watchedArrayList, "Settings.mPastSignatures");
-        WatchedArrayMap watchedArrayMap3 = new WatchedArrayMap();
-        this.mKeySetRefs = watchedArrayMap3;
-        this.mKeySetRefsSnapshot = new SnapshotCache.Auto(watchedArrayMap3, watchedArrayMap3, "Settings.mKeySetRefs");
-        WatchedArrayList watchedArrayList2 = new WatchedArrayList();
-        this.mPendingPackages = watchedArrayList2;
-        this.mPendingPackagesSnapshot = new SnapshotCache.Auto(watchedArrayList2, watchedArrayList2, "Settings.mPendingPackages");
-        this.mKeySetManagerService = new KeySetManagerService(watchedArrayMap);
-        this.mHandler = new Handler(BackgroundThread.getHandler().getLooper());
-        this.mLock = new PackageManagerTracedLock();
-        watchedArrayMap.putAll(map);
-        this.mAppIds = new AppIdSettingMap();
-        this.mSystemDir = null;
-        this.mPermissions = null;
-        this.mRuntimePermissionsPersistence = null;
-        this.mPermissionDataProvider = null;
+        WatchedArrayMap watchedArrayMap5 = (WatchedArrayMap) settings.mPackagesSnapshot.snapshot();
+        this.mPackages = watchedArrayMap5;
+        this.mPackagesSnapshot = new SnapshotCache.Auto();
+        this.mKernelMapping = (WatchedArrayMap) settings.mKernelMappingSnapshot.snapshot();
+        this.mKernelMappingSnapshot = new SnapshotCache.Auto();
+        this.mInstallerPackages = (WatchedArraySet) settings.mInstallerPackagesSnapshot.snapshot();
+        this.mInstallerPackagesSnapshot = new SnapshotCache.Auto();
+        this.mKeySetManagerService = new KeySetManagerService(settings.mKeySetManagerService, watchedArrayMap5);
+        this.mHandler = null;
+        this.mLock = null;
+        this.mRuntimePermissionsPersistence = settings.mRuntimePermissionsPersistence;
         this.mSettingsFilename = null;
         this.mSettingsReserveCopyFilename = null;
         this.mPreviousSettingsFilename = null;
@@ -358,80 +932,100 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         this.mStoppedPackagesFilename = null;
         this.mBackupStoppedPackagesFilename = null;
         this.mKernelMappingFilename = null;
-        this.mDomainVerificationManager = null;
-        registerObservers();
-        Watchable.verifyWatchedAttributes(this, anonymousClass1);
-        this.mSnapshot = makeCache();
+        this.mDomainVerificationManager = settings.mDomainVerificationManager;
+        WatchedArrayMap.snapshot(watchedArrayMap, settings.mDisabledSysPackages);
+        WatchedSparseArray.snapshot(watchedSparseArray, settings.mBlockUninstallPackages);
+        watchedArrayMap2.putAll(settings.mVersion);
+        this.mVerifierDeviceIdentity = settings.mVerifierDeviceIdentity;
+        this.mPreferredActivities = (WatchedSparseArray) settings.mPreferredActivitiesSnapshot.snapshot();
+        this.mPreferredActivitiesSnapshot = new SnapshotCache.Auto();
+        this.mPersistentPreferredActivities = (WatchedSparseArray) settings.mPersistentPreferredActivitiesSnapshot.snapshot();
+        this.mPersistentPreferredActivitiesSnapshot = new SnapshotCache.Auto();
+        this.mCrossProfileIntentResolvers = (WatchedSparseArray) settings.mCrossProfileIntentResolversSnapshot.snapshot();
+        this.mCrossProfileIntentResolversSnapshot = new SnapshotCache.Auto();
+        WatchedArrayMap.snapshot(watchedArrayMap3, settings.mSharedUsers);
+        AppIdSettingMap appIdSettingMap = settings.mAppIds;
+        appIdSettingMap.getClass();
+        this.mAppIds = new AppIdSettingMap(appIdSettingMap);
+        WatchedArrayMap.snapshot(watchedArrayMap4, settings.mRenamedPackages);
+        WatchedSparseIntArray watchedSparseIntArray2 = settings.mNextAppLinkGeneration;
+        if (watchedSparseIntArray.mStorage.size() != 0) {
+            throw new IllegalArgumentException("snapshot destination is not empty");
+        }
+        int size = watchedSparseIntArray2.mStorage.size();
+        for (int i = 0; i < size; i++) {
+            watchedSparseIntArray.mStorage.put(watchedSparseIntArray2.mStorage.keyAt(i), watchedSparseIntArray2.mStorage.valueAt(i));
+        }
+        watchedSparseIntArray.seal();
+        WatchedSparseArray watchedSparseArray2 = this.mPendingDefaultBrowser;
+        WatchedSparseArray watchedSparseArray3 = settings.mPendingDefaultBrowser;
+        watchedSparseArray2.getClass();
+        WatchedSparseArray.snapshot(watchedSparseArray2, watchedSparseArray3);
+        this.mPendingPackages = (WatchedArrayList) settings.mPendingPackagesSnapshot.snapshot();
+        this.mPendingPackagesSnapshot = new SnapshotCache.Auto();
+        this.mSystemDir = null;
+        this.mPermissions = settings.mPermissions;
+        this.mPermissionDataProvider = settings.mPermissionDataProvider;
+        this.mSnapshot = new SnapshotCache.Auto();
     }
 
-    public Settings(File file, RuntimePermissionsPersistence runtimePermissionsPersistence, LegacyPermissionDataProvider legacyPermissionDataProvider, DomainVerificationManagerInternal domainVerificationManagerInternal, Handler handler, PackageManagerTracedLock packageManagerTracedLock) {
+    /* JADX WARN: Type inference failed for: r0v11, types: [com.android.server.pm.Settings$1, com.android.server.utils.Watcher] */
+    /* JADX WARN: Type inference failed for: r13v1, types: [com.android.server.pm.Settings$3] */
+    public Settings(File file, RuntimePermissionsPersistence runtimePermissionsPersistence, PermissionManagerService.PermissionManagerServiceInternalImpl permissionManagerServiceInternalImpl, DomainVerificationManagerInternal domainVerificationManagerInternal, Handler handler, PackageManagerTracedLock packageManagerTracedLock) {
         this.mWatchable = new WatchableImpl();
         this.mPackageRestrictionsLock = new Object();
         this.mPendingAsyncPackageRestrictionsWrites = new SparseIntArray();
-        this.mDisabledSysPackages = new WatchedArrayMap();
+        this.mDisabledSysPackages = new WatchedArrayMap(0);
         this.mBlockUninstallPackages = new WatchedSparseArray();
-        this.mVersion = new WatchedArrayMap();
-        this.mSharedUsers = new WatchedArrayMap();
-        this.mRenamedPackages = new WatchedArrayMap();
-        this.mDefaultBrowserApp = new WatchedSparseArray();
+        this.mVersion = new WatchedArrayMap(0);
+        this.mSharedUsers = new WatchedArrayMap(0);
+        this.mRenamedPackages = new WatchedArrayMap(0);
+        this.mPendingDefaultBrowser = new WatchedSparseArray();
         this.mNextAppLinkGeneration = new WatchedSparseIntArray();
         this.mReadMessages = new StringBuilder();
-        AnonymousClass1 anonymousClass1 = new Watcher() { // from class: com.android.server.pm.Settings.1
-            public AnonymousClass1() {
-            }
-
+        ?? r0 = new Watcher() { // from class: com.android.server.pm.Settings.1
             @Override // com.android.server.utils.Watcher
-            public void onChange(Watchable watchable) {
+            public final void onChange(Watchable watchable) {
                 Settings.this.dispatchChange(watchable);
             }
         };
-        this.mObserver = anonymousClass1;
-        WatchedArrayMap watchedArrayMap = new WatchedArrayMap();
+        this.mObserver = r0;
+        WatchedArrayMap watchedArrayMap = new WatchedArrayMap(0);
         this.mPackages = watchedArrayMap;
-        this.mPackagesSnapshot = new SnapshotCache.Auto(watchedArrayMap, watchedArrayMap, "Settings.mPackages");
-        WatchedArrayMap watchedArrayMap2 = new WatchedArrayMap();
+        this.mPackagesSnapshot = new SnapshotCache.Auto(watchedArrayMap, watchedArrayMap, "Settings.mPackages", 0);
+        WatchedArrayMap watchedArrayMap2 = new WatchedArrayMap(0);
         this.mKernelMapping = watchedArrayMap2;
-        this.mKernelMappingSnapshot = new SnapshotCache.Auto(watchedArrayMap2, watchedArrayMap2, "Settings.mKernelMapping");
+        this.mKernelMappingSnapshot = new SnapshotCache.Auto(watchedArrayMap2, watchedArrayMap2, "Settings.mKernelMapping", 0);
         WatchedArraySet watchedArraySet = new WatchedArraySet();
         this.mInstallerPackages = watchedArraySet;
-        this.mInstallerPackagesSnapshot = new SnapshotCache.Auto(watchedArraySet, watchedArraySet, "Settings.mInstallerPackages");
+        this.mInstallerPackagesSnapshot = new SnapshotCache.Auto(watchedArraySet, watchedArraySet, "Settings.mInstallerPackages", 0);
         WatchedSparseArray watchedSparseArray = new WatchedSparseArray();
         this.mPreferredActivities = watchedSparseArray;
-        this.mPreferredActivitiesSnapshot = new SnapshotCache.Auto(watchedSparseArray, watchedSparseArray, "Settings.mPreferredActivities");
+        this.mPreferredActivitiesSnapshot = new SnapshotCache.Auto(watchedSparseArray, watchedSparseArray, "Settings.mPreferredActivities", 0);
         WatchedSparseArray watchedSparseArray2 = new WatchedSparseArray();
         this.mPersistentPreferredActivities = watchedSparseArray2;
-        this.mPersistentPreferredActivitiesSnapshot = new SnapshotCache.Auto(watchedSparseArray2, watchedSparseArray2, "Settings.mPersistentPreferredActivities");
+        this.mPersistentPreferredActivitiesSnapshot = new SnapshotCache.Auto(watchedSparseArray2, watchedSparseArray2, "Settings.mPersistentPreferredActivities", 0);
         WatchedSparseArray watchedSparseArray3 = new WatchedSparseArray();
         this.mCrossProfileIntentResolvers = watchedSparseArray3;
-        this.mCrossProfileIntentResolversSnapshot = new SnapshotCache.Auto(watchedSparseArray3, watchedSparseArray3, "Settings.mCrossProfileIntentResolvers");
-        WatchedArrayList watchedArrayList = new WatchedArrayList();
-        this.mPastSignatures = watchedArrayList;
-        this.mPastSignaturesSnapshot = new SnapshotCache.Auto(watchedArrayList, watchedArrayList, "Settings.mPastSignatures");
-        WatchedArrayMap watchedArrayMap3 = new WatchedArrayMap();
-        this.mKeySetRefs = watchedArrayMap3;
-        this.mKeySetRefsSnapshot = new SnapshotCache.Auto(watchedArrayMap3, watchedArrayMap3, "Settings.mKeySetRefs");
-        WatchedArrayList watchedArrayList2 = new WatchedArrayList();
-        this.mPendingPackages = watchedArrayList2;
-        this.mPendingPackagesSnapshot = new SnapshotCache.Auto(watchedArrayList2, watchedArrayList2, "Settings.mPendingPackages");
+        this.mCrossProfileIntentResolversSnapshot = new SnapshotCache.Auto(watchedSparseArray3, watchedSparseArray3, "Settings.mCrossProfileIntentResolvers", 0);
+        WatchedArrayList watchedArrayList = new WatchedArrayList(0);
+        this.mPendingPackages = watchedArrayList;
+        this.mPendingPackagesSnapshot = new SnapshotCache.Auto(watchedArrayList, watchedArrayList, "Settings.mPendingPackages", 0);
         this.mKeySetManagerService = new KeySetManagerService(watchedArrayMap);
         this.mHandler = handler;
         this.mLock = packageManagerTracedLock;
         this.mAppIds = new AppIdSettingMap();
-        this.mPermissions = new LegacyPermissionSettings(packageManagerTracedLock);
+        this.mPermissions = new LegacyPermissionSettings();
         this.mRuntimePermissionsPersistence = new RuntimePermissionPersistence(runtimePermissionsPersistence, new Consumer() { // from class: com.android.server.pm.Settings.3
-            public AnonymousClass3() {
-            }
-
             @Override // java.util.function.Consumer
-            public void accept(Integer num) {
+            public final void accept(Object obj) {
                 RuntimePermissionPersistence runtimePermissionPersistence = Settings.this.mRuntimePermissionsPersistence;
-                int intValue = num.intValue();
-                LegacyPermissionDataProvider legacyPermissionDataProvider2 = Settings.this.mPermissionDataProvider;
+                int intValue = ((Integer) obj).intValue();
                 Settings settings = Settings.this;
-                runtimePermissionPersistence.writeStateForUser(intValue, legacyPermissionDataProvider2, settings.mPackages, settings.mSharedUsers, settings.mHandler, Settings.this.mLock, false);
+                runtimePermissionPersistence.writeStateForUser(intValue, settings.mPermissionDataProvider, settings.mPackages, settings.mSharedUsers, settings.mHandler, settings.mLock, false);
             }
         });
-        this.mPermissionDataProvider = legacyPermissionDataProvider;
+        this.mPermissionDataProvider = permissionManagerServiceInternalImpl;
         File file2 = new File(file, "system");
         this.mSystemDir = file2;
         file2.mkdirs();
@@ -447,66 +1041,61 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         this.mStoppedPackagesFilename = new File(file2, "packages-stopped.xml");
         this.mBackupStoppedPackagesFilename = new File(file2, "packages-stopped-backup.xml");
         this.mDomainVerificationManager = domainVerificationManagerInternal;
-        registerObservers();
-        Watchable.verifyWatchedAttributes(this, anonymousClass1);
-        this.mSnapshot = makeCache();
+        registerObservers$1();
+        Watchable.verifyWatchedAttributes(this, r0, false);
+        this.mSnapshot = new AnonymousClass2(this, this, null);
     }
 
-    /* renamed from: com.android.server.pm.Settings$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 implements Consumer {
-        public AnonymousClass3() {
-        }
-
-        @Override // java.util.function.Consumer
-        public void accept(Integer num) {
-            RuntimePermissionPersistence runtimePermissionPersistence = Settings.this.mRuntimePermissionsPersistence;
-            int intValue = num.intValue();
-            LegacyPermissionDataProvider legacyPermissionDataProvider2 = Settings.this.mPermissionDataProvider;
-            Settings settings = Settings.this;
-            runtimePermissionPersistence.writeStateForUser(intValue, legacyPermissionDataProvider2, settings.mPackages, settings.mSharedUsers, settings.mHandler, Settings.this.mLock, false);
-        }
-    }
-
-    public Settings(Settings settings) {
+    /* JADX WARN: Type inference failed for: r0v11, types: [com.android.server.pm.Settings$1, com.android.server.utils.Watcher] */
+    public Settings(Map map) {
         this.mWatchable = new WatchableImpl();
         this.mPackageRestrictionsLock = new Object();
         this.mPendingAsyncPackageRestrictionsWrites = new SparseIntArray();
-        WatchedArrayMap watchedArrayMap = new WatchedArrayMap();
-        this.mDisabledSysPackages = watchedArrayMap;
-        WatchedSparseArray watchedSparseArray = new WatchedSparseArray();
-        this.mBlockUninstallPackages = watchedSparseArray;
-        WatchedArrayMap watchedArrayMap2 = new WatchedArrayMap();
-        this.mVersion = watchedArrayMap2;
-        WatchedArrayMap watchedArrayMap3 = new WatchedArrayMap();
-        this.mSharedUsers = watchedArrayMap3;
-        WatchedArrayMap watchedArrayMap4 = new WatchedArrayMap();
-        this.mRenamedPackages = watchedArrayMap4;
-        WatchedSparseArray watchedSparseArray2 = new WatchedSparseArray();
-        this.mDefaultBrowserApp = watchedSparseArray2;
-        WatchedSparseIntArray watchedSparseIntArray = new WatchedSparseIntArray();
-        this.mNextAppLinkGeneration = watchedSparseIntArray;
+        this.mDisabledSysPackages = new WatchedArrayMap(0);
+        this.mBlockUninstallPackages = new WatchedSparseArray();
+        this.mVersion = new WatchedArrayMap(0);
+        this.mSharedUsers = new WatchedArrayMap(0);
+        this.mRenamedPackages = new WatchedArrayMap(0);
+        this.mPendingDefaultBrowser = new WatchedSparseArray();
+        this.mNextAppLinkGeneration = new WatchedSparseIntArray();
         this.mReadMessages = new StringBuilder();
-        this.mObserver = new Watcher() { // from class: com.android.server.pm.Settings.1
-            public AnonymousClass1() {
-            }
-
+        ?? r0 = new Watcher() { // from class: com.android.server.pm.Settings.1
             @Override // com.android.server.utils.Watcher
-            public void onChange(Watchable watchable) {
+            public final void onChange(Watchable watchable) {
                 Settings.this.dispatchChange(watchable);
             }
         };
-        WatchedArrayMap watchedArrayMap5 = (WatchedArrayMap) settings.mPackagesSnapshot.snapshot();
-        this.mPackages = watchedArrayMap5;
-        this.mPackagesSnapshot = new SnapshotCache.Sealed();
-        this.mKernelMapping = (WatchedArrayMap) settings.mKernelMappingSnapshot.snapshot();
-        this.mKernelMappingSnapshot = new SnapshotCache.Sealed();
-        this.mInstallerPackages = (WatchedArraySet) settings.mInstallerPackagesSnapshot.snapshot();
-        this.mInstallerPackagesSnapshot = new SnapshotCache.Sealed();
-        this.mKeySetManagerService = new KeySetManagerService(settings.mKeySetManagerService, watchedArrayMap5);
-        this.mHandler = null;
-        this.mLock = null;
-        this.mRuntimePermissionsPersistence = settings.mRuntimePermissionsPersistence;
+        this.mObserver = r0;
+        WatchedArrayMap watchedArrayMap = new WatchedArrayMap(0);
+        this.mPackages = watchedArrayMap;
+        this.mPackagesSnapshot = new SnapshotCache.Auto(watchedArrayMap, watchedArrayMap, "Settings.mPackages", 0);
+        WatchedArrayMap watchedArrayMap2 = new WatchedArrayMap(0);
+        this.mKernelMapping = watchedArrayMap2;
+        this.mKernelMappingSnapshot = new SnapshotCache.Auto(watchedArrayMap2, watchedArrayMap2, "Settings.mKernelMapping", 0);
+        WatchedArraySet watchedArraySet = new WatchedArraySet();
+        this.mInstallerPackages = watchedArraySet;
+        this.mInstallerPackagesSnapshot = new SnapshotCache.Auto(watchedArraySet, watchedArraySet, "Settings.mInstallerPackages", 0);
+        WatchedSparseArray watchedSparseArray = new WatchedSparseArray();
+        this.mPreferredActivities = watchedSparseArray;
+        this.mPreferredActivitiesSnapshot = new SnapshotCache.Auto(watchedSparseArray, watchedSparseArray, "Settings.mPreferredActivities", 0);
+        WatchedSparseArray watchedSparseArray2 = new WatchedSparseArray();
+        this.mPersistentPreferredActivities = watchedSparseArray2;
+        this.mPersistentPreferredActivitiesSnapshot = new SnapshotCache.Auto(watchedSparseArray2, watchedSparseArray2, "Settings.mPersistentPreferredActivities", 0);
+        WatchedSparseArray watchedSparseArray3 = new WatchedSparseArray();
+        this.mCrossProfileIntentResolvers = watchedSparseArray3;
+        this.mCrossProfileIntentResolversSnapshot = new SnapshotCache.Auto(watchedSparseArray3, watchedSparseArray3, "Settings.mCrossProfileIntentResolvers", 0);
+        WatchedArrayList watchedArrayList = new WatchedArrayList(0);
+        this.mPendingPackages = watchedArrayList;
+        this.mPendingPackagesSnapshot = new SnapshotCache.Auto(watchedArrayList, watchedArrayList, "Settings.mPendingPackages", 0);
+        this.mKeySetManagerService = new KeySetManagerService(watchedArrayMap);
+        this.mHandler = new Handler(BackgroundThread.getHandler().getLooper());
+        this.mLock = new PackageManagerTracedLock(null);
+        watchedArrayMap.putAll(map);
+        this.mAppIds = new AppIdSettingMap();
+        this.mSystemDir = null;
+        this.mPermissions = null;
+        this.mRuntimePermissionsPersistence = null;
+        this.mPermissionDataProvider = null;
         this.mSettingsFilename = null;
         this.mSettingsReserveCopyFilename = null;
         this.mPreviousSettingsFilename = null;
@@ -514,761 +1103,289 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         this.mStoppedPackagesFilename = null;
         this.mBackupStoppedPackagesFilename = null;
         this.mKernelMappingFilename = null;
-        this.mDomainVerificationManager = settings.mDomainVerificationManager;
-        watchedArrayMap.snapshot(settings.mDisabledSysPackages);
-        watchedSparseArray.snapshot(settings.mBlockUninstallPackages);
-        watchedArrayMap2.putAll(settings.mVersion);
-        this.mVerifierDeviceIdentity = settings.mVerifierDeviceIdentity;
-        this.mPreferredActivities = (WatchedSparseArray) settings.mPreferredActivitiesSnapshot.snapshot();
-        this.mPreferredActivitiesSnapshot = new SnapshotCache.Sealed();
-        this.mPersistentPreferredActivities = (WatchedSparseArray) settings.mPersistentPreferredActivitiesSnapshot.snapshot();
-        this.mPersistentPreferredActivitiesSnapshot = new SnapshotCache.Sealed();
-        this.mCrossProfileIntentResolvers = (WatchedSparseArray) settings.mCrossProfileIntentResolversSnapshot.snapshot();
-        this.mCrossProfileIntentResolversSnapshot = new SnapshotCache.Sealed();
-        watchedArrayMap3.snapshot(settings.mSharedUsers);
-        this.mAppIds = settings.mAppIds.snapshot();
-        this.mPastSignatures = (WatchedArrayList) settings.mPastSignaturesSnapshot.snapshot();
-        this.mPastSignaturesSnapshot = new SnapshotCache.Sealed();
-        this.mKeySetRefs = (WatchedArrayMap) settings.mKeySetRefsSnapshot.snapshot();
-        this.mKeySetRefsSnapshot = new SnapshotCache.Sealed();
-        watchedArrayMap4.snapshot(settings.mRenamedPackages);
-        watchedSparseIntArray.snapshot(settings.mNextAppLinkGeneration);
-        watchedSparseArray2.snapshot(settings.mDefaultBrowserApp);
-        this.mPendingPackages = (WatchedArrayList) settings.mPendingPackagesSnapshot.snapshot();
-        this.mPendingPackagesSnapshot = new SnapshotCache.Sealed();
-        this.mSystemDir = null;
-        this.mPermissions = settings.mPermissions;
-        this.mPermissionDataProvider = settings.mPermissionDataProvider;
-        this.mSnapshot = new SnapshotCache.Sealed();
+        this.mDomainVerificationManager = null;
+        registerObservers$1();
+        Watchable.verifyWatchedAttributes(this, r0, false);
+        this.mSnapshot = new AnonymousClass2(this, this, null);
     }
 
-    @Override // com.android.server.utils.Snappable
-    public Settings snapshot() {
-        return (Settings) this.mSnapshot.snapshot();
-    }
-
-    public final void invalidatePackageCache() {
-        PackageManagerService.invalidatePackageInfoCache();
-        ChangeIdStateCache.invalidate();
-        onChanged();
-    }
-
-    public PackageSetting getPackageLPr(String str) {
-        return (PackageSetting) this.mPackages.get(str);
-    }
-
-    public WatchedArrayMap getPackagesLocked() {
-        return this.mPackages;
-    }
-
-    public WatchedArrayMap getDisabledSystemPackagesLocked() {
-        return this.mDisabledSysPackages;
-    }
-
-    public KeySetManagerService getKeySetManagerService() {
-        return this.mKeySetManagerService;
-    }
-
-    public String getRenamedPackageLPr(String str) {
-        return (String) this.mRenamedPackages.get(str);
-    }
-
-    public String addRenamedPackageLPw(String str, String str2) {
-        return (String) this.mRenamedPackages.put(str, str2);
-    }
-
-    public void removeRenamedPackageLPw(String str) {
-        this.mRenamedPackages.remove(str);
-    }
-
-    public void pruneRenamedPackagesLPw() {
-        for (int size = this.mRenamedPackages.size() - 1; size >= 0; size--) {
-            if (((PackageSetting) this.mPackages.get(this.mRenamedPackages.valueAt(size))) == null) {
-                this.mRenamedPackages.removeAt(size);
-            }
-        }
-    }
-
-    public SharedUserSetting getSharedUserLPw(String str, int i, int i2, boolean z) {
-        SharedUserSetting sharedUserSetting = (SharedUserSetting) this.mSharedUsers.get(str);
-        if (sharedUserSetting == null && z) {
-            sharedUserSetting = new SharedUserSetting(str, i, i2);
-            int acquireAndRegisterNewAppId = this.mAppIds.acquireAndRegisterNewAppId(sharedUserSetting);
-            sharedUserSetting.mAppId = acquireAndRegisterNewAppId;
-            if (acquireAndRegisterNewAppId < 0) {
-                throw new PackageManagerException(-4, "Creating shared user " + str + " failed");
-            }
-            Log.i("PackageManager", "New shared user " + str + ": id=" + sharedUserSetting.mAppId);
-            this.mSharedUsers.put(str, sharedUserSetting);
-        }
-        return sharedUserSetting;
-    }
-
-    public Collection getAllSharedUsersLPw() {
-        return this.mSharedUsers.values();
-    }
-
-    public boolean disableSystemPackageLPw(String str, boolean z) {
-        PackageSetting packageSetting = (PackageSetting) this.mPackages.get(str);
-        boolean z2 = false;
-        if (packageSetting == null) {
-            Log.w("PackageManager", "Package " + str + " is not an installed package");
-            return false;
-        }
-        if (((PackageSetting) this.mDisabledSysPackages.get(str)) == null && packageSetting.getPkg() != null && packageSetting.isSystem() && !packageSetting.isUpdatedSystemApp()) {
-            PackageSetting packageSetting2 = z ? new PackageSetting(packageSetting) : packageSetting;
-            z2 = true;
-            packageSetting.getPkgState().setUpdatedSystemApp(true);
-            this.mDisabledSysPackages.put(str, packageSetting2);
-            SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting2);
-            if (sharedUserSettingLPr != null) {
-                sharedUserSettingLPr.mDisabledPackages.add(packageSetting2);
-            }
-        }
-        return z2;
-    }
-
-    public PackageSetting enableSystemPackageLPw(String str) {
-        PackageSetting packageSetting = (PackageSetting) this.mDisabledSysPackages.get(str);
-        if (packageSetting == null) {
-            Log.w("PackageManager", "Package " + str + " is not disabled");
-            return null;
-        }
-        SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting);
-        if (sharedUserSettingLPr != null) {
-            sharedUserSettingLPr.mDisabledPackages.remove(packageSetting);
-        }
-        packageSetting.getPkgState().setUpdatedSystemApp(false);
-        PackageSetting addPackageLPw = addPackageLPw(str, packageSetting.getRealName(), packageSetting.getPath(), packageSetting.getLegacyNativeLibraryPath(), packageSetting.getPrimaryCpuAbiLegacy(), packageSetting.getSecondaryCpuAbiLegacy(), packageSetting.getCpuAbiOverride(), packageSetting.getAppId(), packageSetting.getVersionCode(), packageSetting.getFlags(), packageSetting.getPrivateFlags(), packageSetting.getUsesSdkLibraries(), packageSetting.getUsesSdkLibrariesVersionsMajor(), packageSetting.getUsesStaticLibraries(), packageSetting.getUsesStaticLibrariesVersions(), packageSetting.getMimeGroups(), this.mDomainVerificationManager.generateNewId());
-        if (addPackageLPw != null) {
-            addPackageLPw.setAppMetadataFilePath(packageSetting.getAppMetadataFilePath());
-            addPackageLPw.getPkgState().setUpdatedSystemApp(false);
-        }
-        this.mDisabledSysPackages.remove(str);
-        return addPackageLPw;
-    }
-
-    public boolean isDisabledSystemPackageLPr(String str) {
-        return this.mDisabledSysPackages.containsKey(str);
-    }
-
-    public void removeDisabledSystemPackageLPw(String str) {
-        SharedUserSetting sharedUserSettingLPr;
-        PackageSetting packageSetting = (PackageSetting) this.mDisabledSysPackages.remove(str);
-        if (packageSetting == null || (sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting)) == null) {
+    public static void dumpComponents(PrintWriter printWriter, String str, String str2, List list) {
+        int size = CollectionUtils.size(list);
+        if (size == 0) {
             return;
         }
-        sharedUserSettingLPr.mDisabledPackages.remove(packageSetting);
-        checkAndPruneSharedUserLPw(sharedUserSettingLPr, false);
+        printWriter.print(str);
+        printWriter.println(str2);
+        for (int i = 0; i < size; i++) {
+            ParsedComponent parsedComponent = (ParsedComponent) list.get(i);
+            printWriter.print(str);
+            printWriter.print("  ");
+            printWriter.println(parsedComponent.getComponentName().flattenToShortString());
+        }
     }
 
-    public PackageSetting addPackageLPw(String str, String str2, File file, String str3, String str4, String str5, String str6, int i, long j, int i2, int i3, String[] strArr, long[] jArr, String[] strArr2, long[] jArr2, Map map, UUID uuid) {
-        PackageSetting packageSetting = (PackageSetting) this.mPackages.get(str);
-        if (packageSetting != null) {
-            if (packageSetting.getAppId() == i) {
-                return packageSetting;
+    public static void dumpGidsLPr(PrintWriter printWriter, String str, int[] iArr) {
+        if (ArrayUtils.isEmpty(iArr)) {
+            return;
+        }
+        printWriter.print(str);
+        printWriter.print("gids=");
+        boolean z = PackageManagerServiceUtils.DEBUG;
+        StringBuilder sb = new StringBuilder(128);
+        sb.append('[');
+        if (iArr != null) {
+            for (int i = 0; i < iArr.length; i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(iArr[i]);
             }
-            PackageManagerService.reportSettingsProblem(6, "Adding duplicate package, keeping first: " + str);
-            return null;
         }
-        PackageSetting packageSetting2 = new PackageSetting(str, str2, file, str3, str4, str5, str6, j, i2, i3, 0, strArr, jArr, strArr2, jArr2, map, uuid);
-        packageSetting2.setAppId(i);
-        if (!this.mAppIds.registerExistingAppId(i, packageSetting2, str)) {
-            return null;
-        }
-        this.mPackages.put(str, packageSetting2);
-        return packageSetting2;
+        sb.append(']');
+        printWriter.println(sb.toString());
     }
 
-    public SharedUserSetting addSharedUserLPw(String str, int i, int i2, int i3) {
-        SharedUserSetting sharedUserSetting = (SharedUserSetting) this.mSharedUsers.get(str);
-        if (sharedUserSetting != null) {
-            if (sharedUserSetting.mAppId == i) {
-                return sharedUserSetting;
-            }
-            PackageManagerService.reportSettingsProblem(6, "Adding duplicate shared user, keeping first: " + str);
-            return null;
-        }
-        SharedUserSetting sharedUserSetting2 = new SharedUserSetting(str, i2, i3);
-        sharedUserSetting2.mAppId = i;
-        if (!this.mAppIds.registerExistingAppId(i, sharedUserSetting2, str)) {
-            return null;
-        }
-        this.mSharedUsers.put(str, sharedUserSetting2);
-        return sharedUserSetting2;
-    }
-
-    public void pruneSharedUsersLPw() {
-        ArrayList arrayList = new ArrayList();
-        ArrayList arrayList2 = new ArrayList();
-        for (Map.Entry entry : this.mSharedUsers.entrySet()) {
-            SharedUserSetting sharedUserSetting = (SharedUserSetting) entry.getValue();
-            if (sharedUserSetting == null) {
-                arrayList.add((String) entry.getKey());
-            } else {
-                WatchedArraySet packageSettings = sharedUserSetting.getPackageSettings();
-                boolean z = false;
-                for (int size = packageSettings.size() - 1; size >= 0; size--) {
-                    if (this.mPackages.get(((PackageSetting) packageSettings.valueAt(size)).getPackageName()) == null) {
-                        packageSettings.removeAt(size);
-                        z = true;
+    public static void dumpInstallPermissionsLPr(PrintWriter printWriter, String str, ArraySet arraySet, LegacyPermissionState legacyPermissionState, List list) {
+        LegacyPermissionState.PermissionState permissionState;
+        ArraySet arraySet2 = new ArraySet();
+        ArrayList arrayList = (ArrayList) list;
+        Iterator it = arrayList.iterator();
+        while (it.hasNext()) {
+            for (LegacyPermissionState.PermissionState permissionState2 : legacyPermissionState.getPermissionStates(((UserInfo) it.next()).id)) {
+                if (!permissionState2.mRuntime) {
+                    String str2 = permissionState2.mName;
+                    if (arraySet == null || arraySet.contains(str2)) {
+                        arraySet2.add(str2);
                     }
                 }
-                WatchedArraySet disabledPackageSettings = sharedUserSetting.getDisabledPackageSettings();
-                for (int size2 = disabledPackageSettings.size() - 1; size2 >= 0; size2--) {
-                    if (this.mDisabledSysPackages.get(((PackageSetting) disabledPackageSettings.valueAt(size2)).getPackageName()) == null) {
-                        disabledPackageSettings.removeAt(size2);
-                        z = true;
+            }
+        }
+        Iterator it2 = arraySet2.iterator();
+        boolean z = false;
+        while (it2.hasNext()) {
+            String str3 = (String) it2.next();
+            legacyPermissionState.getClass();
+            LegacyPermissionState.checkUserId(0);
+            LegacyPermissionState.UserState userState = (LegacyPermissionState.UserState) legacyPermissionState.mUserStates.get(0);
+            LegacyPermissionState.PermissionState permissionState3 = userState == null ? null : (LegacyPermissionState.PermissionState) userState.mPermissionStates.get(str3);
+            Iterator it3 = arrayList.iterator();
+            while (it3.hasNext()) {
+                int i = ((UserInfo) it3.next()).id;
+                if (i == 0) {
+                    permissionState = permissionState3;
+                } else {
+                    LegacyPermissionState.checkUserId(i);
+                    LegacyPermissionState.UserState userState2 = (LegacyPermissionState.UserState) legacyPermissionState.mUserStates.get(i);
+                    permissionState = userState2 == null ? null : (LegacyPermissionState.PermissionState) userState2.mPermissionStates.get(str3);
+                    if (Objects.equals(permissionState, permissionState3)) {
                     }
                 }
-                if (z) {
-                    sharedUserSetting.onChanged();
+                if (!z) {
+                    printWriter.print(str);
+                    printWriter.println("install permissions:");
+                    z = true;
                 }
-                if (packageSettings.isEmpty() && disabledPackageSettings.isEmpty()) {
-                    arrayList2.add(sharedUserSetting);
+                printWriter.print(str);
+                printWriter.print("  ");
+                printWriter.print(str3);
+                printWriter.print(": granted=");
+                printWriter.print(permissionState != null && permissionState.mGranted);
+                printWriter.print(permissionFlagsToString(permissionState != null ? permissionState.mFlags : 0));
+                if (i == 0) {
+                    printWriter.println();
+                } else {
+                    printWriter.print(", userId=");
+                    printWriter.println(i);
                 }
             }
         }
-        final WatchedArrayMap watchedArrayMap = this.mSharedUsers;
-        Objects.requireNonNull(watchedArrayMap);
-        arrayList.forEach(new Consumer() { // from class: com.android.server.pm.Settings$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                WatchedArrayMap.this.remove((String) obj);
-            }
-        });
-        arrayList2.forEach(new Consumer() { // from class: com.android.server.pm.Settings$$ExternalSyntheticLambda2
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                Settings.this.lambda$pruneSharedUsersLPw$0((SharedUserSetting) obj);
-            }
-        });
     }
 
-    public /* synthetic */ void lambda$pruneSharedUsersLPw$0(SharedUserSetting sharedUserSetting) {
-        checkAndPruneSharedUserLPw(sharedUserSetting, true);
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:27:0x00fe, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x002a, code lost:
     
-        if (r5.preCreated == false) goto L94;
+        r6 = (com.android.server.pm.permission.LegacyPermissionState.PermissionState) r5.next();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x0032, code lost:
+    
+        if (r6.mRuntime != false) goto L25;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:13:0x0035, code lost:
+    
+        r0 = r6.mName;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:14:0x0037, code lost:
+    
+        if (r4 == null) goto L27;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x003d, code lost:
+    
+        if (r4.contains(r0) != false) goto L28;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:18:0x0040, code lost:
+    
+        r2.print(r3);
+        r2.print("  ");
+        r2.print(r0);
+        r2.print(": granted=");
+        r2.print(r6.mGranted);
+        r2.println(permissionFlagsToString(r6.mFlags));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:?, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:7:0x0017, code lost:
+    
+        r2.print(r3);
+        r2.println("runtime permissions:");
+        r5 = r5.iterator();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0028, code lost:
+    
+        if (r5.hasNext() == false) goto L26;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static com.android.server.pm.PackageSetting createNewSetting(java.lang.String r47, com.android.server.pm.PackageSetting r48, com.android.server.pm.PackageSetting r49, java.lang.String r50, com.android.server.pm.SharedUserSetting r51, java.io.File r52, java.lang.String r53, java.lang.String r54, java.lang.String r55, long r56, int r58, int r59, android.os.UserHandle r60, boolean r61, boolean r62, boolean r63, boolean r64, com.android.server.pm.UserManagerService r65, java.lang.String[] r66, long[] r67, java.lang.String[] r68, long[] r69, java.util.Set r70, java.util.UUID r71) {
+    public static void dumpRuntimePermissionsLPr(java.io.PrintWriter r2, java.lang.String r3, android.util.ArraySet r4, java.util.Collection r5, boolean r6) {
         /*
-            Method dump skipped, instructions count: 411
-            To view this dump change 'Code comments level' option to 'DEBUG'
+            java.util.Iterator r0 = r5.iterator()
+        L4:
+            boolean r1 = r0.hasNext()
+            if (r1 == 0) goto L15
+            java.lang.Object r1 = r0.next()
+            com.android.server.pm.permission.LegacyPermissionState$PermissionState r1 = (com.android.server.pm.permission.LegacyPermissionState.PermissionState) r1
+            boolean r1 = r1.mRuntime
+            if (r1 == 0) goto L4
+            goto L17
+        L15:
+            if (r6 == 0) goto L5f
+        L17:
+            r2.print(r3)
+            java.lang.String r6 = "runtime permissions:"
+            r2.println(r6)
+            java.util.Iterator r5 = r5.iterator()
+        L24:
+            boolean r6 = r5.hasNext()
+            if (r6 == 0) goto L5f
+            java.lang.Object r6 = r5.next()
+            com.android.server.pm.permission.LegacyPermissionState$PermissionState r6 = (com.android.server.pm.permission.LegacyPermissionState.PermissionState) r6
+            boolean r0 = r6.mRuntime
+            if (r0 != 0) goto L35
+            goto L24
+        L35:
+            java.lang.String r0 = r6.mName
+            if (r4 == 0) goto L40
+            boolean r1 = r4.contains(r0)
+            if (r1 != 0) goto L40
+            goto L24
+        L40:
+            r2.print(r3)
+            java.lang.String r1 = "  "
+            r2.print(r1)
+            r2.print(r0)
+            java.lang.String r0 = ": granted="
+            r2.print(r0)
+            boolean r0 = r6.mGranted
+            r2.print(r0)
+            int r6 = r6.mFlags
+            java.lang.String r6 = permissionFlagsToString(r6)
+            r2.println(r6)
+            goto L24
+        L5f:
+            return
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.createNewSetting(java.lang.String, com.android.server.pm.PackageSetting, com.android.server.pm.PackageSetting, java.lang.String, com.android.server.pm.SharedUserSetting, java.io.File, java.lang.String, java.lang.String, java.lang.String, long, int, int, android.os.UserHandle, boolean, boolean, boolean, boolean, com.android.server.pm.UserManagerService, java.lang.String[], long[], java.lang.String[], long[], java.util.Set, java.util.UUID):com.android.server.pm.PackageSetting");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.dumpRuntimePermissionsLPr(java.io.PrintWriter, java.lang.String, android.util.ArraySet, java.util.Collection, boolean):void");
     }
 
-    public static Map createMimeGroups(Set set) {
-        if (set == null) {
+    public static List getUsers(UserManagerService userManagerService, boolean z, boolean z2) {
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            List users = userManagerService.getUsers(true, z, z2);
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            return users;
+        } catch (NullPointerException unused) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
             return null;
-        }
-        return new KeySetToValueMap(set, new ArraySet());
-    }
-
-    public static void updatePackageSetting(PackageSetting packageSetting, PackageSetting packageSetting2, SharedUserSetting sharedUserSetting, SharedUserSetting sharedUserSetting2, File file, String str, String str2, String str3, int i, int i2, UserManagerService userManagerService, String[] strArr, long[] jArr, String[] strArr2, long[] jArr2, Set set, UUID uuid) {
-        List<UserInfo> allUsers;
-        String packageName = packageSetting.getPackageName();
-        if (sharedUserSetting2 != null) {
-            if (!Objects.equals(sharedUserSetting, sharedUserSetting2)) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Package ");
-                sb.append(packageName);
-                sb.append(" shared user changed from ");
-                sb.append(sharedUserSetting != null ? sharedUserSetting.name : "<nothing>");
-                sb.append(" to ");
-                sb.append(sharedUserSetting2.name);
-                PackageManagerService.reportSettingsProblem(5, sb.toString());
-                throw new PackageManagerException(-24, "Updating application package " + packageName + " failed");
-            }
-            packageSetting.setSharedUserAppId(sharedUserSetting2.mAppId);
-        } else {
-            packageSetting.setSharedUserAppId(-1);
-        }
-        if (!packageSetting.getPath().equals(file)) {
-            boolean isSystem = packageSetting.isSystem();
-            StringBuilder sb2 = new StringBuilder();
-            sb2.append("Update");
-            sb2.append(isSystem ? " system" : "");
-            sb2.append(" package ");
-            sb2.append(packageName);
-            sb2.append(" code path from ");
-            sb2.append(packageSetting.getPathString());
-            sb2.append(" to ");
-            sb2.append(file.toString());
-            sb2.append("; Retain data and using new");
-            Slog.i("PackageManager", sb2.toString());
-            if (!isSystem) {
-                if ((i & 1) != 0 && packageSetting2 == null && (allUsers = getAllUsers(userManagerService)) != null) {
-                    for (UserInfo userInfo : allUsers) {
-                        if (userInfo.isManagedProfile() || userInfo.isDualAppProfile()) {
-                            Slog.i("PackageManager", "User " + userInfo.id + " is Premium container. do not set install flag. / " + packageName + " / installed = " + packageSetting.getInstalled(userInfo.id));
-                        } else {
-                            packageSetting.setInstalled(true, userInfo.id);
-                            packageSetting.setUninstallReason(0, userInfo.id);
-                        }
-                    }
-                }
-                packageSetting.setLegacyNativeLibraryPath(str);
-            }
-            packageSetting.setPath(file);
-        }
-        packageSetting.setPrimaryCpuAbi(str2).setSecondaryCpuAbi(str3).updateMimeGroups(set).setDomainSetId(uuid);
-        if (strArr != null && jArr != null && strArr.length == jArr.length) {
-            packageSetting.setUsesSdkLibraries(strArr).setUsesSdkLibrariesVersionsMajor(jArr);
-        } else {
-            packageSetting.setUsesSdkLibraries(null).setUsesSdkLibrariesVersionsMajor(null);
-        }
-        if (strArr2 != null && jArr2 != null && strArr2.length == jArr2.length) {
-            packageSetting.setUsesStaticLibraries(strArr2).setUsesStaticLibrariesVersions(jArr2);
-        } else {
-            packageSetting.setUsesStaticLibraries(null).setUsesStaticLibrariesVersions(null);
-        }
-        packageSetting.setFlags((packageSetting.getFlags() & (-2)) | (i & 1));
-        packageSetting.setPrivateFlags((packageSetting.getPrivateFlags() & 512) != 0 ? i2 | 512 : i2 & (-513));
-    }
-
-    public boolean registerAppIdLPw(PackageSetting packageSetting, boolean z) {
-        boolean z2;
-        if (packageSetting.getAppId() == 0 || z) {
-            packageSetting.setAppId(this.mAppIds.acquireAndRegisterNewAppId(packageSetting));
-            z2 = true;
-        } else {
-            z2 = this.mAppIds.registerExistingAppId(packageSetting.getAppId(), packageSetting, packageSetting.getPackageName());
-        }
-        if (packageSetting.getAppId() >= 0) {
-            return z2;
-        }
-        PackageManagerService.reportSettingsProblem(5, "Package " + packageSetting.getPackageName() + " could not be assigned a valid UID");
-        throw new PackageManagerException(-4, "Package " + packageSetting.getPackageName() + " could not be assigned a valid UID");
-    }
-
-    public void writeUserRestrictionsLPw(PackageSetting packageSetting, PackageSetting packageSetting2) {
-        List<UserInfo> allUsers;
-        Object readUserState;
-        if (getPackageLPr(packageSetting.getPackageName()) == null || (allUsers = getAllUsers(UserManagerService.getInstance())) == null) {
-            return;
-        }
-        for (UserInfo userInfo : allUsers) {
-            if (packageSetting2 == null) {
-                readUserState = PackageUserState.DEFAULT;
-            } else {
-                readUserState = packageSetting2.readUserState(userInfo.id);
-            }
-            if (!readUserState.equals(packageSetting.readUserState(userInfo.id))) {
-                writePackageRestrictionsLPr(userInfo.id);
-            }
+        } catch (Throwable th) {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+            throw th;
         }
     }
 
-    public static boolean isAdbInstallDisallowed(UserManagerService userManagerService, int i) {
-        return userManagerService.hasUserRestriction("no_debugging_features", i);
-    }
-
-    public void insertPackageSettingLPw(PackageSetting packageSetting, AndroidPackage androidPackage) {
-        if (packageSetting.getSigningDetails().getSignatures() == null) {
-            packageSetting.setSigningDetails(androidPackage.getSigningDetails());
-        }
-        SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting);
-        if (sharedUserSettingLPr != null && sharedUserSettingLPr.signatures.mSigningDetails.getSignatures() == null) {
-            sharedUserSettingLPr.signatures.mSigningDetails = androidPackage.getSigningDetails();
-        }
-        addPackageSettingLPw(packageSetting, sharedUserSettingLPr);
-    }
-
-    public void addPackageSettingLPw(PackageSetting packageSetting, SharedUserSetting sharedUserSetting) {
-        this.mPackages.put(packageSetting.getPackageName(), packageSetting);
-        if (sharedUserSetting != null) {
-            SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting);
-            if (sharedUserSettingLPr != null && sharedUserSettingLPr != sharedUserSetting) {
-                PackageManagerService.reportSettingsProblem(6, "Package " + packageSetting.getPackageName() + " was user " + sharedUserSettingLPr + " but is now " + sharedUserSetting + "; I am not changing its files so it will probably fail!");
-                sharedUserSettingLPr.removePackage(packageSetting);
-            } else if (packageSetting.getAppId() != 0 && packageSetting.getAppId() != sharedUserSetting.mAppId) {
-                PackageManagerService.reportSettingsProblem(6, "Package " + packageSetting.getPackageName() + " was app id " + packageSetting.getAppId() + " but is now user " + sharedUserSetting + " with app id " + sharedUserSetting.mAppId + "; I am not changing its files so it will probably fail!");
-            }
-            sharedUserSetting.addPackage(packageSetting);
-            packageSetting.setSharedUserAppId(sharedUserSetting.mAppId);
-            packageSetting.setAppId(sharedUserSetting.mAppId);
-        }
-        SettingBase settingLPr = getSettingLPr(packageSetting.getAppId());
-        if (sharedUserSetting == null) {
-            if (settingLPr == null || settingLPr == packageSetting) {
-                return;
-            }
-            this.mAppIds.replaceSetting(packageSetting.getAppId(), packageSetting);
-            return;
-        }
-        if (settingLPr == null || settingLPr == sharedUserSetting) {
-            return;
-        }
-        this.mAppIds.replaceSetting(packageSetting.getAppId(), sharedUserSetting);
-    }
-
-    public boolean checkAndPruneSharedUserLPw(SharedUserSetting sharedUserSetting, boolean z) {
-        if ((!z && (!sharedUserSetting.getPackageStates().isEmpty() || !sharedUserSetting.getDisabledPackageStates().isEmpty())) || this.mSharedUsers.remove(sharedUserSetting.name) == null) {
-            return false;
-        }
-        removeAppIdLPw(sharedUserSetting.mAppId);
-        return true;
-    }
-
-    public int removePackageLPw(String str) {
-        PackageSetting packageSetting = (PackageSetting) this.mPackages.remove(str);
-        if (packageSetting == null) {
-            return -1;
-        }
-        removeInstallerPackageStatus(str);
-        SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting);
-        if (sharedUserSettingLPr != null) {
-            sharedUserSettingLPr.removePackage(packageSetting);
-            if (checkAndPruneSharedUserLPw(sharedUserSettingLPr, false)) {
-                return sharedUserSettingLPr.mAppId;
-            }
-            return -1;
-        }
-        removeAppIdLPw(packageSetting.getAppId());
-        return packageSetting.getAppId();
-    }
-
-    public final void removeInstallerPackageStatus(String str) {
-        if (this.mInstallerPackages.contains(str)) {
-            if (PMRune.PM_BADGE_ON_MONETIZED_APP_SUPPORTED && "com.sec.android.app.samsungapps".equals(str) && this.mDisabledSysPackages.get(str) != null) {
-                return;
-            }
-            for (int i = 0; i < this.mPackages.size(); i++) {
-                ((PackageSetting) this.mPackages.valueAt(i)).removeInstallerPackage(str);
-            }
-            this.mInstallerPackages.remove(str);
-        }
-    }
-
-    public SettingBase getSettingLPr(int i) {
-        return this.mAppIds.getSetting(i);
-    }
-
-    public void removeAppIdLPw(int i) {
-        this.mAppIds.removeSetting(i);
-    }
-
-    public void convertSharedUserSettingsLPw(SharedUserSetting sharedUserSetting) {
-        PackageSetting packageSetting = (PackageSetting) sharedUserSetting.getPackageSettings().valueAt(0);
-        this.mAppIds.replaceSetting(sharedUserSetting.getAppId(), packageSetting);
-        packageSetting.setSharedUserAppId(-1);
-        if (!sharedUserSetting.getDisabledPackageSettings().isEmpty()) {
-            ((PackageSetting) sharedUserSetting.getDisabledPackageSettings().valueAt(0)).setSharedUserAppId(-1);
-        }
-        this.mSharedUsers.remove(sharedUserSetting.getName());
-    }
-
-    public void checkAndConvertSharedUserSettingsLPw(SharedUserSetting sharedUserSetting) {
-        AndroidPackageInternal pkg;
-        if (sharedUserSetting.isSingleUser() && (pkg = ((PackageSetting) sharedUserSetting.getPackageSettings().valueAt(0)).getPkg()) != null && pkg.isLeavingSharedUser() && SharedUidMigration.applyStrategy(2)) {
-            convertSharedUserSettingsLPw(sharedUserSetting);
-        }
-    }
-
-    public PreferredIntentResolver editPreferredActivitiesLPw(int i) {
-        PreferredIntentResolver preferredIntentResolver = (PreferredIntentResolver) this.mPreferredActivities.get(i);
-        if (preferredIntentResolver != null) {
-            return preferredIntentResolver;
-        }
-        PreferredIntentResolver preferredIntentResolver2 = new PreferredIntentResolver();
-        this.mPreferredActivities.put(i, preferredIntentResolver2);
-        return preferredIntentResolver2;
-    }
-
-    public PersistentPreferredIntentResolver editPersistentPreferredActivitiesLPw(int i) {
-        PersistentPreferredIntentResolver persistentPreferredIntentResolver = (PersistentPreferredIntentResolver) this.mPersistentPreferredActivities.get(i);
-        if (persistentPreferredIntentResolver != null) {
-            return persistentPreferredIntentResolver;
-        }
-        PersistentPreferredIntentResolver persistentPreferredIntentResolver2 = new PersistentPreferredIntentResolver();
-        this.mPersistentPreferredActivities.put(i, persistentPreferredIntentResolver2);
-        return persistentPreferredIntentResolver2;
-    }
-
-    public CrossProfileIntentResolver editCrossProfileIntentResolverLPw(int i) {
-        CrossProfileIntentResolver crossProfileIntentResolver = (CrossProfileIntentResolver) this.mCrossProfileIntentResolvers.get(i);
-        if (crossProfileIntentResolver != null) {
-            return crossProfileIntentResolver;
-        }
-        CrossProfileIntentResolver crossProfileIntentResolver2 = new CrossProfileIntentResolver();
-        this.mCrossProfileIntentResolvers.put(i, crossProfileIntentResolver2);
-        return crossProfileIntentResolver2;
-    }
-
-    public String removeDefaultBrowserPackageNameLPw(int i) {
-        if (i == -1) {
-            return null;
-        }
-        return (String) this.mDefaultBrowserApp.removeReturnOld(i);
-    }
-
-    public final File getUserSystemDirectory(int i) {
-        return new File(new File(this.mSystemDir, "users"), Integer.toString(i));
-    }
-
-    public final ResilientAtomicFile getUserPackagesStateFile(int i) {
-        return new ResilientAtomicFile(new File(getUserSystemDirectory(i), "package-restrictions.xml"), new File(getUserSystemDirectory(i), "package-restrictions-backup.xml"), new File(getUserSystemDirectory(i), "package-restrictions.xml.reservecopy"), FrameworkStatsLog.HOTWORD_DETECTION_SERVICE_RESTARTED, "package restrictions", this);
-    }
-
-    public final ResilientAtomicFile getSettingsFile() {
-        return new ResilientAtomicFile(this.mSettingsFilename, this.mPreviousSettingsFilename, this.mSettingsReserveCopyFilename, FrameworkStatsLog.HOTWORD_DETECTION_SERVICE_RESTARTED, "package manager settings", this);
-    }
-
-    public final File getUserRuntimePermissionsFile(int i) {
-        return new File(getUserSystemDirectory(i), "runtime-permissions.xml");
-    }
-
-    public void writeAllUsersPackageRestrictionsLPr() {
-        writeAllUsersPackageRestrictionsLPr(false);
-    }
-
-    public void writeAllUsersPackageRestrictionsLPr(boolean z) {
-        List allUsers = getAllUsers(UserManagerService.getInstance());
-        if (allUsers == null) {
-            return;
-        }
-        if (z) {
-            synchronized (this.mPackageRestrictionsLock) {
-                this.mPendingAsyncPackageRestrictionsWrites.clear();
-            }
-            this.mHandler.removeMessages(30);
-        }
-        Iterator it = allUsers.iterator();
-        while (it.hasNext()) {
-            writePackageRestrictionsLPr(((UserInfo) it.next()).id, z);
-        }
-    }
-
-    public void writeAllRuntimePermissionsLPr() {
-        for (int i : UserManagerService.getInstance().getUserIds()) {
-            this.mRuntimePermissionsPersistence.writeStateForUserAsync(i);
-        }
-    }
-
-    public boolean isPermissionUpgradeNeeded(int i) {
-        return this.mRuntimePermissionsPersistence.isPermissionUpgradeNeeded(i);
-    }
-
-    public void updateRuntimePermissionsFingerprint(int i) {
-        this.mRuntimePermissionsPersistence.updateRuntimePermissionsFingerprint(i);
-    }
-
-    public int getDefaultRuntimePermissionsVersion(int i) {
-        return this.mRuntimePermissionsPersistence.getVersion(i);
-    }
-
-    public void setDefaultRuntimePermissionsVersion(int i, int i2) {
-        this.mRuntimePermissionsPersistence.setVersion(i, i2);
-    }
-
-    public void setPermissionControllerVersion(long j) {
-        this.mRuntimePermissionsPersistence.setPermissionControllerVersion(j);
-    }
-
-    public VersionInfo findOrCreateVersion(String str) {
-        VersionInfo versionInfo = (VersionInfo) this.mVersion.get(str);
-        if (versionInfo != null) {
-            return versionInfo;
-        }
-        VersionInfo versionInfo2 = new VersionInfo();
-        this.mVersion.put(str, versionInfo2);
-        return versionInfo2;
-    }
-
-    public VersionInfo getInternalVersion() {
-        return (VersionInfo) this.mVersion.get(StorageManager.UUID_PRIVATE_INTERNAL);
-    }
-
-    public VersionInfo getExternalVersion() {
-        return (VersionInfo) this.mVersion.get("primary_physical");
-    }
-
-    public void onVolumeForgotten(String str) {
-        this.mVersion.remove(str);
-    }
-
-    public void readPreferredActivitiesLPw(TypedXmlPullParser typedXmlPullParser, int i) {
+    public static ArchiveState parseArchiveState(TypedXmlPullParser typedXmlPullParser) {
+        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "installer-title");
+        long attributeLongHex = typedXmlPullParser.getAttributeLongHex((String) null, "archive-time", 0L);
+        ArrayList arrayList = new ArrayList();
         int depth = typedXmlPullParser.getDepth();
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1) {
-                return;
-            }
-            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
-                return;
-            }
-            if (next != 3 && next != 4) {
-                if (typedXmlPullParser.getName().equals("item")) {
-                    PreferredActivity preferredActivity = new PreferredActivity(typedXmlPullParser);
-                    if (preferredActivity.mPref.getParseError() == null) {
-                        PreferredIntentResolver editPreferredActivitiesLPw = editPreferredActivitiesLPw(i);
-                        if (editPreferredActivitiesLPw.shouldAddPreferredActivity(preferredActivity)) {
-                            editPreferredActivitiesLPw.addFilter((PackageDataSnapshot) null, (WatchedIntentFilter) preferredActivity);
-                        }
-                    } else {
-                        PackageManagerService.reportSettingsProblem(5, "Error in package manager settings: <preferred-activity> " + preferredActivity.mPref.getParseError() + " at " + typedXmlPullParser.getPositionDescription());
-                    }
-                } else {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element under <preferred-activities>: " + typedXmlPullParser.getName());
-                    XmlUtils.skipCurrentTag(typedXmlPullParser);
-                }
-            }
-        }
-    }
-
-    public final void readPersistentPreferredActivitiesLPw(TypedXmlPullParser typedXmlPullParser, int i) {
-        int depth = typedXmlPullParser.getDepth();
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1) {
-                return;
-            }
-            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
-                return;
-            }
-            if (next != 3 && next != 4) {
-                if (typedXmlPullParser.getName().equals("item")) {
-                    editPersistentPreferredActivitiesLPw(i).addFilter((PackageDataSnapshot) null, (WatchedIntentFilter) new PersistentPreferredActivity(typedXmlPullParser));
-                } else {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element under <persistent-preferred-activities>: " + typedXmlPullParser.getName());
-                    XmlUtils.skipCurrentTag(typedXmlPullParser);
-                }
-            }
-        }
-    }
-
-    public final void readCrossProfileIntentFiltersLPw(TypedXmlPullParser typedXmlPullParser, int i) {
-        int depth = typedXmlPullParser.getDepth();
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1) {
-                return;
-            }
-            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
-                return;
-            }
-            if (next != 3 && next != 4) {
-                String name = typedXmlPullParser.getName();
-                if (name.equals("item")) {
-                    editCrossProfileIntentResolverLPw(i).addFilter((PackageDataSnapshot) null, (WatchedIntentFilter) new CrossProfileIntentFilter(typedXmlPullParser));
-                } else {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element under crossProfile-intent-filters: " + name);
-                    XmlUtils.skipCurrentTag(typedXmlPullParser);
-                }
-            }
-        }
-    }
-
-    public void readDefaultAppsLPw(XmlPullParser xmlPullParser, int i) {
-        int depth = xmlPullParser.getDepth();
-        while (true) {
-            int next = xmlPullParser.next();
-            if (next == 1) {
-                return;
-            }
-            if (next == 3 && xmlPullParser.getDepth() <= depth) {
-                return;
-            }
-            if (next != 3 && next != 4) {
-                String name = xmlPullParser.getName();
-                if (name.equals("default-browser")) {
-                    this.mDefaultBrowserApp.put(i, xmlPullParser.getAttributeValue(null, "packageName"));
-                } else if (!name.equals("default-dialer")) {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element under default-apps: " + xmlPullParser.getName());
-                    XmlUtils.skipCurrentTag(xmlPullParser);
-                }
-            }
-        }
-    }
-
-    public void readBlockUninstallPackagesLPw(TypedXmlPullParser typedXmlPullParser, int i) {
-        int depth = typedXmlPullParser.getDepth();
-        ArraySet arraySet = new ArraySet();
         while (true) {
             int next = typedXmlPullParser.next();
             if (next == 1 || (next == 3 && typedXmlPullParser.getDepth() <= depth)) {
                 break;
             }
-            if (next != 3 && next != 4) {
-                if (typedXmlPullParser.getName().equals("block-uninstall")) {
-                    arraySet.add(typedXmlPullParser.getAttributeValue((String) null, "packageName"));
+            if (next != 3 && next != 4 && typedXmlPullParser.getName().equals("archive-activity-info")) {
+                String attributeValue2 = typedXmlPullParser.getAttributeValue((String) null, "activity-title");
+                String attributeValue3 = typedXmlPullParser.getAttributeValue((String) null, "original-component-name");
+                String attributeValue4 = typedXmlPullParser.getAttributeValue((String) null, "icon-path");
+                Path of = attributeValue4 == null ? null : Path.of(attributeValue4, new String[0]);
+                String attributeValue5 = typedXmlPullParser.getAttributeValue((String) null, "monochrome-icon-path");
+                Path of2 = attributeValue5 == null ? null : Path.of(attributeValue5, new String[0]);
+                if (attributeValue2 == null || attributeValue3 == null || of == null) {
+                    Slog.wtf("PackageSettings", TextUtils.formatSimple("Missing attributes in tag %s. %s: %s, %s: %s, %s: %s", new Object[]{"archive-activity-info", "activity-title", attributeValue2, "original-component-name", attributeValue3, "icon-path", of}));
                 } else {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element under block-uninstall-packages: " + typedXmlPullParser.getName());
-                    XmlUtils.skipCurrentTag(typedXmlPullParser);
+                    ComponentName unflattenFromString = ComponentName.unflattenFromString(attributeValue3);
+                    if (unflattenFromString == null) {
+                        Slog.wtf("PackageSettings", "Incorrect component name: " + attributeValue3 + " from the attributes");
+                    } else {
+                        arrayList.add(new ArchiveState.ArchiveActivityInfo(attributeValue2, unflattenFromString, of, of2));
+                    }
                 }
             }
         }
-        if (arraySet.isEmpty()) {
-            this.mBlockUninstallPackages.remove(i);
-        } else {
-            this.mBlockUninstallPackages.put(i, arraySet);
+        if (attributeValue == null) {
+            Slog.wtf("PackageSettings", "parseArchiveState: installerTitle is null");
+            return null;
         }
+        if (arrayList.size() >= 1) {
+            return new ArchiveState(attributeValue, attributeLongHex, arrayList);
+        }
+        Slog.wtf("PackageSettings", "parseArchiveState: activityInfos is empty");
+        return null;
     }
 
-    @Override // com.android.server.pm.ResilientAtomicFile.ReadEventLogger
-    public void logEvent(int i, String str) {
-        this.mReadMessages.append(str + KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-        PackageManagerService.reportSettingsProblem(i, str);
-    }
-
-    /* JADX WARN: Not initialized variable reg: 27, insn: 0x03c5: MOVE (r2 I:??[OBJECT, ARRAY]) = (r27 I:??[OBJECT, ARRAY]), block:B:249:0x03c4 */
-    /* JADX WARN: Removed duplicated region for block: B:102:0x03da  */
-    /* JADX WARN: Removed duplicated region for block: B:106:0x03e0  */
-    /* JADX WARN: Removed duplicated region for block: B:112:0x03f1 A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:119:? A[SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:41:0x03e7  */
-    /* JADX WARN: Removed duplicated region for block: B:43:? A[RETURN, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void readPackageRestrictionsLPr(int r48, android.util.ArrayMap r49, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController r50) {
-        /*
-            Method dump skipped, instructions count: 1046
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.readPackageRestrictionsLPr(int, android.util.ArrayMap, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController):void");
-    }
-
-    public void setBlockUninstallLPw(int i, String str, boolean z) {
-        ArraySet arraySet = (ArraySet) this.mBlockUninstallPackages.get(i);
-        if (z) {
-            if (arraySet == null) {
-                arraySet = new ArraySet();
-                this.mBlockUninstallPackages.put(i, arraySet);
+    public static String permissionFlagsToString(int i) {
+        StringBuilder sb = null;
+        while (i != 0) {
+            if (sb == null) {
+                sb = BootReceiver$$ExternalSyntheticOutline0.m(", flags=[ ");
             }
-            arraySet.add(str);
-            return;
-        }
-        if (arraySet != null) {
-            arraySet.remove(str);
-            if (arraySet.isEmpty()) {
-                this.mBlockUninstallPackages.remove(i);
+            int numberOfTrailingZeros = 1 << Integer.numberOfTrailingZeros(i);
+            i &= ~numberOfTrailingZeros;
+            sb.append(PackageManager.permissionFlagToString(numberOfTrailingZeros));
+            if (i != 0) {
+                sb.append('|');
             }
         }
-    }
-
-    public void clearBlockUninstallLPw(int i) {
-        this.mBlockUninstallPackages.remove(i);
-    }
-
-    public boolean getBlockUninstallLPr(int i, String str) {
-        ArraySet arraySet = (ArraySet) this.mBlockUninstallPackages.get(i);
-        if (arraySet == null) {
-            return false;
+        if (sb == null) {
+            return "";
         }
-        return arraySet.contains(str);
+        sb.append(']');
+        return sb.toString();
     }
 
-    public final ArraySet readComponentsLPr(TypedXmlPullParser typedXmlPullParser) {
+    public static void printFlags(PrintWriter printWriter, int i, Object[] objArr) {
+        printWriter.print("[ ");
+        for (int i2 = 0; i2 < objArr.length; i2 += 2) {
+            if ((((Integer) objArr[i2]).intValue() & i) != 0) {
+                printWriter.print(objArr[i2 + 1]);
+                printWriter.print(" ");
+            }
+        }
+        printWriter.print("]");
+    }
+
+    public static ArraySet readComponentsLPr(TypedXmlPullParser typedXmlPullParser) {
         String attributeValue;
         int depth = typedXmlPullParser.getDepth();
         ArraySet arraySet = null;
@@ -1287,129 +1404,30 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         return arraySet;
     }
 
-    public void writePreferredActivitiesLPr(TypedXmlSerializer typedXmlSerializer, int i, boolean z) {
-        typedXmlSerializer.startTag((String) null, "preferred-activities");
-        PreferredIntentResolver preferredIntentResolver = (PreferredIntentResolver) this.mPreferredActivities.get(i);
-        if (preferredIntentResolver != null) {
-            for (PreferredActivity preferredActivity : preferredIntentResolver.filterSet()) {
-                typedXmlSerializer.startTag((String) null, "item");
-                preferredActivity.writeToXml(typedXmlSerializer, z);
-                typedXmlSerializer.endTag((String) null, "item");
+    public static String readDefaultApps(XmlPullParser xmlPullParser) {
+        int depth = xmlPullParser.getDepth();
+        String str = null;
+        while (true) {
+            int next = xmlPullParser.next();
+            if (next == 1 || (next == 3 && xmlPullParser.getDepth() <= depth)) {
+                break;
+            }
+            if (next != 3 && next != 4) {
+                String name = xmlPullParser.getName();
+                if (name.equals("default-browser")) {
+                    str = xmlPullParser.getAttributeValue(null, "packageName");
+                } else if (!name.equals("default-dialer")) {
+                    String str2 = "Unknown element under default-apps: " + xmlPullParser.getName();
+                    boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                    PackageManagerServiceUtils.logCriticalInfo(5, str2);
+                    XmlUtils.skipCurrentTag(xmlPullParser);
+                }
             }
         }
-        typedXmlSerializer.endTag((String) null, "preferred-activities");
+        return str;
     }
 
-    public void writePersistentPreferredActivitiesLPr(TypedXmlSerializer typedXmlSerializer, int i) {
-        typedXmlSerializer.startTag((String) null, "persistent-preferred-activities");
-        PersistentPreferredIntentResolver persistentPreferredIntentResolver = (PersistentPreferredIntentResolver) this.mPersistentPreferredActivities.get(i);
-        if (persistentPreferredIntentResolver != null) {
-            for (PersistentPreferredActivity persistentPreferredActivity : persistentPreferredIntentResolver.filterSet()) {
-                typedXmlSerializer.startTag((String) null, "item");
-                persistentPreferredActivity.writeToXml(typedXmlSerializer);
-                typedXmlSerializer.endTag((String) null, "item");
-            }
-        }
-        typedXmlSerializer.endTag((String) null, "persistent-preferred-activities");
-    }
-
-    public void writeCrossProfileIntentFiltersLPr(TypedXmlSerializer typedXmlSerializer, int i) {
-        typedXmlSerializer.startTag((String) null, "crossProfile-intent-filters");
-        CrossProfileIntentResolver crossProfileIntentResolver = (CrossProfileIntentResolver) this.mCrossProfileIntentResolvers.get(i);
-        if (crossProfileIntentResolver != null) {
-            for (CrossProfileIntentFilter crossProfileIntentFilter : crossProfileIntentResolver.filterSet()) {
-                typedXmlSerializer.startTag((String) null, "item");
-                crossProfileIntentFilter.writeToXml(typedXmlSerializer);
-                typedXmlSerializer.endTag((String) null, "item");
-            }
-        }
-        typedXmlSerializer.endTag((String) null, "crossProfile-intent-filters");
-    }
-
-    public void writeDefaultAppsLPr(XmlSerializer xmlSerializer, int i) {
-        xmlSerializer.startTag(null, "default-apps");
-        String str = (String) this.mDefaultBrowserApp.get(i);
-        if (!TextUtils.isEmpty(str)) {
-            xmlSerializer.startTag(null, "default-browser");
-            xmlSerializer.attribute(null, "packageName", str);
-            xmlSerializer.endTag(null, "default-browser");
-        }
-        xmlSerializer.endTag(null, "default-apps");
-    }
-
-    public void writeBlockUninstallPackagesLPr(TypedXmlSerializer typedXmlSerializer, int i) {
-        ArraySet arraySet = (ArraySet) this.mBlockUninstallPackages.get(i);
-        if (arraySet != null) {
-            typedXmlSerializer.startTag((String) null, "block-uninstall-packages");
-            for (int i2 = 0; i2 < arraySet.size(); i2++) {
-                typedXmlSerializer.startTag((String) null, "block-uninstall");
-                typedXmlSerializer.attribute((String) null, "packageName", (String) arraySet.valueAt(i2));
-                typedXmlSerializer.endTag((String) null, "block-uninstall");
-            }
-            typedXmlSerializer.endTag((String) null, "block-uninstall-packages");
-        }
-    }
-
-    public void writePackageRestrictionsLPr(int i) {
-        writePackageRestrictionsLPr(i, false);
-    }
-
-    public void writePackageRestrictionsLPr(final int i, final boolean z) {
-        invalidatePackageCache();
-        final long uptimeMillis = SystemClock.uptimeMillis();
-        if (z) {
-            lambda$writePackageRestrictionsLPr$1(i, uptimeMillis, z);
-            return;
-        }
-        synchronized (this.mPackageRestrictionsLock) {
-            this.mPendingAsyncPackageRestrictionsWrites.put(i, this.mPendingAsyncPackageRestrictionsWrites.get(i, 0) + 1);
-        }
-        this.mHandler.obtainMessage(30, new Runnable() { // from class: com.android.server.pm.Settings$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                Settings.this.lambda$writePackageRestrictionsLPr$1(i, uptimeMillis, z);
-            }
-        }).sendToTarget();
-    }
-
-    public void writePackageRestrictions(Integer[] numArr) {
-        invalidatePackageCache();
-        long uptimeMillis = SystemClock.uptimeMillis();
-        for (Integer num : numArr) {
-            lambda$writePackageRestrictionsLPr$1(num.intValue(), uptimeMillis, true);
-        }
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:12:0x0030, code lost:
-    
-        if (r2 == null) goto L313;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0032, code lost:
-    
-        r2.close();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:14:0x0035, code lost:
-    
-        return;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:16:?, code lost:
-    
-        return;
-     */
-    /* renamed from: writePackageRestrictions */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void lambda$writePackageRestrictionsLPr$1(int r17, long r18, boolean r20) {
-        /*
-            Method dump skipped, instructions count: 646
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.lambda$writePackageRestrictionsLPr$1(int, long, boolean):void");
-    }
-
-    public void readInstallPermissionsLPr(TypedXmlPullParser typedXmlPullParser, LegacyPermissionState legacyPermissionState, List list) {
+    public static void readInstallPermissionsLPr(TypedXmlPullParser typedXmlPullParser, LegacyPermissionState legacyPermissionState, List list) {
         int depth = typedXmlPullParser.getDepth();
         while (true) {
             int next = typedXmlPullParser.next();
@@ -1436,27 +1454,516 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         }
     }
 
-    public void readUsesSdkLibLPw(TypedXmlPullParser typedXmlPullParser, PackageSetting packageSetting) {
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x0081, code lost:
+    
+        if (r10 != 4) goto L76;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:42:0x0084, code lost:
+    
+        r10 = r14.getName();
+        r11 = r10.hashCode();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x008f, code lost:
+    
+        if (r11 == (-538220657)) goto L56;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:45:0x0094, code lost:
+    
+        if (r11 == (-22768109)) goto L53;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x0099, code lost:
+    
+        if (r11 == 1627485488) goto L50;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:49:0x00ba, code lost:
+    
+        r10 = 65535;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x00bb, code lost:
+    
+        if (r10 == 0) goto L78;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x00e9, code lost:
+    
+        r4 = android.content.pm.SuspendDialogInfo.restoreFromXml(r14);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x00bd, code lost:
+    
+        if (r10 == 1) goto L79;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x00e4, code lost:
+    
+        r8 = android.os.PersistableBundle.restoreFromXml(r14);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x00bf, code lost:
+    
+        if (r10 == 2) goto L80;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:63:0x00df, code lost:
+    
+        r9 = android.os.PersistableBundle.restoreFromXml(r14);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:66:0x00c1, code lost:
+    
+        android.util.Slog.w("FrameworkPackageUserState", "Unknown tag " + r14.getName() + " in SuspendParams. Ignoring");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x00a2, code lost:
+    
+        if (r10.equals("launcher-extras") == false) goto L59;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:70:0x00a4, code lost:
+    
+        r10 = 2;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:72:0x00ac, code lost:
+    
+        if (r10.equals("dialog-info") == false) goto L59;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:73:0x00ae, code lost:
+    
+        r10 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:75:0x00b6, code lost:
+    
+        if (r10.equals("app-extras") == false) goto L59;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x00b8, code lost:
+    
+        r10 = 1;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static java.util.Map.Entry readSuspensionParamsLPr(int r13, com.android.modules.utils.TypedXmlPullParser r14) {
+        /*
+            Method dump skipped, instructions count: 278
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.readSuspensionParamsLPr(int, com.android.modules.utils.TypedXmlPullParser):java.util.Map$Entry");
+    }
+
+    public static void readUsesSdkLibLPw(TypedXmlPullParser typedXmlPullParser, PackageSetting packageSetting) {
         String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
         long attributeLong = typedXmlPullParser.getAttributeLong((String) null, "version", -1L);
+        boolean attributeBoolean = typedXmlPullParser.getAttributeBoolean((String) null, "optional", true);
         if (attributeValue != null && attributeLong >= 0) {
-            packageSetting.setUsesSdkLibraries((String[]) ArrayUtils.appendElement(String.class, packageSetting.getUsesSdkLibraries(), attributeValue));
-            packageSetting.setUsesSdkLibrariesVersionsMajor(ArrayUtils.appendLong(packageSetting.getUsesSdkLibrariesVersionsMajor(), attributeLong));
+            packageSetting.usesSdkLibraries = (String[]) ArrayUtils.appendElement(String.class, packageSetting.getUsesSdkLibraries(), attributeValue);
+            packageSetting.onChanged$2();
+            packageSetting.usesSdkLibrariesVersionsMajor = ArrayUtils.appendLong(packageSetting.getUsesSdkLibrariesVersionsMajor(), attributeLong);
+            packageSetting.onChanged$2();
+            packageSetting.usesSdkLibrariesOptional = ArrayUtils.appendBoolean(packageSetting.getUsesSdkLibrariesOptional(), attributeBoolean);
+            packageSetting.onChanged$2();
         }
         XmlUtils.skipCurrentTag(typedXmlPullParser);
     }
 
-    public void readUsesStaticLibLPw(TypedXmlPullParser typedXmlPullParser, PackageSetting packageSetting) {
+    public static void readUsesStaticLibLPw(TypedXmlPullParser typedXmlPullParser, PackageSetting packageSetting) {
         String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
         long attributeLong = typedXmlPullParser.getAttributeLong((String) null, "version", -1L);
         if (attributeValue != null && attributeLong >= 0) {
-            packageSetting.setUsesStaticLibraries((String[]) ArrayUtils.appendElement(String.class, packageSetting.getUsesStaticLibraries(), attributeValue));
-            packageSetting.setUsesStaticLibrariesVersions(ArrayUtils.appendLong(packageSetting.getUsesStaticLibrariesVersions(), attributeLong));
+            packageSetting.usesStaticLibraries = (String[]) ArrayUtils.appendElement(String.class, packageSetting.getUsesStaticLibraries(), attributeValue);
+            packageSetting.onChanged$2();
+            packageSetting.usesStaticLibrariesVersions = ArrayUtils.appendLong(packageSetting.getUsesStaticLibrariesVersions(), attributeLong);
+            packageSetting.onChanged$2();
         }
         XmlUtils.skipCurrentTag(typedXmlPullParser);
     }
 
-    public void writeUsesSdkLibLPw(TypedXmlSerializer typedXmlSerializer, String[] strArr, long[] jArr) {
+    public static void removeFilters(PreferredIntentResolver preferredIntentResolver, List list) {
+        for (int size = list.size() - 1; size >= 0; size--) {
+            PreferredActivity preferredActivity = (PreferredActivity) list.get(size);
+            preferredIntentResolver.removeFilter((WatchedIntentFilter) preferredActivity);
+            PreferredActivityLog.logPreferenceChange(preferredActivity, "Removing preference<replace>");
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0021, code lost:
+    
+        if (r2.exists() != false) goto L15;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static java.io.FileInputStream restorePackages(com.samsung.android.server.pm.rescueparty.PackageManagerBackupController r4) {
+        /*
+            r0 = 0
+            if (r4 == 0) goto L5e
+            int r1 = r4.mRebootCntByPackages
+            r2 = 3
+            if (r1 < r2) goto L9
+            goto L5e
+        L9:
+            java.io.File r1 = r4.getLatestBackupItemDir()
+            if (r1 == 0) goto L24
+            boolean r2 = r1.exists()
+            if (r2 == 0) goto L24
+            java.io.File r2 = new java.io.File
+            java.lang.String r3 = "packages.xml"
+            r2.<init>(r1, r3)
+            boolean r3 = r2.exists()
+            if (r3 == 0) goto L24
+            goto L38
+        L24:
+            java.lang.StringBuilder r2 = new java.lang.StringBuilder
+            java.lang.String r3 = "!@Invalid file or not exists in "
+            r2.<init>(r3)
+            r2.append(r1)
+            java.lang.String r1 = r2.toString()
+            java.lang.String r2 = "PmBackupController"
+            android.util.Log.e(r2, r1)
+            r2 = r0
+        L38:
+            if (r2 == 0) goto L5e
+            boolean r1 = r2.exists()
+            if (r1 == 0) goto L5e
+            java.lang.String r0 = "Restoring "
+            java.lang.String r0 = com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0.m(r2, r0)
+            boolean r1 = com.android.server.pm.PackageManagerService.DEBUG_COMPRESSION
+            r1 = 4
+            com.android.server.pm.PackageManagerServiceUtils.logCriticalInfo(r1, r0)
+            int r0 = r4.mRebootCntByPackages
+            r1 = 1
+            int r0 = r0 + r1
+            r4.mRebootCntByPackages = r0
+            java.lang.String r3 = "reboot_cnt_by_packages"
+            r4.putBackupConfigInt(r0, r3, r1)
+            java.io.FileInputStream r4 = new java.io.FileInputStream
+            r4.<init>(r2)
+            return r4
+        L5e:
+            return r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.restorePackages(com.samsung.android.server.pm.rescueparty.PackageManagerBackupController):java.io.FileInputStream");
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0027, code lost:
+    
+        if (r2.exists() != false) goto L15;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static java.io.FileInputStream restorePackagesState(com.samsung.android.server.pm.rescueparty.PackageManagerBackupController r5, int r6) {
+        /*
+            r0 = 0
+            if (r5 == 0) goto L6c
+            int r1 = r5.mRebootCntByPackages
+            r2 = 3
+            if (r1 < r2) goto L9
+            goto L6c
+        L9:
+            java.io.File r1 = r5.getLatestBackupItemDir()
+            if (r1 == 0) goto L2a
+            boolean r2 = r1.exists()
+            if (r2 == 0) goto L2a
+            java.io.File r2 = new java.io.File
+            java.lang.String r3 = "users/"
+            java.lang.String r4 = "/package-restrictions.xml"
+            java.lang.String r3 = com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0.m(r6, r3, r4)
+            r2.<init>(r1, r3)
+            boolean r3 = r2.exists()
+            if (r3 == 0) goto L2a
+            goto L46
+        L2a:
+            java.lang.StringBuilder r2 = new java.lang.StringBuilder
+            java.lang.String r3 = "!@Invalid dir or not exists in "
+            r2.<init>(r3)
+            r2.append(r1)
+            java.lang.String r1 = " for user "
+            r2.append(r1)
+            r2.append(r6)
+            java.lang.String r6 = r2.toString()
+            java.lang.String r1 = "PmBackupController"
+            android.util.Log.e(r1, r6)
+            r2 = r0
+        L46:
+            if (r2 == 0) goto L6c
+            boolean r6 = r2.exists()
+            if (r6 == 0) goto L6c
+            java.lang.String r6 = "Restoring "
+            java.lang.String r6 = com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0.m(r2, r6)
+            boolean r0 = com.android.server.pm.PackageManagerService.DEBUG_COMPRESSION
+            r0 = 4
+            com.android.server.pm.PackageManagerServiceUtils.logCriticalInfo(r0, r6)
+            int r6 = r5.mRebootCntByPackages
+            r0 = 1
+            int r6 = r6 + r0
+            r5.mRebootCntByPackages = r6
+            java.lang.String r1 = "reboot_cnt_by_packages"
+            r5.putBackupConfigInt(r6, r1, r0)
+            java.io.FileInputStream r5 = new java.io.FileInputStream
+            r5.<init>(r2)
+            return r5
+        L6c:
+            return r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.restorePackagesState(com.samsung.android.server.pm.rescueparty.PackageManagerBackupController, int):java.io.FileInputStream");
+    }
+
+    public static void writeArchiveStateLPr(TypedXmlSerializer typedXmlSerializer, ArchiveState archiveState) {
+        if (archiveState == null) {
+            return;
+        }
+        typedXmlSerializer.startTag((String) null, "archive-state");
+        typedXmlSerializer.attribute((String) null, "installer-title", archiveState.mInstallerTitle);
+        typedXmlSerializer.attributeLongHex((String) null, "archive-time", archiveState.mArchiveTimeMillis);
+        for (ArchiveState.ArchiveActivityInfo archiveActivityInfo : archiveState.mActivityInfos) {
+            typedXmlSerializer.startTag((String) null, "archive-activity-info");
+            typedXmlSerializer.attribute((String) null, "activity-title", archiveActivityInfo.mTitle);
+            typedXmlSerializer.attribute((String) null, "original-component-name", archiveActivityInfo.mOriginalComponentName.flattenToString());
+            Path path = archiveActivityInfo.mIconBitmap;
+            if (path != null) {
+                typedXmlSerializer.attribute((String) null, "icon-path", path.toAbsolutePath().toString());
+            }
+            Path path2 = archiveActivityInfo.mMonochromeIconBitmap;
+            if (path2 != null) {
+                typedXmlSerializer.attribute((String) null, "monochrome-icon-path", path2.toAbsolutePath().toString());
+            }
+            typedXmlSerializer.endTag((String) null, "archive-activity-info");
+        }
+        typedXmlSerializer.endTag((String) null, "archive-state");
+    }
+
+    public static void writeDefaultApps(XmlSerializer xmlSerializer, String str) {
+        xmlSerializer.startTag(null, "default-apps");
+        if (!TextUtils.isEmpty(str)) {
+            xmlSerializer.startTag(null, "default-browser");
+            xmlSerializer.attribute(null, "packageName", str);
+            xmlSerializer.endTag(null, "default-browser");
+        }
+        xmlSerializer.endTag(null, "default-apps");
+    }
+
+    public static void writeDisabledSysPackageLPr(TypedXmlSerializer typedXmlSerializer, PackageSetting packageSetting) {
+        typedXmlSerializer.startTag((String) null, "updated-package");
+        typedXmlSerializer.attribute((String) null, "name", packageSetting.mName);
+        String str = packageSetting.mRealName;
+        if (str != null) {
+            typedXmlSerializer.attribute((String) null, "realName", str);
+        }
+        typedXmlSerializer.attribute((String) null, "codePath", packageSetting.mPathString);
+        typedXmlSerializer.attributeLongHex((String) null, "ft", packageSetting.mLastModifiedTime);
+        typedXmlSerializer.attributeLongHex((String) null, "ut", packageSetting.lastUpdateTime);
+        typedXmlSerializer.attributeLong((String) null, "version", packageSetting.versionCode);
+        typedXmlSerializer.attributeInt((String) null, "targetSdkVersion", packageSetting.mTargetSdkVersion);
+        byte[] bArr = packageSetting.mRestrictUpdateHash;
+        if (bArr != null) {
+            typedXmlSerializer.attributeBytesBase64((String) null, "restrictUpdateHash", bArr);
+        }
+        typedXmlSerializer.attributeBoolean((String) null, "scannedAsStoppedSystemApp", packageSetting.getBoolean(8));
+        String str2 = packageSetting.legacyNativeLibraryPath;
+        if (str2 != null) {
+            typedXmlSerializer.attribute((String) null, "nativeLibraryPath", str2);
+        }
+        String str3 = packageSetting.mPrimaryCpuAbi;
+        if (str3 != null) {
+            typedXmlSerializer.attribute((String) null, "primaryCpuAbi", str3);
+        }
+        String str4 = packageSetting.mSecondaryCpuAbi;
+        if (str4 != null) {
+            typedXmlSerializer.attribute((String) null, "secondaryCpuAbi", str4);
+        }
+        String str5 = packageSetting.mCpuAbiOverride;
+        if (str5 != null) {
+            typedXmlSerializer.attribute((String) null, "cpuAbiOverride", str5);
+        }
+        if (packageSetting.hasSharedUser()) {
+            typedXmlSerializer.attributeInt((String) null, "sharedUserId", packageSetting.mAppId);
+        } else {
+            typedXmlSerializer.attributeInt((String) null, "userId", packageSetting.mAppId);
+        }
+        typedXmlSerializer.attributeFloat((String) null, "loadingProgress", packageSetting.mLoadingProgress);
+        typedXmlSerializer.attributeLongHex((String) null, "loadingCompletedTime", packageSetting.mLoadingCompletedTime);
+        String str6 = packageSetting.mAppMetadataFilePath;
+        if (str6 != null) {
+            typedXmlSerializer.attribute((String) null, "appMetadataFilePath", str6);
+        }
+        typedXmlSerializer.attributeInt((String) null, "appMetadataSource", packageSetting.mAppMetadataSource);
+        writeUsesSdkLibLPw(typedXmlSerializer, packageSetting.getUsesSdkLibraries(), packageSetting.getUsesSdkLibrariesVersionsMajor(), packageSetting.getUsesSdkLibrariesOptional());
+        writeUsesStaticLibLPw(typedXmlSerializer, packageSetting.getUsesStaticLibraries(), packageSetting.getUsesStaticLibrariesVersions());
+        typedXmlSerializer.endTag((String) null, "updated-package");
+    }
+
+    public static void writeIntToFile(File file, int i) {
+        try {
+            FileUtils.bytesToFile(file.getAbsolutePath(), Integer.toString(i).getBytes(StandardCharsets.US_ASCII));
+        } catch (IOException unused) {
+            StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "Couldn't write ", " to ");
+            m.append(file.getAbsolutePath());
+            Slog.w("PackageSettings", m.toString());
+        }
+    }
+
+    public static void writePackageLPr(TypedXmlSerializer typedXmlSerializer, ArrayList arrayList, PackageSetting packageSetting) {
+        typedXmlSerializer.startTag((String) null, "package");
+        typedXmlSerializer.attribute((String) null, "name", packageSetting.mName);
+        String str = packageSetting.mRealName;
+        if (str != null) {
+            typedXmlSerializer.attribute((String) null, "realName", str);
+        }
+        typedXmlSerializer.attribute((String) null, "codePath", packageSetting.mPathString);
+        String str2 = packageSetting.legacyNativeLibraryPath;
+        if (str2 != null) {
+            typedXmlSerializer.attribute((String) null, "nativeLibraryPath", str2);
+        }
+        String str3 = packageSetting.mPrimaryCpuAbi;
+        if (str3 != null) {
+            typedXmlSerializer.attribute((String) null, "primaryCpuAbi", str3);
+        }
+        String str4 = packageSetting.mSecondaryCpuAbi;
+        if (str4 != null) {
+            typedXmlSerializer.attribute((String) null, "secondaryCpuAbi", str4);
+        }
+        String str5 = packageSetting.mCpuAbiOverride;
+        if (str5 != null) {
+            typedXmlSerializer.attribute((String) null, "cpuAbiOverride", str5);
+        }
+        typedXmlSerializer.attributeInt((String) null, "publicFlags", packageSetting.mPkgFlags);
+        typedXmlSerializer.attributeInt((String) null, "privateFlags", packageSetting.mPkgPrivateFlags);
+        typedXmlSerializer.attributeLongHex((String) null, "ft", packageSetting.mLastModifiedTime);
+        typedXmlSerializer.attributeLongHex((String) null, "ut", packageSetting.lastUpdateTime);
+        typedXmlSerializer.attributeLong((String) null, "version", packageSetting.versionCode);
+        typedXmlSerializer.attributeInt((String) null, "targetSdkVersion", packageSetting.mTargetSdkVersion);
+        byte[] bArr = packageSetting.mRestrictUpdateHash;
+        if (bArr != null) {
+            typedXmlSerializer.attributeBytesBase64((String) null, "restrictUpdateHash", bArr);
+        }
+        typedXmlSerializer.attributeBoolean((String) null, "scannedAsStoppedSystemApp", packageSetting.getBoolean(8));
+        if (packageSetting.hasSharedUser()) {
+            typedXmlSerializer.attributeInt((String) null, "sharedUserId", packageSetting.mAppId);
+        } else {
+            typedXmlSerializer.attributeInt((String) null, "userId", packageSetting.mAppId);
+            AndroidPackageInternal androidPackageInternal = packageSetting.pkg;
+            typedXmlSerializer.attributeBoolean((String) null, "isSdkLibrary", androidPackageInternal != null && androidPackageInternal.isSdkLibrary());
+        }
+        InstallSource installSource = packageSetting.installSource;
+        String str6 = installSource.mInstallerPackageName;
+        if (str6 != null) {
+            typedXmlSerializer.attribute((String) null, "installer", str6);
+        }
+        int i = installSource.mInstallerPackageUid;
+        if (i != -1) {
+            typedXmlSerializer.attributeInt((String) null, "installerUid", i);
+        }
+        String str7 = installSource.mUpdateOwnerPackageName;
+        if (str7 != null) {
+            typedXmlSerializer.attribute((String) null, "updateOwner", str7);
+        }
+        String str8 = installSource.mInstallerAttributionTag;
+        if (str8 != null) {
+            typedXmlSerializer.attribute((String) null, "installerAttributionTag", str8);
+        }
+        typedXmlSerializer.attributeInt((String) null, "packageSource", installSource.mPackageSource);
+        if (installSource.mIsOrphaned) {
+            typedXmlSerializer.attributeBoolean((String) null, "isOrphaned", true);
+        }
+        String str9 = installSource.mInitiatingPackageName;
+        if (str9 != null) {
+            typedXmlSerializer.attribute((String) null, "installInitiator", str9);
+        }
+        if (installSource.mIsInitiatingPackageUninstalled) {
+            typedXmlSerializer.attributeBoolean((String) null, "installInitiatorUninstalled", true);
+        }
+        String str10 = installSource.mOriginatingPackageName;
+        if (str10 != null) {
+            typedXmlSerializer.attribute((String) null, "installOriginator", str10);
+        }
+        String str11 = packageSetting.volumeUuid;
+        if (str11 != null) {
+            typedXmlSerializer.attribute((String) null, "volumeUuid", str11);
+        }
+        int i2 = packageSetting.categoryOverride;
+        if (i2 != -1) {
+            typedXmlSerializer.attributeInt((String) null, "categoryHint", i2);
+        }
+        if (packageSetting.getBoolean(2)) {
+            typedXmlSerializer.attributeBoolean((String) null, "updateAvailable", true);
+        }
+        if (packageSetting.getBoolean(4)) {
+            typedXmlSerializer.attributeBoolean((String) null, "forceQueryable", true);
+        }
+        if (packageSetting.getBoolean(16)) {
+            typedXmlSerializer.attributeBoolean((String) null, "pendingRestore", true);
+        }
+        if (packageSetting.getBoolean(32)) {
+            typedXmlSerializer.attributeBoolean((String) null, "debuggable", true);
+        }
+        if (packageSetting.isLoading()) {
+            typedXmlSerializer.attributeBoolean((String) null, "isLoading", true);
+        }
+        int i3 = packageSetting.mBaseRevisionCode;
+        if (i3 != 0) {
+            typedXmlSerializer.attributeInt((String) null, "baseRevisionCode", i3);
+        }
+        typedXmlSerializer.attributeFloat((String) null, "loadingProgress", packageSetting.mLoadingProgress);
+        typedXmlSerializer.attributeLongHex((String) null, "loadingCompletedTime", packageSetting.mLoadingCompletedTime);
+        typedXmlSerializer.attribute((String) null, "domainSetId", packageSetting.mDomainSetId.toString());
+        String str12 = packageSetting.mAppMetadataFilePath;
+        if (str12 != null) {
+            typedXmlSerializer.attribute((String) null, "appMetadataFilePath", str12);
+        }
+        typedXmlSerializer.attributeInt((String) null, "appMetadataSource", packageSetting.mAppMetadataSource);
+        writeUsesSdkLibLPw(typedXmlSerializer, packageSetting.getUsesSdkLibraries(), packageSetting.getUsesSdkLibrariesVersionsMajor(), packageSetting.getUsesSdkLibrariesOptional());
+        writeUsesStaticLibLPw(typedXmlSerializer, packageSetting.getUsesStaticLibraries(), packageSetting.getUsesStaticLibrariesVersions());
+        packageSetting.signatures.writeXml(typedXmlSerializer, "sigs", arrayList);
+        PackageSignatures packageSignatures = installSource.mInitiatingPackageSignatures;
+        if (packageSignatures != null) {
+            packageSignatures.writeXml(typedXmlSerializer, "install-initiator-sigs", arrayList);
+        }
+        PackageKeySetData packageKeySetData = packageSetting.keySetData;
+        typedXmlSerializer.startTag((String) null, "proper-signing-keyset");
+        typedXmlSerializer.attributeLong((String) null, "identifier", packageKeySetData.mProperSigningKeySet);
+        typedXmlSerializer.endTag((String) null, "proper-signing-keyset");
+        long[] jArr = packageSetting.keySetData.mUpgradeKeySets;
+        if (jArr != null && jArr.length > 0) {
+            for (long j : jArr) {
+                typedXmlSerializer.startTag((String) null, "upgrade-keyset");
+                typedXmlSerializer.attributeLong((String) null, "identifier", j);
+                typedXmlSerializer.endTag((String) null, "upgrade-keyset");
+            }
+        }
+        for (Map.Entry entry : packageSetting.keySetData.mKeySetAliases.entrySet()) {
+            typedXmlSerializer.startTag((String) null, "defined-keyset");
+            typedXmlSerializer.attribute((String) null, "alias", (String) entry.getKey());
+            typedXmlSerializer.attributeLong((String) null, "identifier", ((Long) entry.getValue()).longValue());
+            typedXmlSerializer.endTag((String) null, "defined-keyset");
+        }
+        Map mimeGroups = packageSetting.getMimeGroups();
+        if (mimeGroups != null) {
+            for (String str13 : mimeGroups.keySet()) {
+                typedXmlSerializer.startTag((String) null, "mime-group");
+                typedXmlSerializer.attribute((String) null, "name", str13);
+                for (String str14 : (Set) mimeGroups.get(str13)) {
+                    typedXmlSerializer.startTag((String) null, "mime-type");
+                    typedXmlSerializer.attribute((String) null, "value", str14);
+                    typedXmlSerializer.endTag((String) null, "mime-type");
+                }
+                typedXmlSerializer.endTag((String) null, "mime-group");
+            }
+        }
+        if (packageSetting.pkg == null) {
+            String[] splitNames = packageSetting.getSplitNames();
+            int[] splitRevisionCodes = packageSetting.getSplitRevisionCodes();
+            if (!ArrayUtils.isEmpty(splitNames) && !ArrayUtils.isEmpty(splitRevisionCodes) && splitNames.length == splitRevisionCodes.length) {
+                int length = splitNames.length;
+                for (int i4 = 0; i4 < length; i4++) {
+                    String str15 = splitNames[i4];
+                    int i5 = splitRevisionCodes[i4];
+                    typedXmlSerializer.startTag((String) null, "split-version");
+                    typedXmlSerializer.attribute((String) null, "name", str15);
+                    typedXmlSerializer.attributeInt((String) null, "version", i5);
+                    typedXmlSerializer.endTag((String) null, "split-version");
+                }
+            }
+        }
+        typedXmlSerializer.endTag((String) null, "package");
+    }
+
+    public static void writeUsesSdkLibLPw(TypedXmlSerializer typedXmlSerializer, String[] strArr, long[] jArr, boolean[] zArr) {
         if (ArrayUtils.isEmpty(strArr) || ArrayUtils.isEmpty(jArr) || strArr.length != jArr.length) {
             return;
         }
@@ -1464,14 +1971,16 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         for (int i = 0; i < length; i++) {
             String str = strArr[i];
             long j = jArr[i];
+            boolean z = zArr[i];
             typedXmlSerializer.startTag((String) null, "uses-sdk-lib");
             typedXmlSerializer.attribute((String) null, "name", str);
             typedXmlSerializer.attributeLong((String) null, "version", j);
+            typedXmlSerializer.attributeBoolean((String) null, "optional", z);
             typedXmlSerializer.endTag((String) null, "uses-sdk-lib");
         }
     }
 
-    public void writeUsesStaticLibLPw(TypedXmlSerializer typedXmlSerializer, String[] strArr, long[] jArr) {
+    public static void writeUsesStaticLibLPw(TypedXmlSerializer typedXmlSerializer, String[] strArr, long[] jArr) {
         if (ArrayUtils.isEmpty(strArr) || ArrayUtils.isEmpty(jArr) || strArr.length != jArr.length) {
             return;
         }
@@ -1486,742 +1995,118 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:13:0x0096 A[Catch: IOException -> 0x0128, XmlPullParserException -> 0x0159, TryCatch #4 {IOException -> 0x0128, XmlPullParserException -> 0x0159, blocks: (B:52:0x004c, B:54:0x0054, B:55:0x006a, B:57:0x0070, B:60:0x007e, B:6:0x0085, B:7:0x0089, B:13:0x0096, B:16:0x00a4, B:17:0x00a8, B:21:0x00b1, B:30:0x00bc, B:37:0x00c9, B:39:0x00da, B:41:0x00ec, B:42:0x0104, B:44:0x00f0, B:33:0x0108, B:24:0x0124), top: B:51:0x004c }] */
-    /* JADX WARN: Removed duplicated region for block: B:16:0x00a4 A[Catch: IOException -> 0x0128, XmlPullParserException -> 0x0159, TryCatch #4 {IOException -> 0x0128, XmlPullParserException -> 0x0159, blocks: (B:52:0x004c, B:54:0x0054, B:55:0x006a, B:57:0x0070, B:60:0x007e, B:6:0x0085, B:7:0x0089, B:13:0x0096, B:16:0x00a4, B:17:0x00a8, B:21:0x00b1, B:30:0x00bc, B:37:0x00c9, B:39:0x00da, B:41:0x00ec, B:42:0x0104, B:44:0x00f0, B:33:0x0108, B:24:0x0124), top: B:51:0x004c }] */
-    /* JADX WARN: Removed duplicated region for block: B:50:0x0094 A[EDGE_INSN: B:50:0x0094->B:12:0x0094 BREAK  A[LOOP:0: B:7:0x0089->B:10:0x0093], SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:51:0x004c A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:9:0x0091 A[ADDED_TO_REGION] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public void readStoppedLPw() {
-        /*
-            Method dump skipped, instructions count: 394
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.readStoppedLPw():void");
-    }
-
-    public void writeLPr(Computer computer, boolean z) {
-        long uptimeMillis = SystemClock.uptimeMillis();
-        invalidatePackageCache();
-        this.mPastSignatures.clear();
-        ResilientAtomicFile settingsFile = getSettingsFile();
-        FileOutputStream fileOutputStream = null;
-        try {
-            try {
-                FileOutputStream startWrite = settingsFile.startWrite();
-                try {
-                    TypedXmlSerializer resolveSerializer = Xml.resolveSerializer(startWrite);
-                    resolveSerializer.startDocument((String) null, Boolean.TRUE);
-                    resolveSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-                    resolveSerializer.startTag((String) null, "packages");
-                    int i = 0;
-                    while (i < this.mVersion.size()) {
-                        String str = (String) this.mVersion.keyAt(i);
-                        VersionInfo versionInfo = (VersionInfo) this.mVersion.valueAt(i);
-                        resolveSerializer.startTag((String) null, "version");
-                        XmlUtils.writeStringAttribute(resolveSerializer, "volumeUuid", str);
-                        resolveSerializer.attributeInt((String) null, "sdkVersion", versionInfo.sdkVersion);
-                        resolveSerializer.attributeInt((String) null, "databaseVersion", versionInfo.databaseVersion);
-                        XmlUtils.writeStringAttribute(resolveSerializer, "buildFingerprint", versionInfo.buildFingerprint);
-                        XmlUtils.writeStringAttribute(resolveSerializer, "fingerprint", versionInfo.fingerprint);
-                        resolveSerializer.endTag((String) null, "version");
-                        i++;
-                        uptimeMillis = uptimeMillis;
-                    }
-                    long j = uptimeMillis;
-                    if (this.mVerifierDeviceIdentity != null) {
-                        resolveSerializer.startTag((String) null, "verifier");
-                        resolveSerializer.attribute((String) null, "device", this.mVerifierDeviceIdentity.toString());
-                        resolveSerializer.endTag((String) null, "verifier");
-                    }
-                    resolveSerializer.startTag((String) null, "permission-trees");
-                    this.mPermissions.writePermissionTrees(resolveSerializer);
-                    resolveSerializer.endTag((String) null, "permission-trees");
-                    resolveSerializer.startTag((String) null, "permissions");
-                    this.mPermissions.writePermissions(resolveSerializer);
-                    resolveSerializer.endTag((String) null, "permissions");
-                    for (PackageSetting packageSetting : this.mPackages.values()) {
-                        if (packageSetting.getPkg() == null || !packageSetting.getPkg().isApex()) {
-                            writePackageLPr(resolveSerializer, packageSetting);
-                        }
-                    }
-                    for (PackageSetting packageSetting2 : this.mDisabledSysPackages.values()) {
-                        if (packageSetting2.getPkg() == null || !packageSetting2.getPkg().isApex()) {
-                            writeDisabledSysPackageLPr(resolveSerializer, packageSetting2);
-                        }
-                    }
-                    for (SharedUserSetting sharedUserSetting : this.mSharedUsers.values()) {
-                        resolveSerializer.startTag((String) null, "shared-user");
-                        resolveSerializer.attribute((String) null, "name", sharedUserSetting.name);
-                        resolveSerializer.attributeInt((String) null, "userId", sharedUserSetting.mAppId);
-                        sharedUserSetting.signatures.writeXml(resolveSerializer, "sigs", this.mPastSignatures.untrackedStorage());
-                        resolveSerializer.endTag((String) null, "shared-user");
-                    }
-                    if (this.mRenamedPackages.size() > 0) {
-                        for (Map.Entry entry : this.mRenamedPackages.entrySet()) {
-                            resolveSerializer.startTag((String) null, "renamed-package");
-                            resolveSerializer.attribute((String) null, "new", (String) entry.getKey());
-                            resolveSerializer.attribute((String) null, "old", (String) entry.getValue());
-                            resolveSerializer.endTag((String) null, "renamed-package");
-                        }
-                    }
-                    this.mDomainVerificationManager.writeSettings(computer, resolveSerializer, false, -1);
-                    this.mKeySetManagerService.writeKeySetManagerServiceLPr(resolveSerializer);
-                    resolveSerializer.endTag((String) null, "packages");
-                    resolveSerializer.endDocument();
-                    settingsFile.finishWrite(startWrite);
-                    writeKernelMappingLPr();
-                    writePackageListLPr();
-                    writeAllUsersPackageRestrictionsLPr(z);
-                    writeAllRuntimePermissionsLPr();
-                    EventLogTags.writeCommitSysConfigFile("package", SystemClock.uptimeMillis() - j);
-                    settingsFile.close();
-                } catch (IOException e) {
-                    e = e;
-                    fileOutputStream = startWrite;
-                    Slog.wtf("PackageManager", "Unable to write package manager settings, current changes will be lost at reboot", e);
-                    if (fileOutputStream != null) {
-                        settingsFile.failWrite(fileOutputStream);
-                    }
-                    if (settingsFile != null) {
-                        settingsFile.close();
-                    }
-                }
-            } catch (Throwable th) {
-                if (settingsFile == null) {
-                    throw th;
-                }
-                try {
-                    settingsFile.close();
-                    throw th;
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                    throw th;
-                }
-            }
-        } catch (IOException e2) {
-            e = e2;
-        }
-    }
-
-    public final void writeKernelRemoveUserLPr(int i) {
-        if (this.mKernelMappingFilename == null) {
-            return;
-        }
-        writeIntToFile(new File(this.mKernelMappingFilename, "remove_userid"), i);
-    }
-
-    public void writeKernelMappingLPr() {
-        File file = this.mKernelMappingFilename;
-        if (file == null) {
-            return;
-        }
-        String[] list = file.list();
-        ArraySet arraySet = new ArraySet(list.length);
-        for (String str : list) {
-            arraySet.add(str);
-        }
-        for (PackageSetting packageSetting : this.mPackages.values()) {
-            arraySet.remove(packageSetting.getPackageName());
-            writeKernelMappingLPr(packageSetting);
-        }
-        for (int i = 0; i < arraySet.size(); i++) {
-            String str2 = (String) arraySet.valueAt(i);
-            this.mKernelMapping.remove(str2);
-            new File(this.mKernelMappingFilename, str2).delete();
-        }
-    }
-
-    public void writeKernelMappingLPr(PackageSetting packageSetting) {
-        if (this.mKernelMappingFilename == null || packageSetting == null || packageSetting.getPackageName() == null) {
-            return;
-        }
-        writeKernelMappingLPr(packageSetting.getPackageName(), packageSetting.getAppId(), packageSetting.getNotInstalledUserIds());
-    }
-
-    public void writeKernelMappingLPr(String str, int i, int[] iArr) {
-        KernelPackageState kernelPackageState = (KernelPackageState) this.mKernelMapping.get(str);
-        boolean z = true;
-        int i2 = 0;
-        boolean z2 = kernelPackageState == null;
-        if (!z2 && Arrays.equals(iArr, kernelPackageState.excludedUserIds)) {
-            z = false;
-        }
-        File file = new File(this.mKernelMappingFilename, str);
-        if (z2) {
-            file.mkdir();
-            kernelPackageState = new KernelPackageState();
-            this.mKernelMapping.put(str, kernelPackageState);
-        }
-        if (kernelPackageState.appId != i) {
-            writeIntToFile(new File(file, "appid"), i);
-        }
-        if (z) {
-            for (int i3 = 0; i3 < iArr.length; i3++) {
-                int[] iArr2 = kernelPackageState.excludedUserIds;
-                if (iArr2 == null || !ArrayUtils.contains(iArr2, iArr[i3])) {
-                    writeIntToFile(new File(file, "excluded_userids"), iArr[i3]);
-                }
-            }
-            if (kernelPackageState.excludedUserIds != null) {
-                while (true) {
-                    int[] iArr3 = kernelPackageState.excludedUserIds;
-                    if (i2 >= iArr3.length) {
-                        break;
-                    }
-                    if (!ArrayUtils.contains(iArr, iArr3[i2])) {
-                        writeIntToFile(new File(file, "clear_userid"), kernelPackageState.excludedUserIds[i2]);
-                    }
-                    i2++;
-                }
-            }
-            kernelPackageState.excludedUserIds = iArr;
-        }
-    }
-
-    public final void writeIntToFile(File file, int i) {
-        try {
-            FileUtils.bytesToFile(file.getAbsolutePath(), Integer.toString(i).getBytes(StandardCharsets.US_ASCII));
-        } catch (IOException unused) {
-            Slog.w("PackageSettings", "Couldn't write " + i + " to " + file.getAbsolutePath());
-        }
-    }
-
-    public void writePackageListLPr() {
-        writePackageListLPr(-1);
-    }
-
-    public void writePackageListLPr(int i) {
-        String fileSelabelLookup = SELinux.fileSelabelLookup(this.mPackageListFilename.getAbsolutePath());
-        if (fileSelabelLookup == null) {
-            Slog.wtf("PackageSettings", "Failed to get SELinux context for " + this.mPackageListFilename.getAbsolutePath());
-        }
-        if (!SELinux.setFSCreateContext(fileSelabelLookup)) {
-            Slog.wtf("PackageSettings", "Failed to set packages.list SELinux context");
-        }
-        try {
-            writePackageListLPrInternal(i);
-        } finally {
-            SELinux.setFSCreateContext((String) null);
-        }
-    }
-
-    public final void writePackageListLPrInternal(int i) {
-        BufferedWriter bufferedWriter;
-        FileOutputStream fileOutputStream;
-        BufferedWriter bufferedWriter2;
-        int i2;
-        Settings settings = this;
-        List activeUsers = getActiveUsers(UserManagerService.getInstance(), true);
-        int size = activeUsers.size();
-        int[] iArr = new int[size];
-        int i3 = 0;
-        for (int i4 = 0; i4 < size; i4++) {
-            iArr[i4] = ((UserInfo) activeUsers.get(i4)).id;
-        }
-        if (i != -1) {
-            iArr = ArrayUtils.appendInt(iArr, i);
-        }
-        JournaledFile journaledFile = new JournaledFile(settings.mPackageListFilename, new File(settings.mPackageListFilename.getAbsolutePath() + ".tmp"));
-        try {
-            fileOutputStream = new FileOutputStream(journaledFile.chooseForWrite());
-            bufferedWriter2 = new BufferedWriter(new OutputStreamWriter(fileOutputStream, Charset.defaultCharset()));
-        } catch (Exception e) {
-            e = e;
-            bufferedWriter = null;
-        }
-        try {
-            FileUtils.setPermissions(fileOutputStream.getFD(), FrameworkStatsLog.DISPLAY_HBM_STATE_CHANGED, 1000, 1032);
-            StringBuilder sb = new StringBuilder();
-            for (PackageSetting packageSetting : settings.mPackages.values()) {
-                String absolutePath = packageSetting.getPkg() == null ? null : PackageInfoUtils.getDataDir(packageSetting.getPkg(), i3).getAbsolutePath();
-                if (packageSetting.getPkg() != null && absolutePath != null) {
-                    if (!packageSetting.getPkg().isApex()) {
-                        boolean isDebuggable = packageSetting.getPkg().isDebuggable();
-                        IntArray intArray = new IntArray();
-                        int i5 = i3;
-                        for (int length = iArr.length; i5 < length; length = length) {
-                            intArray.addAll(settings.mPermissionDataProvider.getGidsForUid(UserHandle.getUid(iArr[i5], packageSetting.getAppId())));
-                            i5++;
-                            settings = this;
-                        }
-                        if (absolutePath.indexOf(32) >= 0) {
-                            settings = this;
-                            i3 = 0;
-                        } else {
-                            sb.setLength(0);
-                            sb.append(packageSetting.getPkg().getPackageName());
-                            sb.append(" ");
-                            sb.append(packageSetting.getPkg().getUid());
-                            sb.append(isDebuggable ? " 1 " : " 0 ");
-                            sb.append(absolutePath);
-                            sb.append(" ");
-                            sb.append(packageSetting.getSeInfo());
-                            sb.append(" ");
-                            int size2 = intArray.size();
-                            if (intArray.size() > 0) {
-                                i2 = 0;
-                                sb.append(intArray.get(0));
-                                for (int i6 = 1; i6 < size2; i6++) {
-                                    sb.append(",");
-                                    sb.append(intArray.get(i6));
-                                }
-                            } else {
-                                i2 = 0;
-                                sb.append("none");
-                            }
-                            sb.append(" ");
-                            String str = "1";
-                            sb.append(packageSetting.getPkg().isProfileableByShell() ? "1" : "0");
-                            sb.append(" ");
-                            sb.append(packageSetting.getPkg().getLongVersionCode());
-                            sb.append(" ");
-                            if (!packageSetting.getPkg().isProfileable()) {
-                                str = "0";
-                            }
-                            sb.append(str);
-                            sb.append(" ");
-                            if (packageSetting.isSystem()) {
-                                sb.append("@system");
-                            } else if (packageSetting.isProduct()) {
-                                sb.append("@product");
-                            } else if (packageSetting.getInstallSource().mInstallerPackageName != null && !packageSetting.getInstallSource().mInstallerPackageName.isEmpty()) {
-                                sb.append(packageSetting.getInstallSource().mInstallerPackageName);
-                            } else {
-                                sb.append("@null");
-                            }
-                            sb.append(KnoxVpnFirewallHelper.DELIMITER_IP_RESTORE);
-                            bufferedWriter2.append((CharSequence) sb);
-                            settings = this;
-                            i3 = i2;
-                        }
-                    }
-                }
-                i2 = i3;
-                if (!"android".equals(packageSetting.getPackageName())) {
-                    Slog.w("PackageSettings", "Skipping " + packageSetting + " due to missing metadata");
-                }
-                settings = this;
-                i3 = i2;
-            }
-            bufferedWriter2.flush();
-            FileUtils.sync(fileOutputStream);
-            bufferedWriter2.close();
-            journaledFile.commit();
-        } catch (Exception e2) {
-            e = e2;
-            bufferedWriter = bufferedWriter2;
-            Slog.wtf("PackageSettings", "Failed to write packages.list", e);
-            IoUtils.closeQuietly(bufferedWriter);
-            journaledFile.rollback();
-        }
-    }
-
-    public void writeDisabledSysPackageLPr(TypedXmlSerializer typedXmlSerializer, PackageSetting packageSetting) {
-        typedXmlSerializer.startTag((String) null, "updated-package");
-        typedXmlSerializer.attribute((String) null, "name", packageSetting.getPackageName());
-        if (packageSetting.getRealName() != null) {
-            typedXmlSerializer.attribute((String) null, "realName", packageSetting.getRealName());
-        }
-        typedXmlSerializer.attribute((String) null, "codePath", packageSetting.getPathString());
-        typedXmlSerializer.attributeLongHex((String) null, "ft", packageSetting.getLastModifiedTime());
-        typedXmlSerializer.attributeLongHex((String) null, "ut", packageSetting.getLastUpdateTime());
-        typedXmlSerializer.attributeLong((String) null, "version", packageSetting.getVersionCode());
-        if (packageSetting.getLegacyNativeLibraryPath() != null) {
-            typedXmlSerializer.attribute((String) null, "nativeLibraryPath", packageSetting.getLegacyNativeLibraryPath());
-        }
-        if (packageSetting.getPrimaryCpuAbiLegacy() != null) {
-            typedXmlSerializer.attribute((String) null, "primaryCpuAbi", packageSetting.getPrimaryCpuAbiLegacy());
-        }
-        if (packageSetting.getSecondaryCpuAbiLegacy() != null) {
-            typedXmlSerializer.attribute((String) null, "secondaryCpuAbi", packageSetting.getSecondaryCpuAbiLegacy());
-        }
-        if (packageSetting.getCpuAbiOverride() != null) {
-            typedXmlSerializer.attribute((String) null, "cpuAbiOverride", packageSetting.getCpuAbiOverride());
-        }
-        if (!packageSetting.hasSharedUser()) {
-            typedXmlSerializer.attributeInt((String) null, "userId", packageSetting.getAppId());
-        } else {
-            typedXmlSerializer.attributeInt((String) null, "sharedUserId", packageSetting.getAppId());
-        }
-        typedXmlSerializer.attributeFloat((String) null, "loadingProgress", packageSetting.getLoadingProgress());
-        typedXmlSerializer.attributeLongHex((String) null, "loadingCompletedTime", packageSetting.getLoadingCompletedTime());
-        if (packageSetting.getAppMetadataFilePath() != null) {
-            typedXmlSerializer.attribute((String) null, "appMetadataFilePath", packageSetting.getAppMetadataFilePath());
-        }
-        writeUsesSdkLibLPw(typedXmlSerializer, packageSetting.getUsesSdkLibraries(), packageSetting.getUsesSdkLibrariesVersionsMajor());
-        writeUsesStaticLibLPw(typedXmlSerializer, packageSetting.getUsesStaticLibraries(), packageSetting.getUsesStaticLibrariesVersions());
-        typedXmlSerializer.endTag((String) null, "updated-package");
-    }
-
-    public void writePackageLPr(TypedXmlSerializer typedXmlSerializer, PackageSetting packageSetting) {
-        typedXmlSerializer.startTag((String) null, "package");
-        typedXmlSerializer.attribute((String) null, "name", packageSetting.getPackageName());
-        if (packageSetting.getRealName() != null) {
-            typedXmlSerializer.attribute((String) null, "realName", packageSetting.getRealName());
-        }
-        typedXmlSerializer.attribute((String) null, "codePath", packageSetting.getPathString());
-        if (packageSetting.getLegacyNativeLibraryPath() != null) {
-            typedXmlSerializer.attribute((String) null, "nativeLibraryPath", packageSetting.getLegacyNativeLibraryPath());
-        }
-        if (packageSetting.getPrimaryCpuAbiLegacy() != null) {
-            typedXmlSerializer.attribute((String) null, "primaryCpuAbi", packageSetting.getPrimaryCpuAbiLegacy());
-        }
-        if (packageSetting.getSecondaryCpuAbiLegacy() != null) {
-            typedXmlSerializer.attribute((String) null, "secondaryCpuAbi", packageSetting.getSecondaryCpuAbiLegacy());
-        }
-        if (packageSetting.getCpuAbiOverride() != null) {
-            typedXmlSerializer.attribute((String) null, "cpuAbiOverride", packageSetting.getCpuAbiOverride());
-        }
-        typedXmlSerializer.attributeInt((String) null, "publicFlags", packageSetting.getFlags());
-        typedXmlSerializer.attributeInt((String) null, "privateFlags", packageSetting.getPrivateFlags());
-        typedXmlSerializer.attributeLongHex((String) null, "ft", packageSetting.getLastModifiedTime());
-        typedXmlSerializer.attributeLongHex((String) null, "ut", packageSetting.getLastUpdateTime());
-        typedXmlSerializer.attributeLong((String) null, "version", packageSetting.getVersionCode());
-        if (!packageSetting.hasSharedUser()) {
-            typedXmlSerializer.attributeInt((String) null, "userId", packageSetting.getAppId());
-        } else {
-            typedXmlSerializer.attributeInt((String) null, "sharedUserId", packageSetting.getAppId());
-        }
-        InstallSource installSource = packageSetting.getInstallSource();
+    public final void addInstallerPackageNames(InstallSource installSource) {
         String str = installSource.mInstallerPackageName;
+        WatchedArraySet watchedArraySet = this.mInstallerPackages;
         if (str != null) {
-            typedXmlSerializer.attribute((String) null, "installer", str);
+            watchedArraySet.add(str);
         }
-        int i = installSource.mInstallerPackageUid;
-        if (i != -1) {
-            typedXmlSerializer.attributeInt((String) null, "installerUid", i);
-        }
-        String str2 = installSource.mUpdateOwnerPackageName;
+        String str2 = installSource.mInitiatingPackageName;
         if (str2 != null) {
-            typedXmlSerializer.attribute((String) null, "updateOwner", str2);
+            watchedArraySet.add(str2);
         }
-        String str3 = installSource.mInstallerAttributionTag;
+        String str3 = installSource.mOriginatingPackageName;
         if (str3 != null) {
-            typedXmlSerializer.attribute((String) null, "installerAttributionTag", str3);
+            watchedArraySet.add(str3);
         }
-        typedXmlSerializer.attributeInt((String) null, "packageSource", installSource.mPackageSource);
-        if (installSource.mIsOrphaned) {
-            typedXmlSerializer.attributeBoolean((String) null, "isOrphaned", true);
-        }
-        String str4 = installSource.mInitiatingPackageName;
-        if (str4 != null) {
-            typedXmlSerializer.attribute((String) null, "installInitiator", str4);
-        }
-        if (installSource.mIsInitiatingPackageUninstalled) {
-            typedXmlSerializer.attributeBoolean((String) null, "installInitiatorUninstalled", true);
-        }
-        String str5 = installSource.mOriginatingPackageName;
-        if (str5 != null) {
-            typedXmlSerializer.attribute((String) null, "installOriginator", str5);
-        }
-        if (packageSetting.getVolumeUuid() != null) {
-            typedXmlSerializer.attribute((String) null, "volumeUuid", packageSetting.getVolumeUuid());
-        }
-        if (packageSetting.getCategoryOverride() != -1) {
-            typedXmlSerializer.attributeInt((String) null, "categoryHint", packageSetting.getCategoryOverride());
-        }
-        if (packageSetting.isUpdateAvailable()) {
-            typedXmlSerializer.attributeBoolean((String) null, "updateAvailable", true);
-        }
-        if (packageSetting.isForceQueryableOverride()) {
-            typedXmlSerializer.attributeBoolean((String) null, "forceQueryable", true);
-        }
-        if (packageSetting.isLoading()) {
-            typedXmlSerializer.attributeBoolean((String) null, "isLoading", true);
-        }
-        typedXmlSerializer.attributeFloat((String) null, "loadingProgress", packageSetting.getLoadingProgress());
-        typedXmlSerializer.attributeLongHex((String) null, "loadingCompletedTime", packageSetting.getLoadingCompletedTime());
-        typedXmlSerializer.attribute((String) null, "domainSetId", packageSetting.getDomainSetId().toString());
-        if (packageSetting.getAppMetadataFilePath() != null) {
-            typedXmlSerializer.attribute((String) null, "appMetadataFilePath", packageSetting.getAppMetadataFilePath());
-        }
-        writeUsesSdkLibLPw(typedXmlSerializer, packageSetting.getUsesSdkLibraries(), packageSetting.getUsesSdkLibrariesVersionsMajor());
-        writeUsesStaticLibLPw(typedXmlSerializer, packageSetting.getUsesStaticLibraries(), packageSetting.getUsesStaticLibrariesVersions());
-        packageSetting.getSignatures().writeXml(typedXmlSerializer, "sigs", this.mPastSignatures.untrackedStorage());
-        PackageSignatures packageSignatures = installSource.mInitiatingPackageSignatures;
-        if (packageSignatures != null) {
-            packageSignatures.writeXml(typedXmlSerializer, "install-initiator-sigs", this.mPastSignatures.untrackedStorage());
-        }
-        writeSigningKeySetLPr(typedXmlSerializer, packageSetting.getKeySetData());
-        writeUpgradeKeySetsLPr(typedXmlSerializer, packageSetting.getKeySetData());
-        writeKeySetAliasesLPr(typedXmlSerializer, packageSetting.getKeySetData());
-        writeMimeGroupLPr(typedXmlSerializer, packageSetting.getMimeGroups());
-        typedXmlSerializer.endTag((String) null, "package");
     }
 
-    public void writeSigningKeySetLPr(TypedXmlSerializer typedXmlSerializer, PackageKeySetData packageKeySetData) {
-        typedXmlSerializer.startTag((String) null, "proper-signing-keyset");
-        typedXmlSerializer.attributeLong((String) null, "identifier", packageKeySetData.getProperSigningKeySet());
-        typedXmlSerializer.endTag((String) null, "proper-signing-keyset");
-    }
-
-    public void writeUpgradeKeySetsLPr(TypedXmlSerializer typedXmlSerializer, PackageKeySetData packageKeySetData) {
-        if (packageKeySetData.isUsingUpgradeKeySets()) {
-            for (long j : packageKeySetData.getUpgradeKeySets()) {
-                typedXmlSerializer.startTag((String) null, "upgrade-keyset");
-                typedXmlSerializer.attributeLong((String) null, "identifier", j);
-                typedXmlSerializer.endTag((String) null, "upgrade-keyset");
+    public final PackageSetting addPackageLPw(String str, String str2, File file, int i, int i2, int i3, UUID uuid, boolean z) {
+        PackageSetting packageSetting = (PackageSetting) this.mPackages.mStorage.get(str);
+        if (packageSetting != null) {
+            if (packageSetting.mAppId == i) {
+                return packageSetting;
             }
-        }
-    }
-
-    public void writeKeySetAliasesLPr(TypedXmlSerializer typedXmlSerializer, PackageKeySetData packageKeySetData) {
-        for (Map.Entry entry : packageKeySetData.getAliases().entrySet()) {
-            typedXmlSerializer.startTag((String) null, "defined-keyset");
-            typedXmlSerializer.attribute((String) null, "alias", (String) entry.getKey());
-            typedXmlSerializer.attributeLong((String) null, "identifier", ((Long) entry.getValue()).longValue());
-            typedXmlSerializer.endTag((String) null, "defined-keyset");
-        }
-    }
-
-    public final FileInputStream restorePackages(PackageManagerBackupController packageManagerBackupController) {
-        File backupPackagesFile;
-        if (packageManagerBackupController == null || packageManagerBackupController.getRebootCntByPackages() >= 3 || (backupPackagesFile = packageManagerBackupController.getBackupPackagesFile()) == null || !backupPackagesFile.exists()) {
+            String m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Adding duplicate package, keeping first: ", str);
+            boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+            PackageManagerServiceUtils.logCriticalInfo(6, m);
             return null;
         }
-        PackageManagerService.reportSettingsProblem(4, "Restoring " + backupPackagesFile);
-        packageManagerBackupController.incRebootCntByPackages();
-        return new FileInputStream(backupPackagesFile);
-    }
-
-    public final FileInputStream restorePackagesState(PackageManagerBackupController packageManagerBackupController, int i) {
-        File backupPackagesStateFile;
-        if (packageManagerBackupController == null || packageManagerBackupController.getRebootCntByPackages() >= 3 || (backupPackagesStateFile = packageManagerBackupController.getBackupPackagesStateFile(i)) == null || !backupPackagesStateFile.exists()) {
+        PackageSetting packageSetting2 = new PackageSetting(str, str2, file, i2, i3, uuid);
+        packageSetting2.mAppId = i;
+        packageSetting2.onChanged$2();
+        if ((i != -1 || !z || !Flags.disallowSdkLibsToBeApps()) && !this.mAppIds.registerExistingAppId(i, packageSetting2, str)) {
             return null;
         }
-        PackageManagerService.reportSettingsProblem(4, "Restoring " + backupPackagesStateFile);
-        packageManagerBackupController.incRebootCntByPackages();
-        return new FileInputStream(backupPackagesStateFile);
+        this.mPackages.put(str, packageSetting2);
+        return packageSetting2;
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:35:0x0299  */
-    /* JADX WARN: Removed duplicated region for block: B:37:? A[RETURN, SYNTHETIC] */
+    public void addPackageSettingLPw(PackageSetting packageSetting, SharedUserSetting sharedUserSetting) {
+        this.mPackages.put(packageSetting.mName, packageSetting);
+        if (sharedUserSetting != null) {
+            SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting);
+            if (sharedUserSettingLPr == null || sharedUserSettingLPr == sharedUserSetting) {
+                int i = packageSetting.mAppId;
+                if (i != 0 && i != sharedUserSetting.mAppId) {
+                    StringBuilder sb = new StringBuilder("Package ");
+                    sb.append(packageSetting.mName);
+                    sb.append(" was app id ");
+                    sb.append(packageSetting.mAppId);
+                    sb.append(" but is now user ");
+                    sb.append(sharedUserSetting);
+                    sb.append(" with app id ");
+                    String m = AmFmBandRange$$ExternalSyntheticOutline0.m(sharedUserSetting.mAppId, sb, "; I am not changing its files so it will probably fail!");
+                    boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                    PackageManagerServiceUtils.logCriticalInfo(6, m);
+                }
+            } else {
+                String str = "Package " + packageSetting.mName + " was user " + sharedUserSettingLPr + " but is now " + sharedUserSetting + "; I am not changing its files so it will probably fail!";
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                PackageManagerServiceUtils.logCriticalInfo(6, str);
+                sharedUserSettingLPr.removePackage(packageSetting);
+            }
+            sharedUserSetting.addPackage(packageSetting);
+            packageSetting.setSharedUserAppId(sharedUserSetting.mAppId);
+            packageSetting.setAppId(sharedUserSetting.mAppId);
+        }
+        SettingBase settingLPr = getSettingLPr(packageSetting.mAppId);
+        AppIdSettingMap appIdSettingMap = this.mAppIds;
+        if (sharedUserSetting == null) {
+            if (settingLPr == null || settingLPr == packageSetting) {
+                return;
+            }
+            appIdSettingMap.replaceSetting(packageSetting.mAppId, packageSetting);
+            return;
+        }
+        if (settingLPr == null || settingLPr == sharedUserSetting) {
+            return;
+        }
+        appIdSettingMap.replaceSetting(packageSetting.mAppId, sharedUserSetting);
+    }
+
+    public final SharedUserSetting addSharedUserLPw(int i, int i2, int i3, String str) {
+        WatchedArrayMap watchedArrayMap = this.mSharedUsers;
+        SharedUserSetting sharedUserSetting = (SharedUserSetting) watchedArrayMap.mStorage.get(str);
+        if (sharedUserSetting != null) {
+            if (sharedUserSetting.mAppId == i) {
+                return sharedUserSetting;
+            }
+            String m = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Adding duplicate shared user, keeping first: ", str);
+            boolean z = PackageManagerService.DEBUG_COMPRESSION;
+            PackageManagerServiceUtils.logCriticalInfo(6, m);
+            return null;
+        }
+        SharedUserSetting sharedUserSetting2 = new SharedUserSetting(i2, i3, str);
+        sharedUserSetting2.mAppId = i;
+        if (!this.mAppIds.registerExistingAppId(i, sharedUserSetting2, str)) {
+            return null;
+        }
+        watchedArrayMap.put(str, sharedUserSetting2);
+        return sharedUserSetting2;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:60:0x015b  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public boolean readSettingsLPw(com.android.server.pm.Computer r17, java.util.List r18, android.util.ArrayMap r19, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController r20) {
+    public final void applyDefaultPreferredActivityLPw(android.content.pm.PackageManagerInternal r20, android.content.Intent r21, int r22, android.content.ComponentName r23, java.lang.String r24, android.os.PatternMatcher r25, android.content.IntentFilter.AuthorityEntry r26, android.os.PatternMatcher r27, int r28) {
         /*
-            Method dump skipped, instructions count: 682
+            Method dump skipped, instructions count: 458
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.readSettingsLPw(com.android.server.pm.Computer, java.util.List, android.util.ArrayMap, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController):boolean");
-    }
-
-    public boolean readLPw(Computer computer, List list, PackageManagerBackupController packageManagerBackupController) {
-        ArrayMap arrayMap = new ArrayMap();
-        try {
-            if (!readSettingsLPw(computer, list, arrayMap, packageManagerBackupController)) {
-                return false;
-            }
-            if (!this.mVersion.containsKey(StorageManager.UUID_PRIVATE_INTERNAL)) {
-                Slog.wtf("PackageManager", "No internal VersionInfo found in settings, using current.");
-                findOrCreateVersion(StorageManager.UUID_PRIVATE_INTERNAL).forceCurrent();
-            }
-            if (!this.mVersion.containsKey("primary_physical")) {
-                Slog.wtf("PackageManager", "No external VersionInfo found in settings, using current.");
-                findOrCreateVersion("primary_physical").forceCurrent();
-            }
-            int size = this.mPendingPackages.size();
-            for (int i = 0; i < size; i++) {
-                PackageSetting packageSetting = (PackageSetting) this.mPendingPackages.get(i);
-                int sharedUserAppId = packageSetting.getSharedUserAppId();
-                if (sharedUserAppId > 0) {
-                    SettingBase settingLPr = getSettingLPr(sharedUserAppId);
-                    if (settingLPr instanceof SharedUserSetting) {
-                        addPackageSettingLPw(packageSetting, (SharedUserSetting) settingLPr);
-                    } else if (settingLPr != null) {
-                        String str = "Bad package setting: package " + packageSetting.getPackageName() + " has shared uid " + sharedUserAppId + " that is not a shared uid\n";
-                        this.mReadMessages.append(str);
-                        PackageManagerService.reportSettingsProblem(6, str);
-                    } else {
-                        String str2 = "Bad package setting: package " + packageSetting.getPackageName() + " has shared uid " + sharedUserAppId + " that is not defined\n";
-                        this.mReadMessages.append(str2);
-                        PackageManagerService.reportSettingsProblem(6, str2);
-                    }
-                }
-            }
-            this.mPendingPackages.clear();
-            if (this.mBackupStoppedPackagesFilename.exists() || this.mStoppedPackagesFilename.exists()) {
-                readStoppedLPw();
-                this.mBackupStoppedPackagesFilename.delete();
-                this.mStoppedPackagesFilename.delete();
-                writePackageRestrictionsLPr(0, true);
-            } else {
-                Iterator it = list.iterator();
-                while (it.hasNext()) {
-                    readPackageRestrictionsLPr(((UserInfo) it.next()).id, arrayMap, packageManagerBackupController);
-                }
-            }
-            Iterator it2 = list.iterator();
-            while (it2.hasNext()) {
-                UserInfo userInfo = (UserInfo) it2.next();
-                this.mRuntimePermissionsPersistence.readStateForUserSync(userInfo.id, getInternalVersion(), this.mPackages, this.mSharedUsers, getUserRuntimePermissionsFile(userInfo.id));
-            }
-            for (PackageSetting packageSetting2 : this.mDisabledSysPackages.values()) {
-                SettingBase settingLPr2 = getSettingLPr(packageSetting2.getAppId());
-                if (settingLPr2 instanceof SharedUserSetting) {
-                    SharedUserSetting sharedUserSetting = (SharedUserSetting) settingLPr2;
-                    sharedUserSetting.mDisabledPackages.add(packageSetting2);
-                    packageSetting2.setSharedUserAppId(sharedUserSetting.mAppId);
-                }
-            }
-            StringBuilder sb = this.mReadMessages;
-            sb.append("Read completed successfully: ");
-            sb.append(this.mPackages.size());
-            sb.append(" packages, ");
-            sb.append(this.mSharedUsers.size());
-            sb.append(" shared uids\n");
-            writeKernelMappingLPr();
-            Iterator it3 = list.iterator();
-            while (it3.hasNext()) {
-                UserInfo userInfo2 = (UserInfo) it3.next();
-                String[] strArr = {"com.samsung.android.mtp", "com.android.mtp"};
-                for (int i2 = 0; i2 < 2; i2++) {
-                    PackageSetting packageSetting3 = (PackageSetting) this.mPackages.get(strArr[i2]);
-                    if (packageSetting3 != null && packageSetting3.getStopped(userInfo2.id)) {
-                        packageSetting3.setStopped(false, userInfo2.id);
-                    }
-                }
-            }
-            return true;
-        } finally {
-            if (!this.mVersion.containsKey(StorageManager.UUID_PRIVATE_INTERNAL)) {
-                Slog.wtf("PackageManager", "No internal VersionInfo found in settings, using current.");
-                findOrCreateVersion(StorageManager.UUID_PRIVATE_INTERNAL).forceCurrent();
-            }
-            if (!this.mVersion.containsKey("primary_physical")) {
-                Slog.wtf("PackageManager", "No external VersionInfo found in settings, using current.");
-                findOrCreateVersion("primary_physical").forceCurrent();
-            }
-        }
-    }
-
-    public void readPermissionStateForUserSyncLPr(int i) {
-        this.mRuntimePermissionsPersistence.readStateForUserSync(i, getInternalVersion(), this.mPackages, this.mSharedUsers, getUserRuntimePermissionsFile(i));
-    }
-
-    public void applyDefaultPreferredAppsLPw(int i) {
-        int i2;
-        FileInputStream fileInputStream;
-        int next;
-        int i3;
-        PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
-        for (PackageSetting packageSetting : this.mPackages.values()) {
-            if ((1 & packageSetting.getFlags()) != 0 && packageSetting.getPkg() != null && !packageSetting.getPkg().getPreferredActivityFilters().isEmpty()) {
-                List preferredActivityFilters = packageSetting.getPkg().getPreferredActivityFilters();
-                for (int i4 = 0; i4 < preferredActivityFilters.size(); i4++) {
-                    Pair pair = (Pair) preferredActivityFilters.get(i4);
-                    applyDefaultPreferredActivityLPw(packageManagerInternal, ((ParsedIntentInfo) pair.second).getIntentFilter(), new ComponentName(packageSetting.getPackageName(), (String) pair.first), i);
-                }
-            }
-        }
-        int size = PackageManagerService.SYSTEM_PARTITIONS.size();
-        int i5 = 0;
-        loop2: while (i5 < size) {
-            File file = new File(((ScanPartition) PackageManagerService.SYSTEM_PARTITIONS.get(i5)).getFolder(), "etc/preferred-apps");
-            if (file.exists() && file.isDirectory()) {
-                if (file.canRead()) {
-                    File[] listFiles = file.listFiles();
-                    if (ArrayUtils.isEmpty(listFiles)) {
-                        continue;
-                    } else {
-                        int length = listFiles.length;
-                        int i6 = 0;
-                        while (i6 < length) {
-                            File file2 = listFiles[i6];
-                            if (!file2.getPath().endsWith(".xml")) {
-                                Slog.i("PackageSettings", "Non-xml file " + file2 + " in " + file + " directory, ignoring");
-                            } else if (file2.canRead()) {
-                                try {
-                                    fileInputStream = new FileInputStream(file2);
-                                } catch (IOException e) {
-                                    e = e;
-                                    i2 = size;
-                                } catch (XmlPullParserException e2) {
-                                    e = e2;
-                                    i2 = size;
-                                }
-                                try {
-                                    TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(fileInputStream);
-                                    while (true) {
-                                        next = resolvePullParser.next();
-                                        i2 = size;
-                                        i3 = 2;
-                                        if (next == 2) {
-                                            break;
-                                        }
-                                        if (next == 1) {
-                                            i3 = 2;
-                                            break;
-                                        }
-                                        size = i2;
-                                    }
-                                    if (next != i3) {
-                                        try {
-                                            Slog.w("PackageSettings", "Preferred apps file " + file2 + " does not have start tag");
-                                        } catch (Throwable th) {
-                                            th = th;
-                                            Throwable th2 = th;
-                                            try {
-                                                fileInputStream.close();
-                                            } catch (Throwable th3) {
-                                                th2.addSuppressed(th3);
-                                            }
-                                            throw th2;
-                                            break loop2;
-                                        }
-                                    } else if ("preferred-activities".equals(resolvePullParser.getName())) {
-                                        readDefaultPreferredActivitiesLPw(resolvePullParser, i);
-                                    } else {
-                                        Slog.w("PackageSettings", "Preferred apps file " + file2 + " does not start with 'preferred-activities'");
-                                    }
-                                    try {
-                                        fileInputStream.close();
-                                    } catch (IOException e3) {
-                                        e = e3;
-                                        Slog.w("PackageSettings", "Error reading apps file " + file2, e);
-                                        i6++;
-                                        size = i2;
-                                    } catch (XmlPullParserException e4) {
-                                        e = e4;
-                                        Slog.w("PackageSettings", "Error reading apps file " + file2, e);
-                                        i6++;
-                                        size = i2;
-                                    }
-                                    i6++;
-                                    size = i2;
-                                } catch (Throwable th4) {
-                                    th = th4;
-                                    i2 = size;
-                                }
-                            } else {
-                                Slog.w("PackageSettings", "Preferred apps file " + file2 + " cannot be read");
-                            }
-                            i2 = size;
-                            i6++;
-                            size = i2;
-                        }
-                    }
-                } else {
-                    Slog.w("PackageSettings", "Directory " + file + " cannot be read");
-                }
-            }
-            i5++;
-            size = size;
-        }
-    }
-
-    public static void removeFilters(PreferredIntentResolver preferredIntentResolver, WatchedIntentFilter watchedIntentFilter, List list) {
-        for (int size = list.size() - 1; size >= 0; size--) {
-            PreferredActivity preferredActivity = (PreferredActivity) list.get(size);
-            preferredIntentResolver.removeFilter((WatchedIntentFilter) preferredActivity);
-            PreferredActivityLog.logPreferenceChange(preferredActivity, "Removing preference<replace>");
-        }
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.applyDefaultPreferredActivityLPw(android.content.pm.PackageManagerInternal, android.content.Intent, int, android.content.ComponentName, java.lang.String, android.os.PatternMatcher, android.content.IntentFilter$AuthorityEntry, android.os.PatternMatcher, int):void");
     }
 
     public final void applyDefaultPreferredActivityLPw(PackageManagerInternal packageManagerInternal, IntentFilter intentFilter, ComponentName componentName, int i) {
@@ -2233,7 +2118,7 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         for (int i5 = 0; i5 < intentFilter.countCategories(); i5++) {
             String category = intentFilter.getCategory(i5);
             if (category.equals("android.intent.category.DEFAULT")) {
-                i4 |= 65536;
+                i4 = 851968;
             } else {
                 intent.addCategory(category);
             }
@@ -2350,504 +2235,311 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
         }
     }
 
-    /* JADX WARN: Removed duplicated region for block: B:59:0x0151  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void applyDefaultPreferredActivityLPw(android.content.pm.PackageManagerInternal r20, android.content.Intent r21, int r22, android.content.ComponentName r23, java.lang.String r24, android.os.PatternMatcher r25, android.content.IntentFilter.AuthorityEntry r26, android.os.PatternMatcher r27, int r28) {
-        /*
-            Method dump skipped, instructions count: 454
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.applyDefaultPreferredActivityLPw(android.content.pm.PackageManagerInternal, android.content.Intent, int, android.content.ComponentName, java.lang.String, android.os.PatternMatcher, android.content.IntentFilter$AuthorityEntry, android.os.PatternMatcher, int):void");
-    }
-
-    public final void readDefaultPreferredActivitiesLPw(TypedXmlPullParser typedXmlPullParser, int i) {
+    public final void applyDefaultPreferredAppsLPw(int i) {
+        int i2;
+        FileInputStream fileInputStream;
+        int next;
+        int i3;
+        AndroidPackageInternal androidPackageInternal;
         PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
-        int depth = typedXmlPullParser.getDepth();
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1) {
-                return;
-            }
-            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
-                return;
-            }
-            if (next != 3 && next != 4) {
-                if (typedXmlPullParser.getName().equals("item")) {
-                    PreferredActivity preferredActivity = new PreferredActivity(typedXmlPullParser);
-                    if (preferredActivity.mPref.getParseError() == null) {
-                        applyDefaultPreferredActivityLPw(packageManagerInternal, preferredActivity.getIntentFilter(), preferredActivity.mPref.mComponent, i);
-                    } else {
-                        PackageManagerService.reportSettingsProblem(5, "Error in package manager settings: <preferred-activity> " + preferredActivity.mPref.getParseError() + " at " + typedXmlPullParser.getPositionDescription());
-                    }
-                } else {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element under <preferred-activities>: " + typedXmlPullParser.getName());
-                    XmlUtils.skipCurrentTag(typedXmlPullParser);
+        for (PackageSetting packageSetting : this.mPackages.values()) {
+            if ((1 & packageSetting.mPkgFlags) != 0 && (androidPackageInternal = packageSetting.pkg) != null && !androidPackageInternal.getPreferredActivityFilters().isEmpty()) {
+                List preferredActivityFilters = packageSetting.pkg.getPreferredActivityFilters();
+                for (int i4 = 0; i4 < preferredActivityFilters.size(); i4++) {
+                    Pair pair = (Pair) preferredActivityFilters.get(i4);
+                    applyDefaultPreferredActivityLPw(packageManagerInternal, ((ParsedIntentInfo) pair.second).getIntentFilter(), new ComponentName(packageSetting.mName, (String) pair.first), i);
                 }
             }
         }
+        int size = PackageManagerService.SYSTEM_PARTITIONS.size();
+        int i5 = 0;
+        while (i5 < size) {
+            File file = new File(((ScanPartition) PackageManagerService.SYSTEM_PARTITIONS.get(i5)).getFolder(), "etc/preferred-apps");
+            if (file.exists() && file.isDirectory()) {
+                if (file.canRead()) {
+                    File[] listFiles = file.listFiles();
+                    if (!ArrayUtils.isEmpty(listFiles)) {
+                        int length = listFiles.length;
+                        int i6 = 0;
+                        while (i6 < length) {
+                            File file2 = listFiles[i6];
+                            if (!file2.getPath().endsWith(".xml")) {
+                                Slog.i("PackageSettings", "Non-xml file " + file2 + " in " + file + " directory, ignoring");
+                            } else if (file2.canRead()) {
+                                try {
+                                    fileInputStream = new FileInputStream(file2);
+                                } catch (IOException e) {
+                                    e = e;
+                                    i2 = size;
+                                } catch (XmlPullParserException e2) {
+                                    e = e2;
+                                    i2 = size;
+                                }
+                                try {
+                                    TypedXmlPullParser resolvePullParser = Xml.resolvePullParser(fileInputStream);
+                                    while (true) {
+                                        next = resolvePullParser.next();
+                                        i2 = size;
+                                        i3 = 2;
+                                        if (next == 2) {
+                                            break;
+                                        }
+                                        if (next == 1) {
+                                            i3 = 2;
+                                            break;
+                                        }
+                                        size = i2;
+                                    }
+                                    if (next != i3) {
+                                        try {
+                                            Slog.w("PackageSettings", "Preferred apps file " + file2 + " does not have start tag");
+                                        } catch (Throwable th) {
+                                            th = th;
+                                            Throwable th2 = th;
+                                            try {
+                                                fileInputStream.close();
+                                            } catch (Throwable th3) {
+                                                th2.addSuppressed(th3);
+                                            }
+                                            throw th2;
+                                        }
+                                    } else if ("preferred-activities".equals(resolvePullParser.getName())) {
+                                        readDefaultPreferredActivitiesLPw(i, resolvePullParser);
+                                    } else {
+                                        Slog.w("PackageSettings", "Preferred apps file " + file2 + " does not start with 'preferred-activities'");
+                                    }
+                                    try {
+                                        fileInputStream.close();
+                                    } catch (IOException e3) {
+                                        e = e3;
+                                        Slog.w("PackageSettings", "Error reading apps file " + file2, e);
+                                        i6++;
+                                        size = i2;
+                                    } catch (XmlPullParserException e4) {
+                                        e = e4;
+                                        Slog.w("PackageSettings", "Error reading apps file " + file2, e);
+                                        i6++;
+                                        size = i2;
+                                    }
+                                    i6++;
+                                    size = i2;
+                                } catch (Throwable th4) {
+                                    th = th4;
+                                    i2 = size;
+                                }
+                            } else {
+                                Slog.w("PackageSettings", "Preferred apps file " + file2 + " cannot be read");
+                            }
+                            i2 = size;
+                            i6++;
+                            size = i2;
+                        }
+                    }
+                } else {
+                    Slog.w("PackageSettings", "Directory " + file + " cannot be read");
+                }
+            }
+            i5++;
+            size = size;
+        }
     }
 
-    public final void readDisabledSysPackageLPw(TypedXmlPullParser typedXmlPullParser, List list) {
-        LegacyPermissionState legacyPermissionState;
-        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
-        String attributeValue2 = typedXmlPullParser.getAttributeValue((String) null, "realName");
-        String attributeValue3 = typedXmlPullParser.getAttributeValue((String) null, "codePath");
-        String attributeValue4 = typedXmlPullParser.getAttributeValue((String) null, "requiredCpuAbi");
-        String attributeValue5 = typedXmlPullParser.getAttributeValue((String) null, "nativeLibraryPath");
-        String attributeValue6 = typedXmlPullParser.getAttributeValue((String) null, "primaryCpuAbi");
-        String attributeValue7 = typedXmlPullParser.getAttributeValue((String) null, "secondaryCpuAbi");
-        String attributeValue8 = typedXmlPullParser.getAttributeValue((String) null, "cpuAbiOverride");
-        PackageSetting packageSetting = new PackageSetting(attributeValue, attributeValue2, new File(attributeValue3), attributeValue5, (attributeValue6 != null || attributeValue4 == null) ? attributeValue6 : attributeValue4, attributeValue7, attributeValue8, typedXmlPullParser.getAttributeLong((String) null, "version", 0L), 1, attributeValue3.contains("/priv-app/") ? 8 : 0, 0, null, null, null, null, null, DomainVerificationManagerInternal.DISABLED_ID);
-        long attributeLongHex = typedXmlPullParser.getAttributeLongHex((String) null, "ft", 0L);
-        if (attributeLongHex == 0) {
-            attributeLongHex = typedXmlPullParser.getAttributeLong((String) null, "ts", 0L);
+    public final boolean checkAndPruneSharedUserLPw(SharedUserSetting sharedUserSetting, boolean z) {
+        if (!z && (!sharedUserSetting.mPackages.mStorage.isEmpty() || !sharedUserSetting.mDisabledPackages.mStorage.isEmpty())) {
+            return false;
         }
-        packageSetting.setLastModifiedTime(attributeLongHex);
-        packageSetting.setLastUpdateTime(typedXmlPullParser.getAttributeLongHex((String) null, "ut", 0L));
-        packageSetting.setAppId(parseAppId(typedXmlPullParser));
-        if (packageSetting.getAppId() <= 0) {
-            int parseSharedUserAppId = parseSharedUserAppId(typedXmlPullParser);
-            packageSetting.setAppId(parseSharedUserAppId);
-            packageSetting.setSharedUserAppId(parseSharedUserAppId);
+        if (this.mSharedUsers.remove(sharedUserSetting.name) == null) {
+            return false;
         }
-        packageSetting.setAppMetadataFilePath(typedXmlPullParser.getAttributeValue((String) null, "appMetadataFilePath"));
-        int depth = typedXmlPullParser.getDepth();
+        removeAppIdLPw(sharedUserSetting.mAppId);
+        return true;
+    }
+
+    public final boolean clearPackagePersistentPreferredActivities(int i, String str) {
+        ArrayList arrayList = null;
+        int i2 = 0;
+        boolean z = false;
         while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1 || (next == 3 && typedXmlPullParser.getDepth() <= depth)) {
+            WatchedSparseArray watchedSparseArray = this.mPersistentPreferredActivities;
+            if (i2 >= watchedSparseArray.mStorage.size()) {
                 break;
             }
-            if (next != 3) {
-                if (next != 4) {
-                    if (typedXmlPullParser.getName().equals("perms")) {
-                        if (packageSetting.hasSharedUser()) {
-                            SettingBase settingLPr = getSettingLPr(packageSetting.getSharedUserAppId());
-                            legacyPermissionState = settingLPr != null ? settingLPr.getLegacyPermissionState() : null;
-                        } else {
-                            legacyPermissionState = packageSetting.getLegacyPermissionState();
+            int keyAt = watchedSparseArray.mStorage.keyAt(i2);
+            PersistentPreferredIntentResolver persistentPreferredIntentResolver = (PersistentPreferredIntentResolver) watchedSparseArray.mStorage.valueAt(i2);
+            if (i == keyAt) {
+                IntentResolver.IteratorWrapper filterIterator = persistentPreferredIntentResolver.filterIterator();
+                while (filterIterator.mI.hasNext()) {
+                    PersistentPreferredActivity persistentPreferredActivity = (PersistentPreferredActivity) filterIterator.next();
+                    if (persistentPreferredActivity.mComponent.getPackageName().equals(str)) {
+                        if (arrayList == null) {
+                            arrayList = new ArrayList();
                         }
-                        if (legacyPermissionState != null) {
-                            readInstallPermissionsLPr(typedXmlPullParser, legacyPermissionState, list);
-                        }
-                    } else if (typedXmlPullParser.getName().equals("uses-static-lib")) {
-                        readUsesStaticLibLPw(typedXmlPullParser, packageSetting);
-                    } else if (typedXmlPullParser.getName().equals("uses-sdk-lib")) {
-                        readUsesSdkLibLPw(typedXmlPullParser, packageSetting);
-                    } else {
-                        PackageManagerService.reportSettingsProblem(5, "Unknown element under <updated-package>: " + typedXmlPullParser.getName());
-                        XmlUtils.skipCurrentTag(typedXmlPullParser);
+                        arrayList.add(persistentPreferredActivity);
                     }
                 }
-            }
-        }
-        this.mDisabledSysPackages.put(attributeValue, packageSetting);
-    }
-
-    /*  JADX ERROR: Type inference failed
-        jadx.core.utils.exceptions.JadxOverflowException: Type inference error: updates count limit reached
-        	at jadx.core.utils.ErrorsCounter.addError(ErrorsCounter.java:59)
-        	at jadx.core.utils.ErrorsCounter.error(ErrorsCounter.java:31)
-        	at jadx.core.dex.attributes.nodes.NotificationAttrNode.addError(NotificationAttrNode.java:19)
-        	at jadx.core.dex.visitors.typeinference.TypeInferenceVisitor.visit(TypeInferenceVisitor.java:77)
-        */
-    /* JADX WARN: Unreachable blocks removed: 1, instructions: 10 */
-    /* JADX WARN: Unreachable blocks removed: 1, instructions: 8 */
-    public final void readPackageLPw(com.android.modules.utils.TypedXmlPullParser r73, java.util.List r74, android.util.ArrayMap r75) {
-        /*
-            Method dump skipped, instructions count: 2329
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.readPackageLPw(com.android.modules.utils.TypedXmlPullParser, java.util.List, android.util.ArrayMap):void");
-    }
-
-    public static int parseAppId(TypedXmlPullParser typedXmlPullParser) {
-        return typedXmlPullParser.getAttributeInt((String) null, "userId", 0);
-    }
-
-    public static int parseSharedUserAppId(TypedXmlPullParser typedXmlPullParser) {
-        return typedXmlPullParser.getAttributeInt((String) null, "sharedUserId", 0);
-    }
-
-    public void addInstallerPackageNames(InstallSource installSource) {
-        String str = installSource.mInstallerPackageName;
-        if (str != null) {
-            this.mInstallerPackages.add(str);
-        }
-        String str2 = installSource.mInitiatingPackageName;
-        if (str2 != null) {
-            this.mInstallerPackages.add(str2);
-        }
-        String str3 = installSource.mOriginatingPackageName;
-        if (str3 != null) {
-            this.mInstallerPackages.add(str3);
-        }
-    }
-
-    public final Pair readMimeGroupLPw(TypedXmlPullParser typedXmlPullParser) {
-        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
-        if (attributeValue == null) {
-            XmlUtils.skipCurrentTag(typedXmlPullParser);
-            return null;
-        }
-        ArraySet arraySet = new ArraySet();
-        int depth = typedXmlPullParser.getDepth();
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1 || (next == 3 && typedXmlPullParser.getDepth() <= depth)) {
-                break;
-            }
-            if (next != 3 && next != 4) {
-                if (typedXmlPullParser.getName().equals("mime-type")) {
-                    String attributeValue2 = typedXmlPullParser.getAttributeValue((String) null, "value");
-                    if (attributeValue2 != null) {
-                        arraySet.add(attributeValue2);
+                if (arrayList != null) {
+                    for (int i3 = 0; i3 < arrayList.size(); i3++) {
+                        persistentPreferredIntentResolver.removeFilter((WatchedIntentFilter) arrayList.get(i3));
                     }
-                } else {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element under <mime-group>: " + typedXmlPullParser.getName());
-                    XmlUtils.skipCurrentTag(typedXmlPullParser);
+                    z = true;
                 }
             }
+            i2++;
         }
-        return Pair.create(attributeValue, arraySet);
+        if (z) {
+            dispatchChange(this);
+        }
+        return z;
     }
 
-    public final void writeMimeGroupLPr(TypedXmlSerializer typedXmlSerializer, Map map) {
-        if (map == null) {
-            return;
-        }
-        for (String str : map.keySet()) {
-            typedXmlSerializer.startTag((String) null, "mime-group");
-            typedXmlSerializer.attribute((String) null, "name", str);
-            for (String str2 : (Set) map.get(str)) {
-                typedXmlSerializer.startTag((String) null, "mime-type");
-                typedXmlSerializer.attribute((String) null, "value", str2);
-                typedXmlSerializer.endTag((String) null, "mime-type");
+    public final boolean clearPersistentPreferredActivity(IntentFilter intentFilter, int i) {
+        PersistentPreferredIntentResolver persistentPreferredIntentResolver = (PersistentPreferredIntentResolver) this.mPersistentPreferredActivities.mStorage.get(i);
+        IntentResolver.IteratorWrapper filterIterator = persistentPreferredIntentResolver.filterIterator();
+        ArrayList arrayList = null;
+        while (filterIterator.mI.hasNext()) {
+            PersistentPreferredActivity persistentPreferredActivity = (PersistentPreferredActivity) filterIterator.next();
+            if (IntentFilter.filterEquals(persistentPreferredActivity.mFilter, intentFilter)) {
+                if (arrayList == null) {
+                    arrayList = new ArrayList();
+                }
+                arrayList.add(persistentPreferredActivity);
             }
-            typedXmlSerializer.endTag((String) null, "mime-group");
         }
+        boolean z = false;
+        if (arrayList != null) {
+            for (int i2 = 0; i2 < arrayList.size(); i2++) {
+                persistentPreferredIntentResolver.removeFilter((WatchedIntentFilter) arrayList.get(i2));
+            }
+            z = true;
+        }
+        if (z) {
+            dispatchChange(this);
+        }
+        return z;
     }
 
-    public final void readDisabledComponentsLPw(PackageSetting packageSetting, TypedXmlPullParser typedXmlPullParser, int i) {
-        int depth = typedXmlPullParser.getDepth();
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1) {
-                return;
-            }
-            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
-                return;
-            }
-            if (next != 3 && next != 4) {
-                if (typedXmlPullParser.getName().equals("item")) {
-                    String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
-                    if (attributeValue != null) {
-                        packageSetting.addDisabledComponent(attributeValue.intern(), i);
-                    } else {
-                        PackageManagerService.reportSettingsProblem(5, "Error in package manager settings: <disabled-components> has no name at " + typedXmlPullParser.getPositionDescription());
-                    }
-                } else {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element under <disabled-components>: " + typedXmlPullParser.getName());
-                }
-                XmlUtils.skipCurrentTag(typedXmlPullParser);
-            }
+    public final void convertSharedUserSettingsLPw(SharedUserSetting sharedUserSetting) {
+        PackageSetting packageSetting = (PackageSetting) sharedUserSetting.mPackages.mStorage.valueAt(0);
+        this.mAppIds.replaceSetting(sharedUserSetting.mAppId, packageSetting);
+        packageSetting.setSharedUserAppId(-1);
+        WatchedArraySet watchedArraySet = sharedUserSetting.mDisabledPackages;
+        if (!watchedArraySet.mStorage.isEmpty()) {
+            ((PackageSetting) watchedArraySet.mStorage.valueAt(0)).setSharedUserAppId(-1);
         }
+        this.mSharedUsers.remove(sharedUserSetting.name);
     }
 
-    public final void readEnabledComponentsLPw(PackageSetting packageSetting, TypedXmlPullParser typedXmlPullParser, int i) {
-        int depth = typedXmlPullParser.getDepth();
-        while (true) {
-            int next = typedXmlPullParser.next();
-            if (next == 1) {
-                return;
-            }
-            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
-                return;
-            }
-            if (next != 3 && next != 4) {
-                if (typedXmlPullParser.getName().equals("item")) {
-                    String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
-                    if (attributeValue != null) {
-                        packageSetting.addEnabledComponent(attributeValue.intern(), i);
-                    } else {
-                        PackageManagerService.reportSettingsProblem(5, "Error in package manager settings: <enabled-components> has no name at " + typedXmlPullParser.getPositionDescription());
-                    }
-                } else {
-                    PackageManagerService.reportSettingsProblem(5, "Unknown element under <enabled-components>: " + typedXmlPullParser.getName());
-                }
-                XmlUtils.skipCurrentTag(typedXmlPullParser);
-            }
-        }
-    }
-
-    public final void readSharedUserLPw(TypedXmlPullParser typedXmlPullParser, List list) {
-        SharedUserSetting sharedUserSetting = null;
-        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
-        int parseAppId = parseAppId(typedXmlPullParser);
-        boolean attributeBoolean = typedXmlPullParser.getAttributeBoolean((String) null, "system", false);
-        if (attributeValue == null) {
-            PackageManagerService.reportSettingsProblem(5, "Error in package manager settings: <shared-user> has no name at " + typedXmlPullParser.getPositionDescription());
-        } else if (parseAppId == 0) {
-            PackageManagerService.reportSettingsProblem(5, "Error in package manager settings: shared-user " + attributeValue + " has bad appId " + parseAppId + " at " + typedXmlPullParser.getPositionDescription());
-        } else {
-            sharedUserSetting = addSharedUserLPw(attributeValue.intern(), parseAppId, attributeBoolean ? 1 : 0, 0);
-            if (sharedUserSetting == null) {
-                PackageManagerService.reportSettingsProblem(6, "Occurred while parsing settings at " + typedXmlPullParser.getPositionDescription());
-            }
-        }
-        if (sharedUserSetting != null) {
-            int depth = typedXmlPullParser.getDepth();
-            while (true) {
-                int next = typedXmlPullParser.next();
-                if (next == 1) {
-                    return;
-                }
-                if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
-                    return;
-                }
-                if (next != 3 && next != 4) {
-                    String name = typedXmlPullParser.getName();
-                    if (name.equals("sigs")) {
-                        sharedUserSetting.signatures.readXml(typedXmlPullParser, this.mPastSignatures.untrackedStorage());
-                    } else if (name.equals("perms")) {
-                        readInstallPermissionsLPr(typedXmlPullParser, sharedUserSetting.getLegacyPermissionState(), list);
-                    } else {
-                        PackageManagerService.reportSettingsProblem(5, "Unknown element under <shared-user>: " + typedXmlPullParser.getName());
-                        XmlUtils.skipCurrentTag(typedXmlPullParser);
-                    }
-                }
-            }
-        } else {
-            XmlUtils.skipCurrentTag(typedXmlPullParser);
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:39:0x00d5 A[Catch: all -> 0x01a7, TryCatch #1 {all -> 0x01a7, blocks: (B:7:0x0035, B:9:0x004f, B:15:0x006a, B:17:0x0081, B:20:0x008f, B:26:0x00a4, B:29:0x00b1, B:31:0x00b8, B:33:0x00be, B:35:0x00c4, B:39:0x00d5, B:42:0x0107, B:46:0x0111, B:48:0x0116, B:51:0x011e, B:54:0x0133), top: B:6:0x0035 }] */
-    /* JADX WARN: Removed duplicated region for block: B:44:0x010c A[ADDED_TO_REGION] */
-    /* JADX WARN: Removed duplicated region for block: B:48:0x0116 A[Catch: all -> 0x01a7, TryCatch #1 {all -> 0x01a7, blocks: (B:7:0x0035, B:9:0x004f, B:15:0x006a, B:17:0x0081, B:20:0x008f, B:26:0x00a4, B:29:0x00b1, B:31:0x00b8, B:33:0x00be, B:35:0x00c4, B:39:0x00d5, B:42:0x0107, B:46:0x0111, B:48:0x0116, B:51:0x011e, B:54:0x0133), top: B:6:0x0035 }] */
-    /* JADX WARN: Removed duplicated region for block: B:64:0x0166 A[Catch: all -> 0x01ac, TryCatch #3 {all -> 0x01ac, blocks: (B:14:0x0172, B:57:0x015e, B:60:0x01aa, B:64:0x0166, B:76:0x0181), top: B:56:0x015e }] */
-    /* JADX WARN: Removed duplicated region for block: B:68:0x0103  */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x010c, code lost:
+    
+        if (((android.util.ArraySet) r29).contains(r2.mName) != false) goto L54;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:29:0x00cb  */
+    /* JADX WARN: Removed duplicated region for block: B:44:0x0100  */
+    /* JADX WARN: Removed duplicated region for block: B:50:0x011a A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:54:0x0123 A[Catch: all -> 0x008d, TryCatch #3 {all -> 0x008d, blocks: (B:7:0x0035, B:11:0x0051, B:13:0x0069, B:15:0x0077, B:19:0x0091, B:21:0x00ae, B:24:0x00ba, B:27:0x00c5, B:30:0x00cd, B:32:0x00d3, B:35:0x00dc, B:38:0x00e7, B:45:0x0102, B:48:0x0111, B:51:0x011c, B:52:0x011f, B:54:0x0123, B:56:0x0129, B:58:0x012f, B:62:0x013e, B:65:0x0167, B:69:0x017c, B:71:0x0181, B:74:0x0187, B:40:0x00f1, B:110:0x0048), top: B:6:0x0035 }] */
+    /* JADX WARN: Removed duplicated region for block: B:62:0x013e A[Catch: all -> 0x008d, TryCatch #3 {all -> 0x008d, blocks: (B:7:0x0035, B:11:0x0051, B:13:0x0069, B:15:0x0077, B:19:0x0091, B:21:0x00ae, B:24:0x00ba, B:27:0x00c5, B:30:0x00cd, B:32:0x00d3, B:35:0x00dc, B:38:0x00e7, B:45:0x0102, B:48:0x0111, B:51:0x011c, B:52:0x011f, B:54:0x0123, B:56:0x0129, B:58:0x012f, B:62:0x013e, B:65:0x0167, B:69:0x017c, B:71:0x0181, B:74:0x0187, B:40:0x00f1, B:110:0x0048), top: B:6:0x0035 }] */
+    /* JADX WARN: Removed duplicated region for block: B:67:0x0177 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:71:0x0181 A[Catch: all -> 0x008d, TryCatch #3 {all -> 0x008d, blocks: (B:7:0x0035, B:11:0x0051, B:13:0x0069, B:15:0x0077, B:19:0x0091, B:21:0x00ae, B:24:0x00ba, B:27:0x00c5, B:30:0x00cd, B:32:0x00d3, B:35:0x00dc, B:38:0x00e7, B:45:0x0102, B:48:0x0111, B:51:0x011c, B:52:0x011f, B:54:0x0123, B:56:0x0129, B:58:0x012f, B:62:0x013e, B:65:0x0167, B:69:0x017c, B:71:0x0181, B:74:0x0187, B:40:0x00f1, B:110:0x0048), top: B:6:0x0035 }] */
+    /* JADX WARN: Removed duplicated region for block: B:77:0x01c7 A[Catch: all -> 0x01c5, TryCatch #0 {all -> 0x01c5, blocks: (B:18:0x01d1, B:76:0x01bc, B:113:0x020e, B:77:0x01c7, B:90:0x01e2), top: B:6:0x0035 }] */
+    /* JADX WARN: Removed duplicated region for block: B:84:0x00fa  */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void createNewUserLI(com.android.server.pm.PackageManagerService r26, com.android.server.pm.Installer r27, int r28, java.util.Set r29, java.lang.String[] r30) {
+    public final void createNewUserLI(com.android.server.pm.PackageManagerService r26, com.android.server.pm.Installer r27, int r28, java.util.Set r29, java.lang.String[] r30) {
         /*
-            Method dump skipped, instructions count: 430
+            Method dump skipped, instructions count: 530
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.createNewUserLI(com.android.server.pm.PackageManagerService, com.android.server.pm.Installer, int, java.util.Set, java.lang.String[]):void");
     }
 
-    public void removeUserLPw(int i) {
-        Iterator it = this.mPackages.entrySet().iterator();
-        while (it.hasNext()) {
-            ((PackageSetting) ((Map.Entry) it.next()).getValue()).removeUser(i);
+    public final boolean disableSystemPackageLPw(String str) {
+        PackageSetting packageSetting = (PackageSetting) this.mPackages.mStorage.get(str);
+        if (packageSetting == null) {
+            Log.w("PackageManager", "Package " + str + " is not an installed package");
+            return false;
         }
-        this.mPreferredActivities.remove(i);
-        synchronized (this.mPackageRestrictionsLock) {
-            getUserPackagesStateFile(i).delete();
-            this.mPendingAsyncPackageRestrictionsWrites.delete(i);
-        }
-        removeCrossProfileIntentFiltersLPw(i);
-        this.mRuntimePermissionsPersistence.onUserRemoved(i);
-        this.mDomainVerificationManager.clearUser(i);
-        writePackageListLPr();
-        writeKernelRemoveUserLPr(i);
-    }
-
-    public void removeCrossProfileIntentFiltersLPw(int i) {
-        synchronized (this.mCrossProfileIntentResolvers) {
-            if (this.mCrossProfileIntentResolvers.get(i) != null) {
-                this.mCrossProfileIntentResolvers.remove(i);
-                writePackageRestrictionsLPr(i);
-            }
-            int size = this.mCrossProfileIntentResolvers.size();
-            for (int i2 = 0; i2 < size; i2++) {
-                int keyAt = this.mCrossProfileIntentResolvers.keyAt(i2);
-                CrossProfileIntentResolver crossProfileIntentResolver = (CrossProfileIntentResolver) this.mCrossProfileIntentResolvers.get(keyAt);
-                Iterator it = new ArraySet(crossProfileIntentResolver.filterSet()).iterator();
-                boolean z = false;
-                while (it.hasNext()) {
-                    CrossProfileIntentFilter crossProfileIntentFilter = (CrossProfileIntentFilter) it.next();
-                    if (crossProfileIntentFilter.getTargetUserId() == i) {
-                        crossProfileIntentResolver.removeFilter((WatchedIntentFilter) crossProfileIntentFilter);
-                        z = true;
-                    }
+        if (((PackageSetting) this.mDisabledSysPackages.mStorage.get(str)) == null && packageSetting.pkg != null && packageSetting.isSystem()) {
+            PackageStateUnserialized packageStateUnserialized = packageSetting.pkgState;
+            if (!packageStateUnserialized.updatedSystemApp) {
+                PackageSetting packageSetting2 = new PackageSetting(packageSetting, false);
+                packageStateUnserialized.setUpdatedSystemApp(true);
+                this.mDisabledSysPackages.put(str, packageSetting2);
+                SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting2);
+                if (sharedUserSettingLPr != null) {
+                    sharedUserSettingLPr.mDisabledPackages.add(packageSetting2);
                 }
-                if (z) {
-                    writePackageRestrictionsLPr(keyAt);
-                }
+                return true;
             }
         }
+        return false;
     }
 
-    public VerifierDeviceIdentity getVerifierDeviceIdentityLPw(Computer computer) {
-        if (this.mVerifierDeviceIdentity == null) {
-            this.mVerifierDeviceIdentity = VerifierDeviceIdentity.generate();
-            writeLPr(computer, false);
-        }
-        return this.mVerifierDeviceIdentity;
-    }
-
-    public PackageSetting getDisabledSystemPkgLPr(String str) {
-        return (PackageSetting) this.mDisabledSysPackages.get(str);
-    }
-
-    public PackageSetting getDisabledSystemPkgLPr(PackageSetting packageSetting) {
-        if (packageSetting == null) {
-            return null;
-        }
-        return getDisabledSystemPkgLPr(packageSetting.getPackageName());
-    }
-
-    public int getApplicationEnabledSettingLPr(String str, int i) {
-        PackageSetting packageSetting = (PackageSetting) this.mPackages.get(str);
-        if (packageSetting == null) {
-            throw new PackageManager.NameNotFoundException(str);
-        }
-        return packageSetting.getEnabled(i);
-    }
-
-    public int getComponentEnabledSettingLPr(ComponentName componentName, int i) {
-        PackageSetting packageSetting = (PackageSetting) this.mPackages.get(componentName.getPackageName());
-        if (packageSetting == null) {
-            throw new PackageManager.NameNotFoundException(componentName.getPackageName());
-        }
-        return packageSetting.getCurrentEnabledStateLPr(componentName.getClassName(), i);
-    }
-
-    public SharedUserSetting getSharedUserSettingLPr(String str) {
-        return getSharedUserSettingLPr((PackageSetting) this.mPackages.get(str));
-    }
-
-    public SharedUserSetting getSharedUserSettingLPr(PackageSetting packageSetting) {
-        if (packageSetting == null || !packageSetting.hasSharedUser()) {
-            return null;
-        }
-        return (SharedUserSetting) getSettingLPr(packageSetting.getSharedUserAppId());
-    }
-
-    public static List getAllUsers(UserManagerService userManagerService) {
-        return getUsers(userManagerService, false, false);
-    }
-
-    public static List getActiveUsers(UserManagerService userManagerService, boolean z) {
-        return getUsers(userManagerService, z, true);
-    }
-
-    public static List getUsers(UserManagerService userManagerService, boolean z, boolean z2) {
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            List users = userManagerService.getUsers(true, z, z2);
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            return users;
-        } catch (NullPointerException unused) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            return null;
-        } catch (Throwable th) {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-            throw th;
-        }
-    }
-
-    public List getVolumePackagesLPr(String str) {
-        ArrayList arrayList = new ArrayList();
-        for (int i = 0; i < this.mPackages.size(); i++) {
-            PackageSetting packageSetting = (PackageSetting) this.mPackages.valueAt(i);
-            if (Objects.equals(str, packageSetting.getVolumeUuid())) {
-                arrayList.add(packageSetting);
-            }
-        }
-        return arrayList;
-    }
-
-    public static void printFlags(PrintWriter printWriter, int i, Object[] objArr) {
-        printWriter.print("[ ");
-        for (int i2 = 0; i2 < objArr.length; i2 += 2) {
-            if ((((Integer) objArr[i2]).intValue() & i) != 0) {
-                printWriter.print(objArr[i2 + 1]);
-                printWriter.print(" ");
-            }
-        }
-        printWriter.print("]");
-    }
-
-    static {
-        Integer valueOf = Integer.valueOf(IInstalld.FLAG_CLEAR_APP_DATA_KEEP_ART_PROFILES);
-        FLAG_DUMP_SPEC = new Object[]{1, "SYSTEM", 2, "DEBUGGABLE", 4, "HAS_CODE", 8, "PERSISTENT", 16, "FACTORY_TEST", 32, "ALLOW_TASK_REPARENTING", 64, "ALLOW_CLEAR_USER_DATA", 128, "UPDATED_SYSTEM_APP", 256, "TEST_ONLY", 16384, "VM_SAFE_MODE", 32768, "ALLOW_BACKUP", 65536, "KILL_AFTER_RESTORE", valueOf, "RESTORE_ANY_VERSION", 262144, "EXTERNAL_STORAGE", 1048576, "LARGE_HEAP"};
-        PRIVATE_FLAG_DUMP_SPEC = new Object[]{1024, "PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE", Integer.valueOf(IInstalld.FLAG_USE_QUOTA), "PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION", Integer.valueOf(IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES), "PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_UNRESIZEABLE", 134217728, "ALLOW_AUDIO_PLAYBACK_CAPTURE", 536870912, "PRIVATE_FLAG_REQUEST_LEGACY_EXTERNAL_STORAGE", Integer.valueOf(IInstalld.FLAG_FORCE), "BACKUP_IN_FOREGROUND", 2, "CANT_SAVE_STATE", 32, "DEFAULT_TO_DEVICE_PROTECTED_STORAGE", 64, "DIRECT_BOOT_AWARE", 16, "HAS_DOMAIN_URLS", 1, "HIDDEN", 128, "EPHEMERAL", 32768, "ISOLATED_SPLIT_LOADING", valueOf, "OEM", 256, "PARTIALLY_DIRECT_BOOT_AWARE", 8, "PRIVILEGED", 512, "REQUIRED_FOR_SYSTEM_USER", 16384, "STATIC_SHARED_LIBRARY", 262144, "VENDOR", 524288, "PRODUCT", 2097152, "SYSTEM_EXT", 65536, "VIRTUAL_PRELOAD", 1073741824, "ODM", Integer.MIN_VALUE, "PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING"};
-    }
-
-    public void dumpVersionLPr(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.increaseIndent();
-        for (int i = 0; i < this.mVersion.size(); i++) {
-            String str = (String) this.mVersion.keyAt(i);
-            VersionInfo versionInfo = (VersionInfo) this.mVersion.valueAt(i);
-            if (Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, str)) {
-                indentingPrintWriter.println("Internal:");
-            } else if ("primary_physical".equals(str)) {
-                indentingPrintWriter.println("External:");
-            } else {
-                indentingPrintWriter.println("UUID " + str + com.android.internal.util.jobs.XmlUtils.STRING_ARRAY_SEPARATOR);
-            }
-            indentingPrintWriter.increaseIndent();
-            indentingPrintWriter.printPair("sdkVersion", Integer.valueOf(versionInfo.sdkVersion));
-            indentingPrintWriter.printPair("databaseVersion", Integer.valueOf(versionInfo.databaseVersion));
-            indentingPrintWriter.println();
-            indentingPrintWriter.printPair("buildFingerprint", versionInfo.buildFingerprint);
-            indentingPrintWriter.printPair("fingerprint", versionInfo.fingerprint);
-            indentingPrintWriter.println();
-            indentingPrintWriter.decreaseIndent();
-        }
-        indentingPrintWriter.decreaseIndent();
+    @Override // com.android.server.utils.Watchable
+    public final void dispatchChange(Watchable watchable) {
+        this.mWatchable.dispatchChange(watchable);
     }
 
     @NeverCompile
-    public void dumpPackageLPr(PrintWriter printWriter, String str, String str2, ArraySet arraySet, PackageSetting packageSetting, LegacyPermissionState legacyPermissionState, SimpleDateFormat simpleDateFormat, Date date, List list, boolean z, boolean z2) {
+    public final void dumpPackageLPr(PrintWriter printWriter, String str, ArraySet arraySet, PackageSetting packageSetting, LegacyPermissionState legacyPermissionState, SimpleDateFormat simpleDateFormat, Date date, List list, boolean z, boolean z2) {
+        String str2;
+        LegacyPermissionState legacyPermissionState2;
+        List list2;
         boolean z3;
-        AndroidPackageInternal pkg = packageSetting.getPkg();
-        if (str2 != null) {
-            printWriter.print(str2);
+        PackageSetting packageSetting2 = packageSetting;
+        AndroidPackageInternal androidPackageInternal = packageSetting2.pkg;
+        if (str != null) {
+            printWriter.print(str);
             printWriter.print(",");
-            printWriter.print(packageSetting.getRealName() != null ? packageSetting.getRealName() : packageSetting.getPackageName());
+            String str3 = packageSetting2.mRealName;
+            if (str3 == null) {
+                str3 = packageSetting2.mName;
+            }
+            printWriter.print(str3);
             printWriter.print(",");
-            printWriter.print(packageSetting.getAppId());
+            printWriter.print(packageSetting2.mAppId);
             printWriter.print(",");
-            printWriter.print(packageSetting.getVersionCode());
+            printWriter.print(packageSetting2.versionCode);
             printWriter.print(",");
-            printWriter.print(packageSetting.getLastUpdateTime());
+            printWriter.print(packageSetting2.lastUpdateTime);
             printWriter.print(",");
-            printWriter.print(packageSetting.getInstallSource().mInstallerPackageName != null ? packageSetting.getInstallSource().mInstallerPackageName : "?");
-            printWriter.print(packageSetting.getInstallSource().mInstallerPackageUid);
-            printWriter.print(packageSetting.getInstallSource().mUpdateOwnerPackageName != null ? packageSetting.getInstallSource().mUpdateOwnerPackageName : "?");
-            printWriter.print(packageSetting.getInstallSource().mInstallerAttributionTag != null ? "(" + packageSetting.getInstallSource().mInstallerAttributionTag + ")" : "");
+            String str4 = packageSetting2.installSource.mInstallerPackageName;
+            if (str4 == null) {
+                str4 = "?";
+            }
+            printWriter.print(str4);
+            printWriter.print(packageSetting2.installSource.mInstallerPackageUid);
+            String str5 = packageSetting2.installSource.mUpdateOwnerPackageName;
+            if (str5 == null) {
+                str5 = "?";
+            }
+            printWriter.print(str5);
+            printWriter.print(packageSetting2.installSource.mInstallerAttributionTag != null ? AudioOffloadInfo$$ExternalSyntheticOutline0.m(new StringBuilder("("), packageSetting2.installSource.mInstallerAttributionTag, ")") : "");
             printWriter.print(",");
-            printWriter.print(packageSetting.getInstallSource().mPackageSource);
+            printWriter.print(packageSetting2.installSource.mPackageSource);
             printWriter.println();
-            if (pkg != null) {
-                printWriter.print(str2);
+            if (androidPackageInternal != null) {
+                printWriter.print(str);
                 printWriter.print(PackageManagerShellCommandDataLoader.STDIN_PATH);
                 printWriter.print("splt,");
                 printWriter.print("base,");
-                printWriter.println(pkg.getBaseRevisionCode());
-                int[] splitRevisionCodes = pkg.getSplitRevisionCodes();
-                for (int i = 0; i < pkg.getSplitNames().length; i++) {
-                    printWriter.print(str2);
+                printWriter.println(androidPackageInternal.getBaseRevisionCode());
+                int[] splitRevisionCodes = androidPackageInternal.getSplitRevisionCodes();
+                for (int i = 0; i < androidPackageInternal.getSplitNames().length; i++) {
+                    printWriter.print(str);
                     printWriter.print(PackageManagerShellCommandDataLoader.STDIN_PATH);
                     printWriter.print("splt,");
-                    printWriter.print(pkg.getSplitNames()[i]);
+                    printWriter.print(androidPackageInternal.getSplitNames()[i]);
                     printWriter.print(",");
                     printWriter.println(splitRevisionCodes[i]);
                 }
             }
-            Iterator it = list.iterator();
+            Iterator it = ((ArrayList) list).iterator();
             while (it.hasNext()) {
                 UserInfo userInfo = (UserInfo) it.next();
-                PackageUserStateInternal userStateOrDefault = packageSetting.getUserStateOrDefault(userInfo.id);
-                printWriter.print(str2);
+                PackageUserStateInternal userStateOrDefault = packageSetting2.getUserStateOrDefault(userInfo.id);
+                printWriter.print(str);
                 printWriter.print(PackageManagerShellCommandDataLoader.STDIN_PATH);
                 printWriter.print("usr");
                 printWriter.print(",");
@@ -2860,6 +2552,7 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
                 printWriter.print(userStateOrDefault.isNotLaunched() ? "l" : "L");
                 printWriter.print(userStateOrDefault.isInstantApp() ? "IA" : "ia");
                 printWriter.print(userStateOrDefault.isVirtualPreload() ? "VPI" : "vpi");
+                printWriter.print(userStateOrDefault.isQuarantined() ? "Q" : "q");
                 printWriter.print(userStateOrDefault.getHarmfulAppWarning() != null ? "HA" : "ha");
                 printWriter.print(",");
                 printWriter.print(userStateOrDefault.getEnabledState());
@@ -2870,76 +2563,84 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
                 }
                 printWriter.print(lastDisableAppCaller);
                 printWriter.print(",");
-                printWriter.print(packageSetting.readUserState(userInfo.id).getFirstInstallTimeMillis());
+                printWriter.print(packageSetting2.readUserState(userInfo.id).getFirstInstallTimeMillis());
                 printWriter.print(",");
                 printWriter.println();
             }
             return;
         }
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("Package [");
-        printWriter.print(packageSetting.getRealName() != null ? packageSetting.getRealName() : packageSetting.getPackageName());
+        String str6 = packageSetting2.mRealName;
+        if (str6 == null) {
+            str6 = packageSetting2.mName;
+        }
+        printWriter.print(str6);
         printWriter.print("] (");
         printWriter.print(Integer.toHexString(System.identityHashCode(packageSetting)));
         printWriter.println("):");
-        if (packageSetting.getRealName() != null) {
-            printWriter.print(str);
+        if (packageSetting2.mRealName != null) {
+            printWriter.print("  ");
             printWriter.print("  compat name=");
-            printWriter.println(packageSetting.getPackageName());
+            printWriter.println(packageSetting2.mName);
         }
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  appId=");
-        printWriter.println(packageSetting.getAppId());
-        SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting);
+        printWriter.println(packageSetting2.mAppId);
+        Object sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting2);
         if (sharedUserSettingLPr != null) {
-            printWriter.print(str);
+            printWriter.print("  ");
             printWriter.print("  sharedUser=");
             printWriter.println(sharedUserSettingLPr);
         }
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  pkg=");
-        printWriter.println(pkg);
-        printWriter.print(str);
+        printWriter.println(androidPackageInternal);
+        printWriter.print("  ");
         printWriter.print("  codePath=");
-        printWriter.println(packageSetting.getPathString());
-        if (arraySet == null) {
-            printWriter.print(str);
-            printWriter.print("  resourcePath=");
-            printWriter.println(packageSetting.getPathString());
-            printWriter.print(str);
-            printWriter.print("  legacyNativeLibraryDir=");
-            printWriter.println(packageSetting.getLegacyNativeLibraryPath());
-            printWriter.print(str);
-            printWriter.print("  extractNativeLibs=");
-            printWriter.println((packageSetting.getFlags() & 268435456) != 0 ? "true" : "false");
-            printWriter.print(str);
-            printWriter.print("  primaryCpuAbi=");
-            printWriter.println(packageSetting.getPrimaryCpuAbiLegacy());
-            printWriter.print(str);
-            printWriter.print("  secondaryCpuAbi=");
-            printWriter.println(packageSetting.getSecondaryCpuAbiLegacy());
-            printWriter.print(str);
-            printWriter.print("  cpuAbiOverride=");
-            printWriter.println(packageSetting.getCpuAbiOverride());
+        printWriter.println(packageSetting2.mPathString);
+        LinkedHashSet linkedHashSet = packageSetting2.mOldPaths;
+        if (linkedHashSet != null && linkedHashSet.size() > 0) {
+            Iterator it2 = packageSetting2.mOldPaths.iterator();
+            while (it2.hasNext()) {
+                File file = (File) it2.next();
+                StringBuilder m = BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, "  ", "    oldCodePath=");
+                m.append(file.getAbsolutePath());
+                printWriter.println(m.toString());
+            }
         }
-        printWriter.print(str);
+        if (arraySet == null) {
+            printWriter.print("  ");
+            printWriter.print("  resourcePath=");
+            ProcessList$$ExternalSyntheticOutline0.m(printWriter, packageSetting2.mPathString, "  ", "  legacyNativeLibraryDir=");
+            ProcessList$$ExternalSyntheticOutline0.m(printWriter, packageSetting2.legacyNativeLibraryPath, "  ", "  extractNativeLibs=");
+            ProcessList$$ExternalSyntheticOutline0.m(printWriter, (packageSetting2.mPkgFlags & 268435456) != 0 ? "true" : "false", "  ", "  primaryCpuAbi=");
+            ProcessList$$ExternalSyntheticOutline0.m(printWriter, packageSetting2.mPrimaryCpuAbi, "  ", "  secondaryCpuAbi=");
+            ProcessList$$ExternalSyntheticOutline0.m(printWriter, packageSetting2.mSecondaryCpuAbi, "  ", "  cpuAbiOverride=");
+            printWriter.println(packageSetting2.mCpuAbiOverride);
+        }
+        printWriter.print("  ");
         printWriter.print("  versionCode=");
-        printWriter.print(packageSetting.getVersionCode());
-        if (pkg != null) {
+        printWriter.print(packageSetting2.versionCode);
+        if (androidPackageInternal != null) {
             printWriter.print(" minSdk=");
-            printWriter.print(pkg.getMinSdkVersion());
-            printWriter.print(" targetSdk=");
-            printWriter.println(pkg.getTargetSdkVersion());
-            SparseIntArray minExtensionVersions = pkg.getMinExtensionVersions();
-            printWriter.print(str);
+            printWriter.print(androidPackageInternal.getMinSdkVersion());
+        }
+        printWriter.print(" targetSdk=");
+        printWriter.println(packageSetting2.mTargetSdkVersion);
+        if (androidPackageInternal != null) {
+            SparseIntArray minExtensionVersions = androidPackageInternal.getMinExtensionVersions();
+            printWriter.print("  ");
             printWriter.print("  minExtensionVersions=[");
             if (minExtensionVersions != null) {
                 ArrayList arrayList = new ArrayList();
                 int size = minExtensionVersions.size();
                 int i2 = 0;
                 while (i2 < size) {
+                    int i3 = size;
                     arrayList.add(minExtensionVersions.keyAt(i2) + "=" + minExtensionVersions.valueAt(i2));
                     i2++;
+                    size = i3;
                     minExtensionVersions = minExtensionVersions;
                 }
                 printWriter.print(TextUtils.join(", ", arrayList));
@@ -2947,319 +2648,367 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
             printWriter.print("]");
         }
         printWriter.println();
-        if (pkg != null) {
-            printWriter.print(str);
+        Object[] objArr = PRIVATE_FLAG_DUMP_SPEC;
+        Object[] objArr2 = FLAG_DUMP_SPEC;
+        String str7 = "  pendingRestore=true";
+        if (androidPackageInternal != null) {
+            printWriter.print("  ");
             printWriter.print("  versionName=");
-            printWriter.println(pkg.getVersionName());
-            printWriter.print(str);
+            printWriter.println(androidPackageInternal.getVersionName());
+            printWriter.print("  ");
+            printWriter.print("  hiddenApiEnforcementPolicy=");
+            printWriter.println(AndroidPackageUtils.getHiddenApiEnforcementPolicy(packageSetting2.pkg, packageSetting2));
+            printWriter.print("  ");
             printWriter.print("  usesNonSdkApi=");
-            printWriter.println(pkg.isNonSdkApiRequested());
-            printWriter.print(str);
+            printWriter.println(androidPackageInternal.isNonSdkApiRequested());
+            printWriter.print("  ");
             printWriter.print("  splits=");
-            dumpSplitNames(printWriter, pkg);
+            printWriter.print("[");
+            printWriter.print("base");
+            if (androidPackageInternal.getBaseRevisionCode() != 0) {
+                printWriter.print(":");
+                printWriter.print(androidPackageInternal.getBaseRevisionCode());
+            }
+            String[] splitNames = androidPackageInternal.getSplitNames();
+            int[] splitRevisionCodes2 = androidPackageInternal.getSplitRevisionCodes();
+            for (int i4 = 0; i4 < splitNames.length; i4++) {
+                printWriter.print(", ");
+                printWriter.print(splitNames[i4]);
+                if (splitRevisionCodes2[i4] != 0) {
+                    printWriter.print(":");
+                    printWriter.print(splitRevisionCodes2[i4]);
+                }
+            }
+            printWriter.print("]");
             printWriter.println();
-            int signatureSchemeVersion = pkg.getSigningDetails().getSignatureSchemeVersion();
-            printWriter.print(str);
+            int signatureSchemeVersion = androidPackageInternal.getSigningDetails().getSignatureSchemeVersion();
+            printWriter.print("  ");
             printWriter.print("  apkSigningVersion=");
             printWriter.println(signatureSchemeVersion);
-            printWriter.print(str);
+            printWriter.print("  ");
             printWriter.print("  flags=");
-            printFlags(printWriter, PackageInfoUtils.appInfoFlags(pkg, packageSetting), FLAG_DUMP_SPEC);
+            printFlags(printWriter, PackageInfoUtils.appInfoFlags(androidPackageInternal, packageSetting2), objArr2);
             printWriter.println();
-            int appInfoPrivateFlags = PackageInfoUtils.appInfoPrivateFlags(pkg, packageSetting);
+            int appInfoPrivateFlags = PackageInfoUtils.appInfoPrivateFlags(androidPackageInternal);
             if (appInfoPrivateFlags != 0) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.print("  privateFlags=");
-                printFlags(printWriter, appInfoPrivateFlags, PRIVATE_FLAG_DUMP_SPEC);
+                printFlags(printWriter, appInfoPrivateFlags, objArr);
                 printWriter.println();
             }
-            if (pkg.hasPreserveLegacyExternalStorage()) {
-                printWriter.print(str);
+            if (packageSetting2.getBoolean(16)) {
+                printWriter.print("  ");
+                printWriter.print("  pendingRestore=true");
+                printWriter.println();
+            }
+            if (!androidPackageInternal.isUpdatableSystem()) {
+                printWriter.print("  ");
+                printWriter.print("  updatableSystem=false");
+                printWriter.println();
+            }
+            if (androidPackageInternal.getEmergencyInstaller() != null) {
+                printWriter.print("  ");
+                printWriter.print("  emergencyInstaller=");
+                printWriter.println(androidPackageInternal.getEmergencyInstaller());
+            }
+            if (androidPackageInternal.hasPreserveLegacyExternalStorage()) {
+                printWriter.print("  ");
                 printWriter.print("  hasPreserveLegacyExternalStorage=true");
                 printWriter.println();
             }
-            printWriter.print(str);
+            printWriter.print("  ");
             printWriter.print("  forceQueryable=");
-            printWriter.print(packageSetting.getPkg().isForceQueryable());
-            if (packageSetting.isForceQueryableOverride()) {
+            printWriter.print(packageSetting2.pkg.isForceQueryable());
+            if (packageSetting2.getBoolean(4)) {
                 printWriter.print(" (override=true)");
             }
             printWriter.println();
-            if (!packageSetting.getPkg().getQueriesPackages().isEmpty()) {
-                printWriter.append((CharSequence) str).append((CharSequence) "  queriesPackages=").println(packageSetting.getPkg().getQueriesPackages());
+            if (!packageSetting2.pkg.getQueriesPackages().isEmpty()) {
+                printWriter.append("  ").append("  queriesPackages=").println(packageSetting2.pkg.getQueriesPackages());
             }
-            if (!packageSetting.getPkg().getQueriesIntents().isEmpty()) {
-                printWriter.append((CharSequence) str).append((CharSequence) "  queriesIntents=").println(packageSetting.getPkg().getQueriesIntents());
+            if (!packageSetting2.pkg.getQueriesIntents().isEmpty()) {
+                printWriter.append("  ").append("  queriesIntents=").println(packageSetting2.pkg.getQueriesIntents());
             }
-            File dataDir = PackageInfoUtils.getDataDir(pkg, UserHandle.myUserId());
-            printWriter.print(str);
-            printWriter.print("  dataDir=");
-            printWriter.println(dataDir.getAbsolutePath());
-            printWriter.print(str);
+            printWriter.print("  ");
+            printWriter.print("  scannedAsStoppedSystemApp=");
+            printWriter.println(packageSetting2.getBoolean(8));
+            printWriter.print("  ");
             printWriter.print("  supportsScreens=[");
-            if (pkg.isSmallScreensSupported()) {
+            if (androidPackageInternal.isSmallScreensSupported()) {
                 printWriter.print("small");
                 z3 = false;
             } else {
                 z3 = true;
             }
-            if (pkg.isNormalScreensSupported()) {
+            if (androidPackageInternal.isNormalScreensSupported()) {
                 if (!z3) {
                     printWriter.print(", ");
                 }
                 printWriter.print("medium");
                 z3 = false;
             }
-            if (pkg.isLargeScreensSupported()) {
+            if (androidPackageInternal.isLargeScreensSupported()) {
                 if (!z3) {
                     printWriter.print(", ");
                 }
                 printWriter.print("large");
                 z3 = false;
             }
-            if (pkg.isExtraLargeScreensSupported()) {
+            if (androidPackageInternal.isExtraLargeScreensSupported()) {
                 if (!z3) {
                     printWriter.print(", ");
                 }
                 printWriter.print("xlarge");
                 z3 = false;
             }
-            if (pkg.isResizeable()) {
+            if (androidPackageInternal.isResizeable()) {
                 if (!z3) {
                     printWriter.print(", ");
                 }
                 printWriter.print("resizeable");
                 z3 = false;
             }
-            if (pkg.isAnyDensity()) {
+            if (androidPackageInternal.isAnyDensity()) {
                 if (!z3) {
                     printWriter.print(", ");
                 }
                 printWriter.print("anyDensity");
             }
             printWriter.println("]");
-            List libraryNames = pkg.getLibraryNames();
+            List libraryNames = androidPackageInternal.getLibraryNames();
             if (libraryNames != null && libraryNames.size() > 0) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.println("  dynamic libraries:");
-                for (int i3 = 0; i3 < libraryNames.size(); i3++) {
-                    printWriter.print(str);
+                for (int i5 = 0; i5 < libraryNames.size(); i5++) {
+                    printWriter.print("  ");
                     printWriter.print("    ");
-                    printWriter.println((String) libraryNames.get(i3));
+                    printWriter.println((String) libraryNames.get(i5));
                 }
             }
-            String str3 = " version:";
-            if (pkg.getStaticSharedLibraryName() != null) {
-                printWriter.print(str);
+            if (androidPackageInternal.getStaticSharedLibraryName() != null) {
+                printWriter.print("  ");
                 printWriter.println("  static library:");
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.print("    ");
                 printWriter.print("name:");
-                printWriter.print(pkg.getStaticSharedLibraryName());
+                printWriter.print(androidPackageInternal.getStaticSharedLibraryName());
                 printWriter.print(" version:");
-                printWriter.println(pkg.getStaticSharedLibraryVersion());
+                printWriter.println(androidPackageInternal.getStaticSharedLibraryVersion());
             }
-            if (pkg.getSdkLibraryName() != null) {
-                printWriter.print(str);
+            if (androidPackageInternal.getSdkLibraryName() != null) {
+                printWriter.print("  ");
                 printWriter.println("  SDK library:");
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.print("    ");
                 printWriter.print("name:");
-                printWriter.print(pkg.getSdkLibraryName());
+                printWriter.print(androidPackageInternal.getSdkLibraryName());
                 printWriter.print(" versionMajor:");
-                printWriter.println(pkg.getSdkLibVersionMajor());
+                printWriter.println(androidPackageInternal.getSdkLibVersionMajor());
             }
-            List usesLibraries = pkg.getUsesLibraries();
+            List usesLibraries = androidPackageInternal.getUsesLibraries();
             if (usesLibraries.size() > 0) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.println("  usesLibraries:");
-                for (int i4 = 0; i4 < usesLibraries.size(); i4++) {
-                    printWriter.print(str);
+                for (int i6 = 0; i6 < usesLibraries.size(); i6++) {
+                    printWriter.print("  ");
                     printWriter.print("    ");
-                    printWriter.println((String) usesLibraries.get(i4));
+                    printWriter.println((String) usesLibraries.get(i6));
                 }
             }
-            List usesStaticLibraries = pkg.getUsesStaticLibraries();
-            long[] usesStaticLibrariesVersions = pkg.getUsesStaticLibrariesVersions();
+            List usesStaticLibraries = androidPackageInternal.getUsesStaticLibraries();
+            long[] usesStaticLibrariesVersions = androidPackageInternal.getUsesStaticLibrariesVersions();
             if (usesStaticLibraries.size() > 0) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.println("  usesStaticLibraries:");
-                for (int i5 = 0; i5 < usesStaticLibraries.size(); i5++) {
-                    printWriter.print(str);
+                int i7 = 0;
+                while (i7 < usesStaticLibraries.size()) {
+                    printWriter.print("  ");
                     printWriter.print("    ");
-                    printWriter.print((String) usesStaticLibraries.get(i5));
+                    printWriter.print((String) usesStaticLibraries.get(i7));
                     printWriter.print(" version:");
-                    printWriter.println(usesStaticLibrariesVersions[i5]);
+                    printWriter.println(usesStaticLibrariesVersions[i7]);
+                    i7++;
+                    str7 = str7;
                 }
             }
-            List usesSdkLibraries = pkg.getUsesSdkLibraries();
-            long[] usesSdkLibrariesVersionsMajor = pkg.getUsesSdkLibrariesVersionsMajor();
+            str2 = str7;
+            List usesSdkLibraries = androidPackageInternal.getUsesSdkLibraries();
+            long[] usesSdkLibrariesVersionsMajor = androidPackageInternal.getUsesSdkLibrariesVersionsMajor();
+            boolean[] usesSdkLibrariesOptional = androidPackageInternal.getUsesSdkLibrariesOptional();
             if (usesSdkLibraries.size() > 0) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.println("  usesSdkLibraries:");
                 int size2 = usesSdkLibraries.size();
-                int i6 = 0;
-                while (i6 < size2) {
-                    printWriter.print(str);
+                int i8 = 0;
+                while (i8 < size2) {
+                    printWriter.print("  ");
                     printWriter.print("    ");
-                    printWriter.print((String) usesSdkLibraries.get(i6));
-                    printWriter.print(str3);
-                    printWriter.println(usesSdkLibrariesVersionsMajor[i6]);
-                    i6++;
-                    str3 = str3;
+                    printWriter.print((String) usesSdkLibraries.get(i8));
+                    printWriter.print(" version:");
+                    printWriter.println(usesSdkLibrariesVersionsMajor[i8]);
+                    printWriter.print(" optional:");
+                    printWriter.println(usesSdkLibrariesOptional[i8]);
+                    i8++;
+                    usesSdkLibraries = usesSdkLibraries;
                 }
             }
-            List usesOptionalLibraries = pkg.getUsesOptionalLibraries();
+            List usesOptionalLibraries = androidPackageInternal.getUsesOptionalLibraries();
             if (usesOptionalLibraries.size() > 0) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.println("  usesOptionalLibraries:");
-                for (int i7 = 0; i7 < usesOptionalLibraries.size(); i7++) {
-                    printWriter.print(str);
+                for (int i9 = 0; i9 < usesOptionalLibraries.size(); i9++) {
+                    printWriter.print("  ");
                     printWriter.print("    ");
-                    printWriter.println((String) usesOptionalLibraries.get(i7));
+                    printWriter.println((String) usesOptionalLibraries.get(i9));
                 }
             }
-            List usesNativeLibraries = pkg.getUsesNativeLibraries();
+            List usesNativeLibraries = androidPackageInternal.getUsesNativeLibraries();
             if (usesNativeLibraries.size() > 0) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.println("  usesNativeLibraries:");
-                for (int i8 = 0; i8 < usesNativeLibraries.size(); i8++) {
-                    printWriter.print(str);
+                for (int i10 = 0; i10 < usesNativeLibraries.size(); i10++) {
+                    printWriter.print("  ");
                     printWriter.print("    ");
-                    printWriter.println((String) usesNativeLibraries.get(i8));
+                    printWriter.println((String) usesNativeLibraries.get(i10));
                 }
             }
-            List usesOptionalNativeLibraries = pkg.getUsesOptionalNativeLibraries();
+            List usesOptionalNativeLibraries = androidPackageInternal.getUsesOptionalNativeLibraries();
             if (usesOptionalNativeLibraries.size() > 0) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.println("  usesOptionalNativeLibraries:");
-                for (int i9 = 0; i9 < usesOptionalNativeLibraries.size(); i9++) {
-                    printWriter.print(str);
+                for (int i11 = 0; i11 < usesOptionalNativeLibraries.size(); i11++) {
+                    printWriter.print("  ");
                     printWriter.print("    ");
-                    printWriter.println((String) usesOptionalNativeLibraries.get(i9));
+                    printWriter.println((String) usesOptionalNativeLibraries.get(i11));
                 }
             }
-            List usesLibraryFiles = packageSetting.getPkgState().getUsesLibraryFiles();
-            if (usesLibraryFiles.size() > 0) {
-                printWriter.print(str);
+            List list3 = packageSetting2.pkgState.usesLibraryFiles;
+            if (list3.size() > 0) {
+                printWriter.print("  ");
                 printWriter.println("  usesLibraryFiles:");
-                for (int i10 = 0; i10 < usesLibraryFiles.size(); i10++) {
-                    printWriter.print(str);
+                for (int i12 = 0; i12 < list3.size(); i12++) {
+                    printWriter.print("  ");
                     printWriter.print("    ");
-                    printWriter.println((String) usesLibraryFiles.get(i10));
+                    printWriter.println((String) list3.get(i12));
                 }
             }
-            Map processes = pkg.getProcesses();
+            Map processes = androidPackageInternal.getProcesses();
             if (!processes.isEmpty()) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.println("  processes:");
                 for (ParsedProcess parsedProcess : processes.values()) {
-                    printWriter.print(str);
+                    printWriter.print("  ");
                     printWriter.print("    ");
                     printWriter.println(parsedProcess.getName());
                     if (parsedProcess.getDeniedPermissions() != null) {
-                        for (String str4 : parsedProcess.getDeniedPermissions()) {
-                            printWriter.print(str);
+                        for (String str8 : parsedProcess.getDeniedPermissions()) {
+                            printWriter.print("  ");
                             printWriter.print("      deny: ");
-                            printWriter.println(str4);
+                            printWriter.println(str8);
                         }
                     }
                 }
             }
+        } else {
+            str2 = "  pendingRestore=true";
         }
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  timeStamp=");
-        date.setTime(packageSetting.getLastModifiedTime());
+        date.setTime(packageSetting2.mLastModifiedTime);
         printWriter.println(simpleDateFormat.format(date));
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  lastUpdateTime=");
-        date.setTime(packageSetting.getLastUpdateTime());
+        date.setTime(packageSetting2.lastUpdateTime);
         printWriter.println(simpleDateFormat.format(date));
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  installerPackageName=");
-        printWriter.println(packageSetting.getInstallSource().mInstallerPackageName);
-        printWriter.print(str);
-        printWriter.print("  installerPackageUid=");
-        printWriter.println(packageSetting.getInstallSource().mInstallerPackageUid);
-        printWriter.print(str);
-        printWriter.print("  initiatingPackageName=");
-        printWriter.println(packageSetting.getInstallSource().mInitiatingPackageName);
-        printWriter.print(str);
-        printWriter.print("  originatingPackageName=");
-        printWriter.println(packageSetting.getInstallSource().mOriginatingPackageName);
-        if (packageSetting.getInstallSource().mUpdateOwnerPackageName != null) {
-            printWriter.print(str);
+        ProcessList$$ExternalSyntheticOutline0.m(printWriter, packageSetting2.installSource.mInstallerPackageName, "  ", "  installerPackageUid=");
+        BroadcastStats$$ExternalSyntheticOutline0.m(packageSetting2.installSource.mInstallerPackageUid, printWriter, "  ", "  initiatingPackageName=");
+        ProcessList$$ExternalSyntheticOutline0.m(printWriter, packageSetting2.installSource.mInitiatingPackageName, "  ", "  originatingPackageName=");
+        printWriter.println(packageSetting2.installSource.mOriginatingPackageName);
+        if (packageSetting2.installSource.mUpdateOwnerPackageName != null) {
+            printWriter.print("  ");
             printWriter.print("  updateOwnerPackageName=");
-            printWriter.println(packageSetting.getInstallSource().mUpdateOwnerPackageName);
+            printWriter.println(packageSetting2.installSource.mUpdateOwnerPackageName);
         }
-        if (packageSetting.getInstallSource().mInstallerAttributionTag != null) {
-            printWriter.print(str);
+        if (packageSetting2.installSource.mInstallerAttributionTag != null) {
+            printWriter.print("  ");
             printWriter.print("  installerAttributionTag=");
-            printWriter.println(packageSetting.getInstallSource().mInstallerAttributionTag);
+            printWriter.println(packageSetting2.installSource.mInstallerAttributionTag);
         }
-        int categoryOverride = packageSetting.getCategoryOverride();
-        int category = pkg != null ? pkg.getCategory() : -1;
-        if (categoryOverride != -1 || category != -1) {
-            printWriter.print(str);
-            printWriter.print("  category=");
-            printWriter.print(categoryOverride);
-            if (category != -1) {
-                printWriter.print(" (manifest=" + category + ")");
-            }
-            printWriter.println();
-        }
-        printWriter.print(str);
+        int i13 = packageSetting2.categoryOverride;
+        int category = androidPackageInternal != null ? androidPackageInternal.getCategory() : -1;
+        printWriter.print("  ");
+        printWriter.print("  category=manifest: " + category);
+        printWriter.print(", override: " + i13);
+        printWriter.print(", by user: " + PackageManagerService.sAppCategoryHintHelper.getAppCategoryHintUser(packageSetting2.mName));
+        printWriter.println();
+        printWriter.print("  ");
         printWriter.print("  packageSource=");
-        printWriter.println(packageSetting.getInstallSource().mPackageSource);
-        if (packageSetting.isIncremental()) {
-            printWriter.print(str);
-            printWriter.println("  loadingProgress=" + ((int) (packageSetting.getLoadingProgress() * 100.0f)) + "%");
+        printWriter.println(packageSetting2.installSource.mPackageSource);
+        if (IncrementalManager.isIncrementalPath(packageSetting2.mPathString)) {
+            StringBuilder m2 = BinaryTransparencyService$$ExternalSyntheticOutline0.m(printWriter, "  ", "  loadingProgress=");
+            m2.append((int) (packageSetting.getLoadingProgress() * 100.0f));
+            m2.append("%");
+            printWriter.println(m2.toString());
             date.setTime(packageSetting.getLoadingCompletedTime());
-            printWriter.print(str);
+            printWriter.print("  ");
             printWriter.println("  loadingCompletedTime=" + simpleDateFormat.format(date));
         }
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  appMetadataFilePath=");
         printWriter.println(packageSetting.getAppMetadataFilePath());
+        printWriter.print("  ");
+        printWriter.print("  appMetadataSource=");
+        printWriter.println(packageSetting.getAppMetadataSource());
         if (packageSetting.getVolumeUuid() != null) {
-            printWriter.print(str);
+            printWriter.print("  ");
             printWriter.print("  volumeUuid=");
             printWriter.println(packageSetting.getVolumeUuid());
         }
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  signatures=");
-        printWriter.println(packageSetting.getSignatures());
-        printWriter.print(str);
+        printWriter.println(packageSetting2.signatures);
+        printWriter.print("  ");
         printWriter.print("  installPermissionsFixed=");
         printWriter.print(packageSetting.isInstallPermissionsFixed());
         printWriter.println();
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  pkgFlags=");
-        printFlags(printWriter, packageSetting.getFlags(), FLAG_DUMP_SPEC);
+        printFlags(printWriter, packageSetting.getFlags(), objArr2);
         printWriter.println();
-        printWriter.print(str);
+        printWriter.print("  ");
         printWriter.print("  privatePkgFlags=");
-        printFlags(printWriter, packageSetting.getPrivateFlags(), PRIVATE_FLAG_DUMP_SPEC);
+        printFlags(printWriter, packageSetting.getPrivateFlags(), objArr);
         printWriter.println();
-        printWriter.print(str);
+        if (packageSetting.isPendingRestore()) {
+            printWriter.print("  ");
+            printWriter.println(str2);
+        }
+        printWriter.print("  ");
         printWriter.print("  apexModuleName=");
         printWriter.println(packageSetting.getApexModuleName());
-        if (pkg != null && pkg.getOverlayTarget() != null) {
-            printWriter.print(str);
+        if (androidPackageInternal != null && androidPackageInternal.getOverlayTarget() != null) {
+            printWriter.print("  ");
             printWriter.print("  overlayTarget=");
-            printWriter.println(pkg.getOverlayTarget());
-            printWriter.print(str);
+            printWriter.println(androidPackageInternal.getOverlayTarget());
+            printWriter.print("  ");
             printWriter.print("  overlayCategory=");
-            printWriter.println(pkg.getOverlayCategory());
+            printWriter.println(androidPackageInternal.getOverlayCategory());
         }
-        if (pkg != null && !pkg.getPermissions().isEmpty()) {
-            List permissions = pkg.getPermissions();
-            printWriter.print(str);
+        if (androidPackageInternal != null) {
+            printWriter.print("  ");
+            printWriter.print("  componentsDeclared=");
+            printWriter.println(androidPackageInternal.getServices().size() + androidPackageInternal.getProviders().size() + androidPackageInternal.getActivities().size());
+        }
+        if (androidPackageInternal != null && !androidPackageInternal.getPermissions().isEmpty()) {
+            List permissions = androidPackageInternal.getPermissions();
+            printWriter.print("  ");
             printWriter.println("  declared permissions:");
-            for (int i11 = 0; i11 < permissions.size(); i11++) {
-                ParsedPermission parsedPermission = (ParsedPermission) permissions.get(i11);
+            for (int i14 = 0; i14 < permissions.size(); i14++) {
+                ParsedPermission parsedPermission = (ParsedPermission) permissions.get(i14);
                 if (arraySet == null || arraySet.contains(parsedPermission.getName())) {
-                    printWriter.print(str);
+                    printWriter.print("  ");
                     printWriter.print("    ");
                     printWriter.print(parsedPermission.getName());
                     printWriter.print(": prot=");
@@ -3277,35 +3026,45 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
                 }
             }
         }
-        if ((arraySet != null || z) && pkg != null && pkg.getRequestedPermissions() != null && pkg.getRequestedPermissions().size() > 0) {
-            List requestedPermissions = pkg.getRequestedPermissions();
-            printWriter.print(str);
+        if ((arraySet != null || z) && androidPackageInternal != null && androidPackageInternal.getRequestedPermissions() != null && androidPackageInternal.getRequestedPermissions().size() > 0) {
+            Set<String> requestedPermissions = androidPackageInternal.getRequestedPermissions();
+            printWriter.print("  ");
             printWriter.println("  requested permissions:");
-            for (int i12 = 0; i12 < requestedPermissions.size(); i12++) {
-                String str5 = (String) requestedPermissions.get(i12);
-                if (arraySet == null || arraySet.contains(str5)) {
-                    printWriter.print(str);
+            for (String str9 : requestedPermissions) {
+                if (arraySet == null || arraySet.contains(str9)) {
+                    printWriter.print("  ");
                     printWriter.print("    ");
-                    printWriter.println(str5);
+                    printWriter.println(str9);
                 }
             }
         }
-        if (!packageSetting.hasSharedUser() || arraySet != null || z) {
-            dumpInstallPermissionsLPr(printWriter, str + "  ", arraySet, legacyPermissionState, list);
+        if (packageSetting.hasSharedUser() && arraySet == null && !z) {
+            legacyPermissionState2 = legacyPermissionState;
+            list2 = list;
+        } else {
+            legacyPermissionState2 = legacyPermissionState;
+            list2 = list;
+            dumpInstallPermissionsLPr(printWriter, "    ", arraySet, legacyPermissionState2, list2);
         }
         if (z2) {
-            dumpComponents(printWriter, str + "  ", packageSetting);
+            dumpComponents(printWriter, "    ", "activities:", packageSetting2.pkg.getActivities());
+            dumpComponents(printWriter, "    ", "services:", packageSetting2.pkg.getServices());
+            dumpComponents(printWriter, "    ", "receivers:", packageSetting2.pkg.getReceivers());
+            dumpComponents(printWriter, "    ", "providers:", packageSetting2.pkg.getProviders());
+            dumpComponents(printWriter, "    ", "instrumentations:", packageSetting2.pkg.getInstrumentations());
         }
-        Iterator it2 = list.iterator();
-        while (it2.hasNext()) {
-            UserInfo userInfo2 = (UserInfo) it2.next();
-            PackageUserStateInternal userStateOrDefault2 = packageSetting.getUserStateOrDefault(userInfo2.id);
-            printWriter.print(str);
+        Iterator it3 = ((ArrayList) list2).iterator();
+        while (it3.hasNext()) {
+            UserInfo userInfo2 = (UserInfo) it3.next();
+            PackageUserStateInternal userStateOrDefault2 = packageSetting2.getUserStateOrDefault(userInfo2.id);
+            printWriter.print("  ");
             printWriter.print("  User ");
             printWriter.print(userInfo2.id);
             printWriter.print(": ");
             printWriter.print("ceDataInode=");
             printWriter.print(userStateOrDefault2.getCeDataInode());
+            printWriter.print(" deDataInode=");
+            printWriter.print(userStateOrDefault2.getDeDataInode());
             printWriter.print(" installed=");
             printWriter.print(userStateOrDefault2.isInstalled());
             printWriter.print(" hidden=");
@@ -3323,26 +3082,46 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
             printWriter.print(" instant=");
             printWriter.print(userStateOrDefault2.isInstantApp());
             printWriter.print(" virtual=");
-            printWriter.println(userStateOrDefault2.isVirtualPreload());
+            printWriter.print(userStateOrDefault2.isVirtualPreload());
+            printWriter.print(" quarantined=");
+            printWriter.print(userStateOrDefault2.isQuarantined());
+            printWriter.println();
             printWriter.print("      installReason=");
             printWriter.println(userStateOrDefault2.getInstallReason());
-            PackageUserStateInternal readUserState = packageSetting.readUserState(userInfo2.id);
+            File dataDir = PackageInfoUtils.getDataDir(packageSetting2, userInfo2.id);
+            printWriter.print("      dataDir=");
+            printWriter.println(dataDir == null ? "null" : dataDir.getAbsolutePath());
+            PackageUserStateInternal readUserState = packageSetting2.readUserState(userInfo2.id);
             printWriter.print("      firstInstallTime=");
             date.setTime(readUserState.getFirstInstallTimeMillis());
             printWriter.println(simpleDateFormat.format(date));
+            if (readUserState.getArchiveState() != null) {
+                ArchiveState archiveState = readUserState.getArchiveState();
+                printWriter.print("      archiveTime=");
+                date.setTime(archiveState.mArchiveTimeMillis);
+                printWriter.println(simpleDateFormat.format(date));
+                printWriter.print("      unarchiveInstallerTitle=");
+                printWriter.println(archiveState.mInstallerTitle);
+                for (ArchiveState.ArchiveActivityInfo archiveActivityInfo : archiveState.mActivityInfos) {
+                    printWriter.print("        archiveActivityInfo=");
+                    printWriter.println(archiveActivityInfo.toString());
+                }
+            }
             printWriter.print("      uninstallReason=");
             printWriter.println(userStateOrDefault2.getUninstallReason());
             if (userStateOrDefault2.isSuspended()) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.println("  Suspend params:");
-                for (int i13 = 0; i13 < userStateOrDefault2.getSuspendParams().size(); i13++) {
-                    printWriter.print(str);
+                for (int i15 = 0; i15 < userStateOrDefault2.getSuspendParams().size(); i15++) {
+                    printWriter.print("  ");
                     printWriter.print("    suspendingPackage=");
-                    printWriter.print((String) userStateOrDefault2.getSuspendParams().keyAt(i13));
-                    SuspendParams suspendParams = (SuspendParams) userStateOrDefault2.getSuspendParams().valueAt(i13);
+                    printWriter.print(userStateOrDefault2.getSuspendParams().mStorage.keyAt(i15));
+                    SuspendParams suspendParams = (SuspendParams) userStateOrDefault2.getSuspendParams().mStorage.valueAt(i15);
                     if (suspendParams != null) {
                         printWriter.print(" dialogInfo=");
-                        printWriter.print(suspendParams.getDialogInfo());
+                        printWriter.print(suspendParams.mDialogInfo);
+                        printWriter.print(" quarantined=");
+                        printWriter.println(suspendParams.mQuarantined);
                     }
                     printWriter.println();
                 }
@@ -3350,1150 +3129,1225 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
             OverlayPaths overlayPaths = userStateOrDefault2.getOverlayPaths();
             if (overlayPaths != null) {
                 if (!overlayPaths.getOverlayPaths().isEmpty()) {
-                    printWriter.print(str);
+                    printWriter.print("  ");
                     printWriter.println("    overlay paths:");
-                    for (String str6 : overlayPaths.getOverlayPaths()) {
-                        printWriter.print(str);
+                    for (String str10 : overlayPaths.getOverlayPaths()) {
+                        printWriter.print("  ");
                         printWriter.print("      ");
-                        printWriter.println(str6);
+                        printWriter.println(str10);
                     }
                 }
                 if (!overlayPaths.getResourceDirs().isEmpty()) {
-                    printWriter.print(str);
+                    printWriter.print("  ");
                     printWriter.println("    legacy overlay paths:");
-                    for (String str7 : overlayPaths.getResourceDirs()) {
-                        printWriter.print(str);
+                    for (String str11 : overlayPaths.getResourceDirs()) {
+                        printWriter.print("  ");
                         printWriter.print("      ");
-                        printWriter.println(str7);
+                        printWriter.println(str11);
                     }
                 }
             }
             Map sharedLibraryOverlayPaths = userStateOrDefault2.getSharedLibraryOverlayPaths();
             if (sharedLibraryOverlayPaths != null) {
-                Iterator it3 = sharedLibraryOverlayPaths.entrySet().iterator();
-                while (it3.hasNext()) {
-                    Map.Entry entry = (Map.Entry) it3.next();
+                for (Map.Entry entry : sharedLibraryOverlayPaths.entrySet()) {
                     OverlayPaths overlayPaths2 = (OverlayPaths) entry.getValue();
                     if (overlayPaths2 != null) {
                         if (!overlayPaths2.getOverlayPaths().isEmpty()) {
-                            printWriter.print(str);
+                            printWriter.print("  ");
                             printWriter.println("    ");
                             printWriter.print((String) entry.getKey());
                             printWriter.println(" overlay paths:");
-                            for (String str8 : overlayPaths2.getOverlayPaths()) {
-                                printWriter.print(str);
+                            for (String str12 : overlayPaths2.getOverlayPaths()) {
+                                printWriter.print("  ");
                                 printWriter.print("        ");
-                                printWriter.println(str8);
+                                printWriter.println(str12);
                                 it3 = it3;
                             }
                         }
                         Iterator it4 = it3;
                         if (!overlayPaths2.getResourceDirs().isEmpty()) {
-                            printWriter.print(str);
+                            printWriter.print("  ");
                             printWriter.println("      ");
                             printWriter.print((String) entry.getKey());
                             printWriter.println(" legacy overlay paths:");
-                            for (String str9 : overlayPaths2.getResourceDirs()) {
-                                printWriter.print(str);
+                            for (String str13 : overlayPaths2.getResourceDirs()) {
+                                printWriter.print("  ");
                                 printWriter.print("      ");
-                                printWriter.println(str9);
+                                printWriter.println(str13);
                             }
                         }
                         it3 = it4;
                     }
                 }
             }
+            Iterator it5 = it3;
             String lastDisableAppCaller2 = userStateOrDefault2.getLastDisableAppCaller();
             if (lastDisableAppCaller2 != null) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.print("    lastDisabledCaller: ");
                 printWriter.println(lastDisableAppCaller2);
             }
             if (!packageSetting.hasSharedUser()) {
-                dumpGidsLPr(printWriter, str + "    ", this.mPermissionDataProvider.getGidsForUid(UserHandle.getUid(userInfo2.id, packageSetting.getAppId())));
-                dumpRuntimePermissionsLPr(printWriter, str + "    ", arraySet, legacyPermissionState.getPermissionStates(userInfo2.id), z);
+                dumpGidsLPr(printWriter, "      ", this.mPermissionDataProvider.getGidsForUid(UserHandle.getUid(userInfo2.id, packageSetting.getAppId())));
+                dumpRuntimePermissionsLPr(printWriter, "      ", arraySet, legacyPermissionState2.getPermissionStates(userInfo2.id), z);
             }
             String harmfulAppWarning = userStateOrDefault2.getHarmfulAppWarning();
             if (harmfulAppWarning != null) {
-                printWriter.print(str);
+                printWriter.print("  ");
                 printWriter.print("      harmfulAppWarning: ");
                 printWriter.println(harmfulAppWarning);
             }
             if (arraySet == null) {
                 WatchedArraySet disabledComponentsNoCopy = userStateOrDefault2.getDisabledComponentsNoCopy();
-                if (disabledComponentsNoCopy != null && disabledComponentsNoCopy.size() > 0) {
-                    printWriter.print(str);
+                if (disabledComponentsNoCopy != null && disabledComponentsNoCopy.mStorage.size() > 0) {
+                    printWriter.print("  ");
                     printWriter.println("    disabledComponents:");
-                    for (int i14 = 0; i14 < disabledComponentsNoCopy.size(); i14++) {
-                        printWriter.print(str);
+                    for (int i16 = 0; i16 < disabledComponentsNoCopy.mStorage.size(); i16++) {
+                        printWriter.print("  ");
                         printWriter.print("      ");
-                        printWriter.println((String) disabledComponentsNoCopy.valueAt(i14));
+                        printWriter.println((String) disabledComponentsNoCopy.mStorage.valueAt(i16));
                     }
                 }
                 WatchedArraySet enabledComponentsNoCopy = userStateOrDefault2.getEnabledComponentsNoCopy();
-                if (enabledComponentsNoCopy != null && enabledComponentsNoCopy.size() > 0) {
-                    printWriter.print(str);
+                if (enabledComponentsNoCopy != null && enabledComponentsNoCopy.mStorage.size() > 0) {
+                    printWriter.print("  ");
                     printWriter.println("    enabledComponents:");
-                    for (int i15 = 0; i15 < enabledComponentsNoCopy.size(); i15++) {
-                        printWriter.print(str);
+                    for (int i17 = 0; i17 < enabledComponentsNoCopy.mStorage.size(); i17++) {
+                        printWriter.print("  ");
                         printWriter.print("      ");
-                        printWriter.println((String) enabledComponentsNoCopy.valueAt(i15));
+                        printWriter.println((String) enabledComponentsNoCopy.mStorage.valueAt(i17));
                     }
+                }
+            }
+            it3 = it5;
+            packageSetting2 = packageSetting;
+        }
+    }
+
+    public final CrossProfileIntentResolver editCrossProfileIntentResolverLPw(int i) {
+        WatchedSparseArray watchedSparseArray = this.mCrossProfileIntentResolvers;
+        CrossProfileIntentResolver crossProfileIntentResolver = (CrossProfileIntentResolver) watchedSparseArray.mStorage.get(i);
+        if (crossProfileIntentResolver != null) {
+            return crossProfileIntentResolver;
+        }
+        CrossProfileIntentResolver crossProfileIntentResolver2 = new CrossProfileIntentResolver();
+        watchedSparseArray.put(i, crossProfileIntentResolver2);
+        return crossProfileIntentResolver2;
+    }
+
+    public final PreferredIntentResolver editPreferredActivitiesLPw(int i) {
+        WatchedSparseArray watchedSparseArray = this.mPreferredActivities;
+        PreferredIntentResolver preferredIntentResolver = (PreferredIntentResolver) watchedSparseArray.mStorage.get(i);
+        if (preferredIntentResolver != null) {
+            return preferredIntentResolver;
+        }
+        PreferredIntentResolver preferredIntentResolver2 = new PreferredIntentResolver();
+        watchedSparseArray.put(i, preferredIntentResolver2);
+        return preferredIntentResolver2;
+    }
+
+    public final void enableSystemPackageLPw(String str) {
+        PackageSetting packageSetting = (PackageSetting) this.mDisabledSysPackages.mStorage.get(str);
+        if (packageSetting == null) {
+            Log.w("PackageManager", "Package " + str + " is not disabled");
+            return;
+        }
+        SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting);
+        if (sharedUserSettingLPr != null) {
+            sharedUserSettingLPr.mDisabledPackages.remove(packageSetting);
+        }
+        packageSetting.pkgState.setUpdatedSystemApp(false);
+        AndroidPackageInternal androidPackageInternal = packageSetting.pkg;
+        String str2 = packageSetting.mRealName;
+        File file = packageSetting.mPath;
+        int i = packageSetting.mAppId;
+        int i2 = packageSetting.mPkgFlags;
+        int i3 = packageSetting.mPkgPrivateFlags;
+        ((DomainVerificationService) this.mDomainVerificationManager).getClass();
+        PackageSetting addPackageLPw = addPackageLPw(str, str2, file, i, i2, i3, UUID.randomUUID(), androidPackageInternal == null ? false : androidPackageInternal.isSdkLibrary());
+        if (addPackageLPw != null) {
+            addPackageLPw.legacyNativeLibraryPath = packageSetting.legacyNativeLibraryPath;
+            addPackageLPw.onChanged$2();
+            addPackageLPw.mPrimaryCpuAbi = packageSetting.mPrimaryCpuAbi;
+            addPackageLPw.onChanged$2();
+            addPackageLPw.mSecondaryCpuAbi = packageSetting.mSecondaryCpuAbi;
+            addPackageLPw.onChanged$2();
+            addPackageLPw.mCpuAbiOverride = packageSetting.mCpuAbiOverride;
+            addPackageLPw.onChanged$2();
+            addPackageLPw.versionCode = packageSetting.versionCode;
+            addPackageLPw.onChanged$2();
+            addPackageLPw.usesSdkLibraries = packageSetting.getUsesSdkLibraries();
+            addPackageLPw.onChanged$2();
+            addPackageLPw.usesSdkLibrariesVersionsMajor = packageSetting.getUsesSdkLibrariesVersionsMajor();
+            addPackageLPw.onChanged$2();
+            addPackageLPw.usesSdkLibrariesOptional = packageSetting.getUsesSdkLibrariesOptional();
+            addPackageLPw.onChanged$2();
+            addPackageLPw.usesStaticLibraries = packageSetting.getUsesStaticLibraries();
+            addPackageLPw.onChanged$2();
+            addPackageLPw.usesStaticLibrariesVersions = packageSetting.getUsesStaticLibrariesVersions();
+            addPackageLPw.onChanged$2();
+            Map mimeGroups = packageSetting.getMimeGroups();
+            if (mimeGroups != null) {
+                addPackageLPw.copyMimeGroups(mimeGroups);
+                addPackageLPw.onChanged$2();
+            }
+            addPackageLPw.setAppMetadataFilePath(packageSetting.mAppMetadataFilePath);
+            addPackageLPw.setAppMetadataSource(packageSetting.mAppMetadataSource);
+            addPackageLPw.pkgState.setUpdatedSystemApp(false);
+            addPackageLPw.mTargetSdkVersion = packageSetting.mTargetSdkVersion;
+            addPackageLPw.onChanged$2();
+            addPackageLPw.mRestrictUpdateHash = packageSetting.mRestrictUpdateHash;
+            addPackageLPw.onChanged$2();
+            addPackageLPw.setBoolean(8, packageSetting.getBoolean(8));
+            addPackageLPw.onChanged$2();
+            InstallSource installSource = packageSetting.installSource;
+            Objects.requireNonNull(installSource);
+            addPackageLPw.installSource = installSource;
+            addPackageLPw.onChanged$2();
+        }
+        this.mDisabledSysPackages.remove(str);
+    }
+
+    public final VersionInfo findOrCreateVersion(String str) {
+        WatchedArrayMap watchedArrayMap = this.mVersion;
+        VersionInfo versionInfo = (VersionInfo) watchedArrayMap.mStorage.get(str);
+        if (versionInfo != null) {
+            return versionInfo;
+        }
+        VersionInfo versionInfo2 = new VersionInfo();
+        watchedArrayMap.put(str, versionInfo2);
+        return versionInfo2;
+    }
+
+    public final Collection getAllSharedUsersLPw() {
+        return this.mSharedUsers.values();
+    }
+
+    public final PackageSetting getDisabledSystemPkgLPr(String str) {
+        return (PackageSetting) this.mDisabledSysPackages.mStorage.get(str);
+    }
+
+    public final VersionInfo getInternalVersion() {
+        return (VersionInfo) this.mVersion.mStorage.get(StorageManager.UUID_PRIVATE_INTERNAL);
+    }
+
+    public final RuntimePermissionsState getLegacyPermissionsState(int i) {
+        int i2;
+        String str;
+        RuntimePermissionPersistence runtimePermissionPersistence = this.mRuntimePermissionsPersistence;
+        WatchedArrayMap watchedArrayMap = this.mPackages;
+        WatchedArrayMap watchedArrayMap2 = this.mSharedUsers;
+        synchronized (runtimePermissionPersistence.mLock) {
+            i2 = runtimePermissionPersistence.mVersions.get(i, 0);
+            str = (String) runtimePermissionPersistence.mFingerprints.get(i);
+        }
+        return new RuntimePermissionsState(i2, str, RuntimePermissionPersistence.getPackagePermissions(i, watchedArrayMap), RuntimePermissionPersistence.getShareUsersPermissions(i, watchedArrayMap2));
+    }
+
+    public final PackageSetting getPackageLPr(String str) {
+        return (PackageSetting) this.mPackages.mStorage.get(str);
+    }
+
+    public final String getRenamedPackageLPr(String str) {
+        return (String) this.mRenamedPackages.mStorage.get(str);
+    }
+
+    public final SettingBase getSettingLPr(int i) {
+        AppIdSettingMap appIdSettingMap = this.mAppIds;
+        if (i < 10000) {
+            return (SettingBase) appIdSettingMap.mSystemSettings.mStorage.get(i);
+        }
+        WatchedArrayList watchedArrayList = appIdSettingMap.mNonSystemSettings;
+        int i2 = i - 10000;
+        if (i2 < watchedArrayList.mStorage.size()) {
+            return (SettingBase) watchedArrayList.mStorage.get(i2);
+        }
+        return null;
+    }
+
+    public final SharedUserSetting getSharedUserLPw(String str, boolean z) {
+        WatchedArrayMap watchedArrayMap = this.mSharedUsers;
+        SharedUserSetting sharedUserSetting = (SharedUserSetting) watchedArrayMap.mStorage.get(str);
+        if (sharedUserSetting == null && z) {
+            sharedUserSetting = new SharedUserSetting(0, 0, str);
+            int acquireAndRegisterNewAppId = this.mAppIds.acquireAndRegisterNewAppId(sharedUserSetting);
+            sharedUserSetting.mAppId = acquireAndRegisterNewAppId;
+            if (acquireAndRegisterNewAppId < 0) {
+                throw new PackageManagerException(-4, XmlUtils$$ExternalSyntheticOutline0.m("Creating shared user ", str, " failed"));
+            }
+            UiModeManagerService$13$$ExternalSyntheticOutline0.m(DumpUtils$$ExternalSyntheticOutline0.m("New shared user ", str, ": id="), sharedUserSetting.mAppId, "PackageManager");
+            watchedArrayMap.put(str, sharedUserSetting);
+        }
+        return sharedUserSetting;
+    }
+
+    public final SharedUserSetting getSharedUserSettingLPr(PackageSetting packageSetting) {
+        if (packageSetting == null || !packageSetting.hasSharedUser()) {
+            return null;
+        }
+        return (SharedUserSetting) getSettingLPr(packageSetting.mSharedUserAppId);
+    }
+
+    public final ResilientAtomicFile getUserPackagesStateFile(int i) {
+        return new ResilientAtomicFile(new File(getUserSystemDirectory(i), "package-restrictions.xml"), new File(getUserSystemDirectory(i), "package-restrictions-backup.xml"), new File(getUserSystemDirectory(i), "package-restrictions.xml.reservecopy"), FrameworkStatsLog.HOTWORD_DETECTION_SERVICE_RESTARTED, "package restrictions", this);
+    }
+
+    public final File getUserSystemDirectory(int i) {
+        return new File(new File(this.mSystemDir, "users"), Integer.toString(i));
+    }
+
+    public final List getVolumePackagesLPr(String str) {
+        ArrayList arrayList = new ArrayList();
+        for (int i = 0; i < this.mPackages.mStorage.size(); i++) {
+            PackageSetting packageSetting = (PackageSetting) this.mPackages.mStorage.valueAt(i);
+            if (Objects.equals(str, packageSetting.volumeUuid)) {
+                arrayList.add(packageSetting);
+            }
+        }
+        return arrayList;
+    }
+
+    @Override // com.android.server.utils.Watchable
+    public final boolean isRegisteredObserver(Watcher watcher) {
+        return this.mWatchable.isRegisteredObserver(watcher);
+    }
+
+    @Override // com.android.server.pm.ResilientAtomicFile.ReadEventLogger
+    public final void logEvent(int i, String str) {
+        this.mReadMessages.append(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "\n"));
+        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+        PackageManagerServiceUtils.logCriticalInfo(i, str);
+    }
+
+    public final void readBlockUninstallPackagesLPw(int i, TypedXmlPullParser typedXmlPullParser) {
+        int depth = typedXmlPullParser.getDepth();
+        ArraySet arraySet = new ArraySet();
+        while (true) {
+            int next = typedXmlPullParser.next();
+            if (next == 1 || (next == 3 && typedXmlPullParser.getDepth() <= depth)) {
+                break;
+            }
+            if (next != 3 && next != 4) {
+                if (typedXmlPullParser.getName().equals("block-uninstall")) {
+                    arraySet.add(typedXmlPullParser.getAttributeValue((String) null, "packageName"));
+                } else {
+                    String m = XmlUtils$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Unknown element under block-uninstall-packages: "));
+                    boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                    PackageManagerServiceUtils.logCriticalInfo(5, m);
+                    XmlUtils.skipCurrentTag(typedXmlPullParser);
+                }
+            }
+        }
+        boolean isEmpty = arraySet.isEmpty();
+        WatchedSparseArray watchedSparseArray = this.mBlockUninstallPackages;
+        if (isEmpty) {
+            watchedSparseArray.delete(i);
+        } else {
+            watchedSparseArray.put(i, arraySet);
+        }
+    }
+
+    public final void readCrossProfileIntentFiltersLPw(int i, TypedXmlPullParser typedXmlPullParser) {
+        int depth = typedXmlPullParser.getDepth();
+        while (true) {
+            int next = typedXmlPullParser.next();
+            if (next == 1) {
+                return;
+            }
+            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
+                return;
+            }
+            if (next != 3 && next != 4) {
+                String name = typedXmlPullParser.getName();
+                if (name.equals("item")) {
+                    editCrossProfileIntentResolverLPw(i).addFilter((PackageDataSnapshot) null, (WatchedIntentFilter) new CrossProfileIntentFilter(typedXmlPullParser));
+                } else {
+                    String concat = "Unknown element under crossProfile-intent-filters: ".concat(name);
+                    boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                    PackageManagerServiceUtils.logCriticalInfo(5, concat);
+                    XmlUtils.skipCurrentTag(typedXmlPullParser);
                 }
             }
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:65:0x0111, code lost:
-    
-        if (r1 != false) goto L201;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:67:0x0117, code lost:
-    
-        if (r30.onTitlePrinted() == false) goto L200;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:68:0x0119, code lost:
-    
-        r27.println();
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:69:0x011c, code lost:
-    
-        r27.println("Renamed packages:");
-        r1 = true;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:70:0x0123, code lost:
-    
-        r27.print("  ");
-     */
+    public final void readDefaultPreferredActivitiesLPw(int i, TypedXmlPullParser typedXmlPullParser) {
+        PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
+        int depth = typedXmlPullParser.getDepth();
+        while (true) {
+            int next = typedXmlPullParser.next();
+            if (next == 1) {
+                return;
+            }
+            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
+                return;
+            }
+            if (next != 3 && next != 4) {
+                if (typedXmlPullParser.getName().equals("item")) {
+                    PreferredActivity preferredActivity = new PreferredActivity(typedXmlPullParser);
+                    PreferredComponent preferredComponent = preferredActivity.mPref;
+                    if (preferredComponent.mParseError == null) {
+                        applyDefaultPreferredActivityLPw(packageManagerInternal, preferredActivity.mFilter, preferredComponent.mComponent, i);
+                    } else {
+                        String str = "Error in package manager settings: <preferred-activity> " + preferredComponent.mParseError + " at " + typedXmlPullParser.getPositionDescription();
+                        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                        PackageManagerServiceUtils.logCriticalInfo(5, str);
+                    }
+                } else {
+                    String m = XmlUtils$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Unknown element under <preferred-activities>: "));
+                    boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                    PackageManagerServiceUtils.logCriticalInfo(5, m);
+                    XmlUtils.skipCurrentTag(typedXmlPullParser);
+                }
+            }
+        }
+    }
+
+    public final void readDisabledSysPackageLPw(TypedXmlPullParser typedXmlPullParser, List list) {
+        LegacyPermissionState legacyPermissionState;
+        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
+        String attributeValue2 = typedXmlPullParser.getAttributeValue((String) null, "realName");
+        String attributeValue3 = typedXmlPullParser.getAttributeValue((String) null, "codePath");
+        String attributeValue4 = typedXmlPullParser.getAttributeValue((String) null, "requiredCpuAbi");
+        String attributeValue5 = typedXmlPullParser.getAttributeValue((String) null, "nativeLibraryPath");
+        String attributeValue6 = typedXmlPullParser.getAttributeValue((String) null, "primaryCpuAbi");
+        String attributeValue7 = typedXmlPullParser.getAttributeValue((String) null, "secondaryCpuAbi");
+        String attributeValue8 = typedXmlPullParser.getAttributeValue((String) null, "cpuAbiOverride");
+        String str = (attributeValue6 != null || attributeValue4 == null) ? attributeValue6 : attributeValue4;
+        long attributeLong = typedXmlPullParser.getAttributeLong((String) null, "version", 0L);
+        int attributeInt = typedXmlPullParser.getAttributeInt((String) null, "targetSdkVersion", 0);
+        byte[] attributeBytesBase64 = typedXmlPullParser.getAttributeBytesBase64((String) null, "restrictUpdateHash", (byte[]) null);
+        boolean attributeBoolean = typedXmlPullParser.getAttributeBoolean((String) null, "scannedAsStoppedSystemApp", false);
+        PackageSetting packageSetting = new PackageSetting(attributeValue, attributeValue2, new File(attributeValue3), 1, attributeValue3.contains("/priv-app/") ? 8 : 0, DomainVerificationManagerInternal.DISABLED_ID);
+        packageSetting.legacyNativeLibraryPath = attributeValue5;
+        packageSetting.onChanged$2();
+        packageSetting.mPrimaryCpuAbi = str;
+        packageSetting.onChanged$2();
+        packageSetting.mSecondaryCpuAbi = attributeValue7;
+        packageSetting.onChanged$2();
+        packageSetting.mCpuAbiOverride = attributeValue8;
+        packageSetting.onChanged$2();
+        packageSetting.versionCode = attributeLong;
+        packageSetting.onChanged$2();
+        packageSetting.mTargetSdkVersion = attributeInt;
+        packageSetting.onChanged$2();
+        packageSetting.mRestrictUpdateHash = attributeBytesBase64;
+        packageSetting.onChanged$2();
+        packageSetting.setBoolean(8, attributeBoolean);
+        packageSetting.onChanged$2();
+        long attributeLongHex = typedXmlPullParser.getAttributeLongHex((String) null, "ft", 0L);
+        if (attributeLongHex == 0) {
+            attributeLongHex = typedXmlPullParser.getAttributeLong((String) null, "ts", 0L);
+        }
+        packageSetting.mLastModifiedTime = attributeLongHex;
+        packageSetting.onChanged$2();
+        packageSetting.setLastUpdateTime(typedXmlPullParser.getAttributeLongHex((String) null, "ut", 0L));
+        packageSetting.setAppId(typedXmlPullParser.getAttributeInt((String) null, "userId", 0));
+        if (packageSetting.mAppId <= 0) {
+            int attributeInt2 = typedXmlPullParser.getAttributeInt((String) null, "sharedUserId", 0);
+            packageSetting.setAppId(attributeInt2);
+            packageSetting.setSharedUserAppId(attributeInt2);
+        }
+        packageSetting.setAppMetadataFilePath(typedXmlPullParser.getAttributeValue((String) null, "appMetadataFilePath"));
+        packageSetting.setAppMetadataSource(typedXmlPullParser.getAttributeInt((String) null, "appMetadataSource", 0));
+        int depth = typedXmlPullParser.getDepth();
+        while (true) {
+            int next = typedXmlPullParser.next();
+            if (next == 1 || (next == 3 && typedXmlPullParser.getDepth() <= depth)) {
+                break;
+            }
+            if (next != 3 && next != 4) {
+                if (typedXmlPullParser.getName().equals("perms")) {
+                    if (packageSetting.hasSharedUser()) {
+                        SettingBase settingLPr = getSettingLPr(packageSetting.mSharedUserAppId);
+                        legacyPermissionState = settingLPr != null ? settingLPr.getLegacyPermissionState() : null;
+                    } else {
+                        legacyPermissionState = packageSetting.mLegacyPermissionsState;
+                    }
+                    if (legacyPermissionState != null) {
+                        readInstallPermissionsLPr(typedXmlPullParser, legacyPermissionState, list);
+                    }
+                } else if (typedXmlPullParser.getName().equals("uses-static-lib")) {
+                    readUsesStaticLibLPw(typedXmlPullParser, packageSetting);
+                } else if (typedXmlPullParser.getName().equals("uses-sdk-lib")) {
+                    readUsesSdkLibLPw(typedXmlPullParser, packageSetting);
+                } else {
+                    String m = XmlUtils$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Unknown element under <updated-package>: "));
+                    boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                    PackageManagerServiceUtils.logCriticalInfo(5, m);
+                    XmlUtils.skipCurrentTag(typedXmlPullParser);
+                }
+            }
+        }
+        this.mDisabledSysPackages.put(attributeValue, packageSetting);
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:106:0x019c A[EDGE_INSN: B:106:0x019c->B:76:0x019c BREAK  A[LOOP:4: B:71:0x0193->B:74:0x019b], SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:107:0x013c A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:73:0x0199 A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:77:0x019e A[Catch: IOException -> 0x0182, XmlPullParserException -> 0x0185, TryCatch #5 {IOException -> 0x0182, XmlPullParserException -> 0x0185, blocks: (B:108:0x013c, B:110:0x0144, B:111:0x015a, B:113:0x0160, B:115:0x0188, B:70:0x018f, B:71:0x0193, B:77:0x019e, B:79:0x01ad, B:80:0x01b1, B:84:0x01ba, B:90:0x01c7, B:92:0x01d4, B:94:0x01e7, B:96:0x0205, B:97:0x0228, B:100:0x0214, B:101:0x022c, B:87:0x0249), top: B:107:0x013c }] */
+    /* JADX WARN: Removed duplicated region for block: B:79:0x01ad A[Catch: IOException -> 0x0182, XmlPullParserException -> 0x0185, TryCatch #5 {IOException -> 0x0182, XmlPullParserException -> 0x0185, blocks: (B:108:0x013c, B:110:0x0144, B:111:0x015a, B:113:0x0160, B:115:0x0188, B:70:0x018f, B:71:0x0193, B:77:0x019e, B:79:0x01ad, B:80:0x01b1, B:84:0x01ba, B:90:0x01c7, B:92:0x01d4, B:94:0x01e7, B:96:0x0205, B:97:0x0228, B:100:0x0214, B:101:0x022c, B:87:0x0249), top: B:107:0x013c }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void dumpPackagesLPr(java.io.PrintWriter r27, java.lang.String r28, android.util.ArraySet r29, com.android.server.pm.DumpState r30, boolean r31) {
+    public final boolean readLPw(com.android.server.pm.ComputerLocked r17, java.util.List r18, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController r19) {
         /*
-            Method dump skipped, instructions count: 495
+            Method dump skipped, instructions count: 857
             To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.dumpPackagesLPr(java.io.PrintWriter, java.lang.String, android.util.ArraySet, com.android.server.pm.DumpState, boolean):void");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.readLPw(com.android.server.pm.ComputerLocked, java.util.List, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController):boolean");
     }
 
-    public void dumpPackagesProto(ProtoOutputStream protoOutputStream) {
-        List allUsers = getAllUsers(UserManagerService.getInstance());
-        int size = this.mPackages.size();
-        for (int i = 0; i < size; i++) {
-            ((PackageSetting) this.mPackages.valueAt(i)).dumpDebug(protoOutputStream, 2246267895813L, allUsers, this.mPermissionDataProvider);
+    /* JADX WARN: Can't wrap try/catch for region: R(14:(6:344|(3:347|348|(1:350))|(1:(8:384|385|386|387|388|389|111|(9:113|(1:115)|116|(10:318|319|320|321|322|323|120|(2:121|(1:1)(2:(2:139|(1:316)(8:141|142|(2:144|(2:145|(2:(5:159|160|(2:162|(1:164)(1:168))(1:169)|165|166)|167)(2:172|150)))(2:173|(2:175|(2:176|(2:(5:185|186|(2:188|(1:190)(1:194))(1:195)|191|192)|193)(2:198|181)))(2:199|(5:201|152|153|154|155)(5:202|(5:204|(2:206|(1:208)(1:213))(1:214)|209|(1:211)|212)(2:215|(3:217|(1:219)(1:221)|220)(2:222|(2:224|(1:226)(2:227|(3:229|(1:231)(1:233)|232)(5:234|(3:236|(1:238)(1:241)|239)(2:242|(3:244|a16|249)(5:254|(3:256|(1:258)(4:268|(2:269|(1:1)(2:(3:281|282|(3:288|289|(3:291|292|293)(1:294))(3:284|285|286))|287))|275|276)|(5:260|(1:262)|263|(1:265)|266))(2:298|(1:300)(2:301|(1:303)(4:304|(4:306|(2:309|(1:311)(2:312|313))|314|313)(1:315)|154|155)))|267|154|155))|240|154|155)))))|153|154|155)))|151|152|153|154|155))(3:135|136|137)|138))|128|(2:130|131)(1:133))(1:118)|119|120|(3:121|(3:123|125|127)(1:317)|138)|128|(0)(0))(2:339|340))(2:382|383))(6:394|395|396|397|398|399)|110|111|(0)(0))(1:405)|351|352|353|355|356|357|358|359|360|(1:362)(1:365)|363|111|(0)(0)) */
+    /* JADX WARN: Can't wrap try/catch for region: R(27:0|1|2|3|5|6|(14:7|8|10|11|12|13|14|15|16|17|19|20|21|22)|(17:23|24|25|26|27|28|29|30|31|32|(1:35)|36|37|39|40|41|42)|(25:43|44|46|47|48|49|51|52|54|55|56|57|58|59|61|62|63|64|66|67|69|70|71|72|(11:73|74|76|77|78|79|81|82|(2:445|446)(1:84)|85|86))|(21:435|436|437|(2:439|440)|93|94|95|96|97|98|(2:411|412)|100|101|103|104|(2:406|407)(1:106)|(1:108)(1:(1:342)(14:(6:344|(3:347|348|(1:350))|(1:(8:384|385|386|387|388|389|111|(9:113|(1:115)|116|(10:318|319|320|321|322|323|120|(2:121|(1:1)(2:(2:139|(1:316)(8:141|142|(2:144|(2:145|(2:(5:159|160|(2:162|(1:164)(1:168))(1:169)|165|166)|167)(2:172|150)))(2:173|(2:175|(2:176|(2:(5:185|186|(2:188|(1:190)(1:194))(1:195)|191|192)|193)(2:198|181)))(2:199|(5:201|152|153|154|155)(5:202|(5:204|(2:206|(1:208)(1:213))(1:214)|209|(1:211)|212)(2:215|(3:217|(1:219)(1:221)|220)(2:222|(2:224|(1:226)(2:227|(3:229|(1:231)(1:233)|232)(5:234|(3:236|(1:238)(1:241)|239)(2:242|(3:244|a16|249)(5:254|(3:256|(1:258)(4:268|(2:269|(1:1)(2:(3:281|282|(3:288|289|(3:291|292|293)(1:294))(3:284|285|286))|287))|275|276)|(5:260|(1:262)|263|(1:265)|266))(2:298|(1:300)(2:301|(1:303)(4:304|(4:306|(2:309|(1:311)(2:312|313))|314|313)(1:315)|154|155)))|267|154|155))|240|154|155)))))|153|154|155)))|151|152|153|154|155))(3:135|136|137)|138))|128|(2:130|131)(1:133))(1:118)|119|120|(3:121|(3:123|125|127)(1:317)|138)|128|(0)(0))(2:339|340))(2:382|383))(6:394|395|396|397|398|399)|110|111|(0)(0))(1:405)|351|352|353|355|356|357|358|359|360|(1:362)(1:365)|363|111|(0)(0)))|109|110|111|(0)(0))(2:88|(9:419|420|421|(1:423)(1:432)|424|(1:426)|427|(1:429)|430)(2:90|(18:92|93|94|95|96|97|98|(0)|100|101|103|104|(0)(0)|(0)(0)|109|110|111|(0)(0))(17:417|94|95|96|97|98|(0)|100|101|103|104|(0)(0)|(0)(0)|109|110|111|(0)(0))))|431|94|95|96|97|98|(0)|100|101|103|104|(0)(0)|(0)(0)|109|110|111|(0)(0)) */
+    /* JADX WARN: Code restructure failed: missing block: B:366:0x0383, code lost:
+    
+        r2 = r6;
+        r9 = r14;
+        r6 = r19;
+        r7 = r20;
+        r13 = r23;
+        r5 = r40;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:370:0x03e6, code lost:
+    
+        r9 = r14;
+        r6 = r19;
+        r7 = r20;
+        r13 = r23;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:371:0x03ed, code lost:
+    
+        r5 = r40;
+        r2 = null;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:373:0x03f2, code lost:
+    
+        r27 = 0;
+        r19 = r14;
+        r0 = 5;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:374:0x03f7, code lost:
+    
+        r14 = r7;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:375:0x03f9, code lost:
+    
+        r0 = r4;
+        r27 = 0;
+        r19 = r14;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:410:0x03ff, code lost:
+    
+        r27 = 0;
+        r19 = r14;
+        r14 = r8;
+        r0 = 5;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:415:0x0407, code lost:
+    
+        r27 = 0;
+        r19 = r14;
+        r14 = r8;
+        r0 = 5;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:416:0x040e, code lost:
+    
+        r9 = r14;
+        r6 = r19;
+        r13 = r23;
+        r7 = r27;
+     */
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Removed duplicated region for block: B:106:0x01f7  */
+    /* JADX WARN: Removed duplicated region for block: B:108:0x01fb A[Catch: NumberFormatException -> 0x01e8, TryCatch #37 {NumberFormatException -> 0x01e8, blocks: (B:407:0x01e1, B:108:0x01fb, B:342:0x0219), top: B:406:0x01e1 }] */
+    /* JADX WARN: Removed duplicated region for block: B:113:0x06ba  */
+    /* JADX WARN: Removed duplicated region for block: B:123:0x07b5  */
+    /* JADX WARN: Removed duplicated region for block: B:130:0x0b6a  */
+    /* JADX WARN: Removed duplicated region for block: B:133:? A[RETURN, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:317:0x0b66 A[ADDED_TO_REGION, EDGE_INSN: B:317:0x0b66->B:128:0x0b66 BREAK  A[LOOP:0: B:121:0x07af->B:138:0x07af], SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:339:0x0b76  */
+    /* JADX WARN: Removed duplicated region for block: B:341:0x0217  */
+    /* JADX WARN: Removed duplicated region for block: B:406:0x01e1 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Removed duplicated region for block: B:411:0x01b7 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /* JADX WARN: Type inference failed for: r1v27, types: [com.android.server.utils.Watchable, com.android.server.utils.WatchableImpl, com.android.server.utils.WatchedArrayList] */
+    /* JADX WARN: Type inference failed for: r7v136 */
+    /* JADX WARN: Type inference failed for: r7v137 */
+    /* JADX WARN: Type inference failed for: r7v155 */
+    /* JADX WARN: Type inference failed for: r7v164, types: [boolean] */
+    /* JADX WARN: Type inference failed for: r7v168 */
+    /* JADX WARN: Unreachable blocks removed: 1, instructions: 3 */
+    /* JADX WARN: Unreachable blocks removed: 1, instructions: 7 */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void readPackageLPw(com.android.modules.utils.TypedXmlPullParser r74, java.util.ArrayList r75, android.util.ArrayMap r76, java.util.List r77, android.util.ArrayMap r78) {
+        /*
+            Method dump skipped, instructions count: 2940
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.readPackageLPw(com.android.modules.utils.TypedXmlPullParser, java.util.ArrayList, android.util.ArrayMap, java.util.List, android.util.ArrayMap):void");
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Removed duplicated region for block: B:104:0x0454 A[Catch: all -> 0x046e, TryCatch #2 {all -> 0x046e, blocks: (B:102:0x044c, B:104:0x0454, B:106:0x045c, B:108:0x0467, B:110:0x0464), top: B:101:0x044c }] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void readPackageRestrictionsLPr(int r56, android.util.ArrayMap r57, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController r58) {
+        /*
+            Method dump skipped, instructions count: 1194
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.readPackageRestrictionsLPr(int, android.util.ArrayMap, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController):void");
+    }
+
+    public final void readPersistentPreferredActivitiesLPw(int i, TypedXmlPullParser typedXmlPullParser) {
+        int depth = typedXmlPullParser.getDepth();
+        while (true) {
+            int next = typedXmlPullParser.next();
+            if (next == 1) {
+                return;
+            }
+            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
+                return;
+            }
+            if (next != 3 && next != 4) {
+                if (typedXmlPullParser.getName().equals("item")) {
+                    PersistentPreferredActivity persistentPreferredActivity = new PersistentPreferredActivity(typedXmlPullParser);
+                    WatchedSparseArray watchedSparseArray = this.mPersistentPreferredActivities;
+                    PersistentPreferredIntentResolver persistentPreferredIntentResolver = (PersistentPreferredIntentResolver) watchedSparseArray.mStorage.get(i);
+                    if (persistentPreferredIntentResolver == null) {
+                        persistentPreferredIntentResolver = new PersistentPreferredIntentResolver();
+                        watchedSparseArray.put(i, persistentPreferredIntentResolver);
+                    }
+                    persistentPreferredIntentResolver.addFilter((PackageDataSnapshot) null, (WatchedIntentFilter) persistentPreferredActivity);
+                } else {
+                    String m = XmlUtils$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Unknown element under <persistent-preferred-activities>: "));
+                    boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                    PackageManagerServiceUtils.logCriticalInfo(5, m);
+                    XmlUtils.skipCurrentTag(typedXmlPullParser);
+                }
+            }
         }
     }
 
-    public void dumpPermissions(PrintWriter printWriter, String str, ArraySet arraySet, DumpState dumpState) {
-        LegacyPermissionSettings.dumpPermissions(printWriter, str, arraySet, this.mPermissionDataProvider.getLegacyPermissions(), this.mPermissionDataProvider.getAllAppOpPermissionPackages(), true, dumpState);
-    }
-
-    public void dumpSharedUsersLPr(PrintWriter printWriter, String str, ArraySet arraySet, DumpState dumpState, boolean z) {
-        boolean z2;
-        boolean z3 = false;
-        for (SharedUserSetting sharedUserSetting : this.mSharedUsers.values()) {
-            if (str == null || sharedUserSetting == dumpState.getSharedUser()) {
-                LegacyPermissionState legacyPermissionState = this.mPermissionDataProvider.getLegacyPermissionState(sharedUserSetting.mAppId);
-                if (arraySet == null || legacyPermissionState.hasPermissionState(arraySet)) {
-                    if (!z) {
-                        if (z3) {
-                            z2 = z3;
-                        } else {
-                            if (dumpState.onTitlePrinted()) {
-                                printWriter.println();
-                            }
-                            printWriter.println("Shared users:");
-                            z2 = true;
-                        }
-                        printWriter.print("  SharedUser [");
-                        printWriter.print(sharedUserSetting.name);
-                        printWriter.print("] (");
-                        printWriter.print(Integer.toHexString(System.identityHashCode(sharedUserSetting)));
-                        printWriter.println("):");
-                        printWriter.print("    ");
-                        printWriter.print("appId=");
-                        printWriter.println(sharedUserSetting.mAppId);
-                        printWriter.print("    ");
-                        printWriter.println("Packages");
-                        ArraySet packageStates = sharedUserSetting.getPackageStates();
-                        int size = packageStates.size();
-                        for (int i = 0; i < size; i++) {
-                            PackageStateInternal packageStateInternal = (PackageStateInternal) packageStates.valueAt(i);
-                            if (packageStateInternal != null) {
-                                printWriter.print("      ");
-                                printWriter.println(packageStateInternal);
-                            } else {
-                                printWriter.print("      ");
-                                printWriter.println("NULL?!");
-                            }
-                        }
-                        if (!dumpState.isOptionEnabled(4)) {
-                            List allUsers = getAllUsers(UserManagerService.getInstance());
-                            dumpInstallPermissionsLPr(printWriter, "    ", arraySet, legacyPermissionState, allUsers);
-                            Iterator it = allUsers.iterator();
-                            while (it.hasNext()) {
-                                int i2 = ((UserInfo) it.next()).id;
-                                int[] gidsForUid = this.mPermissionDataProvider.getGidsForUid(UserHandle.getUid(i2, sharedUserSetting.mAppId));
-                                Collection permissionStates = legacyPermissionState.getPermissionStates(i2);
-                                if (!ArrayUtils.isEmpty(gidsForUid) || !permissionStates.isEmpty()) {
-                                    printWriter.print("    ");
-                                    printWriter.print("User ");
-                                    printWriter.print(i2);
-                                    printWriter.println(": ");
-                                    dumpGidsLPr(printWriter, "      ", gidsForUid);
-                                    dumpRuntimePermissionsLPr(printWriter, "      ", arraySet, permissionStates, str != null);
+    public final void readPreferredActivitiesLPw(int i, TypedXmlPullParser typedXmlPullParser) {
+        String[] strArr;
+        String[] strArr2;
+        int i2;
+        int depth = typedXmlPullParser.getDepth();
+        while (true) {
+            int next = typedXmlPullParser.next();
+            if (next == 1) {
+                return;
+            }
+            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
+                return;
+            }
+            if (next != 3 && next != 4) {
+                if (typedXmlPullParser.getName().equals("item")) {
+                    PreferredActivity preferredActivity = new PreferredActivity(typedXmlPullParser);
+                    PreferredComponent preferredComponent = preferredActivity.mPref;
+                    if (preferredComponent.mParseError == null) {
+                        PreferredIntentResolver editPreferredActivitiesLPw = editPreferredActivitiesLPw(i);
+                        ArrayList findFilters = editPreferredActivitiesLPw.findFilters(preferredActivity);
+                        if (findFilters != null && !findFilters.isEmpty()) {
+                            if (preferredComponent.mAlways) {
+                                int size = findFilters.size();
+                                for (int i3 = 0; i3 < size; i3++) {
+                                    PreferredComponent preferredComponent2 = ((PreferredActivity) findFilters.get(i3)).mPref;
+                                    if (preferredComponent2.mAlways) {
+                                        if (preferredComponent2.mMatch == (preferredComponent.mMatch & 268369920) && (strArr = preferredComponent2.mSetPackages) != null && (strArr2 = preferredComponent.mSetPackages) != null) {
+                                            ComponentName componentName = preferredComponent.mComponent;
+                                            ComponentName componentName2 = preferredComponent2.mComponent;
+                                            if (componentName2 != null && componentName != null && componentName2.getPackageName().equals(componentName.getPackageName()) && preferredComponent2.mComponent.getClassName().equals(componentName.getClassName())) {
+                                                int length = strArr2.length;
+                                                int length2 = strArr.length;
+                                                if (length != length2) {
+                                                    continue;
+                                                } else {
+                                                    while (i2 < length2) {
+                                                        i2 = (strArr[i2].equals(strArr2[i2]) && preferredComponent2.mSetClasses[i2].equals(preferredComponent.mSetClasses[i2])) ? i2 + 1 : 0;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
-                        z3 = z2;
+                        editPreferredActivitiesLPw.addFilter((PackageDataSnapshot) null, (WatchedIntentFilter) preferredActivity);
                     } else {
-                        printWriter.print("suid,");
-                        printWriter.print(sharedUserSetting.mAppId);
-                        printWriter.print(",");
-                        printWriter.println(sharedUserSetting.name);
-                    }
-                }
-            }
-        }
-    }
-
-    public void dumpSharedUsersProto(ProtoOutputStream protoOutputStream) {
-        int size = this.mSharedUsers.size();
-        for (int i = 0; i < size; i++) {
-            ((SharedUserSetting) this.mSharedUsers.valueAt(i)).dumpDebug(protoOutputStream, 2246267895814L);
-        }
-    }
-
-    public void dumpReadMessages(PrintWriter printWriter, DumpState dumpState) {
-        printWriter.println("Settings parse messages:");
-        printWriter.print(this.mReadMessages.toString());
-    }
-
-    public static void dumpSplitNames(PrintWriter printWriter, AndroidPackage androidPackage) {
-        if (androidPackage == null) {
-            printWriter.print("unknown");
-            return;
-        }
-        printWriter.print("[");
-        printWriter.print("base");
-        if (androidPackage.getBaseRevisionCode() != 0) {
-            printWriter.print(com.android.internal.util.jobs.XmlUtils.STRING_ARRAY_SEPARATOR);
-            printWriter.print(androidPackage.getBaseRevisionCode());
-        }
-        String[] splitNames = androidPackage.getSplitNames();
-        int[] splitRevisionCodes = androidPackage.getSplitRevisionCodes();
-        for (int i = 0; i < splitNames.length; i++) {
-            printWriter.print(", ");
-            printWriter.print(splitNames[i]);
-            if (splitRevisionCodes[i] != 0) {
-                printWriter.print(com.android.internal.util.jobs.XmlUtils.STRING_ARRAY_SEPARATOR);
-                printWriter.print(splitRevisionCodes[i]);
-            }
-        }
-        printWriter.print("]");
-    }
-
-    public void dumpGidsLPr(PrintWriter printWriter, String str, int[] iArr) {
-        if (ArrayUtils.isEmpty(iArr)) {
-            return;
-        }
-        printWriter.print(str);
-        printWriter.print("gids=");
-        printWriter.println(PackageManagerServiceUtils.arrayToString(iArr));
-    }
-
-    public void dumpRuntimePermissionsLPr(PrintWriter printWriter, String str, ArraySet arraySet, Collection collection, boolean z) {
-        boolean z2;
-        Iterator it = collection.iterator();
-        while (true) {
-            if (!it.hasNext()) {
-                z2 = false;
-                break;
-            } else if (((LegacyPermissionState.PermissionState) it.next()).isRuntime()) {
-                z2 = true;
-                break;
-            }
-        }
-        if (z2 || z) {
-            printWriter.print(str);
-            printWriter.println("runtime permissions:");
-            Iterator it2 = collection.iterator();
-            while (it2.hasNext()) {
-                LegacyPermissionState.PermissionState permissionState = (LegacyPermissionState.PermissionState) it2.next();
-                if (permissionState.isRuntime() && (arraySet == null || arraySet.contains(permissionState.getName()))) {
-                    printWriter.print(str);
-                    printWriter.print("  ");
-                    printWriter.print(permissionState.getName());
-                    printWriter.print(": granted=");
-                    printWriter.print(permissionState.isGranted());
-                    printWriter.println(permissionFlagsToString(", flags=", permissionState.getFlags()));
-                }
-            }
-        }
-    }
-
-    public static String permissionFlagsToString(String str, int i) {
-        StringBuilder sb = null;
-        while (i != 0) {
-            if (sb == null) {
-                sb = new StringBuilder();
-                sb.append(str);
-                sb.append("[ ");
-            }
-            int numberOfTrailingZeros = 1 << Integer.numberOfTrailingZeros(i);
-            i &= ~numberOfTrailingZeros;
-            sb.append(PackageManager.permissionFlagToString(numberOfTrailingZeros));
-            if (i != 0) {
-                sb.append('|');
-            }
-        }
-        if (sb == null) {
-            return "";
-        }
-        sb.append(']');
-        return sb.toString();
-    }
-
-    public void dumpInstallPermissionsLPr(PrintWriter printWriter, String str, ArraySet arraySet, LegacyPermissionState legacyPermissionState, List list) {
-        LegacyPermissionState.PermissionState permissionState;
-        ArraySet arraySet2 = new ArraySet();
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            for (LegacyPermissionState.PermissionState permissionState2 : legacyPermissionState.getPermissionStates(((UserInfo) it.next()).id)) {
-                if (!permissionState2.isRuntime()) {
-                    String name = permissionState2.getName();
-                    if (arraySet == null || arraySet.contains(name)) {
-                        arraySet2.add(name);
-                    }
-                }
-            }
-        }
-        Iterator it2 = arraySet2.iterator();
-        boolean z = false;
-        while (it2.hasNext()) {
-            String str2 = (String) it2.next();
-            LegacyPermissionState.PermissionState permissionState3 = legacyPermissionState.getPermissionState(str2, 0);
-            Iterator it3 = list.iterator();
-            while (it3.hasNext()) {
-                int i = ((UserInfo) it3.next()).id;
-                if (i == 0) {
-                    permissionState = permissionState3;
-                } else {
-                    permissionState = legacyPermissionState.getPermissionState(str2, i);
-                    if (Objects.equals(permissionState, permissionState3)) {
-                    }
-                }
-                if (!z) {
-                    printWriter.print(str);
-                    printWriter.println("install permissions:");
-                    z = true;
-                }
-                printWriter.print(str);
-                printWriter.print("  ");
-                printWriter.print(str2);
-                printWriter.print(": granted=");
-                printWriter.print(permissionState != null && permissionState.isGranted());
-                printWriter.print(permissionFlagsToString(", flags=", permissionState != null ? permissionState.getFlags() : 0));
-                if (i == 0) {
-                    printWriter.println();
-                } else {
-                    printWriter.print(", userId=");
-                    printWriter.println(i);
-                }
-            }
-        }
-    }
-
-    public void dumpComponents(PrintWriter printWriter, String str, PackageSetting packageSetting) {
-        dumpComponents(printWriter, str, "activities:", packageSetting.getPkg().getActivities());
-        dumpComponents(printWriter, str, "services:", packageSetting.getPkg().getServices());
-        dumpComponents(printWriter, str, "receivers:", packageSetting.getPkg().getReceivers());
-        dumpComponents(printWriter, str, "providers:", packageSetting.getPkg().getProviders());
-        dumpComponents(printWriter, str, "instrumentations:", packageSetting.getPkg().getInstrumentations());
-    }
-
-    public void dumpComponents(PrintWriter printWriter, String str, String str2, List list) {
-        int size = CollectionUtils.size(list);
-        if (size == 0) {
-            return;
-        }
-        printWriter.print(str);
-        printWriter.println(str2);
-        for (int i = 0; i < size; i++) {
-            ParsedComponent parsedComponent = (ParsedComponent) list.get(i);
-            printWriter.print(str);
-            printWriter.print("  ");
-            printWriter.println(parsedComponent.getComponentName().flattenToShortString());
-        }
-    }
-
-    public void writePermissionStateForUserLPr(int i, boolean z) {
-        if (z) {
-            this.mRuntimePermissionsPersistence.writeStateForUser(i, this.mPermissionDataProvider, this.mPackages, this.mSharedUsers, null, this.mLock, true);
-        } else {
-            this.mRuntimePermissionsPersistence.writeStateForUserAsync(i);
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class KeySetToValueMap implements Map {
-        public final Set mKeySet;
-        public final Object mValue;
-
-        public KeySetToValueMap(Set set, Object obj) {
-            this.mKeySet = set;
-            this.mValue = obj;
-        }
-
-        @Override // java.util.Map
-        public int size() {
-            return this.mKeySet.size();
-        }
-
-        @Override // java.util.Map
-        public boolean isEmpty() {
-            return this.mKeySet.isEmpty();
-        }
-
-        @Override // java.util.Map
-        public boolean containsKey(Object obj) {
-            return this.mKeySet.contains(obj);
-        }
-
-        @Override // java.util.Map
-        public boolean containsValue(Object obj) {
-            return this.mValue == obj;
-        }
-
-        @Override // java.util.Map
-        public Object get(Object obj) {
-            return this.mValue;
-        }
-
-        @Override // java.util.Map
-        public Object put(Object obj, Object obj2) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override // java.util.Map
-        public Object remove(Object obj) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override // java.util.Map
-        public void putAll(Map map) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override // java.util.Map
-        public void clear() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override // java.util.Map
-        public Set keySet() {
-            return this.mKeySet;
-        }
-
-        @Override // java.util.Map
-        public Collection values() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override // java.util.Map
-        public Set entrySet() {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public final class RuntimePermissionPersistence {
-        public static final Random sRandom = new Random();
-        public String mExtendedFingerprint;
-        public final Consumer mInvokeWriteUserStateAsyncCallback;
-        public final RuntimePermissionsPersistence mPersistence;
-        public final Object mPersistenceLock = new Object();
-        public final Handler mAsyncHandler = new MyHandler();
-        public final Handler mPersistenceHandler = new PersistenceHandler();
-        public final Object mLock = new Object();
-        public long mLastWriteDoneTimeMillis = 0;
-        public final SparseBooleanArray mWriteScheduled = new SparseBooleanArray();
-        public final SparseLongArray mLastNotWrittenMutationTimesMillis = new SparseLongArray();
-        public AtomicBoolean mIsLegacyPermissionStateStale = new AtomicBoolean(false);
-        public final SparseIntArray mVersions = new SparseIntArray();
-        public final SparseArray mFingerprints = new SparseArray();
-        public final SparseBooleanArray mPermissionUpgradeNeeded = new SparseBooleanArray();
-        public final SparseArray mPendingStatesToWrite = new SparseArray();
-
-        public RuntimePermissionPersistence(RuntimePermissionsPersistence runtimePermissionsPersistence, Consumer consumer) {
-            this.mPersistence = runtimePermissionsPersistence;
-            this.mInvokeWriteUserStateAsyncCallback = consumer;
-        }
-
-        public int getVersion(int i) {
-            int i2;
-            synchronized (this.mLock) {
-                i2 = this.mVersions.get(i, 0);
-            }
-            return i2;
-        }
-
-        public void setVersion(int i, int i2) {
-            synchronized (this.mLock) {
-                this.mVersions.put(i2, i);
-                writeStateForUserAsync(i2);
-            }
-        }
-
-        public boolean isPermissionUpgradeNeeded(int i) {
-            boolean z;
-            synchronized (this.mLock) {
-                z = this.mPermissionUpgradeNeeded.get(i, true);
-            }
-            return z;
-        }
-
-        public void updateRuntimePermissionsFingerprint(int i) {
-            synchronized (this.mLock) {
-                String str = this.mExtendedFingerprint;
-                if (str == null) {
-                    throw new RuntimeException("The version of the permission controller hasn't been set before trying to update the fingerprint.");
-                }
-                this.mFingerprints.put(i, str);
-                this.mPermissionUpgradeNeeded.put(i, false);
-                writeStateForUserAsync(i);
-            }
-        }
-
-        public void setPermissionControllerVersion(long j) {
-            synchronized (this.mLock) {
-                int size = this.mFingerprints.size();
-                this.mExtendedFingerprint = getExtendedFingerprint(j);
-                for (int i = 0; i < size; i++) {
-                    this.mPermissionUpgradeNeeded.put(this.mFingerprints.keyAt(i), !TextUtils.equals(this.mExtendedFingerprint, (String) this.mFingerprints.valueAt(i)));
-                }
-            }
-        }
-
-        public final String getExtendedFingerprint(long j) {
-            return PackagePartitions.FINGERPRINT + "?pc_version=" + j;
-        }
-
-        public static long uniformRandom(double d, double d2) {
-            return (long) ((sRandom.nextDouble() * (d2 - d)) + d);
-        }
-
-        public static long nextWritePermissionDelayMillis() {
-            return uniformRandom(-300.0d, 300.0d) + 1000;
-        }
-
-        public void writeStateForUserAsync(int i) {
-            this.mIsLegacyPermissionStateStale.set(true);
-            synchronized (this.mLock) {
-                long uptimeMillis = SystemClock.uptimeMillis();
-                long nextWritePermissionDelayMillis = nextWritePermissionDelayMillis();
-                if (this.mWriteScheduled.get(i)) {
-                    this.mAsyncHandler.removeMessages(i);
-                    long j = this.mLastNotWrittenMutationTimesMillis.get(i);
-                    if (uptimeMillis - j >= 2000) {
-                        this.mAsyncHandler.obtainMessage(i).sendToTarget();
-                    } else {
-                        long min = Math.min(nextWritePermissionDelayMillis, Math.max((j + 2000) - uptimeMillis, 0L));
-                        this.mAsyncHandler.sendMessageDelayed(this.mAsyncHandler.obtainMessage(i), min);
+                        String str = "Error in package manager settings: <preferred-activity> " + preferredComponent.mParseError + " at " + typedXmlPullParser.getPositionDescription();
+                        boolean z = PackageManagerService.DEBUG_COMPRESSION;
+                        PackageManagerServiceUtils.logCriticalInfo(5, str);
                     }
                 } else {
-                    this.mLastNotWrittenMutationTimesMillis.put(i, uptimeMillis);
-                    this.mAsyncHandler.sendMessageDelayed(this.mAsyncHandler.obtainMessage(i), nextWritePermissionDelayMillis);
-                    this.mWriteScheduled.put(i, true);
+                    String m = XmlUtils$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Unknown element under <preferred-activities>: "));
+                    boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                    PackageManagerServiceUtils.logCriticalInfo(5, m);
+                    XmlUtils.skipCurrentTag(typedXmlPullParser);
                 }
-            }
-        }
-
-        public void writeStateForUser(final int i, final LegacyPermissionDataProvider legacyPermissionDataProvider, final WatchedArrayMap watchedArrayMap, final WatchedArrayMap watchedArrayMap2, final Handler handler, final Object obj, final boolean z) {
-            Trace.traceBegin(262144L, "writePerm");
-            Slog.d("PackageSettings", "++ writeStateForUserSyncLPr(" + i + ")");
-            synchronized (this.mLock) {
-                this.mAsyncHandler.removeMessages(i);
-                this.mWriteScheduled.delete(i);
-            }
-            Runnable runnable = new Runnable() { // from class: com.android.server.pm.Settings$RuntimePermissionPersistence$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    Settings.RuntimePermissionPersistence.this.lambda$writeStateForUser$0(obj, z, legacyPermissionDataProvider, watchedArrayMap, i, watchedArrayMap2, handler);
-                }
-            };
-            if (handler != null) {
-                handler.post(runnable);
-            } else {
-                runnable.run();
-            }
-            this.mLastWriteDoneTimeMillis = SystemClock.uptimeMillis();
-            Slog.w("PackageSettings", "-- writeStateForUserSyncLPr(" + i + ")");
-            Trace.traceEnd(262144L);
-        }
-
-        public /* synthetic */ void lambda$writeStateForUser$0(Object obj, boolean z, LegacyPermissionDataProvider legacyPermissionDataProvider, WatchedArrayMap watchedArrayMap, int i, WatchedArrayMap watchedArrayMap2, Handler handler) {
-            boolean andSet = this.mIsLegacyPermissionStateStale.getAndSet(false);
-            ArrayMap arrayMap = new ArrayMap();
-            ArrayMap arrayMap2 = new ArrayMap();
-            synchronized (obj) {
-                if (z || andSet) {
-                    legacyPermissionDataProvider.writeLegacyPermissionStateTEMP();
-                }
-                int size = watchedArrayMap.size();
-                for (int i2 = 0; i2 < size; i2++) {
-                    String str = (String) watchedArrayMap.keyAt(i2);
-                    PackageStateInternal packageStateInternal = (PackageStateInternal) watchedArrayMap.valueAt(i2);
-                    if (!packageStateInternal.hasSharedUser()) {
-                        List permissionsFromPermissionsState = getPermissionsFromPermissionsState(packageStateInternal.getLegacyPermissionState(), i);
-                        if (!permissionsFromPermissionsState.isEmpty() || packageStateInternal.isInstallPermissionsFixed()) {
-                            arrayMap.put(str, permissionsFromPermissionsState);
-                        }
-                    }
-                }
-                int size2 = watchedArrayMap2.size();
-                for (int i3 = 0; i3 < size2; i3++) {
-                    arrayMap2.put((String) watchedArrayMap2.keyAt(i3), getPermissionsFromPermissionsState(((SharedUserSetting) watchedArrayMap2.valueAt(i3)).getLegacyPermissionState(), i));
-                }
-            }
-            synchronized (this.mLock) {
-                this.mPendingStatesToWrite.put(i, new RuntimePermissionsState(this.mVersions.get(i, 0), (String) this.mFingerprints.get(i), arrayMap, arrayMap2));
-            }
-            if (handler != null) {
-                this.mPersistenceHandler.obtainMessage(i).sendToTarget();
-            } else {
-                writePendingStates();
-            }
-        }
-
-        public final void writePendingStates() {
-            int keyAt;
-            RuntimePermissionsState runtimePermissionsState;
-            while (true) {
-                synchronized (this.mLock) {
-                    if (this.mPendingStatesToWrite.size() == 0) {
-                        return;
-                    }
-                    keyAt = this.mPendingStatesToWrite.keyAt(0);
-                    runtimePermissionsState = (RuntimePermissionsState) this.mPendingStatesToWrite.valueAt(0);
-                    this.mPendingStatesToWrite.removeAt(0);
-                }
-                synchronized (this.mPersistenceLock) {
-                    this.mPersistence.writeForUser(runtimePermissionsState, UserHandle.of(keyAt));
-                }
-            }
-        }
-
-        public final List getPermissionsFromPermissionsState(LegacyPermissionState legacyPermissionState, int i) {
-            Collection<LegacyPermissionState.PermissionState> permissionStates = legacyPermissionState.getPermissionStates(i);
-            ArrayList arrayList = new ArrayList();
-            for (LegacyPermissionState.PermissionState permissionState : permissionStates) {
-                arrayList.add(new RuntimePermissionsState.PermissionState(permissionState.getName(), permissionState.isGranted(), permissionState.getFlags()));
-            }
-            return arrayList;
-        }
-
-        public final void onUserRemoved(int i) {
-            synchronized (this.mLock) {
-                this.mAsyncHandler.removeMessages(i);
-                this.mPermissionUpgradeNeeded.delete(i);
-                this.mVersions.delete(i);
-                this.mFingerprints.remove(i);
-            }
-        }
-
-        public void readStateForUserSync(int i, VersionInfo versionInfo, WatchedArrayMap watchedArrayMap, WatchedArrayMap watchedArrayMap2, File file) {
-            RuntimePermissionsState readForUser;
-            synchronized (this.mPersistenceLock) {
-                readForUser = this.mPersistence.readForUser(UserHandle.of(i));
-            }
-            if (readForUser == null) {
-                readLegacyStateForUserSync(i, file, watchedArrayMap, watchedArrayMap2);
-                writeStateForUserAsync(i);
-                return;
-            }
-            synchronized (this.mLock) {
-                int version = readForUser.getVersion();
-                if (version == -1) {
-                    version = -1;
-                }
-                this.mVersions.put(i, version);
-                this.mFingerprints.put(i, readForUser.getFingerprint());
-                char c = 0;
-                boolean z = true;
-                boolean z2 = versionInfo.sdkVersion < 30;
-                Map packagePermissions = readForUser.getPackagePermissions();
-                int size = watchedArrayMap.size();
-                int i2 = 0;
-                while (i2 < size) {
-                    String str = (String) watchedArrayMap.keyAt(i2);
-                    PackageSetting packageSetting = (PackageSetting) watchedArrayMap.valueAt(i2);
-                    List list = (List) packagePermissions.get(str);
-                    if (list != null) {
-                        readPermissionsState(list, packageSetting.getLegacyPermissionState(), i);
-                        packageSetting.setInstallPermissionsFixed(z);
-                    } else if (!packageSetting.hasSharedUser() && !z2) {
-                        Object[] objArr = new Object[2];
-                        objArr[c] = str;
-                        objArr[1] = Integer.valueOf(i);
-                        Slogf.w("PackageSettings", "Missing permission state for package %s on user %d", objArr);
-                        packageSetting.getLegacyPermissionState().setMissing(true, i);
-                    }
-                    i2++;
-                    c = 0;
-                    z = true;
-                }
-                Map sharedUserPermissions = readForUser.getSharedUserPermissions();
-                int size2 = watchedArrayMap2.size();
-                for (int i3 = 0; i3 < size2; i3++) {
-                    String str2 = (String) watchedArrayMap2.keyAt(i3);
-                    SharedUserSetting sharedUserSetting = (SharedUserSetting) watchedArrayMap2.valueAt(i3);
-                    List list2 = (List) sharedUserPermissions.get(str2);
-                    if (list2 != null) {
-                        readPermissionsState(list2, sharedUserSetting.getLegacyPermissionState(), i);
-                    } else if (!z2) {
-                        Slog.w("PackageSettings", "Missing permission state for shared user: " + str2);
-                        sharedUserSetting.getLegacyPermissionState().setMissing(true, i);
-                    }
-                }
-            }
-        }
-
-        public final void readPermissionsState(List list, LegacyPermissionState legacyPermissionState, int i) {
-            int size = list.size();
-            for (int i2 = 0; i2 < size; i2++) {
-                RuntimePermissionsState.PermissionState permissionState = (RuntimePermissionsState.PermissionState) list.get(i2);
-                legacyPermissionState.putPermissionState(new LegacyPermissionState.PermissionState(permissionState.getName(), true, permissionState.isGranted(), permissionState.getFlags()), i);
-            }
-        }
-
-        public final void readLegacyStateForUserSync(int i, File file, WatchedArrayMap watchedArrayMap, WatchedArrayMap watchedArrayMap2) {
-            synchronized (this.mLock) {
-                if (file.exists()) {
-                    try {
-                        FileInputStream openRead = new AtomicFile(file).openRead();
-                        try {
-                            try {
-                                parseLegacyRuntimePermissions(Xml.resolvePullParser(openRead), i, watchedArrayMap, watchedArrayMap2);
-                            } catch (IOException | XmlPullParserException e) {
-                                throw new IllegalStateException("Failed parsing permissions file: " + file, e);
-                            }
-                        } finally {
-                            IoUtils.closeQuietly(openRead);
-                        }
-                    } catch (FileNotFoundException unused) {
-                        Slog.i("PackageManager", "No permissions state");
-                    }
-                }
-            }
-        }
-
-        /* JADX WARN: Removed duplicated region for block: B:31:0x00c7 A[SYNTHETIC] */
-        /* JADX WARN: Removed duplicated region for block: B:35:0x005c A[SYNTHETIC] */
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public final void parseLegacyRuntimePermissions(com.android.modules.utils.TypedXmlPullParser r9, int r10, com.android.server.utils.WatchedArrayMap r11, com.android.server.utils.WatchedArrayMap r12) {
-            /*
-                r8 = this;
-                java.lang.Object r0 = r8.mLock
-                monitor-enter(r0)
-                int r1 = r9.getDepth()     // Catch: java.lang.Throwable -> Le2
-            L7:
-                int r2 = r9.next()     // Catch: java.lang.Throwable -> Le2
-                r3 = 1
-                if (r2 == r3) goto Le0
-                r4 = 3
-                if (r2 != r4) goto L17
-                int r5 = r9.getDepth()     // Catch: java.lang.Throwable -> Le2
-                if (r5 <= r1) goto Le0
-            L17:
-                if (r2 == r4) goto L7
-                r4 = 4
-                if (r2 != r4) goto L1d
-                goto L7
-            L1d:
-                java.lang.String r2 = r9.getName()     // Catch: java.lang.Throwable -> Le2
-                int r4 = r2.hashCode()     // Catch: java.lang.Throwable -> Le2
-                r5 = 111052(0x1b1cc, float:1.55617E-40)
-                r6 = 2
-                r7 = -1
-                if (r4 == r5) goto L4d
-                r5 = 160289295(0x98dd20f, float:3.4142053E-33)
-                if (r4 == r5) goto L42
-                r5 = 485578803(0x1cf15833, float:1.5970841E-21)
-                if (r4 == r5) goto L37
-                goto L58
-            L37:
-                java.lang.String r4 = "shared-user"
-                boolean r2 = r2.equals(r4)     // Catch: java.lang.Throwable -> Le2
-                if (r2 == 0) goto L58
-                r2 = r6
-                goto L59
-            L42:
-                java.lang.String r4 = "runtime-permissions"
-                boolean r2 = r2.equals(r4)     // Catch: java.lang.Throwable -> Le2
-                if (r2 == 0) goto L58
-                r2 = 0
-                goto L59
-            L4d:
-                java.lang.String r4 = "pkg"
-                boolean r2 = r2.equals(r4)     // Catch: java.lang.Throwable -> Le2
-                if (r2 == 0) goto L58
-                r2 = r3
-                goto L59
-            L58:
-                r2 = r7
-            L59:
-                r4 = 0
-                if (r2 == 0) goto Lc7
-                if (r2 == r3) goto L94
-                if (r2 == r6) goto L61
-                goto L7
-            L61:
-                java.lang.String r2 = "name"
-                java.lang.String r2 = r9.getAttributeValue(r4, r2)     // Catch: java.lang.Throwable -> Le2
-                java.lang.Object r3 = r12.get(r2)     // Catch: java.lang.Throwable -> Le2
-                com.android.server.pm.SharedUserSetting r3 = (com.android.server.pm.SharedUserSetting) r3     // Catch: java.lang.Throwable -> Le2
-                if (r3 != 0) goto L8b
-                java.lang.String r3 = "PackageManager"
-                java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Le2
-                r4.<init>()     // Catch: java.lang.Throwable -> Le2
-                java.lang.String r5 = "Unknown shared user:"
-                r4.append(r5)     // Catch: java.lang.Throwable -> Le2
-                r4.append(r2)     // Catch: java.lang.Throwable -> Le2
-                java.lang.String r2 = r4.toString()     // Catch: java.lang.Throwable -> Le2
-                android.util.Slog.w(r3, r2)     // Catch: java.lang.Throwable -> Le2
-                com.android.internal.util.XmlUtils.skipCurrentTag(r9)     // Catch: java.lang.Throwable -> Le2
-                goto L7
-            L8b:
-                com.android.server.pm.permission.LegacyPermissionState r2 = r3.getLegacyPermissionState()     // Catch: java.lang.Throwable -> Le2
-                r8.parseLegacyPermissionsLPr(r9, r2, r10)     // Catch: java.lang.Throwable -> Le2
-                goto L7
-            L94:
-                java.lang.String r2 = "name"
-                java.lang.String r2 = r9.getAttributeValue(r4, r2)     // Catch: java.lang.Throwable -> Le2
-                java.lang.Object r3 = r11.get(r2)     // Catch: java.lang.Throwable -> Le2
-                com.android.server.pm.pkg.PackageStateInternal r3 = (com.android.server.pm.pkg.PackageStateInternal) r3     // Catch: java.lang.Throwable -> Le2
-                if (r3 != 0) goto Lbe
-                java.lang.String r3 = "PackageManager"
-                java.lang.StringBuilder r4 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Le2
-                r4.<init>()     // Catch: java.lang.Throwable -> Le2
-                java.lang.String r5 = "Unknown package:"
-                r4.append(r5)     // Catch: java.lang.Throwable -> Le2
-                r4.append(r2)     // Catch: java.lang.Throwable -> Le2
-                java.lang.String r2 = r4.toString()     // Catch: java.lang.Throwable -> Le2
-                android.util.Slog.w(r3, r2)     // Catch: java.lang.Throwable -> Le2
-                com.android.internal.util.XmlUtils.skipCurrentTag(r9)     // Catch: java.lang.Throwable -> Le2
-                goto L7
-            Lbe:
-                com.android.server.pm.permission.LegacyPermissionState r2 = r3.getLegacyPermissionState()     // Catch: java.lang.Throwable -> Le2
-                r8.parseLegacyPermissionsLPr(r9, r2, r10)     // Catch: java.lang.Throwable -> Le2
-                goto L7
-            Lc7:
-                java.lang.String r2 = "version"
-                int r2 = r9.getAttributeInt(r4, r2, r7)     // Catch: java.lang.Throwable -> Le2
-                android.util.SparseIntArray r3 = r8.mVersions     // Catch: java.lang.Throwable -> Le2
-                r3.put(r10, r2)     // Catch: java.lang.Throwable -> Le2
-                java.lang.String r2 = "fingerprint"
-                java.lang.String r2 = r9.getAttributeValue(r4, r2)     // Catch: java.lang.Throwable -> Le2
-                android.util.SparseArray r3 = r8.mFingerprints     // Catch: java.lang.Throwable -> Le2
-                r3.put(r10, r2)     // Catch: java.lang.Throwable -> Le2
-                goto L7
-            Le0:
-                monitor-exit(r0)     // Catch: java.lang.Throwable -> Le2
-                return
-            Le2:
-                r8 = move-exception
-                monitor-exit(r0)     // Catch: java.lang.Throwable -> Le2
-                throw r8
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.RuntimePermissionPersistence.parseLegacyRuntimePermissions(com.android.modules.utils.TypedXmlPullParser, int, com.android.server.utils.WatchedArrayMap, com.android.server.utils.WatchedArrayMap):void");
-        }
-
-        /* JADX WARN: Removed duplicated region for block: B:26:0x003a A[SYNTHETIC] */
-        /* JADX WARN: Removed duplicated region for block: B:30:0x0039 A[SYNTHETIC] */
-        /*
-            Code decompiled incorrectly, please refer to instructions dump.
-            To view partially-correct code enable 'Show inconsistent code' option in preferences
-        */
-        public final void parseLegacyPermissionsLPr(com.android.modules.utils.TypedXmlPullParser r8, com.android.server.pm.permission.LegacyPermissionState r9, int r10) {
-            /*
-                r7 = this;
-                java.lang.Object r7 = r7.mLock
-                monitor-enter(r7)
-                int r0 = r8.getDepth()     // Catch: java.lang.Throwable -> L59
-            L7:
-                int r1 = r8.next()     // Catch: java.lang.Throwable -> L59
-                r2 = 1
-                if (r1 == r2) goto L57
-                r3 = 3
-                if (r1 != r3) goto L17
-                int r4 = r8.getDepth()     // Catch: java.lang.Throwable -> L59
-                if (r4 <= r0) goto L57
-            L17:
-                if (r1 == r3) goto L7
-                r3 = 4
-                if (r1 != r3) goto L1d
-                goto L7
-            L1d:
-                java.lang.String r1 = r8.getName()     // Catch: java.lang.Throwable -> L59
-                int r3 = r1.hashCode()     // Catch: java.lang.Throwable -> L59
-                r4 = 3242771(0x317b13, float:4.54409E-39)
-                r5 = 0
-                if (r3 == r4) goto L2c
-                goto L36
-            L2c:
-                java.lang.String r3 = "item"
-                boolean r1 = r1.equals(r3)     // Catch: java.lang.Throwable -> L59
-                if (r1 == 0) goto L36
-                r1 = r5
-                goto L37
-            L36:
-                r1 = -1
-            L37:
-                if (r1 == 0) goto L3a
-                goto L7
-            L3a:
-                java.lang.String r1 = "name"
-                r3 = 0
-                java.lang.String r1 = r8.getAttributeValue(r3, r1)     // Catch: java.lang.Throwable -> L59
-                java.lang.String r4 = "granted"
-                boolean r4 = r8.getAttributeBoolean(r3, r4, r2)     // Catch: java.lang.Throwable -> L59
-                java.lang.String r6 = "flags"
-                int r3 = r8.getAttributeIntHex(r3, r6, r5)     // Catch: java.lang.Throwable -> L59
-                com.android.server.pm.permission.LegacyPermissionState$PermissionState r5 = new com.android.server.pm.permission.LegacyPermissionState$PermissionState     // Catch: java.lang.Throwable -> L59
-                r5.<init>(r1, r2, r4, r3)     // Catch: java.lang.Throwable -> L59
-                r9.putPermissionState(r5, r10)     // Catch: java.lang.Throwable -> L59
-                goto L7
-            L57:
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> L59
-                return
-            L59:
-                r8 = move-exception
-                monitor-exit(r7)     // Catch: java.lang.Throwable -> L59
-                throw r8
-            */
-            throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.RuntimePermissionPersistence.parseLegacyPermissionsLPr(com.android.modules.utils.TypedXmlPullParser, com.android.server.pm.permission.LegacyPermissionState, int):void");
-        }
-
-        /* loaded from: classes3.dex */
-        public final class MyHandler extends Handler {
-            public MyHandler() {
-                super(BackgroundThread.getHandler().getLooper());
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message message) {
-                int i = message.what;
-                Runnable runnable = (Runnable) message.obj;
-                long uptimeMillis = SystemClock.uptimeMillis() - RuntimePermissionPersistence.this.mLastWriteDoneTimeMillis;
-                if (uptimeMillis < 500) {
-                    Message obtainMessage = RuntimePermissionPersistence.this.mAsyncHandler.obtainMessage(i);
-                    RuntimePermissionPersistence.this.mAsyncHandler.sendMessageDelayed(obtainMessage, 500 - uptimeMillis);
-                } else {
-                    RuntimePermissionPersistence.this.mInvokeWriteUserStateAsyncCallback.accept(Integer.valueOf(i));
-                    if (runnable != null) {
-                        runnable.run();
-                    }
-                }
-            }
-        }
-
-        /* loaded from: classes3.dex */
-        public final class PersistenceHandler extends Handler {
-            public PersistenceHandler() {
-                super(BackgroundThread.getHandler().getLooper());
-            }
-
-            @Override // android.os.Handler
-            public void handleMessage(Message message) {
-                RuntimePermissionPersistence.this.writePendingStates();
             }
         }
     }
 
-    public PersistentPreferredIntentResolver getPersistentPreferredActivities(int i) {
-        return (PersistentPreferredIntentResolver) this.mPersistentPreferredActivities.get(i);
-    }
-
-    public PreferredIntentResolver getPreferredActivities(int i) {
-        return (PreferredIntentResolver) this.mPreferredActivities.get(i);
-    }
-
-    public CrossProfileIntentResolver getCrossProfileIntentResolver(int i) {
-        return (CrossProfileIntentResolver) this.mCrossProfileIntentResolvers.get(i);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:49:0x00a8  */
-    /* JADX WARN: Removed duplicated region for block: B:52:? A[RETURN, SYNTHETIC] */
-    /* JADX WARN: Removed duplicated region for block: B:7:0x0030  */
+    /* JADX WARN: Code restructure failed: missing block: B:100:0x0181, code lost:
+    
+        r1 = findOrCreateVersion(android.os.storage.StorageManager.UUID_PRIVATE_INTERNAL);
+        r2 = findOrCreateVersion("primary_physical");
+        r1.sdkVersion = r13.getAttributeInt((java.lang.String) null, "internal", r0);
+        r2.sdkVersion = r13.getAttributeInt((java.lang.String) null, "external", r0);
+        r4 = com.android.internal.util.XmlUtils.readStringAttribute(r13, "buildFingerprint");
+        r2.buildFingerprint = r4;
+        r1.buildFingerprint = r4;
+        r3 = com.android.internal.util.XmlUtils.readStringAttribute(r13, "fingerprint");
+        r2.fingerprint = r3;
+        r1.fingerprint = r3;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:102:0x01b0, code lost:
+    
+        if (r1.equals("database-version") == false) goto L90;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:103:0x01b2, code lost:
+    
+        r1 = findOrCreateVersion(android.os.storage.StorageManager.UUID_PRIVATE_INTERNAL);
+        r2 = findOrCreateVersion("primary_physical");
+        r1.databaseVersion = r13.getAttributeInt((java.lang.String) null, "internal", r0);
+        r2.databaseVersion = r13.getAttributeInt((java.lang.String) null, "external", r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:105:0x01d2, code lost:
+    
+        if (r1.equals("verifier") == false) goto L93;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:106:0x01d4, code lost:
+    
+        r17.mVerifierDeviceIdentity = android.content.pm.VerifierDeviceIdentity.parse(r13.getAttributeValue((java.lang.String) null, "device"));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:108:0x01ea, code lost:
+    
+        if ("read-external-storage".equals(r1) == false) goto L96;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:111:0x01f4, code lost:
+    
+        if (r1.equals("keyset-settings") == false) goto L99;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:112:0x01f6, code lost:
+    
+        r17.mKeySetManagerService.readKeySetsLPw(r10, r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:114:0x0204, code lost:
+    
+        if ("version".equals(r1) == false) goto L102;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:115:0x0206, code lost:
+    
+        r1 = findOrCreateVersion(com.android.internal.util.XmlUtils.readStringAttribute(r13, "volumeUuid"));
+        r1.sdkVersion = r13.getAttributeInt((java.lang.String) null, "sdkVersion");
+        r1.databaseVersion = r13.getAttributeInt((java.lang.String) null, "databaseVersion");
+        r1.buildFingerprint = com.android.internal.util.XmlUtils.readStringAttribute(r13, "buildFingerprint");
+        r1.fingerprint = com.android.internal.util.XmlUtils.readStringAttribute(r13, "fingerprint");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:116:0x0232, code lost:
+    
+        r2 = r1.equals("domain-verifications");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:117:0x0239, code lost:
+    
+        r3 = r17.mDomainVerificationManager;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:118:0x023b, code lost:
+    
+        if (r2 == false) goto L110;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:120:0x0250, code lost:
+    
+        if (r1.equals("domain-verifications-legacy") == false) goto L113;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:121:0x0252, code lost:
+    
+        ((com.android.server.pm.verify.domain.DomainVerificationService) r3).readLegacySettings(r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:122:0x0258, code lost:
+    
+        android.util.Slog.w(r7, "Unknown element under <packages>: " + r13.getName());
+        com.android.internal.util.XmlUtils.skipCurrentTag(r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:127:0x0241, code lost:
+    
+        ((com.android.server.pm.verify.domain.DomainVerificationService) r3).readSettings(r18, r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:129:0x0245, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x027d, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x0064, code lost:
+    
+        r13 = r14;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:51:0x00a8, code lost:
+    
+        if (r1 != 4) goto L154;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x00ab, code lost:
+    
+        r1 = r5.getName();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:54:0x00b6, code lost:
+    
+        if (r1.equals("package") == false) goto L47;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:55:0x00b8, code lost:
+    
+        r7 = r4;
+        r13 = r5;
+        r16 = r0;
+        r0 = r6;
+        readPackageLPw(r5, r11, r10, r19, r20);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:57:0x0273, code lost:
+    
+        r9 = r19;
+        r6 = r0;
+        r4 = r7;
+        r5 = r13;
+        r0 = r16;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x00ce, code lost:
+    
+        r16 = r0;
+        r7 = r4;
+        r13 = r5;
+        r0 = r6;
+        r2 = r1.equals("permissions");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x00da, code lost:
+    
+        r3 = r17.mPermissions;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:63:0x00dc, code lost:
+    
+        if (r2 == false) goto L51;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x00de, code lost:
+    
+        r3.readPermissions(r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:66:0x00e9, code lost:
+    
+        if (r1.equals("permission-trees") == false) goto L54;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x00eb, code lost:
+    
+        r3.readPermissionTrees(r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:69:0x00f6, code lost:
+    
+        if (r1.equals("shared-user") == false) goto L57;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:70:0x00f8, code lost:
+    
+        readSharedUserLPw(r13, r11, r9);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:72:0x0103, code lost:
+    
+        if (r1.equals("preferred-packages") == false) goto L60;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:75:0x010d, code lost:
+    
+        if (r1.equals("preferred-activities") == false) goto L63;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x010f, code lost:
+    
+        readPreferredActivitiesLPw(r0, r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:78:0x011a, code lost:
+    
+        if (r1.equals("persistent-preferred-activities") == false) goto L66;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:79:0x011c, code lost:
+    
+        readPersistentPreferredActivitiesLPw(r0, r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:81:0x0126, code lost:
+    
+        if (r1.equals("crossProfile-intent-filters") == false) goto L69;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:82:0x0128, code lost:
+    
+        readCrossProfileIntentFiltersLPw(r0, r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:84:0x0132, code lost:
+    
+        if (r1.equals("default-browser") == false) goto L74;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:85:0x0134, code lost:
+    
+        r1 = readDefaultApps(r13);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:86:0x0138, code lost:
+    
+        if (r1 == null) goto L46;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:87:0x013a, code lost:
+    
+        r17.mPendingDefaultBrowser.put(r0, r1);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:89:0x0147, code lost:
+    
+        if (r1.equals("updated-package") == false) goto L77;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:90:0x0149, code lost:
+    
+        readDisabledSysPackageLPw(r13, r9);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:92:0x0155, code lost:
+    
+        if (r1.equals("renamed-package") == false) goto L83;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:93:0x0157, code lost:
+    
+        r1 = r13.getAttributeValue((java.lang.String) null, "new");
+        r3 = r13.getAttributeValue((java.lang.String) null, "old");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:94:0x0166, code lost:
+    
+        if (r1 == null) goto L46;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:95:0x0168, code lost:
+    
+        if (r3 == null) goto L46;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:96:0x016a, code lost:
+    
+        r17.mRenamedPackages.put(r1, r3);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:99:0x017f, code lost:
+    
+        if (r1.equals("last-platform-version") == false) goto L87;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:43:0x0299 A[Catch: all -> 0x003d, TryCatch #4 {all -> 0x003d, blocks: (B:3:0x0031, B:142:0x0037, B:9:0x004d, B:13:0x0067, B:14:0x006b, B:21:0x0079, B:24:0x008d, B:25:0x0091, B:29:0x009a, B:53:0x00ab, B:55:0x00b8, B:61:0x00ce, B:64:0x00de, B:65:0x00e2, B:67:0x00eb, B:68:0x00ef, B:70:0x00f8, B:71:0x00fc, B:74:0x0106, B:76:0x010f, B:77:0x0113, B:79:0x011c, B:80:0x0120, B:82:0x0128, B:83:0x012c, B:85:0x0134, B:87:0x013a, B:88:0x0140, B:90:0x0149, B:91:0x014e, B:93:0x0157, B:96:0x016a, B:97:0x0171, B:100:0x0181, B:101:0x01aa, B:103:0x01b2, B:104:0x01cb, B:106:0x01d4, B:107:0x01e3, B:110:0x01ee, B:112:0x01f6, B:113:0x01fd, B:115:0x0206, B:116:0x0232, B:124:0x023d, B:127:0x0241, B:41:0x0291, B:43:0x0299, B:45:0x02a1, B:47:0x02ac, B:48:0x02a9, B:119:0x0248, B:121:0x0252, B:122:0x0258, B:34:0x0288), top: B:2:0x0031 }] */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public void clearPackagePreferredActivities(java.lang.String r11, android.util.SparseBooleanArray r12, int r13) {
+    public final boolean readSettingsLPw(com.android.server.pm.ComputerLocked r18, java.util.List r19, android.util.ArrayMap r20, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController r21) {
         /*
-            r10 = this;
-            java.lang.String r0 = "kioskmode"
-            android.os.IBinder r0 = android.os.ServiceManager.getService(r0)
-            com.samsung.android.knox.kiosk.IKioskMode r0 = com.samsung.android.knox.kiosk.IKioskMode.Stub.asInterface(r0)
-            r1 = 0
-            if (r0 == 0) goto L24
-            java.lang.String r0 = r0.getKioskHomePackageAsUser(r13)     // Catch: android.os.RemoteException -> L1c
-            if (r0 == 0) goto L24
-            java.lang.String[] r0 = new java.lang.String[]{r0}     // Catch: android.os.RemoteException -> L1c
-            java.util.List r0 = java.util.Arrays.asList(r0)     // Catch: android.os.RemoteException -> L1c
-            goto L25
-        L1c:
-            r0 = move-exception
-            java.lang.String r2 = "PackageSettings"
-            java.lang.String r3 = "Failed talking with kiosk mode service"
-            android.util.Log.e(r2, r3, r0)
-        L24:
-            r0 = r1
-        L25:
-            r2 = 0
-            r3 = r2
-            r4 = r3
-        L28:
-            com.android.server.utils.WatchedSparseArray r5 = r10.mPreferredActivities
-            int r5 = r5.size()
-            if (r3 >= r5) goto La6
-            com.android.server.utils.WatchedSparseArray r5 = r10.mPreferredActivities
-            int r5 = r5.keyAt(r3)
-            com.android.server.utils.WatchedSparseArray r6 = r10.mPreferredActivities
-            java.lang.Object r6 = r6.valueAt(r3)
-            com.android.server.pm.PreferredIntentResolver r6 = (com.android.server.pm.PreferredIntentResolver) r6
-            r7 = -1
-            if (r13 == r7) goto L44
-            if (r13 == r5) goto L44
-            goto La3
-        L44:
-            java.util.Iterator r7 = r6.filterIterator()
-        L48:
-            boolean r8 = r7.hasNext()
-            if (r8 == 0) goto L85
-            java.lang.Object r8 = r7.next()
-            com.android.server.pm.PreferredActivity r8 = (com.android.server.pm.PreferredActivity) r8
-            if (r11 == 0) goto L6a
-            com.android.server.pm.PreferredComponent r9 = r8.mPref
-            android.content.ComponentName r9 = r9.mComponent
-            java.lang.String r9 = r9.getPackageName()
-            boolean r9 = r9.equals(r11)
-            if (r9 == 0) goto L48
-            com.android.server.pm.PreferredComponent r9 = r8.mPref
-            boolean r9 = r9.mAlways
-            if (r9 == 0) goto L48
-        L6a:
-            if (r1 != 0) goto L71
-            java.util.ArrayList r1 = new java.util.ArrayList
-            r1.<init>()
-        L71:
-            if (r0 == 0) goto L81
-            com.android.server.pm.PreferredComponent r9 = r8.mPref
-            android.content.ComponentName r9 = r9.mComponent
-            java.lang.String r9 = r9.getPackageName()
-            boolean r9 = r0.contains(r9)
-            if (r9 != 0) goto L48
-        L81:
-            r1.add(r8)
-            goto L48
-        L85:
-            if (r1 == 0) goto La3
-            r4 = r2
-        L88:
-            int r7 = r1.size()
-            if (r4 >= r7) goto L9f
-            java.lang.Object r7 = r1.get(r4)
-            com.android.server.pm.PreferredActivity r7 = (com.android.server.pm.PreferredActivity) r7
-            r6.removeFilter(r7)
-            java.lang.String r8 = "Removing preference<clear>"
-            com.android.server.pm.PreferredActivityLog.logPreferenceChange(r7, r8)
-            int r4 = r4 + 1
-            goto L88
-        L9f:
-            r4 = 1
-            r12.put(r5, r4)
-        La3:
-            int r3 = r3 + 1
-            goto L28
-        La6:
-            if (r4 == 0) goto Lab
-            r10.onChanged()
-        Lab:
-            return
+            Method dump skipped, instructions count: 702
+            To view this dump change 'Code comments level' option to 'DEBUG'
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.clearPackagePreferredActivities(java.lang.String, android.util.SparseBooleanArray, int):void");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.readSettingsLPw(com.android.server.pm.ComputerLocked, java.util.List, android.util.ArrayMap, com.samsung.android.server.pm.rescueparty.PackageManagerBackupController):boolean");
     }
 
-    public boolean clearPackagePersistentPreferredActivities(String str, int i) {
-        ArrayList arrayList = null;
-        boolean z = false;
-        for (int i2 = 0; i2 < this.mPersistentPreferredActivities.size(); i2++) {
-            int keyAt = this.mPersistentPreferredActivities.keyAt(i2);
-            PersistentPreferredIntentResolver persistentPreferredIntentResolver = (PersistentPreferredIntentResolver) this.mPersistentPreferredActivities.valueAt(i2);
-            if (i == keyAt) {
-                Iterator filterIterator = persistentPreferredIntentResolver.filterIterator();
-                while (filterIterator.hasNext()) {
-                    PersistentPreferredActivity persistentPreferredActivity = (PersistentPreferredActivity) filterIterator.next();
-                    if (persistentPreferredActivity.mComponent.getPackageName().equals(str)) {
-                        if (arrayList == null) {
-                            arrayList = new ArrayList();
-                        }
-                        arrayList.add(persistentPreferredActivity);
-                    }
-                }
-                if (arrayList != null) {
-                    for (int i3 = 0; i3 < arrayList.size(); i3++) {
-                        persistentPreferredIntentResolver.removeFilter((WatchedIntentFilter) arrayList.get(i3));
-                    }
-                    z = true;
+    public final void readSharedUserLPw(TypedXmlPullParser typedXmlPullParser, ArrayList arrayList, List list) {
+        SharedUserSetting sharedUserSetting = null;
+        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "name");
+        int attributeInt = typedXmlPullParser.getAttributeInt((String) null, "userId", 0);
+        boolean attributeBoolean = typedXmlPullParser.getAttributeBoolean((String) null, "system", false);
+        if (attributeValue == null) {
+            String m = CrossProfileIntentFilter$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Error in package manager settings: <shared-user> has no name at "));
+            boolean z = PackageManagerService.DEBUG_COMPRESSION;
+            PackageManagerServiceUtils.logCriticalInfo(5, m);
+        } else if (attributeInt == 0) {
+            String m2 = CrossProfileIntentFilter$$ExternalSyntheticOutline0.m(typedXmlPullParser, StorageManagerService$$ExternalSyntheticOutline0.m(attributeInt, "Error in package manager settings: shared-user ", attributeValue, " has bad appId ", " at "));
+            boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+            PackageManagerServiceUtils.logCriticalInfo(5, m2);
+        } else {
+            sharedUserSetting = addSharedUserLPw(attributeInt, attributeBoolean ? 1 : 0, 0, attributeValue.intern());
+            if (sharedUserSetting == null) {
+                String m3 = CrossProfileIntentFilter$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Occurred while parsing settings at "));
+                boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+                PackageManagerServiceUtils.logCriticalInfo(6, m3);
+            }
+        }
+        if (sharedUserSetting == null) {
+            XmlUtils.skipCurrentTag(typedXmlPullParser);
+            return;
+        }
+        int depth = typedXmlPullParser.getDepth();
+        while (true) {
+            int next = typedXmlPullParser.next();
+            if (next == 1) {
+                return;
+            }
+            if (next == 3 && typedXmlPullParser.getDepth() <= depth) {
+                return;
+            }
+            if (next != 3 && next != 4) {
+                String name = typedXmlPullParser.getName();
+                if (name.equals("sigs")) {
+                    sharedUserSetting.signatures.readXml(typedXmlPullParser, arrayList);
+                } else if (name.equals("perms")) {
+                    readInstallPermissionsLPr(typedXmlPullParser, sharedUserSetting.mLegacyPermissionsState, list);
+                } else {
+                    String m4 = XmlUtils$$ExternalSyntheticOutline0.m(typedXmlPullParser, new StringBuilder("Unknown element under <shared-user>: "));
+                    boolean z4 = PackageManagerService.DEBUG_COMPRESSION;
+                    PackageManagerServiceUtils.logCriticalInfo(5, m4);
+                    XmlUtils.skipCurrentTag(typedXmlPullParser);
                 }
             }
         }
-        if (z) {
-            onChanged();
-        }
-        return z;
     }
 
-    public boolean clearPersistentPreferredActivity(IntentFilter intentFilter, int i) {
-        PersistentPreferredIntentResolver persistentPreferredIntentResolver = (PersistentPreferredIntentResolver) this.mPersistentPreferredActivities.get(i);
-        Iterator filterIterator = persistentPreferredIntentResolver.filterIterator();
-        ArrayList arrayList = null;
-        while (filterIterator.hasNext()) {
-            PersistentPreferredActivity persistentPreferredActivity = (PersistentPreferredActivity) filterIterator.next();
-            if (IntentFilter.filterEquals(persistentPreferredActivity.getIntentFilter(), intentFilter)) {
-                if (arrayList == null) {
-                    arrayList = new ArrayList();
-                }
-                arrayList.add(persistentPreferredActivity);
-            }
-        }
-        boolean z = false;
-        if (arrayList != null) {
-            for (int i2 = 0; i2 < arrayList.size(); i2++) {
-                persistentPreferredIntentResolver.removeFilter((WatchedIntentFilter) arrayList.get(i2));
-            }
+    public final boolean registerAppIdLPw(PackageSetting packageSetting) {
+        boolean z;
+        int i = packageSetting.mAppId;
+        AppIdSettingMap appIdSettingMap = this.mAppIds;
+        if (i != 0) {
+            z = appIdSettingMap.registerExistingAppId(i, packageSetting, packageSetting.mName);
+        } else {
+            packageSetting.setAppId(appIdSettingMap.acquireAndRegisterNewAppId(packageSetting));
             z = true;
         }
-        if (z) {
-            onChanged();
+        if (packageSetting.mAppId >= 0) {
+            return z;
         }
-        return z;
+        String m = AudioOffloadInfo$$ExternalSyntheticOutline0.m(new StringBuilder("Package "), packageSetting.mName, " could not be assigned a valid UID");
+        boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+        PackageManagerServiceUtils.logCriticalInfo(5, m);
+        throw new PackageManagerException(-4, AudioOffloadInfo$$ExternalSyntheticOutline0.m(new StringBuilder("Package "), packageSetting.mName, " could not be assigned a valid UID"));
     }
 
-    public ArrayList systemReady(ComponentResolver componentResolver) {
+    @Override // com.android.server.utils.Watchable
+    public final void registerObserver(Watcher watcher) {
+        this.mWatchable.registerObserver(watcher);
+    }
+
+    public final void registerObservers$1() {
+        WatchedArrayMap watchedArrayMap = this.mPackages;
+        AnonymousClass1 anonymousClass1 = this.mObserver;
+        watchedArrayMap.registerObserver(anonymousClass1);
+        this.mInstallerPackages.registerObserver(anonymousClass1);
+        this.mKernelMapping.registerObserver(anonymousClass1);
+        this.mDisabledSysPackages.registerObserver(anonymousClass1);
+        this.mBlockUninstallPackages.registerObserver(anonymousClass1);
+        this.mVersion.registerObserver(anonymousClass1);
+        this.mPreferredActivities.registerObserver(anonymousClass1);
+        this.mPersistentPreferredActivities.registerObserver(anonymousClass1);
+        this.mCrossProfileIntentResolvers.registerObserver(anonymousClass1);
+        this.mSharedUsers.registerObserver(anonymousClass1);
+        AppIdSettingMap appIdSettingMap = this.mAppIds;
+        appIdSettingMap.mNonSystemSettings.registerObserver(anonymousClass1);
+        appIdSettingMap.mSystemSettings.registerObserver(anonymousClass1);
+        this.mRenamedPackages.registerObserver(anonymousClass1);
+        this.mNextAppLinkGeneration.registerObserver(anonymousClass1);
+        this.mPendingDefaultBrowser.registerObserver(anonymousClass1);
+        this.mPendingPackages.registerObserver(anonymousClass1);
+    }
+
+    public final void removeAppIdLPw(int i) {
+        AppIdSettingMap appIdSettingMap = this.mAppIds;
+        if (i >= 10000) {
+            WatchedArrayList watchedArrayList = appIdSettingMap.mNonSystemSettings;
+            int i2 = i - 10000;
+            if (i2 < watchedArrayList.mStorage.size()) {
+                watchedArrayList.set(i2, null);
+            }
+        } else {
+            appIdSettingMap.mSystemSettings.delete(i);
+        }
+        int i3 = i + 1;
+        if (i3 > appIdSettingMap.mFirstAvailableAppId) {
+            appIdSettingMap.mFirstAvailableAppId = i3;
+        }
+    }
+
+    public final boolean removePackageAndAppIdLPw(String str) {
+        boolean z;
+        boolean z2;
+        String str2;
+        int i;
+        String str3;
+        boolean z3;
+        String str4;
+        PackageSetting packageSetting = (PackageSetting) this.mPackages.remove(str);
+        if (packageSetting == null) {
+            return false;
+        }
+        WatchedArraySet watchedArraySet = this.mInstallerPackages;
+        if (watchedArraySet.mStorage.contains(str) && ((!this.mDisabledSysPackages.mStorage.containsKey(str) || (!"com.sec.android.app.samsungapps".equals(str) && !"com.android.vending".equals(str))) && (!PMRune.PM_BADGE_ON_MONETIZED_APP_SUPPORTED || !"com.sec.android.app.samsungapps".equals(str) || this.mDisabledSysPackages.mStorage.get(str) == null))) {
+            for (int i2 = 0; i2 < this.mPackages.mStorage.size(); i2++) {
+                PackageSetting packageSetting2 = (PackageSetting) this.mPackages.mStorage.valueAt(i2);
+                InstallSource installSource = packageSetting2.installSource;
+                if (str == null) {
+                    installSource.getClass();
+                } else {
+                    boolean equals = str.equals(installSource.mInitiatingPackageName);
+                    boolean z4 = installSource.mIsInitiatingPackageUninstalled;
+                    if (!equals || z4) {
+                        z = false;
+                        z2 = z4;
+                    } else {
+                        z = true;
+                        z2 = true;
+                    }
+                    String str5 = installSource.mOriginatingPackageName;
+                    if (str.equals(str5)) {
+                        z = true;
+                        str2 = null;
+                    } else {
+                        str2 = str5;
+                    }
+                    String str6 = installSource.mInstallerPackageName;
+                    if (str.equals(str6)) {
+                        z3 = true;
+                        i = -1;
+                        str3 = null;
+                        z = true;
+                    } else {
+                        i = installSource.mInstallerPackageUid;
+                        str3 = str6;
+                        z3 = installSource.mIsOrphaned;
+                    }
+                    String str7 = installSource.mUpdateOwnerPackageName;
+                    if (str.equals(str7)) {
+                        z = true;
+                        str4 = null;
+                    } else {
+                        str4 = str7;
+                    }
+                    if (z) {
+                        installSource = InstallSource.createInternal(i, installSource.mPackageSource, installSource.mInitiatingPackageSignatures, installSource.mInitiatingPackageName, str2, str3, str4, null, z3, z2);
+                    }
+                }
+                packageSetting2.installSource = installSource;
+                packageSetting2.onChanged$2();
+            }
+            watchedArraySet.remove(str);
+        }
+        SharedUserSetting sharedUserSettingLPr = getSharedUserSettingLPr(packageSetting);
+        if (sharedUserSettingLPr != null) {
+            sharedUserSettingLPr.removePackage(packageSetting);
+            return checkAndPruneSharedUserLPw(sharedUserSettingLPr, false);
+        }
+        removeAppIdLPw(packageSetting.mAppId);
+        return true;
+    }
+
+    public final void removeUserLPw(int i) {
+        Iterator it = this.mPackages.entrySet().iterator();
+        while (it.hasNext()) {
+            PackageSetting packageSetting = (PackageSetting) ((Map.Entry) it.next()).getValue();
+            packageSetting.mUserStates.delete(i);
+            packageSetting.onChanged$2();
+        }
+        this.mPreferredActivities.delete(i);
+        synchronized (this.mPackageRestrictionsLock) {
+            ResilientAtomicFile userPackagesStateFile = getUserPackagesStateFile(i);
+            userPackagesStateFile.mFile.delete();
+            userPackagesStateFile.mTemporaryBackup.delete();
+            userPackagesStateFile.mReserveCopy.delete();
+            this.mPendingAsyncPackageRestrictionsWrites.delete(i);
+        }
+        synchronized (this.mCrossProfileIntentResolvers) {
+            try {
+                if (this.mCrossProfileIntentResolvers.mStorage.get(i) != null) {
+                    this.mCrossProfileIntentResolvers.delete(i);
+                    writePackageRestrictionsLPr(i, false);
+                }
+                int size = this.mCrossProfileIntentResolvers.mStorage.size();
+                for (int i2 = 0; i2 < size; i2++) {
+                    int keyAt = this.mCrossProfileIntentResolvers.mStorage.keyAt(i2);
+                    CrossProfileIntentResolver crossProfileIntentResolver = (CrossProfileIntentResolver) this.mCrossProfileIntentResolvers.mStorage.get(keyAt);
+                    Iterator it2 = new ArraySet(Collections.unmodifiableSet(crossProfileIntentResolver.mFilters)).iterator();
+                    boolean z = false;
+                    while (it2.hasNext()) {
+                        CrossProfileIntentFilter crossProfileIntentFilter = (CrossProfileIntentFilter) it2.next();
+                        if (crossProfileIntentFilter.mTargetUserId == i) {
+                            crossProfileIntentResolver.removeFilter((WatchedIntentFilter) crossProfileIntentFilter);
+                            z = true;
+                        }
+                    }
+                    if (z) {
+                        writePackageRestrictionsLPr(keyAt, false);
+                    }
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+        RuntimePermissionPersistence runtimePermissionPersistence = this.mRuntimePermissionsPersistence;
+        synchronized (runtimePermissionPersistence.mLock) {
+            runtimePermissionPersistence.mAsyncHandler.removeMessages(i);
+            runtimePermissionPersistence.mPermissionUpgradeNeeded.delete(i);
+            runtimePermissionPersistence.mVersions.delete(i);
+            runtimePermissionPersistence.mFingerprints.remove(i);
+        }
+        ((DomainVerificationService) this.mDomainVerificationManager).clearUser(i);
+        writePackageListLPr(-1);
+        if (this.mKernelMappingFilename == null) {
+            return;
+        }
+        writeIntToFile(new File(this.mKernelMappingFilename, "remove_userid"), i);
+    }
+
+    public final void setBlockUninstallLPw(int i, String str, boolean z) {
+        WatchedSparseArray watchedSparseArray = this.mBlockUninstallPackages;
+        ArraySet arraySet = (ArraySet) watchedSparseArray.mStorage.get(i);
+        if (z) {
+            if (arraySet == null) {
+                arraySet = new ArraySet();
+                watchedSparseArray.put(i, arraySet);
+            }
+            arraySet.add(str);
+            return;
+        }
+        if (arraySet != null) {
+            arraySet.remove(str);
+            if (arraySet.isEmpty()) {
+                watchedSparseArray.delete(i);
+            }
+        }
+    }
+
+    public final void setPermissionControllerVersion(long j) {
+        RuntimePermissionPersistence runtimePermissionPersistence = this.mRuntimePermissionsPersistence;
+        synchronized (runtimePermissionPersistence.mLock) {
+            try {
+                int size = runtimePermissionPersistence.mFingerprints.size();
+                runtimePermissionPersistence.mExtendedFingerprint = PackagePartitions.FINGERPRINT + "?pc_version=" + j;
+                for (int i = 0; i < size; i++) {
+                    runtimePermissionPersistence.mPermissionUpgradeNeeded.put(runtimePermissionPersistence.mFingerprints.keyAt(i), !TextUtils.equals(runtimePermissionPersistence.mExtendedFingerprint, (String) runtimePermissionPersistence.mFingerprints.valueAt(i)));
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    @Override // com.android.server.utils.Snappable
+    public final Object snapshot() {
+        return (Settings) this.mSnapshot.snapshot();
+    }
+
+    public final ArrayList systemReady(ComponentResolver componentResolver) {
+        boolean z;
         ArrayList arrayList = new ArrayList();
         ArrayList arrayList2 = new ArrayList();
-        for (int i = 0; i < this.mPreferredActivities.size(); i++) {
-            PreferredIntentResolver preferredIntentResolver = (PreferredIntentResolver) this.mPreferredActivities.valueAt(i);
+        for (int i = 0; i < this.mPreferredActivities.mStorage.size(); i++) {
+            PreferredIntentResolver preferredIntentResolver = (PreferredIntentResolver) this.mPreferredActivities.mStorage.valueAt(i);
             arrayList2.clear();
-            for (PreferredActivity preferredActivity : preferredIntentResolver.filterSet()) {
-                if (!componentResolver.isActivityDefined(preferredActivity.mPref.mComponent)) {
+            for (PreferredActivity preferredActivity : Collections.unmodifiableSet(preferredIntentResolver.mFilters)) {
+                ComponentName componentName = preferredActivity.mPref.mComponent;
+                PackageManagerTracedLock packageManagerTracedLock = componentResolver.mLock;
+                boolean z2 = PackageManagerService.DEBUG_COMPRESSION;
+                synchronized (packageManagerTracedLock) {
+                    try {
+                        z = componentResolver.mActivities.mActivities.get(componentName) != null;
+                    } catch (Throwable th) {
+                        boolean z3 = PackageManagerService.DEBUG_COMPRESSION;
+                        throw th;
+                    }
+                }
+                if (!z) {
                     arrayList2.add(preferredActivity);
                 }
             }
@@ -4503,24 +4357,700 @@ public final class Settings implements Watchable, Snappable, ResilientAtomicFile
                     Slog.w("PackageSettings", "Removing dangling preferred activity: " + preferredActivity2.mPref.mComponent);
                     preferredIntentResolver.removeFilter((WatchedIntentFilter) preferredActivity2);
                 }
-                arrayList.add(Integer.valueOf(this.mPreferredActivities.keyAt(i)));
+                arrayList.add(Integer.valueOf(this.mPreferredActivities.mStorage.keyAt(i)));
             }
         }
-        onChanged();
+        dispatchChange(this);
         return arrayList;
     }
 
-    public void dumpPreferred(PrintWriter printWriter, DumpState dumpState, String str) {
-        for (int i = 0; i < this.mPreferredActivities.size(); i++) {
-            PreferredIntentResolver preferredIntentResolver = (PreferredIntentResolver) this.mPreferredActivities.valueAt(i);
-            int keyAt = this.mPreferredActivities.keyAt(i);
-            if (preferredIntentResolver.dump(printWriter, dumpState.getTitlePrinted() ? "\nPreferred Activities User " + keyAt + com.android.internal.util.jobs.XmlUtils.STRING_ARRAY_SEPARATOR : "Preferred Activities User " + keyAt + com.android.internal.util.jobs.XmlUtils.STRING_ARRAY_SEPARATOR, "  ", str, true, false)) {
-                dumpState.setTitlePrinted(true);
+    @Override // com.android.server.utils.Watchable
+    public final void unregisterObserver(Watcher watcher) {
+        this.mWatchable.unregisterObserver(watcher);
+    }
+
+    public final void writeAllUsersPackageRestrictionsLPr(boolean z) {
+        List users = getUsers(UserManagerService.getInstance(), false, false);
+        if (users == null) {
+            return;
+        }
+        if (z) {
+            synchronized (this.mPackageRestrictionsLock) {
+                this.mPendingAsyncPackageRestrictionsWrites.clear();
             }
+            this.mHandler.removeMessages(30);
+        }
+        Iterator it = ((ArrayList) users).iterator();
+        while (it.hasNext()) {
+            writePackageRestrictionsLPr(((UserInfo) it.next()).id, z);
         }
     }
 
-    public boolean isInstallerPackage(String str) {
-        return this.mInstallerPackages.contains(str);
+    public final void writeBlockUninstallPackagesLPr(TypedXmlSerializer typedXmlSerializer, int i) {
+        ArraySet arraySet = (ArraySet) this.mBlockUninstallPackages.mStorage.get(i);
+        if (arraySet != null) {
+            typedXmlSerializer.startTag((String) null, "block-uninstall-packages");
+            for (int i2 = 0; i2 < arraySet.size(); i2++) {
+                typedXmlSerializer.startTag((String) null, "block-uninstall");
+                typedXmlSerializer.attribute((String) null, "packageName", (String) arraySet.valueAt(i2));
+                typedXmlSerializer.endTag((String) null, "block-uninstall");
+            }
+            typedXmlSerializer.endTag((String) null, "block-uninstall-packages");
+        }
+    }
+
+    public final void writeCrossProfileIntentFiltersLPr(TypedXmlSerializer typedXmlSerializer, int i) {
+        typedXmlSerializer.startTag((String) null, "crossProfile-intent-filters");
+        CrossProfileIntentResolver crossProfileIntentResolver = (CrossProfileIntentResolver) this.mCrossProfileIntentResolvers.mStorage.get(i);
+        if (crossProfileIntentResolver != null) {
+            for (CrossProfileIntentFilter crossProfileIntentFilter : Collections.unmodifiableSet(crossProfileIntentResolver.mFilters)) {
+                typedXmlSerializer.startTag((String) null, "item");
+                typedXmlSerializer.attributeInt((String) null, "targetUserId", crossProfileIntentFilter.mTargetUserId);
+                typedXmlSerializer.attributeInt((String) null, "flags", crossProfileIntentFilter.mFlags);
+                typedXmlSerializer.attribute((String) null, "ownerPackage", crossProfileIntentFilter.mOwnerPackage);
+                typedXmlSerializer.attributeInt((String) null, "accessControl", crossProfileIntentFilter.mAccessControlLevel);
+                typedXmlSerializer.startTag((String) null, "filter");
+                crossProfileIntentFilter.mFilter.writeToXml(typedXmlSerializer);
+                typedXmlSerializer.endTag((String) null, "filter");
+                typedXmlSerializer.endTag((String) null, "item");
+            }
+        }
+        typedXmlSerializer.endTag((String) null, "crossProfile-intent-filters");
+    }
+
+    public final void writeKernelMappingLPr() {
+        File file = this.mKernelMappingFilename;
+        if (file == null) {
+            return;
+        }
+        String[] list = file.list();
+        ArraySet arraySet = new ArraySet(list.length);
+        for (String str : list) {
+            arraySet.add(str);
+        }
+        for (PackageSetting packageSetting : this.mPackages.values()) {
+            arraySet.remove(packageSetting.mName);
+            writeKernelMappingLPr(packageSetting);
+        }
+        for (int i = 0; i < arraySet.size(); i++) {
+            String str2 = (String) arraySet.valueAt(i);
+            this.mKernelMapping.remove(str2);
+            new File(this.mKernelMappingFilename, str2).delete();
+        }
+    }
+
+    public final void writeKernelMappingLPr(PackageSetting packageSetting) {
+        String str;
+        if (this.mKernelMappingFilename == null || packageSetting == null || (str = packageSetting.mName) == null) {
+            return;
+        }
+        int i = packageSetting.mAppId;
+        int[] notInstalledUserIds = packageSetting.getNotInstalledUserIds();
+        WatchedArrayMap watchedArrayMap = this.mKernelMapping;
+        KernelPackageState kernelPackageState = (KernelPackageState) watchedArrayMap.mStorage.get(str);
+        boolean z = true;
+        int i2 = 0;
+        boolean z2 = kernelPackageState == null;
+        if (!z2 && Arrays.equals(notInstalledUserIds, kernelPackageState.excludedUserIds)) {
+            z = false;
+        }
+        File file = new File(this.mKernelMappingFilename, str);
+        if (z2) {
+            file.mkdir();
+            kernelPackageState = new KernelPackageState();
+            watchedArrayMap.put(str, kernelPackageState);
+        }
+        kernelPackageState.getClass();
+        if (i != 0) {
+            writeIntToFile(new File(file, "appid"), i);
+        }
+        if (z) {
+            for (int i3 = 0; i3 < notInstalledUserIds.length; i3++) {
+                int[] iArr = kernelPackageState.excludedUserIds;
+                if (iArr == null || !ArrayUtils.contains(iArr, notInstalledUserIds[i3])) {
+                    writeIntToFile(new File(file, "excluded_userids"), notInstalledUserIds[i3]);
+                }
+            }
+            if (kernelPackageState.excludedUserIds != null) {
+                while (true) {
+                    int[] iArr2 = kernelPackageState.excludedUserIds;
+                    if (i2 >= iArr2.length) {
+                        break;
+                    }
+                    if (!ArrayUtils.contains(notInstalledUserIds, iArr2[i2])) {
+                        writeIntToFile(new File(file, "clear_userid"), kernelPackageState.excludedUserIds[i2]);
+                    }
+                    i2++;
+                }
+            }
+            kernelPackageState.excludedUserIds = notInstalledUserIds;
+        }
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:17:0x0216 A[Catch: all -> 0x01fc, TRY_LEAVE, TryCatch #7 {all -> 0x01fc, blocks: (B:89:0x01c9, B:91:0x01e2, B:93:0x01ec, B:15:0x020d, B:17:0x0216), top: B:88:0x01c9 }] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void writeLPr(com.android.server.pm.Computer r25, boolean r26) {
+        /*
+            Method dump skipped, instructions count: 551
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.writeLPr(com.android.server.pm.Computer, boolean):void");
+    }
+
+    public final void writePackageListLPr(int i) {
+        String fileSelabelLookup = SELinux.fileSelabelLookup(this.mPackageListFilename.getAbsolutePath());
+        if (fileSelabelLookup == null) {
+            Slog.wtf("PackageSettings", "Failed to get SELinux context for " + this.mPackageListFilename.getAbsolutePath());
+        }
+        if (!SELinux.setFSCreateContext(fileSelabelLookup)) {
+            Slog.wtf("PackageSettings", "Failed to set packages.list SELinux context");
+        }
+        try {
+            writePackageListLPrInternal(i);
+        } finally {
+            SELinux.setFSCreateContext((String) null);
+        }
+    }
+
+    public final void writePackageListLPrInternal(int i) {
+        int i2;
+        Settings settings = this;
+        ArrayList arrayList = (ArrayList) getUsers(UserManagerService.getInstance(), true, true);
+        int size = arrayList.size();
+        int[] iArr = new int[size];
+        int i3 = 0;
+        for (int i4 = 0; i4 < size; i4++) {
+            iArr[i4] = ((UserInfo) arrayList.get(i4)).id;
+        }
+        if (i != -1) {
+            iArr = ArrayUtils.appendInt(iArr, i);
+        }
+        JournaledFile journaledFile = new JournaledFile(settings.mPackageListFilename, new File(settings.mPackageListFilename.getAbsolutePath() + ".tmp"));
+        BufferedWriter bufferedWriter = null;
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(journaledFile.chooseForWrite());
+            BufferedWriter bufferedWriter2 = new BufferedWriter(new OutputStreamWriter(fileOutputStream, Charset.defaultCharset()));
+            try {
+                FileUtils.setPermissions(fileOutputStream.getFD(), FrameworkStatsLog.DISPLAY_HBM_STATE_CHANGED, 1000, 1032);
+                StringBuilder sb = new StringBuilder();
+                for (PackageSetting packageSetting : settings.mPackages.values()) {
+                    AndroidPackageInternal androidPackageInternal = packageSetting.pkg;
+                    if (androidPackageInternal == null) {
+                        if (!"android".equals(packageSetting.mName)) {
+                            Slog.w("PackageSettings", "Skipping " + packageSetting + " due to missing metadata");
+                        }
+                    } else if (!androidPackageInternal.isApex()) {
+                        File dataDir = PackageInfoUtils.getDataDir(packageSetting, i3);
+                        String absolutePath = dataDir == null ? "null" : dataDir.getAbsolutePath();
+                        boolean isDebuggable = packageSetting.pkg.isDebuggable();
+                        IntArray intArray = new IntArray();
+                        int length = iArr.length;
+                        int i5 = i3;
+                        while (i5 < length) {
+                            intArray.addAll(settings.mPermissionDataProvider.getGidsForUid(UserHandle.getUid(iArr[i5], packageSetting.mAppId)));
+                            i5++;
+                            settings = this;
+                            iArr = iArr;
+                        }
+                        int[] iArr2 = iArr;
+                        if (absolutePath.indexOf(32) >= 0) {
+                            settings = this;
+                            iArr = iArr2;
+                            i3 = 0;
+                        } else {
+                            sb.setLength(0);
+                            sb.append(packageSetting.pkg.getPackageName());
+                            sb.append(" ");
+                            sb.append(packageSetting.pkg.getUid());
+                            sb.append(isDebuggable ? " 1 " : " 0 ");
+                            sb.append(absolutePath);
+                            sb.append(" ");
+                            sb.append(packageSetting.getSeInfo());
+                            sb.append(" ");
+                            int size2 = intArray.size();
+                            if (intArray.size() > 0) {
+                                i2 = 0;
+                                sb.append(intArray.get(0));
+                                for (int i6 = 1; i6 < size2; i6++) {
+                                    sb.append(",");
+                                    sb.append(intArray.get(i6));
+                                }
+                            } else {
+                                i2 = 0;
+                                sb.append("none");
+                            }
+                            sb.append(" ");
+                            sb.append(packageSetting.pkg.isProfileableByShell() ? "1" : "0");
+                            sb.append(" ");
+                            sb.append(packageSetting.pkg.getLongVersionCode());
+                            sb.append(" ");
+                            sb.append(packageSetting.pkg.isProfileable() ? "1" : "0");
+                            sb.append(" ");
+                            if (packageSetting.isSystem()) {
+                                sb.append("@system");
+                            } else if (packageSetting.isProduct()) {
+                                sb.append("@product");
+                            } else {
+                                String str = packageSetting.installSource.mInstallerPackageName;
+                                if (str == null || str.isEmpty()) {
+                                    sb.append("@null");
+                                } else {
+                                    sb.append(packageSetting.installSource.mInstallerPackageName);
+                                }
+                            }
+                            sb.append("\n");
+                            bufferedWriter2.append((CharSequence) sb);
+                            settings = this;
+                            iArr = iArr2;
+                            i3 = i2;
+                        }
+                    }
+                }
+                bufferedWriter2.flush();
+                FileUtils.sync(fileOutputStream);
+                bufferedWriter2.close();
+                journaledFile.commit();
+            } catch (Exception e) {
+                e = e;
+                bufferedWriter = bufferedWriter2;
+                Slog.wtf("PackageSettings", "Failed to write packages.list", e);
+                IoUtils.closeQuietly(bufferedWriter);
+                journaledFile.rollback();
+            }
+        } catch (Exception e2) {
+            e = e2;
+        }
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:100:0x01e8, code lost:
+    
+        r8.startTag((java.lang.String) null, "item");
+        r8.attribute((java.lang.String) null, "name", (java.lang.String) r10.valueAt(r12));
+        r8.endTag((java.lang.String) null, "item");
+        r12 = r12 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:102:0x0200, code lost:
+    
+        r8.endTag((java.lang.String) null, "enabled-components");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:103:0x0205, code lost:
+    
+        r10 = r11.getDisabledComponents();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:104:0x0209, code lost:
+    
+        if (r10 == null) goto L154;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:106:0x020f, code lost:
+    
+        if (r10.size() <= 0) goto L155;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:107:0x0211, code lost:
+    
+        r8.startTag((java.lang.String) null, "disabled-components");
+        r12 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:109:0x021b, code lost:
+    
+        if (r12 >= r10.size()) goto L160;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:110:0x021d, code lost:
+    
+        r8.startTag((java.lang.String) null, "item");
+        r8.attribute((java.lang.String) null, "name", (java.lang.String) r10.valueAt(r12));
+        r8.endTag((java.lang.String) null, "item");
+        r12 = r12 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:112:0x0235, code lost:
+    
+        r8.endTag((java.lang.String) null, "disabled-components");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:114:0x023a, code lost:
+    
+        writeArchiveStateLPr(r8, r11.getArchiveState());
+        r8.endTag((java.lang.String) null, "pkg");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:118:0x0249, code lost:
+    
+        writePreferredActivitiesLPr(r17, r8, true);
+        writePersistentPreferredActivitiesLPr(r8, r17);
+        writeCrossProfileIntentFiltersLPr(r8, r17);
+        writeDefaultApps(r8, (java.lang.String) r16.mPendingDefaultBrowser.mStorage.get(r17));
+        writeBlockUninstallPackagesLPr(r8, r17);
+        r8.endTag((java.lang.String) null, "package-restrictions");
+        r8.endDocument();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:119:0x026b, code lost:
+    
+        monitor-exit(r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:120:0x026c, code lost:
+    
+        r0 = com.android.server.pm.PackageManagerService.DEBUG_COMPRESSION;
+        r4.finishWrite(r3);
+        com.android.internal.logging.EventLogTags.writeCommitSysConfigFile("package-user-" + r17, android.os.SystemClock.uptimeMillis() - r18);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:121:0x028c, code lost:
+    
+        r4.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:122:0x028f, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:124:0x0093, code lost:
+    
+        r0 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:127:0x0297, code lost:
+    
+        r1 = com.android.server.pm.PackageManagerService.DEBUG_COMPRESSION;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:128:0x0299, code lost:
+    
+        throw r0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:129:0x0293, code lost:
+    
+        r0 = e;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:130:0x0294, code lost:
+    
+        r5 = r3;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:131:0x02ae, code lost:
+    
+        android.util.Slog.wtf("PackageManager", "Unable to write package manager package restrictions,  current changes will be lost at reboot", r0);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:132:0x02b5, code lost:
+    
+        if (r5 != null) goto L132;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:133:0x02b7, code lost:
+    
+        r4.failWrite(r5);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:134:0x02ba, code lost:
+    
+        r4.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:135:0x02bd, code lost:
+    
+        return;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x003e, code lost:
+    
+        r6 = r16.mLock;
+        r8 = com.android.server.pm.PackageManagerService.DEBUG_COMPRESSION;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x0042, code lost:
+    
+        monitor-enter(r6);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x0043, code lost:
+    
+        r8 = android.util.Xml.resolveSerializer(r3);
+        r8.startDocument((java.lang.String) null, java.lang.Boolean.TRUE);
+        r8.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+        r8.startTag((java.lang.String) null, "package-restrictions");
+        r9 = r16.mPackages.values().iterator();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:26:0x0065, code lost:
+    
+        if (r9.hasNext() == false) goto L152;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x0067, code lost:
+    
+        r10 = (com.android.server.pm.PackageSetting) r9.next();
+        r11 = r10.readUserState(r17);
+        r8.startTag((java.lang.String) null, "pkg");
+        r8.attribute((java.lang.String) null, "name", r10.mName);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0087, code lost:
+    
+        if (r11.getCeDataInode() == 0) goto L28;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:29:0x0089, code lost:
+    
+        r8.attributeLong((java.lang.String) null, "ceDataInode", r11.getCeDataInode());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x009c, code lost:
+    
+        if (r11.getDeDataInode() == 0) goto L31;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:32:0x009e, code lost:
+    
+        r8.attributeLong((java.lang.String) null, "deDataInode", r11.getDeDataInode());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x00ab, code lost:
+    
+        if (r11.isInstalled() != false) goto L34;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:35:0x00ad, code lost:
+    
+        r8.attributeBoolean((java.lang.String) null, "inst", false);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x00b6, code lost:
+    
+        if (r11.isStopped() == false) goto L37;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x00b8, code lost:
+    
+        r8.attributeBoolean((java.lang.String) null, "stopped", true);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:40:0x00c2, code lost:
+    
+        if (r11.isNotLaunched() == false) goto L40;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x00c4, code lost:
+    
+        r8.attributeBoolean((java.lang.String) null, "nl", true);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:43:0x00ce, code lost:
+    
+        if (r11.isHidden() == false) goto L43;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x00d0, code lost:
+    
+        r8.attributeBoolean((java.lang.String) null, "hidden", true);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:46:0x00d9, code lost:
+    
+        if (r11.getDistractionFlags() == 0) goto L46;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x00db, code lost:
+    
+        r8.attributeInt((java.lang.String) null, "distraction_flags", r11.getDistractionFlags());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:49:0x00e8, code lost:
+    
+        if (r11.isSuspended() == false) goto L49;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:50:0x00ea, code lost:
+    
+        r8.attributeBoolean((java.lang.String) null, "suspended", true);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:52:0x00f4, code lost:
+    
+        if (r11.isInstantApp() == false) goto L52;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:53:0x00f6, code lost:
+    
+        r8.attributeBoolean((java.lang.String) null, "instant-app", true);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:55:0x00ff, code lost:
+    
+        if (r11.isVirtualPreload() == false) goto L55;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:56:0x0101, code lost:
+    
+        r8.attributeBoolean((java.lang.String) null, "virtual-preload", true);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:58:0x010b, code lost:
+    
+        if (r11.getEnabledState() == 0) goto L58;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:59:0x010d, code lost:
+    
+        r8.attributeInt((java.lang.String) null, "enabled", r11.getEnabledState());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:61:0x011a, code lost:
+    
+        if (r11.getLastDisableAppCaller() == null) goto L61;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:62:0x011c, code lost:
+    
+        r8.attribute((java.lang.String) null, "enabledCaller", r11.getLastDisableAppCaller());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:64:0x0129, code lost:
+    
+        if (r11.getInstallReason() == 0) goto L64;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:65:0x012b, code lost:
+    
+        r8.attributeInt((java.lang.String) null, "install-reason", r11.getInstallReason());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:66:0x0134, code lost:
+    
+        r8.attributeLongHex((java.lang.String) null, "first-install-time", r11.getFirstInstallTimeMillis());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:67:0x0141, code lost:
+    
+        if (r11.getUninstallReason() == 0) goto L67;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:68:0x0143, code lost:
+    
+        r8.attributeInt((java.lang.String) null, "uninstall-reason", r11.getUninstallReason());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:70:0x0151, code lost:
+    
+        if (r11.getHarmfulAppWarning() == null) goto L70;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:71:0x0153, code lost:
+    
+        r8.attribute((java.lang.String) null, "harmful-app-warning", r11.getHarmfulAppWarning());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:73:0x0160, code lost:
+    
+        if (r11.getSplashScreenTheme() == null) goto L73;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:74:0x0162, code lost:
+    
+        r8.attribute((java.lang.String) null, "splash-screen-theme", r11.getSplashScreenTheme());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:76:0x0170, code lost:
+    
+        if (r11.getMinAspectRatio() == 0) goto L76;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:77:0x0172, code lost:
+    
+        r8.attributeInt((java.lang.String) null, "min-aspect-ratio", r11.getMinAspectRatio());
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:79:0x0180, code lost:
+    
+        if (r11.isSuspended() == false) goto L88;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:80:0x0182, code lost:
+    
+        r10 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:82:0x018d, code lost:
+    
+        if (r10 >= r11.getSuspendParams().mStorage.size()) goto L156;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:83:0x018f, code lost:
+    
+        r12 = (android.content.pm.UserPackage) r11.getSuspendParams().mStorage.keyAt(r10);
+        r8.startTag((java.lang.String) null, "suspend-params");
+        r8.attribute((java.lang.String) null, "suspending-package", r12.packageName);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:84:0x01ad, code lost:
+    
+        if (android.app.admin.flags.Flags.crossUserSuspensionEnabledRo() == false) goto L84;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:85:0x01af, code lost:
+    
+        r8.attributeInt((java.lang.String) null, "suspending-user", r12.userId);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:86:0x01b7, code lost:
+    
+        r12 = (com.android.server.pm.pkg.SuspendParams) r11.getSuspendParams().mStorage.valueAt(r10);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:87:0x01c3, code lost:
+    
+        if (r12 == null) goto L158;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:88:0x01c5, code lost:
+    
+        r12.saveToXml(r8);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:90:0x01c8, code lost:
+    
+        r8.endTag((java.lang.String) null, "suspend-params");
+        r10 = r10 + 1;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:93:0x01d0, code lost:
+    
+        r10 = r11.getEnabledComponents();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:94:0x01d4, code lost:
+    
+        if (r10 == null) goto L97;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:96:0x01da, code lost:
+    
+        if (r10.size() <= 0) goto L97;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:97:0x01dc, code lost:
+    
+        r8.startTag((java.lang.String) null, "enabled-components");
+        r12 = 0;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:99:0x01e6, code lost:
+    
+        if (r12 >= r10.size()) goto L159;
+     */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void writePackageRestrictions(int r17, long r18, boolean r20) {
+        /*
+            Method dump skipped, instructions count: 712
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.pm.Settings.writePackageRestrictions(int, long, boolean):void");
+    }
+
+    public final void writePackageRestrictionsLPr(final int i, final boolean z) {
+        PackageManagerService.invalidatePackageInfoCache();
+        ChangeIdStateCache.invalidate();
+        dispatchChange(this);
+        final long uptimeMillis = SystemClock.uptimeMillis();
+        if (z) {
+            writePackageRestrictions(i, uptimeMillis, z);
+            return;
+        }
+        synchronized (this.mPackageRestrictionsLock) {
+            this.mPendingAsyncPackageRestrictionsWrites.put(i, this.mPendingAsyncPackageRestrictionsWrites.get(i, 0) + 1);
+        }
+        this.mHandler.obtainMessage(30, new Runnable() { // from class: com.android.server.pm.Settings$$ExternalSyntheticLambda0
+            @Override // java.lang.Runnable
+            public final void run() {
+                Settings.this.writePackageRestrictions(i, uptimeMillis, z);
+            }
+        }).sendToTarget();
+    }
+
+    public final void writePersistentPreferredActivitiesLPr(TypedXmlSerializer typedXmlSerializer, int i) {
+        typedXmlSerializer.startTag((String) null, "persistent-preferred-activities");
+        PersistentPreferredIntentResolver persistentPreferredIntentResolver = (PersistentPreferredIntentResolver) this.mPersistentPreferredActivities.mStorage.get(i);
+        if (persistentPreferredIntentResolver != null) {
+            for (PersistentPreferredActivity persistentPreferredActivity : Collections.unmodifiableSet(persistentPreferredIntentResolver.mFilters)) {
+                typedXmlSerializer.startTag((String) null, "item");
+                typedXmlSerializer.attribute((String) null, "name", persistentPreferredActivity.mComponent.flattenToShortString());
+                typedXmlSerializer.attributeBoolean((String) null, "set-by-dpm", persistentPreferredActivity.mIsSetByDpm);
+                typedXmlSerializer.startTag((String) null, "filter");
+                persistentPreferredActivity.mFilter.writeToXml(typedXmlSerializer);
+                typedXmlSerializer.endTag((String) null, "filter");
+                typedXmlSerializer.endTag((String) null, "item");
+            }
+        }
+        typedXmlSerializer.endTag((String) null, "persistent-preferred-activities");
+    }
+
+    public final void writePreferredActivitiesLPr(int i, TypedXmlSerializer typedXmlSerializer, boolean z) {
+        typedXmlSerializer.startTag((String) null, "preferred-activities");
+        PreferredIntentResolver preferredIntentResolver = (PreferredIntentResolver) this.mPreferredActivities.mStorage.get(i);
+        if (preferredIntentResolver != null) {
+            for (PreferredActivity preferredActivity : Collections.unmodifiableSet(preferredIntentResolver.mFilters)) {
+                typedXmlSerializer.startTag((String) null, "item");
+                PreferredComponent preferredComponent = preferredActivity.mPref;
+                String[] strArr = preferredComponent.mSetClasses;
+                int length = strArr != null ? strArr.length : 0;
+                typedXmlSerializer.attribute((String) null, "name", preferredComponent.mShortComponent);
+                if (z) {
+                    int i2 = preferredComponent.mMatch;
+                    if (i2 != 0) {
+                        typedXmlSerializer.attributeIntHex((String) null, "match", i2);
+                    }
+                    typedXmlSerializer.attributeBoolean((String) null, "always", preferredComponent.mAlways);
+                    typedXmlSerializer.attributeInt((String) null, "set", length);
+                    for (int i3 = 0; i3 < length; i3++) {
+                        typedXmlSerializer.startTag((String) null, "set");
+                        typedXmlSerializer.attribute((String) null, "name", preferredComponent.mSetComponents[i3]);
+                        typedXmlSerializer.endTag((String) null, "set");
+                    }
+                }
+                typedXmlSerializer.startTag((String) null, "filter");
+                preferredActivity.mFilter.writeToXml(typedXmlSerializer);
+                typedXmlSerializer.endTag((String) null, "filter");
+                typedXmlSerializer.endTag((String) null, "item");
+            }
+        }
+        typedXmlSerializer.endTag((String) null, "preferred-activities");
     }
 }

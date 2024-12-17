@@ -2,56 +2,85 @@ package com.android.server.devicepolicy;
 
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
+import android.app.admin.DevicePolicySafetyChecker;
 import android.content.ComponentName;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
+import android.os.Binder;
 import android.os.ShellCommand;
 import android.os.SystemClock;
 import android.os.UserHandle;
+import com.android.internal.util.Preconditions;
+import com.android.server.devicepolicy.DevicePolicyManagerService;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class DevicePolicyManagerServiceShellCommand extends ShellCommand {
     public ComponentName mComponent;
     public final DevicePolicyManagerService mService;
     public boolean mSetDoOnly;
     public int mUserId = 0;
 
-    public static String safeToString(boolean z) {
-        return z ? "SAFE" : "UNSAFE";
-    }
-
     public DevicePolicyManagerServiceShellCommand(DevicePolicyManagerService devicePolicyManagerService) {
         Objects.requireNonNull(devicePolicyManagerService);
         this.mService = devicePolicyManagerService;
     }
 
-    public void onHelp() {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        try {
-            outPrintWriter.printf("DevicePolicyManager Service (device_policy) commands:\n\n", new Object[0]);
-            showHelp(outPrintWriter);
-            outPrintWriter.close();
-        } catch (Throwable th) {
-            if (outPrintWriter != null) {
-                try {
-                    outPrintWriter.close();
-                } catch (Throwable th2) {
-                    th.addSuppressed(th2);
-                }
-            }
-            throw th;
+    public static int printAndGetSize(PrintWriter printWriter, Collection collection, String str) {
+        if (collection.isEmpty()) {
+            printWriter.printf("no %ss\n", str);
+            return 0;
         }
+        int size = collection.size();
+        printWriter.printf("%d %s%s:\n", Integer.valueOf(size), str, size == 1 ? "" : "s");
+        return size;
     }
 
-    public int onCommand(String str) {
+    public static void showHelp(PrintWriter printWriter) {
+        printWriter.printf("  help\n", new Object[0]);
+        printWriter.printf("    Prints this help text.\n\n", new Object[0]);
+        printWriter.printf("  %s <OPERATION_ID>\n", "is-operation-safe");
+        printWriter.printf("    Checks if the give operation is safe \n\n", new Object[0]);
+        printWriter.printf("  %s <REASON_ID>\n", "is-operation-safe-by-reason");
+        printWriter.printf("    Checks if the operations are safe for the given reason\n\n", new Object[0]);
+        printWriter.printf("  %s <OPERATION_ID> <REASON_ID>\n", "set-operation-safe");
+        printWriter.printf("    Emulates the result of the next call to check if the given operation is safe \n\n", new Object[0]);
+        printWriter.printf("  %s\n", "list-owners");
+        printWriter.printf("    Lists the device / profile owners per user \n\n", new Object[0]);
+        printWriter.printf("  %s\n", "list-policy-exempt-apps");
+        printWriter.printf("    Lists the apps that are exempt from policies\n\n", new Object[0]);
+        printWriter.printf("  %s [ %s <USER_ID> | current ] <COMPONENT>\n", "set-active-admin", "--user");
+        printWriter.printf("    Sets the given component as active admin for an existing user.\n\n", new Object[0]);
+        printWriter.printf("  %s [ %s <USER_ID> | current *EXPERIMENTAL* ] [ %s ]<COMPONENT>\n", "set-device-owner", "--user", "--device-owner-only");
+        printWriter.printf("    Sets the given component as active admin, and its package as device owner.\n\n", new Object[0]);
+        printWriter.printf("  %s [ %s <USER_ID> | current ] <COMPONENT>\n", "set-profile-owner", "--user");
+        printWriter.printf("    Sets the given component as active admin and profile owner for an existing user.\n\n", new Object[0]);
+        printWriter.printf("  %s [ %s <USER_ID> | current ] <COMPONENT>\n", "remove-active-admin", "--user");
+        printWriter.printf("    Disables an active admin, the admin must have declared android:testOnly in the application in its manifest. This will also remove device and profile owners.\n\n", new Object[0]);
+        printWriter.printf("  %s\n", "clear-freeze-period-record");
+        printWriter.printf("    Clears framework-maintained record of past freeze periods that the device went through. For use during feature development to prevent triggering restriction on setting freeze periods.\n\n", new Object[0]);
+        printWriter.printf("  %s\n", "force-network-logs");
+        printWriter.printf("    Makes all network logs available to the DPC and triggers DeviceAdminReceiver.onNetworkLogsAvailable() if needed.\n\n", new Object[0]);
+        printWriter.printf("  %s\n", "force-security-logs");
+        printWriter.printf("    Makes all security logs available to the DPC and triggers DeviceAdminReceiver.onSecurityLogsAvailable() if needed.\n\n", new Object[0]);
+        printWriter.printf("  %s [ %s <USER_ID> | current ] <COMPONENT>\n", "mark-profile-owner-on-organization-owned-device", "--user");
+        printWriter.printf("    Marks the profile owner of the given user as managing an organization-owneddevice. That will give it access to device identifiers (such as serial number, IMEI and MEID), as well as other privileges.\n\n", new Object[0]);
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    public final int onCommand(String str) {
         char c;
         if (str == null) {
             return handleDefaultCommands(str);
         }
         PrintWriter outPrintWriter = getOutPrintWriter();
         try {
+            boolean z = true;
+            int i = -1;
             switch (str.hashCode()) {
                 case -2077120112:
                     if (str.equals("force-network-logs")) {
@@ -150,89 +179,105 @@ public final class DevicePolicyManagerServiceShellCommand extends ShellCommand {
             }
             switch (c) {
                 case 0:
-                    int runIsSafeOperation = runIsSafeOperation(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
+                    int parseInt = Integer.parseInt(getNextArgRequired());
+                    DevicePolicySafetyChecker devicePolicySafetyChecker = this.mService.mSafetyChecker;
+                    int unsafeOperationReason = devicePolicySafetyChecker == null ? -1 : devicePolicySafetyChecker.getUnsafeOperationReason(parseInt);
+                    if (unsafeOperationReason != -1) {
+                        z = false;
                     }
-                    return runIsSafeOperation;
+                    outPrintWriter.printf("Operation %s is %s. Reason: %s\n", DevicePolicyManager.operationToString(parseInt), z ? "SAFE" : "UNSAFE", DevicePolicyManager.operationSafetyReasonToString(unsafeOperationReason));
+                    outPrintWriter.close();
+                    return 0;
                 case 1:
-                    int runIsSafeOperationByReason = runIsSafeOperationByReason(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
-                    }
-                    return runIsSafeOperationByReason;
+                    int parseInt2 = Integer.parseInt(getNextArgRequired());
+                    outPrintWriter.printf("Operations affected by %s are %s\n", DevicePolicyManager.operationSafetyReasonToString(parseInt2), this.mService.isSafeOperation(parseInt2) ? "SAFE" : "UNSAFE");
+                    outPrintWriter.close();
+                    return 0;
                 case 2:
-                    int runSetSafeOperation = runSetSafeOperation(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
-                    }
-                    return runSetSafeOperation;
+                    int parseInt3 = Integer.parseInt(getNextArgRequired());
+                    int parseInt4 = Integer.parseInt(getNextArgRequired());
+                    this.mService.setNextOperationSafety(parseInt3, parseInt4);
+                    outPrintWriter.printf("Next call to check operation %s will return %s\n", DevicePolicyManager.operationToString(parseInt3), DevicePolicyManager.operationSafetyReasonToString(parseInt4));
+                    outPrintWriter.close();
+                    return 0;
                 case 3:
-                    int runListOwners = runListOwners(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
-                    }
-                    return runListOwners;
+                    runListOwners(outPrintWriter);
+                    outPrintWriter.close();
+                    return 0;
                 case 4:
-                    int runListPolicyExemptApps = runListPolicyExemptApps(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
+                    List listPolicyExemptApps = this.mService.listPolicyExemptApps();
+                    int printAndGetSize = printAndGetSize(outPrintWriter, listPolicyExemptApps, "policy exempt app");
+                    if (printAndGetSize != 0) {
+                        for (int i2 = 0; i2 < printAndGetSize; i2++) {
+                            outPrintWriter.printf("  %d: %s\n", Integer.valueOf(i2), (String) ((ArrayList) listPolicyExemptApps).get(i2));
+                        }
                     }
-                    return runListPolicyExemptApps;
+                    outPrintWriter.close();
+                    return 0;
                 case 5:
-                    int runSetActiveAdmin = runSetActiveAdmin(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
-                    }
-                    return runSetActiveAdmin;
+                    parseArgs();
+                    this.mService.setActiveAdmin(this.mComponent, true, this.mUserId);
+                    outPrintWriter.printf("Success: Active admin set to component %s\n", this.mComponent.flattenToShortString());
+                    outPrintWriter.close();
+                    return 0;
                 case 6:
-                    int runSetDeviceOwner = runSetDeviceOwner(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
-                    }
-                    return runSetDeviceOwner;
+                    runSetDeviceOwner(outPrintWriter);
+                    outPrintWriter.close();
+                    return 0;
                 case 7:
-                    int runSetProfileOwner = runSetProfileOwner(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
-                    }
-                    return runSetProfileOwner;
+                    runSetProfileOwner(outPrintWriter);
+                    outPrintWriter.close();
+                    return 0;
                 case '\b':
-                    int runRemoveActiveAdmin = runRemoveActiveAdmin(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
-                    }
-                    return runRemoveActiveAdmin;
+                    parseArgs();
+                    this.mService.forceRemoveActiveAdmin(this.mComponent, this.mUserId);
+                    outPrintWriter.printf("Success: Admin removed %s\n", this.mComponent);
+                    outPrintWriter.close();
+                    return 0;
                 case '\t':
-                    int runClearFreezePeriodRecord = runClearFreezePeriodRecord(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
-                    }
-                    return runClearFreezePeriodRecord;
+                    this.mService.clearSystemUpdatePolicyFreezePeriodRecord();
+                    outPrintWriter.printf("Success\n", new Object[0]);
+                    outPrintWriter.close();
+                    return 0;
                 case '\n':
-                    int runForceNetworkLogs = runForceNetworkLogs(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
+                    while (true) {
+                        long forceNetworkLogs = this.mService.forceNetworkLogs();
+                        if (forceNetworkLogs == 0) {
+                            outPrintWriter.printf("Success\n", new Object[0]);
+                            outPrintWriter.close();
+                            return 0;
+                        }
+                        outPrintWriter.printf("We have to wait for %d milliseconds...\n", Long.valueOf(forceNetworkLogs));
+                        SystemClock.sleep(forceNetworkLogs);
                     }
-                    return runForceNetworkLogs;
                 case 11:
-                    int runForceSecurityLogs = runForceSecurityLogs(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
+                    while (true) {
+                        long forceSecurityLogs = this.mService.forceSecurityLogs();
+                        if (forceSecurityLogs == 0) {
+                            outPrintWriter.printf("Success\n", new Object[0]);
+                            outPrintWriter.close();
+                            return 0;
+                        }
+                        outPrintWriter.printf("We have to wait for %d milliseconds...\n", Long.valueOf(forceSecurityLogs));
+                        SystemClock.sleep(forceSecurityLogs);
                     }
-                    return runForceSecurityLogs;
                 case '\f':
-                    int runMarkProfileOwnerOnOrganizationOwnedDevice = runMarkProfileOwnerOnOrganizationOwnedDevice(outPrintWriter);
-                    if (outPrintWriter != null) {
-                        outPrintWriter.close();
-                    }
-                    return runMarkProfileOwnerOnOrganizationOwnedDevice;
+                    parseArgs();
+                    this.mService.setProfileOwnerOnOrganizationOwnedDevice(this.mComponent, this.mUserId, true);
+                    outPrintWriter.printf("Success\n", new Object[0]);
+                    outPrintWriter.close();
+                    return 0;
                 default:
-                    int onInvalidCommand = onInvalidCommand(outPrintWriter, str);
+                    if (handleDefaultCommands(str) == 0) {
+                        i = 0;
+                    } else {
+                        outPrintWriter.printf("Usage: \n", new Object[0]);
+                        showHelp(outPrintWriter);
+                    }
                     if (outPrintWriter != null) {
                         outPrintWriter.close();
                     }
-                    return onInvalidCommand;
+                    return i;
             }
         } catch (Throwable th) {
             if (outPrintWriter != null) {
@@ -246,89 +291,64 @@ public final class DevicePolicyManagerServiceShellCommand extends ShellCommand {
         }
     }
 
-    public final int onInvalidCommand(PrintWriter printWriter, String str) {
-        if (super.handleDefaultCommands(str) == 0) {
-            return 0;
+    public final void onHelp() {
+        PrintWriter outPrintWriter = getOutPrintWriter();
+        try {
+            outPrintWriter.printf("DevicePolicyManager Service (device_policy) commands:\n\n", new Object[0]);
+            showHelp(outPrintWriter);
+            outPrintWriter.close();
+        } catch (Throwable th) {
+            if (outPrintWriter != null) {
+                try {
+                    outPrintWriter.close();
+                } catch (Throwable th2) {
+                    th.addSuppressed(th2);
+                }
+            }
+            throw th;
         }
-        printWriter.printf("Usage: \n", new Object[0]);
-        showHelp(printWriter);
-        return -1;
     }
 
-    public final void showHelp(PrintWriter printWriter) {
-        printWriter.printf("  help\n", new Object[0]);
-        printWriter.printf("    Prints this help text.\n\n", new Object[0]);
-        printWriter.printf("  %s <OPERATION_ID>\n", "is-operation-safe");
-        printWriter.printf("    Checks if the give operation is safe \n\n", new Object[0]);
-        printWriter.printf("  %s <REASON_ID>\n", "is-operation-safe-by-reason");
-        printWriter.printf("    Checks if the operations are safe for the given reason\n\n", new Object[0]);
-        printWriter.printf("  %s <OPERATION_ID> <REASON_ID>\n", "set-operation-safe");
-        printWriter.printf("    Emulates the result of the next call to check if the given operation is safe \n\n", new Object[0]);
-        printWriter.printf("  %s\n", "list-owners");
-        printWriter.printf("    Lists the device / profile owners per user \n\n", new Object[0]);
-        printWriter.printf("  %s\n", "list-policy-exempt-apps");
-        printWriter.printf("    Lists the apps that are exempt from policies\n\n", new Object[0]);
-        printWriter.printf("  %s [ %s <USER_ID> | current ] <COMPONENT>\n", "set-active-admin", "--user");
-        printWriter.printf("    Sets the given component as active admin for an existing user.\n\n", new Object[0]);
-        printWriter.printf("  %s [ %s <USER_ID> | current *EXPERIMENTAL* ] [ %s ]<COMPONENT>\n", "set-device-owner", "--user", "--device-owner-only");
-        printWriter.printf("    Sets the given component as active admin, and its package as device owner.\n\n", new Object[0]);
-        printWriter.printf("  %s [ %s <USER_ID> | current ] <COMPONENT>\n", "set-profile-owner", "--user");
-        printWriter.printf("    Sets the given component as active admin and profile owner for an existing user.\n\n", new Object[0]);
-        printWriter.printf("  %s [ %s <USER_ID> | current ] <COMPONENT>\n", "remove-active-admin", "--user");
-        printWriter.printf("    Disables an active admin, the admin must have declared android:testOnly in the application in its manifest. This will also remove device and profile owners.\n\n", new Object[0]);
-        printWriter.printf("  %s\n", "clear-freeze-period-record");
-        printWriter.printf("    Clears framework-maintained record of past freeze periods that the device went through. For use during feature development to prevent triggering restriction on setting freeze periods.\n\n", new Object[0]);
-        printWriter.printf("  %s\n", "force-network-logs");
-        printWriter.printf("    Makes all network logs available to the DPC and triggers DeviceAdminReceiver.onNetworkLogsAvailable() if needed.\n\n", new Object[0]);
-        printWriter.printf("  %s\n", "force-security-logs");
-        printWriter.printf("    Makes all security logs available to the DPC and triggers DeviceAdminReceiver.onSecurityLogsAvailable() if needed.\n\n", new Object[0]);
-        printWriter.printf("  %s [ %s <USER_ID> | current ] <COMPONENT>\n", "mark-profile-owner-on-organization-owned-device", "--user");
-        printWriter.printf("    Marks the profile owner of the given user as managing an organization-owneddevice. That will give it access to device identifiers (such as serial number, IMEI and MEID), as well as other privileges.\n\n", new Object[0]);
-    }
-
-    public final int runIsSafeOperation(PrintWriter printWriter) {
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        int unsafeOperationReason = this.mService.getUnsafeOperationReason(parseInt);
-        printWriter.printf("Operation %s is %s. Reason: %s\n", DevicePolicyManager.operationToString(parseInt), safeToString(unsafeOperationReason == -1), DevicePolicyManager.operationSafetyReasonToString(unsafeOperationReason));
-        return 0;
-    }
-
-    public final int runIsSafeOperationByReason(PrintWriter printWriter) {
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        printWriter.printf("Operations affected by %s are %s\n", DevicePolicyManager.operationSafetyReasonToString(parseInt), safeToString(this.mService.isSafeOperation(parseInt)));
-        return 0;
-    }
-
-    public final int runSetSafeOperation(PrintWriter printWriter) {
-        int parseInt = Integer.parseInt(getNextArgRequired());
-        int parseInt2 = Integer.parseInt(getNextArgRequired());
-        this.mService.setNextOperationSafety(parseInt, parseInt2);
-        printWriter.printf("Next call to check operation %s will return %s\n", DevicePolicyManager.operationToString(parseInt), DevicePolicyManager.operationSafetyReasonToString(parseInt2));
-        return 0;
-    }
-
-    public final int printAndGetSize(PrintWriter printWriter, Collection collection, String str) {
-        if (collection.isEmpty()) {
-            printWriter.printf("no %ss\n", str);
-            return 0;
+    public final void parseArgs() {
+        while (true) {
+            String nextOption = getNextOption();
+            if (nextOption == null) {
+                String nextArgRequired = getNextArgRequired();
+                ComponentName unflattenFromString = ComponentName.unflattenFromString(nextArgRequired);
+                if (unflattenFromString == null) {
+                    throw new IllegalArgumentException(ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("Invalid component ", nextArgRequired));
+                }
+                this.mComponent = unflattenFromString;
+                return;
+            }
+            if ("--user".equals(nextOption)) {
+                int parseUserArg = UserHandle.parseUserArg(getNextArgRequired());
+                this.mUserId = parseUserArg;
+                if (parseUserArg == -2) {
+                    this.mUserId = ActivityManager.getCurrentUser();
+                }
+            } else {
+                if (!"--device-owner-only".equals(nextOption)) {
+                    throw new IllegalArgumentException("Unknown option: ".concat(nextOption));
+                }
+                this.mSetDoOnly = true;
+            }
         }
-        int size = collection.size();
-        Object[] objArr = new Object[3];
-        objArr[0] = Integer.valueOf(size);
-        objArr[1] = str;
-        objArr[2] = size == 1 ? "" : "s";
-        printWriter.printf("%d %s%s:\n", objArr);
-        return size;
     }
 
-    public final int runListOwners(PrintWriter printWriter) {
-        List listAllOwners = this.mService.listAllOwners();
-        int printAndGetSize = printAndGetSize(printWriter, listAllOwners, "owner");
+    public final void runListOwners(PrintWriter printWriter) {
+        DevicePolicyManagerService devicePolicyManagerService = this.mService;
+        Preconditions.checkCallAuthorization(devicePolicyManagerService.hasCallingOrSelfPermission("android.permission.MANAGE_DEVICE_ADMINS"));
+        DevicePolicyManagerService.Injector injector = devicePolicyManagerService.mInjector;
+        DevicePolicyManagerService$$ExternalSyntheticLambda33 devicePolicyManagerService$$ExternalSyntheticLambda33 = new DevicePolicyManagerService$$ExternalSyntheticLambda33(devicePolicyManagerService, 4);
+        injector.getClass();
+        List list = (List) Binder.withCleanCallingIdentity(devicePolicyManagerService$$ExternalSyntheticLambda33);
+        int printAndGetSize = printAndGetSize(printWriter, list, "owner");
         if (printAndGetSize == 0) {
-            return 0;
+            return;
         }
         for (int i = 0; i < printAndGetSize; i++) {
-            OwnerShellData ownerShellData = (OwnerShellData) listAllOwners.get(i);
+            OwnerShellData ownerShellData = (OwnerShellData) list.get(i);
             printWriter.printf("User %2d: admin=%s", Integer.valueOf(ownerShellData.userId), ownerShellData.admin.flattenToShortString());
             if (ownerShellData.isDeviceOwner) {
                 printWriter.print(",DeviceOwner");
@@ -344,141 +364,46 @@ public final class DevicePolicyManagerServiceShellCommand extends ShellCommand {
             }
             printWriter.println();
         }
-        return 0;
     }
 
-    public final int runListPolicyExemptApps(PrintWriter printWriter) {
-        List listPolicyExemptApps = this.mService.listPolicyExemptApps();
-        int printAndGetSize = printAndGetSize(printWriter, listPolicyExemptApps, "policy exempt app");
-        if (printAndGetSize == 0) {
-            return 0;
-        }
-        for (int i = 0; i < printAndGetSize; i++) {
-            printWriter.printf("  %d: %s\n", Integer.valueOf(i), (String) listPolicyExemptApps.get(i));
-        }
-        return 0;
-    }
-
-    public final int runSetActiveAdmin(PrintWriter printWriter) {
+    public final void runSetDeviceOwner(PrintWriter printWriter) {
         parseArgs();
-        this.mService.setActiveAdmin(this.mComponent, true, this.mUserId);
-        printWriter.printf("Success: Active admin set to component %s\n", this.mComponent.flattenToShortString());
-        return 0;
-    }
-
-    public final int runSetDeviceOwner(PrintWriter printWriter) {
-        parseArgs();
-        boolean z = true;
-        this.mService.setActiveAdmin(this.mComponent, true, this.mUserId);
+        boolean z = false;
         try {
-            DevicePolicyManagerService devicePolicyManagerService = this.mService;
-            ComponentName componentName = this.mComponent;
-            int i = this.mUserId;
-            if (this.mSetDoOnly) {
-                z = false;
-            }
-            if (!devicePolicyManagerService.setDeviceOwner(componentName, i, z)) {
+            this.mService.setActiveAdmin(this.mComponent, false, this.mUserId);
+            z = true;
+        } catch (IllegalArgumentException unused) {
+            printWriter.printf("%s was already an admin for user %d. No need to set it again.\n", this.mComponent.flattenToShortString(), Integer.valueOf(this.mUserId));
+        }
+        try {
+            if (this.mService.setDeviceOwner(this.mComponent, this.mUserId, true ^ this.mSetDoOnly)) {
+                this.mService.setUserProvisioningState(3, this.mUserId);
+                printWriter.printf("Success: Device owner set to package %s\n", this.mComponent.flattenToShortString());
+                printWriter.printf("Active admin set to component %s\n", this.mComponent.flattenToShortString());
+            } else {
                 throw new RuntimeException("Can't set package " + this.mComponent + " as device owner.");
             }
-            this.mService.setUserProvisioningState(3, this.mUserId);
-            printWriter.printf("Success: Device owner set to package %s\n", this.mComponent.flattenToShortString());
-            printWriter.printf("Active admin set to component %s\n", this.mComponent.flattenToShortString());
-            return 0;
         } catch (Exception e) {
-            this.mService.removeActiveAdmin(this.mComponent, 0);
+            if (z) {
+                this.mService.removeActiveAdmin(this.mComponent, this.mUserId);
+            }
             throw e;
         }
     }
 
-    public final int runRemoveActiveAdmin(PrintWriter printWriter) {
-        parseArgs();
-        this.mService.forceRemoveActiveAdmin(this.mComponent, this.mUserId);
-        printWriter.printf("Success: Admin removed %s\n", this.mComponent);
-        return 0;
-    }
-
-    public final int runSetProfileOwner(PrintWriter printWriter) {
+    public final void runSetProfileOwner(PrintWriter printWriter) {
         parseArgs();
         this.mService.setActiveAdmin(this.mComponent, true, this.mUserId);
         try {
-            if (!this.mService.setProfileOwner(this.mComponent, this.mUserId)) {
+            if (this.mService.setProfileOwner(this.mComponent, this.mUserId)) {
+                this.mService.setUserProvisioningState(3, this.mUserId);
+                printWriter.printf("Success: Active admin and profile owner set to %s for user %d\n", this.mComponent.flattenToShortString(), Integer.valueOf(this.mUserId));
+            } else {
                 throw new RuntimeException("Can't set component " + this.mComponent.flattenToShortString() + " as profile owner for user " + this.mUserId);
             }
-            this.mService.setUserProvisioningState(3, this.mUserId);
-            printWriter.printf("Success: Active admin and profile owner set to %s for user %d\n", this.mComponent.flattenToShortString(), Integer.valueOf(this.mUserId));
-            return 0;
         } catch (Exception e) {
             this.mService.removeActiveAdmin(this.mComponent, this.mUserId);
             throw e;
         }
-    }
-
-    public final int runClearFreezePeriodRecord(PrintWriter printWriter) {
-        this.mService.clearSystemUpdatePolicyFreezePeriodRecord();
-        printWriter.printf("Success\n", new Object[0]);
-        return 0;
-    }
-
-    public final int runForceNetworkLogs(PrintWriter printWriter) {
-        while (true) {
-            long forceNetworkLogs = this.mService.forceNetworkLogs();
-            if (forceNetworkLogs != 0) {
-                printWriter.printf("We have to wait for %d milliseconds...\n", Long.valueOf(forceNetworkLogs));
-                SystemClock.sleep(forceNetworkLogs);
-            } else {
-                printWriter.printf("Success\n", new Object[0]);
-                return 0;
-            }
-        }
-    }
-
-    public final int runForceSecurityLogs(PrintWriter printWriter) {
-        while (true) {
-            long forceSecurityLogs = this.mService.forceSecurityLogs();
-            if (forceSecurityLogs != 0) {
-                printWriter.printf("We have to wait for %d milliseconds...\n", Long.valueOf(forceSecurityLogs));
-                SystemClock.sleep(forceSecurityLogs);
-            } else {
-                printWriter.printf("Success\n", new Object[0]);
-                return 0;
-            }
-        }
-    }
-
-    public final int runMarkProfileOwnerOnOrganizationOwnedDevice(PrintWriter printWriter) {
-        parseArgs();
-        this.mService.setProfileOwnerOnOrganizationOwnedDevice(this.mComponent, this.mUserId, true);
-        printWriter.printf("Success\n", new Object[0]);
-        return 0;
-    }
-
-    public final void parseArgs() {
-        while (true) {
-            String nextOption = getNextOption();
-            if (nextOption != null) {
-                if ("--user".equals(nextOption)) {
-                    int parseUserArg = UserHandle.parseUserArg(getNextArgRequired());
-                    this.mUserId = parseUserArg;
-                    if (parseUserArg == -2) {
-                        this.mUserId = ActivityManager.getCurrentUser();
-                    }
-                } else if ("--device-owner-only".equals(nextOption)) {
-                    this.mSetDoOnly = true;
-                } else {
-                    throw new IllegalArgumentException("Unknown option: " + nextOption);
-                }
-            } else {
-                this.mComponent = parseComponentName(getNextArgRequired());
-                return;
-            }
-        }
-    }
-
-    public final ComponentName parseComponentName(String str) {
-        ComponentName unflattenFromString = ComponentName.unflattenFromString(str);
-        if (unflattenFromString != null) {
-            return unflattenFromString;
-        }
-        throw new IllegalArgumentException("Invalid component " + str);
     }
 }

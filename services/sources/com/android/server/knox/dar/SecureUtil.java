@@ -5,21 +5,20 @@ import com.android.server.knox.dar.sdp.SDPLog;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-/* loaded from: classes2.dex */
-public final class SecureUtil {
-    public static void clear(String str) {
-    }
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public abstract class SecureUtil {
+    public static final SecureRandom sSecureRandom = new SecureRandom();
 
-    public static boolean isFailed(Object obj) {
-        return ((obj instanceof Boolean) && !((Boolean) obj).booleanValue()) || ((obj instanceof Integer) && ((Integer) obj).intValue() != 0);
-    }
-
-    public static boolean isEmpty(Object obj) {
-        return obj == null || ((obj instanceof byte[]) && ((byte[]) obj).length == 0) || ((obj instanceof String) && ((String) obj).isEmpty());
+    public static void clear(byte[] bArr) {
+        if (bArr == null) {
+            return;
+        }
+        Arrays.fill(bArr, 0, bArr.length, (byte) 0);
     }
 
     public static boolean isAnyoneEmptyHere(Object... objArr) {
-        if (objArr == null || objArr.length == 0) {
+        if (objArr.length == 0) {
             return true;
         }
         for (Object obj : objArr) {
@@ -30,34 +29,18 @@ public final class SecureUtil {
         return false;
     }
 
-    public static void clearAll(Object... objArr) {
-        if (objArr == null || objArr.length == 0) {
+    public static boolean isEmpty(Object obj) {
+        return obj == null || ((obj instanceof byte[]) && ((byte[]) obj).length == 0) || ((obj instanceof String) && ((String) obj).isEmpty());
+    }
+
+    public static boolean isFailed(Object obj) {
+        return ((obj instanceof Boolean) && !((Boolean) obj).booleanValue()) || ((obj instanceof Integer) && ((Integer) obj).intValue() != 0);
+    }
+
+    public static void record(boolean z) {
+        if (z) {
             return;
         }
-        for (Object obj : objArr) {
-            if (obj instanceof byte[]) {
-                clear((byte[]) obj);
-            } else if (obj instanceof String) {
-                clear((String) obj);
-            }
-        }
-    }
-
-    public static void clear(byte[] bArr) {
-        if (bArr == null) {
-            return;
-        }
-        Arrays.fill(bArr, 0, bArr.length, (byte) 0);
-    }
-
-    public static byte[] generateRandomBytes(int i) {
-        return new SecureRandom().generateSeed(i);
-    }
-
-    public static boolean record(boolean z) {
-        if (!z) {
-            SDPLog.e(new Exception(String.format("Unexpected failure with a process [ UID : %d, PID : %d ]", Integer.valueOf(Binder.getCallingUid()), Integer.valueOf(Binder.getCallingPid()))));
-        }
-        return z;
+        SDPLog.e(new Exception(String.format("Unexpected failure with a process [ UID : %d, PID : %d ]", Integer.valueOf(Binder.getCallingUid()), Integer.valueOf(Binder.getCallingPid()))), null, null);
     }
 }

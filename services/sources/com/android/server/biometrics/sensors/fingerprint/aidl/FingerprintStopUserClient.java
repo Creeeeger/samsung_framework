@@ -1,38 +1,31 @@
 package com.android.server.biometrics.sensors.fingerprint.aidl;
 
-import android.content.Context;
-import android.os.IBinder;
+import android.hardware.biometrics.fingerprint.ISession;
 import android.os.RemoteException;
 import android.util.Slog;
-import com.android.server.biometrics.log.BiometricContext;
-import com.android.server.biometrics.log.BiometricLogger;
 import com.android.server.biometrics.sensors.ClientMonitorCallback;
 import com.android.server.biometrics.sensors.StopUserClient;
-import java.util.function.Supplier;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FingerprintStopUserClient extends StopUserClient {
-    @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void unableToStart() {
-    }
-
-    public FingerprintStopUserClient(Context context, Supplier supplier, IBinder iBinder, int i, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, StopUserClient.UserStoppedCallback userStoppedCallback) {
-        super(context, supplier, iBinder, i, i2, biometricLogger, biometricContext, userStoppedCallback);
-    }
-
+public final class FingerprintStopUserClient extends StopUserClient {
     @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public void start(ClientMonitorCallback clientMonitorCallback) {
+    public final void start(ClientMonitorCallback clientMonitorCallback) {
         super.start(clientMonitorCallback);
         startHalOperation();
     }
 
     @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void startHalOperation() {
+    public final void startHalOperation() {
         try {
-            ((AidlSession) getFreshDaemon()).getSession().close();
+            ((ISession) this.mLazyDaemon.get()).close();
         } catch (RemoteException e) {
             Slog.e("FingerprintStopUserClient", "Remote exception", e);
             getCallback().onClientFinished(this, false);
         }
+    }
+
+    @Override // com.android.server.biometrics.sensors.HalClientMonitor
+    public final void unableToStart() {
     }
 }

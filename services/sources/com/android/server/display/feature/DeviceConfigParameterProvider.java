@@ -1,22 +1,33 @@
 package com.android.server.display.feature;
 
-import android.provider.DeviceConfig;
 import android.provider.DeviceConfigInterface;
-import java.util.concurrent.Executor;
+import android.util.Slog;
 
-/* loaded from: classes2.dex */
-public class DeviceConfigParameterProvider {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DeviceConfigParameterProvider {
     public final DeviceConfigInterface mDeviceConfig;
 
     public DeviceConfigParameterProvider(DeviceConfigInterface deviceConfigInterface) {
         this.mDeviceConfig = deviceConfigInterface;
     }
 
-    public boolean isDisableScreenWakeLocksWhileCachedFeatureEnabled() {
-        return this.mDeviceConfig.getBoolean("display_manager", "disable_screen_wake_locks_while_cached", true);
-    }
-
-    public void addOnPropertiesChangedListener(Executor executor, DeviceConfig.OnPropertiesChangedListener onPropertiesChangedListener) {
-        this.mDeviceConfig.addOnPropertiesChangedListener("display_manager", executor, onPropertiesChangedListener);
+    public final int[] getIntArrayProperty(String str) {
+        String string = this.mDeviceConfig.getString("display_manager", str, (String) null);
+        if (string == null) {
+            return null;
+        }
+        String[] split = string.split(",");
+        int length = split.length;
+        int[] iArr = new int[length];
+        for (int i = 0; i < length; i++) {
+            try {
+                iArr[i] = Integer.parseInt(split[i]);
+            } catch (NumberFormatException e) {
+                Slog.e("DisplayFeatureProvider", "Incorrect format for array: '" + string + "'", e);
+                return null;
+            }
+        }
+        return iArr;
     }
 }

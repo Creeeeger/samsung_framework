@@ -5,19 +5,16 @@ import android.content.ComponentName;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.service.contentcapture.ContentCaptureService;
-import android.service.contentcapture.SnapshotData;
-import android.util.LocalLog;
 import android.util.Slog;
 import android.view.contentcapture.ContentCaptureContext;
 import com.android.internal.os.IResultReceiver;
 import com.android.internal.util.Preconditions;
-import com.android.internal.util.jobs.XmlUtils;
-import java.io.PrintWriter;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
+import com.android.server.alarm.GmsAlarmManager$$ExternalSyntheticOutline0;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class ContentCaptureServerSession {
-    public static final String TAG = "ContentCaptureServerSession";
     public final ComponentName appComponentName;
     public final IBinder mActivityToken;
     public final ContentCaptureContext mContentCaptureContext;
@@ -27,42 +24,61 @@ public final class ContentCaptureServerSession {
     public final IResultReceiver mSessionStateReceiver;
     public final int mUid;
 
-    public ContentCaptureServerSession(Object obj, IBinder iBinder, ActivityId activityId, ContentCapturePerUserService contentCapturePerUserService, ComponentName componentName, IResultReceiver iResultReceiver, int i, int i2, int i3, int i4, int i5) {
-        Preconditions.checkArgument(i3 != 0);
+    public ContentCaptureServerSession(Object obj, IBinder iBinder, ActivityId activityId, ContentCapturePerUserService contentCapturePerUserService, ComponentName componentName, IResultReceiver iResultReceiver, int i, int i2, int i3, int i4) {
+        Preconditions.checkArgument(i2 != 0);
         this.mLock = obj;
         this.mActivityToken = iBinder;
         this.appComponentName = componentName;
         this.mService = contentCapturePerUserService;
-        this.mId = i3;
-        this.mUid = i4;
-        this.mContentCaptureContext = new ContentCaptureContext(null, activityId, componentName, i2, iBinder, i5);
+        this.mId = i2;
+        this.mUid = i3;
+        this.mContentCaptureContext = new ContentCaptureContext(null, activityId, componentName, i, iBinder, i4);
         this.mSessionStateReceiver = iResultReceiver;
         try {
             iResultReceiver.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: com.android.server.contentcapture.ContentCaptureServerSession$$ExternalSyntheticLambda0
                 @Override // android.os.IBinder.DeathRecipient
                 public final void binderDied() {
-                    ContentCaptureServerSession.this.lambda$new$0();
+                    ContentCaptureServerSession contentCaptureServerSession = ContentCaptureServerSession.this;
+                    if (contentCaptureServerSession.mService.mMaster.verbose) {
+                        StringBuilder sb = new StringBuilder("onClientDeath(");
+                        sb.append(contentCaptureServerSession.mActivityToken);
+                        sb.append("): removing session ");
+                        GmsAlarmManager$$ExternalSyntheticOutline0.m(sb, contentCaptureServerSession.mId, "ContentCaptureServerSession");
+                    }
+                    synchronized (contentCaptureServerSession.mLock) {
+                        try {
+                            int i5 = contentCaptureServerSession.mId;
+                            ContentCapturePerUserService contentCapturePerUserService2 = contentCaptureServerSession.mService;
+                            try {
+                                contentCaptureServerSession.destroyLocked();
+                            } finally {
+                                contentCapturePerUserService2.mSessions.remove(i5);
+                            }
+                        } catch (Throwable th) {
+                            throw th;
+                        }
+                    }
                 }
             }, 0);
         } catch (Exception unused) {
-            Slog.w(TAG, "could not register DeathRecipient for " + iBinder);
+            Slog.w("ContentCaptureServerSession", "could not register DeathRecipient for " + iBinder);
         }
     }
 
-    public boolean isActivitySession(IBinder iBinder) {
-        return this.mActivityToken.equals(iBinder);
-    }
-
-    public void notifySessionStartedLocked(IResultReceiver iResultReceiver) {
-        RemoteContentCaptureService remoteContentCaptureService = this.mService.mRemoteService;
+    public final void destroyLocked() {
+        ContentCapturePerUserService contentCapturePerUserService = this.mService;
+        if (contentCapturePerUserService.mMaster.verbose) {
+            Slog.v("ContentCaptureServerSession", "destroy(notifyRemoteService=true)");
+        }
+        RemoteContentCaptureService remoteContentCaptureService = contentCapturePerUserService.mRemoteService;
         if (remoteContentCaptureService == null) {
-            Slog.w(TAG, "notifySessionStartedLocked(): no remote service");
+            Slog.w("ContentCaptureServerSession", "destroyLocked(): no remote service");
         } else {
-            remoteContentCaptureService.onSessionStarted(this.mContentCaptureContext, this.mId, this.mUid, iResultReceiver, 2);
+            remoteContentCaptureService.onSessionFinished(this.mId);
         }
     }
 
-    public void setContentCaptureEnabledLocked(boolean z) {
+    public final void setContentCaptureEnabledLocked(boolean z) {
         try {
             Bundle bundle = new Bundle();
             int i = 1;
@@ -73,103 +89,11 @@ public final class ContentCaptureServerSession {
             }
             iResultReceiver.send(i, bundle);
         } catch (RemoteException e) {
-            Slog.w(TAG, "Error async reporting result to client: " + e);
+            AccountManagerService$$ExternalSyntheticOutline0.m("Error async reporting result to client: ", e, "ContentCaptureServerSession");
         }
     }
 
-    public void sendActivitySnapshotLocked(SnapshotData snapshotData) {
-        LocalLog localLog = ((ContentCaptureManagerService) this.mService.getMaster()).mRequestsHistory;
-        if (localLog != null) {
-            localLog.log("snapshot: id=" + this.mId);
-        }
-        RemoteContentCaptureService remoteContentCaptureService = this.mService.mRemoteService;
-        if (remoteContentCaptureService == null) {
-            Slog.w(TAG, "sendActivitySnapshotLocked(): no remote service");
-        } else {
-            remoteContentCaptureService.onActivitySnapshotRequest(this.mId, snapshotData);
-        }
-    }
-
-    public void removeSelfLocked(boolean z) {
-        try {
-            destroyLocked(z);
-        } finally {
-            this.mService.removeSessionLocked(this.mId);
-        }
-    }
-
-    public void destroyLocked(boolean z) {
-        if (this.mService.isVerbose()) {
-            Slog.v(TAG, "destroy(notifyRemoteService=" + z + ")");
-        }
-        if (z) {
-            RemoteContentCaptureService remoteContentCaptureService = this.mService.mRemoteService;
-            if (remoteContentCaptureService == null) {
-                Slog.w(TAG, "destroyLocked(): no remote service");
-            } else {
-                remoteContentCaptureService.onSessionFinished(this.mId);
-            }
-        }
-    }
-
-    public void resurrectLocked() {
-        ContentCapturePerUserService contentCapturePerUserService = this.mService;
-        RemoteContentCaptureService remoteContentCaptureService = contentCapturePerUserService.mRemoteService;
-        if (remoteContentCaptureService == null) {
-            Slog.w(TAG, "destroyLocked(: no remote service");
-            return;
-        }
-        if (contentCapturePerUserService.isVerbose()) {
-            Slog.v(TAG, "resurrecting " + this.mActivityToken + " on " + remoteContentCaptureService);
-        }
-        remoteContentCaptureService.onSessionStarted(new ContentCaptureContext(this.mContentCaptureContext, 4), this.mId, this.mUid, this.mSessionStateReceiver, 4098);
-    }
-
-    public void pauseLocked() {
-        if (this.mService.isVerbose()) {
-            Slog.v(TAG, "pausing " + this.mActivityToken);
-        }
-        ContentCaptureService.setClientState(this.mSessionStateReceiver, 2052, (IBinder) null);
-    }
-
-    /* renamed from: onClientDeath, reason: merged with bridge method [inline-methods] */
-    public final void lambda$new$0() {
-        if (this.mService.isVerbose()) {
-            Slog.v(TAG, "onClientDeath(" + this.mActivityToken + "): removing session " + this.mId);
-        }
-        synchronized (this.mLock) {
-            removeSelfLocked(true);
-        }
-    }
-
-    public void dumpLocked(String str, PrintWriter printWriter) {
-        printWriter.print(str);
-        printWriter.print("id: ");
-        printWriter.print(this.mId);
-        printWriter.println();
-        printWriter.print(str);
-        printWriter.print("uid: ");
-        printWriter.print(this.mUid);
-        printWriter.println();
-        printWriter.print(str);
-        printWriter.print("context: ");
-        this.mContentCaptureContext.dump(printWriter);
-        printWriter.println();
-        printWriter.print(str);
-        printWriter.print("activity token: ");
-        printWriter.println(this.mActivityToken);
-        printWriter.print(str);
-        printWriter.print("app component: ");
-        printWriter.println(this.appComponentName);
-        printWriter.print(str);
-        printWriter.print("has autofill callback: ");
-    }
-
-    public String toShortString() {
-        return this.mId + XmlUtils.STRING_ARRAY_SEPARATOR + this.mActivityToken;
-    }
-
-    public String toString() {
+    public final String toString() {
         return "ContentCaptureSession[id=" + this.mId + ", act=" + this.mActivityToken + "]";
     }
 }

@@ -3,9 +3,9 @@ package com.android.server.enterprise.threatdefense;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.Signature;
 import android.content.pm.SigningInfo;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Debug;
@@ -14,9 +14,14 @@ import android.os.SemSystemProperties;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.SparseArray;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0;
+import com.android.server.StorageManagerService$$ExternalSyntheticOutline0;
+import com.android.server.am.OomAdjuster$$ExternalSyntheticOutline0;
+import com.android.server.audio.AudioDeviceInventory$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.EnterpriseServiceCallback;
 import com.android.server.enterprise.adapterlayer.PackageManagerAdapter;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import com.samsung.android.knox.ContextInfo;
 import com.samsung.android.knox.EnterpriseDeviceManager;
 import com.samsung.android.knox.custom.KnoxCustomManagerService;
@@ -35,330 +40,302 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Collectors;
 import org.json.JSONException;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class ThreatDefenseService extends IThreatDefenseService.Stub implements EnterpriseServiceCallback {
     static final String BRAKET_END_STRING = "\\)";
     static final String BRAKET_START_STRING = "\\(";
     public final Context mContext;
     public EnterpriseDeviceManager mEnterpriseDeviceManager;
     public KnoxAnalyticsThread mKnoxAnalytics;
-    public static final String TAG = ThreatDefenseService.class.getSimpleName();
+    public final AnonymousClass2 mReceiver;
+    public final Timer mTimer;
+    public final AnonymousClass1 mTimerTask;
     static final int[] SENSTIVE_PROCESS_PROC_POSITION = {28, 29, 30, 45, 46, 47, 48, 49, 50, 51};
     static final String[] SENSITIVE_PROCESS_PROC_LIST = {"stat"};
     static final int[] SENSITIVE_PROCESS_PROC_LEN_LIST = {52};
-    static final String[] RESTRICTED_CHAR_LIST = {KnoxVpnFirewallHelper.DELIMITER, "*", "."};
+    static final String[] RESTRICTED_CHAR_LIST = {";", "*", "."};
     public static final Hashtable sAllowedProcRules = new Hashtable();
     public static final Hashtable sAllowedProcessProcRules = new Hashtable();
     public static final boolean DEBUG = Debug.semIsProductDev();
-    public static SparseArray sProcessIds = new SparseArray();
+    public static final SparseArray sProcessIds = new SparseArray();
     public static final Object sLock = new Object();
-    public Timer mTimer = new Timer();
-    public final TimerTask mTimerTask = new TimerTask() { // from class: com.android.server.enterprise.threatdefense.ThreatDefenseService.1
-        @Override // java.util.TimerTask, java.lang.Runnable
-        public void run() {
-            if (ThreatDefenseService.this.mKnoxAnalytics == null) {
-                ThreatDefenseService.this.mKnoxAnalytics = new KnoxAnalyticsThread();
-            }
-            ThreatDefenseService.this.mKnoxAnalytics.schedule();
-            ThreatDefenseService.this.resetPackageRules();
-        }
-    };
-    public BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.threatdefense.ThreatDefenseService.2
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.enterprise.threatdefense.ThreatDefenseService$2, reason: invalid class name */
+    public final class AnonymousClass2 extends BroadcastReceiver {
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             Uri data;
             if (!"android.intent.action.PACKAGE_REMOVED".equals(intent.getAction()) || (data = intent.getData()) == null) {
                 return;
             }
             String schemeSpecificPart = data.getSchemeSpecificPart();
             try {
-                if (ThreatDefenseService.sAllowedProcRules.containsKey(schemeSpecificPart)) {
-                    ThreatDefenseService.sAllowedProcRules.remove(schemeSpecificPart);
-                    Log.i(ThreatDefenseService.TAG, schemeSpecificPart + " rules are removed");
+                Hashtable hashtable = ThreatDefenseService.sAllowedProcRules;
+                if (hashtable.containsKey(schemeSpecificPart)) {
+                    hashtable.remove(schemeSpecificPart);
+                    Log.i("ThreatDefenseService", schemeSpecificPart + " rules are removed");
                 }
-                if (ThreatDefenseService.sAllowedProcessProcRules.containsKey(schemeSpecificPart)) {
-                    ThreatDefenseService.sAllowedProcessProcRules.remove(schemeSpecificPart);
-                    Log.i(ThreatDefenseService.TAG, schemeSpecificPart + " process rules are removed");
+                Hashtable hashtable2 = ThreatDefenseService.sAllowedProcessProcRules;
+                if (hashtable2.containsKey(schemeSpecificPart)) {
+                    hashtable2.remove(schemeSpecificPart);
+                    Log.i("ThreatDefenseService", schemeSpecificPart + " process rules are removed");
                 }
-                if (ThreatDefenseService.sAllowedProcRules.size() == 0 && ThreatDefenseService.sAllowedProcessProcRules.size() == 0) {
+                if (hashtable.size() == 0 && hashtable2.size() == 0) {
                     SemSystemProperties.set("sys.mtdl.start", "false");
                 }
             } catch (NullPointerException e) {
-                Log.w(ThreatDefenseService.TAG, "pkg=" + schemeSpecificPart + ", " + e.getMessage());
+                Hashtable hashtable3 = ThreatDefenseService.sAllowedProcRules;
+                StringBuilder m = DumpUtils$$ExternalSyntheticOutline0.m("pkg=", schemeSpecificPart, ", ");
+                m.append(e.getMessage());
+                Log.w("ThreatDefenseService", m.toString());
             }
         }
-    };
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void notifyToAddSystemService(String str, IBinder iBinder) {
     }
 
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminAdded(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminRemoved(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onPreAdminRemoval(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void systemReady() {
-    }
-
-    public ThreatDefenseService(Context context) {
-        String str = TAG;
-        Log.d(str, "Start ThreatDefenseService");
-        Log.d(str, "pid = " + Binder.getCallingPid() + ", uid = " + Binder.getCallingUid());
-        this.mContext = context;
-        initIntervalTasks();
-        initReceiver();
-    }
-
-    public final void initReceiver() {
-        IntentFilter intentFilter = new IntentFilter("android.intent.action.PACKAGE_REMOVED");
-        intentFilter.setPriority(1000);
-        intentFilter.addDataScheme("package");
-        this.mContext.registerReceiver(this.mReceiver, intentFilter);
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x002b, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0068, code lost:
     
-        if (r3 < 60000) goto L13;
+        if (r5 < 60000) goto L11;
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public final void initIntervalTasks() {
+    public ThreatDefenseService(android.content.Context r11) {
         /*
-            r11 = this;
-            java.util.Timer r0 = r11.mTimer
-            if (r0 != 0) goto Ld
+            r10 = this;
+            r10.<init>()
             java.util.Timer r0 = new java.util.Timer
-            java.lang.String r1 = "MTDL_Timer"
-            r0.<init>(r1)
-            r11.mTimer = r0
-        Ld:
-            boolean r0 = com.android.server.enterprise.threatdefense.ThreatDefenseService.DEBUG
-            r1 = 86400000(0x5265c00, double:4.2687272E-316)
-            if (r0 == 0) goto L2f
-            java.lang.String r0 = "sys.mtdl.interval"
-            long r3 = android.os.SemSystemProperties.getLong(r0, r1)
-            int r0 = (r3 > r1 ? 1 : (r3 == r1 ? 0 : -1))
-            if (r0 == 0) goto L2e
-            java.lang.String r0 = com.android.server.enterprise.threatdefense.ThreatDefenseService.TAG
-            java.lang.String r1 = "Custom interval applied"
-            android.util.Log.d(r0, r1)
-            r1 = 60000(0xea60, double:2.9644E-319)
-            int r0 = (r3 > r1 ? 1 : (r3 == r1 ? 0 : -1))
-            if (r0 >= 0) goto L2e
-            goto L2f
-        L2e:
-            r1 = r3
-        L2f:
-            java.util.Timer r5 = r11.mTimer
-            java.util.TimerTask r6 = r11.mTimerTask
-            r7 = 0
-            r9 = r1
-            r5.scheduleAtFixedRate(r6, r7, r9)
-            java.lang.String r11 = com.android.server.enterprise.threatdefense.ThreatDefenseService.TAG
-            java.lang.StringBuilder r0 = new java.lang.StringBuilder
             r0.<init>()
-            java.lang.String r3 = "Timer Scheduled : "
-            r0.append(r3)
-            r3 = 1000(0x3e8, double:4.94E-321)
-            long r1 = r1 / r3
-            r0.append(r1)
+            r10.mTimer = r0
+            com.android.server.enterprise.threatdefense.ThreatDefenseService$1 r2 = new com.android.server.enterprise.threatdefense.ThreatDefenseService$1
+            r2.<init>()
+            com.android.server.enterprise.threatdefense.ThreatDefenseService$2 r0 = new com.android.server.enterprise.threatdefense.ThreatDefenseService$2
+            r0.<init>()
+            java.lang.String r7 = "ThreatDefenseService"
+            java.lang.String r1 = "Start ThreatDefenseService"
+            android.util.Log.d(r7, r1)
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder
+            java.lang.String r3 = "pid = "
+            r1.<init>(r3)
+            int r3 = android.os.Binder.getCallingPid()
+            r1.append(r3)
+            java.lang.String r3 = ", uid = "
+            r1.append(r3)
+            int r3 = android.os.Binder.getCallingUid()
+            r1.append(r3)
+            java.lang.String r1 = r1.toString()
+            android.util.Log.d(r7, r1)
+            r10.mContext = r11
+            java.util.Timer r1 = r10.mTimer
+            if (r1 != 0) goto L4c
+            java.util.Timer r1 = new java.util.Timer
+            java.lang.String r3 = "MTDL_Timer"
+            r1.<init>(r3)
+            r10.mTimer = r1
+        L4c:
+            boolean r1 = com.android.server.enterprise.threatdefense.ThreatDefenseService.DEBUG
+            r3 = 86400000(0x5265c00, double:4.2687272E-316)
+            if (r1 == 0) goto L6a
+            java.lang.String r1 = "sys.mtdl.interval"
+            long r5 = android.os.SemSystemProperties.getLong(r1, r3)
+            int r1 = (r5 > r3 ? 1 : (r5 == r3 ? 0 : -1))
+            if (r1 == 0) goto L6c
+            java.lang.String r1 = "Custom interval applied"
+            android.util.Log.d(r7, r1)
+            r3 = 60000(0xea60, double:2.9644E-319)
+            int r1 = (r5 > r3 ? 1 : (r5 == r3 ? 0 : -1))
+            if (r1 >= 0) goto L6c
+        L6a:
+            r8 = r3
+            goto L6d
+        L6c:
+            r8 = r5
+        L6d:
+            java.util.Timer r1 = r10.mTimer
+            r3 = 0
+            r5 = r8
+            r1.scheduleAtFixedRate(r2, r3, r5)
+            java.lang.StringBuilder r10 = new java.lang.StringBuilder
+            java.lang.String r1 = "Timer Scheduled : "
+            r10.<init>(r1)
+            r1 = 1000(0x3e8, double:4.94E-321)
+            long r8 = r8 / r1
+            r10.append(r8)
             java.lang.String r1 = "s"
-            r0.append(r1)
-            java.lang.String r0 = r0.toString()
-            android.util.Log.i(r11, r0)
+            r10.append(r1)
+            java.lang.String r10 = r10.toString()
+            android.util.Log.i(r7, r10)
+            android.content.IntentFilter r10 = new android.content.IntentFilter
+            java.lang.String r1 = "android.intent.action.PACKAGE_REMOVED"
+            r10.<init>(r1)
+            r1 = 1000(0x3e8, float:1.401E-42)
+            r10.setPriority(r1)
+            java.lang.String r1 = "package"
+            r10.addDataScheme(r1)
+            r11.registerReceiver(r0, r10)
             return
         */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.threatdefense.ThreatDefenseService.initIntervalTasks():void");
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.threatdefense.ThreatDefenseService.<init>(android.content.Context):void");
     }
 
-    public final EnterpriseDeviceManager getEnterpriseDeviceManagerService() {
-        if (this.mEnterpriseDeviceManager == null) {
-            this.mEnterpriseDeviceManager = EnterpriseDeviceManager.getInstance(this.mContext);
-        }
-        return this.mEnterpriseDeviceManager;
+    /* JADX WARN: Removed duplicated region for block: B:16:0x008c A[ADDED_TO_REGION] */
+    /* JADX WARN: Removed duplicated region for block: B:21:0x0097 A[ADDED_TO_REGION, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public static void updateProcessIds() {
+        /*
+            long r0 = java.lang.System.currentTimeMillis()
+            java.io.File r2 = new java.io.File
+            java.lang.String r3 = "/proc/"
+            r2.<init>(r3)
+            java.lang.Object r3 = com.android.server.enterprise.threatdefense.ThreatDefenseService.sLock
+            monitor-enter(r3)
+            android.util.SparseArray r4 = com.android.server.enterprise.threatdefense.ThreatDefenseService.sProcessIds     // Catch: java.lang.Throwable -> L53
+            r4.clear()     // Catch: java.lang.Throwable -> L53
+            java.io.File[] r4 = r2.listFiles()     // Catch: java.lang.Throwable -> L53
+            if (r4 == 0) goto L9a
+            java.io.File[] r2 = r2.listFiles()     // Catch: java.lang.Throwable -> L53
+            int r4 = r2.length     // Catch: java.lang.Throwable -> L53
+            r5 = 0
+            r6 = 0
+            r7 = r5
+        L21:
+            if (r7 >= r4) goto L9a
+            r8 = r2[r7]     // Catch: java.lang.Throwable -> L53
+            java.lang.String r8 = r8.getName()     // Catch: java.lang.Throwable -> L53
+            java.lang.String r9 = "^[0-9]+"
+            boolean r9 = r8.matches(r9)     // Catch: java.lang.Throwable -> L53
+            if (r9 == 0) goto L97
+            int r9 = java.lang.Integer.parseInt(r8)     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L59 java.lang.NumberFormatException -> L72
+            java.lang.StringBuilder r10 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L55 java.lang.NumberFormatException -> L57
+            r10.<init>()     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L55 java.lang.NumberFormatException -> L57
+            java.lang.String r11 = "/proc/"
+            r10.append(r11)     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L55 java.lang.NumberFormatException -> L57
+            r10.append(r8)     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L55 java.lang.NumberFormatException -> L57
+            java.lang.String r8 = r10.toString()     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L55 java.lang.NumberFormatException -> L57
+            java.lang.String[] r10 = new java.lang.String[r5]     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L55 java.lang.NumberFormatException -> L57
+            java.nio.file.Path r8 = java.nio.file.Paths.get(r8, r10)     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L55 java.lang.NumberFormatException -> L57
+            java.nio.file.LinkOption[] r10 = new java.nio.file.LinkOption[r5]     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L55 java.lang.NumberFormatException -> L57
+            java.nio.file.attribute.UserPrincipal r6 = java.nio.file.Files.getOwner(r8, r10)     // Catch: java.lang.Throwable -> L53 java.io.IOException -> L55 java.lang.NumberFormatException -> L57
+            goto L8a
+        L53:
+            r0 = move-exception
+            goto Lba
+        L55:
+            r8 = move-exception
+            goto L5b
+        L57:
+            r8 = move-exception
+            goto L74
+        L59:
+            r8 = move-exception
+            r9 = r5
+        L5b:
+            java.lang.String r10 = "ThreatDefenseService"
+            java.lang.StringBuilder r11 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L53
+            r11.<init>()     // Catch: java.lang.Throwable -> L53
+            java.lang.String r12 = "IOException"
+            r11.append(r12)     // Catch: java.lang.Throwable -> L53
+            r11.append(r8)     // Catch: java.lang.Throwable -> L53
+            java.lang.String r8 = r11.toString()     // Catch: java.lang.Throwable -> L53
+            android.util.Log.w(r10, r8)     // Catch: java.lang.Throwable -> L53
+            goto L8a
+        L72:
+            r8 = move-exception
+            r9 = r5
+        L74:
+            java.lang.String r10 = "ThreatDefenseService"
+            java.lang.StringBuilder r11 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> L53
+            r11.<init>()     // Catch: java.lang.Throwable -> L53
+            java.lang.String r12 = "NumberFormatException"
+            r11.append(r12)     // Catch: java.lang.Throwable -> L53
+            r11.append(r8)     // Catch: java.lang.Throwable -> L53
+            java.lang.String r8 = r11.toString()     // Catch: java.lang.Throwable -> L53
+            android.util.Log.w(r10, r8)     // Catch: java.lang.Throwable -> L53
+        L8a:
+            if (r9 <= 0) goto L97
+            if (r6 == 0) goto L97
+            android.util.SparseArray r8 = com.android.server.enterprise.threatdefense.ThreatDefenseService.sProcessIds     // Catch: java.lang.Throwable -> L53
+            java.lang.String r10 = r6.getName()     // Catch: java.lang.Throwable -> L53
+            r8.put(r9, r10)     // Catch: java.lang.Throwable -> L53
+        L97:
+            int r7 = r7 + 1
+            goto L21
+        L9a:
+            monitor-exit(r3)     // Catch: java.lang.Throwable -> L53
+            long r2 = java.lang.System.currentTimeMillis()
+            long r2 = r2 - r0
+            java.lang.String r0 = "ThreatDefenseService"
+            java.lang.StringBuilder r1 = new java.lang.StringBuilder
+            java.lang.String r4 = "Update PIDs took "
+            r1.<init>(r4)
+            r1.append(r2)
+            java.lang.String r2 = "ms"
+            r1.append(r2)
+            java.lang.String r1 = r1.toString()
+            android.util.Log.i(r0, r1)
+            return
+        Lba:
+            monitor-exit(r3)     // Catch: java.lang.Throwable -> L53
+            throw r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.threatdefense.ThreatDefenseService.updateProcessIds():void");
     }
 
     public final void enforceThreatDefensePermission(ContextInfo contextInfo) {
-        getEnterpriseDeviceManagerService().enforcePermissionByContext(contextInfo, "com.samsung.android.knox.permission.KNOX_MOBILE_THREAT_DEFENSE");
+        if (this.mEnterpriseDeviceManager == null) {
+            this.mEnterpriseDeviceManager = EnterpriseDeviceManager.getInstance(this.mContext);
+        }
+        this.mEnterpriseDeviceManager.enforcePermissionByContext(contextInfo, "com.samsung.android.knox.permission.KNOX_MOBILE_THREAT_DEFENSE");
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r5v10, types: [java.io.BufferedReader] */
-    /* JADX WARN: Type inference failed for: r5v11, types: [java.io.BufferedReader] */
-    /* JADX WARN: Type inference failed for: r5v12 */
-    /* JADX WARN: Type inference failed for: r5v13 */
-    /* JADX WARN: Type inference failed for: r5v14, types: [java.io.BufferedReader] */
-    /* JADX WARN: Type inference failed for: r5v16 */
-    /* JADX WARN: Type inference failed for: r5v18 */
-    /* JADX WARN: Type inference failed for: r5v19 */
-    /* JADX WARN: Type inference failed for: r5v3, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r5v4, types: [java.lang.Throwable, java.io.IOException] */
-    /* JADX WARN: Type inference failed for: r5v5 */
-    /* JADX WARN: Type inference failed for: r5v7 */
-    /* JADX WARN: Type inference failed for: r5v8 */
-    /* JADX WARN: Type inference failed for: r5v9 */
-    /* JADX WARN: Type inference failed for: r6v10 */
-    /* JADX WARN: Type inference failed for: r6v11 */
-    /* JADX WARN: Type inference failed for: r6v12, types: [java.io.InputStream] */
-    /* JADX WARN: Type inference failed for: r6v13, types: [java.io.InputStream] */
-    /* JADX WARN: Type inference failed for: r6v14, types: [java.io.FileInputStream, java.io.InputStream] */
-    /* JADX WARN: Type inference failed for: r6v16 */
-    /* JADX WARN: Type inference failed for: r6v17 */
-    /* JADX WARN: Type inference failed for: r6v18 */
-    /* JADX WARN: Type inference failed for: r6v3, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r6v4, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r6v5 */
-    /* JADX WARN: Type inference failed for: r6v6, types: [java.io.InputStream] */
-    /* JADX WARN: Type inference failed for: r6v8 */
-    /* JADX WARN: Type inference failed for: r6v9 */
-    public String procReader(ContextInfo contextInfo, String str) {
-        String str2 = null;
-        r1 = null;
-        str2 = null;
-        str2 = null;
-        str2 = null;
-        str2 = null;
-        BufferedReader bufferedReader = null;
-        if (contextInfo == null) {
-            Log.e(TAG, "ContextInfo is null");
-            return null;
-        }
-        enforceThreatDefensePermission(contextInfo);
-        String nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
-        this.mKnoxAnalytics.countApiCall(nameForUid, 0);
-        if (isAllowedProc(nameForUid, str, false) < 0) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        ?? r6 = "/proc/";
-        sb.append("/proc/");
-        sb.append(str);
-        ?? e = sb.toString();
-        try {
-        } catch (IOException e2) {
-            e = e2;
-            r6 = TAG;
-            Log.e(r6, "IOException", e);
-        }
-        try {
-            try {
-                r6 = new FileInputStream((String) e);
-            } catch (FileNotFoundException e3) {
-                e = e3;
-                e = 0;
-                r6 = 0;
-            } catch (SecurityException e4) {
-                e = e4;
-                e = 0;
-                r6 = 0;
-            } catch (Throwable th) {
-                th = th;
-                r6 = 0;
-            }
-            try {
-                e = new BufferedReader(new InputStreamReader((InputStream) r6, StandardCharsets.UTF_8));
-                try {
-                    String str3 = (String) e.lines().collect(Collectors.joining(System.lineSeparator()));
-                    try {
-                        e.close();
-                        r6.close();
-                        e = e;
-                        r6 = r6;
-                    } catch (IOException e5) {
-                        String str4 = TAG;
-                        Log.e(str4, "IOException", e5);
-                        e = e5;
-                        r6 = str4;
-                    }
-                    str2 = str3;
-                } catch (FileNotFoundException e6) {
-                    e = e6;
-                    Log.e(TAG, "FileNotFoundException : " + e.getMessage());
-                    if (e != 0) {
-                        e.close();
-                    }
-                    if (r6 != 0) {
-                        r6.close();
-                    }
-                    return str2;
-                } catch (SecurityException e7) {
-                    e = e7;
-                    Log.e(TAG, "SecurityException", e);
-                    if (e != 0) {
-                        e.close();
-                    }
-                    if (r6 != 0) {
-                        r6.close();
-                    }
-                    return str2;
-                }
-            } catch (FileNotFoundException e8) {
-                e = e8;
-                e = 0;
-            } catch (SecurityException e9) {
-                e = e9;
-                e = 0;
-            } catch (Throwable th2) {
-                th = th2;
-                if (bufferedReader != null) {
-                    try {
-                        bufferedReader.close();
-                    } catch (IOException e10) {
-                        Log.e(TAG, "IOException", e10);
-                        throw th;
-                    }
-                }
-                if (r6 != 0) {
-                    r6.close();
-                }
-                throw th;
-            }
-            return str2;
-        } catch (Throwable th3) {
-            th = th3;
-            bufferedReader = e;
-        }
-    }
-
-    public int[] getProcessId(ContextInfo contextInfo, String str) {
+    public final int[] getProcessId(ContextInfo contextInfo, String str) {
         int i;
         if (contextInfo == null) {
-            Log.e(TAG, "ContextInfo is null");
+            Log.e("ThreatDefenseService", "ContextInfo is null");
             return null;
         }
         enforceThreatDefensePermission(contextInfo);
-        this.mKnoxAnalytics.countApiCall(this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid), 2);
+        this.mKnoxAnalytics.countApiCall(2, this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid));
         if (str == null || str.isEmpty()) {
             return null;
         }
         ArrayList arrayList = new ArrayList();
         synchronized (sLock) {
-            updateProcessIds();
-            if ("all".equals(str)) {
-                for (int i2 = 0; i2 < sProcessIds.size(); i2++) {
-                    arrayList.add(Integer.valueOf(sProcessIds.keyAt(i2)));
-                }
-            } else {
-                for (int i3 = 0; i3 < sProcessIds.size(); i3++) {
-                    if (str.equals(sProcessIds.valueAt(i3))) {
-                        arrayList.add(Integer.valueOf(sProcessIds.keyAt(i3)));
+            try {
+                updateProcessIds();
+                if (!"all".equals(str)) {
+                    int i2 = 0;
+                    while (true) {
+                        SparseArray sparseArray = sProcessIds;
+                        if (i2 >= sparseArray.size()) {
+                            break;
+                        }
+                        if (str.equals(sparseArray.valueAt(i2))) {
+                            arrayList.add(Integer.valueOf(sparseArray.keyAt(i2)));
+                        }
+                        i2++;
+                    }
+                } else {
+                    int i3 = 0;
+                    while (true) {
+                        SparseArray sparseArray2 = sProcessIds;
+                        if (i3 >= sparseArray2.size()) {
+                            break;
+                        }
+                        arrayList.add(Integer.valueOf(sparseArray2.keyAt(i3)));
+                        i3++;
                     }
                 }
+            } catch (Throwable th) {
+                throw th;
             }
         }
         int size = arrayList.size();
@@ -369,44 +346,294 @@ public final class ThreatDefenseService extends IThreatDefenseService.Stub imple
         return iArr;
     }
 
+    public final boolean hasPackageRules(ContextInfo contextInfo) {
+        enforceThreatDefensePermission(contextInfo);
+        String nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
+        if (nameForUid == null) {
+            Log.e("ThreatDefenseService", "Get package error");
+            return false;
+        }
+        try {
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        if (sAllowedProcRules.containsKey(nameForUid)) {
+            return true;
+        }
+        return sAllowedProcessProcRules.containsKey(nameForUid);
+    }
+
+    public boolean hasRestrictCharacter(String str) {
+        for (String str2 : RESTRICTED_CHAR_LIST) {
+            if (str.contains(str2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasValidSignature(String str, String str2) {
+        int callingUid = Binder.getCallingUid();
+        PackageManagerAdapter packageManagerAdapter = PackageManagerAdapter.getInstance(this.mContext);
+        try {
+            int userId = UserHandle.getUserId(callingUid);
+            packageManagerAdapter.getClass();
+            SigningInfo signingInfo = PackageManagerAdapter.getPackageInfo(134217728, userId, str).signingInfo;
+            if (signingInfo.hasMultipleSigners()) {
+                AudioDeviceInventory$$ExternalSyntheticOutline0.m("package : ", str, " hasMultipleSigners", "ThreatDefenseService");
+            }
+            Signature[] apkContentsSigners = signingInfo.getApkContentsSigners();
+            if (apkContentsSigners == null) {
+                Log.e("ThreatDefenseService", "getApkContentsSigners() failed");
+                return false;
+            }
+            String charsString = apkContentsSigners[0].toCharsString();
+            if (charsString == null || str2 == null) {
+                Log.e("ThreatDefenseService", "Get package signature failed");
+                return false;
+            }
+            if (charsString.equals(str2)) {
+                return true;
+            }
+            Log.e("ThreatDefenseService", "Signature check failed");
+            return false;
+        } catch (Exception e) {
+            OomAdjuster$$ExternalSyntheticOutline0.m(e, new StringBuilder("Invalid package : "), "ThreatDefenseService");
+            return false;
+        }
+    }
+
+    public int isAllowedProc(String str, String str2, boolean z) {
+        int i = KnoxCustomManagerService.DOCK_SHORTCUT_CONTAINER_ID;
+        if (str == null) {
+            Log.e("ThreatDefenseService", "Get package name failed");
+            return KnoxCustomManagerService.DOCK_SHORTCUT_CONTAINER_ID;
+        }
+        int i2 = -103;
+        if (hasRestrictCharacter(str2)) {
+            Log.e("ThreatDefenseService", "Denied proc = " + str2 + " reason : Restrict Character");
+            return -103;
+        }
+        if (z) {
+            try {
+                if (Files.isSymbolicLink(Paths.get(str2, new String[0]))) {
+                    Log.e("ThreatDefenseService", "Denied proc = " + str2 + " reason : Symbolic Link");
+                    return -105;
+                }
+            } catch (InvalidPathException e) {
+                Log.e("ThreatDefenseService", "Invalid path p = " + str2 + ", err = " + e);
+                return -105;
+            }
+        }
+        Hashtable hashtable = new Hashtable();
+        try {
+            if (z) {
+                hashtable.putAll(sAllowedProcessProcRules);
+            } else {
+                hashtable.putAll(sAllowedProcRules);
+            }
+        } catch (ClassCastException e2) {
+            e2.printStackTrace();
+            i = -104;
+        } catch (NullPointerException e3) {
+            e3.printStackTrace();
+        }
+        if (hashtable.containsKey(str)) {
+            ArrayList arrayList = (ArrayList) hashtable.get(str);
+            if (arrayList != null) {
+                Iterator it = arrayList.iterator();
+                while (it.hasNext()) {
+                    if (((String) it.next()).equals(str2)) {
+                        if (hasRestrictCharacter(str2)) {
+                            Log.e("ThreatDefenseService", "Not allowed proc : " + str2);
+                        } else {
+                            i2 = 0;
+                        }
+                    }
+                }
+            }
+            Log.d("ThreatDefenseService", "No rules : " + str + "|" + str2);
+            i = -102;
+            i2 = i;
+        } else {
+            Log.i("ThreatDefenseService", "Please set package rules first : ".concat(str));
+            i2 = -102;
+        }
+        if (i2 < 0) {
+            Log.e("ThreatDefenseService", "Denied proc : " + str2 + ", errno=" + i2);
+        }
+        return i2;
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void notifyToAddSystemService(String str, IBinder iBinder) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminAdded(int i) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminRemoved(int i) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onPreAdminRemoval(int i) {
+    }
+
     /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r10v0, types: [java.lang.Object, java.lang.String] */
-    /* JADX WARN: Type inference failed for: r10v1 */
-    /* JADX WARN: Type inference failed for: r10v10, types: [java.io.FileInputStream, java.io.InputStream] */
-    /* JADX WARN: Type inference failed for: r10v11 */
-    /* JADX WARN: Type inference failed for: r10v12 */
-    /* JADX WARN: Type inference failed for: r10v13 */
-    /* JADX WARN: Type inference failed for: r10v14 */
-    /* JADX WARN: Type inference failed for: r10v2, types: [java.io.InputStream] */
-    /* JADX WARN: Type inference failed for: r10v4 */
-    /* JADX WARN: Type inference failed for: r10v5 */
-    /* JADX WARN: Type inference failed for: r10v6 */
-    /* JADX WARN: Type inference failed for: r10v7, types: [java.io.InputStream] */
-    /* JADX WARN: Type inference failed for: r10v8, types: [java.io.InputStream] */
-    /* JADX WARN: Type inference failed for: r10v9 */
-    /* JADX WARN: Type inference failed for: r11v1, types: [java.lang.StringBuilder] */
-    /* JADX WARN: Type inference failed for: r11v2 */
-    /* JADX WARN: Type inference failed for: r11v20 */
-    /* JADX WARN: Type inference failed for: r11v21 */
-    /* JADX WARN: Type inference failed for: r11v22 */
-    /* JADX WARN: Type inference failed for: r11v23 */
-    /* JADX WARN: Type inference failed for: r11v24 */
+    /* JADX WARN: Type inference failed for: r4v2, types: [com.android.server.enterprise.threatdefense.KnoxAnalyticsThread] */
+    /* JADX WARN: Type inference failed for: r6v0, types: [com.android.server.enterprise.threatdefense.ThreatDefenseService] */
+    /* JADX WARN: Type inference failed for: r6v10, types: [java.io.BufferedReader] */
+    /* JADX WARN: Type inference failed for: r6v11, types: [java.io.BufferedReader] */
+    /* JADX WARN: Type inference failed for: r6v12 */
+    /* JADX WARN: Type inference failed for: r6v13 */
+    /* JADX WARN: Type inference failed for: r6v14, types: [java.io.BufferedReader] */
+    /* JADX WARN: Type inference failed for: r6v16 */
+    /* JADX WARN: Type inference failed for: r6v17 */
+    /* JADX WARN: Type inference failed for: r6v18 */
+    /* JADX WARN: Type inference failed for: r6v3, types: [java.lang.String] */
+    /* JADX WARN: Type inference failed for: r6v4, types: [java.io.IOException, java.lang.Throwable] */
+    /* JADX WARN: Type inference failed for: r6v5 */
+    /* JADX WARN: Type inference failed for: r6v7 */
+    /* JADX WARN: Type inference failed for: r6v8 */
+    /* JADX WARN: Type inference failed for: r6v9 */
+    /* JADX WARN: Type inference failed for: r7v10, types: [java.io.InputStream] */
+    /* JADX WARN: Type inference failed for: r7v11, types: [java.io.FileInputStream, java.io.InputStream] */
+    /* JADX WARN: Type inference failed for: r7v2, types: [java.lang.String] */
+    /* JADX WARN: Type inference failed for: r7v3 */
+    /* JADX WARN: Type inference failed for: r7v4, types: [java.io.InputStream] */
+    /* JADX WARN: Type inference failed for: r7v5 */
+    /* JADX WARN: Type inference failed for: r7v6 */
+    /* JADX WARN: Type inference failed for: r7v7 */
+    /* JADX WARN: Type inference failed for: r7v8 */
+    /* JADX WARN: Type inference failed for: r7v9, types: [java.io.InputStream] */
+    public final String procReader(ContextInfo contextInfo, String str) {
+        String str2 = null;
+        r2 = null;
+        str2 = null;
+        str2 = null;
+        str2 = null;
+        str2 = null;
+        BufferedReader bufferedReader = null;
+        if (contextInfo == null) {
+            Log.e("ThreatDefenseService", "ContextInfo is null");
+            return null;
+        }
+        enforceThreatDefensePermission(contextInfo);
+        ?? nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
+        this.mKnoxAnalytics.countApiCall(0, nameForUid);
+        if (isAllowedProc(nameForUid, str, false) < 0) {
+            return null;
+        }
+        ?? e = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m("/proc/", str);
+        try {
+        } catch (IOException e2) {
+            e = e2;
+            Log.e("ThreatDefenseService", "IOException", e);
+        }
+        try {
+            try {
+                nameForUid = new FileInputStream((String) e);
+                try {
+                    e = new BufferedReader(new InputStreamReader((InputStream) nameForUid, StandardCharsets.UTF_8));
+                } catch (FileNotFoundException e3) {
+                    e = e3;
+                    e = 0;
+                } catch (SecurityException e4) {
+                    e = e4;
+                    e = 0;
+                } catch (Throwable th) {
+                    th = th;
+                    if (bufferedReader != null) {
+                        try {
+                            bufferedReader.close();
+                        } catch (IOException e5) {
+                            Log.e("ThreatDefenseService", "IOException", e5);
+                            throw th;
+                        }
+                    }
+                    if (nameForUid != 0) {
+                        nameForUid.close();
+                    }
+                    throw th;
+                }
+            } catch (FileNotFoundException e6) {
+                e = e6;
+                e = 0;
+                nameForUid = 0;
+            } catch (SecurityException e7) {
+                e = e7;
+                e = 0;
+                nameForUid = 0;
+            } catch (Throwable th2) {
+                th = th2;
+                nameForUid = 0;
+            }
+            try {
+                String str3 = (String) e.lines().collect(Collectors.joining(System.lineSeparator()));
+                try {
+                    e.close();
+                    nameForUid.close();
+                    e = e;
+                } catch (IOException e8) {
+                    Log.e("ThreatDefenseService", "IOException", e8);
+                    e = e8;
+                }
+                str2 = str3;
+            } catch (FileNotFoundException e9) {
+                e = e9;
+                Log.e("ThreatDefenseService", "FileNotFoundException : " + e.getMessage());
+                if (e != 0) {
+                    e.close();
+                }
+                if (nameForUid != 0) {
+                    nameForUid.close();
+                }
+                return str2;
+            } catch (SecurityException e10) {
+                e = e10;
+                Log.e("ThreatDefenseService", "SecurityException", e);
+                if (e != 0) {
+                    e.close();
+                }
+                if (nameForUid != 0) {
+                    nameForUid.close();
+                }
+                return str2;
+            }
+            return str2;
+        } catch (Throwable th3) {
+            th = th3;
+            bufferedReader = e;
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r11v0, types: [java.lang.Object, java.lang.String] */
+    /* JADX WARN: Type inference failed for: r11v1 */
+    /* JADX WARN: Type inference failed for: r11v10 */
+    /* JADX WARN: Type inference failed for: r11v11 */
+    /* JADX WARN: Type inference failed for: r11v12 */
+    /* JADX WARN: Type inference failed for: r11v13 */
+    /* JADX WARN: Type inference failed for: r11v2, types: [java.io.InputStream] */
     /* JADX WARN: Type inference failed for: r11v3 */
     /* JADX WARN: Type inference failed for: r11v4 */
     /* JADX WARN: Type inference failed for: r11v5 */
-    /* JADX WARN: Type inference failed for: r11v6, types: [java.lang.String] */
-    /* JADX WARN: Type inference failed for: r11v7 */
-    /* JADX WARN: Type inference failed for: r11v8 */
-    public String processProcReader(ContextInfo contextInfo, String str, int i) {
-        String str2;
-        BufferedReader bufferedReader = null;
+    /* JADX WARN: Type inference failed for: r11v6 */
+    /* JADX WARN: Type inference failed for: r11v7, types: [java.io.InputStream] */
+    /* JADX WARN: Type inference failed for: r11v8, types: [java.io.InputStream] */
+    /* JADX WARN: Type inference failed for: r11v9, types: [java.io.FileInputStream, java.io.InputStream] */
+    public final String processProcReader(ContextInfo contextInfo, String str, int i) {
+        BufferedReader bufferedReader;
+        BufferedReader bufferedReader2 = null;
         if (contextInfo == null) {
-            Log.e(TAG, "ContextInfo is null");
+            Log.e("ThreatDefenseService", "ContextInfo is null");
             return null;
         }
         enforceThreatDefensePermission(contextInfo);
         String nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
-        this.mKnoxAnalytics.countApiCall(nameForUid, 1);
+        this.mKnoxAnalytics.countApiCall(1, nameForUid);
         if (isAllowedProc(nameForUid, str, true) < 0) {
             return null;
         }
@@ -427,115 +654,167 @@ public final class ThreatDefenseService extends IThreatDefenseService.Stub imple
             i2++;
         }
         if (i3 > SENSITIVE_PROCESS_PROC_LIST.length) {
-            Log.e(TAG, "Get sensitive proc failed : " + i3);
+            ExtendedEthernetServiceImpl$1$$ExternalSyntheticOutline0.m(i3, "Get sensitive proc failed : ", "ThreatDefenseService");
             return null;
         }
         if (i < 1) {
             return null;
         }
         String valueOf = String.valueOf(i);
-        ?? sb = new StringBuilder();
-        sb.append("/proc/");
-        sb.append(valueOf);
-        sb.append("/");
-        sb.append(str);
+        String str2 = "/proc/";
+        try {
+        } catch (IOException e) {
+            Log.e("ThreatDefenseService", "IOException", e);
+        }
         try {
             try {
+                str = new FileInputStream(BootReceiver$$ExternalSyntheticOutline0.m("/proc/", valueOf, "/", (String) str));
                 try {
-                    str = new FileInputStream(sb.toString());
-                } catch (FileNotFoundException e) {
-                    e = e;
-                    str = 0;
-                    sb = 0;
-                } catch (SecurityException e2) {
+                    bufferedReader = new BufferedReader(new InputStreamReader((InputStream) str, StandardCharsets.UTF_8));
+                } catch (FileNotFoundException e2) {
                     e = e2;
-                    str = 0;
-                    sb = 0;
-                } catch (Throwable th) {
-                    th = th;
-                    str = 0;
+                    str2 = null;
+                    str = str;
+                } catch (SecurityException e3) {
+                    e = e3;
+                    str2 = null;
+                    str = str;
                 }
+            } catch (FileNotFoundException e4) {
+                e = e4;
+                str = 0;
+                str2 = null;
+            } catch (SecurityException e5) {
+                e = e5;
+                str = 0;
+                str2 = null;
+            } catch (Throwable th) {
+                th = th;
+                str = 0;
+            }
+            try {
                 try {
-                    BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader((InputStream) str, StandardCharsets.UTF_8));
-                    try {
+                    str2 = (String) bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
+                    if (z) {
                         try {
-                            str2 = (String) bufferedReader2.lines().collect(Collectors.joining(System.lineSeparator()));
-                            sb = str2;
-                            if (z) {
-                                try {
-                                    sb = removeSensitiveProc(str2, i3);
-                                } catch (FileNotFoundException e3) {
-                                    e = e3;
-                                    bufferedReader = bufferedReader2;
-                                    str = str;
-                                    sb = str2;
-                                    Log.e(TAG, "FileNotFoundException : " + e.getMessage());
-                                    if (bufferedReader != null) {
-                                        bufferedReader.close();
-                                    }
-                                    if (str != 0) {
-                                        str.close();
-                                    }
-                                    return sb;
-                                } catch (SecurityException e4) {
-                                    e = e4;
-                                    bufferedReader = bufferedReader2;
-                                    str = str;
-                                    sb = str2;
-                                    Log.e(TAG, "SecurityException", e);
-                                    if (bufferedReader != null) {
-                                        bufferedReader.close();
-                                    }
-                                    if (str != 0) {
-                                        str.close();
-                                    }
-                                    return sb;
-                                }
-                            }
-                            bufferedReader2.close();
-                            str.close();
-                        } catch (FileNotFoundException e5) {
-                            e = e5;
-                            str2 = null;
-                        } catch (SecurityException e6) {
+                            str2 = removeSensitiveProc(str2, i3);
+                        } catch (FileNotFoundException e6) {
                             e = e6;
-                            str2 = null;
-                        }
-                    } catch (Throwable th2) {
-                        th = th2;
-                        bufferedReader = bufferedReader2;
-                        if (bufferedReader != null) {
-                            try {
-                                bufferedReader.close();
-                            } catch (IOException e7) {
-                                Log.e(TAG, "IOException", e7);
-                                throw th;
+                            bufferedReader2 = bufferedReader;
+                            str = str;
+                            Log.e("ThreatDefenseService", "FileNotFoundException : " + e.getMessage());
+                            if (bufferedReader2 != null) {
+                                bufferedReader2.close();
                             }
+                            if (str != 0) {
+                                str.close();
+                            }
+                            return str2;
+                        } catch (SecurityException e7) {
+                            e = e7;
+                            bufferedReader2 = bufferedReader;
+                            str = str;
+                            Log.e("ThreatDefenseService", "SecurityException", e);
+                            if (bufferedReader2 != null) {
+                                bufferedReader2.close();
+                            }
+                            if (str != 0) {
+                                str.close();
+                            }
+                            return str2;
                         }
-                        if (str != 0) {
-                            str.close();
-                        }
-                        throw th;
                     }
+                    bufferedReader.close();
+                    str.close();
                 } catch (FileNotFoundException e8) {
                     e = e8;
-                    sb = 0;
-                    str = str;
+                    str2 = null;
                 } catch (SecurityException e9) {
                     e = e9;
-                    sb = 0;
-                    str = str;
+                    str2 = null;
                 }
-            } catch (IOException e10) {
-                Log.e(TAG, "IOException", e10);
+                return str2;
+            } catch (Throwable th2) {
+                th = th2;
+                bufferedReader2 = bufferedReader;
+                if (bufferedReader2 != null) {
+                    try {
+                        bufferedReader2.close();
+                    } catch (IOException e10) {
+                        Log.e("ThreatDefenseService", "IOException", e10);
+                        throw th;
+                    }
+                }
+                if (str != 0) {
+                    str.close();
+                }
+                throw th;
             }
-            return sb;
         } catch (Throwable th3) {
             th = th3;
         }
     }
 
-    public int setPackageRules(ContextInfo contextInfo, String str) {
+    public String removeSensitiveProc(String str, int i) {
+        String[] strArr;
+        if (str == null || !str.contains(" ") || !str.contains("(") || !str.contains(")")) {
+            StorageManagerService$$ExternalSyntheticOutline0.m("Invalid argument : ", str, "ThreatDefenseService");
+            return null;
+        }
+        int[] iArr = SENSITIVE_PROCESS_PROC_LEN_LIST;
+        int i2 = iArr[i];
+        String[] strArr2 = new String[i2];
+        String[] split = str.split(BRAKET_START_STRING);
+        int i3 = 2;
+        if (split.length != 2) {
+            Log.e("ThreatDefenseService", "Invalid format line=".concat(str));
+            return null;
+        }
+        strArr2[0] = split[0].trim();
+        String[] split2 = split[1].split(BRAKET_END_STRING);
+        if (split2.length == 2) {
+            strArr2[1] = split2[0].trim();
+            strArr = split2[1].trim().split(" ");
+        } else {
+            strArr = null;
+        }
+        if (strArr == null || strArr.length != iArr[i] - 2) {
+            Log.e("ThreatDefenseService", "Remove sensitive data failed, pid=" + strArr2[0] + ", name=" + strArr2[1]);
+            if (DEBUG) {
+                Log.e("ThreatDefenseService", "Sensitive data result=".concat(str));
+            }
+            if (strArr != null) {
+                Log.e("ThreatDefenseService", "Remained len=" + strArr.length);
+            }
+            return null;
+        }
+        int length = strArr.length;
+        int i4 = 0;
+        while (i4 < length) {
+            strArr2[i3] = strArr[i4];
+            i4++;
+            i3++;
+        }
+        for (int i5 : SENSTIVE_PROCESS_PROC_POSITION) {
+            int i6 = i5 - 1;
+            if (i6 == i2) {
+                Log.e("ThreatDefenseService", "Invalid length " + i6 + "|" + i2);
+            } else {
+                strArr2[i6] = "";
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i7 = 0; i7 < i2; i7++) {
+            String str2 = strArr2[i7];
+            if (!"".equals(str2)) {
+                sb.append(str2);
+                sb.append(" ");
+            }
+        }
+        return sb.toString().trim();
+    }
+
+    public final int setPackageRules(ContextInfo contextInfo, String str) {
         if (str == null || str.isEmpty()) {
             return -106;
         }
@@ -547,360 +826,60 @@ public final class ThreatDefenseService extends IThreatDefenseService.Stub imple
         if (!SemSystemProperties.getBoolean("sys.mtdl.start", false)) {
             SemSystemProperties.set("sys.mtdl.start", "true");
             if (!SemSystemProperties.getBoolean("sys.mtdl.start", false)) {
-                Log.e(TAG, "set system property failed");
+                Log.e("ThreatDefenseService", "set system property failed");
             }
         }
         try {
             String verifiedData = new MTDSignature(str).getVerifiedData();
             if (verifiedData == null) {
-                Log.e(TAG, "Signature verification failed");
+                Log.e("ThreatDefenseService", "Signature verification failed");
                 return -108;
             }
             RuleParser ruleParser = new RuleParser(verifiedData);
-            if (!hasValidSignature(nameForUid, ruleParser.getPackagePublicSignature())) {
+            if (!hasValidSignature(nameForUid, ruleParser.mPacakagePublicSignature)) {
                 return -108;
             }
             RUFSPolicy rUFSPolicy = new RUFSPolicy(nameForUid);
-            int parseInt = Integer.parseInt(ruleParser.getVersion());
-            int policyVersion = rUFSPolicy.getPolicyVersion();
-            String str2 = TAG;
-            Log.i(str2, "app/rufs version : " + parseInt + "/" + policyVersion);
-            if (parseInt < policyVersion) {
+            int parseInt = Integer.parseInt(ruleParser.mPolicyVersion);
+            int i = rUFSPolicy.mPolicyVersion;
+            Log.i("ThreatDefenseService", "app/rufs version : " + parseInt + "/" + i);
+            if (parseInt < i) {
                 return -100;
             }
-            if (!nameForUid.equals(ruleParser.getPackageName())) {
-                Log.e(str2, "Invalid package rules. " + nameForUid + "|" + ruleParser.getPackageName());
+            if (!nameForUid.equals(ruleParser.mPackageName)) {
+                Log.e("ThreatDefenseService", "Invalid package rules. " + nameForUid + "|" + ruleParser.mPackageName);
                 return KnoxCustomManagerService.DOCK_SHORTCUT_CONTAINER_ID;
             }
             Hashtable hashtable = sAllowedProcRules;
             if (hashtable.containsKey(nameForUid)) {
-                Log.i(str2, "Replace proc rules : " + nameForUid);
+                Log.i("ThreatDefenseService", "Replace proc rules : ".concat(nameForUid));
                 hashtable.remove(nameForUid);
             }
             Hashtable hashtable2 = sAllowedProcessProcRules;
             if (hashtable2.containsKey(nameForUid)) {
-                Log.i(str2, "Replace process proc rules : " + nameForUid);
+                Log.i("ThreatDefenseService", "Replace process proc rules : ".concat(nameForUid));
                 hashtable2.remove(nameForUid);
             }
             hashtable.put(nameForUid, ruleParser.getProcList());
             hashtable2.put(nameForUid, ruleParser.getProcessProcList());
             return 0;
-        } catch (IllegalArgumentException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
-            return -108;
-        } catch (NullPointerException e2) {
-            e2.printStackTrace();
             return KnoxCustomManagerService.DOCK_SHORTCUT_CONTAINER_ID;
-        } catch (NumberFormatException e3) {
-            e3.printStackTrace();
+        } catch (NumberFormatException e2) {
+            e2.printStackTrace();
             return -104;
+        } catch (IllegalArgumentException e3) {
+            e3.printStackTrace();
+            return -108;
         } catch (JSONException e4) {
-            Log.w(TAG, "Initialize json object failed : " + e4.getMessage());
+            Log.w("ThreatDefenseService", "Initialize json object failed : " + e4.getMessage());
             e4.printStackTrace();
             return -107;
         }
     }
 
-    public boolean hasPackageRules(ContextInfo contextInfo) {
-        enforceThreatDefensePermission(contextInfo);
-        String nameForUid = this.mContext.getPackageManager().getNameForUid(contextInfo.mCallerUid);
-        if (nameForUid == null) {
-            Log.e(TAG, "Get package error");
-            return false;
-        }
-        try {
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        if (sAllowedProcRules.containsKey(nameForUid)) {
-            return true;
-        }
-        return sAllowedProcessProcRules.containsKey(nameForUid);
-    }
-
-    public final int isAllowedProcRules(String str, String str2, boolean z) {
-        Hashtable hashtable = new Hashtable();
-        try {
-            if (z) {
-                hashtable.putAll(sAllowedProcessProcRules);
-            } else {
-                hashtable.putAll(sAllowedProcRules);
-            }
-            if (!hashtable.containsKey(str)) {
-                Log.i(TAG, "Please set package rules first : " + str);
-                return -102;
-            }
-            ArrayList arrayList = (ArrayList) hashtable.get(str);
-            if (arrayList != null) {
-                Iterator it = arrayList.iterator();
-                while (it.hasNext()) {
-                    if (((String) it.next()).equals(str2)) {
-                        if (!hasRestrictCharacter(str2)) {
-                            return 0;
-                        }
-                        Log.e(TAG, "Not allowed proc : " + str2);
-                        return -103;
-                    }
-                }
-            }
-            Log.d(TAG, "No rules : " + str + "|" + str2);
-            return -102;
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-            return -104;
-        } catch (NullPointerException e2) {
-            e2.printStackTrace();
-            return KnoxCustomManagerService.DOCK_SHORTCUT_CONTAINER_ID;
-        }
-    }
-
-    public String removeSensitiveProc(String str, int i) {
-        String[] strArr;
-        if (str == null || !str.contains(" ") || !str.contains("(") || !str.contains(")")) {
-            Log.e(TAG, "Invalid argument : " + str);
-            return null;
-        }
-        int[] iArr = SENSITIVE_PROCESS_PROC_LEN_LIST;
-        int i2 = iArr[i];
-        String[] strArr2 = new String[i2];
-        String[] split = str.split(BRAKET_START_STRING);
-        int i3 = 2;
-        if (split.length == 2) {
-            strArr2[0] = split[0].trim();
-            String[] split2 = split[1].split(BRAKET_END_STRING);
-            if (split2.length == 2) {
-                strArr2[1] = split2[0].trim();
-                strArr = split2[1].trim().split(" ");
-            } else {
-                strArr = null;
-            }
-            if (strArr != null && strArr.length == iArr[i] - 2) {
-                int length = strArr.length;
-                int i4 = 0;
-                while (i4 < length) {
-                    strArr2[i3] = strArr[i4];
-                    i4++;
-                    i3++;
-                }
-                for (int i5 : SENSTIVE_PROCESS_PROC_POSITION) {
-                    int i6 = i5 - 1;
-                    if (i6 == i2) {
-                        Log.e(TAG, "Invalid length " + i6 + "|" + i2);
-                    } else {
-                        strArr2[i6] = "";
-                    }
-                }
-                StringBuilder sb = new StringBuilder();
-                for (int i7 = 0; i7 < i2; i7++) {
-                    String str2 = strArr2[i7];
-                    if (!"".equals(str2)) {
-                        sb.append(str2);
-                        sb.append(" ");
-                    }
-                }
-                return sb.toString().trim();
-            }
-            String str3 = TAG;
-            Log.e(str3, "Remove sensitive data failed, pid=" + strArr2[0] + ", name=" + strArr2[1]);
-            if (DEBUG) {
-                Log.e(str3, "Sensitive data result=" + str);
-            }
-            if (strArr != null) {
-                Log.e(str3, "Remained len=" + strArr.length);
-            }
-            return null;
-        }
-        Log.e(TAG, "Invalid format line=" + str);
-        return null;
-    }
-
-    public int isAllowedProc(String str, String str2, boolean z) {
-        if (str == null) {
-            Log.e(TAG, "Get package name failed");
-            return KnoxCustomManagerService.DOCK_SHORTCUT_CONTAINER_ID;
-        }
-        if (hasRestrictCharacter(str2)) {
-            Log.e(TAG, "Denied proc = " + str2 + " reason : Restrict Character");
-            return -103;
-        }
-        if (z) {
-            try {
-                if (Files.isSymbolicLink(Paths.get(str2, new String[0]))) {
-                    Log.e(TAG, "Denied proc = " + str2 + " reason : Symbolic Link");
-                    return -105;
-                }
-            } catch (InvalidPathException e) {
-                Log.e(TAG, "Invalid path p = " + str2 + ", err = " + e);
-                return -105;
-            }
-        }
-        int isAllowedProcRules = isAllowedProcRules(str, str2, z);
-        if (isAllowedProcRules < 0) {
-            Log.e(TAG, "Denied proc : " + str2 + ", errno=" + isAllowedProcRules);
-        }
-        return isAllowedProcRules;
-    }
-
-    public boolean hasRestrictCharacter(String str) {
-        for (String str2 : RESTRICTED_CHAR_LIST) {
-            if (str.contains(str2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:15:0x008a A[ADDED_TO_REGION] */
-    /* JADX WARN: Removed duplicated region for block: B:20:0x0095 A[ADDED_TO_REGION, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public final void updateProcessIds() {
-        /*
-            r12 = this;
-            long r0 = java.lang.System.currentTimeMillis()
-            java.io.File r12 = new java.io.File
-            java.lang.String r2 = "/proc/"
-            r12.<init>(r2)
-            java.lang.Object r2 = com.android.server.enterprise.threatdefense.ThreatDefenseService.sLock
-            monitor-enter(r2)
-            android.util.SparseArray r3 = com.android.server.enterprise.threatdefense.ThreatDefenseService.sProcessIds     // Catch: java.lang.Throwable -> Lbb
-            r3.clear()     // Catch: java.lang.Throwable -> Lbb
-            java.io.File[] r3 = r12.listFiles()     // Catch: java.lang.Throwable -> Lbb
-            if (r3 == 0) goto L98
-            java.io.File[] r12 = r12.listFiles()     // Catch: java.lang.Throwable -> Lbb
-            int r3 = r12.length     // Catch: java.lang.Throwable -> Lbb
-            r4 = 0
-            r5 = 0
-            r6 = r4
-        L21:
-            if (r6 >= r3) goto L98
-            r7 = r12[r6]     // Catch: java.lang.Throwable -> Lbb
-            java.lang.String r7 = r7.getName()     // Catch: java.lang.Throwable -> Lbb
-            java.lang.String r8 = "^[0-9]+"
-            boolean r8 = r7.matches(r8)     // Catch: java.lang.Throwable -> Lbb
-            if (r8 == 0) goto L95
-            int r8 = java.lang.Integer.parseInt(r7)     // Catch: java.io.IOException -> L57 java.lang.NumberFormatException -> L70 java.lang.Throwable -> Lbb
-            java.lang.StringBuilder r9 = new java.lang.StringBuilder     // Catch: java.io.IOException -> L53 java.lang.NumberFormatException -> L55 java.lang.Throwable -> Lbb
-            r9.<init>()     // Catch: java.io.IOException -> L53 java.lang.NumberFormatException -> L55 java.lang.Throwable -> Lbb
-            java.lang.String r10 = "/proc/"
-            r9.append(r10)     // Catch: java.io.IOException -> L53 java.lang.NumberFormatException -> L55 java.lang.Throwable -> Lbb
-            r9.append(r7)     // Catch: java.io.IOException -> L53 java.lang.NumberFormatException -> L55 java.lang.Throwable -> Lbb
-            java.lang.String r7 = r9.toString()     // Catch: java.io.IOException -> L53 java.lang.NumberFormatException -> L55 java.lang.Throwable -> Lbb
-            java.lang.String[] r9 = new java.lang.String[r4]     // Catch: java.io.IOException -> L53 java.lang.NumberFormatException -> L55 java.lang.Throwable -> Lbb
-            java.nio.file.Path r7 = java.nio.file.Paths.get(r7, r9)     // Catch: java.io.IOException -> L53 java.lang.NumberFormatException -> L55 java.lang.Throwable -> Lbb
-            java.nio.file.LinkOption[] r9 = new java.nio.file.LinkOption[r4]     // Catch: java.io.IOException -> L53 java.lang.NumberFormatException -> L55 java.lang.Throwable -> Lbb
-            java.nio.file.attribute.UserPrincipal r5 = java.nio.file.Files.getOwner(r7, r9)     // Catch: java.io.IOException -> L53 java.lang.NumberFormatException -> L55 java.lang.Throwable -> Lbb
-            goto L88
-        L53:
-            r7 = move-exception
-            goto L59
-        L55:
-            r7 = move-exception
-            goto L72
-        L57:
-            r7 = move-exception
-            r8 = r4
-        L59:
-            java.lang.String r9 = com.android.server.enterprise.threatdefense.ThreatDefenseService.TAG     // Catch: java.lang.Throwable -> Lbb
-            java.lang.StringBuilder r10 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lbb
-            r10.<init>()     // Catch: java.lang.Throwable -> Lbb
-            java.lang.String r11 = "IOException"
-            r10.append(r11)     // Catch: java.lang.Throwable -> Lbb
-            r10.append(r7)     // Catch: java.lang.Throwable -> Lbb
-            java.lang.String r7 = r10.toString()     // Catch: java.lang.Throwable -> Lbb
-            android.util.Log.w(r9, r7)     // Catch: java.lang.Throwable -> Lbb
-            goto L88
-        L70:
-            r7 = move-exception
-            r8 = r4
-        L72:
-            java.lang.String r9 = com.android.server.enterprise.threatdefense.ThreatDefenseService.TAG     // Catch: java.lang.Throwable -> Lbb
-            java.lang.StringBuilder r10 = new java.lang.StringBuilder     // Catch: java.lang.Throwable -> Lbb
-            r10.<init>()     // Catch: java.lang.Throwable -> Lbb
-            java.lang.String r11 = "NumberFormatException"
-            r10.append(r11)     // Catch: java.lang.Throwable -> Lbb
-            r10.append(r7)     // Catch: java.lang.Throwable -> Lbb
-            java.lang.String r7 = r10.toString()     // Catch: java.lang.Throwable -> Lbb
-            android.util.Log.w(r9, r7)     // Catch: java.lang.Throwable -> Lbb
-        L88:
-            if (r8 <= 0) goto L95
-            if (r5 == 0) goto L95
-            android.util.SparseArray r7 = com.android.server.enterprise.threatdefense.ThreatDefenseService.sProcessIds     // Catch: java.lang.Throwable -> Lbb
-            java.lang.String r9 = r5.getName()     // Catch: java.lang.Throwable -> Lbb
-            r7.put(r8, r9)     // Catch: java.lang.Throwable -> Lbb
-        L95:
-            int r6 = r6 + 1
-            goto L21
-        L98:
-            monitor-exit(r2)     // Catch: java.lang.Throwable -> Lbb
-            long r2 = java.lang.System.currentTimeMillis()
-            long r2 = r2 - r0
-            java.lang.String r12 = com.android.server.enterprise.threatdefense.ThreatDefenseService.TAG
-            java.lang.StringBuilder r0 = new java.lang.StringBuilder
-            r0.<init>()
-            java.lang.String r1 = "Update PIDs took "
-            r0.append(r1)
-            r0.append(r2)
-            java.lang.String r1 = "ms"
-            r0.append(r1)
-            java.lang.String r0 = r0.toString()
-            android.util.Log.i(r12, r0)
-            return
-        Lbb:
-            r12 = move-exception
-            monitor-exit(r2)     // Catch: java.lang.Throwable -> Lbb
-            throw r12
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.threatdefense.ThreatDefenseService.updateProcessIds():void");
-    }
-
-    public boolean hasValidSignature(String str, String str2) {
-        try {
-            SigningInfo signingInfo = PackageManagerAdapter.getInstance(this.mContext).getPackageInfo(str, 134217728, UserHandle.getUserId(Binder.getCallingUid())).signingInfo;
-            if (signingInfo.hasMultipleSigners()) {
-                Log.i(TAG, "package : " + str + " hasMultipleSigners");
-            }
-            Signature[] apkContentsSigners = signingInfo.getApkContentsSigners();
-            if (apkContentsSigners == null) {
-                Log.e(TAG, "getApkContentsSigners() failed");
-                return false;
-            }
-            String charsString = apkContentsSigners[0].toCharsString();
-            if (charsString == null || str2 == null) {
-                Log.e(TAG, "Get package signature failed");
-                return false;
-            }
-            if (charsString.equals(str2)) {
-                return true;
-            }
-            Log.e(TAG, "Signature check failed");
-            return false;
-        } catch (Exception e) {
-            Log.e(TAG, "Invalid package : " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public final void resetPackageRules() {
-        Hashtable hashtable = sAllowedProcRules;
-        int size = hashtable.size();
-        Hashtable hashtable2 = sAllowedProcessProcRules;
-        if (size + hashtable2.size() < 1) {
-            if (DEBUG) {
-                Log.d(TAG, "Skip!! No rules");
-            }
-        } else {
-            hashtable.clear();
-            hashtable2.clear();
-            notifyToPackages();
-        }
-    }
-
-    public final void notifyToPackages() {
-        Log.i(TAG, "Send broadcast");
-        this.mContext.sendBroadcast(new Intent("com.samsung.android.knox.intent.action.MTDL_PACKAGE_RULES_REMOVED"));
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void systemReady() {
     }
 }

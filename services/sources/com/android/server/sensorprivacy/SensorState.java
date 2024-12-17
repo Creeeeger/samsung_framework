@@ -1,55 +1,29 @@
 package com.android.server.sensorprivacy;
 
-/* loaded from: classes3.dex */
-public class SensorState {
+import android.os.SystemClock;
+
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SensorState {
     public long mLastChange;
     public int mStateType;
 
-    public static int enabledToState(boolean z) {
-        return z ? 1 : 2;
-    }
-
     public SensorState(int i) {
         this.mStateType = i;
-        this.mLastChange = SensorPrivacyService.getCurrentTimeMillis();
-    }
-
-    public SensorState(int i, long j) {
-        this.mStateType = i;
-        this.mLastChange = Math.min(SensorPrivacyService.getCurrentTimeMillis(), j);
+        String str = SensorPrivacyService.ACTION_DISABLE_TOGGLE_SENSOR_PRIVACY;
+        this.mLastChange = SystemClock.elapsedRealtime();
     }
 
     public SensorState(SensorState sensorState) {
-        this.mStateType = sensorState.getState();
-        this.mLastChange = sensorState.getLastChange();
-    }
-
-    public boolean setState(int i) {
-        if (this.mStateType == i) {
-            return false;
-        }
-        this.mStateType = i;
-        this.mLastChange = SensorPrivacyService.getCurrentTimeMillis();
-        return true;
-    }
-
-    public int getState() {
-        return this.mStateType;
-    }
-
-    public long getLastChange() {
-        return this.mLastChange;
+        this.mStateType = sensorState.mStateType;
+        this.mLastChange = sensorState.mLastChange;
     }
 
     public SensorState(boolean z) {
-        this(enabledToState(z));
+        this(z ? 1 : 2);
     }
 
-    public boolean setEnabled(boolean z) {
-        return setState(enabledToState(z));
-    }
-
-    public boolean isEnabled() {
-        return getState() == 1;
+    public final boolean isEnabled() {
+        return this.mStateType == 1;
     }
 }

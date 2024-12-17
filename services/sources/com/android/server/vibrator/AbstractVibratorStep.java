@@ -2,10 +2,13 @@ package com.android.server.vibrator;
 
 import android.os.SystemClock;
 import android.os.VibrationEffect;
+import android.util.Slog;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import java.util.Arrays;
 import java.util.List;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class AbstractVibratorStep extends Step {
     public final VibratorController controller;
     public final VibrationEffect.Composed effect;
@@ -22,21 +25,13 @@ public abstract class AbstractVibratorStep extends Step {
         this.mPendingVibratorOffDeadline = j2;
     }
 
-    public int getVibratorId() {
-        return this.controller.getVibratorInfo().getId();
-    }
-
-    @Override // com.android.server.vibrator.Step
-    public long getVibratorOnDuration() {
-        return this.mVibratorOnResult;
-    }
-
     @Override // com.android.server.vibrator.Step
     public boolean acceptVibratorCompleteCallback(int i) {
         if (getVibratorId() != i) {
             return false;
         }
         boolean z = this.mPendingVibratorOffDeadline > SystemClock.uptimeMillis();
+        Slog.d("VibrationThread", "Received completion callback from " + i + ", accepted = " + z);
         this.mPendingVibratorOffDeadline = 0L;
         this.mVibratorCompleteCallbackReceived = true;
         return z;
@@ -54,46 +49,60 @@ public abstract class AbstractVibratorStep extends Step {
         }
     }
 
-    public long handleVibratorOnResult(long j) {
+    public final void changeAmplitude(float f) {
+        Slog.d("VibrationThread", "Amplitude changed on vibrator " + getVibratorId() + " to " + f);
+        this.controller.setAmplitude(f);
+        VibrationStats vibrationStats = this.conductor.mVibration.stats;
+        vibrationStats.mVibratorSetAmplitudeCount = vibrationStats.mVibratorSetAmplitudeCount + 1;
+    }
+
+    public final int getVibratorId() {
+        return this.controller.mVibratorInfo.getId();
+    }
+
+    @Override // com.android.server.vibrator.Step
+    public final long getVibratorOnDuration() {
+        return this.mVibratorOnResult;
+    }
+
+    public final void handleVibratorOnResult(long j) {
         this.mVibratorOnResult = j;
-        if (j > 0) {
+        StringBuilder sb = new StringBuilder("Turned on vibrator ");
+        sb.append(getVibratorId());
+        sb.append(", result = ");
+        BatteryService$$ExternalSyntheticOutline0.m(sb, this.mVibratorOnResult, "VibrationThread");
+        if (this.mVibratorOnResult > 0) {
             this.mPendingVibratorOffDeadline = SystemClock.uptimeMillis() + this.mVibratorOnResult + 1000;
         } else {
             this.mPendingVibratorOffDeadline = 0L;
         }
-        return this.mVibratorOnResult;
     }
 
-    public void stopVibrating() {
-        this.controller.off();
-        getVibration().stats.reportVibratorOff();
-        this.mPendingVibratorOffDeadline = 0L;
-    }
-
-    public void changeAmplitude(float f) {
-        this.controller.setAmplitude(f);
-        getVibration().stats.reportSetAmplitude();
-    }
-
-    public List nextSteps(int i) {
+    public final List nextSteps(int i) {
         long uptimeMillis = SystemClock.uptimeMillis();
         long j = this.mVibratorOnResult;
         if (j > 0) {
             uptimeMillis += j;
         }
-        return nextSteps(uptimeMillis, i);
+        return nextSteps(i, uptimeMillis);
     }
 
-    public List nextSteps(long j, int i) {
+    public final List nextSteps(int i, long j) {
         int i2 = this.segmentIndex + i;
         int size = this.effect.getSegments().size();
         int repeatIndex = this.effect.getRepeatIndex();
         if (i2 >= size && repeatIndex >= 0) {
             int i3 = size - repeatIndex;
-            getVibration().stats.reportRepetition((i2 - repeatIndex) / i3);
+            this.conductor.mVibration.stats.mRepeatCount += (i2 - repeatIndex) / i3;
             i2 = ((i2 - size) % i3) + repeatIndex;
         }
-        AbstractVibratorStep nextVibrateStep = this.conductor.nextVibrateStep(j, this.controller, this.effect, i2, this.mPendingVibratorOffDeadline);
-        return nextVibrateStep == null ? VibrationStepConductor.EMPTY_STEP_LIST : Arrays.asList(nextVibrateStep);
+        return Arrays.asList(this.conductor.nextVibrateStep(j, this.controller, this.effect, i2, this.mPendingVibratorOffDeadline));
+    }
+
+    public final void stopVibrating() {
+        Slog.d("VibrationThread", "Turning off vibrator " + getVibratorId());
+        this.controller.off();
+        this.conductor.mVibration.stats.mVibratorOffCount++;
+        this.mPendingVibratorOffDeadline = 0L;
     }
 }

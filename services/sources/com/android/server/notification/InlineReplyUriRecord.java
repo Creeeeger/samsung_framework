@@ -1,12 +1,10 @@
 package com.android.server.notification;
 
-import android.app.ActivityManager;
-import android.net.Uri;
 import android.os.IBinder;
 import android.os.UserHandle;
-import android.os.UserManager;
 import android.util.ArraySet;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public final class InlineReplyUriRecord {
     public final String mKey;
@@ -20,32 +18,5 @@ public final class InlineReplyUriRecord {
         this.mUser = userHandle;
         this.mPackageName = str;
         this.mKey = str2;
-    }
-
-    public IBinder getPermissionOwner() {
-        return this.mPermissionOwner;
-    }
-
-    public void addUri(Uri uri) {
-        this.mUris.add(uri);
-    }
-
-    public int getUserId() {
-        int identifier = this.mUser.getIdentifier();
-        if (UserManager.isHeadlessSystemUserMode() && identifier == -1) {
-            return ActivityManager.getCurrentUser();
-        }
-        if (identifier == -1) {
-            return 0;
-        }
-        return identifier;
-    }
-
-    public String getPackageName() {
-        return this.mPackageName;
-    }
-
-    public String getKey() {
-        return this.mKey;
     }
 }

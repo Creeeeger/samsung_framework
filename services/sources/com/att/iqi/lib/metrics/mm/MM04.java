@@ -3,9 +3,11 @@ package com.att.iqi.lib.metrics.mm;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.att.iqi.lib.Metric;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class MM04 extends Metric {
     private String m_szCallId;
     private String m_szDialedString;
@@ -28,13 +30,6 @@ public class MM04 extends Metric {
         reset();
     }
 
-    public void reset() {
-        this.m_szDialedString = "";
-        this.m_szCallId = "";
-        this.m_szOriginatingUri = "";
-        this.m_szTerminatingUri = "";
-    }
-
     public MM04(Parcel parcel) {
         super(parcel);
         if (parcel.readInt() >= 1) {
@@ -45,13 +40,36 @@ public class MM04 extends Metric {
         }
     }
 
-    public MM04 setDialedString(String str) {
-        this.m_szDialedString = str;
-        return this;
+    public String getCallId() {
+        return this.m_szCallId;
     }
 
     public String getDialedString() {
         return this.m_szDialedString;
+    }
+
+    public String getOriginatingUri() {
+        return this.m_szOriginatingUri;
+    }
+
+    public String getTerminatingUri() {
+        return this.m_szTerminatingUri;
+    }
+
+    public void reset() {
+        this.m_szDialedString = "";
+        this.m_szCallId = "";
+        this.m_szOriginatingUri = "";
+        this.m_szTerminatingUri = "";
+    }
+
+    @Override // com.att.iqi.lib.Metric
+    public int serialize(ByteBuffer byteBuffer) throws BufferOverflowException {
+        stringOut(byteBuffer, this.m_szDialedString);
+        stringOut(byteBuffer, this.m_szCallId);
+        stringOut(byteBuffer, this.m_szOriginatingUri);
+        stringOut(byteBuffer, this.m_szTerminatingUri);
+        return byteBuffer.position();
     }
 
     public MM04 setCallId(String str) {
@@ -59,8 +77,9 @@ public class MM04 extends Metric {
         return this;
     }
 
-    public String getCallId() {
-        return this.m_szCallId;
+    public MM04 setDialedString(String str) {
+        this.m_szDialedString = str;
+        return this;
     }
 
     public MM04 setOriginatingUri(String str) {
@@ -68,26 +87,9 @@ public class MM04 extends Metric {
         return this;
     }
 
-    public String getOriginatingUri() {
-        return this.m_szOriginatingUri;
-    }
-
     public MM04 setTerminatingUri(String str) {
         this.m_szTerminatingUri = str;
         return this;
-    }
-
-    public String getTerminatingUri() {
-        return this.m_szTerminatingUri;
-    }
-
-    @Override // com.att.iqi.lib.Metric
-    public int serialize(ByteBuffer byteBuffer) {
-        stringOut(byteBuffer, this.m_szDialedString);
-        stringOut(byteBuffer, this.m_szCallId);
-        stringOut(byteBuffer, this.m_szOriginatingUri);
-        stringOut(byteBuffer, this.m_szTerminatingUri);
-        return byteBuffer.position();
     }
 
     @Override // com.att.iqi.lib.Metric, android.os.Parcelable

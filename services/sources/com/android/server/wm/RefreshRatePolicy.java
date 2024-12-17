@@ -2,48 +2,74 @@ package com.android.server.wm;
 
 import android.view.Display;
 import android.view.DisplayInfo;
-import android.view.SurfaceControl;
-import com.android.server.display.DisplayPowerController2;
-import com.samsung.android.hardware.display.RefreshRateConfig;
+import android.view.WindowManager;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.wm.RefreshRatePolicyLogger;
+import com.android.window.flags.Flags;
+import com.samsung.android.core.SystemHistory;
 import com.samsung.android.rune.CoreRune;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/* loaded from: classes3.dex */
-public class RefreshRatePolicy {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class RefreshRatePolicy {
     public final Display.Mode mDefaultMode;
     public final DisplayInfo mDisplayInfo;
     public final HighRefreshRateDenylist mHighRefreshRateDenylist;
     public Display.Mode mLowRefreshRateMode;
     public float mMaxSupportedRefreshRate;
     public float mMinSupportedRefreshRate;
-    public RefreshRatePolicyLogger mRefreshRatePolicyLogger;
+    public final RefreshRatePolicyLogger mRefreshRatePolicyLogger;
     public final WindowManagerService mWmService;
     public final PackageRefreshRate mNonHighRefreshRatePackages = new PackageRefreshRate();
     public final ConcurrentHashMap mFixedRefreshRatePackages = new ConcurrentHashMap();
     public boolean mRestrictHighRefreshRate = false;
-    public AtomicBoolean mReportedRestrictHighRefreshRate = new AtomicBoolean(false);
+    public final AtomicBoolean mReportedRestrictHighRefreshRate = new AtomicBoolean(false);
 
-    /* loaded from: classes3.dex */
-    public class PackageRefreshRate {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class FrameRateVote {
+        public int mCompatibility;
+        public float mRefreshRate;
+        public int mSelectionStrategy;
+
+        public final boolean equals(Object obj) {
+            if (!(obj instanceof FrameRateVote)) {
+                return false;
+            }
+            FrameRateVote frameRateVote = (FrameRateVote) obj;
+            float f = frameRateVote.mRefreshRate;
+            float f2 = this.mRefreshRate;
+            return f2 <= f + 0.01f && f2 >= f - 0.01f && this.mCompatibility == frameRateVote.mCompatibility && this.mSelectionStrategy == frameRateVote.mSelectionStrategy;
+        }
+
+        public final int hashCode() {
+            return Objects.hash(Float.valueOf(this.mRefreshRate), Integer.valueOf(this.mCompatibility), Integer.valueOf(this.mSelectionStrategy));
+        }
+
+        public final String toString() {
+            return "mRefreshRate=" + this.mRefreshRate + ", mCompatibility=" + this.mCompatibility + ", mSelectionStrategy=" + this.mSelectionStrategy;
+        }
+
+        public final boolean update(int i, int i2, float f) {
+            float f2 = this.mRefreshRate;
+            if (f2 <= f + 0.01f && f2 >= f - 0.01f && this.mCompatibility == i && this.mSelectionStrategy == i2) {
+                return false;
+            }
+            this.mRefreshRate = f;
+            this.mCompatibility = i;
+            this.mSelectionStrategy = i2;
+            return true;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PackageRefreshRate {
         public final HashMap mPackages = new HashMap();
 
         public PackageRefreshRate() {
-        }
-
-        public void add(String str, float f, float f2) {
-            this.mPackages.put(str, new SurfaceControl.RefreshRateRange(Math.max(RefreshRatePolicy.this.mMinSupportedRefreshRate, f), Math.min(RefreshRatePolicy.this.mMaxSupportedRefreshRate, f2)));
-        }
-
-        public SurfaceControl.RefreshRateRange get(String str) {
-            return (SurfaceControl.RefreshRateRange) this.mPackages.get(str);
-        }
-
-        public void remove(String str) {
-            this.mPackages.remove(str);
         }
     }
 
@@ -60,8 +86,18 @@ public class RefreshRatePolicy {
         }
     }
 
+    public static boolean shouldIgnoreRestrictedRange(WindowState windowState) {
+        if (windowState.getTask() == null || !windowState.getTask().inPinnedWindowingMode()) {
+            WindowManager.LayoutParams layoutParams = windowState.mAttrs;
+            if (layoutParams.type != 2038 || layoutParams.isFullscreen()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public final Display.Mode findLowRefreshRateMode(DisplayInfo displayInfo, Display.Mode mode) {
-        float[] defaultRefreshRates = displayInfo.getDefaultRefreshRates();
+        float[] defaultRefreshRates = CoreRune.FW_VRR_DISCRETE ? displayInfo.getDefaultRefreshRates(displayInfo.appsSupportedModes) : displayInfo.getDefaultRefreshRates();
         float refreshRate = mode.getRefreshRate();
         this.mMinSupportedRefreshRate = refreshRate;
         this.mMaxSupportedRefreshRate = refreshRate;
@@ -73,52 +109,16 @@ public class RefreshRatePolicy {
                 refreshRate = f;
             }
         }
-        return displayInfo.findDefaultModeByRefreshRate(refreshRate);
+        return CoreRune.FW_VRR_DISCRETE ? displayInfo.findDefaultModeByRefreshRate(refreshRate, displayInfo.appsSupportedModes) : displayInfo.findDefaultModeByRefreshRate(refreshRate);
     }
 
-    public void addRefreshRateRangeForPackage(String str, float f, float f2) {
-        this.mNonHighRefreshRatePackages.add(str, f, f2);
-        this.mWmService.requestTraversal();
-    }
-
-    public void removeRefreshRateRangeForPackage(String str) {
-        this.mNonHighRefreshRatePackages.remove(str);
-        this.mWmService.requestTraversal();
-    }
-
-    public void addFixedRefreshRatePackage(String str, int i) {
-        this.mFixedRefreshRatePackages.put(str, Integer.valueOf(i));
-        this.mWmService.requestTraversal();
-    }
-
-    public void removeFixedRefreshRatePackage(String str) {
-        this.mFixedRefreshRatePackages.remove(str);
-        this.mWmService.requestTraversal();
-    }
-
-    public final float getRefreshRateFromFixedRefreshRatePackages(WindowState windowState) {
-        DisplayInfo displayInfo;
-        String owningPackage = windowState.getOwningPackage();
-        if (!this.mFixedRefreshRatePackages.containsKey(owningPackage) || (displayInfo = windowState.getDisplayInfo()) == null) {
-            return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        }
-        int intValue = ((Integer) this.mFixedRefreshRatePackages.get(owningPackage)).intValue();
-        for (Display.Mode mode : displayInfo.supportedModes) {
-            if (intValue == mode.getModeId()) {
-                return mode.getRefreshRate();
-            }
-        }
-        return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    }
-
-    public int getPreferredModeId(WindowState windowState) {
-        DisplayInfo displayInfo;
+    public final int getPreferredModeId(WindowState windowState) {
         Display.Mode mode;
         int i = windowState.mAttrs.preferredDisplayModeId;
         if (i <= 0) {
             return 0;
         }
-        if (windowState.isAnimationRunningSelfOrParent()) {
+        if (!Flags.explicitRefreshRateHints() && windowState.isAnimationRunningSelfOrParent()) {
             Display.Mode[] modeArr = this.mDisplayInfo.supportedModes;
             int length = modeArr.length;
             int i2 = 0;
@@ -142,15 +142,17 @@ public class RefreshRatePolicy {
             }
             return 0;
         }
-        String owningPackage = CoreRune.FW_VRR_POLICY ? windowState.getOwningPackage() : "";
-        if (CoreRune.FW_VRR_FIXED_REFRESH_RATE_PACKAGE && this.mFixedRefreshRatePackages.containsKey(owningPackage)) {
-            return ((Integer) this.mFixedRefreshRatePackages.get(owningPackage)).intValue();
+        String str = CoreRune.FW_VRR_POLICY ? windowState.mAttrs.packageName : "";
+        if (CoreRune.FW_VRR_FIXED_REFRESH_RATE_PACKAGE && this.mFixedRefreshRatePackages.containsKey(str)) {
+            return ((Integer) this.mFixedRefreshRatePackages.get(str)).intValue();
         }
-        if (CoreRune.FW_VRR_LOW_REFRESH_RATE_LIST && isFocusedLowRefreshRatePackage(windowState, owningPackage)) {
+        boolean z = CoreRune.FW_VRR_LOW_REFRESH_RATE_LIST;
+        WindowManagerService windowManagerService = this.mWmService;
+        if (z && windowState.isFocused() && windowManagerService.mAtmService.mExt.mLowRefreshRateList.contains(str)) {
             return this.mLowRefreshRateMode.getModeId();
         }
-        if (CoreRune.FW_VRR_HRR_CHINA_DELTA && i != 0 && isHighRefreshRatePackage(owningPackage) && (displayInfo = windowState.getDisplayInfo()) != null) {
-            for (Display.Mode mode2 : displayInfo.supportedModes) {
+        if (CoreRune.FW_VRR_HRR_CHINA_DELTA && i != 0 && windowState.getDisplayInfo() != null && windowManagerService.mAtmService.mExt.mHighRefreshRateBlockList.contains(str)) {
+            for (Display.Mode mode2 : CoreRune.FW_VRR_DISCRETE ? windowState.getDisplayInfo().appsSupportedModes : windowState.getDisplayInfo().supportedModes) {
                 if (i == mode2.getModeId() && mode2.getRefreshRate() >= 119.99f) {
                     return 0;
                 }
@@ -159,180 +161,46 @@ public class RefreshRatePolicy {
         return i;
     }
 
-    public int calculatePriority(WindowState windowState) {
-        boolean isFocused = windowState.isFocused();
-        int preferredModeId = getPreferredModeId(windowState);
-        if (!isFocused && preferredModeId > 0) {
-            return 2;
+    public final float getRefreshRateFromFixedRefreshRatePackages(WindowState windowState) {
+        String str = windowState.mAttrs.packageName;
+        if (!this.mFixedRefreshRatePackages.containsKey(str)) {
+            return FullScreenMagnificationGestureHandler.MAX_SCALE;
         }
-        if (isFocused && preferredModeId == 0) {
-            return 1;
+        DisplayInfo displayInfo = windowState.getDisplayInfo();
+        int intValue = ((Integer) this.mFixedRefreshRatePackages.get(str)).intValue();
+        for (Display.Mode mode : displayInfo.appsSupportedModes) {
+            if (intValue == mode.getModeId()) {
+                return mode.getRefreshRate();
+            }
         }
-        return (!isFocused || preferredModeId <= 0) ? -1 : 0;
+        return FullScreenMagnificationGestureHandler.MAX_SCALE;
     }
 
-    /* loaded from: classes3.dex */
-    public class FrameRateVote {
-        public int mCompatibility;
-        public float mRefreshRate;
-
-        public FrameRateVote() {
-            reset();
-        }
-
-        public boolean update(float f, int i) {
-            if (refreshRateEquals(f) && this.mCompatibility == i) {
-                return false;
+    public final void updateLog(WindowState windowState, int i, float f, int i2) {
+        RefreshRatePolicyLogger.RefreshRateHistory refreshRateHistory = (RefreshRatePolicyLogger.RefreshRateHistory) this.mRefreshRatePolicyLogger.mRefreshRateHistories.get(i2);
+        if (refreshRateHistory != null) {
+            if (refreshRateHistory.mLastRequester == windowState && refreshRateHistory.mModeId == i && refreshRateHistory.mRefreshRate == f) {
+                return;
             }
-            this.mRefreshRate = f;
-            this.mCompatibility = i;
-            return true;
-        }
-
-        public boolean reset() {
-            return update(DisplayPowerController2.RATE_FROM_DOZE_TO_ON, 0);
-        }
-
-        public boolean equals(Object obj) {
-            if (!(obj instanceof FrameRateVote)) {
-                return false;
-            }
-            FrameRateVote frameRateVote = (FrameRateVote) obj;
-            return refreshRateEquals(frameRateVote.mRefreshRate) && this.mCompatibility == frameRateVote.mCompatibility;
-        }
-
-        public int hashCode() {
-            return Objects.hash(Float.valueOf(this.mRefreshRate), Integer.valueOf(this.mCompatibility));
-        }
-
-        public String toString() {
-            return "mRefreshRate=" + this.mRefreshRate + ", mCompatibility=" + this.mCompatibility;
-        }
-
-        public final boolean refreshRateEquals(float f) {
-            float f2 = this.mRefreshRate;
-            return f2 <= f + 0.01f && f2 >= f - 0.01f;
-        }
-    }
-
-    public boolean updateFrameRateVote(WindowState windowState) {
-        int i;
-        int refreshRateSwitchingType = this.mWmService.mDisplayManagerInternal.getRefreshRateSwitchingType();
-        if (refreshRateSwitchingType == 0) {
-            return windowState.mFrameRateVote.reset();
-        }
-        if (windowState.isAnimationRunningSelfOrParent()) {
-            return windowState.mFrameRateVote.reset();
-        }
-        if (refreshRateSwitchingType != 3 && (i = windowState.mAttrs.preferredDisplayModeId) > 0) {
-            for (Display.Mode mode : this.mDisplayInfo.supportedModes) {
-                if (i == mode.getModeId()) {
-                    if (CoreRune.FW_VRR_HRR_CHINA_DELTA && mode.getRefreshRate() >= 119.99f && isHighRefreshRatePackage(windowState.getOwningPackage())) {
-                        return windowState.mFrameRateVote.reset();
-                    }
-                    return windowState.mFrameRateVote.update(mode.getRefreshRate(), 100);
+            refreshRateHistory.mLastRequester = windowState;
+            refreshRateHistory.mModeId = i;
+            refreshRateHistory.mRefreshRate = f;
+            if (windowState != null) {
+                SystemHistory systemHistory = refreshRateHistory.mHistory;
+                StringBuilder sb = new StringBuilder("Requested (");
+                if (refreshRateHistory.mRefreshRate != -1.0f) {
+                    sb.append(" refreshRate=");
+                    sb.append(refreshRateHistory.mRefreshRate);
                 }
+                if (refreshRateHistory.mModeId != -1) {
+                    sb.append(" modeId=");
+                    sb.append(refreshRateHistory.mModeId);
+                }
+                sb.append(" w=");
+                sb.append(refreshRateHistory.mLastRequester);
+                sb.append(")");
+                systemHistory.add(sb.toString());
             }
         }
-        float f = windowState.mAttrs.preferredRefreshRate;
-        if (f > DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            return windowState.mFrameRateVote.update(f, 0);
-        }
-        if (refreshRateSwitchingType != 3) {
-            if (this.mHighRefreshRateDenylist.isDenylisted(windowState.getOwningPackage())) {
-                return windowState.mFrameRateVote.update(this.mLowRefreshRateMode.getRefreshRate(), 100);
-            }
-        }
-        return windowState.mFrameRateVote.reset();
-    }
-
-    public float getPreferredMinRefreshRate(WindowState windowState) {
-        if (windowState.isAnimationRunningSelfOrParent()) {
-            return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        }
-        if (CoreRune.FW_VRR_FIXED_REFRESH_RATE_PACKAGE && windowState.mAttrs.preferredMinDisplayRefreshRate == DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            float refreshRateFromFixedRefreshRatePackages = getRefreshRateFromFixedRefreshRatePackages(windowState);
-            if (refreshRateFromFixedRefreshRatePackages > DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                return refreshRateFromFixedRefreshRatePackages;
-            }
-        }
-        float f = windowState.mAttrs.preferredMinDisplayRefreshRate;
-        if (f > DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            return f;
-        }
-        SurfaceControl.RefreshRateRange refreshRateRange = this.mNonHighRefreshRatePackages.get(windowState.getOwningPackage());
-        return refreshRateRange != null ? refreshRateRange.min : DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    }
-
-    public float getPreferredMaxRefreshRate(WindowState windowState) {
-        if (windowState.isAnimationRunningSelfOrParent() && (!CoreRune.FW_VRR_POLICY || !RefreshRateConfig.getInstance().isSwitchable() || !windowState.isAnimating(3, 1))) {
-            return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        }
-        if (CoreRune.FW_VRR_FIXED_REFRESH_RATE_PACKAGE) {
-            float refreshRateFromFixedRefreshRatePackages = getRefreshRateFromFixedRefreshRatePackages(windowState);
-            if (refreshRateFromFixedRefreshRatePackages > DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-                return refreshRateFromFixedRefreshRatePackages;
-            }
-        }
-        float f = windowState.mAttrs.preferredMaxDisplayRefreshRate;
-        if (f > DisplayPowerController2.RATE_FROM_DOZE_TO_ON) {
-            return f;
-        }
-        String owningPackage = windowState.getOwningPackage();
-        SurfaceControl.RefreshRateRange refreshRateRange = this.mNonHighRefreshRatePackages.get(owningPackage);
-        if (refreshRateRange != null) {
-            return refreshRateRange.max;
-        }
-        if (CoreRune.FW_VRR_HIGH_REFRESH_RATE_BLOCK_LIST && this.mWmService.mAtmService.mExt.mHighRefreshRateBlockList.contains(owningPackage)) {
-            this.mRestrictHighRefreshRate = true;
-            return DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-        }
-        if (CoreRune.FW_VRR_NAVIGATION_LOW_REFRESH_RATE && isNavigationPackageWithKeepScreenOn(windowState, owningPackage)) {
-            return this.mLowRefreshRateMode.getRefreshRate();
-        }
-        return (CoreRune.FW_VRR_LOW_REFRESH_RATE_LIST && isFocusedLowRefreshRatePackage(windowState, owningPackage)) ? this.mLowRefreshRateMode.getRefreshRate() : DisplayPowerController2.RATE_FROM_DOZE_TO_ON;
-    }
-
-    public final boolean isNavigationPackageWithKeepScreenOn(WindowState windowState, String str) {
-        return this.mWmService.mAtmService.mExt.mNaviAppLowRefreshRateList.contains(str) && (windowState.mAttrs.flags & 128) != 0;
-    }
-
-    public final boolean isFocusedLowRefreshRatePackage(WindowState windowState, String str) {
-        return windowState.isFocused() && this.mWmService.mAtmService.mExt.mLowRefreshRateList.contains(str);
-    }
-
-    public final boolean isHighRefreshRatePackage(String str) {
-        return this.mWmService.mAtmService.mExt.mHighRefreshRateBlockList.contains(str);
-    }
-
-    public void resetRestrictHighRefreshRate() {
-        this.mRestrictHighRefreshRate = false;
-    }
-
-    public void updateRestrictHighRefreshRate() {
-        if (this.mDisplayInfo.state == 1 || this.mReportedRestrictHighRefreshRate.getAndSet(this.mRestrictHighRefreshRate) == this.mRestrictHighRefreshRate) {
-            return;
-        }
-        SurfaceControl.restrictHighRefreshRate(this.mReportedRestrictHighRefreshRate.get());
-    }
-
-    public void onDisplayInfoChanged(DisplayInfo displayInfo) {
-        this.mLowRefreshRateMode = findLowRefreshRateMode(displayInfo, displayInfo.getDefaultMode());
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        printWriter.print(str);
-        printWriter.println("RefreshRatePolicy");
-        String str2 = str + "  ";
-        printWriter.print(str2);
-        printWriter.print("mLowRefreshRateMode=");
-        printWriter.println(this.mLowRefreshRateMode);
-        if (CoreRune.FW_VRR_SYSTEM_HISTORY) {
-            this.mRefreshRatePolicyLogger.dump(str2, printWriter);
-        }
-    }
-
-    public void updateLog(WindowState windowState, int i, float f, int i2) {
-        this.mRefreshRatePolicyLogger.update(windowState, i, f, i2);
     }
 }

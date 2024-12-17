@@ -8,68 +8,86 @@ import android.os.Message;
 import android.util.ArrayMap;
 import android.util.FeatureFlagUtils;
 import android.view.InputDevice;
+import com.android.server.input.NativeInputManagerService;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class KeyRemapper implements InputManager.InputDeviceListener {
     public final Context mContext;
     public final PersistentDataStore mDataStore;
     public final Handler mHandler;
     public final NativeInputManagerService mNative;
 
-    @Override // android.hardware.input.InputManager.InputDeviceListener
-    public void onInputDeviceChanged(int i) {
-    }
-
-    @Override // android.hardware.input.InputManager.InputDeviceListener
-    public void onInputDeviceRemoved(int i) {
-    }
-
-    public KeyRemapper(Context context, NativeInputManagerService nativeInputManagerService, PersistentDataStore persistentDataStore, Looper looper) {
+    public KeyRemapper(Context context, NativeInputManagerService.NativeImpl nativeImpl, PersistentDataStore persistentDataStore, Looper looper) {
         this.mContext = context;
-        this.mNative = nativeInputManagerService;
+        this.mNative = nativeImpl;
         this.mDataStore = persistentDataStore;
-        this.mHandler = new Handler(looper, new Handler.Callback() { // from class: com.android.server.input.KeyRemapper$$ExternalSyntheticLambda1
+        this.mHandler = new Handler(looper, new Handler.Callback() { // from class: com.android.server.input.KeyRemapper$$ExternalSyntheticLambda0
+            /* JADX WARN: Multi-variable type inference failed */
+            /* JADX WARN: Type inference failed for: r7v1, types: [com.android.server.input.KeyRemapper, java.lang.Object] */
+            /* JADX WARN: Type inference failed for: r7v5, types: [com.android.server.input.PersistentDataStore] */
             @Override // android.os.Handler.Callback
             public final boolean handleMessage(Message message) {
-                boolean handleMessage;
-                handleMessage = KeyRemapper.this.handleMessage(message);
-                return handleMessage;
+                KeyRemapper keyRemapper = KeyRemapper.this;
+                keyRemapper.getClass();
+                int i = message.what;
+                if (i == 1) {
+                    for (int i2 : (int[]) message.obj) {
+                        keyRemapper.onInputDeviceAdded(i2);
+                    }
+                    return true;
+                }
+                if (i != 2) {
+                    if (i != 3) {
+                        return false;
+                    }
+                    synchronized (keyRemapper.mDataStore) {
+                        try {
+                            try {
+                                PersistentDataStore persistentDataStore2 = keyRemapper.mDataStore;
+                                persistentDataStore2.loadIfNeeded();
+                                Iterator it = new HashMap(persistentDataStore2.mKeyRemapping).keySet().iterator();
+                                while (it.hasNext()) {
+                                    int intValue = ((Integer) it.next()).intValue();
+                                    keyRemapper.mDataStore.clearMappedKey(intValue);
+                                    keyRemapper.addKeyRemapping(intValue, intValue);
+                                }
+                            } finally {
+                                keyRemapper.mDataStore.saveIfNeeded();
+                            }
+                        } finally {
+                        }
+                    }
+                    return true;
+                }
+                int i3 = message.arg1;
+                int i4 = message.arg2;
+                keyRemapper.addKeyRemapping(i3, i4);
+                synchronized (keyRemapper.mDataStore) {
+                    try {
+                        if (i3 == i4) {
+                            keyRemapper.mDataStore.clearMappedKey(i3);
+                        } else {
+                            PersistentDataStore persistentDataStore3 = keyRemapper.mDataStore;
+                            persistentDataStore3.loadIfNeeded();
+                            if (((Integer) ((HashMap) persistentDataStore3.mKeyRemapping).getOrDefault(Integer.valueOf(i3), -1)).intValue() != i4) {
+                                ((HashMap) persistentDataStore3.mKeyRemapping).put(Integer.valueOf(i3), Integer.valueOf(i4));
+                                persistentDataStore3.mDirty = true;
+                            }
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    } finally {
+                    }
+                }
+                return true;
             }
         });
-    }
-
-    public void systemRunning() {
-        InputManager inputManager = (InputManager) this.mContext.getSystemService(InputManager.class);
-        Objects.requireNonNull(inputManager);
-        inputManager.registerInputDeviceListener(this, this.mHandler);
-        this.mHandler.sendMessage(Message.obtain(this.mHandler, 1, inputManager.getInputDeviceIds()));
-    }
-
-    public void remapKey(int i, int i2) {
-        if (supportRemapping()) {
-            this.mHandler.sendMessage(Message.obtain(this.mHandler, 2, i, i2));
-        }
-    }
-
-    public void clearAllKeyRemappings() {
-        if (supportRemapping()) {
-            this.mHandler.sendMessage(Message.obtain(this.mHandler, 3));
-        }
-    }
-
-    public Map getKeyRemapping() {
-        Map keyRemapping;
-        if (!supportRemapping()) {
-            return new ArrayMap();
-        }
-        synchronized (this.mDataStore) {
-            keyRemapping = this.mDataStore.getKeyRemapping();
-        }
-        return keyRemapping;
     }
 
     public final void addKeyRemapping(int i, int i2) {
@@ -83,81 +101,43 @@ public final class KeyRemapper implements InputManager.InputDeviceListener {
         }
     }
 
-    /* JADX WARN: Multi-variable type inference failed */
-    /* JADX WARN: Type inference failed for: r2v4, types: [com.android.server.input.PersistentDataStore] */
-    public final void remapKeyInternal(int i, int i2) {
-        addKeyRemapping(i, i2);
-        synchronized (this.mDataStore) {
-            try {
-                if (i == i2) {
-                    this.mDataStore.clearMappedKey(i);
-                } else {
-                    this.mDataStore.remapKey(i, i2);
-                }
-            } finally {
-                this.mDataStore.saveIfNeeded();
-            }
+    public final Map getKeyRemapping() {
+        HashMap hashMap;
+        if (!FeatureFlagUtils.isEnabled(this.mContext, "settings_new_keyboard_modifier_key")) {
+            return new ArrayMap();
         }
-    }
-
-    public final void clearAllRemappingsInternal() {
         synchronized (this.mDataStore) {
-            try {
-                Iterator it = this.mDataStore.getKeyRemapping().keySet().iterator();
-                while (it.hasNext()) {
-                    int intValue = ((Integer) it.next()).intValue();
-                    this.mDataStore.clearMappedKey(intValue);
-                    addKeyRemapping(intValue, intValue);
-                }
-            } finally {
-                this.mDataStore.saveIfNeeded();
-            }
+            PersistentDataStore persistentDataStore = this.mDataStore;
+            persistentDataStore.loadIfNeeded();
+            hashMap = new HashMap(persistentDataStore.mKeyRemapping);
         }
+        return hashMap;
     }
 
     @Override // android.hardware.input.InputManager.InputDeviceListener
-    public void onInputDeviceAdded(final int i) {
-        if (supportRemapping()) {
+    public final void onInputDeviceAdded(final int i) {
+        if (FeatureFlagUtils.isEnabled(this.mContext, "settings_new_keyboard_modifier_key")) {
             InputManager inputManager = (InputManager) this.mContext.getSystemService(InputManager.class);
             Objects.requireNonNull(inputManager);
             InputDevice inputDevice = inputManager.getInputDevice(i);
             if (inputDevice == null || inputDevice.isVirtual() || !inputDevice.isFullKeyboard()) {
                 return;
             }
-            getKeyRemapping().forEach(new BiConsumer() { // from class: com.android.server.input.KeyRemapper$$ExternalSyntheticLambda0
+            getKeyRemapping().forEach(new BiConsumer() { // from class: com.android.server.input.KeyRemapper$$ExternalSyntheticLambda1
                 @Override // java.util.function.BiConsumer
                 public final void accept(Object obj, Object obj2) {
-                    KeyRemapper.this.lambda$onInputDeviceAdded$0(i, (Integer) obj, (Integer) obj2);
+                    KeyRemapper keyRemapper = KeyRemapper.this;
+                    keyRemapper.mNative.addKeyRemapping(i, ((Integer) obj).intValue(), ((Integer) obj2).intValue());
                 }
             });
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onInputDeviceAdded$0(int i, Integer num, Integer num2) {
-        this.mNative.addKeyRemapping(i, num.intValue(), num2.intValue());
+    @Override // android.hardware.input.InputManager.InputDeviceListener
+    public final void onInputDeviceChanged(int i) {
     }
 
-    public final boolean handleMessage(Message message) {
-        int i = message.what;
-        if (i == 1) {
-            for (int i2 : (int[]) message.obj) {
-                onInputDeviceAdded(i2);
-            }
-            return true;
-        }
-        if (i == 2) {
-            remapKeyInternal(message.arg1, message.arg2);
-            return true;
-        }
-        if (i != 3) {
-            return false;
-        }
-        clearAllRemappingsInternal();
-        return true;
-    }
-
-    public final boolean supportRemapping() {
-        return FeatureFlagUtils.isEnabled(this.mContext, "settings_new_keyboard_modifier_key");
+    @Override // android.hardware.input.InputManager.InputDeviceListener
+    public final void onInputDeviceRemoved(int i) {
     }
 }

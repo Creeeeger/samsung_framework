@@ -1,50 +1,50 @@
 package com.android.server.wm;
 
 import android.app.ActivityOptions;
-import android.app.WindowConfiguration;
-import android.content.ComponentName;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.IInstalld;
+import android.net.ConnectivityModuleConnector$$ExternalSyntheticOutline0;
+import android.os.Message;
+import android.util.EventLog;
 import android.util.IntArray;
 import android.util.Slog;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.window.WindowContainerToken;
 import android.window.WindowContainerTransaction;
+import com.android.internal.app.ResolverActivity;
 import com.android.internal.protolog.ProtoLogGroup;
-import com.android.internal.protolog.ProtoLogImpl;
+import com.android.internal.protolog.ProtoLogImpl_54989576;
 import com.android.internal.util.ArrayUtils;
-import com.android.internal.util.function.pooled.PooledLambda;
-import com.android.internal.util.function.pooled.PooledPredicate;
+import com.android.internal.util.jobs.Preconditions$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
 import com.android.server.wm.ActivityRecord;
 import com.android.server.wm.DisplayArea;
-import com.android.server.wm.DisplayContent;
 import com.android.server.wm.LaunchParamsController;
 import com.android.server.wm.RemoteAnimationController;
+import com.android.server.wm.SizeCompatPolicyManager;
 import com.android.server.wm.Task;
 import com.android.server.wm.TaskOrganizerController;
-import com.samsung.android.multiwindow.TaskOrganizerInfo;
 import com.samsung.android.rune.CoreRune;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class TaskDisplayArea extends DisplayArea {
-    public ActivityTaskManagerService mAtmService;
+    public final ActivityTaskManagerService mAtmService;
     public int mBackgroundColor;
     public final boolean mCanHostHomeTask;
     public SurfaceControl mChangeLeashAnchor;
     public int mColorLayerCounter;
     public final boolean mCreatedByOrganizer;
-    public DisplayContent mDisplayContent;
+    public final DisplayContent mDisplayContent;
     public SurfaceControl mFloatingLeashAnchor;
     public final FreeformTaskPinningController mFreeformTaskPinningController;
     public Task mLastFocusedRootTask;
@@ -58,8 +58,8 @@ public final class TaskDisplayArea extends DisplayArea {
     public Task mRootMainStageTask;
     public Task mRootPinnedTask;
     public Task mRootSideStageTask;
-    public ArrayList mRootTaskOrderChangedCallbacks;
-    public RootWindowContainer mRootWindowContainer;
+    public final ArrayList mRootTaskOrderChangedCallbacks;
+    public final RootWindowContainer mRootWindowContainer;
     public final Configuration mTempConfiguration;
     public final ArrayList mTmpAlwaysOnTopChildren;
     public final ArrayList mTmpFreeformChildren;
@@ -67,12 +67,44 @@ public final class TaskDisplayArea extends DisplayArea {
     public final ArrayList mTmpHomeChildren;
     public final IntArray mTmpNeedsZBoostIndexes;
     public final ArrayList mTmpNormalChildren;
-    public final ArrayList mTmpRecentsChildren;
-    public ArrayList mTmpTasks;
+    public final ArrayList mTmpTasks;
 
-    /* loaded from: classes3.dex */
-    public interface OnRootTaskOrderChangedListener {
-        void onRootTaskOrderChanged(Task task);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LaunchRootTaskDef {
+        public int[] activityTypes;
+        public Task task;
+        public int[] windowingModes;
+    }
+
+    public TaskDisplayArea(DisplayContent displayContent, WindowManagerService windowManagerService, String str, int i, boolean z) {
+        super(windowManagerService, DisplayArea.Type.ANY, str, i);
+        this.mBackgroundColor = 0;
+        this.mColorLayerCounter = 0;
+        this.mTmpAlwaysOnTopChildren = new ArrayList();
+        this.mTmpNormalChildren = new ArrayList();
+        this.mTmpHomeChildren = new ArrayList();
+        this.mTmpNeedsZBoostIndexes = new IntArray();
+        this.mTmpTasks = new ArrayList();
+        this.mTmpFreeformChildren = new ArrayList();
+        this.mTmpFreeformPinnedChildren = new ArrayList();
+        this.mLaunchRootTasks = new ArrayList();
+        this.mRootTaskOrderChangedCallbacks = new ArrayList();
+        this.mTempConfiguration = new Configuration();
+        this.mDisplayContent = displayContent;
+        this.mRootWindowContainer = windowManagerService.mRoot;
+        this.mAtmService = windowManagerService.mAtmService;
+        this.mCreatedByOrganizer = z;
+        this.mCanHostHomeTask = true;
+        this.mFreeformTaskPinningController = CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING ? new FreeformTaskPinningController(this) : null;
+    }
+
+    public static Task getRootTaskAbove(Task task) {
+        WindowContainer parent = task.getParent();
+        int indexOf = parent.mChildren.indexOf(task) + 1;
+        if (indexOf < parent.mChildren.size()) {
+            return (Task) parent.mChildren.get(indexOf);
+        }
+        return null;
     }
 
     public static boolean isWindowingModeSupported(int i, boolean z, boolean z2, boolean z3) {
@@ -93,163 +125,56 @@ public final class TaskDisplayArea extends DisplayArea {
         return true;
     }
 
-    public static /* synthetic */ boolean lambda$getTopRootTask$1(Task task) {
-        return true;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public TaskDisplayArea asTaskDisplayArea() {
-        return this;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public TaskDisplayArea getTaskDisplayArea() {
-        return this;
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean isOnTop() {
-        return true;
-    }
-
-    @Override // com.android.server.wm.DisplayArea
-    public boolean isTaskDisplayArea() {
-        return true;
-    }
-
-    /* loaded from: classes3.dex */
-    public class LaunchRootTaskDef {
-        public int[] activityTypes;
-        public Task task;
-        public int[] windowingModes;
-
-        public LaunchRootTaskDef() {
-        }
-
-        public boolean contains(int i, int i2) {
-            return ArrayUtils.contains(this.windowingModes, i) && ArrayUtils.contains(this.activityTypes, i2);
-        }
-    }
-
-    public TaskDisplayArea(DisplayContent displayContent, WindowManagerService windowManagerService, String str, int i) {
-        this(displayContent, windowManagerService, str, i, false, true);
-    }
-
-    public TaskDisplayArea(DisplayContent displayContent, WindowManagerService windowManagerService, String str, int i, boolean z) {
-        this(displayContent, windowManagerService, str, i, z, true);
-    }
-
-    public TaskDisplayArea(DisplayContent displayContent, WindowManagerService windowManagerService, String str, int i, boolean z, boolean z2) {
-        super(windowManagerService, DisplayArea.Type.ANY, str, i);
-        this.mBackgroundColor = 0;
-        this.mColorLayerCounter = 0;
-        this.mTmpAlwaysOnTopChildren = new ArrayList();
-        this.mTmpNormalChildren = new ArrayList();
-        this.mTmpHomeChildren = new ArrayList();
-        this.mTmpNeedsZBoostIndexes = new IntArray();
-        this.mTmpRecentsChildren = new ArrayList();
-        this.mTmpFreeformChildren = new ArrayList();
-        this.mTmpFreeformPinnedChildren = new ArrayList();
-        this.mTmpTasks = new ArrayList();
-        this.mLaunchRootTasks = new ArrayList();
-        this.mRootTaskOrderChangedCallbacks = new ArrayList();
-        this.mTempConfiguration = new Configuration();
-        this.mDisplayContent = displayContent;
-        this.mRootWindowContainer = windowManagerService.mRoot;
-        this.mAtmService = windowManagerService.mAtmService;
-        this.mCreatedByOrganizer = z;
-        this.mCanHostHomeTask = z2;
-        this.mFreeformTaskPinningController = new FreeformTaskPinningController(this);
-    }
-
-    public Task getRootTask(final int i, final int i2) {
-        if (i2 == 2) {
-            return this.mRootHomeTask;
-        }
-        if (i == 2) {
-            return this.mRootPinnedTask;
-        }
-        return getRootTask(new Predicate() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda10
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getRootTask$0;
-                lambda$getRootTask$0 = TaskDisplayArea.lambda$getRootTask$0(i2, i, (Task) obj);
-                return lambda$getRootTask$0;
-            }
-        });
-    }
-
-    public static /* synthetic */ boolean lambda$getRootTask$0(int i, int i2, Task task) {
-        if (i == 0 && i2 == task.getWindowingMode()) {
-            return true;
-        }
-        return task.isCompatible(i2, i);
-    }
-
-    public Task getTopRootTask() {
-        return getRootTask(new Predicate() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda9
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getTopRootTask$1;
-                lambda$getTopRootTask$1 = TaskDisplayArea.lambda$getTopRootTask$1((Task) obj);
-                return lambda$getTopRootTask$1;
-            }
-        });
-    }
-
-    public Task getRootHomeTask() {
-        return this.mRootHomeTask;
-    }
-
-    public Task getRootPinnedTask() {
-        return this.mRootPinnedTask;
-    }
-
-    public ArrayList getVisibleTasks() {
-        final ArrayList arrayList = new ArrayList();
-        forAllTasks(new Consumer() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda8
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TaskDisplayArea.lambda$getVisibleTasks$2(arrayList, (Task) obj);
-            }
-        });
-        return arrayList;
-    }
-
-    public static /* synthetic */ void lambda$getVisibleTasks$2(ArrayList arrayList, Task task) {
-        if (task.isLeafTask() && task.isVisible()) {
-            arrayList.add(task);
-        }
-    }
-
-    public void onRootTaskWindowingModeChanged(Task task) {
-        removeRootTaskReferenceIfNeeded(task);
-        addRootTaskReferenceIfNeeded(task);
-        if (task != this.mRootPinnedTask || getTopRootTask() == task) {
+    public static void moveRootTaskBehindRootTask(Task task, Task task2) {
+        WindowContainer parent;
+        if (task2 == null || task2 == task || (parent = task.getParent()) == null || parent != task2.getParent()) {
             return;
         }
-        positionChildAt(Integer.MAX_VALUE, task, false);
+        int indexOf = parent.mChildren.indexOf(task);
+        int indexOf2 = parent.mChildren.indexOf(task2);
+        if (indexOf <= indexOf2) {
+            indexOf2--;
+        }
+        parent.positionChildAt(Math.max(0, indexOf2), task, false);
     }
 
-    public void addRootTaskReferenceIfNeeded(Task task) {
+    @Override // com.android.server.wm.WindowContainer
+    public final void addChild(WindowContainer windowContainer, int i) {
+        if (windowContainer.asTaskDisplayArea() != null) {
+            super.addChild(windowContainer, i);
+            return;
+        }
+        if (windowContainer.asTask() == null) {
+            throw new IllegalArgumentException("TaskDisplayArea can only add Task and TaskDisplayArea, but found " + windowContainer);
+        }
+        Task asTask = windowContainer.asTask();
+        addRootTaskReferenceIfNeeded(asTask);
+        super.addChild(asTask, findPositionForRootTask(i, asTask, true));
+        if (this.mPreferredTopFocusableRootTask != null && asTask.isFocusable() && this.mPreferredTopFocusableRootTask.compareTo((WindowContainer) asTask) < 0) {
+            this.mPreferredTopFocusableRootTask = null;
+        }
+        this.mAtmService.mTaskSupervisor.updateTopResumedActivityIfNeeded("addChildTask");
+        this.mAtmService.updateSleepIfNeededLocked();
+        onRootTaskOrderChanged(asTask);
+    }
+
+    public final void addRootTaskReferenceIfNeeded(Task task) {
         if (task.isActivityTypeHome()) {
             Task task2 = this.mRootHomeTask;
-            if (task2 != null) {
-                if (!task.isDescendantOf(task2)) {
-                    throw new IllegalArgumentException("addRootTaskReferenceIfNeeded: root home task=" + this.mRootHomeTask + " already exist on display=" + this + " rootTask=" + task);
-                }
-            } else {
+            if (task2 == null) {
                 this.mRootHomeTask = task;
+            } else if (!task.isDescendantOf(task2)) {
+                throw new IllegalArgumentException("addRootTaskReferenceIfNeeded: root home task=" + this.mRootHomeTask + " already exist on display=" + this + " rootTask=" + task);
             }
         }
         if (task.isRootTask()) {
             int windowingMode = task.getWindowingMode();
             if (windowingMode == 2) {
-                if (this.mRootPinnedTask != null) {
-                    throw new IllegalArgumentException("addRootTaskReferenceIfNeeded: root pinned task=" + this.mRootPinnedTask + " already exist on display=" + this + " rootTask=" + task);
+                if (this.mRootPinnedTask == null) {
+                    this.mRootPinnedTask = task;
+                    return;
                 }
-                this.mRootPinnedTask = task;
-                return;
+                throw new IllegalArgumentException("addRootTaskReferenceIfNeeded: root pinned task=" + this.mRootPinnedTask + " already exist on display=" + this + " rootTask=" + task);
             }
             if (windowingMode == 6 && task.isOrganized()) {
                 int stageType = task.getWindowConfiguration().getStageType();
@@ -280,409 +205,6 @@ public final class TaskDisplayArea extends DisplayArea {
         }
     }
 
-    public void removeRootTaskReferenceIfNeeded(Task task) {
-        if (task == this.mRootHomeTask) {
-            this.mRootHomeTask = null;
-            return;
-        }
-        if (task == this.mRootPinnedTask) {
-            this.mRootPinnedTask = null;
-            return;
-        }
-        if (task.mTaskOrganizer == null) {
-            if (task == this.mRootMainStageTask) {
-                this.mRootMainStageTask = null;
-                return;
-            }
-            if (task == this.mRootSideStageTask) {
-                this.mRootSideStageTask = null;
-            } else if (CoreRune.MW_MULTI_SPLIT_TASK_ORGANIZER && task == this.mRootCellStageTask) {
-                this.mRootCellStageTask = null;
-            }
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void setInitialSurfaceControlProperties(SurfaceControl.Builder builder) {
-        builder.setEffectLayer();
-        super.setInitialSurfaceControlProperties(builder);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void addChild(WindowContainer windowContainer, int i) {
-        if (windowContainer.asTaskDisplayArea() != null) {
-            super.addChild(windowContainer, i);
-        } else {
-            if (windowContainer.asTask() != null) {
-                addChildTask(windowContainer.asTask(), i);
-                return;
-            }
-            throw new IllegalArgumentException("TaskDisplayArea can only add Task and TaskDisplayArea, but found " + windowContainer);
-        }
-    }
-
-    public final void addChildTask(Task task, int i) {
-        addRootTaskReferenceIfNeeded(task);
-        super.addChild(task, findPositionForRootTask(i, task, true));
-        if (this.mPreferredTopFocusableRootTask != null && task.isFocusable() && this.mPreferredTopFocusableRootTask.compareTo((WindowContainer) task) < 0) {
-            this.mPreferredTopFocusableRootTask = null;
-        }
-        this.mAtmService.mTaskSupervisor.updateTopResumedActivityIfNeeded("addChildTask");
-        this.mAtmService.updateSleepIfNeededLocked();
-        onRootTaskOrderChanged(task);
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void removeChild(WindowContainer windowContainer) {
-        if (windowContainer.asTaskDisplayArea() != null) {
-            super.removeChild(windowContainer);
-        } else {
-            if (windowContainer.asTask() != null) {
-                removeChildTask(windowContainer.asTask());
-                return;
-            }
-            throw new IllegalArgumentException("TaskDisplayArea can only remove Task and TaskDisplayArea, but found " + windowContainer);
-        }
-    }
-
-    public final void removeChildTask(Task task) {
-        super.removeChild(task);
-        onRootTaskRemoved(task);
-        this.mAtmService.updateSleepIfNeededLocked();
-        removeRootTaskReferenceIfNeeded(task);
-        task.setUnminimizedWhenRemoved();
-        if (getDisplayId() == 0) {
-            this.mAtmService.mFreeformController.scheduleUnbindMinimizeContainerService("removeChildTask");
-        }
-    }
-
-    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
-    public void positionChildAt(int i, WindowContainer windowContainer, boolean z) {
-        if (windowContainer.asTaskDisplayArea() != null) {
-            super.positionChildAt(i, windowContainer, z);
-        } else {
-            if (windowContainer.asTask() != null) {
-                positionChildTaskAt(i, windowContainer.asTask(), z);
-                return;
-            }
-            throw new IllegalArgumentException("TaskDisplayArea can only position Task and TaskDisplayArea, but found " + windowContainer);
-        }
-    }
-
-    public final void positionChildTaskAt(int i, Task task, boolean z) {
-        ActivityRecord activityRecord;
-        WindowProcessController windowProcessController;
-        boolean z2 = i >= getChildCount() - 1;
-        boolean z3 = i <= 0;
-        int indexOf = this.mChildren.indexOf(task);
-        if (task.isAlwaysOnTop() && !z2) {
-            if (FreeformController.useAlwaysOnTopFreeform(task.getWindowingMode(), this.mDisplayContent)) {
-                task.setAlwaysOnTop(false);
-            } else {
-                Slog.w(StartingSurfaceController.TAG, "Ignoring move of always-on-top root task=" + this + " to bottom");
-                super.positionChildAt(indexOf, task, false);
-                return;
-            }
-        }
-        if ((!this.mDisplayContent.isTrusted() || this.mDisplayContent.mDontMoveToTop) && !getParent().isOnTop()) {
-            z = false;
-        }
-        int findPositionForRootTask = findPositionForRootTask(i, task, false);
-        super.positionChildAt(findPositionForRootTask, task, false);
-        if (z && getParent() != null && (z2 || z3)) {
-            if (z2 && task.isFocusableAndVisible()) {
-                this.mPreferredTopFocusableRootTask = task;
-            } else if (this.mPreferredTopFocusableRootTask == task) {
-                this.mPreferredTopFocusableRootTask = null;
-            }
-            getParent().positionChildAt(z2 ? Integer.MAX_VALUE : Integer.MIN_VALUE, this, true);
-        }
-        task.updateTaskMovement(z2, z3, findPositionForRootTask);
-        if (z2 && task.isTopActivityFocusable()) {
-            this.mPreferredTopFocusableRootTask = task.shouldBeVisible(null) ? task : null;
-        } else if (this.mPreferredTopFocusableRootTask == task) {
-            this.mPreferredTopFocusableRootTask = null;
-        }
-        if (this.mPreferredTopFocusableRootTask == null && task.inFullscreenWindowingMode() && z3) {
-            Task focusedRootTask = getFocusedRootTask();
-            Task rootTask = getRootTask(1, 0);
-            if (focusedRootTask != null && focusedRootTask.inFreeformWindowingMode() && rootTask != null && !rootTask.isFullscreenRootForStageTask() && rootTask.isFocusableAndVisible()) {
-                this.mPreferredTopFocusableRootTask = rootTask;
-            }
-        }
-        this.mAtmService.mTaskSupervisor.updateTopResumedActivityIfNeeded("positionChildTaskAt");
-        if (task.getTopResumedActivity() == null && i == Integer.MIN_VALUE) {
-            Task rootMainStageTask = getRootMainStageTask();
-            ActivityRecord topResumedActivity = this.mRootWindowContainer.getTopResumedActivity();
-            if (rootMainStageTask != null && rootMainStageTask.isDescendantOf(task) && topResumedActivity != null && !topResumedActivity.equals(this.mAtmService.mLastResumedActivity)) {
-                this.mAtmService.setLastResumedActivityUncheckLocked(topResumedActivity, "positionChildAt(stageRoot)");
-            }
-        }
-        if (task.isOnTop() && (activityRecord = task.topRunningActivity()) != null && (windowProcessController = activityRecord.app) != null) {
-            windowProcessController.updateTopActivityIfNeeded(activityRecord);
-        }
-        if (this.mChildren.indexOf(task) != indexOf) {
-            onRootTaskOrderChanged(task);
-        }
-    }
-
-    public void onLeafTaskRemoved(int i) {
-        if (this.mLastLeafTaskToFrontId == i) {
-            this.mLastLeafTaskToFrontId = -1;
-        }
-    }
-
-    public void onLeafTaskMoved(Task task, boolean z, boolean z2) {
-        if (z2) {
-            this.mAtmService.getTaskChangeNotificationController().notifyTaskMovedToBack(task.getTaskInfo());
-        }
-        if (!z) {
-            if (task.mTaskId == this.mLastLeafTaskToFrontId) {
-                this.mLastLeafTaskToFrontId = -1;
-                ActivityRecord topMostActivity = getTopMostActivity();
-                if (topMostActivity != null) {
-                    this.mAtmService.getTaskChangeNotificationController().notifyTaskMovedToFront(topMostActivity.getTask().getTaskInfo());
-                    return;
-                }
-                return;
-            }
-            return;
-        }
-        if (task.mTaskId == this.mLastLeafTaskToFrontId || task.topRunningActivityLocked() == null) {
-            return;
-        }
-        int i = task.mTaskId;
-        this.mLastLeafTaskToFrontId = i;
-        EventLogTags.writeWmTaskToFront(task.mUserId, i, getDisplayId());
-        this.mAtmService.getTaskChangeNotificationController().notifyTaskMovedToFront(task.getTaskInfo());
-    }
-
-    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
-    public void onChildPositionChanged(WindowContainer windowContainer) {
-        super.onChildPositionChanged(windowContainer);
-        this.mRootWindowContainer.invalidateTaskLayers();
-    }
-
-    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
-    public boolean forAllTaskDisplayAreas(Predicate predicate, boolean z) {
-        return z ? super.forAllTaskDisplayAreas(predicate, z) || predicate.test(this) : predicate.test(this) || super.forAllTaskDisplayAreas(predicate, z);
-    }
-
-    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
-    public void forAllTaskDisplayAreas(Consumer consumer, boolean z) {
-        if (z) {
-            super.forAllTaskDisplayAreas(consumer, z);
-            consumer.accept(this);
-        } else {
-            consumer.accept(this);
-            super.forAllTaskDisplayAreas(consumer, z);
-        }
-    }
-
-    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
-    public Object reduceOnAllTaskDisplayAreas(BiFunction biFunction, Object obj, boolean z) {
-        if (z) {
-            return biFunction.apply(this, super.reduceOnAllTaskDisplayAreas(biFunction, obj, z));
-        }
-        return super.reduceOnAllTaskDisplayAreas(biFunction, biFunction.apply(this, obj), z);
-    }
-
-    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
-    public Object getItemFromTaskDisplayAreas(Function function, boolean z) {
-        if (z) {
-            Object itemFromTaskDisplayAreas = super.getItemFromTaskDisplayAreas(function, z);
-            return itemFromTaskDisplayAreas != null ? itemFromTaskDisplayAreas : function.apply(this);
-        }
-        Object apply = function.apply(this);
-        return apply != null ? apply : super.getItemFromTaskDisplayAreas(function, z);
-    }
-
-    public final int getPriority(WindowContainer windowContainer) {
-        TaskDisplayArea asTaskDisplayArea = windowContainer.asTaskDisplayArea();
-        if (asTaskDisplayArea != null) {
-            return asTaskDisplayArea.getPriority(asTaskDisplayArea.getTopChild());
-        }
-        return getPriority(windowContainer.asTask());
-    }
-
-    public final int getPriority(Task task) {
-        if (this.mWmService.mAssistantOnTopOfDream && task.isActivityTypeAssistant()) {
-            return 5;
-        }
-        if (task.isActivityTypeDream()) {
-            return 4;
-        }
-        if (task.inPinnedWindowingMode()) {
-            return 3;
-        }
-        if (isDesktopModeEnabled() && task.isFreeformPinned() && !task.isMinimized()) {
-            return 2;
-        }
-        return task.isAlwaysOnTop() ? 1 : 0;
-    }
-
-    public final int findMinPositionForRootTask(Task task) {
-        int i;
-        int indexOf;
-        int i2 = Integer.MIN_VALUE;
-        int i3 = 0;
-        while (true) {
-            int i4 = i3;
-            i = i2;
-            i2 = i4;
-            if (i2 >= this.mChildren.size() || getPriority((WindowContainer) this.mChildren.get(i2)) >= getPriority(task)) {
-                break;
-            }
-            i3 = i2 + 1;
-        }
-        return (!task.isAlwaysOnTop() || (indexOf = this.mChildren.indexOf(task)) <= i) ? i : indexOf;
-    }
-
-    public final int findMaxPositionForRootTask(Task task) {
-        int size = this.mChildren.size() - 1;
-        while (true) {
-            if (size < 0) {
-                return 0;
-            }
-            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
-            boolean z = windowContainer == task;
-            if (getPriority(windowContainer) > getPriority(task) || z || (task.isDesktopModeEnabled() && task.isActivityTypeHomeOrRecents() && windowContainer.asTask() != null && !windowContainer.asTask().isMinimized() && windowContainer.inFreeformWindowingMode() && windowContainer.compareTo((WindowContainer) task) > 0)) {
-                size--;
-            }
-        }
-        return size;
-    }
-
-    public int getRootTaskIndex(Task task) {
-        return this.mChildren.indexOf(task);
-    }
-
-    public final int findPositionForRootTask(int i, Task task, boolean z) {
-        int findMaxPositionForRootTask = findMaxPositionForRootTask(task);
-        int findMinPositionForRootTask = findMinPositionForRootTask(task);
-        if (i == Integer.MAX_VALUE) {
-            i = this.mChildren.size();
-        } else if (i == Integer.MIN_VALUE) {
-            i = 0;
-        }
-        int max = Math.max(Math.min(i, findMaxPositionForRootTask), findMinPositionForRootTask);
-        return max != i ? (z || max < this.mChildren.indexOf(task)) ? max + 1 : max : max;
-    }
-
-    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
-    public int getOrientation(final int i) {
-        int orientation = super.getOrientation(i);
-        if (!canSpecifyOrientation(orientation)) {
-            this.mLastOrientationSource = null;
-            return ((Integer) reduceOnAllTaskDisplayAreas(new BiFunction() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda5
-                @Override // java.util.function.BiFunction
-                public final Object apply(Object obj, Object obj2) {
-                    Integer lambda$getOrientation$3;
-                    lambda$getOrientation$3 = TaskDisplayArea.this.lambda$getOrientation$3(i, (TaskDisplayArea) obj, (Integer) obj2);
-                    return lambda$getOrientation$3;
-                }
-            }, -2)).intValue();
-        }
-        if (handleOrientationChangeFromSplitScreen()) {
-            return -1;
-        }
-        if (orientation != -2 && orientation != 3) {
-            if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-                ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 1381227466, 5, (String) null, new Object[]{Long.valueOf(orientation), Long.valueOf(this.mDisplayContent.mDisplayId)});
-            }
-            return orientation;
-        }
-        if (ProtoLogCache.WM_DEBUG_ORIENTATION_enabled) {
-            ProtoLogImpl.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 1640436199, 5, (String) null, new Object[]{Long.valueOf(this.mDisplayContent.getLastOrientation()), Long.valueOf(this.mDisplayContent.mDisplayId)});
-        }
-        return this.mDisplayContent.getLastOrientation();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ Integer lambda$getOrientation$3(int i, TaskDisplayArea taskDisplayArea, Integer num) {
-        return (taskDisplayArea == this || num.intValue() != -2) ? num : Integer.valueOf(taskDisplayArea.getOrientation(i));
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void assignChildLayers(SurfaceControl.Transaction transaction) {
-        assignRootTaskOrdering(transaction);
-        for (int i = 0; i < this.mChildren.size(); i++) {
-            ((WindowContainer) this.mChildren.get(i)).assignChildLayers(transaction);
-        }
-    }
-
-    public void assignRootTaskOrdering(SurfaceControl.Transaction transaction) {
-        SurfaceControl surfaceControl;
-        SurfaceControl surfaceControl2;
-        if (getParent() == null) {
-            return;
-        }
-        this.mTmpAlwaysOnTopChildren.clear();
-        this.mTmpHomeChildren.clear();
-        this.mTmpNormalChildren.clear();
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_SEPARATE_RECENTS) {
-            this.mTmpRecentsChildren.clear();
-        }
-        this.mTmpFreeformChildren.clear();
-        this.mTmpFreeformPinnedChildren.clear();
-        for (int i = 0; i < this.mChildren.size(); i++) {
-            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(i);
-            TaskDisplayArea asTaskDisplayArea = windowContainer.asTaskDisplayArea();
-            if (asTaskDisplayArea != null) {
-                Task topRootTask = asTaskDisplayArea.getTopRootTask();
-                if (topRootTask == null) {
-                    this.mTmpNormalChildren.add(asTaskDisplayArea);
-                } else if (topRootTask.isAlwaysOnTop()) {
-                    if (topRootTask.inFreeformWindowingMode()) {
-                        this.mTmpFreeformChildren.add(asTaskDisplayArea);
-                    } else {
-                        this.mTmpAlwaysOnTopChildren.add(asTaskDisplayArea);
-                    }
-                } else if (topRootTask.isActivityTypeHome()) {
-                    this.mTmpHomeChildren.add(asTaskDisplayArea);
-                } else if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_SEPARATE_RECENTS && topRootTask.isActivityTypeRecents()) {
-                    this.mTmpRecentsChildren.add(asTaskDisplayArea);
-                } else {
-                    this.mTmpNormalChildren.add(asTaskDisplayArea);
-                }
-            } else {
-                Task asTask = windowContainer.asTask();
-                if (asTask.mBoostRootTaskLayerForFreeform) {
-                    this.mTmpFreeformChildren.add(asTask);
-                } else if (asTask.isFreeformPinned() && !asTask.isMinimized()) {
-                    this.mTmpFreeformPinnedChildren.add(asTask);
-                } else if (asTask.isAlwaysOnTop()) {
-                    if (asTask.inFreeformWindowingMode()) {
-                        this.mTmpFreeformChildren.add(asTask);
-                    } else {
-                        this.mTmpAlwaysOnTopChildren.add(asTask);
-                    }
-                } else if (asTask.isActivityTypeHome()) {
-                    this.mTmpHomeChildren.add(asTask);
-                } else if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_SEPARATE_RECENTS && asTask.isActivityTypeRecents()) {
-                    this.mTmpRecentsChildren.add(asTask);
-                } else {
-                    this.mTmpNormalChildren.add(asTask);
-                }
-            }
-        }
-        int adjustRootTaskLayer = adjustRootTaskLayer(transaction, this.mTmpHomeChildren, 0);
-        if (CoreRune.FW_CUSTOM_SHELL_TRANSITION_SEPARATE_RECENTS) {
-            adjustRootTaskLayer = adjustRootTaskLayer(transaction, this.mTmpRecentsChildren, adjustRootTaskLayer);
-        }
-        int adjustRootTaskLayer2 = adjustRootTaskLayer(transaction, this.mTmpNormalChildren, adjustRootTaskLayer);
-        if (CoreRune.MW_SHELL_CHANGE_TRANSITION && (surfaceControl2 = this.mChangeLeashAnchor) != null) {
-            transaction.setLayer(surfaceControl2, adjustRootTaskLayer2);
-            adjustRootTaskLayer2++;
-        }
-        int adjustRootTaskLayer3 = adjustRootTaskLayer(transaction, this.mTmpFreeformPinnedChildren, adjustRootTaskLayer(transaction, this.mTmpFreeformChildren, adjustRootTaskLayer2));
-        if (CoreRune.MW_FREEFORM_SHELL_TRANSITION && (surfaceControl = this.mFloatingLeashAnchor) != null) {
-            transaction.setLayer(surfaceControl, adjustRootTaskLayer3);
-            adjustRootTaskLayer3++;
-        }
-        adjustRootTaskLayer(transaction, this.mTmpAlwaysOnTopChildren, adjustRootTaskLayer3);
-    }
-
     public final int adjustRootTaskLayer(SurfaceControl.Transaction transaction, ArrayList arrayList, int i) {
         this.mTmpNeedsZBoostIndexes.clear();
         int size = arrayList.size();
@@ -693,7 +215,9 @@ public final class TaskDisplayArea extends DisplayArea {
             boolean z = true;
             boolean z2 = windowContainer.inFreeformWindowingMode() && windowContainer.asTask() != null && windowContainer.asTask().mBoostRootTaskLayerForFreeform;
             if (asTaskDisplayArea != null) {
-                z = asTaskDisplayArea.childrenNeedZBoost();
+                boolean[] zArr = new boolean[1];
+                asTaskDisplayArea.forAllRootTasks(new TaskDisplayArea$$ExternalSyntheticLambda0(1, zArr));
+                z = zArr[0];
             } else if (!windowContainer.needsZBoost() && !z2) {
                 z = false;
             }
@@ -713,23 +237,107 @@ public final class TaskDisplayArea extends DisplayArea {
         return i;
     }
 
-    public final boolean childrenNeedZBoost() {
-        final boolean[] zArr = new boolean[1];
-        forAllRootTasks(new Consumer() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda0
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TaskDisplayArea.lambda$childrenNeedZBoost$5(zArr, (Task) obj);
+    public final boolean allResumedActivitiesComplete() {
+        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
+            if (windowContainer.asTaskDisplayArea() == null) {
+                ActivityRecord topResumedActivity = ((WindowContainer) this.mChildren.get(size)).asTask().getTopResumedActivity();
+                if (topResumedActivity != null && !topResumedActivity.isState(ActivityRecord.State.RESUMED)) {
+                    return false;
+                }
+            } else if (!windowContainer.asTaskDisplayArea().allResumedActivitiesComplete()) {
+                return false;
             }
-        });
-        return zArr[0];
-    }
-
-    public static /* synthetic */ void lambda$childrenNeedZBoost$5(boolean[] zArr, Task task) {
-        zArr[0] = task.needsZBoost() | zArr[0];
+        }
+        this.mLastFocusedRootTask = getFocusedRootTask();
+        return true;
     }
 
     @Override // com.android.server.wm.WindowContainer
-    public RemoteAnimationTarget createRemoteAnimationTarget(RemoteAnimationController.RemoteAnimationRecord remoteAnimationRecord) {
+    public final TaskDisplayArea asTaskDisplayArea() {
+        return this;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void assignChildLayers(SurfaceControl.Transaction transaction) {
+        SurfaceControl surfaceControl;
+        SurfaceControl surfaceControl2;
+        if (getParent() != null) {
+            this.mTmpAlwaysOnTopChildren.clear();
+            this.mTmpHomeChildren.clear();
+            this.mTmpNormalChildren.clear();
+            this.mTmpFreeformChildren.clear();
+            if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING) {
+                this.mTmpFreeformPinnedChildren.clear();
+            }
+            for (int i = 0; i < this.mChildren.size(); i++) {
+                WindowContainer windowContainer = (WindowContainer) this.mChildren.get(i);
+                TaskDisplayArea asTaskDisplayArea = windowContainer.asTaskDisplayArea();
+                if (asTaskDisplayArea != null) {
+                    Task topRootTask = asTaskDisplayArea.getTopRootTask();
+                    if (topRootTask == null) {
+                        this.mTmpNormalChildren.add(asTaskDisplayArea);
+                    } else if (topRootTask.isAlwaysOnTop()) {
+                        if (topRootTask.inFreeformWindowingMode()) {
+                            this.mTmpFreeformChildren.add(asTaskDisplayArea);
+                        } else {
+                            this.mTmpAlwaysOnTopChildren.add(asTaskDisplayArea);
+                        }
+                    } else if (topRootTask.isActivityTypeHome()) {
+                        this.mTmpHomeChildren.add(asTaskDisplayArea);
+                    } else {
+                        this.mTmpNormalChildren.add(asTaskDisplayArea);
+                    }
+                } else {
+                    Task asTask = windowContainer.asTask();
+                    if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING && asTask.isFreeformPinned() && !asTask.isMinimized()) {
+                        this.mTmpFreeformPinnedChildren.add(asTask);
+                    } else if (asTask.mBoostRootTaskLayerForFreeform) {
+                        this.mTmpFreeformChildren.add(asTask);
+                    } else if (asTask.isAlwaysOnTop()) {
+                        if (asTask.inFreeformWindowingMode()) {
+                            this.mTmpFreeformChildren.add(asTask);
+                        } else {
+                            this.mTmpAlwaysOnTopChildren.add(asTask);
+                        }
+                    } else if (asTask.isActivityTypeHome()) {
+                        this.mTmpHomeChildren.add(asTask);
+                    } else {
+                        this.mTmpNormalChildren.add(asTask);
+                    }
+                }
+            }
+            int adjustRootTaskLayer = adjustRootTaskLayer(transaction, this.mTmpNormalChildren, adjustRootTaskLayer(transaction, this.mTmpHomeChildren, 0));
+            if (CoreRune.MW_SHELL_CHANGE_TRANSITION && (surfaceControl2 = this.mChangeLeashAnchor) != null) {
+                transaction.setLayer(surfaceControl2, adjustRootTaskLayer);
+                adjustRootTaskLayer++;
+            }
+            int adjustRootTaskLayer2 = adjustRootTaskLayer(transaction, this.mTmpFreeformChildren, adjustRootTaskLayer);
+            if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING) {
+                adjustRootTaskLayer2 = adjustRootTaskLayer(transaction, this.mTmpFreeformPinnedChildren, adjustRootTaskLayer2);
+            }
+            if (CoreRune.MW_FREEFORM_SHELL_TRANSITION && (surfaceControl = this.mFloatingLeashAnchor) != null) {
+                transaction.setLayer(surfaceControl, adjustRootTaskLayer2);
+                adjustRootTaskLayer2++;
+            }
+            adjustRootTaskLayer(transaction, this.mTmpAlwaysOnTopChildren, adjustRootTaskLayer2);
+        }
+        for (int i2 = 0; i2 < this.mChildren.size(); i2++) {
+            ((WindowContainer) this.mChildren.get(i2)).assignChildLayers(transaction);
+        }
+    }
+
+    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
+    public final boolean canCreateRemoteAnimationTarget() {
+        return WindowManagerService.sEnableShellTransitions;
+    }
+
+    public final boolean canHostHomeTask() {
+        return this.mDisplayContent.isHomeSupported() && this.mCanHostHomeTask;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final RemoteAnimationTarget createRemoteAnimationTarget(RemoteAnimationController.RemoteAnimationRecord remoteAnimationRecord) {
         ActivityRecord topMostActivity = getTopMostActivity();
         if (topMostActivity != null) {
             return topMostActivity.createRemoteAnimationTarget(remoteAnimationRecord);
@@ -737,282 +345,140 @@ public final class TaskDisplayArea extends DisplayArea {
         return null;
     }
 
-    public void setBackgroundColor(int i) {
-        setBackgroundColor(i, false);
-    }
-
-    public void setBackgroundColor(int i, boolean z) {
-        this.mBackgroundColor = i;
-        Color valueOf = Color.valueOf(i);
-        if (!z) {
-            this.mColorLayerCounter++;
+    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
+    public final void dump(PrintWriter printWriter, String str, boolean z) {
+        StringBuilder m = Preconditions$$ExternalSyntheticOutline0.m(str, "TaskDisplayArea ");
+        m.append(getName());
+        printWriter.println(m.toString());
+        String str2 = str + "  ";
+        super.dump(printWriter, str2, z);
+        if (this.mPreferredTopFocusableRootTask != null) {
+            StringBuilder m2 = Preconditions$$ExternalSyntheticOutline0.m(str2, "mPreferredTopFocusableRootTask=");
+            m2.append(this.mPreferredTopFocusableRootTask);
+            printWriter.println(m2.toString());
         }
-        if (this.mSurfaceControl != null) {
-            getPendingTransaction().setColor(this.mSurfaceControl, new float[]{valueOf.red(), valueOf.green(), valueOf.blue()});
-            scheduleAnimation();
+        if (this.mLastFocusedRootTask != null) {
+            StringBuilder m3 = Preconditions$$ExternalSyntheticOutline0.m(str2, "mLastFocusedRootTask=");
+            m3.append(this.mLastFocusedRootTask);
+            printWriter.println(m3.toString());
         }
-    }
-
-    public void clearBackgroundColor() {
-        int i = this.mColorLayerCounter - 1;
-        this.mColorLayerCounter = i;
-        if (i != 0 || this.mSurfaceControl == null) {
-            return;
+        String m$1 = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str2, "  ");
+        if (this.mLaunchRootTasks.size() > 0) {
+            printWriter.println(str2 + "mLaunchRootTasks:");
+            for (int size = this.mLaunchRootTasks.size() - 1; size >= 0; size--) {
+                LaunchRootTaskDef launchRootTaskDef = (LaunchRootTaskDef) this.mLaunchRootTasks.get(size);
+                StringBuilder m4 = BootReceiver$$ExternalSyntheticOutline0.m(m$1);
+                m4.append(Arrays.toString(launchRootTaskDef.activityTypes));
+                m4.append(" ");
+                m4.append(Arrays.toString(launchRootTaskDef.windowingModes));
+                m4.append("  task=");
+                m4.append(launchRootTaskDef.task);
+                printWriter.println(m4.toString());
+            }
         }
-        getPendingTransaction().unsetColor(this.mSurfaceControl);
-        scheduleAnimation();
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public void migrateToNewSurfaceControl(SurfaceControl.Transaction transaction) {
-        super.migrateToNewSurfaceControl(transaction);
-        if (this.mColorLayerCounter > 0) {
-            setBackgroundColor(this.mBackgroundColor, true);
-        }
-        if (CoreRune.MW_SHELL_CHANGE_TRANSITION) {
-            transaction.reparent(this.mChangeLeashAnchor, this.mSurfaceControl);
-        }
-        if (CoreRune.MW_FREEFORM_SHELL_TRANSITION) {
-            transaction.reparent(this.mFloatingLeashAnchor, this.mSurfaceControl);
-        }
-        reassignLayer(transaction);
-        scheduleAnimation();
-    }
-
-    public void onRootTaskRemoved(Task task) {
-        if (this.mPreferredTopFocusableRootTask == task) {
-            this.mPreferredTopFocusableRootTask = null;
-        }
-        if (this.mLaunchAdjacentFlagRootTask == task) {
-            this.mLaunchAdjacentFlagRootTask = null;
-        }
-        this.mDisplayContent.releaseSelfIfNeeded();
-        onRootTaskOrderChanged(task);
-    }
-
-    public void positionTaskBehindHome(Task task) {
-        WindowContainer parent = getOrCreateRootHomeTask().getParent();
-        Task asTask = parent != null ? parent.asTask() : null;
-        if (asTask == null) {
-            if (task.getParent() == this) {
-                positionChildAt(Integer.MIN_VALUE, task, false);
-                return;
+        printWriter.println(str2 + "Application tokens in top down Z order:");
+        for (int childCount = getChildCount() + (-1); childCount >= 0; childCount--) {
+            WindowContainer childAt = getChildAt(childCount);
+            if (childAt.asTaskDisplayArea() != null) {
+                childAt.dump(printWriter, str2, z);
             } else {
-                task.reparent(this, false);
+                Task asTask = childAt.asTask();
+                StringBuilder m5 = Preconditions$$ExternalSyntheticOutline0.m(str2, "* ");
+                m5.append(asTask.toFullString());
+                printWriter.println(m5.toString());
+                asTask.dump(printWriter, m$1, z);
+            }
+        }
+        if (CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING) {
+            FreeformTaskPinningController freeformTaskPinningController = this.mFreeformTaskPinningController;
+            if (freeformTaskPinningController.mPinnedTask == null) {
                 return;
             }
-        }
-        if (asTask == task.getParent()) {
-            asTask.positionChildAtBottom(task);
-        } else {
-            task.reparent(asTask, false, 2, false, false, "positionTaskBehindHome");
+            String m$12 = ConnectivityModuleConnector$$ExternalSyntheticOutline0.m$1(str, "  ");
+            printWriter.println(str + "FreeformTaskPinningController :");
+            printWriter.println(m$12 + "mPinnedTask :" + freeformTaskPinningController.mPinnedTask);
         }
     }
 
-    public Task getOrCreateRootTask(int i, int i2, boolean z) {
-        return getOrCreateRootTask(i, i2, z, null, null, null, 0);
-    }
+    public final void ensureActivitiesVisible(boolean z, ActivityRecord activityRecord) {
+        this.mAtmService.mTaskSupervisor.beginActivityVisibilityUpdate(getDisplayContent());
+        try {
+            forAllRootTasks(new Consumer() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda8
+                public final /* synthetic */ ActivityRecord f$0 = null;
+                public final /* synthetic */ boolean f$1 = true;
 
-    public Task getOrCreateRootTask(int i, int i2, boolean z, Task task, Task task2, ActivityOptions activityOptions, int i3) {
-        Rect rect;
-        int windowingMode = i == 0 ? getWindowingMode() : i;
-        if (!DisplayContent.alwaysCreateRootTask(windowingMode, i2)) {
-            Task rootTask = getRootTask(windowingMode, i2);
-            if (rootTask != null) {
-                return rootTask;
-            }
-        } else if (task != null) {
-            int i4 = z ? Integer.MAX_VALUE : Integer.MIN_VALUE;
-            Task launchRootTask = getLaunchRootTask(windowingMode, i2, activityOptions, task2, i3, task);
-            if (this.mDisplayContent.isDefaultDisplay && task.isDexMode() && task.getDisplayArea() != null && task.getDisplayArea() != this && (launchRootTask == null || !launchRootTask.inSplitScreenWindowingMode())) {
-                task.reparent(this, z);
-                task.setWindowingMode(0);
-                task.mLastNonFullscreenBounds = null;
-            }
-            if (launchRootTask != null) {
-                if (task.getParent() == null) {
-                    launchRootTask.addChild(task, i4);
-                } else if (task.getParent() != launchRootTask) {
-                    task.reparent(launchRootTask, i4);
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    Task task = (Task) obj;
+                    task.ensureActivitiesVisible(this.f$1, this.f$0);
                 }
-            } else if (task.getDisplayArea() != this || task.getRootTask().mReparentLeafTaskIfRelaunch) {
-                if (task.getParent() == null) {
-                    addChild(task, i4);
-                } else {
-                    task.reparent(this, z);
-                }
-            } else if (!task.isRootTask() && i == 5 && task.getParent() != null) {
-                if (task.isVisible() && task.inSplitScreenWindowingMode()) {
-                    TaskOrganizerInfo taskOrganizerInfo = new TaskOrganizerInfo();
-                    taskOrganizerInfo.setSplitToFreeformTaskId(task.mTaskId);
-                    this.mAtmService.mTaskOrganizerController.onSplitLayoutChangeRequested(taskOrganizerInfo.toBundle());
-                } else {
-                    task.reparent(this, z);
-                }
-            }
-            if ((i != 0 && task.isRootTask() && task.getWindowingMode() != i) || ForceLaunchWindowingModeUtils.shouldApplyForceLaunchWindowingMode(activityOptions, null, task)) {
-                task.mTransitionController.collect(task);
-                if (CoreRune.MW_FREEFORM_SHELL_TRANSITION && i == 5 && !this.mAtmService.mTaskSupervisor.isRootVisibilityUpdateDeferred()) {
-                    this.mAtmService.mTaskSupervisor.setDeferRootVisibilityUpdate(true);
-                    try {
-                        task.setWindowingMode(i);
-                    } finally {
-                        this.mAtmService.mTaskSupervisor.setDeferRootVisibilityUpdate(false);
-                    }
-                } else if (activityOptions != null && activityOptions.getForceLaunchWindowingMode() == 1 && task.inSplitScreenWindowingMode()) {
-                    task.reparent(this, z);
-                } else {
-                    task.setWindowingMode(i);
-                }
-                if (i == 5 && task.getRootActivity() != null && ((rect = task.mLastNonFullscreenBounds) == null || rect.isEmpty())) {
-                    ActivityRecord topNonFinishingActivity = task.getTopNonFinishingActivity();
-                    this.mAtmService.mTaskSupervisor.getLaunchParamsController().layoutTask(task, topNonFinishingActivity != null ? topNonFinishingActivity.info.windowLayout : null, topNonFinishingActivity, null, null);
-                }
-            }
-            if (task.inFreeformWindowingMode() && task.getWindowingMode() != i && !task.isMinimized() && !task.isVisible()) {
-                task.setWindowingMode(i);
-                task.mLastNonFullscreenBounds = null;
-                task.setBounds(null);
-            }
-            return task.getRootTask();
-        }
-        return new Task.Builder(this.mAtmService).setWindowingMode(i).setActivityType(i2).setOnTop(z).setParent(this).setSourceTask(task2).setActivityOptions(activityOptions).setLaunchFlags(i3).build();
-    }
-
-    public Task getOrCreateRootTask(ActivityRecord activityRecord, ActivityOptions activityOptions, Task task, Task task2, LaunchParamsController.LaunchParams launchParams, int i, int i2, boolean z) {
-        int launchWindowingMode;
-        if (launchParams != null) {
-            launchWindowingMode = launchParams.mWindowingMode;
-        } else {
-            launchWindowingMode = activityOptions != null ? activityOptions.getLaunchWindowingMode() : 0;
-        }
-        int resolveForceLaunchWindowingMode = ForceLaunchWindowingModeUtils.resolveForceLaunchWindowingMode(activityOptions, activityRecord, task);
-        if (resolveForceLaunchWindowingMode != 0) {
-            launchWindowingMode = resolveForceLaunchWindowingMode;
-        }
-        return getOrCreateRootTask(validateWindowingMode(launchWindowingMode, activityRecord, task), i2, z, task, task2, activityOptions, i);
-    }
-
-    public int getNextRootTaskId() {
-        return this.mAtmService.mTaskSupervisor.getNextTaskIdForUser();
-    }
-
-    public Task createRootTask(int i, int i2, boolean z) {
-        return createRootTask(i, i2, z, null);
-    }
-
-    public Task createRootTask(int i, int i2, boolean z, ActivityOptions activityOptions) {
-        return new Task.Builder(this.mAtmService).setWindowingMode(i).setActivityType(i2).setParent(this).setOnTop(z).setActivityOptions(activityOptions).build();
-    }
-
-    public void setLaunchRootTask(Task task, int[] iArr, int[] iArr2) {
-        if (!task.mCreatedByOrganizer) {
-            throw new IllegalArgumentException("Can't set not mCreatedByOrganizer as launch root tr=" + task);
-        }
-        LaunchRootTaskDef launchRootTaskDef = getLaunchRootTaskDef(task);
-        if (launchRootTaskDef != null) {
-            this.mLaunchRootTasks.remove(launchRootTaskDef);
-        } else {
-            launchRootTaskDef = new LaunchRootTaskDef();
-            launchRootTaskDef.task = task;
-        }
-        launchRootTaskDef.activityTypes = iArr2;
-        launchRootTaskDef.windowingModes = iArr;
-        if (ArrayUtils.isEmpty(iArr) && ArrayUtils.isEmpty(iArr2)) {
-            return;
-        }
-        this.mLaunchRootTasks.add(launchRootTaskDef);
-    }
-
-    public void removeLaunchRootTask(Task task) {
-        LaunchRootTaskDef launchRootTaskDef = getLaunchRootTaskDef(task);
-        if (launchRootTaskDef != null) {
-            this.mLaunchRootTasks.remove(launchRootTaskDef);
+            });
+        } finally {
+            this.mAtmService.mTaskSupervisor.endActivityVisibilityUpdate();
         }
     }
 
-    public void setLaunchAdjacentFlagRootTask(Task task) {
-        if (task != null) {
-            if (!task.mCreatedByOrganizer) {
-                throw new IllegalArgumentException("Can't set not mCreatedByOrganizer as launch adjacent flag root tr=" + task);
-            }
-            if (task.getAdjacentTaskFragment() == null) {
-                throw new UnsupportedOperationException("Can't set non-adjacent root as launch adjacent flag root tr=" + task);
-            }
-        }
-        this.mLaunchAdjacentFlagRootTask = task;
-    }
-
-    public final LaunchRootTaskDef getLaunchRootTaskDef(Task task) {
-        for (int size = this.mLaunchRootTasks.size() - 1; size >= 0; size--) {
-            if (((LaunchRootTaskDef) this.mLaunchRootTasks.get(size)).task.mTaskId == task.mTaskId) {
-                return (LaunchRootTaskDef) this.mLaunchRootTasks.get(size);
-            }
-        }
-        return null;
-    }
-
-    public Task getLaunchRootTask(int i, int i2, ActivityOptions activityOptions, Task task, int i3) {
-        return getLaunchRootTask(i, i2, activityOptions, task, i3, null);
-    }
-
-    public Task getLaunchRootTask(int i, int i2, ActivityOptions activityOptions, Task task, int i3, Task task2) {
-        Task task3;
-        Task fromWindowContainerToken;
-        if (activityOptions != null && (fromWindowContainerToken = Task.fromWindowContainerToken(activityOptions.getLaunchRootTask())) != null && fromWindowContainerToken.mCreatedByOrganizer) {
-            return fromWindowContainerToken;
-        }
-        if ((i3 & IInstalld.FLAG_USE_QUOTA) != 0 && this.mLaunchAdjacentFlagRootTask != null) {
-            if ((task != null && task == task2 && task.inFullscreenWindowingMode() && getTopMostTask() == task && this.mLaunchAdjacentFlagRootTask.inSplitScreenWindowingMode()) || ((task != null && (task.inFreeformWindowingMode() || task.inPinnedWindowingMode())) || isDexMode())) {
-                Slog.d(StartingSurfaceController.TAG, "getLaunchRootTask: Skip adjacent flag, " + task);
-            } else if (task == null || task != task2) {
-                if (task != null && this.mLaunchAdjacentFlagRootTask.getAdjacentTaskFragment() != null && (task == (task3 = this.mLaunchAdjacentFlagRootTask) || task.isDescendantOf(task3))) {
-                    if (task.topRunningActivity() != null && ActivityRecord.isResolverActivity(task.topRunningActivity().mActivityComponent.getClassName())) {
-                        return task.getParent().asTask();
-                    }
-                    return this.mLaunchAdjacentFlagRootTask.getAdjacentTaskFragment().asTask();
-                }
-                if (task != null && task.inFullscreenWindowingMode() && !task.isResizeable() && this.mLaunchAdjacentFlagRootTask.inSplitScreenWindowingMode()) {
-                    Slog.d(StartingSurfaceController.TAG, "getLaunchRootTask: Skip adjacent flag, " + task);
-                } else {
-                    return this.mLaunchAdjacentFlagRootTask;
-                }
-            }
-        }
-        int size = this.mLaunchRootTasks.size();
-        do {
-            size--;
+    public final int findPositionForRootTask(int i, Task task, boolean z) {
+        int indexOf;
+        int size = this.mChildren.size() - 1;
+        while (true) {
             if (size < 0) {
-                if (task != null && (task2 == null || task2.getWindowingMode() != 2)) {
-                    Task createdByOrganizerTask = task.getCreatedByOrganizerTask();
-                    if (createdByOrganizerTask != null && createdByOrganizerTask.inSplitScreenWindowingMode()) {
-                        if (task2 != null && task2.isFocusableAndVisible()) {
-                            if (task2.isRootTask()) {
-                                return null;
-                            }
-                            Task createdByOrganizerTask2 = task2.getCreatedByOrganizerTask();
-                            if (createdByOrganizerTask2 != null) {
-                                return createdByOrganizerTask2;
-                            }
-                        } else if (createdByOrganizerTask.getTopNonFinishingActivity() == null) {
-                            return null;
-                        }
-                        return createdByOrganizerTask;
-                    }
-                    Task adjacentTask = task.getAdjacentTask();
-                    if (adjacentTask != null) {
-                        return (task2 == null || !(task2 == adjacentTask || task2.isDescendantOf(adjacentTask))) ? task.getCreatedByOrganizerTask() : adjacentTask;
-                    }
-                }
-                return null;
+                size = 0;
+                break;
             }
-        } while (!((LaunchRootTaskDef) this.mLaunchRootTasks.get(size)).contains(i, i2));
-        Task task4 = ((LaunchRootTaskDef) this.mLaunchRootTasks.get(size)).task;
-        Task adjacentTask2 = task4 != null ? task4.getAdjacentTask() : null;
-        return (task == null || adjacentTask2 == null || !(task == adjacentTask2 || task.isDescendantOf(adjacentTask2))) ? task4 : adjacentTask2;
+            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
+            boolean z2 = windowContainer == task;
+            if (getPriority(windowContainer) <= getPriority(task) && !z2 && (!task.isDesktopModeEnabled() || !task.isActivityTypeHomeOrRecents() || windowContainer.asTask() == null || windowContainer.asTask().isMinimized() || !windowContainer.inFreeformWindowingMode() || windowContainer.compareTo((WindowContainer) task) <= 0)) {
+                break;
+            }
+            size--;
+        }
+        int i2 = Integer.MIN_VALUE;
+        for (int i3 = 0; i3 < this.mChildren.size() && getPriority((WindowContainer) this.mChildren.get(i3)) < getPriority(task); i3++) {
+            i2 = i3;
+        }
+        if (task.isAlwaysOnTop() && (indexOf = this.mChildren.indexOf(task)) > i2) {
+            i2 = indexOf;
+        }
+        if (i == Integer.MAX_VALUE) {
+            i = this.mChildren.size();
+        } else if (i == Integer.MIN_VALUE) {
+            i = 0;
+        }
+        int max = Math.max(Math.min(i, size), i2);
+        return max != i ? (z || max < this.mChildren.indexOf(task)) ? max + 1 : max : max;
     }
 
-    public Task getFocusedRootTask() {
+    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
+    public final void forAllTaskDisplayAreas(Consumer consumer, boolean z) {
+        if (z) {
+            super.forAllTaskDisplayAreas(consumer, z);
+            consumer.accept(this);
+        } else {
+            consumer.accept(this);
+            super.forAllTaskDisplayAreas(consumer, z);
+        }
+    }
+
+    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
+    public final boolean forAllTaskDisplayAreas(Predicate predicate, boolean z) {
+        return z ? super.forAllTaskDisplayAreas(predicate, z) || predicate.test(this) : predicate.test(this) || super.forAllTaskDisplayAreas(predicate, z);
+    }
+
+    public final ActivityRecord getFocusedActivity() {
+        Task focusedRootTask = getFocusedRootTask();
+        if (focusedRootTask == null) {
+            return null;
+        }
+        ActivityRecord topResumedActivity = focusedRootTask.getTopResumedActivity();
+        if (topResumedActivity != null && topResumedActivity.app != null) {
+            return topResumedActivity;
+        }
+        ActivityRecord topPausingActivity = focusedRootTask.getTopPausingActivity();
+        return (topPausingActivity == null || topPausingActivity.app == null) ? focusedRootTask.topRunningActivity(true) : topPausingActivity;
+    }
+
+    public final Task getFocusedRootTask() {
         Task task = this.mPreferredTopFocusableRootTask;
         if (task != null) {
             return task;
@@ -1034,7 +500,88 @@ public final class TaskDisplayArea extends DisplayArea {
         return null;
     }
 
-    public Task getNextFocusableRootTask(Task task, boolean z) {
+    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
+    public final Object getItemFromTaskDisplayAreas(Function function, boolean z) {
+        if (z) {
+            Object itemFromTaskDisplayAreas = super.getItemFromTaskDisplayAreas(function, z);
+            return itemFromTaskDisplayAreas != null ? itemFromTaskDisplayAreas : function.apply(this);
+        }
+        Object apply = function.apply(this);
+        return apply != null ? apply : super.getItemFromTaskDisplayAreas(function, z);
+    }
+
+    public final Task getLaunchRootTask(int i, int i2, ActivityOptions activityOptions, Task task, int i3, Task task2) {
+        Task task3;
+        Task fromWindowContainerToken;
+        if (activityOptions != null && (fromWindowContainerToken = Task.fromWindowContainerToken(activityOptions.getLaunchRootTask())) != null && fromWindowContainerToken.mCreatedByOrganizer) {
+            return fromWindowContainerToken;
+        }
+        if ((i3 & 4096) != 0 && this.mLaunchAdjacentFlagRootTask != null) {
+            if ((task != null && task == task2 && task.inFullscreenWindowingMode() && getTopMostTask() == task && this.mLaunchAdjacentFlagRootTask.inSplitScreenWindowingMode()) || ((task != null && (task.inFreeformWindowingMode() || task.inPinnedWindowingMode())) || isDexMode())) {
+                Slog.d("WindowManager", "getLaunchRootTask: Skip adjacent flag, " + task);
+            } else if (task == null || task != task2) {
+                if (task != null && this.mLaunchAdjacentFlagRootTask.getAdjacentTask() != null && (task == (task3 = this.mLaunchAdjacentFlagRootTask) || task.isDescendantOf(task3))) {
+                    if (task.topRunningActivity(false) != null) {
+                        if (ResolverActivity.class.getName().equals(task.topRunningActivity(false).mActivityComponent.getClassName())) {
+                            return task.getParent().asTask();
+                        }
+                    }
+                    return this.mLaunchAdjacentFlagRootTask.getAdjacentTask();
+                }
+                if (task == null || !task.inFullscreenWindowingMode() || task.isResizeable(true) || !this.mLaunchAdjacentFlagRootTask.inSplitScreenWindowingMode()) {
+                    return this.mLaunchAdjacentFlagRootTask;
+                }
+                Slog.d("WindowManager", "getLaunchRootTask: Skip adjacent flag, " + task);
+            }
+        }
+        int size = this.mLaunchRootTasks.size() - 1;
+        while (true) {
+            if (size < 0) {
+                if (task != null && (task2 == null || task2.getWindowingMode() != 2)) {
+                    Task createdByOrganizerTask = task.getCreatedByOrganizerTask();
+                    if (createdByOrganizerTask != null && createdByOrganizerTask.inSplitScreenWindowingMode()) {
+                        if (task2 == null || !task2.isFocusableAndVisible()) {
+                            if (createdByOrganizerTask.getTopNonFinishingActivity(true, true) == null) {
+                                return null;
+                            }
+                        } else {
+                            if (task2.isRootTask()) {
+                                return null;
+                            }
+                            Task createdByOrganizerTask2 = task2.getCreatedByOrganizerTask();
+                            if (createdByOrganizerTask2 != null) {
+                                return createdByOrganizerTask2;
+                            }
+                        }
+                        return createdByOrganizerTask;
+                    }
+                    Task adjacentTask = task.getAdjacentTask();
+                    if (adjacentTask != null) {
+                        return (task2 == null || !(task2 == adjacentTask || task2.isDescendantOf(adjacentTask))) ? task.getCreatedByOrganizerTask() : adjacentTask;
+                    }
+                }
+                return null;
+            }
+            LaunchRootTaskDef launchRootTaskDef = (LaunchRootTaskDef) this.mLaunchRootTasks.get(size);
+            if (ArrayUtils.contains(launchRootTaskDef.windowingModes, i) && ArrayUtils.contains(launchRootTaskDef.activityTypes, i2)) {
+                Task task4 = ((LaunchRootTaskDef) this.mLaunchRootTasks.get(size)).task;
+                Task adjacentTask2 = task4 != null ? task4.getAdjacentTask() : null;
+                return (task == null || adjacentTask2 == null || !(task == adjacentTask2 || task.isDescendantOf(adjacentTask2))) ? task4 : adjacentTask2;
+            }
+            size--;
+        }
+    }
+
+    public final LaunchRootTaskDef getLaunchRootTaskDef(Task task) {
+        for (int size = this.mLaunchRootTasks.size() - 1; size >= 0; size--) {
+            if (((LaunchRootTaskDef) this.mLaunchRootTasks.get(size)).task.mTaskId == task.mTaskId) {
+                return (LaunchRootTaskDef) this.mLaunchRootTasks.get(size);
+            }
+        }
+        return null;
+    }
+
+    public final Task getNextFocusableRootTask(Task task, boolean z) {
         int windowingMode = task != null ? task.getWindowingMode() : 0;
         for (int size = this.mChildren.size() - 1; size >= 0; size--) {
             WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
@@ -1053,305 +600,169 @@ public final class TaskDisplayArea extends DisplayArea {
         return null;
     }
 
-    public ActivityRecord getFocusedActivity() {
-        Task focusedRootTask = getFocusedRootTask();
-        if (focusedRootTask == null) {
-            return null;
-        }
-        ActivityRecord topResumedActivity = focusedRootTask.getTopResumedActivity();
-        if (topResumedActivity != null && topResumedActivity.app != null) {
-            return topResumedActivity;
-        }
-        ActivityRecord topPausingActivity = focusedRootTask.getTopPausingActivity();
-        return (topPausingActivity == null || topPausingActivity.app == null) ? focusedRootTask.topRunningActivity(true) : topPausingActivity;
+    public int getNextRootTaskId() {
+        ActivityTaskSupervisor activityTaskSupervisor = this.mAtmService.mTaskSupervisor;
+        return activityTaskSupervisor.getNextTaskIdForUser(activityTaskSupervisor.mRootWindowContainer.mCurrentUser);
     }
 
-    public Task getLastFocusedRootTask() {
-        return this.mLastFocusedRootTask;
+    public final Task getOrCreateRootHomeTask(boolean z) {
+        Task task = this.mRootHomeTask;
+        if (task != null || !canHostHomeTask()) {
+            return task;
+        }
+        Task.Builder builder = new Task.Builder(this.mAtmService);
+        builder.mWindowingMode = 0;
+        builder.mActivityType = 2;
+        builder.mParent = this;
+        builder.mOnTop = z;
+        builder.mActivityOptions = null;
+        return builder.build();
     }
 
-    public void updateLastFocusedRootTask(Task task, String str) {
-        Task focusedRootTask;
-        if (str == null || (focusedRootTask = getFocusedRootTask()) == task) {
-            return;
-        }
-        if (this.mDisplayContent.isSleeping() && focusedRootTask != null) {
-            focusedRootTask.clearLastPausedActivity();
-        }
-        this.mLastFocusedRootTask = task;
-        int i = this.mRootWindowContainer.mCurrentUser;
-        int i2 = this.mDisplayContent.mDisplayId;
-        int rootTaskId = focusedRootTask == null ? -1 : focusedRootTask.getRootTaskId();
-        Task task2 = this.mLastFocusedRootTask;
-        EventLogTags.writeWmFocusedRootTask(i, i2, rootTaskId, task2 != null ? task2.getRootTaskId() : -1, str);
+    /* JADX WARN: Removed duplicated region for block: B:56:0x0146  */
+    /* JADX WARN: Removed duplicated region for block: B:58:0x014c  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final com.android.server.wm.Task getOrCreateRootTask(int r17, int r18, boolean r19, com.android.server.wm.Task r20, com.android.server.wm.Task r21, android.app.ActivityOptions r22, int r23) {
+        /*
+            Method dump skipped, instructions count: 416
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.TaskDisplayArea.getOrCreateRootTask(int, int, boolean, com.android.server.wm.Task, com.android.server.wm.Task, android.app.ActivityOptions, int):com.android.server.wm.Task");
     }
 
-    public boolean allResumedActivitiesComplete() {
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
-            if (windowContainer.asTaskDisplayArea() != null) {
-                if (!windowContainer.asTaskDisplayArea().allResumedActivitiesComplete()) {
-                    return false;
+    public final Task getOrCreateRootTask(ActivityRecord activityRecord, ActivityOptions activityOptions, Task task, Task task2, LaunchParamsController.LaunchParams launchParams, int i, int i2, boolean z) {
+        int launchWindowingMode = launchParams != null ? launchParams.mWindowingMode : activityOptions != null ? activityOptions.getLaunchWindowingMode() : 0;
+        int resolveForceLaunchWindowingMode = ForceLaunchWindowingModeUtils.resolveForceLaunchWindowingMode(activityOptions, activityRecord, task);
+        if (resolveForceLaunchWindowingMode != 0) {
+            launchWindowingMode = resolveForceLaunchWindowingMode;
+        }
+        if (!isValidWindowingMode(launchWindowingMode, activityRecord, task)) {
+            launchWindowingMode = 0;
+        }
+        return getOrCreateRootTask(launchWindowingMode, i2, z, task, task2, activityOptions, i);
+    }
+
+    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
+    public final int getOrientation(final int i) {
+        Task rootTask;
+        int orientation = super.getOrientation(i);
+        if (!(this.mDisplayContent.mOrientationRequestingTaskDisplayArea == this && !shouldIgnoreOrientationRequest(orientation))) {
+            this.mLastOrientationSource = null;
+            return ((Integer) reduceOnAllTaskDisplayAreas(new BiFunction() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda6
+                @Override // java.util.function.BiFunction
+                public final Object apply(Object obj, Object obj2) {
+                    TaskDisplayArea taskDisplayArea = this;
+                    int i2 = i;
+                    TaskDisplayArea taskDisplayArea2 = (TaskDisplayArea) obj;
+                    Integer num = (Integer) obj2;
+                    taskDisplayArea.getClass();
+                    return (taskDisplayArea2 == taskDisplayArea || num.intValue() != -2) ? num : Integer.valueOf(taskDisplayArea2.getOrientation(i2));
                 }
-            } else {
-                ActivityRecord topResumedActivity = ((WindowContainer) this.mChildren.get(size)).asTask().getTopResumedActivity();
-                if (topResumedActivity != null && !topResumedActivity.isState(ActivityRecord.State.RESUMED)) {
-                    return false;
-                }
-            }
+            }, -2)).intValue();
         }
-        this.mLastFocusedRootTask = getFocusedRootTask();
-        return true;
-    }
-
-    public boolean pauseBackTasks(final ActivityRecord activityRecord) {
-        final int[] iArr = {0};
-        forAllLeafTasks(new Consumer() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda12
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TaskDisplayArea.lambda$pauseBackTasks$6(ActivityRecord.this, iArr, (Task) obj);
-            }
-        }, true);
-        return iArr[0] > 0;
-    }
-
-    public static /* synthetic */ void lambda$pauseBackTasks$6(ActivityRecord activityRecord, int[] iArr, Task task) {
-        if (task.pauseActivityIfNeeded(activityRecord, "pauseBackTasks")) {
-            iArr[0] = iArr[0] + 1;
+        if (CoreRune.MW_SPLIT_FLEX_PANEL_ORIENTATION_POLICY && this.mDisplayContent.isFlexPanelRunning() && (rootTask = this.mDisplayContent.getRootTask(new TaskDisplayArea$$ExternalSyntheticLambda7(0))) != null && rootTask.isFullscreenRootForStageTask()) {
+            return 6;
         }
-    }
-
-    public void onStageSplitScreenDismissed(Task task) {
-        onStageSplitScreenDismissed(task, true);
-    }
-
-    public void onStageSplitScreenDismissed(final Task task, boolean z) {
-        Task topRootTaskInWindowingMode;
-        Task topRootTaskInWindowingMode2;
-        this.mAtmService.deferWindowLayout();
-        final Task[] taskArr = new Task[1];
-        try {
-            WindowContainerTransaction windowContainerTransaction = new WindowContainerTransaction();
-            this.mTmpTasks.clear();
-            forAllTasks(new Consumer() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda6
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    TaskDisplayArea.this.lambda$onStageSplitScreenDismissed$7(taskArr, task, (Task) obj);
-                }
-            });
-            for (int size = this.mTmpTasks.size() - 1; size >= 0; size--) {
-                Task task2 = (Task) this.mTmpTasks.get(size);
-                for (int i = 0; i < task2.getChildCount(); i++) {
-                    WindowContainer childAt = task2.getChildAt(i);
-                    childAt.forAllActivities(new Consumer() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda7
-                        @Override // java.util.function.Consumer
-                        public final void accept(Object obj) {
-                            ((ActivityRecord) obj).mLaunchRootTask = null;
-                        }
-                    });
-                    WindowContainerToken windowContainerToken = childAt.mRemoteToken.toWindowContainerToken();
-                    windowContainerTransaction.reparent(windowContainerToken, (WindowContainerToken) null, z);
-                    windowContainerTransaction.setBounds(windowContainerToken, (Rect) null);
-                }
-            }
-            this.mAtmService.mWindowOrganizerController.applyTransaction(windowContainerTransaction);
-            if (task != null) {
-                topRootTaskInWindowingMode2 = task;
-            } else {
-                try {
-                    topRootTaskInWindowingMode2 = getTopRootTaskInWindowingMode(1);
-                } finally {
-                }
-            }
-            Task orCreateRootHomeTask = getOrCreateRootHomeTask();
-            if (orCreateRootHomeTask != null && (((topRootTaskInWindowingMode2 != null && !isTopRootTask(orCreateRootHomeTask)) || task != null) && taskArr[0] == null)) {
-                orCreateRootHomeTask.moveToFront("onStageSplitScreenDismissed");
-                topRootTaskInWindowingMode2.moveToFront("onStageSplitScreenDismissed");
-            }
-        } catch (Throwable th) {
-            if (task != null) {
-                topRootTaskInWindowingMode = task;
-            } else {
-                try {
-                    topRootTaskInWindowingMode = getTopRootTaskInWindowingMode(1);
-                } finally {
-                }
-            }
-            Task orCreateRootHomeTask2 = getOrCreateRootHomeTask();
-            if (orCreateRootHomeTask2 != null && (((topRootTaskInWindowingMode != null && !isTopRootTask(orCreateRootHomeTask2)) || task != null) && taskArr[0] == null)) {
-                orCreateRootHomeTask2.moveToFront("onStageSplitScreenDismissed");
-                topRootTaskInWindowingMode.moveToFront("onStageSplitScreenDismissed");
-            }
-            throw th;
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onStageSplitScreenDismissed$7(Task[] taskArr, Task task, Task task2) {
-        if (task2.mCreatedByOrganizer && task2.inSplitScreenWindowingMode() && task2.hasChild()) {
-            if (task != null && task2.mChildren.contains(task)) {
-                this.mTmpTasks.add(0, task2);
-            } else {
-                this.mTmpTasks.add(task2);
-            }
-        }
-    }
-
-    public int resolveWindowingMode(ActivityRecord activityRecord, ActivityOptions activityOptions, Task task) {
-        int launchWindowingMode = activityOptions != null ? activityOptions.getLaunchWindowingMode() : 0;
-        if (launchWindowingMode == 0) {
-            if (task != null) {
-                launchWindowingMode = task.getWindowingMode();
-            }
-            if (launchWindowingMode == 0 && activityRecord != null) {
-                launchWindowingMode = activityRecord.getWindowingMode();
-            }
-            if (launchWindowingMode == 0) {
-                launchWindowingMode = getWindowingMode();
-            }
-        }
-        int validateWindowingMode = validateWindowingMode(launchWindowingMode, activityRecord, task);
-        if (validateWindowingMode != 0) {
-            return validateWindowingMode;
-        }
-        return 1;
-    }
-
-    public boolean isValidWindowingMode(int i, ActivityRecord activityRecord, Task task) {
-        ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
-        boolean z = activityTaskManagerService.mSupportsMultiWindow;
-        boolean z2 = activityTaskManagerService.mSupportsFreeformWindowManagement;
-        boolean z3 = activityTaskManagerService.mSupportsPictureInPicture;
-        if (z) {
-            if (task != null) {
-                z2 = task.supportsFreeformInDisplayArea(this);
-                z = task.supportsMultiWindowInDisplayArea(this) || (i == 2 && z3);
-            } else if (activityRecord != null) {
-                z2 = activityRecord.supportsFreeformInDisplayArea(this);
-                z3 = activityRecord.supportsPictureInPicture();
-                z = activityRecord.supportsMultiWindowInDisplayArea(this);
-            }
-            if (CoreRune.MT_SUPPORT_SIZE_COMPAT && i == 5 && !z2) {
-                SizeCompatPolicyManager sizeCompatPolicyManager = SizeCompatPolicyManager.get();
-                if (task == null) {
-                    task = activityRecord.getTask();
-                }
-                SizeCompatPolicy compatPolicy = sizeCompatPolicyManager.getCompatPolicy(task);
-                if (compatPolicy != null && compatPolicy.supportsFreeform()) {
-                    z = true;
-                    z2 = true;
-                }
-            }
-        }
-        return i != 0 && isWindowingModeSupported(i, z, z2, z3);
-    }
-
-    public int validateWindowingMode(int i, ActivityRecord activityRecord, Task task) {
-        if (isValidWindowingMode(i, activityRecord, task)) {
-            return i;
-        }
-        return 0;
-    }
-
-    public boolean supportsNonResizableMultiWindow() {
-        ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
-        int i = activityTaskManagerService.mSupportsNonResizableMultiWindow;
-        if (activityTaskManagerService.mDevEnableNonResizableMultiWindow || i == 1) {
-            return true;
-        }
-        if (i == -1) {
-            return false;
-        }
-        return isLargeEnoughForMultiWindow();
-    }
-
-    public final boolean isLargeEnoughForMultiWindow() {
-        return getConfiguration().smallestScreenWidthDp >= 600;
-    }
-
-    public boolean isTopRootTask(Task task) {
-        return task == getTopRootTask();
-    }
-
-    public ActivityRecord topRunningActivity() {
-        return topRunningActivity(false);
-    }
-
-    public ActivityRecord topRunningActivity(boolean z) {
-        Task focusedRootTask = getFocusedRootTask();
-        ActivityRecord activityRecord = focusedRootTask != null ? focusedRootTask.topRunningActivity() : null;
-        if (activityRecord == null) {
-            for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-                WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
-                if (windowContainer.asTaskDisplayArea() != null) {
-                    activityRecord = windowContainer.asTaskDisplayArea().topRunningActivity(z);
-                    if (activityRecord != null) {
-                        break;
+        if (isSplitScreenVisible() || isSplitScreenStarting()) {
+            Task task = this.mRootMainStageTask;
+            final Task task2 = task != null ? (Task) task.getParent() : null;
+            if (getRootTask(new Predicate() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda13
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    Task task3 = (Task) obj;
+                    if (task3 == Task.this) {
+                        return true;
                     }
-                } else {
-                    Task asTask = ((WindowContainer) this.mChildren.get(size)).asTask();
-                    if (asTask != focusedRootTask && asTask.isTopActivityFocusable() && (activityRecord = asTask.topRunningActivity()) != null) {
-                        break;
-                    }
+                    return task3.inFullscreenWindowingMode() && task3.isVisibleRequested();
                 }
+            }) == task2) {
+                return -1;
             }
         }
-        if (activityRecord == null || !z || !this.mRootWindowContainer.mTaskSupervisor.getKeyguardController().isKeyguardLocked(activityRecord.getDisplayId()) || activityRecord.canShowWhenLocked()) {
-            return activityRecord;
+        boolean[] zArr = ProtoLogImpl_54989576.Cache.WM_DEBUG_ORIENTATION_enabled;
+        if (orientation != -2 && orientation != 3) {
+            if (zArr[1]) {
+                ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 7378236902389922467L, 5, null, Long.valueOf(orientation), Long.valueOf(this.mDisplayContent.mDisplayId));
+            }
+            return orientation;
         }
-        return null;
+        if (zArr[1]) {
+            DisplayContent displayContent = this.mDisplayContent;
+            ProtoLogImpl_54989576.v(ProtoLogGroup.WM_DEBUG_ORIENTATION, 2005499548343677845L, 5, null, Long.valueOf(displayContent.mDisplayRotation.mLastOrientation), Long.valueOf(displayContent.mDisplayId));
+        }
+        return this.mDisplayContent.mDisplayRotation.mLastOrientation;
     }
 
-    public int getRootTaskCount() {
-        final int[] iArr = new int[1];
-        forAllRootTasks(new Consumer() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TaskDisplayArea.lambda$getRootTaskCount$9(iArr, (Task) obj);
+    public final int getPriority(WindowContainer windowContainer) {
+        TaskDisplayArea asTaskDisplayArea = windowContainer.asTaskDisplayArea();
+        if (asTaskDisplayArea != null) {
+            return asTaskDisplayArea.getPriority(asTaskDisplayArea.getTopChild());
+        }
+        Task asTask = windowContainer.asTask();
+        if (!CoreRune.MW_CAPTION_SHELL_FREEFORM_PINNING) {
+            if (this.mWmService.mAssistantOnTopOfDream && asTask.isActivityTypeAssistant()) {
+                return 4;
+            }
+            if (asTask.isActivityTypeDream()) {
+                return 3;
+            }
+            if (asTask.inPinnedWindowingMode()) {
+                return 2;
+            }
+            return asTask.isAlwaysOnTop() ? 1 : 0;
+        }
+        if (this.mWmService.mAssistantOnTopOfDream && asTask.isActivityTypeAssistant()) {
+            return 5;
+        }
+        if (asTask.isActivityTypeDream()) {
+            return 4;
+        }
+        if (asTask.inPinnedWindowingMode()) {
+            return 3;
+        }
+        if (!asTask.isFreeformPinned() || asTask.isMinimized()) {
+            return asTask.isAlwaysOnTop() ? 1 : 0;
+        }
+        return 2;
+    }
+
+    public final Task getRootTask(final int i, final int i2) {
+        return i2 == 2 ? this.mRootHomeTask : i == 2 ? this.mRootPinnedTask : getRootTask(new Predicate() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda1
+            @Override // java.util.function.Predicate
+            public final boolean test(Object obj) {
+                int i3 = i2;
+                int i4 = i;
+                Task task = (Task) obj;
+                if (i3 == 0 && i4 == task.getWindowingMode()) {
+                    return true;
+                }
+                return task.isCompatible(i4, i3);
             }
         });
-        return iArr[0];
     }
 
-    public static /* synthetic */ void lambda$getRootTaskCount$9(int[] iArr, Task task) {
-        iArr[0] = iArr[0] + 1;
+    @Override // com.android.server.wm.WindowContainer
+    public final TaskDisplayArea getTaskDisplayArea() {
+        return this;
     }
 
-    public Task getOrCreateRootHomeTask() {
-        return getOrCreateRootHomeTask(false);
-    }
-
-    public Task getOrCreateRootHomeTask(boolean z) {
-        Task rootHomeTask = getRootHomeTask();
-        return (rootHomeTask == null && canHostHomeTask()) ? createRootTask(0, 2, z) : rootHomeTask;
-    }
-
-    public boolean isSplitScreenModeActivated() {
-        Task rootMainStageTask = getRootMainStageTask();
-        if (rootMainStageTask == null || !rootMainStageTask.hasChild()) {
-            return false;
-        }
-        if (rootMainStageTask.isVisible() || rootMainStageTask.isVisibleRequested()) {
-            return true;
-        }
-        Task topRootTaskInWindowingMode = getTopRootTaskInWindowingMode(1);
-        return topRootTaskInWindowingMode != null && rootMainStageTask.getRootTask() == topRootTaskInWindowingMode;
-    }
-
-    public boolean hasChildTaskInSideStage() {
-        Task rootSideStageTask = getRootSideStageTask();
-        return rootSideStageTask != null && rootSideStageTask.hasChild();
-    }
-
-    public Task getTopRootStageTask() {
-        Task task = getRootMainStageTask() != null ? (Task) getRootMainStageTask().getParent() : null;
-        if (task == null || task.mChildren.isEmpty()) {
+    public final Task getTopRootStageTask() {
+        Task task = this.mRootMainStageTask;
+        Task task2 = task != null ? (Task) task.getParent() : null;
+        if (task2 == null || task2.mChildren.isEmpty()) {
             return null;
         }
-        return (Task) task.mChildren.get(r2.size() - 1);
+        return (Task) task2.mChildren.get(r2.size() - 1);
     }
 
-    public Task getTopRootTaskInStageType(int i) {
+    public Task getTopRootTask() {
+        return getRootTask(WindowContainer.alwaysTruePredicate());
+    }
+
+    public final Task getTopRootTaskInStageType(int i) {
         if (i == 1) {
             return this.mRootMainStageTask;
         }
@@ -1364,34 +775,6 @@ public final class TaskDisplayArea extends DisplayArea {
         return null;
     }
 
-    public Task getRootMainStageTask() {
-        return this.mRootMainStageTask;
-    }
-
-    public Task getRootSideStageTask() {
-        return this.mRootSideStageTask;
-    }
-
-    public void forAllRootStageTasks(Consumer consumer) {
-        Task rootTask = getRootTask(new Predicate() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda14
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean isFullscreenRootForStageTask;
-                isFullscreenRootForStageTask = ((Task) obj).isFullscreenRootForStageTask();
-                return isFullscreenRootForStageTask;
-            }
-        });
-        if (rootTask == null) {
-            return;
-        }
-        for (int childCount = rootTask.getChildCount() - 1; childCount >= 0; childCount--) {
-            WindowContainer childAt = rootTask.getChildAt(childCount);
-            if (childAt.asTask() != null && childAt.inSplitScreenWindowingMode()) {
-                consumer.accept(childAt.asTask());
-            }
-        }
-    }
-
     public final void handleExceptionForRootStageTask(Task task, Task task2) {
         if (task.isOrganized()) {
             TaskOrganizerController.TaskOrganizerState taskOrganizerState = this.mAtmService.mTaskOrganizerController.getTaskOrganizerState(task.mTaskOrganizer.asBinder());
@@ -1402,78 +785,111 @@ public final class TaskDisplayArea extends DisplayArea {
         }
     }
 
-    public boolean isMultiSplitActive() {
+    public final boolean hasChildTaskInSideStage() {
+        Task task = this.mRootSideStageTask;
+        return task != null && task.hasChild();
+    }
+
+    public final boolean hasPinnedTask() {
+        return this.mRootPinnedTask != null;
+    }
+
+    public final boolean isMultiSplitActive() {
         Task task = this.mRootCellStageTask;
         return task != null && task.hasChild();
     }
 
-    public boolean isMultiSplitVisible() {
-        return isMultiSplitActive() && (this.mRootCellStageTask.isVisible() || this.mRootCellStageTask.isVisibleRequested());
+    @Override // com.android.server.wm.WindowContainer
+    public final boolean isOnTop() {
+        return true;
     }
 
-    public Task getRootCellStageTask() {
-        return this.mRootCellStageTask;
-    }
-
-    public boolean isSplitScreenVisible() {
-        Task rootMainStageTask = getRootMainStageTask();
-        Task rootSideStageTask = getRootSideStageTask();
-        return (rootMainStageTask != null && (rootMainStageTask.isVisible() || rootMainStageTask.isVisibleRequested())) || (rootSideStageTask != null && (rootSideStageTask.isVisible() || rootSideStageTask.isVisibleRequested()));
-    }
-
-    public boolean isSplitScreenStarting() {
-        Task rootMainStageTask = getRootMainStageTask();
-        Task rootSideStageTask = getRootSideStageTask();
-        return ((rootMainStageTask == null || !rootMainStageTask.isVisibleRequested() || rootMainStageTask.isVisible()) && (rootSideStageTask == null || !rootSideStageTask.isVisibleRequested() || rootSideStageTask.isVisible())) ? false : true;
-    }
-
-    public Task getTopRootTaskInWindowingMode(int i) {
-        return getRootTask(i, 0);
-    }
-
-    public void moveHomeRootTaskToFront(String str) {
-        Task orCreateRootHomeTask = getOrCreateRootHomeTask();
-        if (orCreateRootHomeTask != null) {
-            orCreateRootHomeTask.moveToFront(str);
+    public final boolean isSplitScreenModeActivated() {
+        Task task = this.mRootMainStageTask;
+        if (task == null || !task.hasChild()) {
+            return false;
         }
-    }
-
-    public void moveHomeActivityToTop(String str) {
-        ActivityRecord homeActivity = getHomeActivity();
-        if (homeActivity == null) {
-            moveHomeRootTaskToFront(str);
-        } else {
-            homeActivity.moveFocusableActivityToTop(str);
+        if (task.isVisible() || task.isVisibleRequested()) {
+            return true;
         }
+        Task rootTask = getRootTask(1, 0);
+        return rootTask != null && task.getRootTask() == rootTask;
     }
 
-    public ActivityRecord getHomeActivity() {
-        return getHomeActivityForUser(this.mRootWindowContainer.mCurrentUser);
+    public final boolean isSplitScreenStarting() {
+        Task task = this.mRootMainStageTask;
+        Task task2 = this.mRootSideStageTask;
+        return ((task == null || !task.isVisibleRequested() || task.isVisible()) && (task2 == null || !task2.isVisibleRequested() || task2.isVisible())) ? false : true;
     }
 
-    public ActivityRecord getHomeActivityForUser(int i) {
-        Task rootHomeTask = getRootHomeTask();
-        if (rootHomeTask == null) {
-            return null;
-        }
-        PooledPredicate obtainPredicate = PooledLambda.obtainPredicate(new BiPredicate() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda13
-            @Override // java.util.function.BiPredicate
-            public final boolean test(Object obj, Object obj2) {
-                boolean isHomeActivityForUser;
-                isHomeActivityForUser = TaskDisplayArea.isHomeActivityForUser((ActivityRecord) obj, ((Integer) obj2).intValue());
-                return isHomeActivityForUser;
+    public final boolean isSplitScreenVisible() {
+        Task task = this.mRootMainStageTask;
+        Task task2 = this.mRootSideStageTask;
+        return (task != null && (task.isVisible() || task.isVisibleRequested())) || (task2 != null && (task2.isVisible() || task2.isVisibleRequested()));
+    }
+
+    @Override // com.android.server.wm.DisplayArea
+    public final boolean isTaskDisplayArea() {
+        return true;
+    }
+
+    public final boolean isUnderHomeTask(Task task) {
+        return this.mChildren.indexOf(this.mRootHomeTask) > this.mChildren.indexOf(task);
+    }
+
+    public final boolean isValidWindowingMode(int i, ActivityRecord activityRecord, Task task) {
+        ActivityTaskManagerService activityTaskManagerService = this.mAtmService;
+        boolean z = activityTaskManagerService.mSupportsMultiWindow;
+        boolean z2 = activityTaskManagerService.mSupportsFreeformWindowManagement;
+        boolean z3 = activityTaskManagerService.mSupportsPictureInPicture;
+        if (z) {
+            if (task != null) {
+                z2 = task.mAtmService.mSupportsFreeformWindowManagement && task.supportsMultiWindowInDisplayArea(this, false);
+                z = task.supportsMultiWindowInDisplayArea(this, false) || (i == 2 && z3);
+            } else if (activityRecord != null) {
+                z2 = activityRecord.supportsFreeformInDisplayArea(this);
+                z3 = activityRecord.supportsPictureInPicture();
+                z = activityRecord.supportsMultiWindowInDisplayArea(this);
             }
-        }, PooledLambda.__(ActivityRecord.class), Integer.valueOf(i));
-        ActivityRecord activity = rootHomeTask.getActivity(obtainPredicate);
-        obtainPredicate.recycle();
-        return activity;
+            if (CoreRune.MT_SIZE_COMPAT_POLICY && i == 5 && !z2) {
+                SizeCompatPolicyManager sizeCompatPolicyManager = SizeCompatPolicyManager.LazyHolder.sManager;
+                if (task == null) {
+                    task = activityRecord.task;
+                }
+                sizeCompatPolicyManager.getClass();
+                if (SizeCompatPolicyManager.getCompatPolicy(task, false) != null) {
+                    z = true;
+                    z2 = true;
+                }
+            }
+        }
+        return i != 0 && isWindowingModeSupported(i, z, z2, z3);
     }
 
-    public static boolean isHomeActivityForUser(ActivityRecord activityRecord, int i) {
-        return activityRecord.isActivityTypeHome() && (i == -1 || activityRecord.mUserId == i);
+    @Override // com.android.server.wm.WindowContainer
+    public final void migrateToNewSurfaceControl(SurfaceControl.Transaction transaction) {
+        super.migrateToNewSurfaceControl(transaction);
+        if (this.mColorLayerCounter > 0) {
+            setBackgroundColor(this.mBackgroundColor, true);
+        }
+        if (CoreRune.MW_SHELL_CHANGE_TRANSITION) {
+            transaction.reparent(this.mChangeLeashAnchor, this.mSurfaceControl);
+        }
+        if (CoreRune.MW_FREEFORM_SHELL_TRANSITION) {
+            transaction.reparent(this.mFloatingLeashAnchor, this.mSurfaceControl);
+        }
+        reassignLayer(transaction);
+        scheduleAnimation();
     }
 
-    public void moveRootTaskBehindBottomMostVisibleRootTask(Task task) {
+    public final void moveHomeRootTaskToFront(String str) {
+        Task orCreateRootHomeTask = getOrCreateRootHomeTask(false);
+        if (orCreateRootHomeTask != null) {
+            orCreateRootHomeTask.moveToFront(str, null);
+        }
+    }
+
+    public final void moveRootTaskBehindBottomMostVisibleRootTask(Task task) {
         Task asTask;
         if (task.shouldBeVisible(null)) {
             return;
@@ -1485,7 +901,9 @@ public final class TaskDisplayArea extends DisplayArea {
             if (isRootTask) {
                 WindowContainer windowContainer = (WindowContainer) this.mChildren.get(i);
                 if (windowContainer.asTaskDisplayArea() != null) {
-                    asTask = windowContainer.asTaskDisplayArea().getBottomMostVisibleRootTask(task);
+                    TaskDisplayArea asTaskDisplayArea = windowContainer.asTaskDisplayArea();
+                    asTaskDisplayArea.getClass();
+                    asTask = asTaskDisplayArea.getRootTask((Predicate) new TaskDisplayArea$$ExternalSyntheticLambda7(1), false);
                 } else {
                     asTask = windowContainer.asTask();
                 }
@@ -1502,169 +920,70 @@ public final class TaskDisplayArea extends DisplayArea {
         }
     }
 
-    public final Task getBottomMostVisibleRootTask(Task task) {
-        return getRootTask(new Predicate() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda1
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$getBottomMostVisibleRootTask$11;
-                lambda$getBottomMostVisibleRootTask$11 = TaskDisplayArea.lambda$getBottomMostVisibleRootTask$11((Task) obj);
-                return lambda$getBottomMostVisibleRootTask$11;
-            }
-        }, false);
-    }
-
-    public static /* synthetic */ boolean lambda$getBottomMostVisibleRootTask$11(Task task) {
-        return task.shouldBeVisible(null) && (task.getWindowingMode() == 1);
-    }
-
-    public void moveRootTaskBehindRootTask(Task task, Task task2) {
-        WindowContainer parent;
-        if (task2 == null || task2 == task || (parent = task.getParent()) == null || parent != task2.getParent()) {
-            return;
-        }
-        int indexOf = parent.mChildren.indexOf(task);
-        int indexOf2 = parent.mChildren.indexOf(task2);
-        if (indexOf <= indexOf2) {
-            indexOf2--;
-        }
-        parent.positionChildAt(Math.max(0, indexOf2), task, false);
-    }
-
-    public boolean hasPinnedTask() {
-        return getRootPinnedTask() != null;
-    }
-
-    public static Task getRootTaskAbove(Task task) {
-        WindowContainer parent = task.getParent();
-        int indexOf = parent.mChildren.indexOf(task) + 1;
-        if (indexOf < parent.mChildren.size()) {
-            return (Task) parent.mChildren.get(indexOf);
-        }
-        return null;
-    }
-
-    public boolean isRootTaskVisible(int i) {
-        Task topRootTaskInWindowingMode = getTopRootTaskInWindowingMode(i);
-        return topRootTaskInWindowingMode != null && topRootTaskInWindowingMode.isVisible();
-    }
-
-    public int getDisplayId() {
-        return this.mDisplayContent.getDisplayId();
-    }
-
-    public boolean isRemoved() {
-        return this.mRemoved;
-    }
-
-    public void registerRootTaskOrderChangedListener(OnRootTaskOrderChangedListener onRootTaskOrderChangedListener) {
-        if (this.mRootTaskOrderChangedCallbacks.contains(onRootTaskOrderChangedListener)) {
-            return;
-        }
-        this.mRootTaskOrderChangedCallbacks.add(onRootTaskOrderChangedListener);
-    }
-
-    public void unregisterRootTaskOrderChangedListener(OnRootTaskOrderChangedListener onRootTaskOrderChangedListener) {
-        this.mRootTaskOrderChangedCallbacks.remove(onRootTaskOrderChangedListener);
-    }
-
-    public void onRootTaskOrderChanged(Task task) {
-        for (int size = this.mRootTaskOrderChangedCallbacks.size() - 1; size >= 0; size--) {
-            ((OnRootTaskOrderChangedListener) this.mRootTaskOrderChangedCallbacks.get(size)).onRootTaskOrderChanged(task);
-        }
-    }
-
-    @Override // com.android.server.wm.WindowContainer
-    public boolean canCreateRemoteAnimationTarget() {
-        return WindowManagerService.sEnableShellTransitions;
-    }
-
-    public boolean canHostHomeTask() {
-        return this.mDisplayContent.supportsSystemDecorations() && this.mCanHostHomeTask;
-    }
-
-    public void ensureActivitiesVisible(final ActivityRecord activityRecord, final int i, final boolean z, final boolean z2) {
-        this.mAtmService.mTaskSupervisor.beginActivityVisibilityUpdate(getDisplayContent());
-        try {
-            forAllRootTasks(new Consumer() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda2
-                @Override // java.util.function.Consumer
-                public final void accept(Object obj) {
-                    ((Task) obj).ensureActivitiesVisible(ActivityRecord.this, i, z, z2);
-                }
-            });
-        } finally {
-            this.mAtmService.mTaskSupervisor.endActivityVisibilityUpdate();
-        }
-    }
-
-    public Task remove() {
-        Task task = null;
-        this.mPreferredTopFocusableRootTask = null;
-        boolean shouldDestroyContentOnRemove = this.mDisplayContent.shouldDestroyContentOnRemove();
-        TaskDisplayArea defaultTaskDisplayArea = this.mRootWindowContainer.getDefaultTaskDisplayArea();
-        int size = this.mChildren.size();
-        int i = 0;
-        while (i < size) {
-            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(i);
-            if (windowContainer.asTaskDisplayArea() != null) {
-                task = windowContainer.asTaskDisplayArea().remove();
-            } else {
-                Task asTask = ((WindowContainer) this.mChildren.get(i)).asTask();
-                if (shouldDestroyContentOnRemove || !asTask.isActivityTypeStandardOrUndefined() || asTask.mCreatedByOrganizer) {
-                    asTask.remove(false, "removeTaskDisplayArea");
-                } else {
-                    Task launchRootTask = defaultTaskDisplayArea.getLaunchRootTask(asTask.getWindowingMode(), asTask.getActivityType(), null, null, 0);
-                    if (launchRootTask == null) {
-                        launchRootTask = defaultTaskDisplayArea;
-                    }
-                    asTask.reparent(launchRootTask, Integer.MAX_VALUE);
-                    asTask.setWindowingMode(0);
-                    task = asTask;
-                }
-                i -= size - this.mChildren.size();
-                size = this.mChildren.size();
-            }
-            i++;
-        }
-        if (task != null && !task.isRootTask()) {
-            task.getRootTask().moveToFront("display-removed");
-        }
-        this.mRemoved = true;
-        return task;
-    }
-
-    public boolean canSpecifyOrientation(int i) {
-        return this.mDisplayContent.getOrientationRequestingTaskDisplayArea() == this && !shouldIgnoreOrientationRequest(i);
-    }
-
-    public void clearPreferredTopFocusableRootTask() {
-        this.mPreferredTopFocusableRootTask = null;
-    }
-
-    @Override // com.android.server.wm.ConfigurationContainer
-    public void setWindowingMode(int i) {
-        this.mTempConfiguration.setTo(getRequestedOverrideConfiguration());
-        WindowConfiguration windowConfiguration = this.mTempConfiguration.windowConfiguration;
-        windowConfiguration.setWindowingMode(i);
-        windowConfiguration.setDisplayWindowingMode(i);
-        onRequestedOverrideConfigurationChanged(this.mTempConfiguration);
-    }
-
-    public boolean isUnderHomeTask(Task task) {
-        return this.mChildren.indexOf(this.mRootHomeTask) > this.mChildren.indexOf(task);
-    }
-
     @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer, com.android.server.wm.SurfaceAnimator.Animatable
-    public void onAnimationLeashCreated(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
+    public final void onAnimationLeashCreated(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
         super.onAnimationLeashCreated(transaction, surfaceControl);
+        DisplayContent displayContent = this.mDisplayContent;
+        if (displayContent.mMagnificationSpec != null) {
+            displayContent.applyMagnificationSpec(displayContent.getPendingTransaction(), displayContent.mMagnificationSpec);
+        }
+    }
+
+    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
+    public final void onChildPositionChanged(WindowContainer windowContainer) {
+        super.onChildPositionChanged(windowContainer);
+        RootWindowContainer rootWindowContainer = this.mRootWindowContainer;
+        if (rootWindowContainer.mTaskLayersChanged) {
+            return;
+        }
+        rootWindowContainer.mTaskLayersChanged = true;
+        rootWindowContainer.mService.mH.post(rootWindowContainer.mRankTaskLayersRunnable);
+    }
+
+    public final void onLeafTaskMoved(Task task, boolean z, boolean z2) {
+        if (z2) {
+            TaskChangeNotificationController taskChangeNotificationController = this.mAtmService.mTaskChangeNotificationController;
+            Message obtainMessage = taskChangeNotificationController.mHandler.obtainMessage(27, task.getTaskInfo());
+            taskChangeNotificationController.forAllLocalListeners(taskChangeNotificationController.mNotifyTaskMovedToBack, obtainMessage);
+            obtainMessage.sendToTarget();
+        }
+        if (!z) {
+            if (task.mTaskId == this.mLastLeafTaskToFrontId) {
+                this.mLastLeafTaskToFrontId = -1;
+                ActivityRecord topMostActivity = getTopMostActivity();
+                if (topMostActivity != null) {
+                    this.mAtmService.mTaskChangeNotificationController.notifyTaskMovedToFront(topMostActivity.task.getTaskInfo());
+                    return;
+                }
+                return;
+            }
+            return;
+        }
+        if (task.mTaskId == this.mLastLeafTaskToFrontId || task.topRunningActivityLocked() == null) {
+            return;
+        }
+        int i = task.mTaskId;
+        this.mLastLeafTaskToFrontId = i;
+        EventLog.writeEvent(30002, Integer.valueOf(task.mUserId), Integer.valueOf(i), Integer.valueOf(this.mDisplayContent.mDisplayId));
+        this.mAtmService.mTaskChangeNotificationController.notifyTaskMovedToFront(task.getTaskInfo());
     }
 
     @Override // com.android.server.wm.WindowContainer, com.android.server.wm.ConfigurationContainer
-    public void onParentChanged(ConfigurationContainer configurationContainer, ConfigurationContainer configurationContainer2) {
+    public final void onParentChanged(ConfigurationContainer configurationContainer, ConfigurationContainer configurationContainer2) {
         if (getParent() != null) {
             super.onParentChanged(configurationContainer, configurationContainer2, new Runnable() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda4
                 @Override // java.lang.Runnable
                 public final void run() {
-                    TaskDisplayArea.this.lambda$onParentChanged$13();
+                    TaskDisplayArea taskDisplayArea = TaskDisplayArea.this;
+                    taskDisplayArea.getClass();
+                    if (CoreRune.MW_SHELL_CHANGE_TRANSITION) {
+                        taskDisplayArea.mChangeLeashAnchor = taskDisplayArea.makeChildSurface(null).setName("ChangeLeashAnchor").setCallsite("TaskDisplayArea.onParentChanged").build();
+                        taskDisplayArea.getPendingTransaction().show(taskDisplayArea.mChangeLeashAnchor);
+                    }
+                    if (CoreRune.MW_FREEFORM_SHELL_TRANSITION) {
+                        taskDisplayArea.mFloatingLeashAnchor = taskDisplayArea.makeChildSurface(null).setName("FloatingLeashAnchor").setCallsite("TaskDisplayArea.onParentChanged").build();
+                        taskDisplayArea.getPendingTransaction().show(taskDisplayArea.mFloatingLeashAnchor);
+                    }
                 }
             });
             return;
@@ -1680,146 +999,363 @@ public final class TaskDisplayArea extends DisplayArea {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onParentChanged$13() {
-        if (CoreRune.MW_SHELL_CHANGE_TRANSITION) {
-            this.mChangeLeashAnchor = makeChildSurface(null).setName("ChangeLeashAnchor").setCallsite("TaskDisplayArea.onParentChanged").build();
-            getPendingTransaction().show(this.mChangeLeashAnchor);
-        }
-        if (CoreRune.MW_FREEFORM_SHELL_TRANSITION) {
-            this.mFloatingLeashAnchor = makeChildSurface(null).setName("FloatingLeashAnchor").setCallsite("TaskDisplayArea.onParentChanged").build();
-            getPendingTransaction().show(this.mFloatingLeashAnchor);
-        }
-    }
-
-    public int taskIdFromPoint(int i, int i2, DisplayContent.TaskIdFromPointSearchResult taskIdFromPointSearchResult) {
-        getBounds(((WindowContainer) this).mTmpRect);
-        if (!((WindowContainer) this).mTmpRect.contains(i, i2)) {
-            return -1;
-        }
-        for (int size = this.mChildren.size() - 1; size >= 0; size--) {
-            Task asTask = ((WindowContainer) this.mChildren.get(size)).asTask();
-            if (asTask != null && asTask.getTopVisibleAppMainWindow() != null) {
-                asTask.getDimBounds(((WindowContainer) this).mTmpRect);
-                if (((WindowContainer) this).mTmpRect.contains(i, i2)) {
-                    if (taskIdFromPointSearchResult != null) {
-                        taskIdFromPointSearchResult.mTask = asTask;
-                    }
-                    return asTask.mTaskId;
+    public final void onRootTaskOrderChanged(final Task task) {
+        WindowManagerService windowManagerService;
+        RecentsAnimationController recentsAnimationController;
+        for (int size = this.mRootTaskOrderChangedCallbacks.size() - 1; size >= 0; size--) {
+            RecentsAnimation recentsAnimation = (RecentsAnimation) this.mRootTaskOrderChangedCallbacks.get(size);
+            recentsAnimation.getClass();
+            if (ProtoLogImpl_54989576.Cache.WM_DEBUG_RECENTS_ANIMATIONS_enabled[0]) {
+                ProtoLogImpl_54989576.d(ProtoLogGroup.WM_DEBUG_RECENTS_ANIMATIONS, 4515487264815398694L, 0, null, String.valueOf(task));
+            }
+            if (recentsAnimation.mDefaultTaskDisplayArea.getRootTask(new Predicate() { // from class: com.android.server.wm.RecentsAnimation$$ExternalSyntheticLambda4
+                @Override // java.util.function.Predicate
+                public final boolean test(Object obj) {
+                    return ((Task) obj) == Task.this;
                 }
+            }) != null && task.shouldBeVisible(null) && (recentsAnimationController = (windowManagerService = recentsAnimation.mWindowManager).mRecentsAnimationController) != null && ((!recentsAnimationController.isAnimatingTask(task.getTopMostTask()) || recentsAnimationController.isTargetApp(task.getTopNonFinishingActivity(true, true))) && recentsAnimationController.mRequestDeferCancelUntilNextTransition)) {
+                windowManagerService.prepareAppTransitionNone();
+                recentsAnimationController.mCancelOnNextTransitionStart = true;
             }
         }
-        return -1;
     }
 
-    public void startFreeformTaskPinning(Task task) {
-        this.mFreeformTaskPinningController.startPinning(task);
-    }
-
-    public void stopFreeformTaskPinning(Task task, boolean z, String str) {
-        this.mFreeformTaskPinningController.stopPinning(task, z, str);
-    }
-
-    public boolean hasPinnedFreeformTask() {
-        return this.mFreeformTaskPinningController.hasTaskPinned();
-    }
-
-    public final boolean handleOrientationChangeFromSplitScreen() {
-        if (!isSplitScreenVisible() && !isSplitScreenStarting()) {
-            return false;
-        }
-        final Task task = getRootMainStageTask() != null ? (Task) getRootMainStageTask().getParent() : null;
-        return getRootTask(new Predicate() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda11
-            @Override // java.util.function.Predicate
-            public final boolean test(Object obj) {
-                boolean lambda$handleOrientationChangeFromSplitScreen$14;
-                lambda$handleOrientationChangeFromSplitScreen$14 = TaskDisplayArea.lambda$handleOrientationChangeFromSplitScreen$14(Task.this, (Task) obj);
-                return lambda$handleOrientationChangeFromSplitScreen$14;
-            }
-        }) == task;
-    }
-
-    public static /* synthetic */ boolean lambda$handleOrientationChangeFromSplitScreen$14(Task task, Task task2) {
-        if (task2 == task) {
-            return true;
-        }
-        return task2.inFullscreenWindowingMode() && task2.isVisibleRequested();
-    }
-
-    public boolean needToEnsureLaunchSplitRootTask(ActivityRecord activityRecord, ActivityOptions activityOptions, Task task, Task task2) {
-        Task topMostTask = getTopMostTask();
-        if (!isSplitScreenModeActivated() || ((topMostTask != null && topMostTask.inFullscreenWindowingMode()) || !(activityOptions == null || (activityOptions.getLaunchRootTask() == null && activityOptions.getLaunchTaskFragmentToken() == null && ((activityOptions.getRemoteTransition() != null || !activityOptions.freezeRecentTasksReordering() || this.mWmService.getRecentsAnimationController() == null) && !ForceLaunchWindowingModeUtils.shouldDismissSplitBeforeLaunch(activityOptions, activityRecord)))))) {
-            return false;
-        }
-        return (task == null || !(task.inSplitScreenWindowingMode() || task.inPinnedWindowingMode())) && activityRecord != null && !activityRecord.isActivityTypeHome() && !activityRecord.isActivityTypeRecents() && activityRecord.supportsSplitScreenWindowingMode() && activityRecord.supportsMultiWindowInDisplayArea(this) && (task2 == null || !task2.isActivityTypeHome());
-    }
-
-    public Task ensureLaunchSplitRootTask(ActivityRecord activityRecord, ActivityOptions activityOptions, Task task, Task task2, LaunchParamsController.LaunchParams launchParams, int i, int i2, boolean z) {
-        int i3;
-        ActivityRecord activityRecord2;
-        int stageType;
-        Task topRootTaskInStageType;
-        if (activityOptions != null) {
-            i3 = activityOptions.getLaunchWindowingMode();
-            if (i3 == 0) {
-                i3 = activityOptions.getForceLaunchWindowingMode();
-            }
-        } else {
-            i3 = 0;
-        }
-        if ((task == null || (task.getResumedActivity() == null && !task.isMinimized())) && validateWindowingMode(i3, activityRecord, task) == 0) {
-            if (task != null && (stageType = task.getWindowConfiguration().getStageType()) != 0 && (topRootTaskInStageType = getTopRootTaskInStageType(stageType)) != null && task.equals(topRootTaskInStageType.getTopMostTask())) {
-                return topRootTaskInStageType;
-            }
-            Task topRootStageTask = getTopRootStageTask();
-            if (topRootStageTask != null) {
-                if (activityRecord != null && activityRecord.isLaunchAdjacent() && (activityRecord2 = this.mAtmService.mLastResumedActivity) != null) {
-                    int stageType2 = activityRecord2.getStageType();
-                    ActivityRecord activityRecord3 = this.mAtmService.mLastResumedActivity;
-                    ComponentName componentName = activityRecord3.mActivityComponent;
-                    if (activityRecord3.finishing && componentName != null && componentName.equals(activityRecord.mActivityComponent) && stageType2 == topRootStageTask.getStageType() && topRootStageTask.getAdjacentTaskFragment() != null) {
-                        return topRootStageTask.getAdjacentTaskFragment().asTask();
+    public final void onStageSplitScreenDismissed(final Task task, boolean z) {
+        Task rootTask;
+        Task rootTask2;
+        this.mAtmService.deferWindowLayout();
+        final Task[] taskArr = new Task[1];
+        try {
+            WindowContainerTransaction windowContainerTransaction = new WindowContainerTransaction();
+            this.mTmpTasks.clear();
+            forAllTasks(new Consumer() { // from class: com.android.server.wm.TaskDisplayArea$$ExternalSyntheticLambda9
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    ActivityRecord activityRecord;
+                    TaskDisplayArea taskDisplayArea = TaskDisplayArea.this;
+                    Task[] taskArr2 = taskArr;
+                    Task task2 = task;
+                    Task task3 = (Task) obj;
+                    taskDisplayArea.getClass();
+                    if (task3.mCreatedByOrganizer && task3.inSplitScreenWindowingMode() && task3.hasChild()) {
+                        if (CoreRune.MW_SPLIT_FLEX_PANEL_LAUNCH_POLICY && (activityRecord = task3.topRunningActivity(false)) != null && activityRecord.mIsFlexPanel) {
+                            taskArr2[0] = task3;
+                        }
+                        if (task2 == null || !task3.mChildren.contains(task2)) {
+                            taskDisplayArea.mTmpTasks.add(task3);
+                        } else {
+                            taskDisplayArea.mTmpTasks.add(0, task3);
+                        }
                     }
                 }
-                return topRootStageTask;
+            });
+            for (int size = this.mTmpTasks.size() - 1; size >= 0; size--) {
+                Task task2 = (Task) this.mTmpTasks.get(size);
+                for (int i = 0; i < task2.getChildCount(); i++) {
+                    WindowContainer childAt = task2.getChildAt(i);
+                    childAt.forAllActivities(new TaskDisplayArea$$ExternalSyntheticLambda10());
+                    WindowContainerToken windowContainerToken = childAt.mRemoteToken.toWindowContainerToken();
+                    windowContainerTransaction.reparent(windowContainerToken, (WindowContainerToken) null, z);
+                    windowContainerTransaction.setBounds(windowContainerToken, (Rect) null);
+                }
             }
+            this.mAtmService.mWindowOrganizerController.applyTransaction(windowContainerTransaction);
+            if (task != null) {
+                rootTask2 = task;
+            } else {
+                try {
+                    rootTask2 = getRootTask(1, 0);
+                } finally {
+                }
+            }
+            Task orCreateRootHomeTask = getOrCreateRootHomeTask(false);
+            if (orCreateRootHomeTask != null && (((rootTask2 != null && orCreateRootHomeTask != getTopRootTask()) || task != null) && taskArr[0] == null)) {
+                orCreateRootHomeTask.moveToFront("onStageSplitScreenDismissed", null);
+                rootTask2.moveToFront("onStageSplitScreenDismissed", null);
+            }
+        } catch (Throwable th) {
+            if (task != null) {
+                rootTask = task;
+            } else {
+                try {
+                    rootTask = getRootTask(1, 0);
+                } finally {
+                }
+            }
+            Task orCreateRootHomeTask2 = getOrCreateRootHomeTask(false);
+            if (orCreateRootHomeTask2 != null && (((rootTask != null && orCreateRootHomeTask2 != getTopRootTask()) || task != null) && taskArr[0] == null)) {
+                orCreateRootHomeTask2.moveToFront("onStageSplitScreenDismissed", null);
+                rootTask.moveToFront("onStageSplitScreenDismissed", null);
+            }
+            throw th;
         }
-        return getOrCreateRootTask(activityRecord, activityOptions, task, task2, launchParams, i, i2, z);
     }
 
     @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
-    public void dump(PrintWriter printWriter, String str, boolean z) {
-        printWriter.println(str + "TaskDisplayArea " + getName());
-        StringBuilder sb = new StringBuilder();
-        sb.append(str);
-        sb.append("  ");
-        String sb2 = sb.toString();
-        super.dump(printWriter, sb2, z);
-        if (this.mPreferredTopFocusableRootTask != null) {
-            printWriter.println(sb2 + "mPreferredTopFocusableRootTask=" + this.mPreferredTopFocusableRootTask);
+    public final void positionChildAt(int i, WindowContainer windowContainer, boolean z) {
+        ActivityRecord activityRecord;
+        WindowProcessController windowProcessController;
+        if (windowContainer.asTaskDisplayArea() != null) {
+            super.positionChildAt(i, windowContainer, z);
+            return;
         }
-        if (this.mLastFocusedRootTask != null) {
-            printWriter.println(sb2 + "mLastFocusedRootTask=" + this.mLastFocusedRootTask);
+        if (windowContainer.asTask() == null) {
+            throw new IllegalArgumentException("TaskDisplayArea can only position Task and TaskDisplayArea, but found " + windowContainer);
         }
-        String str2 = sb2 + "  ";
-        if (this.mLaunchRootTasks.size() > 0) {
-            printWriter.println(sb2 + "mLaunchRootTasks:");
-            for (int size = this.mLaunchRootTasks.size() + (-1); size >= 0; size += -1) {
-                LaunchRootTaskDef launchRootTaskDef = (LaunchRootTaskDef) this.mLaunchRootTasks.get(size);
-                printWriter.println(str2 + Arrays.toString(launchRootTaskDef.activityTypes) + " " + Arrays.toString(launchRootTaskDef.windowingModes) + "  task=" + launchRootTaskDef.task);
+        Task asTask = windowContainer.asTask();
+        boolean z2 = i >= getChildCount() - 1;
+        boolean z3 = i <= 0;
+        int indexOf = this.mChildren.indexOf(asTask);
+        if (asTask.isAlwaysOnTop() && !z2) {
+            ActivityRecord rootActivity = asTask.getRootActivity(true, false);
+            if (!FreeformController.useAlwaysOnTopFreeform(asTask.getWindowingMode(), this.mDisplayContent) && (rootActivity == null || !rootActivity.mLaunchedFromBubble)) {
+                Slog.w("WindowManager", "Ignoring move of always-on-top root task=" + this + " to bottom");
+                super.positionChildAt(indexOf, asTask, false);
+                return;
+            }
+            asTask.setAlwaysOnTop(false);
+        }
+        if ((!this.mDisplayContent.mDisplay.isTrusted() || this.mDisplayContent.mDontMoveToTop) && !getParent().isOnTop()) {
+            z = false;
+        }
+        int findPositionForRootTask = findPositionForRootTask(i, asTask, false);
+        super.positionChildAt(findPositionForRootTask, asTask, false);
+        if (z && getParent() != null && (z2 || z3)) {
+            if (z2 && asTask.isFocusableAndVisible()) {
+                this.mPreferredTopFocusableRootTask = asTask;
+            } else if (this.mPreferredTopFocusableRootTask == asTask) {
+                this.mPreferredTopFocusableRootTask = null;
+            }
+            getParent().positionChildAt(z2 ? Integer.MAX_VALUE : Integer.MIN_VALUE, this, true);
+        }
+        asTask.updateTaskMovement(findPositionForRootTask, z2, z3);
+        if (z2 && asTask != this.mRootPinnedTask && asTask.isTopActivityFocusable()) {
+            this.mPreferredTopFocusableRootTask = asTask.shouldBeVisible(null) ? asTask : null;
+        } else if (this.mPreferredTopFocusableRootTask == asTask) {
+            this.mPreferredTopFocusableRootTask = null;
+        }
+        if (this.mPreferredTopFocusableRootTask == null && asTask.inFullscreenWindowingMode() && z3) {
+            Task focusedRootTask = getFocusedRootTask();
+            Task rootTask = getRootTask(1, 0);
+            if (focusedRootTask != null && focusedRootTask.inFreeformWindowingMode() && rootTask != null && !rootTask.isFullscreenRootForStageTask() && rootTask.isFocusableAndVisible()) {
+                this.mPreferredTopFocusableRootTask = rootTask;
             }
         }
-        printWriter.println(sb2 + "Application tokens in top down Z order:");
-        for (int childCount = getChildCount() + (-1); childCount >= 0; childCount--) {
-            WindowContainer childAt = getChildAt(childCount);
-            if (childAt.asTaskDisplayArea() != null) {
-                childAt.dump(printWriter, sb2, z);
+        this.mAtmService.mTaskSupervisor.updateTopResumedActivityIfNeeded("positionChildTaskAt");
+        if (asTask.getTopResumedActivity() == null && i == Integer.MIN_VALUE) {
+            Task task = this.mRootMainStageTask;
+            ActivityRecord topResumedActivity = this.mRootWindowContainer.getTopResumedActivity();
+            if (task != null && task.isDescendantOf(asTask) && topResumedActivity != null && !topResumedActivity.equals(this.mAtmService.mLastResumedActivity)) {
+                this.mAtmService.setLastResumedActivityUncheckLocked(topResumedActivity, "positionChildAt(stageRoot)");
+            }
+        }
+        if (asTask.isOnTop() && (activityRecord = asTask.topRunningActivity(false)) != null && (windowProcessController = activityRecord.app) != null) {
+            windowProcessController.updateActivityConfigurationListener(activityRecord);
+        }
+        if (this.mChildren.indexOf(asTask) != indexOf) {
+            onRootTaskOrderChanged(asTask);
+        }
+    }
+
+    public final void positionTaskBehindHome(Task task) {
+        WindowContainer parent = getOrCreateRootHomeTask(false).getParent();
+        Task asTask = parent != null ? parent.asTask() : null;
+        if (asTask == null) {
+            if (task.getParent() == this) {
+                positionChildAt(Integer.MIN_VALUE, task, false);
+                return;
             } else {
-                Task asTask = childAt.asTask();
-                printWriter.println(sb2 + "* " + asTask.toFullString());
-                asTask.dump(printWriter, str2, z);
+                task.reparent(this, false);
+                return;
             }
         }
-        this.mFreeformTaskPinningController.dump(printWriter, str);
+        if (asTask == task.getParent()) {
+            asTask.positionChildAtBottom(task, asTask.getDisplayArea().getNextFocusableRootTask(task.getRootTask(), true) == null);
+        } else {
+            task.reparent(asTask, false, 2, false, false, "positionTaskBehindHome");
+        }
+    }
+
+    @Override // com.android.server.wm.DisplayArea, com.android.server.wm.WindowContainer
+    public final Object reduceOnAllTaskDisplayAreas(BiFunction biFunction, Object obj, boolean z) {
+        return z ? biFunction.apply(this, super.reduceOnAllTaskDisplayAreas(biFunction, obj, z)) : super.reduceOnAllTaskDisplayAreas(biFunction, biFunction.apply(this, obj), z);
+    }
+
+    public final Task remove() {
+        this.mPreferredTopFocusableRootTask = null;
+        boolean shouldDestroyContentOnRemove = this.mDisplayContent.shouldDestroyContentOnRemove();
+        TaskDisplayArea defaultTaskDisplayArea = this.mRootWindowContainer.mDefaultDisplay.getDefaultTaskDisplayArea();
+        int size = this.mChildren.size();
+        int i = 0;
+        Task task = null;
+        while (i < size) {
+            WindowContainer windowContainer = (WindowContainer) this.mChildren.get(i);
+            if (windowContainer.asTaskDisplayArea() != null) {
+                task = windowContainer.asTaskDisplayArea().remove();
+            } else {
+                Task asTask = ((WindowContainer) this.mChildren.get(i)).asTask();
+                if (shouldDestroyContentOnRemove || !asTask.isActivityTypeStandardOrUndefined() || asTask.mCreatedByOrganizer) {
+                    asTask.remove("removeTaskDisplayArea", false);
+                } else {
+                    Task launchRootTask = defaultTaskDisplayArea.getLaunchRootTask(asTask.getWindowingMode(), asTask.getActivityType(), null, null, 0, null);
+                    asTask.reparent(launchRootTask == null ? defaultTaskDisplayArea : launchRootTask, Integer.MAX_VALUE);
+                    if (launchRootTask != null || asTask.getRequestedOverrideWindowingMode() != 1 || defaultTaskDisplayArea.getWindowingMode() == 1) {
+                        asTask.setWindowingMode(0);
+                    }
+                    task = asTask;
+                }
+                i -= size - this.mChildren.size();
+                size = this.mChildren.size();
+            }
+            i++;
+        }
+        if (task != null && !task.isRootTask()) {
+            task.getRootTask().moveToFront("display-removed", null);
+        }
+        this.mRemoved = true;
+        return task;
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void removeChild(WindowContainer windowContainer) {
+        if (windowContainer.asTaskDisplayArea() != null) {
+            super.removeChild(windowContainer);
+            return;
+        }
+        if (windowContainer.asTask() == null) {
+            throw new IllegalArgumentException("TaskDisplayArea can only remove Task and TaskDisplayArea, but found " + windowContainer);
+        }
+        Task asTask = windowContainer.asTask();
+        super.removeChild(asTask);
+        if (this.mPreferredTopFocusableRootTask == asTask) {
+            this.mPreferredTopFocusableRootTask = null;
+        }
+        if (this.mLaunchAdjacentFlagRootTask == asTask) {
+            this.mLaunchAdjacentFlagRootTask = null;
+        }
+        this.mDisplayContent.releaseSelfIfNeeded();
+        onRootTaskOrderChanged(asTask);
+        this.mAtmService.updateSleepIfNeededLocked();
+        removeRootTaskReferenceIfNeeded(asTask);
+        if (asTask.mIsMinimized) {
+            asTask.mIsMinimized = false;
+            if (asTask.isDexMode()) {
+                DexController dexController = asTask.mAtmService.mDexController;
+                if (((ArrayList) dexController.mMinimizedToggleTasks).contains(asTask)) {
+                    ((ArrayList) dexController.mMinimizedToggleTasks).remove(asTask);
+                }
+            }
+            asTask.mAtmService.mFreeformController.notifyFreeformMinimizeStateChanged(-1, -1, asTask, true);
+            if (CoreRune.MW_MULTI_SPLIT_FREEFORM_FOLDING_POLICY && asTask.getDisplayId() == 0) {
+                asTask.mLastMinimizedDisplayType = -1;
+                asTask.mLastMinimizedRotation = -1;
+            }
+        }
+        if (this.mDisplayContent.mDisplayId == 0) {
+            this.mAtmService.mFreeformController.scheduleUnbindMinimizeContainerService("removeChildTask");
+        }
+    }
+
+    public final void removeRootTaskReferenceIfNeeded(Task task) {
+        if (task == this.mRootHomeTask) {
+            this.mRootHomeTask = null;
+            return;
+        }
+        if (task == this.mRootPinnedTask) {
+            this.mRootPinnedTask = null;
+            return;
+        }
+        if (task.mTaskOrganizer == null) {
+            if (task == this.mRootMainStageTask) {
+                this.mRootMainStageTask = null;
+                return;
+            }
+            if (task == this.mRootSideStageTask) {
+                this.mRootSideStageTask = null;
+            } else if (CoreRune.MW_MULTI_SPLIT_TASK_ORGANIZER && task == this.mRootCellStageTask) {
+                this.mRootCellStageTask = null;
+            }
+        }
+    }
+
+    public final void setBackgroundColor(int i, boolean z) {
+        this.mBackgroundColor = i;
+        Color valueOf = Color.valueOf(i);
+        if (!z) {
+            this.mColorLayerCounter++;
+        }
+        if (this.mSurfaceControl != null) {
+            getPendingTransaction().setColor(this.mSurfaceControl, new float[]{valueOf.red(), valueOf.green(), valueOf.blue()});
+            scheduleAnimation();
+        }
+    }
+
+    @Override // com.android.server.wm.WindowContainer
+    public final void setInitialSurfaceControlProperties(SurfaceControl.Builder builder) {
+        builder.setEffectLayer();
+        super.setInitialSurfaceControlProperties(builder);
+    }
+
+    @Override // com.android.server.wm.ConfigurationContainer
+    public final void setWindowingMode(int i) {
+        this.mTempConfiguration.setTo(getRequestedOverrideConfiguration());
+        this.mTempConfiguration.windowConfiguration.setWindowingMode(i);
+        onRequestedOverrideConfigurationChanged(this.mTempConfiguration);
+    }
+
+    public final void stopFreeformTaskPinning(Task task) {
+        FreeformTaskPinningController freeformTaskPinningController = this.mFreeformTaskPinningController;
+        Task task2 = freeformTaskPinningController.mPinnedTask;
+        TaskDisplayArea taskDisplayArea = freeformTaskPinningController.mTaskDisplayArea;
+        if (task2 != task && CoreRune.MT_NEW_DEX_TASK_PINNING && !taskDisplayArea.isNewDexMode()) {
+            android.util.secutil.Slog.d("FreeformTaskPinningController", "Failed to stop freeform task pinning, task requested isn't in pinning mode.");
+            return;
+        }
+        if (CoreRune.MT_NEW_DEX_TASK_PINNING && !taskDisplayArea.isNewDexMode()) {
+            taskDisplayArea.setFreeformTaskPinning(1);
+        }
+        task.setFreeformTaskPinning(0);
+        freeformTaskPinningController.mPinnedTask = null;
+    }
+
+    public final ActivityRecord topRunningActivity(boolean z) {
+        Task focusedRootTask = getFocusedRootTask();
+        ActivityRecord activityRecord = focusedRootTask != null ? focusedRootTask.topRunningActivity(false) : null;
+        if (activityRecord == null) {
+            for (int size = this.mChildren.size() - 1; size >= 0; size--) {
+                WindowContainer windowContainer = (WindowContainer) this.mChildren.get(size);
+                if (windowContainer.asTaskDisplayArea() != null) {
+                    activityRecord = windowContainer.asTaskDisplayArea().topRunningActivity(z);
+                    if (activityRecord != null) {
+                        break;
+                    }
+                } else {
+                    Task asTask = ((WindowContainer) this.mChildren.get(size)).asTask();
+                    if (asTask != focusedRootTask && asTask.isTopActivityFocusable() && (activityRecord = asTask.topRunningActivity(false)) != null) {
+                        break;
+                    }
+                }
+            }
+        }
+        if (activityRecord == null || !z || !this.mRootWindowContainer.mTaskSupervisor.mKeyguardController.isKeyguardLocked(activityRecord.getDisplayId()) || activityRecord.canShowWhenLocked()) {
+            return activityRecord;
+        }
+        return null;
+    }
+
+    public final void updateLastFocusedRootTask(String str, Task task) {
+        Task focusedRootTask;
+        if (str == null || (focusedRootTask = getFocusedRootTask()) == task) {
+            return;
+        }
+        if (this.mDisplayContent.mSleeping && focusedRootTask != null) {
+            focusedRootTask.clearLastPausedActivity();
+        }
+        this.mLastFocusedRootTask = task;
+        int i = this.mRootWindowContainer.mCurrentUser;
+        int i2 = this.mDisplayContent.mDisplayId;
+        int i3 = focusedRootTask == null ? -1 : focusedRootTask.getRootTask().mTaskId;
+        Task task2 = this.mLastFocusedRootTask;
+        EventLog.writeEvent(30044, Integer.valueOf(i), Integer.valueOf(i2), Integer.valueOf(i3), Integer.valueOf(task2 != null ? task2.getRootTask().mTaskId : -1), str);
     }
 }

@@ -4,8 +4,9 @@ import android.util.Size;
 import android.view.DisplayCutout;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class WmDisplayCutout {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class WmDisplayCutout {
     public static final WmDisplayCutout NO_CUTOUT = new WmDisplayCutout(DisplayCutout.NO_CUTOUT, null);
     public final Size mFrameSize;
     public final DisplayCutout mInner;
@@ -15,18 +16,7 @@ public class WmDisplayCutout {
         this.mFrameSize = size;
     }
 
-    public static WmDisplayCutout computeSafeInsets(DisplayCutout displayCutout, int i, int i2) {
-        if (displayCutout == DisplayCutout.NO_CUTOUT) {
-            return NO_CUTOUT;
-        }
-        return new WmDisplayCutout(displayCutout.replaceSafeInsets(DisplayCutout.computeSafeInsets(i, i2, displayCutout)), new Size(i, i2));
-    }
-
-    public DisplayCutout getDisplayCutout() {
-        return this.mInner;
-    }
-
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (!(obj instanceof WmDisplayCutout)) {
             return false;
         }
@@ -34,11 +24,11 @@ public class WmDisplayCutout {
         return Objects.equals(this.mInner, wmDisplayCutout.mInner) && Objects.equals(this.mFrameSize, wmDisplayCutout.mFrameSize);
     }
 
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(this.mInner, this.mFrameSize);
     }
 
-    public String toString() {
+    public final String toString() {
         return "WmDisplayCutout{" + this.mInner + ", mFrameSize=" + this.mFrameSize + '}';
     }
 }

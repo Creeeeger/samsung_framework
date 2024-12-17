@@ -1,66 +1,22 @@
 package com.android.server.usage;
 
-import android.app.job.JobInfo;
+import android.app.admin.DevicePolicyManagerInternal;
 import android.app.job.JobParameters;
-import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.app.usage.UsageStatsManagerInternal;
-import android.content.ComponentName;
-import android.content.Context;
 import android.os.AsyncTask;
-import android.os.PersistableBundle;
+import android.os.UserHandle;
 import com.android.server.LocalServices;
-import java.util.concurrent.TimeUnit;
+import com.android.server.usage.UsageStatsService;
+import java.util.HashMap;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public class UsageStatsIdleService extends JobService {
-    @Override // android.app.job.JobService
-    public boolean onStopJob(JobParameters jobParameters) {
-        return false;
-    }
-
-    public static void schedulePruneJob(Context context, int i) {
-        ComponentName componentName = new ComponentName(context.getPackageName(), UsageStatsIdleService.class.getName());
-        PersistableBundle persistableBundle = new PersistableBundle();
-        persistableBundle.putInt("user_id", i);
-        scheduleJobInternal(context, new JobInfo.Builder(i, componentName).setRequiresDeviceIdle(true).setExtras(persistableBundle).setPersisted(true).build(), "usagestats_prune", i);
-    }
-
-    public static void scheduleUpdateMappingsJob(Context context, int i) {
-        ComponentName componentName = new ComponentName(context.getPackageName(), UsageStatsIdleService.class.getName());
-        PersistableBundle persistableBundle = new PersistableBundle();
-        persistableBundle.putInt("user_id", i);
-        JobInfo.Builder persisted = new JobInfo.Builder(i, componentName).setPersisted(true);
-        TimeUnit timeUnit = TimeUnit.DAYS;
-        scheduleJobInternal(context, persisted.setMinimumLatency(timeUnit.toMillis(1L)).setOverrideDeadline(timeUnit.toMillis(2L)).setExtras(persistableBundle).build(), "usagestats_mapping", i);
-    }
-
-    public static void scheduleJobInternal(Context context, JobInfo jobInfo, String str, int i) {
-        JobScheduler forNamespace = ((JobScheduler) context.getSystemService(JobScheduler.class)).forNamespace(str);
-        if (jobInfo.equals(forNamespace.getPendingJob(i))) {
-            return;
-        }
-        forNamespace.cancel(i);
-        forNamespace.schedule(jobInfo);
-    }
-
-    public static void cancelPruneJob(Context context, int i) {
-        cancelJobInternal(context, "usagestats_prune", i);
-    }
-
-    public static void cancelUpdateMappingsJob(Context context, int i) {
-        cancelJobInternal(context, "usagestats_mapping", i);
-    }
-
-    public static void cancelJobInternal(Context context, String str, int i) {
-        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(JobScheduler.class);
-        if (jobScheduler != null) {
-            jobScheduler.forNamespace(str).cancel(i);
-        }
-    }
+    public static final /* synthetic */ int $r8$clinit = 0;
 
     @Override // android.app.job.JobService
-    public boolean onStartJob(final JobParameters jobParameters) {
+    public final boolean onStartJob(final JobParameters jobParameters) {
         final int i = jobParameters.getExtras().getInt("user_id", -1);
         if (i == -1) {
             return false;
@@ -68,19 +24,57 @@ public class UsageStatsIdleService extends JobService {
         AsyncTask.execute(new Runnable() { // from class: com.android.server.usage.UsageStatsIdleService$$ExternalSyntheticLambda0
             @Override // java.lang.Runnable
             public final void run() {
-                UsageStatsIdleService.this.lambda$onStartJob$0(jobParameters, i);
+                UsageStatsIdleService usageStatsIdleService = UsageStatsIdleService.this;
+                JobParameters jobParameters2 = jobParameters;
+                int i2 = i;
+                int i3 = UsageStatsIdleService.$r8$clinit;
+                usageStatsIdleService.getClass();
+                UsageStatsManagerInternal usageStatsManagerInternal = (UsageStatsManagerInternal) LocalServices.getService(UsageStatsManagerInternal.class);
+                boolean z = false;
+                if (!"usagestats_mapping".equals(jobParameters2.getJobNamespace())) {
+                    UsageStatsService usageStatsService = ((UsageStatsService.LocalService) usageStatsManagerInternal).this$0;
+                    synchronized (usageStatsService.mLock) {
+                        try {
+                            if (usageStatsService.mUserUnlockedStates.contains(Integer.valueOf(i2))) {
+                                UserUsageStatsService userUsageStatsService = (UserUsageStatsService) usageStatsService.mUserState.get(i2);
+                                if (userUsageStatsService != null) {
+                                    z = userUsageStatsService.pruneUninstalledPackagesData();
+                                }
+                            }
+                        } finally {
+                        }
+                    }
+                    usageStatsIdleService.jobFinished(jobParameters2, !z);
+                    return;
+                }
+                UsageStatsService usageStatsService2 = ((UsageStatsService.LocalService) usageStatsManagerInternal).this$0;
+                usageStatsService2.getClass();
+                UserHandle of = UserHandle.of(i2);
+                DevicePolicyManagerInternal dpmInternal = usageStatsService2.getDpmInternal();
+                if (dpmInternal == null || dpmInternal.getProfileOwnerOrDeviceOwnerSupervisionComponent(of) == null) {
+                    HashMap installedPackages = usageStatsService2.getInstalledPackages(i2);
+                    synchronized (usageStatsService2.mLock) {
+                        try {
+                            if (usageStatsService2.mUserUnlockedStates.contains(Integer.valueOf(i2))) {
+                                UserUsageStatsService userUsageStatsService2 = (UserUsageStatsService) usageStatsService2.mUserState.get(i2);
+                                if (userUsageStatsService2 != null) {
+                                    z = userUsageStatsService2.updatePackageMappingsLocked(installedPackages);
+                                }
+                            }
+                        } finally {
+                        }
+                    }
+                } else {
+                    z = true;
+                }
+                usageStatsIdleService.jobFinished(jobParameters2, !z);
             }
         });
         return true;
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onStartJob$0(JobParameters jobParameters, int i) {
-        UsageStatsManagerInternal usageStatsManagerInternal = (UsageStatsManagerInternal) LocalServices.getService(UsageStatsManagerInternal.class);
-        if ("usagestats_mapping".equals(jobParameters.getJobNamespace())) {
-            jobFinished(jobParameters, !usageStatsManagerInternal.updatePackageMappingsData(i));
-        } else {
-            jobFinished(jobParameters, !usageStatsManagerInternal.pruneUninstalledPackagesData(i));
-        }
+    @Override // android.app.job.JobService
+    public final boolean onStopJob(JobParameters jobParameters) {
+        return false;
     }
 }

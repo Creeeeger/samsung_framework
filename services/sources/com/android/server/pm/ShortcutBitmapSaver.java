@@ -3,17 +3,16 @@ package com.android.server.pm;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Icon;
-import android.os.IInstalld;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Slog;
-import com.android.server.pm.ShortcutService;
+import com.samsung.android.knox.zt.devicetrust.EndpointMonitorConst;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -21,34 +20,27 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import libcore.io.IoUtils;
 
-/* loaded from: classes3.dex */
-public class ShortcutBitmapSaver {
-    public final long SAVE_WAIT_TIMEOUT_MS = 5000;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ShortcutBitmapSaver {
     public final Executor mExecutor = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue());
     public final Deque mPendingItems = new LinkedBlockingDeque();
-    public final Runnable mRunnable = new Runnable() { // from class: com.android.server.pm.ShortcutBitmapSaver$$ExternalSyntheticLambda1
-        @Override // java.lang.Runnable
-        public final void run() {
-            ShortcutBitmapSaver.this.lambda$new$1();
-        }
-    };
+    public final ShortcutBitmapSaver$$ExternalSyntheticLambda0 mRunnable = new ShortcutBitmapSaver$$ExternalSyntheticLambda0(0, this);
     public final ShortcutService mService;
 
-    /* loaded from: classes3.dex */
-    public class PendingItem {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class PendingItem {
         public final byte[] bytes;
-        public final long mInstantiatedUptimeMillis;
+        public final long mInstantiatedUptimeMillis = SystemClock.uptimeMillis();
         public final ShortcutInfo shortcut;
 
         public PendingItem(ShortcutInfo shortcutInfo, byte[] bArr) {
             this.shortcut = shortcutInfo;
             this.bytes = bArr;
-            this.mInstantiatedUptimeMillis = SystemClock.uptimeMillis();
         }
 
-        public String toString() {
+        public final String toString() {
             return "PendingItem{size=" + this.bytes.length + " age=" + (SystemClock.uptimeMillis() - this.mInstantiatedUptimeMillis) + "ms shortcut=" + this.shortcut.toInsecureString() + "}";
         }
     }
@@ -57,34 +49,7 @@ public class ShortcutBitmapSaver {
         this.mService = shortcutService;
     }
 
-    public boolean waitForAllSavesLocked() {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        this.mExecutor.execute(new Runnable() { // from class: com.android.server.pm.ShortcutBitmapSaver$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                countDownLatch.countDown();
-            }
-        });
-        try {
-            if (countDownLatch.await(5000L, TimeUnit.MILLISECONDS)) {
-                return true;
-            }
-            this.mService.wtf("Timed out waiting on saving bitmaps.");
-            return false;
-        } catch (InterruptedException unused) {
-            Slog.w("ShortcutService", "interrupted");
-            return false;
-        }
-    }
-
-    public String getBitmapPathMayWaitLocked(ShortcutInfo shortcutInfo) {
-        if (waitForAllSavesLocked() && shortcutInfo.hasIconFile()) {
-            return shortcutInfo.getBitmapPath();
-        }
-        return null;
-    }
-
-    public void removeIcon(ShortcutInfo shortcutInfo) {
+    public static void removeIcon(ShortcutInfo shortcutInfo) {
         shortcutInfo.setIconResourceId(0);
         shortcutInfo.setIconResName(null);
         shortcutInfo.setBitmapPath(null);
@@ -92,7 +57,26 @@ public class ShortcutBitmapSaver {
         shortcutInfo.clearFlags(35340);
     }
 
-    public void saveBitmapLocked(ShortcutInfo shortcutInfo, int i, Bitmap.CompressFormat compressFormat, int i2) {
+    public final void dumpLocked(PrintWriter printWriter) {
+        synchronized (this.mPendingItems) {
+            try {
+                int size = ((LinkedBlockingDeque) this.mPendingItems).size();
+                printWriter.print("  ");
+                printWriter.println("Pending saves: Num=" + size + " Executor=" + this.mExecutor);
+                Iterator it = ((LinkedBlockingDeque) this.mPendingItems).iterator();
+                while (it.hasNext()) {
+                    PendingItem pendingItem = (PendingItem) it.next();
+                    printWriter.print("  ");
+                    printWriter.print("  ");
+                    printWriter.println(pendingItem);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final void saveBitmapLocked(ShortcutInfo shortcutInfo, int i, Bitmap.CompressFormat compressFormat, int i2) {
         Icon icon = shortcutInfo.getIcon();
         Objects.requireNonNull(icon);
         Bitmap bitmap = icon.getBitmap();
@@ -104,9 +88,9 @@ public class ShortcutBitmapSaver {
         try {
             try {
                 StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(threadPolicy).permitCustomSlowCalls().build());
-                Bitmap shrinkBitmap = ShortcutService.shrinkBitmap(bitmap, i);
+                Bitmap shrinkBitmap = ShortcutService.shrinkBitmap(i, bitmap);
                 try {
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(65536);
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(EndpointMonitorConst.FLAG_TRACING_NETWORK_EVENT_ABNORMAL_PKT);
                     try {
                         if (!shrinkBitmap.compress(compressFormat, i2, byteArrayOutputStream)) {
                             Slog.wtf("ShortcutService", "Unable to compress bitmap");
@@ -122,9 +106,9 @@ public class ShortcutBitmapSaver {
                         }
                         PendingItem pendingItem = new PendingItem(shortcutInfo, byteArray);
                         synchronized (this.mPendingItems) {
-                            this.mPendingItems.add(pendingItem);
+                            ((LinkedBlockingDeque) this.mPendingItems).add(pendingItem);
                         }
-                        this.mExecutor.execute(this.mRunnable);
+                        ((ThreadPoolExecutor) this.mExecutor).execute(this.mRunnable);
                     } finally {
                     }
                 } finally {
@@ -142,85 +126,18 @@ public class ShortcutBitmapSaver {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$1() {
-        do {
-        } while (processPendingItems());
-    }
-
-    public final boolean processPendingItems() {
-        ShortcutInfo shortcutInfo;
-        Throwable th;
-        File file = null;
+    public final boolean waitForAllSavesLocked() {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        ((ThreadPoolExecutor) this.mExecutor).execute(new ShortcutBitmapSaver$$ExternalSyntheticLambda0(1, countDownLatch));
         try {
-            synchronized (this.mPendingItems) {
-                if (this.mPendingItems.size() == 0) {
-                    return false;
-                }
-                PendingItem pendingItem = (PendingItem) this.mPendingItems.pop();
-                shortcutInfo = pendingItem.shortcut;
-                try {
-                    if (!shortcutInfo.isIconPendingSave()) {
-                        if (shortcutInfo.getBitmapPath() == null) {
-                            removeIcon(shortcutInfo);
-                        }
-                        shortcutInfo.clearFlags(IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES);
-                        return true;
-                    }
-                    try {
-                        ShortcutService.FileOutputStreamWithPath openIconFileForWrite = this.mService.openIconFileForWrite(shortcutInfo.getUserId(), shortcutInfo);
-                        File file2 = openIconFileForWrite.getFile();
-                        try {
-                            openIconFileForWrite.write(pendingItem.bytes);
-                            IoUtils.closeQuietly(openIconFileForWrite);
-                            shortcutInfo.setBitmapPath(file2.getAbsolutePath());
-                            if (shortcutInfo.getBitmapPath() == null) {
-                                removeIcon(shortcutInfo);
-                            }
-                            shortcutInfo.clearFlags(IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES);
-                            return true;
-                        } catch (Throwable th2) {
-                            IoUtils.closeQuietly(openIconFileForWrite);
-                            throw th2;
-                        }
-                    } catch (IOException | RuntimeException e) {
-                        Slog.e("ShortcutService", "Unable to write bitmap to file", e);
-                        if (0 != 0 && file.exists()) {
-                            file.delete();
-                        }
-                        if (shortcutInfo.getBitmapPath() == null) {
-                            removeIcon(shortcutInfo);
-                        }
-                        shortcutInfo.clearFlags(IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES);
-                        return true;
-                    }
-                } catch (Throwable th3) {
-                    th = th3;
-                    if (shortcutInfo != null) {
-                        if (shortcutInfo.getBitmapPath() == null) {
-                            removeIcon(shortcutInfo);
-                        }
-                        shortcutInfo.clearFlags(IInstalld.FLAG_FREE_CACHE_DEFY_TARGET_FREE_BYTES);
-                    }
-                    throw th;
-                }
+            if (countDownLatch.await(5000L, TimeUnit.MILLISECONDS)) {
+                return true;
             }
-        } catch (Throwable th4) {
-            shortcutInfo = null;
-            th = th4;
-        }
-    }
-
-    public void dumpLocked(PrintWriter printWriter, String str) {
-        synchronized (this.mPendingItems) {
-            int size = this.mPendingItems.size();
-            printWriter.print(str);
-            printWriter.println("Pending saves: Num=" + size + " Executor=" + this.mExecutor);
-            for (PendingItem pendingItem : this.mPendingItems) {
-                printWriter.print(str);
-                printWriter.print("  ");
-                printWriter.println(pendingItem);
-            }
+            this.mService.wtf("Timed out waiting on saving bitmaps.", null);
+            return false;
+        } catch (InterruptedException unused) {
+            Slog.w("ShortcutService", "interrupted");
+            return false;
         }
     }
 }

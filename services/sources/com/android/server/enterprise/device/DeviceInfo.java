@@ -1,38 +1,43 @@
 package com.android.server.enterprise.device;
 
-import android.app.AppGlobals;
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.TrafficStats;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Process;
-import android.os.RemoteException;
+import android.os.StatFs;
 import android.os.SystemProperties;
-import android.os.UserHandle;
+import android.os.storage.StorageVolume;
 import android.provider.Settings;
 import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
-import com.android.internal.util.jobs.XmlUtils;
 import com.android.internal.widget.LockPatternUtils;
+import com.android.server.DirEncryptServiceHelper$$ExternalSyntheticOutline0;
+import com.android.server.accounts.AccountManagerService$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.EnterpriseServiceCallback;
+import com.android.server.enterprise.adapter.AdapterRegistry;
+import com.android.server.enterprise.adapter.IStorageManagerAdapter;
+import com.android.server.enterprise.adapterlayer.StorageManagerAdapter;
 import com.android.server.enterprise.storage.EdmStorageProvider;
 import com.android.server.enterprise.storage.SettingNotFoundException;
 import com.android.server.enterprise.utils.Utils;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import com.samsung.android.knox.ContextInfo;
 import com.samsung.android.knox.EnterpriseDeviceManager;
 import com.samsung.android.knox.deviceinfo.IDeviceInfo;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -41,12 +46,18 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-/* loaded from: classes2.dex */
-public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCallback {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCallback {
     public static String mSignalStrength = Integer.toString(99);
-    public Context mContext;
-    public EdmStorageProvider mEdmStorageProvider;
-    public TelephonyManager mTelMgr;
+    public final Context mContext;
+    public final AnonymousClass1 mDataConnectionStateChangeReceiver;
+    public final AnonymousClass1 mDataStatisticsReceiver;
+    public final AnonymousClass3 mDataStatisticsUpdateRun;
+    public EnterpriseDeviceManager mEDM;
+    public final EdmStorageProvider mEdmStorageProvider;
+    public final AnonymousClass1 mMessagingReceiver;
+    public final TelephonyManager mTelMgr;
     public WifiManager mWifiManager = null;
     public long mLastUpdateWifiTx = 0;
     public long mLastUpdateWifiRx = 0;
@@ -62,437 +73,479 @@ public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCal
     public boolean mWifiStatsEnabled = false;
     public boolean mDataStatsEnabled = false;
     public boolean mDataLogEnabled = false;
-    public Handler mDataUsageEventsHandler = new Handler();
+    public final Handler mDataUsageEventsHandler = new Handler();
     public long mDataCallLogLastTime = 0;
     public String mDataCallLogLastStatus = "";
     public String mDataCallLogLastNetType = "";
     public long mDataCallLogLastValue = 0;
     public boolean mDataCallConnected = false;
-    public BroadcastReceiver mDataConnectionStateChangeReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.device.DeviceInfo.1
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("android.net.conn.DATA_ACTIVITY_CHANGE")) {
-                if (intent.getBooleanExtra("isActive", false)) {
-                    DeviceInfo.this.mDataCallConnected = true;
-                    return;
-                }
-                DeviceInfo.this.mDataCallLogLastTime = 0L;
-                DeviceInfo.this.mDataCallLogLastValue = 0L;
-                DeviceInfo.this.mDataCallConnected = false;
-            }
-        }
-    };
-    public BroadcastReceiver mDataStatisticsReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.device.DeviceInfo.2
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            Log.d("DeviceInfo", intent.getAction());
-            if (intent.getAction().equals("android.intent.action.LOCKED_BOOT_COMPLETED")) {
-                DeviceInfo.this.dataUsageValuesInit();
-                DeviceInfo.this.dataUsageTimerActivation(null);
-            } else if (intent.getAction().equals("android.intent.action.ACTION_SHUTDOWN")) {
-                DeviceInfo.this.mDataStatsCounter = 10;
-                DeviceInfo.this.mDataUsageEventsHandler.removeCallbacks(DeviceInfo.this.mDataStatisticsUpdateRun);
-                if (DeviceInfo.this.mDataUsageTimerActivated) {
-                    DeviceInfo.this.mDataUsageEventsHandler.postDelayed(DeviceInfo.this.mDataStatisticsUpdateRun, 0L);
-                }
-            }
-        }
-    };
-    public Runnable mDataStatisticsUpdateRun = new Runnable() { // from class: com.android.server.enterprise.device.DeviceInfo.3
-        @Override // java.lang.Runnable
-        public void run() {
-            DeviceInfo.this.mDataUsageEventsHandler.removeCallbacks(this);
-            DeviceInfo.this.updateDataStatisticsUsage();
-            if (DeviceInfo.this.mDataUsageTimerActivated) {
-                DeviceInfo.this.mDataUsageEventsHandler.postDelayed(this, DeviceInfo.this.mDataUsageTimer);
-            }
-        }
-    };
-    public EnterpriseDeviceManager mEDM = null;
-    public BroadcastReceiver mMessagingReceiver = new BroadcastReceiver() { // from class: com.android.server.enterprise.device.DeviceInfo.4
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            boolean z;
-            String str;
-            String str2;
-            if (DeviceInfo.this.isMMSCaptureEnabled(null)) {
-                String action = intent.getAction();
-                Bundle extras = intent.getExtras();
-                if (action == null || extras == null) {
-                    Log.d("DeviceInfo", "No data arrived at mMessagingReceiver");
-                    return;
-                }
-                if ("com.samsung.mms.RECEIVED_MSG".equals(action)) {
-                    z = true;
-                } else {
-                    if (!"com.samsung.mms.SENT_MSG".equals(action)) {
-                        Log.d("DeviceInfo", "Unexpected intent arrived at mMessagingReceiver");
-                        return;
-                    }
-                    z = false;
-                }
-                if ("mms".equals(extras.getString("msg_type"))) {
-                    String string = extras.getString("msg_address");
-                    long j = extras.getLong("date");
-                    String string2 = extras.getString("msg_subject");
-                    String string3 = extras.getString("msg_body");
-                    String string4 = extras.getString("content_location");
-                    StringBuilder sb = new StringBuilder();
-                    if (string4 == null) {
-                        str = "";
-                    } else {
-                        str = string4 + " ";
-                    }
-                    sb.append(str);
-                    if (string2 == null) {
-                        str2 = "";
-                    } else {
-                        str2 = string2 + " ";
-                    }
-                    sb.append(str2);
-                    if (string3 == null) {
-                        string3 = "";
-                    }
-                    sb.append(string3);
-                    DeviceInfo.this.storeMMS(string, String.valueOf(j), sb.toString(), z);
-                }
-            }
-        }
-    };
 
-    public String getPlatformVersionName(ContextInfo contextInfo) {
-        return "UNKNOWN";
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void notifyToAddSystemService(String str, IBinder iBinder) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminAdded(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onPreAdminRemoval(int i) {
-    }
-
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void systemReady() {
-    }
-
+    /* JADX WARN: Type inference failed for: r3v2, types: [com.android.server.enterprise.device.DeviceInfo$3] */
     public DeviceInfo(Context context) {
         this.mEdmStorageProvider = null;
+        final int i = 0;
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver(this) { // from class: com.android.server.enterprise.device.DeviceInfo.1
+            public final /* synthetic */ DeviceInfo this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                ContentValues contentValues;
+                boolean z;
+                switch (i) {
+                    case 0:
+                        if (intent.getAction().equals("android.net.conn.DATA_ACTIVITY_CHANGE")) {
+                            if (!intent.getBooleanExtra("isActive", false)) {
+                                DeviceInfo deviceInfo = this.this$0;
+                                deviceInfo.mDataCallLogLastTime = 0L;
+                                deviceInfo.mDataCallLogLastValue = 0L;
+                                deviceInfo.mDataCallConnected = false;
+                                break;
+                            } else {
+                                this.this$0.mDataCallConnected = true;
+                                break;
+                            }
+                        }
+                        break;
+                    case 1:
+                        Log.d("DeviceInfo", intent.getAction());
+                        if (!intent.getAction().equals("android.intent.action.LOCKED_BOOT_COMPLETED")) {
+                            if (intent.getAction().equals("android.intent.action.ACTION_SHUTDOWN")) {
+                                DeviceInfo deviceInfo2 = this.this$0;
+                                deviceInfo2.mDataStatsCounter = 10;
+                                deviceInfo2.mDataUsageEventsHandler.removeCallbacks(deviceInfo2.mDataStatisticsUpdateRun);
+                                DeviceInfo deviceInfo3 = this.this$0;
+                                if (deviceInfo3.mDataUsageTimerActivated) {
+                                    deviceInfo3.mDataUsageEventsHandler.postDelayed(deviceInfo3.mDataStatisticsUpdateRun, 0L);
+                                    break;
+                                }
+                            }
+                        } else {
+                            DeviceInfo deviceInfo4 = this.this$0;
+                            deviceInfo4.getClass();
+                            deviceInfo4.mLastUpdateWifiTx = DeviceInfo.getTrafficWifiTx();
+                            deviceInfo4.mLastUpdateWifiRx = DeviceInfo.getTrafficWifiRx();
+                            deviceInfo4.mLastUpdateMobileTx = deviceInfo4.getTrafficMobileTx();
+                            deviceInfo4.mLastUpdateMobileRx = deviceInfo4.getTrafficMobileRx();
+                            deviceInfo4.mDataCallLogLastTime = 0L;
+                            int strictDataUsageTimer = deviceInfo4.getStrictDataUsageTimer();
+                            if (strictDataUsageTimer == 0) {
+                                strictDataUsageTimer = 3;
+                            }
+                            deviceInfo4.mDataUsageTimer = strictDataUsageTimer * 1000;
+                            deviceInfo4.mDataStatsEnabled = deviceInfo4.getDataCallStatisticsEnabled(null);
+                            deviceInfo4.mDataLogEnabled = deviceInfo4.getDataCallLoggingEnabled(null);
+                            deviceInfo4.mWifiStatsEnabled = deviceInfo4.getWifiStatisticEnabled(null);
+                            ArrayList dataByFields = deviceInfo4.mEdmStorageProvider.getDataByFields("DEVICE", null, null, new String[]{"deviceWifiSent", "deviceWifiReceived", "deviceNetworkSent", "deviceNetworkReceived"});
+                            if (!dataByFields.isEmpty() && (contentValues = (ContentValues) dataByFields.get(0)) != null) {
+                                try {
+                                    deviceInfo4.mStorageWifiTx = contentValues.getAsLong("deviceWifiSent").longValue();
+                                    deviceInfo4.mStorageWifiRx = contentValues.getAsLong("deviceWifiReceived").longValue();
+                                    deviceInfo4.mStorageMobileTx = contentValues.getAsLong("deviceNetworkSent").longValue();
+                                    deviceInfo4.mStorageMobileRx = contentValues.getAsLong("deviceNetworkReceived").longValue();
+                                } catch (NullPointerException unused) {
+                                    Log.d("DeviceInfo", "initializeStorageValues - Error reading from Device Storage");
+                                    deviceInfo4.resetDataUsage(null);
+                                }
+                            }
+                            this.this$0.dataUsageTimerActivation(null);
+                            break;
+                        }
+                        break;
+                    default:
+                        if (this.this$0.isMMSCaptureEnabled(null)) {
+                            String action = intent.getAction();
+                            Bundle extras = intent.getExtras();
+                            if (action != null && extras != null) {
+                                if (!"com.samsung.mms.RECEIVED_MSG".equals(action)) {
+                                    if (!"com.samsung.mms.SENT_MSG".equals(action)) {
+                                        Log.d("DeviceInfo", "Unexpected intent arrived at mMessagingReceiver");
+                                        break;
+                                    } else {
+                                        z = false;
+                                    }
+                                } else {
+                                    z = true;
+                                }
+                                if ("mms".equals(extras.getString("msg_type"))) {
+                                    String string = extras.getString("msg_address");
+                                    long j = extras.getLong("date");
+                                    String string2 = extras.getString("msg_subject");
+                                    String string3 = extras.getString("msg_body");
+                                    String string4 = extras.getString("content_location");
+                                    StringBuilder sb = new StringBuilder();
+                                    sb.append(string4 == null ? "" : string4.concat(" "));
+                                    sb.append(string2 == null ? "" : string2.concat(" "));
+                                    if (string3 == null) {
+                                        string3 = "";
+                                    }
+                                    sb.append(string3);
+                                    this.this$0.storeMMS(string, String.valueOf(j), sb.toString(), z);
+                                    break;
+                                }
+                            } else {
+                                Log.d("DeviceInfo", "No data arrived at mMessagingReceiver");
+                                break;
+                            }
+                        }
+                        break;
+                }
+            }
+        };
+        final int i2 = 1;
+        BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver(this) { // from class: com.android.server.enterprise.device.DeviceInfo.1
+            public final /* synthetic */ DeviceInfo this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                ContentValues contentValues;
+                boolean z;
+                switch (i2) {
+                    case 0:
+                        if (intent.getAction().equals("android.net.conn.DATA_ACTIVITY_CHANGE")) {
+                            if (!intent.getBooleanExtra("isActive", false)) {
+                                DeviceInfo deviceInfo = this.this$0;
+                                deviceInfo.mDataCallLogLastTime = 0L;
+                                deviceInfo.mDataCallLogLastValue = 0L;
+                                deviceInfo.mDataCallConnected = false;
+                                break;
+                            } else {
+                                this.this$0.mDataCallConnected = true;
+                                break;
+                            }
+                        }
+                        break;
+                    case 1:
+                        Log.d("DeviceInfo", intent.getAction());
+                        if (!intent.getAction().equals("android.intent.action.LOCKED_BOOT_COMPLETED")) {
+                            if (intent.getAction().equals("android.intent.action.ACTION_SHUTDOWN")) {
+                                DeviceInfo deviceInfo2 = this.this$0;
+                                deviceInfo2.mDataStatsCounter = 10;
+                                deviceInfo2.mDataUsageEventsHandler.removeCallbacks(deviceInfo2.mDataStatisticsUpdateRun);
+                                DeviceInfo deviceInfo3 = this.this$0;
+                                if (deviceInfo3.mDataUsageTimerActivated) {
+                                    deviceInfo3.mDataUsageEventsHandler.postDelayed(deviceInfo3.mDataStatisticsUpdateRun, 0L);
+                                    break;
+                                }
+                            }
+                        } else {
+                            DeviceInfo deviceInfo4 = this.this$0;
+                            deviceInfo4.getClass();
+                            deviceInfo4.mLastUpdateWifiTx = DeviceInfo.getTrafficWifiTx();
+                            deviceInfo4.mLastUpdateWifiRx = DeviceInfo.getTrafficWifiRx();
+                            deviceInfo4.mLastUpdateMobileTx = deviceInfo4.getTrafficMobileTx();
+                            deviceInfo4.mLastUpdateMobileRx = deviceInfo4.getTrafficMobileRx();
+                            deviceInfo4.mDataCallLogLastTime = 0L;
+                            int strictDataUsageTimer = deviceInfo4.getStrictDataUsageTimer();
+                            if (strictDataUsageTimer == 0) {
+                                strictDataUsageTimer = 3;
+                            }
+                            deviceInfo4.mDataUsageTimer = strictDataUsageTimer * 1000;
+                            deviceInfo4.mDataStatsEnabled = deviceInfo4.getDataCallStatisticsEnabled(null);
+                            deviceInfo4.mDataLogEnabled = deviceInfo4.getDataCallLoggingEnabled(null);
+                            deviceInfo4.mWifiStatsEnabled = deviceInfo4.getWifiStatisticEnabled(null);
+                            ArrayList dataByFields = deviceInfo4.mEdmStorageProvider.getDataByFields("DEVICE", null, null, new String[]{"deviceWifiSent", "deviceWifiReceived", "deviceNetworkSent", "deviceNetworkReceived"});
+                            if (!dataByFields.isEmpty() && (contentValues = (ContentValues) dataByFields.get(0)) != null) {
+                                try {
+                                    deviceInfo4.mStorageWifiTx = contentValues.getAsLong("deviceWifiSent").longValue();
+                                    deviceInfo4.mStorageWifiRx = contentValues.getAsLong("deviceWifiReceived").longValue();
+                                    deviceInfo4.mStorageMobileTx = contentValues.getAsLong("deviceNetworkSent").longValue();
+                                    deviceInfo4.mStorageMobileRx = contentValues.getAsLong("deviceNetworkReceived").longValue();
+                                } catch (NullPointerException unused) {
+                                    Log.d("DeviceInfo", "initializeStorageValues - Error reading from Device Storage");
+                                    deviceInfo4.resetDataUsage(null);
+                                }
+                            }
+                            this.this$0.dataUsageTimerActivation(null);
+                            break;
+                        }
+                        break;
+                    default:
+                        if (this.this$0.isMMSCaptureEnabled(null)) {
+                            String action = intent.getAction();
+                            Bundle extras = intent.getExtras();
+                            if (action != null && extras != null) {
+                                if (!"com.samsung.mms.RECEIVED_MSG".equals(action)) {
+                                    if (!"com.samsung.mms.SENT_MSG".equals(action)) {
+                                        Log.d("DeviceInfo", "Unexpected intent arrived at mMessagingReceiver");
+                                        break;
+                                    } else {
+                                        z = false;
+                                    }
+                                } else {
+                                    z = true;
+                                }
+                                if ("mms".equals(extras.getString("msg_type"))) {
+                                    String string = extras.getString("msg_address");
+                                    long j = extras.getLong("date");
+                                    String string2 = extras.getString("msg_subject");
+                                    String string3 = extras.getString("msg_body");
+                                    String string4 = extras.getString("content_location");
+                                    StringBuilder sb = new StringBuilder();
+                                    sb.append(string4 == null ? "" : string4.concat(" "));
+                                    sb.append(string2 == null ? "" : string2.concat(" "));
+                                    if (string3 == null) {
+                                        string3 = "";
+                                    }
+                                    sb.append(string3);
+                                    this.this$0.storeMMS(string, String.valueOf(j), sb.toString(), z);
+                                    break;
+                                }
+                            } else {
+                                Log.d("DeviceInfo", "No data arrived at mMessagingReceiver");
+                                break;
+                            }
+                        }
+                        break;
+                }
+            }
+        };
+        this.mDataStatisticsUpdateRun = new Runnable() { // from class: com.android.server.enterprise.device.DeviceInfo.3
+            @Override // java.lang.Runnable
+            public final void run() {
+                long j;
+                long j2;
+                DeviceInfo.this.mDataUsageEventsHandler.removeCallbacks(this);
+                DeviceInfo deviceInfo = DeviceInfo.this;
+                deviceInfo.mDataStatsCounter++;
+                long trafficWifiTx = DeviceInfo.getTrafficWifiTx();
+                long j3 = deviceInfo.mLastUpdateWifiTx;
+                if (trafficWifiTx > j3) {
+                    long j4 = trafficWifiTx - j3;
+                    if (deviceInfo.isWifiStateEnabled() && deviceInfo.mWifiStatsEnabled) {
+                        deviceInfo.mStorageWifiTx += j4;
+                    }
+                }
+                deviceInfo.mLastUpdateWifiTx = trafficWifiTx;
+                long trafficWifiRx = DeviceInfo.getTrafficWifiRx();
+                long j5 = deviceInfo.mLastUpdateWifiRx;
+                if (trafficWifiRx > j5) {
+                    long j6 = trafficWifiRx - j5;
+                    if (deviceInfo.isWifiStateEnabled() && deviceInfo.mWifiStatsEnabled) {
+                        deviceInfo.mStorageWifiRx += j6;
+                    }
+                }
+                deviceInfo.mLastUpdateWifiRx = trafficWifiRx;
+                long trafficMobileTx = deviceInfo.getTrafficMobileTx();
+                long j7 = deviceInfo.mLastUpdateMobileTx;
+                if (trafficMobileTx >= j7) {
+                    j = trafficMobileTx - j7;
+                    if (deviceInfo.mDataStatsEnabled) {
+                        deviceInfo.mStorageMobileTx += j;
+                    }
+                } else {
+                    deviceInfo.mDataCallLogLastTime = 0L;
+                    deviceInfo.mDataCallLogLastValue = 0L;
+                    j = 0;
+                }
+                deviceInfo.mLastUpdateMobileTx = trafficMobileTx;
+                long trafficMobileRx = deviceInfo.getTrafficMobileRx();
+                long j8 = deviceInfo.mLastUpdateMobileRx;
+                if (trafficMobileRx >= j8) {
+                    j2 = trafficMobileRx - j8;
+                    if (deviceInfo.mDataStatsEnabled) {
+                        deviceInfo.mStorageMobileRx += j2;
+                    }
+                } else {
+                    deviceInfo.mDataCallLogLastTime = 0L;
+                    deviceInfo.mDataCallLogLastValue = 0L;
+                    j2 = 0;
+                }
+                deviceInfo.mLastUpdateMobileRx = trafficMobileRx;
+                long j9 = j + j2;
+                if (j9 > 0) {
+                    if (!deviceInfo.mDataLogEnabled) {
+                        Log.d("DeviceInfo", "Logging disabled");
+                    } else if (!deviceInfo.mDataCallConnected) {
+                        Log.d("DeviceInfo", "Data Disconnected, don't log");
+                    } else if (j9 <= 0) {
+                        Log.d("DeviceInfo", "No bytes to log");
+                    } else {
+                        TelephonyManager telephonyManager = deviceInfo.mTelMgr;
+                        if (telephonyManager == null) {
+                            Log.d("DeviceInfo", "failed logDataCall because mTelMgr is null");
+                        } else {
+                            String str = telephonyManager.isNetworkRoaming() ? "ROAMING" : "NORMAL";
+                            String networkTypeName = deviceInfo.mTelMgr.getNetworkTypeName();
+                            if (!str.equals(deviceInfo.mDataCallLogLastStatus) || !networkTypeName.equals(deviceInfo.mDataCallLogLastNetType)) {
+                                deviceInfo.mDataCallLogLastTime = 0L;
+                                deviceInfo.mDataCallLogLastValue = 0L;
+                            }
+                            deviceInfo.mDataCallLogLastStatus = str;
+                            if (!networkTypeName.equals("UNKNOWN")) {
+                                deviceInfo.mDataCallLogLastNetType = networkTypeName;
+                            }
+                            deviceInfo.mDataCallLogLastValue += j9;
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("dataCallDate", Long.valueOf(deviceInfo.mDataCallLogLastTime));
+                            contentValues.put("dataCallStatus", deviceInfo.mDataCallLogLastStatus);
+                            contentValues.put("dataCallNetType", deviceInfo.mDataCallLogLastNetType);
+                            deviceInfo.mDataCallLogLastTime = Calendar.getInstance().getTimeInMillis();
+                            ContentValues contentValues2 = new ContentValues();
+                            contentValues2.put("dataCallDate", Long.valueOf(deviceInfo.mDataCallLogLastTime));
+                            contentValues2.put("dataCallStatus", deviceInfo.mDataCallLogLastStatus);
+                            contentValues2.put("dataCallNetType", deviceInfo.mDataCallLogLastNetType);
+                            contentValues2.put("dataCallBytes", Long.valueOf(deviceInfo.mDataCallLogLastValue));
+                            deviceInfo.mEdmStorageProvider.putValues("DATACALLLOG", contentValues2, contentValues);
+                        }
+                    }
+                }
+                deviceInfo.getEDM$8().getPhoneRestrictionPolicy().updateDateAndDataCallCounters(j9);
+                if (deviceInfo.mDataStatsCounter >= 10) {
+                    ContentValues contentValues3 = new ContentValues();
+                    contentValues3.put("deviceWifiSent", Long.valueOf(deviceInfo.mStorageWifiTx));
+                    contentValues3.put("deviceWifiReceived", Long.valueOf(deviceInfo.mStorageWifiRx));
+                    contentValues3.put("deviceNetworkSent", Long.valueOf(deviceInfo.mStorageMobileTx));
+                    contentValues3.put("deviceNetworkReceived", Long.valueOf(deviceInfo.mStorageMobileRx));
+                    deviceInfo.mEdmStorageProvider.putValues("DEVICE", contentValues3);
+                    deviceInfo.mDataStatsCounter = 0;
+                }
+                DeviceInfo deviceInfo2 = DeviceInfo.this;
+                if (deviceInfo2.mDataUsageTimerActivated) {
+                    deviceInfo2.mDataUsageEventsHandler.postDelayed(this, deviceInfo2.mDataUsageTimer);
+                }
+            }
+        };
+        this.mEDM = null;
+        final int i3 = 2;
+        BroadcastReceiver broadcastReceiver3 = new BroadcastReceiver(this) { // from class: com.android.server.enterprise.device.DeviceInfo.1
+            public final /* synthetic */ DeviceInfo this$0;
+
+            {
+                this.this$0 = this;
+            }
+
+            @Override // android.content.BroadcastReceiver
+            public final void onReceive(Context context2, Intent intent) {
+                ContentValues contentValues;
+                boolean z;
+                switch (i3) {
+                    case 0:
+                        if (intent.getAction().equals("android.net.conn.DATA_ACTIVITY_CHANGE")) {
+                            if (!intent.getBooleanExtra("isActive", false)) {
+                                DeviceInfo deviceInfo = this.this$0;
+                                deviceInfo.mDataCallLogLastTime = 0L;
+                                deviceInfo.mDataCallLogLastValue = 0L;
+                                deviceInfo.mDataCallConnected = false;
+                                break;
+                            } else {
+                                this.this$0.mDataCallConnected = true;
+                                break;
+                            }
+                        }
+                        break;
+                    case 1:
+                        Log.d("DeviceInfo", intent.getAction());
+                        if (!intent.getAction().equals("android.intent.action.LOCKED_BOOT_COMPLETED")) {
+                            if (intent.getAction().equals("android.intent.action.ACTION_SHUTDOWN")) {
+                                DeviceInfo deviceInfo2 = this.this$0;
+                                deviceInfo2.mDataStatsCounter = 10;
+                                deviceInfo2.mDataUsageEventsHandler.removeCallbacks(deviceInfo2.mDataStatisticsUpdateRun);
+                                DeviceInfo deviceInfo3 = this.this$0;
+                                if (deviceInfo3.mDataUsageTimerActivated) {
+                                    deviceInfo3.mDataUsageEventsHandler.postDelayed(deviceInfo3.mDataStatisticsUpdateRun, 0L);
+                                    break;
+                                }
+                            }
+                        } else {
+                            DeviceInfo deviceInfo4 = this.this$0;
+                            deviceInfo4.getClass();
+                            deviceInfo4.mLastUpdateWifiTx = DeviceInfo.getTrafficWifiTx();
+                            deviceInfo4.mLastUpdateWifiRx = DeviceInfo.getTrafficWifiRx();
+                            deviceInfo4.mLastUpdateMobileTx = deviceInfo4.getTrafficMobileTx();
+                            deviceInfo4.mLastUpdateMobileRx = deviceInfo4.getTrafficMobileRx();
+                            deviceInfo4.mDataCallLogLastTime = 0L;
+                            int strictDataUsageTimer = deviceInfo4.getStrictDataUsageTimer();
+                            if (strictDataUsageTimer == 0) {
+                                strictDataUsageTimer = 3;
+                            }
+                            deviceInfo4.mDataUsageTimer = strictDataUsageTimer * 1000;
+                            deviceInfo4.mDataStatsEnabled = deviceInfo4.getDataCallStatisticsEnabled(null);
+                            deviceInfo4.mDataLogEnabled = deviceInfo4.getDataCallLoggingEnabled(null);
+                            deviceInfo4.mWifiStatsEnabled = deviceInfo4.getWifiStatisticEnabled(null);
+                            ArrayList dataByFields = deviceInfo4.mEdmStorageProvider.getDataByFields("DEVICE", null, null, new String[]{"deviceWifiSent", "deviceWifiReceived", "deviceNetworkSent", "deviceNetworkReceived"});
+                            if (!dataByFields.isEmpty() && (contentValues = (ContentValues) dataByFields.get(0)) != null) {
+                                try {
+                                    deviceInfo4.mStorageWifiTx = contentValues.getAsLong("deviceWifiSent").longValue();
+                                    deviceInfo4.mStorageWifiRx = contentValues.getAsLong("deviceWifiReceived").longValue();
+                                    deviceInfo4.mStorageMobileTx = contentValues.getAsLong("deviceNetworkSent").longValue();
+                                    deviceInfo4.mStorageMobileRx = contentValues.getAsLong("deviceNetworkReceived").longValue();
+                                } catch (NullPointerException unused) {
+                                    Log.d("DeviceInfo", "initializeStorageValues - Error reading from Device Storage");
+                                    deviceInfo4.resetDataUsage(null);
+                                }
+                            }
+                            this.this$0.dataUsageTimerActivation(null);
+                            break;
+                        }
+                        break;
+                    default:
+                        if (this.this$0.isMMSCaptureEnabled(null)) {
+                            String action = intent.getAction();
+                            Bundle extras = intent.getExtras();
+                            if (action != null && extras != null) {
+                                if (!"com.samsung.mms.RECEIVED_MSG".equals(action)) {
+                                    if (!"com.samsung.mms.SENT_MSG".equals(action)) {
+                                        Log.d("DeviceInfo", "Unexpected intent arrived at mMessagingReceiver");
+                                        break;
+                                    } else {
+                                        z = false;
+                                    }
+                                } else {
+                                    z = true;
+                                }
+                                if ("mms".equals(extras.getString("msg_type"))) {
+                                    String string = extras.getString("msg_address");
+                                    long j = extras.getLong("date");
+                                    String string2 = extras.getString("msg_subject");
+                                    String string3 = extras.getString("msg_body");
+                                    String string4 = extras.getString("content_location");
+                                    StringBuilder sb = new StringBuilder();
+                                    sb.append(string4 == null ? "" : string4.concat(" "));
+                                    sb.append(string2 == null ? "" : string2.concat(" "));
+                                    if (string3 == null) {
+                                        string3 = "";
+                                    }
+                                    sb.append(string3);
+                                    this.this$0.storeMMS(string, String.valueOf(j), sb.toString(), z);
+                                    break;
+                                }
+                            } else {
+                                Log.d("DeviceInfo", "No data arrived at mMessagingReceiver");
+                                break;
+                            }
+                        }
+                        break;
+                }
+            }
+        };
         this.mContext = context;
         this.mEdmStorageProvider = new EdmStorageProvider(context);
+        IntentFilter m = DirEncryptServiceHelper$$ExternalSyntheticOutline0.m("android.intent.action.LOCKED_BOOT_COMPLETED", "android.intent.action.ACTION_SHUTDOWN");
+        this.mTelMgr = (TelephonyManager) context.getSystemService("phone");
+        context.registerReceiver(broadcastReceiver2, m);
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.LOCKED_BOOT_COMPLETED");
-        intentFilter.addAction("android.intent.action.ACTION_SHUTDOWN");
-        this.mTelMgr = (TelephonyManager) this.mContext.getSystemService("phone");
-        this.mContext.registerReceiver(this.mDataStatisticsReceiver, intentFilter);
+        intentFilter.addAction("com.samsung.mms.RECEIVED_MSG");
+        intentFilter.addAction("com.samsung.mms.SENT_MSG");
+        context.registerReceiver(broadcastReceiver3, intentFilter, "com.sec.mms.permission.RECEIVE_MESSAGES_INFORMATION", null, 2);
         IntentFilter intentFilter2 = new IntentFilter();
-        intentFilter2.addAction("com.samsung.mms.RECEIVED_MSG");
-        intentFilter2.addAction("com.samsung.mms.SENT_MSG");
-        this.mContext.registerReceiver(this.mMessagingReceiver, intentFilter2, "com.sec.mms.permission.RECEIVE_MESSAGES_INFORMATION", null);
-        IntentFilter intentFilter3 = new IntentFilter();
-        intentFilter3.addAction("android.net.conn.DATA_ACTIVITY_CHANGE");
-        this.mContext.registerReceiver(this.mDataConnectionStateChangeReceiver, intentFilter3);
+        intentFilter2.addAction("android.net.conn.DATA_ACTIVITY_CHANGE");
+        context.registerReceiver(broadcastReceiver, intentFilter2, 2);
     }
 
-    public static void readProcLines(String str, String[] strArr, long[] jArr) {
-        Process.readProcLines(str, strArr, jArr);
-    }
-
-    public boolean isDeviceSecure(ContextInfo contextInfo) {
-        boolean z;
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
-        long clearCallingIdentity = Binder.clearCallingIdentity();
-        try {
-            try {
-                z = new LockPatternUtils(this.mContext).isSecure(callingOrCurrentUserId);
-                Log.d("DeviceInfo", "isDeviceSecure " + z);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Binder.restoreCallingIdentity(clearCallingIdentity);
-                z = false;
-            }
-            return z;
-        } finally {
-            Binder.restoreCallingIdentity(clearCallingIdentity);
-        }
-    }
-
-    public boolean isDeviceLocked(ContextInfo contextInfo) {
-        try {
-            return ((KeyguardManager) this.mContext.getSystemService("keyguard")).isKeyguardLocked();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public long getTotalCapacityExternal(ContextInfo contextInfo) {
-        return new DeviceStorageUtil(this.mContext).getTotalExternalMemorySize();
-    }
-
-    public long getAvailableCapacityExternal(ContextInfo contextInfo) {
-        return new DeviceStorageUtil(this.mContext).getAvailableExternalMemorySize();
-    }
-
-    public long getTotalCapacityInternal(ContextInfo contextInfo) {
-        return new DeviceStorageUtil(this.mContext).getTotalInternalMemorySize();
-    }
-
-    public long getAvailableCapacityInternal(ContextInfo contextInfo) {
-        return new DeviceStorageUtil(this.mContext).getAvailableInternalMemorySize();
-    }
-
-    public String getModelName(ContextInfo contextInfo) {
-        return getString("ro.product.name", false);
-    }
-
-    public String getModelNumber(ContextInfo contextInfo) {
-        return getString("ro.product.model", false);
-    }
-
-    public String getDeviceName(ContextInfo contextInfo) {
-        String string = Settings.System.getString(this.mContext.getContentResolver(), "device_name");
-        return string == null ? Settings.Global.getString(this.mContext.getContentResolver(), "device_name") : string;
-    }
-
-    public String getSerialNumber(ContextInfo contextInfo) {
-        try {
-            enforceReadPrivilegedPhoneStatePermission(contextInfo);
-            String string = getString("ril.serialnumber", false);
-            if (!TextUtils.isEmpty(string) && !string.equals("00000000000")) {
-                return string;
-            }
-            return getString("ro.boot.serialno", false);
-        } catch (SecurityException unused) {
-            return "00000000000";
-        }
-    }
-
-    public final List getKnoxServiceIdData(String[] strArr, ContentValues contentValues) {
-        return this.mEdmStorageProvider.getValues("KnoxServiceIdTable", strArr, contentValues);
-    }
-
-    public final boolean hasKnoxInternalExceptionPermission(String str, int i) {
-        try {
-            return AppGlobals.getPackageManager().checkPermission("com.samsung.android.knox.permission.KNOX_INTERNAL_EXCEPTION", str, i) == 0;
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public final boolean isDuplicatedPackage(List list, int i) {
-        List<ContentValues> knoxServiceIdData = getKnoxServiceIdData(new String[]{"adminUid", "packageList"}, null);
-        if (knoxServiceIdData == null || knoxServiceIdData.isEmpty()) {
-            return false;
-        }
-        for (ContentValues contentValues : knoxServiceIdData) {
-            String asString = contentValues.getAsString("packageList");
-            int intValue = contentValues.getAsInteger("adminUid").intValue();
-            if (asString != null) {
-                List asList = Arrays.asList(asString.split(","));
-                Iterator it = list.iterator();
-                while (it.hasNext()) {
-                    String str = (String) it.next();
-                    if (asList != null && asList.contains(str) && intValue != i) {
-                        Log.i("DeviceInfo", str + " already stored by uid " + intValue);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean setKnoxServiceId(ContextInfo contextInfo, List list, String str) {
-        enforceKnoxInternalExceptionPermission(contextInfo);
-        if (list == null || list.size() == 0 || TextUtils.isEmpty(str)) {
-            Log.d("DeviceInfo", "packageList or serviceId is null");
-            return false;
-        }
-        int callingUid = Binder.getCallingUid();
-        if (isDuplicatedPackage(list, callingUid)) {
-            return false;
-        }
-        StringBuilder sb = new StringBuilder();
-        Iterator it = list.iterator();
-        while (it.hasNext()) {
-            String str2 = (String) it.next();
-            if (str2 != null && str2.length() > 0) {
-                sb.append(str2.trim() + ",");
-            }
-        }
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Integer.valueOf(callingUid));
-        contentValues.put("packageList", sb.toString());
-        contentValues.put("serviceId", str);
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("adminUid", Integer.valueOf(callingUid));
-        if (this.mEdmStorageProvider.putValues("KnoxServiceIdTable", contentValues, contentValues2)) {
-            return true;
-        }
-        Log.d("DeviceInfo", "setKnoxServiceId() fail");
-        return false;
-    }
-
-    public String getKnoxServiceId(ContextInfo contextInfo) {
-        int callingUid = Binder.getCallingUid();
-        String[] packagesForUid = this.mContext.getPackageManager().getPackagesForUid(callingUid);
-        String str = "";
-        if (packagesForUid == null || packagesForUid.length == 0) {
-            Log.d("DeviceInfo", "unable to find the packages for uid : " + callingUid);
-            return "";
-        }
-        String str2 = packagesForUid[0];
-        boolean hasKnoxInternalExceptionPermission = hasKnoxInternalExceptionPermission(str2, UserHandle.getUserId(callingUid));
-        Log.d("DeviceInfo", "callingPackage " + str2 + ", isKnoxInternalApp = " + hasKnoxInternalExceptionPermission);
-        if (hasKnoxInternalExceptionPermission) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("adminUid", Integer.valueOf(callingUid));
-            String string = this.mEdmStorageProvider.getString("KnoxServiceIdTable", "serviceId", contentValues);
-            return string == null ? "" : string;
-        }
-        List<ContentValues> knoxServiceIdData = getKnoxServiceIdData(null, null);
-        if (knoxServiceIdData != null && !knoxServiceIdData.isEmpty()) {
-            for (ContentValues contentValues2 : knoxServiceIdData) {
-                String asString = contentValues2.getAsString("packageList");
-                if (asString != null) {
-                    String[] split = asString.split(",");
-                    int length = split.length;
-                    int i = 0;
-                    while (true) {
-                        if (i >= length) {
-                            break;
-                        }
-                        if (split[i].equals(str2)) {
-                            str = contentValues2.getAsString("serviceId");
-                            break;
-                        }
-                        i++;
-                    }
-                }
-            }
-        }
-        return str;
-    }
-
-    public List getKnoxServicePackageList(ContextInfo contextInfo) {
-        enforceKnoxInternalExceptionPermission(contextInfo);
-        int callingUid = Binder.getCallingUid();
-        ArrayList arrayList = new ArrayList();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("adminUid", Integer.valueOf(callingUid));
-        List knoxServiceIdData = getKnoxServiceIdData(new String[]{"packageList"}, contentValues);
-        if (knoxServiceIdData != null && !knoxServiceIdData.isEmpty()) {
-            Iterator it = knoxServiceIdData.iterator();
-            while (it.hasNext()) {
-                String asString = ((ContentValues) it.next()).getAsString("packageList");
-                if (!asString.isEmpty()) {
-                    for (String str : asString.split(",")) {
-                        arrayList.add(str);
-                    }
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public String getModemFirmware(ContextInfo contextInfo) {
-        return getString("gsm.version.baseband", false);
-    }
-
-    public int getPlatformSDK(ContextInfo contextInfo) {
-        return getInt("ro.build.version.sdk");
-    }
-
-    public String getPlatformVersion(ContextInfo contextInfo) {
-        return getString("ro.build.version.release", false);
-    }
-
-    public String getDeviceMaker(ContextInfo contextInfo) {
-        return getString("ro.product.manufacturer", false);
-    }
-
-    public String getDeviceOS(ContextInfo contextInfo) {
-        return getString("os.name", true);
-    }
-
-    public String getDeviceOSVersion(ContextInfo contextInfo) {
-        return getString("os.version", true);
-    }
-
-    public String getDevicePlatform(ContextInfo contextInfo) {
-        String string = getString("ro.build.version.release", false);
-        if (string == null) {
-            return null;
-        }
-        return "Android " + string;
-    }
-
-    public final int getCallsCount(ContextInfo contextInfo, String str) {
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        if (!this.mTelMgr.isVoiceCapable()) {
-            return -1;
-        }
-        String genericValue = this.mEdmStorageProvider.getGenericValue(str);
-        if (genericValue == null) {
-            return 0;
-        }
-        try {
-            return Integer.parseInt(genericValue);
-        } catch (NumberFormatException unused) {
-            Log.w("DeviceInfo", "could not parse integer ");
-            return -1;
-        }
-    }
-
-    public int getDroppedCallsCount(ContextInfo contextInfo) {
-        return getCallsCount(contextInfo, "dropped");
-    }
-
-    public int getMissedCallsCount(ContextInfo contextInfo) {
-        return getCallsCount(contextInfo, "missed");
-    }
-
-    public int getSuccessCallsCount(ContextInfo contextInfo) {
-        return getCallsCount(contextInfo, "success");
-    }
-
-    public boolean resetCallsCount(ContextInfo contextInfo) {
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        if (!this.mTelMgr.isVoiceCapable()) {
-            return false;
-        }
-        return this.mEdmStorageProvider.putGenericValue("dropped", "0") & this.mEdmStorageProvider.putGenericValue("success", "0") & true & this.mEdmStorageProvider.putGenericValue("missed", "0");
-    }
-
-    public void addCallsCount(String str) {
-        String genericValue = this.mEdmStorageProvider.getGenericValue(str);
-        int i = 0;
-        if (genericValue != null) {
-            try {
-                int parseInt = Integer.parseInt(genericValue);
-                if (parseInt >= 0) {
-                    i = parseInt;
-                }
-            } catch (NumberFormatException unused) {
-                Log.w("DeviceInfo", "could not parse integer ");
-            }
-        }
-        this.mEdmStorageProvider.putGenericValue(str, String.valueOf(i + 1));
-    }
-
-    public final String getProcessorTypeinLine(String str) {
+    public static String getProcessorTypeinLine(String str) {
         if (!Pattern.matches("(?i:model)\\s*(?i:name).*:.*[a-zA-Z].*", str) && !Pattern.matches("(?i:processor).*:.*[a-zA-Z].*", str)) {
             return null;
         }
         String trim = str.trim();
-        StringTokenizer stringTokenizer = new StringTokenizer(trim, XmlUtils.STRING_ARRAY_SEPARATOR);
+        StringTokenizer stringTokenizer = new StringTokenizer(trim, ":");
         while (stringTokenizer.hasMoreTokens()) {
             trim = stringTokenizer.nextToken().trim();
         }
@@ -502,321 +555,20 @@ public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCal
         return trim;
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:16:0x001d, code lost:
-    
-        r3 = move-exception;
-     */
-    /* JADX WARN: Code restructure failed: missing block: B:17:0x001e, code lost:
-    
-        r3.printStackTrace();
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public java.lang.String getDeviceProcessorType(com.samsung.android.knox.ContextInfo r4) {
-        /*
-            r3 = this;
-            r4 = 0
-            java.io.BufferedReader r0 = new java.io.BufferedReader     // Catch: java.lang.Throwable -> L2c java.lang.Exception -> L2e
-            java.io.FileReader r1 = new java.io.FileReader     // Catch: java.lang.Throwable -> L2c java.lang.Exception -> L2e
-            java.lang.String r2 = "/proc/cpuinfo"
-            r1.<init>(r2)     // Catch: java.lang.Throwable -> L2c java.lang.Exception -> L2e
-            r0.<init>(r1)     // Catch: java.lang.Throwable -> L2c java.lang.Exception -> L2e
-        Ld:
-            java.lang.String r4 = r0.readLine()     // Catch: java.lang.Throwable -> L26 java.lang.Exception -> L29
-            if (r4 == 0) goto L22
-            java.lang.String r4 = r3.getProcessorTypeinLine(r4)     // Catch: java.lang.Throwable -> L26 java.lang.Exception -> L29
-            if (r4 == 0) goto Ld
-            r0.close()     // Catch: java.lang.Exception -> L1d
-            goto L21
-        L1d:
-            r3 = move-exception
-            r3.printStackTrace()
-        L21:
-            return r4
-        L22:
-            r0.close()     // Catch: java.lang.Exception -> L38
-            goto L3c
-        L26:
-            r3 = move-exception
-            r4 = r0
-            goto L3f
-        L29:
-            r3 = move-exception
-            r4 = r0
-            goto L2f
-        L2c:
-            r3 = move-exception
-            goto L3f
-        L2e:
-            r3 = move-exception
-        L2f:
-            r3.printStackTrace()     // Catch: java.lang.Throwable -> L2c
-            if (r4 == 0) goto L3c
-            r4.close()     // Catch: java.lang.Exception -> L38
-            goto L3c
-        L38:
-            r3 = move-exception
-            r3.printStackTrace()
-        L3c:
-            java.lang.String r3 = ""
-            return r3
-        L3f:
-            if (r4 == 0) goto L49
-            r4.close()     // Catch: java.lang.Exception -> L45
-            goto L49
-        L45:
-            r4 = move-exception
-            r4.printStackTrace()
-        L49:
-            throw r3
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.device.DeviceInfo.getDeviceProcessorType(com.samsung.android.knox.ContextInfo):java.lang.String");
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:29:0x0038 A[EXC_TOP_SPLITTER, SYNTHETIC] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public java.lang.String getDeviceProcessorSpeed(com.samsung.android.knox.ContextInfo r4) {
-        /*
-            r3 = this;
-            r3 = 0
-            java.io.BufferedReader r4 = new java.io.BufferedReader     // Catch: java.lang.Throwable -> L1c java.lang.Exception -> L21
-            java.io.FileReader r0 = new java.io.FileReader     // Catch: java.lang.Throwable -> L1c java.lang.Exception -> L21
-            java.lang.String r1 = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq"
-            r0.<init>(r1)     // Catch: java.lang.Throwable -> L1c java.lang.Exception -> L21
-            r4.<init>(r0)     // Catch: java.lang.Throwable -> L1c java.lang.Exception -> L21
-            java.lang.String r3 = r4.readLine()     // Catch: java.lang.Exception -> L1a java.lang.Throwable -> L35
-            r4.close()     // Catch: java.lang.Exception -> L15
-            goto L19
-        L15:
-            r4 = move-exception
-            r4.printStackTrace()
-        L19:
-            return r3
-        L1a:
-            r3 = move-exception
-            goto L25
-        L1c:
-            r4 = move-exception
-            r2 = r4
-            r4 = r3
-            r3 = r2
-            goto L36
-        L21:
-            r4 = move-exception
-            r2 = r4
-            r4 = r3
-            r3 = r2
-        L25:
-            r3.printStackTrace()     // Catch: java.lang.Throwable -> L35
-            if (r4 == 0) goto L32
-            r4.close()     // Catch: java.lang.Exception -> L2e
-            goto L32
-        L2e:
-            r3 = move-exception
-            r3.printStackTrace()
-        L32:
-            java.lang.String r3 = ""
-            return r3
-        L35:
-            r3 = move-exception
-        L36:
-            if (r4 == 0) goto L40
-            r4.close()     // Catch: java.lang.Exception -> L3c
-            goto L40
-        L3c:
-            r4 = move-exception
-            r4.printStackTrace()
-        L40:
-            throw r3
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.device.DeviceInfo.getDeviceProcessorSpeed(com.samsung.android.knox.ContextInfo):java.lang.String");
-    }
-
-    public long getTotalRamMemory(ContextInfo contextInfo) {
-        readProcLines("/proc/meminfo", new String[]{"MemTotal:"}, r5);
-        long j = r5[0] * 1024;
-        long[] jArr = {j};
-        return j;
-    }
-
-    public long getAvailableRamMemory(ContextInfo contextInfo) {
-        long[] jArr = new long[2];
-        readProcLines("/proc/meminfo", new String[]{"MemFree:", "Cached:"}, jArr);
-        for (int i = 0; i < 2; i++) {
-            jArr[i] = jArr[i] * 1024;
-        }
-        return jArr[0] + jArr[1];
-    }
-
-    public final String getString(String str, boolean z) {
-        String str2 = null;
+    public static String getString(String str) {
         try {
-            if (z) {
-                str2 = System.getProperty(str);
-            } else {
-                String str3 = SystemProperties.get(str, "unknown");
-                if (!str3.equalsIgnoreCase("unknown")) {
-                    str2 = str3;
-                }
+            String str2 = SystemProperties.get(str, "unknown");
+            if (str2.equalsIgnoreCase("unknown")) {
+                return null;
             }
+            return str2;
         } catch (Exception unused) {
             Log.w("DeviceInfo", "could not get property");
-        }
-        return str2;
-    }
-
-    public final int getInt(String str) {
-        try {
-            return SystemProperties.getInt(str, -1);
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not get property");
-            return -1;
+            return null;
         }
     }
 
-    public boolean setWifiStatisticEnabled(ContextInfo contextInfo, boolean z) {
-        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, "MISC", "enableWifiDataStatistic", z);
-        if (putBoolean) {
-            this.mWifiStatsEnabled = getWifiStatisticEnabled(enforceOwnerOnlyAndDeviceInventoryPermission);
-            dataUsageTimerActivation(enforceOwnerOnlyAndDeviceInventoryPermission);
-        }
-        return putBoolean;
-    }
-
-    public boolean getWifiStatisticEnabled(ContextInfo contextInfo) {
-        Iterator it = this.mEdmStorageProvider.getBooleanList("MISC", "enableWifiDataStatistic").iterator();
-        while (it.hasNext()) {
-            boolean booleanValue = ((Boolean) it.next()).booleanValue();
-            if (booleanValue) {
-                return booleanValue;
-            }
-        }
-        return false;
-    }
-
-    public boolean setDataCallStatisticsEnabled(ContextInfo contextInfo, boolean z) {
-        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, "PHONERESTRICTION", "enableWifiDataCallDataStatistic", z);
-        if (putBoolean) {
-            this.mDataStatsEnabled = getDataCallStatisticsEnabled(enforceOwnerOnlyAndDeviceInventoryPermission);
-            dataUsageTimerActivation(enforceOwnerOnlyAndDeviceInventoryPermission);
-        }
-        return putBoolean;
-    }
-
-    public boolean getDataCallStatisticsEnabled(ContextInfo contextInfo) {
-        Iterator it = this.mEdmStorageProvider.getBooleanList("PHONERESTRICTION", "enableWifiDataCallDataStatistic").iterator();
-        while (it.hasNext()) {
-            boolean booleanValue = ((Boolean) it.next()).booleanValue();
-            if (booleanValue) {
-                return booleanValue;
-            }
-        }
-        return false;
-    }
-
-    public long getBytesSentWiFi(ContextInfo contextInfo) {
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        return this.mStorageWifiTx;
-    }
-
-    public long getBytesReceivedWiFi(ContextInfo contextInfo) {
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        return this.mStorageWifiRx;
-    }
-
-    public long getBytesSentNetwork(ContextInfo contextInfo) {
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        return this.mStorageMobileTx;
-    }
-
-    public long getBytesReceivedNetwork(ContextInfo contextInfo) {
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        return this.mStorageMobileRx;
-    }
-
-    public void resetDataUsage(ContextInfo contextInfo) {
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        this.mDataUsageEventsHandler.removeCallbacks(this.mDataStatisticsUpdateRun);
-        this.mStorageWifiTx = 0L;
-        this.mStorageWifiRx = 0L;
-        this.mStorageMobileTx = 0L;
-        this.mStorageMobileRx = 0L;
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("deviceWifiSent", Long.valueOf(this.mStorageWifiTx));
-        contentValues.put("deviceWifiReceived", Long.valueOf(this.mStorageWifiRx));
-        contentValues.put("deviceNetworkSent", Long.valueOf(this.mStorageMobileTx));
-        contentValues.put("deviceNetworkReceived", Long.valueOf(this.mStorageMobileRx));
-        this.mEdmStorageProvider.putValues("DEVICE", contentValues);
-        this.mLastUpdateWifiTx = getTrafficWifiTx();
-        this.mLastUpdateWifiRx = getTrafficWifiRx();
-        this.mLastUpdateMobileTx = getTrafficMobileTx();
-        this.mLastUpdateMobileRx = getTrafficMobileRx();
-        if (this.mDataUsageTimerActivated) {
-            this.mDataUsageEventsHandler.postDelayed(this.mDataStatisticsUpdateRun, 0L);
-        }
-    }
-
-    public boolean setDataUsageTimer(ContextInfo contextInfo, int i) {
-        int i2 = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid;
-        this.mDataUsageEventsHandler.removeCallbacks(this.mDataStatisticsUpdateRun);
-        if (i < 1 || i > 60) {
-            i = 3;
-        }
-        boolean putInt = this.mEdmStorageProvider.putInt(i2, "MISC", "miscDataStatisticTimer", i);
-        if (putInt) {
-            this.mDataUsageTimer = getStrictDataUsageTimer() * 1000;
-        }
-        if (this.mDataUsageTimerActivated) {
-            this.mDataUsageEventsHandler.postDelayed(this.mDataStatisticsUpdateRun, this.mDataUsageTimer);
-        }
-        return putInt;
-    }
-
-    public int getDataUsageTimer(ContextInfo contextInfo) {
-        try {
-            return this.mEdmStorageProvider.getInt(contextInfo.mCallerUid, "MISC", "miscDataStatisticTimer");
-        } catch (SettingNotFoundException e) {
-            Log.d("DeviceInfo", "getDataUsageTimer could not read database");
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    public final int getStrictDataUsageTimer() {
-        Iterator it = this.mEdmStorageProvider.getIntList("MISC", "miscDataStatisticTimer").iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            int intValue = ((Integer) it.next()).intValue();
-            if (i == 0 || intValue < i) {
-                i = intValue;
-            }
-        }
-        if (i == 0) {
-            return 3;
-        }
-        return i;
-    }
-
-    public final long getTrafficWifiTx() {
-        long mobileTxBytes = TrafficStats.getMobileTxBytes();
-        long totalTxBytes = TrafficStats.getTotalTxBytes();
-        if (-1 == totalTxBytes) {
-            totalTxBytes = 0;
-        }
-        if (-1 == mobileTxBytes) {
-            mobileTxBytes = 0;
-        }
-        return totalTxBytes - mobileTxBytes;
-    }
-
-    public final long getTrafficWifiRx() {
+    public static long getTrafficWifiRx() {
         long mobileRxBytes = TrafficStats.getMobileRxBytes();
         long totalRxBytes = TrafficStats.getTotalRxBytes();
         if (-1 == totalRxBytes) {
@@ -828,227 +580,31 @@ public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCal
         return totalRxBytes - mobileRxBytes;
     }
 
-    public final long getTrafficMobileTx() {
+    public static long getTrafficWifiTx() {
         long mobileTxBytes = TrafficStats.getMobileTxBytes();
-        if (this.mLastUpdateMobileTx > 0 && !this.mTelMgr.isDataEnabled()) {
-            mobileTxBytes = this.mLastUpdateMobileTx;
+        long totalTxBytes = TrafficStats.getTotalTxBytes();
+        if (-1 == totalTxBytes) {
+            totalTxBytes = 0;
         }
         if (-1 == mobileTxBytes) {
-            return 0L;
+            mobileTxBytes = 0;
         }
-        return mobileTxBytes;
+        return totalTxBytes - mobileTxBytes;
     }
 
-    public final long getTrafficMobileRx() {
-        long mobileRxBytes = TrafficStats.getMobileRxBytes();
-        if (this.mLastUpdateMobileRx > 0 && !this.mTelMgr.isDataEnabled()) {
-            mobileRxBytes = this.mLastUpdateMobileRx;
+    public static boolean isCorrectAdmin(int i, ContentValues contentValues, String str) {
+        if (contentValues.get(str) == null) {
+            return true;
         }
-        if (-1 == mobileRxBytes) {
-            return 0L;
-        }
-        return mobileRxBytes;
-    }
-
-    public final void dataUsageValuesInit() {
-        ContentValues contentValues;
-        dataUsageValuesUpdate();
-        int strictDataUsageTimer = getStrictDataUsageTimer();
-        if (strictDataUsageTimer == 0) {
-            strictDataUsageTimer = 3;
-        }
-        this.mDataUsageTimer = strictDataUsageTimer * 1000;
-        this.mDataStatsEnabled = getDataCallStatisticsEnabled(null);
-        this.mDataLogEnabled = getDataCallLoggingEnabled(null);
-        this.mWifiStatsEnabled = getWifiStatisticEnabled(null);
-        ArrayList dataByFields = this.mEdmStorageProvider.getDataByFields("DEVICE", null, null, new String[]{"deviceWifiSent", "deviceWifiReceived", "deviceNetworkSent", "deviceNetworkReceived"});
-        if (dataByFields == null || dataByFields.isEmpty() || (contentValues = (ContentValues) dataByFields.get(0)) == null) {
-            return;
-        }
-        try {
-            this.mStorageWifiTx = contentValues.getAsLong("deviceWifiSent").longValue();
-            this.mStorageWifiRx = contentValues.getAsLong("deviceWifiReceived").longValue();
-            this.mStorageMobileTx = contentValues.getAsLong("deviceNetworkSent").longValue();
-            this.mStorageMobileRx = contentValues.getAsLong("deviceNetworkReceived").longValue();
-        } catch (NullPointerException unused) {
-            Log.d("DeviceInfo", "initializeStorageValues - Error reading from Device Storage");
-            resetDataUsage(null);
-        }
-    }
-
-    public final void dataUsageValuesUpdate() {
-        this.mLastUpdateWifiTx = getTrafficWifiTx();
-        this.mLastUpdateWifiRx = getTrafficWifiRx();
-        this.mLastUpdateMobileTx = getTrafficMobileTx();
-        this.mLastUpdateMobileRx = getTrafficMobileRx();
-        this.mDataCallLogLastTime = 0L;
-    }
-
-    public final boolean isWifiStateEnabled() {
-        if (this.mWifiManager == null) {
-            this.mWifiManager = (WifiManager) this.mContext.getSystemService("wifi");
-        }
-        WifiManager wifiManager = this.mWifiManager;
-        return wifiManager != null && wifiManager.getWifiState() == 3;
-    }
-
-    public final long updateDataStatisticsUsage() {
-        long j;
-        long j2;
-        long j3;
-        long j4;
-        this.mDataStatsCounter++;
-        long trafficWifiTx = getTrafficWifiTx();
-        long j5 = this.mLastUpdateWifiTx;
-        if (trafficWifiTx > j5) {
-            j = trafficWifiTx - j5;
-            if (isWifiStateEnabled() && this.mWifiStatsEnabled) {
-                this.mStorageWifiTx += j;
-            }
-        } else {
-            j = 0;
-        }
-        this.mLastUpdateWifiTx = trafficWifiTx;
-        long j6 = j + 0;
-        long trafficWifiRx = getTrafficWifiRx();
-        long j7 = this.mLastUpdateWifiRx;
-        if (trafficWifiRx > j7) {
-            j2 = trafficWifiRx - j7;
-            if (isWifiStateEnabled() && this.mWifiStatsEnabled) {
-                this.mStorageWifiRx += j2;
-            }
-        } else {
-            j2 = 0;
-        }
-        this.mLastUpdateWifiRx = trafficWifiRx;
-        long j8 = j6 + j2;
-        long trafficMobileTx = getTrafficMobileTx();
-        long j9 = this.mLastUpdateMobileTx;
-        if (trafficMobileTx >= j9) {
-            j3 = trafficMobileTx - j9;
-            if (this.mDataStatsEnabled) {
-                this.mStorageMobileTx += j3;
-            }
-        } else {
-            this.mDataCallLogLastTime = 0L;
-            this.mDataCallLogLastValue = 0L;
-            j3 = 0;
-        }
-        this.mLastUpdateMobileTx = trafficMobileTx;
-        long j10 = j3 + 0;
-        long trafficMobileRx = getTrafficMobileRx();
-        long j11 = this.mLastUpdateMobileRx;
-        if (trafficMobileRx >= j11) {
-            j4 = trafficMobileRx - j11;
-            if (this.mDataStatsEnabled) {
-                this.mStorageMobileRx += j4;
-            }
-        } else {
-            this.mDataCallLogLastTime = 0L;
-            this.mDataCallLogLastValue = 0L;
-            j4 = 0;
-        }
-        this.mLastUpdateMobileRx = trafficMobileRx;
-        long j12 = j10 + j4;
-        if (j12 > 0) {
-            logDataCall(j12);
-        }
-        getEDM().getPhoneRestrictionPolicy().updateDateAndDataCallCounters(j12);
-        if (this.mDataStatsCounter >= 10) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("deviceWifiSent", Long.valueOf(this.mStorageWifiTx));
-            contentValues.put("deviceWifiReceived", Long.valueOf(this.mStorageWifiRx));
-            contentValues.put("deviceNetworkSent", Long.valueOf(this.mStorageMobileTx));
-            contentValues.put("deviceNetworkReceived", Long.valueOf(this.mStorageMobileRx));
-            this.mEdmStorageProvider.putValues("DEVICE", contentValues);
-            this.mDataStatsCounter = 0;
-        }
-        return j8 + j12;
-    }
-
-    public void dataUsageTimerActivation(ContextInfo contextInfo) {
-        boolean z = this.mWifiStatsEnabled || this.mDataStatsEnabled || this.mDataLogEnabled || getEDM().getPhoneRestrictionPolicy().getDataCallLimitEnabled();
-        if (z && !this.mDataUsageTimerActivated) {
-            this.mDataUsageTimerActivated = true;
-            dataUsageValuesUpdate();
-            this.mDataUsageEventsHandler.postDelayed(this.mDataStatisticsUpdateRun, this.mDataUsageTimer);
-        } else {
-            if (z || !this.mDataUsageTimerActivated) {
-                return;
-            }
-            this.mDataUsageTimerActivated = false;
-            this.mDataUsageEventsHandler.removeCallbacks(this.mDataStatisticsUpdateRun);
-        }
-    }
-
-    public final void updateDataUsageState() {
-        ContextInfo contextInfo = new ContextInfo(Binder.getCallingUid());
-        this.mWifiStatsEnabled = getWifiStatisticEnabled(contextInfo);
-        this.mDataStatsEnabled = getDataCallStatisticsEnabled(contextInfo);
-        this.mDataLogEnabled = getDataCallLoggingEnabled(contextInfo);
-        dataUsageTimerActivation(contextInfo);
-    }
-
-    public boolean setDataCallLoggingEnabled(ContextInfo contextInfo, boolean z) {
-        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        boolean putBoolean = this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, "PHONERESTRICTION", "enableDataCallLogging", z);
-        if (putBoolean) {
-            this.mDataLogEnabled = getDataCallLoggingEnabled(enforceOwnerOnlyAndDeviceInventoryPermission);
-            dataUsageTimerActivation(enforceOwnerOnlyAndDeviceInventoryPermission);
-        }
-        return putBoolean;
-    }
-
-    public boolean getDataCallLoggingEnabled(ContextInfo contextInfo) {
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        Iterator it = this.mEdmStorageProvider.getBooleanList("PHONERESTRICTION", "enableDataCallLogging").iterator();
-        while (it.hasNext()) {
-            boolean booleanValue = ((Boolean) it.next()).booleanValue();
-            if (booleanValue) {
-                return booleanValue;
+        for (String str2 : contentValues.get(str).toString().split(";")) {
+            if (i == Integer.parseInt(str2)) {
+                return true;
             }
         }
         return false;
     }
 
-    public boolean resetDataCallLogging(ContextInfo contextInfo, String str) {
-        ContentValues contentValues;
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        this.mDataCallLogLastTime = 0L;
-        this.mDataCallLogLastValue = 0L;
-        if (str != null) {
-            contentValues = new ContentValues();
-            contentValues.put("dataCallDate<=?", str);
-        } else {
-            contentValues = null;
-        }
-        return this.mEdmStorageProvider.removeByFilterSmallerThan("DATACALLLOG", contentValues);
-    }
-
-    public List getDataCallLog(ContextInfo contextInfo, String str) {
-        ContentValues contentValues;
-        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        String[] strArr = {"dataCallDate", "dataCallStatus", "dataCallNetType", "dataCallBytes"};
-        if (str != null) {
-            contentValues = new ContentValues();
-            contentValues.put("dataCallDate>=?", str);
-        } else {
-            contentValues = null;
-        }
-        List<ContentValues> values = this.mEdmStorageProvider.getValues("DATACALLLOG", strArr, contentValues);
-        if (values == null) {
-            return null;
-        }
-        ArrayList arrayList = new ArrayList();
-        if (!values.isEmpty()) {
-            for (ContentValues contentValues2 : values) {
-                arrayList.add(contentValues2.getAsString("dataCallDate") + KnoxVpnFirewallHelper.DELIMITER + contentValues2.getAsString("dataCallStatus") + KnoxVpnFirewallHelper.DELIMITER + contentValues2.getAsString("dataCallNetType") + KnoxVpnFirewallHelper.DELIMITER + contentValues2.getAsString("dataCallBytes"));
-            }
-        }
-        return arrayList;
-    }
-
-    public boolean clearCallingLog(ContextInfo contextInfo) {
+    public final boolean clearCallingLog(ContextInfo contextInfo) {
         ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
         if (this.mTelMgr.isVoiceCapable()) {
             return clearLog(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, "CallingLog", "callingCaptureAdmin", false);
@@ -1056,90 +612,13 @@ public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCal
         return false;
     }
 
-    public final boolean logDataCall(long j) {
-        if (!this.mDataLogEnabled) {
-            Log.d("DeviceInfo", "Logging disabled");
-            return false;
-        }
-        if (!this.mDataCallConnected) {
-            Log.d("DeviceInfo", "Data Disconnected, don't log");
-            return false;
-        }
-        if (j <= 0) {
-            Log.d("DeviceInfo", "No bytes to log");
-            return false;
-        }
-        TelephonyManager telephonyManager = this.mTelMgr;
-        if (telephonyManager == null) {
-            Log.d("DeviceInfo", "failed logDataCall because mTelMgr is null");
-            return false;
-        }
-        String str = telephonyManager.isNetworkRoaming() ? "ROAMING" : "NORMAL";
-        String networkTypeName = this.mTelMgr.getNetworkTypeName();
-        if (!str.equals(this.mDataCallLogLastStatus) || !networkTypeName.equals(this.mDataCallLogLastNetType)) {
-            this.mDataCallLogLastTime = 0L;
-            this.mDataCallLogLastValue = 0L;
-        }
-        this.mDataCallLogLastStatus = str;
-        if (!networkTypeName.equals("UNKNOWN")) {
-            this.mDataCallLogLastNetType = networkTypeName;
-        }
-        this.mDataCallLogLastValue += j;
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("dataCallDate", Long.valueOf(this.mDataCallLogLastTime));
-        contentValues.put("dataCallStatus", this.mDataCallLogLastStatus);
-        contentValues.put("dataCallNetType", this.mDataCallLogLastNetType);
-        this.mDataCallLogLastTime = Calendar.getInstance().getTimeInMillis();
-        ContentValues contentValues2 = new ContentValues();
-        contentValues2.put("dataCallDate", Long.valueOf(this.mDataCallLogLastTime));
-        contentValues2.put("dataCallStatus", this.mDataCallLogLastStatus);
-        contentValues2.put("dataCallNetType", this.mDataCallLogLastNetType);
-        contentValues2.put("dataCallBytes", Long.valueOf(this.mDataCallLogLastValue));
-        return this.mEdmStorageProvider.putValues("DATACALLLOG", contentValues2, contentValues);
-    }
-
-    public final EnterpriseDeviceManager getEDM() {
-        if (this.mEDM == null) {
-            this.mEDM = EnterpriseDeviceManager.getInstance(this.mContext);
-        }
-        return this.mEDM;
-    }
-
-    public final ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission(ContextInfo contextInfo) {
-        return getEDM().enforceOwnerOnlyAndActiveAdminPermission(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_INVENTORY")));
-    }
-
-    public final ContextInfo enforceReadPrivilegedPhoneStatePermission(ContextInfo contextInfo) {
-        return getEDM().enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("android.permission.READ_PRIVILEGED_PHONE_STATE")));
-    }
-
-    public final void enforcePhone() {
-        if (Binder.getCallingUid() != 1001) {
-            throw new SecurityException("Can only be called by internal phone");
-        }
-    }
-
-    public final void enforcePhoneAppOrOwnerAndDeviceInventoryPermission(ContextInfo contextInfo) {
-        if (Binder.getCallingUid() != 1001) {
-            enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        }
-    }
-
-    public final ContextInfo enforceKnoxInternalExceptionPermission(ContextInfo contextInfo) {
-        return getEDM().enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_INTERNAL_EXCEPTION")));
-    }
-
-    public final void clearDatabasesOnAdminRemoval(int i) {
-        clearLog(i, "CallingLog", "callingCaptureAdmin", true);
-        clearLog(i, "SMS", "smsCaptureAdmin", true);
-        clearLog(i, "MMS", "mmsCaptureAdmin", true);
-    }
-
     public final boolean clearLog(int i, String str, String str2, boolean z) {
         try {
-            for (ContentValues contentValues : this.mEdmStorageProvider.getValues(str, (String[]) null, (ContentValues) null)) {
+            Iterator it = ((ArrayList) this.mEdmStorageProvider.getValues(str, null, null)).iterator();
+            while (it.hasNext()) {
+                ContentValues contentValues = (ContentValues) it.next();
                 if (contentValues.get(str2) != null) {
-                    String[] split = contentValues.get(str2).toString().split(KnoxVpnFirewallHelper.DELIMITER);
+                    String[] split = contentValues.get(str2).toString().split(";");
                     if (split.length == 1 && i == Integer.parseInt(split[0])) {
                         if (this.mEdmStorageProvider.delete(str, contentValues) <= 0) {
                             return false;
@@ -1149,7 +628,7 @@ public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCal
                         for (String str3 : split) {
                             if (i != Integer.parseInt(str3)) {
                                 sb.append(str3);
-                                sb.append(KnoxVpnFirewallHelper.DELIMITER);
+                                sb.append(";");
                             }
                         }
                         ContentValues contentValues2 = new ContentValues();
@@ -1171,233 +650,193 @@ public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCal
         }
     }
 
-    public final boolean isCorrectAdmin(int i, ContentValues contentValues, String str) {
-        if (contentValues.get(str) == null) {
-            return true;
-        }
-        for (String str2 : contentValues.get(str).toString().split(KnoxVpnFirewallHelper.DELIMITER)) {
-            if (i == Integer.parseInt(str2)) {
-                return true;
+    public final boolean clearMMSLog(ContextInfo contextInfo) {
+        return clearLog(enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid, "MMS", "mmsCaptureAdmin", false);
+    }
+
+    public final boolean clearSMSLog(ContextInfo contextInfo) {
+        return clearLog(enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid, "SMS", "smsCaptureAdmin", false);
+    }
+
+    public final void dataUsageTimerActivation(ContextInfo contextInfo) {
+        boolean z = this.mWifiStatsEnabled || this.mDataStatsEnabled || this.mDataLogEnabled || getEDM$8().getPhoneRestrictionPolicy().getDataCallLimitEnabled();
+        if (!z || this.mDataUsageTimerActivated) {
+            if (z || !this.mDataUsageTimerActivated) {
+                return;
             }
+            this.mDataUsageTimerActivated = false;
+            this.mDataUsageEventsHandler.removeCallbacks(this.mDataStatisticsUpdateRun);
+            return;
+        }
+        this.mDataUsageTimerActivated = true;
+        this.mLastUpdateWifiTx = getTrafficWifiTx();
+        this.mLastUpdateWifiRx = getTrafficWifiRx();
+        this.mLastUpdateMobileTx = getTrafficMobileTx();
+        this.mLastUpdateMobileRx = getTrafficMobileRx();
+        this.mDataCallLogLastTime = 0L;
+        this.mDataUsageEventsHandler.postDelayed(this.mDataStatisticsUpdateRun, this.mDataUsageTimer);
+    }
+
+    public final boolean enableCallingCapture(ContextInfo contextInfo, boolean z) {
+        int i = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid;
+        if (this.mTelMgr.isVoiceCapable()) {
+            return this.mEdmStorageProvider.putBoolean("MISC", i, z, 0, "CallingLogEnabled");
         }
         return false;
     }
 
-    public boolean enableSMSCapture(ContextInfo contextInfo, boolean z) {
+    public final boolean enableMMSCapture(ContextInfo contextInfo, boolean z) {
         try {
-            return this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid, "MISC", "smsLogEnabled", z);
+            return this.mEdmStorageProvider.putBoolean("MISC", enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid, z, 0, "mmsLogEnabled");
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not enable mms capture");
+            return false;
+        }
+    }
+
+    public final boolean enableSMSCapture(ContextInfo contextInfo, boolean z) {
+        try {
+            return this.mEdmStorageProvider.putBoolean("MISC", enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid, z, 0, "smsLogEnabled");
         } catch (Exception unused) {
             Log.w("DeviceInfo", "could not enable sms capture");
             return false;
         }
     }
 
-    public boolean isSMSCaptureEnabled(ContextInfo contextInfo) {
-        enforcePhoneAppOrOwnerAndDeviceInventoryPermission(contextInfo);
+    public final ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission(ContextInfo contextInfo) {
+        return getEDM$8().enforceOwnerOnlyAndActiveAdminPermission(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_INVENTORY")));
+    }
+
+    public final long getAvailableCapacityExternal(ContextInfo contextInfo) {
         try {
-            Iterator it = this.mEdmStorageProvider.getBooleanList("MISC", "smsLogEnabled").iterator();
-            while (it.hasNext()) {
-                if (((Boolean) it.next()).booleanValue()) {
-                    return true;
-                }
+            String externalSdCardPath = ((StorageManagerAdapter) ((IStorageManagerAdapter) AdapterRegistry.mAdapterHandles.get(IStorageManagerAdapter.class))).getExternalSdCardPath();
+            File file = null;
+            String volumeState = externalSdCardPath == null ? null : StorageManagerAdapter.mStorageManager.getVolumeState(externalSdCardPath);
+            if (!(volumeState == null ? false : volumeState.equals("mounted"))) {
+                return -1L;
             }
-            return false;
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not open edm database");
-            return false;
+            String externalSdCardPath2 = ((StorageManagerAdapter) ((IStorageManagerAdapter) AdapterRegistry.mAdapterHandles.get(IStorageManagerAdapter.class))).getExternalSdCardPath();
+            if (externalSdCardPath2 != null) {
+                file = new File(externalSdCardPath2);
+            }
+            if (file == null) {
+                return -1L;
+            }
+            StatFs statFs = new StatFs(file.getPath());
+            return statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1L;
         }
     }
 
-    public List getOutboundSMSCaptured(ContextInfo contextInfo) {
-        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        ArrayList arrayList = new ArrayList();
+    public final long getAvailableCapacityInternal(ContextInfo contextInfo) {
+        String path;
         try {
-            Iterator it = this.mEdmStorageProvider.getDataByFields("SMS", new String[]{"smsType"}, new String[]{"0"}, null).iterator();
-            while (it.hasNext()) {
-                ContentValues contentValues = (ContentValues) it.next();
-                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "smsCaptureAdmin")) {
-                    arrayList.add("To:" + contentValues.get("smsAddress") + " - TimeStamp:" + contentValues.get("smsTimeStamp") + " - Body:" + contentValues.get("smsBody"));
-                }
+            StatFs statFs = new StatFs(Environment.getDataDirectory().getPath());
+            long availableBlocksLong = statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
+            ((StorageManagerAdapter) ((IStorageManagerAdapter) AdapterRegistry.mAdapterHandles.get(IStorageManagerAdapter.class))).getClass();
+            StorageVolume[] volumeList = StorageManagerAdapter.mStorageManager.getVolumeList();
+            File file = null;
+            if (volumeList == null || volumeList.length <= 0 || volumeList[0].getPath() == null) {
+                path = null;
+            } else {
+                StorageVolume storageVolume = volumeList[0];
+                path = storageVolume.getSubSystem().equals("fuse") ? "/" : storageVolume.getPath();
             }
-            return arrayList;
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not open edm database");
-            return arrayList;
+            if (path != null) {
+                file = new File(path);
+            }
+            if (file == null) {
+                return -1L;
+            }
+            StatFs statFs2 = new StatFs(file.getPath());
+            return (statFs2.getAvailableBlocksLong() * statFs2.getBlockSizeLong()) + availableBlocksLong;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1L;
         }
     }
 
-    public List getInboundSMSCaptured(ContextInfo contextInfo) {
-        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        ArrayList arrayList = new ArrayList();
-        try {
-            Iterator it = this.mEdmStorageProvider.getDataByFields("SMS", new String[]{"smsType"}, new String[]{"1"}, null).iterator();
-            while (it.hasNext()) {
-                ContentValues contentValues = (ContentValues) it.next();
-                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "smsCaptureAdmin")) {
-                    arrayList.add("From:" + contentValues.get("smsAddress") + " - TimeStamp:" + contentValues.get("smsTimeStamp") + " - Body:" + contentValues.get("smsBody"));
-                }
-            }
-            return arrayList;
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not open edm database");
-            return arrayList;
+    public final long getAvailableRamMemory(ContextInfo contextInfo) {
+        long[] jArr = new long[2];
+        Process.readProcLines("/proc/meminfo", new String[]{"MemFree:", "Cached:"}, jArr);
+        for (int i = 0; i < 2; i++) {
+            jArr[i] = jArr[i] * 1024;
         }
+        return jArr[0] + jArr[1];
     }
 
-    public void storeSMS(String str, String str2, String str3, boolean z) {
-        enforcePhone();
-        ContentValues contentValues = new ContentValues();
-        ContentValues contentValues2 = new ContentValues();
-        StringBuilder sb = new StringBuilder();
-        try {
-            contentValues2.put("smsLogEnabled", (Integer) 1);
-            Iterator it = this.mEdmStorageProvider.getValues("MISC", new String[]{"adminUid"}, contentValues2).iterator();
-            while (it.hasNext()) {
-                sb.append(((ContentValues) it.next()).getAsString("adminUid"));
-                sb.append(KnoxVpnFirewallHelper.DELIMITER);
-            }
-            if (sb.toString().isEmpty()) {
-                return;
-            }
-            contentValues.put("smsType", z ? "1" : "0");
-            contentValues.put("smsAddress", str);
-            contentValues.put("smsTimeStamp", str2);
-            contentValues.put("smsBody", str3);
-            contentValues.put("smsCaptureAdmin", sb.toString());
-            this.mEdmStorageProvider.insertConfiguration("SMS", contentValues);
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not write log edm database");
-        }
+    public final long getBytesReceivedNetwork(ContextInfo contextInfo) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        return this.mStorageMobileRx;
     }
 
-    public boolean clearSMSLog(ContextInfo contextInfo) {
-        return clearLog(enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid, "SMS", "smsCaptureAdmin", false);
+    public final long getBytesReceivedWiFi(ContextInfo contextInfo) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        return this.mStorageWifiRx;
     }
 
-    public boolean enableCallingCapture(ContextInfo contextInfo, boolean z) {
-        int i = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid;
-        if (this.mTelMgr.isVoiceCapable()) {
-            return this.mEdmStorageProvider.putBoolean(i, "MISC", "CallingLogEnabled", z);
-        }
-        return false;
+    public final long getBytesSentNetwork(ContextInfo contextInfo) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        return this.mStorageMobileTx;
     }
 
-    public boolean isCallingCaptureEnabled(ContextInfo contextInfo) {
-        enforcePhoneAppOrOwnerAndDeviceInventoryPermission(contextInfo);
+    public final long getBytesSentWiFi(ContextInfo contextInfo) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        return this.mStorageWifiTx;
+    }
+
+    public final int getCallsCount(ContextInfo contextInfo, String str) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
         if (!this.mTelMgr.isVoiceCapable()) {
-            return false;
+            return -1;
+        }
+        String genericValueAsUser = this.mEdmStorageProvider.getGenericValueAsUser(0, str);
+        if (genericValueAsUser == null) {
+            return 0;
         }
         try {
-            Iterator it = this.mEdmStorageProvider.getBooleanList("MISC", "CallingLogEnabled").iterator();
-            while (it.hasNext()) {
-                if (((Boolean) it.next()).booleanValue()) {
-                    return true;
-                }
-            }
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not open edm database");
-        }
-        return false;
-    }
-
-    public void storeCalling(String str, String str2, String str3, String str4, boolean z) {
-        enforcePhone();
-        if (this.mTelMgr.isVoiceCapable()) {
-            ContentValues contentValues = new ContentValues();
-            ContentValues contentValues2 = new ContentValues();
-            StringBuilder sb = new StringBuilder();
-            try {
-                contentValues2.put("CallingLogEnabled", (Integer) 1);
-                Iterator it = this.mEdmStorageProvider.getValues("MISC", new String[]{"adminUid"}, contentValues2).iterator();
-                while (it.hasNext()) {
-                    sb.append(((ContentValues) it.next()).getAsString("adminUid"));
-                    sb.append(KnoxVpnFirewallHelper.DELIMITER);
-                }
-                if (sb.toString().isEmpty()) {
-                    return;
-                }
-                contentValues.put("callingType", z ? "1" : "0");
-                contentValues.put("callingStatus", str4);
-                contentValues.put("callingAddress", str);
-                contentValues.put("callingTimeStamp", str2);
-                contentValues.put("callingDuration", str3);
-                contentValues.put("callingCaptureAdmin", sb.toString());
-                this.mEdmStorageProvider.insertConfiguration("CallingLog", contentValues);
-            } catch (Exception unused) {
-                Log.w("DeviceInfo", "could not write log edm database");
-            }
+            return Integer.parseInt(genericValueAsUser);
+        } catch (NumberFormatException unused) {
+            Log.w("DeviceInfo", "could not parse integer ");
+            return -1;
         }
     }
 
-    public List getOutgoingCallingCaptured(ContextInfo contextInfo) {
-        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        if (!this.mTelMgr.isVoiceCapable()) {
-            return new ArrayList();
-        }
-        ArrayList arrayList = new ArrayList();
-        try {
-            Iterator it = this.mEdmStorageProvider.getDataByFields("CallingLog", new String[]{"callingType"}, new String[]{"0"}, null).iterator();
-            while (it.hasNext()) {
-                ContentValues contentValues = (ContentValues) it.next();
-                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "callingCaptureAdmin")) {
-                    arrayList.add("To:" + contentValues.get("callingAddress") + " - TimeStamp:" + contentValues.get("callingTimeStamp") + " - Duration:" + contentValues.get("callingDuration") + " - Status:" + contentValues.get("callingStatus"));
-                }
-            }
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not log edm database");
-        }
-        return arrayList;
-    }
-
-    public List getIncomingCallingCaptured(ContextInfo contextInfo) {
-        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
-        if (!this.mTelMgr.isVoiceCapable()) {
-            return new ArrayList();
-        }
-        ArrayList arrayList = new ArrayList();
-        try {
-            Iterator it = this.mEdmStorageProvider.getDataByFields("CallingLog", new String[]{"callingType"}, new String[]{"1"}, null).iterator();
-            while (it.hasNext()) {
-                ContentValues contentValues = (ContentValues) it.next();
-                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "callingCaptureAdmin")) {
-                    arrayList.add("From:" + contentValues.get("callingAddress") + " - TimeStamp:" + contentValues.get("callingTimeStamp") + " - Duration:" + contentValues.get("callingDuration") + " - Status:" + contentValues.get("callingStatus"));
-                }
-            }
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not open edm database");
-        }
-        return arrayList;
-    }
-
-    public String getCellTowerCID(ContextInfo contextInfo) {
+    public final String getCellTowerCID(ContextInfo contextInfo) {
         GsmCellLocation gsmCellLocation;
         enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
         TelephonyManager telephonyManager = this.mTelMgr;
         return Integer.toHexString((telephonyManager == null || (gsmCellLocation = (GsmCellLocation) telephonyManager.getCellLocation()) == null) ? -1 : gsmCellLocation.getCid());
     }
 
-    public String getCellTowerLAC(ContextInfo contextInfo) {
+    public final String getCellTowerLAC(ContextInfo contextInfo) {
         GsmCellLocation gsmCellLocation;
         enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
         TelephonyManager telephonyManager = this.mTelMgr;
         return Integer.toHexString((telephonyManager == null || (gsmCellLocation = (GsmCellLocation) telephonyManager.getCellLocation()) == null) ? -1 : gsmCellLocation.getLac());
     }
 
-    public String getCellTowerPSC(ContextInfo contextInfo) {
+    public final String getCellTowerPSC(ContextInfo contextInfo) {
         GsmCellLocation gsmCellLocation;
         enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
         TelephonyManager telephonyManager = this.mTelMgr;
         return Integer.toString((telephonyManager == null || (gsmCellLocation = (GsmCellLocation) telephonyManager.getCellLocation()) == null) ? -1 : gsmCellLocation.getPsc());
     }
 
-    public String getCellTowerRSSI(ContextInfo contextInfo) {
+    public final String getCellTowerRSSI(ContextInfo contextInfo) {
         int cid;
         enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
         TelephonyManager telephonyManager = this.mTelMgr;
         int i = 99;
         if (telephonyManager != null) {
             if (telephonyManager.getPhoneType() == 2) {
-                updateSignalStrength();
+                try {
+                    mSignalStrength = Integer.toString(0) + " dBm " + Integer.toString(0) + " asu";
+                } catch (RuntimeException e) {
+                    Log.e("DeviceInfo", "updateSignalStrength: " + e.getMessage());
+                }
                 return mSignalStrength;
             }
             GsmCellLocation gsmCellLocation = (GsmCellLocation) this.mTelMgr.getCellLocation();
@@ -1424,57 +863,242 @@ public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCal
         return Integer.toString(i);
     }
 
-    public final void updateSignalStrength() {
-        try {
-            mSignalStrength = Integer.toString(0) + " dBm " + Integer.toString(0) + " asu";
-        } catch (RuntimeException e) {
-            Log.e("DeviceInfo", "updateSignalStrength: " + e.getMessage());
-        }
-    }
-
-    public boolean enableMMSCapture(ContextInfo contextInfo, boolean z) {
-        try {
-            return this.mEdmStorageProvider.putBoolean(enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid, "MISC", "mmsLogEnabled", z);
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not enable mms capture");
-            return false;
-        }
-    }
-
-    public boolean isMMSCaptureEnabled(ContextInfo contextInfo) {
-        try {
-            Iterator it = this.mEdmStorageProvider.getBooleanList("MISC", "mmsLogEnabled").iterator();
-            while (it.hasNext()) {
-                if (((Boolean) it.next()).booleanValue()) {
-                    return true;
-                }
-            }
-            return false;
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not open edm database");
-            return false;
-        }
-    }
-
-    public List getOutboundMMSCaptured(ContextInfo contextInfo) {
-        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+    public final List getDataCallLog(ContextInfo contextInfo, String str) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        List values = this.mEdmStorageProvider.getValues("DATACALLLOG", new String[]{"dataCallDate", "dataCallStatus", "dataCallNetType", "dataCallBytes"}, str != null ? AccountManagerService$$ExternalSyntheticOutline0.m("dataCallDate>=?", str) : null);
         ArrayList arrayList = new ArrayList();
-        try {
-            Iterator it = this.mEdmStorageProvider.getDataByFields("MMS", new String[]{"mmsType"}, new String[]{"0"}, null).iterator();
+        ArrayList arrayList2 = (ArrayList) values;
+        if (!arrayList2.isEmpty()) {
+            Iterator it = arrayList2.iterator();
             while (it.hasNext()) {
                 ContentValues contentValues = (ContentValues) it.next();
-                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "mmsCaptureAdmin")) {
-                    arrayList.add("To:" + contentValues.get("mmsAddress") + " - TimeStamp:" + contentValues.get("mmsTimeStamp") + " - Body:" + contentValues.get("mmsBody"));
-                }
+                arrayList.add(contentValues.getAsString("dataCallDate") + ";" + contentValues.getAsString("dataCallStatus") + ";" + contentValues.getAsString("dataCallNetType") + ";" + contentValues.getAsString("dataCallBytes"));
             }
-            return arrayList;
-        } catch (Exception unused) {
-            Log.w("DeviceInfo", "could not open edm database");
-            return arrayList;
+        }
+        return arrayList;
+    }
+
+    public final boolean getDataCallLoggingEnabled(ContextInfo contextInfo) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "PHONERESTRICTION", "enableDataCallLogging").iterator();
+        while (it.hasNext()) {
+            boolean booleanValue = ((Boolean) it.next()).booleanValue();
+            if (booleanValue) {
+                return booleanValue;
+            }
+        }
+        return false;
+    }
+
+    public final boolean getDataCallStatisticsEnabled(ContextInfo contextInfo) {
+        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "PHONERESTRICTION", "enableWifiDataCallDataStatistic").iterator();
+        while (it.hasNext()) {
+            boolean booleanValue = ((Boolean) it.next()).booleanValue();
+            if (booleanValue) {
+                return booleanValue;
+            }
+        }
+        return false;
+    }
+
+    public final int getDataUsageTimer(ContextInfo contextInfo) {
+        try {
+            return this.mEdmStorageProvider.getInt(contextInfo.mCallerUid, 0, "MISC", "miscDataStatisticTimer");
+        } catch (SettingNotFoundException e) {
+            Log.d("DeviceInfo", "getDataUsageTimer could not read database");
+            e.printStackTrace();
+            return -1;
         }
     }
 
-    public List getInboundMMSCaptured(ContextInfo contextInfo) {
+    public final String getDeviceMaker(ContextInfo contextInfo) {
+        return getString("ro.product.manufacturer");
+    }
+
+    public final String getDeviceName(ContextInfo contextInfo) {
+        String string = Settings.System.getString(this.mContext.getContentResolver(), "device_name");
+        return string == null ? Settings.Global.getString(this.mContext.getContentResolver(), "device_name") : string;
+    }
+
+    public final String getDeviceOS(ContextInfo contextInfo) {
+        try {
+            return System.getProperty("os.name");
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not get property");
+            return null;
+        }
+    }
+
+    public final String getDeviceOSVersion(ContextInfo contextInfo) {
+        try {
+            return System.getProperty("os.version");
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not get property");
+            return null;
+        }
+    }
+
+    public final String getDevicePlatform(ContextInfo contextInfo) {
+        String string = getString("ro.build.version.release");
+        if (string != null) {
+            return "Android ".concat(string);
+        }
+        return null;
+    }
+
+    /* JADX WARN: Removed duplicated region for block: B:29:0x0039 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final java.lang.String getDeviceProcessorSpeed(com.samsung.android.knox.ContextInfo r4) {
+        /*
+            r3 = this;
+            r3 = 0
+            java.io.BufferedReader r4 = new java.io.BufferedReader     // Catch: java.lang.Throwable -> L1e java.lang.Exception -> L23
+            java.io.FileReader r0 = new java.io.FileReader     // Catch: java.lang.Throwable -> L1e java.lang.Exception -> L23
+            java.lang.String r1 = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq"
+            r0.<init>(r1)     // Catch: java.lang.Throwable -> L1e java.lang.Exception -> L23
+            r4.<init>(r0)     // Catch: java.lang.Throwable -> L1e java.lang.Exception -> L23
+            java.lang.String r3 = r4.readLine()     // Catch: java.lang.Throwable -> L1a java.lang.Exception -> L1c
+            r4.close()     // Catch: java.lang.Exception -> L15
+            goto L19
+        L15:
+            r4 = move-exception
+            r4.printStackTrace()
+        L19:
+            return r3
+        L1a:
+            r3 = move-exception
+            goto L37
+        L1c:
+            r3 = move-exception
+            goto L27
+        L1e:
+            r4 = move-exception
+            r2 = r4
+            r4 = r3
+            r3 = r2
+            goto L37
+        L23:
+            r4 = move-exception
+            r2 = r4
+            r4 = r3
+            r3 = r2
+        L27:
+            r3.printStackTrace()     // Catch: java.lang.Throwable -> L1a
+            if (r4 == 0) goto L34
+            r4.close()     // Catch: java.lang.Exception -> L30
+            goto L34
+        L30:
+            r3 = move-exception
+            r3.printStackTrace()
+        L34:
+            java.lang.String r3 = ""
+            return r3
+        L37:
+            if (r4 == 0) goto L41
+            r4.close()     // Catch: java.lang.Exception -> L3d
+            goto L41
+        L3d:
+            r4 = move-exception
+            r4.printStackTrace()
+        L41:
+            throw r3
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.device.DeviceInfo.getDeviceProcessorSpeed(com.samsung.android.knox.ContextInfo):java.lang.String");
+    }
+
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x001d, code lost:
+    
+        r4 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x001e, code lost:
+    
+        r4.printStackTrace();
+     */
+    /* JADX WARN: Removed duplicated region for block: B:33:0x0045 A[EXC_TOP_SPLITTER, SYNTHETIC] */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final java.lang.String getDeviceProcessorType(com.samsung.android.knox.ContextInfo r4) {
+        /*
+            r3 = this;
+            r3 = 0
+            java.io.BufferedReader r4 = new java.io.BufferedReader     // Catch: java.lang.Throwable -> L2f java.lang.Exception -> L34
+            java.io.FileReader r0 = new java.io.FileReader     // Catch: java.lang.Throwable -> L2f java.lang.Exception -> L34
+            java.lang.String r1 = "/proc/cpuinfo"
+            r0.<init>(r1)     // Catch: java.lang.Throwable -> L2f java.lang.Exception -> L34
+            r4.<init>(r0)     // Catch: java.lang.Throwable -> L2f java.lang.Exception -> L34
+        Ld:
+            java.lang.String r3 = r4.readLine()     // Catch: java.lang.Throwable -> L22 java.lang.Exception -> L24
+            if (r3 == 0) goto L26
+            java.lang.String r3 = getProcessorTypeinLine(r3)     // Catch: java.lang.Throwable -> L22 java.lang.Exception -> L24
+            if (r3 == 0) goto Ld
+            r4.close()     // Catch: java.lang.Exception -> L1d
+            goto L21
+        L1d:
+            r4 = move-exception
+            r4.printStackTrace()
+        L21:
+            return r3
+        L22:
+            r3 = move-exception
+            goto L43
+        L24:
+            r3 = move-exception
+            goto L38
+        L26:
+            r4.close()     // Catch: java.lang.Exception -> L2a
+            goto L40
+        L2a:
+            r3 = move-exception
+            r3.printStackTrace()
+            goto L40
+        L2f:
+            r4 = move-exception
+            r2 = r4
+            r4 = r3
+            r3 = r2
+            goto L43
+        L34:
+            r4 = move-exception
+            r2 = r4
+            r4 = r3
+            r3 = r2
+        L38:
+            r3.printStackTrace()     // Catch: java.lang.Throwable -> L22
+            if (r4 == 0) goto L40
+            r4.close()     // Catch: java.lang.Exception -> L2a
+        L40:
+            java.lang.String r3 = ""
+            return r3
+        L43:
+            if (r4 == 0) goto L4d
+            r4.close()     // Catch: java.lang.Exception -> L49
+            goto L4d
+        L49:
+            r4 = move-exception
+            r4.printStackTrace()
+        L4d:
+            throw r3
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.device.DeviceInfo.getDeviceProcessorType(com.samsung.android.knox.ContextInfo):java.lang.String");
+    }
+
+    public final int getDroppedCallsCount(ContextInfo contextInfo) {
+        return getCallsCount(contextInfo, "dropped");
+    }
+
+    public final EnterpriseDeviceManager getEDM$8() {
+        if (this.mEDM == null) {
+            this.mEDM = EnterpriseDeviceManager.getInstance(this.mContext);
+        }
+        return this.mEDM;
+    }
+
+    public final List getInboundMMSCaptured(ContextInfo contextInfo) {
         ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
         ArrayList arrayList = new ArrayList();
         try {
@@ -1492,44 +1116,254 @@ public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCal
         }
     }
 
-    public void storeMMS(String str, String str2, String str3, boolean z) {
-        if (Binder.getCallingPid() == Process.myPid()) {
-            ContentValues contentValues = new ContentValues();
-            ContentValues contentValues2 = new ContentValues();
-            StringBuilder sb = new StringBuilder();
-            try {
-                contentValues2.put("mmsLogEnabled", (Integer) 1);
-                Iterator it = this.mEdmStorageProvider.getValues("MISC", new String[]{"adminUid"}, contentValues2).iterator();
-                while (it.hasNext()) {
-                    sb.append(((ContentValues) it.next()).getAsString("adminUid"));
-                    sb.append(KnoxVpnFirewallHelper.DELIMITER);
+    public final List getInboundSMSCaptured(ContextInfo contextInfo) {
+        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        ArrayList arrayList = new ArrayList();
+        try {
+            Iterator it = this.mEdmStorageProvider.getDataByFields("SMS", new String[]{"smsType"}, new String[]{"1"}, null).iterator();
+            while (it.hasNext()) {
+                ContentValues contentValues = (ContentValues) it.next();
+                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "smsCaptureAdmin")) {
+                    arrayList.add("From:" + contentValues.get("smsAddress") + " - TimeStamp:" + contentValues.get("smsTimeStamp") + " - Body:" + contentValues.get("smsBody"));
                 }
-                if (sb.toString().isEmpty()) {
-                    return;
-                }
-                contentValues.put("mmsType", z ? "1" : "0");
-                contentValues.put("mmsAddress", str);
-                contentValues.put("mmsTimeStamp", str2);
-                contentValues.put("mmsBody", str3);
-                contentValues.put("mmsCaptureAdmin", sb.toString());
-                this.mEdmStorageProvider.insertConfiguration("MMS", contentValues);
-            } catch (Exception unused) {
-                Log.w("DeviceInfo", "could not write log edm database");
             }
+            return arrayList;
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not open edm database");
+            return arrayList;
         }
     }
 
-    public boolean clearMMSLog(ContextInfo contextInfo) {
-        return clearLog(enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid, "MMS", "mmsCaptureAdmin", false);
+    public final List getIncomingCallingCaptured(ContextInfo contextInfo) {
+        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        if (!this.mTelMgr.isVoiceCapable()) {
+            return new ArrayList();
+        }
+        ArrayList arrayList = new ArrayList();
+        try {
+            Iterator it = this.mEdmStorageProvider.getDataByFields("CallingLog", new String[]{"callingType"}, new String[]{"1"}, null).iterator();
+            while (it.hasNext()) {
+                ContentValues contentValues = (ContentValues) it.next();
+                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "callingCaptureAdmin")) {
+                    arrayList.add("From:" + contentValues.get("callingAddress") + " - TimeStamp:" + contentValues.get("callingTimeStamp") + " - Duration:" + contentValues.get("callingDuration") + " - Status:" + contentValues.get("callingStatus"));
+                }
+            }
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not open edm database");
+        }
+        return arrayList;
     }
 
-    @Override // com.android.server.enterprise.EnterpriseServiceCallback
-    public void onAdminRemoved(int i) {
-        updateDataUsageState();
-        clearDatabasesOnAdminRemoval(i);
+    /* JADX WARN: Removed duplicated region for block: B:12:0x0055  */
+    /* JADX WARN: Removed duplicated region for block: B:17:0x006d  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final java.lang.String getKnoxServiceId(com.samsung.android.knox.ContextInfo r9) {
+        /*
+            r8 = this;
+            int r9 = android.os.Binder.getCallingUid()
+            android.content.Context r0 = r8.mContext
+            android.content.pm.PackageManager r0 = r0.getPackageManager()
+            java.lang.String[] r0 = r0.getPackagesForUid(r9)
+            java.lang.String r1 = "DeviceInfo"
+            java.lang.String r2 = ""
+            if (r0 == 0) goto Lb1
+            int r3 = r0.length
+            if (r3 != 0) goto L19
+            goto Lb1
+        L19:
+            r3 = 0
+            r0 = r0[r3]
+            int r4 = android.os.UserHandle.getUserId(r9)
+            android.content.pm.IPackageManager r5 = android.app.AppGlobals.getPackageManager()
+            java.lang.String r6 = "com.samsung.android.knox.permission.KNOX_INTERNAL_EXCEPTION"
+            int r4 = r5.checkPermission(r6, r0, r4)     // Catch: android.os.RemoteException -> L2f
+            if (r4 != 0) goto L33
+            r4 = 1
+            goto L34
+        L2f:
+            r4 = move-exception
+            r4.printStackTrace()
+        L33:
+            r4 = r3
+        L34:
+            java.lang.StringBuilder r5 = new java.lang.StringBuilder
+            java.lang.String r6 = "callingPackage "
+            r5.<init>(r6)
+            r5.append(r0)
+            java.lang.String r6 = ", isKnoxInternalApp = "
+            r5.append(r6)
+            r5.append(r4)
+            java.lang.String r5 = r5.toString()
+            android.util.Log.d(r1, r5)
+            java.lang.String r1 = "KnoxServiceIdTable"
+            java.lang.String r5 = "serviceId"
+            if (r4 == 0) goto L6d
+            android.content.ContentValues r0 = new android.content.ContentValues
+            r0.<init>()
+            java.lang.Integer r9 = java.lang.Integer.valueOf(r9)
+            java.lang.String r3 = "adminUid"
+            r0.put(r3, r9)
+            com.android.server.enterprise.storage.EdmStorageProvider r8 = r8.mEdmStorageProvider
+            java.lang.String r8 = r8.getString(r0, r1, r5)
+            if (r8 != 0) goto L6c
+            return r2
+        L6c:
+            return r8
+        L6d:
+            com.android.server.enterprise.storage.EdmStorageProvider r8 = r8.mEdmStorageProvider
+            r9 = 0
+            java.util.List r8 = r8.getValues(r1, r9, r9)
+            java.util.ArrayList r8 = (java.util.ArrayList) r8
+            boolean r9 = r8.isEmpty()
+            if (r9 != 0) goto Lb0
+            java.util.Iterator r8 = r8.iterator()
+        L80:
+            boolean r9 = r8.hasNext()
+            if (r9 == 0) goto Lb0
+            java.lang.Object r9 = r8.next()
+            android.content.ContentValues r9 = (android.content.ContentValues) r9
+            java.lang.String r1 = "packageList"
+            java.lang.String r1 = r9.getAsString(r1)
+            if (r1 == 0) goto L80
+            java.lang.String r4 = ","
+            java.lang.String[] r1 = r1.split(r4)
+            int r4 = r1.length
+            r6 = r3
+        L9d:
+            if (r6 >= r4) goto L80
+            r7 = r1[r6]
+            boolean r7 = r7.equals(r0)
+            if (r7 == 0) goto Lad
+            java.lang.String r9 = r9.getAsString(r5)
+            r2 = r9
+            goto L80
+        Lad:
+            int r6 = r6 + 1
+            goto L9d
+        Lb0:
+            return r2
+        Lb1:
+            java.lang.String r8 = "unable to find the packages for uid : "
+            com.android.server.NetworkScorerAppManager$$ExternalSyntheticOutline0.m(r9, r8, r1)
+            return r2
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.enterprise.device.DeviceInfo.getKnoxServiceId(com.samsung.android.knox.ContextInfo):java.lang.String");
     }
 
-    public String getSalesCode(ContextInfo contextInfo) {
+    public final List getKnoxServicePackageList(ContextInfo contextInfo) {
+        getEDM$8().enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_INTERNAL_EXCEPTION")));
+        int callingUid = Binder.getCallingUid();
+        ArrayList arrayList = new ArrayList();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("adminUid", Integer.valueOf(callingUid));
+        ArrayList arrayList2 = (ArrayList) this.mEdmStorageProvider.getValues("KnoxServiceIdTable", new String[]{"packageList"}, contentValues);
+        if (!arrayList2.isEmpty()) {
+            Iterator it = arrayList2.iterator();
+            while (it.hasNext()) {
+                String asString = ((ContentValues) it.next()).getAsString("packageList");
+                if (!asString.isEmpty()) {
+                    for (String str : asString.split(",")) {
+                        arrayList.add(str);
+                    }
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    public final int getMissedCallsCount(ContextInfo contextInfo) {
+        return getCallsCount(contextInfo, "missed");
+    }
+
+    public final String getModelName(ContextInfo contextInfo) {
+        return getString("ro.product.name");
+    }
+
+    public final String getModelNumber(ContextInfo contextInfo) {
+        return getString("ro.product.model");
+    }
+
+    public final String getModemFirmware(ContextInfo contextInfo) {
+        return getString("gsm.version.baseband");
+    }
+
+    public final List getOutboundMMSCaptured(ContextInfo contextInfo) {
+        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        ArrayList arrayList = new ArrayList();
+        try {
+            Iterator it = this.mEdmStorageProvider.getDataByFields("MMS", new String[]{"mmsType"}, new String[]{"0"}, null).iterator();
+            while (it.hasNext()) {
+                ContentValues contentValues = (ContentValues) it.next();
+                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "mmsCaptureAdmin")) {
+                    arrayList.add("To:" + contentValues.get("mmsAddress") + " - TimeStamp:" + contentValues.get("mmsTimeStamp") + " - Body:" + contentValues.get("mmsBody"));
+                }
+            }
+            return arrayList;
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not open edm database");
+            return arrayList;
+        }
+    }
+
+    public final List getOutboundSMSCaptured(ContextInfo contextInfo) {
+        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        ArrayList arrayList = new ArrayList();
+        try {
+            Iterator it = this.mEdmStorageProvider.getDataByFields("SMS", new String[]{"smsType"}, new String[]{"0"}, null).iterator();
+            while (it.hasNext()) {
+                ContentValues contentValues = (ContentValues) it.next();
+                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "smsCaptureAdmin")) {
+                    arrayList.add("To:" + contentValues.get("smsAddress") + " - TimeStamp:" + contentValues.get("smsTimeStamp") + " - Body:" + contentValues.get("smsBody"));
+                }
+            }
+            return arrayList;
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not open edm database");
+            return arrayList;
+        }
+    }
+
+    public final List getOutgoingCallingCaptured(ContextInfo contextInfo) {
+        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        if (!this.mTelMgr.isVoiceCapable()) {
+            return new ArrayList();
+        }
+        ArrayList arrayList = new ArrayList();
+        try {
+            Iterator it = this.mEdmStorageProvider.getDataByFields("CallingLog", new String[]{"callingType"}, new String[]{"0"}, null).iterator();
+            while (it.hasNext()) {
+                ContentValues contentValues = (ContentValues) it.next();
+                if (isCorrectAdmin(enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, contentValues, "callingCaptureAdmin")) {
+                    arrayList.add("To:" + contentValues.get("callingAddress") + " - TimeStamp:" + contentValues.get("callingTimeStamp") + " - Duration:" + contentValues.get("callingDuration") + " - Status:" + contentValues.get("callingStatus"));
+                }
+            }
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not log edm database");
+        }
+        return arrayList;
+    }
+
+    public final int getPlatformSDK(ContextInfo contextInfo) {
+        try {
+            return SystemProperties.getInt("ro.build.version.sdk", -1);
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not get property");
+            return -1;
+        }
+    }
+
+    public final String getPlatformVersion(ContextInfo contextInfo) {
+        return getString("ro.build.version.release");
+    }
+
+    public final String getPlatformVersionName(ContextInfo contextInfo) {
+        return "UNKNOWN";
+    }
+
+    public final String getSalesCode(ContextInfo contextInfo) {
         String str = SystemProperties.get("ril.sales_code", "none");
         if ("none".equals(str)) {
             str = SystemProperties.get("ro.csc.sales_code", "BTU");
@@ -1565,5 +1399,473 @@ public class DeviceInfo extends IDeviceInfo.Stub implements EnterpriseServiceCal
             e = e2;
         }
         return str;
+    }
+
+    public final String getSerialNumber(ContextInfo contextInfo) {
+        try {
+            getEDM$8().enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("android.permission.READ_PRIVILEGED_PHONE_STATE")));
+            String string = getString("ril.serialnumber");
+            if (!TextUtils.isEmpty(string)) {
+                if (string.equals("00000000000")) {
+                }
+                return string;
+            }
+            string = getString("ro.boot.serialno");
+            return string;
+        } catch (SecurityException unused) {
+            return "00000000000";
+        }
+    }
+
+    public final int getStrictDataUsageTimer() {
+        int i = 0;
+        Iterator it = this.mEdmStorageProvider.getIntListAsUser(0, 0, "MISC", "miscDataStatisticTimer").iterator();
+        while (it.hasNext()) {
+            int intValue = ((Integer) it.next()).intValue();
+            if (i == 0 || intValue < i) {
+                i = intValue;
+            }
+        }
+        if (i == 0) {
+            return 3;
+        }
+        return i;
+    }
+
+    public final int getSuccessCallsCount(ContextInfo contextInfo) {
+        return getCallsCount(contextInfo, "success");
+    }
+
+    public final long getTotalCapacityExternal(ContextInfo contextInfo) {
+        try {
+            String externalSdCardPath = ((StorageManagerAdapter) ((IStorageManagerAdapter) AdapterRegistry.mAdapterHandles.get(IStorageManagerAdapter.class))).getExternalSdCardPath();
+            File file = null;
+            String volumeState = externalSdCardPath == null ? null : StorageManagerAdapter.mStorageManager.getVolumeState(externalSdCardPath);
+            if (!(volumeState == null ? false : volumeState.equals("mounted"))) {
+                return -1L;
+            }
+            String externalSdCardPath2 = ((StorageManagerAdapter) ((IStorageManagerAdapter) AdapterRegistry.mAdapterHandles.get(IStorageManagerAdapter.class))).getExternalSdCardPath();
+            if (externalSdCardPath2 != null) {
+                file = new File(externalSdCardPath2);
+            }
+            if (file == null) {
+                return -1L;
+            }
+            StatFs statFs = new StatFs(file.getPath());
+            return statFs.getBlockCountLong() * statFs.getBlockSizeLong();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1L;
+        }
+    }
+
+    public final long getTotalCapacityInternal(ContextInfo contextInfo) {
+        String path;
+        try {
+            StatFs statFs = new StatFs(Environment.getDataDirectory().getPath());
+            long blockCountLong = statFs.getBlockCountLong() * statFs.getBlockSizeLong();
+            ((StorageManagerAdapter) ((IStorageManagerAdapter) AdapterRegistry.mAdapterHandles.get(IStorageManagerAdapter.class))).getClass();
+            StorageVolume[] volumeList = StorageManagerAdapter.mStorageManager.getVolumeList();
+            File file = null;
+            if (volumeList == null || volumeList.length <= 0 || volumeList[0].getPath() == null) {
+                path = null;
+            } else {
+                StorageVolume storageVolume = volumeList[0];
+                path = storageVolume.getSubSystem().equals("fuse") ? "/" : storageVolume.getPath();
+            }
+            if (path != null) {
+                file = new File(path);
+            }
+            if (file == null) {
+                return -1L;
+            }
+            StatFs statFs2 = new StatFs(file.getPath());
+            return (statFs2.getBlockCountLong() * statFs2.getBlockSizeLong()) + blockCountLong;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1L;
+        }
+    }
+
+    public final long getTotalRamMemory(ContextInfo contextInfo) {
+        long[] jArr = {r0};
+        Process.readProcLines("/proc/meminfo", new String[]{"MemTotal:"}, jArr);
+        long j = jArr[0] * 1024;
+        return j;
+    }
+
+    public final long getTrafficMobileRx() {
+        long mobileRxBytes = TrafficStats.getMobileRxBytes();
+        if (this.mLastUpdateMobileRx > 0 && !this.mTelMgr.isDataEnabled()) {
+            mobileRxBytes = this.mLastUpdateMobileRx;
+        }
+        if (-1 == mobileRxBytes) {
+            return 0L;
+        }
+        return mobileRxBytes;
+    }
+
+    public final long getTrafficMobileTx() {
+        long mobileTxBytes = TrafficStats.getMobileTxBytes();
+        if (this.mLastUpdateMobileTx > 0 && !this.mTelMgr.isDataEnabled()) {
+            mobileTxBytes = this.mLastUpdateMobileTx;
+        }
+        if (-1 == mobileTxBytes) {
+            return 0L;
+        }
+        return mobileTxBytes;
+    }
+
+    public final boolean getWifiStatisticEnabled(ContextInfo contextInfo) {
+        Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "MISC", "enableWifiDataStatistic").iterator();
+        while (it.hasNext()) {
+            boolean booleanValue = ((Boolean) it.next()).booleanValue();
+            if (booleanValue) {
+                return booleanValue;
+            }
+        }
+        return false;
+    }
+
+    public final boolean isCallingCaptureEnabled(ContextInfo contextInfo) {
+        if (Binder.getCallingUid() != 1001) {
+            enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        }
+        if (!this.mTelMgr.isVoiceCapable()) {
+            return false;
+        }
+        try {
+            Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "MISC", "CallingLogEnabled").iterator();
+            while (it.hasNext()) {
+                if (((Boolean) it.next()).booleanValue()) {
+                    return true;
+                }
+            }
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not open edm database");
+        }
+        return false;
+    }
+
+    public final boolean isDeviceLocked(ContextInfo contextInfo) {
+        try {
+            return ((KeyguardManager) this.mContext.getSystemService("keyguard")).isKeyguardLocked();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public final boolean isDeviceSecure(ContextInfo contextInfo) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        int callingOrCurrentUserId = Utils.getCallingOrCurrentUserId(contextInfo);
+        long clearCallingIdentity = Binder.clearCallingIdentity();
+        try {
+            try {
+                boolean isSecure = new LockPatternUtils(this.mContext).isSecure(callingOrCurrentUserId);
+                Log.d("DeviceInfo", "isDeviceSecure " + isSecure);
+                return isSecure;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                return false;
+            }
+        } finally {
+            Binder.restoreCallingIdentity(clearCallingIdentity);
+        }
+    }
+
+    public final boolean isMMSCaptureEnabled(ContextInfo contextInfo) {
+        try {
+            Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "MISC", "mmsLogEnabled").iterator();
+            while (it.hasNext()) {
+                if (((Boolean) it.next()).booleanValue()) {
+                    return true;
+                }
+            }
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not open edm database");
+        }
+        return false;
+    }
+
+    public final boolean isSMSCaptureEnabled(ContextInfo contextInfo) {
+        if (Binder.getCallingUid() != 1001) {
+            enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        }
+        try {
+            Iterator it = this.mEdmStorageProvider.getBooleanListAsUser(0, "MISC", "smsLogEnabled").iterator();
+            while (it.hasNext()) {
+                if (((Boolean) it.next()).booleanValue()) {
+                    return true;
+                }
+            }
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not open edm database");
+        }
+        return false;
+    }
+
+    public final boolean isWifiStateEnabled() {
+        if (this.mWifiManager == null) {
+            this.mWifiManager = (WifiManager) this.mContext.getSystemService("wifi");
+        }
+        WifiManager wifiManager = this.mWifiManager;
+        return wifiManager != null && wifiManager.getWifiState() == 3;
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void notifyToAddSystemService(String str, IBinder iBinder) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminAdded(int i) {
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onAdminRemoved(int i) {
+        ContextInfo contextInfo = new ContextInfo(Binder.getCallingUid());
+        this.mWifiStatsEnabled = getWifiStatisticEnabled(contextInfo);
+        this.mDataStatsEnabled = getDataCallStatisticsEnabled(contextInfo);
+        this.mDataLogEnabled = getDataCallLoggingEnabled(contextInfo);
+        dataUsageTimerActivation(contextInfo);
+        clearLog(i, "CallingLog", "callingCaptureAdmin", true);
+        clearLog(i, "SMS", "smsCaptureAdmin", true);
+        clearLog(i, "MMS", "mmsCaptureAdmin", true);
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void onPreAdminRemoval(int i) {
+    }
+
+    public final boolean resetCallsCount(ContextInfo contextInfo) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        if (!this.mTelMgr.isVoiceCapable()) {
+            return false;
+        }
+        return this.mEdmStorageProvider.putGenericValueAsUser(0, "dropped", "0") & this.mEdmStorageProvider.putGenericValueAsUser(0, "success", "0") & this.mEdmStorageProvider.putGenericValueAsUser(0, "missed", "0");
+    }
+
+    public final boolean resetDataCallLogging(ContextInfo contextInfo, String str) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        this.mDataCallLogLastTime = 0L;
+        this.mDataCallLogLastValue = 0L;
+        ContentValues m = str != null ? AccountManagerService$$ExternalSyntheticOutline0.m("dataCallDate<=?", str) : null;
+        EdmStorageProvider edmStorageProvider = this.mEdmStorageProvider;
+        SQLiteDatabase writableDatabase = edmStorageProvider.mEdmDbHelper.getWritableDatabase();
+        if (m == null) {
+            if (writableDatabase.delete("DATACALLLOG", "1", null) < 0) {
+                return false;
+            }
+        } else if (edmStorageProvider.delete("DATACALLLOG", m) <= 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public final void resetDataUsage(ContextInfo contextInfo) {
+        enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        this.mDataUsageEventsHandler.removeCallbacks(this.mDataStatisticsUpdateRun);
+        this.mStorageWifiTx = 0L;
+        this.mStorageWifiRx = 0L;
+        this.mStorageMobileTx = 0L;
+        this.mStorageMobileRx = 0L;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("deviceWifiSent", Long.valueOf(this.mStorageWifiTx));
+        contentValues.put("deviceWifiReceived", Long.valueOf(this.mStorageWifiRx));
+        contentValues.put("deviceNetworkSent", Long.valueOf(this.mStorageMobileTx));
+        contentValues.put("deviceNetworkReceived", Long.valueOf(this.mStorageMobileRx));
+        this.mEdmStorageProvider.putValues("DEVICE", contentValues);
+        this.mLastUpdateWifiTx = getTrafficWifiTx();
+        this.mLastUpdateWifiRx = getTrafficWifiRx();
+        this.mLastUpdateMobileTx = getTrafficMobileTx();
+        this.mLastUpdateMobileRx = getTrafficMobileRx();
+        if (this.mDataUsageTimerActivated) {
+            this.mDataUsageEventsHandler.postDelayed(this.mDataStatisticsUpdateRun, 0L);
+        }
+    }
+
+    public final boolean setDataCallLoggingEnabled(ContextInfo contextInfo, boolean z) {
+        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("PHONERESTRICTION", enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, z, 0, "enableDataCallLogging");
+        if (putBoolean) {
+            this.mDataLogEnabled = getDataCallLoggingEnabled(enforceOwnerOnlyAndDeviceInventoryPermission);
+            dataUsageTimerActivation(enforceOwnerOnlyAndDeviceInventoryPermission);
+        }
+        return putBoolean;
+    }
+
+    public final boolean setDataCallStatisticsEnabled(ContextInfo contextInfo, boolean z) {
+        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("PHONERESTRICTION", enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, z, 0, "enableWifiDataCallDataStatistic");
+        if (putBoolean) {
+            this.mDataStatsEnabled = getDataCallStatisticsEnabled(enforceOwnerOnlyAndDeviceInventoryPermission);
+            dataUsageTimerActivation(enforceOwnerOnlyAndDeviceInventoryPermission);
+        }
+        return putBoolean;
+    }
+
+    public final boolean setDataUsageTimer(ContextInfo contextInfo, int i) {
+        int i2 = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo).mCallerUid;
+        this.mDataUsageEventsHandler.removeCallbacks(this.mDataStatisticsUpdateRun);
+        if (i < 1 || i > 60) {
+            i = 3;
+        }
+        boolean putInt = this.mEdmStorageProvider.putInt(i2, 0, i, "MISC", "miscDataStatisticTimer");
+        if (putInt) {
+            this.mDataUsageTimer = getStrictDataUsageTimer() * 1000;
+        }
+        if (this.mDataUsageTimerActivated) {
+            this.mDataUsageEventsHandler.postDelayed(this.mDataStatisticsUpdateRun, this.mDataUsageTimer);
+        }
+        return putInt;
+    }
+
+    public final boolean setKnoxServiceId(ContextInfo contextInfo, List list, String str) {
+        getEDM$8().enforceActiveAdminPermissionByContext(contextInfo, new ArrayList(Arrays.asList("com.samsung.android.knox.permission.KNOX_INTERNAL_EXCEPTION")));
+        if (list == null || list.size() == 0 || TextUtils.isEmpty(str)) {
+            Log.d("DeviceInfo", "packageList or serviceId is null");
+            return false;
+        }
+        int callingUid = Binder.getCallingUid();
+        ArrayList arrayList = (ArrayList) this.mEdmStorageProvider.getValues("KnoxServiceIdTable", new String[]{"adminUid", "packageList"}, null);
+        if (!arrayList.isEmpty()) {
+            Iterator it = arrayList.iterator();
+            while (it.hasNext()) {
+                ContentValues contentValues = (ContentValues) it.next();
+                String asString = contentValues.getAsString("packageList");
+                int intValue = contentValues.getAsInteger("adminUid").intValue();
+                if (asString != null) {
+                    List asList = Arrays.asList(asString.split(","));
+                    Iterator it2 = list.iterator();
+                    while (it2.hasNext()) {
+                        String str2 = (String) it2.next();
+                        if (asList != null && asList.contains(str2) && intValue != callingUid) {
+                            Log.i("DeviceInfo", str2 + " already stored by uid " + intValue);
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        Iterator it3 = list.iterator();
+        while (it3.hasNext()) {
+            String str3 = (String) it3.next();
+            if (str3 != null && str3.length() > 0) {
+                sb.append(str3.trim() + ",");
+            }
+        }
+        ContentValues contentValues2 = new ContentValues();
+        contentValues2.put("adminUid", Integer.valueOf(callingUid));
+        contentValues2.put("packageList", sb.toString());
+        contentValues2.put("serviceId", str);
+        ContentValues contentValues3 = new ContentValues();
+        contentValues3.put("adminUid", Integer.valueOf(callingUid));
+        if (this.mEdmStorageProvider.putValues("KnoxServiceIdTable", contentValues2, contentValues3)) {
+            return true;
+        }
+        Log.d("DeviceInfo", "setKnoxServiceId() fail");
+        return false;
+    }
+
+    public final boolean setWifiStatisticEnabled(ContextInfo contextInfo, boolean z) {
+        ContextInfo enforceOwnerOnlyAndDeviceInventoryPermission = enforceOwnerOnlyAndDeviceInventoryPermission(contextInfo);
+        boolean putBoolean = this.mEdmStorageProvider.putBoolean("MISC", enforceOwnerOnlyAndDeviceInventoryPermission.mCallerUid, z, 0, "enableWifiDataStatistic");
+        if (putBoolean) {
+            this.mWifiStatsEnabled = getWifiStatisticEnabled(enforceOwnerOnlyAndDeviceInventoryPermission);
+            dataUsageTimerActivation(enforceOwnerOnlyAndDeviceInventoryPermission);
+        }
+        return putBoolean;
+    }
+
+    public final void storeCalling(String str, String str2, String str3, String str4, boolean z) {
+        if (Binder.getCallingUid() != 1001) {
+            throw new SecurityException("Can only be called by internal phone");
+        }
+        if (this.mTelMgr.isVoiceCapable()) {
+            ContentValues contentValues = new ContentValues();
+            ContentValues contentValues2 = new ContentValues();
+            StringBuilder sb = new StringBuilder();
+            try {
+                contentValues2.put("CallingLogEnabled", (Integer) 1);
+                Iterator it = ((ArrayList) this.mEdmStorageProvider.getValues("MISC", new String[]{"adminUid"}, contentValues2)).iterator();
+                while (it.hasNext()) {
+                    sb.append(((ContentValues) it.next()).getAsString("adminUid"));
+                    sb.append(";");
+                }
+                if (sb.toString().isEmpty()) {
+                    return;
+                }
+                contentValues.put("callingType", z ? "1" : "0");
+                contentValues.put("callingStatus", str4);
+                contentValues.put("callingAddress", str);
+                contentValues.put("callingTimeStamp", str2);
+                contentValues.put("callingDuration", str3);
+                contentValues.put("callingCaptureAdmin", sb.toString());
+                this.mEdmStorageProvider.insertConfiguration("CallingLog", contentValues);
+            } catch (Exception unused) {
+                Log.w("DeviceInfo", "could not write log edm database");
+            }
+        }
+    }
+
+    public final void storeMMS(String str, String str2, String str3, boolean z) {
+        if (Binder.getCallingPid() == Process.myPid()) {
+            ContentValues contentValues = new ContentValues();
+            ContentValues contentValues2 = new ContentValues();
+            StringBuilder sb = new StringBuilder();
+            try {
+                contentValues2.put("mmsLogEnabled", (Integer) 1);
+                Iterator it = ((ArrayList) this.mEdmStorageProvider.getValues("MISC", new String[]{"adminUid"}, contentValues2)).iterator();
+                while (it.hasNext()) {
+                    sb.append(((ContentValues) it.next()).getAsString("adminUid"));
+                    sb.append(";");
+                }
+                if (sb.toString().isEmpty()) {
+                    return;
+                }
+                contentValues.put("mmsType", z ? "1" : "0");
+                contentValues.put("mmsAddress", str);
+                contentValues.put("mmsTimeStamp", str2);
+                contentValues.put("mmsBody", str3);
+                contentValues.put("mmsCaptureAdmin", sb.toString());
+                this.mEdmStorageProvider.insertConfiguration("MMS", contentValues);
+            } catch (Exception unused) {
+                Log.w("DeviceInfo", "could not write log edm database");
+            }
+        }
+    }
+
+    public final void storeSMS(String str, String str2, String str3, boolean z) {
+        if (Binder.getCallingUid() != 1001) {
+            throw new SecurityException("Can only be called by internal phone");
+        }
+        ContentValues contentValues = new ContentValues();
+        ContentValues contentValues2 = new ContentValues();
+        StringBuilder sb = new StringBuilder();
+        try {
+            contentValues2.put("smsLogEnabled", (Integer) 1);
+            Iterator it = ((ArrayList) this.mEdmStorageProvider.getValues("MISC", new String[]{"adminUid"}, contentValues2)).iterator();
+            while (it.hasNext()) {
+                sb.append(((ContentValues) it.next()).getAsString("adminUid"));
+                sb.append(";");
+            }
+            if (sb.toString().isEmpty()) {
+                return;
+            }
+            contentValues.put("smsType", z ? "1" : "0");
+            contentValues.put("smsAddress", str);
+            contentValues.put("smsTimeStamp", str2);
+            contentValues.put("smsBody", str3);
+            contentValues.put("smsCaptureAdmin", sb.toString());
+            this.mEdmStorageProvider.insertConfiguration("SMS", contentValues);
+        } catch (Exception unused) {
+            Log.w("DeviceInfo", "could not write log edm database");
+        }
+    }
+
+    @Override // com.android.server.enterprise.EnterpriseServiceCallback
+    public final void systemReady() {
     }
 }

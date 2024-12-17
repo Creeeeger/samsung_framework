@@ -2,489 +2,465 @@ package com.android.server.wm;
 
 import android.R;
 import android.app.ActivityManager;
+import android.graphics.Rect;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.util.ArraySet;
+import android.util.IntArray;
+import android.util.Slog;
 import android.util.SparseArray;
 import android.window.TaskSnapshot;
-import com.android.server.LocalServices;
-import com.android.server.display.DisplayPowerController2;
-import com.android.server.pm.UserManagerInternal;
-import com.android.server.wm.BaseAppSnapshotPersister;
-import com.android.server.wm.SnapshotController;
+import com.android.internal.util.ToBooleanFunction;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.accessibility.magnification.FullScreenMagnificationGestureHandler;
+import com.android.server.wm.ActivitySnapshotController;
 import com.android.server.wm.SnapshotPersistQueue;
+import com.android.window.flags.Flags;
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.function.Consumer;
 
-/* loaded from: classes3.dex */
-public class ActivitySnapshotController extends AbsAppSnapshotController {
-    final ArraySet mPendingCaptureActivity;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class ActivitySnapshotController extends AbsAppSnapshotController {
+    public final ArraySet mOnBackPressedActivities;
     final ArraySet mPendingDeleteActivity;
     final ArraySet mPendingLoadActivity;
     final ArraySet mPendingRemoveActivity;
-    public final BaseAppSnapshotPersister.PersistInfoProvider mPersistInfoProvider;
+    public final BaseAppSnapshotPersister$PersistInfoProvider mPersistInfoProvider;
     public final TaskSnapshotPersister mPersister;
     public final ArrayList mSavedFilesInOrder;
     public final AppSnapshotLoader mSnapshotLoader;
     public final SnapshotPersistQueue mSnapshotPersistQueue;
+    public final ArrayList mTmpBelowActivities;
+    public final ArrayList mTmpTransitionParticipants;
     public final SparseArray mUserSavedFiles;
 
-    @Override // com.android.server.wm.AbsAppSnapshotController
-    public ActivityRecord getTopActivity(ActivityRecord activityRecord) {
-        return activityRecord;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.wm.ActivitySnapshotController$1, reason: invalid class name */
+    public final class AnonymousClass1 extends SnapshotPersistQueue.WriteQueueItem {
+        @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
+        public final void write() {
+            File[] listFiles;
+            Trace.traceBegin(32L, "cleanUpUserFiles");
+            File directory = this.mPersistInfoProvider.getDirectory(this.mUserId);
+            if (directory.exists() && (listFiles = directory.listFiles()) != null) {
+                for (int length = listFiles.length - 1; length >= 0; length--) {
+                    listFiles[length].delete();
+                }
+            }
+            Trace.traceEnd(32L);
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class LoadActivitySnapshotItem extends SnapshotPersistQueue.WriteQueueItem {
+        public final ActivityRecord[] mActivities;
+        public final int mCode;
+
+        public LoadActivitySnapshotItem(ActivityRecord[] activityRecordArr, int i, int i2, BaseAppSnapshotPersister$PersistInfoProvider baseAppSnapshotPersister$PersistInfoProvider) {
+            super(baseAppSnapshotPersister$PersistInfoProvider, i2);
+            this.mActivities = activityRecordArr;
+            this.mCode = i;
+        }
+
+        public final boolean equals(Object obj) {
+            if (obj == null || LoadActivitySnapshotItem.class != obj.getClass()) {
+                return false;
+            }
+            LoadActivitySnapshotItem loadActivitySnapshotItem = (LoadActivitySnapshotItem) obj;
+            return this.mCode == loadActivitySnapshotItem.mCode && this.mUserId == loadActivitySnapshotItem.mUserId && this.mPersistInfoProvider == loadActivitySnapshotItem.mPersistInfoProvider;
+        }
+
+        public final String toString() {
+            StringBuilder sb = new StringBuilder("LoadActivitySnapshotItem{code=");
+            sb.append(this.mCode);
+            sb.append(", UserId=");
+            return AmFmBandRange$$ExternalSyntheticOutline0.m(this.mUserId, sb, "}");
+        }
+
+        @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
+        public final void write() {
+            try {
+                Trace.traceBegin(32L, "load_activity_snapshot");
+                TaskSnapshot loadTask = ActivitySnapshotController.this.mSnapshotLoader.loadTask(this.mCode, this.mUserId, false);
+                if (loadTask == null) {
+                    return;
+                }
+                synchronized (ActivitySnapshotController.this.mService.mGlobalLock) {
+                    if (ActivitySnapshotController.this.hasRecord(this.mActivities[0])) {
+                        for (ActivityRecord activityRecord : this.mActivities) {
+                            ((ActivitySnapshotCache) ActivitySnapshotController.this.mCache).putSnapshot(loadTask, activityRecord);
+                        }
+                    }
+                }
+            } finally {
+                Trace.traceEnd(32L);
+            }
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class UserSavedFile {
+        public final IntArray mActivityIds = new IntArray();
+        public final int mFileId;
+        public final int mUserId;
+
+        public UserSavedFile(int i, int i2) {
+            this.mFileId = i;
+            this.mUserId = i2;
+        }
+
+        public final String toString() {
+            StringBuilder m = BootReceiver$$ExternalSyntheticOutline0.m(128, "UserSavedFile{");
+            m.append(Integer.toHexString(System.identityHashCode(this)));
+            m.append(" fileId=");
+            BatteryService$$ExternalSyntheticOutline0.m(this.mFileId, m, ", activityIds=[");
+            for (int size = this.mActivityIds.size() - 1; size >= 0; size--) {
+                m.append(Integer.toHexString(this.mActivityIds.get(size)));
+                if (size > 0) {
+                    m.append(',');
+                }
+            }
+            m.append("]}");
+            return m.toString();
+        }
     }
 
     public ActivitySnapshotController(WindowManagerService windowManagerService, SnapshotPersistQueue snapshotPersistQueue) {
         super(windowManagerService);
-        this.mPendingCaptureActivity = new ArraySet();
         this.mPendingRemoveActivity = new ArraySet();
         this.mPendingDeleteActivity = new ArraySet();
         this.mPendingLoadActivity = new ArraySet();
+        this.mOnBackPressedActivities = new ArraySet();
+        this.mTmpBelowActivities = new ArrayList();
+        this.mTmpTransitionParticipants = new ArrayList();
         this.mUserSavedFiles = new SparseArray();
         this.mSavedFilesInOrder = new ArrayList();
         this.mSnapshotPersistQueue = snapshotPersistQueue;
-        BaseAppSnapshotPersister.PersistInfoProvider createPersistInfoProvider = createPersistInfoProvider(windowManagerService, new ActivitySnapshotController$$ExternalSyntheticLambda0());
-        this.mPersistInfoProvider = createPersistInfoProvider;
-        this.mPersister = new TaskSnapshotPersister(snapshotPersistQueue, createPersistInfoProvider);
-        this.mSnapshotLoader = new AppSnapshotLoader(createPersistInfoProvider);
-        initialize(new ActivitySnapshotCache(windowManagerService));
-        setSnapshotEnabled((windowManagerService.mContext.getResources().getBoolean(R.bool.use_lock_pattern_drawable) || !isSnapshotEnabled() || ActivityManager.isLowRamDeviceStatic()) ? false : true);
-    }
-
-    public void systemReady() {
-        if (shouldDisableSnapshots()) {
-            return;
+        BaseAppSnapshotPersister$PersistInfoProvider baseAppSnapshotPersister$PersistInfoProvider = new BaseAppSnapshotPersister$PersistInfoProvider(new ActivitySnapshotController$$ExternalSyntheticLambda1(), "activity_snapshots", false, FullScreenMagnificationGestureHandler.MAX_SCALE, windowManagerService.mContext.getResources().getBoolean(R.bool.config_use_strict_phone_number_comparation_for_kazakhstan));
+        this.mPersistInfoProvider = baseAppSnapshotPersister$PersistInfoProvider;
+        this.mPersister = new TaskSnapshotPersister(snapshotPersistQueue, baseAppSnapshotPersister$PersistInfoProvider);
+        this.mSnapshotLoader = new AppSnapshotLoader(baseAppSnapshotPersister$PersistInfoProvider);
+        this.mCache = new ActivitySnapshotCache("Activity");
+        boolean z = false;
+        if (!windowManagerService.mContext.getResources().getBoolean(R.bool.config_displayBlanksAfterDoze) && ((SystemProperties.getInt("persist.wm.debug.activity_screenshot", 0) != 0 || Flags.activitySnapshotByDefault()) && !ActivityManager.isLowRamDeviceStatic())) {
+            z = true;
         }
-        this.mService.mSnapshotController.registerTransitionStateConsumer(1, new Consumer() { // from class: com.android.server.wm.ActivitySnapshotController$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ActivitySnapshotController.this.handleOpenActivityTransition((SnapshotController.TransitionState) obj);
-            }
-        });
-        this.mService.mSnapshotController.registerTransitionStateConsumer(2, new Consumer() { // from class: com.android.server.wm.ActivitySnapshotController$$ExternalSyntheticLambda2
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ActivitySnapshotController.this.handleCloseActivityTransition((SnapshotController.TransitionState) obj);
-            }
-        });
-        this.mService.mSnapshotController.registerTransitionStateConsumer(4, new Consumer() { // from class: com.android.server.wm.ActivitySnapshotController$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ActivitySnapshotController.this.handleOpenTaskTransition((SnapshotController.TransitionState) obj);
-            }
-        });
-        this.mService.mSnapshotController.registerTransitionStateConsumer(8, new Consumer() { // from class: com.android.server.wm.ActivitySnapshotController$$ExternalSyntheticLambda4
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ActivitySnapshotController.this.handleCloseTaskTransition((SnapshotController.TransitionState) obj);
-            }
-        });
-    }
-
-    @Override // com.android.server.wm.AbsAppSnapshotController
-    public float initSnapshotScale() {
-        return Math.max(Math.min(this.mService.mContext.getResources().getFloat(R.dimen.date_picker_day_of_week_height), 1.0f), 0.1f);
-    }
-
-    public static boolean isSnapshotEnabled() {
-        return SystemProperties.getInt("persist.wm.debug.activity_screenshot", 0) != 0;
-    }
-
-    public static BaseAppSnapshotPersister.PersistInfoProvider createPersistInfoProvider(WindowManagerService windowManagerService, BaseAppSnapshotPersister.DirectoryResolver directoryResolver) {
-        return new BaseAppSnapshotPersister.PersistInfoProvider(directoryResolver, "activity_snapshots", false, DisplayPowerController2.RATE_FROM_DOZE_TO_ON, windowManagerService.mContext.getResources().getBoolean(17891889));
-    }
-
-    public final void cleanUpUserFiles(int i) {
-        synchronized (this.mSnapshotPersistQueue.getLock()) {
-            this.mSnapshotPersistQueue.sendToQueueLocked(new SnapshotPersistQueue.WriteQueueItem(this.mPersistInfoProvider) { // from class: com.android.server.wm.ActivitySnapshotController.1
-                public final /* synthetic */ int val$userId;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                public AnonymousClass1(BaseAppSnapshotPersister.PersistInfoProvider persistInfoProvider, int i2) {
-                    super(persistInfoProvider);
-                    r3 = i2;
-                }
-
-                @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
-                public boolean isReady() {
-                    return ((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).isUserUnlocked(r3);
-                }
-
-                @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
-                public void write() {
-                    File[] listFiles;
-                    File directory = this.mPersistInfoProvider.getDirectory(r3);
-                    if (!directory.exists() || (listFiles = directory.listFiles()) == null) {
-                        return;
-                    }
-                    for (int length = listFiles.length - 1; length >= 0; length--) {
-                        listFiles[length].delete();
-                    }
-                }
-            });
-        }
-    }
-
-    /* renamed from: com.android.server.wm.ActivitySnapshotController$1 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass1 extends SnapshotPersistQueue.WriteQueueItem {
-        public final /* synthetic */ int val$userId;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        public AnonymousClass1(BaseAppSnapshotPersister.PersistInfoProvider persistInfoProvider, int i2) {
-            super(persistInfoProvider);
-            r3 = i2;
-        }
-
-        @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
-        public boolean isReady() {
-            return ((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).isUserUnlocked(r3);
-        }
-
-        @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
-        public void write() {
-            File[] listFiles;
-            File directory = this.mPersistInfoProvider.getDirectory(r3);
-            if (!directory.exists() || (listFiles = directory.listFiles()) == null) {
-                return;
-            }
-            for (int length = listFiles.length - 1; length >= 0; length--) {
-                listFiles[length].delete();
-            }
-        }
-    }
-
-    public void preTransitionStart() {
-        if (shouldDisableSnapshots()) {
-            return;
-        }
-        resetTmpFields();
-    }
-
-    public void postTransitionStart() {
-        if (shouldDisableSnapshots()) {
-            return;
-        }
-        onCommitTransition();
-    }
-
-    public void resetTmpFields() {
-        this.mPendingCaptureActivity.clear();
-        this.mPendingRemoveActivity.clear();
-        this.mPendingDeleteActivity.clear();
-        this.mPendingLoadActivity.clear();
-    }
-
-    public final void onCommitTransition() {
-        for (int size = this.mPendingCaptureActivity.size() - 1; size >= 0; size--) {
-            recordSnapshot((ActivityRecord) this.mPendingCaptureActivity.valueAt(size));
-        }
-        for (int size2 = this.mPendingRemoveActivity.size() - 1; size2 >= 0; size2--) {
-            ((ActivitySnapshotCache) this.mCache).onIdRemoved(Integer.valueOf(getSystemHashCode((ActivityRecord) this.mPendingRemoveActivity.valueAt(size2))));
-        }
-        for (int size3 = this.mPendingDeleteActivity.size() - 1; size3 >= 0; size3--) {
-            ActivityRecord activityRecord = (ActivityRecord) this.mPendingDeleteActivity.valueAt(size3);
-            int systemHashCode = getSystemHashCode(activityRecord);
-            ((ActivitySnapshotCache) this.mCache).onIdRemoved(Integer.valueOf(systemHashCode));
-            removeIfUserSavedFileExist(systemHashCode, activityRecord.mUserId);
-        }
-        for (int size4 = this.mPendingLoadActivity.size() - 1; size4 >= 0; size4--) {
-            ActivityRecord activityRecord2 = (ActivityRecord) this.mPendingLoadActivity.valueAt(size4);
-            int systemHashCode2 = getSystemHashCode(activityRecord2);
-            int i = activityRecord2.mUserId;
-            if (((ActivitySnapshotCache) this.mCache).getSnapshot(Integer.valueOf(systemHashCode2)) == null && containsFile(systemHashCode2, i)) {
-                synchronized (this.mSnapshotPersistQueue.getLock()) {
-                    this.mSnapshotPersistQueue.sendToQueueLocked(new SnapshotPersistQueue.WriteQueueItem(this.mPersistInfoProvider) { // from class: com.android.server.wm.ActivitySnapshotController.2
-                        public final /* synthetic */ ActivityRecord val$ar;
-                        public final /* synthetic */ int val$code;
-                        public final /* synthetic */ int val$userId;
-
-                        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                        public AnonymousClass2(BaseAppSnapshotPersister.PersistInfoProvider persistInfoProvider, int systemHashCode22, int i2, ActivityRecord activityRecord22) {
-                            super(persistInfoProvider);
-                            r3 = systemHashCode22;
-                            r4 = i2;
-                            r5 = activityRecord22;
-                        }
-
-                        @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
-                        public void write() {
-                            TaskSnapshot loadTask = ActivitySnapshotController.this.mSnapshotLoader.loadTask(r3, r4, false);
-                            synchronized (ActivitySnapshotController.this.mService.getWindowManagerLock()) {
-                                if (loadTask != null) {
-                                    ActivityRecord activityRecord3 = r5;
-                                    if (!activityRecord3.finishing) {
-                                        ((ActivitySnapshotCache) ActivitySnapshotController.this.mCache).putSnapshot(activityRecord3, loadTask);
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        }
-        resetTmpFields();
-    }
-
-    /* renamed from: com.android.server.wm.ActivitySnapshotController$2 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass2 extends SnapshotPersistQueue.WriteQueueItem {
-        public final /* synthetic */ ActivityRecord val$ar;
-        public final /* synthetic */ int val$code;
-        public final /* synthetic */ int val$userId;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        public AnonymousClass2(BaseAppSnapshotPersister.PersistInfoProvider persistInfoProvider, int systemHashCode22, int i2, ActivityRecord activityRecord22) {
-            super(persistInfoProvider);
-            r3 = systemHashCode22;
-            r4 = i2;
-            r5 = activityRecord22;
-        }
-
-        @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
-        public void write() {
-            TaskSnapshot loadTask = ActivitySnapshotController.this.mSnapshotLoader.loadTask(r3, r4, false);
-            synchronized (ActivitySnapshotController.this.mService.getWindowManagerLock()) {
-                if (loadTask != null) {
-                    ActivityRecord activityRecord3 = r5;
-                    if (!activityRecord3.finishing) {
-                        ((ActivitySnapshotCache) ActivitySnapshotController.this.mCache).putSnapshot(activityRecord3, loadTask);
-                    }
-                }
-            }
-        }
-    }
-
-    public final void recordSnapshot(ActivityRecord activityRecord) {
-        TaskSnapshot recordSnapshotInner = recordSnapshotInner(activityRecord, false);
-        if (recordSnapshotInner != null) {
-            addUserSavedFile(getSystemHashCode(activityRecord), activityRecord.mUserId, recordSnapshotInner);
-        }
-    }
-
-    public void notifyAppVisibilityChanged(ActivityRecord activityRecord, boolean z) {
-        if (shouldDisableSnapshots() || z) {
-            return;
-        }
-        resetTmpFields();
-        addBelowTopActivityIfExist(activityRecord.getTask(), this.mPendingRemoveActivity, "remove-snapshot");
-        onCommitTransition();
+        this.mSnapshotEnabled = z;
     }
 
     public static int getSystemHashCode(ActivityRecord activityRecord) {
         return System.identityHashCode(activityRecord);
     }
 
-    public void handleOpenActivityTransition(SnapshotController.TransitionState transitionState) {
-        Iterator it = transitionState.getParticipant(false).iterator();
-        while (it.hasNext()) {
-            ActivityRecord activityRecord = (ActivityRecord) it.next();
-            this.mPendingCaptureActivity.add(activityRecord);
-            ActivityRecord activityBelow = activityRecord.getTask().getActivityBelow(activityRecord);
-            if (activityBelow != null) {
-                this.mPendingRemoveActivity.add(activityBelow);
+    public static boolean isInParticipant(ActivityRecord activityRecord, ArrayList arrayList) {
+        for (int size = arrayList.size() - 1; size >= 0; size--) {
+            WindowContainer windowContainer = (WindowContainer) arrayList.get(size);
+            if (activityRecord == windowContainer || activityRecord.isDescendantOf(windowContainer)) {
+                return true;
             }
         }
+        return false;
     }
 
-    public void handleCloseActivityTransition(SnapshotController.TransitionState transitionState) {
-        Iterator it = transitionState.getParticipant(true).iterator();
-        while (it.hasNext()) {
-            ActivityRecord activityRecord = (ActivityRecord) it.next();
-            this.mPendingDeleteActivity.add(activityRecord);
-            ActivityRecord activityBelow = activityRecord.getTask().getActivityBelow(activityRecord);
-            if (activityBelow != null) {
-                this.mPendingLoadActivity.add(activityBelow);
-            }
+    public final void addBelowActivityIfExist(ActivityRecord activityRecord, ArraySet arraySet, boolean z) {
+        getActivityBelow(activityRecord, z, this.mTmpBelowActivities);
+        for (int size = this.mTmpBelowActivities.size() - 1; size >= 0; size--) {
+            arraySet.add((ActivityRecord) this.mTmpBelowActivities.get(size));
         }
+        this.mTmpBelowActivities.clear();
     }
 
-    public void handleCloseTaskTransition(SnapshotController.TransitionState transitionState) {
-        Iterator it = transitionState.getParticipant(false).iterator();
-        while (it.hasNext()) {
-            addBelowTopActivityIfExist((Task) it.next(), this.mPendingRemoveActivity, "remove-snapshot");
-        }
-    }
-
-    public void handleOpenTaskTransition(SnapshotController.TransitionState transitionState) {
-        Iterator it = transitionState.getParticipant(true).iterator();
-        while (it.hasNext()) {
-            Task task = (Task) it.next();
-            addBelowTopActivityIfExist(task, this.mPendingLoadActivity, "load-snapshot");
-            adjustSavedFileOrder(task);
-        }
-    }
-
-    public final void addBelowTopActivityIfExist(Task task, ArraySet arraySet, String str) {
-        ActivityRecord activityBelow;
-        ActivityRecord topMostActivity = task.getTopMostActivity();
-        if (topMostActivity == null || (activityBelow = task.getActivityBelow(topMostActivity)) == null) {
+    public void addUserSavedFile(int i, TaskSnapshot taskSnapshot, int[] iArr) {
+        int i2 = 0;
+        UserSavedFile userSavedFile = (UserSavedFile) getUserFiles(i).get(iArr[0]);
+        if (userSavedFile != null) {
+            Slog.w("WindowManager", "Duplicate request for recording activity snapshot " + userSavedFile);
             return;
         }
-        arraySet.add(activityBelow);
-    }
-
-    public final void adjustSavedFileOrder(Task task) {
-        final int i = task.mUserId;
-        task.forAllActivities(new Consumer() { // from class: com.android.server.wm.ActivitySnapshotController$$ExternalSyntheticLambda5
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                ActivitySnapshotController.this.lambda$adjustSavedFileOrder$0(i, (ActivityRecord) obj);
+        for (int length = iArr.length - 1; length >= 0; length--) {
+            i2 ^= iArr[length];
+        }
+        UserSavedFile userSavedFile2 = new UserSavedFile(i2, i);
+        SparseArray userFiles = getUserFiles(i);
+        for (int length2 = iArr.length - 1; length2 >= 0; length2--) {
+            userFiles.put(iArr[length2], userSavedFile2);
+        }
+        userSavedFile2.mActivityIds.addAll(iArr);
+        this.mSavedFilesInOrder.add(userSavedFile2);
+        TaskSnapshotPersister taskSnapshotPersister = this.mPersister;
+        taskSnapshotPersister.persistSnapshot(i2, i, taskSnapshot);
+        if (this.mSavedFilesInOrder.size() > 40) {
+            int size = this.mSavedFilesInOrder.size();
+            if (size - 20 < 1) {
+                return;
             }
-        }, false);
-    }
-
-    public /* synthetic */ void lambda$adjustSavedFileOrder$0(int i, ActivityRecord activityRecord) {
-        UserSavedFile userSavedFile = (UserSavedFile) getUserFiles(i).get(getSystemHashCode(activityRecord));
-        if (userSavedFile != null) {
-            this.mSavedFilesInOrder.remove(userSavedFile);
-            this.mSavedFilesInOrder.add(userSavedFile);
+            ArrayList arrayList = new ArrayList();
+            for (int i3 = size - 21; i3 >= 0; i3--) {
+                UserSavedFile userSavedFile3 = (UserSavedFile) this.mSavedFilesInOrder.remove(i3);
+                SparseArray sparseArray = (SparseArray) this.mUserSavedFiles.get(userSavedFile3.mUserId);
+                for (int size2 = userSavedFile3.mActivityIds.size() - 1; size2 >= 0; size2--) {
+                    ((ActivitySnapshotCache) this.mCache).removeRunningEntry(Integer.valueOf(userSavedFile3.mActivityIds.get(size2)));
+                    sparseArray.remove(userSavedFile3.mActivityIds.get(size2));
+                }
+                arrayList.add(userSavedFile3);
+            }
+            for (int size3 = arrayList.size() - 1; size3 >= 0; size3--) {
+                UserSavedFile userSavedFile4 = (UserSavedFile) arrayList.get(size3);
+                taskSnapshotPersister.removeSnapshot(userSavedFile4.mFileId, userSavedFile4.mUserId);
+            }
         }
     }
 
     @Override // com.android.server.wm.AbsAppSnapshotController
-    public void onAppRemoved(ActivityRecord activityRecord) {
-        super.onAppRemoved(activityRecord);
-        removeIfUserSavedFileExist(getSystemHashCode(activityRecord), activityRecord.mUserId);
+    public final void dump(PrintWriter printWriter) {
+        super.dump(printWriter);
+        for (int size = this.mUserSavedFiles.size() - 1; size >= 0; size--) {
+            SparseArray sparseArray = (SparseArray) this.mUserSavedFiles.valueAt(size);
+            printWriter.println("   UserSavedFile userId=" + this.mUserSavedFiles.keyAt(size));
+            ArraySet arraySet = new ArraySet();
+            for (int size2 = sparseArray.size() + (-1); size2 >= 0; size2--) {
+                arraySet.add((UserSavedFile) sparseArray.valueAt(size2));
+            }
+            for (int size3 = arraySet.size() - 1; size3 >= 0; size3 += -1) {
+                printWriter.println("     SavedFile=" + arraySet.valueAt(size3));
+            }
+        }
     }
 
     @Override // com.android.server.wm.AbsAppSnapshotController
-    public void onAppDied(ActivityRecord activityRecord) {
-        super.onAppDied(activityRecord);
-        removeIfUserSavedFileExist(getSystemHashCode(activityRecord), activityRecord.mUserId);
-    }
-
-    @Override // com.android.server.wm.AbsAppSnapshotController
-    public ActivityRecord getTopFullscreenActivity(ActivityRecord activityRecord) {
-        WindowState findMainWindow = activityRecord.findMainWindow();
-        if (findMainWindow == null || !findMainWindow.mAttrs.isFullscreen()) {
+    public final ActivityRecord findAppTokenForSnapshot(WindowContainer windowContainer) {
+        ActivityRecord activityRecord = (ActivityRecord) windowContainer;
+        if (activityRecord == null) {
             return null;
+        }
+        if (!((!activityRecord.mLastSurfaceShowing || activityRecord.findMainWindow(true) == null || activityRecord.mPopOverState.mIsActivated) ? false : activityRecord.forAllWindows((ToBooleanFunction) new ActivityRecord$$ExternalSyntheticLambda18(0), true))) {
+            activityRecord = null;
         }
         return activityRecord;
     }
 
-    @Override // com.android.server.wm.AbsAppSnapshotController
-    public ActivityManager.TaskDescription getTaskDescription(ActivityRecord activityRecord) {
-        return activityRecord.taskDescription;
+    public final UserSavedFile findSavedFile(ActivityRecord activityRecord) {
+        return (UserSavedFile) getUserFiles(activityRecord.mUserId).get(getSystemHashCode(activityRecord));
+    }
+
+    public final void getActivityBelow(ActivityRecord activityRecord, boolean z, ArrayList arrayList) {
+        ActivityRecord activityBelow;
+        Task task = activityRecord.task;
+        if (task == null || (activityBelow = task.getActivityBelow(activityRecord)) == null) {
+            return;
+        }
+        TaskFragment taskFragment = activityRecord.getTaskFragment();
+        TaskFragment taskFragment2 = activityBelow.getTaskFragment();
+        TaskFragment taskFragment3 = taskFragment2 != null ? taskFragment2.mAdjacentTaskFragment : null;
+        if ((taskFragment == taskFragment2 && taskFragment != null) || taskFragment3 == null) {
+            if (!z || isInParticipant(activityBelow, this.mTmpTransitionParticipants)) {
+                arrayList.add(activityBelow);
+                return;
+            }
+            return;
+        }
+        if (taskFragment3 == taskFragment) {
+            getActivityBelow(activityBelow, z, arrayList);
+            return;
+        }
+        Task task2 = taskFragment3.getTask();
+        if (task2 == task) {
+            if (task2.mChildren.indexOf(taskFragment3) > (taskFragment != null ? task.mChildren.indexOf(taskFragment) : task.mChildren.indexOf(activityRecord))) {
+                return;
+            }
+        }
+        if (!z || isInParticipant(activityBelow, this.mTmpTransitionParticipants)) {
+            arrayList.add(activityBelow);
+        }
+        ActivityRecord topMostActivity = taskFragment3.getTopMostActivity();
+        if (topMostActivity != null) {
+            if (!z || isInParticipant(topMostActivity, this.mTmpTransitionParticipants)) {
+                arrayList.add(topMostActivity);
+            }
+        }
     }
 
     @Override // com.android.server.wm.AbsAppSnapshotController
-    public ActivityRecord findAppTokenForSnapshot(ActivityRecord activityRecord) {
-        if (activityRecord != null && activityRecord.canCaptureSnapshot()) {
-            return activityRecord;
+    public final Rect getLetterboxInsets(ActivityRecord activityRecord) {
+        return Letterbox.EMPTY_RECT;
+    }
+
+    public final TaskSnapshot getSnapshot(ActivityRecord[] activityRecordArr) {
+        UserSavedFile findSavedFile;
+        if (activityRecordArr.length == 0 || (findSavedFile = findSavedFile(activityRecordArr[0])) == null || findSavedFile.mActivityIds.size() != activityRecordArr.length) {
+            return null;
+        }
+        int i = 0;
+        for (int length = activityRecordArr.length - 1; length >= 0; length--) {
+            i ^= getSystemHashCode(activityRecordArr[length]);
+        }
+        if (findSavedFile.mFileId == i) {
+            return ((ActivitySnapshotCache) this.mCache).getSnapshot(Integer.valueOf(findSavedFile.mActivityIds.get(0)));
         }
         return null;
     }
 
     @Override // com.android.server.wm.AbsAppSnapshotController
-    public boolean use16BitFormat() {
-        return this.mPersistInfoProvider.use16BitFormat();
+    public final ActivityManager.TaskDescription getTaskDescription(WindowContainer windowContainer) {
+        return ((ActivityRecord) windowContainer).taskDescription;
+    }
+
+    @Override // com.android.server.wm.AbsAppSnapshotController
+    public final ActivityRecord getTopActivity(WindowContainer windowContainer) {
+        return (ActivityRecord) windowContainer;
     }
 
     public final SparseArray getUserFiles(int i) {
         if (this.mUserSavedFiles.get(i) == null) {
             this.mUserSavedFiles.put(i, new SparseArray());
-            cleanUpUserFiles(i);
+            synchronized (this.mSnapshotPersistQueue.mLock) {
+                this.mSnapshotPersistQueue.addToQueueInternal(new AnonymousClass1(this.mPersistInfoProvider, i), false);
+            }
         }
         return (SparseArray) this.mUserSavedFiles.get(i);
     }
 
-    public final void removeIfUserSavedFileExist(int i, int i2) {
-        UserSavedFile userSavedFile = (UserSavedFile) getUserFiles(i2).get(i);
-        if (userSavedFile != null) {
-            this.mUserSavedFiles.remove(i);
-            this.mSavedFilesInOrder.remove(userSavedFile);
-            this.mPersister.removeSnap(i, i2);
+    public final void handleActivityTransition(ActivityRecord activityRecord) {
+        if (shouldDisableSnapshots()) {
+            return;
+        }
+        if (!activityRecord.isVisibleRequested()) {
+            addBelowActivityIfExist(activityRecord, this.mPendingRemoveActivity, true);
+        } else {
+            this.mPendingDeleteActivity.add(activityRecord);
+            addBelowActivityIfExist(activityRecord, this.mPendingLoadActivity, false);
         }
     }
 
-    public final boolean containsFile(int i, int i2) {
-        return getUserFiles(i2).get(i) != null;
-    }
-
-    public final void addUserSavedFile(int i, int i2, TaskSnapshot taskSnapshot) {
-        SparseArray userFiles = getUserFiles(i2);
-        if (((UserSavedFile) userFiles.get(i)) == null) {
-            UserSavedFile userSavedFile = new UserSavedFile(i, i2);
-            userFiles.put(i, userSavedFile);
-            this.mSavedFilesInOrder.add(userSavedFile);
-            this.mPersister.persistSnapshot(i, i2, taskSnapshot);
-            if (this.mSavedFilesInOrder.size() > 40) {
-                purgeSavedFile();
-            }
-        }
-    }
-
-    public final void purgeSavedFile() {
-        int size = this.mSavedFilesInOrder.size();
-        int i = size - 20;
-        ArrayList arrayList = new ArrayList();
-        if (i > 0) {
-            int i2 = size - i;
-            for (int i3 = size - 1; i3 > i2; i3--) {
-                UserSavedFile userSavedFile = (UserSavedFile) this.mSavedFilesInOrder.remove(i3);
-                if (userSavedFile != null) {
-                    this.mUserSavedFiles.remove(userSavedFile.mFileId);
-                    arrayList.add(userSavedFile);
-                }
-            }
-        }
-        if (arrayList.size() > 0) {
-            removeSnapshotFiles(arrayList);
-        }
-    }
-
-    public final void removeSnapshotFiles(ArrayList arrayList) {
-        synchronized (this.mSnapshotPersistQueue.getLock()) {
-            this.mSnapshotPersistQueue.sendToQueueLocked(new SnapshotPersistQueue.WriteQueueItem(this.mPersistInfoProvider) { // from class: com.android.server.wm.ActivitySnapshotController.3
-                public final /* synthetic */ ArrayList val$files;
-
-                /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-                public AnonymousClass3(BaseAppSnapshotPersister.PersistInfoProvider persistInfoProvider, ArrayList arrayList2) {
-                    super(persistInfoProvider);
-                    r3 = arrayList2;
-                }
-
-                @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
-                public void write() {
-                    for (int size = r3.size() - 1; size >= 0; size--) {
-                        UserSavedFile userSavedFile = (UserSavedFile) r3.get(size);
-                        ActivitySnapshotController.this.mSnapshotPersistQueue.deleteSnapshot(userSavedFile.mFileId, userSavedFile.mUserId, this.mPersistInfoProvider);
+    public void handleTransitionFinish(ArrayList arrayList) {
+        ActivityRecord topMostActivity;
+        this.mTmpTransitionParticipants.clear();
+        this.mTmpTransitionParticipants.addAll(arrayList);
+        for (int size = this.mTmpTransitionParticipants.size() - 1; size >= 0; size--) {
+            WindowContainer windowContainer = (WindowContainer) this.mTmpTransitionParticipants.get(size);
+            if (windowContainer.asTask() != null) {
+                Task asTask = windowContainer.asTask();
+                if (!shouldDisableSnapshots() && (topMostActivity = asTask.getTopMostActivity()) != null) {
+                    if (asTask.isVisibleRequested()) {
+                        addBelowActivityIfExist(topMostActivity, this.mPendingLoadActivity, true);
+                        asTask.forAllActivities(new Consumer() { // from class: com.android.server.wm.ActivitySnapshotController$$ExternalSyntheticLambda0
+                            @Override // java.util.function.Consumer
+                            public final void accept(Object obj) {
+                                ActivitySnapshotController activitySnapshotController = ActivitySnapshotController.this;
+                                ActivitySnapshotController.UserSavedFile findSavedFile = activitySnapshotController.findSavedFile((ActivityRecord) obj);
+                                if (findSavedFile != null) {
+                                    activitySnapshotController.mSavedFilesInOrder.remove(findSavedFile);
+                                    activitySnapshotController.mSavedFilesInOrder.add(findSavedFile);
+                                }
+                            }
+                        }, false);
+                    } else {
+                        addBelowActivityIfExist(topMostActivity, this.mPendingRemoveActivity, true);
                     }
                 }
-            });
-        }
-    }
-
-    /* renamed from: com.android.server.wm.ActivitySnapshotController$3 */
-    /* loaded from: classes3.dex */
-    public class AnonymousClass3 extends SnapshotPersistQueue.WriteQueueItem {
-        public final /* synthetic */ ArrayList val$files;
-
-        /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
-        public AnonymousClass3(BaseAppSnapshotPersister.PersistInfoProvider persistInfoProvider, ArrayList arrayList2) {
-            super(persistInfoProvider);
-            r3 = arrayList2;
-        }
-
-        @Override // com.android.server.wm.SnapshotPersistQueue.WriteQueueItem
-        public void write() {
-            for (int size = r3.size() - 1; size >= 0; size--) {
-                UserSavedFile userSavedFile = (UserSavedFile) r3.get(size);
-                ActivitySnapshotController.this.mSnapshotPersistQueue.deleteSnapshot(userSavedFile.mFileId, userSavedFile.mUserId, this.mPersistInfoProvider);
+            } else if (windowContainer.asTaskFragment() != null) {
+                ActivityRecord topMostActivity2 = windowContainer.asTaskFragment().getTopMostActivity();
+                if (topMostActivity2 != null) {
+                    handleActivityTransition(topMostActivity2);
+                }
+            } else if (windowContainer.asActivityRecord() != null) {
+                handleActivityTransition(windowContainer.asActivityRecord());
             }
         }
     }
 
-    /* loaded from: classes3.dex */
-    public class UserSavedFile {
-        public int mFileId;
-        public int mUserId;
+    public boolean hasRecord(ActivityRecord activityRecord) {
+        return findSavedFile(activityRecord) != null;
+    }
 
-        public UserSavedFile(int i, int i2) {
-            this.mFileId = i;
-            this.mUserId = i2;
+    @Override // com.android.server.wm.AbsAppSnapshotController
+    public final float initSnapshotScale() {
+        return Math.max(Math.min(this.mService.mContext.getResources().getFloat(R.dimen.control_padding_material), 1.0f), 0.1f);
+    }
+
+    public void loadSnapshotInner(ActivityRecord[] activityRecordArr, UserSavedFile userSavedFile) {
+        synchronized (this.mSnapshotPersistQueue.mLock) {
+            this.mSnapshotPersistQueue.addToQueueInternal(new LoadActivitySnapshotItem(activityRecordArr, userSavedFile.mFileId, userSavedFile.mUserId, this.mPersistInfoProvider), true);
         }
+    }
+
+    public final void postProcess() {
+        if (!this.mPendingLoadActivity.isEmpty()) {
+            ArraySet arraySet = new ArraySet();
+            for (int size = this.mPendingLoadActivity.size() - 1; size >= 0; size--) {
+                UserSavedFile findSavedFile = findSavedFile((ActivityRecord) this.mPendingLoadActivity.valueAt(size));
+                if (findSavedFile != null) {
+                    arraySet.add(findSavedFile);
+                }
+            }
+            for (int size2 = arraySet.size() - 1; size2 >= 0; size2--) {
+                UserSavedFile userSavedFile = (UserSavedFile) arraySet.valueAt(size2);
+                ArraySet arraySet2 = this.mPendingLoadActivity;
+                userSavedFile.getClass();
+                ActivityRecord[] activityRecordArr = null;
+                ArrayList arrayList = null;
+                for (int size3 = arraySet2.size() - 1; size3 >= 0; size3--) {
+                    ActivityRecord activityRecord = (ActivityRecord) arraySet2.valueAt(size3);
+                    if (userSavedFile.mActivityIds.contains(getSystemHashCode(activityRecord))) {
+                        if (arrayList == null) {
+                            arrayList = new ArrayList();
+                        }
+                        arrayList.add(activityRecord);
+                    }
+                }
+                if (arrayList != null && arrayList.size() == userSavedFile.mActivityIds.size()) {
+                    activityRecordArr = (ActivityRecord[]) arrayList.toArray(new ActivityRecord[0]);
+                }
+                if (activityRecordArr != null && getSnapshot(activityRecordArr) == null) {
+                    loadSnapshotInner(activityRecordArr, userSavedFile);
+                }
+            }
+        }
+        for (int size4 = this.mPendingRemoveActivity.size() - 1; size4 >= 0; size4--) {
+            UserSavedFile findSavedFile2 = findSavedFile((ActivityRecord) this.mPendingRemoveActivity.valueAt(size4));
+            if (findSavedFile2 != null) {
+                for (int size5 = findSavedFile2.mActivityIds.size() - 1; size5 >= 0; size5--) {
+                    ((ActivitySnapshotCache) this.mCache).removeRunningEntry(Integer.valueOf(findSavedFile2.mActivityIds.get(size5)));
+                }
+            }
+        }
+        for (int size6 = this.mPendingDeleteActivity.size() - 1; size6 >= 0; size6--) {
+            removeIfUserSavedFileExist((ActivityRecord) this.mPendingDeleteActivity.valueAt(size6));
+        }
+        resetTmpFields();
+    }
+
+    public final void removeIfUserSavedFileExist(ActivityRecord activityRecord) {
+        UserSavedFile findSavedFile = findSavedFile(activityRecord);
+        if (findSavedFile != null) {
+            SparseArray userFiles = getUserFiles(activityRecord.mUserId);
+            for (int size = findSavedFile.mActivityIds.size() - 1; size >= 0; size--) {
+                int i = findSavedFile.mActivityIds.get(size);
+                int indexOf = findSavedFile.mActivityIds.indexOf(i);
+                if (indexOf >= 0) {
+                    findSavedFile.mActivityIds.remove(indexOf);
+                }
+                ((ActivitySnapshotCache) this.mCache).removeRunningEntry(Integer.valueOf(i));
+                userFiles.remove(i);
+            }
+            this.mSavedFilesInOrder.remove(findSavedFile);
+            this.mPersister.removeSnapshot(findSavedFile.mFileId, activityRecord.mUserId);
+        }
+    }
+
+    public void resetTmpFields() {
+        this.mPendingRemoveActivity.clear();
+        this.mPendingDeleteActivity.clear();
+        this.mPendingLoadActivity.clear();
+    }
+
+    @Override // com.android.server.wm.AbsAppSnapshotController
+    public final boolean use16BitFormat() {
+        return this.mPersistInfoProvider.mUse16BitFormat;
     }
 }

@@ -1,94 +1,51 @@
 package com.android.server.pm.permission;
 
+import android.content.pm.PermissionInfo;
+import android.os.UserHandle;
 import android.util.ArrayMap;
-import android.util.ArraySet;
-import com.android.server.pm.pkg.component.ParsedPermissionGroup;
+import com.android.server.BinaryTransparencyService$$ExternalSyntheticOutline0;
 import java.util.Collection;
-import java.util.Iterator;
+import libcore.util.EmptyArray;
 
-/* loaded from: classes3.dex */
-public class PermissionRegistry {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PermissionRegistry {
     public final ArrayMap mPermissions = new ArrayMap();
     public final ArrayMap mPermissionTrees = new ArrayMap();
     public final ArrayMap mPermissionGroups = new ArrayMap();
     public final ArrayMap mAppOpPermissionPackages = new ArrayMap();
 
-    public Collection getPermissions() {
-        return this.mPermissions.values();
+    public final Permission enforcePermissionTree(int i, String str) {
+        Permission findPermissionTree;
+        Collection values = this.mPermissionTrees.values();
+        if (str == null || (findPermissionTree = Permission.findPermissionTree(str, values)) == null || findPermissionTree.mUid != UserHandle.getAppId(i)) {
+            throw new SecurityException(BinaryTransparencyService$$ExternalSyntheticOutline0.m(i, "Calling uid ", " is not allowed to add to or remove from the permission tree"));
+        }
+        return findPermissionTree;
     }
 
-    public Permission getPermission(String str) {
+    public final Permission getPermission(String str) {
         return (Permission) this.mPermissions.get(str);
     }
 
-    public void addPermission(Permission permission) {
-        this.mPermissions.put(permission.getName(), permission);
-    }
-
-    public void removePermission(String str) {
-        this.mPermissions.remove(str);
-    }
-
-    public Collection getPermissionTrees() {
-        return this.mPermissionTrees.values();
-    }
-
-    public Permission getPermissionTree(String str) {
-        return (Permission) this.mPermissionTrees.get(str);
-    }
-
-    public void addPermissionTree(Permission permission) {
-        this.mPermissionTrees.put(permission.getName(), permission);
-    }
-
-    public void transferPermissions(String str, String str2) {
+    public final void transferPermissions(String str, String str2) {
         int i = 0;
         while (i < 2) {
-            Iterator it = (i == 0 ? this.mPermissionTrees : this.mPermissions).values().iterator();
-            while (it.hasNext()) {
-                ((Permission) it.next()).transfer(str, str2);
+            for (Permission permission : (i == 0 ? this.mPermissionTrees : this.mPermissions).values()) {
+                if (str.equals(permission.mPermissionInfo.packageName)) {
+                    PermissionInfo permissionInfo = new PermissionInfo();
+                    PermissionInfo permissionInfo2 = permission.mPermissionInfo;
+                    permissionInfo.name = permissionInfo2.name;
+                    permissionInfo.packageName = str2;
+                    permissionInfo.protectionLevel = permissionInfo2.protectionLevel;
+                    permission.mPermissionInfo = permissionInfo;
+                    permission.mReconciled = false;
+                    permission.mUid = 0;
+                    permission.mGids = EmptyArray.INT;
+                    permission.mGidsPerUser = false;
+                }
             }
             i++;
         }
-    }
-
-    public Collection getPermissionGroups() {
-        return this.mPermissionGroups.values();
-    }
-
-    public ParsedPermissionGroup getPermissionGroup(String str) {
-        return (ParsedPermissionGroup) this.mPermissionGroups.get(str);
-    }
-
-    public void addPermissionGroup(ParsedPermissionGroup parsedPermissionGroup) {
-        this.mPermissionGroups.put(parsedPermissionGroup.getName(), parsedPermissionGroup);
-    }
-
-    public ArrayMap getAllAppOpPermissionPackages() {
-        return this.mAppOpPermissionPackages;
-    }
-
-    public ArraySet getAppOpPermissionPackages(String str) {
-        return (ArraySet) this.mAppOpPermissionPackages.get(str);
-    }
-
-    public void addAppOpPermissionPackage(String str, String str2) {
-        ArraySet arraySet = (ArraySet) this.mAppOpPermissionPackages.get(str);
-        if (arraySet == null) {
-            arraySet = new ArraySet();
-            this.mAppOpPermissionPackages.put(str, arraySet);
-        }
-        arraySet.add(str2);
-    }
-
-    public void removeAppOpPermissionPackage(String str, String str2) {
-        ArraySet arraySet = (ArraySet) this.mAppOpPermissionPackages.get(str);
-        if (arraySet != null && arraySet.remove(str2) && arraySet.isEmpty()) {
-            this.mAppOpPermissionPackages.remove(str);
-        }
-    }
-
-    public Permission enforcePermissionTree(String str, int i) {
-        return Permission.enforcePermissionTree(this.mPermissionTrees.values(), str, i);
     }
 }

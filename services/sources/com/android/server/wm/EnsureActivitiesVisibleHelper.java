@@ -1,17 +1,11 @@
 package com.android.server.wm;
 
-import com.android.server.wm.ActivityRecord;
-import com.samsung.android.rune.CoreRune;
-import java.util.ArrayList;
-
-/* loaded from: classes3.dex */
-public class EnsureActivitiesVisibleHelper {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class EnsureActivitiesVisibleHelper {
     public boolean mAboveTop;
     public boolean mBehindFullyOccludedContainer;
-    public int mConfigChanges;
-    public boolean mContainerShouldBeVisible;
     public boolean mNotifyClients;
-    public boolean mPreserveWindows;
     public ActivityRecord mStarting;
     public final TaskFragment mTaskFragment;
     public ActivityRecord mTopRunningActivity;
@@ -20,134 +14,27 @@ public class EnsureActivitiesVisibleHelper {
         this.mTaskFragment = taskFragment;
     }
 
-    public void reset(ActivityRecord activityRecord, int i, boolean z, boolean z2) {
-        this.mStarting = activityRecord;
-        ActivityRecord activityRecord2 = this.mTaskFragment.topRunningActivity();
-        this.mTopRunningActivity = activityRecord2;
-        this.mAboveTop = activityRecord2 != null;
-        boolean shouldBeVisible = this.mTaskFragment.shouldBeVisible(this.mStarting);
-        this.mContainerShouldBeVisible = shouldBeVisible;
-        this.mBehindFullyOccludedContainer = !shouldBeVisible;
-        this.mConfigChanges = i;
-        this.mPreserveWindows = z;
-        this.mNotifyClients = z2;
-    }
-
-    public void process(ActivityRecord activityRecord, int i, boolean z, boolean z2) {
-        reset(activityRecord, i, z, z2);
-        if (this.mTopRunningActivity != null && this.mTaskFragment.asTask() != null) {
-            this.mTaskFragment.asTask().checkTranslucentActivityWaiting(this.mTopRunningActivity);
-        }
-        ActivityRecord activityRecord2 = this.mTopRunningActivity;
-        boolean z3 = activityRecord2 != null && !activityRecord2.mLaunchTaskBehind && this.mTaskFragment.canBeResumed(activityRecord) && (activityRecord == null || !activityRecord.isDescendantOf(this.mTaskFragment));
-        ArrayList arrayList = null;
-        for (int size = this.mTaskFragment.mChildren.size() - 1; size >= 0; size--) {
-            WindowContainer windowContainer = (WindowContainer) this.mTaskFragment.mChildren.get(size);
-            TaskFragment asTaskFragment = windowContainer.asTaskFragment();
-            if (asTaskFragment != null && asTaskFragment.getTopNonFinishingActivity() != null) {
-                asTaskFragment.updateActivityVisibilities(activityRecord, i, z, z2);
-                this.mBehindFullyOccludedContainer |= asTaskFragment.getBounds().equals(this.mTaskFragment.getBounds()) && !asTaskFragment.isTranslucent(activityRecord);
-                if (this.mAboveTop && this.mTopRunningActivity.getTaskFragment() == asTaskFragment) {
-                    this.mAboveTop = false;
-                }
-                if (!this.mBehindFullyOccludedContainer) {
-                    if (arrayList != null && arrayList.contains(asTaskFragment)) {
-                        if (!asTaskFragment.isTranslucent(activityRecord) && !asTaskFragment.getAdjacentTaskFragment().isTranslucent(activityRecord)) {
-                            this.mBehindFullyOccludedContainer = true;
-                        }
-                    } else {
-                        TaskFragment adjacentTaskFragment = asTaskFragment.getAdjacentTaskFragment();
-                        if (adjacentTaskFragment != null) {
-                            if (arrayList == null) {
-                                arrayList = new ArrayList();
-                            }
-                            arrayList.add(adjacentTaskFragment);
-                        }
-                    }
-                }
-            } else if (windowContainer.asActivityRecord() != null) {
-                setActivityVisibilityState(windowContainer.asActivityRecord(), activityRecord, z3);
-            }
-        }
-    }
-
-    public final void setActivityVisibilityState(ActivityRecord activityRecord, ActivityRecord activityRecord2, boolean z) {
-        Task dragSourceTask;
-        ActivityRecord activityRecord3 = this.mTopRunningActivity;
-        boolean z2 = false;
-        boolean z3 = activityRecord == activityRecord3;
-        if (this.mAboveTop && !z3) {
-            activityRecord.makeInvisible();
-            return;
-        }
-        this.mAboveTop = false;
-        if (CoreRune.FW_CUSTOM_LETTERBOX && !this.mBehindFullyOccludedContainer && activityRecord3 != null && activityRecord3.mCompatRecord.isCompatModeEnabled() && this.mTopRunningActivity.getConfiguration().orientation != activityRecord.getConfiguration().orientation && CustomLetterboxConfiguration.hasWallpaperBackgroundForLetterbox(activityRecord)) {
-            this.mBehindFullyOccludedContainer = true;
-        }
-        activityRecord.updateVisibilityIgnoringKeyguard(this.mBehindFullyOccludedContainer || (activityRecord.mPopOverState.isActivated() && activityRecord.mPopOverState.isBelowAnotherOpaquePopOver()));
-        boolean shouldBeVisibleUnchecked = activityRecord.shouldBeVisibleUnchecked();
-        if (activityRecord.visibleIgnoringKeyguard) {
-            if (activityRecord.occludesParent()) {
-                this.mBehindFullyOccludedContainer = true;
-            } else if (!activityRecord.mAtmService.mKeyguardController.checkKeyguardVisibility(activityRecord)) {
-                this.mBehindFullyOccludedContainer = true;
-            } else {
-                this.mBehindFullyOccludedContainer = false;
-            }
-        } else if (activityRecord.isState(ActivityRecord.State.INITIALIZING)) {
-            activityRecord.cancelInitializing();
-        }
-        if (shouldBeVisibleUnchecked || (this.mTaskFragment.mAtmService.isOccluding(activityRecord.getDisplayId()) && z3 && this.mTaskFragment.asTask() != null && this.mTaskFragment.asTask().isFocusedRootTaskOnDisplay())) {
-            if (activityRecord.finishing) {
-                return;
-            }
-            if (activityRecord != this.mStarting && this.mNotifyClients) {
-                activityRecord.ensureActivityConfiguration(0, this.mPreserveWindows, true);
-            }
-            if (!activityRecord.attachedToProcess()) {
-                ActivityRecord activityRecord4 = this.mStarting;
-                int i = this.mConfigChanges;
-                if (z && z3) {
-                    z2 = true;
-                }
-                makeVisibleAndRestartIfNeeded(activityRecord4, i, z2, activityRecord);
-            } else if (activityRecord.isVisibleRequested()) {
-                boolean z4 = activityRecord.mClientVisibilityDeferred;
-                if (z4 && this.mNotifyClients) {
-                    if (z4) {
-                        activityRecord2 = null;
-                    }
-                    activityRecord.makeActiveIfNeeded(activityRecord2);
-                    activityRecord.mClientVisibilityDeferred = false;
-                }
-                activityRecord.handleAlreadyVisible();
-                if (this.mNotifyClients) {
-                    activityRecord.makeActiveIfNeeded(this.mStarting);
-                }
-                if (this.mTaskFragment.isActivityTypeHome() && (dragSourceTask = this.mTaskFragment.mAtmService.mWindowManager.mDragDropController.getDragSourceTask()) != null && dragSourceTask.mHiddenWhileActivatingDrag) {
-                    dragSourceTask.updateSurfaceVisibilityForDragAndDrop();
-                }
-            } else {
-                activityRecord.makeVisibleIfNeeded(this.mStarting, this.mNotifyClients);
-            }
-            this.mConfigChanges |= activityRecord.configChangeFlags;
-        } else {
-            activityRecord.makeInvisible();
-        }
-        if (!this.mBehindFullyOccludedContainer && this.mTaskFragment.isActivityTypeHome() && activityRecord.isRootOfTask()) {
-            this.mBehindFullyOccludedContainer = true;
-        }
-    }
-
-    public final void makeVisibleAndRestartIfNeeded(ActivityRecord activityRecord, int i, boolean z, ActivityRecord activityRecord2) {
-        if (activityRecord2 != activityRecord) {
-            activityRecord2.startFreezingScreenLocked(i);
-        }
-        if (!activityRecord2.isVisibleRequested() || activityRecord2.mLaunchTaskBehind) {
-            activityRecord2.setVisibility(true);
-        }
-        if (activityRecord2 != activityRecord) {
-            this.mTaskFragment.mTaskSupervisor.startSpecificActivity(activityRecord2, z, true);
-        }
+    /* JADX WARN: Code restructure failed: missing block: B:187:0x0123, code lost:
+    
+        if (r11.mLaunchTaskBehind != false) goto L80;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:80:0x011f, code lost:
+    
+        if (r14.getActivity(new com.android.server.wm.PopOverState$$ExternalSyntheticLambda0(1, r13), r12, false, false) != null) goto L78;
+     */
+    /* JADX WARN: Removed duplicated region for block: B:172:0x027c  */
+    /* JADX WARN: Removed duplicated region for block: B:177:0x0151  */
+    /* JADX WARN: Removed duplicated region for block: B:86:0x0138  */
+    /* JADX WARN: Removed duplicated region for block: B:90:0x0175  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final void process(boolean r17, com.android.server.wm.ActivityRecord r18) {
+        /*
+            Method dump skipped, instructions count: 663
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.wm.EnsureActivitiesVisibleHelper.process(boolean, com.android.server.wm.ActivityRecord):void");
     }
 }

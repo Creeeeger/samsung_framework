@@ -3,27 +3,21 @@ package com.android.server.hdmi;
 import android.content.Context;
 import android.os.PowerManager;
 
-/* loaded from: classes2.dex */
-public class PowerManagerWrapper {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class PowerManagerWrapper {
     public final PowerManager mPowerManager;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DefaultWakeLockWrapper {
+        public final PowerManager.WakeLock mWakeLock;
+
+        public DefaultWakeLockWrapper(PowerManager.WakeLock wakeLock) {
+            this.mWakeLock = wakeLock;
+        }
+    }
 
     public PowerManagerWrapper(Context context) {
         this.mPowerManager = (PowerManager) context.getSystemService(PowerManager.class);
-    }
-
-    public boolean isInteractive() {
-        return this.mPowerManager.isInteractive();
-    }
-
-    public void wakeUp(long j, int i, String str) {
-        this.mPowerManager.wakeUp(j, i, str);
-    }
-
-    public void goToSleep(long j, int i, int i2) {
-        this.mPowerManager.goToSleep(j, i, i2);
-    }
-
-    public PowerManager.WakeLock newWakeLock(int i, String str) {
-        return this.mPowerManager.newWakeLock(i, str);
     }
 }

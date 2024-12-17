@@ -1,21 +1,19 @@
 package com.android.server.soundtrigger_middleware;
 
-import android.util.Log;
+import android.util.Slog;
 import com.android.server.soundtrigger_middleware.ICaptureStateNotifier;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-/* JADX INFO: Access modifiers changed from: package-private */
-/* loaded from: classes3.dex */
-public class ExternalCaptureStateTracker implements ICaptureStateNotifier {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+class ExternalCaptureStateTracker implements ICaptureStateNotifier {
     public static final String TAG = "CaptureStateTracker";
     public final List mListeners = new LinkedList();
     public boolean mCaptureActive = true;
     public final Semaphore mNeedToConnect = new Semaphore(1);
-
-    private native void connect();
 
     public ExternalCaptureStateTracker() {
         new Thread(new Runnable() { // from class: com.android.server.soundtrigger_middleware.ExternalCaptureStateTracker$$ExternalSyntheticLambda0
@@ -26,21 +24,20 @@ public class ExternalCaptureStateTracker implements ICaptureStateNotifier {
         }).start();
     }
 
-    @Override // com.android.server.soundtrigger_middleware.ICaptureStateNotifier
-    public boolean registerListener(ICaptureStateNotifier.Listener listener) {
+    private native void connect();
+
+    public final void binderDied() {
+        Slog.w(TAG, "Audio policy service died");
+        this.mNeedToConnect.release();
+    }
+
+    public final boolean registerListener(ICaptureStateNotifier.Listener listener) {
         boolean z;
         synchronized (this.mListeners) {
             this.mListeners.add(listener);
             z = this.mCaptureActive;
         }
         return z;
-    }
-
-    @Override // com.android.server.soundtrigger_middleware.ICaptureStateNotifier
-    public void unregisterListener(ICaptureStateNotifier.Listener listener) {
-        synchronized (this.mListeners) {
-            this.mListeners.remove(listener);
-        }
     }
 
     public final void run() {
@@ -53,19 +50,37 @@ public class ExternalCaptureStateTracker implements ICaptureStateNotifier {
     public final void setCaptureState(boolean z) {
         try {
             synchronized (this.mListeners) {
-                this.mCaptureActive = z;
-                Iterator it = this.mListeners.iterator();
-                while (it.hasNext()) {
-                    ((ICaptureStateNotifier.Listener) it.next()).onCaptureStateChange(z);
+                try {
+                    this.mCaptureActive = z;
+                    Iterator it = this.mListeners.iterator();
+                    while (it.hasNext()) {
+                        SoundTriggerHalConcurrentCaptureHandler soundTriggerHalConcurrentCaptureHandler = (SoundTriggerHalConcurrentCaptureHandler) ((ICaptureStateNotifier.Listener) it.next());
+                        synchronized (soundTriggerHalConcurrentCaptureHandler.mStartStopLock) {
+                            if (z) {
+                                soundTriggerHalConcurrentCaptureHandler.abortAllActiveModels();
+                            } else {
+                                SoundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0 soundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0 = soundTriggerHalConcurrentCaptureHandler.mGlobalCallback;
+                                if (soundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0 != null) {
+                                    soundTriggerHalConcurrentCaptureHandler$$ExternalSyntheticLambda0.onResourcesAvailable();
+                                }
+                            }
+                            soundTriggerHalConcurrentCaptureHandler.mCaptureState = z;
+                        }
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                } finally {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "Exception caught while setting capture state", e);
+            Slog.e(TAG, "Exception caught while setting capture state", e);
         }
     }
 
-    public final void binderDied() {
-        Log.w(TAG, "Audio policy service died");
-        this.mNeedToConnect.release();
+    @Override // com.android.server.soundtrigger_middleware.ICaptureStateNotifier
+    public final void unregisterListener(ICaptureStateNotifier.Listener listener) {
+        synchronized (this.mListeners) {
+            this.mListeners.remove(listener);
+        }
     }
 }

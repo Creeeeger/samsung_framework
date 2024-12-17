@@ -2,12 +2,16 @@ package com.android.server.devicepolicy;
 
 import android.app.admin.PolicyValue;
 import java.util.LinkedHashMap;
+import java.util.List;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public abstract class ResolutionMechanism {
-    /* renamed from: getParcelableResolutionMechanism */
-    public abstract android.app.admin.ResolutionMechanism mo5119getParcelableResolutionMechanism();
+    public abstract android.app.admin.ResolutionMechanism getParcelableResolutionMechanism();
 
-    /* renamed from: resolve */
-    public abstract PolicyValue mo5120resolve(LinkedHashMap linkedHashMap);
+    public abstract PolicyValue resolve(LinkedHashMap linkedHashMap);
+
+    public PolicyValue resolve(List list) {
+        throw new UnsupportedOperationException();
+    }
 }

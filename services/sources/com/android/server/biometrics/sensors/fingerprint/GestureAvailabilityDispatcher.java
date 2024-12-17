@@ -2,27 +2,24 @@ package com.android.server.biometrics.sensors.fingerprint;
 
 import android.hardware.fingerprint.IFingerprintClientActiveCallback;
 import android.os.RemoteException;
-import android.util.Slog;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class GestureAvailabilityDispatcher {
+public final class GestureAvailabilityDispatcher {
     public boolean mIsActive;
     public final CopyOnWriteArrayList mClientActiveCallbacks = new CopyOnWriteArrayList();
     public final Map mActiveSensors = new HashMap();
 
-    public boolean isAnySensorActive() {
-        return this.mIsActive;
-    }
-
-    public void markSensorActive(int i, boolean z) {
+    public final void markSensorActive(int i, boolean z) {
         boolean z2;
-        this.mActiveSensors.put(Integer.valueOf(i), Boolean.valueOf(z));
+        ((HashMap) this.mActiveSensors).put(Integer.valueOf(i), Boolean.valueOf(z));
         boolean z3 = this.mIsActive;
-        Iterator it = this.mActiveSensors.values().iterator();
+        Iterator it = ((HashMap) this.mActiveSensors).values().iterator();
         while (true) {
             if (!it.hasNext()) {
                 z2 = false;
@@ -33,28 +30,16 @@ public class GestureAvailabilityDispatcher {
             }
         }
         if (z3 != z2) {
-            Slog.d("GestureAvailabilityTracker", "Notifying gesture availability, active=" + this.mIsActive);
+            AnyMotionDetector$$ExternalSyntheticOutline0.m("GestureAvailabilityTracker", new StringBuilder("Notifying gesture availability, active="), this.mIsActive);
             this.mIsActive = z2;
-            notifyClientActiveCallbacks(z2);
-        }
-    }
-
-    public void registerCallback(IFingerprintClientActiveCallback iFingerprintClientActiveCallback) {
-        this.mClientActiveCallbacks.add(iFingerprintClientActiveCallback);
-    }
-
-    public void removeCallback(IFingerprintClientActiveCallback iFingerprintClientActiveCallback) {
-        this.mClientActiveCallbacks.remove(iFingerprintClientActiveCallback);
-    }
-
-    public final void notifyClientActiveCallbacks(boolean z) {
-        Iterator it = this.mClientActiveCallbacks.iterator();
-        while (it.hasNext()) {
-            IFingerprintClientActiveCallback iFingerprintClientActiveCallback = (IFingerprintClientActiveCallback) it.next();
-            try {
-                iFingerprintClientActiveCallback.onClientActiveChanged(z);
-            } catch (RemoteException unused) {
-                this.mClientActiveCallbacks.remove(iFingerprintClientActiveCallback);
+            Iterator it2 = this.mClientActiveCallbacks.iterator();
+            while (it2.hasNext()) {
+                IFingerprintClientActiveCallback iFingerprintClientActiveCallback = (IFingerprintClientActiveCallback) it2.next();
+                try {
+                    iFingerprintClientActiveCallback.onClientActiveChanged(z2);
+                } catch (RemoteException unused) {
+                    this.mClientActiveCallbacks.remove(iFingerprintClientActiveCallback);
+                }
             }
         }
     }

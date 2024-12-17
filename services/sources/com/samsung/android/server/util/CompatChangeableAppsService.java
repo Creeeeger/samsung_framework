@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ParceledListSlice;
 import android.content.pm.ResolveInfo;
 import android.util.Slog;
-import com.android.server.wm.ActivityTaskManagerService;
 import com.samsung.android.core.CompatChangeableApps;
 import com.samsung.android.core.CompatChangeablePackageInfo;
 import com.samsung.android.server.util.SafetySystemService;
@@ -16,49 +15,78 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class CompatChangeableAppsService {
-    public final Object mLock;
-    public Context mSystemContext;
+public final class CompatChangeableAppsService {
+    public PackageManager mPackageManager;
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BuilderWrapper extends CompatChangeablePackageInfo.Builder {
+        public final ApplicationInfo mApplicationInfo;
+        public final String mPackageName;
+        public final PackageManager mPm;
+
+        public BuilderWrapper(ApplicationInfo applicationInfo, PackageManager packageManager, String str) {
+            this.mPm = packageManager;
+            this.mPackageName = str;
+            this.mApplicationInfo = applicationInfo;
+        }
+
+        public final CompatChangeablePackageInfo build() {
+            setPackageName(this.mPackageName);
+            setHasLauncherActivity(true);
+            ApplicationInfo applicationInfo = this.mApplicationInfo;
+            if (applicationInfo != null) {
+                setUid(applicationInfo.uid);
+                setHasGameCategory(this.mApplicationInfo.category == 0);
+            }
+            Boolean bool = Boolean.FALSE;
+            setIsResizeableActivityOverrideDisallowed(equalsProperty(bool, "android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES"));
+            setIsOrientationOverrideDisallowed(equalsProperty(bool, "android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE"));
+            setIsMinAspectRatioOverrideDisallowed(equalsProperty(bool, "android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE", "android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_OVERRIDE"));
+            setIsActivityEmbeddingSplitsEnabled(equalsProperty(Boolean.TRUE, "android.window.PROPERTY_ACTIVITY_EMBEDDING_SPLITS_ENABLED"));
+            return super.build();
+        }
+
+        public final boolean equalsProperty(Boolean bool, String... strArr) {
+            for (String str : strArr) {
+                if (bool.equals(CompatChangeableApps.readComponentProperty(this.mPm, this.mPackageName, str))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class LazyHolder {
         public static final CompatChangeableAppsService sService = new CompatChangeableAppsService();
     }
 
     public static ParceledListSlice getCompatChangeablePackageInfoList(String str, int i) {
-        return LazyHolder.sService.getList(str, i);
-    }
-
-    public CompatChangeableAppsService() {
-        this.mLock = new Object();
-        SafetySystemService.registerForSystemReady(new SafetySystemService.Callback() { // from class: com.samsung.android.server.util.CompatChangeableAppsService$$ExternalSyntheticLambda0
-            @Override // com.samsung.android.server.util.SafetySystemService.Callback
-            public final void onSystemReady(ActivityTaskManagerService activityTaskManagerService) {
-                CompatChangeableAppsService.this.lambda$new$0(activityTaskManagerService);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$new$0(ActivityTaskManagerService activityTaskManagerService) {
-        synchronized (this.mLock) {
-            this.mSystemContext = SafetySystemService.getSystemContext();
-        }
-    }
-
-    public final ParceledListSlice getList(String str, int i) {
-        PackageManager packageManager;
         String str2;
-        synchronized (this.mLock) {
-            Context context = this.mSystemContext;
-            packageManager = context != null ? context.getPackageManager() : null;
+        Context context;
+        PackageManager packageManager;
+        CompatChangeableAppsService compatChangeableAppsService = LazyHolder.sService;
+        if (compatChangeableAppsService.mPackageManager == null) {
+            SafetySystemService.Manager manager = SafetySystemService.LazyHolder.sSingleton;
+            synchronized (manager) {
+                context = manager.mSystemContext;
+            }
+            if (context == null) {
+                Slog.w("SafetySystemService", "PackageManager".concat(" should be called after system ready."));
+                packageManager = null;
+            } else {
+                packageManager = context.getPackageManager();
+            }
+            compatChangeableAppsService.mPackageManager = packageManager;
         }
-        if (packageManager == null) {
+        PackageManager packageManager2 = compatChangeableAppsService.mPackageManager;
+        if (packageManager2 == null) {
             Slog.w("CompatChangeableApps", "PackageManager is null.");
             return ParceledListSlice.emptyList();
         }
-        List queryIntentActivitiesAsUser = packageManager.queryIntentActivitiesAsUser(new Intent("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER").setPackage(str), 786432, i);
+        List queryIntentActivitiesAsUser = packageManager2.queryIntentActivitiesAsUser(new Intent("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER").setPackage(str), 786432, i);
         ArrayList arrayList = new ArrayList();
         ArrayList arrayList2 = new ArrayList();
         Iterator it = queryIntentActivitiesAsUser.iterator();
@@ -70,19 +98,7 @@ public class CompatChangeableAppsService {
                 if (!z && (str == null || str.equals(str2))) {
                     z = true;
                 }
-                CompatChangeablePackageInfo.Builder builder = new CompatChangeablePackageInfo.Builder();
-                builder.setPackageName(str2);
-                builder.setHasLauncherActivity(true);
-                ApplicationInfo applicationInfo = activityInfo.applicationInfo;
-                if (applicationInfo != null) {
-                    builder.setUid(applicationInfo.uid);
-                    builder.setHasGameCategory(activityInfo.applicationInfo.category == 0);
-                }
-                Boolean bool = Boolean.FALSE;
-                builder.setIsOrientationOverrideDisallowed(bool.equals(CompatChangeableApps.readComponentProperty(packageManager, str2, "android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE")));
-                builder.setIsMinAspectRatioOverrideDisallowed(bool.equals(CompatChangeableApps.readComponentProperty(packageManager, str2, "android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE")));
-                builder.setIsActivityEmbeddingSplitsEnabled(Boolean.TRUE.equals(CompatChangeableApps.readComponentProperty(packageManager, str2, "android.window.PROPERTY_ACTIVITY_EMBEDDING_SPLITS_ENABLED")));
-                arrayList.add(builder.build());
+                arrayList.add(new BuilderWrapper(activityInfo.applicationInfo, packageManager2, str2).build());
             }
         }
         if (!z && str != null) {

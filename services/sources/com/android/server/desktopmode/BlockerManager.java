@@ -2,26 +2,23 @@ package com.android.server.desktopmode;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.hardware.display.DisplayManager;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.ArrayMap;
-import android.util.IndentingPrintWriter;
-import com.android.server.desktopmode.DefaultBlocker;
 import com.samsung.android.desktopmode.IDesktopModeBlocker;
-import java.util.Iterator;
 import java.util.Map;
 
-/* loaded from: classes2.dex */
-public class BlockerManager {
-    public static final String TAG = "[DMS]" + BlockerManager.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class BlockerManager {
     public final Map mBlockers = new ArrayMap();
     public final DefaultBlocker mDefaultBlocker;
     public final Injector mInjector;
     public final IStateManager mStateManager;
 
-    /* loaded from: classes2.dex */
-    public class DesktopModeBlockerInfo implements IBinder.DeathRecipient {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class DesktopModeBlockerInfo implements IBinder.DeathRecipient {
         public final IDesktopModeBlocker blocker;
         public final String name;
         public final int pid;
@@ -35,16 +32,23 @@ public class BlockerManager {
         }
 
         @Override // android.os.IBinder.DeathRecipient
-        public void binderDied() {
-            Log.v(BlockerManager.TAG, "binderDied(): " + this);
+        public final void binderDied() {
+            Log.v("[DMS]BlockerManager", "binderDied(): " + this);
             synchronized (BlockerManager.this.mBlockers) {
-                BlockerManager.this.mBlockers.remove(this.blocker.asBinder());
+                ((ArrayMap) BlockerManager.this.mBlockers).remove(this.blocker.asBinder());
             }
             this.blocker.asBinder().unlinkToDeath(this, 0);
         }
 
-        public String toString() {
-            return DesktopModeBlockerInfo.class.getSimpleName() + "(name=" + this.name + ", pid=" + this.pid + ", uid=" + this.uid + ")";
+        public final String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append(DesktopModeBlockerInfo.class.getSimpleName());
+            sb.append("(name=");
+            sb.append(this.name);
+            sb.append(", pid=");
+            sb.append(this.pid);
+            sb.append(", uid=");
+            return AmFmBandRange$$ExternalSyntheticOutline0.m(this.uid, sb, ")");
         }
     }
 
@@ -54,71 +58,17 @@ public class BlockerManager {
         this.mInjector = injector;
     }
 
-    public boolean registerBlocker(IDesktopModeBlocker iDesktopModeBlocker, String str) {
-        synchronized (this.mBlockers) {
-            IBinder asBinder = iDesktopModeBlocker.asBinder();
-            try {
-                DesktopModeBlockerInfo desktopModeBlockerInfo = new DesktopModeBlockerInfo(iDesktopModeBlocker, str, this.mInjector.binderGetCallingPid(), this.mInjector.binderGetCallingUid());
-                asBinder.linkToDeath(desktopModeBlockerInfo, 0);
-                this.mBlockers.put(asBinder, desktopModeBlockerInfo);
-                this.mStateManager.notifyScheduleUpdateDesktopMode(false);
-            } catch (RemoteException unused) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean unregisterBlocker(IDesktopModeBlocker iDesktopModeBlocker) {
-        synchronized (this.mBlockers) {
-            DesktopModeBlockerInfo desktopModeBlockerInfo = (DesktopModeBlockerInfo) this.mBlockers.remove(iDesktopModeBlocker.asBinder());
-            if (desktopModeBlockerInfo == null) {
-                return false;
-            }
-            desktopModeBlockerInfo.blocker.asBinder().unlinkToDeath(desktopModeBlockerInfo, 0);
-            if (this.mBlockers.isEmpty()) {
-                this.mStateManager.notifyScheduleUpdateDesktopMode(true);
-            }
-            return true;
-        }
-    }
-
-    public final DesktopModeBlockerInfo getDefaultBlockerInfo(State state) {
-        DefaultBlocker.BlockerImpl blocker = this.mDefaultBlocker.getBlocker(state);
-        if (blocker != null) {
-            return new DesktopModeBlockerInfo(blocker, DefaultBlocker.reasonToString(blocker.reasonCode), this.mInjector.binderGetCallingPid(), this.mInjector.binderGetCallingUid());
-        }
-        return null;
-    }
-
-    public DesktopModeBlockerInfo getBlocker(State state) {
-        DesktopModeBlockerInfo defaultBlockerInfo = getDefaultBlockerInfo(state);
-        if (defaultBlockerInfo != null) {
-            return defaultBlockerInfo;
-        }
-        synchronized (this.mBlockers) {
-            for (DesktopModeBlockerInfo desktopModeBlockerInfo : this.mBlockers.values()) {
-                if (desktopModeBlockerInfo != null) {
-                    return desktopModeBlockerInfo;
-                }
-            }
-            return null;
-        }
-    }
-
-    public void dump(IndentingPrintWriter indentingPrintWriter) {
-        indentingPrintWriter.println("Current " + BlockerManager.class.getSimpleName() + " state:");
-        indentingPrintWriter.increaseIndent();
-        indentingPrintWriter.println("DefaultBlocker=" + getDefaultBlockerInfo(this.mStateManager.getState()));
-        synchronized (this.mBlockers) {
-            indentingPrintWriter.println("mBlockers (" + this.mBlockers.size() + "):");
-            indentingPrintWriter.increaseIndent();
-            Iterator it = this.mBlockers.values().iterator();
-            while (it.hasNext()) {
-                indentingPrintWriter.println((DesktopModeBlockerInfo) it.next());
-            }
-            indentingPrintWriter.decreaseIndent();
-        }
-        indentingPrintWriter.decreaseIndent();
+    /* JADX WARN: Removed duplicated region for block: B:21:0x00fe A[RETURN] */
+    /* JADX WARN: Removed duplicated region for block: B:6:0x00c1  */
+    /*
+        Code decompiled incorrectly, please refer to instructions dump.
+        To view partially-correct code enable 'Show inconsistent code' option in preferences
+    */
+    public final com.android.server.desktopmode.BlockerManager.DesktopModeBlockerInfo getDefaultBlockerInfo(com.android.server.desktopmode.StateManager.InternalState r12) {
+        /*
+            Method dump skipped, instructions count: 276
+            To view this dump change 'Code comments level' option to 'DEBUG'
+        */
+        throw new UnsupportedOperationException("Method not decompiled: com.android.server.desktopmode.BlockerManager.getDefaultBlockerInfo(com.android.server.desktopmode.StateManager$InternalState):com.android.server.desktopmode.BlockerManager$DesktopModeBlockerInfo");
     }
 }

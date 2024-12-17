@@ -1,35 +1,12 @@
 package com.android.server.usb.descriptors;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class UsbACMixerUnit extends UsbACInterface {
     public byte[] mInputIDs;
     public byte mNumInputs;
     public byte mNumOutputs;
     public byte mUnitID;
-
-    public UsbACMixerUnit(int i, byte b, byte b2, int i2) {
-        super(i, b, b2, i2);
-    }
-
-    public byte getUnitID() {
-        return this.mUnitID;
-    }
-
-    public byte getNumInputs() {
-        return this.mNumInputs;
-    }
-
-    public byte[] getInputIDs() {
-        return this.mInputIDs;
-    }
-
-    public byte getNumOutputs() {
-        return this.mNumOutputs;
-    }
-
-    public static int calcControlArraySize(int i, int i2) {
-        return ((i * i2) + 7) / 8;
-    }
 
     /* JADX WARN: Multi-variable type inference failed */
     @Override // com.android.server.usb.descriptors.UsbDescriptor

@@ -10,39 +10,12 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class KeepalivePacketDataUtil {
     private static final int IPV4_HEADER_LENGTH = 20;
     private static final int IPV6_HEADER_LENGTH = 40;
     private static final String TAG = "KeepalivePacketDataUtil";
-
-    public static NattKeepalivePacketDataParcelable toStableParcelable(NattKeepalivePacketData nattKeepalivePacketData) {
-        NattKeepalivePacketDataParcelable nattKeepalivePacketDataParcelable = new NattKeepalivePacketDataParcelable();
-        InetAddress srcAddress = nattKeepalivePacketData.getSrcAddress();
-        InetAddress dstAddress = nattKeepalivePacketData.getDstAddress();
-        nattKeepalivePacketDataParcelable.srcAddress = srcAddress.getAddress();
-        nattKeepalivePacketDataParcelable.srcPort = nattKeepalivePacketData.getSrcPort();
-        nattKeepalivePacketDataParcelable.dstAddress = dstAddress.getAddress();
-        nattKeepalivePacketDataParcelable.dstPort = nattKeepalivePacketData.getDstPort();
-        return nattKeepalivePacketDataParcelable;
-    }
-
-    public static TcpKeepalivePacketDataParcelable toStableParcelable(TcpKeepalivePacketData tcpKeepalivePacketData) {
-        TcpKeepalivePacketDataParcelable tcpKeepalivePacketDataParcelable = new TcpKeepalivePacketDataParcelable();
-        InetAddress srcAddress = tcpKeepalivePacketData.getSrcAddress();
-        InetAddress dstAddress = tcpKeepalivePacketData.getDstAddress();
-        tcpKeepalivePacketDataParcelable.srcAddress = srcAddress.getAddress();
-        tcpKeepalivePacketDataParcelable.srcPort = tcpKeepalivePacketData.getSrcPort();
-        tcpKeepalivePacketDataParcelable.dstAddress = dstAddress.getAddress();
-        tcpKeepalivePacketDataParcelable.dstPort = tcpKeepalivePacketData.getDstPort();
-        tcpKeepalivePacketDataParcelable.seq = tcpKeepalivePacketData.getTcpSeq();
-        tcpKeepalivePacketDataParcelable.ack = tcpKeepalivePacketData.getTcpAck();
-        tcpKeepalivePacketDataParcelable.rcvWnd = tcpKeepalivePacketData.getTcpWindow();
-        tcpKeepalivePacketDataParcelable.rcvWndScale = tcpKeepalivePacketData.getTcpWindowScale();
-        tcpKeepalivePacketDataParcelable.tos = tcpKeepalivePacketData.getIpTos();
-        tcpKeepalivePacketDataParcelable.ttl = tcpKeepalivePacketData.getIpTtl();
-        return tcpKeepalivePacketDataParcelable;
-    }
 
     @Deprecated
     public static TcpKeepalivePacketDataParcelable parseTcpKeepalivePacketData(KeepalivePacketData keepalivePacketData) {
@@ -73,5 +46,33 @@ public final class KeepalivePacketDataUtil {
         } catch (IndexOutOfBoundsException unused) {
             return null;
         }
+    }
+
+    public static NattKeepalivePacketDataParcelable toStableParcelable(NattKeepalivePacketData nattKeepalivePacketData) {
+        NattKeepalivePacketDataParcelable nattKeepalivePacketDataParcelable = new NattKeepalivePacketDataParcelable();
+        InetAddress srcAddress = nattKeepalivePacketData.getSrcAddress();
+        InetAddress dstAddress = nattKeepalivePacketData.getDstAddress();
+        nattKeepalivePacketDataParcelable.srcAddress = srcAddress.getAddress();
+        nattKeepalivePacketDataParcelable.srcPort = nattKeepalivePacketData.getSrcPort();
+        nattKeepalivePacketDataParcelable.dstAddress = dstAddress.getAddress();
+        nattKeepalivePacketDataParcelable.dstPort = nattKeepalivePacketData.getDstPort();
+        return nattKeepalivePacketDataParcelable;
+    }
+
+    public static TcpKeepalivePacketDataParcelable toStableParcelable(TcpKeepalivePacketData tcpKeepalivePacketData) {
+        TcpKeepalivePacketDataParcelable tcpKeepalivePacketDataParcelable = new TcpKeepalivePacketDataParcelable();
+        InetAddress srcAddress = tcpKeepalivePacketData.getSrcAddress();
+        InetAddress dstAddress = tcpKeepalivePacketData.getDstAddress();
+        tcpKeepalivePacketDataParcelable.srcAddress = srcAddress.getAddress();
+        tcpKeepalivePacketDataParcelable.srcPort = tcpKeepalivePacketData.getSrcPort();
+        tcpKeepalivePacketDataParcelable.dstAddress = dstAddress.getAddress();
+        tcpKeepalivePacketDataParcelable.dstPort = tcpKeepalivePacketData.getDstPort();
+        tcpKeepalivePacketDataParcelable.seq = tcpKeepalivePacketData.getTcpSeq();
+        tcpKeepalivePacketDataParcelable.ack = tcpKeepalivePacketData.getTcpAck();
+        tcpKeepalivePacketDataParcelable.rcvWnd = tcpKeepalivePacketData.getTcpWindow();
+        tcpKeepalivePacketDataParcelable.rcvWndScale = tcpKeepalivePacketData.getTcpWindowScale();
+        tcpKeepalivePacketDataParcelable.tos = tcpKeepalivePacketData.getIpTos();
+        tcpKeepalivePacketDataParcelable.ttl = tcpKeepalivePacketData.getIpTtl();
+        return tcpKeepalivePacketDataParcelable;
     }
 }

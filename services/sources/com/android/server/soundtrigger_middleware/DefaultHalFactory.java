@@ -5,81 +5,121 @@ import android.os.HwBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
-import android.util.Log;
+import android.util.Slog;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/* loaded from: classes3.dex */
-public class DefaultHalFactory implements HalFactory {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class DefaultHalFactory implements HalFactory {
     public static final ICaptureStateNotifier mCaptureStateNotifier = new ExternalCaptureStateTracker();
 
     @Override // com.android.server.soundtrigger_middleware.HalFactory
-    public ISoundTriggerHal create() {
+    public final ISoundTriggerHal create() {
         try {
             int i = SystemProperties.getInt("debug.soundtrigger_middleware.use_mock_hal", 0);
+            ICaptureStateNotifier iCaptureStateNotifier = mCaptureStateNotifier;
             if (i == 0) {
                 String str = ISoundTriggerHw.class.getCanonicalName() + "/default";
                 if (ServiceManager.isDeclared(str)) {
-                    Log.i("SoundTriggerMiddlewareDefaultHalFactory", "Connecting to default soundtrigger3.ISoundTriggerHw");
+                    Slog.i("SoundTriggerMiddlewareDefaultHalFactory", "Connecting to default soundtrigger3.ISoundTriggerHw");
+                    final int i2 = 0;
                     return new SoundTriggerHw3Compat(ServiceManager.waitForService(str), new Runnable() { // from class: com.android.server.soundtrigger_middleware.DefaultHalFactory$$ExternalSyntheticLambda0
                         @Override // java.lang.Runnable
                         public final void run() {
-                            SystemProperties.set("sys.audio.restart.hal", "1");
+                            switch (i2) {
+                                case 0:
+                                    SystemProperties.set("sys.audio.restart.hal", "1");
+                                    break;
+                                default:
+                                    SystemProperties.set("sys.audio.restart.hal", "1");
+                                    break;
+                            }
                         }
                     });
                 }
-                Log.i("SoundTriggerMiddlewareDefaultHalFactory", "Connecting to default soundtrigger-V2.x.ISoundTriggerHw");
-                return SoundTriggerHw2Compat.create(android.hardware.soundtrigger.V2_0.ISoundTriggerHw.getService(true), new Runnable() { // from class: com.android.server.soundtrigger_middleware.DefaultHalFactory$$ExternalSyntheticLambda1
+                Slog.i("SoundTriggerMiddlewareDefaultHalFactory", "Connecting to default soundtrigger-V2.x.ISoundTriggerHw");
+                final int i3 = 1;
+                return SoundTriggerHw2Compat.create(android.hardware.soundtrigger.V2_0.ISoundTriggerHw.asInterface(HwBinder.getService("android.hardware.soundtrigger@2.0::ISoundTriggerHw", "default", true)), new Runnable() { // from class: com.android.server.soundtrigger_middleware.DefaultHalFactory$$ExternalSyntheticLambda0
                     @Override // java.lang.Runnable
                     public final void run() {
-                        SystemProperties.set("sys.audio.restart.hal", "1");
+                        switch (i3) {
+                            case 0:
+                                SystemProperties.set("sys.audio.restart.hal", "1");
+                                break;
+                            default:
+                                SystemProperties.set("sys.audio.restart.hal", "1");
+                                break;
+                        }
                     }
-                }, mCaptureStateNotifier);
+                }, iCaptureStateNotifier);
             }
             if (i == 2) {
-                Log.i("SoundTriggerMiddlewareDefaultHalFactory", "Connecting to mock soundtrigger-V2.x.ISoundTriggerHw");
+                Slog.i("SoundTriggerMiddlewareDefaultHalFactory", "Connecting to mock soundtrigger-V2.x.ISoundTriggerHw");
                 HwBinder.setTrebleTestingOverride(true);
                 try {
-                    final android.hardware.soundtrigger.V2_0.ISoundTriggerHw service = android.hardware.soundtrigger.V2_0.ISoundTriggerHw.getService("mock", true);
-                    return SoundTriggerHw2Compat.create(service, new Runnable() { // from class: com.android.server.soundtrigger_middleware.DefaultHalFactory$$ExternalSyntheticLambda2
+                    final android.hardware.soundtrigger.V2_0.ISoundTriggerHw asInterface = android.hardware.soundtrigger.V2_0.ISoundTriggerHw.asInterface(HwBinder.getService("android.hardware.soundtrigger@2.0::ISoundTriggerHw", "mock", true));
+                    final int i4 = 0;
+                    return SoundTriggerHw2Compat.create(asInterface, new Runnable() { // from class: com.android.server.soundtrigger_middleware.DefaultHalFactory$$ExternalSyntheticLambda2
                         @Override // java.lang.Runnable
                         public final void run() {
-                            DefaultHalFactory.lambda$create$2(android.hardware.soundtrigger.V2_0.ISoundTriggerHw.this);
+                            int i5 = i4;
+                            Object obj = asInterface;
+                            switch (i5) {
+                                case 0:
+                                    try {
+                                        ((android.hardware.soundtrigger.V2_0.ISoundTriggerHw) obj).debug(null, new ArrayList(Arrays.asList("reboot")));
+                                        break;
+                                    } catch (Exception e) {
+                                        Slog.e("SoundTriggerMiddlewareDefaultHalFactory", "Failed to reboot mock HAL", e);
+                                        return;
+                                    }
+                                default:
+                                    try {
+                                        ServiceManager.waitForService((String) obj).shellCommand(null, null, null, new String[]{"reboot"}, null, null);
+                                        break;
+                                    } catch (Exception e2) {
+                                        Slog.e("SoundTriggerMiddlewareDefaultHalFactory", "Failed to reboot mock HAL", e2);
+                                    }
+                            }
                         }
-                    }, mCaptureStateNotifier);
+                    }, iCaptureStateNotifier);
                 } finally {
                     HwBinder.setTrebleTestingOverride(false);
                 }
             }
-            if (i == 3) {
-                final String str2 = ISoundTriggerHw.class.getCanonicalName() + "/mock";
-                Log.i("SoundTriggerMiddlewareDefaultHalFactory", "Connecting to mock soundtrigger3.ISoundTriggerHw");
-                return new SoundTriggerHw3Compat(ServiceManager.waitForService(str2), new Runnable() { // from class: com.android.server.soundtrigger_middleware.DefaultHalFactory$$ExternalSyntheticLambda3
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        DefaultHalFactory.lambda$create$3(str2);
-                    }
-                });
+            if (i != 3) {
+                throw new RuntimeException("Unknown HAL mock version: " + i);
             }
-            throw new RuntimeException("Unknown HAL mock version: " + i);
+            final String str2 = ISoundTriggerHw.class.getCanonicalName() + "/mock";
+            Slog.i("SoundTriggerMiddlewareDefaultHalFactory", "Connecting to mock soundtrigger3.ISoundTriggerHw");
+            final int i5 = 1;
+            return new SoundTriggerHw3Compat(ServiceManager.waitForService(str2), new Runnable() { // from class: com.android.server.soundtrigger_middleware.DefaultHalFactory$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    int i52 = i5;
+                    Object obj = str2;
+                    switch (i52) {
+                        case 0:
+                            try {
+                                ((android.hardware.soundtrigger.V2_0.ISoundTriggerHw) obj).debug(null, new ArrayList(Arrays.asList("reboot")));
+                                break;
+                            } catch (Exception e) {
+                                Slog.e("SoundTriggerMiddlewareDefaultHalFactory", "Failed to reboot mock HAL", e);
+                                return;
+                            }
+                        default:
+                            try {
+                                ServiceManager.waitForService((String) obj).shellCommand(null, null, null, new String[]{"reboot"}, null, null);
+                                break;
+                            } catch (Exception e2) {
+                                Slog.e("SoundTriggerMiddlewareDefaultHalFactory", "Failed to reboot mock HAL", e2);
+                            }
+                    }
+                }
+            });
         } catch (RemoteException e) {
             throw e.rethrowAsRuntimeException();
-        }
-    }
-
-    public static /* synthetic */ void lambda$create$2(android.hardware.soundtrigger.V2_0.ISoundTriggerHw iSoundTriggerHw) {
-        try {
-            iSoundTriggerHw.debug(null, new ArrayList(Arrays.asList("reboot")));
-        } catch (Exception e) {
-            Log.e("SoundTriggerMiddlewareDefaultHalFactory", "Failed to reboot mock HAL", e);
-        }
-    }
-
-    public static /* synthetic */ void lambda$create$3(String str) {
-        try {
-            ServiceManager.waitForService(str).shellCommand(null, null, null, new String[]{"reboot"}, null, null);
-        } catch (Exception e) {
-            Log.e("SoundTriggerMiddlewareDefaultHalFactory", "Failed to reboot mock HAL", e);
         }
     }
 }

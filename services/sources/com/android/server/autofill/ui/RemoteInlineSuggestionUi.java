@@ -10,15 +10,17 @@ import android.service.autofill.ISurfacePackageResultCallback;
 import android.util.Slog;
 import android.view.SurfaceControlViewHost;
 import com.android.internal.view.inline.IInlineContentCallback;
+import com.android.server.LocalServices;
 import com.android.server.autofill.Helper;
 import com.android.server.autofill.ui.RemoteInlineSuggestionUi;
+import com.android.server.inputmethod.InputMethodManagerInternal;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class RemoteInlineSuggestionUi {
-    public static final String TAG = "RemoteInlineSuggestionUi";
     public int mActualHeight;
     public int mActualWidth;
-    public Runnable mDelayedReleaseViewRunnable;
+    public RemoteInlineSuggestionUi$$ExternalSyntheticLambda0 mDelayedReleaseViewRunnable;
     public final Handler mHandler;
     public final int mHeight;
     public IInlineContentCallback mInlineContentCallback;
@@ -29,6 +31,94 @@ public final class RemoteInlineSuggestionUi {
     public boolean mWaitingForUiCreation = false;
     public final InlineSuggestionUiCallbackImpl mInlineSuggestionUiCallback = new InlineSuggestionUiCallbackImpl();
 
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.autofill.ui.RemoteInlineSuggestionUi$1, reason: invalid class name */
+    public final class AnonymousClass1 extends ISurfacePackageResultCallback.Stub {
+        public AnonymousClass1() {
+        }
+
+        public final void onResult(SurfaceControlViewHost.SurfacePackage surfacePackage) {
+            RemoteInlineSuggestionUi.this.mHandler.post(new RemoteInlineSuggestionUi$$ExternalSyntheticLambda1(1, this, surfacePackage));
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class InlineSuggestionUiCallbackImpl extends IInlineSuggestionUiCallback.Stub {
+        public InlineSuggestionUiCallbackImpl() {
+        }
+
+        public final void onClick() {
+            RemoteInlineSuggestionUi remoteInlineSuggestionUi = RemoteInlineSuggestionUi.this;
+            remoteInlineSuggestionUi.mHandler.post(new RemoteInlineSuggestionUi$$ExternalSyntheticLambda0(remoteInlineSuggestionUi, 3));
+        }
+
+        public final void onContent(final IInlineSuggestionUi iInlineSuggestionUi, final SurfaceControlViewHost.SurfacePackage surfacePackage, final int i, final int i2) {
+            RemoteInlineSuggestionUi.this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$InlineSuggestionUiCallbackImpl$$ExternalSyntheticLambda3
+                @Override // java.lang.Runnable
+                public final void run() {
+                    RemoteInlineSuggestionUi.InlineSuggestionUiCallbackImpl inlineSuggestionUiCallbackImpl = RemoteInlineSuggestionUi.InlineSuggestionUiCallbackImpl.this;
+                    IInlineSuggestionUi iInlineSuggestionUi2 = iInlineSuggestionUi;
+                    SurfaceControlViewHost.SurfacePackage surfacePackage2 = surfacePackage;
+                    int i3 = i;
+                    int i4 = i2;
+                    RemoteInlineSuggestionUi remoteInlineSuggestionUi = RemoteInlineSuggestionUi.this;
+                    remoteInlineSuggestionUi.mInlineSuggestionUi = iInlineSuggestionUi2;
+                    remoteInlineSuggestionUi.mRefCount = 0;
+                    remoteInlineSuggestionUi.mWaitingForUiCreation = false;
+                    remoteInlineSuggestionUi.mActualWidth = i3;
+                    remoteInlineSuggestionUi.mActualHeight = i4;
+                    if (remoteInlineSuggestionUi.mInlineContentCallback != null) {
+                        try {
+                            if (Helper.sVerbose) {
+                                Slog.v("RemoteInlineSuggestionUi", "Sending new UI content to IME");
+                            }
+                            remoteInlineSuggestionUi.handleUpdateRefCount(1);
+                            remoteInlineSuggestionUi.mInlineContentCallback.onContent(surfacePackage2, remoteInlineSuggestionUi.mActualWidth, remoteInlineSuggestionUi.mActualHeight);
+                        } catch (RemoteException unused) {
+                            Slog.w("RemoteInlineSuggestionUi", "RemoteException calling onContent");
+                        }
+                    }
+                    if (surfacePackage2 != null) {
+                        surfacePackage2.release();
+                    }
+                    remoteInlineSuggestionUi.mRemoteInlineSuggestionViewConnector.mOnInflateCallback.run();
+                }
+            });
+        }
+
+        public final void onError() {
+            RemoteInlineSuggestionUi remoteInlineSuggestionUi = RemoteInlineSuggestionUi.this;
+            remoteInlineSuggestionUi.mHandler.post(new RemoteInlineSuggestionUi$$ExternalSyntheticLambda0(remoteInlineSuggestionUi, 5));
+        }
+
+        public final void onLongClick() {
+            RemoteInlineSuggestionUi remoteInlineSuggestionUi = RemoteInlineSuggestionUi.this;
+            remoteInlineSuggestionUi.mHandler.post(new RemoteInlineSuggestionUi$$ExternalSyntheticLambda0(remoteInlineSuggestionUi, 4));
+        }
+
+        public final void onStartIntentSender(IntentSender intentSender) {
+            RemoteInlineSuggestionUi.this.mHandler.post(new RemoteInlineSuggestionUi$$ExternalSyntheticLambda1(2, this, intentSender));
+        }
+
+        public final void onTransferTouchFocusToImeWindow(final IBinder iBinder, final int i) {
+            RemoteInlineSuggestionUi.this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$InlineSuggestionUiCallbackImpl$$ExternalSyntheticLambda2
+                @Override // java.lang.Runnable
+                public final void run() {
+                    RemoteInlineSuggestionUi.InlineSuggestionUiCallbackImpl inlineSuggestionUiCallbackImpl = RemoteInlineSuggestionUi.InlineSuggestionUiCallbackImpl.this;
+                    IBinder iBinder2 = iBinder;
+                    int i2 = i;
+                    RemoteInlineSuggestionViewConnector remoteInlineSuggestionViewConnector = RemoteInlineSuggestionUi.this.mRemoteInlineSuggestionViewConnector;
+                    remoteInlineSuggestionViewConnector.getClass();
+                    if (((InputMethodManagerInternal) LocalServices.getService(InputMethodManagerInternal.class)).transferTouchFocusToImeWindow(i2, iBinder2, remoteInlineSuggestionViewConnector.mUserId)) {
+                        return;
+                    }
+                    Slog.e("RemoteInlineSuggestionViewConnector", "Cannot transfer touch focus from suggestion to IME");
+                    remoteInlineSuggestionViewConnector.mOnErrorCallback.run();
+                }
+            });
+        }
+    }
+
     public RemoteInlineSuggestionUi(RemoteInlineSuggestionViewConnector remoteInlineSuggestionViewConnector, int i, int i2, Handler handler) {
         this.mHandler = handler;
         this.mRemoteInlineSuggestionViewConnector = remoteInlineSuggestionViewConnector;
@@ -36,275 +126,19 @@ public final class RemoteInlineSuggestionUi {
         this.mHeight = i2;
     }
 
-    public void setInlineContentCallback(final IInlineContentCallback iInlineContentCallback) {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$$ExternalSyntheticLambda2
-            @Override // java.lang.Runnable
-            public final void run() {
-                RemoteInlineSuggestionUi.this.lambda$setInlineContentCallback$0(iInlineContentCallback);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$setInlineContentCallback$0(IInlineContentCallback iInlineContentCallback) {
-        this.mInlineContentCallback = iInlineContentCallback;
-    }
-
-    public void requestSurfacePackage() {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$$ExternalSyntheticLambda1
-            @Override // java.lang.Runnable
-            public final void run() {
-                RemoteInlineSuggestionUi.this.handleRequestSurfacePackage();
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$surfacePackageReleased$1() {
-        handleUpdateRefCount(-1);
-    }
-
-    public void surfacePackageReleased() {
-        this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                RemoteInlineSuggestionUi.this.lambda$surfacePackageReleased$1();
-            }
-        });
-    }
-
-    public boolean match(int i, int i2) {
-        return this.mWidth == i && this.mHeight == i2;
-    }
-
-    public final void handleRequestSurfacePackage() {
-        cancelPendingReleaseViewRequest();
-        IInlineSuggestionUi iInlineSuggestionUi = this.mInlineSuggestionUi;
-        if (iInlineSuggestionUi == null) {
-            if (this.mWaitingForUiCreation) {
-                if (Helper.sDebug) {
-                    Slog.d(TAG, "Inline suggestion ui is not ready");
-                    return;
-                }
-                return;
-            } else {
-                this.mRemoteInlineSuggestionViewConnector.renderSuggestion(this.mWidth, this.mHeight, this.mInlineSuggestionUiCallback);
-                this.mWaitingForUiCreation = true;
-                return;
-            }
-        }
-        try {
-            iInlineSuggestionUi.getSurfacePackage(new AnonymousClass1());
-        } catch (RemoteException unused) {
-            Slog.w(TAG, "RemoteException calling getSurfacePackage.");
-        }
-    }
-
-    /* renamed from: com.android.server.autofill.ui.RemoteInlineSuggestionUi$1, reason: invalid class name */
-    /* loaded from: classes.dex */
-    public class AnonymousClass1 extends ISurfacePackageResultCallback.Stub {
-        public AnonymousClass1() {
-        }
-
-        public void onResult(final SurfaceControlViewHost.SurfacePackage surfacePackage) {
-            RemoteInlineSuggestionUi.this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$1$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RemoteInlineSuggestionUi.AnonymousClass1.this.lambda$onResult$0(surfacePackage);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onResult$0(SurfaceControlViewHost.SurfacePackage surfacePackage) {
-            if (Helper.sVerbose) {
-                Slog.v(RemoteInlineSuggestionUi.TAG, "Sending refreshed SurfacePackage to IME");
-            }
-            try {
-                RemoteInlineSuggestionUi.this.mInlineContentCallback.onContent(surfacePackage, RemoteInlineSuggestionUi.this.mActualWidth, RemoteInlineSuggestionUi.this.mActualHeight);
-                RemoteInlineSuggestionUi.this.handleUpdateRefCount(1);
-            } catch (RemoteException unused) {
-                Slog.w(RemoteInlineSuggestionUi.TAG, "RemoteException calling onContent");
-            }
-        }
-    }
-
     public final void handleUpdateRefCount(int i) {
-        cancelPendingReleaseViewRequest();
+        RemoteInlineSuggestionUi$$ExternalSyntheticLambda0 remoteInlineSuggestionUi$$ExternalSyntheticLambda0 = this.mDelayedReleaseViewRunnable;
+        Handler handler = this.mHandler;
+        if (remoteInlineSuggestionUi$$ExternalSyntheticLambda0 != null) {
+            handler.removeCallbacks(remoteInlineSuggestionUi$$ExternalSyntheticLambda0);
+            this.mDelayedReleaseViewRunnable = null;
+        }
         int i2 = this.mRefCount + i;
         this.mRefCount = i2;
         if (i2 <= 0) {
-            Runnable runnable = new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$$ExternalSyntheticLambda3
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RemoteInlineSuggestionUi.this.lambda$handleUpdateRefCount$2();
-                }
-            };
-            this.mDelayedReleaseViewRunnable = runnable;
-            this.mHandler.postDelayed(runnable, 200L);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$handleUpdateRefCount$2() {
-        if (this.mInlineSuggestionUi != null) {
-            try {
-                if (Helper.sVerbose) {
-                    Slog.v(TAG, "releasing the host");
-                }
-                this.mInlineSuggestionUi.releaseSurfaceControlViewHost();
-                this.mInlineSuggestionUi = null;
-            } catch (RemoteException unused) {
-                Slog.w(TAG, "RemoteException calling releaseSurfaceControlViewHost");
-            }
-        }
-        this.mDelayedReleaseViewRunnable = null;
-    }
-
-    public final void cancelPendingReleaseViewRequest() {
-        Runnable runnable = this.mDelayedReleaseViewRunnable;
-        if (runnable != null) {
-            this.mHandler.removeCallbacks(runnable);
-            this.mDelayedReleaseViewRunnable = null;
-        }
-    }
-
-    public final void handleInlineSuggestionUiReady(IInlineSuggestionUi iInlineSuggestionUi, SurfaceControlViewHost.SurfacePackage surfacePackage, int i, int i2) {
-        this.mInlineSuggestionUi = iInlineSuggestionUi;
-        this.mRefCount = 0;
-        this.mWaitingForUiCreation = false;
-        this.mActualWidth = i;
-        this.mActualHeight = i2;
-        if (this.mInlineContentCallback != null) {
-            try {
-                if (Helper.sVerbose) {
-                    Slog.v(TAG, "Sending new UI content to IME");
-                }
-                handleUpdateRefCount(1);
-                this.mInlineContentCallback.onContent(surfacePackage, this.mActualWidth, this.mActualHeight);
-            } catch (RemoteException unused) {
-                Slog.w(TAG, "RemoteException calling onContent");
-            }
-        }
-        if (surfacePackage != null) {
-            surfacePackage.release();
-        }
-        this.mRemoteInlineSuggestionViewConnector.onRender();
-    }
-
-    public final void handleOnClick() {
-        this.mRemoteInlineSuggestionViewConnector.onClick();
-        IInlineContentCallback iInlineContentCallback = this.mInlineContentCallback;
-        if (iInlineContentCallback != null) {
-            try {
-                iInlineContentCallback.onClick();
-            } catch (RemoteException unused) {
-                Slog.w(TAG, "RemoteException calling onClick");
-            }
-        }
-    }
-
-    public final void handleOnLongClick() {
-        IInlineContentCallback iInlineContentCallback = this.mInlineContentCallback;
-        if (iInlineContentCallback != null) {
-            try {
-                iInlineContentCallback.onLongClick();
-            } catch (RemoteException unused) {
-                Slog.w(TAG, "RemoteException calling onLongClick");
-            }
-        }
-    }
-
-    public final void handleOnError() {
-        this.mRemoteInlineSuggestionViewConnector.onError();
-    }
-
-    public final void handleOnTransferTouchFocusToImeWindow(IBinder iBinder, int i) {
-        this.mRemoteInlineSuggestionViewConnector.onTransferTouchFocusToImeWindow(iBinder, i);
-    }
-
-    public final void handleOnStartIntentSender(IntentSender intentSender) {
-        this.mRemoteInlineSuggestionViewConnector.onStartIntentSender(intentSender);
-    }
-
-    /* loaded from: classes.dex */
-    public class InlineSuggestionUiCallbackImpl extends IInlineSuggestionUiCallback.Stub {
-        public InlineSuggestionUiCallbackImpl() {
-        }
-
-        public void onClick() {
-            Handler handler = RemoteInlineSuggestionUi.this.mHandler;
-            final RemoteInlineSuggestionUi remoteInlineSuggestionUi = RemoteInlineSuggestionUi.this;
-            handler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$InlineSuggestionUiCallbackImpl$$ExternalSyntheticLambda4
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RemoteInlineSuggestionUi.this.handleOnClick();
-                }
-            });
-        }
-
-        public void onLongClick() {
-            Handler handler = RemoteInlineSuggestionUi.this.mHandler;
-            final RemoteInlineSuggestionUi remoteInlineSuggestionUi = RemoteInlineSuggestionUi.this;
-            handler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$InlineSuggestionUiCallbackImpl$$ExternalSyntheticLambda2
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RemoteInlineSuggestionUi.this.handleOnLongClick();
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onContent$0(IInlineSuggestionUi iInlineSuggestionUi, SurfaceControlViewHost.SurfacePackage surfacePackage, int i, int i2) {
-            RemoteInlineSuggestionUi.this.handleInlineSuggestionUiReady(iInlineSuggestionUi, surfacePackage, i, i2);
-        }
-
-        public void onContent(final IInlineSuggestionUi iInlineSuggestionUi, final SurfaceControlViewHost.SurfacePackage surfacePackage, final int i, final int i2) {
-            RemoteInlineSuggestionUi.this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$InlineSuggestionUiCallbackImpl$$ExternalSyntheticLambda3
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RemoteInlineSuggestionUi.InlineSuggestionUiCallbackImpl.this.lambda$onContent$0(iInlineSuggestionUi, surfacePackage, i, i2);
-                }
-            });
-        }
-
-        public void onError() {
-            Handler handler = RemoteInlineSuggestionUi.this.mHandler;
-            final RemoteInlineSuggestionUi remoteInlineSuggestionUi = RemoteInlineSuggestionUi.this;
-            handler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$InlineSuggestionUiCallbackImpl$$ExternalSyntheticLambda5
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RemoteInlineSuggestionUi.this.handleOnError();
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onTransferTouchFocusToImeWindow$1(IBinder iBinder, int i) {
-            RemoteInlineSuggestionUi.this.handleOnTransferTouchFocusToImeWindow(iBinder, i);
-        }
-
-        public void onTransferTouchFocusToImeWindow(final IBinder iBinder, final int i) {
-            RemoteInlineSuggestionUi.this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$InlineSuggestionUiCallbackImpl$$ExternalSyntheticLambda0
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RemoteInlineSuggestionUi.InlineSuggestionUiCallbackImpl.this.lambda$onTransferTouchFocusToImeWindow$1(iBinder, i);
-                }
-            });
-        }
-
-        /* JADX INFO: Access modifiers changed from: private */
-        public /* synthetic */ void lambda$onStartIntentSender$2(IntentSender intentSender) {
-            RemoteInlineSuggestionUi.this.handleOnStartIntentSender(intentSender);
-        }
-
-        public void onStartIntentSender(final IntentSender intentSender) {
-            RemoteInlineSuggestionUi.this.mHandler.post(new Runnable() { // from class: com.android.server.autofill.ui.RemoteInlineSuggestionUi$InlineSuggestionUiCallbackImpl$$ExternalSyntheticLambda1
-                @Override // java.lang.Runnable
-                public final void run() {
-                    RemoteInlineSuggestionUi.InlineSuggestionUiCallbackImpl.this.lambda$onStartIntentSender$2(intentSender);
-                }
-            });
+            RemoteInlineSuggestionUi$$ExternalSyntheticLambda0 remoteInlineSuggestionUi$$ExternalSyntheticLambda02 = new RemoteInlineSuggestionUi$$ExternalSyntheticLambda0(this, 2);
+            this.mDelayedReleaseViewRunnable = remoteInlineSuggestionUi$$ExternalSyntheticLambda02;
+            handler.postDelayed(remoteInlineSuggestionUi$$ExternalSyntheticLambda02, 200L);
         }
     }
 }

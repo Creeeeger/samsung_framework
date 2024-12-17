@@ -2,36 +2,14 @@ package com.android.server.accessibility.magnification;
 
 import android.view.MotionEvent;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class MotionEventInfo {
     public MotionEvent mEvent;
     public int mPolicyFlags;
     public MotionEvent mRawEvent;
 
-    public static MotionEventInfo obtain(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        return new MotionEventInfo(MotionEvent.obtain(motionEvent), MotionEvent.obtain(motionEvent2), i);
-    }
-
-    public MotionEventInfo(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        this.mEvent = motionEvent;
-        this.mRawEvent = motionEvent2;
-        this.mPolicyFlags = i;
-    }
-
-    public void recycle() {
-        this.mEvent = recycleAndNullify(this.mEvent);
-        this.mRawEvent = recycleAndNullify(this.mRawEvent);
-    }
-
-    public String toString() {
+    public final String toString() {
         return MotionEvent.actionToString(this.mEvent.getAction()).replace("ACTION_", "");
-    }
-
-    public static MotionEvent recycleAndNullify(MotionEvent motionEvent) {
-        if (motionEvent == null) {
-            return null;
-        }
-        motionEvent.recycle();
-        return null;
     }
 }

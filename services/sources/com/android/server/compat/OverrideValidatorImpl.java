@@ -10,21 +10,22 @@ import com.android.internal.compat.AndroidBuildClassifier;
 import com.android.internal.compat.IOverrideValidator;
 import com.android.internal.compat.OverrideAllowedState;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class OverrideValidatorImpl extends IOverrideValidator.Stub {
-    public AndroidBuildClassifier mAndroidBuildClassifier;
-    public CompatConfig mCompatConfig;
-    public Context mContext;
+public final class OverrideValidatorImpl extends IOverrideValidator.Stub {
+    public final AndroidBuildClassifier mAndroidBuildClassifier;
+    public final CompatConfig mCompatConfig;
+    public final Context mContext;
     public boolean mForceNonDebuggableFinalBuild = false;
 
-    /* loaded from: classes.dex */
-    public class SettingsObserver extends ContentObserver {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class SettingsObserver extends ContentObserver {
         public SettingsObserver() {
             super(new Handler());
         }
 
         @Override // android.database.ContentObserver
-        public void onChange(boolean z) {
+        public final void onChange(boolean z) {
             OverrideValidatorImpl overrideValidatorImpl = OverrideValidatorImpl.this;
             overrideValidatorImpl.mForceNonDebuggableFinalBuild = Settings.Global.getInt(overrideValidatorImpl.mContext.getContentResolver(), "force_non_debuggable_final_build_for_compat", 0) == 1;
         }
@@ -36,27 +37,26 @@ public class OverrideValidatorImpl extends IOverrideValidator.Stub {
         this.mCompatConfig = compatConfig;
     }
 
-    public OverrideAllowedState getOverrideAllowedStateForRecheck(long j, String str) {
-        return getOverrideAllowedStateInternal(j, str, true);
+    public final OverrideAllowedState getOverrideAllowedState(long j, String str) {
+        return getOverrideAllowedStateInternal(str, j, false);
     }
 
-    public OverrideAllowedState getOverrideAllowedState(long j, String str) {
-        return getOverrideAllowedStateInternal(j, str, false);
-    }
-
-    public final OverrideAllowedState getOverrideAllowedStateInternal(long j, String str, boolean z) {
-        if (this.mCompatConfig.isLoggingOnly(j)) {
+    public final OverrideAllowedState getOverrideAllowedStateInternal(String str, long j, boolean z) {
+        CompatChange compatChange = (CompatChange) this.mCompatConfig.mChanges.get(Long.valueOf(j));
+        if (compatChange != null && compatChange.getLoggingOnly()) {
             return new OverrideAllowedState(5, -1, -1);
         }
         boolean z2 = this.mAndroidBuildClassifier.isDebuggableBuild() && !this.mForceNonDebuggableFinalBuild;
         boolean z3 = this.mAndroidBuildClassifier.isFinalBuild() || this.mForceNonDebuggableFinalBuild;
-        int maxTargetSdkForChangeIdOptIn = this.mCompatConfig.maxTargetSdkForChangeIdOptIn(j);
-        boolean isDisabled = this.mCompatConfig.isDisabled(j);
+        CompatChange compatChange2 = (CompatChange) this.mCompatConfig.mChanges.get(Long.valueOf(j));
+        int enableSinceTargetSdk = (compatChange2 == null || compatChange2.getEnableSinceTargetSdk() == -1) ? -1 : compatChange2.getEnableSinceTargetSdk() - 1;
+        CompatChange compatChange3 = (CompatChange) this.mCompatConfig.mChanges.get(Long.valueOf(j));
+        boolean z4 = compatChange3 != null && compatChange3.getDisabled();
         if (z2) {
             return new OverrideAllowedState(0, -1, -1);
         }
-        if (maxTargetSdkForChangeIdOptIn >= this.mAndroidBuildClassifier.platformTargetSdk()) {
-            return new OverrideAllowedState(6, -1, maxTargetSdkForChangeIdOptIn);
+        if (enableSinceTargetSdk >= this.mAndroidBuildClassifier.platformTargetSdk()) {
+            return new OverrideAllowedState(6, -1, enableSinceTargetSdk);
         }
         PackageManager packageManager = this.mContext.getPackageManager();
         if (packageManager == null) {
@@ -64,33 +64,14 @@ public class OverrideValidatorImpl extends IOverrideValidator.Stub {
         }
         try {
             ApplicationInfo applicationInfo = packageManager.getApplicationInfo(str, 4194304);
-            if (this.mCompatConfig.isOverridable(j) && (z || this.mContext.checkCallingOrSelfPermission("android.permission.OVERRIDE_COMPAT_CHANGE_CONFIG_ON_RELEASE_BUILD") == 0)) {
+            CompatChange compatChange4 = (CompatChange) this.mCompatConfig.mChanges.get(Long.valueOf(j));
+            if (compatChange4 != null && compatChange4.getOverridable() && (z || this.mContext.checkCallingOrSelfPermission("android.permission.OVERRIDE_COMPAT_CHANGE_CONFIG_ON_RELEASE_BUILD") == 0)) {
                 return new OverrideAllowedState(0, -1, -1);
             }
             int i = applicationInfo.targetSdkVersion;
-            if ((applicationInfo.flags & 2) == 0) {
-                return new OverrideAllowedState(1, -1, -1);
-            }
-            if (!z3) {
-                return new OverrideAllowedState(0, i, maxTargetSdkForChangeIdOptIn);
-            }
-            if (maxTargetSdkForChangeIdOptIn == -1 && !isDisabled) {
-                return new OverrideAllowedState(2, i, maxTargetSdkForChangeIdOptIn);
-            }
-            if (isDisabled || i <= maxTargetSdkForChangeIdOptIn) {
-                return new OverrideAllowedState(0, i, maxTargetSdkForChangeIdOptIn);
-            }
-            return new OverrideAllowedState(3, i, maxTargetSdkForChangeIdOptIn);
+            return (applicationInfo.flags & 2) == 0 ? new OverrideAllowedState(1, -1, -1) : !z3 ? new OverrideAllowedState(0, i, enableSinceTargetSdk) : (enableSinceTargetSdk != -1 || z4) ? (z4 || i <= enableSinceTargetSdk) ? new OverrideAllowedState(0, i, enableSinceTargetSdk) : new OverrideAllowedState(3, i, enableSinceTargetSdk) : new OverrideAllowedState(2, i, enableSinceTargetSdk);
         } catch (PackageManager.NameNotFoundException unused) {
             return new OverrideAllowedState(4, -1, -1);
         }
-    }
-
-    public void registerContentObserver() {
-        this.mContext.getContentResolver().registerContentObserver(Settings.Global.getUriFor("force_non_debuggable_final_build_for_compat"), false, new SettingsObserver());
-    }
-
-    public void forceNonDebuggableFinalForTest(boolean z) {
-        this.mForceNonDebuggableFinalBuild = z;
     }
 }

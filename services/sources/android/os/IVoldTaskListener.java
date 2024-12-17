@@ -1,9 +1,10 @@
 package android.os;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public interface IVoldTaskListener extends IInterface {
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public class Default implements IVoldTaskListener {
         @Override // android.os.IInterface
         public IBinder asBinder() {
@@ -11,27 +12,54 @@ public interface IVoldTaskListener extends IInterface {
         }
 
         @Override // android.os.IVoldTaskListener
-        public void onFinished(int i, PersistableBundle persistableBundle) {
+        public void onFinished(int i, PersistableBundle persistableBundle) throws RemoteException {
         }
 
         @Override // android.os.IVoldTaskListener
-        public void onStatus(int i, PersistableBundle persistableBundle) {
+        public void onStatus(int i, PersistableBundle persistableBundle) throws RemoteException {
         }
     }
 
-    void onFinished(int i, PersistableBundle persistableBundle);
-
-    void onStatus(int i, PersistableBundle persistableBundle);
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class Stub extends Binder implements IVoldTaskListener {
         public static final String DESCRIPTOR = "android.os.IVoldTaskListener";
-        public static final int TRANSACTION_onFinished = 2;
-        public static final int TRANSACTION_onStatus = 1;
+        static final int TRANSACTION_onFinished = 2;
+        static final int TRANSACTION_onStatus = 1;
 
-        @Override // android.os.IInterface
-        public IBinder asBinder() {
-            return this;
+        /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+        public final class Proxy implements IVoldTaskListener {
+            public IBinder mRemote;
+
+            @Override // android.os.IInterface
+            public final IBinder asBinder() {
+                return this.mRemote;
+            }
+
+            @Override // android.os.IVoldTaskListener
+            public final void onFinished(int i, PersistableBundle persistableBundle) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeTypedObject(persistableBundle, 0);
+                    this.mRemote.transact(2, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
+
+            @Override // android.os.IVoldTaskListener
+            public final void onStatus(int i, PersistableBundle persistableBundle) {
+                Parcel obtain = Parcel.obtain(this.mRemote);
+                try {
+                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
+                    obtain.writeInt(i);
+                    obtain.writeTypedObject(persistableBundle, 0);
+                    this.mRemote.transact(1, obtain, null, 1);
+                } finally {
+                    obtain.recycle();
+                }
+            }
         }
 
         public Stub() {
@@ -46,11 +74,18 @@ public interface IVoldTaskListener extends IInterface {
             if (queryLocalInterface != null && (queryLocalInterface instanceof IVoldTaskListener)) {
                 return (IVoldTaskListener) queryLocalInterface;
             }
-            return new Proxy(iBinder);
+            Proxy proxy = new Proxy();
+            proxy.mRemote = iBinder;
+            return proxy;
+        }
+
+        @Override // android.os.IInterface
+        public IBinder asBinder() {
+            return this;
         }
 
         @Override // android.os.Binder
-        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) {
+        public boolean onTransact(int i, Parcel parcel, Parcel parcel2, int i2) throws RemoteException {
             if (i >= 1 && i <= 16777215) {
                 parcel.enforceInterface(DESCRIPTOR);
             }
@@ -63,59 +98,20 @@ public interface IVoldTaskListener extends IInterface {
                 PersistableBundle persistableBundle = (PersistableBundle) parcel.readTypedObject(PersistableBundle.CREATOR);
                 parcel.enforceNoDataAvail();
                 onStatus(readInt, persistableBundle);
-            } else if (i == 2) {
+            } else {
+                if (i != 2) {
+                    return super.onTransact(i, parcel, parcel2, i2);
+                }
                 int readInt2 = parcel.readInt();
                 PersistableBundle persistableBundle2 = (PersistableBundle) parcel.readTypedObject(PersistableBundle.CREATOR);
                 parcel.enforceNoDataAvail();
                 onFinished(readInt2, persistableBundle2);
-            } else {
-                return super.onTransact(i, parcel, parcel2, i2);
             }
             return true;
         }
-
-        /* loaded from: classes.dex */
-        public class Proxy implements IVoldTaskListener {
-            public IBinder mRemote;
-
-            public String getInterfaceDescriptor() {
-                return Stub.DESCRIPTOR;
-            }
-
-            public Proxy(IBinder iBinder) {
-                this.mRemote = iBinder;
-            }
-
-            @Override // android.os.IInterface
-            public IBinder asBinder() {
-                return this.mRemote;
-            }
-
-            @Override // android.os.IVoldTaskListener
-            public void onStatus(int i, PersistableBundle persistableBundle) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeTypedObject(persistableBundle, 0);
-                    this.mRemote.transact(1, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-
-            @Override // android.os.IVoldTaskListener
-            public void onFinished(int i, PersistableBundle persistableBundle) {
-                Parcel obtain = Parcel.obtain(asBinder());
-                try {
-                    obtain.writeInterfaceToken(Stub.DESCRIPTOR);
-                    obtain.writeInt(i);
-                    obtain.writeTypedObject(persistableBundle, 0);
-                    this.mRemote.transact(2, obtain, null, 1);
-                } finally {
-                    obtain.recycle();
-                }
-            }
-        }
     }
+
+    void onFinished(int i, PersistableBundle persistableBundle) throws RemoteException;
+
+    void onStatus(int i, PersistableBundle persistableBundle) throws RemoteException;
 }

@@ -5,15 +5,11 @@ import android.os.BatteryUsageStats;
 import android.os.BatteryUsageStatsQuery;
 import com.android.internal.os.PowerProfile;
 
-/* loaded from: classes3.dex */
-public class BatteryChargeCalculator extends PowerCalculator {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class BatteryChargeCalculator extends PowerCalculator {
     public final double mBatteryRatedCapacity;
     public final double mBatteryTypicalCapacity;
-
-    @Override // com.android.server.power.stats.PowerCalculator
-    public boolean isPowerComponentSupported(int i) {
-        return true;
-    }
 
     public BatteryChargeCalculator(PowerProfile powerProfile) {
         this.mBatteryRatedCapacity = powerProfile.getBatteryCapacity();
@@ -21,7 +17,7 @@ public class BatteryChargeCalculator extends PowerCalculator {
     }
 
     @Override // com.android.server.power.stats.PowerCalculator
-    public void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
+    public final void calculate(BatteryUsageStats.Builder builder, BatteryStats batteryStats, long j, long j2, BatteryUsageStatsQuery batteryUsageStatsQuery) {
         builder.setDischargePercentage(batteryStats.getDischargeAmount(0));
         int learnedBatteryCapacity = batteryStats.getLearnedBatteryCapacity() / 1000;
         if (learnedBatteryCapacity <= 0 && (learnedBatteryCapacity = batteryStats.getMinLearnedBatteryCapacity() / 1000) <= 0) {
@@ -46,5 +42,10 @@ public class BatteryChargeCalculator extends PowerCalculator {
             uahDischarge = (long) (((lowDischargeAmountSinceCharge + highDischargeAmountSinceCharge) / 2.0d) + 0.5d);
         }
         builder.getAggregateBatteryConsumerBuilder(0).setConsumedPower(uahDischarge);
+    }
+
+    @Override // com.android.server.power.stats.PowerCalculator
+    public final boolean isPowerComponentSupported(int i) {
+        return true;
     }
 }

@@ -1,76 +1,63 @@
 package com.android.server.usb.descriptors;
 
-import com.android.server.usb.descriptors.report.ReportCanvas;
+import com.android.server.usb.descriptors.report.TextReportCanvas;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class Usb10ACMixerUnit extends UsbACMixerUnit implements UsbAudioChannelCluster {
-    public byte mChanNameID;
     public int mChannelConfig;
     public byte[] mControls;
-    public byte mNameID;
-
-    public Usb10ACMixerUnit(int i, byte b, byte b2, int i2) {
-        super(i, b, b2, i2);
-    }
 
     @Override // com.android.server.usb.descriptors.UsbAudioChannelCluster
-    public byte getChannelCount() {
+    public final byte getChannelCount() {
         return this.mNumOutputs;
     }
 
-    public int getChannelConfig() {
-        return this.mChannelConfig;
-    }
-
-    public byte[] getControls() {
-        return this.mControls;
-    }
-
     @Override // com.android.server.usb.descriptors.UsbACMixerUnit, com.android.server.usb.descriptors.UsbDescriptor
-    public int parseRawDescriptors(ByteStream byteStream) {
+    public final int parseRawDescriptors(ByteStream byteStream) {
         super.parseRawDescriptors(byteStream);
         this.mChannelConfig = byteStream.unpackUsbShort();
-        this.mChanNameID = byteStream.getByte();
-        int calcControlArraySize = UsbACMixerUnit.calcControlArraySize(this.mNumInputs, this.mNumOutputs);
-        this.mControls = new byte[calcControlArraySize];
-        for (int i = 0; i < calcControlArraySize; i++) {
-            this.mControls[i] = byteStream.getByte();
+        byteStream.getByte();
+        int i = ((this.mNumInputs * this.mNumOutputs) + 7) / 8;
+        this.mControls = new byte[i];
+        for (int i2 = 0; i2 < i; i2++) {
+            this.mControls[i2] = byteStream.getByte();
         }
-        this.mNameID = byteStream.getByte();
+        byteStream.getByte();
         return this.mLength;
     }
 
     @Override // com.android.server.usb.descriptors.UsbACInterface, com.android.server.usb.descriptors.UsbDescriptor
-    public void report(ReportCanvas reportCanvas) {
-        super.report(reportCanvas);
-        reportCanvas.writeParagraph("Mixer Unit", false);
-        reportCanvas.openList();
-        reportCanvas.writeListItem("Unit ID: " + ReportCanvas.getHexString(getUnitID()));
-        byte numInputs = getNumInputs();
-        byte[] inputIDs = getInputIDs();
-        reportCanvas.openListItem();
-        reportCanvas.write("Num Inputs: " + ((int) numInputs) + " [");
-        for (int i = 0; i < numInputs; i++) {
-            reportCanvas.write("" + ReportCanvas.getHexString(inputIDs[i]));
-            if (i < numInputs - 1) {
-                reportCanvas.write(" ");
+    public final void report(TextReportCanvas textReportCanvas) {
+        super.report(textReportCanvas);
+        textReportCanvas.writeParagraph("Mixer Unit", false);
+        textReportCanvas.openList();
+        textReportCanvas.writeListItem("Unit ID: " + TextReportCanvas.getHexString(this.mUnitID));
+        byte b = this.mNumInputs;
+        byte[] bArr = this.mInputIDs;
+        textReportCanvas.openListItem();
+        textReportCanvas.write("Num Inputs: " + ((int) b) + " [");
+        for (int i = 0; i < b; i++) {
+            textReportCanvas.write("" + TextReportCanvas.getHexString(bArr[i]));
+            if (i < b - 1) {
+                textReportCanvas.write(" ");
             }
         }
-        reportCanvas.write("]");
-        reportCanvas.closeListItem();
-        reportCanvas.writeListItem("Num Outputs: " + ((int) getNumOutputs()));
-        reportCanvas.writeListItem("Channel Config: " + ReportCanvas.getHexString(getChannelConfig()));
-        byte[] controls = getControls();
-        reportCanvas.openListItem();
-        reportCanvas.write("Controls: " + controls.length + " [");
-        for (int i2 = 0; i2 < controls.length; i2++) {
-            reportCanvas.write("" + ((int) controls[i2]));
-            if (i2 < controls.length - 1) {
-                reportCanvas.write(" ");
+        textReportCanvas.write("]");
+        textReportCanvas.closeListItem();
+        textReportCanvas.writeListItem("Num Outputs: " + ((int) this.mNumOutputs));
+        textReportCanvas.writeListItem("Channel Config: " + TextReportCanvas.getHexString(this.mChannelConfig));
+        byte[] bArr2 = this.mControls;
+        textReportCanvas.openListItem();
+        textReportCanvas.write("Controls: " + bArr2.length + " [");
+        for (int i2 = 0; i2 < bArr2.length; i2++) {
+            textReportCanvas.write("" + ((int) bArr2[i2]));
+            if (i2 < bArr2.length - 1) {
+                textReportCanvas.write(" ");
             }
         }
-        reportCanvas.write("]");
-        reportCanvas.closeListItem();
-        reportCanvas.closeList();
+        textReportCanvas.write("]");
+        textReportCanvas.closeListItem();
+        textReportCanvas.closeList();
     }
 }

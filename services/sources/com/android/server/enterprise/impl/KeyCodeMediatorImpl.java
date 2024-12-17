@@ -1,13 +1,18 @@
 package com.android.server.enterprise.impl;
 
+import android.content.Intent;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.RemoteException;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
 import com.android.server.enterprise.adapter.AdapterRegistry;
 import com.android.server.enterprise.adapter.IWindowManagerAdapter;
-import com.android.server.enterprise.common.KeyCodeMediator;
+import com.android.server.enterprise.adapterlayer.WindowManagerAdapter;
 import com.android.server.enterprise.common.KeyCodeRestrictionCallback;
 import com.samsung.android.knox.custom.utils.KnoxsdkFileLog;
+import com.samsung.android.view.SemWindowManager;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,131 +20,34 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
-public class KeyCodeMediatorImpl implements KeyCodeMediator, Handler.Callback {
-    public final Handler mHandler;
-    public KeyCodeMediatorInjector mInjector;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class KeyCodeMediatorImpl implements Handler.Callback {
+    public final AnonymousClass1 mInjector;
     public final Map mRestrictedKeyCodeBackup;
     public final Set mRestrictionCallbacks;
 
-    /* loaded from: classes2.dex */
-    public interface KeyCodeMediatorInjector {
-        Handler getHandler(Handler.Callback callback);
-
-        void knoxSdkFileLogD(String str, String str2);
-
-        void knoxSdkFileLogW(String str, String str2);
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    /* renamed from: com.android.server.enterprise.impl.KeyCodeMediatorImpl$1, reason: invalid class name */
+    public final class AnonymousClass1 {
+        public Handler mHandler;
     }
 
     public KeyCodeMediatorImpl() {
-        this(new KeyCodeMediatorInjector() { // from class: com.android.server.enterprise.impl.KeyCodeMediatorImpl.1
-            public Handler mHandler;
-
-            @Override // com.android.server.enterprise.impl.KeyCodeMediatorImpl.KeyCodeMediatorInjector
-            public Handler getHandler(Handler.Callback callback) {
-                if (this.mHandler == null) {
-                    this.mHandler = new Handler(Looper.myLooper(), callback);
-                }
-                return this.mHandler;
-            }
-
-            @Override // com.android.server.enterprise.impl.KeyCodeMediatorImpl.KeyCodeMediatorInjector
-            public void knoxSdkFileLogD(String str, String str2) {
-                KnoxsdkFileLog.w(str, str2);
-            }
-
-            @Override // com.android.server.enterprise.impl.KeyCodeMediatorImpl.KeyCodeMediatorInjector
-            public void knoxSdkFileLogW(String str, String str2) {
-                KnoxsdkFileLog.w(str, str2);
-            }
-        });
-    }
-
-    public KeyCodeMediatorImpl(KeyCodeMediatorInjector keyCodeMediatorInjector) {
+        AnonymousClass1 anonymousClass1 = new AnonymousClass1();
         this.mRestrictedKeyCodeBackup = new HashMap();
         this.mRestrictionCallbacks = new HashSet();
-        this.mInjector = keyCodeMediatorInjector;
-        this.mHandler = keyCodeMediatorInjector.getHandler(this);
-    }
-
-    @Override // com.android.server.enterprise.common.KeyCodeMediator
-    public void registerCallback(KeyCodeRestrictionCallback keyCodeRestrictionCallback) {
-        this.mRestrictionCallbacks.add(keyCodeRestrictionCallback);
-    }
-
-    @Override // com.android.server.enterprise.common.KeyCodeMediator
-    public boolean update(int i) {
-        Handler handler = this.mInjector.getHandler(this);
-        if (handler != null) {
-            if (handler.hasMessages(i)) {
-                handler.removeMessages(i);
-            }
-            if (handler.sendEmptyMessage(i)) {
-                return true;
-            }
+        this.mInjector = anonymousClass1;
+        if (anonymousClass1.mHandler == null) {
+            anonymousClass1.mHandler = new Handler(Looper.myLooper(), this);
         }
-        this.mInjector.knoxSdkFileLogW("KeyCodeMediator", "Failed to update for keycode :" + i);
-        return false;
-    }
-
-    @Override // android.os.Handler.Callback
-    public boolean handleMessage(Message message) {
-        return handleKeyCode(message.what);
-    }
-
-    public boolean handleKeyCode(int i) {
-        if (hasPreviousConfigurations(i)) {
-            clear(i);
-        }
-        if (!needToBlock(i)) {
-            return true;
-        }
-        block(i);
-        return true;
-    }
-
-    public final boolean hasPreviousConfigurations(int i) {
-        return getWindowManagerAdapter().hasConfigurations(i);
-    }
-
-    public final void clear(int i) {
-        getWindowManagerAdapter().clearAllConfiguration(i);
-    }
-
-    public final void block(int i) {
-        getWindowManagerAdapter().blockKeyCode(i);
-    }
-
-    public final IWindowManagerAdapter getWindowManagerAdapter() {
-        IWindowManagerAdapter iWindowManagerAdapter = (IWindowManagerAdapter) AdapterRegistry.getAdapter(IWindowManagerAdapter.class);
-        Objects.requireNonNull(iWindowManagerAdapter);
-        return iWindowManagerAdapter;
-    }
-
-    public final boolean needToBlock(int i) {
-        for (KeyCodeRestrictionCallback keyCodeRestrictionCallback : this.mRestrictionCallbacks) {
-            if (!keyCodeRestrictionCallback.isKeyCodeInputAllowed(i)) {
-                this.mInjector.knoxSdkFileLogD("KeyCodeMediator", "keyCode " + i + " must be blocked by " + keyCodeRestrictionCallback.getServiceName());
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void onSystemReady() {
-        Iterator it = getAllRestrictedKeyCodes().iterator();
-        while (it.hasNext()) {
-            update(((Integer) it.next()).intValue());
-        }
-    }
-
-    public void onPreAdminRemoval(int i) {
-        this.mRestrictedKeyCodeBackup.put(Integer.valueOf(i), getAllRestrictedKeyCodes());
     }
 
     public final Set getAllRestrictedKeyCodes() {
         HashSet hashSet = new HashSet();
-        for (KeyCodeRestrictionCallback keyCodeRestrictionCallback : this.mRestrictionCallbacks) {
+        Iterator it = ((HashSet) this.mRestrictionCallbacks).iterator();
+        while (it.hasNext()) {
+            KeyCodeRestrictionCallback keyCodeRestrictionCallback = (KeyCodeRestrictionCallback) it.next();
             if (keyCodeRestrictionCallback.getRestrictedKeyCodes() != null) {
                 hashSet.addAll(keyCodeRestrictionCallback.getRestrictedKeyCodes());
             }
@@ -147,12 +55,113 @@ public class KeyCodeMediatorImpl implements KeyCodeMediator, Handler.Callback {
         return hashSet;
     }
 
-    public void onAdminRemoved(int i) {
-        Set set = (Set) this.mRestrictedKeyCodeBackup.get(Integer.valueOf(i));
-        this.mRestrictedKeyCodeBackup.remove(Integer.valueOf(i));
-        Iterator it = set.iterator();
-        while (it.hasNext()) {
-            update(((Integer) it.next()).intValue());
+    @Override // android.os.Handler.Callback
+    public final boolean handleMessage(Message message) {
+        long clearCallingIdentity;
+        SemWindowManager.KeyCustomizationInfo keyCustomizationInfo;
+        int i = message.what;
+        IWindowManagerAdapter iWindowManagerAdapter = (IWindowManagerAdapter) AdapterRegistry.mAdapterHandles.get(IWindowManagerAdapter.class);
+        Objects.requireNonNull(iWindowManagerAdapter);
+        WindowManagerAdapter windowManagerAdapter = (WindowManagerAdapter) iWindowManagerAdapter;
+        Iterator it = WindowManagerAdapter.PRESS_TYPES_TO_BLOCK.iterator();
+        while (true) {
+            if (!it.hasNext()) {
+                break;
+            }
+            Integer num = (Integer) it.next();
+            clearCallingIdentity = Binder.clearCallingIdentity();
+            try {
+                try {
+                    keyCustomizationInfo = windowManagerAdapter.mWindowManagerService.getKeyCustomizationInfo(10, num.intValue(), i);
+                    Binder.restoreCallingIdentity(clearCallingIdentity);
+                } finally {
+                }
+            } catch (RemoteException e) {
+                KnoxsdkFileLog.e("WindowManagerAdapter", "fail to getKeyCustomizationInfo " + e);
+                Binder.restoreCallingIdentity(clearCallingIdentity);
+                keyCustomizationInfo = null;
+            }
+            if (keyCustomizationInfo != null && keyCustomizationInfo.id == 10 && keyCustomizationInfo.action == 4) {
+                IWindowManagerAdapter iWindowManagerAdapter2 = (IWindowManagerAdapter) AdapterRegistry.mAdapterHandles.get(IWindowManagerAdapter.class);
+                Objects.requireNonNull(iWindowManagerAdapter2);
+                WindowManagerAdapter windowManagerAdapter2 = (WindowManagerAdapter) iWindowManagerAdapter2;
+                clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    try {
+                        KnoxsdkFileLog.d("WindowManagerAdapter", "clearKeyCustomizationInfoByKeyCode with priority/keyCode : 10/" + i);
+                        windowManagerAdapter2.mWindowManagerService.clearKeyCustomizationInfoByAction(10, i, 4);
+                    } finally {
+                    }
+                } catch (Exception e2) {
+                    KnoxsdkFileLog.e("WindowManagerAdapter", "fail to clearAllConfiguration " + e2);
+                }
+                break;
+            }
         }
+        Iterator it2 = ((HashSet) this.mRestrictionCallbacks).iterator();
+        while (it2.hasNext()) {
+            KeyCodeRestrictionCallback keyCodeRestrictionCallback = (KeyCodeRestrictionCallback) it2.next();
+            if (!keyCodeRestrictionCallback.isKeyCodeInputAllowed(i)) {
+                AnonymousClass1 anonymousClass1 = this.mInjector;
+                StringBuilder m = BatteryService$$ExternalSyntheticOutline0.m(i, "keyCode ", " must be blocked by ");
+                m.append(keyCodeRestrictionCallback.getServiceName());
+                String sb = m.toString();
+                anonymousClass1.getClass();
+                KnoxsdkFileLog.w("KeyCodeMediator", sb);
+                IWindowManagerAdapter iWindowManagerAdapter3 = (IWindowManagerAdapter) AdapterRegistry.mAdapterHandles.get(IWindowManagerAdapter.class);
+                Objects.requireNonNull(iWindowManagerAdapter3);
+                WindowManagerAdapter windowManagerAdapter3 = (WindowManagerAdapter) iWindowManagerAdapter3;
+                clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    try {
+                        SemWindowManager.KeyCustomizationInfo keyCustomizationInfo2 = new SemWindowManager.KeyCustomizationInfo(3, 10, i, 4, (Intent) null, -1, -2);
+                        KnoxsdkFileLog.d("WindowManagerAdapter", "putKeyCustomizationInfo with pressType : 3, " + WindowManagerAdapter.keyCustomizationInfoToString(keyCustomizationInfo2));
+                        windowManagerAdapter3.mWindowManagerService.putKeyCustomizationInfo(keyCustomizationInfo2);
+                    } catch (Exception e3) {
+                        KnoxsdkFileLog.e("WindowManagerAdapter", "fail to putKeyCustomizationInfo " + e3);
+                    }
+                    return true;
+                } finally {
+                }
+            }
+        }
+        return true;
+    }
+
+    public final void onAdminRemoved(int i) {
+        Set set = (Set) ((HashMap) this.mRestrictedKeyCodeBackup).get(Integer.valueOf(i));
+        ((HashMap) this.mRestrictedKeyCodeBackup).remove(Integer.valueOf(i));
+        if (set != null) {
+            Iterator it = set.iterator();
+            while (it.hasNext()) {
+                update(((Integer) it.next()).intValue());
+            }
+        } else {
+            this.mInjector.getClass();
+            KnoxsdkFileLog.w("KeyCodeMediator", "Restricted Keycodes are appearing Null for Admin: " + i);
+        }
+    }
+
+    public final void onPreAdminRemoval(int i) {
+        Set allRestrictedKeyCodes = getAllRestrictedKeyCodes();
+        ((HashMap) this.mRestrictedKeyCodeBackup).put(Integer.valueOf(i), allRestrictedKeyCodes);
+    }
+
+    public final void update(int i) {
+        AnonymousClass1 anonymousClass1 = this.mInjector;
+        if (anonymousClass1.mHandler == null) {
+            anonymousClass1.mHandler = new Handler(Looper.myLooper(), this);
+        }
+        Handler handler = anonymousClass1.mHandler;
+        if (handler != null) {
+            if (handler.hasMessages(i)) {
+                handler.removeMessages(i);
+            }
+            if (handler.sendEmptyMessage(i)) {
+                return;
+            }
+        }
+        this.mInjector.getClass();
+        KnoxsdkFileLog.w("KeyCodeMediator", "Failed to update for keycode :" + i);
     }
 }

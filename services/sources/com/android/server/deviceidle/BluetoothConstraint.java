@@ -10,9 +10,9 @@ import android.os.Handler;
 import android.os.Message;
 import com.android.server.DeviceIdleInternal;
 
-/* loaded from: classes2.dex */
-public class BluetoothConstraint implements IDeviceIdleConstraint {
-    public static final String TAG = BluetoothConstraint.class.getSimpleName();
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class BluetoothConstraint implements IDeviceIdleConstraint {
     public final BluetoothManager mBluetoothManager;
     public final Context mContext;
     public final Handler mHandler;
@@ -21,21 +21,33 @@ public class BluetoothConstraint implements IDeviceIdleConstraint {
     public volatile boolean mMonitoring = false;
     final BroadcastReceiver mReceiver = new BroadcastReceiver() { // from class: com.android.server.deviceidle.BluetoothConstraint.1
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             if ("android.bluetooth.device.action.ACL_CONNECTED".equals(intent.getAction())) {
                 BluetoothConstraint.this.mLocalService.exitIdle("bluetooth");
-            } else {
-                BluetoothConstraint.this.updateAndReportActiveLocked();
+                return;
+            }
+            BluetoothConstraint bluetoothConstraint = BluetoothConstraint.this;
+            boolean isBluetoothConnected = BluetoothConstraint.isBluetoothConnected(bluetoothConstraint.mBluetoothManager);
+            if (isBluetoothConnected != bluetoothConstraint.mConnected) {
+                bluetoothConstraint.mConnected = isBluetoothConnected;
+                bluetoothConstraint.mLocalService.onConstraintStateChanged(bluetoothConstraint, bluetoothConstraint.mConnected);
             }
         }
     };
-    public final Runnable mTimeoutCallback = new Runnable() { // from class: com.android.server.deviceidle.BluetoothConstraint$$ExternalSyntheticLambda0
+    public final BluetoothConstraint$$ExternalSyntheticLambda0 mTimeoutCallback = new Runnable() { // from class: com.android.server.deviceidle.BluetoothConstraint$$ExternalSyntheticLambda0
         @Override // java.lang.Runnable
         public final void run() {
-            BluetoothConstraint.this.lambda$new$0();
+            BluetoothConstraint bluetoothConstraint = BluetoothConstraint.this;
+            synchronized (bluetoothConstraint) {
+                if (bluetoothConstraint.mMonitoring) {
+                    bluetoothConstraint.mMonitoring = false;
+                    bluetoothConstraint.mLocalService.onConstraintStateChanged(bluetoothConstraint, false);
+                }
+            }
         }
     };
 
+    /* JADX WARN: Type inference failed for: r0v3, types: [com.android.server.deviceidle.BluetoothConstraint$$ExternalSyntheticLambda0] */
     public BluetoothConstraint(Context context, Handler handler, DeviceIdleInternal deviceIdleInternal) {
         this.mContext = context;
         this.mHandler = handler;
@@ -43,7 +55,12 @@ public class BluetoothConstraint implements IDeviceIdleConstraint {
         this.mBluetoothManager = (BluetoothManager) context.getSystemService(BluetoothManager.class);
     }
 
-    public synchronized void startMonitoring() {
+    public static boolean isBluetoothConnected(BluetoothManager bluetoothManager) {
+        BluetoothAdapter adapter = bluetoothManager.getAdapter();
+        return adapter != null && adapter.isEnabled() && bluetoothManager.getConnectedDevices(7).size() > 0;
+    }
+
+    public final synchronized void startMonitoring() {
         this.mConnected = true;
         this.mMonitoring = true;
         IntentFilter intentFilter = new IntentFilter();
@@ -53,24 +70,6 @@ public class BluetoothConstraint implements IDeviceIdleConstraint {
         this.mContext.registerReceiver(this.mReceiver, intentFilter);
         Handler handler = this.mHandler;
         handler.sendMessageDelayed(Message.obtain(handler, this.mTimeoutCallback), 1200000L);
-        updateAndReportActiveLocked();
-    }
-
-    public synchronized void stopMonitoring() {
-        this.mContext.unregisterReceiver(this.mReceiver);
-        this.mHandler.removeCallbacks(this.mTimeoutCallback);
-        this.mMonitoring = false;
-    }
-
-    /* renamed from: cancelMonitoringDueToTimeout, reason: merged with bridge method [inline-methods] */
-    public final synchronized void lambda$new$0() {
-        if (this.mMonitoring) {
-            this.mMonitoring = false;
-            this.mLocalService.onConstraintStateChanged(this, false);
-        }
-    }
-
-    public final void updateAndReportActiveLocked() {
         boolean isBluetoothConnected = isBluetoothConnected(this.mBluetoothManager);
         if (isBluetoothConnected != this.mConnected) {
             this.mConnected = isBluetoothConnected;
@@ -78,8 +77,9 @@ public class BluetoothConstraint implements IDeviceIdleConstraint {
         }
     }
 
-    public static boolean isBluetoothConnected(BluetoothManager bluetoothManager) {
-        BluetoothAdapter adapter = bluetoothManager.getAdapter();
-        return adapter != null && adapter.isEnabled() && bluetoothManager.getConnectedDevices(7).size() > 0;
+    public final synchronized void stopMonitoring() {
+        this.mContext.unregisterReceiver(this.mReceiver);
+        this.mHandler.removeCallbacks(this.mTimeoutCallback);
+        this.mMonitoring = false;
     }
 }

@@ -4,20 +4,20 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Handler;
-import android.os.UserHandle;
 import android.util.Log;
 import android.util.Slog;
-import java.io.PrintWriter;
+import com.android.media.flags.Flags;
+import com.android.server.media.MediaRouter2ServiceImpl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class MediaRoute2ProviderWatcher {
     public static final boolean DEBUG = Log.isLoggable("MR2ProviderWatcher", 3);
     public static final PackageManager.ResolveInfoFlags RESOLVE_INFO_FLAGS = PackageManager.ResolveInfoFlags.of(64);
@@ -28,145 +28,106 @@ public final class MediaRoute2ProviderWatcher {
     public boolean mRunning;
     public final int mUserId;
     public final ArrayList mProxies = new ArrayList();
-    public final BroadcastReceiver mScanPackagesReceiver = new BroadcastReceiver() { // from class: com.android.server.media.MediaRoute2ProviderWatcher.1
-        public AnonymousClass1() {
-        }
-
+    public final AnonymousClass1 mScanPackagesReceiver = new BroadcastReceiver() { // from class: com.android.server.media.MediaRoute2ProviderWatcher.1
         @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
+        public final void onReceive(Context context, Intent intent) {
             if (MediaRoute2ProviderWatcher.DEBUG) {
                 Slog.d("MR2ProviderWatcher", "Received package manager broadcast: " + intent);
             }
-            MediaRoute2ProviderWatcher.this.postScanPackagesIfNeeded();
+            MediaRoute2ProviderWatcher mediaRoute2ProviderWatcher = MediaRoute2ProviderWatcher.this;
+            mediaRoute2ProviderWatcher.getClass();
+            MediaRoute2ProviderWatcher$$ExternalSyntheticLambda0 mediaRoute2ProviderWatcher$$ExternalSyntheticLambda0 = new MediaRoute2ProviderWatcher$$ExternalSyntheticLambda0(mediaRoute2ProviderWatcher);
+            Handler handler = mediaRoute2ProviderWatcher.mHandler;
+            if (handler.hasCallbacks(mediaRoute2ProviderWatcher$$ExternalSyntheticLambda0)) {
+                return;
+            }
+            handler.post(new MediaRoute2ProviderWatcher$$ExternalSyntheticLambda0(mediaRoute2ProviderWatcher));
         }
     };
 
-    /* loaded from: classes2.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface Callback {
-        void onAddProviderService(MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy);
-
-        void onRemoveProviderService(MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy);
     }
 
-    public MediaRoute2ProviderWatcher(Context context, Callback callback, Handler handler, int i) {
-        this.mContext = context;
-        this.mCallback = callback;
-        this.mHandler = handler;
-        this.mUserId = i;
-        this.mPackageManager = context.getPackageManager();
-    }
-
-    public void dump(PrintWriter printWriter, String str) {
-        printWriter.println(str + "MediaRoute2ProviderWatcher");
-        String str2 = str + "  ";
-        if (this.mProxies.isEmpty()) {
-            printWriter.println(str2 + "<no provider service proxies>");
-            return;
-        }
-        Iterator it = this.mProxies.iterator();
-        while (it.hasNext()) {
-            ((MediaRoute2ProviderServiceProxy) it.next()).dump(printWriter, str2);
-        }
-    }
-
-    public void start() {
-        if (this.mRunning) {
-            return;
-        }
-        this.mRunning = true;
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
-        intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
-        intentFilter.addAction("android.intent.action.PACKAGE_CHANGED");
-        intentFilter.addAction("android.intent.action.PACKAGE_REPLACED");
-        intentFilter.addAction("android.intent.action.PACKAGE_RESTARTED");
-        intentFilter.addDataScheme("package");
-        this.mContext.registerReceiverAsUser(this.mScanPackagesReceiver, new UserHandle(this.mUserId), intentFilter, null, this.mHandler);
-        postScanPackagesIfNeeded();
-    }
-
-    public void stop() {
-        if (this.mRunning) {
-            this.mRunning = false;
-            this.mContext.unregisterReceiver(this.mScanPackagesReceiver);
-            this.mHandler.removeCallbacks(new MediaRoute2ProviderWatcher$$ExternalSyntheticLambda0(this));
-            for (int size = this.mProxies.size() - 1; size >= 0; size--) {
-                ((MediaRoute2ProviderServiceProxy) this.mProxies.get(size)).stop();
-            }
-        }
-    }
-
-    public final void scanPackages() {
-        int i;
-        if (this.mRunning) {
-            int i2 = 0;
-            for (ResolveInfo resolveInfo : this.mPackageManager.queryIntentServicesAsUser(new Intent("android.media.MediaRoute2ProviderService"), RESOLVE_INFO_FLAGS, this.mUserId)) {
+    public static void $r8$lambda$uxDP7YbvEhxettSyL1qhqc8pTDY(MediaRoute2ProviderWatcher mediaRoute2ProviderWatcher) {
+        Callback callback;
+        boolean z;
+        if (mediaRoute2ProviderWatcher.mRunning) {
+            Iterator it = mediaRoute2ProviderWatcher.mPackageManager.queryIntentServicesAsUser(new Intent("android.media.MediaRoute2ProviderService"), RESOLVE_INFO_FLAGS, mediaRoute2ProviderWatcher.mUserId).iterator();
+            int i = 0;
+            while (true) {
+                boolean hasNext = it.hasNext();
+                callback = mediaRoute2ProviderWatcher.mCallback;
+                if (!hasNext) {
+                    break;
+                }
+                ResolveInfo resolveInfo = (ResolveInfo) it.next();
                 ServiceInfo serviceInfo = resolveInfo.serviceInfo;
                 if (serviceInfo != null) {
                     Iterator<String> categoriesIterator = resolveInfo.filter.categoriesIterator();
-                    boolean z = false;
                     if (categoriesIterator != null) {
+                        boolean z2 = false;
                         while (categoriesIterator.hasNext()) {
-                            z |= "android.media.MediaRoute2ProviderService.SELF_SCAN_ONLY".equals(categoriesIterator.next());
+                            z2 |= "android.media.MediaRoute2ProviderService.SELF_SCAN_ONLY".equals(categoriesIterator.next());
+                        }
+                        z = z2;
+                    } else {
+                        z = false;
+                    }
+                    String str = serviceInfo.packageName;
+                    String str2 = serviceInfo.name;
+                    int size = mediaRoute2ProviderWatcher.mProxies.size();
+                    int i2 = 0;
+                    while (true) {
+                        if (i2 >= size) {
+                            i2 = -1;
+                            break;
+                        }
+                        MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy = (MediaRoute2ProviderServiceProxy) mediaRoute2ProviderWatcher.mProxies.get(i2);
+                        if (mediaRoute2ProviderServiceProxy.mComponentName.getPackageName().equals(str) && mediaRoute2ProviderServiceProxy.mComponentName.getClassName().equals(str2)) {
+                            break;
+                        } else {
+                            i2++;
                         }
                     }
-                    int findProvider = findProvider(serviceInfo.packageName, serviceInfo.name);
-                    if (findProvider < 0) {
-                        MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy = new MediaRoute2ProviderServiceProxy(this.mContext, new ComponentName(serviceInfo.packageName, serviceInfo.name), z, this.mUserId);
-                        mediaRoute2ProviderServiceProxy.start();
-                        i = i2 + 1;
-                        this.mProxies.add(i2, mediaRoute2ProviderServiceProxy);
-                        this.mCallback.onAddProviderService(mediaRoute2ProviderServiceProxy);
-                    } else if (findProvider >= i2) {
-                        MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy2 = (MediaRoute2ProviderServiceProxy) this.mProxies.get(findProvider);
-                        mediaRoute2ProviderServiceProxy2.start();
-                        mediaRoute2ProviderServiceProxy2.rebindIfDisconnected();
-                        i = i2 + 1;
-                        Collections.swap(this.mProxies, findProvider, i2);
+                    if (i2 < 0) {
+                        MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy2 = new MediaRoute2ProviderServiceProxy(mediaRoute2ProviderWatcher.mContext, mediaRoute2ProviderWatcher.mHandler.getLooper(), new ComponentName(serviceInfo.packageName, serviceInfo.name), z, mediaRoute2ProviderWatcher.mUserId);
+                        Slog.i("MR2ProviderWatcher", "Enabling proxy for MediaRoute2ProviderService: " + mediaRoute2ProviderServiceProxy2.mComponentName);
+                        mediaRoute2ProviderServiceProxy2.start(false);
+                        int i3 = i + 1;
+                        mediaRoute2ProviderWatcher.mProxies.add(i, mediaRoute2ProviderServiceProxy2);
+                        MediaRouter2ServiceImpl.UserHandler userHandler = (MediaRouter2ServiceImpl.UserHandler) callback;
+                        userHandler.getClass();
+                        mediaRoute2ProviderServiceProxy2.mCallback = userHandler;
+                        userHandler.mRouteProviders.add(mediaRoute2ProviderServiceProxy2);
+                        MediaRouter2ServiceImpl.UserRecord userRecord = userHandler.mUserRecord;
+                        mediaRoute2ProviderServiceProxy2.updateDiscoveryPreference(userRecord.mActivelyScanningPackages, userRecord.mCompositeDiscoveryPreference);
+                        i = i3;
+                    } else if (i2 >= i) {
+                        ((MediaRoute2ProviderServiceProxy) mediaRoute2ProviderWatcher.mProxies.get(i2)).start(!Flags.enablePreventionOfKeepAliveRouteProviders());
+                        Collections.swap(mediaRoute2ProviderWatcher.mProxies, i2, i);
+                        i++;
                     }
-                    i2 = i;
                 }
             }
-            if (i2 < this.mProxies.size()) {
-                for (int size = this.mProxies.size() - 1; size >= i2; size--) {
-                    MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy3 = (MediaRoute2ProviderServiceProxy) this.mProxies.get(size);
-                    this.mCallback.onRemoveProviderService(mediaRoute2ProviderServiceProxy3);
-                    this.mProxies.remove(mediaRoute2ProviderServiceProxy3);
+            if (i < mediaRoute2ProviderWatcher.mProxies.size()) {
+                for (int size2 = mediaRoute2ProviderWatcher.mProxies.size() - 1; size2 >= i; size2--) {
+                    MediaRoute2ProviderServiceProxy mediaRoute2ProviderServiceProxy3 = (MediaRoute2ProviderServiceProxy) mediaRoute2ProviderWatcher.mProxies.get(size2);
+                    Slog.i("MR2ProviderWatcher", "Disabling proxy for MediaRoute2ProviderService: " + mediaRoute2ProviderServiceProxy3.mComponentName);
+                    ((MediaRouter2ServiceImpl.UserHandler) callback).mRouteProviders.remove(mediaRoute2ProviderServiceProxy3);
+                    mediaRoute2ProviderWatcher.mProxies.remove(mediaRoute2ProviderServiceProxy3);
                     mediaRoute2ProviderServiceProxy3.stop();
                 }
             }
         }
     }
 
-    public final int findProvider(String str, String str2) {
-        int size = this.mProxies.size();
-        for (int i = 0; i < size; i++) {
-            if (((MediaRoute2ProviderServiceProxy) this.mProxies.get(i)).hasComponentName(str, str2)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public final void postScanPackagesIfNeeded() {
-        if (this.mHandler.hasCallbacks(new MediaRoute2ProviderWatcher$$ExternalSyntheticLambda0(this))) {
-            return;
-        }
-        this.mHandler.post(new MediaRoute2ProviderWatcher$$ExternalSyntheticLambda0(this));
-    }
-
-    /* renamed from: com.android.server.media.MediaRoute2ProviderWatcher$1 */
-    /* loaded from: classes2.dex */
-    public class AnonymousClass1 extends BroadcastReceiver {
-        public AnonymousClass1() {
-        }
-
-        @Override // android.content.BroadcastReceiver
-        public void onReceive(Context context, Intent intent) {
-            if (MediaRoute2ProviderWatcher.DEBUG) {
-                Slog.d("MR2ProviderWatcher", "Received package manager broadcast: " + intent);
-            }
-            MediaRoute2ProviderWatcher.this.postScanPackagesIfNeeded();
-        }
+    /* JADX WARN: Type inference failed for: r0v1, types: [com.android.server.media.MediaRoute2ProviderWatcher$1] */
+    public MediaRoute2ProviderWatcher(Context context, Callback callback, Handler handler, int i) {
+        this.mContext = context;
+        this.mCallback = callback;
+        this.mHandler = handler;
+        this.mUserId = i;
+        this.mPackageManager = context.getPackageManager();
     }
 }

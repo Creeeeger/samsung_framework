@@ -2,41 +2,19 @@ package com.android.server.hdmi;
 
 import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
 
-/* loaded from: classes2.dex */
-public class SetAudioVolumeLevelMessage extends HdmiCecMessage {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class SetAudioVolumeLevelMessage extends HdmiCecMessage {
     public final int mAudioVolumeLevel;
 
-    public SetAudioVolumeLevelMessage(int i, int i2, byte[] bArr, int i3) {
-        super(i, i2, 115, bArr, 0);
+    public SetAudioVolumeLevelMessage(int i, int i2, int i3, byte[] bArr) {
+        super(i, i2, 115, 0, bArr);
         this.mAudioVolumeLevel = i3;
     }
 
     public static HdmiCecMessage build(int i, int i2, int i3) {
         byte[] bArr = {(byte) (i3 & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT)};
-        int validateAddress = validateAddress(i, i2);
-        if (validateAddress == 0) {
-            return new SetAudioVolumeLevelMessage(i, i2, bArr, i3);
-        }
-        return new HdmiCecMessage(i, i2, 115, bArr, validateAddress);
-    }
-
-    public static HdmiCecMessage build(int i, int i2, byte[] bArr) {
-        if (bArr.length == 0) {
-            return new HdmiCecMessage(i, i2, 115, bArr, 4);
-        }
-        byte b = bArr[0];
-        int validateAddress = validateAddress(i, i2);
-        if (validateAddress == 0) {
-            return new SetAudioVolumeLevelMessage(i, i2, bArr, b);
-        }
-        return new HdmiCecMessage(i, i2, 115, bArr, validateAddress);
-    }
-
-    public static int validateAddress(int i, int i2) {
-        return HdmiCecMessageValidator.validateAddress(i, i2, 32767, 32767);
-    }
-
-    public int getAudioVolumeLevel() {
-        return this.mAudioVolumeLevel;
+        int validateAddress = HdmiCecMessageValidator.validateAddress(i, i2, 32767, 32767);
+        return validateAddress == 0 ? new SetAudioVolumeLevelMessage(i, i2, i3, bArr) : new HdmiCecMessage(i, i2, 115, validateAddress, bArr);
     }
 }

@@ -12,50 +12,46 @@ import com.android.server.biometrics.log.BiometricContext;
 import com.android.server.biometrics.log.BiometricLogger;
 import com.android.server.biometrics.sensors.ClientMonitorCallback;
 import com.android.server.biometrics.sensors.StartUserClient;
-import java.util.function.Supplier;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class FaceStartUserClient extends StartUserClient {
+public final class FaceStartUserClient extends StartUserClient {
     public final ISessionCallback mSessionCallback;
 
-    @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void unableToStart() {
-    }
-
-    public FaceStartUserClient(Context context, Supplier supplier, IBinder iBinder, int i, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, ISessionCallback iSessionCallback, StartUserClient.UserStartedCallback userStartedCallback) {
-        super(context, supplier, iBinder, i, i2, biometricLogger, biometricContext, userStartedCallback);
-        this.mSessionCallback = iSessionCallback;
+    public FaceStartUserClient(Context context, Sensor$$ExternalSyntheticLambda4 sensor$$ExternalSyntheticLambda4, IBinder iBinder, int i, int i2, BiometricLogger biometricLogger, BiometricContext biometricContext, AidlResponseHandler aidlResponseHandler, Sensor$$ExternalSyntheticLambda3 sensor$$ExternalSyntheticLambda3) {
+        super(context, sensor$$ExternalSyntheticLambda4, iBinder, i, i2, biometricLogger, biometricContext, sensor$$ExternalSyntheticLambda3);
+        this.mSessionCallback = aidlResponseHandler;
     }
 
     @Override // com.android.server.biometrics.sensors.BaseClientMonitor
-    public void start(ClientMonitorCallback clientMonitorCallback) {
+    public final void start(ClientMonitorCallback clientMonitorCallback) {
         super.start(clientMonitorCallback);
         startHalOperation();
     }
 
     @Override // com.android.server.biometrics.sensors.HalClientMonitor
-    public void startHalOperation() {
+    public final void startHalOperation() {
         try {
-            SemFaceServiceExImpl.getInstance().setUserId(getTargetUserId());
+            SemFaceServiceExImpl.getInstance().mUserId = this.mTargetUserId;
             if (SemFaceServiceExImpl.getInstance().isUsingSehAPI()) {
-                SemFaceServiceExImpl.getInstance().setISessionCallback(this.mSessionCallback);
-                int interfaceVersion = ((IFace) getFreshDaemon()).getInterfaceVersion();
-                if (SemFaceServiceExImpl.getInstance().getISession() != null) {
-                    Binder.allowBlocking(SemFaceServiceExImpl.getInstance().getISession().asBinder());
-                    this.mUserStartedCallback.onUserStarted(getTargetUserId(), SemFaceServiceExImpl.getInstance().getISession(), interfaceVersion);
+                SemFaceServiceExImpl.getInstance().mISessionCallback = this.mSessionCallback;
+                int interfaceVersion = ((IFace) this.mLazyDaemon.get()).getInterfaceVersion();
+                if (SemFaceServiceExImpl.getInstance().mISession != null) {
+                    Binder.allowBlocking(SemFaceServiceExImpl.getInstance().mISession.asBinder());
+                    this.mUserStartedCallback.onUserStarted(this.mTargetUserId, interfaceVersion, SemFaceServiceExImpl.getInstance().mISession);
                 }
                 SemFaceServiceExImpl.getInstance().daemonEnumerateUser();
             } else {
-                IFace iFace = (IFace) getFreshDaemon();
+                IFace iFace = (IFace) this.mLazyDaemon.get();
                 int interfaceVersion2 = iFace.getInterfaceVersion();
-                ISession createSession = iFace.createSession(getSensorId(), getTargetUserId(), this.mSessionCallback);
+                ISession createSession = iFace.createSession(this.mSensorId, this.mTargetUserId, this.mSessionCallback);
                 if (createSession == null) {
                     Slog.e("FaceStartUserClient", "createSession() is null");
                     getCallback().onClientFinished(this, false);
                     return;
                 } else {
                     Binder.allowBlocking(createSession.asBinder());
-                    this.mUserStartedCallback.onUserStarted(getTargetUserId(), createSession, interfaceVersion2);
+                    this.mUserStartedCallback.onUserStarted(this.mTargetUserId, interfaceVersion2, createSession);
                 }
             }
             getCallback().onClientFinished(this, true);
@@ -63,5 +59,9 @@ public class FaceStartUserClient extends StartUserClient {
             Slog.e("FaceStartUserClient", "Remote exception", e);
             getCallback().onClientFinished(this, false);
         }
+    }
+
+    @Override // com.android.server.biometrics.sensors.HalClientMonitor
+    public final void unableToStart() {
     }
 }

@@ -1,24 +1,9 @@
 package com.android.server.backup.keyvalue;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 class AgentException extends BackupException {
     private final boolean mTransitory;
-
-    public static AgentException transitory() {
-        return new AgentException(true);
-    }
-
-    public static AgentException transitory(Exception exc) {
-        return new AgentException(true, exc);
-    }
-
-    public static AgentException permanent() {
-        return new AgentException(false);
-    }
-
-    public static AgentException permanent(Exception exc) {
-        return new AgentException(false, exc);
-    }
 
     public AgentException(boolean z) {
         this.mTransitory = z;
@@ -29,7 +14,11 @@ class AgentException extends BackupException {
         this.mTransitory = z;
     }
 
-    public boolean isTransitory() {
+    public static AgentException permanent() {
+        return new AgentException(false);
+    }
+
+    public final boolean isTransitory() {
         return this.mTransitory;
     }
 }

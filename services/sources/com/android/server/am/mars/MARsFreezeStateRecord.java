@@ -1,218 +1,145 @@
 package com.android.server.am.mars;
 
 import android.net.INetd;
+import android.os.Bundle;
+import android.os.Message;
+import android.os.UserHandle;
 import android.util.ArraySet;
 import android.util.Slog;
+import com.android.server.BatteryService$$ExternalSyntheticOutline0;
+import com.android.server.DeviceIdleController$$ExternalSyntheticOutline0;
 import com.android.server.am.FreecessController;
+import com.android.server.am.FreecessController$$ExternalSyntheticOutline0;
 import com.android.server.am.FreecessPkgStatus;
+import com.android.server.am.MARsHandler;
+import com.android.server.am.MARsPackageInfo;
 import com.android.server.am.MARsPolicyManager;
-import com.android.server.backup.BackupManagerConstants;
-import java.io.PrintWriter;
+import com.android.server.input.KeyboardMetricsCollector;
 import java.text.SimpleDateFormat;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class MARsFreezeStateRecord {
+public final class MARsFreezeStateRecord {
+    public long freezedTime;
     public long initialStateTime;
+    public boolean isFrozen;
+    public boolean isLcdOffFreezed;
+    public boolean isLcdOnFreezed;
+    public boolean isOLAFFreezed;
     public long mAvailableTokens;
     public int mDetectionVer;
     public FreecessPkgStatus mFreecessParent;
+    public int[] mFreezeCounts;
     public long mTokensUpdateTime;
     public ArraySet mUnfreezeAbuseDetections;
-    public int[] mFreezeCounts = new int[FreezeReasonType.values().length];
-    public int[] mUnfreezeCounts = new int[UnfreezeReasonType.values().length];
-    public EventRecorder mFreezeEventRecorder = new EventRecorder();
-    public boolean isFreezed = false;
-    public boolean isLcdOnFreezed = false;
-    public boolean isOLAFFreezed = false;
-    public boolean isLcdOffFreezed = false;
-    public long freezedTime = 0;
-    public long unfreezedTime = 0;
-    public String freezedReason = null;
-    public String unfreezedReason = null;
+    public int[] mUnfreezeCounts;
+    public String unfreezedReason;
+    public long unfreezedTime;
 
-    /* loaded from: classes.dex */
-    public enum Event {
-        FREEZE,
-        UNFREEZE
-    }
-
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public enum FreezeReasonType {
-        FREEZE_TOTAL(0, "Total"),
-        FREEZE_REASON_LCDON(1, "Bg"),
-        FREEZE_REASON_LCDOFF(2, "LEV"),
-        FREEZE_REASON_OLAF(3, "OLAF");
+        FREEZE_TOTAL("FREEZE_TOTAL", "Total"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF27("FREEZE_REASON_LCDON", "Bg"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF41("FREEZE_REASON_LCDOFF", "LEV"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF55("FREEZE_REASON_OLAF", "OLAF");
 
         private final String freezeType;
         private final int typeNum;
 
-        FreezeReasonType(Integer num, String str) {
-            this.typeNum = num.intValue();
-            this.freezeType = str;
+        FreezeReasonType(String str, String str2) {
+            this.typeNum = r2.intValue();
+            this.freezeType = str2;
         }
 
-        public int getTypeNum() {
+        public final int getTypeNum() {
             return this.typeNum;
         }
     }
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public enum UnfreezeReasonType {
-        UNFREEZE_TOTAL(0, "Total"),
-        UNFREEZE_REASON_ALARM(1, "Alarm"),
-        UNFREEZE_REASON_PACKET(2, "Packet"),
-        UNFREEZE_REASON_WAKELOCK(3, "Wakelock"),
-        UNFREEZE_REASON_BINDER_1(4, "Binder(1)"),
-        UNFREEZE_REASON_BINDER_0(5, "Binder(0)"),
-        UNFREEZE_REASON_DEVICE_IDLE_OFF(6, "DeviceIdleOFF"),
-        UNFREEZE_REASON_START_PROCESS(7, "StartProcessP"),
-        UNFREEZE_REASON_LAUNCHING_PROVIDER(8, "LaunchingProvider"),
-        UNFREEZE_REASON_RECEIVING_INTENT(9, "ReceivingIntent"),
-        UNFREEZE_REASON_EXECUITNG_SERVICE(10, "ExecutingService"),
-        UNFREEZE_REASON_UIDACTIVE(11, "UidActive"),
-        UNFREEZE_REASON_STARTSERVICE(12, "startService"),
-        UNFREEZE_REASON_BINDSERVICE(13, "bindService"),
-        UNFREEZE_REASON_ACTIVITY(14, "activity"),
-        UNFREEZE_REASON_BROADCAST(15, INetd.IF_FLAG_BROADCAST),
-        UNFREEZE_REASON_PROVIDER(16, "provider"),
-        UNFREEZE_REASON_UNBINDSERVICE(17, "unbindService"),
-        UNFREEZE_REASON_STARTPROCESS(18, "startProcess"),
-        UNFREEZE_REASON_SERVICEANR(19, "ServiceANR"),
-        UNFREEZE_REASON_SIGNAL(20, "Signal"),
-        UNFREEZE_REASON_CFB(21, "Cfb"),
-        UNFREEZE_REASON_OLAF(22, "OLAF:"),
-        UNFREEZE_REASON_NONE(23, "None");
+        UNFREEZE_TOTAL("UNFREEZE_TOTAL", "Total"),
+        UNFREEZE_REASON_ALARM("UNFREEZE_REASON_ALARM", "Alarm"),
+        UNFREEZE_REASON_PACKET("UNFREEZE_REASON_PACKET", "Packet"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF3("UNFREEZE_REASON_WAKELOCK", "Wakelock"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF4("UNFREEZE_REASON_BINDER_1", "Binder(1)"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF5("UNFREEZE_REASON_BINDER_0", "Binder(0)"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF6("UNFREEZE_REASON_DEVICE_IDLE_OFF", "DeviceIdleOFF"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF7("UNFREEZE_REASON_START_PROCESS", "StartProcessP"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF8("UNFREEZE_REASON_LAUNCHING_PROVIDER", "LaunchingProvider"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF9("UNFREEZE_REASON_RECEIVING_INTENT", "ReceivingIntent"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF10("UNFREEZE_REASON_EXECUITNG_SERVICE", "ExecutingService"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF11("UNFREEZE_REASON_UIDACTIVE", "UidActive"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF12("UNFREEZE_REASON_STARTSERVICE", "startService"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF13("UNFREEZE_REASON_BINDSERVICE", "bindService"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF14("UNFREEZE_REASON_ACTIVITY", "activity"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF15("UNFREEZE_REASON_BROADCAST", INetd.IF_FLAG_BROADCAST),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF14("UNFREEZE_REASON_PROVIDER", "provider"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF15("UNFREEZE_REASON_UNBINDSERVICE", "unbindService"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF14("UNFREEZE_REASON_STARTPROCESS", "startProcess"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF15("UNFREEZE_REASON_SERVICEANR", "ServiceANR"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF14("UNFREEZE_REASON_SIGNAL", "Signal"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF15("UNFREEZE_REASON_CFB", "Cfb"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF14("UNFREEZE_REASON_PROC_STATE", "procstate"),
+        /* JADX INFO: Fake field, exist only in values array */
+        EF15("UNFREEZE_REASON_OLAF", "OLAF:"),
+        UNFREEZE_REASON_NONE("UNFREEZE_REASON_NONE", KeyboardMetricsCollector.DEFAULT_LANGUAGE_TAG);
 
         private final int typeNum;
         private final String unfreezeType;
 
-        UnfreezeReasonType(Integer num, String str) {
-            this.typeNum = num.intValue();
-            this.unfreezeType = str;
-        }
-
-        public String getString() {
-            return this.unfreezeType;
-        }
-
-        public int getTypeNum() {
-            return this.typeNum;
+        UnfreezeReasonType(String str, String str2) {
+            this.typeNum = r2.intValue();
+            this.unfreezeType = str2;
         }
 
         public static UnfreezeReasonType reasonTypeOf(String str) {
-            if (str == null || str.isEmpty()) {
-                return UNFREEZE_REASON_NONE;
-            }
-            for (UnfreezeReasonType unfreezeReasonType : values()) {
-                if (str.contains(unfreezeReasonType.getString())) {
-                    return unfreezeReasonType;
+            UnfreezeReasonType unfreezeReasonType = UNFREEZE_REASON_NONE;
+            if (str != null && !str.isEmpty()) {
+                for (UnfreezeReasonType unfreezeReasonType2 : values()) {
+                    if (str.contains(unfreezeReasonType2.unfreezeType)) {
+                        return unfreezeReasonType2;
+                    }
                 }
             }
-            return UNFREEZE_REASON_NONE;
+            return unfreezeReasonType;
         }
-    }
 
-    public MARsFreezeStateRecord(FreecessPkgStatus freecessPkgStatus) {
-        this.mFreecessParent = freecessPkgStatus;
-        initRealtimeDetection();
-    }
-
-    public void updateFreezeState(long j, String str) {
-        this.freezedTime = j;
-        this.freezedReason = str;
-        int[] iArr = this.mFreezeCounts;
-        int typeNum = FreezeReasonType.FREEZE_TOTAL.getTypeNum();
-        iArr[typeNum] = iArr[typeNum] + 1;
-        this.mFreezeEventRecorder.addEvent(Event.FREEZE, j, str);
-    }
-
-    public void updateUnfreezeState(long j, String str) {
-        this.unfreezedTime = j;
-        this.unfreezedReason = str;
-        int[] iArr = this.mUnfreezeCounts;
-        int typeNum = UnfreezeReasonType.UNFREEZE_TOTAL.getTypeNum();
-        iArr[typeNum] = iArr[typeNum] + 1;
-        this.mFreezeEventRecorder.addEvent(Event.UNFREEZE, j, str);
-        try {
-            isAssignedUnfreezeDetection(str, this.mUnfreezeCounts);
-            if (MARsPolicyManager.getInstance().isChinaPolicyEnabled() && !FreecessController.getInstance().isInFreecessExcludeList(this.mFreecessParent) && abnormalRealtimeDetectionVer0(j)) {
-                Slog.i("MARsFreezeStateRecord", "ver:0 catch abnormal unfreeze detection at " + formatDateTime(j));
-                handleAbnormalApp(j);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public final void handleAbnormalApp(long j) {
-        if (MARsDebugConfig.DEBUG_MARs) {
-            Slog.d("MARsFreezeStateRecord", "handleAbnormalApp");
-        }
-        this.mUnfreezeAbuseDetections.add(Long.valueOf(j));
-        int maxUnfreezeType = getMaxUnfreezeType();
-        MARsPolicyManager mARsPolicyManager = MARsPolicyManager.getInstance();
-        FreecessPkgStatus freecessPkgStatus = this.mFreecessParent;
-        mARsPolicyManager.restrictAbusiveApp(freecessPkgStatus.name, freecessPkgStatus.uid, maxUnfreezeType);
-        if (UnfreezeReasonType.UNFREEZE_REASON_ALARM.getTypeNum() == maxUnfreezeType || UnfreezeReasonType.UNFREEZE_REASON_PACKET.getTypeNum() == maxUnfreezeType) {
-            FreecessController.getInstance().addRestrictedPackages(this.mFreecessParent);
-        }
-        resetToken();
-    }
-
-    public void cancelRestrictState() {
-        if (MARsDebugConfig.DEBUG_MARs) {
-            Slog.d("MARsFreezeStateRecord", "updateRestrictState");
-        }
-        MARsPolicyManager mARsPolicyManager = MARsPolicyManager.getInstance();
-        FreecessPkgStatus freecessPkgStatus = this.mFreecessParent;
-        mARsPolicyManager.cancelRestrict(freecessPkgStatus.name, freecessPkgStatus.uid);
-        FreecessController.getInstance().removeRestrictedPackages(this.mFreecessParent);
-    }
-
-    public final void initRealtimeDetection() {
-        if (MARsDebugConfig.DEBUG_FREECESS) {
-            Slog.d("MARsFreezeStateRecord", "initRealtimeDetection " + this.mFreecessParent.name + " rate:12");
-        }
-        this.mAvailableTokens = 512L;
-        this.mDetectionVer = 0;
-        long currentTimeMillis = System.currentTimeMillis();
-        this.mTokensUpdateTime = currentTimeMillis;
-        this.initialStateTime = currentTimeMillis;
-        ArraySet arraySet = this.mUnfreezeAbuseDetections;
-        if (arraySet != null) {
-            arraySet.clear();
-        } else {
-            this.mUnfreezeAbuseDetections = new ArraySet();
-        }
-    }
-
-    public final int getMaxUnfreezeType() {
-        int i = this.mUnfreezeCounts[1];
-        int i2 = i <= 0 ? -1 : 1;
-        int i3 = 2;
-        while (true) {
-            int[] iArr = this.mUnfreezeCounts;
-            if (i3 >= iArr.length) {
-                return i2;
-            }
-            int i4 = iArr[i3];
-            if (i < i4) {
-                i2 = i3;
-                i = i4;
-            }
-            i3++;
+        public final int getTypeNum() {
+            return this.typeNum;
         }
     }
 
     public final boolean abnormalRealtimeDetectionVer0(long j) {
         long j2 = j - this.mTokensUpdateTime;
         if (MARsDebugConfig.DEBUG_FREECESS) {
-            Slog.d("MARsFreezeStateRecord", "abnormalRealtimeDetection " + formatDateTime(j) + " elapsed:" + j2);
+            StringBuilder sb = new StringBuilder("abnormalRealtimeDetection ");
+            sb.append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(Long.valueOf(j)));
+            sb.append(" elapsed:");
+            BatteryService$$ExternalSyntheticOutline0.m(sb, j2, "MARsFreezeStateRecord");
         }
         if (j2 < 0) {
             this.mTokensUpdateTime = j;
@@ -222,7 +149,7 @@ public class MARsFreezeStateRecord {
         this.mAvailableTokens = Math.min(512L, this.mAvailableTokens + j3);
         this.mTokensUpdateTime = j;
         if (MARsDebugConfig.DEBUG_FREECESS) {
-            Slog.d("MARsFreezeStateRecord", "newTokens:" + j3 + " adjusted available tokens: " + this.mAvailableTokens);
+            BatteryService$$ExternalSyntheticOutline0.m(BatteryService$$ExternalSyntheticOutline0.m("newTokens:", j3, " adjusted available tokens: "), this.mAvailableTokens, "MARsFreezeStateRecord");
         }
         long j4 = this.mAvailableTokens;
         if (j4 <= 0) {
@@ -232,279 +159,139 @@ public class MARsFreezeStateRecord {
         return false;
     }
 
-    public final void resetToken() {
+    public final void cancelRestrictState() {
+        if (MARsDebugConfig.DEBUG_MARs) {
+            Slog.d("MARsFreezeStateRecord", "updateRestrictState");
+        }
+        boolean z = MARsPolicyManager.MARs_ENABLE;
+        MARsPolicyManager mARsPolicyManager = MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE;
+        FreecessPkgStatus freecessPkgStatus = this.mFreecessParent;
+        String str = freecessPkgStatus.name;
+        int i = freecessPkgStatus.uid;
+        mARsPolicyManager.getClass();
+        Slog.d("MARsPolicyManager", "cancelRestrict uid:" + i + " pkgname:" + str);
+        MARsHandler mARsHandler = MARsHandler.MARsHandlerHolder.INSTANCE;
+        if (mARsHandler.mMainHandler != null) {
+            Bundle m = FreecessController$$ExternalSyntheticOutline0.m(i, "pkgName", str, "uid");
+            Message obtainMessage = mARsHandler.mMainHandler.obtainMessage(19);
+            obtainMessage.setData(m);
+            mARsHandler.mMainHandler.sendMessage(obtainMessage);
+        }
+        mARsPolicyManager.addDebugInfoToHistory("Abusive", "[cancel_restrict]" + i);
+        boolean z2 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+        FreecessController freecessController = FreecessController.FreecessControllerHolder.INSTANCE;
+        FreecessPkgStatus freecessPkgStatus2 = this.mFreecessParent;
+        freecessController.getClass();
+        if (MARsDebugConfig.DEBUG_ENG) {
+            DeviceIdleController$$ExternalSyntheticOutline0.m(new StringBuilder("removeRestrictedPackages uid: "), freecessPkgStatus2.uid, "FreecessController");
+        }
+        synchronized (MARsPolicyManager.MARsLock) {
+            try {
+                if (freecessController.mRestrictedPackages.mUidMap.get(freecessPkgStatus2.uid) != null) {
+                    freecessController.mRestrictedPackages.remove(freecessPkgStatus2.uid, freecessPkgStatus2.name);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public final String dumpUfzContent() {
+        StringBuilder sb = new StringBuilder();
+        UnfreezeReasonType[] values = UnfreezeReasonType.values();
+        int length = values.length;
+        int i = 0;
+        while (i < length) {
+            i = MARsFreezeStateRecord$$ExternalSyntheticOutline0.m("%-4d|", new Object[]{Integer.valueOf(this.mUnfreezeCounts[values[i].getTypeNum()])}, sb, i, 1);
+        }
+        return sb.toString();
+    }
+
+    public final void handleAbnormalApp(long j) {
+        if (MARsDebugConfig.DEBUG_MARs) {
+            Slog.d("MARsFreezeStateRecord", "handleAbnormalApp");
+        }
+        this.mUnfreezeAbuseDetections.add(Long.valueOf(j));
+        int[] iArr = this.mUnfreezeCounts;
+        int i = iArr[1];
+        int i2 = i > 0 ? 1 : -1;
+        for (int i3 = 2; i3 < iArr.length; i3++) {
+            int i4 = iArr[i3];
+            if (i < i4) {
+                i2 = i3;
+                i = i4;
+            }
+        }
+        boolean z = MARsPolicyManager.MARs_ENABLE;
+        MARsPolicyManager mARsPolicyManager = MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE;
+        FreecessPkgStatus freecessPkgStatus = this.mFreecessParent;
+        String str = freecessPkgStatus.name;
+        int i5 = freecessPkgStatus.uid;
+        mARsPolicyManager.getClass();
+        MARsPolicyManager.Lock lock = MARsPolicyManager.MARsLock;
+        synchronized (lock) {
+            try {
+                MARsPackageInfo mARsPackageInfo = MARsPolicyManager.getMARsPackageInfo(mARsPolicyManager.mMARsTargetPackages, str, UserHandle.getUserId(i5));
+                if (mARsPackageInfo != null) {
+                    Slog.d("MARsPolicyManager", "updateAbusiveAppFromBartender uid:" + i5 + " pkgname:" + str + " type:excessive_unfreez");
+                    if (UnfreezeReasonType.UNFREEZE_REASON_ALARM.getTypeNum() == i2) {
+                        mARsPackageInfo.optionFlag |= 8;
+                    } else if (UnfreezeReasonType.UNFREEZE_REASON_PACKET.getTypeNum() == i2) {
+                        mARsPackageInfo.optionFlag |= 16;
+                        boolean z2 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                        FreecessController.FreecessControllerHolder.INSTANCE.updateAbnormalAppFirewall(mARsPackageInfo.uid, false);
+                        mARsPolicyManager.closeSocketsForUid(mARsPackageInfo.uid);
+                    }
+                    MARsHandler.MARsHandlerHolder.INSTANCE.sendAnomalyMsgToMainHandler(mARsPackageInfo.uid, mARsPackageInfo.name, "excessive_unfreeze");
+                    mARsPolicyManager.addDebugInfoToHistory("Abusive", "[excessive_unfreez]" + i5);
+                }
+            } finally {
+            }
+        }
+        if (UnfreezeReasonType.UNFREEZE_REASON_ALARM.getTypeNum() == i2 || UnfreezeReasonType.UNFREEZE_REASON_PACKET.getTypeNum() == i2) {
+            boolean z3 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+            FreecessController freecessController = FreecessController.FreecessControllerHolder.INSTANCE;
+            FreecessPkgStatus freecessPkgStatus2 = this.mFreecessParent;
+            freecessController.getClass();
+            if (MARsDebugConfig.DEBUG_ENG) {
+                DeviceIdleController$$ExternalSyntheticOutline0.m(new StringBuilder("addRestrictedPackages uid: "), freecessPkgStatus2.uid, "FreecessController");
+            }
+            synchronized (lock) {
+                try {
+                    if (freecessController.mRestrictedPackages.mUidMap.get(freecessPkgStatus2.uid) == null) {
+                        freecessController.mRestrictedPackages.put(freecessPkgStatus2.name, freecessPkgStatus2.uid, freecessPkgStatus2);
+                    }
+                } finally {
+                }
+            }
+        }
         this.mAvailableTokens = 512L;
     }
 
-    public final String formatDateTime(long j) {
-        return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(Long.valueOf(j));
-    }
-
-    public long getInitialStateTime() {
-        return this.initialStateTime;
-    }
-
-    public ArraySet getUnfreezeAbuseDetections() {
-        return this.mUnfreezeAbuseDetections;
-    }
-
-    public boolean hasUnfreezeAbuseHistory() {
-        return !this.mUnfreezeAbuseDetections.isEmpty();
-    }
-
-    public long getLastUnfreezeAbuseTime() {
-        return ((Long) this.mUnfreezeAbuseDetections.valueAt(r2.size() - 1)).longValue();
-    }
-
-    public final void isAssignedUnfreezeDetection(String str, int[] iArr) {
-        int typeNum = UnfreezeReasonType.reasonTypeOf(str).getTypeNum();
+    public final void updateUnfreezeState(long j, String str) {
+        this.unfreezedTime = j;
+        this.unfreezedReason = str;
+        int typeNum = UnfreezeReasonType.UNFREEZE_TOTAL.getTypeNum();
+        int[] iArr = this.mUnfreezeCounts;
         iArr[typeNum] = iArr[typeNum] + 1;
-    }
-
-    public String dumpUfzContent() {
-        StringBuilder sb = new StringBuilder();
-        for (UnfreezeReasonType unfreezeReasonType : UnfreezeReasonType.values()) {
-            sb.append(String.format("%-4d|", Integer.valueOf(this.mUnfreezeCounts[unfreezeReasonType.getTypeNum()])));
-        }
-        return sb.toString();
-    }
-
-    public void dumpCmd(PrintWriter printWriter, String[] strArr) {
-        if ("mfsr".equals(strArr[1])) {
-            if ("ver".equals(strArr[2])) {
-                this.mDetectionVer = Integer.parseInt(strArr[3]);
-                printWriter.println("set real time detection as ver:" + this.mDetectionVer);
-                return;
-            }
-            if ("history".equals(strArr[2])) {
-                printWriter.println(this.mFreecessParent.name + " detection version:" + this.mDetectionVer);
-                printWriter.println(dumpUfzContent());
-            }
-        }
-    }
-
-    public static String getDumpUnfreezeTitle() {
-        StringBuilder sb = new StringBuilder();
-        for (UnfreezeReasonType unfreezeReasonType : UnfreezeReasonType.values()) {
-            sb.append(String.format("T%-3d|", Integer.valueOf(unfreezeReasonType.getTypeNum())));
-        }
-        return sb.toString();
-    }
-
-    public void compute(long j, long j2, boolean z) {
-        this.mFreezeEventRecorder.compute(j, j2, z);
-    }
-
-    public Long getFrozenTime() {
-        return Long.valueOf(this.mFreezeEventRecorder.getUidFrozenTime());
-    }
-
-    public Long getUidRunningTime() {
-        return Long.valueOf(this.mFreezeEventRecorder.getUidRunningTime());
-    }
-
-    public ArrayList getUnfreezeCounts() {
-        return this.mFreezeEventRecorder.getUnfreezeCounts();
-    }
-
-    /* loaded from: classes.dex */
-    public class EventRecorder {
-        public final ArrayDeque mEventArraySelfLocked = new ArrayDeque();
-        public long uidRunningTime = 0;
-        public long uidFrozenTime = 0;
-        public final ArrayList unfreezeCounts = new ArrayList(Collections.nCopies(UnfreezeReasonType.values().length, 0));
-
-        public void onUidStart(long j) {
-            synchronized (this.mEventArraySelfLocked) {
-                removeOutdated();
-                this.mEventArraySelfLocked.add(new UidEventRecord(j));
-            }
-        }
-
-        public void onUidStop(int i, long j) {
-            synchronized (this.mEventArraySelfLocked) {
-                removeOutdated();
-                if (!this.mEventArraySelfLocked.isEmpty() && ((UidEventRecord) this.mEventArraySelfLocked.getLast()).runningEndTime == Long.MAX_VALUE) {
-                    ((UidEventRecord) this.mEventArraySelfLocked.getLast()).runningEndTime = j;
-                } else {
-                    boolean isEmpty = this.mEventArraySelfLocked.isEmpty();
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("something wrong at onUidStop uid : ");
-                    sb.append(i);
-                    sb.append(" is empty? ");
-                    sb.append(isEmpty);
-                    sb.append(" uidEndTime : ");
-                    sb.append(isEmpty ? "null" : Long.valueOf(((UidEventRecord) this.mEventArraySelfLocked.getLast()).runningEndTime));
-                    Slog.e("MARsFreezeStateRecord", sb.toString());
+        try {
+            int typeNum2 = UnfreezeReasonType.reasonTypeOf(str).getTypeNum();
+            iArr[typeNum2] = iArr[typeNum2] + 1;
+            boolean z = MARsPolicyManager.MARs_ENABLE;
+            MARsPolicyManager.MARsPolicyManagerHolder.INSTANCE.getClass();
+            if (MARsPolicyManager.isChinaPolicyEnabled()) {
+                boolean z2 = FreecessController.IS_MINIMIZE_OLAF_LOCK;
+                FreecessController freecessController = FreecessController.FreecessControllerHolder.INSTANCE;
+                FreecessPkgStatus freecessPkgStatus = this.mFreecessParent;
+                freecessController.getClass();
+                if (FreecessController.isInFreecessExcludeList(freecessPkgStatus) || !abnormalRealtimeDetectionVer0(j)) {
+                    return;
                 }
+                Slog.i("MARsFreezeStateRecord", "ver:0 catch abnormal unfreeze detection at " + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(Long.valueOf(j)));
+                handleAbnormalApp(j);
             }
-        }
-
-        public final void addEvent(Event event, long j, String str) {
-            synchronized (this.mEventArraySelfLocked) {
-                removeOutdated();
-                try {
-                    ((UidEventRecord) this.mEventArraySelfLocked.getLast()).addEvent(event, j, str);
-                } catch (Exception e) {
-                    Slog.e("MARsFreezeStateRecord", "error at addEvent. App frozen event without uid running event", e);
-                }
-            }
-        }
-
-        public void printAllEvents() {
-            synchronized (this.mEventArraySelfLocked) {
-                Iterator it = this.mEventArraySelfLocked.iterator();
-                while (it.hasNext()) {
-                    UidEventRecord uidEventRecord = (UidEventRecord) it.next();
-                    Slog.d("MARsFreezeStateRecord", "running start time : " + new Date(uidEventRecord.runningStartTime));
-                    Slog.d("MARsFreezeStateRecord", "running end time : " + new Date(uidEventRecord.runningEndTime));
-                    uidEventRecord.printAllEvents();
-                }
-            }
-        }
-
-        public final long getUidFrozenTime() {
-            return this.uidFrozenTime;
-        }
-
-        public final long getUidRunningTime() {
-            return this.uidRunningTime;
-        }
-
-        public final ArrayList getUnfreezeCounts() {
-            return this.unfreezeCounts;
-        }
-
-        public final void compute(long j, long j2, boolean z) {
-            Collections.fill(this.unfreezeCounts, 0);
-            this.uidRunningTime = computeUidRunningTimeFor(j, j2);
-            this.uidFrozenTime = computeFrozenTimeAndUnfreezeReasonsFor(j, j2, z);
-        }
-
-        /* loaded from: classes.dex */
-        public class UidEventRecord {
-            public final ArrayDeque freezeEvents;
-            public long runningEndTime;
-            public final long runningStartTime;
-
-            public UidEventRecord(long j) {
-                this.runningStartTime = j;
-                this.runningEndTime = Long.MAX_VALUE;
-                this.freezeEvents = new ArrayDeque();
-            }
-
-            public final void addEvent(Event event, long j, String str) {
-                this.freezeEvents.add(new FreezeEventRecord(event, j, str));
-            }
-
-            public final void removeOutdated(long j) {
-                while (!this.freezeEvents.isEmpty() && j - BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS > ((FreezeEventRecord) this.freezeEvents.getFirst()).time) {
-                    this.freezeEvents.removeFirst();
-                }
-            }
-
-            public final void printAllEvents() {
-                Iterator it = this.freezeEvents.iterator();
-                while (it.hasNext()) {
-                    FreezeEventRecord freezeEventRecord = (FreezeEventRecord) it.next();
-                    Slog.d("MARsFreezeStateRecord", "event : " + freezeEventRecord.event + " time : " + new Date(freezeEventRecord.time) + " reason : " + freezeEventRecord.reason);
-                }
-            }
-
-            /* loaded from: classes.dex */
-            public class FreezeEventRecord {
-                public final Event event;
-                public final String reason;
-                public final long time;
-
-                public FreezeEventRecord(Event event, long j, String str) {
-                    this.event = event;
-                    this.time = j;
-                    this.reason = str;
-                }
-            }
-        }
-
-        public final long computeFrozenTimeAndUnfreezeReasonsFor(long j, long j2, boolean z) {
-            long j3;
-            if (!isArgumentsValid(j, j2)) {
-                return -1L;
-            }
-            synchronized (this.mEventArraySelfLocked) {
-                removeOutdated();
-                Iterator it = this.mEventArraySelfLocked.iterator();
-                long j4 = 0;
-                j3 = 0;
-                while (it.hasNext()) {
-                    UidEventRecord uidEventRecord = (UidEventRecord) it.next();
-                    if (uidEventRecord.runningEndTime >= j) {
-                        Iterator it2 = uidEventRecord.freezeEvents.iterator();
-                        while (it2.hasNext()) {
-                            UidEventRecord.FreezeEventRecord freezeEventRecord = (UidEventRecord.FreezeEventRecord) it2.next();
-                            if (freezeEventRecord.event == Event.FREEZE) {
-                                j4 = freezeEventRecord.time;
-                            } else {
-                                long j5 = freezeEventRecord.time;
-                                if (j4 == 0) {
-                                    j4 = Math.min(j, freezeEventRecord.time);
-                                }
-                                countUnfreezeReason(j5, j, j2, freezeEventRecord);
-                                j3 += calculateOverlapPeriod(j, j2, j4, j5);
-                                j4 = 0;
-                            }
-                        }
-                    }
-                }
-                if (z) {
-                    j3 += j4 != 0 ? calculateOverlapPeriod(j, j2, Math.max(j4, j), j2) : j2 - j;
-                }
-            }
-            return j3;
-        }
-
-        public final void countUnfreezeReason(long j, long j2, long j3, UidEventRecord.FreezeEventRecord freezeEventRecord) {
-            if (j < j2 || j > j3) {
-                return;
-            }
-            int i = UnfreezeReasonType.reasonTypeOf(freezeEventRecord.reason).typeNum;
-            ArrayList arrayList = this.unfreezeCounts;
-            arrayList.set(i, Integer.valueOf(((Integer) arrayList.get(i)).intValue() + 1));
-        }
-
-        public final long calculateOverlapPeriod(long j, long j2, long j3, long j4) {
-            if (j4 < j || j2 < j3) {
-                return 0L;
-            }
-            return (j3 >= j || j2 >= j4) ? (j > j3 || j4 > j2) ? Math.min(j2, j4) - Math.max(j, j3) : j4 - j3 : j2 - j;
-        }
-
-        public long computeUidRunningTimeFor(long j, long j2) {
-            long j3;
-            synchronized (this.mEventArraySelfLocked) {
-                removeOutdated();
-                Iterator it = this.mEventArraySelfLocked.iterator();
-                j3 = 0;
-                while (it.hasNext()) {
-                    UidEventRecord uidEventRecord = (UidEventRecord) it.next();
-                    j3 += calculateOverlapPeriod(j, j2, uidEventRecord.runningStartTime, uidEventRecord.runningEndTime);
-                }
-            }
-            return j3;
-        }
-
-        public final void removeOutdated() {
-            long currentTimeMillis = System.currentTimeMillis();
-            while (!this.mEventArraySelfLocked.isEmpty() && currentTimeMillis - BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS > ((UidEventRecord) this.mEventArraySelfLocked.getFirst()).runningEndTime) {
-                this.mEventArraySelfLocked.removeFirst();
-            }
-            if (this.mEventArraySelfLocked.isEmpty()) {
-                return;
-            }
-            ((UidEventRecord) this.mEventArraySelfLocked.getFirst()).removeOutdated(currentTimeMillis);
-        }
-
-        public final boolean isArgumentsValid(long j, long j2) {
-            return System.currentTimeMillis() - BackupManagerConstants.DEFAULT_FULL_BACKUP_INTERVAL_MILLISECONDS <= j && j <= j2;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

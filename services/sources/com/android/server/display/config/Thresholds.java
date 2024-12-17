@@ -3,26 +3,11 @@ package com.android.server.display.config;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.xmlpull.v1.XmlPullParser;
 
-/* loaded from: classes2.dex */
-public class Thresholds {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class Thresholds {
     public BrightnessThresholds brighteningThresholds;
     public BrightnessThresholds darkeningThresholds;
-
-    public final BrightnessThresholds getBrighteningThresholds() {
-        return this.brighteningThresholds;
-    }
-
-    public final void setBrighteningThresholds(BrightnessThresholds brightnessThresholds) {
-        this.brighteningThresholds = brightnessThresholds;
-    }
-
-    public final BrightnessThresholds getDarkeningThresholds() {
-        return this.darkeningThresholds;
-    }
-
-    public final void setDarkeningThresholds(BrightnessThresholds brightnessThresholds) {
-        this.darkeningThresholds = brightnessThresholds;
-    }
 
     public static Thresholds read(XmlPullParser xmlPullParser) {
         int next;
@@ -36,9 +21,9 @@ public class Thresholds {
             if (xmlPullParser.getEventType() == 2) {
                 String name = xmlPullParser.getName();
                 if (name.equals("brighteningThresholds")) {
-                    thresholds.setBrighteningThresholds(BrightnessThresholds.read(xmlPullParser));
+                    thresholds.brighteningThresholds = BrightnessThresholds.read(xmlPullParser);
                 } else if (name.equals("darkeningThresholds")) {
-                    thresholds.setDarkeningThresholds(BrightnessThresholds.read(xmlPullParser));
+                    thresholds.darkeningThresholds = BrightnessThresholds.read(xmlPullParser);
                 } else {
                     XmlParser.skip(xmlPullParser);
                 }

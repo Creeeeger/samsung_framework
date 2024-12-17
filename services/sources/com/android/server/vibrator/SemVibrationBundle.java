@@ -3,13 +3,14 @@ package com.android.server.vibrator;
 import android.os.CombinedVibration;
 import android.os.IBinder;
 import android.os.VibrationAttributes;
-import com.android.server.vibrator.Vibration;
+import com.android.server.accessibility.magnification.WindowMagnificationGestureHandler$$ExternalSyntheticOutline0;
 import java.util.Objects;
 
-/* loaded from: classes3.dex */
-public class SemVibrationBundle {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class SemVibrationBundle {
     public VibrationAttributes mAttrs;
-    public int mDisplayId;
+    public int mDeviceId;
     public CombinedVibration mEffect;
     public int mIndex;
     public int mMagnitude;
@@ -19,75 +20,37 @@ public class SemVibrationBundle {
     public IBinder mToken;
     public int mUid;
 
-    public SemVibrationBundle(IBinder iBinder, CombinedVibration combinedVibration, int i, int i2, int i3, Vibration.CallerInfo callerInfo) {
-        this.mToken = iBinder;
-        this.mEffect = combinedVibration;
-        this.mIndex = i;
-        this.mRepeat = i2;
-        this.mMagnitude = i3;
-        this.mAttrs = callerInfo.attrs;
-        this.mUid = callerInfo.uid;
-        this.mDisplayId = callerInfo.displayId;
-        this.mOpPkg = callerInfo.opPkg;
-        this.mReason = callerInfo.reason;
-    }
-
-    public IBinder getToken() {
-        return this.mToken;
-    }
-
-    public VibrationAttributes getAttrs() {
-        return this.mAttrs;
-    }
-
-    public int getUid() {
-        return this.mUid;
-    }
-
-    public int getDisplayId() {
-        return this.mDisplayId;
-    }
-
-    public String getOpPkg() {
-        return this.mOpPkg;
-    }
-
-    public String getReason() {
-        return this.mReason;
-    }
-
-    public CombinedVibration getEffect() {
-        return this.mEffect;
-    }
-
-    public int getIndex() {
-        return this.mIndex;
-    }
-
-    public int getRepeat() {
-        return this.mRepeat;
-    }
-
-    public int getMagnitude() {
-        return this.mMagnitude;
-    }
-
-    public void setMagnitude(int i) {
-        this.mMagnitude = i;
-    }
-
-    public String toString() {
-        return "SemVibrationBundle{mToken=" + this.mToken + ", mAttrs=" + this.mAttrs + ", mUid=" + this.mUid + ", mDisplayId=" + this.mDisplayId + ", mOpPkg='" + this.mOpPkg + "', mReason='" + this.mReason + "', mEffect=" + this.mEffect + ", mIndex=" + this.mIndex + ", mRepeat=" + this.mRepeat + ", mMagnitude=" + this.mMagnitude + '}';
-    }
-
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass() || !super.equals(obj)) {
+        if (obj == null || SemVibrationBundle.class != obj.getClass() || !super.equals(obj)) {
             return false;
         }
         SemVibrationBundle semVibrationBundle = (SemVibrationBundle) obj;
-        return this.mUid == semVibrationBundle.mUid && this.mDisplayId == semVibrationBundle.mDisplayId && this.mIndex == semVibrationBundle.mIndex && this.mRepeat == semVibrationBundle.mRepeat && this.mMagnitude == semVibrationBundle.mMagnitude && Objects.equals(this.mToken, semVibrationBundle.mToken) && Objects.equals(this.mAttrs, semVibrationBundle.mAttrs) && Objects.equals(this.mOpPkg, semVibrationBundle.mOpPkg) && Objects.equals(this.mReason, semVibrationBundle.mReason) && Objects.equals(this.mEffect, semVibrationBundle.mEffect);
+        return this.mUid == semVibrationBundle.mUid && this.mDeviceId == semVibrationBundle.mDeviceId && this.mIndex == semVibrationBundle.mIndex && this.mRepeat == semVibrationBundle.mRepeat && this.mMagnitude == semVibrationBundle.mMagnitude && Objects.equals(this.mToken, semVibrationBundle.mToken) && Objects.equals(this.mAttrs, semVibrationBundle.mAttrs) && Objects.equals(this.mOpPkg, semVibrationBundle.mOpPkg) && Objects.equals(this.mReason, semVibrationBundle.mReason) && Objects.equals(this.mEffect, semVibrationBundle.mEffect);
+    }
+
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("SemVibrationBundle{mToken=");
+        sb.append(this.mToken);
+        sb.append(", mAttrs=");
+        sb.append(this.mAttrs);
+        sb.append(", mUid=");
+        sb.append(this.mUid);
+        sb.append(", mDeviceId=");
+        sb.append(this.mDeviceId);
+        sb.append(", mOpPkg='");
+        sb.append(this.mOpPkg);
+        sb.append("', mReason='");
+        sb.append(this.mReason);
+        sb.append("', mEffect=");
+        sb.append(this.mEffect);
+        sb.append(", mIndex=");
+        sb.append(this.mIndex);
+        sb.append(", mRepeat=");
+        sb.append(this.mRepeat);
+        sb.append(", mMagnitude=");
+        return WindowMagnificationGestureHandler$$ExternalSyntheticOutline0.m(sb, this.mMagnitude, '}');
     }
 }

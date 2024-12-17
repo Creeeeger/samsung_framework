@@ -1,73 +1,290 @@
 package com.android.server.autofill;
 
-import android.app.AppGlobals;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ServiceInfo;
-import android.os.Build;
-import android.os.IBinder;
-import android.os.ICancellationSignal;
+import android.os.IInterface;
 import android.os.SystemClock;
-import android.service.assist.classification.FieldClassificationRequest;
 import android.service.assist.classification.FieldClassificationResponse;
-import android.service.assist.classification.IFieldClassificationCallback;
 import android.service.assist.classification.IFieldClassificationService;
-import android.util.Log;
-import android.util.Pair;
 import android.util.Slog;
 import com.android.internal.infra.ServiceConnector;
-import java.lang.ref.WeakReference;
-import java.util.function.Function;
+import com.android.server.autofill.FieldClassificationEventLogger;
+import java.util.Optional;
+import java.util.function.Consumer;
 
-/* JADX INFO: Access modifiers changed from: package-private */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public final class RemoteFieldClassificationService extends ServiceConnector.Impl {
-    public static final String TAG = "Autofill" + RemoteFieldClassificationService.class.getSimpleName();
+final class RemoteFieldClassificationService extends ServiceConnector.Impl {
+    public static final /* synthetic */ int $r8$clinit = 0;
     private final ComponentName mComponentName;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public interface FieldClassificationServiceCallbacks {
-        void onClassificationRequestFailure(int i, CharSequence charSequence);
-
-        void onClassificationRequestSuccess(FieldClassificationResponse fieldClassificationResponse);
     }
 
-    public long getAutoDisconnectTimeoutMs() {
-        return 0L;
-    }
+    /* renamed from: -$$Nest$mlogFieldClassificationEvent, reason: not valid java name */
+    public static void m297$$Nest$mlogFieldClassificationEvent(RemoteFieldClassificationService remoteFieldClassificationService, long j, FieldClassificationServiceCallbacks fieldClassificationServiceCallbacks, final int i, FieldClassificationResponse fieldClassificationResponse) {
+        if (fieldClassificationServiceCallbacks == null) {
+            FieldClassificationEventLogger fieldClassificationEventLogger = new FieldClassificationEventLogger();
+            fieldClassificationEventLogger.mEventInternal = Optional.empty();
+            fieldClassificationEventLogger.startNewLogForRequest();
+            final long elapsedRealtime = SystemClock.elapsedRealtime() - j;
+            fieldClassificationEventLogger.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda3
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    ((FieldClassificationEventLogger.FieldClassificationEventInternal) obj).mLatencyClassificationRequestMillis = elapsedRealtime;
+                }
+            });
+            fieldClassificationEventLogger.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda7
+                public final /* synthetic */ boolean f$0 = true;
 
-    public RemoteFieldClassificationService(Context context, ComponentName componentName, int i, int i2) {
-        super(context, new Intent("android.service.assist.classification.FieldClassificationService").setComponent(componentName), 0, i2, new Function() { // from class: com.android.server.autofill.RemoteFieldClassificationService$$ExternalSyntheticLambda0
-            @Override // java.util.function.Function
-            public final Object apply(Object obj) {
-                return IFieldClassificationService.Stub.asInterface((IBinder) obj);
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    ((FieldClassificationEventLogger.FieldClassificationEventInternal) obj).mIsSessionGc = this.f$0;
+                }
+            });
+            final int i2 = 0;
+            fieldClassificationEventLogger.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda0
+                @Override // java.util.function.Consumer
+                public final void accept(Object obj) {
+                    int i3 = i2;
+                    int i4 = i;
+                    FieldClassificationEventLogger.FieldClassificationEventInternal fieldClassificationEventInternal = (FieldClassificationEventLogger.FieldClassificationEventInternal) obj;
+                    switch (i3) {
+                        case 0:
+                            fieldClassificationEventInternal.mStatus = i4;
+                            break;
+                        case 1:
+                            fieldClassificationEventInternal.mNextFillRequestId = i4;
+                            break;
+                        case 2:
+                            fieldClassificationEventInternal.mCountClassifications = i4;
+                            break;
+                        case 3:
+                            fieldClassificationEventInternal.mRequestId = i4;
+                            break;
+                        case 4:
+                            fieldClassificationEventInternal.mAppPackageUid = i4;
+                            break;
+                        default:
+                            fieldClassificationEventInternal.mSessionId = i4;
+                            break;
+                    }
+                }
+            });
+            fieldClassificationEventLogger.logAndEndEvent();
+            return;
+        }
+        Session session = (Session) fieldClassificationServiceCallbacks;
+        FieldClassificationEventLogger fieldClassificationEventLogger2 = new FieldClassificationEventLogger();
+        fieldClassificationEventLogger2.mEventInternal = Optional.empty();
+        fieldClassificationEventLogger2.startNewLogForRequest();
+        final long elapsedRealtime2 = SystemClock.elapsedRealtime() - j;
+        fieldClassificationEventLogger2.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda3
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                ((FieldClassificationEventLogger.FieldClassificationEventInternal) obj).mLatencyClassificationRequestMillis = elapsedRealtime2;
             }
         });
+        final int i3 = session.uid;
+        final int i4 = 4;
+        fieldClassificationEventLogger2.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda0
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                int i32 = i4;
+                int i42 = i3;
+                FieldClassificationEventLogger.FieldClassificationEventInternal fieldClassificationEventInternal = (FieldClassificationEventLogger.FieldClassificationEventInternal) obj;
+                switch (i32) {
+                    case 0:
+                        fieldClassificationEventInternal.mStatus = i42;
+                        break;
+                    case 1:
+                        fieldClassificationEventInternal.mNextFillRequestId = i42;
+                        break;
+                    case 2:
+                        fieldClassificationEventInternal.mCountClassifications = i42;
+                        break;
+                    case 3:
+                        fieldClassificationEventInternal.mRequestId = i42;
+                        break;
+                    case 4:
+                        fieldClassificationEventInternal.mAppPackageUid = i42;
+                        break;
+                    default:
+                        fieldClassificationEventInternal.mSessionId = i42;
+                        break;
+                }
+            }
+        });
+        final int i5 = session.mFillRequestIdSnapshot + 1;
+        final int i6 = 1;
+        fieldClassificationEventLogger2.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda0
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                int i32 = i6;
+                int i42 = i5;
+                FieldClassificationEventLogger.FieldClassificationEventInternal fieldClassificationEventInternal = (FieldClassificationEventLogger.FieldClassificationEventInternal) obj;
+                switch (i32) {
+                    case 0:
+                        fieldClassificationEventInternal.mStatus = i42;
+                        break;
+                    case 1:
+                        fieldClassificationEventInternal.mNextFillRequestId = i42;
+                        break;
+                    case 2:
+                        fieldClassificationEventInternal.mCountClassifications = i42;
+                        break;
+                    case 3:
+                        fieldClassificationEventInternal.mRequestId = i42;
+                        break;
+                    case 4:
+                        fieldClassificationEventInternal.mAppPackageUid = i42;
+                        break;
+                    default:
+                        fieldClassificationEventInternal.mSessionId = i42;
+                        break;
+                }
+            }
+        });
+        final int i7 = Session.sIdCounterForPcc.get();
+        final int i8 = 3;
+        fieldClassificationEventLogger2.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda0
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                int i32 = i8;
+                int i42 = i7;
+                FieldClassificationEventLogger.FieldClassificationEventInternal fieldClassificationEventInternal = (FieldClassificationEventLogger.FieldClassificationEventInternal) obj;
+                switch (i32) {
+                    case 0:
+                        fieldClassificationEventInternal.mStatus = i42;
+                        break;
+                    case 1:
+                        fieldClassificationEventInternal.mNextFillRequestId = i42;
+                        break;
+                    case 2:
+                        fieldClassificationEventInternal.mCountClassifications = i42;
+                        break;
+                    case 3:
+                        fieldClassificationEventInternal.mRequestId = i42;
+                        break;
+                    case 4:
+                        fieldClassificationEventInternal.mAppPackageUid = i42;
+                        break;
+                    default:
+                        fieldClassificationEventInternal.mSessionId = i42;
+                        break;
+                }
+            }
+        });
+        final int i9 = session.id;
+        final int i10 = 5;
+        fieldClassificationEventLogger2.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda0
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                int i32 = i10;
+                int i42 = i9;
+                FieldClassificationEventLogger.FieldClassificationEventInternal fieldClassificationEventInternal = (FieldClassificationEventLogger.FieldClassificationEventInternal) obj;
+                switch (i32) {
+                    case 0:
+                        fieldClassificationEventInternal.mStatus = i42;
+                        break;
+                    case 1:
+                        fieldClassificationEventInternal.mNextFillRequestId = i42;
+                        break;
+                    case 2:
+                        fieldClassificationEventInternal.mCountClassifications = i42;
+                        break;
+                    case 3:
+                        fieldClassificationEventInternal.mRequestId = i42;
+                        break;
+                    case 4:
+                        fieldClassificationEventInternal.mAppPackageUid = i42;
+                        break;
+                    default:
+                        fieldClassificationEventInternal.mSessionId = i42;
+                        break;
+                }
+            }
+        });
+        final int size = fieldClassificationResponse != null ? fieldClassificationResponse.getClassifications().size() : -1;
+        final int i11 = 0;
+        fieldClassificationEventLogger2.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda0
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                int i32 = i11;
+                int i42 = i;
+                FieldClassificationEventLogger.FieldClassificationEventInternal fieldClassificationEventInternal = (FieldClassificationEventLogger.FieldClassificationEventInternal) obj;
+                switch (i32) {
+                    case 0:
+                        fieldClassificationEventInternal.mStatus = i42;
+                        break;
+                    case 1:
+                        fieldClassificationEventInternal.mNextFillRequestId = i42;
+                        break;
+                    case 2:
+                        fieldClassificationEventInternal.mCountClassifications = i42;
+                        break;
+                    case 3:
+                        fieldClassificationEventInternal.mRequestId = i42;
+                        break;
+                    case 4:
+                        fieldClassificationEventInternal.mAppPackageUid = i42;
+                        break;
+                    default:
+                        fieldClassificationEventInternal.mSessionId = i42;
+                        break;
+                }
+            }
+        });
+        final int i12 = 2;
+        fieldClassificationEventLogger2.mEventInternal.ifPresent(new Consumer() { // from class: com.android.server.autofill.FieldClassificationEventLogger$$ExternalSyntheticLambda0
+            @Override // java.util.function.Consumer
+            public final void accept(Object obj) {
+                int i32 = i12;
+                int i42 = size;
+                FieldClassificationEventLogger.FieldClassificationEventInternal fieldClassificationEventInternal = (FieldClassificationEventLogger.FieldClassificationEventInternal) obj;
+                switch (i32) {
+                    case 0:
+                        fieldClassificationEventInternal.mStatus = i42;
+                        break;
+                    case 1:
+                        fieldClassificationEventInternal.mNextFillRequestId = i42;
+                        break;
+                    case 2:
+                        fieldClassificationEventInternal.mCountClassifications = i42;
+                        break;
+                    case 3:
+                        fieldClassificationEventInternal.mRequestId = i42;
+                        break;
+                    case 4:
+                        fieldClassificationEventInternal.mAppPackageUid = i42;
+                        break;
+                    default:
+                        fieldClassificationEventInternal.mSessionId = i42;
+                        break;
+                }
+            }
+        });
+        fieldClassificationEventLogger2.logAndEndEvent();
+        session.mFillRequestIdSnapshot = -2;
+    }
+
+    public RemoteFieldClassificationService(Context context, ComponentName componentName, int i) {
+        super(context, new Intent("android.service.assist.classification.FieldClassificationService").setComponent(componentName), 0, i, new RemoteFieldClassificationService$$ExternalSyntheticLambda0());
         this.mComponentName = componentName;
         if (Helper.sDebug) {
-            Slog.d(TAG, "About to connect to serviceName: " + componentName);
+            Slog.d("AutofillRemoteFieldClassificationService", "About to connect to serviceName: " + componentName);
         }
         connect();
     }
 
-    public static Pair getComponentName(String str, int i, boolean z) {
-        int i2 = !z ? 1048704 : 128;
-        try {
-            ComponentName unflattenFromString = ComponentName.unflattenFromString(str);
-            ServiceInfo serviceInfo = AppGlobals.getPackageManager().getServiceInfo(unflattenFromString, i2, i);
-            if (serviceInfo == null) {
-                Slog.e(TAG, "Bad service name for flags " + i2 + ": " + str);
-                return null;
-            }
-            return new Pair(serviceInfo, unflattenFromString);
-        } catch (Exception e) {
-            Slog.e(TAG, "Error getting service info for '" + str + "': " + e);
-            return null;
-        }
+    public final long getAutoDisconnectTimeoutMs() {
+        return 0L;
     }
 
-    public void onServiceConnectionStatusChanged(IFieldClassificationService iFieldClassificationService, boolean z) {
+    public final void onServiceConnectionStatusChanged(IInterface iInterface, boolean z) {
+        IFieldClassificationService iFieldClassificationService = (IFieldClassificationService) iInterface;
         try {
             if (z) {
                 iFieldClassificationService.onConnected(false, false);
@@ -75,79 +292,7 @@ public final class RemoteFieldClassificationService extends ServiceConnector.Imp
                 iFieldClassificationService.onDisconnected();
             }
         } catch (Exception e) {
-            Slog.w(TAG, "Exception calling onServiceConnectionStatusChanged(" + z + "): ", e);
+            Slog.w("AutofillRemoteFieldClassificationService", "Exception calling onServiceConnectionStatusChanged(" + z + "): ", e);
         }
-    }
-
-    public void onFieldClassificationRequest(final FieldClassificationRequest fieldClassificationRequest, final WeakReference weakReference) {
-        final long elapsedRealtime = SystemClock.elapsedRealtime();
-        if (Helper.sVerbose) {
-            Slog.v(TAG, "onFieldClassificationRequest request:" + fieldClassificationRequest);
-        }
-        run(new ServiceConnector.VoidJob() { // from class: com.android.server.autofill.RemoteFieldClassificationService$$ExternalSyntheticLambda1
-            public final void runNoResult(Object obj) {
-                RemoteFieldClassificationService.this.lambda$onFieldClassificationRequest$0(fieldClassificationRequest, elapsedRealtime, weakReference, (IFieldClassificationService) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ void lambda$onFieldClassificationRequest$0(FieldClassificationRequest fieldClassificationRequest, final long j, final WeakReference weakReference, IFieldClassificationService iFieldClassificationService) {
-        iFieldClassificationService.onFieldClassificationRequest(fieldClassificationRequest, new IFieldClassificationCallback.Stub() { // from class: com.android.server.autofill.RemoteFieldClassificationService.1
-            public void cancel() {
-            }
-
-            public boolean isCompleted() {
-                return false;
-            }
-
-            public void onCancellable(ICancellationSignal iCancellationSignal) {
-                RemoteFieldClassificationService.this.logLatency(j);
-                if (Helper.sDebug) {
-                    Log.d(RemoteFieldClassificationService.TAG, "onCancellable");
-                }
-            }
-
-            public void onSuccess(FieldClassificationResponse fieldClassificationResponse) {
-                String str;
-                RemoteFieldClassificationService.this.logLatency(j);
-                if (Helper.sDebug) {
-                    if (Build.IS_DEBUGGABLE) {
-                        Slog.d(RemoteFieldClassificationService.TAG, "onSuccess Response: " + fieldClassificationResponse);
-                    } else {
-                        if (fieldClassificationResponse == null || fieldClassificationResponse.getClassifications() == null) {
-                            str = "null response";
-                        } else {
-                            str = "size: " + fieldClassificationResponse.getClassifications().size();
-                        }
-                        Slog.d(RemoteFieldClassificationService.TAG, "onSuccess " + str);
-                    }
-                }
-                FieldClassificationServiceCallbacks fieldClassificationServiceCallbacks = (FieldClassificationServiceCallbacks) Helper.weakDeref(weakReference, RemoteFieldClassificationService.TAG, "onSuccess ");
-                if (fieldClassificationServiceCallbacks == null) {
-                    return;
-                }
-                fieldClassificationServiceCallbacks.onClassificationRequestSuccess(fieldClassificationResponse);
-            }
-
-            public void onFailure() {
-                RemoteFieldClassificationService.this.logLatency(j);
-                if (Helper.sDebug) {
-                    Slog.d(RemoteFieldClassificationService.TAG, "onFailure");
-                }
-                FieldClassificationServiceCallbacks fieldClassificationServiceCallbacks = (FieldClassificationServiceCallbacks) Helper.weakDeref(weakReference, RemoteFieldClassificationService.TAG, "onFailure ");
-                if (fieldClassificationServiceCallbacks == null) {
-                    return;
-                }
-                fieldClassificationServiceCallbacks.onClassificationRequestFailure(0, null);
-            }
-        });
-    }
-
-    public final void logLatency(long j) {
-        FieldClassificationEventLogger createLogger = FieldClassificationEventLogger.createLogger();
-        createLogger.startNewLogForRequest();
-        createLogger.maybeSetLatencyMillis(SystemClock.elapsedRealtime() - j);
-        createLogger.logAndEndEvent();
     }
 }

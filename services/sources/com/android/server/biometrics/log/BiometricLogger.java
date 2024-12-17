@@ -2,13 +2,21 @@ package com.android.server.biometrics.log;
 
 import android.content.Context;
 import android.hardware.SensorManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Slog;
+import com.android.internal.util.FrameworkStatsLog;
+import com.android.server.ServiceKeeper$$ExternalSyntheticOutline0;
+import com.android.server.biometrics.AuthenticationStatsCollector;
 import com.android.server.biometrics.Utils;
+import java.util.concurrent.TimeUnit;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class BiometricLogger {
+public final class BiometricLogger {
     public static final boolean DEBUG = Utils.DEBUG;
     public final ALSProbe mALSProbe;
+    public final AuthenticationStatsCollector mAuthenticationStatsCollector;
     public long mFirstAcquireTimeMs;
     public boolean mShouldLogMetrics;
     public final BiometricFrameworkStatsLogger mSink;
@@ -16,137 +24,91 @@ public class BiometricLogger {
     public final int mStatsClient;
     public final int mStatsModality;
 
-    public static BiometricLogger ofUnknown(Context context) {
-        return new BiometricLogger(context, 0, 0, 0);
-    }
-
-    public BiometricLogger(Context context, int i, int i2, int i3) {
-        this(i, i2, i3, BiometricFrameworkStatsLogger.getInstance(), (SensorManager) context.getSystemService(SensorManager.class));
-    }
-
-    public BiometricLogger(int i, int i2, int i3, BiometricFrameworkStatsLogger biometricFrameworkStatsLogger, SensorManager sensorManager) {
+    public BiometricLogger(int i, int i2, int i3, BiometricFrameworkStatsLogger biometricFrameworkStatsLogger, AuthenticationStatsCollector authenticationStatsCollector, SensorManager sensorManager) {
         this.mShouldLogMetrics = true;
         this.mStatsModality = i;
         this.mStatsAction = i2;
         this.mStatsClient = i3;
         this.mSink = biometricFrameworkStatsLogger;
-        this.mALSProbe = new ALSProbe(sensorManager);
+        this.mAuthenticationStatsCollector = authenticationStatsCollector;
+        this.mALSProbe = new ALSProbe(sensorManager, new Handler(Looper.getMainLooper()), TimeUnit.MINUTES.toMillis(1L));
     }
 
-    public BiometricLogger swapAction(Context context, int i) {
-        return new BiometricLogger(context, this.mStatsModality, i, this.mStatsClient);
+    public BiometricLogger(Context context, int i, int i2, int i3, AuthenticationStatsCollector authenticationStatsCollector) {
+        this(i, i2, i3, BiometricFrameworkStatsLogger.sInstance, authenticationStatsCollector, (SensorManager) context.getSystemService(SensorManager.class));
     }
 
-    public void disableMetrics() {
-        this.mShouldLogMetrics = false;
-        this.mALSProbe.destroy();
+    public static BiometricLogger ofUnknown(Context context) {
+        return new BiometricLogger(context, 0, 0, 0, null);
     }
 
-    public int getStatsClient() {
-        return this.mStatsClient;
-    }
-
-    public final boolean shouldSkipLogging() {
-        int i = this.mStatsModality;
-        boolean z = i == 0 || this.mStatsAction == 0;
-        if (i == 0) {
-            Slog.w("BiometricLogger", "Unknown field detected: MODALITY_UNKNOWN, will not report metric");
-        }
-        if (this.mStatsAction == 0) {
-            Slog.w("BiometricLogger", "Unknown field detected: ACTION_UNKNOWN, will not report metric");
-        }
-        if (this.mStatsClient == 0) {
-            Slog.w("BiometricLogger", "Unknown field detected: CLIENT_UNKNOWN");
-        }
-        return z;
-    }
-
-    public void logOnAcquired(Context context, OperationContextExt operationContextExt, int i, int i2, int i3) {
-        if (this.mShouldLogMetrics) {
-            int i4 = this.mStatsModality;
-            boolean z = i4 == 4;
-            boolean z2 = i4 == 1;
-            if (z || z2) {
-                if ((z2 && (i == 7 || i2 == 10002)) || (z && i == 20)) {
-                    this.mFirstAcquireTimeMs = System.currentTimeMillis();
-                }
-            } else if (i == 0 && this.mFirstAcquireTimeMs == 0) {
-                this.mFirstAcquireTimeMs = System.currentTimeMillis();
-            }
-            if (DEBUG) {
-                Slog.v("BiometricLogger", "Acquired! Modality: " + this.mStatsModality + ", User: " + i3 + ", IsCrypto: " + operationContextExt.isCrypto() + ", Action: " + this.mStatsAction + ", Client: " + this.mStatsClient + ", AcquiredInfo: " + i + ", VendorCode: " + i2);
-            }
-            if (shouldSkipLogging()) {
-                return;
-            }
-            this.mSink.acquired(operationContextExt, this.mStatsModality, this.mStatsAction, this.mStatsClient, Utils.isDebugEnabled(context, i3), i, i2, i3);
-        }
-    }
-
-    public void logOnError(Context context, OperationContextExt operationContextExt, int i, int i2, int i3) {
-        if (this.mShouldLogMetrics) {
-            long currentTimeMillis = this.mFirstAcquireTimeMs != 0 ? System.currentTimeMillis() - this.mFirstAcquireTimeMs : -1L;
-            if (DEBUG) {
-                Slog.v("BiometricLogger", "Error! Modality: " + this.mStatsModality + ", User: " + i3 + ", IsCrypto: " + operationContextExt.isCrypto() + ", Action: " + this.mStatsAction + ", Client: " + this.mStatsClient + ", Error: " + i + ", VendorCode: " + i2 + ", Latency: " + currentTimeMillis);
-            } else {
-                Slog.v("BiometricLogger", "Error latency: " + currentTimeMillis);
-            }
-            if (shouldSkipLogging()) {
-                return;
-            }
-            this.mSink.error(operationContextExt, this.mStatsModality, this.mStatsAction, this.mStatsClient, Utils.isDebugEnabled(context, i3), currentTimeMillis, i, i2, i3);
-        }
-    }
-
-    public void logOnAuthenticated(Context context, OperationContextExt operationContextExt, boolean z, boolean z2, int i, boolean z3) {
-        if (this.mShouldLogMetrics) {
-            int i2 = !z ? 1 : (z3 && z2) ? 2 : 3;
-            long currentTimeMillis = this.mFirstAcquireTimeMs != 0 ? System.currentTimeMillis() - this.mFirstAcquireTimeMs : -1L;
-            if (DEBUG) {
-                Slog.v("BiometricLogger", "Authenticated! Modality: " + this.mStatsModality + ", User: " + i + ", IsCrypto: " + operationContextExt.isCrypto() + ", Client: " + this.mStatsClient + ", RequireConfirmation: " + z2 + ", State: " + i2 + ", Latency: " + currentTimeMillis + ", Lux: " + this.mALSProbe.getMostRecentLux());
-            } else {
-                Slog.v("BiometricLogger", "Authentication latency: " + currentTimeMillis);
-            }
-            if (shouldSkipLogging()) {
-                return;
-            }
-            this.mSink.authenticate(operationContextExt, this.mStatsModality, this.mStatsAction, this.mStatsClient, Utils.isDebugEnabled(context, i), currentTimeMillis, i2, z2, i, this.mALSProbe);
-        }
-    }
-
-    public void logOnEnrolled(int i, long j, boolean z) {
+    public final void logOnEnrolled(int i, int i2, boolean z, long j) {
         if (this.mShouldLogMetrics) {
             if (DEBUG) {
-                Slog.v("BiometricLogger", "Enrolled! Modality: " + this.mStatsModality + ", User: " + i + ", Client: " + this.mStatsClient + ", Latency: " + j + ", Lux: " + this.mALSProbe.getMostRecentLux() + ", Success: " + z);
+                StringBuilder sb = new StringBuilder("Enrolled! Modality: ");
+                ServiceKeeper$$ExternalSyntheticOutline0.m(this.mStatsModality, i, ", User: ", ", Client: ", sb);
+                sb.append(this.mStatsClient);
+                sb.append(", Latency: ");
+                sb.append(j);
+                sb.append(", Lux: ");
+                sb.append(this.mALSProbe.mLastAmbientLux);
+                sb.append(", Success: ");
+                sb.append(z);
+                Slog.v("BiometricLogger", sb.toString());
             } else {
                 Slog.v("BiometricLogger", "Enroll latency: " + j);
             }
             if (shouldSkipLogging()) {
                 return;
             }
-            this.mSink.enroll(this.mStatsModality, this.mStatsAction, this.mStatsClient, i, j, z, this.mALSProbe.getMostRecentLux());
+            BiometricFrameworkStatsLogger biometricFrameworkStatsLogger = this.mSink;
+            int i3 = this.mStatsModality;
+            float f = this.mALSProbe.mLastAmbientLux;
+            biometricFrameworkStatsLogger.getClass();
+            FrameworkStatsLog.write(184, i3, i, BiometricFrameworkStatsLogger.sanitizeLatency(j), z, -1, f, i2);
         }
     }
 
-    public void logUnknownEnrollmentInHal() {
-        if (shouldSkipLogging()) {
-            return;
+    public final void logOnError(Context context, OperationContextExt operationContextExt, int i, int i2, int i3) {
+        if (this.mShouldLogMetrics) {
+            long currentTimeMillis = this.mFirstAcquireTimeMs != 0 ? System.currentTimeMillis() - this.mFirstAcquireTimeMs : -1L;
+            if (DEBUG) {
+                StringBuilder sb = new StringBuilder("Error! Modality: ");
+                ServiceKeeper$$ExternalSyntheticOutline0.m(this.mStatsModality, i3, ", User: ", ", IsCrypto: ", sb);
+                sb.append(operationContextExt.mAidlContext.isCrypto);
+                sb.append(", Action: ");
+                sb.append(this.mStatsAction);
+                sb.append(", Client: ");
+                ServiceKeeper$$ExternalSyntheticOutline0.m(this.mStatsClient, i, ", Error: ", ", VendorCode: ", sb);
+                sb.append(i2);
+                sb.append(", Latency: ");
+                sb.append(currentTimeMillis);
+                Slog.v("BiometricLogger", sb.toString());
+            } else {
+                Slog.v("BiometricLogger", "Error latency: " + currentTimeMillis);
+            }
+            if (shouldSkipLogging()) {
+                return;
+            }
+            boolean isDebugEnabled = Utils.isDebugEnabled(context, i3);
+            this.mSink.getClass();
+            BiometricFrameworkStatsLogger.error(operationContextExt, this.mStatsModality, this.mStatsAction, this.mStatsClient, isDebugEnabled, currentTimeMillis, i, i2, i3);
         }
-        this.mSink.reportUnknownTemplateEnrolledHal(this.mStatsModality);
     }
 
-    public void logUnknownEnrollmentInFramework() {
-        if (shouldSkipLogging()) {
-            return;
+    public final boolean shouldSkipLogging() {
+        int i = this.mStatsAction;
+        int i2 = this.mStatsModality;
+        boolean z = i2 == 0 || i == 0;
+        if (i2 == 0) {
+            Slog.w("BiometricLogger", "Unknown field detected: MODALITY_UNKNOWN, will not report metric");
         }
-        this.mSink.reportUnknownTemplateEnrolledFramework(this.mStatsModality);
-    }
-
-    public CallbackWithProbe getAmbientLightProbe(boolean z) {
-        return new CallbackWithProbe(this.mALSProbe, z);
-    }
-
-    public int getStatsModality() {
-        return this.mStatsModality;
+        if (i == 0) {
+            Slog.w("BiometricLogger", "Unknown field detected: ACTION_UNKNOWN, will not report metric");
+        }
+        if (this.mStatsClient == 0) {
+            Slog.w("BiometricLogger", "Unknown field detected: CLIENT_UNKNOWN");
+        }
+        return z;
     }
 }

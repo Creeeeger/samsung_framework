@@ -3,43 +3,13 @@ package com.android.server.enterprise.general.font;
 import java.util.ArrayList;
 import java.util.List;
 
-/* loaded from: classes2.dex */
-public class Typeface {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
+public final class Typeface {
     public String mName = null;
     public String mFontPackageName = null;
     public String mTypefaceFilename = null;
     public final List mSansFonts = new ArrayList();
     public final List mSerifFonts = new ArrayList();
     public final List mMonospaceFonts = new ArrayList();
-
-    public String getFontPackageName() {
-        return this.mFontPackageName;
-    }
-
-    public void setFontPackageName(String str) {
-        this.mFontPackageName = str;
-    }
-
-    public String getName() {
-        return this.mName;
-    }
-
-    public void setName(String str) {
-        this.mName = str;
-    }
-
-    public String getTypefaceFilename() {
-        return this.mTypefaceFilename;
-    }
-
-    public void setTypefaceFilename(String str) {
-        this.mTypefaceFilename = str;
-    }
-
-    public String getSansName() {
-        if (this.mSansFonts.isEmpty()) {
-            return null;
-        }
-        return this.mName;
-    }
 }

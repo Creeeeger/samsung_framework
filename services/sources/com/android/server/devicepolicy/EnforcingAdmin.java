@@ -1,17 +1,16 @@
 package com.android.server.devicepolicy;
 
-import android.app.admin.Authority;
 import android.app.admin.DeviceAdminAuthority;
 import android.app.admin.DpcAuthority;
 import android.app.admin.RoleAuthority;
 import android.app.admin.UnknownAuthority;
 import android.content.ComponentName;
+import android.hardware.biometrics.face.V1_0.OptionalBool$$ExternalSyntheticOutline0;
 import android.os.UserHandle;
 import com.android.modules.utils.TypedXmlPullParser;
 import com.android.modules.utils.TypedXmlSerializer;
 import com.android.role.RoleManagerLocal;
 import com.android.server.LocalManagerRegistry;
-import com.android.server.enterprise.vpn.knoxvpn.KnoxVpnFirewallHelper;
 import com.android.server.utils.Slogf;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,7 +18,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-/* loaded from: classes2.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes.dex */
 public final class EnforcingAdmin {
     public final ActiveAdmin mActiveAdmin;
     public Set mAuthorities;
@@ -28,44 +28,25 @@ public final class EnforcingAdmin {
     public final String mPackageName;
     public final int mUserId;
 
-    public static EnforcingAdmin createEnforcingAdmin(String str, int i, ActiveAdmin activeAdmin) {
+    public EnforcingAdmin(String str, int i, ActiveAdmin activeAdmin) {
         Objects.requireNonNull(str);
-        return new EnforcingAdmin(str, i, activeAdmin);
+        this.mIsRoleAuthority = true;
+        this.mPackageName = str;
+        this.mUserId = i;
+        this.mComponentName = null;
+        this.mAuthorities = null;
+        this.mActiveAdmin = activeAdmin;
     }
 
-    public static EnforcingAdmin createEnterpriseEnforcingAdmin(ComponentName componentName, int i) {
-        Objects.requireNonNull(componentName);
-        return new EnforcingAdmin(componentName.getPackageName(), componentName, Set.of("enterprise"), i, null);
-    }
-
-    public static EnforcingAdmin createEnterpriseEnforcingAdmin(ComponentName componentName, int i, ActiveAdmin activeAdmin) {
-        Objects.requireNonNull(componentName);
-        return new EnforcingAdmin(componentName.getPackageName(), componentName, Set.of("enterprise"), i, activeAdmin);
-    }
-
-    public static EnforcingAdmin createDeviceAdminEnforcingAdmin(ComponentName componentName, int i, ActiveAdmin activeAdmin) {
-        Objects.requireNonNull(componentName);
-        return new EnforcingAdmin(componentName.getPackageName(), componentName, Set.of("device_admin"), i, activeAdmin);
-    }
-
-    public static String getRoleAuthorityOf(String str) {
-        return "role:" + str;
-    }
-
-    public static Authority getParcelableAuthority(String str) {
-        if (str == null || str.isEmpty()) {
-            return UnknownAuthority.UNKNOWN_AUTHORITY;
-        }
-        if ("enterprise".equals(str)) {
-            return DpcAuthority.DPC_AUTHORITY;
-        }
-        if ("device_admin".equals(str)) {
-            return DeviceAdminAuthority.DEVICE_ADMIN_AUTHORITY;
-        }
-        if (str.startsWith("role:")) {
-            return new RoleAuthority(Set.of(str.substring(5)));
-        }
-        return UnknownAuthority.UNKNOWN_AUTHORITY;
+    public EnforcingAdmin(String str, ComponentName componentName, Set set, int i) {
+        Objects.requireNonNull(str);
+        Objects.requireNonNull(set);
+        this.mIsRoleAuthority = true;
+        this.mPackageName = str;
+        this.mComponentName = componentName;
+        this.mAuthorities = new HashSet(set);
+        this.mUserId = i;
+        this.mActiveAdmin = null;
     }
 
     public EnforcingAdmin(String str, ComponentName componentName, Set set, int i, ActiveAdmin activeAdmin) {
@@ -79,27 +60,27 @@ public final class EnforcingAdmin {
         this.mActiveAdmin = activeAdmin;
     }
 
-    public EnforcingAdmin(String str, int i, ActiveAdmin activeAdmin) {
-        Objects.requireNonNull(str);
-        this.mIsRoleAuthority = true;
-        this.mPackageName = str;
-        this.mUserId = i;
-        this.mComponentName = null;
-        this.mAuthorities = null;
-        this.mActiveAdmin = activeAdmin;
+    public static EnforcingAdmin createEnterpriseEnforcingAdmin(int i, ComponentName componentName) {
+        Objects.requireNonNull(componentName);
+        return new EnforcingAdmin(componentName.getPackageName(), componentName, Set.of("enterprise"), i, null);
     }
 
-    public static Set getRoleAuthoritiesOrDefault(String str, int i) {
-        Set roles = getRoles(str, i);
+    public static EnforcingAdmin createEnterpriseEnforcingAdmin(ComponentName componentName, int i, ActiveAdmin activeAdmin) {
+        Objects.requireNonNull(componentName);
+        return new EnforcingAdmin(componentName.getPackageName(), componentName, Set.of("enterprise"), i, activeAdmin);
+    }
+
+    public static Set getRoleAuthoritiesOrDefault(int i, String str) {
+        Set roles = getRoles(i, str);
         HashSet hashSet = new HashSet();
-        Iterator it = roles.iterator();
+        Iterator it = ((HashSet) roles).iterator();
         while (it.hasNext()) {
             hashSet.add("role:" + ((String) it.next()));
         }
         return hashSet.isEmpty() ? Set.of("default") : hashSet;
     }
 
-    public static Set getRoles(String str, int i) {
+    public static Set getRoles(int i, String str) {
         RoleManagerLocal roleManagerLocal = (RoleManagerLocal) LocalManagerRegistry.getManager(RoleManagerLocal.class);
         HashSet hashSet = new HashSet();
         Map rolesAndHolders = roleManagerLocal.getRolesAndHolders(i);
@@ -111,55 +92,38 @@ public final class EnforcingAdmin {
         return hashSet;
     }
 
-    public final Set getAuthorities() {
-        if (this.mAuthorities == null && this.mIsRoleAuthority) {
-            this.mAuthorities = getRoleAuthoritiesOrDefault(this.mPackageName, this.mUserId);
-        }
-        return this.mAuthorities;
-    }
-
-    public void reloadRoleAuthorities() {
-        if (this.mIsRoleAuthority) {
-            this.mAuthorities = getRoleAuthoritiesOrDefault(this.mPackageName, this.mUserId);
-        }
-    }
-
-    public boolean hasAuthority(String str) {
-        return getAuthorities().contains(str);
-    }
-
-    public String getPackageName() {
-        return this.mPackageName;
-    }
-
-    public int getUserId() {
-        return this.mUserId;
-    }
-
-    public ActiveAdmin getActiveAdmin() {
-        return this.mActiveAdmin;
-    }
-
-    public android.app.admin.EnforcingAdmin getParcelableAdmin() {
-        UnknownAuthority unknownAuthority;
-        if (this.mIsRoleAuthority) {
-            Set roles = getRoles(this.mPackageName, this.mUserId);
-            if (roles.isEmpty()) {
-                unknownAuthority = UnknownAuthority.UNKNOWN_AUTHORITY;
-            } else {
-                unknownAuthority = new RoleAuthority(roles);
+    public static EnforcingAdmin readFromXml(TypedXmlPullParser typedXmlPullParser) {
+        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "package-name");
+        boolean attributeBoolean = typedXmlPullParser.getAttributeBoolean((String) null, "is-role");
+        String attributeValue2 = typedXmlPullParser.getAttributeValue((String) null, "authorities");
+        int attributeInt = typedXmlPullParser.getAttributeInt((String) null, "user-id");
+        if (attributeBoolean) {
+            if (attributeValue != null) {
+                return new EnforcingAdmin(attributeValue, attributeInt, null);
             }
-        } else if (this.mAuthorities.contains("enterprise")) {
-            unknownAuthority = DpcAuthority.DPC_AUTHORITY;
-        } else if (this.mAuthorities.contains("device_admin")) {
-            unknownAuthority = DeviceAdminAuthority.DEVICE_ADMIN_AUTHORITY;
-        } else {
-            unknownAuthority = UnknownAuthority.UNKNOWN_AUTHORITY;
+            Slogf.wtf("EnforcingAdmin", "Error parsing EnforcingAdmin with RoleAuthority, packageName is null.");
+            return null;
         }
-        return new android.app.admin.EnforcingAdmin(this.mPackageName, unknownAuthority, UserHandle.of(this.mUserId));
+        if (attributeValue != null && attributeValue2 != null) {
+            String attributeValue3 = typedXmlPullParser.getAttributeValue((String) null, "class-name");
+            return new EnforcingAdmin(attributeValue, attributeValue3 != null ? new ComponentName(attributeValue, attributeValue3) : null, Set.of((Object[]) attributeValue2.split(";")), attributeInt, null);
+        }
+        StringBuilder sb = new StringBuilder("Error parsing EnforcingAdmin, packageName is ");
+        if (attributeValue == null) {
+            attributeValue = "null";
+        }
+        sb.append(attributeValue);
+        sb.append(", and authorities is ");
+        if (attributeValue2 == null) {
+            attributeValue2 = "null";
+        }
+        sb.append(attributeValue2);
+        sb.append(".");
+        Slogf.wtf("EnforcingAdmin", sb.toString());
+        return null;
     }
 
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -167,80 +131,75 @@ public final class EnforcingAdmin {
             return false;
         }
         EnforcingAdmin enforcingAdmin = (EnforcingAdmin) obj;
-        return Objects.equals(this.mPackageName, enforcingAdmin.mPackageName) && Objects.equals(this.mComponentName, enforcingAdmin.mComponentName) && Objects.equals(Boolean.valueOf(this.mIsRoleAuthority), Boolean.valueOf(enforcingAdmin.mIsRoleAuthority)) && hasMatchingAuthorities(this, enforcingAdmin);
+        if (Objects.equals(this.mPackageName, enforcingAdmin.mPackageName) && Objects.equals(this.mComponentName, enforcingAdmin.mComponentName)) {
+            boolean z = this.mIsRoleAuthority;
+            Boolean valueOf = Boolean.valueOf(z);
+            boolean z2 = enforcingAdmin.mIsRoleAuthority;
+            if (valueOf.equals(Boolean.valueOf(z2))) {
+                if ((z && z2) ? true : getAuthorities().equals(enforcingAdmin.getAuthorities())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public static boolean hasMatchingAuthorities(EnforcingAdmin enforcingAdmin, EnforcingAdmin enforcingAdmin2) {
-        if (enforcingAdmin.mIsRoleAuthority && enforcingAdmin2.mIsRoleAuthority) {
-            return true;
+    public final Set getAuthorities() {
+        if (this.mAuthorities == null && this.mIsRoleAuthority) {
+            this.mAuthorities = getRoleAuthoritiesOrDefault(this.mUserId, this.mPackageName);
         }
-        return enforcingAdmin.getAuthorities().equals(enforcingAdmin2.getAuthorities());
+        return this.mAuthorities;
     }
 
-    public int hashCode() {
-        if (this.mIsRoleAuthority) {
-            return Objects.hash(this.mPackageName, Integer.valueOf(this.mUserId));
+    public final android.app.admin.EnforcingAdmin getParcelableAdmin() {
+        UnknownAuthority unknownAuthority;
+        boolean z = this.mIsRoleAuthority;
+        int i = this.mUserId;
+        String str = this.mPackageName;
+        if (z) {
+            Set roles = getRoles(i, str);
+            unknownAuthority = ((HashSet) roles).isEmpty() ? UnknownAuthority.UNKNOWN_AUTHORITY : new RoleAuthority(roles);
+        } else {
+            unknownAuthority = this.mAuthorities.contains("enterprise") ? DpcAuthority.DPC_AUTHORITY : this.mAuthorities.contains("device_admin") ? DeviceAdminAuthority.DEVICE_ADMIN_AUTHORITY : UnknownAuthority.UNKNOWN_AUTHORITY;
         }
-        Object[] objArr = new Object[3];
-        Object obj = this.mComponentName;
-        if (obj == null) {
-            obj = this.mPackageName;
-        }
-        objArr[0] = obj;
-        objArr[1] = Integer.valueOf(this.mUserId);
-        objArr[2] = getAuthorities();
-        return Objects.hash(objArr);
+        return new android.app.admin.EnforcingAdmin(str, unknownAuthority, UserHandle.of(i), this.mComponentName);
     }
 
-    public void saveToXml(TypedXmlSerializer typedXmlSerializer) {
+    public final boolean hasAuthority(String str) {
+        return getAuthorities().contains(str);
+    }
+
+    public final int hashCode() {
+        boolean z = this.mIsRoleAuthority;
+        int i = this.mUserId;
+        Object obj = this.mPackageName;
+        if (z) {
+            return Objects.hash(obj, Integer.valueOf(i));
+        }
+        Object obj2 = this.mComponentName;
+        if (obj2 != null) {
+            obj = obj2;
+        }
+        return Objects.hash(obj, Integer.valueOf(i), getAuthorities());
+    }
+
+    public final void saveToXml(TypedXmlSerializer typedXmlSerializer) {
         typedXmlSerializer.attribute((String) null, "package-name", this.mPackageName);
-        typedXmlSerializer.attributeBoolean((String) null, "is-role", this.mIsRoleAuthority);
+        boolean z = this.mIsRoleAuthority;
+        typedXmlSerializer.attributeBoolean((String) null, "is-role", z);
         typedXmlSerializer.attributeInt((String) null, "user-id", this.mUserId);
-        if (this.mIsRoleAuthority) {
+        if (z) {
             return;
         }
         ComponentName componentName = this.mComponentName;
         if (componentName != null) {
             typedXmlSerializer.attribute((String) null, "class-name", componentName.getClassName());
         }
-        typedXmlSerializer.attribute((String) null, "authorities", String.join(KnoxVpnFirewallHelper.DELIMITER, getAuthorities()));
+        typedXmlSerializer.attribute((String) null, "authorities", String.join(";", getAuthorities()));
     }
 
-    public static EnforcingAdmin readFromXml(TypedXmlPullParser typedXmlPullParser) {
-        String attributeValue = typedXmlPullParser.getAttributeValue((String) null, "package-name");
-        boolean attributeBoolean = typedXmlPullParser.getAttributeBoolean((String) null, "is-role");
-        String attributeValue2 = typedXmlPullParser.getAttributeValue((String) null, "authorities");
-        int attributeInt = typedXmlPullParser.getAttributeInt((String) null, "user-id");
-        if (attributeBoolean) {
-            if (attributeValue == null) {
-                Slogf.wtf("EnforcingAdmin", "Error parsing EnforcingAdmin with RoleAuthority, packageName is null.");
-                return null;
-            }
-            return new EnforcingAdmin(attributeValue, attributeInt, null);
-        }
-        if (attributeValue == null || attributeValue2 == null) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Error parsing EnforcingAdmin, packageName is ");
-            if (attributeValue == null) {
-                attributeValue = "null";
-            }
-            sb.append(attributeValue);
-            sb.append(", and authorities is ");
-            if (attributeValue2 == null) {
-                attributeValue2 = "null";
-            }
-            sb.append(attributeValue2);
-            sb.append(".");
-            Slogf.wtf("EnforcingAdmin", sb.toString());
-            return null;
-        }
-        String attributeValue3 = typedXmlPullParser.getAttributeValue((String) null, "class-name");
-        return new EnforcingAdmin(attributeValue, attributeValue3 != null ? new ComponentName(attributeValue, attributeValue3) : null, Set.of((Object[]) attributeValue2.split(KnoxVpnFirewallHelper.DELIMITER)), attributeInt, null);
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("EnforcingAdmin { mPackageName= ");
+    public final String toString() {
+        StringBuilder sb = new StringBuilder("EnforcingAdmin { mPackageName= ");
         sb.append(this.mPackageName);
         if (this.mComponentName != null) {
             sb.append(", mComponentName= ");
@@ -253,8 +212,6 @@ public final class EnforcingAdmin {
         sb.append(", mUserId= ");
         sb.append(this.mUserId);
         sb.append(", mIsRoleAuthority= ");
-        sb.append(this.mIsRoleAuthority);
-        sb.append(" }");
-        return sb.toString();
+        return OptionalBool$$ExternalSyntheticOutline0.m(" }", sb, this.mIsRoleAuthority);
     }
 }

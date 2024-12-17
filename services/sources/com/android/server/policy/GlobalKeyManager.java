@@ -5,54 +5,21 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
-import android.os.UserHandle;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import com.android.internal.util.XmlUtils;
 import java.io.IOException;
-import java.io.PrintWriter;
 import org.xmlpull.v1.XmlPullParserException;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public final class GlobalKeyManager {
     public final SparseArray mKeyMapping = new SparseArray();
     public boolean mBeganFromNonInteractive = false;
 
-    public GlobalKeyManager(Context context) {
-        loadGlobalKeys(context);
-    }
-
-    public boolean handleGlobalKey(Context context, int i, KeyEvent keyEvent) {
-        GlobalKeyAction globalKeyAction;
-        if (this.mKeyMapping.size() <= 0 || (globalKeyAction = (GlobalKeyAction) this.mKeyMapping.get(i)) == null) {
-            return false;
-        }
-        context.sendBroadcastAsUser(new GlobalKeyIntent(globalKeyAction.mComponentName, keyEvent, this.mBeganFromNonInteractive).getIntent(), UserHandle.CURRENT, null);
-        if (keyEvent.getAction() == 1) {
-            this.mBeganFromNonInteractive = false;
-        }
-        return true;
-    }
-
-    public boolean shouldHandleGlobalKey(int i) {
-        return this.mKeyMapping.get(i) != null;
-    }
-
-    public boolean shouldDispatchFromNonInteractive(int i) {
-        GlobalKeyAction globalKeyAction = (GlobalKeyAction) this.mKeyMapping.get(i);
-        if (globalKeyAction == null) {
-            return false;
-        }
-        return globalKeyAction.mDispatchWhenNonInteractive;
-    }
-
-    public void setBeganFromNonInteractive() {
-        this.mBeganFromNonInteractive = true;
-    }
-
-    /* loaded from: classes3.dex */
-    public class GlobalKeyAction {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class GlobalKeyAction {
         public final ComponentName mComponentName;
         public final boolean mDispatchWhenNonInteractive;
 
@@ -62,9 +29,9 @@ public final class GlobalKeyManager {
         }
     }
 
-    public final void loadGlobalKeys(Context context) {
+    public GlobalKeyManager(Context context) {
         try {
-            XmlResourceParser xml = context.getResources().getXml(R.xml.password_kbd_qwerty_shifted);
+            XmlResourceParser xml = context.getResources().getXml(R.xml.password_kbd_qwerty);
             try {
                 XmlUtils.beginDocument(xml, "global_keys");
                 if (1 == xml.getAttributeIntValue(null, "version", 0)) {
@@ -108,27 +75,5 @@ public final class GlobalKeyManager {
         } catch (XmlPullParserException e3) {
             Log.wtf("GlobalKeyManager", "XML parser exception reading global keys file", e3);
         }
-    }
-
-    public void dump(String str, PrintWriter printWriter) {
-        int size = this.mKeyMapping.size();
-        if (size == 0) {
-            printWriter.print(str);
-            printWriter.println("mKeyMapping.size=0");
-            return;
-        }
-        printWriter.print(str);
-        printWriter.println("mKeyMapping={");
-        for (int i = 0; i < size; i++) {
-            printWriter.print("  ");
-            printWriter.print(str);
-            printWriter.print(KeyEvent.keyCodeToString(this.mKeyMapping.keyAt(i)));
-            printWriter.print("=");
-            printWriter.print(((GlobalKeyAction) this.mKeyMapping.valueAt(i)).mComponentName.flattenToString());
-            printWriter.print(",dispatchWhenNonInteractive=");
-            printWriter.println(((GlobalKeyAction) this.mKeyMapping.valueAt(i)).mDispatchWhenNonInteractive);
-        }
-        printWriter.print(str);
-        printWriter.println("}");
     }
 }

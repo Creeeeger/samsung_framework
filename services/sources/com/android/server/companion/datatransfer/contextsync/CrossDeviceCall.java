@@ -10,17 +10,20 @@ import android.telecom.CallAudioState;
 import android.telecom.PhoneAccountHandle;
 import android.text.TextUtils;
 import android.util.Slog;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.NandswapManager$$ExternalSyntheticOutline0;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class CrossDeviceCall {
+public final class CrossDeviceCall {
     public final Call mCall;
     public String mCallerDisplayName;
     public int mCallerDisplayNamePresentation;
-    public byte[] mCallingAppIcon;
-    public String mCallingAppName;
+    public final byte[] mCallingAppIcon;
+    public final String mCallingAppName;
     public final String mCallingAppPackageName;
     public String mContactDisplayName;
     public final Set mControls;
@@ -30,51 +33,22 @@ public class CrossDeviceCall {
     public final String mId;
     public final boolean mIsCallPlacedByContextSync;
     boolean mIsEnterprise;
-    public boolean mIsMuted;
+    public final boolean mIsMuted;
     public final String mSerializedPhoneAccountHandle;
     public int mStatus;
     public final int mUserId;
 
-    public static int convertStatusToState(int i) {
-        switch (i) {
-            case 1:
-            case 4:
-                return 2;
-            case 2:
-                return 4;
-            case 3:
-                return 3;
-            case 5:
-                return 12;
-            case 6:
-                return 13;
-            case 7:
-                return 7;
-            case 8:
-                return 1;
-            default:
-                return 0;
-        }
-    }
-
     public CrossDeviceCall(Context context, Call call, CallAudioState callAudioState) {
-        this(context, call, call.getDetails(), callAudioState);
-    }
-
-    public CrossDeviceCall(Context context, Call call, Call.Details details, CallAudioState callAudioState) {
+        Call.Details details = call.getDetails();
         boolean z = false;
         this.mStatus = 0;
         this.mControls = new HashSet();
         this.mCall = call;
         String string = details.getIntentExtras() != null ? details.getIntentExtras().getString("com.android.companion.datatransfer.contextsync.extra.CALL_ID") : null;
         String uuid = UUID.randomUUID().toString();
-        if (string != null) {
-            uuid = uuid + "::" + string;
-        }
+        uuid = string != null ? AnyMotionDetector$$ExternalSyntheticOutline0.m(uuid, "::", string) : uuid;
         this.mId = uuid;
-        if (call != null) {
-            call.putExtra("com.android.companion.datatransfer.contextsync.extra.CALL_ID", uuid);
-        }
+        call.putExtra("com.android.companion.datatransfer.contextsync.extra.CALL_ID", uuid);
         PhoneAccountHandle accountHandle = details.getAccountHandle();
         int identifier = accountHandle != null ? accountHandle.getUserHandle().getIdentifier() : -1;
         this.mUserId = identifier;
@@ -102,103 +76,6 @@ public class CrossDeviceCall {
         updateCallDetails(details);
     }
 
-    public void updateCallDetails(Call.Details details) {
-        this.mCallerDisplayName = details.getCallerDisplayName();
-        this.mCallerDisplayNamePresentation = details.getCallerDisplayNamePresentation();
-        this.mContactDisplayName = details.getContactDisplayName();
-        this.mHandle = details.getHandle();
-        this.mHandlePresentation = details.getHandlePresentation();
-        int callDirection = details.getCallDirection();
-        if (callDirection == 0) {
-            this.mDirection = 1;
-        } else if (callDirection == 1) {
-            this.mDirection = 2;
-        } else {
-            this.mDirection = 0;
-        }
-        this.mStatus = convertStateToStatus(details.getState());
-        this.mControls.clear();
-        if (this.mStatus == 8) {
-            this.mControls.add(6);
-        }
-        int i = this.mStatus;
-        if (i == 1 || i == 4) {
-            this.mControls.add(1);
-            this.mControls.add(2);
-            if (this.mStatus == 1) {
-                this.mControls.add(3);
-            }
-        }
-        int i2 = this.mStatus;
-        if (i2 == 2 || i2 == 3) {
-            this.mControls.add(6);
-            if (details.can(1)) {
-                this.mControls.add(Integer.valueOf(this.mStatus != 3 ? 7 : 8));
-            }
-        }
-        if (this.mStatus == 2 && details.can(64)) {
-            this.mControls.add(Integer.valueOf(this.mIsMuted ? 5 : 4));
-        }
-    }
-
-    public static int convertStateToStatus(int i) {
-        int i2 = 1;
-        if (i == 1) {
-            return 8;
-        }
-        if (i != 2) {
-            i2 = 3;
-            if (i != 3) {
-                if (i == 4) {
-                    return 2;
-                }
-                if (i == 7) {
-                    return 7;
-                }
-                if (i == 12) {
-                    return 5;
-                }
-                if (i == 13) {
-                    return 6;
-                }
-                Slog.e("CrossDeviceCall", "Couldn't resolve state to status: " + i);
-                return 0;
-            }
-        }
-        return i2;
-    }
-
-    public String getId() {
-        return this.mId;
-    }
-
-    public int getUserId() {
-        return this.mUserId;
-    }
-
-    public String getCallingAppName() {
-        return this.mCallingAppName;
-    }
-
-    public byte[] getCallingAppIcon() {
-        return this.mCallingAppIcon;
-    }
-
-    public String getCallingAppPackageName() {
-        return this.mCallingAppPackageName;
-    }
-
-    public String getSerializedPhoneAccountHandle() {
-        return this.mSerializedPhoneAccountHandle;
-    }
-
-    public String getReadableCallerId(boolean z) {
-        if (this.mIsEnterprise && z) {
-            return getNonContactString();
-        }
-        return TextUtils.isEmpty(this.mContactDisplayName) ? getNonContactString() : this.mContactDisplayName;
-    }
-
     public final String getNonContactString() {
         if (!TextUtils.isEmpty(this.mCallerDisplayName) && this.mCallerDisplayNamePresentation == 1) {
             return this.mCallerDisplayName;
@@ -210,41 +87,61 @@ public class CrossDeviceCall {
         return this.mHandle.getSchemeSpecificPart();
     }
 
-    public int getStatus() {
-        return this.mStatus;
-    }
-
-    public int getDirection() {
-        return this.mDirection;
-    }
-
-    public Set getControls() {
-        return this.mControls;
-    }
-
-    public boolean isCallPlacedByContextSync() {
-        return this.mIsCallPlacedByContextSync;
-    }
-
-    public void doAccept() {
-        this.mCall.answer(0);
-    }
-
-    public void doReject() {
-        if (this.mStatus == 1) {
-            this.mCall.reject(1);
+    public void updateCallDetails(Call.Details details) {
+        this.mCallerDisplayName = details.getCallerDisplayName();
+        this.mCallerDisplayNamePresentation = details.getCallerDisplayNamePresentation();
+        this.mContactDisplayName = details.getContactDisplayName();
+        this.mHandle = details.getHandle();
+        this.mHandlePresentation = details.getHandlePresentation();
+        int callDirection = details.getCallDirection();
+        int i = 0;
+        if (callDirection == 0) {
+            this.mDirection = 1;
+        } else if (callDirection == 1) {
+            this.mDirection = 2;
+        } else {
+            this.mDirection = 0;
         }
-    }
-
-    public void doEnd() {
-        this.mCall.disconnect();
-    }
-
-    public void doPutOnHold() {
-        this.mCall.hold();
-    }
-
-    public void doTakeOffHold() {
-        this.mCall.unhold();
+        int state = details.getState();
+        if (state == 1) {
+            i = 8;
+        } else if (state == 2) {
+            i = 1;
+        } else if (state == 3) {
+            i = 3;
+        } else if (state == 4) {
+            i = 2;
+        } else if (state == 7) {
+            i = 7;
+        } else if (state == 12) {
+            i = 5;
+        } else if (state != 13) {
+            NandswapManager$$ExternalSyntheticOutline0.m(state, "Couldn't resolve state to status: ", "CrossDeviceCall");
+        } else {
+            i = 6;
+        }
+        this.mStatus = i;
+        ((HashSet) this.mControls).clear();
+        if (this.mStatus == 8) {
+            ((HashSet) this.mControls).add(6);
+        }
+        int i2 = this.mStatus;
+        if (i2 == 1 || i2 == 4) {
+            ((HashSet) this.mControls).add(1);
+            ((HashSet) this.mControls).add(2);
+            if (this.mStatus == 1) {
+                ((HashSet) this.mControls).add(3);
+            }
+        }
+        int i3 = this.mStatus;
+        if (i3 == 2 || i3 == 3) {
+            ((HashSet) this.mControls).add(6);
+            if (details.can(1)) {
+                ((HashSet) this.mControls).add(Integer.valueOf(this.mStatus == 3 ? 8 : 7));
+            }
+        }
+        if (this.mStatus == 2 && details.can(64)) {
+            ((HashSet) this.mControls).add(Integer.valueOf(this.mIsMuted ? 5 : 4));
+        }
     }
 }

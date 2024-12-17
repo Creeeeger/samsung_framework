@@ -1,35 +1,13 @@
 package com.android.server.accessibility.gestures;
 
-import android.content.Context;
 import android.view.MotionEvent;
-import com.android.server.accessibility.gestures.GestureMatcher;
+import android.view.ViewConfiguration;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class MultiFingerMultiTapAndHold extends MultiFingerMultiTap {
-    public MultiFingerMultiTapAndHold(Context context, int i, int i2, int i3, GestureMatcher.StateChangeListener stateChangeListener) {
-        super(context, i, i2, i3, stateChangeListener);
-    }
-
     @Override // com.android.server.accessibility.gestures.MultiFingerMultiTap, com.android.server.accessibility.gestures.GestureMatcher
-    public void onPointerDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        super.onPointerDown(motionEvent, motionEvent2, i);
-        if (this.mIsTargetFingerCountReached && this.mCompletedTapCount + 1 == this.mTargetTapCount) {
-            completeAfterLongPressTimeout(motionEvent, motionEvent2, i);
-        }
-    }
-
-    @Override // com.android.server.accessibility.gestures.MultiFingerMultiTap, com.android.server.accessibility.gestures.GestureMatcher
-    public void onUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
-        if (this.mCompletedTapCount + 1 == this.mTargetTapCount) {
-            cancelGesture(motionEvent, motionEvent2, i);
-        } else {
-            super.onUp(motionEvent, motionEvent2, i);
-            cancelAfterDoubleTapTimeout(motionEvent, motionEvent2, i);
-        }
-    }
-
-    @Override // com.android.server.accessibility.gestures.MultiFingerMultiTap, com.android.server.accessibility.gestures.GestureMatcher
-    public String getGestureName() {
+    public final String getGestureName() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.mTargetFingerCount);
         sb.append("-Finger ");
@@ -45,5 +23,25 @@ public class MultiFingerMultiTapAndHold extends MultiFingerMultiTap {
         }
         sb.append(" Tap and hold");
         return sb.toString();
+    }
+
+    @Override // com.android.server.accessibility.gestures.MultiFingerMultiTap, com.android.server.accessibility.gestures.GestureMatcher
+    public void onPointerDown(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        super.onPointerDown(motionEvent, motionEvent2, i);
+        if (this.mIsTargetFingerCountReached && this.mCompletedTapCount + 1 == this.mTargetTapCount) {
+            long longPressTimeout = ViewConfiguration.getLongPressTimeout();
+            this.mDelayedTransition.cancel();
+            this.mDelayedTransition.post(2, longPressTimeout, motionEvent, motionEvent2, i);
+        }
+    }
+
+    @Override // com.android.server.accessibility.gestures.MultiFingerMultiTap, com.android.server.accessibility.gestures.GestureMatcher
+    public final void onUp(MotionEvent motionEvent, MotionEvent motionEvent2, int i) {
+        if (this.mCompletedTapCount + 1 == this.mTargetTapCount) {
+            setState(3, motionEvent, motionEvent2, i);
+        } else {
+            super.onUp(motionEvent, motionEvent2, i);
+            cancelAfterDoubleTapTimeout(motionEvent, motionEvent2, i);
+        }
     }
 }

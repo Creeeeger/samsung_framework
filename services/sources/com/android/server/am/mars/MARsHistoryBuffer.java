@@ -1,53 +1,35 @@
 package com.android.server.am.mars;
 
-import java.util.ArrayList;
+import com.android.server.am.mars.MARsHistoryLog;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public class MARsHistoryBuffer {
+public final class MARsHistoryBuffer {
     public String[] buffer;
     public int pointer;
     public int size;
 
-    /* loaded from: classes.dex */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
     public abstract class MARsHistoryBufferHolder {
-        public static final MARsHistoryBuffer INSTANCE = new MARsHistoryBuffer();
+        public static final MARsHistoryBuffer INSTANCE;
+
+        static {
+            MARsHistoryBuffer mARsHistoryBuffer = new MARsHistoryBuffer();
+            mARsHistoryBuffer.size = 0;
+            mARsHistoryBuffer.pointer = 0;
+            INSTANCE = mARsHistoryBuffer;
+        }
     }
 
-    public MARsHistoryBuffer() {
-        this.size = 0;
-        this.pointer = 0;
-    }
-
-    public static MARsHistoryBuffer getInstance() {
-        return MARsHistoryBufferHolder.INSTANCE;
-    }
-
-    public synchronized void put(String str) {
+    public final synchronized void put(String str) {
         String[] strArr = this.buffer;
         int i = this.pointer;
         int i2 = i + 1;
         this.pointer = i2;
         strArr[i] = str;
         if (i2 >= this.size) {
-            MARsHistoryLog.getInstance().saveLogToFile(true, false);
+            MARsHistoryLog.MARsHistoryLogHolder.INSTANCE.saveLogToFile(true, false);
             this.pointer = 0;
         }
-    }
-
-    public void init() {
-        this.size = 1000;
-        this.buffer = new String[1000];
-    }
-
-    public synchronized ArrayList getLog() {
-        return MARsHistoryLog.getInstance().getLog();
-    }
-
-    public String getBufferLine(int i) {
-        return this.buffer[i];
-    }
-
-    public int getPointer() {
-        return this.pointer;
     }
 }

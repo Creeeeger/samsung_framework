@@ -4,12 +4,13 @@ import android.os.Binder;
 import android.os.LocaleList;
 import android.util.ArraySet;
 import android.util.Slog;
-import com.android.server.wm.ActivityTaskManagerInternal;
+import java.util.HashMap;
 import java.util.Optional;
 
-/* loaded from: classes3.dex */
-public final class PackageConfigurationUpdaterImpl implements ActivityTaskManagerInternal.PackageConfigurationUpdater {
-    public ActivityTaskManagerService mAtm;
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class PackageConfigurationUpdaterImpl {
+    public final ActivityTaskManagerService mAtm;
     public int mGrammaticalGender;
     public LocaleList mLocales;
     public Integer mNightMode;
@@ -22,40 +23,15 @@ public final class PackageConfigurationUpdaterImpl implements ActivityTaskManage
         this.mAtm = activityTaskManagerService;
     }
 
-    public PackageConfigurationUpdaterImpl(String str, int i, ActivityTaskManagerService activityTaskManagerService) {
+    public PackageConfigurationUpdaterImpl(int i, ActivityTaskManagerService activityTaskManagerService, String str) {
         this.mPackageName = str;
         this.mUserId = i;
         this.mAtm = activityTaskManagerService;
         this.mPid = Optional.empty();
     }
 
-    @Override // com.android.server.wm.ActivityTaskManagerInternal.PackageConfigurationUpdater
-    public ActivityTaskManagerInternal.PackageConfigurationUpdater setNightMode(int i) {
-        synchronized (this) {
-            this.mNightMode = Integer.valueOf(i);
-        }
-        return this;
-    }
-
-    @Override // com.android.server.wm.ActivityTaskManagerInternal.PackageConfigurationUpdater
-    public ActivityTaskManagerInternal.PackageConfigurationUpdater setLocales(LocaleList localeList) {
-        synchronized (this) {
-            this.mLocales = localeList;
-        }
-        return this;
-    }
-
-    @Override // com.android.server.wm.ActivityTaskManagerInternal.PackageConfigurationUpdater
-    public ActivityTaskManagerInternal.PackageConfigurationUpdater setGrammaticalGender(int i) {
-        synchronized (this) {
-            this.mGrammaticalGender = i;
-        }
-        return this;
-    }
-
-    @Override // com.android.server.wm.ActivityTaskManagerInternal.PackageConfigurationUpdater
-    public boolean commit() {
-        int i;
+    public final boolean commit() {
+        int packageUid;
         synchronized (this) {
             WindowManagerGlobalLock windowManagerGlobalLock = this.mAtm.mGlobalLock;
             WindowManagerService.boostPriorityForLockedSection();
@@ -70,19 +46,18 @@ public final class PackageConfigurationUpdaterImpl implements ActivityTaskManage
                                 WindowManagerService.resetPriorityAfterLockedSection();
                                 return false;
                             }
-                            i = process.mUid;
+                            packageUid = process.mUid;
                             this.mUserId = process.mUserId;
                             this.mPackageName = process.mInfo.packageName;
                         } else {
-                            int packageUid = this.mAtm.getPackageManagerInternalLocked().getPackageUid(this.mPackageName, 131072L, this.mUserId);
+                            packageUid = this.mAtm.getPackageManagerInternalLocked().getPackageUid(this.mPackageName, 131072L, this.mUserId);
                             if (packageUid < 0) {
                                 Slog.w("PackageConfigurationUpdaterImpl", "commit: update of application configuration failed: userId or packageName not valid " + this.mUserId);
                                 WindowManagerService.resetPriorityAfterLockedSection();
                                 return false;
                             }
-                            i = packageUid;
                         }
-                        updateConfig(i, this.mPackageName);
+                        updateConfig(packageUid, this.mPackageName);
                         boolean updateFromImpl = this.mAtm.mPackageConfigPersister.updateFromImpl(this.mPackageName, this.mUserId, this);
                         WindowManagerService.resetPriorityAfterLockedSection();
                         return updateFromImpl;
@@ -97,30 +72,32 @@ public final class PackageConfigurationUpdaterImpl implements ActivityTaskManage
         }
     }
 
+    public final void setNightMode(int i) {
+        synchronized (this) {
+            this.mNightMode = Integer.valueOf(i);
+        }
+    }
+
     public final void updateConfig(int i, String str) {
-        ArraySet processes = this.mAtm.mProcessMap.getProcesses(i);
-        if (processes == null || processes.isEmpty()) {
+        ActivityTaskManagerService activityTaskManagerService = this.mAtm;
+        ArraySet arraySet = (ArraySet) ((HashMap) activityTaskManagerService.mProcessMap.mUidMap).get(Integer.valueOf(i));
+        if (arraySet == null || arraySet.isEmpty()) {
             return;
         }
-        LocaleList combineLocalesIfOverlayExists = LocaleOverlayHelper.combineLocalesIfOverlayExists(this.mLocales, this.mAtm.getGlobalConfiguration().getLocales());
-        for (int size = processes.size() - 1; size >= 0; size--) {
-            WindowProcessController windowProcessController = (WindowProcessController) processes.valueAt(size);
+        LocaleList combineLocalesIfOverlayExists = LocaleOverlayHelper.combineLocalesIfOverlayExists(this.mLocales, activityTaskManagerService.getGlobalConfiguration().getLocales());
+        for (int size = arraySet.size() - 1; size >= 0; size--) {
+            WindowProcessController windowProcessController = (WindowProcessController) arraySet.valueAt(size);
             if (windowProcessController.mInfo.packageName.equals(str)) {
                 windowProcessController.applyAppSpecificConfig(this.mNightMode, combineLocalesIfOverlayExists, Integer.valueOf(this.mGrammaticalGender));
             }
-            windowProcessController.updateAppSpecificSettingsForAllActivitiesInPackage(str, this.mNightMode, combineLocalesIfOverlayExists, this.mGrammaticalGender);
+            Integer num = this.mNightMode;
+            int i2 = this.mGrammaticalGender;
+            for (int size2 = windowProcessController.mActivities.size() - 1; size2 >= 0; size2--) {
+                ActivityRecord activityRecord = (ActivityRecord) windowProcessController.mActivities.get(size2);
+                if (str.equals(activityRecord.packageName) && activityRecord.applyAppSpecificConfig(num, combineLocalesIfOverlayExists, Integer.valueOf(i2)) && activityRecord.isVisibleRequested()) {
+                    activityRecord.ensureActivityConfiguration(false);
+                }
+            }
         }
-    }
-
-    public Integer getNightMode() {
-        return this.mNightMode;
-    }
-
-    public LocaleList getLocales() {
-        return this.mLocales;
-    }
-
-    public Integer getGrammaticalGender() {
-        return Integer.valueOf(this.mGrammaticalGender);
     }
 }

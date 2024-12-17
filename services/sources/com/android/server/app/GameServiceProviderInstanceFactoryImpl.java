@@ -19,55 +19,58 @@ import com.android.server.app.GameServiceConfiguration;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import com.android.server.wm.WindowManagerInternal;
 import com.android.server.wm.WindowManagerService;
-import java.util.concurrent.Executor;
 import java.util.function.Function;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
-public final class GameServiceProviderInstanceFactoryImpl implements GameServiceProviderInstanceFactory {
+public final class GameServiceProviderInstanceFactoryImpl {
     public final Context mContext;
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class GameServiceConnector extends ServiceConnector.Impl {
+        public final long getAutoDisconnectTimeoutMs() {
+            return 0L;
+        }
+    }
+
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class GameSessionServiceConnector extends ServiceConnector.Impl {
+        public final long getAutoDisconnectTimeoutMs() {
+            return 0L;
+        }
+    }
 
     public GameServiceProviderInstanceFactoryImpl(Context context) {
         this.mContext = context;
     }
 
-    @Override // com.android.server.app.GameServiceProviderInstanceFactory
-    public GameServiceProviderInstance create(GameServiceConfiguration.GameServiceComponentConfiguration gameServiceComponentConfiguration) {
-        UserHandle userHandle = gameServiceComponentConfiguration.getUserHandle();
+    public final GameServiceProviderInstanceImpl create(GameServiceConfiguration.GameServiceComponentConfiguration gameServiceComponentConfiguration) {
+        UserHandle userHandle = gameServiceComponentConfiguration.mUserHandle;
         IActivityTaskManager service = ActivityTaskManager.getService();
-        Executor executor = BackgroundThread.getExecutor();
-        Context context = this.mContext;
-        return new GameServiceProviderInstanceImpl(userHandle, executor, context, new GameTaskInfoProvider(userHandle, service, new GameClassifierImpl(context.getPackageManager())), ActivityManager.getService(), (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class), service, (WindowManagerService) ServiceManager.getService("window"), (WindowManagerInternal) LocalServices.getService(WindowManagerInternal.class), (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class), new GameServiceConnector(this.mContext, gameServiceComponentConfiguration), new GameSessionServiceConnector(this.mContext, gameServiceComponentConfiguration), new ScreenshotHelper(this.mContext));
-    }
-
-    /* loaded from: classes.dex */
-    final class GameServiceConnector extends ServiceConnector.Impl {
-        public long getAutoDisconnectTimeoutMs() {
-            return 0L;
-        }
-
-        public GameServiceConnector(Context context, GameServiceConfiguration.GameServiceComponentConfiguration gameServiceComponentConfiguration) {
-            super(context, new Intent("android.service.games.action.GAME_SERVICE").setComponent(gameServiceComponentConfiguration.getGameServiceComponentName()), 1048576, gameServiceComponentConfiguration.getUserHandle().getIdentifier(), new Function() { // from class: com.android.server.app.GameServiceProviderInstanceFactoryImpl$GameServiceConnector$$ExternalSyntheticLambda0
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    return IGameService.Stub.asInterface((IBinder) obj);
+        final int i = 0;
+        final int i2 = 1;
+        return new GameServiceProviderInstanceImpl(userHandle, BackgroundThread.getExecutor(), new GameTaskInfoProvider(userHandle, service, new GameClassifierImpl(this.mContext.getPackageManager())), ActivityManager.getService(), (ActivityManagerInternal) LocalServices.getService(ActivityManagerInternal.class), service, (WindowManagerService) ServiceManager.getService("window"), (WindowManagerInternal) LocalServices.getService(WindowManagerInternal.class), (ActivityTaskManagerInternal) LocalServices.getService(ActivityTaskManagerInternal.class), new GameServiceConnector(this.mContext, new Intent("android.service.games.action.GAME_SERVICE").setComponent(gameServiceComponentConfiguration.mGameServiceComponentName), 1048576, gameServiceComponentConfiguration.mUserHandle.getIdentifier(), new Function() { // from class: com.android.server.app.GameServiceProviderInstanceFactoryImpl$GameServiceConnector$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                IBinder iBinder = (IBinder) obj;
+                switch (i) {
+                    case 0:
+                        return IGameService.Stub.asInterface(iBinder);
+                    default:
+                        return IGameSessionService.Stub.asInterface(iBinder);
                 }
-            });
-        }
-    }
-
-    /* loaded from: classes.dex */
-    final class GameSessionServiceConnector extends ServiceConnector.Impl {
-        public long getAutoDisconnectTimeoutMs() {
-            return 0L;
-        }
-
-        public GameSessionServiceConnector(Context context, GameServiceConfiguration.GameServiceComponentConfiguration gameServiceComponentConfiguration) {
-            super(context, new Intent("android.service.games.action.GAME_SESSION_SERVICE").setComponent(gameServiceComponentConfiguration.getGameSessionServiceComponentName()), 135790592, gameServiceComponentConfiguration.getUserHandle().getIdentifier(), new Function() { // from class: com.android.server.app.GameServiceProviderInstanceFactoryImpl$GameSessionServiceConnector$$ExternalSyntheticLambda0
-                @Override // java.util.function.Function
-                public final Object apply(Object obj) {
-                    return IGameSessionService.Stub.asInterface((IBinder) obj);
+            }
+        }), new GameSessionServiceConnector(this.mContext, new Intent("android.service.games.action.GAME_SESSION_SERVICE").setComponent(gameServiceComponentConfiguration.mGameSessionServiceComponentName), 135790592, gameServiceComponentConfiguration.mUserHandle.getIdentifier(), new Function() { // from class: com.android.server.app.GameServiceProviderInstanceFactoryImpl$GameServiceConnector$$ExternalSyntheticLambda0
+            @Override // java.util.function.Function
+            public final Object apply(Object obj) {
+                IBinder iBinder = (IBinder) obj;
+                switch (i2) {
+                    case 0:
+                        return IGameService.Stub.asInterface(iBinder);
+                    default:
+                        return IGameSessionService.Stub.asInterface(iBinder);
                 }
-            });
-        }
+            }
+        }), new ScreenshotHelper(this.mContext));
     }
 }

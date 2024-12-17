@@ -19,41 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-/* loaded from: classes3.dex */
-public class AppCollector {
-    public static String TAG = "AppCollector";
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class AppCollector {
     public final BackgroundHandler mBackgroundHandler;
     public CompletableFuture mStats;
 
-    public AppCollector(Context context, VolumeInfo volumeInfo) {
-        Objects.requireNonNull(volumeInfo);
-        this.mBackgroundHandler = new BackgroundHandler(BackgroundThread.get().getLooper(), volumeInfo, context.getPackageManager(), (UserManager) context.getSystemService("user"), (StorageStatsManager) context.getSystemService("storagestats"));
-    }
-
-    public List getPackageStats(long j) {
-        synchronized (this) {
-            if (this.mStats == null) {
-                this.mStats = new CompletableFuture();
-                this.mBackgroundHandler.sendEmptyMessage(0);
-            }
-        }
-        try {
-            return (List) this.mStats.get(j, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "An exception occurred while getting app storage", e);
-            return null;
-        } catch (TimeoutException unused) {
-            Log.e(TAG, "AppCollector timed out");
-            return null;
-        }
-    }
-
-    /* loaded from: classes3.dex */
-    public class BackgroundHandler extends Handler {
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class BackgroundHandler extends Handler {
         public final PackageManager mPm;
         public final StorageStatsManager mStorageStatsManager;
         public final UserManager mUm;
@@ -68,7 +42,7 @@ public class AppCollector {
         }
 
         @Override // android.os.Handler
-        public void handleMessage(Message message) {
+        public final void handleMessage(Message message) {
             if (message.what != 0) {
                 return;
             }
@@ -90,12 +64,16 @@ public class AppCollector {
                             packageStats.dataSize = queryStatsForPackage.getDataBytes();
                             arrayList.add(packageStats);
                         } catch (PackageManager.NameNotFoundException | IOException e) {
-                            Log.e(AppCollector.TAG, "An exception occurred while fetching app size", e);
+                            Log.e("AppCollector", "An exception occurred while fetching app size", e);
                         }
                     }
                 }
             }
             AppCollector.this.mStats.complete(arrayList);
         }
+    }
+
+    public AppCollector(Context context, VolumeInfo volumeInfo) {
+        this.mBackgroundHandler = new BackgroundHandler(BackgroundThread.get().getLooper(), volumeInfo, context.getPackageManager(), (UserManager) context.getSystemService("user"), (StorageStatsManager) context.getSystemService("storagestats"));
     }
 }

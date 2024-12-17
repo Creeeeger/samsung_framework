@@ -1,33 +1,25 @@
 package com.android.server.usb.descriptors.report;
 
 import android.net.resolv.aidl.IDnsResolverUnsolicitedEventListener;
-import android.os.IInstalld;
 import com.android.internal.util.FrameworkStatsLog;
-import com.android.internal.util.jobs.XmlUtils;
 import com.att.iqi.lib.metrics.hw.HwConstants;
 import com.att.iqi.lib.metrics.mm.MM05;
+import com.samsung.android.knoxguard.service.utils.IntegritySeUtil;
 import java.util.HashMap;
 
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public abstract class UsbStrings {
-    public static HashMap sACControlInterfaceNames;
-    public static HashMap sACStreamingInterfaceNames;
-    public static HashMap sAudioEncodingNames;
-    public static HashMap sAudioSubclassNames;
-    public static HashMap sClassNames;
-    public static HashMap sDescriptorNames;
-    public static HashMap sFormatNames;
-    public static HashMap sTerminalNames;
-
-    public static String getACInterfaceSubclassName(int i) {
-        return i == 1 ? "AC Control" : "AC Streaming";
-    }
+    public static final HashMap sACControlInterfaceNames;
+    public static final HashMap sACStreamingInterfaceNames;
+    public static final HashMap sAudioEncodingNames;
+    public static final HashMap sAudioSubclassNames;
+    public static final HashMap sClassNames;
+    public static final HashMap sDescriptorNames;
+    public static final HashMap sFormatNames;
+    public static final HashMap sTerminalNames;
 
     static {
-        allocUsbStrings();
-    }
-
-    public static void initDescriptorNames() {
         HashMap hashMap = new HashMap();
         sDescriptorNames = hashMap;
         hashMap.put((byte) 1, "Device");
@@ -46,12 +38,9 @@ public abstract class UsbStrings {
         sDescriptorNames.put((byte) 41, "Hub");
         sDescriptorNames.put((byte) 42, "Superspeed Hub");
         sDescriptorNames.put((byte) 48, "Endpoint Companion");
-    }
-
-    public static void initACControlInterfaceNames() {
-        HashMap hashMap = new HashMap();
-        sACControlInterfaceNames = hashMap;
-        hashMap.put((byte) 0, "Undefined");
+        HashMap hashMap2 = new HashMap();
+        sACControlInterfaceNames = hashMap2;
+        hashMap2.put((byte) 0, "Undefined");
         sACControlInterfaceNames.put((byte) 1, "Header");
         sACControlInterfaceNames.put((byte) 2, "Input Terminal");
         sACControlInterfaceNames.put((byte) 3, "Output Terminal");
@@ -64,21 +53,15 @@ public abstract class UsbStrings {
         sACControlInterfaceNames.put(Byte.valueOf(MM05.IQ_SIP_CALL_STATE_DISCONNECTING), "Clock Selector");
         sACControlInterfaceNames.put((byte) 12, "Clock Multiplier");
         sACControlInterfaceNames.put((byte) 13, "Sample Rate Converter");
-    }
-
-    public static void initACStreamingInterfaceNames() {
-        HashMap hashMap = new HashMap();
-        sACStreamingInterfaceNames = hashMap;
-        hashMap.put((byte) 0, "Undefined");
+        HashMap hashMap3 = new HashMap();
+        sACStreamingInterfaceNames = hashMap3;
+        hashMap3.put((byte) 0, "Undefined");
         sACStreamingInterfaceNames.put((byte) 1, "General");
         sACStreamingInterfaceNames.put((byte) 2, "Format Type");
         sACStreamingInterfaceNames.put((byte) 3, "Format Specific");
-    }
-
-    public static void initClassNames() {
-        HashMap hashMap = new HashMap();
-        sClassNames = hashMap;
-        hashMap.put(0, "Device");
+        HashMap hashMap4 = new HashMap();
+        sClassNames = hashMap4;
+        hashMap4.put(0, "Device");
         sClassNames.put(1, "Audio");
         sClassNames.put(2, "Communications");
         sClassNames.put(3, "HID");
@@ -100,43 +83,34 @@ public abstract class UsbStrings {
         sClassNames.put(Integer.valueOf(FrameworkStatsLog.BOOT_TIME_EVENT_DURATION_REPORTED), "Misc");
         sClassNames.put(Integer.valueOf(FrameworkStatsLog.APP_FREEZE_CHANGED), "Application Specific");
         sClassNames.put(Integer.valueOf(IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT), "Vendor Specific");
-    }
-
-    public static void initAudioSubclassNames() {
-        HashMap hashMap = new HashMap();
-        sAudioSubclassNames = hashMap;
-        hashMap.put(0, "Undefinded");
+        HashMap hashMap5 = new HashMap();
+        sAudioSubclassNames = hashMap5;
+        hashMap5.put(0, "Undefinded");
         sAudioSubclassNames.put(1, "Audio Control");
         sAudioSubclassNames.put(2, "Audio Streaming");
         sAudioSubclassNames.put(3, "MIDI Streaming");
-    }
-
-    public static void initAudioEncodingNames() {
-        HashMap hashMap = new HashMap();
-        sAudioEncodingNames = hashMap;
-        hashMap.put(0, "Format I Undefined");
+        HashMap hashMap6 = new HashMap();
+        sAudioEncodingNames = hashMap6;
+        hashMap6.put(0, "Format I Undefined");
         sAudioEncodingNames.put(1, "Format I PCM");
         sAudioEncodingNames.put(2, "Format I PCM8");
         sAudioEncodingNames.put(3, "Format I FLOAT");
         sAudioEncodingNames.put(4, "Format I ALAW");
         sAudioEncodingNames.put(5, "Format I MuLAW");
-        sAudioEncodingNames.put(Integer.valueOf(IInstalld.FLAG_USE_QUOTA), "FORMAT_II Undefined");
-        sAudioEncodingNames.put(4097, "FORMAT_II MPEG");
+        sAudioEncodingNames.put(4096, "FORMAT_II Undefined");
+        sAudioEncodingNames.put(Integer.valueOf(IntegritySeUtil.CLIENT_INTEGRITY_BASE2), "FORMAT_II MPEG");
         sAudioEncodingNames.put(4098, "FORMAT_II AC3");
-        sAudioEncodingNames.put(Integer.valueOf(IInstalld.FLAG_FORCE), "FORMAT_III Undefined");
+        sAudioEncodingNames.put(8192, "FORMAT_III Undefined");
         sAudioEncodingNames.put(8193, "FORMAT_III IEC1937 AC3");
         sAudioEncodingNames.put(8194, "FORMAT_III MPEG1 Layer 1");
         sAudioEncodingNames.put(8195, "FORMAT_III MPEG1 Layer 2");
         sAudioEncodingNames.put(8196, "FORMAT_III MPEG2 EXT");
         sAudioEncodingNames.put(8197, "FORMAT_III MPEG2 Layer1LS");
-    }
-
-    public static void initTerminalNames() {
-        HashMap hashMap = new HashMap();
-        sTerminalNames = hashMap;
-        hashMap.put(Integer.valueOf(FrameworkStatsLog.HDMI_CEC_MESSAGE_REPORTED__USER_CONTROL_PRESSED_COMMAND__UP), "USB Streaming");
+        HashMap hashMap7 = new HashMap();
+        sTerminalNames = hashMap7;
+        hashMap7.put(Integer.valueOf(FrameworkStatsLog.HDMI_CEC_MESSAGE_REPORTED__USER_CONTROL_PRESSED_COMMAND__UP), "USB Streaming");
         sTerminalNames.put(512, "Undefined");
-        sTerminalNames.put(Integer.valueOf(FrameworkStatsLog.HEARING_AID_INFO_REPORTED), "Microphone");
+        sTerminalNames.put(513, "Microphone");
         sTerminalNames.put(Integer.valueOf(FrameworkStatsLog.DEVICE_WIDE_JOB_CONSTRAINT_CHANGED), "Desktop Microphone");
         sTerminalNames.put(Integer.valueOf(FrameworkStatsLog.AMBIENT_MODE_CHANGED), "Personal (headset) Microphone");
         sTerminalNames.put(Integer.valueOf(FrameworkStatsLog.ANR_LATENCY_REPORTED), "Omni Microphone");
@@ -146,10 +120,10 @@ public abstract class UsbStrings {
         sTerminalNames.put(769, "Speaker");
         sTerminalNames.put(770, "Headphones");
         sTerminalNames.put(771, "Head Mounted Speaker");
-        sTerminalNames.put(772, "Desktop Speaker");
-        sTerminalNames.put(773, "Room Speaker");
-        sTerminalNames.put(774, "Communications Speaker");
-        sTerminalNames.put(775, "Low Frequency Speaker");
+        sTerminalNames.put(Integer.valueOf(FrameworkStatsLog.THERMAL_STATUS_CALLED), "Desktop Speaker");
+        sTerminalNames.put(Integer.valueOf(FrameworkStatsLog.THERMAL_HEADROOM_CALLED), "Room Speaker");
+        sTerminalNames.put(Integer.valueOf(FrameworkStatsLog.THERMAL_HEADROOM_THRESHOLDS_CALLED), "Communications Speaker");
+        sTerminalNames.put(Integer.valueOf(FrameworkStatsLog.BOOT_INTEGRITY_INFO_REPORTED), "Low Frequency Speaker");
         sTerminalNames.put(1024, "Undefined");
         sTerminalNames.put(1025, "Handset");
         sTerminalNames.put(1026, "Headset");
@@ -187,20 +161,9 @@ public abstract class UsbStrings {
         sTerminalNames.put(1809, "Radio Transmitter");
         sTerminalNames.put(1810, "Multitrack Recorder");
         sTerminalNames.put(1811, "Synthesizer");
-    }
-
-    public static String getTerminalName(int i) {
-        String str = (String) sTerminalNames.get(Integer.valueOf(i));
-        if (str != null) {
-            return str;
-        }
-        return "Unknown Terminal Type 0x" + Integer.toHexString(i);
-    }
-
-    public static void initFormatNames() {
-        HashMap hashMap = new HashMap();
-        sFormatNames = hashMap;
-        hashMap.put(1, "FORMAT_TYPE_I");
+        HashMap hashMap8 = new HashMap();
+        sFormatNames = hashMap8;
+        hashMap8.put(1, "FORMAT_TYPE_I");
         sFormatNames.put(2, "FORMAT_TYPE_II");
         sFormatNames.put(3, "FORMAT_TYPE_III");
         sFormatNames.put(4, "FORMAT_TYPE_IV");
@@ -209,66 +172,12 @@ public abstract class UsbStrings {
         sFormatNames.put(-125, "EXT_FORMAT_TYPE_III");
     }
 
-    public static String getFormatName(int i) {
-        String str = (String) sFormatNames.get(Integer.valueOf(i));
-        if (str != null) {
-            return str;
-        }
-        return "Unknown Format Type 0x" + Integer.toHexString(i);
-    }
-
-    public static void allocUsbStrings() {
-        initDescriptorNames();
-        initACControlInterfaceNames();
-        initACStreamingInterfaceNames();
-        initClassNames();
-        initAudioSubclassNames();
-        initAudioEncodingNames();
-        initTerminalNames();
-        initFormatNames();
-    }
-
-    public static String getDescriptorName(byte b) {
-        String str = (String) sDescriptorNames.get(Byte.valueOf(b));
-        int i = b & 255;
-        if (str != null) {
-            return str;
-        }
-        return "Unknown Descriptor [0x" + Integer.toHexString(i) + XmlUtils.STRING_ARRAY_SEPARATOR + i + "]";
-    }
-
-    public static String getACControlInterfaceName(byte b) {
-        String str = (String) sACControlInterfaceNames.get(Byte.valueOf(b));
-        int i = b & 255;
-        if (str != null) {
-            return str;
-        }
-        return "Unknown subtype [0x" + Integer.toHexString(i) + XmlUtils.STRING_ARRAY_SEPARATOR + i + "]";
-    }
-
     public static String getClassName(int i) {
         String str = (String) sClassNames.get(Integer.valueOf(i));
         int i2 = i & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
         if (str != null) {
             return str;
         }
-        return "Unknown Class ID [0x" + Integer.toHexString(i2) + XmlUtils.STRING_ARRAY_SEPARATOR + i2 + "]";
-    }
-
-    public static String getAudioSubclassName(int i) {
-        String str = (String) sAudioSubclassNames.get(Integer.valueOf(i));
-        int i2 = i & IDnsResolverUnsolicitedEventListener.DNS_HEALTH_RESULT_TIMEOUT;
-        if (str != null) {
-            return str;
-        }
-        return "Unknown Audio Subclass [0x" + Integer.toHexString(i2) + XmlUtils.STRING_ARRAY_SEPARATOR + i2 + "]";
-    }
-
-    public static String getAudioFormatName(int i) {
-        String str = (String) sAudioEncodingNames.get(Integer.valueOf(i));
-        if (str != null) {
-            return str;
-        }
-        return "Unknown Format (encoding) ID [0x" + Integer.toHexString(i) + XmlUtils.STRING_ARRAY_SEPARATOR + i + "]";
+        return "Unknown Class ID [0x" + Integer.toHexString(i2) + ":" + i2 + "]";
     }
 }

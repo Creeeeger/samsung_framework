@@ -2,24 +2,16 @@ package com.android.server.autofill.ui;
 
 import android.content.IntentSender;
 import android.service.autofill.Dataset;
-import android.service.autofill.FillResponse;
-import android.service.autofill.InlinePresentation;
-import android.text.TextUtils;
 import android.util.Pair;
-import android.util.Slog;
 import android.util.SparseArray;
 import android.view.autofill.AutofillId;
-import android.view.autofill.AutofillValue;
 import android.view.inputmethod.InlineSuggestion;
+import android.view.inputmethod.InlineSuggestionInfo;
 import android.view.inputmethod.InlineSuggestionsRequest;
-import android.view.inputmethod.InlineSuggestionsResponse;
-import com.android.server.autofill.Helper;
 import com.android.server.autofill.RemoteInlineSuggestionRenderService;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public final class InlineFillUi {
     public final AutofillId mAutofillId;
@@ -27,39 +19,16 @@ public final class InlineFillUi {
     public boolean mFilterMatchingDisabled;
     public String mFilterText;
     public final ArrayList mInlineSuggestions;
+    public final int mMaxInputLengthForAutofill;
 
-    /* loaded from: classes.dex */
-    public interface InlineSuggestionUiCallback {
-        void authenticate(int i, int i2);
-
-        void autofill(Dataset dataset, int i);
-
-        void onError();
-
-        void onInflate();
-
-        void startIntentSender(IntentSender intentSender);
-    }
-
-    /* loaded from: classes.dex */
-    public interface InlineUiEventCallback {
-        void notifyInlineUiHidden(AutofillId autofillId);
-
-        void notifyInlineUiShown(AutofillId autofillId);
-    }
-
-    public static InlineFillUi emptyUi(AutofillId autofillId) {
-        return new InlineFillUi(autofillId);
-    }
-
-    /* loaded from: classes.dex */
-    public class InlineFillUiInfo {
-        public String mFilterText;
-        public AutofillId mFocusedId;
-        public InlineSuggestionsRequest mInlineRequest;
-        public RemoteInlineSuggestionRenderService mRemoteRenderService;
-        public int mSessionId;
-        public int mUserId;
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class InlineFillUiInfo {
+        public final String mFilterText;
+        public final AutofillId mFocusedId;
+        public final InlineSuggestionsRequest mInlineRequest;
+        public final RemoteInlineSuggestionRenderService mRemoteRenderService;
+        public final int mSessionId;
+        public final int mUserId;
 
         public InlineFillUiInfo(InlineSuggestionsRequest inlineSuggestionsRequest, AutofillId autofillId, String str, RemoteInlineSuggestionRenderService remoteInlineSuggestionRenderService, int i, int i2) {
             this.mUserId = i;
@@ -71,21 +40,29 @@ public final class InlineFillUi {
         }
     }
 
-    public static InlineFillUi forAutofill(InlineFillUiInfo inlineFillUiInfo, FillResponse fillResponse, InlineSuggestionUiCallback inlineSuggestionUiCallback) {
-        if (fillResponse.getAuthentication() != null && fillResponse.getInlinePresentation() != null) {
-            return new InlineFillUi(inlineFillUiInfo, InlineSuggestionFactory.createInlineAuthentication(inlineFillUiInfo, fillResponse, inlineSuggestionUiCallback));
-        }
-        if (fillResponse.getDatasets() != null) {
-            return new InlineFillUi(inlineFillUiInfo, InlineSuggestionFactory.createInlineSuggestions(inlineFillUiInfo, "android:autofill", fillResponse.getDatasets(), inlineSuggestionUiCallback));
-        }
-        return new InlineFillUi(inlineFillUiInfo, new SparseArray());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface InlineSuggestionUiCallback {
+        void authenticate();
+
+        void autofill(Dataset dataset, int i);
+
+        void onError();
+
+        void onInflate();
+
+        void startIntentSender(IntentSender intentSender);
     }
 
-    public static InlineFillUi forAugmentedAutofill(InlineFillUiInfo inlineFillUiInfo, List list, InlineSuggestionUiCallback inlineSuggestionUiCallback) {
-        return new InlineFillUi(inlineFillUiInfo, InlineSuggestionFactory.createInlineSuggestions(inlineFillUiInfo, "android:platform", list, inlineSuggestionUiCallback));
+    public InlineFillUi(AutofillId autofillId) {
+        this.mMaxInputLengthForAutofill = Integer.MAX_VALUE;
+        this.mAutofillId = autofillId;
+        this.mDatasets = new ArrayList(0);
+        this.mInlineSuggestions = new ArrayList(0);
+        this.mFilterText = null;
     }
 
     public InlineFillUi(InlineFillUiInfo inlineFillUiInfo, SparseArray sparseArray) {
+        this.mMaxInputLengthForAutofill = Integer.MAX_VALUE;
         this.mAutofillId = inlineFillUiInfo.mFocusedId;
         int size = sparseArray.size();
         this.mDatasets = new ArrayList(size);
@@ -98,61 +75,30 @@ public final class InlineFillUi {
         this.mFilterText = inlineFillUiInfo.mFilterText;
     }
 
-    public InlineFillUi(InlineFillUiInfo inlineFillUiInfo, InlineSuggestion inlineSuggestion) {
+    public InlineFillUi(InlineFillUiInfo inlineFillUiInfo, SparseArray sparseArray, int i) {
+        this.mMaxInputLengthForAutofill = Integer.MAX_VALUE;
+        this.mAutofillId = inlineFillUiInfo.mFocusedId;
+        int size = sparseArray.size();
+        this.mDatasets = new ArrayList(size);
+        this.mInlineSuggestions = new ArrayList(size);
+        for (int i2 = 0; i2 < size; i2++) {
+            Pair pair = (Pair) sparseArray.valueAt(i2);
+            this.mDatasets.add((Dataset) pair.first);
+            this.mInlineSuggestions.add((InlineSuggestion) pair.second);
+        }
+        this.mFilterText = inlineFillUiInfo.mFilterText;
+        this.mMaxInputLengthForAutofill = i;
+    }
+
+    public InlineFillUi(InlineFillUiInfo inlineFillUiInfo, InlineSuggestion inlineSuggestion, int i) {
+        this.mMaxInputLengthForAutofill = Integer.MAX_VALUE;
         this.mAutofillId = inlineFillUiInfo.mFocusedId;
         this.mDatasets = null;
         ArrayList arrayList = new ArrayList();
         this.mInlineSuggestions = arrayList;
         arrayList.add(inlineSuggestion);
         this.mFilterText = inlineFillUiInfo.mFilterText;
-    }
-
-    public InlineFillUi(AutofillId autofillId) {
-        this.mAutofillId = autofillId;
-        this.mDatasets = new ArrayList(0);
-        this.mInlineSuggestions = new ArrayList(0);
-        this.mFilterText = null;
-    }
-
-    public AutofillId getAutofillId() {
-        return this.mAutofillId;
-    }
-
-    public void setFilterText(String str) {
-        this.mFilterText = str;
-    }
-
-    public InlineSuggestionsResponse getInlineSuggestionsResponse() {
-        int size = this.mInlineSuggestions.size();
-        if (size == 0) {
-            return new InlineSuggestionsResponse(Collections.emptyList());
-        }
-        ArrayList arrayList = new ArrayList();
-        ArrayList arrayList2 = this.mDatasets;
-        int i = 0;
-        if (arrayList2 == null || arrayList2.size() != size) {
-            while (i < size) {
-                arrayList.add(copy(i, (InlineSuggestion) this.mInlineSuggestions.get(i)));
-                i++;
-            }
-            return new InlineSuggestionsResponse(arrayList);
-        }
-        while (i < size) {
-            Dataset dataset = (Dataset) this.mDatasets.get(i);
-            int indexOf = dataset.getFieldIds().indexOf(this.mAutofillId);
-            if (indexOf < 0) {
-                Slog.w("InlineFillUi", "AutofillId=" + this.mAutofillId + " not found in dataset");
-            } else {
-                InlinePresentation fieldInlinePresentation = dataset.getFieldInlinePresentation(indexOf);
-                if (fieldInlinePresentation == null) {
-                    Slog.w("InlineFillUi", "InlinePresentation not found in dataset");
-                } else if (fieldInlinePresentation.isPinned() || includeDataset(dataset, indexOf)) {
-                    arrayList.add(copy(i, (InlineSuggestion) this.mInlineSuggestions.get(i)));
-                }
-            }
-            i++;
-        }
-        return new InlineSuggestionsResponse(arrayList);
+        this.mMaxInputLengthForAutofill = i;
     }
 
     public final InlineSuggestion copy(int i, InlineSuggestion inlineSuggestion) {
@@ -160,41 +106,11 @@ public final class InlineFillUi {
         if (!(contentProvider instanceof InlineContentProviderImpl)) {
             return inlineSuggestion;
         }
-        InlineSuggestion inlineSuggestion2 = new InlineSuggestion(inlineSuggestion.getInfo(), contentProvider.copy());
+        InlineSuggestionInfo info = inlineSuggestion.getInfo();
+        InlineContentProviderImpl inlineContentProviderImpl = contentProvider;
+        inlineContentProviderImpl.getClass();
+        InlineSuggestion inlineSuggestion2 = new InlineSuggestion(info, new InlineContentProviderImpl(inlineContentProviderImpl.mRemoteInlineSuggestionViewConnector, inlineContentProviderImpl.mRemoteInlineSuggestionUi));
         this.mInlineSuggestions.set(i, inlineSuggestion2);
         return inlineSuggestion2;
-    }
-
-    public final boolean includeDataset(Dataset dataset, int i) {
-        if (TextUtils.isEmpty(this.mFilterText)) {
-            return true;
-        }
-        String lowerCase = this.mFilterText.toString().toLowerCase();
-        Dataset.DatasetFieldFilter filter = dataset.getFilter(i);
-        if (filter != null) {
-            Pattern pattern = filter.pattern;
-            if (pattern == null) {
-                if (Helper.sVerbose) {
-                    Slog.v("InlineFillUi", "Explicitly disabling filter for dataset id" + dataset.getId());
-                }
-                return false;
-            }
-            if (this.mFilterMatchingDisabled) {
-                return false;
-            }
-            return pattern.matcher(lowerCase).matches();
-        }
-        AutofillValue autofillValue = (AutofillValue) dataset.getFieldValues().get(i);
-        if (autofillValue == null || !autofillValue.isText()) {
-            return dataset.getAuthentication() == null;
-        }
-        if (this.mFilterMatchingDisabled) {
-            return false;
-        }
-        return autofillValue.getTextValue().toString().toLowerCase().toLowerCase().startsWith(lowerCase);
-    }
-
-    public void disableFilterMatching() {
-        this.mFilterMatchingDisabled = true;
     }
 }

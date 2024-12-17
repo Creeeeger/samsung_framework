@@ -5,30 +5,137 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.os.Build;
-import android.os.FileUtils;
 import android.util.ArrayMap;
 import android.util.Log;
 import com.android.internal.util.XmlUtils;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.AndroidPackageSplit;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Iterator;
 import libcore.io.IoUtils;
 import org.xmlpull.v1.XmlPullParserException;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
 public abstract class ResourceMapParser {
     public static final boolean DEBUG = "eng".equals(Build.TYPE);
 
-    /* JADX INFO: Access modifiers changed from: package-private */
-    /* loaded from: classes2.dex */
-    public enum ResourceType {
-        DRAWABLE,
-        COLOR
+    /* JADX WARN: Failed to restore enum class, 'enum' modifier and super class removed */
+    /* JADX WARN: Unknown enum class pattern. Please report as an issue! */
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    final class ResourceType {
+        public static final /* synthetic */ ResourceType[] $VALUES;
+        public static final ResourceType COLOR;
+        public static final ResourceType DRAWABLE;
+
+        static {
+            ResourceType resourceType = new ResourceType("DRAWABLE", 0);
+            DRAWABLE = resourceType;
+            ResourceType resourceType2 = new ResourceType("COLOR", 1);
+            COLOR = resourceType2;
+            $VALUES = new ResourceType[]{resourceType, resourceType2};
+        }
+
+        public static ResourceType valueOf(String str) {
+            return (ResourceType) Enum.valueOf(ResourceType.class, str);
+        }
+
+        public static ResourceType[] values() {
+            return (ResourceType[]) $VALUES.clone();
+        }
+    }
+
+    public static void parseResourceEntries(String str, Resources resources, XmlResourceParser xmlResourceParser, ArrayMap arrayMap, ResourceType resourceType) {
+        int i;
+        int i2;
+        int i3;
+        int identifier;
+        int depth = xmlResourceParser.getDepth();
+        while (true) {
+            int next = xmlResourceParser.next();
+            int i4 = 1;
+            if (next == 1) {
+                return;
+            }
+            int i5 = 3;
+            if (next == 3 && xmlResourceParser.getDepth() <= depth) {
+                return;
+            }
+            if (next != 3) {
+                int i6 = 4;
+                if (next != 4) {
+                    String name = xmlResourceParser.getName();
+                    String attributeValue = xmlResourceParser.getAttributeValue(null, "overlay");
+                    if (!"match".equals(name) || attributeValue == null) {
+                        i = depth;
+                        Log.w("ResourceMapParser", "Unknown element under <resource-map>: " + xmlResourceParser.getName() + " at  " + xmlResourceParser.getPositionDescription());
+                        XmlUtils.skipCurrentTag(xmlResourceParser);
+                    } else {
+                        ArrayList arrayList = new ArrayList();
+                        int depth2 = xmlResourceParser.getDepth();
+                        while (true) {
+                            int next2 = xmlResourceParser.next();
+                            if (next2 == i4 || (next2 == i5 && xmlResourceParser.getDepth() <= depth2)) {
+                                break;
+                            }
+                            if (next2 == i5 || next2 == i6 || !"original".equals(xmlResourceParser.getName())) {
+                                i4 = 1;
+                            } else {
+                                if (xmlResourceParser.next() == i6) {
+                                    String text = xmlResourceParser.getText();
+                                    if (text == null || text.isEmpty()) {
+                                        i2 = depth;
+                                    } else {
+                                        int ordinal = resourceType.ordinal();
+                                        if (ordinal != 0) {
+                                            i2 = depth;
+                                            identifier = ordinal != 1 ? 0 : resources.getIdentifier(text, "color", str);
+                                        } else {
+                                            i2 = depth;
+                                            identifier = resources.getIdentifier(text, "drawable", str);
+                                        }
+                                        if (identifier != 0) {
+                                            arrayList.add(text);
+                                        }
+                                    }
+                                    i3 = 3;
+                                    if (xmlResourceParser.next() != 3 || !"original".equals(xmlResourceParser.getName())) {
+                                        Log.w("ResourceMapParser", "Unknown element under <match>: " + xmlResourceParser.getName() + " at  " + xmlResourceParser.getPositionDescription());
+                                        XmlUtils.skipCurrentTag(xmlResourceParser);
+                                    }
+                                } else {
+                                    i2 = depth;
+                                    i3 = 3;
+                                    Log.w("ResourceMapParser", "Unknown element under <match>: " + xmlResourceParser.getName() + " at  " + xmlResourceParser.getPositionDescription());
+                                    XmlUtils.skipCurrentTag(xmlResourceParser);
+                                }
+                                i5 = i3;
+                                depth = i2;
+                                i4 = 1;
+                                i6 = 4;
+                            }
+                        }
+                        i = depth;
+                        if (!arrayList.isEmpty()) {
+                            Iterator it = arrayList.iterator();
+                            while (it.hasNext()) {
+                                String str2 = (String) it.next();
+                                int ordinal2 = resourceType.ordinal();
+                                if (ordinal2 == 0) {
+                                    ((ArrayMap) arrayMap.get("drawable")).put(str2, attributeValue);
+                                } else if (ordinal2 == 1) {
+                                    ((ArrayMap) arrayMap.get("color")).put(str2, attributeValue);
+                                }
+                            }
+                        } else if (DEBUG) {
+                            Log.w("ResourceMapParser", "Empty mapping for ".concat(attributeValue));
+                        }
+                    }
+                    depth = i;
+                }
+            }
+        }
     }
 
     public static void parseResourceMap(AndroidPackage androidPackage) {
@@ -39,19 +146,19 @@ public abstract class ResourceMapParser {
         }
         XmlResourceParser xmlResourceParser = null;
         try {
-            try {
-                aPKContents = new APKContents(((AndroidPackageSplit) androidPackage.getSplits().get(0)).getPath());
-                assetManager = aPKContents.getAssets();
-            } catch (IOException | RuntimeException | XmlPullParserException e) {
-                e = e;
-                assetManager = null;
-            } catch (Throwable th) {
-                th = th;
-                assetManager = null;
-                IoUtils.closeQuietly(xmlResourceParser);
-                IoUtils.closeQuietly(assetManager);
-                throw th;
-            }
+            aPKContents = new APKContents(((AndroidPackageSplit) androidPackage.getSplits().get(0)).getPath());
+            assetManager = aPKContents.getAssets();
+        } catch (IOException | RuntimeException | XmlPullParserException e) {
+            e = e;
+            assetManager = null;
+        } catch (Throwable th) {
+            th = th;
+            assetManager = null;
+            IoUtils.closeQuietly(xmlResourceParser);
+            IoUtils.closeQuietly(assetManager);
+            throw th;
+        }
+        try {
             try {
                 Resources resources = aPKContents.getResources();
                 int identifier = resources.getIdentifier("resource_map", "xml", androidPackage.getPackageName());
@@ -61,297 +168,144 @@ public abstract class ResourceMapParser {
                 } else {
                     Log.e("ResourceMapParser", "resource_map file not found in res/xml/.. folder");
                 }
-            } catch (IOException | RuntimeException | XmlPullParserException e2) {
-                e = e2;
-                Log.e("ResourceMapParser", "Failed to parse resource_map");
-                e.printStackTrace();
+            } catch (Throwable th2) {
+                th = th2;
                 IoUtils.closeQuietly(xmlResourceParser);
                 IoUtils.closeQuietly(assetManager);
+                throw th;
             }
+        } catch (IOException | RuntimeException | XmlPullParserException e2) {
+            e = e2;
+            Log.e("ResourceMapParser", "Failed to parse resource_map");
+            e.printStackTrace();
             IoUtils.closeQuietly(xmlResourceParser);
             IoUtils.closeQuietly(assetManager);
-        } catch (Throwable th2) {
-            th = th2;
-            IoUtils.closeQuietly(xmlResourceParser);
-            IoUtils.closeQuietly(assetManager);
-            throw th;
         }
+        IoUtils.closeQuietly(xmlResourceParser);
+        IoUtils.closeQuietly(assetManager);
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:10:0x0080, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:10:0x0088, code lost:
+    
+        if (r13.exists() != false) goto L37;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:11:0x008a, code lost:
+    
+        r13.mkdir();
+        android.os.FileUtils.setPermissions(r13, 485, -1, -1);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:12:0x0090, code lost:
+    
+        r13 = new java.io.File("/data/overlays/remaps/" + r11.replace("/", ".") + ".map");
+        r11 = new java.io.BufferedWriter(new java.io.FileWriter(r13, false));
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:15:0x00ba, code lost:
+    
+        if (com.android.server.om.ResourceMapParser.DEBUG == false) goto L43;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:16:0x00bc, code lost:
+    
+        android.util.Log.d("ResourceMapParser", "create resource map for " + r10);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:17:0x00d1, code lost:
+    
+        r10 = (android.util.ArrayMap) r0.get("color");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:19:0x00d9, code lost:
+    
+        if (r10 == null) goto L52;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:21:0x00df, code lost:
+    
+        if (r10.size() <= 0) goto L52;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:22:0x00e1, code lost:
+    
+        r11.write("# C\n");
+        r10 = r10.entrySet().iterator();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:24:0x00f2, code lost:
+    
+        if (r10.hasNext() == false) goto L91;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:25:0x00f4, code lost:
+    
+        r1 = (java.util.Map.Entry) r10.next();
+        r11.write(((java.lang.String) r1.getKey()) + " " + ((java.lang.String) r1.getValue()));
+        r11.newLine();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:27:0x011f, code lost:
+    
+        r10 = (android.util.ArrayMap) r0.get("drawable");
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:28:0x0125, code lost:
+    
+        if (r10 == null) goto L60;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:30:0x012b, code lost:
+    
+        if (r10.size() <= 0) goto L60;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:31:0x012d, code lost:
+    
+        r11.write("# D\n");
+        r10 = r10.entrySet().iterator();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:33:0x013e, code lost:
+    
+        if (r10.hasNext() == false) goto L92;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:34:0x0140, code lost:
+    
+        r0 = (java.util.Map.Entry) r10.next();
+        r11.write(((java.lang.String) r0.getKey()) + " " + ((java.lang.String) r0.getValue()));
+        r11.newLine();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:36:0x016b, code lost:
+    
+        android.os.FileUtils.setPermissions(r13, 485, -1, -1);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:37:0x016e, code lost:
+    
+        r11.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:38:0x0171, code lost:
     
         return;
      */
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x007d, code lost:
+    /* JADX WARN: Code restructure failed: missing block: B:41:0x00ce, code lost:
     
-        writeMapFile(r7, r8, r0);
+        r10 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:44:0x0172, code lost:
+    
+        r11.close();
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:45:0x017a, code lost:
+    
+        throw r10;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:47:0x0176, code lost:
+    
+        r11 = move-exception;
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:48:0x0177, code lost:
+    
+        r10.addSuppressed(r11);
+     */
+    /* JADX WARN: Code restructure failed: missing block: B:9:0x0078, code lost:
+    
+        r13 = new java.io.File("/data/overlays/remaps/");
      */
     /*
         Code decompiled incorrectly, please refer to instructions dump.
         To view partially-correct code enable 'Show inconsistent code' option in preferences
     */
-    public static void parseResourceMapToFile(java.lang.String r7, java.lang.String r8, android.content.res.Resources r9, android.content.res.XmlResourceParser r10) {
+    public static void parseResourceMapToFile(java.lang.String r10, java.lang.String r11, android.content.res.Resources r12, android.content.res.XmlResourceParser r13) {
         /*
-            android.util.ArrayMap r0 = new android.util.ArrayMap
-            r0.<init>()
-            r10.getEventType()
-            int r1 = r10.getDepth()
-            r2 = 0
-        Ld:
-            int r3 = r10.next()
-            r4 = 1
-            if (r3 == r4) goto L7d
-            r5 = 3
-            if (r3 != r5) goto L1d
-            int r6 = r10.getDepth()
-            if (r6 <= r1) goto L7d
-        L1d:
-            if (r3 == r5) goto Ld
-            r5 = 4
-            if (r3 != r5) goto L23
-            goto Ld
-        L23:
-            java.lang.String r3 = r10.getName()
-            if (r3 != 0) goto L2a
-            goto Ld
-        L2a:
-            if (r2 == 0) goto L6a
-            java.lang.String r4 = "drawable"
-            boolean r5 = r4.equals(r3)
-            if (r5 == 0) goto L4b
-            java.lang.Object r3 = r0.get(r4)
-            if (r3 != 0) goto L42
-            android.util.ArrayMap r3 = new android.util.ArrayMap
-            r3.<init>()
-            r0.put(r4, r3)
-        L42:
-            com.android.server.om.ResourceMapParser$ResourceType r3 = com.android.server.om.ResourceMapParser.ResourceType.DRAWABLE
-            boolean r3 = parseResourceEntries(r7, r9, r10, r0, r3)
-            if (r3 != 0) goto Ld
-            return
-        L4b:
-            java.lang.String r4 = "color"
-            boolean r3 = r4.equals(r3)
-            if (r3 == 0) goto Ld
-            java.lang.Object r3 = r0.get(r4)
-            if (r3 != 0) goto L61
-            android.util.ArrayMap r3 = new android.util.ArrayMap
-            r3.<init>()
-            r0.put(r4, r3)
-        L61:
-            com.android.server.om.ResourceMapParser$ResourceType r3 = com.android.server.om.ResourceMapParser.ResourceType.COLOR
-            boolean r3 = parseResourceEntries(r7, r9, r10, r0, r3)
-            if (r3 != 0) goto Ld
-            return
-        L6a:
-            java.lang.String r2 = "resource-map"
-            boolean r2 = r2.equals(r3)
-            if (r2 == 0) goto L75
-            r2 = r4
-            goto Ld
-        L75:
-            org.xmlpull.v1.XmlPullParserException r7 = new org.xmlpull.v1.XmlPullParserException
-            java.lang.String r8 = "Invalid resource_map XML"
-            r7.<init>(r8)
-            throw r7
-        L7d:
-            writeMapFile(r7, r8, r0)
-            return
+            Method dump skipped, instructions count: 379
+            To view this dump change 'Code comments level' option to 'DEBUG'
         */
         throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.ResourceMapParser.parseResourceMapToFile(java.lang.String, java.lang.String, android.content.res.Resources, android.content.res.XmlResourceParser):void");
-    }
-
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x00bf, code lost:
-    
-        return true;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static boolean parseResourceEntries(java.lang.String r7, android.content.res.Resources r8, android.content.res.XmlResourceParser r9, android.util.ArrayMap r10, com.android.server.om.ResourceMapParser.ResourceType r11) {
-        /*
-            int r0 = r9.getDepth()
-        L4:
-            int r1 = r9.next()
-            r2 = 1
-            if (r1 == r2) goto Lbf
-            r3 = 3
-            if (r1 != r3) goto L14
-            int r4 = r9.getDepth()
-            if (r4 <= r0) goto Lbf
-        L14:
-            if (r1 == r3) goto L4
-            r3 = 4
-            if (r1 != r3) goto L1a
-            goto L4
-        L1a:
-            java.lang.String r1 = r9.getName()
-            r3 = 0
-            java.lang.String r4 = "overlay"
-            java.lang.String r3 = r9.getAttributeValue(r3, r4)
-            java.lang.String r4 = "match"
-            boolean r1 = r4.equals(r1)
-            java.lang.String r4 = "ResourceMapParser"
-            if (r1 == 0) goto L96
-            if (r3 == 0) goto L96
-            java.util.ArrayList r1 = new java.util.ArrayList
-            r1.<init>()
-            boolean r5 = parseEntry(r7, r8, r9, r1, r11)
-            if (r5 != 0) goto L40
-            r7 = 0
-            return r7
-        L40:
-            boolean r5 = r1.isEmpty()
-            if (r5 != 0) goto L7c
-            java.util.Iterator r1 = r1.iterator()
-        L4a:
-            boolean r4 = r1.hasNext()
-            if (r4 == 0) goto L4
-            java.lang.Object r4 = r1.next()
-            java.lang.String r4 = (java.lang.String) r4
-            int[] r5 = com.android.server.om.ResourceMapParser.AnonymousClass1.$SwitchMap$com$android$server$om$ResourceMapParser$ResourceType
-            int r6 = r11.ordinal()
-            r5 = r5[r6]
-            if (r5 == r2) goto L70
-            r6 = 2
-            if (r5 == r6) goto L64
-            goto L4a
-        L64:
-            java.lang.String r5 = "drawable"
-            java.lang.Object r5 = r10.get(r5)
-            android.util.ArrayMap r5 = (android.util.ArrayMap) r5
-            r5.put(r4, r3)
-            goto L4a
-        L70:
-            java.lang.String r5 = "color"
-            java.lang.Object r5 = r10.get(r5)
-            android.util.ArrayMap r5 = (android.util.ArrayMap) r5
-            r5.put(r4, r3)
-            goto L4a
-        L7c:
-            boolean r1 = com.android.server.om.ResourceMapParser.DEBUG
-            if (r1 == 0) goto L4
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder
-            r1.<init>()
-            java.lang.String r2 = "Empty mapping for "
-            r1.append(r2)
-            r1.append(r3)
-            java.lang.String r1 = r1.toString()
-            android.util.Log.w(r4, r1)
-            goto L4
-        L96:
-            java.lang.StringBuilder r1 = new java.lang.StringBuilder
-            r1.<init>()
-            java.lang.String r2 = "Unknown element under <resource-map>: "
-            r1.append(r2)
-            java.lang.String r2 = r9.getName()
-            r1.append(r2)
-            java.lang.String r2 = " at  "
-            r1.append(r2)
-            java.lang.String r2 = r9.getPositionDescription()
-            r1.append(r2)
-            java.lang.String r1 = r1.toString()
-            android.util.Log.w(r4, r1)
-            com.android.internal.util.XmlUtils.skipCurrentTag(r9)
-            goto L4
-        Lbf:
-            return r2
-        */
-        throw new UnsupportedOperationException("Method not decompiled: com.android.server.om.ResourceMapParser.parseResourceEntries(java.lang.String, android.content.res.Resources, android.content.res.XmlResourceParser, android.util.ArrayMap, com.android.server.om.ResourceMapParser$ResourceType):boolean");
-    }
-
-    /* renamed from: com.android.server.om.ResourceMapParser$1, reason: invalid class name */
-    /* loaded from: classes2.dex */
-    public abstract /* synthetic */ class AnonymousClass1 {
-        public static final /* synthetic */ int[] $SwitchMap$com$android$server$om$ResourceMapParser$ResourceType;
-
-        static {
-            int[] iArr = new int[ResourceType.values().length];
-            $SwitchMap$com$android$server$om$ResourceMapParser$ResourceType = iArr;
-            try {
-                iArr[ResourceType.COLOR.ordinal()] = 1;
-            } catch (NoSuchFieldError unused) {
-            }
-            try {
-                $SwitchMap$com$android$server$om$ResourceMapParser$ResourceType[ResourceType.DRAWABLE.ordinal()] = 2;
-            } catch (NoSuchFieldError unused2) {
-            }
-        }
-    }
-
-    public static boolean parseEntry(String str, Resources resources, XmlResourceParser xmlResourceParser, ArrayList arrayList, ResourceType resourceType) {
-        int identifier;
-        int depth = xmlResourceParser.getDepth();
-        while (true) {
-            int next = xmlResourceParser.next();
-            if (next == 1 || (next == 3 && xmlResourceParser.getDepth() <= depth)) {
-                break;
-            }
-            if (next != 3 && next != 4 && "original".equals(xmlResourceParser.getName())) {
-                if (xmlResourceParser.next() == 4) {
-                    String text = xmlResourceParser.getText();
-                    if (text != null && !text.isEmpty()) {
-                        int i = AnonymousClass1.$SwitchMap$com$android$server$om$ResourceMapParser$ResourceType[resourceType.ordinal()];
-                        if (i == 1) {
-                            identifier = resources.getIdentifier(text, "color", str);
-                        } else {
-                            identifier = i != 2 ? 0 : resources.getIdentifier(text, "drawable", str);
-                        }
-                        if (identifier != 0) {
-                            arrayList.add(text);
-                        }
-                    }
-                    if (xmlResourceParser.next() != 3 || !"original".equals(xmlResourceParser.getName())) {
-                        Log.w("ResourceMapParser", "Unknown element under <match>: " + xmlResourceParser.getName() + " at  " + xmlResourceParser.getPositionDescription());
-                        XmlUtils.skipCurrentTag(xmlResourceParser);
-                    }
-                } else {
-                    Log.w("ResourceMapParser", "Unknown element under <match>: " + xmlResourceParser.getName() + " at  " + xmlResourceParser.getPositionDescription());
-                    XmlUtils.skipCurrentTag(xmlResourceParser);
-                }
-            }
-        }
-        return true;
-    }
-
-    public static void writeMapFile(String str, String str2, ArrayMap arrayMap) {
-        File file = new File("/data/overlays/remaps/");
-        if (!file.exists()) {
-            file.mkdir();
-            FileUtils.setPermissions(file, 485, -1, -1);
-        }
-        File file2 = new File("/data/overlays/remaps/" + str2.replace("/", ".") + ".map");
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file2, false));
-        try {
-            if (DEBUG) {
-                Log.d("ResourceMapParser", "create resource map for " + str);
-            }
-            ArrayMap arrayMap2 = (ArrayMap) arrayMap.get("color");
-            if (arrayMap2 != null && arrayMap2.size() > 0) {
-                bufferedWriter.write("# C\n");
-                for (Map.Entry entry : arrayMap2.entrySet()) {
-                    bufferedWriter.write(((String) entry.getKey()) + " " + ((String) entry.getValue()));
-                    bufferedWriter.newLine();
-                }
-            }
-            ArrayMap arrayMap3 = (ArrayMap) arrayMap.get("drawable");
-            if (arrayMap3 != null && arrayMap3.size() > 0) {
-                bufferedWriter.write("# D\n");
-                for (Map.Entry entry2 : arrayMap3.entrySet()) {
-                    bufferedWriter.write(((String) entry2.getKey()) + " " + ((String) entry2.getValue()));
-                    bufferedWriter.newLine();
-                }
-            }
-            FileUtils.setPermissions(file2, 485, -1, -1);
-            bufferedWriter.close();
-        } catch (Throwable th) {
-            try {
-                bufferedWriter.close();
-            } catch (Throwable th2) {
-                th.addSuppressed(th2);
-            }
-            throw th;
-        }
     }
 }

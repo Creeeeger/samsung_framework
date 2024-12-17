@@ -1,10 +1,6 @@
 package com.android.server.rollback;
 
-import java.util.List;
-
-/* loaded from: classes3.dex */
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
 public interface RollbackManagerInternal {
-    int notifyStagedSession(int i);
-
-    void snapshotAndRestoreUserData(String str, List list, int i, long j, String str2, int i2);
 }

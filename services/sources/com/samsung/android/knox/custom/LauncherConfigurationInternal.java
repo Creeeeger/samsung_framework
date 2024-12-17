@@ -7,9 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Size;
+import com.android.server.SystemUpdateManagerService$$ExternalSyntheticOutline0;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes2.dex */
-public class LauncherConfigurationInternal {
+public final class LauncherConfigurationInternal {
     public static final String ARG_GETHOMEMODE_HOMEMODE = "home_mode";
     public static final Uri CONTENT_URI = Uri.parse("content://com.sec.android.app.launcher.settings/settings");
     public static final int FEATURE_SHORTCUT_FOR_EASYMODE = 1001;
@@ -68,13 +70,42 @@ public class LauncherConfigurationInternal {
         this.mContext = context;
     }
 
-    public int isSupported(int i) {
+    public final int addShortcut(int i, Point point, ComponentName componentName) {
         Bundle bundle = new Bundle();
-        bundle.putInt(KEY_FEATURE_INT, i);
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_IS_SUPPORTED, (String) null, bundle).getInt("invocation_result", -2);
+        bundle.putInt(KEY_PAGE_INT, i);
+        bundle.putParcelable("coordination_position", point);
+        bundle.putParcelable("component", componentName);
+        return this.mContext.getContentResolver().call(CONTENT_URI, "add_shortcut", (String) null, bundle).getInt("invocation_result", -2);
     }
 
-    public int getHomeMode() {
+    public final int addWidget(int i, Point point, Point point2, ComponentName componentName) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(KEY_PAGE_INT, i);
+        bundle.putParcelable("coordination_position", point);
+        bundle.putParcelable(KEY_COORDINATION_SIZE_POINT, point2);
+        bundle.putParcelable("component", componentName);
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_ADD_WIDGET, (String) null, bundle).getInt("invocation_result", -2);
+    }
+
+    public final boolean getAppsButtonVisibility() {
+        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_APPS_BUTTON_STATE, (String) null, (Bundle) null);
+        if (call.getInt("invocation_result", -2) == 0) {
+            return call.getBoolean(KEY_STATE_BOOLEAN, false);
+        }
+        return false;
+    }
+
+    public final Size getAppsCellDimension() {
+        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_APPS_CELL_DIMENSION, (String) null, (Bundle) null);
+        return new Size(call.getInt(KEY_CELLDIMENSION_ROWS_INT, 0), call.getInt(KEY_CELLDIMENSION_COLS_INT, 0));
+    }
+
+    public final Size getHomeCellDimension() {
+        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_HOME_CELL_DIMENSION, (String) null, (Bundle) null);
+        return new Size(call.getInt(KEY_CELLDIMENSION_ROWS_INT, 0), call.getInt(KEY_CELLDIMENSION_COLS_INT, 0));
+    }
+
+    public final int getHomeMode() {
         String string = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_HOME_MODE, "home_mode", (Bundle) null).getString("home_mode");
         if (VALUE_GETHOMEMODE_EASYMODE.equals(string)) {
             return 1;
@@ -85,7 +116,83 @@ public class LauncherConfigurationInternal {
         return VALUE_GETHOMEMODE_HOMEONLYMODE.equals(string) ? 2 : -2;
     }
 
-    public int switchHomeMode(int i) {
+    public final ComponentName getHotseatItem(int i) {
+        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_HOTSEAT_ITEM, (String) null, SystemUpdateManagerService$$ExternalSyntheticOutline0.m(i, KEY_INDEX_INT));
+        int i2 = call.getInt("invocation_result", -2);
+        Parcelable parcelable = call.getParcelable("component");
+        if (i2 == 0 && (parcelable instanceof ComponentName)) {
+            return (ComponentName) parcelable;
+        }
+        return null;
+    }
+
+    public final int getHotseatItemCount() {
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_HOTSEAT_ITEM_COUNT, (String) null, (Bundle) null).getInt(KEY_ITEMCOUNT_INT, -2);
+    }
+
+    public final int getHotseatMaxItemCount() {
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_HOTSEAT_MAXITEM_COUNT, (String) null, (Bundle) null).getInt(KEY_ITEMCOUNT_INT, -2);
+    }
+
+    public final boolean getSupplementServicePageVisibility() {
+        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_SUPPLEMENT_SERVICE_PAGE_VISIBILITY, (String) null, (Bundle) null);
+        if (call.getInt("invocation_result", -2) == 0) {
+            return call.getBoolean(KEY_SUPPLEMENT_SERVICE_PAGE_VISIBILITY_BOOLEAN, false);
+        }
+        return true;
+    }
+
+    public final int isSupported(int i) {
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_IS_SUPPORTED, (String) null, SystemUpdateManagerService$$ExternalSyntheticOutline0.m(i, KEY_FEATURE_INT)).getInt("invocation_result", -2);
+    }
+
+    public final int makeEmptyPosition(int i, Point point, Point point2) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(KEY_PAGE_INT, i);
+        bundle.putParcelable("coordination_position", point);
+        bundle.putParcelable(KEY_COORDINATION_SIZE_POINT, point2);
+        return this.mContext.getContentResolver().call(CONTENT_URI, "make_empty_position", (String) null, bundle).getInt("invocation_result", -2);
+    }
+
+    public final int removeHotseatItem(int i) {
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_REMOVE_HOTSEAT_ITEM, (String) null, SystemUpdateManagerService$$ExternalSyntheticOutline0.m(i, KEY_INDEX_INT)).getInt("invocation_result", -2);
+    }
+
+    public final int removePageFromHome(int i) {
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_REMOVE_PAGE_FROM_HOME, (String) null, SystemUpdateManagerService$$ExternalSyntheticOutline0.m(i, KEY_PAGE_INT)).getInt("invocation_result", -2);
+    }
+
+    public final int removeShortcut(ComponentName componentName) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("component", componentName);
+        return this.mContext.getContentResolver().call(CONTENT_URI, "remove_shortcut", (String) null, bundle).getInt("invocation_result", -2);
+    }
+
+    public final int removeWidget(ComponentName componentName) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("component", componentName);
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_REMOVE_WIDGET, (String) null, bundle).getInt("invocation_result", -2);
+    }
+
+    public final int setAppsButtonVisibility(boolean z) {
+        new Bundle();
+        return (z ? this.mContext.getContentResolver().call(CONTENT_URI, METHOD_ENABLE_APPS_BUTTON, (String) null, (Bundle) null) : this.mContext.getContentResolver().call(CONTENT_URI, METHOD_DISABLE_APPS_BUTTON, (String) null, (Bundle) null)).getInt("invocation_result", -2);
+    }
+
+    public final int setHotseatItem(int i, ComponentName componentName) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(KEY_INDEX_INT, i);
+        bundle.putParcelable("component", componentName);
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_SET_HOTSEAT_ITEM, (String) null, bundle).getInt("invocation_result", -2);
+    }
+
+    public final int setSupplementServicePageVisibility(boolean z) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(KEY_SUPPLEMENT_SERVICE_PAGE_VISIBILITY_BOOLEAN, z);
+        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_SET_SUPPLEMENT_SERVICE_PAGE_VISIBILITY, (String) null, bundle).getInt("invocation_result", -2);
+    }
+
+    public final int switchHomeMode(int i) {
         Bundle bundle = new Bundle();
         if (i == 3) {
             bundle.putString("home_mode", VALUE_GETHOMEMODE_HOMEANDAPPSMODE);
@@ -96,124 +203,5 @@ public class LauncherConfigurationInternal {
             bundle.putString("home_mode", VALUE_GETHOMEMODE_HOMEONLYMODE);
         }
         return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_SWITCH_HOME_MODE, (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public Size getHomeCellDimension() {
-        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_HOME_CELL_DIMENSION, (String) null, (Bundle) null);
-        return new Size(call.getInt(KEY_CELLDIMENSION_ROWS_INT, 0), call.getInt(KEY_CELLDIMENSION_COLS_INT, 0));
-    }
-
-    public Size getAppsCellDimension() {
-        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_APPS_CELL_DIMENSION, (String) null, (Bundle) null);
-        return new Size(call.getInt(KEY_CELLDIMENSION_ROWS_INT, 0), call.getInt(KEY_CELLDIMENSION_COLS_INT, 0));
-    }
-
-    public int getHotseatItemCount() {
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_HOTSEAT_ITEM_COUNT, (String) null, (Bundle) null).getInt(KEY_ITEMCOUNT_INT, -2);
-    }
-
-    public int getHotseatMaxItemCount() {
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_HOTSEAT_MAXITEM_COUNT, (String) null, (Bundle) null).getInt(KEY_ITEMCOUNT_INT, -2);
-    }
-
-    public int setHotseatItem(int i, ComponentName componentName) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_INDEX_INT, i);
-        bundle.putParcelable("component", componentName);
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_SET_HOTSEAT_ITEM, (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public ComponentName getHotseatItem(int i) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_INDEX_INT, i);
-        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_HOTSEAT_ITEM, (String) null, bundle);
-        int i2 = call.getInt("invocation_result", -2);
-        Parcelable parcelable = call.getParcelable("component");
-        if (i2 == 0 && (parcelable instanceof ComponentName)) {
-            return (ComponentName) parcelable;
-        }
-        return null;
-    }
-
-    public int removeHotseatItem(int i) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_INDEX_INT, i);
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_REMOVE_HOTSEAT_ITEM, (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public int addWidget(int i, Point point, Point point2, ComponentName componentName) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_PAGE_INT, i);
-        bundle.putParcelable("coordination_position", point);
-        bundle.putParcelable(KEY_COORDINATION_SIZE_POINT, point2);
-        bundle.putParcelable("component", componentName);
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_ADD_WIDGET, (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public int removeWidget(ComponentName componentName) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("component", componentName);
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_REMOVE_WIDGET, (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public int addShortcut(int i, Point point, ComponentName componentName) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_PAGE_INT, i);
-        bundle.putParcelable("coordination_position", point);
-        bundle.putParcelable("component", componentName);
-        return this.mContext.getContentResolver().call(CONTENT_URI, "add_shortcut", (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public int removeShortcut(ComponentName componentName) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("component", componentName);
-        return this.mContext.getContentResolver().call(CONTENT_URI, "remove_shortcut", (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public int makeEmptyPosition(int i, Point point, Point point2) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_PAGE_INT, i);
-        bundle.putParcelable("coordination_position", point);
-        bundle.putParcelable(KEY_COORDINATION_SIZE_POINT, point2);
-        return this.mContext.getContentResolver().call(CONTENT_URI, "make_empty_position", (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public int removePageFromHome(int i) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_PAGE_INT, i);
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_REMOVE_PAGE_FROM_HOME, (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public boolean getSupplementServicePageVisibility() {
-        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_SUPPLEMENT_SERVICE_PAGE_VISIBILITY, (String) null, (Bundle) null);
-        if (call.getInt("invocation_result", -2) == 0) {
-            return call.getBoolean(KEY_SUPPLEMENT_SERVICE_PAGE_VISIBILITY_BOOLEAN, false);
-        }
-        return true;
-    }
-
-    public int setSupplementServicePageVisibility(boolean z) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(KEY_SUPPLEMENT_SERVICE_PAGE_VISIBILITY_BOOLEAN, z);
-        return this.mContext.getContentResolver().call(CONTENT_URI, METHOD_SET_SUPPLEMENT_SERVICE_PAGE_VISIBILITY, (String) null, bundle).getInt("invocation_result", -2);
-    }
-
-    public int setAppsButtonVisibility(boolean z) {
-        Bundle call;
-        new Bundle();
-        if (z) {
-            call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_ENABLE_APPS_BUTTON, (String) null, (Bundle) null);
-        } else {
-            call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_DISABLE_APPS_BUTTON, (String) null, (Bundle) null);
-        }
-        return call.getInt("invocation_result", -2);
-    }
-
-    public boolean getAppsButtonVisibility() {
-        Bundle call = this.mContext.getContentResolver().call(CONTENT_URI, METHOD_GET_APPS_BUTTON_STATE, (String) null, (Bundle) null);
-        if (call.getInt("invocation_result", -2) == 0) {
-            return call.getBoolean(KEY_STATE_BOOLEAN, false);
-        }
-        return false;
     }
 }

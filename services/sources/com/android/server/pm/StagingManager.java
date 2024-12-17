@@ -1,18 +1,13 @@
 package com.android.server.pm;
 
 import android.apex.ApexInfo;
-import android.apex.ApexSessionInfo;
 import android.apex.ApexSessionParams;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ApexStagedEvent;
 import android.content.pm.IStagedApexObserver;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManagerInternal;
-import android.content.pm.StagedApexInfo;
-import android.os.IBinder;
+import android.hardware.broadcastradio.V2_0.AmFmBandRange$$ExternalSyntheticOutline0;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemProperties;
@@ -27,14 +22,19 @@ import android.util.TimingsTraceLog;
 import com.android.internal.content.InstallLocationUtils;
 import com.android.internal.os.BackgroundThread;
 import com.android.internal.util.Preconditions;
+import com.android.internal.util.jobs.DumpUtils$$ExternalSyntheticOutline0;
+import com.android.server.AnyMotionDetector$$ExternalSyntheticOutline0;
+import com.android.server.BootReceiver$$ExternalSyntheticOutline0;
+import com.android.server.CustomizedBinderCallsStatsInternal$$ExternalSyntheticOutline0;
 import com.android.server.LocalServices;
 import com.android.server.SystemService;
-import com.android.server.SystemServiceManager;
-import com.android.server.pm.StagingManager;
+import com.android.server.accessibility.magnification.MagnificationConnectionManager$$ExternalSyntheticOutline0;
+import com.android.server.pm.ApexManager;
+import com.android.server.pm.PackageInstallerSession;
 import com.android.server.pm.pkg.PackageStateInternal;
 import com.android.server.pm.pkg.PackageStateUtils;
 import com.android.server.rollback.RollbackManagerInternal;
-import com.android.server.rollback.WatchdogRollbackLogger;
+import com.android.server.rollback.RollbackManagerServiceImpl;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -47,15 +47,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Predicate;
 
-/* loaded from: classes3.dex */
-public class StagingManager {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class StagingManager {
     public final ApexManager mApexManager;
     public final CompletableFuture mBootCompleted;
     public final Context mContext;
     public final List mFailedPackageNames;
-    public String mFailureReason;
+    public final String mFailureReason;
     public final File mFailureReasonFile;
     public String mNativeFailureReason;
     public final PowerManager mPowerManager;
@@ -63,53 +63,48 @@ public class StagingManager {
     public final SparseArray mStagedSessions;
     public final List mSuccessfulStagedSessionIds;
 
-    /* loaded from: classes3.dex */
-    public interface StagedSession {
-        void abandon();
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public final class Lifecycle extends SystemService {
+        public static StagingManager sStagingManager;
 
-        boolean containsApexSession();
+        public Lifecycle(Context context) {
+            super(context);
+        }
 
-        List getChildSessions();
+        @Override // com.android.server.SystemService
+        public final void onBootPhase(int i) {
+            StagingManager stagingManager;
+            if (i != 1000 || (stagingManager = sStagingManager) == null) {
+                return;
+            }
+            synchronized (stagingManager.mSuccessfulStagedSessionIds) {
+                for (int i2 = 0; i2 < ((ArrayList) stagingManager.mSuccessfulStagedSessionIds).size(); i2++) {
+                    try {
+                        stagingManager.mApexManager.markStagedSessionSuccessful(((Integer) ((ArrayList) stagingManager.mSuccessfulStagedSessionIds).get(i2)).intValue());
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+                if (!((ArrayList) stagingManager.mSuccessfulStagedSessionIds).isEmpty()) {
+                    SystemProperties.set("sys.staged_apex.state", "success");
+                }
+            }
+            ApexManager.ApexManagerImpl apexManagerImpl = (ApexManager.ApexManagerImpl) sStagingManager.mApexManager;
+            apexManagerImpl.getClass();
+            try {
+                apexManagerImpl.waitForApexService().markBootCompleted();
+            } catch (RemoteException e) {
+                Slog.e("ApexManager", "Unable to contact apexservice", e);
+            }
+        }
 
-        long getCommittedMillis();
-
-        String getPackageName();
-
-        int getParentSessionId();
-
-        boolean hasParentSessionId();
-
-        CompletableFuture installSession();
-
-        boolean isApexSession();
-
-        boolean isCommitted();
-
-        boolean isDestroyed();
-
-        boolean isInTerminalState();
-
-        boolean isMultiPackage();
-
-        boolean isSessionFailed();
-
-        boolean isSessionReady();
-
-        boolean sessionContains(Predicate predicate);
-
-        int sessionId();
-
-        PackageInstaller.SessionParams sessionParams();
-
-        void setSessionFailed(int i, String str);
-
-        void setSessionReady();
-
-        void verifySession();
+        @Override // com.android.server.SystemService
+        public final void onStart() {
+        }
     }
 
-    public StagingManager(Context context) {
-        this(context, ApexManager.getInstance());
+    /* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+    public interface StagedSession {
     }
 
     public StagingManager(Context context, ApexManager apexManager) {
@@ -136,68 +131,25 @@ public class StagingManager {
         }
     }
 
-    /* loaded from: classes3.dex */
-    public final class Lifecycle extends SystemService {
-        public static StagingManager sStagingManager;
-
-        @Override // com.android.server.SystemService
-        public void onStart() {
-        }
-
-        public Lifecycle(Context context) {
-            super(context);
-        }
-
-        public void startService(StagingManager stagingManager) {
-            sStagingManager = stagingManager;
-            ((SystemServiceManager) LocalServices.getService(SystemServiceManager.class)).startService(this);
-        }
-
-        @Override // com.android.server.SystemService
-        public void onBootPhase(int i) {
-            StagingManager stagingManager;
-            if (i != 1000 || (stagingManager = sStagingManager) == null) {
-                return;
+    public static List extractApexSessions(StagedSession stagedSession) {
+        ArrayList arrayList = new ArrayList();
+        PackageInstallerSession.StagedSession stagedSession2 = (PackageInstallerSession.StagedSession) stagedSession;
+        if (PackageInstallerSession.this.params.isMultiPackage) {
+            Iterator it = stagedSession2.getChildSessions().iterator();
+            while (it.hasNext()) {
+                PackageInstallerSession.StagedSession stagedSession3 = (PackageInstallerSession.StagedSession) ((StagedSession) it.next());
+                if (stagedSession3.containsApexSession()) {
+                    arrayList.add(stagedSession3);
+                }
             }
-            stagingManager.markStagedSessionsAsSuccessful();
-            sStagingManager.markBootCompleted();
+        } else {
+            arrayList.add(stagedSession2);
         }
-    }
-
-    public final void markBootCompleted() {
-        this.mApexManager.markBootCompleted();
-    }
-
-    public void registerStagedApexObserver(final IStagedApexObserver iStagedApexObserver) {
-        if (iStagedApexObserver == null) {
-            return;
-        }
-        if (iStagedApexObserver.asBinder() != null) {
-            try {
-                iStagedApexObserver.asBinder().linkToDeath(new IBinder.DeathRecipient() { // from class: com.android.server.pm.StagingManager.1
-                    @Override // android.os.IBinder.DeathRecipient
-                    public void binderDied() {
-                        synchronized (StagingManager.this.mStagedApexObservers) {
-                            StagingManager.this.mStagedApexObservers.remove(iStagedApexObserver);
-                        }
-                    }
-                }, 0);
-            } catch (RemoteException e) {
-                Slog.w("StagingManager", e.getMessage());
-            }
-        }
-        synchronized (this.mStagedApexObservers) {
-            this.mStagedApexObservers.add(iStagedApexObserver);
-        }
-    }
-
-    public void unregisterStagedApexObserver(IStagedApexObserver iStagedApexObserver) {
-        synchronized (this.mStagedApexObservers) {
-            this.mStagedApexObservers.remove(iStagedApexObserver);
-        }
+        return arrayList;
     }
 
     public final void abortCheckpoint(String str, boolean z, boolean z2) {
+        ApexManager apexManager = this.mApexManager;
         Slog.e("StagingManager", str);
         if (z) {
             try {
@@ -212,136 +164,138 @@ public class StagingManager {
                     } catch (Exception e) {
                         Slog.w("StagingManager", "Failed to save failure reason: ", e);
                     }
-                    if (this.mApexManager.isApexSupported()) {
-                        this.mApexManager.revertActiveSessions();
-                    }
+                    apexManager.getClass();
+                    apexManager.revertActiveSessions();
                     InstallLocationUtils.getStorageManager().abortChanges("abort-staged-install", false);
                 }
             } catch (Exception e2) {
                 Slog.wtf("StagingManager", "Failed to abort checkpoint", e2);
-                if (this.mApexManager.isApexSupported()) {
-                    this.mApexManager.revertActiveSessions();
-                }
+                apexManager.getClass();
+                apexManager.revertActiveSessions();
                 this.mPowerManager.reboot(null);
             }
         }
     }
 
-    public final List extractApexSessions(StagedSession stagedSession) {
-        ArrayList arrayList = new ArrayList();
-        if (stagedSession.isMultiPackage()) {
-            for (StagedSession stagedSession2 : stagedSession.getChildSessions()) {
-                if (stagedSession2.containsApexSession()) {
-                    arrayList.add(stagedSession2);
+    public final void abortSession(StagedSession stagedSession) {
+        synchronized (this.mStagedSessions) {
+            this.mStagedSessions.remove(PackageInstallerSession.this.sessionId);
+        }
+    }
+
+    public void commitSession(StagedSession stagedSession) {
+        createSession(stagedSession);
+        PackageInstallerSession.StagedSession stagedSession2 = (PackageInstallerSession.StagedSession) stagedSession;
+        if (stagedSession2.isSessionReady() && stagedSession2.containsApexSession()) {
+            notifyStagedApexObservers();
+        }
+    }
+
+    public void createSession(StagedSession stagedSession) {
+        synchronized (this.mStagedSessions) {
+            this.mStagedSessions.append(PackageInstallerSession.this.sessionId, stagedSession);
+        }
+    }
+
+    public final String getReasonForRevert() {
+        String str = this.mFailureReason;
+        if (!TextUtils.isEmpty(str)) {
+            return str;
+        }
+        if (TextUtils.isEmpty(this.mNativeFailureReason)) {
+            return "";
+        }
+        return "Session reverted due to crashing native process: " + this.mNativeFailureReason;
+    }
+
+    public Map getStagedApexInfos(StagedSession stagedSession) {
+        ApexInfo[] apexInfoArr;
+        Preconditions.checkArgument(stagedSession != null, "Session is null");
+        PackageInstallerSession.StagedSession stagedSession2 = (PackageInstallerSession.StagedSession) stagedSession;
+        boolean hasParentSessionId = true ^ PackageInstallerSession.this.hasParentSessionId();
+        StringBuilder sb = new StringBuilder();
+        PackageInstallerSession packageInstallerSession = PackageInstallerSession.this;
+        sb.append(packageInstallerSession.sessionId);
+        sb.append(" session has parent session");
+        Preconditions.checkArgument(hasParentSessionId, sb.toString());
+        Preconditions.checkArgument(stagedSession2.containsApexSession(), packageInstallerSession.sessionId + " session does not contain apex");
+        if (!stagedSession2.isSessionReady() || packageInstallerSession.isDestroyed()) {
+            return Collections.emptyMap();
+        }
+        ApexSessionParams apexSessionParams = new ApexSessionParams();
+        apexSessionParams.sessionId = packageInstallerSession.sessionId;
+        IntArray intArray = new IntArray();
+        if (PackageInstallerSession.this.params.isMultiPackage) {
+            Iterator it = stagedSession2.getChildSessions().iterator();
+            while (it.hasNext()) {
+                PackageInstallerSession.StagedSession stagedSession3 = (PackageInstallerSession.StagedSession) ((StagedSession) it.next());
+                if (stagedSession3.isApexSession()) {
+                    intArray.add(PackageInstallerSession.this.sessionId);
                 }
             }
-        } else {
-            arrayList.add(stagedSession);
+        }
+        apexSessionParams.childSessionIds = intArray.toArray();
+        ApexManager.ApexManagerImpl apexManagerImpl = (ApexManager.ApexManagerImpl) this.mApexManager;
+        apexManagerImpl.getClass();
+        try {
+            apexInfoArr = apexManagerImpl.waitForApexService().getStagedApexInfos(apexSessionParams);
+        } catch (RemoteException e) {
+            Slog.w("ApexManager", "Unable to contact apexservice" + e.getMessage());
+            throw new RuntimeException(e);
+        } catch (Exception e2) {
+            MagnificationConnectionManager$$ExternalSyntheticOutline0.m(e2, new StringBuilder("Failed to collect staged apex infos"), "ApexManager");
+            apexInfoArr = new ApexInfo[0];
+        }
+        ArrayMap arrayMap = new ArrayMap();
+        for (ApexInfo apexInfo : apexInfoArr) {
+            arrayMap.put(apexInfo.moduleName, apexInfo);
+        }
+        return arrayMap;
+    }
+
+    public final List getStagedApexModuleNames() {
+        ArrayList arrayList = new ArrayList();
+        synchronized (this.mStagedSessions) {
+            for (int i = 0; i < this.mStagedSessions.size(); i++) {
+                try {
+                    PackageInstallerSession.StagedSession stagedSession = (PackageInstallerSession.StagedSession) ((StagedSession) this.mStagedSessions.valueAt(i));
+                    if (stagedSession.isSessionReady() && !PackageInstallerSession.this.isDestroyed() && !PackageInstallerSession.this.hasParentSessionId() && stagedSession.containsApexSession()) {
+                        arrayList.addAll(getStagedApexInfos(stagedSession).keySet());
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
         }
         return arrayList;
     }
 
-    public final void checkInstallationOfApkInApexSuccessful(StagedSession stagedSession) {
-        List extractApexSessions = extractApexSessions(stagedSession);
-        if (extractApexSessions.isEmpty()) {
-            return;
-        }
-        Iterator it = extractApexSessions.iterator();
-        while (it.hasNext()) {
-            String packageName = ((StagedSession) it.next()).getPackageName();
-            String apkInApexInstallError = this.mApexManager.getApkInApexInstallError(packageName);
-            if (apkInApexInstallError != null) {
-                throw new PackageManagerException(-128, "Failed to install apk-in-apex of " + packageName + " : " + apkInApexInstallError);
-            }
-        }
-    }
-
-    public final void snapshotAndRestoreForApexSession(StagedSession stagedSession) {
-        if ((stagedSession.sessionParams().installFlags & 262144) != 0 || stagedSession.sessionParams().installReason == 5) {
-            List extractApexSessions = extractApexSessions(stagedSession);
-            if (extractApexSessions.isEmpty()) {
-                return;
-            }
-            int[] userIds = ((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).getUserIds();
-            RollbackManagerInternal rollbackManagerInternal = (RollbackManagerInternal) LocalServices.getService(RollbackManagerInternal.class);
-            int size = extractApexSessions.size();
-            for (int i = 0; i < size; i++) {
-                String packageName = ((StagedSession) extractApexSessions.get(i)).getPackageName();
-                snapshotAndRestoreApexUserData(packageName, userIds, rollbackManagerInternal);
-                List apksInApex = this.mApexManager.getApksInApex(packageName);
-                int size2 = apksInApex.size();
-                for (int i2 = 0; i2 < size2; i2++) {
-                    snapshotAndRestoreApkInApexUserData((String) apksInApex.get(i2), userIds, rollbackManagerInternal);
+    public final void notifyStagedApexObservers() {
+        synchronized (this.mStagedApexObservers) {
+            Iterator it = ((ArrayList) this.mStagedApexObservers).iterator();
+            while (it.hasNext()) {
+                IStagedApexObserver iStagedApexObserver = (IStagedApexObserver) it.next();
+                ApexStagedEvent apexStagedEvent = new ApexStagedEvent();
+                apexStagedEvent.stagedApexModuleNames = (String[]) ((ArrayList) getStagedApexModuleNames()).toArray(new String[0]);
+                try {
+                    iStagedApexObserver.onApexStaged(apexStagedEvent);
+                } catch (RemoteException e) {
+                    Slog.w("StagingManager", "Failed to contact the observer " + e.getMessage());
                 }
             }
         }
     }
 
-    public final void snapshotAndRestoreApexUserData(String str, int[] iArr, RollbackManagerInternal rollbackManagerInternal) {
-        rollbackManagerInternal.snapshotAndRestoreUserData(str, UserHandle.toUserHandles(iArr), 0, 0L, null, 0);
+    public void onBootCompletedBroadcastReceived() {
+        this.mBootCompleted.complete(null);
+        BackgroundThread.getExecutor().execute(new StagingManager$$ExternalSyntheticLambda0(0, this));
     }
 
-    public final void snapshotAndRestoreApkInApexUserData(String str, int[] iArr, RollbackManagerInternal rollbackManagerInternal) {
-        PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
-        if (packageManagerInternal.getPackage(str) == null) {
-            Slog.e("StagingManager", "Could not find package: " + str + "for snapshotting/restoring user data.");
-            return;
-        }
-        PackageStateInternal packageStateInternal = packageManagerInternal.getPackageStateInternal(str);
-        if (packageStateInternal != null) {
-            rollbackManagerInternal.snapshotAndRestoreUserData(str, UserHandle.toUserHandles(PackageStateUtils.queryInstalledUsers(packageStateInternal, iArr, true)), packageStateInternal.getAppId(), packageStateInternal.getUserStateOrDefault(0).getCeDataInode(), packageStateInternal.getSeInfo(), 0);
-        }
-    }
-
-    public final void prepareForLoggingApexdRevert(StagedSession stagedSession, String str) {
-        synchronized (this.mFailedPackageNames) {
-            this.mNativeFailureReason = str;
-            if (stagedSession.getPackageName() != null) {
-                this.mFailedPackageNames.add(stagedSession.getPackageName());
-            }
-        }
-    }
-
-    public final void resumeSession(StagedSession stagedSession, boolean z, boolean z2) {
-        Slog.d("StagingManager", "Resuming session " + stagedSession.sessionId());
-        boolean containsApexSession = stagedSession.containsApexSession();
-        if (z && !z2) {
-            String str = "Reverting back to safe state. Marking " + stagedSession.sessionId() + " as failed.";
-            String reasonForRevert = getReasonForRevert();
-            if (!TextUtils.isEmpty(reasonForRevert)) {
-                str = str + " Reason for revert: " + reasonForRevert;
-            }
-            Slog.d("StagingManager", str);
-            stagedSession.setSessionFailed(-110, str);
-            return;
-        }
-        if (containsApexSession) {
-            checkInstallationOfApkInApexSuccessful(stagedSession);
-            checkDuplicateApkInApex(stagedSession);
-            snapshotAndRestoreForApexSession(stagedSession);
-            Slog.i("StagingManager", "APEX packages in session " + stagedSession.sessionId() + " were successfully activated. Proceeding with APK packages, if any");
-        }
-        Slog.d("StagingManager", "Installing APK packages in session " + stagedSession.sessionId());
-        TimingsTraceLog timingsTraceLog = new TimingsTraceLog("StagingManagerTiming", 262144L);
-        timingsTraceLog.traceBegin("installApksInSession");
-        installApksInSession(stagedSession);
-        timingsTraceLog.traceEnd();
-        if (containsApexSession) {
-            if (z) {
-                synchronized (this.mSuccessfulStagedSessionIds) {
-                    this.mSuccessfulStagedSessionIds.add(Integer.valueOf(stagedSession.sessionId()));
-                }
-            } else {
-                this.mApexManager.markStagedSessionSuccessful(stagedSession.sessionId());
-                SystemProperties.set("sys.staged_apex.state", "success");
-            }
-        }
-    }
-
-    public void onInstallationFailure(StagedSession stagedSession, PackageManagerException packageManagerException, boolean z, boolean z2) {
-        stagedSession.setSessionFailed(packageManagerException.error, packageManagerException.getMessage());
-        abortCheckpoint("Failed to install sessionId: " + stagedSession.sessionId() + " Error: " + packageManagerException.getMessage(), z, z2);
-        if (stagedSession.containsApexSession()) {
+    public final void onInstallationFailure(StagedSession stagedSession, PackageManagerException packageManagerException, boolean z, boolean z2) {
+        PackageInstallerSession.StagedSession stagedSession2 = (PackageInstallerSession.StagedSession) stagedSession;
+        stagedSession2.setSessionFailed(packageManagerException.error, packageManagerException.getMessage());
+        abortCheckpoint("Failed to install sessionId: " + PackageInstallerSession.this.sessionId + " Error: " + packageManagerException.getMessage(), z, z2);
+        if (stagedSession2.containsApexSession()) {
             if (!this.mApexManager.revertActiveSessions()) {
                 Slog.e("StagingManager", "Failed to abort APEXd session");
             } else {
@@ -351,341 +305,132 @@ public class StagingManager {
         }
     }
 
-    public final String getReasonForRevert() {
-        if (!TextUtils.isEmpty(this.mFailureReason)) {
-            return this.mFailureReason;
-        }
-        if (TextUtils.isEmpty(this.mNativeFailureReason)) {
-            return "";
-        }
-        return "Session reverted due to crashing native process: " + this.mNativeFailureReason;
-    }
-
-    public final void checkDuplicateApkInApex(StagedSession stagedSession) {
-        if (stagedSession.isMultiPackage()) {
-            ArraySet arraySet = new ArraySet();
-            for (StagedSession stagedSession2 : stagedSession.getChildSessions()) {
-                if (!stagedSession2.isApexSession()) {
-                    arraySet.add(stagedSession2.getPackageName());
-                }
+    public final void resumeSession(StagedSession stagedSession, boolean z, boolean z2) {
+        int i;
+        String str;
+        StringBuilder sb = new StringBuilder("Resuming session ");
+        PackageInstallerSession.StagedSession stagedSession2 = (PackageInstallerSession.StagedSession) stagedSession;
+        sb.append(PackageInstallerSession.this.sessionId);
+        Slog.d("StagingManager", sb.toString());
+        boolean containsApexSession = stagedSession2.containsApexSession();
+        if (z && !z2) {
+            String m = AmFmBandRange$$ExternalSyntheticOutline0.m(PackageInstallerSession.this.sessionId, new StringBuilder("Reverting back to safe state. Marking "), " as failed.");
+            String reasonForRevert = getReasonForRevert();
+            if (!TextUtils.isEmpty(reasonForRevert)) {
+                m = AnyMotionDetector$$ExternalSyntheticOutline0.m(m, " Reason for revert: ", reasonForRevert);
             }
-            for (StagedSession stagedSession3 : extractApexSessions(stagedSession)) {
-                String packageName = stagedSession3.getPackageName();
-                for (String str : this.mApexManager.getApksInApex(packageName)) {
-                    if (!arraySet.add(str)) {
-                        throw new PackageManagerException(-128, "Package: " + packageName + " in session: " + stagedSession3.sessionId() + " has duplicate apk-in-apex: " + str, (Throwable) null);
+            Slog.d("StagingManager", m);
+            stagedSession2.setSessionFailed(-110, m);
+            return;
+        }
+        if (containsApexSession) {
+            ArrayList arrayList = (ArrayList) extractApexSessions(stagedSession);
+            if (!arrayList.isEmpty()) {
+                Iterator it = arrayList.iterator();
+                while (it.hasNext()) {
+                    String packageName = PackageInstallerSession.this.getPackageName();
+                    ApexManager.ApexManagerImpl apexManagerImpl = (ApexManager.ApexManagerImpl) this.mApexManager;
+                    synchronized (apexManagerImpl.mLock) {
+                        try {
+                            Preconditions.checkState(apexManagerImpl.mPackageNameToApexModuleName != null, "APEX packages have not been scanned");
+                            String str2 = (String) apexManagerImpl.mPackageNameToApexModuleName.get(packageName);
+                            str = str2 == null ? null : (String) ((ArrayMap) apexManagerImpl.mErrorWithApkInApex).get(str2);
+                        } finally {
+                        }
+                    }
+                    if (str != null) {
+                        throw new PackageManagerException(-128, BootReceiver$$ExternalSyntheticOutline0.m("Failed to install apk-in-apex of ", packageName, " : ", str));
                     }
                 }
             }
+            if (PackageInstallerSession.this.params.isMultiPackage) {
+                ArraySet arraySet = new ArraySet();
+                Iterator it2 = stagedSession2.getChildSessions().iterator();
+                while (it2.hasNext()) {
+                    PackageInstallerSession.StagedSession stagedSession3 = (PackageInstallerSession.StagedSession) ((StagedSession) it2.next());
+                    if (!stagedSession3.isApexSession()) {
+                        arraySet.add(PackageInstallerSession.this.getPackageName());
+                    }
+                }
+                Iterator it3 = ((ArrayList) extractApexSessions(stagedSession2)).iterator();
+                while (it3.hasNext()) {
+                    PackageInstallerSession.StagedSession stagedSession4 = (PackageInstallerSession.StagedSession) ((StagedSession) it3.next());
+                    String packageName2 = PackageInstallerSession.this.getPackageName();
+                    for (String str3 : this.mApexManager.getApksInApex(packageName2)) {
+                        if (!arraySet.add(str3)) {
+                            StringBuilder m2 = DumpUtils$$ExternalSyntheticOutline0.m("Package: ", packageName2, " in session: ");
+                            m2.append(PackageInstallerSession.this.sessionId);
+                            m2.append(" has duplicate apk-in-apex: ");
+                            m2.append(str3);
+                            throw new PackageManagerException(-128, m2.toString(), null);
+                        }
+                    }
+                }
+            }
+            PackageInstaller.SessionParams sessionParams = PackageInstallerSession.this.params;
+            if ((sessionParams.installFlags & 262144) != 0 || sessionParams.installReason == 5) {
+                ArrayList arrayList2 = (ArrayList) extractApexSessions(stagedSession);
+                if (!arrayList2.isEmpty()) {
+                    int[] userIds = ((UserManagerInternal) LocalServices.getService(UserManagerInternal.class)).getUserIds();
+                    RollbackManagerInternal rollbackManagerInternal = (RollbackManagerInternal) LocalServices.getService(RollbackManagerInternal.class);
+                    int size = arrayList2.size();
+                    for (int i2 = 0; i2 < size; i2++) {
+                        String packageName3 = PackageInstallerSession.this.getPackageName();
+                        List userHandles = UserHandle.toUserHandles(userIds);
+                        RollbackManagerServiceImpl rollbackManagerServiceImpl = (RollbackManagerServiceImpl) rollbackManagerInternal;
+                        rollbackManagerServiceImpl.assertNotInWorkerThread();
+                        rollbackManagerServiceImpl.snapshotAndRestoreUserData(packageName3, UserHandle.fromUserHandles(userHandles), 0, 0L, null, 0);
+                        List apksInApex = this.mApexManager.getApksInApex(packageName3);
+                        int size2 = apksInApex.size();
+                        int i3 = 0;
+                        while (i3 < size2) {
+                            String str4 = (String) apksInApex.get(i3);
+                            PackageManagerInternal packageManagerInternal = (PackageManagerInternal) LocalServices.getService(PackageManagerInternal.class);
+                            if (packageManagerInternal.getPackage(str4) == null) {
+                                Slog.e("StagingManager", "Could not find package: " + str4 + "for snapshotting/restoring user data.");
+                            } else {
+                                PackageStateInternal packageStateInternal = packageManagerInternal.getPackageStateInternal(str4);
+                                if (packageStateInternal != null) {
+                                    PackageSetting packageSetting = (PackageSetting) packageStateInternal;
+                                    int i4 = packageSetting.mAppId;
+                                    long ceDataInode = packageStateInternal.getUserStateOrDefault(0).getCeDataInode();
+                                    int[] queryInstalledUsers = PackageStateUtils.queryInstalledUsers(packageStateInternal, userIds);
+                                    String seInfo = packageSetting.getSeInfo();
+                                    List userHandles2 = UserHandle.toUserHandles(queryInstalledUsers);
+                                    rollbackManagerServiceImpl.assertNotInWorkerThread();
+                                    i = i3;
+                                    rollbackManagerServiceImpl.snapshotAndRestoreUserData(str4, UserHandle.fromUserHandles(userHandles2), i4, ceDataInode, seInfo, 0);
+                                    i3 = i + 1;
+                                }
+                            }
+                            i = i3;
+                            i3 = i + 1;
+                        }
+                    }
+                }
+            }
+            CustomizedBinderCallsStatsInternal$$ExternalSyntheticOutline0.m(new StringBuilder("APEX packages in session "), PackageInstallerSession.this.sessionId, " were successfully activated. Proceeding with APK packages, if any", "StagingManager");
         }
-    }
-
-    public final void installApksInSession(StagedSession stagedSession) {
+        Slog.d("StagingManager", "Installing APK packages in session " + PackageInstallerSession.this.sessionId);
+        TimingsTraceLog timingsTraceLog = new TimingsTraceLog("StagingManagerTiming", 262144L);
+        timingsTraceLog.traceBegin("installApksInSession");
         try {
-            stagedSession.installSession().get();
+            ((PackageInstallerSession.StagedSession) stagedSession).installSession().get();
+            timingsTraceLog.traceEnd();
+            if (containsApexSession) {
+                if (z) {
+                    synchronized (this.mSuccessfulStagedSessionIds) {
+                        ((ArrayList) this.mSuccessfulStagedSessionIds).add(Integer.valueOf(PackageInstallerSession.this.sessionId));
+                    }
+                } else {
+                    this.mApexManager.markStagedSessionSuccessful(PackageInstallerSession.this.sessionId);
+                    SystemProperties.set("sys.staged_apex.state", "success");
+                }
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e2) {
             throw ((PackageManagerException) e2.getCause());
-        }
-    }
-
-    public void commitSession(StagedSession stagedSession) {
-        createSession(stagedSession);
-        handleCommittedSession(stagedSession);
-    }
-
-    public final void handleCommittedSession(StagedSession stagedSession) {
-        if (stagedSession.isSessionReady() && stagedSession.containsApexSession()) {
-            notifyStagedApexObservers();
-        }
-    }
-
-    public void createSession(StagedSession stagedSession) {
-        synchronized (this.mStagedSessions) {
-            this.mStagedSessions.append(stagedSession.sessionId(), stagedSession);
-        }
-    }
-
-    public void abortSession(StagedSession stagedSession) {
-        synchronized (this.mStagedSessions) {
-            this.mStagedSessions.remove(stagedSession.sessionId());
-        }
-    }
-
-    public void abortCommittedSession(StagedSession stagedSession) {
-        int sessionId = stagedSession.sessionId();
-        if (stagedSession.isInTerminalState()) {
-            Slog.w("StagingManager", "Cannot abort session in final state: " + sessionId);
-            return;
-        }
-        if (!stagedSession.isDestroyed()) {
-            throw new IllegalStateException("Committed session must be destroyed before aborting it from StagingManager");
-        }
-        if (getStagedSession(sessionId) == null) {
-            Slog.w("StagingManager", "Session " + sessionId + " has been abandoned already");
-            return;
-        }
-        if (stagedSession.isSessionReady()) {
-            if (!ensureActiveApexSessionIsAborted(stagedSession)) {
-                Slog.e("StagingManager", "Failed to abort apex session " + stagedSession.sessionId());
-            }
-            if (stagedSession.containsApexSession()) {
-                notifyStagedApexObservers();
-            }
-        }
-        abortSession(stagedSession);
-    }
-
-    public final boolean ensureActiveApexSessionIsAborted(StagedSession stagedSession) {
-        ApexSessionInfo stagedSessionInfo;
-        if (!stagedSession.containsApexSession() || (stagedSessionInfo = this.mApexManager.getStagedSessionInfo(stagedSession.sessionId())) == null || isApexSessionFinalized(stagedSessionInfo)) {
-            return true;
-        }
-        return this.mApexManager.abortStagedSession(stagedSession.sessionId());
-    }
-
-    public final boolean isApexSessionFinalized(ApexSessionInfo apexSessionInfo) {
-        return apexSessionInfo.isUnknown || apexSessionInfo.isActivationFailed || apexSessionInfo.isSuccess || apexSessionInfo.isReverted;
-    }
-
-    public static boolean isApexSessionFailed(ApexSessionInfo apexSessionInfo) {
-        return apexSessionInfo.isActivationFailed || apexSessionInfo.isUnknown || apexSessionInfo.isReverted || apexSessionInfo.isRevertInProgress || apexSessionInfo.isRevertFailed;
-    }
-
-    public final void handleNonReadyAndDestroyedSessions(List list) {
-        int size = list.size();
-        int i = 0;
-        while (i < size) {
-            final StagedSession stagedSession = (StagedSession) list.get(i);
-            if (stagedSession.isDestroyed()) {
-                stagedSession.abandon();
-                list.set(i, (StagedSession) list.set(size - 1, stagedSession));
-            } else if (stagedSession.isSessionReady()) {
-                i++;
-            } else {
-                Slog.i("StagingManager", "Restart verification for session=" + stagedSession.sessionId());
-                this.mBootCompleted.thenRun(new Runnable() { // from class: com.android.server.pm.StagingManager$$ExternalSyntheticLambda1
-                    @Override // java.lang.Runnable
-                    public final void run() {
-                        StagingManager.StagedSession.this.verifySession();
-                    }
-                });
-                list.set(i, (StagedSession) list.set(size + (-1), stagedSession));
-            }
-            size--;
-        }
-        list.subList(size, list.size()).clear();
-    }
-
-    public void restoreSessions(List list, boolean z) {
-        TimingsTraceLog timingsTraceLog = new TimingsTraceLog("StagingManagerTiming", 262144L);
-        timingsTraceLog.traceBegin("restoreSessions");
-        if (SystemProperties.getBoolean("sys.boot_completed", false)) {
-            return;
-        }
-        for (int i = 0; i < list.size(); i++) {
-            StagedSession stagedSession = (StagedSession) list.get(i);
-            Preconditions.checkArgument(!stagedSession.hasParentSessionId(), stagedSession.sessionId() + " is a child session");
-            Preconditions.checkArgument(stagedSession.isCommitted(), stagedSession.sessionId() + " is not committed");
-            Preconditions.checkArgument(true ^ stagedSession.isInTerminalState(), stagedSession.sessionId() + " is in terminal state");
-            createSession(stagedSession);
-        }
-        if (z) {
-            for (int i2 = 0; i2 < list.size(); i2++) {
-                ((StagedSession) list.get(i2)).setSessionFailed(-128, "Build fingerprint has changed");
-            }
-            return;
-        }
-        try {
-            boolean supportsCheckpoint = InstallLocationUtils.getStorageManager().supportsCheckpoint();
-            boolean needsCheckpoint = InstallLocationUtils.getStorageManager().needsCheckpoint();
-            if (list.size() > 1 && !supportsCheckpoint) {
-                throw new IllegalStateException("Detected multiple staged sessions on a device without fs-checkpoint support");
-            }
-            handleNonReadyAndDestroyedSessions(list);
-            SparseArray sessions = this.mApexManager.getSessions();
-            boolean z2 = false;
-            boolean z3 = false;
-            for (int i3 = 0; i3 < list.size(); i3++) {
-                StagedSession stagedSession2 = (StagedSession) list.get(i3);
-                if (stagedSession2.containsApexSession()) {
-                    ApexSessionInfo apexSessionInfo = (ApexSessionInfo) sessions.get(stagedSession2.sessionId());
-                    if (apexSessionInfo == null || apexSessionInfo.isUnknown) {
-                        stagedSession2.setSessionFailed(-128, "apexd did not know anything about a staged session supposed to be activated");
-                    } else if (isApexSessionFailed(apexSessionInfo)) {
-                        if (!TextUtils.isEmpty(apexSessionInfo.crashingNativeProcess)) {
-                            prepareForLoggingApexdRevert(stagedSession2, apexSessionInfo.crashingNativeProcess);
-                        }
-                        String reasonForRevert = getReasonForRevert();
-                        String str = "APEX activation failed.";
-                        if (!TextUtils.isEmpty(reasonForRevert)) {
-                            str = "APEX activation failed. Reason: " + reasonForRevert;
-                        } else if (!TextUtils.isEmpty(apexSessionInfo.errorMessage)) {
-                            str = "APEX activation failed. Error: " + apexSessionInfo.errorMessage;
-                        }
-                        Slog.d("StagingManager", str);
-                        stagedSession2.setSessionFailed(-128, str);
-                    } else if (apexSessionInfo.isActivated || apexSessionInfo.isSuccess) {
-                        z2 = true;
-                    } else if (apexSessionInfo.isStaged) {
-                        stagedSession2.setSessionFailed(-128, "Staged session " + stagedSession2.sessionId() + " at boot didn't activate nor fail. Marking it as failed anyway.");
-                    } else {
-                        Slog.w("StagingManager", "Apex session " + stagedSession2.sessionId() + " is in impossible state");
-                        stagedSession2.setSessionFailed(-128, "Impossible state");
-                    }
-                    z3 = true;
-                }
-            }
-            if (z2 && z3) {
-                abortCheckpoint("Found both applied and failed apex sessions", supportsCheckpoint, needsCheckpoint);
-                return;
-            }
-            if (z3) {
-                for (int i4 = 0; i4 < list.size(); i4++) {
-                    StagedSession stagedSession3 = (StagedSession) list.get(i4);
-                    if (!stagedSession3.isSessionFailed()) {
-                        stagedSession3.setSessionFailed(-128, "Another apex session failed");
-                    }
-                }
-                return;
-            }
-            for (int i5 = 0; i5 < list.size(); i5++) {
-                StagedSession stagedSession4 = (StagedSession) list.get(i5);
-                try {
-                    resumeSession(stagedSession4, supportsCheckpoint, needsCheckpoint);
-                } catch (PackageManagerException e) {
-                    onInstallationFailure(stagedSession4, e, supportsCheckpoint, needsCheckpoint);
-                } catch (Exception e2) {
-                    Slog.e("StagingManager", "Staged install failed due to unhandled exception", e2);
-                    onInstallationFailure(stagedSession4, new PackageManagerException(-110, "Staged install failed due to unhandled exception: " + e2), supportsCheckpoint, needsCheckpoint);
-                }
-            }
-            timingsTraceLog.traceEnd();
-        } catch (RemoteException e3) {
-            throw new IllegalStateException("Failed to get checkpoint status", e3);
-        }
-    }
-
-    /* renamed from: logFailedApexSessionsIfNecessary, reason: merged with bridge method [inline-methods] */
-    public final void lambda$onBootCompletedBroadcastReceived$1() {
-        synchronized (this.mFailedPackageNames) {
-            if (!this.mFailedPackageNames.isEmpty()) {
-                WatchdogRollbackLogger.logApexdRevert(this.mContext, this.mFailedPackageNames, this.mNativeFailureReason);
-            }
-        }
-    }
-
-    public final void markStagedSessionsAsSuccessful() {
-        synchronized (this.mSuccessfulStagedSessionIds) {
-            for (int i = 0; i < this.mSuccessfulStagedSessionIds.size(); i++) {
-                this.mApexManager.markStagedSessionSuccessful(((Integer) this.mSuccessfulStagedSessionIds.get(i)).intValue());
-            }
-            if (!this.mSuccessfulStagedSessionIds.isEmpty()) {
-                SystemProperties.set("sys.staged_apex.state", "success");
-            }
-        }
-    }
-
-    public void systemReady() {
-        new Lifecycle(this.mContext).startService(this);
-        this.mContext.registerReceiver(new BroadcastReceiver() { // from class: com.android.server.pm.StagingManager.2
-            @Override // android.content.BroadcastReceiver
-            public void onReceive(Context context, Intent intent) {
-                StagingManager.this.onBootCompletedBroadcastReceived();
-                context.unregisterReceiver(this);
-            }
-        }, new IntentFilter("android.intent.action.BOOT_COMPLETED"));
-        this.mFailureReasonFile.delete();
-    }
-
-    public void onBootCompletedBroadcastReceived() {
-        this.mBootCompleted.complete(null);
-        BackgroundThread.getExecutor().execute(new Runnable() { // from class: com.android.server.pm.StagingManager$$ExternalSyntheticLambda0
-            @Override // java.lang.Runnable
-            public final void run() {
-                StagingManager.this.lambda$onBootCompletedBroadcastReceived$1();
-            }
-        });
-    }
-
-    public final StagedSession getStagedSession(int i) {
-        StagedSession stagedSession;
-        synchronized (this.mStagedSessions) {
-            stagedSession = (StagedSession) this.mStagedSessions.get(i);
-        }
-        return stagedSession;
-    }
-
-    public Map getStagedApexInfos(StagedSession stagedSession) {
-        Preconditions.checkArgument(stagedSession != null, "Session is null");
-        Preconditions.checkArgument(true ^ stagedSession.hasParentSessionId(), stagedSession.sessionId() + " session has parent session");
-        Preconditions.checkArgument(stagedSession.containsApexSession(), stagedSession.sessionId() + " session does not contain apex");
-        if (!stagedSession.isSessionReady() || stagedSession.isDestroyed()) {
-            return Collections.emptyMap();
-        }
-        ApexSessionParams apexSessionParams = new ApexSessionParams();
-        apexSessionParams.sessionId = stagedSession.sessionId();
-        IntArray intArray = new IntArray();
-        if (stagedSession.isMultiPackage()) {
-            for (StagedSession stagedSession2 : stagedSession.getChildSessions()) {
-                if (stagedSession2.isApexSession()) {
-                    intArray.add(stagedSession2.sessionId());
-                }
-            }
-        }
-        apexSessionParams.childSessionIds = intArray.toArray();
-        ApexInfo[] stagedApexInfos = this.mApexManager.getStagedApexInfos(apexSessionParams);
-        ArrayMap arrayMap = new ArrayMap();
-        for (ApexInfo apexInfo : stagedApexInfos) {
-            arrayMap.put(apexInfo.moduleName, apexInfo);
-        }
-        return arrayMap;
-    }
-
-    public List getStagedApexModuleNames() {
-        ArrayList arrayList = new ArrayList();
-        synchronized (this.mStagedSessions) {
-            for (int i = 0; i < this.mStagedSessions.size(); i++) {
-                StagedSession stagedSession = (StagedSession) this.mStagedSessions.valueAt(i);
-                if (stagedSession.isSessionReady() && !stagedSession.isDestroyed() && !stagedSession.hasParentSessionId() && stagedSession.containsApexSession()) {
-                    arrayList.addAll(getStagedApexInfos(stagedSession).keySet());
-                }
-            }
-        }
-        return arrayList;
-    }
-
-    public StagedApexInfo getStagedApexInfo(String str) {
-        ApexInfo apexInfo;
-        synchronized (this.mStagedSessions) {
-            for (int i = 0; i < this.mStagedSessions.size(); i++) {
-                StagedSession stagedSession = (StagedSession) this.mStagedSessions.valueAt(i);
-                if (stagedSession.isSessionReady() && !stagedSession.isDestroyed() && !stagedSession.hasParentSessionId() && stagedSession.containsApexSession() && (apexInfo = (ApexInfo) getStagedApexInfos(stagedSession).get(str)) != null) {
-                    StagedApexInfo stagedApexInfo = new StagedApexInfo();
-                    stagedApexInfo.moduleName = apexInfo.moduleName;
-                    stagedApexInfo.diskImagePath = apexInfo.modulePath;
-                    stagedApexInfo.versionCode = apexInfo.versionCode;
-                    stagedApexInfo.versionName = apexInfo.versionName;
-                    stagedApexInfo.hasClassPathJars = apexInfo.hasClassPathJars;
-                    return stagedApexInfo;
-                }
-            }
-            return null;
-        }
-    }
-
-    public final void notifyStagedApexObservers() {
-        synchronized (this.mStagedApexObservers) {
-            for (IStagedApexObserver iStagedApexObserver : this.mStagedApexObservers) {
-                ApexStagedEvent apexStagedEvent = new ApexStagedEvent();
-                apexStagedEvent.stagedApexModuleNames = (String[]) getStagedApexModuleNames().toArray(new String[0]);
-                try {
-                    iStagedApexObserver.onApexStaged(apexStagedEvent);
-                } catch (RemoteException e) {
-                    Slog.w("StagingManager", "Failed to contact the observer " + e.getMessage());
-                }
-            }
         }
     }
 }

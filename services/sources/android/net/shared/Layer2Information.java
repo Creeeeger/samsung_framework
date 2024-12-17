@@ -4,6 +4,7 @@ import android.net.Layer2InformationParcelable;
 import android.net.MacAddress;
 import java.util.Objects;
 
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
 /* loaded from: classes.dex */
 public class Layer2Information {
     public final MacAddress mBssid;
@@ -14,25 +15,6 @@ public class Layer2Information {
         this.mL2Key = str;
         this.mCluster = str2;
         this.mBssid = macAddress;
-    }
-
-    public String toString() {
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("L2Key: ");
-        stringBuffer.append(this.mL2Key);
-        stringBuffer.append(", Cluster: ");
-        stringBuffer.append(this.mCluster);
-        stringBuffer.append(", bssid: ");
-        stringBuffer.append(this.mBssid);
-        return stringBuffer.toString();
-    }
-
-    public Layer2InformationParcelable toStableParcelable() {
-        Layer2InformationParcelable layer2InformationParcelable = new Layer2InformationParcelable();
-        layer2InformationParcelable.l2Key = this.mL2Key;
-        layer2InformationParcelable.cluster = this.mCluster;
-        layer2InformationParcelable.bssid = this.mBssid;
-        return layer2InformationParcelable;
     }
 
     public static Layer2Information fromStableParcelable(Layer2InformationParcelable layer2InformationParcelable) {
@@ -52,5 +34,23 @@ public class Layer2Information {
 
     public int hashCode() {
         return Objects.hash(this.mL2Key, this.mCluster, this.mBssid);
+    }
+
+    public Layer2InformationParcelable toStableParcelable() {
+        Layer2InformationParcelable layer2InformationParcelable = new Layer2InformationParcelable();
+        layer2InformationParcelable.l2Key = this.mL2Key;
+        layer2InformationParcelable.cluster = this.mCluster;
+        layer2InformationParcelable.bssid = this.mBssid;
+        return layer2InformationParcelable;
+    }
+
+    public String toString() {
+        StringBuffer stringBuffer = new StringBuffer("L2Key: ");
+        stringBuffer.append(this.mL2Key);
+        stringBuffer.append(", Cluster: ");
+        stringBuffer.append(this.mCluster);
+        stringBuffer.append(", bssid: ");
+        stringBuffer.append(this.mBssid);
+        return stringBuffer.toString();
     }
 }

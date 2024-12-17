@@ -6,328 +6,392 @@ import android.app.time.TimeState;
 import android.app.time.UnixEpochTime;
 import android.app.timedetector.ManualTimeSuggestion;
 import android.app.timedetector.TelephonyTimeSuggestion;
+import android.app.timedetector.TimeSuggestionHelper;
+import android.os.Binder;
 import android.os.ShellCommand;
+import com.android.server.location.gnss.TimeDetectorNetworkTimeHelper;
+import com.android.server.timezonedetector.CallerIdentityInjector;
 import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/* loaded from: classes3.dex */
-public class TimeDetectorShellCommand extends ShellCommand {
+/* compiled from: qb/89523975 b19e8d3036bb0bb04c0b123e55579fdc5d41bbd9c06260ba21f1b25f8ce00bef */
+/* loaded from: classes2.dex */
+public final class TimeDetectorShellCommand extends ShellCommand {
     public final TimeDetectorService mInterface;
 
     public TimeDetectorShellCommand(TimeDetectorService timeDetectorService) {
         this.mInterface = timeDetectorService;
     }
 
-    public int onCommand(String str) {
+    public final int onCommand(String str) {
+        final int i = 4;
+        final int i2 = 3;
+        final int i3 = 2;
+        final int i4 = 1;
+        final int i5 = 0;
         if (str == null) {
             return handleDefaultCommands(str);
         }
-        char c = 65535;
-        switch (str.hashCode()) {
-            case -1630622545:
-                if (str.equals("suggest_telephony_time")) {
-                    c = 0;
-                    break;
+        switch (str) {
+            case "suggest_telephony_time":
+                Supplier supplier = new Supplier(this) { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda0
+                    public final /* synthetic */ TimeDetectorShellCommand f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        int i6 = i4;
+                        TimeDetectorShellCommand timeDetectorShellCommand = this.f$0;
+                        timeDetectorShellCommand.getClass();
+                        switch (i6) {
+                            case 0:
+                                return NetworkTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 1:
+                                return TelephonyTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 2:
+                                return new GnssTimeSuggestion(TimeSuggestionHelper.handleParseCommandLineArg(GnssTimeSuggestion.class, timeDetectorShellCommand));
+                            case 3:
+                                return ExternalTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            default:
+                                return ManualTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                        }
+                    }
+                };
+                final TimeDetectorService timeDetectorService = this.mInterface;
+                Objects.requireNonNull(timeDetectorService);
+                return runSuggestTime(supplier, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        int i6 = i4;
+                        TimeDetectorService timeDetectorService2 = timeDetectorService;
+                        switch (i6) {
+                            case 0:
+                                NetworkTimeSuggestion networkTimeSuggestion = (NetworkTimeSuggestion) obj;
+                                timeDetectorService2.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest network time");
+                                Objects.requireNonNull(networkTimeSuggestion);
+                                timeDetectorService2.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService2, networkTimeSuggestion, 3));
+                                break;
+                            case 1:
+                                timeDetectorService2.suggestTelephonyTime((TelephonyTimeSuggestion) obj);
+                                break;
+                            case 2:
+                                GnssTimeSuggestion gnssTimeSuggestion = (GnssTimeSuggestion) obj;
+                                timeDetectorService2.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest gnss time");
+                                Objects.requireNonNull(gnssTimeSuggestion);
+                                timeDetectorService2.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService2, gnssTimeSuggestion, 2));
+                                break;
+                            case 3:
+                                timeDetectorService2.suggestExternalTime((ExternalTimeSuggestion) obj);
+                                break;
+                            default:
+                                timeDetectorService2.suggestManualTime((ManualTimeSuggestion) obj);
+                                break;
+                        }
+                    }
+                });
+            case "is_auto_detection_enabled":
+                getOutPrintWriter().println(this.mInterface.getCapabilitiesAndConfig().getConfiguration().isAutoDetectionEnabled());
+                return 0;
+            case "suggest_network_time":
+                Supplier supplier2 = new Supplier(this) { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda0
+                    public final /* synthetic */ TimeDetectorShellCommand f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        int i6 = i5;
+                        TimeDetectorShellCommand timeDetectorShellCommand = this.f$0;
+                        timeDetectorShellCommand.getClass();
+                        switch (i6) {
+                            case 0:
+                                return NetworkTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 1:
+                                return TelephonyTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 2:
+                                return new GnssTimeSuggestion(TimeSuggestionHelper.handleParseCommandLineArg(GnssTimeSuggestion.class, timeDetectorShellCommand));
+                            case 3:
+                                return ExternalTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            default:
+                                return ManualTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                        }
+                    }
+                };
+                final TimeDetectorService timeDetectorService2 = this.mInterface;
+                Objects.requireNonNull(timeDetectorService2);
+                return runSuggestTime(supplier2, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        int i6 = i5;
+                        TimeDetectorService timeDetectorService22 = timeDetectorService2;
+                        switch (i6) {
+                            case 0:
+                                NetworkTimeSuggestion networkTimeSuggestion = (NetworkTimeSuggestion) obj;
+                                timeDetectorService22.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest network time");
+                                Objects.requireNonNull(networkTimeSuggestion);
+                                timeDetectorService22.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService22, networkTimeSuggestion, 3));
+                                break;
+                            case 1:
+                                timeDetectorService22.suggestTelephonyTime((TelephonyTimeSuggestion) obj);
+                                break;
+                            case 2:
+                                GnssTimeSuggestion gnssTimeSuggestion = (GnssTimeSuggestion) obj;
+                                timeDetectorService22.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest gnss time");
+                                Objects.requireNonNull(gnssTimeSuggestion);
+                                timeDetectorService22.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService22, gnssTimeSuggestion, 2));
+                                break;
+                            case 3:
+                                timeDetectorService22.suggestExternalTime((ExternalTimeSuggestion) obj);
+                                break;
+                            default:
+                                timeDetectorService22.suggestManualTime((ManualTimeSuggestion) obj);
+                                break;
+                        }
+                    }
+                });
+            case "suggest_gnss_time":
+                Supplier supplier3 = new Supplier(this) { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda0
+                    public final /* synthetic */ TimeDetectorShellCommand f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        int i6 = i3;
+                        TimeDetectorShellCommand timeDetectorShellCommand = this.f$0;
+                        timeDetectorShellCommand.getClass();
+                        switch (i6) {
+                            case 0:
+                                return NetworkTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 1:
+                                return TelephonyTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 2:
+                                return new GnssTimeSuggestion(TimeSuggestionHelper.handleParseCommandLineArg(GnssTimeSuggestion.class, timeDetectorShellCommand));
+                            case 3:
+                                return ExternalTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            default:
+                                return ManualTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                        }
+                    }
+                };
+                final TimeDetectorService timeDetectorService3 = this.mInterface;
+                Objects.requireNonNull(timeDetectorService3);
+                return runSuggestTime(supplier3, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        int i6 = i3;
+                        TimeDetectorService timeDetectorService22 = timeDetectorService3;
+                        switch (i6) {
+                            case 0:
+                                NetworkTimeSuggestion networkTimeSuggestion = (NetworkTimeSuggestion) obj;
+                                timeDetectorService22.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest network time");
+                                Objects.requireNonNull(networkTimeSuggestion);
+                                timeDetectorService22.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService22, networkTimeSuggestion, 3));
+                                break;
+                            case 1:
+                                timeDetectorService22.suggestTelephonyTime((TelephonyTimeSuggestion) obj);
+                                break;
+                            case 2:
+                                GnssTimeSuggestion gnssTimeSuggestion = (GnssTimeSuggestion) obj;
+                                timeDetectorService22.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest gnss time");
+                                Objects.requireNonNull(gnssTimeSuggestion);
+                                timeDetectorService22.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService22, gnssTimeSuggestion, 2));
+                                break;
+                            case 3:
+                                timeDetectorService22.suggestExternalTime((ExternalTimeSuggestion) obj);
+                                break;
+                            default:
+                                timeDetectorService22.suggestManualTime((ManualTimeSuggestion) obj);
+                                break;
+                        }
+                    }
+                });
+            case "set_time_state_for_tests":
+                TimeState parseCommandLineArgs = TimeState.parseCommandLineArgs(this);
+                TimeDetectorService timeDetectorService4 = this.mInterface;
+                timeDetectorService4.enforceManageTimeDetectorPermission();
+                ((CallerIdentityInjector.Real) timeDetectorService4.mCallerIdentityInjector).getClass();
+                long clearCallingIdentity = Binder.clearCallingIdentity();
+                try {
+                    ((TimeDetectorStrategyImpl) timeDetectorService4.mTimeDetectorStrategy).setTimeState(parseCommandLineArgs);
+                    return 0;
+                } finally {
                 }
-                break;
-            case -1316904020:
-                if (str.equals("is_auto_detection_enabled")) {
-                    c = 1;
-                    break;
+            case "get_time_state":
+                getOutPrintWriter().println(this.mInterface.getTimeState());
+                return 0;
+            case "suggest_external_time":
+                Supplier supplier4 = new Supplier(this) { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda0
+                    public final /* synthetic */ TimeDetectorShellCommand f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        int i6 = i2;
+                        TimeDetectorShellCommand timeDetectorShellCommand = this.f$0;
+                        timeDetectorShellCommand.getClass();
+                        switch (i6) {
+                            case 0:
+                                return NetworkTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 1:
+                                return TelephonyTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 2:
+                                return new GnssTimeSuggestion(TimeSuggestionHelper.handleParseCommandLineArg(GnssTimeSuggestion.class, timeDetectorShellCommand));
+                            case 3:
+                                return ExternalTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            default:
+                                return ManualTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                        }
+                    }
+                };
+                final TimeDetectorService timeDetectorService5 = this.mInterface;
+                Objects.requireNonNull(timeDetectorService5);
+                return runSuggestTime(supplier4, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        int i6 = i2;
+                        TimeDetectorService timeDetectorService22 = timeDetectorService5;
+                        switch (i6) {
+                            case 0:
+                                NetworkTimeSuggestion networkTimeSuggestion = (NetworkTimeSuggestion) obj;
+                                timeDetectorService22.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest network time");
+                                Objects.requireNonNull(networkTimeSuggestion);
+                                timeDetectorService22.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService22, networkTimeSuggestion, 3));
+                                break;
+                            case 1:
+                                timeDetectorService22.suggestTelephonyTime((TelephonyTimeSuggestion) obj);
+                                break;
+                            case 2:
+                                GnssTimeSuggestion gnssTimeSuggestion = (GnssTimeSuggestion) obj;
+                                timeDetectorService22.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest gnss time");
+                                Objects.requireNonNull(gnssTimeSuggestion);
+                                timeDetectorService22.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService22, gnssTimeSuggestion, 2));
+                                break;
+                            case 3:
+                                timeDetectorService22.suggestExternalTime((ExternalTimeSuggestion) obj);
+                                break;
+                            default:
+                                timeDetectorService22.suggestManualTime((ManualTimeSuggestion) obj);
+                                break;
+                        }
+                    }
+                });
+            case "get_network_time":
+                getOutPrintWriter().println(((TimeDetectorStrategyImpl) this.mInterface.mTimeDetectorStrategy).getLatestNetworkSuggestion());
+                return 0;
+            case "clear_network_time":
+                TimeDetectorService timeDetectorService6 = this.mInterface;
+                timeDetectorService6.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest network time");
+                ((CallerIdentityInjector.Real) timeDetectorService6.mCallerIdentityInjector).getClass();
+                long clearCallingIdentity2 = Binder.clearCallingIdentity();
+                try {
+                    ((TimeDetectorStrategyImpl) timeDetectorService6.mTimeDetectorStrategy).clearLatestNetworkSuggestion();
+                    return 0;
+                } finally {
                 }
-                break;
-            case -844157159:
-                if (str.equals("suggest_network_time")) {
-                    c = 2;
-                    break;
+            case "suggest_manual_time":
+                Supplier supplier5 = new Supplier(this) { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda0
+                    public final /* synthetic */ TimeDetectorShellCommand f$0;
+
+                    {
+                        this.f$0 = this;
+                    }
+
+                    @Override // java.util.function.Supplier
+                    public final Object get() {
+                        int i6 = i;
+                        TimeDetectorShellCommand timeDetectorShellCommand = this.f$0;
+                        timeDetectorShellCommand.getClass();
+                        switch (i6) {
+                            case 0:
+                                return NetworkTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 1:
+                                return TelephonyTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            case 2:
+                                return new GnssTimeSuggestion(TimeSuggestionHelper.handleParseCommandLineArg(GnssTimeSuggestion.class, timeDetectorShellCommand));
+                            case 3:
+                                return ExternalTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                            default:
+                                return ManualTimeSuggestion.parseCommandLineArg(timeDetectorShellCommand);
+                        }
+                    }
+                };
+                final TimeDetectorService timeDetectorService7 = this.mInterface;
+                Objects.requireNonNull(timeDetectorService7);
+                return runSuggestTime(supplier5, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda1
+                    @Override // java.util.function.Consumer
+                    public final void accept(Object obj) {
+                        int i6 = i;
+                        TimeDetectorService timeDetectorService22 = timeDetectorService7;
+                        switch (i6) {
+                            case 0:
+                                NetworkTimeSuggestion networkTimeSuggestion = (NetworkTimeSuggestion) obj;
+                                timeDetectorService22.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest network time");
+                                Objects.requireNonNull(networkTimeSuggestion);
+                                timeDetectorService22.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService22, networkTimeSuggestion, 3));
+                                break;
+                            case 1:
+                                timeDetectorService22.suggestTelephonyTime((TelephonyTimeSuggestion) obj);
+                                break;
+                            case 2:
+                                GnssTimeSuggestion gnssTimeSuggestion = (GnssTimeSuggestion) obj;
+                                timeDetectorService22.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest gnss time");
+                                Objects.requireNonNull(gnssTimeSuggestion);
+                                timeDetectorService22.mHandler.post(new TimeDetectorService$$ExternalSyntheticLambda0(timeDetectorService22, gnssTimeSuggestion, 2));
+                                break;
+                            case 3:
+                                timeDetectorService22.suggestExternalTime((ExternalTimeSuggestion) obj);
+                                break;
+                            default:
+                                timeDetectorService22.suggestManualTime((ManualTimeSuggestion) obj);
+                                break;
+                        }
+                    }
+                });
+            case "clear_system_clock_network_time":
+                TimeDetectorService timeDetectorService8 = this.mInterface;
+                timeDetectorService8.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest network time");
+                ((CallerIdentityInjector.Real) timeDetectorService8.mCallerIdentityInjector).getClass();
+                long clearCallingIdentity3 = Binder.clearCallingIdentity();
+                try {
+                    boolean z = TimeDetectorNetworkTimeHelper.DEBUG;
+                    ((TimeDetectorStrategyImpl) timeDetectorService8.mTimeDetectorStrategy).clearLatestNetworkSuggestion();
+                    return 0;
+                } finally {
                 }
-                break;
-            case -532496502:
-                if (str.equals("suggest_gnss_time")) {
-                    c = 3;
-                    break;
-                }
-                break;
-            case -219775160:
-                if (str.equals("set_time_state_for_tests")) {
-                    c = 4;
-                    break;
-                }
-                break;
-            case -83861208:
-                if (str.equals("get_time_state")) {
-                    c = 5;
-                    break;
-                }
-                break;
-            case 200743238:
-                if (str.equals("suggest_external_time")) {
-                    c = 6;
-                    break;
-                }
-                break;
-            case 255251591:
-                if (str.equals("get_network_time")) {
-                    c = 7;
-                    break;
-                }
-                break;
-            case 754841328:
-                if (str.equals("clear_network_time")) {
-                    c = '\b';
-                    break;
-                }
-                break;
-            case 909817707:
-                if (str.equals("suggest_manual_time")) {
-                    c = '\t';
-                    break;
-                }
-                break;
-            case 1433926509:
-                if (str.equals("clear_system_clock_network_time")) {
-                    c = '\n';
-                    break;
-                }
-                break;
-            case 1860100418:
-                if (str.equals("set_system_clock_network_time")) {
-                    c = 11;
-                    break;
-                }
-                break;
-            case 1902269812:
-                if (str.equals("set_auto_detection_enabled")) {
-                    c = '\f';
-                    break;
-                }
-                break;
-            case 2097306860:
-                if (str.equals("confirm_time")) {
-                    c = '\r';
-                    break;
-                }
-                break;
-        }
-        switch (c) {
-            case 0:
-                return runSuggestTelephonyTime();
-            case 1:
-                return runIsAutoDetectionEnabled();
-            case 2:
-                return runSuggestNetworkTime();
-            case 3:
-                return runSuggestGnssTime();
-            case 4:
-                return runSetTimeState();
-            case 5:
-                return runGetTimeState();
-            case 6:
-                return runSuggestExternalTime();
-            case 7:
-                return runGetLatestNetworkTime();
-            case '\b':
-                return runClearLatestNetworkTime();
-            case '\t':
-                return runSuggestManualTime();
-            case '\n':
-                return runClearSystemClockNetworkTime();
-            case 11:
-                return runSetSystemClockNetworkTime();
-            case '\f':
-                return runSetAutoDetectionEnabled();
-            case '\r':
-                return runConfirmTime();
+            case "set_system_clock_network_time":
+                NetworkTimeSuggestion parseCommandLineArg = NetworkTimeSuggestion.parseCommandLineArg(this);
+                TimeDetectorService timeDetectorService9 = this.mInterface;
+                UnixEpochTime unixEpochTime = parseCommandLineArg.mUnixEpochTime;
+                timeDetectorService9.mContext.enforceCallingPermission("android.permission.SET_TIME", "suggest network time");
+                boolean z2 = TimeDetectorNetworkTimeHelper.DEBUG;
+                NetworkTimeSuggestion networkTimeSuggestion = new NetworkTimeSuggestion(unixEpochTime, parseCommandLineArg.mUncertaintyMillis);
+                networkTimeSuggestion.addDebugInfo("Injected for tests");
+                ((TimeDetectorStrategyImpl) timeDetectorService9.mTimeDetectorStrategy).suggestNetworkTime(networkTimeSuggestion);
+                return 0;
+            case "set_auto_detection_enabled":
+                return !this.mInterface.updateConfiguration(-2, new TimeConfiguration.Builder().setAutoDetectionEnabled(Boolean.parseBoolean(getNextArgRequired())).build()) ? 1 : 0;
+            case "confirm_time":
+                getOutPrintWriter().println(this.mInterface.confirmTime(UnixEpochTime.parseCommandLineArgs(this)));
+                return 0;
             default:
                 return handleDefaultCommands(str);
         }
     }
 
-    public final int runIsAutoDetectionEnabled() {
-        getOutPrintWriter().println(this.mInterface.getCapabilitiesAndConfig().getConfiguration().isAutoDetectionEnabled());
-        return 0;
-    }
-
-    public final int runSetAutoDetectionEnabled() {
-        return !this.mInterface.updateConfiguration(-2, new TimeConfiguration.Builder().setAutoDetectionEnabled(Boolean.parseBoolean(getNextArgRequired())).build()) ? 1 : 0;
-    }
-
-    public final int runSuggestManualTime() {
-        Supplier supplier = new Supplier() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda0
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                ManualTimeSuggestion lambda$runSuggestManualTime$0;
-                lambda$runSuggestManualTime$0 = TimeDetectorShellCommand.this.lambda$runSuggestManualTime$0();
-                return lambda$runSuggestManualTime$0;
-            }
-        };
-        final TimeDetectorService timeDetectorService = this.mInterface;
-        Objects.requireNonNull(timeDetectorService);
-        return runSuggestTime(supplier, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda1
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TimeDetectorService.this.suggestManualTime((ManualTimeSuggestion) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ ManualTimeSuggestion lambda$runSuggestManualTime$0() {
-        return ManualTimeSuggestion.parseCommandLineArg(this);
-    }
-
-    public final int runSuggestTelephonyTime() {
-        Supplier supplier = new Supplier() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda6
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                TelephonyTimeSuggestion lambda$runSuggestTelephonyTime$1;
-                lambda$runSuggestTelephonyTime$1 = TimeDetectorShellCommand.this.lambda$runSuggestTelephonyTime$1();
-                return lambda$runSuggestTelephonyTime$1;
-            }
-        };
-        final TimeDetectorService timeDetectorService = this.mInterface;
-        Objects.requireNonNull(timeDetectorService);
-        return runSuggestTime(supplier, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda7
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TimeDetectorService.this.suggestTelephonyTime((TelephonyTimeSuggestion) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ TelephonyTimeSuggestion lambda$runSuggestTelephonyTime$1() {
-        return TelephonyTimeSuggestion.parseCommandLineArg(this);
-    }
-
-    public final int runSuggestNetworkTime() {
-        Supplier supplier = new Supplier() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda8
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                NetworkTimeSuggestion lambda$runSuggestNetworkTime$2;
-                lambda$runSuggestNetworkTime$2 = TimeDetectorShellCommand.this.lambda$runSuggestNetworkTime$2();
-                return lambda$runSuggestNetworkTime$2;
-            }
-        };
-        final TimeDetectorService timeDetectorService = this.mInterface;
-        Objects.requireNonNull(timeDetectorService);
-        return runSuggestTime(supplier, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda9
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TimeDetectorService.this.suggestNetworkTime((NetworkTimeSuggestion) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ NetworkTimeSuggestion lambda$runSuggestNetworkTime$2() {
-        return NetworkTimeSuggestion.parseCommandLineArg(this);
-    }
-
-    public final int runGetLatestNetworkTime() {
-        getOutPrintWriter().println(this.mInterface.getLatestNetworkSuggestion());
-        return 0;
-    }
-
-    public final int runClearLatestNetworkTime() {
-        this.mInterface.clearLatestNetworkTime();
-        return 0;
-    }
-
-    public final int runSuggestGnssTime() {
-        Supplier supplier = new Supplier() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda4
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                GnssTimeSuggestion lambda$runSuggestGnssTime$3;
-                lambda$runSuggestGnssTime$3 = TimeDetectorShellCommand.this.lambda$runSuggestGnssTime$3();
-                return lambda$runSuggestGnssTime$3;
-            }
-        };
-        final TimeDetectorService timeDetectorService = this.mInterface;
-        Objects.requireNonNull(timeDetectorService);
-        return runSuggestTime(supplier, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda5
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TimeDetectorService.this.suggestGnssTime((GnssTimeSuggestion) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ GnssTimeSuggestion lambda$runSuggestGnssTime$3() {
-        return GnssTimeSuggestion.parseCommandLineArg(this);
-    }
-
-    public final int runSuggestExternalTime() {
-        Supplier supplier = new Supplier() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda2
-            @Override // java.util.function.Supplier
-            public final Object get() {
-                ExternalTimeSuggestion lambda$runSuggestExternalTime$4;
-                lambda$runSuggestExternalTime$4 = TimeDetectorShellCommand.this.lambda$runSuggestExternalTime$4();
-                return lambda$runSuggestExternalTime$4;
-            }
-        };
-        final TimeDetectorService timeDetectorService = this.mInterface;
-        Objects.requireNonNull(timeDetectorService);
-        return runSuggestTime(supplier, new Consumer() { // from class: com.android.server.timedetector.TimeDetectorShellCommand$$ExternalSyntheticLambda3
-            @Override // java.util.function.Consumer
-            public final void accept(Object obj) {
-                TimeDetectorService.this.suggestExternalTime((ExternalTimeSuggestion) obj);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public /* synthetic */ ExternalTimeSuggestion lambda$runSuggestExternalTime$4() {
-        return ExternalTimeSuggestion.parseCommandLineArg(this);
-    }
-
-    public final int runSuggestTime(Supplier supplier, Consumer consumer) {
-        PrintWriter outPrintWriter = getOutPrintWriter();
-        try {
-            Object obj = supplier.get();
-            if (obj == null) {
-                outPrintWriter.println("Error: suggestion not specified");
-                return 1;
-            }
-            consumer.accept(obj);
-            outPrintWriter.println("Suggestion " + obj + " injected.");
-            return 0;
-        } catch (RuntimeException e) {
-            outPrintWriter.println(e);
-            return 1;
-        }
-    }
-
-    public final int runGetTimeState() {
-        getOutPrintWriter().println(this.mInterface.getTimeState());
-        return 0;
-    }
-
-    public final int runSetTimeState() {
-        this.mInterface.setTimeState(TimeState.parseCommandLineArgs(this));
-        return 0;
-    }
-
-    public final int runConfirmTime() {
-        getOutPrintWriter().println(this.mInterface.confirmTime(UnixEpochTime.parseCommandLineArgs(this)));
-        return 0;
-    }
-
-    public final int runClearSystemClockNetworkTime() {
-        this.mInterface.clearNetworkTimeForSystemClockForTests();
-        return 0;
-    }
-
-    public final int runSetSystemClockNetworkTime() {
-        NetworkTimeSuggestion parseCommandLineArg = NetworkTimeSuggestion.parseCommandLineArg(this);
-        this.mInterface.setNetworkTimeForSystemClockForTests(parseCommandLineArg.getUnixEpochTime(), parseCommandLineArg.getUncertaintyMillis());
-        return 0;
-    }
-
-    public void onHelp() {
+    public final void onHelp() {
         PrintWriter outPrintWriter = getOutPrintWriter();
         outPrintWriter.printf("Time Detector (%s) commands:\n", "time_detector");
         outPrintWriter.printf("  help\n", new Object[0]);
@@ -366,9 +430,14 @@ public class TimeDetectorShellCommand extends ShellCommand {
         outPrintWriter.println();
         TelephonyTimeSuggestion.printCommandLineOpts(outPrintWriter);
         outPrintWriter.println();
-        NetworkTimeSuggestion.printCommandLineOpts(outPrintWriter);
+        outPrintWriter.printf("%s suggestion options:\n", "Network");
+        outPrintWriter.println("  --elapsed_realtime <elapsed realtime millis> - the elapsed realtime millis when unix epoch time was read");
+        outPrintWriter.println("  --unix_epoch_time <Unix epoch time millis>");
+        outPrintWriter.println("  --uncertainty_millis <Uncertainty millis> - a positive error bound (+/-) estimate for unix epoch time");
         outPrintWriter.println();
-        GnssTimeSuggestion.printCommandLineOpts(outPrintWriter);
+        outPrintWriter.println("See " + NetworkTimeSuggestion.class.getName() + " for more information");
+        outPrintWriter.println();
+        TimeSuggestionHelper.handlePrintCommandLineOpts(outPrintWriter, "GNSS", GnssTimeSuggestion.class);
         outPrintWriter.println();
         ExternalTimeSuggestion.printCommandLineOpts(outPrintWriter);
         outPrintWriter.println();
@@ -385,5 +454,22 @@ public class TimeDetectorShellCommand extends ShellCommand {
         outPrintWriter.println();
         outPrintWriter.printf("See \"adb shell cmd device_config\" for more information on setting flags.\n", new Object[0]);
         outPrintWriter.println();
+    }
+
+    public final int runSuggestTime(Supplier supplier, Consumer consumer) {
+        PrintWriter outPrintWriter = getOutPrintWriter();
+        try {
+            Object obj = supplier.get();
+            if (obj == null) {
+                outPrintWriter.println("Error: suggestion not specified");
+                return 1;
+            }
+            consumer.accept(obj);
+            outPrintWriter.println("Suggestion " + obj + " injected.");
+            return 0;
+        } catch (RuntimeException e) {
+            outPrintWriter.println(e);
+            return 1;
+        }
     }
 }
